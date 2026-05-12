@@ -2821,9 +2821,9 @@ async function fetchData(): Promise<ApiData> {
     <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px;">
       <div style="background: #f59e0b; color: #1e293b; border-radius: 10px; padding: 10px 8px; text-align: center; font-size: 11px; font-weight: 600; width: 100%; box-shadow: 0 2px 6px rgba(245,158,11,0.25);">Object is possibly 'undefined'<br><span style="font-weight: 400;">null/undefined の可能性</span></div>
       <div style="color: #64748b; font-size: 16px;">▼</div>
-      <div style="background: #16a34a; color: white; border-radius: 8px; padding: 8px 6px; text-align: center; font-size: 10px; font-weight: 600; width: 100%;">null チェックを追加<br><code style="font-size: 9px; color: #bbf7d0;">if (value) { ... }</code></div>
-      <div style="background: #16a34a; color: white; border-radius: 8px; padding: 8px 6px; text-align: center; font-size: 10px; font-weight: 600; width: 100%; margin-top: 4px;">オプショナルチェイニング<br><code style="font-size: 9px; color: #bbf7d0;">value?.property</code></div>
-      <div style="background: #16a34a; color: white; border-radius: 8px; padding: 8px 6px; text-align: center; font-size: 10px; font-weight: 600; width: 100%; margin-top: 4px;">null 合体演算子<br><code style="font-size: 9px; color: #bbf7d0;">value ?? default</code></div>
+      <div style="background: #16a34a; color: white; border-radius: 8px; padding: 8px 6px; text-align: center; font-size: 10px; font-weight: 600; width: 100%;">null チェックを追加<br><code style="font-size: 9px; background: rgba(255,255,255,0.2); color: #ffffff; padding: 1px 4px; border-radius: 3px;">if (value) { ... }</code></div>
+      <div style="background: #16a34a; color: white; border-radius: 8px; padding: 8px 6px; text-align: center; font-size: 10px; font-weight: 600; width: 100%; margin-top: 4px;">オプショナルチェイニング<br><code style="font-size: 9px; background: rgba(255,255,255,0.2); color: #ffffff; padding: 1px 4px; border-radius: 3px;">value?.property</code></div>
+      <div style="background: #16a34a; color: white; border-radius: 8px; padding: 8px 6px; text-align: center; font-size: 10px; font-weight: 600; width: 100%; margin-top: 4px;">null 合体演算子<br><code style="font-size: 9px; background: rgba(255,255,255,0.2); color: #ffffff; padding: 1px 4px; border-radius: 3px;">value ?? default</code></div>
     </div>
     <!-- Branch 3: Property not found -->
     <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px;">
@@ -2831,7 +2831,7 @@ async function fetchData(): Promise<ApiData> {
       <div style="color: #64748b; font-size: 16px;">▼</div>
       <div style="background: #16a34a; color: white; border-radius: 8px; padding: 8px 6px; text-align: center; font-size: 10px; font-weight: 600; width: 100%;">タイプミスを確認</div>
       <div style="background: #16a34a; color: white; border-radius: 8px; padding: 8px 6px; text-align: center; font-size: 10px; font-weight: 600; width: 100%; margin-top: 4px;">型定義にプロパティを追加</div>
-      <div style="background: #16a34a; color: white; border-radius: 8px; padding: 8px 6px; text-align: center; font-size: 10px; font-weight: 600; width: 100%; margin-top: 4px;">型の絞り込み<br><code style="font-size: 9px; color: #bbf7d0;">(type guard)</code></div>
+      <div style="background: #16a34a; color: white; border-radius: 8px; padding: 8px 6px; text-align: center; font-size: 10px; font-weight: 600; width: 100%; margin-top: 4px;">型の絞り込み<br><code style="font-size: 9px; background: rgba(255,255,255,0.2); color: #ffffff; padding: 1px 4px; border-radius: 3px;">(type guard)</code></div>
     </div>
   </div>
 </div>
