@@ -1,6 +1,13 @@
 # 第3章: React の基礎
 
-> この章では、React（リアクト）の基本的な概念をゼロから学びます。React は**ユーザーインターフェース（UI：ユーザーが見て操作する画面部分）** を効率的に作るためのライブラリ（Library：特定の機能を提供するプログラムの集まり）です。
+> この章では、React（リアクト：Meta社が開発したUI構築用JavaScriptライブラリ）の基本的な概念をゼロから学びます。React は**ユーザーインターフェース（UI：User Interface。ユーザーが見て操作する画面部分の総称）** を効率的に作るためのライブラリ（Library：特定の機能を提供するプログラム部品の集まり。自分のコードから呼び出して使う）です。
+>
+> **この章を読む前に頭に入れておきたいこと:**
+>
+> - **JSX**（ジェイエスエックス：JavaScript XMLの略）は、JavaScript の中に HTML 風の構文を書ける「拡張構文」です。ブラウザは JSX を直接理解できないため、ビルドツール（Vite, Babel など）が裏で `React.createElement(...)` という関数呼び出しに変換しています。つまり JSX は「見た目が HTML だけど、実体は JavaScript の関数呼び出し」と覚えてください。
+> - **コンポーネント**（Component：UIの部品）は、画面の一部を表す関数です。「JSX を返す関数」を作って、それを別の関数から `<MyComponent />` のように呼び出すだけで、UI を組み立てられます。
+> - **state**（ステート：状態）の値は **直接書き換えてはいけません**。React は state の更新を「参照が変わったかどうか」で判定するため、`obj.name = "..."` のような直接代入では再レンダリング（再描画）が起こりません。必ず `setXxx(...)` という更新関数を呼びます。
+> - **Strict Mode**（ストリクトモード：開発時の不具合検出モード）が有効だと、開発中はコンポーネントの関数が**わざと2回呼ばれます**。「あれ、console.log が2回出る？」と驚くかもしれませんが、これは仕様です。本番ビルドでは1回しか呼ばれません。
 
 ### この章で学ぶこと
 
@@ -14,7 +21,9 @@
 | **useEffect** | 画面描画以外の処理 | 画面が表示された後に行う「裏方の仕事」（API通信など） |
 | **カスタムフック** | 共通ロジックの切り出し | よく使う手順をマニュアルにまとめておくこと |
 
-> **Reactを学ぶ前に：** React は「宣言的UI」（Declarative UI）という考え方を採用しています。これは「画面がどうあるべきか」を記述するスタイルで、jQuery（ジェイクエリー）のように「画面のどこをどう操作するか」を記述する「命令的UI」（Imperative UI）とは大きく異なります。最初は戸惑うかもしれませんが、慣れると非常に直感的に感じるようになります。
+> **Reactを学ぶ前に：** React は「宣言的UI」（Declarative UI：宣言的ユーアイ。「最終的にこう見えてほしい」を書くスタイル）という考え方を採用しています。これは「画面がどうあるべきか」を記述するスタイルで、jQuery（ジェイクエリー：古くからあるDOM操作用JavaScriptライブラリ）のように「画面のどこをどう操作するか」を1ステップずつ記述する「命令的UI」（Imperative UI：めいれいてきユーアイ）とは大きく異なります。最初は戸惑うかもしれませんが、慣れると非常に直感的に感じるようになります。
+>
+> 例えるなら、命令的UIは「友達に道を教えるとき、最初の交差点を右、次の信号を左、3軒目の家…」と1手ずつ指示する方法。宣言的UIは「○○駅前の郵便局」と最終目的地だけ伝え、行き方はカーナビ（=React）に任せる方法です。
 
 ---
 
@@ -41,15 +50,15 @@ React は「画面を作る」ための仕組みです。「画面」とは内�
 HTML（HyperText Markup Language）は、**Webページの構造を記述する言語**です。`<タグ名>...</タグ名>` という形で、文章のどの部分が「見出し」で、どの部分が「段落」で、どこに「リンク」があるか、をコンピュータに教えます。
 
 ```html
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>はじめてのページ</title>
+<!DOCTYPE html>                                  <!-- ブラウザに「これはHTML5の文書です」と宣言する一行。HTMLファイルの先頭に必ず書く -->
+<html>                                           <!-- ページ全体の最も外側のタグ。<html>...</html> の中にすべてが入る -->
+  <head>                                         <!-- 文書の「メタ情報（タイトル・文字コード・読み込むCSS等）」を入れる場所。画面には表示されない -->
+    <title>はじめてのページ</title>              <!-- ブラウザのタブ部分に表示される文字 -->
   </head>
-  <body>
-    <h1>こんにちは</h1>
-    <p>これは段落（paragraph）です。</p>
-    <a href="https://example.com">リンク</a>
+  <body>                                         <!-- 画面に実際に表示される「本文」を入れる場所 -->
+    <h1>こんにちは</h1>                          <!-- 一番大きな見出し（heading 1）。1ページに1つだけ書くのが原則 -->
+    <p>これは段落（paragraph）です。</p>          <!-- <p> は paragraph（段落）の略。通常の文章ブロック -->
+    <a href="https://example.com">リンク</a>     <!-- <a> はアンカー（anchor）。href 属性で飛び先URLを指定するクリック可能なリンク -->
   </body>
 </html>
 ```
@@ -95,7 +104,7 @@ html
      └─ a  ("リンク") [href="https://example.com"]
 ```
 
-「DOM を操作する」とは、JavaScript からこのツリーを読み書きして画面を変更することです。React は **「DOM 操作を直接書かなくて済むようにする」** ためのライブラリ、と言い換えてもOKです。
+「DOM を操作する」とは、JavaScript からこのツリーを読み書きして画面を変更することです（例: `element.textContent = "新しい文字"` で文字を書き換える、`element.style.color = "red"` で色を変える、など）。React は **「DOM 操作を直接書かなくて済むようにする」** ためのライブラリ、と言い換えてもOKです。React に「画面はこういう状態であってほしい」と JSX で宣言すれば、内部で必要な DOM 操作を裏で勝手にやってくれます。
 
 ### 0.4 ブラウザの開発者ツールで触ってみる
 
@@ -103,7 +112,10 @@ Chrome や Edge で右クリック →「検証（Inspect）」を選ぶと、�
 
 ```javascript
 // Consoleタブで実行
-document.title            // ▶ ページタイトルを取得
+// document はブラウザが用意している「ページ全体を表すオブジェクト」。常にグローバルに存在する。
+document.title            // ▶ ページタイトル（<title>タグの中身）を取得。文字列が返る
+// querySelector はCSSセレクタで要素を1つ取得するメソッド。"h1" は「h1タグを探す」という意味。
+// .textContent は「その要素のテキスト部分だけ」を取り出すプロパティ。
 document.querySelector("h1").textContent  // ▶ h1の文字を取得
 ```
 
@@ -117,7 +129,7 @@ document.querySelector("h1").textContent  // ▶ h1の文字を取得
 
 React は **Facebook（現 Meta）** が開発した、ユーザーインターフェース（UI：画面）を構築するための JavaScript ライブラリです。2013年にオープンソース（誰でも無料で使える形）として公開され、現在では世界で最も使われているUIライブラリです。
 
-React の最大の特徴は **「コンポーネント」**（Component：UIの部品。ボタン、カード、ヘッダーなど、画面を構成する一つひとつの要素）という考え方です。
+React の最大の特徴は **「コンポーネント」**（Component：コンポーネント。UIの部品。ボタン、カード、ヘッダーなど、画面を構成する一つひとつの要素。React では「JSX を返す関数」として書く）という考え方です。
 
 > **なぜReactが人気なの？** 従来のWeb開発では、HTMLファイル全体を書き換える必要がありました。React では、変化した部分だけを効率的に更新できるため、**高速で滑らかな画面更新**が可能です。また、一度作った部品（コンポーネント）を使い回せるため、開発効率も大幅に向上します。
 
@@ -289,21 +301,28 @@ React の最大の特徴は **「コンポーネント」**（Component：UIの�
 
 ### 2.1 JSX とは何か
 
-**JSX（JavaScript XML）** は、JavaScript の中に HTML のようなコードを書ける構文拡張です。TypeScript で使う場合は **TSX** と呼びます（ファイル拡張子が `.tsx`）。
+**JSX（JavaScript XML：ジェイエスエックス）** は、JavaScript の中に HTML のようなコードを書ける構文拡張（言語の文法を拡張したもの）です。TypeScript で使う場合は **TSX**（TypeScript XML）と呼びます（ファイル拡張子が `.tsx`）。
 
-JSX は実際にはブラウザが直接理解できるものではなく、ビルドツール（Vite, Webpack など）によって通常の JavaScript に変換されます。
+JSX は実際にはブラウザが直接理解できるものではなく、ビルドツール（Vite, Webpack, Babel など、ソースコードを実行可能な形式に変換するツール）によって通常の JavaScript に変換されます。変換結果は「`React.createElement()` という関数を呼ぶだけのコード」になります。つまり JSX の `<h1>...</h1>` は内部的には「React 用のオブジェクトを作る関数呼び出し」に過ぎません。
 
 ```tsx
 // JSX で書いたコード
+// const = 再代入できない変数を宣言するキーワード（JavaScript ES2015以降）
+// element = 変数名（自分でつけた名前）
+// <h1>こんにちは、React！</h1> = JSX。HTML そっくりだが、これは JS 式（オブジェクト）。
 const element = <h1>こんにちは、React！</h1>;
 
 // ↓ ビルドツールによって変換される ↓
 
 // 実際に実行される JavaScript コード
+// React.createElement(タグ名, 属性オブジェクト, 子要素...) の形で React 要素を作る。
+//   第1引数 "h1": どのタグを作るか
+//   第2引数 null: 属性（className や onClick など）。今回はないので null
+//   第3引数 "こんにちは、React！": 子要素（タグの中身）
 const element = React.createElement("h1", null, "こんにちは、React！");
 ```
 
-JSX のおかげで、UI の構造を直感的に記述できます。
+JSX のおかげで、UI の構造を直感的に記述できます。なお、ブラウザがコードを動かす前に「JSX → JavaScript」への変換が必ず走っている、というのは重要なポイントです。エラーメッセージや devtools の表示で `createElement` が出てきても驚かないようにしましょう。
 
 ### 2.2 基本的な構文
 
@@ -522,9 +541,11 @@ function App() {
 
 ```tsx
 // NG: if 文は式ではないので書けない
+// 文（statement）は「値を持たない命令」。値を持たないものを { } の中に書くことはできない。
 <p>{if (age >= 20) { "成人" }}</p>
 
 // OK: 三項演算子は式なので書ける
+// 「条件 ? 真の値 : 偽の値」は値を返す式。だから JSX 内に埋め込める。
 <p>{age >= 20 ? "成人" : "未成年"}</p>
 ```
 
@@ -623,34 +644,52 @@ function Notification() {
 
 ```tsx
 // NG: count が 0 のとき、画面に「0」が表示されてしまう
+// JSX は false/null/undefined は描画しないが、0 は数値として描画してしまう。
 {count && <p>{count}件</p>}
 
 // OK: 比較演算子を使えば安全
+// count > 0 は必ず true/false の真偽値になるので、0件のときは何も表示されない。
 {count > 0 && <p>{count}件</p>}
 ```
 
 #### 複雑な条件分岐
 
 ```tsx
+// type 文は TypeScript の型定義。Status は "loading" / "success" / "error" のいずれか
+// の文字列しか入らない「ユニオン型」になる。タイポしただけで VS Code が赤線で教えてくれる。
 type Status = "loading" | "success" | "error";
 
+// 関数コンポーネント DataDisplay の定義
 function DataDisplay() {
+  // 現在の状態を表す変数。: Status は型注釈で「Status 型しか入らない」と宣言。
   const status: Status = "success";
+  // 表示するデータ本体（成功時に出す文字列）
   const data: string = "データの内容";
+  // エラー時のメッセージ。今回はエラーがないので空文字
   const errorMessage: string = "";
 
   // 関数で条件分岐をまとめる
+  // renderContent は「画面に出す中身を返す関数」。
+  // 戻り値の型 JSX.Element は「JSXの要素1つ」を意味する。
   const renderContent = (): JSX.Element => {
+    // switch 文: 1つの値を複数の case と比較して分岐する制御構造
     switch (status) {
       case "loading":
+        // 状態が "loading" のとき表示するJSXを返す
         return <p>読み込み中...</p>;
       case "error":
+        // 状態が "error" のとき。className="error" でCSSクラスを指定（赤字スタイル等）
+        // { } の中は JS 式。errorMessage 変数の値が埋め込まれる。
         return <p className="error">エラー: {errorMessage}</p>;
       case "success":
+        // 状態が "success" のとき。{data} で変数の中身を表示。
         return <p>{data}</p>;
     }
   };
 
+  // 親JSXで <h2> と renderContent() の戻り値を並べる。
+  // {renderContent()} の () は「関数を呼び出す」記号。
+  // 関数の戻り値（=JSX）がここに展開される。
   return (
     <div>
       <h2>データ表示</h2>
@@ -667,14 +706,28 @@ function DataDisplay() {
 配列データを画面に表示するには、`map` メソッドを使います。
 
 ```tsx
+// 関数コンポーネント FruitList を定義
 function FruitList() {
+  // fruits: 4つの文字列が入った配列。型 string[] は「文字列の配列」を意味する。
   const fruits: string[] = ["りんご", "バナナ", "みかん", "ぶどう"];
 
   return (
     <div>
       <h2>フルーツ一覧</h2>
+      {/* <ul> は順序なしリスト（unordered list）。中に <li>（list item）を並べる */}
       <ul>
+        {/*
+          {fruits.map(...)} = JSX 中に「配列の各要素を JSX に変換した結果の配列」を埋め込む。
+          map((要素, インデックス) => 戻り値) で全要素に対して関数を呼び、新しい配列を作る。
+            fruit  = 配列の各要素（"りんご" など）
+            index  = 配列内での位置（0, 1, 2, 3）
+          アロー関数の () => (...) は「JSXを返すアロー関数」。
+          { } の中で () で囲んでいるのは「return できる単一の式」にするため。
+        */}
         {fruits.map((fruit, index) => (
+          // key={index} は React がリスト要素を識別するための特別な属性。
+          // 後述のとおり、本来は配列の index ではなく一意なIDを使うのが望ましい。
+          // ここでは「並び替えがない静的なリスト」なので index でも問題ない。
           <li key={index}>{fruit}</li>
         ))}
       </ul>
@@ -778,12 +831,14 @@ function BookList() {
 > 状態: 在庫あり          ← 緑色
 > ```
 
-**重要**: `key` プロパティには、配列内で一意（ユニーク）な値を指定します。データベースから取得した `id` がベストです。`index` は最後の手段です（要素の並び替え・追加・削除で不具合の原因になります）。
+**重要**: `key` プロパティ（key prop：キー プロップ。Reactがリスト要素を識別するための特別な属性）には、配列内で一意（ユニーク）な値を指定します。データベースから取得した `id` がベストです。`index` は最後の手段です（要素の並び替え・追加・削除で不具合の原因になります）。`key` は React 内部の差分計算（reconciliation）専用で、子コンポーネントから `props.key` として読むことはできません。
 
 #### フィルタリングと map の組み合わせ
 
 ```tsx
+// 「在庫があるものだけ」を表示する関数コンポーネント
 function AvailableBookList() {
+  // Book型の配列を用意（前のサンプルと同じ Book 型を使用）
   const books: Book[] = [
     { id: 1, title: "React入門", author: "田中太郎", price: 2800, isAvailable: true },
     { id: 2, title: "TypeScript実践", author: "鈴木花子", price: 3200, isAvailable: false },
@@ -793,11 +848,22 @@ function AvailableBookList() {
   return (
     <div>
       <h2>在庫のある書籍</h2>
+      {/*
+        メソッドチェーン: 「.filter() の戻り値（新しい配列）」に「.map() を呼ぶ」と続けて書く形。
+        - filter((要素) => 条件) は「条件が true の要素だけ残した新しい配列」を返す。
+          ここでは book.isAvailable が true の書籍だけを残す。
+        - 続く map((要素) => JSX) で「残った書籍を JSX に変換」。
+        - filter/map とも元の配列を変更しない。新しい配列を返す（破壊的ではない）。
+      */}
       {books
         .filter((book) => book.isAvailable)
         .map((book) => (
+          // key={book.id} は必須。データのID（一意な値）を使うのがベスト。
           <div key={book.id}>
             <p>
+              {/* {book.title} は文字列。- は普通の文字。
+                  ¥ は通貨記号（普通の文字）。
+                  {book.price.toLocaleString()} は「数値→3桁カンマ区切り文字列」変換。 */}
               {book.title} - ¥{book.price.toLocaleString()}
             </p>
           </div>
@@ -819,20 +885,28 @@ function AvailableBookList() {
 
 ### 3.1 関数コンポーネントの書き方
 
-React では、**関数コンポーネント** が標準的な書き方です（クラスコンポーネントは現在の React では推奨されていません）。
+React では、**関数コンポーネント**（Function Component：関数として書かれたコンポーネント）が標準的な書き方です（**クラスコンポーネント**（Class Component：class 構文で書かれた古い書き方）は現在の React では推奨されていません。本書では扱いません）。
 
 ```tsx
 // 最もシンプルな関数コンポーネント
+// function 文で「JSXを返す関数」を作るだけでコンポーネントになる。
+// 関数名 Greeting は大文字始まり（PascalCase）にする。これが React の決まり。
 function Greeting() {
+  // return = この関数の戻り値を指定。<h1>...</h1> の JSX をそのまま返す。
   return <h1>こんにちは！</h1>;
 }
 
 // アロー関数でも書ける
+// const Greeting = ... で「Greeting という変数にアロー関数を入れる」書き方。
+// () は引数（このコンポーネントは props を取らないので空）。
+// => の右側 { ... } が関数本体。
 const Greeting = () => {
   return <h1>こんにちは！</h1>;
 };
 
 // 1行で返せる場合は return を省略できる
+// アロー関数で「=> 式」と書くと、その式が自動的に戻り値になる（即時 return）。
+// 中括弧 { } を書かないことで「式を直接返す」モードになる。
 const Greeting = () => <h1>こんにちは！</h1>;
 ```
 
@@ -841,9 +915,14 @@ const Greeting = () => <h1>こんにちは！</h1>;
 #### コンポーネントの使い方
 
 ```tsx
+// 親コンポーネント App から子コンポーネント Greeting を呼び出す例
 function App() {
   return (
+    // <div> で全体を1つにまとめる（JSXの「ルート要素は1つ」ルール）
     <div>
+      {/* <Greeting /> は自己閉じタグ。HTMLの <br /> と同じく / で閉じる。
+          中身がない子コンポーネントは自己閉じタグで書くのが慣習。
+          同じコンポーネントは何度でも書けて、それぞれが独立したインスタンスになる。 */}
       <Greeting />
       <Greeting />
       <Greeting />
@@ -852,23 +931,29 @@ function App() {
 }
 ```
 
-> この結果、画面には **「こんにちは！」** が3回表示されます。同じコンポーネントを何度でも再利用できます。
+> この結果、画面には **「こんにちは！」** が3回表示されます。同じコンポーネントを何度でも再利用できます。**1つのコンポーネント定義（設計図）から、いくつでもインスタンス（実際の表示）を作れる**のがコンポーネント指向のメリットです。
 
-**命名規則**: コンポーネント名は必ず **大文字始まり（PascalCase）** にします。小文字で始まると、HTML タグとして認識されてしまいます。
+**命名規則**: コンポーネント名は必ず **大文字始まり（PascalCase：パスカルケース。単語の先頭をすべて大文字にする命名法）** にします。小文字で始まると、HTML タグとして認識されてしまいます。
 
 ```tsx
 // OK: 大文字始まり → React コンポーネント
+// JSX → JS変換時に React.createElement(Greeting, ...) と「変数 Greeting」として扱われる
 <Greeting />
 <BookCard />
 <UserProfile />
 
 // NG: 小文字始まり → HTML タグとして扱われる
+// React.createElement("greeting", ...) になり、不明なHTMLタグとしてDOMに出力される
 <greeting />  // <greeting> という存在しない HTML タグになる
 ```
 
 ### 3.2 Props の受け渡し（TypeScript での型定義含む）
 
-**Props（プロパティ）** は、親コンポーネントから子コンポーネントにデータを渡す仕組みです。
+**Props**（プロパティ：Properties。「親が子に渡す入力データ」のこと。HTMLタグの属性に似ている）は、親コンポーネントから子コンポーネントにデータを渡す仕組みです。値は **読み取り専用**で、子の中で書き換えてはいけません（書き換えても親には反映されないし、Reactの想定外の動作になります）。
+
+> **propsドリリング**（Props Drilling：プロップスドリリング）について: 親 → 子 → 孫… と何階層も同じ props を「素通し」で渡し続ける現象です。階層が深くなるとコード保守が辛くなるため、後の章で扱う **Context**（コンテキスト）や状態管理ライブラリで解決します。
+>
+> **リフトアップ**（Lifting State Up：状態を持ち上げる）について: 兄弟コンポーネント間で同じ state を共有したいとき、共通の親に state を「持ち上げ」、props と更新関数を子に配るパターンです。例えば「親が `items` を持ち、子A が読み出し、子B が更新」という構図にします。
 
 #### 基本的な Props
 
@@ -924,15 +1009,18 @@ function App() {
 #### さまざまな型の Props
 
 ```tsx
+// Props の型を定義。1つのオブジェクトの「形」を表す type を作る。
 type UserCardProps = {
   name: string;                    // 必須の文字列
   age: number;                     // 必須の数値
-  email?: string;                  // オプショナル（省略可能）
-  isAdmin: boolean;                // 必須の真偽値
-  hobbies: string[];               // 文字列の配列
-  onClickProfile: () => void;      // 関数（コールバック）
+  email?: string;                  // ? はオプショナル（省略可能）。値が無いと型は string | undefined になる
+  isAdmin: boolean;                // 必須の真偽値（true / false）
+  hobbies: string[];               // 文字列の配列。[] は「配列」を表す
+  onClickProfile: () => void;      // 関数型。「引数なし、戻り値なし（void）の関数」を表す
 };
 
+// 分割代入で props のプロパティを直接取り出す。
+// 元の書き方: function UserCard(props: UserCardProps) { const { name, ... } = props; }
 function UserCard({
   name,
   age,
@@ -942,24 +1030,32 @@ function UserCard({
   onClickProfile,
 }: UserCardProps) {
   return (
+    // className は HTML の class 属性の JSX 版（class は JS の予約語のため）
     <div className="user-card">
-      <h2>{name}</h2>
-      <p>年齢: {age}歳</p>
+      <h2>{name}</h2>           {/* { } で JS の式を JSX に埋め込む。name 変数の値が表示される */}
+      <p>年齢: {age}歳</p>      {/* 「年齢: 25歳」のように文字列と変数が混ざる */}
 
-      {/* オプショナルな props は存在チェック */}
+      {/* オプショナルな props は存在チェック
+          email が undefined（=falsy）なら && の右辺が評価されず、何も表示されない。
+          email が文字列（=truthy）なら <p>...</p> が表示される。 */}
       {email && <p>メール: {email}</p>}
 
+      {/* 三項演算子 条件 ? 真の値 : 偽の値。式なので JSX 内に書ける */}
       <p>権限: {isAdmin ? "管理者" : "一般ユーザー"}</p>
 
       <div>
         趣味:
         <ul>
+          {/* hobbies.map で配列を <li> の配列に変換。
+              key には今回 index を使っているが、本来はデータ固有のIDが望ましい。 */}
           {hobbies.map((hobby, index) => (
             <li key={index}>{hobby}</li>
           ))}
         </ul>
       </div>
 
+      {/* onClick に「関数自身」を渡す。()を付けると即実行になりバグの元なので注意。
+          onClickProfile は親から受け取った関数で、ボタンクリック時に呼び出される。 */}
       <button onClick={onClickProfile}>プロフィールを見る</button>
     </div>
   );
@@ -967,11 +1063,15 @@ function UserCard({
 
 // 使い方
 function App() {
+  // ボタンクリック時の処理を関数として用意。alert はブラウザの組み込み関数。
   const handleClick = () => {
     alert("プロフィールページへ移動します");
   };
 
   return (
+    // 子コンポーネントに props を渡す。
+    // - 文字列は "..." または '...' で書く（ダブルクオート/シングルクオート）
+    // - 数値・真偽値・配列・関数は { } で囲んでJS式として渡す
     <UserCard
       name="田中太郎"
       age={25}
@@ -1004,19 +1104,25 @@ function App() {
 #### デフォルト値を持つ Props
 
 ```tsx
+// Button が受け取る Props の型定義
 type ButtonProps = {
-  label: string;
-  color?: string;
-  size?: "small" | "medium" | "large";
-  disabled?: boolean;
+  label: string;                          // ボタンに表示する文字（必須）
+  color?: string;                         // ? を付けると省略可能（オプショナル）
+  size?: "small" | "medium" | "large";    // ユニオン型: 3つの文字列のどれかしか入らない
+  disabled?: boolean;                     // クリック不可にするかどうか（省略可能）
 };
 
+// 分割代入で props を取り出し、同時に「= 値」でデフォルト値を設定。
+// 親が color を指定しなかった場合は "blue" が使われる。
 function Button({
   label,
   color = "blue",
   size = "medium",
   disabled = false,
 }: ButtonProps) {
+  // Record<キーの型, 値の型> は「オブジェクトの型」。
+  // ここでは「キー: string, 値: string のオブジェクト」を表す。
+  // ボタンサイズごとに padding（内側余白）の値を持たせている。
   const sizeStyles: Record<string, string> = {
     small: "8px 16px",
     medium: "12px 24px",
@@ -1025,17 +1131,22 @@ function Button({
 
   return (
     <button
+      // style はオブジェクトで指定。外側の {} が JSX、内側の {} が JSオブジェクトリテラル。
+      // CSSプロパティ名はキャメルケース（background-color → backgroundColor）。
       style={{
-        backgroundColor: color,
-        padding: sizeStyles[size],
-        color: "white",
-        border: "none",
-        borderRadius: "4px",
-        opacity: disabled ? 0.5 : 1,
-        cursor: disabled ? "not-allowed" : "pointer",
+        backgroundColor: color,                 // 背景色（props 由来）
+        padding: sizeStyles[size],              // size に対応する余白文字列
+        color: "white",                         // 文字色
+        border: "none",                         // 枠線なし
+        borderRadius: "4px",                    // 角を丸める
+        opacity: disabled ? 0.5 : 1,            // 無効化されてたら半透明
+        cursor: disabled ? "not-allowed" : "pointer", // マウスカーソルの形
       }}
+      // disabled={disabled} は「JS変数の値をHTML属性にセット」する書き方。
+      // boolean を渡せば true のとき disabled 属性が付き、false なら付かない。
       disabled={disabled}
     >
+      {/* {label} は props の文字列をボタンの中身として表示 */}
       {label}
     </button>
   );
@@ -1044,8 +1155,11 @@ function Button({
 function App() {
   return (
     <div>
+      {/* color, size, disabled を省略 → デフォルト値が使われる */}
       <Button label="デフォルト" />
+      {/* color="red" size="large" を指定 */}
       <Button label="赤い大きなボタン" color="red" size="large" />
+      {/* disabled だけ書くと自動的に disabled={true} と同じ意味になる（JSXのショートハンド） */}
       <Button label="無効化" disabled />
       <Button label="緑の小さなボタン" color="green" size="small" />
     </div>
@@ -1062,27 +1176,34 @@ function App() {
 
 #### children Props
 
-コンポーネントのタグで囲んだ中身は、`children` として渡されます。
+コンポーネントのタグで囲んだ中身は、`children`（子要素）として渡されます。これにより「外側の枠だけ用意して、中身は呼び出し側が自由に決められる」コンポーネントが作れます。
 
 ```tsx
+// CardProps の型定義
 type CardProps = {
   title: string;
+  // React.ReactNode = 「React で描画できるもの全部」を表す特別な型。
+  // 文字列、数値、JSX要素、その配列、null、undefined… すべて受け入れる。
+  // children という名前は React の特別な予約名。タグで囲んだ中身が自動的にここに入る。
   children: React.ReactNode;
 };
 
 function Card({ title, children }: CardProps) {
   return (
+    // インラインスタイルでカードの見た目を作る
     <div
       style={{
-        border: "1px solid #ddd",
-        borderRadius: "8px",
-        padding: "16px",
-        margin: "8px",
+        border: "1px solid #ddd",        // 1px、実線、薄いグレーの枠線
+        borderRadius: "8px",             // 角丸
+        padding: "16px",                 // 内側の余白
+        margin: "8px",                   // 外側の余白
       }}
     >
+      {/* タイトル部分。borderBottom で下線、paddingBottom で下線との余白を確保 */}
       <h2 style={{ borderBottom: "1px solid #eee", paddingBottom: "8px" }}>
         {title}
       </h2>
+      {/* {children} と書くと、親で <Card>...</Card> の間に書いた要素がここに展開される */}
       <div>{children}</div>
     </div>
   );
@@ -1091,12 +1212,15 @@ function Card({ title, children }: CardProps) {
 function App() {
   return (
     <div>
+      {/* 開始タグと終了タグで囲んだ中身（<p>2つ）が children として渡される */}
       <Card title="お知らせ">
         <p>新機能がリリースされました！</p>
         <p>詳しくはこちらをご覧ください。</p>
       </Card>
 
+      {/* 別の呼び出し。中身に画像と段落を入れている。 */}
       <Card title="プロフィール">
+        {/* <img> は自己閉じタグ。src は画像URL、alt は代替テキスト（読み上げ・画像未表示時用） */}
         <img src="/avatar.png" alt="アバター" />
         <p>田中太郎</p>
       </Card>
@@ -1121,27 +1245,27 @@ function App() {
 4. **独立してテストできるか**: テストしやすい単位に分ける
 
 ```
-src/
-├── components/
-│   ├── common/           # 汎用コンポーネント
-│   │   ├── Button.tsx
-│   │   ├── Card.tsx
-│   │   ├── Input.tsx
-│   │   └── Modal.tsx
-│   ├── layout/           # レイアウト系
-│   │   ├── Header.tsx
-│   │   ├── Footer.tsx
-│   │   └── Sidebar.tsx
-│   └── book/             # 書籍機能関連
-│       ├── BookCard.tsx
-│       ├── BookList.tsx
-│       ├── BookDetail.tsx
-│       └── BookForm.tsx
-├── pages/                # ページ単位
-│   ├── HomePage.tsx
-│   ├── BookListPage.tsx
-│   └── BookDetailPage.tsx
-└── App.tsx
+src/                              # ソースコードのルートフォルダ
+├── components/                   # 再利用可能なUI部品を置く
+│   ├── common/                   # 汎用コンポーネント（プロジェクト横断で使う）
+│   │   ├── Button.tsx            # ボタン
+│   │   ├── Card.tsx              # 枠付きカード
+│   │   ├── Input.tsx             # 入力欄
+│   │   └── Modal.tsx             # モーダル（ポップアップ）
+│   ├── layout/                   # 画面レイアウト系（ページ全体の骨組み）
+│   │   ├── Header.tsx            # 上部ヘッダー
+│   │   ├── Footer.tsx            # 下部フッター
+│   │   └── Sidebar.tsx           # サイドバー
+│   └── book/                     # 書籍機能専用のコンポーネント群
+│       ├── BookCard.tsx          # 書籍1件分のカード
+│       ├── BookList.tsx          # 書籍リスト全体
+│       ├── BookDetail.tsx        # 詳細表示
+│       └── BookForm.tsx          # 登録・編集フォーム
+├── pages/                        # 1ページ＝1ファイル（ルーティング先）
+│   ├── HomePage.tsx              # トップページ
+│   ├── BookListPage.tsx          # 書籍一覧ページ
+│   └── BookDetailPage.tsx        # 書籍詳細ページ
+└── App.tsx                       # アプリ全体のルート（最上位コンポーネント）
 ```
 
 ### 3.4 書籍カードコンポーネントの例
@@ -1150,59 +1274,68 @@ src/
 
 ```tsx
 // types.ts - 型定義
+// 書籍データ1件分の「形」を表す型
 type Book = {
-  id: number;
-  title: string;
-  author: string;
-  price: number;
-  rating: number;        // 1〜5
-  isAvailable: boolean;
-  coverImage?: string;
-  publishedDate: string;
-  tags: string[];
+  id: number;                  // 一意なID（DBの主キーに相当）
+  title: string;               // 書名
+  author: string;              // 著者名
+  price: number;               // 価格（円）
+  rating: number;              // 評価1〜5
+  isAvailable: boolean;        // 在庫があるか
+  coverImage?: string;         // ? でオプショナル: 画像URLが無い書籍もある
+  publishedDate: string;       // 出版日（ISO形式の文字列 "2025-01-15"）
+  tags: string[];              // タグの配列（複数の文字列）
 };
 
 // BookCard.tsx - 書籍カードコンポーネント
+// このコンポーネントが親から受け取る props の型
 type BookCardProps = {
-  book: Book;
-  onAddToCart: (bookId: number) => void;
-  onToggleFavorite: (bookId: number) => void;
-  isFavorite: boolean;
+  book: Book;                                       // 表示する書籍データ
+  onAddToCart: (bookId: number) => void;            // カート追加時のコールバック関数
+  onToggleFavorite: (bookId: number) => void;       // お気に入り切替時のコールバック関数
+  isFavorite: boolean;                              // 現在お気に入り状態か
 };
 
+// 分割代入で props を取り出す
 function BookCard({ book, onAddToCart, onToggleFavorite, isFavorite }: BookCardProps) {
   // 星の表示を作る関数
+  // ★を rating 個、☆を (5 - rating) 個並べて文字列を作る。
+  // "★".repeat(3) は "★★★"（3回繰り返した文字列）になる JS の文字列メソッド。
   const renderStars = (rating: number): string => {
     return "★".repeat(rating) + "☆".repeat(5 - rating);
   };
 
   return (
+    // カード全体の枠
     <div
       style={{
-        border: "1px solid #ddd",
-        borderRadius: "12px",
-        padding: "16px",
-        maxWidth: "300px",
-        boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+        border: "1px solid #ddd",              // 薄い枠線
+        borderRadius: "12px",                  // 大きめ角丸
+        padding: "16px",                       // 内側の余白
+        maxWidth: "300px",                     // 最大幅
+        boxShadow: "0 2px 8px rgba(0,0,0,0.1)", // ふんわり影
       }}
     >
-      {/* 表紙画像 */}
+      {/* 表紙画像
+          三項演算子 条件 ? A : B で、coverImage の有無により表示を切り替え。
+          coverImage が "string" → truthy → 画像を表示
+          coverImage が undefined → falsy → No Image プレースホルダーを表示 */}
       {book.coverImage ? (
         <img
-          src={book.coverImage}
-          alt={`${book.title}の表紙`}
-          style={{ width: "100%", borderRadius: "8px" }}
+          src={book.coverImage}                                    // 画像URL
+          alt={`${book.title}の表紙`}                              // 代替テキスト（テンプレートリテラル）
+          style={{ width: "100%", borderRadius: "8px" }}            // 横幅100%・角丸
         />
       ) : (
         <div
           style={{
             width: "100%",
             height: "200px",
-            backgroundColor: "#f0f0f0",
+            backgroundColor: "#f0f0f0",         // 薄いグレー
             borderRadius: "8px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
+            display: "flex",                     // 中身を flex レイアウトに
+            alignItems: "center",                // 縦方向中央寄せ
+            justifyContent: "center",            // 横方向中央寄せ
             color: "#999",
           }}
         >
@@ -1210,25 +1343,27 @@ function BookCard({ book, onAddToCart, onToggleFavorite, isFavorite }: BookCardP
         </div>
       )}
 
-      {/* 書籍情報 */}
+      {/* 書籍情報。h3 のマージンを上12px・下4pxに調整 */}
       <h3 style={{ margin: "12px 0 4px" }}>{book.title}</h3>
       <p style={{ color: "#666", margin: "0 0 8px" }}>{book.author}</p>
 
-      {/* 評価 */}
+      {/* 評価。色は山吹色（#f39c12）。星と数値を並べて表示 */}
       <p style={{ color: "#f39c12", margin: "0 0 8px" }}>
         {renderStars(book.rating)} ({book.rating}/5)
       </p>
 
-      {/* タグ */}
+      {/* タグ一覧
+          display:flex でタグを横並びに、flexWrap:wrap で幅が足りなければ折り返す */}
       <div style={{ display: "flex", gap: "4px", flexWrap: "wrap", marginBottom: "8px" }}>
+        {/* タグ配列を map で <span> に変換。key にタグ文字列を使う（タグは重複しない前提） */}
         {book.tags.map((tag) => (
           <span
             key={tag}
             style={{
-              backgroundColor: "#e8f4fd",
-              color: "#1a73e8",
+              backgroundColor: "#e8f4fd",      // 淡い青背景
+              color: "#1a73e8",                 // 青文字
               padding: "2px 8px",
-              borderRadius: "12px",
+              borderRadius: "12px",             // 強めの角丸でピル状に
               fontSize: "12px",
             }}
           >
@@ -1237,11 +1372,12 @@ function BookCard({ book, onAddToCart, onToggleFavorite, isFavorite }: BookCardP
         ))}
       </div>
 
-      {/* 価格と在庫状態 */}
+      {/* 価格と在庫状態を左右に配置（space-between） */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <span style={{ fontSize: "20px", fontWeight: "bold" }}>
-          ¥{book.price.toLocaleString()}
+          ¥{book.price.toLocaleString()}        {/* 3桁カンマ区切り */}
         </span>
+        {/* 在庫がある=緑、ない=赤 */}
         <span style={{ color: book.isAvailable ? "green" : "red", fontSize: "14px" }}>
           {book.isAvailable ? "在庫あり" : "在庫なし"}
         </span>
@@ -1250,12 +1386,15 @@ function BookCard({ book, onAddToCart, onToggleFavorite, isFavorite }: BookCardP
       {/* アクションボタン */}
       <div style={{ display: "flex", gap: "8px", marginTop: "12px" }}>
         <button
+          // アロー関数で包む理由: onAddToCart に book.id を引数として渡したいから。
+          // onClick={onAddToCart(book.id)} と書くとレンダー中に即実行されてしまう。
           onClick={() => onAddToCart(book.id)}
+          // 在庫なし → disabled=true（クリック不可）
           disabled={!book.isAvailable}
           style={{
-            flex: 1,
+            flex: 1,                                                 // 残りスペースを埋める
             padding: "8px",
-            backgroundColor: book.isAvailable ? "#1a73e8" : "#ccc",
+            backgroundColor: book.isAvailable ? "#1a73e8" : "#ccc",  // 状態で色変化
             color: "white",
             border: "none",
             borderRadius: "6px",
@@ -1265,16 +1404,18 @@ function BookCard({ book, onAddToCart, onToggleFavorite, isFavorite }: BookCardP
           カートに追加
         </button>
         <button
+          // クリックでお気に入り切り替え。コールバックに book.id を渡す。
           onClick={() => onToggleFavorite(book.id)}
           style={{
             padding: "8px 12px",
-            backgroundColor: "transparent",
+            backgroundColor: "transparent",     // 背景なし
             border: "1px solid #ddd",
             borderRadius: "6px",
             cursor: "pointer",
             fontSize: "18px",
           }}
         >
+          {/* お気に入り中は塗りつぶしハート、未登録は中抜きハート */}
           {isFavorite ? "❤" : "♡"}
         </button>
       </div>
@@ -1284,6 +1425,7 @@ function BookCard({ book, onAddToCart, onToggleFavorite, isFavorite }: BookCardP
 
 // 使い方
 function App() {
+  // サンプルデータ。: Book で型を明示してプロパティ漏れを防ぐ。
   const sampleBook: Book = {
     id: 1,
     title: "React入門ガイド",
@@ -1296,8 +1438,12 @@ function App() {
   };
 
   return (
+    // 親 → 子へ props を渡す
+    // book={sampleBook} はオブジェクトを渡している（{} の中の {} ではない、変数を渡しているだけ）
     <BookCard
       book={sampleBook}
+      // インラインでコールバック関数を渡す。alert はブラウザの組み込み関数。
+      // テンプレートリテラル `...${id}...` は文字列内に変数を埋め込む書き方。
       onAddToCart={(id) => alert(`書籍ID: ${id} をカートに追加しました`)}
       onToggleFavorite={(id) => alert(`書籍ID: ${id} のお気に入りを切り替えました`)}
       isFavorite={false}
@@ -1328,15 +1474,21 @@ function App() {
 
 ### 4.1 state とは何か
 
-**state（状態）** は、コンポーネントが持つ「変化するデータ」です。state が変わると、React は自動的にそのコンポーネントを**再レンダリング**（再描画）します。
+**state**（ステート：状態。コンポーネントが内部で保持する「変化するデータ」）は、コンポーネントが持つ「変化するデータ」です。state が変わると、React は自動的にそのコンポーネントを**再レンダリング**（さいレンダリング：Re-render。state や props が変わったときに、コンポーネント関数が再度実行されて新しい JSX が作られ、画面が更新されること）します。
+
+> **なぜ普通の変数ではダメか:** React は「state が変わったかどうか」だけを監視しています。普通のローカル変数（`let count = 0;` のようなもの）は React の管理外なので、いくら値を変えても画面は更新されません。値を「画面に反映される形で覚える」には `useState` という **フック**（Hook：フック。`use` で始まる React の特別な関数。コンポーネントに機能を追加する）を使う必要があります。
 
 普通の変数と state の違いを見てみましょう。
 
 ```tsx
 // NG: 普通の変数は変更しても再レンダリングされない
 function Counter() {
+  // let は再代入できる変数を作るキーワード。
+  // ただしこの変数は React の管理外なので、変更しても画面更新は起きない。
+  // しかも関数が再実行されるたびに 0 に戻されてしまう。
   let count = 0;
 
+  // ボタンが押されたときに呼ぶ関数
   const handleClick = () => {
     count += 1; // 値は変わるが、画面は更新されない！
     console.log(count); // コンソールには 1, 2, 3... と出る
@@ -1454,17 +1606,22 @@ function Counter() {
 #### useState の型推論
 
 ```tsx
-// 型を明示的に指定
+// 型を明示的に指定するパターン（<>はジェネリクス: 型を1つ渡す）
+// useState<number>(0) は「number型の状態を初期値0で作る」と書いている。
 const [count, setCount] = useState<number>(0);
 const [name, setName] = useState<string>("");
 const [isVisible, setIsVisible] = useState<boolean>(false);
 
 // 初期値から型推論される（明示しなくてもOK）
+// 初期値 0 を見て TypeScript が「number 型だな」と自動で判断する。
 const [count, setCount] = useState(0);          // number と推論
 const [name, setName] = useState("");            // string と推論
 const [isVisible, setIsVisible] = useState(false); // boolean と推論
 
 // null を使う場合は明示的な型指定が必要
+// 理由: 初期値が null だけだと「null 型」と推論されてしまい、
+//        後から User オブジェクトを入れられなくなる。
+// User | null は「User型 または null」のユニオン型。
 const [user, setUser] = useState<User | null>(null);
 ```
 
@@ -1548,15 +1705,19 @@ const [user, setUser] = useState<User | null>(null);
   <div style="text-align: center; background: #dbeafe; color: #1e40af; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600;">表示: カウント: 2</div>
 </div>
 
-**重要なポイント**: `setCount` を呼んでも、その場では `count` の値は変わりません。次の再レンダリング時に新しい値になります。
+**重要なポイント**: `setCount` を呼んでも、その場では `count` の値は変わりません。次の再レンダリング時に新しい値になります。これは React の「state は1回の関数実行中は同じ値で固定される」というルールによるものです（**state は再レンダリング時に最新化される**）。
 
 ```tsx
 function Counter() {
+  // count, setCount を useState で作る
   const [count, setCount] = useState<number>(0);
 
   const handleClick = () => {
+    // 1回目: 「次のレンダリングで count を (現在の count=0) + 1 = 1 にして」と予約
     setCount(count + 1);
+    // この時点で count はまだ 0（更新は予約されただけ）
     console.log(count); // まだ 0 のまま！（次のレンダリングで 1 になる）
+    // 2回目: count はまだ 0 → setCount(0 + 1) になる → 結局 1 を予約しているだけ
     setCount(count + 1); // count はまだ 0 なので、0 + 1 = 1 になる（2 にはならない！）
   };
 
@@ -1573,13 +1734,17 @@ function Counter() {
 
 **解決策: 関数型更新を使う**
 
+`setXxx(値)` の代わりに `setXxx((prev) => 新しい値)` と書くと、React は「予約された変更を順番に適用」してくれます。`prev` には「これまでに予約された変更を全部反映した最新値」が渡されます。
+
 ```tsx
 function Counter() {
   const [count, setCount] = useState<number>(0);
 
   const handleClick = () => {
     // prev には常に「最新の値」が渡される
+    // 関数型更新: setCount に「現在値 → 次の値」という関数を渡す
     setCount((prev) => prev + 1); // 0 → 1
+    // ↑の予約が反映された結果が prev に渡る → 1 + 1 = 2
     setCount((prev) => prev + 1); // 1 → 2
   };
 
@@ -1597,16 +1762,19 @@ function Counter() {
 ### 4.4 オブジェクトの state
 
 ```tsx
+// useState フックを取り込む
 import { useState } from "react";
 
+// プロフィール情報の「形」を表す型
 type UserProfile = {
   name: string;
   email: string;
   age: number;
-  bio: string;
+  bio: string;       // 自己紹介
 };
 
 function ProfileEditor() {
+  // オブジェクト state を作る。複数の関連プロパティをまとめて管理できる。
   const [profile, setProfile] = useState<UserProfile>({
     name: "田中太郎",
     email: "tanaka@example.com",
@@ -1615,15 +1783,19 @@ function ProfileEditor() {
   });
 
   // 名前を変更する関数
+  // 引数 e の型 React.ChangeEvent<HTMLInputElement> は「<input>のChangeイベント」を表す。
+  // e.target.value で入力欄の現在の文字列を取得できる。
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // スプレッド構文で既存のプロパティをコピーし、name だけ上書き
+    // スプレッド構文 ...profile で「現在のprofileの全プロパティを展開」してコピーし、
+    // 続けて name: e.target.value で name だけ新しい値に上書きする。
+    // この結果、新しい profile オブジェクトが作られる（=参照が変わる=Reactが変化を検知）。
     setProfile({
       ...profile,
       name: e.target.value,
     });
   };
 
-  // メールを変更する関数
+  // メールを変更する関数（パターンは同じ）
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setProfile({
       ...profile,
@@ -1632,6 +1804,7 @@ function ProfileEditor() {
   };
 
   // 年齢を変更する関数
+  // <input type="number"> でも e.target.value は文字列なので Number() で数値に変換する。
   const handleAgeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setProfile({
       ...profile,
@@ -1640,6 +1813,7 @@ function ProfileEditor() {
   };
 
   // 自己紹介を変更する関数
+  // <textarea> の場合は型が HTMLTextAreaElement に変わる点に注意。
   const handleBioChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setProfile({
       ...profile,
@@ -1651,6 +1825,9 @@ function ProfileEditor() {
     <div>
       <h2>プロフィール編集</h2>
 
+      {/* 制御コンポーネント（Controlled Component）パターン:
+          value と onChange を両方セットで指定し、表示値を state で完全に制御する。
+          これにより state が「唯一の正解」となり、画面と data が常に同期する。 */}
       <div>
         <label>名前: </label>
         <input value={profile.name} onChange={handleNameChange} />
@@ -1664,7 +1841,7 @@ function ProfileEditor() {
       <div>
         <label>年齢: </label>
         <input
-          type="number"
+          type="number"                          // 数値入力モード
           value={profile.age}
           onChange={handleAgeChange}
         />
@@ -1672,6 +1849,8 @@ function ProfileEditor() {
 
       <div>
         <label>自己紹介: </label>
+        {/* textarea は HTML では <textarea>中身</textarea> だが、
+            React では value 属性で中身を制御する。 */}
         <textarea value={profile.bio} onChange={handleBioChange} />
       </div>
 
@@ -1684,6 +1863,8 @@ function ProfileEditor() {
   );
 }
 ```
+
+> **制御コンポーネント / 非制御コンポーネント:** value と onChange の両方で state とつなぐ書き方が**制御コンポーネント**（Controlled Component：Reactのstateが入力値の真実の出どころ）。逆に value を指定せず DOM 任せにする書き方は**非制御コンポーネント**（Uncontrolled Component：DOM自身が値を保持し、必要なときだけ ref で読み取る）。本書では基本的に制御コンポーネントを使います。
 
 > この結果、画面には4つの入力欄と、その下にプレビューが表示されます。入力欄に文字を入力すると、**リアルタイムにプレビュー部分が更新**されます。例えば名前の入力欄を「鈴木花子」に変更すると、プレビューの名前も即座に **「名前: 鈴木花子」** に変わります。
 
@@ -1701,18 +1882,21 @@ setProfile({ ...profile, name: "新しい名前" });
 #### ネストしたオブジェクトの更新
 
 ```tsx
+// 住所の型（小さな部品）
 type Address = {
-  prefecture: string;
-  city: string;
-  street: string;
+  prefecture: string;       // 都道府県
+  city: string;             // 市区町村
+  street: string;           // 番地
 };
 
+// ユーザー型（Address を中に含む = ネストした構造）
 type UserWithAddress = {
   name: string;
   address: Address;
 };
 
 function AddressEditor() {
+  // ネストしたオブジェクト state
   const [user, setUser] = useState<UserWithAddress>({
     name: "田中太郎",
     address: {
@@ -1724,6 +1908,10 @@ function AddressEditor() {
 
   const handleCityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // ネストしたオブジェクトもスプレッド構文で展開する
+    // 外側の {...user} で「user の全プロパティ」を展開してコピー、
+    // address プロパティだけは別の新しいオブジェクトに置き換える。
+    // その内側でも {...user.address} で展開し、city だけ上書きする。
+    // → user も user.address も新しい参照になるので React がきちんと変化を検知する。
     setUser({
       ...user,
       address: {
@@ -1736,6 +1924,7 @@ function AddressEditor() {
   return (
     <div>
       <p>
+        {/* {} で JS式を埋め込み、文字列を連結 */}
         住所: {user.address.prefecture}
         {user.address.city}
         {user.address.street}
@@ -1756,42 +1945,56 @@ function AddressEditor() {
 ```tsx
 import { useState } from "react";
 
+// TODO項目1件の型
 type Todo = {
-  id: number;
-  text: string;
-  completed: boolean;
+  id: number;            // 一意なID（key に使う）
+  text: string;          // タスク本文
+  completed: boolean;    // 完了済みか
 };
 
 function TodoApp() {
+  // 配列 state。初期値は2件のサンプル。
   const [todos, setTodos] = useState<Todo[]>([
     { id: 1, text: "React を学ぶ", completed: false },
     { id: 2, text: "TypeScript を学ぶ", completed: true },
   ]);
+  // 入力欄の現在値（制御コンポーネント用）
   const [inputValue, setInputValue] = useState<string>("");
+  // 次に使う一意なID。新規追加するたびに1増やす。
   const [nextId, setNextId] = useState<number>(3);
 
   // ── 追加 ──
   const handleAdd = () => {
+    // .trim() は前後の空白を取り除いた新しい文字列を返す。
+    // 空文字なら何もせず即 return（早期リターン）。
     if (inputValue.trim() === "") return;
 
+    // 新しい Todo オブジェクトを作る
     const newTodo: Todo = {
       id: nextId,
       text: inputValue,
       completed: false,
     };
+    // [...todos, newTodo] で「既存の全要素＋末尾に新項目」の新しい配列を作って渡す。
+    // 元の todos 配列は変更しない（イミュータブル＝不変な更新）。
     setTodos([...todos, newTodo]); // 既存の配列を展開して新しい要素を追加
-    setInputValue("");
-    setNextId(nextId + 1);
+    setInputValue("");                // 入力欄をクリア
+    setNextId(nextId + 1);            // 次回ID用に+1
   };
 
   // ── 削除 ──
   const handleDelete = (id: number) => {
+    // filter は「条件が true の要素だけ残した新しい配列」を返す。
+    // ここでは「ID が一致しないもの = 削除対象でないもの」だけを残す。
     setTodos(todos.filter((todo) => todo.id !== id)); // id が一致しない要素だけ残す
   };
 
   // ── 完了/未完了の切り替え ──
   const handleToggle = (id: number) => {
     setTodos(
+      // map は「各要素を変換して新しい配列を作る」メソッド。
+      // 一致する Todo だけ「completed を反転した新しいオブジェクト」に置き換える。
+      // 一致しない Todo はそのまま返す。
       todos.map((todo) =>
         todo.id === id ? { ...todo, completed: !todo.completed } : todo
       )
@@ -1801,6 +2004,7 @@ function TodoApp() {
   // ── テキスト更新 ──
   const handleUpdate = (id: number, newText: string) => {
     setTodos(
+      // 一致する Todo の text プロパティだけを上書き
       todos.map((todo) =>
         todo.id === id ? { ...todo, text: newText } : todo
       )
@@ -1814,9 +2018,9 @@ function TodoApp() {
       {/* 入力欄 */}
       <div>
         <input
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          placeholder="新しいタスクを入力"
+          value={inputValue}                                           // 表示値を state に紐づけ
+          onChange={(e) => setInputValue(e.target.value)}              // 入力ごとに state を更新
+          placeholder="新しいタスクを入力"                              // 未入力時の薄いガイド文字
         />
         <button onClick={handleAdd}>追加</button>
       </div>
@@ -1824,26 +2028,32 @@ function TodoApp() {
       {/* TODOリスト */}
       <ul>
         {todos.map((todo) => (
+          // key には DBの主キーに当たる一意なIDを使う
           <li key={todo.id}>
             <input
-              type="checkbox"
-              checked={todo.completed}
-              onChange={() => handleToggle(todo.id)}
+              type="checkbox"                                          // チェックボックス入力
+              checked={todo.completed}                                 // 制御コンポーネント
+              onChange={() => handleToggle(todo.id)}                   // クリックで切替
             />
             <span
               style={{
+                // 完了済みなら取り消し線、未完了ならなし
                 textDecoration: todo.completed ? "line-through" : "none",
+                // 完了済みは薄い灰色、未完了は黒
                 color: todo.completed ? "#999" : "#000",
               }}
             >
               {todo.text}
             </span>
+            {/* アロー関数で包んで id を引数に渡す */}
             <button onClick={() => handleDelete(todo.id)}>削除</button>
           </li>
         ))}
       </ul>
 
-      {/* 統計 */}
+      {/* 統計
+          todos.length は配列の要素数。
+          filter(...).length で「条件を満たす要素の数」を計算できる。 */}
       <p>
         合計: {todos.length}件 / 完了: {todos.filter((t) => t.completed).length}件
         / 未完了: {todos.filter((t) => !t.completed).length}件
@@ -1896,16 +2106,23 @@ function TodoApp() {
 ```tsx
 function ClickExamples() {
   // 基本的なクリックハンドラ
+  // イベントハンドラ（Event Handler）= イベント発生時に呼ばれる関数。
   const handleClick = () => {
     alert("ボタンがクリックされました！");
   };
 
   // 引数を受け取るクリックハンドラ
+  // 通常のJS関数なので、引数は自由に定義できる。
   const handleItemClick = (itemName: string) => {
+    // テンプレートリテラル: ` ` で囲み、${} の中に式を埋め込める文字列。
     alert(`${itemName}がクリックされました`);
   };
 
   // イベントオブジェクトを受け取るクリックハンドラ
+  // React.MouseEvent<HTMLButtonElement> は「<button>に対する Mouseイベント」の型。
+  //   e.clientX / e.clientY = クリックされた画面座標
+  //   e.currentTarget = ハンドラを付けた要素そのもの
+  //   e.target = 実際にクリックされた要素（子要素の場合がある）
   const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     console.log("クリック位置:", e.clientX, e.clientY);
     console.log("クリックされた要素:", e.currentTarget.textContent);
@@ -1913,17 +2130,22 @@ function ClickExamples() {
 
   return (
     <div>
-      {/* 基本的な使い方 */}
+      {/* 基本的な使い方
+          onClick={関数名} で「関数の参照」を渡す。React がクリック時に呼んでくれる。 */}
       <button onClick={handleClick}>クリック</button>
 
-      {/* 引数を渡す場合はアロー関数で包む */}
+      {/* 引数を渡す場合はアロー関数で包む
+          () => handleItemClick("Apple") は「引数なしの関数」で、その中で
+          handleItemClick("Apple") を呼ぶ。React はこの匿名関数をクリック時に呼ぶ。 */}
       <button onClick={() => handleItemClick("Apple")}>Apple</button>
       <button onClick={() => handleItemClick("Banana")}>Banana</button>
 
-      {/* イベントオブジェクトを使う */}
+      {/* イベントオブジェクトを使う
+          関数参照を直接渡すと、React がクリック時に第1引数として event を渡してくれる。 */}
       <button onClick={handleButtonClick}>位置を表示</button>
 
-      {/* インラインで直接書く */}
+      {/* インラインで直接書く
+          わざわざ関数を別に定義しなくても、その場でアロー関数を書ける。 */}
       <button onClick={() => console.log("インラインハンドラ")}>
         インライン
       </button>
@@ -1944,12 +2166,17 @@ function ClickExamples() {
 
 ```tsx
 // NG: 関数を実行してしまっている（レンダリング時に即座に実行される）
+// () を付けると「今すぐ呼び出す」意味になり、戻り値（多くの場合 undefined）が onClick に渡る。
+// 結果として、画面表示の瞬間に handleClick が動いてしまい、無限ループや誤動作になる。
 <button onClick={handleClick()}>クリック</button>
 
 // OK: 関数の参照を渡す
+// () を付けないことで「関数そのもの」を渡せる。React がクリック時に呼ぶ。
 <button onClick={handleClick}>クリック</button>
 
 // OK: アロー関数で包む
+// 「クリック時に handleClick() を呼ぶ」新しい関数を作って渡している。
+// 引数を渡したい場合はこの書き方が必要。
 <button onClick={() => handleClick()}>クリック</button>
 ```
 
@@ -1959,6 +2186,7 @@ function ClickExamples() {
 import { useState } from "react";
 
 function InputExamples() {
+  // 4つの独立した state を用意
   const [text, setText] = useState<string>("");
   const [selectedColor, setSelectedColor] = useState<string>("red");
   const [isChecked, setIsChecked] = useState<boolean>(false);
@@ -1970,29 +2198,32 @@ function InputExamples() {
       <div>
         <label>名前: </label>
         <input
-          type="text"
-          value={text}
+          type="text"                                                    // 1行のテキスト入力
+          value={text}                                                   // 表示値は state と同期
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            // e.target = 入力欄のDOM要素。.value で現在の文字列を取得
             setText(e.target.value)
           }
-          placeholder="名前を入力してください"
+          placeholder="名前を入力してください"                            // 未入力時のガイド文字
         />
         <p>入力値: 「{text}」</p>
       </div>
 
-      {/* セレクトボックス */}
+      {/* セレクトボックス（プルダウンメニュー） */}
       <div>
         <label>色: </label>
         <select
-          value={selectedColor}
+          value={selectedColor}                                          // 現在の選択値
           onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-            setSelectedColor(e.target.value)
+            setSelectedColor(e.target.value)                             // <select>専用の型
           }
         >
+          {/* <option> の value 属性が選択時に e.target.value として返る */}
           <option value="red">赤</option>
           <option value="blue">青</option>
           <option value="green">緑</option>
         </select>
+        {/* 選択中の色名で文字色を変える */}
         <p style={{ color: selectedColor }}>
           選択した色: {selectedColor}
         </p>
@@ -2003,8 +2234,10 @@ function InputExamples() {
         <label>
           <input
             type="checkbox"
+            // チェックボックスでは value ではなく checked プロパティを使う
             checked={isChecked}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              // e.target.checked は真偽値（true/false）。文字列ではない！
               setIsChecked(e.target.checked)
             }
           />
@@ -2013,16 +2246,18 @@ function InputExamples() {
         <p>同意状態: {isChecked ? "同意済み" : "未同意"}</p>
       </div>
 
-      {/* ラジオボタン */}
+      {/* ラジオボタン
+          複数のラジオボタンを「同じグループ」として扱うには、name 属性を揃える。 */}
       <div>
         <p>サイズ:</p>
+        {/* ["S","M","L","XL"] の各要素を <label> に展開 */}
         {["S", "M", "L", "XL"].map((size) => (
           <label key={size} style={{ marginRight: "12px" }}>
             <input
               type="radio"
-              name="size"
+              name="size"                                                // 同じ name でグループ化
               value={size}
-              checked={selectedSize === size}
+              checked={selectedSize === size}                            // この選択肢が現在の値と同じか
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setSelectedSize(e.target.value)
               }
@@ -2049,6 +2284,9 @@ function InputExamples() {
 ```tsx
 import { useState } from "react";
 
+// フォーム入力データの型
+// 注意: price は文字列にしている。<input type="number"> でも DOM 上の値は文字列なので、
+//       入力中の "" や "1." のような中間状態を表現しやすい。
 type BookFormData = {
   title: string;
   author: string;
@@ -2058,46 +2296,63 @@ type BookFormData = {
 };
 
 function BookForm() {
+  // フォーム全体のデータを1つのオブジェクト state で持つ
   const [formData, setFormData] = useState<BookFormData>({
     title: "",
     author: "",
     price: "",
-    category: "programming",
+    category: "programming",         // デフォルトカテゴリ
     description: "",
   });
 
+  // エラー情報を「フィールド名 → エラーメッセージ」の形で持つ。
+  // Partial<X> は X の全プロパティをオプショナル化した型。
+  // Record<K, V> は「キーKのオブジェクトに値Vが入る」型。
+  // keyof BookFormData は "title" | "author" | ... の文字列リテラルユニオン。
   const [errors, setErrors] = useState<Partial<Record<keyof BookFormData, string>>>({});
+  // 送信完了フラグ
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
 
   // バリデーション関数
+  // 戻り値が true なら「全項目OK」。
   const validate = (): boolean => {
     const newErrors: Partial<Record<keyof BookFormData, string>> = {};
 
+    // .trim() で前後空白を取り除いた文字列が "" なら未入力。
     if (formData.title.trim() === "") {
       newErrors.title = "タイトルは必須です";
     }
     if (formData.author.trim() === "") {
       newErrors.author = "著者は必須です";
     }
+    // Number("") は NaN、Number("100") は 100。<= 0 で「未入力 or 0以下」を弾く。
     if (formData.price === "" || Number(formData.price) <= 0) {
       newErrors.price = "価格は0より大きい数値を入力してください";
     }
 
+    // エラーオブジェクトを state にセット
     setErrors(newErrors);
+    // Object.keys でプロパティ名の配列を取得。長さ0なら「エラーなし」=true。
     return Object.keys(newErrors).length === 0;
   };
 
   // 汎用的な入力ハンドラ
+  // ChangeEvent の型を3種類のユニオンにして、input/select/textarea を1関数で処理。
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
+    // 分割代入で name と value を取り出す。
+    // name は <input name="..."> 属性、value は現在値。
     const { name, value } = e.target;
     setFormData({
       ...formData,
+      // [name]: value は「動的なキー」で、name の値そのものをプロパティ名として使う。
+      // 例えば name="title" なら { ...formData, title: value } と書くのと同じ。
       [name]: value,
     });
 
     // 入力時にエラーをクリア
+    // as keyof BookFormData は「string を BookFormData のキー型として扱う」型アサーション。
     if (errors[name as keyof BookFormData]) {
       setErrors({
         ...errors,
@@ -2108,6 +2363,7 @@ function BookForm() {
 
   // フォーム送信
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    // <form> のデフォルト動作（ページリロード）を抑止
     e.preventDefault(); // ページ遷移（デフォルト動作）を防ぐ
 
     if (validate()) {
@@ -2117,29 +2373,35 @@ function BookForm() {
     }
   };
 
+  // 早期 return で「送信完了画面」と「フォーム画面」を切り替える
   if (isSubmitted) {
     return (
       <div>
         <h2>登録完了！</h2>
         <p>「{formData.title}」を登録しました。</p>
+        {/* 完了画面のボタン: フラグを false に戻すとフォーム画面に戻る */}
         <button onClick={() => setIsSubmitted(false)}>もう1冊登録する</button>
       </div>
     );
   }
 
   return (
+    // <form> の onSubmit に handleSubmit を指定。
+    // フォーム内の submit ボタンクリック または Enter キーで発火する。
     <form onSubmit={handleSubmit}>
       <h2>書籍登録</h2>
 
       <div>
+        {/* htmlFor は HTML の for 属性のJSX版。クリックで対応する input にフォーカス */}
         <label htmlFor="title">タイトル *</label>
         <input
           id="title"
-          name="title"
+          name="title"                      // handleChange の中で動的キーとして使う
           type="text"
           value={formData.title}
           onChange={handleChange}
         />
+        {/* エラーがある（truthy）ときだけ赤字でメッセージを表示 */}
         {errors.title && <p style={{ color: "red" }}>{errors.title}</p>}
       </div>
 
@@ -2160,7 +2422,7 @@ function BookForm() {
         <input
           id="price"
           name="price"
-          type="number"
+          type="number"                     // 数値入力（スマホで数字キーボードが出る）
           value={formData.price}
           onChange={handleChange}
         />
@@ -2189,10 +2451,11 @@ function BookForm() {
           name="description"
           value={formData.description}
           onChange={handleChange}
-          rows={4}
+          rows={4}                           // 表示行数の目安
         />
       </div>
 
+      {/* type="submit" のボタンを押すと <form> の onSubmit が走る */}
       <button type="submit">登録する</button>
     </form>
   );
@@ -2234,7 +2497,7 @@ function BookForm() {
 
 ### 6.1 副作用とは
 
-React コンポーネントの主な仕事は「UI を描画すること（レンダリング）」です。それ以外の処理を**副作用（Side Effect）**と呼びます。
+React コンポーネントの主な仕事は「UI を描画すること（レンダリング：Rendering。state や props からJSXを作る一連の処理）」です。それ以外の処理を**副作用**（Side Effect：サイドエフェクト。レンダリング以外の、外部世界へ影響を及ぼす処理）と呼びます。「画面を描く」関数の中で副作用を直接実行すると、レンダリングのたびに発生してしまったり、Strict Mode で関数が2回呼ばれるために2回実行されてしまったりするため、`useEffect` で隔離します。
 
 例:
 - API からデータを取得する
@@ -2318,6 +2581,8 @@ Console:
 ```
 
 > **依存配列のキモ:** もし `[count]` を `[]`（空配列）にすると、初回しか実行されないため、タブタイトルが「カウント: 0」のまま固まります。逆に第2引数を**完全に省略**すると毎回再描画ごとに実行され、無限ループになりがちです。「何が変わったらこの副作用を再実行したいか？」を意識して書くのが鉄則です。
+>
+> なお開発モードの **Strict Mode** が有効だと、初回の useEffect は **わざと2回呼ばれます**（マウント → アンマウント → 再マウントをシミュレートして、クリーンアップ忘れを検出するため）。「console.log が2回出る？」と驚かないようにしましょう。本番ビルドでは1回しか呼ばれません。
 
 ### 6.3 依存配列
 
@@ -2331,22 +2596,29 @@ function EffectExamples() {
   const [name, setName] = useState<string>("");
 
   // パターン1: 毎回実行（依存配列なし）
+  // 第2引数を完全に省略すると、コンポーネントが再描画されるたびに毎回実行される。
+  // 注意: 中で state を更新するとすぐ無限ループに陥る。ほぼ使うべきでない。
   useEffect(() => {
     console.log("毎回のレンダリング後に実行");
   }); // ← 第2引数を省略
 
   // パターン2: 初回のみ実行（空の依存配列）
+  // [] は「依存する値が無い」という意味なので、初回マウント時1回だけ実行される。
+  // ※ Strict Mode（開発時のみ）では2回呼ばれるが、本番では1回。
   useEffect(() => {
     console.log("コンポーネントのマウント時に1回だけ実行");
     // API からデータを取得する処理などをここに書く
   }, []); // ← 空の配列
 
   // パターン3: 特定の値が変わったときに実行
+  // [count] と書くと「count が前回と異なる場合だけ」関数が再実行される。
+  // 初回マウント時にも1回実行される（前回値がない状態を「変化あり」とみなすため）。
   useEffect(() => {
     console.log(`count が変わりました: ${count}`);
   }, [count]); // ← count が変わるたびに実行
 
   // パターン4: 複数の依存値
+  // 配列内の値のうち1つでも変わったら実行される。
   useEffect(() => {
     console.log(`count または name が変わりました: ${count}, ${name}`);
   }, [count, name]); // ← count または name が変わるたびに実行
@@ -2361,6 +2633,14 @@ function EffectExamples() {
 }
 ```
 
+> **依存配列の3パターンまとめ:**
+>
+> - **省略する**: 毎レンダリング後に実行（ほぼ使わない）。
+> - **`[]`（空配列）**: マウント時に1回だけ実行（API初期取得などに最適）。
+> - **`[a, b]`（値を指定）**: 配列の中身が前回と異なるときだけ実行。
+>
+> 依存配列に含めるべき値を抜かす（**stale closure**：古い変数を参照したまま動くバグ）と、想定通りに動かなくなります。基本的には ESLint の `react-hooks/exhaustive-deps` ルールに従って、effect 内で使う変数は全部入れるのが安全です。
+
 | 依存配列 | 実行タイミング | 用途 |
 |---------|--------------|------|
 | 省略 | 毎回のレンダリング後 | ほとんど使わない |
@@ -2373,6 +2653,7 @@ function EffectExamples() {
 ```tsx
 import { useState, useEffect } from "react";
 
+// 受け取るユーザーデータの型
 type User = {
   id: number;
   name: string;
@@ -2380,26 +2661,40 @@ type User = {
 };
 
 function UserList() {
+  // 取得したユーザー配列。初期値は空配列。
   const [users, setUsers] = useState<User[]>([]);
+  // 読み込み中フラグ
   const [loading, setLoading] = useState<boolean>(true);
+  // エラー情報。エラー無しなら null。string | null のユニオン型を明示。
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     // API からユーザーデータを取得
+    // async/await は「非同期処理を同期っぽく書く」JS の構文。
+    // useEffect の第1引数の関数自体は async にできないため、内側に async 関数を定義する。
     const fetchUsers = async () => {
       try {
         setLoading(true);
+        // fetch はブラウザ組み込みのHTTPクライアント関数。Promise を返す。
+        // await でレスポンスが返ってくるまで待つ。
         const response = await fetch("https://jsonplaceholder.typicode.com/users");
 
+        // response.ok は HTTPステータスが200-299のとき true。
+        // それ以外（404, 500 等）は手動でエラーを投げる必要がある（fetch は HTTP エラーで reject しない）。
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
+        // .json() はレスポンスボディを JSON としてパースする非同期メソッド。
+        // 型注釈 User[] で「返ってくるのは User の配列」と宣言。
         const data: User[] = await response.json();
         setUsers(data);
       } catch (err) {
+        // err が Error インスタンスならその message を、そうでなければ汎用文言を使う。
+        // err instanceof Error は TypeScript の型ガード。
         setError(err instanceof Error ? err.message : "不明なエラー");
       } finally {
+        // finally ブロックは成功・失敗どちらでも必ず実行される。
         setLoading(false);
       }
     };
@@ -2407,6 +2702,7 @@ function UserList() {
     fetchUsers();
   }, []); // 空配列 → 初回マウント時に1回だけ実行
 
+  // 早期 return パターンで状態別の画面を切り替え
   if (loading) {
     return <p>読み込み中...</p>;
   }
@@ -2415,11 +2711,13 @@ function UserList() {
     return <p style={{ color: "red" }}>エラー: {error}</p>;
   }
 
+  // 正常時の表示
   return (
     <div>
       <h2>ユーザー一覧</h2>
       <ul>
         {users.map((user) => (
+          // key には DB の id を使う
           <li key={user.id}>
             {user.name} ({user.email})
           </li>
@@ -2448,24 +2746,33 @@ function UserList() {
 import { useState, useEffect } from "react";
 
 function Timer() {
+  // 経過秒数
   const [seconds, setSeconds] = useState<number>(0);
+  // 動作中フラグ（true=動作中, false=停止）
   const [isRunning, setIsRunning] = useState<boolean>(false);
 
   useEffect(() => {
+    // 早期 return: 動作中でなければ何もしない（後続のクリーンアップも登録されない）
     if (!isRunning) return; // タイマーが停止中なら何もしない
 
     // 1秒ごとにカウントアップ
+    // setInterval(関数, ミリ秒) はブラウザ組み込み関数。
+    // 指定ミリ秒ごとに関数を実行し続け、識別ID（intervalId）を返す。
     const intervalId = setInterval(() => {
+      // 関数型更新を使うと、依存配列に seconds を入れなくて済む。
       setSeconds((prev) => prev + 1);
     }, 1000);
 
     // クリーンアップ: タイマーを解除する
+    // useEffect の中で return した関数は「次の effect 実行直前」または「アンマウント時」に呼ばれる。
+    // タイマーを止めないと、コンポーネントが消えても動き続けてメモリリークになる。
     return () => {
-      clearInterval(intervalId);
+      clearInterval(intervalId);                  // タイマー停止
       console.log("タイマーをクリーンアップしました");
     };
   }, [isRunning]); // isRunning が変わるたびに再設定
 
+  // リセット処理: 停止＋秒数0
   const handleReset = () => {
     setIsRunning(false);
     setSeconds(0);
@@ -2475,14 +2782,18 @@ function Timer() {
     <div>
       <h2>タイマー</h2>
       <p style={{ fontSize: "48px", fontFamily: "monospace" }}>
+        {/* 分: 秒数を60で割って小数点以下を切り捨て、2桁0埋め */}
         {Math.floor(seconds / 60)
-          .toString()
-          .padStart(2, "0")}
+          .toString()                       // 数値 → 文字列に変換
+          .padStart(2, "0")}                // 2桁にして足りなければ "0" を前に追加 (1 → "01")
+        {/* 区切り文字 ":" 続いて 秒（60で割った余り、2桁0埋め） */}
         :{(seconds % 60).toString().padStart(2, "0")}
       </p>
+      {/* 動作中なら開始ボタンを無効化 */}
       <button onClick={() => setIsRunning(true)} disabled={isRunning}>
         開始
       </button>
+      {/* 停止中なら停止ボタンを無効化 */}
       <button onClick={() => setIsRunning(false)} disabled={!isRunning}>
         停止
       </button>
@@ -2505,12 +2816,15 @@ function Timer() {
 ```tsx
 import { useState, useEffect } from "react";
 
+// ウィンドウサイズの型
 type WindowSize = {
   width: number;
   height: number;
 };
 
 function WindowSizeDisplay() {
+  // window.innerWidth / innerHeight はブラウザの「ビューポート」サイズ。
+  // useState の初期値として使うことで、初回描画から正しい値を表示できる。
   const [windowSize, setWindowSize] = useState<WindowSize>({
     width: window.innerWidth,
     height: window.innerHeight,
@@ -2526,9 +2840,12 @@ function WindowSizeDisplay() {
     };
 
     // イベントリスナーを登録
+    // window.addEventListener("resize", 関数) でウィンドウサイズ変化時に関数が呼ばれる。
     window.addEventListener("resize", handleResize);
 
     // クリーンアップ: イベントリスナーを解除
+    // 解除し忘れると、コンポーネントが何度もマウント/アンマウントするたびに
+    // リスナーが増殖してメモリリーク＆パフォーマンス低下を招く。
     return () => {
       window.removeEventListener("resize", handleResize);
     };
@@ -2629,22 +2946,24 @@ function WindowSizeDisplay() {
 
 ### 7.1 なぜカスタムフックを作るのか
 
-複数のコンポーネントで**同じロジック**を使い回したい場合、カスタムフックを作ります。
+複数のコンポーネントで**同じロジック**を使い回したい場合、**カスタムフック**（Custom Hook：ユーザー定義のフック。`use` で始まる関数として作る再利用可能なロジック）を作ります。
 
 **カスタムフックなしの場合:**
 
 ```tsx
 // ComponentA.tsx
 function ComponentA() {
+  // ウィンドウサイズの state
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
 
   useEffect(() => {
+    // リサイズ時のハンドラ
     const handleResize = () => {
       setWindowSize({ width: window.innerWidth, height: window.innerHeight });
     };
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    handleResize();                                                       // 初回値を反映
+    window.addEventListener("resize", handleResize);                      // イベント登録
+    return () => window.removeEventListener("resize", handleResize);      // クリーンアップ
   }, []);
 
   return <p>幅: {windowSize.width}</p>;
@@ -2652,6 +2971,7 @@ function ComponentA() {
 
 // ComponentB.tsx — 全く同じロジックをコピペ...
 function ComponentB() {
+  // 同じ state と同じ effect をコピペで持っている
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
 
   useEffect(() => {
@@ -2687,7 +3007,10 @@ type WindowSize = {
 };
 
 // カスタムフック: ウィンドウサイズを返す
+// 関数名は必ず use で始める（React がフックとして認識する条件）。
+// 戻り値の型を WindowSize と明示しておくと利用側の補完が効く。
 function useWindowSize(): WindowSize {
+  // 内部で他のフック（useState, useEffect）を呼んで状態管理。
   const [windowSize, setWindowSize] = useState<WindowSize>({
     width: window.innerWidth,
     height: window.innerHeight,
@@ -2702,19 +3025,25 @@ function useWindowSize(): WindowSize {
     };
 
     window.addEventListener("resize", handleResize);
+    // クリーンアップでリスナー解除
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // 最終的に値を返す。返した値が呼び出し元コンポーネントで使える。
   return windowSize;
 }
 
 // 使い方: どのコンポーネントでも簡単に使える！
 function Header() {
+  // 分割代入で width だけ取り出す
   const { width } = useWindowSize();
+  // 三項演算子で表示テキストを切替
   return <header>{width > 768 ? "デスクトップメニュー" : "モバイルメニュー"}</header>;
 }
 
 function Footer() {
+  // 同じカスタムフックを別コンポーネントから呼んでも、それぞれ独立に state を持つ。
+  // 「フックの共有」はロジックの共有であり、state そのものは共有されない点に注意。
   const { width, height } = useWindowSize();
   return (
     <footer>
@@ -2732,13 +3061,22 @@ function Footer() {
 import { useState, useEffect } from "react";
 
 // ローカルストレージと同期する state を提供するカスタムフック
+// <T> は「型を引数で受け取る」ジェネリクス。呼び出し側が string でも number でも指定可能。
+// 戻り値の型は「[現在値, 更新関数]」のタプル型（順序固定の配列型）。
 function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T) => void] {
   // 初期値: ローカルストレージに値があればそれを使う
+  // useState の第1引数に「関数」を渡すと、その関数の戻り値が初期値になる（遅延初期化）。
+  // 重い処理を初回マウント時だけ実行したいときに使うパターン。
   const [storedValue, setStoredValue] = useState<T>(() => {
     try {
+      // localStorage は文字列でしか保存できないので、保存時は JSON.stringify、
+      // 読み出し時は JSON.parse する。
       const item = window.localStorage.getItem(key);
+      // item が null（未保存）なら初期値、あればJSONパース。
+      // as T は型アサーション（「これは T 型ですよ」と TS に教える）。
       return item ? (JSON.parse(item) as T) : initialValue;
     } catch {
+      // パース失敗やストレージ無効時は初期値にフォールバック
       return initialValue;
     }
   });
@@ -2748,15 +3086,18 @@ function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T) => voi
     try {
       window.localStorage.setItem(key, JSON.stringify(storedValue));
     } catch (error) {
+      // プライベートブラウジング等で書き込み失敗する可能性がある
       console.error("ローカルストレージへの保存に失敗:", error);
     }
-  }, [key, storedValue]);
+  }, [key, storedValue]); // key と storedValue のどちらか変わったら再実行
 
+  // 配列で「現在値」と「更新関数」を返す → useState とほぼ同じインターフェース
   return [storedValue, setStoredValue];
 }
 
 // 使い方
 function Settings() {
+  // ジェネリクスで型を指定。<string> は省略しても初期値から推論される。
   const [theme, setTheme] = useLocalStorage<string>("theme", "light");
   const [fontSize, setFontSize] = useLocalStorage<number>("fontSize", 16);
 
@@ -2775,14 +3116,15 @@ function Settings() {
       <div>
         <label>フォントサイズ: {fontSize}px</label>
         <input
-          type="range"
-          min={12}
-          max={24}
+          type="range"              // スライダー入力
+          min={12}                  // 最小値
+          max={24}                  // 最大値
           value={fontSize}
-          onChange={(e) => setFontSize(Number(e.target.value))}
+          onChange={(e) => setFontSize(Number(e.target.value))}    // 文字列→数値変換
         />
       </div>
 
+      {/* テンプレートリテラルで "16px" のようなCSS値を作る */}
       <p style={{ fontSize: `${fontSize}px` }}>
         このテキストのフォントサイズが変わります。
       </p>
@@ -2803,23 +3145,32 @@ function Settings() {
 import { useState, useCallback } from "react";
 
 // true/false を切り替えるシンプルなカスタムフック
+// useCallback は「関数をメモ化（記憶）して、依存配列が変わるまで同じ参照を返す」フック。
+// 子コンポーネントに props として関数を渡すときに、不要な再レンダリングを防ぐ目的で使う。
 function useToggle(initialValue: boolean = false): [boolean, () => void] {
+  // 真偽値の state
   const [value, setValue] = useState<boolean>(initialValue);
 
+  // useCallback(関数, 依存配列) で関数をメモ化。
+  // 依存配列 [] なので、この toggle 関数の参照はコンポーネントの寿命を通じて変わらない。
+  // setValue(prev => !prev) は関数型更新で、前の値を反転する。
   const toggle = useCallback(() => {
     setValue((prev) => !prev);
   }, []);
 
+  // [現在値, 切替関数] のタプルを返す
   return [value, toggle];
 }
 
 // 使い方
 function App() {
+  // 3つの独立した toggle 状態
   const [isMenuOpen, toggleMenu] = useToggle(false);
   const [isDarkMode, toggleDarkMode] = useToggle(false);
   const [isModalOpen, toggleModal] = useToggle(false);
 
   return (
+    // 背景・文字色を isDarkMode で切替
     <div style={{ backgroundColor: isDarkMode ? "#333" : "#fff", color: isDarkMode ? "#fff" : "#000" }}>
       <button onClick={toggleDarkMode}>
         {isDarkMode ? "ライトモード" : "ダークモード"}に切り替え
@@ -2829,6 +3180,7 @@ function App() {
         メニュー{isMenuOpen ? "を閉じる" : "を開く"}
       </button>
 
+      {/* && 演算子: isMenuOpen が true のときだけ <nav>...</nav> を表示 */}
       {isMenuOpen && (
         <nav>
           <ul>
@@ -2845,6 +3197,7 @@ function App() {
         <div style={{ border: "2px solid #ccc", padding: "16px", margin: "16px" }}>
           <h3>モーダルの内容</h3>
           <p>これはモーダルウィンドウです。</p>
+          {/* モーダル内の閉じるボタンも同じ toggleModal を共有 */}
           <button onClick={toggleModal}>閉じる</button>
         </div>
       )}
@@ -2865,15 +3218,19 @@ function App() {
 
 ```tsx
 // 予告: 後の章で実装するカスタムフック
+// このフックが返す値の型
 type UseBooksReturn = {
-  books: Book[];
-  loading: boolean;
-  error: string | null;
+  books: Book[];                                                       // 全書籍データ
+  loading: boolean;                                                    // 読み込み中フラグ
+  error: string | null;                                                // エラーメッセージ または null
+  // Omit<Book, "id"> は「Book 型から id プロパティを除外した型」（新規追加時はIDは未確定）
+  // Promise<void> は「非同期処理だが戻り値なし」を表す
   addBook: (book: Omit<Book, "id">) => Promise<void>;
+  // Partial<Book> は「Book の全プロパティをオプショナル化」した型（一部だけ更新する用）
   updateBook: (id: number, updates: Partial<Book>) => Promise<void>;
   deleteBook: (id: number) => Promise<void>;
-  searchBooks: (query: string) => void;
-  filteredBooks: Book[];
+  searchBooks: (query: string) => void;                                // 検索クエリ設定
+  filteredBooks: Book[];                                               // 検索結果
 };
 
 function useBooks(): UseBooksReturn {
@@ -2884,14 +3241,18 @@ function useBooks(): UseBooksReturn {
 
 // 使い方（完成イメージ）
 function BookListPage() {
+  // 必要な値だけを分割代入で取り出す
   const { books, loading, error, deleteBook, searchBooks, filteredBooks } = useBooks();
 
+  // 状態別の早期 return
   if (loading) return <p>読み込み中...</p>;
   if (error) return <p>エラー: {error}</p>;
 
   return (
     <div>
+      {/* 子コンポーネントに「検索処理」を関数として渡す */}
       <SearchBar onSearch={searchBooks} />
+      {/* リストデータと削除コールバックを渡す */}
       <BookList books={filteredBooks} onDelete={deleteBook} />
     </div>
   );
@@ -2917,6 +3278,7 @@ type User = {
 };
 
 function UserEditor() {
+  // オブジェクト state と配列 state
   const [user, setUser] = useState<User>({ name: "田中", age: 25 });
   const [items, setItems] = useState<string[]>(["A", "B", "C"]);
 
@@ -2924,12 +3286,15 @@ function UserEditor() {
 
   const badUpdateName = () => {
     // NG: オブジェクトのプロパティを直接変更
+    // user オブジェクトは React 内部にも参照されている。
+    // .name を直接書き換えてしまうと、React が「同じ参照だから変化なし」と判断して再描画しない。
     user.name = "鈴木";
     setUser(user); // 同じ参照のオブジェクトなので React は変化を検知できない！
   };
 
   const badAddItem = () => {
     // NG: 配列を直接変更
+    // push は配列を変更する破壊的メソッド。
     items.push("D");
     setItems(items); // 同じ参照の配列なので React は変化を検知できない！
   };
@@ -2944,22 +3309,26 @@ function UserEditor() {
 
   const goodUpdateName = () => {
     // OK: 新しいオブジェクトを作成
+    // {...user, name: "鈴木"} は「user のコピー + name 上書き」の新しいオブジェクト。
     setUser({ ...user, name: "鈴木" });
   };
 
   const goodAddItem = () => {
     // OK: 新しい配列を作成
+    // [...items, "D"] は「items の全要素 + "D"」の新しい配列。
     setItems([...items, "D"]);
   };
 
   const goodSortItems = () => {
     // OK: コピーしてからソート
+    // [...items] でまずコピーを作り、その上で .sort()。元の items は変わらない。
     setItems([...items].sort());
   };
 
   return (
     <div>
       <p>名前: {user.name}</p>
+      {/* join(", ") は配列要素を区切り文字で連結した文字列を作る */}
       <p>アイテム: {items.join(", ")}</p>
       <button onClick={goodUpdateName}>名前を変更</button>
       <button onClick={goodAddItem}>アイテム追加</button>
@@ -2969,7 +3338,7 @@ function UserEditor() {
 }
 ```
 
-> **なぜ直接変更がダメなのか**: React は state の更新を**参照の比較（===）** で検出します。同じオブジェクト/配列への参照のままだと、中身が変わっていても「変化なし」と判断され、再レンダリングが発生しません。
+> **なぜ直接変更がダメなのか**: React は state の更新を**参照の比較（`===`：Object.is 相当）** で検出します。同じオブジェクト/配列への参照のままだと、中身が変わっていても「変化なし」と判断され、再レンダリングが発生しません。これを **イミュータブル更新**（Immutable Update：不変更新。常に新しいオブジェクトを作って更新する考え方）と呼びます。
 
 ### 8.2 useEffect の無限ループ
 
@@ -2983,16 +3352,22 @@ function InfiniteLoopExample() {
   // ========== NG: 無限ループ ==========
 
   // パターン1: 依存配列を省略して state を更新
+  // 依存配列なしの useEffect は毎回のレンダリング後に走る。
+  // 中で setCount を呼ぶと state が変わり → 再レンダリング → またこの useEffect が走る → ...
   useEffect(() => {
     setCount(count + 1); // state 更新 → 再レンダリング → useEffect 再実行 → state 更新 → ...
   }); // 依存配列がない！
 
   // パターン2: useEffect 内で毎回新しいオブジェクト/配列を state に設定
+  // ["A","B","C"] は毎回「新しい配列オブジェクト」として作られるため、
+  // 参照比較では常に「変化あり」となり、再描画が止まらない。
   useEffect(() => {
     setData(["A", "B", "C"]); // 毎回新しい配列オブジェクトが作られる → 再レンダリング → ...
   }); // 依存配列がない！
 
   // パターン3: 依存配列に毎回変わる値を入れる
+  // { key: "value" } は実行のたびに新しいオブジェクト参照になるため、
+  // 毎レンダリングで「依存値が変わった」とみなされてしまう。
   useEffect(() => {
     console.log("実行");
   }, [{ key: "value" }]); // オブジェクトリテラルは毎回新しい参照 → 毎回実行
@@ -3000,11 +3375,13 @@ function InfiniteLoopExample() {
   // ========== OK: 正しい使い方 ==========
 
   // 修正1: 適切な依存配列を指定
+  // [] で初回マウント時のみ実行。関数型更新で外部の count に依存しない。
   useEffect(() => {
     setCount((prev) => prev + 1); // 初回のみ実行
   }, []); // 空配列 → 初回マウント時のみ
 
   // 修正2: 条件付きで実行
+  // 「data が空のときだけ」更新するので無限ループにならない。
   useEffect(() => {
     if (data.length === 0) {
       setData(["A", "B", "C"]); // data が空のときだけ設定
@@ -3012,6 +3389,7 @@ function InfiniteLoopExample() {
   }, [data.length]);
 
   // 修正3: useMemo でオブジェクトの参照を安定させる
+  // useMemo は「依存配列が変わるまで同じ値（参照）を返す」フック。
   // （useMemo については次章以降で詳しく解説します）
 
   return <p>カウント: {count}</p>;
@@ -3046,10 +3424,12 @@ function KeyExample() {
 
   // 先頭に追加する
   const addToTop = () => {
+    // Date.now() は現在時刻のミリ秒値。簡易的な一意ID生成に使う。
     const newItem: Item = {
       id: Date.now(),
       text: `アイテム${items.length + 1}`,
     };
+    // [新規, ...既存] で先頭に挿入した新しい配列を作る
     setItems([newItem, ...items]);
   };
 
@@ -3058,6 +3438,9 @@ function KeyExample() {
       <button onClick={addToTop}>先頭に追加</button>
 
       <h3>NG: index を key に使用</h3>
+      {/* 先頭に追加すると全要素の index がずれてしまい、React は
+          「key=0 の中身が変わった」と解釈する。input の入力値(=非制御の DOM 状態)が
+          別の要素に紐づいてしまう。 */}
       {items.map((item, index) => (
         <div key={index}>
           <span>{item.text}</span>
@@ -3067,6 +3450,8 @@ function KeyExample() {
       ))}
 
       <h3>OK: 一意な id を key に使用</h3>
+      {/* item.id は要素固有なので、配列の中で順序が変わっても
+          「この id の要素はこの DOM ノード」という対応が保たれる。 */}
       {items.map((item) => (
         <div key={item.id}>
           <span>{item.text}</span>
@@ -3091,15 +3476,20 @@ function KeyExample() {
 
 ```tsx
 // ベスト: データベースの ID を使う
+// 配列内で一意かつ、再レンダリングしても変わらない値が理想。
 {items.map((item) => <Item key={item.id} />)}
 
 // OK: ユニークな文字列を使う
+// slug 等の人間が読めるユニークIDでもOK。
 {items.map((item) => <Item key={item.slug} />)}
 
 // 最終手段: index を使う（並び替え・追加・削除がない静的リストのみ）
+// 並びが固定で、要素が増減しないリストでは index でも問題ない。
 {staticItems.map((item, index) => <Item key={index} />)}
 
 // NG: ランダム値を使う（毎回変わるので意味がない）
+// Math.random() は描画のたびに違う値を返す。key の意味（=同一性の判別）が成立しない。
+// 全要素が毎回「別物」と判定され、入力欄の状態が失われる等の不具合の元。
 {items.map((item) => <Item key={Math.random()} />)}
 ```
 

@@ -1,16 +1,24 @@
 # 第5章: Supabase セットアップとデータベース設計
 
-> この章では、**Supabase**（スーパベース）というサービスを使って、アプリのデータを保存する**データベース**（Database：データを永続的に保管する仕組み。アプリを閉じてもデータが消えない）を準備します。
+> この章では、**Supabase**（スーパベース：BaaSと呼ばれる「バックエンドまるごと提供サービス」）というサービスを使って、アプリのデータを保存する**データベース**（Database：データを永続的に保管する仕組み。アプリを閉じてもデータが消えない箱のようなもの）を準備します。
 
 ### この章で学ぶこと
 
 - **データベースとは何か** — プログラムのデータを永続的に保存する「倉庫」
 - **テーブル設計** — データをどのような「表」の形で保存するか考える作業
 - **SQL の基本** — データベースに命令を出すための言語（SELECT, INSERT, UPDATE, DELETE）
-- **RLS（Row Level Security）** — 「誰がどのデータにアクセスできるか」を制御するセキュリティ機能
+- **RLS（Row Level Security：行レベルセキュリティ。「どの行に誰がアクセスできるか」を行ごとに制御する仕組み）** — 「誰がどのデータにアクセスできるか」を制御するセキュリティ機能
 - **Supabase クライアント** — JavaScriptのコードからSupabaseに接続する方法
 
 > **データベースはなぜ必要？** 変数や配列にデータを保持しても、ブラウザを閉じれば消えてしまいます。データベースはハードディスクにデータを保存するので、アプリを再起動してもデータが残ります。SNSの投稿、ECサイトの商品情報、そしてこのアプリの書籍情報も、すべてデータベースに保存されています。
+
+> **補足: 用語の読み方**
+> - **BaaS**（バース／ビーエーエーエス：Backend as a Service の略。サーバーやDBを自前で構築せずに使えるクラウドサービス）
+> - **PostgreSQL**（ポストグレスキューエル：オープンソースのリレーショナルデータベース。Supabaseの中核）
+> - **JWT**（ジョット／ジェイダブリュティー：JSON Web Token の略。ログイン状態を表すデジタル証明書のような文字列）
+> - **Auth**（オース：Authentication = 認証。ログイン処理）
+> - **Storage**（ストレージ：画像やファイルを保管する場所）
+> - **リアルタイムサブスクリプション**（Realtime Subscription：DBの変更を即座に画面へ反映する仕組み。WebSocketで通知を受け取る）
 
 ## 目次
 
@@ -29,11 +37,11 @@
 
 ## 0. 前提知識: データベースとSQLの超基礎
 
-Supabase の中身は **PostgreSQL（ポストグレスキューエル）** という有名なデータベースです。本格的に使い始める前に、データベース・テーブル・SQL のいろはを押さえておきましょう。
+Supabase の中身は **PostgreSQL（ポストグレスキューエル：30年以上の歴史を持つオープンソースのリレーショナルデータベース管理システム）** という有名なデータベースです。本格的に使い始める前に、データベース・テーブル・SQL のいろはを押さえておきましょう。
 
 ### 0.1 データベースとは何か
 
-「データを永続的に・大量に・整理して保管しておく仕組み」がデータベース（DB）です。Excelで言えば「複数のシートを持つ巨大な台帳」のイメージです。本書で使う **PostgreSQL** は、最も広く使われている**リレーショナルデータベース（RDB）**の一つです。
+「データを永続的に・大量に・整理して保管しておく仕組み」がデータベース（DB）です。Excelで言えば「複数のシートを持つ巨大な台帳」のイメージです。本書で使う **PostgreSQL** は、最も広く使われている**リレーショナルデータベース（RDB：Relational Database。表の形でデータを管理し、表同士を関連付けられるDB）** の一つです。
 
 ### 0.2 テーブル・カラム・レコード
 
@@ -58,11 +66,15 @@ RDB では、データを **テーブル（表）** に保存します。
 
 ### 0.3 SQL の超ミニマム入門
 
-データベースを操作する言語が **SQL（Structured Query Language）** です。よく使う4つだけ先に覚えましょう。
+データベースを操作する言語が **SQL（エスキューエル：Structured Query Language の略。データベース操作の世界標準言語）** です。よく使う4つだけ先に覚えましょう。
 
 #### SELECT — データを取り出す
 
 ```sql
+-- SELECT : 「テーブルからデータを取り出す」SQL文の開始キーワード
+-- title, author : 取り出したいカラム名をカンマ区切りで指定（必要な列だけ取れる）
+-- FROM books   : どのテーブルから取るかを指定（ここでは books テーブル）
+-- ;            : SQL文の終わりを表す記号（必ず必要）
 SELECT title, author FROM books;
 ```
 
@@ -78,6 +90,10 @@ title             | author
 条件付きで取り出すこともできます。
 
 ```sql
+-- SELECT *           : * は「全カラム」を意味するワイルドカード
+-- FROM books         : booksテーブルから取り出す
+-- WHERE status='reading' : 「statusカラムが'reading'と等しい行」だけに絞り込む条件
+-- 文字列リテラルはシングルクォート ' で囲む（SQLのルール）
 SELECT * FROM books WHERE status = 'reading';
 ```
 
@@ -91,6 +107,12 @@ id | title              | author       | status
 #### INSERT — データを新しく追加する
 
 ```sql
+-- INSERT INTO books     : booksテーブルに新しい行を追加する宣言
+-- (title, author, status): どのカラムに値を入れるか、カラム名を列挙
+-- VALUES (..., ..., ...): 上で並べたカラムと同じ順番で値を指定
+-- 'SQL入門'             : title カラムに入れる文字列リテラル
+-- 'ミック'              : author カラムに入れる文字列
+-- 'unread'              : status カラムに入れる文字列
 INSERT INTO books (title, author, status) VALUES ('SQL入門', 'ミック', 'unread');
 ```
 
@@ -101,6 +123,10 @@ INSERT INTO books (title, author, status) VALUES ('SQL入門', 'ミック', 'unr
 #### UPDATE — データを書き換える
 
 ```sql
+-- UPDATE books     : books テーブルの既存行を書き換える宣言
+-- SET status='done': どのカラムをどの値に変えるかを指定（=は代入）
+-- WHERE id = 2     : 「id が 2 の行だけ」更新対象にする絞り込み条件
+--                    WHERE を忘れると全行が書き換わるので超危険
 UPDATE books SET status = 'done' WHERE id = 2;
 ```
 
@@ -111,6 +137,9 @@ UPDATE books SET status = 'done' WHERE id = 2;
 #### DELETE — データを消す
 
 ```sql
+-- DELETE FROM books : books テーブルから行を削除する宣言
+-- WHERE id = 3      : 「id が 3 の行だけ」削除する条件
+--                     WHEREを忘れると全件削除で復元不可なので絶対に注意
 DELETE FROM books WHERE id = 3;
 ```
 
@@ -120,7 +149,7 @@ DELETE FROM books WHERE id = 3;
 
 ### 0.4 CRUDという言葉
 
-上の4つの操作を頭文字でまとめて **CRUD（クラッド）** と呼びます。
+上の4つの操作を頭文字でまとめて **CRUD（クラッド：Create / Read / Update / Delete の頭文字）** と呼びます。
 
 | C | Create | INSERT | データを作る |
 | R | Read   | SELECT | データを読む |
@@ -134,8 +163,14 @@ DELETE FROM books WHERE id = 3;
 本書では、これらの SQL を**直接書く機会は少なめ**です。代わりに **Supabase のJavaScriptクライアント**を使い、TypeScriptのコードで操作します。
 
 ```typescript
-// SQLの SELECT * FROM books と同じ意味
+// SQLの「SELECT * FROM books」と同じ意味のコード
+// await       : このAPI呼び出しは非同期（時間がかかる）ので結果が返るまで待つ
+// supabase    : 別ファイルで作成した Supabase クライアントオブジェクト
+// .from("books"): 操作対象のテーブル名を指定（戻り値はクエリビルダ）
+// .select("*")  : 取得するカラムを指定。"*" は全カラム
+// 分割代入 { data } : 戻り値オブジェクトから data プロパティだけを取り出す
 const { data } = await supabase.from("books").select("*");
+// console.log : ブラウザ開発者ツールのConsoleタブに値を出力する関数
 console.log(data);
 // ▼ data の中身（実行結果のイメージ）
 // [
@@ -174,7 +209,7 @@ Web アプリケーションを作るとき、通常は「フロントエンド�
 
 これは初心者にとって非常に大きなハードルです。学ぶべき技術が多すぎて、アプリの本質的な部分に集中できません。
 
-**BaaS（Backend as a Service）** は、このバックエンド部分をまるごとクラウドサービスとして提供してくれるものです。つまり、データベース・認証・ストレージ・API といったバックエンドの機能を、自分でサーバーを構築することなく利用できます。
+**BaaS（Backend as a Service：バックエンドをサービスとして利用する形態。Firebase や Supabase など）** は、このバックエンド部分をまるごとクラウドサービスとして提供してくれるものです。つまり、データベース・認証・ストレージ・API といったバックエンドの機能を、自分でサーバーを構築することなく利用できます。
 
 ```
 従来の開発:
@@ -251,6 +286,14 @@ Supabase がどのような構成になっているか、全体像を見てみ�
 </div>
 
 **ポイント:** Supabase はオープンソースのツールを組み合わせて構築されています。PostgreSQL を中核として、PostgREST（自動 API 生成）、GoTrue（認証）、Realtime（リアルタイム通信）などが連携しています。
+
+> **登場する各サービスの読み方と役割:**
+> - **Kong**（コング：API Gateway。すべてのリクエストを最初に受け取る玄関口）
+> - **GoTrue**（ゴートゥルー：認証サーバー。ログイン・サインアップ・JWT発行を担当）
+> - **PostgREST**（ポストグレストレスト：DBのテーブル定義から自動的にRESTful APIを生成するソフトウェア）
+> - **Realtime**（リアルタイム：DBの変更を WebSocket でブラウザに即時配信するサーバー）
+> - **Storage**（ストレージ：画像やPDFなどファイルを保管するS3互換のサービス）
+> - **Edge Functions**（エッジファンクション：世界各地のサーバーで動く小さな関数。Deno で実行される）
 
 ### 1.3 Firebase との比較
 
@@ -439,7 +482,18 @@ Supabase は GitHub アカウントでのサインアップを推奨していま
 > ダッシュボードの「Settings」>「API」から以下の2つの値を確認・メモしてください。後ほどコードから Supabase に接続する際に必要です。
 >
 > - **Project URL**: `https://xxxxxxxx.supabase.co` の形式
-> - **anon (public) key**: `eyJhbGciOiJIUzI1NiIs...` のような長い文字列
+> - **anon (public) key**: `eyJhbGciOiJIUzI1NiIs...` のような長い文字列（実体は **JWT**：JSON Web Token と呼ばれる署名付きの文字列）
+
+> **ANON Key と Service Role Key の違い（重要）**
+>
+> Supabase のプロジェクトには2種類のAPIキーが発行されます。混同すると重大な事故になります。
+>
+> | キー名 | 用途 | RLSの効果 | どこに置く |
+> |--------|------|-----------|-----------|
+> | **anon key**（アノン：anonymous の略。匿名キー） | ブラウザから使う公開キー | RLS が有効。ポリシーに従う | フロントエンド、`.env.local` の `NEXT_PUBLIC_` プレフィックス付きでOK |
+> | **service_role key**（サービスロール：管理者キー） | サーバー処理から使う特権キー | **RLSを完全にバイパス（無視）** | **絶対にフロントエンドに含めない**。サーバー側だけ |
+>
+> **service_role key が漏えいすると、全データの読み取り・書き換え・削除を誰でもできるようになります**。Gitにコミットしたり、ブラウザに渡したりするのは絶対に避けてください。
 
 ### 2.3 リージョンの選び方
 
@@ -615,8 +669,8 @@ Supabase の無料プラン（Free Plan）には以下の制限があります�
 
 | 方式 | 例 | メリット | デメリット |
 |------|-----|---------|-----------|
-| **UUID** | `550e8400-e29b-41d4-a716-446655440000` | 衝突の可能性がほぼゼロ。分散システムに適する | 長い。人間が読みにくい |
-| **SERIAL** | `1`, `2`, `3` ... | 短い。人間が読みやすい | 連番が推測可能。分散環境で衝突しうる |
+| **UUID**（ユーユーアイディー：Universally Unique Identifier。世界中で重複しない128ビットの識別子） | `550e8400-e29b-41d4-a716-446655440000` | 衝突の可能性がほぼゼロ。分散システムに適する | 長い。人間が読みにくい |
+| **SERIAL**（シリアル：自動採番される連番） | `1`, `2`, `3` ... | 短い。人間が読みやすい | 連番が推測可能。分散環境で衝突しうる |
 
 Supabase では **UUID** がデフォルトで推奨されています。本チュートリアルでも UUID を使用します。
 
@@ -650,7 +704,7 @@ PostgreSQL で使う主なデータ型を紹介します。
 | `varchar(n)` | 可変長テキスト（最大 n 文字） | `'abc'`（最大n文字） |
 | `integer` | 整数（-2147483648 〜 2147483647） | `42` |
 | `bigint` | 大きい整数 | `9223372036854775807` |
-| `boolean` | 真偽値 | `true` / `false` |
+| `boolean`（bool） | 真偽値 | `true` / `false` |
 | `date` | 日付 | `'2024-01-15'` |
 | `timestamptz` | タイムスタンプ（タイムゾーン付き） | `'2024-01-15T10:30:00+09:00'` |
 | `jsonb` | JSON データ（バイナリ形式） | `'{"key": "value"}'` |
@@ -658,6 +712,9 @@ PostgreSQL で使う主なデータ型を紹介します。
 
 > **`text` vs `varchar(n)` について:**
 > PostgreSQL では `text` と `varchar` の性能差はほとんどありません。長さの制限が本当に必要な場合以外は `text` を使うのがシンプルです。Supabase の公式ドキュメントでも `text` が推奨されています。
+
+> **`timestamptz` と `timestamp` の違い:**
+> `timestamptz` は "timestamp with time zone" の略で、タイムゾーン情報を保持する型です。世界中どこからINSERTしてもUTCに換算して保存され、SELECT時はクライアントのタイムゾーンに自動変換されます。`timestamp`（タイムゾーンなし）だと「東京の23時」「ロンドンの23時」が同じ値になって混乱するので、原則 `timestamptz` を使います。
 
 ---
 
@@ -713,6 +770,11 @@ PostgreSQL で使う主なデータ型を紹介します。
 #### `id` - uuid (PK, auto-generated)
 
 ```sql
+-- id              : カラム名（このテーブル内での識別用、慣習的にidという名前を使う）
+-- uuid            : データ型。128ビットのUUID（世界中で重複しないランダム文字列）を格納
+-- DEFAULT ...     : INSERTで値が指定されなかったときに自動で入る値
+-- gen_random_uuid(): Postgresが標準で持つ「新しいUUIDを1つ作る」関数
+-- PRIMARY KEY     : このカラムを主キーにする宣言（NOT NULL かつ UNIQUE が自動付与される）
 id uuid DEFAULT gen_random_uuid() PRIMARY KEY
 ```
 
@@ -724,6 +786,9 @@ id uuid DEFAULT gen_random_uuid() PRIMARY KEY
 #### `title` - text (NOT NULL)
 
 ```sql
+-- title    : カラム名（書籍のタイトル）
+-- text     : 可変長の文字列型。長さ制限なし（日本語もOK）
+-- NOT NULL : 値が空（NULL）の行は許可しない、という制約
 title text NOT NULL
 ```
 
@@ -734,6 +799,9 @@ title text NOT NULL
 #### `author` - text (NOT NULL)
 
 ```sql
+-- author   : カラム名（著者名）
+-- text     : 文字列型
+-- NOT NULL : 必須項目（空欄での登録を防ぐ）
 author text NOT NULL
 ```
 
@@ -745,6 +813,9 @@ author text NOT NULL
 #### `publisher` - text
 
 ```sql
+-- publisher : カラム名（出版社名）
+-- text      : 文字列型
+-- NOT NULL を付けないので NULL を許可（任意項目になる）
 publisher text
 ```
 
@@ -755,6 +826,9 @@ publisher text
 #### `published_date` - date
 
 ```sql
+-- published_date : カラム名（出版日）
+-- date           : 「年月日」だけを格納する型。時分秒は持たない
+-- NOT NULLなし   : NULL許可（出版日不明でも登録できる）
 published_date date
 ```
 
@@ -766,6 +840,10 @@ published_date date
 #### `rating` - integer (1-5)
 
 ```sql
+-- rating  : カラム名（評価値）
+-- integer : 整数型（-2147483648〜2147483647までの範囲）
+-- CHECK ( ... ) : 値の妥当性を検査する制約。条件を満たさない値はINSERT/UPDATE時に拒否
+-- rating >= 1 AND rating <= 5 : 1以上かつ5以下のみ許可、という条件式
 rating integer CHECK (rating >= 1 AND rating <= 5)
 ```
 
@@ -777,6 +855,11 @@ rating integer CHECK (rating >= 1 AND rating <= 5)
 #### `status` - text ('reading' | 'completed' | 'want_to_read')
 
 ```sql
+-- status : カラム名（読書状態）
+-- text   : 文字列型
+-- DEFAULT 'want_to_read' : INSERT時に値が指定されなければ 'want_to_read' を入れる
+-- CHECK (status IN (...)) : 指定された3つの値のいずれかでないと弾く制約
+-- IN は「リストの中に含まれるか」を判定するSQL演算子
 status text DEFAULT 'want_to_read' CHECK (status IN ('reading', 'completed', 'want_to_read'))
 ```
 
@@ -795,6 +878,9 @@ status text DEFAULT 'want_to_read' CHECK (status IN ('reading', 'completed', 'wa
 #### `notes` - text
 
 ```sql
+-- notes : カラム名（読書メモ）
+-- text  : 文字列型（長文OK）
+-- NULL許可（メモは任意）
 notes text
 ```
 
@@ -805,6 +891,9 @@ notes text
 #### `cover_url` - text
 
 ```sql
+-- cover_url : カラム名（表紙画像のURL）
+-- text      : URL文字列を格納
+-- NULL許可（画像未設定でもOK）
 cover_url text
 ```
 
@@ -816,6 +905,10 @@ cover_url text
 #### `created_at` - timestamptz
 
 ```sql
+-- created_at  : カラム名（作成日時。慣習的にこの名前を使う）
+-- timestamptz : タイムゾーン付きの日時型（worldwide で正しい時刻を扱える）
+-- DEFAULT NOW() : INSERT時に値がなければ「現在時刻」が自動で入る
+-- NOW() : 現在の日時を返すPostgres組み込み関数
 created_at timestamptz DEFAULT NOW()
 ```
 
@@ -826,6 +919,10 @@ created_at timestamptz DEFAULT NOW()
 #### `updated_at` - timestamptz
 
 ```sql
+-- updated_at  : カラム名（更新日時）
+-- timestamptz : タイムゾーン付きの日時型
+-- DEFAULT NOW() : 作成時の値として現在時刻を入れる
+-- UPDATE時に自動で書き換えるためには「トリガー」を別途定義する必要あり（後述）
 updated_at timestamptz DEFAULT NOW()
 ```
 
@@ -842,6 +939,9 @@ updated_at timestamptz DEFAULT NOW()
 
 Supabase ダッシュボードの左メニューから「SQL Editor」をクリックします。
 
+> **Supabase Studio（管理画面）とSQLの対応:**
+> Supabase の管理画面は内部的には毎回SQLを実行しています。「Table Editor で列を追加する」ボタンを押すと、裏で `ALTER TABLE ... ADD COLUMN ...` が走るだけ。GUIに慣れたら、SQL Editor で直接書いた方が早いと感じるはずです。
+
 **ステップ 2: 新しいクエリを作成**
 
 「New query」ボタンをクリックし、以下の SQL をコピー＆ペーストします。
@@ -856,51 +956,68 @@ Supabase ダッシュボードの左メニューから「SQL Editor」をクリ�
 -- -- (ハイフン2つ) で始まる行はコメント（実行時に無視される）。
 -- ============================================================================
 
+-- CREATE TABLE : 新しいテーブルを作るSQL文の開始キーワード
+-- books        : 作成するテーブル名（複数形にするのが慣習）
+-- (...)        : この中にカラム定義を並べる
 CREATE TABLE books (
 
   -- (1) 主キー(PRIMARY KEY): レコードを一意に識別する列。
-  --     uuid                 : 文字列の一種で、世界中で重複しないIDを表す型
+  --     id                   : このテーブル内でのカラム名
+  --     uuid                 : 文字列の一種で、世界中で重複しないIDを表す型（128ビット）
   --     gen_random_uuid()    : Postgres組み込み関数。新しいUUIDを1つ生成する
   --     DEFAULT ...          : INSERT時にこの値が省略されたら自動で入る初期値
   --     PRIMARY KEY          : 主キー宣言。NULL不可・重複不可になる
   id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
 
   -- (2) 書籍情報（必須）
+  --     title    : タイトル列。カラム名
   --     text     : 可変長の文字列（長さ制限なし）。MySQL の VARCHAR に相当
-  --     NOT NULL : 「NULL（値なし）を許可しない」制約
+  --     NOT NULL : 「NULL（値なし）を許可しない」制約。空のINSERTを拒否
   title text NOT NULL,
+  -- author : 著者名。同じく text NOT NULL（必須項目）
   author text NOT NULL,
 
   -- (3) 書籍情報（任意）
+  --     publisher : 出版社名のカラム
   --     NOT NULL を付けないので、INSERT時に省略可能 → NULLが入る
   publisher text,
-  --     date : 「年月日」だけを保存する型。時刻は持たない
+  --     published_date : 出版日のカラム
+  --     date : 「年月日」だけを保存する型。時刻は持たない（軽量）
   published_date date,
 
   -- (4) 読書管理
-  --     integer : 整数型
+  --     rating  : 評価値（1〜5の星）のカラム
+  --     integer : 整数型（負の値も入るが、CHECK制約で1〜5に絞る）
   --     CHECK ( ... ) : 値が条件を満たさなければINSERT/UPDATEを拒否する制約
-  --     ここでは「rating は 1以上かつ5以下」を強制する
+  --     ここでは「rating は 1以上かつ5以下」を強制する（5を超える値は弾かれる）
   rating integer CHECK (rating >= 1 AND rating <= 5),
 
+  --     status : 読書状態のカラム
+  --     text   : 文字列で 'reading'/'completed'/'want_to_read' のいずれかを格納
   --     DEFAULT 'want_to_read' : INSERT時に省略されたら 'want_to_read' を入れる
-  --     status IN ('reading', 'completed', 'want_to_read')
+  --     CHECK (status IN ('reading', 'completed', 'want_to_read'))
   --       → これらの値以外は登録不可（typoや不正値を防ぐ）
+  --       → IN はリストにマッチするかを判定する演算子
   status text DEFAULT 'want_to_read'
     CHECK (status IN ('reading', 'completed', 'want_to_read')),
 
+  -- notes : 読書メモ。任意（NULL可能）
   notes text,
 
   -- (5) 画像URL
+  -- cover_url : 表紙画像のURLを格納。Supabase Storage 等のURLを想定
   cover_url text,
 
   -- (6) タイムスタンプ
+  --     created_at : 作成日時のカラム
   --     timestamptz : 「タイムゾーン付きの日時」を表す型（推奨）
   --     NOW()       : 現在の日時を返す関数
   --     DEFAULT NOW() で「INSERT時に自動で現在時刻が入る」
   created_at timestamptz DEFAULT NOW(),
+  -- updated_at : 更新日時。INSERT時はNOW()が入り、UPDATE時はトリガーで更新（後述）
   updated_at timestamptz DEFAULT NOW()
 );
+-- 上のセミコロンで CREATE TABLE 文が終わる
 
 -- ▼ 実行結果（成功時、Supabase SQL Editor の出力）
 --   Success. No rows returned
@@ -917,25 +1034,36 @@ CREATE TABLE books (
 -- (1) まず「呼ばれた時に動く関数」を定義する。
 --     CREATE OR REPLACE FUNCTION:
 --       同名の関数が既にあれば置き換える、無ければ新規作成。
+--       何度実行しても安全（冪等性=べきとうせい）。
+--     update_updated_at_column : この関数の名前（自分で命名）
+--     () : 引数なし
 --     RETURNS TRIGGER:
 --       戻り値の型がトリガー専用の特殊な値であることを示す。
---     $$ ... $$:
+--     AS $$ ... $$:
 --       関数本体を囲む区切り。シングルクォートを多用するときに便利。
 --     LANGUAGE plpgsql:
 --       関数本体は PL/pgSQL（Postgres の手続き型言語）で書く宣言。
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
+-- BEGIN ... END; : 関数本体の処理ブロック
 BEGIN
   -- NEW は「これから書き込まれる新しい行」の擬似変数
   -- そのレコードの updated_at を現在時刻に書き換える
+  -- NOW() で現在のタイムスタンプを取得し代入
   NEW.updated_at = NOW();
   -- 書き換えた NEW を返すことでDBに反映される
+  -- RETURN を省略するとUPDATEがキャンセル扱いになるので必須
   RETURN NEW;
 END;
+-- $$ で関数本体の終わり
 $$ LANGUAGE plpgsql;
 
 -- (2) 上の関数を「books テーブルが UPDATE される直前」に呼ぶよう紐付ける
+--     CREATE TRIGGER : トリガー（特定イベントで自動実行される処理）を作成
+--     update_books_updated_at : トリガー名（自由命名）
 --     BEFORE UPDATE: 「UPDATE実行の直前に呼ぶ」タイミング指定
+--       (AFTER UPDATE だと「実行後に呼ぶ」)
+--     ON books     : booksテーブルを対象にする
 --     FOR EACH ROW : 「行ごとに1回呼ぶ」（複数行同時更新時も全行に効く）
 --     EXECUTE FUNCTION ...: 実行する関数の指定
 CREATE TRIGGER update_books_updated_at
@@ -952,7 +1080,9 @@ CREATE TRIGGER update_books_updated_at
 -- Dashboard での表示が分かりやすくなる
 -- ============================================
 
+-- COMMENT ON TABLE テーブル名 IS '説明文'; でテーブル全体に注釈を付ける
 COMMENT ON TABLE books IS '書籍管理テーブル';
+-- COMMENT ON COLUMN テーブル.カラム名 IS '説明文'; でカラムに注釈を付ける
 COMMENT ON COLUMN books.id IS '書籍ID（自動生成）';
 COMMENT ON COLUMN books.title IS '書籍タイトル';
 COMMENT ON COLUMN books.author IS '著者名';
@@ -1034,26 +1164,38 @@ SQL を使わずに、Dashboard の GUI でテーブルを作成することも�
 > **注意:** GUI では CHECK 制約やトリガーを設定できないため、別途 SQL Editor で以下を実行する必要があります:
 
 ```sql
--- CHECK 制約の追加
+-- ALTER TABLE : 既存テーブルの定義を変更するSQL文
+-- books       : 対象テーブル名
+-- ADD CONSTRAINT 制約名 ... : 新しい制約を追加する
+-- books_rating_check : 制約に付ける名前（テーブル名_カラム名_check が慣習）
+-- CHECK (rating >= 1 AND rating <= 5) : rating が 1〜5 の範囲のみ許可
 ALTER TABLE books
   ADD CONSTRAINT books_rating_check CHECK (rating >= 1 AND rating <= 5);
 
+-- 同様に status の値を 3つに限定する制約を追加
+-- IN ('reading', 'completed', 'want_to_read') : このリストの値以外は弾く
 ALTER TABLE books
   ADD CONSTRAINT books_status_check CHECK (status IN ('reading', 'completed', 'want_to_read'));
 
--- updated_at 自動更新トリガーの追加
+-- updated_at 自動更新トリガーの追加（仕組みは前述と同じ）
+-- CREATE OR REPLACE FUNCTION : 既存なら置換、なければ作成
 CREATE OR REPLACE FUNCTION update_updated_at_column()
+-- RETURNS TRIGGER : トリガー専用関数として宣言
 RETURNS TRIGGER AS $$
 BEGIN
+  -- NEW.updated_at : これから書き込まれる行の updated_at を…
+  -- NOW()          : 現在時刻に書き換える
   NEW.updated_at = NOW();
+  -- 書き換えた行を返す（これでDBに反映される）
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
+-- トリガーの作成: UPDATE 直前にこの関数を呼ぶよう紐付け
 CREATE TRIGGER update_books_updated_at
-  BEFORE UPDATE ON books
-  FOR EACH ROW
-  EXECUTE FUNCTION update_updated_at_column();
+  BEFORE UPDATE ON books       -- UPDATE 文の直前に発火
+  FOR EACH ROW                  -- 行ごとに1回呼ぶ
+  EXECUTE FUNCTION update_updated_at_column();  -- 上で作った関数を実行
 ```
 
 ---
@@ -1077,6 +1219,16 @@ Supabase の構成:
 ```
 
 RLS がなければ、anon key を知っている人は誰でもすべてのデータを読み書きできてしまいます。RLS を有効にすることで、「どのユーザーがどのデータにアクセスできるか」をデータベースレベルで制御できます。
+
+> **RLSを無効化したら何が起きる？**
+>
+> RLSがOFFの状態でテーブルを世に公開すると、anon key（フロントに埋め込まれている公開キー）を知る誰でもが
+> 1. 全データを SELECT で読める（個人情報の漏えい）
+> 2. 任意のデータを INSERT できる（スパム書き込み）
+> 3. 既存データを UPDATE で改ざんできる
+> 4. DELETE で全削除もできる（破壊行為）
+>
+> という状態になります。**本番環境ではRLSは必須**と覚えてください。ダッシュボードにも「Unprotected」と警告が出ます。
 
 ### 5.2 RLS の仕組み（図解）
 
@@ -1134,21 +1286,26 @@ RLS がなければ、anon key を知っている人は誰でもすべてのデ�
 -- RLS（Row Level Security）の設定
 -- ----------------------------------------------------------------------------
 -- 「テーブルの行ごとに、誰がアクセスできるかを決める」セキュリティ機能。
--- Supabase ではデフォルトでRLSが無効。
+-- Supabase ではテーブル作成時の状態によってRLSの初期値が変わる。
 -- ALTER TABLE で有効化し、CREATE POLICY で「許可ルール」を1つずつ追加していく。
+-- ポリシーは「ホワイトリスト方式」: 何も設定しないと全部拒否、書いたぶんだけ許可される
 -- ============================================================================
 
 -- (1) books テーブルの RLS を有効化する
 --     ALTER TABLE          : 既存テーブルの設定を変更するSQL文
+--     books                : 対象テーブル
 --     ENABLE ROW LEVEL SECURITY : RLSを ON にする
 --     ※ RLSを有効にしたあと、ポリシーを1つも作っていないと「全部拒否」になる
+--       （SELECTしてもデータが空配列で返るのに気づかずハマる定番ポイント）
 ALTER TABLE books ENABLE ROW LEVEL SECURITY;
 
 
 -- (2) SELECT（読み取り）を全員に許可するポリシー
 --     CREATE POLICY "ポリシー名" ON テーブル名
---     FOR 操作種別  ← どの操作（SELECT/INSERT/UPDATE/DELETE/ALL）に効くか
---     USING (条件) ← どの「既存の行」がこの操作に使えるかを決めるブール式
+--     "Allow public read access" : ポリシー名（自由命名、空白OK）
+--     ON books      : booksテーブルに適用
+--     FOR SELECT    : どの操作（SELECT/INSERT/UPDATE/DELETE/ALL）に効くか
+--     USING (条件)  : どの「既存の行」がこの操作に使えるかを決めるブール式
 --     true は「常に真」 → 全行に対して許可するという意味
 CREATE POLICY "Allow public read access"
   ON books
@@ -1157,6 +1314,8 @@ CREATE POLICY "Allow public read access"
 
 
 -- (3) INSERT（新規作成）を全員に許可するポリシー
+--     "Allow public insert access" : ポリシー名
+--     FOR INSERT    : INSERT操作向けポリシー
 --     INSERTでは「これから書き込まれる新行」が対象なので USING ではなく
 --     WITH CHECK を使う。
 --     WITH CHECK (true) → どんな値の行でも書き込みOK
@@ -1167,6 +1326,7 @@ CREATE POLICY "Allow public insert access"
 
 
 -- (4) UPDATE（更新）を全員に許可するポリシー
+--     FOR UPDATE   : UPDATE操作向けポリシー
 --     UPDATEは「既存の行を選んで」「新しい値で上書き」の2フェーズなので
 --     USING（読み取り対象の判定）と WITH CHECK（書き込み内容の判定）の両方を書く。
 CREATE POLICY "Allow public update access"
@@ -1177,6 +1337,7 @@ CREATE POLICY "Allow public update access"
 
 
 -- (5) DELETE（削除）を全員に許可するポリシー
+--     FOR DELETE   : DELETE操作向けポリシー
 --     DELETEは新規行を作らないので WITH CHECK は不要、USINGだけで判定する。
 CREATE POLICY "Allow public delete access"
   ON books
@@ -1211,25 +1372,30 @@ CREATE POLICY "Allow public delete access"
 -- 認証済みユーザーが自分のデータのみアクセスできるポリシー
 -- （第7章で実装予定。今は実行しないでください）
 
--- 既存のポリシーを削除
+-- 既存のポリシーを削除（DROP POLICY: ポリシーを消すSQL）
 -- DROP POLICY "Allow public read access" ON books;
 -- DROP POLICY "Allow public insert access" ON books;
 -- DROP POLICY "Allow public update access" ON books;
 -- DROP POLICY "Allow public delete access" ON books;
 
 -- ユーザーは自分のデータのみ SELECT 可能
+-- auth.uid()  : Supabaseが提供する関数。現在ログインしているユーザーのUUIDを返す
+-- user_id     : booksテーブルの「持ち主」を表すFKカラム（あとで追加予定）
+-- = で両者が等しい行だけを許可する条件
 -- CREATE POLICY "Users can view own books"
 --   ON books
 --   FOR SELECT
 --   USING (auth.uid() = user_id);
 
 -- ユーザーは自分の user_id でのみ INSERT 可能
+-- INSERT時の「これから書く行」の user_id がログイン中ユーザーと一致するかを検査
 -- CREATE POLICY "Users can insert own books"
 --   ON books
 --   FOR INSERT
 --   WITH CHECK (auth.uid() = user_id);
 
 -- ユーザーは自分のデータのみ UPDATE 可能
+-- USING で「自分の行だけ」読み出し、WITH CHECK で「自分のIDのまま」書き込みを保証
 -- CREATE POLICY "Users can update own books"
 --   ON books
 --   FOR UPDATE
@@ -1252,6 +1418,9 @@ CREATE POLICY "Allow public delete access"
 プロジェクトのルートディレクトリで以下のコマンドを実行します。
 
 ```bash
+# npm install : npmパッケージをプロジェクトに追加するコマンド
+# @supabase/supabase-js : Supabase公式のJavaScript/TypeScript SDKパッケージ名
+#                         "@組織名/パッケージ名" の形式（スコープ付きパッケージ）
 npm install @supabase/supabase-js
 ```
 
@@ -1265,6 +1434,8 @@ npm install @supabase/supabase-js
 }
 ```
 
+> **`^2.x.x` の意味:** キャレット `^` は「メジャーバージョン（先頭の数字）は固定、それ以下は最新を使う」の意味。`^2.0.0` なら `2.x.x` の範囲で最新版が入る。
+
 ### 6.2 環境変数の設定
 
 Supabase に接続するために必要な情報を環境変数として設定します。環境変数を使うことで、API キーなどの秘密情報をコードにハードコードせずに管理できます。
@@ -1277,7 +1448,7 @@ Supabase に接続するために必要な情報を環境変数として設定�
 4. 「API」をクリック
 5. 以下の2つの値をコピー:
    - **Project URL**: `https://xxxxxxxx.supabase.co`
-   - **anon public key**: `eyJhbGciOiJIUzI1NiIs...`（長い文字列）
+   - **anon public key**: `eyJhbGciOiJIUzI1NiIs...`（長い文字列。JWT形式）
 
 **ステップ 2: `.env.local` ファイルの作成**
 
@@ -1286,16 +1457,25 @@ Supabase に接続するために必要な情報を環境変数として設定�
 ```bash
 # .env.local
 # Supabase の接続情報
+# 「キー=値」の形式で1行1変数を書く（イコールの周りに空白を入れない）
 
+# NEXT_PUBLIC_SUPABASE_URL : Supabase プロジェクトのAPIエンドポイント
+#   NEXT_PUBLIC_ プレフィックスはNext.jsの約束で「ブラウザにも値を渡してOK」を意味する
 NEXT_PUBLIC_SUPABASE_URL=https://xxxxxxxx.supabase.co
+# NEXT_PUBLIC_SUPABASE_ANON_KEY : 匿名（anon）APIキー
+#   ブラウザに埋め込まれて公開される前提のキー。RLSと組み合わせて安全に使う
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
 > **重要な注意点:**
 >
 > 1. `xxxxxxxx` の部分は、あなたのプロジェクトの実際の値に置き換えてください
-> 2. `NEXT_PUBLIC_` プレフィックスは Next.js で環境変数をブラウザ側で使うために必要です
+> 2. `NEXT_PUBLIC_` プレフィックスは Next.js で環境変数をブラウザ側で使うために必要です（このプレフィックスがない環境変数はサーバー側だけで参照可能）
 > 3. `.env.local` は **絶対に Git にコミットしないでください**。`.gitignore` に含まれていることを確認しましょう
+> 4. **service_role key（管理者キー）を `.env.local` に書く場合は、絶対に `NEXT_PUBLIC_` を付けてはいけません**。付けるとブラウザに漏れます
+
+> **`NEXT_PUBLIC_` プレフィックスの仕組み:**
+> Next.js は `process.env.XXX` を「ビルド時に値を埋め込む」処理をします。`NEXT_PUBLIC_` で始まる名前のものだけがブラウザ向けバンドルにも埋め込まれます。そうでないものはサーバー側（API Route や Server Component）でしか参照できません。これにより「ブラウザに渡したい変数」と「サーバーに隠したい変数」を分けて管理できます。
 
 **ステップ 3: `.gitignore` に追加されていることを確認**
 
@@ -1303,6 +1483,7 @@ Next.js のプロジェクトを `create-next-app` で作成した場合、`.env
 
 ```bash
 # .gitignore に以下が含まれていることを確認
+# .env*.local は「.envで始まり.localで終わる任意のファイル」をGit管理から除外する
 .env*.local
 ```
 
@@ -1322,6 +1503,8 @@ Supabase に接続するためのクライアントを作成します。
 `src/lib/supabase.ts` ファイルを作成します。
 
 ```bash
+# mkdir -p : 中間ディレクトリも含めて作る（既にあってもエラーにならない）
+# src/lib  : srcの下にlibディレクトリを作るパス
 mkdir -p src/lib
 ```
 
@@ -1335,28 +1518,35 @@ mkdir -p src/lib
 // このファイルを作っておくと、他のファイルから
 //   import { supabase } from "@/lib/supabase";
 // と書くだけでDB操作できるようになる。
+// クライアントを1個にまとめる(=シングルトン化)ことで、接続の無駄遣いを防ぐ。
 // ============================================================================
 
 // (1) Supabase クライアント作成関数を取り込む
-//     @supabase/supabase-js は Supabase の公式SDK（npmパッケージ）
+//     import { createClient } : 名前付きインポート（特定の関数だけ取り込む構文）
+//     @supabase/supabase-js   : Supabase の公式SDK（npmパッケージ）の名前
 import { createClient } from '@supabase/supabase-js';
 
 // (2) DBスキーマから自動生成した型を取り込む
 //     `import type` は「型情報だけ取り込み、実行時のJSには残さない」記法
+//     Database はテーブル定義から自動生成された型（後述）
 //     @ は src/ を表すパスエイリアス（tsconfig.json の paths で設定済み）
+//     よって @/types/supabase は src/types/supabase.ts を指す
 import type { Database } from '@/types/supabase';
 
 // (3) 環境変数から接続情報を取得
-//     process.env はビルド時に Next.js が値を埋め込む
-//     NEXT_PUBLIC_ プレフィックスはブラウザ側にも値を渡すための約束（ない場合は
-//     サーバーでしか参照できない）
+//     process.env はNode.jsで環境変数を読むオブジェクト
+//     Next.jsの場合、ビルド時に NEXT_PUBLIC_ で始まる値が埋め込まれる
+//     NEXT_PUBLIC_SUPABASE_URL : .env.local で設定したSupabaseのURL
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+// NEXT_PUBLIC_SUPABASE_ANON_KEY : .env.local で設定したanonキー（JWT文字列）
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 // (4) 環境変数が未設定の場合は早期にエラーを出す（Fail-Fast）
 //     これを書かないと「なぜか動かない」と原因不明になりやすい。
 //     エラー文に「.env.local を確認」と書いて初心者にやさしくする。
+//     ! (論理否定) で「変数がundefined/空文字なら true」を判定
 if (!supabaseUrl) {
+  // throw new Error : エラーオブジェクトを投げる構文。実行を即停止する
   throw new Error(
     'NEXT_PUBLIC_SUPABASE_URL が設定されていません。.env.local ファイルを確認してください。'
   );
@@ -1369,6 +1559,7 @@ if (!supabaseAnonKey) {
 }
 
 // (5) Supabase クライアントを作って export する
+//     createClient(url, anonKey) : Supabaseに接続するためのオブジェクトを返す関数
 //     <Database> はジェネリクス型引数。これを渡しておくと
 //       supabase.from('books').select('*') と書いたときに
 //       VS Code が books の存在やカラム名を補完・検証してくれる。
@@ -1398,12 +1589,17 @@ Supabase CLI を使うと、データベースのスキーマ（テーブル定�
 **ステップ 1: Supabase CLI のインストール**
 
 ```bash
+# -D は --save-dev の短縮形。開発時のみ使うパッケージとして package.json に記録
+# supabase : CLIツールのパッケージ名
 npm install -D supabase
 ```
 
 **ステップ 2: Supabase CLI にログイン**
 
 ```bash
+# npx : ローカルにインストールしたCLIツールを実行する命令
+# supabase login : Supabaseアカウントにログインする
+# 実行するとブラウザが開き、ログイン処理が走る
 npx supabase login
 ```
 
@@ -1416,6 +1612,10 @@ npx supabase login
 # Supabase Dashboard の URL: https://supabase.com/dashboard/project/[ここがリファレンスID]
 # または Settings > General > Reference ID で確認
 
+# npx supabase gen types typescript : DBスキーマからTSの型定義を生成するサブコマンド
+# --project-id "..."   : 対象のプロジェクトID（自分のものに置き換え）
+# --schema public      : publicスキーマのテーブルを対象にする（標準のスキーマ名）
+# > src/types/supabase.ts : 標準出力をファイルにリダイレクト（ファイルが上書きされる）
 npx supabase gen types typescript --project-id "あなたのプロジェクトID" --schema public > src/types/supabase.ts
 ```
 
@@ -1426,6 +1626,7 @@ npx supabase gen types typescript --project-id "あなたのプロジェクトID
 事前にディレクトリを作成しておく必要があります:
 
 ```bash
+# src/types ディレクトリがなければ作る
 mkdir -p src/types
 ```
 
@@ -1437,46 +1638,50 @@ mkdir -p src/types
 // src/types/supabase.ts
 // このファイルは自動生成されます。手動で編集しないでください。
 
+// Json型 : PostgreSQLのjsonb等で扱える値の型を表現
+// | はTypeScriptのユニオン型（このいずれかの型をとる）
 export type Json =
-  | string
-  | number
-  | boolean
-  | null
-  | { [key: string]: Json | undefined }
-  | Json[];
+  | string                                    // 文字列
+  | number                                    // 数値
+  | boolean                                   // 真偽値
+  | null                                      // null
+  | { [key: string]: Json | undefined }       // オブジェクト（キーは文字列、値は再帰的にJson）
+  | Json[];                                   // Jsonの配列
 
+// Database型 : DB全体のスキーマを表す型
+// 「スキーマ → テーブル → Row/Insert/Update」のネスト構造
 export type Database = {
-  public: {
-    Tables: {
-      books: {
-        Row: {
-          id: string;
-          title: string;
-          author: string;
-          publisher: string | null;
-          published_date: string | null;
-          rating: number | null;
-          status: string | null;
+  public: {                                   // publicスキーマ
+    Tables: {                                 // テーブル一覧
+      books: {                                // booksテーブル
+        Row: {                                // SELECTで返ってくる「1行」の型
+          id: string;                         // uuid → string
+          title: string;                      // text NOT NULL → string
+          author: string;                     // text NOT NULL → string
+          publisher: string | null;           // text NULLable → string | null
+          published_date: string | null;     // date → ISO形式の文字列 or null
+          rating: number | null;              // integer → number | null
+          status: string | null;              // text → string | null
           notes: string | null;
           cover_url: string | null;
-          created_at: string | null;
+          created_at: string | null;          // timestamptz → ISO文字列
           updated_at: string | null;
         };
-        Insert: {
-          id?: string;
-          title: string;
-          author: string;
-          publisher?: string | null;
+        Insert: {                             // INSERT時に渡すデータの型
+          id?: string;                        // ? は「省略可」。DEFAULTがあるので省略OK
+          title: string;                      // NOT NULL なので必須
+          author: string;                     // NOT NULL なので必須
+          publisher?: string | null;          // NULL許可なので省略可
           published_date?: string | null;
           rating?: number | null;
-          status?: string | null;
+          status?: string | null;             // DEFAULTがあるので省略可
           notes?: string | null;
           cover_url?: string | null;
           created_at?: string | null;
           updated_at?: string | null;
         };
-        Update: {
-          id?: string;
+        Update: {                             // UPDATE時に渡すデータの型
+          id?: string;                        // 全カラムが省略可（部分更新を想定）
           title?: string;
           author?: string;
           publisher?: string | null;
@@ -1490,13 +1695,13 @@ export type Database = {
         };
       };
     };
-    Views: {
+    Views: {                                  // ビュー（仮想テーブル）一覧。今は空
       [_ in never]: never;
     };
-    Functions: {
+    Functions: {                              // ストアド関数一覧。今は空
       [_ in never]: never;
     };
-    Enums: {
+    Enums: {                                  // enum型一覧。今は空
       [_ in never]: never;
     };
   };
@@ -1517,22 +1722,35 @@ export type Database = {
 
 ```typescript
 // src/types/book.ts
+// books テーブル専用の型エイリアスをまとめたファイル
 
+// 自動生成された Database 型を取り込む
+// import type : 型だけ取り込む（実行時のコードには出力されない）
+// './supabase' は同じ src/types フォルダの supabase.ts
 import type { Database } from './supabase';
 
 // books テーブルの型エイリアス
+// Database['public']['Tables']['books']['Row'] という長いパスを Book で再利用可能にする
+// ['public'] = publicスキーマ、 ['Tables'] = テーブル群、 ['books'] = booksテーブル
+// ['Row'] = SELECTで返ってくる行の型
 export type Book = Database['public']['Tables']['books']['Row'];
+// INSERT 用の型（省略可能なフィールドあり）
 export type BookInsert = Database['public']['Tables']['books']['Insert'];
+// UPDATE 用の型（全フィールド省略可能）
 export type BookUpdate = Database['public']['Tables']['books']['Update'];
 
 // 読書状態の型
+// リテラルユニオン型 : この3つの文字列以外を許さない型
+// statusカラムは text だが、CHECK制約のおかげで実質この3つしか入らない
 export type BookStatus = 'reading' | 'completed' | 'want_to_read';
 
 // 読書状態の日本語ラベル
+// Record<K, V> : すべてのキーKに対して値がVの型 を作るユーティリティ型
+// Record<BookStatus, string> = { reading: string, completed: string, want_to_read: string }
 export const BOOK_STATUS_LABELS: Record<BookStatus, string> = {
-  reading: '読書中',
-  completed: '読了',
-  want_to_read: '読みたい',
+  reading: '読書中',       // 'reading' を画面表示するときの日本語
+  completed: '読了',       // 'completed' の表示
+  want_to_read: '読みたい', // 'want_to_read' の表示
 };
 ```
 
@@ -1552,9 +1770,17 @@ export const BOOK_STATUS_LABELS: Record<BookStatus, string> = {
 }
 ```
 
+> **`gen:types` スクリプトの中身解説:**
+> - `supabase gen types typescript` : Supabase CLI のサブコマンド。TypeScriptの型を生成
+> - `--project-id "..."` : 対象プロジェクトIDを指定
+> - `--schema public` : publicスキーマを対象に
+> - `> src/types/supabase.ts` : 出力先ファイル（リダイレクト）
+> - JSON内のダブルクォートはエスケープ（`\"`）が必要
+
 これにより、テーブル定義を変更した後は以下のコマンドで型を再生成できます:
 
 ```bash
+# npm run スクリプト名 で package.json の scripts を実行
 npm run gen:types
 ```
 
@@ -1620,16 +1846,25 @@ CRUD とは、データベースの4つの基本操作の頭文字をとった�
 #### 全件取得
 
 ```typescript
-// すべての書籍を取得
+// すべての書籍を取得するクエリ
+// await       : このAPI呼び出しが終わるまで待つ（時間がかかる処理）
+// supabase    : 6.3で作ったクライアントオブジェクト
+// .from('books') : booksテーブルを操作対象にする（テーブル名を指定）
+// .select('*')   : 全カラムを取得する（'*' はワイルドカード）
+// 戻り値は { data, error } というオブジェクト。分割代入で取り出す
 const { data, error } = await supabase
   .from('books')
   .select('*');
 
+// エラーチェック : Supabaseは例外を投げない設計。errorで判定するのが基本
 if (error) {
+  // console.error : エラーログをコンソールに赤字で出力
+  // error.message にユーザー向けの説明文が入っている
   console.error('エラー:', error.message);
-  return;
+  return;  // 関数を抜ける（以降を実行しない）
 }
 
+// 成功した場合、data に取得結果が配列で入る
 console.log('書籍一覧:', data);
 // 結果例:
 // [
@@ -1654,11 +1889,13 @@ console.log('書籍一覧:', data);
 
 ```typescript
 // タイトルと著者のみ取得（データ転送量を減らせる）
+// .select('title, author, rating') : カンマ区切りで取得したいカラムを文字列で指定
+//   * で全列を取らず、必要な列だけ指定することで通信が軽くなる
 const { data, error } = await supabase
   .from('books')
   .select('title, author, rating');
 
-// 結果例:
+// 結果例: 指定したカラムだけのオブジェクトが配列で返る
 // [
 //   { title: 'ノルウェイの森', author: '村上春樹', rating: 5 },
 //   { title: '人間失格', author: '太宰治', rating: 4 },
@@ -1670,6 +1907,9 @@ const { data, error } = await supabase
 
 ```typescript
 // 評価が4以上の書籍のみ取得
+// .gte('rating', 4) : rating >= 4 という条件を追加
+//   gte = greater than or equal (以上)
+//   メソッドチェーンで好きなだけ条件を追加できる
 const { data, error } = await supabase
   .from('books')
   .select('*')
@@ -1684,6 +1924,9 @@ const { data, error } = await supabase
 
 ```typescript
 // 読書中の書籍のみ取得
+// .eq('status', 'reading') : status カラムが 'reading' と等しい行のみ
+//   eq = equal （等しい）
+//   SQLの WHERE status = 'reading' に相当
 const { data, error } = await supabase
   .from('books')
   .select('*')
@@ -1692,6 +1935,10 @@ const { data, error } = await supabase
 
 ```typescript
 // タイトルに「村上」を含む書籍を検索
+// .ilike('author', '%村上%')
+//   ilike = case-insensitive LIKE。大文字小文字を区別しないパターン一致
+//   % はワイルドカード（任意の文字列）
+//   '%村上%' は「文字列のどこかに『村上』を含む」を意味する
 const { data, error } = await supabase
   .from('books')
   .select('*')
@@ -1717,6 +1964,10 @@ const { data, error } = await supabase
 
 ```typescript
 // 評価が高い順にソート
+// .order('rating', { ascending: false })
+//   第1引数 'rating' : 並び替えのキーとなるカラム
+//   第2引数 { ascending: false } : ascending=昇順かどうか。falseで降順（大→小）
+//   trueなら昇順（小→大）。デフォルトは true（昇順）
 const { data, error } = await supabase
   .from('books')
   .select('*')
@@ -1732,6 +1983,7 @@ const { data, error } = await supabase
 
 ```typescript
 // 作成日時の新しい順にソート
+// created_at は ISO文字列だが、文字列としても日時としても降順で同じ並びになる
 const { data, error } = await supabase
   .from('books')
   .select('*')
@@ -1742,17 +1994,28 @@ const { data, error } = await supabase
 
 ```typescript
 // 1ページあたり10件、1ページ目を取得
+// pageSize : 1ページに表示する件数
 const pageSize = 10;
+// page : 何ページ目を取りたいか（1始まり）
 const page = 1;
 
+// .select('*', { count: 'exact' })
+//   第2引数 { count: 'exact' } で「該当行の総件数」も一緒に取得する
+//   'exact'  : 正確に数える（重いが正確）
+//   'planned': おおよそ（軽い）
+//   'estimated': 推定値
 const { data, error, count } = await supabase
   .from('books')
   .select('*', { count: 'exact' })  // count: 'exact' で総件数も取得
   .order('created_at', { ascending: false })
+  // .range(開始インデックス, 終了インデックス) : 行範囲を指定（0始まり、両端含む）
+  //   1ページ目(page=1)なら 0〜9、 2ページ目(page=2)なら 10〜19 の行を取る
   .range((page - 1) * pageSize, page * pageSize - 1);  // range(開始, 終了)
 
 console.log('データ:', data);       // 10件のデータ
 console.log('総件数:', count);      // テーブル内の全件数
+// Math.ceil(x) : 切り上げ。総件数÷1ページ件数 を切り上げると総ページ数になる
+// count ?? 0  : count が null/undefined なら 0 を使う（Nullish Coalescing演算子）
 console.log('総ページ数:', Math.ceil((count ?? 0) / pageSize));
 ```
 
@@ -1760,13 +2023,16 @@ console.log('総ページ数:', Math.ceil((count ?? 0) / pageSize));
 
 ```typescript
 // ID を指定して1件取得
+// .eq('id', '...') で対象を1件に絞り込み
+// .single() で「配列ではなく1個のオブジェクト」として受け取る
+//   結果が0件 or 2件以上だとエラーになる
 const { data, error } = await supabase
   .from('books')
   .select('*')
   .eq('id', '550e8400-e29b-41d4-a716-446655440000')
   .single();  // single() で1件のみ取得（配列ではなくオブジェクトが返る）
 
-// 結果例:
+// 結果例: 配列ではなくオブジェクトが返る
 // {
 //   id: '550e8400-e29b-41d4-a716-446655440000',
 //   title: 'ノルウェイの森',
@@ -1775,26 +2041,32 @@ const { data, error } = await supabase
 ```
 
 > **`.single()` の注意点:**
-> `.single()` は結果が0件または2件以上の場合にエラーを返します。必ず1件だけ返ることが保証される場面（主キーで検索する場合など）でのみ使用してください。0件の可能性がある場合は `.maybeSingle()` を使用します。
+> `.single()` は結果が0件または2件以上の場合にエラーを返します。必ず1件だけ返ることが保証される場面（主キーで検索する場合など）でのみ使用してください。0件の可能性がある場合は `.maybeSingle()` を使用します（0件なら data が null になり、エラーにはなりません）。
 
 ### 7.2 INSERT（データの作成）
 
 #### 単一行の挿入
 
 ```typescript
+// BookInsert型をインポート（INSERT用のオブジェクト型）
+// DEFAULTがあるidやcreated_atは省略可、NOT NULLのtitle/authorは必須
 import type { BookInsert } from '@/types/book';
 
 // 新しい書籍を1件追加
+// 型注釈 : BookInsert を付けることでミスタイプ・必須項目漏れを検出できる
 const newBook: BookInsert = {
-  title: 'ノルウェイの森',
-  author: '村上春樹',
-  publisher: '講談社',
-  published_date: '1987-09-04',
-  rating: 5,
-  status: 'completed',
-  notes: '名作。何度も読み返したい。',
+  title: 'ノルウェイの森',              // 必須
+  author: '村上春樹',                   // 必須
+  publisher: '講談社',                  // 任意
+  published_date: '1987-09-04',         // 任意。'YYYY-MM-DD' 形式の文字列
+  rating: 5,                            // 任意（CHECK制約で 1〜5 のみ）
+  status: 'completed',                  // 任意。指定しないと 'want_to_read'
+  notes: '名作。何度も読み返したい。',   // 任意
+  // id, cover_url, created_at, updated_at は省略 → DBが自動で埋める
 };
 
+// .insert(newBook) : booksテーブルに newBook を1件追加するクエリ
+// .select()        : 挿入された結果を返してもらう（idやcreated_atも入る）
 const { data, error } = await supabase
   .from('books')
   .insert(newBook)
@@ -1825,15 +2097,17 @@ console.log('挿入されたデータ:', data);
 ```
 
 > **`.select()` を付ける理由:**
-> `.insert()` だけだとレスポンスにデータが含まれません。挿入したデータ（自動生成された id や created_at を含む）を取得したい場合は `.select()` を付けてください。
+> `.insert()` だけだとレスポンスにデータが含まれません（パフォーマンス上の理由）。挿入したデータ（自動生成された id や created_at を含む）を取得したい場合は `.select()` を付けてください。
 
 #### 複数行の挿入
 
 ```typescript
 // 複数の書籍を一度に追加
+// BookInsert[] : BookInsert の配列型
+// 1回の通信で複数行を入れられる（個別にループするより速い）
 const newBooks: BookInsert[] = [
   {
-    title: '人間失格',
+    title: '人間失格',                  // 1件目
     author: '太宰治',
     publisher: '新潮社',
     published_date: '1948-06-01',
@@ -1841,7 +2115,7 @@ const newBooks: BookInsert[] = [
     status: 'completed',
   },
   {
-    title: 'こころ',
+    title: 'こころ',                    // 2件目
     author: '夏目漱石',
     publisher: '岩波書店',
     published_date: '1914-09-01',
@@ -1849,12 +2123,13 @@ const newBooks: BookInsert[] = [
     status: 'reading',
   },
   {
-    title: '銀河鉄道の夜',
+    title: '銀河鉄道の夜',              // 3件目（最小限の項目のみ）
     author: '宮沢賢治',
     status: 'want_to_read',  // 最低限 title と author があれば OK
   },
 ];
 
+// .insert に配列を渡すと「複数行同時INSERT」になる
 const { data, error } = await supabase
   .from('books')
   .insert(newBooks)
@@ -1865,23 +2140,31 @@ if (error) {
   return;
 }
 
+// data.length : 返ってきた配列の要素数（=実際に挿入できた件数）
 console.log(`${data.length}件の書籍を追加しました`);
 ```
 
 ### 7.3 UPDATE（データの更新）
 
 ```typescript
+// BookUpdate型 : UPDATE用の型。全フィールドが optional（一部だけ更新できる）
 import type { BookUpdate } from '@/types/book';
 
 // 特定の書籍の情報を更新
+// bookId : 更新対象の書籍ID（事前に取得しておく）
 const bookId = '550e8400-e29b-41d4-a716-446655440000';
 
+// updates : 書き換えたいフィールドだけを含むオブジェクト
 const updates: BookUpdate = {
-  rating: 4,
-  status: 'completed',
-  notes: '読了。面白かった！',
+  rating: 4,                       // 評価を4に
+  status: 'completed',             // 状態を 'completed' に
+  notes: '読了。面白かった！',      // メモを上書き
+  // title や author は省略 → 既存値のまま
 };
 
+// .update(updates) : updates の内容で行を書き換える
+// .eq('id', bookId) : id が bookId の行だけ対象（必須！）
+// .select() : 更新後のデータを取得
 const { data, error } = await supabase
   .from('books')
   .update(updates)
@@ -1915,11 +2198,11 @@ console.log('更新されたデータ:', data);
 #### 読書状態だけを更新する例
 
 ```typescript
-// ステータスだけを変更
+// ステータスだけを変更（オブジェクトには1フィールドだけ書く）
 const { data, error } = await supabase
   .from('books')
-  .update({ status: 'completed' })
-  .eq('id', bookId)
+  .update({ status: 'completed' })  // 直接オブジェクトリテラルを渡してもOK
+  .eq('id', bookId)                  // 対象の絞り込み（忘れずに!）
   .select();
 ```
 
@@ -1929,6 +2212,9 @@ const { data, error } = await supabase
 // 特定の書籍を削除
 const bookId = '550e8400-e29b-41d4-a716-446655440000';
 
+// .delete() : 削除クエリの宣言。括弧内に引数なし
+// .eq('id', bookId) : 対象を1件に絞り込む（必須！）
+// 戻り値からは data を分割代入していない → 結果は不要、errorだけ気にする
 const { error } = await supabase
   .from('books')
   .delete()
@@ -1950,6 +2236,7 @@ console.log('書籍を削除しました');
 
 ```typescript
 // 削除されたデータを返り値で確認したい場合
+// .select() を付けると、削除された行の内容が返ってくる
 const { data, error } = await supabase
   .from('books')
   .delete()
@@ -1965,23 +2252,29 @@ Supabase の操作では、常にエラーが発生する可能性がありま�
 
 ```typescript
 // 汎用的なエラーハンドリング関数
+// async : この関数はPromiseを返す非同期関数
 async function fetchBooks() {
+  // SELECTクエリの実行
   const { data, error } = await supabase
     .from('books')
     .select('*')
     .order('created_at', { ascending: false });
 
+  // エラーが存在する場合のハンドリング
   if (error) {
-    // エラーの種類に応じた処理
+    // エラーオブジェクトの中身をオブジェクトで整理して出力
     console.error('Supabase エラー:', {
-      message: error.message,  // エラーメッセージ
-      code: error.code,        // エラーコード
-      details: error.details,  // 詳細情報
-      hint: error.hint,        // ヒント（修正方法の提案）
+      message: error.message,  // エラーメッセージ（人間向け説明）
+      code: error.code,        // エラーコード（PostgrestErrorのコード文字列）
+      details: error.details,  // 詳細情報（DBが返したdetails）
+      hint: error.hint,        // ヒント（修正方法の提案。PostgreSQLが付けてくれる）
     });
+    // throw new Error(...) : 上位関数に再スローしてUI側でcatchできるようにする
+    // テンプレートリテラル `${...}` で文字列の中に変数を埋め込める
     throw new Error(`書籍の取得に失敗しました: ${error.message}`);
   }
 
+  // 成功時はデータを返す
   return data;
 }
 ```
@@ -2000,16 +2293,21 @@ Supabase の SQL Editor で以下の SQL を実行して、テスト用のサン
 -- 書籍管理アプリのサンプルデータ
 -- ============================================
 
+-- INSERT INTO books : books テーブルに行を追加
+-- (title, author, publisher, published_date, rating, status, notes) : 値を入れるカラム名
+-- VALUES (...), (...), ... : 複数行を一度に追加する書き方（カンマで区切る）
 INSERT INTO books (title, author, publisher, published_date, rating, status, notes) VALUES
+-- 1件目: ノルウェイの森
 (
-  'ノルウェイの森',
-  '村上春樹',
-  '講談社',
-  '1987-09-04',
-  5,
-  'completed',
-  '名作。静かで美しい文体に引き込まれた。何度も読み返したくなる作品。'
+  'ノルウェイの森',     -- title
+  '村上春樹',           -- author
+  '講談社',             -- publisher
+  '1987-09-04',         -- published_date（YYYY-MM-DD形式の日付リテラル）
+  5,                    -- rating（1〜5の整数）
+  'completed',          -- status（CHECK制約で許可された値）
+  '名作。静かで美しい文体に引き込まれた。何度も読み返したくなる作品。'  -- notes
 ),
+-- 2件目: 人間失格
 (
   '人間失格',
   '太宰治',
@@ -2019,6 +2317,7 @@ INSERT INTO books (title, author, publisher, published_date, rating, status, not
   'completed',
   '太宰治の代表作。人間の弱さと苦悩が痛いほど伝わってくる。'
 ),
+-- 3件目: こころ（読書中）
 (
   'こころ',
   '夏目漱石',
@@ -2028,15 +2327,17 @@ INSERT INTO books (title, author, publisher, published_date, rating, status, not
   'reading',
   '先生の手紙の部分を読んでいる。明治時代の人間関係の複雑さが興味深い。'
 ),
+-- 4件目: 銀河鉄道の夜（未読、評価NULL）
 (
   '銀河鉄道の夜',
   '宮沢賢治',
   '岩波書店',
   '1934-01-01',
-  NULL,
-  'want_to_read',
+  NULL,                 -- rating は NULL（未評価）
+  'want_to_read',       -- まだ読みたいリストの段階
   '友人に勧められた。幻想的な世界観が気になる。'
 ),
+-- 5件目: コンビニ人間
 (
   'コンビニ人間',
   '村田沙耶香',
@@ -2046,6 +2347,7 @@ INSERT INTO books (title, author, publisher, published_date, rating, status, not
   'completed',
   '芥川賞受賞作。「普通」とは何かを考えさせられた。読みやすく一気に読了。'
 );
+-- 末尾のセミコロンで1つのINSERT文の終わり
 ```
 
 実行後、`Success. 5 rows affected.` と表示されれば成功です。
@@ -2057,9 +2359,12 @@ SQL の代わりに、JavaScript/TypeScript コードからもテストデータ
 ```typescript
 // テストデータの投入スクリプト（開発時のみ使用）
 
+// 6.3で作ったSupabaseクライアントを取り込む
 import { supabase } from '@/lib/supabase';
+// INSERT用の型を取り込む
 import type { BookInsert } from '@/types/book';
 
+// 投入したいデータの配列
 const sampleBooks: BookInsert[] = [
   {
     title: 'ノルウェイの森',
@@ -2093,7 +2398,7 @@ const sampleBooks: BookInsert[] = [
     author: '宮沢賢治',
     publisher: '岩波書店',
     published_date: '1934-01-01',
-    status: 'want_to_read',
+    status: 'want_to_read',  // ratingとnotesは省略
     notes: '友人に勧められた。幻想的な世界観が気になる。',
   },
   {
@@ -2107,8 +2412,13 @@ const sampleBooks: BookInsert[] = [
   },
 ];
 
+// async関数 : 非同期処理をまとめて書ける関数
 async function seedBooks() {
   // 既存データを削除（テスト環境のみ）
+  // .delete() に .neq() を付けて「全件削除」を間接的に表現
+  //   Supabaseは「条件なしのdelete()」を安全のため拒否することがあるので
+  //   .neq('id', 存在しないID) で実質全件選択する裏ワザ
+  // 戻り値オブジェクトから error だけを取り出し、別名 deleteError に
   const { error: deleteError } = await supabase
     .from('books')
     .delete()
@@ -2120,6 +2430,8 @@ async function seedBooks() {
   }
 
   // サンプルデータを挿入
+  // .insert(sampleBooks) で配列を一括INSERT
+  // .select() で挿入されたデータ（idなど）を取得
   const { data, error } = await supabase
     .from('books')
     .insert(sampleBooks)
@@ -2130,13 +2442,17 @@ async function seedBooks() {
     return;
   }
 
+  // テンプレートリテラルで件数を表示
   console.log(`${data.length}件のサンプルデータを投入しました`);
+  // forEach : 配列の各要素について順番にコールバックを実行
+  // (book) => { ... } : アロー関数。各要素を book として受け取る
   data.forEach((book) => {
     console.log(`  - ${book.title} (${book.author})`);
   });
 }
 
-// 実行
+// 実行 : 上で定義した関数を呼び出す
+// async関数を呼ぶとPromiseが返るが、ここでは await せずfire-and-forget
 seedBooks();
 ```
 
@@ -2191,15 +2507,24 @@ SQL Editor で以下のクエリを実行して、データを確認すること
 
 ```sql
 -- 全件取得
+-- SELECT * : 全カラム取得
+-- FROM books : booksテーブルから
+-- ORDER BY created_at DESC : created_at の降順（新しい順）に並べる
 SELECT * FROM books ORDER BY created_at DESC;
 
 -- 読了済みの書籍のみ取得
+-- SELECT title, author, rating : 必要なカラムだけ取得
+-- WHERE status = 'completed' : status が 'completed' の行のみ
+-- ORDER BY rating DESC : ratingの降順（高い順）
 SELECT title, author, rating FROM books WHERE status = 'completed' ORDER BY rating DESC;
 
 -- 件数の確認
+-- COUNT(*) : 行数を数える集約関数。テーブル全体の行数を返す
 SELECT COUNT(*) FROM books;
 
 -- ステータスごとの件数
+-- GROUP BY status : 同じstatusの行をグループ化
+-- COUNT(*) as count : 各グループの件数を取得し、列名を count にする
 SELECT status, COUNT(*) as count FROM books GROUP BY status;
 ```
 
@@ -2218,6 +2543,7 @@ SELECT status, COUNT(*) as count FROM books GROUP BY status;
 1. **環境変数を確認する**
    ```bash
    # .env.local の内容を確認（ターミナルで実行）
+   # cat : ファイルの中身を表示するUnixコマンド
    cat .env.local
    ```
    - `NEXT_PUBLIC_SUPABASE_URL` が正しいか確認
@@ -2233,6 +2559,7 @@ SELECT status, COUNT(*) as count FROM books GROUP BY status;
    ```bash
    # 環境変数の変更はサーバー再起動が必要
    # Ctrl + C で停止してから
+   # npm run dev : Next.jsの開発サーバーを起動するコマンド
    npm run dev
    ```
 
@@ -2263,6 +2590,8 @@ SELECT status, COUNT(*) as count FROM books GROUP BY status;
 
 ```sql
 -- 現在のポリシーを確認
+-- pg_policies : PostgreSQLが自動で持つ「ポリシー一覧」を見られるシステムビュー
+-- WHERE tablename = 'books' : booksテーブルのポリシーだけを表示
 SELECT * FROM pg_policies WHERE tablename = 'books';
 ```
 
@@ -2270,28 +2599,35 @@ SELECT * FROM pg_policies WHERE tablename = 'books';
 
 ```sql
 -- RLS が有効になっているか確認
+-- pg_class : テーブル等のメタデータを持つシステムカタログ
+-- relname  : 名前（リレーション名）
+-- relrowsecurity : RLSが有効か（true/false）
 SELECT relname, relrowsecurity
 FROM pg_class
 WHERE relname = 'books';
 -- relrowsecurity が true なら RLS が有効
 
 -- ポリシーがない場合は追加
+-- SELECT用ポリシー
 CREATE POLICY "Allow public read access"
   ON books
   FOR SELECT
   USING (true);
 
+-- INSERT用ポリシー
 CREATE POLICY "Allow public insert access"
   ON books
   FOR INSERT
   WITH CHECK (true);
 
+-- UPDATE用ポリシー
 CREATE POLICY "Allow public update access"
   ON books
   FOR UPDATE
   USING (true)
   WITH CHECK (true);
 
+-- DELETE用ポリシー
 CREATE POLICY "Allow public delete access"
   ON books
   FOR DELETE
@@ -2304,12 +2640,15 @@ CREATE POLICY "Allow public delete access"
 
 ```sql
 -- ⚠️ 開発環境でのみ使用すること！
+-- DISABLE ROW LEVEL SECURITY : RLSを OFF にする
+-- 本番でこれをやると全データが世界に公開される
 ALTER TABLE books DISABLE ROW LEVEL SECURITY;
 ```
 
 これでデータが取得できるようになったら、RLS のポリシー設定に問題があることが確定します。問題を解決したら必ず RLS を再度有効化してください:
 
 ```sql
+-- 再度RLSを有効化（本番運用前に必須）
 ALTER TABLE books ENABLE ROW LEVEL SECURITY;
 ```
 
@@ -2329,6 +2668,7 @@ ALTER TABLE books ENABLE ROW LEVEL SECURITY;
 
 ```bash
 # 型定義を再生成
+# package.json の gen:types スクリプトを実行
 npm run gen:types
 ```
 
@@ -2340,15 +2680,17 @@ npm run gen:types
 
 ```typescript
 // 自動生成された型を使用する
+// '@/types/book' は src/types/book.ts （6.4で作った）
 import type { Book } from '@/types/book';
 
-// ❌ 手動で型を定義しない
+// 悪い例: 手動で型を定義しない
 interface Book {
-  id: number;  // UUID は string なのに number にしている
+  id: number;  // UUID は string なのに number にしている → 型不一致
   // ...
 }
 
-// ✅ 自動生成された型を使う
+// 良い例: 自動生成された型を使う
+// Database['public']['Tables']['books']['Row'] で正しい型が得られる
 type Book = Database['public']['Tables']['books']['Row'];
 ```
 
@@ -2363,6 +2705,8 @@ type Book = Database['public']['Tables']['books']['Row'];
 npm install @supabase/supabase-js
 
 # node_modules を削除して再インストール
+# rm -rf : ディレクトリを再帰的・強制的に削除（Unix）
+# Windowsの場合は: rmdir /s /q node_modules && del package-lock.json
 rm -rf node_modules package-lock.json
 npm install
 ```
@@ -2377,9 +2721,12 @@ npm install
 
 ```sql
 -- テーブルを削除してから再作成（データも消える）
+-- DROP TABLE : テーブルを削除するSQL
+-- IF EXISTS  : 存在する場合のみ実行（存在しなくてもエラーにならない）
 DROP TABLE IF EXISTS books;
 
 -- または、テーブルが存在しない場合のみ作成
+-- CREATE TABLE IF NOT EXISTS : 存在しない場合のみ作成
 CREATE TABLE IF NOT EXISTS books (
   -- ...
 );
@@ -2392,10 +2739,10 @@ CREATE TABLE IF NOT EXISTS books (
 **対処法:**
 
 ```typescript
-// ❌ 範囲外の値
-const book = { title: 'テスト', author: 'テスト', rating: 10 };
+// 悪い例: 範囲外の値
+const book = { title: 'テスト', author: 'テスト', rating: 10 };  // CHECK違反
 
-// ✅ 1〜5 の範囲内の値
+// 良い例: 1〜5 の範囲内の値
 const book = { title: 'テスト', author: 'テスト', rating: 5 };
 ```
 
@@ -2406,10 +2753,10 @@ const book = { title: 'テスト', author: 'テスト', rating: 5 };
 **対処法:**
 
 ```typescript
-// ❌ 許可されていない値
-const book = { title: 'テスト', author: 'テスト', status: 'done' };
+// 悪い例: 許可されていない値
+const book = { title: 'テスト', author: 'テスト', status: 'done' };  // CHECK違反
 
-// ✅ 許可された値のいずれか
+// 良い例: 許可された値のいずれか
 const book = { title: 'テスト', author: 'テスト', status: 'completed' };
 // 許可された値: 'reading' | 'completed' | 'want_to_read'
 ```
@@ -2422,7 +2769,7 @@ A: anon key は「公開キー」なので、ブラウザの JavaScript から�
 
 **Q: service_role key はいつ使いますか？**
 
-A: `service_role` key は RLS をバイパスする管理者用のキーです。**絶対にフロントエンドに含めないでください。** サーバーサイドのバッチ処理やマイグレーションスクリプトでのみ使用します。
+A: `service_role` key は RLS をバイパスする管理者用のキーです。**絶対にフロントエンドに含めないでください。** サーバーサイドのバッチ処理やマイグレーションスクリプトでのみ使用します。漏えいすると全データの読み書きが攻撃者に許されるため、Gitリポジトリ・公開URL・ブラウザJSに含めるのは厳禁です。
 
 **Q: テーブルの定義を変更したい場合は？**
 
@@ -2430,12 +2777,18 @@ A: SQL Editor で `ALTER TABLE` コマンドを使用します。変更後は `n
 
 ```sql
 -- カラムの追加
+-- ALTER TABLE : テーブル定義の変更
+-- ADD COLUMN  : 新しいカラムを追加
+-- page_count integer : カラム名と型
 ALTER TABLE books ADD COLUMN page_count integer;
 
 -- カラムの削除
+-- DROP COLUMN : 既存カラムを削除（データも消える）
 ALTER TABLE books DROP COLUMN page_count;
 
 -- カラムの型変更
+-- ALTER COLUMN ... TYPE 新しい型 : カラムの型を変える
+-- smallint : 小さい整数型（-32768〜32767）
 ALTER TABLE books ALTER COLUMN rating TYPE smallint;
 ```
 

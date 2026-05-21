@@ -1,6 +1,17 @@
 # 第7章: 書籍管理アプリ — 一覧表示と登録機能の実装
 
-> いよいよアプリの本体を作ります！この章では、CRUD（Create=作成、Read=読み取り、Update=更新、Delete=削除）のうち、**R（Read：一覧表示）** と **C（Create：新規登録）** を実装します。
+> いよいよアプリの本体を作ります！この章では、**CRUD**（クラッド／create・read・update・delete の頭文字を取った言葉。データに対する基本4操作のこと）のうち、**R（Read：一覧表示）** と **C（Create：新規登録）** を実装します。
+
+### CRUD の4つの操作とは
+
+| 文字 | 英語 | 日本語 | 例 |
+|------|------|--------|---|
+| **C** | Create | 作成 | 新しい書籍を登録する |
+| **R** | Read | 読み取り | 書籍の一覧を表示する／1冊の詳細を見る |
+| **U** | Update | 更新 | 書籍の評価やステータスを変更する |
+| **D** | Delete | 削除 | 不要になった書籍を消す |
+
+ほとんどのアプリ（SNS・ECサイト・メモアプリなど）は、結局この4操作の組み合わせでできています。この章ではまず **C** と **R** を作ります。
 
 ### この章で作るもの
 
@@ -19,6 +30,12 @@
 2. 「＋ 新規登録」ボタンを押す → **登録フォーム**に移動する
 3. タイトル・著者・評価などを入力して「登録する」を押す → データがSupabaseに保存される
 4. 自動的に一覧ページに戻る → 今登録した書籍が一覧に追加されている
+
+> **用語メモ:**
+> - **Server Component**（サーバーコンポーネント／server component）: サーバー側でHTMLを組み立ててからブラウザに送る部品。データベース接続などに向いている。
+> - **Client Component**（クライアントコンポーネント／client component）: ブラウザの中で動く部品。クリックや入力などインタラクティブな処理に向いている。
+> - **revalidation**（リバリデーション／再検証）: 「キャッシュ済みのデータをもう一度サーバーから取り直す」こと。データ更新後に画面を最新化するため使う。
+> - **楽観的UI**（らっかんてきユーアイ／optimistic UI）: サーバーの返事を待たずに「成功したつもり」で画面を先に更新するUI手法。体感速度を上げる代わりに失敗時のロールバックが必要になる。この章では使わないが、第8章以降で登場する。
 
 ### 作成するコンポーネント（部品）一覧
 
@@ -50,22 +67,32 @@
 
 ## 0. 前提知識: 非同期処理（async / await）の超基礎
 
-この章のコードでは `async`（エイシンク）と `await`（アウェイト）が頻出します。これは「**時間がかかる処理を待つ**」ための仕組みです。Supabaseに「データを取ってきて」とお願いする処理は、結果が返ってくるまで数十〜数百ミリ秒かかります。その「待ち時間」を扱うのが async/await です。
+この章のコードでは `async`（エイシンク）と `await`（アウェイト）が頻出します。これは「**時間がかかる処理を待つ**」ための仕組みです。Supabaseに「データを取ってきて」とお願いする処理は、結果が返ってくるまで数十〜数百ミリ秒かかります（インターネット越しに別のサーバーへ問い合わせるので、CPU内部で完結する計算より格段に遅い）。その「待ち時間」を扱うのが async/await です。
+
+> **読み方と意味:**
+> - **synchronous**（シンクロナス／同期）: 「時間軸が揃っている」という意味。前の処理が終わってから次の処理に進む。
+> - **asynchronous**（エイシンクロナス／非同期）: 「時間軸が揃っていない」。前の処理の終了を待たずに次の処理が始まることがある。
 
 ### 0.1 同期と非同期の違い
 
 ```javascript
 // 同期処理（synchronous）: 上から下へ順番に実行され、即座に結果が返る
-const sum = 1 + 2;
-console.log(sum); // 3
+const sum = 1 + 2;            // この計算はCPU内部だけで完結するのでマイクロ秒で終わる
+console.log(sum);             // 3 と表示される。1 + 2 の結果がすでに確定しているため。
 
 // 非同期処理（asynchronous）: 結果が返るのに時間がかかる
-const data = supabase.from("books").select("*");  // ❌ これだけだと「Promise」というオブジェクトが返ってくる
+const data = supabase.from("books").select("*");  // ネット越しのリクエスト。返事が来るまで時間がかかる。
+//    ❌ await を付けないので、data には「答え」ではなく「答えが入る約束（Promise）」が代入される。
 ```
 
 ### 0.2 Promise って何？
 
-非同期処理の「結果が返ってくる予定の入れ物」のことを **Promise（プロミス、約束）** と言います。
+非同期処理の「結果が返ってくる予定の入れ物」のことを **Promise（プロミス、約束／英語の "promise" は『約束』）** と言います。
+
+Promise は3つの状態を持ちます。
+- **pending**（ペンディング／保留中）: まだ結果が出ていない。
+- **fulfilled**（フルフィルド／成功）: 結果（値）が確定した。
+- **rejected**（リジェクテッド／失敗）: エラーで失敗した。
 
 ```
 今すぐ返せる値: ─── 1 + 2 ─── 即 3 が返る
@@ -74,19 +101,20 @@ const data = supabase.from("books").select("*");  // ❌ これだけだと「Pr
 
 ### 0.3 async / await で「待つ」
 
-`await` を関数呼び出しの前に書くと、「Promiseの中身が確定するまでこの行で待ってね」という意味になります。`await` を使う関数には `async` を付ける必要があります。
+`await` を関数呼び出しの前に書くと、「Promiseの中身が確定するまでこの行で待ってね」という意味になります。`await` を使う関数には **必ず** `async` を付ける必要があります。`async` の付いていない関数の中で `await` を書くと、TypeScript / JavaScript の文法エラーになります。
 
 ```typescript
 // ❌ await なし: data には Promise オブジェクトが入る
-const fetchBooks = () => {
-  const data = supabase.from("books").select("*");
-  console.log(data); // Promise { <pending> } と表示される
+const fetchBooks = () => {                            // 普通の関数（async が無い）
+  const data = supabase.from("books").select("*");    // Promise が data に入る（中身はまだ無い）
+  console.log(data);                                  // Promise { <pending> } と表示される（ペンディング状態）
 };
 
 // ✅ async/await あり: data に実際のデータが入る
-const fetchBooks = async () => {
+const fetchBooks = async () => {                       // async を付けたので await が使える関数になる
   const { data } = await supabase.from("books").select("*");
-  console.log(data); // [{ id: 1, title: "..." }, ...] と表示される
+  // await により Promise の中身が確定するまで停止 → 確定した結果から data プロパティを取り出す（分割代入）
+  console.log(data);                                   // [{ id: 1, title: "..." }, ...] のような配列が出る
 };
 ```
 
@@ -95,23 +123,25 @@ const fetchBooks = async () => {
 ```
 async function fetchBooks() {
   const { data } = await supabase.from("books").select("*");
-  //              └─ ここで「結果が来るまで待つ」
+  //              └─ ここで「結果が来るまで待つ」（pendingからfulfilledへ変わる瞬間）
   console.log(data);  // ←───── 結果が来てからこの行が実行される
 }
 ```
 
+> **重要なポイント:** `await` を付けた関数を呼び出した瞬間、その関数自体も Promise を返します。つまり「async関数は常に Promise を返す」というルールがあります。`async function f() { return 1; }` を呼ぶと、戻り値は数値の 1 ではなく、中身が 1 の Promise になります。
+
 ### 0.4 try / catch でエラーを捕まえる
 
-非同期処理は「サーバーが落ちている」「ネットワーク切断」などで失敗することがあります。`try / catch` で失敗を捕まえます。
+非同期処理は「サーバーが落ちている」「ネットワーク切断」「権限が無い」などで失敗することがあります。`try / catch` で失敗を捕まえます。
 
 ```typescript
-const fetchBooks = async () => {
-  try {
-    const { data, error } = await supabase.from("books").select("*");
-    if (error) throw error;            // Supabaseが返したエラーは自分でthrow
-    console.log("成功:", data);
-  } catch (err) {
-    console.error("失敗:", err);       // ここに飛んでくる
+const fetchBooks = async () => {                                          // async関数の定義
+  try {                                                                   // この中で起きたエラーは下の catch に飛ぶ
+    const { data, error } = await supabase.from("books").select("*");     // 非同期処理を await で待つ
+    if (error) throw error;            // Supabaseは「成功でも例外を投げない」設計。errorプロパティを自分で投げ直す。
+    console.log("成功:", data);        // 例外が出なかった＝成功。data を使える。
+  } catch (err) {                      // try ブロック内で throw された値や、await中の例外がここに来る
+    console.error("失敗:", err);       // 開発者ツール（コンソール）に赤文字でエラーを出す
   }
 };
 ```
@@ -329,49 +359,72 @@ StatusBadge は小さな角丸のバッジとして表示されます。
 書籍の評価（1〜5）を星マーク（★☆）で視覚的に表示するコンポーネントです。
 
 ```tsx
-// components/RatingStars.tsx
+// components/RatingStars.tsx  ← このファイルのパス（コメントとして書いておくと分かりやすい）
 
 /**
  * RatingStars - 1〜5の評価を星マークで表示するコンポーネント
  *
  * 例: rating=3 の場合 → ★★★☆☆
  *
- * rating が null の場合は「評価なし」と表示する
+ * rating が null の場合は「評価なし」と表示する。
+ * これは「評価が未入力の本」を表現できるようにするため。
  */
 
+// Props（プロパティ：親から渡される値）の型を定義。
+// rating は数値、もしくは null（評価がないことを表す）のどちらかを受け取る。
+// 「number | null」は TypeScript の「ユニオン型」で、「AかBどちらか」という意味。
 type RatingStarsProps = {
   rating: number | null;
 };
 
+// export default = このファイルの主役の関数。他のファイルから import RatingStars from "./RatingStars" で読み込める。
+// 引数で { rating } と分割代入しているので、props.rating ではなく rating だけで使える。
 export default function RatingStars({ rating }: RatingStarsProps) {
-  // 評価がない場合はテキストで表示する
+  // 評価がない場合はテキストで表示する。
+  // === は「型まで含めて完全一致」する比較演算子。==（緩い比較）よりも安全なので必ずこちらを使う。
+  // null と undefined はどちらも「値が無い」ことを表すが、別物として扱われるため両方チェックしている。
   if (rating === null || rating === undefined) {
     return (
+      // 早期 return で、以降の処理を実行せずにこの JSX を返して終わる。
+      // text-sm = 小さめの文字、text-gray-400 = 薄いグレー（控えめなトーン）。
       <span className="text-sm text-gray-400">
         評価なし
       </span>
     );
   }
 
-  // 1〜5 の範囲に収める（データベースの制約と合わせる）
+  // 1〜5 の範囲に収める（データベースの制約と合わせる）。
+  // Math.max(1, rating)  = rating と 1 の大きい方 → 1未満なら 1 に押し上げる
+  // Math.min(5, 上記結果) = 上記結果と 5 の小さい方 → 5を超えるなら 5 に押し戻す
+  // 結果として「1以上5以下」に強制される。これを「クランプ（clamp、挟み込み）」と呼ぶ。
   const clampedRating = Math.min(5, Math.max(1, rating));
 
   return (
+    // flex = 横並び、items-center = 縦方向中央揃え、gap-0.5 = 子要素間の隙間。
+    // aria-label はスクリーンリーダー（視覚障害者向け読み上げ機能）に伝える説明文。
+    // `${clampedRating}点` はテンプレートリテラル：バッククォート ` で囲み、${} で変数を埋め込める。
     <div className="flex items-center gap-0.5" aria-label={`評価: ${clampedRating}点`}>
-      {/* 星を5つ並べる。rating以下のインデックスは塗りつぶし、それ以外は空の星 */}
+      {/* 星を5つ並べる。rating以下のインデックスは塗りつぶし、それ以外は空の星。
+          [1, 2, 3, 4, 5].map(...) は「配列の各要素に関数を適用して新しい配列を作る」メソッド。
+          ここでは数値1〜5に対して <span> を作って配列にしている。 */}
       {[1, 2, 3, 4, 5].map((star) => (
         <span
+          // key は React が「どの要素がどれか」を識別するための必須プロパティ。
+          // map で要素を並べる時は必ず key を付ける（付けないと警告が出る）。
           key={star}
+          // 三項演算子 (条件 ? A : B) で「条件が真なら A、偽なら B」を選ぶ。
+          // star（1〜5）が現在の評価値以下なら「塗りつぶし（黄色）」、それより大きいなら「空（グレー）」。
           className={`text-lg ${
             star <= clampedRating
               ? "text-yellow-400" // 塗りつぶしの星（黄色）
               : "text-gray-300"  // 空の星（グレー）
           }`}
         >
-          ★
+          ★ {/* 実は同じ「★」を出している。色だけクラスで切り替えることで塗りつぶし/空を表現。 */}
         </span>
       ))}
-      {/* 数値も併記する（スクリーンリーダーや視認性のため） */}
+      {/* 数値も併記する（スクリーンリーダーや視認性のため）。
+          ml-1 は left margin（左の外側余白）。星の右に少し離して数値を置く。 */}
       <span className="ml-1 text-sm text-gray-600">
         ({clampedRating})
       </span>
@@ -577,8 +630,10 @@ export default function BookCard({ book }: BookCardProps) {
 BookCard を並べて表示するコンポーネントです。書籍が0冊の場合のメッセージも含みます。
 
 ```tsx
-// components/BookList.tsx
+// components/BookList.tsx  ← ファイルパス
 
+// 同フォルダの BookCard を読み込む。Book 型も同時に取り込む（コンポーネントと型を同一ファイルから export しているのは効率のため）。
+// 「type」キーワードを付けると「型だけインポート」になり、ビルド時に消えるので JS バンドルサイズが小さくなる。
 import BookCard, { type Book } from "./BookCard";
 
 /**
@@ -587,22 +642,26 @@ import BookCard, { type Book } from "./BookCard";
  * - 書籍が1冊以上ある場合: カードをグリッド状に並べる
  * - 書籍が0冊の場合: 「書籍が登録されていません」メッセージを表示
  *
- * レスポンシブ対応:
+ * レスポンシブ対応（responsive：画面幅で見た目を変える）:
  * - スマホ（デフォルト）: 1列
- * - タブレット（md）: 2列
- * - デスクトップ（lg）: 3列
+ * - タブレット（md = medium breakpoint：768px〜）: 2列
+ * - デスクトップ（lg = large breakpoint：1024px〜）: 3列
  */
 
+// Props 型：親（page.tsx など）から books 配列を受け取るだけのシンプルな型。
+// 「Book[]」は「Book型を要素とする配列」という意味。
 type BookListProps = {
   books: Book[];
 };
 
 export default function BookList({ books }: BookListProps) {
-  // 書籍が0冊の場合
+  // 書籍が0冊の場合の「空状態（empty state）」表示。
+  // books.length は配列の要素数。0なら登録なし。
   if (books.length === 0) {
     return (
+      // text-center で中央寄せ、py-16 で上下に大きめの余白を取って「主役感」を出す。
       <div className="text-center py-16">
-        {/* 大きなアイコン的テキスト */}
+        {/* 大きなアイコン的テキスト。絵文字を巨大表示することで視覚的なアクセントにする。 */}
         <p className="text-6xl mb-4">📚</p>
         <h2 className="text-xl font-bold text-gray-700 mb-2">
           書籍が登録されていません
@@ -610,18 +669,20 @@ export default function BookList({ books }: BookListProps) {
         <p className="text-gray-500 mb-6">
           「新規登録」ボタンから最初の書籍を登録しましょう。
         </p>
+        {/* <a> は通常のリンク。<Link> でも書けるが、ここでは Next.js のインポートを増やさないため普通の a タグにしている。
+            ※本格運用では <Link> を使った方がページ間遷移が高速になる（プリフェッチ機能のため）。 */}
         <a
           href="/books/new"
           className="
-            inline-block
-            bg-blue-600
-            text-white
-            px-6 py-3
-            rounded-lg
-            font-medium
-            hover:bg-blue-700
-            transition-colors
-            duration-200
+            inline-block             /* aタグ（普段インライン）をブロック寄りにして余白を効かせる */
+            bg-blue-600              /* 背景: 濃い青 */
+            text-white               /* 文字色: 白 */
+            px-6 py-3                /* 内側余白: 横6 / 縦3（Tailwindの単位は4px基準） */
+            rounded-lg               /* 角丸 */
+            font-medium              /* 文字の太さ: 中 */
+            hover:bg-blue-700        /* マウスホバー時にもう一段濃い青へ */
+            transition-colors        /* 色の変化を滑らかに */
+            duration-200             /* アニメーション時間 200ms */
           "
         >
           最初の書籍を登録する
@@ -630,9 +691,14 @@ export default function BookList({ books }: BookListProps) {
     );
   }
 
-  // 書籍が1冊以上ある場合
+  // 書籍が1冊以上ある場合の表示（早期 return しなかったので、ここに到達）。
   return (
     <div
+      // grid と grid-cols-X で CSS Grid Layout を使う。
+      // grid-cols-1            : デフォルト（スマホ）は1列
+      // md:grid-cols-2         : 中サイズ画面以上では2列に切り替え
+      // lg:grid-cols-3         : 大画面では3列に切り替え
+      // gap-6                  : セル間の隙間（24px）
       className="
         grid
         grid-cols-1
@@ -641,6 +707,9 @@ export default function BookList({ books }: BookListProps) {
         gap-6
       "
     >
+      {/* books 配列を map で1冊ずつ BookCard に変換して並べる。
+          key={book.id} は React の必須要件：「どの要素がどれか」を識別するための一意キー。
+          book={book} は Props として book オブジェクトを子に渡している（"book" という名前で受け取る）。 */}
       {books.map((book) => (
         <BookCard key={book.id} book={book} />
       ))}
@@ -663,11 +732,15 @@ export default function BookList({ books }: BookListProps) {
 Supabase からデータを取得して BookList に渡すトップページです。Next.js の **Server Component** として実装します。
 
 ```tsx
-// app/page.tsx
+// app/page.tsx  ← Next.js App Router の規約で「ルート（/）に対応するページ」になる
 
+// Next.js が提供する Link コンポーネント。<a> よりも遷移が速い（プリフェッチ機能あり）。
 import Link from "next/link";
+// サーバー用 Supabase クライアント。cookies などの「サーバーしか知らない情報」を扱えるバージョン。
 import { createClient } from "@/lib/supabase/server";
+// 自作の一覧表示コンポーネント。「@/」は tsconfig.json で設定した「プロジェクトルート」のエイリアス。
 import BookList from "@/components/BookList";
+// Book 型だけを取り込む。値ではなく型なので「type」キーワード付き。
 import { type Book } from "@/components/BookCard";
 
 /**
@@ -678,35 +751,60 @@ import { type Book } from "@/components/BookCard";
  * HTML をレンダリングしてからクライアントに送信する。
  *
  * "use client" を書いていない = Server Component（Next.js App Router のデフォルト）
+ *
+ * 重要な特徴:
+ *  - 関数定義に async が付いている → 内部で await が使える
+ *  - サーバー上で動くので、Supabase の秘密鍵（service role 等）も安全に使える
+ *  - JavaScript としてブラウザに送信されないので、バンドルサイズが小さい
+ *  - useState や onClick などの「インタラクティブな機能」は使えない（必要なら子要素に Client Component を置く）
  */
 export default async function HomePage() {
-  // Supabase クライアントを作成（サーバー用）
+  // Supabase クライアントを作成（サーバー用）。
+  // この createClient は内部で cookies() を呼ぶので async（await が必要）。
   const supabase = await createClient();
 
-  // books テーブルから全件取得（作成日の降順＝新しい順）
+  // books テーブルから全件取得（作成日の降順＝新しい順）。
+  //   .from("books")                          : 操作対象テーブルを指定
+  //   .select("*")                            : 全カラムを取得（SELECT * 相当）
+  //   .order("created_at", { ascending: false }) : created_at で並び替え、false なので降順（新しい順）
+  // await で結果を待つと、{ data, error } という形のオブジェクトが返る。
+  // 「data: books」は「data プロパティを books という別名で取り出す」分割代入のリネーム記法。
   const { data: books, error } = await supabase
     .from("books")
     .select("*")
     .order("created_at", { ascending: false });
 
-  // エラーが発生した場合
+  // エラーが発生した場合の処理。
+  // Supabase は通常エラーを throw せず、戻り値の error プロパティに格納する設計。
   if (error) {
+    // console.error はサーバーのターミナルにログを出す（ブラウザではなくサーバー側に表示される）。
     console.error("書籍の取得に失敗しました:", error.message);
-    // エラー時でも画面は表示する（空の一覧として）
-    // 本番アプリでは error boundary を使うことも検討する
+    // エラー時でも画面は表示する（空の一覧として）。
+    // 本番アプリでは throw error して error.tsx で受け止める設計にすることもある。
   }
 
-  // data が null の場合は空配列にする
+  // data が null の場合は空配列にする。
+  // 「??」（Nullish Coalescing 演算子）は左辺が null か undefined の時だけ右辺を使う。
+  // これにより books が null でも以降のコードで安心して .length などを呼べる。
   const bookList: Book[] = books ?? [];
 
   return (
+    // min-h-screen = 最低でも画面の高さ分（h = height、screen = ビューポート1画面）
+    // bg-gray-50  = 非常に薄いグレー背景（コンテンツの白を引き立てる）
     <div className="min-h-screen bg-gray-50">
       {/* ===== ヘッダー ===== */}
+      {/* <header> は意味的なHTML要素（セマンティクス）。ページの上部「ナビ・タイトル」帯に使う。
+          shadow-sm = 薄い影、border-b = 下方向の枠線 */}
       <header className="bg-white shadow-sm border-b border-gray-200">
+        {/* max-w-7xl = 最大幅 1280px、mx-auto = 左右の余白を自動（中央寄せ）。
+            px-4 sm:px-6 lg:px-8 = 横の内側余白を画面幅で段階的に変更（レスポンシブ）。 */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          {/* flex で横並び、items-center で縦中央、justify-between で「左右両端に寄せる」。 */}
           <div className="flex items-center justify-between">
-            {/* アプリタイトル */}
+            {/* アプリタイトル（左側） */}
             <div>
+              {/* sm:text-3xl は「sm（640px）以上の画面では text-3xl」というレスポンシブ指定。
+                  狭い画面では text-2xl で控えめに、広い画面では大きく表示する。 */}
               <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
                 書籍管理アプリ
               </h1>
@@ -715,11 +813,13 @@ export default async function HomePage() {
               </p>
             </div>
 
-            {/* 新規登録ボタン */}
+            {/* 新規登録ボタン（右側）。
+                <Link> は内部的に <a> をレンダリングするが、JavaScript で画面遷移を高速化する。
+                href="/books/new" は app/books/new/page.tsx に対応。 */}
             <Link
               href="/books/new"
               className="
-                inline-flex items-center gap-2
+                inline-flex items-center gap-2   /* インライン・フレックス: SVGとテキストを横並び・中央揃え */
                 bg-blue-600
                 text-white
                 px-4 py-2.5
@@ -732,6 +832,14 @@ export default async function HomePage() {
                 shadow-sm
               "
             >
+              {/* + アイコン。SVG（Scalable Vector Graphics）で「拡大しても綺麗な画像」を描く。
+                  w-5 h-5 = 幅・高さともに 20px。
+                  fill="none" stroke="currentColor" は「中身は塗らず、線の色は親のテキスト色を引き継ぐ」。
+                  viewBox="0 0 24 24" は内部座標系（左上(0,0)〜右下(24,24)）。
+                  <path d="M12 4v16m8-8H4" />
+                    M12 4 → x=12,y=4 に移動  v16 → 縦に16進む（縦線）
+                    m8 -8 → 相対移動  H4 → 水平に x=4 まで進む（横線）
+                  結果として「＋」マークが描かれる。 */}
               <svg
                 className="w-5 h-5"
                 fill="none"
@@ -739,9 +847,9 @@ export default async function HomePage() {
                 viewBox="0 0 24 24"
               >
                 <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
+                  strokeLinecap="round"     // 線の端を丸くする
+                  strokeLinejoin="round"    // 線の交点も丸くする
+                  strokeWidth={2}           // 線の太さ
                   d="M12 4v16m8-8H4"
                 />
               </svg>
@@ -752,15 +860,19 @@ export default async function HomePage() {
       </header>
 
       {/* ===== メインコンテンツ ===== */}
+      {/* <main> はページの主要コンテンツを表すセマンティック要素。 */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* 書籍数の表示 */}
         <div className="mb-6">
           <p className="text-sm text-gray-600">
+            {/* {bookList.length} で配列の要素数（書籍冊数）を JSX に埋め込む。
+                JSX では中括弧 {} の中に JavaScript 式を書ける。 */}
             全 <span className="font-bold text-gray-900">{bookList.length}</span> 冊
           </p>
         </div>
 
-        {/* 書籍一覧 */}
+        {/* 書籍一覧 - 子コンポーネント BookList に books 配列を Props として渡す。
+            BookList は中で 0冊なら空状態、1冊以上ならカードグリッドを表示する。 */}
         <BookList books={bookList} />
       </main>
     </div>
@@ -886,7 +998,7 @@ Next.js App Router では、`loading.tsx` ファイルを作成すると、ペ�
 
 ```tsx
 // components/LoadingSpinner.tsx
-"use client";
+"use client";   // このファイル内のコンポーネントは Client Component として扱う宣言。必ず1行目に書く。
 
 /**
  * LoadingSpinner - ローディング中に表示するスピナーコンポーネント
@@ -898,38 +1010,42 @@ Next.js App Router では、`loading.tsx` ファイルを作成すると、ペ�
  */
 
 type LoadingSpinnerProps = {
-  /** スピナーのサイズ（デフォルト: "md"） */
-  size?: "sm" | "md" | "lg";
-  /** スピナーの下に表示するテキスト */
+  /** スピナーのサイズ（デフォルト: "md"）。?: は「省略可能」の意味。 */
+  size?: "sm" | "md" | "lg";   // ユニオン型 = この3つの文字列リテラルのうちどれか
+  /** スピナーの下に表示するテキスト。省略可。 */
   message?: string;
 };
 
+// 引数で size と message にデフォルト値を設定（呼び出し側で省略された時に使う値）。
 export default function LoadingSpinner({
   size = "md",
   message = "読み込み中...",
 }: LoadingSpinnerProps) {
-  // サイズに応じたクラスを定義
+  // サイズに応じたクラスを定義（StatusBadge と同じ「辞書パターン」）。
+  // キー：サイズ識別子、値：Tailwind の幅・高さ・枠線太さのクラス文字列。
   const sizeClasses = {
-    sm: "w-6 h-6 border-2",
-    md: "w-10 h-10 border-3",
-    lg: "w-16 h-16 border-4",
+    sm: "w-6 h-6 border-2",     // 24px × 24px、枠線2px
+    md: "w-10 h-10 border-3",   // 40px × 40px、枠線3px
+    lg: "w-16 h-16 border-4",   // 64px × 64px、枠線4px
   };
 
   return (
+    // flex-col = 縦並び（column）、items-center / justify-center = 縦横とも中央揃え。
     <div className="flex flex-col items-center justify-center py-16">
-      {/* 回転するスピナー */}
+      {/* 回転するスピナー：円形のうち1辺だけ色を変えて、それを回転させることで「読み込み中」を表現する。 */}
       <div
         className={`
-          ${sizeClasses[size]}
-          border-gray-300
-          border-t-blue-600
-          rounded-full
-          animate-spin
+          ${sizeClasses[size]}      /* 上で選んだサイズクラスを展開（テンプレートリテラル） */
+          border-gray-300           /* 枠線の基本色：薄いグレー */
+          border-t-blue-600         /* 上辺だけ青に：これが回ると進捗感が出る */
+          rounded-full              /* 完全な円形に */
+          animate-spin              /* Tailwind のクラスで「回り続ける」アニメーションを適用 */
         `}
-        role="status"
-        aria-label="読み込み中"
+        role="status"               // スクリーンリーダーに「ステータス表示」と伝える
+        aria-label="読み込み中"     // 読み上げ文言
       />
-      {/* メッセージ */}
+      {/* メッセージが渡されていれば下に表示。
+          「&&」は短絡評価：左辺が真なら右辺の JSX を描画、偽（空文字や undefined）なら何も描画しない。 */}
       {message && (
         <p className="mt-4 text-sm text-gray-500">
           {message}
@@ -945,7 +1061,8 @@ export default function LoadingSpinner({
 **ファイル: `app/loading.tsx`**
 
 ```tsx
-// app/loading.tsx
+// app/loading.tsx  ← Next.js のルールで「loading.tsx」というファイル名にすると、
+//                   同じ階層の page.tsx の読み込み中に自動でこの画面が表示される。
 
 import LoadingSpinner from "@/components/LoadingSpinner";
 
@@ -961,25 +1078,32 @@ import LoadingSpinner from "@/components/LoadingSpinner";
  * 3. その間、この loading.tsx が表示される
  * 4. データ取得が完了すると、page.tsx の内容に自動的に切り替わる
  *
- * これは React の Suspense を内部的に利用している。
+ * これは React の Suspense（サスペンス：読み込み中のフォールバック表示機能）を内部的に利用している。
  */
-export default function Loading() {
+export default function Loading() {                  // async は不要：データ取得しない静的な画面
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* ヘッダーのスケルトン（ローディング中もヘッダーのような見た目を維持） */}
+      {/* ヘッダーのスケルトン（ローディング中もヘッダーのような見た目を維持）。
+          スケルトン UI（skeleton UI）とは「コンテンツの形だけ先に出す」UI手法。
+          完成形と同じ位置にグレーの矩形を置くことで、レイアウトの「ガタつき」を防げる。 */}
       <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
             <div>
+              {/* h-8 = 高さ32px、w-48 = 幅192px。タイトル位置にグレーの矩形を置く。
+                  animate-pulse = ゆっくり点滅するアニメーション（読み込み感を演出）。 */}
               <div className="h-8 w-48 bg-gray-200 rounded animate-pulse" />
+              {/* mt-2 = 上方向のマージン8px。説明文の位置に小さい矩形。 */}
               <div className="mt-2 h-4 w-64 bg-gray-100 rounded animate-pulse" />
             </div>
+            {/* ボタン位置の矩形。実際のボタンとほぼ同じ大きさ。 */}
             <div className="h-10 w-28 bg-gray-200 rounded-lg animate-pulse" />
           </div>
         </div>
       </header>
 
-      {/* メインコンテンツのローディング表示 */}
+      {/* メインコンテンツのローディング表示。
+          LoadingSpinner に size="lg"（大きいサイズ）と message を渡す。 */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <LoadingSpinner size="lg" message="書籍データを読み込んでいます..." />
       </main>
@@ -1001,14 +1125,15 @@ export default function Loading() {
 ページのレンダリング中にエラーが発生した場合に表示される画面です。Next.js App Router の Error Boundary 機能を利用しています。
 
 ```tsx
-// app/error.tsx
-"use client";
+// app/error.tsx  ← Next.js の規約で、ページレンダリング中に未処理エラーが起きた時に自動表示される。
+"use client";   // 必須：Next.js の仕様で error.tsx は Client Component でなければならない
 
 /**
  * エラーページ
  *
  * 重要: error.tsx は必ず "use client" でなければならない。
- * これは Next.js の仕様で、Error Boundary は Client Component である必要がある。
+ * これは Next.js の仕様で、Error Boundary（エラー境界：内部のエラーを捕まえる仕組み）は
+ * Client Component である必要がある。
  *
  * このコンポーネントは以下の場合に自動的に表示される:
  * - Server Component でエラーが throw された場合
@@ -1017,17 +1142,23 @@ export default function Loading() {
  */
 
 type ErrorPageProps = {
-  /** 発生したエラーオブジェクト */
-  error: Error & { digest?: string };
-  /** エラーからの復帰を試みる関数（ページの再レンダリングを試行する） */
+  /** 発生したエラーオブジェクト。Error 型に digest（Next.js が付与するエラーID）を追加した型。 */
+  error: Error & { digest?: string };   // 「&」は交差型：両方の性質を併せ持つ
+  /** エラーからの復帰を試みる関数（ページの再レンダリングを試行する）。
+      「() => void」は「引数なし、戻り値なし」の関数型。 */
   reset: () => void;
 };
 
 export default function ErrorPage({ error, reset }: ErrorPageProps) {
   return (
+    // 画面全体を埋め、その中央に1枚のカードを配置するレイアウト。
+    // flex items-center justify-center で「子要素を縦横中央寄せ」を実現。
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+      {/* max-w-md = 最大幅 28rem (約448px)、w-full = 親いっぱい。
+          結果として「最大448pxまで広がり、それ以上は広がらない」カードになる。 */}
       <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8 text-center">
-        {/* エラーアイコン */}
+        {/* エラーアイコン。赤い円の中に三角形の警告マーク。
+            mx-auto = 左右マージン自動（中央寄せ）。 */}
         <div className="mx-auto w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-6">
           <svg
             className="w-8 h-8 text-red-600"
@@ -1035,6 +1166,7 @@ export default function ErrorPage({ error, reset }: ErrorPageProps) {
             stroke="currentColor"
             viewBox="0 0 24 24"
           >
+            {/* この path 文字列は警告三角形（中に「!」のような縦線と点）を描画している。 */}
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -1053,20 +1185,31 @@ export default function ErrorPage({ error, reset }: ErrorPageProps) {
           しばらく時間をおいてから再度お試しください。
         </p>
 
-        {/* エラー詳細（開発時のデバッグ用） */}
+        {/* エラー詳細（開発時のデバッグ用）。
+            process.env.NODE_ENV は Node.js が提供する環境変数。
+              "development" → 開発中（npm run dev）
+              "production"  → 本番ビルド（npm run build → npm start）
+            開発時だけ詳細表示することで、本番ユーザーに技術的な情報を見せないようにする。 */}
         {process.env.NODE_ENV === "development" && (
+          // <details> / <summary> は HTML 標準の「折りたたみ」要素。
+          // クリックで <summary> 以外の中身が開く。JS 不要。
           <details className="mb-6 text-left">
             <summary className="text-sm text-gray-500 cursor-pointer hover:text-gray-700">
               エラー詳細を表示
             </summary>
+            {/* <pre> はそのままの体裁（改行・空白）を保持して表示する HTML 要素。
+                overflow-auto max-h-40 で「内容が多ければスクロール、最大160pxまで」。 */}
             <pre className="mt-2 p-3 bg-gray-100 rounded text-xs text-red-600 overflow-auto max-h-40">
-              {error.message}
+              {error.message}   {/* Error オブジェクトの message プロパティ（人間可読なエラー説明文）。 */}
             </pre>
           </details>
         )}
 
-        {/* アクションボタン */}
+        {/* アクションボタン群。
+            flex-col sm:flex-row で「スマホでは縦並び、smサイズ以上では横並び」を切り替え。 */}
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          {/* reset 関数を onClick に渡す。Next.js が用意するこの関数を呼ぶと、
+              ページの再レンダリングが試みられ、エラーから復帰できる可能性がある。 */}
           <button
             onClick={reset}
             className="
@@ -1082,6 +1225,8 @@ export default function ErrorPage({ error, reset }: ErrorPageProps) {
           >
             もう一度試す
           </button>
+          {/* トップページへ戻るリンク。エラー時は <Link> ではなく普通の <a> を使うことで
+              「アプリ全体を完全に初期化」できる（クライアントサイドキャッシュも含めてリセット）。 */}
           <a
             href="/"
             className="
@@ -1114,6 +1259,88 @@ export default function ErrorPage({ error, reset }: ErrorPageProps) {
 
 ここからは書籍の新規登録機能を作ります。ユーザーがフォームに情報を入力し、Supabase のデータベースに新しいレコードを INSERT する流れです。
 
+### 4-0. 登録機能を作る前に知っておきたい用語
+
+実装に入る前に、いくつかの言葉の意味を押さえておきましょう。
+
+| 用語 | 読み・英語 | 1行説明 |
+|---|---|---|
+| **フォーム** | form | ユーザーが入力する箱（input、textarea、selectなど）を集めた HTML 要素 `<form>` |
+| **FormData** | フォームデータ | フォームの入力内容をまとめて持つブラウザ標準のオブジェクト |
+| **Server Action** | サーバーアクション | Next.js の機能。Client側から呼べるけど実行はサーバーで行われる関数 |
+| **revalidatePath** | リバリデートパス | 指定したパスのキャッシュを破棄して次回アクセス時に作り直す関数 |
+| **redirect** | リダイレクト | 別のURLにブラウザを移動させる関数 |
+| **INSERT** | インサート | SQL で「新しい行を追加する」操作 |
+
+> **本書での登録機能のアプローチ:**
+> Next.js には「Server Action」というサーバー側で実行される関数を使う登録方式と、「ブラウザ側の Supabase クライアントから直接 INSERT」する方式の2通りがあります。**本書ではこの章では後者（クライアント方式）** を採用します。理由は、Reactの useState や onSubmit といった基本機能だけで完結し、初学者にとって流れが追いやすいためです。
+>
+> Server Action 方式は仕組みがやや高度（`'use server'` ディレクティブ、`<form action={fn}>`、`FormData` の扱い、`revalidatePath`、`redirect` などの理解が必要）なので、参考として下の「Server Action 方式の概要」コラムにまとめておきます。実装は読み飛ばしても構いません。
+
+#### コラム: Server Action 方式の概要（参考）
+
+参考までに、Server Action を使うとどんなコードになるかだけ簡単に紹介します。**この章では実装しません**（クライアント方式で進めます）。
+
+```tsx
+// app/actions.ts — Server Action を定義するファイル例（参考）
+"use server";   // ファイル先頭でこのディレクティブを書くと、中の関数はすべてサーバー実行になる
+
+import { createClient } from "@/lib/supabase/server";   // サーバー用 Supabase クライアント
+import { revalidatePath } from "next/cache";            // 指定パスのキャッシュを破棄する関数
+import { redirect } from "next/navigation";             // 別のページに遷移させる関数
+
+// フォーム送信時に呼ばれる Server Action。引数 formData はブラウザ標準の FormData オブジェクト。
+// FormData とは <form> 内の入力値（name 属性をキーに）をまとめた箱。
+export async function createBook(formData: FormData) {
+  // formData.get("title") の戻り値の型は FormDataEntryValue | null。
+  // FormDataEntryValue は「string か File のどちらか」。
+  // 通常のテキスト入力なら string になるが、TypeScript 上はそうとは限らないので、
+  // String(...) で文字列にキャストするのが安全（null なら "null" になるので注意）。
+  const title = String(formData.get("title") ?? "");
+  const author = String(formData.get("author") ?? "");
+
+  const supabase = await createClient();
+  await supabase.from("books").insert({ title, author });
+
+  // 関連パスのキャッシュを破棄 → 次の表示で最新データが取られる
+  revalidatePath("/");
+
+  // 登録完了後にトップへ遷移
+  redirect("/");
+}
+```
+
+```tsx
+// app/books/new/page.tsx — Server Action を使う側（参考）
+import { createBook } from "@/app/actions";
+
+export default function NewBookPage() {
+  return (
+    // <form action={createBook}> と書くと、送信時に Next.js が自動で
+    // FormData を組み立てて createBook(formData) を呼んでくれる。
+    <form action={createBook}>
+      <input name="title" />     {/* name="title" が formData.get("title") に対応 */}
+      <input name="author" />
+      <button type="submit">登録</button>
+    </form>
+  );
+}
+```
+
+**Server Action のメリット（参考）:**
+- ブラウザ側 JS の量が減る（送信ロジックがサーバーに置かれる）。
+- Supabase の秘密鍵などをサーバー側だけで使える。
+- フォーム送信時に JavaScript が無効でも動作する（プログレッシブエンハンスメント）。
+
+**Server Action のセキュリティ:**
+- Server Action はサーバー上で実行されるため、フォームに「価格を勝手に書き換える」「他人の ID を送る」といった改ざんが届いても、Server Action の中で再検証すれば防げます。**ただし「クライアントから送られた値は信用しない」前提でバリデーションを書くことが必須**です。
+
+**Server Action と組み合わせるフック（参考）:**
+- `useFormState` / `useActionState`（React 19以降）: フォーム送信の結果（成功/エラー）を state として保持する。
+- `useFormStatus`: フォーム送信中かどうか（pending状態）を取得する。
+
+これらは第8章以降のオプションとして紹介します。
+
 ---
 
 ### 4a. BookForm コンポーネント
@@ -1124,7 +1351,7 @@ export default function ErrorPage({ error, reset }: ErrorPageProps) {
 
 ```tsx
 // components/BookForm.tsx
-"use client";
+"use client";   // useState などブラウザ専用機能を使うので Client Component 化
 
 /**
  * BookForm - 書籍の登録・編集フォームコンポーネント
@@ -1140,59 +1367,70 @@ export default function ErrorPage({ error, reset }: ErrorPageProps) {
  * - 編集時: initialData に既存データを渡す → 値が入ったフォーム
  */
 
+// useState は「状態」を管理するための React フック。
+// type FormEvent は「フォーム送信イベントオブジェクト」の型。"type" を付けると型だけインポート。
 import { useState, type FormEvent } from "react";
+// 同フォルダの StatusBadge から BookStatus 型だけインポート（値は使わない）
 import { type BookStatus } from "./StatusBadge";
 
 // フォームのデータ型（データベースの books テーブルに対応するが、
-// id, created_at, updated_at はフォームでは扱わない）
+// id, created_at, updated_at はフォームでは扱わない）。
+// export しているので、親ページがこの型を使って handleSubmit の引数を型付けできる。
 export type BookFormData = {
-  title: string;
-  author: string;
-  publisher: string;
-  published_date: string;
-  rating: number | null;
-  status: BookStatus;
-  memo: string;
+  title: string;             // タイトル（必須）
+  author: string;            // 著者（必須）
+  publisher: string;         // 出版社（任意）。文字列のまま扱い、null は親側で変換する
+  published_date: string;    // 出版日（任意）。"YYYY-MM-DD" 形式の文字列
+  rating: number | null;     // 評価（任意）。1〜5の数値 または null
+  status: BookStatus;        // ステータス（必須）。"reading" | "completed" | "want_to_read"
+  memo: string;              // メモ（任意）
 };
 
-// Props の型定義
+// Props の型定義（親から受け取る値の形）
 type BookFormProps = {
-  /** 編集時に渡す初期データ（新規登録時は undefined） */
+  /** 編集時に渡す初期データ（新規登録時は undefined）。?: で省略可能。 */
   initialData?: BookFormData;
-  /** フォーム送信時に呼ばれるコールバック関数 */
+  /** フォーム送信時に呼ばれるコールバック関数。
+   *  - 引数: フォームのデータ
+   *  - 戻り値: Promise<void>（非同期処理を行う想定。中で await できる）
+   */
   onSubmit: (data: BookFormData) => Promise<void>;
-  /** 送信ボタンのテキスト（"登録する" / "更新する" など） */
+  /** 送信ボタンのテキスト（"登録する" / "更新する" など）。省略時はデフォルト値を使う。 */
   submitLabel?: string;
   /** 送信中かどうか（ボタンの無効化・ローディング表示に使う） */
   isSubmitting?: boolean;
 };
 
-// フォームの初期値（新規登録時に使う）
+// フォームの初期値（新規登録時に使う）。すべての項目を「空」または「初期選択」にしておく。
 const defaultFormData: BookFormData = {
   title: "",
   author: "",
   publisher: "",
   published_date: "",
-  rating: null,
-  status: "want_to_read",
+  rating: null,             // 「未選択」を表す null
+  status: "want_to_read",   // 新規登録時は「読みたい」を初期値に
   memo: "",
 };
 
 export default function BookForm({
   initialData,
   onSubmit,
-  submitLabel = "登録する",
+  submitLabel = "登録する",   // デフォルト値：呼び出し側が省略したらこれを使う
   isSubmitting = false,
 }: BookFormProps) {
   // ----- State -----
-  // フォームの入力値を管理する state
-  // initialData が渡されていればそれを使い、なければデフォルト値を使う
+  // フォームの入力値を管理する state。
+  // useState<型>(初期値) で「型と初期値」を指定する。
+  // initialData が渡されていればそれを使い、なければデフォルト値を使う（?? は nullish coalescing）。
   const [formData, setFormData] = useState<BookFormData>(
     initialData ?? defaultFormData
   );
 
-  // バリデーションエラーを管理する state
-  // キーがフィールド名、値がエラーメッセージ
+  // バリデーションエラーを管理する state。
+  // Partial<T>          = T の全プロパティを「省略可能」にした型
+  // Record<K, V>        = キーが K、値が V のオブジェクト型
+  // keyof BookFormData = BookFormData のプロパティ名のユニオン型（"title" | "author" | ...）
+  // つまり {title?: string; author?: string; ...} という型。
   const [errors, setErrors] = useState<Partial<Record<keyof BookFormData, string>>>({});
 
   // ----- バリデーション -----
@@ -1200,10 +1438,12 @@ export default function BookForm({
    * フォーム全体のバリデーションを行う
    * @returns バリデーションを通過したら true、エラーがあれば false
    */
-  const validate = (): boolean => {
-    const newErrors: Partial<Record<keyof BookFormData, string>> = {};
+  const validate = (): boolean => {                                          // 戻り値型を明示
+    const newErrors: Partial<Record<keyof BookFormData, string>> = {};       // 新しいエラー集を作る
 
     // タイトル: 必須、100文字以内
+    // .trim() は前後の空白文字を削った文字列を返す。
+    // 空文字列 "" は falsy なので、! を付けると「空または空白だけ」を検出できる。
     if (!formData.title.trim()) {
       newErrors.title = "タイトルは必須です";
     } else if (formData.title.trim().length > 100) {
@@ -1217,7 +1457,7 @@ export default function BookForm({
       newErrors.author = "著者は50文字以内で入力してください";
     }
 
-    // 出版社: 任意、50文字以内
+    // 出版社: 任意、50文字以内（空ならエラーにしない）
     if (formData.publisher.trim().length > 50) {
       newErrors.publisher = "出版社は50文字以内で入力してください";
     }
@@ -1227,9 +1467,11 @@ export default function BookForm({
       newErrors.memo = "メモは1000文字以内で入力してください";
     }
 
+    // 集めたエラーを state に反映 → 画面に表示される
     setErrors(newErrors);
 
-    // エラーが1つもなければ true を返す
+    // Object.keys(obj) は obj のキー名を配列で返す。
+    // エラーが1つもなければ length が 0 になり、true を返す。
     return Object.keys(newErrors).length === 0;
   };
 
@@ -1284,12 +1526,17 @@ export default function BookForm({
 
   /**
    * 評価（rating）の変更ハンドラ
-   * select の値は文字列なので、数値に変換する必要がある
+   * select の値は文字列なので、数値に変換する必要がある。
+   * 「選択してください」を選んだ時は value が空文字列 "" になるので、それを null に変換する。
    */
   const handleRatingChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    // HTMLSelectElement の value は常に string。<option value="3"> なら "3"。
     const value = e.target.value;
     setFormData((prev) => ({
       ...prev,
+      // 三項演算子: value === "" なら null、それ以外なら Number(value) で数値化。
+      // Number("3") は 3 を返す。Number("abc") は NaN を返すので、数値以外が来る場合は注意が必要。
+      // ここでは <option value="..."> の値は固定なので問題ない。
       rating: value === "" ? null : Number(value),
     }));
   };
@@ -1320,32 +1567,41 @@ export default function BookForm({
 
   // ----- 表示 -----
   return (
+    // <form> は HTML 標準のフォーム要素。
+    // onSubmit={handleSubmit} で送信時に handleSubmit を呼ぶ。
+    // space-y-6 は Tailwind の「直下の子要素の間隔を縦方向に 6（24px）空ける」ユーティリティ。
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* ===== タイトル ===== */}
       <div>
+        {/* <label htmlFor="title"> は「title という id を持つ入力要素のラベル」という関連付け。
+            ラベルをクリックすると、関連付けられた入力にフォーカスが移る。
+            ※React では「for」が JS の予約語と被るので、HTML の for 属性は「htmlFor」と書く。 */}
         <label
           htmlFor="title"
           className="block text-sm font-medium text-gray-700 mb-1"
         >
-          タイトル <span className="text-red-500">*</span>
+          タイトル <span className="text-red-500">*</span>   {/* 赤い「*」で必須を表す */}
         </label>
         <input
-          type="text"
-          id="title"
-          name="title"
-          value={formData.title}
-          onChange={handleChange}
+          type="text"                       // 1行のテキスト入力
+          id="title"                        // label の htmlFor と一致させる
+          name="title"                      // FormData で使うキー名（Server Action方式の場合に重要）
+          value={formData.title}            // 制御コンポーネント：state の値を入力欄の値として使う
+          onChange={handleChange}           // 入力が変わったら handleChange を呼ぶ
           placeholder="例: リーダブルコード"
+          // テンプレートリテラル内で「エラーがあれば赤い枠線、なければ通常の枠線」を切り替える。
           className={`
             w-full px-4 py-2.5
             border rounded-lg
             text-gray-900
             placeholder-gray-400
-            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent   /* フォーカス時に青い縁取り */
             transition-colors duration-200
             ${errors.title ? "border-red-500 bg-red-50" : "border-gray-300"}
           `}
         />
+        {/* エラーがあれば、フィールドのすぐ下に赤文字でエラーメッセージを表示。
+            「errors.title &&」は短絡評価：左辺が真（文字列がある）なら右辺の JSX を描画。 */}
         {errors.title && (
           <p className="mt-1 text-sm text-red-600">{errors.title}</p>
         )}
@@ -1419,6 +1675,8 @@ export default function BookForm({
         >
           出版日
         </label>
+        {/* type="date" にすると、ブラウザがカレンダー UI を出してくれる。
+            値は "YYYY-MM-DD" 形式の文字列で取得できる（ISO 8601 形式の一部）。 */}
         <input
           type="date"
           id="published_date"
@@ -1435,7 +1693,8 @@ export default function BookForm({
         />
       </div>
 
-      {/* ===== 評価 と ステータス を横に並べる ===== */}
+      {/* ===== 評価 と ステータス を横に並べる =====
+           grid-cols-1 sm:grid-cols-2 で「スマホでは1列、smサイズ以上では2列」のグリッドに。 */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         {/* 評価 */}
         <div>
@@ -1445,11 +1704,14 @@ export default function BookForm({
           >
             評価
           </label>
+          {/* <select> はドロップダウン。
+              value={formData.rating ?? ""} で「null なら空文字列」を value にする。
+              これは <option value=""> と一致するので「選択してください」が選ばれた状態になる。 */}
           <select
             id="rating"
             name="rating"
             value={formData.rating ?? ""}
-            onChange={handleRatingChange}
+            onChange={handleRatingChange}     // rating は数値変換が必要なので別ハンドラ
             className="
               w-full px-4 py-2.5
               border border-gray-300 rounded-lg
@@ -1459,6 +1721,7 @@ export default function BookForm({
               bg-white
             "
           >
+            {/* <option> の value 属性が、選択時に select の value になる値。 */}
             <option value="">選択してください</option>
             <option value="1">★☆☆☆☆ (1)</option>
             <option value="2">★★☆☆☆ (2)</option>
@@ -1505,6 +1768,8 @@ export default function BookForm({
         >
           メモ
         </label>
+        {/* <textarea> は複数行入力。input と違って終了タグが必要。
+            rows={4} で「最初の表示高さ」を4行分に設定。実際には自由に広げられる（resize-vertical）。 */}
         <textarea
           id="memo"
           name="memo"
@@ -1519,13 +1784,14 @@ export default function BookForm({
             placeholder-gray-400
             focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
             transition-colors duration-200
-            resize-vertical
+            resize-vertical                                                                 /* 縦方向だけリサイズ可能 */
             ${errors.memo ? "border-red-500 bg-red-50" : "border-gray-300"}
           `}
         />
         {errors.memo && (
           <p className="mt-1 text-sm text-red-600">{errors.memo}</p>
         )}
+        {/* 文字数カウンター。入力するたびに再レンダリングされて数値が更新される。 */}
         <p className="mt-1 text-xs text-gray-400">
           {formData.memo.length} / 1000 文字
         </p>
@@ -1534,8 +1800,9 @@ export default function BookForm({
       {/* ===== 送信ボタン ===== */}
       <div className="flex items-center gap-4 pt-4">
         <button
-          type="submit"
-          disabled={isSubmitting}
+          type="submit"                       // type="submit" で「これがフォームの送信ボタン」と明示
+          disabled={isSubmitting}             // 送信中はボタンを無効化（連打防止）
+          // 送信中は薄い青＆クリック不可マウスカーソル、通常時は濃い青＆ホバーで色変化
           className={`
             px-8 py-3
             rounded-lg
@@ -1549,22 +1816,25 @@ export default function BookForm({
             }
           `}
         >
+          {/* 送信中ならスピナー＋「送信中...」、それ以外なら submitLabel（"登録する"等）を表示 */}
           {isSubmitting ? (
             <span className="flex items-center gap-2">
-              {/* 送信中のスピナー */}
+              {/* 送信中のスピナー（SVG）。animate-spin で回転アニメーション。 */}
               <svg
                 className="animate-spin h-5 w-5"
                 viewBox="0 0 24 24"
                 fill="none"
               >
+                {/* 背景の薄い円（不透明度25%）。 */}
                 <circle
                   className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
+                  cx="12"                     // 中心 x
+                  cy="12"                     // 中心 y
+                  r="10"                      // 半径
                   stroke="currentColor"
                   strokeWidth="4"
                 />
+                {/* 上に重ねる「動く一部の弧」（不透明度75%）。これが回って見える。 */}
                 <path
                   className="opacity-75"
                   fill="currentColor"
@@ -1578,7 +1848,7 @@ export default function BookForm({
           )}
         </button>
 
-        {/* キャンセルボタン（トップページに戻る） */}
+        {/* キャンセルボタン（トップページに戻る）。<a> なのでフォーム送信はしない。 */}
         <a
           href="/"
           className="
@@ -1662,8 +1932,8 @@ export default function BookForm({
 BookForm を使って新規登録画面を構成するページです。
 
 ```tsx
-// app/books/new/page.tsx
-"use client";
+// app/books/new/page.tsx  ← URL "/books/new" に対応するページ（App Router のファイルベースルーティング）
+"use client";   // useState・useRouter などブラウザ専用機能を使うので Client Component
 
 /**
  * 書籍登録ページ
@@ -1678,18 +1948,22 @@ BookForm を使って新規登録画面を構成するページです。
  *   初心者にとって分かりやすい Client Component 方式で実装する。
  */
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
-import BookForm, { type BookFormData } from "@/components/BookForm";
+import { useState } from "react";                              // React の状態管理フック
+import { useRouter } from "next/navigation";                   // Next.js App Router のページ遷移フック
+import { createClient } from "@/lib/supabase/client";          // ブラウザ用 Supabase クライアント（サーバー用と別物）
+import BookForm, { type BookFormData } from "@/components/BookForm";   // フォーム本体と型
 
 export default function NewBookPage() {
+  // useRouter() でルーター操作オブジェクトを取得。
+  // .push("/path") で遷移、.refresh() で Server Component の再実行など。
   const router = useRouter();
 
-  // 送信中かどうかの状態
+  // 送信中かどうかの状態。
+  // ボタンの「送信中...」表示や、二重送信防止に使う。
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // エラーメッセージの状態
+  // エラーメッセージの状態。
+  // 「string | null」で「エラー文字列があるか、null（エラーなし）」を表現。
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   /**
@@ -1765,15 +2039,17 @@ export default function NewBookPage() {
     <div className="min-h-screen bg-gray-50">
       {/* ヘッダー */}
       <header className="bg-white shadow-sm border-b border-gray-200">
+        {/* max-w-3xl = 最大幅 48rem (約768px)。フォームは狭いほうが読みやすいので一覧画面より狭くしている。 */}
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center gap-4">
-            {/* 戻るボタン */}
+            {/* 戻るボタン。丸い灰色ボタンに矢印アイコンを入れた「戻る」UI。
+                aria-label でスクリーンリーダーに「トップに戻る」と読ませる。 */}
             <a
               href="/"
               className="
                 inline-flex items-center justify-center
                 w-10 h-10
-                rounded-full
+                rounded-full          /* 完全に丸い形 */
                 bg-gray-100
                 text-gray-600
                 hover:bg-gray-200
@@ -1781,6 +2057,8 @@ export default function NewBookPage() {
               "
               aria-label="トップに戻る"
             >
+              {/* 左向き矢印を描く SVG。
+                  d="M15 19l-7-7 7-7" は「(15,19)→(8,12)→(15,5)」と進む線（左向き「く」の字）。 */}
               <svg
                 className="w-5 h-5"
                 fill="none"
@@ -1811,10 +2089,14 @@ export default function NewBookPage() {
 
       {/* メインコンテンツ */}
       <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* エラーメッセージ（送信失敗時に表示） */}
+        {/* エラーメッセージ（送信失敗時に表示）。
+            submitError が null なら短絡評価で何も表示しない。
+            文字列が入っているときだけ赤い警告ボックスが現れる。 */}
         {submitError && (
           <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
             <div className="flex items-center gap-2">
+              {/* 円形の警告アイコン（中に「!」風の縦線と点）。
+                  flex-shrink-0 は「テキストが長くてもアイコンを縮めない」指定。 */}
               <svg
                 className="w-5 h-5 text-red-600 flex-shrink-0"
                 fill="none"
@@ -1833,7 +2115,10 @@ export default function NewBookPage() {
           </div>
         )}
 
-        {/* フォーム本体 */}
+        {/* フォーム本体。BookForm に必要な Props を渡す。
+            - onSubmit       : 上で定義したフォーム送信処理
+            - submitLabel    : ボタンに表示する文字
+            - isSubmitting   : 送信中フラグ（ボタンを薄くしてスピナーを出すため） */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 sm:p-8">
           <BookForm
             onSubmit={handleSubmit}
@@ -2010,14 +2295,17 @@ const [publisher, setPublisher] = useState("");
 ### 5-6. `router.push` と `router.refresh` の組み合わせ（NewBookPage）
 
 ```tsx
-router.push("/");
-router.refresh();
+router.push("/");      // URLを変えて遷移
+router.refresh();      // Server Component のデータを取り直す
 ```
 
 **なぜ両方必要なのか:**
 
-- `router.push("/")` はトップページに遷移しますが、Next.js はパフォーマンスのためにページの内容をキャッシュしています。キャッシュが残っていると、登録前の古いデータが表示されることがあります。
-- `router.refresh()` はキャッシュを無効化し、Server Component を再実行させます。これにより、Supabase から最新のデータが取得され、新しく登録した書籍が一覧に反映されます。
+- `router.push("/")` はトップページに遷移しますが、Next.js はパフォーマンスのためにページの内容を**キャッシュ**（一時保存）しています。キャッシュが残っていると、登録前の古いデータが表示されることがあります。
+- `router.refresh()` はキャッシュを無効化し、Server Component を再実行させます。これにより、Supabase から最新のデータが取得され、新しく登録した書籍が一覧に反映されます。これが冒頭で触れた **revalidation（リバリデーション／再検証）** の一つの形です。
+
+> **補足: Server Action 方式なら `revalidatePath`:**
+> Server Action を使う場合は、`router.refresh()` の代わりにサーバー側で `revalidatePath("/")` を呼びます。意味は同じ「キャッシュを破棄して次の表示で取り直す」ですが、サーバー側からの指示なのでより確実です。
 
 ### 5-7. 空文字列を null に変換する理由
 
@@ -2036,12 +2324,45 @@ publisher: data.publisher.trim() || null,
 
 ```tsx
 const handleSubmit = async (e: FormEvent) => {
-  e.preventDefault();
+  e.preventDefault();   // ブラウザの「フォーム送信→画面遷移」を止める
   // ...
 };
 ```
 
-HTML の `<form>` は、送信ボタンが押されるとデフォルトでページ全体をリロードしてデータを送信しようとします。`e.preventDefault()` はこのデフォルト動作を止め、JavaScript で非同期にデータを送信できるようにします。これを忘れるとページがリロードされ、`useState` の値がすべてリセットされてしまいます。
+HTML の `<form>` は、送信ボタンが押されるとデフォルトでページ全体をリロードしてデータを送信しようとします（昔ながらの「サーバーへPOSTしてHTMLを返してもらう」挙動）。`e.preventDefault()` はこのデフォルト動作を止め、JavaScript で非同期にデータを送信できるようにします。これを忘れるとページがリロードされ、`useState` の値がすべてリセットされてしまいます。
+
+### 5-9. FormData と FormDataEntryValue について（参考）
+
+この章ではブラウザ用 Supabase クライアントで `useState` の値を直接 INSERT していますが、Server Action 方式（参考コラム参照）では `formData.get("title")` のようにフォームから値を取り出します。その時の戻り値の型に注意が必要です。
+
+```typescript
+// formData.get の戻り値の型
+const value: FormDataEntryValue | null = formData.get("title");
+//          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+//          FormDataEntryValue = string | File
+//          フィールドが存在しないと null
+```
+
+- **FormDataEntryValue**: 「文字列か File（ファイル）か」のどちらか。普通の `<input type="text">` なら string、`<input type="file">` なら File。
+- **null**: そもそもそのフィールドが送信されなかった場合（HTML 上に無い、disabled だった、など）。
+
+そのため Server Action では `String(formData.get("title") ?? "")` のように、まず `??` で null を空文字に変換し、その後 `String()` で文字列にキャストするのが安全です。
+
+```typescript
+const title = String(formData.get("title") ?? "");
+//                                       ^^^^^   null だったら "" を使う
+//             ^^^^^^                            string | File を string に変換
+```
+
+### 5-10. Server Action のセキュリティ（参考）
+
+Server Action は「サーバー上で実行される関数」です。クライアント（ブラウザ）から呼び出せますが、コードはサーバーで走るため:
+
+- **シークレット情報を扱える**: 環境変数の SUPABASE_SERVICE_ROLE_KEY など、ブラウザに漏らしたくない情報をそのまま使える。
+- **データベースに直接アクセスできる**: クライアントを経由しないので、改ざんされにくい。
+- **ただしクライアントからの入力は信用しない**: フォームから送られた `formData` の中身は誰でも書き換えられる可能性があるので、サーバー側でも改めてバリデーションする必要がある。
+
+> **覚えておくべきこと:** 「クライアントから来た値はすべて疑え」は Web 開発全般の鉄則です。Client Component 方式（本書）でも、Supabase の Row Level Security（RLS）ポリシーが「最後の砦」として働きます。
 
 ---
 

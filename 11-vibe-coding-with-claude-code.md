@@ -2,13 +2,35 @@
 
 Claude Codeを使ってNext.jsアプリをバイブコーディング（自然言語で指示を出しながらAIと協調開発）するための、実践的な作業手順書です。Claude Codeの全機能（Settings、Hooks、Skills、Rules、MCP、Permissions、Plan Mode、Worktrees、Subagents、Memory、Keybindings）を網羅し、各フェーズで最適な機能を活用する方法を解説します。
 
+この章は完全な初学者向けです。「AIエージェントってそもそも何？」というところから始めて、本格的な開発フローまで一気通貫で解説します。読みながらわからない用語が出てきたら、各セクションの冒頭の用語解説に戻って確認してください。
+
 ---
 
 ## 0. 前提知識: AIアシスタントと一緒にコードを書くって何？
 
+### 0.0 まず押さえておきたい言葉たち
+
+ここから出てくる言葉を、最初にまとめて整理しておきます。雰囲気だけでもつかんでおくと、以降の説明がぐっと読みやすくなります。
+
+- **AI（人工知能）**: コンピュータが「人間っぽい判断」をしてくれる技術の総称。
+- **LLM（Large Language Model、大規模言語モデル）**: 大量の文章を学習した、自然言語を扱うAIの一種。Claude や ChatGPT の中身がこれです。
+- **AIエージェント**: LLMに「ファイルを読む」「コマンドを実行する」などの行動能力（ツール）を持たせ、目的に向かって自律的に動けるようにした仕組み。Claude Code はまさにこのAIエージェントです。
+- **コンテキストウィンドウ**: AIが一度に「読んで覚えていられる」文字数の上限。会話履歴・読み込んだファイル・指示文の全部がここに収まる必要があります。日本語だとざっくり数十万字ぶん。
+- **トークン**: AIが文字を扱う最小単位。日本語1文字でだいたい1〜2トークン。コンテキストウィンドウの上限はトークン数で決まります。
+- **プロンプト**: AIに渡す指示文のこと。「〜してください」と書くテキストそのもの。
+- **プロンプトエンジニアリング**: AIから良い答えを引き出すために、プロンプトの書き方を工夫する技術。指示を具体的にする・例を見せる・ステップを区切る、などのコツがあります。
+- **ハルシネーション**: AIがもっともらしいウソをつく現象。実在しない関数名を呼んだり、間違ったAPIを使ったりすることがあるため、必ず人間が検証する必要があります。
+- **ツール呼び出し（tool use / function calling）**: AIエージェントが「ファイル読む」「コマンド打つ」などの行動を起こすときの仕組み。Claude Code では `Read` `Edit` `Bash` などのツールがあらかじめ用意されています。
+- **コードレビュー**: 書いたコードを他の人（または別のAI）が読み、バグ・規約違反・改善点を指摘する作業。バイブコーディングでは「自分がレビュアー」になります。
+- **ペアプロ（ペアプログラミング）**: 2人で1台のパソコンに向かい、1人がコードを書き、もう1人が横で見ながら助言する開発スタイル。バイブコーディングは「相手がAI」のペアプロだと考えると分かりやすいです。
+
+これらの用語は本章で何度も出てくるので、いったん流し読みして OK です。
+
 ### 0.1 「バイブコーディング」とは
 
-**バイブコーディング（vibe coding）** とは、「AIに自然言語で指示しながら、AIが書いたコードを確認・修正していく開発スタイル」のことです。`feel like coding`のニュアンスで、自分はざっくりした方針を伝え、細部はAIに任せる感じです。
+**バイブコーディング（vibe coding）** とは、「AIに自然言語で指示しながら、AIが書いたコードを確認・修正していく開発スタイル」のことです。`feel like coding`（コードを書いている雰囲気を味わう）のニュアンスで、自分はざっくりした方針を伝え、細部はAIに任せる感じです。
+
+従来のプログラミングは「手で1行ずつコードを打つ」のが当たり前でしたが、バイブコーディングでは「日本語で要件を伝える → AIが実装する → 自分はそれをレビュー・指示」というサイクルになります。前述のペアプロのうち、相方がAIになったイメージです。
 
 **▼ 従来の開発スタイルとの違い:**
 
@@ -20,7 +42,15 @@ Claude Codeを使ってNext.jsアプリをバイブコーディング（自然�
 | 実装速度 | 遅い〜中 | 非常に速い |
 | コード理解度 | 高い | 油断すると低くなる |
 
-> **重要な注意:** バイブコーディングはコードの「品質保証は自分の責任」です。AIは間違いも書きます。**生成されたコードを必ず読んで理解する**習慣を捨てないでください。
+> **重要な注意:** バイブコーディングはコードの「品質保証は自分の責任」です。AIは間違いも書きます（前述のハルシネーション）。**生成されたコードを必ず読んで理解する**習慣を捨てないでください。
+
+### 0.1.1 なぜAIに「お願い」だけでなく「文脈」と「制約」を渡すと結果が良くなるのか
+
+これがバイブコーディングの肝です。LLM は確率的に「次に来そうな文字」を選ぶ仕組みなので、入力に含まれる情報が多いほど、より正確で意図に近い答えを出せます。
+
+たとえば「ボタンを作って」と言うだけだと、AIは「どんなボタン？色は？クリックしたら何が起きる？フレームワークは何？」を全部勝手に推測（つまり当てずっぽう）で埋めます。逆に「タスク一覧画面の右上に、Tailwind の bg-blue-600 でスタイリングした追加ボタン。クリックで TaskFormModal を開く。shadcn/ui の Button を使う」と書けば、推測の余地が無くなり、意図どおりのコードが返ってきます。
+
+このため本章では「仕様」「制約」「参考ファイル」「禁止事項」を丁寧にプロンプトに書き込む方法を繰り返し紹介します。
 
 ### 0.2 Claude Code でできることのイメージ
 
@@ -34,6 +64,8 @@ Claude Codeを使ってNext.jsアプリをバイブコーディング（自然�
 - 送信時に Supabase の books テーブルに insert する
 - 完了したら一覧ページにリダイレクト
 ```
+
+このように、URL・必要なフィールド・処理内容・遷移先まで明示してあると、AI はほぼ迷わずに作業できます。
 
 **▼ Claude Codeの動作（イメージ）:**
 
@@ -50,6 +82,18 @@ Claude Codeを使ってNext.jsアプリをバイブコーディング（自然�
          実装が完了しました。/books/new にアクセスして動作確認してください。
 ```
 
+`[Edit]` の部分は、Claude Code が `Edit` ツール（ファイルを変更するツール）を呼んでいることを示しています。Claude Code は内部に複数のツールを持っており、状況に応じて使い分けます。主要なツールは次のとおりです。
+
+| ツール名 | 役割 |
+|---------|------|
+| `Read` | ファイルの中身を読む |
+| `Edit` | 既存ファイルの一部を書き換える（差分編集） |
+| `Write` | ファイルを新規作成、または全体を上書き |
+| `Grep` | ファイル内容を正規表現で検索（中身検索） |
+| `Glob` | ファイル名パターン（`**/*.tsx` など）で検索 |
+| `Bash` | シェルコマンドを実行（`npm install` など） |
+| `Agent` / `Task` | サブエージェントを起動して別タスクに委任 |
+
 ### 0.3 まず触ってみる: 最小コマンド集
 
 | やりたいこと | 入力するコマンド/操作 |
@@ -61,12 +105,16 @@ Claude Codeを使ってNext.jsアプリをバイブコーディング（自然�
 | ヘルプ | `/help` |
 | 終了 | `/exit` または `Ctrl+D` |
 
+`/help` や `/clear` のように「スラッシュ `/` で始まるコマンド」を **スラッシュコマンド** と呼びます。チャット欄にメッセージを送るのではなく、Claude Code 自体に対する操作命令を表します。スラッシュコマンドは Tab キーで補完できます。
+
 ### 0.4 安全に使うための基本ルール
 
-1. **重要な変更は Git コミット直後に依頼する** — いつでも `git reset` で戻せる状態にしておく
-2. **生成コードを必ず読む** — 「動いたからOK」ではなく「理解したからOK」を目標に
-3. **`rm -rf` や `git push --force` などの破壊的コマンドはユーザー確認を要求する設定にする** — `.claude/settings.json` で制御可能（後の章で説明）
-4. **API キーや秘密情報を AI に直接見せない** — `.env.local` や `git-ignore` を活用
+1. **重要な変更は Git コミット直後に依頼する** — いつでも `git reset` で戻せる状態にしておく。AIに任せる前に必ず `git status` でクリーンな状態かを確認しましょう。
+2. **生成コードを必ず読む** — 「動いたからOK」ではなく「理解したからOK」を目標に。読まずにマージしてしまうと、自分のリポジトリなのに何が起きているか分からなくなります。
+3. **`rm -rf` や `git push --force` などの破壊的コマンドはユーザー確認を要求する設定にする** — `.claude/settings.json` で制御可能（後の章で説明）。
+4. **API キーや秘密情報を AI に直接見せない** — `.env.local` や `git-ignore` を活用。AIに `.env` の中身を「読んで」と頼んでも答えてくれますが、その内容が会話履歴に残るため漏えいリスクが上がります。
+5. **`git diff` や `pwd` で自分の状態を確認する** — 「いま自分はどのブランチにいて」「どのファイルが変更中で」「どこのディレクトリにいるか」を把握しないまま AI に指示を出すと、思わぬところに変更が入ってしまいます。
+6. **AIに自動でコミット・プッシュさせない** — コミット内容は人間が `git diff` で確認してから push しましょう。AI に直接 `git push` を実行させるのは原則禁止です。
 
 ---
 
@@ -99,9 +147,11 @@ Claude Codeを使ってNext.jsアプリをバイブコーディング（自然�
 
 Claude CodeはAnthropicが提供する公式CLIツールで、ターミナル上でClaudeと対話しながらソフトウェア開発を行えます。CLI、デスクトップアプリ（Mac/Windows）、Webアプリ（claude.ai/code）、IDE拡張（VS Code、JetBrains）で利用可能です。
 
+「CLI」とは Command Line Interface の略で、ターミナル（黒い画面）から文字入力で操作するタイプのアプリのことです。GUI（マウス操作のアプリ）と比べてキーボード中心で素早く操作でき、スクリプトとも連携しやすいのが特徴です。
+
 ### 1-2. 設定ファイルの階層構造
 
-Claude Codeは4層のスコープで設定を管理します。**最も具体的なスコープが優先**されます。
+Claude Codeは4層のスコープで設定を管理します。**最も具体的なスコープが優先**されます。「スコープ」とは設定が効く範囲のこと。「自分のマシン全体」よりも「いまのプロジェクトだけ」のほうがより具体的、という意味です。
 
 ```
 優先度: 高 ← → 低
@@ -125,6 +175,8 @@ Claude Codeは4層のスコープで設定を管理します。**最も具体的
 └─────────────────────────────────────────────────────────┘
 ```
 
+`~` (チルダ) はホームディレクトリの略記号で、Windows では `C:\Users\<ユーザー名>` を指します。`.claude` のように先頭にドットが付くフォルダは「隠しフォルダ」で、エクスプローラの設定によっては見えません。
+
 ### 1-3. 主要機能一覧
 
 | 機能 | 説明 | 設定場所 |
@@ -142,6 +194,8 @@ Claude Codeは4層のスコープで設定を管理します。**最も具体的
 | **Worktrees** | Git worktreeで並列開発 | CLI引数 |
 | **Plan Mode** | 読み取り専用の設計モード | `Shift+Tab` で切り替え |
 
+それぞれの詳細は後続の Phase で順番に登場します。「いま全部理解しなくてOK」、表は索引代わりに使ってください。
+
 ---
 
 ## 2. Phase 0：環境構築と安全設定
@@ -149,23 +203,33 @@ Claude Codeは4層のスコープで設定を管理します。**最も具体的
 ### 2-1. Claude Code のインストール
 
 ```bash
-# Node.js 18以上が必要
+# Node.js 18以上が必要（npm を使うため、まず Node.js を入れておく）
+# Claude Code 本体を npm のグローバル領域にインストールする
+# -g は global の意味で、どのフォルダからでも claude コマンドが使えるようになる
+# @anthropic-ai/claude-code は npm 上のパッケージ名（スコープ名@パッケージ名）
 npm install -g @anthropic-ai/claude-code
 
-# インストール確認
+# インストール確認: バージョンが出れば成功
+# --version は「現在のバージョン情報だけ出して終了」を意味する一般的なオプション
 claude --version
 
 # APIキーの設定（初回のみ）
-claude  # 起動時にAPIキーの入力を求められる
+# 引数なしで claude を実行すると対話モードが起動する
+# 起動時に Anthropic の API キーまたはアカウント認証を求められる
+claude
 ```
+
+`Node.js` はJavaScriptをパソコン上で動かすための実行環境です。バージョン 18 以上が必要で、なければ <https://nodejs.org> からインストールしてください。
 
 ### 2-2. 危険コマンドの禁止設定（Permissions）
 
-**これが最も重要な初期設定です。** 必ず開発を始める前に設定してください。
+**これが最も重要な初期設定です。** 必ず開発を始める前に設定してください。AIエージェントは賢いとはいえ、勘違いやハルシネーションで「`rm -rf .`」のような危険コマンドを提案することがあり得ます。事前に「これは絶対に実行しない」と Claude Code 側でブロックしておくのが安全策です。
 
 **Claude Codeへのプロンプト：**
 
 ```
+# /update-config は設定ファイルを編集するための組み込みスキル
+# このスキルを呼び出すと Claude が settings.json の編集をサポートしてくれる
 /update-config
 
 Claude Codeの ~/.claude/settings.json を設定してください。
@@ -271,7 +335,16 @@ Claude Codeの ~/.claude/settings.json を設定してください。
 }
 ```
 
-> **Permission ルールの優先順位**: Deny > Ask > Allow（最初にマッチしたルールが適用）
+各キーの意味は次のとおりです。
+
+- `permissions`: 権限制御のルートキー。許可・拒否設定はすべてこの下にぶら下がる。
+- `defaultMode`: 普段使うパーミッションモード。`default` は「毎回確認」モード。
+- `allow`: 自動的に許可するツール・コマンドのリスト。マッチしたら確認なしで実行される。
+- `deny`: 絶対に実行させないツール・コマンドのリスト。マッチしたら確認すら出ずブロック。
+- `Bash(...)`: Bash ツールの引数パターン。`*` はワイルドカードで任意の文字列にマッチ。
+- `Edit(/.env)`: Edit ツールで `/.env` を編集しようとするのをブロック。秘密情報の保護。
+
+> **Permission ルールの優先順位**: Deny > Ask > Allow（最初にマッチしたルールが適用）。つまり「`deny` に書いた条件は、`allow` に同じものがあっても deny が勝つ」。
 >
 > **ワイルドカード `*`**: パターンマッチで広範囲にブロック可能。`Bash(rm -rf *)` は `rm -rf /` も `rm -rf .` もブロックします。
 
@@ -288,6 +361,8 @@ Claude Codeには6つのパーミッションモードがあります。**セッ
 | **dontAsk** | `claude --permission-mode dontAsk` | 事前許可済みツールのみ | 自動化パイプライン |
 | **bypassPermissions** | `claude --dangerously-skip-permissions` | チェックなし（危険） | **使用非推奨** |
 
+`--permission-mode` は「パーミッションモードを指定して起動する」フラグです。`--` で始まるオプションは「ロングオプション」と呼ばれ、後ろに値を渡せます。
+
 **デフォルトモードを設定する場合：**
 
 ```json
@@ -298,9 +373,12 @@ Claude Codeには6つのパーミッションモードがあります。**セッ
 }
 ```
 
+- `permissions`: 設定のグループ名。
+- `defaultMode`: 何も指定せず `claude` と打ったときに使うモード。
+
 ### 2-4. MCP サーバーの設定
 
-MCP（Model Context Protocol）により、Claude Codeに外部サービスとの連携能力を追加できます。
+MCP（Model Context Protocol）により、Claude Codeに外部サービスとの連携能力を追加できます。MCP は「AIに外部ツールを足すための共通プロトコル」で、これを使うと GitHub の Issue を読んだり Supabase のテーブルを操作したり、といった外部連携が可能になります。
 
 #### MCP設定ファイルの階層
 
@@ -364,6 +442,16 @@ MCP（Model Context Protocol）により、Claude Codeに外部サービスと�
 }
 ```
 
+各キーの意味は以下のとおりです。
+
+- `mcpServers`: MCP サーバー定義をまとめるルートキー。
+- `"github"` などのキー: サーバーの識別名。Claude 側で参照するためのラベル。
+- `type`: 接続方式。`stdio`（標準入出力）/ `http` / `sse` から選ぶ。
+- `command`: サーバーを起動するコマンド。`npx` は npm パッケージを直接実行するツール。
+- `args`: 上記コマンドに渡す引数の配列。`-y` は npx の「確認なしで進める」フラグ。
+- `env`: サーバーに渡す環境変数。`$GITHUB_TOKEN` でシェルの環境変数を参照。
+- `allowedEnvVars`: 参照を許可する環境変数のホワイトリスト。セキュリティのため明示が必要。
+
 #### MCP接続タイプの違い
 
 | タイプ | 形式 | 用途 |
@@ -385,6 +473,9 @@ MCP（Model Context Protocol）により、Claude Codeに外部サービスと�
 }
 ```
 
+- `type: "sse"`: サーバーから送られてくるイベントを受け取り続けるタイプ。
+- `url`: 接続先 URL。
+
 **OAuth認証付きの例：**
 
 ```json
@@ -405,6 +496,11 @@ MCP（Model Context Protocol）により、Claude Codeに外部サービスと�
 }
 ```
 
+- `auth`: 認証情報のグループ。
+- `type: "oauth"`: OAuth2.0 認証フローを使用。
+- `clientId` / `clientSecret`: OAuth アプリケーションの ID と秘密鍵。
+- `redirectPort`: 認証完了後にリダイレクトを受け取るローカルポート。
+
 #### MCP内で使える環境変数
 
 ```json
@@ -417,6 +513,8 @@ MCP（Model Context Protocol）により、Claude Codeに外部サービスと�
 }
 ```
 
+`${VAR}` の形式は Claude Code が用意した特殊変数の展開構文です。シェル変数とは異なり、Claude Code 側で値が差し込まれます。
+
 | 変数 | 説明 |
 |------|------|
 | `${CLAUDE_SESSION_ID}` | 現在のセッションID |
@@ -426,7 +524,7 @@ MCP（Model Context Protocol）により、Claude Codeに外部サービスと�
 
 ### 2-5. Hooks の設定（イベント駆動自動化）
 
-Hooksは特定のイベントが発生した時に自動でコマンドを実行する仕組みです。コード品質の自動維持に不可欠です。
+Hooksは特定のイベントが発生した時に自動でコマンドを実行する仕組みです。コード品質の自動維持に不可欠です。たとえば「ファイル編集のたびに自動で Prettier をかける」「コミット前に lint を走らせる」など、機械的な作業を肩代わりさせられます。
 
 #### 全Hookイベント一覧
 
@@ -464,6 +562,14 @@ Hooksは特定のイベントが発生した時に自動でコマンドを実行
 }
 ```
 
+- `hooks`: フック定義をまとめるルートキー。
+- `"イベント名"`: 上の表のイベント名（例 `PostToolUse`）。
+- `matcher`: そのイベント内でさらに絞り込むためのパターン。たとえば `Edit|Write` で Edit と Write ツールだけにマッチ。
+- 内側の `hooks` 配列: 実行する処理のリスト。
+- `type: "command"`: シェルコマンドを実行する種別。
+- `command`: 実行する具体的なコマンド文字列。
+- `timeout`: 何秒で打ち切るか（秒単位）。重い処理を放置しないための保険。
+
 #### Hookの終了コードの意味
 
 | 終了コード | 意味 | 動作 |
@@ -471,6 +577,8 @@ Hooksは特定のイベントが発生した時に自動でコマンドを実行
 | `0` | 成功 | JSON出力があればパース |
 | `2` | ブロッキングエラー | stderrがClaudeへフィードバックされる |
 | その他 | 非ブロッキングエラー | トランスクリプトに記録のみ |
+
+「終了コード」とはコマンドの結果を表す整数で、`0` が成功、それ以外は何らかのエラー、というのが UNIX 系の慣習です。
 
 **Claude Codeへのプロンプト：**
 
@@ -564,6 +672,16 @@ settings.jsonに追記してください。
 }
 ```
 
+長いのでポイントだけ解説します。
+
+- `"matcher": "Edit|Write"`: 正規表現で「Edit または Write」を意味し、その両ツールの実行後に発火。
+- `FILE=$(echo $CLAUDE_TOOL_INPUT | jq -r '.file_path // empty')`: ツール入力 JSON から `file_path` フィールドを取り出す。`jq` は JSON 操作の定番ツール。
+- `[ -n "$FILE" ] && ...`: `$FILE` が空でないときだけ次のコマンドを実行（&& は「左が成功したら右を実行」）。
+- `npx prettier --write "$FILE"`: Prettier で対象ファイルをフォーマット。`--write` は実ファイルへの書き戻し。
+- `2>/dev/null || true`: エラーを捨てて常に成功扱い。Hook 全体は壊さない設計。
+- `exit 2`: Claude にブロックを伝える終了コード。`echo ... >&2` で標準エラー出力にメッセージを出す。
+- `powershell.exe -Command ...`: Windows の PowerShell でメッセージボックスを表示。
+
 #### 高度なHook例：保護ファイルのブロックスクリプト
 
 プロジェクト内にスクリプトを配置して、より複雑なロジックを実行できます。
@@ -572,10 +690,13 @@ settings.jsonに追記してください。
 
 ```bash
 #!/bin/bash
+# 上の行は shebang（シバン）。このスクリプトを bash で実行するよう指示
+# 標準入力（Claude が JSON で渡してくる情報）を変数 INPUT に読み込む
 INPUT=$(cat)
+# jq でツール入力の file_path フィールドを取り出す。値がなければ空文字列
 FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty')
 
-# 保護対象ファイルリスト
+# 保護対象ファイルリスト（配列）
 PROTECTED=(
   ".env"
   ".env.local"
@@ -585,13 +706,17 @@ PROTECTED=(
   "next.config.js"
 )
 
+# 配列の各パターンに対してループ
 for pattern in "${PROTECTED[@]}"; do
+  # FILE_PATH に保護対象パターンが含まれていればブロック
   if [[ "$FILE_PATH" == *"$pattern"* ]]; then
+    # 標準エラー出力にメッセージを書き、終了コード 2 でブロック
     echo "BLOCKED: $FILE_PATH は保護されたファイルです。手動で編集してください。" >&2
     exit 2
   fi
 done
 
+# 何にもマッチしなければ正常終了
 exit 0
 ```
 
@@ -612,6 +737,8 @@ exit 0
   }
 }
 ```
+
+- `"$CLAUDE_PROJECT_DIR/.claude/hooks/protect-files.sh"`: プロジェクトルート配下のスクリプトを実行。複雑なロジックはスクリプトに切り出すと管理しやすい。
 
 ---
 
@@ -647,6 +774,8 @@ create-next-app 実行後、追加で以下もインストール:
 まだ機能のコードは書かないでください。
 ```
 
+「まだ機能のコードは書かないでください」と書くことで、AIが暴走して未承認のページや機能を追加するのを防いでいます。
+
 ### 3-2. Git リポジトリの初期化
 
 **Claude Codeへのプロンプト：**
@@ -671,6 +800,8 @@ gitリポジトリを初期化して、以下を設定してください：
 
 .envファイルが含まれていないことを確認してからコミットしてください。
 ```
+
+`.gitignore` は「Git の追跡対象から除外するファイル」を指定するファイルです。`.env`（秘密情報）や `node_modules`（巨大）は必ず除外しないと事故ります。
 
 ### 3-3. Claude Code 用ディレクトリ構造の作成
 
@@ -704,6 +835,8 @@ gitリポジトリを初期化して、以下を設定してください：
     └── protect-files.sh
 ```
 
+ここで作るディレクトリは後の Phase で1つずつ埋めていきます。先に「箱」だけ作っておくと、後の設定作業が見通しよく進みます。
+
 ---
 
 ## 4. Phase 2：要件定義（Plan Mode活用）
@@ -712,10 +845,13 @@ gitリポジトリを初期化して、以下を設定してください：
 
 Plan Modeは**読み取り専用**のモードで、Claudeはコードを読んで分析はできますが、ファイルの作成・編集・コマンド実行はできません。**設計フェーズに最適**です。
 
+要件が定まる前に AI に勝手にコードを書かれてしまうと、後戻りが大変です。「最初は計画だけ立てる」というのを Plan Mode で強制できます。
+
 #### Plan Mode の起動方法
 
 ```bash
 # 起動時にPlan Modeで開始
+# --permission-mode plan で読み取り専用モードに固定
 claude --permission-mode plan
 
 # セッション中に切り替え
@@ -900,6 +1036,8 @@ SupabaseのマイグレーションSQL形式で出力してください。
 具体的かつ正確に記述してください。
 ```
 
+ここで作るドキュメントは、後の Phase で `@docs/requirements.md` のように `@` 参照で読み込ませて、AI に常に同じ前提を共有させるための「正典」になります。
+
 ---
 
 ## 5. Phase 3：CLAUDE.md の作成と配置戦略
@@ -907,6 +1045,8 @@ SupabaseのマイグレーションSQL形式で出力してください。
 ### 5-1. CLAUDE.md とは
 
 CLAUDE.mdはClaude Codeへの「永続的な指示書」です。セッション開始時に自動的に読み込まれ、Claudeの振る舞いを制御します。
+
+人間で言うなら「新人さんへの引き継ぎマニュアル」に近いです。プロジェクトの命名規約・禁止事項・コミットルールなどを書いておくと、Claude が毎回それを踏まえて作業してくれます。
 
 ### 5-2. 配置場所と優先順位
 
@@ -923,9 +1063,11 @@ C:\Program Files\ClaudeCode\CLAUDE.md   ← 企業ポリシー（IT管理者）
 
 > **重要**: これらは全て **結合（concatenate）** されます。上位が下位を上書きするのではなく、全てが読み込まれます。
 
+`AGENTS.md` という名前のファイルを置いている場合、`CLAUDE.md` と同様に扱われます（他のAIエージェントとの互換用）。両方ある場合は両方読まれます。
+
 ### 5-3. 作成タイミング
 
-**要件定義完了後、最初のコードを書く直前**に作成します。
+**要件定義完了後、最初のコードを書く直前**に作成します。要件が固まる前に書くと「とりあえず書いただけのルール」になりがち。設計を踏まえた具体的なルールを書きましょう。
 
 ### 5-4. CLAUDE.md 作成のプロンプト
 
@@ -1051,6 +1193,8 @@ src/
 @docs/api.md
 ```
 
+最後の `@docs/requirements.md` のような行は、CLAUDE.md 内の **ファイル参照記法** です。`@` で始めるとそのファイルの中身がコンテキストに自動で取り込まれ、Claude がドキュメントを踏まえて作業できるようになります。
+
 ### 5-5. CLAUDE.local.md（個人設定）
 
 チームメンバーそれぞれのスタイルに合わせた個人設定をCLAUDE.local.mdに配置できます（gitignoreされるため共有されない）。
@@ -1068,7 +1212,7 @@ CLAUDE.local.md を作成してください。以下を記載：
 
 ### 5-6. サブディレクトリ CLAUDE.md
 
-特定のディレクトリ以下でのみ有効なルールを設定できます。
+特定のディレクトリ以下でのみ有効なルールを設定できます。サブディレクトリの CLAUDE.md は「そのフォルダ配下のファイルを触るとき」だけ自動で読み込まれます。
 
 **`src/app/api/CLAUDE.md`：**
 
@@ -1099,7 +1243,9 @@ CLAUDE.md内で他のドキュメントを参照できます。
 @README.md
 ```
 
-> **注意**: 参照先のファイルもコンテキストに読み込まれるため、大きすぎるファイルを参照するとコンテキストを圧迫します。
+- `@<相対パス>`: そのファイルの中身を CLAUDE.md と一緒に読み込ませる。
+
+> **注意**: 参照先のファイルもコンテキストに読み込まれるため、大きすぎるファイルを参照するとコンテキストを圧迫します。1ファイル数千行になるようなものは、要点だけ抜粋した別ドキュメントを作って参照しましょう。
 
 ### 5-8. CLAUDE.md の更新タイミングと方法
 
@@ -1142,6 +1288,9 @@ CLAUDE.mdを更新してください。以下の変更を反映：
 }
 ```
 
+- `claudeMdExcludes`: 読み込み対象から除外する glob パターンの配列。
+- `**/node_modules/**`: あらゆる階層の node_modules を意味するパターン。
+
 ---
 
 ## 6. Phase 4：Rules の構成
@@ -1149,6 +1298,8 @@ CLAUDE.mdを更新してください。以下の変更を反映：
 ### 6-1. Rules とは
 
 `.claude/rules/` ディレクトリに配置するMarkdownファイルで、**特定のファイルパスにマッチした時に自動的に適用される**ルールです。CLAUDE.mdとは異なり、パスベースで条件分岐できます。
+
+CLAUDE.md が「プロジェクト全体のルール」だとすれば、Rules は「このフォルダだけのルール」。たとえばコンポーネントを作るときと API Route を作るときでは気をつけるポイントが違うので、別々の Rules ファイルに分けます。
 
 ### 6-2. Rules の仕組み
 
@@ -1161,6 +1312,10 @@ paths:
 # ここにルールを記述
 コンポーネント作成時のルール...
 ```
+
+- `---` で囲まれた部分は YAML フロントマター（メタ情報）。
+- `paths`: このルールを発火させるファイルパターン。glob 記法。
+- `**` はあらゆる深さのフォルダにマッチ、`*` は任意のファイル名にマッチ。
 
 Claudeが該当パスのファイルを操作する時、自動的にこのルールがコンテキストに追加されます。
 
@@ -1239,17 +1394,23 @@ paths:
 
 ```tsx
 // Good: Server Component
+// プロジェクト内の関数を @/ エイリアスで読み込む（相対パス禁止のため）
 import { getProjects } from '@/lib/queries/projects'
 
+// Props 型は interface で定義。命名は ComponentName + Props
 interface ProjectListProps {
-  userId: string
+  userId: string  // 必須の文字列プロパティ
 }
 
+// named export。default export は page.tsx/layout.tsx のみ許可
+// async が付くと Server Component で await が使える
 export function ProjectList({ userId }: ProjectListProps) {
+  // サーバー側でデータ取得。クライアントには結果だけ届く
   const projects = await getProjects(userId)
 
   return (
     <ul>
+      {/* map で配列を要素に変換。key は React の差分検出に必須 */}
       {projects.map((project) => (
         <li key={project.id}>{project.name}</li>
       ))}
@@ -1262,21 +1423,26 @@ export function ProjectList({ userId }: ProjectListProps) {
 
 ```tsx
 // Good: Client Component（'use client' を明示）
+// ファイル先頭に書くと、このファイル全体がクライアント側でハイドレートされる
 'use client'
 
+// useState はクライアントでしか使えないので 'use client' が必要
 import { useState } from 'react'
+// shadcn/ui の Button コンポーネント
 import { Button } from '@/components/ui/button'
 
 interface CounterProps {
-  initialCount: number
+  initialCount: number  // 初期カウント値
 }
 
 export function Counter({ initialCount }: CounterProps) {
+  // useState: 値とその更新関数のペアを返す
   const [count, setCount] = useState(initialCount)
 
   return (
     <div>
       <p>Count: {count}</p>
+      {/* onClick は React のイベントハンドラ。アロー関数で書く */}
       <Button onClick={() => setCount((c) => c + 1)}>
         Increment
       </Button>
@@ -1288,18 +1454,18 @@ export function Counter({ initialCount }: CounterProps) {
 ## 禁止パターン
 
 ```tsx
-// Bad: any型
+// Bad: any型（型安全が崩れる）
 function Component(props: any) { ... }
 
 // Bad: default export（page.tsx以外）
 export default function Component() { ... }
 
-// Bad: useEffectでデータフェッチ
+// Bad: useEffectでデータフェッチ（Server Component で十分）
 useEffect(() => {
   fetch('/api/data').then(...)
 }, [])
 
-// Bad: インラインスタイル
+// Bad: インラインスタイル（Tailwind を使うべき）
 <div style={{ color: 'red' }}>...</div>
 ```
 
@@ -1323,63 +1489,74 @@ paths:
 ## Route Handler の雛形
 
 ```ts
+// Next.js のサーバー側型定義をインポート
 import { NextRequest, NextResponse } from 'next/server'
+// バリデーションライブラリ。スキーマで型と検証を同時に定義
 import { z } from 'zod'
+// Supabase の Server クライアント（cookie ベースの認証情報を持つ）
 import { createClient } from '@/lib/supabase/server'
 
 // 1. バリデーションスキーマ定義
+// z.object() で各フィールドの型・制約を宣言的に書く
 const createTaskSchema = z.object({
-  title: z.string().min(1).max(100),
-  description: z.string().max(1000).optional(),
-  status: z.enum(['todo', 'in_progress', 'review', 'done']).default('todo'),
+  title: z.string().min(1).max(100),  // 1〜100文字の文字列
+  description: z.string().max(1000).optional(),  // 任意、最大1000文字
+  status: z.enum(['todo', 'in_progress', 'review', 'done']).default('todo'),  // 列挙型
   priority: z.enum(['low', 'medium', 'high']).default('medium'),
-  assigneeId: z.string().uuid().optional(),
-  dueDate: z.string().datetime().optional(),
+  assigneeId: z.string().uuid().optional(),  // UUID 形式の文字列
+  dueDate: z.string().datetime().optional(),  // ISO8601 形式
 })
 
 // 2. Route Handler
+// export async function POST で、このパスへの POST リクエストを処理
 export async function POST(request: NextRequest) {
   try {
     // 3. 認証チェック
-    const supabase = await createClient()
+    const supabase = await createClient()  // Supabase クライアント作成
+    // 現在ログイン中のユーザーを取得
     const { data: { user }, error: authError } = await supabase.auth.getUser()
 
+    // 未ログインなら 401 を返して終了
     if (authError || !user) {
       return NextResponse.json(
-        { error: '認証が必要です' },
-        { status: 401 }
+        { error: '認証が必要です' },  // ユーザー向けメッセージ
+        { status: 401 }  // HTTP ステータス
       )
     }
 
     // 4. リクエストバリデーション
-    const body = await request.json()
+    const body = await request.json()  // JSON ボディをオブジェクトに
+    // safeParse は throw せず { success, data | error } を返す
     const parsed = createTaskSchema.safeParse(body)
 
     if (!parsed.success) {
       return NextResponse.json(
         { error: 'バリデーションエラー', details: parsed.error.flatten() },
-        { status: 400 }
+        { status: 400 }  // クライアント側の入力ミスは 400
       )
     }
 
     // 5. DB操作
+    // from('tables').insert(...).select().single() の流れ
     const { data, error } = await supabase
-      .from('tasks')
-      .insert({ ...parsed.data, created_by: user.id })
-      .select()
-      .single()
+      .from('tasks')  // 対象テーブル
+      .insert({ ...parsed.data, created_by: user.id })  // 検証済みデータ + 作成者
+      .select()  // 挿入結果を取得
+      .single()  // 1件だけ取り出す（複数返ったらエラー）
 
     if (error) {
       return NextResponse.json(
         { error: 'タスクの作成に失敗しました' },
-        { status: 500 }
+        { status: 500 }  // サーバー側エラーは 500
       )
     }
 
     // 6. 成功レスポンス
+    // 新規作成成功は 201 Created
     return NextResponse.json({ data }, { status: 201 })
 
   } catch {
+    // 想定外の例外は 500 にまとめる
     return NextResponse.json(
       { error: '予期しないエラーが発生しました' },
       { status: 500 }
@@ -1402,12 +1579,16 @@ export async function POST(request: NextRequest) {
 
 Skillsは**再利用可能なプロンプトテンプレート**です。`/skill-name` のスラッシュコマンドとして呼び出せます。繰り返し行う定型作業を自動化できます。
 
+「同じような指示文を毎回書くのは面倒」「チームで指示の表現を揃えたい」というときに、Skill としてまとめておけば `/review` のような短いコマンドで呼び出せます。
+
 ### 7-2. Skill の配置場所
 
 ```
 ~/.claude/skills/<name>/SKILL.md     ← 全プロジェクト共通
 .claude/skills/<name>/SKILL.md       ← プロジェクト固有
 ```
+
+Skill 1つにつき1フォルダ作り、その中に `SKILL.md` を置きます。同じフォルダにヘルパースクリプトや参考資料を入れることもできます。
 
 ### 7-3. SKILL.md のフロントマター
 
@@ -1427,6 +1608,20 @@ paths: ["src/**/*.tsx"]           # 自動発火のglobパターン
 ---
 ```
 
+各キーの意味は以下のとおりです。
+
+- `name`: スラッシュコマンド名のもと（例 `review` → `/review`）。
+- `description`: Claude が「いまこのスキル使うべき？」と判断する材料。
+- `argument-hint`: 補完時に表示する引数の説明（例 `[filepath]`）。
+- `disable-model-invocation`: Claude が自動でこの Skill を呼ぶのを禁止するか。
+- `user-invocable`: ユーザーがスラッシュコマンドとして呼べるか。
+- `allowed-tools`: この Skill 内で使えるツールを限定。
+- `model`: 使うモデル（Opus / Sonnet など）。
+- `effort`: 推論の深さ。high のほうが時間とコストがかかるが品質が上がる。
+- `context`: `fork` でサブエージェントとして独立コンテキストで実行。メインの会話を汚さない。
+- `agent`: ビルトインのサブエージェントタイプ。
+- `paths`: 該当パターンのファイルを編集するとき自動的に呼ばれる。
+
 ### 7-4. 変数の使い方
 
 | 変数 | 説明 |
@@ -1437,6 +1632,8 @@ paths: ["src/**/*.tsx"]           # 自動発火のglobパターン
 | `${CLAUDE_PROJECT_DIR}` | プロジェクトルート |
 | `${CLAUDE_SKILL_DIR}` | Skillファイルのディレクトリ |
 | `` !`command` `` | コマンド実行結果を注入（Skill読み込み時に実行） |
+
+`` !`コマンド` `` は「Skill が読み込まれた瞬間にそのコマンドを実行し、結果をその場に埋め込む」記法です。例: `` !`git diff --name-only` `` と書けば、Skill 起動時の変更ファイル一覧がそのままプロンプトに入ります。
 
 ### 7-5. Skills 作成のプロンプト
 
@@ -1619,6 +1816,8 @@ Claude Codeには組み込みのSkillもあります。
 
 Subagentsは**独立したAIエージェント**を定義し、特定のタスクを委任できる仕組みです。メインのコンテキストを汚さずに、専門的なタスクを並列実行できます。
 
+たとえば「コードレビュー専門のエージェント」「テスト作成専門のエージェント」をそれぞれ用意し、必要に応じて使い分けると、メイン会話のコンテキストを節約しつつ専門タスクを任せられます。
+
 ### 8-2. 配置場所
 
 ```
@@ -1643,6 +1842,15 @@ memory:
 isolation: worktree                # worktreeで並列実行
 ---
 ```
+
+- `name`: エージェント識別子。
+- `description`: メインのClaude がこのエージェントへ委任するか判断する材料。
+- `model`: 使用するモデル。
+- `tools`: このエージェント内で許可するツール（スペース区切り）。
+- `permissions.allow` / `deny`: ツール実行の許可・拒否。
+- `skills`: 起動時にあらかじめ読み込む Skill。
+- `memory.enabled`: メモリの使用可否。
+- `isolation: worktree`: worktree で別作業ツリーを使って並列実行。
 
 ### 8-4. ビルトインSubagent
 
@@ -1794,6 +2002,8 @@ Phase 7-6: テスト
 Phase 7-7: デプロイ・最終調整
 ```
 
+「土台 → 認証 → CRUD → 派生機能 → UI磨き → テスト → デプロイ」という順序が王道です。順序を飛ばすと後で痛い目を見ます（例: 認証より先にCRUDを書くと、後で RLS の入れ込みに苦労する）。
+
 ### 9-2. 1機能の実装フロー（黄金パターン）
 
 ```
@@ -1842,10 +2052,13 @@ Phase 7-7: デプロイ・最終調整
 │ Step 8: コミット                                │
 │ /commit を実行                                   │
 │ 日本語メッセージ + プレフィックス                   │
+│ ※ コミット前に必ず git diff を自分の目で確認       │
 └──────────┬───────────────────────────────────┘
            ↓
         次の機能へ
 ```
+
+`/commit` を AI に任せきりにせず、必ず `git diff` で内容を確認してから走らせるのがおすすめです。push は人間が手動で行うのが基本。
 
 ### 9-3. 精度を最大化するプロンプトテンプレート
 
@@ -1901,6 +2114,8 @@ Phase 7-7: デプロイ・最終調整
 合意後に実装に移ります。
 ```
 
+このテンプレを埋めていくだけで、AIの出力品質が劇的に上がります。
+
 ### 9-4. 実装例：基盤構築
 
 **Claude Codeへのプロンプト：**
@@ -1932,12 +2147,12 @@ shadcn/ui から必要なコンポーネントをインストールしてくだ�
 ### 9-5. 効果的な修正指示の出し方
 
 ```
-❌ 悪い例:
+[悪い例]
 「動かないので直してください」
 「エラーが出ます」
 「なんか変です」
 
-✅ 良い例:
+[良い例]
 「TaskCardコンポーネントで以下のエラーが出ています。
 
 エラーメッセージ:
@@ -1959,6 +2174,8 @@ task.assignee が null の場合の条件分岐が漏れている
 このエラーを修正してください。」
 ```
 
+エラーメッセージ全文・ファイル名・行番号・再現手順・期待動作の5点セットを揃えると、AI のデバッグ精度が一段上がります。
+
 ### 9-6. 大きすぎる変更を制御する方法
 
 ```
@@ -1973,6 +2190,8 @@ task.assignee が null の場合の条件分岐が漏れている
 
 今は1だけ実装してください。2以降は指示があるまで待ってください。
 ```
+
+「ストップ」と明確に伝えると、Claude は途中でも作業を中断して指示を仰ぎます。
 
 ---
 
@@ -2065,6 +2284,8 @@ npm test が通ることを確認してください。
 作成後 npm test を実行して全テストがパスすることを確認してください。
 ```
 
+AAA は「Arrange（準備）→ Act（実行）→ Assert（検証）」の3ステップでテストを書く方針です。1テスト1観点・前提と検証が一目で分かる構造を目指します。
+
 ---
 
 ## 11. Phase 9：デプロイと最終調整
@@ -2106,6 +2327,8 @@ npm test が通ることを確認してください。
 全ての結果をレポートしてください。問題があれば修正してください。
 ```
 
+デプロイ前にこのチェックリストを実行する習慣を持つだけで、本番事故がぐっと減ります。
+
 ---
 
 ## 12. Context管理とMemoryシステム
@@ -2113,6 +2336,8 @@ npm test が通ることを確認してください。
 ### 12-1. Contextとは
 
 Claude Codeのコンテキストウィンドウには上限があります。長い会話を続けると、古いメッセージが自動的に圧縮（compact）されます。
+
+前述のとおりコンテキストウィンドウは AI が一度に扱えるトークン数の上限のことです。会話・読み込みファイル・指示すべてがこの「容器」に入り、満杯になると古いものから消えたり要約されたりします。
 
 ### 12-2. Context管理コマンド
 
@@ -2136,7 +2361,7 @@ Claude Codeのコンテキストウィンドウには上限があります。長
 
 ### 12-4. Memory システム
 
-Claude Codeは会話を跨いで記憶を保持するMemoryシステムを持っています。
+Claude Codeは会話を跨いで記憶を保持するMemoryシステムを持っています。コンテキストとは別の場所に保管され、セッションをまたいで読み込まれます。
 
 **保存場所：** `~/.claude/projects/<project>/memory/`
 
@@ -2180,6 +2405,8 @@ Route Handlersで統一する決定をした。理由はテストの書きやす
   "autoMemoryEnabled": true
 }
 ```
+
+- `autoMemoryEnabled`: Claude が自動的に Memory を読み書きするか。`false` にすると明示指示時のみ動く。
 
 ---
 
@@ -2229,6 +2456,12 @@ Route Handlersで統一する決定をした。理由はテストの書きやす
 }
 ```
 
+- `$schema`: エディタが入力補完するための JSON Schema 参照。
+- `bindings`: コンテキストごとのバインディング配列。
+- `context`: バインディングが効く場面（Chat / Global など）。
+- `"ctrl+k": "chat:clearInput"`: Ctrl+K に「入力欄をクリア」を割り当て。
+- `"ctrl+u": null`: 既存のバインディングを無効化。
+
 ### 13-4. 利用可能なコンテキスト
 
 | コンテキスト | 説明 |
@@ -2252,24 +2485,29 @@ K               # 大文字 = Shift暗黙
 escape, enter   # 特殊キー名
 ```
 
+「コード入力」は2段押し（プレフィックスキーを押してから別のキーを押す）の記法です。Emacs 風の操作を好む人向け。
+
 ---
 
 ## 14. Worktrees（並列開発）
 
 ### 14-1. Worktrees とは
 
-Git worktreeを使って、**メインの作業を中断せずに別ブランチで並列作業**できます。
+Git worktreeを使って、**メインの作業を中断せずに別ブランチで並列作業**できます。1つのリポジトリから複数の作業ディレクトリを派生させ、それぞれで別ブランチを進められる仕組みです。
 
 ### 14-2. 使い方
 
 ```bash
 # 名前を指定してworktreeを作成
+# --worktree オプションで feature-auth という新しい worktree を作る
 claude --worktree feature-auth
 
 # 自動で名前を生成
+# 名前を省略するとランダムな名前で worktree を作成
 claude --worktree
 
 # tmux連携（macOS/Linux）
+# -w は --worktree の短縮形。--tmux で新しい tmux ペインに展開
 claude -w feature-auth --tmux
 ```
 
@@ -2289,6 +2527,9 @@ gitignoreされたファイルをworktreeにコピーするための設定：
 .claude/settings.local.json
 .claude/.mcp.local.json
 ```
+
+- 各行に「gitignore されているがworktreeにはコピーしたい」ファイル名を書く。
+- `.env` などはGit追跡から外れているが、worktreeで開発するときに必要なのでこの仕組みでコピーする。
 
 > gitignoreされた **かつ** .worktreeincludeにマッチするファイルのみコピーされます。
 
@@ -2314,64 +2555,80 @@ gitignoreされたファイルをworktreeにコピーするための設定：
 ### 15-1. セッション管理
 
 ```bash
-claude                           # 新しいセッション開始
-claude -c                        # 前回のセッションを再開
-claude -r "session-name"         # 名前指定でセッション再開
-claude -n "my-feature"           # セッションに名前をつけて開始
-claude --from-pr 123             # PR連携セッション再開
+# 新しいセッション開始（最も普通の起動方法）
+claude
+# 前回のセッションを再開（-c は continue の意味）
+claude -c
+# 名前指定でセッション再開
+claude -r "session-name"
+# セッションに名前をつけて開始（後で -r で呼び戻せる）
+claude -n "my-feature"
+# Pull Request #123 連携セッションを再開
+claude --from-pr 123
 ```
 
 ### 15-2. モードとモデル
 
 ```bash
-claude --permission-mode plan           # Plan Mode
-claude --permission-mode acceptEdits    # 編集自動承認
-claude --permission-mode auto           # Auto Mode
-claude --model opus                     # Opus使用
-claude --model sonnet                   # Sonnet使用（安価）
-claude --effort high                    # 推論レベル
+# Plan Mode で起動（読み取り専用）
+claude --permission-mode plan
+# 編集は確認なしで自動承認（信頼できるタスク向け）
+claude --permission-mode acceptEdits
+# Auto Mode（バックグラウンドで安全性チェック）
+claude --permission-mode auto
+# Opus モデルを使用（高品質・高コスト）
+claude --model opus
+# Sonnet モデルを使用（安価・高速）
+claude --model sonnet
+# 推論レベルを最高に上げる
+claude --effort high
 ```
 
 ### 15-3. 非対話モード（スクリプト連携）
 
 ```bash
-# 質問を投げて回答を受け取る
+# -p は print mode。質問を投げて回答だけ受け取る（対話なし）
 claude -p "このプロジェクトの構成を教えて"
 
-# JSON出力
+# JSON 出力に切り替え。スクリプトでパースしやすい
 claude -p "package.jsonの依存関係を一覧して" --output-format json
 
-# ターン数制限
+# 最大ターン数を制限（無限ループ防止）
 claude -p "テストを全部実行して" --max-turns 5
 
-# 予算制限（USドル）
+# 予算上限を USD で指定。超えそうになると停止
 claude -p "全機能を実装して" --max-budget-usd 5.00
 ```
 
 ### 15-4. コンテキストとツール
 
 ```bash
-# 追加ディレクトリをコンテキストに含める
+# 別ディレクトリ（共有ライブラリ等）もコンテキストに含める
 claude --add-dir ../shared-lib
 
-# 使用ツール制限
+# 使用ツール制限（カンマ区切り）
 claude --tools "Bash,Edit,Read"
+# 特定ツールだけ禁止
 claude --disallowedTools "WebFetch"
 
-# システムプロンプト上書き
+# システムプロンプトを上書き（Claude の根本的な指示を変える）
 claude --system-prompt "You are a TypeScript expert"
+# システムプロンプトをファイルから読み込み
 claude --system-prompt-file ./custom-prompt.txt
 
-# MCP設定ファイル指定
+# MCP 設定ファイルを個別に指定
 claude --mcp-config ./custom-mcp.json
 ```
 
 ### 15-5. デバッグ
 
 ```bash
-claude --debug                          # デバッグモード
-claude --debug-file /tmp/claude.log     # ログファイル指定
-claude --verbose                        # 詳細出力
+# デバッグモード（内部の挙動を詳細出力）
+claude --debug
+# デバッグログをファイルに記録
+claude --debug-file /tmp/claude.log
+# 通常より詳細な出力
+claude --verbose
 ```
 
 ---
@@ -2427,6 +2684,8 @@ CLAUDE.mdの規約に準拠しているか再確認してから修正してく�
 勝手に追加の変更はしないでください。
 ```
 
+それでも止まらない場合は、`Ctrl+C` で実行を強制中断し、`git status` と `git diff` で被害状況を確認してから、必要に応じて `git restore` や `git checkout` で巻き戻します（破壊的コマンドは事前にコミットしてあれば安全に戻せます）。
+
 ---
 
 ## 17. ベストプラクティス総まとめ
@@ -2475,6 +2734,8 @@ CLAUDE.mdの規約に準拠しているか再確認してから修正してく�
 | Rulesを活用しない | パス別ルールで規約自動適用 |
 | Skillsを作らない | 繰り返す操作はSkill化して効率化 |
 | 全てデフォルトモードで実行 | 設計=Plan、実装=acceptEdits、レビュー=Plan |
+| AIにそのまま git push させる | コミット内容を確認し、push は人間が手動で行う |
+| `git status` を確認せず作業開始 | 毎セッション最初に `git status` / `git diff` で現状把握 |
 
 ### 17-4. 推奨ワークフロー全体図
 
@@ -2528,6 +2789,7 @@ CLAUDE.mdの規約に準拠しているか再確認してから修正してく�
 │ │                                              │    │
 │ │ ※機能完了ごとに /compact                      │    │
 │ │ ※並列作業は Worktree を活用                   │    │
+│ │ ※コミット前に git diff、push は人間が手動     │    │
 │ └────────────────────────────────────────────┘    │
 └──────────┬───────────────────────────────────────┘
            ↓
@@ -2554,6 +2816,7 @@ CLAUDE.mdの規約に準拠しているか再確認してから修正してく�
 | **CLAUDE.md（共有）** | `./CLAUDE.md` or `./.claude/CLAUDE.md` | Yes |
 | **CLAUDE.md（個人）** | `./CLAUDE.local.md` | No |
 | **CLAUDE.md（全体）** | `~/.claude/CLAUDE.md` | No |
+| **AGENTS.md（互換用）** | `./AGENTS.md` | Yes |
 | **Rules** | `.claude/rules/*.md` | Yes |
 | **Skills** | `.claude/skills/<name>/SKILL.md` | Yes |
 | **Skills（個人）** | `~/.claude/skills/<name>/SKILL.md` | No |
@@ -2636,3 +2899,5 @@ CLAUDE.mdの規約に準拠しているか再確認してから修正してく�
 > 1. **「まだコードは書かないで」** — 方針合意を先に取る
 > 2. **「完了したら一度止まって」** — 段階的レビューで品質を維持
 > 3. **「/review → /commit」** — レビューしてからコミットする
+>
+> そして大前提として、`git status` で現状を確認してから依頼し、`git diff` で結果を確認してから commit、`git push` は人間が手動で行う、というGit運用を徹底することで、AIと安全に協調できます。

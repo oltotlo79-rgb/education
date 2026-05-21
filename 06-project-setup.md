@@ -4,7 +4,7 @@
 
 ### この章で行うこと
 
-ここまでの章で学んだ技術（TypeScript、React、Next.js、Supabase）を組み合わせて、実際のプロジェクトを作成します。料理に例えると、**材料を揃えて下ごしらえをする段階**です。
+ここまでの章で学んだ技術（TypeScript、React、Next.js、Supabase）を組み合わせて、実際のプロジェクトを作成します。料理に例えると、**材料を揃えて下ごしらえをする段階**です。包丁やまな板、調味料を準備しておくのと同じで、後でスムーズに料理（コード）が書けるように、まずは作業環境を整えます。
 
 1. **Next.js プロジェクトの作成** — `npx create-next-app` コマンド（プロジェクトの雛形を自動生成するコマンド）を実行
 2. **Tailwind CSS の理解** — Tailwind CSS（テールウィンドCSS：HTMLのクラス名でスタイルを直接指定する CSSフレームワーク）の使い方
@@ -13,6 +13,12 @@
 5. **型定義の作成** — 書籍データの「Book型」をTypeScriptで定義
 
 この章を終えると、ブラウザで開発サーバー（Development Server：開発中にアプリを確認するためのローカルサーバー。`http://localhost:3000` でアクセスできる）にアクセスし、ヘッダー付きのトップページが表示される状態になります。
+
+> **用語のミニ解説：**
+> - **ビルド（build）**: ソースコード（人間が書いたコード）を、ブラウザや Node.js が実行できる形式に変換する作業のこと。TypeScript を JavaScript に変換したり、複数ファイルを1つにまとめたりします。
+> - **devサーバ（開発サーバー）**: コードを書きながら動作確認するためのローカル（自分のPC上）で動くWebサーバー。ファイルを保存すると自動的にブラウザの表示が更新されます。
+> - **依存関係（dependencies）**: あなたのアプリが動くために必要な外部のライブラリ（React や Next.js など）のこと。`package.json` に一覧が書かれます。
+> - **環境変数（environment variable）**: アプリの外側からプログラムに渡す設定値。コードに直接書きたくない秘密情報（API キーなど）や、開発環境と本番環境で値を変えたい設定に使います。
 
 > **ポイント：** この章はコードを書く量が多いですが、一つ一つのファイルの役割を理解しながら進めてください。「なぜこのファイルが必要なのか」を意識すると、後の章で迷わなくなります。
 
@@ -40,24 +46,31 @@
 ターミナル（コマンドプロンプト、PowerShell、または VS Code のターミナル）を開き、プロジェクトを作成したいディレクトリに移動してから、以下のコマンドを実行します。
 
 ```bash
+# npx: ローカルにインストールしていないコマンドも一時的に実行できるツール
+# create-next-app: Next.js プロジェクトの雛形を自動生成するパッケージ
+# @latest: パッケージの「最新版」を使うという指定（@を使ってバージョン指定）
+# book-management: 作成するプロジェクトのフォルダ名（好きな名前に変えてもOK）
 npx create-next-app@latest book-management
 ```
 
 > **`npx` とは？**
-> `npx` は npm 5.2 以降に同梱されているコマンドで、パッケージをグローバルインストールせずに一時的に実行できます。`create-next-app@latest` は「最新版の create-next-app を使う」という意味です。
+> `npx` は npm 5.2 以降に同梱されているコマンドで、パッケージをグローバルインストールせずに一時的に実行できます。`create-next-app@latest` は「最新版の create-next-app を使う」という意味です。プロジェクト作成のためだけに使うコマンドを、PCに永久にインストールせずに済むので便利です。
+
+> **`npm` と `npx` の違い:**
+> `npm install` はパッケージを「インストール」して使えるようにするコマンドで、`npx` はパッケージを「実行」するコマンドです。`create-next-app` はプロジェクト作成時に一度だけ使うので、インストールせずに `npx` で実行します。
 
 コマンドを実行すると、いくつかの質問が対話形式で表示されます。以下のように回答してください。
 
 ### 1.2 各選択肢の詳細解説
 
 ```
-Would you like to use TypeScript? … Yes
-Would you like to use ESLint? … Yes
-Would you like to use Tailwind CSS? … Yes
-Would you like your code inside a `src/` directory? … Yes
-Would you like to use App Router? (recommended) … Yes
-Would you like to use Turbopack for next dev? … Yes
-Would you like to customize the import alias (@/* by default)? … No
+Would you like to use TypeScript? … Yes              # TypeScriptを使うか？ → 使う
+Would you like to use ESLint? … Yes                  # ESLint（コード品質チェック）を使うか？ → 使う
+Would you like to use Tailwind CSS? … Yes            # Tailwind CSS（スタイリング）を使うか？ → 使う
+Would you like your code inside a `src/` directory? … Yes  # コードを src/ フォルダに入れるか？ → 入れる
+Would you like to use App Router? (recommended) … Yes      # App Router（新しいルーティング）を使うか？ → 使う
+Would you like to use Turbopack for next dev? … Yes        # Turbopack（高速ビルドツール）を使うか？ → 使う
+Would you like to customize the import alias (@/* by default)? … No  # @/* のエイリアスをカスタムするか？ → しない
 ```
 
 それぞれの選択肢が何を意味するのか、なぜその回答をするのかを詳しく見ていきましょう。
@@ -71,6 +84,14 @@ Would you like to customize the import alias (@/* by default)? … No
 | **App Router** | Yes | Next.js 13 以降で導入された新しいルーティング方式です。ファイルシステムベースのルーティング、Server Components、レイアウトのネストなど、モダンな機能が使えます。Pages Router（旧方式）より推奨されています。 |
 | **Turbopack** | Yes | Rust で書かれた高速なバンドラーです。開発サーバーの起動やホットリロード（コード変更時の自動反映）が従来の Webpack より大幅に高速になります。 |
 | **Import alias** | No（デフォルト） | デフォルトの `@/*` エイリアスをそのまま使います。`@/components/Header` のように `src/` ディレクトリ内のファイルを短いパスでインポートできます。 |
+
+> **静的解析（static analysis）とは？**
+> コードを実行せずに、ソースコードを読み解いて問題を見つける手法のこと。ESLint がこの役割を担います。例えば「この変数は宣言されているけど使われていない」「`if` 文の条件が常に true になる」といった問題を、実行前にチェックしてくれます。
+
+> **パスエイリアスとは？（重要）**
+> 通常、別のファイルをインポートするときは相対パス（`../../components/Header` のように、現在のファイルからの相対位置）を使います。深い階層になると `../../../../` のように `../` が増えて読みづらくなります。
+>
+> パスエイリアスを使うと、`@/components/Header` のように `src/` を起点とした絶対インポート（プロジェクトのルートからのパス）で書けるようになります。ファイルを移動してもインポート文を直さなくてよいので、リファクタリング（コードの整理）も楽になります。
 
 ### 1.3 なぜ Tailwind CSS を選ぶのか
 
@@ -128,9 +149,26 @@ Success! Created book-management at /Users/you/projects/book-management
 
 > **「added XXX packages」とは？:** `npm install` が `node_modules/` フォルダに何個のパッケージを置いたかを示します。React/Next.js本体に加えて、依存パッケージ（依存関係でついてくる関連ライブラリ）が一緒に入るので 300〜400個程度になります。これが普通です。
 
+> **`npm install` で何が起きているか:**
+> 1. `package.json` に書かれた依存パッケージのリストを読み取る
+> 2. npm レジストリ（https://www.npmjs.com）から、それぞれのパッケージをダウンロード
+> 3. ダウンロードしたパッケージを `node_modules/` フォルダに展開
+> 4. 各パッケージがさらに依存しているパッケージも芋づる式にダウンロード（これが「依存関係の解決」）
+> 5. インストールされた正確なバージョンを `package-lock.json` に記録
+>
+> `node_modules/` はとても巨大になりやすいですが、`.gitignore` でGit管理から除外するのが標準的なやり方です（後述）。
+
+> **`dependencies` と `devDependencies` の違い:**
+> - **`dependencies`**: アプリが本番環境で動くために必要なパッケージ。例: React、Next.js本体。
+> - **`devDependencies`**: 開発中だけ必要なパッケージ。例: TypeScript（本番ではJavaScriptに変換済み）、ESLint（本番では使わない）。
+>
+> 本番ビルド時には `devDependencies` を除外できるので、本番のサーバーに置くファイルを軽くできます。
+
 完了したら、表示されたプロジェクトフォルダに `cd` で移動します。
 
 ```bash
+# cd: Change Directory の略。指定したフォルダに移動するコマンド
+# book-management: 移動先のフォルダ名（先ほど create-next-app で作成したフォルダ）
 cd book-management
 ```
 
@@ -140,15 +178,15 @@ cd book-management
 
 ```
 book-management/
-  node_modules/         ... インストールされたパッケージ群
-  public/               ... 静的ファイル（画像など）
-    file.svg
-    globe.svg
-    next.svg
-    vercel.svg
-    window.svg
-  src/
-    app/
+  node_modules/         ... インストールされたパッケージ群（数百〜数千フォルダ。.gitignoreで除外する）
+  public/               ... 静的ファイル（画像など）。ここに置いたファイルは / 直下のURLでアクセス可能
+    file.svg            ... ファイルアイコン（デフォルトサンプル）
+    globe.svg           ... 地球アイコン（デフォルトサンプル）
+    next.svg            ... Next.js ロゴ（デフォルトサンプル）
+    vercel.svg          ... Vercel ロゴ（デフォルトサンプル）
+    window.svg          ... ウィンドウアイコン（デフォルトサンプル）
+  src/                  ... アプリのソースコードを置くフォルダ
+    app/                ... App Router のルートディレクトリ。フォルダ構成がそのままURLになる
       favicon.ico       ... ブラウザのタブに表示されるアイコン
       globals.css       ... グローバル CSS（Tailwind の設定を含む）
       layout.tsx        ... ルートレイアウト（全ページ共通の枠）
@@ -157,7 +195,7 @@ book-management/
   .gitignore            ... Git で管理しないファイルの指定
   next-env.d.ts         ... Next.js の TypeScript 型定義（自動生成）
   next.config.ts        ... Next.js の設定ファイル
-  package-lock.json     ... パッケージの正確なバージョン記録
+  package-lock.json     ... パッケージの正確なバージョン記録（自動更新されるので手で編集しない）
   package.json          ... プロジェクトの設定とパッケージ一覧
   postcss.config.mjs    ... PostCSS の設定（Tailwind CSS が使用）
   README.md             ... プロジェクトの説明
@@ -179,6 +217,98 @@ book-management/
 | `src/app/page.tsx` | トップページのコンポーネントです。URL `/` にアクセスしたときに表示されます。 |
 | `src/app/globals.css` | アプリ全体に適用されるグローバル CSS です。Tailwind CSS のディレクティブ（`@tailwind base;` など）が含まれています。 |
 
+> **`.gitignore` で何を除外するか、なぜか:**
+> Git の管理から除外する（コミットしない）べきファイルの種類を `.gitignore` ファイルに書きます。`create-next-app` が自動生成する `.gitignore` には、次のようなものが含まれます。
+>
+> | 除外対象 | 理由 |
+> |---------|------|
+> | `node_modules/` | パッケージ群はとても大きい上に `package.json` から再インストールできるため。コミットすると無駄に容量を食う。 |
+> | `.next/` | Next.js のビルド結果。実行のたびに再生成されるため。 |
+> | `.env*.local` | 秘密の環境変数（APIキー、パスワードなど）が入っているため。GitHub にアップすると漏洩する。 |
+> | `*.log`, `npm-debug.log*` | ログファイルは個人のPC固有のものなので共有不要。 |
+> | `.DS_Store`, `Thumbs.db` | macOS/Windowsが自動生成する隠しファイル。アプリと無関係。 |
+>
+> ルール: 「自動生成されるもの」「PC固有のもの」「秘密情報を含むもの」はGitに入れない、と覚えておくと良いです。
+
+### 1.6 主な設定ファイルの中身を見てみる
+
+#### `package.json` の構造
+
+`create-next-app` が生成する `package.json` は、おおよそ次のような構造になっています。
+
+```json
+{
+  "name": "book-management",                  // プロジェクト名（フォルダ名と同じ）
+  "version": "0.1.0",                          // プロジェクトのバージョン（自由に決められる）
+  "private": true,                             // true にすると npm publish で公開できなくなる（誤公開防止）
+  "scripts": {                                 // npm run <名前> で実行できるコマンドの集まり
+    "dev": "next dev --turbopack",             // 開発サーバー起動（Turbopackを使用）
+    "build": "next build",                     // 本番用ビルド（最適化された静的ファイルを生成）
+    "start": "next start",                     // ビルド済みアプリを本番モードで起動
+    "lint": "next lint"                        // ESLint でコード品質チェックを実行
+  },
+  "dependencies": {                            // 本番でも必要なパッケージ
+    "react": "19.x.x",                         // React 本体
+    "react-dom": "19.x.x",                     // React を DOM にレンダリングするためのパッケージ
+    "next": "15.x.x"                           // Next.js フレームワーク
+  },
+  "devDependencies": {                         // 開発中だけ必要なパッケージ
+    "typescript": "^5",                        // TypeScript コンパイラ
+    "@types/node": "^20",                      // Node.js の型定義
+    "@types/react": "^19",                     // React の型定義
+    "@types/react-dom": "^19",                 // React DOM の型定義
+    "postcss": "^8",                           // PostCSS（CSS変換ツール）
+    "tailwindcss": "^3.x.x",                   // Tailwind CSS 本体
+    "eslint": "^8",                            // ESLint 本体
+    "eslint-config-next": "15.x.x"             // Next.js 用 ESLint 設定
+  }
+}
+```
+
+#### `tsconfig.json` の主要設定
+
+```json
+{
+  "compilerOptions": {                         // TypeScript コンパイラの動作設定
+    "target": "ES2017",                        // コンパイル後のJavaScriptのバージョン（ES2017相当）
+    "lib": ["dom", "dom.iterable", "esnext"],  // 使えるグローバルAPI（DOM、最新のES機能など）
+    "allowJs": true,                           // .js ファイルもTypeScriptで扱えるようにする
+    "skipLibCheck": true,                      // ライブラリの型チェックをスキップ（高速化）
+    "strict": true,                            // 厳格な型チェックを有効化（推奨）
+    "noEmit": true,                            // .ts → .js への変換ファイルは出力しない（Next.jsが代行）
+    "esModuleInterop": true,                   // CommonJS と ES Modules の混在を許可
+    "module": "esnext",                        // モジュールシステムは最新の ES Modules
+    "moduleResolution": "bundler",             // モジュール解決方式（バンドラー用）
+    "resolveJsonModule": true,                 // .json ファイルを import 可能にする
+    "isolatedModules": true,                   // 各ファイルを独立したモジュールとして扱う
+    "jsx": "preserve",                         // JSX をそのまま残す（Next.jsが変換）
+    "incremental": true,                       // 増分コンパイルを有効化（再ビルドが速くなる）
+    "plugins": [
+      { "name": "next" }                       // Next.js 用の TypeScript プラグイン
+    ],
+    "paths": {                                 // パスエイリアスの定義
+      "@/*": ["./src/*"]                       // @/foo は src/foo を指す
+    }
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],  // 型チェック対象
+  "exclude": ["node_modules"]                  // 型チェック対象から除外
+}
+```
+
+#### `next.config.ts` の例（最小構成）
+
+```typescript
+// next.config.ts
+
+import type { NextConfig } from "next";       // Next.js の設定型をインポート（type 付きで型のみ取得）
+
+const nextConfig: NextConfig = {               // 設定オブジェクトの型を NextConfig に固定
+  /* ここに追加の設定を書く */                   // 例: images.remotePatterns で外部画像ドメインを許可など
+};
+
+export default nextConfig;                     // デフォルトエクスポート（Next.js が自動で読み込む）
+```
+
 ---
 
 ## 2. Tailwind CSS の基礎
@@ -189,22 +319,24 @@ book-management/
 
 ```css
 /* 従来の CSS */
-.card {
-  background-color: white;
-  border-radius: 8px;
-  padding: 16px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+.card {                                        /* card という名前のクラスにスタイルを定義 */
+  background-color: white;                     /* 背景色を白に */
+  border-radius: 8px;                          /* 角を 8px の半径で丸める */
+  padding: 16px;                               /* 内側の余白を 16px に */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);    /* 薄い影を下方向に */
 }
 ```
 
 ```html
+<!-- HTML 側で class 属性に名前を指定して上記スタイルを適用 -->
 <div class="card">...</div>
 ```
 
 Tailwind CSS では、あらかじめ用意された小さなユーティリティクラスを組み合わせてスタイリングします。
 
 ```html
-<!-- Tailwind CSS -->
+<!-- Tailwind CSS: 1つ1つが小さな役割を持つクラスを並べる -->
+<!-- bg-white: 背景白 / rounded-lg: 大きめの角丸 / p-4: 内側16px余白 / shadow-sm: 控えめな影 -->
 <div class="bg-white rounded-lg p-4 shadow-sm">...</div>
 ```
 
@@ -356,10 +488,11 @@ Tailwind CSS では、ブレークポイントのプレフィックスを付け�
 #### 実例: レスポンシブなグリッドレイアウト
 
 ```tsx
+{/* grid: グリッド表示 / grid-cols-1: 1列 / md:grid-cols-2: 768px以上で2列 / lg:grid-cols-3: 1024px以上で3列 / gap-4: 子要素間に16px間隔 */}
 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-  <div>カード1</div>
-  <div>カード2</div>
-  <div>カード3</div>
+  <div>カード1</div>          {/* 1つ目のセル */}
+  <div>カード2</div>          {/* 2つ目のセル */}
+  <div>カード3</div>          {/* 3つ目のセル */}
 </div>
 ```
 
@@ -378,6 +511,7 @@ Tailwind CSS では、ブレークポイントのプレフィックスを付け�
 **Step 1: テキストだけ（クラスなし）**
 
 ```tsx
+{/* 何もクラスを付けないボタン。ブラウザのデフォルト見た目になる */}
 <button>書籍を登録する</button>
 ```
 
@@ -386,6 +520,7 @@ Tailwind CSS では、ブレークポイントのプレフィックスを付け�
 **Step 2: 背景色と文字色を追加**
 
 ```tsx
+{/* bg-blue-600: 青い背景 / text-white: 白い文字 */}
 <button className="bg-blue-600 text-white">書籍を登録する</button>
 ```
 
@@ -394,6 +529,7 @@ Tailwind CSS では、ブレークポイントのプレフィックスを付け�
 **Step 3: 余白を追加**
 
 ```tsx
+{/* px-4: 左右の内側余白16px / py-2: 上下の内側余白8px */}
 <button className="bg-blue-600 text-white px-4 py-2">書籍を登録する</button>
 ```
 
@@ -402,6 +538,7 @@ Tailwind CSS では、ブレークポイントのプレフィックスを付け�
 **Step 4: 角丸を追加**
 
 ```tsx
+{/* rounded-md: 中程度の角丸（border-radius: 6px） */}
 <button className="bg-blue-600 text-white px-4 py-2 rounded-md">書籍を登録する</button>
 ```
 
@@ -410,6 +547,8 @@ Tailwind CSS では、ブレークポイントのプレフィックスを付け�
 **Step 5: ホバーエフェクトとトランジションを追加**
 
 ```tsx
+{/* hover:bg-blue-700: マウスホバー時に少し濃い青へ */}
+{/* transition: 変化をスムーズに / duration-200: 200ミリ秒かけて変化 */}
 <button className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition duration-200">
   書籍を登録する
 </button>
@@ -420,6 +559,10 @@ Tailwind CSS では、ブレークポイントのプレフィックスを付け�
 **Step 6: フォーカスリングを追加**
 
 ```tsx
+{/* focus:outline-none: デフォルトの黒い枠を消す */}
+{/* focus:ring-2: フォーカス時に2pxのリング */}
+{/* focus:ring-blue-500: リング色は青 */}
+{/* focus:ring-offset-2: リングとボタンの間に2pxの隙間 */}
 <button className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
   書籍を登録する
 </button>
@@ -430,6 +573,9 @@ Tab キーでフォーカスしたときに、ボタンの周りに青いリン�
 **完成形: 本チュートリアルで使うボタンスタイル**
 
 ```tsx
+{/* font-medium: やや太字（500） */}
+{/* disabled:opacity-50: disabled属性付きのときは半透明 */}
+{/* disabled:cursor-not-allowed: disabled時はカーソルを「禁止」マークに */}
 <button className="bg-blue-600 text-white px-4 py-2 rounded-md font-medium hover:bg-blue-700 transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed">
   書籍を登録する
 </button>
@@ -442,7 +588,11 @@ Tab キーでフォーカスしたときに、ボタンの周りに青いリン�
 プロジェクトのディレクトリに移動してから、必要なパッケージをインストールします。
 
 ```bash
+# プロジェクトフォルダに移動
 cd book-management
+
+# npm install: package.json に依存パッケージを追加し、node_modules/ にダウンロード
+# @supabase/supabase-js: Supabase 公式の JavaScript/TypeScript クライアントライブラリ
 npm install @supabase/supabase-js
 ```
 
@@ -468,15 +618,23 @@ npm install @supabase/supabase-js
 ```json
 {
   "dependencies": {
-    "@supabase/supabase-js": "^2.x.x",
-    "next": "15.x.x",
-    "react": "^19.x.x",
-    "react-dom": "^19.x.x"
+    "@supabase/supabase-js": "^2.x.x",   // 今インストールしたSupabaseクライアント（^は後述）
+    "next": "15.x.x",                     // Next.js本体
+    "react": "^19.x.x",                   // React本体
+    "react-dom": "^19.x.x"                // React DOM
   }
 }
 ```
 
 > **`^` の意味:** `^2.49.1` は「メジャーバージョン 2 の範囲で最新版を許容する」という意味です。`2.49.1` から `2.99.99` まではインストール可能ですが、`3.0.0` はインストールされません。これにより、破壊的変更を避けつつ最新のバグ修正やパフォーマンス改善を受けられます。
+
+> **セマンティックバージョニング（SemVer）の補足:**
+> バージョン番号は `メジャー.マイナー.パッチ` の形（例: `2.49.1`）になっています。
+> - **メジャー（2）**: 互換性のない変更（古い書き方が動かなくなる可能性あり）
+> - **マイナー（49）**: 機能追加（後方互換あり）
+> - **パッチ（1）**: バグ修正
+>
+> `^` は「マイナーとパッチの自動アップデートはOK、メジャーは固定」という意味のルールです。
 
 ---
 
@@ -544,30 +702,30 @@ npm install @supabase/supabase-js
 
 ```
 src/
-├── app/
-│   ├── page.tsx              ... トップページ（書籍一覧を表示）
-│   ├── layout.tsx            ... ルートレイアウト（全ページ共通の枠組み）
-│   ├── globals.css           ... グローバル CSS
-│   └── books/
-│       ├── new/
-│       │   └── page.tsx      ... 書籍登録ページ
-│       └── [id]/
-│           ├── page.tsx      ... 書籍詳細ページ
-│           └── edit/
-│               └── page.tsx  ... 書籍編集ページ
-├── components/
-│   ├── Header.tsx            ... 共通ヘッダー
-│   ├── BookCard.tsx          ... 書籍カード（一覧の各アイテム）
-│   ├── BookForm.tsx          ... 書籍登録・編集フォーム
-│   ├── BookList.tsx          ... 書籍一覧表示
-│   ├── DeleteButton.tsx      ... 削除ボタン
-│   ├── StatusBadge.tsx       ... ステータスバッジ
-│   ├── RatingStars.tsx       ... 評価（星）表示
-│   └── LoadingSpinner.tsx    ... ローディング表示
-├── lib/
-│   └── supabase.ts           ... Supabase クライアント設定
-└── types/
-    └── book.ts               ... 型定義
+├── app/                            # App Router のルート。フォルダ名 = URL になる
+│   ├── page.tsx                    # / にアクセスしたときのページ（トップ：書籍一覧）
+│   ├── layout.tsx                  # 全ページ共通の枠（HTMLタグ、ヘッダーなど）
+│   ├── globals.css                 # アプリ全体のグローバルCSS（Tailwindディレクティブ含む）
+│   └── books/                      # /books 配下のページをまとめるフォルダ
+│       ├── new/                    # /books/new ページ用のフォルダ
+│       │   └── page.tsx            # 書籍登録ページ
+│       └── [id]/                   # [id] は動的セグメント。/books/任意のID にマッチ
+│           ├── page.tsx            # 書籍詳細ページ（/books/123 など）
+│           └── edit/               # /books/[id]/edit ページ用のフォルダ
+│               └── page.tsx        # 書籍編集ページ
+├── components/                     # 再利用可能なUI部品を置くフォルダ
+│   ├── Header.tsx                  # 共通ヘッダー（全ページ上部のナビ）
+│   ├── BookCard.tsx                # 書籍カード（一覧の各アイテム）
+│   ├── BookForm.tsx                # 書籍登録・編集フォーム
+│   ├── BookList.tsx                # 書籍一覧表示（BookCardを並べる）
+│   ├── DeleteButton.tsx            # 削除ボタン（確認ダイアログ付き）
+│   ├── StatusBadge.tsx             # ステータスバッジ（読書中など）
+│   ├── RatingStars.tsx             # 評価（星）表示
+│   └── LoadingSpinner.tsx          # ローディング表示（くるくる回るやつ）
+├── lib/                            # アプリ全体で使うユーティリティを置くフォルダ
+│   └── supabase.ts                 # Supabase クライアントの初期化・エクスポート
+└── types/                          # TypeScript 型定義を置くフォルダ
+    └── book.ts                     # Book / BookInsert / BookUpdate などの型
 ```
 
 ### 4.2 各ファイルの役割
@@ -617,7 +775,10 @@ src/
 
 ```bash
 # ディレクトリの作成
+# mkdir: Make Directory の略。フォルダを作成するコマンド
+# -p: 親フォルダが存在しなければ一緒に作る（既に存在してもエラーにならない）
 mkdir -p src/app/books/new
+# [id] は角括弧の意味を持つ特殊文字なので、シェルで誤解されないようにバックスラッシュでエスケープ
 mkdir -p src/app/books/\[id\]/edit
 mkdir -p src/components
 mkdir -p src/lib
@@ -628,16 +789,18 @@ mkdir -p src/types
 
 ```bash
 # ファイルの作成（中身は後ほど記述）
-touch src/components/Header.tsx
-touch src/components/BookCard.tsx
-touch src/components/BookForm.tsx
-touch src/components/BookList.tsx
-touch src/components/DeleteButton.tsx
-touch src/components/StatusBadge.tsx
-touch src/components/RatingStars.tsx
-touch src/components/LoadingSpinner.tsx
-touch src/lib/supabase.ts
-touch src/types/book.ts
+# touch: 空のファイルを作成するコマンド（既に存在する場合は最終更新時刻だけ変える）
+# Windows の PowerShell では touch がないので、代わりに「New-Item -ItemType File ファイル名」を使う
+touch src/components/Header.tsx          # 共通ヘッダー
+touch src/components/BookCard.tsx        # 書籍カード
+touch src/components/BookForm.tsx        # 書籍フォーム
+touch src/components/BookList.tsx        # 書籍一覧
+touch src/components/DeleteButton.tsx    # 削除ボタン
+touch src/components/StatusBadge.tsx     # ステータスバッジ
+touch src/components/RatingStars.tsx     # 評価表示
+touch src/components/LoadingSpinner.tsx  # ローディング
+touch src/lib/supabase.ts                # Supabaseクライアント
+touch src/types/book.ts                  # Book型定義
 ```
 
 ---
@@ -669,8 +832,13 @@ Supabase クライアントの設定には、以下の2つの情報が必要で�
 
 ```bash
 # book-management/.env.local
+# このファイルは ENV ファイルと呼ばれ、「キー=値」の形で環境変数を1行ずつ書く
+# NEXT_PUBLIC_ プレフィックスを付けると Next.js がブラウザ側にも公開してくれる
 
+# Supabase プロジェクトのURL（ダッシュボードからコピー）
 NEXT_PUBLIC_SUPABASE_URL=https://xxxxxxxxxxxxxxxx.supabase.co
+
+# Supabase の Anon Key（匿名アクセス用の公開鍵。長いJWTトークン形式）
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
@@ -678,6 +846,20 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.xxxxxxxxxxxxx
 > Next.js では、環境変数に `NEXT_PUBLIC_` プレフィックスを付けると、ブラウザ側の JavaScript からもアクセスできるようになります。プレフィックスがない環境変数はサーバー側でのみ使用可能です。
 >
 > Supabase の Anon Key はブラウザから直接 API を呼び出すために使うため、`NEXT_PUBLIC_` が必要です。Anon Key は Row Level Security（RLS）で保護されているため、公開しても安全です（前の章で RLS を設定しました）。
+
+> **ENV ファイルの種類と読み込み順（Next.js）:**
+> Next.js では複数の `.env` 系ファイルを使い分けられます。同じ変数が複数のファイルにある場合、上のものが優先されます。
+>
+> | ファイル | いつ読み込まれるか | Gitに入れる？ |
+> |---------|----------------|-------------|
+> | `.env.local` | 全環境（開発・本番ともに）。ただし `next test` は除く | **入れない**（.gitignoreで除外） |
+> | `.env.development` | 開発時（`npm run dev`）のみ | 入れてOK（秘密情報を含まないなら） |
+> | `.env.production` | 本番時（`npm run start`）のみ | 入れてOK（秘密情報を含まないなら） |
+> | `.env` | すべての環境（デフォルト値） | 入れてOK（秘密情報を含まないなら） |
+>
+> 読み込み優先順位（高 → 低）: `.env.local` > `.env.development` / `.env.production` > `.env`
+>
+> **覚え方:** 「`.local` が付くファイルは個人専用＝Gitに入れない＝秘密情報を入れてOK」。`.env.local` だけは絶対にコミットしない、と覚えれば事故を防げます。
 
 > **`.env.local` がGitにアップロードされない理由:**
 > `create-next-app` が自動生成した `.gitignore` ファイルには `.env*.local` が含まれています。そのため、`.env.local` は Git にコミットされず、API キーが公開リポジトリに漏洩する心配はありません。
@@ -690,21 +872,30 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.xxxxxxxxxxxxx
 
 ```typescript
 // src/lib/supabase.ts
+// このファイルは、アプリ全体で共有する Supabase クライアントを作成・エクスポートする役割
 
+// @supabase/supabase-js パッケージから createClient 関数を「名前付きインポート」する
+// {} で囲むのが名前付きインポートの構文。export されている特定の関数だけを取り出す
 import { createClient } from "@supabase/supabase-js";
 
 // 環境変数から Supabase の接続情報を取得
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+// process.env: Node.js 由来のグローバルオブジェクト。.env.local の中身がここに入る
+// NEXT_PUBLIC_ で始まる変数は、ビルド時にブラウザ側のコードにも埋め込まれる
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;       // SupabaseのプロジェクトURL
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY; // Supabase の Anon Key
 
 // 環境変数が設定されていない場合にわかりやすいエラーメッセージを表示
+// !supabaseUrl は「supabaseUrl が undefined や空文字なら true」になる条件
 if (!supabaseUrl) {
+  // throw: エラーを「投げる」。アプリの実行を停止し、コンソールにエラーを出力する
+  // new Error(...): JavaScript標準のエラーオブジェクトを作る
   throw new Error(
     "環境変数 NEXT_PUBLIC_SUPABASE_URL が設定されていません。" +
       ".env.local ファイルを確認してください。"
   );
 }
 
+// AnonKey についても同じく未設定チェックを行う
 if (!supabaseAnonKey) {
   throw new Error(
     "環境変数 NEXT_PUBLIC_SUPABASE_ANON_KEY が設定されていません。" +
@@ -714,6 +905,8 @@ if (!supabaseAnonKey) {
 
 // Supabase クライアントを作成してエクスポート
 // アプリ全体で同じインスタンスを使い回す（シングルトンパターン）
+// export const: 他のファイルから import できる変数を宣言
+// createClient(URL, Key): 第1引数 URL、第2引数 認証キーで Supabase に接続するクライアントを作成
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 ```
 
@@ -721,11 +914,36 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 | 行 | 解説 |
 |----|------|
-| `import { createClient } from "@supabase/supabase-js";` | Supabase の公式ライブラリから `createClient` 関数をインポートします。この関数が Supabase との接続を確立します。 |
+| `import { createClient } from "@supabase/supabase-js";` | Supabase の公式ライブラリから `createClient` 関数をインポートします。この関数が Supabase との接続を確立します。中括弧 `{}` で囲むのが「named import（名前付きインポート）」で、ライブラリが `export { createClient }` のように公開している特定の関数だけを取り出します。 |
 | `process.env.NEXT_PUBLIC_SUPABASE_URL` | `.env.local` に定義した環境変数を読み取ります。`process.env` は Node.js が環境変数にアクセスするためのオブジェクトです。 |
 | `if (!supabaseUrl)` | 環境変数が未設定（`undefined`）の場合にエラーを投げます。`.env.local` の作成忘れや typo を早期に検出できます。 |
 | `createClient(supabaseUrl, supabaseAnonKey)` | Supabase クライアントを生成します。第1引数が API の URL、第2引数が認証キーです。 |
 | `export const supabase` | 生成したクライアントを `supabase` という名前でエクスポートします。他のファイルから `import { supabase } from "@/lib/supabase";` でインポートして使います。 |
+
+> **import 文の種類（重要）:**
+> JavaScript/TypeScript には3種類のインポート方法があります。
+> - **default import**: `import React from "react";` のように中括弧なし。各ファイルにつき1つだけ `export default` できる主要なものを取り出す。
+> - **named import**: `import { useState } from "react";` のように中括弧あり。複数の名前を指定して取り出せる（例: `import { useState, useEffect } from "react";`）。
+> - **type import**: `import type { Book } from "@/types/book";` のように `type` キーワード付き。型のみをインポートし、ビルド時に取り除かれる（JavaScriptには型がないため）。
+
+> **シングルトンパターンとは？**
+> アプリ全体で「ただ1つのインスタンス」を共有する設計のこと。`supabase.ts` で1回だけ `createClient` を呼び、できた `supabase` オブジェクトを全ファイルで使い回します。毎回新しく作るとリソースの無駄、設定がバラバラになる、などの問題が起きるので、共通化しておくのが定石です。
+
+> **Server Component と Client Component で Supabase を使うときの違い（重要）:**
+>
+> Next.js の App Router では、コンポーネントが「Server Component」（サーバー側で実行）か「Client Component」（ブラウザ側で実行）かを区別します。それぞれで Supabase を使う際の注意点が異なります。
+>
+> | 観点 | Server Component | Client Component |
+> |------|------------------|------------------|
+> | ファイル先頭の宣言 | （宣言なし。デフォルト） | `"use client"` を書く |
+> | 実行場所 | サーバー（あなたのPC or 本番サーバー） | ユーザーのブラウザ |
+> | 使える React フック | 使えない（useState など不可） | 使える |
+> | データ取得 | `await supabase.from(...)` を直接書ける | `useEffect` 内で呼ぶ必要あり |
+> | 環境変数 | サーバー専用変数（`SUPABASE_SERVICE_ROLE_KEY` 等）も読める | `NEXT_PUBLIC_` 付きの変数のみ |
+> | 認証情報 | サーバー側でCookieからセッションを取る場合がある | ブラウザのlocalStorage等にセッション保存 |
+> | このチュートリアル | 主に静的な表示で使用 | フォーム入力や削除などインタラクションで使用 |
+>
+> 本チュートリアルでは、書籍一覧表示は Client Component（フォーム入力との連携のため `"use client"`）で実装します。より高度な用途では、Server Component から直接Supabaseを呼ぶこともできます。
 
 ---
 
@@ -737,6 +955,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 ```typescript
 // src/types/book.ts
+// 書籍データに関する型と定数をまとめて定義するファイル
 
 /**
  * 読書ステータスの型定義
@@ -745,6 +964,9 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
  * - "reading" : 読書中（今読んでいる途中）
  * - "finished": 読了（読み終わった）
  */
+// type: TypeScript の型エイリアス（型に名前を付ける構文）
+// "unread" | "reading" | "finished": ユニオン型。この3つの文字列リテラルのいずれかしか取れない
+// export: 他のファイルからこの型をインポートできるようにする
 export type BookStatus = "unread" | "reading" | "finished";
 
 /**
@@ -754,30 +976,31 @@ export type BookStatus = "unread" | "reading" | "finished";
  * すべてのフィールドが含まれており、データベースから取得した
  * 書籍データはこの型に一致します。
  */
+// type Book = { ... }: オブジェクトの形を表す型を Book という名前で定義
 export type Book = {
   /** 書籍ID（UUID形式、Supabase が自動生成） */
-  id: string;
+  id: string;                  // UUID は "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" 形式の文字列
 
   /** 書籍のタイトル（必須） */
-  title: string;
+  title: string;               // 例: "リーダブルコード"
 
   /** 著者名（必須） */
-  author: string;
+  author: string;              // 例: "Dustin Boswell"
 
   /** 読書ステータス（デフォルト: "unread"） */
-  status: BookStatus;
+  status: BookStatus;          // 上で定義した BookStatus 型（3つの文字列のどれか）
 
   /** 評価（1〜5の整数、未評価の場合は null） */
-  rating: number | null;
+  rating: number | null;       // number | null: 数値か null のどちらか（ユニオン型）
 
   /** メモ・感想（任意、未入力の場合は null） */
-  memo: string | null;
+  memo: string | null;         // 文字列または null
 
   /** 作成日時（ISO 8601 形式の文字列、Supabase が自動生成） */
-  created_at: string;
+  created_at: string;          // 例: "2024-01-15T10:30:00.000Z"
 
   /** 更新日時（ISO 8601 形式の文字列、Supabase が自動生成） */
-  updated_at: string;
+  updated_at: string;          // 行が更新されるたびに Supabase のトリガーが書き換える
 };
 
 /**
@@ -789,19 +1012,19 @@ export type Book = {
  */
 export type BookInsert = {
   /** 書籍のタイトル（必須） */
-  title: string;
+  title: string;               // 必須項目（? が付いていない）
 
   /** 著者名（必須） */
-  author: string;
+  author: string;              // 必須項目
 
   /** 読書ステータス（省略時は "unread" がデフォルト） */
-  status?: BookStatus;
+  status?: BookStatus;         // ?: オプショナル。省略可能。省略時の値はDB側のデフォルトで補う
 
   /** 評価（1〜5、省略時は null） */
-  rating?: number | null;
+  rating?: number | null;      // 省略してもよいし、明示的に null を送ってもよい
 
   /** メモ・感想（省略時は null） */
-  memo?: string | null;
+  memo?: string | null;        // 同上
 };
 
 /**
@@ -813,19 +1036,19 @@ export type BookInsert = {
  */
 export type BookUpdate = {
   /** 書籍のタイトル */
-  title?: string;
+  title?: string;              // すべて ? 付き（更新時は変更したいフィールドのみ送る）
 
   /** 著者名 */
-  author?: string;
+  author?: string;             // 同上
 
   /** 読書ステータス */
-  status?: BookStatus;
+  status?: BookStatus;         // 同上
 
   /** 評価（1〜5、null で評価をクリア） */
-  rating?: number | null;
+  rating?: number | null;      // null を明示的に送ると評価をリセットできる
 
   /** メモ・感想（null でメモをクリア） */
-  memo?: string | null;
+  memo?: string | null;        // 同上
 };
 
 /**
@@ -834,10 +1057,13 @@ export type BookUpdate = {
  * コンポーネントでステータスを日本語表示するときに使います。
  * 例: statusLabels["reading"] → "読書中"
  */
+// Record<BookStatus, string>: TypeScript の組み込み型。
+// 「キーが BookStatus 型、値が string 型のオブジェクト」を意味する
+// 3つのキー（unread, reading, finished）すべてが必須になる
 export const statusLabels: Record<BookStatus, string> = {
-  unread: "未読",
-  reading: "読書中",
-  finished: "読了",
+  unread: "未読",              // "unread" の表示用ラベル
+  reading: "読書中",            // "reading" の表示用ラベル
+  finished: "読了",             // "finished" の表示用ラベル
 };
 
 /**
@@ -846,21 +1072,24 @@ export const statusLabels: Record<BookStatus, string> = {
  * StatusBadge コンポーネントでバッジの色を切り替えるときに使います。
  * Tailwind CSS のクラス名を直接指定しています。
  */
+// Record<BookStatus, { bg: string; text: string }>:
+// キーが BookStatus、値が { bg: string; text: string } 型のオブジェクト
+// 各ステータスごとに「背景色クラス」と「文字色クラス」を持つ
 export const statusColors: Record<
   BookStatus,
   { bg: string; text: string }
 > = {
-  unread: {
-    bg: "bg-gray-100",
-    text: "text-gray-700",
+  unread: {                    // 未読: グレー系（控えめ）
+    bg: "bg-gray-100",         // 背景は薄いグレー
+    text: "text-gray-700",     // 文字は濃いめのグレー
   },
-  reading: {
-    bg: "bg-blue-100",
-    text: "text-blue-700",
+  reading: {                   // 読書中: 青系（進行中の印象）
+    bg: "bg-blue-100",         // 背景は薄い青
+    text: "text-blue-700",     // 文字は濃いめの青
   },
-  finished: {
-    bg: "bg-green-100",
-    text: "text-green-700",
+  finished: {                  // 読了: 緑系（完了の印象）
+    bg: "bg-green-100",        // 背景は薄い緑
+    text: "text-green-700",    // 文字は濃いめの緑
   },
 };
 ```
@@ -875,6 +1104,25 @@ export const statusColors: Record<
 | `BookUpdate` | 更新時に送るデータの型です。すべてのフィールドがオプショナルで、変更したい項目だけを送ります。 |
 | `statusLabels` | ステータスの文字列を日本語ラベルに変換するためのマッピングオブジェクトです。`Record<BookStatus, string>` は「キーが `BookStatus` 型、値が `string` 型のオブジェクト」を意味します。 |
 | `statusColors` | ステータスに対応する Tailwind CSS のクラス名をマッピングしたオブジェクトです。StatusBadge コンポーネントでバッジの背景色と文字色を動的に切り替えるために使います。 |
+
+> **Supabase の自動生成型（Database 型）について:**
+> 大規模プロジェクトでは Supabase CLI で `npx supabase gen types typescript` を実行し、データベースの定義からTypeScriptの型を自動生成することがあります。生成された型は次のような形をしています。
+>
+> ```typescript
+> export type Database = {
+>   public: {
+>     Tables: {
+>       books: {
+>         Row: { id: string; title: string; ... };       // SELECTで返ってくる行の型
+>         Insert: { title: string; author: string; ... }; // INSERT時に渡す型
+>         Update: { title?: string; ... };                 // UPDATE時に渡す型
+>       };
+>     };
+>   };
+> };
+> ```
+>
+> 本チュートリアルでは学習のしやすさのため、手書きで `Book`, `BookInsert`, `BookUpdate` を定義しています。仕組みは同じです。
 
 > **なぜ3つの型を分けるのか？**
 >
@@ -898,10 +1146,21 @@ export const statusColors: Record<
 
 ```typescript
 // src/app/layout.tsx
+// 全ページに適用される「ルートレイアウト」。<html> と <body> はここでしか書かない
 
+// type import: Metadata 型だけをインポート（実体はビルド後のコードに残らない）
 import type { Metadata } from "next";
+
+// named import: next/font/google から Noto_Sans_JP 関数だけを取り出す
+// next/font は Next.js が用意した、フォント最適化のための機能
 import { Noto_Sans_JP } from "next/font/google";
+
+// CSS のサイドエフェクトインポート（左辺なし）
+// このファイルを読み込んだだけで CSS が適用される
 import "./globals.css";
+
+// default import: Header コンポーネントを取り込む
+// @/components/Header は src/components/Header（パスエイリアス @/ = src/）
 import Header from "@/components/Header";
 
 /**
@@ -913,10 +1172,10 @@ import Header from "@/components/Header";
  * （外部の Google Fonts サーバーにリクエストが飛ばないため高速）
  */
 const notoSansJP = Noto_Sans_JP({
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
-  display: "swap",
-  preload: true,
+  subsets: ["latin"],         // 読み込むサブセット（文字種）。日本語はデフォルトで含まれる
+  weight: ["400", "500", "700"], // 使用するフォントの太さ（通常 / やや太字 / 太字）
+  display: "swap",            // フォント読み込み中は代替フォントで表示し、完了後に切り替える
+  preload: true,              // 重要なフォントなので、HTMLの <link rel="preload"> で先読みする
 });
 
 /**
@@ -925,9 +1184,11 @@ const notoSansJP = Noto_Sans_JP({
  * ブラウザのタブに表示されるタイトルや、
  * 検索エンジンに表示される説明文を設定します。
  */
+// export const metadata: Next.js が自動でこの変数を読み取って <head> に反映する
+// 型は Metadata（先ほど type import したもの）
 export const metadata: Metadata = {
-  title: "書籍管理アプリ",
-  description:
+  title: "書籍管理アプリ",                       // <title> タグの中身（ブラウザのタブ表示）
+  description:                                  // <meta name="description"> の中身（検索結果に出る説明文）
     "読んだ本、読んでいる本、これから読む本を管理するWebアプリケーション",
 };
 
@@ -945,16 +1206,30 @@ export const metadata: Metadata = {
  *     </body>
  *   </html>
  */
+// export default function: ファイルの主要な関数として1つだけ default エクスポート
+// RootLayout: コンポーネントの名前。Next.js が自動でこの関数を呼ぶ
+// { children }: 分割代入で props から children を取り出している
+// Readonly<{ children: React.ReactNode }>: 引数の型。children は読み取り専用、React の任意のノード
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // JSX を return する。1つの親要素（<html>）で全体を包む必要がある
   return (
+    // lang="ja": HTML の言語属性を日本語に。スクリーンリーダーや検索エンジン用
     <html lang="ja">
+      {/* body の className: notoSansJP のクラス名 + Tailwind の背景色と最小高さ */}
+      {/* テンプレートリテラル `${...}` で文字列を結合 */}
       <body className={`${notoSansJP.className} bg-gray-50 min-h-screen`}>
+        {/* 共通ヘッダーを最上部に配置 */}
         <Header />
+        {/* main: ページのメインコンテンツ領域 */}
+        {/* max-w-7xl: 最大幅1280px / mx-auto: 左右マージン自動で中央寄せ */}
+        {/* px-4 sm:px-6 lg:px-8: 画面サイズに応じて左右パディングを変える（モバイル16px → タブレット24px → PC32px） */}
+        {/* py-8: 上下パディング32px */}
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* children: 各ページの中身がここに差し込まれる */}
           {children}
         </main>
       </body>
@@ -967,14 +1242,14 @@ export default function RootLayout({
 
 | 部分 | 解説 |
 |------|------|
-| `import type { Metadata } from "next";` | Next.js のメタデータ型をインポートします。`type` キーワードは「型のみインポート」を意味し、ランタイムには影響しません。 |
+| `import type { Metadata } from "next";` | Next.js のメタデータ型をインポートします。`type` キーワードは「型のみインポート」を意味し、ランタイムには影響しません（ビルド時に消える）。 |
 | `import { Noto_Sans_JP } from "next/font/google";` | Google Fonts から Noto Sans JP フォントをインポートします。`next/font` を使うと、フォントがビルド時にダウンロードされ、パフォーマンスが最適化されます。 |
-| `import "./globals.css";` | Tailwind CSS のグローバルスタイルを読み込みます。この1行がないと Tailwind のクラスが機能しません。 |
-| `import Header from "@/components/Header";` | 共通ヘッダーコンポーネントをインポートします。`@/` は `src/` ディレクトリのエイリアスです。 |
+| `import "./globals.css";` | Tailwind CSS のグローバルスタイルを読み込みます。この1行がないと Tailwind のクラスが機能しません。`./` は同じフォルダにあるファイルを指す相対パス。 |
+| `import Header from "@/components/Header";` | 共通ヘッダーコンポーネントをインポートします。`@/` は `src/` ディレクトリのエイリアスです。これにより `../../components/Header` のように相対パスを書かなくて済みます。 |
 | `subsets: ["latin"]` | ラテン文字のサブセットを読み込みます。日本語文字はデフォルトで含まれます。 |
-| `weight: ["400", "500", "700"]` | 使用するフォントウェイト（太さ）を指定します。400 = 通常、500 = やや太字、700 = 太字。 |
-| `display: "swap"` | フォントの読み込み方式を指定します。`"swap"` はフォント読み込み完了前にシステムフォントで表示し、読み込み後に切り替えます（FOIT を防ぐ）。 |
-| `export const metadata` | ページのメタデータを定義します。`title` がブラウザのタブに表示され、`description` が検索エンジンの説明文に使われます。 |
+| `weight: ["400", "500", "700"]` | 使用するフォントウェイト（太さ）を指定します。400 = 通常、500 = やや太字、700 = 太字。指定しない太さは使えなくなる代わりに、ダウンロードサイズが減ります。 |
+| `display: "swap"` | フォントの読み込み方式を指定します。`"swap"` はフォント読み込み完了前にシステムフォントで表示し、読み込み後に切り替えます（FOIT: Flash Of Invisible Text を防ぐ）。 |
+| `export const metadata` | ページのメタデータを定義します。`title` がブラウザのタブに表示され、`description` が検索エンジンの説明文に使われます。Next.js がこの export を自動的に検出して `<head>` タグに反映します。 |
 | `lang="ja"` | HTML の言語を日本語に設定します。スクリーンリーダーや検索エンジンが正しく言語を認識できます。 |
 | `bg-gray-50` | `<body>` の背景色をごく薄いグレーにします。真っ白よりも目に優しく、カードなどの白い要素が際立ちます。 |
 | `min-h-screen` | `<body>` の最小高さを画面いっぱいにします。コンテンツが少ないページでも背景色が画面全体に適用されます。 |
@@ -989,9 +1264,10 @@ export default function RootLayout({
 ```css
 /* src/app/globals.css */
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* @tailwind: Tailwind CSS 専用のディレクティブ。PostCSS が処理時に大量のクラスに展開する */
+@tailwind base;        /* リセットCSSと要素のベーススタイル */
+@tailwind components;  /* component レイヤー（カスタムコンポーネントクラス） */
+@tailwind utilities;   /* 全ユーティリティクラス（最も多くのコードが展開される） */
 ```
 
 > **Tailwind CSS ディレクティブの意味:**
@@ -1015,10 +1291,19 @@ export default function RootLayout({
 
 ```typescript
 // src/components/Header.tsx
+// 全ページ上部に表示する共通ヘッダー（ナビゲーションバー）
 
+// "use client": このファイルを Client Component として宣言する特別な文字列
+// 必ずファイルの一番上（importよりも前）に書く
+// これがあるとブラウザで実行され、React フックや状態管理が使える
 "use client";
 
+// default import: Next.js の Link コンポーネント
+// HTML の <a> よりも高速にページ遷移できる（SPA的な切り替え）
 import Link from "next/link";
+
+// named import: usePathname フック（現在のURLパスを取得）
+// 注意: import元は "next/navigation"（App Router用）。Pages Router の "next/router" とは別物
 import { usePathname } from "next/navigation";
 
 /**
@@ -1033,31 +1318,51 @@ import { usePathname } from "next/navigation";
  * usePathname() フックを使用するため、Client Component にする必要があります。
  * Server Component では React のフック（useState, useEffect, usePathname 等）は使えません。
  */
+// export default: このファイルを import するときの主要な対象
+// function Header(): 関数コンポーネントの宣言。引数なし、JSX を返す
 export default function Header() {
   // 現在のURLパスを取得（アクティブなナビゲーションリンクのスタイル変更に使用）
+  // usePathname() の戻り値は "/" や "/books/new" のような文字列
   const pathname = usePathname();
 
+  // JSX を return（ヘッダー全体の構造）
   return (
+    // <header>: HTML5 のセマンティックタグ。ページ上部のヘッダーを示す
+    // bg-white: 白い背景 / shadow-sm: 控えめな影 / border-b: 下方向に1pxのボーダー / border-gray-200: ボーダー色
     <header className="bg-white shadow-sm border-b border-gray-200">
+      {/* 内側の div: ヘッダーの中身を中央寄せ＆最大幅制限する */}
+      {/* max-w-7xl: 最大幅1280px / mx-auto: 左右マージンautoで中央寄せ */}
+      {/* px-4 sm:px-6 lg:px-8: 画面サイズに応じて左右パディング */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* flex 行: ロゴと右側ナビを横並びに、両端配置、高さ64px */}
+        {/* flex: フレックスボックス / items-center: 垂直中央揃え */}
+        {/* justify-between: 左右に均等配置（ロゴが左、ナビが右） / h-16: 高さ64px */}
         <div className="flex items-center justify-between h-16">
           {/* アプリ名（ロゴ） */}
+          {/* Link: ページリロードなしで遷移する Next.js のコンポーネント */}
+          {/* href: 遷移先のパス */}
           <Link
             href="/"
+            // text-xl: フォントサイズ20px / font-bold: 太字 / text-gray-900: 濃いグレー
+            // hover:text-blue-600: ホバー時に青 / transition duration-200: 200msで滑らかに変化
             className="text-xl font-bold text-gray-900 hover:text-blue-600 transition duration-200"
           >
             書籍管理アプリ
           </Link>
 
           {/* ナビゲーション */}
+          {/* nav: HTML5 のナビゲーション用セマンティックタグ */}
+          {/* space-x-4: 子要素間に16pxの水平方向マージン */}
           <nav className="flex items-center space-x-4">
             {/* 書籍一覧リンク */}
             <Link
               href="/"
+              // テンプレートリテラル ${} で動的にクラスを切り替える
+              // pathname === "/" が true なら青系（現在地ハイライト）、false ならグレー系
               className={`px-3 py-2 rounded-md text-sm font-medium transition duration-200 ${
                 pathname === "/"
-                  ? "bg-blue-50 text-blue-700"
-                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                  ? "bg-blue-50 text-blue-700"                                 // 現在地：薄青背景＋青文字
+                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"       // 通常：グレー文字、ホバーで反応
               }`}
             >
               書籍一覧
@@ -1066,10 +1371,12 @@ export default function Header() {
             {/* 書籍登録ボタン */}
             <Link
               href="/books/new"
+              // px-4: 左右パディング16px / py-2: 上下パディング8px / rounded-md: 角丸
+              // text-sm: 文字サイズ14px / font-medium: やや太字 / transition: 滑らか変化
               className={`px-4 py-2 rounded-md text-sm font-medium transition duration-200 ${
                 pathname === "/books/new"
-                  ? "bg-blue-700 text-white"
-                  : "bg-blue-600 text-white hover:bg-blue-700"
+                  ? "bg-blue-700 text-white"                                   // 現在地：濃い青背景＋白文字
+                  : "bg-blue-600 text-white hover:bg-blue-700"                 // 通常：青背景、ホバーで濃く
               }`}
             >
               書籍を登録する
@@ -1105,33 +1412,51 @@ export default function Header() {
 
 ```typescript
 // src/app/page.tsx
+// URL "/" にアクセスしたときに表示されるトップページ
 
+// export default function: ファイルのメインコンポーネントとしてエクスポート
+// HomePage: コンポーネント名（任意の名前でOK。Next.jsはdefault exportを自動的にページとして扱う）
 export default function HomePage() {
+  // JSX を return（このページの中身）
   return (
+    // 全体を div で囲む。複数の要素を return するには親要素が必要
     <div>
+      {/* h1: 大見出し / text-3xl: 30px / font-bold: 太字 / text-gray-900: 濃いグレー / mb-4: 下マージン16px */}
       <h1 className="text-3xl font-bold text-gray-900 mb-4">
         書籍一覧
       </h1>
+      {/* p: 段落 / text-gray-600: 中間グレー / mb-8: 下マージン32px */}
       <p className="text-gray-600 mb-8">
         登録された書籍がここに表示されます。
       </p>
 
       {/* 動作確認用: Tailwind CSS のスタイルが正しく適用されるかチェック */}
+      {/* bg-white: 白背景 / rounded-lg: 角丸大 / shadow-sm: 控えめな影 */}
+      {/* border border-gray-200: 1pxの薄いグレーボーダー / p-6: 内側パディング24px */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        {/* h2: 中見出し / text-lg: 18px / font-semibold: やや太字（600） */}
         <h2 className="text-lg font-semibold text-gray-800 mb-2">
           セットアップ完了
         </h2>
+        {/* text-sm: 14px の小さめテキスト */}
         <p className="text-gray-600 text-sm">
           Next.js + Tailwind CSS + Supabase の開発環境が正しくセットアップされました。
           次の章で、このページに実際の書籍一覧を表示します。
         </p>
+        {/* バッジを横並びにする領域 */}
+        {/* mt-4: 上マージン16px / flex: 横並び / space-x-2: 子要素間に8px間隔 */}
         <div className="mt-4 flex space-x-2">
+          {/* 未読バッジ */}
+          {/* inline-block: インラインブロック表示 / bg-gray-100: 薄グレー背景 / text-gray-700: 濃グレー文字 */}
+          {/* text-xs: 12px / px-2.5 py-1: パディング / rounded-full: 完全な丸（カプセル形） / font-medium: 中太字 */}
           <span className="inline-block bg-gray-100 text-gray-700 text-xs px-2.5 py-1 rounded-full font-medium">
             未読
           </span>
+          {/* 読書中バッジ：青系 */}
           <span className="inline-block bg-blue-100 text-blue-700 text-xs px-2.5 py-1 rounded-full font-medium">
             読書中
           </span>
+          {/* 読了バッジ：緑系 */}
           <span className="inline-block bg-green-100 text-green-700 text-xs px-2.5 py-1 rounded-full font-medium">
             読了
           </span>
@@ -1147,6 +1472,10 @@ export default function HomePage() {
 ターミナルで以下のコマンドを実行します。
 
 ```bash
+# npm run dev: package.json の "scripts" にある "dev" を実行
+# 中身は「next dev --turbopack」で、Next.js の開発サーバーが起動する
+# ファイルを保存するたびに自動でブラウザが更新される（ホットリロード）
+# 停止するには Ctrl+C を押す
 npm run dev
 ```
 
@@ -1280,24 +1609,31 @@ npm run dev
 // 書籍一覧を取得するコードの流れ
 
 // 1. Supabase クライアントをインポート
+// named import で supabase 変数だけを取り込む（lib/supabase.ts で export const supabase したもの）
 import { supabase } from "@/lib/supabase";
+// Book 型もインポート（型情報のみ。ランタイムには影響なし）
 import { Book } from "@/types/book";
 
 // 2. データベースから書籍一覧を取得
+// await: Promise（非同期処理の結果）を待つキーワード。async 関数内でのみ使用可能
+// 戻り値は { data, error } のオブジェクトなので、分割代入で取り出す
 const { data, error } = await supabase
-  .from("books")           // books テーブルを指定
-  .select("*")             // すべてのカラムを取得
-  .order("created_at", {   // 作成日の降順（新しい順）に並び替え
-    ascending: false
+  .from("books")           // books テーブルを指定（SQL の FROM books に相当）
+  .select("*")             // すべてのカラムを取得（SQL の SELECT * に相当）
+  .order("created_at", {   // 作成日の降順（新しい順）に並び替え（SQL の ORDER BY に相当）
+    ascending: false       // false で降順（新しい順）。true なら昇順（古い順）
   });
 
 // 3. エラーハンドリング
+// if (error): error が null/undefined でなければ true（エラーが発生した）
 if (error) {
+  // console.error: 開発者ツールのコンソールにエラーログを赤色で出力
   console.error("書籍の取得に失敗しました:", error.message);
-  return;
+  return;                  // ここで関数を抜ける
 }
 
 // 4. data は Book[] 型（書籍の配列）
+// data の型は自動で Book[] と推論されるが、明示的に型注釈を付けることもできる
 const books: Book[] = data;
 ```
 

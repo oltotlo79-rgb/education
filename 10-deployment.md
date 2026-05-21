@@ -11,9 +11,15 @@
 | **本番設定** | Supabaseのセキュリティ設定の確認と調整 | 10分 |
 | **振り返り** | この教材で学んだことの総まとめ | 10分 |
 
-> **デプロイとは？** 自分のPCで動いているアプリは、他の人からはアクセスできません。デプロイとは、アプリをインターネット上のサーバーに配置して、URLでアクセスできるようにすることです。レストランで例えると、自宅で試作した料理を実店舗で提供開始する段階です。
+> **デプロイとは？** 「デプロイ（Deploy）」は英語で「配置する／配備する」という意味の単語です。プログラミングの世界では、**自分のPCで動いているアプリを、インターネット上のサーバーに置いて、URLを叩けば世界中の誰でも使える状態にする作業**を指します。自分のPCで動いているアプリは、他の人からはアクセスできません。デプロイをすると、`https://～` のURLが発行され、スマホからでも、海外からでもアクセスできるようになります。レストランで例えると、自宅で試作した料理を実店舗で提供開始する段階です。
 
 この章では、**Vercel**（ヴァーセル：Next.js を開発している会社が提供するホスティングサービス。GitHub と連携するだけで自動デプロイできる）を使ってデプロイします。そして、この教材全体を通じて学んだことを振り返り、今後の学習ロードマップ（次に何を学ぶべきかの道筋）を示します。
+
+> **ホスティング（Hosting）とは？** 「Host（ホスト）」は「招き入れる人」という意味です。**自分が作ったWebアプリやファイルを、24時間動いているサーバー（コンピューター）に置いて、世界中からアクセスできるようにするサービス**を「ホスティングサービス」と呼びます。Vercel、Netlify、AWS などが代表例です。自分のPCはずっと電源を入れっぱなしにできないので、専門の会社のサーバーを借りる、というイメージです。
+
+> **サーバレス（Serverless）とは？** 直訳すると「サーバーがない」ですが、**「サーバーがない」のではなく「サーバーの存在を意識しなくていい」**という意味です。従来は自分でサーバーを用意・管理する必要がありましたが、サーバレスでは「コードを置くだけ」で、必要なときに自動でサーバーが動き、終わったら止まります。料金もアクセスがあった分だけ。Vercel はこのサーバレスの仕組みでアプリを動かしています。
+
+> **Edge Function（エッジ関数）とは？** 「Edge」は「端っこ」という意味で、ここでは**世界中に散らばっているサーバー（ユーザーに近い場所）**を指します。Edge Function は、そのユーザーに一番近いサーバーで実行されるプログラムのことで、応答が速いのが特徴です。Vercel ではこの仕組みでページを高速配信しています。
 
 ---
 
@@ -47,6 +53,10 @@
 **▼ ビルド実行例:**
 
 ```bash
+# $ はターミナルの入力待ち記号（自分でタイプする必要はない）
+# npm = Node.js に付属するパッケージマネージャ
+# run = package.json の scripts に書かれたコマンドを実行する命令
+# build = package.json で定義された「ビルド用」のスクリプト名（中身は "next build"）
 $ npm run build
 ```
 
@@ -77,25 +87,37 @@ Route (app)                              Size     First Load JS
 **▼ 何が起きた？**
 - すべてのページが正常にビルドされた
 - 各ページのファイルサイズが表示される
-- `○` は静的ページ、`λ` はリクエストごとにサーバーで生成されるページ
+- `○` は静的ページ（あらかじめHTMLが用意されている）、`λ` はリクエストごとにサーバーで生成されるページ
+- `First Load JS` は「最初にユーザーのブラウザがダウンロードする JavaScript の量」。小さいほど読み込みが速い
 
-> **ビルド失敗が出たら？:** TypeScriptの型エラーや lint エラーが残っているとビルドできません。エラーメッセージのファイル名と行番号を見て修正します。**ローカルでビルドが通ってからデプロイする習慣**をつけると安全です。
+> **ビルド失敗が出たら？:** TypeScriptの型エラーや lint エラーが残っているとビルドできません。エラーメッセージのファイル名と行番号を見て修正します。**ローカルでビルドが通ってからデプロイする習慣**をつけると安全です。本番のVercel上でビルドに失敗すると、せっかく `git push` しても新しいバージョンが反映されないため、必ず手元で `npm run build` を1回通してからプッシュしましょう。
 
 ### 0.2 デプロイ（Deploy）とは
 
 ビルドの成果物を**インターネット上のサーバーに配置**して、誰でも URL でアクセスできるようにする作業です。本書では **Vercel** に GitHub 経由で自動デプロイします。
 
 ```
-[あなたのPC]
-   ↓ git push
-[GitHub]                          ← コードの保管庫
-   ↓ Webhookで自動通知
-[Vercel]
-   ↓ npm run build を実行
-[CDN（世界中のサーバー）]         ← 完成品が配置される
+[あなたのPC]                       ← ここでコードを書く
+   ↓ git push                       ← GitHub にコードを送る命令
+[GitHub]                          ← コードの保管庫（バージョン管理サービス）
+   ↓ Webhookで自動通知              ← Webhook = ある出来事が起きたら別のサービスに自動で知らせる仕組み
+[Vercel]                          ← Next.js 公式のホスティングサービス
+   ↓ npm run build を実行           ← Vercel が自動でビルドしてくれる
+[CDN（世界中のサーバー）]         ← CDN = Content Delivery Network、世界中の中継サーバー網
    ↓
-あなたのアプリ: https://your-app.vercel.app
+あなたのアプリ: https://your-app.vercel.app   ← この URL で公開される
 ```
+
+> **CI/CD（シーアイ・シーディー）とは？** 「**C**ontinuous **I**ntegration（継続的インテグレーション）」と「**C**ontinuous **D**elivery / **D**eployment（継続的デリバリー／デプロイ）」の略。**コードを変更するたびに、テスト・ビルド・デプロイを自動で行う仕組み**のことです。Vercel + GitHub の組み合わせも、簡単な CI/CD の一種で、`git push` するだけで自動的にビルドからデプロイまで進みます。手作業のミスを減らせるのが大きなメリットです。
+
+> **プレビュー環境（Preview Environment）とは？** 本番に反映する前に、**変更内容を試せる「お試し版」のURL**のこと。Vercel では、Pull Request（変更案の提案）を作るたびに自動で `https://your-app-git-feature-xxx.vercel.app` のような専用URLが生成され、本番のデータには影響を与えずに動作確認ができます。
+
+> **ロールバック（Rollback）とは？** 「Roll（巻く）」+「Back（戻す）」で、**「変更を取り消して前の状態に戻す」**こと。例えば、新しくデプロイしたバージョンに不具合があった場合、Vercel のダッシュボードからボタン1つで以前動いていたバージョンに戻せます。これがあるので、安心して新しいバージョンを試せます。
+
+> **ドメイン／DNS／SSL とは？**
+> - **ドメイン（Domain）**: `google.com` や `your-app.vercel.app` のような、人間が覚えやすいインターネット上の住所のこと。本来サーバーは `192.168.x.x` のような数字（IPアドレス）で識別されますが、覚えるのが大変なので、文字列の住所を割り当てます。
+> - **DNS（Domain Name System）**: ドメイン名と IPアドレスを変換してくれる「インターネットの電話帳」。「`your-app.vercel.app` ってどこ？」と聞くと、「IPアドレスは○○です」と教えてくれます。
+> - **SSL/TLS**: 通信を暗号化する技術。「Secure Sockets Layer」「Transport Layer Security」の略。URL が `http://` ではなく `https://` で始まっていれば SSL/TLS で暗号化されている証拠で、鍵マークがブラウザに表示されます。Vercel では自動的に有効になっています。
 
 ### 0.3 環境変数（Environment Variables）とは
 
@@ -111,13 +133,21 @@ Route (app)                              Size     First Load JS
 
 ```
 # .env.local（このファイルはGitHubに上げない！）
+# 「#」で始まる行はコメント。実行時には無視される
+# 「変数名=値」の形式で1行に1つの環境変数を書く（=の左右にスペースを入れない）
+
 NEXT_PUBLIC_SUPABASE_URL=https://xxxxx.supabase.co
+# ↑ NEXT_PUBLIC_ プレフィックス付きなのでブラウザにも値が送られる。URL は公開しても問題ない情報
+
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGc...
+# ↑ 匿名キー。これも公開前提のキー。ただし RLS（Row Level Security）でデータを保護することが必須
 ```
 
 **本番（Vercel）**: Vercelダッシュボードの **Settings → Environment Variables** で同じ値を設定する。
 
-> **`NEXT_PUBLIC_` の意味:** 接頭辞 `NEXT_PUBLIC_` を付けた環境変数は**ブラウザ側にも送られる**（=世界に公開される）。付けない変数はサーバーでしか参照できないので、シークレットには `NEXT_PUBLIC_` を付けてはいけない。
+> **`NEXT_PUBLIC_` の意味:** 接頭辞 `NEXT_PUBLIC_` を付けた環境変数は**ブラウザ側にも送られる**（=世界に公開される）。付けない変数はサーバーでしか参照できないので、シークレットには `NEXT_PUBLIC_` を付けてはいけない。Next.js は、ビルド時に `NEXT_PUBLIC_` 付きの環境変数を JavaScript ファイルの中に埋め込みます。そのためビルド後にブラウザの開発者ツールでソースを開くと、その値が文字列として見えてしまいます。逆に `NEXT_PUBLIC_` が付いていない変数は、サーバー上でしか参照できず、ブラウザには出力されません。
+
+> **環境変数を変更したら必ず「再デプロイ」が必要な理由:** Next.js はビルド時に環境変数の値をコードの中に焼き付けます。そのため、Vercel ダッシュボードで環境変数の値を変えただけでは反映されません。**変更後は「Redeploy」ボタンを押して、新しい値で再ビルドする必要がある**ということを覚えておきましょう。これは初心者が「変えたのに反映されない！」とハマる典型ポイントです。
 
 ### 0.4 開発・本番の3つの違い
 
@@ -129,6 +159,13 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGc...
 | ホットリロード | あり（保存で即反映） | なし |
 | ファイルサイズ | 大きい | 小さい（圧縮済み） |
 | 環境変数の出元 | `.env.local` | Vercel の設定画面 |
+
+> **ローカルと本番でハマるポイント:**
+> - **環境変数の設定漏れ**: `.env.local` には書いたが、Vercel 側に登録し忘れる。本番で「supabaseUrl is required」エラーになる典型例
+> - **大文字小文字の違い**: Windows/Mac はファイル名の大文字小文字を区別しないが、Vercel（Linux）は厳密に区別する。`BookCard.tsx` と `bookcard.tsx` は別ファイル扱い
+> - **`window` や `localStorage` をサーバー側で参照**: 開発時には気づかなくても、本番のServer Componentでは `window is not defined` エラーになる
+> - **タイムゾーン**: ローカル（日本時間）と Vercel のサーバー（UTC）で日時の扱いが違う場合がある
+> - **ビルド時にしか実行されないコード**: `generateStaticParams` などはローカルでは毎回実行されるが、本番では1回しか実行されないので注意
 
 ---
 
@@ -188,7 +225,10 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGc...
 Next.js アプリケーションをデプロイする前に、必ずローカルでビルドを実行して問題がないか確認します。
 
 ```bash
-# プロジェクトのルートディレクトリで実行
+# プロジェクトのルートディレクトリ（package.json があるフォルダ）で実行する
+# npm = Node Package Manager（Node.js のパッケージ管理ツール）
+# run = scripts に書かれたコマンドを実行する
+# build = scripts の "build" を実行する（実体は "next build"）
 npm run build
 ```
 
@@ -214,7 +254,15 @@ Route (app)                              Size     First Load JS
 
 ### 1.3 よくあるビルドエラーと解決方法
 
-ビルド時にエラーが出ることはよくあります。以下は、初心者がよく遭遇するエラーとその解決方法です。
+ビルド時にエラーが出ることはよくあります。エラーが出たからといって自分のスキルを疑う必要はなく、エラーは「**どこを直せばよいか教えてくれるヒント**」だと考えましょう。以下は、初心者がよく遭遇するエラーとその解決方法です。
+
+#### ビルドエラーメッセージの読み方
+
+エラーメッセージは英語で出ますが、構造はだいたい同じです。次の3点を順番に確認すれば、ほとんどのエラーは特定できます。
+
+1. **エラーの種類**: `Type error`、`Module not found`、`SyntaxError` など、一番上の行
+2. **ファイル名と行番号**: `./src/components/BookCard.tsx:12:5` のように出る部分（12行目の5文字目）
+3. **エラーの詳細メッセージ**: 何が問題なのか具体的に書かれている部分
 
 #### エラー1: TypeScript の型エラー
 
@@ -228,12 +276,13 @@ Type error: Property 'title' does not exist on type 'Book'.
 
 ```typescript
 // 型定義を確認して修正する
+// type は「型エイリアス」と呼ばれ、Book という名前で型を定義する構文
 type Book = {
-  id: string;
-  title: string;    // ← このプロパティが定義されているか確認
-  author: string;
-  rating: number;
-  created_at: string;
+  id: string;        // 書籍ID。文字列型（UUID形式の文字列を想定）
+  title: string;    // ← このプロパティが定義されているか確認。書籍タイトル
+  author: string;   // 著者名。文字列型
+  rating: number;   // 評価。数値型（1〜5を想定）
+  created_at: string;  // 作成日時。Supabase が ISO 8601 形式の文字列で返す
 };
 ```
 
@@ -248,11 +297,13 @@ Module not found: Can't resolve '@/components/BookCard'
 **解決方法**:
 
 ```bash
-# ファイルの存在を確認
+# ls = list（一覧表示）コマンド。指定したファイルが存在するか確認するために使う
+# 存在しない場合は「No such file or directory」と表示される
 ls src/components/BookCard.tsx
 
 # ファイル名の大文字・小文字も確認（Linux ではケースセンシティブ）
 # BookCard.tsx と bookCard.tsx は別のファイルとして扱われます
+# Windows/Mac の開発環境では区別されないため、ローカルで動いても Vercel（Linux）で失敗する典型例
 ```
 
 #### エラー3: 環境変数が undefined
@@ -266,12 +317,14 @@ Error: supabaseUrl is required.
 **解決方法**:
 
 ```bash
-# .env.local ファイルが存在するか確認
+# cat = ファイルの中身を表示するコマンド（concatenate の略）
+# .env.local の中身を一覧で確認できる
 cat .env.local
 
 # 以下の変数が設定されているか確認
 # NEXT_PUBLIC_SUPABASE_URL=https://xxxxx.supabase.co
 # NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIs...
+# 注意：環境変数を書き換えた後は、開発サーバー（npm run dev）を停止して再起動が必要
 ```
 
 #### エラー4: 'use client' ディレクティブの不足
@@ -285,9 +338,12 @@ Error: useState only works in Client Components. Add the "use client" directive.
 **解決方法**:
 
 ```typescript
-// ファイルの先頭に追加
+// ファイルの先頭（必ず1行目）に追加
+// この一行があると、Next.js はこのファイルを Client Component として扱う
+// Server Component（デフォルト）はサーバー側でしか動かないので、useState や useEffect が使えない
 'use client';
 
+// React の useState フックを使うために import する
 import { useState } from 'react';
 // ...
 ```
@@ -304,16 +360,23 @@ ESLint: 'variable' is defined but never used. (@typescript-eslint/no-unused-vars
 
 ```typescript
 // 不要な変数・インポートを削除する
-// または、意図的に未使用の場合はアンダースコアを付ける
+// または、意図的に未使用の場合はアンダースコアを付けると ESLint が無視してくれる
+// アンダースコア（_）始まりの変数は「使わないことを明示している」という慣習
 const _unusedVariable = 'something';
 ```
+
+> **その他、本番でハマる典型エラー:**
+> - `Hydration failed because the initial UI does not match...`: サーバー側で生成したHTMLとクライアント側のレンダリング結果が違うときに出る。日時表示やランダム値が原因のことが多い
+> - `Cannot find module 'xxx'`: パッケージのインストール忘れ。`npm install` を再実行する
+> - `EACCES: permission denied`: ファイルのアクセス権限の問題。再起動や `node_modules` の削除で直ることが多い
 
 ### 1.4 環境変数の確認
 
 デプロイ前に、必要な環境変数がすべて揃っているか確認しましょう。
 
 ```bash
-# .env.local の内容を確認
+# .env.local の内容を確認する
+# cat コマンド：ファイルの内容を画面に表示する
 cat .env.local
 ```
 
@@ -324,7 +387,7 @@ cat .env.local
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase プロジェクトの URL | `https://abcdefg.supabase.co` |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase の匿名キー | `eyJhbGciOiJIUzI1NiIs...` |
 
-> **重要**: `.env.local` は `.gitignore` に含まれているため、GitHub にはプッシュされません。これはセキュリティ上正しい動作です。デプロイ先（Vercel）で別途環境変数を設定する必要があります。
+> **重要**: `.env.local` は `.gitignore` に含まれているため、GitHub にはプッシュされません。これはセキュリティ上正しい動作です。**もし `.env.local` を間違って GitHub にプッシュしてしまうと、世界中の人にキーが見られてしまう**ため、`.gitignore` で守られている、ということを覚えておきましょう。デプロイ先（Vercel）で別途環境変数を設定する必要があります。
 
 ### 1.5 ビルド前チェックリスト
 
@@ -380,18 +443,23 @@ Vercel にデプロイするには、コードが GitHub に存在する必要�
 
 # (1) Git リポジトリを初期化（既に init 済みなら不要、何度実行してもOK）
 #     カレントフォルダに隠しフォルダ .git/ が作られ、Git管理が始まる
+#     git = バージョン管理ツールの名前
+#     init = initialize（初期化）の略
 git init
 # ▼ 出力例
 # Initialized empty Git repository in /path/to/book-management/.git/
 
 # (2) ステージングエリアに全ファイルを登録
-#     . はカレントフォルダ全体を意味する。
+#     git add = コミット候補に追加するコマンド
+#     . はカレントフォルダ全体を意味する（「すべてのファイル」と読み替えてもOK）
 #     .gitignore に書かれたファイル/フォルダ（node_modules や .env.local 等）は
 #     自動的に除外されるので安心。
 git add .
 
 # (3) 最初のコミット
+#     commit = 「変更を記録する」操作。スナップショットを残すイメージ
 #     -m "..." はコミットメッセージ。何をした履歴か後で分かるよう短文で残す。
+#     メッセージなしで commit するとエディタが開く（初心者がハマりやすいポイント）
 git commit -m "書籍管理アプリの初回コミット"
 # ▼ 出力例
 # [main (root-commit) abc1234] 書籍管理アプリの初回コミット
@@ -417,17 +485,24 @@ git commit -m "書籍管理アプリの初回コミット"
 # ----------------------------------------------------------------------------
 
 # (1) リモート接続先を「origin」という名前で登録
+#     git remote add = リモート（GitHub などのサーバー側リポジトリ）を登録する命令
+#     origin = リモートの「あだ名」。慣習的に最初のリモートには origin を使う
 #     URL は GitHub 上のリポジトリの URL に置き換える
 #     これ以降「origin」と書けばそのURLを指すようになる
 git remote add origin https://github.com/あなたのユーザー名/book-management-app.git
 
 # (2) ローカルのブランチ名を「main」に統一する（古い環境では master の場合がある）
-#     -M は「強制リネーム」を意味する
+#     git branch = ブランチ操作のコマンド
+#     -M は「強制リネーム」を意味する（大文字の M）
+#     現在のブランチ名を main に変える
 git branch -M main
 
 # (3) 初回プッシュ
-#     -u origin main は「これ以降、git push だけで origin の main に送るよう覚えてね」
-#     という設定（upstream の設定）。
+#     git push = ローカルの履歴をリモートに送る操作
+#     -u は --set-upstream の短縮形。「これ以降のデフォルトの送信先」として origin の main を覚えさせる
+#     origin = リモート名（さっき登録したGitHubのURLのあだ名）
+#     main = 送るブランチ名
+#     これを一度やれば、次回からは git push だけで済む
 git push -u origin main
 # ▼ 出力例
 # Enumerating objects: 150, done.
@@ -467,6 +542,10 @@ git push -u origin main
 - **Build Command**: `npm run build`（デフォルトのまま）
 - **Output Directory**: `.next`（デフォルトのまま）
 
+> **Build Command と Output Directory の意味:**
+> - **Build Command**（ビルドコマンド）: Vercel のサーバー上で実行されるコマンド。デフォルトの `npm run build` は package.json の `scripts.build`（中身は `next build`）を呼び出します
+> - **Output Directory**（出力ディレクトリ）: ビルド結果が保存される場所。Next.js では `.next/` フォルダに最適化されたファイルが入る。Vercel はこのフォルダの中身をサーバーに配置して公開します
+
 #### Step 3: 環境変数の設定
 
 **これが最も重要なステップです。** 環境変数を設定しないと、Supabase に接続できずアプリが動作しません。
@@ -483,12 +562,101 @@ git push -u origin main
 
 3. 「Add」ボタンで各変数を追加
 
+> **重要：環境変数は環境ごとに設定できる:** Vercel では、環境変数を「Production（本番）」「Preview（プレビュー）」「Development（開発）」の3つの環境ごとに設定できます。多くの場合、すべての環境にチェックを入れて同じ値を入れておけばOKです。本番DBと開発DBを分けたい場合は、環境ごとに異なる値を設定することも可能です。
+
 #### Step 4: デプロイの実行
 
 1. 「Deploy」ボタンをクリック
 2. Vercel がビルドとデプロイを開始する（通常 1〜3 分）
 3. 成功すると、紙吹雪のアニメーションとともにデプロイ完了画面が表示される
 4. 表示された URL（例: `https://book-management-app.vercel.app`）をクリックしてアプリを確認
+
+#### （補足）Vercel CLI を使う場合
+
+ブラウザではなくターミナルから直接デプロイしたい場合、Vercel CLI を使えます。GitHub 経由のデプロイで十分なので必須ではありませんが、参考までに紹介します。
+
+```bash
+# (1) Vercel CLI をグローバルインストール
+#     -g は global（システム全体に入れる）オプション
+#     これでターミナルのどこからでも vercel コマンドが使える
+npm install -g vercel
+
+# (2) Vercel アカウントでログイン
+#     ブラウザが開き、認証フローに進む
+vercel login
+
+# (3) 現在のディレクトリをプレビュー環境にデプロイ
+#     プロジェクトのルート（package.json があるフォルダ）で実行
+vercel
+# ↑ 初回は質問がいくつか出る（プロジェクト名・フレームワーク等）。基本Enterで進めればOK
+
+# (4) 本番環境にデプロイ
+#     --prod = Production（本番）環境にデプロイ
+vercel --prod
+```
+
+#### （補足）vercel.json の例
+
+プロジェクトのルートに `vercel.json` を置けば、Vercel の挙動を細かく設定できます。本書のチュートリアルでは不要ですが、参考までに。
+
+```json
+{
+  "framework": "nextjs",
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next",
+  "installCommand": "npm install",
+  "devCommand": "npm run dev",
+  "regions": ["hnd1"]
+}
+```
+
+各行の意味：
+
+- `"framework": "nextjs"` … フレームワーク種別。Vercel が最適なビルド方式を自動選択するためのヒント
+- `"buildCommand": "npm run build"` … ビルド時に実行するコマンド
+- `"outputDirectory": ".next"` … ビルド結果の出力先フォルダ
+- `"installCommand": "npm install"` … 依存パッケージのインストール時に実行するコマンド
+- `"devCommand": "npm run dev"` … 開発サーバー起動時のコマンド（`vercel dev` で使われる）
+- `"regions": ["hnd1"]` … デプロイ先リージョン。`hnd1` は東京リージョン。日本のユーザーがメインなら東京を指定すると応答が速い
+
+#### （補足）next.config.js の本番向け設定例
+
+`next.config.js` は Next.js プロジェクトの設定ファイルです。本書ではほぼデフォルトでOKですが、本番向けに調整したい場合のサンプルです。
+
+```javascript
+// JSDoc コメントで型情報を付ける（エディタの補完が効くようになる）
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  // reactStrictMode = React の Strict Mode を有効にする
+  // 開発中に副作用の問題を早期発見しやすくなる。本番では無効化されるので付けっぱなしでOK
+  reactStrictMode: true,
+
+  // poweredByHeader = レスポンスヘッダから X-Powered-By: Next.js を消す
+  // 使用技術を外部に教えないことでセキュリティを少し高められる
+  poweredByHeader: false,
+
+  // compress = レスポンスをgzipで圧縮するか。デフォルトでtrue（基本そのまま）
+  compress: true,
+
+  // images = next/image コンポーネントの設定
+  images: {
+    // remotePatterns = 外部画像を許可するドメイン一覧
+    // ここに登録されていないドメインの画像は <Image> で表示できない（セキュリティ対策）
+    remotePatterns: [
+      {
+        protocol: 'https',            // https のみ許可
+        hostname: '*.supabase.co',    // Supabase の任意のサブドメインを許可
+        pathname: '/storage/**',      // /storage/ 以下のパスのみ許可
+      },
+    ],
+  },
+};
+
+// CommonJS の書き方で nextConfig を外部に公開する（Next.js が読み込む）
+module.exports = nextConfig;
+```
+
+> **本番でアプリを直接起動するコマンド:** Vercel では自動で行われますが、もし自前のサーバーで動かす場合は、ビルド後に `npm start`（中身は `next start`）を実行します。これは「ビルド済みの `.next/` フォルダの中身を使って本番モードで Web サーバーを起動する」コマンドです。`npm run dev` と違い、ファイルを変更しても自動反映されません。
 
 ### 2.6 デプロイの自動化フロー
 
@@ -552,6 +720,8 @@ git push -u origin main
 3. 変数を追加・編集・削除
 4. **重要**: 環境変数を変更した後は、「Deployments」タブから最新のデプロイを「Redeploy」する必要があります
 
+> **再デプロイが必要な理由（もう一度）:** Next.js は `NEXT_PUBLIC_` 付きの環境変数を「ビルド時」にコード内に埋め込みます。値を変えただけではコード内の値は古いままなので、もう一度ビルドし直す必要があるのです。Redeploy ボタンを押すと、Vercel は最新コミットを使って再ビルドし、新しい環境変数の値で動くバージョンを公開します。
+
 ### 2.8 カスタムドメインの設定（任意）
 
 独自ドメイン（例: `mybooks.example.com`）を設定したい場合:
@@ -562,7 +732,7 @@ git push -u origin main
 4. 表示される DNS 設定をドメインレジストラ（お名前.com、Google Domains など）で設定
 5. DNS の反映を待つ（通常数分〜最大48時間）
 
-> **初心者へ**: カスタムドメインは必須ではありません。Vercel が自動生成する `xxx.vercel.app` の URL でも十分に利用できます。
+> **初心者へ**: カスタムドメインは必須ではありません。Vercel が自動生成する `xxx.vercel.app` の URL でも十分に利用できます。DNS（ドメインネームシステム）は、世界中のサーバーに新しい設定が伝わるまで時間がかかります。設定した直後に反映されなくても焦らず待ちましょう。
 
 ### 2.9 デプロイ後の動作確認
 
@@ -577,7 +747,7 @@ git push -u origin main
 - [ ] スマートフォンでも正常に表示される（レスポンシブ）
 - [ ] HTTPS（鍵アイコン）で接続されている
 
-> **トラブルシューティング**: 問題が発生した場合は、Vercel ダッシュボードの「Deployments」→ 該当デプロイ →「Logs」でビルドログとランタイムログを確認できます。
+> **トラブルシューティング**: 問題が発生した場合は、Vercel ダッシュボードの「Deployments」→ 該当デプロイ →「Logs」でビルドログとランタイムログを確認できます。ビルドログは「ビルド時のエラー」、ランタイムログは「ユーザーアクセス時のエラー」を見るのに使います。
 
 ---
 
@@ -602,7 +772,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY   → クライアントに公開される（OK、
 SUPABASE_SERVICE_ROLE_KEY       → サーバーサイドのみで使用（絶対に公開しない）
 ```
 
-> **重要**: `NEXT_PUBLIC_` プレフィックスが付いた環境変数は、ブラウザの JavaScript から参照可能です。`service_role` キーには絶対に `NEXT_PUBLIC_` を付けないでください。
+> **重要**: `NEXT_PUBLIC_` プレフィックスが付いた環境変数は、ブラウザの JavaScript から参照可能です。`service_role` キーには絶対に `NEXT_PUBLIC_` を付けないでください。万一付けたままビルド・公開すると、悪意のあるユーザーがあなたのデータベースを全削除できてしまいます。
 
 #### フロントエンドのコードで確認すべきこと
 
@@ -616,6 +786,16 @@ SUPABASE_SERVICE_ROLE_KEY       → サーバーサイドのみで使用（絶�
 
 RLS は Supabase のセキュリティの要です。本番環境では、適切なポリシーが設定されていることを必ず確認しましょう。
 
+#### Auth Redirect URL の本番設定
+
+将来的に認証機能を追加するときに必要な設定なので、ここで触れておきます。
+
+1. Supabase ダッシュボード → Authentication → URL Configuration を開く
+2. **Site URL** に本番 URL（例: `https://book-management-app.vercel.app`）を入れる
+3. **Redirect URLs** にログイン後にリダイレクトされる URL を追加する（プレビュー環境用に `https://*.vercel.app` のようなワイルドカードも登録可能）
+
+> **なぜ必要？:** Supabase Auth は「ログイン後にどの URL に戻していいか」を厳格に管理しています。ここに登録されていない URL に戻そうとすると、エラーで弾かれます。ローカル（`http://localhost:3000`）と本番（`https://...vercel.app`）の両方を登録しておくのが基本です。
+
 #### 現在の RLS 設定を確認する
 
 Supabase ダッシュボード → Table Editor → `books` テーブル → 「RLS」タブで確認できます。
@@ -624,21 +804,22 @@ Supabase ダッシュボード → Table Editor → `books` テーブル → 「
 
 ```sql
 -- 現在のポリシー（開発用・学習用）
+-- -- で始まる行は SQL のコメント（実行されない）
 -- すべてのユーザーが読み取り可能
-CREATE POLICY "誰でも書籍を読める" ON books
-  FOR SELECT USING (true);
+CREATE POLICY "誰でも書籍を読める" ON books    -- ポリシー名を「誰でも書籍を読める」とし、books テーブルに適用
+  FOR SELECT USING (true);                        -- FOR SELECT = 読み取り操作に対する許可。USING (true) = 常に許可
 
 -- すべてのユーザーが書き込み可能
 CREATE POLICY "誰でも書籍を追加できる" ON books
-  FOR INSERT WITH CHECK (true);
+  FOR INSERT WITH CHECK (true);                  -- FOR INSERT = 追加操作。WITH CHECK (true) = 常に許可
 
 -- すべてのユーザーが更新可能
 CREATE POLICY "誰でも書籍を更新できる" ON books
-  FOR UPDATE USING (true);
+  FOR UPDATE USING (true);                        -- FOR UPDATE = 更新操作。常に許可
 
 -- すべてのユーザーが削除可能
 CREATE POLICY "誰でも書籍を削除できる" ON books
-  FOR DELETE USING (true);
+  FOR DELETE USING (true);                        -- FOR DELETE = 削除操作。常に許可
 ```
 
 #### 本番環境向けの推奨設定
@@ -649,19 +830,19 @@ CREATE POLICY "誰でも書籍を削除できる" ON books
 -- 本番用ポリシー（認証導入後）
 -- 誰でも読み取り可能（公開データの場合）
 CREATE POLICY "誰でも書籍を読める" ON books
-  FOR SELECT USING (true);
+  FOR SELECT USING (true);                                       -- 読み取りは全員OK
 
 -- 認証済みユーザーのみ書き込み可能
 CREATE POLICY "認証済みユーザーのみ追加可能" ON books
-  FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+  FOR INSERT WITH CHECK (auth.role() = 'authenticated');         -- auth.role() = 現在のユーザーの権限を返す関数。'authenticated' = ログイン済み
 
 -- 自分が追加した書籍のみ更新可能
 CREATE POLICY "自分の書籍のみ更新可能" ON books
-  FOR UPDATE USING (auth.uid() = user_id);
+  FOR UPDATE USING (auth.uid() = user_id);                       -- auth.uid() = ログイン中のユーザーID。user_id 列と一致する行だけ更新可
 
 -- 自分が追加した書籍のみ削除可能
 CREATE POLICY "自分の書籍のみ削除可能" ON books
-  FOR DELETE USING (auth.uid() = user_id);
+  FOR DELETE USING (auth.uid() = user_id);                       -- 自分のレコードしか消せない（他人のは触れない）
 ```
 
 > **この教材の範囲**: 認証機能は次のステップとして紹介しますので、現時点では開発用のポリシーのままで問題ありません。ただし、**重要なデータを扱う本番アプリではセキュリティ設定を必ず強化してください。**
@@ -689,6 +870,9 @@ Supabase ダッシュボードから手動でバックアップを取得でき�
 # Supabase のデータベース URL は、ダッシュボードの
 # Settings → Database → Connection string で確認できます
 
+# pg_dump = PostgreSQL に同梱されているバックアップ用コマンド（PostgreSQL クライアントのインストールが必要）
+# "postgresql://..." = データベースへの接続文字列。"ユーザー名:パスワード@ホスト:ポート/データベース名" の形
+# > backup.sql = 出力を backup.sql ファイルに書き込む（リダイレクト）。実行すると同じフォルダにバックアップが保存される
 pg_dump "postgresql://postgres:[パスワード]@db.[プロジェクトID].supabase.co:5432/postgres" > backup.sql
 ```
 
@@ -708,18 +892,20 @@ Next.js には、画像を自動的に最適化する `Image` コンポーネン
 
 ```typescript
 // ❌ 通常の img タグ（最適化なし）
+// 単純な HTML タグ。画像の自動最適化やレイアウトずれ防止は行われない
 <img src="/book-cover.jpg" alt="書籍カバー" width={200} height={300} />
 
 // ✅ Next.js の Image コンポーネント（自動最適化）
+// next/image からインポートして使う。デフォルトエクスポートを Image という名前で受け取る
 import Image from 'next/image';
 
 <Image
-  src="/book-cover.jpg"
-  alt="書籍カバー"
-  width={200}
-  height={300}
-  placeholder="blur"        // 読み込み中にぼかし表示
-  blurDataURL="data:..."    // ぼかし画像のデータURL
+  src="/book-cover.jpg"     // 画像のパス（public/ フォルダ基準）
+  alt="書籍カバー"           // 代替テキスト（必須。アクセシビリティ・SEO 向上）
+  width={200}                // 元画像の幅（px単位）。レイアウトずれ防止に必須
+  height={300}               // 元画像の高さ（px単位）。レイアウトずれ防止に必須
+  placeholder="blur"        // 読み込み中にぼかし表示。"blur" か "empty" を指定
+  blurDataURL="data:..."    // ぼかし画像のデータURL。低解像度のプレースホルダ用
 />
 ```
 
@@ -739,24 +925,30 @@ import Image from 'next/image';
 
 ```javascript
 // next.config.js
+// JSDoc コメント。TypeScript の型情報を JS ファイルに付与する記法
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // images = next/image の設定
   images: {
+    // remotePatterns = 外部画像を許可するドメインパターンのリスト
+    // ここに登録されていないドメインの画像は <Image> で読み込めない（セキュリティのため）
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'example.com',  // 画像を取得するドメイン
-        pathname: '/images/**',
+        protocol: 'https',           // https のみ許可（http は不可）
+        hostname: 'example.com',     // 画像を取得するドメイン
+        pathname: '/images/**',      // /images/ 以下の任意のパスを許可（** はワイルドカード）
       },
       {
         protocol: 'https',
-        hostname: '*.supabase.co', // Supabase Storage を使う場合
-        pathname: '/storage/**',
+        hostname: '*.supabase.co',   // Supabase の任意のサブドメインを許可。* は単一階層のワイルドカード
+        pathname: '/storage/**',     // /storage/ 以下を許可
       },
     ],
   },
 };
 
+// CommonJS の書き方で外部に公開
+// Next.js はこのファイルを require して、ここから設定オブジェクトを読み取る
 module.exports = nextConfig;
 ```
 
@@ -764,36 +956,45 @@ module.exports = nextConfig;
 
 検索エンジンにアプリを正しく認識してもらうために、メタデータを設定しましょう。
 
+> **SEO とは？** Search Engine Optimization（検索エンジン最適化）の略。Google などの検索エンジンに、自分のサイトを正しく理解してもらい、検索結果に出やすくする工夫のこと。
+
 #### ルートレイアウトでのメタデータ設定
 
 ```typescript
 // src/app/layout.tsx
+// Metadata 型を next からインポート。TypeScript の型チェックに使う
 import type { Metadata } from 'next';
 
+// metadata という名前で export すると、Next.js が自動でメタタグを生成してくれる
+// : Metadata は型注釈。間違ったキーを書くとエディタ・ビルド時にエラーになる
 export const metadata: Metadata = {
+  // title = <title> タグの内容を設定
   title: {
-    default: '書籍管理アプリ',
-    template: '%s | 書籍管理アプリ',  // 各ページのタイトルが自動的に「ページ名 | 書籍管理アプリ」になる
+    default: '書籍管理アプリ',                       // デフォルトのタイトル（titleが指定されていないページで使用）
+    template: '%s | 書籍管理アプリ',                 // 各ページのタイトルが自動的に「ページ名 | 書籍管理アプリ」になる（%s が各ページのtitleで置き換わる）
   },
-  description: 'お気に入りの書籍を管理・評価できるWebアプリケーションです。',
-  keywords: ['書籍管理', '本', 'レビュー', 'Next.js'],
-  authors: [{ name: 'あなたの名前' }],
+  description: 'お気に入りの書籍を管理・評価できるWebアプリケーションです。',  // <meta name="description"> 用
+  keywords: ['書籍管理', '本', 'レビュー', 'Next.js'],                          // <meta name="keywords"> 用（現代では重要度は低い）
+  authors: [{ name: 'あなたの名前' }],                                          // 著者情報
+  // openGraph = OGP（OpenGraph Protocol）の設定。SNS でシェアしたときの見た目に使われる
   openGraph: {
     title: '書籍管理アプリ',
     description: 'お気に入りの書籍を管理・評価できるWebアプリケーションです。',
-    url: 'https://your-app.vercel.app',
-    siteName: '書籍管理アプリ',
-    locale: 'ja_JP',
-    type: 'website',
+    url: 'https://your-app.vercel.app',  // サイトの代表URL
+    siteName: '書籍管理アプリ',           // サイト名
+    locale: 'ja_JP',                       // 言語と地域
+    type: 'website',                       // コンテンツ種別。website / article など
   },
+  // twitter = X（旧Twitter）でシェアされたときのカード設定
   twitter: {
-    card: 'summary_large_image',
+    card: 'summary_large_image',           // 大きな画像付きカードを使用
     title: '書籍管理アプリ',
     description: 'お気に入りの書籍を管理・評価できるWebアプリケーションです。',
   },
+  // robots = 検索エンジンクローラへの指示
   robots: {
-    index: true,
-    follow: true,
+    index: true,      // true = 検索結果に表示してOK
+    follow: true,     // true = ページ内のリンクをたどってOK
   },
 };
 ```
@@ -804,8 +1005,9 @@ export const metadata: Metadata = {
 // src/app/books/page.tsx
 import type { Metadata } from 'next';
 
+// このページ固有のメタデータを定義
 export const metadata: Metadata = {
-  title: '書籍一覧',  // → 「書籍一覧 | 書籍管理アプリ」と表示される
+  title: '書籍一覧',  // → 「書籍一覧 | 書籍管理アプリ」と表示される（layout.tsx の template が適用される）
   description: '登録されている書籍の一覧を表示します。',
 };
 ```
@@ -816,21 +1018,27 @@ export const metadata: Metadata = {
 // src/app/books/[id]/page.tsx
 import type { Metadata } from 'next';
 
+// このページに渡される props の型を定義
 type Props = {
-  params: { id: string };
+  params: { id: string };   // URL の [id] 部分の値を文字列として受け取る
 };
 
+// generateMetadata = 動的にメタデータを作る関数。Next.js が自動で呼び出す
+// async = 中で await（非同期処理）を使えるようにする
+// Promise<Metadata> = 「Metadataを返す非同期関数」という型注釈
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   // Supabase から書籍データを取得
+  // .single() = 1件だけを取得するメソッド
   const { data: book } = await supabase
-    .from('books')
-    .select('*')
-    .eq('id', params.id)
-    .single();
+    .from('books')                  // books テーブルから
+    .select('*')                    // 全カラム取得
+    .eq('id', params.id)            // id が params.id と一致する行
+    .single();                       // 1件だけ
 
+  // 取得した書籍情報からメタデータを作って返す
   return {
-    title: book?.title ?? '書籍詳細',
-    description: `${book?.title}（${book?.author}）の詳細情報`,
+    title: book?.title ?? '書籍詳細',                          // book が null の場合は「書籍詳細」を使う（?? = nullish coalescing 演算子）
+    description: `${book?.title}（${book?.author}）の詳細情報`,  // テンプレートリテラルで動的に作成
   };
 }
 ```
@@ -1017,26 +1225,33 @@ Google Lighthouse は、Web アプリのパフォーマンス、アクセシビ�
 
 ```typescript
 // Supabase Auth を使ったログイン例
+// supabase クライアントをインポート
 import { supabase } from '@/lib/supabase';
 
-// メールアドレス + パスワードでサインアップ
+// メールアドレス + パスワードでサインアップ（新規登録）
+// supabase.auth.signUp = 新規ユーザー作成のメソッド。Promise を返すので await で待つ
+// 戻り値の data には作成されたユーザー情報、error には失敗時の情報が入る
 const { data, error } = await supabase.auth.signUp({
-  email: 'user@example.com',
-  password: 'your-password',
+  email: 'user@example.com',       // 登録するメールアドレス
+  password: 'your-password',       // パスワード（Supabase の最小文字数ポリシーを満たす必要あり）
 });
 
 // ログイン
+// signInWithPassword = メール・パスワードでログインするメソッド
 const { data, error } = await supabase.auth.signInWithPassword({
   email: 'user@example.com',
   password: 'your-password',
 });
 
 // Google ログイン
+// signInWithOAuth = 外部プロバイダ（Google, GitHub 等）でログインするメソッド
+// 内部的にプロバイダの認証画面にリダイレクトされる
 const { data, error } = await supabase.auth.signInWithOAuth({
-  provider: 'google',
+  provider: 'google',               // 認証プロバイダの種類
 });
 
 // ログアウト
+// signOut = 現在のセッションを破棄するメソッド
 const { error } = await supabase.auth.signOut();
 ```
 
@@ -1061,17 +1276,20 @@ const { error } = await supabase.auth.signOut();
 import { supabase } from '@/lib/supabase';
 
 // 画像のアップロード
+// supabase.storage.from('バケット名') = 指定したバケット（保存場所）を操作する
+// .upload(パス, ファイル, オプション) = ファイルをアップロードする
 const { data, error } = await supabase.storage
-  .from('book-covers')       // バケット名
-  .upload(`covers/${fileName}`, file, {
-    cacheControl: '3600',
-    upsert: false,
+  .from('book-covers')                  // バケット名（事前に Supabase ダッシュボードで作成しておく）
+  .upload(`covers/${fileName}`, file, { // covers/ 以下に fileName でアップロード
+    cacheControl: '3600',               // ブラウザにキャッシュさせる秒数（3600秒 = 1時間）
+    upsert: false,                       // false = 同名ファイルがあればエラー。true なら上書き
   });
 
 // アップロードした画像の公開 URL を取得
+// getPublicUrl = バケットが Public 設定の場合に公開URLを取得する
 const { data: { publicUrl } } = supabase.storage
-  .from('book-covers')
-  .getPublicUrl(`covers/${fileName}`);
+  .from('book-covers')                  // バケット名
+  .getPublicUrl(`covers/${fileName}`);  // 取得したいファイルのパス
 ```
 
 **学べること:**
@@ -1091,35 +1309,42 @@ const { data: { publicUrl } } = supabase.storage
 
 ```typescript
 // Supabase Realtime を使ったリアルタイム購読例
+// useEffect を使うので Client Component にする必要がある
 'use client';
 
 import { useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 
+// ページコンポーネント。default export で Next.js のルーティング対象にする
 export default function BooksPage() {
+  // useEffect = コンポーネントのマウント時に副作用を実行するフック
+  // 第2引数 [] により、初回マウント時に1度だけ実行される
   useEffect(() => {
     // books テーブルの変更をリアルタイムで監視
+    // .channel('チャンネル名') = WebSocket チャンネルを作成
     const channel = supabase
-      .channel('books-changes')
+      .channel('books-changes')              // チャンネルの名前。任意の文字列
       .on(
-        'postgres_changes',
+        'postgres_changes',                  // PostgreSQL の変更イベントを監視
         {
-          event: '*',       // INSERT, UPDATE, DELETE すべて
-          schema: 'public',
-          table: 'books',
+          event: '*',                        // INSERT, UPDATE, DELETE すべて（'*' = 全種類）
+          schema: 'public',                   // スキーマ名（Supabase のデフォルトは 'public'）
+          table: 'books',                     // 監視対象のテーブル名
         },
         (payload) => {
-          console.log('変更を検知:', payload);
+          // 変更が起きるたびに呼ばれるコールバック関数
+          console.log('変更を検知:', payload);  // payload には変更内容が入っている
           // ここで State を更新してUIに反映
         }
       )
-      .subscribe();
+      .subscribe();                          // 監視開始
 
     // クリーンアップ
+    // useEffect が return する関数はコンポーネントのアンマウント時に呼ばれる
     return () => {
-      supabase.removeChannel(channel);
+      supabase.removeChannel(channel);       // チャンネルを削除して購読停止（メモリリーク防止）
     };
-  }, []);
+  }, []);                                    // 空配列 = 初回1回だけ実行
 
   return <div>...</div>;
 }
@@ -1141,10 +1366,15 @@ export default function BooksPage() {
 
 ```typescript
 // BookCard コンポーネントのテスト例
+// render = コンポーネントをテスト用の仮想DOMに描画する関数
+// screen = 描画された要素を取得するためのオブジェクト
 import { render, screen } from '@testing-library/react';
 import BookCard from '@/components/BookCard';
 
+// describe = 関連するテストをグループ化するブロック
+// 第1引数: グループ名、第2引数: 中で it() を並べる関数
 describe('BookCard', () => {
+  // テスト用のダミーデータ
   const mockBook = {
     id: '1',
     title: '吾輩は猫である',
@@ -1153,8 +1383,12 @@ describe('BookCard', () => {
     created_at: '2025-01-01',
   };
 
+  // it = 個別のテストケース。test() でも同じ
+  // 第1引数: テストの説明、第2引数: 実行する関数
   it('書籍のタイトルが表示される', () => {
-    render(<BookCard book={mockBook} />);
+    render(<BookCard book={mockBook} />);             // コンポーネントを描画
+    // expect(...).toBeInTheDocument() = 要素が画面に存在することを検証
+    // screen.getByText('文字列') = その文字列を含む要素を取得
     expect(screen.getByText('吾輩は猫である')).toBeInTheDocument();
   });
 
@@ -1165,7 +1399,9 @@ describe('BookCard', () => {
 
   it('評価が星で表示される', () => {
     render(<BookCard book={mockBook} />);
+    // getAllByText = 該当する全要素を配列で取得
     const stars = screen.getAllByText('★');
+    // toHaveLength(5) = 配列の長さが5であることを検証
     expect(stars).toHaveLength(5);
   });
 });
@@ -1189,28 +1425,34 @@ GitHub Actions を使って、コードをプッシュするたびに自動で�
 
 ```yaml
 # .github/workflows/ci.yml
+# このファイルを置くだけで GitHub Actions が自動で読み込んでくれる
+# YAML はインデント（半角スペース2つ）で階層を表す形式
+
+# name = ワークフローの名前（GitHub の Actions タブに表示される）
 name: CI
 
+# on = いつこのワークフローを起動するかの条件
 on:
   push:
-    branches: [main]
+    branches: [main]              # main ブランチに push されたとき
   pull_request:
-    branches: [main]
+    branches: [main]              # main ブランチ向けの Pull Request が作られたとき
 
+# jobs = 実行するジョブの定義（複数並列に書ける）
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+  test:                              # ジョブの名前（任意）
+    runs-on: ubuntu-latest          # 実行環境。最新の Ubuntu Linux を使う
+    steps:                            # 順に実行するステップを並べる
+      - uses: actions/checkout@v4   # リポジトリのコードを取得する公式アクション
+      - uses: actions/setup-node@v4 # Node.js をセットアップする公式アクション
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: '20'         # Node.js のバージョン
+          cache: 'npm'                # npm のキャッシュを使って高速化
 
-      - run: npm ci
-      - run: npm run lint
-      - run: npm run build
-      - run: npm test
+      - run: npm ci                  # npm ci = package-lock.json に従ってクリーンインストール
+      - run: npm run lint            # lint チェックを実行
+      - run: npm run build           # ビルドを実行（型エラーがないか確認）
+      - run: npm test                # テストを実行
 ```
 
 **学べること:**
