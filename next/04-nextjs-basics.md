@@ -396,6 +396,8 @@ App Router では、特別な名前を持つファイルにそれぞれ役割が
 
 `page.tsx`（ページ・ティーエスエックス）は **Next.js が「これがこのフォルダのページ本体」と認識する予約名のファイル** です。そのルート（URL）にアクセスしたときに表示されるメインコンテンツを書きます。`page.tsx` がないフォルダは URL として公開されない、というルールも合わせて覚えておきましょう。
 
+> **▼ このコードがやること（先に日本語で）:** `app/page.tsx` を作って「トップページ（URL は `/`）の中身」を定義します。コンポーネント（画面の部品）は「JSX を返す関数」で、`export default` を付けて「このファイルの主役」として外に公開するのがポイントです。見出しと段落を表示するだけのシンプルなページです。詳しい1行ずつの意味はコード内コメントを見てください。
+
 ```typescript
 // app/page.tsx                              // ファイルパス。`app/` 直下なので URL は `/`（ルート）になる
 // URL: /                                    // ブラウザでアクセスする URL の説明コメント
@@ -419,6 +421,8 @@ export default function HomePage() {         // `export default` でこのコン
 #### layout.tsx - 共通レイアウト
 
 複数のページで共有される UI（ヘッダー、サイドバーなど）を定義します。ページ遷移してもレイアウトは再レンダリングされず、状態が保持されます。
+
+> **▼ このコードがやること（先に日本語で）:** すべてのページを「共通ヘッダー＋本文＋フッター」という枠で包む、アプリの一番外側の土台を作ります。`children`（チルドレン）という名前の引数に「各ページの中身」が自動で差し込まれる仕組みがキモで、ページを移動してもこの枠は作り直されません。`<html>` と `<body>` タグはこのルートレイアウトにだけ書く、という決まりも押さえてください。
 
 ```typescript
 // ============================================================================
@@ -520,6 +524,8 @@ export default function RootLayout({
 
 `loading.tsx` は **Next.js が「データ取得中に表示するUI」と認識する予約名のファイル** です。データの読み込み中に自動的に表示される UI を書きます。仕組みとしては内部で React の `<Suspense>`（サスペンス：データ待ちの間に代わりのUIを出す機能）を使っており、対応する `page.tsx` の Server Component が `await` でデータを待っている間、この `loading.tsx` の中身が代わりに描画されます。
 
+> **▼ このコードがやること（先に日本語で）:** データ取得中に「読み込み中」を伝える画面（ローディングUI）を作ります。`loading.tsx` という予約名のファイルを置くだけで、Next.js が自動で「ページの準備ができるまでの間」にこれを表示してくれます。回転するスピナーと案内メッセージを出すだけのシンプルな部品です。詳細はコード内コメントを参照してください。
+
 ```typescript
 // app/books/loading.tsx                       // ファイルパス。`/books` のロード中UIになる
                                                 // フォルダごとに置けるので、ページ単位で異なるローディング表現が可能
@@ -540,6 +546,8 @@ export default function BooksLoading() {       // default export された関数
 #### error.tsx - エラー時の表示
 
 `error.tsx` は **Next.js が「そのフォルダ内でエラーが起きたときに表示するUI」と認識する予約名のファイル** です。ページの描画中に例外が `throw` された場合などに表示される UI を書きます。**`"use client"` が必須** です（React の Error Boundary（エラーバウンダリ：エラーをキャッチして代替UIを出す仕組み）はクラスコンポーネントを内部で使うため、Client Component でないと動かないため）。
+
+> **▼ このコードがやること（先に日本語で）:** ページ表示中にエラー（不具合）が起きたとき、白い画面で固まる代わりに「エラーが発生しました」という案内と「もう一度試す」ボタンを出す画面を作ります。`error.tsx` には必ず先頭に `"use client"` を書く必要があり、Next.js が `error`（起きたエラー情報）と `reset`（再挑戦用の関数）を自動で渡してくれます。ボタンを押すと `reset()` が呼ばれてその部分の再表示を試みます。詳細はコード内コメントを参照してください。
 
 ```typescript
 // app/books/error.tsx                          // `/books` 配下でエラーが起きたときに自動で表示される
@@ -581,6 +589,8 @@ app/                                # アプリのルートフォルダ
     [id]/                           # 角括弧で囲むと「ここは可変」を意味する。フォルダ名の `id` が変数名になる
       page.tsx    → /books/1, /books/2, /books/abc などにマッチ   # 数字でも文字列でも何でも受ける
 ```
+
+> **▼ このコードがやること（先に日本語で）:** URL の一部（例: `/books/42` の「42」）をプログラムの中で受け取って画面に表示します。フォルダ名を `[id]` のように角括弧で囲むと、その部分が変化する値（パラメータ）になり、`params` という引数で受け取れます。Next.js 15 以降では `params` は `await` で取り出す必要がある点に注意してください（受け取った値は数値ではなく文字列で来ます）。詳細はコード内コメントを参照してください。
 
 ```typescript
 // app/books/[id]/page.tsx                            // ファイルパス。フォルダ名 [id] が動的セグメント
@@ -626,6 +636,8 @@ app/
         [bookId]/
           page.tsx   → /users/5/books/12 にマッチ
 ```
+
+> **▼ このコードがやること（先に日本語で）:** URL に変化する部分が2つある場合（例: `/users/5/books/12`）に、その両方の値（`userId` と `bookId`）を同時に取り出して表示します。動的セグメントは2段以上ネストでき、`params` の中に複数のキーとして入ってきます。`await` で取り出してから分割代入で2つの変数に展開するのがポイントです。詳細はコード内コメントを参照してください。
 
 ```typescript
 // ==========================================================================
@@ -676,6 +688,8 @@ app/                                              # ルート
     [...slug]/                                    # `...` 付きの動的セグメント。slug は配列で渡る
       page.tsx   → /docs/a, /docs/a/b, /docs/a/b/c などにマッチ  # 何階層でもOK
 ```
+
+> **▼ このコードがやること（先に日本語で）:** `/docs/a/b/c` のように何階層続くか分からない URL を、まとめて1つのページで受け取ります。フォルダ名を `[...slug]` のように `...` 付きにすると、それ以降のパスが「文字列の配列」として渡ってきます（例: `["react", "hooks", "useEffect"]`）。受け取った配列を `join(" / ")` でつなげて表示する例です。詳細はコード内コメントを参照してください。
 
 ```typescript
 // ==========================================================================
@@ -789,6 +803,8 @@ Client Component にするには、ファイルの **先頭**（import 文より
 > - 逆に「Server Component から import される Client Component」はOKです。これが普通の組み合わせ。
 > - 1つのページ内で「Server の骨組みの中に Client 部品を埋め込む」という構造が App Router の基本パターンです。
 
+> **▼ このコードがやること（先に日本語で）:** 「`"use client"` を書かないと自動的に Server Component（サーバー側で動く部品）になる」というデフォルトの形を確認します。Server Component は関数を `async` にしてサーバー上で直接データを取りに行ける反面、`useState` やボタンのクリック処理などブラウザ側の機能は使えません。ここではデータ取得は省略し、文字を表示するだけの最小例です。詳細はコード内コメントを参照してください。
+
 ```typescript
 // ==========================================================================
 // Server Component の例（"use client" を書かない＝デフォルト）
@@ -805,6 +821,8 @@ export default function BookList() {
   return <div>書籍一覧（サーバーで描画）</div>;
 }
 ```
+
+> **▼ このコードがやること（先に日本語で）:** ファイル先頭に `"use client"` を書いて、ブラウザ側で動く Client Component（クライアントコンポーネント）にする例です。これにより `useState`（状態を覚えておく仕組み）やユーザー入力への反応が使えるようになります。入力欄に文字を打つたびに状態が更新され、画面の表示もそれに追従する「検索バー」を作ります。詳細はコード内コメントを参照してください。
 
 ```typescript
 // ==========================================================================
@@ -941,6 +959,8 @@ export default function SearchBar() {
   </div>
 </div>
 
+> **▼ このコードがやること（先に日本語で）:** 書籍一覧ページ本体を Server Component として作り、サーバー上で書籍データを取得してから画面を組み立てます。ポイントは「Server の骨組み（このページ）の中に、Client の部品（検索バー）と Server の部品（一覧表示）を組み合わせる」という App Router の基本パターンです。取得した `books` を子コンポーネントに props（受け渡しデータ）として渡します。詳細はコード内コメントを参照してください。
+
 ```typescript
 // app/books/page.tsx（Server Component）                          // `/books` のページ本体。"use client" なしなので Server Component
 // データベースから直接書籍一覧を取得する
@@ -972,6 +992,8 @@ export default async function BooksPage() {                        // `async` �
   );
 }
 ```
+
+> **▼ このコードがやること（先に日本語で）:** 入力した文字でページを検索結果に切り替える検索バーを作ります。Client Component なので入力状態を `useState` で覚えつつ、`useRouter`（ページ移動用の道具）で検索キーワード付きの URL に移動します。日本語や空白は URL にそのまま使えないため `encodeURIComponent` で変換する点も押さえてください。詳細はコード内コメントを参照してください。
 
 ```typescript
 // components/SearchBar.tsx（Client Component）                    // 再利用される検索バー部品
@@ -1008,6 +1030,8 @@ export function SearchBar() {                                       // 名前付
 }
 ```
 
+> **▼ このコードがやること（先に日本語で）:** 書籍1冊分の「カード」表示を Server Component で作ります。タイトルや著者など動かない部分はサーバーで描画し、クリックが必要な「お気に入りボタン」だけを Client Component として中に埋め込みます。`type Book = {...}` は「このオブジェクトはこういう形」と決める TypeScript の型定義で、入力ミスを防いでくれます。詳細はコード内コメントを参照してください。
+
 ```typescript
 // components/BookCard.tsx（Server Component）                     // 書籍1冊分のカード。静的表示部分は Server で
 
@@ -1031,6 +1055,8 @@ export function BookCard({ book }: { book: Book }) {                // props を
   );
 }
 ```
+
+> **▼ このコードがやること（先に日本語で）:** クリックで「お気に入り」の ON/OFF を切り替えるボタンを作ります。Client Component なので、状態を `useState` で覚え、クリックされたらまず画面表示をすぐ切り替え（楽観的更新）、その後サーバーに `fetch` で保存依頼を送ります。ボタンの文字も状態に応じて「☆」と「★」で切り替わります。詳細はコード内コメントを参照してください。
 
 ```typescript
 // components/FavoriteButton.tsx（Client Component）              // クリック可能なお気に入りボタン
@@ -1068,6 +1094,8 @@ export function FavoriteButton({ bookId }: { bookId: string }) {   // props は 
 ### 4.1 ルートレイアウト
 
 `app/layout.tsx` は **ルートレイアウト** と呼ばれ、アプリケーション全体に適用されます。`<html>` タグと `<body>` タグを含む **唯一の** レイアウトです。
+
+> **▼ このコードがやること（先に日本語で）:** アプリ全体の一番外側の枠（ヘッダー・本文・フッター）と、ブラウザタブのタイトルなどの基本情報（`metadata`）をまとめて定義します。`metadata` を export すると Next.js が `<head>` を自動で組み立ててくれるので、自分で `<title>` を書く必要がありません。Google Fonts の最適化読み込みも含む、実用的なルートレイアウトの完成形です。詳細はコード内コメントを参照してください。
 
 ```typescript
 // app/layout.tsx                                       // 予約名 `layout.tsx`。`app/` 直下のものは「ルートレイアウト」と呼ばれる
@@ -1159,6 +1187,8 @@ export default function RootLayout({                    // ルートレイアウ
     </div>
   </div>
 </div>
+
+> **▼ このコードがやること（先に日本語で）:** `/books` 以下のページだけに共通で付くサイドバー付きの枠（ネストされたレイアウト）を作ります。ルートレイアウトの内側にさらに重ねられるのがポイントで、トップページには出ず `/books` 配下でだけサイドバーが表示されます。ルート以外のレイアウトでは `<html>`/`<body>` は書かない点に注意してください。詳細はコード内コメントを参照してください。
 
 ```typescript
 // app/books/layout.tsx                                     // `app/books/` フォルダの中の `layout.tsx`
@@ -1262,6 +1292,8 @@ export default function BooksLayout({                       // ネストされ�
 
 Next.js では、ページ間の遷移に HTML の `<a>` タグではなく、`next/link` モジュールが提供する `<Link>` コンポーネントを使います。`<Link>` は内部的に `<a>` を描画しますが、クリック時にページ全体をリロードせず、必要な部分だけを差し替える **クライアントサイド遷移**（client-side navigation：ブラウザでURLだけ書き換えて描画を切り替える方式）を行います。
 
+> **▼ このコードがやること（先に日本語で）:** ページ間を移動するためのナビゲーション（メニュー）を、`next/link` の `<Link>` を使って作ります。`<a>` タグの代わりに `<Link>` を使うと、クリック時にページ全体を読み込み直さず必要な部分だけ差し替える「高速なページ移動」になります。`href` に行き先 URL を指定する書き方は `<a>` とよく似ています。詳細はコード内コメントを参照してください。
+
 ```typescript
 // components/Navigation.tsx                         // ナビゲーション専用コンポーネント
 import Link from "next/link";                        // Next.js の Link コンポーネントを取り込む（default export）
@@ -1294,6 +1326,8 @@ export function Navigation() {                       // 名前付き export（�
 | 状態の保持 | リセットされる | **レイアウトの状態が保持される** |
 | JavaScript | 不要 | 必要 |
 
+> **▼ このコードがやること（先に日本語で）:** 書籍ごとに異なる詳細ページ（例: `/books/42`）へのリンクを、データに応じて動的に組み立てます。`href={`/books/${book.id}`}` のようにバッククォート（テンプレートリテラル）で URL に変数を埋め込むのがポイントです。1冊分の `book` を props で受け取り、その `id` からリンク先を作ります。詳細はコード内コメントを参照してください。
+
 ```typescript
 // 動的ルートへのリンク                                 // 動的セグメント `[id]` を含むURLへのリンク例
 import Link from "next/link";                          // Link コンポーネントを取り込む
@@ -1320,6 +1354,8 @@ export function BookLink({ book }: { book: Book }) {   // props として 1冊�
 ### 5.2 useRouter フック
 
 プログラムからページ遷移を行いたい場合（ボタンクリック後やフォーム送信後など）は、`useRouter` フックを使います。**Client Component でのみ使用可能です。**
+
+> **▼ このコードがやること（先に日本語で）:** `<Link>` のクリックではなく「処理が終わった後にプログラムから自動でページを移動する」方法を学びます。フォーム送信後に `useRouter` の `router.push("/books")` を呼んで一覧ページへ飛ばす例です。`useRouter` は Client Component でしか使えず、取り込み元は `next/navigation`（旧 `next/router` ではない）である点が要注意です。詳細はコード内コメントを参照してください。
 
 ```typescript
 // components/BookForm.tsx                              // 書籍フォーム部品
@@ -1349,6 +1385,8 @@ export function BookForm() {
 ```
 
 **useRouter の主要メソッド:**
+
+> **▼ このコードがやること（先に日本語で）:** `useRouter` が持つ4つの代表的な機能を、ボタンで呼び分けて比較します。`push`（履歴を残して移動）、`replace`（履歴を上書きして移動＝戻れない）、`back`（1つ前に戻る）、`refresh`（今のページのデータだけ取り直す）の違いを押さえるのが目的です。それぞれをいつ使うかはこの後の表にもまとまっています。詳細はコード内コメントを参照してください。
 
 ```typescript
 "use client";                                            // Client Component 化
@@ -1396,6 +1434,8 @@ export function NavigationExample() {
 
 `next/navigation` には `useRouter` 以外にも、現在の URL に関する情報を取り出すフックがあります。どちらも **Client Component 専用** です。
 
+> **▼ このコードがやること（先に日本語で）:** 「今どの URL にいるか」「URL の `?sort=price` のような追加情報（クエリパラメータ）は何か」をプログラムから読み取ります。`usePathname` で現在のパス、`useSearchParams` でクエリの値（`.get("sort")` で取得）を取り出す例です。`??`（ヌル合体演算子）は「値が無いときの代わりの値」を指定する書き方です。詳細はコード内コメントを参照してください。
+
 ```typescript
 "use client";                                                     // Client Component 必須
 
@@ -1421,6 +1461,8 @@ export function CurrentUrlInfo() {
 リダイレクト（redirect：別のURLに自動転送すること）は、Server Component の中で `redirect()` を呼ぶか、後述する `middleware.ts` で行います。
 
 #### Server Component でのリダイレクト
+
+> **▼ このコードがやること（先に日本語で）:** 書籍詳細ページで「条件によって別ページへ自動転送する」処理を学びます。データが見つからなければ `notFound()` で404ページを、非公開の書籍なら `redirect("/books")` で一覧へ飛ばす例です。どちらも呼ぶとそこで処理が止まる（戻ってこない）ため、`return` の前に置くだけで分岐できます。詳細はコード内コメントを参照してください。
 
 ```typescript
 // app/books/[id]/page.tsx                                       // 動的セグメントを含む書籍詳細ページ
@@ -1464,6 +1506,8 @@ async function fetchBook(id: string) {                            // データ�
 
 `middleware.ts`（ミドルウェア：リクエストとレスポンスの間に挟まる処理。Next.js では Edge Runtime（軽量な実行環境）で動く）をプロジェクトルートに置くことで、ページが描画される**前の段階**でリダイレクトを行えます。認証チェック、地域別の振り分け、A/Bテストなどに使えます。
 
+> **▼ このコードがやること（先に日本語で）:** ページが表示される「前の段階」で割り込み、未ログインのユーザーを `/login` に転送する関所（ミドルウェア）を作ります。リクエストの Cookie からログイン状態を判定し、条件に合えば転送、合わなければそのまま通します。最後の `config.matcher` で「どの URL にこの関所を効かせるか」を指定する点もポイントです。詳細はコード内コメントを参照してください。
+
 ```typescript
 // middleware.ts（プロジェクトルート）                              // ファイル名は固定。app/ の外、プロジェクト直下に置く
 
@@ -1496,6 +1540,8 @@ export const config = {                                            // `config` �
 ### 6.1 Server Component でのデータ取得
 
 Server Component ではコンポーネント関数を `async` にして、直接 `await` でデータを取得できます。これが Next.js App Router の最も強力な機能の1つです。
+
+> **▼ このコードがやること（先に日本語で）:** Server Component の最大の魅力である「コンポーネント関数を `async` にして、その場で `await` でデータを取得する」書き方を学びます。取得した書籍配列を `map`（1件ずつ変換）でリスト表示する、データ取得の王道パターンです。データが入った状態の HTML がサーバーから届くので表示が速く SEO にも強い、という普通の React との違いも意識してください。詳細はコード内コメントを参照してください。
 
 ```typescript
 // ============================================================================
@@ -1632,6 +1678,8 @@ fetch(url, { next: { revalidate: 60 } });                                   // `
 
 Client Component では、従来の React と同じように `useEffect` と `useState` を使うか、サードパーティのデータ取得ライブラリ（SWR や TanStack Query）を使います。
 
+> **▼ このコードがやること（先に日本語で）:** ブラウザ側でリアルタイムに検索する部品を、従来の React と同じ `useState` + `useEffect` で作ります。入力のたびに毎回通信すると重いので、「入力が止まって300ミリ秒後にだけ検索する」デバウンスという工夫を入れています。読み込み中・エラー・結果という3つの状態をそれぞれ管理する、実戦的な例です。詳細はコード内コメントを参照してください。
+
 ```typescript
 // components/BookSearch.tsx                                       // ブラウザでリアルタイム検索する部品
 "use client";                                                       // Client Component。useState/useEffect を使うため必須
@@ -1725,6 +1773,8 @@ export function BookSearch() {
 
 `loading.tsx` を配置するだけで、Server Component のデータ取得中に自動的にローディング UI が表示されます。
 
+> **▼ このコードがやること（先に日本語で）:** 読み込み中に、実際のコンテンツと同じ形をした灰色の枠（スケルトンUI）を表示するローディング画面を作ります。データが届いた瞬間に画面がガタつかないようにするための工夫です。`Array.from({ length: 6 }).map(...)` で同じカードを6個並べる書き方や、`style` 属性にオブジェクトを渡す JSX 特有の書き方を学べます。詳細はコード内コメントを参照してください。
+
 ```typescript
 // app/books/loading.tsx                                           // 予約名 `loading.tsx`。/books のロード中UI
 
@@ -1813,6 +1863,8 @@ export default function BooksLoading() {                           // default ex
 
 App Router で「自前のHTTP API」を作りたいときは、`app/api/.../route.ts` というファイルを置きます。これを **Route Handler**（ルートハンドラ：URLとHTTPメソッドに対応する関数を書くファイル）と呼びます。Server Component から直接DBにアクセスできる App Router では出番は減りましたが、外部から `fetch` で叩かれるエンドポイントを公開したい場合に使います。
 
+> **▼ このコードがやること（先に日本語で）:** `app/api/.../route.ts` という予約名のファイルで、外部から `fetch` で呼べる自前の HTTP API を作ります。`GET` や `POST` という名前の関数を export すると、それぞれが同名の HTTP メソッドの処理になるのがポイントです。`NextResponse.json(...)` で JSON を返す、API の基本形を学べます。詳細はコード内コメントを参照してください。
+
 ```typescript
 // app/api/books/route.ts                                        // 予約名 `route.ts`。`/api/books` の HTTP API になる
                                                                    // page.tsx と同じフォルダには置けない（ルートが衝突するため）
@@ -1839,6 +1891,8 @@ export async function POST(request: Request) {                   // POST メソ�
 
 画像は `next/image` の `<Image>` コンポーネントを使うと、自動でサイズ最適化・WebP変換・遅延ロードが行われます。
 
+> **▼ このコードがやること（先に日本語で）:** 画像を `<img>` ではなく `next/image` の `<Image>` で表示し、サイズ最適化・WebP変換・遅延読み込みを自動で効かせます。`width`/`height` はレイアウト崩れ防止のために必須、`alt`（代替テキスト）もアクセシビリティのために必須です。最重要画像には `priority` を付ける、という使い方を学べます。詳細はコード内コメントを参照してください。
+
 ```typescript
 import Image from "next/image";                                  // default export の Image コンポーネント
 
@@ -1860,6 +1914,8 @@ export function BookCover() {
 ### 6.6 next.config.js / next.config.ts（補足）
 
 プロジェクトルートの `next.config.js`（または TypeScript 版 `next.config.ts`）は Next.js 全体の設定ファイルです。画像の許可ドメインや実験的機能の有効化などをここで指定します。
+
+> **▼ このコードがやること（先に日本語で）:** プロジェクト全体の設定ファイル `next.config.ts` の基本形を学びます。ここでは `next/image` で外部サイトの画像を表示してよいドメインを `remotePatterns` で許可する例を示します（許可しないと外部画像は表示されません）。設定オブジェクトを作り `export default` する、という決まった書き方を押さえてください。詳細はコード内コメントを参照してください。
 
 ```typescript
 // next.config.ts                                                  // 設定ファイル本体
@@ -1914,6 +1970,8 @@ Server Actions は `"use server"` ディレクティブで宣言します。`"us
 
 #### 基本的な Server Action
 
+> **▼ このコードがやること（先に日本語で）:** フォーム送信を処理する関数（Server Action）を作ります。ファイル先頭の `"use server"` が「この中の関数はサーバー上で動く」という宣言で、これにより別途 API を作らなくてもフォームの保存処理が書けます。送信された値を `formData.get("title")` で取り出し、入力チェック（バリデーション）してから保存する流れを学べます。詳細はコード内コメントを参照してください。
+
 ```typescript
 // app/books/new/actions.ts                                       // Server Action 用の専用ファイル
 "use server";                                                      // ファイル先頭の `"use server"` で「この中の関数は全部サーバー実行」と宣言
@@ -1948,6 +2006,8 @@ export async function createBook(formData: FormData) {            // 引数 `For
 ```
 
 #### Server Component のフォーム（JavaScript 不要）
+
+> **▼ このコードがやること（先に日本語で）:** 先ほどの Server Action を使う「書籍追加フォーム」を Server Component として作ります。`<form action={createBook}>` のように `action` 属性に関数を直接渡せるのが Next.js の拡張で、JavaScript が動かない環境でも送信できる堅牢な作りになります（Progressive Enhancement）。各 `<input>` の `name` 属性が、サーバー側で値を取り出すときのキー名になる点が重要です。詳細はコード内コメントを参照してください。
 
 ```typescript
 // app/books/new/page.tsx（Server Component）                    // 新規追加ページ。"use client" を書かないので Server
@@ -2002,6 +2062,8 @@ export default function NewBookPage() {                           // 同期関�
 **画面にはこう表示される:** 「書籍を追加」という見出しの下に、タイトル、著者、出版年の入力フィールドと「追加する」ボタンが表示されます。各フィールドに入力して「追加する」ボタンを押すと、フォームのデータがサーバーに送信され、`createBook` 関数がサーバー上で実行されます。
 
 #### Client Component のフォーム（ローディング状態の管理）
+
+> **▼ このコードがやること（先に日本語で）:** 同じフォームを、送信中の状態やエラー表示まで扱える Client Component 版に作り変えます。React 19 の `useActionState` フックを使うと、Server Action と連携しながら「現在の状態・加工済みの送信関数・送信中フラグ」の3つを受け取れます。送信中はボタンを「追加中...」にしてクリック不可にし、エラーがあれば画面に出す、という親切な UI が作れます。詳細はコード内コメントを参照してください。
 
 ```typescript
 // components/BookFormClient.tsx                                    // クライアント側でローディング状態を扱えるフォーム
@@ -2093,6 +2155,8 @@ export function BookFormClient() {
 
 Next.js では、プロジェクトルートに `.env.local` ファイルを作成して環境変数を設定します。
 
+> **▼ このコードがやること（先に日本語で）:** APIキーやデータベース接続情報などの設定値を、コードに直接書かずに `.env.local` というファイルにまとめて管理します。`KEY="値"` の形で1行に1つ書きます。変数名の先頭に `NEXT_PUBLIC_` を付けるとブラウザにも公開され、付けないとサーバー側だけで使える（＝機密情報を守れる）という違いが最大のポイントです。詳細はコード内コメントを参照してください。
+
 ```bash
 # .env.local（プロジェクトルートに作成）                              # `#` から始まる行はコメント。シェル/dotenv 共通の記法
 
@@ -2139,6 +2203,8 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6..."     # 匿名キ�
   </div>
 </div>
 
+> **▼ このコードがやること（先に日本語で）:** Server Component の中で環境変数を読み取る例です。サーバー側では `process.env.変数名` で、`NEXT_PUBLIC_` 付きでも無しでも、すべての環境変数にアクセスできます。機密キーもここでなら安全に使えます（ブラウザには送られない）。`console.log` の出力もブラウザではなくサーバーのターミナルに出る点を意識してください。詳細はコード内コメントを参照してください。
+
 ```typescript
 // Server Component での使用                                       // サーバー側ではすべての環境変数にアクセスできる
 // app/books/page.tsx
@@ -2156,6 +2222,8 @@ export default async function BooksPage() {
   return <div>...</div>;                                          // 省略表記
 }
 ```
+
+> **▼ このコードがやること（先に日本語で）:** 同じ `process.env` でも、Client Component（ブラウザ側）では `NEXT_PUBLIC_` 付きの変数しか読めない、という違いを確かめる例です。`NEXT_PUBLIC_` なしの機密キーを参照すると `undefined`（値なし）になり、これは「漏らさないための安全な仕様」です。どの変数がどちらで使えるかを区別できるようになるのが目標です。詳細はコード内コメントを参照してください。
 
 ```typescript
 // Client Component での使用                                       // ブラウザ側では NEXT_PUBLIC_ 付きしか参照できない
@@ -2186,6 +2254,8 @@ export function SomeClient() {
 
 書籍管理アプリでは、Supabase を使います。環境変数の設定例は以下の通りです。
 
+> **▼ このコードがやること（先に日本語で）:** 書籍管理アプリで実際に使う Supabase（データベースサービス）の接続情報を `.env.local` に設定する具体例です。URL と匿名キーは公開してよいので `NEXT_PUBLIC_` を付け、全権限を持つサービスロールキーは絶対に公開しないため `NEXT_PUBLIC_` を付けません。この付け分けがそのままセキュリティの境界になります。詳細はコード内コメントを参照してください。
+
 ```bash
 # .env.local                                                       # 開発機ローカル用の環境変数ファイル
 
@@ -2198,6 +2268,8 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."   # 公�
 # Supabase サービスロールキー（絶対に公開してはいけない）
 SUPABASE_SERVICE_ROLE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."  # NEXT_PUBLIC_ なし＝Server 限定
 ```
+
+> **▼ このコードがやること（先に日本語で）:** ブラウザ側（Client Component）から Supabase に接続するための「クライアント」を作る関数を定義します。公開してよい `NEXT_PUBLIC_` 付きの URL と匿名キーだけを使うのがポイントです。`!`（non-null assertion）は「この値は undefined ではないと TypeScript に約束する」記号で、設定漏れがあると実行時にエラーになります。詳細はコード内コメントを参照してください。
 
 ```typescript
 // lib/supabase/client.ts                                          // ブラウザ側で動く Supabase クライアント
@@ -2212,6 +2284,8 @@ export function createClient() {                                   // クライ�
   );
 }
 ```
+
+> **▼ このコードがやること（先に日本語で）:** サーバー側（Server Component）から Supabase に接続するクライアントを作ります。クライアント版との違いは、ログイン状態を保つために Cookie を読み書きする仕組み（`cookies()` を使ったアダプタ）を渡している点です。`cookies()` が Promise を返すため関数を `async` にして `await` する必要があります。やや複雑ですが、いまは「サーバー用は Cookie 連携が要る」とだけ掴めば十分です。詳細はコード内コメントを参照してください。
 
 ```typescript
 // lib/supabase/server.ts                                          // サーバー側で動く Supabase クライアント
@@ -2317,6 +2391,8 @@ export async function createClient() {                             // async に�
 
 以下は、書籍管理アプリの最終的なファイル構成の全体像です。
 
+> **▼ このコードがやること（先に日本語で）:** アプリ全体で使い回す「書籍データの形」を TypeScript の型として1か所にまとめて定義します。型を決めておくと、`book.title` のように書いたときにエディタが補完してくれたり、入力ミスを事前に警告してくれます。`string | null`（文字列か空のどちらか）や `?`（省略可能）といった、型を柔軟に表す書き方も学べます。詳細はコード内コメントを参照してください。
+
 ```typescript
 // types/book.ts                                                   // 型定義の置き場
 // アプリ全体で使う書籍の型定義
@@ -2341,6 +2417,8 @@ export type BookFormData = {                                        // 新規追
   description?: string;                                             // `?` で「省略可能」のオプショナルプロパティ
 };
 ```
+
+> **▼ このコードがやること（先に日本語で）:** アプリのあちこちで使う「便利な小さな関数（ユーティリティ）」を1か所にまとめます。日付文字列を「2024年1月15日」の形に整える `formatDate` と、複数のクラス名を空白区切りでつなげる `cn` の2つを定義します。`...classes`（レストパラメータ）で引数を何個でも受け取る書き方や、`filter(Boolean)` で空の値を除く書き方が学べます。詳細はコード内コメントを参照してください。
 
 ```typescript
 // lib/utils.ts                                                    // 汎用ヘルパー置き場
@@ -2370,6 +2448,8 @@ export function cn(...classes: (string | false | undefined | null)[]): string {
                                                                     // `join(" ")` で半角スペース区切りに連結
 }
 ```
+
+> **▼ このコードがやること（先に日本語で）:** 色や種類を切り替えられる、使い回し可能な汎用ボタン部品を作ります。`variant`（primary/secondary/danger）や `disabled` などを props で受け取り、種類に応じて CSS クラスを組み立てます。`variant = "primary"` のように引数にデフォルト値を持たせる書き方や、props の形を型（`ButtonProps`）で定義する書き方が学べます。詳細はコード内コメントを参照してください。
 
 ```typescript
 // components/ui/Button.tsx                                         // 再利用可能なボタンコンポーネント
