@@ -80,6 +80,8 @@ npx tailwindcss init
 
 生成された `tailwind.config.js` を次のように書き換えます。
 
+> **▼ このコードがやること（先に日本語で）:** NativeWind（Tailwind）に「**クラス名をどのファイルから探すか**」と「**NativeWind用の設定一式を読み込む**」ことを教える設定ファイルです。一番大事なのは `content`——ここに書いたファイルの中で実際に使われているクラスだけがスタイルとして取り込まれます。書き換える箇所は数行だけで、残りはほぼ決まり文句（おまじない）です。詳しい意味は各行のコメントを見てください。
+
 ```js
 // tailwind.config.js — Tailwind/NativeWindの設定
 
@@ -103,6 +105,8 @@ module.exports = {
 
 `app` フォルダに `global.css` を新規作成し、Tailwindの基本指定を書きます。
 
+> **▼ このコードがやること（先に日本語で）:** Tailwindの土台となるスタイルを読み込むための、**3行だけのCSSファイル**を作ります。`@tailwind base / components / utilities` の3行を書くことで、`text-lg` や `bg-white` といった便利クラスがアプリで使えるようになります。これはNativeWindを使うための「お決まりの3行」なので、丸ごとそのまま書けばOKです。
+
 ```css
 /* app/global.css — Tailwindの基本スタイルを読み込む */
 @tailwind base;        /* Tailwindの土台スタイル */
@@ -122,6 +126,8 @@ NativeWindを動かすため、2つの設定ファイルを調整します。内
 
 `babel.config.js`（無ければ作成）:
 
+> **▼ このコードがやること（先に日本語で）:** Babel（コードをスマホが分かる形へ翻訳する道具）に「**classNameをスタイルに変える翻訳ルールも使ってね**」と教える設定です。`jsxImportSource: "nativewind"` と `"nativewind/babel"` の2つが、その指定の中心です。仕組みは下のblockquoteで詳しく説明していますが、まずは丸ごとコピーで構いません。詳細は各行のコメントを参照してください。
+
 ```js
 // babel.config.js — コード変換の設定
 module.exports = function (api) {
@@ -137,6 +143,8 @@ module.exports = function (api) {
 ```
 
 `metro.config.js`（無ければ作成）:
+
+> **▼ このコードがやること（先に日本語で）:** Metro（ファイルを1つにまとめてスマホへ届ける道具）に「**NativeWindの機能を足し、先ほど作った `global.css` を読み込ませる**」設定です。`withNativeWind(...)` は「Expoの標準設定を受け取って、NativeWind対応版にして返す」関数だと考えてください。これも基本はコピーでOK。詳しい役割は下のblockquoteと各行のコメントにあります。
 
 ```js
 // metro.config.js — バンドラ(Metro)の設定。global.cssをNativeWindに渡す
@@ -184,6 +192,8 @@ npx expo start --clear
 
 NativeWindでは、`style={...}` の代わりに **`className="..."`** にクラス名を並べて見た目を指定します。
 
+> **▼ このコードがやること（先に日本語で）:** NativeWindの基本である **`className="..."` の書き方**を、画面中央に文字を表示する小さな例で体験します。ポイントは「`className` の中に、見た目を表す短いクラス名を**空白で区切って並べる**」こと——例えば `flex-1`（画面いっぱい）、`justify-center`（縦中央）、`text-2xl`（文字大きめ）のようにです。1つ1つのクラスが何を意味するかは、コード内のコメントで確認してください。
+
 ```tsx
 import { View, Text } from "react-native";
 
@@ -223,6 +233,8 @@ export default function Demo() {
 ## 4. 一覧画面をNativeWindで書き直す
 
 第7・8章で `StyleSheet` で書いた一覧画面を、NativeWindで書き直してみます。`StyleSheet.create` のブロックがごっそり消えて、コードが短くなるのを体感してください。
+
+> **▼ このコードがやること（先に日本語で）:** これまで `StyleSheet` で書いていた一覧画面を、**すべて `className` で書き直した完成形**です。注目してほしいのは、ファイル末尾にあった `StyleSheet.create({ ... })` の長いブロックがまるごと消え、見た目の指定が各部品の `className` に移っている点です。検索ボックス・カード・追加ボタンなどの見た目が、短いクラス名だけで表現されています。各クラスの意味やテンプレートリテラルでの色切り替えは、コード内コメントと直後の補足を見てください。
 
 ```tsx
 // app/index.tsx — NativeWind版（主要部分のみ）
@@ -338,6 +350,8 @@ function getStatusClass(status: string) {
 ### 5.1 アプリ名・アイコン・スプラッシュ画面
 
 `app.json`（第1章で見た設定ファイル）で、アプリの基本情報を設定します。
+
+> **▼ このコードがやること（先に日本語で）:** アプリの**名前・アイコン・起動画面（スプラッシュ）**などの基本情報を `app.json` にまとめて設定します。`name` はホーム画面に出るアプリ名、`icon` はアイコン画像、`splash` は起動時に一瞬出る画面の指定です。公開前の「アプリらしさ」を決める大事な設定なので、どの項目が何を表すかを各行のコメントで押さえておきましょう。
 
 ```json
 {
