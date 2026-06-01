@@ -24,8 +24,6 @@ from pathlib import Path
 import markdown
 
 ROOT = Path(__file__).resolve().parent
-PDF_DIR = ROOT / "pdf"
-PDF_DIR.mkdir(exist_ok=True)
 
 # --------------------------- Browser detection -------------------------------
 CHROME_CANDIDATES = [
@@ -122,6 +120,9 @@ code {{
   color: #be123c;
   padding: 0.12em 0.36em;
   border-radius: 4px;
+  /* Long inline code (file paths / URLs) must break instead of overflowing. */
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }}
 
 pre {{
@@ -129,7 +130,12 @@ pre {{
   color: #e2e8f0;
   border-radius: 8px;
   padding: 12px 14px;
-  overflow-x: auto;
+  /* In a PDF there is no horizontal scrolling, so long lines must wrap
+     instead of being clipped off the right edge of the page. */
+  overflow-x: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
   font-size: 9.2pt;
   line-height: 1.5;
   margin: 0.8em 0;
@@ -140,6 +146,20 @@ pre code {{
   color: inherit;
   padding: 0;
   font-size: inherit;
+  white-space: inherit;
+  word-break: inherit;
+  overflow-wrap: inherit;
+}}
+
+/* The codehilite extension wraps highlighted blocks in a scrolling div; make
+   that wrap too so nothing is clipped in the PDF. */
+.codehilite {{
+  overflow-x: hidden;
+}}
+.codehilite pre {{
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }}
 
 /* Pygments tokens (a single dark theme) */
@@ -292,23 +312,42 @@ def convert(md_path: Path) -> Path:
     html_path = md_path.with_suffix(".tmp.html")
     html_path.write_text(html_text, encoding="utf-8")
 
-    pdf_path = PDF_DIR / f"{title}.pdf"
-    print(f"  -> {pdf_path.name}")
+    # PDFs go into a `pdf/` subfolder beside the source .md (e.g. next/pdf,
+    # react_native/pdf), so each tutorial folder keeps its own output.
+    pdf_dir = md_path.parent / "pdf"
+    pdf_dir.mkdir(exist_ok=True)
+    pdf_path = pdf_dir / f"{title}.pdf"
+    print(f"  -> {pdf_path.relative_to(ROOT)}")
     chrome_print_pdf(html_path, pdf_path)
 
     html_path.unlink(missing_ok=True)
     return pdf_path
 
 def main(targets: list[Path]) -> None:
-    print(f"PDF output dir: {PDF_DIR}")
     for md in targets:
-        print(f"Converting: {md.name}")
+        print(f"Converting: {md.relative_to(ROOT)}")
         convert(md)
     print("Done.")
 
-if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        files = [ROOT / a for a in sys.argv[1:]]
+def resolve_targets(args: list[str]) -> list[Path]:
+    """Turn CLI args into a list of .md files.
+
+    Each arg may be a folder (e.g. `next` or `react_native`) — all its `*.md`
+    files are picked up — or a direct path to a single `.md` file. With no args,
+    every tutorial subfolder under ROOT is built.
+    """
+    files: list[Path] = []
+    if args:
+        for a in args:
+            p = (ROOT / a) if not Path(a).is_absolute() else Path(a)
+            if p.is_dir():
+                files += sorted(q for q in p.glob("*.md") if not q.name.startswith("_"))
+            else:
+                files.append(p)
     else:
-        files = sorted(p for p in ROOT.glob("*.md") if not p.name.startswith("_"))
-    main(files)
+        for folder in sorted(d for d in ROOT.iterdir() if d.is_dir()):
+            files += sorted(q for q in folder.glob("*.md") if not q.name.startswith("_"))
+    return files
+
+if __name__ == "__main__":
+    main(resolve_targets(sys.argv[1:]))
