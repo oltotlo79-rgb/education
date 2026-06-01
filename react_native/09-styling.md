@@ -112,7 +112,13 @@ module.exports = {
 
 ### 2.4 Babel と Metro の設定
 
-NativeWindを動かすため、2つの設定ファイルを調整します。難しい内部の仕組みなので、「こう書く」と覚えれば十分です。
+NativeWindを動かすため、2つの設定ファイルを調整します。内部の仕組みなので「こう書く」と覚えれば十分ですが、**それぞれが何をしているのか**を知っておくと、エラー時に対処しやすくなります。
+
+> **そもそも Babel と Metro とは？** あなたが書く `className="text-lg"` のようなコードは、そのままではスマホは理解できません。アプリを動かす前に、**スマホが分かる形へ変換（へんかん）** する道具が必要です。
+> - **Babel（バベル）** … 新しい書き方（TypeScript、JSX、NativeWindのclassName）を、スマホが解釈できる素のJavaScriptへ**翻訳する**道具。
+> - **Metro（メトロ）** … たくさんのファイルや部品を**1つにまとめて**スマホへ届ける道具（「バンドラ＝束ねるもの」と呼びます。第1章で登場）。
+>
+> NativeWindは「`className` を本物のスタイルへ変換する」仕組みなので、この**BabelとMetroの両方に「NativeWindの変換も通してね」と教える**必要があります。それが下の2ファイルの役割です。
 
 `babel.config.js`（無ければ作成）:
 
@@ -142,6 +148,12 @@ const config = getDefaultConfig(__dirname);   // Expoの標準設定を取得
 // withNativeWind : 標準設定にNativeWindの機能を足す。input に先ほどのCSSを指定
 module.exports = withNativeWind(config, { input: "./app/global.css" });
 ```
+
+> **2つの設定ファイルが何をしているか（要点）:**
+> - **`babel.config.js`** … `babel-preset-expo`（Expo標準の変換ルール）に、`{ jsxImportSource: "nativewind" }` を渡しています。これは「**JSX（`<View className="...">` のような画面の書き方）を変換するとき、NativeWindの仕組みを使ってね**」という指定です。続く `"nativewind/babel"` も、classNameを解釈するための変換ルールです。つまりBabel側に「classNameをスタイルに変える翻訳ルール」を追加しています。
+> - **`metro.config.js`** … `getDefaultConfig` でExpoの標準設定を取得し、`withNativeWind(config, { input: "./app/global.css" })` で「**標準設定にNativeWindの機能を足し、先ほど作った `global.css` を読み込ませる**」設定にしています。`withNativeWind` は「設定を受け取って、NativeWind対応版にして返す」関数だと考えてください。
+>
+> 難しく見えますが、やっていることは**「BabelとMetroの両方に、NativeWindの変換を組み込む」**だけです。丸ごとコピーで構いませんが、「className がスタイルに化けるのは、この2ファイルのおかげ」と覚えておくと、もしスタイルが効かないとき真っ先にここを見直せます。
 
 ### 2.5 グローバルCSSを読み込む
 
