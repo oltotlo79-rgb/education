@@ -520,6 +520,77 @@ export default function RootLayout({
 
 ページ遷移しても**ヘッダーとフッターは再描画されない**（=スクロール位置や状態が保たれる）のが Next.js のレイアウト機能のメリットです。
 
+#### ▼ コードを1つずつ分解して解説
+
+上のレイアウトには「メタデータの export」「children を受け取る型」「`<html>`/`<body>` の特別扱い」という、初心者がつまずきやすいポイントが入っています。順番に見ていきましょう。
+
+---
+
+##### 解説1: `metadata` を export するだけで `<head>` が自動生成される
+
+```typescript
+export const metadata: Metadata = {
+  title: "書籍管理アプリ",
+  description: "あなたの読書記録を管理するアプリケーション",
+};
+```
+
+- `metadata`（メタデータ）は「ページに関する情報」のことです。ブラウザのタブに出る**タイトル**や、検索エンジン・SNS共有で使われる**説明文**などがこれにあたります。
+- ポイントは「`metadata` という**決まった名前**で `export` するだけ」という点です。これだけで Next.js が自動的に `<head>` の中の `<title>` や `<meta name="description">` を作ってくれます。**自分で `<head>` を書く必要がありません。**
+- `: Metadata` の部分は「このオブジェクトは `Metadata` という型ですよ」とTypeScriptに教える型注釈です（`Metadata` 型はファイル冒頭で `import type { Metadata } from "next"` して取り込んでいます）。
+
+> **用語: メタデータ（metadata）** … 「データについてのデータ」という意味。ページ本体の中身ではなく「このページは何か」を説明する付帯情報（タイトル・説明文など）を指します。
+
+---
+
+##### 解説2: `children` を受け取って「各ページの中身」を差し込む
+
+```typescript
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+```
+
+- `RootLayout` は、すべてのページを包む一番外側の枠（レイアウト）です。`export default` を付けて「このファイルの主役」として公開しています。
+- 引数の `{ children }` は**分割代入**で、props（親から渡される値）の中から `children` だけを取り出しています。`children`（チルドレン＝子）には「**このレイアウトの内側に入る、各ページの中身**」が自動で入ってきます。
+- `: { children: React.ReactNode }` は引数の型注釈です。`React.ReactNode`（リアクト・リアクトノード）は「JSX・文字列・数値・`null` など、Reactが画面に描画できるものなら何でも」を表す便利な型です。
+
+> **用語: children（チルドレン）** … React で「あるコンポーネントのタグの内側に書かれた中身」を指す特別な props 名。Next.js のレイアウトでは「各ページの内容」がここに渡されます。
+
+---
+
+##### 解説3: `<html>` と `<body>` はルートレイアウトにだけ書く
+
+```typescript
+    <html lang="ja">
+      <body>
+
+        <header>
+          <nav>
+            <h1>📚 書籍管理アプリ</h1>
+          </nav>
+        </header>
+
+        <main>{children}</main>
+
+        <footer>
+          <p>&copy; 2024 書籍管理アプリ</p>
+        </footer>
+
+      </body>
+    </html>
+```
+
+- 普通の React コンポーネントでは `<html>` や `<body>` を書きませんが、**Next.js のルートレイアウトだけは例外**で、ここに `<html>` と `<body>` を書きます（ページ全体の最も外側の枠だからです）。
+- `lang="ja"` は「このページは日本語ですよ」という指定で、翻訳ツールやスクリーンリーダー（読み上げソフト）がこれを参照します。
+- `<header>`（ヘッダー）と `<footer>`（フッター）は全ページ共通で表示される枠です。その間の `<main>{children}</main>` の `{children}` の位置に、**各ページの中身がはめ込まれます**。`/books` を開けば books のページが、`/` を開けばトップページの中身が、この同じ場所に入れ替わりで表示されます。
+
+> **用語: `<header>` / `<main>` / `<footer>`** … HTMLの「セマンティック要素」（意味を持つタグ）。それぞれ「上部の見出し領域」「主要な本文領域」「下部の補足領域」を表し、検索エンジンや支援技術がページ構造を理解する助けになります。
+
+---
+
 #### loading.tsx - 読み込み中の表示
 
 `loading.tsx` は **Next.js が「データ取得中に表示するUI」と認識する予約名のファイル** です。データの読み込み中に自動的に表示される UI を書きます。仕組みとしては内部で React の `<Suspense>`（サスペンス：データ待ちの間に代わりのUIを出す機能）を使っており、対応する `page.tsx` の Server Component が `await` でデータを待っている間、この `loading.tsx` の中身が代わりに描画されます。
@@ -625,6 +696,44 @@ export default async function BookDetailPage({       // `async` 関数にする�
 - `/books/abc` にアクセスすると「書籍 ID: abc」と表示されます。
 
 URL のその部分がそのまま `id` パラメータとして使えるわけです。
+
+#### ▼ コードを1つずつ分解して解説
+
+この動的ルートのコードには「`async` コンポーネント」「`params` が Promise で来る」「`await` で取り出す」という3つの新しい考え方が詰まっています。1つずつ見ていきましょう。
+
+---
+
+##### 解説1: コンポーネント関数に `async` を付けられるのは Server Component の特権
+
+```typescript
+export default async function BookDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+```
+
+- 関数名の前に付いている `async`（エイシンク＝非同期）は、「**この関数の中で `await`（待つ）が使えるようにする**」キーワードです。
+- 普通の React（Client Component）では、コンポーネント関数を `async` にできません。**関数を `async` にできるのは Server Component だけの特権**です（このファイルは `"use client"` を書いていないので Server Component です）。
+- `params`（パラムス＝パラメータの複数形）は、URLの動的セグメント（`[id]` の部分）の値が入った箱です。引数の分割代入で受け取っています。
+
+> **用語: async / await** … 「時間がかかる処理（データ取得など）の結果を待つ」ための仕組み。`async` を付けた関数の中でだけ `await` が使え、`await ○○` は「○○ の結果が出るまでここで待つ」という意味になります。
+
+---
+
+##### 解説2: Next.js 15 では `params` は「Promise」で渡される
+
+```typescript
+  const { id } = await params;
+```
+
+- `params: Promise<{ id: string }>` の **`Promise`（プロミス＝約束）** は「**今すぐではなく、少し後に値が届く**」ことを表す型です。Next.js 15 以降では `params` がこの Promise に包まれて渡されます。
+- そのため、中身を取り出すには `await params` のように **`await` で「値が届くのを待つ」** 必要があります。届いたオブジェクト（`{ id: "42" }` のような形）から、分割代入で `id` だけを取り出しています。
+- **注意点：取り出した `id` は数値ではなく文字列です。** URLが `/books/42` でも、`id` は数値の `42` ではなく文字列の `"42"` になります。数値として計算したいときは `Number(id)` で変換します。
+
+> **用語: Promise（プロミス）** … 「将来この値を渡します」という約束を表すオブジェクト。`await` を付けると、その約束が果たされる（値が届く）まで待ってから次の行へ進みます。
+
+---
 
 #### 複数の動的セグメント
 
@@ -866,6 +975,64 @@ export default function SearchBar() {
 
 > **重要:** `"use client"` はそのファイルとそこから import されるすべてのモジュールを Client Component の境界として宣言します。つまり、Client Component の子コンポーネントも自動的に Client Component になります。
 
+#### ▼ コードを1つずつ分解して解説
+
+この Client Component には「`"use client"` の宣言」「`useState` での状態管理」「制御コンポーネント」という3つの大事な要素があります。順に見ていきましょう。
+
+---
+
+##### 解説1: ファイル先頭の `"use client"` で「ブラウザ側で動く部品」にする
+
+```typescript
+"use client";
+
+import { useState } from "react";
+```
+
+- `"use client"`（ユーズ・クライアント）は、ファイルの**一番上**（import より前）に書く「おまじない（ディレクティブ）」です。これを書くと、このファイルは「**ブラウザ側で動く Client Component**」になります。
+- App Router ではデフォルトが Server Component（サーバー側で動く）なので、`useState` やボタンのクリック処理など「ブラウザでの操作」を使いたいときは、この1行で明示的に切り替える必要があります。
+- 切り替えた後は、`react` から `useState`（状態を覚えておく仕組み）などのフックを import して使えるようになります。
+
+> **用語: ディレクティブ（directive）** … プログラムに対する「指示書き」。`"use client"` は「このファイルはクライアント側で動かして」という Next.js への指示です。
+
+---
+
+##### 解説2: `useState` で「入力された文字」を覚えておく
+
+```typescript
+  const [query, setQuery] = useState("");
+```
+
+- `useState`（ユーズ・ステート）は「**変化する値を覚えておく箱**」を作るフックです。`const [今の値, 値を変える関数] = useState(初期値)` の形で使います。
+- ここでは「今の値」を `query`（クエリ＝検索文字列）、「値を変える関数」を `setQuery` という名前にしています。初期値は `""`（空文字）なので、最初の `query` は空です。
+- ユーザーが文字を打つたびに `setQuery(新しい文字)` を呼ぶと、`query` が更新され、Reactが画面を描き直します。
+
+> **用語: state（ステート＝状態）** … コンポーネントが内部で持つ「変化するデータ」。state を更新すると、Reactが自動で画面を最新の状態に描き直します。
+
+---
+
+##### 解説3: `value` と `onChange` をセットにする「制御コンポーネント」
+
+```typescript
+  return (
+    <input
+      type="text"
+      value={query}
+      onChange={(e) => setQuery(e.target.value)}
+      placeholder="書籍を検索..."
+    />
+  );
+```
+
+- `value={query}` は「入力欄の表示内容を、state（`query`）と一致させる」指定です。
+- `onChange={(e) => setQuery(e.target.value)}` は「**入力欄の中身が変わるたびに呼ばれる関数**」です。`e.target.value`（イー・ターゲット・バリュー）が「今入力されている文字」で、それを `setQuery` に渡して state を更新しています。
+- この「`value` で表示し、`onChange` で更新する」というセットの仕組みを **制御コンポーネント（controlled component）** と呼びます。入力欄の中身を常にReactの state が握っている状態です。
+- `placeholder`（プレースホルダー）は、何も入力していないときに薄く表示される案内文です。
+
+> **用語: 制御コンポーネント（controlled component）** … 入力欄の値をReactのstateで管理する方式。「画面の表示」と「stateの値」が常に一致し、入力内容をプログラムから自由に読み書きできます。
+
+---
+
 ### 3.3 いつどちらを使うか（判断フローチャート）
 
 <div style="max-width: 680px; margin: 20px auto; font-family: 'Segoe UI', sans-serif; text-align: center;">
@@ -1030,6 +1197,62 @@ export function SearchBar() {                                       // 名前付
 }
 ```
 
+#### ▼ コードを1つずつ分解して解説
+
+この検索バーには「`useRouter` でのプログラム的なページ移動」「`encodeURIComponent` でのURL変換」という、Next.js特有の要素があります。順に見ていきましょう。
+
+---
+
+##### 解説1: `useRouter` を取り込むのは `next/navigation` から
+
+```typescript
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+```
+
+- `useRouter`（ユーズ・ルーター）は「**プログラムからページを移動する**」ための道具（フック）です。ボタンを押した後やフォーム送信後に、コードで「○○ページへ飛べ」と指示できます。
+- **取り込み元が `next/navigation` である点が最重要です。** よく似た `next/router` は古い Pages Router 用で、App Router では使えません（使うとエラーになります）。
+- `useRouter` はブラウザ側の機能なので、ファイル先頭に `"use client"` が必須です。
+
+> **用語: フック（hook）** … React で `use〇〇` という名前の特別な関数の総称。`useState`（状態）、`useRouter`（ページ移動）のように、コンポーネントに機能を「引っ掛けて」使います。
+
+---
+
+##### 解説2: フォーム送信を受け取って検索結果ページへ移動する
+
+```typescript
+  const router = useRouter();
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    router.push(`/books?q=${encodeURIComponent(query)}`);
+  };
+```
+
+- `const router = useRouter()` で、ページ移動に使う「ルーター」を取り出します。
+- `e.preventDefault()`（プリベント・デフォルト）は、フォームの「送信するとページ全体が再読み込みされる」という昔ながらの動作を**止める**おまじないです。これを書かないと画面がリロードされてしまいます。
+- `router.push(...)` で、指定したURLへ移動します。`push` は「ブラウザの履歴に1つ追加しながら移動」なので、移動後に「戻る」ボタンで元のページに戻れます。
+
+> **用語: preventDefault** … イベントの「ブラウザ標準の振る舞い」を打ち消すメソッド。フォーム送信では「ページのリロードを止める」ために、ほぼ必ず最初に書きます。
+
+---
+
+##### 解説3: `encodeURIComponent` でURLに使えない文字を変換する
+
+```typescript
+    router.push(`/books?q=${encodeURIComponent(query)}`);
+```
+
+- バッククォート（`` ` ``）で囲んだ文字列は **テンプレートリテラル**で、`${...}` の中に変数や式を埋め込めます。ここでは `/books?q=検索語` というURLを組み立てています。
+- `encodeURIComponent(query)`（エンコード・ユーアールアイ・コンポーネント）は、「**URLにそのまま使えない文字（空白・日本語・記号など）を、安全な形に変換する**」関数です。例えば空白は `%20`、日本語は `%E3%...` のような形に変換されます。
+- これを通さないと、検索語に空白や日本語が含まれたときにURLが壊れてしまいます。`?q=` の後ろのような「URLに値を載せる」場面では必ず通す習慣をつけましょう。
+
+> **用語: クエリパラメータ** … URLの `?` 以降に「キー=値」の形で付ける追加情報（例: `?q=react`）。検索条件やページ番号などを次のページへ渡すのに使います。
+
+---
+
 > **▼ このコードがやること（先に日本語で）:** 書籍1冊分の「カード」表示を Server Component で作ります。タイトルや著者など動かない部分はサーバーで描画し、クリックが必要な「お気に入りボタン」だけを Client Component として中に埋め込みます。`type Book = {...}` は「このオブジェクトはこういう形」と決める TypeScript の型定義で、入力ミスを防いでくれます。詳細はコード内コメントを参照してください。
 
 ```typescript
@@ -1084,6 +1307,69 @@ export function FavoriteButton({ bookId }: { bookId: string }) {   // props は 
   );
 }
 ```
+
+#### ▼ コードを1つずつ分解して解説
+
+このお気に入りボタンには「楽観的更新」「`fetch` でのサーバー保存」「三項演算子での表示切替」という、よく使うパターンが詰まっています。順に見ていきましょう。
+
+---
+
+##### 解説1: クリックされたら「まず画面を切り替えてから」サーバーに送る
+
+```typescript
+  const [isFavorite, setIsFavorite] = useState(false);
+
+  const handleClick = async () => {
+    setIsFavorite(!isFavorite);
+    // API を呼び出してお気に入り状態を保存
+    await fetch(`/api/books/${bookId}/favorite`, {
+      method: "POST",
+      body: JSON.stringify({ favorite: !isFavorite }),
+    });
+  };
+```
+
+- `isFavorite` は「お気に入りかどうか」を表す `true`/`false` の状態です。初期値は `false`。
+- `setIsFavorite(!isFavorite)` の `!`（ビックリマーク）は「**反対の値にする**」記号です。`true` なら `false` に、`false` なら `true` に切り替わります。
+- 注目してほしいのは順番です。**まず先に `setIsFavorite` で画面の見た目を切り替え、その後で `await fetch(...)` でサーバーに保存依頼を送っています。** こうすると、サーバーの返事を待たずにボタンの見た目が即座に変わるので、ユーザーは「サクサク反応する」と感じます。これを **楽観的更新（optimistic update）** と呼びます。
+
+> **用語: 楽観的更新（optimistic update）** … 「サーバー処理はどうせ成功するだろう」と楽観的に考え、サーバーの返事を待たずに先に画面を更新する手法。体感速度が上がります（失敗時は元に戻す処理を足すこともあります）。
+
+---
+
+##### 解説2: `fetch` でサーバーに「お気に入り状態」を送る
+
+```typescript
+    await fetch(`/api/books/${bookId}/favorite`, {
+      method: "POST",
+      body: JSON.stringify({ favorite: !isFavorite }),
+    });
+```
+
+- `fetch`（フェッチ）は「**サーバーと通信する**」ためのブラウザ標準の関数です。第1引数が送り先のURL、第2引数が送り方の設定です。
+- URLはテンプレートリテラル（`` ` ``）で組み立てており、`${bookId}` の部分に、props で受け取った書籍IDが入ります。
+- `method: "POST"` は「データを**送って保存する**ときの通信方法」です（単に取得するだけなら `GET`）。
+- `body: JSON.stringify({ favorite: !isFavorite })` は、送る中身（本体）です。`JSON.stringify(...)` は「**JavaScriptのオブジェクトを、通信で送れる文字列（JSON）に変換する**」関数です。
+
+> **用語: JSON.stringify** … JavaScriptのオブジェクトや配列を「JSON形式の文字列」に変換するメソッド。サーバーへデータを送るときは、この文字列の形にしてから送ります。
+
+---
+
+##### 解説3: 三項演算子でボタンの文字を切り替える
+
+```typescript
+    <button onClick={handleClick}>
+      {isFavorite ? "★ お気に入り済み" : "☆ お気に入り"}
+    </button>
+```
+
+- `onClick={handleClick}` で、ボタンがクリックされたら上の `handleClick` 関数が呼ばれるように紐付けています。
+- `{isFavorite ? "★ お気に入り済み" : "☆ お気に入り"}` は **三項演算子**です。「`条件 ? 真のときの値 : 偽のときの値`」の形で、`isFavorite` が `true` なら「★ お気に入り済み」、`false` なら「☆ お気に入り」を表示します。
+- `isFavorite` の値が切り替わるたびにReactが再描画するので、ボタンの文字も自動で「☆」と「★」が入れ替わります。
+
+> **用語: 三項演算子（ternary operator）** … `条件 ? A : B` という形で「条件に応じてAかBを返す」式。`if` 文と違って「値を返す式」なので、JSXの `{ }` の中に直接書けます。
+
+---
 
 **画面にはこう表示される:** ページ上部に検索バー、その下に書籍カードが並んで表示されます。各カードには書籍タイトル、著者名、お気に入りボタンがあります。検索バーに文字を入力するとリアルタイムに反映され、お気に入りボタンをクリックすると「☆ お気に入り」が「★ お気に入り済み」に切り替わります。
 
@@ -1351,6 +1637,51 @@ export function BookLink({ book }: { book: Book }) {   // props として 1冊�
 
 > **プリフェッチについて:** `<Link>` コンポーネントはデフォルトで、ユーザーの画面（ビューポート）に表示されているリンク先のページを裏で先読みします。これにより、リンクをクリックした瞬間にページが表示されるような高速な体験が実現します。
 
+#### ▼ コードを1つずつ分解して解説
+
+この動的リンクには「`<Link>` の import」「テンプレートリテラルでのURL組み立て」という2つのポイントがあります。
+
+---
+
+##### 解説1: `next/link` から `<Link>` を取り込む
+
+```typescript
+import Link from "next/link";
+
+type Book = {
+  id: string;
+  title: string;
+};
+```
+
+- `<Link>`（リンク）は、Next.js が用意している「**ページ間を高速に移動するための部品**」です。`next/link` から取り込みます。
+- `import Link from ...`（中括弧なし）の形なのは、`<Link>` が **default export**（そのファイルの主役として公開）されているためです。
+- `type Book = { ... }` は「書籍データの形」を決めるTypeScriptの型定義です。`id`（文字列）と `title`（文字列）を持つオブジェクト、と宣言しています。
+
+> **用語: `<Link>` コンポーネント** … `<a>` タグの代わりに使うNext.jsの移動部品。クリック時にページ全体を読み込み直さず、必要な部分だけ差し替える「高速なページ移動」を実現します。
+
+---
+
+##### 解説2: テンプレートリテラルで「行き先URL」を動的に組み立てる
+
+```typescript
+export function BookLink({ book }: { book: Book }) {
+  return (
+    <Link href={`/books/${book.id}`}>
+      {book.title} の詳細を見る
+    </Link>
+  );
+}
+```
+
+- `{ book }` は分割代入で、props から `book`（書籍1冊分のデータ）を取り出しています。型は `{ book: Book }`。
+- `href={`/books/${book.id}`}` がこのコードのキモです。バッククォート（`` ` ``）で囲んだ **テンプレートリテラル**を使い、`${book.id}` の部分に書籍IDを埋め込んでいます。`book.id` が `"42"` なら `/books/42` というURLが組み立てられます。
+- `<Link>` の**内側**に書いた `{book.title} の詳細を見る` が、画面に表示されるリンクの文字になります。
+
+> **用語: テンプレートリテラル** … バッククォートで囲む文字列で、`${変数}` の形で値を埋め込めます。URLやメッセージを「固定部分＋変化する値」で組み立てるときに便利です。
+
+---
+
 ### 5.2 useRouter フック
 
 プログラムからページ遷移を行いたい場合（ボタンクリック後やフォーム送信後など）は、`useRouter` フックを使います。**Client Component でのみ使用可能です。**
@@ -1502,6 +1833,49 @@ async function fetchBook(id: string) {                            // データ�
 }
 ```
 
+#### ▼ コードを1つずつ分解して解説
+
+このリダイレクト処理には「`notFound()` で404を出す」「`redirect()` で別ページへ飛ばす」という、Server Component ならではの分岐があります。順に見ていきましょう。
+
+---
+
+##### 解説1: `redirect` と `notFound` を `next/navigation` から取り込む
+
+```typescript
+import { redirect, notFound } from "next/navigation";
+```
+
+- `redirect`（リダイレクト）は「**別のURLへ自動転送する**」関数、`notFound`（ノットファウンド）は「**404ページ（見つかりません）を表示する**」関数です。どちらも `next/navigation` から取り込みます。
+- これらは Server Component の中で呼ぶことを想定した関数です。ユーザーの操作を待たずに「サーバー側で表示前に転送先を決める」ときに使います。
+
+> **用語: リダイレクト（redirect）** … あるURLにアクセスしたユーザーを、自動的に別のURLへ飛ばすこと。ログインが必要なページや、移動した古いページなどで使われます。
+
+---
+
+##### 解説2: 見つからなければ404、非公開なら一覧へ飛ばす
+
+```typescript
+  const { id } = await params;
+  const book = await fetchBook(id);
+
+  if (!book) {
+    notFound();
+  }
+
+  if (book.isPrivate) {
+    redirect("/books");
+  }
+```
+
+- `await fetchBook(id)` で書籍データを取りに行き、結果を `book` に入れます。
+- `if (!book) { notFound(); }` … `!book` は「`book` が空（`null`/`undefined`）なら」という意味です。データが見つからなければ `notFound()` を呼び、404ページ（`not-found.tsx`）を表示します。
+- `if (book.isPrivate) { redirect("/books"); }` … 非公開の書籍なら `redirect("/books")` で一覧ページへ転送します。
+- **ポイント：`notFound()` も `redirect()` も「呼んだらそこで処理が止まり、後ろの行には進まない」**特殊な関数です。だから `else` を書かなくても、下の `return` まで到達するのは「見つかった＆公開されている」場合だけになります。
+
+> **用語: 早期リターン的な中断** … `notFound()` / `redirect()` は戻り値の型が `never`（＝戻ってこない関数）で、呼んだ時点で処理が打ち切られます。そのため `if` で条件を満たしたらすぐ抜ける書き方ができます。
+
+---
+
 #### middleware.ts でのリダイレクト
 
 `middleware.ts`（ミドルウェア：リクエストとレスポンスの間に挟まる処理。Next.js では Edge Runtime（軽量な実行環境）で動く）をプロジェクトルートに置くことで、ページが描画される**前の段階**でリダイレクトを行えます。認証チェック、地域別の振り分け、A/Bテストなどに使えます。
@@ -1652,6 +2026,95 @@ export default async function BooksPage() {
 **▼ 普通のReactとの最大の違い:**
 クライアントサイドの useState/useEffect でデータを取りに行くのと違って、**最初からデータが入ったHTMLが返ってくる**ので、表示がカクカクしない・SEOに強い・JSバンドルも小さく済む。
 
+#### ▼ コードを1つずつ分解して解説
+
+このデータ取得コードには「`async` 関数での `fetch`」「`cache` オプション」「`response.ok` でのエラー判定」「`await` でのページ内データ取得」という要素があります。順に見ていきましょう。
+
+---
+
+##### 解説1: `async` 関数の中で `fetch` してデータを取りに行く
+
+```typescript
+async function getBooks(): Promise<Book[]> {
+  const response = await fetch("https://api.example.com/books", {
+    cache: "no-store",
+  });
+```
+
+- `getBooks` は「APIから書籍一覧を取ってくる」関数です。`async` が付いているので、中で `await` が使えます。
+- `: Promise<Book[]>` は戻り値の型注釈で、「**`Book` 型の配列が、将来（非同期で）届く**」という意味です。`Promise<...>` は「後で値が届く」ことを表します。
+- `await fetch(...)` で、指定したURLにデータを取りに行き、返事（`response`）が届くまで待ちます。
+
+> **用語: fetch（フェッチ）** … サーバーとHTTP通信してデータをやり取りするブラウザ標準の関数。Next.js ではこれを拡張して、後述のキャッシュ機能を追加しています。
+
+---
+
+##### 解説2: `cache` オプションで「いつ取り直すか」を決める
+
+```typescript
+  const response = await fetch("https://api.example.com/books", {
+    cache: "no-store",   // ← 毎リクエストで最新データを取得する（=SSR動作）
+    // cache: "force-cache",      // ← ビルド時に1度だけ取得（=SSG動作）
+    // next: { revalidate: 60 },  // ← 60秒ごとに再取得（=ISR動作）
+  });
+```
+
+- `fetch` の第2引数の `cache`（キャッシュ）は、Next.js が標準の `fetch` に追加した独自オプションです。「**取得したデータをどれくらい使い回すか**」を決めます。
+- `cache: "no-store"` は「使い回さず、毎回サーバーから最新を取る」設定で、常に新しいデータが必要なページ（＝SSR動作）に向きます。
+- コメントアウトされた `"force-cache"` は「1度取ったら使い回す」（＝SSG動作）、`next: { revalidate: 60 }` は「60秒ごとに取り直す」（＝ISR動作）です。**この1行を変えるだけで、ページの性質を切り替えられる**のが Next.js の特徴です。
+
+> **用語: キャッシュ（cache）** … 一度取得したデータを保存しておき、次回はそれを再利用する仕組み。通信を減らして高速化できますが、その分データが古くなる可能性があります。
+
+---
+
+##### 解説3: `response.ok` で通信の成否を確認する
+
+```typescript
+  if (!response.ok) {
+    throw new Error("書籍データの取得に失敗しました");
+  }
+
+  return response.json();
+```
+
+- `response.ok`（レスポンス・オーケー）は、通信のステータスが正常（200〜299番台）なら `true`、それ以外（404や500などのエラー）なら `false` になります。
+- `if (!response.ok)` は「正常でなければ」という意味で、`throw new Error(...)` で**エラーを発生させます**。Next.js ではこのエラーが起きると、自動的に同じフォルダの `error.tsx` が表示されます。
+- 最後の `response.json()` は「**返ってきた本文（JSON文字列）を、JavaScriptのオブジェクトに変換する**」処理です。これで使える形の書籍配列が返ります。
+
+> **用語: throw（スロー）** … 「エラーを投げる」命令。`throw new Error("メッセージ")` で意図的にエラーを発生させ、エラー処理（`error.tsx` など）に流れを移せます。
+
+---
+
+##### 解説4: ページ本体で `await` してデータ入りのJSXを返す
+
+```typescript
+export default async function BooksPage() {
+  const books = await getBooks();
+
+  return (
+    <div>
+      <h1>書籍一覧（{books.length}冊）</h1>
+      <ul>
+        {books.map((book) => (
+          <li key={book.id}>
+            <h3>{book.title}</h3>
+            <p>著者: {book.author}（{book.publishedYear}年）</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+```
+
+- ページコンポーネント自体が `async` なので、本体で `const books = await getBooks()` と書いてデータ取得の完了を待てます。この待っている間、ユーザーには `loading.tsx` が表示されます。
+- `books.length` は配列の件数（3冊なら3）です。見出しに「書籍一覧（3冊）」のように埋め込んでいます。
+- `books.map((book) => (...))` で、配列の各書籍を1件ずつ `<li>`（リスト項目）のJSXに変換しています。`key={book.id}` は、Reactがリストの各項目を見分けるための必須の目印です。
+
+> **用語: map（マップ）** … 配列の各要素を1つずつ別の形に作り替え、新しい配列を作るメソッド。「データの配列」を「JSX要素の配列」に変換してリスト表示するのが定番の使い方です。
+
+---
+
 #### fetch のキャッシュ戦略
 
 Next.js の `fetch` には、標準仕様にはない独自のオプションが追加されています。これらを使い分けることで SSR / SSG / ISR（インクリメンタル静的再生成）を切り替えられます。
@@ -1757,6 +2220,96 @@ export function BookSearch() {
 ```
 
 **画面にはこう表示される:** 検索入力欄が表示されます。ユーザーが「村上」と入力すると、入力が止まって300ミリ秒後に「検索中...」というメッセージが一瞬表示され、その後「村上春樹」の著書一覧がリスト形式で表示されます。
+
+#### ▼ コードを1つずつ分解して解説
+
+このクライアント検索には「複数の state 管理」「`useEffect` での副作用」「デバウンス」「`try/catch/finally` での通信処理」という要素が組み合わさっています。順に見ていきましょう。
+
+---
+
+##### 解説1: 4つの state で「入力・結果・読み込み中・エラー」を管理する
+
+```typescript
+  const [query, setQuery] = useState("");
+  const [books, setBooks] = useState<Book[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+```
+
+- Client Component で通信を伴う検索を作るには、複数の状態を同時に管理する必要があります。ここでは4つの `useState` を使っています。
+  - `query`：入力された検索文字列（初期値は空文字）。
+  - `books`：検索結果の配列。`useState<Book[]>([])` の `<Book[]>` は「`Book` 型の配列を入れる箱」という型指定で、初期値は空配列 `[]`。
+  - `isLoading`：読み込み中かどうかの `true`/`false`。
+  - `error`：エラーメッセージ。`<string | null>` は「文字列、またはエラーなしの `null`」という型で、初期値は `null`。
+
+> **用語: ジェネリック（`<...>`）** … `useState<Book[]>(...)` の `<Book[]>` のように、型を `< >` で指定する書き方。「この箱には何の型が入るか」をTypeScriptに明示できます。
+
+---
+
+##### 解説2: `useEffect` で「`query` が変わるたびに検索する」
+
+```typescript
+  useEffect(() => {
+    if (!query.trim()) {
+      setBooks([]);
+      return;
+    }
+    // ...（タイマーの仕掛け）...
+  }, [query]);
+```
+
+- `useEffect`（ユーズ・エフェクト）は「**画面の描画とは別に行う処理（副作用）**」を書くフックです。データ取得はこの代表例です。
+- 末尾の `[query]` は **依存配列**で、「`query` が変わったときだけ、この中の処理を実行する」という指定です。つまり入力が変わるたびに検索処理が走ります。
+- `if (!query.trim())` は「入力が空（または空白だけ）なら」の判定です。その場合は結果を空にして `return` で打ち切り、無駄な通信を避けます。
+
+> **用語: 副作用（side effect）/ 依存配列** … 副作用は「画面を描く以外の処理（通信・タイマーなど）」のこと。依存配列はその副作用を「どの値が変わったら実行し直すか」を指定するリストです。
+
+---
+
+##### 解説3: デバウンス ―「入力が止まって300ミリ秒後」にだけ検索する
+
+```typescript
+    const timer = setTimeout(async () => {
+      // ...通信処理...
+    }, 300);
+
+    return () => clearTimeout(timer);
+```
+
+- `setTimeout(関数, 300)` は「300ミリ秒後にこの関数を実行する」タイマーを仕掛けます。
+- 最後の `return () => clearTimeout(timer)` は **クリーンアップ関数**で、「次の入力が来たら（＝effectが再実行される直前に）前のタイマーを取り消す」処理です。
+- この「**タイマーを仕掛ける→次の入力で取り消す**」の繰り返しにより、ユーザーが文字を打ち続けている間は検索が走らず、**手が止まって300ミリ秒経ったときだけ**検索が実行されます。これを **デバウンス（debounce）** と呼びます。毎文字ごとに通信する無駄を防げます。
+
+> **用語: デバウンス（debounce）** … 連続して起きるイベント（キー入力など）を間引き、「最後の操作から一定時間経ったとき」だけ処理を実行する手法。検索や入力補完で多用されます。
+
+---
+
+##### 解説4: `try / catch / finally` で通信の成功・失敗・後始末を分ける
+
+```typescript
+      try {
+        const response = await fetch(
+          `/api/books/search?q=${encodeURIComponent(query)}`
+        );
+        if (!response.ok) {
+          throw new Error("検索に失敗しました");
+        }
+        const data = await response.json();
+        setBooks(data);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "エラーが発生しました");
+      } finally {
+        setIsLoading(false);
+      }
+```
+
+- `try { ... }` には「失敗するかもしれない処理（通信）」を書きます。成功すれば、結果を `setBooks(data)` で state に保存します。
+- `catch (err) { ... }` は「`try` の中でエラーが起きたとき」に実行されます。`err instanceof Error ? err.message : "エラーが発生しました"` は「`err` がちゃんとした Error なら、そのメッセージを、そうでなければ汎用メッセージを使う」という三項演算子です。
+- `finally { ... }` は「成功しても失敗しても**必ず最後に**実行される」ブロックです。ここで `setIsLoading(false)` を呼び、どちらの場合も「読み込み中」表示を確実に解除しています。
+
+> **用語: try / catch / finally** … エラーが起きうる処理を安全に扱う構文。`try` で試し、`catch` でエラーを受け止め、`finally` で後始末（必ず実行）をします。
+
+---
 
 > **Server Component と Client Component のデータ取得の比較:**
 >
@@ -2005,6 +2558,63 @@ export async function createBook(formData: FormData) {            // 引数 `For
 }
 ```
 
+#### ▼ コードを1つずつ分解して解説
+
+この Server Action には「`"use server"` 宣言」「`FormData` からの値の取り出し」「バリデーション」という、フォーム処理の基本が詰まっています。順に見ていきましょう。
+
+---
+
+##### 解説1: ファイル先頭の `"use server"` で「サーバー専用の関数」と宣言する
+
+```typescript
+"use server";
+
+export async function createBook(formData: FormData) {
+```
+
+- `"use server"`（ユーズ・サーバー）は、ファイルの**一番上**に書くディレクティブです。これを書くと、このファイルの関数は「**サーバー上でだけ実行される**」関数（Server Action）になります。
+- `"use client"` がファイルを「ブラウザ側」に切り替えるのと対になる存在です。`"use server"` で印を付けた関数の中身は**ブラウザに送られない**ので、DB接続情報などの機密を安全に扱えます。
+- `createBook` は `async` 関数で、引数に `FormData` を1つ受け取ります。この関数を `<form action={createBook}>` のように指定すると、フォーム送信時にサーバーで実行されます。
+
+> **用語: Server Action（サーバーアクション）** … `"use server"` を付けた、サーバー上で実行される関数。別途API（route.ts）を作らなくても、フォーム送信やデータ更新の処理を直接書けます。
+
+---
+
+##### 解説2: `FormData` から `get()` で入力値を取り出す
+
+```typescript
+  const title = formData.get("title") as string;
+  const author = formData.get("author") as string;
+  const publishedYear = Number(formData.get("publishedYear"));
+```
+
+- `formData`（フォームデータ）は、送信されたフォームの入力値が全部入った「Web標準の箱」です。
+- `formData.get("title")` は「`name="title"` の入力欄の値を取り出す」という意味です。**取り出すキーは、各 `<input>` の `name` 属性と一致します**（`id` ではない点に注意）。
+- `as string` は型アサーションで、「`get()` の戻り値（`文字列 | null` というあいまいな型）を、文字列として扱ってね」とTypeScriptに伝えています。
+- `Number(formData.get("publishedYear"))` は、取り出した値を**数値に変換**しています。フォームの値は基本すべて文字列なので、数値が必要なときは `Number(...)` で変換します。
+
+> **用語: FormData** … HTMLフォームの入力値を「キー（name）→値」の形でまとめて持つWeb標準のオブジェクト。`.get("キー名")` でそれぞれの値を取り出します。
+
+---
+
+##### 解説3: バリデーション（入力チェック）して、ダメなら error を返す
+
+```typescript
+  if (!title || !author) {
+    return {
+      error: "タイトルと著者は必須です",
+    };
+  }
+```
+
+- `if (!title || !author)` は「タイトルが空、**または**著者が空なら」という条件です。`!title` は「`title` が空（falsy）なら true」、`||` は「または」です。
+- 必須項目が欠けていれば、`{ error: "..." }` というオブジェクトを `return` します。このオブジェクトは、呼び出し側（フォーム）で「エラーメッセージの表示」に使えます（後述の `useActionState` の例で活用します）。
+- ここを通り抜けたとき（＝両方入力されているとき）だけ、下のDB保存処理に進みます。
+
+> **用語: バリデーション（validation）** … 入力された値が正しいか（必須項目が空でないか等）をチェックすること。不正なデータがDBに保存されるのを防ぐ、フォーム処理の必須ステップです。
+
+---
+
 #### Server Component のフォーム（JavaScript 不要）
 
 > **▼ このコードがやること（先に日本語で）:** 先ほどの Server Action を使う「書籍追加フォーム」を Server Component として作ります。`<form action={createBook}>` のように `action` 属性に関数を直接渡せるのが Next.js の拡張で、JavaScript が動かない環境でも送信できる堅牢な作りになります（Progressive Enhancement）。各 `<input>` の `name` 属性が、サーバー側で値を取り出すときのキー名になる点が重要です。詳細はコード内コメントを参照してください。
@@ -2111,6 +2721,74 @@ export function BookFormClient() {
 ```
 
 **画面にはこう表示される:** フォームは前の例と同じ見た目ですが、「追加する」ボタンを押すと、ボタンのテキストが「追加中...」に変わり、ボタンがグレーアウトして再クリックできなくなります。バリデーションエラーがあれば、ボタンの上にエラーメッセージが赤字で表示されます。
+
+#### ▼ コードを1つずつ分解して解説
+
+このクライアントフォームの核心は React 19 の `useActionState` フックです。「3つの戻り値」「ラップ済み関数の使い方」「送信中の状態表示」を順に見ていきましょう。
+
+---
+
+##### 解説1: `useActionState` で Server Action と連携する
+
+```typescript
+"use client";
+
+import { useActionState } from "react";
+import { createBook } from "@/app/books/new/actions";
+
+export function BookFormClient() {
+  const [state, formAction, isPending] = useActionState(createBook, null);
+```
+
+- `useActionState`（ユーズ・アクション・ステート）は、React 19 で追加された「**Server Action とフォームをつなぐ**」フックです（旧名は `useFormState`）。ブラウザ側のフックなので `"use client"` が必須です。
+- 第1引数に Server Action（`createBook`）、第2引数に state の初期値（`null`）を渡します。
+- 戻り値は3つの値の配列で、分割代入で受け取ります。
+  - `state`：Server Action が `return` した値（例: `{ error: "..." }`）。
+  - `formAction`：`<form action={...}>` に渡せるよう**加工済みの送信関数**。
+  - `isPending`：送信処理中かどうかの `true`/`false`。
+
+> **用語: useActionState** … Server Action の「実行結果(state)」「送信用の関数」「送信中フラグ」をまとめて受け取れるReactフック。フォームの送信状態を簡単に扱えます。
+
+---
+
+##### 解説2: 元の関数ではなく「ラップ済みの formAction」を渡す
+
+```typescript
+  return (
+    <form action={formAction}>
+      <div>
+        <label htmlFor="title">タイトル</label>
+        <input type="text" id="title" name="title" required />
+      </div>
+      {/* ...他の入力欄... */}
+```
+
+- `<form action={formAction}>` のように、`action` 属性には**元の `createBook` ではなく、`useActionState` が返した `formAction`** を渡します。これにより、送信時に state の更新や `isPending` の管理が自動で行われます。
+- 各 `<input>` の `name` 属性（`name="title"` など）が、Server Action 側で `formData.get("title")` として値を取り出すときのキーになります。`required` はブラウザ標準の「入力必須」チェックです。
+
+> **用語: action 属性** … Next.js では `<form>` の `action` に「関数」を直接渡せます（通常のHTMLでは送信先URLを書く場所）。これがServer Actionと連携する入口になります。
+
+---
+
+##### 解説3: エラー表示と「送信中はボタンを無効化」
+
+```typescript
+      {state?.error && (
+        <p className="error-message">{state.error}</p>
+      )}
+
+      <button type="submit" disabled={isPending}>
+        {isPending ? "追加中..." : "追加する"}
+      </button>
+```
+
+- `{state?.error && (...)}` … `state?.error` の `?.`（オプショナルチェイニング）は「`state` が `null` でも安全に `error` を読む」書き方です。エラーメッセージがあるときだけ、その右の `<p>` を表示します（`&&` による条件付き表示）。
+- `disabled={isPending}` … 送信処理中（`isPending` が `true`）の間、ボタンを**クリック不可（グレーアウト）**にします。これで二重送信を防げます。
+- `{isPending ? "追加中..." : "追加する"}` … 三項演算子で、送信中はボタンの文字を「追加中...」に切り替えます。
+
+> **用語: オプショナルチェイニング（`?.`）** … `state?.error` のように書くと、`state` が `null`/`undefined` のときはエラーにならず `undefined` を返します。「値があるか分からないオブジェクト」を安全にたどれます。
+
+---
 
 ### 7.3 書籍の追加/編集での利用予告
 
@@ -2320,6 +2998,81 @@ export async function createClient() {                             // async に�
   );
 }
 ```
+
+#### ▼ コードを1つずつ分解して解説
+
+このサーバー用 Supabase クライアントは、クライアント版と違って「Cookie 連携」が必要なため少し複雑です。「なぜ `async` なのか」「`cookies()` の取得」「Cookie アダプタ」を順に見ていきましょう。
+
+---
+
+##### 解説1: `cookies()` を `await` するために関数を `async` にする
+
+```typescript
+import { createServerClient } from "@supabase/ssr";
+import { cookies } from "next/headers";
+
+export async function createClient() {
+  const cookieStore = await cookies();
+```
+
+- `createServerClient` は「**サーバー側で動く Supabase クライアントを作る**」関数です。`@supabase/ssr` パッケージから取り込みます。
+- `cookies`（クッキーズ）は Next.js が提供する「**現在のリクエストの Cookie を読み書きする**」関数です。`next/headers` から取り込みます。
+- `createClient` 関数が `async` なのは、`await cookies()` を呼ぶためです。`cookies()` は Promise を返すので、`await` で中身（Cookieストア）を取り出してから使います。
+
+> **用語: Cookie（クッキー）** … ブラウザとサーバーの間で受け渡しされる小さなデータ。ログイン状態（セッション）を保持するのに使われ、Supabaseはこれを使ってユーザーを識別します。
+
+---
+
+##### 解説2: URL・匿名キーと一緒に「Cookie の入出力アダプタ」を渡す
+
+```typescript
+  return createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll();
+        },
+        setAll(cookiesToSet) {
+          // ...（Cookie の書き込み処理）...
+        },
+      },
+    }
+  );
+```
+
+- 第1・第2引数は、接続先のURLと匿名キーです。`process.env.NEXT_PUBLIC_...` で環境変数から読み込んでいます。末尾の `!`（non-null assertion）は「この値は `undefined` ではないと断言する」記号で、設定漏れがあると実行時にエラーになります。
+- 第3引数の `cookies` オブジェクトが、クライアント版にはない**サーバー版だけの追加設定**です。Supabase に「Cookie を読むときはこれ、書くときはこれを使って」と、読み書きの方法（アダプタ）を渡しています。
+  - `getAll()`：今のリクエストの全Cookieを返す関数。
+  - `setAll(...)`：Supabase がセッションを更新するとき、新しいCookieを書き込む関数。
+
+> **用語: アダプタ（adapter）** … 「形の違う2つの仕組みをつなぐ橋渡し役」のこと。ここでは「Supabaseが期待するCookie操作」と「Next.jsのCookie API」をつなぐ役割を果たします。
+
+---
+
+##### 解説3: 書き込み時の例外を `try/catch` で握りつぶす理由
+
+```typescript
+        setAll(cookiesToSet) {
+          try {
+            cookiesToSet.forEach(({ name, value, options }) =>
+              cookieStore.set(name, value, options)
+            );
+          } catch {
+            // Server Component からの呼び出し時は
+            // cookie のセットができないが、問題ない
+          }
+        },
+```
+
+- `cookiesToSet.forEach(...)` は、Supabaseが渡してきた複数のCookieを1つずつ取り出して、`cookieStore.set(...)` で書き込んでいます。`({ name, value, options }) =>` は分割代入で、各Cookieの名前・値・オプションを取り出しています。
+- これを `try/catch` で囲んでいるのは、**Server Component から Cookie を書き込もうとすると Next.js が例外を出す**ためです。
+- ただし、これは実害がないので、`catch {}` の中を空にして**意図的に握りつぶしています**（エラーを無視しています）。コメントの通り「セットできないが問題ない」状況です。
+
+> **用語: 例外を握りつぶす** … `try/catch` でエラーを受け止めつつ、`catch` の中で何もしないこと。「起きても問題ないと分かっているエラー」に限って使う手法で、むやみに多用するのは禁物です。
+
+---
 
 > **次章で詳しく解説:** Supabase のセットアップと実際の接続方法は、第5章「Supabase 入門」で詳しく扱います。ここでは環境変数の管理方法だけ理解しておいてください。
 

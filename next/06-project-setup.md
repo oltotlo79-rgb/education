@@ -955,6 +955,76 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 >
 > 本チュートリアルでは、書籍一覧表示は Client Component（フォーム入力との連携のため `"use client"`）で実装します。より高度な用途では、Server Component から直接Supabaseを呼ぶこともできます。
 
+#### ▼ コードを1つずつ分解して解説
+
+上のコードを、初心者がつまずきやすい部分ごとに**1つずつ**ていねいに見ていきましょう。
+
+---
+
+##### 解説1: createClient 関数を「名前付きインポート」する
+
+```typescript
+import { createClient } from "@supabase/supabase-js";
+```
+
+- `import ... from "..."` は、別のファイルやライブラリから機能を**取り込む**ための構文です。
+- `{ createClient }` のように波括弧 `{ }` で囲むのが「名前付きインポート」で、そのライブラリが公開している**特定の名前の機能だけ**をピンポイントで取り出します。
+- ここでは `@supabase/supabase-js`（インストールした Supabase 公式ライブラリ）から、`createClient`（接続用の窓口を作る関数）だけを取り出しています。
+- この関数を後で呼ぶことで、アプリと Supabase をつなぐ「クライアント」が作られます。
+
+> **用語:** 「ライブラリ」とは、誰かが作って公開してくれた便利な機能のかたまりのことです。`npm install` で自分のプロジェクトに取り込み、`import` で必要な部分だけ呼び出して使います。
+
+---
+
+##### 解説2: 環境変数から接続情報を読み取る
+
+```typescript
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;       // SupabaseのプロジェクトURL
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY; // Supabase の Anon Key
+```
+
+- `process.env`（プロセス・エンブ）は、**環境変数の入れ物**です。さきほど `.env.local` に書いた値が、ここに入ってきます。
+- `process.env.NEXT_PUBLIC_SUPABASE_URL` と書くと、`.env.local` の `NEXT_PUBLIC_SUPABASE_URL=...` の値（URL）を取り出せます。
+- 取り出した値を `supabaseUrl` と `supabaseAnonKey` という名前の定数（`const`）に入れて、あとで使いやすくしています。
+- URL とキーをコードに直接書かず、外部の設定ファイル経由で渡すことで、**秘密情報の漏洩を防ぎ**、環境ごとに値を切り替えられます。
+
+> **用語:** 「環境変数」とは、コードの外側からプログラムへ渡す設定値のことです。API キーのような秘密情報や、開発用と本番用で変えたい値を、コード本体と分けて管理するために使います。
+
+---
+
+##### 解説3: 設定が抜けていたらわざとエラーを出す
+
+```typescript
+if (!supabaseUrl) {
+  throw new Error(
+    "環境変数 NEXT_PUBLIC_SUPABASE_URL が設定されていません。" +
+      ".env.local ファイルを確認してください。"
+  );
+}
+```
+
+- `!supabaseUrl` の `!`（エクスクラメーション）は「否定」の記号で、「`supabaseUrl` が空っぽ（`undefined` や空文字）なら `true`」という意味になります。
+- つまりこの `if` は「URL がちゃんと取れなかったとき」だけ中に入ります。
+- `throw new Error(...)` は、エラーを**わざと発生させて処理を止める**書き方です。原因（環境変数が未設定）と対処法（`.env.local` を確認）をメッセージに書いておくと、後で自分が困りません。
+- `+` は文字列をつなげる演算子で、長いメッセージを2行に分けて書いています。Anon Key 側も同じチェックをしています。
+
+> **用語:** 「例外（throw / Error）」とは、処理を続けられない問題が起きたときに発生させる中断の合図です。早い段階でわかりやすく失敗させることを「フェイルファスト（fail fast）」と呼び、原因究明を楽にします。
+
+---
+
+##### 解説4: クライアントを作って export する
+
+```typescript
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+```
+
+- `createClient(URL, キー)` を呼ぶと、Supabase と通信するための**窓口オブジェクト**が1つ作られます。第1引数が接続先 URL、第2引数が認証キーです。
+- それを `supabase` という定数に入れ、先頭に `export` を付けることで、**他のファイルからこの `supabase` を `import` して使える**ようにしています。
+- このファイルで1回だけ作り、アプリ全体で同じものを使い回します（毎回作り直さない）。
+- 他のファイルでは `import { supabase } from "@/lib/supabase";` と書けば、この窓口を呼び出せます。
+
+> **用語:** 「export」は、ファイルの中で作ったものを**外部に公開する**指定です。逆に他ファイルでそれを受け取るのが「import」です。この2つでファイル間の機能の受け渡しを行います。
+
 ---
 
 ## 6. 型定義ファイルの作成
@@ -1146,6 +1216,89 @@ export const statusColors: Record<
 >
 > 型を分けることで、各場面で正確なデータ構造を強制でき、バグを防げます。
 
+#### ▼ コードを1つずつ分解して解説
+
+上の型定義を、初心者がつまずきやすい部分ごとに**1つずつ**ていねいに見ていきましょう。
+
+---
+
+##### 解説1: 決まった3つの文字列しか入らない「ユニオン型」
+
+```typescript
+export type BookStatus = "unread" | "reading" | "finished";
+```
+
+- `type 名前 = ...` は、よく使うデータの形に**自分で名前を付ける**構文（型エイリアス）です。
+- `"unread" | "reading" | "finished"` の `|`（縦棒）は「または」を意味し、**この3つの文字列のどれか**しか入れられない、という制約になります。
+- たとえば `"yomu"` のような違う文字列を入れようとすると、コードを動かす前に TypeScript がエラーで教えてくれます。タイプミスを防げるのが利点です。
+- 先頭の `export` で、他のファイルからこの `BookStatus` を使えるようにしています。
+
+> **用語:** 「ユニオン型」とは、複数の候補のうちの**いずれか**を表す型です。決まった選択肢しか取らない値（ステータスや種別など）を安全に扱うのに向いています。
+
+---
+
+##### 解説2: 取得用の完全なデータ型 `Book`
+
+```typescript
+export type Book = {
+  id: string;
+  title: string;
+  author: string;
+  status: BookStatus;
+  rating: number | null;
+  memo: string | null;
+  created_at: string;
+  updated_at: string;
+};
+```
+
+- `type Book = { ... }` は、**オブジェクト（複数の項目を持つデータ）の形**を定義しています。データベースの books テーブルの1行ぶんに対応します。
+- 各行は `項目名: 型` の形で、「`title` は文字列」「`rating` は数値」のように、項目ごとに入る値の種類を決めています。
+- `status: BookStatus` のように、解説1で作った型を**部品として再利用**できます。
+- `number | null` は「数値、または null（値なし）」という意味で、未評価のときに `null` を許すための書き方です。
+
+> **用語:** 「null」とは「値が存在しない」ことを表す特別な値です。`number | null` のように書くと、「数値が入るか、まだ何も入っていないか」の両方を表現できます。
+
+---
+
+##### 解説3: 場面で型を分ける（Insert と Update）
+
+```typescript
+export type BookInsert = {
+  title: string;
+  author: string;
+  status?: BookStatus;
+  rating?: number | null;
+  memo?: string | null;
+};
+```
+
+- `BookInsert` は**新規登録のときに送るデータ**の型です。`id` や `created_at` はデータベースが自動で付けるので、ここには含めません。
+- 項目名の後ろの `?`（クエスチョン）は「**省略してもよい**（オプショナル）」という印です。`status?` は、書かなくてもエラーにならず、DB 側のデフォルト値が使われます。
+- 一方 `BookUpdate` は更新用で、**全項目に `?` が付いています**。変更したい項目だけを送れば済むようにするためです。
+- このように場面ごとに必要な項目を分けることで、「登録時に id を送ってしまう」といった間違いを型で防げます。
+
+> **用語:** 「オプショナル（`?`）」とは、そのプロパティが**あってもなくてもよい**という指定です。必須項目には付けず、省略を許したい項目にだけ付けます。
+
+---
+
+##### 解説4: ステータスごとの値をまとめる `Record` 型
+
+```typescript
+export const statusLabels: Record<BookStatus, string> = {
+  unread: "未読",
+  reading: "読書中",
+  finished: "読了",
+};
+```
+
+- これは型ではなく**実際の値（定数）**です。`"reading"` のような内部用の文字列を、`"読書中"` という画面表示用の日本語に変換するための対応表です。
+- `Record<BookStatus, string>` は「**キーが `BookStatus`、値が文字列**のオブジェクト」という型で、3つのステータス全部を漏れなく書くことを強制してくれます。
+- 使うときは `statusLabels["reading"]` のように書くと `"読書中"` が取り出せます。
+- 同じ仕組みの `statusColors` では、値が文字列ではなく `{ bg, text }`（背景色クラスと文字色クラス）のオブジェクトになっています。
+
+> **用語:** 「Record<K, V>」は TypeScript の組み込み型で、キーの型 `K` と値の型 `V` を指定して**対応表（マップ）の形**を作ります。選択肢ごとの設定値をまとめるのに便利です。
+
 ---
 
 ## 7. ルートレイアウトの設定
@@ -1270,6 +1423,98 @@ export default function RootLayout({
 | `max-w-7xl mx-auto` | `<main>` の最大幅を 1280px に制限し、左右の margin を auto にして中央寄せにします。大画面でもコンテンツが横に広がりすぎるのを防ぎます。 |
 | `px-4 sm:px-6 lg:px-8` | 画面サイズに応じて左右の padding を変えます。モバイルでは 16px、タブレットでは 24px、PCでは 32px です。 |
 | `{children}` | 各ページのコンテンツがここに挿入されます。`/` にアクセスすれば `app/page.tsx` の内容が、`/books/new` にアクセスすれば `app/books/new/page.tsx` の内容が入ります。 |
+
+#### ▼ コードを1つずつ分解して解説
+
+上のレイアウトを、初心者がつまずきやすい部分ごとに**1つずつ**ていねいに見ていきましょう。
+
+---
+
+##### 解説1: 3種類のインポートを使い分ける
+
+```typescript
+import type { Metadata } from "next";
+import { Noto_Sans_JP } from "next/font/google";
+import "./globals.css";
+import Header from "@/components/Header";
+```
+
+- 1行目の `import type` は「**型だけ**を取り込む」インポートで、ビルド後のコードには残りません（型は実行時には不要なため）。
+- 2行目の `{ Noto_Sans_JP }` は波括弧付きの「名前付きインポート」で、日本語フォントを読み込む関数を取り出しています。
+- 3行目の `import "./globals.css";` は**左側に名前がない**特殊な形で、「このファイルを読み込むだけ」を意味します。これで Tailwind のスタイルが全ページに効きます。
+- 4行目の `import Header` は波括弧なしの「デフォルトインポート」。`@/` は `src/` の近道（パスエイリアス）なので、`@/components/Header` は `src/components/Header` を指します。
+
+> **用語:** 「パスエイリアス（`@/`）」とは、長い相対パス（`../../components/...`）を短く書くための別名です。`src/` を起点にできるので、ファイルを移動してもインポート文を直さずに済みます。
+
+---
+
+##### 解説2: フォントを最適化して読み込む
+
+```typescript
+const notoSansJP = Noto_Sans_JP({
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+  display: "swap",
+  preload: true,
+});
+```
+
+- `Noto_Sans_JP({ ... })` のように、フォント関数に**設定オブジェクト**を渡して呼び出します。戻り値を `notoSansJP` に保存し、あとで `<body>` に適用します。
+- `weight: ["400", "500", "700"]` は使う太さ（通常・やや太字・太字）の指定で、使う分だけ読み込むことでファイルサイズを抑えます。
+- `display: "swap"` は、フォント読み込み中はいったん代替フォントで表示し、読み込み完了後に切り替える設定です。文字が一瞬消える現象を防ぎます。
+- `next/font` を使うとフォントがビルド時にダウンロードされて自前配信されるため、表示が速く安定します。
+
+> **用語:** 「フォントの最適化」とは、必要な文字種・太さだけをまとめてダウンロードし、表示の遅延やレイアウトのガタつきを減らす仕組みのことです。
+
+---
+
+##### 解説3: メタデータでタブのタイトルなどを設定
+
+```typescript
+export const metadata: Metadata = {
+  title: "書籍管理アプリ",
+  description:
+    "読んだ本、読んでいる本、これから読む本を管理するWebアプリケーション",
+};
+```
+
+- `metadata` という名前で `export` した値は、**Next.js が自動で見つけて** HTML の `<head>` に反映してくれます（自分で `<title>` を書く必要がありません）。
+- `title` はブラウザのタブに表示される文字、`description` は検索結果に出る説明文になります。
+- `: Metadata` は「この値は `Metadata` という型に従う」という指定で、解説1で `import type` したものです。項目名を間違えると型チェックで気づけます。
+
+> **用語:** 「メタデータ」とは、ページ自体の内容ではなく、ページに**付随する情報**（タイトル・説明・OGP など）のことです。検索エンジンや SNS が参照します。
+
+---
+
+##### 解説4: children に各ページが差し込まれる仕組み
+
+```typescript
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="ja">
+      <body className={`${notoSansJP.className} bg-gray-50 min-h-screen`}>
+        <Header />
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {children}
+        </main>
+      </body>
+    </html>
+  );
+}
+```
+
+- `RootLayout` は全ページを包む外枠コンポーネントです。引数の `{ children }` には、**表示中の各ページの中身**が自動的に入ってきます。
+- `Readonly<{ children: React.ReactNode }>` は引数の型で、`React.ReactNode` は「React が表示できるあらゆる中身（要素・文字列など）」を表します。
+- `className={`${notoSansJP.className} ...`}` の `` `${...}` `` はテンプレートリテラルで、フォントのクラス名と Tailwind のクラスを**つなげて1つの文字列**にしています。
+- `<Header />` を常に上に置き、その下の `<main>` 内の `{children}` 部分だけがページごとに入れ替わります。これで全ページ共通の枠を1か所で管理できます。
+
+> **用語:** 「children（チルドレン）」とは、コンポーネントの中に**差し込まれる中身**を受け取る特別な props です。レイアウトのように「枠だけ用意して中身は後から入れる」設計でよく使います。
+
+---
 
 ### 7.2 globals.css の確認
 
@@ -1418,6 +1663,77 @@ export default function Header() {
 | `flex items-center justify-between h-16` | Flexbox で子要素を横並びにし、垂直方向に中央揃え、左右に均等配置、高さ64px を設定します。 |
 | `space-x-4` | ナビゲーションリンク間に 16px の水平方向の間隔を設けます。 |
 
+#### ▼ コードを1つずつ分解して解説
+
+上のヘッダーを、初心者がつまずきやすい部分ごとに**1つずつ**ていねいに見ていきましょう。
+
+---
+
+##### 解説1: なぜ先頭に "use client" が必要か
+
+```typescript
+"use client";
+```
+
+- この1行は、ファイルを「**Client Component（ブラウザ側で動く部品）**」として宣言する特別な合図です。必ず import より前、ファイルの一番上に書きます。
+- Next.js の App Router では、何も書かないとコンポーネントは**サーバー側で動く**設定になります。サーバー側では `useState` などの React の機能や、URL を取る `usePathname()` が使えません。
+- このヘッダーは現在地に応じて見た目を変えるため `usePathname()` を使います。そのために `"use client"` を付けてブラウザ側で動くようにしています。
+
+> **用語:** 「Client Component」とは、ユーザーのブラウザ上で実行されるコンポーネントです。クリックや入力などの操作、React フックを使いたい部品はこちらにします。
+
+---
+
+##### 解説2: Link と usePathname を取り込む
+
+```typescript
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+```
+
+- `Link` は、ページを**まるごと再読み込みせずに**素早く切り替えるための Next.js 専用のリンク部品です。HTML の `<a>` の代わりに使います。
+- `usePathname` は「**いま開いている URL のパス**」（例: `"/"` や `"/books/new"`）を取得するフックです。
+- import 元に注意が必要で、`usePathname` は App Router 用の `"next/navigation"` から取り込みます（旧方式の `"next/router"` とは別物です）。
+
+> **用語:** 「フック（Hook）」とは、`use` で始まる React の特別な関数です。状態や現在の URL など、コンポーネントに機能を「引っかけて」追加するために使います。
+
+---
+
+##### 解説3: 現在のパスを取得する
+
+```typescript
+const pathname = usePathname();
+```
+
+- `usePathname()` を呼ぶと、今表示しているページの URL パスが文字列で返ってきます。それを `pathname` に保存します。
+- この値を後で `pathname === "/"` のように比較して、「いま見ているページのリンクだけ色を変える」ハイライト表示に使います。
+- ページを移動すると `pathname` の値も自動で変わり、ヘッダーの見た目も更新されます。
+
+> **用語:** 「パス（pathname）」とは、URL のうちドメイン名より後ろの部分（`/books/new` など）のことです。どのページにいるかを判別する手がかりになります。
+
+---
+
+##### 解説4: 現在地によってクラスを切り替える
+
+```typescript
+<Link
+  href="/"
+  className={`px-3 py-2 rounded-md text-sm font-medium transition duration-200 ${
+    pathname === "/"
+      ? "bg-blue-50 text-blue-700"
+      : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+  }`}
+>
+  書籍一覧
+</Link>
+```
+
+- `className={`...${ ... }`}` のテンプレートリテラルで、**共通のクラス**と**条件で変わるクラス**を1つの文字列に合体させています。
+- `条件 ? Aの値 : Bの値` は三項演算子（条件分岐の短い書き方）で、「`pathname === "/"` が真なら A、偽なら B」を選びます。
+- いまトップページにいれば薄い青背景＋青文字（`bg-blue-50 text-blue-700`）でハイライトし、そうでなければグレー文字でホバー時に反応するスタイルになります。
+- `href="/"` で遷移先を指定し、クリックすると `Link` が高速にトップページへ切り替えます。
+
+> **用語:** 「三項演算子（`条件 ? A : B`）」とは、`if/else` を1行で書ける短縮形です。値を2択で切り替えたいとき、JSX の中などで手軽に使えます。
+
 ---
 
 ## 9. 開発サーバーの起動と動作確認
@@ -1484,6 +1800,77 @@ export default function HomePage() {
   );
 }
 ```
+
+#### ▼ コードを1つずつ分解して解説
+
+上の仮トップページを、初心者がつまずきやすい部分ごとに**1つずつ**ていねいに見ていきましょう。
+
+---
+
+##### 解説1: ページは default export の関数で作る
+
+```typescript
+export default function HomePage() {
+  return (
+    <div>
+      ...
+    </div>
+  );
+}
+```
+
+- `app/page.tsx` の中で `export default` した関数が、その URL（ここでは `/`）に表示される**ページの本体**になります。Next.js が自動でこの関数を探して呼び出します。
+- 関数名（`HomePage`）は自由に決められます。重要なのは名前ではなく「`export default` であること」です。
+- `return ( ... )` の中に画面の中身（JSX）を書きます。複数の要素を返すときは、必ず1つの親要素（ここでは外側の `<div>`）で包む必要があります。
+
+> **用語:** 「default export」とは、1ファイルにつき1つだけ指定できる「主役の書き出し」です。Next.js のページやコンポーネントは、これでファイルの代表を決めます。
+
+---
+
+##### 解説2: Tailwind のクラスで見出しと説明を装飾
+
+```typescript
+<h1 className="text-3xl font-bold text-gray-900 mb-4">
+  書籍一覧
+</h1>
+<p className="text-gray-600 mb-8">
+  登録された書籍がここに表示されます。
+</p>
+```
+
+- JSX では HTML の `class` 属性のかわりに `className` を使います（`class` は JavaScript の予約語のため）。
+- `className` に Tailwind のクラスを**スペース区切りで並べる**と、それぞれが1つのスタイルになります。`text-3xl`（文字サイズ30px）、`font-bold`（太字）、`text-gray-900`（濃いグレー）など。
+- `mb-4` / `mb-8` は下方向の余白（margin-bottom）で、数字が大きいほど余白も広がります（4=16px、8=32px）。
+
+> **用語:** 「className」とは、JSX で CSS クラスを指定するための属性名です。HTML の `class` と同じ役割ですが、React では `className` と書く決まりになっています。
+
+---
+
+##### 解説3: カードとステータスバッジを並べる
+
+```typescript
+<div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+  <h2 className="text-lg font-semibold text-gray-800 mb-2">
+    セットアップ完了
+  </h2>
+  ...
+  <div className="mt-4 flex space-x-2">
+    <span className="inline-block bg-gray-100 text-gray-700 text-xs px-2.5 py-1 rounded-full font-medium">
+      未読
+    </span>
+    ...
+  </div>
+</div>
+```
+
+- 外側の `<div>` が**白いカード**です。`bg-white`（白背景）、`rounded-lg`（角丸）、`shadow-sm`（薄い影）、`border`（枠線）、`p-6`（内側の余白24px）を組み合わせて作っています。
+- バッジを囲む `<div>` の `flex space-x-2` で、3つのバッジを**横並び**にし、間に8pxの隙間を空けています。
+- 各バッジ（`<span>`）の `rounded-full` でカプセル型の丸みを付け、`bg-gray-100`/`bg-blue-100`/`bg-green-100` のように背景色を変えてステータスを色分けしています。
+- これは動作確認用の仮表示で、Tailwind が正しく効いているか（色・角丸・影が出るか）を目で確かめる役割です。
+
+> **用語:** 「Flexbox（`flex`）」とは、子要素を横や縦に整列させるための CSS のレイアウト方式です。`space-x-2` のような間隔指定と組み合わせて、並びを手軽に整えられます。
+
+---
 
 ### 9.2 開発サーバーの起動
 
@@ -1658,6 +2045,63 @@ const books: Book[] = data;
 ```
 
 この1つの `supabase.from("books").select("*")` の呼び出しの裏側で、上の図の 2 → 3 → 4 → 5 → 6 → 7 のステップがすべて自動的に実行されています。Supabase クライアントがこれらの複雑な処理を抽象化してくれるため、開発者は SQL を直接書くことなく、シンプルな JavaScript/TypeScript のコードでデータベースを操作できます。
+
+#### ▼ コードを1つずつ分解して解説
+
+この取得処理を、初心者がつまずきやすい部分ごとに**1つずつ**ていねいに見ていきましょう。
+
+---
+
+##### 解説1: 共有クライアントと型をインポートする
+
+```typescript
+import { supabase } from "@/lib/supabase";
+import { Book } from "@/types/book";
+```
+
+- 1行目で、さきほど `lib/supabase.ts` で作って `export` した `supabase`（データベースの窓口）を取り込んでいます。これで通信の準備は完了です。
+- 2行目で `Book` 型を取り込み、取得したデータが「書籍の形」をしていることを TypeScript に伝えられるようにします。
+- どちらも `@/`（= `src/`）から始まるパスエイリアスを使い、相対パスより読みやすく書いています。
+
+> **用語:** 「型のインポート」とは、`Book` のような型定義を別ファイルから取り込むことです。データの形を共有することで、プロジェクト全体で同じ構造を保てます。
+
+---
+
+##### 解説2: await で取得結果を待ち、分割代入で受け取る
+
+```typescript
+const { data, error } = await supabase
+  .from("books")
+  .select("*")
+  .order("created_at", {
+    ascending: false
+  });
+```
+
+- `await`（アウェイト）は、**通信が終わるまで結果を待つ**ための合図です。データベースとのやり取りには時間がかかるため、答えが返ってくるまでここで待機します。
+- `.from("books")` で対象テーブルを、`.select("*")` で全カラムを、`.order("created_at", { ascending: false })` で「作成日の新しい順」を指定しています。SQL の `FROM` / `SELECT *` / `ORDER BY` に対応します。
+- 戻り値は `{ data, error }` という形のオブジェクトなので、`const { data, error } = ...`（分割代入）で**成功データとエラーを同時に取り出して**います。
+
+> **用語:** 「await / 非同期処理」とは、時間のかかる処理（通信など）の完了を待つ仕組みです。待っている間ほかの処理を止めず、結果が来たら続きを実行します。
+
+---
+
+##### 解説3: エラーを必ず確認してから先へ進む
+
+```typescript
+if (error) {
+  console.error("書籍の取得に失敗しました:", error.message);
+  return;
+}
+
+const books: Book[] = data;
+```
+
+- `if (error)` は「エラーが入っていれば（通信が失敗していれば）」という意味です。Supabase はエラーを**例外で投げず `error` に入れて返す**ため、自分でこのチェックをするのが安全な書き方です。
+- 失敗時は `console.error(...)` で原因をコンソールに出し、`return` で処理を中断します。失敗したのに先へ進んでしまう事故を防げます。
+- 問題がなければ、`data` を `Book[]`（書籍の配列）として受け取ります。`[]` は「その型がいくつも並んだ配列」を表します。
+
+> **用語:** 「エラーハンドリング」とは、失敗が起きたときの対処をあらかじめ書いておくことです。通信は必ず成功するとは限らないため、`error` の確認はセットで行います。
 
 ---
 

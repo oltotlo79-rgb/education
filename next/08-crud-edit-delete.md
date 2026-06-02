@@ -1095,6 +1095,118 @@ export default function BookForm({
 
 編集フォームにアクセスすると、各入力フィールドに既存のデータが入った状態で表示されます。ユーザーは変更したい項目だけを修正して「更新する」ボタンを押せば、データベースが更新されます。
 
+#### ▼ コードを1つずつ分解して解説
+
+上の `BookForm` には初心者がつまずきやすい書き方がいくつもあります。順番に、塊ごとにていねいに見ていきましょう。
+
+---
+
+##### 解説1: props で「新規」と「編集」を切り替える
+
+```tsx
+type Props = {
+  initialData?: BookFormData;  // 省略可（新規登録時は渡さない）
+  isEdit?: boolean;             // 省略可（デフォルト false）
+  bookId?: string;              // 省略可（編集時のみ必要）
+};
+```
+
+- このフォームは「新規登録」と「編集」の2役を1つで兼ねます。その切り替えに使うのが上の3つの props（親から渡される入力データ）です。
+- `initialData` は「編集時にフォームへ最初から入れておく既存データ」です。新規登録のときは渡さない（＝中身が空）ので、末尾の `?` で「省略可（あってもなくてもよい）」にしています。
+- `isEdit` は「今が編集モードかどうか」を表す `true`/`false` の旗（フラグ）です。これが `true` なら UPDATE（更新）、`false` なら INSERT（新規追加）を実行します。
+- `bookId` は「どの書籍を更新するか」を表すIDで、編集時だけ必要になります。
+
+> **用語:** **prop（プロップ）** は親コンポーネントから子へ渡す入力データのこと。**オプショナル（`?`）** は「その項目を省略してもよい」というTypeScriptの記法で、省略されると値は `undefined` になります。
+
+---
+
+##### 解説2: 初期値を `initialData ?? defaultFormData` で決める
+
+```tsx
+const [formData, setFormData] = useState<BookFormData>(
+  initialData ?? defaultFormData  // initialData が undefined なら defaultFormData
+);
+```
+
+- `useState`（ユーズ・ステート）は「変化する値を覚えておく箱」を作る道具で、`[今の値, 値を変える関数]` の形で受け取ります。ここでは入力内容をまとめて `formData` という1つの箱に入れています。
+- `initialData ?? defaultFormData` の `??`（ナリッシュ合体演算子）は「**左が `null` か `undefined` のときだけ右を使う**」という意味です。
+- つまり「編集モードで `initialData` が渡されていればそれを初期値に、渡されていなければ（新規登録なら）空っぽの `defaultFormData` を初期値に」という切り替えを1行で実現しています。これが「編集前データのプリロード（事前読み込み）」の中核です。
+
+> **用語:** **`??`（nullish coalescing）** は「左が `null`/`undefined` のときだけ右の値を採用する」演算子。`||` と似ていますが、`||` は `0` や `""` も右に置き換えてしまうのに対し、`??` は `null`/`undefined` だけを対象にする点が違います。
+
+---
+
+##### 解説3: 1つの `handleChange` で全フィールドを更新する
+
+```tsx
+const handleChange = (
+  e: React.ChangeEvent<
+    HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+  >
+) => {
+  const { name, value } = e.target;  // イベントの発生元から name と value を取り出す
+  setFormData((prev) => ({           // 関数形式の setState（前の状態を引数に取れる）
+    ...prev,                          // スプレッド構文で既存の値を全部展開（他のフィールドはそのまま）
+    [name]: value,                    // 計算プロパティ名で name に対応するフィールドだけ上書き
+  }));
+};
+```
+
+- 入力欄に文字を打つたびに呼ばれる関数です。`e.target`（変化が起きた入力欄そのもの）から、`name`（その欄の名前）と `value`（今入力されている値）を取り出します。
+- `...prev`（スプレッド構文）は「今ある全項目をまるごとコピー」する書き方です。Reactでは「古い state を直接書き換えず、新しいオブジェクトを作って差し替える」のがルールなので、こうして全項目をコピーしてから1つだけ上書きします。
+- `[name]: value`（動的なキー）は「変数 `name` の中身を、そのままキー（項目名）として使う」書き方です。`name` が `"title"` なら `title: value` と書いたのと同じになります。
+- これにより、たった1つの `handleChange` で、タイトル・著者・出版社…どの欄が変わっても、その欄だけを正しく更新できます。
+
+> **用語:** **スプレッド構文（`...`）** はオブジェクトや配列の中身を展開してコピーする記法。**動的なキー（computed property name、`[name]`）** は変数の値をそのままプロパティ名として使う記法です。
+
+---
+
+##### 解説4: `isEdit` で UPDATE と INSERT を切り替える
+
+```tsx
+if (isEdit && bookId) {  // 編集モード かつ ID がある場合
+  const { error: updateError } = await supabase
+    .from("books")          // books テーブルに対して
+    .update({               // UPDATE を発行
+      title: formData.title.trim(),                          // 前後の空白を除去
+      author: formData.author.trim() || null,                // 空文字なら null（DB をクリーンに保つ）
+      publisher: formData.publisher.trim() || null,
+      published_date: formData.published_date || null,       // 空文字なら null
+      rating: formData.rating,                                // null または数値
+      status: formData.status,
+      memo: formData.memo.trim() || null,
+    })
+    .eq("id", bookId);      // WHERE id = bookId
+```
+
+- 送信処理の中心です。`if (isEdit && bookId)` で「編集モードかつIDがある」ときだけ UPDATE（更新）を実行し、そうでなければ（`else` 側で）INSERT（新規追加）を実行します。
+- `.update({ ... })` で更新したい内容を渡し、`.eq("id", bookId)` で「IDが一致する1件だけ」に絞り込みます。**この `.eq()` を忘れると全件が更新されてしまう**ため、UPDATE/DELETE では絶対に付けます。
+- `formData.author.trim() || null` は「前後の空白を除いた結果が空文字なら `null` を入れる」という意味です（`||` は左が空っぽのとき右を使う）。空文字ではなく `null` を入れることで、データベースを「未入力＝null」というきれいな状態に保てます。
+
+> **用語:** **`.eq("id", bookId)`** は「id 列が bookId と等しい行だけ」を対象にする絞り込み（SQL の `WHERE id = ...` に相当）。**UPDATE** は既存データの書き換え、**INSERT** は新しいデータの追加を指すデータベース操作です。
+
+---
+
+##### 解説5: 送信中フラグでボタン文言を出し分ける
+
+```tsx
+{isSubmitting               /* 送信中なら... */
+  ? isEdit                   /* かつ編集モードなら */
+    ? "更新中..."             /* 「更新中...」 */
+    : "登録中..."             /* それ以外は「登録中...」 */
+  : isEdit                   /* 送信中でなくて編集モードなら */
+    ? "更新する"              /* 「更新する」 */
+    : "登録する"}             /* 新規登録なら「登録する」 */
+```
+
+- ボタンに表示する文字を、2つの旗（`isSubmitting` と `isEdit`）の組み合わせで4通りに出し分けています。
+- 三項演算子（`条件 ? A : B`）を入れ子（ネスト）にしており、まず `isSubmitting`（送信中か）で分け、その中でさらに `isEdit`（編集か）で分けています。結果は「更新中... / 登録中... / 更新する / 登録する」の4パターンです。
+- このように送信中は「更新中...」等に変え、同時にボタンを `disabled`（クリック不可）にすることで、ユーザーに処理中だと伝えつつ二重送信（ボタン連打による重複処理）を防いでいます。
+
+> **用語:** **三項演算子（`?:`）** は「条件 ? 真のときの値 : 偽のときの値」と書く式。**ネスト** は構文を入れ子にすること。**二重送信** はボタン連打などで同じ処理が複数回走ってしまう不具合のことです。
+
+---
+
 ### 2-3. 編集ページの作成
 
 `app/books/[id]/edit/` ディレクトリを作成し、`page.tsx` を作成します。このページはサーバーコンポーネントとして動作し、既存の書籍データを取得して `BookForm` に渡す役割を持ちます。
@@ -1237,6 +1349,68 @@ export default async function BookEditPage({ params }: Props) {
 - 戻るリンクは詳細ページ（`/books/${id}`）を指しています。一覧ではなく、編集元の詳細ページに戻る方がユーザー体験として自然です。
 
 > **Server Action という別パターン:** 本章ではクライアントコンポーネント側で Supabase を直接呼び出していますが、Next.js には「Server Action」という別の更新手段もあります。`"use server"` ディレクティブを付けた関数をフォームに直接渡し、サーバー側で更新→`revalidatePath` でキャッシュ破棄→`redirect` で遷移、という流れにできます。今回の教材では学習コストを抑えるためクライアント直書きを採用していますが、認証情報を守りたい場合や複雑なバリデーションをサーバーで行いたい場合は Server Action の方が向いています。`revalidatePath("/books")` を呼ぶと、その URL に紐づくサーバーコンポーネントのキャッシュが破棄され、次のアクセスで最新データが取得されます。
+
+#### ▼ コードを1つずつ分解して解説
+
+編集ページの中でも、初心者が押さえておきたい塊を順に見ていきます。
+
+---
+
+##### 解説1: URL の id で1件だけ取得する
+
+```tsx
+const { id } = await params;
+
+const supabase = await createClient();  // クライアントを準備
+
+const { data: book, error } = await supabase
+  .from("books")
+  .select("*")
+  .eq("id", id)         // URL の id と一致するレコード
+  .single();             // 単一レコードとして取得
+```
+
+- このページはサーバー側で動く Server Component なので、`await` を使ってデータベースから直接データを読めます。
+- `const { id } = await params;` で、URL の `[id]` 部分を取り出します。Next.js 15 以降 `params` は Promise（あとで値が決まる箱）なので、`await` を付けて中身を取り出す点が要注意です（忘れると `id` が `undefined` になります）。
+- `.eq("id", id)` で「IDが一致する行だけ」に絞り、`.single()` で「配列ではなく1件のオブジェクト」として受け取ります（0件や2件以上だとエラーになります）。
+
+> **用語:** **Server Component** はサーバー側だけで動くコンポーネントで、DBに直接アクセスできます。**Promise（プロミス）** は「あとで値が決まる箱」で、`await` を付けて中身が出るのを待ちます。
+
+---
+
+##### 解説2: `null` を空文字に変換して初期値を作る
+
+```tsx
+const initialData = {
+  title: book.title ?? "",                  // null なら空文字に変換
+  author: book.author ?? "",
+  publisher: book.publisher ?? "",
+  published_date: book.published_date ?? "",
+  rating: book.rating ?? null,              // null はそのまま
+  status: book.status ?? "unread",          // status は null だと困るのでデフォルトを設定
+  memo: book.memo ?? "",
+};
+```
+
+- データベースから取った `book` を、フォームに渡す形（`initialData`）に整え直しています。
+- ポイントは `?? ""` で **`null` を空文字に変換** している点です。React の入力欄に `null` を渡すと「非制御コンポーネント」になってしまい、入力が React 側で管理できなくなるため、文字列の欄はすべて空文字にそろえます。
+- `rating` だけは数値か `null` のままで構わない（評価なしを表せる）ので `?? null`、`status` は空だと困るので `?? "unread"` とデフォルトを与えています。
+
+> **用語:** **制御コンポーネント** は入力値を React の state で管理する方式で、`value` には必ず文字列（や数値）を渡します。`null` を渡すと**非制御コンポーネント**扱いになり、入力が state に同期されなくなります。
+
+---
+
+##### 解説3: BookForm に props を渡して編集モードで使う
+
+```tsx
+<BookForm initialData={initialData} isEdit={true} bookId={id} />
+```
+
+- ここがこのページの結論部分です。整えた `initialData`、編集モードを表す `isEdit={true}`、対象のIDである `bookId={id}` の3つを `BookForm` に渡しています。
+- これによって `BookForm` は「最初から既存データが入った状態」で表示され、送信時には（`isEdit` が `true` なので）UPDATE を実行します。
+- 重いデータ取得はこのサーバー側のページが担当し、対話的な入力処理は受け取った側の `BookForm`（クライアント側）が担当する、という役割分担になっています。
+
+> **用語:** **役割分担（Server/Client の分離）** は、データ取得をサーバーコンポーネントで、ユーザー操作をクライアントコンポーネントで行う Next.js App Router の定番パターンです。サーバーからクライアントへは props で値を渡せます。
 
 ---
 
@@ -1504,6 +1678,77 @@ export default function DeleteButton({ bookId, bookTitle }: Props) {
 
 > **このボタンは独立した `<button>` であり、フォームの `type="submit"` ではありません。** もしフォーム内に置く場合は `type="button"` を明示しないと、親フォームの送信が発火してしまうので注意してください。今回は親が `<form>` ではなくただの `<div>` なのでこの問題は起きません。
 
+#### ▼ コードを1つずつ分解して解説
+
+`DeleteButton` の中で、初心者が押さえておきたい塊を順に見ていきます。
+
+---
+
+##### 解説1: クリックでまず確認ダイアログを出す
+
+```tsx
+const confirmed = window.confirm(
+  `本当に「${bookTitle}」を削除しますか？\nこの操作は取り消せません。`
+);
+
+if (!confirmed) {
+  return;
+}
+```
+
+- 削除は取り消せない操作なので、いきなり消さずに `window.confirm()`（ブラウザ標準の確認ダイアログ）でユーザーに最終確認します。
+- `window.confirm()` は「OK」が押されると `true`、「キャンセル」が押されると `false` を返します。その結果を `confirmed` に入れています。
+- `if (!confirmed) { return; }` は「OKでなければ（＝キャンセルなら）ここで処理を打ち切る」という早期 return です。これにより、以降の削除処理はOKのときだけ進みます。
+- メッセージに `${bookTitle}` を埋め込み、`\n`（改行）を入れることで「どの本を消すのか」が一目で分かるようにしています。
+
+> **用語:** **`window.confirm()`** はブラウザに用意された確認ダイアログを出す関数。**早期 return** は「条件を満たさなければ関数を途中で抜ける」書き方で、深い入れ子を避けて読みやすくします。
+
+---
+
+##### 解説2: 削除中フラグで二重削除を防ぐ
+
+```tsx
+setIsDeleting(true);  // ローディング状態に切り替え
+
+try {
+  const supabase = createClient();  // Supabase クライアントを準備
+
+  const { error } = await supabase
+    .from("books")
+    .delete()             // DELETE 文に相当
+    .eq("id", bookId);    // WHERE id = bookId
+
+  if (error) {
+    throw error;          // catch にエラーを渡す
+  }
+```
+
+- 削除を始める前に `setIsDeleting(true)` で「削除中」の旗を立てます。この旗が立っている間はボタンを `disabled`（クリック不可）にするので、連打による二重削除を防げます。
+- `.delete()` で削除操作を、`.eq("id", bookId)` で「IDが一致する1件だけ」を対象に絞ります。**`.eq()` を付けずに `.delete()` だけだと全件削除になりかねない**ため、必ず条件を付ける習慣をつけます。
+- `if (error) { throw error; }` は「Supabase がエラーを返したら、それを `catch` ブロックに投げる」処理です。
+
+> **用語:** **`disabled`** はボタンを押せなくするHTML属性。**`throw`** はエラーを発生させて `try/catch` の `catch` 側へ処理を移す命令です。
+
+---
+
+##### 解説3: 成功時は一覧へ戻し、失敗時はリトライ可能にする
+
+```tsx
+  router.push("/books");   // 一覧ページへ
+  router.refresh();         // サーバー側データを再取得
+} catch (err) {
+  console.error("削除エラー:", err);
+  alert("書籍の削除に失敗しました。もう一度お試しください。");
+  setIsDeleting(false);  // 状態を戻してリトライ可能に
+}
+```
+
+- 削除に成功したら、消した本の詳細ページはもう存在しないので `router.push("/books")` で一覧へ戻します。
+- 続く `router.refresh()` は「サーバーコンポーネントのデータを取り直す」命令です。これを呼ばないとキャッシュが残り、一覧に消したはずの本が表示されたままになることがあります。
+- 失敗したときは `catch` に入り、`alert` でユーザーに知らせ、`setIsDeleting(false)` で旗を下ろして**もう一度試せる状態**に戻します（成功時は遷移するので旗を戻す必要はありません）。
+
+> **用語:** **`router.push()`** はプログラムからの画面遷移、**`router.refresh()`** はサーバー側データの再取得を行うメソッド。**キャッシュ** は「一度取得した結果を覚えておく仕組み」で、更新後は明示的に取り直す必要があります。
+
 ---
 
 ## 4. 検索・フィルタ機能（発展）
@@ -1722,6 +1967,69 @@ export default function SearchBar() {
   );
 }
 ```
+
+#### ▼ コードを1つずつ分解して解説
+
+`SearchBar` には、初心者がつまずきやすい「URL同期」と「デバウンス」という工夫が入っています。塊ごとに見ていきましょう。
+
+---
+
+##### 解説1: 初期値を URL の検索パラメータから取る
+
+```tsx
+const [searchQuery, setSearchQuery] = useState(
+  searchParams.get("q") ?? ""               // ?q= の値、無ければ空文字
+);
+const [statusFilter, setStatusFilter] = useState(
+  searchParams.get("status") ?? ""          // ?status= の値、無ければ空文字
+);
+```
+
+- 検索条件を state（変化する値）として持ちますが、その**初期値を URL から読み込んでいる**のがポイントです。
+- `searchParams.get("q")` は URL の `?q=...` の値を取り出します。値が無いときは `null` が返るので、`?? ""`（左が null/undefined なら右）で空文字にそろえています。
+- こうしておくと、検索結果のURLを直接開いたりページをリロードしたりしても、入力欄に前回の検索条件が復元されます。
+
+> **用語:** **`searchParams`** は URL の `?` 以降（クエリ文字列）を読むためのオブジェクト。`.get("q")` で `?q=` の値を取り出せます。
+
+---
+
+##### 解説2: 入力をデバウンスして「打ち終わってから」検索する
+
+```tsx
+useEffect(() => {
+  const timer = setTimeout(() => {              // 300ms 後に実行する予約
+    updateSearchParams(searchQuery, statusFilter);
+  }, 300);
+
+  return () => clearTimeout(timer);             // 副作用の片付け
+}, [searchQuery, statusFilter, updateSearchParams]);  // これらが変わるたびに発火
+```
+
+- もしキーを打つたびに検索すると、不要なリクエストが大量に飛んでしまいます。それを防ぐのが**デバウンス**という工夫です。
+- `useEffect`（描画後に副作用を行うフック）の中で `setTimeout` を使い、「300ミリ秒後に検索する」という予約をします。
+- 戻り値の `return () => clearTimeout(timer)` が肝です。次のキー入力が来ると、まずこの後片付けで**前の予約をキャンセル**してから新しい予約を入れ直します。結果として「入力が止まって300ミリ秒経ったとき」だけ検索が走ります。
+
+> **用語:** **デバウンス（debounce）** は「連続するイベントを間引いて、最後の1回だけ処理する」テクニック。**クリーンアップ関数**（`useEffect` の `return`）は、次の実行前や後片付けのときに呼ばれる掃除用の関数です。
+
+---
+
+##### 解説3: 空の条件は URL から削除してきれいに保つ
+
+```tsx
+if (query.trim()) {                  // 空白以外の文字が含まれていれば
+  params.set("q", query.trim());      // ?q= を設定
+} else {
+  params.delete("q");                 // 空なら ?q= を削除
+}
+```
+
+- 検索条件を URL に書き込むとき、**値があるときだけ付け、空なら消す**ことで URL を読みやすく保っています。
+- `query.trim()` で前後の空白を除き、中身があれば `params.set("q", ...)` で `?q=...` を設定します。
+- 空のときは `params.delete("q")` で `?q=` を消します。これにより `/books?status=reading` のように「使っている条件だけ」が URL に残ります。
+
+> **用語:** **`URLSearchParams`** はクエリ文字列を組み立て・編集するための道具で、`.set()` で項目を追加/上書き、`.delete()` で項目を削除できます。
+
+---
 
 ### 4-2. 一覧ページの更新（検索・フィルタ対応）
 
@@ -1989,6 +2297,62 @@ export default async function BooksPage({ searchParams }: Props) {
 - `.or()` メソッドを使うことで、「タイトルに含まれる **または** 著者名に含まれる」という OR 条件を設定できます。
 - URLの検索パラメータ（`searchParams`）を使うことで、検索状態がURLに反映されます。ブラウザの戻る/進むボタンで検索状態を行き来したり、検索結果のURLを他の人と共有したりできます。
 
+#### ▼ コードを1つずつ分解して解説
+
+更新版の一覧ページでは、URL の条件を見ながらクエリを少しずつ組み立てていきます。塊ごとに見ていきましょう。
+
+---
+
+##### 解説1: クエリを `let` で宣言して後から条件を足す
+
+```tsx
+let query = supabase.from("books").select("*");  // ベースのクエリ（全件取得）
+```
+
+- まず「全件取得」という土台のクエリを作り、`let`（あとで再代入できる変数）に入れておきます。
+- このあと検索やフィルタの条件があるときだけ、この `query` に条件を継ぎ足していきます。
+- ポイントは、この時点ではまだサーバーに問い合わせていないことです。Supabase のクエリは「組み立てている途中」で、最後に `await` したときに初めて実行されます。
+
+> **用語:** **`let`** は再代入できる変数の宣言（`const` は再代入不可）。**クエリビルダー** は「条件をメソッドでつないで組み立て、最後に実行する」仕組みのことです。
+
+---
+
+##### 解説2: 検索とフィルタの条件を継ぎ足す
+
+```tsx
+if (q) {
+  query = query.or(`title.ilike.%${q}%,author.ilike.%${q}%`);  // title OR author で部分一致
+}
+
+if (status) {
+  query = query.eq("status", status);  // WHERE status = :status
+}
+```
+
+- `if (q)` で「検索語があるときだけ」テキスト検索の条件を足します。`.or(...)` は「タイトル または 著者名」のどちらかにマッチさせる指定です。
+- `ilike` は大文字小文字を区別しない部分一致検索で、`%${q}%` の `%`（ワイルドカード）が「前後に何があってもよい＝含む」を表します。
+- `if (status)` も同様に、ステータスが選ばれているときだけ `.eq("status", status)`（status が一致する行だけ）を足します。条件が無ければ何も足さないので、全件のままになります。
+
+> **用語:** **`ilike`** は大文字小文字を無視する部分一致検索（PostgreSQL の `ILIKE`）。**`%`（ワイルドカード）** は「任意の文字列」を表す記号で、`%語%` は「その語を含む」という意味になります。
+
+---
+
+##### 解説3: ソート条件を決めて、最後にまとめて実行する
+
+```tsx
+const sortColumn = sort || "created_at";        // 指定が無ければ created_at
+const ascending = order === "asc";              // "asc" のときだけ昇順
+query = query.order(sortColumn, { ascending });  // ORDER BY :sortColumn :order
+
+const { data: books, error } = await query;
+```
+
+- 並び順を決めます。`sort || "created_at"` は「URL に並び替え対象が無ければ登録日（`created_at`）を使う」という意味です（`||` は左が空なら右）。
+- `order === "asc"` で「URL の order が "asc" のときだけ昇順（小さい順）」と判定し、それ以外は降順になります。
+- `.order(sortColumn, { ascending })` で並び順を足し、最後の `await query` で**ここで初めてサーバーへ問い合わせ**ます。組み立て終えたクエリをまとめて実行する流れです。
+
+> **用語:** **`.order()`** は並び替えの指定（SQL の `ORDER BY`）。**昇順（ascending）** は小さい順・古い順、**降順（descending）** は大きい順・新しい順を指します。
+
 ---
 
 ## 5. ソート機能
@@ -2080,6 +2444,49 @@ export default function SortSelect() {
 - Supabase の `.order()` メソッドは、PostgreSQL の `ORDER BY` 句に対応しています。第1引数にカラム名、第2引数のオブジェクトで `ascending: true` を指定すると昇順、`ascending: false`（または省略）で降順になります。
 - ソート条件もURLの検索パラメータに反映されるため、検索・フィルタと同様にブラウザの履歴管理やURL共有が可能です。
 - 検索・フィルタとソートは独立して動作します。例えば「未読」フィルタをかけた状態で「評価（高い順）」にソートすると、「未読かつ評価の高い順」で表示されます。
+
+#### ▼ コードを1つずつ分解して解説
+
+`SortSelect` の中で、初心者が押さえておきたい塊を順に見ていきます。
+
+---
+
+##### 解説1: URL から現在の並び順を組み立てて select に反映する
+
+```tsx
+const currentSort = searchParams.get("sort") || "created_at";   // デフォルトは登録日
+const currentOrder = searchParams.get("order") || "desc";       // デフォルトは降順
+const currentValue = `${currentSort}-${currentOrder}`;          // select の value 形式に変換
+```
+
+- セレクトボックスに「今どの並び順が選ばれているか」を表示するため、現在の状態を URL から読み取ります。
+- `searchParams.get("sort") || "created_at"` は「URL に `?sort=` が無ければ登録日（`created_at`）を初期値にする」という意味です。`order` も同様にデフォルトは降順（`desc`）です。
+- 取り出した2つを `` `${currentSort}-${currentOrder}` `` でハイフン区切りにつなぎ、`"created_at-desc"` のような形にします。これは下の `<option value="...">` の値と同じ形式で、`select` の `value` に渡して選択状態を一致させるためです。
+
+> **用語:** **テンプレートリテラル（`` `...` ``）** はバッククォートで囲み、`${変数}` で値を文字列に埋め込める書き方。`select` の `value` に現在値を渡すと、その値に一致する `option` が選択された状態で表示されます。
+
+---
+
+##### 解説2: 選ばれた値を分解して URL に書き込む
+
+```tsx
+const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const value = e.target.value;                       // 例: "rating-desc"
+  const [sort, order] = value.split("-");             // ["rating", "desc"] に分解
+
+  const params = new URLSearchParams(searchParams.toString());  // 現在のクエリをコピー
+  params.set("sort", sort);                            // sort を上書き
+  params.set("order", order);                          // order を上書き
+
+  router.push(`${pathname}?${params.toString()}`);   // 新しい URL に遷移
+};
+```
+
+- セレクトの値が変わったときに呼ばれる関数です。選ばれた値（例: `"rating-desc"`）を `.split("-")` でハイフンの位置で2つに割り、`[sort, order]` の分割代入で `sort="rating"`, `order="desc"` のように取り出します。
+- `new URLSearchParams(searchParams.toString())` で**今の URL の条件をコピー**してから `.set()` で `sort` と `order` だけを上書きします。こうすることで、検索やフィルタの条件を消さずに並び順だけを差し替えられます。
+- 最後に `router.push(...)` で新しい URL に遷移すると、サーバーがその並び順でデータを取り直します。
+
+> **用語:** **`.split("-")`** は文字列を区切り文字で分割して配列にするメソッド。**分割代入（`[sort, order] = ...`）** は配列の要素を一度に別々の変数へ取り出す書き方です。
 
 ---
 
@@ -2266,6 +2673,41 @@ CREATE POLICY "Allow all operations" ON books   -- ポリシー名を "Allow all
   WITH CHECK (true);                              -- 新規追加/更新時のチェック条件: 常に true（全許可）
 ```
 
+#### ▼ コードを1つずつ分解して解説
+
+この開発用ポリシー（RLS のルール）を、行ごとに分解して見ていきます。
+
+---
+
+##### 解説1: ポリシーを作る対象と適用範囲
+
+```sql
+CREATE POLICY "Allow all operations" ON books   -- ポリシー名を "Allow all operations" として books テーブルに作成
+  FOR ALL                                         -- SELECT/INSERT/UPDATE/DELETE すべてに適用
+```
+
+- `CREATE POLICY "名前" ON テーブル名` で、指定したテーブル（ここでは `books`）に対する**アクセスルール**を1つ作ります。`"Allow all operations"` は後から見分けるためのポリシー名です。
+- `FOR ALL` は「このルールを SELECT（読む）/INSERT（追加）/UPDATE（更新）/DELETE（削除）の**すべての操作に適用する**」という指定です。
+
+> **用語:** **RLS（Row Level Security、行レベルセキュリティ）** は「テーブルの行ごとにアクセス可否を制御する」Supabase/PostgreSQL の仕組み。**ポリシー** はその許可ルール1件のことです。
+
+---
+
+##### 解説2: `USING (true)` と `WITH CHECK (true)` の意味
+
+```sql
+  USING (true)                                    -- 既存行へのアクセス条件: 常に true（全許可）
+  WITH CHECK (true);                              -- 新規追加/更新時のチェック条件: 常に true（全許可）
+```
+
+- `USING (...)` は「**すでにある行を読む/更新/削除してよいか**」を判定する条件です。`true`（常に真）なので「どの行でもOK」になります。
+- `WITH CHECK (...)` は「**これから追加/更新する行を許してよいか**」を判定する条件です。こちらも `true` なので「どんな書き込みもOK」になります。
+- つまりこのポリシーは「誰でも全操作OK」という最も緩い設定です。学習中に手早く動かすため専用で、**本番では必ず認証ベースのルールに置き換えます**（次の 7-4 で本番例を扱います）。
+
+> **用語:** **`USING`** は既存行へのアクセス条件、**`WITH CHECK`** は書き込み内容の検査条件。`true` は「常に許可」を意味します。
+
+---
+
 **原因2: `.eq()` の条件が合っていない**
 
 UPDATE や DELETE で `.eq("id", bookId)` の `bookId` が正しくない可能性があります。
@@ -2383,6 +2825,42 @@ CREATE POLICY "Authenticated users can manage books" ON books   -- ポリシー�
   USING (auth.uid() = user_id)                                     -- 既存行の所有者チェック
   WITH CHECK (auth.uid() = user_id);                               -- 書き込み時の所有者チェック
 ```
+
+#### ▼ コードを1つずつ分解して解説
+
+開発用の「全部許可」と違い、本番用は「ログイン済みかつ自分のデータだけ」に絞ります。塊ごとに見ていきましょう。
+
+---
+
+##### 解説1: 適用対象を「認証済みユーザー」に限定する
+
+```sql
+CREATE POLICY "Authenticated users can manage books" ON books   -- ポリシー名は説明的に
+  FOR ALL                                                          -- すべての操作
+  TO authenticated                                                 -- 認証済みユーザー（ロール authenticated）のみ
+```
+
+- `books` テーブルに対するルールを作る点は開発用と同じですが、名前を「何をするポリシーか」が分かる説明的なものにしています。
+- 開発用に無かった `TO authenticated` が肝です。これは「**ログイン済みのユーザー（`authenticated` ロール）にだけ**このルールを適用する」という指定で、未ログインの訪問者は対象外になります。
+
+> **用語:** **ロール（role）** は Supabase における利用者の種別。`authenticated` は「ログイン済みユーザー」、`anon` は「未ログイン（匿名）ユーザー」を表します。`TO authenticated` で対象をログイン済みに絞れます。
+
+---
+
+##### 解説2: 「自分のデータだけ」に制限する所有者チェック
+
+```sql
+  USING (auth.uid() = user_id)                                     -- 既存行の所有者チェック
+  WITH CHECK (auth.uid() = user_id);                               -- 書き込み時の所有者チェック
+```
+
+- 開発用では `true`（常に許可）だった部分を、`auth.uid() = user_id` という**条件**に変えています。
+- `auth.uid()` は「今ログインしている人のユーザーID」を返す関数です。これが行の `user_id` 列と一致するとき、つまり**自分が登録したデータのとき**だけ許可します。
+- `USING` 側で「自分の行だけ読む/更新/削除できる」を、`WITH CHECK` 側で「他人のIDを付けて保存できない」を保証します。これにより、ユーザーごとにデータが安全に分離されます。
+
+> **用語:** **`auth.uid()`** は現在ログイン中のユーザーIDを返す Supabase の関数。**所有者チェック** は「そのデータの持ち主だけが操作できる」ようにする仕組みです。なお、この例は `books` テーブルに `user_id` 列がある前提で、本章の現段階では未実装です。
+
+---
 
 > **注意:** 上記の本番用ポリシーは、`books` テーブルに `user_id` カラムがあり、ユーザーごとにデータを分離する場合の例です。このチュートリアルの現段階では `user_id` カラムは未実装なので、開発用の全許可ポリシーを使用してください。
 

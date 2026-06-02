@@ -721,6 +721,178 @@ Tailwind の数値（`p-4`, `text-xl`）は**4の倍数のpx**などの規則が
 }
 ```
 
+#### ▼ コードを1つずつ分解して解説
+
+このCSSはとても長く見えますが、やっていることは「①色などの値に名前を付ける」「②その名前を使ってまとめてスタイルを定義する」の2つだけです。塊ごとに見ていきましょう。
+
+---
+
+##### 解説1: Tailwind を読み込む3行（`@tailwind`）
+
+```css
+@tailwind base;       /* base   : ブラウザ標準スタイルのリセット（normalize.css 的なもの）+ HTML要素のデフォルト */
+@tailwind components; /* components: .btn など、@layer components { ... } で定義したクラス */
+@tailwind utilities;  /* utilities : bg-red-500, p-4 などのユーティリティクラス本体 */
+```
+
+- `@tailwind`（アットマーク・テイルウィンド）は Tailwind 専用の「命令文」です。ビルド時にこの1行が**数千行のCSS**に展開されます。
+- `base` は「ブラウザごとに違う初期スタイルをそろえるリセット」、`components` は「`.btn` など自作のまとまったクラス」、`utilities` は「`p-4`・`bg-red-500` などの細かい1機能クラス」を入れる場所です。
+- **この3行が無いと Tailwind のクラスは一切効きません。** 必ずファイルの先頭に書きます。
+
+> **用語: ディレクティブ（directive）** … CSSやツールに対する「特別な指示」を表す命令文のこと。`@` から始まるものが多い（`@tailwind`, `@layer`, `@apply` など）。
+
+---
+
+##### 解説2: 色に名前を付ける（CSS変数 / カラートークン）
+
+```css
+:root {
+  --color-primary-50: #eef2ff;   /* 一番薄いインディゴ（背景バッジ等に使う） */
+  /* ... 中略 ... */
+  --color-primary-600: #4f46e5;  /* ボタン背景でよく使う濃さ */
+}
+```
+
+- `:root`（ルート）は「ページの一番外側（`<html>`）」を指します。ここに変数を書くと、ページのどこからでも `var(--変数名)` で呼び出せます。
+- `--color-primary-600` のように `--` で始まる名前が **CSS変数（カスタムプロパティ）** です。値の `#4f46e5` は色を表す16進数コードで、`#` の後ろ2桁ずつが「赤・緑・青」の強さを表します。
+- 色を直接 `#4f46e5` と書かず変数にしておくと、後で色を変えたいとき**1か所直すだけ**で全体に反映できます。
+
+> **用語: カラートークン（color tokens）／デザイントークン** … 「primary-600 はこの色」のように、デザインで使う値に意味のある名前を付けて一元管理したもの。チームでデザインの一貫性を保つための定番手法。
+
+---
+
+##### 解説3: ダークモードで色を入れ替える（`.dark`）
+
+```css
+.dark {
+  --color-background: #0f172a;        /* ほぼ黒（slate-900）に */
+  --color-foreground: #f8fafc;        /* 文字は逆に白系に */
+  --color-card: #1e293b;               /* カード背景は背景より少し明るい暗色 */
+}
+```
+
+- `<html class="dark">` のように `dark` クラスが付いたときだけ、この中の**変数の値が上書き**されます。
+- ポイントは「**新しいクラスを足すのではなく、同じ変数の中身だけを差し替える**」こと。背景の変数を黒に、文字の変数を白に入れ替えるだけで、画面全体がダークモードに変わります。
+- 各コンポーネントで `dark:bg-...` を一つずつ書かなくて済むのが、CSS変数方式の最大の利点です。
+
+> **用語: ダークモード（dark mode）** … 背景を黒・濃灰にした暗い配色モード。夜間や暗所での目の負担を減らす目的で用意する。
+
+---
+
+##### 解説4: ベースレイヤーで土台を整える（`@layer base`）
+
+```css
+@layer base {
+  body {
+    @apply bg-[var(--color-background)] text-[var(--color-foreground)];
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+}
+```
+
+- `@layer base`（レイヤー・ベース）は「**一番優先度の低い層**」にスタイルを置く指定です。低い層に置くと、後から個別の Tailwind クラスで簡単に上書きできます。
+- `@apply`（アプライ）は「**CSSの中でTailwindクラスを使う**」ための命令です。`bg-[var(--color-background)]` は「背景色を解説2のCSS変数から取ってくる」という意味で、`[ ]`（角カッコ）はTailwindに無い任意の値を直接書く構文です。
+- `transition: ... 0.3s ease` で、ダークモード切替時に背景と文字色が**0.3秒かけて滑らかに**変わるようにしています。
+
+> **用語: レイヤー（layer）／@apply** … `@layer` はCSSの優先順位を整理するための「層」。`@apply` は長くなりがちなTailwindクラス指定をCSS側にまとめる書き方。
+
+---
+
+##### 解説5: ボタンの共通スタイルを作る（`@layer components` の `.btn`）
+
+```css
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center
+           rounded-lg px-4 py-2
+           text-sm font-medium
+           transition-all duration-200 ease-in-out
+           disabled:pointer-events-none disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply btn
+           bg-primary-600 text-white
+           hover:bg-primary-700;
+  }
+}
+```
+
+- `.btn` は「全ボタン共通の土台」です。`inline-flex items-center justify-center` で中身を中央寄せ、`rounded-lg` で角丸、`px-4 py-2` で内側余白、`transition-all duration-200` で変化を200msかけて滑らかにしています。
+- `disabled:opacity-50` は「ボタンが無効化されたときは半透明にする」指定で、`disabled:` は状態に応じてスタイルを変える接頭辞です。
+- `.btn-primary` は `@apply btn ...` のように**`.btn` を継承**してから色（インディゴ背景＋白文字）だけを足しています。こうすると共通部分を何度も書かずに済みます。
+
+> **用語: ホバー（hover）** … マウスカーソルを要素の上に乗せた状態。`hover:bg-primary-700` は「乗せたときだけ背景を濃くする」という指定。
+
+---
+
+##### 解説6: カードと入力欄の共通スタイル（`.card` / `.input`）
+
+```css
+.card {
+  @apply rounded-xl border border-[var(--color-border)]
+         bg-[var(--color-card)] text-[var(--color-card-foreground)]
+         shadow-sm;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+.input {
+  @apply w-full rounded-lg border border-[var(--color-border)]
+         px-4 py-2.5 text-sm
+         focus:border-primary-500 focus:outline-none focus:ring-2;
+}
+```
+
+- `.card` は書籍カードなどの土台です。角丸・枠線・背景・影を、すべてCSS変数経由で指定しているので**ダークモードでも自動で色が変わります**。
+- `.input` は入力欄の共通スタイル。`w-full` で横幅いっぱい、`focus:ring-2` は「クリックして入力中のとき、枠の周りに2pxの光るリングを出す」指定で、`focus:` は入力欄が選択された状態を表します。
+- このように共通スタイルを `@layer components` にまとめておくと、HTML側では `<div class="card">` と書くだけで統一された見た目になります。
+
+> **用語: フォーカス（focus）** … 入力欄やボタンが「いま操作対象として選ばれている」状態。キーボード操作のユーザーにとって、どこが選択中かを示すリング表示が重要になる。
+
+---
+
+##### 解説7: 自作ユーティリティと省略表示（`@layer utilities` の `line-clamp`）
+
+```css
+@layer utilities {
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;            /* 2 行で打ち切る */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+```
+
+- `@layer utilities` は「**一番優先度の高い層**」で、Tailwindに無い便利クラスを自作する場所です。
+- `.line-clamp-2` は「**2行を超えた文章を「…」で打ち切る**」クラスです。長いタイトルがカードからはみ出さないように使います。
+- `-webkit-line-clamp` の数字を変えると打ち切る行数が変わります（`line-clamp-1` なら1行、`line-clamp-3` なら3行）。
+
+> **用語: ユーティリティクラス（utility class）** … `p-4`（余白16px）のように「1つの機能だけを持つ小さなクラス」。これらを組み合わせてデザインするのがTailwindの考え方。
+
+---
+
+##### 解説8: 動きの素材を定義する（`@keyframes`）
+
+```css
+@keyframes fadeIn {
+  from {
+    opacity: 0;                       /* 透明（見えない） */
+    transform: translateY(8px);       /* 8px 下にずらした位置から始まる */
+  }
+  to {
+    opacity: 1;                       /* 不透明（見える） */
+    transform: translateY(0);         /* 元の位置へ */
+  }
+}
+```
+
+- `@keyframes`（キーフレーム）は「**アニメーションの始まり（`from`）と終わり（`to`）のコマ**」を定義します。
+- この `fadeIn` は「透明で8px下にいる状態」から「不透明で元の位置」へ変化します。つまり**少し下からふわっと現れる**動きです。
+- `opacity`（透明度：0で透明、1で不透明）と `transform: translateY(...)`（縦方向の移動）を組み合わせるのがフェードイン演出の定番です。
+
+> **用語: キーフレーム（keyframe）** … アニメーションの途中経過を指定する「コマ」。`from`/`to` のほか `0%`/`50%`/`100%` のようにパーセントで複数指定もできる。
+
+---
+
 ### 1.2 カスタムカラーパレットの設定
 
 アプリでは以下のカラーパレットを採用しています。「カラーパレット（color palette）」とは「アプリ全体で使う色の組み合わせ」のことです。色を決めて統一することで、デザインに一貫性が出ます。
@@ -1001,6 +1173,87 @@ export default config;
 - `colors` -- CSS カスタムプロパティ経由でカラーを定義することで、ダークモード切り替えが CSS 変数の上書きだけで済む
 - `keyframes` / `animation` -- globals.css の `@keyframes` と合わせて、Tailwind のクラスとしてアニメーションを呼び出せるようにする
 
+#### ▼ コードを1つずつ分解して解説
+
+この設定ファイルは「Tailwind に対する取扱説明書」です。塊ごとに、どんな設定をしているかを見ていきましょう。
+
+---
+
+##### 解説1: ダークモードの方式を選ぶ（`darkMode`）
+
+```typescript
+darkMode: "class",
+```
+
+- `darkMode` は「ダークモードをどう切り替えるか」を決める設定です。
+- `"class"` を選ぶと、`<html class="dark">` のように**クラスを手動で付け外し**して切り替えます。ユーザーが切替ボタンで選べるようにしたいので、この方式にしています。
+- もう一つの `"media"` を選ぶと、OSの設定（ダーク/ライト）に自動で連動しますが、ユーザーが自分で選べなくなります。
+
+> **用語: ダークモードの class 方式** … `<html>` に `dark` クラスが付いているかどうかでテーマを切り替える方式。JSからクラスを付け外しして制御する。
+
+---
+
+##### 解説2: クラスを探す対象ファイルを指定（`content`）
+
+```typescript
+content: [
+  "./pages/**/*.{js,ts,jsx,tsx,mdx}",     // Pages Router 用（使っていなくてもOK）
+  "./components/**/*.{js,ts,jsx,tsx,mdx}", // 自作コンポーネント
+  "./app/**/*.{js,ts,jsx,tsx,mdx}",        // App Router 用
+],
+```
+
+- `content` は「**どのファイルからTailwindクラスを探すか**」のリストです。
+- Tailwind はここに書かれたファイルを読み、**実際に使われているクラスだけ**を最終的なCSSに含めます。使っていないクラスを除くことで、出力サイズを小さくできます。
+- `**` は「どんな深さのフォルダでも」、`{js,ts,jsx,tsx,mdx}` は「これらの拡張子すべて」という意味の記号です。
+
+> **用語: バンドルサイズ／パージ（purge）** … 最終的にユーザーへ配信されるCSS/JSの容量のこと。未使用クラスを削る（パージする）と軽くなり、表示が速くなる。
+
+---
+
+##### 解説3: CSS変数を Tailwind の色として登録（`extend.colors`）
+
+```typescript
+extend: {
+  colors: {
+    primary: {
+      500: "var(--color-primary-500)",
+      600: "var(--color-primary-600)",
+      // ...
+    },
+  },
+},
+```
+
+- `extend`（エクステンド＝拡張）は「標準のテーマを**消さずに追加する**」ための場所です。`extend` を使わずに書くと標準の色などが全部消えてしまうので注意します。
+- `primary` の各段階を `var(--color-primary-500)` のように **globals.css のCSS変数に紐付け**ています。こうすると `bg-primary-500` のようなクラスが使えるようになります。
+- さらに変数経由にしておくことで、ダークモード時は変数の値を入れ替えるだけで `bg-primary-500` の色も自動で変わります。
+
+> **用語: extend** … Tailwind の設定で「標準設定を上書きせず、追加だけする」キーワード。色・余白・影などを安全に足せる。
+
+---
+
+##### 解説4: アニメーションをクラス化する（`keyframes` / `animation`）
+
+```typescript
+keyframes: {
+  "fade-in": {
+    from: { opacity: "0", transform: "translateY(8px)" },
+    to: { opacity: "1", transform: "translateY(0)" },
+  },
+},
+animation: {
+  "fade-in": "fade-in 0.3s ease-out",
+  shimmer: "shimmer 2s infinite linear",
+},
+```
+
+- `keyframes` は「動きのコマ」、`animation` は「そのコマを**どんな速度・回数で再生するか**」をまとめた設定です。
+- `animation` に登録すると、`animate-fade-in` や `animate-shimmer` のように**クラス名としてアニメーションを呼び出せる**ようになります。
+- `"fade-in 0.3s ease-out"` は「fade-in を0.3秒、ease-out（最後ゆっくり）で再生」、`"shimmer 2s infinite linear"` は「2秒・無限ループ・等速」という意味です。
+
+> **用語: イージング（easing）** … アニメーションの速度変化のカーブ。`ease-out` は登場向き（パッと出てフワッと止まる）、`linear` は等速、`infinite` は無限ループの指定。
+
 ---
 
 ## 2. レスポンシブデザイン
@@ -1162,6 +1415,74 @@ export function BookGrid({ books }: BookGridProps) {
   );
 }
 ```
+
+#### ▼ コードを1つずつ分解して解説
+
+---
+
+##### 解説1: 0冊のときは早期リターン
+
+```typescript
+if (books.length === 0) {
+  return <EmptyState />;
+}
+```
+
+- `books.length === 0` は「書籍の配列が空（0冊）か」を判定しています。`.length` は配列の要素数です。
+- 0冊なら、グリッドを描かずに `<EmptyState />`（「まだ書籍がありません」の案内）を返して**関数をここで終わらせます**。
+- この「条件を満たしたら途中で `return` して抜ける」書き方を**早期リターン**と呼びます。先に例外ケースを片付けると、後の本処理がすっきりします。
+
+> **用語: 早期リターン（early return）** … 条件を満たしたときに関数の途中で `return` して処理を打ち切る書き方。ネスト（入れ子）が浅くなり読みやすくなる。
+
+---
+
+##### 解説2: レスポンシブな格子レイアウト（grid 系クラス）
+
+```typescript
+className="
+  grid
+  grid-cols-1
+  gap-4
+  sm:grid-cols-2
+  sm:gap-5
+  lg:grid-cols-3
+  lg:gap-6
+  xl:grid-cols-4
+"
+```
+
+- `grid` は「CSSグリッド（格子）レイアウトにする」指定です。`grid-cols-1` は列数を1にする、`gap-4` はマス目同士の隙間を16pxにする指定です。
+- `sm:` `lg:` `xl:` は**レスポンシブ接頭辞**で、その画面幅以上のときだけ適用されます。`sm:grid-cols-2`（640px以上で2列）→ `lg:grid-cols-3`（1024px以上で3列）→ `xl:grid-cols-4`（1280px以上で4列）と段階的に増えます。
+- 接頭辞なしの `grid-cols-1` が一番小さい画面（スマホ）向け。画面が広がるほど右側の指定で上書きされます（モバイルファースト）。
+
+> **用語: レスポンシブ接頭辞（responsive prefix）** … `sm:` `md:` `lg:` のように、画面幅に応じてスタイルを切り替えるためにクラスの先頭に付ける目印。メディアクエリを手書きせずに済む。
+
+---
+
+##### 解説3: 各カードを順番にフェードインさせる（`animationDelay`）
+
+```typescript
+{books.map((book, index) => (
+  <Link
+    key={book.id}
+    href={`/books/${book.id}`}
+    className="group block"
+    style={{
+      animationDelay: `${index * 50}ms`,
+    }}
+  >
+    <BookCard book={book} />
+  </Link>
+))}
+```
+
+- `books.map((book, index) => ...)` で配列の各書籍を `<Link>`＋`<BookCard>` に変換しています。`index` は0から始まる「何番目か」の番号です。
+- `key={book.id}` はReactがリスト要素を見分けるための必須の目印。データ固有のIDを使うのが鉄則です。
+- `className="group"` は「子要素の `group-hover:...` を効かせるための目印」。`animationDelay: ${index * 50}ms` は「i番目のカードを `i×50`ミリ秒遅らせて登場させる」指定で、カードが**ぱらぱらと順番に**現れる演出になります。
+
+> **用語: animationDelay（アニメーション遅延）** … アニメーション開始までの待ち時間。各要素に少しずつ違う遅延を与えると、一斉ではなく順番に動く「スタッガード（staggered）」な演出になる。
+
+---
 
 > **▼ このコードがやること（先に日本語で）:** 書籍1冊分の見た目（タイトル・著者・状態バッジなど）を表示する「カード」コンポーネントを作ります。先ほど globals.css で用意した `.card` や `.badge` といった共通スタイルのクラスを当てて、見た目を整えるのがポイントです。このカードが先ほどのグリッドの中に1セルずつ並びます。各部分の役割はコメントで説明しています。
 
@@ -1403,6 +1724,91 @@ export function BookCard({ book }: BookCardProps) {
   );
 }
 ```
+
+#### ▼ コードを1つずつ分解して解説
+
+---
+
+##### 解説1: ステータスに応じてバッジを出し分ける（`statusBadge`）
+
+```typescript
+const statusBadge = () => {
+  switch (book.status) {
+    case "reading":
+      return <span className="badge-primary">読書中</span>;
+    case "completed":
+      return <span className="badge-success">読了</span>;
+    case "want_to_read":
+      return <span className="badge-warning">読みたい</span>;
+    default:
+      return null;
+  }
+};
+```
+
+- `statusBadge` は「**JSXを返す小さな関数**」です。`{statusBadge()}` のように呼び出すと、状態に合ったバッジが描画されます。
+- `switch (book.status)` で読了状況を分岐し、`badge-primary`（青）・`badge-success`（緑）・`badge-warning`（黄）という globals.css 定義のクラスを当て分けています。
+- `default: return null` は「どれにも当てはまらなければ何も表示しない」という意味。Reactでは `null` を返すと何も描画されません。
+
+> **用語: switch 文** … 1つの値を複数の `case` と照合して分岐する制御構文。状態（status）ごとの出し分けに向く。
+
+---
+
+##### 解説2: 画像があるか無いかで表示を切り替える（三項演算子）
+
+```typescript
+{book.thumbnailUrl ? (
+  <img
+    src={book.thumbnailUrl}
+    alt={`「${book.title}」の表紙`}
+    className="h-full w-full object-cover ... group-hover:scale-105"
+    loading="lazy"
+  />
+) : (
+  /* プレースホルダー（画像がない場合の代替表示） */
+  <div className="flex h-full w-full ...">
+    {/* No Image アイコン */}
+  </div>
+)}
+```
+
+- `book.thumbnailUrl ? (画像) : (代替表示)` は**三項演算子**で、「URLがあれば画像を、なければ『No Image』の代替を表示」と切り替えています。
+- `object-cover` は「縦横比を保ったまま枠を覆い、はみ出る部分はカット」する指定。`group-hover:scale-105` は親（`.group`）にマウスを乗せたとき画像を105%に拡大します。
+- `loading="lazy"` は「画面外の画像は後回しで読み込む」指定で、ページ表示を軽くします。`alt` は画像が出ない時や読み上げソフト用の代替文です。
+
+> **用語: 三項演算子（`条件 ? A : B`）／object-cover** … 三項演算子は条件で値を出し分ける式。`object-cover` は画像を切り抜いて枠いっぱいに表示するCSS。
+
+---
+
+##### 解説3: 評価の星を5つ描く（配列の map）
+
+```typescript
+{book.rating !== undefined && book.rating > 0 && (
+  <div className="mt-auto flex items-center gap-1 pt-2">
+    {[1, 2, 3, 4, 5].map((star) => (
+      <svg
+        key={star}
+        className={`h-3.5 w-3.5 ${
+          star <= book.rating!
+            ? "text-yellow-400"
+            : "text-gray-300 dark:text-gray-600"
+        }`}
+        // ...
+      >
+        <path d="..." />
+      </svg>
+    ))}
+  </div>
+)}
+```
+
+- 先頭の `book.rating !== undefined && book.rating > 0 &&` は「評価が設定されていて0より大きいときだけ」星を描く条件です（`&&` は左が成立したときだけ右を実行）。
+- `[1, 2, 3, 4, 5].map((star) => ...)` で**星アイコンを5個**作ります。`star` は1〜5の番号です。
+- ``className={`... ${star <= book.rating! ? "text-yellow-400" : "text-gray-300 ..."}`}`` で、「その星の番号が評価以下なら金色、超えていれば灰色」と色を切り替えます。`book.rating!` の `!` は「ここでは null/undefined ではない」とTypeScriptに保証する記号です。
+
+> **用語: 非nullアサーション（`!`）／mt-auto** … 値の後ろの `!` は「絶対にnull/undefinedでない」とコンパイラに伝える印。`mt-auto` は上の余白を自動で最大化し、要素を下端に押し下げるTailwindクラス。
+
+---
 
 ### 2.3 モバイル/タブレット/デスクトップでの表示の違い
 
@@ -1669,6 +2075,108 @@ export function useToast(): ToastContextType {
   return context;
 }
 ```
+
+#### ▼ コードを1つずつ分解して解説
+
+---
+
+##### 解説1: Context の「形」を型で決める（`ToastContextType`）
+
+```typescript
+type ToastContextType = {
+  toasts: Toast[];
+  addToast: (type: ToastType, title: string, message?: string, duration?: number) => void;
+  removeToast: (id: string) => void;
+  success: (title: string, message?: string) => void;
+  // error / warning / info も同様
+};
+```
+
+- これは「Context を通じて配る中身の一覧」を表す型です。`toasts`（表示中の配列）と、追加・削除・各種ショートカット関数が含まれます。
+- `addToast: (...) => void` のように書くと「**こういう引数を取り、戻り値の無い関数**」という型になります。`message?` の `?` は省略可能の意味です。
+- 先に型を決めておくと、使う側で `toast.success(...)` のように呼ぶとき、VS Codeが補完や間違いチェックをしてくれます。
+
+> **用語: Context（コンテキスト）** … propsのバケツリレーをせずに、ある範囲のどのコンポーネントへも直接値を届けるReactの仕組み。
+
+---
+
+##### 解説2: Context オブジェクトを作る（`createContext`）
+
+```typescript
+const ToastContext = createContext<ToastContextType | undefined>(undefined);
+```
+
+- `createContext` は「値を配るための入れ物（Context）」を作る関数です。
+- 初期値を `undefined` にしているのは、「Providerで包まずに使ったら気づけるようにする」ためです（後述の `useToast` で `undefined` を検出してエラーを出します）。
+- 型 `ToastContextType | undefined` は「中身は ToastContextType か、まだ無い（undefined）かのどちらか」という意味です。
+
+> **用語: createContext** … Contextの入れ物を生成するReact関数。`.Provider` で値を流し込み、`useContext` で受け取る。
+
+---
+
+##### 解説3: トーストを追加して自動で消す（`addToast`）
+
+```typescript
+const addToast = useCallback(
+  (type, title, message, duration = 5000) => {
+    const id = generateToastId();
+    const newToast: Toast = { id, type, title, message, duration };
+    setToasts((prev) => [...prev, newToast]);
+    if (duration > 0) {
+      setTimeout(() => { removeToast(id); }, duration);
+    }
+  },
+  [removeToast]
+);
+```
+
+- `duration = 5000` は「指定が無ければ5000ミリ秒（5秒）」というデフォルト値です。
+- `setToasts((prev) => [...prev, newToast])` は「**今ある配列をコピーして末尾に新トーストを足した新しい配列**」を作ってセットします。`...prev` で元を壊さずに追加するのがReactのお作法です。
+- `setTimeout(() => removeToast(id), duration)` で、`duration` 経過後に**自動でそのトーストを削除**します。`useCallback` で包むのは、関数を毎回作り直さず使い回す（メモ化）ためです。
+
+> **用語: useCallback（メモ化）／setTimeout** … `useCallback` は依存が変わらない限り同じ関数を保つReact Hook。`setTimeout` は指定ミリ秒後に1回だけ処理を実行するブラウザ関数。
+
+---
+
+##### 解説4: Provider で値を配る（`ToastContext.Provider`）
+
+```typescript
+return (
+  <ToastContext.Provider
+    value={{ toasts, addToast, removeToast, success, error, warning, info }}
+  >
+    {children}
+  </ToastContext.Provider>
+);
+```
+
+- `<ToastContext.Provider value={...}>` で囲むと、その**内側にある全コンポーネント**が `value` の中身を受け取れます。
+- `value` には解説1の型に対応する一式（配列と関数群）を渡しています。
+- `{children}` は「このProviderで包まれた中身」を表し、アプリ全体をここに入れることで、どこからでもトーストを呼べるようになります。
+
+> **用語: Provider（プロバイダー）** … Contextの値を「ここから下の範囲に配る」役割のコンポーネント。`value` に配りたいデータを渡す。
+
+---
+
+##### 解説5: 安全に値を取り出すカスタムフック（`useToast`）
+
+```typescript
+export function useToast(): ToastContextType {
+  const context = useContext(ToastContext);
+  if (context === undefined) {
+    throw new Error("useToast must be used within a ToastProvider");
+  }
+  return context;
+}
+```
+
+- `useContext(ToastContext)` で Context の現在値を取り出します。
+- `if (context === undefined)` は「Providerの外で誤って使った」状況の検出です。その場合 `throw new Error(...)` で**分かりやすいエラーを出して**早期に気づかせます。
+- 関数名を `use` で始めるのはReactの「Hookは use で始める」というルールに従うためです。これで使う側は `const toast = useToast()` の1行で済みます。
+
+> **用語: カスタムフック（custom hook）** … `use` で始まる自作の関数で、Hookのロジックを再利用しやすくまとめたもの。`useContext` などの組み込みHookを内部で使える。
+
+---
 
 #### 3.1.3 トーストコンポーネント
 
@@ -1964,6 +2472,116 @@ export function ToastContainer() {
   );
 }
 ```
+
+#### ▼ コードを1つずつ分解して解説
+
+---
+
+##### 解説1: 種類ごとのアイコン・色を1か所にまとめる（`toastConfig`）
+
+```typescript
+const toastConfig = {
+  success: {
+    icon: ( /* チェックマークのSVG */ ),
+    containerClass: "border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950",
+    iconClass: "text-green-600 dark:text-green-400",
+    // ...
+  },
+  // error / warning / info も同じ構造
+};
+```
+
+- `toastConfig` は「4種類（成功・エラー・警告・情報）それぞれの**アイコンと色設定**」をまとめたオブジェクトです。
+- 後で `toastConfig[toast.type]` と書くだけで、その種類に合った設定一式を取り出せます。
+- このように設定を1か所に集めておくと、**新しい種類を足すのも色を直すのも簡単**になります（同じ記述を繰り返さないDRY原則）。
+
+> **用語: DRY原則（Don't Repeat Yourself）** … 同じ記述を何度も繰り返さず、1か所にまとめる設計の考え方。修正漏れやバグを減らせる。
+
+---
+
+##### 解説2: 閉じるアニメーション付きで削除する（`handleClose`）
+
+```typescript
+const [isExiting, setIsExiting] = useState(false);
+const handleClose = useCallback(() => {
+  setIsExiting(true);
+  setTimeout(() => {
+    removeToast(toast.id);
+  }, 300);
+}, [removeToast, toast.id]);
+```
+
+- `isExiting` は「いま閉じるアニメーション中か」を表す state です。`true` になると `animate-toast-out`（右へ滑り出る）に切り替わります。
+- `handleClose` はまず `setIsExiting(true)` でアニメを始め、**300ミリ秒（アニメ時間）待ってから** `removeToast` で実際にデータから消します。
+- 先に消すとアニメが見えないので、「アニメ→その後に削除」の順番が大事です。
+
+> **用語: アニメーション中フラグ** … `isExiting` のように「いま演出の最中か」を保持する真偽値state。これでクラスを切り替えて出入りの動きを制御する。
+
+---
+
+##### 解説3: 読み上げソフトへ通知する（`role` / `aria-live`）
+
+```typescript
+<div
+  role="alert"
+  aria-live="assertive"
+  aria-atomic="true"
+  className={`... ${config.containerClass} ${isExiting ? "animate-toast-out" : "animate-toast-in"}`}
+>
+```
+
+- `role="alert"` は「これは警告メッセージだ」とスクリーンリーダーに伝える指定です。
+- `aria-live="assertive"` は「内容が出たら**すぐ読み上げて**」という指示。トーストは見逃せない情報なので即時読み上げにしています。
+- `aria-atomic="true"` は「一部だけでなく**全文をまとめて読み直す**」指定です。末尾の三項演算子で、状態に応じて入場/退場アニメのクラスを切り替えています。
+
+> **用語: aria-live** … 動的に出る内容を読み上げソフトにどう伝えるかを指定するARIA属性。`assertive`（即時）と `polite`（手が空いたら）がある。
+
+---
+
+##### 解説4: 残り時間を見せるプログレスバー
+
+```typescript
+<div className="absolute bottom-0 left-0 right-0 h-1">
+  <div
+    className={`h-full ${config.progressClass} opacity-30`}
+    style={{
+      animation: `shrinkWidth ${duration}ms linear forwards`,
+    }}
+  />
+</div>
+```
+
+- 外側の `div` は `absolute bottom-0 left-0 right-0` でトーストの**下端いっぱい**に置かれ、`h-1`（高さ4px）の細い帯になります。
+- 内側の `div` に `animation: shrinkWidth ${duration}ms linear forwards` を直接指定し、「**表示時間をかけて幅を100%→0%に縮める**」演出をしています。これで「あと何秒で消えるか」が視覚的に分かります。
+- `linear`（等速）で時間どおりに、`forwards`（終了状態を維持）で縮みきった状態を保ちます。
+
+> **用語: プログレスバー（progress bar）／forwards** … 進捗や残り時間を帯の長さで示すUI。`forwards` はアニメ終了後も最後のコマの見た目を保つ指定。
+
+---
+
+##### 解説5: 画面右上に全トーストを集約する（`ToastContainer`）
+
+```typescript
+export function ToastContainer() {
+  const { toasts } = useToast();
+  if (toasts.length === 0) return null;
+  return (
+    <div className="fixed right-4 top-4 z-50 flex flex-col gap-3 sm:right-6 sm:top-6">
+      {toasts.map((toast) => (
+        <ToastItem key={toast.id} toast={toast} />
+      ))}
+    </div>
+  );
+}
+```
+
+- `useToast()` で現在のトースト配列を受け取り、0件なら `return null` で何も描きません。
+- `fixed right-4 top-4` で**画面の右上に固定**（スクロールしても動かない）、`z-50` で他要素より前面、`flex flex-col gap-3` で縦に間隔を空けて並べます。
+- 配列を `map` で1件ずつ `<ToastItem>` に展開します。このコンテナをレイアウトに1つ置くだけで、全トーストがここに集まります。
+
+> **用語: fixed / z-index（z-50）** … `fixed` は画面に固定する配置。`z-50` は重なり順（z-index）を50にする指定で、数字が大きいほど手前に表示される。
+
+---
 
 **使用例:**
 
@@ -2299,6 +2917,103 @@ export function Pagination({
 }
 ```
 
+#### ▼ コードを1つずつ分解して解説
+
+---
+
+##### 解説1: 検索条件を保ったままページURLを作る（`createPageUrl`）
+
+```typescript
+const createPageUrl = (page: number): string => {
+  const params = new URLSearchParams(searchParams.toString());
+  params.set("page", String(page));
+  return `${basePath}?${params.toString()}`;
+};
+```
+
+- `URLSearchParams` は「`?key=val&...` というクエリ文字列を扱う標準の道具」です。今のURLのクエリを複製してから操作します。
+- `params.set("page", String(page))` で `page` の値だけを上書きします。`String(page)` は数値を文字列に変換しています（クエリは文字列のため）。
+- これにより `?search=react` のような**既存の検索条件を消さずに**、ページ番号だけ差し替えたURL（例: `/books?page=2&search=react`）を作れます。
+
+> **用語: クエリパラメータ／URLSearchParams** … URLの `?` 以降の `key=value` 部分のこと。`URLSearchParams` はそれを安全に読み書きするブラウザ標準API。
+
+---
+
+##### 解説2: 表示するページ番号を計算する（`getPageNumbers`）
+
+```typescript
+const getPageNumbers = (): (number | "ellipsis")[] => {
+  const pages: (number | "ellipsis")[] = [];
+  const maxVisible = 5;
+  if (totalPages <= maxVisible + 2) {
+    for (let i = 1; i <= totalPages; i++) pages.push(i);
+  } else {
+    pages.push(1);
+    if (currentPage <= 3) { pages.push(2, 3, 4); pages.push("ellipsis"); }
+    else if (currentPage >= totalPages - 2) { pages.push("ellipsis"); pages.push(totalPages - 3, totalPages - 2, totalPages - 1); }
+    else { pages.push("ellipsis"); pages.push(currentPage - 1, currentPage, currentPage + 1); pages.push("ellipsis"); }
+    pages.push(totalPages);
+  }
+  return pages;
+};
+```
+
+- この関数は「画面に並べるページ番号の配列」を作ります。要素は**数値**か、省略記号を表す文字列 `"ellipsis"` のどちらかです。
+- ページ数が少ない（7ページ以下）なら全部表示。多いときは「**先頭 … 真ん中 … 末尾**」の形にして、間を `"ellipsis"`（…）でまとめます。
+- 現在ページが前寄り・後ろ寄り・中間のどこにあるかで、表示する番号の組み合わせを変えています。例: 5ページ目/全10なら `[1, "ellipsis", 4, 5, 6, "ellipsis", 10]`。
+
+> **用語: ユニオン型（`number | "ellipsis"`）** … 「数値、または文字列 ellipsis のどちらか」のように複数の型を許す型。配列に番号と省略記号を混在させるのに使う。
+
+---
+
+##### 解説3: 先頭・末尾でボタンを無効化する
+
+```typescript
+if (totalPages <= 1) return null;
+const isFirstPage = currentPage === 1;
+const isLastPage = currentPage === totalPages;
+```
+
+```typescript
+{isFirstPage ? (
+  <span className={disabledNavClass} aria-disabled="true"> ... 前へ </span>
+) : (
+  <Link href={createPageUrl(currentPage - 1)} className={enabledNavClass} aria-label="前のページへ"> ... 前へ </Link>
+)}
+```
+
+- `if (totalPages <= 1) return null` は「1ページしかないなら、そもそもページ送りを表示しない」早期リターンです。
+- `isFirstPage` / `isLastPage` で「今が最初/最後のページか」を判定します。
+- 最初のページでは「前へ」を**リンクではなく無効化された `<span>`**（`aria-disabled="true"`）にして、押せないことを見た目と読み上げソフトの両方に伝えます。それ以外は `<Link>` で前ページへ遷移できます。
+
+> **用語: aria-disabled** … 「この要素は今は操作できない」ことをスクリーンリーダーに伝えるARIA属性。見た目の `cursor-not-allowed` と合わせて使う。
+
+---
+
+##### 解説4: 現在ページと他ページを描き分ける（map 内の分岐）
+
+```typescript
+{pageNumbers.map((page, index) => {
+  if (page === "ellipsis") {
+    return <span key={`ellipsis-${index}`} ... aria-hidden="true">...</span>;
+  }
+  const isActive = page === currentPage;
+  return isActive ? (
+    <span key={page} className={activePageClass} aria-current="page" ...>{page}</span>
+  ) : (
+    <Link key={page} href={createPageUrl(page)} className={inactivePageClass} ...>{page}</Link>
+  );
+})}
+```
+
+- 配列を `map` で展開し、要素が `"ellipsis"` なら「…」を表示します。`aria-hidden="true"` で読み上げソフトには無視させます（装飾のため）。
+- 数値の場合は `isActive`（現在ページか）で分岐。現在ページは**リンクにせず `<span>`** にし、`aria-current="page"` で「これが現在地」と伝えます。
+- それ以外のページは `<Link>` にして、クリックでそのページへ遷移できるようにします。
+
+> **用語: aria-current="page"** … 同種のリンク群の中で「これが今いるページ」であることを読み上げソフトに示すARIA属性。
+
+---
+
 ### 3.3 空状態（データがない場合）の改善
 
 **空状態（empty state：データが0件・該当なし・初回利用などの「何もない」画面）** は、ただ真っ白にせず、ユーザーに次の行動を促す案内を出すのが現代的なUXのお作法です。
@@ -2490,6 +3205,80 @@ export function EmptyState({
 }
 ```
 
+#### ▼ コードを1つずつ分解して解説
+
+---
+
+##### 解説1: 省略可能なpropsにデフォルト値を持たせる
+
+```typescript
+type EmptyStateProps = {
+  title?: string;
+  message?: string;
+  actionLabel?: string;
+  actionHref?: string;
+  icon?: "book" | "search" | "error";
+};
+
+export function EmptyState({
+  title = "書籍が見つかりません",
+  message = "まだ書籍が登録されていません。最初の一冊を登録してみましょう。",
+  actionLabel = "書籍を登録する",
+  actionHref = "/books/new",
+  icon = "book",
+}: EmptyStateProps) {
+```
+
+- 型の各プロパティに付いた `?` は「**省略してもよい**」という意味です。すべて任意なので、`<EmptyState />` だけでも使えます。
+- 分割代入の `title = "..."` の形は「**呼び出し側が渡さなかったときに使うデフォルト値**」です。指定があればそちらが優先されます。
+- `icon?: "book" | "search" | "error"` は3種類のうちのどれか、というユニオン型。これ以外の文字列は書けません。
+
+> **用語: デフォルト引数（default parameter）** … 引数が渡されなかったとき自動で使われる初期値。`title = "..."` のように分割代入と組み合わせて書ける。
+
+---
+
+##### 解説2: iconの値に応じてSVGを返す（`renderIcon`）
+
+```typescript
+const renderIcon = () => {
+  switch (icon) {
+    case "book":
+      return ( <svg ...>{/* 本のアイコン */}</svg> );
+    case "search":
+      return ( <svg ...>{/* 虫眼鏡のアイコン */}</svg> );
+    case "error":
+      return ( <svg ...>{/* エラーのアイコン */}</svg> );
+  }
+};
+```
+
+- `renderIcon` は `icon` の値（"book"/"search"/"error"）で **表示するSVGアイコンを出し分ける** 関数です。
+- `{renderIcon()}` のように本体側で呼び出すと、選ばれたアイコンが描画されます。
+- 用途に合わせて「検索結果0件なら虫眼鏡」「エラーなら警告アイコン」のように、同じコンポーネントで見た目を変えられます。
+
+> **用語: SVG（Scalable Vector Graphics）** … 拡大しても劣化しないベクター形式の画像。アイコンをコードで描けるためWebでよく使われる。
+
+---
+
+##### 解説3: 行動を促すボタンを条件付きで出す（CTA）
+
+```typescript
+{actionHref && (
+  <Link href={actionHref} className="btn-primary gap-2">
+    <svg ...>{/* 「+」プラスマーク */}</svg>
+    {actionLabel}
+  </Link>
+)}
+```
+
+- `{actionHref && (...)}` は「**リンク先が指定されているときだけ**ボタンを表示する」条件付きレンダリングです（`&&` の短絡評価）。
+- `<Link>` に `btn-primary`（globals.css のプライマリボタン）を当て、`gap-2` でアイコンと文字の間に8pxの隙間を作っています。
+- 空状態でただ案内するだけでなく「最初の1冊を登録する」など**次の行動への入口**を置くのが、現代的なUXの定石です。
+
+> **用語: CTA（Call To Action）** … ユーザーに次の行動を促すボタンやリンク。「登録する」「始める」など、画面上で最も目立たせたい要素。
+
+---
+
 ### 3.4 ローディングスケルトン
 
 **スケルトン（skeleton：骨組み）** は、データ取得中に「これからこういう形の中身が出ます」と予告するグレーの仮表示です。スピナー（くるくる回るアイコン）よりも「コンテンツの骨組み」を見せたほうが、待ち時間の体感が短くなることが知られています。
@@ -2587,6 +3376,67 @@ export function BookGridSkeleton({ count = 8 }: { count?: number }) {
   );
 }
 ```
+
+#### ▼ コードを1つずつ分解して解説
+
+---
+
+##### 解説1: 光が流れるシマー効果（gradient + shimmer）
+
+```typescript
+<div
+  className="
+    aspect-[3/4] w-full
+    bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200
+    bg-[length:200%_100%]
+    animate-shimmer
+    dark:from-gray-700 dark:via-gray-600 dark:to-gray-700
+  "
+/>
+```
+
+- `aspect-[3/4] w-full` で「実際の書籍画像と同じ縦長の枠」を作ります。`[ ]` はTailwindに無い任意の値を直接書く構文です。
+- `bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200` は「左→右の3色グラデーション（中央だけ少し明るい）」。これが**流れる光の素**になります。
+- `bg-[length:200%_100%]` で背景を横2倍に引き伸ばして余りを画面外に置き、`animate-shimmer` でそれを左右に動かすことで「**キラッと光が流れる**」演出になります。
+
+> **用語: スケルトン（skeleton）／シマー（shimmer）** … スケルトンは読込中に出すグレーの仮表示。シマーはそこに光を流して「読込中」を自然に伝えるアニメーション。
+
+---
+
+##### 解説2: 行ごとに開始をずらす（`animationDelay`）
+
+```typescript
+<div className="h-3 w-1/2 rounded ... animate-shimmer ..." style={{ animationDelay: "0.1s" }} />
+<div className="mt-2 h-3 w-1/3 rounded ... animate-shimmer ..." style={{ animationDelay: "0.2s" }} />
+```
+
+- タイトル行・著者行・評価行と、テキストの仮表示を `h-4`/`h-3`、`w-3/4`/`w-1/2`/`w-1/3` のように**高さと幅を変えて**並べ、実際のレイアウトに似せています。
+- `animationDelay: "0.1s"` / `"0.2s"` で各行のアニメ開始を少しずつ遅らせています。
+- 全行が同じタイミングで光ると不自然なので、**ずらすことで自然な動き**に見せています。
+
+> **用語: animationDelay（アニメーション遅延）** … アニメ開始までの待ち時間。要素ごとに変えると、一斉でなく順々に動く生き生きとした演出になる。
+
+---
+
+##### 解説3: 必要な数だけスケルトンを並べる（`Array.from`）
+
+```typescript
+export function BookGridSkeleton({ count = 8 }: { count?: number }) {
+  return (
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6 xl:grid-cols-4">
+      {Array.from({ length: count }).map((_, i) => (
+        <BookCardSkeleton key={i} />
+      ))}
+    </div>
+  );
+}
+```
+
+- `count = 8` はデフォルトで8個のスケルトンを並べる指定（省略可能）。
+- `Array.from({ length: count })` は「**要素が count 個の配列を作る**」慣用句で、その `.map` で `<BookCardSkeleton>` を必要数だけ生成します。`_` は「使わない引数」の慣例的な名前です。
+- グリッドのクラスを `BookGrid` と**同じレスポンシブ設定**にしているので、読込中も本物と同じ配置で表示されます。
+
+> **用語: Array.from({ length: n })** … 長さ n の配列を作る定番の書き方。`.map` と組み合わせて「同じ要素を n 個並べる」のに使う。
 
 ---
 
@@ -2760,6 +3610,72 @@ export function PageTransition({ children }: PageTransitionProps) {
 }
 ```
 
+#### ▼ コードを1つずつ分解して解説
+
+---
+
+##### 解説1: パスと表示中の子要素を state で持つ
+
+```typescript
+const pathname = usePathname();
+const [isVisible, setIsVisible] = useState(false);
+const [displayChildren, setDisplayChildren] = useState(children);
+```
+
+- `usePathname()` は「**現在のURLパス**（`/books` など）」を取得するNext.jsのHookです。ページが変わるとこの値が変わります。
+- `isVisible` は「いま表示状態（不透明・元位置）か」を表すアニメ用フラグ。最初は `false`（透明・少し下）です。
+- `displayChildren` は「**今画面に出している中身**」。新しいページに切り替わる瞬間を制御するために、子要素を直接描かず一度stateに入れています。
+
+> **用語: usePathname** … 現在のURLのパス部分を返すNext.jsのHook。これが変わったらページ遷移が起きたと判断できる。
+
+---
+
+##### 解説2: 遷移ごとにアニメをやり直す（`useEffect` + `requestAnimationFrame`）
+
+```typescript
+useEffect(() => {
+  setIsVisible(false);
+  setDisplayChildren(children);
+  const timer = requestAnimationFrame(() => {
+    setIsVisible(true);
+  });
+  return () => cancelAnimationFrame(timer);
+}, [pathname, children]);
+```
+
+- `useEffect` の依存配列 `[pathname, children]` により、**ページ（パス）や中身が変わるたび**にこの中が実行されます。
+- まず `setIsVisible(false)` で「透明・少し下」に戻し、`requestAnimationFrame(...)` で**次の描画タイミング**に `setIsVisible(true)` を予約します。一度「非表示」を描いてから「表示」に切り替えるので、アニメが毎回確実に発火します。
+- `return () => cancelAnimationFrame(timer)` は後片付け（クリーンアップ）で、次の実行前や画面から消える時に予約を取り消します。
+
+> **用語: requestAnimationFrame** … 「ブラウザの次の描画の直前に1回実行して」と予約するブラウザAPI。状態を確実に1コマ描かせてからアニメを始めたいときに使う。
+
+---
+
+##### 解説3: フラグで見た目を切り替える（transition クラス）
+
+```typescript
+<div
+  className={`
+    transition-all duration-300 ease-out
+    ${
+      isVisible
+        ? "translate-y-0 opacity-100"
+        : "translate-y-2 opacity-0"
+    }
+  `}
+>
+  {displayChildren}
+</div>
+```
+
+- `transition-all duration-300 ease-out` は「全プロパティを300msかけて、最後ゆっくり（ease-out）で変化させる」指定です。
+- `isVisible` が `true` なら `translate-y-0 opacity-100`（元位置・不透明）、`false` なら `translate-y-2 opacity-0`（8px下・透明）。この切り替わりに `transition` がかかるので**ふわっと上昇しながら現れます**。
+- 中身は `children` ではなく `displayChildren` を描き、解説2のタイミング制御と組み合わせています。
+
+> **用語: transition（トランジション）** … 状態Aから状態Bへ変わるときの途中を滑らかにつなぐCSS機能。`duration` で時間、`ease-out` で速度カーブを指定する。
+
+---
+
 > **▼ このコードがやること（先に日本語で）:** 先ほど作った `PageTransition`（ページ遷移アニメーション）を、アプリ全体で使うために「ルートレイアウト」に組み込む例です。ルートレイアウトは全ページ共通の `<html><body>` の枠組みで、ここでページ本文を `PageTransition` で包むと、すべてのページ移動に自動でアニメーションが付きます。トーストの仕組みもここで全体に適用します。
 
 ```typescript
@@ -2919,6 +3835,100 @@ export function AnimatedButton({
   );
 }
 ```
+
+#### ▼ コードを1つずつ分解して解説
+
+---
+
+##### 解説1: `<button>` の全属性に独自propsを足す（インターセクション型）
+
+```typescript
+type AnimatedButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+  variant?: "primary" | "secondary" | "danger" | "ghost";
+  size?: "sm" | "md" | "lg";
+  isLoading?: boolean;
+  children: ReactNode;
+};
+```
+
+- `ButtonHTMLAttributes<HTMLButtonElement>` は「`<button>` が本来持つ全属性（`onClick`・`type`・`disabled` など）の型」です。
+- `&`（インターセクション型）で、それに `variant`・`size`・`isLoading` という**独自プロパティを足し合わせて**います。
+- これにより、標準のボタン属性も独自のオプションも両方受け取れる、使い勝手のよいボタンになります。
+
+> **用語: インターセクション型（`A & B`）** … 「Aの性質もBの性質も両方持つ」型。既存の型に独自プロパティを追加するときに使う。
+
+---
+
+##### 解説2: 残りの属性をまとめて受け取って渡す（rest と spread）
+
+```typescript
+export function AnimatedButton({
+  variant = "primary",
+  size = "md",
+  isLoading = false,
+  children,
+  className = "",
+  disabled,
+  ...props
+}: AnimatedButtonProps) {
+  return (
+    <button
+      // ... className ...
+      disabled={disabled || isLoading}
+      {...props}
+    >
+```
+
+- `...props`（rest演算子）は「分割代入で名前を付けなかった**残りの全属性**」をまとめて受け取ります（`onClick` など）。
+- `{...props}`（spread構文）でそれらを `<button>` に**そのまま展開して渡します**。これで親が渡した `onClick` 等がボタンに反映されます。
+- `disabled={disabled || isLoading}` は「明示的に無効化されている、**または処理中**なら無効化」。二重クリック（多重送信）を防ぐ工夫です。
+
+> **用語: rest演算子 / spread構文（`...`）** … 同じ `...` 記号でも、受け取る側では「残りをまとめる（rest）」、渡す側では「展開する（spread）」働きをする。
+
+---
+
+##### 解説3: variant/size でスタイルを切り替える
+
+```typescript
+const variantStyles = {
+  primary: `bg-primary-600 text-white hover:bg-primary-700 ...`,
+  danger: `bg-red-600 text-white hover:bg-red-700 ...`,
+  // ...
+};
+const sizeStyles = {
+  sm: "px-3 py-1.5 text-xs gap-1.5",
+  md: "px-4 py-2.5 text-sm gap-2",
+  lg: "px-6 py-3 text-base gap-2.5",
+};
+// className 内で:
+//   ${variantStyles[variant]}
+//   ${sizeStyles[size]}
+```
+
+- `variantStyles` は色違い（primary/secondary/danger/ghost）、`sizeStyles` は大きさ（sm/md/lg）の**クラスをまとめたオブジェクト**です。
+- `variantStyles[variant]` のように**propsの値をキーにして**該当スタイルを取り出し、className に差し込みます。
+- `active:scale-[0.97]` も付いていて、「クリック中（押している瞬間）だけ97%に縮む」押下感の演出になります。
+
+> **用語: ルックアップオブジェクト（lookup object）** … `スタイル[キー]` のようにキーで値を引くためのオブジェクト。長い `if`/`switch` の代わりに使えて見通しがよい。
+
+---
+
+##### 解説4: 処理中だけスピナーを出す
+
+```typescript
+{isLoading && (
+  <svg className="h-4 w-4 animate-spin" ...>
+    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+  </svg>
+)}
+```
+
+- `{isLoading && (...)}` は「`isLoading` が `true` のときだけ」スピナーを描く短絡評価です。
+- `animate-spin` は「1秒で1回転を無限に繰り返す」アニメ。薄い円（`opacity-25`）の上に濃い円弧（`opacity-75`）を重ねて、**回っているように見せる**定番の作りです。
+- これと解説2の `disabled` を合わせて、「処理中はボタンを押せず、くるくる回って待たせる」UXを実現しています。
+
+> **用語: スピナー（spinner）／animate-spin** … 処理中を示すくるくる回るアイコン。`animate-spin` はTailwindの回転アニメーションクラス。
 
 ---
 
@@ -3187,6 +4197,101 @@ export function ThemeToggle() {
 }
 ```
 
+#### ▼ コードを1つずつ分解して解説
+
+---
+
+##### 解説1: 保存済みテーマを読み込む（`useEffect` + `localStorage`）
+
+```typescript
+const [theme, setTheme] = useState<Theme>("system");
+const [mounted, setMounted] = useState(false);
+
+useEffect(() => {
+  setMounted(true);
+  const savedTheme = localStorage.getItem("theme") as Theme | null;
+  if (savedTheme) {
+    setTheme(savedTheme);
+    applyTheme(savedTheme);
+  } else {
+    applyTheme("system");
+  }
+}, []);
+```
+
+- `localStorage` は「**タブを閉じても消えないブラウザの保存場所**」です。`getItem("theme")` で前回選んだテーマを読み出します。
+- `mounted` を `true` にするのは、SSR（サーバー描画）とCSR（ブラウザ描画）の食い違い（ハイドレーションエラー）を避けるためです。マウント後にだけ本来の表示をします。
+- 依存配列 `[]` なので、この `useEffect` は**初回マウント時に1回だけ**実行されます。
+
+> **用語: localStorage／ハイドレーション** … localStorage はブラウザに永続保存する仕組み。ハイドレーションはサーバー生成HTMLにReactが後から機能を結びつける処理で、両者の表示差は警告の原因になる。
+
+---
+
+##### 解説2: 実際にダークを適用する（`applyTheme`）
+
+```typescript
+const applyTheme = (newTheme: Theme) => {
+  const root = document.documentElement;
+  const isDark =
+    newTheme === "dark" ||
+    (newTheme === "system" &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches);
+  if (isDark) {
+    root.classList.add("dark");
+  } else {
+    root.classList.remove("dark");
+  }
+};
+```
+
+- `document.documentElement` は `<html>` 要素そのものです。ここに `dark` クラスを付け外しすると、globals.css のCSS変数が一斉に切り替わります。
+- `isDark` の判定は「**`dark` が選ばれている、または `system` かつOSがダーク設定**」のとき `true`。`matchMedia("(prefers-color-scheme: dark)")` でOSの設定を読み取ります。
+- `classList.add("dark")` / `remove("dark")` でダークモードのオン・オフを切り替えます。
+
+> **用語: matchMedia / prefers-color-scheme** … `matchMedia` はメディアクエリをJSから判定するAPI。`prefers-color-scheme: dark` はOSがダーク表示を望んでいるかを表す。
+
+---
+
+##### 解説3: クリックでテーマを循環させる（`toggleTheme`）
+
+```typescript
+const toggleTheme = () => {
+  const nextTheme: Theme =
+    theme === "light" ? "dark" : theme === "dark" ? "system" : "light";
+  setTheme(nextTheme);
+  localStorage.setItem("theme", nextTheme);
+  applyTheme(nextTheme);
+};
+```
+
+- 三項演算子を2つつなげて「light → dark → system → light → …」と**順番に循環**させています。
+- `setTheme` で画面表示を更新し、`localStorage.setItem` で選択を保存（次回も同じテーマで開ける）、`applyTheme` で実際の `<html>` に反映、の3つを行います。
+- このように「状態更新・永続化・DOM反映」をまとめて行うのがテーマ切替の基本形です。
+
+> **用語: 三項演算子のネスト** … `A ? x : B ? y : z` のように三項演算子を連ねた書き方。3つ以上の分岐を1行で表せるが、深くしすぎると読みにくくなる。
+
+---
+
+##### 解説4: マウント前はプレースホルダーを返す
+
+```typescript
+if (!mounted) {
+  return (
+    <button className="inline-flex h-10 w-10 ..." aria-label="テーマ切り替え">
+      <div className="h-5 w-5" />
+    </button>
+  );
+}
+```
+
+- `if (!mounted)` は「まだクライアントでマウントされていない（＝サーバー描画段階）」のときの分岐です。
+- ここで**中身が空のボタン（プレースホルダー）**を返すことで、サーバーとブラウザで初期表示を一致させ、ハイドレーションエラーを防ぎます。
+- マウント後は `mounted` が `true` になり、テーマに応じたアイコン入りのボタンが描画されます。
+
+> **用語: プレースホルダー（placeholder）** … 本来の中身が決まる前に置いておく仮の表示。ここではレイアウトのずれや警告を避けるための空ボタンとして使う。
+
+---
+
 **ちらつき防止のスクリプト:**
 
 ページ読み込み時にダークモードが一瞬ライトモードで表示されるのを防ぐため、`<head>` 内にインラインスクリプトを設置します。
@@ -3435,6 +4540,98 @@ export function Header() {
 }
 ```
 
+#### ▼ コードを1つずつ分解して解説
+
+---
+
+##### 解説1: ヘッダーの領域を読み上げソフトに伝える（`role="banner"`）
+
+```typescript
+<header
+  className="sticky top-0 z-40 border-b border-[var(--color-border)] glass"
+  role="banner"
+>
+```
+
+- `sticky top-0` は「スクロールしても**画面上端に貼り付く**」配置。`z-40` で他の要素より前面（ただしトーストの `z-50` よりは後ろ）に置きます。
+- `glass` は globals.css のすりガラス効果（半透明＋背景ぼかし）です。
+- `role="banner"` は「ここはサイトのヘッダー領域だ」とスクリーンリーダーに伝えるARIAロール。見た目は変わらず、意味だけを補います。
+
+> **用語: ARIA role（banner）** … 要素の役割を読み上げソフトに伝える属性。`banner` はページ上部のヘッダー（ロゴやナビ）領域を表す。
+
+---
+
+##### 解説2: ナビ配列を map し、現在地を強調（`aria-current`）
+
+```typescript
+{navItems.map((item) => {
+  const isActive = pathname === item.href;
+  return (
+    <Link
+      key={item.href}
+      href={item.href}
+      className={`rounded-lg px-3 py-2 ... ${
+        isActive
+          ? "bg-primary-50 text-primary-700 dark:bg-primary-950 dark:text-primary-300"
+          : "text-gray-600 hover:bg-gray-100 ..."
+      }`}
+      aria-current={isActive ? "page" : undefined}
+    >
+      {item.label}
+    </Link>
+  );
+})}
+```
+
+- `navItems` 配列を `map` で展開し、各リンクを作ります。`isActive = pathname === item.href` で「今いるページか」を判定します。
+- 三項演算子で、現在ページのリンクだけ**背景色付きで強調**し、他は通常色＋ホバー時の薄い背景にしています。
+- `aria-current={isActive ? "page" : undefined}` は、現在ページにだけ「これが現在地」と読み上げソフトに伝えます。該当しなければ `undefined`（属性を付けない）にします。
+
+> **用語: aria-current="page"** … 同種リンク群の中で「今いるページ」を示すARIA属性。視覚的な強調と合わせて使うとアクセシブルになる。
+
+---
+
+##### 解説3: ハンバーガーボタンの開閉状態を伝える（`aria-expanded` / `aria-controls`）
+
+```typescript
+<button
+  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+  aria-expanded={isMobileMenuOpen}
+  aria-controls="mobile-menu"
+  aria-label={isMobileMenuOpen ? "メニューを閉じる" : "メニューを開く"}
+>
+```
+
+- `onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}` は「**現在の開閉状態を反転**」させる処理。`!` で true↔false を切り替えます。
+- `aria-expanded={isMobileMenuOpen}` は「メニューが今**開いているか閉じているか**」を読み上げソフトに伝えます。`aria-controls="mobile-menu"` は「このボタンが操作する対象のid」を示します。
+- `aria-label` も開閉状態で文言を変え、ボタンの目的を明確にしています。
+
+> **用語: aria-expanded / aria-controls** … `aria-expanded` は開閉式の要素が今開いているかを示す。`aria-controls` はそのボタンが制御する要素のidを結びつける。
+
+---
+
+##### 解説4: モバイルメニューを条件付きで表示
+
+```typescript
+{isMobileMenuOpen && (
+  <nav id="mobile-menu" className="border-t ... md:hidden" role="navigation" aria-label="モバイルナビゲーション">
+    <ul className="flex flex-col gap-1" role="list">
+      {navItems.map((item) => (
+        // ... 各リンク。onClick で setIsMobileMenuOpen(false)
+      ))}
+    </ul>
+  </nav>
+)}
+```
+
+- `{isMobileMenuOpen && (...)}` で「開いているときだけ」メニューを描画します（短絡評価）。
+- `id="mobile-menu"` は解説3の `aria-controls` と対応し、`md:hidden` で「768px以上（PC）では非表示」にします。モバイル専用のメニューです。
+- 各リンクの `onClick` で `setIsMobileMenuOpen(false)` を呼び、**リンクを押したらメニューが閉じる**ようにしています。
+
+> **用語: 条件付きレンダリング（`条件 && JSX`）** … 条件が真のときだけ要素を描く書き方。開いているときだけメニューを出すなどの出し分けに使う。
+
+---
+
 ### 6.2 キーボードナビゲーション
 
 **キーボードナビゲーション（keyboard navigation：マウスを使わずキーボードだけで操作できるようにすること）** は、視覚障害のあるユーザーや、マウスが使いづらい状況のユーザーにとって必須の機能です。
@@ -3645,6 +4842,109 @@ export function ConfirmDialog({
   );
 }
 ```
+
+#### ▼ コードを1つずつ分解して解説
+
+---
+
+##### 解説1: DOM要素への参照を持つ（`useRef`）
+
+```typescript
+const dialogRef = useRef<HTMLDivElement>(null);
+const cancelButtonRef = useRef<HTMLButtonElement>(null);
+
+useEffect(() => {
+  if (isOpen) {
+    cancelButtonRef.current?.focus();
+  }
+}, [isOpen]);
+```
+
+- `useRef` は「**実際のDOM要素への参照**」を保持するHookです。`.current` でその要素にアクセスできます。`<div ref={dialogRef}>` のように要素に紐付けます。
+- ダイアログが開いたら `cancelButtonRef.current?.focus()` で**キャンセルボタンに自動でフォーカス**を当てます。`?.` は「nullでなければ実行」の安全アクセスです。
+- 確認ボタンではなくキャンセルに当てるのは、Enter連打などで**誤って確定させない**ための配慮です。
+
+> **用語: useRef** … 再描画を起こさずに値やDOM参照を保持するReact Hook。`.current` で中身を読み書きする。
+
+---
+
+##### 解説2: Escapeで閉じ、Tabを閉じ込める（フォーカストラップ）
+
+```typescript
+const handleKeyDown = (e: KeyboardEvent) => {
+  if (!isOpen) return;
+  if (e.key === "Escape") { onCancel(); }
+  if (e.key === "Tab" && dialogRef.current) {
+    const focusableElements = dialogRef.current.querySelectorAll<HTMLElement>(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    const firstElement = focusableElements[0];
+    const lastElement = focusableElements[focusableElements.length - 1];
+    if (e.shiftKey) {
+      if (document.activeElement === firstElement) { e.preventDefault(); lastElement.focus(); }
+    } else {
+      if (document.activeElement === lastElement) { e.preventDefault(); firstElement.focus(); }
+    }
+  }
+};
+```
+
+- `e.key === "Escape"` のとき `onCancel()` を呼び、**Escapeキーで閉じられる**ようにします。
+- Tabキーのときは、`querySelectorAll` でダイアログ内の**フォーカス可能な要素を全部集め**、最初と最後を取り出します。
+- 最後の要素でさらにTabを押したら最初へ、最初の要素でShift+Tabを押したら最後へ「ラップ」させます。これで**フォーカスがダイアログの外に逃げない**＝フォーカストラップが完成します。
+
+> **用語: フォーカストラップ（focus trap）** … モーダル表示中、Tab移動の対象を枠内に閉じ込める仕組み。背景の要素に誤ってフォーカスが移るのを防ぐ。
+
+---
+
+##### 解説3: 背景のスクロールを止める（`document.body.style.overflow`）
+
+```typescript
+useEffect(() => {
+  if (isOpen) {
+    document.body.style.overflow = "hidden";
+  } else {
+    document.body.style.overflow = "";
+  }
+  return () => {
+    document.body.style.overflow = "";
+  };
+}, [isOpen]);
+```
+
+- ダイアログが開いている間 `document.body.style.overflow = "hidden"` で**ページ全体のスクロールを禁止**します。モーダルの後ろが動くと混乱するためです。
+- 閉じたら `""`（空文字）に戻して、元のスクロール可能な状態に復帰させます。
+- `return () => { ... }` のクリーンアップでも復元しておくことで、コンポーネントが消えてもスクロールが固まったままにならないようにします。
+
+> **用語: クリーンアップ関数** … `useEffect` が返す関数。次の実行前やアンマウント時に呼ばれ、イベント解除やスタイル復元などの後片付けを担う。
+
+---
+
+##### 解説4: モーダルの意味づけ（`role="dialog"` / `aria-modal`）
+
+```typescript
+<div
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="dialog-title"
+  aria-describedby="dialog-description"
+>
+  <div className="... bg-black/50 ..." onClick={onCancel} aria-hidden="true" />
+  <div ref={dialogRef} className="relative ...">
+    <h2 id="dialog-title">{title}</h2>
+    <p id="dialog-description">{message}</p>
+    {/* ... ボタン ... */}
+  </div>
+</div>
+```
+
+- `role="dialog"` と `aria-modal="true"` で「これは**背景操作を遮るモーダルダイアログ**だ」とスクリーンリーダーに伝えます。
+- `aria-labelledby="dialog-title"` / `aria-describedby="dialog-description"` は、見出し（`id="dialog-title"`）と説明文（`id="dialog-description"`）を**ダイアログの名前・説明として結びつけ**ます。
+- 背景の幕（`bg-black/50`）は `onClick={onCancel}` で「外側クリックで閉じる」、`aria-hidden="true"` で読み上げ対象から除外しています。
+
+> **用語: role="dialog" / aria-modal** … ダイアログであることと、背景が操作不可のモーダルであることを伝えるARIA。`aria-labelledby`/`describedby` で見出し・説明を関連付ける。
+
+---
 
 ### 6.3 色のコントラスト
 

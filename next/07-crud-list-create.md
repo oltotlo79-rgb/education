@@ -352,6 +352,124 @@ StatusBadge は小さな角丸のバッジとして表示されます。
 
 いずれも `text-xs`（12px 程度）の小さめのフォントサイズで、`rounded-full` により完全な角丸（カプセル型）になります。カードの中に配置すると、ステータスがひと目で分かるアクセントになります。
 
+#### ▼ コードを1つずつ分解して解説
+
+上の `StatusBadge` には、初心者がつまずきやすい書き方がいくつか入っています。意味の塊ごとに、順番にていねいに見ていきましょう。
+
+---
+
+##### 解説1: ステータスの「型」をユニオン型で定義する
+
+```tsx
+export type BookStatus = "reading" | "completed" | "want_to_read";
+```
+
+- `type`（タイプ）は TypeScript で「**新しい型に名前を付ける**」キーワードです。ここでは `BookStatus` という型を作っています。
+- `"reading" | "completed" | "want_to_read"` の `|`（パイプ）は「**または**」を表す「ユニオン型」です。「この3つの文字列のうちのどれか1つ」という意味になります。
+- こう書いておくと、誤って `"readign"`（タイプミス）のような値を渡したとき、VS Code がコードを書いている最中に赤線で警告してくれます。
+- 先頭の `export`（エクスポート）は「**他のファイルからもこの型を使えるようにする**」印です。後で `BookCard` などがこの型を `import` して使います。
+
+> **用語:** ユニオン型（union type）とは「いくつかの候補のうちのどれか」を表す型のこと。`"A" | "B" | "C"` のように `|` でつなぐと「決まった文字列のどれか」に限定でき、タイプミスを未然に防げる。
+
+---
+
+##### 解説2: 親から受け取る Props の形を定義する
+
+```tsx
+type StatusBadgeProps = {
+  status: BookStatus;
+};
+```
+
+- これは「このコンポーネントが**親から受け取る値（Props）の形**」を決めている部分です。
+- `status: BookStatus` は「`status` という名前のプロパティを1つ受け取り、その値は `BookStatus` 型（＝解説1の3択）」という意味です。
+- 例えば `<StatusBadge status="reading" />` のように呼び出されると、`status` に `"reading"` が渡ってきます。
+
+> **用語:** Props（プロパティ）とは、親コンポーネントから子コンポーネントへ渡すデータのこと。HTML タグの属性（`<input type="text">` の `type` など）に似た書き方で渡す。
+
+---
+
+##### 解説3: ステータスごとの表示設定を「辞書（オブジェクト）」にまとめる
+
+```tsx
+const statusConfig: Record<
+  BookStatus,
+  { label: string; bgColor: string; textColor: string }
+> = {
+  reading: {
+    label: "読書中",
+    bgColor: "bg-blue-100",
+    textColor: "text-blue-800",
+  },
+  completed: {
+    label: "読了",
+    bgColor: "bg-green-100",
+    textColor: "text-green-800",
+  },
+  want_to_read: {
+    label: "読みたい",
+    bgColor: "bg-yellow-100",
+    textColor: "text-yellow-800",
+  },
+};
+```
+
+- ここがこのコンポーネントの**心臓部**です。「ステータス → 表示文字・背景色・文字色」の対応表（辞書）をオブジェクトで作っています。
+- もし `if` 文や `switch` 文で「`reading` なら青、`completed` なら緑…」と書くと、ステータスを追加するたびに分岐を増やす必要があり面倒です。辞書にしておけば、**新しいステータスは1ブロック足すだけ**で済みます。
+- `Record<BookStatus, { ... }>` は「**キーは `BookStatus` のどれか、値は `{ label, bgColor, textColor }` という形**」という辞書全体の型です。これにより「3つのステータス全部の設定を書き忘れていないか」を TypeScript がチェックしてくれます。
+- `bg-blue-100` や `text-blue-800` は Tailwind CSS のクラス名です。`bg-` は背景色、`text-` は文字色で、数字が大きいほど色が濃くなります。
+
+> **用語:** `Record<K, V>`（レコード）とは「キーが `K` 型、値が `V` 型のオブジェクト」を表す TypeScript の型。ここでは「ステータス名をキーに、設定オブジェクトを値に持つ辞書」を型として表現している。
+
+---
+
+##### 解説4: コンポーネント本体で辞書を引く
+
+```tsx
+export default function StatusBadge({ status }: StatusBadgeProps) {
+  const config = statusConfig[status] ?? {
+    label: "不明",
+    bgColor: "bg-gray-100",
+    textColor: "text-gray-800",
+  };
+```
+
+- `export default function StatusBadge(...)` で「**このファイルの主役の部品**」を1つ宣言しています。
+- 引数の `{ status }` は「**分割代入**」です。親から渡された Props オブジェクトから `status` だけを取り出しています。`props.status` と書くのと同じ意味ですが、こちらのほうが短く書けます。
+- `statusConfig[status]` で、渡された `status` をキーにして解説3の辞書から設定を引いています。例えば `status` が `"reading"` なら `{ label: "読書中", ... }` が取り出されます。
+- `?? { label: "不明", ... }` の `??`（ヌル合体演算子）は「**左辺が `null` か `undefined` のときだけ右辺を使う**」という意味です。万が一、辞書にないステータスが来てもアプリが壊れないようにする「保険」です。
+
+> **用語:** `??`（Nullish Coalescing 演算子・ヌル合体演算子）とは「左の値が `null` または `undefined` のときだけ右の値を使う」演算子。`||`（OR）と似ているが、`||` は `0` や `""` も右辺に切り替えてしまうのに対し、`??` は `null`/`undefined` のときだけ切り替える点が違う。
+
+---
+
+##### 解説5: JSX で色付きバッジを描画する
+
+```tsx
+  return (
+    <span
+      className={`
+        inline-flex items-center
+        px-2.5 py-0.5
+        rounded-full
+        text-xs font-medium
+        ${config.bgColor}
+        ${config.textColor}
+      `}
+    >
+      {config.label}
+    </span>
+  );
+}
+```
+
+- `<span>` は「行の中で使える小さな箱」を表す HTML 要素です。バッジのような小さなラベルにぴったりです。
+- `className={` ... `}` の中はテンプレートリテラル（バッククォート文字列）です。固定のクラス（`rounded-full` など）と、解説4で決めた `config.bgColor`・`config.textColor` を `${ }` で埋め込んで連結しています。
+- これにより「ステータスによって背景色・文字色が変わるバッジ」が完成します。`rounded-full` で完全な角丸（カプセル型）に、`text-xs` で小さめの文字になります。
+- `{config.label}` は「`config` の `label`（"読書中" など）を画面に表示する」部分です。JSX では `{ }` の中に JavaScript の値を埋め込めます。
+
+> **用語:** テンプレートリテラルとは、バッククォート `` ` `` で囲む文字列のこと。中に `${変数}` と書くと、その変数の値を文字列に埋め込める。ここでは Tailwind のクラス名を動的に組み立てるために使っている。
+
 ---
 
 ### 1b. RatingStars コンポーネント
@@ -441,6 +559,110 @@ export default function RatingStars({ rating }: RatingStarsProps) {
 
 - **rating=4** の場合: `★★★★☆ (4)` — 黄色い星4つとグレーの星1つ、その横に小さく `(4)` と数値が表示されます。
 - **rating=null** の場合: グレーの文字で `評価なし` と表示されます。
+
+#### ▼ コードを1つずつ分解して解説
+
+`RatingStars` には「未入力の分岐」「数値の範囲調整」「星を並べる map」など、押さえておきたい塊があります。順番に見ていきましょう。
+
+---
+
+##### 解説1: Props の型（数値 または null）
+
+```tsx
+type RatingStarsProps = {
+  rating: number | null;
+};
+```
+
+- 親から受け取る `rating`（評価）の型を定義しています。
+- `number | null` は「**数値、または `null`（評価が無い）**」というユニオン型です。`|` は「または」を表します。
+- なぜ `null` も許すのかというと、「**まだ評価を付けていない本**」を表現できるようにするためです。評価が無いことを `0` で表すと「最低評価」と区別がつかなくなるため、あえて `null` を使います。
+
+> **用語:** `null`（ヌル）とは「値が存在しないこと」を意図的に表す特別な値。ここでは「評価が未入力」という状態を `null` で表している。
+
+---
+
+##### 解説2: 評価が無いときの早期 return
+
+```tsx
+export default function RatingStars({ rating }: RatingStarsProps) {
+  if (rating === null || rating === undefined) {
+    return (
+      <span className="text-sm text-gray-400">
+        評価なし
+      </span>
+    );
+  }
+```
+
+- 引数の `{ rating }` は分割代入で、Props から `rating` だけを取り出しています。
+- `if (rating === null || rating === undefined)` で「**評価が無い場合**」をまず判定しています。`===` は「型まで含めて完全に等しいか」を比べる厳密比較で、`==` より安全なので常にこちらを使います。
+- 条件に当てはまれば、星ではなくグレーの文字で「評価なし」と表示し、その場で `return` して関数を終わらせます。これを「**早期 return（early return）**」と呼びます。先に例外的なケースを片付けることで、以降のコードを「評価が必ずある前提」でシンプルに書けます。
+
+> **用語:** 早期 return（early return）とは、特殊な条件を関数の最初で処理して `return` で抜けてしまう書き方。残りのコードが「正常系（普通のケース）」だけに集中できるので読みやすくなる。
+
+---
+
+##### 解説3: 評価を1〜5に収める（クランプ）
+
+```tsx
+  const clampedRating = Math.min(5, Math.max(1, rating));
+```
+
+- 評価の値を「**必ず1以上5以下**」に強制する処理です。
+- `Math.max(1, rating)` は「`rating` と `1` の大きいほう」を返すので、1未満の値が来たら `1` に押し上げます。
+- その結果に `Math.min(5, ...)` を掛けると「5より大きければ `5` に押し戻す」ので、最終的に「1〜5の範囲」に収まります。
+- このように「ある範囲に値を挟み込む」処理を「**クランプ（clamp）**」と呼びます。データベース側の制約（1〜5）と画面表示を確実に一致させる安全策です。
+
+> **用語:** クランプ（clamp）とは、値を「下限と上限の範囲内に収める」操作のこと。`Math.min` と `Math.max` を組み合わせて実現する定番のテクニック。
+
+---
+
+##### 解説4: 星を5つ並べる（map と三項演算子）
+
+```tsx
+  return (
+    <div className="flex items-center gap-0.5" aria-label={`評価: ${clampedRating}点`}>
+      {[1, 2, 3, 4, 5].map((star) => (
+        <span
+          key={star}
+          className={`text-lg ${
+            star <= clampedRating
+              ? "text-yellow-400"
+              : "text-gray-300"
+          }`}
+        >
+          ★
+        </span>
+      ))}
+```
+
+- `[1, 2, 3, 4, 5].map((star) => ...)` は「**1〜5の数値それぞれに対して `<span>` を作り、星の配列を作る**」処理です。`map` は「配列の各要素を別のものに変換して新しい配列を作る」メソッドです。
+- `key={star}` は、`map` で要素を並べるときに React が「どの星がどれか」を識別するための**必須の属性**です。付けないと警告が出ます。
+- `star <= clampedRating ? "text-yellow-400" : "text-gray-300"` は三項演算子で、「**今の星番号が評価値以下なら黄色、そうでなければグレー**」を選んでいます。例えば評価が3なら、星1〜3は黄色、星4〜5はグレーになります。
+- 実は塗りつぶしも空も同じ「★」を出しており、**色だけを切り替える**ことで「塗られた星／空の星」を表現しています。
+- `aria-label={`評価: ${clampedRating}点`}` は、目で見えない人向けの読み上げ用テキストです。星の見た目だけでなく数値でも評価を伝えられます。
+
+> **用語:** `aria-label`（エリア・ラベル）とは、スクリーンリーダー（画面読み上げソフト）に要素の意味を伝えるための属性。視覚的なUI（星マーク）を、音声でも分かるように補足する。
+
+---
+
+##### 解説5: 数値を併記する
+
+```tsx
+      <span className="ml-1 text-sm text-gray-600">
+        ({clampedRating})
+      </span>
+    </div>
+  );
+}
+```
+
+- 星の右側に `(4)` のように**評価の数値そのもの**を小さく表示する部分です。
+- `ml-1`（margin-left）で星から少し離し、`text-sm text-gray-600` で控えめな小さいグレー文字にしています。
+- 星だけだと「4つなのか5つなのか」一瞬迷うことがあるため、数値を併記して**確実に伝わる**ようにしています。
+
+> **用語:** `ml-1` の `ml` は margin-left（左外側の余白）の略。Tailwind では `m`（margin）+ 方向（`l`=left, `r`=right, `t`=top, `b`=bottom）+ 数値、という規則でクラス名が付く。
 
 ---
 
@@ -627,6 +849,130 @@ export default function BookCard({ book }: BookCardProps) {
 
 カード全体が `<Link>` で囲まれているため、どこをクリックしても `/books/[id]` の詳細ページに遷移します。
 
+#### ▼ コードを1つずつ分解して解説
+
+`BookCard` は、これまで作った `StatusBadge` と `RatingStars` を**子として組み合わせて使う**点が新しいところです。塊ごとに見ていきましょう。
+
+---
+
+##### 解説1: 必要なものを import する
+
+```tsx
+import Link from "next/link";
+import StatusBadge, { type BookStatus } from "./StatusBadge";
+import RatingStars from "./RatingStars";
+```
+
+- `import`（インポート）は「**別のファイルで作ったものを、このファイルで使えるように読み込む**」命令です。
+- `Link` は Next.js が用意するリンク用の部品です。普通の `<a>` よりも画面遷移が速くなります（移動先を先読みする「プリフェッチ」機能のため）。
+- `StatusBadge, { type BookStatus }` は「`StatusBadge` という部品（デフォルトエクスポート）と、`BookStatus` という型を同時に読み込む」書き方です。`type` を付けると「**型だけを読み込む**」という意味になり、ビルド時に消えるので無駄がありません。
+
+> **用語:** デフォルトエクスポートと名前付きエクスポート。`import StatusBadge from "./StatusBadge"` のように名前を自由に付けて読み込めるのが「デフォルトエクスポート」（1ファイル1つ）。`import { type BookStatus }` のように `{ }` で囲み、決まった名前で読み込むのが「名前付きエクスポート」（1ファイルに複数可）。
+
+---
+
+##### 解説2: Book 型の定義
+
+```tsx
+export type Book = {
+  id: string;
+  title: string;
+  author: string;
+  publisher: string | null;
+  published_date: string | null;
+  rating: number | null;
+  status: BookStatus;
+  memo: string | null;
+  created_at: string;
+  updated_at: string;
+};
+```
+
+- データベースの `books` テーブルの**1行分のデータの形**を `Book` という型で定義しています。
+- `publisher: string | null` のように `| null` が付いているものは「**値が無いこともある（任意）**」項目です。出版社やメモは未入力でもよいので `null` を許しています。
+- `id: string`（UUID）や `created_at`（作成日時）はデータベースが自動で付ける値です。
+- `export` を付けているので、`BookList` や `page.tsx` などほかのファイルからこの `Book` 型を `import` して使い回せます。
+
+> **用語:** UUID（ユーユーアイディー）とは「世界中で重複しないように作られた長いID文字列」のこと（例: `123e4567-e89b-...`）。連番より推測されにくく、データの一意な目印（主キー）に向いている。
+
+---
+
+##### 解説3: Props の型とコンポーネント本体
+
+```tsx
+type BookCardProps = {
+  book: Book;
+};
+
+export default function BookCard({ book }: BookCardProps) {
+```
+
+- `BookCardProps` は「親（`BookList`）から `book` を1つ受け取るだけ」というシンプルな Props の型です。
+- `export default function BookCard({ book }: BookCardProps)` で本体を定義し、引数の分割代入で `book`（1冊分のデータ）を取り出しています。
+- 以降の JSX では、この `book.title` や `book.author` のように各項目を取り出して表示していきます。
+
+> **用語:** 分割代入とは、オブジェクトや配列から必要な要素だけを取り出して変数にする書き方。`{ book }` は「渡された Props オブジェクトの `book` プロパティを `book` という変数にする」という意味。
+
+---
+
+##### 解説4: カード全体をクリック可能なリンクにする
+
+```tsx
+    <Link
+      href={`/books/${book.id}`}
+      className="
+        block
+        bg-white
+        rounded-lg
+        shadow-md
+        hover:shadow-lg
+        transition-shadow
+        duration-200
+        p-6
+        border
+        border-gray-200
+        hover:border-blue-300
+      "
+    >
+```
+
+- `<Link>` でカード全体を囲むことで、**カードのどこをクリックしても詳細ページへ移動**できるようにしています。
+- `href={`/books/${book.id}`}` はテンプレートリテラルで、`book.id` を埋め込んで `/books/123...` のような遷移先URLを動的に組み立てています。
+- `className` のクラスは見た目の指定です。`bg-white`（白背景）、`rounded-lg`（角丸）、`shadow-md`（影）、`hover:shadow-lg`（ホバーで影を濃く）、`hover:border-blue-300`（ホバーで枠線を青く）などにより、「クリックできるカード」だと視覚的に伝わります。
+
+> **用語:** `hover:` プレフィックス（Tailwind）は「**マウスカーソルを乗せたときだけ適用するスタイル**」を表す。`hover:shadow-lg` は「ホバー時に影を大きくする」という意味になる。
+
+---
+
+##### 解説5: 子コンポーネントを組み合わせて中身を作る（コンポジション）
+
+```tsx
+      <div className="flex items-start justify-between gap-2 mb-3">
+        <h2 className="text-lg font-bold text-gray-900 line-clamp-2 flex-1">
+          {book.title}
+        </h2>
+        <StatusBadge status={book.status} />
+      </div>
+
+      {book.publisher && (
+        <p className="text-sm text-gray-600 mb-1">
+          <span className="font-medium text-gray-500">出版社:</span>{" "}
+          {book.publisher}
+        </p>
+      )}
+
+      <div className="mt-3 pt-3 border-t border-gray-100">
+        <RatingStars rating={book.rating} />
+      </div>
+```
+
+- 1行目では `flex justify-between` で「左にタイトル、右にステータスバッジ」を両端に配置しています。`<StatusBadge status={book.status} />` のように、**さきほど作った部品を子として呼び出して**いるのがポイントです。
+- `{book.publisher && (...)}` は短絡評価で、「**`publisher` に値があるときだけ**出版社の行を表示」します。`null` や空文字のときは何も表示されません（出版日・メモも同じパターン）。
+- 区切り線の下では `<RatingStars rating={book.rating} />` を呼び、星評価を表示しています。
+- このように「小さな部品（`StatusBadge`・`RatingStars`）を寄せ集めて大きな部品（`BookCard`）を作る」考え方を「**コンポジション（合成）**」と呼びます。
+
+> **用語:** コンポジション（composition・合成）とは、小さなコンポーネントを組み合わせて大きなコンポーネントを作る設計手法。1つの巨大な部品を作るより、再利用しやすく見通しもよくなる。
+
 ---
 
 ### 1d. BookList コンポーネント
@@ -730,6 +1076,101 @@ export default function BookList({ books }: BookListProps) {
 
 - 書籍がある場合: CSS Grid を使って、画面幅に応じて1〜3列にカードが並びます。各カードの間は `gap-6`（24px）の余白があります。
 - 書籍がない場合: 画面中央に本の絵文字、「書籍が登録されていません」というメッセージ、そして新規登録ページへのリンクボタンが表示されます。
+
+#### ▼ コードを1つずつ分解して解説
+
+`BookList` には「2つの役割（カードを並べる係・0冊のときの案内係）」が詰まっています。塊ごとに見ていきましょう。
+
+---
+
+##### 解説1: BookCard と Book 型を import する
+
+```tsx
+import BookCard, { type Book } from "./BookCard";
+```
+
+- 同じフォルダの `BookCard.tsx` から、部品 `BookCard` と型 `Book` を**まとめて読み込んで**います。
+- `BookCard` は値（部品）、`Book` は型です。`{ type Book }` のように `type` を付けると「型だけのインポート」になり、ビルド後のJavaScriptには残らないため、ファイルサイズが小さくなります。
+- このように「コンポーネントと、それに対応する型」を同じファイルから取り込めるのは、`BookCard.tsx` 側で両方を `export` しているからです。
+
+> **用語:** 型だけのインポート（`import { type X }`）とは、「実行時には不要な型情報だけを読み込む」書き方。TypeScript はビルド時に型を消すため、この記法で書くと最終的なJSバンドルに余計なコードが含まれない。
+
+---
+
+##### 解説2: Props の型（書籍の配列を受け取る）
+
+```tsx
+type BookListProps = {
+  books: Book[];
+};
+
+export default function BookList({ books }: BookListProps) {
+```
+
+- 親（`page.tsx` など）から `books` という**書籍の配列**を1つ受け取ります。
+- `Book[]` の `[]` は「**配列**」を表します。`Book[]` で「`Book` 型のオブジェクトがいくつも入った配列」という意味になります。
+- 本体では分割代入で `books` を取り出し、これから「0冊かどうか」で表示を切り替えていきます。
+
+> **用語:** 配列型（`型[]`）とは「その型の要素が並んだリスト」を表す記法。`Book[]` は「Book がいくつも入った配列」、`string[]` は「文字列の配列」となる。
+
+---
+
+##### 解説3: 0冊のときの「空状態（empty state）」表示
+
+```tsx
+  if (books.length === 0) {
+    return (
+      <div className="text-center py-16">
+        <p className="text-6xl mb-4">📚</p>
+        <h2 className="text-xl font-bold text-gray-700 mb-2">
+          書籍が登録されていません
+        </h2>
+        <p className="text-gray-500 mb-6">
+          「新規登録」ボタンから最初の書籍を登録しましょう。
+        </p>
+        <a href="/books/new" className="...">
+          最初の書籍を登録する
+        </a>
+      </div>
+    );
+  }
+```
+
+- `books.length === 0` は「**配列の要素数が0、つまり書籍が1冊も無い**」状態を判定しています。`.length` は配列の個数です。
+- 0冊なら、空っぽの画面に「📚 書籍が登録されていません」というメッセージと、登録ページへのボタンを表示して、その場で `return` します（早期 return）。
+- このように「**データが無いときに専用の案内を出す**」UIを「**空状態（empty state）**」と呼びます。何も出さずに真っ白だとユーザーが不安になるため、次に何をすればよいかを示すのが親切な設計です。
+
+> **用語:** 空状態（empty state）とは、「表示するデータがゼロ件のときに見せる専用の画面」のこと。案内文や次の行動ボタンを置くことで、ユーザーが迷わないようにする。
+
+---
+
+##### 解説4: 1冊以上あるときのグリッド表示と map
+
+```tsx
+  return (
+    <div
+      className="
+        grid
+        grid-cols-1
+        md:grid-cols-2
+        lg:grid-cols-3
+        gap-6
+      "
+    >
+      {books.map((book) => (
+        <BookCard key={book.id} book={book} />
+      ))}
+    </div>
+  );
+}
+```
+
+- 解説3で早期 return しなかった場合（1冊以上ある場合）に、ここへ到達します。
+- `grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3` は CSS Grid のクラスで、「**スマホでは1列、タブレットでは2列、デスクトップでは3列**」と画面幅に応じてカードの列数を自動で変えます。これを「レスポンシブ対応」と呼びます。
+- `books.map((book) => <BookCard ... />)` で、配列の**各書籍を1枚の `BookCard` に変換**して並べています。
+- `key={book.id}` は React がリスト要素を識別するための必須属性で、各書籍の一意なID（`book.id`）を使っています。`book={book}` で、その1冊分のデータを子に渡しています。
+
+> **用語:** レスポンシブ対応（responsive）とは、画面幅に応じてレイアウトを自動的に変える設計のこと。Tailwind では `md:`（中サイズ以上）・`lg:`（大サイズ以上）などのプレフィックスで「画面幅ごとの指定」を書ける。
 
 ---
 
@@ -942,6 +1383,112 @@ export default async function HomePage() {
   </div>
 </div>
 
+#### ▼ コードを1つずつ分解して解説
+
+このトップページ（`page.tsx`）は **Server Component**（サーバー側で動く部品）として、Supabase からデータを取って `BookList` に渡します。塊ごとに見ていきましょう。
+
+---
+
+##### 解説1: import 群
+
+```tsx
+import Link from "next/link";
+import { createClient } from "@/lib/supabase/server";
+import BookList from "@/components/BookList";
+import { type Book } from "@/components/BookCard";
+```
+
+- `Link` は Next.js のリンク部品（高速な画面遷移用）です。
+- `createClient` は「**サーバー用** の Supabase クライアント」を作る関数です。クライアント用（ブラウザ用）とは別物で、cookie などサーバーしか知らない情報を扱えます。
+- `BookList` は自作の一覧表示コンポーネント、`{ type Book }` は `Book` 型だけのインポートです。
+- `@/` は「プロジェクトのルートフォルダ」を表すエイリアス（近道の書き方）で、`tsconfig.json` で設定されています。`../../components` のような長い相対パスを書かずに済みます。
+
+> **用語:** パスエイリアス（`@/`）とは、長い相対パス（`../../`）の代わりに使える「プロジェクト基準の短い書き方」。設定ファイルで `@` がどのフォルダを指すかを決めておくと、どのファイルからでも同じ書き方で import できる。
+
+---
+
+##### 解説2: async なコンポーネント本体と Supabase クライアント作成
+
+```tsx
+export default async function HomePage() {
+  const supabase = await createClient();
+```
+
+- 関数に `async`（エイシンク）が付いている点が Server Component ならではです。`async` を付けると関数内で `await` が使えるようになり、**データ取得が終わるのを待ってから**HTMLを組み立てられます。
+- 通常のクライアント側コンポーネントの関数には `async` を付けられませんが、Server Component なら付けられます。
+- `await createClient()` で、サーバー用の Supabase 接続オブジェクトを用意しています。内部で cookie を読むため `await` が必要です。
+
+> **用語:** Server Component（サーバーコンポーネント）とは、サーバー側でHTMLを組み立ててからブラウザへ送る部品。`async` を付けてデータ取得を待てる反面、`useState` や `onClick` などのブラウザ専用機能は使えない。
+
+---
+
+##### 解説3: Supabase からデータを取得する
+
+```tsx
+  const { data: books, error } = await supabase
+    .from("books")
+    .select("*")
+    .order("created_at", { ascending: false });
+```
+
+- `await supabase.from("books").select("*").order(...)` で、`books` テーブルから全件取得しています。
+  - `.from("books")` … 操作対象のテーブル
+  - `.select("*")` … 全カラムを取得（SQL の `SELECT *` に相当）
+  - `.order("created_at", { ascending: false })` … 作成日時で並び替え、`ascending: false` なので**降順（新しい順）**
+- 結果は `{ data, error }` という形で返ります。`data: books` は「`data` プロパティを `books` という別名で取り出す」分割代入のリネームです。
+- `error` には、取得に失敗したときのエラー情報が入ります（成功なら `null`）。
+
+> **用語:** 分割代入のリネーム（`{ data: books }`）とは、オブジェクトからプロパティを取り出すときに別名を付ける書き方。`data` という汎用的な名前を、用途が分かる `books` に付け替えている。
+
+---
+
+##### 解説4: エラー処理と null ガード
+
+```tsx
+  if (error) {
+    console.error("書籍の取得に失敗しました:", error.message);
+  }
+
+  const bookList: Book[] = books ?? [];
+```
+
+- `if (error)` で、取得が失敗したときだけ `console.error` でサーバーのログにエラーを出します。Supabase は失敗しても例外を投げず `error` プロパティに入れる設計なので、自分でチェックします。
+- `console.error` の出力は**サーバーのターミナル**に表示されます（ブラウザのコンソールではありません。Server Component だからです）。
+- `const bookList: Book[] = books ?? [];` の `??` は「`books` が `null` や `undefined` なら空配列 `[]` を使う」という意味です。こうしておけば、以降で安心して `.length` や `.map` を呼べます。
+
+> **用語:** null ガードとは、「値が無い（`null`/`undefined`）かもしれない変数を、安全な初期値に置き換えておく」処理。`?? []` で「無ければ空配列」にしておくと、後続のコードでエラーになりにくい。
+
+---
+
+##### 解説5: JSX — ヘッダーとメインを組み立てる
+
+```tsx
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <header className="bg-white shadow-sm border-b border-gray-200">
+        {/* ...タイトルと「＋ 新規登録」ボタン... */}
+      </header>
+
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="mb-6">
+          <p className="text-sm text-gray-600">
+            全 <span className="font-bold text-gray-900">{bookList.length}</span> 冊
+          </p>
+        </div>
+
+        <BookList books={bookList} />
+      </main>
+    </div>
+  );
+}
+```
+
+- 画面を `<header>`（上部の帯）と `<main>`（主要コンテンツ）に分けています。これらは「意味のあるHTML要素（セマンティックタグ）」で、構造を分かりやすくします。
+- `{bookList.length}` で書籍の冊数を「全 N 冊」と表示しています。JSX では `{ }` の中に JavaScript の値を埋め込めます。
+- `<BookList books={bookList} />` で、取得した書籍配列を子の `BookList` に Props として渡しています。あとは `BookList` が「0冊なら空状態、1冊以上ならカードグリッド」を判断して描画します。
+
+> **用語:** セマンティックタグとは、`<header>`・`<main>`・`<nav>` のように「その部分が何を表すか」を意味するHTMLタグのこと。`<div>` の代わりに使うと、検索エンジンや支援技術にも構造が伝わりやすくなる。
+
 ---
 
 ### 1f. データ取得フローの図解
@@ -1068,6 +1615,114 @@ export default function LoadingSpinner({
 }
 ```
 
+#### ▼ コードを1つずつ分解して解説
+
+`LoadingSpinner` は「サイズの辞書パターン」や「デフォルト値付きの Props」など、再利用しやすくする工夫が入っています。塊ごとに見ていきましょう。
+
+---
+
+##### 解説1: "use client" 宣言
+
+```tsx
+"use client";
+```
+
+- ファイルの**先頭**に書く特別な1行で、「このファイルの部品は **Client Component**（ブラウザ側で動く部品）として扱う」という宣言です。
+- スピナーの回転アニメーション自体はサーバーでも動きますが、いろいろな画面から再利用しやすいよう、あえて Client Component にしています。
+- `"use client"` は必ずファイルの一番上（import より前）に書く決まりです。
+
+> **用語:** `"use client"` ディレクティブとは、Next.js App Router で「このファイルはクライアント側で動く」と宣言する目印。これを書かないファイルはデフォルトで Server Component になる。
+
+---
+
+##### 解説2: Props の型（省略可能なサイズとメッセージ）
+
+```tsx
+type LoadingSpinnerProps = {
+  size?: "sm" | "md" | "lg";
+  message?: string;
+};
+```
+
+- `size?` の `?`（クエスチョンマーク）は「**この Props は省略してもよい（オプショナル）**」という意味です。
+- `size` の型 `"sm" | "md" | "lg"` はユニオン型で、「小・中・大の3択のどれか」に限定されます。これ以外の文字列を渡すと TypeScript が警告します。
+- `message?` も省略可能で、スピナーの下に出す説明文（文字列）です。
+
+> **用語:** オプショナルプロパティ（`?:`）とは、「あってもなくてもよいプロパティ」のこと。`size?` のように `?` を付けると、呼び出し側で省略できる。省略時の値は次の解説3で設定する。
+
+---
+
+##### 解説3: デフォルト値付きの分割代入
+
+```tsx
+export default function LoadingSpinner({
+  size = "md",
+  message = "読み込み中...",
+}: LoadingSpinnerProps) {
+```
+
+- 引数の分割代入で `size` と `message` を取り出すと同時に、`= "md"` や `= "読み込み中..."` で**デフォルト値**を設定しています。
+- 呼び出し側が `size` を省略したら自動的に `"md"`（中サイズ）が、`message` を省略したら `"読み込み中..."` が使われます。
+- 例えば `<LoadingSpinner />` とだけ書けば「中サイズ・"読み込み中..."」のスピナーになります。
+
+> **用語:** デフォルト引数とは、引数が渡されなかったときに使う「初期値」のこと。`size = "md"` のように `=` で書くと、省略時にその値が自動的に入る。
+
+---
+
+##### 解説4: サイズの辞書とスピナー本体
+
+```tsx
+  const sizeClasses = {
+    sm: "w-6 h-6 border-2",
+    md: "w-10 h-10 border-3",
+    lg: "w-16 h-16 border-4",
+  };
+
+  return (
+    <div className="flex flex-col items-center justify-center py-16">
+      <div
+        className={`
+          ${sizeClasses[size]}
+          border-gray-300
+          border-t-blue-600
+          rounded-full
+          animate-spin
+        `}
+        role="status"
+        aria-label="読み込み中"
+      />
+```
+
+- `sizeClasses` は「サイズ名 → Tailwind のクラス文字列」という**辞書（オブジェクト）**です。`StatusBadge` と同じ「辞書パターン」で、`if` 文を使わずにサイズを切り替えています。
+- `sizeClasses[size]` で、選ばれたサイズに対応するクラス（幅・高さ・枠線の太さ）を取り出し、テンプレートリテラルで埋め込んでいます。
+- スピナーの正体は「**円のうち上辺だけ色を変えた円**」です。`rounded-full` で円形にし、`border-t-blue-600`（上辺だけ青）と `animate-spin`（回転アニメ）を組み合わせることで、くるくる回って「処理中」に見えます。
+- `role="status"` と `aria-label="読み込み中"` で、画面読み上げソフトにも「読み込み中である」ことを伝えています。
+
+> **用語:** `animate-spin`（Tailwind）とは、要素を「ぐるぐる回転させ続ける」アニメーションを適用するクラス。`border-t-...`（上辺だけ色付き）と組み合わせると、進捗が回っているように見える。
+
+---
+
+##### 解説5: メッセージの条件付き表示
+
+```tsx
+      {message && (
+        <p className="mt-4 text-sm text-gray-500">
+          {message}
+        </p>
+      )}
+    </div>
+  );
+}
+```
+
+- `{message && (...)}` は短絡評価で、「**`message` に中身があるときだけ**スピナーの下に説明文を表示する**」という意味です。
+- `message` が空文字や `undefined` のときは、`&&` の右側が評価されず、何も表示されません。
+- `mt-4`（上の余白）でスピナーから少し離し、`text-sm text-gray-500` で控えめな小さいグレー文字にしています。
+
+> **用語:** 短絡評価（`A && B`）とは、「`A` が真のときだけ `B` を実行・表示する」JavaScript の仕組み。JSX では `false`・`null`・`undefined` は何も描画されないため、「条件 && JSX」が「条件付き表示」として使える。
+
+---
+
 ### loading.tsx
 
 **ファイル: `app/loading.tsx`**
@@ -1129,6 +1784,66 @@ export default function Loading() {                  // async は不要：デー
 **表示の説明:**
 
 ローディング中は、ヘッダー部分がスケルトン UI（灰色の長方形がパルスアニメーションする）として表示され、メインコンテンツ領域の中央に大きなスピナー（回転する円）と「書籍データを読み込んでいます...」というメッセージが表示されます。ユーザーは「何かが読み込まれている」ことをすぐに理解できます。
+
+#### ▼ コードを1つずつ分解して解説
+
+`loading.tsx` は「ファイル名で機能が決まる」Next.js の規約ファイルです。塊ごとに見ていきましょう。
+
+---
+
+##### 解説1: import と Loading 関数
+
+```tsx
+import LoadingSpinner from "@/components/LoadingSpinner";
+
+export default function Loading() {
+```
+
+- ファイル名を `loading.tsx` にすると、Next.js が「**同じ階層の `page.tsx` がデータ取得している間、自動でこの画面を出す**」ようになります。コードで呼び出さなくても勝手に表示されるのが特徴です。
+- さきほど作った `LoadingSpinner` を import して使います。
+- 関数に `async` が付いていない点に注目してください。この画面は**自分ではデータを取得しない静的な表示**なので、`await` は不要です。
+
+> **用語:** ファイルベースルーティングの特殊ファイルとは、`page.tsx`・`loading.tsx`・`error.tsx` のように「決まった名前を置くと決まった役割を持つ」Next.js のファイルのこと。`loading.tsx` は読み込み中の表示を自動で担う。
+
+---
+
+##### 解説2: ヘッダーのスケルトン UI
+
+```tsx
+      <header className="bg-white shadow-sm border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="h-8 w-48 bg-gray-200 rounded animate-pulse" />
+              <div className="mt-2 h-4 w-64 bg-gray-100 rounded animate-pulse" />
+            </div>
+            <div className="h-10 w-28 bg-gray-200 rounded-lg animate-pulse" />
+          </div>
+        </div>
+      </header>
+```
+
+- ここは「**コンテンツの形だけ先に出す**」スケルトン UI です。本物のタイトルやボタンの代わりに、同じ位置・同じ大きさのグレーの矩形（`bg-gray-200` など）を置いています。
+- `h-8 w-48`（高さ32px・幅192px）はタイトルの位置、`h-10 w-28` はボタンの位置に対応します。完成形とほぼ同じ大きさにすることで、読み込み完了時に**レイアウトがガタつかない**ようにしています。
+- `animate-pulse` は「ゆっくり点滅する」アニメーションで、「いま読み込み中ですよ」という雰囲気を出します。
+
+> **用語:** スケルトン UI（skeleton screen）とは、本来のコンテンツが表示されるまでの間、その「骨組み（灰色の枠）」だけを先に見せるUI手法。空白やガタつきを減らし、待ち時間の体感を和らげる。
+
+---
+
+##### 解説3: メイン領域にスピナーを置く
+
+```tsx
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <LoadingSpinner size="lg" message="書籍データを読み込んでいます..." />
+      </main>
+```
+
+- メインコンテンツ領域には、解説2のスケルトンとは別に、さきほど作った `LoadingSpinner` を置いています。
+- `size="lg"`（大サイズ）と `message="書籍データを読み込んでいます..."` を Props として渡し、大きな回転スピナーと説明文を表示します。
+- スケルトン（ヘッダーの形）＋スピナー（中央の回転）の組み合わせで、「ヘッダーはこういう見た目になる予定」「中身は今読み込み中」という2つの情報を同時に伝えています。
+
+> **用語:** Props を渡してコンポーネントの見た目を変える、というのは React の基本。同じ `LoadingSpinner` でも `size` や `message` を変えるだけで、画面ごとに最適な表示にできる。
 
 ---
 
@@ -1268,6 +1983,88 @@ export default function ErrorPage({ error, reset }: ErrorPageProps) {
 **表示の説明:**
 
 画面中央に白いカードが表示されます。赤い三角形の警告アイコン、「エラーが発生しました」というメッセージ、そして「もう一度試す」ボタンと「トップに戻る」ボタンが配置されます。開発環境（`NODE_ENV === "development"`）では、エラーの詳細メッセージも折りたたみで確認できます。
+
+#### ▼ コードを1つずつ分解して解説
+
+`error.tsx` も Next.js の規約ファイルで、`"use client"` 必須・特別な Props（`error`・`reset`）を受け取る、という特徴があります。塊ごとに見ていきましょう。
+
+---
+
+##### 解説1: "use client" が必須
+
+```tsx
+"use client";
+```
+
+- `error.tsx` は **必ず先頭に `"use client"` を書く**決まりです（Next.js の仕様）。
+- 理由は、エラーを捕まえる仕組み（Error Boundary）が Client Component でしか動かないためです。書き忘れるとビルド時にエラーになります。
+- `loading.tsx` には不要でしたが、`error.tsx` には必須、という違いを押さえておきましょう。
+
+> **用語:** Error Boundary（エラー境界）とは、配下のコンポーネントで起きたエラーを捕まえ、アプリ全体がクラッシュする代わりに代替UI（エラー画面）を出す仕組み。Next.js では `error.tsx` がこれを担う。
+
+---
+
+##### 解説2: 受け取る Props の型（error と reset）
+
+```tsx
+type ErrorPageProps = {
+  error: Error & { digest?: string };
+  reset: () => void;
+};
+
+export default function ErrorPage({ error, reset }: ErrorPageProps) {
+```
+
+- `error.tsx` は、Next.js から自動的に2つの Props を受け取ります。
+- `error: Error & { digest?: string }` … 発生したエラー情報です。`&`（アンド）は「**交差型**」で、「`Error` 型の性質と `{ digest? }` の性質を**両方**併せ持つ」という意味です。`digest` は Next.js が付けるエラーIDです。
+- `reset: () => void` … 「**エラーからの復帰を試みる関数**」です。`() => void` は「引数なし・戻り値なしの関数」という型です。このボタンを押すとページの再描画が試みられます。
+
+> **用語:** 交差型（intersection type・`A & B`）とは、「`A` と `B` の両方の性質を同時に持つ型」のこと。ユニオン型（`A | B`＝どちらか）の反対で、`&` は「両方を兼ね備える」を表す。
+
+---
+
+##### 解説3: 開発時だけエラー詳細を表示する
+
+```tsx
+        {process.env.NODE_ENV === "development" && (
+          <details className="mb-6 text-left">
+            <summary className="text-sm text-gray-500 cursor-pointer hover:text-gray-700">
+              エラー詳細を表示
+            </summary>
+            <pre className="mt-2 p-3 bg-gray-100 rounded text-xs text-red-600 overflow-auto max-h-40">
+              {error.message}
+            </pre>
+          </details>
+        )}
+```
+
+- `process.env.NODE_ENV` は「**今が開発中か本番か**」を表す環境変数です。`"development"`（開発中）と一致するときだけ、`&&` の右側が表示されます。
+- つまり、エラーの技術的な詳細（`error.message`）は**開発者が見るとき（`npm run dev`）だけ**表示され、本番のユーザーには見せません。技術情報を一般ユーザーに晒さない配慮です。
+- `<details>` / `<summary>` は HTML 標準の「折りたたみ」要素で、JavaScript なしでクリック開閉できます。`<pre>` は改行や空白をそのまま保持して表示する要素です。
+
+> **用語:** 環境変数 `NODE_ENV` とは、アプリが「開発モード」か「本番モード」かを示す値。開発時だけログや詳細を出し、本番では隠す、といった切り替えに使う。
+
+---
+
+##### 解説4: 再試行ボタンで reset を呼ぶ
+
+```tsx
+          <button
+            onClick={reset}
+            className="..."
+          >
+            もう一度試す
+          </button>
+          <a href="/" className="...">
+            トップに戻る
+          </a>
+```
+
+- 「もう一度試す」ボタンの `onClick={reset}` で、Props で受け取った `reset` 関数を呼びます。これによりページの再レンダリングが試みられ、一時的なエラー（通信の不調など）なら復帰できる可能性があります。
+- `onClick={reset}` のように**関数名だけ**を渡している点に注意してください。`reset()` と `()` を付けると、レンダリング時に即実行されてしまいバグの原因になります。
+- 「トップに戻る」は `<Link>` ではなく通常の `<a href="/">` を使っています。`<a>` だとページ全体が完全に再読み込みされ、クライアント側のキャッシュも含めてアプリを初期化できるため、エラー時の確実なリセット手段になります。
+
+> **用語:** `onClick={関数}` と `onClick={関数()}` の違い。前者は「クリック時にこの関数を呼んで」という意味で正しい。後者は「今この場で関数を実行した戻り値を渡す」になってしまい、意図しない即時実行が起きる。
 
 ---
 
@@ -1941,6 +2738,249 @@ export default function BookForm({
 - メモ欄の下には入力文字数カウンター（`0 / 1000 文字`）が表示されます。
 - 送信ボタンは青色で、送信中は薄い青色になりスピナーアイコンが回転します。
 
+#### ▼ コードを1つずつ分解して解説
+
+`BookForm` はこの章で一番大きな部品です。「制御コンポーネント」「汎用ハンドラ」「バリデーション」「親への委譲」など、フォームの定番パターンが詰まっています。塊ごとにていねいに見ていきましょう。
+
+---
+
+##### 解説1: "use client" と import
+
+```tsx
+"use client";
+
+import { useState, type FormEvent } from "react";
+import { type BookStatus } from "./StatusBadge";
+```
+
+- フォームは `useState` や `onChange` などブラウザ専用の機能を使うため、先頭に `"use client"` を書いて Client Component にします。
+- `useState` は「**変化する値を持つための道具**」、`type FormEvent` は「フォーム送信イベントの型」です。`type` を付けたものは型だけのインポートです。
+- `BookStatus` 型は `StatusBadge.tsx` から取り込み、ステータス欄の型として使います。
+
+> **用語:** フック（hook）とは、`useState` のように `use` で始まる React の特別な関数。コンポーネントに「状態」や「副作用」などの機能を追加するために使う。Client Component の中でのみ使える。
+
+---
+
+##### 解説2: フォームデータの型と Props の型
+
+```tsx
+export type BookFormData = {
+  title: string;
+  author: string;
+  publisher: string;
+  published_date: string;
+  rating: number | null;
+  status: BookStatus;
+  memo: string;
+};
+
+type BookFormProps = {
+  initialData?: BookFormData;
+  onSubmit: (data: BookFormData) => Promise<void>;
+  submitLabel?: string;
+  isSubmitting?: boolean;
+};
+```
+
+- `BookFormData` は「フォームが扱う入力値の形」です。データベースの `books` テーブルに似ていますが、`id`・`created_at`・`updated_at` は含みません（フォームで入力する項目ではないため）。
+- `BookFormProps` は親から受け取る値の形です。
+  - `initialData?` … 編集時の初期値（新規登録時は省略）。`?` で省略可能。
+  - `onSubmit: (data) => Promise<void>` … **送信時に呼ぶ親の関数**。実際のDB保存は親に任せる設計です。`Promise<void>` は「非同期で、最終的な戻り値は無し」という意味です。
+  - `submitLabel?`・`isSubmitting?` … ボタンの文字と送信中フラグ（いずれも省略可能）。
+
+> **用語:** コールバック関数とは、「あとで呼んでもらうために他人に渡す関数」のこと。`onSubmit` は親が用意した関数で、フォームは送信時にそれを呼ぶだけ。こうすると同じフォームを登録用・編集用で使い回せる。
+
+---
+
+##### 解説3: state の初期化（formData と errors）
+
+```tsx
+const defaultFormData: BookFormData = {
+  title: "", author: "", publisher: "", published_date: "",
+  rating: null, status: "want_to_read", memo: "",
+};
+
+export default function BookForm({
+  initialData, onSubmit,
+  submitLabel = "登録する", isSubmitting = false,
+}: BookFormProps) {
+  const [formData, setFormData] = useState<BookFormData>(
+    initialData ?? defaultFormData
+  );
+  const [errors, setErrors] = useState<Partial<Record<keyof BookFormData, string>>>({});
+```
+
+- `defaultFormData` は新規登録時の初期値です。すべて空（または初期選択）にしてあり、ステータスだけ `"want_to_read"`（読みたい）を初期値にしています。
+- `useState<BookFormData>(initialData ?? defaultFormData)` で、**`initialData` があればそれを（編集時）、なければ `defaultFormData` を（新規時）** 初期値にします。`??` は「左が無ければ右を使う」演算子です。
+- `errors` の型 `Partial<Record<keyof BookFormData, string>>` は「**エラーが出た項目だけ、項目名→メッセージ で入る箱**」です。`keyof` で項目名一覧を作り、`Record` で「項目名→文字列」、`Partial` で「全部省略可」にしています。初期値は空 `{}`。
+
+> **用語:** `Partial<Record<keyof T, string>>` とは「`T` の各項目名をキーに、エラーメッセージ（文字列）を入れられる、全項目が省略可能なオブジェクト」の型。「エラーが出た項目だけ覚えておく箱」を表す定番の型。
+
+---
+
+##### 解説4: バリデーション関数
+
+```tsx
+  const validate = (): boolean => {
+    const newErrors: Partial<Record<keyof BookFormData, string>> = {};
+
+    if (!formData.title.trim()) {
+      newErrors.title = "タイトルは必須です";
+    } else if (formData.title.trim().length > 100) {
+      newErrors.title = "タイトルは100文字以内で入力してください";
+    }
+    // ...author, publisher, memo も同様にチェック...
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+```
+
+- `validate` は「送信してよい内容か」をチェックし、`true`（全部OK）か `false`（エラーあり）を返す関数です。
+- `!formData.title.trim()` … `.trim()` は前後の空白を削った文字列を返し、空文字 `""` は「偽（falsy）」なので、`!` を付けると「**空または空白だけ**」を検出できます。タイトル・著者は必須なのでこれで未入力を弾きます。
+- `else if (... .length > 100)` … 文字数の上限もチェックしています。
+- 最後に `setErrors(newErrors)` で集めたエラーを画面に反映し、`Object.keys(newErrors).length === 0` で「エラーが0個なら true」を返します。
+
+> **用語:** バリデーション（validation・検証）とは、ユーザーの入力が正しいか（必須項目が埋まっているか、文字数は適切かなど）を送信前に確認する処理。問題があればエラーを表示し、送信を止める。
+
+---
+
+##### 解説5: 汎用入力ハンドラ handleChange
+
+```tsx
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    if (errors[name as keyof BookFormData]) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: undefined,
+      }));
+    }
+  };
+```
+
+- これ1つで `input`・`textarea`・`select` の**すべての入力欄の変更**を処理する汎用ハンドラです。引数 `e` の型がその3種類のユニオンになっているのはそのためです。
+- `const { name, value } = e.target;` で「変化した入力欄の `name` と現在値 `value`」を取り出します。`name` は `<input name="title">` のように指定した名前です。
+- `setFormData((prev) => ({ ...prev, [name]: value }))` がキモです。`...prev` で**今の全項目をコピー**し、`[name]: value` で**変化した欄だけを上書き**します。`[name]` は「変数 `name` の中身をキーとして使う」動的キー記法で、これにより1つの関数でどの欄でも正しく更新できます。
+- 後半の `if (errors[...])` は「入力し直したら、その欄の古いエラーを消す」親切処理です。
+
+> **用語:** 動的なキー（computed property name・`[name]: value`）とは、オブジェクトのキー名を「変数の中身」で決める記法。`name` が `"title"` なら `{ title: value }`、`"author"` なら `{ author: value }` になり、1つのハンドラで全項目に対応できる。
+
+---
+
+##### 解説6: 評価専用ハンドラ handleRatingChange
+
+```tsx
+  const handleRatingChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    setFormData((prev) => ({
+      ...prev,
+      rating: value === "" ? null : Number(value),
+    }));
+  };
+```
+
+- 評価（rating）だけは専用ハンドラにしています。理由は、`<select>` の値は常に**文字列**ですが、`rating` は**数値 または null** で持ちたいからです。
+- `value === "" ? null : Number(value)` … 三項演算子で、「『選択してください』（空文字）なら `null`、そうでなければ `Number(value)` で**数値に変換**」しています。`Number("3")` は `3` になります。
+- このひと手間で、画面上は文字列の選択肢でも、内部のデータは正しく「数値 or null」で保てます。
+
+> **用語:** 型変換（キャスト）とは、ある型の値を別の型に変えること。`Number("3")` は「文字列の "3" を数値の 3 に変える」型変換。`<input>` や `<select>` の値は常に文字列なので、数値が必要なときは変換が要る。
+
+---
+
+##### 解説7: 送信ハンドラ handleSubmit（親に委譲）
+
+```tsx
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+
+    if (!validate()) {
+      return;
+    }
+
+    await onSubmit(formData);
+  };
+```
+
+- `e.preventDefault()` は「フォーム送信時にブラウザが**ページ全体をリロード**してしまう既定動作を止める」お決まりの一行です。これを書かないと React の処理が走る前に画面がリセットされます。
+- `if (!validate()) { return; }` で、バリデーションに失敗したら（`false`）ここで関数を終え、送信しません。
+- `await onSubmit(formData)` が重要です。**実際のDB保存はこのフォームではせず、親から渡された `onSubmit` 関数に丸ごと任せ**ています。`async`/`await` なので、親の非同期処理（DB書き込み）の完了を待てます。
+- この「自分では保存せず親に渡す」設計のおかげで、同じフォームを登録ページでも編集ページでも使い回せます。
+
+> **用語:** `e.preventDefault()`（プリベント・デフォルト）とは、イベントの「ブラウザ標準の動作」をキャンセルする命令。フォームの場合は「送信でページがリロードされる」動作を止めるために、`onSubmit` の冒頭でほぼ必ず呼ぶ。
+
+---
+
+##### 解説8: 制御コンポーネントとしての input
+
+```tsx
+        <input
+          type="text"
+          id="title"
+          name="title"
+          value={formData.title}
+          onChange={handleChange}
+          placeholder="例: リーダブルコード"
+          className={`
+            ...
+            ${errors.title ? "border-red-500 bg-red-50" : "border-gray-300"}
+          `}
+        />
+        {errors.title && (
+          <p className="mt-1 text-sm text-red-600">{errors.title}</p>
+        )}
+```
+
+- `value={formData.title}` と `onChange={handleChange}` の組み合わせが「**制御コンポーネント**」です。入力欄の表示値を常に state（`formData`）から取り、変化したら `handleChange` で state を更新します。これにより「**画面の値とプログラムの値が常に一致**」します。
+- `name="title"` は解説5の動的キー（`[name]`）と対応します。この名前のおかげで `handleChange` が「タイトル欄が変わった」と分かります。
+- `className` の中の `${errors.title ? "border-red-500 bg-red-50" : "border-gray-300"}` で、エラーがある欄だけ**枠線を赤・背景を薄赤**に切り替えています。
+- 下の `{errors.title && (<p ...>)}` は短絡評価で、エラーがあるときだけ赤文字のメッセージを表示します（他のフィールドも同じ作りです）。
+
+> **用語:** 制御コンポーネント（controlled component）とは、入力欄の値を React の state で管理する方式（`value` + `onChange` のペア）。常に state が「唯一の正しい値」になるので、バリデーションや初期値設定がしやすい。
+
+---
+
+##### 解説9: 送信ボタン（送信中の無効化と表示切替）
+
+```tsx
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className={`
+            ...
+            ${
+              isSubmitting
+                ? "bg-blue-400 cursor-not-allowed"
+                : "bg-blue-600 hover:bg-blue-700"
+            }
+          `}
+        >
+          {isSubmitting ? (
+            <span className="flex items-center gap-2">
+              <svg className="animate-spin h-5 w-5" ...>...</svg>
+              送信中...
+            </span>
+          ) : (
+            submitLabel
+          )}
+        </button>
+```
+
+- `type="submit"` で「これがフォームの送信ボタン」と明示します。これを押すと `<form>` の `onSubmit`（＝`handleSubmit`）が走ります。
+- `disabled={isSubmitting}` で、送信中はボタンを無効化します。これにより**二重送信（連打）を防止**できます。
+- `className` の三項演算子で、送信中は薄い青＋禁止カーソル、通常時は濃い青＋ホバーで色変化、と見た目も切り替えています。
+- ボタンの中身も `isSubmitting ? (スピナー + "送信中...") : submitLabel` の三項演算子で切り替え、送信中は回転スピナーを表示します。
+
+> **用語:** 二重送信（double submit）とは、ユーザーがボタンを連打して同じデータが2回送られてしまう問題。送信中はボタンを `disabled` にしておくことで防げる。
+
 ---
 
 ### 4b. 登録ページ
@@ -2162,6 +3202,160 @@ export default function NewBookPage() {
 4. Supabase への INSERT リクエストが **ブラウザから直接** Supabase API に送信されます。
 5. **成功した場合**: `router.push("/")` によりトップページにリダイレクトされます。一覧が再読み込みされ、今登録した書籍がリストの先頭に表示されます。画面遷移はスムーズで、ページ全体がリロードされることはありません。
 6. **失敗した場合**: フォームの上部に赤い背景のエラーメッセージ（「書籍の登録に失敗しました。入力内容を確認して再度お試しください。」）が表示されます。フォームの入力内容は保持されるので、修正して再送信できます。
+
+#### ▼ コードを1つずつ分解して解説
+
+この登録ページ（`NewBookPage`）は、`BookForm` から送信を受け取り、Supabase に INSERT して画面遷移する「送信処理の本体」を持ちます。塊ごとに見ていきましょう。
+
+---
+
+##### 解説1: "use client" と import
+
+```tsx
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
+import BookForm, { type BookFormData } from "@/components/BookForm";
+```
+
+- このページは `useState`・`useRouter` などブラウザ専用機能を使うため、`"use client"` を付けて Client Component にします。
+- `useRouter` は Next.js のページ遷移用フックです。登録後にトップへ戻すために使います。
+- `createClient` は「**ブラウザ用** の Supabase クライアント」です。トップページ（`page.tsx`）で使った**サーバー用とは別物**である点に注意してください。
+- `BookForm` とその型 `BookFormData` を取り込み、フォーム本体として使います。
+
+> **用語:** サーバー用クライアントとブラウザ用クライアント。Supabase には用途別に2種類のクライアント作成関数があり、Server Component ではサーバー用、Client Component ではブラウザ用を使う。混同すると正しく動かない。
+
+---
+
+##### 解説2: state とルーターの準備
+
+```tsx
+export default function NewBookPage() {
+  const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+```
+
+- `const router = useRouter();` でページ遷移を操作するオブジェクトを取得します。`router.push("/")` で移動、`router.refresh()` で再取得などができます。
+- `isSubmitting`（送信中フラグ）は、ボタンの「送信中...」表示や二重送信防止に使う `true`/`false` の state です。
+- `submitError` は送信失敗時のエラーメッセージです。型 `string | null` で「メッセージがあるか、`null`（エラーなし）か」を表します。
+
+> **用語:** `useRouter`（ユーズ・ルーター）とは、コードからページ遷移や再読み込みを行うための Next.js のフック。`router.push("/path")` でリンクを踏まずにプログラム側で画面を移動できる。
+
+---
+
+##### 解説3: 送信開始の準備とフラグ操作
+
+```tsx
+  const handleSubmit = async (data: BookFormData) => {
+    setIsSubmitting(true);
+    setSubmitError(null);
+```
+
+- `handleSubmit` は `BookForm` の `onSubmit` に渡す関数です。フォームがバリデーションを通したあと、入力データ `data` を引数として呼んでくれます。
+- 最初に `setIsSubmitting(true)` で送信中フラグを立てます。これがフォームの送信ボタンに伝わり、ボタンが無効化＆スピナー表示になります。
+- `setSubmitError(null)` で、前回の送信で出たエラーメッセージをクリアしておきます。
+
+> **用語:** ローディング状態の管理とは、「処理中かどうか」を state で持ち、それに応じてUI（ボタンの無効化やスピナー）を切り替えること。ユーザーに「今処理中です」と伝え、操作の重複を防ぐ。
+
+---
+
+##### 解説4: try で Supabase に INSERT する
+
+```tsx
+    try {
+      const supabase = createClient();
+
+      const { error } = await supabase.from("books").insert({
+        title: data.title.trim(),
+        author: data.author.trim(),
+        publisher: data.publisher.trim() || null,
+        published_date: data.published_date || null,
+        rating: data.rating,
+        status: data.status,
+        memo: data.memo.trim() || null,
+      });
+
+      if (error) {
+        console.error("書籍の登録に失敗しました:", error.message);
+        setSubmitError("書籍の登録に失敗しました。入力内容を確認して再度お試しください。");
+        return;
+      }
+```
+
+- `createClient()` でブラウザ用 Supabase クライアントを作り、`supabase.from("books").insert({...})` で**新しい行を追加（INSERT）**します。`await` で完了を待ちます。
+- `insert` に渡すオブジェクトでは「入力ガード」をしています。`data.publisher.trim() || null` は「空文字なら `null`」という意味で、`||`（OR）は左が空文字（falsy）のとき右の `null` を返します。これにより「空欄」をデータベースに `null` できれいに保存できます。
+- `if (error)` で失敗を判定し、エラーがあればユーザー向けメッセージを `setSubmitError` でセットして `return`（中断）します。
+- `console.error` には開発者向けの技術的詳細、`setSubmitError` には一般ユーザー向けの分かりやすい文言、と**出し分け**ているのもポイントです。
+
+> **用語:** INSERT（インサート）とは、SQL で「テーブルに新しい行を追加する」操作。`supabase.from("テーブル").insert({...})` が、その Supabase 版の書き方になる。
+
+---
+
+##### 解説5: 成功時の画面遷移
+
+```tsx
+      router.push("/");
+      router.refresh();
+```
+
+- INSERT が成功したら（`if (error)` を通り抜けたら）、`router.push("/")` でトップページに移動します。ページ全体のリロードは起きないので体感が速いです。
+- 続く `router.refresh()` が重要です。トップページは Server Component なので、これを呼んで**サーバー側を再実行**させ、「今登録したばかりの書籍も含む最新の一覧」を取り直して表示します。
+- `push` だけだとキャッシュされた古い一覧が出ることがあるため、`refresh` をセットで呼んで最新化しています。
+
+> **用語:** `router.refresh()` とは、現在のページの Server Component を再実行し、最新データで作り直す Next.js の機能。クライアント側の入力状態は保ったまま、サーバー由来の表示だけを更新できる。
+
+---
+
+##### 解説6: catch と finally（エラーと後始末）
+
+```tsx
+    } catch (err) {
+      console.error("予期しないエラー:", err);
+      setSubmitError("予期しないエラーが発生しました。");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+```
+
+- `catch (err)` は、`try` の中で**想定外の例外**（ネットワーク切断など）が起きたときに実行されます。`if (error)` で拾えない種類のトラブルの最後の砦です。
+- `finally` は「**成功・失敗どちらでも、最後に必ず実行される**」ブロックです。ここで `setIsSubmitting(false)` を呼び、送信中フラグを必ず解除します。
+- `finally` に置くことで、「成功しても失敗しても、ボタンの『送信中』状態が解除されずに固まる」事故を確実に防げます。
+
+> **用語:** `try / catch / finally` とは、エラー処理の構文。`try` で通常処理を試み、`catch` で例外を捕まえ、`finally` で「結果に関わらず必ず行う後始末」を書く。送信中フラグの解除のような後始末は `finally` が最適。
+
+---
+
+##### 解説7: JSX — エラー表示とフォームの配置
+
+```tsx
+        {submitError && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+            {/* ...警告アイコン... */}
+            <p className="text-sm text-red-700">{submitError}</p>
+          </div>
+        )}
+
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 sm:p-8">
+          <BookForm
+            onSubmit={handleSubmit}
+            submitLabel="登録する"
+            isSubmitting={isSubmitting}
+          />
+        </div>
+```
+
+- `{submitError && (...)}` は短絡評価で、`submitError` に文字列があるときだけ、フォーム上部に赤い警告ボックスを表示します。`null` のときは何も出ません。
+- `<BookForm ... />` に3つの Props を渡しています。
+  - `onSubmit={handleSubmit}` … 上で定義した送信処理（INSERT〜遷移）
+  - `submitLabel="登録する"` … ボタンの文字
+  - `isSubmitting={isSubmitting}` … 送信中フラグ（ボタンの無効化・スピナー表示に使う）
+- このように「**フォームの見た目・入力管理は `BookForm`、実際の保存処理はこのページ**」と役割分担しているのが、この設計の要点です。
+
+> **用語:** 関心の分離（separation of concerns）とは、「見た目・入力管理」と「データ保存」のように役割ごとに担当を分ける設計の考え方。`BookForm`（入力係）と `NewBookPage`（保存係）に分けることで、それぞれが小さく分かりやすくなる。
 
 ---
 

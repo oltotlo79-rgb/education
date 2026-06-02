@@ -1110,6 +1110,86 @@ COMMENT ON COLUMN books.created_at IS '作成日時';
 COMMENT ON COLUMN books.updated_at IS '更新日時';
 ```
 
+#### ▼ コードを1つずつ分解して解説
+
+上の SQL は長く見えますが、「①テーブルを作る」「②自動更新の仕組みを作る」「③注釈を付ける」の3つに分かれています。SQL を初めて見る人向けに、塊ごとに区切って解説します。
+
+##### 解説1: CREATE TABLE で「表のひな型」を作る
+
+```sql
+CREATE TABLE books (
+  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  title text NOT NULL,
+  author text NOT NULL,
+```
+
+- `CREATE TABLE books ( ... )` は「`books` という名前の新しいテーブル（表）を作る」という命令です。`( )` の中に、列（カラム）を1つずつカンマ区切りで並べます。
+- 1つの列は「**列名 → データ型 → 制約**」の3つの順で書きます。`title text NOT NULL` なら「`title` という名前」「文字列型」「空を許さない」という意味です。
+- `uuid` は「世界中で重複しない長いID」を入れる型、`text` は「長さ制限のない文字列」を入れる型です。
+- `DEFAULT gen_random_uuid()` は「INSERT時に値を指定しなければ、自動でUUIDを1つ作って入れる」初期値の指定です。
+
+> **用語:** **カラム（列）** = 表の縦の項目（id・title など）。**データ型** = その列に入れられる値の種類（数値・文字列・日付など）。**制約（constraint）** = 「こういう値は入れてはダメ」というルール。
+
+---
+
+##### 解説2: NOT NULL / DEFAULT / CHECK の3つの制約
+
+```sql
+  publisher text,
+  published_date date,
+  rating integer CHECK (rating >= 1 AND rating <= 5),
+  status text DEFAULT 'want_to_read'
+    CHECK (status IN ('reading', 'completed', 'want_to_read')),
+```
+
+- `NOT NULL` を**付けない**列（`publisher`・`published_date` など）は「空（NULL）でもOK＝任意項目」になります。逆に `NOT NULL` を付けると必須項目です。
+- `CHECK ( 条件 )` は「条件を満たさない値は登録させない」制約です。`rating >= 1 AND rating <= 5` で「1以上5以下の整数しか入れられない」を強制します。
+- `DEFAULT 'want_to_read'` は「INSERT時に `status` を省略したら自動で `'want_to_read'` を入れる」という初期値です。
+- `IN ('reading', 'completed', 'want_to_read')` は「この3つの値のどれかであること」を判定します。これでスペルミスや想定外の値の登録を防げます。
+
+> **用語:** **NULL（ヌル）** = 「値が入っていない（未入力）」状態のこと。空文字 `''` とは別物。**IN** = 「カッコ内のリストのどれかに一致するか」を調べるSQL演算子。
+
+---
+
+##### 解説3: トリガー関数で「更新時に時刻を自動で書き換える」
+
+```sql
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+```
+
+- これは「行が更新される直前に呼ばれる小さな処理（関数）」を作る部分です。中身は「これから保存する行の `updated_at` を、今の時刻 `NOW()` に書き換える」だけです。
+- `NEW` は「これから書き込まれる新しい行」を表す特別な変数です。`NEW.updated_at = NOW()` でその行の更新日時を現在時刻にしています。
+- `RETURN NEW` で書き換えた行を返すことで、DBに反映されます（これを省くと更新がキャンセル扱いになります）。
+- `CREATE OR REPLACE` なので、同じ名前の関数が既にあっても上書きされ、何度実行しても安全です。
+
+> **用語:** **関数（FUNCTION）** = DB内に保存しておき、必要なときに呼び出せる処理のまとまり。**NOW()** = 「現在の日時」を返すPostgreSQLの組み込み関数。
+
+---
+
+##### 解説4: トリガーで関数を「UPDATEの直前」に紐付ける
+
+```sql
+CREATE TRIGGER update_books_updated_at
+  BEFORE UPDATE ON books
+  FOR EACH ROW
+  EXECUTE FUNCTION update_updated_at_column();
+```
+
+- `CREATE TRIGGER` は「あるイベントが起きたら、自動で関数を呼ぶ」仕掛けを作る命令です。
+- `BEFORE UPDATE ON books` は「`books` テーブルが UPDATE される**直前**に発動する」というタイミング指定です。
+- `FOR EACH ROW` は「更新される行1つごとに1回呼ぶ」という意味です。10行まとめて更新すれば10回呼ばれます。
+- `EXECUTE FUNCTION update_updated_at_column()` で、解説3で作った関数を実行します。これ以降、`updated_at` を自分で指定しなくても自動で最新時刻になります。
+
+> **用語:** **トリガー（trigger）** = 「DBで特定の操作（INSERT/UPDATE/DELETE）が起きたら自動で動く仕掛け」。引き金（trigger）のように、イベントをきっかけに処理が走る。
+
+---
+
 **ステップ 3: SQL を実行**
 
 SQL Editor の右下にある「Run」ボタン（または `Ctrl + Enter` / `Cmd + Enter`）をクリックして実行します。
@@ -1368,6 +1448,77 @@ CREATE POLICY "Allow public delete access"
 --   auth.uid() = user_id のような「自分のレコードだけ」ポリシーに差し替える。
 ```
 
+#### ▼ コードを1つずつ分解して解説
+
+RLS は「**まず防御をON → 許可ルール（ポリシー）を1つずつ足していく**」という流れです。塊ごとに見ていきましょう。
+
+##### 解説1: ENABLE ROW LEVEL SECURITY で防御をONにする
+
+```sql
+ALTER TABLE books ENABLE ROW LEVEL SECURITY;
+```
+
+- `ALTER TABLE books` は「既存の `books` テーブルの設定を変更する」命令です（`CREATE` は新規作成、`ALTER` は変更）。
+- `ENABLE ROW LEVEL SECURITY` で、そのテーブルの「行レベルセキュリティ（RLS）」をONにします。
+- **重要な落とし穴:** RLSをONにした直後は「ポリシーが1つもない＝全部拒否」状態です。SELECTしてもエラーは出ず、ただ空配列 `[]` が返るだけなので、原因に気づきにくいです。
+
+> **用語:** **RLS（Row Level Security）** = 「テーブルの行（レコード）1件ごとに、誰がアクセスできるかを決める」しくみ。ホワイトリスト方式（許可したものだけ通す）。
+
+---
+
+##### 解説2: CREATE POLICY で SELECT（読み取り）を許可する
+
+```sql
+CREATE POLICY "Allow public read access"
+  ON books
+  FOR SELECT
+  USING (true);
+```
+
+- `CREATE POLICY "名前"` で許可ルールを1つ作ります。名前は自由で、空白を含めてもOKです。
+- `ON books` は「`books` テーブルに対するルール」、`FOR SELECT` は「SELECT（読み取り）操作に効くルール」という指定です。
+- `USING ( 条件 )` は「**どの既存の行が、この操作の対象になれるか**」を真偽（true/false）で判定する式です。
+- `USING (true)` は「常に真＝すべての行を読み取り可能」という意味です（開発用の全許可）。
+
+> **用語:** **ポリシー（policy）** = RLSにおける「許可ルール」1つ1つのこと。**USING** = 「すでにテーブルにある行のうち、どれを対象にできるか」を決める条件。
+
+---
+
+##### 解説3: INSERT は WITH CHECK で「書き込む値」を判定する
+
+```sql
+CREATE POLICY "Allow public insert access"
+  ON books
+  FOR INSERT
+  WITH CHECK (true);
+```
+
+- `FOR INSERT` は「新規追加の操作に効くルール」です。
+- INSERTは「これから書き込む新しい行」が対象なので、`USING`（既存行の判定）ではなく `WITH CHECK`（これから書く行の判定）を使います。
+- `WITH CHECK (true)` は「どんな値の行でも書き込みOK」という意味です。
+
+> **用語:** **WITH CHECK** = 「これから書き込もうとしている（新しい/更新後の）行が、登録を許される値かどうか」を判定する条件。INSERT・UPDATE で使う。
+
+---
+
+##### 解説4: UPDATE は USING と WITH CHECK の両方を使う
+
+```sql
+CREATE POLICY "Allow public update access"
+  ON books
+  FOR UPDATE
+  USING (true)         -- 全ての既存行を更新対象にできる
+  WITH CHECK (true);   -- どんな新しい値でも書き込みOK
+```
+
+- UPDATEは「①既存の行を選ぶ → ②新しい値で上書きする」の2段階なので、両方の判定が必要です。
+- `USING (true)` で「すべての既存行を更新対象にできる」、`WITH CHECK (true)` で「上書き後の値は何でもOK」を表します。
+- DELETE（解説では割愛しますが上のSQLの(5)）は新しい行を作らないため `WITH CHECK` は不要で、`USING` だけで「どの行を消せるか」を判定します。
+
+> **用語:** **FOR SELECT / INSERT / UPDATE / DELETE** = そのポリシーが「どの操作に効くか」の指定。`FOR ALL` と書くと4つすべてに効く。
+
+---
+
 **各ポリシーの解説:**
 
 | ポリシー名 | 対象操作 | `USING` | `WITH CHECK` | 意味 |
@@ -1597,6 +1748,73 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey);
 //   const { data, error } = await supabase.from("books").select("*");
 //   console.log(data); // Book[] 型（自動推論）
 ```
+
+#### ▼ コードを1つずつ分解して解説
+
+このファイルは「①必要なものを取り込む → ②接続情報を読む → ③値の有無をチェック → ④クライアントを作って共有する」という流れです。塊ごとに見ていきます。
+
+##### 解説1: createClient と型をインポートする
+
+```ts
+import { createClient } from '@supabase/supabase-js';
+
+import type { Database } from '@/types/supabase';
+```
+
+- `import { createClient } from '@supabase/supabase-js'` は、Supabaseの公式SDKから「クライアントを作る関数」だけを取り込む書き方です（名前付きインポート）。
+- `import type { Database }` は「**型情報だけ**を取り込む」書き方で、実行時のJavaScriptには残りません。`Database` はテーブル定義から自動生成した型です（このあとの 6.4 で作ります）。
+- `@/types/supabase` の `@` は「`src/` フォルダ」を指す近道（パスエイリアス）で、`src/types/supabase.ts` を意味します。
+
+> **用語:** **import** = 別ファイルやパッケージの機能を「持ち込む」命令。**SDK** = ある機能を使うための道具一式（ここではSupabase操作用のライブラリ）。
+
+---
+
+##### 解説2: 環境変数から接続情報を読み込む
+
+```ts
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+```
+
+- `process.env.XXX` は「環境変数 XXX の値を読む」書き方です。さきほど `.env.local` に書いた値がここに入ってきます。
+- URLとanonキーをコードに直接書かず環境変数から読むことで、秘密情報をソースコードに埋め込まずに済みます。
+- `NEXT_PUBLIC_` で始まる名前なので、これらの値はブラウザ側でも参照できます（anonキーは公開前提のキーなのでOK）。
+
+> **用語:** **環境変数** = プログラムの外側（OSや設定ファイル）から値を渡すしくみ。接続先やキーなど、環境ごとに変わる値を入れておく。
+
+---
+
+##### 解説3: 値が無ければ早めにエラーを出す（Fail-Fast）
+
+```ts
+if (!supabaseUrl) {
+  throw new Error(
+    'NEXT_PUBLIC_SUPABASE_URL が設定されていません。.env.local ファイルを確認してください。'
+  );
+}
+```
+
+- `!supabaseUrl` は「`supabaseUrl` が空（undefinedや空文字）なら true」という判定です。`!` は「〜でない」を表す否定記号です。
+- 値が無いまま進むと「なぜか動かない」原因不明の状態になりがちです。そこで `throw new Error(...)` で**すぐに**処理を止め、分かりやすいメッセージを出します。
+- このように「問題があれば早く失敗させる」考え方を Fail-Fast（フェイルファスト）と呼びます。
+
+> **用語:** **throw（スロー）** = エラーを発生させて処理を中断する命令。**Error オブジェクト** = エラーの内容（メッセージなど）を入れる入れ物。
+
+---
+
+##### 解説4: クライアントを作って export し、共有する
+
+```ts
+export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey);
+```
+
+- `createClient(url, anonKey)` で「Supabaseに接続するためのオブジェクト」を1つ作ります。
+- `<Database>` は型情報を渡す部分（ジェネリクス）です。これを渡しておくと、`supabase.from('books').select('*')` と書いたときにエディタがテーブル名やカラム名を補完・検証してくれます。
+- `export const supabase = ...` で外部に公開しているので、他のファイルから `import { supabase } from '@/lib/supabase'` と書くだけで同じ接続を使い回せます（シングルトン）。
+
+> **用語:** **export** = このファイルの値を「他ファイルから使えるように公開する」命令。**シングルトン** = 「インスタンスを1個だけ作って全体で共有する」設計。
+
+---
 
 **コードの解説:**
 
@@ -1915,6 +2133,44 @@ console.log('書籍一覧:', data);
 // ]
 ```
 
+#### ▼ コードを1つずつ分解して解説
+
+この「全件取得」は、これ以降のCRUD操作すべての土台になる形です。塊ごとに分解します。
+
+##### 解説1: メソッドをつないで「どのテーブルから何を取るか」を組み立てる
+
+```ts
+const { data, error } = await supabase
+  .from('books')
+  .select('*');
+```
+
+- `supabase.from('books')` で「`books` テーブルを操作対象にする」と宣言し、続く `.select('*')` で「全カラム（`*`）を取り出す」と指定します。
+- このように `.` でメソッドをつないでいく書き方をメソッドチェーンと呼びます。条件や並び替えも、このうしろにつなげて足していけます。
+- `await` は「この通信が終わって結果が返るまで待つ」という意味です。DB操作は時間がかかるため必要です。
+- 戻り値は `{ data, error }` という形のオブジェクトで、分割代入で `data`（取得結果）と `error`（エラー情報）を同時に取り出しています。
+
+> **用語:** **メソッドチェーン** = `a.b().c()` のように、メソッドを点でつないで処理を組み立てる書き方。**分割代入** = オブジェクトから必要なプロパティだけを取り出して変数にする書き方。
+
+---
+
+##### 解説2: error を必ず先にチェックする
+
+```ts
+if (error) {
+  console.error('エラー:', error.message);
+  return;
+}
+```
+
+- Supabaseは失敗しても例外を投げず、`error` に情報を入れて返す設計です。そのため `data` を使う前に必ず `error` を確認します。
+- `if (error)` は「`error` に中身があれば（＝失敗していれば）」という判定です。失敗時は `error.message`（人間向けの説明）をログに出します。
+- `return` でそこより先（`data` を使う処理）に進まないようにします。これでエラー時に壊れた `data` を触らずに済みます。
+
+> **用語:** **例外（throw）を投げない設計** = エラーを `try/catch` で捕まえるのではなく、戻り値の `error` で受け取る方式。Supabaseはこちらを採用している。
+
+---
+
 #### 特定のカラムのみ取得
 
 > **▼ このコードがやること（先に日本語で）:** 全カラムではなく、**欲しい列だけを指定して取り出す**例です。`.select('title, author, rating')` のようにカンマ区切りで列名を並べます。必要な列だけ取れば通信量が減って表示も速くなる、というのがポイントです。
@@ -2142,6 +2398,47 @@ console.log('挿入されたデータ:', data);
 // ]
 ```
 
+#### ▼ コードを1つずつ分解して解説
+
+INSERT（作成）は「①追加する値を用意 → ②`.insert()` で送る → ③`.select()` で結果を受け取る」という流れです。
+
+##### 解説1: 追加するデータをオブジェクトにまとめる
+
+```ts
+const newBook: BookInsert = {
+  title: 'ノルウェイの森',              // 必須
+  author: '村上春樹',                   // 必須
+  publisher: '講談社',                  // 任意
+  // ...
+  // id, cover_url, created_at, updated_at は省略 → DBが自動で埋める
+};
+```
+
+- 追加したい値を1つのオブジェクト（`{ }`）にまとめます。キーが列名、値が入れる中身です。
+- `: BookInsert` という型注釈を付けると、必須項目（`title`・`author`）の入れ忘れや、存在しない列名のタイプミスをエディタが教えてくれます。
+- `id`・`created_at` のように **DEFAULT が設定された列は省略できます**。省略するとDB側が自動で値を埋めます。
+
+> **用語:** **型注釈** = 変数の中身の「型（形）」を明示すること。`BookInsert` は「INSERTで渡してよいデータの形」を表す型。
+
+---
+
+##### 解説2: .insert() で追加し、.select() で結果を受け取る
+
+```ts
+const { data, error } = await supabase
+  .from('books')
+  .insert(newBook)
+  .select();  // .select() を付けると、挿入したデータが返る
+```
+
+- `.insert(newBook)` で「`newBook` を1件追加する」クエリになります。
+- 末尾の `.select()` がポイントです。これを**付けないと**、追加は成功しても戻り値の `data` は空になります（性能上の理由）。
+- `.select()` を付けると、自動生成された `id` や `created_at` を含む「実際に保存された行」が `data` に返ってきます。
+
+> **用語:** **insert** = テーブルに新しい行を追加する操作（SQLの INSERT に相当）。追加後の行を使いたいときは `.select()` をつなげる。
+
+---
+
 > **`.select()` を付ける理由:**
 > `.insert()` だけだとレスポンスにデータが含まれません（パフォーマンス上の理由）。挿入したデータ（自動生成された id や created_at を含む）を取得したい場合は `.select()` を付けてください。
 
@@ -2241,6 +2538,46 @@ console.log('更新されたデータ:', data);
 // ]
 ```
 
+#### ▼ コードを1つずつ分解して解説
+
+UPDATE（更新）は「①変えたい値を用意 → ②`.update()` で送り → ③`.eq()` で対象を絞る」という流れです。**対象の絞り込みが命綱**です。
+
+##### 解説1: 変えたいフィールドだけをオブジェクトにする
+
+```ts
+const updates: BookUpdate = {
+  rating: 4,                       // 評価を4に
+  status: 'completed',             // 状態を 'completed' に
+  notes: '読了。面白かった！',      // メモを上書き
+  // title や author は省略 → 既存値のまま
+};
+```
+
+- 更新では「変えたい列だけ」を書きます。書かなかった列（`title` など）は既存の値のまま残ります。
+- `: BookUpdate` 型は「すべての列が省略可（optional）」になっており、部分的な更新を安全に書けます。
+
+> **用語:** **部分更新** = 行のすべての列ではなく、一部の列だけを書き換えること。Supabaseの `.update()` は渡した列だけを更新する。
+
+---
+
+##### 解説2: .eq() で「どの行を更新するか」を必ず絞る
+
+```ts
+const { data, error } = await supabase
+  .from('books')
+  .update(updates)
+  .eq('id', bookId)  // 必ず条件を指定すること！
+  .select();
+```
+
+- `.update(updates)` で「`updates` の内容で書き換える」、`.eq('id', bookId)` で「`id` が `bookId` の行だけを対象にする」と指定します（eq = equal）。
+- **この `.eq(...)` を付け忘れると、テーブルの全行が同じ値に書き換わります。** これは非常に危険なので、更新時は必ず対象を絞ります。
+- `.select()` を付けると、更新後の行（トリガーで自動更新された `updated_at` を含む）が返ってきます。
+
+> **用語:** **.eq(列, 値)** = 「その列が指定した値と等しい行だけ」に絞り込むメソッド。SQLの `WHERE 列 = 値` に相当する。
+
+---
+
 > **重要: `.eq()` 等の条件を必ず指定すること！**
 >
 > `.update()` に条件を付けないと **テーブルの全行が更新されてしまいます**。これは非常に危険です。必ず `.eq('id', bookId)` のような条件を付けてください。
@@ -2279,6 +2616,43 @@ if (error) {
 
 console.log('書籍を削除しました');
 ```
+
+#### ▼ コードを1つずつ分解して解説
+
+DELETE（削除）は最も慎重に扱う操作です。塊ごとに見ていきます。
+
+##### 解説1: .delete() に .eq() で対象を絞る
+
+```ts
+const { error } = await supabase
+  .from('books')
+  .delete()
+  .eq('id', bookId);  // 必ず条件を指定すること！
+```
+
+- `.delete()` で「削除する」クエリを宣言し、`.eq('id', bookId)` で「`id` が `bookId` の行だけ」に対象を絞ります。
+- **`.eq(...)` を付け忘れると全行が削除され、しかも復元できません。** 削除では対象の絞り込みが何より重要です。
+- ここでは戻り値から `data` を取り出していません。削除した中身は不要で、成功・失敗（`error`）だけ確認すればよいからです。
+
+> **用語:** **delete** = テーブルから行を削除する操作（SQLの DELETE に相当）。条件なしの delete は全件削除になるため、必ず絞り込む。
+
+---
+
+##### 解説2: 失敗していないかを error で確認する
+
+```ts
+if (error) {
+  console.error('削除エラー:', error.message);
+  return;
+}
+```
+
+- 他の操作と同じく、Supabaseは削除の失敗も `error` で返します。`if (error)` で失敗を検知し、メッセージを出して `return` で処理を止めます。
+- 削除されたデータを確認したい場合は、このあとの例のように `.eq(...).select()` と `.select()` をつなげると、消した行の内容が `data` に返ってきます。
+
+> **用語:** **error.message** = エラーの内容を人間向けに説明した文字列。ログに出すと原因を追いやすい。
+
+---
 
 > **重要: `.eq()` 等の条件を必ず指定すること！**
 >
