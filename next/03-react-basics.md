@@ -350,6 +350,36 @@ function App() {
 >
 > 画面には **「Hello, World!」** という大きな見出しが1行表示されます。<h1>はHTMLで一番大きな見出しを意味するため、文字サイズが大きく、太字になります。
 
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: 関数を定義する
+
+```tsx
+function App() {
+```
+
+- `function`（ファンクション）は「**関数を作る**」というJavaScriptのキーワードです。
+- `App` がこの関数（コンポーネント）の名前です。Reactでは「**大文字で始まる関数**」を自動的にコンポーネントとして扱います。小文字始まりだと普通の関数になってしまいます。
+- `()` は引数を受け取る括弧ですが、このコンポーネントは何も受け取らないので空です。
+
+> **用語:** **コンポーネント（Component）** … 画面の部品。Reactでは「JSXを返す関数」のこと。
+
+---
+
+##### 解説2: JSXを return で返す
+
+```tsx
+  return <h1>Hello, World!</h1>;
+```
+
+- `return`（リターン）は「**この関数が返す値**」を指定するキーワードです。コンポーネントは必ず「見た目（JSX）」を return で返します。
+- `<h1>Hello, World!</h1>` は見た目を表すJSXです。HTMLそっくりですが、内部では `React.createElement(...)` という関数呼び出しに変換されます。
+- これだけで「画面にHello, World!と表示する部品」が完成します。コンポーネントの最小形です。
+
+> **用語:** **JSX** … JavaScriptの中にHTML風の見た目を書ける構文。実体はJavaScriptの式（値になるもの）。
+
+---
+
 #### 複数の要素を返す場合
 
 JSX では、**必ず1つのルート要素** で囲む必要があります。
@@ -413,6 +443,40 @@ function App() {
 >
 > 上の `<div>` 版と見た目は同じだが、実際の HTML には `<div>` が出力されない。レイアウト崩れを起こしたくないときに便利。
 
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: Fragment（空タグ）で全体を1つに包む
+
+```tsx
+  return (
+    <>                    {/* 開始タグ: 名前のないタグ */}
+```
+
+- JSXには「**returnで返せるのは1つの要素だけ**」というルールがあります。複数の要素を並べたいときは、必ず何か1つの要素で包む必要があります。
+- `<>` は **Fragment（フラグメント）** の開始タグです。`<div>` と違い「論理的に1つにまとめるが、実際のHTMLには何も出力しない」特殊な空タグです。
+- `( )` で囲んでいるのは、JSXを複数行に分けて書くためです（returnの直後で改行すると別の意味になるため、括弧で1つの式にまとめています）。
+
+> **用語:** **Fragment（フラグメント）** … 余計なタグを増やさずに複数の要素をまとめるためのReactの仕組み。`<> ... </>` と書く。
+
+---
+
+##### 解説2: 中身の要素を並べて、空タグで閉じる
+
+```tsx
+      <h1>タイトル</h1>
+      <p>本文</p>
+    </>                   {/* 終了タグ */}
+  );
+```
+
+- `<>` の中に、表示したい要素（見出しと段落）を好きなだけ並べられます。
+- `</>` が Fragment の終了タグです。開始の `<>` と必ず対で書きます。
+- `<div>` で包む方法との違いは「**HTMLに余計な箱（divタグ）が増えない**」こと。見た目は同じでも、出力されるHTMLがすっきりするのでこちらが推奨されます。
+
+> **用語:** **ルート要素** … returnで返すJSXの一番外側の1つの要素。Fragmentやdivがこの役割を果たす。
+
+---
+
 #### HTML と JSX の違い
 
 ```tsx
@@ -475,6 +539,67 @@ function App() {
 >
 > [               ]        ← 別の input ボックス
 > ```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: class ではなく className を使う
+
+```tsx
+      <div className="container">
+```
+
+- HTMLでは `class="container"` と書きますが、JSXでは **`className`** と書きます。
+- 理由は、`class` がJavaScriptの予約語（クラス定義に使う特別な単語）だからです。JSXは実体がJavaScriptなので、ぶつからないように名前を変えています。
+
+> **用語:** **予約語** … プログラミング言語があらかじめ用途を決めている特別な単語。変数名や属性名に使えない。
+
+---
+
+##### 解説2: label の for は htmlFor に書き換える
+
+```tsx
+        <label htmlFor="name">名前:</label>
+        <input id="name" />
+```
+
+- HTMLの `<label for="name">` は、JSXでは **`htmlFor`** と書きます。これも `for`（forループ）がJavaScriptの予約語だからです。
+- `htmlFor="name"` と `<input id="name">` を同じ値で結ぶと、ラベルをクリックしたとき対応する入力欄にカーソルが移ります。
+
+> **用語:** **label（ラベル）** … 入力欄の見出し。for/htmlFor で入力欄と結びつける。
+
+---
+
+##### 解説3: style はオブジェクトで渡す
+
+```tsx
+        <p style={{ color: "red", fontSize: "16px", marginTop: "10px" }}>
+          赤いテキスト
+        </p>
+```
+
+- HTMLでは `style="color: red"` と文字列で書きますが、JSXでは **オブジェクト**で渡します。
+- `{{ }}` の **外側の `{ }`** は「ここからJavaScriptを書く」という印、**内側の `{ }`** は「オブジェクト（キーと値の集まり）」です。
+- CSSのプロパティ名は**キャメルケース**（単語の区切りを大文字に）で書きます。`font-size` → `fontSize`、`margin-top` → `marginTop`。
+
+> **用語:** **キャメルケース** … `fontSize` のように2語目以降の先頭を大文字にする書き方。ラクダのコブに似ているのが由来。
+
+---
+
+##### 解説4: 自己閉じタグは / で必ず閉じる
+
+```tsx
+        <br />
+        <img src="/logo.png" alt="ロゴ" />
+        <input type="text" />
+```
+
+- 中身を持たないタグ（改行・画像・入力欄など）は、JSXでは必ず末尾を **`/>`** で閉じます。
+- HTMLでは `<br>` や `<img src="...">` のように閉じなくても許されますが、JSXは厳密なので `/` が必須です。
+- `alt` は画像が表示できないときの代替テキスト、`src` は画像の場所（URL）を指定します。
+
+> **用語:** **自己閉じタグ（self-closing tag）** … 中身を持たず、1つのタグで完結する要素。末尾を `/>` で閉じる。
+
+---
 
 | HTML | JSX/TSX |
 |------|---------|
@@ -540,6 +665,53 @@ function App() {
 >
 > 田中太郎さんは25歳です
 > ```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: returnより前で変数を準備する
+
+```tsx
+  const userName: string = "田中太郎";   // 文字列の変数
+  const age: number = 25;                // 数値の変数
+  const today: Date = new Date();        // 現在時刻の Date オブジェクト
+```
+
+- コンポーネント関数の中で、`return` より**前**の部分は普通のJavaScriptです。ここで表示に使う変数を用意しておきます。
+- `const 名前: 型 = 値;` は変数宣言です。`: string` や `: number` は「この変数の型」を表す型注釈です（書かなくても動きますが、書くと安全になります）。
+- `new Date()` は「今この瞬間の日時」を表すオブジェクトを作ります。
+
+> **用語:** **変数** … 値に名前を付けて保管しておく入れ物。`const` は後から中身を変えられない変数。
+
+---
+
+##### 解説2: 変数や計算結果を { } で埋め込む
+
+```tsx
+      <h1>ようこそ、{userName}さん！</h1>
+      <p>年齢: {age}歳（来年は{age + 1}歳）</p>
+```
+
+- JSXの中で **`{ }`（中カッコ）** を使うと、その中だけ「JavaScriptの世界」になり、変数や計算式を書けます。
+- `{userName}` は変数 `userName` の中身（"田中太郎"）に置き換わります。
+- `{age + 1}` のように**計算式**も書けます。`25 + 1` が計算されて `26` と表示されます。
+
+> **用語:** **埋め込み（補間）** … 文字の中に変数の値を差し込むこと。JSXでは `{ }` で行う。
+
+---
+
+##### 解説3: メソッド呼び出しやテンプレートリテラルも埋め込める
+
+```tsx
+      <p>今日の日付: {today.toLocaleDateString("ja-JP")}</p>
+      <p>{`${userName}さんは${age}歳です`}</p>
+```
+
+- `{ }` の中には**関数（メソッド）の呼び出し**も書けます。`today.toLocaleDateString("ja-JP")` は日付を「2026/5/10」のような日本語形式の文字列に変換します。
+- 2行目の `` `${userName}さんは${age}歳です` `` は**テンプレートリテラル**。バッククォート（`` ` ``）で囲み、`${ }` の中に変数を差し込める文字列です。これも「値になるもの（式）」なので埋め込めます。
+
+> **用語:** **式（expression）** … 計算すると1つの値になるもの（変数・計算・関数呼び出しなど）。`{ }` の中には式だけ書ける。`if`/`for` などの「文」は書けない。
+
+---
 
 **重要**: `{}` の中に書けるのは **式（expression）** だけです。`if` 文や `for` 文などの **文（statement）** は書けません。
 
@@ -749,6 +921,39 @@ function FruitList() {
 > - みかん
 > - ぶどう
 
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: 表示元になる配列を用意する
+
+```tsx
+  const fruits: string[] = ["りんご", "バナナ", "みかん", "ぶどう"];
+```
+
+- `fruits` は4つの文字列が入った**配列**（複数の値を順番に並べた入れ物）です。
+- `: string[]` は型注釈で「**文字列の配列**」という意味。`string` が「文字列」、`[]` が「配列」を表します。
+- この配列の各要素を、画面のリスト項目に変換していきます。
+
+> **用語:** **配列（array）** … 複数の値を `[ ]` で並べて1つにまとめたもの。`["a", "b"]` のように書く。
+
+---
+
+##### 解説2: map で各要素を <li> に変換する
+
+```tsx
+        {fruits.map((fruit, index) => (
+          <li key={index}>{fruit}</li>
+        ))}
+```
+
+- `fruits.map(...)` は「**配列の各要素を、別のものに作り替えて新しい配列を作る**」メソッドです。ここでは「フルーツ名（文字列）」を「`<li>フルーツ名</li>`（リスト項目）」に作り替えています。
+- `(fruit, index) => (...)` はアロー関数で、`fruit` が各要素（"りんご"など）、`index` が並び順の番号（0,1,2,3）です。
+- `<li key={index}>{fruit}</li>` で、各フルーツ名を箇条書き項目にしています。`{fruit}` で要素の値を表示します。
+- `key={index}` は、Reactがリストの各項目を見分けるための目印です（詳しくは後の 8.3 で解説）。
+
+> **用語:** **map（マップ）** … 配列の全要素を1つずつ変換して新しい配列を作るメソッド。リスト表示の定番。
+
+---
+
 #### オブジェクト配列のレンダリング
 
 ```tsx
@@ -837,6 +1042,83 @@ function BookList() {
 > 状態: 在庫あり          ← 緑色
 > ```
 
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: 書籍データ1件分の「形」を型で決める
+
+```tsx
+type Book = {
+  id: number;          // 一意なID（key に使う）
+  title: string;       // 書籍タイトル
+  author: string;      // 著者名
+  price: number;       // 税込価格
+  isAvailable: boolean;// 在庫があるか（true=あり, false=なし）
+};
+```
+
+- `type Book = { ... }` は「**Book型という、データの形のひな型**」を定義しています。
+- この型は「本1件は `id`（数値）・`title`（文字列）・`author`（文字列）・`price`（数値）・`isAvailable`（真偽値）を持つ」と決めています。
+- こう決めておくと、プロパティを書き忘れたり型を間違えたりしたとき、VS Codeが赤線で教えてくれます。
+
+> **用語:** **型（type）** … データの形（どんな項目をどんな種類で持つか）の決まり。TypeScriptで定義する。
+
+---
+
+##### 解説2: Book型の配列を作る
+
+```tsx
+  const books: Book[] = [
+    { id: 1, title: "React入門",       author: "田中太郎", price: 2800, isAvailable: true },
+    { id: 2, title: "TypeScript実践",  author: "鈴木花子", price: 3200, isAvailable: false },
+    { id: 3, title: "Next.js徹底解説", author: "佐藤一郎", price: 3500, isAvailable: true },
+  ];
+```
+
+- `: Book[]` は「**Book型のオブジェクトだけが入る配列**」という意味です。
+- `{ }` で囲んだ1つ1つが書籍オブジェクト（解説1の Book 型に沿ったデータ）です。
+- 文字列の配列と違い、各要素が複数の項目を持つ「オブジェクト」になっている点がポイントです。
+
+> **用語:** **オブジェクト配列** … 配列の各要素がオブジェクト（複数項目の集まり）になっているもの。
+
+---
+
+##### 解説3: map でオブジェクトをカードに変換し、key を付ける
+
+```tsx
+      {books.map((book) => (
+        <div key={book.id} className="book-card">
+          <h3>{book.title}</h3>
+          <p>著者: {book.author}</p>
+```
+
+- `books.map((book) => (...))` で、各書籍オブジェクトを1枚のカード（`<div>`）に作り替えます。`book` には各要素のオブジェクトが入ります。
+- `{book.title}` のように **`オブジェクト.プロパティ名`** と書くと、そのオブジェクトの中の項目を取り出せます。
+- `key={book.id}` には、配列の番号ではなく**データ固有のID**を使っています。これが推奨される付け方です。
+
+> **用語:** **プロパティアクセス** … `book.title` のように `.` でオブジェクトの中の項目を取り出すこと。
+
+---
+
+##### 解説4: メソッドや三項演算子で表示を整える
+
+```tsx
+          <p>価格: ¥{book.price.toLocaleString()}</p>
+          <p>
+            状態:{" "}
+            <span style={{ color: book.isAvailable ? "green" : "red" }}>
+              {book.isAvailable ? "在庫あり" : "在庫なし"}
+            </span>
+          </p>
+```
+
+- `book.price.toLocaleString()` は数値を「3桁ごとにカンマで区切った文字列」にします。`2800` → `"2,800"`。
+- `{" "}` は「ここに半角スペースを1つ入れたい」というときの書き方です。
+- `book.isAvailable ? "在庫あり" : "在庫なし"` は**三項演算子**で、`isAvailable` が `true` なら「在庫あり」、`false` なら「在庫なし」を表示します。文字色も同じ仕組みで緑/赤に切り替えています。
+
+> **用語:** **三項演算子** … `条件 ? Aの値 : Bの値` で、条件によって2つの値を切り替える式。
+
+---
+
 **重要**: `key` プロパティ（key prop：キー プロップ。Reactがリスト要素を識別するための特別な属性）には、配列内で一意（ユニーク）な値を指定します。データベースから取得した `id` がベストです。`index` は最後の手段です（要素の並び替え・追加・削除で不具合の原因になります）。`key` は React 内部の差分計算（reconciliation）専用で、子コンポーネントから `props.key` として読むことはできません。
 
 #### フィルタリングと map の組み合わせ
@@ -885,6 +1167,43 @@ function AvailableBookList() {
 >
 > Next.js徹底解説 - ¥3,500
 
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: filter で条件に合う要素だけ残す
+
+```tsx
+      {books
+        .filter((book) => book.isAvailable)
+```
+
+- `filter`（フィルター）は「**条件が true の要素だけを残した新しい配列**」を作るメソッドです。
+- `(book) => book.isAvailable` は「`book.isAvailable` が `true` の本だけ残す」という条件です。在庫ありの本だけが残ります。
+- 元の `books` 配列は変更されず、新しい配列が作られます（**非破壊的**）。
+
+> **用語:** **filter（フィルター）** … 配列から条件に合う要素だけを抜き出して新しい配列を作るメソッド。
+
+---
+
+##### 解説2: メソッドチェーンで filter のあとに map をつなぐ
+
+```tsx
+        .map((book) => (
+          <div key={book.id}>
+            <p>
+              {book.title} - ¥{book.price.toLocaleString()}
+            </p>
+          </div>
+        ))}
+```
+
+- `.filter(...)` のすぐ後ろに `.map(...)` を続けて書いています。これを **メソッドチェーン**（メソッドを数珠つなぎにする書き方）と呼びます。
+- 流れは「①filter で在庫ありだけ残す → ②map でその各本をJSXに変換する」の2段階です。
+- `{book.title} - ¥{book.price.toLocaleString()}` で「タイトル - ¥価格」の形に表示しています。`-` や `¥` はそのままの文字、`{ }` の中だけがJavaScriptの値です。
+
+> **用語:** **メソッドチェーン** … `配列.filter(...).map(...)` のようにメソッドを連続して呼ぶ書き方。filterの結果にmapが続けて適用される。
+
+---
+
 ---
 
 ## 3. コンポーネント
@@ -919,6 +1238,54 @@ const Greeting = () => <h1>こんにちは！</h1>;
 ```
 
 > いずれの書き方でも、画面には **「こんにちは！」** という見出しが表示されます。
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: function を使う書き方
+
+```tsx
+function Greeting() {
+  return <h1>こんにちは！</h1>;
+}
+```
+
+- `function 名前() { ... }` は、もっとも基本的な関数の書き方です。
+- `return` で見た目（JSX）を返せば、それだけでコンポーネントになります。
+- 関数名 `Greeting` は**大文字始まり**（PascalCase）にします。これがReactの決まりです。
+
+> **用語:** **PascalCase（パスカルケース）** … `Greeting` のように先頭を大文字にする命名法。Reactのコンポーネント名はこれを使う。
+
+---
+
+##### 解説2: アロー関数を使う書き方
+
+```tsx
+const Greeting = () => {
+  return <h1>こんにちは！</h1>;
+};
+```
+
+- `const 名前 = () => { ... }` は**アロー関数**という書き方で、「Greetingという変数に関数を入れる」形です。
+- `()` が引数、`=>` の右の `{ }` が関数の中身です。やっていることは解説1とまったく同じです。
+- 実務ではこのアロー関数の形がよく使われます。
+
+> **用語:** **アロー関数** … `() => { ... }` という形で書く関数。`function` より短く書ける。
+
+---
+
+##### 解説3: 1行で返せるときは return と { } を省略
+
+```tsx
+const Greeting = () => <h1>こんにちは！</h1>;
+```
+
+- アロー関数で `=> 式` と書くと、その式が**自動的に戻り値**になります（returnを書かなくてよい）。
+- 中括弧 `{ }` を書かないことで「式を直接返す」モードになります。
+- 1行で済むシンプルな部品のとき、この短い書き方がよく使われます。3つとも結果は同じです。
+
+> **用語:** **暗黙のreturn** … アロー関数で `{ }` を省くと、右側の式が自動的に戻り値になる仕組み。
+
+---
 
 #### コンポーネントの使い方
 
@@ -1013,6 +1380,62 @@ function App() {
 > ```
 >
 > 同じ Greeting コンポーネントが3回呼ばれ、それぞれ異なる name を受け取って描画されている。コンポーネントの再利用性がこれで実現できる。
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: 受け取るPropsの「形」を型で決める
+
+```tsx
+type GreetingProps = {
+  name: string;
+};
+```
+
+- `GreetingProps` は「この子コンポーネントが親から受け取るデータの形」を表す型です。
+- ここでは「`name` という**文字列**を1つ受け取る」と決めています。
+- こうしておくと、親が `name` を渡し忘れたり数値を渡したりしたとき、TypeScriptが警告してくれます。
+
+> **用語:** **Props（プロパティ）** … 親コンポーネントから子コンポーネントへ渡すデータ。子の中では読み取り専用。
+
+---
+
+##### 解説2: 分割代入でPropsを受け取る
+
+```tsx
+function Greeting({ name }: GreetingProps) {
+  return <h1>こんにちは、{name}さん！</h1>;
+}
+```
+
+- 関数の引数 `{ name }` は**分割代入**で、親から渡されたPropsオブジェクトから `name` だけを取り出しています。
+- `: GreetingProps` は「受け取るPropsはGreetingProps型ですよ」という型注釈です。
+- 取り出した `name` を `{name}` でJSXに埋め込んで表示しています。
+
+> **用語:** **分割代入** … オブジェクトから必要な項目だけを取り出して変数にする書き方。`{ name } = props` のように書く。
+
+---
+
+##### 解説3: 親がPropsを渡してコンポーネントを使う
+
+```tsx
+function App() {
+  return (
+    <div>
+      <Greeting name="田中" />
+      <Greeting name="鈴木" />
+      <Greeting name="佐藤" />
+    </div>
+  );
+}
+```
+
+- `<Greeting name="田中" />` の `name="田中"` の部分が、子に渡すPropsです。
+- 文字列は `"..."` で渡します（数値や変数を渡すときは `{ }` を使います）。
+- 同じ `Greeting` を3回使い、それぞれ違う `name` を渡すことで、3つの異なる挨拶を表示しています。これがPropsによる**再利用**です。
+
+> **用語:** **再利用** … 同じコンポーネントに違うPropsを渡して、何度も使い回すこと。
+
+---
 
 #### さまざまな型の Props
 
@@ -1109,6 +1532,84 @@ function App() {
 >
 > 【プロフィールを見る】ボタン
 
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: いろいろな型のPropsを定義する
+
+```tsx
+type UserCardProps = {
+  name: string;                    // 必須の文字列
+  age: number;                     // 必須の数値
+  email?: string;                  // ? はオプショナル（省略可能）
+  isAdmin: boolean;                // 必須の真偽値（true / false）
+  hobbies: string[];               // 文字列の配列
+  onClickProfile: () => void;      // 関数型（引数なし・戻り値なし）
+};
+```
+
+- Propsは文字列だけでなく、**数値・真偽値・配列・関数**など、いろいろな型を受け取れます。
+- `email?` の **`?`** は「**オプショナル（省略可能）**」の印で、親が渡さなくてもよい項目です。
+- `onClickProfile: () => void` は**関数を受け取る**型で、`() => void` は「引数なし・戻り値なしの関数」を表します。親が用意した処理を子で呼び出せます。
+
+> **用語:** **オプショナル（`?`）** … 「あってもなくてもよい」項目を表す印。省略すると値は `undefined` になる。
+
+---
+
+##### 解説2: 受け取った各Propsを使って表示する
+
+```tsx
+      <h2>{name}</h2>
+      <p>年齢: {age}歳</p>
+      {email && <p>メール: {email}</p>}
+      <p>権限: {isAdmin ? "管理者" : "一般ユーザー"}</p>
+```
+
+- `{name}` `{age}` のように、受け取ったPropsを `{ }` で埋め込んで表示します。
+- `{email && <p>...</p>}` は「`email` に値があるときだけ表示」という条件付き表示です（省略可能なPropsの定番の扱い方）。
+- `{isAdmin ? "管理者" : "一般ユーザー"}` は三項演算子で、真偽値によって表示文字を切り替えています。
+
+> **用語:** **条件付きレンダリング** … 条件に応じて表示する/しないを切り替えること。`&&` や三項演算子で書く。
+
+---
+
+##### 解説3: 配列Propsを map で展開・関数Propsをボタンに渡す
+
+```tsx
+          {hobbies.map((hobby, index) => (
+            <li key={index}>{hobby}</li>
+          ))}
+      ...
+      <button onClick={onClickProfile}>プロフィールを見る</button>
+```
+
+- 配列のProps `hobbies` は `map` で `<li>` に変換して箇条書き表示しています。
+- `onClick={onClickProfile}` は、親から受け取った**関数をそのまま**ボタンのクリック処理に渡しています。`()` を付けない点に注意（付けると即実行されてしまう）。
+
+> **用語:** **コールバック関数** … 親が用意し、子が「ボタンが押されたとき」などに呼び出す関数。
+
+---
+
+##### 解説4: 親が各型の値を渡す
+
+```tsx
+    <UserCard
+      name="田中太郎"
+      age={25}
+      email="tanaka@example.com"
+      isAdmin={false}
+      hobbies={["読書", "プログラミング", "映画鑑賞"]}
+      onClickProfile={handleClick}
+    />
+```
+
+- 文字列は `"..."` でそのまま渡せます。
+- 数値・真偽値・配列・関数は **`{ }`** で囲んで「JavaScriptの値」として渡します（`age={25}`, `isAdmin={false}`, `hobbies={[...]}`, `onClickProfile={handleClick}`）。
+- この渡し方の違い（文字列だけ `"..."`、それ以外は `{ }`）が初心者のつまずきどころです。
+
+> **用語:** **Propsの渡し方** … 文字列は `"..."`、それ以外（数値・真偽値・配列・オブジェクト・関数）は `{ }` で渡す。
+
+---
+
 #### デフォルト値を持つ Props
 
 ```tsx
@@ -1182,6 +1683,66 @@ function App() {
 > 3. **「無効化」** - 青色・中サイズだが半透明でクリック不可のボタン
 > 4. **「緑の小さなボタン」** - 緑色・小サイズのボタン
 
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: 省略可能なPropsとユニオン型を定義する
+
+```tsx
+type ButtonProps = {
+  label: string;                          // ボタンに表示する文字（必須）
+  color?: string;                         // ? を付けると省略可能
+  size?: "small" | "medium" | "large";    // ユニオン型: 3つの文字列のどれか
+  disabled?: boolean;                     // クリック不可にするか（省略可能）
+};
+```
+
+- `label` だけ必須で、`color` `size` `disabled` は `?` 付きの**省略可能**なPropsです。
+- `size?: "small" | "medium" | "large"` の `|` は「**または**」を表す**ユニオン型**で、この3つの文字列のどれかしか入れられません。タイポすると警告が出ます。
+
+> **用語:** **ユニオン型** … `"a" | "b" | "c"` のように「いくつかのうちのどれか」を表す型。`|` でつなぐ。
+
+---
+
+##### 解説2: 分割代入と同時にデフォルト値を設定する
+
+```tsx
+function Button({
+  label,
+  color = "blue",
+  size = "medium",
+  disabled = false,
+}: ButtonProps) {
+```
+
+- 分割代入で各Propsを取り出すと同時に、`= 値` で**デフォルト値**を指定しています。
+- 親が `color` を渡さなかった場合は、自動的に `"blue"` が使われます。同様に `size` は `"medium"`、`disabled` は `false` になります。
+- これにより「省略されたときの安全な初期値」を保証できます。
+
+> **用語:** **デフォルト値（既定値）** … Propsが渡されなかったときに使われる初期値。`= 値` で指定する。
+
+---
+
+##### 解説3: Propsの値からスタイルを組み立てる
+
+```tsx
+      style={{
+        backgroundColor: color,                 // 背景色（props 由来）
+        padding: sizeStyles[size],              // size に対応する余白文字列
+        opacity: disabled ? 0.5 : 1,            // 無効化されてたら半透明
+        cursor: disabled ? "not-allowed" : "pointer", // マウスカーソルの形
+      }}
+      disabled={disabled}
+```
+
+- 受け取ったProps（`color` `size` `disabled`）を使って、見た目を動的に組み立てています。
+- `sizeStyles[size]` は、サイズ名（"medium"など）をキーにして対応する余白の値を取り出しています。
+- `disabled ? 0.5 : 1` のように三項演算子で、無効化されているかどうかで見た目を変えています。
+- `disabled={disabled}` で、ボタンを実際にクリック不可にしています。
+
+> **用語:** **動的スタイル** … Propsやstateの値に応じて変化する見た目。三項演算子などで切り替える。
+
+---
+
 #### children Props
 
 コンポーネントのタグで囲んだ中身は、`children`（子要素）として渡されます。これにより「外側の枠だけ用意して、中身は呼び出し側が自由に決められる」コンポーネントが作れます。
@@ -1242,6 +1803,59 @@ function App() {
 > **【お知らせカード】** 枠線で囲まれた領域に「お知らせ」という見出しと、2行のテキスト
 >
 > **【プロフィールカード】** 枠線で囲まれた領域に「プロフィール」という見出しと、画像・名前
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: children を受け取る型を定義する
+
+```tsx
+type CardProps = {
+  title: string;
+  children: React.ReactNode;
+};
+```
+
+- `children`（チルドレン）は**特別な予約名**で、コンポーネントのタグで囲んだ中身が自動的にここに入ります。
+- `React.ReactNode` は「**Reactで描画できるものすべて**」を表す型です。文字列・数値・JSX要素・その配列など、何でも受け取れます。
+- これにより「外側の枠だけ用意し、中身は使う側が自由に決める」部品が作れます。
+
+> **用語:** **children（子要素）** … コンポーネントの開始タグと終了タグで囲んだ中身。`<Card>ここ</Card>` の「ここ」の部分。
+
+---
+
+##### 解説2: 受け取った children を表示位置に置く
+
+```tsx
+      <h2 style={{ borderBottom: "1px solid #eee", paddingBottom: "8px" }}>
+        {title}
+      </h2>
+      <div>{children}</div>
+```
+
+- `{title}` でPropsのタイトルを見出しに表示しています。
+- `{children}` と書くと、親が `<Card>...</Card>` の間に書いた要素が、ちょうどこの位置に展開されます。
+- 枠やタイトルは固定で、中身だけ差し替えられる「テンプレート」のような部品になります。
+
+> **用語:** **コンポジション** … 枠コンポーネントの中に別の要素を差し込んで組み合わせる設計。childrenで実現する。
+
+---
+
+##### 解説3: 親が中身を入れて使う
+
+```tsx
+      <Card title="お知らせ">
+        <p>新機能がリリースされました！</p>
+        <p>詳しくはこちらをご覧ください。</p>
+      </Card>
+```
+
+- `<Card>...</Card>` の**開始タグと終了タグで囲んだ中身**（`<p>` 2つ）が、`children` として子に渡されます。
+- `title="お知らせ"` は通常のPropsとして渡されます。
+- 同じ `Card` でも、中身を変えれば「お知らせカード」「プロフィールカード」など、いろいろなカードが作れます。
+
+> **用語:** **ラッパーコンポーネント** … 中身を囲んで装飾や枠を付ける役割のコンポーネント。Cardが典型例。
+
+---
 
 ### 3.3 コンポーネントの分割の考え方
 
@@ -1478,6 +2092,109 @@ function App() {
 >
 > 【カートに追加】ボタン 【♡】ボタン
 
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: 書籍データの型を定義する
+
+```tsx
+type Book = {
+  id: number;                  // 一意なID（DBの主キーに相当）
+  title: string;               // 書名
+  author: string;              // 著者名
+  price: number;               // 価格（円）
+  rating: number;              // 評価1〜5
+  isAvailable: boolean;        // 在庫があるか
+  coverImage?: string;         // ? でオプショナル: 画像URLが無い書籍もある
+  publishedDate: string;       // 出版日
+  tags: string[];              // タグの配列
+};
+```
+
+- まず「本1冊のデータの形」を `Book` 型で決めます。これまでより項目が多いですが、考え方は同じです。
+- `coverImage?` の `?` は省略可能の印で、「表紙画像が無い本もある」ことを表しています。
+- `tags: string[]` はタグの配列（複数の文字列）です。
+
+> **用語:** **型定義** … データがどんな項目をどんな種類で持つかを決めること。表示や受け渡しの安全性が増す。
+
+---
+
+##### 解説2: この部品が受け取るPropsを定義する
+
+```tsx
+type BookCardProps = {
+  book: Book;                                       // 表示する書籍データ
+  onAddToCart: (bookId: number) => void;            // カート追加時のコールバック
+  onToggleFavorite: (bookId: number) => void;       // お気に入り切替時のコールバック
+  isFavorite: boolean;                              // 現在お気に入り状態か
+};
+```
+
+- この部品は「**表示する本のデータ（`book`）**」と、「**ボタンが押されたとき親に知らせる関数（`onAddToCart`/`onToggleFavorite`）**」、「**お気に入り状態（`isFavorite`）**」を受け取ります。
+- `onAddToCart: (bookId: number) => void` は「数値を1つ受け取り、戻り値なしの関数」を表します。どの本かを `bookId` で親に伝えます。
+- 「データ＋操作を知らせる関数」をまとめて受け取るのが、実用的なコンポーネントの典型です。
+
+> **用語:** **イベント用コールバック** … `onXxx` という名前で親から渡される関数。子で操作が起きたとき呼んで親に通知する。
+
+---
+
+##### 解説3: Propsを分割代入し、表示用の関数を用意する
+
+```tsx
+function BookCard({ book, onAddToCart, onToggleFavorite, isFavorite }: BookCardProps) {
+  const renderStars = (rating: number): string => {
+    return "★".repeat(rating) + "☆".repeat(5 - rating);
+  };
+```
+
+- 引数の `{ book, onAddToCart, ... }` で、4つのPropsを一度に分割代入で取り出しています。
+- `renderStars` は「評価の数だけ★、残りを☆で埋めた文字列」を作る関数です。
+- `"★".repeat(3)` は `"★★★"` のように「文字を指定回数くり返す」メソッドです。評価4なら `★★★★☆` になります。
+
+> **用語:** **repeat** … 文字列を指定した回数だけくり返した新しい文字列を作るメソッド。
+
+---
+
+##### 解説4: 表紙画像の有無で表示を切り替える
+
+```tsx
+      {book.coverImage ? (
+        <img
+          src={book.coverImage}
+          alt={`${book.title}の表紙`}
+          style={{ width: "100%", borderRadius: "8px" }}
+        />
+      ) : (
+        <div style={{ /* ...グレーの箱... */ }}>
+          No Image
+        </div>
+      )}
+```
+
+- 三項演算子で「`book.coverImage` が**あれば画像**、**なければ「No Image」の箱**」を切り替えています。
+- `alt={`${book.title}の表紙`}` はテンプレートリテラルで、「○○の表紙」という代替テキストを動的に作っています。
+- 省略可能なProps（画像URL）の「ある/ない」を安全に扱う典型パターンです。
+
+> **用語:** **プレースホルダー** … 本来の内容がないときに代わりに表示する仮の表示。ここでは「No Image」の箱。
+
+---
+
+##### 解説5: ボタンにアロー関数で包んだコールバックを渡す
+
+```tsx
+          onClick={() => onAddToCart(book.id)}
+          disabled={!book.isAvailable}
+      ...
+          onClick={() => onToggleFavorite(book.id)}
+```
+
+- `onClick={() => onAddToCart(book.id)}` のように**アロー関数で包む**のは、「**クリックされたときに `book.id` を引数として渡したい**」からです。
+- `onClick={onAddToCart(book.id)}` と書くと、表示の瞬間に即実行されてしまうので誤りです。
+- `disabled={!book.isAvailable}` は「在庫が無ければボタンを押せなくする」指定です。`!` は「否定（〜でない）」を表します。
+
+> **用語:** **引数付きイベント** … クリック時に値を渡したいとき、`() => 関数(値)` とアロー関数で包んで渡す。
+
+---
+
 ---
 
 ## 4. State (useState)
@@ -1614,6 +2331,69 @@ function Counter() {
 1. `count` は**読み取り専用**。直接 `count = 5;` とは書けない（書いても画面に反映されない）
 2. 値を変えたいときは必ず `setCount(...)` を呼ぶ
 3. `setCount` を呼ぶと、React が裏で関数 `Counter` をもう一度実行し、新しい count で画面を再描画する
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: useStateをimportする
+
+```tsx
+import { useState } from "react";
+```
+
+- `import { useState } from "react";` は「Reactから `useState` という道具を取り込む」という宣言です。
+- `useState` を使うコンポーネントのファイルには、必ずこの1行が必要です。
+- `useState` は「**コンポーネントが値を覚えておく**」ための関数（フック）です。
+
+> **用語:** **フック（Hook）** … `use` で始まるReactの特別な関数。コンポーネントに「状態を持つ」などの機能を追加する。
+
+---
+
+##### 解説2: stateを作る
+
+```tsx
+  const [count, setCount] = useState<number>(0);
+```
+
+- `useState<number>(0)` は「**数値の状態を、初期値0で作って**」という意味です。`<number>` が型、`(0)` が初期値です。
+- 戻り値は配列で2つ入っています：`[現在の値, 値を変える関数]`。これを分割代入で `count` と `setCount` に取り出しています。
+- `count` が今の数値、`setCount` がその数値を変える関数です。`count` は直接書き換えられず、必ず `setCount` を使います。
+
+> **用語:** **state（状態）** … コンポーネントが内部で覚えておく「変化する値」。変わると画面が自動で更新される。
+
+---
+
+##### 解説3: ボタンが押されたときの処理を書く
+
+```tsx
+  const handleIncrement = () => {
+    setCount(count + 1);  // 「今の count + 1」を新しい値として設定
+  };
+```
+
+- `handleIncrement` は「+1ボタンが押されたときの処理」を表す関数です。
+- `setCount(count + 1)` で「今の値 + 1」を新しい値として設定します。
+- **`setCount` を呼ぶと、Reactが自動で画面を描き直す**——これが `useState` の最大のポイントです。同様に `setCount(count - 1)` で-1、`setCount(0)` でリセットができます。
+
+> **用語:** **イベントハンドラ** … ボタンクリックなどの操作が起きたときに呼ばれる関数。`handleXxx` という名前をよく使う。
+
+---
+
+##### 解説4: stateを画面に表示し、ボタンに処理を結びつける
+
+```tsx
+      <p>カウント: {count}</p>
+      <button onClick={handleDecrement}>-1</button>
+      <button onClick={handleReset}>リセット</button>
+      <button onClick={handleIncrement}>+1</button>
+```
+
+- `{count}` で、今の数値を画面に表示します。`count` が5なら「カウント: 5」になります。
+- `onClick={handleIncrement}` で、ボタンと処理を結びつけます。**関数名だけを渡す**点に注意（`handleIncrement()` と `()` を付けると即実行されてバグになります）。
+- 数値が変わると `setCount` が画面を描き直すので、表示も自動で更新されます。
+
+> **用語:** **再レンダリング** … stateが変わったとき、コンポーネント関数が再実行されて画面が更新されること。
+
+---
 
 #### useState の型推論
 
@@ -1882,6 +2662,79 @@ function ProfileEditor() {
 
 > この結果、画面には4つの入力欄と、その下にプレビューが表示されます。入力欄に文字を入力すると、**リアルタイムにプレビュー部分が更新**されます。例えば名前の入力欄を「鈴木花子」に変更すると、プレビューの名前も即座に **「名前: 鈴木花子」** に変わります。
 
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: 複数の項目を1つのオブジェクトstateで持つ
+
+```tsx
+  const [profile, setProfile] = useState<UserProfile>({
+    name: "田中太郎",
+    email: "tanaka@example.com",
+    age: 25,
+    bio: "React を勉強中です",
+  });
+```
+
+- 名前・メール・年齢・自己紹介を、**1つのオブジェクト**として state に持っています。バラバラに4つの state を作るより管理しやすくなります。
+- `useState<UserProfile>(...)` の `<UserProfile>` で「この state の中身はUserProfile型」と指定しています。
+- 初期値として、オブジェクトをそのまま渡しています。
+
+> **用語:** **オブジェクトstate** … 複数の関連する値を1つのオブジェクトにまとめて持つstate。
+
+---
+
+##### 解説2: スプレッド構文で「新しいオブジェクト」を作って更新する
+
+```tsx
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setProfile({
+      ...profile,
+      name: e.target.value,
+    });
+  };
+```
+
+- `e.target.value` は入力欄の現在の文字列です。`e` はイベント情報、`.target` が入力欄そのもの、`.value` が中身です。
+- `...profile` は**スプレッド構文**で、「今の `profile` の全項目をコピーして展開する」という意味です。
+- そのあと `name: e.target.value` で `name` だけを上書きします。結果として「**他の項目はそのまま・名前だけ新しい**、新しいオブジェクト**」ができ、それを `setProfile` に渡します。
+
+> **用語:** **スプレッド構文（`...`）** … オブジェクトや配列の中身を展開してコピーする記法。state更新で「新しいオブジェクトを作る」のに使う。
+
+---
+
+##### 解説3: 入力の種類に応じてイベントの型を変える
+
+```tsx
+  const handleAgeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setProfile({ ...profile, age: Number(e.target.value) });
+  };
+  const handleBioChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setProfile({ ...profile, bio: e.target.value });
+  };
+```
+
+- `e.target.value` は、たとえ `<input type="number">` でも**必ず文字列**です。数値が必要なら `Number(...)` で変換します。
+- `<textarea>`（複数行入力）の場合は、イベントの型が `HTMLInputElement` から **`HTMLTextAreaElement`** に変わります。
+- どのハンドラも「スプレッドでコピー＋1項目だけ上書き」という同じパターンです。
+
+> **用語:** **型変換** … `Number("25")` のように、文字列を数値などへ変換すること。入力値は文字列なので必要になる。
+
+---
+
+##### 解説4: 制御コンポーネントで入力欄とstateを同期する
+
+```tsx
+        <input value={profile.name} onChange={handleNameChange} />
+```
+
+- `value={profile.name}` で入力欄の表示を state の値に固定し、`onChange={handleNameChange}` で入力のたびに state を更新します。
+- この「**value と onChange をセットで指定する**」書き方を**制御コンポーネント**と呼びます。state が「唯一の正解」になり、画面と値が常に一致します。
+- だから入力するとプレビューもリアルタイムに更新されます。
+
+> **用語:** **制御コンポーネント** … 入力欄の値をstateで完全に管理する書き方。value と onChange を必ずセットで使う。
+
+---
+
 **重要**: オブジェクトの state を更新するときは、必ず**新しいオブジェクトを作成**してください。プロパティを直接変更してはいけません。
 
 ```tsx
@@ -2104,6 +2957,90 @@ function TodoApp() {
 >
 > 合計: 3件 / 完了: 2件 / 未完了: 1件
 
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: 配列stateと補助のstateを用意する
+
+```tsx
+  const [todos, setTodos] = useState<Todo[]>([
+    { id: 1, text: "React を学ぶ", completed: false },
+    { id: 2, text: "TypeScript を学ぶ", completed: true },
+  ]);
+  const [inputValue, setInputValue] = useState<string>("");
+  const [nextId, setNextId] = useState<number>(3);
+```
+
+- `todos` は TODO の**配列**state です。`<Todo[]>` で「Todo型の配列」と指定しています。
+- `inputValue` は入力欄の現在値（制御コンポーネント用）、`nextId` は新規追加するときの一意なID用です。
+- このように、1つの機能でも複数のstateを組み合わせて使うことがよくあります。
+
+> **用語:** **配列state** … 複数の項目をリストとして持つstate。追加・削除・変更を非破壊的に行う。
+
+---
+
+##### 解説2: 追加はスプレッド構文で「末尾に足した新しい配列」を作る
+
+```tsx
+    if (inputValue.trim() === "") return;
+    const newTodo: Todo = { id: nextId, text: inputValue, completed: false };
+    setTodos([...todos, newTodo]);
+    setInputValue("");
+    setNextId(nextId + 1);
+```
+
+- `inputValue.trim() === ""` で空入力なら**早期return**して何もしません。`.trim()` は前後の空白を除く処理です。
+- `[...todos, newTodo]` は「**今の全要素＋末尾に新項目**」の新しい配列です。元の `todos` は変更しません。
+- 追加後は入力欄を空に戻し（`setInputValue("")`）、次回のIDを1増やします。
+
+> **用語:** **イミュータブル更新** … 元の配列・オブジェクトを変更せず、新しいものを作って差し替える更新方法。
+
+---
+
+##### 解説3: 削除はfilter、変更はmapで新しい配列を作る
+
+```tsx
+  const handleDelete = (id: number) => {
+    setTodos(todos.filter((todo) => todo.id !== id));
+  };
+  const handleToggle = (id: number) => {
+    setTodos(
+      todos.map((todo) =>
+        todo.id === id ? { ...todo, completed: !todo.completed } : todo
+      )
+    );
+  };
+```
+
+- **削除**は `filter` で「IDが一致しないもの（＝消す対象でないもの）だけ残す」新しい配列を作ります。
+- **変更**は `map` で「IDが一致するものだけ作り替え、他はそのまま」の新しい配列を作ります。`{ ...todo, completed: !todo.completed }` で完了状態を反転しています。
+- どちらも元の配列を直接いじらず、新しい配列を `setTodos` に渡すのがポイントです。
+
+> **用語:** **filter / map** … filterは「条件で絞る」、mapは「各要素を作り替える」。配列stateの更新で多用する。
+
+---
+
+##### 解説4: 配列を map でリスト表示し、統計を計算する
+
+```tsx
+        {todos.map((todo) => (
+          <li key={todo.id}>
+            <input type="checkbox" checked={todo.completed} onChange={() => handleToggle(todo.id)} />
+            ...
+            <button onClick={() => handleDelete(todo.id)}>削除</button>
+          </li>
+        ))}
+      ...
+        合計: {todos.length}件 / 完了: {todos.filter((t) => t.completed).length}件
+```
+
+- `todos.map(...)` で各TODOを `<li>` に変換します。`key={todo.id}` には一意なIDを使います。
+- チェックボックスや削除ボタンは `() => handleToggle(todo.id)` のようにアロー関数で包み、どのTODOかをIDで渡します。
+- `todos.length` で件数、`todos.filter(...).length` で「条件を満たす件数」を計算して統計を表示しています。
+
+> **用語:** **length** … 配列の要素数。`filter(...).length` で「条件に合う数」を数えられる。
+
+---
+
 #### 配列操作の早見表
 
 | 操作 | 使わない（直接変更） | 使う（新しい配列を作成） |
@@ -2179,6 +3116,64 @@ function ClickExamples() {
 > 【Apple】を押すと、**「Appleがクリックされました」** と表示されます。
 >
 > 【位置を表示】を押すと、コンソールにクリック座標が出力されます。
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: クリック時に呼ぶ関数を用意する
+
+```tsx
+  const handleClick = () => {
+    alert("ボタンがクリックされました！");
+  };
+  const handleItemClick = (itemName: string) => {
+    alert(`${itemName}がクリックされました`);
+  };
+```
+
+- `handleClick` は引数なしのシンプルなクリック処理です。`alert(...)` はブラウザにメッセージを表示する組み込み関数です。
+- `handleItemClick` は**引数を受け取る**処理で、押された項目名を受け取って表示します。
+- イベントハンドラはただのJavaScript関数なので、引数も自由に決められます。
+
+> **用語:** **イベントハンドラ** … クリックなどの操作が起きたときに呼ばれる関数。
+
+---
+
+##### 解説2: イベントオブジェクトを受け取る
+
+```tsx
+  const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    console.log("クリック位置:", e.clientX, e.clientY);
+    console.log("クリックされた要素:", e.currentTarget.textContent);
+  };
+```
+
+- 関数の引数 `e` には、Reactが「何が起きたか」の情報（**イベントオブジェクト**）を渡してくれます。
+- `e: React.MouseEvent<HTMLButtonElement>` は「`<button>` に対するマウスイベント」の型です。
+- `e.clientX`/`e.clientY` でクリックされた座標、`e.currentTarget` でハンドラを付けた要素そのものを取得できます。
+
+> **用語:** **イベントオブジェクト** … 発生したイベントの詳細情報（座標・対象要素など）が入った箱。慣例で `e` と書く。
+
+---
+
+##### 解説3: 関数の「渡し方」を使い分ける
+
+```tsx
+      <button onClick={handleClick}>クリック</button>
+      <button onClick={() => handleItemClick("Apple")}>Apple</button>
+      <button onClick={handleButtonClick}>位置を表示</button>
+      <button onClick={() => console.log("インラインハンドラ")}>
+        インライン
+      </button>
+```
+
+- 引数が不要なら `onClick={handleClick}` のように**関数名だけ**を渡します（`()` を付けない）。
+- 引数を渡したいときは `onClick={() => handleItemClick("Apple")}` のように**アロー関数で包み**ます。
+- イベントオブジェクトを使いたいときは関数名だけ渡せば、Reactが自動で `e` を渡してくれます。
+- その場限りの処理なら、インラインでアロー関数を直接書くこともできます。
+
+> **用語:** **関数参照を渡す** … `onClick={関数名}` のように、関数を実行せず「関数そのもの」を渡すこと。Reactがクリック時に呼ぶ。
+
+---
 
 **注意**: `onClick` に関数を渡すときは、**関数を実行してはいけません**。
 
@@ -2298,6 +3293,92 @@ function InputExamples() {
 > 2. セレクトボックスで「青」を選ぶと、**「選択した色: blue」** が青色で表示
 > 3. チェックボックスをオンにすると、**「同意状態: 同意済み」** に変化
 > 4. ラジオボタンで「L」を選ぶと、**「選択サイズ: L」** に変化
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: 入力の種類ごとにstateを用意する
+
+```tsx
+  const [text, setText] = useState<string>("");
+  const [selectedColor, setSelectedColor] = useState<string>("red");
+  const [isChecked, setIsChecked] = useState<boolean>(false);
+  const [selectedSize, setSelectedSize] = useState<string>("M");
+```
+
+- テキスト・セレクト・チェックボックス・ラジオの4つに対し、それぞれ独立した state を用意しています。
+- テキストやセレクトは文字列（`string`）、チェックボックスは真偽値（`boolean`）の state です。
+- 入力の種類によって「覚えておく値の型」が変わる点に注目してください。
+
+> **用語:** **onChange** … 入力欄の内容が変化したときに呼ばれるイベント。値をstateに保存するのに使う。
+
+---
+
+##### 解説2: テキスト入力は value をstateで取り出す
+
+```tsx
+        <input
+          type="text"
+          value={text}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setText(e.target.value)
+          }
+        />
+```
+
+- `value={text}` で表示を state に固定し、`onChange` で入力のたびに更新する**制御コンポーネント**です。
+- `e.target.value` でその入力欄の現在の文字列を取り出し、`setText` で state を更新します。
+- これにより「画面の入力欄」と「state の値」が常に一致します。
+
+> **用語:** **e.target.value** … 入力欄の現在の値。テキストやセレクトの値の取り出しに使う。
+
+---
+
+##### 解説3: チェックボックスは value ではなく checked を使う
+
+```tsx
+          <input
+            type="checkbox"
+            checked={isChecked}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setIsChecked(e.target.checked)
+            }
+          />
+```
+
+- チェックボックスは文字列ではなく**オン/オフ**なので、`value` ではなく **`checked`** プロパティを使います。
+- 値の取り出しも `e.target.value` ではなく **`e.target.checked`**（true/false の真偽値）を使います。
+- 入力の種類によって「使うプロパティ」が違う、という点が初心者のつまずきどころです。
+
+> **用語:** **checked** … チェックボックスやラジオボタンの「選択されているか」を表す真偽値プロパティ。
+
+---
+
+##### 解説4: ラジオボタンは name でグループ化し checked で判定
+
+```tsx
+        {["S", "M", "L", "XL"].map((size) => (
+          <label key={size} style={{ marginRight: "12px" }}>
+            <input
+              type="radio"
+              name="size"
+              value={size}
+              checked={selectedSize === size}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setSelectedSize(e.target.value)
+              }
+            />
+            {size}
+          </label>
+        ))}
+```
+
+- 選択肢の配列を `map` で複数のラジオボタンに展開しています。
+- `name="size"` をすべて同じにすることで「**1つだけ選べるグループ**」になります。
+- `checked={selectedSize === size}` で「この選択肢が今の値と同じなら選択状態」にしています。選ぶと `onChange` で state が更新されます。
+
+> **用語:** **name属性** … 同じ name のラジオボタンは1つのグループになり、同時に1つだけ選択できる。
+
+---
 
 ### 5.3 onSubmit（フォーム送信）
 
@@ -2821,6 +3902,53 @@ Console:
 >
 > なお開発モードの **Strict Mode** が有効だと、初回の useEffect は **わざと2回呼ばれます**（マウント → アンマウント → 再マウントをシミュレートして、クリーンアップ忘れを検出するため）。「console.log が2回出る？」と驚かないようにしましょう。本番ビルドでは1回しか呼ばれません。
 
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: useStateとuseEffectをimportする
+
+```tsx
+import { useState, useEffect } from "react";
+```
+
+- `useEffect` を使うには、`useState` と一緒にReactから取り込みます。
+- `useEffect` は「**画面が描かれた"あと"に、追加の処理（副作用）をする**」ための道具です。
+- 副作用とは「画面を描く以外の処理」のこと。ここでは「ブラウザのタブ名を変える」のがそれにあたります。
+
+> **用語:** **副作用（Side Effect）** … 画面描画以外の処理（タブ名変更・API通信・タイマーなど）。useEffectの中で行う。
+
+---
+
+##### 解説2: useEffectで副作用の処理を書く
+
+```tsx
+  useEffect(() => {
+    document.title = `カウント: ${count}`;
+    console.log(`useEffect が実行されました（count = ${count}）`);
+  }, [count]);
+```
+
+- `useEffect(処理, 依存配列)` の2点セットで書きます。第1引数が「やりたい処理」、第2引数が「いつ実行するか」の指定です。
+- `document.title = ...` はブラウザのタブ名を変える命令（DOM操作＝副作用）です。これをJSXの中に直接書くと不安定なので、useEffectの中に隔離しています。
+- `console.log(...)` で実行されたことを確認できるようにしています。
+
+> **用語:** **useEffect** … レンダリングのあとに副作用を実行するフック。`useEffect(処理, 依存配列)` の形で使う。
+
+---
+
+##### 解説3: 依存配列で「いつ実行するか」を決める
+
+```tsx
+  }, [count]); // ← count が変わるたびに上の関数が再実行される
+```
+
+- 第2引数の `[count]` が**依存配列**で、`useEffect` のいちばんのキモです。
+- `[count]` は「**count が変わったときだけ処理をやり直す**」という意味です。初回表示でも1回実行されます。
+- もし `[]`（空）にすると「最初の1回だけ」、省略すると「毎回（再描画のたび）」実行されます。
+
+> **用語:** **依存配列** … useEffectの第2引数。この中の値が変わったときだけ処理を再実行する。
+
+---
+
 ### 6.3 依存配列
 
 依存配列の指定方法によって、`useEffect` の実行タイミングが変わります。
@@ -2886,6 +4014,60 @@ function EffectExamples() {
 | `[]`（空配列） | 初回マウント時のみ | API 初期データ取得 |
 | `[count]` | `count` が変わった時 | 値の変化に応じた処理 |
 | `[count, name]` | いずれかが変わった時 | 複数の値に応じた処理 |
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: 依存配列を省略 → 毎回実行（基本使わない）
+
+```tsx
+  useEffect(() => {
+    console.log("毎回のレンダリング後に実行");
+  }); // ← 第2引数を省略
+```
+
+- 第2引数（依存配列）を**完全に省略**すると、再描画されるたびに毎回実行されます。
+- この中で state を更新すると、すぐに無限ループに陥るため、**ほぼ使うべきではありません**。
+- 「省略＝毎回」とだけ覚えておけば十分です。
+
+> **用語:** **依存配列の省略** … 第2引数を書かないと毎レンダリング後に実行される。危険なので通常避ける。
+
+---
+
+##### 解説2: 空配列 [] → 初回マウント時に1回だけ
+
+```tsx
+  useEffect(() => {
+    console.log("コンポーネントのマウント時に1回だけ実行");
+  }, []); // ← 空の配列
+```
+
+- `[]`（空配列）は「依存する値が無い」という意味なので、**初回マウント時に1回だけ**実行されます。
+- APIからの初期データ取得など「最初に1度だけやりたい処理」に最適です。
+- ※開発時の Strict Mode では2回呼ばれますが、本番では1回です。
+
+> **用語:** **マウント** … コンポーネントが初めて画面に表示されること。`[]` の useEffect はこのとき1回実行される。
+
+---
+
+##### 解説3: [値] → その値が変わったときだけ実行
+
+```tsx
+  useEffect(() => {
+    console.log(`count が変わりました: ${count}`);
+  }, [count]); // ← count が変わるたびに実行
+
+  useEffect(() => {
+    console.log(`count または name が変わりました`);
+  }, [count, name]); // ← count または name が変わるたびに実行
+```
+
+- `[count]` は「count が前回と異なるときだけ」実行されます。値の変化に応じた処理に使います。
+- `[count, name]` のように複数入れると、**どれか1つでも変われば**実行されます。
+- effect の中で使う state や props は、基本的に全部この配列に入れるのが安全です（入れ忘れるとバグの原因になります）。
+
+> **用語:** **stale closure（古い値の参照）** … 依存配列に入れ忘れた値が古いまま使われるバグ。依存値は漏らさず入れる。
+
+---
 
 #### 実践例: API からデータを取得
 
@@ -2977,6 +4159,93 @@ function UserList() {
 >
 > ネットワークエラーが発生した場合は、赤字で **「エラー: Failed to fetch」** 等と表示されます。
 
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: データ・読み込み・エラーの3つのstateを持つ
+
+```tsx
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+```
+
+- API通信では「取得したデータ」「読み込み中かどうか」「エラーが起きたか」の**3つの状態**を持つのが定番です。
+- `users` は初期値が空配列、`loading` は最初 `true`（読み込み中）、`error` は `string | null`（エラー無しなら null）型です。
+- この3つで「読み込み中／成功／失敗」の画面を出し分けます。
+
+> **用語:** **ローディング状態** … 通信が終わるまでの「読み込み中」を表すstate。ユーザーに待ち時間を伝える。
+
+---
+
+##### 解説2: useEffectの中で非同期関数を定義して呼ぶ
+
+```tsx
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch("https://jsonplaceholder.typicode.com/users");
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data: User[] = await response.json();
+        setUsers(data);
+```
+
+- `async`/`await` は「**通信のような時間のかかる処理を、順番に待ちながら書く**」ための構文です。
+- `useEffect` の第1引数の関数自体は `async` にできないため、**内側に `fetchUsers` という async 関数を定義して呼ぶ**形にしています。
+- `await fetch(...)` でデータを取りに行き、`await response.json()` で中身をJavaScriptのデータに変換して `setUsers` に保存します。
+
+> **用語:** **async / await** … 非同期処理（通信など）を同期的に見える形で書く構文。`await` は結果が返るまで待つ。
+
+---
+
+##### 解説3: try/catch/finallyで成功・失敗・後処理を分ける
+
+```tsx
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "不明なエラー");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUsers();
+  }, []); // 空配列 → 初回マウント時に1回だけ実行
+```
+
+- `try { }` の中で通信を試み、失敗したら `catch (err) { }` に飛んでエラーメッセージを state に保存します。
+- `finally { }` は**成功・失敗どちらでも必ず**実行されるので、ここで `setLoading(false)`（読み込み終了）にします。
+- 依存配列は `[]` なので、この通信は**初回に1回だけ**実行されます。
+
+> **用語:** **try / catch / finally** … 失敗するかもしれない処理を安全に扱う構文。catchはエラー時、finallyは必ず実行。
+
+---
+
+##### 解説4: 状態別に早期returnで画面を出し分ける
+
+```tsx
+  if (loading) {
+    return <p>読み込み中...</p>;
+  }
+  if (error) {
+    return <p style={{ color: "red" }}>エラー: {error}</p>;
+  }
+  return (
+    <div>
+      <h2>ユーザー一覧</h2>
+      <ul>{users.map((user) => (...))}</ul>
+    </div>
+  );
+```
+
+- まず `loading` が true なら「読み込み中...」を返して**ここで終了**（早期return）します。
+- 次に `error` があればエラー表示を返します。
+- どちらでもない（＝成功）ときだけ、最後の `return` まで進んでユーザー一覧を表示します。
+
+> **用語:** **早期return** … 条件を満たしたら途中でreturnして関数を抜けること。状態別の画面切り替えに便利。
+
+---
+
 ### 6.4 クリーンアップ
 
 `useEffect` の中で `return` した関数は、**クリーンアップ関数**として実行されます。コンポーネントがアンマウント（画面から消える）されるとき、または次の effect が実行される前に呼ばれます。
@@ -3050,6 +4319,59 @@ function Timer() {
 >
 > 【リセット】を押すと、**「00:00」** に戻り、停止します。
 
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: 経過秒数と動作中フラグのstateを持つ
+
+```tsx
+  const [seconds, setSeconds] = useState<number>(0);
+  const [isRunning, setIsRunning] = useState<boolean>(false);
+```
+
+- `seconds` は経過秒数（数値）、`isRunning` は「タイマーが動いているか」を表す真偽値です。
+- 「開始」で `isRunning` を `true`、「停止」で `false` にして、タイマーのオン/オフを切り替えます。
+- この `isRunning` が次の useEffect の依存配列のカギになります。
+
+> **用語:** **フラグ** … `true`/`false` で状態を表す値。ここでは「動作中かどうか」を表す。
+
+---
+
+##### 解説2: setIntervalで1秒ごとにカウントアップする
+
+```tsx
+  useEffect(() => {
+    if (!isRunning) return;
+    const intervalId = setInterval(() => {
+      setSeconds((prev) => prev + 1);
+    }, 1000);
+```
+
+- `if (!isRunning) return;` で、停止中なら何もせずに抜けます（早期return）。
+- `setInterval(関数, 1000)` は「**1000ミリ秒（1秒）ごとに関数をくり返し実行**」するブラウザの組み込み関数で、識別用のID（`intervalId`）を返します。
+- `setSeconds((prev) => prev + 1)` は**関数型更新**で、「直前の値に+1」します。これにより依存配列に `seconds` を入れずに済みます。
+
+> **用語:** **setInterval** … 一定時間ごとに処理をくり返す関数。止めるには clearInterval にIDを渡す。
+
+---
+
+##### 解説3: クリーンアップ関数でタイマーを止める
+
+```tsx
+    return () => {
+      clearInterval(intervalId);
+      console.log("タイマーをクリーンアップしました");
+    };
+  }, [isRunning]);
+```
+
+- `useEffect` の中で **`return` した関数**が**クリーンアップ関数**です。「次のeffect実行の直前」や「コンポーネントが消えるとき」に呼ばれます。
+- `clearInterval(intervalId)` でタイマーを止めます。これを忘れると、画面が消えてもタイマーが動き続け、**メモリリーク**になります。
+- 依存配列が `[isRunning]` なので、開始/停止のたびに「古いタイマーを止めて新しく設定し直す」動きになります。
+
+> **用語:** **クリーンアップ関数** … useEffectが返す後片付け用の関数。タイマー解除やリスナー解除に使う。
+
+---
+
 #### ウィンドウサイズの監視（クリーンアップの実用例）
 
 ```tsx
@@ -3101,6 +4423,63 @@ function WindowSizeDisplay() {
 ```
 
 > この結果、画面には **「幅: 1920px」** **「高さ: 1080px」** のように現在のウィンドウサイズが表示されます。ブラウザのウィンドウをリサイズすると、数値がリアルタイムに変化します。
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: 現在のウィンドウサイズで初期化する
+
+```tsx
+  const [windowSize, setWindowSize] = useState<WindowSize>({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
+```
+
+- `window.innerWidth` / `window.innerHeight` は、ブラウザの表示領域の現在の幅と高さです。
+- これを `useState` の初期値に使うことで、**初回表示から正しいサイズ**を表示できます。
+- `windowSize` は `{ width, height }` という形のオブジェクトstateです。
+
+> **用語:** **window** … ブラウザのウィンドウ全体を表す組み込みオブジェクト。サイズなどの情報を持つ。
+
+---
+
+##### 解説2: リサイズイベントを監視する関数を登録する
+
+```tsx
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+    window.addEventListener("resize", handleResize);
+```
+
+- `handleResize` は「今のサイズを取得して state を更新する」関数です。
+- `window.addEventListener("resize", handleResize)` で「**ウィンドウサイズが変わるたびに `handleResize` を呼んで**」と登録します。
+- これでリサイズのたびに state が更新され、画面の表示も追従します。
+
+> **用語:** **addEventListener** … 「○○が起きたらこの関数を呼ぶ」とイベントを登録するメソッド。
+
+---
+
+##### 解説3: クリーンアップでリスナーを解除する
+
+```tsx
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []); // 初回マウント時にのみ設定
+```
+
+- `return` した関数（クリーンアップ）で、`removeEventListener` を呼んで**登録したリスナーを解除**します。
+- 解除し忘れると、マウント/アンマウントのたびにリスナーが増殖し、メモリリークや動作の重さの原因になります。
+- 依存配列は `[]` なので、登録は初回マウント時に1回だけ、解除はアンマウント時に行われます。
+
+> **用語:** **removeEventListener** … addEventListenerで登録したイベントの監視を解除するメソッド。後片付けに必須。
+
+---
 
 ### 6.5 コンポーネントライフサイクルと useEffect
 
@@ -3296,6 +4675,65 @@ function Footer() {
 
 > `Header` コンポーネントでは、画面幅が768pxより大きい場合 **「デスクトップメニュー」**、小さい場合 **「モバイルメニュー」** と表示されます。ウィンドウをリサイズすると自動的に切り替わります。
 
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: use で始まる関数として定義する
+
+```tsx
+function useWindowSize(): WindowSize {
+  const [windowSize, setWindowSize] = useState<WindowSize>({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
+```
+
+- カスタムフックは**関数名を必ず `use` で始めます**（Reactがフックとして認識する条件）。
+- `(): WindowSize` は「この関数は WindowSize 型の値を返す」という宣言です。
+- 中で `useState` などの普通のフックを使えます。ここでは画面サイズを state で覚えています。
+
+> **用語:** **カスタムフック** … `useState` や `useEffect` を使う処理を `use〇〇` という関数にまとめ、使い回せるようにしたもの。
+
+---
+
+##### 解説2: 処理の中身は通常のコンポーネントと同じ
+
+```tsx
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowSize({ width: window.innerWidth, height: window.innerHeight });
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+  return windowSize;
+}
+```
+
+- 中身は、6.4 のウィンドウサイズ監視とまったく同じ処理（リスナー登録＋クリーンアップ）です。
+- 違いは「これをコンポーネントの中ではなく**関数に閉じ込めている**」点だけです。
+- 最後に `return windowSize;` で値を返します。**この返した値が、呼び出し元のコンポーネントで使えます**。
+
+> **用語:** **ロジックの切り出し** … 複数の場所で使う処理を関数にまとめること。カスタムフックはその一種。
+
+---
+
+##### 解説3: どのコンポーネントからも1行で使える
+
+```tsx
+function Header() {
+  const { width } = useWindowSize();
+  return <header>{width > 768 ? "デスクトップメニュー" : "モバイルメニュー"}</header>;
+}
+```
+
+- `const { width } = useWindowSize();` の**1行**で、画面幅を取得できます。
+- `Header` でも `Footer` でも同じ書き方で使えます。同じロジックを何度もコピペせずに済みます。
+- 注意：別コンポーネントから呼ぶと**それぞれ独立した state を持ちます**。「ロジックの共有」であって「state そのものの共有」ではありません。
+
+> **用語:** **DRY原則** … 同じコードをくり返さない（Don't Repeat Yourself）という考え方。カスタムフックで実現できる。
+
+---
+
 #### useLocalStorage フック
 
 ```tsx
@@ -3380,6 +4818,65 @@ function Settings() {
 >
 > **ページを再読み込みしても設定が保持されます**（ローカルストレージに保存されているため）。
 
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: ジェネリクスで「どんな型でも扱える」フックにする
+
+```tsx
+function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T) => void] {
+```
+
+- `<T>` は**ジェネリクス**で、「型を呼び出し側から受け取る」仕組みです。文字列でも数値でも使えるようになります。
+- 引数の `key` は保存場所の名前、`initialValue` は初期値（型 `T`）です。
+- 戻り値の `[T, (value: T) => void]` は「`[現在値, 更新関数]`」という、`useState` とよく似た形です。
+
+> **用語:** **ジェネリクス（`<T>`）** … 型を後から決められるようにする仕組み。1つのフックを色々な型で使い回せる。
+
+---
+
+##### 解説2: 初回だけストレージから値を読み込む（遅延初期化）
+
+```tsx
+  const [storedValue, setStoredValue] = useState<T>(() => {
+    try {
+      const item = window.localStorage.getItem(key);
+      return item ? (JSON.parse(item) as T) : initialValue;
+    } catch {
+      return initialValue;
+    }
+  });
+```
+
+- `useState(() => {...})` のように**関数を渡す**と、その戻り値が初期値になります。これを**遅延初期化**と呼び、重い処理を初回だけ実行できます。
+- `localStorage.getItem(key)` で保存済みの値を読み、あれば `JSON.parse` でデータに戻し、なければ初期値を使います。
+- `try/catch` で、読み込みやパースに失敗しても初期値で安全に動くようにしています。
+
+> **用語:** **localStorage** … ブラウザに値を保存しておく仕組み。ページを閉じても残る。文字列でのみ保存できる。
+
+---
+
+##### 解説3: 値が変わるたびにストレージへ保存する
+
+```tsx
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(key, JSON.stringify(storedValue));
+    } catch (error) {
+      console.error("ローカルストレージへの保存に失敗:", error);
+    }
+  }, [key, storedValue]);
+  return [storedValue, setStoredValue];
+}
+```
+
+- `useEffect` の依存配列が `[key, storedValue]` なので、値が変わるたびにストレージへ保存します。
+- localStorage は文字列しか保存できないので、`JSON.stringify` でオブジェクトを文字列に変換してから保存します。
+- 最後に `[storedValue, setStoredValue]` を返すので、利用側は `useState` と同じ感覚で使えます。
+
+> **用語:** **JSON.stringify / JSON.parse** … stringifyはデータを文字列に、parseは文字列をデータに戻す。localStorage保存に必須。
+
+---
+
 #### useToggle フック
 
 ```tsx
@@ -3452,6 +4949,57 @@ function App() {
 > 【ダークモードに切り替え】を押すと、背景が黒・文字が白に変わり、ボタンのテキストが **「ライトモードに切り替え」** に変わります。
 >
 > 【メニューを開く】を押すと、ナビゲーションリストが表示され、ボタンが **「メニューを閉じる」** に変わります。
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: 真偽値を切り替えるフックを定義する
+
+```tsx
+function useToggle(initialValue: boolean = false): [boolean, () => void] {
+  const [value, setValue] = useState<boolean>(initialValue);
+```
+
+- `useToggle` は「`true`/`false` を切り替える」だけのシンプルなカスタムフックです。
+- 引数 `initialValue: boolean = false` は「初期値。省略したら false」というデフォルト値付きの引数です。
+- 戻り値の型 `[boolean, () => void]` は「`[現在値, 切替関数]`」を表します。
+
+> **用語:** **トグル（toggle）** … on/offを交互に切り替えること。ここでは true ⇄ false の反転。
+
+---
+
+##### 解説2: useCallbackで切替関数をメモ化する
+
+```tsx
+  const toggle = useCallback(() => {
+    setValue((prev) => !prev);
+  }, []);
+  return [value, toggle];
+}
+```
+
+- `setValue((prev) => !prev)` は**関数型更新**で、`!prev`（前の値の反転）にします。`true` なら `false`、`false` なら `true` になります。
+- `useCallback(関数, [])` は「**関数をメモ化（記憶）して、毎回作り直さない**」フックです。依存配列が `[]` なので、この `toggle` の参照はずっと同じになります。
+- 子コンポーネントに関数を渡すとき、不要な再レンダリングを防ぐ目的で使います。
+
+> **用語:** **useCallback** … 関数をメモ化し、依存配列が変わるまで同じ関数を返すフック。参照の安定化に使う。
+
+---
+
+##### 解説3: 複数の独立したトグル状態を使う
+
+```tsx
+  const [isMenuOpen, toggleMenu] = useToggle(false);
+  const [isDarkMode, toggleDarkMode] = useToggle(false);
+  const [isModalOpen, toggleModal] = useToggle(false);
+```
+
+- 同じ `useToggle` を3回呼んで、メニュー・ダークモード・モーダルの**3つの独立した状態**を作っています。
+- それぞれ `[現在値, 切替関数]` を受け取り、`onClick={toggleMenu}` のようにボタンに結びつけます。
+- `{isMenuOpen && <nav>...</nav>}` のように `&&` で「true のときだけ表示」と組み合わせるのが定番です。
+
+> **用語:** **状態の独立性** … 同じカスタムフックを複数回呼んでも、それぞれ別々のstateを持つ。混ざらない。
+
+---
 
 ### 7.3 useBooks フックの予告
 
@@ -3583,6 +5131,52 @@ function UserEditor() {
 
 > **なぜ直接変更がダメなのか**: React は state の更新を**参照の比較（`===`：Object.is 相当）** で検出します。同じオブジェクト/配列への参照のままだと、中身が変わっていても「変化なし」と判断され、再レンダリングが発生しません。これを **イミュータブル更新**（Immutable Update：不変更新。常に新しいオブジェクトを作って更新する考え方）と呼びます。
 
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: NG例 — オブジェクト/配列を直接書き換える
+
+```tsx
+  const badUpdateName = () => {
+    user.name = "鈴木";
+    setUser(user); // 同じ参照のオブジェクトなので React は変化を検知できない！
+  };
+  const badAddItem = () => {
+    items.push("D");
+    setItems(items); // 同じ参照の配列なので React は変化を検知できない！
+  };
+```
+
+- `user.name = "鈴木"` のように**直接プロパティを書き換える**のはNGです。
+- `items.push("D")` の `push` も、元の配列を**直接変更する破壊的メソッド**なのでNGです。
+- どちらも「同じ入れ物」のままなので、Reactは「参照が同じ＝変化なし」と判断し、**画面が更新されません**。
+
+> **用語:** **破壊的メソッド** … `push` / `sort` / `splice` など、元の配列そのものを変更してしまうメソッド。stateには使わない。
+
+---
+
+##### 解説2: OK例 — スプレッド構文で新しいものを作る
+
+```tsx
+  const goodUpdateName = () => {
+    setUser({ ...user, name: "鈴木" });
+  };
+  const goodAddItem = () => {
+    setItems([...items, "D"]);
+  };
+  const goodSortItems = () => {
+    setItems([...items].sort());
+  };
+```
+
+- `{ ...user, name: "鈴木" }` は「user をコピーして name だけ上書きした**新しいオブジェクト**」です。
+- `[...items, "D"]` は「items の全要素＋"D" の**新しい配列**」です。
+- 並び替えも `[...items].sort()` のように、まず `[...items]` でコピーを作ってから sort します。元の配列は変えません。
+- いずれも「**新しい入れ物**」を渡すので、Reactが変化を検知して画面を更新します。
+
+> **用語:** **イミュータブル更新（不変更新）** … 元を変えず、常に新しいオブジェクト/配列を作って差し替える更新方法。Reactの鉄則。
+
+---
+
 ### 8.2 useEffect の無限ループ
 
 > **▼ このコードがやること（先に日本語で）:** `useEffect` で起こりがちな**「無限ループ」**——処理が止まらずアプリが固まる失敗——の**典型パターンと、その直し方**を示します。原因はだいたい同じで、「**`useEffect` の中で state を更新しているのに、依存配列の指定を間違えている**」こと。すると『state更新 → 再描画 → またuseEffect実行 → state更新 →…』が永遠に続きます。この節で「やってはいけない書き方」を知っておくと、実際に画面が固まったとき、すぐ原因に気づけます。
@@ -3647,6 +5241,66 @@ function InfiniteLoopExample() {
 2. `useEffect` 内で依存配列に含まれる state を無条件に更新していないか?
 3. 依存配列にオブジェクトリテラルや配列リテラルを直接書いていないか?
 4. `useEffect` 内の関数が毎回再生成されていないか?
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: NG — 依存配列を省略してstateを更新する
+
+```tsx
+  useEffect(() => {
+    setCount(count + 1); // state 更新 → 再レンダリング → useEffect 再実行 → ...
+  }); // 依存配列がない！
+```
+
+- 依存配列を**省略**したuseEffectは、再描画のたびに毎回実行されます。
+- その中で `setCount`（state更新）を呼ぶと、「**state更新 → 再描画 → またuseEffect → state更新 → …**」が永遠に続きます。
+- これが無限ループの典型パターンです。アプリが固まります。
+
+> **用語:** **無限ループ** … 処理が永遠にくり返されて止まらない状態。useEffectとstate更新の組み合わせで起きやすい。
+
+---
+
+##### 解説2: NG — 依存配列に毎回新しい参照を入れる
+
+```tsx
+  useEffect(() => {
+    setData(["A", "B", "C"]); // 毎回新しい配列オブジェクト → 再レンダリング → ...
+  }); // 依存配列がない！
+
+  useEffect(() => {
+    console.log("実行");
+  }, [{ key: "value" }]); // オブジェクトリテラルは毎回新しい参照 → 毎回実行
+```
+
+- `["A","B","C"]` や `{ key: "value" }` は、実行のたびに**新しい入れ物（参照）**として作られます。
+- Reactは参照で比較するため、中身が同じでも「毎回変わった」とみなし、効果が止まりません。
+- 依存配列にオブジェクト/配列リテラルを直接書くのは避けます。
+
+> **用語:** **参照の比較** … Reactは値の中身ではなく「同じ入れ物か」で変化を判定する。毎回新しく作ると常に「変化あり」になる。
+
+---
+
+##### 解説3: OK — 適切な依存配列と条件・関数型更新
+
+```tsx
+  useEffect(() => {
+    setCount((prev) => prev + 1); // 初回のみ実行
+  }, []); // 空配列 → 初回マウント時のみ
+
+  useEffect(() => {
+    if (data.length === 0) {
+      setData(["A", "B", "C"]); // data が空のときだけ設定
+    }
+  }, [data.length]);
+```
+
+- `[]`（空配列）にして「初回だけ」実行すれば、ループしません。`(prev) => prev + 1` の関数型更新で外部の `count` にも依存しません。
+- `if (data.length === 0)` のように**条件を付ける**と、必要なときだけ更新されてループを防げます。
+- 依存配列には `data.length`（変化を見たい値）を入れます。
+
+> **用語:** **関数型更新** … `setX((prev) => ...)` の形。直前の値を使うので、依存配列に値を入れずに済む。
+
+---
 
 ### 8.3 key の重要性
 
@@ -3718,6 +5372,66 @@ function KeyExample() {
 > 4. **OK の方**: 入力したメモは元のアイテムに正しく紐づいたまま
 >
 > これは、`index` を key にすると、先頭に要素を挿入したとき全要素の index が変わり、React が要素の対応を正しく把握できなくなるためです。
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: 先頭に項目を追加する処理
+
+```tsx
+  const addToTop = () => {
+    const newItem: Item = {
+      id: Date.now(),
+      text: `アイテム${items.length + 1}`,
+    };
+    setItems([newItem, ...items]);
+  };
+```
+
+- `Date.now()` は現在時刻のミリ秒値で、簡易的な一意IDとして使っています（呼ぶたびに違う値）。
+- `[newItem, ...items]` は「**新項目を先頭に、続けて既存の全要素**」を並べた新しい配列です。
+- この「先頭への追加」が、key の付け方による違いが分かりやすく出る操作です。
+
+> **用語:** **Date.now()** … 現在時刻のミリ秒値を返す。簡易的な一意ID生成に使われることがある。
+
+---
+
+##### 解説2: NG — index を key にすると取り違える
+
+```tsx
+      {items.map((item, index) => (
+        <div key={index}>
+          <span>{item.text}</span>
+          <input type="text" placeholder="メモを入力" />
+        </div>
+      ))}
+```
+
+- `key={index}`（配列の番号）を使うと、先頭に追加したとき**全要素の index がずれます**。
+- Reactは key を頼りに要素を見分けるため、「key=0 の中身が変わった」と誤解し、入力欄の中身が別の行に紐づいてしまいます。
+- 結果、**入力中の文字が別の行に移る**という不可解なバグが起きます。
+
+> **用語:** **key** … リストの各要素を見分けるためのReactの目印。順番に左右されない固有の値を使うべき。
+
+---
+
+##### 解説3: OK — 固有の id を key にする
+
+```tsx
+      {items.map((item) => (
+        <div key={item.id}>
+          <span>{item.text}</span>
+          <input type="text" placeholder="メモを入力" />
+        </div>
+      ))}
+```
+
+- `key={item.id}` のように、**順番に左右されない固有のID**を使います。
+- これなら並び順が変わっても「この id の要素はこのDOM」という対応が保たれ、入力欄の中身も正しい行に残ります。
+- 結論：key には本やTODOの `id` のような**一意で変わらない値**を使うこと。
+
+> **用語:** **一意なID** … データごとに重複せず、並び替えても変わらない値（DBの主キーなど）。keyの理想的な値。
+
+---
 
 **key のベストプラクティス:**
 
