@@ -59,11 +59,16 @@
 
 ```javascript
 // ※説明用の簡易例：素のJavaScriptで1行追加する
-const tr = document.createElement("tr");          // 行（tr要素）を手で作る
-const td = document.createElement("td");          // セル（td要素）を手で作る
-td.textContent = "2025-06-01";                    // セルに文字を入れる
-tr.appendChild(td);                               // 行にセルを差し込む
-document.getElementById("tbody").appendChild(tr); // 表の本体に行を差し込む
+// 行（tr要素）を手で作る
+const tr = document.createElement("tr");
+// セル（td要素）を手で作る
+const td = document.createElement("td");
+// セルに文字を入れる
+td.textContent = "2025-06-01";
+// 行にセルを差し込む
+tr.appendChild(td);
+// 表の本体に行を差し込む
+document.getElementById("tbody").appendChild(tr);
 ```
 
 データが1つ増えるたびに、**「どのDOMを、どこに、どう差し込むか」を全部自分で指示** していました。データが100個・1000個と増え、削除や並べ替えが入ると、この手作業はすぐに破綻します。「画面とデータがズレる（表示は古いままなのに裏のデータは新しい）」というバグの温床でした。
@@ -128,14 +133,17 @@ KosuList（工数一覧画面ぜんたい）           ← 大きな部品
 > **▼ このコードがやること（先に日本語で）:** `Login` という名前の「関数コンポーネント」を定義しています。この関数は画面（JSX）を `return` で返します。最後の `export default` で「この部品を他のファイルから使えるように公開」しています。
 
 ```tsx
-const Login: React.FC = () => {   // Login という名前の部品を定義。React.FC は「Reactの関数コンポーネント」という型
+// Login という名前の部品を定義。React.FC は「Reactの関数コンポーネント」という型
+const Login: React.FC = () => {
   // ...（中で値を準備する処理）...
-  return (                        // この部品が描く画面（JSX）を返す
+  // この部品が描く画面（JSX）を返す
+  return (
     <div>...</div>
   );
 };
 
-export default Login;             // この部品を外部から import できるよう公開（既定の輸出）
+// この部品を外部から import できるよう公開（既定の輸出）
+export default Login;
 ```
 
 - `const Login = () => { ... }` … 第4章で学んだ **アロー関数**。これが「部品の本体」です。
@@ -186,8 +194,10 @@ JSXはHTMLによく似ていますが、JavaScriptの中に書く都合上、3�
 `Login.tsx` の実例で確認します。
 
 ```tsx
-<label htmlFor="numberInput">従業員番号</label>              {/* for ではなく htmlFor */}
-<input id="numberInput" className={styles["input-focus"]} /> {/* class ではなく className、値は { } で */}
+{/* for ではなく htmlFor */}
+<label htmlFor="numberInput">従業員番号</label>
+{/* class ではなく className、値は { } で */}
+<input id="numberInput" className={styles["input-focus"]} />
 ```
 
 ### 2.2 `{ }` ― 中括弧でJavaScriptを埋め込む
@@ -226,9 +236,11 @@ JSXの中では `if` 文がそのままは書けません（`{ }` の中は「�
 
 ```tsx
 {data.length === 0 ? (
-  <p>No data found.</p>                  // データが0件なら、このメッセージ
+  // データが0件なら、このメッセージ
+  <p>No data found.</p>
 ) : (
-  <TableContainer>...</TableContainer>   // 1件以上なら、表を表示
+  // 1件以上なら、表を表示
+  <TableContainer>...</TableContainer>
 )}
 ```
 
@@ -257,7 +269,8 @@ JSXは「返せるのは1つの要素だけ」というルールがあります�
 
 ```tsx
 return (
-  <>                          {/* フラグメント＝「見えない箱」。余計なdivを作らない */}
+  {/* フラグメント＝「見えない箱」。余計なdivを作らない */}
+  <>
     <div className={styles["kosu-list-wrapper"]}>
       ...
     </div>
@@ -297,12 +310,18 @@ return (
 子コンポーネント側で props を受け取るには、まず **どんな props が来るか** をTypeScriptの `interface` で定義します。`Pagination.tsx` の実コード。
 
 ```tsx
-interface PaginationProps {        // この部品が受け取る props の「設計図」
-  currentPage: number;             // 現在のページ番号（数値）
-  totalPages: number;              // 全ページ数（数値）
-  setCurrentPage: (page: number) => void;  // ページを変える「関数」を受け取る
-  buttonColor?: string;            // ボタン色（? は「省略可能」の意味）
-  hoverColor?: string;             // ホバー色（省略可能）
+// この部品が受け取る props の「設計図」
+interface PaginationProps {
+  // 現在のページ番号（数値）
+  currentPage: number;
+  // 全ページ数（数値）
+  totalPages: number;
+  // ページを変える「関数」を受け取る
+  setCurrentPage: (page: number) => void;
+  // ボタン色（? は「省略可能」の意味）
+  buttonColor?: string;
+  // ホバー色（省略可能）
+  hoverColor?: string;
 }
 ```
 
@@ -319,11 +338,16 @@ interface PaginationProps {        // この部品が受け取る props の「�
 
 ```tsx
 const Pagination: React.FC<PaginationProps> = ({
-  currentPage,                     // props から currentPage を取り出す
-  totalPages,                      // totalPages を取り出す
-  setCurrentPage,                  // 関数 setCurrentPage を取り出す
-  buttonColor = "#fff",            // buttonColor。渡されなければ既定値 "#fff"（白）
-  hoverColor = "#fff",             // hoverColor。渡されなければ既定値 "#fff"
+  // props から currentPage を取り出す
+  currentPage,
+  // totalPages を取り出す
+  totalPages,
+  // 関数 setCurrentPage を取り出す
+  setCurrentPage,
+  // buttonColor。渡されなければ既定値 "#fff"（白）
+  buttonColor = "#fff",
+  // hoverColor。渡されなければ既定値 "#fff"
+  hoverColor = "#fff",
 }) => {
 ```
 
@@ -399,12 +423,18 @@ const [currentPage, setCurrentPage] = useState<number>(1);
 `KosuList.tsx` が持つstateを先に俯瞰します（§8で1つずつ解説）。
 
 ```tsx
-const [data, setData] = useState<Kosu[]>([]);                       // 表に出す工数データの配列。初期は空配列 []
-const [loading, setLoading] = useState<boolean>(true);              // 読み込み中か。初期は true（最初は読み込み中）
-const [error, setError] = useState<string | null>(null);           // エラー文。初期は null（エラーなし）
-const [searchByMonth, setSearchByMonth] = useState<boolean>(false); // 月で検索するか。初期 false（日検索）
-const [currentPage, setCurrentPage] = useState<number>(1);          // 現在ページ。初期 1
-const [totalPages, setTotalPages] = useState<number>(0);            // 全ページ数。初期 0
+// 表に出す工数データの配列。初期は空配列 []
+const [data, setData] = useState<Kosu[]>([]);
+// 読み込み中か。初期は true（最初は読み込み中）
+const [loading, setLoading] = useState<boolean>(true);
+// エラー文。初期は null（エラーなし）
+const [error, setError] = useState<string | null>(null);
+// 月で検索するか。初期 false（日検索）
+const [searchByMonth, setSearchByMonth] = useState<boolean>(false);
+// 現在ページ。初期 1
+const [currentPage, setCurrentPage] = useState<number>(1);
+// 全ページ数。初期 0
+const [totalPages, setTotalPages] = useState<number>(0);
 ```
 
 `Kosu[]`・`boolean`・`string | null`・`number` のように、stateごとに型を指定しています。`string | null` は「文字列 **または** null」という意味の **ユニオン型**（第4章）です。
@@ -425,7 +455,8 @@ const [totalPages, setTotalPages] = useState<number>(0);            // 全ペー
 ```tsx
 useEffect(() => {
   // ここに副作用の処理（通信・タイマーなど）
-}, [依存する値1, 依存する値2]);   // ← この [] が「依存配列」
+// ← この [] が「依存配列」
+}, [依存する値1, 依存する値2]);
 ```
 
 - 第1引数：実行したい処理（関数）。
@@ -447,17 +478,21 @@ useEffect(() => {
 
 ```tsx
 useEffect(() => {
-  searchDayRef.current = "";              // 検索日をクリア
+  // 検索日をクリア
+  searchDayRef.current = "";
   // ...入力欄もクリア、月検索フラグも、ページも1に戻す...
-}, [location.pathname]);                  // URLのパスが変わったとき（=この画面に来たとき）に実行
+// URLのパスが変わったとき（=この画面に来たとき）に実行
+}, [location.pathname]);
 ```
 
 **② データを取りに行く effect**
 
 ```tsx
 useEffect(() => {
-  fetchData(currentPage, searchDayRef.current, searchByMonth);  // サーバーからデータ取得
-}, [currentPage, fetchData, searchByMonth]);  // ページ・取得関数・月フラグが変わるたびに再取得
+  // サーバーからデータ取得
+  fetchData(currentPage, searchDayRef.current, searchByMonth);
+// ページ・取得関数・月フラグが変わるたびに再取得
+}, [currentPage, fetchData, searchByMonth]);
 ```
 
 「ページ番号が変わったら（=ページ送りしたら）、自動で新しいページのデータを取りに行く」——これが②の効果です。ユーザーがページ送りボタンを押す → `setCurrentPage` でstateが変わる → ②のeffectが反応して通信、という連鎖が起きます。
@@ -468,9 +503,12 @@ useEffect(() => {
 
 ```tsx
 useEffect(() => {
-  window.addEventListener("resize", updateDimensions);    // ウィンドウのリサイズを監視開始
-  return () => {                                          // ← 後片付け関数
-    window.removeEventListener("resize", updateDimensions); // 監視を解除（メモリリーク防止）
+  // ウィンドウのリサイズを監視開始
+  window.addEventListener("resize", updateDimensions);
+  // ← 後片付け関数
+  return () => {
+    // 監視を解除（メモリリーク防止）
+    window.removeEventListener("resize", updateDimensions);
   };
 }, [...]);
 ```
@@ -499,9 +537,11 @@ useStateとの違いが核心です。
 `KosuList.tsx` の検索日の保持。
 
 ```tsx
-const searchDayRef = useRef<string>("");        // 検索する日付を覚える箱。初期は空文字
+// 検索する日付を覚える箱。初期は空文字
+const searchDayRef = useRef<string>("");
 // ...
-onChange={(e) => { searchDayRef.current = e.target.value; }}  // 入力が変わるたび箱の中身を更新（再描画なし）
+// 入力が変わるたび箱の中身を更新（再描画なし）
+onChange={(e) => { searchDayRef.current = e.target.value; }}
 ```
 
 > **なぜ state ではなく ref？** 日付入力欄に文字を打つたびに `setState` すると毎回再描画が走り、重くなります。検索日は「検索ボタンを押した瞬間に使えればよい」ので、**打っている間は再描画不要** → `useRef` で十分。ボタンを押したとき `searchDayRef.current` を読んで通信します。「入力中はこっそり覚えるだけ」の使い分けです。
@@ -511,10 +551,13 @@ onChange={(e) => { searchDayRef.current = e.target.value; }}  // 入力が変わ
 `KosuList.tsx` では、表の高さ計算のために検索バーと見出しの **実際のDOM要素** をつかんでいます。
 
 ```tsx
-const searchBarRef = useRef<HTMLDivElement>(null);   // <div>（検索バー）をつかむ箱
-const headerRef = useRef<HTMLHeadingElement>(null);  // <h1>（見出し）をつかむ箱
+// <div>（検索バー）をつかむ箱
+const searchBarRef = useRef<HTMLDivElement>(null);
+// <h1>（見出し）をつかむ箱
+const headerRef = useRef<HTMLHeadingElement>(null);
 // ...
-<div ref={searchBarRef} className={styles["search-bar"]}>  // ref を要素に取り付ける
+// ref を要素に取り付ける
+<div ref={searchBarRef} className={styles["search-bar"]}>
 ```
 
 `ref={searchBarRef}` と要素に取り付けると、`searchBarRef.current` でその **本物のDOM要素** に触れます。`TableContainer.tsx` では `searchBarRef.current?.offsetHeight`（その要素の高さ）を読んで、表の最大高さを計算しています（§11）。
@@ -542,7 +585,8 @@ const headerRef = useRef<HTMLHeadingElement>(null);  // <h1>（見出し）を�
 ```tsx
 const fetchData = useCallback(async (page, day, mode) => {
   // ...通信処理...
-}, [navigate]);   // navigate が変わらない限り、同じ fetchData を使い回す
+// navigate が変わらない限り、同じ fetchData を使い回す
+}, [navigate]);
 ```
 
 `[navigate]` が依存配列。`navigate`（画面遷移関数）は基本変わらないので、`fetchData` は **ずっと同じ関数** として保たれます。だから `useEffect` の依存配列 `[currentPage, fetchData, searchByMonth]` に `fetchData` を入れても、無限ループになりません。
@@ -562,14 +606,22 @@ const fetchData = useCallback(async (page, day, mode) => {
 > **▼ このブロックがやること:** この画面が使う「道具」を、他のファイルから取り込みます。Reactのフック群、通信の道具、画面遷移の道具、表示部品、専用スタイルです。
 
 ```tsx
-import React, { useState, useEffect, useCallback, useRef } from "react";  // ① Reactと、使う4つのフック
-import api from "../api/axios";                                            // ② 通信の共通設定（§12で解説）
-import axios from "axios";                                                 // ③ エラー判定に使う本家axios
-import { Link, useNavigate, useLocation } from "react-router-dom";         // ④ 画面遷移・現在URLの道具
-import TableContainer from "../Components/TableContainer";                 // ⑤ スクロールする表の枠（§11）
-import Pagination from "../Components/Pagination";                         // ⑥ ページ送りボタン（§9）
-import Loading from "../Components/Loading";                               // ⑦ 読み込み中表示（§10）
-import styles from "../styles/KosuPage/KosuList.module.css";               // ⑧ この画面専用のCSS（CSS Modules）
+// ① Reactと、使う4つのフック
+import React, { useState, useEffect, useCallback, useRef } from "react";
+// ② 通信の共通設定（§12で解説）
+import api from "../api/axios";
+// ③ エラー判定に使う本家axios
+import axios from "axios";
+// ④ 画面遷移・現在URLの道具
+import { Link, useNavigate, useLocation } from "react-router-dom";
+// ⑤ スクロールする表の枠（§11）
+import TableContainer from "../Components/TableContainer";
+// ⑥ ページ送りボタン（§9）
+import Pagination from "../Components/Pagination";
+// ⑦ 読み込み中表示（§10）
+import Loading from "../Components/Loading";
+// ⑧ この画面専用のCSS（CSS Modules）
+import styles from "../styles/KosuPage/KosuList.module.css";
 ```
 
 1行ずつ：
@@ -591,13 +643,20 @@ import styles from "../styles/KosuPage/KosuList.module.css";               // �
 > **▼ このブロックがやること:** サーバーから受け取る「工数1件分」のデータの形を、TypeScriptの設計図として定義します。これで「このデータには `name` がある」等が型で保証されます。
 
 ```tsx
-interface Kosu {              // 工数1件分のデータの形（設計図）
-  id: number;                 // レコードの一意なID（数値）
-  employee_no3: number;       // 従業員番号（数値）
-  name: string;               // 氏名（文字列）
-  work_day2: string;          // 就業日（"2025-06-01" のような文字列）
-  tyoku2: string;             // 直（ちょく：勤務シフト区分。"1"〜"6" の文字列）
-  judgement: boolean;         // 整合性の判定（true=OK / false=NG）
+// 工数1件分のデータの形（設計図）
+interface Kosu {
+  // レコードの一意なID（数値）
+  id: number;
+  // 従業員番号（数値）
+  employee_no3: number;
+  // 氏名（文字列）
+  name: string;
+  // 就業日（"2025-06-01" のような文字列）
+  work_day2: string;
+  // 直（ちょく：勤務シフト区分。"1"〜"6" の文字列）
+  tyoku2: string;
+  // 整合性の判定（true=OK / false=NG）
+  judgement: boolean;
 }
 ```
 
@@ -612,15 +671,24 @@ interface Kosu {              // 工数1件分のデータの形（設計図）
 > **▼ このブロックがやること:** サーバーから来る「直（シフト）」の数値コード（1〜6）を、人が読める日本語（「1直」「常昼」など）に変換します。コンポーネントの外に置かれた、ただの便利関数です。
 
 ```tsx
-const formatTyoku = (value: string | number): string => {  // 直コードを日本語に変換する関数
-  switch (Number(value)) {        // value を数値に変換して場合分け
-    case 1: return "1直";         // 1 なら「1直」
-    case 2: return "2直";         // 2 なら「2直」
-    case 3: return "3直";         // 3 なら「3直」
-    case 4: return "常昼";        // 4 なら「常昼（じょうちゅう）」
-    case 5: return "連1直";       // 5 なら「連1直」
-    case 6: return "連2直";       // 6 なら「連2直」
-    default: return "";           // どれでもなければ空文字
+// 直コードを日本語に変換する関数
+const formatTyoku = (value: string | number): string => {
+  // value を数値に変換して場合分け
+  switch (Number(value)) {
+    // 1 なら「1直」
+    case 1: return "1直";
+    // 2 なら「2直」
+    case 2: return "2直";
+    // 3 なら「3直」
+    case 3: return "3直";
+    // 4 なら「常昼（じょうちゅう）」
+    case 4: return "常昼";
+    // 5 なら「連1直」
+    case 5: return "連1直";
+    // 6 なら「連2直」
+    case 6: return "連2直";
+    // どれでもなければ空文字
+    default: return "";
   }
 };
 ```
@@ -639,10 +707,14 @@ const formatTyoku = (value: string | number): string => {  // 直コードを日
 > **▼ このブロックがやること:** "2025-06-01" のような日付文字列から、曜日（「日」「月」…）を求めます。
 
 ```tsx
-const getDayOfWeek = (dateStr: string): string => {       // 日付文字列→曜日を返す関数
-  const days = ["日", "月", "火", "水", "木", "金", "土"];  // 0〜6 に対応する曜日の配列
-  const date = new Date(dateStr);                         // 文字列から Date オブジェクトを作る
-  return days[date.getDay()] || "";                       // getDay() は曜日番号(0=日)。配列から曜日名を引く
+// 日付文字列→曜日を返す関数
+const getDayOfWeek = (dateStr: string): string => {
+  // 0〜6 に対応する曜日の配列
+  const days = ["日", "月", "火", "水", "木", "金", "土"];
+  // 文字列から Date オブジェクトを作る
+  const date = new Date(dateStr);
+  // getDay() は曜日番号(0=日)。配列から曜日名を引く
+  return days[date.getDay()] || "";
 };
 ```
 
@@ -658,16 +730,26 @@ const getDayOfWeek = (dateStr: string): string => {       // 日付文字列→�
 ### 8.5 コンポーネント開始とstate宣言（37〜46行目）
 
 ```tsx
-const KosuList: React.FC = () => {                          // ① 工数一覧コンポーネント開始
-  const [data, setData] = useState<Kosu[]>([]);            // ② 表データの配列。初期は空配列
-  const [loading, setLoading] = useState<boolean>(true);   // ③ 読み込み中フラグ。初期 true
-  const [error, setError] = useState<string | null>(null); // ④ エラー文。初期 null
-  const searchDayRef = useRef<string>("");                 // ⑤ 検索日の箱（再描画なし）。初期 空文字
-  const [searchByMonth, setSearchByMonth] = useState<boolean>(false); // ⑥ 月検索か。初期 false
-  const [currentPage, setCurrentPage] = useState<number>(1);          // ⑦ 現在ページ。初期 1
-  const [totalPages, setTotalPages] = useState<number>(0);            // ⑧ 全ページ数。初期 0
-  const location = useLocation();                           // ⑨ 現在のURL情報を取得
-  const navigate = useNavigate();                           // ⑩ 画面遷移する関数を取得
+// ① 工数一覧コンポーネント開始
+const KosuList: React.FC = () => {
+  // ② 表データの配列。初期は空配列
+  const [data, setData] = useState<Kosu[]>([]);
+  // ③ 読み込み中フラグ。初期 true
+  const [loading, setLoading] = useState<boolean>(true);
+  // ④ エラー文。初期 null
+  const [error, setError] = useState<string | null>(null);
+  // ⑤ 検索日の箱（再描画なし）。初期 空文字
+  const searchDayRef = useRef<string>("");
+  // ⑥ 月検索か。初期 false
+  const [searchByMonth, setSearchByMonth] = useState<boolean>(false);
+  // ⑦ 現在ページ。初期 1
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  // ⑧ 全ページ数。初期 0
+  const [totalPages, setTotalPages] = useState<number>(0);
+  // ⑨ 現在のURL情報を取得
+  const location = useLocation();
+  // ⑩ 画面遷移する関数を取得
+  const navigate = useNavigate();
 ```
 
 1行ずつ：
@@ -686,8 +768,10 @@ const KosuList: React.FC = () => {                          // ① 工数一覧�
 ### 8.6 DOM参照用のref（48〜49行目）
 
 ```tsx
-const searchBarRef = useRef<HTMLDivElement>(null);     // 検索バーの<div>をつかむ箱。初期 null
-const headerRef = useRef<HTMLHeadingElement>(null);    // 見出しの<h1>をつかむ箱。初期 null
+// 検索バーの<div>をつかむ箱。初期 null
+const searchBarRef = useRef<HTMLDivElement>(null);
+// 見出しの<h1>をつかむ箱。初期 null
+const headerRef = useRef<HTMLHeadingElement>(null);
 ```
 
 - `useRef<HTMLDivElement>(null)` … **DOM要素をつかむ** ためのref（§6.3）。型は `HTMLDivElement`（div要素）。
@@ -701,40 +785,67 @@ const headerRef = useRef<HTMLHeadingElement>(null);    // 見出しの<h1>をつ
 > **▼ このブロックがやること:** サーバーの `/api/kosu_list/` に「何ページ目の、（検索があれば）この日付・この検索モードのデータをください」とお願いし、返ってきたデータを表用のstateに入れます。途中で読み込み中フラグを立て、エラーは種類別に処理します。
 
 ```tsx
-const fetchData = useCallback(async (              // ① useCallbackでメモ化した非同期関数
-  page: number,                                    // 引数1：取得するページ番号
-  day: string,                                     // 引数2：検索する日付（空なら検索なし）
-  mode: boolean                                    // 引数3：true=月検索 / false=日検索
+// ① useCallbackでメモ化した非同期関数
+const fetchData = useCallback(async (
+  // 引数1：取得するページ番号
+  page: number,
+  // 引数2：検索する日付（空なら検索なし）
+  day: string,
+  // 引数3：true=月検索 / false=日検索
+  mode: boolean
 ) => {
-  setLoading(true);                                // ② 読み込み中フラグを立てる（ヘルメット表示）
-  try {                                            // ③ 通信を試みる（失敗するかもしれないので try）
-    const response = await api.get("/api/kosu_list/", {  // ④ サーバーにGETリクエスト（応答を待つ）
-      params: {                                    // ⑤ URLに付ける検索条件（クエリパラメータ）
-        page: page,                                //    ページ番号は常に送る
-        ...(day && {                               // ⑥ day が空でなければ、以下を展開して追加
-          day: day,                                //    検索日
-          mode: mode ? "month" : "day",            //    月検索なら"month"、日検索なら"day"
-          filter: "true",                          //    絞り込みフラグ
+  // ② 読み込み中フラグを立てる（ヘルメット表示）
+  setLoading(true);
+  // ③ 通信を試みる（失敗するかもしれないので try）
+  try {
+    // ④ サーバーにGETリクエスト（応答を待つ）
+    const response = await api.get("/api/kosu_list/", {
+      // ⑤ URLに付ける検索条件（クエリパラメータ）
+      params: {
+        //    ページ番号は常に送る
+        page: page,
+        // ⑥ day が空でなければ、以下を展開して追加
+        ...(day && {
+          //    検索日
+          day: day,
+          //    月検索なら"month"、日検索なら"day"
+          mode: mode ? "month" : "day",
+          //    絞り込みフラグ
+          filter: "true",
         })
       }
     });
 
-    const results = response.data.results || [];   // ⑦ 応答からデータ配列を取り出す（なければ空配列）
-    const pageSize = response.data.page_size || 20; // ⑧ 1ページあたり件数（なければ20）
-    setData(results);                              // ⑨ 表データstateを更新（→再描画）
-    setTotalPages(Math.ceil(response.data.count / pageSize)); // ⑩ 全ページ数を計算してセット
-  } catch (err) {                                  // ⑪ 通信が失敗したらここへ
-    if (axios.isAxiosError(err)) {                 // ⑫ エラーがaxios由来（通信エラー）か判定
-      if (err.response?.status === 401) navigate("/login");      // ⑬ 401=未ログイン→ログイン画面へ
-      else if (err.response?.status === 403) navigate("/");      // ⑭ 403=権限なし→トップへ
-      else setError(err.response?.data.message);                 // ⑮ その他はエラー文を表示
-    } else {                                       // ⑯ axios由来でない予期せぬエラー
-      setError("不明なエラーが発生しました。IT担当者に連絡してください。"); // ⑰ 汎用メッセージ
+    // ⑦ 応答からデータ配列を取り出す（なければ空配列）
+    const results = response.data.results || [];
+    // ⑧ 1ページあたり件数（なければ20）
+    const pageSize = response.data.page_size || 20;
+    // ⑨ 表データstateを更新（→再描画）
+    setData(results);
+    // ⑩ 全ページ数を計算してセット
+    setTotalPages(Math.ceil(response.data.count / pageSize));
+  // ⑪ 通信が失敗したらここへ
+  } catch (err) {
+    // ⑫ エラーがaxios由来（通信エラー）か判定
+    if (axios.isAxiosError(err)) {
+      // ⑬ 401=未ログイン→ログイン画面へ
+      if (err.response?.status === 401) navigate("/login");
+      // ⑭ 403=権限なし→トップへ
+      else if (err.response?.status === 403) navigate("/");
+      // ⑮ その他はエラー文を表示
+      else setError(err.response?.data.message);
+    // ⑯ axios由来でない予期せぬエラー
+    } else {
+      // ⑰ 汎用メッセージ
+      setError("不明なエラーが発生しました。IT担当者に連絡してください。");
     }
-  } finally {                                      // ⑱ 成功でも失敗でも必ず実行
-    setLoading(false);                             // ⑲ 読み込み中フラグを下ろす（ヘルメット消す）
+  // ⑱ 成功でも失敗でも必ず実行
+  } finally {
+    // ⑲ 読み込み中フラグを下ろす（ヘルメット消す）
+    setLoading(false);
   }
-}, [navigate]);                                    // ⑳ 依存配列：navigate が変わらなければ使い回す
+// ⑳ 依存配列：navigate が変わらなければ使い回す
+}, [navigate]);
 ```
 
 1行ずつていねいに：
@@ -793,12 +904,18 @@ const fetchData = useCallback(async (              // ① useCallbackでメモ�
 
 ```tsx
 useEffect(() => {
-  searchDayRef.current = "";                                          // ① 検索日の箱を空に
-  const input = document.getElementById("search-day-input") as HTMLInputElement; // ② 入力欄をDOMでつかむ
-  if (input) input.value = "";                                        // ③ 入力欄の表示も空に
-  setSearchByMonth(false);                                            // ④ 月検索フラグを false（日検索）に
-  setCurrentPage(1);                                                  // ⑤ ページを1に戻す
-}, [location.pathname]);                                              // ⑥ URLのパスが変わったら実行
+  // ① 検索日の箱を空に
+  searchDayRef.current = "";
+  // ② 入力欄をDOMでつかむ
+  const input = document.getElementById("search-day-input") as HTMLInputElement;
+  // ③ 入力欄の表示も空に
+  if (input) input.value = "";
+  // ④ 月検索フラグを false（日検索）に
+  setSearchByMonth(false);
+  // ⑤ ページを1に戻す
+  setCurrentPage(1);
+// ⑥ URLのパスが変わったら実行
+}, [location.pathname]);
 ```
 
 - **① `searchDayRef.current = ""`** … refの中身（検索日）を空に。
@@ -817,8 +934,10 @@ useEffect(() => {
 
 ```tsx
 useEffect(() => {
-  fetchData(currentPage, searchDayRef.current, searchByMonth);  // 現在ページ・検索日・検索モードで取得
-}, [currentPage, fetchData, searchByMonth]);                    // これらが変わるたびに再取得
+  // 現在ページ・検索日・検索モードで取得
+  fetchData(currentPage, searchDayRef.current, searchByMonth);
+// これらが変わるたびに再取得
+}, [currentPage, fetchData, searchByMonth]);
 ```
 
 - `fetchData(currentPage, searchDayRef.current, searchByMonth)` … §8.7の取得関数を、今のページ・検索日・検索モードで呼びます。
@@ -835,10 +954,14 @@ useEffect(() => {
 > **▼ このブロックがやること:** 「指定月」「指定日」ボタンが押されたときの処理。検索モードを設定し、1ページ目に戻して、すぐにデータを取り直します。
 
 ```tsx
-const handleSearch = (isMonthSearch: boolean) => {     // 引数：月検索なら true
-  setSearchByMonth(isMonthSearch);                     // ① 検索モードを更新
-  setCurrentPage(1);                                   // ② ページを1に戻す
-  fetchData(1, searchDayRef.current, isMonthSearch);   // ③ 1ページ目を即取得
+// 引数：月検索なら true
+const handleSearch = (isMonthSearch: boolean) => {
+  // ① 検索モードを更新
+  setSearchByMonth(isMonthSearch);
+  // ② ページを1に戻す
+  setCurrentPage(1);
+  // ③ 1ページ目を即取得
+  fetchData(1, searchDayRef.current, isMonthSearch);
 };
 ```
 
@@ -853,8 +976,10 @@ const handleSearch = (isMonthSearch: boolean) => {     // 引数：月検索な�
 > **▼ このコードがやること:** 「まだ読み込み中」「エラー発生」のときは、表ではなく専用の画面を先に返して関数を抜けます。これを「早期リターン（early return）」と呼びます。
 
 ```tsx
-if (loading) return <div><Loading isLoading={loading} /></div>;  // ① 読み込み中ならヘルメット画面
-if (error) return <div>Error: {error}</div>;                     // ② エラーならエラー文を表示
+// ① 読み込み中ならヘルメット画面
+if (loading) return <div><Loading isLoading={loading} /></div>;
+// ② エラーならエラー文を表示
+if (error) return <div>Error: {error}</div>;
 ```
 
 - **① `if (loading) return <div><Loading isLoading={loading} /></div>`**
@@ -871,17 +996,23 @@ if (error) return <div>Error: {error}</div>;                     // ② エラ�
 
 ```tsx
 return (
-  <>                                                       {/* ① フラグメント（余計なdivを作らない） */}
-    <div className={styles["kosu-list-wrapper"]}>          {/* ② 画面全体を囲む箱（専用スタイル） */}
+  {/* ① フラグメント（余計なdivを作らない） */}
+  <>
+    {/* ② 画面全体を囲む箱（専用スタイル） */}
+    <div className={styles["kosu-list-wrapper"]}>
       <h1
-        ref={headerRef}                                    {/* ③ この<h1>をheaderRefでつかむ（高さ計算用） */}
+        {/* ③ この<h1>をheaderRefでつかむ（高さ計算用） */}
+        ref={headerRef}
         className={styles["h1-collar"]}
       >
-        工数履歴                                            {/* ④ 見出しテキスト */}
+        {/* ④ 見出しテキスト */}
+        工数履歴
       </h1>
 
-      <nav className={styles["kosu-nav"]}>                 {/* ⑤ ナビゲーション領域 */}
-        <Link to="/kosu-menu">工数MENU</Link>             {/* ⑥ 工数メニューへのリンク */}
+      {/* ⑤ ナビゲーション領域 */}
+      <nav className={styles["kosu-nav"]}>
+        {/* ⑥ 工数メニューへのリンク */}
+        <Link to="/kosu-menu">工数MENU</Link>
       </nav>
 ```
 
@@ -898,27 +1029,38 @@ return (
 
 ```tsx
 <div
-  ref={searchBarRef}                                   {/* ① 検索バーの<div>をrefでつかむ（高さ計算用） */}
+  {/* ① 検索バーの<div>をrefでつかむ（高さ計算用） */}
+  ref={searchBarRef}
   className={styles["search-bar"]}
 >
-  <label htmlFor="search-day-input"></label>           {/* ② 入力欄のラベル（中身は空） */}
+  {/* ② 入力欄のラベル（中身は空） */}
+  <label htmlFor="search-day-input"></label>
   <input
-    id="search-day-input"                              {/* ③ 入力欄のID（labelやリセットが参照） */}
-    type="date"                                        {/* ④ 日付入力（カレンダー付き） */}
-    defaultValue={searchDayRef.current}                {/* ⑤ 初期値（refの値）。以後はDOM管理 */}
-    onChange={(e) => { searchDayRef.current = e.target.value; }} {/* ⑥ 入力変化→refに保存 */}
-    placeholder="日付を選択"                            {/* ⑦ 未入力時の薄い案内文 */}
+    {/* ③ 入力欄のID（labelやリセットが参照） */}
+    id="search-day-input"
+    {/* ④ 日付入力（カレンダー付き） */}
+    type="date"
+    {/* ⑤ 初期値（refの値）。以後はDOM管理 */}
+    defaultValue={searchDayRef.current}
+    {/* ⑥ 入力変化→refに保存 */}
+    onChange={(e) => { searchDayRef.current = e.target.value; }}
+    {/* ⑦ 未入力時の薄い案内文 */}
+    placeholder="日付を選択"
   />
 
-  <div className={styles["button-group"]}>             {/* ⑧ ボタンをまとめる箱 */}
+  {/* ⑧ ボタンをまとめる箱 */}
+  <div className={styles["button-group"]}>
     <button
-      onClick={() => handleSearch(true)}               {/* ⑨ 押すと月検索（true） */}
-      className="light_blue_button"                    {/*    global.cssの水色ボタン */}
+      {/* ⑨ 押すと月検索（true） */}
+      onClick={() => handleSearch(true)}
+      {/*    global.cssの水色ボタン */}
+      className="light_blue_button"
     >
       指定月
     </button>
     <button
-      onClick={() => handleSearch(false)}              {/* ⑩ 押すと日検索（false） */}
+      {/* ⑩ 押すと日検索（false） */}
+      onClick={() => handleSearch(false)}
       className="light_blue_button"
     >
       指定日
@@ -950,17 +1092,22 @@ return (
 > **▼ このブロックがやること:** データが0件なら「No data found.」、1件以上なら表を表示します。表は `TableContainer` で囲んでスクロール可能にし、各行を `map` で生成します。
 
 ```tsx
-{data.length === 0 ? (                                 {/* ① データ0件なら↓ */}
+{/* ① データ0件なら↓ */}
+{data.length === 0 ? (
   <p>No data found.</p>
-) : (                                                  {/* ② 1件以上なら↓ */}
+{/* ② 1件以上なら↓ */}
+) : (
   <TableContainer
-    searchBarRef={searchBarRef}                        {/* ③ 検索バーのrefを渡す（高さ計算用） */}
-    headerRef={headerRef}                              {/*    見出しのrefを渡す */}
+    {/* ③ 検索バーのrefを渡す（高さ計算用） */}
+    searchBarRef={searchBarRef}
+    {/*    見出しのrefを渡す */}
+    headerRef={headerRef}
   >
     <table>
       <thead>
         <tr>
-          <th className={styles["th-collar"]}>就業日</th>   {/* ④ 表ヘッダ各列 */}
+          {/* ④ 表ヘッダ各列 */}
+          <th className={styles["th-collar"]}>就業日</th>
           <th className={styles["th-collar"]}>直</th>
           <th className={styles["th-collar"]}>整合性</th>
           <th className={styles["th-collar"]}>編集</th>
@@ -968,22 +1115,31 @@ return (
         </tr>
       </thead>
       <tbody>
-        {data.map((item) => (                          {/* ⑤ データ配列を1行ずつ表の行に変換 */}
-          <tr key={item.id}>                           {/* ⑥ keyに一意なidを指定 */}
-            <td>{item.work_day2} ({getDayOfWeek(item.work_day2)})</td>  {/* ⑦ 就業日＋曜日 */}
-            <td>{formatTyoku(item.tyoku2)}</td>        {/* ⑧ 直コードを日本語に変換して表示 */}
+        {/* ⑤ データ配列を1行ずつ表の行に変換 */}
+        {data.map((item) => (
+          {/* ⑥ keyに一意なidを指定 */}
+          <tr key={item.id}>
+            {/* ⑦ 就業日＋曜日 */}
+            <td>{item.work_day2} ({getDayOfWeek(item.work_day2)})</td>
+            {/* ⑧ 直コードを日本語に変換して表示 */}
+            <td>{formatTyoku(item.tyoku2)}</td>
             <td
               className={
-                item.judgement                         {/* ⑨ 整合性で色クラスを切替 */}
-                  ? styles["status-ok"]                {/*    true→OK（緑など） */}
-                  : styles["status-ng"]                {/*    false→NG（赤など） */}
+                {/* ⑨ 整合性で色クラスを切替 */}
+                item.judgement
+                  {/*    true→OK（緑など） */}
+                  ? styles["status-ok"]
+                  {/*    false→NG（赤など） */}
+                  : styles["status-ng"]
               }
             >
-              {item.judgement ? "OK" : "NG"}           {/* ⑩ OK/NGの文字 */}
+              {/* ⑩ OK/NGの文字 */}
+              {item.judgement ? "OK" : "NG"}
             </td>
             <td>
               <Link
-                to={`/kosu-update/${item.id}`}         {/* ⑪ 編集画面へ。URLにidを埋め込む */}
+                {/* ⑪ 編集画面へ。URLにidを埋め込む */}
+                to={`/kosu-update/${item.id}`}
                 className={styles["a-collar"]}
               >
                 編集
@@ -991,7 +1147,8 @@ return (
             </td>
             <td>
               <Link
-                to={`/kosu-delete/${item.id}`}         {/* ⑫ 削除画面へ。URLにidを埋め込む */}
+                {/* ⑫ 削除画面へ。URLにidを埋め込む */}
+                to={`/kosu-delete/${item.id}`}
                 className={styles["a-collar"]}
               >
                 削除
@@ -1027,11 +1184,16 @@ return (
 
 ```tsx
     <Pagination
-      currentPage={currentPage}        {/* ① 現在ページを渡す */}
-      totalPages={totalPages}          {/* ② 全ページ数を渡す */}
-      setCurrentPage={setCurrentPage}  {/* ③ ページ更新関数を渡す（子から呼んでもらう） */}
-      buttonColor="#0ff"               {/* ④ ボタン色＝水色 */}
-      hoverColor="#0af"                {/* ⑤ ホバー色＝濃い水色 */}
+      {/* ① 現在ページを渡す */}
+      currentPage={currentPage}
+      {/* ② 全ページ数を渡す */}
+      totalPages={totalPages}
+      {/* ③ ページ更新関数を渡す（子から呼んでもらう） */}
+      setCurrentPage={setCurrentPage}
+      {/* ④ ボタン色＝水色 */}
+      buttonColor="#0ff"
+      {/* ⑤ ホバー色＝濃い水色 */}
+      hoverColor="#0af"
     />
       </TableContainer>
     )}
@@ -1040,7 +1202,8 @@ return (
 );
 };
 
-export default KosuList;               {/* ⑥ この画面を外部に公開 */}
+{/* ⑥ この画面を外部に公開 */}
+export default KosuList;
 ```
 
 - **① `currentPage={currentPage}`** … 親の `currentPage` state（§8.5⑦）を、子の `Pagination` に props として渡す。子は「今何ページ目か」を表示できます。
@@ -1060,15 +1223,23 @@ export default KosuList;               {/* ⑥ この画面を外部に公開 */
 ### 9.1 import と props型定義（1〜10行目）
 
 ```tsx
-import React from "react";                                      // ① React本体
-import styles from "../styles/Components/Pagination.module.css"; // ② この部品専用のCSS
+// ① React本体
+import React from "react";
+// ② この部品専用のCSS
+import styles from "../styles/Components/Pagination.module.css";
 
-interface PaginationProps {                  // ③ 受け取るpropsの設計図
-  currentPage: number;                       //    現在ページ（数値）
-  totalPages: number;                        //    全ページ数（数値）
-  setCurrentPage: (page: number) => void;    //    ページ更新関数（数値を受け、何も返さない）
-  buttonColor?: string;                      //    ボタン色（省略可）
-  hoverColor?: string;                       //    ホバー色（省略可）
+// ③ 受け取るpropsの設計図
+interface PaginationProps {
+  //    現在ページ（数値）
+  currentPage: number;
+  //    全ページ数（数値）
+  totalPages: number;
+  //    ページ更新関数（数値を受け、何も返さない）
+  setCurrentPage: (page: number) => void;
+  //    ボタン色（省略可）
+  buttonColor?: string;
+  //    ホバー色（省略可）
+  hoverColor?: string;
 }
 ```
 
@@ -1078,12 +1249,18 @@ interface PaginationProps {                  // ③ 受け取るpropsの設計�
 ### 9.2 propsの受け取りとデフォルト値（12〜18行目）
 
 ```tsx
-const Pagination: React.FC<PaginationProps> = ({   // PaginationProps型のpropsを受け取る
-  currentPage,                                       // 取り出し（§8.15①が入る）
-  totalPages,                                        // 取り出し（§8.15②が入る）
-  setCurrentPage,                                    // 取り出し（§8.15③が入る）
-  buttonColor = "#fff",                              // 渡されなければ白。今回は"#0ff"が渡る
-  hoverColor = "#fff",                               // 渡されなければ白。今回は"#0af"が渡る
+// PaginationProps型のpropsを受け取る
+const Pagination: React.FC<PaginationProps> = ({
+  // 取り出し（§8.15①が入る）
+  currentPage,
+  // 取り出し（§8.15②が入る）
+  totalPages,
+  // 取り出し（§8.15③が入る）
+  setCurrentPage,
+  // 渡されなければ白。今回は"#0ff"が渡る
+  buttonColor = "#fff",
+  // 渡されなければ白。今回は"#0af"が渡る
+  hoverColor = "#fff",
 }) => {
 ```
 
@@ -1102,13 +1279,19 @@ const Pagination: React.FC<PaginationProps> = ({   // PaginationProps型のprops
 > **▼ このブロックがやること:** 「最初／前／次／最後」の4つのボタンが押されたときに、親の `setCurrentPage` を適切な値で呼ぶ関数を用意します。範囲外（1未満・最終超え）にはならないよう守ります。
 
 ```tsx
-const handleFirstPage = () => setCurrentPage(1);              // ① 最初へ：1ページ目
-const handleLastPage = () => setCurrentPage(totalPages);      // ② 最後へ：最終ページ
-const handleNextPage = () => {                                // ③ 次へ
-  if (currentPage < totalPages) setCurrentPage(currentPage + 1); //    最終未満なら+1
+// ① 最初へ：1ページ目
+const handleFirstPage = () => setCurrentPage(1);
+// ② 最後へ：最終ページ
+const handleLastPage = () => setCurrentPage(totalPages);
+// ③ 次へ
+const handleNextPage = () => {
+  //    最終未満なら+1
+  if (currentPage < totalPages) setCurrentPage(currentPage + 1);
 };
-const handlePreviousPage = () => {                           // ④ 前へ
-  if (currentPage > 1) setCurrentPage(currentPage - 1);       //    1より大きければ-1
+// ④ 前へ
+const handlePreviousPage = () => {
+  //    1より大きければ-1
+  if (currentPage > 1) setCurrentPage(currentPage - 1);
 };
 ```
 
@@ -1128,37 +1311,46 @@ return (
   <div
     className={styles["pagination"]}
     style={{
-      "--btn-bg-color": buttonColor,        // ① 受け取った色をCSS変数に注入
-      "--btn-hover-color": hoverColor        //    ホバー色も注入
-    } as React.CSSProperties}                // ②  TypeScriptに「CSSの形」と教える
+      // ① 受け取った色をCSS変数に注入
+      "--btn-bg-color": buttonColor,
+      //    ホバー色も注入
+      "--btn-hover-color": hoverColor
+    // ②  TypeScriptに「CSSの形」と教える
+    } as React.CSSProperties}
   >
     <button
       className={styles["prev-button"]}
-      disabled={currentPage === 1}           // ③ 1ページ目なら「最初」ボタンを無効化
-      onClick={handleFirstPage}              //    クリックで最初へ
+      // ③ 1ページ目なら「最初」ボタンを無効化
+      disabled={currentPage === 1}
+      //    クリックで最初へ
+      onClick={handleFirstPage}
     >
       最初
     </button>
     <button
       className={styles["prev-button"]}
-      disabled={currentPage === 1}           // ④ 1ページ目なら「前」も無効化
+      // ④ 1ページ目なら「前」も無効化
+      disabled={currentPage === 1}
       onClick={handlePreviousPage}
     >
       前
     </button>
     <span>
-      {currentPage} / {totalPages}           // ⑤ 「2 / 5」のような現在地表示
+      // ⑤ 「2 / 5」のような現在地表示
+      {currentPage} / {totalPages}
     </span>
     <button
       className={styles["next-button"]}
-      disabled={currentPage === totalPages}  // ⑥ 最終ページなら「次」を無効化
+      // ⑥ 最終ページなら「次」を無効化
+      disabled={currentPage === totalPages}
       onClick={handleNextPage}
     >
       次
     </button>
     <button
       className={styles["next-button"]}
-      disabled={currentPage === totalPages}  // ⑦ 最終ページなら「最後」を無効化
+      // ⑦ 最終ページなら「最後」を無効化
+      disabled={currentPage === totalPages}
       onClick={handleLastPage}
     >
       最後
@@ -1182,7 +1374,8 @@ return (
 ```tsx
 };
 
-export default Pagination;   // この部品を公開（KosuList等が import する）
+// この部品を公開（KosuList等が import する）
+export default Pagination;
 ```
 
 **`Pagination.tsx` 全71行を読み切りました。** この部品は **自分のstateを一切持たず**、すべて props（現在ページ・全ページ数・更新関数・色）で動く「純粋な部品」です。だからこそ、工数一覧でも人員一覧でも班員一覧でも、`<Pagination .../>` と置くだけで再利用できます。**「propsだけで動く部品＝どこでも使える部品」** の好例です。
@@ -1196,12 +1389,16 @@ export default Pagination;   // この部品を公開（KosuList等が import �
 ### 10.1 import と props（1〜7行目）
 
 ```tsx
-import React, { useEffect, useState } from "react";       // React・useEffect・useState
-import helmetImage from "../img/helmet.png";              // ① ヘルメット画像を取り込む（静的リソース）
-import styles from "../styles/Components/Loading.module.css"; // 専用CSS
+// React・useEffect・useState
+import React, { useEffect, useState } from "react";
+// ① ヘルメット画像を取り込む（静的リソース）
+import helmetImage from "../img/helmet.png";
+// 専用CSS
+import styles from "../styles/Components/Loading.module.css";
 
 interface LoadingProps {
-  isLoading: boolean;   // ② 親から「読み込み中か」を受け取る
+  // ② 親から「読み込み中か」を受け取る
+  isLoading: boolean;
 }
 ```
 
@@ -1211,8 +1408,10 @@ interface LoadingProps {
 ### 10.2 フェードアウト用のstate（9〜10行目）
 
 ```tsx
-const Loading: React.FC<LoadingProps> = ({ isLoading }) => {   // isLoadingを受け取る
-  const [shouldRender, setShouldRender] = useState(true);      // 表示すべきか。初期 true
+// isLoadingを受け取る
+const Loading: React.FC<LoadingProps> = ({ isLoading }) => {
+  // 表示すべきか。初期 true
+  const [shouldRender, setShouldRender] = useState(true);
 ```
 
 - `shouldRender` … 「まだ画面に出しておくか」のstate。**読み込みが終わってもすぐ消さず、1秒かけてフェードアウトさせてから消す** ために使います。
@@ -1225,13 +1424,19 @@ const Loading: React.FC<LoadingProps> = ({ isLoading }) => {   // isLoadingを�
 
 ```tsx
 useEffect(() => {
-  if (!isLoading) {                          // ① 読み込みが終わったら
-    const timeout = setTimeout(() => {       // ② 1秒後に実行するタイマーを仕掛ける
-      setShouldRender(false);                // ③ 表示を完全停止
-    }, 1000);                                //    1000ミリ秒＝1秒（CSSトランジションと同期）
-    return () => clearTimeout(timeout);      // ④ 後片付け：タイマーを解除（アンマウント時）
+  // ① 読み込みが終わったら
+  if (!isLoading) {
+    // ② 1秒後に実行するタイマーを仕掛ける
+    const timeout = setTimeout(() => {
+      // ③ 表示を完全停止
+      setShouldRender(false);
+    //    1000ミリ秒＝1秒（CSSトランジションと同期）
+    }, 1000);
+    // ④ 後片付け：タイマーを解除（アンマウント時）
+    return () => clearTimeout(timeout);
   }
-}, [isLoading]);                             // ⑤ isLoadingが変わるたびに実行
+// ⑤ isLoadingが変わるたびに実行
+}, [isLoading]);
 ```
 
 - **① `if (!isLoading)`** … `isLoading` が false（読み込み終了）になったときだけ処理。
@@ -1247,22 +1452,28 @@ useEffect(() => {
 ### 10.4 早期リターンとJSX（22〜40行目）
 
 ```tsx
-if (!shouldRender) return null;             // ① 表示停止なら何も描かない（null）
+// ① 表示停止なら何も描かない（null）
+if (!shouldRender) return null;
 
 return (
   <div
     id="loading"
-    className={`${styles.loading} ${!isLoading ? styles.fadeOut : ""}`} // ② 読込終了時にfadeOutクラス追加
+    // ② 読込終了時にfadeOutクラス追加
+    className={`${styles.loading} ${!isLoading ? styles.fadeOut : ""}`}
   >
     <div className={styles.item}>
       <img
         id="loadingImg"
-        src={helmetImage}                   // ③ ヘルメット画像
-        alt="Loading..."                    //    代替文字
-        className={styles.sway}             //    左右に揺れるアニメ
+        // ③ ヘルメット画像
+        src={helmetImage}
+        //    代替文字
+        alt="Loading..."
+        //    左右に揺れるアニメ
+        className={styles.sway}
       />
     </div>
-    <p className={styles.loadingText}>Loading...</p>  // ④ 「Loading...」の文字
+    // ④ 「Loading...」の文字
+    <p className={styles.loadingText}>Loading...</p>
   </div>
 );
 ```
@@ -1285,14 +1496,19 @@ return (
 ### 11.1 import と props型（1〜9行目）
 
 ```tsx
-import React, { useState, useEffect, useRef, ReactNode } from "react";  // ReactNodeも取り込む
+// ReactNodeも取り込む
+import React, { useState, useEffect, useRef, ReactNode } from "react";
 import styles from "../styles/Components/TableContainer.module.css";
 
 interface TableContainerProps {
-  children: ReactNode;                                  // ① 中に入れる子要素（表など）
-  searchBarRef: React.RefObject<HTMLElement | null>;    // ② 検索バーのref
-  headerRef: React.RefObject<HTMLElement | null>;       // ③ 見出しのref
-  heightExpansion?: boolean;                            // ④ 高さ拡張モード（省略可）
+  // ① 中に入れる子要素（表など）
+  children: ReactNode;
+  // ② 検索バーのref
+  searchBarRef: React.RefObject<HTMLElement | null>;
+  // ③ 見出しのref
+  headerRef: React.RefObject<HTMLElement | null>;
+  // ④ 高さ拡張モード（省略可）
+  heightExpansion?: boolean;
 }
 ```
 
@@ -1308,13 +1524,19 @@ interface TableContainerProps {
 
 ```tsx
 const TableContainer: React.FC<TableContainerProps> = ({
-  children,                                  // 中身を受け取る
-  searchBarRef,                              // 検索バーのrefを受け取る
-  headerRef,                                 // 見出しのrefを受け取る
-  heightExpansion = false,                   // 既定 false
+  // 中身を受け取る
+  children,
+  // 検索バーのrefを受け取る
+  searchBarRef,
+  // 見出しのrefを受け取る
+  headerRef,
+  // 既定 false
+  heightExpansion = false,
 }) => {
-  const [maxHeight, setMaxHeight] = useState<number>(window.innerHeight);  // ① 表枠の最大高さ。初期=画面高
-  const containerRef = useRef<HTMLDivElement>(null);                       // ② 自分の枠divをつかむref
+  // ① 表枠の最大高さ。初期=画面高
+  const [maxHeight, setMaxHeight] = useState<number>(window.innerHeight);
+  // ② 自分の枠divをつかむref
+  const containerRef = useRef<HTMLDivElement>(null);
 ```
 
 - **① `const [maxHeight, setMaxHeight] = useState<number>(window.innerHeight)`**
@@ -1327,26 +1549,38 @@ const TableContainer: React.FC<TableContainerProps> = ({
 
 ```tsx
 useEffect(() => {
-  const updateDimensions = () => {                              // ① 高さを計算してセットする関数
-    const searchBarHeight = searchBarRef.current?.offsetHeight || 0; // ② 検索バーの高さ（なければ0）
-    const headerHeight = headerRef.current?.offsetHeight || 0;       // ③ 見出しの高さ（なければ0）
+  // ① 高さを計算してセットする関数
+  const updateDimensions = () => {
+    // ② 検索バーの高さ（なければ0）
+    const searchBarHeight = searchBarRef.current?.offsetHeight || 0;
+    // ③ 見出しの高さ（なければ0）
+    const headerHeight = headerRef.current?.offsetHeight || 0;
 
-    if (heightExpansion) {                                     // ④ 拡張モードなら
-      setMaxHeight(window.innerHeight - 100);                 //    画面高 − 100px
-    } else {                                                  // ⑤ 通常モードなら
+    // ④ 拡張モードなら
+    if (heightExpansion) {
+      //    画面高 − 100px
+      setMaxHeight(window.innerHeight - 100);
+    // ⑤ 通常モードなら
+    } else {
       setMaxHeight(
-        window.innerHeight - searchBarHeight - headerHeight - 40 // 画面高 − 検索バー − 見出し − 余白40
+        // 画面高 − 検索バー − 見出し − 余白40
+        window.innerHeight - searchBarHeight - headerHeight - 40
       );
     }
   };
 
-  updateDimensions();                                         // ⑥ まず1回計算（初期表示用）
+  // ⑥ まず1回計算（初期表示用）
+  updateDimensions();
 
-  window.addEventListener("resize", updateDimensions);        // ⑦ リサイズのたびに再計算するよう登録
-  return () => {                                              // ⑧ 後片付け
-    window.removeEventListener("resize", updateDimensions);   //    リサイズ監視を解除
+  // ⑦ リサイズのたびに再計算するよう登録
+  window.addEventListener("resize", updateDimensions);
+  // ⑧ 後片付け
+  return () => {
+    //    リサイズ監視を解除
+    window.removeEventListener("resize", updateDimensions);
   };
-}, [searchBarRef, headerRef, heightExpansion]);               // ⑨ これらが変わったら再設定
+// ⑨ これらが変わったら再設定
+}, [searchBarRef, headerRef, heightExpansion]);
 ```
 
 - **① `const updateDimensions = () => {...}`** … 高さを計算する内部関数。
@@ -1368,15 +1602,20 @@ useEffect(() => {
 ```tsx
 return (
   <div
-    ref={containerRef}                       // ① 自分の枠をrefでつかむ
+    // ① 自分の枠をrefでつかむ
+    ref={containerRef}
     className={styles["table-wrapper"]}
     style={{
-      maxHeight: `${maxHeight}px`,           // ② 計算した最大高さを適用
-      overflowY: "auto",                     // ③ 縦にはみ出たらスクロールバー
-      overflowX: "auto",                     // ④ 横も同様
+      // ② 計算した最大高さを適用
+      maxHeight: `${maxHeight}px`,
+      // ③ 縦にはみ出たらスクロールバー
+      overflowY: "auto",
+      // ④ 横も同様
+      overflowX: "auto",
     }}
   >
-    {children}                               // ⑤ 親から渡された中身（表とPagination）を描く
+    // ⑤ 親から渡された中身（表とPagination）を描く
+    {children}
   </div>
 );
 ```
@@ -1400,14 +1639,21 @@ return (
 > **▼ このコードがやること:** サーバーの基本URL・Cookie送信・CSRF対策をまとめて設定した「自分専用のaxios（`api`）」を作り、全画面で共有できるよう公開します。
 
 ```tsx
-import axios from "axios";                            // ① axios本体を取り込む
-const api = axios.create({                            // ② 設定済みの専用インスタンスを作る
-    baseURL: process.env.REACT_APP_API_BASE_URL,      // ③ 全リクエストの基本URL（環境変数から）
-    withCredentials: true,                            // ④ Cookie（ログインセッション）を一緒に送る
-    xsrfCookieName: "csrftoken",                      // ⑤ CSRFトークンが入ったCookie名
-    xsrfHeaderName: "X-CSRFToken",                    // ⑥ CSRFトークンを送るヘッダ名
+// ① axios本体を取り込む
+import axios from "axios";
+// ② 設定済みの専用インスタンスを作る
+const api = axios.create({
+    // ③ 全リクエストの基本URL（環境変数から）
+    baseURL: process.env.REACT_APP_API_BASE_URL,
+    // ④ Cookie（ログインセッション）を一緒に送る
+    withCredentials: true,
+    // ⑤ CSRFトークンが入ったCookie名
+    xsrfCookieName: "csrftoken",
+    // ⑥ CSRFトークンを送るヘッダ名
+    xsrfHeaderName: "X-CSRFToken",
 });
-export default api;                                   // ⑦ この設定済みapiを全画面に公開
+// ⑦ この設定済みapiを全画面に公開
+export default api;
 ```
 
 1行ずつ：
@@ -1459,12 +1705,17 @@ export default api;                                   // ⑦ この設定済みa
 > **▼ このコードがやること:** HTMLの中の `id="root"` の場所に、Reactアプリ全体を描き込みます。`Router` で囲むことで、アプリ全体でルーティング（URLに応じた画面切替）が使えるようになります。
 
 ```tsx
-const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement); // ① 描画する土台を取得
+// ① 描画する土台を取得
+const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 
-root.render(                          // ② そこにアプリを描画
-  <React.StrictMode>                  // ③ 開発時の問題検出モード
-    <Router>                          // ④ ルーティング機能でアプリ全体を包む
-      <App />                         // ⑤ 全画面を束ねるAppコンポーネント
+// ② そこにアプリを描画
+root.render(
+  // ③ 開発時の問題検出モード
+  <React.StrictMode>
+    // ④ ルーティング機能でアプリ全体を包む
+    <Router>
+      // ⑤ 全画面を束ねるAppコンポーネント
+      <App />
     </Router>
   </React.StrictMode>
 );
@@ -1486,10 +1737,14 @@ root.render(                          // ② そこにアプリを描画
 冒頭は全画面コンポーネントのimport（5〜53行目）と、URLに応じた **ブラウザのタブのタイトル** 設定です。要点を抜粋します。
 
 ```tsx
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom"; // ① ルーティング道具
-import './styles/global.css';                                                            // ② 全画面共通CSS
-import Login from './MainPage/Login';        // ③ 以下、全画面コンポーネントを取り込む
-import KosuList from './KosuPage/KosuList';   //    （工数一覧。§8で解説した画面）
+// ① ルーティング道具
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+// ② 全画面共通CSS
+import './styles/global.css';
+// ③ 以下、全画面コンポーネントを取り込む
+import Login from './MainPage/Login';
+//    （工数一覧。§8で解説した画面）
+import KosuList from './KosuPage/KosuList';
 // ... 他多数 ...
 ```
 
@@ -1502,16 +1757,20 @@ import KosuList from './KosuPage/KosuList';   //    （工数一覧。§8で解�
 
 ```tsx
 const App: React.FC = () => {
-  const location = useLocation();                          // 現在のURL情報
+  // 現在のURL情報
+  const location = useLocation();
 
   React.useEffect(() => {
-    const routeTitles: { [key: string]: string } = {      // パス→タイトルの対応表
+    // パス→タイトルの対応表
+    const routeTitles: { [key: string]: string } = {
       "/login": "ログイン - 業務工数システム",
       "/kosu-list": "工数一覧 - 業務工数システム",
       // ... 全画面分 ...
     };
-    document.title = routeTitles[location.pathname] || "業務工数システム"; // タブのタイトルを設定
-  }, [location]);                                          // URLが変わるたびに更新
+    // タブのタイトルを設定
+    document.title = routeTitles[location.pathname] || "業務工数システム";
+  // URLが変わるたびに更新
+  }, [location]);
 ```
 
 - `const location = useLocation()` … 現在のURLを取得（§8.5⑨と同じフック）。
@@ -1525,14 +1784,21 @@ const App: React.FC = () => {
 
 ```tsx
 return (
-  <Routes>                                                    {/* ① ルート一覧の枠 */}
-    <Route path="/login" element={<Login />} />               {/* ② /login ならLogin画面 */}
-    <Route path="/" element={<MainMenu />} />                 {/* ③ / ならメインメニュー */}
-    <Route path="/kosu-list" element={<KosuList />} />        {/* ④ /kosu-list ならKosuList（§8） */}
-    <Route path="/kosu-update/:id" element={<KosuEdit />} />  {/* ⑤ :id 付き＝可変URL */}
-    <Route path="/kosu-delete/:id" element={<KosuDelete />} />{/* ⑥ 削除画面も:id付き */}
+  {/* ① ルート一覧の枠 */}
+  <Routes>
+    {/* ② /login ならLogin画面 */}
+    <Route path="/login" element={<Login />} />
+    {/* ③ / ならメインメニュー */}
+    <Route path="/" element={<MainMenu />} />
+    {/* ④ /kosu-list ならKosuList（§8） */}
+    <Route path="/kosu-list" element={<KosuList />} />
+    {/* ⑤ :id 付き＝可変URL */}
+    <Route path="/kosu-update/:id" element={<KosuEdit />} />
+    {/* ⑥ 削除画面も:id付き */}
+    <Route path="/kosu-delete/:id" element={<KosuDelete />} />
     {/* ... 他50以上のルート ... */}
-    <Route path="/member-update/:employee_no" element={<MemberEdit />} /> {/* ⑦ 別名の可変部分も可 */}
+    {/* ⑦ 別名の可変部分も可 */}
+    <Route path="/member-update/:employee_no" element={<MemberEdit />} />
   </Routes>
 );
 ```
@@ -1582,8 +1848,10 @@ return (
 `KosuList` の実例：
 
 ```tsx
-<Link to="/kosu-menu">工数MENU</Link>             {/* メニューへ（§8.12⑥） */}
-<Link to={`/kosu-update/${item.id}`}>編集</Link>  {/* 編集へ。idを埋め込む（§8.14⑪） */}
+{/* メニューへ（§8.12⑥） */}
+<Link to="/kosu-menu">工数MENU</Link>
+{/* 編集へ。idを埋め込む（§8.14⑪） */}
+<Link to={`/kosu-update/${item.id}`}>編集</Link>
 ```
 
 - `to="/kosu-menu"` … 固定の移動先。
@@ -1599,11 +1867,14 @@ return (
 `KosuList` の `fetchData`（§8.7）と `Login` の実例：
 
 ```tsx
-const navigate = useNavigate();                       // 移動関数を取得（§8.5⑩）
+// 移動関数を取得（§8.5⑩）
+const navigate = useNavigate();
 // ...
-if (err.response?.status === 401) navigate("/login"); // 未ログインなら自動でログイン画面へ（§8.7⑬）
+// 未ログインなら自動でログイン画面へ（§8.7⑬）
+if (err.response?.status === 401) navigate("/login");
 // ...
-if (data.status === "success") navigate("/");         // ログイン成功ならトップへ（Login.tsx）
+// ログイン成功ならトップへ（Login.tsx）
+if (data.status === "success") navigate("/");
 ```
 
 - `navigate("/login")` … リンクのクリックを待たず、**プログラムの判断で** ログイン画面へ飛ばす。401エラー検知時の自動リダイレクトに使います（CLAUDE.mdの「401はloginへ」方針）。

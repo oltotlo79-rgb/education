@@ -247,7 +247,8 @@ Git では、あなたのファイルは次の **3つの場所** を移動しな
 > **▼ このコードがやること（先に日本語で）:** 今いるフォルダが Git で管理されているか（`.git` フォルダがあるか）をざっくり確認します。`git status` がエラーなく動けば管理下です。
 
 ```bash
-git status   # 今の状態を表示する。エラーが出なければ、ここは Git 管理下
+# 今の状態を表示する。エラーが出なければ、ここは Git 管理下
+git status
 ```
 
 > **▼ こう表示されれば成功:**
@@ -264,7 +265,8 @@ git status   # 今の状態を表示する。エラーが出なければ、こ�
 > **▼ このコードがやること（先に日本語で）:** このプロジェクトが「どの GitHub の倉庫」と繋がっているかを表示します。`-v`（verbose：詳しく）を付けると URL まで見えます。
 
 ```bash
-git remote -v   # remote=リモート倉庫の一覧、-v=URLも表示
+# remote=リモート倉庫の一覧、-v=URLも表示
+git remote -v
 ```
 
 > **▼ こう表示されれば成功（本アプリの実際の出力）:**
@@ -284,7 +286,8 @@ git remote -v   # remote=リモート倉庫の一覧、-v=URLも表示
 > **▼ このコードがやること（先に日本語で）:** 自分が今どの「ブランチ（作業の枝）」にいるか、どんなブランチが存在するかを一覧します。`-a`（all）でリモートの枝も含めて全部表示します。ブランチの詳しい説明は§10です。
 
 ```bash
-git branch -a   # branch=枝の一覧、-a=リモートも含めて全部
+# branch=枝の一覧、-a=リモートも含めて全部
+git branch -a
 ```
 
 > **▼ こう表示されれば成功（本アプリの実際の出力）:**
@@ -314,7 +317,8 @@ git branch -a   # branch=枝の一覧、-a=リモートも含めて全部
 > **▼ このコードがやること（先に日本語で）:** 今いるブランチ名、変更したけれどまだステージングしていないファイル、ステージング済みのファイル、Git がまだ追跡していない新規ファイルを、色分けして一覧します。
 
 ```bash
-git status   # status=状態。今の3つの場所の状態をまとめて表示
+# status=状態。今の3つの場所の状態をまとめて表示
+git status
 ```
 
 ### 4.2 本アプリでの実際の出力を読む
@@ -370,7 +374,8 @@ git status   # status=状態。今の3つの場所の状態をまとめて表示
 > **▼ このコードがやること（先に日本語で）:** 状態を1ファイル1行のコンパクトな形式で表示します。
 
 ```bash
-git status -s   # -s=short。記号で簡潔に表示
+# -s=short。記号で簡潔に表示
+git status -s
 ```
 
 > **▼ こう表示されます（本アプリの章冒頭の状態に近い実例）:**
@@ -393,7 +398,8 @@ git status -s   # -s=short。記号で簡潔に表示
 > **▼ このコードがやること（先に日本語で）:** まだステージングしていない（赤い）変更について、「変更前のどの行が、変更後どうなったか」を行単位で色付き表示します。
 
 ```bash
-git diff   # ステージング前の変更を、行単位で表示
+# ステージング前の変更を、行単位で表示
+git diff
 ```
 
 > **▼ こう表示されます（例：Help.tsx の一部を変えた場合。※表示形式を示すための説明用の例）:**
@@ -429,7 +435,8 @@ git diff   # ステージング前の変更を、行単位で表示
 > **▼ このコードがやること（先に日本語で）:** ステージングに載せた変更だけを差分表示します。コミット直前に「これから記録される内容」を最終確認するのに使います。
 
 ```bash
-git diff --staged   # ステージング済み（add 後）の差分を表示
+# ステージング済み（add 後）の差分を表示
+git diff --staged
 ```
 
 > **なぜ？ コミット前に `git diff --staged` を打つと事故が減る**
@@ -440,7 +447,8 @@ git diff --staged   # ステージング済み（add 後）の差分を表示
 > **▼ このコードがやること（先に日本語で）:** ファイル名を後ろに付けると、そのファイルの差分だけを表示します。変更ファイルが多いときに便利です。
 
 ```bash
-git diff frontend/src/MainPage/Help.tsx   # このファイルの差分だけ見る
+# このファイルの差分だけ見る
+git diff frontend/src/MainPage/Help.tsx
 ```
 
 ### 5.4 diff の終了方法（初心者がハマる罠）
@@ -462,7 +470,8 @@ git diff frontend/src/MainPage/Help.tsx   # このファイルの差分だけ見
 > **▼ このコードがやること（先に日本語で）:** 指定したファイルの「作業ツリーの変更」を、ステージング（次のコミットに含める仮置き場）に載せます。§2の図でいう「作業ツリー → ステージング」の矢印です。
 
 ```bash
-git add frontend/src/MainPage/Help.tsx   # このファイルの変更をステージングに載せる
+# このファイルの変更をステージングに載せる
+git add frontend/src/MainPage/Help.tsx
 ```
 
 実行しても、画面には **何も表示されません**（成功時は無言）。確認は `git status` で行います。
@@ -481,8 +490,10 @@ git add frontend/src/MainPage/Help.tsx   # このファイルの変更をステ�
 > **▼ このコードがやること（先に日本語で）:** ファイルを並べれば複数をまとめて、`.`（ドット）なら「変更した全ファイル」をステージングに載せます。
 
 ```bash
-git add frontend/src/MainPage/Help.tsx hozen_another/settings.py   # 2つまとめて
-git add .                                                          # 変更した全部をまとめて
+# 2つまとめて
+git add frontend/src/MainPage/Help.tsx hozen_another/settings.py
+# 変更した全部をまとめて
+git add .
 ```
 
 > ⚠️ **`git add .` は便利ですが、要注意。** 「意図せず変えてしまったファイル」や「コミットすべきでない一時ファイル」まで巻き込みます。`git add .` の **前に必ず `git status` を打って**、緑になる予定のファイルを確認する癖をつけてください。本アプリでは特に `frontend/build/` 配下の自動生成ファイルなどが紛れ込みやすいので注意します。
@@ -494,7 +505,8 @@ git add .                                                          # 変更し�
 > **▼ このコードがやること（先に日本語で）:** ステージングに載せたファイルを「載せる前の状態（作業ツリーのみ）」に戻します。ファイルの中身は変わりません。
 
 ```bash
-git restore --staged frontend/src/MainPage/Help.tsx   # ステージングから降ろす（中身は無傷）
+# ステージングから降ろす（中身は無傷）
+git restore --staged frontend/src/MainPage/Help.tsx
 ```
 
 > **なぜ？ `--staged` を付けると安全**
@@ -513,7 +525,8 @@ git restore --staged frontend/src/MainPage/Help.tsx   # ステージングから
 > **▼ このコードがやること（先に日本語で）:** ステージング済みの変更を1つの記録にまとめ、`-m` の後ろの文字列を「コミットメッセージ（変更理由）」として添えて確定します。
 
 ```bash
-git commit -m "人員一覧で異動・退社を後ろに変更"   # -m=メッセージ。""の中が変更の説明
+# -m=メッセージ。""の中が変更の説明
+git commit -m "人員一覧で異動・退社を後ろに変更"
 ```
 
 - `git commit` … 確定する命令。
@@ -572,7 +585,8 @@ git commit -m "人員一覧で異動・退社を後ろに変更"   # -m=メッ�
 > **▼ このコードがやること（先に日本語で）:** コミットを新しい順に、ID・作者・日時・メッセージ付きで詳しく表示します。
 
 ```bash
-git log   # 全コミットを新しい順に詳しく表示
+# 全コミットを新しい順に詳しく表示
+git log
 ```
 
 > **▼ こう表示されます（本アプリの実際の履歴）:**
@@ -608,7 +622,8 @@ git log   # 全コミットを新しい順に詳しく表示
 > **▼ このコードがやること（先に日本語で）:** 各コミットを「短いID＋メッセージ」の1行に圧縮して一覧します。
 
 ```bash
-git log --oneline   # oneline=1行表示。ID＋メッセージだけ
+# oneline=1行表示。ID＋メッセージだけ
+git log --oneline
 ```
 
 > **▼ こう表示されます（本アプリの実際の履歴）:**
@@ -627,8 +642,10 @@ git log --oneline   # oneline=1行表示。ID＋メッセージだけ
 > **▼ このコードがやること（先に日本語で）:** 最新の数件だけ見たり、ブランチの枝分かれをアスキーアートのグラフで見たりします。
 
 ```bash
-git log --oneline -5            # 最新5件だけ
-git log --oneline --graph --all # ブランチの枝分かれをグラフで表示
+# 最新5件だけ
+git log --oneline -5
+# ブランチの枝分かれをグラフで表示
+git log --oneline --graph --all
 ```
 
 `--graph` を付けると、ブランチがどこで分かれてどこで合流したかが、線（`*`・`|`・`/`・`\`）で描かれます。§10〜§11のブランチを学んだ後に見ると理解が深まります。
@@ -638,7 +655,8 @@ git log --oneline --graph --all # ブランチの枝分かれをグラフで表�
 > **▼ このコードがやること（先に日本語で）:** コミットIDを指定すると、その回で具体的に何行変わったか（diff）まで見られます。
 
 ```bash
-git show 9156f15   # ID 9156f15（休憩バグ修正）の回の変更内容を表示
+# ID 9156f15（休憩バグ修正）の回の変更内容を表示
+git show 9156f15
 ```
 
 > **なぜ？ これが「タイムマシン」の威力**
@@ -657,7 +675,8 @@ git show 9156f15   # ID 9156f15（休憩バグ修正）の回の変更内容を�
 > **▼ このコードがやること（先に日本語で）:** ローカルで確定したコミットを、GitHub（`origin`）の `master` ブランチに送って同期します。§2の図の「ローカル → GitHub」の矢印です。
 
 ```bash
-git push origin master   # origin（GitHub）の master へ、手元のコミットを送る
+# origin（GitHub）の master へ、手元のコミットを送る
+git push origin master
 ```
 
 > **▼ こう表示されれば成功:**
@@ -676,7 +695,8 @@ git push origin master   # origin（GitHub）の master へ、手元のコミッ
 > **▼ このコードがやること（先に日本語で）:** GitHub 側にある最新のコミットを取得し、手元の作業ツリーに反映（合流）します。「取得（fetch）＋合流（merge）」を一度に行います。
 
 ```bash
-git pull origin master   # GitHub の master の最新を取り寄せて合流
+# GitHub の master の最新を取り寄せて合流
+git pull origin master
 ```
 
 > **▼ こう表示されます:**
@@ -695,7 +715,8 @@ git pull origin master   # GitHub の master の最新を取り寄せて合流
 > **▼ このコードがやること（先に日本語で）:** GitHub の最新を「取得するだけ」で、手元の作業ツリーにはまだ反映しません。中身を確認してから合流したい慎重派向け。
 
 ```bash
-git fetch origin   # 取得のみ。手元には自動で混ざらない
+# 取得のみ。手元には自動で混ざらない
+git fetch origin
 ```
 
 > **pull と fetch の違い（重要）:**
@@ -733,7 +754,8 @@ feature:              D ── E ───────     ← 枝（ここで�
 > **▼ このコードがやること（先に日本語で）:** `help-fix` という名前の新しい枝を作り、そこへ移動します。`-c`（create）付きの `switch` は「作って移動」を一度にやります。
 
 ```bash
-git switch -c help-fix   # -c=create。help-fix という枝を作って移動
+# -c=create。help-fix という枝を作って移動
+git switch -c help-fix
 ```
 
 > **▼ こう表示されれば成功:**
@@ -758,8 +780,10 @@ git switch -c help-fix   # -c=create。help-fix という枝を作って移動
 > **▼ このコードがやること（先に日本語で）:** 既存のブランチへ移動します（`-c` なしの `switch`）。`master` に戻りたいときに使います。
 
 ```bash
-git switch master    # master に戻る
-git switch help-fix  # help-fix に移動
+# master に戻る
+git switch master
+# help-fix に移動
+git switch help-fix
 ```
 
 > **▼ こう表示されます:**
@@ -782,8 +806,10 @@ merge は「**取り込みたい側（master）に移動してから、取り込
 > **▼ このコードがやること（先に日本語で）:** まず本流 `master` に移動し、`help-fix` の変更を `master` に合流させます。
 
 ```bash
-git switch master       # ① 取り込み先（本流）に移動
-git merge help-fix      # ② help-fix の変更を master に取り込む
+# ① 取り込み先（本流）に移動
+git switch master
+# ② help-fix の変更を master に取り込む
+git merge help-fix
 ```
 
 > **▼ こう表示されれば成功（Fast-forward の場合）:**
@@ -814,7 +840,8 @@ git merge help-fix      # ② help-fix の変更を master に取り込む
 > **▼ このコードがやること（先に日本語で）:** master に取り込み終えた `help-fix` 枝を削除します。`-d`（delete）は「ちゃんと merge 済みなら消す」安全版です。
 
 ```bash
-git branch -d help-fix   # -d=delete。merge済みの枝を安全に削除
+# -d=delete。merge済みの枝を安全に削除
+git branch -d help-fix
 ```
 
 > ⚠️ `-d`（小文字）は「merge 済みでないと消さない」安全装置付き。`-D`（大文字）は「未マージでも強制削除」で、未保存の作業が消えます。基本は **小文字の `-d`** を使ってください。
@@ -846,7 +873,8 @@ git branch -d help-fix   # -d=delete。merge済みの枝を安全に削除
 > **▼ このコードがやること（先に日本語で）:** 衝突して未解決のファイル一覧を確認します。
 
 ```bash
-git status   # 「both modified:」がコンフリクト中のファイル
+# 「both modified:」がコンフリクト中のファイル
+git status
 ```
 
 > **▼ こう表示されます:**
@@ -916,9 +944,12 @@ git status   # 「both modified:」がコンフリクト中のファイル
 > **▼ このコードがやること（先に日本語で）:** 解決したファイルを `add` で「解決済み」と記録し、`commit` で合流を完了します（merge 中の commit はメッセージ省略でもOK）。
 
 ```bash
-git add frontend/src/MainPage/Help.tsx   # ① 「このファイルは解決した」と記録
-git status                               # ② Unmerged が消えたか確認
-git commit                               # ③ 合流を完了（※指示があれば実行）
+# ① 「このファイルは解決した」と記録
+git add frontend/src/MainPage/Help.tsx
+# ② Unmerged が消えたか確認
+git status
+# ③ 合流を完了（※指示があれば実行）
+git commit
 ```
 
 > **▼ 解決後 `git status` でこう出れば成功:**
@@ -1079,7 +1110,8 @@ yarn-error.log*         # ⑥ yarnのエラーログ
 > **▼ このコードがやること（先に日本語で）:** ファイルを「Git の追跡対象から外す」が、手元のファイル自体は消さない（`--cached`）。これで `.gitignore` が効くようになります。
 
 ```bash
-git rm --cached .env   # 追跡だけ外す。手元の .env ファイルは残る
+# 追跡だけ外す。手元の .env ファイルは残る
+git rm --cached .env
 ```
 
 > ⚠️ `--cached` を **付け忘れる** と、手元の `.env` ファイル **自体が削除** されます。必ず `--cached` を付けてください。これも commit を伴うので、本運用では実行前に指示を仰ぎましょう。
@@ -1136,7 +1168,8 @@ Windows では、一度入れたトークンを OS が安全に覚えてくれ�
 > **▼ このコードがやること（先に日本語で）:** Git に「認証情報を Windows の資格情報マネージャーに保存して」と設定し、次回から自動でトークンを使わせます。
 
 ```bash
-git config --global credential.helper manager   # Windowsの資格情報マネージャーに保存
+# Windowsの資格情報マネージャーに保存
+git config --global credential.helper manager
 ```
 
 > **用語: `--global`（グローバル）**
@@ -1155,7 +1188,8 @@ Git の最大の安心は「**たいていの失敗は元に戻せる**」こと
 > **▼ このコードがやること（先に日本語で）:** 指定ファイルの **作業ツリーの編集を破棄** し、最後にコミットした時点の中身に戻します。「さっきの編集、なかったことにしたい」とき。
 
 ```bash
-git restore frontend/src/MainPage/Help.tsx   # このファイルの編集を捨てて元に戻す
+# このファイルの編集を捨てて元に戻す
+git restore frontend/src/MainPage/Help.tsx
 ```
 
 > ⚠️ **これは破壊的操作です。** 捨てた編集は **基本的に戻りません**（まだコミットしていない変更なので、Git も覚えていない）。実行前に「本当に捨てていいか」を `git diff` で確認しましょう。
@@ -1165,7 +1199,8 @@ git restore frontend/src/MainPage/Help.tsx   # このファイルの編集を捨
 §6.3 で見たもの。`add` を取り消すだけで、中身は無傷の **安全な操作** です。
 
 ```bash
-git restore --staged Help.tsx   # add を取り消す（中身そのまま）
+# add を取り消す（中身そのまま）
+git restore --staged Help.tsx
 ```
 
 ### 16.3 直前のコミットメッセージを直す（amend）
@@ -1173,7 +1208,8 @@ git restore --staged Help.tsx   # add を取り消す（中身そのまま）
 > **▼ このコードがやること（先に日本語で）:** 直前のコミットの **メッセージを書き直す**（まだ push していない場合に限る）。
 
 ```bash
-git commit --amend -m "正しいメッセージ"   # 直前コミットのメッセージを上書き
+# 直前コミットのメッセージを上書き
+git commit --amend -m "正しいメッセージ"
 ```
 
 > ⚠️ **`--amend` は「直前コミットを作り直す」操作。** すでに push したコミットに対して使うと、リモートと食い違って厄介になります。**push 前のローカルでのみ** 使ってください。本運用では commit/push を勝手にしないので、出番は限定的です。
@@ -1185,9 +1221,12 @@ git commit --amend -m "正しいメッセージ"   # 直前コミットのメッ
 > **▼ このコードがやること（先に日本語で）:** 直前のコミットを取り消す。`--soft` は変更を残し、`--mixed`（既定）はステージングだけ解除し、`--hard` は **変更ごと完全に消す**。
 
 ```bash
-git reset --soft HEAD~1    # ① コミットだけ取消。変更はステージングに残る（安全）
-git reset --mixed HEAD~1   # ② コミット&add取消。変更は作業ツリーに残る（既定・安全）
-git reset --hard HEAD~1    # ③ コミットも変更も全部消す（超危険！）
+# ① コミットだけ取消。変更はステージングに残る（安全）
+git reset --soft HEAD~1
+# ② コミット&add取消。変更は作業ツリーに残る（既定・安全）
+git reset --mixed HEAD~1
+# ③ コミットも変更も全部消す（超危険！）
+git reset --hard HEAD~1
 ```
 
 - `HEAD~1`（ヘッド・チルダ・いち）… 「今の位置（HEAD）の1つ前」の意味。`~2` なら2つ前。
@@ -1202,7 +1241,8 @@ git reset --hard HEAD~1    # ③ コミットも変更も全部消す（超危�
 > **救いの神 `git reflog`（レフログ）:** Git は、HEAD が動いたすべての履歴（reset も含む）を裏でこっそり記録しています。`git reflog` を打つと、「reset で消したつもりのコミット」のIDが見つかり、`git reset --hard そのID` で **復活** できることが多いです。「やらかした！」と思っても、**一度コミットしてさえいれば** 諦めるのはまだ早い。`git reflog` を思い出してください。
 
 ```bash
-git reflog   # HEADが動いた全履歴を表示。消したつもりのコミットIDが見つかる
+# HEADが動いた全履歴を表示。消したつもりのコミットIDが見つかる
+git reflog
 ```
 
 ### 16.6 ⚠️ 本プロジェクトの運用ルール（再々掲・最重要）
@@ -1227,10 +1267,14 @@ git reflog   # HEADが動いた全履歴を表示。消したつもりのコミ�
 ### 17.1 朝の儀式（作業を始める前）
 
 ```bash
-git switch master            # ① まず本流にいることを確認
-git status                   # ② 手元に変なゴミが残っていないか確認（クリーンが理想）
-git pull origin master       # ③ GitHubの最新を取り寄せる（古い状態で始めない）
-git log --oneline -5         # ④ 最近の変更をざっと把握
+# ① まず本流にいることを確認
+git switch master
+# ② 手元に変なゴミが残っていないか確認（クリーンが理想）
+git status
+# ③ GitHubの最新を取り寄せる（古い状態で始めない）
+git pull origin master
+# ④ 最近の変更をざっと把握
+git log --oneline -5
 ```
 
 > **なぜ朝に `pull`？** 昨日の自分や他の人の変更を取り込んでから始めることで、コンフリクト（§12）を未然に防げます。
@@ -1238,8 +1282,10 @@ git log --oneline -5         # ④ 最近の変更をざっと把握
 ### 17.2 作業中の儀式（こまめに）
 
 ```bash
-git status                   # 今どのファイルを触ったか、いつでも確認
-git diff                     # 何をどう変えたか、こまめに眺める
+# 今どのファイルを触ったか、いつでも確認
+git status
+# 何をどう変えたか、こまめに眺める
+git diff
 ```
 
 > **コツ:** 「キリのいいところで `git status` と `git diff`」を口癖に。自分が何をしているか見失わなくなります。
@@ -1247,8 +1293,10 @@ git diff                     # 何をどう変えたか、こまめに眺める
 ### 17.3 帰る前の儀式（作業の区切り）
 
 ```bash
-git status                   # 今日の変更を一覧で確認
-git diff                     # 中身を最終確認
+# 今日の変更を一覧で確認
+git status
+# 中身を最終確認
+git diff
 # ここから先（add/commit/push）は指示があれば実行：
 # git add <意図したファイルだけ>
 # git commit -m "わかりやすい日本語メッセージ"

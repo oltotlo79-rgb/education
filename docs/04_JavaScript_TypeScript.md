@@ -96,7 +96,8 @@ HTMLとCSSだけだと、画面は「絵」のように静止しています。�
 ```javascript
 // これは1行コメント。// から行末までが無視される（※説明用の簡易例）
 
-const x = 5; // 行の途中からコメントを始めることもできる
+// 行の途中からコメントを始めることもできる
+const x = 5;
 
 /*
   これは複数行コメント。
@@ -125,8 +126,10 @@ const x = 5; // 行の途中からコメントを始めることもできる
 > **▼ このコードがやること（先に日本語で）:** `employeeName` という箱に文字列「山田」を入れ、`age` という箱に数値42を入れます。
 
 ```javascript
-const employeeName = "山田";  // employeeName という箱に "山田" を入れる（※説明用の簡易例）
-let age = 42;                 // age という箱に 42 を入れる
+// employeeName という箱に "山田" を入れる（※説明用の簡易例）
+const employeeName = "山田";
+// age という箱に 42 を入れる
+let age = 42;
 ```
 
 分解すると：
@@ -147,12 +150,17 @@ JavaScriptで変数を作る方法は主に2つ。**この使い分けは毎日�
 > **▼ このコードがやること:** `const` の箱は中身を変えようとするとエラー、`let` の箱は変えられることを示します。
 
 ```javascript
-const pi = 3.14;   // 円周率。変わらない値なので const（※説明用の簡易例）
-pi = 3.15;         // ❌ エラー！ const で作った箱の中身は変えられない
+// 円周率。変わらない値なので const（※説明用の簡易例）
+const pi = 3.14;
+// ❌ エラー！ const で作った箱の中身は変えられない
+pi = 3.15;
 
-let count = 0;     // カウンター。後で増やすので let
-count = 1;         // ✅ OK。let なら中身を入れ替えられる
-count = count + 1; // ✅ OK。今の count(1) に 1 を足して count に入れ直す → 2
+// カウンター。後で増やすので let
+let count = 0;
+// ✅ OK。let なら中身を入れ替えられる
+count = 1;
+// ✅ OK。今の count(1) に 1 を足して count に入れ直す → 2
+count = count + 1;
 ```
 
 > **なぜ `const` を優先するの？** 「変えるつもりのない箱」を `const` にしておくと、うっかり書き換えてしまうミスを **コンピュータが止めてくれます**。プロは「まず `const` で書き、どうしても変える必要があるときだけ `let`」という習慣です。本アプリのコードを見ても、`const` が圧倒的多数です。
@@ -179,11 +187,16 @@ count = count + 1; // ✅ OK。今の count(1) に 1 を足して count に入�
 > **▼ このコードがやること:** 文字列・数値・真偽値・null・undefined という、JavaScriptの基本的な値の種類を一通り作ってみます。
 
 ```javascript
-const name = "山田太郎";    // 文字列（string）。"" か '' で囲む（※説明用の簡易例）
-const age = 42;            // 数値（number）。整数も小数も同じ number
-const isAdmin = true;      // 真偽値（boolean）。true（真）か false（偽）の2択
-const nothing = null;      // null（ヌル）。「意図的に空」を表す
-let notYet;                // undefined（アンディファインド）。「まだ値を入れていない」
+// 文字列（string）。"" か '' で囲む（※説明用の簡易例）
+const name = "山田太郎";
+// 数値（number）。整数も小数も同じ number
+const age = 42;
+// 真偽値（boolean）。true（真）か false（偽）の2択
+const isAdmin = true;
+// null（ヌル）。「意図的に空」を表す
+const nothing = null;
+// undefined（アンディファインド）。「まだ値を入れていない」
+let notYet;
 ```
 
 | 型 | 英語名 | 意味 | 例 |
@@ -208,9 +221,12 @@ let notYet;                // undefined（アンディファインド）。「�
 ある値が何型かを調べるには `typeof` を使います。
 
 ```javascript
-typeof "山田"   // "string"（※説明用の簡易例）
-typeof 42       // "number"
-typeof true     // "boolean"
+// "string"（※説明用の簡易例）
+typeof "山田"
+// "number"
+typeof 42
+// "boolean"
+typeof true
 ```
 
 ---
@@ -222,11 +238,16 @@ typeof true     // "boolean"
 ### 4.1 算術演算子（計算）
 
 ```javascript
-const a = 10 + 3;  // 13（足し算）（※説明用の簡易例）
-const b = 10 - 3;  // 7（引き算）
-const c = 10 * 3;  // 30（掛け算。× ではなく *）
-const d = 10 / 3;  // 3.333...（割り算。÷ ではなく /）
-const e = 10 % 3;  // 1（余り。10を3で割った余り。「剰余」という）
+// 13（足し算）（※説明用の簡易例）
+const a = 10 + 3;
+// 7（引き算）
+const b = 10 - 3;
+// 30（掛け算。× ではなく *）
+const c = 10 * 3;
+// 3.333...（割り算。÷ ではなく /）
+const d = 10 / 3;
+// 1（余り。10を3で割った余り。「剰余」という）
+const e = 10 % 3;
 ```
 
 > **用語: `%`（剰余演算子／じょうよ：割り算の余りを求める記号）** 「偶数か奇数か」（`x % 2` が0なら偶数）の判定などに使います。`03`章のCSSにも `nth-child(even)` がありましたが、JSでも `%` で偶奇判定をよくします。
@@ -236,8 +257,10 @@ const e = 10 % 3;  // 1（余り。10を3で割った余り。「剰余」とい
 `+` は、文字列どうしだと「つなげる」意味になります。
 
 ```javascript
-const greeting = "こんにちは、" + "山田さん";  // "こんにちは、山田さん"（※説明用の簡易例）
-const message = "番号は" + 123 + "です";       // "番号は123です"（数値が文字列に変換されてつながる）
+// "こんにちは、山田さん"（※説明用の簡易例）
+const greeting = "こんにちは、" + "山田さん";
+// "番号は123です"（数値が文字列に変換されてつながる）
+const message = "番号は" + 123 + "です";
 ```
 
 > ⚠️ `+` は「数値どうしなら足し算、文字列が混じると連結」という二面性があります。`"1" + 2` は **`3` ではなく `"12"`**（文字列の連結）になります。これがバグの温床になることがあるので、§5のテンプレートリテラルのほうが安全です。
@@ -247,12 +270,18 @@ const message = "番号は" + 123 + "です";       // "番号は123です"（�
 2つの値を比べて、`true` か `false` を返します。
 
 ```javascript
-5 > 3      // true（5は3より大きい）（※説明用の簡易例）
-5 < 3      // false
-5 >= 5     // true（以上）
-5 <= 4     // false（以下）
-5 === 5    // true（厳密に等しい）
-5 !== 3    // true（厳密に等しくない）
+// true（5は3より大きい）（※説明用の簡易例）
+5 > 3
+// false
+5 < 3
+// true（以上）
+5 >= 5
+// false（以下）
+5 <= 4
+// true（厳密に等しい）
+5 === 5
+// true（厳密に等しくない）
+5 !== 3
 ```
 
 > **★最重要★ `===`（イコール3つ）を使うこと:**
@@ -272,10 +301,14 @@ const message = "番号は" + 123 + "です";       // "番号は123です"（�
 複数の条件を組み合わせます。
 
 ```javascript
-true && true    // true（&& は「かつ（AND）」。両方trueならtrue）（※説明用の簡易例）
-true && false   // false
-true || false   // true（|| は「または（OR）」。どちらかtrueならtrue）
-!true           // false（! は「でない（NOT）」。反転させる）
+// true（&& は「かつ（AND）」。両方trueならtrue）（※説明用の簡易例）
+true && true
+// false
+true && false
+// true（|| は「または（OR）」。どちらかtrueならtrue）
+true || false
+// false（! は「でない（NOT）」。反転させる）
+!true
 ```
 
 | 記号 | 名前 | 意味 | 覚え方 |
@@ -297,7 +330,8 @@ true || false   // true（|| は「または（OR）」。どちらかtrueなら
 > **▼ このコードがやること:** 「山田」と42という変数の値を、文章の中に直接差し込んで1つの文字列を作ります。
 
 ```javascript
-const name = "山田";  // （※説明用の簡易例）
+// （※説明用の簡易例）
+const name = "山田";
 const age = 42;
 
 // 古い書き方（+ で連結）→ 読みにくい
@@ -327,12 +361,17 @@ const msg2 = `私は${name}、${age}歳です`;
 > **▼ このコードがやること:** 年齢が18以上なら「成人」、そうでなければ「未成年」と判定します。
 
 ```javascript
-const age = 20;  // （※説明用の簡易例）
+// （※説明用の簡易例）
+const age = 20;
 
-if (age >= 18) {        // もし age が18以上なら（条件は ( ) の中）
-  console.log("成人");   //   この { } の中を実行
-} else {                // そうでなければ
-  console.log("未成年"); //   こちらの { } を実行
+// もし age が18以上なら（条件は ( ) の中）
+if (age >= 18) {
+  //   この { } の中を実行
+  console.log("成人");
+// そうでなければ
+} else {
+  //   こちらの { } を実行
+  console.log("未成年");
 }
 ```
 
@@ -346,11 +385,14 @@ if (age >= 18) {        // もし age が18以上なら（条件は ( ) の中�
 3つ以上に分岐したいときは `else if` をはさみます。
 
 ```javascript
-if (score >= 80) {        // （※説明用の簡易例）
+// （※説明用の簡易例）
+if (score >= 80) {
   console.log("優");
-} else if (score >= 60) { // 上がfalseで、これがtrueなら
+// 上がfalseで、これがtrueなら
+} else if (score >= 60) {
   console.log("良");
-} else {                  // どれもfalseなら
+// どれもfalseなら
+} else {
   console.log("可");
 }
 ```
@@ -361,7 +403,8 @@ if (score >= 80) {        // （※説明用の簡易例）
 
 ```javascript
 // 構文： 条件 ? trueのときの値 : falseのときの値
-const result = age >= 18 ? "成人" : "未成年";  // （※説明用の簡易例）
+// （※説明用の簡易例）
+const result = age >= 18 ? "成人" : "未成年";
 // age >= 18 が true なら "成人"、false なら "未成年" が result に入る
 ```
 
@@ -380,15 +423,21 @@ const result = age >= 18 ? "成人" : "未成年";  // （※説明用の簡易�
 > **▼ このコードがやること:** 数値1〜6に応じて、対応する勤務シフト名の文字列を返します。本アプリの `formatTyoku`（§19で実コード解説）の構造そのものです。
 
 ```javascript
-switch (value) {              // value の値で分岐（※説明用の簡易例）
-  case 1:                     // value が 1 のとき
-    return "1直";             //   "1直" を返してswitchを抜ける
-  case 2:                     // value が 2 のとき
+// value の値で分岐（※説明用の簡易例）
+switch (value) {
+  // value が 1 のとき
+  case 1:
+    //   "1直" を返してswitchを抜ける
+    return "1直";
+  // value が 2 のとき
+  case 2:
     return "2直";
   case 3:
     return "3直";
-  default:                    // どの case にも当てはまらないとき
-    return "";                //   空文字を返す
+  // どの case にも当てはまらないとき
+  default:
+    //   空文字を返す
+    return "";
 }
 ```
 
@@ -411,8 +460,10 @@ switch (value) {              // value の値で分岐（※説明用の簡易�
 > **▼ このコードがやること:** 0から4までの数字を順番に5回、コンソールに表示します。
 
 ```javascript
-for (let i = 0; i < 5; i++) {  // i を0から始め、5未満の間、毎回1ずつ増やす（※説明用の簡易例）
-  console.log(i);              // i を表示（0,1,2,3,4 と5回出る）
+// i を0から始め、5未満の間、毎回1ずつ増やす（※説明用の簡易例）
+for (let i = 0; i < 5; i++) {
+  // i を表示（0,1,2,3,4 と5回出る）
+  console.log(i);
 }
 ```
 
@@ -430,9 +481,12 @@ for (let i = 0; i < 5; i++) {  // i を0から始め、5未満の間、毎回1�
 配列（§10）の要素を1つずつ取り出すには `for...of` が便利です。
 
 ```javascript
-const fruits = ["りんご", "みかん", "ぶどう"];  // （※説明用の簡易例）
-for (const fruit of fruits) {   // fruits の要素を1つずつ fruit に入れて繰り返す
-  console.log(fruit);           // "りんご" → "みかん" → "ぶどう" の順に表示
+// （※説明用の簡易例）
+const fruits = ["りんご", "みかん", "ぶどう"];
+// fruits の要素を1つずつ fruit に入れて繰り返す
+for (const fruit of fruits) {
+  // "りんご" → "みかん" → "ぶどう" の順に表示
+  console.log(fruit);
 }
 ```
 
@@ -451,12 +505,16 @@ for (const fruit of fruits) {   // fruits の要素を1つずつ fruit に入れ
 > **▼ このコードがやること:** 2つの数を受け取って足し算した結果を返す `add` という関数を作り、それを使います。
 
 ```javascript
-function add(a, b) {   // add という名前の関数。a と b を受け取る（※説明用の簡易例）
-  return a + b;        // a + b の結果を「返す」
+// add という名前の関数。a と b を受け取る（※説明用の簡易例）
+function add(a, b) {
+  // a + b の結果を「返す」
+  return a + b;
 }
 
-const result = add(3, 5);  // 関数を呼び出す。3 と 5 を渡すと 8 が返り、result に入る
-console.log(result);       // 8
+// 関数を呼び出す。3 と 5 を渡すと 8 が返り、result に入る
+const result = add(3, 5);
+// 8
+console.log(result);
 ```
 
 分解すると：
@@ -474,10 +532,12 @@ console.log(result);       // 8
 引数には数値だけでなく、文字列・真偽値・配列・オブジェクト、何でも渡せます。
 
 ```javascript
-function greet(name) {              // 文字列を受け取る関数（※説明用の簡易例）
+// 文字列を受け取る関数（※説明用の簡易例）
+function greet(name) {
   return "こんにちは、" + name + "さん";
 }
-greet("山田");  // "こんにちは、山田さん"
+// "こんにちは、山田さん"
+greet("山田");
 ```
 
 > **本アプリの関数:** `KosuList.tsx` の `formatTyoku(value)`（直番号→名前）、`getDayOfWeek(dateStr)`（日付→曜日）が、まさにこの「値を受け取って、変換した値を返す」関数です（§19で実コード解説）。
@@ -513,10 +573,13 @@ const add = (a, b) => {
 処理が「1つの値を返すだけ」なら、`{ }` と `return` を省略できます。
 
 ```javascript
-const add = (a, b) => a + b;   // { return } を省略。a + b の結果がそのまま返る（※説明用の簡易例）
+// { return } を省略。a + b の結果がそのまま返る（※説明用の簡易例）
+const add = (a, b) => a + b;
 
-const double = (x) => x * 2;   // 引数1つ。x を2倍にして返す
-const greet = () => "hello";   // 引数なしは () と書く
+// 引数1つ。x を2倍にして返す
+const double = (x) => x * 2;
+// 引数なしは () と書く
+const greet = () => "hello";
 ```
 
 ### 9.3 Reactでの「その場で書く」アロー関数
@@ -552,12 +615,17 @@ Reactでは、「ボタンを押したら〜する」処理を、その場でア
 > **▼ このコードがやること:** 曜日の文字列を7個並べた配列を作り、番号を指定して取り出します。本アプリの `getDayOfWeek`（§19）の `days` 配列と同じ形です。
 
 ```javascript
-const days = ["日", "月", "火", "水", "木", "金", "土"];  // 7個の文字列の配列（※説明用の簡易例）
+// 7個の文字列の配列（※説明用の簡易例）
+const days = ["日", "月", "火", "水", "木", "金", "土"];
 
-console.log(days[0]);  // "日"（最初の要素。番号は0から始まる！）
-console.log(days[1]);  // "月"
-console.log(days[6]);  // "土"（最後の要素）
-console.log(days.length);  // 7（要素の個数。length は「長さ」）
+// "日"（最初の要素。番号は0から始まる！）
+console.log(days[0]);
+// "月"
+console.log(days[1]);
+// "土"（最後の要素）
+console.log(days[6]);
+// 7（要素の個数。length は「長さ」）
+console.log(days.length);
 ```
 
 分解すると：
@@ -572,9 +640,12 @@ console.log(days.length);  // 7（要素の個数。length は「長さ」）
 ### 10.2 要素の追加・変更
 
 ```javascript
-const list = ["a", "b"];   // （※説明用の簡易例）
-list.push("c");            // 末尾に "c" を追加 → ["a","b","c"]
-list[0] = "X";             // 0番目を "X" に変更 → ["X","b","c"]
+// （※説明用の簡易例）
+const list = ["a", "b"];
+// 末尾に "c" を追加 → ["a","b","c"]
+list.push("c");
+// 0番目を "X" に変更 → ["X","b","c"]
+list[0] = "X";
 ```
 
 > ⚠️ `const` で作った配列でも、**中身の追加・変更はできます**。`const` が禁止するのは「箱ごと別物に入れ替えること」だけ。`list = [...]`（別の配列を代入）はダメですが、`list.push()`（中身を足す）はOKです。
@@ -592,9 +663,12 @@ list[0] = "X";             // 0番目を "X" に変更 → ["X","b","c"]
 > **▼ このコードがやること:** 数値の配列の各要素を2倍にした、新しい配列を作ります。
 
 ```javascript
-const numbers = [1, 2, 3];                       // （※説明用の簡易例）
-const doubled = numbers.map((n) => n * 2);       // 各要素 n を n*2 に変換
-console.log(doubled);   // [2, 4, 6]（元の numbers は変わらない）
+// （※説明用の簡易例）
+const numbers = [1, 2, 3];
+// 各要素 n を n*2 に変換
+const doubled = numbers.map((n) => n * 2);
+// [2, 4, 6]（元の numbers は変わらない）
+console.log(doubled);
 ```
 
 分解すると：
@@ -617,9 +691,12 @@ console.log(doubled);   // [2, 4, 6]（元の numbers は変わらない）
 > **▼ このコードがやること:** 数値の配列から、偶数だけを取り出した新しい配列を作ります。
 
 ```javascript
-const numbers = [1, 2, 3, 4, 5, 6];                  // （※説明用の簡易例）
-const evens = numbers.filter((n) => n % 2 === 0);    // 「2で割った余りが0」＝偶数だけ残す
-console.log(evens);   // [2, 4, 6]
+// （※説明用の簡易例）
+const numbers = [1, 2, 3, 4, 5, 6];
+// 「2で割った余りが0」＝偶数だけ残す
+const evens = numbers.filter((n) => n % 2 === 0);
+// [2, 4, 6]
+console.log(evens);
 ```
 
 分解すると：
@@ -637,10 +714,13 @@ console.log(evens);   // [2, 4, 6]
 ### 11.3 map と filter はつなげられる
 
 ```javascript
-const numbers = [1, 2, 3, 4, 5, 6];  // （※説明用の簡易例）
+// （※説明用の簡易例）
+const numbers = [1, 2, 3, 4, 5, 6];
 const result = numbers
-  .filter((n) => n % 2 === 0)  // まず偶数だけ残す → [2,4,6]
-  .map((n) => n * 10);         // それを10倍 → [20,40,60]
+  // まず偶数だけ残す → [2,4,6]
+  .filter((n) => n % 2 === 0)
+  // それを10倍 → [20,40,60]
+  .map((n) => n * 10);
 ```
 
 `.` でつなげて「絞り込んでから変換」のように **数珠つなぎ** にできます（メソッドチェーンと呼びます）。
@@ -658,15 +738,20 @@ const result = numbers
 > **▼ このコードがやること:** 1人の従業員の情報（番号・名前・管理者かどうか）を、1つのオブジェクトにまとめます。
 
 ```javascript
-const employee = {            // { } でオブジェクトを作る（※説明用の簡易例）
-  employeeNo: 123,            // キー: 値 のペア（カンマ区切り）
+// { } でオブジェクトを作る（※説明用の簡易例）
+const employee = {
+  // キー: 値 のペア（カンマ区切り）
+  employeeNo: 123,
   name: "山田太郎",
   isAdmin: false,
 };
 
-console.log(employee.name);        // "山田太郎"（ドットでアクセス）
-console.log(employee["name"]);     // "山田太郎"（角カッコでもアクセスできる）
-console.log(employee.employeeNo);  // 123
+// "山田太郎"（ドットでアクセス）
+console.log(employee.name);
+// "山田太郎"（角カッコでもアクセスできる）
+console.log(employee["name"]);
+// 123
+console.log(employee.employeeNo);
 ```
 
 分解すると：
@@ -685,16 +770,20 @@ console.log(employee.employeeNo);  // 123
 オブジェクトの値が、さらにオブジェクトになっていることもあります。
 
 ```javascript
-const response = {                    // （※説明用の簡易例）
+// （※説明用の簡易例）
+const response = {
   status: 200,
-  data: {                             // data の値が、また別のオブジェクト
+  // data の値が、また別のオブジェクト
+  data: {
     message: "成功",
     results: [1, 2, 3],
   },
 };
 
-console.log(response.data.message);   // "成功"（ドットをつなげて深く入る）
-console.log(response.data.results[0]); // 1（オブジェクト→配列→番号と辿る）
+// "成功"（ドットをつなげて深く入る）
+console.log(response.data.message);
+// 1（オブジェクト→配列→番号と辿る）
+console.log(response.data.results[0]);
 ```
 
 > **本アプリでのネスト:** axiosの通信結果は `response.data.results`、`err.response?.data.message` のように、何段もドットでつないでアクセスします（§18・§19）。「オブジェクトの中のオブジェクトの中の値」を辿っているのです。
@@ -712,16 +801,20 @@ console.log(response.data.results[0]); // 1（オブジェクト→配列→番�
 > **▼ このコードがやること:** オブジェクトから `name` と `age` を、それぞれ同名の変数に一気に取り出します。
 
 ```javascript
-const employee = { name: "山田", age: 42, isAdmin: false };  // （※説明用の簡易例）
+// （※説明用の簡易例）
+const employee = { name: "山田", age: 42, isAdmin: false };
 
 // 従来の書き方
 const name1 = employee.name;
 const age1 = employee.age;
 
 // 分割代入（一気に取り出す）
-const { name, age } = employee;   // employee.name → name、employee.age → age
-console.log(name);  // "山田"
-console.log(age);   // 42
+// employee.name → name、employee.age → age
+const { name, age } = employee;
+// "山田"
+console.log(name);
+// 42
+console.log(age);
 ```
 
 - `const { キー名, キー名 } = オブジェクト;` … 同じ名前の変数に、対応する値が入る。
@@ -729,7 +822,8 @@ console.log(age);   // 42
 配列でも使えます（こちらは順番で取り出す）：
 
 ```javascript
-const [first, second] = ["a", "b", "c"];  // first="a", second="b"（※説明用の簡易例）
+// first="a", second="b"（※説明用の簡易例）
+const [first, second] = ["a", "b", "c"];
 ```
 
 > **本アプリでの実例:** `Login.tsx` の `const [employee_no, setNumber] = useState<string>("")`（§18）は、**配列の分割代入** です。`useState` が返す配列の0番目を `employee_no`、1番目を `setNumber` という名前で受け取っています。Reactの `useState` はこの形で必ず使います（`05`章で詳説）。
@@ -741,12 +835,15 @@ const [first, second] = ["a", "b", "c"];  // first="a", second="b"（※説明�
 > **▼ このコードがやること:** 既存のオブジェクトの中身を新しいオブジェクトにコピーしつつ、項目を足します。
 
 ```javascript
-const base = { page: 1, size: 20 };          // （※説明用の簡易例）
-const extended = { ...base, filter: true };  // base の中身を展開し、filter を追加
+// （※説明用の簡易例）
+const base = { page: 1, size: 20 };
+// base の中身を展開し、filter を追加
+const extended = { ...base, filter: true };
 // extended は { page: 1, size: 20, filter: true }
 
 const arr1 = [1, 2];
-const arr2 = [...arr1, 3, 4];   // arr1 を展開して [1, 2, 3, 4]
+// arr1 を展開して [1, 2, 3, 4]
+const arr2 = [...arr1, 3, 4];
 ```
 
 - `{ ...オブジェクト, 追加キー: 値 }` … 既存の中身を広げて、新しいものを足す。
@@ -772,13 +869,16 @@ const arr2 = [...arr1, 3, 4];   // arr1 を展開して [1, 2, 3, 4]
 > **▼ このコードがやること:** 深いオブジェクトの値を辿るとき、途中が空っぽでもプログラムが落ちないようにします。
 
 ```javascript
-const res = { data: { message: "ok" } };  // （※説明用の簡易例）
+// （※説明用の簡易例）
+const res = { data: { message: "ok" } };
 
 // 普通のドット → 途中が undefined だとエラーで落ちる
-console.log(res.response.data);   // ❌ res.response が無いのでエラー！
+// ❌ res.response が無いのでエラー！
+console.log(res.response.data);
 
 // オプショナルチェイニング → 途中が無ければ undefined を返すだけ（落ちない）
-console.log(res.response?.data);  // undefined（エラーにならない）
+// undefined（エラーにならない）
+console.log(res.response?.data);
 ```
 
 - `a?.b` … `a` が `null`/`undefined` なら、`b` を辿らず `undefined` を返す。
@@ -801,14 +901,18 @@ JavaScriptは「箱に何を入れてもいい」自由な言語です。でも�
 ```javascript
 // JavaScript（型なし）の悲劇（※説明用の簡易例）
 let age = 42;
-age = "四十二";          // エラーにならない（実行するまで気づかない）
-const result = age * 2;  // "四十二" * 2 → NaN（数値じゃない！）というバグ
+// エラーにならない（実行するまで気づかない）
+age = "四十二";
+// "四十二" * 2 → NaN（数値じゃない！）というバグ
+const result = age * 2;
 ```
 
 ```typescript
 // TypeScript（型あり）なら（※説明用の簡易例）
-let age: number = 42;    // age は数値専用、と宣言
-age = "四十二";          // ❌ 書いた瞬間にエディタが赤線で警告！
+// age は数値専用、と宣言
+let age: number = 42;
+// ❌ 書いた瞬間にエディタが赤線で警告！
+age = "四十二";
 ```
 
 > **用語: NaN（ナン／Not a Number：「数値ではない」を表す特殊な値）** 数値計算に文字列が混じったときなどに出ます。出たら「型の取り違え」を疑います。
@@ -820,9 +924,12 @@ age = "四十二";          // ❌ 書いた瞬間にエディタが赤線で警
 > **▼ このコードがやること:** それぞれの変数に「この型しか入れられない」とラベルを貼ります。
 
 ```typescript
-const name: string = "山田";    // string（文字列）専用（※説明用の簡易例）
-const age: number = 42;         // number（数値）専用
-const isAdmin: boolean = false; // boolean（真偽値）専用
+// string（文字列）専用（※説明用の簡易例）
+const name: string = "山田";
+// number（数値）専用
+const age: number = 42;
+// boolean（真偽値）専用
+const isAdmin: boolean = false;
 ```
 
 - `変数名: 型名 = 値;` … `:` の後ろに型名を書く。
@@ -833,8 +940,10 @@ const isAdmin: boolean = false; // boolean（真偽値）専用
 実は、初期値があれば **型注釈を省略** できます。TypeScriptが値から型を **推測（推論）** してくれるからです。
 
 ```typescript
-const name = "山田";   // 型注釈なしでも、TypeScriptが「これは string」と推論（※説明用の簡易例）
-name = 42;             // ❌ それでもエラー！ stringと推論されているので数値は入れられない
+// 型注釈なしでも、TypeScriptが「これは string」と推論（※説明用の簡易例）
+const name = "山田";
+// ❌ それでもエラー！ stringと推論されているので数値は入れられない
+name = 42;
 ```
 
 > **本アプリの方針:** 自明なものは型推論に任せ、関数の引数・戻り値や `useState` など「分かりにくい所」だけ明示する、というバランスです。`KosuList.tsx` の `const days = ["日", ...]` には型注釈がありません（文字列配列だと推論される）。一方、関数 `formatTyoku = (value: string | number): string => ...` には引数と戻り値の型を明示しています（§19）。
@@ -846,7 +955,8 @@ name = 42;             // ❌ それでもエラー！ stringと推論されて�
 > **▼ このコードがやること:** 「数値を2つ受け取り、数値を返す」関数だと明示します。
 
 ```typescript
-const add = (a: number, b: number): number => {  // 引数a,bはnumber、戻り値もnumber（※説明用の簡易例）
+// 引数a,bはnumber、戻り値もnumber（※説明用の簡易例）
+const add = (a: number, b: number): number => {
   return a + b;
 };
 ```
@@ -861,10 +971,14 @@ const add = (a: number, b: number): number => {  // 引数a,bはnumber、戻り�
 `|`（縦棒）で「AまたはB」という型を作れます。
 
 ```typescript
-let value: string | number;   // 文字列 または 数値（※説明用の簡易例）
-value = "abc";   // ✅ OK
-value = 123;     // ✅ OK
-value = true;    // ❌ エラー（boolean は許していない）
+// 文字列 または 数値（※説明用の簡易例）
+let value: string | number;
+// ✅ OK
+value = "abc";
+// ✅ OK
+value = 123;
+// ❌ エラー（boolean は許していない）
+value = true;
 ```
 
 > **用語: union型（ユニオン型／合併型：`A | B` の形で「AかBのどちらか」を表す型）** 「`null` かもしれない」を表す `string | null` が特に頻出です。
@@ -880,20 +994,27 @@ value = true;    // ❌ エラー（boolean は許していない）
 > **▼ このコードがやること:** 「従業員オブジェクトは、番号(数値)・名前(文字列)・管理者か(真偽値)を持つ」という設計図を定義し、それに沿ったオブジェクトを作ります。
 
 ```typescript
-interface Employee {        // Employee という設計図を定義（※説明用の簡易例）
-  employeeNo: number;       // 番号は数値
-  name: string;             // 名前は文字列
-  isAdmin: boolean;         // 管理者かは真偽値
+// Employee という設計図を定義（※説明用の簡易例）
+interface Employee {
+  // 番号は数値
+  employeeNo: number;
+  // 名前は文字列
+  name: string;
+  // 管理者かは真偽値
+  isAdmin: boolean;
 }
 
-const e: Employee = {       // この設計図に従ったオブジェクトを作る
+// この設計図に従ったオブジェクトを作る
+const e: Employee = {
   employeeNo: 123,
   name: "山田",
   isAdmin: false,
 };
 
-const bad: Employee = {     // ❌ エラー！ name が抜けている＆型が違う
-  employeeNo: "123",        //   employeeNo は number のはずが文字列
+// ❌ エラー！ name が抜けている＆型が違う
+const bad: Employee = {
+  //   employeeNo は number のはずが文字列
+  employeeNo: "123",
 };
 ```
 
@@ -911,8 +1032,10 @@ const bad: Employee = {     // ❌ エラー！ name が抜けている＆型が
 `type` でも型に名前を付けられます。`interface` と似ていますが、union型などにも名前を付けられる点が違います。
 
 ```typescript
-type ID = string | number;   // 「文字列か数値」に ID という別名を付ける（※説明用の簡易例）
-type Status = "success" | "error" | "loading";  // 決まった文字列だけを許す型
+// 「文字列か数値」に ID という別名を付ける（※説明用の簡易例）
+type ID = string | number;
+// 決まった文字列だけを許す型
+type Status = "success" | "error" | "loading";
 ```
 
 > **interface と type の使い分け（ざっくり）:** 「オブジェクトの形」なら `interface`、「union や別名」なら `type`、と覚えておけば実務では十分です。本アプリはオブジェクトの形に `interface`（`Kosu`）を使っています。
@@ -954,9 +1077,12 @@ Promiseを **読みやすく扱う** ための仕組みが `async` と `await` �
 > **▼ このコードがやること:** サーバーにログイン情報を送り、その「返事が来るまで待ってから」次の処理に進みます。これは `Login.tsx` の処理の骨格そのものです。
 
 ```typescript
-const handleSubmit = async (event) => {       // ① async：この関数は非同期処理を含む（※説明用の簡易例）
-  const response = await api.post("/api/login/", { ... });  // ② await：返事が来るまで待つ
-  const data = response.data;                 // ③ 返事が来てから、この行が実行される
+// ① async：この関数は非同期処理を含む（※説明用の簡易例）
+const handleSubmit = async (event) => {
+  // ② await：返事が来るまで待つ
+  const response = await api.post("/api/login/", { ... });
+  // ③ 返事が来てから、この行が実行される
+  const data = response.data;
   console.log(data);
 };
 ```
@@ -977,12 +1103,17 @@ const handleSubmit = async (event) => {       // ① async：この関数は非�
 > **▼ このコードがやること:** 通信を試み（try）、もし失敗したら（catch）エラー処理をします。
 
 ```typescript
-try {                                    // try：この中の処理を「試す」（※説明用の簡易例）
-  const response = await api.post(...);  //   成功すればそのまま下へ
+// try：この中の処理を「試す」（※説明用の簡易例）
+try {
+  //   成功すればそのまま下へ
+  const response = await api.post(...);
   console.log("成功", response);
-} catch (err) {                          // catch：try の中でエラーが起きたら、ここに飛んでくる
-  console.log("失敗", err);              //   err にエラー情報が入っている
-} finally {                              // finally：成功・失敗どちらでも最後に必ず実行（省略可）
+// catch：try の中でエラーが起きたら、ここに飛んでくる
+} catch (err) {
+  //   err にエラー情報が入っている
+  console.log("失敗", err);
+// finally：成功・失敗どちらでも最後に必ず実行（省略可）
+} finally {
   console.log("通信おわり");
 }
 ```
@@ -1011,13 +1142,16 @@ try {                                    // try：この中の処理を「試す
 
 ```typescript
 // ファイルA：math.ts（※説明用の簡易例）
-export const add = (a, b) => a + b;   // export：この add を外のファイルから使えるようにする
+// export：この add を外のファイルから使えるようにする
+export const add = (a, b) => a + b;
 ```
 
 ```typescript
 // ファイルB：別のファイル（※説明用の簡易例）
-import { add } from "./math";   // math.ts から add を取り込む
-console.log(add(2, 3));         // 5
+// math.ts から add を取り込む
+import { add } from "./math";
+// 5
+console.log(add(2, 3));
 ```
 
 - `export` … 「このファイルの外に公開する」印。
@@ -1052,14 +1186,22 @@ console.log(add(2, 3));         // 5
 > **▼ このコードがやること（先に日本語で）:** 「サーバーのアドレス」「ログイン情報（クッキー）を一緒に送る設定」「セキュリティ対策（CSRFトークン）の設定」をあらかじめ仕込んだ **専用の通信オブジェクト `api`** を1つ作り、アプリ全体で使い回せるように外へ公開します。
 
 ```typescript
-import axios from "axios";                          // ① axiosライブラリを取り込む
-const api = axios.create({                          // ② 設定済みの通信オブジェクトを作る
-    baseURL: process.env.REACT_APP_API_BASE_URL,    // ③ 通信先サーバーの基本アドレス
-    withCredentials: true,                          // ④ クッキー（ログイン情報）を一緒に送る
-    xsrfCookieName: "csrftoken",                    // ⑤ CSRF対策トークンが入るクッキー名
-    xsrfHeaderName: "X-CSRFToken",                  // ⑥ そのトークンを送るヘッダー名
-});                                                 //    （設定オブジェクトの閉じ）
-export default api;                                 // ⑦ 作った api を外のファイルへ公開
+// ① axiosライブラリを取り込む
+import axios from "axios";
+// ② 設定済みの通信オブジェクトを作る
+const api = axios.create({
+    // ③ 通信先サーバーの基本アドレス
+    baseURL: process.env.REACT_APP_API_BASE_URL,
+    // ④ クッキー（ログイン情報）を一緒に送る
+    withCredentials: true,
+    // ⑤ CSRF対策トークンが入るクッキー名
+    xsrfCookieName: "csrftoken",
+    // ⑥ そのトークンを送るヘッダー名
+    xsrfHeaderName: "X-CSRFToken",
+//    （設定オブジェクトの閉じ）
+});
+// ⑦ 作った api を外のファイルへ公開
+export default api;
 ```
 
 1行ずつ詳しく：
@@ -1112,17 +1254,27 @@ export default api;                                 // ⑦ 作った api を外�
 > **▼ このコードがやること:** 必要な部品を取り込み、「入力された従業員番号」「エラーメッセージ」という2つの状態の箱と、ページ移動の道具を用意します。
 
 ```typescript
-import React, { useState } from "react";                  // ① React本体と useState を取り込む
-import { Link, useNavigate } from "react-router-dom";     // ② リンクとページ移動の道具
-import api from "../api/axios";                           // ③ §17で作った通信オブジェクト
-import axios from "axios";                                // ④ エラー判定に使う axios 本体
-import logo from "../img/TitleRogo.png";                  // ⑤ ロゴ画像ファイル
-import styles from "../styles/MainPage/Login.module.css"; // ⑥ この画面専用CSS（03章）
+// ① React本体と useState を取り込む
+import React, { useState } from "react";
+// ② リンクとページ移動の道具
+import { Link, useNavigate } from "react-router-dom";
+// ③ §17で作った通信オブジェクト
+import api from "../api/axios";
+// ④ エラー判定に使う axios 本体
+import axios from "axios";
+// ⑤ ロゴ画像ファイル
+import logo from "../img/TitleRogo.png";
+// ⑥ この画面専用CSS（03章）
+import styles from "../styles/MainPage/Login.module.css";
 
-const Login: React.FC = () => {                           // ⑦ Loginコンポーネントの定義
-  const [employee_no, setNumber] = useState<string>("");      // ⑧ 入力値の状態（最初は空文字）
-  const [errorMessage, setErrorMessage] = useState<string>(""); // ⑨ エラー文の状態（最初は空）
-  const navigate = useNavigate();                             // ⑩ ページ移動関数を取得
+// ⑦ Loginコンポーネントの定義
+const Login: React.FC = () => {
+  // ⑧ 入力値の状態（最初は空文字）
+  const [employee_no, setNumber] = useState<string>("");
+  // ⑨ エラー文の状態（最初は空）
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  // ⑩ ページ移動関数を取得
+  const navigate = useNavigate();
 ```
 
 - **①〜⑥** … import（§16）。Reactの機能、ルーティング（画面遷移）の道具、§17の `api`、エラー判定用の `axios` 本体、画像、CSSを取り込んでいます。`react` と `react-router-dom` は外部ライブラリ、`../` 付きは自作ファイルです。
@@ -1143,23 +1295,38 @@ const Login: React.FC = () => {                           // ⑦ Loginコンポ�
 > **▼ このコードがやること（先に日本語で）:** ①フォーム送信の既定動作を止め、②前のエラー表示を消し、③サーバーに従業員番号を送ってログインを試み、④成功ならトップページへ移動、⑤失敗理由を画面に表示します。通信は非同期なので `async/await`、失敗に備えて `try/catch` を使います。
 
 ```typescript
-const handleSubmit = async (event: React.FormEvent) => {   // ① 非同期関数として定義
-  event.preventDefault();                                  // ② フォームの既定送信を止める
-  setErrorMessage("");                                     // ③ 前回のエラー表示を消す
+// ① 非同期関数として定義
+const handleSubmit = async (event: React.FormEvent) => {
+  // ② フォームの既定送信を止める
+  event.preventDefault();
+  // ③ 前回のエラー表示を消す
+  setErrorMessage("");
 
-  try {                                                    // ④ 通信を試す（失敗に備える）
-    const response = await api.post("/api/login/", { employee_no: Number(employee_no) });  // ⑤ サーバーに送信し返事を待つ
-    const data = response.data;                            // ⑥ 返事の中身を取り出す
-    if (data.status === "success") {                       // ⑦ 成功と書いてあれば
-      navigate("/");                                       // ⑧ トップページへ移動
-    } else {                                               // ⑨ そうでなければ（業務的な失敗）
-      setErrorMessage(data.message || "サーバーエラーが発生しました。");  // ⑩ サーバーの理由を表示
+  // ④ 通信を試す（失敗に備える）
+  try {
+    // ⑤ サーバーに送信し返事を待つ
+    const response = await api.post("/api/login/", { employee_no: Number(employee_no) });
+    // ⑥ 返事の中身を取り出す
+    const data = response.data;
+    // ⑦ 成功と書いてあれば
+    if (data.status === "success") {
+      // ⑧ トップページへ移動
+      navigate("/");
+    // ⑨ そうでなければ（業務的な失敗）
+    } else {
+      // ⑩ サーバーの理由を表示
+      setErrorMessage(data.message || "サーバーエラーが発生しました。");
     }
-  } catch (err) {                                          // ⑪ 通信自体が失敗したら
-    if (axios.isAxiosError(err)) {                         // ⑫ axiosの通信エラーなら
-      if (err.response?.status === 401) navigate("/login"); // ⑬ 401(未認証)ならログイン画面へ
-      else setErrorMessage(err.response?.data.message);    // ⑭ それ以外はサーバーの理由を表示
-    } else setErrorMessage("不明なエラーが発生しました。IT担当者に連絡してください。");  // ⑮ axios以外の謎エラー
+  // ⑪ 通信自体が失敗したら
+  } catch (err) {
+    // ⑫ axiosの通信エラーなら
+    if (axios.isAxiosError(err)) {
+      // ⑬ 401(未認証)ならログイン画面へ
+      if (err.response?.status === 401) navigate("/login");
+      // ⑭ それ以外はサーバーの理由を表示
+      else setErrorMessage(err.response?.data.message);
+    // ⑮ axios以外の謎エラー
+    } else setErrorMessage("不明なエラーが発生しました。IT担当者に連絡してください。");
   }
 };
 ```
@@ -1248,13 +1415,20 @@ const handleSubmit = async (event: React.FormEvent) => {   // ① 非同期関�
 > **▼ このコードがやること:** サーバーから来る「工数1件」のデータが、どんなキーとどんな型を持つかを定義する設計図です（§14.6）。
 
 ```typescript
-interface Kosu {              // 「工数1件」の形を定義する設計図
-  id: number;                 // 一意の番号（数値）。各行を区別する
-  employee_no3: number;       // 従業員番号（数値）
-  name: string;               // 氏名（文字列）
-  work_day2: string;          // 就業日（文字列。"2026-06-01" のような日付文字列）
-  tyoku2: string;             // 直（シフト区分。文字列。"1"〜"6"）
-  judgement: boolean;         // 整合性（真偽値。trueならOK、falseならNG）
+// 「工数1件」の形を定義する設計図
+interface Kosu {
+  // 一意の番号（数値）。各行を区別する
+  id: number;
+  // 従業員番号（数値）
+  employee_no3: number;
+  // 氏名（文字列）
+  name: string;
+  // 就業日（文字列。"2026-06-01" のような日付文字列）
+  work_day2: string;
+  // 直（シフト区分。文字列。"1"〜"6"）
+  tyoku2: string;
+  // 整合性（真偽値。trueならOK、falseならNG）
+  judgement: boolean;
 }
 ```
 
@@ -1277,15 +1451,24 @@ interface Kosu {              // 「工数1件」の形を定義する設計図
 > **▼ このコードがやること:** 直の番号（1〜6、文字列でも数値でも可）を受け取り、「1直」「常昼」などの **人間が読める文字列** に変換して返します。§6.3の switch、§14.4の関数型注釈の実例です。
 
 ```typescript
-const formatTyoku = (value: string | number): string => {  // 引数はstring|number、戻り値はstring
-  switch (Number(value)) {        // value を数値化して分岐
-    case 1: return "1直";         // 1 なら "1直" を返す
-    case 2: return "2直";         // 2 なら "2直"
-    case 3: return "3直";         // 3 なら "3直"
-    case 4: return "常昼";        // 4 なら "常昼"
-    case 5: return "連1直";       // 5 なら "連1直"
-    case 6: return "連2直";       // 6 なら "連2直"
-    default: return "";           // どれでもなければ空文字
+// 引数はstring|number、戻り値はstring
+const formatTyoku = (value: string | number): string => {
+  // value を数値化して分岐
+  switch (Number(value)) {
+    // 1 なら "1直" を返す
+    case 1: return "1直";
+    // 2 なら "2直"
+    case 2: return "2直";
+    // 3 なら "3直"
+    case 3: return "3直";
+    // 4 なら "常昼"
+    case 4: return "常昼";
+    // 5 なら "連1直"
+    case 5: return "連1直";
+    // 6 なら "連2直"
+    case 6: return "連2直";
+    // どれでもなければ空文字
+    default: return "";
   }
 };
 ```
@@ -1308,10 +1491,14 @@ const formatTyoku = (value: string | number): string => {  // 引数はstring|nu
 > **▼ このコードがやること:** `"2026-06-01"` のような日付文字列を受け取り、「日」「月」…などの **曜日の漢字1文字** を返します。配列（§10）と `Date` オブジェクトの実例です。
 
 ```typescript
-const getDayOfWeek = (dateStr: string): string => {       // 日付文字列を受け取り、曜日文字列を返す
-  const days = ["日", "月", "火", "水", "木", "金", "土"]; // 曜日の配列（番号0〜6に対応）
-  const date = new Date(dateStr);                         // 文字列から日付オブジェクトを作る
-  return days[date.getDay()] || "";                       // 曜日番号で配列を引き、なければ空文字
+// 日付文字列を受け取り、曜日文字列を返す
+const getDayOfWeek = (dateStr: string): string => {
+  // 曜日の配列（番号0〜6に対応）
+  const days = ["日", "月", "火", "水", "木", "金", "土"];
+  // 文字列から日付オブジェクトを作る
+  const date = new Date(dateStr);
+  // 曜日番号で配列を引き、なければ空文字
+  return days[date.getDay()] || "";
 };
 ```
 
@@ -1338,37 +1525,61 @@ const getDayOfWeek = (dateStr: string): string => {       // 日付文字列を�
 
 ```typescript
 const fetchData = useCallback(async (
-  page: number,                       // 引数：ページ番号
-  day: string,                        // 引数：検索する日付（空なら絞り込みなし）
-  mode: boolean                       // 引数：月検索ならtrue、日検索ならfalse
+  // 引数：ページ番号
+  page: number,
+  // 引数：検索する日付（空なら絞り込みなし）
+  day: string,
+  // 引数：月検索ならtrue、日検索ならfalse
+  mode: boolean
 ) => {
-  setLoading(true);                   // ① ローディング表示をオンに
-  try {                               // ② 通信を試す
-    const response = await api.get("/api/kosu_list/", {  // ③ 一覧をGET取得（返事を待つ）
-      params: {                       // ④ サーバーへ渡す検索条件（クエリパラメータ）
-        page: page,                   //    ページ番号は必ず送る
-        ...(day && {                  // ⑤ day に値があるときだけ、以下を展開して追加
-          day: day,                   //    検索日
-          mode: mode ? "month" : "day",  // 月検索か日検索か（三項演算子）
-          filter: "true",             //    絞り込みフラグ
+  // ① ローディング表示をオンに
+  setLoading(true);
+  // ② 通信を試す
+  try {
+    // ③ 一覧をGET取得（返事を待つ）
+    const response = await api.get("/api/kosu_list/", {
+      // ④ サーバーへ渡す検索条件（クエリパラメータ）
+      params: {
+        //    ページ番号は必ず送る
+        page: page,
+        // ⑤ day に値があるときだけ、以下を展開して追加
+        ...(day && {
+          //    検索日
+          day: day,
+          // 月検索か日検索か（三項演算子）
+          mode: mode ? "month" : "day",
+          //    絞り込みフラグ
+          filter: "true",
         })
       }
     });
 
-    const results = response.data.results || [];      // ⑥ 結果配列（なければ空配列）
-    const pageSize = response.data.page_size || 20;   // ⑦ 1ページ件数（なければ20）
-    setData(results);                                 // ⑧ 取得データを状態にセット
-    setTotalPages(Math.ceil(response.data.count / pageSize));  // ⑨ 総ページ数を計算してセット
-  } catch (err) {                     // ⑩ 通信失敗時
-    if (axios.isAxiosError(err)) {                       // ⑪ axiosの通信エラーなら
-      if (err.response?.status === 401) navigate("/login");   // ⑫ 401ならログインへ
-      else if (err.response?.status === 403) navigate("/");   // ⑬ 403（権限なし）ならトップへ
-      else setError(err.response?.data.message);            // ⑭ その他はエラー文を表示
+    // ⑥ 結果配列（なければ空配列）
+    const results = response.data.results || [];
+    // ⑦ 1ページ件数（なければ20）
+    const pageSize = response.data.page_size || 20;
+    // ⑧ 取得データを状態にセット
+    setData(results);
+    // ⑨ 総ページ数を計算してセット
+    setTotalPages(Math.ceil(response.data.count / pageSize));
+  // ⑩ 通信失敗時
+  } catch (err) {
+    // ⑪ axiosの通信エラーなら
+    if (axios.isAxiosError(err)) {
+      // ⑫ 401ならログインへ
+      if (err.response?.status === 401) navigate("/login");
+      // ⑬ 403（権限なし）ならトップへ
+      else if (err.response?.status === 403) navigate("/");
+      // ⑭ その他はエラー文を表示
+      else setError(err.response?.data.message);
     } else {
-      setError("不明なエラーが発生しました。IT担当者に連絡してください。");  // ⑮ axios以外
+      // ⑮ axios以外
+      setError("不明なエラーが発生しました。IT担当者に連絡してください。");
     }
-  } finally {                         // ⑯ 成功・失敗どちらでも最後に
-    setLoading(false);                // ⑰ ローディング表示をオフに
+  // ⑯ 成功・失敗どちらでも最後に
+  } finally {
+    // ⑰ ローディング表示をオフに
+    setLoading(false);
   }
 }, [navigate]);
 ```
@@ -1404,25 +1615,36 @@ const fetchData = useCallback(async (
 > **▼ このコードがやること:** データが0件なら「No data found.」を出し、あれば各データを表の1行（`<tr>`）に変換して並べます。各行では日付に曜日を添え、直を名称化し、整合性をOK/NGで色分け表示します。
 
 ```jsx
-{data.length === 0 ? (                  // ① データ件数が0なら…
-  <p>No data found.</p>                 //    「データなし」を表示
-) : (                                   // ② そうでなければ…
+// ① データ件数が0なら…
+{data.length === 0 ? (
+  //    「データなし」を表示
+  <p>No data found.</p>
+// ② そうでなければ…
+) : (
   <TableContainer ...>
     <table>
       <thead> ... </thead>
       <tbody>
-        {data.map((item) => (           // ③ data配列の各要素 item を、表の行に変換
-          <tr key={item.id}>            // ④ 1行。key には一意の id を指定
-            <td>{item.work_day2} ({getDayOfWeek(item.work_day2)})</td>  // ⑤ 就業日＋曜日
-            <td>{formatTyoku(item.tyoku2)}</td>                         // ⑥ 直を名称化
-            <td className={item.judgement ? styles["status-ok"] : styles["status-ng"]}>  // ⑦ OK/NGで色分け
-              {item.judgement ? "OK" : "NG"}                            // ⑧ 整合性の表示
+        // ③ data配列の各要素 item を、表の行に変換
+        {data.map((item) => (
+          // ④ 1行。key には一意の id を指定
+          <tr key={item.id}>
+            // ⑤ 就業日＋曜日
+            <td>{item.work_day2} ({getDayOfWeek(item.work_day2)})</td>
+            // ⑥ 直を名称化
+            <td>{formatTyoku(item.tyoku2)}</td>
+            // ⑦ OK/NGで色分け
+            <td className={item.judgement ? styles["status-ok"] : styles["status-ng"]}>
+              // ⑧ 整合性の表示
+              {item.judgement ? "OK" : "NG"}
             </td>
             <td>
-              <Link to={`/kosu-update/${item.id}`} className={styles["a-collar"]}>編集</Link>  // ⑨ 編集リンク
+              // ⑨ 編集リンク
+              <Link to={`/kosu-update/${item.id}`} className={styles["a-collar"]}>編集</Link>
             </td>
             <td>
-              <Link to={`/kosu-delete/${item.id}`} className={styles["a-collar"]}>削除</Link>  // ⑩ 削除リンク
+              // ⑩ 削除リンク
+              <Link to={`/kosu-delete/${item.id}`} className={styles["a-collar"]}>削除</Link>
             </td>
           </tr>
         ))}

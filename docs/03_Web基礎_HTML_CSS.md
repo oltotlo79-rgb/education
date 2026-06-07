@@ -296,12 +296,18 @@ div （幹）
 > **▼ このコードがやること:** この画面で使う部品（React本体、ページ移動の道具、通信の道具、ロゴ画像、専用CSS）を外部から読み込んでいます。「材料を仕入れる」段階です。
 
 ```tsx
-import React, { useState } from "react";                       // ① React本体と、状態を持つ道具 useState
-import { Link, useNavigate } from "react-router-dom";          // ② 画面間リンクと、画面移動の道具
-import api from "../api/axios";                                // ③ サーバーと通信する道具（第4章）
-import axios from "axios";                                     // ④ 通信ライブラリ本体
-import logo from "../img/TitleRogo.png";                       // ⑤ ロゴ画像を読み込んで logo という名前に
-import styles from "../styles/MainPage/Login.module.css";      // ⑥ この画面専用のCSS（§12で全解説）
+// ① React本体と、状態を持つ道具 useState
+import React, { useState } from "react";
+// ② 画面間リンクと、画面移動の道具
+import { Link, useNavigate } from "react-router-dom";
+// ③ サーバーと通信する道具（第4章）
+import api from "../api/axios";
+// ④ 通信ライブラリ本体
+import axios from "axios";
+// ⑤ ロゴ画像を読み込んで logo という名前に
+import logo from "../img/TitleRogo.png";
+// ⑥ この画面専用のCSS（§12で全解説）
+import styles from "../styles/MainPage/Login.module.css";
 ```
 
 - ⑤ … 画像も `import` で読み込みます。後で `<img src={logo} />` のように使います。
@@ -313,41 +319,61 @@ import styles from "../styles/MainPage/Login.module.css";      // ⑥ この画�
 
 ```tsx
 return (
-  <div className={styles["login-wrapper"]}>                    {/* ① 画面全体を囲む箱。Modulesのクラスを適用 */}
-    <img src={logo} alt="業務工数システムロゴ"                  {/* ② ロゴ画像。src=画像、alt=代替文字 */}
+  {/* ① 画面全体を囲む箱。Modulesのクラスを適用 */}
+  <div className={styles["login-wrapper"]}>
+    {/* ② ロゴ画像。src=画像、alt=代替文字 */}
+    <img src={logo} alt="業務工数システムロゴ"
          className={styles["login-logo"]} />
-    <form                                                      {/* ③ フォーム枠（申込用紙） */}
-      onSubmit={handleSubmit}                                  {/*    送信時に handleSubmit を呼ぶ（第4章） */}
-      onKeyDown={(e) => {                                      {/*    キー入力時の処理（Enterの暴発防止） */}
+    {/* ③ フォーム枠（申込用紙） */}
+    <form
+      {/*    送信時に handleSubmit を呼ぶ（第4章） */}
+      onSubmit={handleSubmit}
+      {/*    キー入力時の処理（Enterの暴発防止） */}
+      onKeyDown={(e) => {
         if (e.key === "Enter" && e.target instanceof HTMLInputElement
             && e.target.type !== "textarea") {
-          e.preventDefault();                                  {/*    Enterでの誤送信を止める */}
-          (e.target as HTMLInputElement).blur();               {/*    入力欄からフォーカス（カーソル）を外す */}
+          {/*    Enterでの誤送信を止める */}
+          e.preventDefault();
+          {/*    入力欄からフォーカス（カーソル）を外す */}
+          (e.target as HTMLInputElement).blur();
         }
       }}
     >
-      <h2>ログイン</h2>                                          {/* ④ 見出し（global.cssで中央寄せ） */}
-      <div className={styles["search-bar"]}>                    {/* ⑤ 入力欄をまとめる箱（縦並び） */}
-        <label htmlFor="numberInput">従業員番号</label>          {/* ⑥ ラベル。htmlForを下のidと一致 */}
+      {/* ④ 見出し（global.cssで中央寄せ） */}
+      <h2>ログイン</h2>
+      {/* ⑤ 入力欄をまとめる箱（縦並び） */}
+      <div className={styles["search-bar"]}>
+        {/* ⑥ ラベル。htmlForを下のidと一致 */}
+        <label htmlFor="numberInput">従業員番号</label>
         <input
-          type="number"                                        {/* ⑦ 数値入力欄 */}
-          id="numberInput"                                     {/*    ラベルと結ぶ id */}
-          value={employee_no}                                  {/*    表示する値（stateと連動。第5章） */}
-          onChange={(e) => {                                   {/*    入力が変わるたびに */}
+          {/* ⑦ 数値入力欄 */}
+          type="number"
+          {/*    ラベルと結ぶ id */}
+          id="numberInput"
+          {/*    表示する値（stateと連動。第5章） */}
+          value={employee_no}
+          {/*    入力が変わるたびに */}
+          onChange={(e) => {
             const value = e.target.value;
-            setNumber(value === "" ? "" : value);              {/*    stateを更新（空なら空、なければ値） */}
+            {/*    stateを更新（空なら空、なければ値） */}
+            setNumber(value === "" ? "" : value);
           }}
-          required                                             {/* ⑧ 入力必須 */}
+          {/* ⑧ 入力必須 */}
+          required
           className={styles["input-focus"]}
         />
-        {errorMessage && (                                     {/* ⑨ エラーがあるときだけ表示（&&） */}
-          <div role="alert">{errorMessage}</div>               {/*    role="alert"は支援技術への通知（§16） */}
+        {/* ⑨ エラーがあるときだけ表示（&&） */}
+        {errorMessage && (
+          {/*    role="alert"は支援技術への通知（§16） */}
+          <div role="alert">{errorMessage}</div>
         )}
 
-        <button type="submit" className="blue_button">ログイン</button>  {/* ⑩ 送信ボタン。global.cssの青ボタン */}
+        {/* ⑩ 送信ボタン。global.cssの青ボタン */}
+        <button type="submit" className="blue_button">ログイン</button>
       </div>
     </form>
-    <Link to="/help" className={styles["help-button"]}></Link>  {/* ⑪ ヘルプへのリンク（菱形ボタン。§12） */}
+    {/* ⑪ ヘルプへのリンク（菱形ボタン。§12） */}
+    <Link to="/help" className={styles["help-button"]}></Link>
   </div>
 );
 ```
@@ -385,9 +411,12 @@ return (
 具体例（※説明用の簡易例）：
 
 ```css
-p {                /* セレクタ：対象（すべての p） */
-  color: red;      /* プロパティ:値 → 文字色を赤に。最後は必ず ; */
-  font-size: 16px; /* 文字サイズ16ピクセル */
+/* セレクタ：対象（すべての p） */
+p {
+  /* プロパティ:値 → 文字色を赤に。最後は必ず ; */
+  color: red;
+  /* 文字サイズ16ピクセル */
+  font-size: 16px;
 }
 ```
 
@@ -467,7 +496,8 @@ p {                /* セレクタ：対象（すべての p） */
 これを防ぐのが `box-sizing: border-box`。これを指定すると `width` が「padding と border を **含めた** 全体幅」になり、`width:200px` と書けば見た目もちゃんと200pxになります。直感どおりになるわけです。
 
 ```css
-* { box-sizing: border-box; }   /* 全要素を「幅にpadding/borderを含める」方式に（※本アプリの実装。§11.1で再掲） */
+/* 全要素を「幅にpadding/borderを含める」方式に（※本アプリの実装。§11.1で再掲） */
+* { box-sizing: border-box; }
 ```
 
 本アプリは `global.css` の冒頭で **全要素に** これを適用しています（§11.1で実コード確認）。だから本アプリでは「幅の計算が狂う」事故が起きにくくなっています。
@@ -475,11 +505,16 @@ p {                /* セレクタ：対象（すべての p） */
 ### 5.2 margin / padding のショートハンド（まとめ書き）
 
 ```css
-margin: 10px;                /* 上下左右すべて10px */
-margin: 10px 20px;           /* 上下10px / 左右20px */
-margin: 10px 20px 30px 40px; /* 上→右→下→左（時計回り） */
-margin: 0 auto;              /* 上下0、左右auto＝左右中央寄せ（頻出！） */
-margin-top: 8px;             /* 上だけ個別指定 */
+/* 上下左右すべて10px */
+margin: 10px;
+/* 上下10px / 左右20px */
+margin: 10px 20px;
+/* 上→右→下→左（時計回り） */
+margin: 10px 20px 30px 40px;
+/* 上下0、左右auto＝左右中央寄せ（頻出！） */
+margin: 0 auto;
+/* 上だけ個別指定 */
+margin-top: 8px;
 ```
 
 > **`margin: 0 auto` は「横方向の中央寄せ」の定番。** 左右を `auto`（自動）にすると、ブラウザが左右の余白を等しく取り、結果として要素が水平中央に来ます。本アプリの `login-logo` や `form`、各種 `wrapper` で多用されています（§11・§12）。
@@ -518,11 +553,16 @@ margin-top: 8px;             /* 上だけ個別指定 */
 ### 6.3 色の指定
 
 ```css
-color: red;                 /* 色名（限られた数） */
-color: #007bff;             /* 16進数 #RRGGBB（R赤 G緑 B青 を00〜ffで） */
-color: #0f0;                /* 3桁省略形（#00ff00 と同じ＝緑） */
-color: rgb(0, 123, 255);    /* 赤緑青を0〜255で */
-color: rgba(0, 0, 0, 0.1);  /* 最後は透明度(0=透明〜1=不透明) */
+/* 色名（限られた数） */
+color: red;
+/* 16進数 #RRGGBB（R赤 G緑 B青 を00〜ffで） */
+color: #007bff;
+/* 3桁省略形（#00ff00 と同じ＝緑） */
+color: #0f0;
+/* 赤緑青を0〜255で */
+color: rgb(0, 123, 255);
+/* 最後は透明度(0=透明〜1=不透明) */
+color: rgba(0, 0, 0, 0.1);
 ```
 
 > **16進数カラーの読み方:** `#007bff` は「赤=00、緑=7b、青=ff」。`#0f0` は短縮形で `#00ff00`（赤0・緑最大・青0＝純緑）と同じ。本アプリは主に **16進数**（`#007bff` 青、`#0f0` 緑、`#0ff` 水色 など）を使い、影の透明度には **rgba** を使っています（§11）。
@@ -542,12 +582,18 @@ color: rgba(0, 0, 0, 0.1);  /* 最後は透明度(0=透明〜1=不透明) */
 
 ```css
 .container {
-  display: flex;            /* フレックス開始（この箱の子を整列させる） */
-  flex-direction: row;      /* 並ぶ向き：row=横（既定）, column=縦 */
-  justify-content: center;  /* 主軸（並ぶ向き）の揃え */
-  align-items: center;      /* 交差軸（直角方向）の揃え */
-  gap: 15px;                /* アイテム間の隙間 */
-  flex-wrap: wrap;          /* 入りきらない時に折り返す */
+  /* フレックス開始（この箱の子を整列させる） */
+  display: flex;
+  /* 並ぶ向き：row=横（既定）, column=縦 */
+  flex-direction: row;
+  /* 主軸（並ぶ向き）の揃え */
+  justify-content: center;
+  /* 交差軸（直角方向）の揃え */
+  align-items: center;
+  /* アイテム間の隙間 */
+  gap: 15px;
+  /* 入りきらない時に折り返す */
+  flex-wrap: wrap;
 }
 ```
 
@@ -569,10 +615,14 @@ color: rgba(0, 0, 0, 0.1);  /* 最後は透明度(0=透明〜1=不透明) */
 要素の「状態」に応じてスタイルを変えます。`:`（コロン）を **1つ** 付けます。
 
 ```css
-a:hover    { }   /* マウスを乗せている時 */
-input:focus{ }   /* 入力欄が選択（カーソルが入っている）時 */
-tr:nth-child(even) { }  /* 偶数番目の行 */
-button:disabled { }     /* 操作不可の時 */
+/* マウスを乗せている時 */
+a:hover    { }
+/* 入力欄が選択（カーソルが入っている）時 */
+input:focus{ }
+/* 偶数番目の行 */
+tr:nth-child(even) { }
+/* 操作不可の時 */
+button:disabled { }
 ```
 
 > **用語: hover（ホバー）/ focus（フォーカス）**
@@ -586,8 +636,10 @@ button:disabled { }     /* 操作不可の時 */
 要素の前後に「飾りの中身」を追加します。`::`（コロン）を **2つ** 付けます。
 
 ```css
-.icon::before { content: "⚠️ "; }   /* 要素の中身の「前」に文字を足す */
-.icon::after  { content: "?"; }     /* 要素の中身の「後」に文字を足す */
+/* 要素の中身の「前」に文字を足す */
+.icon::before { content: "⚠️ "; }
+/* 要素の中身の「後」に文字を足す */
+.icon::after  { content: "?"; }
 ```
 
 - `content` プロパティが **必須**（足す中身を指定。無いと表示されない）。
@@ -604,10 +656,12 @@ button:disabled { }     /* 操作不可の時 */
 ```css
 .blue_button {
   background-color: #007bff;
-  transition: background-color 0.3s ease;  /* 背景色を0.3秒かけて変化 */
+  /* 背景色を0.3秒かけて変化 */
+  transition: background-color 0.3s ease;
 }
 .blue_button:hover {
-  background-color: #0056b3;   /* ホバーで濃い青へ（0.3秒かけてじわっと） */
+  /* ホバーで濃い青へ（0.3秒かけてじわっと） */
+  background-color: #0056b3;
 }
 ```
 
@@ -620,12 +674,16 @@ button:disabled { }     /* 操作不可の時 */
 `@keyframes`（キーフレーム）で「開始→終了」の変化を定義し、`animation` で再生します。
 
 ```css
-@keyframes fadeInUp {        /* fadeInUp という名前のアニメを定義 */
-  from { opacity: 0; transform: translateY(50px); }  /* 開始：透明＆50px下 */
-  to   { opacity: 1; transform: translateY(0); }     /* 終了：不透明＆定位置 */
+/* fadeInUp という名前のアニメを定義 */
+@keyframes fadeInUp {
+  /* 開始：透明＆50px下 */
+  from { opacity: 0; transform: translateY(50px); }
+  /* 終了：不透明＆定位置 */
+  to   { opacity: 1; transform: translateY(0); }
 }
 .login-wrapper {
-  animation: fadeInUp 1s ease-out;  /* 上のアニメを1秒で再生（下からふわっと出現） */
+  /* 上のアニメを1秒で再生（下からふわっと出現） */
+  animation: fadeInUp 1s ease-out;
 }
 ```
 
@@ -641,10 +699,12 @@ button:disabled { }     /* 操作不可の時 */
 画面の幅に応じてスタイルを切り替え、PC・タブレット・スマホのいずれでも見やすくします。
 
 ```css
-@media (max-width: 768px) {   /* 画面幅が768px以下のときだけ適用 */
+/* 画面幅が768px以下のときだけ適用 */
+@media (max-width: 768px) {
   form {
     width: auto;
-    min-width: unset;         /* 最小幅の指定を解除（小さい画面で横はみ出し防止） */
+    /* 最小幅の指定を解除（小さい画面で横はみ出し防止） */
+    min-width: unset;
   }
 }
 ```
@@ -668,10 +728,14 @@ button:disabled { }     /* 操作不可の時 */
 > **▼ このブロックがやること:** すべての要素の初期の余白を消し、ボックスモデルを扱いやすい方式に統一します。「ブラウザごとの初期スタイルの違い」をならす、いわゆる **CSSリセット** です。
 
 ```css
-* {                        /* * は「すべての要素」を意味する全称セレクタ */
-  margin: 0;               /* 全要素の外側余白を0に（ブラウザ既定の余白を消す） */
-  padding: 0;              /* 全要素の内側余白を0に */
-  box-sizing: border-box;  /* widthにpadding/borderを含める方式に統一（§5.1） */
+/* * は「すべての要素」を意味する全称セレクタ */
+* {
+  /* 全要素の外側余白を0に（ブラウザ既定の余白を消す） */
+  margin: 0;
+  /* 全要素の内側余白を0に */
+  padding: 0;
+  /* widthにpadding/borderを含める方式に統一（§5.1） */
+  box-sizing: border-box;
 }
 ```
 
@@ -681,8 +745,10 @@ button:disabled { }     /* 操作不可の時 */
 
 ```css
 html, body {
-  height: 100%;                      /* 画面の高さいっぱいを使えるように */
-  font-family: 'Arial', sans-serif;  /* 既定フォント。Arialが無ければゴシック系 */
+  /* 画面の高さいっぱいを使えるように */
+  height: 100%;
+  /* 既定フォント。Arialが無ければゴシック系 */
+  font-family: 'Arial', sans-serif;
 }
 ```
 
@@ -699,13 +765,18 @@ button,
 input,
 select,
 textarea {
-  font-family: inherit;  /* 親要素のフォントを引き継ぐ（部品だけ別フォントになるのを防ぐ） */
-  font-size: 100%;       /* 文字サイズも親基準に */
+  /* 親要素のフォントを引き継ぐ（部品だけ別フォントになるのを防ぐ） */
+  font-family: inherit;
+  /* 文字サイズも親基準に */
+  font-size: 100%;
   margin: 0;
   padding: 0;
-  border: none;          /* 既定の枠線を消す（後で自分で付け直す） */
-  background: none;      /* 既定の背景を消す */
-  outline: none;         /* クリック時の青い枠を消す（focusで自分で付ける） */
+  /* 既定の枠線を消す（後で自分で付け直す） */
+  border: none;
+  /* 既定の背景を消す */
+  background: none;
+  /* クリック時の青い枠を消す（focusで自分で付ける） */
+  outline: none;
 }
 ```
 
@@ -718,20 +789,26 @@ textarea {
 ```css
 ul,
 ol {
-  list-style: none;   /* 箇条書きの「・」や番号を消す */
+  /* 箇条書きの「・」や番号を消す */
+  list-style: none;
   margin: 0;
   padding: 0;
 }
 
 a {
-  text-decoration: none;  /* リンクの下線を消す */
-  color: inherit;         /* リンクの青色をやめ、親の文字色を継承 */
+  /* リンクの下線を消す */
+  text-decoration: none;
+  /* リンクの青色をやめ、親の文字色を継承 */
+  color: inherit;
 }
 
 img {
-  max-width: 100%;   /* 画像が親より大きくならないように（はみ出し防止） */
-  height: auto;      /* 縦横比を保ったまま縮小 */
-  display: block;    /* 画像下の謎の隙間を消す（inline要素の癖を回避） */
+  /* 画像が親より大きくならないように（はみ出し防止） */
+  max-width: 100%;
+  /* 縦横比を保ったまま縮小 */
+  height: auto;
+  /* 画像下の謎の隙間を消す（inline要素の癖を回避） */
+  display: block;
 }
 ```
 
@@ -744,10 +821,14 @@ img {
 > **▼ このブロックがやること:** よく使う値（見出しサイズ）に名前を付けて、後でまとめて使い回せるようにします。これを **CSS変数（カスタムプロパティ）** と呼びます。
 
 ```css
-:root {                                              /* :root は html要素＝最上位。ここで定義すると全体で使える */
-  --heading1: clamp(1.5rem, 1.5rem + 3vw, 4rem);     /* 見出し1のサイズ（画面幅で伸縮、§6.2のclamp） */
-  --heading2: clamp(0.7rem, 0.8rem + 3vw, 1.5rem);   /* 見出し2のサイズ */
-  --paragraph: clamp(0.3rem, 0.6rem + 3vw, 1rem);    /* 段落のサイズ */
+/* :root は html要素＝最上位。ここで定義すると全体で使える */
+:root {
+  /* 見出し1のサイズ（画面幅で伸縮、§6.2のclamp） */
+  --heading1: clamp(1.5rem, 1.5rem + 3vw, 4rem);
+  /* 見出し2のサイズ */
+  --heading2: clamp(0.7rem, 0.8rem + 3vw, 1.5rem);
+  /* 段落のサイズ */
+  --paragraph: clamp(0.3rem, 0.6rem + 3vw, 1rem);
 }
 ```
 
@@ -765,20 +846,31 @@ img {
 body {
   font-family: 'Arial', sans-serif;
   margin: 0;
-  padding: 10px;                /* 画面の縁に10pxの余白 */
-  background-color: #f4f7f9;    /* 薄い灰色の背景 */
-  display: flex;                /* 中身をFlexboxで配置 */
-  justify-content: center;      /* 横方向：中央寄せ（コンテンツを画面中央に） */
-  align-items: flex-start;      /* 縦方向：上寄せ */
-  min-height: 100vh;            /* 最低でも画面の高さ分は確保（vh=画面高さの1%） */
-  overflow-x: auto;             /* 横にはみ出たらスクロールバーを出す */
-  white-space: nowrap;          /* テキストを折り返さない（表が崩れないように） */
+  /* 画面の縁に10pxの余白 */
+  padding: 10px;
+  /* 薄い灰色の背景 */
+  background-color: #f4f7f9;
+  /* 中身をFlexboxで配置 */
+  display: flex;
+  /* 横方向：中央寄せ（コンテンツを画面中央に） */
+  justify-content: center;
+  /* 縦方向：上寄せ */
+  align-items: flex-start;
+  /* 最低でも画面の高さ分は確保（vh=画面高さの1%） */
+  min-height: 100vh;
+  /* 横にはみ出たらスクロールバーを出す */
+  overflow-x: auto;
+  /* テキストを折り返さない（表が崩れないように） */
+  white-space: nowrap;
 }
 
 h1 {
-  font-size: var(--heading1);   /* §11.5で定義した変数を使用 */
-  margin-bottom: 1rem;          /* 下に1文字分の余白 */
-  text-align: center;           /* 中央寄せ */
+  /* §11.5で定義した変数を使用 */
+  font-size: var(--heading1);
+  /* 下に1文字分の余白 */
+  margin-bottom: 1rem;
+  /* 中央寄せ */
+  text-align: center;
 }
 
 h2 {
@@ -801,11 +893,13 @@ p {
 
 ```css
 a {
-  text-decoration: none;       /* リンクの下線を消す（§11.4で消したものの再指定） */
+  /* リンクの下線を消す（§11.4で消したものの再指定） */
+  text-decoration: none;
 }
 
 a:hover {
-  text-decoration: underline;  /* ただしマウスを乗せた時だけ下線を出す */
+  /* ただしマウスを乗せた時だけ下線を出す */
+  text-decoration: underline;
 }
 ```
 
@@ -817,22 +911,31 @@ a:hover {
 
 ```css
 form {
-  background-color: #fff;                       /* 白背景 */
+  /* 白背景 */
+  background-color: #fff;
   padding: 0;
-  border-radius: 8px;                           /* 角を丸く（半径8px） */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);     /* 影：右下方向に薄い影（立体感） */
-  min-width: 350px;                             /* 最小幅350px */
-  max-width: 450px;                             /* 最大幅450px */
-  margin: 10px auto;                            /* 上下10px、左右auto＝横中央寄せ */
+  /* 角を丸く（半径8px） */
+  border-radius: 8px;
+  /* 影：右下方向に薄い影（立体感） */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  /* 最小幅350px */
+  min-width: 350px;
+  /* 最大幅450px */
+  max-width: 450px;
+  /* 上下10px、左右auto＝横中央寄せ */
+  margin: 10px auto;
   display: flex;
-  flex-direction: column;                       /* 中身を縦並びに */
+  /* 中身を縦並びに */
+  flex-direction: column;
   box-sizing: border-box;
 }
 
-@media (max-width: 768px) {                     /* 画面幅768px以下のとき */
+/* 画面幅768px以下のとき */
+@media (max-width: 768px) {
   form {
     width: auto;
-    min-width: unset;                           /* 最小幅の制約を外し、狭い画面に対応 */
+    /* 最小幅の制約を外し、狭い画面に対応 */
+    min-width: unset;
   }
 }
 ```
@@ -850,23 +953,30 @@ form {
 ```css
 table {
   width: auto;
-  border-collapse: collapse;  /* セルの境界線を重ねて1本に（二重線を防ぐ） */
+  /* セルの境界線を重ねて1本に（二重線を防ぐ） */
+  border-collapse: collapse;
   margin-top: 10px;
-  white-space: nowrap;        /* セル内で折り返さない */
+  /* セル内で折り返さない */
+  white-space: nowrap;
 }
 
 th,
 td {
-  border: 1px solid #ddd;     /* 薄い灰色の枠線 */
-  padding: 10px;              /* セル内の余白 */
-  text-align: center;         /* 中央寄せ */
+  /* 薄い灰色の枠線 */
+  border: 1px solid #ddd;
+  /* セル内の余白 */
+  padding: 10px;
+  /* 中央寄せ */
+  text-align: center;
 }
 
 th {
-  color: white;               /* 見出しセルの文字は白 */
+  /* 見出しセルの文字は白 */
+  color: white;
   font-weight: bold;
   text-shadow: -0.5px -0.5px 0 #555, 0.5px -0.5px 0 #555,
-               -0.5px 0.5px 0 #555, 0.5px 0.5px 0 #555;  /* 文字を4方向に縁取り（白文字を見やすく） */
+               /* 文字を4方向に縁取り（白文字を見やすく） */
+               -0.5px 0.5px 0 #555, 0.5px 0.5px 0 #555;
 }
 ```
 
@@ -884,23 +994,34 @@ th {
 
 ```css
 .blue_button {
-  background-color: #007bff;        /* 青背景 */
-  color: #fff;                      /* 白文字 */
-  text-shadow: -0.5px -0.5px 0 #555, 0.5px -0.5px 0 #555, -0.5px 0.5px 0 #555, 0.5px 0.5px 0 #555;  /* 文字の縁取り（§11.9と同じ） */
-  padding: 10px;                    /* 内側余白＝ボタンの厚み */
+  /* 青背景 */
+  background-color: #007bff;
+  /* 白文字 */
+  color: #fff;
+  /* 文字の縁取り（§11.9と同じ） */
+  text-shadow: -0.5px -0.5px 0 #555, 0.5px -0.5px 0 #555, -0.5px 0.5px 0 #555, 0.5px 0.5px 0 #555;
+  /* 内側余白＝ボタンの厚み */
+  padding: 10px;
   font-size: 1rem;
-  border: none;                     /* 枠線なし */
-  border-radius: 4px;               /* 角丸 */
-  cursor: pointer;                  /* マウスを乗せると指マークに（押せる合図） */
-  transition: background-color 0.3s ease;  /* 色変化を0.3秒かけて（§9.1） */
-  writing-mode: horizontal-tb;      /* 文字を横書きに固定 */
-  white-space: nowrap;              /* 文字を折り返さない */
+  /* 枠線なし */
+  border: none;
+  /* 角丸 */
+  border-radius: 4px;
+  /* マウスを乗せると指マークに（押せる合図） */
+  cursor: pointer;
+  /* 色変化を0.3秒かけて（§9.1） */
+  transition: background-color 0.3s ease;
+  /* 文字を横書きに固定 */
+  writing-mode: horizontal-tb;
+  /* 文字を折り返さない */
+  white-space: nowrap;
   width: auto;
   max-width: 100%;
 }
 
 .blue_button:hover {
-  background-color: #0056b3;        /* ホバーで濃い青へ */
+  /* ホバーで濃い青へ */
+  background-color: #0056b3;
   text-decoration: none;
 }
 ```
@@ -929,23 +1050,34 @@ th {
 > **▼ このブロックがやること:** `role="alert"` を持つ `<div>`（エラーメッセージ）を、赤系の警告ボックスにし、先頭に⚠️を自動で付けます。`Login.tsx` のエラー表示（§3⑨）がこれです。
 
 ```css
-div[role="alert"] {                  /* role属性が alert の div を狙う（属性セレクタ） */
-  background-color: #f8d7da;          /* 薄い赤背景 */
-  color: #721c24;                     /* 濃い赤文字 */
-  border: 1px solid #f5c6cb;          /* 赤系の枠 */
+/* role属性が alert の div を狙う（属性セレクタ） */
+div[role="alert"] {
+  /* 薄い赤背景 */
+  background-color: #f8d7da;
+  /* 濃い赤文字 */
+  color: #721c24;
+  /* 赤系の枠 */
+  border: 1px solid #f5c6cb;
   border-radius: 4px;
   padding: 10px;
-  margin: 0 auto 16px auto;           /* 上0・左右auto(中央)・下16px */
+  /* 上0・左右auto(中央)・下16px */
+  margin: 0 auto 16px auto;
   font-size: 0.9rem;
-  white-space: pre-wrap;              /* 改行やスペースを保持して表示 */
-  overflow-wrap: break-word;          /* 長い単語を折り返す */
-  word-break: break-all;              /* どこででも折り返してはみ出し防止 */
-  max-width: 90vw;                    /* 画面幅の90%まで */
+  /* 改行やスペースを保持して表示 */
+  white-space: pre-wrap;
+  /* 長い単語を折り返す */
+  overflow-wrap: break-word;
+  /* どこででも折り返してはみ出し防止 */
+  word-break: break-all;
+  /* 画面幅の90%まで */
+  max-width: 90vw;
   box-sizing: border-box;
 }
 
-div[role="alert"]::before {          /* アラートの中身の「前」に */
-  content: "⚠️ ";                     /* ⚠️ マークを自動で足す（§8.2の擬似要素） */
+/* アラートの中身の「前」に */
+div[role="alert"]::before {
+  /* ⚠️ マークを自動で足す（§8.2の擬似要素） */
+  content: "⚠️ ";
   font-size: 1.1rem;
 }
 ```
@@ -968,8 +1100,10 @@ div[role="alert"]::before {          /* アラートの中身の「前」に */
 ```css
 nav {
   display: flex;
-  justify-content: center;   /* メニューリンクを中央に */
-  gap: 15px;                 /* リンク間の隙間15px */
+  /* メニューリンクを中央に */
+  justify-content: center;
+  /* リンク間の隙間15px */
+  gap: 15px;
   margin-bottom: 20px;
 }
 
@@ -977,7 +1111,8 @@ nav a {
   background: none;
   padding: 0;
   border-radius: 0;
-  text-decoration: underline;  /* メニューのリンクは下線付き */
+  /* メニューのリンクは下線付き */
+  text-decoration: underline;
   font-weight: normal;
   transition: color 0.3s ease;
 }
@@ -992,22 +1127,28 @@ nav a {
 
 ```css
 input[type=date]::-webkit-calendar-picker-indicator {
-  position: absolute;        /* カレンダーアイコンを重ねて配置 */
-  width: 100%;               /* 入力欄全体に広げ */
+  /* カレンダーアイコンを重ねて配置 */
+  position: absolute;
+  /* 入力欄全体に広げ */
+  width: 100%;
   height: 100%;
-  opacity: 0;                /* 透明にして（見えないがクリック範囲は残る） */
+  /* 透明にして（見えないがクリック範囲は残る） */
+  opacity: 0;
 }
 
 input[type="date"]::-webkit-inner-spin-button {
-  -webkit-appearance: none;  /* 上下ボタンを消す */
+  /* 上下ボタンを消す */
+  -webkit-appearance: none;
 }
 
 input[type="date"]::-webkit-clear-button {
-  -webkit-appearance: none;  /* クリアボタンを消す */
+  /* クリアボタンを消す */
+  -webkit-appearance: none;
 }
 
 input[type="date"] {
-  position: relative;        /* 上の絶対配置(absolute)の基準点になる */
+  /* 上の絶対配置(absolute)の基準点になる */
+  position: relative;
 }
 
 .MuiPickersInputBase-root .css-15ni0jc {
@@ -1017,7 +1158,8 @@ input[type="date"] {
   width: 100%;
   height: 100%;
   opacity: 0;
-  z-index: 1;                /* 重なり順を前面に */
+  /* 重なり順を前面に */
+  z-index: 1;
   cursor: pointer;
 }
 ```
@@ -1042,26 +1184,36 @@ input[type="date"] {
 > **▼ このブロックがやること:** 「下からふわっと現れる」アニメーション（fadeInUp）を定義し、ログイン画面全体を囲む箱（login-wrapper）に適用します。§3①の一番外側の `<div>` がこれです。
 
 ```css
-@keyframes fadeInUp {                 /* 「下からふわっと」アニメの定義（§9.2） */
+/* 「下からふわっと」アニメの定義（§9.2） */
+@keyframes fadeInUp {
   from {
-    opacity: 0;                       /* 開始：透明 */
-    transform: translateY(50px);      /*        50px下にずらした位置から */
+    /* 開始：透明 */
+    opacity: 0;
+    /*        50px下にずらした位置から */
+    transform: translateY(50px);
   }
   to {
-    opacity: 1;                       /* 終了：不透明 */
-    transform: translateY(0);         /*        定位置へ */
+    /* 終了：不透明 */
+    opacity: 1;
+    /*        定位置へ */
+    transform: translateY(0);
   }
 }
 
 .login-wrapper {
-  animation: fadeInUp 1s ease-out;    /* 画面全体を1秒かけて出現させる */
+  /* 画面全体を1秒かけて出現させる */
+  animation: fadeInUp 1s ease-out;
   width: 100%;
   max-height: 100%;
-  max-width: 100vw;                   /* 画面幅を超えない */
-  overflow-x: auto;                   /* 横はみ出しはスクロール */
+  /* 画面幅を超えない */
+  max-width: 100vw;
+  /* 横はみ出しはスクロール */
+  overflow-x: auto;
   overflow-y: auto;
-  -webkit-overflow-scrolling: touch;  /* iOSでのスクロールを滑らかに */
-  margin: 0 auto;                     /* 横中央寄せ */
+  /* iOSでのスクロールを滑らかに */
+  -webkit-overflow-scrolling: touch;
+  /* 横中央寄せ */
+  margin: 0 auto;
 }
 ```
 
@@ -1076,10 +1228,13 @@ input[type="date"] {
 ```css
 .search-bar {
   display: flex;
-  flex-direction: column;   /* 縦並び（ラベル→入力→ボタンを縦に） */
+  /* 縦並び（ラベル→入力→ボタンを縦に） */
+  flex-direction: column;
   justify-content: center;
-  align-items: center;      /* 中央寄せ */
-  gap: 15px;                /* 各要素の間隔15px */
+  /* 中央寄せ */
+  align-items: center;
+  /* 各要素の間隔15px */
+  gap: 15px;
   margin: 20px 0;
   flex-wrap: wrap;
 }
@@ -1091,12 +1246,17 @@ input[type="date"] {
 
 ```css
 .login-logo {
-  max-width: min(400px, 90%);  /* 最大400px だが画面が狭ければ90%まで（min関数） */
+  /* 最大400px だが画面が狭ければ90%まで（min関数） */
+  max-width: min(400px, 90%);
   width: auto;
-  height: auto;                /* 縦横比を保つ */
-  margin: 0 auto;              /* 横中央 */
-  margin-bottom: 40px;         /* 下に40pxの余白（入力エリアとの間隔） */
-  object-fit: contain;         /* 画像を歪めず枠に収める */
+  /* 縦横比を保つ */
+  height: auto;
+  /* 横中央 */
+  margin: 0 auto;
+  /* 下に40pxの余白（入力エリアとの間隔） */
+  margin-bottom: 40px;
+  /* 画像を歪めず枠に収める */
+  object-fit: contain;
 }
 ```
 
@@ -1109,17 +1269,23 @@ input[type="date"] {
 
 ```css
 .search-bar input {
-  padding: 8px 10px;          /* 入力欄の内側余白（縦8px・横10px） */
-  border: 1px solid #999;     /* 灰色の枠 */
+  /* 入力欄の内側余白（縦8px・横10px） */
+  padding: 8px 10px;
+  /* 灰色の枠 */
+  border: 1px solid #999;
   border-radius: 4px;
   font-size: 1rem;
-  width: calc(100% - 60px);   /* 幅は「親の100%から60px引いた値」（calc関数） */
+  /* 幅は「親の100%から60px引いた値」（calc関数） */
+  width: calc(100% - 60px);
 }
 
-.search-bar input:focus {     /* 入力欄が選択された時（§8.1の擬似クラス） */
-  border-color: #08f;         /* 枠を青に */
+/* 入力欄が選択された時（§8.1の擬似クラス） */
+.search-bar input:focus {
+  /* 枠を青に */
+  border-color: #08f;
   outline: none;
-  box-shadow: 0 0 3px #555;    /* 周囲にうっすら影＝光って見える */
+  /* 周囲にうっすら影＝光って見える */
+  box-shadow: 0 0 3px #555;
 }
 ```
 
@@ -1136,35 +1302,48 @@ input[type="date"] {
 .help-button {
   display: flex;
   align-items: center;
-  justify-content: center;       /* 中身（?）を中央に */
+  /* 中身（?）を中央に */
+  justify-content: center;
   width: 20px;
   height: 20px;
-  background-color: #ffffff;     /* 白背景 */
-  border: 2px solid #007bff;     /* 青い枠 */
-  transform: rotate(45deg);      /* 45度回転＝四角が菱形に見える */
-  position: fixed;               /* 画面に固定（スクロールしても動かない） */
-  bottom: 30px;                  /* 画面下から30px */
-  right: 30px;                   /* 画面右から30px */
+  /* 白背景 */
+  background-color: #ffffff;
+  /* 青い枠 */
+  border: 2px solid #007bff;
+  /* 45度回転＝四角が菱形に見える */
+  transform: rotate(45deg);
+  /* 画面に固定（スクロールしても動かない） */
+  position: fixed;
+  /* 画面下から30px */
+  bottom: 30px;
+  /* 画面右から30px */
+  right: 30px;
   text-decoration: none;
   cursor: pointer;
-  opacity: 0;                    /* 最初は透明（見えない） */
-  animation: fadeIn 0s linear 30.0s forwards;  /* 30秒後に出現（後述） */
+  /* 最初は透明（見えない） */
+  opacity: 0;
+  /* 30秒後に出現（後述） */
+  animation: fadeIn 0s linear 30.0s forwards;
 }
 
 @keyframes fadeIn {
   to {
-    opacity: 1;                  /* 透明→不透明 */
+    /* 透明→不透明 */
+    opacity: 1;
   }
 }
 
 /* ホバー時は色のみ変更（動きはなし） */
 .help-button:hover {
-  background-color: #007bff;     /* ホバーで青背景に（菱形が塗りつぶされる） */
+  /* ホバーで青背景に（菱形が塗りつぶされる） */
+  background-color: #007bff;
 }
 
-.help-button::after {            /* 菱形の中身として「?」を作る */
+/* 菱形の中身として「?」を作る */
+.help-button::after {
   content: "?";
-  transform: rotate(-45deg);     /* 菱形は45度傾いているので、文字だけ-45度で正位置に戻す */
+  /* 菱形は45度傾いているので、文字だけ-45度で正位置に戻す */
+  transform: rotate(-45deg);
   color: #007bff;
   font-weight: bold;
   font-size: 20px;
@@ -1172,7 +1351,8 @@ input[type="date"] {
 
 /* ホバー時の中の文字色 */
 .help-button:hover::after {
-  color: #ffffff;                /* ホバー時、中の「?」を白に */
+  /* ホバー時、中の「?」を白に */
+  color: #ffffff;
 }
 ```
 
@@ -1204,11 +1384,14 @@ input[type="date"] {
 
 ```css
 .kosu-list-wrapper {
-  animation: fadeInUp 1s ease-out;  /* Loginと同じ出現アニメ（各ファイルにコピーされている） */
+  /* Loginと同じ出現アニメ（各ファイルにコピーされている） */
+  animation: fadeInUp 1s ease-out;
   display: flex;
-  flex-direction: column;           /* 縦並び */
+  /* 縦並び */
+  flex-direction: column;
   justify-content: top;
-  align-items: center;              /* 中央寄せ */
+  /* 中央寄せ */
+  align-items: center;
   height: 100vh;
   width: 100%;
   margin: 0 auto;
@@ -1216,17 +1399,20 @@ input[type="date"] {
 }
 
 .th-collar {
-  background-color: #0ff;           /* 表ヘッダの背景を水色に（global.cssのthの白文字＋縁取りが映える） */
+  /* 表ヘッダの背景を水色に（global.cssのthの白文字＋縁取りが映える） */
+  background-color: #0ff;
   text-shadow: -0.5px -0.5px 0 #555, 0.5px -0.5px 0 #555, -0.5px 0.5px 0 #555, 0.5px 0.5px 0 #555;
 }
 
 .status-ok {
-  color: blue;                      /* 「OK」状態を青太字で */
+  /* 「OK」状態を青太字で */
+  color: blue;
   font-weight: bold;
 }
 
 .status-ng {
-  color: red;                       /* 「NG」状態を赤太字で */
+  /* 「NG」状態を赤太字で */
+  color: red;
   font-weight: bold;
 }
 ```
@@ -1241,21 +1427,25 @@ input[type="date"] {
 ```css
 .search-bar {
   display: flex;
-  flex-direction: row;       /* 横並び（Loginのsearch-barはcolumn＝縦だった） */
+  /* 横並び（Loginのsearch-barはcolumn＝縦だった） */
+  flex-direction: row;
   justify-content: center;
   align-items: center;
   gap: 15px;
   margin: 20px 0;
-  flex-wrap: wrap;           /* 入りきらなければ折り返す */
+  /* 入りきらなければ折り返す */
+  flex-wrap: wrap;
 }
 
 @media (max-width: 768px) {
   .search-bar {
-    flex-direction: column;  /* 狭い画面では縦並びに切り替え */
+    /* 狭い画面では縦並びに切り替え */
+    flex-direction: column;
     gap: 10px;
   }
   .kosu-nav a {
-    font-size: 0.8rem;       /* ナビ文字を小さく */
+    /* ナビ文字を小さく */
+    font-size: 0.8rem;
   }
 }
 ```
@@ -1267,9 +1457,12 @@ input[type="date"] {
 メニュー画面 `frontend/src/MainPage/MainMenu.tsx` は、`<Link>`（本来はただのリンク）を **巨大なカラーボタン** に見せています。JSX側はこうです（§3で学んだ知識で読めます）：
 
 ```tsx
-<Link to="/kosu-menu" className={styles["kosu-menu-button"]}>   {/* リンクだが見た目はボタン */}
-  <img src={Note} alt="工数アイコン" className={styles["icon"]} />  {/* 左にアイコン */}
-  工数MENU                                                        {/* 中央にラベル */}
+{/* リンクだが見た目はボタン */}
+<Link to="/kosu-menu" className={styles["kosu-menu-button"]}>
+  {/* 左にアイコン */}
+  <img src={Note} alt="工数アイコン" className={styles["icon"]} />
+  {/* 中央にラベル */}
+  工数MENU
 </Link>
 ```
 
@@ -1281,21 +1474,26 @@ input[type="date"] {
 .kosu-menu-button {
   width: 100%;
   max-width: 400px;
-  background-color: #0ff;                       /* 水色 */
+  /* 水色 */
+  background-color: #0ff;
   color: #fff;
-  font-size: clamp(1rem, 1rem + 3vw, 2rem);     /* 画面幅で文字サイズ伸縮（§6.2） */
+  /* 画面幅で文字サイズ伸縮（§6.2） */
+  font-size: clamp(1rem, 1rem + 3vw, 2rem);
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
   display: flex;
   align-items: center;
-  justify-content: space-between;               /* アイコンとラベルを両端に */
+  /* アイコンとラベルを両端に */
+  justify-content: space-between;
   padding: 10px 15px;
   position: relative;
 }
 .kosu-menu-button:hover {
-  background-color: #0af;                        /* ホバーで濃い水色 */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);      /* 影で浮き上がる */
+  /* ホバーで濃い水色 */
+  background-color: #0af;
+  /* 影で浮き上がる */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 ```
 
@@ -1307,15 +1505,18 @@ input[type="date"] {
 .kosu-menu-button::after,
 .def-menu-button::after,
 /* ...他のボタンも... */ {
-  content: "";                  /* 空の飾りを右端に置く */
+  /* 空の飾りを右端に置く */
+  content: "";
   height: 1em;
   flex: 0 0 auto;
-  width: var(--icon-width, 1em);  /* 左のアイコンと同じ幅の「見えない箱」 */
+  /* 左のアイコンと同じ幅の「見えない箱」 */
+  width: var(--icon-width, 1em);
 }
 
 @media (max-width: 768px) {
   .admin-menu-button {
-    display: none !important;   /* 狭い画面では管理者ボタンを隠す */
+    /* 狭い画面では管理者ボタンを隠す */
+    display: none !important;
   }
 }
 ```
@@ -1343,9 +1544,11 @@ input[type="date"] {
   position: relative;
   width: 70px;
   height: 50px;
-  background-color: var(--btn-bg-color, #fff);   /* 色はJS側から変数で渡す */
+  /* 色はJS側から変数で渡す */
+  background-color: var(--btn-bg-color, #fff);
   border: none;
-  clip-path: polygon(0% 0%, 100% 50%, 0% 100%);  /* 左上→右中央→左下＝右向き三角 */
+  /* 左上→右中央→左下＝右向き三角 */
+  clip-path: polygon(0% 0%, 100% 50%, 0% 100%);
   cursor: pointer;
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
   display: flex;
@@ -1358,9 +1561,11 @@ input[type="date"] {
 }
 
 .pagination button:disabled {
-  background-color: #999;     /* 押せないときは灰色に */
+  /* 押せないときは灰色に */
+  background-color: #999;
   color: #666;
-  cursor: not-allowed;        /* カーソルが「禁止マーク」に */
+  /* カーソルが「禁止マーク」に */
+  cursor: not-allowed;
 }
 ```
 
@@ -1388,9 +1593,11 @@ CSS Modules は、各クラス名をビルド（変換）時に **一意（重�
 ### 14.2 動作
 
 ```tsx
-import styles from "../styles/MainPage/Login.module.css";  // styles というオブジェクトに各クラスが入る
+// styles というオブジェクトに各クラスが入る
+import styles from "../styles/MainPage/Login.module.css";
 // ...
-<div className={styles["login-wrapper"]}>                  // styles["login-wrapper"] を適用
+// styles["login-wrapper"] を適用
+<div className={styles["login-wrapper"]}>
 ```
 
 ビルド後、`login-wrapper` は例えば `Login_login-wrapper__a1B2c` のような **重複しない名前** に自動変換されます。`KosuList` の `search-bar` は `KosuList_search-bar__x9Y8z` に、`Login` の `search-bar` は `Login_search-bar__p3Q4r` に——別名になるので、絶対に衝突しません。
@@ -1400,8 +1607,10 @@ import styles from "../styles/MainPage/Login.module.css";  // styles という�
 1つの要素に、module クラスと global クラスを **両方** 付けられます。`Login.tsx` がまさにそうです。
 
 ```tsx
-<button type="submit" className="blue_button">ログイン</button>  // global（文字列で直接）
-<div className={styles["search-bar"]}>                          // module（styles経由）
+// global（文字列で直接）
+<button type="submit" className="blue_button">ログイン</button>
+// module（styles経由）
+<div className={styles["search-bar"]}>
 ```
 
 - **global**（`global.css`）… 文字列で直接 `className="blue_button"`。**全画面共通**。改名されない。

@@ -116,7 +116,8 @@ JavaScript では、処理のまとまり（ブロック）を **波カッコ `{
 ```javascript
 // ※説明用の簡易例（JavaScript）
 if (x > 0) {
-  console.log("正の数");   // { } の中が「if が成立したときの処理」
+  // { } の中が「if が成立したときの処理」
+  console.log("正の数");
 }
 ```
 
@@ -126,8 +127,10 @@ if (x > 0) {
 
 ```python
 # ※説明用の簡易例（Python）
-if x > 0:                    # 行末に : （コロン）を付ける
-    print("正の数")          # 字下げされた行が「if が成立したときの処理」
+# 行末に : （コロン）を付ける
+if x > 0:
+    # 字下げされた行が「if が成立したときの処理」
+    print("正の数")
 ```
 
 - `if x > 0:` … 条件。**行末に `:`（コロン）** を付けるのがPythonの約束。
@@ -140,9 +143,12 @@ if x > 0:                    # 行末に : （コロン）を付ける
 ```python
 # ※説明用の簡易例
 if x > 0:
-    print("A")        # 字下げあり → if の中（x>0 のときだけ実行）
-    print("B")        # 字下げあり → これも if の中
-print("C")            # 字下げなし → if の外（いつでも実行）
+    # 字下げあり → if の中（x>0 のときだけ実行）
+    print("A")
+    # 字下げあり → これも if の中
+    print("B")
+# 字下げなし → if の外（いつでも実行）
+print("C")
 ```
 
 - `A`・`B` は字下げされているので **if の中**。`x > 0` のときだけ表示。
@@ -159,10 +165,14 @@ print("C")            # 字下げなし → if の外（いつでも実行）
 本アプリ `main_views.py` の冒頭近くにある、実際のコードを見てみましょう（§14で全解説しますが、まずインデントだけ注目）。
 
 ```python
-class PrintToLogger:                      # クラス定義（一番外側、字下げ0）
-  def write(self, message):               # メソッド定義（字下げ1段＝クラスの中）
-    if message.strip():                   # if文（字下げ2段＝メソッドの中）
-      views_logger.info(message)          # if の中身（字下げ3段）
+# クラス定義（一番外側、字下げ0）
+class PrintToLogger:
+  # メソッド定義（字下げ1段＝クラスの中）
+  def write(self, message):
+    # if文（字下げ2段＝メソッドの中）
+    if message.strip():
+      # if の中身（字下げ3段）
+      views_logger.info(message)
 ```
 
 字下げが深くなるほど「内側」です。
@@ -188,9 +198,12 @@ Pythonの変数は、JavaScriptの `let` や `const` のような **宣言キー
 
 ```python
 # ※説明用の簡易例
-input_number = 12345        # input_number という箱に 12345 を入れる
-name = "admin"              # name という箱に "admin"（文字）を入れる
-authority = True            # authority という箱に True（真）を入れる
+# input_number という箱に 12345 を入れる
+input_number = 12345
+# name という箱に "admin"（文字）を入れる
+name = "admin"
+# authority という箱に True（真）を入れる
+authority = True
 ```
 
 - `=`（イコール）は「等しい」ではなく **「右の値を左の箱に入れる（代入）」** という意味。算数の `=` とは違うので注意。
@@ -201,8 +214,10 @@ authority = True            # authority という箱に True（真）を入れ�
 本物のコード（`main_views.py` の Login）でも、同じ書き方が出てきます。
 
 ```python
-data = json.loads(request.body)        # data という箱に、解析したデータを入れる
-input_number = data.get('employee_no') # input_number に、その中の従業員番号を入れる
+# data という箱に、解析したデータを入れる
+data = json.loads(request.body)
+# input_number に、その中の従業員番号を入れる
+input_number = data.get('employee_no')
 ```
 
 ### 2.2 データ型 ― 値の種類
@@ -229,8 +244,10 @@ Pythonは、入れた値から型を **自動で判断** します（型を宣�
 
 ```python
 # ※説明用の簡易例
-x = 5          # 5 は整数なので x は int 型
-x = "5"        # "5" は文字なので x は str 型（同じxでも型が変わる）
+# 5 は整数なので x は int 型
+x = 5
+# "5" は文字なので x は str 型（同じxでも型が変わる）
+x = "5"
 ```
 
 > **⚠️ 「5」と「"5"」は別物:** `5`（数値）と `"5"`（文字）は見た目は似ていますが **まったく別の型** です。`5 + 3` は `8` ですが、`"5" + "3"` は文字をつなげた `"53"` になります。だから本アプリの `main_utils.py` では、文字で来た従業員番号を `int(value)` で **数値に変換** してから比較しています（§15で実コード解説）。
@@ -239,8 +256,10 @@ x = "5"        # "5" は文字なので x は str 型（同じxでも型が変�
 
 ```python
 # ※説明用の簡易例
-int("123")     # 文字 "123" → 数値 123
-str(123)       # 数値 123 → 文字 "123"
+# 文字 "123" → 数値 123
+int("123")
+# 数値 123 → 文字 "123"
+str(123)
 ```
 
 ---
@@ -257,10 +276,14 @@ str(123)       # 数値 123 → 文字 "123"
 
 ```python
 # ※説明用の簡易例
-numbers = [10, 20, 30]      # 角カッコで囲んだリスト
-print(numbers[0])           # → 10 （0番目。番号は0から始まる！）
-print(numbers[1])           # → 20 （1番目）
-numbers.append(40)          # → [10, 20, 30, 40] 末尾に追加
+# 角カッコで囲んだリスト
+numbers = [10, 20, 30]
+# → 10 （0番目。番号は0から始まる！）
+print(numbers[0])
+# → 20 （1番目）
+print(numbers[1])
+# → [10, 20, 30, 40] 末尾に追加
+numbers.append(40)
 ```
 
 - `[ ]` … リストの目印。
@@ -270,9 +293,11 @@ numbers.append(40)          # → [10, 20, 30, 40] 末尾に追加
 本物のコード（`main_views.py` の TeamMenu）でも、リストが活躍します。
 
 ```python
-follow_message_list = []                          # 空のリストを作る
+# 空のリストを作る
+follow_message_list = []
 ...
-follow_message_list.append(follow_message)         # メッセージを末尾に追加していく
+# メッセージを末尾に追加していく
+follow_message_list.append(follow_message)
 ```
 
 > 最初は空っぽ `[]` のリストを作り、ループの中で `.append()` で1つずつ詰めていく——この「空リストを作って詰める」パターンは超頻出です（§5で再登場）。
@@ -285,9 +310,12 @@ follow_message_list.append(follow_message)         # メッセージを末尾に
 
 ```python
 # ※説明用の簡易例
-person = {"name": "admin", "no": 12345}   # キー:値 のペアを波カッコで
-print(person["name"])                     # → "admin" （"name"というキーで引く）
-print(person["no"])                       # → 12345
+# キー:値 のペアを波カッコで
+person = {"name": "admin", "no": 12345}
+# → "admin" （"name"というキーで引く）
+print(person["name"])
+# → 12345
+print(person["no"])
 ```
 
 - `{ }` … 辞書の目印（リストの `[ ]` と区別！）。
@@ -298,9 +326,12 @@ print(person["no"])                       # → 12345
 
 ```python
 data = {
-  "name": "業務工数システム",     # キー "name" → 値 "業務工数システム"
-  "short_name": "業務工数",       # キー "short_name" → 値 "業務工数"
-  "start_url": "/",              # キー "start_url" → 値 "/"
+  # キー "name" → 値 "業務工数システム"
+  "name": "業務工数システム",
+  # キー "short_name" → 値 "業務工数"
+  "short_name": "業務工数",
+  # キー "start_url" → 値 "/"
+  "start_url": "/",
 }
 ```
 
@@ -310,8 +341,10 @@ data = {
 
 ```python
 # ※説明用の簡易例
-person.get("name")        # → "admin"（キーがあれば値）
-person.get("age")         # → None（キーがなくてもエラーにならず None を返す）
+# → "admin"（キーがあれば値）
+person.get("name")
+# → None（キーがなくてもエラーにならず None を返す）
+person.get("age")
 ```
 
 > **`person["age"]` と `person.get("age")` の違い:** 角カッコ `["age"]` はキーが無いと **エラーで止まる**。`.get("age")` はキーが無くても **None を返して止まらない**。本アプリは「あるか分からない値」に `.get()` を多用します（例：`data.get('employee_no')`）。
@@ -322,8 +355,10 @@ person.get("age")         # → None（キーがなくてもエラーになら�
 
 ```python
 # ※説明用の簡易例
-point = (10, 20)          # 丸カッコ。中身は固定
-print(point[0])           # → 10 （取り出しはリストと同じ）
+# 丸カッコ。中身は固定
+point = (10, 20)
+# → 10 （取り出しはリストと同じ）
+print(point[0])
 # point[0] = 99           # ← これはエラー（変更不可）
 ```
 
@@ -331,7 +366,8 @@ print(point[0])           # → 10 （取り出しはリストと同じ）
 
 ```python
 shop_list = [
-  ('P', 'P'),                 # ('表示値', '保存値') のタプル
+  # ('表示値', '保存値') のタプル
+  ('P', 'P'),
   ('R', 'R'),
   ('W1', 'W1'),
   ...
@@ -344,7 +380,8 @@ shop_list = [
 本物のコード（`asynchronous_views.py`）では、関数に渡す引数をタプルでまとめています。
 
 ```python
-args = (start_day, end_day)     # 2つの値をタプルにまとめる
+# 2つの値をタプルにまとめる
+args = (start_day, end_day)
 ```
 
 > **タプルとリストの使い分け:** 「あとで変わらないもの・変わってほしくないもの」はタプル `( )`、「追加・削除する一覧」はリスト `[ ]`。座標・選択肢・固定の組はタプル、という感覚です。
@@ -359,11 +396,14 @@ args = (start_day, end_day)     # 2つの値をタプルにまとめる
 
 ```python
 # ※説明用の簡易例
-if score >= 80:           # もし score が 80 以上なら
+# もし score が 80 以上なら
+if score >= 80:
     print("合格")
-elif score >= 60:         # そうでなく、60以上なら（elif = else if）
+# そうでなく、60以上なら（elif = else if）
+elif score >= 60:
     print("追試")
-else:                     # どれでもなければ
+# どれでもなければ
+else:
     print("不合格")
 ```
 
@@ -385,9 +425,11 @@ else:                     # どれでもなければ
 本物のコード（`asynchronous_views.py` の validate_dates）の比較：
 
 ```python
-if end_date_obj >= today_date_obj:        # 終了日が今日以降なら
+# 終了日が今日以降なら
+if end_date_obj >= today_date_obj:
     ...
-if start_date_obj > end_date_obj:         # 開始日が終了日より後なら
+# 開始日が終了日より後なら
+if start_date_obj > end_date_obj:
     ...
 ```
 
@@ -401,14 +443,16 @@ if start_date_obj > end_date_obj:         # 開始日が終了日より後なら
 
 ```python
 # ※説明用の簡易例
-if x > 0 and x < 100:     # x が 0 より大きく、かつ 100 より小さい
+# x が 0 より大きく、かつ 100 より小さい
+if x > 0 and x < 100:
     print("範囲内")
 ```
 
 本物のコード（`asynchronous_views.py`）：
 
 ```python
-if not start_day or not end_day:          # start_day が無い、または end_day が無いなら
+# start_day が無い、または end_day が無いなら
+if not start_day or not end_day:
     return JsonResponse(...)
 ```
 
@@ -421,9 +465,11 @@ if not start_day or not end_day:          # start_day が無い、または end_
 
 ```python
 # ※説明用の簡易例
-if "name" in person:      # 辞書 person に "name" というキーがあるか
+# 辞書 person に "name" というキーがあるか
+if "name" in person:
     ...
-if old_instance is None:  # old_instance が None かどうか（is None で判定）
+# old_instance が None かどうか（is None で判定）
+if old_instance is None:
     ...
 ```
 
@@ -442,8 +488,10 @@ if old_instance is None:  # old_instance が None かどうか（is None で判�
 ```python
 # ※説明用の簡易例
 numbers = [10, 20, 30]
-for n in numbers:         # numbers から1つずつ取り出して n に入れる
-    print(n)              # → 10, 20, 30 が順に表示される
+# numbers から1つずつ取り出して n に入れる
+for n in numbers:
+    # → 10, 20, 30 が順に表示される
+    print(n)
 ```
 
 - `for 変数 in リスト:` … リストから1個ずつ取り出し、`変数` に入れて、字下げした中身を実行。これをリストの数だけ繰り返す。
@@ -454,11 +502,14 @@ for n in numbers:         # numbers から1つずつ取り出して n に入れ�
 `main_views.py` の TeamMenu には、ループの実例が詰まっています。
 
 ```python
-for m in valid_member_numbers:                      # 班員の番号を1つずつ m に
+# 班員の番号を1つずつ m に
+for m in valid_member_numbers:
   follow_message = ''
-  if member.objects.filter(employee_no=m).exists(): # その番号の人がいたら
+  # その番号の人がいたら
+  if member.objects.filter(employee_no=m).exists():
     member_name = member.objects.get(employee_no=m).name
-    for d in day_list:                              # 過去7日を1日ずつ d に（ループの中のループ）
+    # 過去7日を1日ずつ d に（ループの中のループ）
+    for d in day_list:
       ...
 ```
 
@@ -491,7 +542,8 @@ for d in day_list:
     if not kosu_get.judgement:
       follow_message = f'{member_name}氏の工数未入力があります。'
       follow_message_list.append(follow_message)
-      break                  # 1件見つけたら、このループを途中で抜ける
+      # 1件見つけたら、このループを途中で抜ける
+      break
 ```
 
 - `break` … ループを **途中で打ち切る** 命令。「未入力が1件でも見つかれば、もう調べる必要はない」のでループを抜けます。無駄な処理をしないための工夫です。
@@ -510,9 +562,12 @@ Pythonらしい、**リストを1行で作る** 省略記法です。実コー�
 
 ```python
 # ※説明用の簡易例（普通の書き方）
-squares = []                 # 空リスト
-for n in [1, 2, 3]:          # 1個ずつ取り出して
-    squares.append(n * n)    # 2乗を追加
+# 空リスト
+squares = []
+# 1個ずつ取り出して
+for n in [1, 2, 3]:
+    # 2乗を追加
+    squares.append(n * n)
 # squares は [1, 4, 9]
 ```
 
@@ -520,7 +575,8 @@ for n in [1, 2, 3]:          # 1個ずつ取り出して
 
 ```python
 # ※説明用の簡易例（内包表記）
-squares = [n * n for n in [1, 2, 3]]    # [1, 4, 9]
+# [1, 4, 9]
+squares = [n * n for n in [1, 2, 3]]
 ```
 
 読み方は **「右から左」**：「`[1, 2, 3]` から `n` を1個ずつ取り、`n * n` を計算して、リストにする」。
@@ -585,11 +641,15 @@ def_list = [(x, x) for x in "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwx$
 
 ```python
 # ※説明用の簡易例
-def add(a, b):            # add という名前の関数を定義。a と b を受け取る
-    result = a + b        # 計算
-    return result         # 結果を返す
+# add という名前の関数を定義。a と b を受け取る
+def add(a, b):
+    # 計算
+    result = a + b
+    # 結果を返す
+    return result
 
-answer = add(3, 5)        # 関数を呼び出す。answer は 8
+# 関数を呼び出す。answer は 8
+answer = add(3, 5)
 ```
 
 - `def 関数名(引数):` … 関数の定義。`def` は define（定義する）の略。**末尾に `:`**、中身は字下げ（§1）。
@@ -606,11 +666,14 @@ answer = add(3, 5)        # 関数を呼び出す。answer は 8
 
 ```python
 # ※説明用の簡易例
-def greet(name, greeting="こんにちは"):    # greeting に初期値
+# greeting に初期値
+def greet(name, greeting="こんにちは"):
     print(greeting + name + "さん")
 
-greet("田中")                  # → こんにちは田中さん（greeting 省略 → 初期値が使われる）
-greet("田中", "おはよう")       # → おはよう田中さん（指定すればそちら）
+# → こんにちは田中さん（greeting 省略 → 初期値が使われる）
+greet("田中")
+# → おはよう田中さん（指定すればそちら）
+greet("田中", "おはよう")
 ```
 
 - `greeting="こんにちは"` … 引数に **初期値（デフォルト値）** を設定。
@@ -619,7 +682,8 @@ greet("田中", "おはよう")       # → おはよう田中さん（指定す
 本物のコード（`main_views.py` の AdministratorKosuList）でも、リクエストから値を取るときに初期値を使っています。
 
 ```python
-mode = request.query_params.get('mode', 'day')     # mode が無ければ 'day'
+# mode が無ければ 'day'
+mode = request.query_params.get('mode', 'day')
 ```
 
 - `.get('mode', 'day')` … 「mode を取る。もし無ければ初期値 `'day'`」。これも初期値の考え方です。
@@ -631,16 +695,19 @@ mode = request.query_params.get('mode', 'day')     # mode が無ければ 'day'
 本物のコード（`main_views.py` の get_logs。§14で全解説）：
 
 ```python
-def get_logs(request):                # request だけ受け取る
+# request だけ受け取る
+def get_logs(request):
   with open('web_console.log', 'r') as log_file:
     logs = log_file.readlines()
-  return JsonResponse({'logs': logs}) # JSONレスポンスを返す
+  # JSONレスポンスを返す
+  return JsonResponse({'logs': logs})
 ```
 
 本物のコード（`main_utils.py` の get_all_model_names_in_myapp。§15で全解説）は引数なし：
 
 ```python
-def get_all_model_names_in_myapp():   # 引数なし（カッコの中が空）
+# 引数なし（カッコの中が空）
+def get_all_model_names_in_myapp():
   model_names = []
   ...
   return model_names
@@ -655,9 +722,11 @@ Pythonの関数は、カンマで区切ると **複数の値を一度に返せ�
 ```python
 def validate_employee_no_logic(value, member_model):
   if not value:
-    return True, None                 # 2つの値（True と None）を返す
+    # 2つの値（True と None）を返す
+    return True, None
   ...
-  return False, 'は自然数で入力して下さい'   # 2つの値を返す
+  # 2つの値を返す
+  return False, 'は自然数で入力して下さい'
 ```
 
 - `return True, None` … 「成功したか（True/False）」と「メッセージ」の **2つを同時に返す**。
@@ -723,7 +792,8 @@ session_data = request.session.get('login_No') if request else None
 ```python
 # ※説明用の簡易例
 name = "田中"
-message = f"{name}さん、こんにちは"     # → "田中さん、こんにちは"
+# → "田中さん、こんにちは"
+message = f"{name}さん、こんにちは"
 ```
 
 - 先頭の `f` が目印。
@@ -768,16 +838,23 @@ return f'{self.created_at} on {self.status} (TaskID: {self.task_id})'
 
 ```python
 # ※説明用の簡易例
-class Person:                       # 「人」の設計図（クラス）
-    def __init__(self, name, age):  # 作るときに呼ばれる初期化メソッド
-        self.name = name            # この人の名前を記録
-        self.age = age              # この人の年齢を記録
+# 「人」の設計図（クラス）
+class Person:
+    # 作るときに呼ばれる初期化メソッド
+    def __init__(self, name, age):
+        # この人の名前を記録
+        self.name = name
+        # この人の年齢を記録
+        self.age = age
 
-    def greet(self):                # この人ができること（メソッド）
+    # この人ができること（メソッド）
+    def greet(self):
         print(f"私は{self.name}です")
 
-tanaka = Person("田中", 30)         # 設計図から「田中さん」を作る（インスタンス化）
-tanaka.greet()                      # → 私は田中です
+# 設計図から「田中さん」を作る（インスタンス化）
+tanaka = Person("田中", 30)
+# → 私は田中です
+tanaka.greet()
 ```
 
 > **用語：メソッド（method）** クラスの中に書かれた関数。「そのモノができること（動作）」。`greet`（あいさつする）がメソッド。普通の関数との違いは、第1引数が `self`（自分自身）であること。
@@ -794,10 +871,12 @@ tanaka.greet()                      # → 私は田中です
 class CustomPagination(PageNumberPagination):
   page_size = 20
 
-  def __init__(self):                                  # 作られるとき自動実行
+  # 作られるとき自動実行
+  def __init__(self):
     last_record = administrator_data.objects.order_by("id").last()
     if last_record is not None:
-      self.page_size = last_record.menu_row            # 1ページの表示件数を設定から取得
+      # 1ページの表示件数を設定から取得
+      self.page_size = last_record.menu_row
 ```
 
 - このページ送り部品（§15で詳説）は、作られた瞬間に **管理設定から「1ページに何件表示するか」を読み込んで** 自分にセットします。
@@ -815,11 +894,13 @@ class CustomPagination(PageNumberPagination):
 
 ```python
 class PrintToLogger:
-  def write(self, message):           # 第1引数は self（自分自身）
+  # 第1引数は self（自分自身）
+  def write(self, message):
     if message.strip():
       views_logger.info(message)
 
-  def flush(self):                    # こちらも第1引数は self
+  # こちらも第1引数は self
+  def flush(self):
     pass
 ```
 
@@ -833,7 +914,8 @@ class PrintToLogger:
 class member(models.Model):
   ...
   def __str__(self):
-    return self.name        # この人を表示するときは「氏名」を出す
+    # この人を表示するときは「氏名」を出す
+    return self.name
 ```
 
 - これにより、Djangoの管理画面などで member インスタンスを表示すると、idの数字ではなく **氏名** が出ます。人間に分かりやすくする工夫です。
@@ -861,7 +943,8 @@ def __str__(self):
 本物のコード（`models.py`）― すべてのモデルは `models.Model` を継承：
 
 ```python
-class member(models.Model):       # models.Model を継承
+# models.Model を継承
+class member(models.Model):
   ...
 ```
 
@@ -871,10 +954,12 @@ class member(models.Model):       # models.Model を継承
 本物のコード（`main_utils.py`）― ページ送り部品も継承：
 
 ```python
-class CustomPagination(PageNumberPagination):    # 既製のページ送り機能を継承
+# 既製のページ送り機能を継承
+class CustomPagination(PageNumberPagination):
   page_size = 20
   def __init__(self):
-    ...                                          # 一部だけ自分用にカスタマイズ
+    # 一部だけ自分用にカスタマイズ
+    ...
 ```
 
 > **継承で出てくる `super()`:** 子クラスから「親の同名メソッド」を呼ぶときに使います。本物のコード（`models.py` の AsyncTask）：
@@ -902,9 +987,12 @@ class CustomPagination(PageNumberPagination):    # 既製のページ送り機�
 ```python
 # ※説明用の簡易例
 try:
-    value = int("abc")        # "abc" を数値に変換しようとする（失敗する）
-except ValueError:            # ValueError（値の変換エラー）が起きたら
-    print("数値ではありません")  # こう対処する（止まらない）
+    # "abc" を数値に変換しようとする（失敗する）
+    value = int("abc")
+# ValueError（値の変換エラー）が起きたら
+except ValueError:
+    # こう対処する（止まらない）
+    print("数値ではありません")
 ```
 
 - `try:` … 「まずこれを試す」。中でエラーが起きるかもしれない処理。
@@ -917,8 +1005,10 @@ except ValueError:            # ValueError（値の変換エラー）が起き�
 
 ```python
 try:
-  value_int = int(value)            # 数値に変換を試みる
-except ValueError:                  # 変換できなければ（例: 'abc'）
+  # 数値に変換を試みる
+  value_int = int(value)
+# 変換できなければ（例: 'abc'）
+except ValueError:
   return False, 'は自然数で入力して下さい'
 ```
 
@@ -929,9 +1019,11 @@ except ValueError:                  # 変換できなければ（例: 'abc'）
 
 ```python
 try:
-  data = json.loads(request.body)         # 送られたデータをPythonの辞書に変換
+  # 送られたデータをPythonの辞書に変換
+  data = json.loads(request.body)
   input_number = data.get('employee_no')
-except json.JSONDecodeError:              # データが壊れた形式なら
+# データが壊れた形式なら
+except json.JSONDecodeError:
   return JsonResponse({'status': 'error', 'message': 'JSON形式が正しくありません。'}, ...)
 ```
 
@@ -943,8 +1035,10 @@ except json.JSONDecodeError:              # データが壊れた形式なら
 
 ```python
 try:
-  member_data = member.objects.get(employee_no=login_no)   # 該当する人を1人取得
-except member.DoesNotExist:                                # その人がいなければ
+  # 該当する人を1人取得
+  member_data = member.objects.get(employee_no=login_no)
+# その人がいなければ
+except member.DoesNotExist:
   return Response({'status': 'error', 'message': 'ユーザー情報が見つかりません。'}, ...)
 ```
 
@@ -957,9 +1051,11 @@ except member.DoesNotExist:                                # その人がいな�
 本物のコード（`asynchronous_views.py` の handle_task）：
 
 ```python
-except Exception as e:               # どんなエラーでも捕まえる
+# どんなエラーでも捕まえる
+except Exception as e:
   ...
-  task.result = str(e)               # エラー内容を文字にして記録
+  # エラー内容を文字にして記録
+  task.result = str(e)
 ```
 
 - `Exception` … **すべての例外の親**。`except Exception:` は「種類を問わず、何かエラーが起きたら」。
@@ -983,8 +1079,10 @@ except Exception as e:               # どんなエラーでも捕まえる
 本物のコード（`main_views.py` の get_logs）：
 
 ```python
-with open('web_console.log', 'r') as log_file:    # ログファイルを開く
-  logs = log_file.readlines()                     # 全行をリストで読み込む
+# ログファイルを開く
+with open('web_console.log', 'r') as log_file:
+  # 全行をリストで読み込む
+  logs = log_file.readlines()
 # ← ここでブロックを抜けると、log_file は自動で閉じられる
 ```
 
@@ -1001,9 +1099,12 @@ with open('web_console.log', 'r') as log_file:    # ログファイルを開く
 
 ```python
 with tempfile.NamedTemporaryFile(suffix=".xlsx", delete=False) as temp_file:
-  for chunk in kosu_file.chunks():       # アップロードされたファイルを小分けに
-    temp_file.write(chunk)               # 一時ファイルに書き込む
-  temp_file_path = temp_file.name        # 一時ファイルのパスを覚えておく
+  # アップロードされたファイルを小分けに
+  for chunk in kosu_file.chunks():
+    # 一時ファイルに書き込む
+    temp_file.write(chunk)
+  # 一時ファイルのパスを覚えておく
+  temp_file_path = temp_file.name
 ```
 
 - `tempfile.NamedTemporaryFile(...)` … 一時的な作業ファイルを作る。
@@ -1023,11 +1124,16 @@ with tempfile.NamedTemporaryFile(suffix=".xlsx", delete=False) as temp_file:
 本物のコード（`main_views.py` の冒頭）：
 
 ```python
-import datetime                          # 日付・時刻を扱う道具箱
-import os                                # OS（ファイル・パス）を扱う道具箱
-import json                              # JSONを扱う道具箱
-from pathlib import Path                 # pathlib の中から Path だけを取り出す
-from django.http import JsonResponse     # djangoの中から JsonResponse を取り出す
+# 日付・時刻を扱う道具箱
+import datetime
+# OS（ファイル・パス）を扱う道具箱
+import os
+# JSONを扱う道具箱
+import json
+# pathlib の中から Path だけを取り出す
+from pathlib import Path
+# djangoの中から JsonResponse を取り出す
+from django.http import JsonResponse
 ```
 
 2つの書き方があります：
@@ -1053,9 +1159,12 @@ today = date.today()
 本物のコード（`main_utils.py`）：
 
 ```python
-import inspect                                          # 標準：オブジェクトを調べる道具
-from rest_framework.pagination import PageNumberPagination  # 外部：DRFのページ送り
-from django.db import models                            # 外部：Djangoのモデル機能
+# 標準：オブジェクトを調べる道具
+import inspect
+# 外部：DRFのページ送り
+from rest_framework.pagination import PageNumberPagination
+# 外部：Djangoのモデル機能
+from django.db import models
 ```
 
 ### 12.3 相対import（自分のアプリ内のファイルを読む）
@@ -1107,9 +1216,12 @@ from ..tasks import generate_kosu_backup, delete_kosu_data, load_kosu_file, \
 本物のコード（`asynchronous_views.py`）：
 
 ```python
-@api_view(['POST'])                                    # ← デコレータ
-@parser_classes([MultiPartParser, JSONParser, FormParser])  # ← デコレータ
-def backup(request):                                   # この関数に上の性質が付く
+# ← デコレータ
+@api_view(['POST'])
+# ← デコレータ
+@parser_classes([MultiPartParser, JSONParser, FormParser])
+# この関数に上の性質が付く
+def backup(request):
   ...
 ```
 
@@ -1122,7 +1234,8 @@ def backup(request):                                   # この関数に上の�
 本物のコード（`signals.py`）― 本アプリの「自動記録」を支えるデコレータ：
 
 ```python
-@receiver(post_save, sender=member)              # ← デコレータ
+# ← デコレータ
+@receiver(post_save, sender=member)
 def log_create_update_member_history(sender, instance, created, **kwargs):
   ...
 ```
@@ -1148,23 +1261,40 @@ def log_create_update_member_history(sender, instance, created, **kwargs):
 > **▼ このブロックがやること:** このファイルで使う道具（日付・OS・JSON・Django・自作モデルなど）を全部読み込みます。
 
 ```python
-import datetime                      # 日付・時刻を扱う標準ライブラリ
-import os                            # ファイルパスなどOS機能の標準ライブラリ
-import sys                           # システム関連（標準出力の差し替えに使う）
-import logging                       # ログ記録の標準ライブラリ
-import environ                       # .envファイル（環境変数）を読む外部ライブラリ
-import json                          # JSONの読み書きの標準ライブラリ
-from pathlib import Path             # パス操作の道具 Path を取り出す
-from django.shortcuts import render  # HTMLを描画する関数
-from django.http import JsonResponse # JSON形式で応答を返すクラス
-from django.views import View        # Djangoの基本ビュークラス
-from django.conf import settings     # 設定（settings.py）を読む
-from rest_framework.views import APIView      # DRFのAPI用ビュークラス
-from rest_framework.response import Response  # DRFの応答クラス
-from rest_framework import status             # HTTPステータス番号の定数集
-from ..models import member, Business_Time_graph, kosu_division, team_member, administrator_data, AsyncTask, History  # 自作モデル
-from .serializers import MemberSerializer, AdministratorSerializer, KosuSerializer, DefSerializer, TaskSerializer, HistorySerializer  # 自作シリアライザ
-from ..utils.main_utils import CustomPagination, get_all_model_names_in_myapp  # 自作の便利部品
+# 日付・時刻を扱う標準ライブラリ
+import datetime
+# ファイルパスなどOS機能の標準ライブラリ
+import os
+# システム関連（標準出力の差し替えに使う）
+import sys
+# ログ記録の標準ライブラリ
+import logging
+# .envファイル（環境変数）を読む外部ライブラリ
+import environ
+# JSONの読み書きの標準ライブラリ
+import json
+# パス操作の道具 Path を取り出す
+from pathlib import Path
+# HTMLを描画する関数
+from django.shortcuts import render
+# JSON形式で応答を返すクラス
+from django.http import JsonResponse
+# Djangoの基本ビュークラス
+from django.views import View
+# 設定（settings.py）を読む
+from django.conf import settings
+# DRFのAPI用ビュークラス
+from rest_framework.views import APIView
+# DRFの応答クラス
+from rest_framework.response import Response
+# HTTPステータス番号の定数集
+from rest_framework import status
+# 自作モデル
+from ..models import member, Business_Time_graph, kosu_division, team_member, administrator_data, AsyncTask, History
+# 自作シリアライザ
+from .serializers import MemberSerializer, AdministratorSerializer, KosuSerializer, DefSerializer, TaskSerializer, HistorySerializer
+# 自作の便利部品
+from ..utils.main_utils import CustomPagination, get_all_model_names_in_myapp
 ```
 
 - 上から「標準ライブラリ → 外部ライブラリ（Django/DRF）→ 自作ファイル（相対import）」の順。Pythonの慣習的な並べ方です（§12）。
@@ -1188,15 +1318,21 @@ views_logger = logging.getLogger('views_logger')
 > **▼ このブロックがやること:** Pythonの `print()` で出力した内容を、画面に消えてしまわないよう **ログに記録** するための仕掛けです。`print` の行き先（標準出力）を、このクラスにすり替えます。
 
 ```python
-class PrintToLogger:                       # クラス定義（§9）
-  def write(self, message):                # write メソッド（self は自分自身）
+# クラス定義（§9）
+class PrintToLogger:
+  # write メソッド（self は自分自身）
+  def write(self, message):
     # 受け取った標準出力のメッセージ処理(空白および改行のみのメッセージは無視)
-    if message.strip():                    # 空白・改行だけのメッセージは無視
-      views_logger.info(message)           # 中身があればログに記録
+    # 空白・改行だけのメッセージは無視
+    if message.strip():
+      # 中身があればログに記録
+      views_logger.info(message)
 
-  def flush(self):                         # flush メソッド（必要だが処理は不要）
+  # flush メソッド（必要だが処理は不要）
+  def flush(self):
     # 処理不要のため空処理
-    pass                                   # 「何もしない」を表すキーワード
+    # 「何もしない」を表すキーワード
+    pass
 ```
 
 1行ずつ：
@@ -1225,13 +1361,17 @@ sys.stdout = PrintToLogger()
 > **▼ このブロックがやること:** 記録されたログファイルを読み込み、その全行をJSONで返す関数です。管理画面でログを表示するのに使います。
 
 ```python
-def get_logs(request):                          # request を受け取る関数（§7）
+# request を受け取る関数（§7）
+def get_logs(request):
   # 'web_console.log' ファイルを読み込み専用モードで開く
-  with open('web_console.log', 'r') as log_file:  # ファイルを開く（with §11）
+  # ファイルを開く（with §11）
+  with open('web_console.log', 'r') as log_file:
     # ファイルの内容を行ごとにリストとして格納
-    logs = log_file.readlines()                 # 全行をリストで読み込む
+    # 全行をリストで読み込む
+    logs = log_file.readlines()
   # JSONレスポンスとして、ログを返す
-  return JsonResponse({'logs': logs})           # 辞書をJSONにして返す（§3.2 §7.3）
+  # 辞書をJSONにして返す（§3.2 §7.3）
+  return JsonResponse({'logs': logs})
 ```
 
 1行ずつ：
@@ -1251,29 +1391,43 @@ def get_logs(request):                          # request を受け取る関数�
 
 ```python
 # ログイン
-class Login(APIView):                           # APIView を継承（§9.5）
+# APIView を継承（§9.5）
+class Login(APIView):
   # POST処理
-  def post(self, request):                      # POSTで呼ばれるメソッド
-    try:                                         # まず試す（§10）
+  # POSTで呼ばれるメソッド
+  def post(self, request):
+    # まず試す（§10）
+    try:
       # 送られてきたデータ確認
-      data = json.loads(request.body)            # 受信データをPython辞書に変換
-      input_number = data.get('employee_no')     # その中の従業員番号を取り出す
-    except json.JSONDecodeError:                 # データが壊れていたら
+      # 受信データをPython辞書に変換
+      data = json.loads(request.body)
+      # その中の従業員番号を取り出す
+      input_number = data.get('employee_no')
+    # データが壊れていたら
+    except json.JSONDecodeError:
       return JsonResponse({'status': 'error', 'message': 'JSON形式が正しくありません。'}, status=status.HTTP_400_BAD_REQUEST)
 
     # POSTされた従番が人員データにある場合、セッションに保存&最新工数区分定義取得
-    if member.objects.filter(employee_no=input_number).exists():   # その番号の人がいるか
-      request.session['login_No'] = input_number                   # セッションに番号を保存
-      def_Ver = kosu_division.objects.order_by("id").last()        # 最新の工数区分定義を取得
+    # その番号の人がいるか
+    if member.objects.filter(employee_no=input_number).exists():
+      # セッションに番号を保存
+      request.session['login_No'] = input_number
+      # 最新の工数区分定義を取得
+      def_Ver = kosu_division.objects.order_by("id").last()
 
       # 取得した工数区分定義をセッションに保存
-      if not def_Ver:                            # 定義が1つも無ければ
+      # 定義が1つも無ければ
+      if not def_Ver:
         return JsonResponse({'status': 'error', 'message': '利用可能な工数区分がありません。ERROR052'}, status=status.HTTP_400_BAD_REQUEST)
-      else:                                      # 定義があれば
-        request.session['input_def'] = def_Ver.kosu_name   # 定義名をセッションに保存
-        return JsonResponse({'status': 'success'})         # 成功を返す
+      # 定義があれば
+      else:
+        # 定義名をセッションに保存
+        request.session['input_def'] = def_Ver.kosu_name
+        # 成功を返す
+        return JsonResponse({'status': 'success'})
 
-    else:                                        # その番号の人がいなければ
+    # その番号の人がいなければ
+    else:
       return JsonResponse({'status': 'error', 'message': '入力された従業員番号は登録がありません。ERROR048'}, status=status.HTTP_400_BAD_REQUEST)
 ```
 
@@ -1310,41 +1464,57 @@ class Login(APIView):                           # APIView を継承（§9.5）
 
 ```python
 # 班員フォローメッセージ作成
-follow_message_list = []                                  # 空のリスト（§3.1）
+# 空のリスト（§3.1）
+follow_message_list = []
 # 班員データあるか確認
 team_filter = team_member.objects.filter(employee_no5=login_no)
-team_get = team_filter.first() if team_filter.exists() else None   # 三項演算子（§8.1）
+# 三項演算子（§8.1）
+team_get = team_filter.first() if team_filter.exists() else None
 
 # 班員フォロー有効の場合、班員リスト作成
-if team_filter.exists() and team_get.follow:              # and で2条件（§4.3）
-  member_numbers = [                                      # 15人分の番号をリストに
+# and で2条件（§4.3）
+if team_filter.exists() and team_get.follow:
+  # 15人分の番号をリストに
+  member_numbers = [
     team_get.member1, team_get.member2, team_get.member3,
     team_get.member4, team_get.member5, team_get.member6,
     team_get.member7, team_get.member8, team_get.member9,
     team_get.member10, team_get.member11, team_get.member12,
     team_get.member13, team_get.member14, team_get.member15
   ]
-  valid_member_numbers = [                                # 内包表記（§6.2）
+  # 内包表記（§6.2）
+  valid_member_numbers = [
     num for num in member_numbers if num is not None and num != ''
   ]
 
   # 過去7日分の日付リスト作成
-  today = datetime.date.today()                           # 今日の日付
-  day_list = [today - datetime.timedelta(days=d) for d in range(1, 8)]  # 内包表記（§6.3）
+  # 今日の日付
+  today = datetime.date.today()
+  # 内包表記（§6.3）
+  day_list = [today - datetime.timedelta(days=d) for d in range(1, 8)]
 
   # 班員ごとに工数未入力確認
-  for m in valid_member_numbers:                          # 班員を1人ずつ（§5）
+  # 班員を1人ずつ（§5）
+  for m in valid_member_numbers:
     follow_message = ''
-    if member.objects.filter(employee_no=m).exists():     # その人がいるか
-      member_name = member.objects.get(employee_no=m).name  # 名前を取得
-      for d in day_list:                                  # 7日を1日ずつ（入れ子ループ）
+    # その人がいるか
+    if member.objects.filter(employee_no=m).exists():
+      # 名前を取得
+      member_name = member.objects.get(employee_no=m).name
+      # 7日を1日ずつ（入れ子ループ）
+      for d in day_list:
         if Business_Time_graph.objects.filter(employee_no3=m, work_day2=d).exists():
           kosu_get = Business_Time_graph.objects.get(employee_no3=m, work_day2=d)
-          if not kosu_get.judgement:                      # 判定がOKでなければ
-            follow_message = f'{member_name}氏の工数未入力があります。'  # f文字列（§8.2）
-            follow_message_list.append(follow_message)    # リストに追加（§3.1）
-            break                                         # このループを抜ける（§5.4）
-        else:                                             # その日のデータ自体が無ければ
+          # 判定がOKでなければ
+          if not kosu_get.judgement:
+            # f文字列（§8.2）
+            follow_message = f'{member_name}氏の工数未入力があります。'
+            # リストに追加（§3.1）
+            follow_message_list.append(follow_message)
+            # このループを抜ける（§5.4）
+            break
+        # その日のデータ自体が無ければ
+        else:
           follow_message = f'{member_name}氏の工数未入力があります。'
           follow_message_list.append(follow_message)
           break
@@ -1371,12 +1541,18 @@ if team_filter.exists() and team_get.follow:              # and で2条件（§4
 ### 15.1 import（1〜6行目）
 
 ```python
-import inspect                                           # オブジェクトの中身を調べる標準ライブラリ
-from rest_framework.pagination import PageNumberPagination  # DRFのページ送り機能
-from rest_framework.response import Response             # DRFの応答クラス
-from django.db import models                             # Djangoのモデル基本機能
-from kosu import models as myapp_models                  # 自作モデルを myapp_models という別名で
-from ..models import administrator_data                  # 設定モデルを相対importで
+# オブジェクトの中身を調べる標準ライブラリ
+import inspect
+# DRFのページ送り機能
+from rest_framework.pagination import PageNumberPagination
+# DRFの応答クラス
+from rest_framework.response import Response
+# Djangoのモデル基本機能
+from django.db import models
+# 自作モデルを myapp_models という別名で
+from kosu import models as myapp_models
+# 設定モデルを相対importで
+from ..models import administrator_data
 ```
 
 - `from kosu import models as myapp_models` … `as` は **別名（あだ名）を付ける** キーワード。`kosu.models` を `myapp_models` という短い名前で呼べるようにする。後で「自作モデル全部」を調べるときに使います（§15.4）。
@@ -1387,20 +1563,31 @@ from ..models import administrator_data                  # 設定モデルを相
 
 ```python
 # ページネーションクラス
-class CustomPagination(PageNumberPagination):    # 既製のページ送りを継承（§9.5）
-  page_size = 20  # デフォルトの設定値             # クラス変数（初期値20件）
+# 既製のページ送りを継承（§9.5）
+class CustomPagination(PageNumberPagination):
+  # デフォルトの設定値             # クラス変数（初期値20件）
+  page_size = 20
 
-  def __init__(self):                            # 作られるとき自動実行（§9.2）
+  # 作られるとき自動実行（§9.2）
+  def __init__(self):
     # administrator_data から動的にページサイズを設定
-    last_record = administrator_data.objects.order_by("id").last()  # 最新の設定を取得
-    if last_record is not None:                  # 設定があれば（§4.4）
-      self.page_size = last_record.menu_row      # 1ページの件数を設定値に上書き
+    # 最新の設定を取得
+    last_record = administrator_data.objects.order_by("id").last()
+    # 設定があれば（§4.4）
+    if last_record is not None:
+      # 1ページの件数を設定値に上書き
+      self.page_size = last_record.menu_row
 
-  def get_paginated_response(self, data):        # ページ送り済みの応答を作るメソッド
-    return Response({                            # 辞書を応答にして返す（§3.2）
-      'count': self.page.paginator.count,        # 合計件数
-      'page_size': self.page_size,               # ページサイズ
-      'results': data,                           # 現在のページのデータ
+  # ページ送り済みの応答を作るメソッド
+  def get_paginated_response(self, data):
+    # 辞書を応答にして返す（§3.2）
+    return Response({
+      # 合計件数
+      'count': self.page.paginator.count,
+      # ページサイズ
+      'page_size': self.page_size,
+      # 現在のページのデータ
+      'results': data,
     })
 ```
 
@@ -1421,27 +1608,39 @@ class CustomPagination(PageNumberPagination):    # 既製のページ送りを�
 > **▼ このブロックがやること:** 入力された従業員番号が正しいか（自然数か・実在するか）を検証する関数です。「OKか（True/False）」と「理由メッセージ」をペアで返します。
 
 ```python
-def validate_employee_no_logic(value, member_model):       # 2つの引数（§7）
+# 2つの引数（§7）
+def validate_employee_no_logic(value, member_model):
   # 1. 空欄チェック: 値が存在しない、または空文字列の場合は空欄を許可する
-  if not value:                                            # 値が空なら（§4.3 falsy）
-    return True, None                                      # 「OK・理由なし」を返す（§7.4）
+  # 値が空なら（§4.3 falsy）
+  if not value:
+    # 「OK・理由なし」を返す（§7.4）
+    return True, None
 
   # 2. 整数変換チェック
-  try:                                                     # 試す（§10）
-    value_int = int(value)                                 # 数値に変換
-  except ValueError:                                       # 変換できなければ
+  # 試す（§10）
+  try:
+    # 数値に変換
+    value_int = int(value)
+  # 変換できなければ
+  except ValueError:
     # intに変換できなかった場合 (例: 'abc'などの文字列)
-    return False, 'は自然数で入力して下さい'                  # 「NG・理由」を返す
+    # 「NG・理由」を返す
+    return False, 'は自然数で入力して下さい'
 
   # 3. 自然数チェック (1以上の整数)
-  if value_int <= 0:                                       # 0以下なら（§4.2）
+  # 0以下なら（§4.2）
+  if value_int <= 0:
     return False, 'は自然数で入力して下さい'
 
   # 4. 従業員番号の存在チェック
-  try:                                                     # 試す
-    member_model.objects.get(employee_no=value_int)        # その番号の人を取得
-    return True, value_int                                 # いれば「OK・番号」を返す
-  except member_model.DoesNotExist:                        # いなければ
+  # 試す
+  try:
+    # その番号の人を取得
+    member_model.objects.get(employee_no=value_int)
+    # いれば「OK・番号」を返す
+    return True, value_int
+  # いなければ
+  except member_model.DoesNotExist:
     return False, 'に入力された従業員番号の人員は存在しません'
 ```
 
@@ -1463,19 +1662,29 @@ def validate_employee_no_logic(value, member_model):       # 2つの引数（§7
 > **▼ このブロックがやること:** 本アプリの全モデル（データベースのテーブル）の名前を、自動で一覧にして返す関数です。手で書かずプログラムが見つけ出します。
 
 ```python
-def get_all_model_names_in_myapp():               # 引数なしの関数（§7.3）
-  model_names = []                                # 空のリスト（§3.1）
+# 引数なしの関数（§7.3）
+def get_all_model_names_in_myapp():
+  # 空のリスト（§3.1）
+  model_names = []
 
   # myapp_modelsモジュールのメンバーを全て取得
-  for name, obj in inspect.getmembers(myapp_models):   # models.py の中身を1つずつ
-    if (inspect.isclass(obj) and                  # それがクラスで（§4.3 and）
-      issubclass(obj, models.Model) and           # models.Model を継承していて
-      not obj._meta.abstract and                  # 抽象クラスでなく
-      not obj._meta.proxy and                     # プロキシでなく
-      obj.__module__ == myapp_models.__name__):   # この自作モジュール由来である
-      model_names.append(name)                    # 条件を満たせば名前をリストに追加
+  # models.py の中身を1つずつ
+  for name, obj in inspect.getmembers(myapp_models):
+    # それがクラスで（§4.3 and）
+    if (inspect.isclass(obj) and
+      # models.Model を継承していて
+      issubclass(obj, models.Model) and
+      # 抽象クラスでなく
+      not obj._meta.abstract and
+      # プロキシでなく
+      not obj._meta.proxy and
+      # この自作モジュール由来である
+      obj.__module__ == myapp_models.__name__):
+      # 条件を満たせば名前をリストに追加
+      model_names.append(name)
 
-  return model_names                              # 集めた名前リストを返す
+  # 集めた名前リストを返す
+  return model_names
 ```
 
 1行ずつ：
@@ -1507,22 +1716,31 @@ def get_all_model_names_in_myapp():               # 引数なしの関数（§7.
 
 ```python
 # 日付バリデーション関数
-def validate_dates(start_day, end_day):                    # 2つの日付を受け取る
-  today_str = datetime.date.today().strftime('%Y-%m-%d')   # 今日を 'YYYY-MM-DD' の文字に
-  if not start_day or not end_day:                         # どちらか空なら（§4.3 or）
+# 2つの日付を受け取る
+def validate_dates(start_day, end_day):
+  # 今日を 'YYYY-MM-DD' の文字に
+  today_str = datetime.date.today().strftime('%Y-%m-%d')
+  # どちらか空なら（§4.3 or）
+  if not start_day or not end_day:
     return JsonResponse({'status': 'error', 'message': '日付を指定してください。'}, status=status.HTTP_400_BAD_REQUEST)
 
-  try:                                                     # 日付変換を試す（§10）
-    end_date_obj = datetime.date.fromisoformat(end_day)    # 文字→日付オブジェクト
+  # 日付変換を試す（§10）
+  try:
+    # 文字→日付オブジェクト
+    end_date_obj = datetime.date.fromisoformat(end_day)
     today_date_obj = datetime.date.fromisoformat(today_str)
     start_date_obj = datetime.date.fromisoformat(start_day)
-  except ValueError:                                       # 形式が不正なら
+  # 形式が不正なら
+  except ValueError:
     return JsonResponse({'status': 'error', 'message': '日付の形式が不正です。'}, status=status.HTTP_400_BAD_REQUEST)
-  if end_date_obj >= today_date_obj:                       # 終了日が今日以降なら（§4.2）
+  # 終了日が今日以降なら（§4.2）
+  if end_date_obj >= today_date_obj:
     return JsonResponse({'status': 'error', 'message': '昨日の日付までしか指定できません。'}, status=status.HTTP_400_BAD_REQUEST)
-  if start_date_obj > end_date_obj:                        # 開始日が終了日より後なら
+  # 開始日が終了日より後なら
+  if start_date_obj > end_date_obj:
     return JsonResponse({'status': 'error', 'message': '開始日が終了日を超えています。'}, status=status.HTTP_400_BAD_REQUEST)
-  return None                                              # 全部OKなら None（問題なし）を返す
+  # 全部OKなら None（問題なし）を返す
+  return None
 ```
 
 1行ずつ：
@@ -1552,15 +1770,21 @@ def validate_dates(start_day, end_day):                    # 2つの日付を受
 §13で見たデコレータと、§3.3のタプル、§10の例外、§11のwithが backup 関数に集約されています。冒頭だけ再確認します。
 
 ```python
-@api_view(['POST'])                                       # API化デコレータ（§13.2）
-@parser_classes([MultiPartParser, JSONParser, FormParser]) # データ形式指定デコレータ
+# API化デコレータ（§13.2）
+@api_view(['POST'])
+# データ形式指定デコレータ
+@parser_classes([MultiPartParser, JSONParser, FormParser])
 def backup(request):
   # タスクID生成
-  task_id = str(uuid.uuid4())                             # 一意なIDを文字列で生成
-  AsyncTask.objects.create(task_id=task_id, status='pending')  # 処理中レコードを作成
+  # 一意なIDを文字列で生成
+  task_id = str(uuid.uuid4())
+  # 処理中レコードを作成
+  AsyncTask.objects.create(task_id=task_id, status='pending')
 
-  start_day = request.data.get('start_day')               # 開始日を取得（§3.2 .get）
-  end_day = request.data.get('end_day')                   # 終了日を取得
+  # 開始日を取得（§3.2 .get）
+  start_day = request.data.get('start_day')
+  # 終了日を取得
+  end_day = request.data.get('end_day')
 ```
 
 - `@api_view(['POST'])` … POST専用APIにする飾り（§13.2）。
@@ -1581,9 +1805,12 @@ def backup(request):
 > **▼ このブロックがやること:** 「人員（社員）」を表すテーブルの設計図です。冒頭で「ショップ」欄の選択肢候補をタプルのリストで定義します。
 
 ```python
-class member(models.Model):                  # models.Model を継承（§9.5）
-  shop_list = [                              # ショップの選択肢（タプルのリスト §3.3）
-    ('P', 'P'),                              # ('保存値', '表示値')
+# models.Model を継承（§9.5）
+class member(models.Model):
+  # ショップの選択肢（タプルのリスト §3.3）
+  shop_list = [
+    # ('保存値', '表示値')
+    ('P', 'P'),
     ('R', 'R'),
     ('W1', 'W1'),
     ('W2', 'W2'),
@@ -1607,12 +1834,18 @@ class member(models.Model):                  # models.Model を継承（§9.5）
 > **▼ このブロックがやること:** この人員テーブルが持つ「列（カラム）」を1つずつ定義します。従業員番号・氏名・ショップ・権限・各種休憩時間など。
 
 ```python
-  employee_no = models.IntegerField('従業員番号')        # 整数の列
-  name = models.CharField('氏名', max_length=100)        # 短い文字の列（最大100字）
-  shop = models.CharField('ショップ', choices = shop_list, max_length=15)  # 選択肢付き文字
-  authority = models.BooleanField('権限')                # 真偽値の列（True/False）
-  administrator = models.BooleanField('管理者')           # 真偽値の列
-  break_time1 = models.CharField('1直昼休憩時間', max_length=9)  # 休憩時間（文字9字）
+  # 整数の列
+  employee_no = models.IntegerField('従業員番号')
+  # 短い文字の列（最大100字）
+  name = models.CharField('氏名', max_length=100)
+  # 選択肢付き文字
+  shop = models.CharField('ショップ', choices = shop_list, max_length=15)
+  # 真偽値の列（True/False）
+  authority = models.BooleanField('権限')
+  # 真偽値の列
+  administrator = models.BooleanField('管理者')
+  # 休憩時間（文字9字）
+  break_time1 = models.CharField('1直昼休憩時間', max_length=9)
   break_time1_over1 = models.CharField('1直残業休憩時間1', max_length=9)
   ...
   pop_up1 = models.CharField('ポップアップ1', max_length=255, null=True, blank=True)
@@ -1638,8 +1871,10 @@ class member(models.Model):                  # models.Model を継承（§9.5）
 ### 17.3 `__str__` メソッド（64〜65行目）
 
 ```python
-  def __str__(self):                # 文字列表現メソッド（§9.4）
-    return self.name                # この人を表示するときは氏名を出す
+  # 文字列表現メソッド（§9.4）
+  def __str__(self):
+    # この人を表示するときは氏名を出す
+    return self.name
 ```
 
 - `def __str__(self):` … このインスタンスを文字として表示するときに呼ばれる特別メソッド（§9.4）。
@@ -1674,19 +1909,28 @@ def __str__(self):
 
 ```python
 class History(models.Model):
-  MAX_RECORDS = 500000                          # 上限件数（クラス変数）
+  # 上限件数（クラス変数）
+  MAX_RECORDS = 500000
   ...
-  def save(self, *args, **kwargs):              # 親の save を上書き（オーバーライド）
-    super().save(*args, **kwargs)               # まず親（Model）の保存を実行（§9.5）
-    current_count = self.__class__.objects.count()  # 現在の総件数を数える
+  # 親の save を上書き（オーバーライド）
+  def save(self, *args, **kwargs):
+    # まず親（Model）の保存を実行（§9.5）
+    super().save(*args, **kwargs)
+    # 現在の総件数を数える
+    current_count = self.__class__.objects.count()
 
     # レコード数が許容数以上の場合の処理
-    if current_count > self.MAX_RECORDS:         # 上限を超えたら
+    # 上限を超えたら
+    if current_count > self.MAX_RECORDS:
       # 超過レコード数分のレコード取得し削除
-      excess_count = current_count - self.MAX_RECORDS   # 何件オーバーか
-      oldest_records = self.__class__.objects.order_by('timestamp')[:excess_count]  # 古い順に超過分
-      for record in oldest_records:              # 1件ずつ（§5）
-        record.delete()                          # 削除
+      # 何件オーバーか
+      excess_count = current_count - self.MAX_RECORDS
+      # 古い順に超過分
+      oldest_records = self.__class__.objects.order_by('timestamp')[:excess_count]
+      # 1件ずつ（§5）
+      for record in oldest_records:
+        # 削除
+        record.delete()
 ```
 
 1行ずつのポイント：
@@ -1710,15 +1954,21 @@ class History(models.Model):
 ### 18.1 import と初期化（1〜11行目）
 
 ```python
-from threading import local                                # スレッドごとの保管庫
-from django.db.models.signals import pre_save, post_save, post_delete  # 保存・削除の合図
-from django.dispatch import receiver                       # 合図を受け取る登録用デコレータ
-from .models import History, member, Business_Time_graph, ...  # 自作モデル（相対import §12）
-from .middleware.clear_session_middleware import get_current_request  # 現在のリクエスト取得
+# スレッドごとの保管庫
+from threading import local
+# 保存・削除の合図
+from django.db.models.signals import pre_save, post_save, post_delete
+# 合図を受け取る登録用デコレータ
+from django.dispatch import receiver
+# 自作モデル（相対import §12）
+from .models import History, member, Business_Time_graph, ...
+# 現在のリクエスト取得
+from .middleware.clear_session_middleware import get_current_request
 from django.db import models
 
 # スレッドローカル変数初期化
-_thread_locals = local()                                   # スレッドごとの一時保管庫を作る
+# スレッドごとの一時保管庫を作る
+_thread_locals = local()
 ```
 
 - `from django.db.models.signals import pre_save, post_save, post_delete` … 「保存の前・保存の後・削除の後」という **タイミングの合図（シグナル）** を読み込む。
@@ -1734,19 +1984,26 @@ _thread_locals = local()                                   # スレッドごと�
 
 ```python
 # 更新前の値をスレッドローカルキャッシュに保存
-def set_instance_cache(instance):                 # instance（保存される対象）を受け取る
-  model = type(instance)                          # そのオブジェクトのクラス（種類）を取得
-  try:                                            # 試す（§10）
+# instance（保存される対象）を受け取る
+def set_instance_cache(instance):
+  # そのオブジェクトのクラス（種類）を取得
+  model = type(instance)
+  # 試す（§10）
+  try:
     # 更新前の値取得→スレッドローカルキャッシュに保存
-    _thread_locals.instance_cache = model.objects.get(pk=instance.pk)  # DBの現在値を保管
-  except model.DoesNotExist:                      # まだDBに無ければ（新規作成）
+    # DBの現在値を保管
+    _thread_locals.instance_cache = model.objects.get(pk=instance.pk)
+  # まだDBに無ければ（新規作成）
+  except model.DoesNotExist:
     # レコードなしの場合はNone取得
-    _thread_locals.instance_cache = None          # Noneを保管
+    # Noneを保管
+    _thread_locals.instance_cache = None
 
 
 # スレッドローカルキャッシュから更新前の値取得
 def get_instance_cache():
-  return getattr(_thread_locals, 'instance_cache', None)  # 保管した値を返す（無ければNone）
+  # 保管した値を返す（無ければNone）
+  return getattr(_thread_locals, 'instance_cache', None)
 ```
 
 - `model = type(instance)` … `type(...)` は「その値の **型（クラス）**」を返す。保存対象が member なら member クラスが返る。
@@ -1764,41 +2021,58 @@ def get_instance_cache():
 長いので、前半（変更を検出する部分）から読みます。
 
 ```python
-def get_changes(instance, created):              # 保存対象と「新規か(created)」を受け取る
-  changes = {}                                   # 変更点を入れる空の辞書（§3.2）
+# 保存対象と「新規か(created)」を受け取る
+def get_changes(instance, created):
+  # 変更点を入れる空の辞書（§3.2）
+  changes = {}
 
   # 1. キャッシュを取得
-  old_instance = get_instance_cache()            # §18.2で保管した更新前の値
+  # §18.2で保管した更新前の値
+  old_instance = get_instance_cache()
 
   # 【修正】キャッシュが存在しても、現在のインスタンスと型やPKが違う場合は、誤った比較を避けるためNoneにする
   if old_instance and (not isinstance(old_instance, type(instance)) or old_instance.pk != instance.pk):
-    old_instance = None                          # 別物なら比較対象を無効化
+    # 別物なら比較対象を無効化
+    old_instance = None
 
   # モデルの全フィールド処理
-  for field in instance._meta.fields:            # 全フィールドを1つずつ（§5）
-    field_name = field.name                      # フィールド名（例 'name'）
+  # 全フィールドを1つずつ（§5）
+  for field in instance._meta.fields:
+    # フィールド名（例 'name'）
+    field_name = field.name
 
     # 値取得
-    new_value = getattr(instance, field_name)    # 新しい値を取得（getattrで動的に）
+    # 新しい値を取得（getattrで動的に）
+    new_value = getattr(instance, field_name)
 
     # 新規作成時、全て変更として処理
-    if created:                                  # 新規作成なら
-      old_value = None                           # 古い値は無い
-      is_changed = True                          # 全項目を「変更あり」とする
+    # 新規作成なら
+    if created:
+      # 古い値は無い
+      old_value = None
+      # 全項目を「変更あり」とする
+      is_changed = True
     # 更新時、差分取得
-    else:                                        # 更新なら
-      if old_instance:                           # 更新前の値があれば
-        old_value = getattr(old_instance, field_name)  # 古い値を取得
-        is_changed = (old_value != new_value)    # 古い≠新しい なら変更あり（§4.2）
+    # 更新なら
+    else:
+      # 更新前の値があれば
+      if old_instance:
+        # 古い値を取得
+        old_value = getattr(old_instance, field_name)
+        # 古い≠新しい なら変更あり（§4.2）
+        is_changed = (old_value != new_value)
       else:
         # 【修正】pre_saveでのキャッシュ漏れやスレッドの混同対策としてDBから直接取得を試みる
         try:
-          old_db_instance = type(instance).objects.get(pk=instance.pk)  # DBから直接取得
+          # DBから直接取得
+          old_db_instance = type(instance).objects.get(pk=instance.pk)
           old_value = getattr(old_db_instance, field_name)
           is_changed = (old_value != new_value)
-          old_instance = old_db_instance          # 以降のためにキャッシュ更新
+          # 以降のためにキャッシュ更新
+          old_instance = old_db_instance
         except type(instance).DoesNotExist:
-          continue                                # 取れなければこの項目は飛ばす（§18.4）
+          # 取れなければこの項目は飛ばす（§18.4）
+          continue
 ```
 
 要点：
@@ -1818,34 +2092,48 @@ def get_changes(instance, created):              # 保存対象と「新規か(c
     if is_changed:
 
       # JSON化できないリレーションフィールド処理
-      if field.is_relation and field.many_to_one:        # 他テーブルへの参照なら
-        old_json_safe_value = getattr(old_instance, field.attname) if old_instance else None  # 関連ID（三項演算子 §8.1）
+      # 他テーブルへの参照なら
+      if field.is_relation and field.many_to_one:
+        # 関連ID（三項演算子 §8.1）
+        old_json_safe_value = getattr(old_instance, field.attname) if old_instance else None
         new_json_safe_value = getattr(instance, field.attname)
 
       # その他オブジェクト処理
-      elif not isinstance(new_value, (str, int, float, bool, type(None))):  # 基本型でなければ
-        if isinstance(new_value, models.Model):          # モデルそのものなら
-          old_json_safe_value = {'id': old_value.pk, 'str': str(old_value)} if old_value else None  # 辞書化
+      # 基本型でなければ
+      elif not isinstance(new_value, (str, int, float, bool, type(None))):
+        # モデルそのものなら
+        if isinstance(new_value, models.Model):
+          # 辞書化
+          old_json_safe_value = {'id': old_value.pk, 'str': str(old_value)} if old_value else None
           new_json_safe_value = {'id': new_value.pk, 'str': str(new_value)}
-        elif isinstance(new_value, (models.DateField, models.DateTimeField)):  # 日付なら
-          old_json_safe_value = old_value.isoformat() if old_value else None   # 文字列化
+        # 日付なら
+        elif isinstance(new_value, (models.DateField, models.DateTimeField)):
+          # 文字列化
+          old_json_safe_value = old_value.isoformat() if old_value else None
           new_json_safe_value = new_value.isoformat()
-        else:                                            # その他は文字列化
+        # その他は文字列化
+        else:
           old_json_safe_value = str(old_value) if old_value else None
           new_json_safe_value = str(new_value)
 
       # JSON化可能な基本データ型の処理
-      else:                                              # 数値・文字・真偽値など
+      # 数値・文字・真偽値など
+      else:
         old_json_safe_value = old_value
         new_json_safe_value = new_value
 
       # 6. changes辞書に記録
-      if created:                                        # 新規なら
-        changes[field_name] = new_json_safe_value        # 新しい値だけ記録
-      else:                                              # 更新なら
-        changes[field_name] = {'old': old_json_safe_value, 'new': new_json_safe_value}  # 前後を記録
+      # 新規なら
+      if created:
+        # 新しい値だけ記録
+        changes[field_name] = new_json_safe_value
+      # 更新なら
+      else:
+        # 前後を記録
+        changes[field_name] = {'old': old_json_safe_value, 'new': new_json_safe_value}
 
-  return changes                                         # 変更辞書を返す
+  # 変更辞書を返す
+  return changes
 ```
 
 要点：
@@ -1870,7 +2158,8 @@ def get_changes(instance, created):              # 保存対象と「新規か(c
 
 ```python
 except type(instance).DoesNotExist:
-  continue                           # この項目は処理せず、次の項目へ
+  # この項目は処理せず、次の項目へ
+  continue
 ```
 
 > **用語：`continue`** ループの中で「**今回の繰り返しはここで打ち切り、次の繰り返しへ進む**」命令。`break`（§5.4：ループ自体を抜ける）との違いに注意。`continue` は「この項目だけスキップ、ループは続行」です。
@@ -1881,30 +2170,43 @@ except type(instance).DoesNotExist:
 
 ```python
 # 保存前に更新前の値をキャッシュ
-@receiver(pre_save, sender=member)               # member保存の「直前」に呼ぶ登録（§13.3）
+# member保存の「直前」に呼ぶ登録（§13.3）
+@receiver(pre_save, sender=member)
 def cache_old_member_instance(sender, instance, **kwargs):
-  set_instance_cache(instance)                   # 更新前の値を保管（§18.2）
+  # 更新前の値を保管（§18.2）
+  set_instance_cache(instance)
 
 
 # 履歴を記録　新規作成、更新 (member)
-@receiver(post_save, sender=member)              # member保存の「直後」に呼ぶ登録
+# member保存の「直後」に呼ぶ登録
+@receiver(post_save, sender=member)
 def log_create_update_member_history(sender, instance, created, **kwargs):
-  request = get_current_request()                # 現在のリクエストを取得
-  session_data = request.session.get('login_No') if request else None  # 操作者の番号（三項 §8.1）
+  # 現在のリクエストを取得
+  request = get_current_request()
+  # 操作者の番号（三項 §8.1）
+  session_data = request.session.get('login_No') if request else None
 
   # 差分計算
-  changes = get_changes(instance, created)       # §18.3で変更点を計算
+  # §18.3で変更点を計算
+  changes = get_changes(instance, created)
 
   # 操作内容判定
-  operation = 'CREATE' if created else 'UPDATE'   # 新規ならCREATE、更新ならUPDATE（三項 §8.1）
+  # 新規ならCREATE、更新ならUPDATE（三項 §8.1）
+  operation = 'CREATE' if created else 'UPDATE'
 
   # 履歴記録
-  History.objects.create(                        # 履歴レコードを作成
-    operation=operation,                         # 操作種別
-    table_name='member',                         # テーブル名
-    record_id=instance.id,                       # 対象レコードのid
-    login_No=session_data,                       # 操作した人の番号
-    changes=changes,                             # 変更内容（§18.3の辞書）
+  # 履歴レコードを作成
+  History.objects.create(
+    # 操作種別
+    operation=operation,
+    # テーブル名
+    table_name='member',
+    # 対象レコードのid
+    record_id=instance.id,
+    # 操作した人の番号
+    login_No=session_data,
+    # 変更内容（§18.3の辞書）
+    changes=changes,
   )
 ```
 
@@ -1925,18 +2227,21 @@ def log_create_update_member_history(sender, instance, created, **kwargs):
 
 ```python
 # 履歴を記録　削除 (member)
-@receiver(post_delete, sender=member)            # member削除の「直後」に呼ぶ登録
+# member削除の「直後」に呼ぶ登録
+@receiver(post_delete, sender=member)
 def log_delete_member_history(sender, instance, **kwargs):
   request = get_current_request()
   session_data = request.session.get('login_No') if request else None
 
   # 履歴記録
   History.objects.create(
-    operation='DELETE',                          # 操作は削除
+    # 操作は削除
+    operation='DELETE',
     table_name='member',
     record_id=instance.id,
     login_No=session_data,
-    changes=None,                                # 削除なので差分は無し（None）
+    # 削除なので差分は無し（None）
+    changes=None,
   )
 ```
 

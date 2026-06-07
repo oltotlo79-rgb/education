@@ -266,13 +266,20 @@ URL（urls.py）
 > **▼ このコードがやること（先に日本語で）:** このファイルが使う「外部の道具」を読み込みます。データベース操作の部品・DRFのAPI部品・このアプリ自身のモデルやシリアライザを、上から順番に取り寄せています。
 
 ```python
-from django.db.models import Case, When, Value, IntegerField   # 条件付きの並べ替えに使う部品4種を読み込む
-from ..models import member                                     # このアプリのmemberモデル（人員データの設計図）を読み込む
-from rest_framework.views import APIView                        # DRFのAPI用の基底クラス（土台）を読み込む
-from rest_framework.response import Response                    # API応答を作るためのResponseを読み込む
-from rest_framework import status                               # 200・404などのステータスコード集を読み込む
-from .serializers import MemberSerializer                       # member⇔JSONの翻訳係を読み込む
-from ..utils.main_utils import CustomPagination                 # ページ送り（何件ずつ表示するか）の部品を読み込む
+# 条件付きの並べ替えに使う部品4種を読み込む
+from django.db.models import Case, When, Value, IntegerField
+# このアプリのmemberモデル（人員データの設計図）を読み込む
+from ..models import member
+# DRFのAPI用の基底クラス（土台）を読み込む
+from rest_framework.views import APIView
+# API応答を作るためのResponseを読み込む
+from rest_framework.response import Response
+# 200・404などのステータスコード集を読み込む
+from rest_framework import status
+# member⇔JSONの翻訳係を読み込む
+from .serializers import MemberSerializer
+# ページ送り（何件ずつ表示するか）の部品を読み込む
+from ..utils.main_utils import CustomPagination
 ```
 
 1行ずつ意味を確認します。
@@ -316,12 +323,16 @@ from ..utils.main_utils import CustomPagination                 # ページ送�
 
 ```python
 # 人員一覧
-class MemberList(APIView):                                  # APIViewを継承して「人員一覧API」クラスを作る
+# APIViewを継承して「人員一覧API」クラスを作る
+class MemberList(APIView):
   # GET時の動作
-  def get(self, request):                                  # GETリクエストが来たら呼ばれるメソッド
+  # GETリクエストが来たら呼ばれるメソッド
+  def get(self, request):
     # セッションからデータ取得
-    login_no = request.session.get('login_No')             # セッションからログイン中の従業員番号を取り出す
-    def_ver = request.session.get('input_def')             # セッションから使用中の工数区分定義バージョンを取り出す
+    # セッションからログイン中の従業員番号を取り出す
+    login_no = request.session.get('login_No')
+    # セッションから使用中の工数区分定義バージョンを取り出す
+    def_ver = request.session.get('input_def')
 ```
 
 - **13行目** `class MemberList(APIView):`
@@ -353,20 +364,29 @@ class MemberList(APIView):                                  # APIViewを継承�
 
 ```python
     # 未ログインや定義が未定義の場合はログイン画面へ
-    if not login_no:                                                                                     # ログイン番号が無い（未ログイン）なら
-      return Response({'status': 'error', 'message': 'ログイン情報が確認できません。'}, status=status.HTTP_401_UNAUTHORIZED)   # 401を返して中断
-    if not def_ver:                                                                                      # 定義バージョンが無いなら
-      return Response({'status': 'error', 'message': '使用する工数区分定義情報が確認できません。'}, status=status.HTTP_401_UNAUTHORIZED)  # 401を返して中断
+    # ログイン番号が無い（未ログイン）なら
+    if not login_no:
+      # 401を返して中断
+      return Response({'status': 'error', 'message': 'ログイン情報が確認できません。'}, status=status.HTTP_401_UNAUTHORIZED)
+    # 定義バージョンが無いなら
+    if not def_ver:
+      # 401を返して中断
+      return Response({'status': 'error', 'message': '使用する工数区分定義情報が確認できません。'}, status=status.HTTP_401_UNAUTHORIZED)
 
     try:
       # ログインユーザーのデータ取得
-      member_data = member.objects.get(employee_no=login_no)                                            # 従業員番号でログイン者の人員データを1件取得
+      # 従業員番号でログイン者の人員データを1件取得
+      member_data = member.objects.get(employee_no=login_no)
       # 権限がない場合はMenu画面へ
-      if not member_data.authority:                                                                      # その人に管理権限が無いなら
-        return Response({'status': 'error', 'message': 'アクセス権限がありません。'}, status=status.HTTP_403_FORBIDDEN)  # 403を返して中断
-    except member.DoesNotExist:                                                                          # 該当人員が見つからなかった場合
+      # その人に管理権限が無いなら
+      if not member_data.authority:
+        # 403を返して中断
+        return Response({'status': 'error', 'message': 'アクセス権限がありません。'}, status=status.HTTP_403_FORBIDDEN)
+    # 該当人員が見つからなかった場合
+    except member.DoesNotExist:
       # 人員情報取得できない場合エラー
-      return Response({'status': 'error', 'message': '人員情報が見つかりません。'}, status=status.HTTP_401_UNAUTHORIZED)   # 401を返して中断
+      # 401を返して中断
+      return Response({'status': 'error', 'message': '人員情報が見つかりません。'}, status=status.HTTP_401_UNAUTHORIZED)
 ```
 
 - **21行目** `if not login_no:`
@@ -412,8 +432,10 @@ class MemberList(APIView):                                  # APIViewを継承�
 
 ```python
     # クエリパラメータで絞り込み条件を取得
-    search_number = request.query_params.get('employee_no', None)   # URLの?employee_no= の値を取り出す（無ければNone）
-    search_shop = request.query_params.get('shop', None)            # URLの?shop= の値を取り出す（無ければNone）
+    # URLの?employee_no= の値を取り出す（無ければNone）
+    search_number = request.query_params.get('employee_no', None)
+    # URLの?shop= の値を取り出す（無ければNone）
+    search_shop = request.query_params.get('shop', None)
 ```
 
 - **37行目** `request.query_params.get('employee_no', None)`
@@ -431,13 +453,19 @@ class MemberList(APIView):                                  # APIViewを継承�
 
 ```python
     # 人員データ全取得
-    members = member.objects.annotate(                  # 各人員に計算結果の列を一時的に追加する
-        shop_order=Case(                                # shop_orderという並べ替え用の値を作る
-            When(shop='異動・退社', then=Value(1)),      # もしshopが「異動・退社」なら1にする
-            default=Value(0),                           # それ以外は0にする
-            output_field=IntegerField(),                # この値は整数型だと指定する
+    # 各人員に計算結果の列を一時的に追加する
+    members = member.objects.annotate(
+        # shop_orderという並べ替え用の値を作る
+        shop_order=Case(
+            # もしshopが「異動・退社」なら1にする
+            When(shop='異動・退社', then=Value(1)),
+            # それ以外は0にする
+            default=Value(0),
+            # この値は整数型だと指定する
+            output_field=IntegerField(),
         )
-    ).order_by('shop_order', 'employee_no')             # shop_order昇順→従業員番号昇順で並べる
+    # shop_order昇順→従業員番号昇順で並べる
+    ).order_by('shop_order', 'employee_no')
 ```
 
 ここは少し難しいので、丁寧に分解します。
@@ -471,10 +499,14 @@ class MemberList(APIView):                                  # APIViewを継承�
 
 ```python
     # 絞り込みある場合はフィルタリング
-    if search_number:                                              # 従業員番号の検索条件があれば
-      members = members.filter(employee_no__icontains=search_number)   # 番号を「含む」もので絞り込む
-    if search_shop:                                                # 所属の検索条件があれば
-      members = members.filter(shop=search_shop)                  # 所属が完全一致するもので絞り込む
+    # 従業員番号の検索条件があれば
+    if search_number:
+      # 番号を「含む」もので絞り込む
+      members = members.filter(employee_no__icontains=search_number)
+    # 所属の検索条件があれば
+    if search_shop:
+      # 所属が完全一致するもので絞り込む
+      members = members.filter(shop=search_shop)
 ```
 
 - **50行目** `if search_number:` … 検索番号が入力されていれば（空でなければ）True。
@@ -496,11 +528,15 @@ class MemberList(APIView):                                  # APIViewを継承�
 
 ```python
     # ページネーション処理
-    paginator = CustomPagination()                                # ページ送り係を1つ用意する
-    result_page = paginator.paginate_queryset(members, request)   # 全データから「今のページ分」だけ切り出す
-    serializer = MemberSerializer(result_page, many=True)         # 切り出した複数件をJSON用に翻訳する
+    # ページ送り係を1つ用意する
+    paginator = CustomPagination()
+    # 全データから「今のページ分」だけ切り出す
+    result_page = paginator.paginate_queryset(members, request)
+    # 切り出した複数件をJSON用に翻訳する
+    serializer = MemberSerializer(result_page, many=True)
 
-    return paginator.get_paginated_response(serializer.data)      # 件数情報付きでJSONを返す
+    # 件数情報付きでJSONを返す
+    return paginator.get_paginated_response(serializer.data)
 ```
 
 - **56行目** `paginator = CustomPagination()`
@@ -537,24 +573,36 @@ class MemberList(APIView):                                  # APIViewを継承�
 
 ```python
 # 人員データ新規登録
-class MemberNew(APIView):                                                                              # 新規登録API
-  def get(self, request):                                                                              # 登録画面を開いたときのGET
-    login_no = request.session.get('login_No')                                                         # セッションからログイン番号を取得
-    if not login_no:                                                                                   # 未ログインなら
-      return Response({'status': 'error', 'message': 'ログイン情報が確認できません。'}, status=status.HTTP_401_UNAUTHORIZED)  # 401で中断
+# 新規登録API
+class MemberNew(APIView):
+  # 登録画面を開いたときのGET
+  def get(self, request):
+    # セッションからログイン番号を取得
+    login_no = request.session.get('login_No')
+    # 未ログインなら
+    if not login_no:
+      # 401で中断
+      return Response({'status': 'error', 'message': 'ログイン情報が確認できません。'}, status=status.HTTP_401_UNAUTHORIZED)
 
     try:
       # ログインユーザーのデータ取得
-      member_data = member.objects.get(employee_no=login_no)                                           # ログイン者の人員データ取得
+      # ログイン者の人員データ取得
+      member_data = member.objects.get(employee_no=login_no)
       # 権限がない場合はMenu画面へ
-      if not member_data.authority:                                                                     # 権限が無ければ
-        return Response({'status': 'error', 'message': 'アクセス権限がありません。'}, status=status.HTTP_403_FORBIDDEN)  # 403で中断
-    except member.DoesNotExist:                                                                         # 人員が見つからなければ
+      # 権限が無ければ
+      if not member_data.authority:
+        # 403で中断
+        return Response({'status': 'error', 'message': 'アクセス権限がありません。'}, status=status.HTTP_403_FORBIDDEN)
+    # 人員が見つからなければ
+    except member.DoesNotExist:
       # 人員情報取得できない場合エラー
-      return Response({'status': 'error', 'message': '人員情報が見つかりません。'}, status=status.HTTP_401_UNAUTHORIZED)   # 401で中断
+      # 401で中断
+      return Response({'status': 'error', 'message': '人員情報が見つかりません。'}, status=status.HTTP_401_UNAUTHORIZED)
 
-    serializer = MemberSerializer([member_data], many=True)                                            # ログイン者データをJSON化
-    return Response(serializer.data)                                                                    # そのまま返す
+    # ログイン者データをJSON化
+    serializer = MemberSerializer([member_data], many=True)
+    # そのまま返す
+    return Response(serializer.data)
 ```
 
 - **65行目** `class MemberNew(APIView):` … 新規登録を担当するクラス。
@@ -573,11 +621,15 @@ class MemberNew(APIView):                                                       
 > **▼ このコードがやること（先に日本語で）:** Reactから送られてきた登録データを受け取り、まず「その従業員番号がすでに登録済みでないか」を確認します。すでにあれば、エラー（400）を返して登録を止めます。
 
 ```python
-  def post(self, request):                                                                             # 登録ボタンが押されたときのPOST
-    data = request.data                                                                                # 送られてきた登録データを取り出す
+  # 登録ボタンが押されたときのPOST
+  def post(self, request):
+    # 送られてきた登録データを取り出す
+    data = request.data
 
-    if member.objects.filter(employee_no=data.get('employee_no')).exists():                            # 同じ従業員番号が既に存在するか確認
-      return Response({'status': 'error', 'message': '入力した従業員番号はすでに登録されています。'}, status=status.HTTP_400_BAD_REQUEST)  # あれば400で中断
+    # 同じ従業員番号が既に存在するか確認
+    if member.objects.filter(employee_no=data.get('employee_no')).exists():
+      # あれば400で中断
+      return Response({'status': 'error', 'message': '入力した従業員番号はすでに登録されています。'}, status=status.HTTP_400_BAD_REQUEST)
 ```
 
 - **85行目** `def post(self, request):`
@@ -604,21 +656,33 @@ class MemberNew(APIView):                                                       
 > **▼ このコードがやること（先に日本語で）:** 新しい人員には、所属に応じた「標準の休憩時間」をあらかじめセットします。所属が「現場系（W1, W2, A1, A2, J, 組長以上）」なら現場用の時間割を、それ以外（事務系など）なら別の時間割を、24個の休憩欄に一括で書き込みます。これにより、登録者が毎回休憩を手入力しなくて済みます。
 
 ```python
-    if data.get('shop') in ['W1', 'W2', 'A1', 'A2', 'J', '組長以上(W,A)']:   # 所属が現場系グループに含まれるか判定
-      data.update({                                                          # dataに休憩時間の初期値を一括で上書き追加
-        'break_time1': '#11401240',                                          # 休憩1（例：11:40〜12:40）
-        'break_time1_over1': '#17201735',                                    # 休憩1の残業時パターン1
-        'break_time1_over2': '#23350035',                                    # 休憩1の残業時パターン2
-        'break_time1_over3': '#04350450',                                    # 休憩1の残業時パターン3
-        'break_time2': '#14101510',                                          # 休憩2
+    # 所属が現場系グループに含まれるか判定
+    if data.get('shop') in ['W1', 'W2', 'A1', 'A2', 'J', '組長以上(W,A)']:
+      # dataに休憩時間の初期値を一括で上書き追加
+      data.update({
+        # 休憩1（例：11:40〜12:40）
+        'break_time1': '#11401240',
+        # 休憩1の残業時パターン1
+        'break_time1_over1': '#17201735',
+        # 休憩1の残業時パターン2
+        'break_time1_over2': '#23350035',
+        # 休憩1の残業時パターン3
+        'break_time1_over3': '#04350450',
+        # 休憩2
+        'break_time2': '#14101510',
         # …（中略：break_time2_over1 〜 break_time6_over3 まで同形式で続く）…
-        'break_time6_over3': '#12201230',                                    # 休憩6の残業時パターン3
+        # 休憩6の残業時パターン3
+        'break_time6_over3': '#12201230',
       })
-    else:                                                                    # 上記グループ以外（事務系など）の場合
-      data.update({                                                          # 別の休憩時間パターンを一括設定
-        'break_time1': '#10401130',                                          # 休憩1（事務系の標準）
+    # 上記グループ以外（事務系など）の場合
+    else:
+      # 別の休憩時間パターンを一括設定
+      data.update({
+        # 休憩1（事務系の標準）
+        'break_time1': '#10401130',
         # …（中略：以下同様に24欄ぶん設定）…
-        'break_time6_over3': '#12201230',                                    # 休憩6の残業時パターン3
+        # 休憩6の残業時パターン3
+        'break_time6_over3': '#12201230',
       })
 ```
 
@@ -646,12 +710,17 @@ class MemberNew(APIView):                                                       
 > **▼ このコードがやること（先に日本語で）:** 完成したデータをシリアライザに渡して「中身が正しいか」を検査します。検査に合格すればデータベースに保存し、201（作成成功）を返します。不合格なら400（入力エラー）を返します。
 
 ```python
-    serializer = MemberSerializer(data=data)                                                           # 送信データを翻訳・検査の準備
-    if serializer.is_valid():                                                                           # 検査に合格したら
-      serializer.save()                                                                                 # データベースに新規保存
-      return Response(serializer.data, status=status.HTTP_201_CREATED)                                  # 保存した内容を201で返す
+    # 送信データを翻訳・検査の準備
+    serializer = MemberSerializer(data=data)
+    # 検査に合格したら
+    if serializer.is_valid():
+      # データベースに新規保存
+      serializer.save()
+      # 保存した内容を201で返す
+      return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    return Response({'status': 'error', 'message': 'バリテーションエラー'}, status=status.HTTP_400_BAD_REQUEST)  # 検査不合格なら400で返す
+    # 検査不合格なら400で返す
+    return Response({'status': 'error', 'message': 'バリテーションエラー'}, status=status.HTTP_400_BAD_REQUEST)
 ```
 
 - **146行目** `serializer = MemberSerializer(data=data)`
@@ -686,12 +755,17 @@ CRUDの「U（Update＝更新）」を担当します。
 
 ```python
 # 人員データ編集動作
-class MemberUpdate(APIView):                          # 更新API
-  def get_object(self, pk):                           # 主キー(pk)で1件取ってくる共通メソッド
+# 更新API
+class MemberUpdate(APIView):
+  # 主キー(pk)で1件取ってくる共通メソッド
+  def get_object(self, pk):
     try:
-      return member.objects.get(employee_no=pk)       # 従業員番号がpkの人員を返す
-    except member.DoesNotExist:                       # 見つからなければ
-      return None                                     # Noneを返す
+      # 従業員番号がpkの人員を返す
+      return member.objects.get(employee_no=pk)
+    # 見つからなければ
+    except member.DoesNotExist:
+      # Noneを返す
+      return None
 ```
 
 - **157行目** `def get_object(self, pk):`
@@ -708,28 +782,42 @@ class MemberUpdate(APIView):                          # 更新API
 > **▼ このコードがやること（先に日本語で）:** 編集画面を開いたとき、編集対象の人員データを返します。ここでも「ログイン確認→権限確認→対象が存在するか確認」の順で門番チェックを行います。
 
 ```python
-  def get(self, request, pk):                                                                          # 編集画面を開いたときのGET（pk付き）
+  # 編集画面を開いたときのGET（pk付き）
+  def get(self, request, pk):
     # セッションからログイン情報を取得
-    login_no = request.session.get('login_No')                                                         # ログイン番号取得
-    if not login_no:                                                                                   # 未ログインなら
-      return Response({'status': 'error', 'message': 'ログイン情報が確認できません。'}, status=status.HTTP_401_UNAUTHORIZED)  # 401
+    # ログイン番号取得
+    login_no = request.session.get('login_No')
+    # 未ログインなら
+    if not login_no:
+      # 401
+      return Response({'status': 'error', 'message': 'ログイン情報が確認できません。'}, status=status.HTTP_401_UNAUTHORIZED)
 
     # ログインユーザーの権限を確認
     try:
-      member_data = member.objects.get(employee_no=login_no)                                           # ログイン者データ取得
-    except member.DoesNotExist:                                                                         # 見つからなければ
-      return Response({'status': 'error', 'message': '権限確認中にエラーが発生しました'}, status=status.HTTP_403_FORBIDDEN)  # 403
-    if not member_data.authority:                                                                       # 権限が無ければ
-      return Response({'status': 'error', 'message': 'アクセス権限がありません。'}, status=status.HTTP_403_FORBIDDEN)  # 403
+      # ログイン者データ取得
+      member_data = member.objects.get(employee_no=login_no)
+    # 見つからなければ
+    except member.DoesNotExist:
+      # 403
+      return Response({'status': 'error', 'message': '権限確認中にエラーが発生しました'}, status=status.HTTP_403_FORBIDDEN)
+    # 権限が無ければ
+    if not member_data.authority:
+      # 403
+      return Response({'status': 'error', 'message': 'アクセス権限がありません。'}, status=status.HTTP_403_FORBIDDEN)
 
     # 指定された従業員データを取得
-    member_instance = self.get_object(pk)                                                               # 編集対象を取得（共通メソッド利用）
-    if member_instance is None:                                                                         # 対象が無ければ
-      return Response({'status': 'error', 'message': '人員データが確認できません。'}, status=status.HTTP_404_NOT_FOUND)  # 404
+    # 編集対象を取得（共通メソッド利用）
+    member_instance = self.get_object(pk)
+    # 対象が無ければ
+    if member_instance is None:
+      # 404
+      return Response({'status': 'error', 'message': '人員データが確認できません。'}, status=status.HTTP_404_NOT_FOUND)
 
     # データをシリアライズして返却
-    serializer = MemberSerializer(member_instance)                                                      # 1件をJSON化（many不要）
-    return Response(serializer.data)                                                                    # 返す
+    # 1件をJSON化（many不要）
+    serializer = MemberSerializer(member_instance)
+    # 返す
+    return Response(serializer.data)
 ```
 
 - **164行目** `def get(self, request, pk):`
@@ -753,22 +841,34 @@ class MemberUpdate(APIView):                          # 更新API
 > **▼ このコードがやること（先に日本語で）:** 編集内容を受け取り、対象が存在するか確認し、検査に合格したら保存します。さらに「従業員番号を別の既存番号に変えようとしていないか」も二重チェックして、番号の重複を防ぎます。
 
 ```python
-  def put(self, request, pk):                                                                          # 更新ボタンが押されたときのPUT
+  # 更新ボタンが押されたときのPUT
+  def put(self, request, pk):
     # 特定の従業員データを取得
-    member_instance = self.get_object(pk)                                                               # 更新対象を取得
-    if member_instance is None:                                                                         # 対象が無ければ
-      return Response({'status': 'error', 'message': 'レコードが見つかりません。'}, status=status.HTTP_404_NOT_FOUND)  # 404
+    # 更新対象を取得
+    member_instance = self.get_object(pk)
+    # 対象が無ければ
+    if member_instance is None:
+      # 404
+      return Response({'status': 'error', 'message': 'レコードが見つかりません。'}, status=status.HTTP_404_NOT_FOUND)
 
     # クライアントから送られてきたデータをシリアライズ
-    data = request.data                                                                                 # 送られた更新データ取得
-    serializer = MemberSerializer(member_instance, data=data)                                           # 既存インスタンス＋新データで更新準備
-    if serializer.is_valid():                                                                           # 検査に合格したら
+    # 送られた更新データ取得
+    data = request.data
+    # 既存インスタンス＋新データで更新準備
+    serializer = MemberSerializer(member_instance, data=data)
+    # 検査に合格したら
+    if serializer.is_valid():
       # 従業員番号の一意性確認
-      if data.get('employee_no') != pk and member.objects.filter(employee_no=data.get('employee_no')).exists():  # 番号を変更し、その番号が既に他にあれば
-        return Response({'status': 'error', 'message': '入力した従業員番号はすでに登録されています。'},status=status.HTTP_400_BAD_REQUEST)  # 400
-      serializer.save()                                                                                 # 更新を保存
-      return Response(serializer.data, status=status.HTTP_200_OK)                                        # 200で返す
-    return Response({'status': 'error', 'message': 'バリテーションエラー'}, status=status.HTTP_400_BAD_REQUEST)  # 検査不合格なら400
+      # 番号を変更し、その番号が既に他にあれば
+      if data.get('employee_no') != pk and member.objects.filter(employee_no=data.get('employee_no')).exists():
+        # 400
+        return Response({'status': 'error', 'message': '入力した従業員番号はすでに登録されています。'},status=status.HTTP_400_BAD_REQUEST)
+      # 更新を保存
+      serializer.save()
+      # 200で返す
+      return Response(serializer.data, status=status.HTTP_200_OK)
+    # 検査不合格なら400
+    return Response({'status': 'error', 'message': 'バリテーションエラー'}, status=status.HTTP_400_BAD_REQUEST)
 ```
 
 - **188行目** `def put(self, request, pk):`
@@ -805,23 +905,34 @@ CRUDの「D（Delete＝消す）」を担当します。
 
 ```python
 # 人員データ削除動作
-class MemberDelete(APIView):                                                                           # 削除API
-  def get_object(self, pk):                                                                             # 1件取得の共通メソッド（更新と同じ形）
+# 削除API
+class MemberDelete(APIView):
+  # 1件取得の共通メソッド（更新と同じ形）
+  def get_object(self, pk):
     try:
-      return member.objects.get(employee_no=pk)                                                         # pkの人員を返す
-    except member.DoesNotExist:                                                                         # 無ければ
-      return None                                                                                       # None
+      # pkの人員を返す
+      return member.objects.get(employee_no=pk)
+    # 無ければ
+    except member.DoesNotExist:
+      # None
+      return None
 
 
-  def delete(self, request, pk):                                                                        # 削除ボタンが押されたときのDELETE
+  # 削除ボタンが押されたときのDELETE
+  def delete(self, request, pk):
     # 削除対象のオブジェクトを取得
-    member_instance = self.get_object(pk)                                                               # 削除対象を取得
-    if member_instance is None:                                                                         # 無ければ
-      return Response({'status': 'error', 'message': 'レコードが見つかりません。'}, status=status.HTTP_404_NOT_FOUND)  # 404
+    # 削除対象を取得
+    member_instance = self.get_object(pk)
+    # 無ければ
+    if member_instance is None:
+      # 404
+      return Response({'status': 'error', 'message': 'レコードが見つかりません。'}, status=status.HTTP_404_NOT_FOUND)
 
     # レコードを削除
-    member_instance.delete()                                                                            # データベースから削除
-    return Response({'status': 'success', 'message': 'レコードを削除しました。'}, status=status.HTTP_204_NO_CONTENT)  # 204で返す
+    # データベースから削除
+    member_instance.delete()
+    # 204で返す
+    return Response({'status': 'success', 'message': 'レコードを削除しました。'}, status=status.HTTP_204_NO_CONTENT)
 ```
 
 - **216行目** `def delete(self, request, pk):`
@@ -855,9 +966,12 @@ class MemberDelete(APIView):                                                    
 > **▼ このコードがやること（先に日本語で）:** DRFのシリアライザ部品と、本アプリの全モデルを読み込みます。各シリアライザが「どのモデルを翻訳するか」を指定するために、モデルが必要なのです。
 
 ```python
-from rest_framework import serializers                                          # DRFのシリアライザ部品を読み込む
-from ..models import member, Business_Time_graph, kosu_division, def_choice, \  # アプリの各モデルを読み込む（行末の\は行継続）
-                      team_member, inquiry_data, administrator_data, AsyncTask, History  # 続き
+# DRFのシリアライザ部品を読み込む
+from rest_framework import serializers
+# アプリの各モデルを読み込む（行末の\は行継続）
+from ..models import member, Business_Time_graph, kosu_division, def_choice, \
+                      # 続き
+                      team_member, inquiry_data, administrator_data, AsyncTask, History
 ```
 
 - **1行目** `from rest_framework import serializers` … DRFの `serializers`（シリアライザ）モジュールを読み込みます。
@@ -868,10 +982,14 @@ from ..models import member, Business_Time_graph, kosu_division, def_choice, \  
 > **▼ このコードがやること（先に日本語で）:** memberモデルを、JSONに翻訳する係を定義します。たった4行ですが、これだけで「member の全項目をJSONにする・JSONをmemberに戻す・検査する」を全部こなします。
 
 ```python
-class MemberSerializer(serializers.ModelSerializer):   # ModelSerializerを継承した翻訳係
-  class Meta:                                           # 設定をまとめる入れ子クラス
-    model = member                                      # 翻訳対象はmemberモデル
-    fields = '__all__'                                  # 全フィールドを対象にする
+# ModelSerializerを継承した翻訳係
+class MemberSerializer(serializers.ModelSerializer):
+  # 設定をまとめる入れ子クラス
+  class Meta:
+    # 翻訳対象はmemberモデル
+    model = member
+    # 全フィールドを対象にする
+    fields = '__all__'
 ```
 
 - **7行目** `class MemberSerializer(serializers.ModelSerializer):`
@@ -894,27 +1012,32 @@ class MemberSerializer(serializers.ModelSerializer):   # ModelSerializerを継�
 > **▼ このコードがやること（先に日本語で）:** 他のモデル（工数区分・工数データ・チーム・問い合わせ・管理者設定・タスク・履歴）についても、まったく同じ形で翻訳係を定義しています。中身はモデル名が違うだけです。
 
 ```python
-class DefSerializer(serializers.ModelSerializer):          # 工数区分定義(kosu_division)の翻訳係
+# 工数区分定義(kosu_division)の翻訳係
+class DefSerializer(serializers.ModelSerializer):
   class Meta:
     model = kosu_division
     fields = '__all__'
 
-class DefChoiceSerializer(serializers.ModelSerializer):    # 区分の選択肢(def_choice)の翻訳係
+# 区分の選択肢(def_choice)の翻訳係
+class DefChoiceSerializer(serializers.ModelSerializer):
   class Meta:
     model = def_choice
     fields = '__all__'
 
-class KosuSerializer(serializers.ModelSerializer):         # 工数データ(Business_Time_graph)の翻訳係
+# 工数データ(Business_Time_graph)の翻訳係
+class KosuSerializer(serializers.ModelSerializer):
   class Meta:
     model = Business_Time_graph
     fields = '__all__'
 
-class TeamSerializer(serializers.ModelSerializer):         # チーム(team_member)の翻訳係
+# チーム(team_member)の翻訳係
+class TeamSerializer(serializers.ModelSerializer):
   class Meta:
     model = team_member
     fields = '__all__'
 
-class InquirSerializer(serializers.ModelSerializer):       # 問い合わせ(inquiry_data)の翻訳係
+# 問い合わせ(inquiry_data)の翻訳係
+class InquirSerializer(serializers.ModelSerializer):
   class Meta:
     model = inquiry_data
     fields = '__all__'
@@ -924,12 +1047,14 @@ class AdministratorSerializer(serializers.ModelSerializer):# 管理者設定(adm
     model = administrator_data
     fields = '__all__'
 
-class TaskSerializer(serializers.ModelSerializer):         # 非同期タスク(AsyncTask)の翻訳係
+# 非同期タスク(AsyncTask)の翻訳係
+class TaskSerializer(serializers.ModelSerializer):
   class Meta:
     model = AsyncTask
     fields = '__all__'
 
-class HistorySerializer(serializers.ModelSerializer):      # 変更履歴(History)の翻訳係
+# 変更履歴(History)の翻訳係
+class HistorySerializer(serializers.ModelSerializer):
   class Meta:
     model = History
     fields = '__all__'
@@ -963,16 +1088,26 @@ class HistorySerializer(serializers.ModelSerializer):      # 変更履歴(Histor
 > **▼ このコードがやること（先に日本語で）:** URL定義に必要な `path` 関数と、振り分け先となる各ビューモジュール、そして本番でメディアファイルを配信するための部品を読み込みます。
 
 ```python
-from django.urls import path                            # URLを定義するpath関数を読み込む
-from .views import main_views                           # メイン系ビューを読み込む
-from .views import kosu_views                           # 工数系ビューを読み込む
-from .views import member_views                         # 人員系ビューを読み込む
-from .views import team_views                           # チーム系ビューを読み込む
-from .views import def_views                            # 工数区分定義系ビューを読み込む
-from .views import inquiry_views                        # 問い合わせ系ビューを読み込む
-from kosu.views import asynchronous_views               # 非同期処理系ビューを読み込む
-from django.conf import settings                        # 設定（MEDIA_URL等）を読み込む
-from django.conf.urls.static import static              # メディア配信用のstaticを読み込む
+# URLを定義するpath関数を読み込む
+from django.urls import path
+# メイン系ビューを読み込む
+from .views import main_views
+# 工数系ビューを読み込む
+from .views import kosu_views
+# 人員系ビューを読み込む
+from .views import member_views
+# チーム系ビューを読み込む
+from .views import team_views
+# 工数区分定義系ビューを読み込む
+from .views import def_views
+# 問い合わせ系ビューを読み込む
+from .views import inquiry_views
+# 非同期処理系ビューを読み込む
+from kosu.views import asynchronous_views
+# 設定（MEDIA_URL等）を読み込む
+from django.conf import settings
+# メディア配信用のstaticを読み込む
+from django.conf.urls.static import static
 ```
 
 - **1行目** `from django.urls import path` … URLを1本定義する `path`（パス）関数を読み込みます。
@@ -984,14 +1119,21 @@ from django.conf.urls.static import static              # メディア配信用�
 > **▼ このコードがやること（先に日本語で）:** `urlpatterns` というリストに、URLとビューの対応を1行ずつ並べます。リストの上から順に照合され、最初に一致したものが採用されます。
 
 ```python
-urlpatterns = [                                                                       # URL対応表の始まり（リスト）
-  path('login/', main_views.Login.as_view(), name='login'),                          # /login/ → Loginビュー
-  path('logout/', main_views.Logout.as_view(), name='logout'),                       # /logout/ → Logoutビュー
+# URL対応表の始まり（リスト）
+urlpatterns = [
+  # /login/ → Loginビュー
+  path('login/', main_views.Login.as_view(), name='login'),
+  # /logout/ → Logoutビュー
+  path('logout/', main_views.Logout.as_view(), name='logout'),
   # …（中略）…
-  path('member_list/', member_views.MemberList.as_view(), name='member_list'),       # /member_list/ → MemberList
-  path('member_new/', member_views.MemberNew.as_view(), name='member_new'),          # /member_new/ → MemberNew
-  path('member_update/<int:pk>/', member_views.MemberUpdate.as_view(), name='member_update'),  # /member_update/123/ → MemberUpdate
-  path('member_delete/<int:pk>/', member_views.MemberDelete.as_view(), name='member_delete'),  # /member_delete/123/ → MemberDelete
+  # /member_list/ → MemberList
+  path('member_list/', member_views.MemberList.as_view(), name='member_list'),
+  # /member_new/ → MemberNew
+  path('member_new/', member_views.MemberNew.as_view(), name='member_new'),
+  # /member_update/123/ → MemberUpdate
+  path('member_update/<int:pk>/', member_views.MemberUpdate.as_view(), name='member_update'),
+  # /member_delete/123/ → MemberDelete
+  path('member_delete/<int:pk>/', member_views.MemberDelete.as_view(), name='member_delete'),
   # …（中略：他機能のURLが多数続く）…
 ]
 ```
@@ -1039,12 +1181,17 @@ urlpatterns = [                                                                 
 > **▼ このコードがやること（先に日本語で）:** バックアップ・復元系のURLが大量に並んでいますが、**すべて同じ `asynchronous_views.backup` 関数に繋がっています**。代わりに `name=`（あだ名）を1本ずつ変えてあり、ビュー側はこの名前を見て「今どの処理か」を判断します（§11で詳説）。
 
 ```python
-  path('kosu_backup/', asynchronous_views.backup, name='kosu_backup'),       # 工数バックアップ
-  path('kosu_delet/', asynchronous_views.backup, name='kosu_delet'),         # 工数削除（同じbackup関数）
-  path('kosu_load/', asynchronous_views.backup, name='kosu_load'),           # 工数復元（同じbackup関数）
+  # 工数バックアップ
+  path('kosu_backup/', asynchronous_views.backup, name='kosu_backup'),
+  # 工数削除（同じbackup関数）
+  path('kosu_delet/', asynchronous_views.backup, name='kosu_delet'),
+  # 工数復元（同じbackup関数）
+  path('kosu_load/', asynchronous_views.backup, name='kosu_load'),
   # …（中略：def, choice, member, team, inquiry, setting, AsyncTask, History の backup/load が続く）…
-  path('check_backup_status', asynchronous_views.check_task_status, name='check_member_backup_status'),  # 状態確認
-  path('download_backup', asynchronous_views.download_file, name='download_member_backup'),              # ダウンロード
+  # 状態確認
+  path('check_backup_status', asynchronous_views.check_task_status, name='check_member_backup_status'),
+  # ダウンロード
+  path('download_backup', asynchronous_views.download_file, name='download_member_backup'),
 ```
 
 - **第2要素が関数のまま** … ここでは `asynchronous_views.backup` のように、`.as_view()` を付けていません。これは `backup` が **クラスではなく関数** だからです（§11参照）。関数ビューはそのまま書けます。
@@ -1055,7 +1202,8 @@ urlpatterns = [                                                                 
 > **▼ このコードがやること（先に日本語で）:** バックアップで作ったファイル（メディアファイル）を、ブラウザからダウンロードできるようにURLを追加します。
 
 ```python
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)   # メディア配信用URLを末尾に追加
+# メディア配信用URLを末尾に追加
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 ```
 
 - `urlpatterns += ...` … 既存のURL一覧に、メディア配信用のURLを **付け足し** ています。
@@ -1077,12 +1225,18 @@ urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)   #
 > **▼ このコードがやること（先に日本語で）:** ページネーションの土台クラスや、応答を作る部品、そして「1ページの件数」を読み取るための管理者設定モデルを読み込みます。
 
 ```python
-import inspect                                              # クラスを調べる標準ツール（後半の別関数で使用）
-from rest_framework.pagination import PageNumberPagination  # ページ番号方式の土台クラス
-from rest_framework.response import Response                # 応答を作る部品
-from django.db import models                                # モデルの基底（後半の別関数で使用）
-from kosu import models as myapp_models                     # アプリのmodelsモジュール全体（別名myapp_models）
-from ..models import administrator_data                     # 管理者設定モデル（1ページ件数の保管先）
+# クラスを調べる標準ツール（後半の別関数で使用）
+import inspect
+# ページ番号方式の土台クラス
+from rest_framework.pagination import PageNumberPagination
+# 応答を作る部品
+from rest_framework.response import Response
+# モデルの基底（後半の別関数で使用）
+from django.db import models
+# アプリのmodelsモジュール全体（別名myapp_models）
+from kosu import models as myapp_models
+# 管理者設定モデル（1ページ件数の保管先）
+from ..models import administrator_data
 ```
 
 - **2行目** `PageNumberPagination`（ページナンバーページネーション）… 「1ページ目・2ページ目…」とページ番号で送る方式の土台クラス。これを継承します。
@@ -1094,20 +1248,30 @@ from ..models import administrator_data                     # 管理者設定モ
 
 ```python
 # ページネーションクラス
-class CustomPagination(PageNumberPagination):                  # PageNumberPaginationを継承
-  page_size = 20  # デフォルトの設定値                          # 既定は1ページ20件
+# PageNumberPaginationを継承
+class CustomPagination(PageNumberPagination):
+  # デフォルトの設定値                          # 既定は1ページ20件
+  page_size = 20
 
-  def __init__(self):                                          # このクラスが作られた瞬間に動く初期化メソッド
+  # このクラスが作られた瞬間に動く初期化メソッド
+  def __init__(self):
     # administrator_data から動的にページサイズを設定
-    last_record = administrator_data.objects.order_by("id").last()  # 管理者設定の最新レコードを取得
-    if last_record is not None:                                # 設定が存在すれば
-      self.page_size = last_record.menu_row                    # その値で1ページ件数を上書き
+    # 管理者設定の最新レコードを取得
+    last_record = administrator_data.objects.order_by("id").last()
+    # 設定が存在すれば
+    if last_record is not None:
+      # その値で1ページ件数を上書き
+      self.page_size = last_record.menu_row
 
-  def get_paginated_response(self, data):                      # 応答の中身を組み立てるメソッド
+  # 応答の中身を組み立てるメソッド
+  def get_paginated_response(self, data):
     return Response({
-      'count': self.page.paginator.count,  # 合計件数            # 全部で何件あるか
-      'page_size': self.page_size,  # ページサイズをレスポンスに含める  # 1ページ何件か
-      'results': data,  # 現在のページのデータ                   # 今のページのデータ本体
+      # 合計件数            # 全部で何件あるか
+      'count': self.page.paginator.count,
+      # ページサイズをレスポンスに含める  # 1ページ何件か
+      'page_size': self.page_size,
+      # 現在のページのデータ                   # 今のページのデータ本体
+      'results': data,
     })
 ```
 
@@ -1156,15 +1320,22 @@ class CustomPagination(PageNumberPagination):                  # PageNumberPagin
 > **▼ このコードがやること（先に日本語で）:** シグナルに必要な部品（pre_save等）と、履歴を残す対象モデル、現在のリクエストを取り出す関数を読み込みます。さらに「更新前の値を一時的に覚えておく入れ物」を用意します。
 
 ```python
-from threading import local                                                          # スレッドごとの保管庫を作る部品
-from django.db.models.signals import pre_save, post_save, post_delete                # 3つのシグナル（保存前・保存後・削除後）
-from django.dispatch import receiver                                                 # シグナルを受け取る目印デコレータ
-from .models import History, member, Business_Time_graph, team_member, kosu_division, def_choice, administrator_data, inquiry_data  # 対象モデル群とHistory
-from .middleware.clear_session_middleware import get_current_request                 # 現在のリクエストを取り出す関数
-from django.db import models                                                         # モデルの型判定用
+# スレッドごとの保管庫を作る部品
+from threading import local
+# 3つのシグナル（保存前・保存後・削除後）
+from django.db.models.signals import pre_save, post_save, post_delete
+# シグナルを受け取る目印デコレータ
+from django.dispatch import receiver
+# 対象モデル群とHistory
+from .models import History, member, Business_Time_graph, team_member, kosu_division, def_choice, administrator_data, inquiry_data
+# 現在のリクエストを取り出す関数
+from .middleware.clear_session_middleware import get_current_request
+# モデルの型判定用
+from django.db import models
 
 # スレッドローカル変数初期化
-_thread_locals = local()                                                             # 更新前の値を一時保管する入れ物
+# 更新前の値を一時保管する入れ物
+_thread_locals = local()
 ```
 
 - **2行目** … 3つのシグナルを読み込みます。
@@ -1184,18 +1355,25 @@ _thread_locals = local()                                                        
 
 ```python
 # 更新前の値をスレッドローカルキャッシュに保存
-def set_instance_cache(instance):                                  # 更新前の値を保管する関数
-  model = type(instance)                                           # そのデータが何のモデルか調べる
+# 更新前の値を保管する関数
+def set_instance_cache(instance):
+  # そのデータが何のモデルか調べる
+  model = type(instance)
   try:
     # 更新前の値取得→スレッドローカルキャッシュに保存
-    _thread_locals.instance_cache = model.objects.get(pk=instance.pk)  # DBから更新前の値を取り、ロッカーにしまう
-  except model.DoesNotExist:                                       # 新規でまだDBに無い場合
+    # DBから更新前の値を取り、ロッカーにしまう
+    _thread_locals.instance_cache = model.objects.get(pk=instance.pk)
+  # 新規でまだDBに無い場合
+  except model.DoesNotExist:
     # レコードなしの場合はNone取得
-    _thread_locals.instance_cache = None                           # Noneをしまう
+    # Noneをしまう
+    _thread_locals.instance_cache = None
 
 # スレッドローカルキャッシュから更新前の値取得
-def get_instance_cache():                                          # 保管した更新前の値を取り出す関数
-  return getattr(_thread_locals, 'instance_cache', None)           # ロッカーから取り出す（無ければNone）
+# 保管した更新前の値を取り出す関数
+def get_instance_cache():
+  # ロッカーから取り出す（無ければNone）
+  return getattr(_thread_locals, 'instance_cache', None)
 ```
 
 - **14行目** `def set_instance_cache(instance):`
@@ -1217,15 +1395,20 @@ def get_instance_cache():                                          # 保管し�
 
 ```python
 # 値の差分取得
-def get_changes(instance, created):                # 差分を計算する関数（created=新規かどうか）
-  changes = {}                                     # 変更点を入れる空の辞書
+# 差分を計算する関数（created=新規かどうか）
+def get_changes(instance, created):
+  # 変更点を入れる空の辞書
+  changes = {}
 
   # 1. キャッシュを取得
-  old_instance = get_instance_cache()              # 更新前の値を取り出す
+  # 更新前の値を取り出す
+  old_instance = get_instance_cache()
 
   # 【修正】キャッシュが存在しても、現在のインスタンスと型やPKが違う場合は、誤った比較を避けるためNoneにする
-  if old_instance and (not isinstance(old_instance, type(instance)) or old_instance.pk != instance.pk):  # 種類かPKが食い違うなら
-    old_instance = None                            # 信用せず捨てる
+  # 種類かPKが食い違うなら
+  if old_instance and (not isinstance(old_instance, type(instance)) or old_instance.pk != instance.pk):
+    # 信用せず捨てる
+    old_instance = None
 ```
 
 - **32行目** `def get_changes(instance, created):`
@@ -1240,31 +1423,48 @@ def get_changes(instance, created):                # 差分を計算する関数
 
 ```python
   # モデルの全フィールド処理
-  for field in instance._meta.fields:              # モデルの全項目を1つずつ回す
-    field_name = field.name                        # 項目名を取り出す
+  # モデルの全項目を1つずつ回す
+  for field in instance._meta.fields:
+    # 項目名を取り出す
+    field_name = field.name
 
     # 値取得
-    new_value = getattr(instance, field_name)      # 新しい値（更新後）を取り出す
+    # 新しい値（更新後）を取り出す
+    new_value = getattr(instance, field_name)
 
     # 新規作成時、全て変更として処理
-    if created:                                    # 新規作成なら
-      old_value = None                             # 古い値は無い
-      is_changed = True                            # 全項目を変更扱いにする
+    # 新規作成なら
+    if created:
+      # 古い値は無い
+      old_value = None
+      # 全項目を変更扱いにする
+      is_changed = True
     # 更新時、差分取得
-    else:                                          # 更新なら
-      if old_instance:                             # キャッシュ(更新前)があれば
-        old_value = getattr(old_instance, field_name)  # そこから古い値を取り出す
-        is_changed = (old_value != new_value)      # 新旧が違えば変更ありと判定
-      else:                                        # キャッシュが無ければ（保険）
+    # 更新なら
+    else:
+      # キャッシュ(更新前)があれば
+      if old_instance:
+        # そこから古い値を取り出す
+        old_value = getattr(old_instance, field_name)
+        # 新旧が違えば変更ありと判定
+        is_changed = (old_value != new_value)
+      # キャッシュが無ければ（保険）
+      else:
         # 【修正】pre_saveでのキャッシュ漏れやスレッドの混同対策としてDBから直接取得を試みる
         try:
-          old_db_instance = type(instance).objects.get(pk=instance.pk)  # DBから古い値を取り直す
-          old_value = getattr(old_db_instance, field_name)              # その項目の古い値
-          is_changed = (old_value != new_value)                         # 比較
+          # DBから古い値を取り直す
+          old_db_instance = type(instance).objects.get(pk=instance.pk)
+          # その項目の古い値
+          old_value = getattr(old_db_instance, field_name)
+          # 比較
+          is_changed = (old_value != new_value)
           # 以降の処理（Relation等）で使うためキャッシュを一時的に更新
-          old_instance = old_db_instance                                # 取り直した値を以降で使う
-        except type(instance).DoesNotExist:                             # それでも無ければ
-          continue                                                      # この項目は飛ばす
+          # 取り直した値を以降で使う
+          old_instance = old_db_instance
+        # それでも無ければ
+        except type(instance).DoesNotExist:
+          # この項目は飛ばす
+          continue
 ```
 
 - **43行目** `for field in instance._meta.fields:`
@@ -1285,33 +1485,50 @@ def get_changes(instance, created):                # 差分を計算する関数
 
 ```python
     # 変更or新規作成
-    if is_changed:                                                            # 変更があった項目だけ処理
+    # 変更があった項目だけ処理
+    if is_changed:
 
       # JSON化できないリレーションフィールド処理
-      if field.is_relation and field.many_to_one:                            # 他テーブルへの参照（多対一）なら
+      # 他テーブルへの参照（多対一）なら
+      if field.is_relation and field.many_to_one:
         # 関連ID取得
-        old_json_safe_value = getattr(old_instance, field.attname) if old_instance else None  # 古い側の関連ID
-        new_json_safe_value = getattr(instance, field.attname)               # 新しい側の関連ID
+        # 古い側の関連ID
+        old_json_safe_value = getattr(old_instance, field.attname) if old_instance else None
+        # 新しい側の関連ID
+        new_json_safe_value = getattr(instance, field.attname)
 
       # その他オブジェクト処理
-      elif not isinstance(new_value, (str, int, float, bool, type(None))):   # 基本型でない（複雑な）値なら
+      # 基本型でない（複雑な）値なら
+      elif not isinstance(new_value, (str, int, float, bool, type(None))):
         # インスタンスが直接フィールドに格納されている場合、IDと文字列表現記録
-        if isinstance(new_value, models.Model):                             # モデルそのものなら
-          old_json_safe_value = {'id': old_value.pk, 'str': str(old_value)} if old_value else None  # 古い側をid+文字列で
-          new_json_safe_value = {'id': new_value.pk, 'str': str(new_value)}  # 新しい側をid+文字列で
+        # モデルそのものなら
+        if isinstance(new_value, models.Model):
+          # 古い側をid+文字列で
+          old_json_safe_value = {'id': old_value.pk, 'str': str(old_value)} if old_value else None
+          # 新しい側をid+文字列で
+          new_json_safe_value = {'id': new_value.pk, 'str': str(new_value)}
         # Datetimeの場合の処理
-        elif isinstance(new_value, (models.DateField, models.DateTimeField)):  # 日付/日時なら
-          old_json_safe_value = old_value.isoformat() if old_value else None  # 古い側を標準文字列で
-          new_json_safe_value = new_value.isoformat()                        # 新しい側を標準文字列で
+        # 日付/日時なら
+        elif isinstance(new_value, (models.DateField, models.DateTimeField)):
+          # 古い側を標準文字列で
+          old_json_safe_value = old_value.isoformat() if old_value else None
+          # 新しい側を標準文字列で
+          new_json_safe_value = new_value.isoformat()
         # その他は文字列化
-        else:                                                                # それ以外の複雑な値は
-          old_json_safe_value = str(old_value) if old_value else None        # 文字列に
-          new_json_safe_value = str(new_value)                               # 文字列に
+        # それ以外の複雑な値は
+        else:
+          # 文字列に
+          old_json_safe_value = str(old_value) if old_value else None
+          # 文字列に
+          new_json_safe_value = str(new_value)
 
       # JSON化可能な基本データ型の処理
-      else:                                                                  # 文字列・数値などの基本型は
-        old_json_safe_value = old_value                                      # そのまま
-        new_json_safe_value = new_value                                      # そのまま
+      # 文字列・数値などの基本型は
+      else:
+        # そのまま
+        old_json_safe_value = old_value
+        # そのまま
+        new_json_safe_value = new_value
 ```
 
 - **70行目** `if is_changed:` … 変更があった項目だけが、この中の処理に入ります。変わっていない項目は記録しません（無駄を省く）。
@@ -1337,14 +1554,19 @@ def get_changes(instance, created):                # 差分を計算する関数
 
 ```python
       # 6. changes辞書に記録
-      if created:                                                  # 新規作成なら
+      # 新規作成なら
+      if created:
         # 新規作成時は新しい値のみ記録
-        changes[field_name] = new_json_safe_value                  # 新しい値だけ記録
-      else:                                                        # 更新なら
+        # 新しい値だけ記録
+        changes[field_name] = new_json_safe_value
+      # 更新なら
+      else:
         # 更新時は古い値と新しい値を記録
-        changes[field_name] = {'old': old_json_safe_value, 'new': new_json_safe_value}  # 古い値と新しい値をペアで記録
+        # 古い値と新しい値をペアで記録
+        changes[field_name] = {'old': old_json_safe_value, 'new': new_json_safe_value}
 
-  return changes                                                   # 完成した差分を返す
+  # 完成した差分を返す
+  return changes
 ```
 
 - **99〜101行目** … 新規作成では、項目名 → 新しい値、という形で記録（古い値は無いので）。
@@ -1364,9 +1586,12 @@ def get_changes(instance, created):                # 差分を計算する関数
 
 ```python
 # 保存前に更新前の値をキャッシュ
-@receiver(pre_save, sender=member)                              # 「memberの保存直前」にこの関数を結びつける
-def cache_old_member_instance(sender, instance, **kwargs):      # 保存前に呼ばれる
-  set_instance_cache(instance)                                  # 更新前の値をロッカーにしまう
+# 「memberの保存直前」にこの関数を結びつける
+@receiver(pre_save, sender=member)
+# 保存前に呼ばれる
+def cache_old_member_instance(sender, instance, **kwargs):
+  # 更新前の値をロッカーにしまう
+  set_instance_cache(instance)
 ```
 
 - **111行目** `@receiver(pre_save, sender=member)`
@@ -1385,24 +1610,36 @@ def cache_old_member_instance(sender, instance, **kwargs):      # 保存前に�
 
 ```python
 # 履歴を記録　新規作成、更新 (member)
-@receiver(post_save, sender=member)                                       # 「memberの保存直後」に結びつける
-def log_create_update_member_history(sender, instance, created, **kwargs): # 保存後に呼ばれる（createdで新規か判定）
-  request = get_current_request()                                          # 今のリクエストを取得（誰が操作したか）
-  session_data = request.session.get('login_No') if request else None      # 操作者の従業員番号を取得
+# 「memberの保存直後」に結びつける
+@receiver(post_save, sender=member)
+# 保存後に呼ばれる（createdで新規か判定）
+def log_create_update_member_history(sender, instance, created, **kwargs):
+  # 今のリクエストを取得（誰が操作したか）
+  request = get_current_request()
+  # 操作者の従業員番号を取得
+  session_data = request.session.get('login_No') if request else None
 
   # 差分計算
-  changes = get_changes(instance, created)                                 # §9.3で変更点を計算
+  # §9.3で変更点を計算
+  changes = get_changes(instance, created)
 
   # 操作内容判定
-  operation = 'CREATE' if created else 'UPDATE'                            # 新規ならCREATE、更新ならUPDATE
+  # 新規ならCREATE、更新ならUPDATE
+  operation = 'CREATE' if created else 'UPDATE'
 
   # 履歴記録
-  History.objects.create(                                                 # Historyテーブルに1件作る
-    operation=operation,                                                  # 操作種別
-    table_name='member',                                                  # 対象テーブル名
-    record_id=instance.id,                                                # 対象レコードのID
-    login_No=session_data,                                                # 操作者
-    changes=changes,                                                      # 変更内容
+  # Historyテーブルに1件作る
+  History.objects.create(
+    # 操作種別
+    operation=operation,
+    # 対象テーブル名
+    table_name='member',
+    # 対象レコードのID
+    record_id=instance.id,
+    # 操作者
+    login_No=session_data,
+    # 変更内容
+    changes=changes,
   )
 ```
 
@@ -1419,18 +1656,28 @@ def log_create_update_member_history(sender, instance, created, **kwargs): # 保
 
 ```python
 # 履歴を記録　削除 (member)
-@receiver(post_delete, sender=member)                          # 「memberの削除直後」に結びつける
-def log_delete_member_history(sender, instance, **kwargs):     # 削除後に呼ばれる
-  request = get_current_request()                              # 今のリクエスト取得
-  session_data = request.session.get('login_No') if request else None  # 操作者取得
+# 「memberの削除直後」に結びつける
+@receiver(post_delete, sender=member)
+# 削除後に呼ばれる
+def log_delete_member_history(sender, instance, **kwargs):
+  # 今のリクエスト取得
+  request = get_current_request()
+  # 操作者取得
+  session_data = request.session.get('login_No') if request else None
 
   # 履歴記録
-  History.objects.create(                                     # 履歴を1件作る
-    operation='DELETE',                                       # 操作はDELETE固定
-    table_name='member',                                     # 対象テーブル
-    record_id=instance.id,                                   # 削除されたレコードのID
-    login_No=session_data,                                   # 操作者
-    changes=None,                                            # 削除なので変更内容はなし
+  # 履歴を1件作る
+  History.objects.create(
+    # 操作はDELETE固定
+    operation='DELETE',
+    # 対象テーブル
+    table_name='member',
+    # 削除されたレコードのID
+    record_id=instance.id,
+    # 操作者
+    login_No=session_data,
+    # 削除なので変更内容はなし
+    changes=None,
   )
 ```
 
@@ -1481,32 +1728,44 @@ def log_delete_member_history(sender, instance, **kwargs):     # 削除後に呼
 > **▼ このコードがやること（先に日本語で）:** リクエストが来るたびに、その「今のリクエスト」をスレッド専用の保管庫にしまい、処理が終わったら片付けます。これにより、§9のシグナルのような「リクエストを直接受け取れない場所」でも「今誰が操作しているか」を知ることができます。
 
 ```python
-import threading                                            # スレッド機能を読み込む
+# スレッド機能を読み込む
+import threading
 
 # スレッドローカルオブジェクト作成
-_request_local = threading.local()                          # リクエストをしまうスレッド専用ロッカー
+# リクエストをしまうスレッド専用ロッカー
+_request_local = threading.local()
 # 各リクエスト処理中、現在のHTTPリクエストオブジェクトをスレッドローカルストレージに保存
-class CurrentRequestMiddleware:                             # 独自ミドルウェアのクラス
+# 独自ミドルウェアのクラス
+class CurrentRequestMiddleware:
   # ミドルウェア初期化
-  def __init__(self, get_response):                        # サーバー起動時に1回呼ばれる
+  # サーバー起動時に1回呼ばれる
+  def __init__(self, get_response):
     # 次のミドルウェアかget_respons取得
-    self.get_response = get_response                       # 「次の関所」を覚えておく
+    # 「次の関所」を覚えておく
+    self.get_response = get_response
 
   # リクエスト処理
-  def __call__(self, request):                             # リクエストごとに呼ばれる
+  # リクエストごとに呼ばれる
+  def __call__(self, request):
     # 現在のリクエストオブジェクトをスレッドローカルに保存
-    _request_local.request = request                       # 今のリクエストをロッカーにしまう
+    # 今のリクエストをロッカーにしまう
+    _request_local.request = request
     # 次のミドルウェアかget_respons取得
-    response = self.get_response(request)                  # 次の関所（最終的にビュー）を呼び、応答を得る
+    # 次の関所（最終的にビュー）を呼び、応答を得る
+    response = self.get_response(request)
 
     # スレッドローカル内のリクエストオブジェクト削除(メモリリーク、クロススレッドデータ汚染防止)
-    _request_local.request = None                          # 後始末：ロッカーを空にする
-    return response                                        # 応答を返す
+    # 後始末：ロッカーを空にする
+    _request_local.request = None
+    # 応答を返す
+    return response
 
 # 現在のスレッドのHTTPリクエストオブジェクト取得
-def get_current_request():                                 # しまったリクエストを取り出す関数
+# しまったリクエストを取り出す関数
+def get_current_request():
   # スレッドローカルストレージから'request'属性値取得
-  return getattr(_request_local, 'request', None)          # 無ければNoneを返す
+  # 無ければNoneを返す
+  return getattr(_request_local, 'request', None)
 ```
 
 - **6行目** `_request_local = threading.local()` … リクエストをしまうスレッド専用ロッカー（§9.1のスレッドローカルと同じ考え方）。
@@ -1537,7 +1796,8 @@ def get_current_request():                                 # しまったリク�
 このミドルウェアは、`settings.py` の `MIDDLEWARE` リストの **最後** に登録されています（§12で全体を見ます）。
 
 ```python
-    'kosu.middleware.clear_session_middleware.CurrentRequestMiddleware',  # 独自ミドルウェアを最後に登録
+    # 独自ミドルウェアを最後に登録
+    'kosu.middleware.clear_session_middleware.CurrentRequestMiddleware',
 ```
 
 リストの順番がそのまま「関所を通る順番」です。最後にあるので、セッションが復元された後にリクエストを保管できます。
@@ -1547,14 +1807,20 @@ def get_current_request():                                 # しまったリク�
 > **▼ このコードがやること（先に日本語で）:** アプリが起動して準備が整った瞬間に、`signals.py` を読み込みます。これをしないと、§9で書いたシグナル登録（@receiver）が実行されず、履歴が一切残りません。
 
 ```python
-from django.apps import AppConfig                  # アプリ設定の土台クラスを読み込む
+# アプリ設定の土台クラスを読み込む
+from django.apps import AppConfig
 
-class KosuConfig(AppConfig):                        # kosuアプリの設定クラス
-    default_auto_field = 'django.db.models.BigAutoField'  # 主キーの既定型（大きな整数の自動採番）
-    name = 'kosu'                                   # アプリ名は kosu
+# kosuアプリの設定クラス
+class KosuConfig(AppConfig):
+    # 主キーの既定型（大きな整数の自動採番）
+    default_auto_field = 'django.db.models.BigAutoField'
+    # アプリ名は kosu
+    name = 'kosu'
 
-    def ready(self):                                # アプリ起動準備完了時に1回呼ばれる
-        import kosu.signals                         # signals.pyを読み込んでシグナルを登録する
+    # アプリ起動準備完了時に1回呼ばれる
+    def ready(self):
+        # signals.pyを読み込んでシグナルを登録する
+        import kosu.signals
 ```
 
 - **4行目** `class KosuConfig(AppConfig):` … kosu アプリ全体の設定クラス。
@@ -1582,23 +1848,40 @@ class KosuConfig(AppConfig):                        # kosuアプリの設定ク�
 > **▼ このコードがやること（先に日本語で）:** 非同期処理に必要な標準ツール（スレッド・一意IDの生成・一時ファイル等）、実際の処理本体（tasks.py の各関数）、タスク状態を保存するモデル、DRFの部品を読み込みます。
 
 ```python
-import os                                                   # ファイルパス操作
-import threading                                            # 別スレッドで処理を走らせる
-import uuid                                                 # 一意なタスクIDを生成
-import datetime                                             # 日付処理
-import time                                                 # 待機(sleep)用
-import tempfile                                             # 一時ファイル作成
-from ..tasks import generate_kosu_backup, delete_kosu_data, load_kosu_file, \  # 実処理本体（工数系）
-                    generate_member_backup, load_member_file, generate_team_backup, load_team_file, \  # 人員・チーム系
-                    generate_def_backup, load_def_file, generate_choice_backup, load_choice_file, \    # 区分系
-                    generate_inquiry_backup, load_inquiry_file, generate_setting_backup, load_setting_file, \  # 問い合わせ・設定系
-                    generate_AsyncTask_backup, delete_AsyncTask_data, generate_History_backup ,delete_History_data  # タスク・履歴系
-from ..models import AsyncTask                               # タスク状態を保存するモデル
-from rest_framework import status                            # ステータスコード
-from rest_framework.decorators import api_view, parser_classes  # 関数ビュー用デコレータ
-from rest_framework.parsers import MultiPartParser, JSONParser, FormParser  # 受信形式の解析器
-from django.urls import resolve                              # URLから名前を逆引きする道具
-from django.http import JsonResponse, FileResponse           # JSON応答・ファイル応答
+# ファイルパス操作
+import os
+# 別スレッドで処理を走らせる
+import threading
+# 一意なタスクIDを生成
+import uuid
+# 日付処理
+import datetime
+# 待機(sleep)用
+import time
+# 一時ファイル作成
+import tempfile
+# 実処理本体（工数系）
+from ..tasks import generate_kosu_backup, delete_kosu_data, load_kosu_file, \
+                    # 人員・チーム系
+                    generate_member_backup, load_member_file, generate_team_backup, load_team_file, \
+                    # 区分系
+                    generate_def_backup, load_def_file, generate_choice_backup, load_choice_file, \
+                    # 問い合わせ・設定系
+                    generate_inquiry_backup, load_inquiry_file, generate_setting_backup, load_setting_file, \
+                    # タスク・履歴系
+                    generate_AsyncTask_backup, delete_AsyncTask_data, generate_History_backup ,delete_History_data
+# タスク状態を保存するモデル
+from ..models import AsyncTask
+# ステータスコード
+from rest_framework import status
+# 関数ビュー用デコレータ
+from rest_framework.decorators import api_view, parser_classes
+# 受信形式の解析器
+from rest_framework.parsers import MultiPartParser, JSONParser, FormParser
+# URLから名前を逆引きする道具
+from django.urls import resolve
+# JSON応答・ファイル応答
+from django.http import JsonResponse, FileResponse
 ```
 
 - **3行目** `import uuid` … `uuid`（ユーユーアイディー）は「世界で重複しない一意なID」を作る道具。各タスクに固有の番号札を発行するのに使います。
@@ -1612,20 +1895,30 @@ from django.http import JsonResponse, FileResponse           # JSON応答・フ�
 > **▼ このコードがやること（先に日本語で）:** 全バックアップ/復元/削除URLの共通入口です。まず一意なタスクIDを発行して台帳に「処理中(pending)」で記録し、ブラウザに即座に番号札を返す準備をします。そして「今どのURL名で呼ばれたか」を逆引きして、実行すべき処理を判断します。
 
 ```python
-@api_view(['POST'])                                         # POSTのみ受け付ける関数ビュー
-@parser_classes([MultiPartParser, JSONParser, FormParser])  # ファイル・JSON・フォーム形式を解析できる
-def backup(request):                                        # 非同期処理の共通入口
+# POSTのみ受け付ける関数ビュー
+@api_view(['POST'])
+# ファイル・JSON・フォーム形式を解析できる
+@parser_classes([MultiPartParser, JSONParser, FormParser])
+# 非同期処理の共通入口
+def backup(request):
   # タスクID生成
-  task_id = str(uuid.uuid4())                               # 一意なタスクIDを発行（番号札）
-  AsyncTask.objects.create(task_id=task_id, status='pending')  # 台帳に「処理中」で記録
+  # 一意なタスクIDを発行（番号札）
+  task_id = str(uuid.uuid4())
+  # 台帳に「処理中」で記録
+  AsyncTask.objects.create(task_id=task_id, status='pending')
 
-  start_day = request.data.get('start_day')                 # 開始日（期間指定の処理用）
-  end_day = request.data.get('end_day')                     # 終了日
+  # 開始日（期間指定の処理用）
+  start_day = request.data.get('start_day')
+  # 終了日
+  end_day = request.data.get('end_day')
 
   # url_name属性取得
-  current_path = request.path                               # 今アクセスされたURLパス
-  match = resolve(current_path)                             # そのパスを逆引き
-  url_name = match.url_name                                 # URLのname（あだ名）を取り出す
+  # 今アクセスされたURLパス
+  current_path = request.path
+  # そのパスを逆引き
+  match = resolve(current_path)
+  # URLのname（あだ名）を取り出す
+  url_name = match.url_name
 ```
 
 - **21行目** `@api_view(['POST'])`
@@ -1650,12 +1943,18 @@ def backup(request):                                        # 非同期処理の
 **パターンA：期間指定のバックアップ（kosu_backup）― 36〜41行目**
 
 ```python
-  if url_name == 'kosu_backup':                  # 工数バックアップなら
-    error_response = validate_dates(start_day, end_day)  # 日付の妥当性を検査
-    if error_response:                           # 検査でエラーがあれば
-      return error_response                      # その場でエラーを返す
-    task_function = generate_kosu_backup         # 実行する関数を決める
-    args = (start_day, end_day)                  # 渡す引数（期間）を決める
+  # 工数バックアップなら
+  if url_name == 'kosu_backup':
+    # 日付の妥当性を検査
+    error_response = validate_dates(start_day, end_day)
+    # 検査でエラーがあれば
+    if error_response:
+      # その場でエラーを返す
+      return error_response
+    # 実行する関数を決める
+    task_function = generate_kosu_backup
+    # 渡す引数（期間）を決める
+    args = (start_day, end_day)
 ```
 
 - **37行目** `validate_dates(start_day, end_day)` … §11.5で見る日付検証関数。問題があればエラー応答が返ります。
@@ -1666,20 +1965,33 @@ def backup(request):                                        # 非同期処理の
 **パターンB：ファイルアップロードを伴う復元（kosu_load）― 48〜61行目**
 
 ```python
-  elif url_name == 'kosu_load':                                # 工数復元なら
-    kosu_file = request.FILES.get('file')                     # アップロードされたファイルを取り出す
-    temp_file_path = None                                     # 一時ファイルパスの入れ物
+  # 工数復元なら
+  elif url_name == 'kosu_load':
+    # アップロードされたファイルを取り出す
+    kosu_file = request.FILES.get('file')
+    # 一時ファイルパスの入れ物
+    temp_file_path = None
     try:
-      with tempfile.NamedTemporaryFile(suffix=".xlsx", delete=False) as temp_file:  # 一時xlsxファイルを作る
-        for chunk in kosu_file.chunks():                      # ファイルを小分け(チャンク)で読み
-          temp_file.write(chunk)                              # 一時ファイルに書き込む
-        temp_file_path = temp_file.name                       # 一時ファイルのパスを覚える
-      task_function = load_kosu_file                          # 実行する関数を決める
-      args = (temp_file_path,)                                # 引数は一時ファイルパス
-    except Exception as e:                                    # 書き込み中にエラーが出たら
-      if temp_file_path and os.path.exists(temp_file_path):   # 途中まで作った一時ファイルがあれば
-        os.remove(temp_file_path)                             # 消す（後始末）
-      return JsonResponse({'status': 'error', 'message': f'ファイル書き込みエラー: {str(e)}'}, status=500)  # 500を返す
+      # 一時xlsxファイルを作る
+      with tempfile.NamedTemporaryFile(suffix=".xlsx", delete=False) as temp_file:
+        # ファイルを小分け(チャンク)で読み
+        for chunk in kosu_file.chunks():
+          # 一時ファイルに書き込む
+          temp_file.write(chunk)
+        # 一時ファイルのパスを覚える
+        temp_file_path = temp_file.name
+      # 実行する関数を決める
+      task_function = load_kosu_file
+      # 引数は一時ファイルパス
+      args = (temp_file_path,)
+    # 書き込み中にエラーが出たら
+    except Exception as e:
+      # 途中まで作った一時ファイルがあれば
+      if temp_file_path and os.path.exists(temp_file_path):
+        # 消す（後始末）
+        os.remove(temp_file_path)
+      # 500を返す
+      return JsonResponse({'status': 'error', 'message': f'ファイル書き込みエラー: {str(e)}'}, status=500)
 ```
 
 - **49行目** `request.FILES.get('file')` … `request.FILES` はアップロードされたファイルの保管場所。そこから `'file'` を取り出します。
@@ -1695,9 +2007,12 @@ def backup(request):                                        # 非同期処理の
 **パターンC：引数なしのバックアップ（member_backup など）― 96〜98行目**
 
 ```python
-  elif url_name == 'member_backup':              # 人員バックアップなら
-    task_function = generate_member_backup       # 実行関数を決める
-    args = ()                                    # 引数なし（全件バックアップ）
+  # 人員バックアップなら
+  elif url_name == 'member_backup':
+    # 実行関数を決める
+    task_function = generate_member_backup
+    # 引数なし（全件バックアップ）
+    args = ()
 ```
 
 - 人員・チーム・区分などの「全件バックアップ」は期間指定が不要なので、`args = ()`（引数なし）でシンプルです。
@@ -1705,8 +2020,10 @@ def backup(request):                                        # 非同期処理の
 **最後の else（不明なURL）― 188〜189行目**
 
 ```python
-  else:                                          # どのURL名にも当てはまらなければ
-    return JsonResponse({'status': 'error', 'message': '無効なタスクタイプです。'}, status=status.HTTP_400_BAD_REQUEST)  # 400で返す
+  # どのURL名にも当てはまらなければ
+  else:
+    # 400で返す
+    return JsonResponse({'status': 'error', 'message': '無効なタスクタイプです。'}, status=status.HTTP_400_BAD_REQUEST)
 ```
 
 - どの `if/elif` にも該当しない場合は、不正なリクエストとして400を返します。
@@ -1716,11 +2033,14 @@ def backup(request):                                        # 非同期処理の
 > **▼ このコードがやること（先に日本語で）:** §11.3で決めた「実行する関数」を、**別スレッド（裏方の作業員）** に渡して走らせます。本体はその完了を待たず、すぐにブラウザへ「番号札（タスクID）」を返します。これでユーザーは待たされません。
 
 ```python
-  thread = threading.Thread(target=handle_task, args=(task_id, task_function, *args))  # 裏で走らせるスレッドを用意
-  thread.start()                                                                       # スレッド開始（裏で処理が走り出す）
+  # 裏で走らせるスレッドを用意
+  thread = threading.Thread(target=handle_task, args=(task_id, task_function, *args))
+  # スレッド開始（裏で処理が走り出す）
+  thread.start()
 
   # タスクIDを返却し、非同期処理開始を通知
-  return JsonResponse({'status': 'success', 'task_id': task_id})                       # 番号札（タスクID）を即座に返す
+  # 番号札（タスクID）を即座に返す
+  return JsonResponse({'status': 'success', 'task_id': task_id})
 ```
 
 - **191行目** `thread = threading.Thread(target=handle_task, args=(task_id, task_function, *args))`
@@ -1743,22 +2063,36 @@ def backup(request):                                        # 非同期処理の
 
 ```python
 # 日付バリデーション関数
-def validate_dates(start_day, end_day):                       # 日付を検査する関数
-  today_str = datetime.date.today().strftime('%Y-%m-%d')      # 今日の日付を文字列で取得
-  if not start_day or not end_day:                            # どちらかが空なら
-    return JsonResponse({'status': 'error', 'message': '日付を指定してください。'}, status=status.HTTP_400_BAD_REQUEST)  # 400
+# 日付を検査する関数
+def validate_dates(start_day, end_day):
+  # 今日の日付を文字列で取得
+  today_str = datetime.date.today().strftime('%Y-%m-%d')
+  # どちらかが空なら
+  if not start_day or not end_day:
+    # 400
+    return JsonResponse({'status': 'error', 'message': '日付を指定してください。'}, status=status.HTTP_400_BAD_REQUEST)
 
   try:
-    end_date_obj = datetime.date.fromisoformat(end_day)       # 終了日を日付型に変換
-    today_date_obj = datetime.date.fromisoformat(today_str)   # 今日を日付型に
-    start_date_obj = datetime.date.fromisoformat(start_day)   # 開始日を日付型に
-  except ValueError:                                          # 変換に失敗（形式が不正）なら
-    return JsonResponse({'status': 'error', 'message': '日付の形式が不正です。'}, status=status.HTTP_400_BAD_REQUEST)  # 400
-  if end_date_obj >= today_date_obj:                          # 終了日が今日以降なら
-    return JsonResponse({'status': 'error', 'message': '昨日の日付までしか指定できません。'}, status=status.HTTP_400_BAD_REQUEST)  # 400
-  if start_date_obj > end_date_obj:                           # 開始日が終了日より後なら
-    return JsonResponse({'status': 'error', 'message': '開始日が終了日を超えています。'}, status=status.HTTP_400_BAD_REQUEST)  # 400
-  return None                                                 # 問題なければNone（合格）
+    # 終了日を日付型に変換
+    end_date_obj = datetime.date.fromisoformat(end_day)
+    # 今日を日付型に
+    today_date_obj = datetime.date.fromisoformat(today_str)
+    # 開始日を日付型に
+    start_date_obj = datetime.date.fromisoformat(start_day)
+  # 変換に失敗（形式が不正）なら
+  except ValueError:
+    # 400
+    return JsonResponse({'status': 'error', 'message': '日付の形式が不正です。'}, status=status.HTTP_400_BAD_REQUEST)
+  # 終了日が今日以降なら
+  if end_date_obj >= today_date_obj:
+    # 400
+    return JsonResponse({'status': 'error', 'message': '昨日の日付までしか指定できません。'}, status=status.HTTP_400_BAD_REQUEST)
+  # 開始日が終了日より後なら
+  if start_date_obj > end_date_obj:
+    # 400
+    return JsonResponse({'status': 'error', 'message': '開始日が終了日を超えています。'}, status=status.HTTP_400_BAD_REQUEST)
+  # 問題なければNone（合格）
+  return None
 ```
 
 - **201行目** `today_str = datetime.date.today().strftime('%Y-%m-%d')` … 今日の日付を `2026-06-02` 形式の文字列で取得。
@@ -1773,26 +2107,40 @@ def validate_dates(start_day, end_day):                       # 日付を検査�
 > **▼ このコードがやること（先に日本語で）:** ブラウザが番号札（タスクID）を持って「私の処理どうなった？」と聞いてくる窓口です。台帳を見て、成功なら結果ファイルの場所を、エラーなら理由を、まだなら「処理中(202)」を返します。
 
 ```python
-@api_view(['GET'])                                            # GETで状態を問い合わせる
-def check_task_status(request):                               # タスク状態確認の窓口
-  task_id = request.GET.get('task_id')                        # 問い合わせ対象のタスクID
+# GETで状態を問い合わせる
+@api_view(['GET'])
+# タスク状態確認の窓口
+def check_task_status(request):
+  # 問い合わせ対象のタスクID
+  task_id = request.GET.get('task_id')
 
   # タスクIDがない場合、エラーを返す
-  if not task_id:                                             # 番号札が無ければ
-    return JsonResponse({'status': 'error', 'message': 'タスクIDが指定されていません。'}, status=status.HTTP_400_BAD_REQUEST)  # 400
+  # 番号札が無ければ
+  if not task_id:
+    # 400
+    return JsonResponse({'status': 'error', 'message': 'タスクIDが指定されていません。'}, status=status.HTTP_400_BAD_REQUEST)
 
   try:
     # データベースからタスクIDに対応する状態を取得し返す
-    task = AsyncTask.objects.get(task_id=task_id)             # 台帳から該当タスクを取得
-    if task.status == 'success':                             # 成功していたら
-      return JsonResponse({'status': 'success', 'file_path': task.result})  # 結果ファイルの場所を返す
-    elif task.status == 'error':                             # エラーなら
-      return JsonResponse({'status': 'error', 'message': task.result})  # エラー内容を返す
-    else:                                                    # それ以外（処理中）なら
-      return JsonResponse({'status': 'pending'}, status=202)  # 「処理中(202)」を返す
+    # 台帳から該当タスクを取得
+    task = AsyncTask.objects.get(task_id=task_id)
+    # 成功していたら
+    if task.status == 'success':
+      # 結果ファイルの場所を返す
+      return JsonResponse({'status': 'success', 'file_path': task.result})
+    # エラーなら
+    elif task.status == 'error':
+      # エラー内容を返す
+      return JsonResponse({'status': 'error', 'message': task.result})
+    # それ以外（処理中）なら
+    else:
+      # 「処理中(202)」を返す
+      return JsonResponse({'status': 'pending'}, status=202)
 
-  except AsyncTask.DoesNotExist:                             # そのIDが台帳に無ければ
-    return JsonResponse({'status': 'error', 'message': '無効なタスクIDです。'}, status=status.HTTP_400_BAD_REQUEST)  # 400
+  # そのIDが台帳に無ければ
+  except AsyncTask.DoesNotExist:
+    # 400
+    return JsonResponse({'status': 'error', 'message': '無効なタスクIDです。'}, status=status.HTTP_400_BAD_REQUEST)
 ```
 
 - **221行目** `task_id = request.GET.get('task_id')` … 問い合わせ対象のタスクIDを受け取ります。
@@ -1810,41 +2158,64 @@ def check_task_status(request):                               # タスク状態�
 
 ```python
 # 非同期タスク処理 (汎用版)
-def handle_task(task_id, task_function, *args, **kwargs):     # 裏で走る処理本体
+# 裏で走る処理本体
+def handle_task(task_id, task_function, *args, **kwargs):
   try:
     # タスク関数を実行し、結果を取得
-    result = task_function(*args, **kwargs)                  # 実際の重い処理を実行
-    is_explicit_error = (                                    # 結果が「明示的なエラー」かを判定
-      isinstance(result, tuple) and                         # 結果がタプルで
-      len(result) > 0 and                                   # 中身があり
-      isinstance(result[0], dict) and                       # 先頭が辞書で
-      result[0].get('status') == 'error'                    # statusがerrorなら
+    # 実際の重い処理を実行
+    result = task_function(*args, **kwargs)
+    # 結果が「明示的なエラー」かを判定
+    is_explicit_error = (
+      # 結果がタプルで
+      isinstance(result, tuple) and
+      # 中身があり
+      len(result) > 0 and
+      # 先頭が辞書で
+      isinstance(result[0], dict) and
+      # statusがerrorなら
+      result[0].get('status') == 'error'
     )
 
-    task = AsyncTask.objects.get(task_id=task_id)           # 台帳から該当タスクを取得
+    # 台帳から該当タスクを取得
+    task = AsyncTask.objects.get(task_id=task_id)
 
-    if is_explicit_error:                                   # 明示的エラーなら
+    # 明示的エラーなら
+    if is_explicit_error:
       # エラーを返した場合
-      error_dict = result[0]                                # エラー辞書を取り出す
-      task.status = 'error'                                 # ステータスをerrorに
-      task.result = error_dict.get('message', 'タスク関数が明示的なエラーを返しました。')  # エラーメッセージを記録
-    else:                                                   # 正常終了なら
+      # エラー辞書を取り出す
+      error_dict = result[0]
+      # ステータスをerrorに
+      task.status = 'error'
+      # エラーメッセージを記録
+      task.result = error_dict.get('message', 'タスク関数が明示的なエラーを返しました。')
+    # 正常終了なら
+    else:
       # 正常終了の場合
-      task.status = 'success'                               # ステータスをsuccessに
-      task.result = result                                  # 結果（ファイルパス等）を記録
+      # ステータスをsuccessに
+      task.status = 'success'
+      # 結果（ファイルパス等）を記録
+      task.result = result
 
     # データベースに保存
-    task.save()                                             # 台帳を更新保存
+    # 台帳を更新保存
+    task.save()
 
-  except Exception as e:                                    # 予期せぬエラーが起きたら
+  # 予期せぬエラーが起きたら
+  except Exception as e:
     # 処理中に予期せぬエラーが発生した場合
     try:
-      task = AsyncTask.objects.get(task_id=task_id)         # 台帳を取得
-      task.status = 'error'                                 # errorに
-      task.result = str(e)                                  # エラー内容を文字列で記録
-      task.save()                                           # 保存
-    except AsyncTask.DoesNotExist:                          # 台帳すら見つからなければ
-      print(f"Error: AsyncTask with id {task_id} not found.")  # ログに出すだけ
+      # 台帳を取得
+      task = AsyncTask.objects.get(task_id=task_id)
+      # errorに
+      task.status = 'error'
+      # エラー内容を文字列で記録
+      task.result = str(e)
+      # 保存
+      task.save()
+    # 台帳すら見つからなければ
+    except AsyncTask.DoesNotExist:
+      # ログに出すだけ
+      print(f"Error: AsyncTask with id {task_id} not found.")
 ```
 
 - **271行目** `result = task_function(*args, **kwargs)` … §11.3で決めた実処理（バックアップ生成など）を実行します。ここが時間のかかる本番。**この処理は裏スレッドで走っている** ので、ユーザーは待ちません。
@@ -1860,27 +2231,43 @@ def handle_task(task_id, task_function, *args, **kwargs):     # 裏で走る処�
 > **▼ このコードがやること（先に日本語で）:** 完成したバックアップファイルを、ブラウザにダウンロードさせる窓口です。ファイルを返し終わった後（接続が閉じた後）に、3秒待ってから一時ファイルを自動削除する後始末も仕込んでいます。
 
 ```python
-@api_view(['GET'])                                            # GETでダウンロード
-def download_file(request):                                   # ファイルダウンロードの窓口
-  file_path = request.GET.get('file_path')                    # ダウンロード対象のパス
-  file_handle = open(file_path, 'rb')                         # ファイルをバイナリで開く
-  response = FileResponse(file_handle, as_attachment=True, filename=os.path.basename(file_path))  # ダウンロード応答を作る
+# GETでダウンロード
+@api_view(['GET'])
+# ファイルダウンロードの窓口
+def download_file(request):
+  # ダウンロード対象のパス
+  file_path = request.GET.get('file_path')
+  # ファイルをバイナリで開く
+  file_handle = open(file_path, 'rb')
+  # ダウンロード応答を作る
+  response = FileResponse(file_handle, as_attachment=True, filename=os.path.basename(file_path))
 
-  def delayed_file_cleanup():                                 # 遅延削除する内部関数
-      time.sleep(3)                                           # 3秒待つ
-      if os.path.exists(file_path):                          # ファイルがまだあれば
+  # 遅延削除する内部関数
+  def delayed_file_cleanup():
+      # 3秒待つ
+      time.sleep(3)
+      # ファイルがまだあれば
+      if os.path.exists(file_path):
         try:
-          os.remove(file_path)                               # 削除
-        except Exception as e:                               # 削除失敗なら
-          print(f"Cleanup failed after delay for {file_path}: {e}")  # ログに出す
+          # 削除
+          os.remove(file_path)
+        # 削除失敗なら
+        except Exception as e:
+          # ログに出す
+          print(f"Cleanup failed after delay for {file_path}: {e}")
 
-  def cleanup_on_close():                                     # 接続が閉じたときに呼ばれる関数
-      thread = threading.Thread(target=delayed_file_cleanup)  # 別スレッドで遅延削除
-      thread.start()                                          # 開始
+  # 接続が閉じたときに呼ばれる関数
+  def cleanup_on_close():
+      # 別スレッドで遅延削除
+      thread = threading.Thread(target=delayed_file_cleanup)
+      # 開始
+      thread.start()
 
-  response.close = cleanup_on_close                           # 応答が閉じたら後始末を呼ぶよう差し替え
+  # 応答が閉じたら後始末を呼ぶよう差し替え
+  response.close = cleanup_on_close
 
-  return response                                             # ダウンロード応答を返す
+  # ダウンロード応答を返す
+  return response
 ```
 
 - **244行目** `file_path = request.GET.get('file_path')` … §11.6で受け取ったファイルの場所。
@@ -1907,21 +2294,31 @@ def download_file(request):                                   # ファイルダ�
 > **▼ このコードがやること（先に日本語で）:** プロジェクトの土台となる場所・秘密鍵・デバッグモード・接続を許可するホスト名を設定します。
 
 ```python
-BASE_DIR = Path(__file__).resolve().parent.parent           # プロジェクトの根っこフォルダの場所
+# プロジェクトの根っこフォルダの場所
+BASE_DIR = Path(__file__).resolve().parent.parent
 
-env = environ.Env()                                          # 環境変数を読む道具を用意
-env.read_env(os.path.join(BASE_DIR, '.env'))                # .envファイルから秘密の設定を読む
+# 環境変数を読む道具を用意
+env = environ.Env()
+# .envファイルから秘密の設定を読む
+env.read_env(os.path.join(BASE_DIR, '.env'))
 
-SECRET_KEY=env('SECRET_KEY')                                 # 暗号化などに使う秘密鍵（.envから）
+# 暗号化などに使う秘密鍵（.envから）
+SECRET_KEY=env('SECRET_KEY')
 
-DEBUG=env.bool('DEBUG')                                      # デバッグモードのオン/オフ（.envから）
+# デバッグモードのオン/オフ（.envから）
+DEBUG=env.bool('DEBUG')
 
-DEFAULT_CHARSET = 'utf-8'                                    # 文字コードはUTF-8
+# 文字コードはUTF-8
+DEFAULT_CHARSET = 'utf-8'
 
-ALLOWED_HOSTS = [                                            # 接続を許可するホスト名の一覧
-    'hozen-kosu-react-cwaqashkafgbg5e5.japaneast-01.azurewebsites.net',  # 本番(Azure)
-    'localhost',                                            # 開発用
-    '127.0.0.1'                                             # 開発用(自分自身)
+# 接続を許可するホスト名の一覧
+ALLOWED_HOSTS = [
+    # 本番(Azure)
+    'hozen-kosu-react-cwaqashkafgbg5e5.japaneast-01.azurewebsites.net',
+    # 開発用
+    'localhost',
+    # 開発用(自分自身)
+    '127.0.0.1'
     ]
 ```
 
@@ -1940,19 +2337,32 @@ ALLOWED_HOSTS = [                                            # 接続を許可�
 > **▼ このコードがやること（先に日本語で）:** このプロジェクトで使う「機能パック（アプリ）」の一覧です。Django標準の機能に加え、本アプリ独自の `kosu`、API用の `rest_framework`、非同期用の `django_q`、CORS用の `corsheaders` などを有効にします。
 
 ```python
-INSTALLED_APPS = [                                          # 使う機能パックの一覧
-    'django.contrib.admin',                                # 管理画面
-    'django.contrib.auth',                                 # 認証
-    'django.contrib.contenttypes',                         # コンテンツ型
-    'django.contrib.sessions',                             # セッション機能
-    'django.contrib.messages',                             # メッセージ
-    'django.contrib.staticfiles',                          # 静的ファイル
-    'bootstrap4',                                          # Bootstrap4（管理画面用UI）
-    'bootstrap_datepicker_plus',                          # 日付ピッカー
-    'kosu',                                                # 本アプリ（これが主役）
-    'django_q',                                            # 非同期タスクキュー
-    'rest_framework',                                      # DRF（API機能）
-    'corsheaders',                                         # CORS対応
+# 使う機能パックの一覧
+INSTALLED_APPS = [
+    # 管理画面
+    'django.contrib.admin',
+    # 認証
+    'django.contrib.auth',
+    # コンテンツ型
+    'django.contrib.contenttypes',
+    # セッション機能
+    'django.contrib.sessions',
+    # メッセージ
+    'django.contrib.messages',
+    # 静的ファイル
+    'django.contrib.staticfiles',
+    # Bootstrap4（管理画面用UI）
+    'bootstrap4',
+    # 日付ピッカー
+    'bootstrap_datepicker_plus',
+    # 本アプリ（これが主役）
+    'kosu',
+    # 非同期タスクキュー
+    'django_q',
+    # DRF（API機能）
+    'rest_framework',
+    # CORS対応
+    'corsheaders',
 ]
 ```
 
@@ -1966,17 +2376,28 @@ INSTALLED_APPS = [                                          # 使う機能パッ
 > **▼ このコードがやること（先に日本語で）:** §10で学んだ「関所の列」をここで定義します。リクエストは上から順に、応答は下から逆順に、各関所を通ります。本アプリ独自の CurrentRequestMiddleware は最後に置かれています。
 
 ```python
-MIDDLEWARE = [                                                          # 関所の列（上から順に通る）
-    'corsheaders.middleware.CorsMiddleware',                           # ①CORSチェック（最初）
-    'django.middleware.security.SecurityMiddleware',                  # ②セキュリティ
-    'django.contrib.sessions.middleware.SessionMiddleware',          # ③セッション復元
-    'django.middleware.common.CommonMiddleware',                     # ④共通処理
-    'django.middleware.csrf.CsrfViewMiddleware',                     # ⑤CSRFチェック
-    'django.contrib.auth.middleware.AuthenticationMiddleware',       # ⑥認証
-    'django.contrib.messages.middleware.MessageMiddleware',          # ⑦メッセージ
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',        # ⑧クリックジャッキング対策
-    'whitenoise.middleware.WhiteNoiseMiddleware',                    # ⑨静的ファイル配信
-    'kosu.middleware.clear_session_middleware.CurrentRequestMiddleware',  # ⑩独自:リクエスト保管（最後）
+# 関所の列（上から順に通る）
+MIDDLEWARE = [
+    # ①CORSチェック（最初）
+    'corsheaders.middleware.CorsMiddleware',
+    # ②セキュリティ
+    'django.middleware.security.SecurityMiddleware',
+    # ③セッション復元
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    # ④共通処理
+    'django.middleware.common.CommonMiddleware',
+    # ⑤CSRFチェック
+    'django.middleware.csrf.CsrfViewMiddleware',
+    # ⑥認証
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    # ⑦メッセージ
+    'django.contrib.messages.middleware.MessageMiddleware',
+    # ⑧クリックジャッキング対策
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # ⑨静的ファイル配信
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+    # ⑩独自:リクエスト保管（最後）
+    'kosu.middleware.clear_session_middleware.CurrentRequestMiddleware',
 ]
 ```
 
@@ -1993,12 +2414,18 @@ MIDDLEWARE = [                                                          # 関所
 > **▼ このコードがやること（先に日本語で）:** フロント（localhost:3000）とバック（localhost:8000）が別のアドレスでも、ブラウザの安全装置に弾かれず通信できるようにする設定です。
 
 ```python
-CORS_ORIGIN_ALLOW_ALL = True                                # すべての発信元を許可
-CORS_ALLOW_CREDENTIALS = True                               # クッキー(セッション)の送受信を許可
-CORS_ALLOW_ORIGINS = [                                      # 許可する発信元（明示リスト）
-    'http://localhost:3000',                               # Reactの開発サーバー
-    'http://localhost:8000',                               # Django
-    'http://127.0.0.1:8000',                               # Django(自分自身)
+# すべての発信元を許可
+CORS_ORIGIN_ALLOW_ALL = True
+# クッキー(セッション)の送受信を許可
+CORS_ALLOW_CREDENTIALS = True
+# 許可する発信元（明示リスト）
+CORS_ALLOW_ORIGINS = [
+    # Reactの開発サーバー
+    'http://localhost:3000',
+    # Django
+    'http://localhost:8000',
+    # Django(自分自身)
+    'http://127.0.0.1:8000',
 ]
 ```
 
@@ -2014,14 +2441,21 @@ CORS_ALLOW_ORIGINS = [                                      # 許可する発信
 > **▼ このコードがやること（先に日本語で）:** DRF全体の既定動作を設定します。ページ送りの方式・1ページ件数・受信形式・応答形式を決めます。
 
 ```python
-REST_FRAMEWORK = {                                                     # DRFの全体設定
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',  # 既定のページ送り方式
-    'PAGE_SIZE': 20,                                                  # 既定の1ページ件数
-    'DEFAULT_PARSER_CLASSES': (                                       # 既定の受信形式解析
-        'rest_framework.parsers.JSONParser',                         # JSONのみ
+# DRFの全体設定
+REST_FRAMEWORK = {
+    # 既定のページ送り方式
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    # 既定の1ページ件数
+    'PAGE_SIZE': 20,
+    # 既定の受信形式解析
+    'DEFAULT_PARSER_CLASSES': (
+        # JSONのみ
+        'rest_framework.parsers.JSONParser',
     ),
-    'DEFAULT_RENDERER_CLASSES': (                                     # 既定の応答形式
-        'rest_framework.renderers.JSONRenderer',                     # JSONで返す
+    # 既定の応答形式
+    'DEFAULT_RENDERER_CLASSES': (
+        # JSONで返す
+        'rest_framework.renderers.JSONRenderer',
     ),
 }
 ```
@@ -2036,10 +2470,14 @@ REST_FRAMEWORK = {                                                     # DRFの�
 > **▼ このコードがやること（先に日本語で）:** ログイン状態を覚えておくセッションの保管先や有効期限、クッキーの安全設定を決めます。
 
 ```python
-SESSION_ENGINE = 'django.contrib.sessions.backends.db'      # セッションをデータベースに保存
-SESSION_COOKIE_AGE = 315360000                              # セッションの有効期限（秒）≒10年
-SESSION_COOKIE_SAMESITE = 'Lax'                             # クッキーの送信ポリシー
-SESSION_COOKIE_SECURE = False                               # HTTPでもクッキー送信を許可（開発用）
+# セッションをデータベースに保存
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+# セッションの有効期限（秒）≒10年
+SESSION_COOKIE_AGE = 315360000
+# クッキーの送信ポリシー
+SESSION_COOKIE_SAMESITE = 'Lax'
+# HTTPでもクッキー送信を許可（開発用）
+SESSION_COOKIE_SECURE = False
 ```
 
 - **72行目** `SESSION_ENGINE = 'django.contrib.sessions.backends.db'` … セッションを **データベース** に保存。§5で `request.session.get(...)` が読んでいたのは、このDB保存のセッションです。
@@ -2053,25 +2491,38 @@ SESSION_COOKIE_SECURE = False                               # HTTPでもクッ�
 ### 12.7 その他の重要設定 ― 抜粋
 
 ```python
-DATABASES = {                                              # データベース接続設定
+# データベース接続設定
+DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',        # PostgreSQLを使う
-        'NAME': os.getenv('DB_NAME', ''),                 # DB名（環境変数から）
-        'USER': os.getenv('DB_USER', ''),                 # ユーザー
-        'PASSWORD': os.getenv('DB_PASSWORD', ''),         # パスワード
-        'HOST': os.getenv('DB_HOST', ''),                 # ホスト
-        'PORT': '5432',                                   # ポート
+        # PostgreSQLを使う
+        'ENGINE': 'django.db.backends.postgresql',
+        # DB名（環境変数から）
+        'NAME': os.getenv('DB_NAME', ''),
+        # ユーザー
+        'USER': os.getenv('DB_USER', ''),
+        # パスワード
+        'PASSWORD': os.getenv('DB_PASSWORD', ''),
+        # ホスト
+        'HOST': os.getenv('DB_HOST', ''),
+        # ポート
+        'PORT': '5432',
     }
 }
 
-CSRF_TRUSTED_ORIGINS = [                                   # CSRFで信頼する発信元
-  'https://hozen-kosu-react-cwaqashkafgbg5e5.japaneast-01.azurewebsites.net',  # 本番
-  'http://localhost:8000',                                # 開発
-  'http://127.0.0.1:8000',                                # 開発
+# CSRFで信頼する発信元
+CSRF_TRUSTED_ORIGINS = [
+  # 本番
+  'https://hozen-kosu-react-cwaqashkafgbg5e5.japaneast-01.azurewebsites.net',
+  # 開発
+  'http://localhost:8000',
+  # 開発
+  'http://127.0.0.1:8000',
 ]
 
-MEDIA_URL = '/media/'                                      # メディアファイルのURL接頭辞
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')              # メディアファイルの実保存先
+# メディアファイルのURL接頭辞
+MEDIA_URL = '/media/'
+# メディアファイルの実保存先
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 ```
 
 - **DATABASES** … PostgreSQL（ポストグレス）というデータベースを使い、接続情報は `.env` から読みます。

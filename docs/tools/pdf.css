@@ -41,7 +41,11 @@ pre {
   color: #e6edf3;
   padding: 14px;
   border-radius: 6px;
-  overflow-x: auto;
+  /* PDFは横スクロールできないため、長い行は折り返して切れないようにする */
+  overflow-x: hidden;
+  white-space: pre-wrap;       /* 折り返しを有効化 */
+  word-break: break-word;      /* 単語の途中でも折り返す */
+  overflow-wrap: anywhere;     /* 長いトークンも必ず折り返す */
   line-height: 1.55;
   page-break-inside: avoid;
 }
@@ -50,6 +54,10 @@ pre code {
   color: #e6edf3;
   padding: 0;
   font-size: 9.5pt;
+  /* 親 pre と同じく折り返す */
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 table {
   border-collapse: collapse;
