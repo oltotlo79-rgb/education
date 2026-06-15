@@ -882,6 +882,554 @@ import { Text } from "react-native";
 
 ---
 
+## 発展: アプリでは使っていない重要なReact Native機能
+
+> ここまでで、本書のアプリを作るのに必要な部品はひととおり登場しました。このセクションでは、本書のアプリでは直接使っていないけれど、**実際のスマホアプリ作りでとてもよく使う重要な機能**を6つ紹介します。どれも「いつ使うか・なぜ必要か」から説明するので、必要になったときに「あ、あれが使える」と思い出せるようになっておきましょう。各トピックは独立した最小サンプルなので、気になるものから読んで構いません。
+
+### Image — 画像を表示する
+
+> **▼ このコードがやること（先に日本語で）:** アプリに**画像を2種類の方法で表示する**例です。1つはアプリに同梱した画像ファイル（ローカル画像）、もう1つはインターネット上にある画像（ネットワーク画像）です。どちらも `<Image>` という部品で表示しますが、画像の「指定のしかた」が少し違います。スマホでは画像の**大きさを自分で指定する**必要がある点も大事なポイントです。各指定の意味はコード内コメントにあります。
+
+**いつ使う・なぜ必要？** 本の表紙、プロフィール写真、アイコンなど、アプリに画像を出したい場面はとても多いです。Webの `<img>` は使えないので、React Native専用の `<Image>` を使います。
+
+```tsx
+import { View, Image, StyleSheet } from "react-native";
+
+export default function ImageExample() {
+  return (
+    <View>
+      {/* 方法1: ローカル画像（アプリに同梱したファイル）は require(...) で指定 */}
+      <Image
+        source={require("../assets/cover.png")}  // source : 表示する画像。requireでファイルを読み込む
+        style={styles.local}                      // 大きさは style で指定する
+      />
+
+      {/* 方法2: ネットワーク画像（インターネット上の画像）は { uri: "URL" } で指定 */}
+      <Image
+        source={{ uri: "https://example.com/book.png" }} // uri : 画像のあるURL（住所）
+        style={styles.remote}                            // ネット画像は大きさ指定が必須
+      />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  local: { width: 100, height: 150 },   // width:横幅 / height:高さ（数値で指定）
+  remote: { width: 100, height: 150 },
+});
+```
+
+> **画像の大きさは自分で指定する:** Webと違い、React Nativeでは（特にネットワーク画像で）`width` と `height` を `style` で指定しないと画像が表示されないことがあります。「画像を出すときは大きさもセットで指定する」と覚えておきましょう。
+
+#### ▼ コードを1つずつ分解して解説
+
+「2種類の画像指定」を、1つずつ見ていきましょう。
+
+---
+
+##### 解説1: 同梱ファイルを表示する `require(...)`
+
+```tsx
+<Image
+  source={require("../assets/cover.png")}  // source : 表示する画像。requireでファイルを読み込む
+  style={styles.local}                      // 大きさは style で指定する
+/>
+```
+
+- `<Image>`（イメージ＝画像）は、Webの `<img>` にあたる「**画像を表示する部品**」です。`source`（ソース＝もと）に「どの画像を出すか」を渡します。
+- `require("../assets/cover.png")` は「**アプリに一緒に入れておいた画像ファイルを読み込む**」書き方です。`"../assets/cover.png"` はそのファイルの置き場所（パス）です。
+- このように同梱した画像（ローカル画像）は、`require(...)` でファイルそのものを指定します。文字列のパスをそのまま渡すのではない点に注意してください。
+- `style` で `width`・`height`（大きさ）を指定します。指定しないと表示されなかったり、意図しない大きさになります。
+
+> **用語:** **ローカル画像** とは、アプリの中に一緒に入れて配布する画像ファイルのこと。アイコンやロゴなど「最初から決まっている画像」に使います。`require(...)` でアプリの中のファイルを読み込みます。
+
+---
+
+##### 解説2: ネット上の画像を表示する `{ uri: "URL" }`
+
+```tsx
+<Image
+  source={{ uri: "https://example.com/book.png" }} // uri : 画像のあるURL（住所）
+  style={styles.remote}                            // ネット画像は大きさ指定が必須
+/>
+```
+
+- ネットワーク画像（インターネット上にある画像）は、`source={{ uri: "URL" }}` の形で「**画像のあるURL（住所）**」を渡します。
+- 外側の `{ }` は「JSXの中にTypeScriptを書く印」、内側の `{ uri: "..." }` は「`uri` という項目を持つオブジェクト」です（`<View style={{...}}>` と同じ二重カッコのしくみ）。
+- ネットワーク画像は、読み込んでみるまで大きさが分からないため、**`width` と `height` の指定が特に重要**です。指定しないと表示されないことがあります。
+- 本の表紙をデータベースのURLから出す、といった場面ではこちらの方法を使います。
+
+> **用語:** **URI（ユーアールアイ）** は、ここでは画像のある場所を表す「URL（インターネット上の住所）」とほぼ同じ意味。`{ uri: "https://..." }` で「この住所の画像を取ってきて表示して」と指定します。
+
+---
+
+### Modal — ポップアップを表示する
+
+> **▼ このコードがやること（先に日本語で）:** ボタンを押すと、画面の上に**小さなダイアログ（ポップアップ）が重なって出る**例です。`<Modal>` という部品で囲んだ中身が、ふだんは隠れていて、必要なときだけ前面に出ます。出す・隠すの切り替えは `useState`（状態）で管理します。「確認メッセージを出す」「設定パネルをかぶせる」といった場面の基本形です。各指定の意味はコード内コメントにあります。
+
+**いつ使う・なぜ必要？** 「本当に削除しますか?」の確認や、入力フォームを一時的にかぶせて表示したいときに使います。別の画面に移動せず、**今の画面の上に重ねて出す**のがModalの役割です。
+
+```tsx
+import { useState } from "react";
+import { View, Text, Pressable, Modal, StyleSheet } from "react-native";
+
+export default function ModalExample() {
+  const [visible, setVisible] = useState(false);  // ポップアップを出すかどうかの状態（最初は隠す=false）
+
+  return (
+    <View style={styles.center}>
+      {/* このボタンでポップアップを出す（visibleをtrueに） */}
+      <Pressable onPress={() => setVisible(true)}>
+        <Text>ポップアップを開く</Text>
+      </Pressable>
+
+      <Modal
+        visible={visible}                 // visible : trueなら表示、falseなら非表示
+        transparent={true}                // transparent : 背景を透けさせて、後ろの画面をうっすら見せる
+        animationType="fade"              // animationType : 出入りの動き（fade=じわっと）
+        onRequestClose={() => setVisible(false)} // Android戻るボタンで閉じたときの処理
+      >
+        {/* 画面全体を薄暗くする背景 */}
+        <View style={styles.overlay}>
+          <View style={styles.box}>
+            <Text style={styles.message}>これはポップアップです</Text>
+            {/* このボタンで閉じる（visibleをfalseに） */}
+            <Pressable onPress={() => setVisible(false)}>
+              <Text style={styles.close}>閉じる</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  center: { flex: 1, justifyContent: "center", alignItems: "center" },
+  overlay: {                              // 後ろを薄暗くする全画面の背景
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.4)",   // 黒の半透明（0.4=40%の濃さ）
+  },
+  box: { backgroundColor: "#fff", padding: 24, borderRadius: 12 }, // 白いカード
+  message: { fontSize: 16, marginBottom: 16 },
+  close: { color: "#1e40af", fontWeight: "bold" },
+});
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+「出す・隠すを切り替えられるポップアップ」を、1つずつ見ていきましょう。
+
+---
+
+##### 解説1: 出すか隠すかを覚えておく状態
+
+```tsx
+const [visible, setVisible] = useState(false);  // ポップアップを出すかどうかの状態（最初は隠す=false）
+```
+
+- `useState(false)` で「**ポップアップを今出しているか**」を覚えておく状態を作ります。`true` なら出す、`false` なら隠す、という意味です。
+- 最初は `false`（隠す）にしているので、画面を開いた直後はポップアップは出ていません。
+- `setVisible(true)` で出し、`setVisible(false)` で隠します。この状態1つで、ポップアップの表示・非表示を切り替えます。
+
+> **用語:** **真偽値（しんぎち / boolean）** とは「はい（`true`）か いいえ（`false`）」の2つだけを表す値。「出す/出さない」「オン/オフ」のような2択の状態を覚えるのにぴったりです。
+
+---
+
+##### 解説2: 重ねて表示する `<Modal>`
+
+```tsx
+<Modal
+  visible={visible}                 // visible : trueなら表示、falseなら非表示
+  transparent={true}                // transparent : 背景を透けさせて、後ろの画面をうっすら見せる
+  animationType="fade"              // animationType : 出入りの動き（fade=じわっと）
+  onRequestClose={() => setVisible(false)} // Android戻るボタンで閉じたときの処理
+>
+```
+
+- `<Modal>`（モーダル）は、「**今の画面の上に、別の中身を重ねて表示する**」部品です。
+- `visible={visible}` で「出すか隠すか」を状態とひもづけます。状態が `true` のときだけ中身が前面に出ます。
+- `transparent={true}` は「**背景を透明にして、後ろの画面をうっすら見せる**」指定。これと薄暗い背景（後述の `overlay`）を組み合わせると、よくある「後ろが暗くなってポップアップが浮かぶ」見た目になります。
+- `animationType="fade"` は出入りの動きで、`"fade"` はじわっと現れる動きです（他に `"slide"` などがあります）。
+- `onRequestClose` は、Androidの「戻る」ボタンで閉じようとしたときに呼ばれる処理です。ここで `setVisible(false)` して閉じます。
+
+> **用語:** **モーダル（modal）** とは「いったんそれを操作（または閉じる）しないと先に進めない、前面に重なる表示」のこと。確認ダイアログや設定パネルなど、「今これに注目してほしい」ものに使います。
+
+---
+
+##### 解説3: 後ろを薄暗くする背景とカード
+
+```tsx
+<View style={styles.overlay}>
+  <View style={styles.box}>
+    <Text style={styles.message}>これはポップアップです</Text>
+    <Pressable onPress={() => setVisible(false)}>
+      <Text style={styles.close}>閉じる</Text>
+    </Pressable>
+  </View>
+</View>
+```
+
+- `styles.overlay` の `backgroundColor: "rgba(0,0,0,0.4)"` は「**黒の半透明**」で、画面全体をうっすら暗くする背景です。これで後ろの画面が暗くなり、ポップアップが浮かんで見えます。
+- その中の `styles.box`（白いカード）が、実際のポップアップの中身です。`justifyContent`・`alignItems` の中央寄せで、画面の真ん中に置いています。
+- 「閉じる」を押すと `setVisible(false)` が呼ばれ、状態が `false` になってポップアップが消えます。
+- このように「薄暗い背景＋中央の白いカード」を自分で組むのが、見た目を整えたModalの定番パターンです。
+
+> **用語:** **`rgba(0,0,0,0.4)`** は色の指定方法の1つで、`rgba(赤, 緑, 青, 透明度)` の形。最後の `0.4` が透明度で、`0`=完全に透明、`1`=完全に不透明。`0.4` は「40%の濃さの黒」を意味します。
+
+---
+
+### Platform — iOS と Android で出し分ける
+
+> **▼ このコードがやること（先に日本語で）:** **今アプリが動いているのがiPhone（iOS）かAndroidかを判定して、表示や設定を変える**例です。`Platform.OS` で「今どっちの端末か」が分かり、`Platform.select` で「iOSならコレ、Androidならコレ」と値を切り替えられます。OSによって少しだけ見た目や余白を変えたいときに使います。各指定の意味はコード内コメントにあります。
+
+**いつ使う・なぜ必要？** iOSとAndroidは、ちょうどよい余白やフォント、操作感が少しずつ違います。「iOSだけ上に余白を足す」「OSごとに違うフォントを使う」など、**端末によって細かく調整したい**ときに使います。1つのコードで両方のアプリを作るReact Nativeならではの機能です。
+
+```tsx
+import { View, Text, Platform, StyleSheet } from "react-native";
+
+export default function PlatformExample() {
+  return (
+    <View style={styles.box}>
+      {/* Platform.OS : 今動いているOSの名前。"ios" か "android" が入る */}
+      <Text>今のOS: {Platform.OS}</Text>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  box: {
+    // Platform.select : OSごとに違う値を選ぶ。iosのときは上余白を多めに、androidは少なめに
+    paddingTop: Platform.select({ ios: 50, android: 20 }),
+    backgroundColor: "#f1f5f9",
+  },
+});
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+「OSを見分けて出し分ける」2つの書き方を、1つずつ見ていきましょう。
+
+---
+
+##### 解説1: 今のOSを調べる `Platform.OS`
+
+```tsx
+<Text>今のOS: {Platform.OS}</Text>
+```
+
+- `Platform`（プラットフォーム）は、React Native本体から借りる「**今の端末の情報を教えてくれる道具**」です。
+- `Platform.OS` には、今アプリが動いている端末の種類が入っています。iPhoneなら `"ios"`、Androidなら `"android"` という文字が入ります。
+- `{Platform.OS}` のように `{ }` で囲んでJSXに埋め込むと、その値（`"ios"` など）を画面に表示できます。
+- これを `if` などと組み合わせて「iOSのときだけこうする」といった分岐に使えます。
+
+> **用語:** **OS（オーエス）** とは、スマホを動かしている基本ソフトのこと。iPhoneは「iOS」、多くの他社スマホは「Android」というOSで動いています。React Nativeは1つのコードで両方のOS向けアプリを作れます。
+
+---
+
+##### 解説2: OSごとに値を選ぶ `Platform.select`
+
+```tsx
+paddingTop: Platform.select({ ios: 50, android: 20 }),
+```
+
+- `Platform.select({ ... })` は「**OSごとに違う値を選んで返す**」道具です。`{ ios: ..., android: ... }` のように、OSごとの値を書いておきます。
+- ここでは「iOSなら `paddingTop`（上の内側余白）を `50`、Androidなら `20`」という意味になります。実際に動いているOSに合った値が自動で選ばれます。
+- `Platform.OS` を `if` で分岐して書くこともできますが、`Platform.select` を使うと**1行ですっきり**書けて便利です。
+- スタイルの中で「OSごとにこの値だけ変えたい」というときの定番の書き方です。
+
+> **用語:** **`Platform.select`** は「OSごとに用意した値の中から、今のOSに合うものを選ぶ」しくみ。`{ ios: ..., android: ... }` という形で、それぞれのOS向けの値をまとめて渡します。
+
+---
+
+### Dimensions と useWindowDimensions — 画面の幅・高さを知る
+
+> **▼ このコードがやること（先に日本語で）:** **今使っている端末の画面の幅や高さ（ピクセル数）を取得して、表示に使う**例です。`useWindowDimensions` という道具を使うと、画面の幅・高さが分かり、しかも**画面を回転させたときなどに自動で更新**されます。「画面の幅に合わせて部品の大きさを変えたい」ときに役立ちます。各指定の意味はコード内コメントにあります。
+
+**いつ使う・なぜ必要？** スマホは機種によって画面の大きさがバラバラです。「画面の幅いっぱいの半分の大きさにしたい」「横向きにしたら並べ方を変えたい」など、**画面サイズに合わせて見た目を調整したい**ときに、今の画面サイズを知る必要があります。
+
+```tsx
+import { useWindowDimensions, View, Text, StyleSheet } from "react-native";
+
+export default function DimensionsExample() {
+  // useWindowDimensions : 今の画面の幅・高さを取得する道具。回転などで変わると自動で更新される
+  const { width, height } = useWindowDimensions();
+
+  return (
+    <View>
+      <Text>画面の幅: {Math.round(width)}</Text>    {/* Math.round : 小数を四捨五入して整数に */}
+      <Text>画面の高さ: {Math.round(height)}</Text>
+
+      {/* 画面幅の半分の大きさの四角を表示する */}
+      <View style={[styles.box, { width: width / 2 }]} />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  box: { height: 60, backgroundColor: "#1e40af", marginTop: 12 },
+});
+```
+
+> **`Dimensions` との違い:** `import { Dimensions } from "react-native"` を使い `Dimensions.get("window")` でも画面サイズを取れますが、こちらは**取得した瞬間の値**なので、画面を回転させても自動では変わりません。画面の回転にも対応したいときは、自動更新される **`useWindowDimensions`**（フック）のほうが安全で、今はこちらが推奨です。
+
+#### ▼ コードを1つずつ分解して解説
+
+「画面サイズを取得して使う」部分を、1つずつ見ていきましょう。
+
+---
+
+##### 解説1: 画面の幅・高さを受け取る `useWindowDimensions`
+
+```tsx
+const { width, height } = useWindowDimensions();
+```
+
+- `useWindowDimensions`（ユーズ・ウィンドウ・ディメンションズ）は、「**今の画面の幅と高さを受け取る**」道具（フック）です。`use〜` で始まるReactの便利機能の仲間です。
+- `const { width, height } = ...` は、受け取った情報の中から `width`（幅）と `height`（高さ）の2つを取り出す書き方（分割代入）です。
+- このフックの便利な点は、**画面を回転させたりサイズが変わったりすると、自動で新しい値に更新される**ことです。そのたびに画面も作り直されます。
+- 取り出した `width`・`height` は、ピクセル数の数値なので、そのまま計算（`width / 2` など）に使えます。
+
+> **用語:** **ピクセル** とは画面を構成する点の単位。`width` が `390` なら「画面の横幅は390ぶん」という意味で、これを基準に部品の大きさを計算できます。
+
+---
+
+##### 解説2: 取得した幅を使って大きさを決める
+
+```tsx
+<View style={[styles.box, { width: width / 2 }]} />
+```
+
+- `style={[ ... ]}` のように `[ ]`（配列）で囲むと、「**複数のスタイルを重ねて適用**」できます。ここでは `styles.box` と `{ width: width / 2 }` の2つを重ねています。
+- `{ width: width / 2 }` は「幅を、画面の幅の半分にする」という指定です。`width`（画面幅）を取得しているので、それを `2` で割っています。
+- こうすると、どんな機種でも「画面のちょうど半分の幅の四角」になります。機種ごとに数値を決め打ちしなくてよいのが利点です。
+- `Math.round(width)` の `Math.round` は「小数を四捨五入して整数にする」命令で、表示を見やすくするために使っています。
+
+> **用語:** **スタイルの配列 `[styleA, styleB]`** は「複数のスタイルを順番に重ねる」書き方。後のものが優先されるので、共通のスタイルに「その場だけの追加指定」を足したいときに便利です。
+
+---
+
+### AsyncStorage — 端末内にデータを保存する
+
+> **▼ このコードがやること（先に日本語で）:** **入力した文字を端末の中に保存しておき、次にアプリを開いたときに読み出して表示する**例です。`AsyncStorage`（アシンク・ストレージ）という道具を使うと、アプリを閉じても消えないデータを端末内に残せます。「名前を保存→アプリ再起動→さっきの名前が出る」という、設定や下書きの保存によくある形です。各処理の意味はコード内コメントにあります。
+
+**いつ使う・なぜ必要？** `useState` で覚えた値は、アプリを閉じると消えてしまいます。「ダークモードのオン/オフ」「最後に入力した下書き」「ログイン状態」など、**アプリを閉じても残しておきたい小さなデータ**を端末内に保存するのに使います。これは追加の部品なので、`@react-native-async-storage/async-storage` をインストールして使います。
+
+```tsx
+import { useState, useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { View, Text, TextInput, Pressable, StyleSheet } from "react-native";
+
+const STORAGE_KEY = "user_name";  // 保存するときの「名札（キー）」。これで後から取り出す
+
+export default function StorageExample() {
+  const [name, setName] = useState("");
+
+  // アプリを開いたとき、保存済みの値を読み出す
+  useEffect(() => {
+    const load = async () => {
+      const saved = await AsyncStorage.getItem(STORAGE_KEY);  // getItem : キーで値を読み出す
+      if (saved !== null) setName(saved);                     // 保存があれば状態に反映
+    };
+    load();
+  }, []); // [] : 最初の1回だけ実行
+
+  // 「保存」ボタンで、今の入力を端末に書き込む
+  const save = async () => {
+    await AsyncStorage.setItem(STORAGE_KEY, name);  // setItem : キーと値を渡して保存する
+  };
+
+  return (
+    <View style={styles.box}>
+      <TextInput
+        style={styles.input}
+        placeholder="名前を入力"
+        value={name}
+        onChangeText={setName}
+      />
+      <Pressable onPress={save}>
+        <Text style={styles.save}>保存する</Text>
+      </Pressable>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  box: { padding: 16, gap: 12 },
+  input: { borderWidth: 1, borderColor: "#e2e8f0", borderRadius: 8, padding: 10 },
+  save: { color: "#1e40af", fontWeight: "bold" },
+});
+```
+
+> **保存できるのは「文字」だけ:** AsyncStorageに保存できるのは文字列（文字）だけです。数値やオブジェクト・配列を保存したいときは、いったん `JSON.stringify(...)` で文字に変換して保存し、読み出すときに `JSON.parse(...)` で元に戻します。
+
+#### ▼ コードを1つずつ分解して解説
+
+「保存して、次回読み出す」流れを、1つずつ見ていきましょう。
+
+---
+
+##### 解説1: 保存する場所の名札 `STORAGE_KEY`
+
+```tsx
+const STORAGE_KEY = "user_name";  // 保存するときの「名札（キー）」。これで後から取り出す
+```
+
+- `AsyncStorage` は、データを「**名札（キー）と中身（値）のセット**」で保存します。`STORAGE_KEY` はその名札にあたる文字です。
+- 保存するときも読み出すときも**同じ名札**を使うことで、「さっき保存したあのデータ」を正しく取り出せます。名札がずれると別のデータになってしまいます。
+- ここでは `"user_name"` という名札にしました。複数のデータを保存するときは、それぞれ別の名札を付けます。
+
+> **用語:** **キー（key）と値（value）** とは「名札と中身」のペアのこと。ロッカーに例えると、キーが「ロッカー番号」、値が「中に入れる荷物」。番号（キー）を覚えておけば、後で荷物（値）を取り出せます。
+
+---
+
+##### 解説2: 値を読み出す `getItem`
+
+```tsx
+useEffect(() => {
+  const load = async () => {
+    const saved = await AsyncStorage.getItem(STORAGE_KEY);  // getItem : キーで値を読み出す
+    if (saved !== null) setName(saved);                     // 保存があれば状態に反映
+  };
+  load();
+}, []); // [] : 最初の1回だけ実行
+```
+
+- `useEffect`（ユーズ・エフェクト）は「**画面が表示されたタイミングで何かする**」ための道具です。最後の `[]` は「最初の1回だけ実行する」という意味です。
+- `AsyncStorage.getItem(STORAGE_KEY)` は「**その名札で保存された値を読み出す**」命令です。読み出しには少し時間がかかるため、`await`（待つ）を付けて結果を待ちます。
+- `await` を使うには関数に `async`（非同期）を付ける必要があるため、`async () => { ... }` の形にしています。
+- まだ何も保存されていないと `null`（からっぽ）が返るので、`if (saved !== null)` で「保存があれば」だけ状態に反映しています。
+
+> **用語:** **`async` / `await`** は「**時間のかかる処理の終わりを待つ**」ための書き方。`await` を付けると「この処理が終わるまで待ってから次へ進む」という意味になり、読み込みや保存のように一瞬では終わらない処理で使います。
+
+---
+
+##### 解説3: 値を保存する `setItem`
+
+```tsx
+const save = async () => {
+  await AsyncStorage.setItem(STORAGE_KEY, name);  // setItem : キーと値を渡して保存する
+};
+```
+
+- `AsyncStorage.setItem(名札, 値)` は「**名札を付けて値を端末に保存する**」命令です。ここでは `STORAGE_KEY`（名札）と `name`（今の入力）を渡して保存しています。
+- 保存にも少し時間がかかるので、`await` を付けて待ちます。そのため `save` も `async` 関数にしています。
+- このボタンを押して保存しておけば、アプリを閉じて開き直しても、解説2の `getItem` で同じ名札から読み出して、前回の入力を復元できます。
+- `useState` の値はアプリを閉じると消えますが、`AsyncStorage` に保存した値は**閉じても残る**——この違いが重要です。
+
+> **用語:** **永続化（えいぞくか）** とは「アプリを閉じても消えないように、データを残しておくこと」。`useState` は一時的な記憶、`AsyncStorage` は永続的な記憶、というイメージで使い分けます。
+
+---
+
+### FlatList の応用 — グリッド・横スクロール・空のとき
+
+> **▼ このコードがやること（先に日本語で）:** 4.2で学んだ `FlatList` を、もっと実践的に使う3つの応用例です。①`numColumns` で**何列かに並べるグリッド表示**、②`horizontal` で**横方向にスクロールする並び**、③`ListEmptyComponent` で**データが空っぽのときに案内文を出す**——どれもプロパティを1つ足すだけで実現できます。よくあるアプリの見た目がこれで作れる、という引き出しを増やしておきましょう。各指定の意味はコード内コメントにあります。
+
+**いつ使う・なぜ必要？** 写真アプリのような格子状の並び、おすすめ作品の横スクロール、検索結果ゼロ件のときの「該当なし」表示——どれも実際のアプリでよく見る形です。`FlatList` の基本（`data`/`renderItem`/`keyExtractor`）に**プロパティを足すだけ**で作れます。
+
+```tsx
+import { FlatList, View, Text, StyleSheet } from "react-native";
+
+const books = [
+  { id: "1", title: "本A" },
+  { id: "2", title: "本B" },
+  { id: "3", title: "本C" },
+  { id: "4", title: "本D" },
+];
+
+export default function FlatListAdvanced() {
+  return (
+    <FlatList
+      data={books}
+      keyExtractor={(item) => item.id}
+      numColumns={2}                          // numColumns : 2列のグリッドで並べる
+      ListEmptyComponent={                    // ListEmptyComponent : dataが空のときに表示する中身
+        <Text style={styles.empty}>本がありません</Text>
+      }
+      renderItem={({ item }) => (
+        <View style={styles.cell}>
+          <Text>{item.title}</Text>
+        </View>
+      )}
+    />
+  );
+}
+
+const styles = StyleSheet.create({
+  cell: {
+    flex: 1,                                  // 1列ぶんの幅を等分する
+    margin: 6,
+    padding: 20,
+    backgroundColor: "#f1f5f9",
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  empty: { textAlign: "center", color: "#94a3b8", padding: 24 },
+});
+```
+
+> **横スクロールにしたいとき:** 上の例の `numColumns={2}` を外し、代わりに `horizontal={true}` を付けると、リストが**横方向にスクロール**する並びになります（おすすめ作品の横並びなどに使います）。`numColumns` と `horizontal` は同時には使えないので、どちらか一方を使います。
+
+#### ▼ コードを1つずつ分解して解説
+
+「FlatListに足す3つの便利プロパティ」を、1つずつ見ていきましょう。
+
+---
+
+##### 解説1: 何列かに並べる `numColumns`
+
+```tsx
+numColumns={2}                          // numColumns : 2列のグリッドで並べる
+```
+
+- `numColumns`（ナム・カラムズ＝列の数）は、「**リストを何列のグリッド（格子状）で並べるか**」を指定します。
+- ここでは `2` なので、項目が**2列ずつ**並びます。4件あれば「2列×2行」の格子になります。
+- グリッドにするときは、各セル（`styles.cell`）に `flex: 1` を付けて「1列ぶんの幅を等分」させるのが定番です。これで列幅がそろいます。
+- 写真の一覧や、本の表紙を格子状に並べたいときに使う、定番の指定です。
+
+> **用語:** **グリッド表示** とは、項目を「縦横の格子状」に並べる見せ方のこと。写真アプリのサムネイル一覧のような並びをイメージしてください。
+
+---
+
+##### 解説2: 横スクロールにする `horizontal`
+
+```tsx
+// numColumns を外して、代わりにこれを付ける
+horizontal={true}                       // horizontal : リストを横方向にスクロールさせる
+```
+
+- `horizontal={true}`（ホリゾンタル＝水平）を付けると、リストが**横方向に並び、横スクロール**できるようになります（既定は縦スクロール）。
+- 「おすすめの本」を横に並べてスッスッと見せる、といった見た目に向いています。
+- `numColumns`（縦のグリッド）と `horizontal`（横スクロール）は**同時には使えません**。どちらか一方を選びます。
+- 横スクロールのときは、各項目に `width`（幅）を指定しておくと並びが安定します。
+
+> **用語:** **横スクロール** とは、指で左右にスワイプして続きを見る並べ方。縦に長いリストと違い、限られた高さの中で「もっとあるよ」と見せたいときに使います。
+
+---
+
+##### 解説3: 空のときに案内を出す `ListEmptyComponent`
+
+```tsx
+ListEmptyComponent={                    // ListEmptyComponent : dataが空のときに表示する中身
+  <Text style={styles.empty}>本がありません</Text>
+}
+```
+
+- `ListEmptyComponent`（リスト・エンプティ・コンポーネント＝リストが空のときの中身）は、「**`data` が空っぽのときに代わりに表示する中身**」を指定します。
+- データが1件もないとき、何も出ないと利用者は「壊れた?」と不安になります。`ListEmptyComponent` で「本がありません」などの案内を出すと親切です。
+- データがあるときは普通にリストが表示され、空のときだけこの中身が出る、と自動で切り替わります。自分で「空かどうか」を判定する必要はありません。
+- 検索結果が0件のときの「該当する本はありません」表示などに、そのまま使えます。
+
+> **用語:** **空状態（からじょうたい / empty state）** とは「表示するデータが1件もない状態」のこと。ここに分かりやすい案内を出すかどうかで、アプリの親切さが変わります。
+
+---
+
+> **これらの先にあるもの:** ここで紹介した機能のほかにも、「画面の下からスライドして出るメニュー」や「複雑なタブ・ドロワー（横から出るメニュー）」などは、**React Navigation** という別のライブラリで作ります（Expo Routerもその上に作られています）。本書では深入りしませんが、「もっと凝った画面遷移がしたくなったら React Navigation を調べる」と覚えておけば十分です。
+
+---
+
 ## 7. この章のまとめ
 
 - React Nativeでは **`View`**（箱）・**`Text`**（文字、必ずこれで囲む）・**`Image`**・**`TextInput`**・**`Pressable`** などの専用部品を使う

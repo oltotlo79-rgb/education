@@ -826,3 +826,638 @@ NativeWindは `dark:` というプレフィックスでダークモード（暗�
 - `app.json` で**アプリ名・アイコン・スプラッシュ**を設定し、公開の準備を整えた
 
 > **次の章へ:** アプリが完成しました！いよいよ第10章で、このアプリを **App Store と Google Play に公開**します。世界中の人があなたのアプリを使えるようになります。
+
+---
+
+## 発展: アプリでは使っていない重要なスタイリング機能
+
+ここまでで作った書籍管理アプリでは使いませんでしたが、**実際のアプリ開発でとてもよく登場する**スタイリングの機能をまとめて紹介します。どれも「いつ使うか・なぜ必要か」が分かれば、難しくありません。本書では `StyleSheet`（React Native標準）で書きますが、NativeWindでもほぼ同じ考え方が使えます。
+
+> **大事な前提（Webとの違い）:** React Nativeは**スマホの画面**に表示する仕組みで、ホームページ（Web）の見た目を作るCSSとは別物です。Webでよく使う `box-shadow: ...` という文字列や、マウスを乗せたときの `:hover`、ページに貼り付ける `position: fixed` などは**使えません**。React Nativeには専用の書き方が用意されているので、この節ではそれを学びます。
+
+---
+
+### Flexboxの詳細（折り返し・基準サイズ・個別配置・伸び縮みの比率）
+
+> **▼ このコードがやること（先に日本語で）:** 要素を「横や縦にきれいに並べる」仕組みである **Flexbox** の、よく使う4つの機能を1つの画面で試します。具体的には、入りきらないときに**次の行へ折り返す**（`flexWrap`）、各要素の**基準の幅を決める**（`flexBasis`）、特定の1つだけ**配置をずらす**（`alignSelf`）、そして**残りの空間を何対何で分け合うか**（`flex` の比率）です。タグの一覧や、画面を比率で分割するレイアウトを作るときに役立ちます。
+
+```tsx
+import { View, Text, StyleSheet } from "react-native";
+
+export default function FlexboxDemo() {
+  return (
+    <View style={styles.screen}>
+      {/* (1) 折り返し: 横に並べて入りきらなければ次の行へ */}
+      <View style={styles.tagRow}>
+        <Text style={styles.tag}>React</Text>
+        <Text style={styles.tag}>Native</Text>
+        <Text style={styles.tag}>Flexbox</Text>
+        <Text style={styles.tag}>StyleSheet</Text>
+        <Text style={styles.tag}>NativeWind</Text>
+      </View>
+
+      {/* (2) 伸び縮みの比率: 1 : 2 で横幅を分け合う */}
+      <View style={styles.ratioRow}>
+        <View style={[styles.box, { flex: 1, backgroundColor: "#93c5fd" }]}>
+          <Text>flex: 1</Text>
+        </View>
+        <View style={[styles.box, { flex: 2, backgroundColor: "#3b82f6" }]}>
+          <Text>flex: 2</Text>
+        </View>
+      </View>
+
+      {/* (3) 自分だけ右へ: alignSelf で1つだけ配置をずらす */}
+      <View style={styles.selfRow}>
+        <Text style={styles.selfItem}>左寄せ（親の指定どおり）</Text>
+        <Text style={[styles.selfItem, { alignSelf: "flex-end" }]}>
+          この行だけ右寄せ
+        </Text>
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  screen: { flex: 1, padding: 16, gap: 16 },
+  tagRow: {
+    flexDirection: "row", // 横並びにする
+    flexWrap: "wrap",     // 入りきらなければ折り返す
+    gap: 8,               // タグ同士のすき間
+  },
+  tag: {
+    backgroundColor: "#e0e7ff",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 999,    // 完全な丸み（カプセル型）
+    flexBasis: 100,       // 1つあたりの基準の幅を100にする
+    textAlign: "center",
+  },
+  ratioRow: { flexDirection: "row", gap: 8, height: 60 },
+  box: { justifyContent: "center", alignItems: "center", borderRadius: 8 },
+  selfRow: { gap: 8 },
+  selfItem: { backgroundColor: "#fde68a", padding: 8, borderRadius: 8 },
+});
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+---
+
+##### 解説1: 折り返して並べる（`flexWrap`）
+
+```tsx
+tagRow: {
+  flexDirection: "row", // 横並びにする
+  flexWrap: "wrap",     // 入りきらなければ折り返す
+  gap: 8,
+},
+```
+
+- `flexDirection: "row"` で、中の要素を**横方向に並べます**（初期値は縦並びの `"column"`）。
+- `flexWrap: "wrap"` は「**横幅が足りなくなったら、はみ出さずに次の行へ折り返す**」という指定です。これが無い（初期値の `"nowrap"`）と、要素が無理やり縮められたり画面からはみ出したりします。
+- `gap: 8` で、並んだ要素同士のすき間を8空けます。折り返した後の行同士のすき間にも効きます。
+
+> **用語:** `flexWrap`（フレックスラップ） … 並べた要素が**1行に収まらないとき折り返すかどうか**を決める指定。タグ一覧やボタンの集まりのように「数が変わるものを並べる」場面で必須です。
+
+---
+
+##### 解説2: 1つあたりの基準サイズ（`flexBasis`）
+
+```tsx
+tag: {
+  flexBasis: 100, // 1つあたりの基準の幅を100にする
+  // ...
+},
+```
+
+- `flexBasis` は「**その要素の、最初の基準となる大きさ**」です。横並び（`row`）なら幅、縦並び（`column`）なら高さの基準になります。
+- ここでは `100` を指定しているので、各タグは**まず幅100を目安に置かれ**、入りきらなければ前述の `flexWrap` で折り返されます。
+- `width`（固定幅）と似ていますが、`flexBasis` は「**あくまで基準**であり、空き具合に応じて伸び縮みできる」点が違います。
+
+> **用語:** `flexBasis`（フレックスベーシス） … 伸び縮みする前の「**スタートの大きさ**」。`width` がガチガチの固定なのに対し、こちらは柔軟に調整される基準値です。
+
+---
+
+##### 解説3: 自分だけ配置をずらす（`alignSelf`）
+
+```tsx
+<Text style={[styles.selfItem, { alignSelf: "flex-end" }]}>
+  この行だけ右寄せ
+</Text>
+```
+
+- `alignSelf` は「**親の配置ルールを無視して、自分1つだけ別の配置にする**」指定です。
+- 親（`selfRow`）は縦並びなので、通常は子要素が左端からそろいます。そこに `alignSelf: "flex-end"` を付けた要素**だけ**が、右端（行の終わり側）に寄ります。
+- `"flex-start"`（始め側）、`"center"`（中央）、`"flex-end"`（終わり側）、`"stretch"`（いっぱいに伸ばす）などが指定できます。
+
+> **用語:** `alignSelf`（アラインセルフ） … 親がまとめて決めた配置を、**その要素だけ上書き**する指定。「基本は左寄せだけど、この1つだけ右に出したい」というときに使います。
+
+---
+
+##### 解説4: 残りの空間を比率で分け合う（`flex` の数字）
+
+```tsx
+<View style={[styles.box, { flex: 1, backgroundColor: "#93c5fd" }]}>
+  <Text>flex: 1</Text>
+</View>
+<View style={[styles.box, { flex: 2, backgroundColor: "#3b82f6" }]}>
+  <Text>flex: 2</Text>
+</View>
+```
+
+- 横並びの中に置いた2つの枠に、それぞれ `flex: 1` と `flex: 2` を付けています。
+- このとき2つは**幅を 1 : 2 の比率で分け合います**。つまり右側が左側の2倍の幅になります。`flex` の数字は「使える空間を、どんな割合で取り合うか」を表す**比率**です。
+- 画面を「左に1・右に2」のように比率で分割したいとき、固定のピクセル数を計算しなくてもこれだけで実現できます。
+
+> **用語:** `flex` の比率 … 並んだ要素に付けた `flex` の数字の**比**で、余った空間を分け合います。`flex: 1` と `flex: 1` なら半々、`flex: 1` と `flex: 3` なら 1 : 3 になります。
+
+---
+
+### 画面サイズに合わせる（`Dimensions` と `useWindowDimensions`）
+
+> **▼ このコードがやること（先に日本語で）:** スマホには画面が大きい機種・小さい機種、さらに**縦持ち・横持ち**があります。この例では、今の**画面の幅・高さを取得**して、その値に応じて見た目を変えます（例: 幅が広い端末では文字を大きく）。これを使うと、どの端末でも崩れない「**端末に合わせて伸び縮みするレイアウト**」が作れます。`useWindowDimensions` は画面を回転したときも**自動で最新の値に更新される**のが便利なポイントです。
+
+```tsx
+import { View, Text, StyleSheet, useWindowDimensions, Dimensions } from "react-native";
+
+// 画面の今の大きさを「1回だけ」測る（更新はされない）
+const initial = Dimensions.get("window");
+console.log("起動時の幅:", initial.width);
+
+export default function ResponsiveDemo() {
+  // 画面の幅・高さを取得（回転や折りたたみで自動更新される）
+  const { width, height } = useWindowDimensions();
+
+  // 幅が400より広ければ「大きい画面」とみなす
+  const isWide = width >= 400;
+
+  return (
+    <View style={styles.screen}>
+      <Text style={{ fontSize: isWide ? 24 : 16 }}>
+        画面の幅: {Math.round(width)} / 高さ: {Math.round(height)}
+      </Text>
+      {/* 画面幅の半分の幅を持つ四角を作る */}
+      <View style={{ width: width / 2, height: 60, backgroundColor: "#3b82f6" }} />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  screen: { flex: 1, padding: 16, gap: 16, justifyContent: "center" },
+});
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+---
+
+##### 解説1: 1回だけ測る `Dimensions.get`
+
+```tsx
+const initial = Dimensions.get("window");
+console.log("起動時の幅:", initial.width);
+```
+
+- `Dimensions.get("window")` は「**今の画面の大きさ（幅・高さ）を1回測って返す**」関数です。返ってきたものから `.width`（幅）や `.height`（高さ）を取り出せます。
+- `"window"` は「アプリが使える画面の領域」を意味します（似たものに端末全体を表す `"screen"` もあります）。
+- 注意点は、これは**測った瞬間の値で固定**されることです。画面を回転しても**自動では更新されません**。コンポーネントの外（毎回再計算しない場所）で、起動時の値を一度だけ知りたいときに向いています。
+
+> **用語:** `Dimensions`（ディメンションズ） … 画面の大きさを測るためのReact Native標準の道具。`get("window")` でその時点の幅・高さが分かります。
+
+---
+
+##### 解説2: 自動更新される `useWindowDimensions`
+
+```tsx
+const { width, height } = useWindowDimensions();
+const isWide = width >= 400;
+```
+
+- `useWindowDimensions()` は「**今の画面の幅・高さを返し、しかも画面が回転・サイズ変更されると自動で最新の値に更新してくれる**」便利な関数（フック）です。
+- ここでは `{ width, height }` として幅と高さを取り出しています。回転して幅が変わると、この値も変わり、画面が**自動で再描画**されます。
+- `isWide = width >= 400` のように、取得した幅をもとに「広い画面かどうか」を判定して、後の見た目を切り替えられます。
+
+> **用語:** フック（hook） … `use〜` という名前で始まる、React/React Nativeの特別な関数。画面の状態や端末の情報を**自動で追いかけて**、変化したら画面を更新してくれます。
+
+---
+
+##### 解説3: 取得した値で見た目を変える
+
+```tsx
+<Text style={{ fontSize: isWide ? 24 : 16 }}>
+  画面の幅: {Math.round(width)} / 高さ: {Math.round(height)}
+</Text>
+<View style={{ width: width / 2, height: 60, backgroundColor: "#3b82f6" }} />
+```
+
+- `fontSize: isWide ? 24 : 16` は「**広い画面なら文字を24、そうでなければ16にする**」という条件分岐です（`条件 ? 真のとき : 偽のとき`）。
+- `width: width / 2` のように、取得した画面幅を**計算に使って**、画面幅のちょうど半分の四角を作っています。端末が変わってもいつでも「画面の半分」になります。
+- `Math.round(...)` は小数点以下を四捨五入して、表示を見やすい整数にしています。
+
+> **いつ使う？** 「タブレットでは2列、スマホでは1列」「横持ちのときだけ横並び」など、**端末や向きに応じてレイアウトを変えたい**ときに使います。リアルなアプリでは必須級の機能です。
+
+---
+
+### 影を付ける（iOSとAndroidで指定が違う）
+
+> **▼ このコードがやること（先に日本語で）:** カードやボタンを「**少し浮いて見える**」ようにする影の付け方です。ここが少しややこしいのですが、React Nativeでは **iPhone（iOS）とAndroidで影の指定方法が違います**。iOSは影の色・向き・濃さ・ぼかし具合を細かく指定し、Androidは `elevation`（高さ）という1つの数字で指定します。**両方を書いておけば**、どちらの端末でもきれいに影が付きます。
+
+```tsx
+import { View, Text, StyleSheet } from "react-native";
+
+export default function ShadowDemo() {
+  return (
+    <View style={styles.screen}>
+      <View style={styles.card}>
+        <Text>影付きのカード</Text>
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  screen: { flex: 1, padding: 24, backgroundColor: "#f8fafc", justifyContent: "center" },
+  card: {
+    backgroundColor: "#ffffff",
+    padding: 24,
+    borderRadius: 12,
+    // ▼ iOS用の影（4つセットで指定する）
+    shadowColor: "#000000",            // 影の色
+    shadowOffset: { width: 0, height: 4 }, // 影をどれだけずらすか（右0・下4）
+    shadowOpacity: 0.15,               // 影の濃さ（0=透明〜1=真っ黒）
+    shadowRadius: 8,                   // 影のぼかし具合（大きいほどふんわり）
+    // ▼ Android用の影（高さを表す1つの数字）
+    elevation: 5,                      // 数字が大きいほど高く浮いて影が濃くなる
+  },
+});
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+---
+
+##### 解説1: iOS用の影は「4つセット」で指定する
+
+```tsx
+shadowColor: "#000000",                // 影の色
+shadowOffset: { width: 0, height: 4 }, // 影をどれだけずらすか
+shadowOpacity: 0.15,                   // 影の濃さ
+shadowRadius: 8,                       // 影のぼかし具合
+```
+
+- iPhone（iOS）では、影を**4つのプロパティの組み合わせ**で表現します。1つだけ書いても効かないので、基本は4つセットで指定します。
+- `shadowColor` … 影の**色**です。たいてい黒（`"#000000"`）にします。
+- `shadowOffset: { width: 0, height: 4 }` … 影を**どの向きにどれだけずらすか**。`height: 4` で「真下に4ずらした影」になり、要素が上に浮いて見えます。
+- `shadowOpacity: 0.15` … 影の**濃さ**を `0`（透明）〜`1`（真っ黒）で指定します。`0.15` くらいが自然です。
+- `shadowRadius: 8` … 影の**ぼかし具合**。大きいほど、ふわっと広がった柔らかい影になります。
+
+> **用語:** 影の4点セット … iOSでは `shadowColor`（色）/`shadowOffset`（ずらし）/`shadowOpacity`（濃さ）/`shadowRadius`（ぼかし）の4つで影を作ります。WebのCSSで使う `box-shadow` という1行の文字列は**使えない**ので注意してください。
+
+---
+
+##### 解説2: Android用の影は「高さ」1つで指定する
+
+```tsx
+elevation: 5, // 数字が大きいほど高く浮いて影が濃くなる
+```
+
+- Androidでは影を `elevation`（エレベーション＝高さ）という**1つの数字**だけで指定します。iOSの4点セットは効きません。
+- 数字が大きいほど「**より高く浮いている**」とみなされ、影が濃く大きくなります。`5` 前後がカードらしい自然な見た目です。
+- 大事なのは、**iOS用の4点セットとAndroidの `elevation` の両方を書いておく**ことです。React Nativeは「その端末で有効なほうだけ」を使うので、両方書いておけばどちらの機種でも影が付きます。
+
+> **いつ使う？** カード・ボタン・メニューなどを「**背景から少し浮かせて目立たせたい**」ときに使います。前の節で見たFAB（浮かぶ追加ボタン）も、影が付くことで「押せそうな浮いたボタン」に見えます。
+
+---
+
+### 変形させる（拡大・回転・移動＝`transform`）
+
+> **▼ このコードがやること（先に日本語で）:** 要素を**大きくしたり（拡大）、傾けたり（回転）、位置をずらしたり（移動）**する `transform` の使い方です。元のレイアウトを崩さずに「見た目だけ」変えられるのが特徴で、アイコンを少し傾けたり、押したとき一瞬大きくする演出などに使います。`transform` は**変形の指定を配列（リスト）で複数並べる**点がポイントです。
+
+```tsx
+import { View, Text, StyleSheet } from "react-native";
+
+export default function TransformDemo() {
+  return (
+    <View style={styles.screen}>
+      {/* 1.3倍に拡大 */}
+      <View style={[styles.box, { transform: [{ scale: 1.3 }] }]}>
+        <Text>拡大</Text>
+      </View>
+
+      {/* 15度かたむける */}
+      <View style={[styles.box, { transform: [{ rotate: "15deg" }] }]}>
+        <Text>回転</Text>
+      </View>
+
+      {/* 右へ40ずらす + 少し縮小（複数を配列で並べる） */}
+      <View
+        style={[styles.box, { transform: [{ translateX: 40 }, { scale: 0.8 }] }]}
+      >
+        <Text>移動＋縮小</Text>
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  screen: { flex: 1, padding: 24, gap: 32, justifyContent: "center" },
+  box: {
+    backgroundColor: "#a7f3d0",
+    padding: 16,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+});
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+---
+
+##### 解説1: 大きさを変える（`scale`）
+
+```tsx
+transform: [{ scale: 1.3 }]
+```
+
+- `transform` には、変形の指定を **`[ { ... } ]` という配列（リスト）**で渡します。たとえ1つだけでも配列で囲みます。
+- `{ scale: 1.3 }` は「**1.3倍に拡大する**」指定です。`1` が元のサイズ、`0.5` なら半分、`2` なら2倍です。
+- 拡大しても**まわりのレイアウトの計算は元のサイズのまま**なので、近くの要素を押しのけずに「見た目だけ」大きくなります。
+
+> **用語:** `scale`（スケール） … 拡大・縮小の倍率。`1` が等倍で、数字を大きくすると拡大、小さくすると縮小します。
+
+---
+
+##### 解説2: 回転させる（`rotate`）
+
+```tsx
+transform: [{ rotate: "15deg" }]
+```
+
+- `{ rotate: "15deg" }` は「**15度かたむける**」指定です。角度は `"15deg"` のように**文字列で単位 `deg`（度）を付けて**書きます。
+- プラスの数字で時計回り、マイナス（`"-15deg"`）で反時計回りに回転します。
+- アイコンを少し傾けたり、開閉する矢印を回したり、といった演出に使います。
+
+> **用語:** `rotate`（ローテート） … 要素を回す指定。値は `"45deg"` のように**度数を文字列**で渡します（数字だけだとエラーになります）。
+
+---
+
+##### 解説3: 位置をずらす＋複数を組み合わせる（`translateX` と配列）
+
+```tsx
+transform: [{ translateX: 40 }, { scale: 0.8 }]
+```
+
+- `{ translateX: 40 }` は「**横方向（X）に40ずらす**」指定です（プラスで右、マイナスで左）。縦にずらす `translateY` もあります。
+- ここでは配列の中に **`translateX` と `scale` の2つを並べて**います。このように `transform` は**複数の変形を組み合わせられる**のが大きな特徴です（「右に40ずらして、かつ0.8倍に縮小」）。
+- 並べる順番にも意味があるので、思った見た目にならないときは順番を入れ替えてみてください。
+
+> **いつ使う？** ボタンを押した瞬間に少し縮める、お知らせバッジをちょっと傾ける、要素をスッと横移動させるなど、**「見た目だけの小さな演出」**に使います。レイアウト自体は変えずに動きを足せるのが利点です。
+
+---
+
+### 要素を重ねて配置する（`position: "absolute"` と `zIndex`）
+
+> **▼ このコードがやること（先に日本語で）:** ふだん要素は順番に並びますが、`position: "absolute"`（絶対配置）を使うと、**親の中の好きな位置にピンで留めるように置ける**ようになります。さらに要素同士が重なったとき、`zIndex`（重なりの順番）で**どちらを前に出すか**を決められます。画像の右上に「NEW」バッジを重ねる、写真の上に文字を乗せる、といった表現に使います。
+
+```tsx
+import { View, Text, StyleSheet } from "react-native";
+
+export default function AbsoluteDemo() {
+  return (
+    <View style={styles.screen}>
+      {/* この枠を「基準（relative）」にして、中の絶対配置がこの枠を基準に動く */}
+      <View style={styles.card}>
+        <Text>商品画像のかわりの枠</Text>
+
+        {/* 右上に重ねるNEWバッジ */}
+        <View style={styles.badge}>
+          <Text style={styles.badgeText}>NEW</Text>
+        </View>
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  screen: { flex: 1, padding: 24, justifyContent: "center" },
+  card: {
+    position: "relative",   // 中の絶対配置の「基準」になる
+    height: 160,
+    backgroundColor: "#e2e8f0",
+    borderRadius: 12,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  badge: {
+    position: "absolute",   // 基準の枠の中で位置を自由に指定
+    top: 8,                 // 上から8
+    right: 8,               // 右から8
+    zIndex: 10,             // 重なったとき手前に出す
+    backgroundColor: "#ef4444",
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 999,
+  },
+  badgeText: { color: "#ffffff", fontSize: 12, fontWeight: "bold" },
+});
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+---
+
+##### 解説1: 基準になる枠を作る（`position: "relative"`）
+
+```tsx
+card: {
+  position: "relative", // 中の絶対配置の「基準」になる
+  height: 160,
+  // ...
+},
+```
+
+- `position: "relative"` を付けた枠は、**中に置く絶対配置の要素の「基準」**になります。
+- 絶対配置の要素（次の `badge`）は、`top` や `right` を「**一番近い `relative` の親からの距離**」として計算します。つまりこの枠を基準に、バッジの位置が決まります。
+- これを付けておかないと、バッジが**画面全体を基準**にしてしまい、思わぬ位置に飛んでいくことがあります。
+
+> **用語:** `position: "relative"` … その要素自体は普通に並ぶが、**中の絶対配置の「位置の基準点」になる**指定。「ここを基準にしてね」という土台の役割です。
+
+---
+
+##### 解説2: 好きな位置にピン留めする（`position: "absolute"` と `top`/`right`）
+
+```tsx
+badge: {
+  position: "absolute", // 基準の枠の中で位置を自由に指定
+  top: 8,               // 上から8
+  right: 8,             // 右から8
+  // ...
+},
+```
+
+- `position: "absolute"` は「**通常の並びから外れて、指定した位置にピンで留める**」配置です。
+- `top: 8` / `right: 8` で「基準の枠の**上から8・右から8**の位置」に置いています。これでカードの右上にバッジが乗ります。`top`/`bottom`/`left`/`right` の4方向で位置を指定できます。
+- 絶対配置にした要素は「場所を取らない（まわりを押しのけない）」ので、他の要素の**上に重ねて**置けます。
+
+> **用語:** `position: "absolute"`（アブソリュート） … 要素を通常の並びから外し、`top`/`left` などで**好きな位置に固定**する配置。バッジ・ラベル・重ねる文字などに使います。なお、Webの「スクロールしても画面に貼り付く `fixed`」はReact Nativeには無く、固定したいときはこの `absolute` を使います。
+
+---
+
+##### 解説3: 重なりの前後を決める（`zIndex`）
+
+```tsx
+zIndex: 10, // 重なったとき手前に出す
+```
+
+- `zIndex` は「**要素が重なったとき、どちらを前（手前）に出すか**」を決める数字です。
+- 数字が**大きいほど手前**に表示されます。`zIndex: 10` を付けたバッジは、`zIndex` の小さい（または無い）他の要素より前面に出ます。
+- バッジや吹き出しが他の要素の下に隠れてしまうときは、この数字を上げると手前に出てきます。
+
+> **いつ使う？** 商品画像の角に「SALE」「NEW」を重ねる、アイコンに未読数の赤丸を重ねる、写真の上に説明文を乗せる、といった「**要素を重ねて表現したい**」場面で使います。
+
+---
+
+### OSごとにスタイルを変える（`Platform.select`）
+
+> **▼ このコードがやること（先に日本語で）:** 同じアプリでも、iPhone（iOS）とAndroidでは「ちょうどいい見た目」が少し違うことがあります（影の付け方、フォント、余白など）。`Platform.select` を使うと、**今動いているOSに応じて自動で別々の値を使い分け**られます。ここでは、影の指定をiOSとAndroidで切り替える例を見ます。
+
+```tsx
+import { View, Text, StyleSheet, Platform } from "react-native";
+
+export default function PlatformDemo() {
+  return (
+    <View style={styles.screen}>
+      <View style={styles.card}>
+        {/* 今動いているOSの名前を表示 */}
+        <Text>このOSは: {Platform.OS}</Text>
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  screen: { flex: 1, padding: 24, justifyContent: "center" },
+  card: {
+    backgroundColor: "#ffffff",
+    padding: 24,
+    borderRadius: 12,
+    // OSごとに別々のスタイルを使い分ける
+    ...Platform.select({
+      ios: {
+        // iOSのときだけ使う影の指定
+        shadowColor: "#000000",
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.15,
+        shadowRadius: 8,
+      },
+      android: {
+        // Androidのときだけ使う影の指定
+        elevation: 5,
+      },
+    }),
+  },
+});
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+---
+
+##### 解説1: 今のOSを知る（`Platform.OS`）
+
+```tsx
+<Text>このOSは: {Platform.OS}</Text>
+```
+
+- `Platform` はReact Native標準の「**今どのOSで動いているかを教えてくれる道具**」です。
+- `Platform.OS` には、iPhoneなら `"ios"`、Androidなら `"android"` という文字列が入っています。
+- これを使えば「`if (Platform.OS === "ios") { ... }`」のように、OSによって処理を分けることもできます。
+
+> **用語:** `Platform.OS` … 今動いているOSの名前（`"ios"` か `"android"`）が入った値。OSごとに違う動きをさせたいときの出発点です。
+
+---
+
+##### 解説2: OSごとに値を選ぶ（`Platform.select`）
+
+```tsx
+...Platform.select({
+  ios: { /* iOSのときの影 */ },
+  android: { elevation: 5 },
+}),
+```
+
+- `Platform.select({ ios: ..., android: ... })` は「**今のOSに合うほうの中身を返す**」関数です。iOSで動いていれば `ios:` の中身、Androidなら `android:` の中身が選ばれます。
+- 前の冒頭の `...`（スプレッド構文）は「**選ばれたオブジェクトの中身を、ここに展開して混ぜ込む**」書き方です。これにより、選ばれた影の指定が `card` のスタイルに合流します。
+- 結果として、**iOSでは4点セットの影、Androidでは `elevation` の影**が自動で使い分けられます。前の「影」の節では両方ベタ書きしましたが、`Platform.select` を使うと「**そのOSに必要な分だけ**」を渡せて、すっきり書けます。
+
+> **いつ使う？** 「iOSとAndroidで影・フォント・余白の見た目をそろえたい」「片方のOSだけ特別な調整をしたい」ときに使います。OSごとの細かな違いを吸収する定番の道具です。
+
+> **用語:** スプレッド構文（`...`） … オブジェクトや配列の**中身をその場に展開して並べる**書き方。ここでは「OSに応じて選ばれた設定を、スタイルの中に溶け込ませる」役割をしています。
+
+---
+
+### 長い文字を「…」で省略する（`numberOfLines` と `ellipsizeMode`）
+
+> **▼ このコードがやること（先に日本語で）:** 本のタイトルや説明文がとても長いと、画面からはみ出したりレイアウトが崩れたりします。`Text` に `numberOfLines`（表示する行数の上限）を付けると、**指定した行数を超えた分は自動で「…」に省略**されます。一覧のカードで「タイトルは1行まで」「説明は2行まで」とそろえたいときに大活躍する機能です。
+
+```tsx
+import { View, Text, StyleSheet } from "react-native";
+
+export default function EllipsisDemo() {
+  const longTitle = "とても長い本のタイトルが入っていて画面からはみ出してしまうケース";
+
+  return (
+    <View style={styles.screen}>
+      {/* 1行を超えたら末尾を「…」で省略 */}
+      <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
+        {longTitle}
+      </Text>
+
+      {/* 2行までにそろえる（説明文などに) */}
+      <Text style={styles.body} numberOfLines={2}>
+        {longTitle}（こちらは2行まで表示し、3行目以降は省略されます）{longTitle}
+      </Text>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  screen: { flex: 1, padding: 24, gap: 12, justifyContent: "center" },
+  title: { fontSize: 18, fontWeight: "bold" },
+  body: { fontSize: 14, color: "#475569" },
+});
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+---
+
+##### 解説1: 表示する行数の上限を決める（`numberOfLines`）
+
+```tsx
+<Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
+  {longTitle}
+</Text>
+```
+
+- `numberOfLines={1}` は「**この文字は最大1行まで表示する**」という指定です。1行に収まらない長い文字は、はみ出さずに自動で切り詰められます。
+- 切り詰められた箇所には「**…**（三点リーダー）」が表示され、「まだ続きがある」ことが分かります。
+- `numberOfLines={2}` のように数字を変えれば「2行まで」「3行まで」と調整できます。カード内のタイトルや説明文の高さをそろえるのに最適です。
+
+> **用語:** `numberOfLines`（ナンバーオブラインズ） … `Text` に「**最大で何行まで表示するか**」を指定するプロパティ。あふれた分は自動で「…」に省略されます。
+
+---
+
+##### 解説2: どこを省略するか決める（`ellipsizeMode`）
+
+```tsx
+ellipsizeMode="tail"
+```
+
+- `ellipsizeMode` は「**文字のどの部分を「…」にするか**」を決める指定です。
+- `"tail"`（末尾）… いちばんよく使う指定で、**後ろを省略**します（`長いタイトル…`）。
+- `"head"`（先頭）… **前を省略**します（`…いタイトル`）。`"middle"`（中央）… **真ん中を省略**します（`長い…トル`）。ファイル名のように末尾も見せたいときに便利です。
+- 省略しても、`numberOfLines` を付けていれば自動で `"tail"` が初期値になるので、特にこだわりが無ければ省略してもかまいません。
+
+> **いつ使う？** 一覧画面で「タイトルは1行・説明は2行」のように**カードの高さをそろえたい**とき、長いテキストでレイアウトが崩れるのを防ぎたいときに使います。実用アプリではほぼ必ず登場する機能です。

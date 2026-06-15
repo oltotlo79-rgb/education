@@ -29,6 +29,7 @@
 6. [ユニオン型とリテラル型](#6-ユニオン型とリテラル型)
 7. [TypeScript の設定（tsconfig.json）](#7-typescript-の設定tsconfigjson)
 8. [よくあるエラーと対処法](#8-よくあるエラーと対処法)
+9. [発展: アプリでは使っていない重要なTypeScript機能](#発展-アプリでは使っていない重要なtypescript機能)
 
 ---
 
@@ -3537,6 +3538,548 @@ async function fetchData(): Promise<ApiData> {                  // 戻り値の�
     </div>
   </div>
 </div>
+
+---
+
+## 発展: アプリでは使っていない重要なTypeScript機能
+
+> この章の本編とアプリ作りでは登場しなかったけれど、**実務やほかの人のコードを読むとき必ず出てくる**TypeScriptの機能をまとめて紹介します。どれも「これ単体で動く小さな例」なので、気になったものから順に読んでもらって大丈夫です。難しく感じたら「こういう機能があるんだな」と眺めるだけでもOKです。
+>
+> **補足:** 「ユニオン型」「リテラル型」は本編の第6章ですでに扱ったので、ここでは省略します。
+
+### Utility Types（型を組み立て直す便利な道具箱）
+
+> **▼ このコードがやること（先に日本語で）:** すでにある型をもとに「一部だけ省略可能にした型」「特定の項目だけ抜き出した型」などを**自動で作り出す**便利機能（Utility Types）を一通り使います。同じ型を何度も手書きしなくて済むのが利点で、ここでは `Partial`・`Pick`・`Omit`・`Required`・`Record` の5つをまとめて見ます。
+
+```typescript
+// ==========================================================================
+// Utility Types のサンプル — 既存の型から新しい型を「自動生成」する道具
+// ==========================================================================
+
+// もとになる型を1つ用意する。これを使い回していく。
+interface User {
+  id: number;       // ユーザーID（必須）
+  name: string;     // 名前（必須）
+  email: string;    // メールアドレス（必須）
+}
+
+// (1) Partial<T> … すべてのプロパティを「省略してもよい（?付き）」にした型を作る
+//     → { id?: number; name?: string; email?: string } と同じ意味になる
+const draft: Partial<User> = { name: "田中" };   // id も email も省略できる
+
+// (2) Pick<T, キー> … T から指定したキーだけ「抜き出した」型を作る
+//     → { id: number; name: string } と同じ意味
+const summary: Pick<User, "id" | "name"> = { id: 1, name: "田中" };
+
+// (3) Omit<T, キー> … T から指定したキーを「取り除いた」型を作る（Pick の逆）
+//     → { id: number; name: string }（email を除いた形）
+const noEmail: Omit<User, "email"> = { id: 1, name: "田中" };
+
+// (4) Required<T> … すべてのプロパティを「必須」にした型を作る（Partial の逆）
+interface Config {
+  host?: string;    // ? が付いていて省略可能
+  port?: number;
+}
+const fullConfig: Required<Config> = { host: "localhost", port: 8080 }; // 両方とも必須になる
+
+// (5) Record<キーの型, 値の型> … 「キーと値の組」をまとめて表す型を作る
+//     ここでは「文字列キー → number 値」の辞書を表している
+const scores: Record<string, number> = {
+  math: 80,
+  english: 95,
+};
+
+console.log(draft, summary, noEmail, fullConfig, scores);
+// ▼ 実行結果
+// { name: '田中' } { id: 1, name: '田中' } { id: 1, name: '田中' } { host: 'localhost', port: 8080 } { math: 80, english: 95 }
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+Utility Types は名前と役割さえ覚えれば、あとは組み合わせるだけです。**1つずつ**見ていきましょう。
+
+---
+
+##### 解説1: Partial（全部を「省略可能」にする）
+
+```typescript
+const draft: Partial<User> = { name: "田中" };
+```
+
+- `Partial<User>` は、`User` 型のすべてのプロパティに `?`（省略可能マーク）を付けた型を**自動で**作ります。
+- もとの `User` は `id`・`name`・`email` がすべて必須ですが、`Partial<User>` ではどれを書いても・書かなくてもOKになります。
+- 「入力途中の下書きデータ」や「一部だけ更新したいとき」によく使います。
+
+> **用語: Utility Types（ユーティリティ型）** … TypeScript に最初から用意されている「型を加工する道具」のこと。`型の名前<もとの型>` の形で使います。
+
+---
+
+##### 解説2: Pick と Omit（必要な項目を選ぶ／いらない項目を捨てる）
+
+```typescript
+const summary: Pick<User, "id" | "name"> = { id: 1, name: "田中" };
+const noEmail: Omit<User, "email"> = { id: 1, name: "田中" };
+```
+
+- `Pick<User, "id" | "name">` は、`User` から `id` と `name` **だけを抜き出した**型です。`"id" | "name"` のように `|` で複数のキーを並べられます。
+- `Omit<User, "email">` は、`User` から `email` **を取り除いた**型です。`Pick` のちょうど逆です。
+- 「この場面では一部のプロパティしか使わない」というとき、もとの型を壊さずに新しい型を作れます。
+
+---
+
+##### 解説3: Required（全部を「必須」にする）
+
+```typescript
+const fullConfig: Required<Config> = { host: "localhost", port: 8080 };
+```
+
+- `Required<Config>` は、`Config` の `?`（省略可能マーク）を**すべて外して必須**にした型です。`Partial` の逆の働きをします。
+- もとの `Config` は `host?` と `port?` がどちらも省略可能ですが、`Required<Config>` では両方とも必ず書かないとエラーになります。
+
+---
+
+##### 解説4: Record（キーと値の組をまとめて表す）
+
+```typescript
+const scores: Record<string, number> = {
+  math: 80,
+  english: 95,
+};
+```
+
+- `Record<string, number>` は「**キーが `string`、値が `number` の組がいくつでも入る**」型です。
+- `< >` の中は左がキーの型、右が値の型です。今回は「科目名（文字列）→ 点数（数値）」の辞書を表しています。
+- 「どんなキー名が来るか事前に決まっていない辞書」を型で表したいときに便利です。
+
+---
+
+### enum（列挙型 — 決まった選択肢に名前を付ける）
+
+> **▼ このコードがやること（先に日本語で）:** 「赤・黄・青」のような**決まった数の選択肢**に、それぞれ分かりやすい名前を付けてまとめる仕組み（enum）を使います。`Signal.Red` のように名前で書けるので、コードを読んだときに何を表しているか一目で分かるのが利点です。
+
+```typescript
+// ==========================================================================
+// enum のサンプル — 「決まった選択肢の集まり」に名前を付ける
+// ==========================================================================
+
+// enum（イーナム）= 「列挙型」。関連する定数（変わらない値）に名前を付けてまとめる。
+enum Signal {
+  Red,     // 名前を書くだけだと、自動で 0 が割り当てられる
+  Yellow,  // 次は 1
+  Green,   // 次は 2
+}
+
+// enum の値は「列挙名.メンバー名」で取り出す
+const current: Signal = Signal.Red;     // current には 0 が入る（が、意味は「赤信号」）
+
+// 値そのものではなく「名前」で比較できるので読みやすい
+if (current === Signal.Red) {
+  console.log("止まれ");
+}
+
+// 数値ではなく文字列を割り当てることもできる（こちらの方がデバッグ時に分かりやすい）
+enum Direction {
+  Up = "UP",
+  Down = "DOWN",
+  Left = "LEFT",
+  Right = "RIGHT",
+}
+
+const move: Direction = Direction.Up;   // move には "UP" が入る
+console.log(move);
+
+// ▼ 実行結果
+// 止まれ
+// UP
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+enum は「選択肢に名前を付ける」だけのシンプルな機能です。**1つずつ**見ていきましょう。
+
+---
+
+##### 解説1: 数値が自動で割り当たる enum
+
+```typescript
+enum Signal {
+  Red,
+  Yellow,
+  Green,
+}
+```
+
+- `enum`（イーナム）は「**関連する選択肢をひとまとめにして名前を付ける**」仕組みです。
+- 値を書かずに名前だけ並べると、上から順に `0, 1, 2, ...` という数値が自動で割り当てられます。`Red` は `0`、`Yellow` は `1`、`Green` は `2` です。
+- コードの中では `Signal.Red` のように「名前」で書けるので、`0` と直接書くより**何を表しているか分かりやすく**なります。
+
+> **用語: enum（列挙型）** … 「とりうる値があらかじめ決まっている」ものに名前を付けてまとめた型。曜日・信号・状態など「種類が固定の選択肢」を表すのに向いています。
+
+---
+
+##### 解説2: 文字列を割り当てる enum
+
+```typescript
+enum Direction {
+  Up = "UP",
+  Down = "DOWN",
+  Left = "LEFT",
+  Right = "RIGHT",
+}
+
+const move: Direction = Direction.Up;
+```
+
+- `= "UP"` のように、各メンバーに好きな値（ここでは文字列）を指定することもできます。
+- 数値の enum だと表示したとき `0` などになって意味が分かりにくいですが、文字列を割り当てておくと `console.log(move)` で `"UP"` と表示され、**動作確認のとき分かりやすい**という利点があります。
+
+---
+
+### 型ガード（今この値はどの型か、を絞り込む）
+
+> **▼ このコードがやること（先に日本語で）:** 「文字列かもしれないし数値かもしれない」という値を扱うとき、**今この瞬間はどちらの型なのかを調べて安全に処理する**テクニック（型ガード）を学びます。`typeof`・`in`・自作の判定関数の3通りを使い、それぞれ「ここから先はこの型だ」とTypeScriptに伝える方法を見ます。
+
+```typescript
+// ==========================================================================
+// 型ガードのサンプル — 「今この値はどの型か」を調べて安全に絞り込む
+// ==========================================================================
+
+// (1) typeof による型ガード … 文字列・数値などの「基本の型」を調べる
+function describe(value: string | number): string {  // value は string か number のどちらか
+  if (typeof value === "string") {
+    // この { } の中では value は string だと TypeScript が分かっている
+    return `文字列です: ${value.toUpperCase()}`;       // string 専用の .toUpperCase() が使える
+  } else {
+    // ここでは value は number に絞り込まれている
+    return `数値です: ${value.toFixed(1)}`;            // number 専用の .toFixed() が使える
+  }
+}
+
+// (2) in による型ガード … 「そのプロパティを持っているか」で型を見分ける
+interface Dog {
+  bark: () => void;   // 犬は bark を持つ
+}
+interface Cat {
+  meow: () => void;   // 猫は meow を持つ
+}
+
+function speak(animal: Dog | Cat): void {
+  if ("bark" in animal) {        // animal が bark プロパティを持っているか調べる
+    animal.bark();               // ここでは Dog に絞り込まれている
+  } else {
+    animal.meow();               // ここでは Cat に絞り込まれている
+  }
+}
+
+// (3) 型述語（x is T）による自作の型ガード関数
+//     戻り値の型に「value is string」と書くと、true のとき value は string だと TS に伝わる
+function isString(value: unknown): value is string {
+  return typeof value === "string";
+}
+
+const data: unknown = "hello";
+if (isString(data)) {
+  // isString が true なので、ここでは data は string 扱い
+  console.log(data.length);      // string の .length が使える
+}
+
+console.log(describe("hello"));
+console.log(describe(3.14159));
+// ▼ 実行結果
+// 文字列です: HELLO
+// 数値です: 3.1
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+型ガードは「if文で調べると、その中では型が確定する」のがポイントです。**1つずつ**見ていきましょう。
+
+---
+
+##### 解説1: typeof で基本の型を見分ける
+
+```typescript
+if (typeof value === "string") {
+  return `文字列です: ${value.toUpperCase()}`;
+} else {
+  return `数値です: ${value.toFixed(1)}`;
+}
+```
+
+- `typeof value` は「その値が何の型か」を文字列で返す演算子です（`"string"`, `"number"`, `"boolean"` など）。
+- `if (typeof value === "string")` が成り立った `{ }` の中では、TypeScript が「ここでは `value` は `string` だ」と理解してくれます。だから `string` 専用の `.toUpperCase()` を安心して呼べます。
+- `else` 側では残った可能性（`number`）に絞り込まれるので、`.toFixed()` が使えます。
+
+> **用語: 型ガード** … 「今この値はどの型か」を調べて、コードの一部分だけ型を確定させる仕組みのこと。`if` と組み合わせて使います。
+
+---
+
+##### 解説2: in でプロパティの有無を見分ける
+
+```typescript
+if ("bark" in animal) {
+  animal.bark();
+} else {
+  animal.meow();
+}
+```
+
+- `"プロパティ名" in オブジェクト` は「そのオブジェクトがそのプロパティを持っているか」を調べる書き方です。
+- `Dog` だけが `bark` を持つので、`"bark" in animal` が成り立てば `animal` は `Dog` だと絞り込めます。
+- 基本の型（string/number など）ではなく、**オブジェクトの種類を見分けたいとき**に便利です。
+
+---
+
+##### 解説3: 型述語（`x is T`）で自作の型ガードを作る
+
+```typescript
+function isString(value: unknown): value is string {
+  return typeof value === "string";
+}
+```
+
+- 関数の戻り値の型に `value is string` と書くと、その関数が `true` を返したとき「`value` は `string` だ」とTypeScriptに教えられます。これを**型述語**と呼びます。
+- 中身は `true` / `false` を返すだけの普通の関数ですが、`: boolean` の代わりに `: value is string` と書くのがポイントです。
+- これを使うと `if (isString(data)) { ... }` の中で `data` を `string` として扱えるようになります。複雑な判定を関数にまとめて使い回せて便利です。
+
+> **用語: `unknown`** … 「何が入っているか分からない値」を表す型。安全のため、型ガードで絞り込まないとほとんどの操作ができません。
+
+---
+
+### as const（値を「変わらない決め打ちの値」として固定する）
+
+> **▼ このコードがやること（先に日本語で）:** 普通に書くと「ただの文字列」と扱われる値を、`as const` を付けることで「**まさにその値だけ**」という厳密な型に固定します。設定値や選択肢の一覧など「あとから変えたくない・特定の値だけ許したい」ものを安全に扱えるようになります。
+
+```typescript
+// ==========================================================================
+// as const のサンプル — 値を「その値そのもの」に固定する
+// ==========================================================================
+
+// (1) as const を付けない場合
+let role1 = "admin";          // 型は string（"admin" 以外の文字列も入りうる、と判断される）
+
+// (2) as const を付けた場合
+const role2 = "admin" as const;  // 型は "admin"（まさに "admin" という値だけ、に固定される）
+
+// (3) オブジェクトに付けると、中身すべてが「変更不可＆値固定」になる
+const config = {
+  host: "localhost",
+  port: 8080,
+} as const;
+// config.port = 3000;        // ❌ as const のため変更不可（readonly になる）
+
+// (4) 配列に付けると「読み取り専用＆中身の値が固定されたタプル」になる
+//     よく「決まった選択肢の一覧」を作るのに使う
+const colors = ["red", "green", "blue"] as const;
+// colors の型は readonly ["red", "green", "blue"]
+
+// この配列から「"red" | "green" | "blue"」というユニオン型を取り出せる
+type Color = typeof colors[number];   // "red" | "green" | "blue"
+
+const myColor: Color = "red";         // OK
+// const ng: Color = "purple";        // ❌ 一覧に無い値はエラー
+
+console.log(role2, config, colors, myColor);
+// ▼ 実行結果
+// admin { host: 'localhost', port: 8080 } [ 'red', 'green', 'blue' ] red
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+`as const` は「値をガチガチに固定する」だけですが、便利な使い道があります。**1つずつ**見ていきましょう。
+
+---
+
+##### 解説1: 付けるかどうかで型が変わる
+
+```typescript
+let role1 = "admin";              // 型は string
+const role2 = "admin" as const;   // 型は "admin"
+```
+
+- `let role1 = "admin"` の型はただの `string` です。「文字列なら何でも入る箱」と判断されます。
+- `"admin" as const` と書くと、型が **`"admin"` という値そのもの**になります。つまり「`"admin"` 以外は入れられない」という厳密な型です。
+- 「決まった値だけを許したい」ときに役立ちます。
+
+> **用語: `as const`** … 値のうしろに付けると「この値は変わらない決め打ちの値だ」とTypeScriptに伝える書き方。型がぐっと厳密になります。
+
+---
+
+##### 解説2: オブジェクト・配列に付けると全体が固定される
+
+```typescript
+const config = {
+  host: "localhost",
+  port: 8080,
+} as const;
+
+const colors = ["red", "green", "blue"] as const;
+```
+
+- オブジェクトに `as const` を付けると、中のすべてのプロパティが `readonly`（変更不可）になり、値も固定されます。`config.port = 3000` のような書き換えはエラーになります。
+- 配列に付けると「読み取り専用で、中身の値も順番も固定された配列（タプル）」になります。
+- 「設定値」や「選択肢の一覧」のように、**あとから変えてほしくないデータ**にぴったりです。
+
+---
+
+##### 解説3: 一覧からユニオン型を取り出す
+
+```typescript
+const colors = ["red", "green", "blue"] as const;
+type Color = typeof colors[number];   // "red" | "green" | "blue"
+```
+
+- `typeof colors` で「`colors` 変数の型」を取り出し、さらに `[number]`（配列の中身の型を取り出す書き方）を付けると、`"red" | "green" | "blue"` というユニオン型になります。
+- こうすると「選択肢の一覧」と「許される値の型」を**1か所で管理**でき、片方を直せばもう片方も自動で揃います。選択肢が増えても書き換えるのは配列だけで済みます。
+
+---
+
+### オプショナルチェイニング `?.` と Null合体演算子 `??`
+
+> **▼ このコードがやること（先に日本語で）:** 「値がないかもしれない」場面で安全に値を取り出す2つの便利演算子を学びます。`?.` は「途中が空っぽならそこで止めてエラーを防ぐ」、`??` は「値が空っぽだったらこっちの値を使う」という働きです。データが欠けていてもプログラムを止めずに済みます。
+
+```typescript
+// ==========================================================================
+// ?. と ?? のサンプル — 「値がないかも」を安全に扱う
+// ==========================================================================
+
+interface User {
+  name: string;
+  address?: {            // address は省略可能（無いかもしれない）
+    city?: string;       // city も省略可能
+  };
+}
+
+// (1) オプショナルチェイニング ?. … 途中が null / undefined なら、そこで止めて undefined を返す
+const user1: User = { name: "田中" };               // address が無い
+console.log(user1.address?.city);                    // address が無いので undefined（エラーにならない！）
+
+const user2: User = { name: "鈴木", address: { city: "東京" } };
+console.log(user2.address?.city);                    // → "東京"
+
+// もし ?. を使わずに user1.address.city と書くと、実行時にクラッシュしてしまう
+
+// (2) Null合体演算子 ?? … 左が null / undefined のときだけ、右の値を使う
+const city1 = user1.address?.city ?? "未設定";       // 左が undefined なので "未設定"
+const city2 = user2.address?.city ?? "未設定";       // 左が "東京" なのでそのまま "東京"
+
+console.log(city1, city2);
+// ▼ 実行結果
+// undefined
+// 東京
+// 未設定 東京
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+この2つはセットで使うことが多い演算子です。**1つずつ**見ていきましょう。
+
+---
+
+##### 解説1: オプショナルチェイニング `?.`
+
+```typescript
+const user1: User = { name: "田中" };
+console.log(user1.address?.city);   // undefined（エラーにならない）
+```
+
+- `?.`（オプショナルチェイニング）は「**`?.` の左側が `null` か `undefined` なら、その場で止めて `undefined` を返す**」演算子です。
+- `user1.address` が無い（`undefined`）場合、`user1.address.city` と普通に書くと「`undefined` の中の `city`」を読もうとして実行時にクラッシュします。
+- `user1.address?.city` と書けば、途中で安全に止まって `undefined` が返るだけなので、プログラムが落ちません。
+
+> **用語: オプショナルチェイニング** … `?.` を使って「途中が空っぽでも安全につなげて値を取り出す」書き方。
+
+---
+
+##### 解説2: Null合体演算子 `??`
+
+```typescript
+const city1 = user1.address?.city ?? "未設定";
+```
+
+- `??`（ヌル合体演算子）は「**左側が `null` か `undefined` のときだけ、右側の値を使う**」演算子です。
+- `user1.address?.city` は `undefined` なので、`??` の右側の `"未設定"` が `city1` に入ります。
+- 似た `||`（OR）と違い、`??` は **`0` や空文字 `""` を「値あり」として扱う**点が重要です。「`0` も正しい値」という場面では `??` を使うと安全です。
+
+> **用語: Null合体演算子** … `??` を使って「値が無いときだけ別の値（デフォルト値）を使う」書き方。
+
+---
+
+### ジェネリック関数（型を後から決められる関数）
+
+> **▼ このコードがやること（先に日本語で）:** 「どんな型の値が来ても対応できる」関数の書き方（ジェネリック関数）を学びます。`<T>` という印を付けると「型はあとで呼び出すときに決める」という意味になり、文字列でも数値でも同じ1つの関数で扱えます。しかも型の情報は失われないので安全です。
+
+```typescript
+// ==========================================================================
+// ジェネリック関数のサンプル — 「型をあとから決める」関数
+// ==========================================================================
+
+// <T> が「型のプレースホルダ（あとで決まる型の仮の名前）」。
+// 引数 x の型も T、戻り値の型も「T の配列（T[]）」にしている。
+function wrap<T>(x: T): T[] {
+  return [x];                 // 受け取った値を、要素1つだけの配列に包んで返す
+}
+
+// 呼び出すときに T が自動で決まる（明示しなくてよい）
+const a = wrap("hello");      // T は string → a の型は string[]
+const b = wrap(42);           // T は number → b の型は number[]
+const c = wrap(true);         // T は boolean → c の型は boolean[]
+
+console.log(a, b, c);
+// ▼ 実行結果
+// [ 'hello' ] [ 42 ] [ true ]
+
+// 型を明示的に指定することもできる（普通は不要）
+const d = wrap<string>("world");   // T を string と明示
+
+console.log(d);
+// ▼ 実行結果
+// [ 'world' ]
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+ジェネリックは「型に名前を付けて使い回す」だけの仕組みです。**1つずつ**見ていきましょう。
+
+---
+
+##### 解説1: `<T>` は「あとで決まる型の名前」
+
+```typescript
+function wrap<T>(x: T): T[] {
+  return [x];
+}
+```
+
+- 関数名のうしろの `<T>` は「**型のプレースホルダ（仮の名前）**」です。`T` は「あとで決まる型」を表す目印で、`T` という名前自体に決まりはありません（`<U>` でも `<Item>` でもOKです）。
+- 引数 `x: T` は「`T` 型の値を受け取る」、戻り値 `: T[]` は「`T` の配列を返す」という意味です。受け取った型と返す型が**連動**しているのがポイントです。
+- 中身の `return [x]` は「受け取った値を、要素1つだけの配列に包んで返す」だけのシンプルな処理です。
+
+> **用語: ジェネリック（総称型）** … 型を「あとで決められる変数」のように扱う仕組み。1つの関数を色々な型で使い回せるようになります。
+
+---
+
+##### 解説2: 呼び出すと型が自動で決まる
+
+```typescript
+const a = wrap("hello");   // a の型は string[]
+const b = wrap(42);        // b の型は number[]
+```
+
+- `wrap("hello")` のように文字列を渡すと、`T` が自動で `string` に決まり、戻り値 `a` の型は `string[]` になります。
+- `wrap(42)` なら `T` は `number` になり、`b` は `number[]` です。**渡した値から型が自動で決まる**ので、いちいち型を書く必要はありません。
+- もし `any`（何でも型）で書いてしまうと型の情報が失われますが、ジェネリックなら「文字列を渡したら文字列の配列が返る」という対応が**型として保たれる**のが大きな利点です。
+
+---
+
+##### 解説3: 型を明示的に指定することもできる
+
+```typescript
+const d = wrap<string>("world");   // T を string と明示
+```
+
+- `wrap<string>(...)` のように `< >` の中に型を書くと、`T` を自分で指定できます。
+- 普段は値から自動で決まるので省略しますが、「どうしてもこの型として扱ってほしい」場面では明示できる、と覚えておけば十分です。
 
 ---
 

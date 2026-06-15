@@ -32,6 +32,7 @@
 7. [Supabase の基本操作（CRUD）](#7-supabase-の基本操作crud)
 8. [テストデータの投入](#8-テストデータの投入)
 9. [トラブルシューティング](#9-トラブルシューティング)
+10. [発展: アプリでは使っていない重要なSupabase機能](#発展-アプリでは使っていない重要なsupabase機能)
 
 ---
 
@@ -2961,6 +2962,554 @@ SELECT COUNT(*) FROM books;
 -- COUNT(*) as count : 各グループの件数を取得し、列名を count にする
 SELECT status, COUNT(*) as count FROM books GROUP BY status;
 ```
+
+---
+
+## 発展: アプリでは使っていない重要なSupabase機能
+
+ここまでで、books テーブルを使った基本的なデータの読み書き（CRUD）と、RLS の基礎は身につきました。この章の本編で作るアプリでは使いませんが、実際のサービスを作るときにほぼ必ず必要になる、Supabase の重要な機能を「最小サンプル」で紹介します。
+
+> **この発展セクションの読み方:** どれも独立した小さな例なので、興味のあるものから読んで構いません。各トピックの最初に「いつ使うか・なぜ必要か」を必ず書いているので、まずはそこだけ読んで「自分のアプリに必要そうか」を判断するのがおすすめです。コードは「今すぐ書く」ものではなく「将来必要になったときに戻ってくる辞書」として使ってください。
+
+### 認証（Auth）: サインアップ・ログイン・ログアウト・現在のユーザー取得
+
+> **▼ このコードがやること（先に日本語で）:** ユーザーが**メールアドレスとパスワードで会員登録（サインアップ）し、ログイン・ログアウトする**ための一式です。「誰がアクセスしているか」をアプリが知るための仕組みで、「自分の投稿だけ表示する」「ログインしていない人には見せない」といった機能の土台になります。Supabase がパスワードの暗号化やログイン状態の管理を全部やってくれるので、私たちは用意された関数を呼ぶだけです。
+
+```ts
+// ① メール＋パスワードで新規登録（サインアップ）
+// supabase.auth      : 認証まわりの機能がまとまったオブジェクト
+// .signUp(...)       : 新しいユーザーを作成する関数
+// email / password   : 登録するメールアドレスとパスワード
+const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+  email: 'taro@example.com',
+  password: 'super-secret-password',
+});
+if (signUpError) {
+  console.error('登録に失敗:', signUpError.message);
+}
+
+// ② 登録済みのユーザーがログインする
+// .signInWithPassword(...) : メールとパスワードでログインする関数
+const { data: loginData, error: loginError } = await supabase.auth.signInWithPassword({
+  email: 'taro@example.com',
+  password: 'super-secret-password',
+});
+if (loginError) {
+  console.error('ログインに失敗:', loginError.message);
+}
+
+// ③ 今ログインしているユーザーの情報を取得する
+// .getUser() : 現在のログインユーザーを取得する関数（未ログインなら user は null）
+const { data: { user } } = await supabase.auth.getUser();
+console.log('今ログイン中のユーザー:', user?.email); // 例: taro@example.com
+
+// ④ ログアウトする
+// .signOut() : ログイン状態を解除する関数
+const { error: signOutError } = await supabase.auth.signOut();
+if (signOutError) {
+  console.error('ログアウトに失敗:', signOutError.message);
+}
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: サインアップ（新規会員登録）
+
+```ts
+const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+  email: 'taro@example.com',
+  password: 'super-secret-password',
+});
+```
+
+- `supabase.auth` は、ログインまわりの機能がまとまった入れ口です。`.from('books')` がテーブル操作の入り口だったのに対し、`.auth` は「人（ユーザー）」を扱う入り口だと考えてください。
+- `.signUp({ email, password })` を呼ぶと、新しいユーザーがデータベースに登録されます。パスワードはそのまま保存されるのではなく、Supabase が安全な形（暗号化したもの）に変換して保存してくれます。
+- これまでのCRUDと同じで、戻り値は `{ data, error }` の形です。`data: signUpData` のように書いているのは、後のログインの `data` と名前がぶつからないように**別名をつけている**だけです。
+
+> **用語:** **サインアップ** = アプリに初めて登録すること（会員登録）。**ログイン** = すでに登録済みの人が「これは私です」と認証して入ること。
+
+---
+
+##### 解説2: ログイン（既存ユーザーの認証）
+
+```ts
+const { data: loginData, error: loginError } = await supabase.auth.signInWithPassword({
+  email: 'taro@example.com',
+  password: 'super-secret-password',
+});
+```
+
+- `.signInWithPassword(...)` は「メールとパスワードが正しいか確認して、正しければログインさせる」関数です。
+- ログインに成功すると、Supabase はブラウザの中に「ログイン証明書」のようなもの（トークン）を保存します。これ以降の `supabase.from('books')...` などの操作は、自動的に「このユーザーとして」実行されるようになります。
+- 以降に出てくる RLS ポリシーの `auth.uid()`（自分のID）は、このログイン情報をもとに決まります。
+
+> **用語:** **トークン** = 「ログイン済みであること」を証明する文字列。毎回パスワードを送らなくても、このトークンを見せれば本人だと分かる仕組み。
+
+---
+
+##### 解説3: 今ログイン中のユーザーを取得する
+
+```ts
+const { data: { user } } = await supabase.auth.getUser();
+console.log('今ログイン中のユーザー:', user?.email);
+```
+
+- `.getUser()` で「今このブラウザで誰がログインしているか」を取り出せます。ログインしていなければ `user` は `null`（誰もいない）になります。
+- `user?.email` の `?.`（オプショナルチェーン）は、「`user` が `null` でなければ `.email` を取り出す。`null` なら何もせず `undefined` を返す」という安全な書き方です。`user` が `null` のときに `user.email` と書くとエラーになるのを防ぎます。
+- 「ログインしていなければログイン画面に飛ばす」といった分岐は、この `user` が `null` かどうかで判断します。
+
+---
+
+##### 解説4: ログアウト
+
+```ts
+const { error: signOutError } = await supabase.auth.signOut();
+```
+
+- `.signOut()` を呼ぶと、ブラウザに保存されていたログイン証明書（トークン）が消され、未ログイン状態に戻ります。
+- ログアウト後は `getUser()` の `user` が `null` になり、自分専用のデータも見えなくなります（次のRLSの話につながります）。
+
+### 認証後の厳密なRLSポリシー: 「自分のデータだけ」を守る
+
+> **▼ このコードがやること（先に日本語で）:** ログイン機能とセットで使う、**「自分が作ったデータだけ読める・書ける」**という厳しいルール（ポリシー）を SQL で定義します。本編のRLSは「ログインしていれば誰でもOK」レベルでしたが、実際のサービスでは「他人の家計簿や日記が見えてしまう」と大問題です。ここでは、テーブルに `user_id`（持ち主のID）列を足し、その列が**今ログインしている人のIDと一致する行だけ**操作を許可するようにします。
+
+```sql
+-- ============================================================================
+-- 前提: books テーブルに「持ち主」を表す user_id 列を追加する
+-- ----------------------------------------------------------------------------
+-- ALTER TABLE     : 既存テーブルの構造を変更するSQL
+-- ADD COLUMN      : 新しい列を追加する
+-- user_id uuid    : 持ち主のユーザーIDを入れる列（型はuuid）
+-- REFERENCES auth.users(id) : 「この値は auth.users テーブルの id を指す」という外部キー
+--   auth.users は Supabase が認証ユーザーを管理する標準テーブル
+-- DEFAULT auth.uid() : INSERT時に省略されたら「今ログイン中の人のID」が自動で入る
+-- ============================================================================
+ALTER TABLE books
+  ADD COLUMN user_id uuid REFERENCES auth.users(id) DEFAULT auth.uid();
+
+-- RLSを有効化（まだなら）。これが無いとポリシーは効かない
+ALTER TABLE books ENABLE ROW LEVEL SECURITY;
+
+-- (1) 読み取り(SELECT)ポリシー: 自分のbooksだけ見える
+-- CREATE POLICY "ポリシー名" : 新しいルールを作る
+-- ON books               : booksテーブルに対するルール
+-- FOR SELECT             : SELECT（読み取り）のときに適用
+-- USING ( 条件 )         : この条件が真の行だけ「見える」
+-- auth.uid() = user_id   : 今ログイン中の人のID と 行の持ち主ID が一致する行だけ
+CREATE POLICY "自分の本だけ読める"
+  ON books FOR SELECT
+  USING (auth.uid() = user_id);
+
+-- (2) 追加(INSERT)ポリシー: 自分名義でしか追加できない
+-- FOR INSERT          : INSERT（追加）のときに適用
+-- WITH CHECK ( 条件 ) : 追加しようとする行がこの条件を満たすときだけ許可
+--   USING ではなく WITH CHECK を使うのがINSERTの作法
+CREATE POLICY "自分の本として追加できる"
+  ON books FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+
+-- (3) 更新(UPDATE)ポリシー: 自分の本だけ更新できる
+-- USING      : 「どの行を更新対象にできるか」（更新前のチェック）
+-- WITH CHECK : 「更新後の行が満たすべき条件」（持ち主を他人に書き換えるのを防ぐ）
+CREATE POLICY "自分の本だけ更新できる"
+  ON books FOR UPDATE
+  USING (auth.uid() = user_id)
+  WITH CHECK (auth.uid() = user_id);
+
+-- (4) 削除(DELETE)ポリシー: 自分の本だけ削除できる
+CREATE POLICY "自分の本だけ削除できる"
+  ON books FOR DELETE
+  USING (auth.uid() = user_id);
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: そもそも `auth.uid()` とは何か
+
+```sql
+auth.uid() = user_id
+```
+
+- `auth.uid()` は「**今このリクエストを送ってきたログインユーザーのID**」を返す、Supabaseが用意した関数です。先ほどの `signInWithPassword` でログインした人のIDが、ここに自動的に入ります。
+- `user_id` はテーブルの各行に持たせた「その本の持ち主のID」です。
+- つまり `auth.uid() = user_id` は「**この行の持ち主は、今アクセスしている本人ですか？**」という質問です。本人の行だけ真（true）になります。
+- ログインしていない場合、`auth.uid()` は `null` になり、どの行とも一致しないため、結果として何も見えません（安全側に倒れる）。
+
+> **用語:** **ポリシー** = 「どの行に・誰が・どの操作をしてよいか」を1つにまとめたルール。テーブルに何枚でも貼れる。
+
+---
+
+##### 解説2: 操作ごとにポリシーを分ける（SELECT / INSERT / UPDATE / DELETE）
+
+```sql
+CREATE POLICY "自分の本だけ読める"  ON books FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "自分の本として追加できる" ON books FOR INSERT WITH CHECK (auth.uid() = user_id);
+```
+
+- RLS のポリシーは「読む」「追加する」「更新する」「削除する」の**操作ごとに別々に**作るのが基本です。`FOR SELECT` / `FOR INSERT` のように、どの操作向けかを指定します。
+- ポリシーを1枚も貼っていない操作は、RLS有効時には**全面的に禁止**されます（「許可リスト方式」）。だから4種類すべてに対してポリシーを用意しています。
+
+---
+
+##### 解説3: `USING` と `WITH CHECK` の違い
+
+```sql
+CREATE POLICY "自分の本だけ更新できる"
+  ON books FOR UPDATE
+  USING (auth.uid() = user_id)       -- どの行を触ってよいか（変更前）
+  WITH CHECK (auth.uid() = user_id); -- 変更後の行が満たすべき条件
+```
+
+- `USING` は「**今ある行のうち、どれを対象にできるか**」の条件です。読み取りや、更新・削除の「対象選び」に使われます。
+- `WITH CHECK` は「**新しく書き込もうとしている値が、ルールを満たしているか**」の条件です。追加（INSERT）や更新後（UPDATE）の値をチェックします。
+- UPDATE で両方を書いているのは、「他人の本を勝手に編集できない（USING）」だけでなく「更新のついでに `user_id` を他人のものに書き換えて乗っ取る、を防ぐ（WITH CHECK）」ためです。
+
+> **用語:** **許可リスト方式** = 「明示的に許可したものだけOK、それ以外は全部禁止」という考え方。セキュリティの基本姿勢。
+
+### Storage: 画像やファイルのアップロードと公開URLの取得
+
+> **▼ このコードがやること（先に日本語で）:** 写真やPDFのような**ファイルを Supabase に保存（アップロード）し、そのファイルを表示するためのURLを取得する**例です。テキストデータはテーブル（DB）に保存しますが、画像のような大きなファイルはDBではなく「Storage（ファイル置き場）」に入れるのが定石です。書籍の表紙画像をアップロードして `cover_url` に保存する、といった用途で使います。
+
+```ts
+// 前提: Supabaseダッシュボードの Storage で「book-covers」という
+//       バケット（ファイルを入れる箱）を作成し、Public（公開）に設定しておく
+
+// file は <input type="file"> でユーザーが選んだファイル（Fileオブジェクト）
+async function uploadCover(file: File) {
+  // 保存するときのファイル名（パス）。重複しないよう現在時刻を頭につける
+  const filePath = `${Date.now()}-${file.name}`;
+
+  // ① ファイルをアップロードする
+  // supabase.storage         : ファイル置き場（Storage）を操作する入り口
+  // .from('book-covers')     : 'book-covers' という箱（バケット）を選ぶ
+  // .upload(保存先パス, ファイル) : 指定パスにファイルを保存する
+  const { data, error } = await supabase.storage
+    .from('book-covers')
+    .upload(filePath, file);
+
+  if (error) {
+    console.error('アップロード失敗:', error.message);
+    return null;
+  }
+
+  // ② 保存したファイルの「公開URL」を取得する
+  // .getPublicUrl(パス) : 公開バケット内のファイルにアクセスできるURLを返す
+  const { data: urlData } = supabase.storage
+    .from('book-covers')
+    .getPublicUrl(filePath);
+
+  console.log('画像のURL:', urlData.publicUrl);
+  // 例: https://xxxx.supabase.co/storage/v1/object/public/book-covers/171234-cover.png
+  return urlData.publicUrl; // このURLを books.cover_url に保存すれば表示できる
+}
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: バケットという「ファイルの箱」
+
+```ts
+supabase.storage.from('book-covers')
+```
+
+- `supabase.storage` は、テーブル（DB）とは別の「ファイル置き場」を操作する入り口です。
+- `.from('book-covers')` の `'book-covers'` は**バケット**の名前です。バケットは「フォルダのような大きな箱」で、用途ごと（表紙画像用、アバター用…）に分けて作ります。バケットはあらかじめダッシュボードで作っておく必要があります。
+- バケットには「Public（誰でもURLで見られる）」と「Private（許可された人だけ）」の設定があります。表紙画像のように隠す必要のないものは Public が手軽です。
+
+> **用語:** **バケット** = Storage の中でファイルをまとめて入れておく箱（フォルダのようなもの）。
+
+---
+
+##### 解説2: アップロードと、保存先パスの決め方
+
+```ts
+const filePath = `${Date.now()}-${file.name}`;
+const { data, error } = await supabase.storage
+  .from('book-covers')
+  .upload(filePath, file);
+```
+
+- `.upload(保存先パス, ファイル)` で、選んだファイルをバケットに保存します。
+- `filePath` は「箱の中でのファイル名」です。同じ名前のファイルがあると上書きエラーになるため、`Date.now()`（今の時刻を数値にしたもの）を頭につけて**名前がかぶらないように**しています。
+- `file` は、HTML の `<input type="file">` でユーザーが選んだファイルそのものです。
+
+---
+
+##### 解説3: 公開URLを取り出してDBに保存する
+
+```ts
+const { data: urlData } = supabase.storage
+  .from('book-covers')
+  .getPublicUrl(filePath);
+// urlData.publicUrl を books.cover_url に保存する
+```
+
+- `.getPublicUrl(パス)` は、保存したファイルを**ブラウザで表示するためのURL**を返します。このメソッドは通信を伴わないので `await` は不要です。
+- 返ってきた `urlData.publicUrl` を、`books` テーブルの `cover_url` 列に保存しておけば、画面では `<img src={cover_url}>` のように表示できます。
+- 「ファイルそのものは Storage に、その**場所を指すURLだけ**を DB に持つ」という分担がポイントです。
+
+### テーブル結合: 関連する別テーブルのデータも一緒に取得する
+
+> **▼ このコードがやること（先に日本語で）:** ある本のデータを取るとき、**その本の「持ち主ユーザーの情報」も一回でまとめて取得する**例です。データは複数のテーブルに分けて保存しますが（本は books、ユーザー情報は profiles…）、画面に出すときは「本のタイトルと、登録した人の名前」を一緒に見せたいことがよくあります。毎回2回問い合わせる代わりに、Supabase の `select` の中で関連先を指定すると1回でまとめて取れます。
+
+```ts
+// 前提: books テーブルに user_id（profiles.id を指す外部キー）があり、
+//       profiles テーブルに id, username, avatar_url がある状態
+
+// .select('*, profiles(*)') :
+//   '*'          → books自身の全カラム
+//   profiles(*)  → 関連する profiles テーブルの全カラムも一緒に取得
+const { data, error } = await supabase
+  .from('books')
+  .select('*, profiles(*)');
+
+if (error) {
+  console.error('取得失敗:', error.message);
+} else {
+  console.log(data);
+  // 結果のイメージ（各bookの中に profiles が入れ子で入る）:
+  // [
+  //   {
+  //     id: 'book-1',
+  //     title: 'ノルウェイの森',
+  //     user_id: 'user-AAA',
+  //     profiles: { id: 'user-AAA', username: 'taro', avatar_url: null }
+  //   },
+  //   ...
+  // ]
+}
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: `select` の中に別テーブル名を書く
+
+```ts
+.select('*, profiles(*)')
+```
+
+- これまで `select('*')` は「このテーブルの全カラム」でした。ここに `, profiles(*)` を足すと、「**外部キーでつながっている profiles テーブルの全カラムも一緒にちょうだい**」という意味になります。
+- `profiles(*)` の `(*)` は「profiles の全カラム」。`profiles(username, avatar_url)` のように、欲しい列だけ指定することもできます。
+- これが成立するのは、`books.user_id` が `profiles.id` を指す**外部キー**として設定されているからです。Supabase はその関係を見て「どの行とどの行がつながっているか」を自動で判断します。
+
+> **用語:** **結合（JOIN）** = 関連する複数のテーブルを、共通のID（外部キー）でつなげて1つの結果としてまとめること。
+
+---
+
+##### 解説2: 結果は「入れ子（ネスト）」になって返る
+
+```ts
+// book.profiles.username のように、本の中にユーザー情報が入っている
+```
+
+- 結合した結果は、SQLの表のように横に広がるのではなく、**JavaScriptのオブジェクトの入れ子**として返ってきます。各 `book` の中に `profiles` というプロパティができ、その中に持ち主の情報が入ります。
+- 画面では `book.profiles.username`（登録者名）のように、ドットでたどって取り出せます。
+- 「1回の通信で必要な情報をまとめて取る」ことで、表示が速くなり、コードもシンプルになります。
+
+### 高度なフィルタ: or・複数条件・in・range
+
+> **▼ このコードがやること（先に日本語で）:** 「**もっと細かい条件でデータを絞り込む**」ための道具を整理します。本編では `.eq()`（〜と等しい）だけ使いましたが、実際には「AまたはB」「リストのどれかに当てはまる」「上位20件だけ」のように、いろいろな絞り込みが必要になります。検索機能やページめくり（ページネーション）を作るときに必須の道具です。
+
+```ts
+// ① 複数条件（AND）: メソッドを並べると「すべて満たす」になる
+// .eq('status', 'reading') : status が 'reading'
+// .gte('rating', 4)        : rating が 4 以上（gte = greater than or equal）
+const { data: reading } = await supabase
+  .from('books')
+  .select('*')
+  .eq('status', 'reading')
+  .gte('rating', 4);
+
+// ② OR条件: 「どちらか一方でも満たせばOK」
+// .or('文字列') : カンマ区切りで複数条件を並べ、いずれか真ならマッチ
+const { data: orResult } = await supabase
+  .from('books')
+  .select('*')
+  .or('status.eq.completed,rating.eq.5'); // 読了済み または 評価5
+
+// ③ in: 「このリストのどれかに当てはまる」
+// .in('カラム', [値1, 値2, ...]) : 値のどれかと一致する行
+const { data: inResult } = await supabase
+  .from('books')
+  .select('*')
+  .in('status', ['reading', 'completed']); // reading か completed の本
+
+// ④ range: 「何件目から何件目まで」を取り出す（ページめくり用）
+// .range(開始index, 終了index) : 0始まりの番号で範囲指定（両端を含む）
+const { data: page1 } = await supabase
+  .from('books')
+  .select('*')
+  .order('created_at', { ascending: false })
+  .range(0, 19); // 0〜19番 = 最初の20件
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: メソッドを並べると AND（かつ）になる
+
+```ts
+.eq('status', 'reading')
+.gte('rating', 4)
+```
+
+- 絞り込みメソッドを `.` で続けて並べると、「**そのすべてを満たす行**」だけが残ります（AND条件）。上の例は「読書中 **かつ** 評価4以上」です。
+- `.gte` は "greater than or equal"（以上）の略です。仲間に `.gt`（より大きい）、`.lte`（以下）、`.lt`（未満）、`.neq`（等しくない）があります。
+
+> **用語:** **AND条件** = 「AもBも両方とも満たす」絞り込み。**OR条件** = 「AかBのどちらか一方でも満たせばよい」絞り込み。
+
+---
+
+##### 解説2: `.or()` で「どちらか一方」を表す
+
+```ts
+.or('status.eq.completed,rating.eq.5')
+```
+
+- `.or()` は AND とは逆で、「**並べた条件のどれか1つでも満たせばマッチ**」させます。
+- 条件の書き方は少し独特で、`カラム名.演算子.値` を**カンマ区切り**でつなぎます。`status.eq.completed` は「status が completed と等しい」、`rating.eq.5` は「rating が 5」を意味します。
+- 上の例は「読了済み、**または** 評価が5の本」を取り出します。
+
+---
+
+##### 解説3: `.in()` で「リストのどれか」を表す
+
+```ts
+.in('status', ['reading', 'completed'])
+```
+
+- `.in('カラム', [値の配列])` は、「そのカラムが、配列の中のどれかと一致する行」を取り出します。
+- 上の例は「status が reading **または** completed の本」で、`.or()` でも書けますが、同じカラムで候補が多いときは `.in()` の方がずっと簡潔です。
+
+---
+
+##### 解説4: `.range()` でページめくり（ページネーション）
+
+```ts
+.order('created_at', { ascending: false })
+.range(0, 19);
+```
+
+- `.range(開始, 終了)` は「**何番目から何番目までの行**」を取り出します。番号は0から始まり、両端を含みます。`range(0, 19)` は最初の20件です。
+- 次のページは `range(20, 39)`、その次は `range(40, 59)`…と進めれば、「1ページ20件ずつ表示する」機能が作れます。これを**ページネーション**と呼びます。
+- 範囲を指定する前に `.order(...)` で**並び順を固定**しておくのが重要です。順番が決まっていないと「何番目」が毎回ばらついてしまうためです。
+
+> **用語:** **ページネーション** = 大量のデータを「1ページ◯件ずつ」に分けて表示し、ページを切り替えられるようにする仕組み。
+
+### upsert: あれば更新・無ければ挿入
+
+> **▼ このコードがやること（先に日本語で）:** 「**そのデータがすでにあれば上書き更新し、無ければ新しく追加する**」という、insert と update を1回でこなす便利な操作です。たとえば「ユーザー設定」や「お気に入り」のように、「初回は新規作成、2回目以降は更新」となるケースで、毎回「存在するか確認してから insert か update を選ぶ」という面倒な分岐を書かずに済みます。
+
+```ts
+// upsert = update + insert
+// .upsert(データ, { onConflict: 'カラム名' }) :
+//   指定カラムの値が既存の行と「かぶったら」→ 更新
+//   かぶらなければ                       → 新規挿入
+const { data, error } = await supabase
+  .from('books')
+  .upsert(
+    { id: 'book-123', title: 'リーダブルコード', status: 'completed' },
+    { onConflict: 'id' } // id がかぶったら更新、なければ挿入
+  )
+  .select(); // 挿入/更新後の行を返してもらう
+
+if (error) {
+  console.error('upsert失敗:', error.message);
+} else {
+  console.log('保存結果:', data);
+}
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: insert と update を1つにまとめる
+
+```ts
+.upsert(
+  { id: 'book-123', title: 'リーダブルコード', status: 'completed' },
+  { onConflict: 'id' }
+)
+```
+
+- `.upsert(データ, オプション)` は、渡したデータが既存の行と「ぶつかる」かどうかで、自動的に挿入か更新かを切り替えます。
+- `{ onConflict: 'id' }` は「**`id` 列の値がすでにある行とかぶったら、新規追加ではなく更新する**」という指定です。`id` が `'book-123'` の行が既にあれば中身を上書きし、無ければ新しく1行追加します。
+- これがないと、同じ `id` を insert しようとしたときに「重複エラー」で失敗します。upsert はそのエラーを「更新」に振り替えてくれる、と考えると分かりやすいです。
+
+> **用語:** **upsert** = update（更新）と insert（挿入）を合わせた造語。「あれば更新・無ければ挿入」を一発でやる操作。**onConflict** = 「どの列の重複を『同じデータ』とみなすか」の指定。
+
+---
+
+##### 解説2: 最後の `.select()` で結果を受け取る
+
+```ts
+.upsert(...).select();
+```
+
+- `.upsert(...)` だけでは、保存はされても結果のデータは返ってきません。うしろに `.select()` をつけると、**挿入または更新された後の行**を `data` で受け取れます。
+- 「保存したらすぐ画面に最新の内容を反映したい」ときに便利です。
+
+### Realtime購読: テーブルの変更をリアルタイムに受け取る
+
+> **▼ このコードがやること（先に日本語で）:** **データベースが変わった瞬間に、自分の画面へ自動で通知を受け取る**仕組みです。普通は「再読み込みボタンを押す」「ページを開き直す」をしないと新しいデータは見えませんが、Realtime を使うと、誰かが本を追加した瞬間に自分の一覧へ即座に反映できます。チャットアプリの新着メッセージや、複数人で同時に使う管理画面などで活躍します。
+
+```ts
+// supabase.channel('名前') : リアルタイム通知の受信チャンネルを作る
+// .on('postgres_changes', { ... }, コールバック) :
+//   DBの変更が起きたら、第3引数の関数を呼んでもらう設定
+const channel = supabase
+  .channel('books-changes')
+  .on(
+    'postgres_changes',
+    {
+      event: '*',        // INSERT/UPDATE/DELETE すべての変更を対象にする
+      schema: 'public',  // 対象スキーマ（通常はpublic）
+      table: 'books',    // 監視するテーブル名
+    },
+    (payload) => {
+      // payload に「何が起きたか」の情報が入って渡される
+      console.log('変更を検知:', payload.eventType); // 'INSERT' など
+      console.log('新しい行:', payload.new);          // 追加/更新後のデータ
+    }
+  )
+  .subscribe(); // ① ここで実際に購読（受信）を開始する
+
+// 画面を閉じるときなどは購読を解除して後始末する
+// supabase.removeChannel(channel) : このチャンネルの受信を停止する
+// （Reactなら useEffect の後始末関数の中で呼ぶ）
+// supabase.removeChannel(channel);
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: チャンネルを作り、「何を監視するか」を指定する
+
+```ts
+supabase
+  .channel('books-changes')
+  .on('postgres_changes', { event: '*', schema: 'public', table: 'books' }, (payload) => { ... })
+```
+
+- `.channel('books-changes')` は「リアルタイム通知を受け取る専用の窓口」を1つ作ります。名前（`'books-changes'`）は自分で分かりやすいものを付けるだけです。
+- `.on('postgres_changes', {条件}, 関数)` で「**books テーブルに変更が起きたら、この関数を呼んで**」と登録します。
+  - `event: '*'` は「追加・更新・削除すべて」。特定の操作だけ見たいなら `'INSERT'` などにします。
+  - `table: 'books'` で監視対象のテーブルを指定します。
+- 変更が起きると、登録した関数に `payload`（変更内容の詳細）が渡されます。`payload.new` に新しいデータ、`payload.eventType` に「INSERT/UPDATE/DELETE のどれか」が入っています。
+
+> **用語:** **購読（subscribe）** = 「変化があったら教えてね」と登録して、通知を受け取り続けること。新聞の定期購読のイメージ。**コールバック** = 「何かが起きたときに呼んでもらう関数」。
+
+---
+
+##### 解説2: subscribe で開始し、removeChannel で後始末する
+
+```ts
+.subscribe(); // 受信を開始
+// supabase.removeChannel(channel); // 受信を停止
+```
+
+- `.subscribe()` を呼んで初めて、実際に通知の受信が始まります。これを忘れると、設定はしたのに何も届きません。
+- 受信は「つなぎっぱなし」になるため、画面を閉じるときなどには `supabase.removeChannel(channel)` で**必ず後始末**します。後始末しないと、見えない場所で通信が残り続け、動作が重くなる原因になります。
+- React で使う場合は、`useEffect` の中で `subscribe()` し、その**後始末関数（return する関数）**の中で `removeChannel` を呼ぶ、という形が定番です。
+
+> **補足: Realtime は最初はオフ:** Realtime はテーブルごとに有効化が必要です。Supabaseダッシュボードの該当テーブルで「Realtime」をオンにする（または Replication 設定に追加する）と、上のコードで変更が届くようになります。
 
 ---
 
