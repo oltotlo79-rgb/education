@@ -55,7 +55,8 @@ renderItem={({ item }) => (
 import { useState, useEffect } from "react";
 import { View, Text, TextInput, Pressable, StyleSheet, ScrollView, Alert, ActivityIndicator } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { fetchBookById, updateBook, deleteBook } from "../../lib/books";  // 第6章の関数（パスは ../../）
+// 第6章の関数（パスは ../../）
+import { fetchBookById, updateBook, deleteBook } from "../../lib/books";
 
 const STATUS_OPTIONS = ["未読", "読書中", "読了"];
 
@@ -70,19 +71,23 @@ export default function EditBookScreen() {
   const [author, setAuthor] = useState("");
   const [status, setStatus] = useState("未読");
   const [memo, setMemo] = useState("");
-  const [loading, setLoading] = useState(true);   // 初期データ読込中か
-  const [saving, setSaving] = useState(false);    // 更新処理中か
+  // 初期データ読込中か
+  const [loading, setLoading] = useState(true);
+  // 更新処理中か
+  const [saving, setSaving] = useState(false);
 
   // 画面表示時に、idの本を取得してフォームの初期値にセットする
   useEffect(() => {
     const load = async () => {
       try {
-        const book = await fetchBookById(id);     // idで1冊取得（第6章）
+        // idで1冊取得（第6章）
+        const book = await fetchBookById(id);
         // 取得した値を各stateにセット → フォームに初期表示される
         setTitle(book.title);
         setAuthor(book.author);
         setStatus(book.status);
-        setMemo(book.memo ?? "");                 // memoがnullなら空文字に（?? で代替）
+        // memoがnullなら空文字に（?? で代替）
+        setMemo(book.memo ?? "");
       } catch (e) {
         Alert.alert("読み込みエラー", "本の情報を取得できませんでした");
         console.log(e);
@@ -91,7 +96,8 @@ export default function EditBookScreen() {
       }
     };
     load();
-  }, [id]);   // 依存配列に id。idが変わったら取得し直す
+  // 依存配列に id。idが変わったら取得し直す
+  }, [id]);
 
   // 更新ボタンの処理
   const handleUpdate = async () => {
@@ -108,7 +114,8 @@ export default function EditBookScreen() {
         status: status,
         memo: memo.trim() === "" ? null : memo.trim(),
       });
-      router.back();                              // 一覧へ戻る（戻り先で再取得され反映）
+      // 一覧へ戻る（戻り先で再取得され反映）
+      router.back();
     } catch (e) {
       Alert.alert("更新に失敗しました", "通信状況を確認してください");
       console.log(e);
@@ -124,14 +131,19 @@ export default function EditBookScreen() {
       "削除の確認",
       "この本を削除しますか？この操作は取り消せません。",
       [
-        { text: "キャンセル", style: "cancel" },   // style:"cancel" : キャンセル用のボタン（何もしない）
+        // style:"cancel" : キャンセル用のボタン（何もしない）
+        { text: "キャンセル", style: "cancel" },
         {
           text: "削除",
-          style: "destructive",                    // style:"destructive" : 赤字の警告ボタン（iOS）
-          onPress: async () => {                   // 「削除」を押したときだけ実行
+          // style:"destructive" : 赤字の警告ボタン（iOS）
+          style: "destructive",
+          // 「削除」を押したときだけ実行
+          onPress: async () => {
             try {
-              await deleteBook(id);                // 第6章の削除関数
-              router.back();                       // 一覧へ戻る
+              // 第6章の削除関数
+              await deleteBook(id);
+              // 一覧へ戻る
+              router.back();
             } catch (e) {
               Alert.alert("削除に失敗しました", "通信状況を確認してください");
               console.log(e);
@@ -256,7 +268,8 @@ const styles = StyleSheet.create({
 import { useState, useEffect } from "react";
 import { View, Text, TextInput, Pressable, StyleSheet, ScrollView, Alert, ActivityIndicator } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { fetchBookById, updateBook, deleteBook } from "../../lib/books";  // 第6章の関数（パスは ../../）
+// 第6章の関数（パスは ../../）
+import { fetchBookById, updateBook, deleteBook } from "../../lib/books";
 
 const STATUS_OPTIONS = ["未読", "読書中", "読了"];
 
@@ -285,8 +298,10 @@ export default function EditBookScreen() {
   const [author, setAuthor] = useState("");
   const [status, setStatus] = useState("未読");
   const [memo, setMemo] = useState("");
-  const [loading, setLoading] = useState(true);   // 初期データ読込中か
-  const [saving, setSaving] = useState(false);    // 更新処理中か
+  // 初期データ読込中か
+  const [loading, setLoading] = useState(true);
+  // 更新処理中か
+  const [saving, setSaving] = useState(false);
 ```
 
 - `const [今の値, 値を変える関数] = useState(初期値)` という形で、**変化する値**を1つずつ用意しています。
@@ -305,12 +320,14 @@ export default function EditBookScreen() {
   useEffect(() => {
     const load = async () => {
       try {
-        const book = await fetchBookById(id);     // idで1冊取得（第6章）
+        // idで1冊取得（第6章）
+        const book = await fetchBookById(id);
         // 取得した値を各stateにセット → フォームに初期表示される
         setTitle(book.title);
         setAuthor(book.author);
         setStatus(book.status);
-        setMemo(book.memo ?? "");                 // memoがnullなら空文字に（?? で代替）
+        // memoがnullなら空文字に（?? で代替）
+        setMemo(book.memo ?? "");
       } catch (e) {
         Alert.alert("読み込みエラー", "本の情報を取得できませんでした");
         console.log(e);
@@ -319,7 +336,8 @@ export default function EditBookScreen() {
       }
     };
     load();
-  }, [id]);   // 依存配列に id。idが変わったら取得し直す
+  // 依存配列に id。idが変わったら取得し直す
+  }, [id]);
 ```
 
 - **`useEffect(() => { ... }, [id])`** … 「画面が表示されたとき（と `id` が変わったとき）に1回だけ実行する処理」を書く場所です。データの取得など「画面描画以外の裏方の仕事」をここで行います。
@@ -350,7 +368,8 @@ export default function EditBookScreen() {
         status: status,
         memo: memo.trim() === "" ? null : memo.trim(),
       });
-      router.back();                              // 一覧へ戻る（戻り先で再取得され反映）
+      // 一覧へ戻る（戻り先で再取得され反映）
+      router.back();
     } catch (e) {
       Alert.alert("更新に失敗しました", "通信状況を確認してください");
       console.log(e);
@@ -380,14 +399,19 @@ export default function EditBookScreen() {
       "削除の確認",
       "この本を削除しますか？この操作は取り消せません。",
       [
-        { text: "キャンセル", style: "cancel" },   // style:"cancel" : キャンセル用のボタン（何もしない）
+        // style:"cancel" : キャンセル用のボタン（何もしない）
+        { text: "キャンセル", style: "cancel" },
         {
           text: "削除",
-          style: "destructive",                    // style:"destructive" : 赤字の警告ボタン（iOS）
-          onPress: async () => {                   // 「削除」を押したときだけ実行
+          // style:"destructive" : 赤字の警告ボタン（iOS）
+          style: "destructive",
+          // 「削除」を押したときだけ実行
+          onPress: async () => {
             try {
-              await deleteBook(id);                // 第6章の削除関数
-              router.back();                       // 一覧へ戻る
+              // 第6章の削除関数
+              await deleteBook(id);
+              // 一覧へ戻る
+              router.back();
             } catch (e) {
               Alert.alert("削除に失敗しました", "通信状況を確認してください");
               console.log(e);
@@ -556,30 +580,37 @@ const styles = StyleSheet.create({
 ```tsx
 // app/index.tsx に検索機能を追加する（主な変更点）
 
-import { useState, useCallback, useMemo } from "react";   // useMemo を追加
-import { TextInput } from "react-native";                 // TextInput を追加
+// useMemo を追加
+import { useState, useCallback, useMemo } from "react";
+// TextInput を追加
+import { TextInput } from "react-native";
 // （他のimportは第7章のまま）
 
 export default function HomeScreen() {
   const router = useRouter();
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
-  const [keyword, setKeyword] = useState("");   // ★追加: 検索キーワードのstate
+  // ★追加: 検索キーワードのstate
+  const [keyword, setKeyword] = useState("");
 
   // （load関数・useFocusEffectは第7章のまま）
 
   // ★追加: キーワードで絞り込んだ結果を計算する
   // useMemo : 計算結果を覚えておき、必要なときだけ再計算するフック（無駄な計算を減らす）
   const filteredBooks = useMemo(() => {
-    if (keyword.trim() === "") return books;    // 未入力なら全件をそのまま返す
-    const lower = keyword.toLowerCase();        // 大文字小文字を区別しないため小文字化
+    // 未入力なら全件をそのまま返す
+    if (keyword.trim() === "") return books;
+    // 大文字小文字を区別しないため小文字化
+    const lower = keyword.toLowerCase();
     // filter : 条件に合う本だけ残す（第2章）。タイトルか著者にキーワードを含むものを抽出
     return books.filter(
       (b) =>
-        b.title.toLowerCase().includes(lower) ||   // includes : 文字列に含まれるか判定 / || は「または」
+        // includes : 文字列に含まれるか判定 / || は「または」
+        b.title.toLowerCase().includes(lower) ||
         b.author.toLowerCase().includes(lower)
     );
-  }, [books, keyword]);   // booksかkeywordが変わったときだけ再計算
+  // booksかkeywordが変わったときだけ再計算
+  }, [books, keyword]);
 
   if (loading) {
     return (
@@ -602,7 +633,8 @@ export default function HomeScreen() {
       </View>
 
       <FlatList
-        data={filteredBooks}                      // ★変更: books → filteredBooks（絞り込み後を表示）
+        // ★変更: books → filteredBooks（絞り込み後を表示）
+        data={filteredBooks}
         keyExtractor={(item) => item.id}
         contentContainerStyle={{ padding: 16, gap: 10 }}
         ListEmptyComponent={
@@ -651,7 +683,8 @@ export default function HomeScreen() {
 ##### 解説1: 検索キーワードを覚える state
 
 ```tsx
-  const [keyword, setKeyword] = useState("");   // ★追加: 検索キーワードのstate
+  // ★追加: 検索キーワードのstate
+  const [keyword, setKeyword] = useState("");
 ```
 
 - 検索ボックスに入力された言葉を覚えておくための state です。初期値は空文字 `""`（＝何も入力されていない状態）。
@@ -668,15 +701,19 @@ export default function HomeScreen() {
   // ★追加: キーワードで絞り込んだ結果を計算する
   // useMemo : 計算結果を覚えておき、必要なときだけ再計算するフック（無駄な計算を減らす）
   const filteredBooks = useMemo(() => {
-    if (keyword.trim() === "") return books;    // 未入力なら全件をそのまま返す
-    const lower = keyword.toLowerCase();        // 大文字小文字を区別しないため小文字化
+    // 未入力なら全件をそのまま返す
+    if (keyword.trim() === "") return books;
+    // 大文字小文字を区別しないため小文字化
+    const lower = keyword.toLowerCase();
     // filter : 条件に合う本だけ残す（第2章）。タイトルか著者にキーワードを含むものを抽出
     return books.filter(
       (b) =>
-        b.title.toLowerCase().includes(lower) ||   // includes : 文字列に含まれるか判定 / || は「または」
+        // includes : 文字列に含まれるか判定 / || は「または」
+        b.title.toLowerCase().includes(lower) ||
         b.author.toLowerCase().includes(lower)
     );
-  }, [books, keyword]);   // booksかkeywordが変わったときだけ再計算
+  // booksかkeywordが変わったときだけ再計算
+  }, [books, keyword]);
 ```
 
 - **`useMemo(() => { ... }, [books, keyword])`** … 中の計算結果（＝絞り込んだ配列）を覚えておき、`books` か `keyword` が変わったときだけ再計算するフックです。無駄な計算を減らして動作を軽快に保ちます。
@@ -703,7 +740,8 @@ export default function HomeScreen() {
       </View>
 
       <FlatList
-        data={filteredBooks}                      // ★変更: books → filteredBooks（絞り込み後を表示）
+        // ★変更: books → filteredBooks（絞り込み後を表示）
+        data={filteredBooks}
         keyExtractor={(item) => item.id}
         contentContainerStyle={{ padding: 16, gap: 10 }}
         ListEmptyComponent={

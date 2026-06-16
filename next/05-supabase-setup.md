@@ -1290,9 +1290,12 @@ $$ LANGUAGE plpgsql;
 
 -- トリガーの作成: UPDATE 直前にこの関数を呼ぶよう紐付け
 CREATE TRIGGER update_books_updated_at
-  BEFORE UPDATE ON books       -- UPDATE 文の直前に発火
-  FOR EACH ROW                  -- 行ごとに1回呼ぶ
-  EXECUTE FUNCTION update_updated_at_column();  -- 上で作った関数を実行
+  -- UPDATE 文の直前に発火
+  BEFORE UPDATE ON books
+  -- 行ごとに1回呼ぶ
+  FOR EACH ROW
+  -- 上で作った関数を実行
+  EXECUTE FUNCTION update_updated_at_column();
 ```
 
 ---
@@ -1431,8 +1434,10 @@ CREATE POLICY "Allow public insert access"
 CREATE POLICY "Allow public update access"
   ON books
   FOR UPDATE
-  USING (true)         -- 全ての既存行を更新対象にできる
-  WITH CHECK (true);   -- どんな新しい値でも書き込みOK
+  -- 全ての既存行を更新対象にできる
+  USING (true)
+  -- どんな新しい値でも書き込みOK
+  WITH CHECK (true);
 
 
 -- (5) DELETE（削除）を全員に許可するポリシー
@@ -1508,8 +1513,10 @@ CREATE POLICY "Allow public insert access"
 CREATE POLICY "Allow public update access"
   ON books
   FOR UPDATE
-  USING (true)         -- 全ての既存行を更新対象にできる
-  WITH CHECK (true);   -- どんな新しい値でも書き込みOK
+  -- 全ての既存行を更新対象にできる
+  USING (true)
+  -- どんな新しい値でも書き込みOK
+  WITH CHECK (true);
 ```
 
 - UPDATEは「①既存の行を選ぶ → ②新しい値で上書きする」の2段階なので、両方の判定が必要です。
@@ -1747,7 +1754,8 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey);
 // ▼ 使用例（別ファイルから）
 //   import { supabase } from "@/lib/supabase";
 //   const { data, error } = await supabase.from("books").select("*");
-//   console.log(data); // Book[] 型（自動推論）
+// Book[] 型（自動推論）
+//   console.log(data);
 ```
 
 #### ▼ コードを1つずつ分解して解説
@@ -1886,47 +1894,73 @@ mkdir -p src/types
 // Json型 : PostgreSQLのjsonb等で扱える値の型を表現
 // | はTypeScriptのユニオン型（このいずれかの型をとる）
 export type Json =
-  | string                                    // 文字列
-  | number                                    // 数値
-  | boolean                                   // 真偽値
-  | null                                      // null
-  | { [key: string]: Json | undefined }       // オブジェクト（キーは文字列、値は再帰的にJson）
-  | Json[];                                   // Jsonの配列
+  // 文字列
+  | string
+  // 数値
+  | number
+  // 真偽値
+  | boolean
+  // null
+  | null
+  // オブジェクト（キーは文字列、値は再帰的にJson）
+  | { [key: string]: Json | undefined }
+  // Jsonの配列
+  | Json[];
 
 // Database型 : DB全体のスキーマを表す型
 // 「スキーマ → テーブル → Row/Insert/Update」のネスト構造
 export type Database = {
-  public: {                                   // publicスキーマ
-    Tables: {                                 // テーブル一覧
-      books: {                                // booksテーブル
-        Row: {                                // SELECTで返ってくる「1行」の型
-          id: string;                         // uuid → string
-          title: string;                      // text NOT NULL → string
-          author: string;                     // text NOT NULL → string
-          publisher: string | null;           // text NULLable → string | null
-          published_date: string | null;     // date → ISO形式の文字列 or null
-          rating: number | null;              // integer → number | null
-          status: string | null;              // text → string | null
+  // publicスキーマ
+  public: {
+    // テーブル一覧
+    Tables: {
+      // booksテーブル
+      books: {
+        // SELECTで返ってくる「1行」の型
+        Row: {
+          // uuid → string
+          id: string;
+          // text NOT NULL → string
+          title: string;
+          // text NOT NULL → string
+          author: string;
+          // text NULLable → string | null
+          publisher: string | null;
+          // date → ISO形式の文字列 or null
+          published_date: string | null;
+          // integer → number | null
+          rating: number | null;
+          // text → string | null
+          status: string | null;
           notes: string | null;
           cover_url: string | null;
-          created_at: string | null;          // timestamptz → ISO文字列
+          // timestamptz → ISO文字列
+          created_at: string | null;
           updated_at: string | null;
         };
-        Insert: {                             // INSERT時に渡すデータの型
-          id?: string;                        // ? は「省略可」。DEFAULTがあるので省略OK
-          title: string;                      // NOT NULL なので必須
-          author: string;                     // NOT NULL なので必須
-          publisher?: string | null;          // NULL許可なので省略可
+        // INSERT時に渡すデータの型
+        Insert: {
+          // ? は「省略可」。DEFAULTがあるので省略OK
+          id?: string;
+          // NOT NULL なので必須
+          title: string;
+          // NOT NULL なので必須
+          author: string;
+          // NULL許可なので省略可
+          publisher?: string | null;
           published_date?: string | null;
           rating?: number | null;
-          status?: string | null;             // DEFAULTがあるので省略可
+          // DEFAULTがあるので省略可
+          status?: string | null;
           notes?: string | null;
           cover_url?: string | null;
           created_at?: string | null;
           updated_at?: string | null;
         };
-        Update: {                             // UPDATE時に渡すデータの型
-          id?: string;                        // 全カラムが省略可（部分更新を想定）
+        // UPDATE時に渡すデータの型
+        Update: {
+          // 全カラムが省略可（部分更新を想定）
+          id?: string;
           title?: string;
           author?: string;
           publisher?: string | null;
@@ -1940,13 +1974,16 @@ export type Database = {
         };
       };
     };
-    Views: {                                  // ビュー（仮想テーブル）一覧。今は空
+    // ビュー（仮想テーブル）一覧。今は空
+    Views: {
       [_ in never]: never;
     };
-    Functions: {                              // ストアド関数一覧。今は空
+    // ストアド関数一覧。今は空
+    Functions: {
       [_ in never]: never;
     };
-    Enums: {                                  // enum型一覧。今は空
+    // enum型一覧。今は空
+    Enums: {
       [_ in never]: never;
     };
   };
@@ -1995,9 +2032,12 @@ export type BookStatus = 'reading' | 'completed' | 'want_to_read';
 // Record<K, V> : すべてのキーKに対して値がVの型 を作るユーティリティ型
 // Record<BookStatus, string> = { reading: string, completed: string, want_to_read: string }
 export const BOOK_STATUS_LABELS: Record<BookStatus, string> = {
-  reading: '読書中',       // 'reading' を画面表示するときの日本語
-  completed: '読了',       // 'completed' の表示
-  want_to_read: '読みたい', // 'want_to_read' の表示
+  // 'reading' を画面表示するときの日本語
+  reading: '読書中',
+  // 'completed' の表示
+  completed: '読了',
+  // 'want_to_read' の表示
+  want_to_read: '読みたい',
 };
 ```
 
@@ -2110,7 +2150,8 @@ if (error) {
   // console.error : エラーログをコンソールに赤字で出力
   // error.message にユーザー向けの説明文が入っている
   console.error('エラー:', error.message);
-  return;  // 関数を抜ける（以降を実行しない）
+  // 関数を抜ける（以降を実行しない）
+  return;
 }
 
 // 成功した場合、data に取得結果が配列で入る
@@ -2204,7 +2245,8 @@ const { data, error } = await supabase
 const { data, error } = await supabase
   .from('books')
   .select('*')
-  .gte('rating', 4);  // gte = greater than or equal (以上)
+  // gte = greater than or equal (以上)
+  .gte('rating', 4);
 
 // 結果例:
 // [
@@ -2223,7 +2265,8 @@ const { data, error } = await supabase
 const { data, error } = await supabase
   .from('books')
   .select('*')
-  .eq('status', 'reading');  // eq = equal (等しい)
+  // eq = equal (等しい)
+  .eq('status', 'reading');
 ```
 
 > **▼ このコードがやること（先に日本語で）:** 完全一致ではなく「**一部に含むかどうか（あいまい検索）**」で絞り込む例です。`.ilike('author', '%村上%')` の `%` は「任意の文字列」を表すワイルドカードで、「authorのどこかに『村上』を含む行」を探します。`ilike` は大文字・小文字を区別しない検索です。
@@ -2237,7 +2280,8 @@ const { data, error } = await supabase
 const { data, error } = await supabase
   .from('books')
   .select('*')
-  .ilike('author', '%村上%');  // ilike = 大文字小文字を区別しない部分一致
+  // ilike = 大文字小文字を区別しない部分一致
+  .ilike('author', '%村上%');
 ```
 
 **主なフィルタメソッド一覧:**
@@ -2268,7 +2312,8 @@ const { data, error } = await supabase
 const { data, error } = await supabase
   .from('books')
   .select('*')
-  .order('rating', { ascending: false });  // ascending: false = 降順
+  // ascending: false = 降順
+  .order('rating', { ascending: false });
 
 // 結果例:
 // [
@@ -2305,14 +2350,18 @@ const page = 1;
 //   'estimated': 推定値
 const { data, error, count } = await supabase
   .from('books')
-  .select('*', { count: 'exact' })  // count: 'exact' で総件数も取得
+  // count: 'exact' で総件数も取得
+  .select('*', { count: 'exact' })
   .order('created_at', { ascending: false })
   // .range(開始インデックス, 終了インデックス) : 行範囲を指定（0始まり、両端含む）
   //   1ページ目(page=1)なら 0〜9、 2ページ目(page=2)なら 10〜19 の行を取る
-  .range((page - 1) * pageSize, page * pageSize - 1);  // range(開始, 終了)
+  // range(開始, 終了)
+  .range((page - 1) * pageSize, page * pageSize - 1);
 
-console.log('データ:', data);       // 10件のデータ
-console.log('総件数:', count);      // テーブル内の全件数
+// 10件のデータ
+console.log('データ:', data);
+// テーブル内の全件数
+console.log('総件数:', count);
 // Math.ceil(x) : 切り上げ。総件数÷1ページ件数 を切り上げると総ページ数になる
 // count ?? 0  : count が null/undefined なら 0 を使う（Nullish Coalescing演算子）
 console.log('総ページ数:', Math.ceil((count ?? 0) / pageSize));
@@ -2331,7 +2380,8 @@ const { data, error } = await supabase
   .from('books')
   .select('*')
   .eq('id', '550e8400-e29b-41d4-a716-446655440000')
-  .single();  // single() で1件のみ取得（配列ではなくオブジェクトが返る）
+  // single() で1件のみ取得（配列ではなくオブジェクトが返る）
+  .single();
 
 // 結果例: 配列ではなくオブジェクトが返る
 // {
@@ -2358,13 +2408,20 @@ import type { BookInsert } from '@/types/book';
 // 新しい書籍を1件追加
 // 型注釈 : BookInsert を付けることでミスタイプ・必須項目漏れを検出できる
 const newBook: BookInsert = {
-  title: 'ノルウェイの森',              // 必須
-  author: '村上春樹',                   // 必須
-  publisher: '講談社',                  // 任意
-  published_date: '1987-09-04',         // 任意。'YYYY-MM-DD' 形式の文字列
-  rating: 5,                            // 任意（CHECK制約で 1〜5 のみ）
-  status: 'completed',                  // 任意。指定しないと 'want_to_read'
-  notes: '名作。何度も読み返したい。',   // 任意
+  // 必須
+  title: 'ノルウェイの森',
+  // 必須
+  author: '村上春樹',
+  // 任意
+  publisher: '講談社',
+  // 任意。'YYYY-MM-DD' 形式の文字列
+  published_date: '1987-09-04',
+  // 任意（CHECK制約で 1〜5 のみ）
+  rating: 5,
+  // 任意。指定しないと 'want_to_read'
+  status: 'completed',
+  // 任意
+  notes: '名作。何度も読み返したい。',
   // id, cover_url, created_at, updated_at は省略 → DBが自動で埋める
 };
 
@@ -2373,7 +2430,8 @@ const newBook: BookInsert = {
 const { data, error } = await supabase
   .from('books')
   .insert(newBook)
-  .select();  // .select() を付けると、挿入したデータが返る
+  // .select() を付けると、挿入したデータが返る
+  .select();
 
 if (error) {
   console.error('挿入エラー:', error.message);
@@ -2407,9 +2465,12 @@ INSERT（作成）は「①追加する値を用意 → ②`.insert()` で送る
 
 ```ts
 const newBook: BookInsert = {
-  title: 'ノルウェイの森',              // 必須
-  author: '村上春樹',                   // 必須
-  publisher: '講談社',                  // 任意
+  // 必須
+  title: 'ノルウェイの森',
+  // 必須
+  author: '村上春樹',
+  // 任意
+  publisher: '講談社',
   // ...
   // id, cover_url, created_at, updated_at は省略 → DBが自動で埋める
 };
@@ -2429,7 +2490,8 @@ const newBook: BookInsert = {
 const { data, error } = await supabase
   .from('books')
   .insert(newBook)
-  .select();  // .select() を付けると、挿入したデータが返る
+  // .select() を付けると、挿入したデータが返る
+  .select();
 ```
 
 - `.insert(newBook)` で「`newBook` を1件追加する」クエリになります。
@@ -2453,7 +2515,8 @@ const { data, error } = await supabase
 // 1回の通信で複数行を入れられる（個別にループするより速い）
 const newBooks: BookInsert[] = [
   {
-    title: '人間失格',                  // 1件目
+    // 1件目
+    title: '人間失格',
     author: '太宰治',
     publisher: '新潮社',
     published_date: '1948-06-01',
@@ -2461,7 +2524,8 @@ const newBooks: BookInsert[] = [
     status: 'completed',
   },
   {
-    title: 'こころ',                    // 2件目
+    // 2件目
+    title: 'こころ',
     author: '夏目漱石',
     publisher: '岩波書店',
     published_date: '1914-09-01',
@@ -2469,9 +2533,11 @@ const newBooks: BookInsert[] = [
     status: 'reading',
   },
   {
-    title: '銀河鉄道の夜',              // 3件目（最小限の項目のみ）
+    // 3件目（最小限の項目のみ）
+    title: '銀河鉄道の夜',
     author: '宮沢賢治',
-    status: 'want_to_read',  // 最低限 title と author があれば OK
+    // 最低限 title と author があれば OK
+    status: 'want_to_read',
   },
 ];
 
@@ -2504,9 +2570,12 @@ const bookId = '550e8400-e29b-41d4-a716-446655440000';
 
 // updates : 書き換えたいフィールドだけを含むオブジェクト
 const updates: BookUpdate = {
-  rating: 4,                       // 評価を4に
-  status: 'completed',             // 状態を 'completed' に
-  notes: '読了。面白かった！',      // メモを上書き
+  // 評価を4に
+  rating: 4,
+  // 状態を 'completed' に
+  status: 'completed',
+  // メモを上書き
+  notes: '読了。面白かった！',
   // title や author は省略 → 既存値のまま
 };
 
@@ -2516,7 +2585,8 @@ const updates: BookUpdate = {
 const { data, error } = await supabase
   .from('books')
   .update(updates)
-  .eq('id', bookId)  // 必ず条件を指定すること！
+  // 必ず条件を指定すること！
+  .eq('id', bookId)
   .select();
 
 if (error) {
@@ -2547,9 +2617,12 @@ UPDATE（更新）は「①変えたい値を用意 → ②`.update()` で送り
 
 ```ts
 const updates: BookUpdate = {
-  rating: 4,                       // 評価を4に
-  status: 'completed',             // 状態を 'completed' に
-  notes: '読了。面白かった！',      // メモを上書き
+  // 評価を4に
+  rating: 4,
+  // 状態を 'completed' に
+  status: 'completed',
+  // メモを上書き
+  notes: '読了。面白かった！',
   // title や author は省略 → 既存値のまま
 };
 ```
@@ -2567,7 +2640,8 @@ const updates: BookUpdate = {
 const { data, error } = await supabase
   .from('books')
   .update(updates)
-  .eq('id', bookId)  // 必ず条件を指定すること！
+  // 必ず条件を指定すること！
+  .eq('id', bookId)
   .select();
 ```
 
@@ -2589,8 +2663,10 @@ const { data, error } = await supabase
 // ステータスだけを変更（オブジェクトには1フィールドだけ書く）
 const { data, error } = await supabase
   .from('books')
-  .update({ status: 'completed' })  // 直接オブジェクトリテラルを渡してもOK
-  .eq('id', bookId)                  // 対象の絞り込み（忘れずに!）
+  // 直接オブジェクトリテラルを渡してもOK
+  .update({ status: 'completed' })
+  // 対象の絞り込み（忘れずに!）
+  .eq('id', bookId)
   .select();
 ```
 
@@ -2608,7 +2684,8 @@ const bookId = '550e8400-e29b-41d4-a716-446655440000';
 const { error } = await supabase
   .from('books')
   .delete()
-  .eq('id', bookId);  // 必ず条件を指定すること！
+  // 必ず条件を指定すること！
+  .eq('id', bookId);
 
 if (error) {
   console.error('削除エラー:', error.message);
@@ -2628,7 +2705,8 @@ DELETE（削除）は最も慎重に扱う操作です。塊ごとに見てい�
 const { error } = await supabase
   .from('books')
   .delete()
-  .eq('id', bookId);  // 必ず条件を指定すること！
+  // 必ず条件を指定すること！
+  .eq('id', bookId);
 ```
 
 - `.delete()` で「削除する」クエリを宣言し、`.eq('id', bookId)` で「`id` が `bookId` の行だけ」に対象を絞ります。
@@ -2668,7 +2746,8 @@ const { data, error } = await supabase
   .from('books')
   .delete()
   .eq('id', bookId)
-  .select();  // select() を付けると削除されたデータが返る
+  // select() を付けると削除されたデータが返る
+  .select();
 
 console.log('削除されたデータ:', data);
 ```
@@ -2693,10 +2772,14 @@ async function fetchBooks() {
   if (error) {
     // エラーオブジェクトの中身をオブジェクトで整理して出力
     console.error('Supabase エラー:', {
-      message: error.message,  // エラーメッセージ（人間向け説明）
-      code: error.code,        // エラーコード（PostgrestErrorのコード文字列）
-      details: error.details,  // 詳細情報（DBが返したdetails）
-      hint: error.hint,        // ヒント（修正方法の提案。PostgreSQLが付けてくれる）
+      // エラーメッセージ（人間向け説明）
+      message: error.message,
+      // エラーコード（PostgrestErrorのコード文字列）
+      code: error.code,
+      // 詳細情報（DBが返したdetails）
+      details: error.details,
+      // ヒント（修正方法の提案。PostgreSQLが付けてくれる）
+      hint: error.hint,
     });
     // throw new Error(...) : 上位関数に再スローしてUI側でcatchできるようにする
     // テンプレートリテラル `${...}` で文字列の中に変数を埋め込める
@@ -2730,13 +2813,20 @@ Supabase の SQL Editor で以下の SQL を実行して、テスト用のサン
 INSERT INTO books (title, author, publisher, published_date, rating, status, notes) VALUES
 -- 1件目: ノルウェイの森
 (
-  'ノルウェイの森',     -- title
-  '村上春樹',           -- author
-  '講談社',             -- publisher
-  '1987-09-04',         -- published_date（YYYY-MM-DD形式の日付リテラル）
-  5,                    -- rating（1〜5の整数）
-  'completed',          -- status（CHECK制約で許可された値）
-  '名作。静かで美しい文体に引き込まれた。何度も読み返したくなる作品。'  -- notes
+  -- title
+  'ノルウェイの森',
+  -- author
+  '村上春樹',
+  -- publisher
+  '講談社',
+  -- published_date（YYYY-MM-DD形式の日付リテラル）
+  '1987-09-04',
+  -- rating（1〜5の整数）
+  5,
+  -- status（CHECK制約で許可された値）
+  'completed',
+  -- notes
+  '名作。静かで美しい文体に引き込まれた。何度も読み返したくなる作品。'
 ),
 -- 2件目: 人間失格
 (
@@ -2764,8 +2854,10 @@ INSERT INTO books (title, author, publisher, published_date, rating, status, not
   '宮沢賢治',
   '岩波書店',
   '1934-01-01',
-  NULL,                 -- rating は NULL（未評価）
-  'want_to_read',       -- まだ読みたいリストの段階
+  -- rating は NULL（未評価）
+  NULL,
+  -- まだ読みたいリストの段階
+  'want_to_read',
   '友人に勧められた。幻想的な世界観が気になる。'
 ),
 -- 5件目: コンビニ人間
@@ -2831,7 +2923,8 @@ const sampleBooks: BookInsert[] = [
     author: '宮沢賢治',
     publisher: '岩波書店',
     published_date: '1934-01-01',
-    status: 'want_to_read',  // ratingとnotesは省略
+    // ratingとnotesは省略
+    status: 'want_to_read',
     notes: '友人に勧められた。幻想的な世界観が気になる。',
   },
   {
@@ -2855,7 +2948,8 @@ async function seedBooks() {
   const { error: deleteError } = await supabase
     .from('books')
     .delete()
-    .neq('id', '00000000-0000-0000-0000-000000000000'); // 全行削除の安全策
+    // 全行削除の安全策
+    .neq('id', '00000000-0000-0000-0000-000000000000');
 
   if (deleteError) {
     console.error('削除エラー:', deleteError.message);
@@ -3001,7 +3095,8 @@ if (loginError) {
 // ③ 今ログインしているユーザーの情報を取得する
 // .getUser() : 現在のログインユーザーを取得する関数（未ログインなら user は null）
 const { data: { user } } = await supabase.auth.getUser();
-console.log('今ログイン中のユーザー:', user?.email); // 例: taro@example.com
+// 例: taro@example.com
+console.log('今ログイン中のユーザー:', user?.email);
 
 // ④ ログアウトする
 // .signOut() : ログイン状態を解除する関数
@@ -3156,8 +3251,10 @@ CREATE POLICY "自分の本として追加できる" ON books FOR INSERT WITH CH
 ```sql
 CREATE POLICY "自分の本だけ更新できる"
   ON books FOR UPDATE
-  USING (auth.uid() = user_id)       -- どの行を触ってよいか（変更前）
-  WITH CHECK (auth.uid() = user_id); -- 変更後の行が満たすべき条件
+  -- どの行を触ってよいか（変更前）
+  USING (auth.uid() = user_id)
+  -- 変更後の行が満たすべき条件
+  WITH CHECK (auth.uid() = user_id);
 ```
 
 - `USING` は「**今ある行のうち、どれを対象にできるか**」の条件です。読み取りや、更新・削除の「対象選び」に使われます。
@@ -3200,7 +3297,8 @@ async function uploadCover(file: File) {
 
   console.log('画像のURL:', urlData.publicUrl);
   // 例: https://xxxx.supabase.co/storage/v1/object/public/book-covers/171234-cover.png
-  return urlData.publicUrl; // このURLを books.cover_url に保存すれば表示できる
+  // このURLを books.cover_url に保存すれば表示できる
+  return urlData.publicUrl;
 }
 ```
 
@@ -3325,14 +3423,16 @@ const { data: reading } = await supabase
 const { data: orResult } = await supabase
   .from('books')
   .select('*')
-  .or('status.eq.completed,rating.eq.5'); // 読了済み または 評価5
+  // 読了済み または 評価5
+  .or('status.eq.completed,rating.eq.5');
 
 // ③ in: 「このリストのどれかに当てはまる」
 // .in('カラム', [値1, 値2, ...]) : 値のどれかと一致する行
 const { data: inResult } = await supabase
   .from('books')
   .select('*')
-  .in('status', ['reading', 'completed']); // reading か completed の本
+  // reading か completed の本
+  .in('status', ['reading', 'completed']);
 
 // ④ range: 「何件目から何件目まで」を取り出す（ページめくり用）
 // .range(開始index, 終了index) : 0始まりの番号で範囲指定（両端を含む）
@@ -3340,7 +3440,8 @@ const { data: page1 } = await supabase
   .from('books')
   .select('*')
   .order('created_at', { ascending: false })
-  .range(0, 19); // 0〜19番 = 最初の20件
+  // 0〜19番 = 最初の20件
+  .range(0, 19);
 ```
 
 #### ▼ コードを1つずつ分解して解説
@@ -3408,9 +3509,11 @@ const { data, error } = await supabase
   .from('books')
   .upsert(
     { id: 'book-123', title: 'リーダブルコード', status: 'completed' },
-    { onConflict: 'id' } // id がかぶったら更新、なければ挿入
+    // id がかぶったら更新、なければ挿入
+    { onConflict: 'id' }
   )
-  .select(); // 挿入/更新後の行を返してもらう
+  // 挿入/更新後の行を返してもらう
+  .select();
 
 if (error) {
   console.error('upsert失敗:', error.message);
@@ -3460,17 +3563,23 @@ const channel = supabase
   .on(
     'postgres_changes',
     {
-      event: '*',        // INSERT/UPDATE/DELETE すべての変更を対象にする
-      schema: 'public',  // 対象スキーマ（通常はpublic）
-      table: 'books',    // 監視するテーブル名
+      // INSERT/UPDATE/DELETE すべての変更を対象にする
+      event: '*',
+      // 対象スキーマ（通常はpublic）
+      schema: 'public',
+      // 監視するテーブル名
+      table: 'books',
     },
     (payload) => {
       // payload に「何が起きたか」の情報が入って渡される
-      console.log('変更を検知:', payload.eventType); // 'INSERT' など
-      console.log('新しい行:', payload.new);          // 追加/更新後のデータ
+      // 'INSERT' など
+      console.log('変更を検知:', payload.eventType);
+      // 追加/更新後のデータ
+      console.log('新しい行:', payload.new);
     }
   )
-  .subscribe(); // ① ここで実際に購読（受信）を開始する
+  // ① ここで実際に購読（受信）を開始する
+  .subscribe();
 
 // 画面を閉じるときなどは購読を解除して後始末する
 // supabase.removeChannel(channel) : このチャンネルの受信を停止する
@@ -3501,8 +3610,10 @@ supabase
 ##### 解説2: subscribe で開始し、removeChannel で後始末する
 
 ```ts
-.subscribe(); // 受信を開始
-// supabase.removeChannel(channel); // 受信を停止
+// 受信を開始
+.subscribe();
+// 受信を停止
+// supabase.removeChannel(channel);
 ```
 
 - `.subscribe()` を呼んで初めて、実際に通知の受信が始まります。これを忘れると、設定はしたのに何も届きません。
@@ -3668,7 +3779,8 @@ import type { Book } from '@/types/book';
 
 // 悪い例: 手動で型を定義しない
 interface Book {
-  id: number;  // UUID は string なのに number にしている → 型不一致
+  // UUID は string なのに number にしている → 型不一致
+  id: number;
   // ...
 }
 
@@ -3723,7 +3835,8 @@ CREATE TABLE IF NOT EXISTS books (
 
 ```typescript
 // 悪い例: 範囲外の値
-const book = { title: 'テスト', author: 'テスト', rating: 10 };  // CHECK違反
+// CHECK違反
+const book = { title: 'テスト', author: 'テスト', rating: 10 };
 
 // 良い例: 1〜5 の範囲内の値
 const book = { title: 'テスト', author: 'テスト', rating: 5 };
@@ -3737,7 +3850,8 @@ const book = { title: 'テスト', author: 'テスト', rating: 5 };
 
 ```typescript
 // 悪い例: 許可されていない値
-const book = { title: 'テスト', author: 'テスト', status: 'done' };  // CHECK違反
+// CHECK違反
+const book = { title: 'テスト', author: 'テスト', status: 'done' };
 
 // 良い例: 許可された値のいずれか
 const book = { title: 'テスト', author: 'テスト', status: 'completed' };

@@ -71,18 +71,24 @@ app/books/[id]/page.tsx   ← フォルダ名を [角括弧] で囲む
 > **▼ このコードがやること（先に日本語で）:** ボタンを押すたびに数字が増える、シンプルなカウンターを作ります。カギになるのは `useState` で、「画面に覚えさせておきたい値（ここではカウント数）」と「その値を書き換える専用の関数」をセットで受け取ります。初心者はまず「値を直接書き換えるのではなく、更新用の関数を呼ぶと画面が描き直される」という流れだけ押さえてください。各行の詳しい意味はコード内のコメントにあります。
 
 ```tsx
-"use client";  // このファイルはクライアント側（ブラウザ）で動かす宣言。これがないと useState などのフックは使えない
-import { useState } from "react";  // React から useState フックを取り込む
+// このファイルはクライアント側（ブラウザ）で動かす宣言。これがないと useState などのフックは使えない
+"use client";
+// React から useState フックを取り込む
+import { useState } from "react";
 
-export default function Counter() {  // Counter という関数コンポーネントを定義し、デフォルトエクスポートする
+// Counter という関数コンポーネントを定義し、デフォルトエクスポートする
+export default function Counter() {
   // [現在の値, 値を更新する関数] = useState(初期値)
   // 配列分割代入で 2 つの値を一度に受け取る書き方
-  const [count, setCount] = useState(0);  // count の初期値は 0、setCount で値を更新する
+  // count の初期値は 0、setCount で値を更新する
+  const [count, setCount] = useState(0);
 
   return (
     <div>
-      <p>カウント: {count}</p>  {/* 波括弧 { } の中に JavaScript の値を書くと、その値が描画される */}
-      <button onClick={() => setCount(count + 1)}>+1</button>  {/* クリック時に count を +1 する関数を渡す */}
+      {/* 波括弧 { } の中に JavaScript の値を書くと、その値が描画される */}
+      <p>カウント: {count}</p>
+      {/* クリック時に count を +1 する関数を渡す */}
+      <button onClick={() => setCount(count + 1)}>+1</button>
     </div>
   );
 }
@@ -99,18 +105,25 @@ export default function Counter() {  // Counter という関数コンポーネ�
 > **▼ このコードがやること（先に日本語で）:** ボタンを押したら、JavaScript のコードから別ページ（`/books`）へ自動で移動させる例です。`useRouter` で取得した `router` オブジェクトの `push` を呼ぶと、リンクをクリックしたのと同じように画面が切り替わります。初心者は「リンクは人がクリック、`router.push` はプログラムが移動させる」という違いだけ覚えておけば十分です。各メソッドの使い分けはこのあとの表とコメントで補足します。
 
 ```tsx
-"use client";  // useRouter はクライアントコンポーネント専用なので、この宣言が必須
-import { useRouter } from "next/navigation";  // App Router 用の useRouter は next/navigation から取る（旧 next/router ではない）
+// useRouter はクライアントコンポーネント専用なので、この宣言が必須
+"use client";
+// App Router 用の useRouter は next/navigation から取る（旧 next/router ではない）
+import { useRouter } from "next/navigation";
 
 export default function MyComponent() {
-  const router = useRouter();  // ルーター（ページ遷移を司るオブジェクト）を取得
+  // ルーター（ページ遷移を司るオブジェクト）を取得
+  const router = useRouter();
 
-  const handleClick = () => {  // ボタンクリック時に呼ばれる関数
-    router.push("/books");           // /books に遷移する（履歴に積まれる＝戻るボタンで戻れる）
-    router.refresh();                // 現在ページのサーバー側データを最新化（必要時のみ呼ぶ）
+  // ボタンクリック時に呼ばれる関数
+  const handleClick = () => {
+    // /books に遷移する（履歴に積まれる＝戻るボタンで戻れる）
+    router.push("/books");
+    // 現在ページのサーバー側データを最新化（必要時のみ呼ぶ）
+    router.refresh();
   };
 
-  return <button onClick={handleClick}>一覧へ戻る</button>;  // クリックで handleClick を実行
+  // クリックで handleClick を実行
+  return <button onClick={handleClick}>一覧へ戻る</button>;
 }
 ```
 
@@ -216,10 +229,14 @@ URLにアクセスすると、Next.js が URL 内の `[id]` 部分を解析し�
 > **▼ このコードがやること（先に日本語で）:** URL の `/books/[id]` の `[id]` 部分を手がかりに、Supabase から書籍を1件だけ取ってきて、その全情報をカード形式で表示するページです。このページはサーバー側で動く Server Component なので、`await` を使ってデータベースから直接データを読み込めます（ブラウザに認証情報を渡さずに済みます）。初心者はまず「URL から ID を取り出す → DB から1件取得 → 見つからなければ404、見つかれば画面に描く」という大きな流れだけ追ってください。星表示やステータスの色分けなどの細かい処理はコード内のコメントで説明しています。
 
 ```tsx
-import { createClient } from "@/lib/supabase/server";  // サーバー側で動く Supabase クライアントを作る関数を取り込む（@/ はプロジェクトルートを指すエイリアス）
-import { notFound } from "next/navigation";  // 404 ページを表示するための Next.js 組み込み関数
-import Link from "next/link";  // クライアントサイド遷移ができる Next.js のリンクコンポーネント（<a> よりも高速）
-import DeleteButton from "@/components/DeleteButton";  // この後作る削除ボタン（クライアントコンポーネント）
+// サーバー側で動く Supabase クライアントを作る関数を取り込む（@/ はプロジェクトルートを指すエイリアス）
+import { createClient } from "@/lib/supabase/server";
+// 404 ページを表示するための Next.js 組み込み関数
+import { notFound } from "next/navigation";
+// クライアントサイド遷移ができる Next.js のリンクコンポーネント（<a> よりも高速）
+import Link from "next/link";
+// この後作る削除ボタン（クライアントコンポーネント）
+import DeleteButton from "@/components/DeleteButton";
 
 // -------------------------------------------------
 // 型定義
@@ -232,7 +249,8 @@ import DeleteButton from "@/components/DeleteButton";  // この後作る削除�
 // されている点に注意してください。
 // -------------------------------------------------
 type Props = {
-  params: Promise<{ id: string }>;  // params は「{ id: string } をいずれ返す Promise」型
+  // params は「{ id: string } をいずれ返す Promise」型
+  params: Promise<{ id: string }>;
 };
 
 // -------------------------------------------------
@@ -242,13 +260,19 @@ type Props = {
 // 日本語の表示ラベルに変換します。
 // 例: "unread" → "未読"
 // -------------------------------------------------
-function getStatusLabel(status: string): string {  // 引数 status は文字列、戻り値も文字列
-  const statusMap: Record<string, string> = {  // Record<キーの型, 値の型> は「キーと値の型を指定したオブジェクト」を表す型
-    unread: "未読",      // DB の値 "unread" を「未読」に対応付け
-    reading: "読書中",   // DB の値 "reading" を「読書中」に対応付け
-    finished: "読了",    // DB の値 "finished" を「読了」に対応付け
+// 引数 status は文字列、戻り値も文字列
+function getStatusLabel(status: string): string {
+  // Record<キーの型, 値の型> は「キーと値の型を指定したオブジェクト」を表す型
+  const statusMap: Record<string, string> = {
+    // DB の値 "unread" を「未読」に対応付け
+    unread: "未読",
+    // DB の値 "reading" を「読書中」に対応付け
+    reading: "読書中",
+    // DB の値 "finished" を「読了」に対応付け
+    finished: "読了",
   };
-  return statusMap[status] || status;  // 該当があれば日本語、無ければ元の値をそのまま返す（フォールバック）
+  // 該当があれば日本語、無ければ元の値をそのまま返す（フォールバック）
+  return statusMap[status] || status;
 }
 
 // -------------------------------------------------
@@ -259,15 +283,24 @@ function getStatusLabel(status: string): string {  // 引数 status は文字列
 // Tailwind CSS のクラス名を文字列として返します。
 // -------------------------------------------------
 function getStatusColor(status: string): string {
-  switch (status) {  // status の値で分岐
-    case "unread":  // 未読のとき
-      return "bg-gray-100 text-gray-800";  // 背景はグレー、文字は濃いグレー
-    case "reading":  // 読書中のとき
-      return "bg-blue-100 text-blue-800";  // 背景は薄い青、文字は濃い青
-    case "finished":  // 読了のとき
-      return "bg-green-100 text-green-800";  // 背景は薄い緑、文字は濃い緑
-    default:  // 想定外の値が来たとき
-      return "bg-gray-100 text-gray-800";  // フォールバックとしてグレー
+  // status の値で分岐
+  switch (status) {
+    // 未読のとき
+    case "unread":
+      // 背景はグレー、文字は濃いグレー
+      return "bg-gray-100 text-gray-800";
+    // 読書中のとき
+    case "reading":
+      // 背景は薄い青、文字は濃い青
+      return "bg-blue-100 text-blue-800";
+    // 読了のとき
+    case "finished":
+      // 背景は薄い緑、文字は濃い緑
+      return "bg-green-100 text-green-800";
+    // 想定外の値が来たとき
+    default:
+      // フォールバックとしてグレー
+      return "bg-gray-100 text-gray-800";
   }
 }
 
@@ -278,11 +311,16 @@ function getStatusColor(status: string): string {
 // 変換して表示します。
 // 例: 3 → "★★★☆☆"
 // -------------------------------------------------
-function renderStars(rating: number | null): string {  // rating は数値または null（評価なし）
-  if (rating === null || rating === undefined) return "未評価";  // null/undefined のときは「未評価」と表示
-  const filled = "★".repeat(rating);          // 評価の数だけ「★」を繰り返す（例: 3 なら "★★★"）
-  const empty = "☆".repeat(5 - rating);       // 残りの数だけ「☆」を繰り返す（例: 3 なら "☆☆"）
-  return filled + empty;                       // 「★★★」+「☆☆」=「★★★☆☆」を返す
+// rating は数値または null（評価なし）
+function renderStars(rating: number | null): string {
+  // null/undefined のときは「未評価」と表示
+  if (rating === null || rating === undefined) return "未評価";
+  // 評価の数だけ「★」を繰り返す（例: 3 なら "★★★"）
+  const filled = "★".repeat(rating);
+  // 残りの数だけ「☆」を繰り返す（例: 3 なら "☆☆"）
+  const empty = "☆".repeat(5 - rating);
+  // 「★★★」+「☆☆」=「★★★☆☆」を返す
+  return filled + empty;
 }
 
 // -------------------------------------------------
@@ -293,7 +331,8 @@ function renderStars(rating: number | null): string {  // rating は数値また
 // 直接 Supabase へのデータ取得を行えます。
 // "use client" を書いていない＝Server Component です。
 // -------------------------------------------------
-export default async function BookDetailPage({ params }: Props) {  // 分割代入で props から params を取り出し
+// 分割代入で props から params を取り出し
+export default async function BookDetailPage({ params }: Props) {
   // -------------------------------------------------
   // 1. params から書籍IDを取得
   // -------------------------------------------------
@@ -302,7 +341,8 @@ export default async function BookDetailPage({ params }: Props) {  // 分割代�
   // ここで await を忘れると id が undefined になり、
   // データ取得が失敗します。
   // -------------------------------------------------
-  const { id } = await params;  // Promise を解決して { id } を取り出す
+  // Promise を解決して { id } を取り出す
+  const { id } = await params;
 
   // -------------------------------------------------
   // 2. Supabase クライアントの作成とデータ取得
@@ -312,13 +352,19 @@ export default async function BookDetailPage({ params }: Props) {  // 分割代�
   // .single() を使うことで、配列ではなく単一の
   // オブジェクトとしてデータを受け取ります。
   // -------------------------------------------------
-  const supabase = await createClient();  // Cookie 連携などの非同期処理があるため await が必要
+  // Cookie 連携などの非同期処理があるため await が必要
+  const supabase = await createClient();
 
-  const { data: book, error } = await supabase  // data を book という名前にリネームして受け取る（分割代入のリネーム構文）
-    .from("books")    // 操作対象は books テーブル
-    .select("*")      // 全カラムを取得（"id, title" のようにカラム名を絞ることも可能）
-    .eq("id", id)     // WHERE id = :id 条件（URL から取った id と一致するレコード）
-    .single();        // 結果を配列ではなく単一オブジェクトとして受け取る（0件や2件以上ならエラー）
+  // data を book という名前にリネームして受け取る（分割代入のリネーム構文）
+  const { data: book, error } = await supabase
+    // 操作対象は books テーブル
+    .from("books")
+    // 全カラムを取得（"id, title" のようにカラム名を絞ることも可能）
+    .select("*")
+    // WHERE id = :id 条件（URL から取った id と一致するレコード）
+    .eq("id", id)
+    // 結果を配列ではなく単一オブジェクトとして受け取る（0件や2件以上ならエラー）
+    .single();
 
   // -------------------------------------------------
   // 3. エラーハンドリング
@@ -332,8 +378,10 @@ export default async function BookDetailPage({ params }: Props) {  // 分割代�
   // try/catch で囲うとエラー扱いになってしまうので、
   // 直接呼び出すのがポイントです。
   // -------------------------------------------------
-  if (error || !book) {  // エラーがある、または book が空のとき
-    notFound();           // 404 ページに即遷移（以降のコードは実行されない）
+  // エラーがある、または book が空のとき
+  if (error || !book) {
+    // 404 ページに即遷移（以降のコードは実行されない）
+    notFound();
   }
 
   // -------------------------------------------------
@@ -343,13 +391,20 @@ export default async function BookDetailPage({ params }: Props) {  // 分割代�
   // 日本語の表示形式に変換します。
   // 例: "2024-01-15" → "2024年1月15日"
   // -------------------------------------------------
-  const formatDate = (dateString: string | null): string => {  // アロー関数で日付フォーマッタを定義
-    if (!dateString) return "未設定";                            // null や空文字なら「未設定」を返す
-    const date = new Date(dateString);                            // 文字列から Date オブジェクトを生成
-    return date.toLocaleDateString("ja-JP", {                     // 日本ロケールで整形（"ja-JP" は日本語表記）
-      year: "numeric",   // 年は数字
-      month: "long",     // 月は「1月」のような長い形式
-      day: "numeric",    // 日は数字
+  // アロー関数で日付フォーマッタを定義
+  const formatDate = (dateString: string | null): string => {
+    // null や空文字なら「未設定」を返す
+    if (!dateString) return "未設定";
+    // 文字列から Date オブジェクトを生成
+    const date = new Date(dateString);
+    // 日本ロケールで整形（"ja-JP" は日本語表記）
+    return date.toLocaleDateString("ja-JP", {
+      // 年は数字
+      year: "numeric",
+      // 月は「1月」のような長い形式
+      month: "long",
+      // 日は数字
+      day: "numeric",
     });
   };
 
@@ -362,7 +417,8 @@ export default async function BookDetailPage({ params }: Props) {  // 分割代�
   // 見やすく表示します。
   // -------------------------------------------------
   return (
-    <div className="max-w-2xl mx-auto py-8 px-4">  {/* 最大幅 2xl、左右中央寄せ、上下に余白 */}
+    {/* 最大幅 2xl、左右中央寄せ、上下に余白 */}
+    <div className="max-w-2xl mx-auto py-8 px-4">
       {/* -------------------------------------------
           戻るリンク
           一覧ページに戻るためのリンクです。
@@ -370,20 +426,30 @@ export default async function BookDetailPage({ params }: Props) {  // 分割代�
           一覧に戻れるようにします。
       ------------------------------------------- */}
       <Link
-        href="/books"  // 遷移先の URL
-        className="inline-flex items-center text-sm text-blue-600 hover:text-blue-800 mb-6"  // インラインフレックスで矢印とテキストを横並びに
+        // 遷移先の URL
+        href="/books"
+        // インラインフレックスで矢印とテキストを横並びに
+        className="inline-flex items-center text-sm text-blue-600 hover:text-blue-800 mb-6"
       >
         <svg
-          className="w-4 h-4 mr-1"      // 16x16 のサイズ、右に少しマージン
-          fill="none"                    // 塗りつぶしなし
-          stroke="currentColor"          // 線の色は親要素の文字色を引き継ぐ
-          viewBox="0 0 24 24"            // SVG の表示領域
+          // 16x16 のサイズ、右に少しマージン
+          className="w-4 h-4 mr-1"
+          // 塗りつぶしなし
+          fill="none"
+          // 線の色は親要素の文字色を引き継ぐ
+          stroke="currentColor"
+          // SVG の表示領域
+          viewBox="0 0 24 24"
         >
           <path
-            strokeLinecap="round"        // 線の端を丸く
-            strokeLinejoin="round"       // 線同士の結合点も丸く
-            strokeWidth={2}              // 線の太さ
-            d="M15 19l-7-7 7-7"          // ← の形を描画するパス
+            // 線の端を丸く
+            strokeLinecap="round"
+            // 線同士の結合点も丸く
+            strokeLinejoin="round"
+            // 線の太さ
+            strokeWidth={2}
+            // ← の形を描画するパス
+            d="M15 19l-7-7 7-7"
           />
         </svg>
         一覧に戻る
@@ -394,23 +460,30 @@ export default async function BookDetailPage({ params }: Props) {  // 分割代�
           白背景のカードに影をつけて、情報を
           グループ化して表示します。
       ------------------------------------------- */}
-      <div className="bg-white shadow-lg rounded-lg overflow-hidden">  {/* 白背景、強めの影、角丸、はみ出し非表示 */}
+      {/* 白背景、強めの影、角丸、はみ出し非表示 */}
+      <div className="bg-white shadow-lg rounded-lg overflow-hidden">
         {/* -------------------------------------------
             ヘッダー部分
             書籍タイトルとステータスバッジを
             表示します。背景色をグラデーションに
             して視覚的に目立たせます。
         ------------------------------------------- */}
-        <div className="bg-gradient-to-r from-blue-600 to-blue-800 px-6 py-8">  {/* 左から右へ青のグラデーション */}
-          <div className="flex items-start justify-between">  {/* タイトルとバッジを左右に振り分ける */}
-            <h1 className="text-2xl font-bold text-white">{book.title}</h1>  {/* book.title を白文字で大きく表示 */}
+        {/* 左から右へ青のグラデーション */}
+        <div className="bg-gradient-to-r from-blue-600 to-blue-800 px-6 py-8">
+          {/* タイトルとバッジを左右に振り分ける */}
+          <div className="flex items-start justify-between">
+            {/* book.title を白文字で大きく表示 */}
+            <h1 className="text-2xl font-bold text-white">{book.title}</h1>
             <span
-              className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(book.status)}`}  // テンプレートリテラルで動的にクラスを合成
+              // テンプレートリテラルで動的にクラスを合成
+              className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(book.status)}`}
             >
-              {getStatusLabel(book.status)}  {/* 日本語ラベルを表示 */}
+              {/* 日本語ラベルを表示 */}
+              {getStatusLabel(book.status)}
             </span>
           </div>
-          {book.author && (   /* book.author が真値（空でない）のときだけ描画する短絡評価 */
+          /* book.author が真値（空でない）のときだけ描画する短絡評価 */
+          {book.author && (
             <p className="mt-2 text-blue-100 text-lg">{book.author}</p>
           )}
         </div>
@@ -422,12 +495,17 @@ export default async function BookDetailPage({ params }: Props) {  // 分割代�
             見やすく整理します。
         ------------------------------------------- */}
         <div className="px-6 py-6">
-          <dl className="divide-y divide-gray-200">  {/* dl は定義リスト。子要素間に区切り線を入れる */}
+          {/* dl は定義リスト。子要素間に区切り線を入れる */}
+          <dl className="divide-y divide-gray-200">
             {/* 出版社 */}
-            <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4">  {/* sm 以上で 3 カラムグリッド */}
-              <dt className="text-sm font-medium text-gray-500">出版社</dt>  {/* dt は定義の見出し（ラベル） */}
-              <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">  {/* dd は定義の本体（値）。2カラム分使う */}
-                {book.publisher || "未設定"}  {/* publisher が空なら「未設定」を表示 */}
+            {/* sm 以上で 3 カラムグリッド */}
+            <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4">
+              {/* dt は定義の見出し（ラベル） */}
+              <dt className="text-sm font-medium text-gray-500">出版社</dt>
+              {/* dd は定義の本体（値）。2カラム分使う */}
+              <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                {/* publisher が空なら「未設定」を表示 */}
+                {book.publisher || "未設定"}
               </dd>
             </div>
 
@@ -435,7 +513,8 @@ export default async function BookDetailPage({ params }: Props) {  // 分割代�
             <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4">
               <dt className="text-sm font-medium text-gray-500">出版日</dt>
               <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                {formatDate(book.published_date)}  {/* 上で定義したフォーマッタで整形 */}
+                {/* 上で定義したフォーマッタで整形 */}
+                {formatDate(book.published_date)}
               </dd>
             </div>
 
@@ -443,8 +522,10 @@ export default async function BookDetailPage({ params }: Props) {  // 分割代�
             <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4">
               <dt className="text-sm font-medium text-gray-500">評価</dt>
               <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                <span className="text-yellow-500 text-lg">  {/* 星は黄色、少し大きめ */}
-                  {renderStars(book.rating)}  {/* 数値を ★★★☆☆ 形式に変換 */}
+                {/* 星は黄色、少し大きめ */}
+                <span className="text-yellow-500 text-lg">
+                  {/* 数値を ★★★☆☆ 形式に変換 */}
+                  {renderStars(book.rating)}
                 </span>
               </dd>
             </div>
@@ -465,8 +546,10 @@ export default async function BookDetailPage({ params }: Props) {  // 分割代�
             <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4">
               <dt className="text-sm font-medium text-gray-500">メモ</dt>
               <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                {book.memo ? (   /* メモがあれば本文を、なければグレーで「メモはありません」を表示する三項演算子 */
-                  <div className="bg-gray-50 rounded-md p-4 whitespace-pre-wrap">  {/* whitespace-pre-wrap で改行を保持 */}
+                /* メモがあれば本文を、なければグレーで「メモはありません」を表示する三項演算子 */
+                {book.memo ? (
+                  {/* whitespace-pre-wrap で改行を保持 */}
+                  <div className="bg-gray-50 rounded-md p-4 whitespace-pre-wrap">
                     {book.memo}
                   </div>
                 ) : (
@@ -479,7 +562,8 @@ export default async function BookDetailPage({ params }: Props) {  // 分割代�
             <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4">
               <dt className="text-sm font-medium text-gray-500">登録日時</dt>
               <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                {formatDate(book.created_at)}  {/* DB が自動で入れる作成日時 */}
+                {/* DB が自動で入れる作成日時 */}
+                {formatDate(book.created_at)}
               </dd>
             </div>
           </dl>
@@ -492,9 +576,11 @@ export default async function BookDetailPage({ params }: Props) {  // 分割代�
             （赤色）で表示して、操作を視覚的に
             区別します。
         ------------------------------------------- */}
-        <div className="bg-gray-50 px-6 py-4 flex items-center justify-end space-x-3">  {/* 右寄せでボタンを横並び、要素間隔 3 */}
+        {/* 右寄せでボタンを横並び、要素間隔 3 */}
+        <div className="bg-gray-50 px-6 py-4 flex items-center justify-end space-x-3">
           <Link
-            href={`/books/${book.id}/edit`}  // テンプレートリテラルで動的に編集ページの URL を組み立て
+            // テンプレートリテラルで動的に編集ページの URL を組み立て
+            href={`/books/${book.id}/edit`}
             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
             <svg
@@ -507,7 +593,8 @@ export default async function BookDetailPage({ params }: Props) {  // 分割代�
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth={2}
-                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"  // 鉛筆（編集）アイコンのパス
+                // 鉛筆（編集）アイコンのパス
+                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
               />
             </svg>
             編集する
@@ -652,11 +739,15 @@ export default async function BookDetailPage({ params }: Props) {  // 分割代�
 > **▼ このコードがやること（先に日本語で）:** 書籍の入力フォームを、「新規登録」と「編集」の両方で使い回せるように作り直します。ポイントは props で渡される `isEdit` というフラグで、これが `true` のときは Supabase の UPDATE（更新）を、`false` のときは INSERT（新規追加）を実行するよう処理を切り替えます。編集時は `initialData` で渡された既存データをフォームの初期値に入れておくので、最初から内容が埋まった状態で表示されます。初心者はまず「1つのフォームが2役をこなしている」「入力値は `useState` で React が管理している」という2点を押さえてください。各フィールドや送信処理の詳細はコード内のコメントにあります。
 
 ```tsx
-"use client";  // このファイルはブラウザ側で動くクライアントコンポーネント。useState/useRouter を使うために必須
+// このファイルはブラウザ側で動くクライアントコンポーネント。useState/useRouter を使うために必須
+"use client";
 
-import { useState } from "react";  // 状態管理フック
-import { useRouter } from "next/navigation";  // ページ遷移フック（App Router 用）
-import { createClient } from "@/lib/supabase/client";  // ブラウザ向けの Supabase クライアント
+// 状態管理フック
+import { useState } from "react";
+// ページ遷移フック（App Router 用）
+import { useRouter } from "next/navigation";
+// ブラウザ向けの Supabase クライアント
+import { createClient } from "@/lib/supabase/client";
 
 // -------------------------------------------------
 // 型定義
@@ -667,13 +758,20 @@ import { createClient } from "@/lib/supabase/client";  // ブラウザ向けの 
 // 数値は null も許容（評価が未入力の場合用）。
 // -------------------------------------------------
 type BookFormData = {
-  title: string;             // タイトル（必須）
-  author: string;            // 著者
-  publisher: string;         // 出版社
-  published_date: string;    // 出版日（YYYY-MM-DD 形式の文字列）
-  rating: number | null;     // 評価（1〜5 または null）
-  status: string;            // ステータス（"unread" / "reading" / "finished"）
-  memo: string;              // メモ
+  // タイトル（必須）
+  title: string;
+  // 著者
+  author: string;
+  // 出版社
+  publisher: string;
+  // 出版日（YYYY-MM-DD 形式の文字列）
+  published_date: string;
+  // 評価（1〜5 または null）
+  rating: number | null;
+  // ステータス（"unread" / "reading" / "finished"）
+  status: string;
+  // メモ
+  memo: string;
 };
 
 // -------------------------------------------------
@@ -689,9 +787,12 @@ type BookFormData = {
 // 末尾の ? は「省略可能」を表す TypeScript の記法です。
 // -------------------------------------------------
 type Props = {
-  initialData?: BookFormData;  // 省略可（新規登録時は渡さない）
-  isEdit?: boolean;             // 省略可（デフォルト false）
-  bookId?: string;              // 省略可（編集時のみ必要）
+  // 省略可（新規登録時は渡さない）
+  initialData?: BookFormData;
+  // 省略可（デフォルト false）
+  isEdit?: boolean;
+  // 省略可（編集時のみ必要）
+  bookId?: string;
 };
 
 // -------------------------------------------------
@@ -702,21 +803,32 @@ type Props = {
 // 初期化します。
 // -------------------------------------------------
 const defaultFormData: BookFormData = {
-  title: "",            // 空文字
-  author: "",           // 空文字
-  publisher: "",        // 空文字
-  published_date: "",   // 空文字（date 入力欄の空状態）
-  rating: null,         // 評価なし
-  status: "unread",     // デフォルトは「未読」
-  memo: "",             // 空文字
+  // 空文字
+  title: "",
+  // 空文字
+  author: "",
+  // 空文字
+  publisher: "",
+  // 空文字（date 入力欄の空状態）
+  published_date: "",
+  // 評価なし
+  rating: null,
+  // デフォルトは「未読」
+  status: "unread",
+  // 空文字
+  memo: "",
 };
 
 export default function BookForm({
-  initialData,     // 編集時の初期データ
-  isEdit = false,  // デフォルト値を指定（渡されなければ false）
-  bookId,          // 編集対象の ID
+  // 編集時の初期データ
+  initialData,
+  // デフォルト値を指定（渡されなければ false）
+  isEdit = false,
+  // 編集対象の ID
+  bookId,
 }: Props) {
-  const router = useRouter();  // 遷移用のルーターを取得
+  // 遷移用のルーターを取得
+  const router = useRouter();
 
   // -------------------------------------------------
   // フォームの状態管理
@@ -728,10 +840,13 @@ export default function BookForm({
   // ?? は「左が null/undefined なら右を使う」演算子（nullish coalescing）です。
   // -------------------------------------------------
   const [formData, setFormData] = useState<BookFormData>(
-    initialData ?? defaultFormData  // initialData が undefined なら defaultFormData
+    // initialData が undefined なら defaultFormData
+    initialData ?? defaultFormData
   );
-  const [isSubmitting, setIsSubmitting] = useState(false);  // 送信中フラグ（二重送信防止）
-  const [error, setError] = useState<string | null>(null);  // エラーメッセージ（無ければ null）
+  // 送信中フラグ（二重送信防止）
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  // エラーメッセージ（無ければ null）
+  const [error, setError] = useState<string | null>(null);
 
   // -------------------------------------------------
   // フォームフィールドの値変更ハンドラ
@@ -742,14 +857,20 @@ export default function BookForm({
   // 値だけを更新します。
   // -------------------------------------------------
   const handleChange = (
-    e: React.ChangeEvent<                          // ChangeEvent は React の入力変化イベントの型
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement  // input / select / textarea のいずれかに対応
+    // ChangeEvent は React の入力変化イベントの型
+    e: React.ChangeEvent<
+      // input / select / textarea のいずれかに対応
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
     >
   ) => {
-    const { name, value } = e.target;  // イベントの発生元から name と value を取り出す
-    setFormData((prev) => ({           // 関数形式の setState（前の状態を引数に取れる）
-      ...prev,                          // スプレッド構文で既存の値を全部展開（他のフィールドはそのまま）
-      [name]: value,                    // 計算プロパティ名で name に対応するフィールドだけ上書き
+    // イベントの発生元から name と value を取り出す
+    const { name, value } = e.target;
+    // 関数形式の setState（前の状態を引数に取れる）
+    setFormData((prev) => ({
+      // スプレッド構文で既存の値を全部展開（他のフィールドはそのまま）
+      ...prev,
+      // 計算プロパティ名で name に対応するフィールドだけ上書き
+      [name]: value,
     }));
   };
 
@@ -763,10 +884,12 @@ export default function BookForm({
   // parseInt で数値化する必要があります。
   // -------------------------------------------------
   const handleRatingChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value;  // 選択された値（文字列）
+    // 選択された値（文字列）
+    const value = e.target.value;
     setFormData((prev) => ({
       ...prev,
-      rating: value === "" ? null : parseInt(value, 10),  // 空なら null、そうでなければ 10 進数で整数化
+      // 空なら null、そうでなければ 10 進数で整数化
+      rating: value === "" ? null : parseInt(value, 10),
     }));
   };
 
@@ -779,9 +902,12 @@ export default function BookForm({
   // 完了を待ちます。
   // -------------------------------------------------
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();          // フォームのデフォルト送信（ページリロード）をキャンセル
-    setIsSubmitting(true);       // 送信中状態に
-    setError(null);              // 過去のエラーをクリア
+    // フォームのデフォルト送信（ページリロード）をキャンセル
+    e.preventDefault();
+    // 送信中状態に
+    setIsSubmitting(true);
+    // 過去のエラーをクリア
+    setError(null);
 
     // -------------------------------------------------
     // バリデーション
@@ -791,16 +917,21 @@ export default function BookForm({
     // trim() で前後の空白を除去してからチェックする
     // ことで「スペースだけ」の入力もエラー扱いに。
     // -------------------------------------------------
-    if (!formData.title.trim()) {  // タイトルが空白のみ または 空文字の場合
+    // タイトルが空白のみ または 空文字の場合
+    if (!formData.title.trim()) {
       setError("タイトルは必須です。");
-      setIsSubmitting(false);      // 送信中フラグを戻す
-      return;                       // 処理を中断
+      // 送信中フラグを戻す
+      setIsSubmitting(false);
+      // 処理を中断
+      return;
     }
 
     try {
-      const supabase = createClient();  // クライアント用 Supabase インスタンスを作成
+      // クライアント用 Supabase インスタンスを作成
+      const supabase = createClient();
 
-      if (isEdit && bookId) {  // 編集モード かつ ID がある場合
+      // 編集モード かつ ID がある場合
+      if (isEdit && bookId) {
         // -------------------------------------------------
         // 編集モード: UPDATE
         // -------------------------------------------------
@@ -811,20 +942,29 @@ export default function BookForm({
         // 絶対に忘れないこと。
         // -------------------------------------------------
         const { error: updateError } = await supabase
-          .from("books")          // books テーブルに対して
-          .update({               // UPDATE を発行
-            title: formData.title.trim(),                          // 前後の空白を除去
-            author: formData.author.trim() || null,                // 空文字なら null（DB をクリーンに保つ）
+          // books テーブルに対して
+          .from("books")
+          // UPDATE を発行
+          .update({
+            // 前後の空白を除去
+            title: formData.title.trim(),
+            // 空文字なら null（DB をクリーンに保つ）
+            author: formData.author.trim() || null,
             publisher: formData.publisher.trim() || null,
-            published_date: formData.published_date || null,       // 空文字なら null
-            rating: formData.rating,                                // null または数値
+            // 空文字なら null
+            published_date: formData.published_date || null,
+            // null または数値
+            rating: formData.rating,
             status: formData.status,
             memo: formData.memo.trim() || null,
           })
-          .eq("id", bookId);      // WHERE id = bookId
+          // WHERE id = bookId
+          .eq("id", bookId);
 
-        if (updateError) {        // UPDATE 中にエラーが起きたら
-          throw updateError;       // catch ブロックに飛ばす
+        // UPDATE 中にエラーが起きたら
+        if (updateError) {
+          // catch ブロックに飛ばす
+          throw updateError;
         }
 
         // -------------------------------------------------
@@ -836,8 +976,10 @@ export default function BookForm({
         // refresh() でサーバーコンポーネントのキャッシュ
         // も更新し、最新のデータが表示されるようにします。
         // -------------------------------------------------
-        router.push(`/books/${bookId}`);  // 詳細ページに遷移
-        router.refresh();                  // サーバー側データを再取得
+        // 詳細ページに遷移
+        router.push(`/books/${bookId}`);
+        // サーバー側データを再取得
+        router.refresh();
       } else {
         // -------------------------------------------------
         // 新規登録モード: INSERT
@@ -848,7 +990,8 @@ export default function BookForm({
         // -------------------------------------------------
         const { data, error: insertError } = await supabase
           .from("books")
-          .insert({                                         // INSERT 文に相当
+          // INSERT 文に相当
+          .insert({
             title: formData.title.trim(),
             author: formData.author.trim() || null,
             publisher: formData.publisher.trim() || null,
@@ -857,8 +1000,10 @@ export default function BookForm({
             status: formData.status,
             memo: formData.memo.trim() || null,
           })
-          .select()                                          // 挿入したレコードを返してもらう
-          .single();                                         // 1 件だけ取得
+          // 挿入したレコードを返してもらう
+          .select()
+          // 1 件だけ取得
+          .single();
 
         if (insertError) {
           throw insertError;
@@ -871,14 +1016,18 @@ export default function BookForm({
         router.refresh();
       }
     } catch (err) {
-      console.error("保存エラー:", err);  // 開発者向けにコンソールへエラー出力
+      // 開発者向けにコンソールへエラー出力
+      console.error("保存エラー:", err);
       setError(
         isEdit
-          ? "書籍の更新に失敗しました。もう一度お試しください。"  // 編集時のメッセージ
-          : "書籍の登録に失敗しました。もう一度お試しください。"  // 新規登録時のメッセージ
+          // 編集時のメッセージ
+          ? "書籍の更新に失敗しました。もう一度お試しください。"
+          // 新規登録時のメッセージ
+          : "書籍の登録に失敗しました。もう一度お試しください。"
       );
     } finally {
-      setIsSubmitting(false);  // 成功・失敗どちらでも、送信中フラグを戻す（finally で必ず実行）
+      // 成功・失敗どちらでも、送信中フラグを戻す（finally で必ず実行）
+      setIsSubmitting(false);
     }
   };
 
@@ -886,10 +1035,13 @@ export default function BookForm({
   // フォームのレンダリング
   // -------------------------------------------------
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">  {/* form の onSubmit で送信時に handleSubmit が呼ばれる */}
+    {/* form の onSubmit で送信時に handleSubmit が呼ばれる */}
+    <form onSubmit={handleSubmit} className="space-y-6">
       {/* エラーメッセージ */}
-      {error && (   /* error が null でないときだけ描画 */
-        <div className="bg-red-50 border-l-4 border-red-400 p-4 rounded">  {/* 赤系の警告ボックス */}
+      /* error が null でないときだけ描画 */
+      {error && (
+        {/* 赤系の警告ボックス */}
+        <div className="bg-red-50 border-l-4 border-red-400 p-4 rounded">
           <div className="flex">
             <div className="flex-shrink-0">
               <svg
@@ -899,13 +1051,15 @@ export default function BookForm({
               >
                 <path
                   fillRule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"  // ×印アイコンのパス
+                  // ×印アイコンのパス
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
                   clipRule="evenodd"
                 />
               </svg>
             </div>
             <div className="ml-3">
-              <p className="text-sm text-red-700">{error}</p>  {/* エラー文言を表示 */}
+              {/* エラー文言を表示 */}
+              <p className="text-sm text-red-700">{error}</p>
             </div>
           </div>
         </div>
@@ -914,20 +1068,29 @@ export default function BookForm({
       {/* タイトル（必須） */}
       <div>
         <label
-          htmlFor="title"  // この label がどの input と紐づくか（id と一致させる）
+          // この label がどの input と紐づくか（id と一致させる）
+          htmlFor="title"
           className="block text-sm font-medium text-gray-700"
         >
-          タイトル <span className="text-red-500">*</span>  {/* 赤いアスタリスクで必須を示す */}
+          {/* 赤いアスタリスクで必須を示す */}
+          タイトル <span className="text-red-500">*</span>
         </label>
         <input
-          type="text"                  // テキスト入力欄
-          id="title"                    // label の htmlFor と一致
-          name="title"                  // handleChange で参照される名前
-          required                      // HTML 側の必須チェック（ブラウザがエラー表示）
-          value={formData.title}        // 制御コンポーネント方式：state の値を反映
-          onChange={handleChange}       // 入力のたびに state を更新
+          // テキスト入力欄
+          type="text"
+          // label の htmlFor と一致
+          id="title"
+          // handleChange で参照される名前
+          name="title"
+          // HTML 側の必須チェック（ブラウザがエラー表示）
+          required
+          // 制御コンポーネント方式：state の値を反映
+          value={formData.title}
+          // 入力のたびに state を更新
+          onChange={handleChange}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-          placeholder="書籍のタイトルを入力"  // 未入力時のヒント
+          // 未入力時のヒント
+          placeholder="書籍のタイトルを入力"
         />
       </div>
 
@@ -942,7 +1105,8 @@ export default function BookForm({
         <input
           type="text"
           id="author"
-          name="author"                 // name="author" → handleChange で formData.author が更新される
+          // name="author" → handleChange で formData.author が更新される
+          name="author"
           value={formData.author}
           onChange={handleChange}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
@@ -978,7 +1142,8 @@ export default function BookForm({
           出版日
         </label>
         <input
-          type="date"                   // 日付ピッカー（YYYY-MM-DD 形式の文字列を扱う）
+          // 日付ピッカー（YYYY-MM-DD 形式の文字列を扱う）
+          type="date"
           id="published_date"
           name="published_date"
           value={formData.published_date}
@@ -998,11 +1163,14 @@ export default function BookForm({
         <select
           id="rating"
           name="rating"
-          value={formData.rating ?? ""}  // null のとき "" を渡す（select は string しか扱えない）
-          onChange={handleRatingChange}   // 専用ハンドラで数値化
+          // null のとき "" を渡す（select は string しか扱えない）
+          value={formData.rating ?? ""}
+          // 専用ハンドラで数値化
+          onChange={handleRatingChange}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
         >
-          <option value="">未評価</option>            {/* 空文字を選択肢として用意 */}
+          {/* 空文字を選択肢として用意 */}
+          <option value="">未評価</option>
           <option value="1">★☆☆☆☆（1）</option>
           <option value="2">★★☆☆☆（2）</option>
           <option value="3">★★★☆☆（3）</option>
@@ -1023,7 +1191,8 @@ export default function BookForm({
           id="status"
           name="status"
           value={formData.status}
-          onChange={handleChange}    // ステータスは文字列のままなので共通ハンドラで OK
+          // ステータスは文字列のままなので共通ハンドラで OK
+          onChange={handleChange}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
         >
           <option value="unread">未読</option>
@@ -1043,7 +1212,8 @@ export default function BookForm({
         <textarea
           id="memo"
           name="memo"
-          rows={4}                       // 表示行数の目安
+          // 表示行数の目安
+          rows={4}
           value={formData.memo}
           onChange={handleChange}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
@@ -1052,26 +1222,38 @@ export default function BookForm({
       </div>
 
       {/* 送信ボタン */}
-      <div className="flex items-center justify-end space-x-3">  {/* ボタンを右寄せで横並び */}
+      {/* ボタンを右寄せで横並び */}
+      <div className="flex items-center justify-end space-x-3">
         <button
-          type="button"                  // type="button" は「フォーム送信をしないボタン」
-          onClick={() => router.back()}  // クリック時に 1 つ前のページへ戻る
+          // type="button" は「フォーム送信をしないボタン」
+          type="button"
+          // クリック時に 1 つ前のページへ戻る
+          onClick={() => router.back()}
           className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
         >
           キャンセル
         </button>
         <button
-          type="submit"                  // type="submit" でフォームの onSubmit を発火させる
-          disabled={isSubmitting}        // 送信中はクリック不可（二重送信防止）
+          // type="submit" でフォームの onSubmit を発火させる
+          type="submit"
+          // 送信中はクリック不可（二重送信防止）
+          disabled={isSubmitting}
           className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isSubmitting               /* 送信中なら... */
-            ? isEdit                   /* かつ編集モードなら */
-              ? "更新中..."             /* 「更新中...」 */
-              : "登録中..."             /* それ以外は「登録中...」 */
-            : isEdit                   /* 送信中でなくて編集モードなら */
-              ? "更新する"              /* 「更新する」 */
-              : "登録する"}             /* 新規登録なら「登録する」 */
+          /* 送信中なら... */
+          {isSubmitting
+            /* かつ編集モードなら */
+            ? isEdit
+              /* 「更新中...」 */
+              ? "更新中..."
+              /* それ以外は「登録中...」 */
+              : "登録中..."
+            /* 送信中でなくて編集モードなら */
+            : isEdit
+              /* 「更新する」 */
+              ? "更新する"
+              /* 新規登録なら「登録する」 */
+              : "登録する"}
         </button>
       </div>
     </form>
@@ -1105,9 +1287,12 @@ export default function BookForm({
 
 ```tsx
 type Props = {
-  initialData?: BookFormData;  // 省略可（新規登録時は渡さない）
-  isEdit?: boolean;             // 省略可（デフォルト false）
-  bookId?: string;              // 省略可（編集時のみ必要）
+  // 省略可（新規登録時は渡さない）
+  initialData?: BookFormData;
+  // 省略可（デフォルト false）
+  isEdit?: boolean;
+  // 省略可（編集時のみ必要）
+  bookId?: string;
 };
 ```
 
@@ -1124,7 +1309,8 @@ type Props = {
 
 ```tsx
 const [formData, setFormData] = useState<BookFormData>(
-  initialData ?? defaultFormData  // initialData が undefined なら defaultFormData
+  // initialData が undefined なら defaultFormData
+  initialData ?? defaultFormData
 );
 ```
 
@@ -1144,10 +1330,14 @@ const handleChange = (
     HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
   >
 ) => {
-  const { name, value } = e.target;  // イベントの発生元から name と value を取り出す
-  setFormData((prev) => ({           // 関数形式の setState（前の状態を引数に取れる）
-    ...prev,                          // スプレッド構文で既存の値を全部展開（他のフィールドはそのまま）
-    [name]: value,                    // 計算プロパティ名で name に対応するフィールドだけ上書き
+  // イベントの発生元から name と value を取り出す
+  const { name, value } = e.target;
+  // 関数形式の setState（前の状態を引数に取れる）
+  setFormData((prev) => ({
+    // スプレッド構文で既存の値を全部展開（他のフィールドはそのまま）
+    ...prev,
+    // 計算プロパティ名で name に対応するフィールドだけ上書き
+    [name]: value,
   }));
 };
 ```
@@ -1164,19 +1354,27 @@ const handleChange = (
 ##### 解説4: `isEdit` で UPDATE と INSERT を切り替える
 
 ```tsx
-if (isEdit && bookId) {  // 編集モード かつ ID がある場合
+// 編集モード かつ ID がある場合
+if (isEdit && bookId) {
   const { error: updateError } = await supabase
-    .from("books")          // books テーブルに対して
-    .update({               // UPDATE を発行
-      title: formData.title.trim(),                          // 前後の空白を除去
-      author: formData.author.trim() || null,                // 空文字なら null（DB をクリーンに保つ）
+    // books テーブルに対して
+    .from("books")
+    // UPDATE を発行
+    .update({
+      // 前後の空白を除去
+      title: formData.title.trim(),
+      // 空文字なら null（DB をクリーンに保つ）
+      author: formData.author.trim() || null,
       publisher: formData.publisher.trim() || null,
-      published_date: formData.published_date || null,       // 空文字なら null
-      rating: formData.rating,                                // null または数値
+      // 空文字なら null
+      published_date: formData.published_date || null,
+      // null または数値
+      rating: formData.rating,
       status: formData.status,
       memo: formData.memo.trim() || null,
     })
-    .eq("id", bookId);      // WHERE id = bookId
+    // WHERE id = bookId
+    .eq("id", bookId);
 ```
 
 - 送信処理の中心です。`if (isEdit && bookId)` で「編集モードかつIDがある」ときだけ UPDATE（更新）を実行し、そうでなければ（`else` 側で）INSERT（新規追加）を実行します。
@@ -1190,13 +1388,20 @@ if (isEdit && bookId) {  // 編集モード かつ ID がある場合
 ##### 解説5: 送信中フラグでボタン文言を出し分ける
 
 ```tsx
-{isSubmitting               /* 送信中なら... */
-  ? isEdit                   /* かつ編集モードなら */
-    ? "更新中..."             /* 「更新中...」 */
-    : "登録中..."             /* それ以外は「登録中...」 */
-  : isEdit                   /* 送信中でなくて編集モードなら */
-    ? "更新する"              /* 「更新する」 */
-    : "登録する"}             /* 新規登録なら「登録する」 */
+/* 送信中なら... */
+{isSubmitting
+  /* かつ編集モードなら */
+  ? isEdit
+    /* 「更新中...」 */
+    ? "更新中..."
+    /* それ以外は「登録中...」 */
+    : "登録中..."
+  /* 送信中でなくて編集モードなら */
+  : isEdit
+    /* 「更新する」 */
+    ? "更新する"
+    /* 新規登録なら「登録する」 */
+    : "登録する"}
 ```
 
 - ボタンに表示する文字を、2つの旗（`isSubmitting` と `isEdit`）の組み合わせで4通りに出し分けています。
@@ -1216,10 +1421,14 @@ if (isEdit && bookId) {  // 編集モード かつ ID がある場合
 > **▼ このコードがやること（先に日本語で）:** 編集ページの本体です。URL の `[id]` から書籍を1件取得し、その既存データを `initialData` として `BookForm` に渡すのが役割です。このページ自体はサーバー側でデータを読むだけの Server Component で、実際の入力や更新処理は受け取った側の `BookForm`（クライアント側）が担当します。初心者は「重いデータ取得はサーバーで行い、対話的なフォームはクライアントに任せる」という役割分担に注目してください。`null` を空文字に変換している理由などはコード内のコメントで説明しています。
 
 ```tsx
-import { createClient } from "@/lib/supabase/server";  // サーバー用 Supabase クライアント
-import { notFound } from "next/navigation";  // 404 表示用
-import Link from "next/link";  // 戻るリンク用
-import BookForm from "@/components/BookForm";  // 上で更新した共通フォーム
+// サーバー用 Supabase クライアント
+import { createClient } from "@/lib/supabase/server";
+// 404 表示用
+import { notFound } from "next/navigation";
+// 戻るリンク用
+import Link from "next/link";
+// 上で更新した共通フォーム
+import BookForm from "@/components/BookForm";
 
 // -------------------------------------------------
 // 型定義
@@ -1253,13 +1462,16 @@ export default async function BookEditPage({ params }: Props) {
   // -------------------------------------------------
   // 2. Supabase から既存データを取得
   // -------------------------------------------------
-  const supabase = await createClient();  // クライアントを準備
+  // クライアントを準備
+  const supabase = await createClient();
 
   const { data: book, error } = await supabase
     .from("books")
     .select("*")
-    .eq("id", id)         // URL の id と一致するレコード
-    .single();             // 単一レコードとして取得
+    // URL の id と一致するレコード
+    .eq("id", id)
+    // 単一レコードとして取得
+    .single();
 
   // -------------------------------------------------
   // 3. エラーハンドリング
@@ -1283,12 +1495,15 @@ export default async function BookEditPage({ params }: Props) {
   // 演算子です（nullish coalescing）。
   // -------------------------------------------------
   const initialData = {
-    title: book.title ?? "",                  // null なら空文字に変換
+    // null なら空文字に変換
+    title: book.title ?? "",
     author: book.author ?? "",
     publisher: book.publisher ?? "",
     published_date: book.published_date ?? "",
-    rating: book.rating ?? null,              // null はそのまま
-    status: book.status ?? "unread",          // status は null だと困るのでデフォルトを設定
+    // null はそのまま
+    rating: book.rating ?? null,
+    // status は null だと困るのでデフォルトを設定
+    status: book.status ?? "unread",
     memo: book.memo ?? "",
   };
 
@@ -1299,7 +1514,8 @@ export default async function BookEditPage({ params }: Props) {
     <div className="max-w-2xl mx-auto py-8 px-4">
       {/* 戻るリンク */}
       <Link
-        href={`/books/${id}`}  // 編集元の詳細ページへ
+        // 編集元の詳細ページへ
+        href={`/books/${id}`}
         className="inline-flex items-center text-sm text-blue-600 hover:text-blue-800 mb-6"
       >
         <svg
@@ -1312,7 +1528,8 @@ export default async function BookEditPage({ params }: Props) {
             strokeLinecap="round"
             strokeLinejoin="round"
             strokeWidth={2}
-            d="M15 19l-7-7 7-7"  // 左向き矢印
+            // 左向き矢印
+            d="M15 19l-7-7 7-7"
           />
         </svg>
         詳細に戻る
@@ -1322,7 +1539,8 @@ export default async function BookEditPage({ params }: Props) {
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-gray-900">書籍を編集</h1>
         <p className="mt-1 text-sm text-gray-600">
-          「{book.title}」の情報を編集します。  {/* 既存タイトルを表示して、編集対象を明示 */}
+          {/* 既存タイトルを表示して、編集対象を明示 */}
+          「{book.title}」の情報を編集します。
         </p>
       </div>
 
@@ -1361,13 +1579,16 @@ export default async function BookEditPage({ params }: Props) {
 ```tsx
 const { id } = await params;
 
-const supabase = await createClient();  // クライアントを準備
+// クライアントを準備
+const supabase = await createClient();
 
 const { data: book, error } = await supabase
   .from("books")
   .select("*")
-  .eq("id", id)         // URL の id と一致するレコード
-  .single();             // 単一レコードとして取得
+  // URL の id と一致するレコード
+  .eq("id", id)
+  // 単一レコードとして取得
+  .single();
 ```
 
 - このページはサーバー側で動く Server Component なので、`await` を使ってデータベースから直接データを読めます。
@@ -1382,12 +1603,15 @@ const { data: book, error } = await supabase
 
 ```tsx
 const initialData = {
-  title: book.title ?? "",                  // null なら空文字に変換
+  // null なら空文字に変換
+  title: book.title ?? "",
   author: book.author ?? "",
   publisher: book.publisher ?? "",
   published_date: book.published_date ?? "",
-  rating: book.rating ?? null,              // null はそのまま
-  status: book.status ?? "unread",          // status は null だと困るのでデフォルトを設定
+  // null はそのまま
+  rating: book.rating ?? null,
+  // status は null だと困るのでデフォルトを設定
+  status: book.status ?? "unread",
   memo: book.memo ?? "",
 };
 ```
@@ -1478,11 +1702,15 @@ const initialData = {
 > **▼ このコードがやること（先に日本語で）:** 「削除する」ボタンを作ります。クリックするとまず `window.confirm()` でブラウザ標準の確認ダイアログを出し、ユーザーが「OK」を押したときだけ Supabase の DELETE（削除）を実行します。確認・クリック処理はブラウザ側でしか動かないため、先頭に `"use client"` を付けたクライアントコンポーネントにしています。初心者は「①確認 → ②OKなら削除 → ③一覧へ戻る」という流れと、処理中はボタンを無効化して二重削除を防いでいる点を押さえてください。詳細はコード内のコメントにあります。
 
 ```tsx
-"use client";  // クライアントコンポーネント宣言：useState や onClick を使うために必須
+// クライアントコンポーネント宣言：useState や onClick を使うために必須
+"use client";
 
-import { useState } from "react";  // 削除中フラグ管理用
-import { useRouter } from "next/navigation";  // 削除後の遷移用
-import { createClient } from "@/lib/supabase/client";  // ブラウザ向け Supabase クライアント
+// 削除中フラグ管理用
+import { useState } from "react";
+// 削除後の遷移用
+import { useRouter } from "next/navigation";
+// ブラウザ向け Supabase クライアント
+import { createClient } from "@/lib/supabase/client";
 
 // -------------------------------------------------
 // Props の型定義
@@ -1500,7 +1728,8 @@ type Props = {
 };
 
 export default function DeleteButton({ bookId, bookTitle }: Props) {
-  const router = useRouter();  // 削除後に一覧へ遷移するために使用
+  // 削除後に一覧へ遷移するために使用
+  const router = useRouter();
 
   // -------------------------------------------------
   // 状態管理
@@ -1547,10 +1776,12 @@ export default function DeleteButton({ bookId, bookTitle }: Props) {
     // -------------------------------------------------
     // 2. 削除処理の実行
     // -------------------------------------------------
-    setIsDeleting(true);  // ローディング状態に切り替え
+    // ローディング状態に切り替え
+    setIsDeleting(true);
 
     try {
-      const supabase = createClient();  // Supabase クライアントを準備
+      // Supabase クライアントを準備
+      const supabase = createClient();
 
       // -------------------------------------------------
       // Supabase DELETE クエリ
@@ -1569,11 +1800,14 @@ export default function DeleteButton({ bookId, bookTitle }: Props) {
       // -------------------------------------------------
       const { error } = await supabase
         .from("books")
-        .delete()             // DELETE 文に相当
-        .eq("id", bookId);    // WHERE id = bookId
+        // DELETE 文に相当
+        .delete()
+        // WHERE id = bookId
+        .eq("id", bookId);
 
       if (error) {
-        throw error;          // catch にエラーを渡す
+        // catch にエラーを渡す
+        throw error;
       }
 
       // -------------------------------------------------
@@ -1585,8 +1819,10 @@ export default function DeleteButton({ bookId, bookTitle }: Props) {
       // データを再取得し、削除された書籍が一覧から
       // 消えていることを確認できるようにします。
       // -------------------------------------------------
-      router.push("/books");   // 一覧ページへ
-      router.refresh();         // サーバー側データを再取得
+      // 一覧ページへ
+      router.push("/books");
+      // サーバー側データを再取得
+      router.refresh();
     } catch (err) {
       console.error("削除エラー:", err);
       // -------------------------------------------------
@@ -1596,7 +1832,8 @@ export default function DeleteButton({ bookId, bookTitle }: Props) {
       // 簡易的なエラー表示として使っています。
       // -------------------------------------------------
       alert("書籍の削除に失敗しました。もう一度お試しください。");
-      setIsDeleting(false);  // 状態を戻してリトライ可能に
+      // 状態を戻してリトライ可能に
+      setIsDeleting(false);
     }
   };
 
@@ -1611,11 +1848,14 @@ export default function DeleteButton({ bookId, bookTitle }: Props) {
   // -------------------------------------------------
   return (
     <button
-      onClick={handleDelete}                                                // クリックで削除ハンドラを呼ぶ
-      disabled={isDeleting}                                                  // 削除中はクリック不可
+      // クリックで削除ハンドラを呼ぶ
+      onClick={handleDelete}
+      // 削除中はクリック不可
+      disabled={isDeleting}
       className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
     >
-      {isDeleting ? (   /* 削除中はスピナー+「削除中...」を表示 */
+      /* 削除中はスピナー+「削除中...」を表示 */
+      {isDeleting ? (
         <>
           {/* -------------------------------------------
               ローディングスピナー
@@ -1624,13 +1864,15 @@ export default function DeleteButton({ bookId, bookTitle }: Props) {
               視覚的にフィードバックします。
           ------------------------------------------- */}
           <svg
-            className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"  // animate-spin で回転アニメ
+            // animate-spin で回転アニメ
+            className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
           >
             <circle
-              className="opacity-25"        // 25% の透明度で薄く描画
+              // 25% の透明度で薄く描画
+              className="opacity-25"
               cx="12"
               cy="12"
               r="10"
@@ -1638,9 +1880,11 @@ export default function DeleteButton({ bookId, bookTitle }: Props) {
               strokeWidth="4"
             />
             <path
-              className="opacity-75"        // 75% の透明度でやや濃く描画
+              // 75% の透明度でやや濃く描画
+              className="opacity-75"
               fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"  // スピナーの一部円弧
+              // スピナーの一部円弧
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
             />
           </svg>
           削除中...
@@ -1658,7 +1902,8 @@ export default function DeleteButton({ bookId, bookTitle }: Props) {
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth={2}
-              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"  // ゴミ箱の絵
+              // ゴミ箱の絵
+              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
             />
           </svg>
           削除する
@@ -1708,18 +1953,23 @@ if (!confirmed) {
 ##### 解説2: 削除中フラグで二重削除を防ぐ
 
 ```tsx
-setIsDeleting(true);  // ローディング状態に切り替え
+// ローディング状態に切り替え
+setIsDeleting(true);
 
 try {
-  const supabase = createClient();  // Supabase クライアントを準備
+  // Supabase クライアントを準備
+  const supabase = createClient();
 
   const { error } = await supabase
     .from("books")
-    .delete()             // DELETE 文に相当
-    .eq("id", bookId);    // WHERE id = bookId
+    // DELETE 文に相当
+    .delete()
+    // WHERE id = bookId
+    .eq("id", bookId);
 
   if (error) {
-    throw error;          // catch にエラーを渡す
+    // catch にエラーを渡す
+    throw error;
   }
 ```
 
@@ -1734,12 +1984,15 @@ try {
 ##### 解説3: 成功時は一覧へ戻し、失敗時はリトライ可能にする
 
 ```tsx
-  router.push("/books");   // 一覧ページへ
-  router.refresh();         // サーバー側データを再取得
+  // 一覧ページへ
+  router.push("/books");
+  // サーバー側データを再取得
+  router.refresh();
 } catch (err) {
   console.error("削除エラー:", err);
   alert("書籍の削除に失敗しました。もう一度お試しください。");
-  setIsDeleting(false);  // 状態を戻してリトライ可能に
+  // 状態を戻してリトライ可能に
+  setIsDeleting(false);
 }
 ```
 
@@ -1764,10 +2017,13 @@ try {
 > **▼ このコードがやること（先に日本語で）:** タイトル・著者名で書籍を絞り込む検索バーと、ステータスで絞り込むフィルタを作ります。検索条件は state ではなく URL の `?q=...&status=...`（検索パラメータ）に反映させるのがポイントで、こうすると検索結果のURLを共有したり、戻るボタンで前の状態に戻したりできます。さらに「キーを打つたびに検索せず、入力が止まって300ミリ秒後にまとめて検索する」デバウンスという工夫も入れています。初心者は「入力 → URL を書き換える → サーバーがその条件で再取得する」という流れだけ追えば十分で、`useEffect` やデバウンスの細部はコメントで補足しています。
 
 ```tsx
-"use client";  // 入力イベントや setState を扱うのでクライアントコンポーネント
+// 入力イベントや setState を扱うのでクライアントコンポーネント
+"use client";
 
-import { useRouter, useSearchParams, usePathname } from "next/navigation";  // ルーター、URL クエリ、パス取得用フック
-import { useState, useEffect, useCallback } from "react";  // 状態管理・副作用・関数メモ化
+// ルーター、URL クエリ、パス取得用フック
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
+// 状態管理・副作用・関数メモ化
+import { useState, useEffect, useCallback } from "react";
 
 // -------------------------------------------------
 // 検索バーコンポーネント
@@ -1780,9 +2036,12 @@ import { useState, useEffect, useCallback } from "react";  // 状態管理・副
 //    発行しないように、一定時間待ってから検索）
 // -------------------------------------------------
 export default function SearchBar() {
-  const router = useRouter();                  // URL を変更するため
-  const searchParams = useSearchParams();      // 現在の ?q=... を読むため
-  const pathname = usePathname();              // 現在のパス（例: /books）を取得
+  // URL を変更するため
+  const router = useRouter();
+  // 現在の ?q=... を読むため
+  const searchParams = useSearchParams();
+  // 現在のパス（例: /books）を取得
+  const pathname = usePathname();
 
   // -------------------------------------------------
   // URL の検索パラメータから初期値を取得
@@ -1792,10 +2051,12 @@ export default function SearchBar() {
   // されるようにします。
   // -------------------------------------------------
   const [searchQuery, setSearchQuery] = useState(
-    searchParams.get("q") ?? ""               // ?q= の値、無ければ空文字
+    // ?q= の値、無ければ空文字
+    searchParams.get("q") ?? ""
   );
   const [statusFilter, setStatusFilter] = useState(
-    searchParams.get("status") ?? ""          // ?status= の値、無ければ空文字
+    // ?status= の値、無ければ空文字
+    searchParams.get("status") ?? ""
   );
 
   // -------------------------------------------------
@@ -1810,7 +2071,8 @@ export default function SearchBar() {
   // -------------------------------------------------
   const updateSearchParams = useCallback(
     (query: string, status: string) => {
-      const params = new URLSearchParams(searchParams.toString());  // 現在のクエリを元にコピーを作成
+      // 現在のクエリを元にコピーを作成
+      const params = new URLSearchParams(searchParams.toString());
 
       // -------------------------------------------------
       // 検索クエリの設定
@@ -1820,10 +2082,13 @@ export default function SearchBar() {
       // 例: /books?q=React&status=reading
       //     検索クエリが空なら /books?status=reading
       // -------------------------------------------------
-      if (query.trim()) {                  // 空白以外の文字が含まれていれば
-        params.set("q", query.trim());      // ?q= を設定
+      // 空白以外の文字が含まれていれば
+      if (query.trim()) {
+        // ?q= を設定
+        params.set("q", query.trim());
       } else {
-        params.delete("q");                 // 空なら ?q= を削除
+        // 空なら ?q= を削除
+        params.delete("q");
       }
 
       // ステータスフィルタの設定
@@ -1841,11 +2106,15 @@ export default function SearchBar() {
       // 再レンダリングし、新しい searchParams で
       // データを再取得します。
       // -------------------------------------------------
-      const queryString = params.toString();                            // "q=React&status=reading" など
-      const newUrl = queryString ? `${pathname}?${queryString}` : pathname;  // クエリがあれば付加、なければパスだけ
-      router.push(newUrl);                                              // URL を更新
+      // "q=React&status=reading" など
+      const queryString = params.toString();
+      // クエリがあれば付加、なければパスだけ
+      const newUrl = queryString ? `${pathname}?${queryString}` : pathname;
+      // URL を更新
+      router.push(newUrl);
     },
-    [router, pathname, searchParams]  // これらが変わったら関数を作り直す
+    // これらが変わったら関数を作り直す
+    [router, pathname, searchParams]
   );
 
   // -------------------------------------------------
@@ -1858,7 +2127,8 @@ export default function SearchBar() {
   // useEffect は「描画後に副作用を実行する」フック。
   // -------------------------------------------------
   useEffect(() => {
-    const timer = setTimeout(() => {              // 300ms 後に実行する予約
+    // 300ms 後に実行する予約
+    const timer = setTimeout(() => {
       updateSearchParams(searchQuery, statusFilter);
     }, 300);
 
@@ -1869,8 +2139,10 @@ export default function SearchBar() {
     // キャンセルします。これにより、最後の入力
     // から 300ms 後にのみ検索が実行されます。
     // -------------------------------------------------
-    return () => clearTimeout(timer);             // 副作用の片付け
-  }, [searchQuery, statusFilter, updateSearchParams]);  // これらが変わるたびに発火
+    // 副作用の片付け
+    return () => clearTimeout(timer);
+  // これらが変わるたびに発火
+  }, [searchQuery, statusFilter, updateSearchParams]);
 
   // -------------------------------------------------
   // 検索条件クリア
@@ -1878,9 +2150,12 @@ export default function SearchBar() {
   // 入力欄を空にして、URL も検索条件無しに戻します。
   // -------------------------------------------------
   const handleClear = () => {
-    setSearchQuery("");        // 検索クエリをクリア
-    setStatusFilter("");        // フィルタをクリア
-    router.push(pathname);     // ?xxx を全部外す
+    // 検索クエリをクリア
+    setSearchQuery("");
+    // フィルタをクリア
+    setStatusFilter("");
+    // ?xxx を全部外す
+    router.push(pathname);
   };
 
   // -------------------------------------------------
@@ -1888,15 +2163,18 @@ export default function SearchBar() {
   // -------------------------------------------------
   return (
     <div className="bg-white shadow rounded-lg p-4 mb-6">
-      <div className="flex flex-col sm:flex-row gap-4">  {/* モバイルは縦、PC は横並び */}
+      {/* モバイルは縦、PC は横並び */}
+      <div className="flex flex-col sm:flex-row gap-4">
         {/* 検索入力フィールド */}
         <div className="flex-1">
-          <label htmlFor="search" className="sr-only">  {/* sr-only は視覚的には非表示、スクリーンリーダー用 */}
+          {/* sr-only は視覚的には非表示、スクリーンリーダー用 */}
+          <label htmlFor="search" className="sr-only">
             検索
           </label>
           <div className="relative">
             {/* 虫眼鏡アイコン */}
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">  {/* クリックを通過させる */}
+            {/* クリックを通過させる */}
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <svg
                 className="h-5 w-5 text-gray-400"
                 fill="none"
@@ -1907,15 +2185,18 @@ export default function SearchBar() {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"  // 虫眼鏡のパス
+                  // 虫眼鏡のパス
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                 />
               </svg>
             </div>
             <input
               type="text"
               id="search"
-              value={searchQuery}                               // state を反映（制御コンポーネント）
-              onChange={(e) => setSearchQuery(e.target.value)}  // 入力のたびに state を更新
+              // state を反映（制御コンポーネント）
+              value={searchQuery}
+              // 入力のたびに state を更新
+              onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="タイトルまたは著者名で検索..."
               className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             />
@@ -1941,7 +2222,8 @@ export default function SearchBar() {
         </div>
 
         {/* クリアボタン */}
-        {(searchQuery || statusFilter) && (   /* どちらか入っているときだけ表示 */
+        /* どちらか入っているときだけ表示 */
+        {(searchQuery || statusFilter) && (
           <button
             onClick={handleClear}
             className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
@@ -1956,7 +2238,8 @@ export default function SearchBar() {
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"  // × アイコン
+                // × アイコン
+                d="M6 18L18 6M6 6l12 12"
               />
             </svg>
             クリア
@@ -1978,10 +2261,12 @@ export default function SearchBar() {
 
 ```tsx
 const [searchQuery, setSearchQuery] = useState(
-  searchParams.get("q") ?? ""               // ?q= の値、無ければ空文字
+  // ?q= の値、無ければ空文字
+  searchParams.get("q") ?? ""
 );
 const [statusFilter, setStatusFilter] = useState(
-  searchParams.get("status") ?? ""          // ?status= の値、無ければ空文字
+  // ?status= の値、無ければ空文字
+  searchParams.get("status") ?? ""
 );
 ```
 
@@ -1997,12 +2282,15 @@ const [statusFilter, setStatusFilter] = useState(
 
 ```tsx
 useEffect(() => {
-  const timer = setTimeout(() => {              // 300ms 後に実行する予約
+  // 300ms 後に実行する予約
+  const timer = setTimeout(() => {
     updateSearchParams(searchQuery, statusFilter);
   }, 300);
 
-  return () => clearTimeout(timer);             // 副作用の片付け
-}, [searchQuery, statusFilter, updateSearchParams]);  // これらが変わるたびに発火
+  // 副作用の片付け
+  return () => clearTimeout(timer);
+// これらが変わるたびに発火
+}, [searchQuery, statusFilter, updateSearchParams]);
 ```
 
 - もしキーを打つたびに検索すると、不要なリクエストが大量に飛んでしまいます。それを防ぐのが**デバウンス**という工夫です。
@@ -2016,10 +2304,13 @@ useEffect(() => {
 ##### 解説3: 空の条件は URL から削除してきれいに保つ
 
 ```tsx
-if (query.trim()) {                  // 空白以外の文字が含まれていれば
-  params.set("q", query.trim());      // ?q= を設定
+// 空白以外の文字が含まれていれば
+if (query.trim()) {
+  // ?q= を設定
+  params.set("q", query.trim());
 } else {
-  params.delete("q");                 // 空なら ?q= を削除
+  // 空なら ?q= を削除
+  params.delete("q");
 }
 ```
 
@@ -2040,10 +2331,14 @@ if (query.trim()) {                  // 空白以外の文字が含まれてい�
 > **▼ このコードがやること（先に日本語で）:** 前章で作った一覧ページを、検索・フィルタ・ソートに対応させた更新版です。URL の検索パラメータ（`q` / `status` / `sort` / `order`）を読み取り、その条件に合わせて Supabase へのクエリを少しずつ組み立てていきます。`ilike` は大文字小文字を区別しない部分一致検索、`.or()` は「タイトル または 著者名」のどちらかにマッチさせる指定です。初心者は「URL の条件を見て → クエリに条件を足していき → 最後にまとめて実行する」という組み立て方に注目してください。各条件の詳細はコード内のコメントで説明しています。
 
 ```tsx
-import { createClient } from "@/lib/supabase/server";  // サーバー用 Supabase クライアント
-import Link from "next/link";  // 詳細ページ等への遷移
-import SearchBar from "@/components/SearchBar";  // 検索バー（クライアントコンポーネント）
-import SortSelect from "@/components/SortSelect";  // ソート用セレクト（クライアントコンポーネント）
+// サーバー用 Supabase クライアント
+import { createClient } from "@/lib/supabase/server";
+// 詳細ページ等への遷移
+import Link from "next/link";
+// 検索バー（クライアントコンポーネント）
+import SearchBar from "@/components/SearchBar";
+// ソート用セレクト（クライアントコンポーネント）
+import SortSelect from "@/components/SortSelect";
 
 // -------------------------------------------------
 // 型定義
@@ -2054,11 +2349,16 @@ import SortSelect from "@/components/SortSelect";  // ソート用セレクト�
 // Next.js 15 以降は Promise でラップされる点に注意。
 // -------------------------------------------------
 type Props = {
-  searchParams: Promise<{      // URL の ? 以降のパラメータ
-    q?: string;                 // 検索クエリ（省略可）
-    status?: string;            // ステータスフィルタ
-    sort?: string;              // ソート対象カラム
-    order?: string;             // 昇順/降順
+  // URL の ? 以降のパラメータ
+  searchParams: Promise<{
+    // 検索クエリ（省略可）
+    q?: string;
+    // ステータスフィルタ
+    status?: string;
+    // ソート対象カラム
+    sort?: string;
+    // 昇順/降順
+    order?: string;
   }>;
 };
 
@@ -2094,7 +2394,8 @@ function getStatusColor(status: string): string {
 // 評価を星マークで表示する関数
 // -------------------------------------------------
 function renderStars(rating: number | null): string {
-  if (rating === null || rating === undefined) return "-";  // 未評価のときはハイフン
+  // 未評価のときはハイフン
+  if (rating === null || rating === undefined) return "-";
   return "★".repeat(rating) + "☆".repeat(5 - rating);
 }
 
@@ -2102,8 +2403,10 @@ function renderStars(rating: number | null): string {
 // 書籍一覧ページ（Server Component）
 // -------------------------------------------------
 export default async function BooksPage({ searchParams }: Props) {
-  const { q, status, sort, order } = await searchParams;  // Promise を解決して各パラメータを取り出し
-  const supabase = await createClient();                   // サーバー用クライアント
+  // Promise を解決して各パラメータを取り出し
+  const { q, status, sort, order } = await searchParams;
+  // サーバー用クライアント
+  const supabase = await createClient();
 
   // -------------------------------------------------
   // Supabase クエリの構築
@@ -2112,7 +2415,8 @@ export default async function BooksPage({ searchParams }: Props) {
   // ある場合は動的にクエリを組み立てます。
   // let で宣言して、後から条件を追加していく形にします。
   // -------------------------------------------------
-  let query = supabase.from("books").select("*");  // ベースのクエリ（全件取得）
+  // ベースのクエリ（全件取得）
+  let query = supabase.from("books").select("*");
 
   // -------------------------------------------------
   // テキスト検索
@@ -2128,7 +2432,8 @@ export default async function BooksPage({ searchParams }: Props) {
   // マッチする条件を設定します。
   // -------------------------------------------------
   if (q) {
-    query = query.or(`title.ilike.%${q}%,author.ilike.%${q}%`);  // title OR author で部分一致
+    // title OR author で部分一致
+    query = query.or(`title.ilike.%${q}%,author.ilike.%${q}%`);
   }
 
   // -------------------------------------------------
@@ -2138,7 +2443,8 @@ export default async function BooksPage({ searchParams }: Props) {
   // そのステータスの書籍のみを取得します。
   // -------------------------------------------------
   if (status) {
-    query = query.eq("status", status);  // WHERE status = :status
+    // WHERE status = :status
+    query = query.eq("status", status);
   }
 
   // -------------------------------------------------
@@ -2148,9 +2454,12 @@ export default async function BooksPage({ searchParams }: Props) {
   // order パラメータでソート順（昇順/降順）を
   // 指定します。デフォルトは作成日の降順です。
   // -------------------------------------------------
-  const sortColumn = sort || "created_at";        // 指定が無ければ created_at
-  const ascending = order === "asc";              // "asc" のときだけ昇順
-  query = query.order(sortColumn, { ascending });  // ORDER BY :sortColumn :order
+  // 指定が無ければ created_at
+  const sortColumn = sort || "created_at";
+  // "asc" のときだけ昇順
+  const ascending = order === "asc";
+  // ORDER BY :sortColumn :order
+  query = query.order(sortColumn, { ascending });
 
   // -------------------------------------------------
   // クエリ実行
@@ -2185,7 +2494,8 @@ export default async function BooksPage({ searchParams }: Props) {
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth={2}
-              d="M12 4v16m8-8H4"  // + アイコン
+              // + アイコン
+              d="M12 4v16m8-8H4"
             />
           </svg>
           新規登録
@@ -2212,7 +2522,8 @@ export default async function BooksPage({ searchParams }: Props) {
       </p>
 
       {/* 書籍一覧 */}
-      {!books || books.length === 0 ? (   /* データが無いとき */
+      /* データが無いとき */
+      {!books || books.length === 0 ? (
         <div className="text-center py-12 bg-white rounded-lg shadow">
           <svg
             className="mx-auto h-12 w-12 text-gray-400"
@@ -2224,7 +2535,8 @@ export default async function BooksPage({ searchParams }: Props) {
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth={2}
-              d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"  // 開いた本のアイコン
+              // 開いた本のアイコン
+              d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
             />
           </svg>
           <h3 className="mt-2 text-sm font-medium text-gray-900">
@@ -2235,7 +2547,8 @@ export default async function BooksPage({ searchParams }: Props) {
               ? "検索条件を変更してお試しください。"
               : "新しい書籍を登録してみましょう。"}
           </p>
-          {!q && !status && (   /* 検索条件無しで 0 件のときだけ「最初の書籍を登録」を表示 */
+          /* 検索条件無しで 0 件のときだけ「最初の書籍を登録」を表示 */
+          {!q && !status && (
             <div className="mt-6">
               <Link
                 href="/books/new"
@@ -2249,10 +2562,13 @@ export default async function BooksPage({ searchParams }: Props) {
       ) : (
         <div className="bg-white shadow overflow-hidden sm:rounded-lg">
           <ul className="divide-y divide-gray-200">
-            {books.map((book) => (   /* 配列を map で展開してリスト要素を生成 */
-              <li key={book.id}>   {/* key は React がリスト要素を識別するために必要 */}
+            /* 配列を map で展開してリスト要素を生成 */
+            {books.map((book) => (
+              {/* key は React がリスト要素を識別するために必要 */}
+              <li key={book.id}>
                 <Link
-                  href={`/books/${book.id}`}  // クリックで詳細ページへ
+                  // クリックで詳細ページへ
+                  href={`/books/${book.id}`}
                   className="block hover:bg-gray-50 transition-colors duration-150"
                 >
                   <div className="px-4 py-4 sm:px-6">
@@ -2263,7 +2579,8 @@ export default async function BooksPage({ searchParams }: Props) {
                         </p>
                         <p className="mt-1 text-sm text-gray-500">
                           {book.author || "著者不明"}
-                          {book.publisher && ` / ${book.publisher}`}  {/* 出版社があれば併記 */}
+                          {/* 出版社があれば併記 */}
+                          {book.publisher && ` / ${book.publisher}`}
                         </p>
                       </div>
                       <div className="ml-4 flex flex-col items-end space-y-1">
@@ -2306,7 +2623,8 @@ export default async function BooksPage({ searchParams }: Props) {
 ##### 解説1: クエリを `let` で宣言して後から条件を足す
 
 ```tsx
-let query = supabase.from("books").select("*");  // ベースのクエリ（全件取得）
+// ベースのクエリ（全件取得）
+let query = supabase.from("books").select("*");
 ```
 
 - まず「全件取得」という土台のクエリを作り、`let`（あとで再代入できる変数）に入れておきます。
@@ -2321,11 +2639,13 @@ let query = supabase.from("books").select("*");  // ベースのクエリ（全�
 
 ```tsx
 if (q) {
-  query = query.or(`title.ilike.%${q}%,author.ilike.%${q}%`);  // title OR author で部分一致
+  // title OR author で部分一致
+  query = query.or(`title.ilike.%${q}%,author.ilike.%${q}%`);
 }
 
 if (status) {
-  query = query.eq("status", status);  // WHERE status = :status
+  // WHERE status = :status
+  query = query.eq("status", status);
 }
 ```
 
@@ -2340,9 +2660,12 @@ if (status) {
 ##### 解説3: ソート条件を決めて、最後にまとめて実行する
 
 ```tsx
-const sortColumn = sort || "created_at";        // 指定が無ければ created_at
-const ascending = order === "asc";              // "asc" のときだけ昇順
-query = query.order(sortColumn, { ascending });  // ORDER BY :sortColumn :order
+// 指定が無ければ created_at
+const sortColumn = sort || "created_at";
+// "asc" のときだけ昇順
+const ascending = order === "asc";
+// ORDER BY :sortColumn :order
+query = query.order(sortColumn, { ascending });
 
 const { data: books, error } = await query;
 ```
@@ -2364,9 +2687,11 @@ const { data: books, error } = await query;
 > **▼ このコードがやること（先に日本語で）:** 一覧の並び順を切り替えるセレクトボックスを作ります。選択肢の値は `"title-asc"` のように「カラム名-昇順/降順」をハイフンでつないだ形式にしておき、選ばれたら2つに分解して URL の `?sort=...&order=...` に書き込みます。検索バーと同じく、並び順も URL に持たせることで共有や戻る操作に対応できます。初心者は「選択 → 値を分解 → URL を更新 → サーバーがその順番で取り直す」という流れを押さえてください。詳細はコード内のコメントにあります。
 
 ```tsx
-"use client";  // セレクト変更時に router.push を呼ぶのでクライアントコンポーネント
+// セレクト変更時に router.push を呼ぶのでクライアントコンポーネント
+"use client";
 
-import { useRouter, useSearchParams, usePathname } from "next/navigation";  // ルーティング関連フック
+// ルーティング関連フック
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 
 // -------------------------------------------------
 // ソート選択コンポーネント
@@ -2387,9 +2712,12 @@ export default function SortSelect() {
   // -------------------------------------------------
   // URL に sort/order が無ければデフォルト値を使う。
   // -------------------------------------------------
-  const currentSort = searchParams.get("sort") || "created_at";   // デフォルトは登録日
-  const currentOrder = searchParams.get("order") || "desc";       // デフォルトは降順
-  const currentValue = `${currentSort}-${currentOrder}`;          // select の value 形式に変換
+  // デフォルトは登録日
+  const currentSort = searchParams.get("sort") || "created_at";
+  // デフォルトは降順
+  const currentOrder = searchParams.get("order") || "desc";
+  // select の value 形式に変換
+  const currentValue = `${currentSort}-${currentOrder}`;
 
   // -------------------------------------------------
   // ソート変更ハンドラ
@@ -2400,14 +2728,20 @@ export default function SortSelect() {
   // 設定します。
   // -------------------------------------------------
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value;                       // 例: "rating-desc"
-    const [sort, order] = value.split("-");             // ["rating", "desc"] に分解
+    // 例: "rating-desc"
+    const value = e.target.value;
+    // ["rating", "desc"] に分解
+    const [sort, order] = value.split("-");
 
-    const params = new URLSearchParams(searchParams.toString());  // 現在のクエリをコピー
-    params.set("sort", sort);                            // sort を上書き
-    params.set("order", order);                          // order を上書き
+    // 現在のクエリをコピー
+    const params = new URLSearchParams(searchParams.toString());
+    // sort を上書き
+    params.set("sort", sort);
+    // order を上書き
+    params.set("order", order);
 
-    router.push(`${pathname}?${params.toString()}`);   // 新しい URL に遷移
+    // 新しい URL に遷移
+    router.push(`${pathname}?${params.toString()}`);
   };
 
   // -------------------------------------------------
@@ -2423,8 +2757,10 @@ export default function SortSelect() {
       </label>
       <select
         id="sort"
-        value={currentValue}        // URL の値を反映
-        onChange={handleSortChange}  // 変更時に URL を更新
+        // URL の値を反映
+        value={currentValue}
+        // 変更時に URL を更新
+        onChange={handleSortChange}
         className="block w-48 py-1.5 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm"
       >
         <option value="created_at-desc">登録日（新しい順）</option>
@@ -2454,9 +2790,12 @@ export default function SortSelect() {
 ##### 解説1: URL から現在の並び順を組み立てて select に反映する
 
 ```tsx
-const currentSort = searchParams.get("sort") || "created_at";   // デフォルトは登録日
-const currentOrder = searchParams.get("order") || "desc";       // デフォルトは降順
-const currentValue = `${currentSort}-${currentOrder}`;          // select の value 形式に変換
+// デフォルトは登録日
+const currentSort = searchParams.get("sort") || "created_at";
+// デフォルトは降順
+const currentOrder = searchParams.get("order") || "desc";
+// select の value 形式に変換
+const currentValue = `${currentSort}-${currentOrder}`;
 ```
 
 - セレクトボックスに「今どの並び順が選ばれているか」を表示するため、現在の状態を URL から読み取ります。
@@ -2471,14 +2810,20 @@ const currentValue = `${currentSort}-${currentOrder}`;          // select の va
 
 ```tsx
 const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-  const value = e.target.value;                       // 例: "rating-desc"
-  const [sort, order] = value.split("-");             // ["rating", "desc"] に分解
+  // 例: "rating-desc"
+  const value = e.target.value;
+  // ["rating", "desc"] に分解
+  const [sort, order] = value.split("-");
 
-  const params = new URLSearchParams(searchParams.toString());  // 現在のクエリをコピー
-  params.set("sort", sort);                            // sort を上書き
-  params.set("order", order);                          // order を上書き
+  // 現在のクエリをコピー
+  const params = new URLSearchParams(searchParams.toString());
+  // sort を上書き
+  params.set("sort", sort);
+  // order を上書き
+  params.set("order", order);
 
-  router.push(`${pathname}?${params.toString()}`);   // 新しい URL に遷移
+  // 新しい URL に遷移
+  router.push(`${pathname}?${params.toString()}`);
 };
 ```
 
@@ -2620,21 +2965,25 @@ Next.js のバージョンによって `params` の扱いが異なります。
 ```tsx
 // Next.js 15 以降
 type Props = {
-  params: Promise<{ id: string }>;  // Promise でラップされている
+  // Promise でラップされている
+  params: Promise<{ id: string }>;
 };
 
 export default async function Page({ params }: Props) {
-  const { id } = await params;  // await が必要
+  // await が必要
+  const { id } = await params;
   // ...
 }
 
 // Next.js 14 以前
 type Props = {
-  params: { id: string };  // ただのオブジェクト
+  // ただのオブジェクト
+  params: { id: string };
 };
 
 export default async function Page({ params }: Props) {
-  const { id } = params;  // await 不要
+  // await 不要
+  const { id } = params;
   // ...
 }
 ```
@@ -2642,7 +2991,8 @@ export default async function Page({ params }: Props) {
 自分のプロジェクトの Next.js バージョンは `package.json` で確認できます。
 
 ```bash
-cat package.json | grep next   # package.json から "next" を含む行を抜き出して表示
+# package.json から "next" を含む行を抜き出して表示
+cat package.json | grep next
 ```
 
 ### 7-2. UPDATE / DELETE が反映されない
@@ -2658,7 +3008,8 @@ Supabase では RLS がデフォルトで有効になっています。テーブ
 ```sql
 -- Supabase SQL Editor で実行
 -- 現在のポリシーを確認
-SELECT * FROM pg_policies WHERE tablename = 'books';  -- システムビューから books テーブル用のポリシーを一覧表示
+-- システムビューから books テーブル用のポリシーを一覧表示
+SELECT * FROM pg_policies WHERE tablename = 'books';
 ```
 
 開発中は、以下のような全許可ポリシーを設定できます（本番環境では適切な認証ベースのポリシーに変更してください）。
@@ -2667,10 +3018,14 @@ SELECT * FROM pg_policies WHERE tablename = 'books';  -- システムビュー�
 
 ```sql
 -- すべての操作を許可するポリシー（開発用）
-CREATE POLICY "Allow all operations" ON books   -- ポリシー名を "Allow all operations" として books テーブルに作成
-  FOR ALL                                         -- SELECT/INSERT/UPDATE/DELETE すべてに適用
-  USING (true)                                    -- 既存行へのアクセス条件: 常に true（全許可）
-  WITH CHECK (true);                              -- 新規追加/更新時のチェック条件: 常に true（全許可）
+-- ポリシー名を "Allow all operations" として books テーブルに作成
+CREATE POLICY "Allow all operations" ON books
+  -- SELECT/INSERT/UPDATE/DELETE すべてに適用
+  FOR ALL
+  -- 既存行へのアクセス条件: 常に true（全許可）
+  USING (true)
+  -- 新規追加/更新時のチェック条件: 常に true（全許可）
+  WITH CHECK (true);
 ```
 
 #### ▼ コードを1つずつ分解して解説
@@ -2682,8 +3037,10 @@ CREATE POLICY "Allow all operations" ON books   -- ポリシー名を "Allow all
 ##### 解説1: ポリシーを作る対象と適用範囲
 
 ```sql
-CREATE POLICY "Allow all operations" ON books   -- ポリシー名を "Allow all operations" として books テーブルに作成
-  FOR ALL                                         -- SELECT/INSERT/UPDATE/DELETE すべてに適用
+-- ポリシー名を "Allow all operations" として books テーブルに作成
+CREATE POLICY "Allow all operations" ON books
+  -- SELECT/INSERT/UPDATE/DELETE すべてに適用
+  FOR ALL
 ```
 
 - `CREATE POLICY "名前" ON テーブル名` で、指定したテーブル（ここでは `books`）に対する**アクセスルール**を1つ作ります。`"Allow all operations"` は後から見分けるためのポリシー名です。
@@ -2696,8 +3053,10 @@ CREATE POLICY "Allow all operations" ON books   -- ポリシー名を "Allow all
 ##### 解説2: `USING (true)` と `WITH CHECK (true)` の意味
 
 ```sql
-  USING (true)                                    -- 既存行へのアクセス条件: 常に true（全許可）
-  WITH CHECK (true);                              -- 新規追加/更新時のチェック条件: 常に true（全許可）
+  -- 既存行へのアクセス条件: 常に true（全許可）
+  USING (true)
+  -- 新規追加/更新時のチェック条件: 常に true（全許可）
+  WITH CHECK (true);
 ```
 
 - `USING (...)` は「**すでにある行を読む/更新/削除してよいか**」を判定する条件です。`true`（常に真）なので「どの行でもOK」になります。
@@ -2715,13 +3074,16 @@ UPDATE や DELETE で `.eq("id", bookId)` の `bookId` が正しくない可能�
 **対処法:** コンソールログで値を確認します。
 
 ```tsx
-console.log("Updating book with ID:", bookId);   // 渡ってきた bookId を確認
+// 渡ってきた bookId を確認
+console.log("Updating book with ID:", bookId);
 const { data, error } = await supabase
   .from("books")
   .update({ title: "..." })
   .eq("id", bookId)
-  .select();                                       // .select() を付けて更新後のデータを返してもらう
-console.log("Update result:", { data, error });  // data が [] なら該当 ID 無し、null なら RLS で弾かれている可能性
+  // .select() を付けて更新後のデータを返してもらう
+  .select();
+// data が [] なら該当 ID 無し、null なら RLS で弾かれている可能性
+console.log("Update result:", { data, error });
 ```
 
 **原因3: `router.refresh()` を呼んでいない**
@@ -2732,7 +3094,8 @@ Next.js のサーバーコンポーネントはデータをキャッシュする
 
 ```tsx
 router.push("/books");
-router.refresh(); // サーバーコンポーネントのキャッシュを更新（最新データで再取得）
+// サーバーコンポーネントのキャッシュを更新（最新データで再取得）
+router.refresh();
 ```
 
 > **Server Action を使っている場合は `revalidatePath` を使う:** `revalidatePath("/books")` を呼ぶと、指定した URL のキャッシュが破棄され、次のアクセスで最新データが取れます。Server Action 内では `router.refresh` が呼べないので、こちらを使います。
@@ -2749,11 +3112,13 @@ router.refresh(); // サーバーコンポーネントのキャッシュを更�
 
 ```tsx
 // サーバーコンポーネント内でのリダイレクト
-import { redirect } from "next/navigation";  // サーバー側遷移用の関数
+// サーバー側遷移用の関数
+import { redirect } from "next/navigation";
 
 export default async function Page() {
   // 何らかの条件でリダイレクト
-  redirect("/books");  // この行で関数全体が中断され、ブラウザは /books に飛ぶ
+  // この行で関数全体が中断され、ブラウザは /books に飛ぶ
+  redirect("/books");
 }
 ```
 
@@ -2762,7 +3127,8 @@ export default async function Page() {
 `useRouter` や `useState` などの React フックを使用するコンポーネントには `"use client"` ディレクティブが必要です。
 
 ```tsx
-"use client"; // ファイルの最初に追加（最上行・1 行目に書く）
+// ファイルの最初に追加（最上行・1 行目に書く）
+"use client";
 
 import { useRouter } from "next/navigation";
 // ...
@@ -2775,9 +3141,11 @@ import { useRouter } from "next/navigation";
 ```tsx
 try {
   // ... Supabase 操作
-  router.push("/books"); // エラーが発生するとここまで到達しない
+  // エラーが発生するとここまで到達しない
+  router.push("/books");
 } catch (err) {
-  console.error("Error:", err); // コンソールでエラーを確認
+  // コンソールでエラーを確認
+  console.error("Error:", err);
 }
 ```
 
@@ -2804,13 +3172,18 @@ try {
 
 ```sql
 -- 既存のポリシーを削除（必要に応じて）
-DROP POLICY IF EXISTS "Allow all operations" ON books;   -- 同名ポリシーがあれば削除（IF EXISTS でエラー回避）
+-- 同名ポリシーがあれば削除（IF EXISTS でエラー回避）
+DROP POLICY IF EXISTS "Allow all operations" ON books;
 
 -- 全操作許可ポリシーを作成
-CREATE POLICY "Allow all operations" ON books            -- ポリシーを再作成
-  FOR ALL                                                  -- すべての操作対象
-  USING (true)                                             -- 全行を許可
-  WITH CHECK (true);                                       -- 全書き込みを許可
+-- ポリシーを再作成
+CREATE POLICY "Allow all operations" ON books
+  -- すべての操作対象
+  FOR ALL
+  -- 全行を許可
+  USING (true)
+  -- 全書き込みを許可
+  WITH CHECK (true);
 ```
 
 3. 本番環境では、認証されたユーザーのみが操作できるようにポリシーを設定します。
@@ -2819,11 +3192,16 @@ CREATE POLICY "Allow all operations" ON books            -- ポリシーを再�
 
 ```sql
 -- 認証済みユーザーのみ操作を許可
-CREATE POLICY "Authenticated users can manage books" ON books   -- ポリシー名は説明的に
-  FOR ALL                                                          -- すべての操作
-  TO authenticated                                                 -- 認証済みユーザー（ロール authenticated）のみ
-  USING (auth.uid() = user_id)                                     -- 既存行の所有者チェック
-  WITH CHECK (auth.uid() = user_id);                               -- 書き込み時の所有者チェック
+-- ポリシー名は説明的に
+CREATE POLICY "Authenticated users can manage books" ON books
+  -- すべての操作
+  FOR ALL
+  -- 認証済みユーザー（ロール authenticated）のみ
+  TO authenticated
+  -- 既存行の所有者チェック
+  USING (auth.uid() = user_id)
+  -- 書き込み時の所有者チェック
+  WITH CHECK (auth.uid() = user_id);
 ```
 
 #### ▼ コードを1つずつ分解して解説
@@ -2835,9 +3213,12 @@ CREATE POLICY "Authenticated users can manage books" ON books   -- ポリシー�
 ##### 解説1: 適用対象を「認証済みユーザー」に限定する
 
 ```sql
-CREATE POLICY "Authenticated users can manage books" ON books   -- ポリシー名は説明的に
-  FOR ALL                                                          -- すべての操作
-  TO authenticated                                                 -- 認証済みユーザー（ロール authenticated）のみ
+-- ポリシー名は説明的に
+CREATE POLICY "Authenticated users can manage books" ON books
+  -- すべての操作
+  FOR ALL
+  -- 認証済みユーザー（ロール authenticated）のみ
+  TO authenticated
 ```
 
 - `books` テーブルに対するルールを作る点は開発用と同じですが、名前を「何をするポリシーか」が分かる説明的なものにしています。
@@ -2850,8 +3231,10 @@ CREATE POLICY "Authenticated users can manage books" ON books   -- ポリシー�
 ##### 解説2: 「自分のデータだけ」に制限する所有者チェック
 
 ```sql
-  USING (auth.uid() = user_id)                                     -- 既存行の所有者チェック
-  WITH CHECK (auth.uid() = user_id);                               -- 書き込み時の所有者チェック
+  -- 既存行の所有者チェック
+  USING (auth.uid() = user_id)
+  -- 書き込み時の所有者チェック
+  WITH CHECK (auth.uid() = user_id);
 ```
 
 - 開発用では `true`（常に許可）だった部分を、`auth.uid() = user_id` という**条件**に変えています。
@@ -2876,16 +3259,20 @@ CREATE POLICY "Authenticated users can manage books" ON books   -- ポリシー�
 
 ```tsx
 // app/books/[id]/edit/page.tsx
-console.log("Book data from DB:", book);            // DB から取れた生データ
-console.log("Initial data for form:", initialData); // フォームに渡す整形後データ
+// DB から取れた生データ
+console.log("Book data from DB:", book);
+// フォームに渡す整形後データ
+console.log("Initial data for form:", initialData);
 ```
 
 2. `BookForm` コンポーネントで `initialData` を受け取れているか確認します。
 
 ```tsx
 // components/BookForm.tsx
-console.log("Received initialData:", initialData);  // 受け取った props
-console.log("Form state:", formData);                // 内部状態
+// 受け取った props
+console.log("Received initialData:", initialData);
+// 内部状態
+console.log("Form state:", formData);
 ```
 
 3. `null` 値の扱いに注意します。データベースから取得した値が `null` の場合、フォームの入力フィールドが uncontrolled になる可能性があります。
@@ -2893,8 +3280,10 @@ console.log("Form state:", formData);                // 内部状態
 ```tsx
 // null を空文字に変換
 const initialData = {
-  title: book.title ?? "",   // null の場合は空文字（?? は null/undefined のときだけ右の値）
-  author: book.author ?? "", // null の場合は空文字
+  // null の場合は空文字（?? は null/undefined のときだけ右の値）
+  title: book.title ?? "",
+  // null の場合は空文字
+  author: book.author ?? "",
   // ...
 };
 ```

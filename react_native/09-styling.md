@@ -93,7 +93,8 @@ module.exports = {
   // presets : NativeWind用の設定一式を読み込む（おまじない）
   presets: [require("nativewind/preset")],
   theme: {
-    extend: {},   // ここに独自の色やサイズを追加できる（今は空でOK）
+    // ここに独自の色やサイズを追加できる（今は空でOK）
+    extend: {},
   },
   plugins: [],
 };
@@ -162,9 +163,12 @@ module.exports = {
 
 ```css
 /* app/global.css — Tailwindの基本スタイルを読み込む */
-@tailwind base;        /* Tailwindの土台スタイル */
-@tailwind components;  /* コンポーネント系スタイル */
-@tailwind utilities;   /* text-lg などの便利クラス群 */
+/* Tailwindの土台スタイル */
+@tailwind base;
+/* コンポーネント系スタイル */
+@tailwind components;
+/* text-lg などの便利クラス群 */
+@tailwind utilities;
 ```
 
 #### ▼ コードを1つずつ分解して解説
@@ -174,9 +178,12 @@ module.exports = {
 ##### 解説1: 3つの `@tailwind` がそろってTailwindが使えるようになる
 
 ```css
-@tailwind base;        /* Tailwindの土台スタイル */
-@tailwind components;  /* コンポーネント系スタイル */
-@tailwind utilities;   /* text-lg などの便利クラス群 */
+/* Tailwindの土台スタイル */
+@tailwind base;
+/* コンポーネント系スタイル */
+@tailwind components;
+/* text-lg などの便利クラス群 */
+@tailwind utilities;
 ```
 
 - `@tailwind` は「**Tailwindの該当部分のスタイルを、ここに展開してね**」とCSSに指示する書き方です。3行それぞれが別の役割を持っています。
@@ -206,7 +213,8 @@ NativeWindを動かすため、2つの設定ファイルを調整します。内
 ```js
 // babel.config.js — コード変換の設定
 module.exports = function (api) {
-  api.cache(true);   // 設定をキャッシュして高速化（おまじない）
+  // 設定をキャッシュして高速化（おまじない）
+  api.cache(true);
   return {
     // presets : 変換ルールの一式。Expo用 + NativeWind用（jsxImportSource）を指定
     presets: [
@@ -225,7 +233,8 @@ module.exports = function (api) {
 
 ```js
 module.exports = function (api) {
-  api.cache(true);   // 設定をキャッシュして高速化（おまじない）
+  // 設定をキャッシュして高速化（おまじない）
+  api.cache(true);
   return {
     // presets: [ ... ]（中身は次で解説）
   };
@@ -267,7 +276,8 @@ module.exports = function (api) {
 const { getDefaultConfig } = require("expo/metro-config");
 const { withNativeWind } = require("nativewind/metro");
 
-const config = getDefaultConfig(__dirname);   // Expoの標準設定を取得
+// Expoの標準設定を取得
+const config = getDefaultConfig(__dirname);
 
 // withNativeWind : 標準設定にNativeWindの機能を足す。input に先ほどのCSSを指定
 module.exports = withNativeWind(config, { input: "./app/global.css" });
@@ -302,7 +312,8 @@ const { withNativeWind } = require("nativewind/metro");
 ##### 解説2: 標準設定を取得してNativeWind対応にする
 
 ```js
-const config = getDefaultConfig(__dirname);   // Expoの標準設定を取得
+// Expoの標準設定を取得
+const config = getDefaultConfig(__dirname);
 
 module.exports = withNativeWind(config, { input: "./app/global.css" });
 ```
@@ -321,7 +332,8 @@ module.exports = withNativeWind(config, { input: "./app/global.css" });
 
 ```tsx
 // app/_layout.tsx の一番上に追加
-import "./global.css";   // NativeWindのスタイルをアプリ全体で有効にする（先頭で読み込む）
+// NativeWindのスタイルをアプリ全体で有効にする（先頭で読み込む）
+import "./global.css";
 
 import { Stack } from "expo-router";
 // （以下は第6章のまま）
@@ -481,7 +493,8 @@ export default function HomeScreen() {
       <FlatList
         data={filteredBooks}
         keyExtractor={(item) => item.id}
-        contentContainerClassName="p-4 gap-2.5"   // contentContainerStyleのNativeWind版
+        // contentContainerStyleのNativeWind版
+        contentContainerClassName="p-4 gap-2.5"
         ListEmptyComponent={
           <Text className="text-center text-slate-400 mt-10 px-5">
             {keyword.trim() === "" ? "まだ本が登録されていません。" : "該当する本が見つかりません。"}
@@ -596,7 +609,8 @@ function getStatusClass(status: string) {
 <FlatList
   data={filteredBooks}
   keyExtractor={(item) => item.id}
-  contentContainerClassName="p-4 gap-2.5"   // contentContainerStyleのNativeWind版
+  // contentContainerStyleのNativeWind版
+  contentContainerClassName="p-4 gap-2.5"
   ...
 ```
 
@@ -726,16 +740,25 @@ function getStatusClass(status: string) {
 ```json
 {
   "expo": {
-    "name": "書籍管理",                    // ホーム画面に表示されるアプリ名
-    "slug": "my-books-app",               // プロジェクトの識別名（半角英数）
-    "version": "1.0.0",                   // アプリのバージョン
-    "icon": "./assets/icon.png",          // アプリアイコン（1024x1024の正方形画像）
-    "splash": {                            // 起動時に一瞬出るスプラッシュ画面
-      "image": "./assets/splash.png",     // スプラッシュ画像
-      "backgroundColor": "#1e40af"        // その背景色
+    // ホーム画面に表示されるアプリ名
+    "name": "書籍管理",
+    // プロジェクトの識別名（半角英数）
+    "slug": "my-books-app",
+    // アプリのバージョン
+    "version": "1.0.0",
+    // アプリアイコン（1024x1024の正方形画像）
+    "icon": "./assets/icon.png",
+    // 起動時に一瞬出るスプラッシュ画面
+    "splash": {
+      // スプラッシュ画像
+      "image": "./assets/splash.png",
+      // その背景色
+      "backgroundColor": "#1e40af"
     },
-    "ios": { "supportsTablet": true },     // iPad対応
-    "android": { "package": "com.example.mybooksapp" }  // Androidの識別子（後で変更）
+    // iPad対応
+    "ios": { "supportsTablet": true },
+    // Androidの識別子（後で変更）
+    "android": { "package": "com.example.mybooksapp" }
   }
 }
 ```
@@ -880,16 +903,21 @@ export default function FlexboxDemo() {
 const styles = StyleSheet.create({
   screen: { flex: 1, padding: 16, gap: 16 },
   tagRow: {
-    flexDirection: "row", // 横並びにする
-    flexWrap: "wrap",     // 入りきらなければ折り返す
-    gap: 8,               // タグ同士のすき間
+    // 横並びにする
+    flexDirection: "row",
+    // 入りきらなければ折り返す
+    flexWrap: "wrap",
+    // タグ同士のすき間
+    gap: 8,
   },
   tag: {
     backgroundColor: "#e0e7ff",
     paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: 999,    // 完全な丸み（カプセル型）
-    flexBasis: 100,       // 1つあたりの基準の幅を100にする
+    // 完全な丸み（カプセル型）
+    borderRadius: 999,
+    // 1つあたりの基準の幅を100にする
+    flexBasis: 100,
     textAlign: "center",
   },
   ratioRow: { flexDirection: "row", gap: 8, height: 60 },
@@ -907,8 +935,10 @@ const styles = StyleSheet.create({
 
 ```tsx
 tagRow: {
-  flexDirection: "row", // 横並びにする
-  flexWrap: "wrap",     // 入りきらなければ折り返す
+  // 横並びにする
+  flexDirection: "row",
+  // 入りきらなければ折り返す
+  flexWrap: "wrap",
   gap: 8,
 },
 ```
@@ -925,7 +955,8 @@ tagRow: {
 
 ```tsx
 tag: {
-  flexBasis: 100, // 1つあたりの基準の幅を100にする
+  // 1つあたりの基準の幅を100にする
+  flexBasis: 100,
   // ...
 },
 ```
@@ -1082,12 +1113,17 @@ const styles = StyleSheet.create({
     padding: 24,
     borderRadius: 12,
     // ▼ iOS用の影（4つセットで指定する）
-    shadowColor: "#000000",            // 影の色
-    shadowOffset: { width: 0, height: 4 }, // 影をどれだけずらすか（右0・下4）
-    shadowOpacity: 0.15,               // 影の濃さ（0=透明〜1=真っ黒）
-    shadowRadius: 8,                   // 影のぼかし具合（大きいほどふんわり）
+    // 影の色
+    shadowColor: "#000000",
+    // 影をどれだけずらすか（右0・下4）
+    shadowOffset: { width: 0, height: 4 },
+    // 影の濃さ（0=透明〜1=真っ黒）
+    shadowOpacity: 0.15,
+    // 影のぼかし具合（大きいほどふんわり）
+    shadowRadius: 8,
     // ▼ Android用の影（高さを表す1つの数字）
-    elevation: 5,                      // 数字が大きいほど高く浮いて影が濃くなる
+    // 数字が大きいほど高く浮いて影が濃くなる
+    elevation: 5,
   },
 });
 ```
@@ -1099,10 +1135,14 @@ const styles = StyleSheet.create({
 ##### 解説1: iOS用の影は「4つセット」で指定する
 
 ```tsx
-shadowColor: "#000000",                // 影の色
-shadowOffset: { width: 0, height: 4 }, // 影をどれだけずらすか
-shadowOpacity: 0.15,                   // 影の濃さ
-shadowRadius: 8,                       // 影のぼかし具合
+// 影の色
+shadowColor: "#000000",
+// 影をどれだけずらすか
+shadowOffset: { width: 0, height: 4 },
+// 影の濃さ
+shadowOpacity: 0.15,
+// 影のぼかし具合
+shadowRadius: 8,
 ```
 
 - iPhone（iOS）では、影を**4つのプロパティの組み合わせ**で表現します。1つだけ書いても効かないので、基本は4つセットで指定します。
@@ -1118,7 +1158,8 @@ shadowRadius: 8,                       // 影のぼかし具合
 ##### 解説2: Android用の影は「高さ」1つで指定する
 
 ```tsx
-elevation: 5, // 数字が大きいほど高く浮いて影が濃くなる
+// 数字が大きいほど高く浮いて影が濃くなる
+elevation: 5,
 ```
 
 - Androidでは影を `elevation`（エレベーション＝高さ）という**1つの数字**だけで指定します。iOSの4点セットは効きません。
@@ -1242,7 +1283,8 @@ export default function AbsoluteDemo() {
 const styles = StyleSheet.create({
   screen: { flex: 1, padding: 24, justifyContent: "center" },
   card: {
-    position: "relative",   // 中の絶対配置の「基準」になる
+    // 中の絶対配置の「基準」になる
+    position: "relative",
     height: 160,
     backgroundColor: "#e2e8f0",
     borderRadius: 12,
@@ -1250,10 +1292,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   badge: {
-    position: "absolute",   // 基準の枠の中で位置を自由に指定
-    top: 8,                 // 上から8
-    right: 8,               // 右から8
-    zIndex: 10,             // 重なったとき手前に出す
+    // 基準の枠の中で位置を自由に指定
+    position: "absolute",
+    // 上から8
+    top: 8,
+    // 右から8
+    right: 8,
+    // 重なったとき手前に出す
+    zIndex: 10,
     backgroundColor: "#ef4444",
     paddingHorizontal: 8,
     paddingVertical: 2,
@@ -1271,7 +1317,8 @@ const styles = StyleSheet.create({
 
 ```tsx
 card: {
-  position: "relative", // 中の絶対配置の「基準」になる
+  // 中の絶対配置の「基準」になる
+  position: "relative",
   height: 160,
   // ...
 },
@@ -1289,9 +1336,12 @@ card: {
 
 ```tsx
 badge: {
-  position: "absolute", // 基準の枠の中で位置を自由に指定
-  top: 8,               // 上から8
-  right: 8,             // 右から8
+  // 基準の枠の中で位置を自由に指定
+  position: "absolute",
+  // 上から8
+  top: 8,
+  // 右から8
+  right: 8,
   // ...
 },
 ```
@@ -1307,7 +1357,8 @@ badge: {
 ##### 解説3: 重なりの前後を決める（`zIndex`）
 
 ```tsx
-zIndex: 10, // 重なったとき手前に出す
+// 重なったとき手前に出す
+zIndex: 10,
 ```
 
 - `zIndex` は「**要素が重なったとき、どちらを前（手前）に出すか**」を決める数字です。

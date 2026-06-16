@@ -399,18 +399,28 @@ App Router では、特別な名前を持つファイルにそれぞれ役割が
 > **▼ このコードがやること（先に日本語で）:** `app/page.tsx` を作って「トップページ（URL は `/`）の中身」を定義します。コンポーネント（画面の部品）は「JSX を返す関数」で、`export default` を付けて「このファイルの主役」として外に公開するのがポイントです。見出しと段落を表示するだけのシンプルなページです。詳しい1行ずつの意味はコード内コメントを見てください。
 
 ```typescript
-// app/page.tsx                              // ファイルパス。`app/` 直下なので URL は `/`（ルート）になる
-// URL: /                                    // ブラウザでアクセスする URL の説明コメント
+// ファイルパス。`app/` 直下なので URL は `/`（ルート）になる
+// app/page.tsx
+// ブラウザでアクセスする URL の説明コメント
+// URL: /
 
-export default function HomePage() {         // `export default` でこのコンポーネントを「このファイルの主役」として外に公開
+// `export default` でこのコンポーネントを「このファイルの主役」として外に公開
+export default function HomePage() {
                                              // 関数名 `HomePage` は何でもよい（慣習的にページ名を付ける）。Next.js は名前ではなく default export を見ている
-  return (                                   // JSX（HTMLに似たReactの記法）を返す
-    <div>                                    // `<div>`：レイアウト用の汎用ブロック要素。中身を1つにまとめるために使う
-      <h1>書籍管理アプリへようこそ</h1>          // `<h1>`：ページの一番大きな見出し。1ページに1つだけ置くのが推奨
-      <p>あなたの読書記録を管理しましょう。</p>   // `<p>`：段落（paragraph）。普通の文章ブロック
-    </div>                                   // 閉じタグ。開いた `<div>` と必ず対応させる
-  );                                         // return の終わり
-}                                            // 関数の終わり
+  // JSX（HTMLに似たReactの記法）を返す
+  return (
+    // `<div>`：レイアウト用の汎用ブロック要素。中身を1つにまとめるために使う
+    <div>
+      // `<h1>`：ページの一番大きな見出し。1ページに1つだけ置くのが推奨
+      <h1>書籍管理アプリへようこそ</h1>
+      // `<p>`：段落（paragraph）。普通の文章ブロック
+      <p>あなたの読書記録を管理しましょう。</p>
+    // 閉じタグ。開いた `<div>` と必ず対応させる
+    </div>
+  // return の終わり
+  );
+// 関数の終わり
+}
 ```
 
 **画面にはこう表示される:** ブラウザで `http://localhost:3000/` にアクセスすると、「書籍管理アプリへようこそ」という見出しと「あなたの読書記録を管理しましょう。」という段落が表示されます。
@@ -445,8 +455,10 @@ import type { Metadata } from "next";
 // <meta name="description" ...> を自動生成してくれる。
 // 自分で <head> を書く必要がない。
 export const metadata: Metadata = {
-  title: "書籍管理アプリ",                                       // ブラウザタブの文字
-  description: "あなたの読書記録を管理するアプリケーション",   // SEO・SNS共有時の説明文
+  // ブラウザタブの文字
+  title: "書籍管理アプリ",
+  // SEO・SNS共有時の説明文
+  description: "あなたの読書記録を管理するアプリケーション",
 };
 
 // ─────────────────────────────────────────────────────────────────────
@@ -598,18 +610,26 @@ export default function RootLayout({
 > **▼ このコードがやること（先に日本語で）:** データ取得中に「読み込み中」を伝える画面（ローディングUI）を作ります。`loading.tsx` という予約名のファイルを置くだけで、Next.js が自動で「ページの準備ができるまでの間」にこれを表示してくれます。回転するスピナーと案内メッセージを出すだけのシンプルな部品です。詳細はコード内コメントを参照してください。
 
 ```typescript
-// app/books/loading.tsx                       // ファイルパス。`/books` のロード中UIになる
+// ファイルパス。`/books` のロード中UIになる
+// app/books/loading.tsx
                                                 // フォルダごとに置けるので、ページ単位で異なるローディング表現が可能
 
-export default function BooksLoading() {       // default export された関数がそのまま「ローディングUI」として使われる
+// default export された関数がそのまま「ローディングUI」として使われる
+export default function BooksLoading() {
                                                 // 関数名は何でもよいが、慣習的に `XxxLoading` と付ける
-  return (                                     // 返す JSX
-    <div className="loading-container">        // `className` は HTML の `class` 属性のJSX版（`class` はJSの予約語なので別名）
-      <div className="spinner" />              // CSSアニメーションで作る回転するスピナー（自己終了タグ `/>` で書ける）
-      <p>書籍データを読み込んでいます...</p>     // ユーザーへの説明文
-    </div>                                     // ラッパーdivの閉じタグ
+  // 返す JSX
+  return (
+    // `className` は HTML の `class` 属性のJSX版（`class` はJSの予約語なので別名）
+    <div className="loading-container">
+      // CSSアニメーションで作る回転するスピナー（自己終了タグ `/>` で書ける）
+      <div className="spinner" />
+      // ユーザーへの説明文
+      <p>書籍データを読み込んでいます...</p>
+    // ラッパーdivの閉じタグ
+    </div>
   );
-}                                              // 関数の終わり
+// 関数の終わり
+}
 ```
 
 **画面にはこう表示される:** `/books` にアクセスした直後、データベースからデータを取得している間、スピナーアニメーションと「書籍データを読み込んでいます...」というメッセージが表示されます。データの取得が完了すると、自動的に `page.tsx` の内容に切り替わります。これは内部的に「サーバーがHTMLを少しずつ送る＝ストリーミング」と呼ばれる挙動で実現されています。
@@ -621,22 +641,33 @@ export default function BooksLoading() {       // default export された関数
 > **▼ このコードがやること（先に日本語で）:** ページ表示中にエラー（不具合）が起きたとき、白い画面で固まる代わりに「エラーが発生しました」という案内と「もう一度試す」ボタンを出す画面を作ります。`error.tsx` には必ず先頭に `"use client"` を書く必要があり、Next.js が `error`（起きたエラー情報）と `reset`（再挑戦用の関数）を自動で渡してくれます。ボタンを押すと `reset()` が呼ばれてその部分の再表示を試みます。詳細はコード内コメントを参照してください。
 
 ```typescript
-// app/books/error.tsx                          // `/books` 配下でエラーが起きたときに自動で表示される
-"use client";                                   // この1行でこのファイルを「ブラウザ側で動くコンポーネント」に切り替える
+// `/books` 配下でエラーが起きたときに自動で表示される
+// app/books/error.tsx
+// この1行でこのファイルを「ブラウザ側で動くコンポーネント」に切り替える
+"use client";
                                                 // error.tsx ではこれを必ず先頭に書く（ファイルの一番上、importより前）
 
-export default function BooksError({            // default export 関数。Next.js が自動で呼び出す
-  error,                                        // props.error: 発生した Error オブジェクト
-  reset,                                        // props.reset: 「もう一度試す」用に Next.js が渡してくれる関数
-}: {                                            // ↓ ここから TypeScript の型注釈
-  error: Error & { digest?: string };           // 標準 Error 型に、Next.js が独自に付ける `digest`（任意）を合成した型
+// default export 関数。Next.js が自動で呼び出す
+export default function BooksError({
+  // props.error: 発生した Error オブジェクト
+  error,
+  // props.reset: 「もう一度試す」用に Next.js が渡してくれる関数
+  reset,
+// ↓ ここから TypeScript の型注釈
+}: {
+  // 標準 Error 型に、Next.js が独自に付ける `digest`（任意）を合成した型
+  error: Error & { digest?: string };
                                                 // digest はサーバーログとの紐付け用ID（本番環境で詳細メッセージを隠したいとき使う）
-  reset: () => void;                            // 引数なし・戻り値なしの関数型
+  // 引数なし・戻り値なしの関数型
+  reset: () => void;
 }) {
   return (
-    <div className="error-container">           // エラー表示の枠
-      <h2>エラーが発生しました</h2>                 // タイトル
-      <p>{error.message}</p>                    // `error.message`：例外が持つメッセージ文字列を表示
+    // エラー表示の枠
+    <div className="error-container">
+      // タイトル
+      <h2>エラーが発生しました</h2>
+      // `error.message`：例外が持つメッセージ文字列を表示
+      <p>{error.message}</p>
                                                 // `{}` 内はJSの式。文字列補間に使う
       <button onClick={() => reset()}>もう一度試す</button>
                                                 // ボタン押下で `reset()` を呼ぶ → Next.js が該当セグメントを再描画してくれる
@@ -664,24 +695,33 @@ app/                                # アプリのルートフォルダ
 > **▼ このコードがやること（先に日本語で）:** URL の一部（例: `/books/42` の「42」）をプログラムの中で受け取って画面に表示します。フォルダ名を `[id]` のように角括弧で囲むと、その部分が変化する値（パラメータ）になり、`params` という引数で受け取れます。Next.js 15 以降では `params` は `await` で取り出す必要がある点に注意してください（受け取った値は数値ではなく文字列で来ます）。詳細はコード内コメントを参照してください。
 
 ```typescript
-// app/books/[id]/page.tsx                            // ファイルパス。フォルダ名 [id] が動的セグメント
+// ファイルパス。フォルダ名 [id] が動的セグメント
+// app/books/[id]/page.tsx
 
 // params はオブジェクトとして渡される
 // Next.js 15 では params は Promise として渡されるため await が必要
-export default async function BookDetailPage({       // `async` 関数にすると本体で `await` が使える
+// `async` 関数にすると本体で `await` が使える
+export default async function BookDetailPage({
                                                       // この `async function` をコンポーネントに使えるのは Server Component の特権
-  params,                                             // props.params: 動的セグメントの値が入ったオブジェクト
-}: {                                                  // ↓ TypeScript 型注釈
-  params: Promise<{ id: string }>;                    // Next.js 15+ では params は Promise でラップされて渡される
+  // props.params: 動的セグメントの値が入ったオブジェクト
+  params,
+// ↓ TypeScript 型注釈
+}: {
+  // Next.js 15+ では params は Promise でラップされて渡される
+  params: Promise<{ id: string }>;
                                                       // `{ id: string }` は「id という文字列プロパティを持つオブジェクト」型
 }) {
-  const { id } = await params;                        // `await` で Promise を解決し、分割代入で `id` だけ取り出す
+  // `await` で Promise を解決し、分割代入で `id` だけ取り出す
+  const { id } = await params;
                                                       // 例: URLが `/books/42` なら id は "42"（数値ではなく文字列！）
 
   return (
-    <div>                                             // ページ全体のラッパー
-      <h1>書籍詳細</h1>                                  // 見出し
-      <p>書籍 ID: {id}</p>                              // 取り出した id を JSX に埋め込んで表示
+    // ページ全体のラッパー
+    <div>
+      // 見出し
+      <h1>書籍詳細</h1>
+      // 取り出した id を JSX に埋め込んで表示
+      <p>書籍 ID: {id}</p>
       {/* 実際にはここで id を使ってデータベースから書籍情報を取得する */}
                                                       // JSX の中のコメントは `{/* ... */}` の形にする
                                                       // 例: const book = await getBookById(id);
@@ -1129,31 +1169,43 @@ import { useState } from "react";
 > **▼ このコードがやること（先に日本語で）:** 書籍一覧ページ本体を Server Component として作り、サーバー上で書籍データを取得してから画面を組み立てます。ポイントは「Server の骨組み（このページ）の中に、Client の部品（検索バー）と Server の部品（一覧表示）を組み合わせる」という App Router の基本パターンです。取得した `books` を子コンポーネントに props（受け渡しデータ）として渡します。詳細はコード内コメントを参照してください。
 
 ```typescript
-// app/books/page.tsx（Server Component）                          // `/books` のページ本体。"use client" なしなので Server Component
+// `/books` のページ本体。"use client" なしなので Server Component
+// app/books/page.tsx（Server Component）
 // データベースから直接書籍一覧を取得する
 
-import { SearchBar } from "@/components/SearchBar";                // `@/` はプロジェクトルートを示すエイリアス
+// `@/` はプロジェクトルートを示すエイリアス
+import { SearchBar } from "@/components/SearchBar";
                                                                     // ../../ のような相対パス地獄を避けるための設定（tsconfig.json で定義）
-import { BookList } from "@/components/BookList";                  // 書籍リストを描画する別の自作コンポーネントを取り込む
+// 書籍リストを描画する別の自作コンポーネントを取り込む
+import { BookList } from "@/components/BookList";
 
-export default async function BooksPage() {                        // `async` 関数なので本体で `await` が使える
+// `async` 関数なので本体で `await` が使える
+export default async function BooksPage() {
                                                                     // この関数自体が Server Component
   // Server Component なので、サーバー上で直接データ取得ができる
   // この処理はブラウザには送信されない
-  const response = await fetch("https://api.example.com/books", {  // `fetch` は Web標準のHTTP通信API
+  // `fetch` は Web標準のHTTP通信API
+  const response = await fetch("https://api.example.com/books", {
                                                                     // Next.js は fetch を拡張してキャッシュ機能を追加している
-    cache: "no-store", // 常に最新データを取得（SSR）                // `"no-store"` でキャッシュを使わず毎回サーバーからデータ取得
+    // 常に最新データを取得（SSR）
+    // `"no-store"` でキャッシュを使わず毎回サーバーからデータ取得
+    cache: "no-store",
                                                                     // 他に "force-cache"（SSG的）、`next: { revalidate: N }`（ISR的）がある
   });
-  const books = await response.json();                              // `response.json()` で本文JSONをJSオブジェクトに変換
+  // `response.json()` で本文JSONをJSオブジェクトに変換
+  const books = await response.json();
 
   return (
     <div>
-      <h1>書籍一覧</h1>                                                // ページタイトル
-      {/* Client Component: ユーザーの入力を受け付ける */}              // JSX 内のコメント記法
-      <SearchBar />                                                  // 検索バー（Client）。ここから下は子コンポーネント
+      // ページタイトル
+      <h1>書籍一覧</h1>
+      // JSX 内のコメント記法
+      {/* Client Component: ユーザーの入力を受け付ける */}
+      // 検索バー（Client）。ここから下は子コンポーネント
+      <SearchBar />
       {/* Server Component: 取得したデータを表示する */}
-      <BookList books={books} />                                     // 取得した books 配列を props として渡す
+      // 取得した books 配列を props として渡す
+      <BookList books={books} />
                                                                       // `books={books}` は「booksというpropに変数booksの値を渡す」の意
     </div>
   );
@@ -1163,35 +1215,51 @@ export default async function BooksPage() {                        // `async` �
 > **▼ このコードがやること（先に日本語で）:** 入力した文字でページを検索結果に切り替える検索バーを作ります。Client Component なので入力状態を `useState` で覚えつつ、`useRouter`（ページ移動用の道具）で検索キーワード付きの URL に移動します。日本語や空白は URL にそのまま使えないため `encodeURIComponent` で変換する点も押さえてください。詳細はコード内コメントを参照してください。
 
 ```typescript
-// components/SearchBar.tsx（Client Component）                    // 再利用される検索バー部品
-"use client";                                                       // この行がある＝このファイルは Client Component
+// 再利用される検索バー部品
+// components/SearchBar.tsx（Client Component）
+// この行がある＝このファイルは Client Component
+"use client";
                                                                      // ブラウザ側で動き、useState やイベントが使える
 
-import { useState } from "react";                                   // React の状態管理フック
-import { useRouter } from "next/navigation";                        // App Router 用のルーターフック
+// React の状態管理フック
+import { useState } from "react";
+// App Router 用のルーターフック
+import { useRouter } from "next/navigation";
                                                                      // ※ `next/router` ではない！（あちらは旧 Pages Router 用）
 
-export function SearchBar() {                                       // 名前付き export。`{ SearchBar }` で import される
-  const [query, setQuery] = useState("");                           // `useState` で「現在の検索文字列」を管理
+// 名前付き export。`{ SearchBar }` で import される
+export function SearchBar() {
+  // `useState` で「現在の検索文字列」を管理
+  const [query, setQuery] = useState("");
                                                                      // 配列の分割代入: [現在値, 更新関数] = useState(初期値)
-  const router = useRouter();                                       // ルーター操作用オブジェクトを取得（push/replace/back/refresh等が使える）
+  // ルーター操作用オブジェクトを取得（push/replace/back/refresh等が使える）
+  const router = useRouter();
 
-  const handleSearch = (e: React.FormEvent) => {                    // フォーム送信時のハンドラ。型は React.FormEvent
-    e.preventDefault();                                             // ブラウザ標準のフォーム送信（ページ全体リロード）を止める
+  // フォーム送信時のハンドラ。型は React.FormEvent
+  const handleSearch = (e: React.FormEvent) => {
+    // ブラウザ標準のフォーム送信（ページ全体リロード）を止める
+    e.preventDefault();
     // 検索クエリ付きで遷移
-    router.push(`/books?q=${encodeURIComponent(query)}`);           // `router.push` で別URLに移動（履歴に追加）
+    // `router.push` で別URLに移動（履歴に追加）
+    router.push(`/books?q=${encodeURIComponent(query)}`);
                                                                      // `encodeURIComponent` はURLに使えない文字（空白や日本語）を %エンコード
   };
 
   return (
-    <form onSubmit={handleSearch}>                                  // submit イベントを上のハンドラに紐付け
+    // submit イベントを上のハンドラに紐付け
+    <form onSubmit={handleSearch}>
       <input
-        type="text"                                                 // テキスト入力欄
-        value={query}                                               // 制御コンポーネント：表示値を React state と同期
-        onChange={(e) => setQuery(e.target.value)}                  // 入力のたびに state を更新（再描画される）
-        placeholder="タイトルで検索..."                                // 空欄時の薄いガイドテキスト
+        // テキスト入力欄
+        type="text"
+        // 制御コンポーネント：表示値を React state と同期
+        value={query}
+        // 入力のたびに state を更新（再描画される）
+        onChange={(e) => setQuery(e.target.value)}
+        // 空欄時の薄いガイドテキスト
+        placeholder="タイトルで検索..."
       />
-      <button type="submit">検索</button>                              // submit ボタン。クリックで form の onSubmit が走る
+      // submit ボタン。クリックで form の onSubmit が走る
+      <button type="submit">検索</button>
     </form>
   );
 }
@@ -1256,24 +1324,35 @@ import { useRouter } from "next/navigation";
 > **▼ このコードがやること（先に日本語で）:** 書籍1冊分の「カード」表示を Server Component で作ります。タイトルや著者など動かない部分はサーバーで描画し、クリックが必要な「お気に入りボタン」だけを Client Component として中に埋め込みます。`type Book = {...}` は「このオブジェクトはこういう形」と決める TypeScript の型定義で、入力ミスを防いでくれます。詳細はコード内コメントを参照してください。
 
 ```typescript
-// components/BookCard.tsx（Server Component）                     // 書籍1冊分のカード。静的表示部分は Server で
+// 書籍1冊分のカード。静的表示部分は Server で
+// components/BookCard.tsx（Server Component）
 
-import { FavoriteButton } from "./FavoriteButton";                 // ※同じフォルダから import するときは "./" で始める
+// ※同じフォルダから import するときは "./" で始める
+import { FavoriteButton } from "./FavoriteButton";
                                                                      // ここで Client Component を取り込んでも、子だけが Client になる
 
-type Book = {                                                       // TypeScript の型定義（=この形のオブジェクト）
-  id: string;                                                       // 書籍ID（文字列）
-  title: string;                                                    // タイトル
-  author: string;                                                   // 著者
+// TypeScript の型定義（=この形のオブジェクト）
+type Book = {
+  // 書籍ID（文字列）
+  id: string;
+  // タイトル
+  title: string;
+  // 著者
+  author: string;
 };
 
-export function BookCard({ book }: { book: Book }) {                // props を分割代入で受け取り、型は `{ book: Book }`
+// props を分割代入で受け取り、型は `{ book: Book }`
+export function BookCard({ book }: { book: Book }) {
   return (
-    <div className="book-card">                                     // カード枠（CSSでスタイル付け）
-      <h3>{book.title}</h3>                                          // タイトル表示
-      <p>{book.author}</p>                                           // 著者表示
+    // カード枠（CSSでスタイル付け）
+    <div className="book-card">
+      // タイトル表示
+      <h3>{book.title}</h3>
+      // 著者表示
+      <p>{book.author}</p>
       {/* インタラクティブな部分だけ Client Component */}
-      <FavoriteButton bookId={book.id} />                           // お気に入りボタンには id だけ渡す（最小限のpropsで境界を作る）
+      // お気に入りボタンには id だけ渡す（最小限のpropsで境界を作る）
+      <FavoriteButton bookId={book.id} />
     </div>
   );
 }
@@ -1282,27 +1361,39 @@ export function BookCard({ book }: { book: Book }) {                // props を
 > **▼ このコードがやること（先に日本語で）:** クリックで「お気に入り」の ON/OFF を切り替えるボタンを作ります。Client Component なので、状態を `useState` で覚え、クリックされたらまず画面表示をすぐ切り替え（楽観的更新）、その後サーバーに `fetch` で保存依頼を送ります。ボタンの文字も状態に応じて「☆」と「★」で切り替わります。詳細はコード内コメントを参照してください。
 
 ```typescript
-// components/FavoriteButton.tsx（Client Component）              // クリック可能なお気に入りボタン
-"use client";                                                       // この1行で Client Component 化
+// クリック可能なお気に入りボタン
+// components/FavoriteButton.tsx（Client Component）
+// この1行で Client Component 化
+"use client";
 
-import { useState } from "react";                                   // 状態管理用のフック
+// 状態管理用のフック
+import { useState } from "react";
 
-export function FavoriteButton({ bookId }: { bookId: string }) {   // props は `{ bookId: string }`
-  const [isFavorite, setIsFavorite] = useState(false);              // 「お気に入りか？」の真偽値state。初期値は false
+// props は `{ bookId: string }`
+export function FavoriteButton({ bookId }: { bookId: string }) {
+  // 「お気に入りか？」の真偽値state。初期値は false
+  const [isFavorite, setIsFavorite] = useState(false);
 
-  const handleClick = async () => {                                 // クリック時のハンドラ。async で await が使える
-    setIsFavorite(!isFavorite);                                     // まず画面上の状態をトグル（楽観的更新）
+  // クリック時のハンドラ。async で await が使える
+  const handleClick = async () => {
+    // まず画面上の状態をトグル（楽観的更新）
+    setIsFavorite(!isFavorite);
                                                                      // `!isFavorite` は「現在の値の反対」
     // API を呼び出してお気に入り状態を保存
-    await fetch(`/api/books/${bookId}/favorite`, {                  // テンプレートリテラル（バッククォート ``）で URL を組み立てる
-      method: "POST",                                               // HTTP メソッド: POST（新しい状態を送る）
-      body: JSON.stringify({ favorite: !isFavorite }),              // JSオブジェクトをJSON文字列に変換してリクエストボディに乗せる
+    // テンプレートリテラル（バッククォート ``）で URL を組み立てる
+    await fetch(`/api/books/${bookId}/favorite`, {
+      // HTTP メソッド: POST（新しい状態を送る）
+      method: "POST",
+      // JSオブジェクトをJSON文字列に変換してリクエストボディに乗せる
+      body: JSON.stringify({ favorite: !isFavorite }),
     });
   };
 
   return (
-    <button onClick={handleClick}>                                  // ボタンクリックで handleClick を発動
-      {isFavorite ? "★ お気に入り済み" : "☆ お気に入り"}             // 三項演算子: state によって表示を切り替える
+    // ボタンクリックで handleClick を発動
+    <button onClick={handleClick}>
+      // 三項演算子: state によって表示を切り替える
+      {isFavorite ? "★ お気に入り済み" : "☆ お気に入り"}
     </button>
   );
 }
@@ -1384,54 +1475,74 @@ export function FavoriteButton({ bookId }: { bookId: string }) {   // props は 
 > **▼ このコードがやること（先に日本語で）:** アプリ全体の一番外側の枠（ヘッダー・本文・フッター）と、ブラウザタブのタイトルなどの基本情報（`metadata`）をまとめて定義します。`metadata` を export すると Next.js が `<head>` を自動で組み立ててくれるので、自分で `<title>` を書く必要がありません。Google Fonts の最適化読み込みも含む、実用的なルートレイアウトの完成形です。詳細はコード内コメントを参照してください。
 
 ```typescript
-// app/layout.tsx                                       // 予約名 `layout.tsx`。`app/` 直下のものは「ルートレイアウト」と呼ばれる
+// 予約名 `layout.tsx`。`app/` 直下のものは「ルートレイアウト」と呼ばれる
+// app/layout.tsx
                                                          // すべてのページを包む一番外側の枠になる（必須）
 
-import type { Metadata } from "next";                   // `import type` は「型だけ取り込む」記法
+// `import type` は「型だけ取り込む」記法
+import type { Metadata } from "next";
                                                          // 実行時のJSには残らないのでバンドルが軽くなる
-import { Inter } from "next/font/google";               // Google Fonts の Inter フォントを Next.js 経由で読み込む
+// Google Fonts の Inter フォントを Next.js 経由で読み込む
+import { Inter } from "next/font/google";
                                                          // `next/font/google` はビルド時にフォントをセルフホストして高速化してくれる
-import "./globals.css";                                 // 全ページに適用する CSS をインポート
+// 全ページに適用する CSS をインポート
+import "./globals.css";
                                                          // 値として使わず副作用のためだけに読み込む書き方
 
 // Google Fonts の Inter フォントを最適化して読み込む
-const inter = Inter({ subsets: ["latin"] });            // フォントのインスタンスを作る
+// フォントのインスタンスを作る
+const inter = Inter({ subsets: ["latin"] });
                                                          // `subsets: ["latin"]` は「ラテン文字だけ含む」指定でサイズ削減
 
-export const metadata: Metadata = {                     // `metadata` という名前で export すると Next.js が <head> を自動生成
+// `metadata` という名前で export すると Next.js が <head> を自動生成
+export const metadata: Metadata = {
                                                          // 自分で <title> や <meta> を書く必要がない
   title: {
-    template: "%s | 書籍管理アプリ",                       // 子ページのタイトルに自動で「 | 書籍管理アプリ」を付ける
+    // 子ページのタイトルに自動で「 | 書籍管理アプリ」を付ける
+    template: "%s | 書籍管理アプリ",
                                                          // `%s` の部分が子の title に置き換わる
-    default: "書籍管理アプリ",                              // 子ページが title を指定しなかったときのデフォルト
+    // 子ページが title を指定しなかったときのデフォルト
+    default: "書籍管理アプリ",
   },
-  description: "あなたの読書記録を管理するアプリケーション",  // <meta name="description"> として出力される。SEOで重要
+  // <meta name="description"> として出力される。SEOで重要
+  description: "あなたの読書記録を管理するアプリケーション",
 };
 
-export default function RootLayout({                    // ルートレイアウトの本体関数。名前は慣習で `RootLayout`
-  children,                                             // children: このレイアウトに包まれる「各ページのJSX」
+// ルートレイアウトの本体関数。名前は慣習で `RootLayout`
+export default function RootLayout({
+  // children: このレイアウトに包まれる「各ページのJSX」
+  children,
 }: {
-  children: React.ReactNode;                            // `React.ReactNode` は「JSX/文字列/数値/null など描画できる何でも」を表す型
+  // `React.ReactNode` は「JSX/文字列/数値/null など描画できる何でも」を表す型
+  children: React.ReactNode;
 }) {
   return (
-    <html lang="ja">                                    // `<html>` はルートレイアウトでだけ書く
+    // `<html>` はルートレイアウトでだけ書く
+    <html lang="ja">
                                                          // lang="ja" は日本語ページであることをブラウザや支援技術に伝える
-      <body className={inter.className}>                // `<body>` もルートレイアウト専用
+      // `<body>` もルートレイアウト専用
+      <body className={inter.className}>
                                                          // `inter.className` でフォント用 CSS クラスを適用
         {/* ここにヘッダーを配置 */}
-        <header className="site-header">                // セマンティック要素 `<header>`：ページ上部のヘッダー領域
-          <nav>                                         // `<nav>`：ナビゲーション領域を示すセマンティック要素
-            <a href="/">書籍管理アプリ</a>                  // 普通のアンカー。ロゴ的リンク（後で `<Link>` に置き換えるのがベター）
+        // セマンティック要素 `<header>`：ページ上部のヘッダー領域
+        <header className="site-header">
+          // `<nav>`：ナビゲーション領域を示すセマンティック要素
+          <nav>
+            // 普通のアンカー。ロゴ的リンク（後で `<Link>` に置き換えるのがベター）
+            <a href="/">書籍管理アプリ</a>
           </nav>
         </header>
 
         {/* children に各ページの内容が入る */}
-        <main className="site-main">{children}</main>   // `<main>`：ページの主要コンテンツ領域
+        // `<main>`：ページの主要コンテンツ領域
+        <main className="site-main">{children}</main>
                                                          // ここに `app/page.tsx` や `app/books/page.tsx` 等の中身が差し込まれる
 
         {/* ここにフッターを配置 */}
-        <footer className="site-footer">                // `<footer>`：ページ下部のフッター領域
-          <p>&copy; 2024 書籍管理アプリ</p>                 // `&copy;` は © の HTML エンティティ（特殊文字）
+        // `<footer>`：ページ下部のフッター領域
+        <footer className="site-footer">
+          // `&copy;` は © の HTML エンティティ（特殊文字）
+          <p>&copy; 2024 書籍管理アプリ</p>
         </footer>
       </body>
     </html>
@@ -1477,27 +1588,40 @@ export default function RootLayout({                    // ルートレイアウ
 > **▼ このコードがやること（先に日本語で）:** `/books` 以下のページだけに共通で付くサイドバー付きの枠（ネストされたレイアウト）を作ります。ルートレイアウトの内側にさらに重ねられるのがポイントで、トップページには出ず `/books` 配下でだけサイドバーが表示されます。ルート以外のレイアウトでは `<html>`/`<body>` は書かない点に注意してください。詳細はコード内コメントを参照してください。
 
 ```typescript
-// app/books/layout.tsx                                     // `app/books/` フォルダの中の `layout.tsx`
-// /books 以下のすべてのページに適用されるレイアウト           // `/books`, `/books/new`, `/books/[id]` 等で共通の枠になる
+// `app/books/` フォルダの中の `layout.tsx`
+// app/books/layout.tsx
+// `/books`, `/books/new`, `/books/[id]` 等で共通の枠になる
+// /books 以下のすべてのページに適用されるレイアウト
 
-import type { Metadata } from "next";                       // 型だけ import（Metadata 型を使うため）
+// 型だけ import（Metadata 型を使うため）
+import type { Metadata } from "next";
 
-export const metadata: Metadata = {                         // この階層用のメタデータ
-  title: "書籍管理",                                          // 親（RootLayout）の template と組み合わさり「書籍管理 | 書籍管理アプリ」になる
+// この階層用のメタデータ
+export const metadata: Metadata = {
+  // 親（RootLayout）の template と組み合わさり「書籍管理 | 書籍管理アプリ」になる
+  title: "書籍管理",
 };
 
-export default function BooksLayout({                       // ネストされたレイアウトの本体関数
-  children,                                                 // children: この階層の page.tsx またはさらに深い layout.tsx の中身
+// ネストされたレイアウトの本体関数
+export default function BooksLayout({
+  // children: この階層の page.tsx またはさらに深い layout.tsx の中身
+  children,
 }: {
-  children: React.ReactNode;                                // 描画可能な何でも、を意味する型
+  // 描画可能な何でも、を意味する型
+  children: React.ReactNode;
 }) {
   return (
-    <div className="books-layout">                          // ※ルート以外の layout.tsx は <html>/<body> を書かない
+    // ※ルート以外の layout.tsx は <html>/<body> を書かない
+    <div className="books-layout">
       {/* サイドバー */}
-      <aside className="sidebar">                           // `<aside>`：補足コンテンツ用のセマンティック要素
-        <nav>                                               // ナビゲーション領域
-          <ul>                                              // 箇条書きリスト
-            <li><a href="/books">書籍一覧</a></li>             // ※ 後ほど `<Link>` への置き換えを学ぶ
+      // `<aside>`：補足コンテンツ用のセマンティック要素
+      <aside className="sidebar">
+        // ナビゲーション領域
+        <nav>
+          // 箇条書きリスト
+          <ul>
+            // ※ 後ほど `<Link>` への置き換えを学ぶ
+            <li><a href="/books">書籍一覧</a></li>
             <li><a href="/books/new">書籍を追加</a></li>
             <li><a href="/books/favorites">お気に入り</a></li>
           </ul>
@@ -1505,8 +1629,10 @@ export default function BooksLayout({                       // ネストされ�
       </aside>
 
       {/* メインコンテンツ */}
-      <section className="content">                         // `<section>`：意味的にひとまとまりの領域
-        {children}                                          // ここに /books/page.tsx や /books/[id]/page.tsx の内容が入る
+      // `<section>`：意味的にひとまとまりの領域
+      <section className="content">
+        // ここに /books/page.tsx や /books/[id]/page.tsx の内容が入る
+        {children}
       </section>
     </div>
   );
@@ -1581,21 +1707,30 @@ Next.js では、ページ間の遷移に HTML の `<a>` タグではなく、`n
 > **▼ このコードがやること（先に日本語で）:** ページ間を移動するためのナビゲーション（メニュー）を、`next/link` の `<Link>` を使って作ります。`<a>` タグの代わりに `<Link>` を使うと、クリック時にページ全体を読み込み直さず必要な部分だけ差し替える「高速なページ移動」になります。`href` に行き先 URL を指定する書き方は `<a>` とよく似ています。詳細はコード内コメントを参照してください。
 
 ```typescript
-// components/Navigation.tsx                         // ナビゲーション専用コンポーネント
-import Link from "next/link";                        // Next.js の Link コンポーネントを取り込む（default export）
+// ナビゲーション専用コンポーネント
+// components/Navigation.tsx
+// Next.js の Link コンポーネントを取り込む（default export）
+import Link from "next/link";
 
-export function Navigation() {                       // 名前付き export（中括弧で import される）
+// 名前付き export（中括弧で import される）
+export function Navigation() {
   return (
-    <nav>                                            // セマンティック要素：ナビゲーション領域
-      <ul>                                           // リスト
-        <li>                                         // 1項目
-          <Link href="/">ホーム</Link>                  // `href` で行き先URLを指定。<a> と似た書き方
+    // セマンティック要素：ナビゲーション領域
+    <nav>
+      // リスト
+      <ul>
+        // 1項目
+        <li>
+          // `href` で行き先URLを指定。<a> と似た書き方
+          <Link href="/">ホーム</Link>
         </li>
         <li>
-          <Link href="/books">書籍一覧</Link>           // `/books` への高速遷移リンク
+          // `/books` への高速遷移リンク
+          <Link href="/books">書籍一覧</Link>
         </li>
         <li>
-          <Link href="/books/new">書籍を追加</Link>     // `/books/new` への遷移
+          // `/books/new` への遷移
+          <Link href="/books/new">書籍を追加</Link>
         </li>
       </ul>
     </nav>
@@ -1615,19 +1750,27 @@ export function Navigation() {                       // 名前付き export（�
 > **▼ このコードがやること（先に日本語で）:** 書籍ごとに異なる詳細ページ（例: `/books/42`）へのリンクを、データに応じて動的に組み立てます。`href={`/books/${book.id}`}` のようにバッククォート（テンプレートリテラル）で URL に変数を埋め込むのがポイントです。1冊分の `book` を props で受け取り、その `id` からリンク先を作ります。詳細はコード内コメントを参照してください。
 
 ```typescript
-// 動的ルートへのリンク                                 // 動的セグメント `[id]` を含むURLへのリンク例
-import Link from "next/link";                          // Link コンポーネントを取り込む
+// 動的セグメント `[id]` を含むURLへのリンク例
+// 動的ルートへのリンク
+// Link コンポーネントを取り込む
+import Link from "next/link";
 
-type Book = {                                           // 書籍の型を簡易定義
-  id: string;                                           // 書籍ID
-  title: string;                                        // タイトル
+// 書籍の型を簡易定義
+type Book = {
+  // 書籍ID
+  id: string;
+  // タイトル
+  title: string;
 };
 
-export function BookLink({ book }: { book: Book }) {   // props として 1冊の book を受け取る
+// props として 1冊の book を受け取る
+export function BookLink({ book }: { book: Book }) {
   return (
-    <Link href={`/books/${book.id}`}>                  // テンプレートリテラルで URL を組み立てる
+    // テンプレートリテラルで URL を組み立てる
+    <Link href={`/books/${book.id}`}>
                                                         // 例: book.id が "42" なら "/books/42" が生成される
-      {book.title} の詳細を見る                          // 表示テキストは book.title を埋め込み
+      // 表示テキストは book.title を埋め込み
+      {book.title} の詳細を見る
     </Link>
   );
 }
@@ -1689,27 +1832,39 @@ export function BookLink({ book }: { book: Book }) {
 > **▼ このコードがやること（先に日本語で）:** `<Link>` のクリックではなく「処理が終わった後にプログラムから自動でページを移動する」方法を学びます。フォーム送信後に `useRouter` の `router.push("/books")` を呼んで一覧ページへ飛ばす例です。`useRouter` は Client Component でしか使えず、取り込み元は `next/navigation`（旧 `next/router` ではない）である点が要注意です。詳細はコード内コメントを参照してください。
 
 ```typescript
-// components/BookForm.tsx                              // 書籍フォーム部品
-"use client";                                            // useRouter は Client Component でしか使えないため必須
+// 書籍フォーム部品
+// components/BookForm.tsx
+// useRouter は Client Component でしか使えないため必須
+"use client";
 
-import { useRouter } from "next/navigation"; // ⚠️ next/router ではない！  // App Router 用は `next/navigation`、旧 Pages Router 用は `next/router`
+// ⚠️ next/router ではない！
+// App Router 用は `next/navigation`、旧 Pages Router 用は `next/router`
+import { useRouter } from "next/navigation";
 
 export function BookForm() {
-  const router = useRouter();                            // ルーターインスタンスを取得
+  // ルーターインスタンスを取得
+  const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {  // フォーム送信時のハンドラ
-    e.preventDefault();                                  // デフォルトの送信動作（ページリロード）を防ぐ
+  // フォーム送信時のハンドラ
+  const handleSubmit = async (e: React.FormEvent) => {
+    // デフォルトの送信動作（ページリロード）を防ぐ
+    e.preventDefault();
 
-    // 書籍を保存する処理（省略）                          // 例: await fetch("/api/books", { method: "POST", ... });
+    // 書籍を保存する処理（省略）
+    // 例: await fetch("/api/books", { method: "POST", ... });
 
     // 保存後、書籍一覧ページに遷移
-    router.push("/books");                               // プログラム的に画面遷移。履歴に「/books」が追加される
+    // プログラム的に画面遷移。履歴に「/books」が追加される
+    router.push("/books");
   };
 
   return (
-    <form onSubmit={handleSubmit}>                       // submit イベントを上記関数に紐付け
-      {/* フォームの内容（省略） */}                       // 実際には input 要素などを並べる
-      <button type="submit">保存</button>                 // submit ボタン
+    // submit イベントを上記関数に紐付け
+    <form onSubmit={handleSubmit}>
+      // 実際には input 要素などを並べる
+      {/* フォームの内容（省略） */}
+      // submit ボタン
+      <button type="submit">保存</button>
     </form>
   );
 }
@@ -1720,33 +1875,42 @@ export function BookForm() {
 > **▼ このコードがやること（先に日本語で）:** `useRouter` が持つ4つの代表的な機能を、ボタンで呼び分けて比較します。`push`（履歴を残して移動）、`replace`（履歴を上書きして移動＝戻れない）、`back`（1つ前に戻る）、`refresh`（今のページのデータだけ取り直す）の違いを押さえるのが目的です。それぞれをいつ使うかはこの後の表にもまとまっています。詳細はコード内コメントを参照してください。
 
 ```typescript
-"use client";                                            // Client Component 化
+// Client Component 化
+"use client";
 
-import { useRouter } from "next/navigation";             // App Router 用のフック
+// App Router 用のフック
+import { useRouter } from "next/navigation";
 
 export function NavigationExample() {
-  const router = useRouter();                            // ルーターを取得
+  // ルーターを取得
+  const router = useRouter();
 
   return (
     <div>
       {/* 指定したパスに遷移（履歴に追加） */}
-      <button onClick={() => router.push("/books")}>     // `push`: 履歴を1つ増やしながら遷移（ブラウザの戻るで前ページに戻れる）
+      // `push`: 履歴を1つ増やしながら遷移（ブラウザの戻るで前ページに戻れる）
+      <button onClick={() => router.push("/books")}>
         書籍一覧へ
       </button>
 
       {/* 指定したパスに遷移（履歴を置換） */}
-      <button onClick={() => router.replace("/books")}>  // `replace`: 現在の履歴エントリを上書きして遷移（戻れない）
-        書籍一覧へ（履歴を置換）                            // ログイン後にログインページを履歴に残したくないときに使う
+      // `replace`: 現在の履歴エントリを上書きして遷移（戻れない）
+      <button onClick={() => router.replace("/books")}>
+        // ログイン後にログインページを履歴に残したくないときに使う
+        書籍一覧へ（履歴を置換）
       </button>
 
       {/* ブラウザの「戻る」と同じ */}
-      <button onClick={() => router.back()}>              // `back`: 履歴を1つ戻る
+      // `back`: 履歴を1つ戻る
+      <button onClick={() => router.back()}>
         戻る
       </button>
 
       {/* ページのデータを再取得（再レンダリング） */}
-      <button onClick={() => router.refresh()}>          // `refresh`: 現在のルートの Server Component を再実行・再描画
-        更新                                              // ※ ページ全体リロードではない（state は保持される）
+      // `refresh`: 現在のルートの Server Component を再実行・再描画
+      <button onClick={() => router.refresh()}>
+        // ※ ページ全体リロードではない（state は保持される）
+        更新
       </button>
     </div>
   );
@@ -1768,16 +1932,22 @@ export function NavigationExample() {
 > **▼ このコードがやること（先に日本語で）:** 「今どの URL にいるか」「URL の `?sort=price` のような追加情報（クエリパラメータ）は何か」をプログラムから読み取ります。`usePathname` で現在のパス、`useSearchParams` でクエリの値（`.get("sort")` で取得）を取り出す例です。`??`（ヌル合体演算子）は「値が無いときの代わりの値」を指定する書き方です。詳細はコード内コメントを参照してください。
 
 ```typescript
-"use client";                                                     // Client Component 必須
+// Client Component 必須
+"use client";
 
-import { usePathname, useSearchParams } from "next/navigation";   // 2つのフックを取り込む
+// 2つのフックを取り込む
+import { usePathname, useSearchParams } from "next/navigation";
 
 export function CurrentUrlInfo() {
-  const pathname = usePathname();                                 // 例: "/books/123" のような現在のパス（クエリは含まない）
-  const searchParams = useSearchParams();                         // クエリパラメータを扱う ReadOnly な URLSearchParams 風オブジェクト
+  // 例: "/books/123" のような現在のパス（クエリは含まない）
+  const pathname = usePathname();
+  // クエリパラメータを扱う ReadOnly な URLSearchParams 風オブジェクト
+  const searchParams = useSearchParams();
 
-  const sort = searchParams.get("sort");                          // `?sort=price` なら "price" を返す。なければ null
-  const page = searchParams.get("page") ?? "1";                   // `??` は左辺が null/undefined のとき右辺を使う「ヌル合体演算子」
+  // `?sort=price` なら "price" を返す。なければ null
+  const sort = searchParams.get("sort");
+  // `??` は左辺が null/undefined のとき右辺を使う「ヌル合体演算子」
+  const page = searchParams.get("page") ?? "1";
 
   return (
     <p>
@@ -1796,40 +1966,55 @@ export function CurrentUrlInfo() {
 > **▼ このコードがやること（先に日本語で）:** 書籍詳細ページで「条件によって別ページへ自動転送する」処理を学びます。データが見つからなければ `notFound()` で404ページを、非公開の書籍なら `redirect("/books")` で一覧へ飛ばす例です。どちらも呼ぶとそこで処理が止まる（戻ってこない）ため、`return` の前に置くだけで分岐できます。詳細はコード内コメントを参照してください。
 
 ```typescript
-// app/books/[id]/page.tsx                                       // 動的セグメントを含む書籍詳細ページ
-import { redirect, notFound } from "next/navigation";            // 2つのヘルパー関数を取り込む
+// 動的セグメントを含む書籍詳細ページ
+// app/books/[id]/page.tsx
+// 2つのヘルパー関数を取り込む
+import { redirect, notFound } from "next/navigation";
                                                                    // redirect: 任意の URL へ転送
                                                                    // notFound: 404扱いにして not-found.tsx を表示
 
-export default async function BookDetailPage({                   // async Server Component
+// async Server Component
+export default async function BookDetailPage({
   params,
 }: {
-  params: Promise<{ id: string }>;                                // Next.js 15+ では params は Promise でラップ
+  // Next.js 15+ では params は Promise でラップ
+  params: Promise<{ id: string }>;
 }) {
-  const { id } = await params;                                    // await で id を取り出す
-  const book = await fetchBook(id);                               // 仮想のデータ取得関数
+  // await で id を取り出す
+  const { id } = await params;
+  // 仮想のデータ取得関数
+  const book = await fetchBook(id);
 
   // 書籍が見つからない場合は 404 ページを表示
-  if (!book) {                                                    // データが null/undefined なら
-    notFound();                                                   // この呼び出しで以降の処理は中断され not-found.tsx が表示される
+  // データが null/undefined なら
+  if (!book) {
+    // この呼び出しで以降の処理は中断され not-found.tsx が表示される
+    notFound();
                                                                    // 関数の戻り値は never（戻ってこない関数の型）
   }
 
   // 非公開の書籍は一覧ページにリダイレクト
-  if (book.isPrivate) {                                           // 条件次第で
-    redirect("/books");                                           // `/books` に転送（これも never を返す）
+  // 条件次第で
+  if (book.isPrivate) {
+    // `/books` に転送（これも never を返す）
+    redirect("/books");
   }
 
-  return (                                                        // 上の if を通り抜けた場合だけここに到達
+  // 上の if を通り抜けた場合だけここに到達
+  return (
     <div>
-      <h1>{book.title}</h1>                                        // タイトル表示
+      // タイトル表示
+      <h1>{book.title}</h1>
     </div>
   );
 }
 
-async function fetchBook(id: string) {                            // データ取得を模した関数
-  // データベースから書籍を取得する処理（仮）                       // 本来は DB クエリや API 呼び出し
-  return { title: "サンプル書籍", isPrivate: false };               // ダミーデータ
+// データ取得を模した関数
+async function fetchBook(id: string) {
+  // データベースから書籍を取得する処理（仮）
+  // 本来は DB クエリや API 呼び出し
+  // ダミーデータ
+  return { title: "サンプル書籍", isPrivate: false };
 }
 ```
 
@@ -1883,26 +2068,36 @@ import { redirect, notFound } from "next/navigation";
 > **▼ このコードがやること（先に日本語で）:** ページが表示される「前の段階」で割り込み、未ログインのユーザーを `/login` に転送する関所（ミドルウェア）を作ります。リクエストの Cookie からログイン状態を判定し、条件に合えば転送、合わなければそのまま通します。最後の `config.matcher` で「どの URL にこの関所を効かせるか」を指定する点もポイントです。詳細はコード内コメントを参照してください。
 
 ```typescript
-// middleware.ts（プロジェクトルート）                              // ファイル名は固定。app/ の外、プロジェクト直下に置く
+// ファイル名は固定。app/ の外、プロジェクト直下に置く
+// middleware.ts（プロジェクトルート）
 
-import { NextResponse } from "next/server";                       // Edge ランタイム用のレスポンスヘルパー
-import type { NextRequest } from "next/server";                   // 型だけ取り込み（リクエスト型）
+// Edge ランタイム用のレスポンスヘルパー
+import { NextResponse } from "next/server";
+// 型だけ取り込み（リクエスト型）
+import type { NextRequest } from "next/server";
 
-export function middleware(request: NextRequest) {                // `middleware` という名前で export すると Next.js が自動呼び出し
+// `middleware` という名前で export すると Next.js が自動呼び出し
+export function middleware(request: NextRequest) {
   // 例: 未ログインユーザーを /books ページからリダイレクト
-  const isLoggedIn = request.cookies.get("session");              // Cookie から `session` の値を取得（あればログイン中とみなす）
+  // Cookie から `session` の値を取得（あればログイン中とみなす）
+  const isLoggedIn = request.cookies.get("session");
 
-  if (!isLoggedIn && request.nextUrl.pathname.startsWith("/books")) {  // 未ログイン かつ /books 配下にアクセスしている
-    return NextResponse.redirect(new URL("/login", request.url));  // /login に転送するレスポンスを返す
+  // 未ログイン かつ /books 配下にアクセスしている
+  if (!isLoggedIn && request.nextUrl.pathname.startsWith("/books")) {
+    // /login に転送するレスポンスを返す
+    return NextResponse.redirect(new URL("/login", request.url));
                                                                     // `new URL("/login", request.url)` はベースURLを保ったまま絶対URLを作る
   }
 
-  return NextResponse.next();                                     // 条件に合わない場合は普通に次の処理（=ページ描画）へ進める
+  // 条件に合わない場合は普通に次の処理（=ページ描画）へ進める
+  return NextResponse.next();
 }
 
 // ミドルウェアを適用するパスを指定
-export const config = {                                            // `config` という名前で設定オブジェクトを export
-  matcher: ["/books/:path*"],                                      // この matcher にマッチしたURLでだけ middleware が動く
+// `config` という名前で設定オブジェクトを export
+export const config = {
+  // この matcher にマッチしたURLでだけ middleware が動く
+  matcher: ["/books/:path*"],
                                                                     // `:path*` は「任意の階層を含む」の意味
 };
 ```
@@ -1934,10 +2129,14 @@ Server Component ではコンポーネント関数を `async` にして、直接
 //     Book 型を1度ここで決めておくと、map のコールバック内などで
 //     book.〇〇 と書いたとき VS Code が補完してくれる。
 type Book = {
-  id: string;             // 一意なID
-  title: string;          // 書籍タイトル
-  author: string;         // 著者名
-  publishedYear: number;  // 出版年
+  // 一意なID
+  id: string;
+  // 書籍タイトル
+  title: string;
+  // 著者名
+  author: string;
+  // 出版年
+  publishedYear: number;
 };
 
 
@@ -1949,9 +2148,12 @@ async function getBooks(): Promise<Book[]> {
   // fetch は Web標準のHTTP通信API。
   // 第2引数の cache オプションで Next.js のキャッシュ動作を指定する。
   const response = await fetch("https://api.example.com/books", {
-    cache: "no-store",   // ← 毎リクエストで最新データを取得する（=SSR動作）
-    // cache: "force-cache",      // ← ビルド時に1度だけ取得（=SSG動作）
-    // next: { revalidate: 60 },  // ← 60秒ごとに再取得（=ISR動作）
+    // ← 毎リクエストで最新データを取得する（=SSR動作）
+    cache: "no-store",
+    // cache: "force-cache",
+    // ← ビルド時に1度だけ取得（=SSG動作）
+    // next: { revalidate: 60 },
+    // ← 60秒ごとに再取得（=ISR動作）
   });
 
   // (2-1) 通信は成功したけどステータスが 4xx/5xx の場合は失敗扱いにする。
@@ -2053,9 +2255,12 @@ async function getBooks(): Promise<Book[]> {
 
 ```typescript
   const response = await fetch("https://api.example.com/books", {
-    cache: "no-store",   // ← 毎リクエストで最新データを取得する（=SSR動作）
-    // cache: "force-cache",      // ← ビルド時に1度だけ取得（=SSG動作）
-    // next: { revalidate: 60 },  // ← 60秒ごとに再取得（=ISR動作）
+    // ← 毎リクエストで最新データを取得する（=SSR動作）
+    cache: "no-store",
+    // cache: "force-cache",
+    // ← ビルド時に1度だけ取得（=SSG動作）
+    // next: { revalidate: 60 },
+    // ← 60秒ごとに再取得（=ISR動作）
   });
 ```
 
@@ -2120,14 +2325,20 @@ export default async function BooksPage() {
 Next.js の `fetch` には、標準仕様にはない独自のオプションが追加されています。これらを使い分けることで SSR / SSG / ISR（インクリメンタル静的再生成）を切り替えられます。
 
 ```typescript
-// SSR - リクエストのたびに最新データを取得                                    // 毎回サーバーで最新データを取りに行く動作
-fetch(url, { cache: "no-store" });                                          // `cache: "no-store"` でキャッシュを使わない
+// 毎回サーバーで最新データを取りに行く動作
+// SSR - リクエストのたびに最新データを取得
+// `cache: "no-store"` でキャッシュを使わない
+fetch(url, { cache: "no-store" });
 
-// SSG - ビルド時にデータを取得し、キャッシュ（デフォルト）                      // ビルド時に1回だけ取得し、以降は同じ結果を返す
-fetch(url, { cache: "force-cache" });                                       // `cache: "force-cache"` で強制キャッシュ
+// ビルド時に1回だけ取得し、以降は同じ結果を返す
+// SSG - ビルド時にデータを取得し、キャッシュ（デフォルト）
+// `cache: "force-cache"` で強制キャッシュ
+fetch(url, { cache: "force-cache" });
 
-// ISR - 60秒ごとにキャッシュを再検証                                          // 一定間隔で再取得する中間方式
-fetch(url, { next: { revalidate: 60 } });                                   // `next.revalidate` は Next.js が追加した独自オプション
+// 一定間隔で再取得する中間方式
+// ISR - 60秒ごとにキャッシュを再検証
+// `next.revalidate` は Next.js が追加した独自オプション
+fetch(url, { next: { revalidate: 60 } });
                                                                               // 60 は秒数。指定間隔ごとに次のアクセス時に再取得
 ```
 
@@ -2144,73 +2355,113 @@ Client Component では、従来の React と同じように `useEffect` と `us
 > **▼ このコードがやること（先に日本語で）:** ブラウザ側でリアルタイムに検索する部品を、従来の React と同じ `useState` + `useEffect` で作ります。入力のたびに毎回通信すると重いので、「入力が止まって300ミリ秒後にだけ検索する」デバウンスという工夫を入れています。読み込み中・エラー・結果という3つの状態をそれぞれ管理する、実戦的な例です。詳細はコード内コメントを参照してください。
 
 ```typescript
-// components/BookSearch.tsx                                       // ブラウザでリアルタイム検索する部品
-"use client";                                                       // Client Component。useState/useEffect を使うため必須
+// ブラウザでリアルタイム検索する部品
+// components/BookSearch.tsx
+// Client Component。useState/useEffect を使うため必須
+"use client";
 
-import { useState, useEffect } from "react";                       // 状態管理と副作用管理のフック
+// 状態管理と副作用管理のフック
+import { useState, useEffect } from "react";
 
-type Book = {                                                       // 検索結果1件の型
-  id: string;                                                       // 書籍ID
-  title: string;                                                    // タイトル
-  author: string;                                                   // 著者
+// 検索結果1件の型
+type Book = {
+  // 書籍ID
+  id: string;
+  // タイトル
+  title: string;
+  // 著者
+  author: string;
 };
 
 export function BookSearch() {
-  const [query, setQuery] = useState("");                           // 検索文字列の state（初期値は空文字）
-  const [books, setBooks] = useState<Book[]>([]);                   // 検索結果の配列。ジェネリック `<Book[]>` で要素の型を指定
-  const [isLoading, setIsLoading] = useState(false);                // 読み込み中フラグ
-  const [error, setError] = useState<string | null>(null);          // エラーメッセージ（なければ null）
+  // 検索文字列の state（初期値は空文字）
+  const [query, setQuery] = useState("");
+  // 検索結果の配列。ジェネリック `<Book[]>` で要素の型を指定
+  const [books, setBooks] = useState<Book[]>([]);
+  // 読み込み中フラグ
+  const [isLoading, setIsLoading] = useState(false);
+  // エラーメッセージ（なければ null）
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {                                                 // query が変わるたびに走る副作用
+  // query が変わるたびに走る副作用
+  useEffect(() => {
     // 検索クエリが空なら何もしない
-    if (!query.trim()) {                                            // `trim()` で前後の空白を取り除いて空かチェック
-      setBooks([]);                                                 // 空の結果に
-      return;                                                       // ここで打ち切り
+    // `trim()` で前後の空白を取り除いて空かチェック
+    if (!query.trim()) {
+      // 空の結果に
+      setBooks([]);
+      // ここで打ち切り
+      return;
     }
 
     // デバウンス: 入力が止まって300ms後に検索を実行
-    const timer = setTimeout(async () => {                          // 300ms後に走るタイマーを仕掛ける
+    // 300ms後に走るタイマーを仕掛ける
+    const timer = setTimeout(async () => {
                                                                      // 入力が続いている間はクリーンアップで毎回キャンセルされる（=デバウンス）
-      setIsLoading(true);                                           // 「読み込み中」に切り替え
-      setError(null);                                               // エラー表示はリセット
+      // 「読み込み中」に切り替え
+      setIsLoading(true);
+      // エラー表示はリセット
+      setError(null);
 
-      try {                                                         // 例外の可能性のある処理を try で囲む
-        const response = await fetch(                               // 内部APIに GET リクエスト
-          `/api/books/search?q=${encodeURIComponent(query)}`        // クエリパラメータ q に検索文字列を入れる
+      // 例外の可能性のある処理を try で囲む
+      try {
+        // 内部APIに GET リクエスト
+        const response = await fetch(
+          // クエリパラメータ q に検索文字列を入れる
+          `/api/books/search?q=${encodeURIComponent(query)}`
         );
-        if (!response.ok) {                                         // HTTP ステータスが 200番台でなければ
-          throw new Error("検索に失敗しました");                       // 例外を投げて catch に飛ばす
+        // HTTP ステータスが 200番台でなければ
+        if (!response.ok) {
+          // 例外を投げて catch に飛ばす
+          throw new Error("検索に失敗しました");
         }
-        const data = await response.json();                         // レスポンス本文（JSON）を JS オブジェクトに変換
-        setBooks(data);                                             // state に保存 → 再描画
-      } catch (err) {                                               // 通信失敗や上の throw を捕まえる
+        // レスポンス本文（JSON）を JS オブジェクトに変換
+        const data = await response.json();
+        // state に保存 → 再描画
+        setBooks(data);
+      // 通信失敗や上の throw を捕まえる
+      } catch (err) {
         setError(err instanceof Error ? err.message : "エラーが発生しました");
                                                                      // err が Error 型ならその message を、それ以外なら汎用文を表示
-      } finally {                                                   // 成功・失敗どちらでも最後に走る
-        setIsLoading(false);                                        // 読み込み中フラグを解除
+      // 成功・失敗どちらでも最後に走る
+      } finally {
+        // 読み込み中フラグを解除
+        setIsLoading(false);
       }
-    }, 300);                                                         // 300ms = デバウンス時間
+    // 300ms = デバウンス時間
+    }, 300);
 
     // クリーンアップ: 次の入力が来たらタイマーをキャンセル
-    return () => clearTimeout(timer);                               // useEffect が return する関数は「次のeffect実行前」または「unmount時」に呼ばれる
-  }, [query]);                                                       // 依存配列。query が変わったときだけ effect を再実行
+    // useEffect が return する関数は「次のeffect実行前」または「unmount時」に呼ばれる
+    return () => clearTimeout(timer);
+  // 依存配列。query が変わったときだけ effect を再実行
+  }, [query]);
 
   return (
     <div>
       <input
-        type="text"                                                 // 1行テキスト入力欄
-        value={query}                                               // 表示値を state と同期（制御コンポーネント）
-        onChange={(e) => setQuery(e.target.value)}                  // 入力変更時に state を更新
-        placeholder="書籍を検索..."                                    // 空欄ガイド
+        // 1行テキスト入力欄
+        type="text"
+        // 表示値を state と同期（制御コンポーネント）
+        value={query}
+        // 入力変更時に state を更新
+        onChange={(e) => setQuery(e.target.value)}
+        // 空欄ガイド
+        placeholder="書籍を検索..."
       />
 
-      {isLoading && <p>検索中...</p>}                                  // 短絡評価: isLoading が true のときだけ <p> を描画
-      {error && <p className="error">{error}</p>}                   // エラー文字列があるときだけ表示
+      // 短絡評価: isLoading が true のときだけ <p> を描画
+      {isLoading && <p>検索中...</p>}
+      // エラー文字列があるときだけ表示
+      {error && <p className="error">{error}</p>}
 
       <ul>
-        {books.map((book) => (                                      // 配列を JSX 要素にマッピング
-          <li key={book.id}>                                        // `key` は React に「どの項目が同じか」を伝える必須属性
-            {book.title} - {book.author}                            // タイトル - 著者 の形式で表示
+        // 配列を JSX 要素にマッピング
+        {books.map((book) => (
+          // `key` は React に「どの項目が同じか」を伝える必須属性
+          <li key={book.id}>
+            // タイトル - 著者 の形式で表示
+            {book.title} - {book.author}
           </li>
         ))}
       </ul>
@@ -2329,9 +2580,11 @@ export function BookSearch() {
 > **▼ このコードがやること（先に日本語で）:** 読み込み中に、実際のコンテンツと同じ形をした灰色の枠（スケルトンUI）を表示するローディング画面を作ります。データが届いた瞬間に画面がガタつかないようにするための工夫です。`Array.from({ length: 6 }).map(...)` で同じカードを6個並べる書き方や、`style` 属性にオブジェクトを渡す JSX 特有の書き方を学べます。詳細はコード内コメントを参照してください。
 
 ```typescript
-// app/books/loading.tsx                                           // 予約名 `loading.tsx`。/books のロード中UI
+// 予約名 `loading.tsx`。/books のロード中UI
+// app/books/loading.tsx
 
-export default function BooksLoading() {                           // default export 関数
+// default export 関数
+export default function BooksLoading() {
   return (
     <div className="loading-container">
       {/* スケルトンUI: 実際のコンテンツと同じ形状の灰色の枠 */}
@@ -2341,13 +2594,16 @@ export default function BooksLoading() {                           // default ex
 
       <div className="book-grid">
         {/* 6個のスケルトンカード */}
-        {Array.from({ length: 6 }).map((_, i) => (                 // `Array.from({ length: 6 })` で要素6個の配列を作る
+        // `Array.from({ length: 6 })` で要素6個の配列を作る
+        {Array.from({ length: 6 }).map((_, i) => (
                                                                     // 第1引数 `_` は使わないので慣習的にアンダースコア
                                                                     // 第2引数 `i` は 0,1,2,...,5 のインデックス
-          <div key={i} className="skeleton-card">                  // key にインデックスを使う（並び順が変わらないリストならOK）
+          // key にインデックスを使う（並び順が変わらないリストならOK）
+          <div key={i} className="skeleton-card">
             <div
               className="skeleton"
-              style={{ width: "100%", height: "200px" }}            // 表紙画像の代わりの灰色ブロック
+              // 表紙画像の代わりの灰色ブロック
+              style={{ width: "100%", height: "200px" }}
             />
             <div
               className="skeleton"
@@ -2419,21 +2675,28 @@ App Router で「自前のHTTP API」を作りたいときは、`app/api/.../rou
 > **▼ このコードがやること（先に日本語で）:** `app/api/.../route.ts` という予約名のファイルで、外部から `fetch` で呼べる自前の HTTP API を作ります。`GET` や `POST` という名前の関数を export すると、それぞれが同名の HTTP メソッドの処理になるのがポイントです。`NextResponse.json(...)` で JSON を返す、API の基本形を学べます。詳細はコード内コメントを参照してください。
 
 ```typescript
-// app/api/books/route.ts                                        // 予約名 `route.ts`。`/api/books` の HTTP API になる
+// 予約名 `route.ts`。`/api/books` の HTTP API になる
+// app/api/books/route.ts
                                                                    // page.tsx と同じフォルダには置けない（ルートが衝突するため）
 
-import { NextResponse } from "next/server";                       // レスポンスを作るヘルパー
+// レスポンスを作るヘルパー
+import { NextResponse } from "next/server";
 
-export async function GET() {                                    // 関数名 `GET` が HTTP メソッドに対応（POST/PUT/DELETE等も同様）
-  const books = [                                                 // 仮データ
+// 関数名 `GET` が HTTP メソッドに対応（POST/PUT/DELETE等も同様）
+export async function GET() {
+  // 仮データ
+  const books = [
     { id: "1", title: "リーダブルコード" },
     { id: "2", title: "達人プログラマー" },
   ];
-  return NextResponse.json(books);                               // 配列を JSON にしてレスポンスとして返す
+  // 配列を JSON にしてレスポンスとして返す
+  return NextResponse.json(books);
 }
 
-export async function POST(request: Request) {                   // POST メソッド用。引数は Web 標準の Request
-  const body = await request.json();                              // リクエストボディの JSON を解釈
+// POST メソッド用。引数は Web 標準の Request
+export async function POST(request: Request) {
+  // リクエストボディの JSON を解釈
+  const body = await request.json();
   // ここで body を使ってDB保存などを行う
   return NextResponse.json({ created: true, body }, { status: 201 });
                                                                    // 201 Created を返す例
@@ -2447,16 +2710,22 @@ export async function POST(request: Request) {                   // POST メソ�
 > **▼ このコードがやること（先に日本語で）:** 画像を `<img>` ではなく `next/image` の `<Image>` で表示し、サイズ最適化・WebP変換・遅延読み込みを自動で効かせます。`width`/`height` はレイアウト崩れ防止のために必須、`alt`（代替テキスト）もアクセシビリティのために必須です。最重要画像には `priority` を付ける、という使い方を学べます。詳細はコード内コメントを参照してください。
 
 ```typescript
-import Image from "next/image";                                  // default export の Image コンポーネント
+// default export の Image コンポーネント
+import Image from "next/image";
 
 export function BookCover() {
   return (
     <Image
-      src="/covers/book.jpg"                                     // public/covers/book.jpg を指す（public 直下は `/` で参照）
-      alt="書籍の表紙"                                              // 代替テキスト（必須）
-      width={200}                                                // 元画像のアスペクト比計算用
-      height={300}                                               // 画像のレイアウト崩れを防ぐ
-      priority                                                   // LCP（最大コンテンツ描画）に関わる重要画像はこれを付ける
+      // public/covers/book.jpg を指す（public 直下は `/` で参照）
+      src="/covers/book.jpg"
+      // 代替テキスト（必須）
+      alt="書籍の表紙"
+      // 元画像のアスペクト比計算用
+      width={200}
+      // 画像のレイアウト崩れを防ぐ
+      height={300}
+      // LCP（最大コンテンツ描画）に関わる重要画像はこれを付ける
+      priority
     />
   );
 }
@@ -2471,19 +2740,26 @@ export function BookCover() {
 > **▼ このコードがやること（先に日本語で）:** プロジェクト全体の設定ファイル `next.config.ts` の基本形を学びます。ここでは `next/image` で外部サイトの画像を表示してよいドメインを `remotePatterns` で許可する例を示します（許可しないと外部画像は表示されません）。設定オブジェクトを作り `export default` する、という決まった書き方を押さえてください。詳細はコード内コメントを参照してください。
 
 ```typescript
-// next.config.ts                                                  // 設定ファイル本体
-import type { NextConfig } from "next";                            // 型を取り込み
+// 設定ファイル本体
+// next.config.ts
+// 型を取り込み
+import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {                                   // 設定オブジェクト
-  images: {                                                        // next/image の設定
-    remotePatterns: [                                              // 外部URLを許可するリスト（明示しないと表示できない）
+// 設定オブジェクト
+const nextConfig: NextConfig = {
+  // next/image の設定
+  images: {
+    // 外部URLを許可するリスト（明示しないと表示できない）
+    remotePatterns: [
       { protocol: "https", hostname: "example.com" },
     ],
   },
-  // experimental: { ... }                                         // 実験的機能はここで ON にする
+  // experimental: { ... }
+  // 実験的機能はここで ON にする
 };
 
-export default nextConfig;                                         // default export することで Next.js が読み込む
+// default export することで Next.js が読み込む
+export default nextConfig;
 ```
 
 ---
@@ -2526,35 +2802,47 @@ Server Actions は `"use server"` ディレクティブで宣言します。`"us
 > **▼ このコードがやること（先に日本語で）:** フォーム送信を処理する関数（Server Action）を作ります。ファイル先頭の `"use server"` が「この中の関数はサーバー上で動く」という宣言で、これにより別途 API を作らなくてもフォームの保存処理が書けます。送信された値を `formData.get("title")` で取り出し、入力チェック（バリデーション）してから保存する流れを学べます。詳細はコード内コメントを参照してください。
 
 ```typescript
-// app/books/new/actions.ts                                       // Server Action 用の専用ファイル
-"use server";                                                      // ファイル先頭の `"use server"` で「この中の関数は全部サーバー実行」と宣言
+// Server Action 用の専用ファイル
+// app/books/new/actions.ts
+// ファイル先頭の `"use server"` で「この中の関数は全部サーバー実行」と宣言
+"use server";
 
 // この関数はサーバー上でのみ実行される
 // クライアントには関数の中身は送信されない
-export async function createBook(formData: FormData) {            // 引数 `FormData` は Web標準のフォーム値コンテナ
+// 引数 `FormData` は Web標準のフォーム値コンテナ
+export async function createBook(formData: FormData) {
                                                                     // <form action={createBook}> の送信内容が自動で渡される
-  const title = formData.get("title") as string;                  // `formData.get("title")` で name="title" の値を取り出す
+  // `formData.get("title")` で name="title" の値を取り出す
+  const title = formData.get("title") as string;
                                                                     // 戻り値は `FormDataEntryValue | null` なので `as string` で型を絞り込む
-  const author = formData.get("author") as string;                // 同じく著者
-  const publishedYear = Number(formData.get("publishedYear"));    // 数値に変換（formData の値は基本文字列）
+  // 同じく著者
+  const author = formData.get("author") as string;
+  // 数値に変換（formData の値は基本文字列）
+  const publishedYear = Number(formData.get("publishedYear"));
 
   // バリデーション
-  if (!title || !author) {                                         // 必須項目が空ならエラーを返す
-    return {                                                       // オブジェクトを返すと呼び出し側で state として扱える
+  // 必須項目が空ならエラーを返す
+  if (!title || !author) {
+    // オブジェクトを返すと呼び出し側で state として扱える
+    return {
       error: "タイトルと著者は必須です",
     };
   }
 
-  // データベースに保存（例）                                       // 本番ではここで Supabase や Prisma で INSERT
+  // データベースに保存（例）
+  // 本番ではここで Supabase や Prisma で INSERT
   // const book = await db.book.create({
   //   data: { title, author, publishedYear },
   // });
 
-  console.log("書籍を追加:", { title, author, publishedYear });    // サーバーのコンソールに出力（ブラウザには出ない）
+  // サーバーのコンソールに出力（ブラウザには出ない）
+  console.log("書籍を追加:", { title, author, publishedYear });
 
   // 成功したら書籍一覧にリダイレクト
-  // redirect("/books");                                            // `redirect()` を呼べば一覧ページに自動遷移
-  return { success: true };                                        // 成功フラグを返す
+  // redirect("/books");
+  // `redirect()` を呼べば一覧ページに自動遷移
+  // 成功フラグを返す
+  return { success: true };
 }
 ```
 
@@ -2620,26 +2908,36 @@ export async function createBook(formData: FormData) {
 > **▼ このコードがやること（先に日本語で）:** 先ほどの Server Action を使う「書籍追加フォーム」を Server Component として作ります。`<form action={createBook}>` のように `action` 属性に関数を直接渡せるのが Next.js の拡張で、JavaScript が動かない環境でも送信できる堅牢な作りになります（Progressive Enhancement）。各 `<input>` の `name` 属性が、サーバー側で値を取り出すときのキー名になる点が重要です。詳細はコード内コメントを参照してください。
 
 ```typescript
-// app/books/new/page.tsx（Server Component）                    // 新規追加ページ。"use client" を書かないので Server
+// 新規追加ページ。"use client" を書かないので Server
+// app/books/new/page.tsx（Server Component）
 
-import { createBook } from "./actions";                           // 同じフォルダの actions.ts から Server Action を取り込む
+// 同じフォルダの actions.ts から Server Action を取り込む
+import { createBook } from "./actions";
 
-export default function NewBookPage() {                           // 同期関数でOK（このページ自体は async データ取得をしない）
+// 同期関数でOK（このページ自体は async データ取得をしない）
+export default function NewBookPage() {
   return (
     <div>
       <h1>書籍を追加</h1>
 
-      {/* action 属性に Server Action を渡す */}                    // `<form action={...}>` に関数を渡せるのが Next.js の拡張
+      // `<form action={...}>` に関数を渡せるのが Next.js の拡張
+      {/* action 属性に Server Action を渡す */}
       {/* JavaScript が無効でも動作する（Progressive Enhancement） */}
                                                                     // Progressive Enhancement: JSが動かない環境でもHTMLだけで動く設計
-      <form action={createBook}>                                   // 送信時に createBook がサーバーで実行される
+      // 送信時に createBook がサーバーで実行される
+      <form action={createBook}>
         <div>
-          <label htmlFor="title">タイトル</label>                    // `htmlFor` は HTML の `for` 属性のJSX版（forはJSの予約語）
+          // `htmlFor` は HTML の `for` 属性のJSX版（forはJSの予約語）
+          <label htmlFor="title">タイトル</label>
           <input
-            type="text"                                            // テキスト入力
-            id="title"                                             // label と紐付けるための id
-            name="title"                                           // ※ formData.get で取り出すキー名はこの name 属性
-            required                                               // 入力必須（ブラウザの標準バリデーション）
+            // テキスト入力
+            type="text"
+            // label と紐付けるための id
+            id="title"
+            // ※ formData.get で取り出すキー名はこの name 属性
+            name="title"
+            // 入力必須（ブラウザの標準バリデーション）
+            required
           />
         </div>
 
@@ -2656,13 +2954,15 @@ export default function NewBookPage() {                           // 同期関�
         <div>
           <label htmlFor="publishedYear">出版年</label>
           <input
-            type="number"                                          // 数値入力欄。上下ボタンが付く
+            // 数値入力欄。上下ボタンが付く
+            type="number"
             id="publishedYear"
             name="publishedYear"
           />
         </div>
 
-        <button type="submit">追加する</button>                     // submit ボタン
+        // submit ボタン
+        <button type="submit">追加する</button>
       </form>
     </div>
   );
@@ -2676,12 +2976,16 @@ export default function NewBookPage() {                           // 同期関�
 > **▼ このコードがやること（先に日本語で）:** 同じフォームを、送信中の状態やエラー表示まで扱える Client Component 版に作り変えます。React 19 の `useActionState` フックを使うと、Server Action と連携しながら「現在の状態・加工済みの送信関数・送信中フラグ」の3つを受け取れます。送信中はボタンを「追加中...」にしてクリック不可にし、エラーがあれば画面に出す、という親切な UI が作れます。詳細はコード内コメントを参照してください。
 
 ```typescript
-// components/BookFormClient.tsx                                    // クライアント側でローディング状態を扱えるフォーム
-"use client";                                                       // useActionState は React のフックなので Client 必須
+// クライアント側でローディング状態を扱えるフォーム
+// components/BookFormClient.tsx
+// useActionState は React のフックなので Client 必須
+"use client";
 
-import { useActionState } from "react";                            // React 19 で追加された Server Action 連携用フック
+// React 19 で追加された Server Action 連携用フック
+import { useActionState } from "react";
                                                                      // 旧名は useFormState（同じ用途）
-import { createBook } from "@/app/books/new/actions";              // 別ファイルの Server Action を取り込む
+// 別ファイルの Server Action を取り込む
+import { createBook } from "@/app/books/new/actions";
 
 export function BookFormClient() {
   const [state, formAction, isPending] = useActionState(createBook, null);
@@ -2690,10 +2994,12 @@ export function BookFormClient() {
                                                                     // formAction は <form action={...}> に渡せるよう加工された関数
 
   return (
-    <form action={formAction}>                                     // 元の createBook ではなく、ラップ済みの formAction を渡す
+    // 元の createBook ではなく、ラップ済みの formAction を渡す
+    <form action={formAction}>
       <div>
         <label htmlFor="title">タイトル</label>
-        <input type="text" id="title" name="title" required />     // name="title" が formData のキーになる
+        // name="title" が formData のキーになる
+        <input type="text" id="title" name="title" required />
       </div>
 
       <div>
@@ -2707,13 +3013,17 @@ export function BookFormClient() {
       </div>
 
       {/* エラーメッセージの表示 */}
-      {state?.error && (                                            // `?.` はオプショナルチェイニング（state が null でも安全）
-        <p className="error-message">{state.error}</p>             // Server Action が返した error メッセージを表示
+      // `?.` はオプショナルチェイニング（state が null でも安全）
+      {state?.error && (
+        // Server Action が返した error メッセージを表示
+        <p className="error-message">{state.error}</p>
       )}
 
       {/* 送信中はボタンを無効化 */}
-      <button type="submit" disabled={isPending}>                  // `disabled={isPending}` で送信中はクリック不可
-        {isPending ? "追加中..." : "追加する"}                       // ボタンラベルも切り替え
+      // `disabled={isPending}` で送信中はクリック不可
+      <button type="submit" disabled={isPending}>
+        // ボタンラベルも切り替え
+        {isPending ? "追加中..." : "追加する"}
       </button>
     </form>
   );
@@ -2839,15 +3149,20 @@ Next.js では、プロジェクトルートに `.env.local` ファイルを作�
 # .env.local（プロジェクトルートに作成）                              # `#` から始まる行はコメント。シェル/dotenv 共通の記法
 
 # データベース接続情報（サーバーサイドのみ）                          # NEXT_PUBLIC_ なしなのでブラウザには漏れない
-DATABASE_URL="postgresql://user:password@localhost:5432/bookapp"   # `KEY="VALUE"` の形で1行1変数。`=` の前後にスペースを入れない
+# `KEY="VALUE"` の形で1行1変数。`=` の前後にスペースを入れない
+DATABASE_URL="postgresql://user:password@localhost:5432/bookapp"
 
 # Supabase 接続情報（サーバーサイドのみ）                              # 機密キーは絶対 NEXT_PUBLIC_ を付けない
-SUPABASE_URL="https://xxxxx.supabase.co"                            # Supabase プロジェクトのURL
-SUPABASE_SERVICE_ROLE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6..."         # サービスロールキー（DB全権限。絶対に公開してはいけない）
+# Supabase プロジェクトのURL
+SUPABASE_URL="https://xxxxx.supabase.co"
+# サービスロールキー（DB全権限。絶対に公開してはいけない）
+SUPABASE_SERVICE_ROLE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6..."
 
 # Supabase 接続情報（クライアントサイドでも使用可能）                  # NEXT_PUBLIC_ プレフィックスでブラウザJSにも埋め込まれる
-NEXT_PUBLIC_SUPABASE_URL="https://xxxxx.supabase.co"                # 同じURLでも公開してよい想定なら NEXT_PUBLIC_ を付ける
-NEXT_PUBLIC_SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6..."     # 匿名キー（Row Level Security で制限される前提なので公開OK）
+# 同じURLでも公開してよい想定なら NEXT_PUBLIC_ を付ける
+NEXT_PUBLIC_SUPABASE_URL="https://xxxxx.supabase.co"
+# 匿名キー（Row Level Security で制限される前提なので公開OK）
+NEXT_PUBLIC_SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6..."
 ```
 
 > **重要:** `.env.local` は `.gitignore` に含まれているため、Git にコミットされません。APIキーやパスワードなどの機密情報を安全に管理できます。
@@ -2884,38 +3199,56 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6..."     # 匿名キ�
 > **▼ このコードがやること（先に日本語で）:** Server Component の中で環境変数を読み取る例です。サーバー側では `process.env.変数名` で、`NEXT_PUBLIC_` 付きでも無しでも、すべての環境変数にアクセスできます。機密キーもここでなら安全に使えます（ブラウザには送られない）。`console.log` の出力もブラウザではなくサーバーのターミナルに出る点を意識してください。詳細はコード内コメントを参照してください。
 
 ```typescript
-// Server Component での使用                                       // サーバー側ではすべての環境変数にアクセスできる
+// サーバー側ではすべての環境変数にアクセスできる
+// Server Component での使用
 // app/books/page.tsx
 
 export default async function BooksPage() {
   // ✅ どちらもアクセス可能
-  const url = process.env.SUPABASE_URL;                           // `process.env` は Node.js 標準の環境変数オブジェクト
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;       // 機密キー。Server Component なので安全に取得可能
-  const publicUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;         // 公開用キーも同様に取れる
+  // `process.env` は Node.js 標準の環境変数オブジェクト
+  const url = process.env.SUPABASE_URL;
+  // 機密キー。Server Component なので安全に取得可能
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  // 公開用キーも同様に取れる
+  const publicUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 
-  console.log(url);        // "https://xxxxx.supabase.co"          // サーバーのコンソールに出力（ブラウザDevToolsには出ない）
-  console.log(serviceKey);  // "eyJhbGciOi..."                     // ※ 本番ではこれをログに出さないこと
-  console.log(publicUrl);   // "https://xxxxx.supabase.co"
+  // "https://xxxxx.supabase.co"
+  // サーバーのコンソールに出力（ブラウザDevToolsには出ない）
+  console.log(url);
+  // "eyJhbGciOi..."
+  // ※ 本番ではこれをログに出さないこと
+  console.log(serviceKey);
+  // "https://xxxxx.supabase.co"
+  console.log(publicUrl);
 
-  return <div>...</div>;                                          // 省略表記
+  // 省略表記
+  return <div>...</div>;
 }
 ```
 
 > **▼ このコードがやること（先に日本語で）:** 同じ `process.env` でも、Client Component（ブラウザ側）では `NEXT_PUBLIC_` 付きの変数しか読めない、という違いを確かめる例です。`NEXT_PUBLIC_` なしの機密キーを参照すると `undefined`（値なし）になり、これは「漏らさないための安全な仕様」です。どの変数がどちらで使えるかを区別できるようになるのが目標です。詳細はコード内コメントを参照してください。
 
 ```typescript
-// Client Component での使用                                       // ブラウザ側では NEXT_PUBLIC_ 付きしか参照できない
+// ブラウザ側では NEXT_PUBLIC_ 付きしか参照できない
+// Client Component での使用
 // components/SomeClient.tsx
-"use client";                                                       // Client Component 化
+// Client Component 化
+"use client";
 
 export function SomeClient() {
   // ✅ NEXT_PUBLIC_ 付きはアクセス可能
-  const publicUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;         // ビルド時に値がJSバンドルに埋め込まれる
-  console.log(publicUrl); // "https://xxxxx.supabase.co"          // ブラウザのコンソールに表示される
+  // ビルド時に値がJSバンドルに埋め込まれる
+  const publicUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  // "https://xxxxx.supabase.co"
+  // ブラウザのコンソールに表示される
+  console.log(publicUrl);
 
   // ❌ NEXT_PUBLIC_ なしは undefined
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;       // バンドルに含まれない＝undefined
-  console.log(serviceKey); // undefined（安全！）                    // 機密情報が漏れない設計になっている
+  // バンドルに含まれない＝undefined
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  // undefined（安全！）
+  // 機密情報が漏れない設計になっている
+  console.log(serviceKey);
 
   return <div>...</div>;
 }
@@ -2938,27 +3271,35 @@ export function SomeClient() {
 # .env.local                                                       # 開発機ローカル用の環境変数ファイル
 
 # Supabase プロジェクト URL（公開OK）                                  # ブラウザにも露出してOKな値
-NEXT_PUBLIC_SUPABASE_URL="https://abcdefghijklm.supabase.co"        # NEXT_PUBLIC_ 付きでClient/Server 両方で使える
+# NEXT_PUBLIC_ 付きでClient/Server 両方で使える
+NEXT_PUBLIC_SUPABASE_URL="https://abcdefghijklm.supabase.co"
 
 # Supabase 匿名キー（公開OK - Row Level Security で保護される）
-NEXT_PUBLIC_SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."   # 公開キー。RLS で安全に絞られている前提
+# 公開キー。RLS で安全に絞られている前提
+NEXT_PUBLIC_SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 
 # Supabase サービスロールキー（絶対に公開してはいけない）
-SUPABASE_SERVICE_ROLE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."  # NEXT_PUBLIC_ なし＝Server 限定
+# NEXT_PUBLIC_ なし＝Server 限定
+SUPABASE_SERVICE_ROLE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 ```
 
 > **▼ このコードがやること（先に日本語で）:** ブラウザ側（Client Component）から Supabase に接続するための「クライアント」を作る関数を定義します。公開してよい `NEXT_PUBLIC_` 付きの URL と匿名キーだけを使うのがポイントです。`!`（non-null assertion）は「この値は undefined ではないと TypeScript に約束する」記号で、設定漏れがあると実行時にエラーになります。詳細はコード内コメントを参照してください。
 
 ```typescript
-// lib/supabase/client.ts                                          // ブラウザ側で動く Supabase クライアント
+// ブラウザ側で動く Supabase クライアント
+// lib/supabase/client.ts
 // Client Component 用の Supabase クライアント
 
-import { createBrowserClient } from "@supabase/ssr";               // `@supabase/ssr` パッケージの import
+// `@supabase/ssr` パッケージの import
+import { createBrowserClient } from "@supabase/ssr";
 
-export function createClient() {                                   // クライアントを生成する関数（毎回新しいインスタンスを作る）
+// クライアントを生成する関数（毎回新しいインスタンスを作る）
+export function createClient() {
   return createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,                         // `!` は TypeScript の non-null assertion（「undefinedではないと断言」）
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!                     // 設定漏れがあるとここで undefined になり実行時エラーになる
+    // `!` は TypeScript の non-null assertion（「undefinedではないと断言」）
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    // 設定漏れがあるとここで undefined になり実行時エラーになる
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   );
 }
 ```
@@ -2966,31 +3307,45 @@ export function createClient() {                                   // クライ�
 > **▼ このコードがやること（先に日本語で）:** サーバー側（Server Component）から Supabase に接続するクライアントを作ります。クライアント版との違いは、ログイン状態を保つために Cookie を読み書きする仕組み（`cookies()` を使ったアダプタ）を渡している点です。`cookies()` が Promise を返すため関数を `async` にして `await` する必要があります。やや複雑ですが、いまは「サーバー用は Cookie 連携が要る」とだけ掴めば十分です。詳細はコード内コメントを参照してください。
 
 ```typescript
-// lib/supabase/server.ts                                          // サーバー側で動く Supabase クライアント
+// サーバー側で動く Supabase クライアント
+// lib/supabase/server.ts
 // Server Component 用の Supabase クライアント
 
-import { createServerClient } from "@supabase/ssr";                // サーバー用ファクトリ関数
-import { cookies } from "next/headers";                            // Next.js が提供する、リクエストの Cookie 読み書きAPI
+// サーバー用ファクトリ関数
+import { createServerClient } from "@supabase/ssr";
+// Next.js が提供する、リクエストの Cookie 読み書きAPI
+import { cookies } from "next/headers";
 
-export async function createClient() {                             // async にする必要があるのは cookies() が Promise を返すため
-  const cookieStore = await cookies();                             // 現在のリクエストの Cookie ストアを取得
+// async にする必要があるのは cookies() が Promise を返すため
+export async function createClient() {
+  // 現在のリクエストの Cookie ストアを取得
+  const cookieStore = await cookies();
 
   return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,                         // URL
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,                    // 匿名キー
+    // URL
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    // 匿名キー
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
-      cookies: {                                                   // Cookie 入出力のアダプタを渡す
-        getAll() {                                                 // 全 Cookie を返す関数
+      // Cookie 入出力のアダプタを渡す
+      cookies: {
+        // 全 Cookie を返す関数
+        getAll() {
           return cookieStore.getAll();
         },
-        setAll(cookiesToSet) {                                     // Supabase がセッション更新時に呼ぶ関数
+        // Supabase がセッション更新時に呼ぶ関数
+        setAll(cookiesToSet) {
           try {
-            cookiesToSet.forEach(({ name, value, options }) =>     // 配列を1つずつ処理
-              cookieStore.set(name, value, options)                // Next.js の cookie ストアに書き込み
+            // 配列を1つずつ処理
+            cookiesToSet.forEach(({ name, value, options }) =>
+              // Next.js の cookie ストアに書き込み
+              cookieStore.set(name, value, options)
             );
           } catch {
-            // Server Component からの呼び出し時は                  // Server Component から cookie を書き込もうとすると例外が出るが
-            // cookie のセットができないが、問題ない                 // 実害がないため握りつぶしてよい
+            // Server Component からの呼び出し時は
+            // Server Component から cookie を書き込もうとすると例外が出るが
+            // cookie のセットができないが、問題ない
+            // 実害がないため握りつぶしてよい
           }
         },
       },
@@ -3147,46 +3502,66 @@ export async function createClient() {
 > **▼ このコードがやること（先に日本語で）:** アプリ全体で使い回す「書籍データの形」を TypeScript の型として1か所にまとめて定義します。型を決めておくと、`book.title` のように書いたときにエディタが補完してくれたり、入力ミスを事前に警告してくれます。`string | null`（文字列か空のどちらか）や `?`（省略可能）といった、型を柔軟に表す書き方も学べます。詳細はコード内コメントを参照してください。
 
 ```typescript
-// types/book.ts                                                   // 型定義の置き場
+// 型定義の置き場
+// types/book.ts
 // アプリ全体で使う書籍の型定義
 
-export type Book = {                                                // 名前付き export。`import { Book } from "@/types/book"` で使う
-  id: string;                                                       // データベース上の主キー（UUID または文字列ID）
-  title: string;                                                    // 書籍タイトル
-  author: string;                                                   // 著者名
-  published_year: number;                                           // 出版年。スネークケースは Supabase の列名と合わせるため
-  description: string | null;                                       // 説明文（null 許容）。`string | null` は型のユニオン
-  cover_image_url: string | null;                                   // 表紙画像のURL（任意）
-  is_favorite: boolean;                                             // お気に入りフラグ
-  created_at: string;                                               // 作成日時（ISO 8601 文字列）
-  updated_at: string;                                               // 更新日時
+// 名前付き export。`import { Book } from "@/types/book"` で使う
+export type Book = {
+  // データベース上の主キー（UUID または文字列ID）
+  id: string;
+  // 書籍タイトル
+  title: string;
+  // 著者名
+  author: string;
+  // 出版年。スネークケースは Supabase の列名と合わせるため
+  published_year: number;
+  // 説明文（null 許容）。`string | null` は型のユニオン
+  description: string | null;
+  // 表紙画像のURL（任意）
+  cover_image_url: string | null;
+  // お気に入りフラグ
+  is_favorite: boolean;
+  // 作成日時（ISO 8601 文字列）
+  created_at: string;
+  // 更新日時
+  updated_at: string;
 };
 
 // フォーム送信時に使う型（id や日時は不要）
-export type BookFormData = {                                        // 新規追加・編集フォーム専用の入力データ型
+// 新規追加・編集フォーム専用の入力データ型
+export type BookFormData = {
   title: string;
   author: string;
   published_year: number;
-  description?: string;                                             // `?` で「省略可能」のオプショナルプロパティ
+  // `?` で「省略可能」のオプショナルプロパティ
+  description?: string;
 };
 ```
 
 > **▼ このコードがやること（先に日本語で）:** アプリのあちこちで使う「便利な小さな関数（ユーティリティ）」を1か所にまとめます。日付文字列を「2024年1月15日」の形に整える `formatDate` と、複数のクラス名を空白区切りでつなげる `cn` の2つを定義します。`...classes`（レストパラメータ）で引数を何個でも受け取る書き方や、`filter(Boolean)` で空の値を除く書き方が学べます。詳細はコード内コメントを参照してください。
 
 ```typescript
-// lib/utils.ts                                                    // 汎用ヘルパー置き場
+// 汎用ヘルパー置き場
+// lib/utils.ts
 // 汎用ユーティリティ関数
 
 /**
  * 日付文字列を日本語のフォーマットに変換する
  * @example formatDate("2024-01-15") → "2024年1月15日"             // `@example` は JSDoc の例示タグ。IDEで吹き出しに表示される
  */
-export function formatDate(dateString: string): string {           // 引数も戻り値も string と明示
-  const date = new Date(dateString);                                // 文字列を Date オブジェクトに変換
-  return date.toLocaleDateString("ja-JP", {                         // ロケール指定で日本語フォーマット
-    year: "numeric",                                                // 年は数字 (2024)
-    month: "long",                                                  // 月は「1月」のような長い表記
-    day: "numeric",                                                 // 日は数字
+// 引数も戻り値も string と明示
+export function formatDate(dateString: string): string {
+  // 文字列を Date オブジェクトに変換
+  const date = new Date(dateString);
+  // ロケール指定で日本語フォーマット
+  return date.toLocaleDateString("ja-JP", {
+    // 年は数字 (2024)
+    year: "numeric",
+    // 月は「1月」のような長い表記
+    month: "long",
+    // 日は数字
+    day: "numeric",
   });
 }
 
@@ -3197,7 +3572,8 @@ export function formatDate(dateString: string): string {           // 引数も�
 export function cn(...classes: (string | false | undefined | null)[]): string {
                                                                     // `...classes` はレストパラメータ。可変長の引数を配列として受け取る
                                                                     // 型は「string か false か undefined か null の配列」
-  return classes.filter(Boolean).join(" ");                         // `filter(Boolean)` で false/undefined/null/"" を除外
+  // `filter(Boolean)` で false/undefined/null/"" を除外
+  return classes.filter(Boolean).join(" ");
                                                                     // `join(" ")` で半角スペース区切りに連結
 }
 ```
@@ -3205,35 +3581,50 @@ export function cn(...classes: (string | false | undefined | null)[]): string {
 > **▼ このコードがやること（先に日本語で）:** 色や種類を切り替えられる、使い回し可能な汎用ボタン部品を作ります。`variant`（primary/secondary/danger）や `disabled` などを props で受け取り、種類に応じて CSS クラスを組み立てます。`variant = "primary"` のように引数にデフォルト値を持たせる書き方や、props の形を型（`ButtonProps`）で定義する書き方が学べます。詳細はコード内コメントを参照してください。
 
 ```typescript
-// components/ui/Button.tsx                                         // 再利用可能なボタンコンポーネント
+// 再利用可能なボタンコンポーネント
+// components/ui/Button.tsx
 // 汎用ボタンコンポーネント
 
-type ButtonProps = {                                                // props の型定義
-  children: React.ReactNode;                                        // ボタン内の表示内容（テキストやアイコン）
-  variant?: "primary" | "secondary" | "danger";                     // ボタンの種類。`?` で省略可能、`|` でユニオン型
-  disabled?: boolean;                                               // 無効化フラグ
-  type?: "button" | "submit";                                       // HTML の button 要素の type
-  onClick?: () => void;                                             // クリック時のハンドラ（任意）
+// props の型定義
+type ButtonProps = {
+  // ボタン内の表示内容（テキストやアイコン）
+  children: React.ReactNode;
+  // ボタンの種類。`?` で省略可能、`|` でユニオン型
+  variant?: "primary" | "secondary" | "danger";
+  // 無効化フラグ
+  disabled?: boolean;
+  // HTML の button 要素の type
+  type?: "button" | "submit";
+  // クリック時のハンドラ（任意）
+  onClick?: () => void;
 };
 
-export function Button({                                            // 分割代入で props を取り出す
+// 分割代入で props を取り出す
+export function Button({
   children,
-  variant = "primary",                                              // デフォルト値の指定。指定がなければ "primary"
+  // デフォルト値の指定。指定がなければ "primary"
+  variant = "primary",
   disabled = false,
-  type = "button",                                                  // デフォルトは "button"（submit を防ぐ）
+  // デフォルトは "button"（submit を防ぐ）
+  type = "button",
   onClick,
 }: ButtonProps) {
-  const baseClass = "btn";                                          // 全ボタン共通のクラス
-  const variantClass = `btn-${variant}`;                            // 種類別のクラス（例: "btn-primary"）
+  // 全ボタン共通のクラス
+  const baseClass = "btn";
+  // 種類別のクラス（例: "btn-primary"）
+  const variantClass = `btn-${variant}`;
 
   return (
     <button
-      type={type}                                                   // HTML 属性に渡す
-      className={`${baseClass} ${variantClass}`}                    // テンプレートリテラルで2つのクラスを連結
+      // HTML 属性に渡す
+      type={type}
+      // テンプレートリテラルで2つのクラスを連結
+      className={`${baseClass} ${variantClass}`}
       disabled={disabled}
       onClick={onClick}
     >
-      {children}                                                    // ボタンの中身を表示
+      // ボタンの中身を表示
+      {children}
     </button>
   );
 }
@@ -3245,21 +3636,28 @@ export function Button({                                            // 分割代
 
 ```typescript
 // ❌ 相対パスでの import（ディレクトリが深いと地獄）
-import { BookCard } from "../../../components/books/BookCard";    // `../` の数を間違えると即エラー
-import { formatDate } from "../../../lib/utils";                   // ファイルを移動するたびに書き直しが必要
+// `../` の数を間違えると即エラー
+import { BookCard } from "../../../components/books/BookCard";
+// ファイルを移動するたびに書き直しが必要
+import { formatDate } from "../../../lib/utils";
 
 // ✅ パスエイリアスでの import（常にわかりやすい）
-import { BookCard } from "@/components/books/BookCard";           // `@/` がプロジェクトルートを指す
-import { formatDate } from "@/lib/utils";                          // どんなに深い階層からでも同じ書き方でOK
+// `@/` がプロジェクトルートを指す
+import { BookCard } from "@/components/books/BookCard";
+// どんなに深い階層からでも同じ書き方でOK
+import { formatDate } from "@/lib/utils";
 ```
 
 この設定は `tsconfig.json`（TypeScript のコンパイル設定ファイル）に記述されています:
 
 ```json
 {
-  "compilerOptions": {                                              // TypeScript コンパイラのオプション
-    "paths": {                                                      // パスエイリアスのマッピング
-      "@/*": ["./*"]                                                // `@/` を「プロジェクトルートからの相対パス」に展開
+  // TypeScript コンパイラのオプション
+  "compilerOptions": {
+    // パスエイリアスのマッピング
+    "paths": {
+      // `@/` を「プロジェクトルートからの相対パス」に展開
+      "@/*": ["./*"]
     }
   }
 }
@@ -3278,15 +3676,19 @@ import { formatDate } from "@/lib/utils";                          // どんな�
 > **▼ このコードがやること（先に日本語で）:** 書籍ごとに違う詳細ページ（`/books/1`, `/books/2` ...）で、**ブラウザのタブやSNS共有に出るタイトルを「その書籍のタイトル」に変える**仕組みと、**どの書籍ページを事前に用意しておくかを Next.js に教える**仕組みの2つを作ります。前者は検索結果やSNSで「この記事は何の話か」を正しく見せるため（SEO対策）に重要で、後者はアクセス前にページを作っておくことで表示を最速にするためのものです。詳細はコード内コメントを参照してください。
 
 ```typescript
-// app/books/[id]/page.tsx                              // 動的ルート。/books/1, /books/2, ... に対応
-// URL: /books/1, /books/2, ...                         // [id] に入った値ごとに別ページになる
+// 動的ルート。/books/1, /books/2, ... に対応
+// app/books/[id]/page.tsx
+// [id] に入った値ごとに別ページになる
+// URL: /books/1, /books/2, ...
 
-import type { Metadata } from "next";                   // タイトルなどの型を読み込む（実行時には消える型だけのimport）
+// タイトルなどの型を読み込む（実行時には消える型だけのimport）
+import type { Metadata } from "next";
 
 // ─────────────────────────────────────────────────────
 // (A) 書籍データを取得する仮の関数（本来はDBやAPIから取る）
 // ─────────────────────────────────────────────────────
-async function getBook(id: string) {                    // id を受け取って書籍1冊分のデータを返す
+// id を受け取って書籍1冊分のデータを返す
+async function getBook(id: string) {
   // 実際にはここで fetch やデータベース問い合わせを書く
   return { id, title: `サンプル書籍 ${id}`, author: "山田太郎" };
 }
@@ -3295,16 +3697,24 @@ async function getBook(id: string) {                    // id を受け取って
 // (B) generateMetadata: ページごとに <title> などを動的に作る
 // ─────────────────────────────────────────────────────
 // この名前で export すると、Next.js がページ表示前に呼んで <head> を組み立てる。
-export async function generateMetadata({                // 予約名の関数。async にできる
-  params,                                               // page.tsx と同じく動的セグメントの値が入る
+// 予約名の関数。async にできる
+export async function generateMetadata({
+  // page.tsx と同じく動的セグメントの値が入る
+  params,
 }: {
-  params: Promise<{ id: string }>;                      // Next.js 15+ では params は Promise
-}): Promise<Metadata> {                                 // 戻り値は Metadata 型（title など）
-  const { id } = await params;                          // await で id を取り出す（文字列）
-  const book = await getBook(id);                       // その id の書籍データを取得
+  // Next.js 15+ では params は Promise
+  params: Promise<{ id: string }>;
+// 戻り値は Metadata 型（title など）
+}): Promise<Metadata> {
+  // await で id を取り出す（文字列）
+  const { id } = await params;
+  // その id の書籍データを取得
+  const book = await getBook(id);
   return {
-    title: `${book.title} | 書籍管理アプリ`,             // ブラウザタブ・検索結果に出るタイトル
-    description: `${book.author} 著「${book.title}」の詳細ページ`, // SNS共有や検索結果の説明文
+    // ブラウザタブ・検索結果に出るタイトル
+    title: `${book.title} | 書籍管理アプリ`,
+    // SNS共有や検索結果の説明文
+    description: `${book.author} 著「${book.title}」の詳細ページ`,
   };
 }
 
@@ -3313,9 +3723,12 @@ export async function generateMetadata({                // 予約名の関数。
 // ─────────────────────────────────────────────────────
 // この名前で export すると、Next.js は「ここで返した id のページ」を
 // ビルド時にあらかじめHTML化しておく（＝アクセスが最速になる）。
-export async function generateStaticParams() {          // 予約名の関数
-  const ids = ["1", "2", "3"];                          // 事前生成したい書籍IDの一覧（本来はDBから取得）
-  return ids.map((id) => ({ id }));                     // [{ id: "1" }, { id: "2" }, { id: "3" }] を返す
+// 予約名の関数
+export async function generateStaticParams() {
+  // 事前生成したい書籍IDの一覧（本来はDBから取得）
+  const ids = ["1", "2", "3"];
+  // [{ id: "1" }, { id: "2" }, { id: "3" }] を返す
+  return ids.map((id) => ({ id }));
 }
 
 // ─────────────────────────────────────────────────────
@@ -3326,11 +3739,14 @@ export default async function BookDetailPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = await params;                          // ページ本体でも params から id を取り出す
-  const book = await getBook(id);                       // 書籍データを取得
+  // ページ本体でも params から id を取り出す
+  const { id } = await params;
+  // 書籍データを取得
+  const book = await getBook(id);
   return (
     <div>
-      <h1>{book.title}</h1>                             {/* 画面に出る見出し */}
+      {/* 画面に出る見出し */}
+      <h1>{book.title}</h1>
       <p>著者: {book.author}</p>
     </div>
   );
@@ -3394,7 +3810,8 @@ export async function generateStaticParams() {
 > **▼ このコードがやること（先に日本語で）:** 「ページを事前に作っておく（最速・SSG）」の良さを保ちつつ、**一定時間ごとに自動で最新版に作り直す**設定です。たった1行 `export const revalidate = 60;` を書くだけで「このページは60秒たったら次のアクセスのタイミングで作り直してね」と Next.js に伝えられます。常に最新でなくてもいいけれど、たまには更新したいページにぴったりです。詳細はコード内コメントを参照してください。
 
 ```typescript
-// app/news/page.tsx                                    // ニュース一覧ページの例
+// ニュース一覧ページの例
+// app/news/page.tsx
 // URL: /news
 
 // ─────────────────────────────────────────────────────
@@ -3402,22 +3819,28 @@ export async function generateStaticParams() {
 // 「このページは最大60秒は使い回し、60秒を過ぎたら次のアクセス時に裏で作り直す」
 // という意味。数字（秒数）は自由に変えられる。
 // ─────────────────────────────────────────────────────
-export const revalidate = 60;                           // 60秒ごとに作り直す（予約名の export）
+// 60秒ごとに作り直す（予約名の export）
+export const revalidate = 60;
 
-async function getNews() {                              // ニュースを取得する仮の関数
+// ニュースを取得する仮の関数
+async function getNews() {
   // 実際にはここで外部APIやDBから最新ニュースを取る
-  const now = new Date().toLocaleTimeString("ja-JP");   // 「ページを作った時刻」を確認用に作る
+  // 「ページを作った時刻」を確認用に作る
+  const now = new Date().toLocaleTimeString("ja-JP");
   return [{ title: "新刊が入荷しました", builtAt: now }];
 }
 
-export default async function NewsPage() {              // ページ本体（Server Component）
-  const news = await getNews();                         // データ取得
+// ページ本体（Server Component）
+export default async function NewsPage() {
+  // データ取得
+  const news = await getNews();
 
   return (
     <div>
       <h1>お知らせ</h1>
       <ul>
-        {news.map((item, i) => (                        // 取得した記事を一覧表示
+        // 取得した記事を一覧表示
+        {news.map((item, i) => (
           <li key={i}>{item.title}（生成時刻: {item.builtAt}）</li>
         ))}
       </ul>
@@ -3455,10 +3878,13 @@ export const revalidate = 60;
 > **▼ このコードがやること（先に日本語で）:** Next.js のアプリの中に、**他のプログラムがデータをやり取りするための「窓口（API）」**を作ります。`app/api/.../route.ts` という決まった場所にファイルを置くと、「データを取りに来たとき（GET）」と「データを送ってきたとき（POST）」の処理を書けます。スマホアプリや外部サービスと連携したり、ブラウザ側のJavaScriptからデータだけを取りに行きたいときに使います。詳細はコード内コメントを参照してください。
 
 ```typescript
-// app/api/books/route.ts                               // 予約名 route.ts。URLは /api/books になる
-// URL: /api/books                                      // page.tsx ではなく route.ts を置くのがポイント
+// 予約名 route.ts。URLは /api/books になる
+// app/api/books/route.ts
+// page.tsx ではなく route.ts を置くのがポイント
+// URL: /api/books
 
-import { NextResponse } from "next/server";             // JSONなどを返すための Next.js 標準ヘルパー
+// JSONなどを返すための Next.js 標準ヘルパー
+import { NextResponse } from "next/server";
 
 // 仮の書籍データ（本来はDBに保存する）
 const books = [
@@ -3472,19 +3898,25 @@ const books = [
 // 関数名を GET にすると、HTTPのGETリクエストに対応する。
 export async function GET() {
   // NextResponse.json(...) でデータをJSON形式にして返す
-  return NextResponse.json(books);                      // /api/books に GET すると books 一覧が返る
+  // /api/books に GET すると books 一覧が返る
+  return NextResponse.json(books);
 }
 
 // ─────────────────────────────────────────────────────
 // (2) POST: データを「送ってきた」ときの処理
 // ─────────────────────────────────────────────────────
 // 関数名を POST にすると、HTTPのPOSTリクエストに対応する。
-export async function POST(request: Request) {          // 送られてきた内容は引数 request に入る
-  const body = await request.json();                    // 送信された本文（JSON）を取り出す
-  const newBook = { id: books.length + 1, title: body.title }; // 新しい書籍を組み立てる
-  books.push(newBook);                                  // 一覧に追加（本来はDBに保存）
+// 送られてきた内容は引数 request に入る
+export async function POST(request: Request) {
+  // 送信された本文（JSON）を取り出す
+  const body = await request.json();
+  // 新しい書籍を組み立てる
+  const newBook = { id: books.length + 1, title: body.title };
+  // 一覧に追加（本来はDBに保存）
+  books.push(newBook);
   // 201 は「新しく作成しました」を表すHTTPステータスコード
-  return NextResponse.json(newBook, { status: 201 });   // 作成した書籍を返す
+  // 作成した書籍を返す
+  return NextResponse.json(newBook, { status: 201 });
 }
 ```
 
@@ -3541,28 +3973,36 @@ export async function POST(request: Request) {
 > **▼ このコードがやること（先に日本語で）:** ページが表示される**前に**「割り込み」を入れて、「この人はログイン済みか？」をチェックします。もしログインしていなければ、目的のページを見せずに**ログイン画面へ自動的に送り返し（リダイレクト）**ます。会員専用ページや管理画面を「ログインしていない人に見せない」ための、見張り番のような仕組みです。詳細はコード内コメントを参照してください。
 
 ```typescript
-// middleware.ts                                        // 置き場所が重要。プロジェクトの一番上（app/ と同じ階層）に置く
+// 置き場所が重要。プロジェクトの一番上（app/ と同じ階層）に置く
+// middleware.ts
 // ※ app/ の中ではなく、ルート直下に1つだけ置く
 
-import { NextResponse } from "next/server";             // リダイレクトや「通過OK」を返すためのヘルパー
-import type { NextRequest } from "next/server";         // 届いたリクエストの型（型だけのimport）
+// リダイレクトや「通過OK」を返すためのヘルパー
+import { NextResponse } from "next/server";
+// 届いたリクエストの型（型だけのimport）
+import type { NextRequest } from "next/server";
 
 // ─────────────────────────────────────────────────────
 // middleware: ページに届く前に必ず通る「関所」
 // 予約名 middleware で export する必要がある。
 // ─────────────────────────────────────────────────────
-export function middleware(request: NextRequest) {      // request にアクセス内容（URLやCookieなど）が入る
+// request にアクセス内容（URLやCookieなど）が入る
+export function middleware(request: NextRequest) {
   // Cookie から「ログインの証（トークン）」を読む
-  const token = request.cookies.get("token");           // ログイン時に保存しておいた印を確認
+  // ログイン時に保存しておいた印を確認
+  const token = request.cookies.get("token");
 
   // ログインの証が無い＝未ログインなら、ログイン画面へ送り返す
   if (!token) {
-    const loginUrl = new URL("/login", request.url);    // リダイレクト先のURLを組み立てる
-    return NextResponse.redirect(loginUrl);             // ログイン画面へ強制移動させる
+    // リダイレクト先のURLを組み立てる
+    const loginUrl = new URL("/login", request.url);
+    // ログイン画面へ強制移動させる
+    return NextResponse.redirect(loginUrl);
   }
 
   // ログイン済みなら、そのまま目的のページへ通す
-  return NextResponse.next();                            // 「通過OK」を返す（何も止めない）
+  // 「通過OK」を返す（何も止めない）
+  return NextResponse.next();
 }
 
 // ─────────────────────────────────────────────────────
@@ -3626,20 +4066,27 @@ export const config = {
 > **▼ このコードがやること（先に日本語で）:** 普通の `<img>` タグの代わりに Next.js の `<Image>` を使い、**画像を自動で軽く・速く・きれいに**表示します。`fill`（親要素いっぱいに広げる）、`priority`（最優先で読み込む）、`sizes`（画面幅ごとの表示サイズ指定）、`placeholder`（読み込み中にぼかしを出す）といった便利なオプションの使い方を1つにまとめた例です。画像が多いページの表示速度を大きく改善できます。詳細はコード内コメントを参照してください。
 
 ```typescript
-// app/page.tsx                                         // どのページでも使える例として page.tsx に書く
+// どのページでも使える例として page.tsx に書く
+// app/page.tsx
 
-import Image from "next/image";                         // Next.js 専用の画像コンポーネントを読み込む
+// Next.js 専用の画像コンポーネントを読み込む
+import Image from "next/image";
 
 export default function HomePage() {
   return (
     <div>
       {/* ───── (1) サイズが分かっている画像: width / height を指定 ───── */}
       <Image
-        src="/cover.jpg"                                // public フォルダ内の画像（/ から始める）
-        alt="本の表紙"                                    // 画像の説明文（読み上げ・SEO・表示失敗時に必須）
-        width={300}                                     // 元画像の幅（ガタつき防止のため必須）
-        height={450}                                    // 元画像の高さ
-        priority                                        // このページで「最初に見える重要画像」を最優先で読み込む
+        // public フォルダ内の画像（/ から始める）
+        src="/cover.jpg"
+        // 画像の説明文（読み上げ・SEO・表示失敗時に必須）
+        alt="本の表紙"
+        // 元画像の幅（ガタつき防止のため必須）
+        width={300}
+        // 元画像の高さ
+        height={450}
+        // このページで「最初に見える重要画像」を最優先で読み込む
+        priority
       />
 
       {/* ───── (2) サイズが可変な画像: fill で親要素いっぱいに広げる ───── */}
@@ -3648,11 +4095,16 @@ export default function HomePage() {
         <Image
           src="/banner.jpg"
           alt="キャンペーンバナー"
-          fill                                          // width/height の代わりに「親要素を埋める」
-          sizes="(max-width: 768px) 100vw, 50vw"        // 画面幅ごとに必要な画像サイズを指定（後述）
-          placeholder="blur"                            // 読み込み中はぼかし画像を表示
-          blurDataURL="data:image/png;base64,iVBORw0K... " // ぼかしに使う極小画像データ
-          style={{ objectFit: "cover" }}                // はみ出した部分を切り取って枠に合わせる
+          // width/height の代わりに「親要素を埋める」
+          fill
+          // 画面幅ごとに必要な画像サイズを指定（後述）
+          sizes="(max-width: 768px) 100vw, 50vw"
+          // 読み込み中はぼかし画像を表示
+          placeholder="blur"
+          // ぼかしに使う極小画像データ
+          blurDataURL="data:image/png;base64,iVBORw0K... "
+          // はみ出した部分を切り取って枠に合わせる
+          style={{ objectFit: "cover" }}
         />
       </div>
     </div>
@@ -3748,22 +4200,29 @@ at the top of the file to use it.
 **対処法:** ファイルの先頭に `"use client"` を追加する。
 
 ```typescript
-// ❌ エラーになる                                                 // "use client" がないので Server Component 扱い
-import { useState } from "react";                                  // React のフックを取り込み
+// "use client" がないので Server Component 扱い
+// ❌ エラーになる
+// React のフックを取り込み
+import { useState } from "react";
 
 export default function Counter() {
-  const [count, setCount] = useState(0); // ← ここでエラー         // Server Component では useState を呼べない
+  // ← ここでエラー
+  // Server Component では useState を呼べない
+  const [count, setCount] = useState(0);
   return <button onClick={() => setCount(count + 1)}>{count}</button>;
                                                                     // onClick も Server Component では使えない
 }
 
 // ✅ 修正版
-"use client"; // ← これを追加                                       // ファイル先頭のディレクティブで Client Component 化
+// ← これを追加
+// ファイル先頭のディレクティブで Client Component 化
+"use client";
 
 import { useState } from "react";
 
 export default function Counter() {
-  const [count, setCount] = useState(0);                            // OK: Client では useState が使える
+  // OK: Client では useState が使える
+  const [count, setCount] = useState(0);
   return <button onClick={() => setCount(count + 1)}>{count}</button>;
 }
 ```
@@ -3783,17 +4242,22 @@ Components.
 
 ```typescript
 // ❌ エラーになる
-"use client";                                                       // Client Component なのに
+// Client Component なのに
+"use client";
 
-export default async function BooksPage() {                         // 関数本体に async を付けている
-  const books = await fetch("/api/books"); // ← async は Client Component で不可
+// 関数本体に async を付けている
+export default async function BooksPage() {
+  // ← async は Client Component で不可
+  const books = await fetch("/api/books");
                                                                     // App Router の Client では関数を async にできない
   return <div>...</div>;
 }
 
 // ✅ 修正版 1: Server Component にする（"use client" を削除）
-export default async function BooksPage() {                         // "use client" がなければ Server Component
-  const books = await fetch("https://api.example.com/books");       // Server なら async でも OK
+// "use client" がなければ Server Component
+export default async function BooksPage() {
+  // Server なら async でも OK
+  const books = await fetch("https://api.example.com/books");
   return <div>...</div>;
 }
 
@@ -3802,14 +4266,20 @@ export default async function BooksPage() {                         // "use clie
 
 import { useState, useEffect } from "react";
 
-export default function BooksPage() {                               // 関数本体は同期のままにする
-  const [books, setBooks] = useState([]);                           // 結果を state に保持
+// 関数本体は同期のままにする
+export default function BooksPage() {
+  // 結果を state に保持
+  const [books, setBooks] = useState([]);
 
-  useEffect(() => {                                                 // マウント後にデータ取得
+  // マウント後にデータ取得
+  useEffect(() => {
     fetch("/api/books")
-      .then((res) => res.json())                                    // Promise チェーン
-      .then(setBooks);                                              // 取れた配列を state に格納
-  }, []);                                                            // 依存配列が空なので初回マウント時に1度だけ実行
+      // Promise チェーン
+      .then((res) => res.json())
+      // 取れた配列を state に格納
+      .then(setBooks);
+  // 依存配列が空なので初回マウント時に1度だけ実行
+  }, []);
 
   return <div>...</div>;
 }
@@ -3827,10 +4297,12 @@ Error: NextRouter was not mounted.
 
 ```typescript
 // ❌ App Router では使えない
-import { useRouter } from "next/router";                            // 旧 Pages Router 用の useRouter
+// 旧 Pages Router 用の useRouter
+import { useRouter } from "next/router";
 
 // ✅ App Router ではこちらを使う
-import { useRouter } from "next/navigation";                        // 新しい App Router 用。push/replace/back/refresh などを持つ
+// 新しい App Router 用。push/replace/back/refresh などを持つ
+import { useRouter } from "next/navigation";
 ```
 
 ---
@@ -3846,14 +4318,17 @@ Error: You are attempting to export "metadata" from a component marked with
 
 ```typescript
 // ❌ エラーになる
-"use client";                                                       // Client Component なのに
+// Client Component なのに
+"use client";
 
-export const metadata = { title: "書籍一覧" }; // ← Client Component では不可
+// ← Client Component では不可
+export const metadata = { title: "書籍一覧" };
                                                                     // metadata は Server Component の機能なので Client では宣言できない
 
 // ✅ 修正版: metadata は Server Component（page.tsx や layout.tsx）に置く
 // app/books/page.tsx（Server Component）
-export const metadata = { title: "書籍一覧" };                       // この行でブラウザタブのタイトルが「書籍一覧」になる
+// この行でブラウザタブのタイトルが「書籍一覧」になる
+export const metadata = { title: "書籍一覧" };
 
 export default function BooksPage() {
   return <div>...</div>;
@@ -3872,10 +4347,14 @@ export default function BooksPage() {
 // ❌ Client Component では undefined になる
 "use client";
 
-const apiKey = process.env.API_SECRET_KEY; // undefined            // NEXT_PUBLIC_ なしの環境変数はブラウザバンドルに含まれない
+// undefined
+// NEXT_PUBLIC_ なしの環境変数はブラウザバンドルに含まれない
+const apiKey = process.env.API_SECRET_KEY;
 
 // ✅ NEXT_PUBLIC_ を付ける（ただし機密情報には使わない！）
-const publicUrl = process.env.NEXT_PUBLIC_API_URL; // 値が取得できる   // 公開してよい値だけに NEXT_PUBLIC_ を付ける
+// 値が取得できる
+// 公開してよい値だけに NEXT_PUBLIC_ を付ける
+const publicUrl = process.env.NEXT_PUBLIC_API_URL;
 ```
 
 > **注意:** 機密情報に `NEXT_PUBLIC_` を付けてはいけません。Server Action や API Route 経由でアクセスしてください。
@@ -3893,7 +4372,8 @@ Warning: Text content did not match. Server: "2024年3月15日" Client: "3/15/20
 ```typescript
 // ❌ サーバーとクライアントで結果が異なる可能性がある
 export default function DateDisplay() {
-  return <p>{new Date().toLocaleString()}</p>;                      // サーバーとブラウザで実行時刻が違えば表示も違う
+  // サーバーとブラウザで実行時刻が違えば表示も違う
+  return <p>{new Date().toLocaleString()}</p>;
                                                                     // → Hydration エラーになる
 }
 
@@ -3905,18 +4385,24 @@ export default function DateDisplay() {
 }
 
 // ✅ 修正版 2: Client Component にして useEffect で設定
-"use client";                                                       // Client 化
+// Client 化
+"use client";
 
 import { useState, useEffect } from "react";
 
 export default function DateDisplay() {
-  const [dateStr, setDateStr] = useState("");                       // 初期値は空文字（サーバーでも同じ値）
+  // 初期値は空文字（サーバーでも同じ値）
+  const [dateStr, setDateStr] = useState("");
 
-  useEffect(() => {                                                 // ハイドレーション後＝ブラウザ側でのみ走る
-    setDateStr(new Date().toLocaleString("ja-JP"));                 // ここで日付を設定 → 再描画
-  }, []);                                                            // 初回1回だけ
+  // ハイドレーション後＝ブラウザ側でのみ走る
+  useEffect(() => {
+    // ここで日付を設定 → 再描画
+    setDateStr(new Date().toLocaleString("ja-JP"));
+  // 初回1回だけ
+  }, []);
 
-  return <p>{dateStr}</p>;                                          // サーバー描画時は空、ブラウザで時刻に置き換わる
+  // サーバー描画時は空、ブラウザで時刻に置き換わる
+  return <p>{dateStr}</p>;
 }
 ```
 

@@ -1306,7 +1306,8 @@ CLAUDE.md が「プロジェクト全体のルール」だとすれば、Rules �
 ```yaml
 ---
 paths:
-  - "src/components/**/*.tsx"   # globパターンでマッチ
+  # globパターンでマッチ
+  - "src/components/**/*.tsx"
 ---
 
 # ここにルールを記述
@@ -1399,7 +1400,8 @@ import { getProjects } from '@/lib/queries/projects'
 
 // Props 型は interface で定義。命名は ComponentName + Props
 interface ProjectListProps {
-  userId: string  // 必須の文字列プロパティ
+  // 必須の文字列プロパティ
+  userId: string
 }
 
 // named export。default export は page.tsx/layout.tsx のみ許可
@@ -1432,7 +1434,8 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 
 interface CounterProps {
-  initialCount: number  // 初期カウント値
+  // 初期カウント値
+  initialCount: number
 }
 
 export function Counter({ initialCount }: CounterProps) {
@@ -1499,12 +1502,17 @@ import { createClient } from '@/lib/supabase/server'
 // 1. バリデーションスキーマ定義
 // z.object() で各フィールドの型・制約を宣言的に書く
 const createTaskSchema = z.object({
-  title: z.string().min(1).max(100),  // 1〜100文字の文字列
-  description: z.string().max(1000).optional(),  // 任意、最大1000文字
-  status: z.enum(['todo', 'in_progress', 'review', 'done']).default('todo'),  // 列挙型
+  // 1〜100文字の文字列
+  title: z.string().min(1).max(100),
+  // 任意、最大1000文字
+  description: z.string().max(1000).optional(),
+  // 列挙型
+  status: z.enum(['todo', 'in_progress', 'review', 'done']).default('todo'),
   priority: z.enum(['low', 'medium', 'high']).default('medium'),
-  assigneeId: z.string().uuid().optional(),  // UUID 形式の文字列
-  dueDate: z.string().datetime().optional(),  // ISO8601 形式
+  // UUID 形式の文字列
+  assigneeId: z.string().uuid().optional(),
+  // ISO8601 形式
+  dueDate: z.string().datetime().optional(),
 })
 
 // 2. Route Handler
@@ -1512,42 +1520,52 @@ const createTaskSchema = z.object({
 export async function POST(request: NextRequest) {
   try {
     // 3. 認証チェック
-    const supabase = await createClient()  // Supabase クライアント作成
+    // Supabase クライアント作成
+    const supabase = await createClient()
     // 現在ログイン中のユーザーを取得
     const { data: { user }, error: authError } = await supabase.auth.getUser()
 
     // 未ログインなら 401 を返して終了
     if (authError || !user) {
       return NextResponse.json(
-        { error: '認証が必要です' },  // ユーザー向けメッセージ
-        { status: 401 }  // HTTP ステータス
+        // ユーザー向けメッセージ
+        { error: '認証が必要です' },
+        // HTTP ステータス
+        { status: 401 }
       )
     }
 
     // 4. リクエストバリデーション
-    const body = await request.json()  // JSON ボディをオブジェクトに
+    // JSON ボディをオブジェクトに
+    const body = await request.json()
     // safeParse は throw せず { success, data | error } を返す
     const parsed = createTaskSchema.safeParse(body)
 
     if (!parsed.success) {
       return NextResponse.json(
         { error: 'バリデーションエラー', details: parsed.error.flatten() },
-        { status: 400 }  // クライアント側の入力ミスは 400
+        // クライアント側の入力ミスは 400
+        { status: 400 }
       )
     }
 
     // 5. DB操作
     // from('tables').insert(...).select().single() の流れ
     const { data, error } = await supabase
-      .from('tasks')  // 対象テーブル
-      .insert({ ...parsed.data, created_by: user.id })  // 検証済みデータ + 作成者
-      .select()  // 挿入結果を取得
-      .single()  // 1件だけ取り出す（複数返ったらエラー）
+      // 対象テーブル
+      .from('tasks')
+      // 検証済みデータ + 作成者
+      .insert({ ...parsed.data, created_by: user.id })
+      // 挿入結果を取得
+      .select()
+      // 1件だけ取り出す（複数返ったらエラー）
+      .single()
 
     if (error) {
       return NextResponse.json(
         { error: 'タスクの作成に失敗しました' },
-        { status: 500 }  // サーバー側エラーは 500
+        // サーバー側エラーは 500
+        { status: 500 }
       )
     }
 
@@ -1594,17 +1612,28 @@ Skill 1つにつき1フォルダ作り、その中に `SKILL.md` を置きます
 
 ```yaml
 ---
-name: skill-id                    # 一意な識別子（小文字、ハイフン、最大64文字）
-description: "説明文"              # 呼び出し条件の判断に使われる（250文字以内）
-argument-hint: "[filepath]"       # 引数のヒント（オートコンプリート用）
-disable-model-invocation: false   # true=手動呼び出しのみ、false=Claudeが自動呼び出し可
-user-invocable: true              # true=ユーザーが/で呼び出せる
-allowed-tools: "Read Grep Edit"   # 使用可能なツール（スペース区切り）
-model: claude-opus-4-6            # 使用モデル
-effort: high                      # 推論レベル（low/medium/high/max）
-context: fork                     # forkでサブエージェントとして実行
-agent: Explore                    # サブエージェントタイプ
-paths: ["src/**/*.tsx"]           # 自動発火のglobパターン
+# 一意な識別子（小文字、ハイフン、最大64文字）
+name: skill-id
+# 呼び出し条件の判断に使われる（250文字以内）
+description: "説明文"
+# 引数のヒント（オートコンプリート用）
+argument-hint: "[filepath]"
+# true=手動呼び出しのみ、false=Claudeが自動呼び出し可
+disable-model-invocation: false
+# true=ユーザーが/で呼び出せる
+user-invocable: true
+# 使用可能なツール（スペース区切り）
+allowed-tools: "Read Grep Edit"
+# 使用モデル
+model: claude-opus-4-6
+# 推論レベル（low/medium/high/max）
+effort: high
+# forkでサブエージェントとして実行
+context: fork
+# サブエージェントタイプ
+agent: Explore
+# 自動発火のglobパターン
+paths: ["src/**/*.tsx"]
 ---
 ```
 
@@ -1829,17 +1858,24 @@ Subagentsは**独立したAIエージェント**を定義し、特定のタス�
 
 ```yaml
 ---
-name: agent-id                    # 一意な識別子
-description: "説明文"              # いつ委任するかの判断基準
-model: claude-opus-4-6            # 使用モデル
-tools: Read Bash Edit Grep        # 許可するツール
+# 一意な識別子
+name: agent-id
+# いつ委任するかの判断基準
+description: "説明文"
+# 使用モデル
+model: claude-opus-4-6
+# 許可するツール
+tools: Read Bash Edit Grep
 permissions:
   allow: ["Bash(npm test*)"]
   deny: ["Edit(/.env)", "WebFetch"]
-skills: [review, create-component]  # プリロードするSkill
+# プリロードするSkill
+skills: [review, create-component]
 memory:
-  enabled: true                    # メモリ使用の可否
-isolation: worktree                # worktreeで並列実行
+  # メモリ使用の可否
+  enabled: true
+# worktreeで並列実行
+isolation: worktree
 ---
 ```
 

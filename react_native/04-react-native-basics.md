@@ -125,10 +125,14 @@ export default function HomeScreen() {
 ```tsx
 <View
   style={{
-    flexDirection: "row",          // 子要素を並べる方向。"row"=横並び / "column"=縦並び（既定）
-    justifyContent: "space-between", // 「主軸方向」の配置。下の表参照
-    alignItems: "center",          // 「交差軸方向」の配置。下の表参照
-    gap: 8,                        // 子要素同士の間隔（隙間）を8に
+    // 子要素を並べる方向。"row"=横並び / "column"=縦並び（既定）
+    flexDirection: "row",
+    // 「主軸方向」の配置。下の表参照
+    justifyContent: "space-between",
+    // 「交差軸方向」の配置。下の表参照
+    alignItems: "center",
+    // 子要素同士の間隔（隙間）を8に
+    gap: 8,
   }}
 >
   <Text>左</Text>
@@ -146,7 +150,8 @@ export default function HomeScreen() {
 ##### 解説1: 並べる向きを決める `flexDirection`
 
 ```tsx
-flexDirection: "row",          // 子要素を並べる方向。"row"=横並び / "column"=縦並び（既定）
+// 子要素を並べる方向。"row"=横並び / "column"=縦並び（既定）
+flexDirection: "row",
 ```
 
 - `flexDirection`（フレックス・ディレクション＝並べる向き）は、「**箱の中の子要素を、どの向きに並べるか**」を決めます。
@@ -160,7 +165,8 @@ flexDirection: "row",          // 子要素を並べる方向。"row"=横並び 
 ##### 解説2: 主軸方向の寄せ方 `justifyContent`
 
 ```tsx
-justifyContent: "space-between", // 「主軸方向」の配置。下の表参照
+// 「主軸方向」の配置。下の表参照
+justifyContent: "space-between",
 ```
 
 - `justifyContent`（ジャスティファイ・コンテント）は、「**並べている向き（主軸）に沿って、子要素をどう寄せるか**」を決めます。
@@ -174,7 +180,8 @@ justifyContent: "space-between", // 「主軸方向」の配置。下の表参�
 ##### 解説3: 直角方向の寄せ方 `alignItems`
 
 ```tsx
-alignItems: "center",          // 「交差軸方向」の配置。下の表参照
+// 「交差軸方向」の配置。下の表参照
+alignItems: "center",
 ```
 
 - `alignItems`（アライン・アイテムズ）は、「**並べている向きと直角の方向に、子要素をどう寄せるか**」を決めます。
@@ -188,7 +195,8 @@ alignItems: "center",          // 「交差軸方向」の配置。下の表参�
 ##### 解説4: 子要素同士の隙間 `gap`
 
 ```tsx
-gap: 8,                        // 子要素同士の間隔（隙間）を8に
+// 子要素同士の間隔（隙間）を8に
+gap: 8,
 ```
 
 - `gap`（ギャップ＝隙間）は、「**並べた子要素と子要素の間に空ける隙間**」の大きさです。
@@ -223,11 +231,13 @@ gap: 8,                        // 子要素同士の間隔（隙間）を8に
 > **▼ このコードがやること（先に日本語で）:** さきほどと同じ「中央に太字の見出し」を、今度は**スタイルを別の場所にまとめて**書く形に整理します。`StyleSheet.create({ ... })` でスタイルに `container` や `title` といった名前を付けておき、JSX側では `styles.container` と名前で呼び出します。「見た目の指定」と「画面の構造」を分けると読みやすくなる、という整理術がポイントです。詳細はコード内コメントを参照してください。
 
 ```tsx
-import { View, Text, StyleSheet } from "react-native";   // StyleSheet も借りる
+// StyleSheet も借りる
+import { View, Text, StyleSheet } from "react-native";
 
 export default function HomeScreen() {
   return (
-    <View style={styles.container}>     {/* styles.container で下の定義を参照 */}
+    {/* styles.container で下の定義を参照 */}
+    <View style={styles.container}>
       <Text style={styles.title}>📚 書籍管理アプリ</Text>
     </View>
   );
@@ -235,16 +245,23 @@ export default function HomeScreen() {
 
 // StyleSheet.create({ ... }) : スタイルをまとめて定義する。名前を付けて再利用できる
 const styles = StyleSheet.create({
-  container: {                  // container という名前のスタイル
-    flex: 1,                    // 画面いっぱい
-    justifyContent: "center",   // 縦中央
-    alignItems: "center",       // 横中央
-    backgroundColor: "#fff",    // 背景色を白に（#fff は白を表す色コード）
+  // container という名前のスタイル
+  container: {
+    // 画面いっぱい
+    flex: 1,
+    // 縦中央
+    justifyContent: "center",
+    // 横中央
+    alignItems: "center",
+    // 背景色を白に（#fff は白を表す色コード）
+    backgroundColor: "#fff",
   },
-  title: {                      // title という名前のスタイル
+  // title という名前のスタイル
+  title: {
     fontSize: 24,
     fontWeight: "bold",
-    color: "#1e293b",           // 文字色（#1e293b は濃いグレー）
+    // 文字色（#1e293b は濃いグレー）
+    color: "#1e293b",
   },
 });
 ```
@@ -260,7 +277,8 @@ const styles = StyleSheet.create({
 ##### 解説1: 名前でスタイルを呼ぶ `styles.container`
 
 ```tsx
-<View style={styles.container}>     {/* styles.container で下の定義を参照 */}
+{/* styles.container で下の定義を参照 */}
+<View style={styles.container}>
   <Text style={styles.title}>📚 書籍管理アプリ</Text>
 </View>
 ```
@@ -277,16 +295,23 @@ const styles = StyleSheet.create({
 
 ```tsx
 const styles = StyleSheet.create({
-  container: {                  // container という名前のスタイル
-    flex: 1,                    // 画面いっぱい
-    justifyContent: "center",   // 縦中央
-    alignItems: "center",       // 横中央
-    backgroundColor: "#fff",    // 背景色を白に（#fff は白を表す色コード）
+  // container という名前のスタイル
+  container: {
+    // 画面いっぱい
+    flex: 1,
+    // 縦中央
+    justifyContent: "center",
+    // 横中央
+    alignItems: "center",
+    // 背景色を白に（#fff は白を表す色コード）
+    backgroundColor: "#fff",
   },
-  title: {                      // title という名前のスタイル
+  // title という名前のスタイル
+  title: {
     fontSize: 24,
     fontWeight: "bold",
-    color: "#1e293b",           // 文字色（#1e293b は濃いグレー）
+    // 文字色（#1e293b は濃いグレー）
+    color: "#1e293b",
   },
 });
 ```
@@ -313,27 +338,37 @@ import { useState } from "react";
 import { View, TextInput, Text, StyleSheet } from "react-native";
 
 export default function SearchBox() {
-  const [keyword, setKeyword] = useState("");   // 入力文字をstateで管理（最初は空文字""）
+  // 入力文字をstateで管理（最初は空文字""）
+  const [keyword, setKeyword] = useState("");
 
   return (
     <View>
       <TextInput
-        style={styles.input}                    // 見た目
-        placeholder="タイトルや著者で検索..."     // placeholder : 未入力時に薄く表示する案内文
-        value={keyword}                         // value : 表示する値。stateと結びつける
-        onChangeText={(text) => setKeyword(text)} // onChangeText : 入力が変わるたびに呼ばれる。textは今の入力内容
+        // 見た目
+        style={styles.input}
+        // placeholder : 未入力時に薄く表示する案内文
+        placeholder="タイトルや著者で検索..."
+        // value : 表示する値。stateと結びつける
+        value={keyword}
+        // onChangeText : 入力が変わるたびに呼ばれる。textは今の入力内容
+        onChangeText={(text) => setKeyword(text)}
       />
-      <Text>入力中: {keyword}</Text>            {/* 入力した文字がリアルタイムで表示される */}
+      {/* 入力した文字がリアルタイムで表示される */}
+      <Text>入力中: {keyword}</Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   input: {
-    borderWidth: 1,            // 枠線の太さ1
-    borderColor: "#e2e8f0",   // 枠線の色（薄いグレー）
-    borderRadius: 8,          // 角の丸み8
-    padding: 10,              // 内側の余白
+    // 枠線の太さ1
+    borderWidth: 1,
+    // 枠線の色（薄いグレー）
+    borderColor: "#e2e8f0",
+    // 角の丸み8
+    borderRadius: 8,
+    // 内側の余白
+    padding: 10,
   },
 });
 ```
@@ -349,7 +384,8 @@ const styles = StyleSheet.create({
 ##### 解説1: 入力内容を覚えておく `useState`
 
 ```tsx
-const [keyword, setKeyword] = useState("");   // 入力文字をstateで管理（最初は空文字""）
+// 入力文字をstateで管理（最初は空文字""）
+const [keyword, setKeyword] = useState("");
 ```
 
 - `useState`（ユーズ・ステート）は、第3章で学んだ「**変化する値を持つための道具**」です。`const [今の値, 値を変える関数] = useState(初期値)` の形で使います。
@@ -365,10 +401,14 @@ const [keyword, setKeyword] = useState("");   // 入力文字をstateで管理�
 
 ```tsx
 <TextInput
-  style={styles.input}                    // 見た目
-  placeholder="タイトルや著者で検索..."     // placeholder : 未入力時に薄く表示する案内文
-  value={keyword}                         // value : 表示する値。stateと結びつける
-  onChangeText={(text) => setKeyword(text)} // onChangeText : 入力が変わるたびに呼ばれる。textは今の入力内容
+  // 見た目
+  style={styles.input}
+  // placeholder : 未入力時に薄く表示する案内文
+  placeholder="タイトルや著者で検索..."
+  // value : 表示する値。stateと結びつける
+  value={keyword}
+  // onChangeText : 入力が変わるたびに呼ばれる。textは今の入力内容
+  onChangeText={(text) => setKeyword(text)}
 />
 ```
 
@@ -385,7 +425,8 @@ const [keyword, setKeyword] = useState("");   // 入力文字をstateで管理�
 ##### 解説3: 入力をリアルタイムで映す `{keyword}`
 
 ```tsx
-<Text>入力中: {keyword}</Text>            {/* 入力した文字がリアルタイムで表示される */}
+{/* 入力した文字がリアルタイムで表示される */}
+<Text>入力中: {keyword}</Text>
 ```
 
 - `<Text>` の中の `{keyword}` は、「**状態 `keyword` の中身を、ここに表示する**」という意味です。`{ }` で囲むとTypeScriptの値を埋め込めます。
@@ -409,20 +450,26 @@ export default function SaveButton() {
   return (
     // onPress : 押されたときに実行する処理を渡す
     <Pressable style={styles.button} onPress={() => console.log("保存ボタンが押された")}>
-      <Text style={styles.buttonText}>保存する</Text>   {/* ボタンの中身も<Text>で囲む */}
+      {/* ボタンの中身も<Text>で囲む */}
+      <Text style={styles.buttonText}>保存する</Text>
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: "#1e40af",  // 背景色（青）
-    paddingVertical: 13,         // 上下の内側余白
-    borderRadius: 10,            // 角丸
-    alignItems: "center",        // 中の文字を横中央に
+    // 背景色（青）
+    backgroundColor: "#1e40af",
+    // 上下の内側余白
+    paddingVertical: 13,
+    // 角丸
+    borderRadius: 10,
+    // 中の文字を横中央に
+    alignItems: "center",
   },
   buttonText: {
-    color: "#fff",               // 文字色（白）
+    // 文字色（白）
+    color: "#fff",
     fontWeight: "bold",
     fontSize: 15,
   },
@@ -441,7 +488,8 @@ const styles = StyleSheet.create({
 
 ```tsx
 <Pressable style={styles.button} onPress={() => console.log("保存ボタンが押された")}>
-  <Text style={styles.buttonText}>保存する</Text>   {/* ボタンの中身も<Text>で囲む */}
+  {/* ボタンの中身も<Text>で囲む */}
+  <Text style={styles.buttonText}>保存する</Text>
 </Pressable>
 ```
 
@@ -540,12 +588,17 @@ const books = [
 export default function BookList() {
   return (
     <FlatList
-      data={books}                          // data : 表示するデータの配列を渡す
-      keyExtractor={(item) => item.id}      // keyExtractor : 各要素を区別する一意のキーを返す（idを使う）
-      renderItem={({ item }) => (           // renderItem : 1件分の見た目を返す関数。itemに1冊分が入る
+      // data : 表示するデータの配列を渡す
+      data={books}
+      // keyExtractor : 各要素を区別する一意のキーを返す（idを使う）
+      keyExtractor={(item) => item.id}
+      // renderItem : 1件分の見た目を返す関数。itemに1冊分が入る
+      renderItem={({ item }) => (
         <View style={styles.card}>
-          <Text style={styles.title}>{item.title}</Text>     {/* その本のタイトル */}
-          <Text style={styles.author}>{item.author}</Text>   {/* その本の著者 */}
+          {/* その本のタイトル */}
+          <Text style={styles.title}>{item.title}</Text>
+          {/* その本の著者 */}
+          <Text style={styles.author}>{item.author}</Text>
         </View>
       )}
     />
@@ -583,7 +636,8 @@ const books = [
 ```
 
 ```tsx
-data={books}                          // data : 表示するデータの配列を渡す
+// data : 表示するデータの配列を渡す
+data={books}
 ```
 
 - `books` は「本のデータの配列」です。`[ ]` の中に、本1冊分を `{ }`（オブジェクト）で表したものを並べています。各本は `id`・`title`・`author` の3項目を持ちます。
@@ -598,7 +652,8 @@ data={books}                          // data : 表示するデータの配列�
 ##### 解説2: 各要素を区別する目印 `keyExtractor`
 
 ```tsx
-keyExtractor={(item) => item.id}      // keyExtractor : 各要素を区別する一意のキーを返す（idを使う）
+// keyExtractor : 各要素を区別する一意のキーを返す（idを使う）
+keyExtractor={(item) => item.id}
 ```
 
 - `keyExtractor`（キー・エクストラクター＝キーを取り出すもの）は、「**各データに付ける固有の目印（key）を返す関数**」です。
@@ -613,10 +668,13 @@ keyExtractor={(item) => item.id}      // keyExtractor : 各要素を区別する
 ##### 解説3: 1件分の見た目を返す `renderItem`
 
 ```tsx
-renderItem={({ item }) => (           // renderItem : 1件分の見た目を返す関数。itemに1冊分が入る
+// renderItem : 1件分の見た目を返す関数。itemに1冊分が入る
+renderItem={({ item }) => (
   <View style={styles.card}>
-    <Text style={styles.title}>{item.title}</Text>     {/* その本のタイトル */}
-    <Text style={styles.author}>{item.author}</Text>   {/* その本の著者 */}
+    {/* その本のタイトル */}
+    <Text style={styles.title}>{item.title}</Text>
+    {/* その本の著者 */}
+    <Text style={styles.author}>{item.author}</Text>
   </View>
 )}
 ```
@@ -663,7 +721,8 @@ import { Text } from "react-native";
 
 function Example1() {
   return (
-    <Link href="/about">             {/* href : 移動先のパス。押すと/about画面へ */}
+    {/* href : 移動先のパス。押すと/about画面へ */}
+    <Link href="/about">
       <Text>Aboutページへ</Text>
     </Link>
   );
@@ -694,7 +753,8 @@ import { Text } from "react-native";
 ##### 解説2: 移動先を指定する `href`
 
 ```tsx
-<Link href="/about">             {/* href : 移動先のパス。押すと/about画面へ */}
+{/* href : 移動先のパス。押すと/about画面へ */}
+<Link href="/about">
   <Text>Aboutページへ</Text>
 </Link>
 ```
@@ -716,10 +776,12 @@ import { useRouter } from "expo-router";
 import { Pressable, Text } from "react-native";
 
 function Example2() {
-  const router = useRouter();        // useRouter : 画面移動を操作する道具を取得
+  // useRouter : 画面移動を操作する道具を取得
+  const router = useRouter();
 
   return (
-    <Pressable onPress={() => router.push("/books/1")}>   {/* router.push("パス") でその画面へ移動 */}
+    {/* router.push("パス") でその画面へ移動 */}
+    <Pressable onPress={() => router.push("/books/1")}>
       <Text>1冊目の詳細へ</Text>
     </Pressable>
   );
@@ -735,7 +797,8 @@ function Example2() {
 ##### 解説1: 移動の道具を受け取る `useRouter`
 
 ```tsx
-const router = useRouter();        // useRouter : 画面移動を操作する道具を取得
+// useRouter : 画面移動を操作する道具を取得
+const router = useRouter();
 ```
 
 - `useRouter`（ユーズ・ルーター）は、「**画面移動を操作するための道具を受け取る**」関数です。`expo-router` から借りて使います。
@@ -749,7 +812,8 @@ const router = useRouter();        // useRouter : 画面移動を操作する道
 ##### 解説2: 指定の画面へ進む `router.push`
 
 ```tsx
-<Pressable onPress={() => router.push("/books/1")}>   {/* router.push("パス") でその画面へ移動 */}
+{/* router.push("パス") でその画面へ移動 */}
+<Pressable onPress={() => router.push("/books/1")}>
   <Text>1冊目の詳細へ</Text>
 </Pressable>
 ```
@@ -830,7 +894,8 @@ export default function RootLayout() {
 > **▼ このコードがやること（先に日本語で）:** 文字が、画面上部のノッチ（カメラの切り欠き）や下部のホームバーに**重なって隠れないように表示する**例です。中身を `<SafeAreaView>` で囲むだけで、機種ごとの「避けるべき危険地帯」を自動でよけてくれます。普通の `<View>` の代わりに一番外側の箱として使う、という使い方を覚えておきましょう。
 
 ```tsx
-import { SafeAreaView } from "react-native-safe-area-context";  // この部品集から借りる
+// この部品集から借りる
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Text } from "react-native";
 
 export default function Screen() {
@@ -854,7 +919,8 @@ export default function Screen() {
 ##### 解説1: SafeAreaView を借りてくる `import`
 
 ```tsx
-import { SafeAreaView } from "react-native-safe-area-context";  // この部品集から借りる
+// この部品集から借りる
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Text } from "react-native";
 ```
 
@@ -900,21 +966,26 @@ export default function ImageExample() {
     <View>
       {/* 方法1: ローカル画像（アプリに同梱したファイル）は require(...) で指定 */}
       <Image
-        source={require("../assets/cover.png")}  // source : 表示する画像。requireでファイルを読み込む
-        style={styles.local}                      // 大きさは style で指定する
+        // source : 表示する画像。requireでファイルを読み込む
+        source={require("../assets/cover.png")}
+        // 大きさは style で指定する
+        style={styles.local}
       />
 
       {/* 方法2: ネットワーク画像（インターネット上の画像）は { uri: "URL" } で指定 */}
       <Image
-        source={{ uri: "https://example.com/book.png" }} // uri : 画像のあるURL（住所）
-        style={styles.remote}                            // ネット画像は大きさ指定が必須
+        // uri : 画像のあるURL（住所）
+        source={{ uri: "https://example.com/book.png" }}
+        // ネット画像は大きさ指定が必須
+        style={styles.remote}
       />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  local: { width: 100, height: 150 },   // width:横幅 / height:高さ（数値で指定）
+  // width:横幅 / height:高さ（数値で指定）
+  local: { width: 100, height: 150 },
   remote: { width: 100, height: 150 },
 });
 ```
@@ -931,8 +1002,10 @@ const styles = StyleSheet.create({
 
 ```tsx
 <Image
-  source={require("../assets/cover.png")}  // source : 表示する画像。requireでファイルを読み込む
-  style={styles.local}                      // 大きさは style で指定する
+  // source : 表示する画像。requireでファイルを読み込む
+  source={require("../assets/cover.png")}
+  // 大きさは style で指定する
+  style={styles.local}
 />
 ```
 
@@ -949,8 +1022,10 @@ const styles = StyleSheet.create({
 
 ```tsx
 <Image
-  source={{ uri: "https://example.com/book.png" }} // uri : 画像のあるURL（住所）
-  style={styles.remote}                            // ネット画像は大きさ指定が必須
+  // uri : 画像のあるURL（住所）
+  source={{ uri: "https://example.com/book.png" }}
+  // ネット画像は大きさ指定が必須
+  style={styles.remote}
 />
 ```
 
@@ -974,7 +1049,8 @@ import { useState } from "react";
 import { View, Text, Pressable, Modal, StyleSheet } from "react-native";
 
 export default function ModalExample() {
-  const [visible, setVisible] = useState(false);  // ポップアップを出すかどうかの状態（最初は隠す=false）
+  // ポップアップを出すかどうかの状態（最初は隠す=false）
+  const [visible, setVisible] = useState(false);
 
   return (
     <View style={styles.center}>
@@ -984,10 +1060,14 @@ export default function ModalExample() {
       </Pressable>
 
       <Modal
-        visible={visible}                 // visible : trueなら表示、falseなら非表示
-        transparent={true}                // transparent : 背景を透けさせて、後ろの画面をうっすら見せる
-        animationType="fade"              // animationType : 出入りの動き（fade=じわっと）
-        onRequestClose={() => setVisible(false)} // Android戻るボタンで閉じたときの処理
+        // visible : trueなら表示、falseなら非表示
+        visible={visible}
+        // transparent : 背景を透けさせて、後ろの画面をうっすら見せる
+        transparent={true}
+        // animationType : 出入りの動き（fade=じわっと）
+        animationType="fade"
+        // Android戻るボタンで閉じたときの処理
+        onRequestClose={() => setVisible(false)}
       >
         {/* 画面全体を薄暗くする背景 */}
         <View style={styles.overlay}>
@@ -1006,13 +1086,16 @@ export default function ModalExample() {
 
 const styles = StyleSheet.create({
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
-  overlay: {                              // 後ろを薄暗くする全画面の背景
+  // 後ろを薄暗くする全画面の背景
+  overlay: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0,0,0,0.4)",   // 黒の半透明（0.4=40%の濃さ）
+    // 黒の半透明（0.4=40%の濃さ）
+    backgroundColor: "rgba(0,0,0,0.4)",
   },
-  box: { backgroundColor: "#fff", padding: 24, borderRadius: 12 }, // 白いカード
+  // 白いカード
+  box: { backgroundColor: "#fff", padding: 24, borderRadius: 12 },
   message: { fontSize: 16, marginBottom: 16 },
   close: { color: "#1e40af", fontWeight: "bold" },
 });
@@ -1027,7 +1110,8 @@ const styles = StyleSheet.create({
 ##### 解説1: 出すか隠すかを覚えておく状態
 
 ```tsx
-const [visible, setVisible] = useState(false);  // ポップアップを出すかどうかの状態（最初は隠す=false）
+// ポップアップを出すかどうかの状態（最初は隠す=false）
+const [visible, setVisible] = useState(false);
 ```
 
 - `useState(false)` で「**ポップアップを今出しているか**」を覚えておく状態を作ります。`true` なら出す、`false` なら隠す、という意味です。
@@ -1042,10 +1126,14 @@ const [visible, setVisible] = useState(false);  // ポップアップを出す�
 
 ```tsx
 <Modal
-  visible={visible}                 // visible : trueなら表示、falseなら非表示
-  transparent={true}                // transparent : 背景を透けさせて、後ろの画面をうっすら見せる
-  animationType="fade"              // animationType : 出入りの動き（fade=じわっと）
-  onRequestClose={() => setVisible(false)} // Android戻るボタンで閉じたときの処理
+  // visible : trueなら表示、falseなら非表示
+  visible={visible}
+  // transparent : 背景を透けさせて、後ろの画面をうっすら見せる
+  transparent={true}
+  // animationType : 出入りの動き（fade=じわっと）
+  animationType="fade"
+  // Android戻るボタンで閉じたときの処理
+  onRequestClose={() => setVisible(false)}
 >
 ```
 
@@ -1159,7 +1247,8 @@ export default function DimensionsExample() {
 
   return (
     <View>
-      <Text>画面の幅: {Math.round(width)}</Text>    {/* Math.round : 小数を四捨五入して整数に */}
+      {/* Math.round : 小数を四捨五入して整数に */}
+      <Text>画面の幅: {Math.round(width)}</Text>
       <Text>画面の高さ: {Math.round(height)}</Text>
 
       {/* 画面幅の半分の大きさの四角を表示する */}
@@ -1222,7 +1311,8 @@ import { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { View, Text, TextInput, Pressable, StyleSheet } from "react-native";
 
-const STORAGE_KEY = "user_name";  // 保存するときの「名札（キー）」。これで後から取り出す
+// 保存するときの「名札（キー）」。これで後から取り出す
+const STORAGE_KEY = "user_name";
 
 export default function StorageExample() {
   const [name, setName] = useState("");
@@ -1230,15 +1320,19 @@ export default function StorageExample() {
   // アプリを開いたとき、保存済みの値を読み出す
   useEffect(() => {
     const load = async () => {
-      const saved = await AsyncStorage.getItem(STORAGE_KEY);  // getItem : キーで値を読み出す
-      if (saved !== null) setName(saved);                     // 保存があれば状態に反映
+      // getItem : キーで値を読み出す
+      const saved = await AsyncStorage.getItem(STORAGE_KEY);
+      // 保存があれば状態に反映
+      if (saved !== null) setName(saved);
     };
     load();
-  }, []); // [] : 最初の1回だけ実行
+  // [] : 最初の1回だけ実行
+  }, []);
 
   // 「保存」ボタンで、今の入力を端末に書き込む
   const save = async () => {
-    await AsyncStorage.setItem(STORAGE_KEY, name);  // setItem : キーと値を渡して保存する
+    // setItem : キーと値を渡して保存する
+    await AsyncStorage.setItem(STORAGE_KEY, name);
   };
 
   return (
@@ -1274,7 +1368,8 @@ const styles = StyleSheet.create({
 ##### 解説1: 保存する場所の名札 `STORAGE_KEY`
 
 ```tsx
-const STORAGE_KEY = "user_name";  // 保存するときの「名札（キー）」。これで後から取り出す
+// 保存するときの「名札（キー）」。これで後から取り出す
+const STORAGE_KEY = "user_name";
 ```
 
 - `AsyncStorage` は、データを「**名札（キー）と中身（値）のセット**」で保存します。`STORAGE_KEY` はその名札にあたる文字です。
@@ -1290,11 +1385,14 @@ const STORAGE_KEY = "user_name";  // 保存するときの「名札（キー）�
 ```tsx
 useEffect(() => {
   const load = async () => {
-    const saved = await AsyncStorage.getItem(STORAGE_KEY);  // getItem : キーで値を読み出す
-    if (saved !== null) setName(saved);                     // 保存があれば状態に反映
+    // getItem : キーで値を読み出す
+    const saved = await AsyncStorage.getItem(STORAGE_KEY);
+    // 保存があれば状態に反映
+    if (saved !== null) setName(saved);
   };
   load();
-}, []); // [] : 最初の1回だけ実行
+// [] : 最初の1回だけ実行
+}, []);
 ```
 
 - `useEffect`（ユーズ・エフェクト）は「**画面が表示されたタイミングで何かする**」ための道具です。最後の `[]` は「最初の1回だけ実行する」という意味です。
@@ -1310,7 +1408,8 @@ useEffect(() => {
 
 ```tsx
 const save = async () => {
-  await AsyncStorage.setItem(STORAGE_KEY, name);  // setItem : キーと値を渡して保存する
+  // setItem : キーと値を渡して保存する
+  await AsyncStorage.setItem(STORAGE_KEY, name);
 };
 ```
 
@@ -1344,8 +1443,10 @@ export default function FlatListAdvanced() {
     <FlatList
       data={books}
       keyExtractor={(item) => item.id}
-      numColumns={2}                          // numColumns : 2列のグリッドで並べる
-      ListEmptyComponent={                    // ListEmptyComponent : dataが空のときに表示する中身
+      // numColumns : 2列のグリッドで並べる
+      numColumns={2}
+      // ListEmptyComponent : dataが空のときに表示する中身
+      ListEmptyComponent={
         <Text style={styles.empty}>本がありません</Text>
       }
       renderItem={({ item }) => (
@@ -1359,7 +1460,8 @@ export default function FlatListAdvanced() {
 
 const styles = StyleSheet.create({
   cell: {
-    flex: 1,                                  // 1列ぶんの幅を等分する
+    // 1列ぶんの幅を等分する
+    flex: 1,
     margin: 6,
     padding: 20,
     backgroundColor: "#f1f5f9",
@@ -1381,7 +1483,8 @@ const styles = StyleSheet.create({
 ##### 解説1: 何列かに並べる `numColumns`
 
 ```tsx
-numColumns={2}                          // numColumns : 2列のグリッドで並べる
+// numColumns : 2列のグリッドで並べる
+numColumns={2}
 ```
 
 - `numColumns`（ナム・カラムズ＝列の数）は、「**リストを何列のグリッド（格子状）で並べるか**」を指定します。
@@ -1397,7 +1500,8 @@ numColumns={2}                          // numColumns : 2列のグリッドで�
 
 ```tsx
 // numColumns を外して、代わりにこれを付ける
-horizontal={true}                       // horizontal : リストを横方向にスクロールさせる
+// horizontal : リストを横方向にスクロールさせる
+horizontal={true}
 ```
 
 - `horizontal={true}`（ホリゾンタル＝水平）を付けると、リストが**横方向に並び、横スクロール**できるようになります（既定は縦スクロール）。
@@ -1412,7 +1516,8 @@ horizontal={true}                       // horizontal : リストを横方向に
 ##### 解説3: 空のときに案内を出す `ListEmptyComponent`
 
 ```tsx
-ListEmptyComponent={                    // ListEmptyComponent : dataが空のときに表示する中身
+// ListEmptyComponent : dataが空のときに表示する中身
+ListEmptyComponent={
   <Text style={styles.empty}>本がありません</Text>
 }
 ```

@@ -24,24 +24,37 @@
 import { useState, useCallback } from "react";
 import { View, Text, FlatList, Pressable, StyleSheet, ActivityIndicator } from "react-native";
 import { useRouter, useFocusEffect } from "expo-router";
-import { fetchBooks } from "../lib/books";   // 第6章で作った「全件取得」関数
-import { Book } from "../types/book";        // 第6章で作ったBook型
+// 第6章で作った「全件取得」関数
+import { fetchBooks } from "../lib/books";
+// 第6章で作ったBook型
+import { Book } from "../types/book";
 
 export default function HomeScreen() {
-  const router = useRouter();                       // 画面移動の道具（第4章）
-  const [books, setBooks] = useState<Book[]>([]);   // 本のリストをstateで持つ。<Book[]>で型を指定。初期値は空配列
-  const [loading, setLoading] = useState(true);     // 読込中かどうか。最初はtrue（読込中）
+  // 画面移動の道具（第4章）
+  const router = useRouter();
+  // 本のリストをstateで持つ。<Book[]>で型を指定。初期値は空配列
+  const [books, setBooks] = useState<Book[]>([]);
+  // 読込中かどうか。最初はtrue（読込中）
+  const [loading, setLoading] = useState(true);
 
   // データを読み込む関数。async（待つ処理を含む）
   const load = useCallback(async () => {
-    try {                                  // try : この中の処理を試す。エラーが出たらcatchへ飛ぶ
-      setLoading(true);                    // 読込開始：ローディング表示をオンに
-      const data = await fetchBooks();     // Supabaseから全件取得（結果が返るまで待つ）
-      setBooks(data);                      // 取得したデータをstateにセット → 画面が更新される
-    } catch (e) {                          // catch : tryの中でエラーが起きたらここに来る。eにエラーが入る
-      console.log("読み込みエラー:", e);   // エラー内容を表示（学習用。本番は画面に出すと親切）
-    } finally {                            // finally : 成功・失敗どちらでも最後に必ず実行
-      setLoading(false);                   // 読込終了：ローディング表示をオフに
+    // try : この中の処理を試す。エラーが出たらcatchへ飛ぶ
+    try {
+      // 読込開始：ローディング表示をオンに
+      setLoading(true);
+      // Supabaseから全件取得（結果が返るまで待つ）
+      const data = await fetchBooks();
+      // 取得したデータをstateにセット → 画面が更新される
+      setBooks(data);
+    // catch : tryの中でエラーが起きたらここに来る。eにエラーが入る
+    } catch (e) {
+      // エラー内容を表示（学習用。本番は画面に出すと親切）
+      console.log("読み込みエラー:", e);
+    // finally : 成功・失敗どちらでも最後に必ず実行
+    } finally {
+      // 読込終了：ローディング表示をオフに
+      setLoading(false);
     }
   }, []);
 
@@ -57,7 +70,8 @@ export default function HomeScreen() {
   if (loading) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color="#1e40af" />  {/* ActivityIndicator : 読込中のぐるぐる */}
+        {/* ActivityIndicator : 読込中のぐるぐる */}
+        <ActivityIndicator size="large" color="#1e40af" />
       </View>
     );
   }
@@ -65,9 +79,12 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <FlatList
-        data={books}                              // 表示するデータ（本の配列）
-        keyExtractor={(item) => item.id}          // 各本を区別するキー（idを使う）
-        contentContainerStyle={{ padding: 16, gap: 10 }}  // リスト内側の余白と要素間の隙間
+        // 表示するデータ（本の配列）
+        data={books}
+        // 各本を区別するキー（idを使う）
+        keyExtractor={(item) => item.id}
+        // リスト内側の余白と要素間の隙間
+        contentContainerStyle={{ padding: 16, gap: 10 }}
         // ListEmptyComponent : dataが空のときに表示する内容
         ListEmptyComponent={
           <Text style={styles.empty}>まだ本が登録されていません。右下の＋から追加しましょう。</Text>
@@ -95,9 +112,12 @@ export default function HomeScreen() {
 
 // ステータスごとに色を変える補助関数。引数statusに応じて背景色を返す
 function getStatusStyle(status: string) {
-  if (status === "読了") return { backgroundColor: "#dcfce7" };   // 緑系
-  if (status === "読書中") return { backgroundColor: "#dbeafe" }; // 青系
-  return { backgroundColor: "#fef3c7" };                          // それ以外（未読）は黄系
+  // 緑系
+  if (status === "読了") return { backgroundColor: "#dcfce7" };
+  // 青系
+  if (status === "読書中") return { backgroundColor: "#dbeafe" };
+  // それ以外（未読）は黄系
+  return { backgroundColor: "#fef3c7" };
 }
 
 const styles = StyleSheet.create({
@@ -116,13 +136,17 @@ const styles = StyleSheet.create({
   badge: { alignSelf: "flex-start", marginTop: 8, paddingVertical: 3, paddingHorizontal: 10, borderRadius: 20 },
   badgeText: { fontSize: 11, fontWeight: "600", color: "#334155" },
   fab: {
-    position: "absolute",       // position:"absolute" : 通常の流れから外して自由配置
-    right: 20, bottom: 30,      // 右から20、下から30の位置に固定
-    width: 56, height: 56, borderRadius: 28,  // 直径56の円（borderRadiusを半分にすると円になる）
+    // position:"absolute" : 通常の流れから外して自由配置
+    position: "absolute",
+    // 右から20、下から30の位置に固定
+    right: 20, bottom: 30,
+    // 直径56の円（borderRadiusを半分にすると円になる）
+    width: 56, height: 56, borderRadius: 28,
     backgroundColor: "#1e40af",
     justifyContent: "center", alignItems: "center",
     shadowColor: "#000", shadowOpacity: 0.3, shadowRadius: 4, shadowOffset: { width: 0, height: 2 },
-    elevation: 5,               // elevation : Androidの影の深さ（iOSはshadow系で指定）
+    // elevation : Androidの影の深さ（iOSはshadow系で指定）
+    elevation: 5,
   },
   fabText: { color: "#fff", fontSize: 28, lineHeight: 30 },
 });
@@ -169,8 +193,10 @@ const styles = StyleSheet.create({
 import { useState, useCallback } from "react";
 import { View, Text, FlatList, Pressable, StyleSheet, ActivityIndicator } from "react-native";
 import { useRouter, useFocusEffect } from "expo-router";
-import { fetchBooks } from "../lib/books";   // 第6章で作った「全件取得」関数
-import { Book } from "../types/book";        // 第6章で作ったBook型
+// 第6章で作った「全件取得」関数
+import { fetchBooks } from "../lib/books";
+// 第6章で作ったBook型
+import { Book } from "../types/book";
 ```
 
 - `import { A, B } from "..."` は「`...` というファイル（ライブラリ）から、`A` と `B` という道具だけを取り出して使う」という意味です。
@@ -185,9 +211,12 @@ import { Book } from "../types/book";        // 第6章で作ったBook型
 ##### 解説2: state を用意する（画面が覚えておく値）
 
 ```tsx
-const router = useRouter();                       // 画面移動の道具（第4章）
-const [books, setBooks] = useState<Book[]>([]);   // 本のリストをstateで持つ。<Book[]>で型を指定。初期値は空配列
-const [loading, setLoading] = useState(true);     // 読込中かどうか。最初はtrue（読込中）
+// 画面移動の道具（第4章）
+const router = useRouter();
+// 本のリストをstateで持つ。<Book[]>で型を指定。初期値は空配列
+const [books, setBooks] = useState<Book[]>([]);
+// 読込中かどうか。最初はtrue（読込中）
+const [loading, setLoading] = useState(true);
 ```
 
 - `useRouter()` は「別の画面へ移動する」ための道具を `router` に入れています（あとで `router.push("/new")` で登録画面へ飛びます）。
@@ -203,14 +232,22 @@ const [loading, setLoading] = useState(true);     // 読込中かどうか。最
 
 ```tsx
 const load = useCallback(async () => {
-  try {                                  // try : この中の処理を試す。エラーが出たらcatchへ飛ぶ
-    setLoading(true);                    // 読込開始：ローディング表示をオンに
-    const data = await fetchBooks();     // Supabaseから全件取得（結果が返るまで待つ）
-    setBooks(data);                      // 取得したデータをstateにセット → 画面が更新される
-  } catch (e) {                          // catch : tryの中でエラーが起きたらここに来る。eにエラーが入る
-    console.log("読み込みエラー:", e);   // エラー内容を表示（学習用。本番は画面に出すと親切）
-  } finally {                            // finally : 成功・失敗どちらでも最後に必ず実行
-    setLoading(false);                   // 読込終了：ローディング表示をオフに
+  // try : この中の処理を試す。エラーが出たらcatchへ飛ぶ
+  try {
+    // 読込開始：ローディング表示をオンに
+    setLoading(true);
+    // Supabaseから全件取得（結果が返るまで待つ）
+    const data = await fetchBooks();
+    // 取得したデータをstateにセット → 画面が更新される
+    setBooks(data);
+  // catch : tryの中でエラーが起きたらここに来る。eにエラーが入る
+  } catch (e) {
+    // エラー内容を表示（学習用。本番は画面に出すと親切）
+    console.log("読み込みエラー:", e);
+  // finally : 成功・失敗どちらでも最後に必ず実行
+  } finally {
+    // 読込終了：ローディング表示をオフに
+    setLoading(false);
   }
 }, []);
 ```
@@ -248,7 +285,8 @@ useFocusEffect(
 if (loading) {
   return (
     <View style={styles.center}>
-      <ActivityIndicator size="large" color="#1e40af" />  {/* ActivityIndicator : 読込中のぐるぐる */}
+      {/* ActivityIndicator : 読込中のぐるぐる */}
+      <ActivityIndicator size="large" color="#1e40af" />
     </View>
   );
 }
@@ -266,9 +304,12 @@ if (loading) {
 
 ```tsx
 <FlatList
-  data={books}                              // 表示するデータ（本の配列）
-  keyExtractor={(item) => item.id}          // 各本を区別するキー（idを使う）
-  contentContainerStyle={{ padding: 16, gap: 10 }}  // リスト内側の余白と要素間の隙間
+  // 表示するデータ（本の配列）
+  data={books}
+  // 各本を区別するキー（idを使う）
+  keyExtractor={(item) => item.id}
+  // リスト内側の余白と要素間の隙間
+  contentContainerStyle={{ padding: 16, gap: 10 }}
   // ListEmptyComponent : dataが空のときに表示する内容
   ListEmptyComponent={
     <Text style={styles.empty}>まだ本が登録されていません。右下の＋から追加しましょう。</Text>
@@ -318,9 +359,12 @@ if (loading) {
 ```tsx
 // ステータスごとに色を変える補助関数。引数statusに応じて背景色を返す
 function getStatusStyle(status: string) {
-  if (status === "読了") return { backgroundColor: "#dcfce7" };   // 緑系
-  if (status === "読書中") return { backgroundColor: "#dbeafe" }; // 青系
-  return { backgroundColor: "#fef3c7" };                          // それ以外（未読）は黄系
+  // 緑系
+  if (status === "読了") return { backgroundColor: "#dcfce7" };
+  // 青系
+  if (status === "読書中") return { backgroundColor: "#dbeafe" };
+  // それ以外（未読）は黄系
+  return { backgroundColor: "#fef3c7" };
 }
 ```
 
@@ -351,13 +395,17 @@ const styles = StyleSheet.create({
   badge: { alignSelf: "flex-start", marginTop: 8, paddingVertical: 3, paddingHorizontal: 10, borderRadius: 20 },
   badgeText: { fontSize: 11, fontWeight: "600", color: "#334155" },
   fab: {
-    position: "absolute",       // position:"absolute" : 通常の流れから外して自由配置
-    right: 20, bottom: 30,      // 右から20、下から30の位置に固定
-    width: 56, height: 56, borderRadius: 28,  // 直径56の円（borderRadiusを半分にすると円になる）
+    // position:"absolute" : 通常の流れから外して自由配置
+    position: "absolute",
+    // 右から20、下から30の位置に固定
+    right: 20, bottom: 30,
+    // 直径56の円（borderRadiusを半分にすると円になる）
+    width: 56, height: 56, borderRadius: 28,
     backgroundColor: "#1e40af",
     justifyContent: "center", alignItems: "center",
     shadowColor: "#000", shadowOpacity: 0.3, shadowRadius: 4, shadowOffset: { width: 0, height: 2 },
-    elevation: 5,               // elevation : Androidの影の深さ（iOSはshadow系で指定）
+    // elevation : Androidの影の深さ（iOSはshadow系で指定）
+    elevation: 5,
   },
   fabText: { color: "#fff", fontSize: 28, lineHeight: 30 },
 });
@@ -384,7 +432,8 @@ const styles = StyleSheet.create({
 import { useState } from "react";
 import { View, Text, TextInput, Pressable, StyleSheet, ScrollView, Alert } from "react-native";
 import { useRouter } from "expo-router";
-import { createBook } from "../lib/books";   // 第6章で作った「追加」関数
+// 第6章で作った「追加」関数
+import { createBook } from "../lib/books";
 
 // ステータスの選択肢を配列で用意（ボタンを並べるのに使う）
 const STATUS_OPTIONS = ["未読", "読書中", "読了"];
@@ -393,29 +442,39 @@ export default function NewBookScreen() {
   const router = useRouter();
 
   // 入力欄ごとにstateを用意する（第4章の制御コンポーネント）
-  const [title, setTitle] = useState("");        // タイトル（最初は空文字）
-  const [author, setAuthor] = useState("");      // 著者
-  const [status, setStatus] = useState("未読");  // ステータス（初期値は未読）
-  const [memo, setMemo] = useState("");          // メモ
-  const [saving, setSaving] = useState(false);   // 保存処理中かどうか（連打防止に使う）
+  // タイトル（最初は空文字）
+  const [title, setTitle] = useState("");
+  // 著者
+  const [author, setAuthor] = useState("");
+  // ステータス（初期値は未読）
+  const [status, setStatus] = useState("未読");
+  // メモ
+  const [memo, setMemo] = useState("");
+  // 保存処理中かどうか（連打防止に使う）
+  const [saving, setSaving] = useState(false);
 
   // 保存ボタンを押したときの処理
   const handleSave = async () => {
     // 入力チェック（バリデーション）: タイトルと著者は必須
     // .trim() : 文字列の前後の空白を除く。空白だけの入力を「未入力」とみなすため
     if (title.trim() === "" || author.trim() === "") {
-      Alert.alert("入力エラー", "タイトルと著者は必須です");  // Alert.alert(タイトル, 本文) : 警告ダイアログを出す
-      return;                                                 // 処理を中断（保存しない）
+      // Alert.alert(タイトル, 本文) : 警告ダイアログを出す
+      Alert.alert("入力エラー", "タイトルと著者は必須です");
+      // 処理を中断（保存しない）
+      return;
     }
 
     try {
-      setSaving(true);                  // 保存開始（ボタンを無効化して二重送信を防ぐ）
+      // 保存開始（ボタンを無効化して二重送信を防ぐ）
+      setSaving(true);
       // createBook(...) : 第6章の追加関数。入力値をオブジェクトにまとめて渡す
       await createBook({
-        title: title.trim(),            // 前後空白を除いて保存
+        // 前後空白を除いて保存
+        title: title.trim(),
         author: author.trim(),
         status: status,
-        memo: memo.trim() === "" ? null : memo.trim(),  // メモが空ならnull、あれば値を保存（三項演算子）
+        // メモが空ならnull、あれば値を保存（三項演算子）
+        memo: memo.trim() === "" ? null : memo.trim(),
       });
       // 成功したら一覧画面へ戻る。一覧側のuseFocusEffectが再取得し、追加した本が表示される
       router.back();
@@ -423,7 +482,8 @@ export default function NewBookScreen() {
       Alert.alert("保存に失敗しました", "通信状況を確認してもう一度お試しください");
       console.log("保存エラー:", e);
     } finally {
-      setSaving(false);                 // 成功・失敗どちらでも保存状態を解除
+      // 成功・失敗どちらでも保存状態を解除
+      setSaving(false);
     }
   };
 
@@ -436,8 +496,10 @@ export default function NewBookScreen() {
         <TextInput
           style={styles.input}
           placeholder="書籍のタイトルを入力"
-          value={title}                              // stateと結びつける
-          onChangeText={setTitle}                    // 入力が変わるたびsetTitleで更新（setTitle(text)の短縮形）
+          // stateと結びつける
+          value={title}
+          // 入力が変わるたびsetTitleで更新（setTitle(text)の短縮形）
+          onChangeText={setTitle}
         />
       </View>
 
@@ -459,10 +521,12 @@ export default function NewBookScreen() {
           {/* STATUS_OPTIONS配列をmapでボタンに変換（第2章のmap） */}
           {STATUS_OPTIONS.map((option) => (
             <Pressable
-              key={option}                            // map で並べる要素には必ずkeyが必要
+              // map で並べる要素には必ずkeyが必要
+              key={option}
               // style に配列を渡すと複数スタイルを合成できる。選択中なら強調スタイルを追加
               style={[styles.statusButton, status === option && styles.statusButtonActive]}
-              onPress={() => setStatus(option)}       // 押したらそのステータスを選択
+              // 押したらそのステータスを選択
+              onPress={() => setStatus(option)}
             >
               <Text style={[styles.statusText, status === option && styles.statusTextActive]}>
                 {option}
@@ -480,8 +544,10 @@ export default function NewBookScreen() {
           placeholder="感想や覚え書きなど"
           value={memo}
           onChangeText={setMemo}
-          multiline                                   // multiline : 複数行入力を許可する
-          numberOfLines={4}                           // 表示上の高さの目安（4行分）
+          // multiline : 複数行入力を許可する
+          multiline
+          // 表示上の高さの目安（4行分）
+          numberOfLines={4}
         />
       </View>
 
@@ -489,7 +555,8 @@ export default function NewBookScreen() {
       <Pressable
         style={[styles.saveButton, saving && styles.saveButtonDisabled]}
         onPress={handleSave}
-        disabled={saving}                             // disabled : trueの間は押せなくする（二重送信防止）
+        // disabled : trueの間は押せなくする（二重送信防止）
+        disabled={saving}
       >
         <Text style={styles.saveButtonText}>{saving ? "保存中..." : "保存する"}</Text>
       </Pressable>
@@ -505,19 +572,23 @@ const styles = StyleSheet.create({
     borderWidth: 1, borderColor: "#e2e8f0", borderRadius: 8,
     paddingHorizontal: 12, paddingVertical: 10, fontSize: 14,
   },
-  textarea: { height: 100, textAlignVertical: "top" },  // textAlignVertical:"top" : 複数行で上揃えにする
-  statusRow: { flexDirection: "row", gap: 8 },          // ステータスボタンを横並びに
+  // textAlignVertical:"top" : 複数行で上揃えにする
+  textarea: { height: 100, textAlignVertical: "top" },
+  // ステータスボタンを横並びに
+  statusRow: { flexDirection: "row", gap: 8 },
   statusButton: {
     flex: 1, alignItems: "center", paddingVertical: 10,
     borderWidth: 1, borderColor: "#e2e8f0", borderRadius: 8, backgroundColor: "#fff",
   },
-  statusButtonActive: { borderColor: "#1e40af", backgroundColor: "#eff6ff" }, // 選択中の強調
+  // 選択中の強調
+  statusButtonActive: { borderColor: "#1e40af", backgroundColor: "#eff6ff" },
   statusText: { fontSize: 13, color: "#475569" },
   statusTextActive: { color: "#1e40af", fontWeight: "700" },
   saveButton: {
     backgroundColor: "#1e40af", paddingVertical: 14, borderRadius: 10, alignItems: "center", marginTop: 8,
   },
-  saveButtonDisabled: { backgroundColor: "#94a3b8" },   // 保存中はグレーにして押せない雰囲気に
+  // 保存中はグレーにして押せない雰囲気に
+  saveButtonDisabled: { backgroundColor: "#94a3b8" },
   saveButtonText: { color: "#fff", fontWeight: "bold", fontSize: 15 },
 });
 ```
@@ -552,7 +623,8 @@ const styles = StyleSheet.create({
 import { useState } from "react";
 import { View, Text, TextInput, Pressable, StyleSheet, ScrollView, Alert } from "react-native";
 import { useRouter } from "expo-router";
-import { createBook } from "../lib/books";   // 第6章で作った「追加」関数
+// 第6章で作った「追加」関数
+import { createBook } from "../lib/books";
 
 // ステータスの選択肢を配列で用意（ボタンを並べるのに使う）
 const STATUS_OPTIONS = ["未読", "読書中", "読了"];
@@ -572,11 +644,16 @@ const STATUS_OPTIONS = ["未読", "読書中", "読了"];
 const router = useRouter();
 
 // 入力欄ごとにstateを用意する（第4章の制御コンポーネント）
-const [title, setTitle] = useState("");        // タイトル（最初は空文字）
-const [author, setAuthor] = useState("");      // 著者
-const [status, setStatus] = useState("未読");  // ステータス（初期値は未読）
-const [memo, setMemo] = useState("");          // メモ
-const [saving, setSaving] = useState(false);   // 保存処理中かどうか（連打防止に使う）
+// タイトル（最初は空文字）
+const [title, setTitle] = useState("");
+// 著者
+const [author, setAuthor] = useState("");
+// ステータス（初期値は未読）
+const [status, setStatus] = useState("未読");
+// メモ
+const [memo, setMemo] = useState("");
+// 保存処理中かどうか（連打防止に使う）
+const [saving, setSaving] = useState(false);
 ```
 
 - 入力欄1つにつき1つの state を用意し、「今その欄に何が入力されているか」を覚えておきます。
@@ -594,8 +671,10 @@ const handleSave = async () => {
   // 入力チェック（バリデーション）: タイトルと著者は必須
   // .trim() : 文字列の前後の空白を除く。空白だけの入力を「未入力」とみなすため
   if (title.trim() === "" || author.trim() === "") {
-    Alert.alert("入力エラー", "タイトルと著者は必須です");  // Alert.alert(タイトル, 本文) : 警告ダイアログを出す
-    return;                                                 // 処理を中断（保存しない）
+    // Alert.alert(タイトル, 本文) : 警告ダイアログを出す
+    Alert.alert("入力エラー", "タイトルと著者は必須です");
+    // 処理を中断（保存しない）
+    return;
   }
 ```
 
@@ -611,13 +690,16 @@ const handleSave = async () => {
 
 ```tsx
   try {
-    setSaving(true);                  // 保存開始（ボタンを無効化して二重送信を防ぐ）
+    // 保存開始（ボタンを無効化して二重送信を防ぐ）
+    setSaving(true);
     // createBook(...) : 第6章の追加関数。入力値をオブジェクトにまとめて渡す
     await createBook({
-      title: title.trim(),            // 前後空白を除いて保存
+      // 前後空白を除いて保存
+      title: title.trim(),
       author: author.trim(),
       status: status,
-      memo: memo.trim() === "" ? null : memo.trim(),  // メモが空ならnull、あれば値を保存（三項演算子）
+      // メモが空ならnull、あれば値を保存（三項演算子）
+      memo: memo.trim() === "" ? null : memo.trim(),
     });
     // 成功したら一覧画面へ戻る。一覧側のuseFocusEffectが再取得し、追加した本が表示される
     router.back();
@@ -625,7 +707,8 @@ const handleSave = async () => {
     Alert.alert("保存に失敗しました", "通信状況を確認してもう一度お試しください");
     console.log("保存エラー:", e);
   } finally {
-    setSaving(false);                 // 成功・失敗どちらでも保存状態を解除
+    // 成功・失敗どちらでも保存状態を解除
+    setSaving(false);
   }
 };
 ```
@@ -648,8 +731,10 @@ const handleSave = async () => {
   <TextInput
     style={styles.input}
     placeholder="書籍のタイトルを入力"
-    value={title}                              // stateと結びつける
-    onChangeText={setTitle}                    // 入力が変わるたびsetTitleで更新（setTitle(text)の短縮形）
+    // stateと結びつける
+    value={title}
+    // 入力が変わるたびsetTitleで更新（setTitle(text)の短縮形）
+    onChangeText={setTitle}
   />
 </View>
 ```
@@ -673,10 +758,12 @@ const handleSave = async () => {
     {/* STATUS_OPTIONS配列をmapでボタンに変換（第2章のmap） */}
     {STATUS_OPTIONS.map((option) => (
       <Pressable
-        key={option}                            // map で並べる要素には必ずkeyが必要
+        // map で並べる要素には必ずkeyが必要
+        key={option}
         // style に配列を渡すと複数スタイルを合成できる。選択中なら強調スタイルを追加
         style={[styles.statusButton, status === option && styles.statusButtonActive]}
-        onPress={() => setStatus(option)}       // 押したらそのステータスを選択
+        // 押したらそのステータスを選択
+        onPress={() => setStatus(option)}
       >
         <Text style={[styles.statusText, status === option && styles.statusTextActive]}>
           {option}
@@ -707,8 +794,10 @@ const handleSave = async () => {
     placeholder="感想や覚え書きなど"
     value={memo}
     onChangeText={setMemo}
-    multiline                                   // multiline : 複数行入力を許可する
-    numberOfLines={4}                           // 表示上の高さの目安（4行分）
+    // multiline : 複数行入力を許可する
+    multiline
+    // 表示上の高さの目安（4行分）
+    numberOfLines={4}
   />
 </View>
 
@@ -716,7 +805,8 @@ const handleSave = async () => {
 <Pressable
   style={[styles.saveButton, saving && styles.saveButtonDisabled]}
   onPress={handleSave}
-  disabled={saving}                             // disabled : trueの間は押せなくする（二重送信防止）
+  // disabled : trueの間は押せなくする（二重送信防止）
+  disabled={saving}
 >
   <Text style={styles.saveButtonText}>{saving ? "保存中..." : "保存する"}</Text>
 </Pressable>
@@ -742,19 +832,23 @@ const styles = StyleSheet.create({
     borderWidth: 1, borderColor: "#e2e8f0", borderRadius: 8,
     paddingHorizontal: 12, paddingVertical: 10, fontSize: 14,
   },
-  textarea: { height: 100, textAlignVertical: "top" },  // textAlignVertical:"top" : 複数行で上揃えにする
-  statusRow: { flexDirection: "row", gap: 8 },          // ステータスボタンを横並びに
+  // textAlignVertical:"top" : 複数行で上揃えにする
+  textarea: { height: 100, textAlignVertical: "top" },
+  // ステータスボタンを横並びに
+  statusRow: { flexDirection: "row", gap: 8 },
   statusButton: {
     flex: 1, alignItems: "center", paddingVertical: 10,
     borderWidth: 1, borderColor: "#e2e8f0", borderRadius: 8, backgroundColor: "#fff",
   },
-  statusButtonActive: { borderColor: "#1e40af", backgroundColor: "#eff6ff" }, // 選択中の強調
+  // 選択中の強調
+  statusButtonActive: { borderColor: "#1e40af", backgroundColor: "#eff6ff" },
   statusText: { fontSize: 13, color: "#475569" },
   statusTextActive: { color: "#1e40af", fontWeight: "700" },
   saveButton: {
     backgroundColor: "#1e40af", paddingVertical: 14, borderRadius: 10, alignItems: "center", marginTop: 8,
   },
-  saveButtonDisabled: { backgroundColor: "#94a3b8" },   // 保存中はグレーにして押せない雰囲気に
+  // 保存中はグレーにして押せない雰囲気に
+  saveButtonDisabled: { backgroundColor: "#94a3b8" },
   saveButtonText: { color: "#fff", fontWeight: "bold", fontSize: 15 },
 });
 ```

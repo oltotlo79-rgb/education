@@ -30,10 +30,12 @@ import { Text } from "react-native";
 // () => { ... } : 第2章で学んだアロー関数。引数なしの関数
 // この関数は「画面に表示する内容」を return で返す
 function Greeting() {
-  return <Text>こんにちは！</Text>;   // return の後ろが「見た目」。<Text>...</Text> が画面に出る文字
+  // return の後ろが「見た目」。<Text>...</Text> が画面に出る文字
+  return <Text>こんにちは！</Text>;
 }
 
-export default Greeting;   // export default : この部品を「外のファイルから使えるように公開する」宣言
+// export default : この部品を「外のファイルから使えるように公開する」宣言
+export default Greeting;
 ```
 
 > **コンポーネント名はなぜ大文字始まり？** Reactは「小文字始まり＝HTMLの普通のタグ」「大文字始まり＝自作コンポーネント」と区別します。だから自作の部品は必ず `Greeting` のように大文字で始めます。これはルールなので守りましょう。
@@ -50,8 +52,10 @@ export default Greeting;   // export default : この部品を「外のファイ
 ```tsx
 // JSXの基本ルール
 return (
-  <View>                          {/* <View> は「箱」。中に複数の部品をまとめられる（第4章で詳説） */}
-    <Text>1冊目の本</Text>         {/* タグは <開始>中身</終了> の形 */}
+  {/* <View> は「箱」。中に複数の部品をまとめられる（第4章で詳説） */}
+  <View>
+    {/* タグは <開始>中身</終了> の形 */}
+    <Text>1冊目の本</Text>
     <Text>2冊目の本</Text>
   </View>
 );
@@ -80,8 +84,10 @@ import { View, Text } from "react-native";
 // BookCard : 書籍カードのコンポーネント
 // props（材料）として title と author を受け取る形を、型で定義する
 type BookCardProps = {
-  title: string;    // 本のタイトル（文字列）
-  author: string;   // 著者名（文字列）
+  // 本のタイトル（文字列）
+  title: string;
+  // 著者名（文字列）
+  author: string;
 };
 
 // ({ title, author }) : 受け取ったpropsから title と author を取り出す書き方（分割代入という）
@@ -89,8 +95,10 @@ type BookCardProps = {
 function BookCard({ title, author }: BookCardProps) {
   return (
     <View>
-      <Text>{title}</Text>      {/* 受け取った title を表示 */}
-      <Text>{author}</Text>     {/* 受け取った author を表示 */}
+      {/* 受け取った title を表示 */}
+      <Text>{title}</Text>
+      {/* 受け取った author を表示 */}
+      <Text>{author}</Text>
     </View>
   );
 }
@@ -124,7 +132,8 @@ export default BookCard;
 stateを作るには **`useState`（ユーズ・ステート）** という機能（フック）を使います。
 
 ```tsx
-import { useState } from "react";              // Reactから useState を借りてくる
+// Reactから useState を借りてくる
+import { useState } from "react";
 import { View, Text, Button } from "react-native";
 
 function Counter() {
@@ -136,10 +145,13 @@ function Counter() {
 
   return (
     <View>
-      <Text>押した回数: {count}</Text>          {/* 今のcountを表示 */}
+      {/* 今のcountを表示 */}
+      <Text>押した回数: {count}</Text>
       <Button
-        title="押す"                           // ボタンに表示する文字
-        onPress={() => setCount(count + 1)}    // onPress : 押されたときの処理 / setCountでcountを+1する
+        // ボタンに表示する文字
+        title="押す"
+        // onPress : 押されたときの処理 / setCountでcountを+1する
+        onPress={() => setCount(count + 1)}
       />
     </View>
   );
@@ -153,8 +165,10 @@ function Counter() {
 ```tsx
 const [count, setCount] = useState(0);
 
-count = count + 1;        // ❌ これはダメ！ 直接書き換えても画面は更新されない
-setCount(count + 1);      // ⭕ 必ず専用の関数（setCount）を使う。これで画面も自動更新される
+// ❌ これはダメ！ 直接書き換えても画面は更新されない
+count = count + 1;
+// ⭕ 必ず専用の関数（setCount）を使う。これで画面も自動更新される
+setCount(count + 1);
 ```
 
 > **なぜ専用関数を使う必要があるの？** Reactは「stateが変わったら画面を描き直す」という仕組みで動いています。`setCount` を呼ぶことで初めてReactが「変化した！画面を更新しよう」と気づきます。直接 `count = ...` と書くと、Reactは変化に気づけず、画面が古いままになります。これは初心者がつまずきやすい超重要ポイントです。
@@ -185,7 +199,8 @@ setCount(count + 1);      // ⭕ 必ず専用の関数（setCount）を使う。
 import { useEffect, useState } from "react";
 
 function BookList() {
-  const [books, setBooks] = useState([]);   // 本のリストをstateで持つ（最初は空の配列[]）
+  // 本のリストをstateで持つ（最初は空の配列[]）
+  const [books, setBooks] = useState([]);
 
   // useEffect(実行したい処理, 依存配列) の形
   useEffect(() => {
@@ -194,7 +209,8 @@ function BookList() {
   }, []);
   // 第2引数の [] : 「依存配列」。空の[]は「最初の1回だけ実行する」という意味になる
 
-  return <Text>本の数: {books.length}</Text>;   // books.length : 配列の要素数（本の冊数）
+  // books.length : 配列の要素数（本の冊数）
+  return <Text>本の数: {books.length}</Text>;
 }
 ```
 
@@ -294,22 +310,27 @@ import { useRef, useState } from "react";
 import { View, Text, Pressable } from "react-native";
 
 export default function TimerExample() {
-  const [count, setCount] = useState(0);          // 画面に出す数 → useState
+  // 画面に出す数 → useState
+  const [count, setCount] = useState(0);
   // タイマーのID（画面には出さない裏の値）→ useRef に保管。最初はまだ無いので null
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const start = () => {
-    if (timerRef.current) return;                 // すでに動いていたら二重に始めない
+    // すでに動いていたら二重に始めない
+    if (timerRef.current) return;
     // setInterval : 一定間隔で処理を繰り返す。戻り値の「ID」を timerRef に保管
     timerRef.current = setInterval(() => {
-      setCount((prev) => prev + 1);               // 1秒ごとにカウントを1増やす
+      // 1秒ごとにカウントを1増やす
+      setCount((prev) => prev + 1);
     }, 1000);
   };
 
   const stop = () => {
     if (timerRef.current) {
-      clearInterval(timerRef.current);            // 保管しておいたIDでタイマーを止める
-      timerRef.current = null;                    // 止めたのでIDを空に戻す
+      // 保管しておいたIDでタイマーを止める
+      clearInterval(timerRef.current);
+      // 止めたのでIDを空に戻す
+      timerRef.current = null;
     }
   };
 
@@ -332,7 +353,8 @@ export default function TimerExample() {
 ##### 解説1: 画面に出す値と出さない値を分ける
 
 ```tsx
-const [count, setCount] = useState(0);          // 画面に出す数 → useState
+// 画面に出す数 → useState
+const [count, setCount] = useState(0);
 const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 ```
 
@@ -348,9 +370,11 @@ const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
 ```tsx
 const start = () => {
-  if (timerRef.current) return;                 // すでに動いていたら二重に始めない
+  // すでに動いていたら二重に始めない
+  if (timerRef.current) return;
   timerRef.current = setInterval(() => {
-    setCount((prev) => prev + 1);               // 1秒ごとにカウントを1増やす
+    // 1秒ごとにカウントを1増やす
+    setCount((prev) => prev + 1);
   }, 1000);
 };
 ```
@@ -369,8 +393,10 @@ const start = () => {
 ```tsx
 const stop = () => {
   if (timerRef.current) {
-    clearInterval(timerRef.current);            // 保管しておいたIDでタイマーを止める
-    timerRef.current = null;                    // 止めたのでIDを空に戻す
+    // 保管しておいたIDでタイマーを止める
+    clearInterval(timerRef.current);
+    // 止めたのでIDを空に戻す
+    timerRef.current = null;
   }
 };
 ```
@@ -402,7 +428,8 @@ const books = [
 ];
 
 export default function BookSearch() {
-  const [keyword, setKeyword] = useState("");   // 検索の言葉（画面に出す値なので useState）
+  // 検索の言葉（画面に出す値なので useState）
+  const [keyword, setKeyword] = useState("");
 
   // useMemo(() => 計算, [keyword]) : keyword が変わったときだけ絞り込みをやり直す
   const filtered = useMemo(() => {
@@ -418,7 +445,8 @@ export default function BookSearch() {
         onChangeText={setKeyword}
       />
       <FlatList
-        data={filtered}                          // 絞り込んだ結果を表示
+        // 絞り込んだ結果を表示
+        data={filtered}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => <Text>{item.title}</Text>}
       />
@@ -496,7 +524,8 @@ export default function StableList() {
     <FlatList
       data={books}
       keyExtractor={(item) => item.id}
-      renderItem={renderItem}                   // 安定した関数を渡す
+      // 安定した関数を渡す
+      renderItem={renderItem}
     />
   );
 }
@@ -560,7 +589,8 @@ const ThemeContext = createContext("light");
 
 // 3. 共有された値を「使う」部品（離れた場所にあってもOK）
 function ThemeLabel() {
-  const theme = useContext(ThemeContext);   // useContext : 共有されたテーマを直接受け取る
+  // useContext : 共有されたテーマを直接受け取る
+  const theme = useContext(ThemeContext);
   return <Text>今のテーマ: {theme}</Text>;
 }
 
@@ -619,7 +649,8 @@ const ThemeContext = createContext("light");
 
 ```tsx
 function ThemeLabel() {
-  const theme = useContext(ThemeContext);   // useContext : 共有されたテーマを直接受け取る
+  // useContext : 共有されたテーマを直接受け取る
+  const theme = useContext(ThemeContext);
   return <Text>今のテーマ: {theme}</Text>;
 }
 ```
@@ -763,8 +794,10 @@ import { View, Text, Pressable } from "react-native";
 // 「今オンかどうか」と「切り替える処理」をまとめて返す
 function useToggle(initial: boolean) {
   const [on, setOn] = useState(initial);
-  const toggle = () => setOn((prev) => !prev);   // !prev : 今の逆にする（オン↔オフ）
-  return { on, toggle };                          // 状態と切り替え処理をまとめて返す
+  // !prev : 今の逆にする（オン↔オフ）
+  const toggle = () => setOn((prev) => !prev);
+  // 状態と切り替え処理をまとめて返す
+  return { on, toggle };
 }
 
 export default function ToggleExample() {
@@ -773,7 +806,8 @@ export default function ToggleExample() {
 
   return (
     <View>
-      <Text>状態: {on ? "オン" : "オフ"}</Text>   {/* on が true なら「オン」 */}
+      {/* on が true なら「オン」 */}
+      <Text>状態: {on ? "オン" : "オフ"}</Text>
       <Pressable onPress={toggle}>
         <Text>切り替える</Text>
       </Pressable>
@@ -793,8 +827,10 @@ export default function ToggleExample() {
 ```tsx
 function useToggle(initial: boolean) {
   const [on, setOn] = useState(initial);
-  const toggle = () => setOn((prev) => !prev);   // !prev : 今の逆にする（オン↔オフ）
-  return { on, toggle };                          // 状態と切り替え処理をまとめて返す
+  // !prev : 今の逆にする（オン↔オフ）
+  const toggle = () => setOn((prev) => !prev);
+  // 状態と切り替え処理をまとめて返す
+  return { on, toggle };
 }
 ```
 
@@ -824,7 +860,8 @@ const { on, toggle } = useToggle(false);
 ##### 解説3: 状態に応じて表示を変える `on ? "オン" : "オフ"`
 
 ```tsx
-<Text>状態: {on ? "オン" : "オフ"}</Text>   {/* on が true なら「オン」 */}
+{/* on が true なら「オン」 */}
+<Text>状態: {on ? "オン" : "オフ"}</Text>
 <Pressable onPress={toggle}>
   <Text>切り替える</Text>
 </Pressable>

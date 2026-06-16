@@ -40,12 +40,18 @@ my-books-app/
 
 // Book : 1冊の本を表す型。Supabaseのbooksテーブルの列と対応させる（第5章で作った表）
 export type Book = {
-  id: string;          // 本のID（Supabaseが自動生成するuuid）
-  title: string;       // タイトル（必須）
-  author: string;      // 著者（必須）
-  status: string;      // 読書状態（"未読" / "読書中" / "読了"）
-  memo: string | null; // メモ（空のこともあるので string または null）。第2章の「| null」参照
-  created_at: string;  // 登録日時（Supabaseが自動で入れる）
+  // 本のID（Supabaseが自動生成するuuid）
+  id: string;
+  // タイトル（必須）
+  title: string;
+  // 著者（必須）
+  author: string;
+  // 読書状態（"未読" / "読書中" / "読了"）
+  status: string;
+  // メモ（空のこともあるので string または null）。第2章の「| null」参照
+  memo: string | null;
+  // 登録日時（Supabaseが自動で入れる）
+  created_at: string;
 };
 
 // NewBook : 「新規登録するときの入力データ」の型
@@ -72,12 +78,18 @@ export type NewBook = {
 
 ```ts
 export type Book = {
-  id: string;          // 本のID（Supabaseが自動生成するuuid）
-  title: string;       // タイトル（必須）
-  author: string;      // 著者（必須）
-  status: string;      // 読書状態（"未読" / "読書中" / "読了"）
-  memo: string | null; // メモ（空のこともあるので string または null）。第2章の「| null」参照
-  created_at: string;  // 登録日時（Supabaseが自動で入れる）
+  // 本のID（Supabaseが自動生成するuuid）
+  id: string;
+  // タイトル（必須）
+  title: string;
+  // 著者（必須）
+  author: string;
+  // 読書状態（"未読" / "読書中" / "読了"）
+  status: string;
+  // メモ（空のこともあるので string または null）。第2章の「| null」参照
+  memo: string | null;
+  // 登録日時（Supabaseが自動で入れる）
+  created_at: string;
 };
 ```
 
@@ -122,8 +134,10 @@ Supabaseとのデータのやり取り（取得・追加・更新・削除）を
 ```ts
 // lib/books.ts — 本のCRUD（作成・読取・更新・削除）をまとめたファイル
 
-import { supabase } from "./supabase";              // 第5章で作った接続オブジェクトを借りる
-import { Book, NewBook } from "../types/book";      // さっき作った型を借りる
+// 第5章で作った接続オブジェクトを借りる
+import { supabase } from "./supabase";
+// さっき作った型を借りる
+import { Book, NewBook } from "../types/book";
 
 // ============================================================
 // Read（読み取り）: 本を全件取得する
@@ -139,8 +153,10 @@ export async function fetchBooks(): Promise<Book[]> {
     .select("*")
     .order("created_at", { ascending: false });
 
-  if (error) throw error;   // エラーがあれば throw で呼び出し元に知らせる（第7章で受け止める）
-  return data ?? [];        // データを返す。?? は「左がnull/undefinedなら右を使う」。空なら[]を返す
+  // エラーがあれば throw で呼び出し元に知らせる（第7章で受け止める）
+  if (error) throw error;
+  // データを返す。?? は「左がnull/undefinedなら右を使う」。空なら[]を返す
+  return data ?? [];
 }
 
 // ============================================================
@@ -160,8 +176,10 @@ export async function fetchBookById(id: string): Promise<Book> {
   const { data, error } = await supabase
     .from("books")
     .select("*")
-    .eq("id", id)      // .eq("id", id) : id列が引数idと等しい行に絞り込む（eq = equal）
-    .single();         // .single()     : 結果を「1件のオブジェクト」として受け取る（配列でなく）
+    // .eq("id", id) : id列が引数idと等しい行に絞り込む（eq = equal）
+    .eq("id", id)
+    // .single()     : 結果を「1件のオブジェクト」として受け取る（配列でなく）
+    .single();
 
   if (error) throw error;
   return data;
@@ -173,8 +191,10 @@ export async function fetchBookById(id: string): Promise<Book> {
 export async function updateBook(id: string, updated: NewBook): Promise<void> {
   const { error } = await supabase
     .from("books")
-    .update(updated)   // .update(updated) : 指定データで上書きする
-    .eq("id", id);     // .eq("id", id)    : id列が一致する行だけを更新（これが無いと全件更新になり危険）
+    // .update(updated) : 指定データで上書きする
+    .update(updated)
+    // .eq("id", id)    : id列が一致する行だけを更新（これが無いと全件更新になり危険）
+    .eq("id", id);
   if (error) throw error;
 }
 
@@ -184,8 +204,10 @@ export async function updateBook(id: string, updated: NewBook): Promise<void> {
 export async function deleteBook(id: string): Promise<void> {
   const { error } = await supabase
     .from("books")
-    .delete()          // .delete() : 行を削除する
-    .eq("id", id);     // .eq("id", id) : id列が一致する行だけを削除
+    // .delete() : 行を削除する
+    .delete()
+    // .eq("id", id) : id列が一致する行だけを削除
+    .eq("id", id);
   if (error) throw error;
 }
 ```
@@ -205,8 +227,10 @@ export async function deleteBook(id: string): Promise<void> {
 ##### 解説1: 他ファイルから道具を借りる（import）
 
 ```ts
-import { supabase } from "./supabase";              // 第5章で作った接続オブジェクトを借りる
-import { Book, NewBook } from "../types/book";      // さっき作った型を借りる
+// 第5章で作った接続オブジェクトを借りる
+import { supabase } from "./supabase";
+// さっき作った型を借りる
+import { Book, NewBook } from "../types/book";
 ```
 
 - `import { 名前 } from "場所"` は「**別のファイルで `export` した部品を、このファイルに借りてくる**」書き方です。解説した `export` の受け取り側にあたります。
@@ -227,8 +251,10 @@ export async function fetchBooks(): Promise<Book[]> {
     .select("*")
     .order("created_at", { ascending: false });
 
-  if (error) throw error;   // エラーがあれば throw で呼び出し元に知らせる（第7章で受け止める）
-  return data ?? [];        // データを返す。?? は「左がnull/undefinedなら右を使う」。空なら[]を返す
+  // エラーがあれば throw で呼び出し元に知らせる（第7章で受け止める）
+  if (error) throw error;
+  // データを返す。?? は「左がnull/undefinedなら右を使う」。空なら[]を返す
+  return data ?? [];
 }
 ```
 
@@ -267,8 +293,10 @@ export async function fetchBookById(id: string): Promise<Book> {
   const { data, error } = await supabase
     .from("books")
     .select("*")
-    .eq("id", id)      // .eq("id", id) : id列が引数idと等しい行に絞り込む（eq = equal）
-    .single();         // .single()     : 結果を「1件のオブジェクト」として受け取る（配列でなく）
+    // .eq("id", id) : id列が引数idと等しい行に絞り込む（eq = equal）
+    .eq("id", id)
+    // .single()     : 結果を「1件のオブジェクト」として受け取る（配列でなく）
+    .single();
 
   if (error) throw error;
   return data;
@@ -290,8 +318,10 @@ export async function fetchBookById(id: string): Promise<Book> {
 export async function updateBook(id: string, updated: NewBook): Promise<void> {
   const { error } = await supabase
     .from("books")
-    .update(updated)   // .update(updated) : 指定データで上書きする
-    .eq("id", id);     // .eq("id", id)    : id列が一致する行だけを更新（これが無いと全件更新になり危険）
+    // .update(updated) : 指定データで上書きする
+    .update(updated)
+    // .eq("id", id)    : id列が一致する行だけを更新（これが無いと全件更新になり危険）
+    .eq("id", id);
   if (error) throw error;
 }
 ```
@@ -311,8 +341,10 @@ export async function updateBook(id: string, updated: NewBook): Promise<void> {
 export async function deleteBook(id: string): Promise<void> {
   const { error } = await supabase
     .from("books")
-    .delete()          // .delete() : 行を削除する
-    .eq("id", id);     // .eq("id", id) : id列が一致する行だけを削除
+    // .delete() : 行を削除する
+    .delete()
+    // .eq("id", id) : id列が一致する行だけを削除
+    .eq("id", id);
   if (error) throw error;
 }
 ```
@@ -335,16 +367,20 @@ export async function deleteBook(id: string): Promise<void> {
 ```tsx
 // app/_layout.tsx — アプリ全体のナビゲーションの枠組み
 
-import { Stack } from "expo-router";   // Stack（カードを重ねる遷移）を借りる
+// Stack（カードを重ねる遷移）を借りる
+import { Stack } from "expo-router";
 
 export default function RootLayout() {
   return (
     // Stack : 画面を積み重ねるナビゲーション。screenOptions で全画面共通の見た目を指定
     <Stack
       screenOptions={{
-        headerStyle: { backgroundColor: "#1e40af" },  // ヘッダー（上部バー）の背景色を青に
-        headerTintColor: "#fff",                       // ヘッダーの文字・戻る矢印の色を白に
-        headerTitleStyle: { fontWeight: "bold" },      // ヘッダータイトルを太字に
+        // ヘッダー（上部バー）の背景色を青に
+        headerStyle: { backgroundColor: "#1e40af" },
+        // ヘッダーの文字・戻る矢印の色を白に
+        headerTintColor: "#fff",
+        // ヘッダータイトルを太字に
+        headerTitleStyle: { fontWeight: "bold" },
       }}
     >
       {/* Stack.Screen : 各画面ごとの個別設定。name はファイル名（拡張子なし）と対応 */}
@@ -377,7 +413,8 @@ export default function RootLayout() {
 ##### 解説1: 道具を借りて、土台コンポーネントを宣言する
 
 ```tsx
-import { Stack } from "expo-router";   // Stack（カードを重ねる遷移）を借りる
+// Stack（カードを重ねる遷移）を借りる
+import { Stack } from "expo-router";
 
 export default function RootLayout() {
 ```
@@ -396,9 +433,12 @@ export default function RootLayout() {
 ```tsx
     <Stack
       screenOptions={{
-        headerStyle: { backgroundColor: "#1e40af" },  // ヘッダー（上部バー）の背景色を青に
-        headerTintColor: "#fff",                       // ヘッダーの文字・戻る矢印の色を白に
-        headerTitleStyle: { fontWeight: "bold" },      // ヘッダータイトルを太字に
+        // ヘッダー（上部バー）の背景色を青に
+        headerStyle: { backgroundColor: "#1e40af" },
+        // ヘッダーの文字・戻る矢印の色を白に
+        headerTintColor: "#fff",
+        // ヘッダータイトルを太字に
+        headerTitleStyle: { fontWeight: "bold" },
       }}
     >
 ```
@@ -462,10 +502,12 @@ rm -r app/(tabs)
 // app/index.tsx — 書籍一覧画面（この章では仮の内容。第7章で本実装）
 
 import { View, Text, Pressable, StyleSheet } from "react-native";
-import { useRouter } from "expo-router";   // 画面移動の道具（第4章参照）
+// 画面移動の道具（第4章参照）
+import { useRouter } from "expo-router";
 
 export default function HomeScreen() {
-  const router = useRouter();              // 移動操作を取得
+  // 移動操作を取得
+  const router = useRouter();
 
   return (
     <View style={styles.container}>
@@ -498,10 +540,12 @@ const styles = StyleSheet.create({
 
 ```tsx
 import { View, Text, Pressable, StyleSheet } from "react-native";
-import { useRouter } from "expo-router";   // 画面移動の道具（第4章参照）
+// 画面移動の道具（第4章参照）
+import { useRouter } from "expo-router";
 
 export default function HomeScreen() {
-  const router = useRouter();              // 移動操作を取得
+  // 移動操作を取得
+  const router = useRouter();
 ```
 
 - 1行目で `react-native` から画面部品を借りています。`View`（箱）、`Text`（文字）、`Pressable`（押せる領域）、`StyleSheet`（見た目の設定をまとめる道具）の4つです。

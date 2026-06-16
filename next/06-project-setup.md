@@ -240,29 +240,50 @@ book-management/
 
 ```json
 {
-  "name": "book-management",                  // プロジェクト名（フォルダ名と同じ）
-  "version": "0.1.0",                          // プロジェクトのバージョン（自由に決められる）
-  "private": true,                             // true にすると npm publish で公開できなくなる（誤公開防止）
-  "scripts": {                                 // npm run <名前> で実行できるコマンドの集まり
-    "dev": "next dev --turbopack",             // 開発サーバー起動（Turbopackを使用）
-    "build": "next build",                     // 本番用ビルド（最適化された静的ファイルを生成）
-    "start": "next start",                     // ビルド済みアプリを本番モードで起動
-    "lint": "next lint"                        // ESLint でコード品質チェックを実行
+  // プロジェクト名（フォルダ名と同じ）
+  "name": "book-management",
+  // プロジェクトのバージョン（自由に決められる）
+  "version": "0.1.0",
+  // true にすると npm publish で公開できなくなる（誤公開防止）
+  "private": true,
+  // npm run <名前> で実行できるコマンドの集まり
+  "scripts": {
+    // 開発サーバー起動（Turbopackを使用）
+    "dev": "next dev --turbopack",
+    // 本番用ビルド（最適化された静的ファイルを生成）
+    "build": "next build",
+    // ビルド済みアプリを本番モードで起動
+    "start": "next start",
+    // ESLint でコード品質チェックを実行
+    "lint": "next lint"
   },
-  "dependencies": {                            // 本番でも必要なパッケージ
-    "react": "19.x.x",                         // React 本体
-    "react-dom": "19.x.x",                     // React を DOM にレンダリングするためのパッケージ
-    "next": "15.x.x"                           // Next.js フレームワーク
+  // 本番でも必要なパッケージ
+  "dependencies": {
+    // React 本体
+    "react": "19.x.x",
+    // React を DOM にレンダリングするためのパッケージ
+    "react-dom": "19.x.x",
+    // Next.js フレームワーク
+    "next": "15.x.x"
   },
-  "devDependencies": {                         // 開発中だけ必要なパッケージ
-    "typescript": "^5",                        // TypeScript コンパイラ
-    "@types/node": "^20",                      // Node.js の型定義
-    "@types/react": "^19",                     // React の型定義
-    "@types/react-dom": "^19",                 // React DOM の型定義
-    "postcss": "^8",                           // PostCSS（CSS変換ツール）
-    "tailwindcss": "^3.x.x",                   // Tailwind CSS 本体
-    "eslint": "^8",                            // ESLint 本体
-    "eslint-config-next": "15.x.x"             // Next.js 用 ESLint 設定
+  // 開発中だけ必要なパッケージ
+  "devDependencies": {
+    // TypeScript コンパイラ
+    "typescript": "^5",
+    // Node.js の型定義
+    "@types/node": "^20",
+    // React の型定義
+    "@types/react": "^19",
+    // React DOM の型定義
+    "@types/react-dom": "^19",
+    // PostCSS（CSS変換ツール）
+    "postcss": "^8",
+    // Tailwind CSS 本体
+    "tailwindcss": "^3.x.x",
+    // ESLint 本体
+    "eslint": "^8",
+    // Next.js 用 ESLint 設定
+    "eslint-config-next": "15.x.x"
   }
 }
 ```
@@ -271,29 +292,48 @@ book-management/
 
 ```json
 {
-  "compilerOptions": {                         // TypeScript コンパイラの動作設定
-    "target": "ES2017",                        // コンパイル後のJavaScriptのバージョン（ES2017相当）
-    "lib": ["dom", "dom.iterable", "esnext"],  // 使えるグローバルAPI（DOM、最新のES機能など）
-    "allowJs": true,                           // .js ファイルもTypeScriptで扱えるようにする
-    "skipLibCheck": true,                      // ライブラリの型チェックをスキップ（高速化）
-    "strict": true,                            // 厳格な型チェックを有効化（推奨）
-    "noEmit": true,                            // .ts → .js への変換ファイルは出力しない（Next.jsが代行）
-    "esModuleInterop": true,                   // CommonJS と ES Modules の混在を許可
-    "module": "esnext",                        // モジュールシステムは最新の ES Modules
-    "moduleResolution": "bundler",             // モジュール解決方式（バンドラー用）
-    "resolveJsonModule": true,                 // .json ファイルを import 可能にする
-    "isolatedModules": true,                   // 各ファイルを独立したモジュールとして扱う
-    "jsx": "preserve",                         // JSX をそのまま残す（Next.jsが変換）
-    "incremental": true,                       // 増分コンパイルを有効化（再ビルドが速くなる）
+  // TypeScript コンパイラの動作設定
+  "compilerOptions": {
+    // コンパイル後のJavaScriptのバージョン（ES2017相当）
+    "target": "ES2017",
+    // 使えるグローバルAPI（DOM、最新のES機能など）
+    "lib": ["dom", "dom.iterable", "esnext"],
+    // .js ファイルもTypeScriptで扱えるようにする
+    "allowJs": true,
+    // ライブラリの型チェックをスキップ（高速化）
+    "skipLibCheck": true,
+    // 厳格な型チェックを有効化（推奨）
+    "strict": true,
+    // .ts → .js への変換ファイルは出力しない（Next.jsが代行）
+    "noEmit": true,
+    // CommonJS と ES Modules の混在を許可
+    "esModuleInterop": true,
+    // モジュールシステムは最新の ES Modules
+    "module": "esnext",
+    // モジュール解決方式（バンドラー用）
+    "moduleResolution": "bundler",
+    // .json ファイルを import 可能にする
+    "resolveJsonModule": true,
+    // 各ファイルを独立したモジュールとして扱う
+    "isolatedModules": true,
+    // JSX をそのまま残す（Next.jsが変換）
+    "jsx": "preserve",
+    // 増分コンパイルを有効化（再ビルドが速くなる）
+    "incremental": true,
     "plugins": [
-      { "name": "next" }                       // Next.js 用の TypeScript プラグイン
+      // Next.js 用の TypeScript プラグイン
+      { "name": "next" }
     ],
-    "paths": {                                 // パスエイリアスの定義
-      "@/*": ["./src/*"]                       // @/foo は src/foo を指す
+    // パスエイリアスの定義
+    "paths": {
+      // @/foo は src/foo を指す
+      "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],  // 型チェック対象
-  "exclude": ["node_modules"]                  // 型チェック対象から除外
+  // 型チェック対象
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  // 型チェック対象から除外
+  "exclude": ["node_modules"]
 }
 ```
 
@@ -302,13 +342,16 @@ book-management/
 ```typescript
 // next.config.ts
 
-import type { NextConfig } from "next";       // Next.js の設定型をインポート（type 付きで型のみ取得）
+// Next.js の設定型をインポート（type 付きで型のみ取得）
+import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {               // 設定オブジェクトの型を NextConfig に固定
-  /* ここに追加の設定を書く */                   // 例: images.remotePatterns で外部画像ドメインを許可など
+// 設定オブジェクトの型を NextConfig に固定
+const nextConfig: NextConfig = {
+  /* ここに追加の設定を書く（例: images.remotePatterns で外部画像ドメインを許可など） */
 };
 
-export default nextConfig;                     // デフォルトエクスポート（Next.js が自動で読み込む）
+// デフォルトエクスポート（Next.js が自動で読み込む）
+export default nextConfig;
 ```
 
 ---
@@ -321,11 +364,16 @@ export default nextConfig;                     // デフォルトエクスポー
 
 ```css
 /* 従来の CSS */
-.card {                                        /* card という名前のクラスにスタイルを定義 */
-  background-color: white;                     /* 背景色を白に */
-  border-radius: 8px;                          /* 角を 8px の半径で丸める */
-  padding: 16px;                               /* 内側の余白を 16px に */
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);    /* 薄い影を下方向に */
+/* card という名前のクラスにスタイルを定義 */
+.card {
+  /* 背景色を白に */
+  background-color: white;
+  /* 角を 8px の半径で丸める */
+  border-radius: 8px;
+  /* 内側の余白を 16px に */
+  padding: 16px;
+  /* 薄い影を下方向に */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 ```
 
@@ -492,9 +540,12 @@ Tailwind CSS では、ブレークポイントのプレフィックスを付け�
 ```tsx
 {/* grid: グリッド表示 / grid-cols-1: 1列 / md:grid-cols-2: 768px以上で2列 / lg:grid-cols-3: 1024px以上で3列 / gap-4: 子要素間に16px間隔 */}
 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-  <div>カード1</div>          {/* 1つ目のセル */}
-  <div>カード2</div>          {/* 2つ目のセル */}
-  <div>カード3</div>          {/* 3つ目のセル */}
+  {/* 1つ目のセル */}
+  <div>カード1</div>
+  {/* 2つ目のセル */}
+  <div>カード2</div>
+  {/* 3つ目のセル */}
+  <div>カード3</div>
 </div>
 ```
 
@@ -620,10 +671,14 @@ npm install @supabase/supabase-js
 ```json
 {
   "dependencies": {
-    "@supabase/supabase-js": "^2.x.x",   // 今インストールしたSupabaseクライアント（^は後述）
-    "next": "15.x.x",                     // Next.js本体
-    "react": "^19.x.x",                   // React本体
-    "react-dom": "^19.x.x"                // React DOM
+    // 今インストールしたSupabaseクライアント（^は後述）
+    "@supabase/supabase-js": "^2.x.x",
+    // Next.js本体
+    "next": "15.x.x",
+    // React本体
+    "react": "^19.x.x",
+    // React DOM
+    "react-dom": "^19.x.x"
   }
 }
 ```
@@ -797,16 +852,26 @@ mkdir -p src/types
 # ファイルの作成（中身は後ほど記述）
 # touch: 空のファイルを作成するコマンド（既に存在する場合は最終更新時刻だけ変える）
 # Windows の PowerShell では touch がないので、代わりに「New-Item -ItemType File ファイル名」を使う
-touch src/components/Header.tsx          # 共通ヘッダー
-touch src/components/BookCard.tsx        # 書籍カード
-touch src/components/BookForm.tsx        # 書籍フォーム
-touch src/components/BookList.tsx        # 書籍一覧
-touch src/components/DeleteButton.tsx    # 削除ボタン
-touch src/components/StatusBadge.tsx     # ステータスバッジ
-touch src/components/RatingStars.tsx     # 評価表示
-touch src/components/LoadingSpinner.tsx  # ローディング
-touch src/lib/supabase.ts                # Supabaseクライアント
-touch src/types/book.ts                  # Book型定義
+# 共通ヘッダー
+touch src/components/Header.tsx
+# 書籍カード
+touch src/components/BookCard.tsx
+# 書籍フォーム
+touch src/components/BookForm.tsx
+# 書籍一覧
+touch src/components/BookList.tsx
+# 削除ボタン
+touch src/components/DeleteButton.tsx
+# ステータスバッジ
+touch src/components/StatusBadge.tsx
+# 評価表示
+touch src/components/RatingStars.tsx
+# ローディング
+touch src/components/LoadingSpinner.tsx
+# Supabaseクライアント
+touch src/lib/supabase.ts
+# Book型定義
+touch src/types/book.ts
 ```
 
 ---
@@ -891,8 +956,10 @@ import { createClient } from "@supabase/supabase-js";
 // 環境変数から Supabase の接続情報を取得
 // process.env: Node.js 由来のグローバルオブジェクト。.env.local の中身がここに入る
 // NEXT_PUBLIC_ で始まる変数は、ビルド時にブラウザ側のコードにも埋め込まれる
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;       // SupabaseのプロジェクトURL
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY; // Supabase の Anon Key
+// SupabaseのプロジェクトURL
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+// Supabase の Anon Key
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 // 環境変数が設定されていない場合にわかりやすいエラーメッセージを表示
 // !supabaseUrl は「supabaseUrl が undefined や空文字なら true」になる条件
@@ -979,8 +1046,10 @@ import { createClient } from "@supabase/supabase-js";
 ##### 解説2: 環境変数から接続情報を読み取る
 
 ```typescript
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;       // SupabaseのプロジェクトURL
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY; // Supabase の Anon Key
+// SupabaseのプロジェクトURL
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+// Supabase の Anon Key
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 ```
 
 - `process.env`（プロセス・エンブ）は、**環境変数の入れ物**です。さきほど `.env.local` に書いた値が、ここに入ってきます。
@@ -1061,28 +1130,36 @@ export type BookStatus = "unread" | "reading" | "finished";
 // type Book = { ... }: オブジェクトの形を表す型を Book という名前で定義
 export type Book = {
   /** 書籍ID（UUID形式、Supabase が自動生成） */
-  id: string;                  // UUID は "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" 形式の文字列
+  // UUID は "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" 形式の文字列
+  id: string;
 
   /** 書籍のタイトル（必須） */
-  title: string;               // 例: "リーダブルコード"
+  // 例: "リーダブルコード"
+  title: string;
 
   /** 著者名（必須） */
-  author: string;              // 例: "Dustin Boswell"
+  // 例: "Dustin Boswell"
+  author: string;
 
   /** 読書ステータス（デフォルト: "unread"） */
-  status: BookStatus;          // 上で定義した BookStatus 型（3つの文字列のどれか）
+  // 上で定義した BookStatus 型（3つの文字列のどれか）
+  status: BookStatus;
 
   /** 評価（1〜5の整数、未評価の場合は null） */
-  rating: number | null;       // number | null: 数値か null のどちらか（ユニオン型）
+  // number | null: 数値か null のどちらか（ユニオン型）
+  rating: number | null;
 
   /** メモ・感想（任意、未入力の場合は null） */
-  memo: string | null;         // 文字列または null
+  // 文字列または null
+  memo: string | null;
 
   /** 作成日時（ISO 8601 形式の文字列、Supabase が自動生成） */
-  created_at: string;          // 例: "2024-01-15T10:30:00.000Z"
+  // 例: "2024-01-15T10:30:00.000Z"
+  created_at: string;
 
   /** 更新日時（ISO 8601 形式の文字列、Supabase が自動生成） */
-  updated_at: string;          // 行が更新されるたびに Supabase のトリガーが書き換える
+  // 行が更新されるたびに Supabase のトリガーが書き換える
+  updated_at: string;
 };
 
 /**
@@ -1094,19 +1171,24 @@ export type Book = {
  */
 export type BookInsert = {
   /** 書籍のタイトル（必須） */
-  title: string;               // 必須項目（? が付いていない）
+  // 必須項目（? が付いていない）
+  title: string;
 
   /** 著者名（必須） */
-  author: string;              // 必須項目
+  // 必須項目
+  author: string;
 
   /** 読書ステータス（省略時は "unread" がデフォルト） */
-  status?: BookStatus;         // ?: オプショナル。省略可能。省略時の値はDB側のデフォルトで補う
+  // ?: オプショナル。省略可能。省略時の値はDB側のデフォルトで補う
+  status?: BookStatus;
 
   /** 評価（1〜5、省略時は null） */
-  rating?: number | null;      // 省略してもよいし、明示的に null を送ってもよい
+  // 省略してもよいし、明示的に null を送ってもよい
+  rating?: number | null;
 
   /** メモ・感想（省略時は null） */
-  memo?: string | null;        // 同上
+  // 同上
+  memo?: string | null;
 };
 
 /**
@@ -1118,19 +1200,24 @@ export type BookInsert = {
  */
 export type BookUpdate = {
   /** 書籍のタイトル */
-  title?: string;              // すべて ? 付き（更新時は変更したいフィールドのみ送る）
+  // すべて ? 付き（更新時は変更したいフィールドのみ送る）
+  title?: string;
 
   /** 著者名 */
-  author?: string;             // 同上
+  // 同上
+  author?: string;
 
   /** 読書ステータス */
-  status?: BookStatus;         // 同上
+  // 同上
+  status?: BookStatus;
 
   /** 評価（1〜5、null で評価をクリア） */
-  rating?: number | null;      // null を明示的に送ると評価をリセットできる
+  // null を明示的に送ると評価をリセットできる
+  rating?: number | null;
 
   /** メモ・感想（null でメモをクリア） */
-  memo?: string | null;        // 同上
+  // 同上
+  memo?: string | null;
 };
 
 /**
@@ -1143,9 +1230,12 @@ export type BookUpdate = {
 // 「キーが BookStatus 型、値が string 型のオブジェクト」を意味する
 // 3つのキー（unread, reading, finished）すべてが必須になる
 export const statusLabels: Record<BookStatus, string> = {
-  unread: "未読",              // "unread" の表示用ラベル
-  reading: "読書中",            // "reading" の表示用ラベル
-  finished: "読了",             // "finished" の表示用ラベル
+  // "unread" の表示用ラベル
+  unread: "未読",
+  // "reading" の表示用ラベル
+  reading: "読書中",
+  // "finished" の表示用ラベル
+  finished: "読了",
 };
 
 /**
@@ -1161,17 +1251,26 @@ export const statusColors: Record<
   BookStatus,
   { bg: string; text: string }
 > = {
-  unread: {                    // 未読: グレー系（控えめ）
-    bg: "bg-gray-100",         // 背景は薄いグレー
-    text: "text-gray-700",     // 文字は濃いめのグレー
+  // 未読: グレー系（控えめ）
+  unread: {
+    // 背景は薄いグレー
+    bg: "bg-gray-100",
+    // 文字は濃いめのグレー
+    text: "text-gray-700",
   },
-  reading: {                   // 読書中: 青系（進行中の印象）
-    bg: "bg-blue-100",         // 背景は薄い青
-    text: "text-blue-700",     // 文字は濃いめの青
+  // 読書中: 青系（進行中の印象）
+  reading: {
+    // 背景は薄い青
+    bg: "bg-blue-100",
+    // 文字は濃いめの青
+    text: "text-blue-700",
   },
-  finished: {                  // 読了: 緑系（完了の印象）
-    bg: "bg-green-100",        // 背景は薄い緑
-    text: "text-green-700",    // 文字は濃いめの緑
+  // 読了: 緑系（完了の印象）
+  finished: {
+    // 背景は薄い緑
+    bg: "bg-green-100",
+    // 文字は濃いめの緑
+    text: "text-green-700",
   },
 };
 ```
@@ -1339,10 +1438,14 @@ import Header from "@/components/Header";
  * （外部の Google Fonts サーバーにリクエストが飛ばないため高速）
  */
 const notoSansJP = Noto_Sans_JP({
-  subsets: ["latin"],         // 読み込むサブセット（文字種）。日本語はデフォルトで含まれる
-  weight: ["400", "500", "700"], // 使用するフォントの太さ（通常 / やや太字 / 太字）
-  display: "swap",            // フォント読み込み中は代替フォントで表示し、完了後に切り替える
-  preload: true,              // 重要なフォントなので、HTMLの <link rel="preload"> で先読みする
+  // 読み込むサブセット（文字種）。日本語はデフォルトで含まれる
+  subsets: ["latin"],
+  // 使用するフォントの太さ（通常 / やや太字 / 太字）
+  weight: ["400", "500", "700"],
+  // フォント読み込み中は代替フォントで表示し、完了後に切り替える
+  display: "swap",
+  // 重要なフォントなので、HTMLの <link rel="preload"> で先読みする
+  preload: true,
 });
 
 /**
@@ -1354,8 +1457,10 @@ const notoSansJP = Noto_Sans_JP({
 // export const metadata: Next.js が自動でこの変数を読み取って <head> に反映する
 // 型は Metadata（先ほど type import したもの）
 export const metadata: Metadata = {
-  title: "書籍管理アプリ",                       // <title> タグの中身（ブラウザのタブ表示）
-  description:                                  // <meta name="description"> の中身（検索結果に出る説明文）
+  // <title> タグの中身（ブラウザのタブ表示）
+  title: "書籍管理アプリ",
+  // <meta name="description"> の中身（検索結果に出る説明文）
+  description:
     "読んだ本、読んでいる本、これから読む本を管理するWebアプリケーション",
 };
 
@@ -1524,9 +1629,12 @@ export default function RootLayout({
 /* src/app/globals.css */
 
 /* @tailwind: Tailwind CSS 専用のディレクティブ。PostCSS が処理時に大量のクラスに展開する */
-@tailwind base;        /* リセットCSSと要素のベーススタイル */
-@tailwind components;  /* component レイヤー（カスタムコンポーネントクラス） */
-@tailwind utilities;   /* 全ユーティリティクラス（最も多くのコードが展開される） */
+/* リセットCSSと要素のベーススタイル */
+@tailwind base;
+/* component レイヤー（カスタムコンポーネントクラス） */
+@tailwind components;
+/* 全ユーティリティクラス（最も多くのコードが展開される） */
+@tailwind utilities;
 ```
 
 > **Tailwind CSS ディレクティブの意味:**
@@ -1622,8 +1730,10 @@ export default function Header() {
               // pathname === "/" が true なら青系（現在地ハイライト）、false ならグレー系
               className={`px-3 py-2 rounded-md text-sm font-medium transition duration-200 ${
                 pathname === "/"
-                  ? "bg-blue-50 text-blue-700"                                 // 現在地：薄青背景＋青文字
-                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"       // 通常：グレー文字、ホバーで反応
+                  // 現在地：薄青背景＋青文字
+                  ? "bg-blue-50 text-blue-700"
+                  // 通常：グレー文字、ホバーで反応
+                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
               }`}
             >
               書籍一覧
@@ -1636,8 +1746,10 @@ export default function Header() {
               // text-sm: 文字サイズ14px / font-medium: やや太字 / transition: 滑らか変化
               className={`px-4 py-2 rounded-md text-sm font-medium transition duration-200 ${
                 pathname === "/books/new"
-                  ? "bg-blue-700 text-white"                                   // 現在地：濃い青背景＋白文字
-                  : "bg-blue-600 text-white hover:bg-blue-700"                 // 通常：青背景、ホバーで濃く
+                  // 現在地：濃い青背景＋白文字
+                  ? "bg-blue-700 text-white"
+                  // 通常：青背景、ホバーで濃く
+                  : "bg-blue-600 text-white hover:bg-blue-700"
               }`}
             >
               書籍を登録する
@@ -2025,10 +2137,14 @@ import { Book } from "@/types/book";
 // await: Promise（非同期処理の結果）を待つキーワード。async 関数内でのみ使用可能
 // 戻り値は { data, error } のオブジェクトなので、分割代入で取り出す
 const { data, error } = await supabase
-  .from("books")           // books テーブルを指定（SQL の FROM books に相当）
-  .select("*")             // すべてのカラムを取得（SQL の SELECT * に相当）
-  .order("created_at", {   // 作成日の降順（新しい順）に並び替え（SQL の ORDER BY に相当）
-    ascending: false       // false で降順（新しい順）。true なら昇順（古い順）
+  // books テーブルを指定（SQL の FROM books に相当）
+  .from("books")
+  // すべてのカラムを取得（SQL の SELECT * に相当）
+  .select("*")
+  // 作成日の降順（新しい順）に並び替え（SQL の ORDER BY に相当）
+  .order("created_at", {
+    // false で降順（新しい順）。true なら昇順（古い順）
+    ascending: false
   });
 
 // 3. エラーハンドリング
@@ -2036,7 +2152,8 @@ const { data, error } = await supabase
 if (error) {
   // console.error: 開発者ツールのコンソールにエラーログを赤色で出力
   console.error("書籍の取得に失敗しました:", error.message);
-  return;                  // ここで関数を抜ける
+  // ここで関数を抜ける
+  return;
 }
 
 // 4. data は Book[] 型（書籍の配列）

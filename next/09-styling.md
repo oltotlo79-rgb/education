@@ -64,11 +64,16 @@
 /* ピリオド「.」で始まる名前は「クラスセレクタ」と呼ばれ、 */
 /* HTML の class="btn-primary" を持つ要素にスタイルを当てる */
 .btn-primary {
-  background-color: #3b82f6;  /* 背景色を指定。#3b82f6 は16進数で青色を表す */
-  color: white;                /* 文字色を白に。color プロパティは「文字色」を指す */
-  padding: 8px 16px;           /* 内側の余白。上下8px、左右16px。padding は要素内部の余白 */
-  border-radius: 8px;          /* 角を丸める。8px の半径で四隅を丸くする */
-  border: none;                /* 枠線を消す。none = 何も無い */
+  /* 背景色を指定。#3b82f6 は16進数で青色を表す */
+  background-color: #3b82f6;
+  /* 文字色を白に。color プロパティは「文字色」を指す */
+  color: white;
+  /* 内側の余白。上下8px、左右16px。padding は要素内部の余白 */
+  padding: 8px 16px;
+  /* 角を丸める。8px の半径で四隅を丸くする */
+  border-radius: 8px;
+  /* 枠線を消す。none = 何も無い */
+  border: none;
 }
 ```
 
@@ -227,9 +232,12 @@ Tailwind の数値（`p-4`, `text-xl`）は**4の倍数のpx**などの規則が
 /* @tailwind ディレクティブは Tailwind CSS が提供する特別な命令文。
    ビルド時に、それぞれ大量のCSSコードに展開される。
    この3行が無いと Tailwind のクラスは一切効かない。 */
-@tailwind base;       /* base   : ブラウザ標準スタイルのリセット（normalize.css 的なもの）+ HTML要素のデフォルト */
-@tailwind components; /* components: .btn など、@layer components { ... } で定義したクラス */
-@tailwind utilities;  /* utilities : bg-red-500, p-4 などのユーティリティクラス本体 */
+/* base   : ブラウザ標準スタイルのリセット（normalize.css 的なもの）+ HTML要素のデフォルト */
+@tailwind base;
+/* components: .btn など、@layer components { ... } で定義したクラス */
+@tailwind components;
+/* utilities : bg-red-500, p-4 などのユーティリティクラス本体 */
+@tailwind utilities;
 
 /* ========================================
    1. CSS カスタムプロパティ（カラートークン）
@@ -242,17 +250,23 @@ Tailwind の数値（`p-4`, `text-xl`）は**4の倍数のpx**などの規則が
   /* --color- で始まる名前は「CSSカスタムプロパティ（CSS変数）」。
      値（例：#eef2ff）は16進数カラーコード。先頭の # の後の2桁ずつが
      赤・緑・青の強さを 00〜FF で表す。 */
-  --color-primary-50: #eef2ff;   /* 一番薄いインディゴ（背景バッジ等に使う） */
-  --color-primary-100: #e0e7ff;  /* 薄め */
+  /* 一番薄いインディゴ（背景バッジ等に使う） */
+  --color-primary-50: #eef2ff;
+  /* 薄め */
+  --color-primary-100: #e0e7ff;
   --color-primary-200: #c7d2fe;
   --color-primary-300: #a5b4fc;
   --color-primary-400: #818cf8;
-  --color-primary-500: #6366f1;  /* 標準のプライマリ色 */
-  --color-primary-600: #4f46e5;  /* ボタン背景でよく使う濃さ */
-  --color-primary-700: #4338ca;  /* ホバー時の濃さ */
+  /* 標準のプライマリ色 */
+  --color-primary-500: #6366f1;
+  /* ボタン背景でよく使う濃さ */
+  --color-primary-600: #4f46e5;
+  /* ホバー時の濃さ */
+  --color-primary-700: #4338ca;
   --color-primary-800: #3730a3;
   --color-primary-900: #312e81;
-  --color-primary-950: #1e1b4b;  /* 一番濃いインディゴ（ダークモード背景等） */
+  /* 一番濃いインディゴ（ダークモード背景等） */
+  --color-primary-950: #1e1b4b;
 
   /* セカンダリカラー（エメラルド系：緑系の鮮やかな色） */
   --color-secondary-50: #ecfdf5;
@@ -260,7 +274,8 @@ Tailwind の数値（`p-4`, `text-xl`）は**4の倍数のpx**などの規則が
   --color-secondary-200: #a7f3d0;
   --color-secondary-300: #6ee7b7;
   --color-secondary-400: #34d399;
-  --color-secondary-500: #10b981;  /* 標準のセカンダリ色 */
+  /* 標準のセカンダリ色 */
+  --color-secondary-500: #10b981;
   --color-secondary-600: #059669;
   --color-secondary-700: #047857;
   --color-secondary-800: #065f46;
@@ -268,33 +283,49 @@ Tailwind の数値（`p-4`, `text-xl`）は**4の倍数のpx**などの規則が
   --color-secondary-950: #022c22;
 
   /* 背景・テキスト（セマンティック＝意味ベースの命名） */
-  --color-background: #ffffff;          /* ページ全体の背景色（白） */
-  --color-foreground: #0f172a;          /* 前景色＝メインの文字色（ほぼ黒） */
-  --color-muted: #64748b;               /* muted = 弱めた色。補足テキスト用 */
-  --color-muted-foreground: #94a3b8;    /* さらに薄い補足文字色 */
-  --color-border: #e2e8f0;              /* 枠線の色 */
-  --color-card: #ffffff;                /* カード（書籍カードなど）の背景色 */
-  --color-card-foreground: #0f172a;     /* カード内の文字色 */
+  /* ページ全体の背景色（白） */
+  --color-background: #ffffff;
+  /* 前景色＝メインの文字色（ほぼ黒） */
+  --color-foreground: #0f172a;
+  /* muted = 弱めた色。補足テキスト用 */
+  --color-muted: #64748b;
+  /* さらに薄い補足文字色 */
+  --color-muted-foreground: #94a3b8;
+  /* 枠線の色 */
+  --color-border: #e2e8f0;
+  /* カード（書籍カードなど）の背景色 */
+  --color-card: #ffffff;
+  /* カード内の文字色 */
+  --color-card-foreground: #0f172a;
 
   /* 状態カラー（操作結果や状態を伝えるための色） */
-  --color-success: #10b981;  /* 成功＝緑 */
-  --color-warning: #f59e0b;  /* 警告＝黄/オレンジ */
-  --color-error: #ef4444;    /* エラー＝赤 */
-  --color-info: #3b82f6;     /* 情報＝青 */
+  /* 成功＝緑 */
+  --color-success: #10b981;
+  /* 警告＝黄/オレンジ */
+  --color-warning: #f59e0b;
+  /* エラー＝赤 */
+  --color-error: #ef4444;
+  /* 情報＝青 */
+  --color-info: #3b82f6;
 
   /* シャドウ（box-shadow：影） */
   /* box-shadow の値は「横ずれ 縦ずれ ぼかし 広がり 色」の順に書く */
   /* rgb(0 0 0 / 0.05) は黒で透明度5%という意味 */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); /* 2つの影を重ねる */
+  /* 2つの影を重ねる */
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 
   /* ボーダー半径（角丸の大きさ） */
   /* rem は「ルート要素のフォントサイズを基準とする単位」。普通は 1rem = 16px */
-  --radius-sm: 0.375rem;  /* = 6px */
-  --radius-md: 0.5rem;    /* = 8px */
-  --radius-lg: 0.75rem;   /* = 12px */
-  --radius-xl: 1rem;      /* = 16px */
+  /* = 6px */
+  --radius-sm: 0.375rem;
+  /* = 8px */
+  --radius-md: 0.5rem;
+  /* = 12px */
+  --radius-lg: 0.75rem;
+  /* = 16px */
+  --radius-xl: 1rem;
 }
 
 /* ダークモード用のカスタムプロパティ */
@@ -303,12 +334,16 @@ Tailwind の数値（`p-4`, `text-xl`）は**4の倍数のpx**などの規則が
    仕組みなので、各コンポーネントで dark:bg-... を一つずつ書かなくても
    ダークモードに対応できる。 */
 .dark {
-  --color-background: #0f172a;        /* ほぼ黒（slate-900）に */
-  --color-foreground: #f8fafc;        /* 文字は逆に白系に */
+  /* ほぼ黒（slate-900）に */
+  --color-background: #0f172a;
+  /* 文字は逆に白系に */
+  --color-foreground: #f8fafc;
   --color-muted: #94a3b8;
   --color-muted-foreground: #64748b;
-  --color-border: #334155;             /* 暗い枠線 */
-  --color-card: #1e293b;               /* カード背景は背景より少し明るい暗色 */
+  /* 暗い枠線 */
+  --color-border: #334155;
+  /* カード背景は背景より少し明るい暗色 */
+  --color-card: #1e293b;
   --color-card-foreground: #f8fafc;
 
   /* 影は暗い画面ではより濃く（透明度を上げる）と見える */
@@ -326,9 +361,12 @@ Tailwind の数値（`p-4`, `text-xl`）は**4の倍数のpx**などの規則が
 @layer base {
   /* HTML・Body のリセットと基本設定 */
   html {
-    scroll-behavior: smooth;          /* ページ内リンクのスクロールをなめらかに */
-    -webkit-font-smoothing: antialiased;  /* Mac の Chrome/Safari でフォントを滑らかに表示 */
-    -moz-osx-font-smoothing: grayscale;   /* Mac の Firefox でフォントを滑らかに表示 */
+    /* ページ内リンクのスクロールをなめらかに */
+    scroll-behavior: smooth;
+    /* Mac の Chrome/Safari でフォントを滑らかに表示 */
+    -webkit-font-smoothing: antialiased;
+    /* Mac の Firefox でフォントを滑らかに表示 */
+    -moz-osx-font-smoothing: grayscale;
   }
 
   body {
@@ -336,7 +374,8 @@ Tailwind の数値（`p-4`, `text-xl`）は**4の倍数のpx**などの規則が
     /* bg-[var(--color-background)] : 背景色を CSS 変数から取得（任意値構文 [ ]） */
     /* text-[var(--color-foreground)] : 文字色を CSS 変数から取得 */
     @apply bg-[var(--color-background)] text-[var(--color-foreground)];
-    font-feature-settings: "rlig" 1, "calt" 1;  /* OpenType の合字機能を有効化（綺麗な文字に） */
+    /* OpenType の合字機能を有効化（綺麗な文字に） */
+    font-feature-settings: "rlig" 1, "calt" 1;
     /* ダークモード切替時に背景・文字色を 0.3 秒かけて滑らかに変える */
     transition: background-color 0.3s ease, color 0.3s ease;
   }
@@ -377,7 +416,8 @@ Tailwind の数値（`p-4`, `text-xl`）は**4の倍数のpx**などの規則が
     /* dark:text-primary-400      : ダークモード時はより明るく（dark: 接頭辞） */
     /* dark:hover:text-primary-300: ダーク × ホバーの組み合わせ */
     @apply text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300;
-    transition: color 0.15s ease;   /* 色変化を 0.15 秒かけて滑らかに */
+    /* 色変化を 0.15 秒かけて滑らかに */
+    transition: color 0.15s ease;
   }
 }
 
@@ -563,45 +603,58 @@ Tailwind の数値（`p-4`, `text-xl`）は**4の倍数のpx**などの規則が
   /* テキスト省略（複数行対応） */
   /* line-clamp は「N 行を超えたら省略記号「…」で打ち切る」機能 */
   .line-clamp-1 {
-    display: -webkit-box;             /* WebKit 系の特殊な display 値（複数行省略に必要） */
-    -webkit-line-clamp: 1;            /* 1 行で打ち切る */
-    -webkit-box-orient: vertical;     /* ボックスを縦方向に並べる */
-    overflow: hidden;                 /* はみ出た部分を非表示 */
+    /* WebKit 系の特殊な display 値（複数行省略に必要） */
+    display: -webkit-box;
+    /* 1 行で打ち切る */
+    -webkit-line-clamp: 1;
+    /* ボックスを縦方向に並べる */
+    -webkit-box-orient: vertical;
+    /* はみ出た部分を非表示 */
+    overflow: hidden;
   }
 
   .line-clamp-2 {
     display: -webkit-box;
-    -webkit-line-clamp: 2;            /* 2 行で打ち切る */
+    /* 2 行で打ち切る */
+    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
 
   .line-clamp-3 {
     display: -webkit-box;
-    -webkit-line-clamp: 3;            /* 3 行で打ち切る */
+    /* 3 行で打ち切る */
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
 
   /* スクロールバーのカスタマイズ */
   .scrollbar-thin {
-    scrollbar-width: thin;            /* Firefox 用: スクロールバーを細く */
-    scrollbar-color: var(--color-muted-foreground) transparent;  /* つまみ色 トラック色 */
+    /* Firefox 用: スクロールバーを細く */
+    scrollbar-width: thin;
+    /* つまみ色 トラック色 */
+    scrollbar-color: var(--color-muted-foreground) transparent;
   }
 
   /* ::-webkit-scrollbar は Chrome/Safari 用のスクロールバー擬似要素 */
   .scrollbar-thin::-webkit-scrollbar {
-    width: 6px;     /* 縦スクロールバーの幅 */
-    height: 6px;    /* 横スクロールバーの高さ */
+    /* 縦スクロールバーの幅 */
+    width: 6px;
+    /* 横スクロールバーの高さ */
+    height: 6px;
   }
 
   .scrollbar-thin::-webkit-scrollbar-track {
-    background: transparent;  /* スクロールバーの「軌道（背景部分）」を透明に */
+    /* スクロールバーの「軌道（背景部分）」を透明に */
+    background: transparent;
   }
 
   .scrollbar-thin::-webkit-scrollbar-thumb {
-    background-color: var(--color-muted-foreground);  /* つまみの色 */
-    border-radius: 3px;                                /* つまみを丸く */
+    /* つまみの色 */
+    background-color: var(--color-muted-foreground);
+    /* つまみを丸く */
+    border-radius: 3px;
   }
 
   /* グラスモーフィズム（glassmorphism：すりガラス風効果） */
@@ -623,12 +676,16 @@ Tailwind の数値（`p-4`, `text-xl`）は**4の倍数のpx**などの規則が
 /* fadeIn: 少し下から、透明 → 不透明にフェードイン */
 @keyframes fadeIn {
   from {
-    opacity: 0;                       /* 透明（見えない） */
-    transform: translateY(8px);       /* 8px 下にずらした位置から始まる */
+    /* 透明（見えない） */
+    opacity: 0;
+    /* 8px 下にずらした位置から始まる */
+    transform: translateY(8px);
   }
   to {
-    opacity: 1;                       /* 不透明（見える） */
-    transform: translateY(0);         /* 元の位置へ */
+    /* 不透明（見える） */
+    opacity: 1;
+    /* 元の位置へ */
+    transform: translateY(0);
   }
 }
 
@@ -648,11 +705,13 @@ Tailwind の数値（`p-4`, `text-xl`）は**4の倍数のpx**などの規則が
 @keyframes slideInRight {
   from {
     opacity: 0;
-    transform: translateX(16px);      /* 16px 右にずれた位置 */
+    /* 16px 右にずれた位置 */
+    transform: translateX(16px);
   }
   to {
     opacity: 1;
-    transform: translateX(0);          /* 元の位置 */
+    /* 元の位置 */
+    transform: translateX(0);
   }
 }
 
@@ -672,28 +731,33 @@ Tailwind の数値（`p-4`, `text-xl`）は**4の倍数のpx**などの規則が
 @keyframes scaleIn {
   from {
     opacity: 0;
-    transform: scale(0.95);           /* 95% の大きさ */
+    /* 95% の大きさ */
+    transform: scale(0.95);
   }
   to {
     opacity: 1;
-    transform: scale(1);              /* 100%（等倍） */
+    /* 100%（等倍） */
+    transform: scale(1);
   }
 }
 
 /* spin: 1周回転（ローディングスピナー用） */
 @keyframes spin {
   to {
-    transform: rotate(360deg);        /* 360度回す */
+    /* 360度回す */
+    transform: rotate(360deg);
   }
 }
 
 /* shimmer: ローディングスケルトンの光が左から右へ流れるアニメーション */
 @keyframes shimmer {
   0% {
-    background-position: -200% 0;     /* 背景画像を左外側に配置 */
+    /* 背景画像を左外側に配置 */
+    background-position: -200% 0;
   }
   100% {
-    background-position: 200% 0;      /* 右外側まで動かす */
+    /* 右外側まで動かす */
+    background-position: 200% 0;
   }
 }
 
@@ -701,7 +765,8 @@ Tailwind の数値（`p-4`, `text-xl`）は**4の倍数のpx**などの規則が
 @keyframes toastSlideIn {
   from {
     opacity: 0;
-    transform: translateX(100%);      /* 100% = 自身の幅ぶん右にいる状態 */
+    /* 100% = 自身の幅ぶん右にいる状態 */
+    transform: translateX(100%);
   }
   to {
     opacity: 1;
@@ -731,9 +796,12 @@ Tailwind の数値（`p-4`, `text-xl`）は**4の倍数のpx**などの規則が
 ##### 解説1: Tailwind を読み込む3行（`@tailwind`）
 
 ```css
-@tailwind base;       /* base   : ブラウザ標準スタイルのリセット（normalize.css 的なもの）+ HTML要素のデフォルト */
-@tailwind components; /* components: .btn など、@layer components { ... } で定義したクラス */
-@tailwind utilities;  /* utilities : bg-red-500, p-4 などのユーティリティクラス本体 */
+/* base   : ブラウザ標準スタイルのリセット（normalize.css 的なもの）+ HTML要素のデフォルト */
+@tailwind base;
+/* components: .btn など、@layer components { ... } で定義したクラス */
+@tailwind components;
+/* utilities : bg-red-500, p-4 などのユーティリティクラス本体 */
+@tailwind utilities;
 ```
 
 - `@tailwind`（アットマーク・テイルウィンド）は Tailwind 専用の「命令文」です。ビルド時にこの1行が**数千行のCSS**に展開されます。
@@ -748,9 +816,11 @@ Tailwind の数値（`p-4`, `text-xl`）は**4の倍数のpx**などの規則が
 
 ```css
 :root {
-  --color-primary-50: #eef2ff;   /* 一番薄いインディゴ（背景バッジ等に使う） */
+  /* 一番薄いインディゴ（背景バッジ等に使う） */
+  --color-primary-50: #eef2ff;
   /* ... 中略 ... */
-  --color-primary-600: #4f46e5;  /* ボタン背景でよく使う濃さ */
+  /* ボタン背景でよく使う濃さ */
+  --color-primary-600: #4f46e5;
 }
 ```
 
@@ -766,9 +836,12 @@ Tailwind の数値（`p-4`, `text-xl`）は**4の倍数のpx**などの規則が
 
 ```css
 .dark {
-  --color-background: #0f172a;        /* ほぼ黒（slate-900）に */
-  --color-foreground: #f8fafc;        /* 文字は逆に白系に */
-  --color-card: #1e293b;               /* カード背景は背景より少し明るい暗色 */
+  /* ほぼ黒（slate-900）に */
+  --color-background: #0f172a;
+  /* 文字は逆に白系に */
+  --color-foreground: #f8fafc;
+  /* カード背景は背景より少し明るい暗色 */
+  --color-card: #1e293b;
 }
 ```
 
@@ -856,7 +929,8 @@ Tailwind の数値（`p-4`, `text-xl`）は**4の倍数のpx**などの規則が
 @layer utilities {
   .line-clamp-2 {
     display: -webkit-box;
-    -webkit-line-clamp: 2;            /* 2 行で打ち切る */
+    /* 2 行で打ち切る */
+    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
@@ -876,12 +950,16 @@ Tailwind の数値（`p-4`, `text-xl`）は**4の倍数のpx**などの規則が
 ```css
 @keyframes fadeIn {
   from {
-    opacity: 0;                       /* 透明（見えない） */
-    transform: translateY(8px);       /* 8px 下にずらした位置から始まる */
+    /* 透明（見えない） */
+    opacity: 0;
+    /* 8px 下にずらした位置から始まる */
+    transform: translateY(8px);
   }
   to {
-    opacity: 1;                       /* 不透明（見える） */
-    transform: translateY(0);         /* 元の位置へ */
+    /* 不透明（見える） */
+    opacity: 1;
+    /* 元の位置へ */
+    transform: translateY(0);
   }
 }
 ```
@@ -942,9 +1020,12 @@ const config: Config = {
   // ここに書かれたファイル内で実際に使われているクラスだけを最終CSSに含めることで
   // バンドルサイズを最小化する（PurgeCSS / JIT エンジンの仕組み）
   content: [
-    "./pages/**/*.{js,ts,jsx,tsx,mdx}",     // Pages Router 用（使っていなくてもOK）
-    "./components/**/*.{js,ts,jsx,tsx,mdx}", // 自作コンポーネント
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",        // App Router 用
+    // Pages Router 用（使っていなくてもOK）
+    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
+    // 自作コンポーネント
+    "./components/**/*.{js,ts,jsx,tsx,mdx}",
+    // App Router 用
+    "./app/**/*.{js,ts,jsx,tsx,mdx}",
     // ※ ** はワイルドカード（任意の深さのフォルダ）、{ } は複数拡張子の指定
   ],
 
@@ -957,20 +1038,29 @@ const config: Config = {
     // .container クラスの挙動をカスタマイズ。
     // <div class="container"> と書いたときの最大幅・余白・中央寄せの設定。
     container: {
-      center: true,                 // コンテナを左右中央寄せ（margin: 0 auto 相当）
-      padding: {                    // 画面サイズごとの左右パディング
-        DEFAULT: "1rem",            // 全画面共通の最小余白 = 16px
-        sm: "2rem",                 // 640px 以上 = 32px
-        lg: "4rem",                 // 1024px 以上 = 64px
-        xl: "5rem",                 // 1280px 以上 = 80px
-        "2xl": "6rem",              // 1536px 以上 = 96px
+      // コンテナを左右中央寄せ（margin: 0 auto 相当）
+      center: true,
+      // 画面サイズごとの左右パディング
+      padding: {
+        // 全画面共通の最小余白 = 16px
+        DEFAULT: "1rem",
+        // 640px 以上 = 32px
+        sm: "2rem",
+        // 1024px 以上 = 64px
+        lg: "4rem",
+        // 1280px 以上 = 80px
+        xl: "5rem",
+        // 1536px 以上 = 96px
+        "2xl": "6rem",
       },
-      screens: {                    // 各ブレークポイントでのコンテナ最大幅
+      // 各ブレークポイントでのコンテナ最大幅
+      screens: {
         sm: "640px",
         md: "768px",
         lg: "1024px",
         xl: "1280px",
-        "2xl": "1400px",            // デフォルトの1536pxより少し狭く（読みやすさのため）
+        // デフォルトの1536pxより少し狭く（読みやすさのため）
+        "2xl": "1400px",
       },
     },
 
@@ -985,7 +1075,8 @@ const config: Config = {
         // CSS変数（globals.css で定義した --color-primary-XX）を経由することで
         // ダークモード時に変数の値だけ差し替えれば自動で色が変わる
         primary: {
-          50: "var(--color-primary-50)",   // bg-primary-50 のように使える
+          // bg-primary-50 のように使える
+          50: "var(--color-primary-50)",
           100: "var(--color-primary-100)",
           200: "var(--color-primary-200)",
           300: "var(--color-primary-300)",
@@ -1012,11 +1103,15 @@ const config: Config = {
           950: "var(--color-secondary-950)",
         },
         // セマンティックカラー（用途ベースの命名）
-        background: "var(--color-background)",   // bg-background で使える
-        foreground: "var(--color-foreground)",   // text-foreground で使える
+        // bg-background で使える
+        background: "var(--color-background)",
+        // text-foreground で使える
+        foreground: "var(--color-foreground)",
         muted: {
-          DEFAULT: "var(--color-muted)",          // bg-muted（DEFAULT は階層なしの指定で参照される）
-          foreground: "var(--color-muted-foreground)", // text-muted-foreground
+          // bg-muted（DEFAULT は階層なしの指定で参照される）
+          DEFAULT: "var(--color-muted)",
+          // text-muted-foreground
+          foreground: "var(--color-muted-foreground)",
         },
         border: "var(--color-border)",
         card: {
@@ -1036,16 +1131,25 @@ const config: Config = {
       // 先頭から探して、利用可能な最初のフォントが使われる
       fontFamily: {
         sans: [
-          "Inter",                  // 第一候補: 欧文用の美しいフォント
-          "Noto Sans JP",           // 日本語フォント（Inter は日本語が含まれないので必須）
-          "ui-sans-serif",          // OS標準のサンセリフ（macOS / Windows）
-          "system-ui",              // システム標準
-          "-apple-system",          // iOS / macOS の San Francisco
-          "sans-serif",             // 最終フォールバック（必ず使える総称名）
+          // 第一候補: 欧文用の美しいフォント
+          "Inter",
+          // 日本語フォント（Inter は日本語が含まれないので必須）
+          "Noto Sans JP",
+          // OS標準のサンセリフ（macOS / Windows）
+          "ui-sans-serif",
+          // システム標準
+          "system-ui",
+          // iOS / macOS の San Francisco
+          "-apple-system",
+          // 最終フォールバック（必ず使える総称名）
+          "sans-serif",
         ],
-        mono: [                     // 等幅フォント（コード表示用）
-          "JetBrains Mono",         // プログラミング用の美しい等幅フォント
-          "Fira Code",              // リガチャ（合字）対応の等幅フォント
+        // 等幅フォント（コード表示用）
+        mono: [
+          // プログラミング用の美しい等幅フォント
+          "JetBrains Mono",
+          // リガチャ（合字）対応の等幅フォント
+          "Fira Code",
           "ui-monospace",
           "monospace",
         ],
@@ -1057,20 +1161,24 @@ const config: Config = {
       // text-2xs クラスを新規追加（標準には無い超小サイズ）
       // 値の形式: [フォントサイズ, { lineHeight: 行間 }]
       fontSize: {
-        "2xs": ["0.625rem", { lineHeight: "0.875rem" }],  // 10px / 行間14px
+        // 10px / 行間14px
+        "2xs": ["0.625rem", { lineHeight: "0.875rem" }],
       },
 
       // ========================================
       // カスタムシャドウ
       // ========================================
       boxShadow: {
-        sm: "var(--shadow-sm)",     // shadow-sm が CSS 変数を参照するように
+        // shadow-sm が CSS 変数を参照するように
+        sm: "var(--shadow-sm)",
         md: "var(--shadow-md)",
         lg: "var(--shadow-lg)",
         // 独自の影を新規追加
-        card: "0 2px 8px -2px rgb(0 0 0 / 0.08), 0 4px 12px -4px rgb(0 0 0 / 0.04)",  // カード用
+        // カード用
+        card: "0 2px 8px -2px rgb(0 0 0 / 0.08), 0 4px 12px -4px rgb(0 0 0 / 0.04)",
         "card-hover":
-          "0 8px 24px -4px rgb(0 0 0 / 0.12), 0 4px 8px -4px rgb(0 0 0 / 0.08)",       // ホバー時用
+          // ホバー時用
+          "0 8px 24px -4px rgb(0 0 0 / 0.12), 0 4px 8px -4px rgb(0 0 0 / 0.08)",
       },
 
       // ========================================
@@ -1090,24 +1198,30 @@ const config: Config = {
       // keyframes: 動きの定義（CSS の @keyframes 相当）
       keyframes: {
         "fade-in": {
-          from: { opacity: "0", transform: "translateY(8px)" },  // 透明＋8px下
-          to: { opacity: "1", transform: "translateY(0)" },      // 不透明＋元位置
+          // 透明＋8px下
+          from: { opacity: "0", transform: "translateY(8px)" },
+          // 不透明＋元位置
+          to: { opacity: "1", transform: "translateY(0)" },
         },
         "fade-out": {
           from: { opacity: "1", transform: "translateY(0)" },
           to: { opacity: "0", transform: "translateY(8px)" },
         },
         "slide-in-right": {
-          from: { opacity: "0", transform: "translateX(16px)" }, // 16px 右からスライド
+          // 16px 右からスライド
+          from: { opacity: "0", transform: "translateX(16px)" },
           to: { opacity: "1", transform: "translateX(0)" },
         },
         "slide-in-up": {
-          from: { opacity: "0", transform: "translateY(16px)" }, // 16px 下からスライド
+          // 16px 下からスライド
+          from: { opacity: "0", transform: "translateY(16px)" },
           to: { opacity: "1", transform: "translateY(0)" },
         },
         "scale-in": {
-          from: { opacity: "0", transform: "scale(0.95)" },      // 95% から
-          to: { opacity: "1", transform: "scale(1)" },           // 100% へ拡大
+          // 95% から
+          from: { opacity: "0", transform: "scale(0.95)" },
+          // 100% へ拡大
+          to: { opacity: "1", transform: "scale(1)" },
         },
         shimmer: {
           "0%": { backgroundPosition: "-200% 0" },
@@ -1125,15 +1239,19 @@ const config: Config = {
       // animation: keyframes を「いつ・どんな速度で」再生するかを定義
       // 形式: "<keyframes名> <時間> <イージング> <繰り返し> <塗り潰し>"
       animation: {
-        "fade-in": "fade-in 0.3s ease-out",                  // animate-fade-in クラスとして使える
+        // animate-fade-in クラスとして使える
+        "fade-in": "fade-in 0.3s ease-out",
         "fade-out": "fade-out 0.3s ease-out",
         "slide-in-right": "slide-in-right 0.3s ease-out",
         "slide-in-up": "slide-in-up 0.4s ease-out",
         "scale-in": "scale-in 0.2s ease-out",
-        shimmer: "shimmer 2s infinite linear",               // infinite: 無限ループ、linear: 等速
+        // infinite: 無限ループ、linear: 等速
+        shimmer: "shimmer 2s infinite linear",
         "toast-in": "toast-slide-in 0.3s ease-out",
-        "toast-out": "toast-slide-out 0.3s ease-in forwards", // forwards: 終了状態をキープ
-        spin: "spin 1s linear infinite",                      // animate-spin（標準）の上書き
+        // forwards: 終了状態をキープ
+        "toast-out": "toast-slide-out 0.3s ease-in forwards",
+        // animate-spin（標準）の上書き
+        spin: "spin 1s linear infinite",
       },
 
       // ========================================
@@ -1141,9 +1259,12 @@ const config: Config = {
       // ========================================
       // 標準にない余白/サイズの値を追加。w-18, h-88, p-128 のように使える
       spacing: {
-        "18": "4.5rem",      // 72px
-        "88": "22rem",       // 352px
-        "128": "32rem",      // 512px
+        // 72px
+        "18": "4.5rem",
+        // 352px
+        "88": "22rem",
+        // 512px
+        "128": "32rem",
       },
 
       // ========================================
@@ -1198,9 +1319,12 @@ darkMode: "class",
 
 ```typescript
 content: [
-  "./pages/**/*.{js,ts,jsx,tsx,mdx}",     // Pages Router 用（使っていなくてもOK）
-  "./components/**/*.{js,ts,jsx,tsx,mdx}", // 自作コンポーネント
-  "./app/**/*.{js,ts,jsx,tsx,mdx}",        // App Router 用
+  // Pages Router 用（使っていなくてもOK）
+  "./pages/**/*.{js,ts,jsx,tsx,mdx}",
+  // 自作コンポーネント
+  "./components/**/*.{js,ts,jsx,tsx,mdx}",
+  // App Router 用
+  "./app/**/*.{js,ts,jsx,tsx,mdx}",
 ],
 ```
 
@@ -1360,7 +1484,8 @@ import { BookCard } from "./BookCard";
 import { EmptyState } from "./EmptyState";
 
 type BookGridProps = {
-  books: Book[];   // 表示する書籍配列
+  // 表示する書籍配列
+  books: Book[];
 };
 
 export function BookGrid({ books }: BookGridProps) {
@@ -1501,7 +1626,8 @@ import { Book } from "@/types/book";
 
 // このコンポーネントが受け取る props（外から渡される値）の型を定義
 type BookCardProps = {
-  book: Book;     // Book 型の書籍データを 1 件
+  // Book 型の書籍データを 1 件
+  book: Book;
 };
 
 // export function: 名前付きエクスポート（他ファイルから { BookCard } で取り出す）
@@ -1521,7 +1647,8 @@ export function BookCard({ book }: BookCardProps) {
         // badge-warning は黄色のバッジ
         return <span className="badge-warning">読みたい</span>;
       default:
-        return null;   // 該当ステータスがなければ何も表示しない
+        // 該当ステータスがなければ何も表示しない
+        return null;
     }
   };
 
@@ -1568,8 +1695,10 @@ export function BookCard({ book }: BookCardProps) {
         {/* JSX 内の {} は JavaScript 式を埋め込む構文。三項演算子 (条件 ? A : B) で出し分け */}
         {book.thumbnailUrl ? (
           <img
-            src={book.thumbnailUrl}                       // 画像URL
-            alt={`「${book.title}」の表紙`}                // 代替テキスト（読み上げ・画像非表示時用）
+            // 画像URL
+            src={book.thumbnailUrl}
+            // 代替テキスト（読み上げ・画像非表示時用）
+            alt={`「${book.title}」の表紙`}
             className="
               h-full w-full
               object-cover
@@ -1584,7 +1713,8 @@ export function BookCard({ book }: BookCardProps) {
                group-hover:scale-105  : 親要素のうち className="group" を持つもののホバー時に
                                         この要素を 105% に拡大。BookGrid 側の <Link> に group を付けている
             */
-            loading="lazy"                                 // 画面外の画像は遅延読み込み（パフォーマンス向上）
+            // 画面外の画像は遅延読み込み（パフォーマンス向上）
+            loading="lazy"
           />
         ) : (
           /* プレースホルダー（画像がない場合の代替表示） */
@@ -1609,16 +1739,24 @@ export function BookCard({ book }: BookCardProps) {
           >
             {/* SVG（Scalable Vector Graphics：拡大しても綺麗な画像形式）でアイコンを描く */}
             <svg
-              className="h-12 w-12"           // 48x48 サイズ
-              fill="none"                      // 塗りつぶしなし
-              viewBox="0 0 24 24"              // SVG の内部座標系（24x24 のキャンバス）
-              stroke="currentColor"            // 線の色は親要素の文字色（text-primary-400）を継承
-              strokeWidth={1.5}                // 線の太さ
-              aria-hidden="true"               // スクリーンリーダーに無視させる（装飾アイコンのため）
+              // 48x48 サイズ
+              className="h-12 w-12"
+              // 塗りつぶしなし
+              fill="none"
+              // SVG の内部座標系（24x24 のキャンバス）
+              viewBox="0 0 24 24"
+              // 線の色は親要素の文字色（text-primary-400）を継承
+              stroke="currentColor"
+              // 線の太さ
+              strokeWidth={1.5}
+              // スクリーンリーダーに無視させる（装飾アイコンのため）
+              aria-hidden="true"
             >
               <path
-                strokeLinecap="round"          // 線の端を丸く
-                strokeLinejoin="round"         // 線の折れ角を丸く
+                // 線の端を丸く
+                strokeLinecap="round"
+                // 線の折れ角を丸く
+                strokeLinejoin="round"
                 d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"
                 /* ↑ d 属性は SVG のパス（描画命令）。M=移動、A=円弧、C=曲線など */
               />
@@ -1697,17 +1835,21 @@ export function BookCard({ book }: BookCardProps) {
             {/* [1,2,3,4,5] の配列を map で星アイコン5つにループ展開 */}
             {[1, 2, 3, 4, 5].map((star) => (
               <svg
-                key={star}                                    // React リストの一意キー（必須）
+                // React リストの一意キー（必須）
+                key={star}
                 /* テンプレートリテラル ` ` の中で ${} を使い動的にクラスを切替 */
                 /* star が現在の評価以下なら金色（塗る）、それより大きいなら灰色（空き） */
                 className={`h-3.5 w-3.5 ${
-                  star <= book.rating!                         // ! は「null/undefined でない」と保証する非 null アサーション
+                  // ! は「null/undefined でない」と保証する非 null アサーション
+                  star <= book.rating!
                     ? "text-yellow-400"
                     : "text-gray-300 dark:text-gray-600"
                 }`}
-                fill="currentColor"                            // 塗り色＝親要素の文字色
+                // 塗り色＝親要素の文字色
+                fill="currentColor"
                 viewBox="0 0 20 20"
-                aria-hidden="true"                             // スクリーンリーダーから隠す（後ろの数値で代替）
+                // スクリーンリーダーから隠す（後ろの数値で代替）
+                aria-hidden="true"
               >
                 {/* 星型のパス */}
                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
@@ -1907,11 +2049,16 @@ export type ToastType = "success" | "error" | "warning" | "info";
 
 // Toast: 1件のトーストデータを表す型（オブジェクト型）
 export type Toast = {
-  id: string;          // 一意な識別子（削除時に使う）
-  type: ToastType;     // 上で定義した4種のどれか
-  title: string;       // 通知のタイトル（必須）
-  message?: string;    // 補足メッセージ。? は「省略可能（undefined を許容）」の意味
-  duration?: number;   // 表示時間（ミリ秒）。省略時はデフォルト 5000ms = 5秒
+  // 一意な識別子（削除時に使う）
+  id: string;
+  // 上で定義した4種のどれか
+  type: ToastType;
+  // 通知のタイトル（必須）
+  title: string;
+  // 補足メッセージ。? は「省略可能（undefined を許容）」の意味
+  message?: string;
+  // 表示時間（ミリ秒）。省略時はデフォルト 5000ms = 5秒
+  duration?: number;
 };
 ```
 
@@ -1954,15 +2101,19 @@ import { Toast, ToastType } from "@/types/toast";
 // ----------------------------------------------------------------------------
 // この型に書かれた値・関数を、Context.Provider 経由で配布する。
 type ToastContextType = {
-  toasts: Toast[];                                                   // 現在表示中のトースト配列
-  addToast: (                                                        // 任意のトーストを追加
+  // 現在表示中のトースト配列
+  toasts: Toast[];
+  // 任意のトーストを追加
+  addToast: (
     type: ToastType,
     title: string,
     message?: string,
     duration?: number
   ) => void;
-  removeToast: (id: string) => void;                                 // 指定IDを削除
-  success: (title: string, message?: string) => void;                // ↓ よく使う4種のショートカット
+  // 指定IDを削除
+  removeToast: (id: string) => void;
+  // ↓ よく使う4種のショートカット
+  success: (title: string, message?: string) => void;
   error: (title: string, message?: string) => void;
   warning: (title: string, message?: string) => void;
   info: (title: string, message?: string) => void;
@@ -2010,7 +2161,8 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       type: ToastType,
       title: string,
       message?: string,
-      duration: number = 5000   // 既定で5秒で消える
+      // 既定で5秒で消える
+      duration: number = 5000
     ) => {
       const id = generateToastId();
       const newToast: Toast = { id, type, title, message, duration };
@@ -2025,7 +2177,8 @@ export function ToastProvider({ children }: { children: ReactNode }) {
         }, duration);
       }
     },
-    [removeToast]   // removeToast が変わったら再生成
+    // removeToast が変わったら再生成
+    [removeToast]
   );
 
   // ショートカットメソッド
@@ -2036,7 +2189,8 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 
   const error = useCallback(
     (title: string, message?: string) =>
-      addToast("error", title, message, 8000), // エラーは長めに表示
+      // エラーは長めに表示
+      addToast("error", title, message, 8000),
     [addToast]
   );
 
@@ -2188,7 +2342,8 @@ export function useToast(): ToastContextType {
 // ↑ トーストの実際の見た目（UIコンポーネント）を定義するファイル。
 //   ToastContext からトースト配列を受け取って画面に描画する。
 
-"use client";   // クライアントコンポーネント宣言（state を使うため）
+// クライアントコンポーネント宣言（state を使うため）
+"use client";
 
 // React Hooks
 import { useState, useEffect, useCallback } from "react";
@@ -2205,7 +2360,8 @@ const toastConfig = {
   success: {
     icon: (
       <svg
-        className="h-5 w-5"             /* 20x20 サイズ */
+        /* 20x20 サイズ */
+        className="h-5 w-5"
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"
@@ -2226,7 +2382,8 @@ const toastConfig = {
     iconClass: "text-green-600 dark:text-green-400",
     titleClass: "text-green-800 dark:text-green-200",
     messageClass: "text-green-700 dark:text-green-300",
-    progressClass: "bg-green-500",   /* プログレスバーは中間色 */
+    /* プログレスバーは中間色 */
+    progressClass: "bg-green-500",
   },
   // ─── エラー（!アイコン+赤色） ───
   error: {
@@ -2322,7 +2479,8 @@ function ToastItem({ toast }: { toast: ToastType }) {
   // 閉じるボタンクリック時のハンドラ
   // useCallback で関数をメモ化（依存が変わらない限り同じ関数を使い回す）
   const handleClose = useCallback(() => {
-    setIsExiting(true);   // アニメーション開始
+    // アニメーション開始
+    setIsExiting(true);
     // 300ms（アニメーション時間）待ってから state から削除
     setTimeout(() => {
       removeToast(toast.id);
@@ -2335,9 +2493,12 @@ function ToastItem({ toast }: { toast: ToastType }) {
 
   return (
     <div
-      role="alert"             // ARIA ロール: 警告メッセージとして扱う
-      aria-live="assertive"    // スクリーンリーダーに即読み上げさせる
-      aria-atomic="true"       // 内容変更時に全体を読み直す（部分だけ読まない）
+      // ARIA ロール: 警告メッセージとして扱う
+      role="alert"
+      // スクリーンリーダーに即読み上げさせる
+      aria-live="assertive"
+      // 内容変更時に全体を読み直す（部分だけ読まない）
+      aria-atomic="true"
       className={`
         relative
         flex w-full max-w-sm items-start gap-3
@@ -2385,7 +2546,8 @@ function ToastItem({ toast }: { toast: ToastType }) {
 
       {/* 閉じるボタン */}
       <button
-        type="button"                    // フォーム内に置かれても submit にならないよう明示
+        // フォーム内に置かれても submit にならないよう明示
+        type="button"
         onClick={handleClose}
         className={`
           flex-shrink-0
@@ -2397,10 +2559,12 @@ function ToastItem({ toast }: { toast: ToastType }) {
           ${config.iconClass}
         `}
         /* opacity-70 → hover:opacity-100: 普段は薄め、ホバーでくっきり */
-        aria-label="通知を閉じる"        // スクリーンリーダー用のボタン説明
+        // スクリーンリーダー用のボタン説明
+        aria-label="通知を閉じる"
       >
         <svg
-          className="h-4 w-4"           // 16x16 の小さい × アイコン
+          // 16x16 の小さい × アイコン
+          className="h-4 w-4"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -2410,7 +2574,8 @@ function ToastItem({ toast }: { toast: ToastType }) {
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
-            d="M6 18L18 6M6 6l12 12"    // 「×」を描く2本の斜め線
+            // 「×」を描く2本の斜め線
+            d="M6 18L18 6M6 6l12 12"
           />
         </svg>
       </button>
@@ -2437,7 +2602,8 @@ function ToastItem({ toast }: { toast: ToastType }) {
 // ----------------------------------------------------------------------------
 // レイアウトのルートに1つ置いて、全トーストをここに集約する
 export function ToastContainer() {
-  const { toasts } = useToast();   // 表示中のトースト配列を取得
+  // 表示中のトースト配列を取得
+  const { toasts } = useToast();
 
   // 0件なら null を返して描画しない（DOMにも残さない）
   if (toasts.length === 0) return null;
@@ -2636,16 +2802,22 @@ export function BookDeleteButton({ bookId }: { bookId: string }) {
 // ↑ ページネーション（複数ページを切り替えるナビゲーション）コンポーネント。
 //   1   2   3 ... 10  のような表示を作る。
 
-"use client";   // クライアントコンポーネント（useSearchParams を使う）
+// クライアントコンポーネント（useSearchParams を使う）
+"use client";
 
-import Link from "next/link";                                // Next.js 用リンクコンポーネント（高速遷移）
-import { useSearchParams } from "next/navigation";           // URL のクエリパラメータ取得 Hook
+// Next.js 用リンクコンポーネント（高速遷移）
+import Link from "next/link";
+// URL のクエリパラメータ取得 Hook
+import { useSearchParams } from "next/navigation";
 
 // コンポーネントが受け取る props 型
 type PaginationProps = {
-  currentPage: number;   // 現在表示中のページ番号（1 始まり）
-  totalPages: number;    // 全体のページ数
-  basePath: string;      // ベースとなるURLパス（例: "/books"）
+  // 現在表示中のページ番号（1 始まり）
+  currentPage: number;
+  // 全体のページ数
+  totalPages: number;
+  // ベースとなるURLパス（例: "/books"）
+  basePath: string;
 };
 
 export function Pagination({
@@ -2662,8 +2834,10 @@ export function Pagination({
     // URLSearchParams: クエリ文字列を扱う標準 API
     // 既存のパラメータを複製してから page を上書き
     const params = new URLSearchParams(searchParams.toString());
-    params.set("page", String(page));                   // 数値を文字列にして set
-    return `${basePath}?${params.toString()}`;          // 例: "/books?page=2&search=react"
+    // 数値を文字列にして set
+    params.set("page", String(page));
+    // 例: "/books?page=2&search=react"
+    return `${basePath}?${params.toString()}`;
   };
 
   // 表示するページ番号のリストを計算する関数
@@ -2671,7 +2845,8 @@ export function Pagination({
   // 返却型: number または "ellipsis"（省略記号）の配列
   const getPageNumbers = (): (number | "ellipsis")[] => {
     const pages: (number | "ellipsis")[] = [];
-    const maxVisible = 5;   // 表示するページ番号の最大数（省略記号除く）
+    // 表示するページ番号の最大数（省略記号除く）
+    const maxVisible = 5;
 
     if (totalPages <= maxVisible + 2) {
       // 全ページ数が少ない場合（7ページ以下なら全部表示）
@@ -2713,9 +2888,12 @@ export function Pagination({
   // ページが1ページしかない場合は表示しない（早期リターン）
   if (totalPages <= 1) return null;
 
-  const pageNumbers = getPageNumbers();         // ページ番号リストを計算
-  const isFirstPage = currentPage === 1;        // 最初のページか
-  const isLastPage = currentPage === totalPages; // 最後のページか
+  // ページ番号リストを計算
+  const pageNumbers = getPageNumbers();
+  // 最初のページか
+  const isFirstPage = currentPage === 1;
+  // 最後のページか
+  const isLastPage = currentPage === totalPages;
 
   // ----- スタイル定数（複数箇所で使い回すために変数化）-----
   // 共通のページ番号ボタンスタイル
@@ -2776,7 +2954,8 @@ export function Pagination({
     // <nav> 要素はナビゲーションを表すセマンティック要素
     <nav
       role="navigation"
-      aria-label="ページネーション"   // スクリーンリーダー向けの説明
+      // スクリーンリーダー向けの説明
+      aria-label="ページネーション"
       className="flex items-center justify-center gap-1 py-8"
       /* flex items-center justify-center: 中央寄せ
          gap-1                            : 子要素間 4px
@@ -2787,7 +2966,8 @@ export function Pagination({
       {isFirstPage ? (
         <span className={disabledNavClass} aria-disabled="true">
           <svg
-            className="mr-1 h-4 w-4"   /* mr-1: 右マージン 4px */
+            /* mr-1: 右マージン 4px */
+            className="mr-1 h-4 w-4"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -2797,7 +2977,8 @@ export function Pagination({
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
-              d="M15.75 19.5L8.25 12l7.5-7.5"   /* 左向きの「<」アイコン */
+              /* 左向きの「<」アイコン */
+              d="M15.75 19.5L8.25 12l7.5-7.5"
             />
           </svg>
           前へ
@@ -2805,7 +2986,8 @@ export function Pagination({
       ) : (
         // Link は Next.js のクライアントサイドナビゲーション用
         <Link
-          href={createPageUrl(currentPage - 1)}   // 一つ前のページURL
+          // 一つ前のページURL
+          href={createPageUrl(currentPage - 1)}
           className={enabledNavClass}
           aria-label="前のページへ"
         >
@@ -2835,9 +3017,11 @@ export function Pagination({
           if (page === "ellipsis") {
             return (
               <span
-                key={`ellipsis-${index}`}  // 同じキーが重複しないよう index を含める
+                // 同じキーが重複しないよう index を含める
+                key={`ellipsis-${index}`}
                 className="inline-flex h-10 w-10 items-center justify-center text-gray-400"
-                aria-hidden="true"          // 省略記号は装飾なのでスクリーンリーダーには無視させる
+                // 省略記号は装飾なのでスクリーンリーダーには無視させる
+                aria-hidden="true"
               >
                 ...
               </span>
@@ -2852,7 +3036,8 @@ export function Pagination({
             <span
               key={page}
               className={activePageClass}
-              aria-current="page"   // ARIA 属性: 「現在のページ」と伝える
+              // ARIA 属性: 「現在のページ」と伝える
+              aria-current="page"
               aria-label={`${page}ページ目（現在のページ）`}
             >
               {page}
@@ -2876,7 +3061,8 @@ export function Pagination({
         <span className={disabledNavClass} aria-disabled="true">
           次へ
           <svg
-            className="ml-1 h-4 w-4"   /* ml-1: 左マージン 4px */
+            /* ml-1: 左マージン 4px */
+            className="ml-1 h-4 w-4"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -2886,13 +3072,15 @@ export function Pagination({
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
-              d="M8.25 4.5l7.5 7.5-7.5 7.5"   /* 右向きの「>」アイコン */
+              /* 右向きの「>」アイコン */
+              d="M8.25 4.5l7.5 7.5-7.5 7.5"
             />
           </svg>
         </span>
       ) : (
         <Link
-          href={createPageUrl(currentPage + 1)}   // 次のページURL
+          // 次のページURL
+          href={createPageUrl(currentPage + 1)}
           className={enabledNavClass}
           aria-label="次のページへ"
         >
@@ -3032,11 +3220,16 @@ import Link from "next/link";
 
 // props 型。? が付いているプロパティはすべて省略可能
 type EmptyStateProps = {
-  title?: string;                                 // タイトル
-  message?: string;                               // 補足説明文
-  actionLabel?: string;                           // ボタンの文字
-  actionHref?: string;                            // ボタンのリンク先
-  icon?: "book" | "search" | "error";             // 3種類から選択
+  // タイトル
+  title?: string;
+  // 補足説明文
+  message?: string;
+  // ボタンの文字
+  actionLabel?: string;
+  // ボタンのリンク先
+  actionHref?: string;
+  // 3種類から選択
+  icon?: "book" | "search" | "error";
 };
 
 // 引数のデフォルト値を分割代入で指定。
@@ -3195,7 +3388,8 @@ export function EmptyState({
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
-              d="M12 4.5v15m7.5-7.5h-15"   /* 「+」プラスマーク */
+              /* 「+」プラスマーク */
+              d="M12 4.5v15m7.5-7.5h-15"
             />
           </svg>
           {actionLabel}
@@ -3336,7 +3530,8 @@ export function BookCardSkeleton() {
             animate-shimmer
             dark:from-gray-700 dark:via-gray-600 dark:to-gray-700
           "
-          style={{ animationDelay: "0.1s" }}   /* 0.1秒遅れて開始（複数行が同じタイミングだと不自然なため） */
+          /* 0.1秒遅れて開始（複数行が同じタイミングだと不自然なため） */
+          style={{ animationDelay: "0.1s" }}
         />
         {/* 評価行 */}
         <div
@@ -3347,7 +3542,8 @@ export function BookCardSkeleton() {
             animate-shimmer
             dark:from-gray-700 dark:via-gray-600 dark:to-gray-700
           "
-          style={{ animationDelay: "0.2s" }}   /* さらに遅らせる */
+          /* さらに遅らせる */
+          style={{ animationDelay: "0.2s" }}
         />
       </div>
     </div>
@@ -3563,8 +3759,10 @@ Next.js App Router でのページ遷移時にフェードイン・スライド�
 
 "use client";
 
-import { usePathname } from "next/navigation";                       // 現在の URL パス取得 Hook
-import { useEffect, useState, type ReactNode } from "react";         // React の基本 Hook と型
+// 現在の URL パス取得 Hook
+import { usePathname } from "next/navigation";
+// React の基本 Hook と型
+import { useEffect, useState, type ReactNode } from "react";
 
 // type ReactNode: JSXとして描画可能なあらゆる値（文字列・JSX・配列など）の型
 type PageTransitionProps = {
@@ -3572,16 +3770,21 @@ type PageTransitionProps = {
 };
 
 export function PageTransition({ children }: PageTransitionProps) {
-  const pathname = usePathname();                              // 現在のパス（/books など）
-  const [isVisible, setIsVisible] = useState(false);           // 表示状態（アニメ用フラグ）
-  const [displayChildren, setDisplayChildren] = useState(children); // 表示中の子要素
+  // 現在のパス（/books など）
+  const pathname = usePathname();
+  // 表示状態（アニメ用フラグ）
+  const [isVisible, setIsVisible] = useState(false);
+  // 表示中の子要素
+  const [displayChildren, setDisplayChildren] = useState(children);
 
   useEffect(() => {
     // pathname または children が変わったときに実行される
 
     // パスが変わるたびにアニメーションをリセット
-    setIsVisible(false);            // 一旦非表示状態に
-    setDisplayChildren(children);   // 子要素を更新
+    // 一旦非表示状態に
+    setIsVisible(false);
+    // 子要素を更新
+    setDisplayChildren(children);
 
     // requestAnimationFrame: ブラウザの次の描画タイミングで実行されるコールバック
     // → ブラウザが「非表示状態」を一度描画してから、すぐに「表示」に切り替えるため
@@ -3592,7 +3795,8 @@ export function PageTransition({ children }: PageTransitionProps) {
 
     // クリーンアップ: 次の useEffect 実行前 or アンマウント時にタイマーをキャンセル
     return () => cancelAnimationFrame(timer);
-  }, [pathname, children]);   // この配列の値が変わるたびに再実行
+  // この配列の値が変わるたびに再実行
+  }, [pathname, children]);
 
   return (
     <div
@@ -3600,8 +3804,10 @@ export function PageTransition({ children }: PageTransitionProps) {
         transition-all duration-300 ease-out
         ${
           isVisible
-            ? "translate-y-0 opacity-100"   // 表示中 → 元位置 / 不透明
-            : "translate-y-2 opacity-0"     // 非表示 → 8px下 / 透明
+            // 表示中 → 元位置 / 不透明
+            ? "translate-y-0 opacity-100"
+            // 非表示 → 8px下 / 透明
+            : "translate-y-2 opacity-0"
         }
       `}
     >
@@ -3689,10 +3895,12 @@ import { ToastProvider } from "@/contexts/ToastContext";
 import { ToastContainer } from "@/components/Toast";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import "./globals.css";   // グローバル CSS は必ずここで import
+// グローバル CSS は必ずここで import
+import "./globals.css";
 
 export default function RootLayout({
-  children,                  // 各ページの内容がここに入る
+  // 各ページの内容がここに入る
+  children,
 }: {
   children: React.ReactNode;
 }) {
@@ -3738,20 +3946,30 @@ import { type ButtonHTMLAttributes, type ReactNode } from "react";
 
 // props 型: <button> の全属性に独自プロパティを追加する（インターセクション型 &）
 type AnimatedButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: "primary" | "secondary" | "danger" | "ghost";  // ボタンの種類
-  size?: "sm" | "md" | "lg";                               // ボタンの大きさ
-  isLoading?: boolean;                                      // 処理中フラグ（trueでスピナー表示）
-  children: ReactNode;                                      // ボタン内のラベル
+  // ボタンの種類
+  variant?: "primary" | "secondary" | "danger" | "ghost";
+  // ボタンの大きさ
+  size?: "sm" | "md" | "lg";
+  // 処理中フラグ（trueでスピナー表示）
+  isLoading?: boolean;
+  // ボタン内のラベル
+  children: ReactNode;
 };
 
 export function AnimatedButton({
-  variant = "primary",       // 既定はプライマリ
-  size = "md",               // 既定は中サイズ
-  isLoading = false,         // 既定は処理していない
+  // 既定はプライマリ
+  variant = "primary",
+  // 既定は中サイズ
+  size = "md",
+  // 既定は処理していない
+  isLoading = false,
   children,
-  className = "",            // 追加クラスを受け取れるように（既定は空）
-  disabled,                  // 標準の disabled も受け取る
-  ...props                   // 残りの<button>属性をまとめて受け取る（rest演算子）
+  // 追加クラスを受け取れるように（既定は空）
+  className = "",
+  // 標準の disabled も受け取る
+  disabled,
+  // 残りの<button>属性をまとめて受け取る（rest演算子）
+  ...props
 }: AnimatedButtonProps) {
   // バリアントごとのスタイル（オブジェクトで管理→ variantStyles[variant] で参照）
   const variantStyles = {
@@ -3783,9 +4001,12 @@ export function AnimatedButton({
 
   // サイズごとのスタイル
   const sizeStyles = {
-    sm: "px-3 py-1.5 text-xs gap-1.5",   /* 小: 横12px 縦6px 文字12px */
-    md: "px-4 py-2.5 text-sm gap-2",     /* 中: 横16px 縦10px 文字14px */
-    lg: "px-6 py-3 text-base gap-2.5",   /* 大: 横24px 縦12px 文字16px */
+    /* 小: 横12px 縦6px 文字12px */
+    sm: "px-3 py-1.5 text-xs gap-1.5",
+    /* 中: 横16px 縦10px 文字14px */
+    md: "px-4 py-2.5 text-sm gap-2",
+    /* 大: 横24px 縦12px 文字16px */
+    lg: "px-6 py-3 text-base gap-2.5",
   };
 
   return (
@@ -3803,29 +4024,37 @@ export function AnimatedButton({
       `}
       /* active:scale-[0.97] : クリック中（押している瞬間）に97%サイズに縮める → 押下感の演出 */
       /* 任意値構文 [ ] でTailwindにないサイズを直接指定できる */
-      disabled={disabled || isLoading}   /* 処理中も無効化 */
-      {...props}                          /* onClick等の追加属性をスプレッドで渡す */
+      /* 処理中も無効化 */
+      disabled={disabled || isLoading}
+      /* onClick等の追加属性をスプレッドで渡す */
+      {...props}
     >
       {/* isLoading が true の時だけスピナーを表示 */}
       {isLoading && (
         <svg
-          className="h-4 w-4 animate-spin"   /* animate-spin: 1秒ループ回転 */
+          /* animate-spin: 1秒ループ回転 */
+          className="h-4 w-4 animate-spin"
           viewBox="0 0 24 24"
           fill="none"
           aria-hidden="true"
         >
           {/* 円弧（薄い背景の円） */}
           <circle
-            className="opacity-25"   /* 透明度25%（薄く） */
-            cx="12"                  /* 中心 x座標 */
-            cy="12"                  /* 中心 y座標 */
-            r="10"                   /* 半径10 */
+            /* 透明度25%（薄く） */
+            className="opacity-25"
+            /* 中心 x座標 */
+            cx="12"
+            /* 中心 y座標 */
+            cy="12"
+            /* 半径10 */
+            r="10"
             stroke="currentColor"
             strokeWidth="4"
           />
           {/* 回転する濃い部分（パス） */}
           <path
-            className="opacity-75"   /* 透明度75%（濃いめ） */
+            /* 透明度75%（濃いめ） */
+            className="opacity-75"
             fill="currentColor"
             d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
           />
@@ -4027,7 +4256,8 @@ export function ThemeToggle() {
   // コンポーネントがマウントされた後にテーマを読み込む
   // （SSR 時にミスマッチ＝ハイドレーションエラーが起きるのを防ぐため）
   useEffect(() => {
-    setMounted(true);   // クライアントで初めて true になる
+    // クライアントで初めて true になる
+    setMounted(true);
 
     // localStorage: ブラウザに永続的に値を保存する仕組み（タブを閉じても消えない）
     // as Theme | null: TypeScript の型アサーション。null も許容
@@ -4038,12 +4268,14 @@ export function ThemeToggle() {
     } else {
       applyTheme("system");
     }
-  }, []);   // [] で初回マウント時のみ実行
+  // [] で初回マウント時のみ実行
+  }, []);
 
   // システムのカラースキーム変更を監視
   // ユーザーが OS の設定でダーク↔ライトを切り替えたら自動連動する
   useEffect(() => {
-    if (theme !== "system") return;   // system モード以外なら監視不要
+    // system モード以外なら監視不要
+    if (theme !== "system") return;
 
     // matchMedia: メディアクエリをJSから扱う API
     // (prefers-color-scheme: dark): OSがダークモード設定かどうか
@@ -4054,11 +4286,13 @@ export function ThemeToggle() {
     mediaQuery.addEventListener("change", handleChange);
     // クリーンアップ: コンポーネントがアンマウントされる時にリスナー解除
     return () => mediaQuery.removeEventListener("change", handleChange);
-  }, [theme]);   // theme が変わるたびに再実行
+  // theme が変わるたびに再実行
+  }, [theme]);
 
   // テーマを実際にDOMに適用する関数
   const applyTheme = (newTheme: Theme) => {
-    const root = document.documentElement;   // <html> 要素を取得
+    // <html> 要素を取得
+    const root = document.documentElement;
     // isDark: 実際にダークモードにすべきかの判定
     // - "dark" 選択時 → true
     // - "system" 選択時 → OS設定に応じて
@@ -4081,9 +4315,12 @@ export function ThemeToggle() {
     const nextTheme: Theme =
       theme === "light" ? "dark" : theme === "dark" ? "system" : "light";
 
-    setTheme(nextTheme);                            // state 更新
-    localStorage.setItem("theme", nextTheme);       // 永続化
-    applyTheme(nextTheme);                          // DOM 反映
+    // state 更新
+    setTheme(nextTheme);
+    // 永続化
+    localStorage.setItem("theme", nextTheme);
+    // DOM 反映
+    applyTheme(nextTheme);
   };
 
   // マウント前はプレースホルダーを表示（ハイドレーションエラー防止）
@@ -4186,7 +4423,8 @@ export function ThemeToggle() {
          hover/dark バリアントの組み合わせで多状態対応
       */
       aria-label={`テーマ切り替え（現在: ${themeLabel}モード）`}
-      title={`${themeLabel}モード`}    /* マウスを乗せたときのツールチップ */
+      /* マウスを乗せたときのツールチップ */
+      title={`${themeLabel}モード`}
     >
       {themeIcon()}
       {/* ラベルは小画面で隠す（hidden）、640px以上で inline 表示 */}
@@ -4350,7 +4588,8 @@ if (!mounted) {
 
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";   // 現在のURLパス取得
+// 現在のURLパス取得
+import { usePathname } from "next/navigation";
 import { ThemeToggle } from "./ThemeToggle";
 
 export function Header() {
@@ -4378,7 +4617,8 @@ export function Header() {
          border-b        : 下側だけ枠線
          glass           : すりガラス効果（globals.css 定義）
       */
-      role="banner"   /* ARIA: サイトのバナー領域（ヘッダー）であることを伝える */
+      /* ARIA: サイトのバナー領域（ヘッダー）であることを伝える */
+      role="banner"
     >
       <div className="container flex h-16 items-center justify-between">
         {/* container: tailwind.config の container 設定
@@ -4395,7 +4635,8 @@ export function Header() {
             transition-colors hover:text-primary-600
             dark:hover:text-primary-400
           "
-          aria-label="BookShelf ホームへ"   /* スクリーンリーダー用 */
+          /* スクリーンリーダー用 */
+          aria-label="BookShelf ホームへ"
         >
           <svg
             className="h-7 w-7 text-primary-600 dark:text-primary-400"
@@ -4465,8 +4706,10 @@ export function Header() {
             "
             /* md:hidden: 768px以上で非表示（モバイル専用ボタン） */
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            aria-expanded={isMobileMenuOpen}      /* メニューが展開中かをスクリーンリーダーに通知 */
-            aria-controls="mobile-menu"           /* このボタンが操作する対象要素のid */
+            /* メニューが展開中かをスクリーンリーダーに通知 */
+            aria-expanded={isMobileMenuOpen}
+            /* このボタンが操作する対象要素のid */
+            aria-controls="mobile-menu"
             aria-label={isMobileMenuOpen ? "メニューを閉じる" : "メニューを開く"}
           >
             {isMobileMenuOpen ? (
@@ -4665,14 +4908,22 @@ export function Header() {
 import { useEffect, useRef, type ReactNode } from "react";
 
 type ConfirmDialogProps = {
-  isOpen: boolean;              // ダイアログを表示するかどうか
-  title: string;                // タイトル
-  message: string;              // 本文メッセージ
-  confirmLabel?: string;        // 確認ボタンの文字（既定: "確認"）
-  cancelLabel?: string;         // キャンセルボタンの文字（既定: "キャンセル"）
-  variant?: "danger" | "primary"; // 確認ボタンの色
-  onConfirm: () => void;        // 確認時のコールバック
-  onCancel: () => void;         // キャンセル時のコールバック
+  // ダイアログを表示するかどうか
+  isOpen: boolean;
+  // タイトル
+  title: string;
+  // 本文メッセージ
+  message: string;
+  // 確認ボタンの文字（既定: "確認"）
+  confirmLabel?: string;
+  // キャンセルボタンの文字（既定: "キャンセル"）
+  cancelLabel?: string;
+  // 確認ボタンの色
+  variant?: "danger" | "primary";
+  // 確認時のコールバック
+  onConfirm: () => void;
+  // キャンセル時のコールバック
+  onCancel: () => void;
 };
 
 export function ConfirmDialog({
@@ -4687,14 +4938,17 @@ export function ConfirmDialog({
 }: ConfirmDialogProps) {
   // useRef: DOM要素への参照を保持する Hook
   // .current で実際の DOM ノードにアクセスできる
-  const dialogRef = useRef<HTMLDivElement>(null);            // ダイアログ本体への参照
-  const cancelButtonRef = useRef<HTMLButtonElement>(null);   // キャンセルボタンへの参照
+  // ダイアログ本体への参照
+  const dialogRef = useRef<HTMLDivElement>(null);
+  // キャンセルボタンへの参照
+  const cancelButtonRef = useRef<HTMLButtonElement>(null);
 
   // ダイアログが開いたらキャンセルボタンにフォーカス
   // ※ 確認ボタンではなくキャンセルに当てるのは「誤操作で確定しない」ための配慮
   useEffect(() => {
     if (isOpen) {
-      cancelButtonRef.current?.focus();   // ?. は null/undefined チェック付きアクセス
+      // ?. は null/undefined チェック付きアクセス
+      cancelButtonRef.current?.focus();
     }
   }, [isOpen]);
 
@@ -4716,8 +4970,10 @@ export function ConfirmDialog({
         const focusableElements = dialogRef.current.querySelectorAll<HTMLElement>(
           'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
         );
-        const firstElement = focusableElements[0];                          // 最初
-        const lastElement = focusableElements[focusableElements.length - 1]; // 最後
+        // 最初
+        const firstElement = focusableElements[0];
+        // 最後
+        const lastElement = focusableElements[focusableElements.length - 1];
 
         if (e.shiftKey) {
           // Shift+Tab: 逆方向に移動
@@ -4746,12 +5002,15 @@ export function ConfirmDialog({
   // モーダル表示中に背景をスクロールできてしまうと混乱するため
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = "hidden";   // スクロール禁止
+      // スクロール禁止
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = "";          // 元に戻す
+      // 元に戻す
+      document.body.style.overflow = "";
     }
     return () => {
-      document.body.style.overflow = "";          // クリーンアップでも復元
+      // クリーンアップでも復元
+      document.body.style.overflow = "";
     };
   }, [isOpen]);
 
@@ -4770,9 +5029,12 @@ export function ConfirmDialog({
          flex ... center: 中身を縦横中央に
          p-4          : 画面端からの余白 */
       role="dialog"
-      aria-modal="true"                            /* 背景操作を遮るモーダルであると伝える */
-      aria-labelledby="dialog-title"               /* タイトルとなる要素のid */
-      aria-describedby="dialog-description"        /* 説明文となる要素のid */
+      /* 背景操作を遮るモーダルであると伝える */
+      aria-modal="true"
+      /* タイトルとなる要素のid */
+      aria-labelledby="dialog-title"
+      /* 説明文となる要素のid */
+      aria-describedby="dialog-description"
     >
       {/* オーバーレイ（背景を暗くする半透明の幕） */}
       <div
@@ -4784,13 +5046,16 @@ export function ConfirmDialog({
         "
         /* bg-black/50      : 黒の透明度50%
            backdrop-blur-sm : 背景を少しぼかす */
-        onClick={onCancel}    /* オーバーレイクリックでキャンセル */
-        aria-hidden="true"    /* スクリーンリーダーから隠す（装飾要素） */
+        /* オーバーレイクリックでキャンセル */
+        onClick={onCancel}
+        /* スクリーンリーダーから隠す（装飾要素） */
+        aria-hidden="true"
       />
 
       {/* ダイアログ本体 */}
       <div
-        ref={dialogRef}                            /* DOMへの参照を取得 */
+        /* DOMへの参照を取得 */
+        ref={dialogRef}
         className="
           relative
           w-full max-w-md
@@ -4807,14 +5072,16 @@ export function ConfirmDialog({
            bg-[var(--color-card)]    : カード背景色（ダーク対応） */
       >
         <h2
-          id="dialog-title"                        /* aria-labelledby で参照される */
+          /* aria-labelledby で参照される */
+          id="dialog-title"
           className="text-lg font-semibold text-[var(--color-foreground)]"
         >
           {title}
         </h2>
 
         <p
-          id="dialog-description"                  /* aria-describedby で参照される */
+          /* aria-describedby で参照される */
+          id="dialog-description"
           className="mt-2 text-sm text-[var(--color-muted)]"
         >
           {message}
@@ -4823,9 +5090,11 @@ export function ConfirmDialog({
         <div className="mt-6 flex justify-end gap-3">
           {/* mt-6: 上マージン 24px / justify-end: 右寄せ / gap-3: ボタン間 12px */}
           <button
-            ref={cancelButtonRef}                  /* ボタンへの参照（初期フォーカス用） */
+            /* ボタンへの参照（初期フォーカス用） */
+            ref={cancelButtonRef}
             onClick={onCancel}
-            className="btn-ghost"                  /* 控えめなボタン */
+            /* 控えめなボタン */
+            className="btn-ghost"
           >
             {cancelLabel}
           </button>

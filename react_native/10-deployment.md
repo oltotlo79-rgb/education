@@ -121,18 +121,24 @@ eas build:configure
   "cli": { "version": ">= 5.0.0" },
   "build": {
     "development": {
-      "developmentClient": true,   // 開発用ビルド（デバッグしやすい）
-      "distribution": "internal"   // 内部配布用（ストアには出さない）
+      // 開発用ビルド（デバッグしやすい）
+      "developmentClient": true,
+      // 内部配布用（ストアには出さない）
+      "distribution": "internal"
     },
     "preview": {
-      "distribution": "internal"   // テスト配布用。実機に直接入れて試せる
+      // テスト配布用。実機に直接入れて試せる
+      "distribution": "internal"
     },
-    "production": {                 // 本番用（ストア提出用）
-      "autoIncrement": true        // ビルドごとにビルド番号を自動で増やす
+    // 本番用（ストア提出用）
+    "production": {
+      // ビルドごとにビルド番号を自動で増やす
+      "autoIncrement": true
     }
   },
   "submit": {
-    "production": {}               // ストア提出の設定（後述）
+    // ストア提出の設定（後述）
+    "production": {}
   }
 }
 ```

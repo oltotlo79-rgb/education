@@ -77,11 +77,14 @@
 
 ```javascript
 // 同期処理（synchronous）: 上から下へ順番に実行され、即座に結果が返る
-const sum = 1 + 2;            // この計算はCPU内部だけで完結するのでマイクロ秒で終わる
-console.log(sum);             // 3 と表示される。1 + 2 の結果がすでに確定しているため。
+// この計算はCPU内部だけで完結するのでマイクロ秒で終わる
+const sum = 1 + 2;
+// 3 と表示される。1 + 2 の結果がすでに確定しているため。
+console.log(sum);
 
 // 非同期処理（asynchronous）: 結果が返るのに時間がかかる
-const data = supabase.from("books").select("*");  // ネット越しのリクエスト。返事が来るまで時間がかかる。
+// ネット越しのリクエスト。返事が来るまで時間がかかる。
+const data = supabase.from("books").select("*");
 //    ❌ await を付けないので、data には「答え」ではなく「答えが入る約束（Promise）」が代入される。
 ```
 
@@ -105,16 +108,21 @@ Promise は3つの状態を持ちます。
 
 ```typescript
 // ❌ await なし: data には Promise オブジェクトが入る
-const fetchBooks = () => {                            // 普通の関数（async が無い）
-  const data = supabase.from("books").select("*");    // Promise が data に入る（中身はまだ無い）
-  console.log(data);                                  // Promise { <pending> } と表示される（ペンディング状態）
+// 普通の関数（async が無い）
+const fetchBooks = () => {
+  // Promise が data に入る（中身はまだ無い）
+  const data = supabase.from("books").select("*");
+  // Promise { <pending> } と表示される（ペンディング状態）
+  console.log(data);
 };
 
 // ✅ async/await あり: data に実際のデータが入る
-const fetchBooks = async () => {                       // async を付けたので await が使える関数になる
+// async を付けたので await が使える関数になる
+const fetchBooks = async () => {
   const { data } = await supabase.from("books").select("*");
   // await により Promise の中身が確定するまで停止 → 確定した結果から data プロパティを取り出す（分割代入）
-  console.log(data);                                   // [{ id: 1, title: "..." }, ...] のような配列が出る
+  // [{ id: 1, title: "..." }, ...] のような配列が出る
+  console.log(data);
 };
 ```
 
@@ -135,13 +143,20 @@ async function fetchBooks() {
 非同期処理は「サーバーが落ちている」「ネットワーク切断」「権限が無い」などで失敗することがあります。`try / catch` で失敗を捕まえます。
 
 ```typescript
-const fetchBooks = async () => {                                          // async関数の定義
-  try {                                                                   // この中で起きたエラーは下の catch に飛ぶ
-    const { data, error } = await supabase.from("books").select("*");     // 非同期処理を await で待つ
-    if (error) throw error;            // Supabaseは「成功でも例外を投げない」設計。errorプロパティを自分で投げ直す。
-    console.log("成功:", data);        // 例外が出なかった＝成功。data を使える。
-  } catch (err) {                      // try ブロック内で throw された値や、await中の例外がここに来る
-    console.error("失敗:", err);       // 開発者ツール（コンソール）に赤文字でエラーを出す
+// async関数の定義
+const fetchBooks = async () => {
+  // この中で起きたエラーは下の catch に飛ぶ
+  try {
+    // 非同期処理を await で待つ
+    const { data, error } = await supabase.from("books").select("*");
+    // Supabaseは「成功でも例外を投げない」設計。errorプロパティを自分で投げ直す。
+    if (error) throw error;
+    // 例外が出なかった＝成功。data を使える。
+    console.log("成功:", data);
+  // try ブロック内で throw された値や、await中の例外がここに来る
+  } catch (err) {
+    // 開発者ツール（コンソール）に赤文字でエラーを出す
+    console.error("失敗:", err);
   }
 };
 ```
@@ -252,18 +267,23 @@ const statusConfig: Record<
   { label: string; bgColor: string; textColor: string }
 > = {
   reading: {
-    label: "読書中",            // バッジに表示する日本語
-    bgColor: "bg-blue-100",     // 背景: 薄い青
-    textColor: "text-blue-800", // 文字: 濃い青
+    // バッジに表示する日本語
+    label: "読書中",
+    // 背景: 薄い青
+    bgColor: "bg-blue-100",
+    // 文字: 濃い青
+    textColor: "text-blue-800",
   },
   completed: {
     label: "読了",
-    bgColor: "bg-green-100",    // 背景: 薄い緑（完了感のある色）
+    // 背景: 薄い緑（完了感のある色）
+    bgColor: "bg-green-100",
     textColor: "text-green-800",
   },
   want_to_read: {
     label: "読みたい",
-    bgColor: "bg-yellow-100",   // 背景: 薄い黄
+    // 背景: 薄い黄
+    bgColor: "bg-yellow-100",
     textColor: "text-yellow-800",
   },
 };
@@ -303,12 +323,18 @@ export default function StatusBadge({ status }: StatusBadgeProps) {
   return (
     <span
       className={`
-        inline-flex items-center   /* 中身（テキスト）を上下中央に揃える */
-        px-2.5 py-0.5              /* 内側の余白 (padding x方向 / y方向) */
-        rounded-full               /* 角を完全に丸めてカプセル型に */
-        text-xs font-medium        /* 文字サイズを小さく、太さは中ぐらい */
-        ${config.bgColor}          /* 背景色（ステータスにより変わる） */
-        ${config.textColor}        /* 文字色（ステータスにより変わる） */
+        /* 中身（テキスト）を上下中央に揃える */
+        inline-flex items-center
+        /* 内側の余白 (padding x方向 / y方向) */
+        px-2.5 py-0.5
+        /* 角を完全に丸めてカプセル型に */
+        rounded-full
+        /* 文字サイズを小さく、太さは中ぐらい */
+        text-xs font-medium
+        /* 背景色（ステータスにより変わる） */
+        ${config.bgColor}
+        /* 文字色（ステータスにより変わる） */
+        ${config.textColor}
       `}
     >
       {/* {config.label} はJSXで「JS式を埋め込む」記法。
@@ -538,11 +564,14 @@ export default function RatingStars({ rating }: RatingStarsProps) {
           // star（1〜5）が現在の評価値以下なら「塗りつぶし（黄色）」、それより大きいなら「空（グレー）」。
           className={`text-lg ${
             star <= clampedRating
-              ? "text-yellow-400" // 塗りつぶしの星（黄色）
-              : "text-gray-300"  // 空の星（グレー）
+              // 塗りつぶしの星（黄色）
+              ? "text-yellow-400"
+              // 空の星（グレー）
+              : "text-gray-300"
           }`}
         >
-          ★ {/* 実は同じ「★」を出している。色だけクラスで切り替えることで塗りつぶし/空を表現。 */}
+          {/* 実は同じ「★」を出している。色だけクラスで切り替えることで塗りつぶし/空を表現。 */}
+          ★
         </span>
       ))}
       {/* 数値も併記する（スクリーンリーダーや視認性のため）。
@@ -710,16 +739,26 @@ import RatingStars from "./RatingStars";
 //     publisher など null OK のカラムは「string | null」のユニオン型で表す。
 //     export しているので他ファイルから import { type Book } で使える。
 export type Book = {
-  id: string;                    // UUID (主キー)
-  title: string;                 // 必須
-  author: string;                // 必須
-  publisher: string | null;      // 任意
-  published_date: string | null; // ISO日付文字列 ("2024-01-15" など)
-  rating: number | null;         // 1〜5 または null
-  status: BookStatus;            // "reading" | "completed" | "want_to_read"
-  memo: string | null;           // 感想メモ
-  created_at: string;            // 作成日時（自動）
-  updated_at: string;            // 更新日時（自動）
+  // UUID (主キー)
+  id: string;
+  // 必須
+  title: string;
+  // 必須
+  author: string;
+  // 任意
+  publisher: string | null;
+  // ISO日付文字列 ("2024-01-15" など)
+  published_date: string | null;
+  // 1〜5 または null
+  rating: number | null;
+  // "reading" | "completed" | "want_to_read"
+  status: BookStatus;
+  // 感想メモ
+  memo: string | null;
+  // 作成日時（自動）
+  created_at: string;
+  // 更新日時（自動）
+  updated_at: string;
 };
 
 // (3) Props の型
@@ -1028,15 +1067,24 @@ export default function BookList({ books }: BookListProps) {
         <a
           href="/books/new"
           className="
-            inline-block             /* aタグ（普段インライン）をブロック寄りにして余白を効かせる */
-            bg-blue-600              /* 背景: 濃い青 */
-            text-white               /* 文字色: 白 */
-            px-6 py-3                /* 内側余白: 横6 / 縦3（Tailwindの単位は4px基準） */
-            rounded-lg               /* 角丸 */
-            font-medium              /* 文字の太さ: 中 */
-            hover:bg-blue-700        /* マウスホバー時にもう一段濃い青へ */
-            transition-colors        /* 色の変化を滑らかに */
-            duration-200             /* アニメーション時間 200ms */
+            /* aタグ（普段インライン）をブロック寄りにして余白を効かせる */
+            inline-block
+            /* 背景: 濃い青 */
+            bg-blue-600
+            /* 文字色: 白 */
+            text-white
+            /* 内側余白: 横6 / 縦3（Tailwindの単位は4px基準） */
+            px-6 py-3
+            /* 角丸 */
+            rounded-lg
+            /* 文字の太さ: 中 */
+            font-medium
+            /* マウスホバー時にもう一段濃い青へ */
+            hover:bg-blue-700
+            /* 色の変化を滑らかに */
+            transition-colors
+            /* アニメーション時間 200ms */
+            duration-200
           "
         >
           最初の書籍を登録する
@@ -1270,7 +1318,8 @@ export default async function HomePage() {
             <Link
               href="/books/new"
               className="
-                inline-flex items-center gap-2   /* インライン・フレックス: SVGとテキストを横並び・中央揃え */
+                /* インライン・フレックス: SVGとテキストを横並び・中央揃え */
+                inline-flex items-center gap-2
                 bg-blue-600
                 text-white
                 px-4 py-2.5
@@ -1298,9 +1347,12 @@ export default async function HomePage() {
                 viewBox="0 0 24 24"
               >
                 <path
-                  strokeLinecap="round"     // 線の端を丸くする
-                  strokeLinejoin="round"    // 線の交点も丸くする
-                  strokeWidth={2}           // 線の太さ
+                  // 線の端を丸くする
+                  strokeLinecap="round"
+                  // 線の交点も丸くする
+                  strokeLinejoin="round"
+                  // 線の太さ
+                  strokeWidth={2}
                   d="M12 4v16m8-8H4"
                 />
               </svg>
@@ -1557,7 +1609,8 @@ Next.js App Router では、`loading.tsx` ファイルを作成すると、ペ�
 
 ```tsx
 // components/LoadingSpinner.tsx
-"use client";   // このファイル内のコンポーネントは Client Component として扱う宣言。必ず1行目に書く。
+// このファイル内のコンポーネントは Client Component として扱う宣言。必ず1行目に書く。
+"use client";
 
 /**
  * LoadingSpinner - ローディング中に表示するスピナーコンポーネント
@@ -1570,7 +1623,8 @@ Next.js App Router では、`loading.tsx` ファイルを作成すると、ペ�
 
 type LoadingSpinnerProps = {
   /** スピナーのサイズ（デフォルト: "md"）。?: は「省略可能」の意味。 */
-  size?: "sm" | "md" | "lg";   // ユニオン型 = この3つの文字列リテラルのうちどれか
+  // ユニオン型 = この3つの文字列リテラルのうちどれか
+  size?: "sm" | "md" | "lg";
   /** スピナーの下に表示するテキスト。省略可。 */
   message?: string;
 };
@@ -1583,9 +1637,12 @@ export default function LoadingSpinner({
   // サイズに応じたクラスを定義（StatusBadge と同じ「辞書パターン」）。
   // キー：サイズ識別子、値：Tailwind の幅・高さ・枠線太さのクラス文字列。
   const sizeClasses = {
-    sm: "w-6 h-6 border-2",     // 24px × 24px、枠線2px
-    md: "w-10 h-10 border-3",   // 40px × 40px、枠線3px
-    lg: "w-16 h-16 border-4",   // 64px × 64px、枠線4px
+    // 24px × 24px、枠線2px
+    sm: "w-6 h-6 border-2",
+    // 40px × 40px、枠線3px
+    md: "w-10 h-10 border-3",
+    // 64px × 64px、枠線4px
+    lg: "w-16 h-16 border-4",
   };
 
   return (
@@ -1594,14 +1651,21 @@ export default function LoadingSpinner({
       {/* 回転するスピナー：円形のうち1辺だけ色を変えて、それを回転させることで「読み込み中」を表現する。 */}
       <div
         className={`
-          ${sizeClasses[size]}      /* 上で選んだサイズクラスを展開（テンプレートリテラル） */
-          border-gray-300           /* 枠線の基本色：薄いグレー */
-          border-t-blue-600         /* 上辺だけ青に：これが回ると進捗感が出る */
-          rounded-full              /* 完全な円形に */
-          animate-spin              /* Tailwind のクラスで「回り続ける」アニメーションを適用 */
+          /* 上で選んだサイズクラスを展開（テンプレートリテラル） */
+          ${sizeClasses[size]}
+          /* 枠線の基本色：薄いグレー */
+          border-gray-300
+          /* 上辺だけ青に：これが回ると進捗感が出る */
+          border-t-blue-600
+          /* 完全な円形に */
+          rounded-full
+          /* Tailwind のクラスで「回り続ける」アニメーションを適用 */
+          animate-spin
         `}
-        role="status"               // スクリーンリーダーに「ステータス表示」と伝える
-        aria-label="読み込み中"     // 読み上げ文言
+        // スクリーンリーダーに「ステータス表示」と伝える
+        role="status"
+        // 読み上げ文言
+        aria-label="読み込み中"
       />
       {/* メッセージが渡されていれば下に表示。
           「&&」は短絡評価：左辺が真なら右辺の JSX を描画、偽（空文字や undefined）なら何も描画しない。 */}
@@ -1749,7 +1813,8 @@ import LoadingSpinner from "@/components/LoadingSpinner";
  *
  * これは React の Suspense（サスペンス：読み込み中のフォールバック表示機能）を内部的に利用している。
  */
-export default function Loading() {                  // async は不要：データ取得しない静的な画面
+// async は不要：データ取得しない静的な画面
+export default function Loading() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* ヘッダーのスケルトン（ローディング中もヘッダーのような見た目を維持）。
@@ -1857,7 +1922,8 @@ export default function Loading() {
 
 ```tsx
 // app/error.tsx  ← Next.js の規約で、ページレンダリング中に未処理エラーが起きた時に自動表示される。
-"use client";   // 必須：Next.js の仕様で error.tsx は Client Component でなければならない
+// 必須：Next.js の仕様で error.tsx は Client Component でなければならない
+"use client";
 
 /**
  * エラーページ
@@ -1874,7 +1940,8 @@ export default function Loading() {
 
 type ErrorPageProps = {
   /** 発生したエラーオブジェクト。Error 型に digest（Next.js が付与するエラーID）を追加した型。 */
-  error: Error & { digest?: string };   // 「&」は交差型：両方の性質を併せ持つ
+  // 「&」は交差型：両方の性質を併せ持つ
+  error: Error & { digest?: string };
   /** エラーからの復帰を試みる関数（ページの再レンダリングを試行する）。
       「() => void」は「引数なし、戻り値なし」の関数型。 */
   reset: () => void;
@@ -1931,7 +1998,8 @@ export default function ErrorPage({ error, reset }: ErrorPageProps) {
             {/* <pre> はそのままの体裁（改行・空白）を保持して表示する HTML 要素。
                 overflow-auto max-h-40 で「内容が多ければスクロール、最大160pxまで」。 */}
             <pre className="mt-2 p-3 bg-gray-100 rounded text-xs text-red-600 overflow-auto max-h-40">
-              {error.message}   {/* Error オブジェクトの message プロパティ（人間可読なエラー説明文）。 */}
+              {/* Error オブジェクトの message プロパティ（人間可読なエラー説明文）。 */}
+              {error.message}
             </pre>
           </details>
         )}
@@ -2096,11 +2164,15 @@ export default function ErrorPage({ error, reset }: ErrorPageProps) {
 
 ```tsx
 // app/actions.ts — Server Action を定義するファイル例（参考）
-"use server";   // ファイル先頭でこのディレクティブを書くと、中の関数はすべてサーバー実行になる
+// ファイル先頭でこのディレクティブを書くと、中の関数はすべてサーバー実行になる
+"use server";
 
-import { createClient } from "@/lib/supabase/server";   // サーバー用 Supabase クライアント
-import { revalidatePath } from "next/cache";            // 指定パスのキャッシュを破棄する関数
-import { redirect } from "next/navigation";             // 別のページに遷移させる関数
+// サーバー用 Supabase クライアント
+import { createClient } from "@/lib/supabase/server";
+// 指定パスのキャッシュを破棄する関数
+import { revalidatePath } from "next/cache";
+// 別のページに遷移させる関数
+import { redirect } from "next/navigation";
 
 // フォーム送信時に呼ばれる Server Action。引数 formData はブラウザ標準の FormData オブジェクト。
 // FormData とは <form> 内の入力値（name 属性をキーに）をまとめた箱。
@@ -2132,7 +2204,8 @@ export default function NewBookPage() {
     // <form action={createBook}> と書くと、送信時に Next.js が自動で
     // FormData を組み立てて createBook(formData) を呼んでくれる。
     <form action={createBook}>
-      <input name="title" />     {/* name="title" が formData.get("title") に対応 */}
+      {/* name="title" が formData.get("title") に対応 */}
+      <input name="title" />
       <input name="author" />
       <button type="submit">登録</button>
     </form>
@@ -2166,7 +2239,8 @@ export default function NewBookPage() {
 
 ```tsx
 // components/BookForm.tsx
-"use client";   // useState などブラウザ専用機能を使うので Client Component 化
+// useState などブラウザ専用機能を使うので Client Component 化
+"use client";
 
 /**
  * BookForm - 書籍の登録・編集フォームコンポーネント
@@ -2192,13 +2266,20 @@ import { type BookStatus } from "./StatusBadge";
 // id, created_at, updated_at はフォームでは扱わない）。
 // export しているので、親ページがこの型を使って handleSubmit の引数を型付けできる。
 export type BookFormData = {
-  title: string;             // タイトル（必須）
-  author: string;            // 著者（必須）
-  publisher: string;         // 出版社（任意）。文字列のまま扱い、null は親側で変換する
-  published_date: string;    // 出版日（任意）。"YYYY-MM-DD" 形式の文字列
-  rating: number | null;     // 評価（任意）。1〜5の数値 または null
-  status: BookStatus;        // ステータス（必須）。"reading" | "completed" | "want_to_read"
-  memo: string;              // メモ（任意）
+  // タイトル（必須）
+  title: string;
+  // 著者（必須）
+  author: string;
+  // 出版社（任意）。文字列のまま扱い、null は親側で変換する
+  publisher: string;
+  // 出版日（任意）。"YYYY-MM-DD" 形式の文字列
+  published_date: string;
+  // 評価（任意）。1〜5の数値 または null
+  rating: number | null;
+  // ステータス（必須）。"reading" | "completed" | "want_to_read"
+  status: BookStatus;
+  // メモ（任意）
+  memo: string;
 };
 
 // Props の型定義（親から受け取る値の形）
@@ -2222,15 +2303,18 @@ const defaultFormData: BookFormData = {
   author: "",
   publisher: "",
   published_date: "",
-  rating: null,             // 「未選択」を表す null
-  status: "want_to_read",   // 新規登録時は「読みたい」を初期値に
+  // 「未選択」を表す null
+  rating: null,
+  // 新規登録時は「読みたい」を初期値に
+  status: "want_to_read",
   memo: "",
 };
 
 export default function BookForm({
   initialData,
   onSubmit,
-  submitLabel = "登録する",   // デフォルト値：呼び出し側が省略したらこれを使う
+  // デフォルト値：呼び出し側が省略したらこれを使う
+  submitLabel = "登録する",
   isSubmitting = false,
 }: BookFormProps) {
   // ----- State -----
@@ -2253,8 +2337,10 @@ export default function BookForm({
    * フォーム全体のバリデーションを行う
    * @returns バリデーションを通過したら true、エラーがあれば false
    */
-  const validate = (): boolean => {                                          // 戻り値型を明示
-    const newErrors: Partial<Record<keyof BookFormData, string>> = {};       // 新しいエラー集を作る
+  // 戻り値型を明示
+  const validate = (): boolean => {
+    // 新しいエラー集を作る
+    const newErrors: Partial<Record<keyof BookFormData, string>> = {};
 
     // タイトル: 必須、100文字以内
     // .trim() は前後の空白文字を削った文字列を返す。
@@ -2371,7 +2457,8 @@ export default function BookForm({
     // (2) バリデーション関数を呼び、エラーがあれば中断
     //     validate() は内部で setErrors を呼ぶので、画面にエラー文も表示される。
     if (!validate()) {
-      return;   // 関数を終了（送信しない）
+      // 関数を終了（送信しない）
+      return;
     }
 
     // (3) 親コンポーネントから渡された onSubmit コールバックを呼ぶ
@@ -2395,14 +2482,20 @@ export default function BookForm({
           htmlFor="title"
           className="block text-sm font-medium text-gray-700 mb-1"
         >
-          タイトル <span className="text-red-500">*</span>   {/* 赤い「*」で必須を表す */}
+          {/* 赤い「*」で必須を表す */}
+          タイトル <span className="text-red-500">*</span>
         </label>
         <input
-          type="text"                       // 1行のテキスト入力
-          id="title"                        // label の htmlFor と一致させる
-          name="title"                      // FormData で使うキー名（Server Action方式の場合に重要）
-          value={formData.title}            // 制御コンポーネント：state の値を入力欄の値として使う
-          onChange={handleChange}           // 入力が変わったら handleChange を呼ぶ
+          // 1行のテキスト入力
+          type="text"
+          // label の htmlFor と一致させる
+          id="title"
+          // FormData で使うキー名（Server Action方式の場合に重要）
+          name="title"
+          // 制御コンポーネント：state の値を入力欄の値として使う
+          value={formData.title}
+          // 入力が変わったら handleChange を呼ぶ
+          onChange={handleChange}
           placeholder="例: リーダブルコード"
           // テンプレートリテラル内で「エラーがあれば赤い枠線、なければ通常の枠線」を切り替える。
           className={`
@@ -2410,7 +2503,8 @@ export default function BookForm({
             border rounded-lg
             text-gray-900
             placeholder-gray-400
-            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent   /* フォーカス時に青い縁取り */
+            /* フォーカス時に青い縁取り */
+            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
             transition-colors duration-200
             ${errors.title ? "border-red-500 bg-red-50" : "border-gray-300"}
           `}
@@ -2526,7 +2620,8 @@ export default function BookForm({
             id="rating"
             name="rating"
             value={formData.rating ?? ""}
-            onChange={handleRatingChange}     // rating は数値変換が必要なので別ハンドラ
+            // rating は数値変換が必要なので別ハンドラ
+            onChange={handleRatingChange}
             className="
               w-full px-4 py-2.5
               border border-gray-300 rounded-lg
@@ -2599,7 +2694,8 @@ export default function BookForm({
             placeholder-gray-400
             focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
             transition-colors duration-200
-            resize-vertical                                                                 /* 縦方向だけリサイズ可能 */
+            /* 縦方向だけリサイズ可能 */
+            resize-vertical
             ${errors.memo ? "border-red-500 bg-red-50" : "border-gray-300"}
           `}
         />
@@ -2615,8 +2711,10 @@ export default function BookForm({
       {/* ===== 送信ボタン ===== */}
       <div className="flex items-center gap-4 pt-4">
         <button
-          type="submit"                       // type="submit" で「これがフォームの送信ボタン」と明示
-          disabled={isSubmitting}             // 送信中はボタンを無効化（連打防止）
+          // type="submit" で「これがフォームの送信ボタン」と明示
+          type="submit"
+          // 送信中はボタンを無効化（連打防止）
+          disabled={isSubmitting}
           // 送信中は薄い青＆クリック不可マウスカーソル、通常時は濃い青＆ホバーで色変化
           className={`
             px-8 py-3
@@ -2643,9 +2741,12 @@ export default function BookForm({
                 {/* 背景の薄い円（不透明度25%）。 */}
                 <circle
                   className="opacity-25"
-                  cx="12"                     // 中心 x
-                  cy="12"                     // 中心 y
-                  r="10"                      // 半径
+                  // 中心 x
+                  cx="12"
+                  // 中心 y
+                  cy="12"
+                  // 半径
+                  r="10"
                   stroke="currentColor"
                   strokeWidth="4"
                 />
@@ -2993,7 +3094,8 @@ BookForm を使って新規登録画面を構成するページです。
 
 ```tsx
 // app/books/new/page.tsx  ← URL "/books/new" に対応するページ（App Router のファイルベースルーティング）
-"use client";   // useState・useRouter などブラウザ専用機能を使うので Client Component
+// useState・useRouter などブラウザ専用機能を使うので Client Component
+"use client";
 
 /**
  * 書籍登録ページ
@@ -3008,10 +3110,14 @@ BookForm を使って新規登録画面を構成するページです。
  *   初心者にとって分かりやすい Client Component 方式で実装する。
  */
 
-import { useState } from "react";                              // React の状態管理フック
-import { useRouter } from "next/navigation";                   // Next.js App Router のページ遷移フック
-import { createClient } from "@/lib/supabase/client";          // ブラウザ用 Supabase クライアント（サーバー用と別物）
-import BookForm, { type BookFormData } from "@/components/BookForm";   // フォーム本体と型
+// React の状態管理フック
+import { useState } from "react";
+// Next.js App Router のページ遷移フック
+import { useRouter } from "next/navigation";
+// ブラウザ用 Supabase クライアント（サーバー用と別物）
+import { createClient } from "@/lib/supabase/client";
+// フォーム本体と型
+import BookForm, { type BookFormData } from "@/components/BookForm";
 
 export default function NewBookPage() {
   // useRouter() でルーター操作オブジェクトを取得。
@@ -3109,7 +3215,8 @@ export default function NewBookPage() {
               className="
                 inline-flex items-center justify-center
                 w-10 h-10
-                rounded-full          /* 完全に丸い形 */
+                /* 完全に丸い形 */
+                rounded-full
                 bg-gray-100
                 text-gray-600
                 hover:bg-gray-200
@@ -3509,8 +3616,10 @@ const [publisher, setPublisher] = useState("");
 ### 5-6. `router.push` と `router.refresh` の組み合わせ（NewBookPage）
 
 ```tsx
-router.push("/");      // URLを変えて遷移
-router.refresh();      // Server Component のデータを取り直す
+// URLを変えて遷移
+router.push("/");
+// Server Component のデータを取り直す
+router.refresh();
 ```
 
 **なぜ両方必要なのか:**
@@ -3538,7 +3647,8 @@ publisher: data.publisher.trim() || null,
 
 ```tsx
 const handleSubmit = async (e: FormEvent) => {
-  e.preventDefault();   // ブラウザの「フォーム送信→画面遷移」を止める
+  // ブラウザの「フォーム送信→画面遷移」を止める
+  e.preventDefault();
   // ...
 };
 ```
@@ -3710,8 +3820,10 @@ Server Action は「サーバー上で実行される関数」です。クライ
 
    ```
    // よくある間違い
-   publishedDate: "2024-01-01"    // NG: キャメルケース
-   published_date: "2024-01-01"   // OK: スネークケース（DB のカラム名に合わせる）
+   // NG: キャメルケース
+   publishedDate: "2024-01-01"
+   // OK: スネークケース（DB のカラム名に合わせる）
+   published_date: "2024-01-01"
    ```
 
 2. **NOT NULL 制約違反**

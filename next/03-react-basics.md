@@ -55,15 +55,23 @@ React は「画面を作る」ための仕組みです。「画面」とは内�
 HTML（HyperText Markup Language）は、**Webページの構造を記述する言語**です。`<タグ名>...</タグ名>` という形で、文章のどの部分が「見出し」で、どの部分が「段落」で、どこに「リンク」があるか、をコンピュータに教えます。
 
 ```html
-<!DOCTYPE html>                                  <!-- ブラウザに「これはHTML5の文書です」と宣言する一行。HTMLファイルの先頭に必ず書く -->
-<html>                                           <!-- ページ全体の最も外側のタグ。<html>...</html> の中にすべてが入る -->
-  <head>                                         <!-- 文書の「メタ情報（タイトル・文字コード・読み込むCSS等）」を入れる場所。画面には表示されない -->
-    <title>はじめてのページ</title>              <!-- ブラウザのタブ部分に表示される文字 -->
+<!-- ブラウザに「これはHTML5の文書です」と宣言する一行。HTMLファイルの先頭に必ず書く -->
+<!DOCTYPE html>
+<!-- ページ全体の最も外側のタグ。<html>...</html> の中にすべてが入る -->
+<html>
+  <!-- 文書の「メタ情報（タイトル・文字コード・読み込むCSS等）」を入れる場所。画面には表示されない -->
+  <head>
+    <!-- ブラウザのタブ部分に表示される文字 -->
+    <title>はじめてのページ</title>
   </head>
-  <body>                                         <!-- 画面に実際に表示される「本文」を入れる場所 -->
-    <h1>こんにちは</h1>                          <!-- 一番大きな見出し（heading 1）。1ページに1つだけ書くのが原則 -->
-    <p>これは段落（paragraph）です。</p>          <!-- <p> は paragraph（段落）の略。通常の文章ブロック -->
-    <a href="https://example.com">リンク</a>     <!-- <a> はアンカー（anchor）。href 属性で飛び先URLを指定するクリック可能なリンク -->
+  <!-- 画面に実際に表示される「本文」を入れる場所 -->
+  <body>
+    <!-- 一番大きな見出し（heading 1）。1ページに1つだけ書くのが原則 -->
+    <h1>こんにちは</h1>
+    <!-- <p> は paragraph（段落）の略。通常の文章ブロック -->
+    <p>これは段落（paragraph）です。</p>
+    <!-- <a> はアンカー（anchor）。href 属性で飛び先URLを指定するクリック可能なリンク -->
+    <a href="https://example.com">リンク</a>
   </body>
 </html>
 ```
@@ -118,10 +126,12 @@ Chrome や Edge で右クリック →「検証（Inspect）」を選ぶと、�
 ```javascript
 // Consoleタブで実行
 // document はブラウザが用意している「ページ全体を表すオブジェクト」。常にグローバルに存在する。
-document.title            // ▶ ページタイトル（<title>タグの中身）を取得。文字列が返る
+// ▶ ページタイトル（<title>タグの中身）を取得。文字列が返る
+document.title
 // querySelector はCSSセレクタで要素を1つ取得するメソッド。"h1" は「h1タグを探す」という意味。
 // .textContent は「その要素のテキスト部分だけ」を取り出すプロパティ。
-document.querySelector("h1").textContent  // ▶ h1の文字を取得
+// ▶ h1の文字を取得
+document.querySelector("h1").textContent
 ```
 
 > **これだけ覚えれば次に進める:** HTMLは「タグで文書の構造を書くもの」、DOMは「ブラウザがそれを読み込んだ後のツリー状のデータ」、React は「DOMを直接いじらず、JSX という書き方で画面を宣言するライブラリ」。これだけ頭に入れて先へ進みましょう。
@@ -397,8 +407,10 @@ JSX では、**必ず1つのルート要素** で囲む必要があります。
 // 並列に複数の要素を書くと「どれが戻り値？」と JS が判断できずエラーになる。
 function App() {
   return (
-    <h1>タイトル</h1>     {/* ← 1つ目のルート要素 */}
-    <p>本文</p>           {/* ← 2つ目のルート要素 → ❌ エラー */}
+    {/* ← 1つ目のルート要素 */}
+    <h1>タイトル</h1>
+    {/* ← 2つ目のルート要素 → ❌ エラー */}
+    <p>本文</p>
   );
 }
 // ▼ エラー
@@ -414,8 +426,10 @@ function App() {
     // (1) ルート要素は1つ。<div> でまとめる。
     //     JSX のインデントは見やすさのためで、必須ではない。
     <div>
-      <h1>タイトル</h1>   {/* (2) <div> の中の子要素1つ目 */}
-      <p>本文</p>         {/* (3) <div> の中の子要素2つ目 */}
+      {/* (2) <div> の中の子要素1つ目 */}
+      <h1>タイトル</h1>
+      {/* (3) <div> の中の子要素2つ目 */}
+      <p>本文</p>
     </div>
   );
 }
@@ -436,10 +450,12 @@ function App() {
 // Fragment は「論理的に1つにまとめるが、DOMには何も出さない」特殊なラッパー。
 function App() {
   return (
-    <>                    {/* 開始タグ: 名前のないタグ */}
+    {/* 開始タグ: 名前のないタグ */}
+    <>
       <h1>タイトル</h1>
       <p>本文</p>
-    </>                   {/* 終了タグ */}
+    {/* 終了タグ */}
+    </>
   );
 }
 ```
@@ -454,7 +470,8 @@ function App() {
 
 ```tsx
   return (
-    <>                    {/* 開始タグ: 名前のないタグ */}
+    {/* 開始タグ: 名前のないタグ */}
+    <>
 ```
 
 - JSXには「**returnで返せるのは1つの要素だけ**」というルールがあります。複数の要素を並べたいときは、必ず何か1つの要素で包む必要があります。
@@ -470,7 +487,8 @@ function App() {
 ```tsx
       <h1>タイトル</h1>
       <p>本文</p>
-    </>                   {/* 終了タグ */}
+    {/* 終了タグ */}
+    </>
   );
 ```
 
@@ -633,9 +651,12 @@ JSX の中で `{}` を使うと、JavaScript の式を埋め込めます。
 function App() {
   // (1) コンポーネント関数の中（return より前）は普通の JS。
   //     ここで変数宣言や計算をしておく。
-  const userName: string = "田中太郎";   // 文字列の変数
-  const age: number = 25;                // 数値の変数
-  const today: Date = new Date();        // 現在時刻の Date オブジェクト
+  // 文字列の変数
+  const userName: string = "田中太郎";
+  // 数値の変数
+  const age: number = 25;
+  // 現在時刻の Date オブジェクト
+  const today: Date = new Date();
 
   // (2) return 内の JSX に { } で値を差し込む
   return (
@@ -676,9 +697,12 @@ function App() {
 ##### 解説1: returnより前で変数を準備する
 
 ```tsx
-  const userName: string = "田中太郎";   // 文字列の変数
-  const age: number = 25;                // 数値の変数
-  const today: Date = new Date();        // 現在時刻の Date オブジェクト
+  // 文字列の変数
+  const userName: string = "田中太郎";
+  // 数値の変数
+  const age: number = 25;
+  // 現在時刻の Date オブジェクト
+  const today: Date = new Date();
 ```
 
 - コンポーネント関数の中で、`return` より**前**の部分は普通のJavaScriptです。ここで表示に使う変数を用意しておきます。
@@ -969,10 +993,14 @@ function FruitList() {
 // (1) Book 型を定義（書籍データ1件分の形）
 //     type を使うのが React/TS では一般的。interface でも同じことができる。
 type Book = {
-  id: number;          // 一意なID（key に使う）
-  title: string;       // 書籍タイトル
-  author: string;      // 著者名
-  price: number;       // 税込価格
+  // 一意なID（key に使う）
+  id: number;
+  // 書籍タイトル
+  title: string;
+  // 著者名
+  author: string;
+  // 税込価格
+  price: number;
   isAvailable: boolean;// 在庫があるか（true=あり, false=なし）
 };
 
@@ -1053,10 +1081,14 @@ function BookList() {
 
 ```tsx
 type Book = {
-  id: number;          // 一意なID（key に使う）
-  title: string;       // 書籍タイトル
-  author: string;      // 著者名
-  price: number;       // 税込価格
+  // 一意なID（key に使う）
+  id: number;
+  // 書籍タイトル
+  title: string;
+  // 著者名
+  author: string;
+  // 税込価格
+  price: number;
   isAvailable: boolean;// 在庫があるか（true=あり, false=なし）
 };
 ```
@@ -1324,7 +1356,8 @@ function App() {
 
 // NG: 小文字始まり → HTML タグとして扱われる
 // React.createElement("greeting", ...) になり、不明なHTMLタグとしてDOMに出力される
-<greeting />  // <greeting> という存在しない HTML タグになる
+// <greeting> という存在しない HTML タグになる
+<greeting />
 ```
 
 ### 3.2 Props の受け渡し（TypeScript での型定義含む）
@@ -1447,12 +1480,18 @@ function App() {
 ```tsx
 // Props の型を定義。1つのオブジェクトの「形」を表す type を作る。
 type UserCardProps = {
-  name: string;                    // 必須の文字列
-  age: number;                     // 必須の数値
-  email?: string;                  // ? はオプショナル（省略可能）。値が無いと型は string | undefined になる
-  isAdmin: boolean;                // 必須の真偽値（true / false）
-  hobbies: string[];               // 文字列の配列。[] は「配列」を表す
-  onClickProfile: () => void;      // 関数型。「引数なし、戻り値なし（void）の関数」を表す
+  // 必須の文字列
+  name: string;
+  // 必須の数値
+  age: number;
+  // ? はオプショナル（省略可能）。値が無いと型は string | undefined になる
+  email?: string;
+  // 必須の真偽値（true / false）
+  isAdmin: boolean;
+  // 文字列の配列。[] は「配列」を表す
+  hobbies: string[];
+  // 関数型。「引数なし、戻り値なし（void）の関数」を表す
+  onClickProfile: () => void;
 };
 
 // 分割代入で props のプロパティを直接取り出す。
@@ -1468,8 +1507,10 @@ function UserCard({
   return (
     // className は HTML の class 属性の JSX 版（class は JS の予約語のため）
     <div className="user-card">
-      <h2>{name}</h2>           {/* { } で JS の式を JSX に埋め込む。name 変数の値が表示される */}
-      <p>年齢: {age}歳</p>      {/* 「年齢: 25歳」のように文字列と変数が混ざる */}
+      {/* { } で JS の式を JSX に埋め込む。name 変数の値が表示される */}
+      <h2>{name}</h2>
+      {/* 「年齢: 25歳」のように文字列と変数が混ざる */}
+      <p>年齢: {age}歳</p>
 
       {/* オプショナルな props は存在チェック
           email が undefined（=falsy）なら && の右辺が評価されず、何も表示されない。
@@ -1543,12 +1584,18 @@ function App() {
 
 ```tsx
 type UserCardProps = {
-  name: string;                    // 必須の文字列
-  age: number;                     // 必須の数値
-  email?: string;                  // ? はオプショナル（省略可能）
-  isAdmin: boolean;                // 必須の真偽値（true / false）
-  hobbies: string[];               // 文字列の配列
-  onClickProfile: () => void;      // 関数型（引数なし・戻り値なし）
+  // 必須の文字列
+  name: string;
+  // 必須の数値
+  age: number;
+  // ? はオプショナル（省略可能）
+  email?: string;
+  // 必須の真偽値（true / false）
+  isAdmin: boolean;
+  // 文字列の配列
+  hobbies: string[];
+  // 関数型（引数なし・戻り値なし）
+  onClickProfile: () => void;
 };
 ```
 
@@ -1620,10 +1667,14 @@ type UserCardProps = {
 ```tsx
 // Button が受け取る Props の型定義
 type ButtonProps = {
-  label: string;                          // ボタンに表示する文字（必須）
-  color?: string;                         // ? を付けると省略可能（オプショナル）
-  size?: "small" | "medium" | "large";    // ユニオン型: 3つの文字列のどれかしか入らない
-  disabled?: boolean;                     // クリック不可にするかどうか（省略可能）
+  // ボタンに表示する文字（必須）
+  label: string;
+  // ? を付けると省略可能（オプショナル）
+  color?: string;
+  // ユニオン型: 3つの文字列のどれかしか入らない
+  size?: "small" | "medium" | "large";
+  // クリック不可にするかどうか（省略可能）
+  disabled?: boolean;
 };
 
 // 分割代入で props を取り出し、同時に「= 値」でデフォルト値を設定。
@@ -1648,13 +1699,20 @@ function Button({
       // style はオブジェクトで指定。外側の {} が JSX、内側の {} が JSオブジェクトリテラル。
       // CSSプロパティ名はキャメルケース（background-color → backgroundColor）。
       style={{
-        backgroundColor: color,                 // 背景色（props 由来）
-        padding: sizeStyles[size],              // size に対応する余白文字列
-        color: "white",                         // 文字色
-        border: "none",                         // 枠線なし
-        borderRadius: "4px",                    // 角を丸める
-        opacity: disabled ? 0.5 : 1,            // 無効化されてたら半透明
-        cursor: disabled ? "not-allowed" : "pointer", // マウスカーソルの形
+        // 背景色（props 由来）
+        backgroundColor: color,
+        // size に対応する余白文字列
+        padding: sizeStyles[size],
+        // 文字色
+        color: "white",
+        // 枠線なし
+        border: "none",
+        // 角を丸める
+        borderRadius: "4px",
+        // 無効化されてたら半透明
+        opacity: disabled ? 0.5 : 1,
+        // マウスカーソルの形
+        cursor: disabled ? "not-allowed" : "pointer",
       }}
       // disabled={disabled} は「JS変数の値をHTML属性にセット」する書き方。
       // boolean を渡せば true のとき disabled 属性が付き、false なら付かない。
@@ -1694,10 +1752,14 @@ function App() {
 
 ```tsx
 type ButtonProps = {
-  label: string;                          // ボタンに表示する文字（必須）
-  color?: string;                         // ? を付けると省略可能
-  size?: "small" | "medium" | "large";    // ユニオン型: 3つの文字列のどれか
-  disabled?: boolean;                     // クリック不可にするか（省略可能）
+  // ボタンに表示する文字（必須）
+  label: string;
+  // ? を付けると省略可能
+  color?: string;
+  // ユニオン型: 3つの文字列のどれか
+  size?: "small" | "medium" | "large";
+  // クリック不可にするか（省略可能）
+  disabled?: boolean;
 };
 ```
 
@@ -1731,10 +1793,14 @@ function Button({
 
 ```tsx
       style={{
-        backgroundColor: color,                 // 背景色（props 由来）
-        padding: sizeStyles[size],              // size に対応する余白文字列
-        opacity: disabled ? 0.5 : 1,            // 無効化されてたら半透明
-        cursor: disabled ? "not-allowed" : "pointer", // マウスカーソルの形
+        // 背景色（props 由来）
+        backgroundColor: color,
+        // size に対応する余白文字列
+        padding: sizeStyles[size],
+        // 無効化されてたら半透明
+        opacity: disabled ? 0.5 : 1,
+        // マウスカーソルの形
+        cursor: disabled ? "not-allowed" : "pointer",
       }}
       disabled={disabled}
 ```
@@ -1767,10 +1833,14 @@ function Card({ title, children }: CardProps) {
     // インラインスタイルでカードの見た目を作る
     <div
       style={{
-        border: "1px solid #ddd",        // 1px、実線、薄いグレーの枠線
-        borderRadius: "8px",             // 角丸
-        padding: "16px",                 // 内側の余白
-        margin: "8px",                   // 外側の余白
+        // 1px、実線、薄いグレーの枠線
+        border: "1px solid #ddd",
+        // 角丸
+        borderRadius: "8px",
+        // 内側の余白
+        padding: "16px",
+        // 外側の余白
+        margin: "8px",
       }}
     >
       {/* タイトル部分。borderBottom で下線、paddingBottom で下線との余白を確保 */}
@@ -1905,24 +1975,37 @@ src/                              # ソースコードのルートフォルダ
 // types.ts - 型定義
 // 書籍データ1件分の「形」を表す型
 type Book = {
-  id: number;                  // 一意なID（DBの主キーに相当）
-  title: string;               // 書名
-  author: string;              // 著者名
-  price: number;               // 価格（円）
-  rating: number;              // 評価1〜5
-  isAvailable: boolean;        // 在庫があるか
-  coverImage?: string;         // ? でオプショナル: 画像URLが無い書籍もある
-  publishedDate: string;       // 出版日（ISO形式の文字列 "2025-01-15"）
-  tags: string[];              // タグの配列（複数の文字列）
+  // 一意なID（DBの主キーに相当）
+  id: number;
+  // 書名
+  title: string;
+  // 著者名
+  author: string;
+  // 価格（円）
+  price: number;
+  // 評価1〜5
+  rating: number;
+  // 在庫があるか
+  isAvailable: boolean;
+  // ? でオプショナル: 画像URLが無い書籍もある
+  coverImage?: string;
+  // 出版日（ISO形式の文字列 "2025-01-15"）
+  publishedDate: string;
+  // タグの配列（複数の文字列）
+  tags: string[];
 };
 
 // BookCard.tsx - 書籍カードコンポーネント
 // このコンポーネントが親から受け取る props の型
 type BookCardProps = {
-  book: Book;                                       // 表示する書籍データ
-  onAddToCart: (bookId: number) => void;            // カート追加時のコールバック関数
-  onToggleFavorite: (bookId: number) => void;       // お気に入り切替時のコールバック関数
-  isFavorite: boolean;                              // 現在お気に入り状態か
+  // 表示する書籍データ
+  book: Book;
+  // カート追加時のコールバック関数
+  onAddToCart: (bookId: number) => void;
+  // お気に入り切替時のコールバック関数
+  onToggleFavorite: (bookId: number) => void;
+  // 現在お気に入り状態か
+  isFavorite: boolean;
 };
 
 // 分割代入で props を取り出す
@@ -1938,11 +2021,16 @@ function BookCard({ book, onAddToCart, onToggleFavorite, isFavorite }: BookCardP
     // カード全体の枠
     <div
       style={{
-        border: "1px solid #ddd",              // 薄い枠線
-        borderRadius: "12px",                  // 大きめ角丸
-        padding: "16px",                       // 内側の余白
-        maxWidth: "300px",                     // 最大幅
-        boxShadow: "0 2px 8px rgba(0,0,0,0.1)", // ふんわり影
+        // 薄い枠線
+        border: "1px solid #ddd",
+        // 大きめ角丸
+        borderRadius: "12px",
+        // 内側の余白
+        padding: "16px",
+        // 最大幅
+        maxWidth: "300px",
+        // ふんわり影
+        boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
       }}
     >
       {/* 表紙画像
@@ -1951,20 +2039,27 @@ function BookCard({ book, onAddToCart, onToggleFavorite, isFavorite }: BookCardP
           coverImage が undefined → falsy → No Image プレースホルダーを表示 */}
       {book.coverImage ? (
         <img
-          src={book.coverImage}                                    // 画像URL
-          alt={`${book.title}の表紙`}                              // 代替テキスト（テンプレートリテラル）
-          style={{ width: "100%", borderRadius: "8px" }}            // 横幅100%・角丸
+          // 画像URL
+          src={book.coverImage}
+          // 代替テキスト（テンプレートリテラル）
+          alt={`${book.title}の表紙`}
+          // 横幅100%・角丸
+          style={{ width: "100%", borderRadius: "8px" }}
         />
       ) : (
         <div
           style={{
             width: "100%",
             height: "200px",
-            backgroundColor: "#f0f0f0",         // 薄いグレー
+            // 薄いグレー
+            backgroundColor: "#f0f0f0",
             borderRadius: "8px",
-            display: "flex",                     // 中身を flex レイアウトに
-            alignItems: "center",                // 縦方向中央寄せ
-            justifyContent: "center",            // 横方向中央寄せ
+            // 中身を flex レイアウトに
+            display: "flex",
+            // 縦方向中央寄せ
+            alignItems: "center",
+            // 横方向中央寄せ
+            justifyContent: "center",
             color: "#999",
           }}
         >
@@ -1989,10 +2084,13 @@ function BookCard({ book, onAddToCart, onToggleFavorite, isFavorite }: BookCardP
           <span
             key={tag}
             style={{
-              backgroundColor: "#e8f4fd",      // 淡い青背景
-              color: "#1a73e8",                 // 青文字
+              // 淡い青背景
+              backgroundColor: "#e8f4fd",
+              // 青文字
+              color: "#1a73e8",
               padding: "2px 8px",
-              borderRadius: "12px",             // 強めの角丸でピル状に
+              // 強めの角丸でピル状に
+              borderRadius: "12px",
               fontSize: "12px",
             }}
           >
@@ -2004,7 +2102,8 @@ function BookCard({ book, onAddToCart, onToggleFavorite, isFavorite }: BookCardP
       {/* 価格と在庫状態を左右に配置（space-between） */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <span style={{ fontSize: "20px", fontWeight: "bold" }}>
-          ¥{book.price.toLocaleString()}        {/* 3桁カンマ区切り */}
+          {/* 3桁カンマ区切り */}
+          ¥{book.price.toLocaleString()}
         </span>
         {/* 在庫がある=緑、ない=赤 */}
         <span style={{ color: book.isAvailable ? "green" : "red", fontSize: "14px" }}>
@@ -2021,9 +2120,11 @@ function BookCard({ book, onAddToCart, onToggleFavorite, isFavorite }: BookCardP
           // 在庫なし → disabled=true（クリック不可）
           disabled={!book.isAvailable}
           style={{
-            flex: 1,                                                 // 残りスペースを埋める
+            // 残りスペースを埋める
+            flex: 1,
             padding: "8px",
-            backgroundColor: book.isAvailable ? "#1a73e8" : "#ccc",  // 状態で色変化
+            // 状態で色変化
+            backgroundColor: book.isAvailable ? "#1a73e8" : "#ccc",
             color: "white",
             border: "none",
             borderRadius: "6px",
@@ -2037,7 +2138,8 @@ function BookCard({ book, onAddToCart, onToggleFavorite, isFavorite }: BookCardP
           onClick={() => onToggleFavorite(book.id)}
           style={{
             padding: "8px 12px",
-            backgroundColor: "transparent",     // 背景なし
+            // 背景なし
+            backgroundColor: "transparent",
             border: "1px solid #ddd",
             borderRadius: "6px",
             cursor: "pointer",
@@ -2103,15 +2205,24 @@ function App() {
 
 ```tsx
 type Book = {
-  id: number;                  // 一意なID（DBの主キーに相当）
-  title: string;               // 書名
-  author: string;              // 著者名
-  price: number;               // 価格（円）
-  rating: number;              // 評価1〜5
-  isAvailable: boolean;        // 在庫があるか
-  coverImage?: string;         // ? でオプショナル: 画像URLが無い書籍もある
-  publishedDate: string;       // 出版日
-  tags: string[];              // タグの配列
+  // 一意なID（DBの主キーに相当）
+  id: number;
+  // 書名
+  title: string;
+  // 著者名
+  author: string;
+  // 価格（円）
+  price: number;
+  // 評価1〜5
+  rating: number;
+  // 在庫があるか
+  isAvailable: boolean;
+  // ? でオプショナル: 画像URLが無い書籍もある
+  coverImage?: string;
+  // 出版日
+  publishedDate: string;
+  // タグの配列
+  tags: string[];
 };
 ```
 
@@ -2127,10 +2238,14 @@ type Book = {
 
 ```tsx
 type BookCardProps = {
-  book: Book;                                       // 表示する書籍データ
-  onAddToCart: (bookId: number) => void;            // カート追加時のコールバック
-  onToggleFavorite: (bookId: number) => void;       // お気に入り切替時のコールバック
-  isFavorite: boolean;                              // 現在お気に入り状態か
+  // 表示する書籍データ
+  book: Book;
+  // カート追加時のコールバック
+  onAddToCart: (bookId: number) => void;
+  // お気に入り切替時のコールバック
+  onToggleFavorite: (bookId: number) => void;
+  // 現在お気に入り状態か
+  isFavorite: boolean;
 };
 ```
 
@@ -2222,13 +2337,16 @@ function Counter() {
 
   // ボタンが押されたときに呼ぶ関数
   const handleClick = () => {
-    count += 1; // 値は変わるが、画面は更新されない！
-    console.log(count); // コンソールには 1, 2, 3... と出る
+    // 値は変わるが、画面は更新されない！
+    count += 1;
+    // コンソールには 1, 2, 3... と出る
+    console.log(count);
   };
 
   return (
     <div>
-      <p>カウント: {count}</p> {/* ずっと 0 のまま */}
+      {/* ずっと 0 のまま */}
+      <p>カウント: {count}</p>
       <button onClick={handleClick}>+1</button>
     </div>
   );
@@ -2278,7 +2396,8 @@ function Counter() {
   // アロー関数で「+1する処理」を定義。
   // setCount を呼ぶことで、count が 0 → 1 → 2 ... と更新される。
   const handleIncrement = () => {
-    setCount(count + 1);  // 「今の count + 1」を新しい値として設定
+    // 「今の count + 1」を新しい値として設定
+    setCount(count + 1);
   };
 
   // 同じく「-1する処理」
@@ -2371,7 +2490,8 @@ import { useState } from "react";
 
 ```tsx
   const handleIncrement = () => {
-    setCount(count + 1);  // 「今の count + 1」を新しい値として設定
+    // 「今の count + 1」を新しい値として設定
+    setCount(count + 1);
   };
 ```
 
@@ -2411,9 +2531,12 @@ const [isVisible, setIsVisible] = useState<boolean>(false);
 
 // 初期値から型推論される（明示しなくてもOK）
 // 初期値 0 を見て TypeScript が「number 型だな」と自動で判断する。
-const [count, setCount] = useState(0);          // number と推論
-const [name, setName] = useState("");            // string と推論
-const [isVisible, setIsVisible] = useState(false); // boolean と推論
+// number と推論
+const [count, setCount] = useState(0);
+// string と推論
+const [name, setName] = useState("");
+// boolean と推論
+const [isVisible, setIsVisible] = useState(false);
 
 // null を使う場合は明示的な型指定が必要
 // 理由: 初期値が null だけだと「null 型」と推論されてしまい、
@@ -2513,9 +2636,11 @@ function Counter() {
     // 1回目: 「次のレンダリングで count を (現在の count=0) + 1 = 1 にして」と予約
     setCount(count + 1);
     // この時点で count はまだ 0（更新は予約されただけ）
-    console.log(count); // まだ 0 のまま！（次のレンダリングで 1 になる）
+    // まだ 0 のまま！（次のレンダリングで 1 になる）
+    console.log(count);
     // 2回目: count はまだ 0 → setCount(0 + 1) になる → 結局 1 を予約しているだけ
-    setCount(count + 1); // count はまだ 0 なので、0 + 1 = 1 になる（2 にはならない！）
+    // count はまだ 0 なので、0 + 1 = 1 になる（2 にはならない！）
+    setCount(count + 1);
   };
 
   return (
@@ -2540,9 +2665,11 @@ function Counter() {
   const handleClick = () => {
     // prev には常に「最新の値」が渡される
     // 関数型更新: setCount に「現在値 → 次の値」という関数を渡す
-    setCount((prev) => prev + 1); // 0 → 1
+    // 0 → 1
+    setCount((prev) => prev + 1);
     // ↑の予約が反映された結果が prev に渡る → 1 + 1 = 2
-    setCount((prev) => prev + 1); // 1 → 2
+    // 1 → 2
+    setCount((prev) => prev + 1);
   };
 
   return (
@@ -2569,7 +2696,8 @@ type UserProfile = {
   name: string;
   email: string;
   age: number;
-  bio: string;       // 自己紹介
+  // 自己紹介
+  bio: string;
 };
 
 function ProfileEditor() {
@@ -2640,7 +2768,8 @@ function ProfileEditor() {
       <div>
         <label>年齢: </label>
         <input
-          type="number"                          // 数値入力モード
+          // 数値入力モード
+          type="number"
           value={profile.age}
           onChange={handleAgeChange}
         />
@@ -2745,7 +2874,8 @@ function ProfileEditor() {
 ```tsx
 // NG: 直接変更（React が変化を検知できない）
 profile.name = "新しい名前";
-setProfile(profile); // 同じオブジェクト参照なので再レンダリングされない！
+// 同じオブジェクト参照なので再レンダリングされない！
+setProfile(profile);
 
 // OK: 新しいオブジェクトを作成
 setProfile({ ...profile, name: "新しい名前" });
@@ -2756,9 +2886,12 @@ setProfile({ ...profile, name: "新しい名前" });
 ```tsx
 // 住所の型（小さな部品）
 type Address = {
-  prefecture: string;       // 都道府県
-  city: string;             // 市区町村
-  street: string;           // 番地
+  // 都道府県
+  prefecture: string;
+  // 市区町村
+  city: string;
+  // 番地
+  street: string;
 };
 
 // ユーザー型（Address を中に含む = ネストした構造）
@@ -2821,9 +2954,12 @@ import { useState } from "react";
 
 // TODO項目1件の型
 type Todo = {
-  id: number;            // 一意なID（key に使う）
-  text: string;          // タスク本文
-  completed: boolean;    // 完了済みか
+  // 一意なID（key に使う）
+  id: number;
+  // タスク本文
+  text: string;
+  // 完了済みか
+  completed: boolean;
 };
 
 function TodoApp() {
@@ -2851,16 +2987,20 @@ function TodoApp() {
     };
     // [...todos, newTodo] で「既存の全要素＋末尾に新項目」の新しい配列を作って渡す。
     // 元の todos 配列は変更しない（イミュータブル＝不変な更新）。
-    setTodos([...todos, newTodo]); // 既存の配列を展開して新しい要素を追加
-    setInputValue("");                // 入力欄をクリア
-    setNextId(nextId + 1);            // 次回ID用に+1
+    // 既存の配列を展開して新しい要素を追加
+    setTodos([...todos, newTodo]);
+    // 入力欄をクリア
+    setInputValue("");
+    // 次回ID用に+1
+    setNextId(nextId + 1);
   };
 
   // ── 削除 ──
   const handleDelete = (id: number) => {
     // filter は「条件が true の要素だけ残した新しい配列」を返す。
     // ここでは「ID が一致しないもの = 削除対象でないもの」だけを残す。
-    setTodos(todos.filter((todo) => todo.id !== id)); // id が一致しない要素だけ残す
+    // id が一致しない要素だけ残す
+    setTodos(todos.filter((todo) => todo.id !== id));
   };
 
   // ── 完了/未完了の切り替え ──
@@ -2892,9 +3032,12 @@ function TodoApp() {
       {/* 入力欄 */}
       <div>
         <input
-          value={inputValue}                                           // 表示値を state に紐づけ
-          onChange={(e) => setInputValue(e.target.value)}              // 入力ごとに state を更新
-          placeholder="新しいタスクを入力"                              // 未入力時の薄いガイド文字
+          // 表示値を state に紐づけ
+          value={inputValue}
+          // 入力ごとに state を更新
+          onChange={(e) => setInputValue(e.target.value)}
+          // 未入力時の薄いガイド文字
+          placeholder="新しいタスクを入力"
         />
         <button onClick={handleAdd}>追加</button>
       </div>
@@ -2905,9 +3048,12 @@ function TodoApp() {
           // key には DBの主キーに当たる一意なIDを使う
           <li key={todo.id}>
             <input
-              type="checkbox"                                          // チェックボックス入力
-              checked={todo.completed}                                 // 制御コンポーネント
-              onChange={() => handleToggle(todo.id)}                   // クリックで切替
+              // チェックボックス入力
+              type="checkbox"
+              // 制御コンポーネント
+              checked={todo.completed}
+              // クリックで切替
+              onChange={() => handleToggle(todo.id)}
             />
             <span
               style={{
@@ -3218,13 +3364,16 @@ function InputExamples() {
       <div>
         <label>名前: </label>
         <input
-          type="text"                                                    // 1行のテキスト入力
-          value={text}                                                   // 表示値は state と同期
+          // 1行のテキスト入力
+          type="text"
+          // 表示値は state と同期
+          value={text}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             // e.target = 入力欄のDOM要素。.value で現在の文字列を取得
             setText(e.target.value)
           }
-          placeholder="名前を入力してください"                            // 未入力時のガイド文字
+          // 未入力時のガイド文字
+          placeholder="名前を入力してください"
         />
         <p>入力値: 「{text}」</p>
       </div>
@@ -3233,9 +3382,11 @@ function InputExamples() {
       <div>
         <label>色: </label>
         <select
-          value={selectedColor}                                          // 現在の選択値
+          // 現在の選択値
+          value={selectedColor}
           onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-            setSelectedColor(e.target.value)                             // <select>専用の型
+            // <select>専用の型
+            setSelectedColor(e.target.value)
           }
         >
           {/* <option> の value 属性が選択時に e.target.value として返る */}
@@ -3275,9 +3426,11 @@ function InputExamples() {
           <label key={size} style={{ marginRight: "12px" }}>
             <input
               type="radio"
-              name="size"                                                // 同じ name でグループ化
+              // 同じ name でグループ化
+              name="size"
               value={size}
-              checked={selectedSize === size}                            // この選択肢が現在の値と同じか
+              // この選択肢が現在の値と同じか
+              checked={selectedSize === size}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setSelectedSize(e.target.value)
               }
@@ -3421,7 +3574,8 @@ function BookForm() {
     title: "",
     author: "",
     price: "",
-    category: "programming",         // デフォルトカテゴリ
+    // デフォルトカテゴリ
+    category: "programming",
     description: "",
   });
 
@@ -3484,7 +3638,8 @@ function BookForm() {
   // フォーム送信
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     // <form> のデフォルト動作（ページリロード）を抑止
-    e.preventDefault(); // ページ遷移（デフォルト動作）を防ぐ
+    // ページ遷移（デフォルト動作）を防ぐ
+    e.preventDefault();
 
     if (validate()) {
       console.log("送信データ:", formData);
@@ -3516,7 +3671,8 @@ function BookForm() {
         <label htmlFor="title">タイトル *</label>
         <input
           id="title"
-          name="title"                      // handleChange の中で動的キーとして使う
+          // handleChange の中で動的キーとして使う
+          name="title"
           type="text"
           value={formData.title}
           onChange={handleChange}
@@ -3542,7 +3698,8 @@ function BookForm() {
         <input
           id="price"
           name="price"
-          type="number"                     // 数値入力（スマホで数字キーボードが出る）
+          // 数値入力（スマホで数字キーボードが出る）
+          type="number"
           value={formData.price}
           onChange={handleChange}
         />
@@ -3571,7 +3728,8 @@ function BookForm() {
           name="description"
           value={formData.description}
           onChange={handleChange}
-          rows={4}                           // 表示行数の目安
+          // 表示行数の目安
+          rows={4}
         />
       </div>
 
@@ -3863,7 +4021,8 @@ function PageTitle() {
 
     // 開発者ツールの Console タブに出力する。動作確認に便利。
     console.log(`useEffect が実行されました（count = ${count}）`);
-  }, [count]); // ← count が変わるたびに上の関数が再実行される
+  // ← count が変わるたびに上の関数が再実行される
+  }, [count]);
 
   // 画面は「現在のカウント」と「+1ボタン」だけ。
   return (
@@ -3943,7 +4102,8 @@ import { useState, useEffect } from "react";
 ##### 解説3: 依存配列で「いつ実行するか」を決める
 
 ```tsx
-  }, [count]); // ← count が変わるたびに上の関数が再実行される
+  // ← count が変わるたびに上の関数が再実行される
+  }, [count]);
 ```
 
 - 第2引数の `[count]` が**依存配列**で、`useEffect` のいちばんのキモです。
@@ -3972,7 +4132,8 @@ function EffectExamples() {
   // 注意: 中で state を更新するとすぐ無限ループに陥る。ほぼ使うべきでない。
   useEffect(() => {
     console.log("毎回のレンダリング後に実行");
-  }); // ← 第2引数を省略
+  // ← 第2引数を省略
+  });
 
   // パターン2: 初回のみ実行（空の依存配列）
   // [] は「依存する値が無い」という意味なので、初回マウント時1回だけ実行される。
@@ -3980,20 +4141,23 @@ function EffectExamples() {
   useEffect(() => {
     console.log("コンポーネントのマウント時に1回だけ実行");
     // API からデータを取得する処理などをここに書く
-  }, []); // ← 空の配列
+  // ← 空の配列
+  }, []);
 
   // パターン3: 特定の値が変わったときに実行
   // [count] と書くと「count が前回と異なる場合だけ」関数が再実行される。
   // 初回マウント時にも1回実行される（前回値がない状態を「変化あり」とみなすため）。
   useEffect(() => {
     console.log(`count が変わりました: ${count}`);
-  }, [count]); // ← count が変わるたびに実行
+  // ← count が変わるたびに実行
+  }, [count]);
 
   // パターン4: 複数の依存値
   // 配列内の値のうち1つでも変わったら実行される。
   useEffect(() => {
     console.log(`count または name が変わりました: ${count}, ${name}`);
-  }, [count, name]); // ← count または name が変わるたびに実行
+  // ← count または name が変わるたびに実行
+  }, [count, name]);
 
   return (
     <div>
@@ -4027,7 +4191,8 @@ function EffectExamples() {
 ```tsx
   useEffect(() => {
     console.log("毎回のレンダリング後に実行");
-  }); // ← 第2引数を省略
+  // ← 第2引数を省略
+  });
 ```
 
 - 第2引数（依存配列）を**完全に省略**すると、再描画されるたびに毎回実行されます。
@@ -4043,7 +4208,8 @@ function EffectExamples() {
 ```tsx
   useEffect(() => {
     console.log("コンポーネントのマウント時に1回だけ実行");
-  }, []); // ← 空の配列
+  // ← 空の配列
+  }, []);
 ```
 
 - `[]`（空配列）は「依存する値が無い」という意味なので、**初回マウント時に1回だけ**実行されます。
@@ -4059,11 +4225,13 @@ function EffectExamples() {
 ```tsx
   useEffect(() => {
     console.log(`count が変わりました: ${count}`);
-  }, [count]); // ← count が変わるたびに実行
+  // ← count が変わるたびに実行
+  }, [count]);
 
   useEffect(() => {
     console.log(`count または name が変わりました`);
-  }, [count, name]); // ← count または name が変わるたびに実行
+  // ← count または name が変わるたびに実行
+  }, [count, name]);
 ```
 
 - `[count]` は「count が前回と異なるときだけ」実行されます。値の変化に応じた処理に使います。
@@ -4126,7 +4294,8 @@ function UserList() {
     };
 
     fetchUsers();
-  }, []); // 空配列 → 初回マウント時に1回だけ実行
+  // 空配列 → 初回マウント時に1回だけ実行
+  }, []);
 
   // 早期 return パターンで状態別の画面を切り替え
   if (loading) {
@@ -4215,7 +4384,8 @@ function UserList() {
       }
     };
     fetchUsers();
-  }, []); // 空配列 → 初回マウント時に1回だけ実行
+  // 空配列 → 初回マウント時に1回だけ実行
+  }, []);
 ```
 
 - `try { }` の中で通信を試み、失敗したら `catch (err) { }` に飛んでエラーメッセージを state に保存します。
@@ -4266,7 +4436,8 @@ function Timer() {
 
   useEffect(() => {
     // 早期 return: 動作中でなければ何もしない（後続のクリーンアップも登録されない）
-    if (!isRunning) return; // タイマーが停止中なら何もしない
+    // タイマーが停止中なら何もしない
+    if (!isRunning) return;
 
     // 1秒ごとにカウントアップ
     // setInterval(関数, ミリ秒) はブラウザ組み込み関数。
@@ -4280,10 +4451,12 @@ function Timer() {
     // useEffect の中で return した関数は「次の effect 実行直前」または「アンマウント時」に呼ばれる。
     // タイマーを止めないと、コンポーネントが消えても動き続けてメモリリークになる。
     return () => {
-      clearInterval(intervalId);                  // タイマー停止
+      // タイマー停止
+      clearInterval(intervalId);
       console.log("タイマーをクリーンアップしました");
     };
-  }, [isRunning]); // isRunning が変わるたびに再設定
+  // isRunning が変わるたびに再設定
+  }, [isRunning]);
 
   // リセット処理: 停止＋秒数0
   const handleReset = () => {
@@ -4297,8 +4470,10 @@ function Timer() {
       <p style={{ fontSize: "48px", fontFamily: "monospace" }}>
         {/* 分: 秒数を60で割って小数点以下を切り捨て、2桁0埋め */}
         {Math.floor(seconds / 60)
-          .toString()                       // 数値 → 文字列に変換
-          .padStart(2, "0")}                // 2桁にして足りなければ "0" を前に追加 (1 → "01")
+          // 数値 → 文字列に変換
+          .toString()
+          // 2桁にして足りなければ "0" を前に追加 (1 → "01")
+          .padStart(2, "0")}
         {/* 区切り文字 ":" 続いて 秒（60で割った余り、2桁0埋め） */}
         :{(seconds % 60).toString().padStart(2, "0")}
       </p>
@@ -4415,7 +4590,8 @@ function WindowSizeDisplay() {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []); // 初回マウント時にのみ設定
+  // 初回マウント時にのみ設定
+  }, []);
 
   return (
     <div>
@@ -4475,7 +4651,8 @@ function WindowSizeDisplay() {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []); // 初回マウント時にのみ設定
+  // 初回マウント時にのみ設定
+  }, []);
 ```
 
 - `return` した関数（クリーンアップ）で、`removeEventListener` を呼んで**登録したリスナーを解除**します。
@@ -5068,13 +5245,17 @@ type CounterAction =
 function counterReducer(state: CounterState, action: CounterAction): CounterState {
   switch (action.type) {
     case "increment":
-      return { count: state.count + 1 };   // +1した新しい状態を返す
+      // +1した新しい状態を返す
+      return { count: state.count + 1 };
     case "decrement":
-      return { count: state.count - 1 };   // -1した新しい状態を返す
+      // -1した新しい状態を返す
+      return { count: state.count - 1 };
     case "reset":
-      return { count: 0 };                 // 0に戻した状態を返す
+      // 0に戻した状態を返す
+      return { count: 0 };
     default:
-      return state;                        // 知らない操作なら何もしない
+      // 知らない操作なら何もしない
+      return state;
   }
 }
 
@@ -5198,9 +5379,12 @@ function ComponentA() {
     const handleResize = () => {
       setWindowSize({ width: window.innerWidth, height: window.innerHeight });
     };
-    handleResize();                                                       // 初回値を反映
-    window.addEventListener("resize", handleResize);                      // イベント登録
-    return () => window.removeEventListener("resize", handleResize);      // クリーンアップ
+    // 初回値を反映
+    handleResize();
+    // イベント登録
+    window.addEventListener("resize", handleResize);
+    // クリーンアップ
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   return <p>幅: {windowSize.width}</p>;
@@ -5387,7 +5571,8 @@ function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T) => voi
       // プライベートブラウジング等で書き込み失敗する可能性がある
       console.error("ローカルストレージへの保存に失敗:", error);
     }
-  }, [key, storedValue]); // key と storedValue のどちらか変わったら再実行
+  // key と storedValue のどちらか変わったら再実行
+  }, [key, storedValue]);
 
   // 配列で「現在値」と「更新関数」を返す → useState とほぼ同じインターフェース
   return [storedValue, setStoredValue];
@@ -5414,11 +5599,15 @@ function Settings() {
       <div>
         <label>フォントサイズ: {fontSize}px</label>
         <input
-          type="range"              // スライダー入力
-          min={12}                  // 最小値
-          max={24}                  // 最大値
+          // スライダー入力
+          type="range"
+          // 最小値
+          min={12}
+          // 最大値
+          max={24}
           value={fontSize}
-          onChange={(e) => setFontSize(Number(e.target.value))}    // 文字列→数値変換
+          // 文字列→数値変換
+          onChange={(e) => setFontSize(Number(e.target.value))}
         />
       </div>
 
@@ -5628,17 +5817,22 @@ function useToggle(initialValue: boolean = false): [boolean, () => void] {
 // 予告: 後の章で実装するカスタムフック
 // このフックが返す値の型
 type UseBooksReturn = {
-  books: Book[];                                                       // 全書籍データ
-  loading: boolean;                                                    // 読み込み中フラグ
-  error: string | null;                                                // エラーメッセージ または null
+  // 全書籍データ
+  books: Book[];
+  // 読み込み中フラグ
+  loading: boolean;
+  // エラーメッセージ または null
+  error: string | null;
   // Omit<Book, "id"> は「Book 型から id プロパティを除外した型」（新規追加時はIDは未確定）
   // Promise<void> は「非同期処理だが戻り値なし」を表す
   addBook: (book: Omit<Book, "id">) => Promise<void>;
   // Partial<Book> は「Book の全プロパティをオプショナル化」した型（一部だけ更新する用）
   updateBook: (id: number, updates: Partial<Book>) => Promise<void>;
   deleteBook: (id: number) => Promise<void>;
-  searchBooks: (query: string) => void;                                // 検索クエリ設定
-  filteredBooks: Book[];                                               // 検索結果
+  // 検索クエリ設定
+  searchBooks: (query: string) => void;
+  // 検索結果
+  filteredBooks: Book[];
 };
 
 function useBooks(): UseBooksReturn {
@@ -5699,14 +5893,16 @@ function UserEditor() {
     // user オブジェクトは React 内部にも参照されている。
     // .name を直接書き換えてしまうと、React が「同じ参照だから変化なし」と判断して再描画しない。
     user.name = "鈴木";
-    setUser(user); // 同じ参照のオブジェクトなので React は変化を検知できない！
+    // 同じ参照のオブジェクトなので React は変化を検知できない！
+    setUser(user);
   };
 
   const badAddItem = () => {
     // NG: 配列を直接変更
     // push は配列を変更する破壊的メソッド。
     items.push("D");
-    setItems(items); // 同じ参照の配列なので React は変化を検知できない！
+    // 同じ参照の配列なので React は変化を検知できない！
+    setItems(items);
   };
 
   const badSortItems = () => {
@@ -5757,11 +5953,13 @@ function UserEditor() {
 ```tsx
   const badUpdateName = () => {
     user.name = "鈴木";
-    setUser(user); // 同じ参照のオブジェクトなので React は変化を検知できない！
+    // 同じ参照のオブジェクトなので React は変化を検知できない！
+    setUser(user);
   };
   const badAddItem = () => {
     items.push("D");
-    setItems(items); // 同じ参照の配列なので React は変化を検知できない！
+    // 同じ参照の配列なので React は変化を検知できない！
+    setItems(items);
   };
 ```
 
@@ -5813,36 +6011,44 @@ function InfiniteLoopExample() {
   // 依存配列なしの useEffect は毎回のレンダリング後に走る。
   // 中で setCount を呼ぶと state が変わり → 再レンダリング → またこの useEffect が走る → ...
   useEffect(() => {
-    setCount(count + 1); // state 更新 → 再レンダリング → useEffect 再実行 → state 更新 → ...
-  }); // 依存配列がない！
+    // state 更新 → 再レンダリング → useEffect 再実行 → state 更新 → ...
+    setCount(count + 1);
+  // 依存配列がない！
+  });
 
   // パターン2: useEffect 内で毎回新しいオブジェクト/配列を state に設定
   // ["A","B","C"] は毎回「新しい配列オブジェクト」として作られるため、
   // 参照比較では常に「変化あり」となり、再描画が止まらない。
   useEffect(() => {
-    setData(["A", "B", "C"]); // 毎回新しい配列オブジェクトが作られる → 再レンダリング → ...
-  }); // 依存配列がない！
+    // 毎回新しい配列オブジェクトが作られる → 再レンダリング → ...
+    setData(["A", "B", "C"]);
+  // 依存配列がない！
+  });
 
   // パターン3: 依存配列に毎回変わる値を入れる
   // { key: "value" } は実行のたびに新しいオブジェクト参照になるため、
   // 毎レンダリングで「依存値が変わった」とみなされてしまう。
   useEffect(() => {
     console.log("実行");
-  }, [{ key: "value" }]); // オブジェクトリテラルは毎回新しい参照 → 毎回実行
+  // オブジェクトリテラルは毎回新しい参照 → 毎回実行
+  }, [{ key: "value" }]);
 
   // ========== OK: 正しい使い方 ==========
 
   // 修正1: 適切な依存配列を指定
   // [] で初回マウント時のみ実行。関数型更新で外部の count に依存しない。
   useEffect(() => {
-    setCount((prev) => prev + 1); // 初回のみ実行
-  }, []); // 空配列 → 初回マウント時のみ
+    // 初回のみ実行
+    setCount((prev) => prev + 1);
+  // 空配列 → 初回マウント時のみ
+  }, []);
 
   // 修正2: 条件付きで実行
   // 「data が空のときだけ」更新するので無限ループにならない。
   useEffect(() => {
     if (data.length === 0) {
-      setData(["A", "B", "C"]); // data が空のときだけ設定
+      // data が空のときだけ設定
+      setData(["A", "B", "C"]);
     }
   }, [data.length]);
 
@@ -5867,8 +6073,10 @@ function InfiniteLoopExample() {
 
 ```tsx
   useEffect(() => {
-    setCount(count + 1); // state 更新 → 再レンダリング → useEffect 再実行 → ...
-  }); // 依存配列がない！
+    // state 更新 → 再レンダリング → useEffect 再実行 → ...
+    setCount(count + 1);
+  // 依存配列がない！
+  });
 ```
 
 - 依存配列を**省略**したuseEffectは、再描画のたびに毎回実行されます。
@@ -5883,12 +6091,15 @@ function InfiniteLoopExample() {
 
 ```tsx
   useEffect(() => {
-    setData(["A", "B", "C"]); // 毎回新しい配列オブジェクト → 再レンダリング → ...
-  }); // 依存配列がない！
+    // 毎回新しい配列オブジェクト → 再レンダリング → ...
+    setData(["A", "B", "C"]);
+  // 依存配列がない！
+  });
 
   useEffect(() => {
     console.log("実行");
-  }, [{ key: "value" }]); // オブジェクトリテラルは毎回新しい参照 → 毎回実行
+  // オブジェクトリテラルは毎回新しい参照 → 毎回実行
+  }, [{ key: "value" }]);
 ```
 
 - `["A","B","C"]` や `{ key: "value" }` は、実行のたびに**新しい入れ物（参照）**として作られます。
@@ -5903,12 +6114,15 @@ function InfiniteLoopExample() {
 
 ```tsx
   useEffect(() => {
-    setCount((prev) => prev + 1); // 初回のみ実行
-  }, []); // 空配列 → 初回マウント時のみ
+    // 初回のみ実行
+    setCount((prev) => prev + 1);
+  // 空配列 → 初回マウント時のみ
+  }, []);
 
   useEffect(() => {
     if (data.length === 0) {
-      setData(["A", "B", "C"]); // data が空のときだけ設定
+      // data が空のときだけ設定
+      setData(["A", "B", "C"]);
     }
   }, [data.length]);
 ```

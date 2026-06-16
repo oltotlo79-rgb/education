@@ -278,11 +278,16 @@ Type error: Property 'title' does not exist on type 'Book'.
 // 型定義を確認して修正する
 // type は「型エイリアス」と呼ばれ、Book という名前で型を定義する構文
 type Book = {
-  id: string;        // 書籍ID。文字列型（UUID形式の文字列を想定）
-  title: string;    // ← このプロパティが定義されているか確認。書籍タイトル
-  author: string;   // 著者名。文字列型
-  rating: number;   // 評価。数値型（1〜5を想定）
-  created_at: string;  // 作成日時。Supabase が ISO 8601 形式の文字列で返す
+  // 書籍ID。文字列型（UUID形式の文字列を想定）
+  id: string;
+  // ← このプロパティが定義されているか確認。書籍タイトル
+  title: string;
+  // 著者名。文字列型
+  author: string;
+  // 評価。数値型（1〜5を想定）
+  rating: number;
+  // 作成日時。Supabase が ISO 8601 形式の文字列で返す
+  created_at: string;
 };
 ```
 
@@ -644,9 +649,12 @@ const nextConfig = {
     // ここに登録されていないドメインの画像は <Image> で表示できない（セキュリティ対策）
     remotePatterns: [
       {
-        protocol: 'https',            // https のみ許可
-        hostname: '*.supabase.co',    // Supabase の任意のサブドメインを許可
-        pathname: '/storage/**',      // /storage/ 以下のパスのみ許可
+        // https のみ許可
+        protocol: 'https',
+        // Supabase の任意のサブドメインを許可
+        hostname: '*.supabase.co',
+        // /storage/ 以下のパスのみ許可
+        pathname: '/storage/**',
       },
     ],
   },
@@ -806,20 +814,25 @@ Supabase ダッシュボード → Table Editor → `books` テーブル → 「
 -- 現在のポリシー（開発用・学習用）
 -- -- で始まる行は SQL のコメント（実行されない）
 -- すべてのユーザーが読み取り可能
-CREATE POLICY "誰でも書籍を読める" ON books    -- ポリシー名を「誰でも書籍を読める」とし、books テーブルに適用
-  FOR SELECT USING (true);                        -- FOR SELECT = 読み取り操作に対する許可。USING (true) = 常に許可
+-- ポリシー名を「誰でも書籍を読める」とし、books テーブルに適用
+CREATE POLICY "誰でも書籍を読める" ON books
+  -- FOR SELECT = 読み取り操作に対する許可。USING (true) = 常に許可
+  FOR SELECT USING (true);
 
 -- すべてのユーザーが書き込み可能
 CREATE POLICY "誰でも書籍を追加できる" ON books
-  FOR INSERT WITH CHECK (true);                  -- FOR INSERT = 追加操作。WITH CHECK (true) = 常に許可
+  -- FOR INSERT = 追加操作。WITH CHECK (true) = 常に許可
+  FOR INSERT WITH CHECK (true);
 
 -- すべてのユーザーが更新可能
 CREATE POLICY "誰でも書籍を更新できる" ON books
-  FOR UPDATE USING (true);                        -- FOR UPDATE = 更新操作。常に許可
+  -- FOR UPDATE = 更新操作。常に許可
+  FOR UPDATE USING (true);
 
 -- すべてのユーザーが削除可能
 CREATE POLICY "誰でも書籍を削除できる" ON books
-  FOR DELETE USING (true);                        -- FOR DELETE = 削除操作。常に許可
+  -- FOR DELETE = 削除操作。常に許可
+  FOR DELETE USING (true);
 ```
 
 #### 本番環境向けの推奨設定
@@ -830,19 +843,23 @@ CREATE POLICY "誰でも書籍を削除できる" ON books
 -- 本番用ポリシー（認証導入後）
 -- 誰でも読み取り可能（公開データの場合）
 CREATE POLICY "誰でも書籍を読める" ON books
-  FOR SELECT USING (true);                                       -- 読み取りは全員OK
+  -- 読み取りは全員OK
+  FOR SELECT USING (true);
 
 -- 認証済みユーザーのみ書き込み可能
 CREATE POLICY "認証済みユーザーのみ追加可能" ON books
-  FOR INSERT WITH CHECK (auth.role() = 'authenticated');         -- auth.role() = 現在のユーザーの権限を返す関数。'authenticated' = ログイン済み
+  -- auth.role() = 現在のユーザーの権限を返す関数。'authenticated' = ログイン済み
+  FOR INSERT WITH CHECK (auth.role() = 'authenticated');
 
 -- 自分が追加した書籍のみ更新可能
 CREATE POLICY "自分の書籍のみ更新可能" ON books
-  FOR UPDATE USING (auth.uid() = user_id);                       -- auth.uid() = ログイン中のユーザーID。user_id 列と一致する行だけ更新可
+  -- auth.uid() = ログイン中のユーザーID。user_id 列と一致する行だけ更新可
+  FOR UPDATE USING (auth.uid() = user_id);
 
 -- 自分が追加した書籍のみ削除可能
 CREATE POLICY "自分の書籍のみ削除可能" ON books
-  FOR DELETE USING (auth.uid() = user_id);                       -- 自分のレコードしか消せない（他人のは触れない）
+  -- 自分のレコードしか消せない（他人のは触れない）
+  FOR DELETE USING (auth.uid() = user_id);
 ```
 
 > **この教材の範囲**: 認証機能は次のステップとして紹介しますので、現時点では開発用のポリシーのままで問題ありません。ただし、**重要なデータを扱う本番アプリではセキュリティ設定を必ず強化してください。**
@@ -900,12 +917,18 @@ Next.js には、画像を自動的に最適化する `Image` コンポーネン
 import Image from 'next/image';
 
 <Image
-  src="/book-cover.jpg"     // 画像のパス（public/ フォルダ基準）
-  alt="書籍カバー"           // 代替テキスト（必須。アクセシビリティ・SEO 向上）
-  width={200}                // 元画像の幅（px単位）。レイアウトずれ防止に必須
-  height={300}               // 元画像の高さ（px単位）。レイアウトずれ防止に必須
-  placeholder="blur"        // 読み込み中にぼかし表示。"blur" か "empty" を指定
-  blurDataURL="data:..."    // ぼかし画像のデータURL。低解像度のプレースホルダ用
+  // 画像のパス（public/ フォルダ基準）
+  src="/book-cover.jpg"
+  // 代替テキスト（必須。アクセシビリティ・SEO 向上）
+  alt="書籍カバー"
+  // 元画像の幅（px単位）。レイアウトずれ防止に必須
+  width={200}
+  // 元画像の高さ（px単位）。レイアウトずれ防止に必須
+  height={300}
+  // 読み込み中にぼかし表示。"blur" か "empty" を指定
+  placeholder="blur"
+  // ぼかし画像のデータURL。低解像度のプレースホルダ用
+  blurDataURL="data:..."
 />
 ```
 
@@ -934,14 +957,19 @@ const nextConfig = {
     // ここに登録されていないドメインの画像は <Image> で読み込めない（セキュリティのため）
     remotePatterns: [
       {
-        protocol: 'https',           // https のみ許可（http は不可）
-        hostname: 'example.com',     // 画像を取得するドメイン
-        pathname: '/images/**',      // /images/ 以下の任意のパスを許可（** はワイルドカード）
+        // https のみ許可（http は不可）
+        protocol: 'https',
+        // 画像を取得するドメイン
+        hostname: 'example.com',
+        // /images/ 以下の任意のパスを許可（** はワイルドカード）
+        pathname: '/images/**',
       },
       {
         protocol: 'https',
-        hostname: '*.supabase.co',   // Supabase の任意のサブドメインを許可。* は単一階層のワイルドカード
-        pathname: '/storage/**',     // /storage/ 以下を許可
+        // Supabase の任意のサブドメインを許可。* は単一階層のワイルドカード
+        hostname: '*.supabase.co',
+        // /storage/ 以下を許可
+        pathname: '/storage/**',
       },
     ],
   },
@@ -970,31 +998,43 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   // title = <title> タグの内容を設定
   title: {
-    default: '書籍管理アプリ',                       // デフォルトのタイトル（titleが指定されていないページで使用）
-    template: '%s | 書籍管理アプリ',                 // 各ページのタイトルが自動的に「ページ名 | 書籍管理アプリ」になる（%s が各ページのtitleで置き換わる）
+    // デフォルトのタイトル（titleが指定されていないページで使用）
+    default: '書籍管理アプリ',
+    // 各ページのタイトルが自動的に「ページ名 | 書籍管理アプリ」になる（%s が各ページのtitleで置き換わる）
+    template: '%s | 書籍管理アプリ',
   },
-  description: 'お気に入りの書籍を管理・評価できるWebアプリケーションです。',  // <meta name="description"> 用
-  keywords: ['書籍管理', '本', 'レビュー', 'Next.js'],                          // <meta name="keywords"> 用（現代では重要度は低い）
-  authors: [{ name: 'あなたの名前' }],                                          // 著者情報
+  // <meta name="description"> 用
+  description: 'お気に入りの書籍を管理・評価できるWebアプリケーションです。',
+  // <meta name="keywords"> 用（現代では重要度は低い）
+  keywords: ['書籍管理', '本', 'レビュー', 'Next.js'],
+  // 著者情報
+  authors: [{ name: 'あなたの名前' }],
   // openGraph = OGP（OpenGraph Protocol）の設定。SNS でシェアしたときの見た目に使われる
   openGraph: {
     title: '書籍管理アプリ',
     description: 'お気に入りの書籍を管理・評価できるWebアプリケーションです。',
-    url: 'https://your-app.vercel.app',  // サイトの代表URL
-    siteName: '書籍管理アプリ',           // サイト名
-    locale: 'ja_JP',                       // 言語と地域
-    type: 'website',                       // コンテンツ種別。website / article など
+    // サイトの代表URL
+    url: 'https://your-app.vercel.app',
+    // サイト名
+    siteName: '書籍管理アプリ',
+    // 言語と地域
+    locale: 'ja_JP',
+    // コンテンツ種別。website / article など
+    type: 'website',
   },
   // twitter = X（旧Twitter）でシェアされたときのカード設定
   twitter: {
-    card: 'summary_large_image',           // 大きな画像付きカードを使用
+    // 大きな画像付きカードを使用
+    card: 'summary_large_image',
     title: '書籍管理アプリ',
     description: 'お気に入りの書籍を管理・評価できるWebアプリケーションです。',
   },
   // robots = 検索エンジンクローラへの指示
   robots: {
-    index: true,      // true = 検索結果に表示してOK
-    follow: true,     // true = ページ内のリンクをたどってOK
+    // true = 検索結果に表示してOK
+    index: true,
+    // true = ページ内のリンクをたどってOK
+    follow: true,
   },
 };
 ```
@@ -1007,7 +1047,8 @@ import type { Metadata } from 'next';
 
 // このページ固有のメタデータを定義
 export const metadata: Metadata = {
-  title: '書籍一覧',  // → 「書籍一覧 | 書籍管理アプリ」と表示される（layout.tsx の template が適用される）
+  // → 「書籍一覧 | 書籍管理アプリ」と表示される（layout.tsx の template が適用される）
+  title: '書籍一覧',
   description: '登録されている書籍の一覧を表示します。',
 };
 ```
@@ -1020,7 +1061,8 @@ import type { Metadata } from 'next';
 
 // このページに渡される props の型を定義
 type Props = {
-  params: { id: string };   // URL の [id] 部分の値を文字列として受け取る
+  // URL の [id] 部分の値を文字列として受け取る
+  params: { id: string };
 };
 
 // generateMetadata = 動的にメタデータを作る関数。Next.js が自動で呼び出す
@@ -1030,15 +1072,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   // Supabase から書籍データを取得
   // .single() = 1件だけを取得するメソッド
   const { data: book } = await supabase
-    .from('books')                  // books テーブルから
-    .select('*')                    // 全カラム取得
-    .eq('id', params.id)            // id が params.id と一致する行
-    .single();                       // 1件だけ
+    // books テーブルから
+    .from('books')
+    // 全カラム取得
+    .select('*')
+    // id が params.id と一致する行
+    .eq('id', params.id)
+    // 1件だけ
+    .single();
 
   // 取得した書籍情報からメタデータを作って返す
   return {
-    title: book?.title ?? '書籍詳細',                          // book が null の場合は「書籍詳細」を使う（?? = nullish coalescing 演算子）
-    description: `${book?.title}（${book?.author}）の詳細情報`,  // テンプレートリテラルで動的に作成
+    // book が null の場合は「書籍詳細」を使う（?? = nullish coalescing 演算子）
+    title: book?.title ?? '書籍詳細',
+    // テンプレートリテラルで動的に作成
+    description: `${book?.title}（${book?.author}）の詳細情報`,
   };
 }
 ```
@@ -1232,8 +1280,10 @@ import { supabase } from '@/lib/supabase';
 // supabase.auth.signUp = 新規ユーザー作成のメソッド。Promise を返すので await で待つ
 // 戻り値の data には作成されたユーザー情報、error には失敗時の情報が入る
 const { data, error } = await supabase.auth.signUp({
-  email: 'user@example.com',       // 登録するメールアドレス
-  password: 'your-password',       // パスワード（Supabase の最小文字数ポリシーを満たす必要あり）
+  // 登録するメールアドレス
+  email: 'user@example.com',
+  // パスワード（Supabase の最小文字数ポリシーを満たす必要あり）
+  password: 'your-password',
 });
 
 // ログイン
@@ -1247,7 +1297,8 @@ const { data, error } = await supabase.auth.signInWithPassword({
 // signInWithOAuth = 外部プロバイダ（Google, GitHub 等）でログインするメソッド
 // 内部的にプロバイダの認証画面にリダイレクトされる
 const { data, error } = await supabase.auth.signInWithOAuth({
-  provider: 'google',               // 認証プロバイダの種類
+  // 認証プロバイダの種類
+  provider: 'google',
 });
 
 // ログアウト
@@ -1279,17 +1330,23 @@ import { supabase } from '@/lib/supabase';
 // supabase.storage.from('バケット名') = 指定したバケット（保存場所）を操作する
 // .upload(パス, ファイル, オプション) = ファイルをアップロードする
 const { data, error } = await supabase.storage
-  .from('book-covers')                  // バケット名（事前に Supabase ダッシュボードで作成しておく）
-  .upload(`covers/${fileName}`, file, { // covers/ 以下に fileName でアップロード
-    cacheControl: '3600',               // ブラウザにキャッシュさせる秒数（3600秒 = 1時間）
-    upsert: false,                       // false = 同名ファイルがあればエラー。true なら上書き
+  // バケット名（事前に Supabase ダッシュボードで作成しておく）
+  .from('book-covers')
+  // covers/ 以下に fileName でアップロード
+  .upload(`covers/${fileName}`, file, {
+    // ブラウザにキャッシュさせる秒数（3600秒 = 1時間）
+    cacheControl: '3600',
+    // false = 同名ファイルがあればエラー。true なら上書き
+    upsert: false,
   });
 
 // アップロードした画像の公開 URL を取得
 // getPublicUrl = バケットが Public 設定の場合に公開URLを取得する
 const { data: { publicUrl } } = supabase.storage
-  .from('book-covers')                  // バケット名
-  .getPublicUrl(`covers/${fileName}`);  // 取得したいファイルのパス
+  // バケット名
+  .from('book-covers')
+  // 取得したいファイルのパス
+  .getPublicUrl(`covers/${fileName}`);
 ```
 
 **学べること:**
@@ -1323,28 +1380,37 @@ export default function BooksPage() {
     // books テーブルの変更をリアルタイムで監視
     // .channel('チャンネル名') = WebSocket チャンネルを作成
     const channel = supabase
-      .channel('books-changes')              // チャンネルの名前。任意の文字列
+      // チャンネルの名前。任意の文字列
+      .channel('books-changes')
       .on(
-        'postgres_changes',                  // PostgreSQL の変更イベントを監視
+        // PostgreSQL の変更イベントを監視
+        'postgres_changes',
         {
-          event: '*',                        // INSERT, UPDATE, DELETE すべて（'*' = 全種類）
-          schema: 'public',                   // スキーマ名（Supabase のデフォルトは 'public'）
-          table: 'books',                     // 監視対象のテーブル名
+          // INSERT, UPDATE, DELETE すべて（'*' = 全種類）
+          event: '*',
+          // スキーマ名（Supabase のデフォルトは 'public'）
+          schema: 'public',
+          // 監視対象のテーブル名
+          table: 'books',
         },
         (payload) => {
           // 変更が起きるたびに呼ばれるコールバック関数
-          console.log('変更を検知:', payload);  // payload には変更内容が入っている
+          // payload には変更内容が入っている
+          console.log('変更を検知:', payload);
           // ここで State を更新してUIに反映
         }
       )
-      .subscribe();                          // 監視開始
+      // 監視開始
+      .subscribe();
 
     // クリーンアップ
     // useEffect が return する関数はコンポーネントのアンマウント時に呼ばれる
     return () => {
-      supabase.removeChannel(channel);       // チャンネルを削除して購読停止（メモリリーク防止）
+      // チャンネルを削除して購読停止（メモリリーク防止）
+      supabase.removeChannel(channel);
     };
-  }, []);                                    // 空配列 = 初回1回だけ実行
+  // 空配列 = 初回1回だけ実行
+  }, []);
 
   return <div>...</div>;
 }
@@ -1386,7 +1452,8 @@ describe('BookCard', () => {
   // it = 個別のテストケース。test() でも同じ
   // 第1引数: テストの説明、第2引数: 実行する関数
   it('書籍のタイトルが表示される', () => {
-    render(<BookCard book={mockBook} />);             // コンポーネントを描画
+    // コンポーネントを描画
+    render(<BookCard book={mockBook} />);
     // expect(...).toBeInTheDocument() = 要素が画面に存在することを検証
     // screen.getByText('文字列') = その文字列を含む要素を取得
     expect(screen.getByText('吾輩は猫である')).toBeInTheDocument();
@@ -1434,25 +1501,38 @@ name: CI
 # on = いつこのワークフローを起動するかの条件
 on:
   push:
-    branches: [main]              # main ブランチに push されたとき
+    # main ブランチに push されたとき
+    branches: [main]
   pull_request:
-    branches: [main]              # main ブランチ向けの Pull Request が作られたとき
+    # main ブランチ向けの Pull Request が作られたとき
+    branches: [main]
 
 # jobs = 実行するジョブの定義（複数並列に書ける）
 jobs:
-  test:                              # ジョブの名前（任意）
-    runs-on: ubuntu-latest          # 実行環境。最新の Ubuntu Linux を使う
-    steps:                            # 順に実行するステップを並べる
-      - uses: actions/checkout@v4   # リポジトリのコードを取得する公式アクション
-      - uses: actions/setup-node@v4 # Node.js をセットアップする公式アクション
+  # ジョブの名前（任意）
+  test:
+    # 実行環境。最新の Ubuntu Linux を使う
+    runs-on: ubuntu-latest
+    # 順に実行するステップを並べる
+    steps:
+      # リポジトリのコードを取得する公式アクション
+      - uses: actions/checkout@v4
+      # Node.js をセットアップする公式アクション
+      - uses: actions/setup-node@v4
         with:
-          node-version: '20'         # Node.js のバージョン
-          cache: 'npm'                # npm のキャッシュを使って高速化
+          # Node.js のバージョン
+          node-version: '20'
+          # npm のキャッシュを使って高速化
+          cache: 'npm'
 
-      - run: npm ci                  # npm ci = package-lock.json に従ってクリーンインストール
-      - run: npm run lint            # lint チェックを実行
-      - run: npm run build           # ビルドを実行（型エラーがないか確認）
-      - run: npm test                # テストを実行
+      # npm ci = package-lock.json に従ってクリーンインストール
+      - run: npm ci
+      # lint チェックを実行
+      - run: npm run lint
+      # ビルドを実行（型エラーがないか確認）
+      - run: npm run build
+      # テストを実行
+      - run: npm test
 ```
 
 **学べること:**

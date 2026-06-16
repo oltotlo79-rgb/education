@@ -285,8 +285,10 @@ cd MyBooksApp/ios && pod install && cd ..
 
 ```bash
 # (3) アプリを起動する
-npx react-native run-android    # Androidエミュレータ/実機で起動
-npx react-native run-ios        # iOSシミュレータで起動（Macのみ）
+# Androidエミュレータ/実機で起動
+npx react-native run-android
+# iOSシミュレータで起動（Macのみ）
+npx react-native run-ios
 # Expoの「QRコードで即確認」とは異なり、エミュレータ/実機へ直接ビルドして転送する
 ```
 

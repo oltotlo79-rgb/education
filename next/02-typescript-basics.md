@@ -44,13 +44,20 @@ TypeScript は JavaScript に「型」を追加した言語なので、JavaScrip
 コメントは「コンピュータには無視されるが、人間が読むためのメモ」です。
 
 ```javascript
-// この行はコメント。実行されない。                      // 行頭の // からその行の終わりまでが「単一行コメント」。コンピュータは無視するので、人間用のメモとして自由に書ける。
-let x = 1; // 行末にも書ける                              // let = 後から値を変えられる変数の宣言。x = 1 で変数 x に 1 を代入。文末の ; はセミコロン（文の終わりを示す）。// 以降はコメント。
-                                                          // ↑ 空行も自由に入れられる（コードの読みやすさのため）。
-/*                                                        // /* で始めると複数行コメントの開始。
- * 複数行コメント。                                       // * は飾り（書式の慣習）。意味はない。
- * /* と */ で囲む                                        // 文章中の /* や */ も「ただの文字」として扱われる。
- */                                                       // */ で複数行コメントの終了。
+// からその行の終わりまでが「単一行コメント」。コンピュータは無視するので、人間用のメモとして自由に書ける。
+// 行頭の
+// この行はコメント。実行されない。
+// 行末にも書ける
+// let = 後から値を変えられる変数の宣言。x = 1 で変数 x に 1 を代入。文末の ; はセミコロン（文の終わりを示す）。// 以降はコメント。
+let x = 1;
+// 空行も自由に入れられる（コードの読みやすさのため）。
+
+// /* で始めると複数行コメントの開始。行頭の * は飾り（書式の慣習）で意味はない。
+// 文章中の /* や */ も「ただの文字」として扱われる。*/ で複数行コメントの終了。
+/*
+ * 複数行コメント。
+ * /* と */ で囲む
+ */
 ```
 
 ### 0.2 変数の宣言: `const` / `let`
@@ -62,12 +69,22 @@ let x = 1; // 行末にも書ける                              // let = 後か
 > **▼ このコードがやること（先に日本語で）:** 値に名前を付けて保存する「変数」を、`const`（あとで変えられない）と `let`（あとで変えられる）の2通りで作ってみます。一番大事なのは「**変えない値は `const` を使う**」という習慣——うっかり書き換えてしまうバグを未然に防げます。詳しい1行ごとの意味はコード内のコメントを見てください。
 
 ```javascript
-const name = "太郎";    // const = 一度入れたら変えられない          // const は「定数」宣言。name という名前の箱を作り、"太郎" を入れる。="代入演算子"。"..." で囲うと文字列リテラル。
-// name = "次郎";       // ❌ エラー: Assignment to constant variable. // ↑ コメントアウトしている。もし // を外すと「定数 name に再代入してる」とエラーになる。
+// const = 一度入れたら変えられない
+// const は「定数」宣言。name という名前の箱を作り、"太郎" を入れる。="代入演算子"。"..." で囲うと文字列リテラル。
+const name = "太郎";
 
-let count = 0;          // let = 後で書き換え可能                     // let は「後で値を変えられる変数」の宣言。count という変数に初期値 0 を入れる。
-count = count + 1;      // ✅ OK                                       // count に「現在の count + 1」を代入。count は 0 → 1 になる。
-console.log(count);                                                    // console.log は「コンソール（ターミナルやブラウザの出力欄）に値を表示する」関数。count の中身 (=1) を表示する。
+// 次の行はコメントアウト中。コメント記号(//)を外して再代入しようとすると
+// 「Assignment to constant variable.（定数 name には再代入できない）」というエラーになる。
+// name = "次郎";
+
+// let = 後で書き換え可能
+// let は「後で値を変えられる変数」の宣言。count という変数に初期値 0 を入れる。
+let count = 0;
+// ✅ OK
+// count に「現在の count + 1」を代入。count は 0 → 1 になる。
+count = count + 1;
+// console.log は「コンソール（ターミナルやブラウザの出力欄）に値を表示する」関数。count の中身 (=1) を表示する。
+console.log(count);
 
 // ▼ 実行結果
 // 1
@@ -89,13 +106,19 @@ console.log(count);                                                    // consol
 > **▼ このコードがやること（先に日本語で）:** プログラムでよく使う基本的な「データの種類（型）」——文字列・数値・真偽値・配列・オブジェクト——を1つずつ変数に入れて、`console.log` でまとめて表示します。今は「こういう種類のデータがあるんだな」と眺めるだけでOKです。それぞれの値の書き方はコメントで説明しています。
 
 ```javascript
-const text = "hello";                            // 文字列リテラル "hello"（"..." または '...' で囲ったもの）を const 変数 text に入れる。
-const num = 42;                                  // 数値リテラル 42（クォートで囲わない数字）を変数 num に入れる。整数も小数も同じ number 型。
-const isOk = true;                               // 真偽値 true（true か false の2つしかない）を変数 isOk に入れる。命名で is... を付けると「真偽値」と分かりやすい慣習。
-const list = [1, 2, 3];                          // 配列リテラル。[ ] の中に値を , で並べる。[0]=1, [1]=2, [2]=3 の順に並ぶ（添え字は 0 始まり）。
-const user = { name: "太郎", age: 20 };          // オブジェクトリテラル。{ キー: 値 } の組を , で並べる。.name や .age で値を取り出せる。
+// 文字列リテラル "hello"（"..." または '...' で囲ったもの）を const 変数 text に入れる。
+const text = "hello";
+// 数値リテラル 42（クォートで囲わない数字）を変数 num に入れる。整数も小数も同じ number 型。
+const num = 42;
+// 真偽値 true（true か false の2つしかない）を変数 isOk に入れる。命名で is... を付けると「真偽値」と分かりやすい慣習。
+const isOk = true;
+// 配列リテラル。[ ] の中に値を , で並べる。[0]=1, [1]=2, [2]=3 の順に並ぶ（添え字は 0 始まり）。
+const list = [1, 2, 3];
+// オブジェクトリテラル。{ キー: 値 } の組を , で並べる。.name や .age で値を取り出せる。
+const user = { name: "太郎", age: 20 };
 
-console.log(text, num, isOk, list, user);        // console.log は引数を ", " 区切りでまとめて表示する。複数値の確認に便利。
+// console.log は引数を ", " 区切りでまとめて表示する。複数値の確認に便利。
+console.log(text, num, isOk, list, user);
 
 // ▼ 実行結果
 // hello 42 true [ 1, 2, 3 ] { name: '太郎', age: 20 }
@@ -104,20 +127,44 @@ console.log(text, num, isOk, list, user);        // console.log は引数を ", 
 ### 0.4 演算子（足し算・比較）
 
 ```javascript
-console.log(1 + 2);        // 3 (足し算)                          // + は加算演算子。数値同士なら算術加算、文字列同士なら連結。
-console.log(10 - 3);       // 7                                    // - は減算演算子。10 から 3 を引く。
-console.log(4 * 5);        // 20                                   // * は乗算演算子（× の代わり）。
-console.log(10 / 3);       // 3.3333333333333335                   // / は除算演算子（÷ の代わり）。JavaScript の数値は浮動小数点なので小数になる。
-console.log(10 % 3);       // 1 (余り)                             // % は剰余演算子。10 ÷ 3 = 3 余り 1 の「余り」を返す。
-console.log("ab" + "cd");  // "abcd" (文字列の連結)                // + の左右が文字列だと、足し算ではなく連結になる。
+// 3 (足し算)
+// + は加算演算子。数値同士なら算術加算、文字列同士なら連結。
+console.log(1 + 2);
+// 7
+// - は減算演算子。10 から 3 を引く。
+console.log(10 - 3);
+// 20
+// * は乗算演算子（× の代わり）。
+console.log(4 * 5);
+// 3.3333333333333335
+// / は除算演算子（÷ の代わり）。JavaScript の数値は浮動小数点なので小数になる。
+console.log(10 / 3);
+// 1 (余り)
+// % は剰余演算子。10 ÷ 3 = 3 余り 1 の「余り」を返す。
+console.log(10 % 3);
+// "abcd" (文字列の連結)
+// + の左右が文字列だと、足し算ではなく連結になる。
+console.log("ab" + "cd");
 
-console.log(1 === 1);      // true (等しい。型もチェック)          // === は「型も値も完全に同じか」を判定。同じなら true、違うなら false。
-console.log(1 === "1");    // false (型が違うと false)             // 数値の 1 と文字列の "1" は型が違うので false。
-console.log(1 !== 2);      // true (異なる)                        // !== は「型または値が異なるか」を判定。違うなら true。
-console.log(3 > 2);        // true                                  // > は「左が右より大きいか」。等号付きなら >=（以上）。
-console.log(true && false);// false (両方trueならtrue = AND)        // && は AND 演算子。両辺が true のときだけ true。
-console.log(true || false);// true  (片方trueならtrue = OR)         // || は OR 演算子。どちらか片方が true なら true。
-console.log(!true);        // false (反転)                         // ! は否定演算子。true → false、false → true に反転する。
+// true (等しい。型もチェック)
+// === は「型も値も完全に同じか」を判定。同じなら true、違うなら false。
+console.log(1 === 1);
+// false (型が違うと false)
+// 数値の 1 と文字列の "1" は型が違うので false。
+console.log(1 === "1");
+// true (異なる)
+// !== は「型または値が異なるか」を判定。違うなら true。
+console.log(1 !== 2);
+// true
+// > は「左が右より大きいか」。等号付きなら >=（以上）。
+console.log(3 > 2);
+// && は AND 演算子。両辺が true のときだけ true。
+console.log(true && false);// false (両方trueならtrue = AND)
+// || は OR 演算子。どちらか片方が true なら true。
+console.log(true || false);// true  (片方trueならtrue = OR)
+// false (反転)
+// ! は否定演算子。true → false、false → true に反転する。
+console.log(!true);
 ```
 
 > **`==` ではなく `===` を使う:** 1個少ない `==` は型変換しながら比較するため、`1 == "1"` が `true` になります。バグの温床なので、本書では一貫して `===` を使います。
@@ -127,16 +174,21 @@ console.log(!true);        // false (反転)                         // ! は否
 > **▼ このコードがやること（先に日本語で）:** 文字列に変数の値を埋め込む2つの方法——古い「`+` でつなげる」やり方と、新しい「**テンプレートリテラル**（バッククォート `` ` `` で囲み `${変数}` を埋め込む）」やり方——を見比べます。覚えてほしいのは後者の `` `〜${name}〜` `` の書き方で、こちらの方が読みやすくミスも減ります。
 
 ```javascript
-const name = "太郎";                                 // 文字列リテラルを変数 name に代入。
+// 文字列リテラルを変数 name に代入。
+const name = "太郎";
 
 // 連結（古い書き方）
-const msg1 = "こんにちは、" + name + "さん！";       // + 演算子で「文字列＋変数＋文字列」をつなげる。冗長になりがち。
+// + 演算子で「文字列＋変数＋文字列」をつなげる。冗長になりがち。
+const msg1 = "こんにちは、" + name + "さん！";
 
 // テンプレートリテラル（新しい書き方。バッククォート ` で囲む）
-const msg2 = `こんにちは、${name}さん！`;            // `...` で囲んだ中に ${変数} を書くと、その場所に値が埋め込まれる。読みやすい。
+// `...` で囲んだ中に ${変数} を書くと、その場所に値が埋め込まれる。読みやすい。
+const msg2 = `こんにちは、${name}さん！`;
 
-console.log(msg1);                                    // 1行目の文字列を表示。
-console.log(msg2);                                    // 2行目の文字列を表示。
+// 1行目の文字列を表示。
+console.log(msg1);
+// 2行目の文字列を表示。
+console.log(msg2);
 
 // ▼ 実行結果
 // こんにちは、太郎さん！
@@ -150,15 +202,23 @@ console.log(msg2);                                    // 2行目の文字列を�
 > **▼ このコードがやること（先に日本語で）:** 点数に応じて「優・可・不可」を出し分ける**条件分岐**を `if / else if / else` で書きます。「もし～なら、こうする。そうでなければ…」という考え方で、上から順に条件をチェックし、最初に当てはまったブロックだけが実行されます。
 
 ```javascript
-const score = 75;                              // 変数 score に数値 75 を入れる。
+// 変数 score に数値 75 を入れる。
+const score = 75;
 
-if (score >= 80) {                             // if は「もし～なら」の意味。( ) の中の条件式が true ならブロックを実行する。>= は「以上」。
-  console.log("優");                            // score が 80 以上のとき表示。
-} else if (score >= 60) {                      // else if = 「上の条件に当てはまらず、こちらの条件に当てはまるなら」。score は 75 なので 80 未満かつ 60 以上 → ここが実行される。
-  console.log("可");                            // 60 以上 80 未満なら表示。
-} else {                                        // else = 「どの条件にも当てはまらないなら」。
-  console.log("不可");                          // 60 未満なら表示。
-}                                               // if 文の終わり。
+// if は「もし～なら」の意味。( ) の中の条件式が true ならブロックを実行する。>= は「以上」。
+if (score >= 80) {
+  // score が 80 以上のとき表示。
+  console.log("優");
+// else if = 「上の条件に当てはまらず、こちらの条件に当てはまるなら」。score は 75 なので 80 未満かつ 60 以上 → ここが実行される。
+} else if (score >= 60) {
+  // 60 以上 80 未満なら表示。
+  console.log("可");
+// else = 「どの条件にも当てはまらないなら」。
+} else {
+  // 60 未満なら表示。
+  console.log("不可");
+// if 文の終わり。
+}
 
 // ▼ 実行結果
 // 可
@@ -174,9 +234,12 @@ if (score >= 80) {                             // if は「もし～なら」の
 
 ```javascript
 // 0, 1, 2 と3回繰り返す
-for (let i = 0; i < 3; i++) {                  // for ループ。( 初期化; 継続条件; 各回の最後の処理 ) の3つを ; で区切って書く。let i = 0 で開始、i < 3 が true の間繰り返し、毎回終わりに i++（i = i+1）。
-  console.log(`i = ${i}`);                     // ループの中身。テンプレートリテラルで現在の i を表示。
-}                                              // for ブロックの終わり。
+// for ループ。( 初期化; 継続条件; 各回の最後の処理 ) の3つを ; で区切って書く。let i = 0 で開始、i < 3 が true の間繰り返し、毎回終わりに i++（i = i+1）。
+for (let i = 0; i < 3; i++) {
+  // ループの中身。テンプレートリテラルで現在の i を表示。
+  console.log(`i = ${i}`);
+// for ブロックの終わり。
+}
 
 // ▼ 実行結果
 // i = 0
@@ -184,10 +247,14 @@ for (let i = 0; i < 3; i++) {                  // for ループ。( 初期化; �
 // i = 2
 
 // 配列を1つずつ取り出す（モダンな書き方）
-const fruits = ["apple", "banana", "cherry"];  // 文字列の配列を作る。
-for (const fruit of fruits) {                  // for...of ループ。fruits の中身を 1つずつ fruit に取り出して繰り返す。const なので毎回新しい束縛。
-  console.log(fruit);                          // 取り出した値を表示。
-}                                              // for ブロックの終わり。
+// 文字列の配列を作る。
+const fruits = ["apple", "banana", "cherry"];
+// for...of ループ。fruits の中身を 1つずつ fruit に取り出して繰り返す。const なので毎回新しい束縛。
+for (const fruit of fruits) {
+  // 取り出した値を表示。
+  console.log(fruit);
+// for ブロックの終わり。
+}
 
 // ▼ 実行結果
 // apple
@@ -203,27 +270,43 @@ for (const fruit of fruits) {                  // for...of ループ。fruits �
 
 ```javascript
 // 1. function 宣言
-function add1(a, b) {                  // function キーワードで関数を定義。add1 が関数名、(a, b) が「仮引数（受け取る値）」。
-  return a + b;                         // return = 計算結果を呼び出し元に返す。これがないと undefined を返す。
-}                                       // 関数本体の終わり。
+// function キーワードで関数を定義。add1 が関数名、(a, b) が「仮引数（受け取る値）」。
+function add1(a, b) {
+  // return = 計算結果を呼び出し元に返す。これがないと undefined を返す。
+  return a + b;
+// 関数本体の終わり。
+}
 
 // 2. function 式
-const add2 = function (a, b) {         // 「無名関数」を変数 add2 に代入する書き方。function の後に関数名がない。
-  return a + b;                         // 中身は宣言版と同じ。
-};                                      // 式の終わりなので最後に ; が付く（宣言版は不要）。
+// 「無名関数」を変数 add2 に代入する書き方。function の後に関数名がない。
+const add2 = function (a, b) {
+  // 中身は宣言版と同じ。
+  return a + b;
+// 式の終わりなので最後に ; が付く（宣言版は不要）。
+};
 
 // 3. アロー関数（=> を使う、Reactでよく使う）
-const add3 = (a, b) => {               // (引数) => { 処理 } の形がアロー関数。function キーワードが不要で短い。
-  return a + b;                         // 本体は通常の関数と同じ。
-};                                      // アロー関数も「式」なので末尾に ;。
+// (引数) => { 処理 } の形がアロー関数。function キーワードが不要で短い。
+const add3 = (a, b) => {
+  // 本体は通常の関数と同じ。
+  return a + b;
+// アロー関数も「式」なので末尾に ;。
+};
 
 // 3'. アロー関数の省略形（return 1行のとき）
-const add4 = (a, b) => a + b;          // 本体が return 1行だけのときは { } と return を省略可能。「a + b の値が自動で返る」と読む。
+// 本体が return 1行だけのときは { } と return を省略可能。「a + b の値が自動で返る」と読む。
+const add4 = (a, b) => a + b;
 
-console.log(add1(1, 2)); // 3          // 関数の呼び出し。add1 に 1 と 2 を渡し、返り値 3 を表示。
-console.log(add2(1, 2)); // 3          // どの書き方でも結果は同じ。
-console.log(add3(1, 2)); // 3
-console.log(add4(1, 2)); // 3
+// 3
+// 関数の呼び出し。add1 に 1 と 2 を渡し、返り値 3 を表示。
+console.log(add1(1, 2));
+// 3
+// どの書き方でも結果は同じ。
+console.log(add2(1, 2));
+// 3
+console.log(add3(1, 2));
+// 3
+console.log(add4(1, 2));
 ```
 
 > **アロー関数の魅力:** `function` の文字を書かなくて済むので短く、コールバック関数（あとで呼んでもらう関数）として渡すときに見やすくなります。React/Next.jsのコードはほぼアロー関数で書かれています。
@@ -235,12 +318,16 @@ console.log(add4(1, 2)); // 3
 > **▼ このコードがやること（先に日本語で）:** 配列を扱う3つの超重要メソッド——`forEach`（1つずつ処理）、`map`（1つずつ加工して**新しい配列**を作る）、`filter`（条件に合う要素だけ残す）——を使い分けます。鉄則は「`map` と `filter` は元の配列を変えず、**新しい配列を返す**」こと。React で一覧表示を作るとき毎回使うので、ここでしっかり押さえましょう。
 
 ```javascript
-const numbers = [1, 2, 3, 4, 5];                 // 数値の配列を用意。
+// 数値の配列を用意。
+const numbers = [1, 2, 3, 4, 5];
 
 // forEach: 1つずつ処理する
-numbers.forEach((n) => {                          // forEach は「配列の各要素に対して関数を実行する」メソッド。引数のアロー関数を1要素ずつ呼んでくれる。
-  console.log(n);                                  // n には 1 → 2 → 3 → 4 → 5 と順に入る。
-});                                                // forEach の終わり。返り値は無い（undefined）。
+// forEach は「配列の各要素に対して関数を実行する」メソッド。引数のアロー関数を1要素ずつ呼んでくれる。
+numbers.forEach((n) => {
+  // n には 1 → 2 → 3 → 4 → 5 と順に入る。
+  console.log(n);
+// forEach の終わり。返り値は無い（undefined）。
+});
 
 // ▼ 実行結果
 // 1
@@ -250,15 +337,19 @@ numbers.forEach((n) => {                          // forEach は「配列の各�
 // 5
 
 // map: 1つずつ加工して新しい配列を作る
-const doubled = numbers.map((n) => n * 2);        // map は「各要素を加工した新しい配列を返す」メソッド。元の配列は変わらない。(n) => n * 2 は省略形のアロー関数。
-console.log(doubled);                              // 加工後の配列を表示。
+// map は「各要素を加工した新しい配列を返す」メソッド。元の配列は変わらない。(n) => n * 2 は省略形のアロー関数。
+const doubled = numbers.map((n) => n * 2);
+// 加工後の配列を表示。
+console.log(doubled);
 
 // ▼ 実行結果
 // [ 2, 4, 6, 8, 10 ]
 
 // filter: 条件を満たす要素だけ残した新しい配列を作る
-const evens = numbers.filter((n) => n % 2 === 0); // filter は「条件式が true になる要素だけ残した配列を返す」メソッド。n % 2 === 0 は「2 で割った余りが 0 ＝偶数」の意。
-console.log(evens);                                // 偶数だけ残った配列を表示。
+// filter は「条件式が true になる要素だけ残した配列を返す」メソッド。n % 2 === 0 は「2 で割った余りが 0 ＝偶数」の意。
+const evens = numbers.filter((n) => n % 2 === 0);
+// 偶数だけ残った配列を表示。
+console.log(evens);
 
 // ▼ 実行結果
 // [ 2, 4 ]
@@ -269,25 +360,37 @@ console.log(evens);                                // 偶数だけ残った配�
 > **▼ このコードがやること（先に日本語で）:** 「名前・年齢…」のような複数の情報を**まとめて持つオブジェクト**の、値の取り出し・書き換え・追加、そして最後に「**分割代入**（`const { name, age } = user;` で一気に取り出す）」を学びます。特に分割代入は React のコードで頻出するので、形を覚えておくと後がラクです。
 
 ```javascript
-const user = { name: "太郎", age: 20 };           // オブジェクトを作る。name と age の2つのプロパティ（プロパティ＝オブジェクトのキーと値の組）を持つ。
+// オブジェクトを作る。name と age の2つのプロパティ（プロパティ＝オブジェクトのキーと値の組）を持つ。
+const user = { name: "太郎", age: 20 };
 
 // 値の取り出し（2つの書き方）
-console.log(user.name);     // "太郎" (ドット記法)    // .（ドット）でプロパティ名を直接指定する書き方。普通はこちらを使う。
-console.log(user["name"]);  // "太郎" (ブラケット記法) // [ ] にキー名を文字列で渡す書き方。変数でキーを指定したいとき便利（user[キー名変数]）。
+// "太郎" (ドット記法)
+// .（ドット）でプロパティ名を直接指定する書き方。普通はこちらを使う。
+console.log(user.name);
+// [ ] にキー名を文字列で渡す書き方。変数でキーを指定したいとき便利（user[キー名変数]）。
+// "太郎" (ブラケット記法)
+console.log(user["name"]);
 
 // 値の書き換え
-user.age = 21;                                       // const で宣言されていても、オブジェクトの「中のプロパティ」は書き換え可能（const が禁止するのは user 自体の差し替えのみ）。
-console.log(user.age);      // 21                    // age が 21 に変わった。
+// const で宣言されていても、オブジェクトの「中のプロパティ」は書き換え可能（const が禁止するのは user 自体の差し替えのみ）。
+user.age = 21;
+// 21
+// age が 21 に変わった。
+console.log(user.age);
 
 // プロパティの追加
-user.email = "taro@example.com";                     // 存在しないキーに代入すると、新しいプロパティが追加される。
-console.log(user);                                    // user 全体を表示すると、email が追加されているのが分かる。
+// 存在しないキーに代入すると、新しいプロパティが追加される。
+user.email = "taro@example.com";
+// user 全体を表示すると、email が追加されているのが分かる。
+console.log(user);
 // ▼ 実行結果
 // { name: '太郎', age: 21, email: 'taro@example.com' }
 
 // 分割代入（オブジェクトから一気に取り出す）
-const { name, age } = user;                          // { } の中に取り出したいキー名を書くと、同じ名前の変数を一気に作れる。name = user.name, age = user.age と同じ意味。
-console.log(name, age);     // "太郎" 21
+// { } の中に取り出したいキー名を書くと、同じ名前の変数を一気に作れる。name = user.name, age = user.age と同じ意味。
+const { name, age } = user;
+// "太郎" 21
+console.log(name, age);
 ```
 
 > **分割代入のコツ:** React のコードでよく `const { title, author } = book;` のような書き方を見ます。これは「`book` オブジェクトから `title` と `author` を取り出して同名の変数を作る」省略記法です。慣れると非常に短く書けます。
@@ -299,9 +402,12 @@ JavaScript/TypeScript では文末にセミコロン `;` を付ける習慣が�
 > **省略すると稀にバグる例:** `return` のすぐ後で改行すると、自動で `;` が入って `return undefined;` と解釈されることがあります。曖昧さを避けるため、本書では一貫して `;` を付けます。
 
 ```javascript
-const a = 1;                       // const で a に 1 を入れる。文末の ; は「ここで1つの文が終わる」を示す。
-const b = 2;                       // 同様に b に 2 を入れる。
-console.log(a + b);                // a + b は 3 になる。それを表示。
+// const で a に 1 を入れる。文末の ; は「ここで1つの文が終わる」を示す。
+const a = 1;
+// 同様に b に 2 を入れる。
+const b = 2;
+// a + b は 3 になる。それを表示。
+console.log(a + b);
 ```
 
 これで JavaScript の超基礎は OK。次の節からいよいよ TypeScript 本編に入ります。
@@ -398,28 +504,36 @@ TypeScript を使う最大の理由は **型安全性** です。以下の表で
 
 ```javascript
 // ---- JavaScript ----
-function greet(name) {                                     // function 宣言。引数 name の型は書けない（書こうとすると構文エラー）。
-  return "こんにちは、" + name + "さん！";                  // 文字列連結で挨拶を作る。name が何の型でも文字列に変換されて連結されてしまう。
+// function 宣言。引数 name の型は書けない（書こうとすると構文エラー）。
+function greet(name) {
+  // 文字列連結で挨拶を作る。name が何の型でも文字列に変換されて連結されてしまう。
+  return "こんにちは、" + name + "さん！";
 }
 
 // 数値を渡してもエラーにならない（実行時まで気づけない）
-console.log(greet(42));                                     // 引数に数値 42 を渡しても、JavaScript は何も警告しない。
-// => "こんにちは、42さん！" ← 意図しない動作                // 42 が文字列 "42" に勝手に変換されて連結される。バグの温床。
+// 引数に数値 42 を渡しても、JavaScript は何も警告しない。
+console.log(greet(42));
+// 42 が文字列 "42" に勝手に変換されて連結される。バグの温床。
+// => "こんにちは、42さん！" ← 意図しない動作
 ```
 
 ```typescript
 // ---- TypeScript ----
-function greet(name: string): string {                      // : string は「型注釈（Type Annotation）」。name の右の : string は「引数 name は string 型」、) の右の : string は「戻り値も string 型」を表す。
-  return "こんにちは、" + name + "さん！";                  // ロジック自体は JavaScript と同じ。
+// : string は「型注釈（Type Annotation）」。name の右の : string は「引数 name は string 型」、) の右の : string は「戻り値も string 型」を表す。
+function greet(name: string): string {
+  // ロジック自体は JavaScript と同じ。
+  return "こんにちは、" + name + "さん！";
 }
 
 // コンパイル時にエラーが発生！
-console.log(greet(42));                                     // ↑ ここで TypeScript が「string が必要なのに number を渡している」と警告。実行する前に気づける。
+// ↑ ここで TypeScript が「string が必要なのに number を渡している」と警告。実行する前に気づける。
+console.log(greet(42));
 // エラー: Argument of type 'number' is not assignable to parameter of type 'string'
 //        （number 型の引数は、string 型のパラメータに代入できません）
 
 // 正しい使い方
-console.log(greet("太郎"));                                  // 文字列を渡すと OK。
+// 文字列を渡すと OK。
+console.log(greet("太郎"));
 // => "こんにちは、太郎さん！"
 ```
 
@@ -429,30 +543,39 @@ console.log(greet("太郎"));                                  // 文字列を�
 
 ```javascript
 // ---- JavaScript ----
-const user = {                                    // user オブジェクトを作る。
-  name: "田中",                                    // name プロパティに文字列。
-  age: 25,                                         // age プロパティに数値。, （カンマ）でプロパティを区切る。最後のカンマはあっても無くてもよい（trailing comma）。
+// user オブジェクトを作る。
+const user = {
+  // name プロパティに文字列。
+  name: "田中",
+  // age プロパティに数値。, （カンマ）でプロパティを区切る。最後のカンマはあっても無くてもよい（trailing comma）。
+  age: 25,
 };
 
 // タイプミスしてもエラーにならない（実行時に undefined になる）
-console.log(user.nmae); // => undefined ← バグ！  // name と nmae（タイプミス）。JavaScript は存在しないプロパティを許し、結果は undefined。表示してから「あれ？」と気づくことが多い。
+// => undefined ← バグ！
+// name と nmae（タイプミス）。JavaScript は存在しないプロパティを許し、結果は undefined。表示してから「あれ？」と気づくことが多い。
+console.log(user.nmae);
 ```
 
 ```typescript
 // ---- TypeScript ----
-const user = {                                    // 型注釈を書かなくても、TypeScript が自動で { name: string; age: number; } と「推論」してくれる。
+// 型注釈を書かなくても、TypeScript が自動で { name: string; age: number; } と「推論」してくれる。
+const user = {
   name: "田中",
   age: 25,
 };
 
 // タイプミスするとコンパイル時にエラー！
-console.log(user.nmae);                            // ↑ VS Code が即座に赤線。
+// ↑ VS Code が即座に赤線。
+console.log(user.nmae);
 // エラー: Property 'nmae' does not exist on type '{ name: string; age: number; }'.
 //        （'nmae' というプロパティは { name; age } 型には存在しません）
-// Did you mean 'name'?                            // 「もしかして name のこと？」とサジェストもしてくれる。
+// 「もしかして name のこと？」とサジェストもしてくれる。
+// Did you mean 'name'?
 
 // 正しいアクセス
-console.log(user.name); // => "田中"
+// => "田中"
+console.log(user.name);
 ```
 
 #### 例3: 配列操作での型安全性
@@ -461,28 +584,40 @@ console.log(user.name); // => "田中"
 
 ```javascript
 // ---- JavaScript ----
-const numbers = [1, 2, 3, 4, 5];                       // 配列リテラル。JavaScript では配列の中身の型は問わない。
+// 配列リテラル。JavaScript では配列の中身の型は問わない。
+const numbers = [1, 2, 3, 4, 5];
 
 // 文字列を追加してもエラーにならない
-numbers.push("six"); // ← バグの原因になる              // push は配列末尾に要素を追加するメソッド。文字列でも入ってしまう。
+// ← バグの原因になる
+// push は配列末尾に要素を追加するメソッド。文字列でも入ってしまう。
+numbers.push("six");
 
 // 後で計算しようとすると予期しない結果に
-const sum = numbers.reduce((a, b) => a + b, 0);          // reduce は配列を左から畳み込んで1つの値にするメソッド。第2引数 0 は初期値。a が累積値、b が現在の要素。
-console.log(sum); // => "15six" ← 文字列連結になってしまう！  // 数値 + 文字列 → 文字列連結のルールが発動。"1+2+3+4+5=15" + "six" = "15six"。
+// reduce は配列を左から畳み込んで1つの値にするメソッド。第2引数 0 は初期値。a が累積値、b が現在の要素。
+const sum = numbers.reduce((a, b) => a + b, 0);
+// => "15six" ← 文字列連結になってしまう！
+// 数値 + 文字列 → 文字列連結のルールが発動。"1+2+3+4+5=15" + "six" = "15six"。
+console.log(sum);
 ```
 
 ```typescript
 // ---- TypeScript ----
-const numbers: number[] = [1, 2, 3, 4, 5];               // number[] は「number 型の配列」。これで「数値以外は入れられない」と TypeScript が保証してくれる。
+// number[] は「number 型の配列」。これで「数値以外は入れられない」と TypeScript が保証してくれる。
+const numbers: number[] = [1, 2, 3, 4, 5];
 
 // 文字列を追加しようとするとコンパイルエラー！
-numbers.push("six");                                       // ↑ 「number しか入らない配列」に string を push しようとして即エラー。
+// ↑ 「number しか入らない配列」に string を push しようとして即エラー。
+numbers.push("six");
 // エラー: Argument of type 'string' is not assignable to parameter of type 'number'
 
 // 正しい使い方
-numbers.push(6);                                           // 6 は number なので OK。
-const sum = numbers.reduce((a, b) => a + b, 0);            // a, b ともに number と推論されるので、+ は算術加算で動く。
-console.log(sum); // => 21                                  // 1+2+3+4+5+6 = 21
+// 6 は number なので OK。
+numbers.push(6);
+// a, b ともに number と推論されるので、+ は算術加算で動く。
+const sum = numbers.reduce((a, b) => a + b, 0);
+// => 21
+// 1+2+3+4+5+6 = 21
+console.log(sum);
 ```
 
 ---
@@ -640,19 +775,23 @@ const negative: number = -10;
 
 // (4) 16進数（0x で始まる）。Web開発で色コードを書くときに使う
 //     0xff の f は 15 を意味する1桁の16進文字。ff = 15*16 + 15 = 255
-const hex: number = 0xff;        // 256 - 1 = 255
+// 256 - 1 = 255
+const hex: number = 0xff;
 
 // (5) 2進数（0b で始まる）。フラグ操作などで使う
 //     0b1010 = 1*8 + 0*4 + 1*2 + 0*1 = 10
-const binary: number = 0b1010;   // = 10
+// = 10
+const binary: number = 0b1010;
 
 // (6) 8進数（0o で始まる）。Linuxのファイル権限で見る形
 //     0o744 = 7*64 + 4*8 + 4*1 = 484
-const octal: number = 0o744;     // = 484
+// = 484
+const octal: number = 0o744;
 
 // (7) 数値リテラル区切り（_ で読みやすくする）
 //     1_000_000 と書いても 1000000 と書いても結果は同じ。実行時の値に _ は含まれない。
-const big: number = 1_000_000;   // = 1000000（百万）
+// = 1000000（百万）
+const big: number = 1_000_000;
 
 // (8) 特殊な数値
 //     Infinity = 無限大、NaN = Not a Number（不正な数値計算の結果）
@@ -663,9 +802,12 @@ console.log(age, price, negative, hex, binary, octal, big);
 // ▼ 実行結果
 // 25 1980.5 -10 255 10 484 1000000
 
-console.log(1 / 0);     // → Infinity（0で割ると無限大）
-console.log(0 / 0);     // → NaN（0÷0 は数学的に未定義）
-console.log("a" * 2);   // → NaN（文字列を数値として掛けると NaN）
+// → Infinity（0で割ると無限大）
+console.log(1 / 0);
+// → NaN（0÷0 は数学的に未定義）
+console.log(0 / 0);
+// → NaN（文字列を数値として掛けると NaN）
+console.log("a" * 2);
 ```
 
 ```typescript
@@ -705,20 +847,25 @@ const result: number = a + b;
 // ==========================================================================
 
 // (1) 直接 true / false を入れる
-const isActive: boolean = true;       // true = 「アクティブ」
-const isCompleted: boolean = false;   // false = 「未完了」
+// true = 「アクティブ」
+const isActive: boolean = true;
+// false = 「未完了」
+const isCompleted: boolean = false;
 
 // (2) 比較式の結果も boolean になる
 //     >= は「以上」、=== は「等しい（型もチェック）」
 //     式が成り立てば true、成り立たなければ false が返る。
-const isAdult: boolean = age >= 18;       // age が 25 なので true
-const isEmpty: boolean = name === "";     // name が "太郎" なので false
+// age が 25 なので true
+const isAdult: boolean = age >= 18;
+// name が "太郎" なので false
+const isEmpty: boolean = name === "";
 
 // (3) 論理演算子（&& と ||）
 //     && (AND) : 両方 true なら true、片方でも false なら false
 //     || (OR)  : 片方でも true なら true、両方 false なら false
 //     ! (NOT)  : true ↔ false を反転
-const canAccess: boolean = isActive && isAdult;  // true && true = true
+// true && true = true
+const canAccess: boolean = isActive && isAdult;
 
 console.log(isActive, isCompleted, isAdult, isEmpty, canAccess);
 // ▼ 実行結果
@@ -781,11 +928,14 @@ const ages: Array<number> = [20, 25, 30];
 
 // (4) push: 配列の末尾に要素を追加（破壊的に変更される）
 //     型が一致する値だけ受け付ける（string配列に number は入らない）
-fruits.push("ぶどう");          // fruits = ["りんご", "みかん", "バナナ", "ぶどう"]
-scores.push(100);               // scores = [85, 90, 78, 92, 100]
+// fruits = ["りんご", "みかん", "バナナ", "ぶどう"]
+fruits.push("ぶどう");
+// scores = [85, 90, 78, 92, 100]
+scores.push(100);
 
 // (5) [添え字] でアクセス。存在しない添え字は undefined（厳密モードでは型エラー）
-const first: string = fruits[0];  // = "りんご"
+// = "りんご"
+const first: string = fruits[0];
 console.log(first);
 // ▼ 実行結果
 // りんご
@@ -798,7 +948,8 @@ console.log(fruits.length);
 // (7) 空配列を作るときも型注釈を書いておくのが安全
 //     こうしないと never[] と推論されてしまい、後で push できない。
 const emptyStrings: string[] = [];
-emptyStrings.push("hello");      // OK
+// OK
+emptyStrings.push("hello");
 console.log(emptyStrings);
 // ▼ 実行結果
 // [ 'hello' ]
@@ -842,8 +993,10 @@ const ages: Array<number> = [20, 25, 30];
 ##### 解説3: 配列に要素を追加する（`push`）
 
 ```typescript
-fruits.push("ぶどう");          // fruits = ["りんご", "みかん", "バナナ", "ぶどう"]
-scores.push(100);               // scores = [85, 90, 78, 92, 100]
+// fruits = ["りんご", "みかん", "バナナ", "ぶどう"]
+fruits.push("ぶどう");
+// scores = [85, 90, 78, 92, 100]
+scores.push(100);
 ```
 
 - `.push(値)` は「**配列の末尾（いちばん後ろ）に値を1つ追加する**」メソッドです。
@@ -857,7 +1010,8 @@ scores.push(100);               // scores = [85, 90, 78, 92, 100]
 ##### 解説4: 要素の取り出しと長さ
 
 ```typescript
-const first: string = fruits[0];  // = "りんご"
+// = "りんご"
+const first: string = fruits[0];
 console.log(first);
 // ▼ 実行結果
 // りんご
@@ -879,7 +1033,8 @@ console.log(fruits.length);
 
 ```typescript
 const emptyStrings: string[] = [];
-emptyStrings.push("hello");      // OK
+// OK
+emptyStrings.push("hello");
 ```
 
 - 最初は空っぽ（`[]`）の配列を作りたいことがあります。
@@ -890,15 +1045,19 @@ emptyStrings.push("hello");      // OK
 
 ```typescript
 // --- エラーになる例 ---
-const numbers: number[] = [1, 2, "three"];                  // number[] と宣言しているのに "three" は string。混在は許されない。
+// number[] と宣言しているのに "three" は string。混在は許されない。
+const numbers: number[] = [1, 2, "three"];
 // エラー: Type 'string' is not assignable to type 'number'
 
-const items: string[] = ["a", "b", "c"];                    // string 専用配列。
-items.push(42);                                              // 42 は number なので入れられない。
+// string 専用配列。
+const items: string[] = ["a", "b", "c"];
+// 42 は number なので入れられない。
+items.push(42);
 // エラー: Argument of type 'number' is not assignable to parameter of type 'string'
 
 // 異なる型が混在する配列を number[] として定義
-const mixed: number[] = [1, true, "hello"];                  // true (boolean) も "hello" (string) も number ではない → 2件エラーになる。
+// true (boolean) も "hello" (string) も number ではない → 2件エラーになる。
+const mixed: number[] = [1, true, "hello"];
 // エラー: Type 'boolean' is not assignable to type 'number'
 // エラー: Type 'string' is not assignable to type 'number'
 ```
@@ -913,36 +1072,48 @@ const mixed: number[] = [1, true, "hello"];                  // true (boolean) �
 // --- 正しい例 ---
 
 // [名前, 年齢] のタプル
-const person: [string, number] = ["田中", 30];              // 型注釈の [string, number] が「タプル型」。1番目=string, 2番目=number と位置で型が固定される。
+// 型注釈の [string, number] が「タプル型」。1番目=string, 2番目=number と位置で型が固定される。
+const person: [string, number] = ["田中", 30];
 
 // [ID, 名前, アクティブフラグ] のタプル
-const record: [number, string, boolean] = [1, "太郎", true]; // 3要素のタプル。位置ごとに型が決まっている。
+// 3要素のタプル。位置ごとに型が決まっている。
+const record: [number, string, boolean] = [1, "太郎", true];
 
 // 要素へのアクセス（型が正しく推論される）
-const personName: string = person[0]; // "田中" ← string 型 // [0] は1番目の要素を取り出す（配列・タプルともに添え字は 0 始まり）。TypeScript は「1番目は string」と知っているので型が string になる。
-const personAge: number = person[1];  // 30 ← number 型    // [1] は2番目。number と推論される。
+// [0] は1番目の要素を取り出す（配列・タプルともに添え字は 0 始まり）。TypeScript は「1番目は string」と知っているので型が string になる。
+// "田中" ← string 型
+const personName: string = person[0];
+// 30 ← number 型
+// [1] は2番目。number と推論される。
+const personAge: number = person[1];
 
 // 分割代入も可能
-const [name, age] = person;                                  // 配列形式の分割代入。person[0] → name, person[1] → age に代入。型もそれぞれ string, number に決まる。
+// 配列形式の分割代入。person[0] → name, person[1] → age に代入。型もそれぞれ string, number に決まる。
+const [name, age] = person;
 // name は string 型、age は number 型
 
 // オプショナルなタプル要素
-const optionalTuple: [string, number?] = ["田中"];           // 2要素目に ? を付けると「省略してもよい」タプル要素になる。number? は number | undefined と同じ意味。
+// 2要素目に ? を付けると「省略してもよい」タプル要素になる。number? は number | undefined と同じ意味。
+const optionalTuple: [string, number?] = ["田中"];
 // 2番目の要素はあってもなくてもよい
 ```
 
 ```typescript
 // --- エラーになる例 ---
-const pair: [string, number] = [42, "田中"];                 // 1番目が string でなければならないのに number。2番目が number でなければならないのに string。位置の型と合わない。
+// 1番目が string でなければならないのに number。2番目が number でなければならないのに string。位置の型と合わない。
+const pair: [string, number] = [42, "田中"];
 // エラー: Type 'number' is not assignable to type 'string'（1番目）
 // エラー: Type 'string' is not assignable to type 'number'（2番目）
 
-const triple: [string, number, boolean] = ["太郎", 25];      // タプル型は「長さも固定」。3要素必要なのに 2要素しかないとエラー。
+// タプル型は「長さも固定」。3要素必要なのに 2要素しかないとエラー。
+const triple: [string, number, boolean] = ["太郎", 25];
 // エラー: Source has 2 element(s) but target requires 3
 
 // 型が異なる位置へのアクセス
-const data: [string, number] = ["hello", 42];                // 1番目が string、2番目が number。
-const wrongType: number = data[0];                            // [0] は string なのに number に代入しようとしているのでエラー。
+// 1番目が string、2番目が number。
+const data: [string, number] = ["hello", 42];
+// [0] は string なのに number に代入しようとしているのでエラー。
+const wrongType: number = data[0];
 // エラー: Type 'string' is not assignable to type 'number'
 ```
 
@@ -956,29 +1127,38 @@ const wrongType: number = data[0];                            // [0] は string 
 // --- 正しい例 ---
 
 // オブジェクトリテラル型
-const user: { name: string; age: number; email: string } = {  // { ... } の中の「キー: 型」の並びが「オブジェクト型」の宣言。3つの必須プロパティを持つことを意味する。区切りは ; (または , でもOK)。
-  name: "田中太郎",                                              // string プロパティ。
-  age: 30,                                                       // number プロパティ。
-  email: "tanaka@example.com",                                   // string プロパティ。
+// { ... } の中の「キー: 型」の並びが「オブジェクト型」の宣言。3つの必須プロパティを持つことを意味する。区切りは ; (または , でもOK)。
+const user: { name: string; age: number; email: string } = {
+  // string プロパティ。
+  name: "田中太郎",
+  // number プロパティ。
+  age: 30,
+  // string プロパティ。
+  email: "tanaka@example.com",
 };
 
 // オプショナルプロパティ（? をつける）
-const product: { name: string; price: number; description?: string } = {  // description? の ? は「あってもなくてもよい」を表す。
+// description? の ? は「あってもなくてもよい」を表す。
+const product: { name: string; price: number; description?: string } = {
   name: "TypeScript入門書",
   price: 2980,
-  // description は省略可能                                     // description は書かなくても OK。値は undefined になる。
+  // description は省略可能
+  // description は書かなくても OK。値は undefined になる。
 };
 
 // 読み取り専用プロパティ
-const config: { readonly apiUrl: string; readonly timeout: number } = {  // readonly キーワード = 「代入後は変更禁止」。config.apiUrl = ... と書くとエラーになる。
+// readonly キーワード = 「代入後は変更禁止」。config.apiUrl = ... と書くとエラーになる。
+const config: { readonly apiUrl: string; readonly timeout: number } = {
   apiUrl: "https://api.example.com",
   timeout: 5000,
 };
 
 // ネストしたオブジェクト
-const company: {                                                 // 型注釈の中にも { ... } を入れ子にできる。
+// 型注釈の中にも { ... } を入れ子にできる。
+const company: {
   name: string;
-  address: {                                                     // address 自体がオブジェクト型。
+  // address 自体がオブジェクト型。
+  address: {
     city: string;
     zipCode: string;
   };
@@ -1081,23 +1261,30 @@ const company: {
 
 ```typescript
 // --- エラーになる例 ---
-const user: { name: string; age: number } = {                // age が必須なのに...
+// age が必須なのに...
+const user: { name: string; age: number } = {
   name: "田中",
-  // age がない！                                            // 必須プロパティ漏れはエラー。
+  // age がない！
+  // 必須プロパティ漏れはエラー。
 };
 // エラー: Property 'age' is missing in type '{ name: string; }'
 
-const item: { name: string; price: number } = {              // 型で許可されているのは name と price のみ。
+// 型で許可されているのは name と price のみ。
+const item: { name: string; price: number } = {
   name: "ペン",
   price: 100,
-  color: "赤", // 余分なプロパティ                            // 余計なプロパティ（型定義に無いキー）もエラー。これを「過剰プロパティチェック」と呼ぶ。
+  // 余分なプロパティ
+  // 余計なプロパティ（型定義に無いキー）もエラー。これを「過剰プロパティチェック」と呼ぶ。
+  color: "赤",
 };
 // エラー: Object literal may only specify known properties,
 // and 'color' does not exist in type '{ name: string; price: number; }'
 
 // readonly プロパティへの再代入
-const settings: { readonly theme: string } = { theme: "dark" };  // readonly なので theme は読み取り専用。
-settings.theme = "light";                                     // 後から書き換えようとするとエラー。
+// readonly なので theme は読み取り専用。
+const settings: { readonly theme: string } = { theme: "dark" };
+// 後から書き換えようとするとエラー。
+settings.theme = "light";
 // エラー: Cannot assign to 'theme' because it is a read-only property
 ```
 
@@ -1109,26 +1296,46 @@ settings.theme = "light";                                     // 後から書き
 
 ```typescript
 // --- any の使用例（非推奨だが動く）---
-let anything: any = "文字列";    // any は「何でもアリ型」。型チェックを全部スキップする魔法のキーワード（=危険）。
-anything = 42;           // OK（number を代入）        // どんな型の値も再代入できる。
-anything = true;         // OK（boolean を代入）       // ↑同じく。
-anything = [1, 2, 3];   // OK（配列を代入）           // ↑同じく。
-anything.foo();          // OK（存在しないメソッドも呼べる → 実行時エラー！） // foo というメソッドは無いが、TypeScript は何も言わない。実際に動かすと TypeError で落ちる。
-anything.bar.baz;        // OK（存在しないプロパティもアクセス可能 → 実行時エラー！） // .bar が undefined、その .baz を読もうとして実行時にクラッシュ。
+// any は「何でもアリ型」。型チェックを全部スキップする魔法のキーワード（=危険）。
+let anything: any = "文字列";
+// OK（number を代入）
+// どんな型の値も再代入できる。
+anything = 42;
+// OK（boolean を代入）
+// ↑同じく。
+anything = true;
+// OK（配列を代入）
+// ↑同じく。
+anything = [1, 2, 3];
+// foo というメソッドは無いが、TypeScript は何も言わない。実際に動かすと TypeError で落ちる。
+// OK（存在しないメソッドも呼べる → 実行時エラー！）
+anything.foo();
+// .bar が undefined、その .baz を読もうとして実行時にクラッシュ。
+// OK（存在しないプロパティもアクセス可能 → 実行時エラー！）
+anything.bar.baz;
 ```
 
 > **警告**: `any` を使うと TypeScript を使う意味がほぼなくなります。**原則として `any` は使わないでください。** やむを得ない場合（外部ライブラリの型定義がない場合など）のみ、限定的に使います。
 
 ```typescript
 // --- なぜ any が危険か ---
-function processData(data: any) {                                // 引数 data の型を any にしてしまうと...
+// 引数 data の型を any にしてしまうと...
+function processData(data: any) {
   // 型チェックが一切行われない
-  return data.toUpperCase(); // data が string でなければ実行時エラー  // .toUpperCase() は string のメソッド。data が string でないと実行時に死ぬ。
+  // data が string でなければ実行時エラー
+  // .toUpperCase() は string のメソッド。data が string でないと実行時に死ぬ。
+  return data.toUpperCase();
 }
 
-processData("hello");   // OK: "HELLO"                            // 文字列なので OK。
-processData(42);         // 実行時エラー: data.toUpperCase is not a function  // 数値に toUpperCase は無い。
-processData(null);       // 実行時エラー: Cannot read properties of null      // null の .toUpperCase を読もうとして即死。
+// OK: "HELLO"
+// 文字列なので OK。
+processData("hello");
+// 実行時エラー: data.toUpperCase is not a function
+// 数値に toUpperCase は無い。
+processData(42);
+// 実行時エラー: Cannot read properties of null
+// null の .toUpperCase を読もうとして即死。
+processData(null);
 ```
 
 ### 2.8 unknown 型
@@ -1139,23 +1346,34 @@ processData(null);       // 実行時エラー: Cannot read properties of null  
 
 ```typescript
 // --- unknown の正しい使い方 ---
-let value: unknown = "こんにちは";                        // unknown 型変数を宣言。「中身は何か分からない」を明示する型。
-value = 42;       // OK（代入は自由）                     // どんな型でも代入はできる（ここは any と同じ）。
-value = true;     // OK
+// unknown 型変数を宣言。「中身は何か分からない」を明示する型。
+let value: unknown = "こんにちは";
+// OK（代入は自由）
+// どんな型でも代入はできる（ここは any と同じ）。
+value = 42;
+// OK
+value = true;
 
 // ただし、そのまま使うことはできない
-// const upper: string = value.toUpperCase();            // ↑ unknown のままだとメソッド呼び出しが禁止される（安全性のため）。
+// ↑ unknown のままだとメソッド呼び出しが禁止される（安全性のため）。
+// const upper: string = value.toUpperCase();
 // エラー: 'value' is of type 'unknown'
 
 // 型チェック（型ガード）を行ってから使う
-if (typeof value === "string") {                          // typeof は値の型を文字列で返す演算子。"string"|"number"|"boolean"|"undefined"|"object"|"function"|"symbol"|"bigint" のいずれか。
-  // このブロック内では value は string 型として扱える     // 条件式により TypeScript が「ここでは string と確定」と推論する。これを「型の絞り込み（narrowing）」と呼ぶ。
-  console.log(value.toUpperCase()); // OK                 // string なので toUpperCase が呼べる。
+// typeof は値の型を文字列で返す演算子。"string"|"number"|"boolean"|"undefined"|"object"|"function"|"symbol"|"bigint" のいずれか。
+if (typeof value === "string") {
+  // このブロック内では value は string 型として扱える
+  // 条件式により TypeScript が「ここでは string と確定」と推論する。これを「型の絞り込み（narrowing）」と呼ぶ。
+  // OK
+  // string なので toUpperCase が呼べる。
+  console.log(value.toUpperCase());
 }
 
 if (typeof value === "number") {
   // このブロック内では value は number 型として扱える
-  console.log(value.toFixed(2)); // OK                    // .toFixed(2) は number のメソッドで「小数点以下2桁の文字列に変換」する。
+  // OK
+  // .toFixed(2) は number のメソッドで「小数点以下2桁の文字列に変換」する。
+  console.log(value.toFixed(2));
 }
 ```
 
@@ -1163,16 +1381,24 @@ if (typeof value === "number") {
 // --- any と unknown の比較 ---
 
 // any: 危険（型チェックなし）
-function unsafeProcess(data: any): string {                  // 引数を any にすると...
-  return data.toUpperCase(); // 実行時に壊れる可能性あり      // 何でも通るが安全性ゼロ。
+// 引数を any にすると...
+function unsafeProcess(data: any): string {
+  // 実行時に壊れる可能性あり
+  // 何でも通るが安全性ゼロ。
+  return data.toUpperCase();
 }
 
 // unknown: 安全（型チェック必須）
-function safeProcess(data: unknown): string {                // unknown にすると...
-  if (typeof data === "string") {                            // 必ず型ガードを書かないと中身を使えない。
-    return data.toUpperCase(); // 型チェック済みなので安全    // string と確定したブロックなので OK。
+// unknown にすると...
+function safeProcess(data: unknown): string {
+  // 必ず型ガードを書かないと中身を使えない。
+  if (typeof data === "string") {
+    // 型チェック済みなので安全
+    // string と確定したブロックなので OK。
+    return data.toUpperCase();
   }
-  return "不明なデータ";                                      // 型が string でなければデフォルト値を返す。
+  // 型が string でなければデフォルト値を返す。
+  return "不明なデータ";
 }
 ```
 
@@ -1184,33 +1410,47 @@ function safeProcess(data: unknown): string {                // unknown にす�
 
 ```typescript
 // --- 用途1: 絶対に値を返さない関数 ---
-function throwError(message: string): never {                 // 戻り値の型 : never は「決して return しない」関数の印。
-  throw new Error(message);                                     // throw = 例外を投げる文。new Error(...) で Error オブジェクトを作る。throw すると関数はここで終わるので、return されない。
+// 戻り値の型 : never は「決して return しない」関数の印。
+function throwError(message: string): never {
+  // throw = 例外を投げる文。new Error(...) で Error オブジェクトを作る。throw すると関数はここで終わるので、return されない。
+  throw new Error(message);
   // この関数は必ず例外を投げるので、正常に値を返すことがない
 }
 
 // --- 用途2: 無限ループ ---
-function infiniteLoop(): never {                               // ずっと終わらない関数も never。
-  while (true) {                                                // while (true) は「true の間ずっと繰り返し」= 無限ループ。
+// ずっと終わらない関数も never。
+function infiniteLoop(): never {
+  // while (true) は「true の間ずっと繰り返し」= 無限ループ。
+  while (true) {
     // 永遠に終わらない
   }
 }
 
 // --- 用途3: 到達不可能なコードの検出（網羅性チェック）---
-type Shape = "circle" | "square" | "triangle";                 // ユニオン型で3種類のリテラルを宣言。
+// ユニオン型で3種類のリテラルを宣言。
+type Shape = "circle" | "square" | "triangle";
 
-function getArea(shape: Shape): number {                       // shape を受け取って面積を返す関数。
-  switch (shape) {                                              // switch 文：値ごとに分岐。
-    case "circle":                                              // shape が "circle" のとき。
-      return Math.PI * 10 * 10;                                  // Math.PI は 円周率 π。半径10の円の面積を返す。
+// shape を受け取って面積を返す関数。
+function getArea(shape: Shape): number {
+  // switch 文：値ごとに分岐。
+  switch (shape) {
+    // shape が "circle" のとき。
+    case "circle":
+      // Math.PI は 円周率 π。半径10の円の面積を返す。
+      return Math.PI * 10 * 10;
     case "square":
-      return 10 * 10;                                            // 1辺10 の正方形の面積。
+      // 1辺10 の正方形の面積。
+      return 10 * 10;
     case "triangle":
-      return (10 * 10) / 2;                                      // 底辺10・高さ10の三角形の面積。
+      // 底辺10・高さ10の三角形の面積。
+      return (10 * 10) / 2;
     default:
-      // すべてのケースを処理済みなら、shape は never 型になる   // 上の case で全てのリテラルを処理し尽くしているので、ここに来る可能性はなく shape の型は never に絞り込まれる。
-      const _exhaustiveCheck: never = shape;                     // never 型に shape を代入。これが「網羅性チェック」の魔法。
-      return _exhaustiveCheck;                                   // never は number にも代入可（never はすべての型の部分型）。
+      // すべてのケースを処理済みなら、shape は never 型になる
+      // 上の case で全てのリテラルを処理し尽くしているので、ここに来る可能性はなく shape の型は never に絞り込まれる。
+      // never 型に shape を代入。これが「網羅性チェック」の魔法。
+      const _exhaustiveCheck: never = shape;
+      // never は number にも代入可（never はすべての型の部分型）。
+      return _exhaustiveCheck;
   }
 }
 ```
@@ -1219,7 +1459,9 @@ function getArea(shape: Shape): number {                       // shape を受�
 // --- never 型の重要性: 網羅性チェック ---
 
 // Shape に新しい種類を追加した場合
-type Shape = "circle" | "square" | "triangle" | "pentagon"; // pentagon を追加  // ↑ あとから1種類追加した、と想像してください。
+// pentagon を追加
+// ↑ あとから1種類追加した、と想像してください。
+type Shape = "circle" | "square" | "triangle" | "pentagon";
 
 function getArea(shape: Shape): number {
   switch (shape) {
@@ -1230,8 +1472,10 @@ function getArea(shape: Shape): number {
     case "triangle":
       return (10 * 10) / 2;
     default:
-      // "pentagon" のケースが未処理なのでエラーになる！         // default に来る可能性が「pentagon」として残っているので、shape は "pentagon" 型に絞り込まれる。
-      const _exhaustiveCheck: never = shape;                     // "pentagon" は never に代入できないのでエラー → 抜け漏れに気づける！
+      // "pentagon" のケースが未処理なのでエラーになる！
+      // default に来る可能性が「pentagon」として残っているので、shape は "pentagon" 型に絞り込まれる。
+      // "pentagon" は never に代入できないのでエラー → 抜け漏れに気づける！
+      const _exhaustiveCheck: never = shape;
       // エラー: Type 'string' is not assignable to type 'never'
       // → "pentagon" の処理を追加し忘れたことに気づける
       return _exhaustiveCheck;
@@ -1247,32 +1491,43 @@ function getArea(shape: Shape): number {
 
 ```typescript
 // --- 正しい例 ---
-function logMessage(message: string): void {                  // 戻り値 : void = 「値を返さない関数」。
-  console.log(message);                                        // 文字列を表示するだけ。
-  // return 文がない、または return; のみ                       // 暗黙的に undefined を返している扱い。
+// 戻り値 : void = 「値を返さない関数」。
+function logMessage(message: string): void {
+  // 文字列を表示するだけ。
+  console.log(message);
+  // return 文がない、または return; のみ
+  // 暗黙的に undefined を返している扱い。
 }
 
 function showAlert(text: string): void {
-  alert(text);                                                  // alert はブラウザのポップアップ表示関数（Node.js には無い）。
-  return; // return; は OK（値を返さない）                       // return の後に値を書かなければ void と矛盾しない。
+  // alert はブラウザのポップアップ表示関数（Node.js には無い）。
+  alert(text);
+  // return; は OK（値を返さない）
+  // return の後に値を書かなければ void と矛盾しない。
+  return;
 }
 
 // void 型の変数には undefined のみ代入可能
-const result: void = undefined;                                // void 変数に入れられるのは undefined のみ。
+// void 変数に入れられるのは undefined のみ。
+const result: void = undefined;
 ```
 
 ```typescript
 // --- エラーになる例 ---
-function greet(name: string): void {                          // void と宣言しているのに...
-  return `こんにちは、${name}さん`;                              // 文字列を return しているので矛盾。
+// void と宣言しているのに...
+function greet(name: string): void {
+  // 文字列を return しているので矛盾。
+  return `こんにちは、${name}さん`;
   // エラー: Type 'string' is not assignable to type 'void'
   // void なのに値を返している
 }
 
-const value: void = "hello";                                   // void に文字列を入れられない。
+// void に文字列を入れられない。
+const value: void = "hello";
 // エラー: Type 'string' is not assignable to type 'void'
 
-const num: void = 42;                                          // void に数値も入れられない。
+// void に数値も入れられない。
+const num: void = 42;
 // エラー: Type 'number' is not assignable to type 'void'
 ```
 
@@ -1291,44 +1546,64 @@ const num: void = 42;                                          // void に数値
 // --- 正しい例 ---
 
 // strictNullChecks が有効な場合（推奨）
-let nullableString: string | null = null;   // 明示的に null を許可    // string | null は「string または null」の意。| はユニオン型の区切り。
-let optionalValue: number | undefined = undefined;                       // number または undefined を許可する変数。
+// 明示的に null を許可
+// string | null は「string または null」の意。| はユニオン型の区切り。
+let nullableString: string | null = null;
+// number または undefined を許可する変数。
+let optionalValue: number | undefined = undefined;
 
 // null チェック
-function findUser(id: number): string | null {                            // 戻り値が「string または null」の関数。
-  if (id === 1) {                                                          // === は厳密等価。id が 1 のとき。
+// 戻り値が「string または null」の関数。
+function findUser(id: number): string | null {
+  // === は厳密等価。id が 1 のとき。
+  if (id === 1) {
     return "田中太郎";
   }
-  return null; // ユーザーが見つからない場合                              // 1 以外は明示的に null を返す。
+  // ユーザーが見つからない場合
+  // 1 以外は明示的に null を返す。
+  return null;
 }
 
-const user = findUser(999);                                                // user の型は string | null と推論される。
-if (user !== null) {                                                        // null でないことを確認する型ガード。
-  console.log(user.toUpperCase()); // null チェック後なので安全            // このブロック内では user は string と絞り込まれる。
+// user の型は string | null と推論される。
+const user = findUser(999);
+// null でないことを確認する型ガード。
+if (user !== null) {
+  // null チェック後なので安全
+  // このブロック内では user は string と絞り込まれる。
+  console.log(user.toUpperCase());
 }
 
 // オプショナルチェイニング（?. ）
-const length = user?.length; // user が null なら undefined を返す         // ?. は「左が null/undefined ならその場で undefined を返し、そうでなければ .length を読む」演算子。.length のクラッシュ回避用。
+// user が null なら undefined を返す
+// ?. は「左が null/undefined ならその場で undefined を返し、そうでなければ .length を読む」演算子。.length のクラッシュ回避用。
+const length = user?.length;
 
 // null 合体演算子（??）
-const displayName = user ?? "ゲスト"; // user が null/undefined なら "ゲスト"  // ?? は「左が null か undefined なら右の値を使う」演算子。|| と似ているが、|| は 0 や "" も false 扱いするのに対し ?? は null/undefined だけを判定する。
+// user が null/undefined なら "ゲスト"
+// ?? は「左が null か undefined なら右の値を使う」演算子。|| と似ているが、|| は 0 や "" も false 扱いするのに対し ?? は null/undefined だけを判定する。
+const displayName = user ?? "ゲスト";
 ```
 
 ```typescript
 // --- エラーになる例（strictNullChecks 有効時）---
-let name: string = null;                                                   // string 型に null は入らない（strictNullChecks: true の場合）。
+// string 型に null は入らない（strictNullChecks: true の場合）。
+let name: string = null;
 // エラー: Type 'null' is not assignable to type 'string'
 
-let age: number = undefined;                                                // number 型に undefined も入らない。
+// number 型に undefined も入らない。
+let age: number = undefined;
 // エラー: Type 'undefined' is not assignable to type 'number'
 
 // null チェックなしでのメソッド呼び出し
 function findItem(id: number): string | null {
-  return id > 0 ? "アイテム" : null;                                        // 三項演算子 ?:。 「条件 ? trueのとき : falseのとき」の形。
+  // 三項演算子 ?:。 「条件 ? trueのとき : falseのとき」の形。
+  return id > 0 ? "アイテム" : null;
 }
 
-const item = findItem(-1);                                                  // item の型は string | null。
-console.log(item.toUpperCase());                                            // チェックなしで .toUpperCase() を呼ぶとエラー。
+// item の型は string | null。
+const item = findItem(-1);
+// チェックなしで .toUpperCase() を呼ぶとエラー。
+console.log(item.toUpperCase());
 // エラー: 'item' is possibly 'null'
 // → item が null の可能性があるので、チェックなしでは使えない
 ```
@@ -1362,27 +1637,35 @@ console.log(item.toUpperCase());                                            // �
 
 ```typescript
 // 変数の型注釈
-const bookTitle: string = "TypeScript入門";                           // 変数名 : 型 = 値 の順。: string が型注釈。
-const pageCount: number = 350;                                         // : number で「数値型」を宣言。
-const isPublished: boolean = true;                                     // : boolean で「真偽値型」を宣言。
+// 変数名 : 型 = 値 の順。: string が型注釈。
+const bookTitle: string = "TypeScript入門";
+// : number で「数値型」を宣言。
+const pageCount: number = 350;
+// : boolean で「真偽値型」を宣言。
+const isPublished: boolean = true;
 
 // 関数のパラメータと戻り値の型注釈
-function calculateTotal(price: number, quantity: number): number {     // (引数1: 型, 引数2: 型): 戻り値の型 の形。
-  return price * quantity;                                              // price と quantity は両方 number なので、* の結果も number。
+// (引数1: 型, 引数2: 型): 戻り値の型 の形。
+function calculateTotal(price: number, quantity: number): number {
+  // price と quantity は両方 number なので、* の結果も number。
+  return price * quantity;
 }
 
 // アロー関数の型注釈
-const add = (a: number, b: number): number => a + b;                   // アロー関数版。( ): 戻り値の型 => 式 の形。
+// アロー関数版。( ): 戻り値の型 => 式 の形。
+const add = (a: number, b: number): number => a + b;
 
 // オブジェクトの型注釈
-const book: { title: string; author: string; pages: number } = {       // { キー: 型; ... } の形でオブジェクト型を直接書ける。
+// { キー: 型; ... } の形でオブジェクト型を直接書ける。
+const book: { title: string; author: string; pages: number } = {
   title: "TypeScript入門",
   author: "山田太郎",
   pages: 350,
 };
 
 // 配列の型注釈
-const tags: string[] = ["プログラミング", "TypeScript", "入門"];        // string[] = 「string の配列」。
+// string[] = 「string の配列」。
+const tags: string[] = ["プログラミング", "TypeScript", "入門"];
 ```
 
 ### 3.2 型推論の仕組み
@@ -1395,30 +1678,47 @@ TypeScript は非常に賢い **型推論**（Type Inference：タイプイン�
 // --- TypeScript が自動で型を推論する例 ---
 
 // 変数の初期化から推論
-const message = "こんにちは";    // string と推論                       // 右辺が文字列リテラルなので、型注釈なしでも string と分かる。
-const count = 42;                // number と推論                       // 数値リテラル → number。
-const isValid = true;            // boolean と推論                      // true/false → boolean。
-const items = [1, 2, 3];        // number[] と推論                     // 配列の中身が全部 number なら number[] と推論。
+// string と推論
+// 右辺が文字列リテラルなので、型注釈なしでも string と分かる。
+const message = "こんにちは";
+// number と推論
+// 数値リテラル → number。
+const count = 42;
+// boolean と推論
+// true/false → boolean。
+const isValid = true;
+// number[] と推論
+// 配列の中身が全部 number なら number[] と推論。
+const items = [1, 2, 3];
 
 // 関数の戻り値も推論される
-function multiply(a: number, b: number) {                                // 戻り値の型注釈を省略しても...
-  return a * b; // 戻り値は number と推論される                          // a * b が number なので戻り値は number と分かる。
+// 戻り値の型注釈を省略しても...
+function multiply(a: number, b: number) {
+  // 戻り値は number と推論される
+  // a * b が number なので戻り値は number と分かる。
+  return a * b;
 }
 
 // オブジェクトの構造も推論される
 const user = {
-  name: "田中",     // name: string                                     // 右辺の値から各プロパティの型が決まる。
-  age: 25,          // age: number
-  isActive: true,   // isActive: boolean
+  // name: string
+  // 右辺の値から各プロパティの型が決まる。
+  name: "田中",
+  // age: number
+  age: 25,
+  // isActive: boolean
+  isActive: true,
 };
 // user の型は { name: string; age: number; isActive: boolean } と推論
 
 // 配列のメソッドから推論
-const doubled = [1, 2, 3].map((n) => n * 2);                              // map の引数 n は配列の要素型から推論されて number。返す n * 2 も number。結果は number[]。
+// map の引数 n は配列の要素型から推論されて number。返す n * 2 も number。結果は number[]。
+const doubled = [1, 2, 3].map((n) => n * 2);
 // doubled は number[] と推論
 
 // 条件式から推論
-const status = count > 10 ? "many" : "few";                                // 三項演算子 ?:。両辺が string なので結果は string と推論される。
+// 三項演算子 ?:。両辺が string なので結果は string と推論される。
+const status = count > 10 ? "many" : "few";
 // status は string と推論
 ```
 
@@ -1426,17 +1726,27 @@ const status = count > 10 ? "many" : "few";                                // �
 // --- 型推論の注意点 ---
 
 // let で宣言すると広い型に推論される
-let color = "red";    // string と推論（"red" リテラル型ではない）       // let は後から再代入されうるので「広めの型」(=string) に推論される。
-color = "blue";       // OK（string なので他の文字列も代入可能）
+// string と推論（"red" リテラル型ではない）
+// let は後から再代入されうるので「広めの型」(=string) に推論される。
+let color = "red";
+// OK（string なので他の文字列も代入可能）
+color = "blue";
 
 // const で宣言するとリテラル型に推論される
-const direction = "north"; // "north" と推論（リテラル型）                // const は変わらないので「ピッタリの型」(="north") に推論される。
-// direction = "south";    // エラー: const なので再代入不可
+// "north" と推論（リテラル型）
+// const は変わらないので「ピッタリの型」(="north") に推論される。
+const direction = "north";
+// エラー: const なので再代入不可
+// direction = "south";
 
 // 空配列は any[] に推論される（要注意）
-const emptyList = []; // any[] と推論                                      // 中身がないので TypeScript は要素型を決められず any[] になる（ゆるい）。
+// any[] と推論
+// 中身がないので TypeScript は要素型を決められず any[] になる（ゆるい）。
+const emptyList = [];
 // → 型注釈をつけるべき
-const emptyStrings: string[] = []; // 明示的に型を指定                    // 必ず型注釈を書くのが安全。
+// 明示的に型を指定
+// 必ず型注釈を書くのが安全。
+const emptyStrings: string[] = [];
 ```
 
 ### 3.3 いつ型注釈を書くべきか
@@ -1481,32 +1791,43 @@ const emptyStrings: string[] = []; // 明示的に型を指定                  
 
 ```typescript
 // 1. 関数のパラメータ（必須！推論できない）
-function greet(name: string, age: number): string {                  // 引数は値が無い段階で書くので、TypeScript は推論できない。書かないと暗黙の any になる。
-  return `${name}さんは${age}歳です`;                                 // テンプレートリテラルで挨拶文を生成。
+// 引数は値が無い段階で書くので、TypeScript は推論できない。書かないと暗黙の any になる。
+function greet(name: string, age: number): string {
+  // テンプレートリテラルで挨拶文を生成。
+  return `${name}さんは${age}歳です`;
 }
 
 // 2. 空配列を初期化する場合
-const users: string[] = []; // 型注釈がないと any[] になる             // 後で push する型を限定したいなら必須。
+// 型注釈がないと any[] になる
+// 後で push する型を限定したいなら必須。
+const users: string[] = [];
 
 // 3. 関数の戻り値を明確にしたい場合（公開APIなど）
-function fetchUser(id: number): Promise<User> {                      // Promise<T> は「将来 T を返す」を表す型。fetch は Promise を返すので戻り値も Promise になる。
+// Promise<T> は「将来 T を返す」を表す型。fetch は Promise を返すので戻り値も Promise になる。
+function fetchUser(id: number): Promise<User> {
   // 戻り値の型が明確になり、実装ミスを防げる
-  return fetch(`/api/users/${id}`).then((res) => res.json());         // fetch はサーバーに HTTP リクエストを送る関数。.then で結果を加工する。
+  // fetch はサーバーに HTTP リクエストを送る関数。.then で結果を加工する。
+  return fetch(`/api/users/${id}`).then((res) => res.json());
 }
 
 // 4. 複数の型を受け入れる場合
-let result: string | number;                                          // | はユニオン型の区切り。「string か number のどちらか」。
-result = "成功";                                                       // string なので OK。
-result = 404;                                                          // number なので OK。
+// | はユニオン型の区切り。「string か number のどちらか」。
+let result: string | number;
+// string なので OK。
+result = "成功";
+// number なので OK。
+result = 404;
 
 // 5. オブジェクトの構造を明確にしたい場合
-interface Config {                                                     // interface でオブジェクトの型を定義。
+// interface でオブジェクトの型を定義。
+interface Config {
   apiUrl: string;
   timeout: number;
   retries: number;
 }
 
-const config: Config = {                                               // Config 型として宣言。3つのプロパティが必須。
+// Config 型として宣言。3つのプロパティが必須。
+const config: Config = {
   apiUrl: "https://api.example.com",
   timeout: 5000,
   retries: 3,
@@ -1519,20 +1840,31 @@ const config: Config = {                                               // Config
 
 ```typescript
 // 1. 初期値から型が明らかな場合
-const name = "田中太郎";     // 明らかに string                       // : string と書かなくても推論される。冗長さを避けるために省くのも良い設計。
-const age = 30;              // 明らかに number
-const isActive = true;       // 明らかに boolean
+// 明らかに string
+// : string と書かなくても推論される。冗長さを避けるために省くのも良い設計。
+const name = "田中太郎";
+// 明らかに number
+const age = 30;
+// 明らかに boolean
+const isActive = true;
 
 // 2. 配列リテラルで初期化する場合
-const fruits = ["りんご", "みかん"]; // 明らかに string[]               // 中身があれば推論できる。
+// 明らかに string[]
+// 中身があれば推論できる。
+const fruits = ["りんご", "みかん"];
 
 // 3. 関数の戻り値が単純な場合
-function add(a: number, b: number) {                                   // 戻り値の型を省略。
-  return a + b; // 明らかに number を返す                              // number + number → number と推論。
+// 戻り値の型を省略。
+function add(a: number, b: number) {
+  // 明らかに number を返す
+  // number + number → number と推論。
+  return a + b;
 }
 
 // 4. 変数の型が変わらない場合
-const total = price * quantity; // 明らかに number                     // 計算結果から推論。
+// 明らかに number
+// 計算結果から推論。
+const total = price * quantity;
 ```
 
 ---
@@ -1556,10 +1888,14 @@ const total = price * quantity; // 明らかに number                     // �
 // (1) User という名前の interface を定義
 //     「User 型のオブジェクトには id, name, email, age の4つが必須」と宣言
 interface User {
-  id: number;       // 数値型のID（必須）
-  name: string;     // 文字列型の名前（必須）
-  email: string;    // 文字列型のメールアドレス（必須）
-  age: number;      // 数値型の年齢（必須）
+  // 数値型のID（必須）
+  id: number;
+  // 文字列型の名前（必須）
+  name: string;
+  // 文字列型のメールアドレス（必須）
+  email: string;
+  // 数値型の年齢（必須）
+  age: number;
 }
 
 // (2) User 型の変数を作る
@@ -1581,10 +1917,14 @@ console.log(user);
 // ==========================================================================
 
 interface Product {
-  id: number;             // 必須
-  name: string;           // 必須
-  price: number;          // 必須
-  description?: string;   // ←「?」付きなので省略可能。値が無いときは undefined
+  // 必須
+  id: number;
+  // 必須
+  name: string;
+  // 必須
+  price: number;
+  // ←「?」付きなので省略可能。値が無いときは undefined
+  description?: string;
 }
 
 // description を省略しても OK
@@ -1605,7 +1945,8 @@ console.log(pen.description);
 // ==========================================================================
 
 interface Config {
-  readonly apiUrl: string;    // readonly = 後で代入禁止
+  // readonly = 後で代入禁止
+  readonly apiUrl: string;
   readonly timeout: number;
 }
 
@@ -1614,7 +1955,8 @@ const config: Config = {
   timeout: 5000,
 };
 
-// config.apiUrl = "https://other.com";   // ← これを書くとエラー
+// ← これを書くとエラー
+// config.apiUrl = "https://other.com";
 // ▼ エラー
 // Cannot assign to 'apiUrl' because it is a read-only property.
 //   （'apiUrl' は読み取り専用プロパティのため代入できません）
@@ -1630,10 +1972,14 @@ const config: Config = {
 
 ```typescript
 interface User {
-  id: number;       // 数値型のID（必須）
-  name: string;     // 文字列型の名前（必須）
-  email: string;    // 文字列型のメールアドレス（必須）
-  age: number;      // 数値型の年齢（必須）
+  // 数値型のID（必須）
+  id: number;
+  // 文字列型の名前（必須）
+  name: string;
+  // 文字列型のメールアドレス（必須）
+  email: string;
+  // 数値型の年齢（必須）
+  age: number;
 }
 ```
 
@@ -1670,10 +2016,14 @@ const user: User = {
 
 ```typescript
 interface Product {
-  id: number;             // 必須
-  name: string;           // 必須
-  price: number;          // 必須
-  description?: string;   // ←「?」付きなので省略可能。値が無いときは undefined
+  // 必須
+  id: number;
+  // 必須
+  name: string;
+  // 必須
+  price: number;
+  // ←「?」付きなので省略可能。値が無いときは undefined
+  description?: string;
 }
 ```
 
@@ -1687,7 +2037,8 @@ interface Product {
 
 ```typescript
 interface Config {
-  readonly apiUrl: string;    // readonly = 後で代入禁止
+  // readonly = 後で代入禁止
+  readonly apiUrl: string;
   readonly timeout: number;
 }
 ```
@@ -1707,24 +2058,32 @@ interface Config {
 
 // (1) ベースとなる Animal 型
 interface Animal {
-  name: string;     // 動物の名前
-  age: number;      // 年齢
+  // 動物の名前
+  name: string;
+  // 年齢
+  age: number;
 }
 
 // (2) Dog は Animal を「extends」している
 //     → Animal の name, age を全て持ったうえで、breed と isVaccinated が追加される。
 //     継承元の項目は書かなくてもOK（自動で引き継がれる）。
 interface Dog extends Animal {
-  breed: string;          // 犬種（Dog で追加）
-  isVaccinated: boolean;  // ワクチン接種済みか（Dog で追加）
+  // 犬種（Dog で追加）
+  breed: string;
+  // ワクチン接種済みか（Dog で追加）
+  isVaccinated: boolean;
 }
 
 // (3) Dog 型のオブジェクトには合計4つのプロパティが必須
 const myDog: Dog = {
-  name: "ポチ",            // Animal 由来
-  age: 3,                  // Animal 由来
-  breed: "柴犬",           // Dog 固有
-  isVaccinated: true,      // Dog 固有
+  // Animal 由来
+  name: "ポチ",
+  // Animal 由来
+  age: 3,
+  // Dog 固有
+  breed: "柴犬",
+  // Dog 固有
+  isVaccinated: true,
 };
 console.log(myDog.name, myDog.breed);
 // ▼ 実行結果
@@ -1744,15 +2103,19 @@ interface HasId {
 
 // (2) 「作成日時・更新日時を持つ」だけを表現する interface
 interface HasTimestamp {
-  createdAt: Date;     // Date は JavaScript 標準の日時オブジェクト
+  // Date は JavaScript 標準の日時オブジェクト
+  createdAt: Date;
   updatedAt: Date;
 }
 
 // (3) BlogPost は HasId と HasTimestamp の両方を継承し、独自フィールドを追加
 interface BlogPost extends HasId, HasTimestamp {
-  title: string;       // タイトル
-  content: string;     // 本文
-  author: string;      // 著者
+  // タイトル
+  title: string;
+  // 本文
+  content: string;
+  // 著者
+  author: string;
 }
 
 // (4) BlogPost 型のオブジェクトには6つのプロパティが必須
@@ -1775,20 +2138,30 @@ console.log(post.title, "投稿日:", post.createdAt.toISOString());
 
 ```typescript
 // interface でメソッドを定義
-interface Calculator {                                          // 「メソッド（関数プロパティ）4つを持つオブジェクト」の型定義。
-  add(a: number, b: number): number;                            // add メソッドの型。引数2つ、戻り値 number。
-  subtract(a: number, b: number): number;                       // 同様に subtract（引き算）。
-  multiply(a: number, b: number): number;                       // multiply（掛け算）。
-  divide(a: number, b: number): number;                         // divide（割り算）。
+// 「メソッド（関数プロパティ）4つを持つオブジェクト」の型定義。
+interface Calculator {
+  // add メソッドの型。引数2つ、戻り値 number。
+  add(a: number, b: number): number;
+  // 同様に subtract（引き算）。
+  subtract(a: number, b: number): number;
+  // multiply（掛け算）。
+  multiply(a: number, b: number): number;
+  // divide（割り算）。
+  divide(a: number, b: number): number;
 }
 
-const calc: Calculator = {                                      // Calculator 型として4つのメソッドを実装。
-  add: (a, b) => a + b,                                          // 各メソッドはアロー関数で実装。引数の型は interface から推論される。
+// Calculator 型として4つのメソッドを実装。
+const calc: Calculator = {
+  // 各メソッドはアロー関数で実装。引数の型は interface から推論される。
+  add: (a, b) => a + b,
   subtract: (a, b) => a - b,
   multiply: (a, b) => a * b,
-  divide: (a, b) => {                                            // 割り算は 0 除算チェックがあるので { } で複数行に。
-    if (b === 0) throw new Error("0で割ることはできません");      // b が 0 のとき例外を投げる。throw は実行を中断する文。
-    return a / b;                                                 // 正常時は割った結果を返す。
+  // 割り算は 0 除算チェックがあるので { } で複数行に。
+  divide: (a, b) => {
+    // b が 0 のとき例外を投げる。throw は実行を中断する文。
+    if (b === 0) throw new Error("0で割ることはできません");
+    // 正常時は割った結果を返す。
+    return a / b;
   },
 };
 ```
@@ -1801,19 +2174,24 @@ const calc: Calculator = {                                      // Calculator �
 
 ```typescript
 // 基本的な type エイリアス
-type UserName = string;                                          // type で型に別名を付ける。UserName は単に string の別名。
-type Age = number;                                                // Age は number の別名。意味のある名前を付けるとコードが読みやすい。
-type IsActive = boolean;                                          // IsActive = boolean。
+// type で型に別名を付ける。UserName は単に string の別名。
+type UserName = string;
+// Age は number の別名。意味のある名前を付けるとコードが読みやすい。
+type Age = number;
+// IsActive = boolean。
+type IsActive = boolean;
 
 // オブジェクト型
-type User = {                                                     // type でオブジェクト型を定義（interface でもほぼ同じ）。
+// type でオブジェクト型を定義（interface でもほぼ同じ）。
+type User = {
   id: number;
   name: string;
   email: string;
   age: number;
 };
 
-const user: User = {                                              // User 型として変数を作る。
+// User 型として変数を作る。
+const user: User = {
   id: 1,
   name: "田中太郎",
   email: "tanaka@example.com",
@@ -1821,23 +2199,34 @@ const user: User = {                                              // User 型と
 };
 
 // ユニオン型（interface ではできない）
-type Status = "active" | "inactive" | "pending";                  // 文字列リテラルのユニオン。3つの値のいずれかに限定。
-type Id = string | number;                                         // string か number のどちらでも入る型。
+// 文字列リテラルのユニオン。3つの値のいずれかに限定。
+type Status = "active" | "inactive" | "pending";
+// string か number のどちらでも入る型。
+type Id = string | number;
 
-const userStatus: Status = "active";                              // "active" は許可された値なので OK。
-const userId: Id = "user_123";                                     // string が許可されているので OK。
+// "active" は許可された値なので OK。
+const userStatus: Status = "active";
+// string が許可されているので OK。
+const userId: Id = "user_123";
 
 // タプル型
-type Coordinate = [number, number];                                // 2要素タプル。[緯度, 経度] のように使う。
-type NameAge = [string, number];                                   // [名前, 年齢] のタプル。
+// 2要素タプル。[緯度, 経度] のように使う。
+type Coordinate = [number, number];
+// [名前, 年齢] のタプル。
+type NameAge = [string, number];
 
-const point: Coordinate = [35.6762, 139.6503]; // 東京の座標       // Coordinate 型として代入。
+// 東京の座標
+// Coordinate 型として代入。
+const point: Coordinate = [35.6762, 139.6503];
 
 // 関数型
-type MathOperation = (a: number, b: number) => number;             // 「(a: number, b: number) => number」は関数型の表記。「引数2つ受け取って number を返す関数」を意味する。
+// 「(a: number, b: number) => number」は関数型の表記。「引数2つ受け取って number を返す関数」を意味する。
+type MathOperation = (a: number, b: number) => number;
 
-const add: MathOperation = (a, b) => a + b;                        // MathOperation 型として add を実装。引数の型は型から推論される。
-const subtract: MathOperation = (a, b) => a - b;                   // 同じ型から別の関数を作れる（型の再利用）。
+// MathOperation 型として add を実装。引数の型は型から推論される。
+const add: MathOperation = (a, b) => a + b;
+// 同じ型から別の関数を作れる（型の再利用）。
+const subtract: MathOperation = (a, b) => a - b;
 ```
 
 #### ▼ コードを1つずつ分解して解説
@@ -1910,7 +2299,8 @@ const userId: Id = "user_123";
 type Coordinate = [number, number];
 type NameAge = [string, number];
 
-const point: Coordinate = [35.6762, 139.6503]; // 東京の座標
+// 東京の座標
+const point: Coordinate = [35.6762, 139.6503];
 
 type MathOperation = (a: number, b: number) => number;
 
@@ -1930,15 +2320,18 @@ const subtract: MathOperation = (a, b) => a - b;
 
 ```typescript
 // 交差型（Intersection Type）
-type HasName = {                                                   // 「name を持つ」だけを表す型。
+// 「name を持つ」だけを表す型。
+type HasName = {
   name: string;
 };
 
-type HasAge = {                                                     // 「age を持つ」だけを表す型。
+// 「age を持つ」だけを表す型。
+type HasAge = {
   age: number;
 };
 
-type Person = HasName & HasAge;                                     // & は交差型（intersection）の記号。両方の性質を合わせ持つ型。「name と age を両方持つ」になる。
+// & は交差型（intersection）の記号。両方の性質を合わせ持つ型。「name と age を両方持つ」になる。
+type Person = HasName & HasAge;
 // Person は { name: string; age: number; } と同じ
 
 const person: Person = {
@@ -1947,17 +2340,25 @@ const person: Person = {
 };
 
 // 条件付き型（Conditional Type）
-type IsString<T> = T extends string ? "yes" : "no";                 // T が string 型に含まれるなら "yes"、そうでないなら "no" を返す型。T extends X は「T が X 型の部分型か」の判定。
+// T が string 型に含まれるなら "yes"、そうでないなら "no" を返す型。T extends X は「T が X 型の部分型か」の判定。
+type IsString<T> = T extends string ? "yes" : "no";
 
-type A = IsString<string>;  // "yes"                                // T = string → "yes"。
-type B = IsString<number>;  // "no"                                 // T = number → "no"。
+// "yes"
+// T = string → "yes"。
+type A = IsString<string>;
+// "no"
+// T = number → "no"。
+type B = IsString<number>;
 
 // マップ型（Mapped Type）
-type Readonly<T> = {                                                // T の全プロパティを readonly に変換した型を作る。
-  readonly [P in keyof T]: T[P];                                     // [P in keyof T] は「T のキーをひとつずつ P として取り出す」記法。T[P] はそのキーに対応する値の型。前に readonly を付けるとすべて読み取り専用に。
+// T の全プロパティを readonly に変換した型を作る。
+type Readonly<T> = {
+  // [P in keyof T] は「T のキーをひとつずつ P として取り出す」記法。T[P] はそのキーに対応する値の型。前に readonly を付けるとすべて読み取り専用に。
+  readonly [P in keyof T]: T[P];
 };
 
-type ReadonlyUser = Readonly<User>;                                 // User の全プロパティが readonly になった型ができる。
+// User の全プロパティが readonly になった型ができる。
+type ReadonlyUser = Readonly<User>;
 // すべてのプロパティが readonly になる
 ```
 
@@ -1980,7 +2381,8 @@ type ReadonlyUser = Readonly<User>;                                 // User の�
 
 ```typescript
 // --- interface でしかできないこと: 宣言のマージ ---
-interface Window {                                                  // 同じ名前の interface を複数書くと、TypeScript が自動でマージしてくれる。
+// 同じ名前の interface を複数書くと、TypeScript が自動でマージしてくれる。
+interface Window {
   title: string;
 }
 
@@ -1989,11 +2391,15 @@ interface Window {
 }
 
 // 2つの宣言がマージされる
-// Window = { title: string; appVersion: number; }                  // 結果は両方のプロパティを持つ型。ライブラリの型を後から拡張する用途で使う。
+// 結果は両方のプロパティを持つ型。ライブラリの型を後から拡張する用途で使う。
+// Window = { title: string; appVersion: number; }
 
 // type では同じ名前で再定義するとエラーになる
-type Animal = { name: string };                                     // 1つ目の定義。
-type Animal = { age: number }; // エラー: Duplicate identifier 'Animal'  // 同じ名前で再定義しようとするとエラー。
+// 1つ目の定義。
+type Animal = { name: string };
+// エラー: Duplicate identifier 'Animal'
+// 同じ名前で再定義しようとするとエラー。
+type Animal = { age: number };
 ```
 
 > **▼ このコードがやること（先に日本語で）:** 逆に `type` だけができることを並べて見ます。ユニオン型（「AまたはB」）、プリミティブ型への別名付け、タプル型、関数型、条件付き型——これらは `interface` では書けません。「オブジェクトの形以外も名前を付けたいときは `type`」と覚えるための一覧です。
@@ -2002,19 +2408,24 @@ type Animal = { age: number }; // エラー: Duplicate identifier 'Animal'  // �
 // --- type でしかできないこと ---
 
 // ユニオン型
-type Result = "success" | "error" | "loading";                       // | で複数のリテラルを並べて型を作るのは type ならでは。
+// | で複数のリテラルを並べて型を作るのは type ならでは。
+type Result = "success" | "error" | "loading";
 
 // プリミティブのエイリアス
-type ID = string | number;                                            // プリミティブ型に別名を付けるのも type のみ。
+// プリミティブ型に別名を付けるのも type のみ。
+type ID = string | number;
 
 // タプル型
-type Point = [number, number];                                        // タプル型のエイリアスも type で書く。
+// タプル型のエイリアスも type で書く。
+type Point = [number, number];
 
 // 関数型
-type Formatter = (input: string) => string;                           // 関数型のエイリアスも type で書く。
+// 関数型のエイリアスも type で書く。
+type Formatter = (input: string) => string;
 
 // 条件付き型
-type NonNullable<T> = T extends null | undefined ? never : T;         // 条件付き型も type 限定。T が null か undefined なら never、そうでなければ T 自体。
+// 条件付き型も type 限定。T が null か undefined なら never、そうでなければ T 自体。
+type NonNullable<T> = T extends null | undefined ? never : T;
 ```
 
 **使い分けの指針**:
@@ -2062,12 +2473,18 @@ type Rating = 1 | 2 | 3 | 4 | 5;
 // ----------------------------------------------------------------------------
 // 各値の右側のコメントは「人間用のメモ」。実行時には消える。
 type BookCategory =
-  | "fiction"         // 小説
-  | "non-fiction"     // ノンフィクション
-  | "technology"      // 技術書
-  | "business"        // ビジネス
-  | "self-help"       // 自己啓発
-  | "other";          // その他
+  // 小説
+  | "fiction"
+  // ノンフィクション
+  | "non-fiction"
+  // 技術書
+  | "technology"
+  // ビジネス
+  | "business"
+  // 自己啓発
+  | "self-help"
+  // その他
+  | "other";
 
 
 // ----------------------------------------------------------------------------
@@ -2075,9 +2492,12 @@ type BookCategory =
 // ----------------------------------------------------------------------------
 // `?` を付けたプロパティは「あってもなくてもいい」（オプショナル）
 interface Author {
-  id: string;            // 著者のユニークID（必須）
-  name: string;          // 著者名（必須）
-  nationality?: string;  // 国籍（省略可能。? が付く）
+  // 著者のユニークID（必須）
+  id: string;
+  // 著者名（必須）
+  name: string;
+  // 国籍（省略可能。? が付く）
+  nationality?: string;
 }
 
 
@@ -2087,15 +2507,24 @@ interface Author {
 // `author` プロパティは前で定義した Author 型を再利用している。
 // このように型を入れ子にできるのが TypeScript の便利なところ。
 interface Book {
-  id: string;                 // 書籍のユニークID
-  title: string;              // タイトル
-  author: Author;             // 著者（Author 型のオブジェクト）
-  isbn: string;               // ISBN番号（書籍の世界共通ID）
-  category: BookCategory;     // カテゴリ（前述の6種類のどれか）
-  pages: number;              // 総ページ数
-  publishedDate: string;      // 出版日。ISO 8601 形式 "2025-01-15"
-  coverImageUrl?: string;     // 表紙画像URL（省略可能）
-  description?: string;       // 説明文（省略可能）
+  // 書籍のユニークID
+  id: string;
+  // タイトル
+  title: string;
+  // 著者（Author 型のオブジェクト）
+  author: Author;
+  // ISBN番号（書籍の世界共通ID）
+  isbn: string;
+  // カテゴリ（前述の6種類のどれか）
+  category: BookCategory;
+  // 総ページ数
+  pages: number;
+  // 出版日。ISO 8601 形式 "2025-01-15"
+  publishedDate: string;
+  // 表紙画像URL（省略可能）
+  coverImageUrl?: string;
+  // 説明文（省略可能）
+  description?: string;
 }
 
 
@@ -2105,12 +2534,18 @@ interface Book {
 // `extends Book` は「Book のすべての項目をそのまま受け継いだうえで、追加項目を持つ」
 // という意味。継承を使うと「Book にこれだけ足したやつ」という意図が明確になる。
 interface ReadingRecord extends Book {
-  status: ReadingStatus;      // 読書ステータス（必須）
-  rating?: Rating;            // 評価（読了後にのみ設定するためオプショナル）
-  startDate?: string;         // 読み始めた日
-  endDate?: string;           // 読み終わった日
-  notes?: string;             // メモ
-  currentPage?: number;       // 現在のページ（読書中のみ意味を持つ）
+  // 読書ステータス（必須）
+  status: ReadingStatus;
+  // 評価（読了後にのみ設定するためオプショナル）
+  rating?: Rating;
+  // 読み始めた日
+  startDate?: string;
+  // 読み終わった日
+  endDate?: string;
+  // メモ
+  notes?: string;
+  // 現在のページ（読書中のみ意味を持つ）
+  currentPage?: number;
 }
 
 
@@ -2135,11 +2570,16 @@ type UpdateBookInput = Partial<Omit<Book, "id">>;
 // ----------------------------------------------------------------------------
 // すべて省略可（?）にして、ユーザーが指定したものだけ使うパターン。
 interface BookFilter {
-  status?: ReadingStatus;     // ステータスで絞る
-  category?: BookCategory;    // カテゴリで絞る
-  searchQuery?: string;       // タイトルまたは著者名で検索
-  sortBy?: "title" | "publishedDate" | "rating";   // 並び替え基準
-  sortOrder?: "asc" | "desc"; // asc=昇順 (1→9, A→Z), desc=降順 (9→1, Z→A)
+  // ステータスで絞る
+  status?: ReadingStatus;
+  // カテゴリで絞る
+  category?: BookCategory;
+  // タイトルまたは著者名で検索
+  searchQuery?: string;
+  // 並び替え基準
+  sortBy?: "title" | "publishedDate" | "rating";
+  // asc=昇順 (1→9, A→Z), desc=降順 (9→1, Z→A)
+  sortOrder?: "asc" | "desc";
 }
 
 
@@ -2151,9 +2591,12 @@ interface BookFilter {
 // `ApiResponse<Author>` と書けば T = Author になる。
 // 「成功・失敗の枠組みは同じだが、データの中身は呼び出し側で決まる」を表現するのに最適。
 interface ApiResponse<T> {
-  data: T;                    // 取得したデータ本体（型は呼び出し側次第）
-  success: boolean;           // 成否
-  message?: string;           // メッセージ（省略可）
+  // 取得したデータ本体（型は呼び出し側次第）
+  data: T;
+  // 成否
+  success: boolean;
+  // メッセージ（省略可）
+  message?: string;
 }
 
 
@@ -2163,11 +2606,16 @@ interface ApiResponse<T> {
 // 一覧取得APIは「データ配列＋ページ情報」をセットで返すのが定番。
 // data: T[] の T[] は「T の配列」を意味する記法。
 interface PaginatedResponse<T> {
-  data: T[];                  // 1ページ分のデータ配列
-  total: number;              // 全件数
-  page: number;               // 現在のページ番号（1始まり）
-  perPage: number;            // 1ページあたりの件数
-  totalPages: number;         // 総ページ数
+  // 1ページ分のデータ配列
+  data: T[];
+  // 全件数
+  total: number;
+  // 現在のページ番号（1始まり）
+  page: number;
+  // 1ページあたりの件数
+  perPage: number;
+  // 総ページ数
+  totalPages: number;
 }
 
 // ===== 使用例 =====
@@ -2278,16 +2726,21 @@ const listResponse: PaginatedResponse<ReadingRecord> = {
 // --- ジェネリクスなしの場合（問題あり）---
 
 // 方法1: any を使う → 型安全性が失われる
-function identityAny(arg: any): any {                              // any を使えば何でも受け取れるが...
+// any を使えば何でも受け取れるが...
+function identityAny(arg: any): any {
   return arg;
 }
-const result1 = identityAny("hello"); // result1 は any 型（string 情報が失われる）  // 結果も any 扱いになり、型安全性が消える。
+// result1 は any 型（string 情報が失われる）
+// 結果も any 扱いになり、型安全性が消える。
+const result1 = identityAny("hello");
 
 // 方法2: 型ごとに関数を作る → コードの重複
-function identityString(arg: string): string {                     // string 専用版。
+// string 専用版。
+function identityString(arg: string): string {
   return arg;
 }
-function identityNumber(arg: number): number {                     // number 専用版。型が増えるごとに関数を量産する必要がある。
+// number 専用版。型が増えるごとに関数を量産する必要がある。
+function identityNumber(arg: number): number {
   return arg;
 }
 ```
@@ -2305,7 +2758,8 @@ function identityNumber(arg: number): number {                     // number 専
 // arg: T  → 引数の型は T
 // : T     → 戻り値の型も T（引数と同じ型）
 function identity<T>(arg: T): T {
-  return arg;  // 受け取ったものをそのまま返す
+  // 受け取ったものをそのまま返す
+  return arg;
 }
 
 // ─────────── 使用例(1): 型を明示的に指定する ───────────
@@ -2351,7 +2805,8 @@ console.log(inferred);
 
 ```typescript
 function identity<T>(arg: T): T {
-  return arg;  // 受け取ったものをそのまま返す
+  // 受け取ったものをそのまま返す
+  return arg;
 }
 ```
 
@@ -2410,12 +2865,18 @@ const inferred = identity("world");
 // R: Return（戻り値）
 
 // 複数の型パラメータ
-function pair<T, U>(first: T, second: U): [T, U] {                  // <T, U> で2種類の型パラメータを宣言。タプル [T, U] を返す。
-  return [first, second];                                            // 引数2つをタプルにして返す。
+// <T, U> で2種類の型パラメータを宣言。タプル [T, U] を返す。
+function pair<T, U>(first: T, second: U): [T, U] {
+  // 引数2つをタプルにして返す。
+  return [first, second];
 }
 
-const p1 = pair<string, number>("hello", 42);   // [string, number]  // 型を明示。T=string, U=number。
-const p2 = pair("田中", true);                   // [string, boolean]（型推論）  // 引数から自動推論。
+// [string, number]
+// 型を明示。T=string, U=number。
+const p1 = pair<string, number>("hello", 42);
+// [string, boolean]（型推論）
+// 引数から自動推論。
+const p2 = pair("田中", true);
 ```
 
 ### 5.2 実用的な例
@@ -2426,30 +2887,46 @@ const p2 = pair("田中", true);                   // [string, boolean]（型推
 
 ```typescript
 // 配列の最初の要素を取得する関数
-function getFirst<T>(arr: T[]): T | undefined {                       // <T> を導入。引数の T[] で「T の配列」を受け取る。戻り値は T かもしくは undefined（空配列のとき）。
-  return arr[0];                                                       // [0] は1要素目。配列が空なら undefined になる。
+// <T> を導入。引数の T[] で「T の配列」を受け取る。戻り値は T かもしくは undefined（空配列のとき）。
+function getFirst<T>(arr: T[]): T | undefined {
+  // [0] は1要素目。配列が空なら undefined になる。
+  return arr[0];
 }
 
-const firstFruit = getFirst(["りんご", "みかん"]);  // string | undefined  // T = string と推論。
-const firstNum = getFirst([10, 20, 30]);             // number | undefined  // T = number と推論。
+// string | undefined
+// T = string と推論。
+const firstFruit = getFirst(["りんご", "みかん"]);
+// number | undefined
+// T = number と推論。
+const firstNum = getFirst([10, 20, 30]);
 
 // 配列の最後の要素を取得する関数
-function getLast<T>(arr: T[]): T | undefined {                        // 同じく <T> を使う汎用関数。
-  return arr.length > 0 ? arr[arr.length - 1] : undefined;             // 三項演算子。長さが0より大きければ最後の要素、そうでなければ undefined。
+// 同じく <T> を使う汎用関数。
+function getLast<T>(arr: T[]): T | undefined {
+  // 三項演算子。長さが0より大きければ最後の要素、そうでなければ undefined。
+  return arr.length > 0 ? arr[arr.length - 1] : undefined;
 }
 
 // 配列をシャッフルする関数
-function shuffle<T>(arr: T[]): T[] {                                    // 配列を受け取り、シャッフルした新しい配列を返す。
-  const result = [...arr];                                              // ... はスプレッド構文。「配列の中身を全部展開する」演算子。[...arr] で「元配列を1段コピーした新しい配列」を作れる。元を破壊しないため。
-  for (let i = result.length - 1; i > 0; i--) {                          // 末尾から先頭手前まで逆順にループ（Fisher-Yates シャッフル）。
-    const j = Math.floor(Math.random() * (i + 1));                       // Math.random() は 0以上1未満の乱数。* (i+1) で 0..i の小数、Math.floor で切り捨てて整数に。
-    [result[i], result[j]] = [result[j], result[i]];                     // 分割代入による値の入れ替え。左右を同時に評価して交換する。
+// 配列を受け取り、シャッフルした新しい配列を返す。
+function shuffle<T>(arr: T[]): T[] {
+  // ... はスプレッド構文。「配列の中身を全部展開する」演算子。[...arr] で「元配列を1段コピーした新しい配列」を作れる。元を破壊しないため。
+  const result = [...arr];
+  // 末尾から先頭手前まで逆順にループ（Fisher-Yates シャッフル）。
+  for (let i = result.length - 1; i > 0; i--) {
+    // Math.random() は 0以上1未満の乱数。* (i+1) で 0..i の小数、Math.floor で切り捨てて整数に。
+    const j = Math.floor(Math.random() * (i + 1));
+    // 分割代入による値の入れ替え。左右を同時に評価して交換する。
+    [result[i], result[j]] = [result[j], result[i]];
   }
-  return result;                                                         // シャッフル後の配列を返す。
+  // シャッフル後の配列を返す。
+  return result;
 }
 
-const shuffledFruits = shuffle(["りんご", "みかん", "バナナ"]); // string[]
-const shuffledNums = shuffle([1, 2, 3, 4, 5]);                 // number[]
+// string[]
+const shuffledFruits = shuffle(["りんご", "みかん", "バナナ"]);
+// number[]
+const shuffledNums = shuffle([1, 2, 3, 4, 5]);
 ```
 
 #### ▼ コードを1つずつ分解して解説
@@ -2465,8 +2942,10 @@ function getFirst<T>(arr: T[]): T | undefined {
   return arr[0];
 }
 
-const firstFruit = getFirst(["りんご", "みかん"]);  // string | undefined
-const firstNum = getFirst([10, 20, 30]);             // number | undefined
+// string | undefined
+const firstFruit = getFirst(["りんご", "みかん"]);
+// number | undefined
+const firstNum = getFirst([10, 20, 30]);
 ```
 
 - `getFirst<T>(arr: T[])` … `<T>` で型を変数化し、引数を `T[]`（`T` の配列）にしています。これで「**どんな型の配列でも受け取れる**」関数になります。
@@ -2520,11 +2999,15 @@ function shuffle<T>(arr: T[]): T[] {
 
 ```typescript
 // API レスポンスの汎用型
-interface ApiResponse<T> {                                           // ジェネリックなインターフェース。T は使う側が決める型。
-  data: T;                                                            // data の中身の型は T 次第。
-  status: number;                                                     // HTTP ステータス (200, 404, 500, ...)
+// ジェネリックなインターフェース。T は使う側が決める型。
+interface ApiResponse<T> {
+  // data の中身の型は T 次第。
+  data: T;
+  // HTTP ステータス (200, 404, 500, ...)
+  status: number;
   message: string;
-  timestamp: Date;                                                    // Date は JavaScript 標準の日時オブジェクト。
+  // Date は JavaScript 標準の日時オブジェクト。
+  timestamp: Date;
 }
 
 // ユーザーデータ用のレスポンス
@@ -2534,7 +3017,8 @@ interface User {
   email: string;
 }
 
-const userResponse: ApiResponse<User> = {                            // T = User として ApiResponse を使う。data は User 型に決まる。
+// T = User として ApiResponse を使う。data は User 型に決まる。
+const userResponse: ApiResponse<User> = {
   data: {
     id: 1,
     name: "田中太郎",
@@ -2542,7 +3026,8 @@ const userResponse: ApiResponse<User> = {                            // T = User
   },
   status: 200,
   message: "成功",
-  timestamp: new Date(),                                              // new Date() は「今この瞬間の日時」を表す Date オブジェクトを作る。
+  // new Date() は「今この瞬間の日時」を表す Date オブジェクトを作る。
+  timestamp: new Date(),
 };
 
 // 書籍データ用のレスポンス
@@ -2551,7 +3036,8 @@ interface Book {
   title: string;
 }
 
-const bookResponse: ApiResponse<Book[]> = {                          // T = Book[]（書籍の配列）として使う。data は Book[] に決まる。
+// T = Book[]（書籍の配列）として使う。data は Book[] に決まる。
+const bookResponse: ApiResponse<Book[]> = {
   data: [
     { id: "1", title: "TypeScript入門" },
     { id: "2", title: "React実践ガイド" },
@@ -2568,30 +3054,46 @@ const bookResponse: ApiResponse<Book[]> = {                          // T = Book
 
 ```typescript
 // T は必ず length プロパティを持つ型に制限
-function getLength<T extends { length: number }>(arg: T): number {    // <T extends X> は「T は X 型の部分型でなければならない」という制約。ここでは「length: number を持つ何か」に制限。
-  return arg.length;                                                   // length プロパティが必ずあるので安全に読める。
+// <T extends X> は「T は X 型の部分型でなければならない」という制約。ここでは「length: number を持つ何か」に制限。
+function getLength<T extends { length: number }>(arg: T): number {
+  // length プロパティが必ずあるので安全に読める。
+  return arg.length;
 }
 
-getLength("hello");         // OK: string は length を持つ → 5         // 文字列は length を持つ。
-getLength([1, 2, 3]);       // OK: 配列は length を持つ → 3            // 配列も length を持つ。
-getLength({ length: 10 });  // OK: length プロパティがある → 10        // 自前で { length: 10 } を渡しても OK。
+// OK: string は length を持つ → 5
+// 文字列は length を持つ。
+getLength("hello");
+// OK: 配列は length を持つ → 3
+// 配列も length を持つ。
+getLength([1, 2, 3]);
+// OK: length プロパティがある → 10
+// 自前で { length: 10 } を渡しても OK。
+getLength({ length: 10 });
 
 // getLength(42);
 // エラー: Argument of type 'number' is not assignable to
 // parameter of type '{ length: number; }'
-// → number には length プロパティがない                                // number に length は無い → 制約違反。
+// number に length は無い → 制約違反。
+// → number には length プロパティがない
 
 // オブジェクトのキーに制限をかける
-function getProperty<T, K extends keyof T>(obj: T, key: K): T[K] {    // K は「T のキーの中のいずれか」に制限。keyof T は T のキーのユニオン型を作る演算子。T[K] は「T 型オブジェクトの K プロパティの型」を取り出す書き方。
+// K は「T のキーの中のいずれか」に制限。keyof T は T のキーのユニオン型を作る演算子。T[K] は「T 型オブジェクトの K プロパティの型」を取り出す書き方。
+function getProperty<T, K extends keyof T>(obj: T, key: K): T[K] {
   return obj[key];
 }
 
-const user = { name: "田中", age: 30, email: "tanaka@example.com" };   // ↑ user の型は { name: string; age: number; email: string; } と推論される。
+// ↑ user の型は { name: string; age: number; email: string; } と推論される。
+const user = { name: "田中", age: 30, email: "tanaka@example.com" };
 
-const name = getProperty(user, "name");   // string                    // K="name" なので戻り値の型は user.name の型 = string。
-const age = getProperty(user, "age");     // number                    // K="age" なので number。
+// string
+// K="name" なので戻り値の型は user.name の型 = string。
+const name = getProperty(user, "name");
+// number
+// K="age" なので number。
+const age = getProperty(user, "age");
 
-// getProperty(user, "address");                                       // "address" は user のキーに含まれない。
+// "address" は user のキーに含まれない。
+// getProperty(user, "address");
 // エラー: Argument of type '"address"' is not assignable to
 // parameter of type '"name" | "age" | "email"'
 ```
@@ -2602,43 +3104,60 @@ const age = getProperty(user, "age");     // number                    // K="age
 
 ```typescript
 // スタック（Last In, First Out）のデータ構造
-class Stack<T> {                                                        // class はオブジェクトの設計図を定義するキーワード。<T> でジェネリッククラスにする。「T 型の要素を入れるスタック」。
-  private items: T[] = [];                                              // private = クラスの外からはアクセス禁止。T[] 型の空配列で初期化。
+// class はオブジェクトの設計図を定義するキーワード。<T> でジェネリッククラスにする。「T 型の要素を入れるスタック」。
+class Stack<T> {
+  // private = クラスの外からはアクセス禁止。T[] 型の空配列で初期化。
+  private items: T[] = [];
 
-  push(item: T): void {                                                  // メソッドの宣言。スタックに要素を追加。
-    this.items.push(item);                                                // this は「このインスタンス自身」を指す。items 配列に追加。
+  // メソッドの宣言。スタックに要素を追加。
+  push(item: T): void {
+    // this は「このインスタンス自身」を指す。items 配列に追加。
+    this.items.push(item);
   }
 
-  pop(): T | undefined {                                                 // スタックの末尾を取り出して返す。空なら undefined。
-    return this.items.pop();                                               // 配列の pop メソッドは末尾を削除して返す（破壊的）。
+  // スタックの末尾を取り出して返す。空なら undefined。
+  pop(): T | undefined {
+    // 配列の pop メソッドは末尾を削除して返す（破壊的）。
+    return this.items.pop();
   }
 
-  peek(): T | undefined {                                                // 末尾を「見るだけ」（削除しない）。
-    return this.items[this.items.length - 1];                              // length-1 が最後の要素の添え字。
+  // 末尾を「見るだけ」（削除しない）。
+  peek(): T | undefined {
+    // length-1 が最後の要素の添え字。
+    return this.items[this.items.length - 1];
   }
 
-  isEmpty(): boolean {                                                    // 空かどうか。
+  // 空かどうか。
+  isEmpty(): boolean {
     return this.items.length === 0;
   }
 
-  size(): number {                                                        // 要素数を返す。
+  // 要素数を返す。
+  size(): number {
     return this.items.length;
   }
 }
 
 // 数値スタック
-const numberStack = new Stack<number>();                                  // T = number で Stack を作る。new はクラスからインスタンスを作るキーワード。
+// T = number で Stack を作る。new はクラスからインスタンスを作るキーワード。
+const numberStack = new Stack<number>();
 numberStack.push(10);
 numberStack.push(20);
 numberStack.push(30);
-console.log(numberStack.pop()); // 30                                     // 最後に push した 30 が取り出される（LIFO の性質）。
-console.log(numberStack.peek()); // 20                                    // 次に末尾にあるのは 20。
+// 30
+// 最後に push した 30 が取り出される（LIFO の性質）。
+console.log(numberStack.pop());
+// 20
+// 次に末尾にあるのは 20。
+console.log(numberStack.peek());
 
 // 文字列スタック
-const stringStack = new Stack<string>();                                  // T = string で別のスタックを作る。同じ Stack クラスを違う型で再利用できる。
+// T = string で別のスタックを作る。同じ Stack クラスを違う型で再利用できる。
+const stringStack = new Stack<string>();
 stringStack.push("TypeScript");
 stringStack.push("React");
-console.log(stringStack.pop()); // "React"
+// "React"
+console.log(stringStack.pop());
 ```
 
 ---
@@ -2661,8 +3180,10 @@ console.log(stringStack.pop()); // "React"
 //     | は「または」の意味（AND ではなく OR）。
 let value: string | number;
 
-value = "hello";  // OK（string なので許可）
-value = 42;       // OK（number なので許可）
+// OK（string なので許可）
+value = "hello";
+// OK（number なので許可）
+value = 42;
 // value = true;
 // ▼ エラー
 // Type 'boolean' is not assignable to type 'string | number'.
@@ -2682,12 +3203,14 @@ function formatId(id: string | number): string {
   if (typeof id === "string") {
     // (2) この if ブロックの中だけ、TS は id を string として扱ってくれる。
     //     なので string 専用メソッド .toUpperCase() が使える。
-    return id.toUpperCase();   // 例: "abc" → "ABC"
+    // 例: "abc" → "ABC"
+    return id.toUpperCase();
   } else {
     // (3) else 側では「string ではない」=「number しか残らない」と推論される。
     //     .toString() は数値を文字列に変換するメソッド。
     //     .padStart(5, "0") は「5文字に満たないなら左を 0 で埋める」メソッド。
-    return id.toString().padStart(5, "0");  // 例: 42 → "00042"
+    // 例: 42 → "00042"
+    return id.toString().padStart(5, "0");
   }
 }
 
@@ -2723,9 +3246,12 @@ console.log(mixed);
 ```typescript
 let value: string | number;
 
-value = "hello";  // OK（string なので許可）
-value = 42;       // OK（number なので許可）
-// value = true;   // ▼ エラー
+// OK（string なので許可）
+value = "hello";
+// OK（number なので許可）
+value = 42;
+// ▼ エラー
+// value = true;
 ```
 
 - `: string | number` が**ユニオン型**の型注釈です。`|`（パイプ）は「**または**」を意味し、「`string` **または** `number` のどちらかが入る」という型になります。
@@ -2741,9 +3267,11 @@ value = 42;       // OK（number なので許可）
 ```typescript
 function formatId(id: string | number): string {
   if (typeof id === "string") {
-    return id.toUpperCase();   // 例: "abc" → "ABC"
+    // 例: "abc" → "ABC"
+    return id.toUpperCase();
   } else {
-    return id.toString().padStart(5, "0");  // 例: 42 → "00042"
+    // 例: 42 → "00042"
+    return id.toString().padStart(5, "0");
   }
 }
 ```
@@ -2784,7 +3312,8 @@ const mixed: (string | number)[] = [1, "two", 3, "four"];
 type Direction = "north" | "south" | "east" | "west";
 //                 ↑ この4つの文字列以外は受け付けない
 
-let dir: Direction = "north";   // OK（許可されている値）
+// OK（許可されている値）
+let dir: Direction = "north";
 // dir = "up";
 // ▼ エラー
 // Type '"up"' is not assignable to type 'Direction'.
@@ -2800,7 +3329,8 @@ console.log(dir);
 // サイコロの目（1〜6）のように値が固定の場面で使う。
 type DiceRoll = 1 | 2 | 3 | 4 | 5 | 6;
 
-let roll: DiceRoll = 3;   // OK
+// OK
+let roll: DiceRoll = 3;
 // roll = 7;
 // ▼ エラー
 // Type '7' is not assignable to type 'DiceRoll'.
@@ -2811,8 +3341,10 @@ let roll: DiceRoll = 3;   // OK
 // ==========================================================================
 // 滅多に使わないが、特定の値しか取らないフラグを表現したいとき便利。
 type True = true;
-let flag: True = true;    // OK
-// flag = false;          // ▼ エラー: Type 'false' is not assignable to type 'true'.
+// OK
+let flag: True = true;
+// ▼ エラー: Type 'false' is not assignable to type 'true'.
+// flag = false;
 ```
 
 ### 6.3 書籍管理アプリでの実践例
@@ -2822,13 +3354,16 @@ let flag: True = true;    // OK
 ```typescript
 // ===== 読書ステータスの定義 =====
 
-type ReadingStatus = "want-to-read" | "reading" | "completed";        // 3つの文字列リテラルだけを許す型。
+// 3つの文字列リテラルだけを許す型。
+type ReadingStatus = "want-to-read" | "reading" | "completed";
 
-interface Book {                                                       // 書籍の基本型。
+// 書籍の基本型。
+interface Book {
   id: string;
   title: string;
   author: string;
-  status: ReadingStatus;                                                // ステータスは ReadingStatus 型に限定。
+  // ステータスは ReadingStatus 型に限定。
+  status: ReadingStatus;
 }
 
 // --- 正しい使い方 ---
@@ -2836,7 +3371,8 @@ const book1: Book = {
   id: "1",
   title: "TypeScript入門",
   author: "山田太郎",
-  status: "reading",                                                    // 許可された値。
+  // 許可された値。
+  status: "reading",
 };
 
 const book2: Book = {
@@ -2858,7 +3394,9 @@ const invalidBook: Book = {
   id: "4",
   title: "間違った書籍",
   author: "テスト太郎",
-  status: "finished", // エラー！                                       // "finished" は ReadingStatus の3つに含まれていない。
+  // エラー！
+  // "finished" は ReadingStatus の3つに含まれていない。
+  status: "finished",
   // Type '"finished"' is not assignable to type 'ReadingStatus'
   // → "want-to-read" | "reading" | "completed" のどれかにしてください
 };
@@ -2869,66 +3407,93 @@ const invalidBook: Book = {
 ```typescript
 // ===== ステータスに応じた処理 =====
 
-function getStatusLabel(status: ReadingStatus): string {                 // ステータスを日本語ラベルに変換する関数。
-  switch (status) {                                                       // switch 文で値ごとに分岐。
-    case "want-to-read":                                                  // status が "want-to-read" のとき。
-      return "読みたい";                                                  // return すると関数が即終了。break 不要。
+// ステータスを日本語ラベルに変換する関数。
+function getStatusLabel(status: ReadingStatus): string {
+  // switch 文で値ごとに分岐。
+  switch (status) {
+    // status が "want-to-read" のとき。
+    case "want-to-read":
+      // return すると関数が即終了。break 不要。
+      return "読みたい";
     case "reading":
       return "読書中";
     case "completed":
       return "読了";
   }
-  // すべてのケースを処理しているため、default 不要                       // ReadingStatus の3値すべてを書いたので、TypeScript は「漏れなし」と判断する。
+  // すべてのケースを処理しているため、default 不要
+  // ReadingStatus の3値すべてを書いたので、TypeScript は「漏れなし」と判断する。
   // TypeScript がすべてのケースが網羅されていることを保証
 }
 
-function getStatusColor(status: ReadingStatus): string {                 // ステータス → 色コード（#で始まる16進数）の変換。
+// ステータス → 色コード（#で始まる16進数）の変換。
+function getStatusColor(status: ReadingStatus): string {
   switch (status) {
     case "want-to-read":
-      return "#f39c12"; // オレンジ
+      // オレンジ
+      return "#f39c12";
     case "reading":
-      return "#3498db"; // 青
+      // 青
+      return "#3498db";
     case "completed":
-      return "#27ae60"; // 緑
+      // 緑
+      return "#27ae60";
   }
 }
 
-function getStatusIcon(status: ReadingStatus): string {                  // ステータス → アイコン名の変換（map 方式）。
-  const icons: Record<ReadingStatus, string> = {                          // Record<K, V> は「K 型のキーを全部持ち、値がすべて V 型」のオブジェクトを表す Utility Type。
-    "want-to-read": "bookmark",                                            // キー名にハイフンが含まれるのでクォートが必要。
-    reading: "book-open",                                                  // 普通の識別子はクォート省略可。
+// ステータス → アイコン名の変換（map 方式）。
+function getStatusIcon(status: ReadingStatus): string {
+  // Record<K, V> は「K 型のキーを全部持ち、値がすべて V 型」のオブジェクトを表す Utility Type。
+  const icons: Record<ReadingStatus, string> = {
+    // キー名にハイフンが含まれるのでクォートが必要。
+    "want-to-read": "bookmark",
+    // 普通の識別子はクォート省略可。
+    reading: "book-open",
     completed: "check-circle",
   };
-  return icons[status];                                                    // status をキーにして値を取り出す。Record で全キー網羅されているので必ず文字列が取れる。
+  // status をキーにして値を取り出す。Record で全キー網羅されているので必ず文字列が取れる。
+  return icons[status];
 }
 
 // ===== フィルタリング =====
 
-function filterBooksByStatus(                                              // 書籍配列を「指定ステータスのものだけ」に絞り込む関数。
-  books: Book[],                                                            // 書籍の配列を受け取る。
-  status: ReadingStatus                                                     // 絞り込みたいステータス。
-): Book[] {                                                                 // 戻り値は Book の配列。
-  return books.filter((book) => book.status === status);                    // filter で「book.status と引数 status が一致する要素」だけ残す。
+// 書籍配列を「指定ステータスのものだけ」に絞り込む関数。
+function filterBooksByStatus(
+  // 書籍の配列を受け取る。
+  books: Book[],
+  // 絞り込みたいステータス。
+  status: ReadingStatus
+// 戻り値は Book の配列。
+): Book[] {
+  // filter で「book.status と引数 status が一致する要素」だけ残す。
+  return books.filter((book) => book.status === status);
 }
 
-const allBooks: Book[] = [book1, book2, book3];                            // 3冊をまとめた配列。
-const readingBooks = filterBooksByStatus(allBooks, "reading");             // "reading" だけ残す → [book1]。
-const completedBooks = filterBooksByStatus(allBooks, "completed");         // "completed" だけ残す → [book2]。
+// 3冊をまとめた配列。
+const allBooks: Book[] = [book1, book2, book3];
+// "reading" だけ残す → [book1]。
+const readingBooks = filterBooksByStatus(allBooks, "reading");
+// "completed" だけ残す → [book2]。
+const completedBooks = filterBooksByStatus(allBooks, "completed");
 
 // ===== ステータスの変更 =====
 
-function updateBookStatus(                                                  // book に新しい status を当てた新しい book を返す関数。
+// book に新しい status を当てた新しい book を返す関数。
+function updateBookStatus(
   book: Book,
   newStatus: ReadingStatus
 ): Book {
-  return { ...book, status: newStatus };                                   // ... はスプレッド構文（オブジェクト版）。book の全プロパティをコピーして、後ろの status を上書き。元の book は壊さない（イミュータブル）。
+  // ... はスプレッド構文（オブジェクト版）。book の全プロパティをコピーして、後ろの status を上書き。元の book は壊さない（イミュータブル）。
+  return { ...book, status: newStatus };
 }
 
-const updatedBook = updateBookStatus(book1, "completed");                  // book1 の status だけ "completed" にした新オブジェクト。
-console.log(updatedBook.status); // "completed"
+// book1 の status だけ "completed" にした新オブジェクト。
+const updatedBook = updateBookStatus(book1, "completed");
+// "completed"
+console.log(updatedBook.status);
 
 // 無効なステータスへの変更はコンパイルエラー
-// updateBookStatus(book1, "abandoned");                                   // ReadingStatus にない値なのでエラー。
+// ReadingStatus にない値なのでエラー。
+// updateBookStatus(book1, "abandoned");
 // エラー: Argument of type '"abandoned"' is not assignable to type 'ReadingStatus'
 ```
 
@@ -2941,40 +3506,56 @@ console.log(updatedBook.status); // "completed"
 
 // ステータスに応じて異なる追加情報を持つ型
 type BookWithDetails =
-  | {                                                                       // ユニオンの1つ目: status="want-to-read" のとき。
-      status: "want-to-read";                                                // ↑ 「判別タグ」。これがあるとTSがバリエーションを区別できる。
+  // ユニオンの1つ目: status="want-to-read" のとき。
+  | {
+      // ↑ 「判別タグ」。これがあるとTSがバリエーションを区別できる。
+      status: "want-to-read";
       title: string;
-      reason: string;  // 読みたい理由                                       // この種類だけが reason を持つ。
+      // 読みたい理由
+      // この種類だけが reason を持つ。
+      reason: string;
     }
-  | {                                                                       // 2つ目: status="reading" のとき。
+  // 2つ目: status="reading" のとき。
+  | {
       status: "reading";
       title: string;
-      currentPage: number;                                                   // 読書中だけ「現在ページ」を持つ。
+      // 読書中だけ「現在ページ」を持つ。
+      currentPage: number;
       totalPages: number;
     }
-  | {                                                                       // 3つ目: status="completed" のとき。
+  // 3つ目: status="completed" のとき。
+  | {
       status: "completed";
       title: string;
-      rating: 1 | 2 | 3 | 4 | 5;                                             // 数値リテラル型のユニオンで 1〜5 に限定。
-      review?: string;                                                        // review はオプショナル。
+      // 数値リテラル型のユニオンで 1〜5 に限定。
+      rating: 1 | 2 | 3 | 4 | 5;
+      // review はオプショナル。
+      review?: string;
     };
 
 function displayBookInfo(book: BookWithDetails): string {
-  switch (book.status) {                                                     // book.status を見て分岐。
+  // book.status を見て分岐。
+  switch (book.status) {
     case "want-to-read":
-      // ここでは book.reason にアクセス可能                                  // この case 内では TS が「book は『1つ目』のバリエーション」と絞り込む。
+      // ここでは book.reason にアクセス可能
+      // この case 内では TS が「book は『1つ目』のバリエーション」と絞り込む。
       return `「${book.title}」を読みたい（理由: ${book.reason}）`;
 
     case "reading":
-      // ここでは book.currentPage, book.totalPages にアクセス可能            // この case では「2つ目」に絞り込み。currentPage が読める。
-      const progress = Math.round(                                            // Math.round は四捨五入。
-        (book.currentPage / book.totalPages) * 100                             // 進捗率 = 現在ページ / 総ページ × 100。
+      // ここでは book.currentPage, book.totalPages にアクセス可能
+      // この case では「2つ目」に絞り込み。currentPage が読める。
+      // Math.round は四捨五入。
+      const progress = Math.round(
+        // 進捗率 = 現在ページ / 総ページ × 100。
+        (book.currentPage / book.totalPages) * 100
       );
       return `「${book.title}」を読書中（進捗: ${progress}%）`;
 
     case "completed":
-      // ここでは book.rating, book.review にアクセス可能                    // この case では「3つ目」に絞り込み。
-      const stars = "★".repeat(book.rating) + "☆".repeat(5 - book.rating);   // .repeat(n) は文字列を n 回繰り返すメソッド。「★★★★☆」のような星評価を作る。
+      // ここでは book.rating, book.review にアクセス可能
+      // この case では「3つ目」に絞り込み。
+      // .repeat(n) は文字列を n 回繰り返すメソッド。「★★★★☆」のような星評価を作る。
+      const stars = "★".repeat(book.rating) + "☆".repeat(5 - book.rating);
       return `「${book.title}」読了 ${stars}`;
   }
 }
@@ -3011,25 +3592,42 @@ console.log(
 
 ```json
 {
-  "compilerOptions": {                       // TypeScript コンパイラ (tsc) に渡す設定。
-    "target": "ES2022",                       // コンパイル後の JavaScript のバージョン。新しいほどモダンな構文が使える。
-    "module": "ESNext",                       // モジュールシステム。"ESNext" = ES Modules（import/export）形式で出力。
-    "lib": ["ES2022", "DOM", "DOM.Iterable"], // 使える組み込み型の集合。"DOM" を入れるとブラウザの window や document 等の型が使える。
-    "strict": true,                            // 厳格モード一括有効化。これだけで厳しい型チェックが7〜8項目まとめてONになる。必須。
-    "esModuleInterop": true,                  // CommonJS と ES Modules の互換性を良くする。 import の書き心地が良くなる。
-    "skipLibCheck": true,                     // node_modules 内の型定義のチェックを省略してビルドを高速化。
-    "forceConsistentCasingInFileNames": true, // ファイル名の大文字小文字を厳格にチェック。macOS/Linux の差を吸収。
-    "resolveJsonModule": true,                // import data from "./foo.json" のように JSON を読み込める。
-    "isolatedModules": true,                  // 1ファイルだけ見て変換できる前提を強制。Babel や SWC との互換性のため。
-    "noEmit": true,                            // tsc から .js ファイルを出力しない。Next.js 等のバンドラーに任せる場合に true。
-    "jsx": "react-jsx",                       // JSX (React の <Component/> 構文) の変換方式。React 17+ の新形式。
-    "baseUrl": ".",                            // パスエイリアスの基準ディレクトリ。"." はプロジェクトルート。
-    "paths": {                                 // 短縮パスの定義。
-      "@/*": ["./src/*"]                       // "@/foo" と書けば "./src/foo" を指す。深いネストでも import が短く書ける。
+  // TypeScript コンパイラ (tsc) に渡す設定。
+  "compilerOptions": {
+    // コンパイル後の JavaScript のバージョン。新しいほどモダンな構文が使える。
+    "target": "ES2022",
+    // モジュールシステム。"ESNext" = ES Modules（import/export）形式で出力。
+    "module": "ESNext",
+    // 使える組み込み型の集合。"DOM" を入れるとブラウザの window や document 等の型が使える。
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    // 厳格モード一括有効化。これだけで厳しい型チェックが7〜8項目まとめてONになる。必須。
+    "strict": true,
+    // CommonJS と ES Modules の互換性を良くする。 import の書き心地が良くなる。
+    "esModuleInterop": true,
+    // node_modules 内の型定義のチェックを省略してビルドを高速化。
+    "skipLibCheck": true,
+    // ファイル名の大文字小文字を厳格にチェック。macOS/Linux の差を吸収。
+    "forceConsistentCasingInFileNames": true,
+    // import data from "./foo.json" のように JSON を読み込める。
+    "resolveJsonModule": true,
+    // 1ファイルだけ見て変換できる前提を強制。Babel や SWC との互換性のため。
+    "isolatedModules": true,
+    // tsc から .js ファイルを出力しない。Next.js 等のバンドラーに任せる場合に true。
+    "noEmit": true,
+    // JSX (React の <Component/> 構文) の変換方式。React 17+ の新形式。
+    "jsx": "react-jsx",
+    // パスエイリアスの基準ディレクトリ。"." はプロジェクトルート。
+    "baseUrl": ".",
+    // 短縮パスの定義。
+    "paths": {
+      // "@/foo" と書けば "./src/foo" を指す。深いネストでも import が短く書ける。
+      "@/*": ["./src/*"]
     }
   },
-  "include": ["src/**/*"],                    // コンパイル対象。** は「任意の階層」、* は「任意のファイル」。
-  "exclude": ["node_modules", "dist"]         // 除外対象。ライブラリやビルド成果物はチェックしない。
+  // コンパイル対象。** は「任意の階層」、* は「任意のファイル」。
+  "include": ["src/**/*"],
+  // 除外対象。ライブラリやビルド成果物はチェックしない。
+  "exclude": ["node_modules", "dist"]
 }
 ```
 
@@ -3074,33 +3672,47 @@ Next.js プロジェクトでは、`next.config.ts` と `tsconfig.json` の両�
 // Next.js プロジェクトの tsconfig.json（自動生成される）
 {
   "compilerOptions": {
-    "target": "ES2017",                          // 古めのブラウザも考慮した出力バージョン。
-    "lib": ["dom", "dom.iterable", "esnext"],    // ブラウザの DOM 系 + 最新の JS 機能の型を有効化。
-    "allowJs": true,                              // .js ファイルも TypeScript と同居できるようにする。
+    // 古めのブラウザも考慮した出力バージョン。
+    "target": "ES2017",
+    // ブラウザの DOM 系 + 最新の JS 機能の型を有効化。
+    "lib": ["dom", "dom.iterable", "esnext"],
+    // .js ファイルも TypeScript と同居できるようにする。
+    "allowJs": true,
     "skipLibCheck": true,
-    "strict": true,                               // 厳格モード ON。
-    "noEmit": true,                                // Next.js 側のバンドラ (SWC) が出力するので、tsc では出力しない。
+    // 厳格モード ON。
+    "strict": true,
+    // Next.js 側のバンドラ (SWC) が出力するので、tsc では出力しない。
+    "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
-    "moduleResolution": "bundler",                // バンドラ向けの解決方式。最新の Next.js 推奨。
+    // バンドラ向けの解決方式。最新の Next.js 推奨。
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",                            // JSX を変換せずそのまま残す。あとで Next.js (SWC) が変換する。
-    "incremental": true,                           // 前回の型情報を再利用してビルドを高速化。
+    // JSX を変換せずそのまま残す。あとで Next.js (SWC) が変換する。
+    "jsx": "preserve",
+    // 前回の型情報を再利用してビルドを高速化。
+    "incremental": true,
     "plugins": [
       {
-        "name": "next"                             // Next.js 用 TypeScript プラグインを有効化（型補完が強化される）。
+        // Next.js 用 TypeScript プラグインを有効化（型補完が強化される）。
+        "name": "next"
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]                            // @/foo → ./src/foo のショートカット。
+      // @/foo → ./src/foo のショートカット。
+      "@/*": ["./src/*"]
     }
   },
   "include": [
-    "next-env.d.ts",                                // Next.js が自動生成する型定義ファイル。
-    "**/*.ts",                                       // すべての .ts ファイル。
-    "**/*.tsx",                                      // JSX を含む .tsx ファイル。
-    ".next/types/**/*.ts"                            // .next ビルド出力中の型ファイル。
+    // Next.js が自動生成する型定義ファイル。
+    "next-env.d.ts",
+    // すべての .ts ファイル。
+    "**/*.ts",
+    // JSX を含む .tsx ファイル。
+    "**/*.tsx",
+    // .next ビルド出力中の型ファイル。
+    ".next/types/**/*.ts"
   ],
   "exclude": ["node_modules"]
 }
@@ -3114,28 +3726,39 @@ Next.js プロジェクトでは、`next.config.ts` と `tsconfig.json` の両�
 // Next.js 特有の型の例
 
 // ページコンポーネントの型
-import type { Metadata } from "next";                          // import type は「型情報だけをインポートする」構文。コンパイル後には何も残らない。
+// import type は「型情報だけをインポートする」構文。コンパイル後には何も残らない。
+import type { Metadata } from "next";
 
-export const metadata: Metadata = {                            // ページのメタ情報（ブラウザのタブ表示やSEOで使われる）。
+// ページのメタ情報（ブラウザのタブ表示やSEOで使われる）。
+export const metadata: Metadata = {
   title: "書籍管理アプリ",
   description: "あなたの読書を管理するアプリです",
 };
 
-export default function HomePage() {                            // export default = このファイルの「主役」をエクスポート。
-  return <h1>書籍管理アプリ</h1>;                                 // JSX。HTML のように見えるが実は関数呼び出しの構文糖衣。
+// export default = このファイルの「主役」をエクスポート。
+export default function HomePage() {
+  // JSX。HTML のように見えるが実は関数呼び出しの構文糖衣。
+  return <h1>書籍管理アプリ</h1>;
 }
 
 // Server Component のデータ取得
-interface PageProps {                                            // Next.js のページコンポーネントに渡される props の型。
-  params: Promise<{ id: string }>;                                // URL のパスパラメータ。Next.js 15+ では Promise に包まれている。
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;  // URL のクエリ文字列。[key: string] は「任意の文字列キー」を表すインデックスシグネチャ。
+// Next.js のページコンポーネントに渡される props の型。
+interface PageProps {
+  // URL のパスパラメータ。Next.js 15+ では Promise に包まれている。
+  params: Promise<{ id: string }>;
+  // URL のクエリ文字列。[key: string] は「任意の文字列キー」を表すインデックスシグネチャ。
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-export default async function BookPage({ params }: PageProps) {  // async = 非同期関数。{ params } は分割代入で props から params だけ取り出す。
-  const { id } = await params;                                    // await は Promise の中身を取り出す演算子。params から id を分割代入。
+// async = 非同期関数。{ params } は分割代入で props から params だけ取り出す。
+export default async function BookPage({ params }: PageProps) {
+  // await は Promise の中身を取り出す演算子。params から id を分割代入。
+  const { id } = await params;
   // サーバーサイドでデータを取得
-  const book = await fetchBook(id);                                // fetchBook(id) も Promise を返すので await。
-  return <div>{book.title}</div>;                                   // JSX の中で { 式 } と書くと、その値を埋め込める。
+  // fetchBook(id) も Promise を返すので await。
+  const book = await fetchBook(id);
+  // JSX の中で { 式 } と書くと、その値を埋め込める。
+  return <div>{book.title}</div>;
 }
 ```
 
@@ -3219,20 +3842,25 @@ TypeScript を使い始めると、必ず遭遇するエラーがあります。
 // ===== エラーパターン1: プリミティブ型の不一致 =====
 
 // 悪い例
-const age: number = "25";                                    // number 型に "25"（文字列）を入れている → 型違反。
+// number 型に "25"（文字列）を入れている → 型違反。
+const age: number = "25";
 // エラー: Type 'string' is not assignable to type 'number'
 
 // 良い例
-const age: number = 25;                                      // 数値リテラルを直接入れる。
+// 数値リテラルを直接入れる。
+const age: number = 25;
 // または、文字列から変換する場合
-const age: number = parseInt("25", 10);                      // parseInt は文字列を整数に変換する関数。第2引数 10 は「10進数として解釈」の意味。
-const age: number = Number("25");                            // Number() は文字列・boolean などを number に変換する関数。
+// parseInt は文字列を整数に変換する関数。第2引数 10 は「10進数として解釈」の意味。
+const age: number = parseInt("25", 10);
+// Number() は文字列・boolean などを number に変換する関数。
+const age: number = Number("25");
 ```
 
 ```typescript
 // ===== エラーパターン2: オブジェクト型の不一致 =====
 
-interface User {                                              // 型を定義。
+// 型を定義。
+interface User {
   name: string;
   age: number;
 }
@@ -3240,24 +3868,29 @@ interface User {                                              // 型を定義。
 // 悪い例
 const user: User = {
   name: "田中",
-  age: "30", // string を number に代入                       // age は number でなければならないのに文字列。
+  // string を number に代入
+  // age は number でなければならないのに文字列。
+  age: "30",
 };
 // エラー: Type 'string' is not assignable to type 'number'
 
 // 良い例
 const user: User = {
   name: "田中",
-  age: 30,                                                     // 数値に修正。
+  // 数値に修正。
+  age: 30,
 };
 ```
 
 ```typescript
 // ===== エラーパターン3: ユニオン型のリテラルが一致しない =====
 
-type Status = "active" | "inactive";                          // 許可される値は "active" か "inactive" のみ。
+// 許可される値は "active" か "inactive" のみ。
+type Status = "active" | "inactive";
 
 // 悪い例
-const status: Status = "enabled";                             // "enabled" は含まれていない。
+// "enabled" は含まれていない。
+const status: Status = "enabled";
 // エラー: Type '"enabled"' is not assignable to type 'Status'
 
 // 良い例
@@ -3270,19 +3903,28 @@ const status: Status = "active";
 type Color = "red" | "blue" | "green";
 
 // 悪い例
-let colorName = "red"; // string と推論される                 // let は再代入されうるので「広い型」（string）に推論されてしまう。
-const color: Color = colorName;                                // string は Color（3リテラルだけ）に代入できない。
+// string と推論される
+// let は再代入されうるので「広い型」（string）に推論されてしまう。
+let colorName = "red";
+// string は Color（3リテラルだけ）に代入できない。
+const color: Color = colorName;
 // エラー: Type 'string' is not assignable to type 'Color'
 
 // 良い例（方法1: as const を使う）
-const colorName = "red" as const; // "red" リテラル型と推論   // as const は「値をできる限り狭いリテラル型に固定する」キーワード。
-const color: Color = colorName;   // OK
+// "red" リテラル型と推論
+// as const は「値をできる限り狭いリテラル型に固定する」キーワード。
+const colorName = "red" as const;
+// OK
+const color: Color = colorName;
 
 // 良い例（方法2: 型注釈を使う）
-const colorName: Color = "red";                                 // 最初から Color 型として宣言。
+// 最初から Color 型として宣言。
+const colorName: Color = "red";
 
 // 良い例（方法3: satisfies を使う）
-const colorName = "red" satisfies Color; // "red" リテラル型かつ Color として検証  // satisfies は「この値は X 型を満たしますよね？と確認しつつ、値そのものの狭い型は維持する」演算子。as より安全。
+// "red" リテラル型かつ Color として検証
+// satisfies は「この値は X 型を満たしますよね？と確認しつつ、値そのものの狭い型は維持する」演算子。as より安全。
+const colorName = "red" satisfies Color;
 ```
 
 ### 8.2 Object is possibly 'undefined'
@@ -3297,19 +3939,26 @@ const colorName = "red" satisfies Color; // "red" リテラル型かつ Color �
 const fruits = ["りんご", "みかん", "バナナ"];
 
 // 悪い例
-const first: string = fruits[0];                                 // noUncheckedIndexedAccess が有効だと、配列[i] は string | undefined と推論される。
+// noUncheckedIndexedAccess が有効だと、配列[i] は string | undefined と推論される。
+const first: string = fruits[0];
 // エラー（strict 設定次第）: Type 'string | undefined' is not assignable to type 'string'
 // 配列のインデックスアクセスは undefined を返す可能性がある
 
 // 良い例（方法1: undefined チェック）
-const first = fruits[0];                                          // 型注釈を省くと string | undefined。
-if (first !== undefined) {                                         // undefined でないか確認する型ガード。
-  console.log(first.toUpperCase()); // OK                          // ガード内では string に絞り込まれている。
+// 型注釈を省くと string | undefined。
+const first = fruits[0];
+// undefined でないか確認する型ガード。
+if (first !== undefined) {
+  // OK
+  // ガード内では string に絞り込まれている。
+  console.log(first.toUpperCase());
 }
 
 // 良い例（方法2: デフォルト値）
-const first = fruits[0] ?? "デフォルト";                          // ?? で undefined の場合のデフォルト値を用意。これで first は必ず string。
-console.log(first.toUpperCase()); // OK
+// ?? で undefined の場合のデフォルト値を用意。これで first は必ず string。
+const first = fruits[0] ?? "デフォルト";
+// OK
+console.log(first.toUpperCase());
 ```
 
 ```typescript
@@ -3317,73 +3966,98 @@ console.log(first.toUpperCase()); // OK
 
 interface User {
   name: string;
-  email?: string; // オプショナル（string | undefined）           // ? を付けると省略可能なプロパティになる。
+  // オプショナル（string | undefined）
+  // ? を付けると省略可能なプロパティになる。
+  email?: string;
 }
 
-const user: User = { name: "田中" };                              // email を省略。値は undefined。
+// email を省略。値は undefined。
+const user: User = { name: "田中" };
 
 // 悪い例
-console.log(user.email.toUpperCase());                            // user.email は string|undefined。undefined に .toUpperCase は呼べない。
+// user.email は string|undefined。undefined に .toUpperCase は呼べない。
+console.log(user.email.toUpperCase());
 // エラー: Object is possibly 'undefined'
 // email は設定されていないかもしれない
 
 // 良い例（方法1: if チェック）
-if (user.email) {                                                  // truthy チェック（undefined や "" でない）。
-  console.log(user.email.toUpperCase()); // OK                     // ガード内では string に絞り込まれる。
+// truthy チェック（undefined や "" でない）。
+if (user.email) {
+  // OK
+  // ガード内では string に絞り込まれる。
+  console.log(user.email.toUpperCase());
 }
 
 // 良い例（方法2: オプショナルチェイニング）
-console.log(user.email?.toUpperCase()); // undefined なら undefined を返す  // ?. を付けると「左が null/undefined なら、その場で undefined を返す」。クラッシュしない。
+// undefined なら undefined を返す
+// ?. を付けると「左が null/undefined なら、その場で undefined を返す」。クラッシュしない。
+console.log(user.email?.toUpperCase());
 
 // 良い例（方法3: null 合体演算子と組み合わせ）
-console.log(user.email?.toUpperCase() ?? "メール未設定");          // 結果が undefined なら ?? の右側 "メール未設定" を使う。
+// 結果が undefined なら ?? の右側 "メール未設定" を使う。
+console.log(user.email?.toUpperCase() ?? "メール未設定");
 ```
 
 ```typescript
 // ===== エラーパターン3: Map.get() の戻り値 =====
 
-const userMap = new Map<string, string>();                       // Map は「キーと値のペアを保持するデータ構造」。<キーの型, 値の型> でジェネリック指定。
-userMap.set("user1", "田中");                                    // .set(キー, 値) で追加。
+// Map は「キーと値のペアを保持するデータ構造」。<キーの型, 値の型> でジェネリック指定。
+const userMap = new Map<string, string>();
+// .set(キー, 値) で追加。
+userMap.set("user1", "田中");
 
 // 悪い例
-const name: string = userMap.get("user1");                        // .get(キー) は「キーが存在しないこともある」のを考慮して string | undefined を返す。
+// .get(キー) は「キーが存在しないこともある」のを考慮して string | undefined を返す。
+const name: string = userMap.get("user1");
 // エラー: Type 'string | undefined' is not assignable to type 'string'
 // Map.get() は undefined を返す可能性がある
 
 // 良い例
-const name = userMap.get("user1");                                // 型は string | undefined。
+// 型は string | undefined。
+const name = userMap.get("user1");
 if (name !== undefined) {
-  console.log(name); // OK
+  // OK
+  console.log(name);
 }
 
 // または
-const name = userMap.get("user1") ?? "不明";                      // 未設定キーに対するデフォルト値で string に確定。
+// 未設定キーに対するデフォルト値で string に確定。
+const name = userMap.get("user1") ?? "不明";
 ```
 
 ```typescript
 // ===== エラーパターン4: document.querySelector =====
 
 // 悪い例
-const button = document.querySelector("#submit-btn");            // querySelector は CSS セレクタで要素を探す DOM API。見つからないと null を返す。戻り値は Element | null。
-button.addEventListener("click", handleClick);                    // null かもしれないものに addEventListener は呼べない。
+// querySelector は CSS セレクタで要素を探す DOM API。見つからないと null を返す。戻り値は Element | null。
+const button = document.querySelector("#submit-btn");
+// null かもしれないものに addEventListener は呼べない。
+button.addEventListener("click", handleClick);
 // エラー: Object is possibly 'null'
 // querySelector は要素が見つからない場合 null を返す
 
 // 良い例（方法1: null チェック）
 const button = document.querySelector("#submit-btn");
-if (button) {                                                      // null/undefined でない=要素ありを確認。
-  button.addEventListener("click", handleClick);                    // ガード内では非 null に絞り込み済み。
+// null/undefined でない=要素ありを確認。
+if (button) {
+  // ガード内では非 null に絞り込み済み。
+  button.addEventListener("click", handleClick);
 }
 
 // 良い例（方法2: 存在が確実な場合は Non-null assertion）
-const button = document.querySelector("#submit-btn")!;            // 末尾の ! は「非nullアサーション」。「絶対 null じゃないと俺が保証する」と TypeScript に伝える演算子。型からのみ null を取り除く（実行時のチェックはしない）。
+// 末尾の ! は「非nullアサーション」。「絶対 null じゃないと俺が保証する」と TypeScript に伝える演算子。型からのみ null を取り除く（実行時のチェックはしない）。
+const button = document.querySelector("#submit-btn")!;
 // ただし、要素が存在しない場合は実行時エラーになるので注意
 button.addEventListener("click", handleClick);
 
 // 良い例（方法3: 型を絞り込む）
-const button = document.querySelector<HTMLButtonElement>("#submit-btn");  // <HTMLButtonElement> で「ボタン要素を期待している」と型引数を渡す。戻り値は HTMLButtonElement | null。
-if (button instanceof HTMLButtonElement) {                          // instanceof は「特定のクラスのインスタンスか」を判定する演算子。
-  button.disabled = true; // HTMLButtonElement のプロパティにアクセス可能  // ガード内では HTMLButtonElement に絞り込まれ、.disabled が使える。
+// <HTMLButtonElement> で「ボタン要素を期待している」と型引数を渡す。戻り値は HTMLButtonElement | null。
+const button = document.querySelector<HTMLButtonElement>("#submit-btn");
+// instanceof は「特定のクラスのインスタンスか」を判定する演算子。
+if (button instanceof HTMLButtonElement) {
+  // HTMLButtonElement のプロパティにアクセス可能
+  // ガード内では HTMLButtonElement に絞り込まれ、.disabled が使える。
+  button.disabled = true;
 }
 ```
 
@@ -3404,9 +4078,11 @@ interface User {
 const user: User = { name: "田中", email: "tanaka@example.com" };
 
 // 悪い例
-console.log(user.emial);                                       // emial（タイプミス）。User 型に emial プロパティは無い。
+// emial（タイプミス）。User 型に emial プロパティは無い。
+console.log(user.emial);
 // エラー: Property 'emial' does not exist on type 'User'.
-// Did you mean 'email'?                                        // TypeScript が「もしかして email では？」とヒントもくれる。
+// TypeScript が「もしかして email では？」とヒントもくれる。
+// Did you mean 'email'?
 
 // 良い例
 console.log(user.email);
@@ -3423,26 +4099,32 @@ interface Product {
 const product: Product = { name: "ペン", price: 150 };
 
 // 悪い例
-console.log(product.description);                                 // Product 型に description は存在しない。
+// Product 型に description は存在しない。
+console.log(product.description);
 // エラー: Property 'description' does not exist on type 'Product'
 
 // 良い例（方法1: 型定義を修正）
 interface Product {
   name: string;
   price: number;
-  description?: string; // プロパティを追加                       // オプショナル（?）で追加すれば既存データを壊さない。
+  // プロパティを追加
+  // オプショナル（?）で追加すれば既存データを壊さない。
+  description?: string;
 }
 
 // 良い例（方法2: オブジェクトリテラルにプロパティを追加する場合）
-const productWithDesc = { ...product, description: "赤いボールペン" };  // スプレッドで既存プロパティを展開し、後ろに description を追加した新オブジェクトを作る。型は自動推論される。
+// スプレッドで既存プロパティを展開し、後ろに description を追加した新オブジェクトを作る。型は自動推論される。
+const productWithDesc = { ...product, description: "赤いボールペン" };
 ```
 
 ```typescript
 // ===== エラーパターン3: ユニオン型での共通でないプロパティ =====
 
 interface Dog {
-  kind: "dog";                                                  // 判別タグ。"dog" リテラル型。
-  bark(): void;                                                  // bark メソッド（戻り値なし）。
+  // 判別タグ。"dog" リテラル型。
+  kind: "dog";
+  // bark メソッド（戻り値なし）。
+  bark(): void;
 }
 
 interface Cat {
@@ -3450,11 +4132,13 @@ interface Cat {
   meow(): void;
 }
 
-type Animal = Dog | Cat;                                         // Dog または Cat。
+// Dog または Cat。
+type Animal = Dog | Cat;
 
 // 悪い例
 function makeSound(animal: Animal) {
-  animal.bark();                                                  // Cat に bark は無い。ユニオン型では「全バリエーションに共通する性質」しか使えない。
+  // Cat に bark は無い。ユニオン型では「全バリエーションに共通する性質」しか使えない。
+  animal.bark();
   // エラー: Property 'bark' does not exist on type 'Animal'
   // Property 'bark' does not exist on type 'Cat'
   // → Animal が Cat の場合、bark() は存在しない
@@ -3462,10 +4146,15 @@ function makeSound(animal: Animal) {
 
 // 良い例（型の絞り込み）
 function makeSound(animal: Animal) {
-  if (animal.kind === "dog") {                                    // kind を使ってどちらか判別。
-    animal.bark();   // OK: Dog 型として認識                       // ガード内では Dog に絞り込まれる。
+  // kind を使ってどちらか判別。
+  if (animal.kind === "dog") {
+    // OK: Dog 型として認識
+    // ガード内では Dog に絞り込まれる。
+    animal.bark();
   } else {
-    animal.meow();   // OK: Cat 型として認識                       // else 側では Cat に絞り込まれる。
+    // OK: Cat 型として認識
+    // else 側では Cat に絞り込まれる。
+    animal.meow();
   }
 }
 ```
@@ -3474,27 +4163,36 @@ function makeSound(animal: Animal) {
 // ===== エラーパターン4: API レスポンスの型が不足 =====
 
 // 悪い例: JSON.parse の結果は any ではなく unknown として扱うべき
-async function fetchData() {                                    // async/await を使った非同期関数。
-  const response = await fetch("/api/data");                    // fetch でサーバーに HTTP リクエスト。await で結果待ち。
-  const data = await response.json(); // any 型                 // .json() の戻り値の型はデフォルトで any。型情報が欠落。
+// async/await を使った非同期関数。
+async function fetchData() {
+  // fetch でサーバーに HTTP リクエスト。await で結果待ち。
+  const response = await fetch("/api/data");
+  // any 型
+  // .json() の戻り値の型はデフォルトで any。型情報が欠落。
+  const data = await response.json();
 
   // この時点では data の構造が不明
-  console.log(data.items.length);                                // 何のチェックも無しに data.items.length にアクセス。
+  // 何のチェックも無しに data.items.length にアクセス。
+  console.log(data.items.length);
   // ← 実行時エラーの可能性あり
 }
 
 // 良い例: 型を明示的に定義
-interface ApiData {                                              // 返ってくる JSON の構造を型として定義。
+// 返ってくる JSON の構造を型として定義。
+interface ApiData {
   items: string[];
   total: number;
 }
 
-async function fetchData(): Promise<ApiData> {                  // 戻り値の型を Promise<ApiData> と明示。
+// 戻り値の型を Promise<ApiData> と明示。
+async function fetchData(): Promise<ApiData> {
   const response = await fetch("/api/data");
-  const data: ApiData = await response.json();                   // 取得結果を ApiData 型として扱う（型アサーション）。
+  // 取得結果を ApiData 型として扱う（型アサーション）。
+  const data: ApiData = await response.json();
 
   // 型安全にアクセスできる
-  console.log(data.items.length);                                // items は string[] と分かるので length が読める。
+  // items は string[] と分かるので length が読める。
+  console.log(data.items.length);
   console.log(data.total);
 
   return data;
@@ -3558,14 +4256,18 @@ async function fetchData(): Promise<ApiData> {                  // 戻り値の�
 
 // もとになる型を1つ用意する。これを使い回していく。
 interface User {
-  id: number;       // ユーザーID（必須）
-  name: string;     // 名前（必須）
-  email: string;    // メールアドレス（必須）
+  // ユーザーID（必須）
+  id: number;
+  // 名前（必須）
+  name: string;
+  // メールアドレス（必須）
+  email: string;
 }
 
 // (1) Partial<T> … すべてのプロパティを「省略してもよい（?付き）」にした型を作る
 //     → { id?: number; name?: string; email?: string } と同じ意味になる
-const draft: Partial<User> = { name: "田中" };   // id も email も省略できる
+// id も email も省略できる
+const draft: Partial<User> = { name: "田中" };
 
 // (2) Pick<T, キー> … T から指定したキーだけ「抜き出した」型を作る
 //     → { id: number; name: string } と同じ意味
@@ -3577,10 +4279,12 @@ const noEmail: Omit<User, "email"> = { id: 1, name: "田中" };
 
 // (4) Required<T> … すべてのプロパティを「必須」にした型を作る（Partial の逆）
 interface Config {
-  host?: string;    // ? が付いていて省略可能
+  // ? が付いていて省略可能
+  host?: string;
   port?: number;
 }
-const fullConfig: Required<Config> = { host: "localhost", port: 8080 }; // 両方とも必須になる
+// 両方とも必須になる
+const fullConfig: Required<Config> = { host: "localhost", port: 8080 };
 
 // (5) Record<キーの型, 値の型> … 「キーと値の組」をまとめて表す型を作る
 //     ここでは「文字列キー → number 値」の辞書を表している
@@ -3664,13 +4368,17 @@ const scores: Record<string, number> = {
 
 // enum（イーナム）= 「列挙型」。関連する定数（変わらない値）に名前を付けてまとめる。
 enum Signal {
-  Red,     // 名前を書くだけだと、自動で 0 が割り当てられる
-  Yellow,  // 次は 1
-  Green,   // 次は 2
+  // 名前を書くだけだと、自動で 0 が割り当てられる
+  Red,
+  // 次は 1
+  Yellow,
+  // 次は 2
+  Green,
 }
 
 // enum の値は「列挙名.メンバー名」で取り出す
-const current: Signal = Signal.Red;     // current には 0 が入る（が、意味は「赤信号」）
+// current には 0 が入る（が、意味は「赤信号」）
+const current: Signal = Signal.Red;
 
 // 値そのものではなく「名前」で比較できるので読みやすい
 if (current === Signal.Red) {
@@ -3685,7 +4393,8 @@ enum Direction {
   Right = "RIGHT",
 }
 
-const move: Direction = Direction.Up;   // move には "UP" が入る
+// move には "UP" が入る
+const move: Direction = Direction.Up;
 console.log(move);
 
 // ▼ 実行結果
@@ -3745,29 +4454,37 @@ const move: Direction = Direction.Up;
 // ==========================================================================
 
 // (1) typeof による型ガード … 文字列・数値などの「基本の型」を調べる
-function describe(value: string | number): string {  // value は string か number のどちらか
+// value は string か number のどちらか
+function describe(value: string | number): string {
   if (typeof value === "string") {
     // この { } の中では value は string だと TypeScript が分かっている
-    return `文字列です: ${value.toUpperCase()}`;       // string 専用の .toUpperCase() が使える
+    // string 専用の .toUpperCase() が使える
+    return `文字列です: ${value.toUpperCase()}`;
   } else {
     // ここでは value は number に絞り込まれている
-    return `数値です: ${value.toFixed(1)}`;            // number 専用の .toFixed() が使える
+    // number 専用の .toFixed() が使える
+    return `数値です: ${value.toFixed(1)}`;
   }
 }
 
 // (2) in による型ガード … 「そのプロパティを持っているか」で型を見分ける
 interface Dog {
-  bark: () => void;   // 犬は bark を持つ
+  // 犬は bark を持つ
+  bark: () => void;
 }
 interface Cat {
-  meow: () => void;   // 猫は meow を持つ
+  // 猫は meow を持つ
+  meow: () => void;
 }
 
 function speak(animal: Dog | Cat): void {
-  if ("bark" in animal) {        // animal が bark プロパティを持っているか調べる
-    animal.bark();               // ここでは Dog に絞り込まれている
+  // animal が bark プロパティを持っているか調べる
+  if ("bark" in animal) {
+    // ここでは Dog に絞り込まれている
+    animal.bark();
   } else {
-    animal.meow();               // ここでは Cat に絞り込まれている
+    // ここでは Cat に絞り込まれている
+    animal.meow();
   }
 }
 
@@ -3780,7 +4497,8 @@ function isString(value: unknown): value is string {
 const data: unknown = "hello";
 if (isString(data)) {
   // isString が true なので、ここでは data は string 扱い
-  console.log(data.length);      // string の .length が使える
+  // string の .length が使える
+  console.log(data.length);
 }
 
 console.log(describe("hello"));
@@ -3856,17 +4574,20 @@ function isString(value: unknown): value is string {
 // ==========================================================================
 
 // (1) as const を付けない場合
-let role1 = "admin";          // 型は string（"admin" 以外の文字列も入りうる、と判断される）
+// 型は string（"admin" 以外の文字列も入りうる、と判断される）
+let role1 = "admin";
 
 // (2) as const を付けた場合
-const role2 = "admin" as const;  // 型は "admin"（まさに "admin" という値だけ、に固定される）
+// 型は "admin"（まさに "admin" という値だけ、に固定される）
+const role2 = "admin" as const;
 
 // (3) オブジェクトに付けると、中身すべてが「変更不可＆値固定」になる
 const config = {
   host: "localhost",
   port: 8080,
 } as const;
-// config.port = 3000;        // ❌ as const のため変更不可（readonly になる）
+// ❌ as const のため変更不可（readonly になる）
+// config.port = 3000;
 
 // (4) 配列に付けると「読み取り専用＆中身の値が固定されたタプル」になる
 //     よく「決まった選択肢の一覧」を作るのに使う
@@ -3874,10 +4595,13 @@ const colors = ["red", "green", "blue"] as const;
 // colors の型は readonly ["red", "green", "blue"]
 
 // この配列から「"red" | "green" | "blue"」というユニオン型を取り出せる
-type Color = typeof colors[number];   // "red" | "green" | "blue"
+// "red" | "green" | "blue"
+type Color = typeof colors[number];
 
-const myColor: Color = "red";         // OK
-// const ng: Color = "purple";        // ❌ 一覧に無い値はエラー
+// OK
+const myColor: Color = "red";
+// ❌ 一覧に無い値はエラー
+// const ng: Color = "purple";
 
 console.log(role2, config, colors, myColor);
 // ▼ 実行結果
@@ -3893,8 +4617,10 @@ console.log(role2, config, colors, myColor);
 ##### 解説1: 付けるかどうかで型が変わる
 
 ```typescript
-let role1 = "admin";              // 型は string
-const role2 = "admin" as const;   // 型は "admin"
+// 型は string
+let role1 = "admin";
+// 型は "admin"
+const role2 = "admin" as const;
 ```
 
 - `let role1 = "admin"` の型はただの `string` です。「文字列なら何でも入る箱」と判断されます。
@@ -3926,7 +4652,8 @@ const colors = ["red", "green", "blue"] as const;
 
 ```typescript
 const colors = ["red", "green", "blue"] as const;
-type Color = typeof colors[number];   // "red" | "green" | "blue"
+// "red" | "green" | "blue"
+type Color = typeof colors[number];
 ```
 
 - `typeof colors` で「`colors` 変数の型」を取り出し、さらに `[number]`（配列の中身の型を取り出す書き方）を付けると、`"red" | "green" | "blue"` というユニオン型になります。
@@ -3945,23 +4672,30 @@ type Color = typeof colors[number];   // "red" | "green" | "blue"
 
 interface User {
   name: string;
-  address?: {            // address は省略可能（無いかもしれない）
-    city?: string;       // city も省略可能
+  // address は省略可能（無いかもしれない）
+  address?: {
+    // city も省略可能
+    city?: string;
   };
 }
 
 // (1) オプショナルチェイニング ?. … 途中が null / undefined なら、そこで止めて undefined を返す
-const user1: User = { name: "田中" };               // address が無い
-console.log(user1.address?.city);                    // address が無いので undefined（エラーにならない！）
+// address が無い
+const user1: User = { name: "田中" };
+// address が無いので undefined（エラーにならない！）
+console.log(user1.address?.city);
 
 const user2: User = { name: "鈴木", address: { city: "東京" } };
-console.log(user2.address?.city);                    // → "東京"
+// → "東京"
+console.log(user2.address?.city);
 
 // もし ?. を使わずに user1.address.city と書くと、実行時にクラッシュしてしまう
 
 // (2) Null合体演算子 ?? … 左が null / undefined のときだけ、右の値を使う
-const city1 = user1.address?.city ?? "未設定";       // 左が undefined なので "未設定"
-const city2 = user2.address?.city ?? "未設定";       // 左が "東京" なのでそのまま "東京"
+// 左が undefined なので "未設定"
+const city1 = user1.address?.city ?? "未設定";
+// 左が "東京" なのでそのまま "東京"
+const city2 = user2.address?.city ?? "未設定";
 
 console.log(city1, city2);
 // ▼ 実行結果
@@ -3980,7 +4714,8 @@ console.log(city1, city2);
 
 ```typescript
 const user1: User = { name: "田中" };
-console.log(user1.address?.city);   // undefined（エラーにならない）
+// undefined（エラーにならない）
+console.log(user1.address?.city);
 ```
 
 - `?.`（オプショナルチェイニング）は「**`?.` の左側が `null` か `undefined` なら、その場で止めて `undefined` を返す**」演算子です。
@@ -4017,20 +4752,25 @@ const city1 = user1.address?.city ?? "未設定";
 // <T> が「型のプレースホルダ（あとで決まる型の仮の名前）」。
 // 引数 x の型も T、戻り値の型も「T の配列（T[]）」にしている。
 function wrap<T>(x: T): T[] {
-  return [x];                 // 受け取った値を、要素1つだけの配列に包んで返す
+  // 受け取った値を、要素1つだけの配列に包んで返す
+  return [x];
 }
 
 // 呼び出すときに T が自動で決まる（明示しなくてよい）
-const a = wrap("hello");      // T は string → a の型は string[]
-const b = wrap(42);           // T は number → b の型は number[]
-const c = wrap(true);         // T は boolean → c の型は boolean[]
+// T は string → a の型は string[]
+const a = wrap("hello");
+// T は number → b の型は number[]
+const b = wrap(42);
+// T は boolean → c の型は boolean[]
+const c = wrap(true);
 
 console.log(a, b, c);
 // ▼ 実行結果
 // [ 'hello' ] [ 42 ] [ true ]
 
 // 型を明示的に指定することもできる（普通は不要）
-const d = wrap<string>("world");   // T を string と明示
+// T を string と明示
+const d = wrap<string>("world");
 
 console.log(d);
 // ▼ 実行結果
@@ -4062,8 +4802,10 @@ function wrap<T>(x: T): T[] {
 ##### 解説2: 呼び出すと型が自動で決まる
 
 ```typescript
-const a = wrap("hello");   // a の型は string[]
-const b = wrap(42);        // b の型は number[]
+// a の型は string[]
+const a = wrap("hello");
+// b の型は number[]
+const b = wrap(42);
 ```
 
 - `wrap("hello")` のように文字列を渡すと、`T` が自動で `string` に決まり、戻り値 `a` の型は `string[]` になります。
@@ -4075,7 +4817,8 @@ const b = wrap(42);        // b の型は number[]
 ##### 解説3: 型を明示的に指定することもできる
 
 ```typescript
-const d = wrap<string>("world");   // T を string と明示
+// T を string と明示
+const d = wrap<string>("world");
 ```
 
 - `wrap<string>(...)` のように `< >` の中に型を書くと、`T` を自分で指定できます。

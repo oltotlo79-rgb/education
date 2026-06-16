@@ -27,19 +27,26 @@
 // ============================================================================
 // 「型あり」と「型なし」で何が違うかの比較
 // ============================================================================
-// 注: // で始まる行は「コメント」。プログラムとしては実行されず、説明用に書ける。
+// で始まる行は「コメント」。プログラムとしては実行されず、説明用に書ける。
+// 注:
 
 // ---------- 型なし（JavaScript）の場合 ----------
-function add(a, b) {        // function = 関数を作るキーワード / add = 関数名 / (a, b) = 受け取る材料2つ
-  return a + b;            // return = 結果を返す / a + b = 足し算（だが…）
+// function = 関数を作るキーワード / add = 関数名 / (a, b) = 受け取る材料2つ
+function add(a, b) {
+  // return = 結果を返す / a + b = 足し算（だが…）
+  return a + b;
 }
-add("1", 2);               // "1"は文字列、2は数値。JSは文字列連結して "12" を返してしまう（バグ！）
+// "1"は文字列、2は数値。JSは文字列連結して "12" を返してしまう（バグ！）
+add("1", 2);
 
 // ---------- 型あり（TypeScript）の場合 ----------
-function addTs(a: number, b: number): number {  // a: number → aは数値型のみ / : number（最後）→ 戻り値も数値
-  return a + b;                                  // a も b も数値なので、必ず正しい足し算になる
+// a: number → aは数値型のみ / : number（最後）→ 戻り値も数値
+function addTs(a: number, b: number): number {
+  // a も b も数値なので、必ず正しい足し算になる
+  return a + b;
 }
-addTs("1", 2);             // ← "1"は文字列なので、ここで「型エラー」が表示され、実行前にミスに気づける
+// ← "1"は文字列なので、ここで「型エラー」が表示され、実行前にミスに気づける
+addTs("1", 2);
 // VS Codeでは addTs("1", 2) の "1" の下に赤い波線が引かれ、次のメッセージが出る：
 // Argument of type 'string' is not assignable to parameter of type 'number'.
 //（'string'型の引数は'number'型のパラメータに代入できません）
@@ -69,8 +76,10 @@ const title = "リーダブルコード";
 > **▼ このコードがやること（先に日本語で）:** 今度は `let`（レット）という書き方で「あとから中身を変えられる箱」を作り、中身を `0` から `1` に書き換えます。`const` との違いは「変更できるかどうか」だけで、`const` は変更しようとするとエラーになります。「変えたいときだけ `let`、それ以外は `const`」と覚えておけば十分です。
 
 ```typescript
-let count = 0;        // let : 「後から中身を変えられる箱」を作るキーワード / 0 は数値
-count = 1;            // 中身を 0 から 1 に変更できる（letだから可能）
+// let : 「後から中身を変えられる箱」を作るキーワード / 0 は数値
+let count = 0;
+// 中身を 0 から 1 に変更できる（letだから可能）
+count = 1;
 // もし上が const count = 0; だったら、count = 1; の行でエラーになる（constは変更不可のため）
 ```
 
@@ -85,9 +94,12 @@ TypeScriptでよく使う基本的な型を紹介します。変数名の後ろ�
 > **▼ このコードがやること（先に日本語で）:** よく使う3つの基本の型（文字列・数値・真偽値）を、それぞれ変数に入れて見せています。変数名の後ろに付いている `: string` や `: number` の部分が「型注釈」で、「この箱には何の種類のデータが入るか」を宣言しています。`boolean` は `true`（はい）か `false`（いいえ）の2択しか入らない型、と覚えてください（各行の意味はコード内のコメント参照）。
 
 ```typescript
-const bookTitle: string = "達人プログラマー";  // string（ストリング）= 文字列の型
-const publishYear: number = 1999;             // number（ナンバー）= 数値の型（整数・小数どちらも）
-const isRead: boolean = true;                 // boolean（ブーリアン）= 真偽値の型。true（真）か false（偽）の2択
+// string（ストリング）= 文字列の型
+const bookTitle: string = "達人プログラマー";
+// number（ナンバー）= 数値の型（整数・小数どちらも）
+const publishYear: number = 1999;
+// boolean（ブーリアン）= 真偽値の型。true（真）か false（偽）の2択
+const isRead: boolean = true;
 // : string や : number の部分が「型注釈（type annotation）」。「この箱の中身の種類」を宣言している
 ```
 
@@ -98,7 +110,8 @@ const isRead: boolean = true;                 // boolean（ブーリアン）= �
 ##### 解説1: 文字列の箱を作る（`: string`）
 
 ```typescript
-const bookTitle: string = "達人プログラマー";  // string（ストリング）= 文字列の型
+// string（ストリング）= 文字列の型
+const bookTitle: string = "達人プログラマー";
 ```
 
 - `const bookTitle` は「あとから中身を変えない箱に `bookTitle` という名前を付ける」部分です。
@@ -113,7 +126,8 @@ const bookTitle: string = "達人プログラマー";  // string（ストリン�
 ##### 解説2: 数値の箱を作る（`: number`）
 
 ```typescript
-const publishYear: number = 1999;             // number（ナンバー）= 数値の型（整数・小数どちらも）
+// number（ナンバー）= 数値の型（整数・小数どちらも）
+const publishYear: number = 1999;
 ```
 
 - `: number` は「この箱には数値しか入れない」という型注釈です。
@@ -127,7 +141,8 @@ const publishYear: number = 1999;             // number（ナンバー）= 数�
 ##### 解説3: はい/いいえの箱を作る（`: boolean`）
 
 ```typescript
-const isRead: boolean = true;                 // boolean（ブーリアン）= 真偽値の型。true（真）か false（偽）の2択
+// boolean（ブーリアン）= 真偽値の型。true（真）か false（偽）の2択
+const isRead: boolean = true;
 ```
 
 - `: boolean` は「この箱には `true` か `false` のどちらかしか入れない」という型注釈です。
@@ -164,7 +179,8 @@ const titles: string[] = ["本A", "本B", "本C"];
 // [ ... ]  : 配列を作る記号。中身はカンマ , で区切る
 // 並んだ各値を「要素（element）」と呼ぶ
 
-console.log(titles[0]);   // titles[0] → 配列の「0番目」の要素を取り出す。結果: "本A"
+// titles[0] → 配列の「0番目」の要素を取り出す。結果: "本A"
+console.log(titles[0]);
 // 注意: プログラミングの数え方は0から始まる！ 1番目=[0]、2番目=[1]、3番目=[2]
 // console.log(...) : ( )の中身をターミナルやデバッグ画面に表示する命令。動作確認によく使う
 ```
@@ -190,7 +206,8 @@ const titles: string[] = ["本A", "本B", "本C"];
 ##### 解説2: 配列から1つ取り出す（番号は0から）
 
 ```typescript
-console.log(titles[0]);   // titles[0] → 配列の「0番目」の要素を取り出す。結果: "本A"
+// titles[0] → 配列の「0番目」の要素を取り出す。結果: "本A"
+console.log(titles[0]);
 ```
 
 - `titles[0]` の `[0]` は「**配列の何番目を取り出すか**」を指定する番号（インデックス）です。
@@ -210,14 +227,19 @@ console.log(titles[0]);   // titles[0] → 配列の「0番目」の要素を取
 
 ```typescript
 const book = {
-  title: "リーダブルコード",   // title というキー（項目名）に "リーダブルコード" という値
-  author: "Dustin Boswell",   // author というキーに著者名。各組はカンマ , で区切る
-  year: 2012,                 // year というキーに数値
-  isRead: true,               // isRead というキーに真偽値
+  // title というキー（項目名）に "リーダブルコード" という値
+  title: "リーダブルコード",
+  // author というキーに著者名。各組はカンマ , で区切る
+  author: "Dustin Boswell",
+  // year というキーに数値
+  year: 2012,
+  // isRead というキーに真偽値
+  isRead: true,
 };
 // { } : オブジェクトを作る記号 / キー: 値 の形で項目を並べる
 
-console.log(book.title);   // book.title → オブジェクトの title の値を取り出す。結果: "リーダブルコード"
+// book.title → オブジェクトの title の値を取り出す。結果: "リーダブルコード"
+console.log(book.title);
 // . （ドット）: 「オブジェクトの中の、その名前の項目」にアクセスする記号
 ```
 
@@ -229,10 +251,14 @@ console.log(book.title);   // book.title → オブジェクトの title の値�
 
 ```typescript
 const book = {
-  title: "リーダブルコード",   // title というキー（項目名）に "リーダブルコード" という値
-  author: "Dustin Boswell",   // author というキーに著者名。各組はカンマ , で区切る
-  year: 2012,                 // year というキーに数値
-  isRead: true,               // isRead というキーに真偽値
+  // title というキー（項目名）に "リーダブルコード" という値
+  title: "リーダブルコード",
+  // author というキーに著者名。各組はカンマ , で区切る
+  author: "Dustin Boswell",
+  // year というキーに数値
+  year: 2012,
+  // isRead というキーに真偽値
+  isRead: true,
 };
 ```
 
@@ -248,7 +274,8 @@ const book = {
 ##### 解説2: ドット `.` で中の項目を取り出す
 
 ```typescript
-console.log(book.title);   // book.title → オブジェクトの title の値を取り出す。結果: "リーダブルコード"
+// book.title → オブジェクトの title の値を取り出す。結果: "リーダブルコード"
+console.log(book.title);
 ```
 
 - `book.title` の `.`（ドット）が「**オブジェクトの中の、その名前の項目にアクセスする**」記号です。
@@ -271,16 +298,22 @@ console.log(book.title);   // book.title → オブジェクトの title の値�
 ```typescript
 // type : 型に名前を付けるキーワード / Book : 付ける名前（型名は大文字始まりが慣習）
 type Book = {
-  id: string;        // id（識別番号）は文字列
-  title: string;     // title（タイトル）は文字列
-  author: string;    // author（著者）は文字列
-  status: string;    // status（読書状態）は文字列
-  isRead: boolean;   // isRead（読了したか）は真偽値
+  // id（識別番号）は文字列
+  id: string;
+  // title（タイトル）は文字列
+  title: string;
+  // author（著者）は文字列
+  author: string;
+  // status（読書状態）は文字列
+  status: string;
+  // isRead（読了したか）は真偽値
+  isRead: boolean;
 };
 // ↑ これで「Book型 = id, title, author, status, isReadを持つオブジェクト」と定義できた
 
 // 定義したBook型を使って変数を作る
-const myBook: Book = {           // : Book → 「この変数はBook型ですよ」と宣言
+// : Book → 「この変数はBook型ですよ」と宣言
+const myBook: Book = {
   id: "1",
   title: "達人プログラマー",
   author: "David Thomas",
@@ -299,11 +332,16 @@ const myBook: Book = {           // : Book → 「この変数はBook型です�
 ```typescript
 // type : 型に名前を付けるキーワード / Book : 付ける名前（型名は大文字始まりが慣習）
 type Book = {
-  id: string;        // id（識別番号）は文字列
-  title: string;     // title（タイトル）は文字列
-  author: string;    // author（著者）は文字列
-  status: string;    // status（読書状態）は文字列
-  isRead: boolean;   // isRead（読了したか）は真偽値
+  // id（識別番号）は文字列
+  id: string;
+  // title（タイトル）は文字列
+  title: string;
+  // author（著者）は文字列
+  author: string;
+  // status（読書状態）は文字列
+  status: string;
+  // isRead（読了したか）は真偽値
+  isRead: boolean;
 };
 ```
 
@@ -320,7 +358,8 @@ type Book = {
 
 ```typescript
 // 定義したBook型を使って変数を作る
-const myBook: Book = {           // : Book → 「この変数はBook型ですよ」と宣言
+// : Book → 「この変数はBook型ですよ」と宣言
+const myBook: Book = {
   id: "1",
   title: "達人プログラマー",
   author: "David Thomas",
@@ -349,11 +388,14 @@ const myBook: Book = {           // : Book → 「この変数はBook型です�
 type Book = {
   id: string;
   title: string;
-  memo?: string;   // memo? → memoは「あってもなくてもよい」項目（省略可能、optional）
+  // memo? → memoは「あってもなくてもよい」項目（省略可能、optional）
+  memo?: string;
 };
 
-const book1: Book = { id: "1", title: "本A", memo: "面白い" };  // memoあり：OK
-const book2: Book = { id: "2", title: "本B" };                  // memoなし：これもOK（?のおかげ）
+// memoあり：OK
+const book1: Book = { id: "1", title: "本A", memo: "面白い" };
+// memoなし：これもOK（?のおかげ）
+const book2: Book = { id: "2", title: "本B" };
 ```
 
 ---
@@ -370,11 +412,14 @@ const book2: Book = { id: "2", title: "本B" };                  // memoなし�
 // function : 関数を作るキーワード
 // greet    : 関数名 / (name: string) : nameという文字列の引数を1つ受け取る / : string : 戻り値も文字列
 function greet(name: string): string {
-  return "こんにちは、" + name + "さん";   // return : 結果を返す / + : 文字列をつなぐ（連結）
+  // return : 結果を返す / + : 文字列をつなぐ（連結）
+  return "こんにちは、" + name + "さん";
 }
 
-const message = greet("鈴木");   // greet関数を呼び出し、"鈴木"を渡す。戻り値が message に入る
-console.log(message);            // 結果: こんにちは、鈴木さん
+// greet関数を呼び出し、"鈴木"を渡す。戻り値が message に入る
+const message = greet("鈴木");
+// 結果: こんにちは、鈴木さん
+console.log(message);
 ```
 
 #### ▼ コードを1つずつ分解して解説
@@ -387,7 +432,8 @@ console.log(message);            // 結果: こんにちは、鈴木さん
 // function : 関数を作るキーワード
 // greet    : 関数名 / (name: string) : nameという文字列の引数を1つ受け取る / : string : 戻り値も文字列
 function greet(name: string): string {
-  return "こんにちは、" + name + "さん";   // return : 結果を返す / + : 文字列をつなぐ（連結）
+  // return : 結果を返す / + : 文字列をつなぐ（連結）
+  return "こんにちは、" + name + "さん";
 }
 ```
 
@@ -403,8 +449,10 @@ function greet(name: string): string {
 ##### 解説2: 関数を呼び出して結果を受け取る
 
 ```typescript
-const message = greet("鈴木");   // greet関数を呼び出し、"鈴木"を渡す。戻り値が message に入る
-console.log(message);            // 結果: こんにちは、鈴木さん
+// greet関数を呼び出し、"鈴木"を渡す。戻り値が message に入る
+const message = greet("鈴木");
+// 結果: こんにちは、鈴木さん
+console.log(message);
 ```
 
 - `greet("鈴木")` が「関数を**呼び出す**」書き方です。関数名の後ろに `(...)` を付けて、中に渡す値を書きます。
@@ -481,9 +529,11 @@ const greet = (name: string): string => {
 > **▼ このコードがやること（先に日本語で）:** 数値の配列 `[1, 2, 3]` の**各要素を2倍した新しい配列**`[2, 4, 6]` を、`map`（マップ）という機能で作ります。`map` は「配列の1つ1つに同じ処理をして、その結果を集めた新しい配列を返す」働きをします。**元の配列は変わらず、新しい配列ができる**点を押さえてください。実際のアプリでは「本の配列」を「画面に表示する部品の配列」に変換するのに使います（処理の詳細はコード内コメント参照）。
 
 ```typescript
-const numbers = [1, 2, 3];                       // 数値の配列
+// 数値の配列
+const numbers = [1, 2, 3];
 
-const doubled = numbers.map((n) => n * 2);       // map : 各要素に処理をして新しい配列を作る
+// map : 各要素に処理をして新しい配列を作る
+const doubled = numbers.map((n) => n * 2);
 // .map(...)      : 配列の各要素に対して、( )内の関数を順番に適用する
 // (n) => n * 2   : 「受け取った n を 2倍して返す」アロー関数。nには1,2,3が順に入る
 // 結果: doubled は [2, 4, 6] になる（元のnumbersは変わらない）
@@ -496,7 +546,8 @@ const doubled = numbers.map((n) => n * 2);       // map : 各要素に処理を�
 ##### 解説1: 元になる配列を用意する
 
 ```typescript
-const numbers = [1, 2, 3];                       // 数値の配列
+// 数値の配列
+const numbers = [1, 2, 3];
 ```
 
 - `[1, 2, 3]` は数値が3つ並んだ配列です。これが「変換のもとになるデータ」です。
@@ -510,7 +561,8 @@ const numbers = [1, 2, 3];                       // 数値の配列
 ##### 解説2: `map` で各要素を変換して新しい配列を作る
 
 ```typescript
-const doubled = numbers.map((n) => n * 2);       // map : 各要素に処理をして新しい配列を作る
+// map : 各要素に処理をして新しい配列を作る
+const doubled = numbers.map((n) => n * 2);
 ```
 
 - `numbers.map(...)` の `.map` は「配列の**各要素1つ1つに、同じ処理をする**」メソッドです。配列の後ろにドットで付けて使います。
@@ -535,7 +587,8 @@ const books = [
   { title: "本C", isRead: true },
 ];
 
-const readBooks = books.filter((b) => b.isRead === true);  // filter : 条件に合う要素だけ抜き出す
+// filter : 条件に合う要素だけ抜き出す
+const readBooks = books.filter((b) => b.isRead === true);
 // .filter(...)         : 各要素のうち、( )内の関数が true を返したものだけ残す
 // (b) => b.isRead === true : 「その本の isRead が true か？」を判定する関数
 // === : 「左右が厳密に等しいか」を判定する比較演算子（= が1つだと代入になるので注意）
@@ -567,7 +620,8 @@ const books = [
 ##### 解説2: `filter` で条件に合う要素だけ残す
 
 ```typescript
-const readBooks = books.filter((b) => b.isRead === true);  // filter : 条件に合う要素だけ抜き出す
+// filter : 条件に合う要素だけ抜き出す
+const readBooks = books.filter((b) => b.isRead === true);
 ```
 
 - `books.filter(...)` の `.filter` は「配列の中から**条件に合う要素だけを残す**（ふるいにかける）」メソッドです。
@@ -592,10 +646,14 @@ const readBooks = books.filter((b) => b.isRead === true);  // filter : 条件に
 ```typescript
 const status = "読了";
 
-if (status === "読了") {           // if : 「もし(条件)なら」 / ( )内が条件 / === で等しいか判定
-  console.log("読み終わった本です");  // 条件が true のとき、この { } 内が実行される
-} else {                          // else : 「そうでなければ」
-  console.log("まだ読んでいません");  // 条件が false のとき、こちらが実行される
+// if : 「もし(条件)なら」 / ( )内が条件 / === で等しいか判定
+if (status === "読了") {
+  // 条件が true のとき、この { } 内が実行される
+  console.log("読み終わった本です");
+// else : 「そうでなければ」
+} else {
+  // 条件が false のとき、こちらが実行される
+  console.log("まだ読んでいません");
 }
 // 結果: status が "読了" なので「読み終わった本です」が表示される
 ```
@@ -609,8 +667,10 @@ if (status === "読了") {           // if : 「もし(条件)なら」 / ( )内
 ```typescript
 const status = "読了";
 
-if (status === "読了") {           // if : 「もし(条件)なら」 / ( )内が条件 / === で等しいか判定
-  console.log("読み終わった本です");  // 条件が true のとき、この { } 内が実行される
+// if : 「もし(条件)なら」 / ( )内が条件 / === で等しいか判定
+if (status === "読了") {
+  // 条件が true のとき、この { } 内が実行される
+  console.log("読み終わった本です");
 ```
 
 - まず `status` という変数に `"読了"` という文字列を入れています。これが判定の対象です。
@@ -625,8 +685,10 @@ if (status === "読了") {           // if : 「もし(条件)なら」 / ( )内
 ##### 解説2: `else` で「そうでなければ」の処理を書く
 
 ```typescript
-} else {                          // else : 「そうでなければ」
-  console.log("まだ読んでいません");  // 条件が false のとき、こちらが実行される
+// else : 「そうでなければ」
+} else {
+  // 条件が false のとき、こちらが実行される
+  console.log("まだ読んでいません");
 }
 ```
 
@@ -701,11 +763,13 @@ const label = isRead ? "読了" : "未読";
 // 配列の型 string[] は、実は Array<string> とも書ける（同じ意味）
 // Array       : 「配列」という"入れ物"の型
 // <string>    : 「その配列の中身は文字列(string)ですよ」と中身の型を渡している
-const titles: Array<string> = ["本A", "本B"];   // string[] と全く同じ意味
+// string[] と全く同じ意味
+const titles: Array<string> = ["本A", "本B"];
 
 // 中身を Book にすれば「本の配列」になる
 // （Book型は第6章で定義します。「本1冊分の形」と思ってください）
-// const books: Array<Book> = [...];   // Book[] と同じ
+// Book[] と同じ
+// const books: Array<Book> = [...];
 ```
 
 #### ▼ コードを1つずつ分解して解説
@@ -718,7 +782,8 @@ const titles: Array<string> = ["本A", "本B"];   // string[] と全く同じ意
 // 配列の型 string[] は、実は Array<string> とも書ける（同じ意味）
 // Array       : 「配列」という"入れ物"の型
 // <string>    : 「その配列の中身は文字列(string)ですよ」と中身の型を渡している
-const titles: Array<string> = ["本A", "本B"];   // string[] と全く同じ意味
+// string[] と全く同じ意味
+const titles: Array<string> = ["本A", "本B"];
 ```
 
 - `Array` は「**配列という入れ物**」を表す型です。それ自体だけでは「何を入れる配列か」が決まっていません。
@@ -735,7 +800,8 @@ const titles: Array<string> = ["本A", "本B"];   // string[] と全く同じ意
 ```typescript
 // 中身を Book にすれば「本の配列」になる
 // （Book型は第6章で定義します。「本1冊分の形」と思ってください）
-// const books: Array<Book> = [...];   // Book[] と同じ
+// Book[] と同じ
+// const books: Array<Book> = [...];
 ```
 
 - `<...>` の中を `Book` に変えて `Array<Book>` と書けば、「**本（Book型）の配列**」という意味になります。
@@ -769,8 +835,10 @@ const titles: Array<string> = ["本A", "本B"];   // string[] と全く同じ意
 async function loadBooks() {
   // await : 「この処理が終わるまで、ここで待つ」という指示
   // fetchBooksFromServer() はサーバーからデータを取る（時間がかかる）関数だと考えてください
-  const books = await fetchBooksFromServer();   // データが届くまで待ってから、結果を books に入れる
-  console.log(books);                           // 届いたデータを表示
+  // データが届くまで待ってから、結果を books に入れる
+  const books = await fetchBooksFromServer();
+  // 届いたデータを表示
+  console.log(books);
 }
 ```
 
@@ -798,8 +866,10 @@ async function loadBooks() {
 ```typescript
   // await : 「この処理が終わるまで、ここで待つ」という指示
   // fetchBooksFromServer() はサーバーからデータを取る（時間がかかる）関数だと考えてください
-  const books = await fetchBooksFromServer();   // データが届くまで待ってから、結果を books に入れる
-  console.log(books);                           // 届いたデータを表示
+  // データが届くまで待ってから、結果を books に入れる
+  const books = await fetchBooksFromServer();
+  // 届いたデータを表示
+  console.log(books);
 ```
 
 - `fetchBooksFromServer()` は「サーバーからデータを取ってくる」**時間のかかる処理**だと考えてください。呼んだ瞬間には結果がまだありません。
@@ -842,15 +912,21 @@ async function loadBooks() {
 ```typescript
 // 「文字列ならなんでも」ではなく、決まった3つの言葉だけを許す型を作る
 // "読了" | "読書中" | "未読" : | (縦棒) で候補を並べる。「このどれか1つ」という意味
-type Status = "読了" | "読書中" | "未読";   // リテラル型をユニオンでつないだ型
+// リテラル型をユニオンでつないだ型
+type Status = "読了" | "読書中" | "未読";
 
-const s1: Status = "読了";    // 候補の中にあるのでOK
-// const s2: Status = "積読";  // ← 候補にない言葉なので、実行前にエラーになる
+// 候補の中にあるのでOK
+const s1: Status = "読了";
+// ← 候補にない言葉なので、実行前にエラーになる
+// const s2: Status = "積読";
 
 // 型どうしを | でつなぐこともできる（文字列または数値、など）
-let id: string | number;     // id には文字列か数値のどちらかを入れてよい
-id = "abc";                  // 文字列：OK
-id = 123;                    // 数値：OK
+// id には文字列か数値のどちらかを入れてよい
+let id: string | number;
+// 文字列：OK
+id = "abc";
+// 数値：OK
+id = 123;
 ```
 
 #### ▼ コードを1つずつ分解して解説
@@ -860,10 +936,13 @@ id = 123;                    // 数値：OK
 ##### 解説1: 決まった言葉だけを許す（リテラル型 ＋ ユニオン）
 
 ```typescript
-type Status = "読了" | "読書中" | "未読";   // リテラル型をユニオンでつないだ型
+// リテラル型をユニオンでつないだ型
+type Status = "読了" | "読書中" | "未読";
 
-const s1: Status = "読了";    // 候補の中にあるのでOK
-// const s2: Status = "積読";  // ← 候補にない言葉なので、実行前にエラーになる
+// 候補の中にあるのでOK
+const s1: Status = "読了";
+// ← 候補にない言葉なので、実行前にエラーになる
+// const s2: Status = "積読";
 ```
 
 - `"読了"` のように**特定の値そのもの**を型にしたものを「**リテラル型**」と呼びます。`string`（文字列ならなんでも）よりも厳しく、「まさにこの言葉だけ」を表します。
@@ -877,9 +956,12 @@ const s1: Status = "読了";    // 候補の中にあるのでOK
 ##### 解説2: 型どうしを `|` でつなぐ（文字列または数値）
 
 ```typescript
-let id: string | number;     // id には文字列か数値のどちらかを入れてよい
-id = "abc";                  // 文字列：OK
-id = 123;                    // 数値：OK
+// id には文字列か数値のどちらかを入れてよい
+let id: string | number;
+// 文字列：OK
+id = "abc";
+// 数値：OK
+id = 123;
 ```
 
 - ユニオン型は、`string | number` のように**型どうし**をつなぐこともできます。「文字列**または**数値のどちらか」という意味です。
@@ -906,7 +988,8 @@ type Book = {
 // Partial<T> : Tの全項目を「省略可能(?)」にした型を作る
 type PartialBook = Partial<Book>;
 // → { id?: string; title?: string; author?: string; isRead?: boolean; } と同じ
-const draft: PartialBook = { title: "下書き" };  // 一部だけでOK
+// 一部だけでOK
+const draft: PartialBook = { title: "下書き" };
 
 // Pick<T, "キー名"> : Tから指定した項目「だけ」取り出した型を作る
 type BookPreview = Pick<Book, "id" | "title">;
@@ -922,7 +1005,8 @@ type FullBook = Required<PartialBook>;
 // → 全項目が省略不可に戻る
 
 // Record<キーの型, 値の型> : 「キーと値の組」の型をまとめて作る
-type ScoreByName = Record<string, number>;  // 「名前(文字列)→点数(数値)」の対応表
+// 「名前(文字列)→点数(数値)」の対応表
+type ScoreByName = Record<string, number>;
 const scores: ScoreByName = { 鈴木: 80, 田中: 95 };
 ```
 
@@ -952,7 +1036,8 @@ type Book = {
 
 ```typescript
 type PartialBook = Partial<Book>;
-const draft: PartialBook = { title: "下書き" };  // 一部だけでOK
+// 一部だけでOK
+const draft: PartialBook = { title: "下書き" };
 ```
 
 - `Partial<Book>` は「`Book` の**全項目に `?` を付けた型**」を作ります。第5節で学んだ `?`（省略可能）を、全項目にまとめて付けるイメージです。
@@ -1011,7 +1096,8 @@ type FullBook = Required<PartialBook>;
 ##### 解説6: `Record` で「キーと値の対応表」を作る
 
 ```typescript
-type ScoreByName = Record<string, number>;  // 「名前(文字列)→点数(数値)」の対応表
+// 「名前(文字列)→点数(数値)」の対応表
+type ScoreByName = Record<string, number>;
 const scores: ScoreByName = { 鈴木: 80, 田中: 95 };
 ```
 
@@ -1031,13 +1117,18 @@ const scores: ScoreByName = { 鈴木: 80, 田中: 95 };
 // enum : 関連する定数（選択肢）をひとまとめにするキーワード
 // Status : グループ名（型名と同じく大文字始まりが慣習）
 enum Status {
-  Unread,    // 未読  （何も指定しないと自動で 0 が割り当てられる）
-  Reading,   // 読書中（自動で 1）
-  Read,      // 読了  （自動で 2）
+  // 未読  （何も指定しないと自動で 0 が割り当てられる）
+  Unread,
+  // 読書中（自動で 1）
+  Reading,
+  // 読了  （自動で 2）
+  Read,
 }
 
-const current: Status = Status.Reading;  // 「Statusグループの Reading」を取り出す
-console.log(current);                    // 結果: 1（Readingに割り当てられた番号）
+// 「Statusグループの Reading」を取り出す
+const current: Status = Status.Reading;
+// 結果: 1（Readingに割り当てられた番号）
+console.log(current);
 
 // 文字列を割り当てることもできる（こちらの方が読みやすく、よく使われる）
 enum StatusLabel {
@@ -1045,7 +1136,8 @@ enum StatusLabel {
   Reading = "読書中",
   Read = "読了",
 }
-console.log(StatusLabel.Read);  // 結果: "読了"
+// 結果: "読了"
+console.log(StatusLabel.Read);
 ```
 
 #### ▼ コードを1つずつ分解して解説
@@ -1056,13 +1148,18 @@ console.log(StatusLabel.Read);  // 結果: "読了"
 
 ```typescript
 enum Status {
-  Unread,    // 未読  （何も指定しないと自動で 0 が割り当てられる）
-  Reading,   // 読書中（自動で 1）
-  Read,      // 読了  （自動で 2）
+  // 未読  （何も指定しないと自動で 0 が割り当てられる）
+  Unread,
+  // 読書中（自動で 1）
+  Reading,
+  // 読了  （自動で 2）
+  Read,
 }
 
-const current: Status = Status.Reading;  // 「Statusグループの Reading」を取り出す
-console.log(current);                    // 結果: 1（Readingに割り当てられた番号）
+// 「Statusグループの Reading」を取り出す
+const current: Status = Status.Reading;
+// 結果: 1（Readingに割り当てられた番号）
+console.log(current);
 ```
 
 - `enum` は「**関連する選択肢（定数）をひとまとめにする**」キーワードです。`enum グループ名 { 選択肢1, 選択肢2, ... }` の形で書きます。
@@ -1082,7 +1179,8 @@ enum StatusLabel {
   Reading = "読書中",
   Read = "読了",
 }
-console.log(StatusLabel.Read);  // 結果: "読了"
+// 結果: "読了"
+console.log(StatusLabel.Read);
 ```
 
 - 各選択肢に `= "未読"` のように**値を明示**することもできます。ここでは番号ではなく文字列を割り当てています。
@@ -1100,10 +1198,13 @@ console.log(StatusLabel.Read);  // 結果: "読了"
 ```typescript
 // (1) typeof : 値が「文字列か数値か」などの基本の種類を調べる
 function describe(value: string | number): string {
-  if (typeof value === "string") {     // ← この { } の中では value は string として扱える
-    return "文字列の長さ: " + value.length;   // 文字列だけが持つ .length を安全に使える
+  // ← この { } の中では value は string として扱える
+  if (typeof value === "string") {
+    // 文字列だけが持つ .length を安全に使える
+    return "文字列の長さ: " + value.length;
   } else {
-    return "数値を2倍: " + value * 2;          // ここでは value は number として扱える
+    // ここでは value は number として扱える
+    return "数値を2倍: " + value * 2;
   }
 }
 
@@ -1111,7 +1212,8 @@ function describe(value: string | number): string {
 type Dog = { bark: () => void };
 type Cat = { meow: () => void };
 function speak(animal: Dog | Cat): void {
-  if ("bark" in animal) {              // bark というキーを持つ？ → 持つなら Dog
+  // bark というキーを持つ？ → 持つなら Dog
+  if ("bark" in animal) {
     animal.bark();
   } else {
     animal.meow();
@@ -1119,12 +1221,14 @@ function speak(animal: Dog | Cat): void {
 }
 
 // (3) 型述語 x is T : 「この関数が true を返したら、x は T 型だ」と教える自作の判定関数
-function isString(x: unknown): x is string {   // 戻り値の型を「x is string」と書くのがポイント
+// 戻り値の型を「x is string」と書くのがポイント
+function isString(x: unknown): x is string {
   return typeof x === "string";
 }
 const data: unknown = "こんにちは";
 if (isString(data)) {
-  console.log(data.toUpperCase());     // ← ここでは data は string として扱える
+  // ← ここでは data は string として扱える
+  console.log(data.toUpperCase());
 }
 ```
 
@@ -1136,10 +1240,13 @@ if (isString(data)) {
 
 ```typescript
 function describe(value: string | number): string {
-  if (typeof value === "string") {     // ← この { } の中では value は string として扱える
-    return "文字列の長さ: " + value.length;   // 文字列だけが持つ .length を安全に使える
+  // ← この { } の中では value は string として扱える
+  if (typeof value === "string") {
+    // 文字列だけが持つ .length を安全に使える
+    return "文字列の長さ: " + value.length;
   } else {
-    return "数値を2倍: " + value * 2;          // ここでは value は number として扱える
+    // ここでは value は number として扱える
+    return "数値を2倍: " + value * 2;
   }
 }
 ```
@@ -1157,7 +1264,8 @@ function describe(value: string | number): string {
 
 ```typescript
 function speak(animal: Dog | Cat): void {
-  if ("bark" in animal) {              // bark というキーを持つ？ → 持つなら Dog
+  // bark というキーを持つ？ → 持つなら Dog
+  if ("bark" in animal) {
     animal.bark();
   } else {
     animal.meow();
@@ -1177,12 +1285,14 @@ function speak(animal: Dog | Cat): void {
 ##### 解説3: 型述語 `x is T` で自作の判定関数を作る
 
 ```typescript
-function isString(x: unknown): x is string {   // 戻り値の型を「x is string」と書くのがポイント
+// 戻り値の型を「x is string」と書くのがポイント
+function isString(x: unknown): x is string {
   return typeof x === "string";
 }
 const data: unknown = "こんにちは";
 if (isString(data)) {
-  console.log(data.toUpperCase());     // ← ここでは data は string として扱える
+  // ← ここでは data は string として扱える
+  console.log(data.toUpperCase());
 }
 ```
 
@@ -1201,17 +1311,20 @@ if (isString(data)) {
 
 ```typescript
 // as const を付けない場合：ただの string と推論される（緩い）
-const status1 = "読了";                 // 型は string（後で別の文字列にも変えうる扱い）
+// 型は string（後で別の文字列にも変えうる扱い）
+const status1 = "読了";
 
 // as const を付ける場合：「まさに "読了" 」というリテラル型に固定される（厳密）
-const status2 = "読了" as const;        // 型は "読了"（この値そのもの）
+// 型は "読了"（この値そのもの）
+const status2 = "読了" as const;
 
 // 配列やオブジェクトに付けると、中身も丸ごと「変更不可・厳密」になる
 const statuses = ["未読", "読書中", "読了"] as const;
 // → 型は readonly ["未読", "読書中", "読了"]（中身を書き換えられない、厳密な並び）
 
 // この一覧から「どれか」を表す型を取り出せる（発展1のユニオン型になる）
-type Status = (typeof statuses)[number];   // "未読" | "読書中" | "読了"
+// "未読" | "読書中" | "読了"
+type Status = (typeof statuses)[number];
 ```
 
 #### ▼ コードを1つずつ分解して解説
@@ -1221,8 +1334,10 @@ type Status = (typeof statuses)[number];   // "未読" | "読書中" | "読了"
 ##### 解説1: `as const` の有無で型の厳しさが変わる
 
 ```typescript
-const status1 = "読了";                 // 型は string（後で別の文字列にも変えうる扱い）
-const status2 = "読了" as const;        // 型は "読了"（この値そのもの）
+// 型は string（後で別の文字列にも変えうる扱い）
+const status1 = "読了";
+// 型は "読了"（この値そのもの）
+const status2 = "読了" as const;
 ```
 
 - `const status1 = "読了"` だけだと、TypeScriptは型を `string`（文字列ならなんでも）と緩く推論します。
@@ -1239,7 +1354,8 @@ const status2 = "読了" as const;        // 型は "読了"（この値その�
 const statuses = ["未読", "読書中", "読了"] as const;
 // → 型は readonly ["未読", "読書中", "読了"]（中身を書き換えられない、厳密な並び）
 
-type Status = (typeof statuses)[number];   // "未読" | "読書中" | "読了"
+// "未読" | "読書中" | "読了"
+type Status = (typeof statuses)[number];
 ```
 
 - 配列に `as const` を付けると、**中身も丸ごと「書き換え不可（readonly）」で「厳密な値」**になります。`statuses` は「この3つの言葉が、この順で並んだ変えられないリスト」になります。
@@ -1257,20 +1373,26 @@ type Status = (typeof statuses)[number];   // "未読" | "読書中" | "読了"
 ```typescript
 type User = {
   name: string;
-  address?: {            // address は省略可能（無いかもしれない）
-    city?: string;       // city も省略可能
+  // address は省略可能（無いかもしれない）
+  address?: {
+    // city も省略可能
+    city?: string;
   };
 };
 
-const user: User = { name: "鈴木" };   // address を持たないユーザー
+// address を持たないユーザー
+const user: User = { name: "鈴木" };
 
 // ?. : 手前が null/undefined なら、そこで止めて undefined を返す（エラーにしない）
-const city = user.address?.city;       // address が無いので、city は undefined（エラーにならない）
+// address が無いので、city は undefined（エラーにならない）
+const city = user.address?.city;
 // もし普通に user.address.city と書くと、address が無いとき実行時エラーになる
 
 // ?? : 左が null/undefined のときだけ、右の値を使う
-const displayCity = user.address?.city ?? "未設定";  // city が無いので "未設定" になる
-console.log(displayCity);              // 結果: "未設定"
+// city が無いので "未設定" になる
+const displayCity = user.address?.city ?? "未設定";
+// 結果: "未設定"
+console.log(displayCity);
 ```
 
 #### ▼ コードを1つずつ分解して解説
@@ -1280,9 +1402,11 @@ console.log(displayCity);              // 結果: "未設定"
 ##### 解説1: `?.` で「無いかもしれない値」を安全にたどる
 
 ```typescript
-const user: User = { name: "鈴木" };   // address を持たないユーザー
+// address を持たないユーザー
+const user: User = { name: "鈴木" };
 
-const city = user.address?.city;       // address が無いので、city は undefined（エラーにならない）
+// address が無いので、city は undefined（エラーにならない）
+const city = user.address?.city;
 // もし普通に user.address.city と書くと、address が無いとき実行時エラーになる
 ```
 
@@ -1298,8 +1422,10 @@ const city = user.address?.city;       // address が無いので、city は und
 ##### 解説2: `??` で「無いとき用の代わりの値」を指定する
 
 ```typescript
-const displayCity = user.address?.city ?? "未設定";  // city が無いので "未設定" になる
-console.log(displayCity);              // 結果: "未設定"
+// city が無いので "未設定" になる
+const displayCity = user.address?.city ?? "未設定";
+// 結果: "未設定"
+console.log(displayCity);
 ```
 
 - `user.address?.city` は（前の解説のとおり）`undefined` になります。そのままでは画面に何も表示できません。
@@ -1319,15 +1445,20 @@ console.log(displayCity);              // 結果: "未設定"
 // <T> : 「これから決まる型」に T という仮の名前を付ける（型の入れ物）
 // (x: T) : 受け取る値の型は T / : T[] : 戻り値は「Tの配列」
 function wrap<T>(x: T): T[] {
-  return [x];                 // 受け取った値を1個だけ入れた配列にして返す
+  // 受け取った値を1個だけ入れた配列にして返す
+  return [x];
 }
 
-const a = wrap("本A");        // "本A" は文字列 → T は string と決まり、戻り値は string[]
-const b = wrap(123);          // 123 は数値   → T は number と決まり、戻り値は number[]
+// "本A" は文字列 → T は string と決まり、戻り値は string[]
+const a = wrap("本A");
+// 123 は数値   → T は number と決まり、戻り値は number[]
+const b = wrap(123);
 // a の型は string[]、b の型は number[] と、渡した値に合わせて自動で決まる
 
-console.log(a);               // 結果: ["本A"]
-console.log(b);               // 結果: [123]
+// 結果: ["本A"]
+console.log(a);
+// 結果: [123]
+console.log(b);
 ```
 
 #### ▼ コードを1つずつ分解して解説
@@ -1338,7 +1469,8 @@ console.log(b);               // 結果: [123]
 
 ```typescript
 function wrap<T>(x: T): T[] {
-  return [x];                 // 受け取った値を1個だけ入れた配列にして返す
+  // 受け取った値を1個だけ入れた配列にして返す
+  return [x];
 }
 ```
 
@@ -1353,8 +1485,10 @@ function wrap<T>(x: T): T[] {
 ##### 解説2: 呼び出した値に合わせて `T` が自動で決まる
 
 ```typescript
-const a = wrap("本A");        // "本A" は文字列 → T は string と決まり、戻り値は string[]
-const b = wrap(123);          // 123 は数値   → T は number と決まり、戻り値は number[]
+// "本A" は文字列 → T は string と決まり、戻り値は string[]
+const a = wrap("本A");
+// 123 は数値   → T は number と決まり、戻り値は number[]
+const b = wrap(123);
 ```
 
 - `wrap("本A")` のように**文字列**を渡すと、TypeScriptが「今回の `T` は `string` だ」と自動で判断します。だから戻り値 `a` の型は `string[]`（文字列の配列）になります。

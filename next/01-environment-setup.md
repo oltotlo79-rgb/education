@@ -430,8 +430,10 @@ node -v
 # 出力例: v14.17.0  ← 古すぎる（v18未満は本書で非対応）
 
 # nvm を使っている場合: LTS版を取得 → 切り替え
-nvm install --lts     # 最新LTSをダウンロード＆インストール
-nvm use --lts         # 「いま使うNode.js」をLTSに切り替え
+# 最新LTSをダウンロード＆インストール
+nvm install --lts
+# 「いま使うNode.js」をLTSに切り替え
+nvm use --lts
 
 # nvm を使っていない場合
 # → 公式サイトから最新 LTS 版をダウンロードして再インストール
@@ -573,25 +575,42 @@ source ~/.bashrc
 
 ```json
 {
-  "name": "book-management-app",                          // プロジェクト名。英小文字とハイフン推奨
-  "version": "1.0.0",                                     // 自分のプロジェクトのバージョン（後述のセマンティックバージョニング形式）
-  "description": "書籍管理 Web アプリケーション",         // プロジェクトの簡単な説明文（人間向け）
-  "main": "index.js",                                     // このパッケージを他から読み込む時のエントリー（入口）ファイル
-  "scripts": {                                            // `npm run <キー>` で実行できるショートカット集
-    "dev": "vite",                                        //   npm run dev → vite（開発サーバー起動）コマンドを実行
-    "build": "vite build",                                //   npm run build → 本番用にビルド（最適化変換）
-    "start": "node server.js",                            //   npm run start → node で server.js を起動
-    "test": "vitest"                                      //   npm run test → vitest でテスト実行
+  // プロジェクト名。英小文字とハイフン推奨
+  "name": "book-management-app",
+  // 自分のプロジェクトのバージョン（後述のセマンティックバージョニング形式）
+  "version": "1.0.0",
+  // プロジェクトの簡単な説明文（人間向け）
+  "description": "書籍管理 Web アプリケーション",
+  // このパッケージを他から読み込む時のエントリー（入口）ファイル
+  "main": "index.js",
+  // `npm run <キー>` で実行できるショートカット集
+  "scripts": {
+    //   npm run dev → vite（開発サーバー起動）コマンドを実行
+    "dev": "vite",
+    //   npm run build → 本番用にビルド（最適化変換）
+    "build": "vite build",
+    //   npm run start → node で server.js を起動
+    "start": "node server.js",
+    //   npm run test → vitest でテスト実行
+    "test": "vitest"
   },
-  "dependencies": {                                       // 本番でも必要なライブラリ。アプリ実行時に呼ばれるもの
-    "react": "^18.2.0",                                   //   React本体
-    "react-dom": "^18.2.0",                               //   ReactをDOM（ブラウザ）に描画するパッケージ
-    "express": "^4.18.2"                                  //   Webサーバーフレームワーク
+  // 本番でも必要なライブラリ。アプリ実行時に呼ばれるもの
+  "dependencies": {
+    //   React本体
+    "react": "^18.2.0",
+    //   ReactをDOM（ブラウザ）に描画するパッケージ
+    "react-dom": "^18.2.0",
+    //   Webサーバーフレームワーク
+    "express": "^4.18.2"
   },
-  "devDependencies": {                                    // 開発時だけ必要。本番デプロイには含めなくてOK
-    "vite": "^5.0.0",                                     //   ビルドツール
-    "vitest": "^1.0.0",                                   //   テストツール
-    "typescript": "^5.3.0"                                //   TypeScriptコンパイラ
+  // 開発時だけ必要。本番デプロイには含めなくてOK
+  "devDependencies": {
+    //   ビルドツール
+    "vite": "^5.0.0",
+    //   テストツール
+    "vitest": "^1.0.0",
+    //   TypeScriptコンパイラ
+    "typescript": "^5.3.0"
   }
 }
 ```
@@ -957,17 +976,28 @@ VS Code で `Ctrl + Shift + P`（Mac: `Cmd + Shift + P`）を押して「Prefere
 
 ```json
 {
-  "editor.formatOnSave": true,                            // ファイル保存時に自動でフォーマットを実行
-  "editor.defaultFormatter": "esbenp.prettier-vscode",    // デフォルトフォーマッターを Prettier に指定
-  "editor.tabSize": 2,                                    // Tab1回あたりのスペース数を2に
-  "editor.wordWrap": "on",                                // 長い行を画面幅で折り返して表示
-  "editor.minimap.enabled": false,                        // 右側のミニマップ（縮小プレビュー）を非表示
-  "editor.bracketPairColorization.enabled": true,         // 対応する括弧をペアごとに色分け
-  "editor.guides.bracketPairs": "active",                 // カーソル位置の括弧ガイドラインを表示
-  "files.autoSave": "onFocusChange",                      // 別のファイルに切り替えた瞬間に自動保存
-  "terminal.integrated.defaultProfile.windows": "Git Bash", // Windowsの統合ターミナルをGit Bashに
-  "emmet.includeLanguages": {                             // Emmet（HTML省略記法）を有効化する言語の追加設定
-    "javascript": "javascriptreact"                       //   .js ファイルでも JSX 用の Emmet を使えるようにする
+  // ファイル保存時に自動でフォーマットを実行
+  "editor.formatOnSave": true,
+  // デフォルトフォーマッターを Prettier に指定
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  // Tab1回あたりのスペース数を2に
+  "editor.tabSize": 2,
+  // 長い行を画面幅で折り返して表示
+  "editor.wordWrap": "on",
+  // 右側のミニマップ（縮小プレビュー）を非表示
+  "editor.minimap.enabled": false,
+  // 対応する括弧をペアごとに色分け
+  "editor.bracketPairColorization.enabled": true,
+  // カーソル位置の括弧ガイドラインを表示
+  "editor.guides.bracketPairs": "active",
+  // 別のファイルに切り替えた瞬間に自動保存
+  "files.autoSave": "onFocusChange",
+  // Windowsの統合ターミナルをGit Bashに
+  "terminal.integrated.defaultProfile.windows": "Git Bash",
+  // Emmet（HTML省略記法）を有効化する言語の追加設定
+  "emmet.includeLanguages": {
+    //   .js ファイルでも JSX 用の Emmet を使えるようにする
+    "javascript": "javascriptreact"
   }
 }
 ```
@@ -1190,7 +1220,8 @@ git status
 #   ①ステージング (git add)  ← どの変更を記録するかを選ぶ
 #   ②コミット   (git commit) ← 選んだ変更をスナップショットとして記録
 # こうすることで「複数の変更のうち一部だけまとめてコミット」ができる。
-git add README.md          # 引数 = 特定ファイル名。そのファイルだけ追加
+# 引数 = 特定ファイル名。そのファイルだけ追加
+git add README.md
 # git add .                # 引数 . は「カレントフォルダ以下の全変更」。よく使う
 
 
@@ -1212,8 +1243,10 @@ git commit -m "最初のコミット: READMEを追加"
 # ----------------------------------------------------------------------------
 # git log だけだと1コミットあたり数行使うので画面が長くなる。
 # --oneline で1行に圧縮表示できる。
-git log                    # 通常表示: 1コミットあたり 作者/日時/メッセージ で4-5行
-git log --oneline          # 1行表示: ハッシュとメッセージのみ。一覧性◎
+# 通常表示: 1コミットあたり 作者/日時/メッセージ で4-5行
+git log
+# 1行表示: ハッシュとメッセージのみ。一覧性◎
+git log --oneline
 # ▼ 出力例（git log --oneline）
 # 1a2b3c4 (HEAD -> main) 最初のコミット: READMEを追加
 ```
@@ -1497,16 +1530,22 @@ ls -la
 # -rw-r--r--  1 yuya  staff  200  1  1 12:00 package.json
 
 # フォルダの移動
-cd Documents          # サブフォルダ Documents に入る
-cd ..                 # .. は「一つ上」の意味。親フォルダへ移動
-cd ~                  # ~ はホームフォルダ。引数なしの cd でも同じ
-cd /c/Users/yuya      # 絶対パスで移動（Git BashでのWindowsパス表記）
+# サブフォルダ Documents に入る
+cd Documents
+# .. は「一つ上」の意味。親フォルダへ移動
+cd ..
+# ~ はホームフォルダ。引数なしの cd でも同じ
+cd ~
+# 絶対パスで移動（Git BashでのWindowsパス表記）
+cd /c/Users/yuya
 
 # フォルダの作成
-mkdir my-project                # 単一フォルダ作成
+# 単一フォルダ作成
+mkdir my-project
 # -p は parents の略。途中のフォルダがなくても順に作成
 # 普通の mkdir は親が無いとエラーになるが、-p は中間フォルダも自動生成
-mkdir -p src/components/ui      # src/components/ui を一気に作成
+# src/components/ui を一気に作成
+mkdir -p src/components/ui
 
 # ファイルの作成
 # touch : ファイルの「最終更新日時」を現在に変更するコマンド
@@ -1517,14 +1556,17 @@ echo "Hello" > hello.txt
 
 # ファイルのコピー
 # cp = "copy" の略
-cp file.txt file-backup.txt     # 第1引数を第2引数の名前でコピー
+# 第1引数を第2引数の名前でコピー
+cp file.txt file-backup.txt
 # -r は recursive（再帰的）の略。フォルダごとコピーする場合に必須
 cp -r src/ src-backup/
 
 # ファイルの移動・リネーム
 # mv = "move" の略。リネームも実は「同じフォルダ内への移動」扱い
-mv old-name.txt new-name.txt    # ファイル名変更
-mv file.txt Documents/          # ファイルをフォルダに移動
+# ファイル名変更
+mv old-name.txt new-name.txt
+# ファイルをフォルダに移動
+mv file.txt Documents/
 
 # ファイルの削除
 # rm = "remove" の略。ゴミ箱を経由せず即削除
@@ -1599,14 +1641,20 @@ grep -r "TODO" src/
 
 # 相対パス（relative path）: 現在のフォルダを基準にした書き方
 # どこにいるかで指す先が変わる
-./src/App.tsx           # ./ は「ここ」。カレントフォルダ内の src/App.tsx
-../other-project/       # ../ は「一つ上」。親フォルダの中の other-project
-../../                  # ../../ で「二つ上」。連結で何段でも遡れる
+# ./ は「ここ」。カレントフォルダ内の src/App.tsx
+./src/App.tsx
+# ../ は「一つ上」。親フォルダの中の other-project
+../other-project/
+# ../../ で「二つ上」。連結で何段でも遡れる
+../../
 
 # 特殊なパス記号
-~                       # チルダ。あなたのホームフォルダ（例: /c/Users/yuya）
-.                       # ピリオド単独。現在のフォルダ
-..                      # ピリオド2つ。一つ上のフォルダ
+# チルダ。あなたのホームフォルダ（例: /c/Users/yuya）
+~
+# ピリオド単独。現在のフォルダ
+.
+# ピリオド2つ。一つ上のフォルダ
+..
 ```
 
 ### 5.5 ターミナルのトラブルシューティング
@@ -1674,19 +1722,23 @@ echo "=== 開発環境チェック ==="
 echo ""
 
 echo "1. Node.js:"
-node -v                                  # Node.js のバージョン表示
+# Node.js のバージョン表示
+node -v
 echo ""
 
 echo "2. npm:"
-npm -v                                   # npm のバージョン表示
+# npm のバージョン表示
+npm -v
 echo ""
 
 echo "3. Git:"
-git --version                            # Git のバージョン表示
+# Git のバージョン表示
+git --version
 echo ""
 
 echo "4. VS Code:"
-code --version                           # VS Code のバージョン表示（3行出力）
+# VS Code のバージョン表示（3行出力）
+code --version
 echo ""
 
 echo "=== チェック完了 ==="
@@ -1798,15 +1850,21 @@ Node.js バージョン: v20.11.0
 
 ```bash
 # 5. Git の動作確認
-cd ~/Desktop/env-test       # 念のためテストフォルダに移動
-git init                    # このフォルダを Git 管理下にする（.git/ ができる）
-git add .                   # カレントフォルダ以下の全変更をステージに追加
-git commit -m "環境テスト: 初回コミット"   # 履歴にコミットを記録
-git log --oneline           # コミット履歴を1行表示で確認
+# 念のためテストフォルダに移動
+cd ~/Desktop/env-test
+# このフォルダを Git 管理下にする（.git/ ができる）
+git init
+# カレントフォルダ以下の全変更をステージに追加
+git add .
+# 履歴にコミットを記録
+git commit -m "環境テスト: 初回コミット"
+# コミット履歴を1行表示で確認
+git log --oneline
 
 # 6. テストフォルダを削除（任意）
 # rm -rf : 中身ごとフォルダを強制削除。実行前に必ずパスを確認
-cd ~/Desktop                # 削除対象から外に出る（中にいると削除に失敗する場合あり）
+# 削除対象から外に出る（中にいると削除に失敗する場合あり）
+cd ~/Desktop
 rm -rf env-test
 ```
 

@@ -115,10 +115,14 @@ create table books (
   -- primary key      : 「主キー」。各行を一意に識別する特別な列
   -- default gen_random_uuid() : 値を省略したら自動でランダムなIDを振る
 
-  title text not null,         -- title : 本のタイトル。text型（文字列）/ not null = 空は許さない（必須）
-  author text not null,        -- author : 著者名。必須
-  status text not null default '未読',  -- status : 読書状態。省略時は '未読' になる（default）
-  memo text,                   -- memo : メモ。not nullが無いので空でもOK（省略可能）
+  -- title : 本のタイトル。text型（文字列）/ not null = 空は許さない（必須）
+  title text not null,
+  -- author : 著者名。必須
+  author text not null,
+  -- status : 読書状態。省略時は '未読' になる（default）
+  status text not null default '未読',
+  -- memo : メモ。not nullが無いので空でもOK（省略可能）
+  memo text,
 
   -- created_at : 登録日時。timestamp型で、登録時の時刻が自動で入る
   created_at timestamp with time zone default now()
@@ -282,11 +286,16 @@ alter table books enable row level security;
 
 -- create policy : アクセスを許可する「ポリシー（規則）」を作る
 -- 学習用に「全員に全操作を許可」する規則を作成（本番アプリでは後で厳しくする）
-create policy "Enable all access for books"   -- ポリシーの名前（自由）
-  on books                                    -- 対象テーブル
-  for all                                     -- for all : 全操作（読み・書き・更新・削除）を対象に
-  using (true)                                -- using (true) : 読み取り条件＝常に許可
-  with check (true);                          -- with check (true) : 書き込み条件＝常に許可
+-- ポリシーの名前（自由）
+create policy "Enable all access for books"
+  -- 対象テーブル
+  on books
+  -- for all : 全操作（読み・書き・更新・削除）を対象に
+  for all
+  -- using (true) : 読み取り条件＝常に許可
+  using (true)
+  -- with check (true) : 書き込み条件＝常に許可
+  with check (true);
 ```
 
 > **「RLS（Row Level Security）」とは？** 「行（Row）ごとに、誰がアクセスできるかを制御するセキュリティ」のこと。本来は「自分のデータは自分しか見られない」のように細かく制御します。本書は学習用なので一旦「全員OK」にしますが、**実際に公開するアプリでは必ず適切に制限**してください（第10章で再度触れます）。
@@ -314,9 +323,12 @@ alter table books enable row level security;
 ##### 解説2: 許可ルールを作る（`create policy` の対象指定）
 
 ```sql
-create policy "Enable all access for books"   -- ポリシーの名前（自由）
-  on books                                    -- 対象テーブル
-  for all                                     -- for all : 全操作（読み・書き・更新・削除）を対象に
+-- ポリシーの名前（自由）
+create policy "Enable all access for books"
+  -- 対象テーブル
+  on books
+  -- for all : 全操作（読み・書き・更新・削除）を対象に
+  for all
 ```
 
 - `create policy`（クリエイト・ポリシー）は「**アクセスを許可するルール（ポリシー）を作りなさい**」という命令です。
@@ -331,8 +343,10 @@ create policy "Enable all access for books"   -- ポリシーの名前（自由�
 ##### 解説3: 許可する条件（`using` と `with check`）
 
 ```sql
-  using (true)                                -- using (true) : 読み取り条件＝常に許可
-  with check (true);                          -- with check (true) : 書き込み条件＝常に許可
+  -- using (true) : 読み取り条件＝常に許可
+  using (true)
+  -- with check (true) : 書き込み条件＝常に許可
+  with check (true);
 ```
 
 - `using (...)` は「**読み取り・削除などで、どの行を対象にしてよいか**」の条件です。カッコ内が `true` になる行だけが対象になります。
@@ -410,21 +424,29 @@ EXPO_PUBLIC_SUPABASE_ANON_KEY=あなたのanon_publicキー
 ```ts
 // lib/supabase.ts — Supabaseへの接続を作る共通ファイル
 
-import "react-native-url-polyfill/auto";              // RNでURL機能を有効化（おまじない。先頭で読み込む）
-import AsyncStorage from "@react-native-async-storage/async-storage"; // 端末保存の部品
-import { createClient } from "@supabase/supabase-js"; // Supabaseクライアントを作る関数を借りる
+// RNでURL機能を有効化（おまじない。先頭で読み込む）
+import "react-native-url-polyfill/auto";
+// 端末保存の部品
+import AsyncStorage from "@react-native-async-storage/async-storage";
+// Supabaseクライアントを作る関数を借りる
+import { createClient } from "@supabase/supabase-js";
 
 // process.env.XXX : .envファイルに書いた環境変数を読み取る書き方
-const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL!;        // 末尾の ! は「nullではないと保証」する印
+// 末尾の ! は「nullではないと保証」する印
+const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!;
 
 // createClient(URL, キー, 設定) : Supabaseへの接続オブジェクトを作る
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
-    storage: AsyncStorage,        // ログイン状態を端末(AsyncStorage)に保存する設定
-    autoRefreshToken: true,       // 認証トークンを自動更新する
-    persistSession: true,         // セッション（ログイン状態）を保持する
-    detectSessionInUrl: false,    // URLからのセッション検出はモバイルでは不要なのでオフ
+    // ログイン状態を端末(AsyncStorage)に保存する設定
+    storage: AsyncStorage,
+    // 認証トークンを自動更新する
+    autoRefreshToken: true,
+    // セッション（ログイン状態）を保持する
+    persistSession: true,
+    // URLからのセッション検出はモバイルでは不要なのでオフ
+    detectSessionInUrl: false,
   },
 });
 // export しているので、他のファイルから import { supabase } from "../lib/supabase" で使える
@@ -449,9 +471,12 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 ##### 解説1: 必要な部品を借りる（`import`）
 
 ```ts
-import "react-native-url-polyfill/auto";              // RNでURL機能を有効化（おまじない。先頭で読み込む）
-import AsyncStorage from "@react-native-async-storage/async-storage"; // 端末保存の部品
-import { createClient } from "@supabase/supabase-js"; // Supabaseクライアントを作る関数を借りる
+// RNでURL機能を有効化（おまじない。先頭で読み込む）
+import "react-native-url-polyfill/auto";
+// 端末保存の部品
+import AsyncStorage from "@react-native-async-storage/async-storage";
+// Supabaseクライアントを作る関数を借りる
+import { createClient } from "@supabase/supabase-js";
 ```
 
 - `import`（インポート）は「**他のファイルやライブラリの機能を借りてくる**」命令です。このファイルの先頭に並べます。
@@ -466,7 +491,8 @@ import { createClient } from "@supabase/supabase-js"; // Supabaseクライアン
 ##### 解説2: 接続情報を読み取る（`process.env` と `!`）
 
 ```ts
-const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL!;        // 末尾の ! は「nullではないと保証」する印
+// 末尾の ! は「nullではないと保証」する印
+const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!;
 ```
 
@@ -483,10 +509,14 @@ const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!;
 ```ts
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
-    storage: AsyncStorage,        // ログイン状態を端末(AsyncStorage)に保存する設定
-    autoRefreshToken: true,       // 認証トークンを自動更新する
-    persistSession: true,         // セッション（ログイン状態）を保持する
-    detectSessionInUrl: false,    // URLからのセッション検出はモバイルでは不要なのでオフ
+    // ログイン状態を端末(AsyncStorage)に保存する設定
+    storage: AsyncStorage,
+    // 認証トークンを自動更新する
+    autoRefreshToken: true,
+    // セッション（ログイン状態）を保持する
+    persistSession: true,
+    // URLからのセッション検出はモバイルでは不要なのでオフ
+    detectSessionInUrl: false,
   },
 });
 ```
@@ -508,7 +538,8 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 
 ```tsx
 import { useEffect } from "react";
-import { supabase } from "../../lib/supabase";   // 作った接続オブジェクトを借りる（パスは場所に応じて調整）
+// 作った接続オブジェクトを借りる（パスは場所に応じて調整）
+import { supabase } from "../../lib/supabase";
 
 export default function HomeScreen() {
   // useEffect : 画面表示時に1回だけ実行（第3章参照）
@@ -519,9 +550,11 @@ export default function HomeScreen() {
       // await : 結果が返るまで待つ / { data, error } : 結果を分割代入で受け取る
       const { data, error } = await supabase.from("books").select("*");
       if (error) {
-        console.log("接続エラー:", error.message);   // 失敗時はエラー内容を表示
+        // 失敗時はエラー内容を表示
+        console.log("接続エラー:", error.message);
       } else {
-        console.log("取得した本:", data);            // 成功時はデータを表示
+        // 成功時はデータを表示
+        console.log("取得した本:", data);
       }
     };
     test();
@@ -545,7 +578,8 @@ export default function HomeScreen() {
 
 ```tsx
 import { useEffect } from "react";
-import { supabase } from "../../lib/supabase";   // 作った接続オブジェクトを借りる（パスは場所に応じて調整）
+// 作った接続オブジェクトを借りる（パスは場所に応じて調整）
+import { supabase } from "../../lib/supabase";
 ```
 
 - `import { useEffect } from "react"` で、Reactから `useEffect`（画面表示時などに処理を動かす道具。第3章参照）を名指しで借りています。
@@ -577,9 +611,11 @@ import { supabase } from "../../lib/supabase";   // 作った接続オブジェ�
     const test = async () => {
       const { data, error } = await supabase.from("books").select("*");
       if (error) {
-        console.log("接続エラー:", error.message);   // 失敗時はエラー内容を表示
+        // 失敗時はエラー内容を表示
+        console.log("接続エラー:", error.message);
       } else {
-        console.log("取得した本:", data);            // 成功時はデータを表示
+        // 成功時はデータを表示
+        console.log("取得した本:", data);
       }
     };
     test();
@@ -609,19 +645,24 @@ import { supabase } from "../../lib/supabase";   // 作った接続オブジェ�
 
 ```ts
 // auth-example.ts — 認証(ログイン機能)の基本4操作
-import { supabase } from "../lib/supabase"; // 4.4で作った接続オブジェクトを借りる
+// 4.4で作った接続オブジェクトを借りる
+import { supabase } from "../lib/supabase";
 
 // (1) サインアップ：メールとパスワードで新しいユーザーを登録する
 async function signUp(email: string, password: string) {
   // signUp(...) : 新規ユーザーを作る命令。結果は { data, error } で返る
   const { data, error } = await supabase.auth.signUp({
-    email,       // 登録するメールアドレス
-    password,    // 登録するパスワード
+    // 登録するメールアドレス
+    email,
+    // 登録するパスワード
+    password,
   });
   if (error) {
-    console.log("登録エラー:", error.message); // 失敗時はエラー内容
+    // 失敗時はエラー内容
+    console.log("登録エラー:", error.message);
   } else {
-    console.log("登録できたユーザー:", data.user); // 成功時は作られたユーザー情報
+    // 成功時は作られたユーザー情報
+    console.log("登録できたユーザー:", data.user);
   }
 }
 
@@ -653,7 +694,8 @@ async function getCurrentUser() {
   if (error) {
     console.log("取得エラー:", error.message);
   } else {
-    console.log("現在のユーザー:", data.user); // 未ログインなら user は null
+    // 未ログインなら user は null
+    console.log("現在のユーザー:", data.user);
   }
 }
 ```
@@ -743,14 +785,18 @@ drop policy if exists "Enable all access for books" on books;
 -- (1) 読み取り：自分の行だけ見られる
 create policy "select_own_books"
   on books
-  for select                       -- select : 読み取り操作だけが対象
-  using (auth.uid() = user_id);    -- ログイン中の人のIDと、行の持ち主が一致する行だけ
+  -- select : 読み取り操作だけが対象
+  for select
+  -- ログイン中の人のIDと、行の持ち主が一致する行だけ
+  using (auth.uid() = user_id);
 
 -- (2) 追加：自分のIDが入った行だけ作れる
 create policy "insert_own_books"
   on books
-  for insert                       -- insert : 追加操作が対象
-  with check (auth.uid() = user_id); -- 書き込む行の user_id が自分のIDのときだけ許可
+  -- insert : 追加操作が対象
+  for insert
+  -- 書き込む行の user_id が自分のIDのときだけ許可
+  with check (auth.uid() = user_id);
 
 -- (3) 更新・削除：自分の行だけ変更・削除できる
 create policy "update_own_books"
@@ -853,8 +899,10 @@ async function uploadCover(file: Blob, fileName: string) {
   // (1) アップロード先：storage.from("バケット名") で保管庫の場所を指定
   //     "covers" は事前にダッシュボードで作っておく「バケット(入れ物)」の名前
   const { data, error } = await supabase.storage
-    .from("covers")              // covers というバケット(入れ物)に
-    .upload(fileName, file);     // fileName という名前で file を保存する
+    // covers というバケット(入れ物)に
+    .from("covers")
+    // fileName という名前で file を保存する
+    .upload(fileName, file);
 
   if (error) {
     console.log("アップロード失敗:", error.message);
@@ -864,9 +912,11 @@ async function uploadCover(file: Blob, fileName: string) {
   // (2) 公開URLを取得：保存したファイルのインターネット上の住所を得る
   const { data: urlData } = supabase.storage
     .from("covers")
-    .getPublicUrl(fileName);     // fileName のファイルの公開URLを作る
+    // fileName のファイルの公開URLを作る
+    .getPublicUrl(fileName);
 
-  console.log("画像URL:", urlData.publicUrl); // <Image source={{ uri: ... }} で表示できる
+  // <Image source={{ uri: ... }} で表示できる
+  console.log("画像URL:", urlData.publicUrl);
   return urlData.publicUrl;
 }
 ```
@@ -972,7 +1022,8 @@ async function getUnreadOrReading() {
   const { data } = await supabase
     .from("books")
     .select("*")
-    .or("status.eq.未読,status.eq.読書中"); // status が '未読' か '読書中'
+    // status が '未読' か '読書中'
+    .or("status.eq.未読,status.eq.読書中");
   return data;
 }
 
@@ -981,8 +1032,10 @@ async function getByAuthorAndStatus() {
   const { data } = await supabase
     .from("books")
     .select("*")
-    .eq("author", "鈴木 僚太") // eq : 「等しい」条件。author が一致
-    .eq("status", "未読");      // つなげると「両方を満たす(AND)」になる
+    // eq : 「等しい」条件。author が一致
+    .eq("author", "鈴木 僚太")
+    // つなげると「両方を満たす(AND)」になる
+    .eq("status", "未読");
   return data;
 }
 
@@ -991,7 +1044,8 @@ async function getByStatusList() {
   const { data } = await supabase
     .from("books")
     .select("*")
-    .in("status", ["読了", "読書中"]); // status がリストのどれかに一致
+    // status がリストのどれかに一致
+    .in("status", ["読了", "読書中"]);
   return data;
 }
 
@@ -1000,7 +1054,8 @@ async function getFirstPage() {
   const { data } = await supabase
     .from("books")
     .select("*")
-    .range(0, 9); // 0始まりで「0〜9」= 10件。ページ送りに使う
+    // 0始まりで「0〜9」= 10件。ページ送りに使う
+    .range(0, 9);
   return data;
 }
 ```
@@ -1056,7 +1111,8 @@ async function getFirstPage() {
 ##### 解説4: 件数を指定して取る（`.range(...)`）
 
 ```ts
-.range(0, 9); // 0番目〜9番目（最初の10件）
+// 0番目〜9番目（最初の10件）
+.range(0, 9);
 ```
 
 - `.range(開始, 終了)` は「**○番目から○番目までの行だけ取る**」指定です。番号は**0始まり**なので、`range(0, 9)` は「0,1,2,…,9 の計10件」になります。
@@ -1081,12 +1137,14 @@ async function saveBook() {
   const { data, error } = await supabase
     .from("books")
     .upsert({
-      id: "11111111-1111-1111-1111-111111111111", // このidが既にあれば更新対象になる
+      // このidが既にあれば更新対象になる
+      id: "11111111-1111-1111-1111-111111111111",
       title: "リーダブルコード",
       author: "Dustin Boswell",
       status: "読了",
     })
-    .select(); // .select() を付けると、追加/更新後の行を結果として受け取れる
+    // .select() を付けると、追加/更新後の行を結果として受け取れる
+    .select();
 
   if (error) {
     console.log("保存エラー:", error.message);
@@ -1134,18 +1192,24 @@ function useBooksRealtime() {
     const channel = supabase
       .channel("books-changes")
       .on(
-        "postgres_changes", // postgres_changes : DB(Postgres)の変更を監視する種類
+        // postgres_changes : DB(Postgres)の変更を監視する種類
+        "postgres_changes",
         {
-          event: "*",       // * : 追加(insert)・更新(update)・削除(delete)すべてを対象
-          schema: "public", // 監視するスキーマ(通常 public)
-          table: "books",   // 監視するテーブル名
+          // * : 追加(insert)・更新(update)・削除(delete)すべてを対象
+          event: "*",
+          // 監視するスキーマ(通常 public)
+          schema: "public",
+          // 監視するテーブル名
+          table: "books",
         },
         (payload) => {
           // 変更が起きるたびに、この関数が自動で呼ばれる
-          console.log("変更を受信:", payload); // payload に「何がどう変わったか」が入る
+          // payload に「何がどう変わったか」が入る
+          console.log("変更を受信:", payload);
         }
       )
-      .subscribe(); // subscribe() : 購読(受信)を開始する
+      // subscribe() : 購読(受信)を開始する
+      .subscribe();
 
     // 画面を閉じるときに購読を解除する（後片付け）
     return () => {
