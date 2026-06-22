@@ -153,27 +153,25 @@ Claude CodeはAnthropicが提供する公式CLIツールで、ターミナル上
 
 Claude Codeは4層のスコープで設定を管理します。**最も具体的なスコープが優先**されます。「スコープ」とは設定が効く範囲のこと。「自分のマシン全体」よりも「いまのプロジェクトだけ」のほうがより具体的、という意味です。
 
-```
-優先度: 高 ← → 低
-
-┌─────────────────────────────────────────────────────────┐
-│ Managed（企業管理者向け）                                  │
-│ 場所: C:\Program Files\ClaudeCode\settings.json          │
-│ 対象: マシン全ユーザー、IT管理者が制御                      │
-├─────────────────────────────────────────────────────────┤
-│ User（個人設定）                                          │
-│ 場所: ~/.claude/settings.json                            │
-│ 対象: 自分の全プロジェクト共通                              │
-├─────────────────────────────────────────────────────────┤
-│ Project（プロジェクト設定）                                │
-│ 場所: .claude/settings.json                              │
-│ 対象: このリポジトリの全メンバー（Git管理可能）              │
-├─────────────────────────────────────────────────────────┤
-│ Local（ローカル設定）                                     │
-│ 場所: .claude/settings.local.json                        │
-│ 対象: 自分のこのプロジェクトのみ（gitignore推奨）           │
-└─────────────────────────────────────────────────────────┘
-```
+<div style="max-width: 680px; margin: 18px auto;">
+  <div style="display:inline-block; font-size:12px; color:#475569; background:#f1f5f9; border-radius:6px; padding:5px 12px; margin-bottom:12px;">優先度: <b style="color:#dc2626;">高</b> ←──────→ <b style="color:#2563eb;">低</b>（より具体的なスコープが優先）</div>
+  <div style="border:1px solid #e2e8f0; border-left:4px solid #3b82f6; border-radius:8px; padding:11px 15px; margin-bottom:9px; background:#fff; box-shadow:0 1px 4px rgba(0,0,0,0.04);">
+    <div style="font-weight:700; color:#0f172a; font-size:13px;">Managed（企業管理者向け）</div>
+    <div style="font-size:12px; color:#475569; margin-top:4px; line-height:1.8;">場所: <code>C:\Program Files\ClaudeCode\settings.json</code><br>対象: マシン全ユーザー、IT 管理者が制御</div>
+  </div>
+  <div style="border:1px solid #e2e8f0; border-left:4px solid #3b82f6; border-radius:8px; padding:11px 15px; margin-bottom:9px; background:#fff; box-shadow:0 1px 4px rgba(0,0,0,0.04);">
+    <div style="font-weight:700; color:#0f172a; font-size:13px;">User（個人設定）</div>
+    <div style="font-size:12px; color:#475569; margin-top:4px; line-height:1.8;">場所: <code>~/.claude/settings.json</code><br>対象: 自分の全プロジェクト共通</div>
+  </div>
+  <div style="border:1px solid #e2e8f0; border-left:4px solid #3b82f6; border-radius:8px; padding:11px 15px; margin-bottom:9px; background:#fff; box-shadow:0 1px 4px rgba(0,0,0,0.04);">
+    <div style="font-weight:700; color:#0f172a; font-size:13px;">Project（プロジェクト設定）</div>
+    <div style="font-size:12px; color:#475569; margin-top:4px; line-height:1.8;">場所: <code>.claude/settings.json</code><br>対象: このリポジトリの全メンバー（Git 管理可能）</div>
+  </div>
+  <div style="border:1px solid #e2e8f0; border-left:4px solid #3b82f6; border-radius:8px; padding:11px 15px; background:#fff; box-shadow:0 1px 4px rgba(0,0,0,0.04);">
+    <div style="font-weight:700; color:#0f172a; font-size:13px;">Local（ローカル設定）</div>
+    <div style="font-size:12px; color:#475569; margin-top:4px; line-height:1.8;">場所: <code>.claude/settings.local.json</code><br>対象: 自分のこのプロジェクトのみ（gitignore 推奨）</div>
+  </div>
+</div>
 
 `~` (チルダ) はホームディレクトリの略記号で、Windows では `C:\Users\<ユーザー名>` を指します。`.claude` のように先頭にドットが付くフォルダは「隠しフォルダ」で、エクスプローラの設定によっては見えません。
 
@@ -2042,57 +2040,47 @@ Phase 7-7: デプロイ・最終調整
 
 ### 9-2. 1機能の実装フロー（黄金パターン）
 
-```
-┌──────────────────────────────────────────────┐
-│ Step 1: 仕様の説明（プロンプト）                 │
-│ 「○○機能を実装します。仕様は以下...」             │
-│ 「まだコードは書かないで、実装方針を説明して」      │
-└──────────┬───────────────────────────────────┘
-           ↓
-┌──────────────────────────────────────────────┐
-│ Step 2: Claude が実装方針を回答                  │
-│ 「以下の手順で実装します: 1. ... 2. ... 3. ...」  │
-└──────────┬───────────────────────────────────┘
-           ↓
-┌──────────────────────────────────────────────┐
-│ Step 3: 方針を確認・修正指示                     │
-│ 「方針OKです。ただし○○は△△に変更して」            │
-│ または「いいですね、進めてください」                │
-└──────────┬───────────────────────────────────┘
-           ↓
-┌──────────────────────────────────────────────┐
-│ Step 4: 実装（Claude がコード生成）               │
-│ ※ 大きい機能は分割して段階的に実装                 │
-│ 「まず○○だけ実装して。完了したら止まって」          │
-└──────────┬───────────────────────────────────┘
-           ↓
-┌──────────────────────────────────────────────┐
-│ Step 5: 動作確認                                │
-│ npm run dev でブラウザ確認                        │
-│ エラーがあれば詳細を伝えて修正依頼                  │
-└──────────┬───────────────────────────────────┘
-           ↓
-┌──────────────────────────────────────────────┐
-│ Step 6: コードレビュー                           │
-│ /review を実行                                   │
-│ または手動でレビュー依頼                           │
-└──────────┬───────────────────────────────────┘
-           ↓
-┌──────────────────────────────────────────────┐
-│ Step 7: テスト作成                               │
-│ /create-component で雛形があればテストも含まれる     │
-│ 追加テストが必要なら test-writer agent に委任       │
-└──────────┬───────────────────────────────────┘
-           ↓
-┌──────────────────────────────────────────────┐
-│ Step 8: コミット                                │
-│ /commit を実行                                   │
-│ 日本語メッセージ + プレフィックス                   │
-│ ※ コミット前に必ず git diff を自分の目で確認       │
-└──────────┬───────────────────────────────────┘
-           ↓
-        次の機能へ
-```
+<div style="max-width:560px; margin:14px auto 0; border:1px solid #e2e8f0; border-radius:8px; padding:10px 15px; background:#fff; box-shadow:0 1px 4px rgba(0,0,0,0.04);">
+  <div style="font-weight:700; color:#1e40af; font-size:13px;">Step 1: 仕様の説明（プロンプト）</div>
+  <div style="font-size:12px; color:#475569; margin-top:4px; line-height:1.8;">「○○機能を実装します。仕様は以下...」<br>「まだコードは書かないで、実装方針を説明して」</div>
+</div>
+<div style="width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:9px solid #cbd5e1;margin:6px auto;"></div>
+<div style="max-width:560px; margin:0 auto; border:1px solid #e2e8f0; border-radius:8px; padding:10px 15px; background:#fff; box-shadow:0 1px 4px rgba(0,0,0,0.04);">
+  <div style="font-weight:700; color:#1e40af; font-size:13px;">Step 2: Claude が実装方針を回答</div>
+  <div style="font-size:12px; color:#475569; margin-top:4px; line-height:1.8;">「以下の手順で実装します: 1. ... 2. ... 3. ...」</div>
+</div>
+<div style="width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:9px solid #cbd5e1;margin:6px auto;"></div>
+<div style="max-width:560px; margin:0 auto; border:1px solid #e2e8f0; border-radius:8px; padding:10px 15px; background:#fff; box-shadow:0 1px 4px rgba(0,0,0,0.04);">
+  <div style="font-weight:700; color:#1e40af; font-size:13px;">Step 3: 方針を確認・修正指示</div>
+  <div style="font-size:12px; color:#475569; margin-top:4px; line-height:1.8;">「方針 OK です。ただし○○は△△に変更して」<br>または「いいですね、進めてください」</div>
+</div>
+<div style="width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:9px solid #cbd5e1;margin:6px auto;"></div>
+<div style="max-width:560px; margin:0 auto; border:1px solid #e2e8f0; border-radius:8px; padding:10px 15px; background:#fff; box-shadow:0 1px 4px rgba(0,0,0,0.04);">
+  <div style="font-weight:700; color:#1e40af; font-size:13px;">Step 4: 実装（Claude がコード生成）</div>
+  <div style="font-size:12px; color:#475569; margin-top:4px; line-height:1.8;">※ 大きい機能は分割して段階的に実装<br>「まず○○だけ実装して。完了したら止まって」</div>
+</div>
+<div style="width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:9px solid #cbd5e1;margin:6px auto;"></div>
+<div style="max-width:560px; margin:0 auto; border:1px solid #e2e8f0; border-radius:8px; padding:10px 15px; background:#fff; box-shadow:0 1px 4px rgba(0,0,0,0.04);">
+  <div style="font-weight:700; color:#1e40af; font-size:13px;">Step 5: 動作確認</div>
+  <div style="font-size:12px; color:#475569; margin-top:4px; line-height:1.8;"><code>npm run dev</code> でブラウザ確認<br>エラーがあれば詳細を伝えて修正依頼</div>
+</div>
+<div style="width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:9px solid #cbd5e1;margin:6px auto;"></div>
+<div style="max-width:560px; margin:0 auto; border:1px solid #e2e8f0; border-radius:8px; padding:10px 15px; background:#fff; box-shadow:0 1px 4px rgba(0,0,0,0.04);">
+  <div style="font-weight:700; color:#1e40af; font-size:13px;">Step 6: コードレビュー</div>
+  <div style="font-size:12px; color:#475569; margin-top:4px; line-height:1.8;"><code>/review</code> を実行<br>または手動でレビュー依頼</div>
+</div>
+<div style="width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:9px solid #cbd5e1;margin:6px auto;"></div>
+<div style="max-width:560px; margin:0 auto; border:1px solid #e2e8f0; border-radius:8px; padding:10px 15px; background:#fff; box-shadow:0 1px 4px rgba(0,0,0,0.04);">
+  <div style="font-weight:700; color:#1e40af; font-size:13px;">Step 7: テスト作成</div>
+  <div style="font-size:12px; color:#475569; margin-top:4px; line-height:1.8;"><code>/create-component</code> で雛形があればテストも含まれる<br>追加テストが必要なら test-writer agent に委任</div>
+</div>
+<div style="width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:9px solid #cbd5e1;margin:6px auto;"></div>
+<div style="max-width:560px; margin:0 auto; border:1px solid #e2e8f0; border-radius:8px; padding:10px 15px; background:#fff; box-shadow:0 1px 4px rgba(0,0,0,0.04);">
+  <div style="font-weight:700; color:#1e40af; font-size:13px;">Step 8: コミット</div>
+  <div style="font-size:12px; color:#475569; margin-top:4px; line-height:1.8;"><code>/commit</code> を実行<br>日本語メッセージ + プレフィックス<br>※ コミット前に必ず <code>git diff</code> を自分の目で確認</div>
+</div>
+<div style="width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:9px solid #cbd5e1;margin:6px auto;"></div>
+<div style="max-width:200px; margin:0 auto 14px; text-align:center; background:#1e40af; color:#fff; border-radius:8px; padding:8px 14px; font-weight:700; font-size:13px;">次の機能へ ↻</div>
 
 `/commit` を AI に任せきりにせず、必ず `git diff` で内容を確認してから走らせるのがおすすめです。push は人間が手動で行うのが基本。
 
@@ -2775,70 +2763,35 @@ CLAUDE.mdの規約に準拠しているか再確認してから修正してく�
 
 ### 17-4. 推奨ワークフロー全体図
 
-```
-┌──────────────────────────────────────────────────┐
-│ Phase 0: 環境構築                                  │
-│ ┌────────────────────────────────────────────┐    │
-│ │ ・Claude Codeインストール                     │    │
-│ │ ・settings.json（Permissions + Hooks）        │    │
-│ │ ・MCP設定                                    │    │
-│ │ ・Keybindings設定                            │    │
-│ └────────────────────────────────────────────┘    │
-└──────────┬───────────────────────────────────────┘
-           ↓
-┌──────────────────────────────────────────────────┐
-│ Phase 1: プロジェクト初期化                         │
-│ ┌────────────────────────────────────────────┐    │
-│ │ ・Next.js + TypeScript + Tailwind           │    │
-│ │ ・Git初期化                                  │    │
-│ │ ・.claude/ ディレクトリ構造作成               │    │
-│ └────────────────────────────────────────────┘    │
-└──────────┬───────────────────────────────────────┘
-           ↓
-┌──────────────────────────────────────────────────┐
-│ Phase 2: 要件定義 【Plan Mode】                     │
-│ ┌────────────────────────────────────────────┐    │
-│ │ ・アプリ全体像の定義                          │    │
-│ │ ・画面設計                                   │    │
-│ │ ・データベース設計                            │    │
-│ │ ・API設計                                    │    │
-│ │ ・設計ドキュメント保存                         │    │
-│ └────────────────────────────────────────────┘    │
-└──────────┬───────────────────────────────────────┘
-           ↓
-┌──────────────────────────────────────────────────┐
-│ Phase 3-6: 開発基盤構築                            │
-│ ┌────────────────────────────────────────────┐    │
-│ │ ・CLAUDE.md 作成                             │    │
-│ │ ・Rules 配置                                 │    │
-│ │ ・Skills 作成                                │    │
-│ │ ・Subagents 定義                             │    │
-│ │ ・ESLint / Prettier / TypeScript設定          │    │
-│ └────────────────────────────────────────────┘    │
-└──────────┬───────────────────────────────────────┘
-           ↓
-┌──────────────────────────────────────────────────┐
-│ Phase 7: 機能開発（繰り返し）                       │
-│ ┌────────────────────────────────────────────┐    │
-│ │ 仕様説明 → 方針合意 → 実装 → 確認 →           │    │
-│ │ /review → 修正 → テスト → /commit             │    │
-│ │                                              │    │
-│ │ ※機能完了ごとに /compact                      │    │
-│ │ ※並列作業は Worktree を活用                   │    │
-│ │ ※コミット前に git diff、push は人間が手動     │    │
-│ └────────────────────────────────────────────┘    │
-└──────────┬───────────────────────────────────────┘
-           ↓
-┌──────────────────────────────────────────────────┐
-│ Phase 8-9: テスト・デプロイ                         │
-│ ┌────────────────────────────────────────────┐    │
-│ │ ・テスト環境セットアップ                       │    │
-│ │ ・ユニット/コンポーネント/E2Eテスト             │    │
-│ │ ・デプロイ前チェック                           │    │
-│ │ ・Vercelデプロイ                              │    │
-│ └────────────────────────────────────────────┘    │
-└──────────────────────────────────────────────────┘
-```
+<div style="max-width:580px; margin:14px auto 0; border:1px solid #e2e8f0; border-radius:8px; overflow:hidden; box-shadow:0 1px 4px rgba(0,0,0,0.04);">
+  <div style="background:#1e40af; color:#fff; font-weight:700; font-size:13px; padding:8px 14px;">Phase 0: 環境構築</div>
+  <ul style="margin:7px 0; padding:0 14px 3px 30px; font-size:12px; color:#475569; line-height:1.9;"><li>Claude Code インストール</li><li><code>settings.json</code>（Permissions + Hooks）</li><li>MCP 設定</li><li>Keybindings 設定</li></ul>
+</div>
+<div style="width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:9px solid #cbd5e1;margin:6px auto;"></div>
+<div style="max-width:580px; margin:0 auto; border:1px solid #e2e8f0; border-radius:8px; overflow:hidden; box-shadow:0 1px 4px rgba(0,0,0,0.04);">
+  <div style="background:#1e40af; color:#fff; font-weight:700; font-size:13px; padding:8px 14px;">Phase 1: プロジェクト初期化</div>
+  <ul style="margin:7px 0; padding:0 14px 3px 30px; font-size:12px; color:#475569; line-height:1.9;"><li>Next.js + TypeScript + Tailwind</li><li>Git 初期化</li><li><code>.claude/</code> ディレクトリ構造作成</li></ul>
+</div>
+<div style="width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:9px solid #cbd5e1;margin:6px auto;"></div>
+<div style="max-width:580px; margin:0 auto; border:1px solid #e2e8f0; border-radius:8px; overflow:hidden; box-shadow:0 1px 4px rgba(0,0,0,0.04);">
+  <div style="background:#1e40af; color:#fff; font-weight:700; font-size:13px; padding:8px 14px;">Phase 2: 要件定義　<span style="background:#fbbf24; color:#78350f; border-radius:4px; padding:1px 7px; font-size:11px;">Plan Mode</span></div>
+  <ul style="margin:7px 0; padding:0 14px 3px 30px; font-size:12px; color:#475569; line-height:1.9;"><li>アプリ全体像の定義</li><li>画面設計</li><li>データベース設計</li><li>API 設計</li><li>設計ドキュメント保存</li></ul>
+</div>
+<div style="width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:9px solid #cbd5e1;margin:6px auto;"></div>
+<div style="max-width:580px; margin:0 auto; border:1px solid #e2e8f0; border-radius:8px; overflow:hidden; box-shadow:0 1px 4px rgba(0,0,0,0.04);">
+  <div style="background:#1e40af; color:#fff; font-weight:700; font-size:13px; padding:8px 14px;">Phase 3-6: 開発基盤構築</div>
+  <ul style="margin:7px 0; padding:0 14px 3px 30px; font-size:12px; color:#475569; line-height:1.9;"><li><code>CLAUDE.md</code> 作成</li><li>Rules 配置</li><li>Skills 作成</li><li>Subagents 定義</li><li>ESLint / Prettier / TypeScript 設定</li></ul>
+</div>
+<div style="width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:9px solid #cbd5e1;margin:6px auto;"></div>
+<div style="max-width:580px; margin:0 auto; border:1px solid #e2e8f0; border-radius:8px; overflow:hidden; box-shadow:0 1px 4px rgba(0,0,0,0.04);">
+  <div style="background:#1e40af; color:#fff; font-weight:700; font-size:13px; padding:8px 14px;">Phase 7: 機能開発（繰り返し）</div>
+  <div style="margin:8px 0; padding:0 16px 4px; font-size:12px; color:#475569; line-height:1.9;">仕様説明 → 方針合意 → 実装 → 確認 → <code>/review</code> → 修正 → テスト → <code>/commit</code><br>※ 機能完了ごとに <code>/compact</code>　／　※ 並列作業は Worktree を活用　／　※ コミット前に <code>git diff</code>、push は人間が手動</div>
+</div>
+<div style="width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:9px solid #cbd5e1;margin:6px auto;"></div>
+<div style="max-width:580px; margin:0 auto 14px; border:1px solid #e2e8f0; border-radius:8px; overflow:hidden; box-shadow:0 1px 4px rgba(0,0,0,0.04);">
+  <div style="background:#1e40af; color:#fff; font-weight:700; font-size:13px; padding:8px 14px;">Phase 8-9: テスト・デプロイ</div>
+  <ul style="margin:7px 0; padding:0 14px 3px 30px; font-size:12px; color:#475569; line-height:1.9;"><li>テスト環境セットアップ</li><li>ユニット / コンポーネント / E2E テスト</li><li>デプロイ前チェック</li><li>Vercel デプロイ</li></ul>
+</div>
 
 ---
 

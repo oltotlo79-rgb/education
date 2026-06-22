@@ -12,17 +12,35 @@ Next.js（読み: ネクストジェイエス）を理解するには「URL（�
 
 ### 0.1 URL の構造
 
-```
-https://example.com:443/products/123?sort=price&page=2#reviews
-─┬───   ─┬─────────  ─┬─ ─┬──────────  ─┬───────────────  ─┬──────
- │       │            │   │              │                  │
- │       │            │   │              │                  └─ フラグメント（ページ内位置）。"#reviews" のように # の後に書く部分。ページ内のID指定に使う。
- │       │            │   │              └─ クエリパラメータ（?以降）。"sort=price&page=2" のように「キー=値」を & で繋いで送る追加情報。
- │       │            │   └─ パス（path: ページの場所）。Next.js ではこの部分が `app/` フォルダの構造とそのまま対応する。
- │       │            └─ ポート番号（省略時はhttpsなら443、httpなら80）。普段は省略されているので意識しないことが多い。
- │       └─ ホスト名（ドメイン）。サーバーの住所。"example.com" のような人間に読める形と、実際のIPアドレスがDNSで結ばれている。
- └─ プロトコル（通信方式）。https は暗号化された通信、http は暗号化されていない通信。今は基本 https を使う。
-```
+<div style="max-width: 720px; margin: 18px auto; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.06);">
+  <div style="background: #0f172a; padding: 16px 18px; font-family: 'Cascadia Mono','Consolas',monospace; font-size: 14px; line-height: 1.7; word-break: break-all;"><span style="color:#f472b6;">https</span><span style="color:#64748b;">://</span><span style="color:#fcd34d;">example.com</span><span style="color:#64748b;">:</span><span style="color:#34d399;">443</span><span style="color:#60a5fa;">/products/123</span><span style="color:#c084fc;">?sort=price&amp;page=2</span><span style="color:#fb923c;">#reviews</span></div>
+  <div style="padding: 4px 18px 8px;">
+    <div style="display:flex; gap:14px; padding:9px 0; border-bottom:1px solid #f1f5f9;">
+      <div style="flex:0 0 124px; font-weight:700; font-family:'Cascadia Mono','Consolas',monospace; font-size:12.5px; color:#db2777;">https</div>
+      <div style="flex:1; font-size:12.5px; color:#334155;"><b>プロトコル（通信方式）</b>。<code>https</code> は暗号化された通信、<code>http</code> は暗号化されていない通信。今は基本 <code>https</code> を使う。</div>
+    </div>
+    <div style="display:flex; gap:14px; padding:9px 0; border-bottom:1px solid #f1f5f9;">
+      <div style="flex:0 0 124px; font-weight:700; font-family:'Cascadia Mono','Consolas',monospace; font-size:12.5px; color:#b45309;">example.com</div>
+      <div style="flex:1; font-size:12.5px; color:#334155;"><b>ホスト名（ドメイン）</b>。サーバーの住所。<code>example.com</code> のような人間に読める形と、実際の IP アドレスが DNS で結ばれている。</div>
+    </div>
+    <div style="display:flex; gap:14px; padding:9px 0; border-bottom:1px solid #f1f5f9;">
+      <div style="flex:0 0 124px; font-weight:700; font-family:'Cascadia Mono','Consolas',monospace; font-size:12.5px; color:#059669;">:443</div>
+      <div style="flex:1; font-size:12.5px; color:#334155;"><b>ポート番号</b>（省略時は https なら 443、http なら 80）。普段は省略されているので意識しないことが多い。</div>
+    </div>
+    <div style="display:flex; gap:14px; padding:9px 0; border-bottom:1px solid #f1f5f9;">
+      <div style="flex:0 0 124px; font-weight:700; font-family:'Cascadia Mono','Consolas',monospace; font-size:12.5px; color:#2563eb;">/products/123</div>
+      <div style="flex:1; font-size:12.5px; color:#334155;"><b>パス</b>（path: ページの場所）。Next.js ではこの部分が <code>app/</code> フォルダの構造とそのまま対応する。</div>
+    </div>
+    <div style="display:flex; gap:14px; padding:9px 0; border-bottom:1px solid #f1f5f9;">
+      <div style="flex:0 0 124px; font-weight:700; font-family:'Cascadia Mono','Consolas',monospace; font-size:12.5px; color:#7c3aed;">?sort=price&amp;page=2</div>
+      <div style="flex:1; font-size:12.5px; color:#334155;"><b>クエリパラメータ</b>（? 以降）。<code>sort=price&amp;page=2</code> のように「キー=値」を <code>&amp;</code> で繋いで送る追加情報。</div>
+    </div>
+    <div style="display:flex; gap:14px; padding:9px 0;">
+      <div style="flex:0 0 124px; font-weight:700; font-family:'Cascadia Mono','Consolas',monospace; font-size:12.5px; color:#ea580c;">#reviews</div>
+      <div style="flex:1; font-size:12.5px; color:#334155;"><b>フラグメント</b>（ページ内位置）。<code>#reviews</code> のように <code>#</code> の後に書く部分。ページ内の ID 指定に使う。</div>
+    </div>
+  </div>
+</div>
 
 Next.js で書く各ページは、この**パス**（`/products/123` の部分）に対応します。つまり「URL のパスをどう設計するか＝どんなフォルダ構造にするか」という関係が成り立ちます。
 
@@ -30,16 +48,48 @@ Next.js で書く各ページは、この**パス**（`/products/123` の部分�
 
 「URL を受け取って、どのページを表示するか決める仕組み」が **ルーティング**（routing：道案内のこと。URLに対応するページを「探して呼び出す」処理）です。Next.js の **App Router**（アップルーター：Next.js 13.4以降で正式採用された新しいルーティング方式。`app/` フォルダ配下の構造で URL を決める）では、`app/` フォルダの中のフォルダ構成がそのまま URL になります。これを **ファイルベースルーティング**（File-based Routing：ファイルやフォルダの配置自体がそのままルート定義になる方式）と呼びます。
 
-```
-app/                         # この `app/` フォルダが Next.js の出発点
- ├─ page.tsx            → /        （トップページ）   # `page.tsx` というファイルがあるフォルダ＝そのURLでアクセス可能
- ├─ about/                                          # フォルダ名がURLのセグメント（区切り）になる
- │   └─ page.tsx        → /about                    # `app/about/page.tsx` は `/about` のページ本体
- └─ books/                                          # `/books` 以下のグループ
-     ├─ page.tsx        → /books                    # `/books` の一覧ページ
-     └─ [id]/                                       # 角括弧 `[id]` は「動的セグメント」: 数字でも文字でも何でも受ける
-         └─ page.tsx    → /books/123 （[id] は動的な値）  # 例えば `/books/42` でアクセスすると id="42" として受け取れる
-```
+<div style="max-width: 720px; margin: 18px auto; background: #0f172a; border-radius: 12px; padding: 14px 18px; box-shadow: 0 4px 16px rgba(0,0,0,0.15);">
+  <div style="display:flex; gap:12px; align-items:flex-start; padding:5px 0; border-bottom:1px solid #1e293b;">
+    <div style="flex:0 0 188px; white-space:pre; font-family:'Cascadia Mono','Consolas',monospace; font-size:13px; color:#93c5fd;">app/</div>
+    <div style="flex:0 0 96px; font-family:'Cascadia Mono','Consolas',monospace; font-size:12px; color:#fcd34d;"></div>
+    <div style="flex:1; font-size:11.5px; color:#94a3b8; line-height:1.6;">この <code>app/</code> フォルダが Next.js の出発点</div>
+  </div>
+  <div style="display:flex; gap:12px; align-items:flex-start; padding:5px 0; border-bottom:1px solid #1e293b;">
+    <div style="flex:0 0 188px; white-space:pre; font-family:'Cascadia Mono','Consolas',monospace; font-size:13px; color:#86efac;"> ├─ page.tsx</div>
+    <div style="flex:0 0 96px; font-family:'Cascadia Mono','Consolas',monospace; font-size:12px; color:#fcd34d;">→ /</div>
+    <div style="flex:1; font-size:11.5px; color:#94a3b8; line-height:1.6;">トップページ。<code>page.tsx</code> があるフォルダ＝その URL でアクセスできる</div>
+  </div>
+  <div style="display:flex; gap:12px; align-items:flex-start; padding:5px 0; border-bottom:1px solid #1e293b;">
+    <div style="flex:0 0 188px; white-space:pre; font-family:'Cascadia Mono','Consolas',monospace; font-size:13px; color:#93c5fd;"> ├─ about/</div>
+    <div style="flex:0 0 96px; font-family:'Cascadia Mono','Consolas',monospace; font-size:12px; color:#fcd34d;"></div>
+    <div style="flex:1; font-size:11.5px; color:#94a3b8; line-height:1.6;">フォルダ名が URL のセグメント（区切り）になる</div>
+  </div>
+  <div style="display:flex; gap:12px; align-items:flex-start; padding:5px 0; border-bottom:1px solid #1e293b;">
+    <div style="flex:0 0 188px; white-space:pre; font-family:'Cascadia Mono','Consolas',monospace; font-size:13px; color:#86efac;"> │   └─ page.tsx</div>
+    <div style="flex:0 0 96px; font-family:'Cascadia Mono','Consolas',monospace; font-size:12px; color:#fcd34d;">→ /about</div>
+    <div style="flex:1; font-size:11.5px; color:#94a3b8; line-height:1.6;"><code>app/about/page.tsx</code> は <code>/about</code> のページ本体</div>
+  </div>
+  <div style="display:flex; gap:12px; align-items:flex-start; padding:5px 0; border-bottom:1px solid #1e293b;">
+    <div style="flex:0 0 188px; white-space:pre; font-family:'Cascadia Mono','Consolas',monospace; font-size:13px; color:#93c5fd;"> └─ books/</div>
+    <div style="flex:0 0 96px; font-family:'Cascadia Mono','Consolas',monospace; font-size:12px; color:#fcd34d;"></div>
+    <div style="flex:1; font-size:11.5px; color:#94a3b8; line-height:1.6;"><code>/books</code> 以下のグループ</div>
+  </div>
+  <div style="display:flex; gap:12px; align-items:flex-start; padding:5px 0; border-bottom:1px solid #1e293b;">
+    <div style="flex:0 0 188px; white-space:pre; font-family:'Cascadia Mono','Consolas',monospace; font-size:13px; color:#86efac;">     ├─ page.tsx</div>
+    <div style="flex:0 0 96px; font-family:'Cascadia Mono','Consolas',monospace; font-size:12px; color:#fcd34d;">→ /books</div>
+    <div style="flex:1; font-size:11.5px; color:#94a3b8; line-height:1.6;"><code>/books</code> の一覧ページ</div>
+  </div>
+  <div style="display:flex; gap:12px; align-items:flex-start; padding:5px 0; border-bottom:1px solid #1e293b;">
+    <div style="flex:0 0 188px; white-space:pre; font-family:'Cascadia Mono','Consolas',monospace; font-size:13px; color:#93c5fd;">     └─ [id]/</div>
+    <div style="flex:0 0 96px; font-family:'Cascadia Mono','Consolas',monospace; font-size:12px; color:#fcd34d;"></div>
+    <div style="flex:1; font-size:11.5px; color:#94a3b8; line-height:1.6;">角括弧 <code>[id]</code> は「動的セグメント」: 数字でも文字でも何でも受ける</div>
+  </div>
+  <div style="display:flex; gap:12px; align-items:flex-start; padding:5px 0;">
+    <div style="flex:0 0 188px; white-space:pre; font-family:'Cascadia Mono','Consolas',monospace; font-size:13px; color:#86efac;">         └─ page.tsx</div>
+    <div style="flex:0 0 96px; font-family:'Cascadia Mono','Consolas',monospace; font-size:12px; color:#fcd34d;">→ /books/123</div>
+    <div style="flex:1; font-size:11.5px; color:#94a3b8; line-height:1.6;">例えば <code>/books/42</code> でアクセスすると <code>id="42"</code> として受け取れる（<code>[id]</code> は動的な値）</div>
+  </div>
+</div>
 
 > **ファイル＝ページ:** 「`app/about/page.tsx` を作っただけで `/about` というURLでそのページが見られるようになる」というのが Next.js のキモです。第3章までの React だけでは、`react-router-dom` などのライブラリを別途インストールし、自分で `<Route path="/about" element={...} />` のようにルーティング設定を書く必要がありました。Next.js ではその設定作業が「ファイルを置く」という直感的な操作に置き換わります。
 
@@ -137,14 +187,20 @@ Web ページのレンダリング方法は大きく3つあります。Next.js �
     <div style="display: flex; justify-content: space-around; margin-bottom: 12px; font-weight: 700; font-size: 13px; color: #1e40af;">
       <span style="flex: 1; text-align: center;">ユーザー（ブラウザ）</span><span style="flex: 1; text-align: center;">サーバー</span>
     </div>
-    <div style="display: flex; align-items: center; gap: 4px; margin-bottom: 8px;">
+    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
       <div style="flex: 1; text-align: right; font-size: 12px; color: #334155;">ページをリクエスト</div>
-      <div style="flex: 1; height: 2px; background: linear-gradient(to right, #3b82f6, #3b82f6); position: relative;"><span style="position: absolute; right: -4px; top: -4px; color: #3b82f6;">&#x25B6;</span></div>
+      <div style="flex: 1; display: flex; align-items: center;">
+        <div style="flex: 1; height: 3px; background: #3b82f6; border-radius: 2px;"></div>
+        <div style="width: 0; height: 0; border-top: 6px solid transparent; border-bottom: 6px solid transparent; border-left: 11px solid #3b82f6;"></div>
+      </div>
       <div style="flex: 1; font-size: 12px; color: #334155;"></div>
     </div>
-    <div style="display: flex; align-items: center; gap: 4px; margin-bottom: 8px;">
+    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
       <div style="flex: 1; text-align: right; font-size: 12px; color: #334155;"></div>
-      <div style="flex: 1; height: 2px; background: #94a3b8; border-top: 2px dashed #94a3b8; position: relative;"><span style="position: absolute; left: -4px; top: -4px; color: #94a3b8;">&#x25C0;</span></div>
+      <div style="flex: 1; display: flex; align-items: center;">
+        <div style="width: 0; height: 0; border-top: 6px solid transparent; border-bottom: 6px solid transparent; border-right: 11px solid #94a3b8;"></div>
+        <div style="flex: 1; border-top: 2px dashed #94a3b8;"></div>
+      </div>
       <div style="flex: 1; font-size: 12px; color: #334155;">空の HTML + JS バンドル</div>
     </div>
     <div style="background: #fef3c7; border-left: 3px solid #f59e0b; padding: 8px 12px; margin: 8px 0; border-radius: 0 6px 6px 0;">
@@ -176,28 +232,36 @@ Web ページのレンダリング方法は大きく3つあります。Next.js �
     </div>
     <div style="display: flex; align-items: center; gap: 4px; margin-bottom: 6px;">
       <div style="flex: 1; text-align: right; font-size: 12px; color: #334155;">リクエスト</div>
-      <div style="flex: 1; height: 2px; background: #3b82f6;"></div>
-      <div style="flex: 1; font-size: 12px; color: #334155;">&#x25B6;</div>
+      <div style="flex: 2; display: flex; align-items: center;">
+        <div style="flex: 1; height: 3px; background: #3b82f6; border-radius: 2px;"></div>
+        <div style="width: 0; height: 0; border-top: 6px solid transparent; border-bottom: 6px solid transparent; border-left: 11px solid #3b82f6;"></div>
+      </div>
       <div style="flex: 1;"></div>
     </div>
     <div style="display: flex; align-items: center; gap: 4px; margin-bottom: 6px;">
       <div style="flex: 1;"></div>
       <div style="flex: 1; text-align: right; font-size: 12px; color: #334155;">データ取得</div>
-      <div style="flex: 1; height: 2px; background: #3b82f6;"></div>
-      <div style="flex: 1; font-size: 12px; color: #334155;">&#x25B6;</div>
+      <div style="flex: 2; display: flex; align-items: center;">
+        <div style="flex: 1; height: 3px; background: #3b82f6; border-radius: 2px;"></div>
+        <div style="width: 0; height: 0; border-top: 6px solid transparent; border-bottom: 6px solid transparent; border-left: 11px solid #3b82f6;"></div>
+      </div>
     </div>
     <div style="display: flex; align-items: center; gap: 4px; margin-bottom: 6px;">
       <div style="flex: 1;"></div>
-      <div style="flex: 1; font-size: 12px; color: #334155;">&#x25C0;</div>
-      <div style="flex: 1; height: 2px; background: #94a3b8; border-top: 2px dashed #94a3b8;"></div>
+      <div style="flex: 2; display: flex; align-items: center;">
+        <div style="width: 0; height: 0; border-top: 6px solid transparent; border-bottom: 6px solid transparent; border-right: 11px solid #94a3b8;"></div>
+        <div style="flex: 1; border-top: 2px dashed #94a3b8;"></div>
+      </div>
       <div style="flex: 1; text-align: right; font-size: 12px; color: #334155;">データ返却</div>
     </div>
     <div style="background: #dbeafe; border-left: 3px solid #3b82f6; padding: 8px 12px; margin: 8px 40px 8px 33%; border-radius: 0 6px 6px 0; font-size: 12px; color: #1e3a5f;">
       サーバー上で React を実行し HTML を生成
     </div>
     <div style="display: flex; align-items: center; gap: 4px; margin-bottom: 6px;">
-      <div style="flex: 1; font-size: 12px; color: #334155;">&#x25C0;</div>
-      <div style="flex: 1; height: 2px; background: #94a3b8; border-top: 2px dashed #94a3b8;"></div>
+      <div style="flex: 2; display: flex; align-items: center;">
+        <div style="width: 0; height: 0; border-top: 6px solid transparent; border-bottom: 6px solid transparent; border-right: 11px solid #94a3b8;"></div>
+        <div style="flex: 1; border-top: 2px dashed #94a3b8;"></div>
+      </div>
       <div style="flex: 1; text-align: right; font-size: 12px; color: #334155;">完成 HTML</div>
       <div style="flex: 1;"></div>
     </div>
@@ -227,23 +291,29 @@ Web ページのレンダリング方法は大きく3つあります。Next.js �
     </div>
     <div style="display: flex; align-items: center; gap: 4px; margin-bottom: 8px;">
       <div style="flex: 1; text-align: right; font-size: 12px; color: #334155;">生成済み HTML を配置</div>
-      <div style="flex: 1; height: 2px; background: #3b82f6;"></div>
-      <div style="flex: 1; font-size: 12px; color: #334155;">&#x25B6;</div>
+      <div style="flex: 2; display: flex; align-items: center;">
+        <div style="flex: 1; height: 3px; background: #3b82f6; border-radius: 2px;"></div>
+        <div style="width: 0; height: 0; border-top: 6px solid transparent; border-bottom: 6px solid transparent; border-left: 11px solid #3b82f6;"></div>
+      </div>
     </div>
     <div style="border-top: 1px dashed #cbd5e1; margin: 12px 0; padding-top: 12px;">
       <div style="font-size: 11px; color: #64748b; text-align: center; margin-bottom: 8px;">&#x2015;&#x2015; ユーザーアクセス時 &#x2015;&#x2015;</div>
     </div>
     <div style="display: flex; align-items: center; gap: 4px; margin-bottom: 6px;">
       <div style="flex: 1;"></div>
-      <div style="flex: 1; font-size: 12px; color: #334155;">&#x25C0;</div>
-      <div style="flex: 1; height: 2px; background: #3b82f6;"></div>
+      <div style="flex: 2; display: flex; align-items: center;">
+        <div style="width: 0; height: 0; border-top: 6px solid transparent; border-bottom: 6px solid transparent; border-right: 11px solid #3b82f6;"></div>
+        <div style="flex: 1; height: 3px; background: #3b82f6; border-radius: 2px;"></div>
+      </div>
       <div style="flex: 1; text-align: right; font-size: 12px; color: #334155;">リクエスト</div>
     </div>
     <div style="display: flex; align-items: center; gap: 4px; margin-bottom: 6px;">
       <div style="flex: 1;"></div>
       <div style="flex: 1; text-align: right; font-size: 12px; color: #334155;">事前生成 HTML</div>
-      <div style="flex: 1; height: 2px; background: #94a3b8; border-top: 2px dashed #94a3b8;"></div>
-      <div style="flex: 1; font-size: 12px; color: #334155;">&#x25B6;</div>
+      <div style="flex: 2; display: flex; align-items: center;">
+        <div style="flex: 1; border-top: 2px dashed #94a3b8;"></div>
+        <div style="width: 0; height: 0; border-top: 6px solid transparent; border-bottom: 6px solid transparent; border-left: 11px solid #94a3b8;"></div>
+      </div>
     </div>
     <div style="background: #dcfce7; border-left: 3px solid #22c55e; padding: 8px 12px; margin: 8px 0 8px 66%; border-radius: 0 6px 6px 0; font-size: 12px; color: #14532d;">
       即座にページが表示される
@@ -916,19 +986,25 @@ Next.js App Router の最大の特徴は、**デフォルトですべてのコ�
     <div style="display: flex; align-items: center; gap: 4px; margin-bottom: 6px;">
       <div style="flex: 1;"></div>
       <div style="flex: 1; text-align: right; font-size: 12px; color: #334155;">データを直接取得</div>
-      <div style="flex: 1; height: 2px; background: #3b82f6;"></div>
-      <div style="flex: 1; font-size: 12px;">&#x25B6;</div>
+      <div style="flex: 2; display: flex; align-items: center;">
+        <div style="flex: 1; height: 3px; background: #3b82f6; border-radius: 2px;"></div>
+        <div style="width: 0; height: 0; border-top: 6px solid transparent; border-bottom: 6px solid transparent; border-left: 11px solid #3b82f6;"></div>
+      </div>
     </div>
     <div style="display: flex; align-items: center; gap: 4px; margin-bottom: 6px;">
       <div style="flex: 1;"></div>
-      <div style="flex: 1; font-size: 12px;">&#x25C0;</div>
-      <div style="flex: 1; height: 2px; background: #94a3b8; border-top: 2px dashed #94a3b8;"></div>
+      <div style="flex: 2; display: flex; align-items: center;">
+        <div style="width: 0; height: 0; border-top: 6px solid transparent; border-bottom: 6px solid transparent; border-right: 11px solid #94a3b8;"></div>
+        <div style="flex: 1; border-top: 2px dashed #94a3b8;"></div>
+      </div>
       <div style="flex: 1; text-align: right; font-size: 12px; color: #334155;">データ返却</div>
     </div>
     <div style="background: #dbeafe; border-left: 3px solid #3b82f6; padding: 6px 12px; margin: 6px 20% 6px 33%; border-radius: 0 6px 6px 0; font-size: 12px; color: #1e3a5f;">HTML を生成</div>
     <div style="display: flex; align-items: center; gap: 4px; margin-bottom: 6px;">
-      <div style="flex: 1; font-size: 12px;">&#x25C0;</div>
-      <div style="flex: 1; height: 2px; background: #94a3b8; border-top: 2px dashed #94a3b8;"></div>
+      <div style="flex: 2; display: flex; align-items: center;">
+        <div style="width: 0; height: 0; border-top: 6px solid transparent; border-bottom: 6px solid transparent; border-right: 11px solid #94a3b8;"></div>
+        <div style="flex: 1; border-top: 2px dashed #94a3b8;"></div>
+      </div>
       <div style="flex: 1; text-align: right; font-size: 12px; color: #334155;">HTML を送信</div>
       <div style="flex: 1;"></div>
     </div>
@@ -2633,14 +2709,18 @@ export default function BooksLoading() {
     </div>
     <div style="display: flex; align-items: center; gap: 4px; margin-bottom: 6px;">
       <div style="flex: 1; text-align: right; font-size: 12px; color: #334155;">/books にアクセス</div>
-      <div style="flex: 1; height: 2px; background: #3b82f6;"></div>
-      <div style="flex: 1; font-size: 12px;">&#x25B6;</div>
+      <div style="flex: 2; display: flex; align-items: center;">
+        <div style="flex: 1; height: 3px; background: #3b82f6; border-radius: 2px;"></div>
+        <div style="width: 0; height: 0; border-top: 6px solid transparent; border-bottom: 6px solid transparent; border-left: 11px solid #3b82f6;"></div>
+      </div>
       <div style="flex: 1;"></div>
     </div>
     <div style="background: #dbeafe; border-left: 3px solid #3b82f6; padding: 6px 12px; margin: 6px 20% 6px 33%; border-radius: 0 6px 6px 0; font-size: 12px; color: #1e3a5f;">loading.tsx を即座に返す</div>
     <div style="display: flex; align-items: center; gap: 4px; margin-bottom: 6px;">
-      <div style="flex: 1; font-size: 12px;">&#x25C0;</div>
-      <div style="flex: 1; height: 2px; background: #94a3b8; border-top: 2px dashed #94a3b8;"></div>
+      <div style="flex: 2; display: flex; align-items: center;">
+        <div style="width: 0; height: 0; border-top: 6px solid transparent; border-bottom: 6px solid transparent; border-right: 11px solid #94a3b8;"></div>
+        <div style="flex: 1; border-top: 2px dashed #94a3b8;"></div>
+      </div>
       <div style="flex: 1; text-align: right; font-size: 12px; color: #334155;">スケルトン UI</div>
       <div style="flex: 1;"></div>
     </div>
@@ -2648,19 +2728,25 @@ export default function BooksLoading() {
     <div style="display: flex; align-items: center; gap: 4px; margin-bottom: 6px;">
       <div style="flex: 1;"></div>
       <div style="flex: 1; text-align: right; font-size: 12px; color: #334155;">データ取得</div>
-      <div style="flex: 1; height: 2px; background: #3b82f6;"></div>
-      <div style="flex: 1; font-size: 12px;">&#x25B6;</div>
+      <div style="flex: 2; display: flex; align-items: center;">
+        <div style="flex: 1; height: 3px; background: #3b82f6; border-radius: 2px;"></div>
+        <div style="width: 0; height: 0; border-top: 6px solid transparent; border-bottom: 6px solid transparent; border-left: 11px solid #3b82f6;"></div>
+      </div>
     </div>
     <div style="display: flex; align-items: center; gap: 4px; margin-bottom: 6px;">
       <div style="flex: 1;"></div>
-      <div style="flex: 1; font-size: 12px;">&#x25C0;</div>
-      <div style="flex: 1; height: 2px; background: #94a3b8; border-top: 2px dashed #94a3b8;"></div>
+      <div style="flex: 2; display: flex; align-items: center;">
+        <div style="width: 0; height: 0; border-top: 6px solid transparent; border-bottom: 6px solid transparent; border-right: 11px solid #94a3b8;"></div>
+        <div style="flex: 1; border-top: 2px dashed #94a3b8;"></div>
+      </div>
       <div style="flex: 1; text-align: right; font-size: 12px; color: #334155;">データ返却</div>
     </div>
     <div style="background: #dbeafe; border-left: 3px solid #3b82f6; padding: 6px 12px; margin: 6px 20% 6px 33%; border-radius: 0 6px 6px 0; font-size: 12px; color: #1e3a5f;">page.tsx をレンダリング</div>
     <div style="display: flex; align-items: center; gap: 4px; margin-bottom: 6px;">
-      <div style="flex: 1; font-size: 12px;">&#x25C0;</div>
-      <div style="flex: 1; height: 2px; background: #94a3b8; border-top: 2px dashed #94a3b8;"></div>
+      <div style="flex: 2; display: flex; align-items: center;">
+        <div style="width: 0; height: 0; border-top: 6px solid transparent; border-bottom: 6px solid transparent; border-right: 11px solid #94a3b8;"></div>
+        <div style="flex: 1; border-top: 2px dashed #94a3b8;"></div>
+      </div>
       <div style="flex: 1; text-align: right; font-size: 12px; color: #334155;">実コンテンツ</div>
       <div style="flex: 1;"></div>
     </div>

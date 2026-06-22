@@ -63,11 +63,26 @@
 
 **サーバー（server、サーブ＝提供する者）** とは、24時間ずっと電源が入っていて「リクエストが来たら何かを返す」役割のコンピュータのことです。Amazonの倉庫の係員のように「注文（リクエスト）」を受けて「商品（レスポンス）」を返します。
 
-```
-[あなたのブラウザ] ──「このページください」(リクエスト)── ▶ [サーバー]   ← 矢印は「お願いの向き」を表す図
-[あなたのブラウザ] ◀───「はい、HTMLとCSSと画像です」────── [サーバー]   ← サーバーが応答（レスポンス）を返す向き
-                       (レスポンス)                                    ← 矢印の下のラベルでやり取りの種類を示している
-```
+<div style="max-width: 660px; margin: 18px auto; border:1px solid #e2e8f0; border-radius:12px; padding:18px 20px; box-shadow:0 2px 12px rgba(0,0,0,0.06);">
+  <div style="display:flex; align-items:center; gap:12px;">
+    <div style="flex:0 0 116px; text-align:center; background:#eff6ff; border:1px solid #bfdbfe; border-radius:8px; padding:12px 6px; font-weight:700; font-size:12.5px; color:#1e40af;">あなたの<br>ブラウザ</div>
+    <div style="flex:1;">
+      <div style="font-size:11.5px; color:#1e40af; text-align:center; margin-bottom:3px;">「このページください」（リクエスト）</div>
+      <div style="display:flex; align-items:center;">
+        <div style="flex:1; height:3px; background:#3b82f6; border-radius:2px;"></div>
+        <div style="width:0; height:0; border-top:6px solid transparent; border-bottom:6px solid transparent; border-left:11px solid #3b82f6;"></div>
+      </div>
+      <div style="height:14px;"></div>
+      <div style="display:flex; align-items:center;">
+        <div style="width:0; height:0; border-top:6px solid transparent; border-bottom:6px solid transparent; border-right:11px solid #94a3b8;"></div>
+        <div style="flex:1; border-top:2px dashed #94a3b8;"></div>
+      </div>
+      <div style="font-size:11.5px; color:#475569; text-align:center; margin-top:3px;">「はい、HTML と CSS と画像です」（レスポンス）</div>
+    </div>
+    <div style="flex:0 0 92px; text-align:center; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:12px 6px; font-weight:700; font-size:12.5px; color:#15803d;">サーバー</div>
+  </div>
+  <div style="font-size:11px; color:#64748b; margin-top:14px; line-height:1.7;">上の矢印は「お願い（リクエスト）の向き」、下の矢印は「サーバーが応答（レスポンス）を返す向き」。矢印の上のラベルでやり取りの種類を示しています。</div>
+</div>
 
 **▼ 実例:** ブラウザのアドレスバーに `https://example.com/about` と打つと、
 
