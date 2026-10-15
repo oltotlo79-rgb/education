@@ -22,6 +22,74 @@
 
 > **ポイント：** この章はコードを書く量が多いですが、一つ一つのファイルの役割を理解しながら進めてください。「なぜこのファイルが必要なのか」を意識すると、後の章で迷わなくなります。
 
+### この章のゴールと地図
+
+家を建てるときは、いきなり壁紙を選んだりしません。まず**土地をならし（雛形づくり）**、**資材を運び込み（パッケージ追加）**、**部屋割りを決め（フォルダ構成）**、**水道や電気を引き（Supabase との接続）**、**設計図の寸法を決め（型定義）**、**玄関と看板を付けて（レイアウトとヘッダー）**、最後に**明かりをつけて確認（開発サーバー起動）**します。この章でやることは、まさにこの順番です。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 300" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-06-01" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="20" y="30" width="150" height="80" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="95" y="56" text-anchor="middle" font-size="14" font-weight="bold" fill="#1e40af">① 雛形を作る</text>
+<text x="95" y="77" text-anchor="middle" font-size="12" fill="#1e40af">create-next-app</text>
+<text x="95" y="97" text-anchor="middle" font-size="12" fill="#64748b">節1・節2</text>
+<rect x="200" y="30" width="150" height="80" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="275" y="56" text-anchor="middle" font-size="14" font-weight="bold" fill="#1e40af">② 部品を足す</text>
+<text x="275" y="77" text-anchor="middle" font-size="12" fill="#1e40af">npm install</text>
+<text x="275" y="97" text-anchor="middle" font-size="12" fill="#64748b">節3</text>
+<rect x="380" y="30" width="150" height="80" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="455" y="56" text-anchor="middle" font-size="14" font-weight="bold" fill="#1e40af">③ 部屋割り</text>
+<text x="455" y="77" text-anchor="middle" font-size="12" fill="#1e40af">フォルダを作る</text>
+<text x="455" y="97" text-anchor="middle" font-size="12" fill="#64748b">節4</text>
+<rect x="560" y="30" width="150" height="80" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<text x="635" y="56" text-anchor="middle" font-size="14" font-weight="bold" fill="#c2410c">④ DBとつなぐ</text>
+<text x="635" y="77" text-anchor="middle" font-size="12" fill="#c2410c">.env.local ほか</text>
+<text x="635" y="97" text-anchor="middle" font-size="12" fill="#64748b">節5</text>
+<rect x="560" y="170" width="150" height="80" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<text x="635" y="196" text-anchor="middle" font-size="14" font-weight="bold" fill="#c2410c">⑤ 型を決める</text>
+<text x="635" y="217" text-anchor="middle" font-size="12" fill="#c2410c">types/book.ts</text>
+<text x="635" y="237" text-anchor="middle" font-size="12" fill="#64748b">節6</text>
+<rect x="380" y="170" width="150" height="80" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="455" y="196" text-anchor="middle" font-size="14" font-weight="bold" fill="#047857">⑥ 外枠と看板</text>
+<text x="455" y="217" text-anchor="middle" font-size="12" fill="#047857">layout と Header</text>
+<text x="455" y="237" text-anchor="middle" font-size="12" fill="#64748b">節7・節8</text>
+<rect x="200" y="170" width="150" height="80" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="275" y="196" text-anchor="middle" font-size="14" font-weight="bold" fill="#047857">⑦ 起動して確認</text>
+<text x="275" y="217" text-anchor="middle" font-size="12" fill="#047857">npm run dev</text>
+<text x="275" y="237" text-anchor="middle" font-size="12" fill="#64748b">節9</text>
+<rect x="20" y="170" width="150" height="80" rx="10" fill="#f8fafc" stroke="#475569" stroke-width="2" stroke-dasharray="6 4"/>
+<text x="95" y="198" text-anchor="middle" font-size="14" font-weight="bold" fill="#475569">ゴール</text>
+<text x="95" y="219" text-anchor="middle" font-size="12" fill="#475569">ヘッダー付きの</text>
+<text x="95" y="237" text-anchor="middle" font-size="12" fill="#475569">トップページが出る</text>
+<line x1="170" y1="70" x2="198" y2="70" stroke="#475569" stroke-width="2" marker-end="url(#ar-06-01)"/>
+<line x1="350" y1="70" x2="378" y2="70" stroke="#475569" stroke-width="2" marker-end="url(#ar-06-01)"/>
+<line x1="530" y1="70" x2="558" y2="70" stroke="#475569" stroke-width="2" marker-end="url(#ar-06-01)"/>
+<line x1="635" y1="110" x2="635" y2="168" stroke="#475569" stroke-width="2" marker-end="url(#ar-06-01)"/>
+<line x1="560" y1="210" x2="532" y2="210" stroke="#475569" stroke-width="2" marker-end="url(#ar-06-01)"/>
+<line x1="380" y1="210" x2="352" y2="210" stroke="#475569" stroke-width="2" marker-end="url(#ar-06-01)"/>
+<line x1="200" y1="210" x2="172" y2="210" stroke="#475569" stroke-width="2" marker-end="url(#ar-06-01)"/>
+<rect x="20" y="268" width="14" height="14" fill="#eff6ff" stroke="#3b82f6"/>
+<text x="40" y="280" font-size="12" fill="#475569">土台づくり</text>
+<rect x="130" y="268" width="14" height="14" fill="#fff7ed" stroke="#f97316"/>
+<text x="150" y="280" font-size="12" fill="#475569">データの準備</text>
+<rect x="250" y="268" width="14" height="14" fill="#ecfdf5" stroke="#10b981"/>
+<text x="270" y="280" font-size="12" fill="#475569">画面づくりと確認</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図6-1: この章の地図（①→⑦の順に進み、最後にブラウザで確認する）</div>
+</div>
+
+**この章を読み終えたときにできるようになること（ゴール）:**
+
+- `create-next-app` の質問に、意味を理解したうえで答えられる
+- 生成されたファイルのうち「自分で書くもの」「設定ファイル」「触らないもの」を区別できる
+- `@/components/Header` のような `@/` 付きの import が、どのファイルを指すか説明できる
+- `.env.local` に書いた値が、どうやってコード（`process.env`）に届くか説明できる
+- 開発サーバーを起動し、うまくいかないとき（ポート使用中・フォルダ違い・import ミスなど）に自分で直せる
+
+> **ヒント:** 各節の最後に「つまずきポイント」を入れてあります。エラーが出たら、まずそのエラーメッセージで本章内を検索してみてください。同じメッセージの実例と直し方が見つかるはずです。
+
 ---
 
 ## 目次
@@ -159,6 +227,41 @@ Success! Created book-management at /Users/you/projects/book-management
 > 5. インストールされた正確なバージョンを `package-lock.json` に記録
 >
 > `node_modules/` はとても巨大になりやすいですが、`.gitignore` でGit管理から除外するのが標準的なやり方です（後述）。
+
+この流れは「買い物」にたとえると分かりやすくなります。`package.json` は**買い物メモ**、npm レジストリは**お店**、`node_modules/` は買ってきた物をしまう**冷蔵庫**、`package-lock.json` は何をいくつ買ったかの**レシート**です。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 235" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-06-05" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="20" y="70" width="150" height="90" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="95" y="100" text-anchor="middle" font-size="14" font-weight="bold" fill="#1e40af">package.json</text>
+<text x="95" y="122" text-anchor="middle" font-size="12" fill="#1e40af">ほしい物のリスト</text>
+<text x="95" y="142" text-anchor="middle" font-size="12" fill="#64748b">（買い物メモ）</text>
+<rect x="285" y="70" width="150" height="90" rx="10" fill="#f8fafc" stroke="#475569" stroke-width="2"/>
+<text x="360" y="100" text-anchor="middle" font-size="14" font-weight="bold" fill="#475569">npm レジストリ</text>
+<text x="360" y="122" text-anchor="middle" font-size="12" fill="#475569">インターネット上の</text>
+<text x="360" y="142" text-anchor="middle" font-size="12" fill="#64748b">倉庫（お店）</text>
+<rect x="550" y="20" width="150" height="90" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="625" y="50" text-anchor="middle" font-size="14" font-weight="bold" fill="#047857">node_modules/</text>
+<text x="625" y="72" text-anchor="middle" font-size="12" fill="#047857">ダウンロードした実物</text>
+<text x="625" y="92" text-anchor="middle" font-size="12" fill="#64748b">（冷蔵庫）</text>
+<rect x="550" y="130" width="150" height="90" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<text x="625" y="160" text-anchor="middle" font-size="14" font-weight="bold" fill="#c2410c">package-lock.json</text>
+<text x="625" y="182" text-anchor="middle" font-size="12" fill="#c2410c">正確なバージョン記録</text>
+<text x="625" y="202" text-anchor="middle" font-size="12" fill="#64748b">（レシート）</text>
+<line x1="170" y1="115" x2="283" y2="115" stroke="#475569" stroke-width="2" marker-end="url(#ar-06-05)"/>
+<text x="227" y="105" text-anchor="middle" font-size="12" fill="#475569">① 読んで注文</text>
+<line x1="435" y1="100" x2="548" y2="70" stroke="#475569" stroke-width="2" marker-end="url(#ar-06-05)"/>
+<text x="490" y="72" text-anchor="middle" font-size="12" fill="#475569">② 展開</text>
+<line x1="435" y1="130" x2="548" y2="170" stroke="#475569" stroke-width="2" marker-end="url(#ar-06-05)"/>
+<text x="488" y="172" text-anchor="middle" font-size="12" fill="#475569">③ 記録</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図6-2: npm install の流れ（買い物メモ → お店 → 冷蔵庫とレシート）</div>
+</div>
+
+Git に入れる（チームで共有する）のはメモとレシート、つまり `package.json` と `package-lock.json` だけです。冷蔵庫の中身（`node_modules/`）は、メモとレシートさえあれば `npm install` でいつでも同じ状態に作り直せるので、共有しません。
 
 > **`dependencies` と `devDependencies` の違い:**
 > - **`dependencies`**: アプリが本番環境で動くために必要なパッケージ。例: React、Next.js本体。
@@ -557,6 +660,50 @@ Tailwind CSS では、ブレークポイントのプレフィックスを付け�
 | 768px 〜 1023px | `md:grid-cols-2` | 2列表示 |
 | 1024px 〜 | `lg:grid-cols-3` | 3列表示 |
 
+物差しの上に並べると、どの幅でどのクラスが効くのかがひと目で分かります。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 250" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<line x1="40" y1="56" x2="700" y2="56" stroke="#475569" stroke-width="2"/>
+<line x1="40" y1="48" x2="40" y2="64" stroke="#475569" stroke-width="2"/>
+<text x="40" y="40" text-anchor="middle" font-size="12" fill="#475569">0px</text>
+<line x1="304" y1="48" x2="304" y2="64" stroke="#475569" stroke-width="2"/>
+<text x="304" y="24" text-anchor="middle" font-size="12" font-weight="bold" fill="#1e40af">sm:</text>
+<text x="304" y="40" text-anchor="middle" font-size="12" fill="#475569">640</text>
+<line x1="357" y1="48" x2="357" y2="64" stroke="#475569" stroke-width="2"/>
+<text x="357" y="24" text-anchor="middle" font-size="12" font-weight="bold" fill="#1e40af">md:</text>
+<text x="357" y="40" text-anchor="middle" font-size="12" fill="#475569">768</text>
+<line x1="462" y1="48" x2="462" y2="64" stroke="#475569" stroke-width="2"/>
+<text x="462" y="24" text-anchor="middle" font-size="12" font-weight="bold" fill="#1e40af">lg:</text>
+<text x="462" y="40" text-anchor="middle" font-size="12" fill="#475569">1024</text>
+<line x1="568" y1="48" x2="568" y2="64" stroke="#475569" stroke-width="2"/>
+<text x="568" y="24" text-anchor="middle" font-size="12" font-weight="bold" fill="#1e40af">xl:</text>
+<text x="568" y="40" text-anchor="middle" font-size="12" fill="#475569">1280</text>
+<line x1="674" y1="48" x2="674" y2="64" stroke="#475569" stroke-width="2"/>
+<text x="674" y="24" text-anchor="middle" font-size="12" font-weight="bold" fill="#1e40af">2xl:</text>
+<text x="674" y="40" text-anchor="middle" font-size="12" fill="#475569">1536</text>
+<text x="700" y="82" text-anchor="end" font-size="12" fill="#64748b">画面の横幅 →</text>
+<rect x="43" y="96" width="311" height="96" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<rect x="51" y="106" width="295" height="34" rx="4" fill="#ffffff" stroke="#3b82f6" stroke-width="1.5"/>
+<rect x="51" y="146" width="295" height="16" rx="4" fill="#ffffff" stroke="#3b82f6" stroke-width="1.5" stroke-dasharray="4 3"/>
+<text x="198" y="182" text-anchor="middle" font-size="12" font-weight="bold" fill="#1e40af">1列（スマホ）</text>
+<text x="198" y="214" text-anchor="middle" font-size="12" fill="#1e40af" font-family="Consolas, Menlo, monospace">grid-cols-1</text>
+<rect x="360" y="96" width="100" height="96" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<rect x="368" y="106" width="38" height="34" rx="4" fill="#ffffff" stroke="#f97316" stroke-width="1.5"/>
+<rect x="414" y="106" width="38" height="34" rx="4" fill="#ffffff" stroke="#f97316" stroke-width="1.5"/>
+<text x="410" y="182" text-anchor="middle" font-size="12" font-weight="bold" fill="#c2410c">2列</text>
+<text x="410" y="214" text-anchor="middle" font-size="12" fill="#c2410c" font-family="Consolas, Menlo, monospace">md:grid-cols-2</text>
+<rect x="465" y="96" width="232" height="96" rx="8" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<rect x="473" y="106" width="67" height="34" rx="4" fill="#ffffff" stroke="#10b981" stroke-width="1.5"/>
+<rect x="548" y="106" width="67" height="34" rx="4" fill="#ffffff" stroke="#10b981" stroke-width="1.5"/>
+<rect x="622" y="106" width="67" height="34" rx="4" fill="#ffffff" stroke="#10b981" stroke-width="1.5"/>
+<text x="581" y="182" text-anchor="middle" font-size="12" font-weight="bold" fill="#047857">3列（PC）</text>
+<text x="581" y="214" text-anchor="middle" font-size="12" fill="#047857" font-family="Consolas, Menlo, monospace">lg:grid-cols-3</text>
+<text x="360" y="240" text-anchor="middle" font-size="12" fill="#64748b">プレフィックス付きのクラスは「その幅以上」で効き、より広い幅のクラスが後から上書きする</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図6-3: ブレークポイントの物差しと、grid-cols-1 md:grid-cols-2 lg:grid-cols-3 の見え方</div>
+</div>
+
 ### 2.4 「このクラスを付けるとこう表示される」具体例
 
 実際にボタンを例にして、クラスを1つずつ追加していくとどう変わるか見てみましょう。
@@ -825,6 +972,63 @@ src/
 | ファイル | 役割 |
 |----------|------|
 | `book.ts` | 書籍データの TypeScript 型定義。`Book` 型（データベースから取得する完全なデータ）、`BookInsert` 型（新規登録時に送るデータ）、`BookUpdate` 型（更新時に送るデータ）を定義します。 |
+
+#### 4.2.1 ファイル同士の「import 関係」を地図にする
+
+表で役割を見ただけでは、「どのファイルがどのファイルを使うのか」がつかみにくいものです。会社にたとえると、`app/` のページは**お客さんの窓口**、`components/` は**窓口で使う道具**、`lib/supabase.ts` は**倉庫（データベース）への電話**、`types/book.ts` は**全員が見る伝票の書式**です。窓口は道具と電話を使い、道具も電話も伝票の書式に従います。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 410" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-06-07" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+<marker id="ar-06-07b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#f97316"/></marker>
+</defs>
+<rect x="30" y="30" width="170" height="46" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="115" y="51" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e40af">app/page.tsx</text>
+<text x="115" y="68" text-anchor="middle" font-size="12" fill="#64748b">ページ（窓口）</text>
+<rect x="520" y="30" width="170" height="46" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="605" y="51" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e40af">app/layout.tsx</text>
+<text x="605" y="68" text-anchor="middle" font-size="12" fill="#64748b">全ページの外枠</text>
+<rect x="30" y="120" width="170" height="46" rx="8" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="115" y="141" text-anchor="middle" font-size="13" font-weight="bold" fill="#047857">BookList.tsx</text>
+<text x="115" y="158" text-anchor="middle" font-size="12" fill="#64748b">部品（一覧）</text>
+<rect x="30" y="210" width="170" height="46" rx="8" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="115" y="231" text-anchor="middle" font-size="13" font-weight="bold" fill="#047857">BookCard.tsx</text>
+<text x="115" y="248" text-anchor="middle" font-size="12" fill="#64748b">部品（1冊分）</text>
+<rect x="520" y="120" width="170" height="46" rx="8" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="605" y="141" text-anchor="middle" font-size="13" font-weight="bold" fill="#047857">Header.tsx</text>
+<text x="605" y="158" text-anchor="middle" font-size="12" fill="#64748b">部品（ヘッダー）</text>
+<rect x="275" y="120" width="170" height="46" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<text x="360" y="141" text-anchor="middle" font-size="13" font-weight="bold" fill="#c2410c">lib/supabase.ts</text>
+<text x="360" y="158" text-anchor="middle" font-size="12" fill="#64748b">DBへの窓口を1つ作る</text>
+<rect x="30" y="300" width="170" height="46" rx="8" fill="#fdf2f8" stroke="#db2777" stroke-width="2"/>
+<text x="115" y="321" text-anchor="middle" font-size="13" font-weight="bold" fill="#9d174d">types/book.ts</text>
+<text x="115" y="338" text-anchor="middle" font-size="12" fill="#64748b">データの形（型）</text>
+<rect x="275" y="210" width="170" height="46" rx="8" fill="#f8fafc" stroke="#475569" stroke-width="2" stroke-dasharray="6 4"/>
+<text x="360" y="231" text-anchor="middle" font-size="13" font-weight="bold" fill="#475569">@supabase/supabase-js</text>
+<text x="360" y="248" text-anchor="middle" font-size="12" fill="#64748b">外部ライブラリ</text>
+<rect x="520" y="210" width="170" height="46" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="2" stroke-dasharray="6 4"/>
+<text x="605" y="231" text-anchor="middle" font-size="13" font-weight="bold" fill="#c2410c">.env.local</text>
+<text x="605" y="248" text-anchor="middle" font-size="12" fill="#64748b">process.env で読まれる</text>
+<line x1="115" y1="76" x2="115" y2="118" stroke="#475569" stroke-width="2" marker-end="url(#ar-06-07)"/>
+<line x1="115" y1="166" x2="115" y2="208" stroke="#475569" stroke-width="2" marker-end="url(#ar-06-07)"/>
+<line x1="115" y1="256" x2="115" y2="298" stroke="#475569" stroke-width="2" marker-end="url(#ar-06-07)"/>
+<line x1="200" y1="62" x2="300" y2="118" stroke="#475569" stroke-width="2" marker-end="url(#ar-06-07)"/>
+<line x1="605" y1="76" x2="605" y2="118" stroke="#475569" stroke-width="2" marker-end="url(#ar-06-07)"/>
+<line x1="360" y1="166" x2="360" y2="208" stroke="#475569" stroke-width="2" marker-end="url(#ar-06-07)"/>
+<line x1="520" y1="226" x2="447" y2="160" stroke="#f97316" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#ar-06-07b)"/>
+<line x1="250" y1="372" x2="290" y2="372" stroke="#475569" stroke-width="2" marker-end="url(#ar-06-07)"/>
+<text x="298" y="377" font-size="12" fill="#475569">A → B は「A が B を import して使う」</text>
+<line x1="250" y1="392" x2="290" y2="392" stroke="#f97316" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#ar-06-07b)"/>
+<text x="298" y="397" font-size="12" fill="#475569">設定値を読み込む（import ではない）</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図6-4: ファイル同士の import 関係（矢印は上から下への一方通行）</div>
+</div>
+
+この図から、次の2つのルールが読み取れます。
+
+- **矢印は上から下への一方通行**: ページ → 部品 → 型、の順に「使う」関係が流れます。逆向き（例: `types/book.ts` が `app/page.tsx` を import する）は作りません。逆向きの矢印ができると、どこを直すとどこが壊れるのか追いにくくなるからです。
+- **データベースにつながる入口は `lib/supabase.ts` の1か所だけ**: ページや部品は、自分で接続を作らず、必ずこのファイルの `supabase` を import して使います。接続設定（`.env.local`）を読むのもここだけなので、接続まわりで問題が起きたら「まず `lib/supabase.ts` と `.env.local` を見る」と決めておけます。
 
 ### 4.3 ディレクトリとファイルの作成
 
@@ -1315,6 +1519,87 @@ export const statusColors: Record<
 >
 > 型を分けることで、各場面で正確なデータ構造を強制でき、バグを防げます。
 
+3つの型の違いを1枚の表にすると、次のようになります。伝票にたとえると、`Book` は「倉庫から届いた控え（全項目が埋まっている）」、`BookInsert` は「新規注文の用紙（番号や日付は倉庫側が書く）」、`BookUpdate` は「変更届（変えたい欄だけ書けばよい）」です。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 345" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<rect x="20" y="14" width="150" height="44" rx="6" fill="#f8fafc" stroke="#475569" stroke-width="1.5"/>
+<text x="95" y="41" text-anchor="middle" font-size="13" font-weight="bold" fill="#475569">項目名</text>
+<rect x="180" y="14" width="170" height="44" rx="6" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="265" y="33" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e40af">Book</text>
+<text x="265" y="50" text-anchor="middle" font-size="12" fill="#64748b">取得（SELECT）</text>
+<rect x="360" y="14" width="170" height="44" rx="6" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="445" y="33" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e40af">BookInsert</text>
+<text x="445" y="50" text-anchor="middle" font-size="12" fill="#64748b">登録（INSERT）</text>
+<rect x="540" y="14" width="170" height="44" rx="6" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="625" y="33" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e40af">BookUpdate</text>
+<text x="625" y="50" text-anchor="middle" font-size="12" fill="#64748b">更新（UPDATE）</text>
+<text x="95" y="84" text-anchor="middle" font-size="13" fill="#1e293b" font-family="Consolas, Menlo, monospace">id</text>
+<rect x="180" y="66" width="170" height="26" rx="5" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="265" y="84" text-anchor="middle" font-size="12" fill="#047857">あり</text>
+<rect x="360" y="66" width="170" height="26" rx="5" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+<text x="445" y="84" text-anchor="middle" font-size="12" fill="#94a3b8">なし</text>
+<rect x="540" y="66" width="170" height="26" rx="5" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+<text x="625" y="84" text-anchor="middle" font-size="12" fill="#94a3b8">なし</text>
+<text x="95" y="114" text-anchor="middle" font-size="13" fill="#1e293b" font-family="Consolas, Menlo, monospace">title</text>
+<rect x="180" y="96" width="170" height="26" rx="5" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="265" y="114" text-anchor="middle" font-size="12" fill="#047857">あり</text>
+<rect x="360" y="96" width="170" height="26" rx="5" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="445" y="114" text-anchor="middle" font-size="12" fill="#047857">必須</text>
+<rect x="540" y="96" width="170" height="26" rx="5" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="625" y="114" text-anchor="middle" font-size="12" fill="#c2410c">省略可（?）</text>
+<text x="95" y="144" text-anchor="middle" font-size="13" fill="#1e293b" font-family="Consolas, Menlo, monospace">author</text>
+<rect x="180" y="126" width="170" height="26" rx="5" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="265" y="144" text-anchor="middle" font-size="12" fill="#047857">あり</text>
+<rect x="360" y="126" width="170" height="26" rx="5" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="445" y="144" text-anchor="middle" font-size="12" fill="#047857">必須</text>
+<rect x="540" y="126" width="170" height="26" rx="5" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="625" y="144" text-anchor="middle" font-size="12" fill="#c2410c">省略可（?）</text>
+<text x="95" y="174" text-anchor="middle" font-size="13" fill="#1e293b" font-family="Consolas, Menlo, monospace">status</text>
+<rect x="180" y="156" width="170" height="26" rx="5" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="265" y="174" text-anchor="middle" font-size="12" fill="#047857">あり</text>
+<rect x="360" y="156" width="170" height="26" rx="5" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="445" y="174" text-anchor="middle" font-size="12" fill="#c2410c">省略可（?）</text>
+<rect x="540" y="156" width="170" height="26" rx="5" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="625" y="174" text-anchor="middle" font-size="12" fill="#c2410c">省略可（?）</text>
+<text x="95" y="204" text-anchor="middle" font-size="13" fill="#1e293b" font-family="Consolas, Menlo, monospace">rating</text>
+<rect x="180" y="186" width="170" height="26" rx="5" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="265" y="204" text-anchor="middle" font-size="12" fill="#047857">あり</text>
+<rect x="360" y="186" width="170" height="26" rx="5" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="445" y="204" text-anchor="middle" font-size="12" fill="#c2410c">省略可（?）</text>
+<rect x="540" y="186" width="170" height="26" rx="5" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="625" y="204" text-anchor="middle" font-size="12" fill="#c2410c">省略可（?）</text>
+<text x="95" y="234" text-anchor="middle" font-size="13" fill="#1e293b" font-family="Consolas, Menlo, monospace">memo</text>
+<rect x="180" y="216" width="170" height="26" rx="5" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="265" y="234" text-anchor="middle" font-size="12" fill="#047857">あり</text>
+<rect x="360" y="216" width="170" height="26" rx="5" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="445" y="234" text-anchor="middle" font-size="12" fill="#c2410c">省略可（?）</text>
+<rect x="540" y="216" width="170" height="26" rx="5" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="625" y="234" text-anchor="middle" font-size="12" fill="#c2410c">省略可（?）</text>
+<text x="95" y="264" text-anchor="middle" font-size="13" fill="#1e293b" font-family="Consolas, Menlo, monospace">created_at</text>
+<rect x="180" y="246" width="170" height="26" rx="5" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="265" y="264" text-anchor="middle" font-size="12" fill="#047857">あり</text>
+<rect x="360" y="246" width="170" height="26" rx="5" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+<text x="445" y="264" text-anchor="middle" font-size="12" fill="#94a3b8">なし</text>
+<rect x="540" y="246" width="170" height="26" rx="5" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+<text x="625" y="264" text-anchor="middle" font-size="12" fill="#94a3b8">なし</text>
+<text x="95" y="294" text-anchor="middle" font-size="13" fill="#1e293b" font-family="Consolas, Menlo, monospace">updated_at</text>
+<rect x="180" y="276" width="170" height="26" rx="5" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="265" y="294" text-anchor="middle" font-size="12" fill="#047857">あり</text>
+<rect x="360" y="276" width="170" height="26" rx="5" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+<text x="445" y="294" text-anchor="middle" font-size="12" fill="#94a3b8">なし</text>
+<rect x="540" y="276" width="170" height="26" rx="5" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+<text x="625" y="294" text-anchor="middle" font-size="12" fill="#94a3b8">なし</text>
+<rect x="30" y="318" width="14" height="14" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="50" y="330" font-size="12" fill="#475569">必ず入っている／必ず送る</text>
+<rect x="250" y="318" width="14" height="14" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="270" y="330" font-size="12" fill="#475569">送っても送らなくてもよい</text>
+<rect x="470" y="318" width="14" height="14" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+<text x="490" y="330" font-size="12" fill="#475569">型に含めない（DBが自動で付ける）</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図6-5: Book / BookInsert / BookUpdate に入る項目の比較</div>
+</div>
+
 #### ▼ コードを1つずつ分解して解説
 
 上の型定義を、初心者がつまずきやすい部分ごとに**1つずつ**ていねいに見ていきましょう。
@@ -1618,6 +1903,38 @@ export default function RootLayout({
 - `<Header />` を常に上に置き、その下の `<main>` 内の `{children}` 部分だけがページごとに入れ替わります。これで全ページ共通の枠を1か所で管理できます。
 
 > **用語:** 「children（チルドレン）」とは、コンポーネントの中に**差し込まれる中身**を受け取る特別な props です。レイアウトのように「枠だけ用意して中身は後から入れる」設計でよく使います。
+
+この「枠」と「中身」の関係を図にすると次のようになります。額縁（layout.tsx）は1つだけで、飾る絵（page.tsx）だけが URL によって掛け替えられる、とイメージしてください。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 320" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-06-11" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="20" y="16" width="400" height="294" rx="10" fill="#f8fafc" stroke="#475569" stroke-width="2"/>
+<text x="34" y="38" font-size="13" font-weight="bold" fill="#475569">layout.tsx が作る &lt;html&gt;（全ページで1つ）</text>
+<rect x="36" y="50" width="368" height="246" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="48" y="70" font-size="12" fill="#64748b">&lt;body&gt;</text>
+<rect x="52" y="80" width="336" height="48" rx="6" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="220" y="100" text-anchor="middle" font-size="13" font-weight="bold" fill="#047857">&lt;Header /&gt;（いつも同じ）</text>
+<text x="220" y="119" text-anchor="middle" font-size="12" fill="#047857">書籍管理アプリ ／ 書籍一覧 ／ 書籍を登録する</text>
+<rect x="52" y="140" width="336" height="144" rx="6" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<text x="64" y="160" font-size="12" fill="#c2410c">&lt;main&gt;</text>
+<rect x="80" y="172" width="280" height="96" rx="6" fill="#ffffff" stroke="#f97316" stroke-width="2" stroke-dasharray="6 4"/>
+<text x="220" y="212" text-anchor="middle" font-size="16" font-weight="bold" fill="#c2410c">{children}</text>
+<text x="220" y="236" text-anchor="middle" font-size="12" fill="#c2410c">ここだけが URL ごとに入れ替わる</text>
+<rect x="480" y="60" width="220" height="70" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="590" y="86" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e40af">URL が /</text>
+<text x="590" y="110" text-anchor="middle" font-size="12" fill="#1e40af" font-family="Consolas, Menlo, monospace">app/page.tsx</text>
+<rect x="480" y="200" width="220" height="70" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="590" y="226" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e40af">URL が /books/new</text>
+<text x="590" y="250" text-anchor="middle" font-size="12" fill="#1e40af" font-family="Consolas, Menlo, monospace">app/books/new/page.tsx</text>
+<line x1="480" y1="95" x2="364" y2="200" stroke="#475569" stroke-width="2" marker-end="url(#ar-06-11)"/>
+<line x1="480" y1="235" x2="364" y2="228" stroke="#475569" stroke-width="2" marker-end="url(#ar-06-11)"/>
+<text x="482" y="168" text-anchor="middle" font-size="12" fill="#475569">どちらか一方が入る</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図6-6: layout.tsx（額縁）と page.tsx（絵）の関係</div>
+</div>
 
 ---
 

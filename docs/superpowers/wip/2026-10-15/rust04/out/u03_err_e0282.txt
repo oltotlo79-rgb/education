@@ -1,0 +1,14 @@
+   Compiling design_lab v0.1.0 (...\design_lab)
+error[E0282]: type annotations needed for `Vec<_>`
+ --> src\bin\u03_err_e0282.rs:3:9
+  |
+3 |     let notes = Vec::new();
+  |         ^^^^^   ---------- type must be known at this point
+  |
+help: consider giving `notes` an explicit type, where the type for type parameter `T` is specified
+  |
+3 |     let notes: Vec<T> = Vec::new();
+  |              ++++++++
+
+For more information about this error, try `rustc --explain E0282`.
+error: could not compile `design_lab` (bin "u03_err_e0282") due to 1 previous error

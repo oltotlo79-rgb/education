@@ -1,0 +1,15 @@
+▲ Next.js 16.4.1 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.210.103:3000
+- Environments: .env.local
+✓ Ready in 2.4s
+✓ Running next.config.ts took 90ms
+
+○ Compiling /books/[id] ...
+[RootLayout] サーバーで描画しました
+[BooksLayout] サーバーで描画しました
+[BookDetailPage] id=42 のページを描画しました
+ GET /books/42 200 in 3.2s (next.js: 1995ms, application-code: 1178ms)
+[RootLayout] サーバーで描画しました
+ GET /ng-layoutfetch 200 in 1127ms (next.js: 30ms, application-code: 1097ms)
+[?25h

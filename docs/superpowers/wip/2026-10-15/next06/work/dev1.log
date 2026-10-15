@@ -1,0 +1,16 @@
+
+> book-management@0.1.0 dev
+> next dev
+
+▲ Next.js 16.4.1 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.210.103:3000
+- Environments: .env.local
+✓ Ready in 7.0s
+✓ Running next.config.ts took 80ms
+
+○ Compiling / ...
+ GET / 200 in 398ms (next.js: 201ms, application-code: 197ms)
+ GET /news 404 in 437ms (next.js: 401ms, application-code: 36ms)
+  Reload env: .env.local
+[?25h

@@ -13,6 +13,80 @@
 
 ほとんどのアプリ（SNS・ECサイト・メモアプリなど）は、結局この4操作の組み合わせでできています。この章ではまず **C** と **R** を作ります。
 
+**▼ CRUD は「画面」「コード」「データベース」で呼び名が変わるだけ**
+
+同じ「本を登録する」という操作でも、どこから見るかによって呼び名が変わります。この対応表を最初に頭に入れておくと、この先のコードがぐっと読みやすくなります。
+
+| CRUD | 画面でやること（この本のアプリ） | supabase-js で書くこと | SQL（データベースへの命令） | HTTP メソッド（通信の種類） | 扱う章 |
+|---|---|---|---|---|---|
+| **C** | 登録フォームから本を追加する | `.insert({...})` | `INSERT` | `POST` | **この章（4節）** |
+| **R** | 一覧ページで本を眺める | `.select("*")` | `SELECT` | `GET` | **この章（1節）** |
+| **U** | 評価やメモを書き直す | `.update({...}).eq("id", id)` | `UPDATE` | `PATCH` | 第8章 |
+| **D** | 不要になった本を消す | `.delete().eq("id", id)` | `DELETE` | `DELETE` | 第8章 |
+
+> **用語:** HTTP メソッド（エイチティーティーピー・メソッド）とは、ブラウザやプログラムがサーバーに送る「お願いの種類」のこと。`GET`＝ください、`POST`＝新しく受け取って、`PATCH`＝一部を書き換えて、`DELETE`＝消して、という意味です。supabase-js は、私たちが書いた `.insert()` などを裏側でこの HTTP のお願いに変換して Supabase に送っています。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 250" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-07-01" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<text x="157" y="22" font-size="13" fill="#64748b" text-anchor="middle">画面でやること</text>
+<text x="384" y="22" font-size="13" fill="#64748b" text-anchor="middle">コードで書くこと（supabase-js）</text>
+<text x="574" y="22" font-size="13" fill="#64748b" text-anchor="middle">DBで起きること</text>
+<text x="675" y="22" font-size="13" fill="#64748b" text-anchor="middle">扱う章</text>
+<circle cx="36" cy="57" r="19" fill="#3b82f6"/>
+<text x="36" y="63" font-size="17" font-weight="bold" fill="#ffffff" text-anchor="middle">C</text>
+<rect x="72" y="35" width="170" height="44" rx="8" fill="#eff6ff" stroke="#3b82f6"/>
+<text x="157" y="62" font-size="13" fill="#1e40af" text-anchor="middle">フォームから本を登録</text>
+<line x1="244" y1="57" x2="280" y2="57" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-07-01)"/>
+<rect x="284" y="35" width="200" height="44" rx="8" fill="#eff6ff" stroke="#3b82f6"/>
+<text x="384" y="62" font-size="13" fill="#1e40af" text-anchor="middle" font-family="Consolas, monospace">.insert({...})</text>
+<line x1="486" y1="57" x2="520" y2="57" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-07-01)"/>
+<rect x="524" y="35" width="100" height="44" rx="8" fill="#eff6ff" stroke="#3b82f6"/>
+<text x="574" y="62" font-size="13" font-weight="bold" fill="#1e40af" text-anchor="middle">INSERT</text>
+<rect x="638" y="43" width="74" height="28" rx="14" fill="#3b82f6"/>
+<text x="675" y="62" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">この章</text>
+<circle cx="36" cy="109" r="19" fill="#3b82f6"/>
+<text x="36" y="115" font-size="17" font-weight="bold" fill="#ffffff" text-anchor="middle">R</text>
+<rect x="72" y="87" width="170" height="44" rx="8" fill="#eff6ff" stroke="#3b82f6"/>
+<text x="157" y="114" font-size="13" fill="#1e40af" text-anchor="middle">一覧ページで本を見る</text>
+<line x1="244" y1="109" x2="280" y2="109" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-07-01)"/>
+<rect x="284" y="87" width="200" height="44" rx="8" fill="#eff6ff" stroke="#3b82f6"/>
+<text x="384" y="114" font-size="13" fill="#1e40af" text-anchor="middle" font-family="Consolas, monospace">.select("*")</text>
+<line x1="486" y1="109" x2="520" y2="109" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-07-01)"/>
+<rect x="524" y="87" width="100" height="44" rx="8" fill="#eff6ff" stroke="#3b82f6"/>
+<text x="574" y="114" font-size="13" font-weight="bold" fill="#1e40af" text-anchor="middle">SELECT</text>
+<rect x="638" y="95" width="74" height="28" rx="14" fill="#3b82f6"/>
+<text x="675" y="114" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">この章</text>
+<circle cx="36" cy="161" r="19" fill="#94a3b8"/>
+<text x="36" y="167" font-size="17" font-weight="bold" fill="#ffffff" text-anchor="middle">U</text>
+<rect x="72" y="139" width="170" height="44" rx="8" fill="#f8fafc" stroke="#cbd5e1"/>
+<text x="157" y="166" font-size="13" fill="#64748b" text-anchor="middle">評価やメモを書き直す</text>
+<line x1="244" y1="161" x2="280" y2="161" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#ar-07-01)"/>
+<rect x="284" y="139" width="200" height="44" rx="8" fill="#f8fafc" stroke="#cbd5e1"/>
+<text x="384" y="166" font-size="13" fill="#64748b" text-anchor="middle" font-family="Consolas, monospace">.update({...}).eq()</text>
+<line x1="486" y1="161" x2="520" y2="161" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#ar-07-01)"/>
+<rect x="524" y="139" width="100" height="44" rx="8" fill="#f8fafc" stroke="#cbd5e1"/>
+<text x="574" y="166" font-size="13" font-weight="bold" fill="#64748b" text-anchor="middle">UPDATE</text>
+<rect x="638" y="147" width="74" height="28" rx="14" fill="#e2e8f0"/>
+<text x="675" y="166" font-size="12" font-weight="bold" fill="#475569" text-anchor="middle">第8章</text>
+<circle cx="36" cy="213" r="19" fill="#94a3b8"/>
+<text x="36" y="219" font-size="17" font-weight="bold" fill="#ffffff" text-anchor="middle">D</text>
+<rect x="72" y="191" width="170" height="44" rx="8" fill="#f8fafc" stroke="#cbd5e1"/>
+<text x="157" y="218" font-size="13" fill="#64748b" text-anchor="middle">不要な本を消す</text>
+<line x1="244" y1="213" x2="280" y2="213" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#ar-07-01)"/>
+<rect x="284" y="191" width="200" height="44" rx="8" fill="#f8fafc" stroke="#cbd5e1"/>
+<text x="384" y="218" font-size="13" fill="#64748b" text-anchor="middle" font-family="Consolas, monospace">.delete().eq()</text>
+<line x1="486" y1="213" x2="520" y2="213" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#ar-07-01)"/>
+<rect x="524" y="191" width="100" height="44" rx="8" fill="#f8fafc" stroke="#cbd5e1"/>
+<text x="574" y="218" font-size="13" font-weight="bold" fill="#64748b" text-anchor="middle">DELETE</text>
+<rect x="638" y="199" width="74" height="28" rx="14" fill="#e2e8f0"/>
+<text x="675" y="218" font-size="12" font-weight="bold" fill="#475569" text-anchor="middle">第8章</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図7-1: CRUD の4操作と、画面・コード・データベースでの呼び名の対応（青がこの章で作る部分）</div>
+</div>
+
 ### この章で作るもの
 
 この章を終えると、以下の2つの画面が動くようになります。
@@ -50,6 +124,86 @@
 
 > **なぜコンポーネントを分けるの？** 1つの巨大なファイルに全てを書くこともできますが、部品に分けることで「見通しが良くなる」「バグを見つけやすくなる」「同じ部品を使い回せる」というメリットがあります。これは**コンポーネント設計**と呼ばれ、React開発の重要な考え方です。
 
+## この章のゴールと地図
+
+**たとえ話:** この章でやることは「本棚づくり」に似ています。まず本棚（一覧ページ）を組み立て、そこに並ぶ本の背表紙（カード）を整えます。次に「棚を準備中です」「棚が壊れています」という張り紙（読み込み中・エラー画面）を用意し、最後に新しい本を受け付ける窓口（登録フォーム）を作ります。窓口で受け付けた本が、ちゃんと本棚に並べば完成です。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 300" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-07-02" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="4" y="10" width="158" height="215" rx="10" fill="#eff6ff" stroke="#3b82f6"/>
+<rect x="4" y="10" width="158" height="40" rx="10" fill="#3b82f6"/>
+<rect x="4" y="36" width="158" height="14" fill="#3b82f6"/>
+<text x="83" y="36" font-size="14" font-weight="bold" fill="#ffffff" text-anchor="middle">① 一覧を表示（R）</text>
+<text x="83" y="70" font-size="12" fill="#1e40af" text-anchor="middle">1節（1a〜1f）</text>
+<rect x="18" y="80" width="130" height="22" rx="11" fill="#ffffff" stroke="#93c5fd"/>
+<text x="83" y="95" font-size="12" fill="#1e40af" text-anchor="middle">StatusBadge</text>
+<rect x="18" y="108" width="130" height="22" rx="11" fill="#ffffff" stroke="#93c5fd"/>
+<text x="83" y="123" font-size="12" fill="#1e40af" text-anchor="middle">RatingStars</text>
+<rect x="18" y="136" width="130" height="22" rx="11" fill="#ffffff" stroke="#93c5fd"/>
+<text x="83" y="151" font-size="12" fill="#1e40af" text-anchor="middle">BookCard</text>
+<rect x="18" y="164" width="130" height="22" rx="11" fill="#ffffff" stroke="#93c5fd"/>
+<text x="83" y="179" font-size="12" fill="#1e40af" text-anchor="middle">BookList</text>
+<rect x="18" y="192" width="130" height="22" rx="11" fill="#ffffff" stroke="#93c5fd"/>
+<text x="83" y="207" font-size="12" fill="#1e40af" text-anchor="middle">app/page.tsx</text>
+<line x1="164" y1="117" x2="182" y2="117" stroke="#475569" stroke-width="2" marker-end="url(#ar-07-02)"/>
+<rect x="186" y="10" width="158" height="215" rx="10" fill="#f8fafc" stroke="#64748b"/>
+<rect x="186" y="10" width="158" height="40" rx="10" fill="#64748b"/>
+<rect x="186" y="36" width="158" height="14" fill="#64748b"/>
+<text x="265" y="36" font-size="14" font-weight="bold" fill="#ffffff" text-anchor="middle">② 待ち・エラー</text>
+<text x="265" y="70" font-size="12" fill="#475569" text-anchor="middle">2節・3節</text>
+<rect x="200" y="80" width="130" height="22" rx="11" fill="#ffffff" stroke="#cbd5e1"/>
+<text x="265" y="95" font-size="12" fill="#475569" text-anchor="middle">LoadingSpinner</text>
+<rect x="200" y="108" width="130" height="22" rx="11" fill="#ffffff" stroke="#cbd5e1"/>
+<text x="265" y="123" font-size="12" fill="#475569" text-anchor="middle">loading.tsx</text>
+<rect x="200" y="136" width="130" height="22" rx="11" fill="#ffffff" stroke="#cbd5e1"/>
+<text x="265" y="151" font-size="12" fill="#475569" text-anchor="middle">error.tsx</text>
+<line x1="346" y1="117" x2="364" y2="117" stroke="#475569" stroke-width="2" marker-end="url(#ar-07-02)"/>
+<rect x="368" y="10" width="158" height="215" rx="10" fill="#fff7ed" stroke="#f97316"/>
+<rect x="368" y="10" width="158" height="40" rx="10" fill="#f97316"/>
+<rect x="368" y="36" width="158" height="14" fill="#f97316"/>
+<text x="447" y="36" font-size="14" font-weight="bold" fill="#ffffff" text-anchor="middle">③ 登録できる（C）</text>
+<text x="447" y="70" font-size="12" fill="#c2410c" text-anchor="middle">4節（4a〜4c）</text>
+<rect x="382" y="80" width="130" height="22" rx="11" fill="#ffffff" stroke="#fdba74"/>
+<text x="447" y="95" font-size="12" fill="#c2410c" text-anchor="middle">BookForm</text>
+<rect x="382" y="108" width="130" height="22" rx="11" fill="#ffffff" stroke="#fdba74"/>
+<text x="447" y="123" font-size="12" fill="#c2410c" text-anchor="middle">books/new/page.tsx</text>
+<rect x="382" y="136" width="130" height="22" rx="11" fill="#ffffff" stroke="#fdba74"/>
+<text x="447" y="151" font-size="12" fill="#c2410c" text-anchor="middle">insert → 一覧へ</text>
+<line x1="528" y1="117" x2="546" y2="117" stroke="#475569" stroke-width="2" marker-end="url(#ar-07-02)"/>
+<rect x="550" y="10" width="158" height="215" rx="10" fill="#ecfdf5" stroke="#10b981"/>
+<rect x="550" y="10" width="158" height="40" rx="10" fill="#10b981"/>
+<rect x="550" y="36" width="158" height="14" fill="#10b981"/>
+<text x="629" y="36" font-size="14" font-weight="bold" fill="#ffffff" text-anchor="middle">④ 確かめる</text>
+<text x="629" y="70" font-size="12" fill="#047857" text-anchor="middle">5節〜8節</text>
+<rect x="564" y="80" width="130" height="22" rx="11" fill="#ffffff" stroke="#6ee7b7"/>
+<text x="629" y="95" font-size="12" fill="#047857" text-anchor="middle">5 コード解説</text>
+<rect x="564" y="108" width="130" height="22" rx="11" fill="#ffffff" stroke="#6ee7b7"/>
+<text x="629" y="123" font-size="12" fill="#047857" text-anchor="middle">6 動作確認</text>
+<rect x="564" y="136" width="130" height="22" rx="11" fill="#ffffff" stroke="#6ee7b7"/>
+<text x="629" y="151" font-size="12" fill="#047857" text-anchor="middle">7 トラブル対応</text>
+<rect x="564" y="164" width="130" height="22" rx="11" fill="#ffffff" stroke="#6ee7b7"/>
+<text x="629" y="179" font-size="12" fill="#047857" text-anchor="middle">8 練習問題</text>
+<rect x="4" y="240" width="704" height="50" rx="10" fill="#ecfdf5" stroke="#10b981"/>
+<text x="356" y="270" font-size="13" fill="#047857" text-anchor="middle"><tspan font-weight="bold">この章のゴール:</tspan> フォームで本を登録 → Supabase に保存 → 一覧ページに新しいカードが並ぶ</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図7-2: この章の地図（①→④の順に進みます）</div>
+</div>
+
+**この章を終えると、次のことができるようになります。**
+
+- Server Component の中で `await` を使って Supabase からデータを取得し、一覧として表示できる
+- 小さな部品（StatusBadge・RatingStars・BookCard・BookList）を組み合わせて1つの画面を作れる
+- 0冊のとき（空状態）・読み込み中・エラーのとき、それぞれの画面を用意できる
+- フォームの入力を `useState` で管理し、送信前にチェック（バリデーション）できる
+- Supabase に新しい行を INSERT し、一覧に戻って最新の状態を表示できる
+
+**前提知識:** 第3章（React の props と useState）、第4章（App Router と Server / Client Component）、第5章（books テーブルと RLS）、第6章（プロジェクトの準備）を終えていること。
+
+**進め方のコツ:** 各節は「完成コード → 画面の説明 → 分解解説 → 動かして確かめる（Node.js だけで実行できる小さな例）」の順に並んでいます。分からない行があっても、まずはコードを写して画面を動かし、あとから分解解説を読む、という順番でも大丈夫です。
+
 ---
 
 ## 目次
@@ -62,6 +216,7 @@
 5. [コード解説](#5-コード解説)
 6. [動作確認手順](#6-動作確認手順)
 7. [トラブルシューティング](#7-トラブルシューティング)
+8. [練習問題（解答・解説つき）](#8-練習問題解答解説つき)
 
 ---
 
@@ -93,6 +248,7 @@ const data = supabase.from("books").select("*");
 非同期処理の「結果が返ってくる予定の入れ物」のことを **Promise（プロミス、約束／英語の "promise" は『約束』）** と言います。
 
 Promise は3つの状態を持ちます。
+
 - **pending**（ペンディング／保留中）: まだ結果が出ていない。
 - **fulfilled**（フルフィルド／成功）: 結果（値）が確定した。
 - **rejected**（リジェクテッド／失敗）: エラーで失敗した。
@@ -101,6 +257,44 @@ Promise は3つの状態を持ちます。
 今すぐ返せる値: ─── 1 + 2 ─── 即 3 が返る
 非同期の値:   ─── DB問い合わせ ─── ⏳ Promise が返る ─── 数百ms後に中身が確定
 ```
+
+**▼ たとえ話: Promise は「フードコートの呼び出しベル」**
+
+フードコートで注文すると、料理の代わりにまず「呼び出しベル」を渡されますね。ベルを持っている間、料理はまだ手元にありません（**pending**）。ベルが鳴ったら料理を受け取り（**fulfilled**）、品切れなら店員さんから「ごめんなさい」の連絡が来ます（**rejected**）。`supabase.from("books").select("*")` を呼んだ直後に返ってくるのは、料理（データ）ではなく、この「ベル」＝ Promise なのです。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 240" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-07-03" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="8" y="70" width="150" height="100" rx="10" fill="#f8fafc" stroke="#64748b"/>
+<text x="83" y="98" font-size="14" font-weight="bold" fill="#334155" text-anchor="middle">① 注文する</text>
+<text x="83" y="124" font-size="12" fill="#475569" text-anchor="middle">データを頼む</text>
+<text x="83" y="148" font-size="12" fill="#475569" text-anchor="middle" font-family="Consolas, monospace">select("*")</text>
+<line x1="160" y1="120" x2="194" y2="120" stroke="#475569" stroke-width="2" marker-end="url(#ar-07-03)"/>
+<rect x="198" y="70" width="176" height="100" rx="10" fill="#eff6ff" stroke="#3b82f6"/>
+<rect x="268" y="80" width="36" height="24" rx="6" fill="#3b82f6"/>
+<circle cx="286" cy="92" r="6" fill="#bfdbfe"/>
+<text x="286" y="126" font-size="14" font-weight="bold" fill="#1e40af" text-anchor="middle">② ベルを受け取る</text>
+<text x="286" y="150" font-size="12" fill="#1e40af" text-anchor="middle" font-family="Consolas, monospace">Promise { &lt;pending&gt; }</text>
+<line x1="376" y1="120" x2="410" y2="120" stroke="#475569" stroke-width="2" marker-end="url(#ar-07-03)"/>
+<rect x="414" y="70" width="130" height="100" rx="10" fill="#f8fafc" stroke="#64748b"/>
+<text x="479" y="100" font-size="14" font-weight="bold" fill="#334155" text-anchor="middle">③ 待つ</text>
+<text x="479" y="126" font-size="13" fill="#475569" text-anchor="middle" font-family="Consolas, monospace">await</text>
+<text x="479" y="150" font-size="12" fill="#475569" text-anchor="middle">この行で一時停止</text>
+<line x1="546" y1="110" x2="572" y2="62" stroke="#10b981" stroke-width="2" marker-end="url(#ar-07-03)"/>
+<line x1="546" y1="130" x2="572" y2="178" stroke="#f97316" stroke-width="2" marker-end="url(#ar-07-03)"/>
+<rect x="576" y="12" width="138" height="96" rx="10" fill="#ecfdf5" stroke="#10b981"/>
+<text x="645" y="38" font-size="14" font-weight="bold" fill="#047857" text-anchor="middle">④ 鳴った！</text>
+<text x="645" y="62" font-size="12" fill="#047857" text-anchor="middle">fulfilled（成功）</text>
+<text x="645" y="86" font-size="12" fill="#047857" text-anchor="middle">→ data を受け取る</text>
+<rect x="576" y="132" width="138" height="96" rx="10" fill="#fff7ed" stroke="#f97316"/>
+<text x="645" y="158" font-size="14" font-weight="bold" fill="#c2410c" text-anchor="middle">④ 品切れ…</text>
+<text x="645" y="182" font-size="12" fill="#c2410c" text-anchor="middle">rejected（失敗）</text>
+<text x="645" y="206" font-size="12" fill="#c2410c" text-anchor="middle">→ エラー処理へ</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図7-3: Promise は「呼び出しベル」。await は「ベルが鳴るまで待つ」こと</div>
+</div>
 
 ### 0.3 async / await で「待つ」
 
@@ -112,7 +306,8 @@ Promise は3つの状態を持ちます。
 const fetchBooks = () => {
   // Promise が data に入る（中身はまだ無い）
   const data = supabase.from("books").select("*");
-  // Promise { <pending> } と表示される（ペンディング状態）
+  // 本のデータではなく「あとで結果が入る入れ物」が表示される（中身はまだ無い）
+  // ※ supabase-js では PostgrestFilterBuilder { ... } という Promise のなかまが表示される
   console.log(data);
 };
 
@@ -137,6 +332,98 @@ async function fetchBooks() {
 ```
 
 > **重要なポイント:** `await` を付けた関数を呼び出した瞬間、その関数自体も Promise を返します。つまり「async関数は常に Promise を返す」というルールがあります。`async function f() { return 1; }` を呼ぶと、戻り値は数値の 1 ではなく、中身が 1 の Promise になります。
+
+#### 動かして確かめる: await を付ける・付けないの違い
+
+> **▼ このコードがやること（先に日本語で）:** 本物の Supabase の代わりに「0.3秒後に本の一覧を返す、にせものの関数」を作ります。それを `await` を付けずに呼んだ場合と、付けて呼んだ場合で、受け取れる値がどう違うかをターミナルに表示します。Supabase のアカウントが無くても、Node.js だけで試せます。
+
+```typescript
+// 本物の Supabase の代わりに使う「にせものの取得関数」
+// 0.3秒後に書籍の配列を返す（ネット越しの問い合わせをまねている）
+function fakeSelectBooks(): Promise<{ title: string }[]> {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([{ title: "リーダブルコード" }, { title: "JavaScript Primer" }]);
+    }, 300);
+  });
+}
+
+// ❌ await を付けずに呼んだ場合
+function withoutAwait() {
+  const data = fakeSelectBooks();
+  console.log("await なし:", data);
+}
+
+// ✅ async 関数の中で await を付けて呼んだ場合
+async function withAwait() {
+  const data = await fakeSelectBooks();
+  console.log("await あり:", data);
+}
+
+// 2つを順番に試す
+async function main() {
+  withoutAwait();
+  await withAwait();
+  console.log("おしまい");
+}
+
+main();
+```
+
+**▼ 実行結果**（`await-demo.ts` という名前で保存し、ターミナルで `node await-demo.ts` を実行）
+
+```text
+await なし: Promise { <pending> }
+await あり: [ { title: 'リーダブルコード' }, { title: 'JavaScript Primer' } ]
+おしまい
+```
+
+> **ヒント:** Node.js 22.18 以降（2026年時点の LTS 版を含む）では、`.ts` ファイルを `node ファイル名.ts` で直接実行できます。ただし「型の部分を消してから実行する」だけなので、**型のまちがいはチェックされません**。型チェックは VS Code の赤線や `npx tsc --noEmit` が担当します。
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: Promise を返す「にせもの」の関数
+
+```typescript
+function fakeSelectBooks(): Promise<{ title: string }[]> {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([{ title: "リーダブルコード" }, { title: "JavaScript Primer" }]);
+    }, 300);
+  });
+}
+```
+
+- 戻り値の型 `Promise<{ title: string }[]>` は「あとで『本の配列』が入る予定のベル」という意味です。
+- `new Promise((resolve) => { ... })` でベルを作り、`setTimeout` で 300 ミリ秒（0.3秒）待ってから `resolve(...)` を呼びます。`resolve` を呼んだ瞬間にベルが鳴り、中身が確定（fulfilled）します。
+
+> **用語:** `setTimeout(関数, ミリ秒)`（セット・タイムアウト）とは「指定した時間が経ってから関数を1回実行する」機能。ブラウザでも Node.js でも使えます。ここではネット越しの待ち時間をまねるために使っています。
+
+##### 解説2: await なしだと「ベル」そのものが入る
+
+```typescript
+function withoutAwait() {
+  const data = fakeSelectBooks();
+  console.log("await なし:", data);
+}
+```
+
+- `await` を付けないと、`data` には本の配列ではなく **Promise（ベル）そのもの**が入ります。実行結果の `Promise { <pending> }` は「まだ中身が無いベル」という表示です。
+- この状態で `data.length` や `data.map(...)` と書いても、配列ではないので期待どおりに動きません。
+
+##### 解説3: await ありなら「中身」が入る
+
+```typescript
+async function withAwait() {
+  const data = await fakeSelectBooks();
+  console.log("await あり:", data);
+}
+```
+
+- `await` を付けると、ベルが鳴るまでこの行で待ち、**鳴ったあとの中身（本の配列）**が `data` に入ります。
+- `main` の中で `await withAwait();` と書いているので、「おしまい」は必ず本の一覧が表示されたあとに出ます。もし `await` を外すと「おしまい」が先に表示されます（ぜひ試してみてください）。
+
+> **補足（supabase-js の場合）:** supabase-js の `supabase.from("books").select("*")` が返すのは、正確には Promise と同じように `await` できる「Promise のなかま（thenable／ゼナブル）」です。しかも **`await`（または `.then()`）されるまで通信そのものが始まりません**。つまり `await` を書き忘れると、データが取れないだけでなく、Supabase への問い合わせ自体が行われないのです。
 
 ### 0.4 try / catch でエラーを捕まえる
 
@@ -168,12 +455,148 @@ const fetchBooks = async () => {
 成功: [ { id: 1, title: "...", ... }, { id: 2, ... } ]
 ```
 
-失敗時（テーブル名を間違えた場合など）:
+失敗時（テーブル名を `bookz` と間違えた場合）:
 ```
-失敗: { code: '42P01', message: 'relation "bookz" does not exist' }
+失敗: {
+  code: 'PGRST205',
+  details: null,
+  hint: "Perhaps you meant the table 'public.books'",
+  message: "Could not find the table 'public.bookz' in the schema cache"
+}
 ```
 
+> **補足:** 以前の Supabase では、同じまちがいが `{ code: '42P01', message: 'relation "bookz" does not exist' }` という形で返っていました。現在の Supabase（内部の PostgREST という部品の新しい版）では上のように `PGRST205`（テーブルが見つからない）が返り、`hint`（ヒント）に「もしかして `public.books` のこと？」という候補まで入ります。エラーが出たら `message` だけでなく `hint` も読む習慣をつけましょう。
+
 > **本書での使い方:** Supabaseの `.from()` などはすべて非同期なので、`async` 関数の中で `await` を付けて呼びます。エラーは `try/catch` で捕まえ、画面に「エラーが発生しました」と表示します。
+
+#### 動かして確かめる: Supabase の error は catch に来ない
+
+上のコードで `if (error) throw error;` と、わざわざ自分で投げ直していたのに気づきましたか？ これは **supabase-js が、失敗しても例外を投げない（throw しない）設計**だからです。失敗は `{ data: null, error: {...} }` という「戻り値」で知らされます。本当にそうなのか、にせものの関数で確かめてみましょう。
+
+> **▼ このコードがやること（先に日本語で）:** supabase-js と同じく「失敗しても throw せず、`error` に理由を入れて返す」にせものの関数を作ります。それを ①`try / catch` だけで囲んだ書き方（NG）と、②`error` を自分で調べる書き方（OK）で呼び比べ、どちらが失敗に気づけるかを確かめます。
+
+```typescript
+// supabase-js の戻り値と同じ「{ data, error } の形」を表す型
+type Result = {
+  data: { title: string }[] | null;
+  error: { code: string; message: string } | null;
+};
+
+// にせものの取得関数。テーブル名が "books" 以外なら error を返す（throw はしない）
+async function fakeFrom(table: string): Promise<Result> {
+  if (table !== "books") {
+    return {
+      data: null,
+      error: {
+        code: "PGRST205",
+        message: `Could not find the table 'public.${table}' in the schema cache`,
+      },
+    };
+  }
+  return { data: [{ title: "リーダブルコード" }], error: null };
+}
+
+// ❌ NG: try / catch だけで安心してしまう書き方
+async function ngVersion(table: string) {
+  try {
+    const { data } = await fakeFrom(table);
+    console.log("NG版: data =", data);
+    console.log("NG版: 成功したつもりで先へ進んでしまう");
+  } catch (err) {
+    console.log("NG版: catch に来た", err);
+  }
+}
+
+// ✅ OK: error を自分でチェックする書き方
+async function okVersion(table: string) {
+  const { data, error } = await fakeFrom(table);
+  if (error) {
+    console.log("OK版: エラーを検出 →", error.code, error.message);
+    return;
+  }
+  const books = data ?? [];
+  console.log("OK版: 取得件数 =", books.length);
+}
+
+async function main() {
+  // テーブル名をわざと間違える（books → bookz）
+  await ngVersion("bookz");
+  await okVersion("bookz");
+  // 正しいテーブル名
+  await okVersion("books");
+}
+
+main();
+```
+
+**▼ 実行結果**（`node data-error-demo.ts`）
+
+```text
+NG版: data = null
+NG版: 成功したつもりで先へ進んでしまう
+OK版: エラーを検出 → PGRST205 Could not find the table 'public.bookz' in the schema cache
+OK版: 取得件数 = 1
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: 失敗を「戻り値」で知らせる関数
+
+```typescript
+type Result = {
+  data: { title: string }[] | null;
+  error: { code: string; message: string } | null;
+};
+```
+
+- `data` と `error` は「どちらか片方だけに中身が入る」2つの箱です。成功なら `data` に配列・`error` は `null`、失敗なら `data` は `null`・`error` に理由が入ります。
+- `fakeFrom` は失敗しても `throw` せず、この形のオブジェクトを `return` するだけです。本物の supabase-js も同じ振る舞いをします。
+
+##### 解説2: NG 版は catch に来ない
+
+```typescript
+  try {
+    const { data } = await fakeFrom(table);
+    console.log("NG版: data =", data);
+    console.log("NG版: 成功したつもりで先へ進んでしまう");
+  } catch (err) {
+```
+
+- `catch` は「throw された例外」を捕まえる仕組みです。`fakeFrom` は何も throw していないので、**`catch` には一度も来ません**。
+- 実行結果のとおり、`data` が `null` のまま「成功したつもり」で次の行へ進んでしまいます。この先で `data.map(...)` などを書いていたら、そこで初めて「null の map は呼べない」という分かりにくいエラーになります。
+
+##### 解説3: OK 版は if (error) で必ず調べる
+
+```typescript
+  const { data, error } = await fakeFrom(table);
+  if (error) {
+    console.log("OK版: エラーを検出 →", error.code, error.message);
+    return;
+  }
+  const books = data ?? [];
+```
+
+- 受け取った直後に `if (error)` で失敗かどうかを調べ、失敗ならその場で `return`（早期 return）します。
+- 成功した場合も、念のため `data ?? []` で「null なら空配列」にしてから使います。これは 1e のトップページでも使う書き方です。
+
+> **つまずきポイント: 「try / catch で囲んだから安心」は supabase-js では通用しない**
+>
+> supabase-js の失敗は `error` という戻り値で届きます。`try / catch` だけでは気づけません。
+
+```typescript
+// ❌ NG: error を受け取っていない。失敗しても books が null になるだけで気づけない
+const { data: books } = await supabase.from("books").select("*");
+```
+
+```typescript
+// ✅ OK: error も受け取り、すぐに調べる
+const { data: books, error } = await supabase.from("books").select("*");
+if (error) {
+  console.error("書籍の取得に失敗しました:", error);
+}
+```
+
+> 実は supabase-js は、**通信そのものが切れたときでさえ throw せず**、`error` に `TypeError: Failed to fetch` のような理由を入れて返します。`try / catch` が役に立つのは、自分のコードのミス（`null` の中身を読もうとした等）や、環境変数の設定漏れでクライアント作成自体が失敗した、といった supabase-js の外側の例外です。この章の登録ページ（4b）では、`if (error)` と `try / catch` の**両方**を使って二重に備えています。
 
 ---
 
@@ -188,6 +611,47 @@ app/page.tsx（トップページ / Server Component）
             ├── StatusBadge（ステータスバッジ）
             └── RatingStars（星評価）
 ```
+
+この「入れ子」を絵にすると、次のようになります。外側の部品が内側の部品を**箱のように包み**、データ（props）は**外から内へ、一方通行で**渡されていきます。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 320" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<rect x="8" y="8" width="704" height="304" rx="12" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="24" y="34" font-size="14" font-weight="bold" fill="#1e40af">app/page.tsx（Server Component）</text>
+<text x="696" y="34" font-size="12" fill="#1e40af" text-anchor="end">① Supabase から books を取得</text>
+<rect x="24" y="48" width="672" height="232" rx="10" fill="#ffffff" stroke="#3b82f6"/>
+<text x="40" y="72" font-size="14" font-weight="bold" fill="#1e40af">BookList</text>
+<text x="112" y="72" font-size="12" fill="#c2410c">② props で受け取る: books={bookList}</text>
+<rect x="40" y="88" width="280" height="178" rx="8" fill="#fff7ed" stroke="#f97316"/>
+<text x="54" y="112" font-size="13" font-weight="bold" fill="#c2410c">BookCard</text>
+<text x="126" y="112" font-size="12" fill="#c2410c">③ book={book}</text>
+<text x="54" y="138" font-size="13" font-weight="bold" fill="#1e293b">リーダブルコード</text>
+<text x="54" y="158" font-size="12" fill="#64748b">著者: Dustin Boswell</text>
+<rect x="54" y="172" width="118" height="30" rx="15" fill="#ecfdf5" stroke="#10b981"/>
+<text x="113" y="192" font-size="12" fill="#047857" text-anchor="middle">StatusBadge</text>
+<rect x="186" y="172" width="120" height="30" rx="8" fill="#fefce8" stroke="#eab308"/>
+<text x="246" y="192" font-size="12" fill="#a16207" text-anchor="middle">RatingStars</text>
+<text x="113" y="226" font-size="12" fill="#c2410c" text-anchor="middle">④ status を渡す</text>
+<text x="246" y="226" font-size="12" fill="#c2410c" text-anchor="middle">④ rating を渡す</text>
+<text x="180" y="252" font-size="12" fill="#64748b" text-anchor="middle">例) status: completed, rating: 4</text>
+<rect x="336" y="88" width="280" height="178" rx="8" fill="#fff7ed" stroke="#f97316"/>
+<text x="350" y="112" font-size="13" font-weight="bold" fill="#c2410c">BookCard</text>
+<text x="422" y="112" font-size="12" fill="#c2410c">③ book={book}</text>
+<text x="350" y="138" font-size="13" font-weight="bold" fill="#1e293b">JavaScript Primer</text>
+<text x="350" y="158" font-size="12" fill="#64748b">著者: azu ほか</text>
+<rect x="350" y="172" width="118" height="30" rx="15" fill="#ecfdf5" stroke="#10b981"/>
+<text x="409" y="192" font-size="12" fill="#047857" text-anchor="middle">StatusBadge</text>
+<rect x="482" y="172" width="120" height="30" rx="8" fill="#fefce8" stroke="#eab308"/>
+<text x="542" y="192" font-size="12" fill="#a16207" text-anchor="middle">RatingStars</text>
+<text x="409" y="226" font-size="12" fill="#c2410c" text-anchor="middle">④ status を渡す</text>
+<text x="542" y="226" font-size="12" fill="#c2410c" text-anchor="middle">④ rating を渡す</text>
+<text x="476" y="252" font-size="12" fill="#64748b" text-anchor="middle">例) status: reading, rating: null</text>
+<text x="656" y="172" font-size="20" font-weight="bold" fill="#f97316" text-anchor="middle">…</text>
+<text x="656" y="196" font-size="12" fill="#c2410c" text-anchor="middle">× N冊</text>
+<text x="360" y="300" font-size="12" fill="#475569" text-anchor="middle">データは「親 → 子」へ一方通行で渡る（子が親のデータを書き換えることはない）</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図7-4: 一覧ページの部品の入れ子と、props（データ）が外から内へ渡っていく流れ</div>
+</div>
 
 小さなコンポーネントから順に作っていきましょう。
 
@@ -692,6 +1156,74 @@ export default function RatingStars({ rating }: RatingStarsProps) {
 - 星だけだと「4つなのか5つなのか」一瞬迷うことがあるため、数値を併記して**確実に伝わる**ようにしています。
 
 > **用語:** `ml-1` の `ml` は margin-left（左外側の余白）の略。Tailwind では `m`（margin）+ 方向（`l`=left, `r`=right, `t`=top, `b`=bottom）+ 数値、という規則でクラス名が付く。
+
+---
+
+#### 動かして確かめる: 評価を星の文字列に変えてみる
+
+`RatingStars` の中身は「数字 → 星の見た目」の変換です。画面（JSX）を外して、変換のロジックだけを Node.js で動かすと、クランプや `map` の働きがよく見えます。
+
+> **▼ このコードがやること（先に日本語で）:** `RatingStars` と同じルール（null なら「評価なし」、1〜5 に収める、評価値以下の番号は塗りつぶし）で、評価を `★★★★☆ (4)` のような文字列に変える関数を作ります。範囲外の値（0 や 9）や `null` も渡して、どう表示されるかを確かめます。
+
+```typescript
+// RatingStars と同じ考え方で、評価を「★☆」の文字列に変える関数
+function ratingToStars(rating: number | null): string {
+  // 評価が無いときは早期 return
+  if (rating === null) {
+    return "評価なし";
+  }
+  // 1〜5 の範囲に収める（クランプ）
+  const clamped = Math.min(5, Math.max(1, rating));
+  // 1〜5 の番号ごとに「塗る★／塗らない☆」を決めて、1本の文字列につなげる
+  const stars = [1, 2, 3, 4, 5]
+    .map((star) => (star <= clamped ? "★" : "☆"))
+    .join("");
+  return `${stars} (${clamped})`;
+}
+
+// いろいろな評価値で試す（0 と 9 は範囲外、null は未入力）
+const samples = [4, 1, 5, 0, 9, null];
+
+for (const rating of samples) {
+  console.log(String(rating).padStart(4), "→", ratingToStars(rating));
+}
+```
+
+**▼ 実行結果**（`node stars-demo.ts`）
+
+```text
+   4 → ★★★★☆ (4)
+   1 → ★☆☆☆☆ (1)
+   5 → ★★★★★ (5)
+   0 → ★☆☆☆☆ (1)
+   9 → ★★★★★ (5)
+null → 評価なし
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: map で「番号の配列」を「星の配列」に変える
+
+```typescript
+  const stars = [1, 2, 3, 4, 5]
+    .map((star) => (star <= clamped ? "★" : "☆"))
+    .join("");
+```
+
+- `[1, 2, 3, 4, 5].map(...)` は、5つの番号それぞれを「★ か ☆」に変換し、`["★", "★", "★", "★", "☆"]` のような**新しい配列**を作ります（評価が 4 の場合）。
+- `.join("")` は配列の要素を区切り文字なしでつなげて、1本の文字列 `"★★★★☆"` にします。
+- `RatingStars` では `join` の代わりに、配列の各要素を `<span>` にして JSX の中に並べています。「配列を map で変換する」という骨組みは同じです。
+
+##### 解説2: クランプで範囲外の値を丸める
+
+```typescript
+  const clamped = Math.min(5, Math.max(1, rating));
+```
+
+- 実行結果の `0 → ★☆☆☆☆ (1)` と `9 → ★★★★★ (5)` に注目してください。範囲外の値が来ても、1〜5 に収められてから星になっています。
+- データベースには CHECK 制約（第5章）があるので本来は 1〜5 しか入りませんが、「表示する側でも念のため守る」のが安全な作り方です。
+
+> **用語:** `padStart(4)`（パッド・スタート）とは、文字列の**左側**を空白で埋めて、4文字の幅にそろえるメソッド。実行結果の矢印の位置をそろえるためだけに使っています。
 
 ---
 
@@ -1220,7 +1752,158 @@ export default function BookList({ books }: BookListProps) {
 
 > **用語:** レスポンシブ対応（responsive）とは、画面幅に応じてレイアウトを自動的に変える設計のこと。Tailwind では `md:`（中サイズ以上）・`lg:`（大サイズ以上）などのプレフィックスで「画面幅ごとの指定」を書ける。
 
----
+**▼ 画面イメージ: 書籍が0冊のとき（空状態）**
+
+アプリを作ったばかりで本が1冊も無いときは、解説3の早期 return によって次の画面が表示されます。何も無い真っ白な画面ではなく、「次に何をすればよいか」が分かる画面になっているのがポイントです。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 330" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-07-05" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#f97316"/></marker>
+</defs>
+<rect x="10" y="10" width="700" height="310" rx="10" fill="#f8fafc"/>
+<path d="M10,46 L10,20 Q10,10 20,10 L700,10 Q710,10 710,20 L710,46 Z" fill="#e2e8f0"/>
+<circle cx="30" cy="28" r="5" fill="#f87171"/>
+<circle cx="46" cy="28" r="5" fill="#fbbf24"/>
+<circle cx="62" cy="28" r="5" fill="#34d399"/>
+<rect x="84" y="18" width="420" height="20" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
+<text x="98" y="32" font-size="12" fill="#475569">localhost:3000</text>
+<rect x="11" y="46" width="698" height="62" fill="#ffffff"/>
+<line x1="11" y1="108" x2="709" y2="108" stroke="#e2e8f0"/>
+<text x="34" y="76" font-size="18" font-weight="bold" fill="#111827">書籍管理アプリ</text>
+<text x="34" y="97" font-size="12" fill="#6b7280">あなたの読書記録を管理しましょう</text>
+<rect x="580" y="61" width="110" height="32" rx="8" fill="#2563eb"/>
+<text x="635" y="82" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">＋ 新規登録</text>
+<text x="34" y="136" font-size="13" fill="#4b5563">全 <tspan font-weight="bold" fill="#111827">0</tspan> 冊</text>
+<rect x="334" y="150" width="52" height="40" rx="4" fill="#bfdbfe" stroke="#3b82f6" stroke-width="1.5"/>
+<line x1="360" y1="150" x2="360" y2="190" stroke="#3b82f6" stroke-width="1.5"/>
+<line x1="341" y1="162" x2="354" y2="162" stroke="#3b82f6"/>
+<line x1="341" y1="170" x2="354" y2="170" stroke="#3b82f6"/>
+<line x1="366" y1="162" x2="379" y2="162" stroke="#3b82f6"/>
+<line x1="366" y1="170" x2="379" y2="170" stroke="#3b82f6"/>
+<text x="360" y="218" font-size="16" font-weight="bold" fill="#374151" text-anchor="middle">書籍が登録されていません</text>
+<text x="360" y="241" font-size="12" fill="#6b7280" text-anchor="middle">「新規登録」ボタンから最初の書籍を登録しましょう。</text>
+<rect x="285" y="256" width="150" height="36" rx="8" fill="#2563eb"/>
+<text x="360" y="279" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">最初の書籍を登録する</text>
+<rect x="500" y="132" width="200" height="48" rx="8" fill="#fff7ed" stroke="#f97316"/>
+<text x="600" y="152" font-size="12" fill="#c2410c" text-anchor="middle">books.length === 0 なので</text>
+<text x="600" y="170" font-size="12" fill="#c2410c" text-anchor="middle">早期 return でこの画面に</text>
+<line x1="540" y1="182" x2="472" y2="208" stroke="#f97316" stroke-width="1.5" marker-end="url(#ar-07-05)"/>
+<rect x="500" y="250" width="200" height="48" rx="8" fill="#fff7ed" stroke="#f97316"/>
+<text x="600" y="270" font-size="12" fill="#c2410c" text-anchor="middle">次の行動を1つだけ示す</text>
+<text x="600" y="288" font-size="12" fill="#c2410c" text-anchor="middle">（/books/new へのリンク）</text>
+<line x1="498" y1="274" x2="440" y2="274" stroke="#f97316" stroke-width="1.5" marker-end="url(#ar-07-05)"/>
+<rect x="10" y="10" width="700" height="310" rx="10" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図7-5: 書籍が0冊のときの画面イメージ（空状態 / empty state）</div>
+</div>
+
+#### 動かして確かめる: map の中で `{ }` を使うと何も返らない
+
+`books.map(...)` は、この章で何度も出てくる大事な書き方です。そして初心者が**一番多く「画面に何も出ない」原因を作る場所**でもあります。JSX を外した小さな例で確かめてみましょう。
+
+> **▼ このコードがやること（先に日本語で）:** 本の配列を `map` で「カード: タイトル」という文字列の配列に変換します。そのとき、矢印関数（`=>`）の右側を `{ }` で囲んで `return` を書き忘れた場合（NG）と、正しく書いた場合（OK を2通り）を比べます。
+
+```typescript
+const books = [
+  { id: "a1", title: "リーダブルコード" },
+  { id: "b2", title: "JavaScript Primer" },
+];
+
+// ❌ NG: { } で囲んだのに return を書いていない
+const ng = books.map((book) => {
+  `カード: ${book.title}`;
+});
+
+// ✅ OK その1: ( ) で囲む（または何も囲まない）と、式の値がそのまま返る
+const ok1 = books.map((book) => `カード: ${book.title}`);
+
+// ✅ OK その2: { } を使うなら return を書く
+const ok2 = books.map((book) => {
+  return `カード: ${book.title}`;
+});
+
+console.log("NG :", ng);
+console.log("OK1:", ok1);
+console.log("OK2:", ok2);
+```
+
+**▼ 実行結果**（`node map-demo.ts`）
+
+```text
+NG : [ undefined, undefined ]
+OK1: [ 'カード: リーダブルコード', 'カード: JavaScript Primer' ]
+OK2: [ 'カード: リーダブルコード', 'カード: JavaScript Primer' ]
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: `=> { }` は「処理のかたまり」なので return が要る
+
+```typescript
+const ng = books.map((book) => {
+  `カード: ${book.title}`;
+});
+```
+
+- 矢印関数の右側を `{ }` で囲むと、そこは「何行でも処理を書ける**ブロック**」になります。ブロックの中では、`return` と書いた値しか外に返りません。
+- この NG 例では文字列を作っただけで返していないので、2冊分とも `undefined`（値が無い）になりました。**エラーは1つも出ない**ので、気づきにくいのが怖いところです。
+
+##### 解説2: `=> ( )` は「値そのもの」なので自動で返る
+
+```typescript
+const ok1 = books.map((book) => `カード: ${book.title}`);
+```
+
+- 矢印関数の右側に**式（値になるもの）**を直接書くと、その値が自動的に返ります（暗黙の return）。
+- JSX は複数行になることが多いので、`BookList` では `(book) => ( <BookCard ... /> )` のように `( )` で囲んで「ここからここまでが1つの値だよ」と示しています。
+
+> **つまずきポイント: map の中で `{ }` を使って、一覧が真っ白になる**
+>
+> JSX でも同じことが起きます。`undefined` は画面に何も描かないので、「データは取れているのにカードが1枚も出ない」という症状になります。
+
+```tsx
+{/* ❌ NG: { } の中に JSX を書いただけ。return が無いので何も表示されない */}
+{books.map((book) => {
+  <BookCard key={book.id} book={book} />;
+})}
+```
+
+```tsx
+{/* ✅ OK: ( ) で囲んで JSX をそのまま返す（BookList の書き方） */}
+{books.map((book) => (
+  <BookCard key={book.id} book={book} />
+))}
+```
+
+> 見分け方は「`=>` のすぐ右が `{` か `(` か」です。`{` なら、中に `return` があるか必ず確認しましょう。
+
+> **つまずきポイント: key を付け忘れる・並び順（index）を key にする**
+>
+> `key` は React がカード1枚1枚を見分けるための「名札」です。名札が無いと、ブラウザの開発者ツールに `Each child in a list should have a unique "key" prop.` という警告が出ます。
+
+```tsx
+{/* ❌ NG: key が無い → 警告が出る */}
+{books.map((book) => (
+  <BookCard book={book} />
+))}
+```
+
+```tsx
+{/* △ 避けたい: 並び順（index）を名札にする → 本が増えると名札がずれる */}
+{books.map((book, index) => (
+  <BookCard key={index} book={book} />
+))}
+```
+
+```tsx
+{/* ✅ OK: データベースの id（変わらない・重複しない）を名札にする */}
+{books.map((book) => (
+  <BookCard key={book.id} book={book} />
+))}
+```
+
+> このアプリの一覧は「新しい順」なので、本を1冊登録するたびに**先頭に**新しいカードが入ります。index を名札にすると、既存の本の名札が全部1つずつずれてしまい、React が「どれが同じカードか」を取り違える原因になります。`book.id` なら並び順が変わっても名札は変わりません。
 
 ### 1e. トップページ
 
@@ -1388,12 +2071,14 @@ export default async function HomePage() {
 画面は大きく **ヘッダー** と **メインコンテンツ** の2つの領域に分かれています。背景は薄いグレー（`bg-gray-50`）です。
 
 **ヘッダー部分:**
+
 - 白い背景（`bg-white`）に薄い影（`shadow-sm`）と下ボーダーがついた帯状のヘッダーです。
 - 左側に「書籍管理アプリ」というアプリタイトルが大きな太字で表示され、その下に「あなたの読書記録を管理しましょう」という小さな説明文があります。
 - 右側に青いボタン「＋ 新規登録」が配置されています。ボタンの左にはプラスアイコン（SVG）が表示されます。
 - ヘッダーの内容は `max-w-7xl`（1280px）で中央揃えされ、画面幅が広くても広がりすぎません。
 
 **メインコンテンツ部分:**
+
 - ヘッダーの下に「全 N 冊」という書籍数のテキストがあります。数字部分は太字です。
 - その下に BookList コンポーネントが配置されます。
   - **書籍が登録されている場合**: 白いカードがグリッド状に並びます。スマホでは1列、タブレットでは2列、デスクトップでは3列です。各カードの間には適度な余白があります。
@@ -1541,11 +2226,90 @@ export default async function HomePage() {
 
 > **用語:** セマンティックタグとは、`<header>`・`<main>`・`<nav>` のように「その部分が何を表すか」を意味するHTMLタグのこと。`<div>` の代わりに使うと、検索エンジンや支援技術にも構造が伝わりやすくなる。
 
+> **つまずきポイント: 取得に失敗したのに「書籍が登録されていません」と表示される**
+>
+> 上の `HomePage` は、取得に失敗しても `books ?? []` で空配列にして表示を続けます。すると利用者には「全 0 冊」「書籍が登録されていません」と見えてしまい、**「登録した本が全部消えた！」と誤解させる**おそれがあります。失敗したときは、失敗したとはっきり伝えるのが親切です。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 270" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<rect x="10" y="10" width="40" height="22" rx="11" fill="#ef4444"/>
+<text x="30" y="26" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">NG</text>
+<text x="58" y="26" font-size="13" font-weight="bold" fill="#b91c1c">失敗を「0冊」に見せてしまう</text>
+<rect x="370" y="10" width="40" height="22" rx="11" fill="#10b981"/>
+<text x="390" y="26" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">OK</text>
+<text x="418" y="26" font-size="13" font-weight="bold" fill="#047857">失敗したことをはっきり伝える</text>
+<rect x="10" y="40" width="340" height="190" rx="8" fill="#f8fafc"/>
+<path d="M10,64 L10,48 Q10,40 18,40 L342,40 Q350,40 350,48 L350,64 Z" fill="#e2e8f0"/>
+<circle cx="26" cy="52" r="4" fill="#f87171"/>
+<circle cx="38" cy="52" r="4" fill="#fbbf24"/>
+<circle cx="50" cy="52" r="4" fill="#34d399"/>
+<text x="66" y="56" font-size="12" fill="#475569">localhost:3000</text>
+<rect x="11" y="64" width="338" height="38" fill="#ffffff"/>
+<text x="26" y="89" font-size="14" font-weight="bold" fill="#111827">書籍管理アプリ</text>
+<text x="26" y="124" font-size="12" fill="#4b5563">全 <tspan font-weight="bold" fill="#111827">0</tspan> 冊</text>
+<rect x="164" y="136" width="32" height="26" rx="3" fill="#bfdbfe" stroke="#3b82f6"/>
+<line x1="180" y1="136" x2="180" y2="162" stroke="#3b82f6"/>
+<text x="180" y="184" font-size="14" font-weight="bold" fill="#374151" text-anchor="middle">書籍が登録されていません</text>
+<text x="180" y="210" font-size="12" fill="#6b7280" text-anchor="middle">（本当は読み込みに失敗している）</text>
+<rect x="10" y="40" width="340" height="190" rx="8" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+<rect x="370" y="40" width="340" height="190" rx="8" fill="#f8fafc"/>
+<path d="M370,64 L370,48 Q370,40 378,40 L702,40 Q710,40 710,48 L710,64 Z" fill="#e2e8f0"/>
+<circle cx="386" cy="52" r="4" fill="#f87171"/>
+<circle cx="398" cy="52" r="4" fill="#fbbf24"/>
+<circle cx="410" cy="52" r="4" fill="#34d399"/>
+<text x="426" y="56" font-size="12" fill="#475569">localhost:3000</text>
+<rect x="371" y="64" width="338" height="38" fill="#ffffff"/>
+<text x="386" y="89" font-size="14" font-weight="bold" fill="#111827">書籍管理アプリ</text>
+<rect x="386" y="118" width="308" height="84" rx="8" fill="#fef2f2" stroke="#fecaca"/>
+<circle cx="408" cy="141" r="10" fill="#dc2626"/>
+<text x="408" y="146" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">!</text>
+<text x="426" y="146" font-size="14" font-weight="bold" fill="#b91c1c">書籍を読み込めませんでした</text>
+<text x="426" y="170" font-size="12" fill="#dc2626">通信状況を確認して、</text>
+<text x="426" y="188" font-size="12" fill="#dc2626">ページを再読み込みしてください。</text>
+<rect x="370" y="40" width="340" height="190" rx="8" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="180" y="256" font-size="12" fill="#b91c1c" text-anchor="middle">→「本が消えた！」と誤解される</text>
+<text x="540" y="256" font-size="12" fill="#047857" text-anchor="middle">→ 何が起きて、何をすればよいか分かる</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図7-6: 一覧の取得に失敗したときの画面イメージ（左: NG / 右: OK）</div>
+</div>
+
+```tsx
+// ❌ NG（HomePage の抜粋）: エラーをログに出すだけで、画面は「0冊」として表示を続ける
+if (error) {
+  console.error("書籍の取得に失敗しました:", error.message);
+}
+const bookList: Book[] = books ?? [];
+```
+
+```tsx
+// ✅ OK（HomePage の抜粋）: エラーなら「読み込めませんでした」という専用の表示を返す
+if (error) {
+  // サーバーのターミナルには、原因調べのために error を丸ごと出しておく
+  console.error("書籍の取得に失敗しました:", error);
+  return (
+    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* role="alert" は、読み上げソフトに「重要なお知らせ」だと伝える属性 */}
+      <div role="alert" className="p-4 bg-red-50 border border-red-200 rounded-lg">
+        <p className="font-bold text-red-700">書籍を読み込めませんでした</p>
+        <p className="mt-1 text-sm text-red-600">
+          通信状況を確認して、ページを再読み込みしてください。
+        </p>
+      </div>
+    </main>
+  );
+}
+const bookList: Book[] = books ?? [];
+```
+
+- OK 版は、`if (error)` の中で**早期 return** して、一覧の代わりにエラー用の表示を返しています。Next.js の公式ドキュメントも、Server Component で「予想できる失敗」が起きたときは、このように条件分岐でメッセージを表示する方法を紹介しています。
+- もう1つの方法は、`if (error)` の中で `throw new Error("書籍の取得に失敗しました")` と例外を投げることです。こうすると、3節で作る `error.tsx`（「もう一度試す」ボタン付きのエラー画面）にページ全体が置き換わります。「画面の一部で知らせたい」なら return、「ページごと再試行させたい」なら throw、と使い分けます（3節の図7-9も参照）。
+- `console.error` には `error.message` だけでなく `error` を丸ごと渡すと、`code`・`hint`・`details` も一緒にターミナルに出るので、原因を調べやすくなります。
+
 ---
 
 ### 1f. データ取得フローの図解
 
-以下は、トップページが表示されるまでのデータの流れを示す Mermaid シーケンス図です。
+以下は、トップページが表示されるまでのデータの流れを、起きる順番に並べた図です。
 
 <div style="max-width:680px;margin:20px auto;font-family:'Segoe UI',sans-serif;">
   <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
@@ -1587,6 +2351,46 @@ export default async function HomePage() {
     <div style="background:#6366f1;color:white;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;">8</div>
     <div style="flex:1;background:#eef2ff;border:1px solid #c7d2fe;border-radius:8px;padding:10px 14px;font-size:13px;"><strong style="color:#3730a3;">ブラウザ</strong><br/>画面にHTMLを表示</div>
   </div>
+</div>
+
+同じ流れを、「**誰と誰が**やり取りしているか」が分かる**シーケンス図**（登場人物を横に並べ、時間を上から下へ進めて描く図）にすると、次のようになります。縦の点線が登場人物、横の矢印が「お願い」と「返事」です。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 410" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-07-07" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="56" y="10" width="148" height="44" rx="8" fill="#eef2ff" stroke="#6366f1"/>
+<text x="130" y="37" font-size="14" font-weight="bold" fill="#3730a3" text-anchor="middle">ブラウザ</text>
+<rect x="300" y="10" width="180" height="44" rx="8" fill="#eff6ff" stroke="#3b82f6"/>
+<text x="390" y="30" font-size="13" font-weight="bold" fill="#1e40af" text-anchor="middle">Next.js サーバー</text>
+<text x="390" y="47" font-size="12" fill="#1e40af" text-anchor="middle">（HomePage を実行）</text>
+<rect x="564" y="10" width="132" height="44" rx="8" fill="#ecfdf5" stroke="#10b981"/>
+<text x="630" y="37" font-size="14" font-weight="bold" fill="#047857" text-anchor="middle">Supabase</text>
+<line x1="130" y1="54" x2="130" y2="372" stroke="#94a3b8" stroke-dasharray="5,4"/>
+<line x1="390" y1="54" x2="390" y2="372" stroke="#94a3b8" stroke-dasharray="5,4"/>
+<line x1="630" y1="54" x2="630" y2="372" stroke="#94a3b8" stroke-dasharray="5,4"/>
+<text x="260" y="86" font-size="13" fill="#334155" text-anchor="middle">① GET /（ページを要求）</text>
+<line x1="130" y1="94" x2="386" y2="94" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-07-07)"/>
+<rect x="292" y="110" width="196" height="30" rx="6" fill="#eff6ff" stroke="#3b82f6"/>
+<text x="390" y="130" font-size="12" fill="#1e40af" text-anchor="middle">② await createClient()</text>
+<text x="510" y="168" font-size="12" fill="#334155" text-anchor="middle" font-family="Consolas, monospace"><tspan font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">③</tspan> select("*").order(...)</text>
+<line x1="390" y1="176" x2="626" y2="176" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-07-07)"/>
+<text x="510" y="210" font-size="12" fill="#047857" text-anchor="middle" font-family="Consolas, monospace"><tspan font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">④</tspan> { data: [...], error: null }</text>
+<line x1="630" y1="218" x2="394" y2="218" stroke="#10b981" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#ar-07-07)"/>
+<rect x="282" y="234" width="216" height="30" rx="6" fill="#eff6ff" stroke="#3b82f6"/>
+<text x="390" y="254" font-size="12" fill="#1e40af" text-anchor="middle">⑤ BookList / BookCard を描く</text>
+<text x="260" y="292" font-size="13" fill="#047857" text-anchor="middle">⑥ 完成した HTML</text>
+<line x1="390" y1="300" x2="134" y2="300" stroke="#10b981" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#ar-07-07)"/>
+<rect x="40" y="320" width="180" height="30" rx="6" fill="#eef2ff" stroke="#6366f1"/>
+<text x="130" y="340" font-size="12" fill="#3730a3" text-anchor="middle">⑦ 画面に一覧を表示</text>
+<line x1="112" y1="100" x2="112" y2="292" stroke="#94a3b8" stroke-width="3"/>
+<text x="56" y="182" font-size="12" fill="#64748b" text-anchor="middle">待つ間は</text>
+<text x="56" y="199" font-size="12" fill="#64748b" text-anchor="middle">loading.tsx</text>
+<text x="56" y="216" font-size="12" fill="#64748b" text-anchor="middle">が見える</text>
+<text x="360" y="396" font-size="12" fill="#475569" text-anchor="middle">③④ の Supabase とのやり取りはサーバーの中だけで完結し、ブラウザからは見えない</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図7-7: トップページが表示されるまでのシーケンス図（上から下へ時間が進む。実線＝お願い、点線＝返事）</div>
 </div>
 
 **ポイント:**
@@ -1910,6 +2714,41 @@ export default function Loading() {
 
 > **用語:** Props を渡してコンポーネントの見た目を変える、というのは React の基本。同じ `LoadingSpinner` でも `size` や `message` を変えるだけで、画面ごとに最適な表示にできる。
 
+**▼ loading.tsx は「いつ」表示されるのか**
+
+`loading.tsx` は、自分で呼び出すコードを1行も書いていないのに表示されます。その「タイミング」を時間の流れで描くと次のとおりです。レストランで料理を待つ間に「ただいま調理中です」の札が出て、料理が来たら札が片付けられる、というイメージです。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 210" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-07-08" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<text x="290" y="30" font-size="12" fill="#64748b" text-anchor="middle">この間、page.tsx はサーバーで Supabase の返事を待っている</text>
+<rect x="100" y="44" width="370" height="56" rx="8" fill="#f1f5f9" stroke="#94a3b8"/>
+<rect x="116" y="56" width="90" height="12" rx="3" fill="#cbd5e1"/>
+<rect x="116" y="76" width="130" height="10" rx="3" fill="#e2e8f0"/>
+<circle cx="300" cy="72" r="13" fill="none" stroke="#cbd5e1" stroke-width="4"/>
+<path d="M300,59 A13,13 0 0,1 313,72" fill="none" stroke="#3b82f6" stroke-width="4"/>
+<text x="400" y="77" font-size="13" font-weight="bold" fill="#475569" text-anchor="middle">loading.tsx</text>
+<rect x="470" y="44" width="236" height="56" rx="8" fill="#eff6ff" stroke="#3b82f6"/>
+<text x="588" y="68" font-size="13" font-weight="bold" fill="#1e40af" text-anchor="middle">page.tsx の本物の一覧</text>
+<text x="588" y="88" font-size="12" fill="#1e40af" text-anchor="middle">（自動で差し替わる）</text>
+<line x1="30" y1="140" x2="700" y2="140" stroke="#475569" stroke-width="2" marker-end="url(#ar-07-08)"/>
+<text x="700" y="162" font-size="12" fill="#475569" text-anchor="end">時間</text>
+<line x1="50" y1="132" x2="50" y2="148" stroke="#475569" stroke-width="2"/>
+<line x1="100" y1="100" x2="100" y2="148" stroke="#94a3b8" stroke-dasharray="4,3"/>
+<line x1="470" y1="100" x2="470" y2="148" stroke="#3b82f6" stroke-dasharray="4,3"/>
+<text x="50" y="166" font-size="12" fill="#334155" text-anchor="middle">① クリック</text>
+<text x="128" y="184" font-size="12" fill="#334155" text-anchor="middle">② すぐに待ち画面</text>
+<text x="470" y="166" font-size="12" fill="#1e40af" text-anchor="middle">③ データ到着（数百ms後）</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図7-8: loading.tsx が表示されるタイミング（React の Suspense の仕組みで自動的に差し替わる）</div>
+</div>
+
+- ① ユーザーがリンクをクリック（または URL を開く）すると、② Next.js は**すぐに** `loading.tsx` の画面を届けます。
+- その裏で `page.tsx` は Supabase の返事を `await` で待っています。③ 返事が来て一覧の HTML ができあがった瞬間に、待ち画面が本物の一覧に**自動で差し替わります**。
+- 自分で「表示する／消す」を切り替えるコードを書かなくてよいのは、Next.js がファイル名（`loading.tsx`）を見て、React の **Suspense**（サスペンス：中身の準備ができるまで代わりの表示を出す仕組み）を自動で組み立ててくれるからです。
+
 ---
 
 ## 3. エラーハンドリング
@@ -2134,6 +2973,80 @@ export default function ErrorPage({ error, reset }: ErrorPageProps) {
 
 > **用語:** `onClick={関数}` と `onClick={関数()}` の違い。前者は「クリック時にこの関数を呼んで」という意味で正しい。後者は「今この場で関数を実行した戻り値を渡す」になってしまい、意図しない即時実行が起きる。
 
+> **注意（Next.js 16.3 以降を使っている場合）:** Next.js 16.3 から、`error.tsx` には `reset` のほかに **`retry`** という関数も渡されるようになり、公式ドキュメントでは `retry` の利用が推奨されています。違いは次のとおりです。
+>
+> - `reset()` … エラー状態を消して描き直すだけ。**サーバーのデータは取り直さない**ので、Supabase の取得失敗のようなエラーだと、同じエラー画面がもう一度出ることがあります。
+> - `retry()` … サーバーのデータを**取り直してから**描き直す。一時的な通信の不調なら、これで復帰できます。
+>
+> 使っている Next.js の版は `package.json` の `"next"` の行で確かめられます。16.3 以降なら `retry` を使うと「もう一度試す」がより確実に働きます。次は `retry` を使った最小限の `error.tsx` です。
+
+```tsx
+// app/error.tsx（Next.js 16.3 以降・retry を使う最小限の例）
+"use client";
+
+type ErrorPageProps = {
+  error: Error & { digest?: string };
+  // データを取り直してから描き直す関数（Next.js 16.3 以降）
+  retry: () => void;
+};
+
+export default function ErrorPage({ retry }: ErrorPageProps) {
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center gap-4">
+      <h2 className="text-xl font-bold text-gray-900">エラーが発生しました</h2>
+      {/* reset ではなく retry を呼ぶ。サーバーのデータから取り直してくれる */}
+      <button
+        onClick={retry}
+        className="px-6 py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700"
+      >
+        もう一度試す
+      </button>
+    </div>
+  );
+}
+```
+
+この節の `ErrorPage` に組み込む場合は、Props の型の `reset: () => void;` を `retry: () => void;` に、引数の `{ error, reset }` を `{ error, retry }` に、ボタンの `onClick={reset}` を `onClick={retry}` に変えるだけです。Next.js 15 など 16.3 より前の版では `retry` は渡されないので、この節のコード（`reset`）のままにしてください。
+
+**▼ エラーには「2つの道」がある**
+
+ここまでで、エラーへの備えが2種類出てきました。1つは 1e のつまずきポイントで見た「`if (error)` で分岐して、画面の中で知らせる」方法、もう1つはこの節の `error.tsx` です。どちらを使うかは、**そのエラーが予想できるものかどうか**で決めます。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 312" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-07-09" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="230" y="8" width="260" height="40" rx="20" fill="#f8fafc" stroke="#64748b"/>
+<text x="360" y="33" font-size="14" font-weight="bold" fill="#334155" text-anchor="middle">何かがうまくいかなかった</text>
+<line x1="300" y1="48" x2="190" y2="76" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-07-09)"/>
+<line x1="420" y1="48" x2="530" y2="76" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-07-09)"/>
+<rect x="20" y="80" width="330" height="44" rx="8" fill="#f97316"/>
+<text x="185" y="107" font-size="14" font-weight="bold" fill="#ffffff" text-anchor="middle">予想できる失敗（expected error）</text>
+<rect x="20" y="124" width="330" height="86" fill="#fff7ed" stroke="#f97316"/>
+<text x="34" y="148" font-size="12" fill="#9a3412">例: 入力ミス、Supabase が返した error、</text>
+<text x="34" y="168" font-size="12" fill="#9a3412">　　権限がない、通信が切れた</text>
+<text x="34" y="194" font-size="12" font-weight="bold" fill="#c2410c">→ if (error) で分岐して、画面の中で知らせる</text>
+<rect x="20" y="210" width="330" height="44" rx="0" fill="#ffffff" stroke="#f97316"/>
+<text x="185" y="230" font-size="12" fill="#c2410c" text-anchor="middle">登録フォーム上の赤い枠（submitError）</text>
+<text x="185" y="247" font-size="12" fill="#c2410c" text-anchor="middle">一覧の「読み込めませんでした」表示</text>
+<rect x="370" y="80" width="330" height="44" rx="8" fill="#dc2626"/>
+<text x="535" y="107" font-size="14" font-weight="bold" fill="#ffffff" text-anchor="middle">予想外の例外（uncaught exception）</text>
+<rect x="370" y="124" width="330" height="86" fill="#fef2f2" stroke="#dc2626"/>
+<text x="384" y="148" font-size="12" fill="#991b1b">例: throw された Error、コードのバグ、</text>
+<text x="384" y="168" font-size="12" fill="#991b1b">　　あるはずの値が null だった</text>
+<text x="384" y="194" font-size="12" font-weight="bold" fill="#b91c1c">→ 描画中に起きたら error.tsx が受け止める</text>
+<rect x="370" y="210" width="330" height="44" fill="#ffffff" stroke="#dc2626"/>
+<text x="535" y="230" font-size="12" fill="#b91c1c" text-anchor="middle">error.tsx の「エラーが発生しました」画面</text>
+<text x="535" y="247" font-size="12" fill="#b91c1c" text-anchor="middle">＋「もう一度試す」ボタン</text>
+<text x="360" y="280" font-size="12" fill="#475569" text-anchor="middle">※ ボタンを押したあとの処理（イベントハンドラ）の中のエラーは error.tsx に届かない</text>
+<text x="360" y="300" font-size="12" fill="#475569" text-anchor="middle">→ その場合は try / catch と state を使って、自分で画面に表示する（4b の submitError）</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図7-9: エラーの2つの道。予想できる失敗は自分で画面に出し、予想外の例外は error.tsx に任せる</div>
+</div>
+
+- 図の下の※が大事です。`error.tsx` が受け止めるのは「**画面を描いている最中**」に起きた例外だけです。登録ボタンを押したあとの処理（4b の `handleSubmit`）の中で起きたエラーは `error.tsx` には届きません。だから 4b では `try / catch` と `submitError` という state を使い、自分でエラー枠を表示しているのです。
+
 ---
 
 ## 4. 登録機能の実装
@@ -2213,17 +3126,78 @@ export default function NewBookPage() {
 }
 ```
 
+**▼ 2つの方式を並べて比べる**
+
+どちらの方式でも「入力 → 保存 → 一覧へ戻って最新を表示」というゴールは同じです。違うのは、**保存の処理がブラウザで動くか、サーバーで動くか**と、**一覧を最新にする命令の名前**です。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 300" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-07-10" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<text x="8" y="28" font-size="14" font-weight="bold" fill="#1e40af">この章で使う方式（クライアント方式）</text>
+<rect x="8" y="42" width="128" height="60" rx="8" fill="#eff6ff" stroke="#3b82f6"/>
+<text x="72" y="67" font-size="13" font-weight="bold" fill="#1e40af" text-anchor="middle">BookForm</text>
+<text x="72" y="88" font-size="12" fill="#1e40af" text-anchor="middle">入力＋チェック</text>
+<line x1="137" y1="72" x2="149" y2="72" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-07-10)"/>
+<rect x="151" y="42" width="128" height="60" rx="8" fill="#eff6ff" stroke="#3b82f6"/>
+<text x="215" y="67" font-size="12" fill="#1e40af" text-anchor="middle" font-family="Consolas, monospace">handleSubmit()</text>
+<text x="215" y="88" font-size="12" fill="#1e40af" text-anchor="middle">ブラウザで動く</text>
+<line x1="280" y1="72" x2="292" y2="72" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-07-10)"/>
+<rect x="294" y="42" width="128" height="60" rx="8" fill="#eff6ff" stroke="#3b82f6"/>
+<text x="358" y="67" font-size="12" fill="#1e40af" text-anchor="middle" font-family="Consolas, monospace">insert()</text>
+<text x="358" y="88" font-size="12" fill="#1e40af" text-anchor="middle">ブラウザ→Supabase</text>
+<line x1="423" y1="72" x2="435" y2="72" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-07-10)"/>
+<rect x="437" y="42" width="128" height="60" rx="8" fill="#eff6ff" stroke="#3b82f6"/>
+<text x="501" y="67" font-size="12" fill="#1e40af" text-anchor="middle" font-family="Consolas, monospace">router.push("/")</text>
+<text x="501" y="88" font-size="12" fill="#1e40af" text-anchor="middle">一覧へ移動</text>
+<line x1="566" y1="72" x2="578" y2="72" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-07-10)"/>
+<rect x="580" y="42" width="128" height="60" rx="8" fill="#eff6ff" stroke="#3b82f6"/>
+<text x="644" y="67" font-size="12" fill="#1e40af" text-anchor="middle" font-family="Consolas, monospace">router.refresh()</text>
+<text x="644" y="88" font-size="12" fill="#1e40af" text-anchor="middle">最新を取り直す</text>
+<line x1="8" y1="134" x2="714" y2="134" stroke="#cbd5e1" stroke-dasharray="6,4"/>
+<text x="8" y="168" font-size="14" font-weight="bold" fill="#c2410c">参考: Server Action 方式</text>
+<rect x="8" y="182" width="128" height="60" rx="8" fill="#fff7ed" stroke="#f97316"/>
+<text x="72" y="207" font-size="12" fill="#c2410c" text-anchor="middle" font-family="Consolas, monospace">&lt;form action&gt;</text>
+<text x="72" y="228" font-size="12" fill="#c2410c" text-anchor="middle">FormData を送る</text>
+<line x1="137" y1="212" x2="149" y2="212" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-07-10)"/>
+<rect x="151" y="182" width="128" height="60" rx="8" fill="#fff7ed" stroke="#f97316"/>
+<text x="215" y="207" font-size="12" fill="#c2410c" text-anchor="middle" font-family="Consolas, monospace">createBook()</text>
+<text x="215" y="228" font-size="12" fill="#c2410c" text-anchor="middle">サーバーで動く</text>
+<line x1="280" y1="212" x2="292" y2="212" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-07-10)"/>
+<rect x="294" y="182" width="128" height="60" rx="8" fill="#fff7ed" stroke="#f97316"/>
+<text x="358" y="207" font-size="12" fill="#c2410c" text-anchor="middle" font-family="Consolas, monospace">insert()</text>
+<text x="358" y="228" font-size="12" fill="#c2410c" text-anchor="middle">サーバー→Supabase</text>
+<line x1="423" y1="212" x2="435" y2="212" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-07-10)"/>
+<rect x="437" y="182" width="128" height="60" rx="8" fill="#fff7ed" stroke="#f97316"/>
+<text x="501" y="207" font-size="12" fill="#c2410c" text-anchor="middle" font-family="Consolas, monospace" textLength="118" lengthAdjust="spacingAndGlyphs">revalidatePath("/")</text>
+<text x="501" y="228" font-size="12" fill="#c2410c" text-anchor="middle">古い一覧を捨てる</text>
+<line x1="566" y1="212" x2="578" y2="212" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-07-10)"/>
+<rect x="580" y="182" width="128" height="60" rx="8" fill="#fff7ed" stroke="#f97316"/>
+<text x="644" y="207" font-size="12" fill="#c2410c" text-anchor="middle" font-family="Consolas, monospace">redirect("/")</text>
+<text x="644" y="228" font-size="12" fill="#c2410c" text-anchor="middle">一覧へ移動</text>
+<text x="360" y="280" font-size="12" fill="#475569" text-anchor="middle">どちらも最後は「一覧ページの Server Component がもう一度動き、新しい本が並ぶ」という同じ結末になる</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図7-10: 登録処理の2つの方式（上: この章のクライアント方式 / 下: 参考の Server Action 方式）</div>
+</div>
+
+- Server Action 方式では `revalidatePath("/")` を **`redirect("/")` より前**に書きます。`redirect` は呼んだ瞬間にその関数の処理を打ち切って移動してしまうため、後ろに書いた行は実行されないからです。
+- `revalidatePath` は Server Action やサーバー側の処理の中でしか呼べません。Client Component（この章の登録ページ）から呼ぶことはできないので、この章では代わりに `router.refresh()` を使っています。
+
 **Server Action のメリット（参考）:**
+
 - ブラウザ側 JS の量が減る（送信ロジックがサーバーに置かれる）。
 - Supabase の秘密鍵などをサーバー側だけで使える。
 - フォーム送信時に JavaScript が無効でも動作する（プログレッシブエンハンスメント）。
 
 **Server Action のセキュリティ:**
+
 - Server Action はサーバー上で実行されるため、フォームに「価格を勝手に書き換える」「他人の ID を送る」といった改ざんが届いても、Server Action の中で再検証すれば防げます。**ただし「クライアントから送られた値は信用しない」前提でバリデーションを書くことが必須**です。
 
 **Server Action と組み合わせるフック（参考）:**
-- `useFormState` / `useActionState`（React 19以降）: フォーム送信の結果（成功/エラー）を state として保持する。
-- `useFormStatus`: フォーム送信中かどうか（pending状態）を取得する。
+
+- `useActionState`（React 19 以降。`react` から import する。React 18 時代は `react-dom` の `useFormState` という名前でした）: フォーム送信の結果（成功/エラー）と、送信中かどうか（pending）を state として保持する。
+- `useFormStatus`（`react-dom` から import）: フォーム送信中かどうか（pending状態）を、フォームの内側に置いた部品から取得する。
 
 これらは第8章以降のオプションとして紹介します。
 
@@ -2679,7 +3653,7 @@ export default function BookForm({
           メモ
         </label>
         {/* <textarea> は複数行入力。input と違って終了タグが必要。
-            rows={4} で「最初の表示高さ」を4行分に設定。実際には自由に広げられる（resize-vertical）。 */}
+            rows={4} で「最初の表示高さ」を4行分に設定。実際には縦方向に自由に広げられる（resize-y）。 */}
         <textarea
           id="memo"
           name="memo"
@@ -2695,7 +3669,7 @@ export default function BookForm({
             focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
             transition-colors duration-200
             /* 縦方向だけリサイズ可能 */
-            resize-vertical
+            resize-y
             ${errors.memo ? "border-red-500 bg-red-50" : "border-gray-300"}
           `}
         />
@@ -2838,6 +3812,54 @@ export default function BookForm({
 - 「評価」と「ステータス」はデスクトップでは横に並び（`sm:grid-cols-2`）、スマホでは縦に並びます。
 - メモ欄の下には入力文字数カウンター（`0 / 1000 文字`）が表示されます。
 - 送信ボタンは青色で、送信中は薄い青色になりスピナーアイコンが回転します。
+
+**▼ 画面イメージ: 何も入力せずに「登録する」を押したとき**
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 360" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-07-11" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#f97316"/></marker>
+</defs>
+<rect x="10" y="10" width="700" height="340" rx="10" fill="#f8fafc"/>
+<path d="M10,42 L10,20 Q10,10 20,10 L700,10 Q710,10 710,20 L710,42 Z" fill="#e2e8f0"/>
+<circle cx="30" cy="26" r="5" fill="#f87171"/>
+<circle cx="46" cy="26" r="5" fill="#fbbf24"/>
+<circle cx="62" cy="26" r="5" fill="#34d399"/>
+<rect x="84" y="16" width="420" height="20" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
+<text x="98" y="30" font-size="12" fill="#475569">localhost:3000/books/new</text>
+<rect x="11" y="42" width="698" height="52" fill="#ffffff"/>
+<line x1="11" y1="94" x2="709" y2="94" stroke="#e2e8f0"/>
+<circle cx="42" cy="68" r="15" fill="#f1f5f9"/>
+<path d="M46,61 L39,68 L46,75" fill="none" stroke="#475569" stroke-width="2"/>
+<text x="68" y="74" font-size="16" font-weight="bold" fill="#111827">書籍を登録する</text>
+<rect x="30" y="108" width="420" height="228" rx="8" fill="#ffffff" stroke="#e5e7eb"/>
+<text x="48" y="134" font-size="13" font-weight="bold" fill="#374151">タイトル <tspan fill="#ef4444">*</tspan></text>
+<rect x="48" y="142" width="384" height="32" rx="6" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
+<text x="62" y="163" font-size="12" fill="#9ca3af">例: リーダブルコード</text>
+<text x="48" y="192" font-size="12" fill="#dc2626">タイトルは必須です</text>
+<text x="48" y="220" font-size="13" font-weight="bold" fill="#374151">著者 <tspan fill="#ef4444">*</tspan></text>
+<rect x="48" y="228" width="384" height="32" rx="6" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
+<text x="62" y="249" font-size="12" fill="#9ca3af">例: Dustin Boswell</text>
+<text x="48" y="278" font-size="12" fill="#dc2626">著者は必須です</text>
+<rect x="48" y="292" width="110" height="32" rx="6" fill="#2563eb"/>
+<text x="103" y="313" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">登録する</text>
+<rect x="170" y="292" width="100" height="32" rx="6" fill="#f3f4f6"/>
+<text x="220" y="313" font-size="13" fill="#374151" text-anchor="middle">キャンセル</text>
+<rect x="476" y="132" width="224" height="50" rx="8" fill="#fff7ed" stroke="#f97316"/>
+<text x="588" y="153" font-size="12" fill="#c2410c" text-anchor="middle">errors.title があると枠が赤く</text>
+<text x="588" y="171" font-size="12" fill="#c2410c" text-anchor="middle">なり、下にメッセージが出る</text>
+<line x1="474" y1="158" x2="438" y2="158" stroke="#f97316" stroke-width="1.5" marker-end="url(#ar-07-11)"/>
+<rect x="476" y="220" width="224" height="50" rx="8" fill="#fff7ed" stroke="#f97316"/>
+<text x="588" y="241" font-size="12" fill="#c2410c" text-anchor="middle">空白だけの入力も trim() で</text>
+<text x="588" y="259" font-size="12" fill="#c2410c" text-anchor="middle">空とみなされ「必須です」に</text>
+<line x1="474" y1="244" x2="438" y2="244" stroke="#f97316" stroke-width="1.5" marker-end="url(#ar-07-11)"/>
+<rect x="476" y="286" width="224" height="50" rx="8" fill="#ecfdf5" stroke="#10b981"/>
+<text x="588" y="307" font-size="12" fill="#047857" text-anchor="middle">validate() が false なので</text>
+<text x="588" y="325" font-size="12" fill="#047857" text-anchor="middle">Supabase には何も送られない</text>
+<rect x="10" y="10" width="700" height="340" rx="10" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図7-11: バリデーションエラーの画面イメージ（出版社より下の欄は省略）</div>
+</div>
 
 #### ▼ コードを1つずつ分解して解説
 
@@ -3047,6 +4069,37 @@ export default function BookForm({
 
 > **用語:** 制御コンポーネント（controlled component）とは、入力欄の値を React の state で管理する方式（`value` + `onChange` のペア）。常に state が「唯一の正しい値」になるので、バリデーションや初期値設定がしやすい。
 
+キーを1つ押すたびに、次の1周がぐるっと回っています。**画面の入力欄は state を映す鏡**で、入力欄が自分で文字を覚えているわけではない、というのがポイントです。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 260" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-07-12" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="30" y="20" width="220" height="60" rx="10" fill="#f8fafc" stroke="#64748b"/>
+<text x="140" y="45" font-size="14" font-weight="bold" fill="#334155" text-anchor="middle">① 文字を入力する</text>
+<text x="140" y="67" font-size="12" fill="#475569" text-anchor="middle">ユーザーが「リ」を押す</text>
+<line x1="252" y1="50" x2="466" y2="50" stroke="#475569" stroke-width="2" marker-end="url(#ar-07-12)"/>
+<rect x="470" y="20" width="220" height="60" rx="10" fill="#eff6ff" stroke="#3b82f6"/>
+<text x="580" y="45" font-size="14" font-weight="bold" fill="#1e40af" text-anchor="middle">② onChange が発火</text>
+<text x="580" y="67" font-size="12" fill="#1e40af" text-anchor="middle" font-family="Consolas, monospace">handleChange(e)</text>
+<line x1="580" y1="82" x2="580" y2="176" stroke="#475569" stroke-width="2" marker-end="url(#ar-07-12)"/>
+<rect x="470" y="180" width="220" height="60" rx="10" fill="#eff6ff" stroke="#3b82f6"/>
+<text x="580" y="205" font-size="14" font-weight="bold" fill="#1e40af" text-anchor="middle">③ state を更新</text>
+<text x="580" y="227" font-size="12" fill="#1e40af" text-anchor="middle" font-family="Consolas, monospace">setFormData(...)</text>
+<line x1="468" y1="210" x2="254" y2="210" stroke="#475569" stroke-width="2" marker-end="url(#ar-07-12)"/>
+<rect x="30" y="180" width="220" height="60" rx="10" fill="#eff6ff" stroke="#3b82f6"/>
+<text x="140" y="205" font-size="14" font-weight="bold" fill="#1e40af" text-anchor="middle">④ 画面を描き直す</text>
+<text x="140" y="227" font-size="12" fill="#1e40af" text-anchor="middle" font-family="Consolas, monospace">value={formData.title}</text>
+<line x1="140" y1="178" x2="140" y2="84" stroke="#475569" stroke-width="2" marker-end="url(#ar-07-12)"/>
+<rect x="270" y="100" width="180" height="60" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="360" y="125" font-size="14" font-weight="bold" fill="#047857" text-anchor="middle">formData（state）</text>
+<text x="360" y="147" font-size="12" fill="#047857" text-anchor="middle">唯一の正しい値</text>
+<text x="360" y="40" font-size="12" fill="#64748b" text-anchor="middle">キー入力のたびに1周</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図7-12: 制御コンポーネントの1周（入力 → state 更新 → 描き直し。画面は state を映す鏡）</div>
+</div>
+
 ---
 
 ##### 解説9: 送信ボタン（送信中の無効化と表示切替）
@@ -3081,6 +4134,325 @@ export default function BookForm({
 - ボタンの中身も `isSubmitting ? (スピナー + "送信中...") : submitLabel` の三項演算子で切り替え、送信中は回転スピナーを表示します。
 
 > **用語:** 二重送信（double submit）とは、ユーザーがボタンを連打して同じデータが2回送られてしまう問題。送信中はボタンを `disabled` にしておくことで防げる。
+
+---
+
+### 動かして確かめる: BookForm の中のロジック
+
+`BookForm` には、画面（JSX）と、ロジック（入力チェック・型の変換・state の更新）が1つのファイルに同居しています。ロジックの部分だけを取り出せば、ブラウザも Supabase も使わずに、Node.js だけで動きを確かめられます。ここでは3つの小さな実験をします。
+
+#### サンプル: バリデーション関数を単体で動かす
+
+> **▼ このコードがやること（先に日本語で）:** `BookForm` の `validate` と同じルール（タイトル・著者は必須、文字数に上限あり）を、画面から切り離した「ただの関数」`validateBookForm` にします。そこへ「何も入力しない」「空白だけ」「タイトルが長すぎる」「正しい入力」の4パターンを渡して、どんなエラーが返るかを確かめます。
+
+```typescript
+// BookForm.tsx と同じ型（Node で単体実行するためにここへ写している）
+type BookStatus = "reading" | "completed" | "want_to_read";
+
+type BookFormData = {
+  title: string;
+  author: string;
+  publisher: string;
+  published_date: string;
+  rating: number | null;
+  status: BookStatus;
+  memo: string;
+};
+
+// 「エラーが出た項目だけ、項目名 → メッセージ」で入る箱の型
+type FormErrors = Partial<Record<keyof BookFormData, string>>;
+
+// BookForm の validate と同じルールを、画面と切り離した「ただの関数」にしたもの
+function validateBookForm(data: BookFormData): FormErrors {
+  const errors: FormErrors = {};
+
+  // タイトル: 必須、100文字以内
+  if (!data.title.trim()) {
+    errors.title = "タイトルは必須です";
+  } else if (data.title.trim().length > 100) {
+    errors.title = "タイトルは100文字以内で入力してください";
+  }
+
+  // 著者: 必須、50文字以内
+  if (!data.author.trim()) {
+    errors.author = "著者は必須です";
+  } else if (data.author.trim().length > 50) {
+    errors.author = "著者は50文字以内で入力してください";
+  }
+
+  // 出版社: 任意、50文字以内
+  if (data.publisher.trim().length > 50) {
+    errors.publisher = "出版社は50文字以内で入力してください";
+  }
+
+  // メモ: 任意、1000文字以内
+  if (data.memo.trim().length > 1000) {
+    errors.memo = "メモは1000文字以内で入力してください";
+  }
+
+  return errors;
+}
+
+// 新規登録フォームの初期値（BookForm の defaultFormData と同じ）
+const empty: BookFormData = {
+  title: "",
+  author: "",
+  publisher: "",
+  published_date: "",
+  rating: null,
+  status: "want_to_read",
+  memo: "",
+};
+
+// 試したい入力のパターンを並べる
+const cases: { label: string; data: BookFormData }[] = [
+  { label: "1. 何も入力しない", data: empty },
+  { label: "2. 空白だけ入力", data: { ...empty, title: "   ", author: "　" } },
+  {
+    label: "3. タイトルが101文字",
+    data: { ...empty, title: "あ".repeat(101), author: "山田" },
+  },
+  {
+    label: "4. 正しい入力",
+    data: { ...empty, title: "リーダブルコード", author: "Dustin Boswell" },
+  },
+];
+
+for (const { label, data } of cases) {
+  const errors = validateBookForm(data);
+  const canSubmit = Object.keys(errors).length === 0;
+  console.log(label, "→", canSubmit ? "送信OK" : "送信しない", errors);
+}
+```
+
+**▼ 実行結果**（`node validate-demo.ts`）
+
+```text
+1. 何も入力しない → 送信しない { title: 'タイトルは必須です', author: '著者は必須です' }
+2. 空白だけ入力 → 送信しない { title: 'タイトルは必須です', author: '著者は必須です' }
+3. タイトルが101文字 → 送信しない { title: 'タイトルは100文字以内で入力してください' }
+4. 正しい入力 → 送信OK {}
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: state ではなく「引数で受け取り、戻り値で返す」
+
+```typescript
+function validateBookForm(data: BookFormData): FormErrors {
+```
+
+- `BookForm` の `validate` は、state の `formData` を読み、結果を `setErrors` で state に書き込んでいました。この関数は、入力を引数 `data` で受け取り、エラーを戻り値で返すだけです。
+- このように「同じ入力なら必ず同じ結果を返し、外側の何も書き換えない関数」を**純粋関数**と呼びます。画面が無くても試せるのはこのおかげです。
+- 実際の `BookForm` でも、`validate` の中身を `const newErrors = validateBookForm(formData);` と `setErrors(newErrors);` の2行に置き換えられます。
+
+> **用語:** 純粋関数（じゅんすいかんすう／pure function）とは、引数だけを材料に戻り値を作り、画面や変数など外側のものを一切変えない関数のこと。結果が予想しやすく、テストもしやすい。
+
+##### 解説2: 空白だけの入力も trim() で弾ける
+
+```typescript
+  if (!data.title.trim()) {
+```
+
+- ケース2では、タイトルに半角スペース3つ、著者に**全角スペース**1つを入れました。`trim()` は全角スペースも取り除くので、どちらも空文字になり「必須です」になりました。
+- `!` は「空文字（falsy）なら true」に反転させる記号です。`trim()` を付け忘れると、スペースだけのタイトルが登録できてしまいます。
+
+##### 解説3: スプレッド構文でテスト用のデータを作る
+
+```typescript
+  { label: "2. 空白だけ入力", data: { ...empty, title: "   ", author: "　" } },
+```
+
+- `{ ...empty, title: "   " }` は「`empty` の中身を全部コピーし、`title` だけ上書きした**新しいオブジェクト**」です。`handleChange` の `{ ...prev, [name]: value }` とまったく同じ書き方です。
+- `"あ".repeat(101)` は「"あ" を101回つなげた文字列」を作るメソッドで、上限ちょうどを1文字だけ超える値を手軽に作れます。
+
+#### サンプル: select の値を数値に変える（Number の落とし穴）
+
+> **▼ このコードがやること（先に日本語で）:** `<select>` から届く値（見た目が数字でも、中身はいつも文字列）を数値に変えるとき、`Number()` だけで変換した場合と、`BookForm` と同じく「空文字なら null」を先に判定した場合を比べます。「選択してください」（空文字 `""`）を選んだときに何が起きるかに注目してください。
+
+```typescript
+// <select> や <input> から来る値は、いつも「文字列」
+// "" は「選択してください」を選んだときの値
+const inputs = ["3", "5", "", "abc"];
+
+for (const value of inputs) {
+  // ❌ 素朴に Number() だけで変換した場合
+  const naive = Number(value);
+  // ✅ BookForm と同じく「空文字なら null」を先に判定した場合
+  const safe = value === "" ? null : Number(value);
+  console.log(
+    `入力 ${JSON.stringify(value).padEnd(5)}`,
+    `| Number()だけ → ${String(naive).padEnd(3)}`,
+    `| 安全版 → ${safe}`,
+  );
+}
+
+// 型も確かめる（typeof は値の種類を文字列で返す）
+console.log('typeof "3"         =', typeof "3");
+console.log('typeof Number("3") =', typeof Number("3"));
+```
+
+**▼ 実行結果**（`node number-demo.ts`）
+
+```text
+入力 "3"   | Number()だけ → 3   | 安全版 → 3
+入力 "5"   | Number()だけ → 5   | 安全版 → 5
+入力 ""    | Number()だけ → 0   | 安全版 → null
+入力 "abc" | Number()だけ → NaN | 安全版 → NaN
+typeof "3"         = string
+typeof Number("3") = number
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: Number("") は 0 になる
+
+```typescript
+  const naive = Number(value);
+```
+
+- `Number("3")` は `3` ですが、`Number("")`（空文字）は **`NaN` ではなく `0`** になります。JavaScript の有名な落とし穴です。
+- もし `rating: Number(value)` とだけ書いていたら、「選択してください」を選んだ本が**評価 0** として保存されようとします。books テーブルには `CHECK (rating >= 1 AND rating <= 5)` という制約（第5章）があるので、Supabase からエラーが返って登録に失敗します。
+
+##### 解説2: 空文字を先に null にする
+
+```typescript
+  const safe = value === "" ? null : Number(value);
+```
+
+- `BookForm` の `handleRatingChange` と同じ書き方です。空文字かどうかを先に調べ、空なら `null`（評価なし）、そうでなければ数値に変換します。
+- `"abc"` のような数字でない文字は `NaN`（ナン／Not a Number：数ではない）になります。このアプリでは `<option>` の値が `"1"`〜`"5"` に固定されているので起きませんが、自由に入力できる欄では `Number.isNaN(値)` でのチェックが必要です。
+
+> **用語:** `typeof`（タイプオブ）とは、値の種類を `"string"`（文字列）・`"number"`（数値）などの文字列で教えてくれる演算子。「見た目は 3 でも中身は文字列」という状態を見破るのに使える。
+
+> **つまずきポイント: 評価（rating）に 0 や文字列を送ってしまう**
+>
+> `<select>` の値は、見た目が数字でも中身はいつも**文字列**です。変換を省いたり `Number()` だけで済ませたりすると、Supabase への登録で失敗します。
+
+```tsx
+// ❌ NG: Number() だけで変換している
+const handleRatingChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  setFormData((prev) => ({
+    ...prev,
+    // 「選択してください」を選ぶと Number("") で 0 になってしまう
+    rating: Number(e.target.value),
+  }));
+};
+```
+
+```tsx
+// ✅ OK: 空文字なら null、それ以外は数値に（BookForm の書き方）
+const handleRatingChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const value = e.target.value;
+  setFormData((prev) => ({
+    ...prev,
+    rating: value === "" ? null : Number(value),
+  }));
+};
+```
+
+> NG のまま「選択してください」で登録すると、Supabase から `new row for relation "books" violates check constraint "books_rating_check"`（code: `23514`、CHECK 制約違反）というエラーが返ります。また、変換せずに空文字 `""` のまま送ると `invalid input syntax for type integer: ""`（code: `22P02`、整数として読めない）になります。エラーコードの読み方は 7節の「問題2」で詳しく扱います。
+
+#### サンプル: state を直接書き換えると画面が変わらない理由
+
+> **▼ このコードがやること（先に日本語で）:** React は state が「変わったかどうか」を、中身ではなく**箱（オブジェクト）が入れ替わったかどうか**で判断します。その判断（`Object.is`）をまねた関数を作り、①今の箱を直接書き換えた場合と、②スプレッド構文で新しい箱を作った場合を比べます。
+
+```typescript
+// React は「前の state」と「次の state」を Object.is で比べて、
+// 同じ箱（同じオブジェクト）なら「変化なし」とみなして再描画しない。
+// その判定をまねる関数
+function willRerender(prev: object, next: object): boolean {
+  return !Object.is(prev, next);
+}
+
+// ❌ NG: 今の state を直接書き換えて、同じ箱をそのまま返す
+const prev1 = { title: "", author: "" };
+const next1 = prev1;
+next1.title = "リーダブルコード";
+console.log("NG: 再描画される？", willRerender(prev1, next1), "/ 中身:", next1);
+
+// ✅ OK: スプレッド構文で「新しい箱」を作り、変えたい項目だけ上書きする
+const prev2 = { title: "", author: "" };
+const next2 = { ...prev2, title: "リーダブルコード" };
+console.log("OK: 再描画される？", willRerender(prev2, next2), "/ 中身:", next2);
+console.log("OK: 元の箱はそのまま:", prev2);
+```
+
+**▼ 実行結果**（`node state-demo.ts`）
+
+```text
+NG: 再描画される？ false / 中身: { title: 'リーダブルコード', author: '' }
+OK: 再描画される？ true / 中身: { title: 'リーダブルコード', author: '' }
+OK: 元の箱はそのまま: { title: '', author: '' }
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: Object.is は「同じ箱かどうか」を見る
+
+```typescript
+function willRerender(prev: object, next: object): boolean {
+  return !Object.is(prev, next);
+}
+```
+
+- `Object.is(a, b)` は、`a` と `b` が「まったく同じもの」なら `true` を返します。オブジェクトの場合は「中身が同じか」ではなく「**同じ1つの箱か**」を比べます。
+- React も `setFormData` が呼ばれるたびに、前の値と次の値をこの方法で比べ、同じ箱なら描き直しを省略します。
+
+##### 解説2: 直接書き換えると「同じ箱」のまま
+
+```typescript
+const next1 = prev1;
+next1.title = "リーダブルコード";
+```
+
+- `const next1 = prev1;` はコピーではありません。**同じ箱に名前を2つ付けた**だけです。
+- 中身（`title`）は確かに書き換わっていますが、箱は同じなので「再描画されない（false）」と判定されました。
+
+##### 解説3: スプレッド構文なら「新しい箱」
+
+```typescript
+const next2 = { ...prev2, title: "リーダブルコード" };
+```
+
+- `{ ...prev2 }` で新しい箱を作ってから `title` を上書きしたので、「再描画される（true）」になりました。
+- 元の `prev2` は空のまま残っています。古い値を壊さないので、React が「前と今」を正しく比べられます。
+
+> **つまずきポイント: state を直接書き換えて、入力しても文字が増えない**
+
+```tsx
+// ❌ NG: prev（今の state）を直接書き換えて、同じ箱を返している
+setFormData((prev) => {
+  prev.title = value;
+  return prev;
+});
+```
+
+```tsx
+// ✅ OK: 新しい箱を作り、変えたい項目だけ上書きする（BookForm の書き方）
+setFormData((prev) => ({
+  ...prev,
+  [name]: value,
+}));
+```
+
+> NG 版では React が「変化なし」と判断して描き直しを省くため、キーを押しても入力欄の文字が増えません（図7-12 の③から④へ進まない状態）。state のオブジェクトや配列は「直接いじらず、新しく作り直して渡す」と覚えておきましょう。
+
+> **つまずきポイント: input の name と state のキー名がずれている**
+>
+> `handleChange` は `[name]: value` で「入力欄の `name` と同じ名前のキー」を更新します。1文字でもずれると、正しい項目が更新されません。
+
+```tsx
+{/* ❌ NG: name が "Title"（大文字始まり）。state のキーは "title" なので一致しない */}
+<input id="title" name="Title" value={formData.title} onChange={handleChange} />
+```
+
+```tsx
+{/* ✅ OK: name を BookFormData のキー名とまったく同じにする */}
+<input id="title" name="title" value={formData.title} onChange={handleChange} />
+```
+
+> NG 版では、`formData` に `Title` という**別のキーが増えるだけ**で、`title` は空のままです。その結果「入力しても欄に文字が出ない」「何度送信しても『タイトルは必須です』が消えない」という不思議な症状になります。`name` はただの文字列なので TypeScript も気づいてくれません。大文字・小文字や `published_date` の `_`（アンダースコア）まで、型のキー名と一字一句そろえましょう。
 
 ---
 
@@ -3192,7 +4564,8 @@ export default function NewBookPage() {
       //     登録したばかりのデータも含む最新の一覧を取得・表示する。
       router.refresh();
     } catch (err) {
-      // (8) 想定外のエラー（ネットワーク切断、JSON パース失敗など）の最後の砦
+      // (8) 想定外のエラー（環境変数の設定漏れでクライアント作成に失敗した、など）の最後の砦
+      //     ※ 通信切断は supabase-js が throw せず (5) の error に入れて返すので、ここには来ない
       console.error("予期しないエラー:", err);
       setSubmitError("予期しないエラーが発生しました。");
     } finally {
@@ -3263,9 +4636,9 @@ export default function NewBookPage() {
           <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
             <div className="flex items-center gap-2">
               {/* 円形の警告アイコン（中に「!」風の縦線と点）。
-                  flex-shrink-0 は「テキストが長くてもアイコンを縮めない」指定。 */}
+                  shrink-0 は「テキストが長くてもアイコンを縮めない」指定（Tailwind v3 では flex-shrink-0 とも書けた）。 */}
               <svg
-                className="w-5 h-5 text-red-600 flex-shrink-0"
+                className="w-5 h-5 text-red-600 shrink-0"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -3428,7 +4801,7 @@ export default function NewBookPage() {
   };
 ```
 
-- `catch (err)` は、`try` の中で**想定外の例外**（ネットワーク切断など）が起きたときに実行されます。`if (error)` で拾えない種類のトラブルの最後の砦です。
+- `catch (err)` は、`try` の中で**想定外の例外**（環境変数の設定漏れで `createClient()` が失敗した、自分のコードのミスで例外が起きた、など）が起きたときに実行されます。`if (error)` で拾えない種類のトラブルの最後の砦です。なお、通信切断のような失敗は supabase-js が throw せずに `error` へ入れて返すので、`if (error)` の側で拾われます。
 - `finally` は「**成功・失敗どちらでも、最後に必ず実行される**」ブロックです。ここで `setIsSubmitting(false)` を呼び、送信中フラグを必ず解除します。
 - `finally` に置くことで、「成功しても失敗しても、ボタンの『送信中』状態が解除されずに固まる」事故を確実に防げます。
 
@@ -3463,6 +4836,24 @@ export default function NewBookPage() {
 - このように「**フォームの見た目・入力管理は `BookForm`、実際の保存処理はこのページ**」と役割分担しているのが、この設計の要点です。
 
 > **用語:** 関心の分離（separation of concerns）とは、「見た目・入力管理」と「データ保存」のように役割ごとに担当を分ける設計の考え方。`BookForm`（入力係）と `NewBookPage`（保存係）に分けることで、それぞれが小さく分かりやすくなる。
+
+> **つまずきポイント: 送信中もボタンが押せて、同じ本が2冊登録される**
+>
+> 送信中フラグは「見た目のため」だけのものではありません。`NewBookPage` の `isSubmitting`（state）→ `BookForm` の `isSubmitting`（props）→ ボタンの `disabled`、とつながって、**データを守る**役目を果たしています。
+
+```tsx
+{/* ❌ NG: 送信中もボタンが押せる。通信が遅いと、連打で2回 INSERT される */}
+<button type="submit">登録する</button>
+```
+
+```tsx
+{/* ✅ OK: 送信中フラグで無効化し、表示も切り替える（BookForm の書き方） */}
+<button type="submit" disabled={isSubmitting}>
+  {isSubmitting ? "送信中..." : "登録する"}
+</button>
+```
+
+> NG 版で回線が遅いと、1回目の INSERT が終わる前に2回目のクリックが受け付けられ、同じ内容の行が2つできてしまいます。books テーブルの `id` は INSERT のたびに新しく作られるので、データベースは「同じ本だ」と気づいて止めてはくれません。開発者ツールの Network タブで通信速度を「Slow 4G」などに落とすと、連打の危険性を自分の目で確かめられます。
 
 ---
 
@@ -3511,6 +4902,57 @@ export default function NewBookPage() {
     <div style="background:#ef4444;color:white;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;">!</div>
     <div style="flex:1;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:10px 14px;font-size:13px;"><strong style="color:#991b1b;">INSERT 失敗の場合</strong><br/>isSubmitting = false → エラーメッセージを表示（フォーム内容は保持）</div>
   </div>
+</div>
+
+上の流れを、登場人物ごとのシーケンス図にすると次のようになります。注目してほしいのは後半の ⑦〜⑩ です。`router.refresh()` によって**一覧ページ（Server Component）がもう一度動き、Supabase から取り直す**ので、今登録した本が一覧に現れます。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 480" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-07-13" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="10" y="10" width="100" height="44" rx="8" fill="#f8fafc" stroke="#64748b"/>
+<text x="60" y="37" font-size="13" font-weight="bold" fill="#334155" text-anchor="middle">ユーザー</text>
+<rect x="140" y="10" width="120" height="44" rx="8" fill="#fff7ed" stroke="#f97316"/>
+<text x="200" y="37" font-size="13" font-weight="bold" fill="#c2410c" text-anchor="middle">BookForm</text>
+<rect x="282" y="10" width="136" height="44" rx="8" fill="#fff7ed" stroke="#f97316"/>
+<text x="350" y="30" font-size="13" font-weight="bold" fill="#c2410c" text-anchor="middle">NewBookPage</text>
+<text x="350" y="47" font-size="12" fill="#c2410c" text-anchor="middle">/books/new</text>
+<rect x="450" y="10" width="100" height="44" rx="8" fill="#ecfdf5" stroke="#10b981"/>
+<text x="500" y="37" font-size="13" font-weight="bold" fill="#047857" text-anchor="middle">Supabase</text>
+<rect x="576" y="10" width="136" height="44" rx="8" fill="#eff6ff" stroke="#3b82f6"/>
+<text x="644" y="30" font-size="13" font-weight="bold" fill="#1e40af" text-anchor="middle">一覧ページ</text>
+<text x="644" y="47" font-size="12" fill="#1e40af" text-anchor="middle">app/page.tsx</text>
+<line x1="60" y1="54" x2="60" y2="466" stroke="#94a3b8" stroke-dasharray="5,4"/>
+<line x1="200" y1="54" x2="200" y2="466" stroke="#94a3b8" stroke-dasharray="5,4"/>
+<line x1="350" y1="54" x2="350" y2="466" stroke="#94a3b8" stroke-dasharray="5,4"/>
+<line x1="500" y1="54" x2="500" y2="466" stroke="#94a3b8" stroke-dasharray="5,4"/>
+<line x1="644" y1="54" x2="644" y2="466" stroke="#94a3b8" stroke-dasharray="5,4"/>
+<text x="130" y="84" font-size="12" fill="#334155" text-anchor="middle">① 入力して「登録する」</text>
+<line x1="60" y1="92" x2="196" y2="92" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-07-13)"/>
+<rect x="148" y="104" width="104" height="28" rx="6" fill="#fff7ed" stroke="#f97316"/>
+<text x="200" y="123" font-size="12" fill="#c2410c" text-anchor="middle">② validate()</text>
+<text x="200" y="150" font-size="12" fill="#dc2626" text-anchor="middle">NG ならここで終了</text>
+<text x="275" y="174" font-size="12" fill="#334155" text-anchor="middle" font-family="Consolas, monospace"><tspan font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">③</tspan> onSubmit(data)</text>
+<line x1="200" y1="182" x2="346" y2="182" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-07-13)"/>
+<rect x="276" y="196" width="148" height="28" rx="6" fill="#fff7ed" stroke="#f97316"/>
+<text x="350" y="215" font-size="12" fill="#c2410c" text-anchor="middle">④ isSubmitting = true</text>
+<text x="425" y="248" font-size="12" fill="#334155" text-anchor="middle" font-family="Consolas, monospace"><tspan font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">⑤</tspan> insert({...})</text>
+<line x1="350" y1="256" x2="496" y2="256" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-07-13)"/>
+<text x="425" y="284" font-size="12" fill="#047857" text-anchor="middle" font-family="Consolas, monospace"><tspan font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">⑥</tspan> { error: null }</text>
+<line x1="500" y1="292" x2="354" y2="292" stroke="#10b981" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#ar-07-13)"/>
+<text x="275" y="290" font-size="12" fill="#dc2626" text-anchor="middle">失敗なら</text>
+<text x="275" y="306" font-size="12" fill="#dc2626" text-anchor="middle">赤い枠を表示</text>
+<text x="497" y="324" font-size="12" fill="#334155" text-anchor="middle" stroke="#ffffff" stroke-width="4" paint-order="stroke">⑦ router.push("/") ＋ refresh()</text>
+<line x1="350" y1="332" x2="640" y2="332" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-07-13)"/>
+<text x="572" y="362" font-size="12" fill="#334155" text-anchor="middle">⑧ もう一度 select</text>
+<line x1="644" y1="370" x2="504" y2="370" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-07-13)"/>
+<text x="572" y="398" font-size="12" fill="#047857" text-anchor="middle">⑨ 新しい本を含む一覧</text>
+<line x1="500" y1="406" x2="640" y2="406" stroke="#10b981" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#ar-07-13)"/>
+<text x="352" y="436" font-size="12" fill="#047857" text-anchor="middle" stroke="#ffffff" stroke-width="4" paint-order="stroke">⑩ 新しいカードが先頭に並んだ一覧を表示</text>
+<line x1="644" y1="444" x2="64" y2="444" stroke="#10b981" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#ar-07-13)"/>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図7-13: 新規登録から一覧が更新されるまでのシーケンス図（実線＝お願い、点線＝返事）</div>
 </div>
 
 ---
@@ -3678,6 +5120,187 @@ const title = String(formData.get("title") ?? "");
 //             ^^^^^^                            string | File を string に変換
 ```
 
+#### 動かして確かめる: FormData から値を取り出して検証する
+
+Server Action 方式に進んだときに必ず書くことになるのが、「`FormData` から値を取り出し、型をそろえ、検証する」処理です。Node.js にもブラウザと同じ `FormData` が用意されているので、画面無しで試せます。
+
+> **▼ このコードがやること（先に日本語で）:** `FormData` から書籍の各項目を取り出し、①前後の空白を削る、②評価を文字列から数値に変える、③ステータスが決められた3種類か調べる、④空の任意項目を `null` にそろえる、までを行う関数 `parseBookForm` を作ります。普通の入力と、開発者ツールなどで書き換えられた「ありえない入力」の2つを渡して、結果を比べます。
+
+```typescript
+type BookStatus = "reading" | "completed" | "want_to_read";
+
+// データベースに INSERT する直前の形（books テーブルの列名に合わせる）
+type BookInsert = {
+  title: string;
+  author: string;
+  publisher: string | null;
+  published_date: string | null;
+  rating: number | null;
+  status: BookStatus;
+  memo: string | null;
+};
+
+// 成功なら value（保存してよい値）、失敗なら errors（項目名 → メッセージ）を返す
+type ParseResult =
+  | { ok: true; value: BookInsert }
+  | { ok: false; errors: Record<string, string> };
+
+// 許可するステータスの一覧
+const STATUSES: BookStatus[] = ["reading", "completed", "want_to_read"];
+
+// FormData から1項目を「必ず文字列」として取り出す小さな道具
+function getText(formData: FormData, name: string): string {
+  // 戻り値は string か File か null（FormDataEntryValue | null）
+  const raw = formData.get(name);
+  // 文字列以外（File や null）が来たら空文字として扱う
+  if (typeof raw !== "string") {
+    return "";
+  }
+  return raw.trim();
+}
+
+function parseBookForm(formData: FormData): ParseResult {
+  const errors: Record<string, string> = {};
+
+  // (1) 必須項目
+  const title = getText(formData, "title");
+  if (title === "") {
+    errors.title = "タイトルは必須です";
+  }
+  const author = getText(formData, "author");
+  if (author === "") {
+    errors.author = "著者は必須です";
+  }
+
+  // (2) 評価: 空なら null、それ以外は「1〜5 の整数」かを確かめてから数値にする
+  const ratingText = getText(formData, "rating");
+  let rating: number | null = null;
+  if (ratingText !== "") {
+    const n = Number(ratingText);
+    if (Number.isInteger(n) && n >= 1 && n <= 5) {
+      rating = n;
+    } else {
+      errors.rating = "評価は1〜5から選んでください";
+    }
+  }
+
+  // (3) ステータス: 決められた3つのどれかと一致するものを探す
+  const statusText = getText(formData, "status");
+  const status = STATUSES.find((s) => s === statusText);
+  if (status === undefined) {
+    errors.status = "ステータスの値が正しくありません";
+  }
+
+  // (4) エラーが1つでもあれば失敗として返す
+  if (Object.keys(errors).length > 0 || status === undefined) {
+    return { ok: false, errors };
+  }
+
+  // (5) 任意項目は「空なら null」にそろえて返す
+  return {
+    ok: true,
+    value: {
+      title,
+      author,
+      publisher: getText(formData, "publisher") || null,
+      published_date: getText(formData, "published_date") || null,
+      rating,
+      status,
+      memo: getText(formData, "memo") || null,
+    },
+  };
+}
+
+// 動作確認1: 画面から普通に送られてきた入力
+const good = new FormData();
+good.append("title", "  リーダブルコード  ");
+good.append("author", "Dustin Boswell");
+good.append("publisher", "");
+good.append("rating", "4");
+good.append("status", "completed");
+console.log("確認1:", parseBookForm(good));
+
+// 動作確認2: 開発者ツールなどで書き換えられた入力（著者欄なし・評価99・存在しないステータス）
+const bad = new FormData();
+bad.append("title", "テスト");
+bad.append("rating", "99");
+bad.append("status", "deleted");
+console.log("確認2:", parseBookForm(bad));
+```
+
+**▼ 実行結果**（`node formdata-demo.ts`）
+
+```text
+確認1: {
+  ok: true,
+  value: {
+    title: 'リーダブルコード',
+    author: 'Dustin Boswell',
+    publisher: null,
+    published_date: null,
+    rating: 4,
+    status: 'completed',
+    memo: null
+  }
+}
+確認2: {
+  ok: false,
+  errors: {
+    author: '著者は必須です',
+    rating: '評価は1〜5から選んでください',
+    status: 'ステータスの値が正しくありません'
+  }
+}
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: getText で「string | File | null」を string にそろえる
+
+```typescript
+function getText(formData: FormData, name: string): string {
+  const raw = formData.get(name);
+  if (typeof raw !== "string") {
+    return "";
+  }
+  return raw.trim();
+}
+```
+
+- `formData.get(name)` の戻り値は、上で説明したとおり `string`・`File`・`null` のどれかです。`typeof raw !== "string"` で「文字列でなければ空文字」にしてしまえば、以降は文字列だけを考えればよくなります。
+- 確認2では `author` を `append` していないので `get("author")` は `null` でしたが、ここで空文字になり「著者は必須です」として扱われました。
+- `String(formData.get("title") ?? "")` と比べて、`File` が来たときに `"[object File]"` という変な文字列にならない点が安全です。
+
+##### 解説2: 文字列の評価を「確かめてから」数値にする
+
+```typescript
+  if (ratingText !== "") {
+    const n = Number(ratingText);
+    if (Number.isInteger(n) && n >= 1 && n <= 5) {
+      rating = n;
+    } else {
+      errors.rating = "評価は1〜5から選んでください";
+    }
+  }
+```
+
+- `FormData` の値はすべて文字列なので、評価 `"4"` を `Number()` で数値の `4` に変えます。空文字は先に除外しているので、`Number("")` が `0` になる落とし穴（4a の「動かして確かめる」参照）も踏みません。
+- `Number.isInteger(n)` は「整数かどうか」を調べます。`"abc"`（NaN）や `"2.5"` はここで弾かれ、範囲チェックで `"99"` も弾かれました。
+
+##### 解説3: 決められた選択肢かどうかを find で調べる
+
+```typescript
+  const status = STATUSES.find((s) => s === statusText);
+  if (status === undefined) {
+    errors.status = "ステータスの値が正しくありません";
+  }
+```
+
+- `find` は配列の中から条件に合う最初の要素を返し、見つからなければ `undefined` を返します。`"deleted"` は3つのどれとも一致しないので `undefined` になり、エラーになりました。
+- 見つかった場合、`status` の型は自動的に `BookStatus`（3択のどれか）になります。`statusText as BookStatus` のような無理やりの型指定（アサーション）を書かずに済むのが、この書き方の良いところです。
+
+> **ヒント:** 画面側（`BookForm` の `validate`）でチェックしていても、サーバー側でもう一度チェックするのが Web 開発の鉄則です。確認2のように、ブラウザの開発者ツールを使えば `<select>` の選択肢に無い値でも送れてしまうからです。最後の砦として、データベースの CHECK 制約（第5章）も働きます。
+
 ### 5-10. Server Action のセキュリティ（参考）
 
 Server Action は「サーバー上で実行される関数」です。クライアント（ブラウザ）から呼び出せますが、コードはサーバーで走るため:
@@ -3808,6 +5431,40 @@ Server Action は「サーバー上で実行される関数」です。クライ
 
    F12 → Console タブを開き、エラーメッセージがないか確認してください。また、Network タブで Supabase への API リクエストが成功しているか（ステータスコード 200）を確認してください。
 
+**5. `permission denied for table books`（code: `42501`）と出る（2026年の Supabase の仕様変更）**
+
+Supabase は 2026年に、「新しく作ったテーブルを、自動では Data API（supabase-js から使う窓口）に公開しない」という仕様に変わりました。2026年5月30日以降に作ったプロジェクトでは最初から、それより前のプロジェクトでも 2026年10月30日以降に作るテーブルから、この動きになります（すでにあるテーブルの許可はそのまま残ります）。この場合、第5章の RLS ポリシーを正しく作っていても、テーブルそのものを使う**許可（GRANT／グラント）**が無いため、一覧が空になり、サーバーのターミナルに次のエラーが出ます。
+
+```text
+書籍の取得に失敗しました: permission denied for table books
+```
+
+1e のつまずきポイントの OK 版のように `error` を丸ごとログに出していれば、`hint`（直し方）まで表示されます。
+
+```text
+書籍の取得に失敗しました: {
+  code: '42501',
+  details: null,
+  hint: 'Grant the required privileges to the current role with: GRANT SELECT ON public.books TO anon;',
+  message: 'permission denied for table books'
+}
+```
+
+`hint` に書かれているとおり、Supabase ダッシュボードの **SQL Editor** で許可を与えます。
+
+```sql
+-- books テーブルを、ログインしていない利用者（anon ロール）からも読み書きできるようにする
+-- この教材にはまだログイン機能が無いので、第5章の「全員に全操作を許可（開発用）」ポリシーと組み合わせて使う
+grant select, insert, update, delete on public.books to anon;
+-- ログイン済みの利用者（authenticated ロール）にも同じ許可を出しておく
+grant select, insert, update, delete on public.books to authenticated;
+```
+
+- **GRANT** は「テーブルという建物に入るための入館証」、**RLS ポリシー**は「建物の中で、どの部屋（行）に入ってよいかのルール」です。supabase-js から使うには、**両方**がそろっている必要があります。
+- プロジェクト作成時の設定によっては、従来どおり自動で許可が付いている場合もあります。エラーが出ていなければ、この SQL は実行しなくて構いません。
+
+> **ヒント（API キーの名前について）:** 最近の Supabase ダッシュボードでは、API キーが「Publishable key（`sb_publishable_` で始まる）」と「Secret key」という名前で表示されます。Publishable key は従来の anon key の代わりにそのまま使えるので、`.env.local` の `NEXT_PUBLIC_SUPABASE_ANON_KEY` の値として貼り付けて構いません。大切なのは、`.env.local` の**変数名**と、`lib/supabase/client.ts`・`server.ts` の `process.env.〇〇` の名前が一字一句そろっていることです。
+
 ### 問題2: フォーム送信でエラーが出る
 
 **症状**: 「登録する」ボタンを押すと、エラーメッセージ（「書籍の登録に失敗しました」）が表示される。
@@ -3837,6 +5494,157 @@ Server Action は「サーバー上で実行される関数」です。クライ
 4. **Supabase のクライアント用ライブラリを使っているか確認**
 
    `app/books/new/page.tsx` は Client Component なので、`@/lib/supabase/client` を使います。`@/lib/supabase/server` を使うと `cookies()` などのサーバー専用APIにアクセスしようとしてエラーになります。
+
+**5. メモの列名がテーブルと違う（`memo` と `notes`）**
+
+第5章の SQL のとおりに books テーブルを作った場合、メモの列名が `notes` になっています。この章のコードは `memo` という列名で INSERT するので、`Could not find the 'memo' column of 'books' in the schema cache`（code: `PGRST204`）というエラーになります。Supabase ダッシュボードの Table Editor で列名を確かめ、どちらかにそろえてください。テーブル側を `memo` に合わせる場合は、SQL Editor で次の1行を実行します。
+
+```sql
+-- books テーブルの notes 列の名前を memo に変える（中のデータはそのまま残る）
+alter table books rename column notes to memo;
+```
+
+**▼ エラーコードで原因を見分ける**
+
+Supabase の `error` には `code`（エラーコード）が入っています。`message` の英文は版によって少し変わることがありますが、`code` は変わりにくいので、原因を見分けるときは `code` を手がかりにするのが確実です。この章で出会いやすいものをまとめます。
+
+| code | message の例 | 主な原因 | 対処 |
+|---|---|---|---|
+| `23502` | `null value in column "title" of relation "books" violates not-null constraint` | 必須の列（title・author）が空 | 必須チェックと `trim()` を確認 |
+| `23514` | `new row for relation "books" violates check constraint "books_rating_check"` | 評価が1〜5以外、ステータスが3種類以外 | 評価の数値変換（4a の Number の落とし穴）を確認 |
+| `22P02` | `invalid input syntax for type integer: ""` | 数値の列に空文字などを送った | 空文字を `null` に変換する |
+| `22007` | `invalid input syntax for type date: ""` | 日付の列に空文字を送った | 空文字を `null` に変換する（4b の書き方） |
+| `42501` | `new row violates row-level security policy for table "books"` | INSERT を許す RLS ポリシーが無い | 第5章の INSERT ポリシーを確認 |
+| `42501` | `permission denied for table books` | テーブルへの GRANT が無い | 問題1の「5」を参照 |
+| `PGRST204` | `Could not find the 'memo' column of 'books' in the schema cache` | 列名の書きまちがい | 列名を Table Editor で確認 |
+| `PGRST205` | `Could not find the table 'public.bookz' in the schema cache` | テーブル名の書きまちがい | `hint` の候補を確認 |
+
+#### 動かして確かめる: エラーコードから画面に出す文を選ぶ
+
+登録ページ（4b）では、どんな失敗でも同じ文（「書籍の登録に失敗しました…」）を出していました。`code` で分岐すれば、利用者にもう少し具体的な案内を出せます。
+
+> **▼ このコードがやること（先に日本語で）:** Supabase が返す `error` の `code` を見て、画面に出す日本語の文を選ぶ関数 `toUserMessage` を作ります。実際に Supabase が返すのと同じ形のエラーを5つ用意して、それぞれどの文になるかを表示します。
+
+```typescript
+// supabase-js が返す error（PostgrestError）の4つの項目
+type SupabaseError = {
+  code: string;
+  message: string;
+  details: string | null;
+  hint: string | null;
+};
+
+// エラーコード（code）を見て、画面に出す日本語メッセージを選ぶ
+// message の文面はバージョンで変わることがあるので、分岐には code を使う
+function toUserMessage(error: SupabaseError): string {
+  switch (error.code) {
+    case "23502":
+      return "必須項目（タイトル・著者）が空です。";
+    case "23514":
+      return "評価やステータスの値が、許可された範囲の外です。";
+    case "22P02":
+    case "22007":
+      return "数値や日付の形式が正しくありません。";
+    case "42501":
+      return "データを保存する権限がありません。";
+    case "PGRST204":
+    case "PGRST205":
+      return "テーブル名または列名がデータベースと一致していません。";
+    default:
+      return "書籍の登録に失敗しました。時間をおいて再度お試しください。";
+  }
+}
+
+// Supabase が実際に返すエラーの例
+// （code と message は PostgreSQL / PostgREST の実物と同じ文面。details は長いので省略）
+const samples: SupabaseError[] = [
+  {
+    code: "23502",
+    message:
+      'null value in column "title" of relation "books" violates not-null constraint',
+    details: "Failing row contains (...)",
+    hint: null,
+  },
+  {
+    code: "23514",
+    message:
+      'new row for relation "books" violates check constraint "books_rating_check"',
+    details: "Failing row contains (...)",
+    hint: null,
+  },
+  {
+    code: "22P02",
+    message: 'invalid input syntax for type integer: ""',
+    details: null,
+    hint: null,
+  },
+  {
+    code: "42501",
+    message: 'new row violates row-level security policy for table "books"',
+    details: null,
+    hint: null,
+  },
+  {
+    code: "PGRST204",
+    message: "Could not find the 'memo' column of 'books' in the schema cache",
+    details: null,
+    hint: null,
+  },
+];
+
+for (const error of samples) {
+  console.log(`[${error.code}] ${error.message}`);
+  console.log(`  → 画面に出す文: ${toUserMessage(error)}`);
+}
+```
+
+**▼ 実行結果**（`node error-message-demo.ts`）
+
+```text
+[23502] null value in column "title" of relation "books" violates not-null constraint
+  → 画面に出す文: 必須項目（タイトル・著者）が空です。
+[23514] new row for relation "books" violates check constraint "books_rating_check"
+  → 画面に出す文: 評価やステータスの値が、許可された範囲の外です。
+[22P02] invalid input syntax for type integer: ""
+  → 画面に出す文: 数値や日付の形式が正しくありません。
+[42501] new row violates row-level security policy for table "books"
+  → 画面に出す文: データを保存する権限がありません。
+[PGRST204] Could not find the 'memo' column of 'books' in the schema cache
+  → 画面に出す文: テーブル名または列名がデータベースと一致していません。
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: error の4つの項目
+
+```typescript
+type SupabaseError = {
+  code: string;
+  message: string;
+  details: string | null;
+  hint: string | null;
+};
+```
+
+- supabase-js の `error` には、主に `code`（エラーの種類を表す短い記号）・`message`（英語の説明）・`details`（問題のあった値などの詳細）・`hint`（直し方のヒント）の4つが入っています。
+- 原因を調べるときは「`hint` → `code` → `details` → `message`」の順に見ると近道です。`hint` に直し方そのもの（GRANT の SQL や、正しいテーブル名の候補）が書いてあることがよくあります。
+
+##### 解説2: switch で code ごとに文を選ぶ
+
+```typescript
+  switch (error.code) {
+    case "22P02":
+    case "22007":
+      return "数値や日付の形式が正しくありません。";
+```
+
+- `switch` は「値に応じて行き先を選ぶ」分岐です。`case` を2つ続けて書くと「どちらでも同じ処理」という意味になります。
+- `default` は「どの `case` にも当てはまらなかったとき」の行き先です。知らないコードが来ても、必ず何かしらの文が返ります。
+
+##### 解説3: 画面に出す文と、ログに出す情報を分ける
+
+- 利用者向けの文には、英語のエラー文や列名などの内部情報をそのまま出さず、「何をすればよいか」が分かる日本語にします。
+- 原因調べに必要な情報は、`console.error("書籍の登録に失敗しました:", error)` のように `error` を丸ごとログに出しておきます。4b の登録ページで使う場合は、`setSubmitError("書籍の登録に失敗しました。…")` の部分を `setSubmitError(toUserMessage(error))` に置き換えるだけです。
 
 ### 問題3: 型エラーが出る
 
@@ -3890,6 +5698,162 @@ Server Action は「サーバー上で実行される関数」です。クライ
    import { createClient as createServerClient } from "@/lib/supabase/server";
    import { createClient as createBrowserClient } from "@/lib/supabase/client";
    ```
+
+---
+
+## 8. 練習問題（解答・解説つき）
+
+この章の内容が身に付いたかを確かめましょう。まず自分で考えてから、後ろの「解答と解説」を読んでください。コードを書く問題は、実際に VS Code や Node.js で試すとより理解が深まります。
+
+### 問題1: CRUD の対応（基本）
+
+次の (a)〜(c) は CRUD のどれにあたりますか？ また、supabase-js ではどのメソッドを使いますか？
+
+- (a) 本の一覧を、新しく登録した順に表示する
+- (b) 登録フォームから新しい本を追加する
+- (c) 登録済みの本の評価を 3 から 5 に変える
+
+### 問題2: 一覧がいつも0冊になる（await）
+
+次のトップページは、本を何冊登録しても「全 0 冊」と表示されます。原因を答え、正しく直してください。
+
+```tsx
+export default async function HomePage() {
+  const supabase = await createClient();
+  const { data: books } = supabase.from("books").select("*");
+  return <BookList books={books ?? []} />;
+}
+```
+
+### 問題3: カードが1枚も出ない（map）
+
+Supabase からデータは取れている（`console.log(books)` で配列が表示される）のに、一覧にカードが1枚も表示されません。どこを直せばよいですか？
+
+```tsx
+{books.map((book) => {
+  <BookCard key={book.id} book={book} />;
+})}
+```
+
+### 問題4: 評価を選ばずに登録すると失敗する（型変換）
+
+ある人が `BookForm` の `handleRatingChange` を次のように書きました。評価を「選択してください」のまま登録すると、登録に失敗します。なぜ失敗するのか、どう直せばよいかを答えてください。
+
+```tsx
+const handleRatingChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  setFormData((prev) => ({
+    ...prev,
+    rating: Number(e.target.value),
+  }));
+};
+```
+
+### 問題5: バリデーションの結果を予想する
+
+4a の「動かして確かめる」で作った `validateBookForm` に、次の値を渡したときの戻り値を予想してください（`empty` は同じサンプルの初期値です）。
+
+```typescript
+validateBookForm({
+  ...empty,
+  title: "　　",
+  author: "A".repeat(51),
+  memo: "   ",
+});
+```
+
+### 問題6: error.tsx が表示されるのはどれ？
+
+次の (a)〜(c) のうち、3節で作った `app/error.tsx` の画面が表示されるのはどれですか？（複数選んでも構いません）
+
+- (a) トップページ（`HomePage`）の中で `throw new Error("取得失敗")` が実行された
+- (b) 登録ページの `handleSubmit`（「登録する」ボタンを押したあとの処理）の中で例外が起きた
+- (c) トップページで Supabase が `error` を返し、`if (error)` の中で「読み込めませんでした」を `return` した
+
+### 問題7: 登録できたのに一覧に出ない
+
+「登録する」を押すと一覧ページに戻り、Supabase の Table Editor を見ると本は確かに保存されています。それなのに、一覧に新しい本が表示されません。考えられる原因を2つ挙げてください。
+
+### 解答と解説
+
+#### 問題1の解答
+
+| | CRUD | supabase-js |
+|---|---|---|
+| (a) | **R**（Read） | `.select("*").order("created_at", { ascending: false })` |
+| (b) | **C**（Create） | `.insert({...})` |
+| (c) | **U**（Update） | `.update({ rating: 5 }).eq("id", 本のid)` |
+
+**解説:** 「表示する＝R」「新しく作る＝C」「直す＝U」「消す＝D」です。(a) の「新しい順」は `order` で `ascending: false`（降順）を指定します。(c) の `update` は第8章で詳しく扱いますが、「どの行を直すか」を `.eq("id", ...)` で必ず絞り込む点を覚えておきましょう。絞り込みを忘れると、全部の本の評価が書き換わってしまいます。
+
+#### 問題2の解答
+
+`supabase.from("books").select("*")` の前に **`await` が無い**のが原因です。正しくは次のとおりです。
+
+```tsx
+export default async function HomePage() {
+  const supabase = await createClient();
+  // await を付けて、結果（data と error）が届くまで待つ
+  const { data: books, error } = await supabase.from("books").select("*");
+  if (error) {
+    console.error("書籍の取得に失敗しました:", error);
+  }
+  return <BookList books={books ?? []} />;
+}
+```
+
+**解説:** `await` が無いと、右辺は結果ではなく「あとで結果が入る入れ物（Promise のなかま）」のままです。その入れ物には `data` というプロパティが無いので `books` は `undefined` になり、`books ?? []` で空配列になって「0冊」と表示されます。しかも supabase-js は `await` されるまで通信を始めないので、Supabase への問い合わせ自体が行われていません（0.3節の補足）。VS Code では「`data` というプロパティは存在しません」という赤線が出るはずなので、赤線は必ず確認しましょう。あわせて `error` も受け取っておくと、失敗にも気づけます。
+
+#### 問題3の解答
+
+`=>` の右側を `{ }` で囲んでいるのに `return` が無いため、`map` の結果が `[undefined, undefined, ...]` になっています。`( )` で囲んで JSX をそのまま返します。
+
+```tsx
+{books.map((book) => (
+  <BookCard key={book.id} book={book} />
+))}
+```
+
+**解説:** 1d の「動かして確かめる」で見たとおり、`=> { }` はブロックなので `return` が必要、`=> ( )` は式なので自動で返ります。`undefined` は画面に何も描かず、エラーも出ないので気づきにくいバグです。「`=>` のすぐ右が `{` なら `return` を探す」と覚えましょう。
+
+#### 問題4の解答
+
+「選択してください」の値は空文字 `""` で、`Number("")` は `0` になります。books テーブルには「評価は1〜5」という CHECK 制約があるため、評価 0 の行は拒否され、`23514`（CHECK 制約違反）のエラーで登録に失敗します。空文字を先に `null` へ変換します。
+
+```tsx
+const handleRatingChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const value = e.target.value;
+  setFormData((prev) => ({
+    ...prev,
+    // 空文字（選択してください）なら null、それ以外は数値に
+    rating: value === "" ? null : Number(value),
+  }));
+};
+```
+
+**解説:** 4a の「動かして確かめる」の実行結果のとおり、`Number("")` は `NaN` ではなく `0` です。`<select>` や `<input>` の値はいつも文字列なので、数値の列に保存する前には「空かどうか」→「数値に変換」の順で処理します。
+
+#### 問題5の解答
+
+```text
+{ title: 'タイトルは必須です', author: '著者は50文字以内で入力してください' }
+```
+
+**解説:** タイトルの `"　　"`（全角スペース2つ）は `trim()` で空文字になるので「必須です」です。著者の `"A".repeat(51)` は51文字なので上限（50文字）を1文字超えています。メモの `"   "` は `trim()` すると0文字で、メモは任意項目なのでエラーになりません。実際に Node.js で実行すると、この結果が表示されます。
+
+#### 問題6の解答
+
+**(a) だけ**です。
+
+**解説:** `error.tsx` が受け止めるのは「画面を描いている最中」に投げられた例外です。(a) はトップページを描く途中の `throw` なので `error.tsx` に切り替わります。(b) のボタンを押したあとの処理（イベントハンドラ）の中のエラーは `error.tsx` に届かないので、4b のように `try / catch` と `submitError` で自分で表示します。(c) は例外を投げずに自分で別の表示を返しているので、`error.tsx` は出番がありません（図7-9）。
+
+#### 問題7の解答
+
+例えば次の2つが考えられます。
+
+1. 登録ページで `router.push("/")` のあとに **`router.refresh()` を呼んでいない**。一覧ページの古い表示（キャッシュ）が使われ、Server Component が取り直しをしていない。
+2. 一覧の**取得（SELECT）に失敗している**のに、それを画面に出していない。SELECT を許す RLS ポリシーや GRANT が無いと `error` が返りますが、1e の元のコードは失敗しても「0冊」として表示を続けるため、取得できていないことに気づけません。
+
+**解説:** 「保存（INSERT）」と「表示（SELECT）」は別々の処理なので、片方だけ成功することがあります。Table Editor にデータがあるなら保存は成功しているので、表示側（`router.refresh()`・SELECT の権限・`error` のログ）を順に疑いましょう。7節の「問題1」とエラーコードの表も役に立ちます。
 
 ---
 

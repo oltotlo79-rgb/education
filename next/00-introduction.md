@@ -9,6 +9,75 @@
 
 ---
 
+## この章のゴールと地図
+
+この第0章は、**コードを本格的に書き始める前の「準備運動」** の章です。料理にたとえると、包丁を握る前に「どんな料理を作るのか（完成写真）」「台所のどこに何があるのか（道具の場所）」「どんな順番で作るのか（レシピの流れ）」を確かめる段階にあたります。ここで全体像をつかんでおくと、第1章以降で迷子になりにくくなります。
+
+### この章を読み終えると、こうなります（ゴール）
+
+- [ ] 「ブラウザ」「サーバー」「URL」「ポート」「ターミナル」などの基本用語を、自分の言葉で説明できる
+- [ ] 書籍管理アプリが **ブラウザ ⇄ Next.js ⇄ Supabase** のやり取りで動いていることを、図を使って説明できる
+- [ ] `node ファイル名` で小さなプログラムを動かし、エラーが出たときに「どこを読めばいいか」が分かる
+- [ ] 第1章〜第11章の道のりと、TypeScript・React・Next.js・Supabase それぞれの役割分担が分かる
+
+### この章の地図
+
+この章は、おおまかに3つのパートに分かれています。①は辞書のように何度も戻ってくる「言葉と道具」、②はアプリの「全体像」、③は「学習の進め方」と理解度の確認です。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 270" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-00-01" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="15" y="15" width="210" height="240" rx="12" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<path d="M15,27 a12,12 0 0 1 12,-12 h186 a12,12 0 0 1 12,12 v41 h-210 z" fill="#1e40af"/>
+<text x="120" y="42" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">① 言葉と道具を知る</text>
+<text x="120" y="60" text-anchor="middle" font-size="12" fill="#ffffff">0. はじめる前に</text>
+<text x="31" y="98" font-size="13" fill="#1e40af">0.1〜0.2 ファイルの基礎</text>
+<text x="31" y="126" font-size="13" fill="#1e40af">0.3〜0.4 Web のしくみ</text>
+<text x="31" y="154" font-size="13" fill="#1e40af">0.5〜0.6 ターミナルと実行</text>
+<text x="31" y="182" font-size="13" fill="#1e40af">0.7 変数・関数・型</text>
+<text x="120" y="240" text-anchor="middle" font-size="12" fill="#64748b">辞書のように何度も戻る</text>
+<rect x="255" y="15" width="210" height="240" rx="12" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<path d="M255,27 a12,12 0 0 1 12,-12 h186 a12,12 0 0 1 12,12 v41 h-210 z" fill="#c2410c"/>
+<text x="360" y="42" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">② 全体像をつかむ</text>
+<text x="360" y="60" text-anchor="middle" font-size="12" fill="#ffffff">1〜5節・8節</text>
+<text x="271" y="98" font-size="13" fill="#c2410c">1. 教材の目的</text>
+<text x="271" y="126" font-size="13" fill="#c2410c">2. Web アプリの動き</text>
+<text x="271" y="154" font-size="13" fill="#c2410c">3. 完成形と道のり</text>
+<text x="271" y="182" font-size="13" fill="#c2410c">4〜5. 技術スタック</text>
+<text x="271" y="210" font-size="13" fill="#c2410c">8. アーキテクチャ</text>
+<text x="360" y="240" text-anchor="middle" font-size="12" fill="#64748b">まずは流し読みで OK</text>
+<rect x="495" y="15" width="210" height="240" rx="12" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<path d="M495,27 a12,12 0 0 1 12,-12 h186 a12,12 0 0 1 12,12 v41 h-210 z" fill="#047857"/>
+<text x="600" y="42" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">③ 進め方を知る</text>
+<text x="600" y="60" text-anchor="middle" font-size="12" fill="#ffffff">6〜7節・9〜12節</text>
+<text x="511" y="98" font-size="13" fill="#047857">6〜7. 前提と学べること</text>
+<text x="511" y="126" font-size="13" fill="#047857">9. 学習のアドバイス</text>
+<text x="511" y="154" font-size="13" fill="#047857">10〜11. FAQ・用語集</text>
+<text x="511" y="182" font-size="13" fill="#047857">12. 練習問題</text>
+<text x="600" y="240" text-anchor="middle" font-size="12" fill="#64748b">最後に問題で確かめる</text>
+<line x1="227" y1="135" x2="252" y2="135" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-01)"/>
+<line x1="467" y1="135" x2="492" y2="135" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-01)"/>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図0-1: この章の地図。①で言葉に慣れ、②でアプリの全体像をつかみ、③で進め方を知って理解度を確かめます</div>
+</div>
+
+> **ヒント:** この章には、`node hello.js` のように**実際に動かして試せる小さなプログラム**がいくつか出てきます。まだ Node.js（第1章でインストールします）が入っていなければ、**今は読むだけで大丈夫**です。第1章で環境を整えたあとに戻ってきて、実際に動かしてみてください。「▼ 実行結果」には、筆者が実際に動かしたときの出力をそのまま載せています（パソコンのユーザー名が入る部分だけ `taro` に置き換えています）。
+
+### この教材の読み方（囲みや記号の意味）
+
+| 見た目 | 意味 |
+|--------|------|
+| **▼ このコードがやること（先に日本語で）** | コードを読む前に、何をするコードなのかを日本語で先に説明しています |
+| **▼ 実行するコマンド** / **▼ 実行結果** | ターミナルに打つ命令と、そのとき実際に画面に出る文字です |
+| **解説1・解説2…** | コードをいくつかの塊に分けて、1つずつ説明しています |
+| **つまずきポイント** | 初心者がよくハマる所です。**NG（まちがった例）→ OK（正しい例）** の順に並べています |
+| **ヒント / 用語 / 注意** | ちょっとした補足 / 言葉の意味 / 気をつけること です |
+| **図0-N** | 図の番号です。「図0-3」は「第0章の3枚目の図」という意味です |
+
+---
+
 ## 0. はじめる前に — 「そもそも何？」を全部解説
 
 この章を読み始める前に、まず**プログラミング・Web開発の最も基礎的な用語**を解説します。「もう知ってるよ」という方は読み飛ばして「1. この教材の目的と対象読者」から始めてください。逆に「これから初めてプログラミングをやります」という方は、ここを丁寧に読むと後の章が驚くほどスムーズに進みます。
@@ -52,6 +121,78 @@
 
 **▼ 例:** `App.tsx` という名前のファイルは、「中身が TypeScript＋JSX で書かれた、`App` という名前のファイル」を意味します。ファイル名（`App`）と拡張子（`.tsx`）は「.」（ドット）で区切られています。慣習的にコンポーネントを書くファイルは先頭を大文字（`App`）にすることが多いです。
 
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 235" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-00-02" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<text x="184" y="30" text-anchor="middle" font-size="15" font-weight="700" fill="#1e293b">ファイル名の読み方</text>
+<rect x="30" y="55" width="130" height="56" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="95" y="92" text-anchor="middle" font-family="Consolas, monospace" font-size="24" font-weight="700" fill="#1e40af">App</text>
+<rect x="166" y="55" width="36" height="56" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+<text x="184" y="92" text-anchor="middle" font-family="Consolas, monospace" font-size="24" font-weight="700" fill="#475569">.</text>
+<rect x="208" y="55" width="130" height="56" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<text x="273" y="92" text-anchor="middle" font-family="Consolas, monospace" font-size="24" font-weight="700" fill="#c2410c">tsx</text>
+<text x="95" y="138" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">ファイル名</text>
+<text x="95" y="157" text-anchor="middle" font-size="12" fill="#64748b">自分で決める</text>
+<text x="184" y="138" text-anchor="middle" font-size="13" font-weight="700" fill="#475569">区切り</text>
+<text x="273" y="138" text-anchor="middle" font-size="13" font-weight="700" fill="#c2410c">拡張子</text>
+<text x="273" y="157" text-anchor="middle" font-size="12" fill="#64748b">中身の種類を表す</text>
+<text x="184" y="200" text-anchor="middle" font-size="12" fill="#475569">.tsx ＝「TypeScript＋JSX で書かれた中身」</text>
+<line x1="370" y1="20" x2="370" y2="215" stroke="#e2e8f0" stroke-width="2"/>
+<text x="545" y="30" text-anchor="middle" font-size="15" font-weight="700" fill="#1e293b">Windows でよくある落とし穴</text>
+<rect x="400" y="50" width="290" height="50" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="414" y="70" font-size="12" fill="#64748b">エクスプローラーでの見た目</text>
+<text x="414" y="91" font-family="Consolas, monospace" font-size="16" font-weight="700" fill="#1e293b">hello.js</text>
+<line x1="545" y1="102" x2="545" y2="138" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-02)"/>
+<text x="557" y="125" font-size="12" fill="#475569">拡張子が隠れていると…</text>
+<rect x="400" y="142" width="290" height="50" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<text x="414" y="162" font-size="12" fill="#c2410c">本当の名前</text>
+<text x="414" y="183" font-family="Consolas, monospace" font-size="16" font-weight="700" fill="#c2410c">hello.js.txt</text>
+<text x="545" y="215" text-anchor="middle" font-size="12" fill="#475569">→ node hello.js では見つからない</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図0-2: 左はファイル名の部品。右は、拡張子が隠れているせいで本当の名前が分からなくなる、Windows でよくある落とし穴</div>
+</div>
+
+> **つまずきポイント:** 「`hello.js` を作ったはずなのに、`node hello.js` を実行すると `Cannot find module`（モジュール＝ファイルが見つからない）と言われる」——Windows でとても多いトラブルです。メモ帳などで保存すると、気づかないうちに本当の名前が `hello.js.txt` になっていることがあります。エクスプローラーの初期設定では拡張子が隠れているので、見た目は `hello.js` のままなのが厄介なところです。
+
+**NG:** 本当の名前が `hello.js.txt` になっている（`ls` でフォルダの中身を確かめると分かる）
+
+```text
+PS C:\Users\taro\study> ls
+
+    ディレクトリ: C:\Users\taro\study
+
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        2026/10/15     20:30             48 hello.js.txt
+
+PS C:\Users\taro\study> node hello.js
+node:internal/modules/cjs/loader:1478
+  throw err;
+  ^
+
+Error: Cannot find module 'C:\Users\taro\study\hello.js'
+（このあとに at で始まる行が続きますが、省略します）
+```
+
+**OK:** 名前を `hello.js` に直してから実行する
+
+```powershell
+# Rename-Item（名前の変更）で、hello.js.txt を hello.js に変える
+Rename-Item hello.js.txt hello.js
+# もう一度実行する
+node hello.js
+```
+
+```text
+こんにちは、世界！
+```
+
+- 再発を防ぐには、拡張子をいつも表示する設定にしておきましょう。Windows 11 ならエクスプローラーの「表示」→「表示」→「ファイル名拡張子」にチェック、Mac なら Finder の「設定」→「詳細」→「すべてのファイル名拡張子を表示」にチェックを入れます。
+- そもそもメモ帳ではなく **VS Code**（第1章で入れます）でファイルを作れば、この問題はほとんど起きません。
+
 ### 0.3 Webブラウザとサーバーの関係
 
 あなたが今このページを見ているソフトを **ブラウザ（browser、ブラウズ＝閲覧するもの）** と呼びます。Chrome（クローム）、Edge（エッジ）、Safari（サファリ）、Firefox（ファイヤーフォックス）などです。
@@ -91,6 +232,40 @@
 3. サーバーは HTML を返す
 4. ブラウザはその HTML を読み解いて画面を描画する
 
+この流れを、登場人物ごとの縦線を使って図にすると次のようになります（上から下へ時間が進みます）。DNS サーバーは「インターネットの住所録」で、`example.com` のような名前を、コンピュータ同士が使う番地（IPアドレス）に変換してくれます。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 268" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-00-03" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="40" y="12" width="140" height="48" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="110" y="42" text-anchor="middle" font-size="15" font-weight="700" fill="#1e40af">ブラウザ</text>
+<rect x="290" y="12" width="140" height="48" rx="8" fill="#f8fafc" stroke="#64748b" stroke-width="2"/>
+<text x="360" y="32" text-anchor="middle" font-size="14" font-weight="700" fill="#475569">DNS サーバー</text>
+<text x="360" y="50" text-anchor="middle" font-size="12" fill="#64748b">ネットの住所録</text>
+<rect x="540" y="12" width="140" height="48" rx="8" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="610" y="32" text-anchor="middle" font-size="14" font-weight="700" fill="#047857">Web サーバー</text>
+<text x="610" y="50" text-anchor="middle" font-size="12" fill="#047857">example.com</text>
+<line x1="110" y1="60" x2="110" y2="224" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5 4"/>
+<line x1="360" y1="60" x2="360" y2="224" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5 4"/>
+<line x1="610" y1="60" x2="610" y2="224" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="235" y="88" text-anchor="middle" font-size="13" fill="#1e293b">① example.com の住所は？</text>
+<line x1="112" y1="96" x2="356" y2="96" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-03)"/>
+<text x="235" y="124" text-anchor="middle" font-size="13" fill="#1e293b">② 住所（IPアドレス）を教える</text>
+<line x1="358" y1="132" x2="114" y2="132" stroke="#475569" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#ar-00-03)"/>
+<text x="485" y="160" text-anchor="middle" font-size="13" fill="#1e293b">③ GET /about（ページをください）</text>
+<line x1="112" y1="168" x2="606" y2="168" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-03)"/>
+<text x="485" y="196" text-anchor="middle" font-size="13" fill="#1e293b">④ HTML を返す（200 OK）</text>
+<line x1="608" y1="204" x2="114" y2="204" stroke="#475569" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#ar-00-03)"/>
+<rect x="30" y="226" width="250" height="32" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="155" y="247" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">⑤ HTML を読んで画面に描く</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図0-3: URL を入力してから画面が出るまで。実線はお願い（リクエスト）、点線は返事（レスポンス）。①②で住所を調べ、③④でページを受け取り、⑤で画面に描きます</div>
+</div>
+
+> **用語:** **IPアドレス（アイピーアドレス）** … インターネットにつながった機械1台1台に付いている番地です。`192.0.2.10` のような数字の並びで、人間には覚えにくいので、`example.com` のような名前（ドメイン名）と DNS を組み合わせて使います。
+
 このやり取りを **HTTP（HyperText Transfer Protocol、ハイパーテキスト転送規約）通信** と呼びます。`https://` の `s` は Secure（セキュア、暗号化されている）の意味です。URL（ユーアールエル、Uniform Resource Locator）の構造は次のようになっています。
 
 ```
@@ -103,6 +278,100 @@ https :// example.com : 443 / about ? q=book #section1
   |        └── ホスト名／ドメイン（どのサーバーか）
   └── スキーム（通信の種類。http や https）
 ```
+
+#### URL をプログラムで部品に分けてみる
+
+> **▼ このコードがやること（先に日本語で）:** 上の図で見た URL の「部品」を、プログラムに分解させて1つずつ表示します。JavaScript / TypeScript には `URL` という「URL を部品に分けてくれる道具」が最初から入っているので、それを使います。本書で何度も開く `http://localhost:3000/...` という URL も一緒に分解してみます。
+
+```typescript
+// 分解してみたい URL を2つ、配列に入れて用意する
+const addresses: string[] = [
+  "https://example.com:443/about?q=book#section1",
+  "http://localhost:3000/books/new",
+];
+
+// 配列の中身を1つずつ取り出して、同じ処理をくり返す
+for (const address of addresses) {
+  // new URL(...) で、URL の文字列を「部品ごとに分けた形」に変換する
+  const url = new URL(address);
+
+  console.log(`▼ ${address}`);
+  console.log(`  スキーム    : ${url.protocol}`);
+  console.log(`  ホスト名    : ${url.hostname}`);
+  console.log(`  ポート番号  : "${url.port}"`);
+  console.log(`  パス        : ${url.pathname}`);
+  console.log(`  クエリ文字列: ${url.search}`);
+  console.log(`  q の値      : ${url.searchParams.get("q")}`);
+  console.log(`  フラグメント: ${url.hash}`);
+}
+```
+
+**▼ 実行するコマンド**（`url.ts` という名前で保存したフォルダで）
+
+```bash
+node url.ts
+```
+
+**▼ 実行結果**
+
+```text
+▼ https://example.com:443/about?q=book#section1
+  スキーム    : https:
+  ホスト名    : example.com
+  ポート番号  : ""
+  パス        : /about
+  クエリ文字列: ?q=book
+  q の値      : book
+  フラグメント: #section1
+▼ http://localhost:3000/books/new
+  スキーム    : http:
+  ホスト名    : localhost
+  ポート番号  : "3000"
+  パス        : /books/new
+  クエリ文字列:
+  q の値      : null
+  フラグメント:
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: URL の文字列を配列に入れておく
+
+```typescript
+const addresses: string[] = [
+  "https://example.com:443/about?q=book#section1",
+  "http://localhost:3000/books/new",
+];
+```
+
+- `const addresses` は、「addresses（アドレスたち）という名前の箱」を作る宣言です。
+- `: string[]` は型注釈で、「文字列（string）が並んだ配列（`[]`）だけを入れてよい」というルールです。
+- `[ ... ]` の中に、カンマ区切りで2つの URL を並べています。
+
+##### 解説2: for...of で1つずつ取り出す
+
+```typescript
+for (const address of addresses) {
+```
+
+- 「addresses の中身を先頭から1つずつ取り出して `address` に入れ、`{ }` の中を実行する」をくり返す書き方です。URL が2つあるので、2回くり返されます。
+
+##### 解説3: new URL で分解して、部品を表示する
+
+```typescript
+const url = new URL(address);
+console.log(`  ポート番号  : "${url.port}"`);
+```
+
+- `new URL(文字列)` で、URL を「部品ごとに取り出せる形（オブジェクト）」に変換します。
+- `url.protocol`（スキーム）、`url.hostname`（ホスト名）、`url.port`（ポート番号）、`url.pathname`（パス）、`url.search`（クエリ文字列）、`url.hash`（フラグメント）のように、`.部品名` で取り出せます。
+- `url.searchParams.get("q")` は、クエリ文字列の中から `q=` の値だけを取り出します。2つ目の URL には `q` が無いので、「値が無い」ことを表す `null` が表示されました。
+- `` `...${式}...` `` はテンプレートリテラルといい、文字列の中に値を埋め込めます。ポート番号は空っぽでも見えるように `"` で囲んで表示しています。
+
+> **つまずきポイント:** 1つ目の URL には `:443` と書いたのに、ポート番号が `""`（空っぽ）と表示されました。これは **https の既定（デフォルト）のポート番号が 443 なので、書いても書かなくても同じ意味になり、「省略された」扱いになる** からです（http の既定は 80）。逆に、開発中に使う `localhost:3000` の `3000` は既定値ではないので**省略できません**。
+>
+> - **NG:** `http://localhost/books` … ポート番号を省略したので 80 番の窓口に行ってしまい、開発中のアプリにつながらない
+> - **OK:** `http://localhost:3000/books` … `npm run dev` が待っている 3000 番の窓口に届く
 
 ### 0.4 フロントエンドとバックエンドの違い
 
@@ -137,9 +406,133 @@ Web開発の現場ではよく **「フロントエンド／バックエンド�
 > - `%` … macOS の Zsh の既定
 > - `#` … 管理者（root）として開いた時の印
 
+実際のターミナルは、次のような見た目をしています（Windows の PowerShell の例）。黒い画面に文字だけが並ぶので最初は戸惑いますが、**「プロンプト → 自分で打つコマンド → 結果の出力 → また次のプロンプト」** のくり返しになっていることが分かれば怖くありません。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 280" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<rect x="10" y="10" width="490" height="260" rx="10" fill="#0f172a"/>
+<path d="M10,20 a10,10 0 0 1 10,-10 h470 a10,10 0 0 1 10,10 v20 h-490 z" fill="#334155"/>
+<circle cx="30" cy="25" r="6" fill="#ef4444"/>
+<circle cx="50" cy="25" r="6" fill="#f59e0b"/>
+<circle cx="70" cy="25" r="6" fill="#10b981"/>
+<text x="255" y="30" text-anchor="middle" font-size="12" fill="#e2e8f0">Windows PowerShell</text>
+<rect x="26" y="62" width="172" height="20" rx="3" fill="#f97316" fill-opacity="0.35"/>
+<rect x="200" y="62" width="56" height="20" rx="3" fill="#3b82f6" fill-opacity="0.5"/>
+<text x="30" y="77" font-family="Consolas, monospace" font-size="13" fill="#e2e8f0">PS C:\Users\taro\study&gt;</text>
+<text x="203" y="77" font-family="Consolas, monospace" font-size="13" fill="#ffffff">node -v</text>
+<rect x="26" y="88" width="230" height="20" rx="3" fill="#94a3b8" fill-opacity="0.22"/>
+<text x="30" y="103" font-family="Consolas, monospace" font-size="13" fill="#cbd5e1">v25.9.0</text>
+<rect x="26" y="122" width="172" height="20" rx="3" fill="#f97316" fill-opacity="0.35"/>
+<rect x="200" y="122" width="100" height="20" rx="3" fill="#3b82f6" fill-opacity="0.5"/>
+<text x="30" y="137" font-family="Consolas, monospace" font-size="13" fill="#e2e8f0">PS C:\Users\taro\study&gt;</text>
+<text x="203" y="137" font-family="Consolas, monospace" font-size="13" fill="#ffffff">node hello.js</text>
+<rect x="26" y="148" width="230" height="46" rx="3" fill="#94a3b8" fill-opacity="0.22"/>
+<text x="30" y="164" font-family="Consolas, monospace" font-size="13" fill="#cbd5e1">こんにちは、世界！</text>
+<text x="30" y="186" font-family="Consolas, monospace" font-size="13" fill="#cbd5e1">これが はじめての プログラムです</text>
+<rect x="26" y="208" width="172" height="20" rx="3" fill="#f97316" fill-opacity="0.35"/>
+<text x="30" y="223" font-family="Consolas, monospace" font-size="13" fill="#e2e8f0">PS C:\Users\taro\study&gt;</text>
+<rect x="204" y="210" width="9" height="17" fill="#f8fafc"/>
+<rect x="520" y="58" width="16" height="16" rx="3" fill="#f97316" fill-opacity="0.7"/>
+<text x="544" y="71" font-size="14" font-weight="700" fill="#c2410c">プロンプト</text>
+<text x="544" y="90" font-size="12" fill="#475569">入力待ちの目印。打たない</text>
+<rect x="520" y="110" width="16" height="16" rx="3" fill="#3b82f6" fill-opacity="0.8"/>
+<text x="544" y="123" font-size="14" font-weight="700" fill="#1e40af">コマンド</text>
+<text x="544" y="142" font-size="12" fill="#475569">自分で打つ命令</text>
+<rect x="520" y="162" width="16" height="16" rx="3" fill="#94a3b8"/>
+<text x="544" y="175" font-size="14" font-weight="700" fill="#475569">出力</text>
+<text x="544" y="194" font-size="12" fill="#475569">コマンドの結果</text>
+<rect x="520" y="212" width="16" height="16" rx="3" fill="#0f172a" stroke="#94a3b8"/>
+<rect x="524" y="215" width="6" height="10" fill="#f8fafc"/>
+<text x="544" y="225" font-size="14" font-weight="700" fill="#1e293b">カーソル</text>
+<text x="544" y="244" font-size="12" fill="#475569">ここに次の命令を打つ</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図0-4: ターミナル（PowerShell）の画面イメージ。橙がプロンプト、青が自分で打つコマンド、灰色が出力です。バージョン番号やフォルダ名は人によって違います</div>
+</div>
+
+> **つまずきポイント:** プロンプト記号の `$` や `PS C:\...>` まで一緒に打ち込んでしまう。本や Web の記事からコマンドをコピーしたときによく起きます。
+
+**NG:** `$` まで打ってしまった（PowerShell の場合）
+
+```text
+PS C:\Users\taro\study> $ node -v
+$ : The term '$' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+（このあとに、まちがえた位置を示す行が続きます）
+```
+
+**OK:** `$` の右側（`node -v`）だけを打つ
+
+```text
+PS C:\Users\taro\study> node -v
+v25.9.0
+```
+
+- 英語のメッセージは「`$` という名前のコマンドは見つかりません。つづりを確かめてください」という意味です。日本語の環境では「用語 '$' は、コマンドレット、関数、スクリプト ファイル、または操作可能なプログラムの名前として認識されません」のように表示されます。
+- `v25.9.0` は Node.js のバージョン番号です。インストールした時期によって数字は違います。
+
+> **つまずきポイント:** 日本語入力（IME）がオンのままコマンドを打つと、`node` が全角の `ｎｏｄｅ` になってしまいます。見た目がほとんど同じなので、気づきにくいミスです。
+
+**NG:** 全角で `ｎｏｄｅ -v` と打ってしまった
+
+```text
+PS C:\Users\taro\study> ｎｏｄｅ -v
+ｎｏｄｅ : The term 'ｎｏｄｅ' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+（このあとに、まちがえた位置を示す行が続きます）
+```
+
+**OK:** 日本語入力をオフ（半角英数）にしてから打つ
+
+```text
+PS C:\Users\taro\study> node -v
+v25.9.0
+```
+
+- コマンドやコードの記号は **半角英数字** で打つのが大原則です。Windows ではキーボードの「半角/全角」キー、Mac では「英数」キーで切り替えます。
+- 区切りのスペースも半角にします。全角スペースは、ターミナルの種類によって通ったりエラーになったりします（例: Mac や Linux の bash では `node　hello.js: command not found` となり、`node　hello.js` 全体が1つのコマンド名だと思われてしまいます）。
+
 ### 0.6 「コードを実行する」ってどういうこと？
 
 このチュートリアルでは何度も「**このコードを実行してみましょう**」と書きます。「実行」とは、書いたプログラムをコンピュータに**読み取らせて、その通りに動かす**ことです。本書では2通りの実行方法が登場します。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 215" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-00-05" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="10" y="20" width="120" height="74" rx="10" fill="#1e40af"/>
+<text x="70" y="51" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">(A)</text>
+<text x="70" y="74" text-anchor="middle" font-size="13" fill="#ffffff">ターミナルで実行</text>
+<rect x="150" y="20" width="110" height="74" rx="10" fill="#f8fafc" stroke="#64748b" stroke-width="2"/>
+<text x="205" y="53" text-anchor="middle" font-family="Consolas, monospace" font-size="14" font-weight="700" fill="#334155">hello.js</text>
+<text x="205" y="75" text-anchor="middle" font-size="12" fill="#64748b">ファイル1つ</text>
+<line x1="262" y1="57" x2="346" y2="57" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-05)"/>
+<text x="304" y="47" text-anchor="middle" font-family="Consolas, monospace" font-size="12" fill="#1e40af">node hello.js</text>
+<rect x="350" y="20" width="140" height="74" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="420" y="53" text-anchor="middle" font-size="14" font-weight="700" fill="#1e40af">Node.js</text>
+<text x="420" y="75" text-anchor="middle" font-size="12" fill="#1e40af">上から順に実行</text>
+<line x1="492" y1="57" x2="566" y2="57" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-05)"/>
+<text x="529" y="47" text-anchor="middle" font-size="12" fill="#475569">表示</text>
+<rect x="570" y="20" width="140" height="74" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="640" y="53" text-anchor="middle" font-size="14" font-weight="700" fill="#047857">ターミナルに</text>
+<text x="640" y="75" text-anchor="middle" font-size="12" fill="#047857">文字が出る</text>
+<rect x="10" y="120" width="120" height="74" rx="10" fill="#c2410c"/>
+<text x="70" y="151" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">(B)</text>
+<text x="70" y="174" text-anchor="middle" font-size="13" fill="#ffffff">ブラウザで確認</text>
+<rect x="150" y="120" width="110" height="74" rx="10" fill="#f8fafc" stroke="#64748b" stroke-width="2"/>
+<text x="205" y="153" text-anchor="middle" font-family="Consolas, monospace" font-size="13" font-weight="700" fill="#334155">page.tsx</text>
+<text x="205" y="175" text-anchor="middle" font-size="12" fill="#64748b">アプリ全体</text>
+<line x1="262" y1="157" x2="346" y2="157" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-05)"/>
+<text x="304" y="147" text-anchor="middle" font-family="Consolas, monospace" font-size="12" fill="#c2410c">npm run dev</text>
+<rect x="350" y="120" width="140" height="74" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<text x="420" y="153" text-anchor="middle" font-size="14" font-weight="700" fill="#c2410c">開発サーバー</text>
+<text x="420" y="175" text-anchor="middle" font-family="Consolas, monospace" font-size="12" fill="#c2410c">localhost:3000</text>
+<line x1="492" y1="157" x2="566" y2="157" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-05)"/>
+<text x="529" y="147" text-anchor="middle" font-size="12" fill="#475569">URL を開く</text>
+<rect x="570" y="120" width="140" height="74" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="640" y="153" text-anchor="middle" font-size="14" font-weight="700" fill="#047857">ブラウザに</text>
+<text x="640" y="175" text-anchor="middle" font-size="12" fill="#047857">画面が出る</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図0-5: 本書に出てくる2通りの「実行」。(A) は1つのファイルをその場で動かす方法、(B) はアプリ全体を動かしてブラウザで確かめる方法です</div>
+</div>
 
 #### (A) ターミナルでコマンドを打って実行する
 
@@ -163,6 +556,94 @@ node hello.js
 
 > **「コマンド」とは何？**: コマンド（command）= 命令。ターミナルに打つ「短い英単語の指示」のこと。`node`、`npm install`、`git status` などはすべてコマンドです。コマンドの後ろにスペースを空けて足す追加情報を「引数（ひきすう、argument）」、ハイフンが付いた指定（`-r` や `--save-dev` など）を「オプション／フラグ（flag）」と呼びます。
 
+#### はじめてのプログラム hello.js を作って動かす
+
+上で `node hello.js` を実行しましたが、`hello.js` の中身はまだ見せていませんでした。中身はたったこれだけです。
+
+> **▼ このコードがやること（先に日本語で）:** ターミナルに2行の文章を表示します。プログラムは**上から下へ1行ずつ順番に**実行される、ということを確かめるための最小のプログラムです。
+
+```javascript
+// 画面（ターミナル）に「こんにちは、世界！」と表示する
+console.log("こんにちは、世界！");
+
+// 2行目も表示してみる（上から順番に実行される）
+console.log("これが はじめての プログラムです");
+```
+
+**▼ 実行するコマンド**（`hello.js` を保存したフォルダで）
+
+```bash
+node hello.js
+```
+
+**▼ 実行結果**
+
+```text
+こんにちは、世界！
+これが はじめての プログラムです
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: `//` で始まる行はコメント
+
+```javascript
+// 画面（ターミナル）に「こんにちは、世界！」と表示する
+```
+
+- `//` から行の終わりまでは「人間向けのメモ（コメント）」で、コンピュータは読み飛ばします。
+- 本書のサンプルでは、**コメントは説明したいコードの1行上**に書いています。
+
+##### 解説2: `console.log(...)` で表示する
+
+```javascript
+console.log("こんにちは、世界！");
+```
+
+- `console.log( )` は「カッコの中身をコンソール（ターミナルやブラウザの出力欄）に表示する」命令です。
+- `"こんにちは、世界！"` のように `"` で囲んだものは**文字列**（文字の並び）です。
+- 行の最後の `;`（セミコロン）は「この命令はここまで」という区切りです。
+
+##### 解説3: 上から順番に実行される
+
+```javascript
+console.log("こんにちは、世界！");
+console.log("これが はじめての プログラムです");
+```
+
+- 1つ目の `console.log` が先に、2つ目があとに実行されるので、結果も同じ順番で2行出ます。2行の順番を入れ替えて保存し、もう一度 `node hello.js` を実行すると、表示の順番も入れ替わります。試してみましょう。
+
+> **つまずきポイント:** ファイルがあるのとは**違うフォルダ**で `node hello.js` を実行してしまう。ターミナルは「今いるフォルダ（カレントディレクトリ）」の中でファイルを探すので、場所がずれていると見つかりません。
+
+**NG:** `hello.js` が無いフォルダ（ここでは `C:\Users\taro`）で実行した
+
+```text
+PS C:\Users\taro> node hello.js
+node:internal/modules/cjs/loader:1478
+  throw err;
+  ^
+
+Error: Cannot find module 'C:\Users\taro\hello.js'
+（このあとに at で始まる行が続きますが、省略します）
+```
+
+**OK:** `cd` で `hello.js` のあるフォルダに移動してから実行する
+
+```powershell
+# cd（change directory）で、hello.js がある study フォルダに移動する
+cd study
+# 移動した先で実行する
+node hello.js
+```
+
+```text
+こんにちは、世界！
+これが はじめての プログラムです
+```
+
+- `Cannot find module '...'` の `'...'` の部分には「Node.js が探しに行った場所」が書かれています。そこに本当にファイルがあるか、エクスプローラーや `ls` で確かめましょう。
+- プロンプトの `PS C:\Users\taro>` の部分には「今いるフォルダ」が表示されています。コマンドを打つ前にここを見るクセをつけると、このミスはぐっと減ります。
+
 #### (B) ブラウザで開いて実行する
 
 Webアプリの場合、コードはサーバーが動かしたり、ブラウザが動かしたりします。本書では `npm run dev` というコマンドで**開発用のサーバー**を起動し、ブラウザから `http://localhost:3000` にアクセスして動作を確認します。
@@ -185,6 +666,192 @@ npm run dev
 ```
 
 ブラウザで `http://localhost:3000` を開くと、自分で作ったページが表示されます。`localhost`（ローカルホスト）は「自分自身のPC」を意味する特別な住所、`3000` はポート番号（同じPC内のどの窓口かの番号）です。`http://` と `localhost` の間にある `://` はURLの「スキーム（通信の種類）」と「住所」を区切る決まりの記号です。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 260" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-00-06" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="10" y="10" width="700" height="240" rx="14" fill="#f8fafc" stroke="#64748b" stroke-width="2" stroke-dasharray="7 5"/>
+<text x="30" y="38" font-size="15" font-weight="700" fill="#334155">あなたの PC（＝ localhost）</text>
+<rect x="40" y="64" width="240" height="150" rx="10" fill="#ffffff" stroke="#3b82f6" stroke-width="2"/>
+<path d="M40,74 a10,10 0 0 1 10,-10 h220 a10,10 0 0 1 10,10 v16 h-240 z" fill="#eff6ff"/>
+<text x="56" y="84" font-size="12" font-weight="700" fill="#1e40af">ブラウザ</text>
+<rect x="52" y="98" width="216" height="28" rx="14" fill="#f1f5f9" stroke="#cbd5e1"/>
+<text x="68" y="117" font-family="Consolas, monospace" font-size="14" fill="#1e293b">localhost:3000</text>
+<text x="160" y="162" text-anchor="middle" font-size="13" fill="#475569">自分で作った</text>
+<text x="160" y="182" text-anchor="middle" font-size="13" fill="#475569">アプリの画面が出る</text>
+<text x="560" y="54" text-anchor="middle" font-size="13" font-weight="700" fill="#475569">ポート ＝ 部屋番号</text>
+<rect x="430" y="64" width="260" height="44" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="446" y="92" font-family="Consolas, monospace" font-size="15" font-weight="700" fill="#1e40af">:3000</text>
+<text x="510" y="92" font-size="13" fill="#1e40af">Next.js 開発サーバー</text>
+<rect x="430" y="118" width="260" height="44" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<text x="446" y="146" font-family="Consolas, monospace" font-size="15" font-weight="700" fill="#94a3b8">:3001</text>
+<text x="510" y="146" font-size="13" fill="#94a3b8">空き部屋</text>
+<rect x="430" y="172" width="260" height="44" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<text x="446" y="200" font-family="Consolas, monospace" font-size="15" font-weight="700" fill="#94a3b8">:8080</text>
+<text x="510" y="200" font-size="13" fill="#94a3b8">別のプログラムの部屋</text>
+<line x1="282" y1="112" x2="426" y2="88" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-06)"/>
+<text x="350" y="86" text-anchor="middle" font-size="12" fill="#1e40af">3000 番へ</text>
+<text x="360" y="238" text-anchor="middle" font-size="12" fill="#64748b">やり取りは自分の PC の中だけで完結し、インターネットには出ていきません</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図0-6: localhost とポート番号。localhost が建物の住所、:3000 が部屋番号です。npm run dev で起動した開発サーバーが 3000 番の部屋で待っています</div>
+</div>
+
+> **用語:** **ポート（port）** … 1台のコンピュータの中にある「窓口の番号」です。マンションにたとえると、`localhost` が建物の住所、`3000` が部屋番号にあたります。1つの部屋（ポート）には、同時に1つのプログラムしか入れません。
+
+#### コードを書いてから、画面に出るまで
+
+`npm run dev` で起動した開発サーバーは、**ファイルの変更を見張っています**。そのため、コードを書き換えて保存するだけで、ブラウザの画面が自動で新しくなります。第4章以降、この流れを何百回もくり返すことになります。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 205" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-00-07" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="298" y="8" width="412" height="24" rx="6" fill="#fff7ed"/>
+<text x="504" y="25" text-anchor="middle" font-size="12" fill="#c2410c">③〜⑤ は npm run dev（開発サーバー）が自動でやってくれる</text>
+<rect x="10" y="40" width="124" height="90" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="72" y="66" text-anchor="middle" font-size="14" font-weight="700" fill="#1e40af">① 書く</text>
+<text x="72" y="92" text-anchor="middle" font-size="12" fill="#334155">VS Code で</text>
+<text x="72" y="110" text-anchor="middle" font-size="12" fill="#334155">コードを編集</text>
+<rect x="154" y="40" width="124" height="90" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="216" y="66" text-anchor="middle" font-size="14" font-weight="700" fill="#1e40af">② 保存する</text>
+<text x="216" y="92" text-anchor="middle" font-size="12" fill="#334155">Ctrl + S</text>
+<text x="216" y="110" text-anchor="middle" font-size="12" fill="#334155">（Mac は ⌘ + S）</text>
+<rect x="298" y="40" width="124" height="90" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<text x="360" y="66" text-anchor="middle" font-size="14" font-weight="700" fill="#c2410c">③ 気づく</text>
+<text x="360" y="92" text-anchor="middle" font-size="12" fill="#334155">開発サーバーが</text>
+<text x="360" y="110" text-anchor="middle" font-size="12" fill="#334155">変更を検知</text>
+<rect x="442" y="40" width="124" height="90" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<text x="504" y="66" text-anchor="middle" font-size="14" font-weight="700" fill="#c2410c">④ 変換する</text>
+<text x="504" y="92" text-anchor="middle" font-size="12" fill="#334155">TS → JS に</text>
+<text x="504" y="110" text-anchor="middle" font-size="12" fill="#334155">変換（コンパイル）</text>
+<rect x="586" y="40" width="124" height="90" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="648" y="66" text-anchor="middle" font-size="14" font-weight="700" fill="#047857">⑤ 画面が変わる</text>
+<text x="648" y="92" text-anchor="middle" font-size="12" fill="#334155">ブラウザが</text>
+<text x="648" y="110" text-anchor="middle" font-size="12" fill="#334155">自動で更新</text>
+<line x1="136" y1="85" x2="151" y2="85" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-07)"/>
+<line x1="280" y1="85" x2="295" y2="85" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-07)"/>
+<line x1="424" y1="85" x2="439" y2="85" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-07)"/>
+<line x1="568" y1="85" x2="583" y2="85" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-07)"/>
+<path d="M648,132 V166 H72 V135" fill="none" stroke="#475569" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#ar-00-07)"/>
+<text x="360" y="190" text-anchor="middle" font-size="12" fill="#475569">うまくいかなければ ① に戻って直す ── このくり返しが「開発」です</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図0-7: コードを書いてから画面に出るまで。自分でやるのは①と②だけで、③〜⑤は開発サーバーが1秒前後で自動的に行います</div>
+</div>
+
+> **ヒント:** この自動更新の仕組みを、Next.js では **Fast Refresh（ファスト・リフレッシュ）** と呼びます。保存しても画面が変わらないときは、①ファイルを保存し忘れていないか（VS Code のタブの名前の横に ● が付いていたら未保存）、②`npm run dev` を動かしているターミナルにエラーが出ていないか、の2つを確かめましょう。
+
+> **つまずきポイント:** `npm run dev` を、プロジェクトのフォルダ**ではない場所**で実行してしまう。`npm run dev` は「今いるフォルダの `package.json` に書かれた `dev` の命令を実行する」コマンドなので、`package.json` が無い場所では何もできません。
+
+**NG:** `package.json` が無いフォルダで実行した
+
+```text
+PS C:\Users\taro> npm run dev
+npm error code ENOENT
+npm error syscall open
+npm error path C:\Users\taro\package.json
+npm error errno -4058
+npm error enoent Could not read package.json: Error: ENOENT: no such file or directory, open 'C:\Users\taro\package.json'
+npm error enoent This is related to npm not being able to find a file.
+npm error enoent
+npm error A complete log of this run can be found in: C:\Users\taro\AppData\Local\npm-cache\_logs\2026-10-15T11_29_14_015Z-debug-0.log
+```
+
+**OK:** プロジェクトのフォルダ（`package.json` がある場所）に移動してから実行する
+
+```powershell
+# 第6章で作るプロジェクトのフォルダに移動する
+cd book-management
+# フォルダの中身を表示して、package.json があることを確かめる
+ls
+# 開発サーバーを起動する
+npm run dev
+```
+
+- `ENOENT` は "Error NO ENTry" の略で、「そのファイル（ここでは `package.json`）が見つからない」という意味です。`npm error path` の行に、npm が探しに行った場所が書かれています。
+
+#### サーバーが止まっているとどうなる？（つながらない体験）
+
+> **▼ このコードがやること（先に日本語で）:** 誰も待ち受けていない窓口（3999 番ポート）に、わざとリクエストを送ってみます。サーバーが動いていないと「つながらない」というエラーになることを、自分の目で確かめるためのプログラムです。
+
+```typescript
+// サーバーが待ち受けていない 3999 番の窓口に、リクエストを送ってみる
+try {
+  await fetch("http://localhost:3999/");
+  console.log("つながりました");
+} catch (error) {
+  // つながらなかったときは、ここに来る
+  console.log("つながりませんでした");
+  if (error instanceof Error) {
+    console.log(`エラーの内容: ${error.message}`);
+    // 詳しい原因（cause）の中にある「エラーコード」を取り出す
+    const cause = error.cause as { code: string };
+    console.log(`原因のコード: ${cause.code}`);
+  }
+}
+```
+
+**▼ 実行するコマンド**
+
+```bash
+node refused.ts
+```
+
+**▼ 実行結果**
+
+```text
+つながりませんでした
+エラーの内容: fetch failed
+原因のコード: ECONNREFUSED
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: fetch でリクエストを送る
+
+```typescript
+await fetch("http://localhost:3999/");
+```
+
+- `fetch(URL)` は「その URL にリクエストを送る」命令です。ブラウザのアドレスバーに URL を打つのとほぼ同じことを、プログラムから行います。
+- `await`（アウェイト）は「返事が来るまで待つ」という意味です。通信には時間がかかるので、待つ必要があります（詳しくは第7章で学びます）。
+
+##### 解説2: try ... catch で失敗を受け止める
+
+```typescript
+try {
+  await fetch("http://localhost:3999/");
+  console.log("つながりました");
+} catch (error) {
+  console.log("つながりませんでした");
+}
+```
+
+（説明のため、`catch` の中身を一部だけ抜き出しています）
+
+- `try { }` の中でエラーが起きると、プログラムを止めずに `catch { }` の中へジャンプします。いわば「失敗したときの受け皿」です。
+- 今回は 3999 番で誰も待っていないので、`console.log("つながりました")` は実行されず、`catch` の中が実行されました。
+
+##### 解説3: エラーの中身を取り出す
+
+```typescript
+if (error instanceof Error) {
+  console.log(`エラーの内容: ${error.message}`);
+  const cause = error.cause as { code: string };
+  console.log(`原因のコード: ${cause.code}`);
+}
+```
+
+- `error instanceof Error` は「受け取ったものが、本当にエラーの形をしているか」の確認です。TypeScript では、確認してからでないと `.message`（エラーの説明文）を読ませてもらえません。
+- `error.cause` には「詳しい原因」が入っています。`as { code: string }` は「`code` という文字列を持っているものとして扱ってね」という TypeScript への申告です。
+- `ECONNREFUSED` は "Error CONNection REFUSED"（接続を拒否された）の略で、**「その住所・その部屋番号には誰もいなかった」** という意味です。
+
+> **つまずきポイント:** `npm run dev` を動かしていたターミナルを閉じたり、`Ctrl + C` で止めたりしたあとに `http://localhost:3000` を開く（または再読み込みする）。開発サーバーが止まっているので、上のプログラムと同じ「誰もいない部屋をノックした」状態になります。Chrome では「このサイトにアクセスできません」「localhost で接続が拒否されました。」「ERR_CONNECTION_REFUSED」と表示されます。
+>
+> - **NG:** 開発中に `npm run dev` のターミナルを閉じる → ブラウザで開いてもつながらない
+> - **OK:** 開発中は `npm run dev` のターミナルを**開いたまま**にしておき、ほかのコマンドを打ちたいときは**新しいターミナルをもう1つ開く**。サーバーを止めたいときだけ `Ctrl + C` を押す
 
 ### 0.7 「変数・関数・型」のひと言ミニ辞典
 
@@ -212,6 +879,204 @@ console.log(name);
 // 太郎
 ```
 
+変数と関数は、次のような「箱」と「機械」をイメージすると分かりやすくなります。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 262" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-00-08" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<text x="165" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#1e293b">変数 ＝ 名前の付いた箱</text>
+<polygon points="80,84 110,56 260,56 230,84" fill="#dbeafe" stroke="#3b82f6" stroke-width="2"/>
+<polygon points="230,84 260,56 260,156 230,184" fill="#bfdbfe" stroke="#3b82f6" stroke-width="2"/>
+<rect x="80" y="84" width="150" height="100" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<rect x="88" y="92" width="62" height="24" rx="4" fill="#1e40af"/>
+<text x="119" y="109" text-anchor="middle" font-family="Consolas, monospace" font-size="14" font-weight="700" fill="#ffffff">name</text>
+<text x="155" y="160" text-anchor="middle" font-size="22" font-weight="700" fill="#1e293b">"太郎"</text>
+<rect x="70" y="200" width="170" height="30" rx="6" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<text x="155" y="220" text-anchor="middle" font-size="13" font-weight="700" fill="#c2410c">型 string ＝ 文字列だけ</text>
+<text x="155" y="252" text-anchor="middle" font-size="12" fill="#64748b">型は「入れてよい物」のルール</text>
+<text x="530" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#1e293b">関数 ＝ 材料から結果を作る機械</text>
+<rect x="455" y="44" width="150" height="34" rx="6" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="530" y="67" text-anchor="middle" font-size="15" fill="#1e293b">"太郎"</text>
+<text x="445" y="66" text-anchor="end" font-size="13" fill="#475569">引数（材料）</text>
+<line x1="530" y1="79" x2="530" y2="101" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-08)"/>
+<rect x="420" y="104" width="220" height="60" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<text x="530" y="131" text-anchor="middle" font-family="Consolas, monospace" font-size="17" font-weight="700" fill="#c2410c">greet( )</text>
+<text x="530" y="153" text-anchor="middle" font-size="12" fill="#c2410c">あいさつ文を作る関数</text>
+<line x1="530" y1="165" x2="530" y2="187" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-08)"/>
+<rect x="425" y="190" width="210" height="34" rx="6" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="530" y="213" text-anchor="middle" font-size="14" fill="#047857">"こんにちは、太郎さん"</text>
+<text x="415" y="212" text-anchor="end" font-size="13" fill="#475569">戻り値（結果）</text>
+<text x="530" y="252" text-anchor="middle" font-size="12" fill="#64748b">同じ機械に "花子" を入れれば "こんにちは、花子さん"</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図0-8: 変数は名前の付いた箱、型はその箱に入れてよい物のルール、関数は材料（引数）を入れると結果（戻り値）が出てくる機械です</div>
+</div>
+
+#### 変数・関数・型をまとめて使ってみる
+
+> **▼ このコードがやること（先に日本語で）:** 「本」のデータの形（型）を決めて、本のデータを変数に入れ、そのデータから紹介文を作る関数を呼び出します。最後に、本を2冊並べた配列の冊数を表示します。上の表に出てきた用語（変数・関数・引数・戻り値・型・配列・オブジェクト）が全部登場します。
+
+```typescript
+// 「本」のデータの形（型）を決める。Book という名前を付ける
+type Book = {
+  title: string;
+  author: string;
+  rating: number;
+};
+
+// 型 Book のルールに従って、本のデータを1冊ぶん作る
+const book: Book = {
+  title: "リーダブルコード",
+  author: "Dustin Boswell",
+  rating: 5,
+};
+
+// 本を受け取り、紹介文（文字列）を作って返す関数
+function describe(b: Book): string {
+  return `『${b.title}』（${b.author}）の評価は ★${b.rating} です`;
+}
+
+// 関数を呼び出して、返ってきた文字列を変数に入れる
+const message = describe(book);
+console.log(message);
+
+// 本を2冊並べた配列（リスト）を作る
+const shelf: Book[] = [
+  book,
+  { title: "達人プログラマー", author: "David Thomas", rating: 4 },
+];
+
+// 配列の長さ（何冊あるか）を表示する
+console.log(`本棚には ${shelf.length} 冊あります`);
+```
+
+**▼ 実行するコマンド**（`book.ts` という名前で保存したフォルダで）
+
+```bash
+node book.ts
+```
+
+**▼ 実行結果**
+
+```text
+『リーダブルコード』（Dustin Boswell）の評価は ★5 です
+本棚には 2 冊あります
+```
+
+> **ヒント:** `.ts`（TypeScript）のファイルを `node` で直接動かせるのは、Node.js 22.18 以降などの新しいバージョンです。`ERR_UNKNOWN_FILE_EXTENSION` というエラーが出たら Node.js が古いので、第1章を参考に新しい LTS（長期サポート）版を入れてください。バージョンによっては `ExperimentalWarning`（試験的な機能です、という注意書き）が1行出ることがありますが、動作には問題ありません。また、このとき Node.js は型の部分を**読み飛ばして実行するだけ**で、型の間違いのチェックはしません。型のチェックは VS Code の赤い波線や、Next.js のビルド（第10章）が担当します。
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: type で「データの形」を決める
+
+```typescript
+type Book = {
+  title: string;
+  author: string;
+  rating: number;
+};
+```
+
+- `type 名前 = { ... }` で、「本のデータには title・author・rating の3つが必要で、それぞれの種類（型）はこれ」というルールに `Book` という名前を付けます。
+- `string` は文字列、`number` は数値です。
+
+##### 解説2: 型に従ってデータを作る
+
+```typescript
+const book: Book = {
+  title: "リーダブルコード",
+  author: "Dustin Boswell",
+  rating: 5,
+};
+```
+
+- `const book: Book` は「Book のルールに従った箱 `book` を作る」という意味です。
+- `{ キー: 値, ... }` の形がオブジェクトです。もし `rating: "5"`（文字列）と書くと型のルールに合わないので、VS Code が赤い波線で教えてくれます。
+
+##### 解説3: 関数を作って呼び出す
+
+```typescript
+function describe(b: Book): string {
+  return `『${b.title}』（${b.author}）の評価は ★${b.rating} です`;
+}
+
+const message = describe(book);
+```
+
+- `function describe(b: Book): string` は、「Book 型の引数 `b` を受け取り、string 型の戻り値を返す関数 `describe`」の定義です。
+- `b.title` のように、`.`（ドット）でオブジェクトの中身を取り出します。
+- `describe(book)` で関数を呼び出すと、`return` の値（紹介文）が戻ってきて `message` に入ります。
+
+##### 解説4: 配列と length
+
+```typescript
+const shelf: Book[] = [
+  book,
+  { title: "達人プログラマー", author: "David Thomas", rating: 4 },
+];
+
+console.log(`本棚には ${shelf.length} 冊あります`);
+```
+
+- `Book[]` は「Book が並んだ配列」という型です。
+- `shelf.length` で、配列に入っている要素の数（ここでは 2）が分かります。
+
+> **つまずきポイント:** 大文字と小文字をまちがえる。プログラミング言語は、**`console` と `Console` をまったく別の名前**として扱います。
+
+**NG:** 先頭を大文字で `Console` と書いた
+
+```javascript
+Console.log("こんにちは");
+```
+
+```text
+ReferenceError: Console is not defined
+```
+
+（実際には、この行の前後にファイル名や `at ...` の行も表示されます。読み方は「9. この教材を進めるにあたってのアドバイス」で説明します）
+
+**OK:** すべて小文字の `console` と書く
+
+```javascript
+console.log("こんにちは");
+```
+
+```text
+こんにちは
+```
+
+- `ReferenceError: ○○ is not defined` は「○○という名前のものは定義されていない（見つからない）」という意味です。このエラーが出たら、まず**名前の打ち間違い（スペルミス・大文字小文字）**を疑いましょう。
+
+> **つまずきポイント:** カッコや引用符を**全角**で打ってしまう。日本語入力のまま `（` `）` や `“` `”`（くるっと曲がった引用符）を打つと、コンピュータには「知らない記号」に見えます。Word やチャットからコードをコピーしたときにも、`"` が勝手に `“ ”` に変わっていることがあります。
+
+**NG①:** 全角のカッコ
+
+```javascript
+console.log（"こんにちは"）;
+```
+
+**NG②:** 曲がった引用符
+
+```javascript
+console.log(“こんにちは”);
+```
+
+どちらも、実行すると次のエラーになります（ファイル名などの行は省略しています）。
+
+```text
+SyntaxError: Invalid or unexpected token
+```
+
+**OK:** カッコも引用符も半角で打つ
+
+```javascript
+console.log("こんにちは");
+```
+
+- `SyntaxError`（シンタックスエラー＝文法エラー）は「書き方のルールに反している」、`Invalid or unexpected token` は「おかしな文字・予想外の記号がある」という意味です。
+- 文字列の**中身**（`"こんにちは"` の「こんにちは」の部分）は日本語で問題ありません。全角にしてはいけないのは、カッコ・引用符・セミコロンなど **コードの記号の部分** です。
+
 ここまでが「読む前の超基礎」です。すべてを覚える必要はなく、**「分からない単語が出てきたらこの 0 章に戻ってくる」** という辞書のように使ってください。
 
 ---
@@ -228,6 +1093,66 @@ console.log(name);
 - CRUD（クラッド。Create=作成、Read=読み取り、Update=更新、Delete=削除の頭文字で、データ操作の基本4つを指します）操作を通じて、**Webアプリ開発の基本パターン**を身につける
 
 > **「CRUD」とは？** ほぼ全てのWebアプリは、データの「作成・読み取り・更新・削除」という4つの操作で成り立っています。SNSなら投稿の作成・表示・編集・削除、ECサイト（Electronic Commerce、ネット通販サイト）なら商品の登録・一覧表示・情報更新・削除です。この4つをマスターすれば、どんなWebアプリでも基本は作れるようになります。
+
+書籍管理アプリでの CRUD を、画面での操作と、裏側で使われる「HTTP メソッド」「SQL」と並べると次のようになります。右側の2列は今は覚えなくて大丈夫です。「画面での1つの操作が、裏側では決まった言葉に置き換わって運ばれていく」というイメージだけ持っておきましょう。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 280" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-00-09" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<text x="125" y="28" text-anchor="middle" font-size="13" font-weight="700" fill="#475569">画面での操作</text>
+<text x="310" y="28" text-anchor="middle" font-size="13" font-weight="700" fill="#475569">CRUD</text>
+<text x="450" y="28" text-anchor="middle" font-size="13" font-weight="700" fill="#475569">HTTP メソッド</text>
+<text x="620" y="28" text-anchor="middle" font-size="13" font-weight="700" fill="#475569">SQL</text>
+<rect x="20" y="42" width="210" height="42" rx="8" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="125" y="68" text-anchor="middle" font-size="13" fill="#1e293b">「保存する」で新しく登録</text>
+<rect x="258" y="42" width="104" height="42" rx="8" fill="#047857"/>
+<text x="310" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">Create 作成</text>
+<rect x="392" y="42" width="116" height="42" rx="8" fill="#ffffff" stroke="#10b981" stroke-width="1.5"/>
+<text x="450" y="69" text-anchor="middle" font-family="Consolas, monospace" font-size="15" font-weight="700" fill="#047857">POST</text>
+<rect x="542" y="42" width="156" height="42" rx="8" fill="#ffffff" stroke="#10b981" stroke-width="1.5"/>
+<text x="620" y="69" text-anchor="middle" font-family="Consolas, monospace" font-size="15" font-weight="700" fill="#047857">INSERT</text>
+<rect x="20" y="96" width="210" height="42" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="125" y="122" text-anchor="middle" font-size="13" fill="#1e293b">一覧ページを開く</text>
+<rect x="258" y="96" width="104" height="42" rx="8" fill="#1e40af"/>
+<text x="310" y="122" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">Read 読み取り</text>
+<rect x="392" y="96" width="116" height="42" rx="8" fill="#ffffff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="450" y="123" text-anchor="middle" font-family="Consolas, monospace" font-size="15" font-weight="700" fill="#1e40af">GET</text>
+<rect x="542" y="96" width="156" height="42" rx="8" fill="#ffffff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="620" y="123" text-anchor="middle" font-family="Consolas, monospace" font-size="15" font-weight="700" fill="#1e40af">SELECT</text>
+<rect x="20" y="150" width="210" height="42" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="125" y="176" text-anchor="middle" font-size="13" fill="#1e293b">編集して「更新する」</text>
+<rect x="258" y="150" width="104" height="42" rx="8" fill="#c2410c"/>
+<text x="310" y="176" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">Update 更新</text>
+<rect x="392" y="150" width="116" height="42" rx="8" fill="#ffffff" stroke="#f97316" stroke-width="1.5"/>
+<text x="450" y="177" text-anchor="middle" font-family="Consolas, monospace" font-size="15" font-weight="700" fill="#c2410c">PATCH</text>
+<rect x="542" y="150" width="156" height="42" rx="8" fill="#ffffff" stroke="#f97316" stroke-width="1.5"/>
+<text x="620" y="177" text-anchor="middle" font-family="Consolas, monospace" font-size="15" font-weight="700" fill="#c2410c">UPDATE</text>
+<rect x="20" y="204" width="210" height="42" rx="8" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
+<text x="125" y="230" text-anchor="middle" font-size="13" fill="#1e293b">「削除」ボタンを押す</text>
+<rect x="258" y="204" width="104" height="42" rx="8" fill="#b91c1c"/>
+<text x="310" y="230" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">Delete 削除</text>
+<rect x="392" y="204" width="116" height="42" rx="8" fill="#ffffff" stroke="#ef4444" stroke-width="1.5"/>
+<text x="450" y="231" text-anchor="middle" font-family="Consolas, monospace" font-size="15" font-weight="700" fill="#b91c1c">DELETE</text>
+<rect x="542" y="204" width="156" height="42" rx="8" fill="#ffffff" stroke="#ef4444" stroke-width="1.5"/>
+<text x="620" y="231" text-anchor="middle" font-family="Consolas, monospace" font-size="15" font-weight="700" fill="#b91c1c">DELETE</text>
+<line x1="232" y1="63" x2="255" y2="63" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-09)"/>
+<line x1="364" y1="63" x2="389" y2="63" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-09)"/>
+<line x1="510" y1="63" x2="539" y2="63" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-09)"/>
+<line x1="232" y1="117" x2="255" y2="117" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-09)"/>
+<line x1="364" y1="117" x2="389" y2="117" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-09)"/>
+<line x1="510" y1="117" x2="539" y2="117" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-09)"/>
+<line x1="232" y1="171" x2="255" y2="171" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-09)"/>
+<line x1="364" y1="171" x2="389" y2="171" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-09)"/>
+<line x1="510" y1="171" x2="539" y2="171" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-09)"/>
+<line x1="232" y1="225" x2="255" y2="225" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-09)"/>
+<line x1="364" y1="225" x2="389" y2="225" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-09)"/>
+<line x1="510" y1="225" x2="539" y2="225" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-09)"/>
+<text x="360" y="270" text-anchor="middle" font-size="12" fill="#64748b">Supabase を使うと、HTTP メソッドや SQL への置き換えは自動で行われます</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図0-9: CRUD の4つの操作と、画面での操作・HTTP メソッド・SQL の対応。左から右へ「画面 → 通信 → データベース」と置き換わって運ばれます</div>
+</div>
 
 ### 対象読者
 
@@ -260,6 +1185,59 @@ Webアプリの仕組みは、レストランに例えるとわかりやすく�
 | **注文票** | **API**（Application Programming Interface：アプリ同士がデータをやり取りするための窓口・ルール） | 厨房と客席をつなぐ「注文の仕組み」。フロントエンドとバックエンドの通信手段 |
 | **ウェイター** | **HTTP通信**（HyperText Transfer Protocol：ブラウザとサーバー間でデータをやり取りする通信の決まりごと） | 注文を厨房に届け、料理を客席に運ぶ人。データの運び役 |
 
+表の内容を絵にすると、次のようになります。お客さん（ブラウザ）は、厨房（サーバー）にも倉庫（データベース）にも直接は入りません。必ずウェイター（HTTP 通信）を通して注文し、料理を受け取ります。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 248" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-00-10" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<text x="360" y="22" text-anchor="middle" font-size="12" fill="#64748b">上段: レストランでは　／　下段: Web アプリでは</text>
+<path d="M15,46 a10,10 0 0 1 10,-10 h110 a10,10 0 0 1 10,10 v70 h-130 z" fill="#fff7ed"/>
+<path d="M15,116 h130 v74 a10,10 0 0 1 -10,10 h-110 a10,10 0 0 1 -10,-10 z" fill="#eff6ff"/>
+<rect x="15" y="36" width="130" height="164" rx="10" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="80" y="72" text-anchor="middle" font-size="15" font-weight="700" fill="#c2410c">お客さん</text>
+<text x="80" y="96" text-anchor="middle" font-size="12" fill="#475569">注文して食べる</text>
+<text x="80" y="152" text-anchor="middle" font-size="15" font-weight="700" fill="#1e40af">ブラウザ</text>
+<text x="80" y="176" text-anchor="middle" font-size="12" fill="#475569">見る・操作する</text>
+<path d="M205,46 a10,10 0 0 1 10,-10 h110 a10,10 0 0 1 10,10 v70 h-130 z" fill="#fff7ed"/>
+<path d="M205,116 h130 v74 a10,10 0 0 1 -10,10 h-110 a10,10 0 0 1 -10,-10 z" fill="#eff6ff"/>
+<rect x="205" y="36" width="130" height="164" rx="10" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="270" y="72" text-anchor="middle" font-size="15" font-weight="700" fill="#c2410c">ウェイター</text>
+<text x="270" y="96" text-anchor="middle" font-size="12" fill="#475569">注文と料理を運ぶ</text>
+<text x="270" y="152" text-anchor="middle" font-size="15" font-weight="700" fill="#1e40af">HTTP 通信</text>
+<text x="270" y="176" text-anchor="middle" font-size="12" fill="#475569">データの運び役</text>
+<path d="M395,46 a10,10 0 0 1 10,-10 h110 a10,10 0 0 1 10,10 v70 h-130 z" fill="#fff7ed"/>
+<path d="M395,116 h130 v74 a10,10 0 0 1 -10,10 h-110 a10,10 0 0 1 -10,-10 z" fill="#eff6ff"/>
+<rect x="395" y="36" width="130" height="164" rx="10" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="460" y="72" text-anchor="middle" font-size="15" font-weight="700" fill="#c2410c">厨房</text>
+<text x="460" y="96" text-anchor="middle" font-size="12" fill="#475569">料理を作る</text>
+<text x="460" y="152" text-anchor="middle" font-size="15" font-weight="700" fill="#1e40af">サーバー</text>
+<text x="460" y="176" text-anchor="middle" font-size="12" fill="#475569">処理・HTML を作る</text>
+<path d="M585,46 a10,10 0 0 1 10,-10 h110 a10,10 0 0 1 10,10 v70 h-130 z" fill="#fff7ed"/>
+<path d="M585,116 h130 v74 a10,10 0 0 1 -10,10 h-110 a10,10 0 0 1 -10,-10 z" fill="#eff6ff"/>
+<rect x="585" y="36" width="130" height="164" rx="10" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="650" y="72" text-anchor="middle" font-size="15" font-weight="700" fill="#c2410c">食材倉庫</text>
+<text x="650" y="96" text-anchor="middle" font-size="12" fill="#475569">食材をしまう</text>
+<text x="650" y="152" text-anchor="middle" font-size="15" font-weight="700" fill="#1e40af">データベース</text>
+<text x="650" y="176" text-anchor="middle" font-size="12" fill="#475569">データを保存</text>
+<text x="175" y="78" text-anchor="middle" font-size="12" fill="#475569">注文</text>
+<line x1="148" y1="86" x2="201" y2="86" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-10)"/>
+<text x="175" y="152" text-anchor="middle" font-size="12" fill="#475569">料理</text>
+<line x1="202" y1="160" x2="149" y2="160" stroke="#475569" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#ar-00-10)"/>
+<text x="365" y="78" text-anchor="middle" font-size="12" fill="#475569">注文</text>
+<line x1="338" y1="86" x2="391" y2="86" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-10)"/>
+<text x="365" y="152" text-anchor="middle" font-size="12" fill="#475569">料理</text>
+<line x1="392" y1="160" x2="339" y2="160" stroke="#475569" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#ar-00-10)"/>
+<text x="555" y="78" text-anchor="middle" font-size="12" fill="#475569">取り出す</text>
+<line x1="528" y1="86" x2="581" y2="86" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-10)"/>
+<text x="555" y="152" text-anchor="middle" font-size="12" fill="#475569">食材</text>
+<line x1="582" y1="160" x2="529" y2="160" stroke="#475569" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#ar-00-10)"/>
+<text x="360" y="232" text-anchor="middle" font-size="12" fill="#475569">本書のアプリでは、厨房 ＝ Next.js、倉庫 ＝ Supabase（PostgreSQL）が担当します</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図0-10: Web アプリをレストランにたとえた図。実線の矢印が注文（リクエスト）、点線の矢印が返ってくるもの（レスポンス）です</div>
+</div>
+
 ### Webアプリの動作の流れ
 
 例えば、あなたがブラウザ（Chrome や Edge など）で「Amazon」を開いたとき、裏側ではこんなことが起きています。
@@ -272,6 +1250,122 @@ Webアプリの仕組みは、レストランに例えるとわかりやすく�
 
 > **このチュートリアルでは：** フロントエンド（画面）は **React + Next.js** で作り、バックエンド（データの処理・保存）は **Supabase** というサービスに任せます。Supabase を使うことで、バックエンドのプログラムを自分で書く必要がなくなり、画面の開発に集中できます。
 
+#### 小さな Web サーバーを動かして「リクエスト → レスポンス」を体験する
+
+> **▼ このコードがやること（先に日本語で）:** 自分の PC の中に、HTML を1行だけ返す小さな Web サーバー（厨房）を作ります。そして同じプログラムの中から、ブラウザの代わりに `fetch` で「`/about` のページをください」とリクエスト（注文）を送り、返ってきたレスポンス（料理）を表示します。最後にサーバーを止めて終わります。
+
+```typescript
+// Node.js に最初から入っている「HTTP サーバーを作る道具」を読み込む
+import { createServer } from "node:http";
+
+// サーバー（お店の厨房）を作る。リクエストが届くたびに中の関数が呼ばれる
+const server = createServer((req, res) => {
+  // どんな注文（リクエスト）が来たかを記録する
+  console.log(`[サーバー] 注文を受けました: ${req.method} ${req.url}`);
+
+  // 「成功(200)」と「中身は HTML です」という情報を先に返す
+  res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
+
+  // 料理（HTML）を渡して、このやり取りを終える
+  res.end("<h1>ようこそ、本の店へ</h1>");
+});
+
+// 3000 番の窓口（ポート）で、リクエストの待ち受けを始める
+server.listen(3000, async () => {
+  console.log("[サーバー] http://localhost:3000 で待っています");
+
+  // ブラウザの代わりに fetch でリクエストを送ってみる
+  const response = await fetch("http://localhost:3000/about");
+  console.log(`[ブラウザ役] ステータスコード: ${response.status}`);
+
+  // 返ってきた本文（HTML）を文字列として受け取る
+  const html = await response.text();
+  console.log(`[ブラウザ役] 届いた HTML: ${html}`);
+
+  // 実験が終わったので、サーバーを止める
+  server.close();
+});
+```
+
+**▼ 実行するコマンド**（`server.ts` という名前で保存したフォルダで）
+
+```bash
+node server.ts
+```
+
+**▼ 実行結果**
+
+```text
+[サーバー] http://localhost:3000 で待っています
+[サーバー] 注文を受けました: GET /about
+[ブラウザ役] ステータスコード: 200
+[ブラウザ役] 届いた HTML: <h1>ようこそ、本の店へ</h1>
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: サーバーを作る道具を読み込む
+
+```typescript
+import { createServer } from "node:http";
+```
+
+- `import { 名前 } from "場所"` は、ほかの場所にある道具を「借りてくる」書き方です。
+- `node:http` は Node.js に最初から入っている「HTTP 通信の道具箱」で、その中から `createServer`（サーバーを作る関数）を借りています。
+
+##### 解説2: 注文が来たときの動きを決める
+
+```typescript
+const server = createServer((req, res) => {
+  console.log(`[サーバー] 注文を受けました: ${req.method} ${req.url}`);
+  res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
+  res.end("<h1>ようこそ、本の店へ</h1>");
+});
+```
+
+（コメントを省いて抜き出しています）
+
+- `(req, res) => { ... }` は「リクエストが届くたびに呼ばれる関数」です。`req`（request）が届いた注文、`res`（response）が返事を書き込む用紙です。
+- `req.method` は HTTP メソッド（今回は `GET`）、`req.url` はパス（今回は `/about`）です。
+- `res.writeHead(200, ...)` で「成功（200）」と「中身は HTML で、文字コードは UTF-8」という情報を書き、`res.end(...)` で HTML を渡して返事を完了します。
+
+##### 解説3: ポートで待ち受けて、自分で注文を送る
+
+```typescript
+server.listen(3000, async () => {
+  const response = await fetch("http://localhost:3000/about");
+  console.log(`[ブラウザ役] ステータスコード: ${response.status}`);
+  const html = await response.text();
+  server.close();
+});
+```
+
+（説明に必要な行だけを抜き出しています）
+
+- `server.listen(3000, ...)` で、3000 番ポートでの待ち受けを始めます。準備ができると、後ろに書いた関数が呼ばれます。
+- `fetch(...)` がブラウザ役です。`response.status` に**ステータスコード**（200＝成功）、`await response.text()` に本文（HTML）が入ります。
+- `server.close()` でサーバーを止めます。これが無いと、プログラムは次の注文を待ち続けて終わりません。
+
+> **ヒント（やってみよう）:** 最後の `server.close();` の行の先頭に `//` を付けて（コメントにして）実行すると、サーバーが動いたままになります。その間にブラウザで `http://localhost:3000/books` を開くと「ようこそ、本の店へ」と表示され、ターミナルには `[サーバー] 注文を受けました: GET /books` と記録されます（ブラウザはタブのアイコン画像 `/favicon.ico` も自動で注文するので、その記録も出ることがあります）。止めるときはターミナルで `Ctrl + C` を押します。これが、本書で使う `npm run dev`（開発サーバー）の小さな模型です。
+
+> **つまずきポイント:** すでに別のプログラムが 3000 番の部屋（ポート）を使っているときに、もう1つ 3000 番で待ち受けようとする。たとえば `npm run dev` を動かしたまま、別のターミナルで上の `server.ts` を実行するとこうなります。
+
+**NG:** 3000 番がふさがっているのに `node server.ts` を実行した
+
+```text
+node:events:487
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3000
+（このあとに at で始まる行などが続きますが、省略します）
+```
+
+**OK:** 先に動いているほうを `Ctrl + C` で止めてから実行する（または、`server.listen(3000, ...)` と `fetch("http://localhost:3000/about")` の `3000` を、空いている `3001` などに書き換える）
+
+- `EADDRINUSE` は "Error ADDRess IN USE"（その住所はもう使われている）の略です。1つの部屋には1つのプログラムしか入れない、というポートのルールに引っかかりました。
+- Next.js の開発サーバーは、3000 番がふさがっていると自動で 3001 番などに切り替え、ターミナルに「Port 3000 is in use」という警告を出します。その場合はブラウザでも `http://localhost:3001` を開く必要があります。`npm run dev` の出力に表示される `Local:` の URL を確かめるクセをつけましょう。
+
 ### クライアントとサーバー
 
 Webの世界では、「お願いする側」と「応える側」の2つの役割があります。
@@ -280,6 +1374,93 @@ Webの世界では、「お願いする側」と「応える側」の2つの役�
 - **サーバー**（Server：サービスを提供する側）= インターネット上のコンピュータ。お願いに応えてデータを返す側
 
 この「クライアントがリクエストを送り、サーバーがレスポンス（応答）を返す」というやり取りが、Webアプリの基本です。
+
+本書のアプリでは、この関係がもう一段だけ増えます。**Next.js のサーバー**が「厨房」として HTML を作り、その材料（データ）を **Supabase** という「倉庫」から取ってきます。どのコードがどこで動くのかを図にすると、次のようになります。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 268" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-00-11" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="15" y="12" width="200" height="214" rx="12" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="115" y="36" text-anchor="middle" font-size="15" font-weight="700" fill="#1e40af">ブラウザ</text>
+<text x="115" y="56" text-anchor="middle" font-size="12" fill="#475569">ユーザーの PC・スマホ</text>
+<rect x="27" y="78" width="176" height="68" rx="8" fill="#ffffff" stroke="#93c5fd" stroke-width="1.5"/>
+<text x="115" y="99" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">Client Component</text>
+<text x="115" y="118" text-anchor="middle" font-size="12" fill="#334155">ボタン・入力欄など</text>
+<text x="115" y="136" text-anchor="middle" font-size="12" fill="#334155">先頭に "use client"</text>
+<rect x="27" y="156" width="176" height="58" rx="8" fill="#ffffff" stroke="#93c5fd" stroke-width="1.5" stroke-dasharray="5 3"/>
+<text x="115" y="178" text-anchor="middle" font-size="12" fill="#334155">console.log の出力先</text>
+<text x="115" y="200" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">ブラウザの開発者ツール</text>
+<rect x="260" y="12" width="200" height="214" rx="12" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<text x="360" y="36" text-anchor="middle" font-size="15" font-weight="700" fill="#c2410c">Next.js サーバー</text>
+<text x="360" y="54" text-anchor="middle" font-size="12" fill="#475569">開発中は自分の PC</text>
+<text x="360" y="69" text-anchor="middle" font-size="12" fill="#475569">公開後は Vercel</text>
+<rect x="272" y="78" width="176" height="68" rx="8" fill="#ffffff" stroke="#fdba74" stroke-width="1.5"/>
+<text x="360" y="99" text-anchor="middle" font-size="13" font-weight="700" fill="#c2410c">Server Component</text>
+<text x="360" y="118" text-anchor="middle" font-size="12" fill="#334155">データ取得・HTML 作り</text>
+<text x="360" y="136" text-anchor="middle" font-size="12" fill="#334155">何も書かなければこちら</text>
+<rect x="272" y="156" width="176" height="58" rx="8" fill="#ffffff" stroke="#fdba74" stroke-width="1.5" stroke-dasharray="5 3"/>
+<text x="360" y="178" text-anchor="middle" font-size="12" fill="#334155">console.log の出力先</text>
+<text x="360" y="200" text-anchor="middle" font-size="13" font-weight="700" fill="#c2410c">ターミナル（npm run dev）</text>
+<rect x="505" y="12" width="200" height="214" rx="12" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="605" y="36" text-anchor="middle" font-size="15" font-weight="700" fill="#047857">Supabase</text>
+<text x="605" y="56" text-anchor="middle" font-size="12" fill="#475569">インターネット上のサービス</text>
+<rect x="517" y="78" width="176" height="42" rx="8" fill="#ffffff" stroke="#6ee7b7" stroke-width="1.5"/>
+<text x="605" y="96" text-anchor="middle" font-size="13" font-weight="700" fill="#047857">REST API</text>
+<text x="605" y="113" text-anchor="middle" font-size="12" fill="#334155">自動で作られる窓口</text>
+<rect x="517" y="128" width="176" height="42" rx="8" fill="#ffffff" stroke="#6ee7b7" stroke-width="1.5"/>
+<text x="605" y="146" text-anchor="middle" font-size="13" font-weight="700" fill="#047857">PostgreSQL</text>
+<text x="605" y="163" text-anchor="middle" font-size="12" fill="#334155">books テーブル</text>
+<rect x="517" y="178" width="176" height="36" rx="8" fill="#ffffff" stroke="#6ee7b7" stroke-width="1.5"/>
+<text x="605" y="201" text-anchor="middle" font-size="12" fill="#334155">認証（ログイン）</text>
+<text x="237" y="94" text-anchor="middle" font-size="12" fill="#475569">依頼</text>
+<line x1="217" y1="102" x2="257" y2="102" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-11)"/>
+<text x="237" y="124" text-anchor="middle" font-family="Consolas, monospace" font-size="12" fill="#475569">HTML</text>
+<line x1="258" y1="132" x2="218" y2="132" stroke="#475569" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#ar-00-11)"/>
+<text x="482" y="94" text-anchor="middle" font-size="12" fill="#475569">取得</text>
+<line x1="462" y1="102" x2="502" y2="102" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-11)"/>
+<text x="482" y="124" text-anchor="middle" font-size="12" fill="#475569">データ</text>
+<line x1="503" y1="132" x2="463" y2="132" stroke="#475569" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#ar-00-11)"/>
+<path d="M115,226 V256 H605 V229" fill="none" stroke="#475569" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#ar-00-11)"/>
+<text x="360" y="248" text-anchor="middle" font-size="12" fill="#475569">ブラウザから直接 Supabase を呼ぶ道もある</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図0-11: どのコードがどこで動くか。Next.js のコードは「ブラウザで動く部品」と「サーバーで動く部品」に分かれ、console.log の出力先もそれぞれ違います</div>
+</div>
+
+> **用語:** **開発者ツール（DevTools、デブツールズ）** … ブラウザに付いている「中身をのぞく道具」です。Chrome や Edge では `F12` キー（Mac は `⌘ + Option + I`）で開き、「Console（コンソール）」タブに、ブラウザで動いたコードの `console.log` が表示されます。
+
+> **つまずきポイント:** 「`console.log` を書いたのに、どこにも出てこない」——Next.js では、そのコードが**サーバーで動くか、ブラウザで動くか**によって、`console.log` の出力先が変わります。探す場所をまちがえているだけ、ということがとても多いです（第4章で実際に試します。ここでは読むだけで OK です）。
+
+**サーバーで動く例:** `"use client"` が無いファイル（Server Component）
+
+```tsx
+// app/page.tsx … "use client" が無いので Server Component（サーバーで動く）
+export default function Page() {
+  // この出力は「npm run dev を動かしているターミナル」に出る
+  console.log("ページを作りました");
+  return <p>こんにちは</p>;
+}
+```
+
+**ブラウザで動く例:** 先頭に `"use client"` があるファイル（Client Component）
+
+```tsx
+"use client";
+
+// "use client" を先頭に書いたので Client Component（ブラウザで動く）
+export default function LikeButton() {
+  function handleClick() {
+    // この出力は「ブラウザの開発者ツールの Console」に出る
+    console.log("ボタンが押されました");
+  }
+  return <button onClick={handleClick}>いいね</button>;
+}
+```
+
+- **NG:** サーバーで動くコードの出力を、ブラウザの開発者ツールだけで探し続ける（本番環境では、そこには出てきません）
+- **OK:** サーバーで動くコード → **ターミナル** を見る。ブラウザで動くコード → **開発者ツールの Console** を見る。
+- 開発中は、サーバー側の出力がブラウザの Console にも「Server」という印つきで表示されることがあります。それでも「本来の出力先はターミナル」と覚えておくと混乱しません。
 
 ---
 
@@ -402,6 +1583,104 @@ Webの世界では、「お願いする側」と「応える側」の2つの役�
   </div>
 </div>
 
+### 画面のつながり（画面遷移）
+
+完成したアプリでは、4種類の画面を行き来します。ブラウザのアドレスバーに表示される URL（パス）にも注目してください。**URL のパスが変わると、表示される画面が変わる**——これが第4章で学ぶ **ルーティング** の考え方です。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 330" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-00-12" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="20" y="20" width="300" height="130" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+<path d="M20,28 a8,8 0 0 1 8,-8 h284 a8,8 0 0 1 8,8 v18 h-300 z" fill="#e2e8f0"/>
+<circle cx="32" cy="33" r="4" fill="#ef4444"/>
+<circle cx="44" cy="33" r="4" fill="#f59e0b"/>
+<circle cx="56" cy="33" r="4" fill="#10b981"/>
+<rect x="70" y="24" width="242" height="18" rx="9" fill="#ffffff"/>
+<text x="80" y="37.5" font-family="Consolas, monospace" font-size="12" fill="#334155">localhost:3000/books</text>
+<rect x="30" y="52" width="280" height="20" rx="4" fill="#3b82f6"/>
+<text x="38" y="66.5" font-size="12" font-weight="700" fill="#ffffff">書籍一覧</text>
+<text x="302" y="66.5" text-anchor="end" font-size="12" fill="#ffffff">＋ 新規登録</text>
+<rect x="30" y="76" width="280" height="20" rx="4" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="38" y="90.5" font-size="12" fill="#1e293b">リーダブルコード</text>
+<rect x="256" y="78" width="46" height="16" rx="8" fill="#dcfce7"/>
+<text x="279" y="90.5" text-anchor="middle" font-size="12" fill="#166534">読了</text>
+<rect x="30" y="100" width="280" height="20" rx="4" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="38" y="114.5" font-size="12" fill="#1e293b">達人プログラマー</text>
+<rect x="256" y="102" width="46" height="16" rx="8" fill="#dbeafe"/>
+<text x="279" y="114.5" text-anchor="middle" font-size="12" fill="#1e40af">読書中</text>
+<rect x="30" y="124" width="280" height="20" rx="4" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="38" y="138.5" font-size="12" fill="#1e293b">こころ</text>
+<rect x="256" y="126" width="46" height="16" rx="8" fill="#fef3c7"/>
+<text x="279" y="138.5" text-anchor="middle" font-size="12" fill="#92400e">未読</text>
+<rect x="400" y="20" width="300" height="130" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+<path d="M400,28 a8,8 0 0 1 8,-8 h284 a8,8 0 0 1 8,8 v18 h-300 z" fill="#e2e8f0"/>
+<circle cx="412" cy="33" r="4" fill="#ef4444"/>
+<circle cx="424" cy="33" r="4" fill="#f59e0b"/>
+<circle cx="436" cy="33" r="4" fill="#10b981"/>
+<rect x="450" y="24" width="242" height="18" rx="9" fill="#ffffff"/>
+<text x="460" y="37.5" font-family="Consolas, monospace" font-size="12" fill="#334155">localhost:3000/books/new</text>
+<rect x="410" y="52" width="280" height="20" rx="4" fill="#3b82f6"/>
+<text x="418" y="66.5" font-size="12" font-weight="700" fill="#ffffff">新規登録</text>
+<text x="418" y="90" font-size="12" fill="#334155">タイトル</text>
+<rect x="480" y="78" width="210" height="17" rx="3" fill="#ffffff" stroke="#cbd5e1"/>
+<text x="418" y="114" font-size="12" fill="#334155">著者</text>
+<rect x="480" y="102" width="210" height="17" rx="3" fill="#ffffff" stroke="#cbd5e1"/>
+<rect x="516" y="125" width="84" height="20" rx="4" fill="#ffffff" stroke="#cbd5e1"/>
+<text x="558" y="139.5" text-anchor="middle" font-size="12" fill="#64748b">キャンセル</text>
+<rect x="606" y="125" width="84" height="20" rx="4" fill="#3b82f6"/>
+<text x="648" y="139.5" text-anchor="middle" font-size="12" fill="#ffffff">保存する</text>
+<rect x="20" y="190" width="300" height="130" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+<path d="M20,198 a8,8 0 0 1 8,-8 h284 a8,8 0 0 1 8,8 v18 h-300 z" fill="#e2e8f0"/>
+<circle cx="32" cy="203" r="4" fill="#ef4444"/>
+<circle cx="44" cy="203" r="4" fill="#f59e0b"/>
+<circle cx="56" cy="203" r="4" fill="#10b981"/>
+<rect x="70" y="194" width="242" height="18" rx="9" fill="#ffffff"/>
+<text x="80" y="207.5" font-family="Consolas, monospace" font-size="12" fill="#334155">localhost:3000/books/[id]</text>
+<rect x="30" y="222" width="280" height="20" rx="4" fill="#3b82f6"/>
+<text x="38" y="236.5" font-size="12" font-weight="700" fill="#ffffff">書籍詳細</text>
+<text x="38" y="263" font-size="14" font-weight="700" fill="#1e293b">リーダブルコード</text>
+<text x="38" y="283" font-size="12" fill="#475569">著者: Dustin Boswell ／ 読了</text>
+<rect x="136" y="293" width="84" height="20" rx="4" fill="#3b82f6"/>
+<text x="178" y="307.5" text-anchor="middle" font-size="12" fill="#ffffff">編集する</text>
+<rect x="226" y="293" width="84" height="20" rx="4" fill="#ef4444"/>
+<text x="268" y="307.5" text-anchor="middle" font-size="12" fill="#ffffff">削除する</text>
+<rect x="400" y="190" width="300" height="130" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+<path d="M400,198 a8,8 0 0 1 8,-8 h284 a8,8 0 0 1 8,8 v18 h-300 z" fill="#e2e8f0"/>
+<circle cx="412" cy="203" r="4" fill="#ef4444"/>
+<circle cx="424" cy="203" r="4" fill="#f59e0b"/>
+<circle cx="436" cy="203" r="4" fill="#10b981"/>
+<rect x="450" y="194" width="242" height="18" rx="9" fill="#ffffff"/>
+<text x="460" y="207.5" font-family="Consolas, monospace" font-size="12" fill="#334155">localhost:3000/books/[id]/edit</text>
+<rect x="410" y="222" width="280" height="20" rx="4" fill="#3b82f6"/>
+<text x="418" y="236.5" font-size="12" font-weight="700" fill="#ffffff">書籍の編集</text>
+<text x="418" y="260" font-size="12" fill="#334155">タイトル</text>
+<rect x="480" y="248" width="210" height="17" rx="3" fill="#ffffff" stroke="#cbd5e1"/>
+<text x="486" y="261" font-size="12" fill="#1e293b">リーダブルコード</text>
+<text x="418" y="284" font-size="12" fill="#334155">著者</text>
+<rect x="480" y="272" width="210" height="17" rx="3" fill="#ffffff" stroke="#cbd5e1"/>
+<text x="486" y="285" font-size="12" fill="#1e293b">Dustin Boswell</text>
+<rect x="606" y="295" width="84" height="20" rx="4" fill="#3b82f6"/>
+<text x="648" y="309.5" text-anchor="middle" font-size="12" fill="#ffffff">更新する</text>
+<text x="360" y="55" text-anchor="middle" font-size="12" fill="#1e40af">新規登録</text>
+<line x1="322" y1="62" x2="397" y2="62" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-12)"/>
+<line x1="398" y1="104" x2="323" y2="104" stroke="#475569" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#ar-00-12)"/>
+<text x="360" y="121" text-anchor="middle" font-size="12" fill="#1e40af">保存</text>
+<line x1="110" y1="152" x2="110" y2="187" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-12)"/>
+<text x="118" y="175" font-size="12" fill="#1e40af">カードを押す</text>
+<line x1="240" y1="187" x2="240" y2="152" stroke="#475569" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#ar-00-12)"/>
+<text x="248" y="175" font-size="12" fill="#1e40af">削除・戻る</text>
+<text x="360" y="225" text-anchor="middle" font-size="12" fill="#1e40af">編集する</text>
+<line x1="322" y1="232" x2="397" y2="232" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-12)"/>
+<line x1="398" y1="274" x2="323" y2="274" stroke="#475569" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#ar-00-12)"/>
+<text x="360" y="291" text-anchor="middle" font-size="12" fill="#1e40af">更新</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図0-12: 完成アプリの4つの画面と、画面どうしのつながり（画面イメージ）。アドレスバーの URL が、画面ごとに変わることに注目してください</div>
+</div>
+
+> **用語:** 図の `/books/[id]` の **`[id]`** は、「ここには本ごとの番号（ID）が入る」という意味の目印です。実際には `/books/123` のように、その本の ID が入った URL になります（本書のアプリの ID は、もっと長い英数字の文字列です）。
+
 ### 主な機能
 
 - **一覧表示**: 登録した書籍をリスト形式で表示
@@ -409,6 +1688,141 @@ Webの世界では、「お願いする側」と「応える側」の2つの役�
 - **編集**: 登録済みの書籍情報を変更
 - **削除**: 不要な書籍データを削除
 - **検索**: タイトルや著者名で書籍を絞り込み
+
+#### 主な機能を「ミニチュア」で体験する
+
+> **▼ このコードがやること（先に日本語で）:** 書籍管理アプリの心臓部である「登録・一覧・更新・削除（CRUD）」を、データベースの代わりにただの配列を使って再現します。本物のアプリでは、この配列の部分が Supabase のデータベースに置き換わるだけで、やっていることの考え方は同じです。
+
+```typescript
+// 1冊の本が持つ情報の形（型）
+type Book = {
+  id: number;
+  title: string;
+  status: string;
+};
+
+// データベースの代わりに、ただの配列を「本棚」として使う
+let books: Book[] = [];
+// 次に登録する本に付ける番号
+let nextId = 1;
+
+// C: Create（作成）… 新しい本を本棚に追加する
+function createBook(title: string): void {
+  books.push({ id: nextId, title: title, status: "unread" });
+  nextId = nextId + 1;
+}
+
+// R: Read（読み取り）… 本棚の中身を全部表示する
+function listBooks(): void {
+  for (const b of books) {
+    console.log(`  ${b.id}: ${b.title} [${b.status}]`);
+  }
+}
+
+// U: Update（更新）… 指定した番号の本の状態を書き換える
+function updateStatus(id: number, status: string): void {
+  const target = books.find((b) => b.id === id);
+  if (target) {
+    target.status = status;
+  }
+}
+
+// D: Delete（削除）… 指定した番号「以外」の本だけを残す
+function deleteBook(id: number): void {
+  books = books.filter((b) => b.id !== id);
+}
+
+createBook("リーダブルコード");
+createBook("達人プログラマー");
+console.log("① 2冊を登録した直後");
+listBooks();
+
+updateStatus(1, "finished");
+console.log("② 1番を読了(finished)にした後");
+listBooks();
+
+deleteBook(2);
+console.log("③ 2番を削除した後");
+listBooks();
+```
+
+**▼ 実行するコマンド**（`crud.ts` という名前で保存したフォルダで）
+
+```bash
+node crud.ts
+```
+
+**▼ 実行結果**
+
+```text
+① 2冊を登録した直後
+  1: リーダブルコード [unread]
+  2: 達人プログラマー [unread]
+② 1番を読了(finished)にした後
+  1: リーダブルコード [finished]
+  2: 達人プログラマー [unread]
+③ 2番を削除した後
+  1: リーダブルコード [finished]
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: 配列を「本棚」として使う
+
+```typescript
+let books: Book[] = [];
+let nextId = 1;
+```
+
+- `[]` は空っぽの配列です。ここに本を入れていきます。本物のアプリでは、これが Supabase のデータベースにある `books` テーブルにあたります。
+- `let` は「あとで中身を入れ替えられる変数」です（`const` は入れ替え不可）。削除のときに配列ごと入れ替えるので、`let` にしています。
+- `nextId` は、次に登録する本に付ける番号です。本物のデータベースでは、ID は自動で付けてくれます。
+
+##### 解説2: Create — push で追加する
+
+```typescript
+function createBook(title: string): void {
+  books.push({ id: nextId, title: title, status: "unread" });
+  nextId = nextId + 1;
+}
+```
+
+- `books.push(...)` で、配列の最後に本を1冊追加します。登録したばかりの本の状態は `"unread"`（未読）です。
+- 戻り値の型の `void`（ボイド）は、「この関数は何も返さない」という意味です。
+
+##### 解説3: Read — for...of で全部表示する
+
+```typescript
+function listBooks(): void {
+  for (const b of books) {
+    console.log(`  ${b.id}: ${b.title} [${b.status}]`);
+  }
+}
+```
+
+- 本棚の本を1冊ずつ取り出して表示します。アプリでは、これが「一覧画面」にあたります。
+
+##### 解説4: Update — find で探して書き換える
+
+```typescript
+const target = books.find((b) => b.id === id);
+if (target) {
+  target.status = status;
+}
+```
+
+- `books.find(条件)` は、条件に合う最初の1冊を探します。`(b) => b.id === id` は「本 `b` の id が、指定された id と等しい」という条件を表す小さな関数（アロー関数）です。
+- 見つからなかったときは `undefined`（何もない）が返るので、`if (target)` で「見つかったときだけ」書き換えます。
+
+##### 解説5: Delete — filter で「それ以外」を残す
+
+```typescript
+books = books.filter((b) => b.id !== id);
+```
+
+- `filter(条件)` は、「条件に合うものだけを集めた新しい配列」を作ります。`!==` は「等しくない」なので、「指定した id **以外**の本」だけが残り、結果として指定した本が消えます。
+
+> **ヒント:** `find` や `filter`、`=>` を使った書き方は第2章でじっくり練習します。今は「CRUD の4つの操作は、データの入れ物に対する **追加・表示・書き換え・削除** なんだ」とつかめれば十分です。本物のアプリでは、`books.push(...)` が Supabase の `insert`、`books.find(...)` が `select`、のように置き換わります。
 
 ---
 
@@ -430,8 +1844,8 @@ Webの世界では、「お願いする側」と「応える側」の2つの役�
   <div style="display: flex; align-items: center; margin-bottom: 4px;">
     <div style="width: 40px; text-align: center; font-size: 20px;">🔧</div>
     <div style="flex: 1; background: #e3f2fd; border-left: 4px solid #2196f3; border-radius: 0 8px 8px 0; padding: 12px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
-      <div style="font-weight: 700; color: #0d47a1; font-size: 14px;">第1章: 開発環境の構築</div>
-      <div style="font-size: 12px; color: #1565c0;">Node.js / VS Code / Git</div>
+      <div style="font-weight: 700; color: #0d47a1; font-size: 14px;">第1章: 開発環境のセットアップ</div>
+      <div style="font-size: 12px; color: #1565c0;">Node.js / VS Code / Git / ターミナルを準備する</div>
     </div>
   </div>
   <div style="text-align: center; color: #94a3b8; font-size: 18px; margin: 2px 0;">↓</div>
@@ -439,7 +1853,7 @@ Webの世界では、「お願いする側」と「応える側」の2つの役�
   <div style="display: flex; align-items: center; margin-bottom: 4px;">
     <div style="width: 40px; text-align: center; font-size: 20px;">📝</div>
     <div style="flex: 1; background: #e3f2fd; border-left: 4px solid #2196f3; border-radius: 0 8px 8px 0; padding: 12px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
-      <div style="font-weight: 700; color: #0d47a1; font-size: 14px;">第2章: TypeScript入門</div>
+      <div style="font-weight: 700; color: #0d47a1; font-size: 14px;">第2章: TypeScript の基礎</div>
       <div style="font-size: 12px; color: #1565c0;">型の基本を学ぶ</div>
     </div>
   </div>
@@ -448,76 +1862,146 @@ Webの世界では、「お願いする側」と「応える側」の2つの役�
   <div style="display: flex; align-items: center; margin-bottom: 4px;">
     <div style="width: 40px; text-align: center; font-size: 20px;">⚛️</div>
     <div style="flex: 1; background: #e3f2fd; border-left: 4px solid #2196f3; border-radius: 0 8px 8px 0; padding: 12px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
-      <div style="font-weight: 700; color: #0d47a1; font-size: 14px;">第3章: React入門</div>
-      <div style="font-size: 12px; color: #1565c0;">コンポーネントの考え方</div>
+      <div style="font-weight: 700; color: #0d47a1; font-size: 14px;">第3章: React の基礎</div>
+      <div style="font-size: 12px; color: #1565c0;">コンポーネント・State・イベントの考え方</div>
     </div>
   </div>
   <div style="text-align: center; color: #94a3b8; font-size: 18px; margin: 2px 0;">↓</div>
   <!-- 第4章 -->
   <div style="display: flex; align-items: center; margin-bottom: 4px;">
     <div style="width: 40px; text-align: center; font-size: 20px;">🚀</div>
-    <div style="flex: 1; background: #fff3e0; border-left: 4px solid #ff9800; border-radius: 0 8px 8px 0; padding: 12px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
-      <div style="font-weight: 700; color: #e65100; font-size: 14px;">第4章: Next.jsプロジェクト作成</div>
-      <div style="font-size: 12px; color: #ef6c00;">プロジェクトの雛形を作る</div>
+    <div style="flex: 1; background: #e3f2fd; border-left: 4px solid #2196f3; border-radius: 0 8px 8px 0; padding: 12px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
+      <div style="font-weight: 700; color: #0d47a1; font-size: 14px;">第4章: Next.js の基礎</div>
+      <div style="font-size: 12px; color: #1565c0;">App Router・Server / Client Components</div>
     </div>
   </div>
   <div style="text-align: center; color: #94a3b8; font-size: 18px; margin: 2px 0;">↓</div>
   <!-- 第5章 -->
   <div style="display: flex; align-items: center; margin-bottom: 4px;">
-    <div style="width: 40px; text-align: center; font-size: 20px;">🎨</div>
+    <div style="width: 40px; text-align: center; font-size: 20px;">🗄️</div>
     <div style="flex: 1; background: #fff3e0; border-left: 4px solid #ff9800; border-radius: 0 8px 8px 0; padding: 12px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
-      <div style="font-weight: 700; color: #e65100; font-size: 14px;">第5章: UIの構築</div>
-      <div style="font-size: 12px; color: #ef6c00;">画面のレイアウトを作る</div>
+      <div style="font-weight: 700; color: #e65100; font-size: 14px;">第5章: Supabase セットアップとデータベース設計</div>
+      <div style="font-size: 12px; color: #ef6c00;">データベースを準備する</div>
     </div>
   </div>
   <div style="text-align: center; color: #94a3b8; font-size: 18px; margin: 2px 0;">↓</div>
   <!-- 第6章 -->
   <div style="display: flex; align-items: center; margin-bottom: 4px;">
-    <div style="width: 40px; text-align: center; font-size: 20px;">🗄️</div>
-    <div style="flex: 1; background: #fce4ec; border-left: 4px solid #e91e63; border-radius: 0 8px 8px 0; padding: 12px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
-      <div style="font-weight: 700; color: #880e4f; font-size: 14px;">第6章: Supabaseのセットアップ</div>
-      <div style="font-size: 12px; color: #ad1457;">データベースを準備する</div>
+    <div style="width: 40px; text-align: center; font-size: 20px;">🏗️</div>
+    <div style="flex: 1; background: #fff3e0; border-left: 4px solid #ff9800; border-radius: 0 8px 8px 0; padding: 12px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
+      <div style="font-weight: 700; color: #e65100; font-size: 14px;">第6章: プロジェクトセットアップ</div>
+      <div style="font-size: 12px; color: #ef6c00;">書籍管理アプリの土台を作る</div>
     </div>
   </div>
   <div style="text-align: center; color: #94a3b8; font-size: 18px; margin: 2px 0;">↓</div>
   <!-- 第7章 -->
   <div style="display: flex; align-items: center; margin-bottom: 4px;">
-    <div style="width: 40px; text-align: center; font-size: 20px;">🔄</div>
+    <div style="width: 40px; text-align: center; font-size: 20px;">📋</div>
     <div style="flex: 1; background: #fce4ec; border-left: 4px solid #e91e63; border-radius: 0 8px 8px 0; padding: 12px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
-      <div style="font-weight: 700; color: #880e4f; font-size: 14px;">第7章: CRUD操作の実装</div>
-      <div style="font-size: 12px; color: #ad1457;">データの作成・読取・更新・削除</div>
+      <div style="font-weight: 700; color: #880e4f; font-size: 14px;">第7章: 一覧表示と登録機能</div>
+      <div style="font-size: 12px; color: #ad1457;">CRUD の Read と Create</div>
     </div>
   </div>
   <div style="text-align: center; color: #94a3b8; font-size: 18px; margin: 2px 0;">↓</div>
   <!-- 第8章 -->
   <div style="display: flex; align-items: center; margin-bottom: 4px;">
-    <div style="width: 40px; text-align: center; font-size: 20px;">🔍</div>
-    <div style="flex: 1; background: #f3e5f5; border-left: 4px solid #9c27b0; border-radius: 0 8px 8px 0; padding: 12px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
-      <div style="font-weight: 700; color: #4a148c; font-size: 14px;">第8章: 検索・フィルタ機能</div>
-      <div style="font-size: 12px; color: #6a1b9a;">使いやすさを向上させる</div>
+    <div style="width: 40px; text-align: center; font-size: 20px;">✏️</div>
+    <div style="flex: 1; background: #fce4ec; border-left: 4px solid #e91e63; border-radius: 0 8px 8px 0; padding: 12px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
+      <div style="font-weight: 700; color: #880e4f; font-size: 14px;">第8章: 編集・削除・詳細表示</div>
+      <div style="font-size: 12px; color: #ad1457;">CRUD の Update と Delete、検索・並び替え</div>
     </div>
   </div>
   <div style="text-align: center; color: #94a3b8; font-size: 18px; margin: 2px 0;">↓</div>
   <!-- 第9章 -->
   <div style="display: flex; align-items: center; margin-bottom: 4px;">
+    <div style="width: 40px; text-align: center; font-size: 20px;">🎨</div>
+    <div style="flex: 1; background: #f3e5f5; border-left: 4px solid #9c27b0; border-radius: 0 8px 8px 0; padding: 12px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
+      <div style="font-weight: 700; color: #4a148c; font-size: 14px;">第9章: スタイリング & UI ポリッシュ</div>
+      <div style="font-size: 12px; color: #6a1b9a;">見た目と使いやすさを仕上げる</div>
+    </div>
+  </div>
+  <div style="text-align: center; color: #94a3b8; font-size: 18px; margin: 2px 0;">↓</div>
+  <!-- 第10章 -->
+  <div style="display: flex; align-items: center; margin-bottom: 4px;">
     <div style="width: 40px; text-align: center; font-size: 20px;">🌐</div>
     <div style="flex: 1; background: #f3e5f5; border-left: 4px solid #9c27b0; border-radius: 0 8px 8px 0; padding: 12px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
-      <div style="font-weight: 700; color: #4a148c; font-size: 14px;">第9章: デプロイ</div>
-      <div style="font-size: 12px; color: #6a1b9a;">アプリを公開する</div>
+      <div style="font-weight: 700; color: #4a148c; font-size: 14px;">第10章: デプロイと総まとめ</div>
+      <div style="font-size: 12px; color: #6a1b9a;">アプリをインターネットに公開する</div>
     </div>
   </div>
   <div style="text-align: center; color: #94a3b8; font-size: 18px; margin: 2px 0;">↓</div>
   <!-- 完成 -->
-  <div style="display: flex; align-items: center;">
+  <div style="display: flex; align-items: center; margin-bottom: 4px;">
     <div style="width: 40px; text-align: center; font-size: 20px;">🎉</div>
     <div style="flex: 1; background: #fffde7; border-left: 4px solid #fdd835; border-radius: 0 8px 8px 0; padding: 12px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
       <div style="font-weight: 700; color: #f57f17; font-size: 14px;">完成！</div>
       <div style="font-size: 12px; color: #f9a825;">書籍管理アプリの完成です。おめでとうございます！</div>
     </div>
   </div>
+  <div style="text-align: center; color: #94a3b8; font-size: 18px; margin: 2px 0;">↓</div>
+  <!-- 第11章 -->
+  <div style="display: flex; align-items: center;">
+    <div style="width: 40px; text-align: center; font-size: 20px;">🤖</div>
+    <div style="flex: 1; background: #eceff1; border-left: 4px solid #607d8b; border-radius: 0 8px 8px 0; padding: 12px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
+      <div style="font-weight: 700; color: #263238; font-size: 14px;">第11章: Claude Code × Next.js バイブコーディング（発展）</div>
+      <div style="font-size: 12px; color: #455a64;">AI と一緒に、さらに機能を足していく</div>
+    </div>
+  </div>
 </div>
 
 各章の目安学習時間は **30分〜1時間程度** です。全体を通して、**約1〜2週間** で完走できる構成になっています。
+
+11 の章は、大きく4つのフェーズ（段階）に分けられます。どのフェーズで何ができるようになるのかを先に知っておくと、「今なぜこれを学んでいるのか」が分かりやすくなります。第1〜4章は少し地味に感じるかもしれませんが、第5章からのアプリ作りを支える「基礎体力」の期間です。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 240" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-00-13" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<text x="15" y="22" font-size="13" font-weight="700" fill="#1e293b">▼ スタート: 第0章（今ここ）</text>
+<rect x="15" y="34" width="155" height="116" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<path d="M15,44 a10,10 0 0 1 10,-10 h135 a10,10 0 0 1 10,10 v22 h-155 z" fill="#1e40af"/>
+<text x="92" y="56" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">フェーズ1 基礎体力</text>
+<text x="92" y="88" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">第1〜4章</text>
+<text x="92" y="110" text-anchor="middle" font-size="12" fill="#334155">環境・TypeScript</text>
+<text x="92" y="128" text-anchor="middle" font-size="12" fill="#334155">React・Next.js</text>
+<rect x="190" y="34" width="155" height="116" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<path d="M190,44 a10,10 0 0 1 10,-10 h135 a10,10 0 0 1 10,10 v22 h-155 z" fill="#c2410c"/>
+<text x="267" y="56" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">フェーズ2 アプリ制作</text>
+<text x="267" y="88" text-anchor="middle" font-size="13" font-weight="700" fill="#c2410c">第5〜8章</text>
+<text x="267" y="110" text-anchor="middle" font-size="12" fill="#334155">DB 設計・土台づくり</text>
+<text x="267" y="128" text-anchor="middle" font-size="12" fill="#334155">一覧・登録・編集・削除</text>
+<rect x="365" y="34" width="155" height="116" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<path d="M365,44 a10,10 0 0 1 10,-10 h135 a10,10 0 0 1 10,10 v22 h-155 z" fill="#047857"/>
+<text x="442" y="56" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">フェーズ3 仕上げと公開</text>
+<text x="442" y="88" text-anchor="middle" font-size="13" font-weight="700" fill="#047857">第9〜10章</text>
+<text x="442" y="110" text-anchor="middle" font-size="12" fill="#334155">見た目を整える</text>
+<text x="442" y="128" text-anchor="middle" font-size="12" fill="#334155">インターネットに公開</text>
+<rect x="540" y="34" width="155" height="116" rx="10" fill="#f8fafc" stroke="#64748b" stroke-width="2"/>
+<path d="M540,44 a10,10 0 0 1 10,-10 h135 a10,10 0 0 1 10,10 v22 h-155 z" fill="#475569"/>
+<text x="617" y="56" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">フェーズ4 発展</text>
+<text x="617" y="88" text-anchor="middle" font-size="13" font-weight="700" fill="#475569">第11章</text>
+<text x="617" y="110" text-anchor="middle" font-size="12" fill="#334155">Claude Code と</text>
+<text x="617" y="128" text-anchor="middle" font-size="12" fill="#334155">AI 協働で開発</text>
+<line x1="172" y1="92" x2="188" y2="92" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-13)"/>
+<line x1="347" y1="92" x2="363" y2="92" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-13)"/>
+<line x1="522" y1="92" x2="538" y2="92" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-13)"/>
+<text x="15" y="176" font-size="12" font-weight="700" fill="#475569">できるようになること</text>
+<rect x="15" y="184" width="155" height="46" rx="8" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="92" y="203" text-anchor="middle" font-size="12" fill="#1e293b">コードを読んで</text>
+<text x="92" y="221" text-anchor="middle" font-size="12" fill="#1e293b">小さく動かせる</text>
+<rect x="190" y="184" width="155" height="46" rx="8" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="267" y="203" text-anchor="middle" font-size="12" fill="#1e293b">本の登録・一覧・</text>
+<text x="267" y="221" text-anchor="middle" font-size="12" fill="#1e293b">編集・削除ができる</text>
+<rect x="365" y="184" width="155" height="46" rx="8" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="442" y="203" text-anchor="middle" font-size="12" fill="#1e293b">URL を送れば</text>
+<text x="442" y="221" text-anchor="middle" font-size="12" fill="#1e293b">誰でも使える</text>
+<rect x="540" y="184" width="155" height="46" rx="8" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="617" y="203" text-anchor="middle" font-size="12" fill="#1e293b">AI に頼んで</text>
+<text x="617" y="221" text-anchor="middle" font-size="12" fill="#1e293b">機能を足せる</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図0-13: 学習ロードマップを4つのフェーズに分けた図。下の段は、各フェーズを終えたときにできるようになることです</div>
+</div>
 
 ---
 
@@ -537,6 +2021,60 @@ Webの世界では、「お願いする側」と「応える側」の2つの役�
 | **VS Code** | 最新版 | コードエディタ（IDE：統合開発環境に近い高機能エディタ） | コードを書くためのエディタ。Microsoft社が開発。豊富な拡張機能が利用可能 |
 
 > **「バージョン」って何？** ソフトウェアは改良されるたびに番号が振り直されます。「5.x」と書いてあれば「メジャー番号が 5 の系列ならどの細かい版でも OK」という意味です。`x` の部分は「何でもいい」を表すワイルドカードです。表記は SemVer（セマンティックバージョニング、Semantic Versioning）と呼ばれ、`メジャー.マイナー.パッチ` の3階層が標準です。
+
+### 技術スタックの役割分担を図で見る
+
+表だけだとイメージしにくいので、**家づくり**にたとえて図にしてみます。Next.js が家の骨組み、React がその中にはめ込む部品、TypeScript は部品を作るときの材料の規格、Supabase は家の外にある倉庫、Vercel は家を建てる土地です。Node.js や VS Code は、家を建てるための大工道具にあたります。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 300" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-00-14" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="15" y="15" width="440" height="190" rx="12" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<text x="31" y="40" font-size="15" font-weight="700" fill="#c2410c">Next.js ＝ 家の骨組み</text>
+<text x="31" y="58" font-size="12" fill="#c2410c">ページと URL の対応・サーバーでの処理</text>
+<rect x="31" y="70" width="408" height="72" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="45" y="92" font-size="14" font-weight="700" fill="#1e40af">React ＝ 部品（ブロック）</text>
+<rect x="45" y="104" width="100" height="28" rx="6" fill="#ffffff" stroke="#93c5fd"/>
+<text x="95" y="123" text-anchor="middle" font-family="Consolas, monospace" font-size="13" fill="#1e40af">Header</text>
+<rect x="155" y="104" width="110" height="28" rx="6" fill="#ffffff" stroke="#93c5fd"/>
+<text x="210" y="123" text-anchor="middle" font-family="Consolas, monospace" font-size="13" fill="#1e40af">BookCard</text>
+<rect x="275" y="104" width="110" height="28" rx="6" fill="#ffffff" stroke="#93c5fd"/>
+<text x="330" y="123" text-anchor="middle" font-family="Consolas, monospace" font-size="13" fill="#1e40af">BookForm</text>
+<text x="408" y="123" text-anchor="middle" font-size="13" fill="#1e40af">…</text>
+<rect x="31" y="152" width="408" height="40" rx="8" fill="#dbeafe" stroke="#1e40af" stroke-width="1.5"/>
+<text x="235" y="177" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">TypeScript ＝ 材料の規格（型で間違いを防ぐ）</text>
+<rect x="505" y="15" width="200" height="190" rx="12" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="605" y="40" text-anchor="middle" font-size="15" font-weight="700" fill="#047857">Supabase ＝ 倉庫</text>
+<text x="605" y="58" text-anchor="middle" font-size="12" fill="#047857">データ置き場と鍵の管理</text>
+<rect x="519" y="70" width="172" height="36" rx="8" fill="#ffffff" stroke="#6ee7b7"/>
+<text x="605" y="93" text-anchor="middle" font-size="13" fill="#047857">PostgreSQL（データ）</text>
+<rect x="519" y="114" width="172" height="36" rx="8" fill="#ffffff" stroke="#6ee7b7"/>
+<text x="605" y="137" text-anchor="middle" font-size="13" fill="#047857">Auth（ログイン）</text>
+<rect x="519" y="158" width="172" height="36" rx="8" fill="#ffffff" stroke="#6ee7b7"/>
+<text x="605" y="181" text-anchor="middle" font-size="13" fill="#047857">REST API（窓口）</text>
+<line x1="457" y1="95" x2="502" y2="95" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-14)"/>
+<text x="480" y="116" text-anchor="middle" font-size="12" fill="#475569">データ</text>
+<line x1="503" y1="128" x2="458" y2="128" stroke="#475569" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#ar-00-14)"/>
+<rect x="15" y="222" width="440" height="66" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="6 4"/>
+<text x="31" y="244" font-size="13" font-weight="700" fill="#475569">道具箱（作るための道具）</text>
+<rect x="31" y="254" width="80" height="24" rx="12" fill="#ffffff" stroke="#94a3b8"/>
+<text x="71" y="271" text-anchor="middle" font-family="Consolas, monospace" font-size="12" fill="#334155">Node.js</text>
+<rect x="119" y="254" width="56" height="24" rx="12" fill="#ffffff" stroke="#94a3b8"/>
+<text x="147" y="271" text-anchor="middle" font-family="Consolas, monospace" font-size="12" fill="#334155">npm</text>
+<rect x="183" y="254" width="84" height="24" rx="12" fill="#ffffff" stroke="#94a3b8"/>
+<text x="225" y="271" text-anchor="middle" font-family="Consolas, monospace" font-size="12" fill="#334155">VS Code</text>
+<rect x="275" y="254" width="112" height="24" rx="12" fill="#ffffff" stroke="#94a3b8"/>
+<text x="331" y="271" text-anchor="middle" font-family="Consolas, monospace" font-size="12" fill="#334155">Git / GitHub</text>
+<rect x="505" y="222" width="200" height="66" rx="12" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="605" y="248" text-anchor="middle" font-size="14" font-weight="700" fill="#047857">Vercel ＝ 土地</text>
+<text x="605" y="270" text-anchor="middle" font-size="12" fill="#047857">完成品を公開する場所</text>
+<line x1="440" y1="207" x2="502" y2="238" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-14)"/>
+<text x="486" y="215" text-anchor="middle" font-size="12" fill="#475569">公開</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図0-14: 技術スタックの役割分担。Next.js の骨組みの中に React の部品をはめ込み、すべてを TypeScript で書きます。データは Supabase に置き、完成品は Vercel で公開します</div>
+</div>
 
 ### 各技術の概要
 
@@ -936,6 +2474,112 @@ Supabaseは、データベース（データの保管庫）やユーザー認証
 
 > **流れの読み方:** ステップ1〜5は「ユーザーから DB へ向かう登録リクエスト」、ステップ6〜10は「DB から画面へ戻ってくる応答」と覚えると分かりやすいです。`POST` はHTTPメソッドの一種で「新規作成」を意味します。`INSERT INTO books ...` はSQL（データベース操作言語）の構文で「books テーブルに行を追加」する命令です。
 
+### データは「JSON」という形で運ばれる
+
+上の流れのステップ4〜7で、書籍のデータはインターネットを通って運ばれます。このとき、プログラムの中のデータ（オブジェクト）はそのままでは運べないので、**JSON（ジェイソン、JavaScript Object Notation）** という「決まった書き方の文字列」に変換されてから送られます。手紙を封筒に入れて送り、受け取った人が封筒から出して読む、というイメージです。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 205" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-00-15" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<text x="105" y="30" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">送る側のオブジェクト</text>
+<text x="360" y="30" text-anchor="middle" font-size="13" font-weight="700" fill="#c2410c">通信中の JSON（文字列）</text>
+<text x="615" y="30" text-anchor="middle" font-size="13" font-weight="700" fill="#047857">受け取った側のオブジェクト</text>
+<rect x="15" y="42" width="180" height="120" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="27" y="66" font-family="Consolas, monospace" font-size="12" fill="#1e293b">{</text>
+<text x="39" y="84" font-family="Consolas, monospace" font-size="12" fill="#1e293b">title: "こころ",</text>
+<text x="39" y="102" font-family="Consolas, monospace" font-size="12" fill="#1e293b">author: "夏目漱石",</text>
+<text x="39" y="120" font-family="Consolas, monospace" font-size="12" fill="#1e293b">status: "finished"</text>
+<text x="27" y="138" font-family="Consolas, monospace" font-size="12" fill="#1e293b">}</text>
+<rect x="270" y="42" width="180" height="120" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<path d="M270,48 L360,84 L450,48" fill="none" stroke="#fdba74" stroke-width="2"/>
+<text x="282" y="108" font-family="Consolas, monospace" font-size="12" fill="#c2410c">{"title":"こころ",</text>
+<text x="282" y="126" font-family="Consolas, monospace" font-size="12" fill="#c2410c">"author":"夏目漱石",</text>
+<text x="282" y="144" font-family="Consolas, monospace" font-size="12" fill="#c2410c">"status":"finished"}</text>
+<rect x="525" y="42" width="180" height="120" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="537" y="66" font-family="Consolas, monospace" font-size="12" fill="#1e293b">{</text>
+<text x="549" y="84" font-family="Consolas, monospace" font-size="12" fill="#1e293b">title: "こころ",</text>
+<text x="549" y="102" font-family="Consolas, monospace" font-size="12" fill="#1e293b">author: "夏目漱石",</text>
+<text x="549" y="120" font-family="Consolas, monospace" font-size="12" fill="#1e293b">status: "finished"</text>
+<text x="537" y="138" font-family="Consolas, monospace" font-size="12" fill="#1e293b">}</text>
+<text x="232" y="94" text-anchor="middle" font-family="Consolas, monospace" font-size="12" fill="#1e40af">stringify</text>
+<line x1="199" y1="102" x2="266" y2="102" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-15)"/>
+<text x="232" y="120" text-anchor="middle" font-size="12" fill="#475569">文字列化</text>
+<text x="487" y="94" text-anchor="middle" font-family="Consolas, monospace" font-size="12" fill="#047857">parse</text>
+<line x1="454" y1="102" x2="521" y2="102" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-15)"/>
+<text x="487" y="120" text-anchor="middle" font-size="12" fill="#475569">元に戻す</text>
+<text x="360" y="192" text-anchor="middle" font-size="12" fill="#64748b">Supabase とのやり取りでは、この変換をライブラリが自動で行います</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図0-15: JSON の旅。送る側で JSON.stringify により文字列に変換し、受け取った側で JSON.parse により元のオブジェクトに戻します</div>
+</div>
+
+#### JSON への変換と、元に戻す変換を試す
+
+> **▼ このコードがやること（先に日本語で）:** 本のデータ（オブジェクト）を `JSON.stringify` で JSON の文字列に変換して表示し、その文字列を `JSON.parse` で元のオブジェクトに戻します。`typeof` を使って「本当に文字列になったか・オブジェクトに戻ったか」も確かめます。
+
+```typescript
+// プログラムの中で扱う「本」のデータ（オブジェクト）
+const book = {
+  title: "こころ",
+  author: "夏目漱石",
+  status: "finished",
+};
+
+// 通信で送れるように、オブジェクトを JSON という「ただの文字列」に変換する
+const json = JSON.stringify(book);
+console.log(json);
+// typeof は「この値の種類は何か」を調べる仕組み
+console.log(typeof json);
+
+// 受け取った側で、JSON の文字列を元のオブジェクトに戻す
+const received = JSON.parse(json);
+console.log(received.author);
+console.log(typeof received);
+```
+
+**▼ 実行するコマンド**（`json.ts` という名前で保存したフォルダで）
+
+```bash
+node json.ts
+```
+
+**▼ 実行結果**
+
+```text
+{"title":"こころ","author":"夏目漱石","status":"finished"}
+string
+夏目漱石
+object
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: JSON.stringify で文字列にする
+
+```typescript
+const json = JSON.stringify(book);
+console.log(json);
+console.log(typeof json);
+```
+
+- `JSON.stringify(オブジェクト)` は、オブジェクトを JSON の文字列に変換します（stringify ＝ 文字列にする）。
+- 結果を見ると、キー（`title` など）も `"` で囲まれ、全体が1行の文字の並びになっています。これが JSON の書き方のルールです。
+- `typeof json` が `string`（文字列）なので、本当に「ただの文字列」になったことが分かります。
+
+##### 解説2: JSON.parse で元に戻す
+
+```typescript
+const received = JSON.parse(json);
+console.log(received.author);
+console.log(typeof received);
+```
+
+- `JSON.parse(文字列)` は、JSON の文字列をオブジェクトに戻します（parse ＝ 解析する）。
+- オブジェクトに戻ったので、`received.author` のように `.` で中身を取り出せます。`typeof` も `object` になりました。
+
+> **ヒント:** Supabase とやり取りするときは、この変換を Supabase のライブラリ（`@supabase/supabase-js`）が自動でやってくれるので、自分で `JSON.stringify` を書くことはほとんどありません。それでも「裏ではこういう形で運ばれている」と知っておくと、ブラウザの開発者ツールで通信の中身をのぞいたときに読めるようになります。
+
 ---
 
 ## まとめ
@@ -949,6 +2593,8 @@ Supabaseは、データベース（データの保管庫）やユーザー認証
 - チュートリアルを始めるための **前提知識**
 - この教材で **学べること** の全体像
 - アプリの **アーキテクチャ**（全体構成）
+- ブラウザ・サーバー・URL・ポート・ターミナルといった **基本用語** と、小さなプログラムを `node` で動かす方法
+- エラーが出たときに **どこを読めばいいか**（`〇〇Error:` の行、ファイル名と行番号）と、よくあるつまずきの直し方
 
 > **準備はできましたか？** 次の章では、実際に開発環境を構築していきます。Node.jsやVS Codeのインストールから始めましょう！
 
@@ -963,13 +2609,200 @@ Supabaseは、データベース（データの保管庫）やユーザー認証
 プログラミングでは、エラーは**日常的に起こるもの**です。プロのエンジニアでも、毎日のようにエラーに遭遇しています。エラーメッセージは「ここが間違っているよ」と教えてくれるヒントなので、むしろ**ありがたい存在**です。
 
 > **エラーメッセージの読み方のコツ：** エラーメッセージは英語で表示されることがほとんどですが、慌てず以下の手順で対処しましょう。
-> 1. エラーメッセージの**最後の行**を読む（最も重要な情報が書かれていることが多い）
+> 1. エラーメッセージの中から **`〇〇Error:` で始まる行**を探して読む（最も重要な情報が書かれています。Python などのエラーでは最後の行に出ますが、Node.js / JavaScript のエラーでは上のほうに出て、最後の行はバージョン番号であることが多いので注意）
 > 2. メッセージをそのまま**Google で検索**する（同じエラーに遭遇した人の解決策が見つかります）
 > 3. このチュートリアルの**トラブルシューティング**（trouble shooting：問題解決）セクションを確認する
+
+#### エラーメッセージを実際に読んでみる
+
+> **▼ このコードがやること（先に日本語で）:** 本の値段と冊数から合計金額を計算するつもりのプログラムですが、変数名を1か所打ち間違えています（`price` を `prise` と書いた）。わざとエラーを出して、エラーメッセージのどこに何が書いてあるかを確かめます。
+
+```javascript
+// 本1冊の値段と、買う冊数
+const price = 1500;
+const count = 3;
+
+// 値段 × 冊数 で合計金額を計算する（ここに打ち間違いがある）
+const total = prise * count;
+
+console.log(`合計は ${total} 円です`);
+```
+
+**▼ 実行するコマンド**（`total.js` という名前で保存したフォルダで）
+
+```bash
+node total.js
+```
+
+**▼ 実行結果**（フォルダの場所の部分は、人によって異なります）
+
+```text
+C:\Users\taro\study\total.js:6
+const total = prise * count;
+              ^
+
+ReferenceError: prise is not defined
+    at Object.<anonymous> (C:\Users\taro\study\total.js:6:15)
+    at Module._compile (node:internal/modules/cjs/loader:1829:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1969:10)
+    at Module.load (node:internal/modules/cjs/loader:1552:32)
+    at Module._load (node:internal/modules/cjs/loader:1354:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v25.9.0
+```
+
+長くて英語ばかりなので身構えてしまいますが、部分ごとに色分けすると、読むべき所はほんの少しだと分かります。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 300" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<rect x="10" y="10" width="480" height="280" rx="10" fill="#0f172a"/>
+<path d="M10,20 a10,10 0 0 1 10,-10 h460 a10,10 0 0 1 10,10 v18 h-480 z" fill="#334155"/>
+<circle cx="30" cy="24" r="6" fill="#ef4444"/>
+<circle cx="50" cy="24" r="6" fill="#f59e0b"/>
+<circle cx="70" cy="24" r="6" fill="#10b981"/>
+<text x="250" y="29" text-anchor="middle" font-size="12" fill="#e2e8f0">Windows PowerShell</text>
+<text x="22" y="58" font-family="Consolas, monospace" font-size="12" fill="#34d399">PS C:\Users\taro\study&gt;</text>
+<text x="180" y="58" font-family="Consolas, monospace" font-size="12" fill="#ffffff">node total.js</text>
+<text x="22" y="80" font-family="Consolas, monospace" font-size="12" fill="#e2e8f0">C:\Users\taro\study\total.js:6</text>
+<text x="22" y="100" font-family="Consolas, monospace" font-size="12" fill="#e2e8f0">const total = prise * count;</text>
+<text x="114" y="118" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#fb923c">^</text>
+<text x="22" y="146" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#f87171">ReferenceError: prise is not defined</text>
+<text x="48" y="170" font-family="Consolas, monospace" font-size="12" fill="#94a3b8">at Object.&lt;anonymous&gt; (C:\Users\taro\study\total.js:6:15)</text>
+<text x="48" y="188" font-family="Consolas, monospace" font-size="12" fill="#94a3b8">at Module._compile (node:internal/…)</text>
+<text x="48" y="206" font-family="Consolas, monospace" font-size="12" fill="#94a3b8">at Module._extensions..js (node:internal/…)</text>
+<text x="48" y="224" font-family="Consolas, monospace" font-size="12" fill="#94a3b8">…（同じような at の行が続く）</text>
+<text x="22" y="262" font-family="Consolas, monospace" font-size="12" fill="#e2e8f0">Node.js v25.9.0</text>
+<circle cx="466" cy="76" r="10" fill="#f97316"/>
+<text x="466" y="80.5" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">1</text>
+<circle cx="466" cy="109" r="10" fill="#f97316"/>
+<text x="466" y="113.5" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">2</text>
+<circle cx="466" cy="142" r="10" fill="#dc2626"/>
+<text x="466" y="146.5" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">3</text>
+<circle cx="466" cy="196" r="10" fill="#64748b"/>
+<text x="466" y="200.5" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">4</text>
+<circle cx="466" cy="258" r="10" fill="#64748b"/>
+<text x="466" y="262.5" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">5</text>
+<circle cx="515" cy="76" r="10" fill="#f97316"/>
+<text x="515" y="80.5" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">1</text>
+<text x="532" y="80" font-size="13" font-weight="700" fill="#1e293b">ファイル名と行番号</text>
+<text x="532" y="97" font-size="12" fill="#475569">total.js の 6 行目</text>
+<circle cx="515" cy="109" r="10" fill="#f97316"/>
+<text x="515" y="113.5" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">2</text>
+<text x="532" y="113" font-size="13" font-weight="700" fill="#1e293b">問題の場所</text>
+<text x="532" y="130" font-size="12" fill="#475569">^ の真上あたり</text>
+<circle cx="515" cy="142" r="10" fill="#dc2626"/>
+<text x="515" y="146.5" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">3</text>
+<text x="532" y="146" font-size="13" font-weight="700" fill="#b91c1c">エラーの種類と理由</text>
+<text x="532" y="163" font-size="12" font-weight="700" fill="#b91c1c">★ ここを一番に読む</text>
+<circle cx="515" cy="196" r="10" fill="#64748b"/>
+<text x="515" y="200.5" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">4</text>
+<text x="532" y="200" font-size="13" font-weight="700" fill="#1e293b">通ってきた道すじ</text>
+<text x="532" y="217" font-size="12" fill="#475569">最初は読み飛ばして OK</text>
+<circle cx="515" cy="258" r="10" fill="#64748b"/>
+<text x="515" y="262.5" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">5</text>
+<text x="532" y="262" font-size="13" font-weight="700" fill="#1e293b">Node.js のバージョン</text>
+<text x="532" y="279" font-size="12" fill="#475569">エラーの原因ではない</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図0-16: エラーメッセージの読み方（画面イメージ）。まず③の「〇〇Error:」の行を読み、①②で場所を確かめます。④⑤は最初は気にしなくて大丈夫です</div>
+</div>
+
+#### ▼ エラーメッセージを1つずつ分解して解説
+
+##### 解説1: どのファイルの何行目か（①）
+
+```text
+C:\Users\taro\study\total.js:6
+```
+
+- 「`total.js` の **6 行目** でエラーが起きた」という意味です。VS Code で 6 行目を見に行きましょう（`Ctrl + G` を押して行番号を入れるとジャンプできます）。
+
+##### 解説2: 問題の場所（②）
+
+```text
+const total = prise * count;
+              ^
+```
+
+- 6 行目の中身がそのまま表示され、その下の `^`（キャレット）が問題の場所を指しています。ここでは `prise` の先頭を指しています。
+
+##### 解説3: エラーの種類と理由（③ 一番大事）
+
+```text
+ReferenceError: prise is not defined
+```
+
+- `:` の左が **エラーの種類**、右が **理由** です。`ReferenceError`（参照エラー）は「その名前のものが見つからない」、`prise is not defined` は「prise は定義されていない」という意味です。
+- 2 行目で作ったのは `price` なので、`prise` は打ち間違いだと分かります。
+
+##### 解説4: at で始まる行と、最後の行（④⑤）
+
+- `at ...` の行は、エラーが起きるまでにプログラムが通ってきた道すじ（**スタックトレース**と呼びます）です。`(…\total.js:6:15)` の `6:15` は「6 行目の 15 文字目」という意味です。自分のファイル名が出ている行以外は、最初は読み飛ばして構いません。
+- 最後の `Node.js v25.9.0` は、エラーの内容ではなく、使っている Node.js のバージョンです。
+
+**直したコード**（`prise` → `price`）と、その実行結果です。
+
+```javascript
+// 本1冊の値段と、買う冊数
+const price = 1500;
+const count = 3;
+
+// 値段 × 冊数 で合計金額を計算する（打ち間違いを直した）
+const total = price * count;
+
+console.log(`合計は ${total} 円です`);
+```
+
+```text
+合計は 4500 円です
+```
+
+> **つまずきポイント:** エラーメッセージの**最後の行だけ**を見て、「`Node.js v25.9.0` って何？ 何が悪いのか分からない」と迷ってしまう。Node.js のエラーでは、大事な `〇〇Error:` の行は上のほうにあり、最後の行はバージョン表示です。
+>
+> - **NG:** 最後の行だけを読む → `Node.js v25.9.0`（原因は書かれていない）
+> - **OK:** `Error:` を含む行を探して読む → `ReferenceError: prise is not defined`（原因が書かれている）
+>
+> なお、日本語（全角文字）を含む行では、`^` の位置が少し左右にずれて見えることがあります。そのときは `total.js:6:15` のような「行番号:文字目」の数字を頼りにしましょう。
 
 ### 写経（しゃきょう）から始めよう
 
 最初はコードの意味が完全に理解できなくても、**まずはサンプルコードをそのまま書き写してみましょう**（これを「写経」と呼びます）。手を動かすことで、自然と「こういうパターンなんだな」と体が覚えていきます。
+
+写経をしたら、そこで終わりにせず、**少しだけ変えて動かしてみる**のがおすすめです。わざと壊してエラーを読み、直してまた動かす——このサイクルを回すほど、「分かる」が増えていきます。この章の `hello.js` や `crud.ts` も、文字や数字を書き換えて遊んでみてください。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 250" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-00-17" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<ellipse cx="360" cy="128" rx="230" ry="92" fill="none" stroke="#e2e8f0" stroke-width="2" stroke-dasharray="4 6"/>
+<rect x="285" y="14" width="150" height="46" rx="23" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="360" y="34" text-anchor="middle" font-size="14" font-weight="700" fill="#1e40af">① 写経する</text>
+<text x="360" y="52" text-anchor="middle" font-size="12" fill="#334155">見本を書き写す</text>
+<rect x="510" y="78" width="150" height="46" rx="23" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="585" y="98" text-anchor="middle" font-size="14" font-weight="700" fill="#1e40af">② 実行する</text>
+<text x="585" y="116" text-anchor="middle" font-size="12" fill="#334155">結果を確かめる</text>
+<rect x="425" y="188" width="150" height="46" rx="23" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<text x="500" y="208" text-anchor="middle" font-size="14" font-weight="700" fill="#c2410c">③ 少し変える</text>
+<text x="500" y="226" text-anchor="middle" font-size="12" fill="#334155">文字や数字を変えてみる</text>
+<rect x="145" y="188" width="150" height="46" rx="23" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<text x="220" y="208" text-anchor="middle" font-size="14" font-weight="700" fill="#c2410c">④ エラーを読む</text>
+<text x="220" y="226" text-anchor="middle" font-size="12" fill="#334155">〇〇Error の行を探す</text>
+<rect x="60" y="78" width="150" height="46" rx="23" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="135" y="98" text-anchor="middle" font-size="14" font-weight="700" fill="#047857">⑤ 直して再実行</text>
+<text x="135" y="116" text-anchor="middle" font-size="12" fill="#334155">動いたら次へ進む</text>
+<line x1="436" y1="44" x2="522" y2="76" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-17)"/>
+<line x1="575" y1="126" x2="530" y2="185" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-17)"/>
+<line x1="423" y1="211" x2="298" y2="211" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-17)"/>
+<line x1="190" y1="186" x2="145" y2="127" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-17)"/>
+<line x1="198" y1="76" x2="283" y2="44" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-17)"/>
+<text x="360" y="120" text-anchor="middle" font-size="15" font-weight="700" fill="#1e293b">くり返すほど</text>
+<text x="360" y="142" text-anchor="middle" font-size="15" font-weight="700" fill="#1e293b">「分かる」が増えていく</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図0-17: 学習のサイクル。写経して動かしたら、少し変えて、エラーを読んで、直す。この1周ごとに理解が深まります</div>
+</div>
 
 ### 分からない箇所は飛ばしてOK
 
@@ -979,7 +2812,7 @@ Supabaseは、データベース（データの保管庫）やユーザー認証
 
 | 章 | テーマ | 目安時間 |
 |----|--------|---------|
-| 第0章 | はじめに（この章） | 15分 |
+| 第0章 | はじめに（この章） | 30〜45分（練習問題を含む） |
 | 第1章 | 開発環境の構築 | 30〜60分 |
 | 第2章 | TypeScript入門 | 45〜90分 |
 | 第3章 | React入門 | 60〜90分 |
@@ -990,6 +2823,7 @@ Supabaseは、データベース（データの保管庫）やユーザー認証
 | 第8章 | 編集・削除・検索 | 60〜90分 |
 | 第9章 | スタイリング・UI改善 | 45〜60分 |
 | 第10章 | デプロイ | 30〜45分 |
+| 第11章 | Claude Code でバイブコーディング（発展・任意） | 60〜120分 |
 
 全体を通して**約1〜2週間**（1日1〜2時間のペース）で完走できる構成です。もちろん、もっとゆっくりでもまったく問題ありません。
 
@@ -1099,6 +2933,10 @@ FAQ は Frequently Asked Questions（よく聞かれる質問）の略です。
 | JSON | じぇいそん | データをやり取りする形式。`{"name":"太郎"}` のような形 |
 | ポート | ぽーと | 同じPC内のどの窓口かを示す番号（例：3000） |
 | localhost | ろーかるほすと | 「自分自身のPC」を表す住所 |
+| DNS | ディーエヌエス | ドメイン名（`example.com`）を IPアドレスに変換する「インターネットの住所録」 |
+| IPアドレス | アイピーアドレス | ネットにつながった機械の番地。`192.0.2.10` のような数字の並び |
+| 開発者ツール | かいはつしゃつーる | ブラウザ内蔵の調査道具（DevTools）。`F12` で開き、Console タブに `console.log` が出る |
+| Fast Refresh | ふぁすとりふれっしゅ | 保存するとブラウザの画面が自動で更新される Next.js の仕組み |
 
 ### React/Next.js 系
 
@@ -1149,6 +2987,206 @@ FAQ は Frequently Asked Questions（よく聞かれる質問）の略です。
 | バンドル | ばんどる | 多数のJSファイルを1〜数個にまとめる処理 |
 | ESLint | いーえすりんと | JS/TSのコードをチェックして悪い書き方を警告するツール |
 | Prettier | ぷりてぃあー | コードの見た目（インデントなど）を自動整形するツール |
+| スタックトレース | すたっくとれーす | エラーの下に並ぶ `at ...` の行。エラーまでにプログラムが通った道すじ |
+| ENOENT | イー・ノー・エント | 「ファイルが見つからない」ことを表すエラーコード |
+| ECONNREFUSED | イー・コン・リフューズド | 「接続を拒否された（その窓口に誰もいない）」ことを表すエラーコード |
+| EADDRINUSE | イー・アドレス・イン・ユース | 「そのポートはもう使われている」ことを表すエラーコード |
+
+---
+
+## 12. 練習問題（解答・解説つき）
+
+この章の内容を、7つの問題で確かめましょう。まず自分で考えてから、後ろの「解答と解説」を読んでください。プログラムを動かす問題（問題5・問題7）は、第1章で Node.js を入れたあとに挑戦すれば大丈夫です。
+
+### 問題
+
+#### 問題1: URL を部品に分ける
+
+`http://localhost:3000/books?status=reading` という URL について、(1) スキーム、(2) ホスト名、(3) ポート番号、(4) パス、(5) クエリ文字列 をそれぞれ答えてください。
+
+#### 問題2: 拡張子から中身を当てる
+
+次の4つのファイルには、それぞれ何が書かれているでしょうか。
+
+- `page.tsx`
+- `package.json`
+- `globals.css`
+- `README.md`
+
+#### 問題3: CRUD に分類する
+
+書籍管理アプリの次の操作は、CRUD のどれにあたりますか。裏側で使われる HTTP メソッドも答えてください。
+
+1. 一覧ページを開く
+2. 本の状態を「読書中」から「読了」に変える
+3. 新しい本を登録する
+4. もう要らない本を消す
+
+#### 問題4: 担当はだれ？
+
+次の仕事を主に担当するのは、TypeScript・React・Next.js・Supabase のどれでしょう。
+
+1. 書籍のデータを保存しておく
+2. `/books/new` という URL に、登録ページを対応させる
+3. 「書籍カード」という画面の部品を作って、何度も使い回す
+4. 数値を入れるべき所に文字列を入れたら、実行する前に教えてくれる
+
+#### 問題5: エラーを読んで直す
+
+次のプログラムは本のタイトルを表示したいのですが、3か所まちがっています。実行すると最初に出るエラーは何でしょうか。また、3か所をどう直せばよいでしょうか。
+
+```javascript
+// 本のタイトルを表示したい（でも 3 か所まちがっている）
+const title = "リーダブルコード";
+Console.log（"タイトル: " + titel）;
+```
+
+#### 問題6: ターミナルの操作
+
+本や記事に、次のように書いてありました。
+
+```text
+$ npm run dev
+```
+
+1. 実際にターミナルに打つ文字は、どこからどこまでですか。
+2. 起動したあと、ブラウザで開く URL は何ですか（3000 番が空いている場合）。
+3. 開発サーバーを止めるには、どうしますか。
+4. 止めたあとにブラウザで再読み込みすると、どうなりますか。
+
+#### 問題7: 自分でプログラムを書く
+
+変数 `myName`（名前）と `bookCount`（本の冊数。例: 3）を作り、テンプレートリテラルを使って「花子さんの本棚には 3 冊の本があります」と表示するプログラム `shelf.ts` を書いてください。余裕があれば、冊数を1増やした文も表示してみましょう。
+
+### 解答と解説
+
+#### 問題1の解答
+
+(1) `http:`（http）、(2) `localhost`、(3) `3000`、(4) `/books`、(5) `?status=reading`
+
+**解説:** 0.3節の `url.ts` と同じように、プログラムに確かめさせることもできます。
+
+```typescript
+// 問題1の URL を部品に分ける
+const url = new URL("http://localhost:3000/books?status=reading");
+console.log(url.protocol);
+console.log(url.hostname);
+console.log(url.port);
+console.log(url.pathname);
+console.log(url.search);
+console.log(url.searchParams.get("status"));
+```
+
+```text
+http:
+localhost
+3000
+/books
+?status=reading
+reading
+```
+
+- `localhost:3000` は、0.6節で見た「自分の PC の 3000 番の部屋」です。ここでは http の既定値（80）ではないので、ポート番号がきちんと `3000` と表示されます。
+- `?status=reading` のようなクエリ文字列は、「読書中の本だけ」のような絞り込みの条件を URL に載せるときによく使われる形です。
+
+#### 問題2の解答
+
+- `page.tsx` … TypeScript ＋ JSX で書かれた画面（コンポーネント）のファイル。Next.js では、`page.tsx` という名前のファイルが1つのページになります。
+- `package.json` … プロジェクトの設定（使う部品の一覧や、`npm run dev` で動く命令など）を書いた JSON 形式のファイル。
+- `globals.css` … アプリ全体の見た目（色・余白など）を指定する CSS のファイル。
+- `README.md` … プロジェクトの説明を書いた Markdown 形式の文書。
+
+**解説:** 拡張子を見れば、中身の種類が分かります（0.2節）。`.tsx` と `.ts` の違いは、JSX（HTML に似た書き方）が入っているかどうかです。
+
+#### 問題3の解答
+
+1. Read（読み取り）・GET
+2. Update（更新）・PATCH
+3. Create（作成）・POST
+4. Delete（削除）・DELETE
+
+**解説:** 図0-9 の対応表のとおりです。2 は「新しく作る」のではなく「すでにある本の一部を書き換える」ので Update です。Supabase を使うと、HTTP メソッドの使い分けはライブラリが自動でやってくれますが、「どの操作が CRUD のどれか」を意識できると、第7章・第8章のコードがぐっと読みやすくなります。
+
+#### 問題4の解答
+
+1. Supabase
+2. Next.js
+3. React
+4. TypeScript
+
+**解説:** 図0-14 の家づくりのたとえで言うと、1 は倉庫（Supabase）、2 は家の骨組み＝どの部屋（URL）に何を置くか（Next.js）、3 は部品（React）、4 は材料の規格チェック（TypeScript）です。
+
+#### 問題5の解答
+
+最初に出るエラーはこれです（ファイル名などの行は省略しています）。
+
+```text
+SyntaxError: Invalid or unexpected token
+```
+
+直すべき3か所は、① 全角のカッコ `（` `）` → 半角の `(` `)`、② `Console` → `console`、③ `titel` → `title` です。
+
+```javascript
+// 本のタイトルを表示する（3 か所を直した版）
+const title = "リーダブルコード";
+console.log("タイトル: " + title);
+```
+
+```text
+タイトル: リーダブルコード
+```
+
+**解説:** エラーは**1つずつ順番に**報告されます。実際に1か所ずつ直しながら実行すると、エラーは次のように変わっていきました。
+
+1. 何も直さずに実行 → `SyntaxError: Invalid or unexpected token`（全角のカッコ）
+2. カッコを半角に直す → `ReferenceError: Console is not defined`
+3. `console` に直す → `ReferenceError: titel is not defined`
+4. `title` に直す → `タイトル: リーダブルコード` と表示される
+
+- 文法のまちがい（`SyntaxError`）は、プログラムを動かす前の「読み込み」の段階で見つかるので、いちばん先に報告されます。名前のまちがい（`ReferenceError`）は、その行を実行したときに初めて見つかります。
+- 「1つ直したのに、また別のエラーが出た！」は失敗ではなく、**前に進んでいる証拠**です。
+
+#### 問題6の解答
+
+1. `npm run dev` だけを打ちます。`$` はプロンプト記号なので打ちません（0.5節）。
+2. `http://localhost:3000` です。
+3. `npm run dev` を動かしているターミナルで `Ctrl + C` を押します。
+4. 開発サーバーが止まっているので、Chrome なら「このサイトにアクセスできません」「ERR_CONNECTION_REFUSED」と表示され、アプリは表示されません。
+
+**解説:** 4 は 0.6節の `refused.ts` で体験した `ECONNREFUSED` と同じ状態です。開発中は `npm run dev` のターミナルを開いたままにしておきましょう。3000 番がふさがっていた場合は 3001 番などに切り替わるので、`npm run dev` の出力の `Local:` の行で URL を確かめます。
+
+#### 問題7の解答（例）
+
+```typescript
+// 自分の名前と、本棚の冊数を変数に入れる
+const myName: string = "花子";
+const bookCount: number = 3;
+
+// テンプレートリテラル（バッククォート）で文章に埋め込んで表示する
+console.log(`${myName}さんの本棚には ${bookCount} 冊の本があります`);
+
+// 1冊増えたことにして、もう一度表示する
+console.log(`1冊買ったので ${bookCount + 1} 冊になりました`);
+```
+
+**▼ 実行するコマンド**
+
+```bash
+node shelf.ts
+```
+
+**▼ 実行結果**
+
+```text
+花子さんの本棚には 3 冊の本があります
+1冊買ったので 4 冊になりました
+```
+
+**解説:**
+
+- バッククォート `` ` `` で囲んだ文字列の中に `${変数}` と書くと、変数の値が埋め込まれます。
+- `${bookCount + 1}` のように、`${ }` の中には計算式も書けます。このとき `bookCount` そのものは 3 のまま変わらず、表示する値だけが 4 になる点に注目してください。
+- `: string` や `: number` は書かなくても動きますが、書いておくと「ここには文字列」「ここには数値」というルールが見える化され、まちがった値を入れたときに VS Code が教えてくれます。
 
 ---
 

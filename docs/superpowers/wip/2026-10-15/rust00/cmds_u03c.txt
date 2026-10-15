@@ -1,0 +1,5 @@
+Set-Content memo.txt "はじめての PowerShell"
+cargo run -q
+Set-Content memo.txt "はじめての PowerShell" -Encoding utf8
+cargo run -q
+Remove-Item memo.txt

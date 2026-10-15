@@ -1,0 +1,13 @@
+error[E0499]: cannot borrow `*r` as mutable more than once at a time
+ --> src\bin\u07_err_reborrow.rs:5:5
+  |
+4 |     let r2 = &mut *r;
+  |              ------- first mutable borrow occurs here
+5 |     r.push(2);
+  |     ^ second mutable borrow occurs here
+6 |     r2.push(3);
+  |     -- first borrow later used here
+
+For more information about this error, try `rustc --explain E0499`.
+error: could not compile `ownership-lab` (bin "u07_err_reborrow") due to 1 previous error
+exit=101

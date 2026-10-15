@@ -1,0 +1,8 @@
+nodee : 用語 'nodee' は、コマンドレット、関数、スクリプト ファイル、または操作可能なプログラムの名前として認識されません。名
+前が正しく記述されていることを確認し、パスが含まれている場合はそのパスが正しいことを確認してから、再試行してください。
+発生場所 行:1 文字:19
++ Set-Location C:\; nodee -v
++                   ~~~~~
+    + CategoryInfo          : ObjectNotFound: (nodee:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+ 

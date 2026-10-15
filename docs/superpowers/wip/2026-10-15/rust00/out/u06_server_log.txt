@@ -1,0 +1,8 @@
+http://127.0.0.1:8080 で待っています（止めるには Ctrl+C）
+受け取った: GET / HTTP/1.1
+受け取った: GET /hello HTTP/1.1
+受け取った: GET / HTTP/1.1
+受け取った: GET / HTTP/1.1
+受け取った: GET /users/5 HTTP/1.1
+受け取った: GET /users/x HTTP/1.1
+受け取った: GET /whoami HTTP/1.1

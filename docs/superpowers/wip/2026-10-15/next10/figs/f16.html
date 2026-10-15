@@ -1,0 +1,46 @@
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 340" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-10-16" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="16" y="16" width="200" height="200" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="116" y="40" text-anchor="middle" font-size="14" font-weight="bold" fill="#1e40af">利用者のブラウザ</text>
+<text x="30" y="68" font-size="12" fill="#0f172a">JS の中に入っている:</text>
+<rect x="30" y="78" width="172" height="26" rx="5" fill="#ffffff" stroke="#bfdbfe"/>
+<text x="40" y="96" font-size="12" fill="#0f172a">Supabase の URL</text>
+<rect x="30" y="110" width="172" height="26" rx="5" fill="#ffffff" stroke="#bfdbfe"/>
+<text x="40" y="128" font-size="12" fill="#0f172a">anon（公開用）キー</text>
+<text x="116" y="164" text-anchor="middle" font-size="12" fill="#1e40af">→ 誰でも見られる前提</text>
+<text x="116" y="184" text-anchor="middle" font-size="12" fill="#1e40af">（見られても大丈夫な鍵）</text>
+<line x1="218" y1="60" x2="256" y2="60" stroke="#475569" stroke-width="2" marker-end="url(#ar-10-16)"/>
+<text x="237" y="52" text-anchor="middle" font-size="12" fill="#334155">ページ</text>
+<rect x="260" y="16" width="200" height="200" rx="10" fill="#f8fafc" stroke="#475569" stroke-width="2"/>
+<text x="360" y="40" text-anchor="middle" font-size="14" font-weight="bold" fill="#334155">Vercel（サーバー）</text>
+<text x="274" y="68" font-size="12" fill="#0f172a">サーバーだけが持つ:</text>
+<rect x="274" y="78" width="172" height="26" rx="5" fill="#ffffff" stroke="#cbd5e1"/>
+<text x="284" y="96" font-size="12" fill="#0f172a">anon キー（共通）</text>
+<rect x="274" y="110" width="172" height="26" rx="5" fill="#fee2e2" stroke="#ef4444"/>
+<text x="284" y="128" font-size="12" font-weight="bold" fill="#b91c1c">service_role キー</text>
+<text x="360" y="164" text-anchor="middle" font-size="12" fill="#b91c1c">→ 使う場合もここだけ。</text>
+<text x="360" y="184" text-anchor="middle" font-size="12" fill="#b91c1c">NEXT_PUBLIC_ を付けない</text>
+<rect x="504" y="16" width="200" height="200" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="604" y="40" text-anchor="middle" font-size="14" font-weight="bold" fill="#047857">Supabase</text>
+<rect x="518" y="56" width="22" height="144" rx="4" fill="#10b981"/>
+<text x="529" y="110" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">R</text>
+<text x="529" y="130" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">L</text>
+<text x="529" y="150" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">S</text>
+<text x="552" y="78" font-size="12" font-weight="bold" fill="#047857">RLS ＝ 門番</text>
+<text x="552" y="100" font-size="12" fill="#0f172a">ポリシーで許した</text>
+<text x="552" y="120" font-size="12" fill="#0f172a">操作だけ通す</text>
+<rect x="552" y="140" width="136" height="50" rx="6" fill="#ffffff" stroke="#a7f3d0"/>
+<text x="620" y="162" text-anchor="middle" font-size="12" font-weight="bold" fill="#0f172a">books テーブル</text>
+<text x="620" y="180" text-anchor="middle" font-size="12" fill="#64748b">（本番データ）</text>
+<line x1="462" y1="123" x2="514" y2="123" stroke="#475569" stroke-width="2" marker-end="url(#ar-10-16)"/>
+<path d="M116,218 L116,240 L529,240 L529,206" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#ar-10-16)"/>
+<text x="322" y="258" text-anchor="middle" font-size="12" fill="#334155">ブラウザから anon キーで直接アクセス（追加・削除など）も RLS を通る</text>
+<rect x="16" y="270" width="688" height="62" rx="8" fill="#fff7ed" stroke="#f97316"/>
+<text x="30" y="295" font-size="13" fill="#9a3412"><tspan font-weight="bold">守っているのは「キーを隠すこと」ではなく RLS。</tspan> anon キーは見られても、RLS が</text>
+<text x="30" y="318" font-size="13" fill="#9a3412">許した操作しかできません。service_role キーは RLS を素通りするので、絶対にブラウザへ出さない。</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図10-16: 本番でのキーの置き場所と RLS の役割（anon キーは公開前提、守りの本体は RLS）</div>
+</div>

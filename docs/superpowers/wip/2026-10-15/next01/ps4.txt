@@ -1,0 +1,13 @@
+npm : このシステムではスクリプトの実行が無効になっているため、ファイル C:\Users\oltot\AppData\Local\Temp\claude\C--Users
+-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\next01\dl\node-v24.22.0-win-arm64\npm
+.ps1 を読み込むことができません。詳細については、「about_Execution_Policies」(https://go.microsoft.com/fwlink/?LinkID=13517
+0) を参照してください。
+発生場所 行:1 文字:1
++ npm -v
++ ~~~
+    + CategoryInfo          : セキュリティ エラー: (: ) []、PSSecurityException
+    + FullyQualifiedErrorId : UnauthorizedAccess
+---- RemoteSigned
+11.19.1
+---- npm.cmd under Restricted
+11.19.1

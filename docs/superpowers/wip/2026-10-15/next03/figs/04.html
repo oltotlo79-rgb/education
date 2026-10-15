@@ -1,0 +1,37 @@
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 290" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-03-03" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#f97316"/></marker>
+<marker id="ar-03-04" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#10b981"/></marker>
+</defs>
+<rect x="8" y="8" width="348" height="274" rx="12" fill="#fff7ed" stroke="#fed7aa"/>
+<text x="182" y="34" font-size="14" font-weight="bold" fill="#c2410c" text-anchor="middle">✕ 普通の変数（let）</text>
+<rect x="28" y="50" width="308" height="48" rx="8" fill="#ffffff" stroke="#f97316"/>
+<text x="40" y="70" font-size="13" font-weight="bold" fill="#0f172a">① Counter() が実行される</text>
+<text x="40" y="90" font-size="12" fill="#475569" font-family="Consolas, Cascadia Mono, monospace">let count = 0;</text>
+<line x1="182" y1="98" x2="182" y2="118" stroke="#f97316" stroke-width="2" marker-end="url(#ar-03-03)"/>
+<rect x="28" y="120" width="308" height="48" rx="8" fill="#ffffff" stroke="#f97316"/>
+<text x="40" y="140" font-size="13" font-weight="bold" fill="#0f172a">② クリック: count = count + 1</text>
+<text x="40" y="160" font-size="12" fill="#475569">変数は 1 になるが、画面は「0」のまま</text>
+<line x1="182" y1="168" x2="182" y2="188" stroke="#f97316" stroke-width="2" marker-end="url(#ar-03-03)"/>
+<rect x="28" y="190" width="308" height="48" rx="8" fill="#ffffff" stroke="#f97316"/>
+<text x="40" y="210" font-size="13" font-weight="bold" fill="#0f172a">③ もう一度 Counter() が実行されると</text>
+<text x="40" y="230" font-size="12" fill="#475569">let count = 0 からやり直し → 0 に戻る</text>
+<text x="182" y="266" font-size="13" font-weight="bold" fill="#c2410c" text-anchor="middle">値を覚えておけず、画面も変わらない</text>
+<rect x="364" y="8" width="348" height="274" rx="12" fill="#ecfdf5" stroke="#a7f3d0"/>
+<text x="538" y="34" font-size="14" font-weight="bold" fill="#047857" text-anchor="middle">○ state（useState）</text>
+<rect x="384" y="50" width="308" height="48" rx="8" fill="#ffffff" stroke="#10b981"/>
+<text x="396" y="70" font-size="13" font-weight="bold" fill="#0f172a">① Counter() が実行される</text>
+<text x="396" y="90" font-size="12" fill="#475569" font-family="Consolas, Cascadia Mono, monospace">const [count, setCount] = useState(0);</text>
+<line x1="538" y1="98" x2="538" y2="118" stroke="#10b981" stroke-width="2" marker-end="url(#ar-03-04)"/>
+<rect x="384" y="120" width="308" height="48" rx="8" fill="#ffffff" stroke="#10b981"/>
+<text x="396" y="140" font-size="13" font-weight="bold" fill="#0f172a">② クリック: setCount(count + 1)</text>
+<text x="396" y="160" font-size="12" fill="#475569">React が「1」を預かり、再実行を予約する</text>
+<line x1="538" y1="168" x2="538" y2="188" stroke="#10b981" stroke-width="2" marker-end="url(#ar-03-04)"/>
+<rect x="384" y="190" width="308" height="48" rx="8" fill="#ffffff" stroke="#10b981"/>
+<text x="396" y="210" font-size="13" font-weight="bold" fill="#0f172a">③ React が Counter() を再実行</text>
+<text x="396" y="230" font-size="12" fill="#475569">useState(0) が 1 を返す → 画面は「1」</text>
+<text x="538" y="266" font-size="13" font-weight="bold" fill="#047857" text-anchor="middle">値を覚えていて、画面も自動で変わる</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図3-4: 普通の変数と state の違い。state の値は React が預かっていて、再実行のたびに最新の値を返してくれます</div>
+</div>

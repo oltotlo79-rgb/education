@@ -1,0 +1,40 @@
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 300" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-10-04" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+<marker id="ar-10-04x" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#c2410c"/></marker>
+</defs>
+<rect x="8" y="8" width="704" height="116" rx="10" fill="#eff6ff" stroke="#bfdbfe"/>
+<text x="22" y="28" font-size="13" font-weight="bold" fill="#1e40af">手元（ローカル）で動かすとき</text>
+<rect x="20" y="40" width="160" height="70" rx="8" fill="#ffffff" stroke="#3b82f6" stroke-width="2"/>
+<text x="100" y="68" text-anchor="middle" font-size="14" font-weight="bold" font-family="Consolas, monospace" fill="#1e40af">.env.local</text>
+<text x="100" y="92" text-anchor="middle" font-size="12" fill="#475569">プロジェクト直下</text>
+<rect x="240" y="40" width="190" height="70" rx="8" fill="#ffffff" stroke="#3b82f6" stroke-width="2"/>
+<text x="335" y="68" text-anchor="middle" font-size="13" font-weight="bold" fill="#0f172a">npm run dev / build</text>
+<text x="335" y="92" text-anchor="middle" font-size="12" fill="#475569">Next.js が自動で読む</text>
+<rect x="490" y="40" width="210" height="70" rx="8" fill="#ffffff" stroke="#3b82f6" stroke-width="2"/>
+<text x="595" y="68" text-anchor="middle" font-size="13" font-weight="bold" fill="#0f172a">localhost:3000</text>
+<text x="595" y="92" text-anchor="middle" font-size="12" fill="#475569">自分のPCだけで動く</text>
+<line x1="182" y1="75" x2="236" y2="75" stroke="#475569" stroke-width="2" marker-end="url(#ar-10-04)"/>
+<line x1="432" y1="75" x2="486" y2="75" stroke="#475569" stroke-width="2" marker-end="url(#ar-10-04)"/>
+<rect x="8" y="176" width="704" height="116" rx="10" fill="#ecfdf5" stroke="#a7f3d0"/>
+<text x="124" y="196" font-size="13" font-weight="bold" fill="#047857">本番（Vercel）で動かすとき</text>
+<rect x="20" y="208" width="160" height="70" rx="8" fill="#ffffff" stroke="#10b981" stroke-width="2"/>
+<text x="100" y="234" text-anchor="middle" font-size="13" font-weight="bold" fill="#047857">Vercel の設定画面</text>
+<text x="100" y="258" text-anchor="middle" font-size="12" fill="#475569">Environment Variables</text>
+<rect x="240" y="208" width="190" height="70" rx="8" fill="#ffffff" stroke="#10b981" stroke-width="2"/>
+<text x="335" y="236" text-anchor="middle" font-size="13" font-weight="bold" fill="#0f172a">Vercel 上のビルド</text>
+<text x="335" y="260" text-anchor="middle" font-size="12" fill="#475569">npm run build を自動実行</text>
+<rect x="490" y="208" width="210" height="70" rx="8" fill="#ffffff" stroke="#10b981" stroke-width="2"/>
+<text x="595" y="236" text-anchor="middle" font-size="13" font-weight="bold" fill="#0f172a">https://〜.vercel.app</text>
+<text x="595" y="260" text-anchor="middle" font-size="12" fill="#475569">世界中からアクセスできる</text>
+<line x1="182" y1="243" x2="236" y2="243" stroke="#475569" stroke-width="2" marker-end="url(#ar-10-04)"/>
+<line x1="432" y1="243" x2="486" y2="243" stroke="#475569" stroke-width="2" marker-end="url(#ar-10-04)"/>
+<line x1="100" y1="112" x2="100" y2="204" stroke="#c2410c" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#ar-10-04x)"/>
+<circle cx="100" cy="150" r="13" fill="#ffffff" stroke="#c2410c" stroke-width="2"/>
+<text x="100" y="155" text-anchor="middle" font-size="14" font-weight="bold" fill="#c2410c">✕</text>
+<text x="124" y="146" font-size="13" font-weight="bold" fill="#c2410c">.env.local は GitHub に送られない（.gitignore で除外）</text>
+<text x="124" y="166" font-size="13" fill="#c2410c">→ だから同じ値を Vercel の設定画面に「手で」登録する</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図10-4: 環境変数はどこから読まれるか（ローカルは .env.local、本番は Vercel の設定画面）</div>
+</div>

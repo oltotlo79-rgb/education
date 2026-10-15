@@ -1,0 +1,37 @@
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 330" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-10-15" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#c2410c"/></marker>
+<marker id="ar-10-15b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="8" y="8" width="340" height="314" rx="10" fill="#f8fafc" stroke="#cbd5e1"/>
+<text x="178" y="32" text-anchor="middle" font-size="14" font-weight="bold" fill="#b91c1c">ロールバック前（バグ発生中）</text>
+<rect x="68" y="46" width="220" height="28" rx="14" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<text x="178" y="65" text-anchor="middle" font-size="12" font-weight="bold" fill="#c2410c">book-management-app.vercel.app</text>
+<line x1="178" y1="74" x2="178" y2="98" stroke="#c2410c" stroke-width="2" marker-end="url(#ar-10-15)"/>
+<rect x="48" y="102" width="260" height="40" rx="8" fill="#fee2e2" stroke="#ef4444" stroke-width="2"/>
+<text x="64" y="127" font-size="13" font-weight="bold" fill="#b91c1c">v3（最新）バグ入り ✕</text>
+<rect x="48" y="152" width="260" height="40" rx="8" fill="#ffffff" stroke="#10b981"/>
+<text x="64" y="177" font-size="13" fill="#047857">v2 正常に動いていた版</text>
+<rect x="48" y="202" width="260" height="40" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+<text x="64" y="227" font-size="13" fill="#475569">v1 もっと前の版</text>
+<text x="178" y="272" text-anchor="middle" font-size="12" fill="#334155">デプロイはどれも消えずに残っている</text>
+<text x="178" y="292" text-anchor="middle" font-size="12" fill="#334155">本番URLが「どれを指すか」だけの問題</text>
+<line x1="352" y1="165" x2="368" y2="165" stroke="#475569" stroke-width="3" marker-end="url(#ar-10-15b)"/>
+<rect x="372" y="8" width="340" height="314" rx="10" fill="#ecfdf5" stroke="#a7f3d0"/>
+<text x="542" y="32" text-anchor="middle" font-size="14" font-weight="bold" fill="#047857">Instant Rollback 後</text>
+<rect x="412" y="46" width="220" height="28" rx="14" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<text x="522" y="65" text-anchor="middle" font-size="12" font-weight="bold" fill="#c2410c">book-management-app.vercel.app</text>
+<path d="M632,60 L688,60 L688,172 L676,172" fill="none" stroke="#c2410c" stroke-width="2" marker-end="url(#ar-10-15)"/>
+<rect x="412" y="102" width="260" height="40" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-dasharray="5 4"/>
+<text x="428" y="127" font-size="13" fill="#94a3b8">v3 バグ入り（いまは使われない）</text>
+<rect x="412" y="152" width="260" height="40" rx="8" fill="#dcfce7" stroke="#10b981" stroke-width="2"/>
+<text x="428" y="177" font-size="13" font-weight="bold" fill="#047857">v2 ← 本番URLが戻った ✓</text>
+<rect x="412" y="202" width="260" height="40" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+<text x="428" y="227" font-size="13" fill="#475569">v1 もっと前の版</text>
+<text x="542" y="272" text-anchor="middle" font-size="12" fill="#334155">ビルドし直さないので、切り替えは一瞬</text>
+<text x="542" y="292" text-anchor="middle" font-size="12" font-weight="bold" fill="#c2410c">注意: この後の push は自動では本番にならない</text>
+<text x="542" y="310" text-anchor="middle" font-size="12" fill="#c2410c">（直したら Undo Rollback か Promote で戻す）</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図10-15: Instant Rollback の仕組み（本番URLの「指し先」を前のデプロイに付け替えるだけ）</div>
+</div>

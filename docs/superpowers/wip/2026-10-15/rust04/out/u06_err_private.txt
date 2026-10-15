@@ -1,0 +1,22 @@
+   Compiling design_lab v0.1.0 (...\design_lab)
+error[E0603]: function `next_version` is private
+  --> src\bin\u06_err_private.rs:30:33
+   |
+30 |     println!("{}", app::domain::next_version(1));
+   |                                 ^^^^^^^^^^^^ private function
+   |
+note: the function `next_version` is defined here
+  --> src\bin\u06_err_private.rs:17:9
+   |
+17 |         fn next_version(v: i64) -> i64 {
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0616]: field `version` of struct `Note` is private
+  --> src\bin\u06_err_private.rs:28:25
+   |
+28 |     println!("{}", note.version);
+   |                         ^^^^^^^ private field
+
+Some errors have detailed explanations: E0603, E0616.
+For more information about an error, try `rustc --explain E0603`.
+error: could not compile `design_lab` (bin "u06_err_private") due to 2 previous errors

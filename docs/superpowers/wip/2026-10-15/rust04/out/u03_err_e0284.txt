@@ -1,0 +1,15 @@
+   Compiling design_lab v0.1.0 (...\design_lab)
+error[E0284]: type annotations needed
+ --> src\bin\u03_err_e0284.rs:3:9
+  |
+3 |     let page = "3".parse().unwrap();
+  |         ^^^^       ----- type must be known at this point
+  |
+  = note: cannot satisfy `<_ as FromStr>::Err == _`
+help: consider giving `page` an explicit type
+  |
+3 |     let page: /* Type */ = "3".parse().unwrap();
+  |             ++++++++++++
+
+For more information about this error, try `rustc --explain E0284`.
+error: could not compile `design_lab` (bin "u03_err_e0284") due to 1 previous error

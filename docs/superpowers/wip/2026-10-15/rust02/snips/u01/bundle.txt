@@ -1,0 +1,166 @@
+//// FILE: a_let.rs
+fn main() {
+    // title という名前に、文字列 "Rust入門" を結び付ける
+    let title = "Rust入門";
+    // count という名前に、数 3 を結び付ける
+    let count = 3;
+
+    // {} の位置に、後ろに書いた値が入って表示される
+    println!("タイトル: {}", title);
+    // {count} のように、波かっこの中へ変数名を直接書いてもよい
+    println!("ノートの数: {count}");
+}
+//// FILE: b_mut.rs
+fn main() {
+    // mut を付けると、あとから中身を入れ替えられる変数になる
+    let mut done_count = 0;
+    println!("はじめ: {done_count}");
+
+    // 今の値に 1 を足して、同じ変数へ入れ直す
+    done_count = done_count + 1;
+    println!("1件完了: {done_count}");
+
+    // += は「自分に足して入れ直す」の短い書き方
+    done_count += 2;
+    println!("さらに2件完了: {done_count}");
+}
+//// FILE: c_shadow.rs
+fn main() {
+    // 段階1: 画面から受け取った文字列（前後に空白がある）
+    let input = "  42  ";
+    println!("[{input}]");
+
+    // 段階2: 同じ名前で「前後の空白を取り除いた版」を作り直す
+    let input = input.trim();
+    println!("[{input}]");
+
+    // 段階3: さらに同じ名前で「数（u32 型）に変換した版」を作り直す
+    let input: u32 = input.parse().expect("数字ではありません");
+    // 数になったので足し算ができる
+    println!("{}", input + 1);
+}
+//// FILE: c2_scope.rs
+fn main() {
+    let level = 1;
+    {
+        // このブロック { } の中だけで有効な、新しい level を作る
+        let level = level * 10;
+        println!("ブロックの中: {level}");
+    }
+    // ブロックを出ると、新しい level は消え、元の level が見える
+    println!("ブロックの外: {level}");
+}
+//// FILE: d_const.rs
+// 定数はファイルのどこからでも使える。型の注釈（: usize など）が必須
+const MAX_TITLE_CHARS: usize = 80;
+// 定数の値は、コンパイルするときに計算できる式なら書ける
+const SECONDS_PER_DAY: u64 = 24 * 60 * 60;
+const SESSION_DAYS: u64 = 30;
+
+fn main() {
+    println!("タイトルは最大 {MAX_TITLE_CHARS} 文字");
+
+    let session_seconds = SESSION_DAYS * SECONDS_PER_DAY;
+    println!("セッションの有効期限: {session_seconds} 秒");
+
+    // 数字の中の _ は読みやすくするための区切りで、値は変わらない
+    let big = 1_000_000;
+    println!("百万: {big}");
+}
+//// FILE: e_config.rs
+// 設定値の「既定値」と「上限」は定数にしておく
+const DEFAULT_PORT: u16 = 8080;
+const MAX_RETRIES: u32 = 3;
+
+fn main() {
+    // 環境変数などから届いた「文字列の」ポート番号を想定する
+    let port = " 3000 ";
+    // 段階1: 空白を取り除く（文字列のまま）
+    let port = port.trim();
+    // 段階2: 数（u16）へ変換する。変換に失敗したら既定値を使う
+    let port: u16 = port.parse().unwrap_or(DEFAULT_PORT);
+    println!("待ち受けポート: {port}");
+
+    // 数字ではない文字列だった場合も試す
+    let broken = "abc";
+    let broken: u16 = broken.trim().parse().unwrap_or(DEFAULT_PORT);
+    println!("壊れた設定のときのポート: {broken}");
+
+    // 変化する状態（試行回数）だけを mut にする
+    let mut attempts = 0;
+    while attempts < MAX_RETRIES {
+        attempts += 1;
+        println!("{attempts} 回目の接続を試みます");
+    }
+    println!("上限の {MAX_RETRIES} 回に達しました");
+}
+//// FILE: f_rustnote.rs
+const MAX_TITLE_CHARS: usize = 80;
+
+fn main() {
+    // フォームから届いたタイトル（前後に空白がついている）
+    let title = "   牛乳を買う   ";
+    // 前後の空白を取り除いた版を、同じ名前で作り直す（シャドーイング）
+    let title = title.trim();
+    // 文字数を数える（日本語も 1 文字を 1 と数える方法。UNIT 05 で詳しく）
+    let chars = title.chars().count();
+    println!("タイトル「{title}」は {chars} 文字です（上限 {MAX_TITLE_CHARS} 文字）");
+}
+//// FILE: err1_e0384.rs
+fn main() {
+    let count = 1;
+    println!("{count}");
+    count = 2;
+    println!("{count}");
+}
+//// FILE: err2_e0308.rs
+fn main() {
+    let mut input = " 42 ";
+    input = input.trim();
+    input = input.parse::<u32>().expect("数字ではありません");
+    println!("{input}");
+}
+//// FILE: err3_const.rs
+const MAX_TITLE_CHARS = 80;
+
+fn main() {
+    println!("{MAX_TITLE_CHARS}");
+}
+//// FILE: err4_unused_mut.rs
+fn main() {
+    let mut name = "RustNote";
+    println!("{name}");
+}
+//// FILE: ex1_mut.rs
+fn main() {
+    let mut count = 1;
+    println!("{count}");
+    count = 2;
+    println!("{count}");
+}
+//// FILE: ex1_shadow.rs
+fn main() {
+    let count = 1;
+    println!("{count}");
+    let count = 2;
+    println!("{count}");
+}
+//// FILE: ex2.rs
+fn main() {
+    let price = "1200";
+    // 文字列を数に変換し、同じ名前で作り直す
+    let price: u32 = price.parse().expect("数字ではありません");
+    // 10% の税を足す（整数のまま計算するため、先に 110 を掛けてから 100 で割る）
+    let price = price * 110 / 100;
+    println!("税込み: {price} 円");
+}
+//// FILE: ex3.rs
+fn main() {
+    let x = 5;
+    let x = x + 1;
+    {
+        let x = x * 2;
+        println!("内側: {x}");
+    }
+    println!("外側: {x}");
+}

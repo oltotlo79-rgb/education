@@ -1,0 +1,4 @@
+Cons(1, Cons(2, Cons(3, Nil)))
+合計 = 6
+List の大きさ: 16 バイト
+exit=0

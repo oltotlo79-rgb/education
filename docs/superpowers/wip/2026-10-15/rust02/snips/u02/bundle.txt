@@ -1,0 +1,210 @@
+//// FILE: a_types.rs
+fn main() {
+    // 整数: 型を書かなければ i32 になる
+    let temperature = -5;
+    // 型を書いて決める。u8 は 0〜255 の整数
+    let level: u8 = 200;
+    // 数字の後ろに型名を付けて決める書き方もある
+    let big = 3_000_000_000u64;
+    // 小数: 型を書かなければ f64 になる
+    let ratio = 0.75;
+    // 真偽値: true か false のどちらか
+    let done = false;
+    // 文字: シングルクォート ' で1文字だけを囲む
+    let mark = 'あ';
+
+    println!("{temperature} {level} {big} {ratio} {done} {mark}");
+
+    // 型ごとの最小値と最大値
+    println!("i32: {} 〜 {}", i32::MIN, i32::MAX);
+    println!("u8 : {} 〜 {}", u8::MIN, u8::MAX);
+    println!("u64 の最大: {}", u64::MAX);
+    // その型が何バイトを使うか
+    println!("char は {} バイト", std::mem::size_of::<char>());
+}
+//// FILE: b_overflow_panic.rs
+fn main() {
+    // 文字列から作った値（コンパイルの時点では中身が分からない値）
+    let stock: u8 = "255".parse().unwrap();
+    println!("在庫: {stock}");
+    // u8 の最大は 255。1 を足すと入りきらない
+    let next = stock + 1;
+    println!("次: {next}");
+}
+//// FILE: c_overflow_methods.rs
+fn main() {
+    let stock: u8 = 250;
+    // wrapping_add: はみ出したら 0 に戻って数え直す（時計の針のように一周する）
+    println!("wrapping_add:    {}", stock.wrapping_add(10));
+    // checked_add: はみ出したら None（計算できなかった）を返す
+    println!("checked_add:     {:?}", stock.checked_add(10));
+    println!("checked_add(5):  {:?}", stock.checked_add(5));
+    // saturating_add: はみ出したら最大値で止める
+    println!("saturating_add:  {}", stock.saturating_add(10));
+    // overflowing_add: 一周した結果と「はみ出したかどうか」の両方を返す
+    println!("overflowing_add: {:?}", stock.overflowing_add(10));
+}
+//// FILE: d_as_tryfrom.rs
+fn main() {
+    // as: 型を強制的に変換する。入りきらない分は黙って捨てられる
+    let big: i32 = 300;
+    let small = big as u8;
+    println!("300 as u8   = {small}");
+    let minus: i32 = -1;
+    println!("-1 as u32   = {}", minus as u32);
+    // 小数 → 整数は、小数点以下が切り捨てられる
+    println!("3.99 as i32 = {}", 3.99_f64 as i32);
+
+    // From: 必ず成功する変換（小さい型 → 大きい型）
+    let level: u8 = 200;
+    let wide = u32::from(level);
+    println!("u32::from(200u8) = {wide}");
+
+    // TryFrom: 失敗するかもしれない変換。結果は Ok(値) か Err(理由)
+    println!("u8::try_from(300) = {:?}", u8::try_from(big));
+    println!("u8::try_from(100) = {:?}", u8::try_from(100_i32));
+}
+//// FILE: e_float.rs
+fn main() {
+    let a = 0.1;
+    let b = 0.2;
+    // 0.1 + 0.2 は、ぴったり 0.3 にはならない
+    println!("0.1 + 0.2 = {}", a + b);
+    println!("0.1 + 0.2 == 0.3 ? {}", a + b == 0.3);
+    // 小さな誤差を許して比べる
+    let close = (a + b - 0.3).abs() < 1e-9;
+    println!("ほぼ等しい ? {close}");
+    // 表示だけ小数点以下2桁にそろえる
+    println!("表示を丸める: {:.2}", a + b);
+
+    // 整数どうしの割り算は、小数点以下を切り捨てる
+    println!("7 / 2 = {}", 7 / 2);
+    // % は割り算の余り
+    println!("7 % 2 = {}", 7 % 2);
+    // 小数どうしなら、小数の答えになる
+    println!("7.0 / 2.0 = {}", 7.0 / 2.0);
+    // 小数を 0 で割ってもエラーにならず「無限大」になる
+    println!("1.0 / 0.0 = {}", 1.0_f64 / 0.0);
+}
+//// FILE: f_bool_char.rs
+fn main() {
+    let logged_in = true;
+    let is_owner = false;
+    // && は「かつ」、|| は「または」、! は「ではない」
+    println!("編集できる: {}", logged_in && is_owner);
+    println!("閲覧できる: {}", logged_in || is_owner);
+    println!("ログアウト中: {}", !logged_in);
+
+    // char は Unicode の1文字。番号（コードポイント）に変換できる
+    let c = 'あ';
+    println!("'{c}' の番号: {} (16進数で {:X})", c as u32, c as u32);
+    // 番号から char に戻す（存在しない番号もあるので、結果は Some か None）
+    println!("0x41 は {:?}", char::from_u32(0x41));
+    // 数字の文字を数に変換する
+    println!("'7' を数に: {:?}", '7'.to_digit(10));
+    // 文字の種類を調べる
+    println!("'A' は英字? {}", 'A'.is_alphabetic());
+    println!("'あ' は ASCII の英数字? {}", 'あ'.is_ascii_alphanumeric());
+}
+//// FILE: g_price.rs
+fn main() {
+    // 金額は小数ではなく「円（整数）」で持つ
+    let unit_price: u32 = 1_250;
+    // 個数はフォームから u16 で届いたとする
+    let quantity: u16 = 3;
+
+    // u16 → u32 は必ず成功するので From を使う
+    let quantity = u32::from(quantity);
+    // 掛け算がはみ出したら None になる checked_mul を使う
+    match unit_price.checked_mul(quantity) {
+        Some(total) => println!("合計: {total} 円"),
+        None => println!("金額が大きすぎます"),
+    }
+
+    // 極端に大きな個数も試す
+    let huge: u32 = 4_000_000;
+    match unit_price.checked_mul(huge) {
+        Some(total) => println!("合計: {total} 円"),
+        None => println!("金額が大きすぎます"),
+    }
+
+    // データベースの ID は i64 で届くことが多い。負の値は ID として不正
+    for raw_id in [42_i64, -7] {
+        match u64::try_from(raw_id) {
+            Ok(id) => println!("ID {id} を使います"),
+            Err(e) => println!("ID {raw_id} は使えません: {e}"),
+        }
+    }
+}
+//// FILE: h_rustnote.rs
+// 1ページに表示するノートの件数
+const PER_PAGE: u32 = 20;
+
+fn main() {
+    // URL の ?page= に入ってくる文字列をいくつか試す
+    for raw in ["1", "3", "0", "-2", "abc"] {
+        // 数（u32）にできなければ 1 ページ目とみなす
+        let page: u32 = raw.parse().unwrap_or(1);
+        // 0 ページ目は存在しないので、最低でも 1 にそろえる
+        let page = page.max(1);
+        // 先頭から何件を飛ばして表示するか
+        let offset = (page - 1) * PER_PAGE;
+        println!("?page={raw} → {page} ページ目, {offset} 件飛ばす");
+    }
+}
+//// FILE: err1_mix.rs
+fn main() {
+    let count: i32 = 10;
+    let total: i64 = 1_000;
+    let sum = count + total;
+    println!("{sum}");
+}
+//// FILE: err2_literal.rs
+fn main() {
+    let level: u8 = 256;
+    println!("{level}");
+}
+//// FILE: err3_neg.rs
+fn main() {
+    let stock: u32 = -1;
+    println!("{stock}");
+}
+//// FILE: err4_int_float.rs
+fn main() {
+    let total = 7;
+    let half = total / 2.0;
+    println!("{half}");
+}
+//// FILE: err4_fix.rs
+fn main() {
+    let total = 7;
+    let half = total as f64 / 2.0;
+    println!("{half}");
+}
+//// FILE: ex1.rs
+fn main() {
+    let x: u8 = 200;
+    println!("{:?}", x.checked_add(100));
+    println!("{}", x.wrapping_add(100));
+    println!("{}", x.saturating_add(100));
+}
+//// FILE: ex2.rs
+fn main() {
+    for raw in [8080_i64, 70000, -1] {
+        match u16::try_from(raw) {
+            Ok(port) => println!("{raw}: ポート {port} を使います"),
+            Err(e) => println!("{raw}: 使えません（{e}）"),
+        }
+    }
+}
+//// FILE: ex3.rs
+fn main() {
+    let a: u32 = 80;
+    let b: u32 = 95;
+    let c: u32 = 72;
+    // 合計は整数のまま計算する
+    let sum = a + b + c;
+    // 割る直前に f64 へ変換する
+    let average = sum as f64 / 3.0;
+    println!("平均: {average:.1} 点");
+}

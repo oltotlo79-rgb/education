@@ -1,0 +1,46 @@
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 376" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-03-02" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<text x="16" y="30" font-size="13" font-weight="bold" fill="#1e40af">① あなたが書く JSX</text>
+<rect x="16" y="40" width="284" height="120" rx="8" fill="#0f172a"/>
+<text x="36" y="80" font-size="13" fill="#e2e8f0" font-family="Consolas, Cascadia Mono, monospace"><tspan fill="#f59e0b">&lt;h1</tspan> <tspan fill="#93c5fd">className</tspan>=<tspan fill="#fcd34d">"title"</tspan><tspan fill="#f59e0b">&gt;</tspan></text>
+<text x="56" y="104" font-size="13" fill="#e2e8f0">こんにちは</text>
+<text x="36" y="128" font-size="13" fill="#f59e0b" font-family="Consolas, Cascadia Mono, monospace">&lt;/h1&gt;</text>
+<text x="360" y="76" font-size="12" fill="#475569" text-anchor="middle">ビルドツールが</text>
+<text x="360" y="92" font-size="12" fill="#475569" text-anchor="middle">自動で変換</text>
+<line x1="300" y1="102" x2="418" y2="102" stroke="#475569" stroke-width="2" marker-end="url(#ar-03-02)"/>
+<text x="420" y="30" font-size="13" font-weight="bold" fill="#c2410c">② 変換後の JavaScript</text>
+<rect x="420" y="40" width="284" height="120" rx="8" fill="#0f172a"/>
+<text x="436" y="66" font-size="12.5" fill="#60a5fa" font-family="Consolas, Cascadia Mono, monospace">createElement(</text>
+<text x="456" y="86" font-size="12.5" fill="#fcd34d" font-family="Consolas, Cascadia Mono, monospace">"h1",</text>
+<text x="456" y="106" font-size="12.5" fill="#e2e8f0" font-family="Consolas, Cascadia Mono, monospace">{ className: <tspan fill="#fcd34d">"title"</tspan> },</text>
+<text x="456" y="126" font-size="12.5" fill="#fcd34d">"こんにちは"</text>
+<text x="436" y="146" font-size="12.5" fill="#60a5fa" font-family="Consolas, Cascadia Mono, monospace">)</text>
+<path d="M562,160 L562,184 L262,184 L262,212" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#ar-03-02)"/>
+<text x="412" y="178" font-size="12" fill="#475569" text-anchor="middle">実行すると（関数を呼ぶと）</text>
+<text x="16" y="206" font-size="13" font-weight="bold" fill="#047857">③ React 要素（ただのオブジェクト）</text>
+<rect x="16" y="214" width="284" height="150" rx="8" fill="#0f172a"/>
+<text x="32" y="238" font-size="12.5" fill="#e2e8f0" font-family="Consolas, Cascadia Mono, monospace">{</text>
+<text x="48" y="258" font-size="12.5" fill="#e2e8f0" font-family="Consolas, Cascadia Mono, monospace">type: <tspan fill="#fcd34d">"h1"</tspan>,</text>
+<text x="48" y="278" font-size="12.5" fill="#e2e8f0" font-family="Consolas, Cascadia Mono, monospace">props: {</text>
+<text x="64" y="298" font-size="12.5" fill="#e2e8f0" font-family="Consolas, Cascadia Mono, monospace">className: <tspan fill="#fcd34d">"title"</tspan>,</text>
+<text x="64" y="318" font-size="12.5" fill="#e2e8f0">children: <tspan fill="#fcd34d">"こんにちは"</tspan></text>
+<text x="48" y="338" font-size="12.5" fill="#e2e8f0" font-family="Consolas, Cascadia Mono, monospace">}</text>
+<text x="32" y="356" font-size="12.5" fill="#e2e8f0" font-family="Consolas, Cascadia Mono, monospace">}</text>
+<text x="360" y="262" font-size="12" fill="#475569" text-anchor="middle">React DOM が</text>
+<text x="360" y="278" font-size="12" fill="#475569" text-anchor="middle">画面に反映</text>
+<line x1="300" y1="290" x2="418" y2="290" stroke="#475569" stroke-width="2" marker-end="url(#ar-03-02)"/>
+<text x="420" y="206" font-size="13" font-weight="bold" fill="#475569">④ ブラウザの画面（DOM）</text>
+<rect x="420" y="214" width="284" height="150" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+<path d="M420,236 L420,222 Q420,214 428,214 L696,214 Q704,214 704,222 L704,236 Z" fill="#e2e8f0"/>
+<circle cx="436" cy="225" r="4" fill="#f87171"/>
+<circle cx="450" cy="225" r="4" fill="#fbbf24"/>
+<circle cx="464" cy="225" r="4" fill="#34d399"/>
+<text x="440" y="282" font-size="26" font-weight="bold" fill="#0f172a">こんにちは</text>
+<text x="440" y="320" font-size="12" fill="#64748b" font-family="Consolas, Cascadia Mono, monospace">&lt;h1 class="title"&gt;</text>
+<text x="440" y="344" font-size="12" fill="#c2410c">className は HTML では class になる</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図3-3: JSX が画面に表示されるまで。JSX は関数呼び出しに変換され、その結果の「オブジェクト」を React が DOM に反映します</div>
+</div>

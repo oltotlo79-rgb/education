@@ -1,0 +1,9 @@
+   Compiling design_lab v0.1.0 (...\design_lab)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.54s
+     Running `target\debug\u05_anyhow.exe missing.txt`
+Error: シードの投入に失敗しました
+
+Caused by:
+    0: シードファイル missing.txt を読めませんでした
+    1: 指定されたファイルが見つかりません。 (os error 2)
+error: process didn't exit successfully: `target\debug\u05_anyhow.exe missing.txt` (exit code: 1)

@@ -1,0 +1,230 @@
+//// FILE: a_if.rs
+fn main() {
+    let score = 72;
+    // 条件を上から順に調べ、最初に当てはまった枝だけを実行する
+    if score >= 80 {
+        println!("よくできました");
+    } else if score >= 60 {
+        println!("合格です");
+    } else {
+        println!("もう一歩です");
+    }
+
+    // if は式なので、結果を変数に入れられる（どの枝も同じ型を返す）
+    let parity = if score % 2 == 0 { "偶数" } else { "奇数" };
+    println!("{score} は{parity}");
+}
+//// FILE: b_loop.rs
+fn main() {
+    let mut n = 1;
+    // loop は break するまで、いつまでもくり返す
+    let result = loop {
+        n *= 2;
+        // 100 を超えたら、その値を持って loop を抜ける
+        if n > 100 {
+            break n;
+        }
+    };
+    println!("100 を超えた最初の 2 の累乗: {result}");
+}
+//// FILE: c_while.rs
+fn main() {
+    let mut remaining = 3;
+    // while は「条件が true の間」くり返す
+    while remaining > 0 {
+        println!("残り {remaining}");
+        remaining -= 1;
+    }
+    println!("発射！");
+}
+//// FILE: d_for.rs
+fn main() {
+    // 0..3 は 0, 1, 2（終わりの 3 は含まない）
+    for i in 0..3 {
+        println!("i = {i}");
+    }
+
+    // 1..=3 は 1, 2, 3（= を付けると終わりも含む）
+    for i in 1..=3 {
+        // print! は改行しない表示
+        print!("{i} ");
+    }
+    // 改行だけを出す
+    println!();
+
+    // .rev() で逆順にし、.step_by(3) で 3 つおきに取り出す
+    for i in (0..10).rev().step_by(3) {
+        print!("{i} ");
+    }
+    println!();
+
+    // 配列の要素を先頭から1つずつ取り出す
+    let fruits = ["りんご", "みかん", "ぶどう"];
+    for fruit in fruits {
+        println!("{fruit}");
+    }
+}
+//// FILE: e_match.rs
+fn main() {
+    for code in [200, 202, 301, 404, 418, 503, 999] {
+        // match は値を上から順に比べ、最初に合った「腕」を実行する
+        let label = match code {
+            // 1つの値
+            200 => "成功",
+            // | は「または」
+            201 | 202 => "受け付けました",
+            // ..= は範囲（300 以上 399 以下）
+            300..=399 => "リダイレクト",
+            404 => "見つかりません",
+            400..=499 => "リクエストの誤り",
+            500..=599 => "サーバーの誤り",
+            // _ は「ここまでのどれにも当てはまらない、それ以外すべて」
+            _ => "不明なコード",
+        };
+        println!("{code}: {label}");
+    }
+}
+//// FILE: f_guard_label.rs
+fn main() {
+    // match の腕に if（ガード）を付けて、条件を足せる
+    for temp in [-3, 0, 18, 35] {
+        let feeling = match temp {
+            t if t < 0 => "氷点下",
+            0 => "ちょうど 0 度",
+            t if t >= 30 => "真夏日",
+            _ => "過ごしやすい",
+        };
+        println!("{temp}度: {feeling}");
+    }
+
+    // 入れ子のループで、外側のループごと抜ける（ラベル付き break）
+    'outer: for row in 1..=3 {
+        for col in 1..=3 {
+            if row * col == 4 {
+                println!("{row} × {col} = 4 を見つけたので終了");
+                break 'outer;
+            }
+            println!("{row} × {col} = {}", row * col);
+        }
+    }
+}
+//// FILE: g_retry.rs
+const MAX_ATTEMPTS: u32 = 5;
+
+// サーバーに問い合わせた結果のステータスコードを返す（練習用のにせ物）
+fn fake_request(attempt: u32) -> u16 {
+    match attempt {
+        1 | 2 => 503,
+        3 => 200,
+        _ => 500,
+    }
+}
+
+fn main() {
+    let mut attempt = 0;
+    let outcome = loop {
+        attempt += 1;
+        let status = fake_request(attempt);
+        match status {
+            // 2xx なら成功。結果の文を持って loop を抜ける
+            200..=299 => break format!("{attempt} 回目で成功（{status}）"),
+            // 503 は一時的な失敗。回数が残っていれば、もう一度くり返す
+            503 if attempt < MAX_ATTEMPTS => {
+                println!("{attempt} 回目: {status} のため再試行します");
+                continue;
+            }
+            // それ以外はあきらめる
+            _ => break format!("{attempt} 回目で中止（{status}）"),
+        }
+    };
+    println!("{outcome}");
+}
+//// FILE: h_rustnote.rs
+const PER_PAGE: u32 = 20;
+
+fn main() {
+    // ノートが全部で 45 件あるとする
+    let total_notes: u32 = 45;
+    // 必要なページ数（端数は切り上げ。45 ÷ 20 → 3）
+    let total_pages = total_notes.div_ceil(PER_PAGE);
+
+    for page in 1..=total_pages {
+        let has_prev = page > 1;
+        let has_next = page < total_pages;
+        // 2つの bool の組み合わせで、ページ送りの表示を決める
+        let nav = match (has_prev, has_next) {
+            (false, false) => "（ページ送りなし）",
+            (false, true) => "次へ →",
+            (true, true) => "← 前へ | 次へ →",
+            (true, false) => "← 前へ",
+        };
+        println!("{page}/{total_pages} ページ: {nav}");
+    }
+}
+//// FILE: err1_if_types.rs
+fn main() {
+    let n = 5;
+    let label = if n > 0 { "正の数" } else { 0 };
+    println!("{label}");
+}
+//// FILE: err2_if_no_else.rs
+fn main() {
+    let n = 5;
+    let label = if n > 0 { "正の数" };
+    println!("{label}");
+}
+//// FILE: err3_e0004.rs
+fn main() {
+    let code: u16 = 404;
+    let label = match code {
+        200..=299 => "成功",
+        400..=499 => "リクエストの誤り",
+        500..=599 => "サーバーの誤り",
+    };
+    println!("{label}");
+}
+//// FILE: err4_if_int.rs
+fn main() {
+    let unread = 3;
+    if unread {
+        println!("未読があります");
+    }
+}
+//// FILE: ex1.rs
+fn main() {
+    for n in 1..=15 {
+        // 3 で割った余りと 5 で割った余りの組で分ける
+        let text = match (n % 3, n % 5) {
+            (0, 0) => "FizzBuzz".to_string(),
+            (0, _) => "Fizz".to_string(),
+            (_, 0) => "Buzz".to_string(),
+            _ => n.to_string(),
+        };
+        print!("{text} ");
+    }
+    println!();
+}
+//// FILE: ex2.rs
+fn main() {
+    let mut n = 0;
+    let mut sum = 0;
+    let answer = loop {
+        n += 1;
+        sum += n;
+        if sum >= 100 {
+            break n;
+        }
+    };
+    println!("1 から {answer} まで足すと {sum} で、初めて 100 以上になる");
+}
+//// FILE: ex3.rs
+fn main() {
+    let code: u16 = 302;
+    let label = match code {
+        200..=299 => "成功",
+        400..=499 => "リクエストの誤り",
+        500..=599 => "サーバーの誤り",
+        _ => "その他",
+    };
+    println!("{label}");
+}

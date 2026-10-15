@@ -1,0 +1,24 @@
+error[E0382]: the type `Arc` does not implement `Copy`
+  --> src\bin\u10_err_arc_loop.rs:8:36
+   |
+ 5 |     let counter = Arc::new(Mutex::new(0));
+   |         ------- this move could be avoided by cloning the original `Arc`, which is inexpensive
+ 6 |     let mut handles = Vec::new();
+ 7 |     for _ in 0..2 {
+   |     ------------- inside of this loop
+ 8 |         handles.push(thread::spawn(move || {
+   |                                    ^^^^^^^ value moved into closure here, in previous iteration of loop
+ 9 |             *counter.lock().unwrap() += 1;
+   |              ------- use occurs due to use in closure
+   |
+   = note: consider using `Arc::clone`
+help: consider cloning the value before moving it into the closure
+   |
+ 8 ~         let value = counter.clone();
+ 9 ~         handles.push(thread::spawn(move || {
+10 ~             *value.lock().unwrap() += 1;
+   |
+
+For more information about this error, try `rustc --explain E0382`.
+error: could not compile `ownership-lab` (bin "u10_err_arc_loop") due to 1 previous error
+exit=101

@@ -1,0 +1,22 @@
+   Compiling design_lab v0.1.0 (...\design_lab)
+error[E0308]: arguments to this function are incorrect
+  --> src\bin\u01_err_swap.rs:15:20
+   |
+15 |     println!("{}", find_note(note, owner));
+   |                    ^^^^^^^^^ ----  ----- expected `NoteId`, found `UserId`
+   |                              |
+   |                              expected `UserId`, found `NoteId`
+   |
+note: function defined here
+  --> src\bin\u01_err_swap.rs:7:4
+   |
+ 7 | fn find_note(owner: UserId, id: NoteId) -> String {
+   |    ^^^^^^^^^
+help: swap these arguments
+   |
+15 -     println!("{}", find_note(note, owner));
+15 +     println!("{}", find_note(owner, note));
+   |
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `design_lab` (bin "u01_err_swap") due to 1 previous error

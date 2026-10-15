@@ -1,0 +1,7 @@
+   Compiling design_lab v0.1.0 (...\design_lab)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.42s
+     Running `target\debug\u01_title.exe`
+OK: [買い物リスト] (6文字)
+NG: Empty
+NG: Empty
+NG: TooLong { len: 81 }

@@ -1,0 +1,4 @@
+carg run
+export GREETING=hello
+Get-Command curl
+Get-Command curl.exe

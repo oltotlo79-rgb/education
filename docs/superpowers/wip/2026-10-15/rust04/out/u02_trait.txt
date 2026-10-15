@@ -1,0 +1,6 @@
+   Compiling design_lab v0.1.0 (...\design_lab)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 3.89s
+     Running `target\debug\u02_trait.exe`
+未 牛乳を買う
+【未 牛乳を買う】
+<<alice@example.com>>

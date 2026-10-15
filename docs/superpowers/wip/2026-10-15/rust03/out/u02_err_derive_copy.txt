@@ -1,0 +1,13 @@
+error[E0204]: the trait `Copy` cannot be implemented for this type
+ --> src\bin\u02_err_derive_copy.rs:2:8
+  |
+1 | #[derive(Clone, Copy)]
+  |                 ---- in this derive macro expansion
+2 | struct NewNote {
+  |        ^^^^^^^
+3 |     title: String,
+  |     ------------- this field does not implement `Copy`
+
+For more information about this error, try `rustc --explain E0204`.
+error: could not compile `ownership-lab` (bin "u02_err_derive_copy") due to 1 previous error
+exit=101

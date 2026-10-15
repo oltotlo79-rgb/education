@@ -1,0 +1,15 @@
+   Compiling design_lab v0.1.0 (...\design_lab)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.85s
+     Running `target\debug\u04_dyn.exe`
+--- テキスト ---
+牛乳を買う
+低脂肪のもの
+--- Markdown ---
+## 牛乳を買う
+
+低脂肪のもの
+--- CSV ---
+"牛乳を買う","低脂肪のもの"
+&Markdown の大きさ: 8 バイト
+&dyn Exporter の大きさ: 16 バイト
+Box<dyn Exporter> の大きさ: 16 バイト

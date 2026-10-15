@@ -1,0 +1,10 @@
+   Compiling design_lab v0.1.0 (...\design_lab)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.57s
+     Running `target\debug\u03_generic.exe`
+Some(9)
+Some(1.5)
+Some('ん')
+None
+この呼び出しの T = i32
+この呼び出しの T = f64
+この呼び出しの T = &str

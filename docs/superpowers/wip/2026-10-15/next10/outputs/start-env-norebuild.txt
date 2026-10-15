@@ -1,0 +1,9 @@
+
+> book-management@0.1.0 start
+> next start -p 3001
+
+▲ Next.js 16.4.1
+- Local:         http://localhost:3001
+- Network:       http://192.168.210.103:3001
+✓ Ready in 234ms
+✓ Running next.config.ts took 48ms

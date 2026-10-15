@@ -1,0 +1,10 @@
+[19288:5652:1015/203550.225:INFO:components\enterprise\browser\controller\chrome_browser_cloud_management_controller.cc:241] No machine level policy manager exists.
+[19288:5652:1015/203550.307:WARNING:chrome\browser\extensions\external_registry_loader_win.cc:236] Error observing HKLM: アクセスが拒否されました。 (0x5)
+[19288:5652:1015/203550.671:INFO:CONSOLE:720] "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold", source: http://localhost:3000/_next/static/chunks/node_modules_next_dist_1bjkg68unqmjx._.js (720)
+[19288:5652:1015/203550.700:INFO:CONSOLE:720] "[HMR] connected", source: http://localhost:3000/_next/static/chunks/node_modules_next_dist_1bjkg68unqmjx._.js (720)
+[19288:5652:1015/203550.706:INFO:CONSOLE:720] "%c%s%c [RootLayout] サーバーで描画しました background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Prerender  ", source: http://localhost:3000/_next/static/chunks/node_modules_next_dist_1bjkg68unqmjx._.js (720)
+[19288:5652:1015/203550.706:INFO:CONSOLE:720] "%c%s%c [WherePage] Server Component を実行しました background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Prerender  ", source: http://localhost:3000/_next/static/chunks/node_modules_next_dist_1bjkg68unqmjx._.js (720)
+[19288:5652:1015/203550.733:INFO:CONSOLE:720] "[ClientLogger] 描画しました（実行場所: ブラウザ）", source: http://localhost:3000/_next/static/chunks/node_modules_next_dist_1bjkg68unqmjx._.js (720)
+[19288:5652:1015/203550.733:INFO:CONSOLE:720] "[ClientLogger] 描画しました（実行場所: ブラウザ）", source: http://localhost:3000/_next/static/chunks/node_modules_next_dist_1bjkg68unqmjx._.js (720)
+[19288:5652:1015/203550.734:INFO:CONSOLE:720] "[ClientLogger] useEffect を実行しました", source: http://localhost:3000/_next/static/chunks/node_modules_next_dist_1bjkg68unqmjx._.js (720)
+[19288:5652:1015/203550.735:INFO:CONSOLE:720] "[ClientLogger] useEffect を実行しました", source: http://localhost:3000/_next/static/chunks/node_modules_next_dist_1bjkg68unqmjx._.js (720)

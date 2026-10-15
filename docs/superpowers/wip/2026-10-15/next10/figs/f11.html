@@ -1,0 +1,31 @@
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 320" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-10-11" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="16" y="44" width="180" height="56" rx="8" fill="#ffffff" stroke="#10b981" stroke-width="2"/>
+<text x="106" y="68" text-anchor="middle" font-size="13" font-weight="bold" fill="#047857">main ブランチ</text>
+<text x="106" y="88" text-anchor="middle" font-size="12" fill="#475569">本番用のブランチ</text>
+<rect x="16" y="204" width="180" height="56" rx="8" fill="#ffffff" stroke="#3b82f6" stroke-width="2"/>
+<text x="106" y="228" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e40af">feature/review</text>
+<text x="106" y="248" text-anchor="middle" font-size="12" fill="#475569">それ以外のブランチ</text>
+<line x1="106" y1="200" x2="106" y2="106" stroke="#475569" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#ar-10-11)"/>
+<text x="116" y="150" font-size="12" fill="#334155">確認できたら</text>
+<text x="116" y="168" font-size="12" fill="#334155">main にマージ</text>
+<line x1="198" y1="72" x2="236" y2="72" stroke="#475569" stroke-width="2" marker-end="url(#ar-10-11)"/>
+<line x1="198" y1="232" x2="236" y2="232" stroke="#475569" stroke-width="2" marker-end="url(#ar-10-11)"/>
+<rect x="240" y="16" width="464" height="116" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="256" y="40" font-size="14" font-weight="bold" fill="#047857">Production（本番）デプロイ</text>
+<text x="256" y="64" font-size="12" fill="#0f172a">URL: book-management-app.vercel.app（いつも同じ）</text>
+<text x="256" y="86" font-size="12" fill="#0f172a">環境変数: 「Production」にチェックした値</text>
+<text x="256" y="108" font-size="12" fill="#0f172a">見られる人: 誰でも（一般公開）</text>
+<rect x="240" y="160" width="464" height="148" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="256" y="184" font-size="14" font-weight="bold" fill="#1e40af">Preview（お試し）デプロイ</text>
+<text x="256" y="208" font-size="12" fill="#0f172a">URL: book-management-app-git-feature-review-yourname.vercel.app</text>
+<text x="256" y="230" font-size="12" fill="#0f172a">環境変数: 「Preview」にチェックした値</text>
+<text x="256" y="252" font-size="12" fill="#0f172a">見られる人: 初期設定では Vercel にログインした本人など</text>
+<text x="256" y="278" font-size="12" font-weight="bold" fill="#c2410c">注意: 同じ Supabase の値を入れていると、</text>
+<text x="256" y="296" font-size="12" font-weight="bold" fill="#c2410c">プレビューで消したデータは本番のデータベースからも消える</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図10-11: Production と Preview の違い（どのブランチに push したかで行き先が変わる）</div>
+</div>

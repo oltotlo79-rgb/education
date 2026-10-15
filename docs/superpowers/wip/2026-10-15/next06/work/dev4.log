@@ -1,0 +1,89 @@
+▲ Next.js 16.4.1 (Turbopack)
+- Local:         http://localhost:3077
+- Network:       http://192.168.210.103:3077
+✓ Ready in 853ms
+✓ Running next.config.ts took 49ms
+
+⨯ Error: 環境変数 NEXT_PUBLIC_SUPABASE_URL が設定されていません。.env.local ファイルを確認してください。
+    at module evaluation (src\lib\supabase.ts:21:9)
+    at module evaluation (src\app\dbtest\page.tsx:1:1)
+    at module evaluation (C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\next06\work\book-management\.next\dev\server\chunks\ssr\[root-of-the-server]__1uglohim74qca._.js:85:47)
+  19 |   // throw: エラーを「投げる」。アプリの実行を停止し、コンソールにエラーを出力する
+  20 |   // new Error(...): JavaScript標準のエラーオブジェクトを作る
+> 21 |   throw new Error(
+     |         ^
+  22 |     "環境変数 NEXT_PUBLIC_SUPABASE_URL が設定されていません。" +
+  23 |       ".env.local ファイルを確認してください。"
+  24 |   );
+⨯ Error: 環境変数 NEXT_PUBLIC_SUPABASE_URL が設定されていません。.env.local ファイルを確認してください。
+    at module evaluation (src\lib\supabase.ts:21:9)
+    at module evaluation (src\app\dbtest\page.tsx:1:1)
+    at module evaluation (C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\next06\work\book-management\.next\dev\server\chunks\ssr\[root-of-the-server]__1uglohim74qca._.js:85:47)
+  19 |   // throw: エラーを「投げる」。アプリの実行を停止し、コンソールにエラーを出力する
+  20 |   // new Error(...): JavaScript標準のエラーオブジェクトを作る
+> 21 |   throw new Error(
+     |         ^
+  22 |     "環境変数 NEXT_PUBLIC_SUPABASE_URL が設定されていません。" +
+  23 |       ".env.local ファイルを確認してください。"
+  24 |   ); {
+  page: '/dbtest'
+}
+ GET /dbtest 500 in 2.1s (next.js: 1884ms, application-code: 204ms)
+⨯ Error: 環境変数 NEXT_PUBLIC_SUPABASE_URL が設定されていません。.env.local ファイルを確認してください。
+    at module evaluation (src\lib\supabase.ts:21:9)
+    at module evaluation (src\app\dbtest\page.tsx:1:1)
+    at module evaluation (C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\next06\work\book-management\.next\dev\server\chunks\ssr\[root-of-the-server]__1uglohim74qca._.js:85:47)
+  19 |   // throw: エラーを「投げる」。アプリの実行を停止し、コンソールにエラーを出力する
+  20 |   // new Error(...): JavaScript標準のエラーオブジェクトを作る
+> 21 |   throw new Error(
+     |         ^
+  22 |     "環境変数 NEXT_PUBLIC_SUPABASE_URL が設定されていません。" +
+  23 |       ".env.local ファイルを確認してください。"
+  24 |   ); {
+  page: '/dbtest'
+}
+⨯ Error: 環境変数 NEXT_PUBLIC_SUPABASE_URL が設定されていません。.env.local ファイルを確認してください。
+    at module evaluation (src\lib\supabase.ts:21:9)
+    at module evaluation (src\app\dbtest\page.tsx:1:1)
+    at module evaluation (C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\next06\work\book-management\.next\dev\server\chunks\ssr\[root-of-the-server]__1uglohim74qca._.js:85:47)
+  19 |   // throw: エラーを「投げる」。アプリの実行を停止し、コンソールにエラーを出力する
+  20 |   // new Error(...): JavaScript標準のエラーオブジェクトを作る
+> 21 |   throw new Error(
+     |         ^
+  22 |     "環境変数 NEXT_PUBLIC_SUPABASE_URL が設定されていません。" +
+  23 |       ".env.local ファイルを確認してください。"
+  24 |   ); {
+  page: '/dbtest'
+}
+ GET /dbtest 500 in 32ms (next.js: 23ms, application-code: 9ms)
+⨯ Error: 環境変数 NEXT_PUBLIC_SUPABASE_URL が設定されていません。.env.local ファイルを確認してください。
+    at module evaluation (src\lib\supabase.ts:21:9)
+    at module evaluation (src\app\dbtest\page.tsx:1:1)
+    at module evaluation (C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\next06\work\book-management\.next\dev\server\chunks\ssr\[root-of-the-server]__1uglohim74qca._.js:85:47)
+  19 |   // throw: エラーを「投げる」。アプリの実行を停止し、コンソールにエラーを出力する
+  20 |   // new Error(...): JavaScript標準のエラーオブジェクトを作る
+> 21 |   throw new Error(
+     |         ^
+  22 |     "環境変数 NEXT_PUBLIC_SUPABASE_URL が設定されていません。" +
+  23 |       ".env.local ファイルを確認してください。"
+  24 |   ); {
+  page: '/dbtest'
+}
+⨯ Error: 環境変数 NEXT_PUBLIC_SUPABASE_URL が設定されていません。.env.local ファイルを確認してください。
+    at module evaluation (src\lib\supabase.ts:21:9)
+    at module evaluation (src\app\dbtest\page.tsx:1:1)
+    at module evaluation (C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\next06\work\book-management\.next\dev\server\chunks\ssr\[root-of-the-server]__1uglohim74qca._.js:85:47)
+  19 |   // throw: エラーを「投げる」。アプリの実行を停止し、コンソールにエラーを出力する
+  20 |   // new Error(...): JavaScript標準のエラーオブジェクトを作る
+> 21 |   throw new Error(
+     |         ^
+  22 |     "環境変数 NEXT_PUBLIC_SUPABASE_URL が設定されていません。" +
+  23 |       ".env.local ファイルを確認してください。"
+  24 |   ); {
+  page: '/dbtest'
+}
+ GET /dbtest 500 in 32ms (next.js: 23ms, application-code: 8ms)
+  Reload env: .env.local
+✓ Compiled in 18ms
+ GET /dbtest 200 in 335ms (next.js: 133ms, application-code: 202ms)
+[?25h

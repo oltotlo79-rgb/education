@@ -1,0 +1,8 @@
+node : 用語 'node' は、コマンドレット、関数、スクリプト ファイル、または操作可能なプログラムの名前として認識されません。名前
+が正しく記述されていることを確認し、パスが含まれている場合はそのパスが正しいことを確認してから、再試行してください。
+発生場所 行:1 文字:1
++ node -v
++ ~~~~
+    + CategoryInfo          : ObjectNotFound: (node:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+ 

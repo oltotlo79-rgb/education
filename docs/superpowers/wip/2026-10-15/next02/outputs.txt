@@ -1,0 +1,432 @@
+=================== as-ng.ts
+--- node
+C:\ts-practice\as-ng.ts:11
+console.log(book.price.toLocaleString());
+                       ^
+
+TypeError: Cannot read properties of undefined (reading 'toLocaleString')
+
+Node.js v25.9.0
+--- tsc7
+=================== as-ok.ts
+--- node
+本のデータの形が正しくありません: { title: 'TypeScript入門' }
+--- tsc7
+=================== async-basic.ts
+--- node
+1. 本の取得を開始します
+2. main() を呼んだ直後の行です
+3. 取得できました: 本その1
+--- tsc7
+=================== async-parallel.ts
+--- node
+順番に待つ: 本その1, 本その2（約700ミリ秒）
+同時に待つ: 本その3, 本その4（約300ミリ秒）
+--- tsc7
+=================== await-ng.ts
+--- node
+Promise { <pending> }
+undefined
+--- tsc7
+await-ng.ts:21:20 - error TS2339: Property 'title' does not exist on type 'Promise<Book>'.
+
+21   console.log(book.title);
+                      ~~~~~
+
+  await-ng.ts:21:20 - Did you forget to use 'await'?
+    21   console.log(book.title);
+                          ~~~~~
+
+
+Found 1 error in await-ng.ts:21
+
+=================== await-ok.ts
+--- node
+{ id: '1', title: '本その1' }
+本その1
+--- tsc7
+=================== check.ts
+--- node
+1500
+1000500
+--- tsc7
+check.ts:11:25 - error TS2345: Argument of type 'string' is not assignable to parameter of type 'number'.
+
+11 console.log(addShipping("1000"));
+                           ~~~~~~
+
+
+Found 1 error in check.ts:11
+
+=================== check-ok.ts
+--- node
+1500
+1500
+--- tsc7
+=================== copy.ts
+--- node
+a = 10 / b = 20
+book1: { title: 'TypeScript入門', price: 1980 }
+book2: { title: 'TypeScript入門', price: 1980 }
+book1 と book2 は同じもの？ true
+book1: { title: 'TypeScript入門', price: 1980 }
+book3: { title: 'TypeScript入門', price: 500 }
+book1 と book3 は同じもの？ false
+--- tsc7
+=================== destructure-ng.ts
+--- node
+C:\ts-practice\destructure-ng.ts:3
+  return `${title}（${price}円）`;
+  ^
+
+ReferenceError: title is not defined
+
+Node.js v25.9.0
+--- tsc7
+destructure-ng.ts:2:32 - error TS7031: Binding element 'string' implicitly has an 'any' type.
+
+2 function describeBook({ title: string, price: number }) {
+                                 ~~~~~~
+
+destructure-ng.ts:2:47 - error TS7031: Binding element 'number' implicitly has an 'any' type.
+
+2 function describeBook({ title: string, price: number }) {
+                                                ~~~~~~
+
+destructure-ng.ts:3:13 - error TS2304: Cannot find name 'title'.
+
+3   return `${title}（${price}円）`;
+              ~~~~~
+
+destructure-ng.ts:3:22 - error TS2304: Cannot find name 'price'.
+
+3   return `${title}（${price}円）`;
+                       ~~~~~
+
+
+Found 4 errors in the same file, starting at: destructure-ng.ts:2
+
+=================== destructure-ok.ts
+--- node
+TypeScript入門（2980円）
+React実践ガイド（3300円）
+--- tsc7
+=================== direction.ts
+--- node
+north
+方角ではありません: up
+--- tsc7
+=================== direction-ng.ts
+--- node
+--- tsc7
+direction-ng.ts:6:7 - error TS2322: Type 'string' is not assignable to type 'Direction'.
+
+6 const d2: Direction = input;
+        ~~
+
+
+Found 1 error in direction-ng.ts:6
+
+=================== empty-ng.ts
+--- node
+{ name: '本棚A', books: [ 'TypeScript入門' ] }
+--- tsc7
+empty-ng.ts:7:18 - error TS2345: Argument of type '"TypeScript入門"' is not assignable to parameter of type 'never'.
+
+7 shelf.books.push("TypeScript入門");
+                   ~~~~~~~~~~~~~~
+
+
+Found 1 error in empty-ng.ts:7
+
+=================== empty-ok.ts
+--- node
+{ name: '本棚A', books: [ 'TypeScript入門' ] }
+--- tsc7
+=================== enum-ng.ts
+--- node
+C:\ts-practice\enum-ng.ts:1
+  > enum Signal {
+      Red = "RED",
+      Yellow = "YELLOW",
+      Green = "GREEN",
+  > }
+
+SyntaxError [ERR_UNSUPPORTED_TYPESCRIPT_SYNTAX]: TypeScript enum is not supported in strip-only mode
+  code: 'ERR_UNSUPPORTED_TYPESCRIPT_SYNTAX'
+}
+
+Node.js v25.9.0
+--- tsc7
+=================== enum-ok.ts
+--- node
+RED
+true
+false
+--- tsc7
+=================== errors.ts
+--- node
+undefined
+--- tsc7
+errors.ts:8:3 - error TS2322: Type 'string' is not assignable to type 'number'.
+
+8   price: "2980",
+    ~~~~~
+
+  errors.ts:3:3 - The expected type comes from property 'price' which is declared here on type 'Book'
+    3   price: number;
+        ~~~~~
+
+errors.ts:11:18 - error TS2551: Property 'titel' does not exist on type 'Book'. Did you mean 'title'?
+
+11 console.log(book.titel);
+                    ~~~~~
+
+  errors.ts:2:3 - 'title' is declared here.
+    2   title: string;
+        ~~~~~
+
+
+Found 2 errors in the same file, starting at: errors.ts:8
+
+=================== errors1.ts
+--- node
+--- tsc7
+errors1.ts:8:3 - error TS2322: Type 'string' is not assignable to type 'number'.
+
+8   price: "2980",
+    ~~~~~
+
+  errors1.ts:3:3 - The expected type comes from property 'price' which is declared here on type 'Book'
+    3   price: number;
+        ~~~~~
+
+
+Found 1 error in errors1.ts:8
+
+=================== find-by-id.ts
+--- node
+React実践ガイド
+山田太郎
+undefined
+--- tsc7
+=================== find-by-id-ng.ts
+--- node
+--- tsc7
+find-by-id-ng.ts:9:11 - error TS2322: Type 'number' is not assignable to type '{ id: string; }'.
+
+9 findById([1, 2, 3], "1");
+            ~
+
+find-by-id-ng.ts:9:14 - error TS2322: Type 'number' is not assignable to type '{ id: string; }'.
+
+9 findById([1, 2, 3], "1");
+               ~
+
+find-by-id-ng.ts:9:17 - error TS2322: Type 'number' is not assignable to type '{ id: string; }'.
+
+9 findById([1, 2, 3], "1");
+                  ~
+
+
+Found 3 errors in the same file, starting at: find-by-id-ng.ts:9
+
+=================== format-price.ts
+--- node
+2,980円
+12,800円
+価格未定
+--- tsc7
+=================== index-ng.ts
+--- node
+undefined
+C:\ts-practice\index-ng.ts:6
+console.log(fourth.toUpperCase());
+                   ^
+
+TypeError: Cannot read properties of undefined (reading 'toUpperCase')
+
+Node.js v25.9.0
+--- tsc7
+=================== index-ok.ts
+--- node
+4番目の果物はありません
+（なし）
+--- tsc7
+=================== nullish.ts
+--- node
+在庫情報なし
+0
+--- tsc7
+=================== q1.ts
+--- node
+3000
+2500
+--- tsc7
+=================== q1-ng.ts
+--- node
+3000
+--- tsc7
+q1-ng.ts:9:23 - error TS2345: Argument of type 'string' is not assignable to parameter of type 'number'.
+
+9 console.log(calcTotal("1000", 3));
+                        ~~~~~~
+
+
+Found 1 error in q1-ng.ts:9
+
+=================== q2.ts
+--- node
+--- tsc7
+q2.ts:8:3 - error TS2322: Type 'number' is not assignable to type 'string'.
+
+8   isbn: 9784000000000,
+    ~~~~
+
+  q2.ts:3:3 - The expected type comes from property 'isbn' which is declared here on type 'Book'
+    3   isbn: string;
+        ~~~~
+
+
+Found 1 error in q2.ts:8
+
+=================== q3.ts
+--- node
+実践
+[ 'TS', 'React' ]
+true false
+--- tsc7
+=================== q4.ts
+--- node
+文字列: TypeScript
+数値: 3.0
+真偽値: いいえ
+--- tsc7
+=================== q5.ts
+--- node
+読み込み中…
+2冊: TypeScript入門, React実践ガイド
+エラー: 通信に失敗しました
+--- tsc7
+=================== q5-ng.ts
+--- node
+読み込み中…
+2冊: TypeScript入門, React実践ガイド
+エラー: 通信に失敗しました
+--- tsc7
+q5-ng.ts:17:13 - error TS2322: Type '{ status: "empty"; }' is not assignable to type 'never'.
+
+17       const unreachable: never = state;
+               ~~~~~~~~~~~
+
+
+Found 1 error in q5-ng.ts:17
+
+=================== q6.ts
+--- node
+React実践ガイド
+1980
+undefined
+--- tsc7
+=================== q6-ng.ts
+--- node
+--- tsc7
+q6-ng.ts:8:15 - error TS2322: Type 'number' is not assignable to type 'string'.
+
+8 last<string>([1, 2]);
+                ~
+
+q6-ng.ts:8:18 - error TS2322: Type 'number' is not assignable to type 'string'.
+
+8 last<string>([1, 2]);
+                   ~
+
+
+Found 2 errors in the same file, starting at: q6-ng.ts:8
+
+=================== q7.ts
+--- node
+A
+B
+D
+2冊目 完了
+1冊目 完了
+C [ '1冊目', '2冊目' ]
+--- tsc7
+=================== shallow-ng.ts
+--- node
+佐藤花子
+--- tsc7
+=================== shallow-ok.ts
+--- node
+山田太郎
+佐藤花子
+鈴木一郎
+--- tsc7
+=================== typeof-null-ng.ts
+--- node
+object
+C:\ts-practice\typeof-null-ng.ts:8
+    return book.title;
+                ^
+
+TypeError: Cannot read properties of null (reading 'title')
+
+Node.js v25.9.0
+--- tsc7
+typeof-null-ng.ts:8:12 - error TS18047: 'book' is possibly 'null'.
+
+8     return book.title;
+             ~~~~
+
+
+Found 1 error in typeof-null-ng.ts:8
+
+=================== typeof-null-ok.ts
+--- node
+TypeScript入門
+（本がありません）
+--- tsc7
+=================== union-ng.ts
+--- node
+--- tsc7
+union-ng.ts:3:16 - error TS2339: Property 'toUpperCase' does not exist on type 'string | number'.
+  Property 'toUpperCase' does not exist on type 'number'.
+
+3   return value.toUpperCase();
+                 ~~~~~~~~~~~
+
+
+Found 1 error in union-ng.ts:3
+
+=================== union-ok.ts
+--- node
+HELLO
+42
+--- tsc7
+=================== utility.ts
+--- node
+{ id: 'book-001', title: 'TypeScript入門', author: '山田太郎', price: 2980 }
+{ id: 'book-001', title: 'TypeScript入門', author: '山田太郎', price: 1980 }
+2980
+--- tsc7
+=================== utility-ng.ts
+--- node
+--- tsc7
+utility-ng.ts:12:3 - error TS2353: Object literal may only specify known properties, and 'id' does not exist in type 'CreateBookInput'.
+
+12   id: "book-001",
+     ~~
+
+utility-ng.ts:19:36 - error TS2322: Type 'string' is not assignable to type 'number'.
+
+19 const changes: UpdateBookInput = { price: "1980" };
+                                      ~~~~~
+
+  utility-ng.ts:5:3 - The expected type comes from property 'price' which is declared here on type 'Partial<CreateBookInput>'
+    5   price: number;
+        ~~~~~
+
+
+Found 2 errors in the same file, starting at: utility-ng.ts:12
+

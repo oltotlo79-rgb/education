@@ -1,0 +1,16 @@
+   Compiling design_lab v0.1.0 (...\design_lab)
+error[E0369]: binary operation `>` cannot be applied to type `T`
+ --> src\bin\u03_err_e0369.rs:6:17
+  |
+6 |         if item > max {
+  |            ---- ^ --- T
+  |            |
+  |            T
+  |
+help: consider further restricting type parameter `T` with trait `PartialOrd`
+  |
+2 | fn largest<T: Copy + std::cmp::PartialOrd>(items: &[T]) -> Option<T> {
+  |                    ++++++++++++++++++++++
+
+For more information about this error, try `rustc --explain E0369`.
+error: could not compile `design_lab` (bin "u03_err_e0369") due to 1 previous error

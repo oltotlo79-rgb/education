@@ -1,0 +1,28 @@
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 236" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-03-08" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="16" y="34" width="338" height="194" rx="10" fill="#f8fafc"/>
+<rect x="366" y="34" width="338" height="194" rx="10" fill="#f8fafc"/>
+<text x="185" y="24" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">① 描画（レンダー）するとき</text>
+<text x="535" y="24" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">② ユーザーがクリックしたとき</text>
+<text x="28" y="56" font-size="13" font-weight="bold" fill="#047857">✓ OK: onClick={() =&gt; deleteBook(1)}</text>
+<rect x="28" y="66" width="314" height="56" rx="8" fill="#ffffff" stroke="#10b981" stroke-width="1.5"/>
+<text x="40" y="88" font-size="12.5" fill="#0f172a">関数を「渡す」だけ。まだ何も起きない</text>
+<text x="40" y="108" font-size="12" fill="#475569">onClick の中身: function（関数）</text>
+<line x1="342" y1="94" x2="376" y2="94" stroke="#475569" stroke-width="2" marker-end="url(#ar-03-08)"/>
+<rect x="378" y="66" width="314" height="56" rx="8" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="390" y="88" font-size="12.5" fill="#0f172a">React が受け取った関数を呼ぶ</text>
+<text x="390" y="108" font-size="12" fill="#047857">→ 本 1 を削除（期待どおり）</text>
+<text x="28" y="150" font-size="13" font-weight="bold" fill="#c2410c">✕ NG: onClick={deleteBook(2)}</text>
+<rect x="28" y="160" width="314" height="56" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="40" y="182" font-size="12.5" fill="#0f172a">描画した瞬間に deleteBook(2) が動く</text>
+<text x="40" y="202" font-size="12" fill="#c2410c">→ 本 2 が勝手に削除される！</text>
+<line x1="342" y1="188" x2="376" y2="188" stroke="#475569" stroke-width="2" marker-end="url(#ar-03-08)"/>
+<rect x="378" y="160" width="314" height="56" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="390" y="182" font-size="12.5" fill="#0f172a">onClick の中身は undefined（空）</text>
+<text x="390" y="202" font-size="12" fill="#475569">→ クリックしても何も起きない</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図3-7: 関数を「渡す」か「その場で呼ぶ」か。() を付けると描画のタイミングで実行されてしまいます</div>
+</div>

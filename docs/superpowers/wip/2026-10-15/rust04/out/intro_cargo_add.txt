@@ -1,0 +1,29 @@
+    Updating crates.io index
+      Adding thiserror v2.0.21 to dependencies
+             Features:
+             + std
+      Adding anyhow v1.0.104 to dependencies
+             Features:
+             + std
+             - backtrace
+      Adding serde_json v1.0.154 to dependencies
+             Features:
+             + std
+             - alloc
+             - arbitrary_precision
+             - float_roundtrip
+             - indexmap
+             - preserve_order
+             - raw_value
+             - unbounded_depth
+    Updating crates.io index
+     Locking 14 packages to latest Rust 1.97.1 compatible versions
+    Updating crates.io index
+      Adding serde v1.0.229 to dependencies
+             Features:
+             + derive
+             + serde_derive
+             + std
+             - alloc
+             - rc
+             - unstable

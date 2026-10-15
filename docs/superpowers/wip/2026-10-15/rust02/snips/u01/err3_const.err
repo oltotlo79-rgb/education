@@ -1,0 +1,8 @@
+   Compiling basics v0.1.0 (.../basics)
+error: missing type for `const` item
+ --> src\main.rs:1:22
+  |
+1 | const MAX_TITLE_CHARS = 80;
+  |                      ^ help: provide a type for the constant: `: i32`
+
+error: could not compile `basics` (bin "basics") due to 1 previous error

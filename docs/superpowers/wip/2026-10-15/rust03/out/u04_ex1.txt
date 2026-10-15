@@ -1,0 +1,3 @@
+world
+single
+exit=0

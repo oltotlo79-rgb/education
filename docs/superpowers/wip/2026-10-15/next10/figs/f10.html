@@ -1,0 +1,42 @@
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 270" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-10-10" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<text x="16" y="24" font-size="12" font-weight="bold" fill="#475569">Vercel の画面に出る状態（Status）</text>
+<rect x="100" y="36" width="70" height="30" rx="6" fill="#e2e8f0"/>
+<text x="135" y="56" text-anchor="middle" font-size="12" font-weight="bold" fill="#334155">Queued</text>
+<rect x="174" y="36" width="406" height="30" rx="6" fill="#fed7aa"/>
+<text x="377" y="56" text-anchor="middle" font-size="12" font-weight="bold" fill="#c2410c">Building（ログが流れる。ここで失敗すると Error）</text>
+<rect x="584" y="36" width="120" height="30" rx="6" fill="#bbf7d0"/>
+<text x="644" y="56" text-anchor="middle" font-size="12" font-weight="bold" fill="#047857">Ready</text>
+<line x1="30" y1="104" x2="700" y2="104" stroke="#475569" stroke-width="3" marker-end="url(#ar-10-10)"/>
+<circle cx="50" cy="104" r="7" fill="#3b82f6"/>
+<circle cx="135" cy="104" r="7" fill="#64748b"/>
+<circle cx="250" cy="104" r="7" fill="#f97316"/>
+<circle cx="400" cy="104" r="7" fill="#f97316"/>
+<circle cx="530" cy="104" r="7" fill="#f97316"/>
+<circle cx="644" cy="104" r="7" fill="#10b981"/>
+<text x="50" y="134" text-anchor="middle" font-size="12" font-weight="bold" fill="#1e40af">git push</text>
+<text x="135" y="134" text-anchor="middle" font-size="12" font-weight="bold" fill="#334155">Vercel が検知</text>
+<text x="250" y="134" text-anchor="middle" font-size="12" font-weight="bold" fill="#c2410c">npm install</text>
+<text x="400" y="134" text-anchor="middle" font-size="12" font-weight="bold" fill="#c2410c">npm run build</text>
+<text x="530" y="134" text-anchor="middle" font-size="12" font-weight="bold" fill="#c2410c">配置・確認</text>
+<text x="644" y="134" text-anchor="middle" font-size="12" font-weight="bold" fill="#047857">本番URLが切替</text>
+<text x="50" y="154" text-anchor="middle" font-size="12" fill="#64748b">0秒</text>
+<text x="135" y="154" text-anchor="middle" font-size="12" fill="#64748b">数秒後</text>
+<text x="250" y="154" text-anchor="middle" font-size="12" fill="#64748b">十数秒</text>
+<text x="400" y="154" text-anchor="middle" font-size="12" fill="#64748b">数十秒〜</text>
+<text x="530" y="154" text-anchor="middle" font-size="12" fill="#64748b">もう少し</text>
+<text x="644" y="154" text-anchor="middle" font-size="12" fill="#64748b">合計1〜3分</text>
+<rect x="16" y="176" width="420" height="80" rx="8" fill="#f8fafc" stroke="#cbd5e1"/>
+<text x="30" y="200" font-size="13" font-weight="bold" fill="#334155">ビルド中（Queued〜Building）の本番URLは？</text>
+<text x="30" y="222" font-size="12" fill="#0f172a">→ 前のバージョンがそのまま表示され続けます。</text>
+<text x="30" y="242" font-size="12" fill="#0f172a">　 ビルドに失敗（Error）しても、前のバージョンのまま。</text>
+<rect x="446" y="176" width="258" height="80" rx="8" fill="#ecfdf5" stroke="#10b981"/>
+<text x="460" y="200" font-size="13" font-weight="bold" fill="#047857">Ready になった瞬間</text>
+<text x="460" y="222" font-size="12" fill="#0f172a">→ 新しいバージョンに一気に</text>
+<text x="460" y="242" font-size="12" fill="#0f172a">　 切り替わります。</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図10-10: git push からデプロイ完了までの時系列（時間は小さなアプリでの目安）</div>
+</div>

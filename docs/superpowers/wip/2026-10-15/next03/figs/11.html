@@ -1,0 +1,58 @@
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 248" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-03-12" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="16" y="36" width="210" height="172" rx="10" fill="#eff6ff"/>
+<rect x="236" y="36" width="300" height="172" rx="10" fill="#fff7ed"/>
+<rect x="546" y="36" width="160" height="172" rx="10" fill="#f8fafc"/>
+<text x="121" y="60" font-size="13" font-weight="bold" fill="#1e40af" text-anchor="middle">マウント（初めて表示）</text>
+<text x="386" y="60" font-size="13" font-weight="bold" fill="#c2410c" text-anchor="middle">更新（count が 0 → 1）</text>
+<text x="626" y="60" font-size="13" font-weight="bold" fill="#475569" text-anchor="middle">アンマウント（消える）</text>
+<rect x="28" y="80" width="88" height="46" rx="8" fill="#ffffff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="72" y="99" font-size="12" font-weight="bold" fill="#1e40af" text-anchor="middle">① レンダー</text>
+<text x="72" y="117" font-size="12" fill="#0f172a" text-anchor="middle">count = 0</text>
+<rect x="124" y="80" width="88" height="46" rx="8" fill="#ffffff" stroke="#10b981" stroke-width="1.5"/>
+<text x="168" y="99" font-size="12" font-weight="bold" fill="#047857" text-anchor="middle">② effect</text>
+<text x="168" y="117" font-size="12" fill="#0f172a" text-anchor="middle">count = 0</text>
+<rect x="246" y="80" width="88" height="46" rx="8" fill="#ffffff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="290" y="99" font-size="12" font-weight="bold" fill="#1e40af" text-anchor="middle">① レンダー</text>
+<text x="290" y="117" font-size="12" fill="#0f172a" text-anchor="middle">count = 1</text>
+<rect x="342" y="80" width="88" height="46" rx="8" fill="#ffffff" stroke="#f97316" stroke-width="1.5"/>
+<text x="386" y="99" font-size="12" font-weight="bold" fill="#c2410c" text-anchor="middle">③ 片付け</text>
+<text x="386" y="117" font-size="12" fill="#0f172a" text-anchor="middle">count = 0</text>
+<rect x="438" y="80" width="88" height="46" rx="8" fill="#ffffff" stroke="#10b981" stroke-width="1.5"/>
+<text x="482" y="99" font-size="12" font-weight="bold" fill="#047857" text-anchor="middle">② effect</text>
+<text x="482" y="117" font-size="12" fill="#0f172a" text-anchor="middle">count = 1</text>
+<rect x="582" y="80" width="88" height="46" rx="8" fill="#ffffff" stroke="#f97316" stroke-width="1.5"/>
+<text x="626" y="99" font-size="12" font-weight="bold" fill="#c2410c" text-anchor="middle">③ 片付け</text>
+<text x="626" y="117" font-size="12" fill="#0f172a" text-anchor="middle">count = 1</text>
+<line x1="16" y1="148" x2="712" y2="148" stroke="#475569" stroke-width="2" marker-end="url(#ar-03-12)"/>
+<text x="708" y="140" font-size="12" fill="#475569" text-anchor="end">時間</text>
+<line x1="72" y1="126" x2="72" y2="144" stroke="#94a3b8" stroke-width="1.5"/>
+<line x1="168" y1="126" x2="168" y2="144" stroke="#94a3b8" stroke-width="1.5"/>
+<line x1="290" y1="126" x2="290" y2="144" stroke="#94a3b8" stroke-width="1.5"/>
+<line x1="386" y1="126" x2="386" y2="144" stroke="#94a3b8" stroke-width="1.5"/>
+<line x1="482" y1="126" x2="482" y2="144" stroke="#94a3b8" stroke-width="1.5"/>
+<line x1="626" y1="126" x2="626" y2="144" stroke="#94a3b8" stroke-width="1.5"/>
+<circle cx="72" cy="148" r="4" fill="#475569"/>
+<circle cx="168" cy="148" r="4" fill="#475569"/>
+<circle cx="290" cy="148" r="4" fill="#475569"/>
+<circle cx="386" cy="148" r="4" fill="#475569"/>
+<circle cx="482" cy="148" r="4" fill="#475569"/>
+<circle cx="626" cy="148" r="4" fill="#475569"/>
+<text x="121" y="176" font-size="12" fill="#475569" text-anchor="middle">画面に出たあとで</text>
+<text x="121" y="194" font-size="12" fill="#475569" text-anchor="middle">effect が動く</text>
+<text x="386" y="176" font-size="12" fill="#475569" text-anchor="middle">前回（count = 0）の effect を片付けてから</text>
+<text x="386" y="194" font-size="12" fill="#475569" text-anchor="middle">新しい effect が動く</text>
+<text x="626" y="176" font-size="12" fill="#475569" text-anchor="middle">最後の片付けだけ</text>
+<text x="626" y="194" font-size="12" fill="#475569" text-anchor="middle">が動く</text>
+<rect x="40" y="224" width="12" height="12" rx="2" fill="#ffffff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="58" y="235" font-size="12" fill="#0f172a">① レンダー（関数が呼ばれる）</text>
+<rect x="290" y="224" width="12" height="12" rx="2" fill="#ffffff" stroke="#10b981" stroke-width="1.5"/>
+<text x="308" y="235" font-size="12" fill="#0f172a">② effect の実行</text>
+<rect x="470" y="224" width="12" height="12" rx="2" fill="#ffffff" stroke="#f97316" stroke-width="1.5"/>
+<text x="488" y="235" font-size="12" fill="#0f172a">③ クリーンアップ（片付け）</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図3-11: useEffect の実行タイミング（依存配列 [count]、Strict Mode なしの場合）。下のサンプルの実際のログと同じ順番です</div>
+</div>

@@ -1,0 +1,21 @@
+   Compiling design_lab v0.1.0 (...\design_lab)
+error[E0277]: `?` couldn't convert the error to `AppError`
+  --> src\bin\u05_err_from.rs:23:35
+   |
+21 | fn signup(input: &str) -> Result<String, AppError> {
+   |                           ------------------------ expected `AppError` because of this
+22 |     // EmailError を AppError に変換する方法が無い
+23 |     let email = parse_email(input)?;
+   |                 ------------------^ the trait `From<EmailError>` is not implemented for `AppError`
+   |                 |
+   |                 this can't be annotated with `?` because it has type `Result<_, EmailError>`
+   |
+note: `AppError` needs to implement `From<EmailError>`
+  --> src\bin\u05_err_from.rs:8:1
+   |
+ 8 | enum AppError {
+   | ^^^^^^^^^^^^^
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `design_lab` (bin "u05_err_from") due to 1 previous error

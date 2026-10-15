@@ -20,6 +20,64 @@
 > - **Storage**（ストレージ：画像やファイルを保管する場所）
 > - **リアルタイムサブスクリプション**（Realtime Subscription：DBの変更を即座に画面へ反映する仕組み。WebSocketで通知を受け取る）
 
+### この章のゴールと地図
+
+この章を読み終えると、次の5つができるようになります。
+
+1. テーブル・行・列・主キーの関係を、表計算ソフトのシートにたとえて説明できる
+2. SQL の4つの命令（SELECT / INSERT / UPDATE / DELETE）で、表がどう変わるかを予想できる
+3. Supabase にプロジェクトと `books` テーブルを作り、**GRANT（テーブルの公開）と RLS（行ごとの許可）** を正しく設定できる
+4. 公開してよいキーと、絶対に隠すべきキーを見分けて `.env.local` に書ける
+5. `supabase-js` で CRUD を実行し、戻ってきた `{ data, error }` を読んで「成功・失敗・0件」を判断できる
+
+章全体は、下の地図の①〜⑦の順に進みます。迷子になったら、この図に戻って「今どこにいるか」を確かめてください。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 290" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-05-01" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="0" y="0" width="720" height="290" fill="#f8fafc" rx="10"/>
+<text x="360" y="28" text-anchor="middle" font-size="15" font-weight="bold" fill="#1e293b">第5章の地図: 「データの置き場所」を作って、コードからつなぐまで</text>
+<rect x="20" y="50" width="152" height="74" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="96" y="80" text-anchor="middle" font-size="14" font-weight="bold" fill="#1e40af">① DB と SQL の基礎</text>
+<text x="96" y="104" text-anchor="middle" font-size="12" fill="#475569">第0節: 表・行・列・SQL</text>
+<rect x="196" y="50" width="152" height="74" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="272" y="80" text-anchor="middle" font-size="14" font-weight="bold" fill="#1e40af">② プロジェクト作成</text>
+<text x="272" y="104" text-anchor="middle" font-size="12" fill="#475569">第1〜2節: Supabase 登録</text>
+<rect x="372" y="50" width="152" height="74" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="448" y="80" text-anchor="middle" font-size="14" font-weight="bold" fill="#1e40af">③ テーブルを作る</text>
+<text x="448" y="104" text-anchor="middle" font-size="12" fill="#475569">第3〜4節: 設計と SQL</text>
+<rect x="548" y="50" width="152" height="74" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<text x="624" y="80" text-anchor="middle" font-size="14" font-weight="bold" fill="#c2410c">④ 公開と RLS</text>
+<text x="624" y="104" text-anchor="middle" font-size="12" fill="#475569">4.3.1・第5節: 守りの設定</text>
+<line x1="172" y1="87" x2="194" y2="87" stroke="#475569" stroke-width="2" marker-end="url(#ar-05-01)"/>
+<line x1="348" y1="87" x2="370" y2="87" stroke="#475569" stroke-width="2" marker-end="url(#ar-05-01)"/>
+<line x1="524" y1="87" x2="546" y2="87" stroke="#475569" stroke-width="2" marker-end="url(#ar-05-01)"/>
+<path d="M624,124 V150 H96 V170" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#ar-05-01)"/>
+<rect x="20" y="172" width="152" height="74" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<text x="96" y="202" text-anchor="middle" font-size="14" font-weight="bold" fill="#c2410c">⑤ キーと環境変数</text>
+<text x="96" y="226" text-anchor="middle" font-size="12" fill="#475569">6.1〜6.2: .env.local</text>
+<rect x="196" y="172" width="152" height="74" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="272" y="202" text-anchor="middle" font-size="14" font-weight="bold" fill="#1e40af">⑥ コードから CRUD</text>
+<text x="272" y="226" text-anchor="middle" font-size="12" fill="#475569">6.3〜第7節: supabase-js</text>
+<rect x="372" y="172" width="152" height="74" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="448" y="202" text-anchor="middle" font-size="14" font-weight="bold" fill="#1e40af">⑦ 確認とトラブル対応</text>
+<text x="448" y="226" text-anchor="middle" font-size="12" fill="#475569">第8〜9節・練習問題</text>
+<rect x="548" y="172" width="152" height="74" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="2" stroke-dasharray="6 4"/>
+<text x="624" y="202" text-anchor="middle" font-size="14" font-weight="bold" fill="#047857">次の第6章へ</text>
+<text x="624" y="226" text-anchor="middle" font-size="12" fill="#475569">画面（Next.js）とつなぐ</text>
+<line x1="172" y1="209" x2="194" y2="209" stroke="#475569" stroke-width="2" marker-end="url(#ar-05-01)"/>
+<line x1="348" y1="209" x2="370" y2="209" stroke="#475569" stroke-width="2" marker-end="url(#ar-05-01)"/>
+<line x1="524" y1="209" x2="546" y2="209" stroke="#475569" stroke-width="2" marker-end="url(#ar-05-01)"/>
+<rect x="20" y="258" width="14" height="14" rx="3" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<text x="42" y="270" font-size="12" fill="#475569">橙色 = セキュリティに関わる手順（ここを飛ばすと「データが返らない」「データが漏れる」の原因になります）</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図5-1: 第5章の地図。①〜⑦の順に進み、最後に次章で画面とつなぐ</div>
+</div>
+
+> **ヒント:** この章は長いので、1日で全部読む必要はありません。おすすめの区切りは「①〜③（テーブル作成まで）」「④〜⑤（守りの設定とキー）」「⑥〜⑦（コードで操作）」の3回です。
+
 ## 目次
 
 0. [前提知識: データベースとSQLの超基礎](#0-前提知識-データベースとsqlの超基礎)
@@ -33,6 +91,7 @@
 8. [テストデータの投入](#8-テストデータの投入)
 9. [トラブルシューティング](#9-トラブルシューティング)
 10. [発展: アプリでは使っていない重要なSupabase機能](#発展-アプリでは使っていない重要なsupabase機能)
+11. [練習問題（解答・解説つき）](#練習問題解答解説つき)
 
 ---
 
@@ -64,6 +123,66 @@ RDB では、データを **テーブル（表）** に保存します。
 | カラム（列） | 縦の項目（id, title, author...） | A列、B列、C列... |
 | レコード（行） | 横の1件分のデータ | 1行目、2行目... |
 | 主キー（PK） | レコードを一意に区別する値（普通は `id`） | 通し番号 |
+
+表計算ソフト（Excel や Google スプレッドシート）を開いた画面を思い浮かべると、テーブルの各部分の名前がすっきり整理できます。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 290" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-05-02" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="30" y="60" width="60" height="120" fill="#ecfdf5"/>
+<rect x="30" y="60" width="440" height="30" fill="#f1f5f9"/>
+<g stroke="#cbd5e1" stroke-width="1">
+<line x1="30" y1="60" x2="470" y2="60"/>
+<line x1="30" y1="90" x2="470" y2="90"/>
+<line x1="30" y1="120" x2="470" y2="120"/>
+<line x1="30" y1="150" x2="470" y2="150"/>
+<line x1="30" y1="180" x2="470" y2="180"/>
+<line x1="30" y1="60" x2="30" y2="180"/>
+<line x1="90" y1="60" x2="90" y2="180"/>
+<line x1="260" y1="60" x2="260" y2="180"/>
+<line x1="370" y1="60" x2="370" y2="180"/>
+<line x1="470" y1="60" x2="470" y2="180"/>
+</g>
+<text x="60" y="80" text-anchor="middle" font-size="13" font-weight="bold" fill="#047857">id</text>
+<text x="175" y="80" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e293b">title</text>
+<text x="315" y="80" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e293b">author</text>
+<text x="420" y="80" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e293b">status</text>
+<text x="60" y="110" text-anchor="middle" font-size="13" fill="#047857">1</text>
+<text x="98" y="110" font-size="13" fill="#1e293b">リーダブルコード</text>
+<text x="278" y="110" font-size="13" fill="#1e293b">Boswell</text>
+<text x="378" y="110" font-size="13" fill="#1e293b">done</text>
+<text x="60" y="140" text-anchor="middle" font-size="13" fill="#047857">2</text>
+<text x="98" y="140" font-size="13" fill="#1e293b">プロを目指す人〜</text>
+<text x="278" y="140" font-size="13" fill="#1e293b">鈴木僚太</text>
+<text x="378" y="140" font-size="13" fill="#1e293b">reading</text>
+<text x="60" y="170" text-anchor="middle" font-size="13" fill="#047857">3</text>
+<text x="98" y="170" font-size="13" fill="#1e293b">達人プログラマー</text>
+<text x="278" y="170" font-size="13" fill="#1e293b">Thomas</text>
+<text x="378" y="170" font-size="13" fill="#1e293b">unread</text>
+<rect x="90" y="60" width="170" height="120" fill="none" stroke="#3b82f6" stroke-width="3"/>
+<rect x="30" y="120" width="440" height="30" fill="none" stroke="#f97316" stroke-width="3"/>
+<rect x="30" y="60" width="60" height="120" fill="none" stroke="#10b981" stroke-width="3"/>
+<path d="M30,180 H120 L112,202 H38 Z" fill="#ffffff" stroke="#64748b" stroke-width="1.5"/>
+<text x="75" y="197" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e293b">books</text>
+<text x="130" y="198" font-size="12" fill="#64748b">← シート1枚 ＝ テーブル1つ（名前は books）</text>
+<path d="M495,40 C420,22 230,22 180,56" fill="none" stroke="#3b82f6" stroke-width="2" marker-end="url(#ar-05-02)"/>
+<text x="500" y="38" font-size="14" font-weight="bold" fill="#1e40af">① カラム（列）</text>
+<text x="500" y="56" font-size="12" fill="#475569">縦の項目。title 列には</text>
+<text x="500" y="72" font-size="12" fill="#475569">題名だけが並ぶ</text>
+<line x1="496" y1="135" x2="474" y2="135" stroke="#f97316" stroke-width="2" marker-end="url(#ar-05-02)"/>
+<text x="500" y="128" font-size="14" font-weight="bold" fill="#c2410c">② レコード（行）</text>
+<text x="500" y="146" font-size="12" fill="#475569">横1行 ＝ 本1冊ぶんのデータ</text>
+<path d="M495,232 C380,262 90,262 62,184" fill="none" stroke="#10b981" stroke-width="2" marker-end="url(#ar-05-02)"/>
+<text x="500" y="226" font-size="14" font-weight="bold" fill="#047857">③ 主キー（id）</text>
+<text x="500" y="244" font-size="12" fill="#475569">行を見分ける番号。</text>
+<text x="500" y="260" font-size="12" fill="#475569">重複も空（NULL）もダメ</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図5-2: テーブルは「表計算ソフトのシート1枚」。青い枠が列、橙の枠が行、緑の枠が主キー</div>
+</div>
+
+たとえ話とのちがいも1つだけ押さえておきましょう。表計算ソフトでは同じ列に数字と文字を混ぜて書けますが、データベースでは**列ごとに入れてよい値の種類（データ型）が決まっていて**、違う種類の値は保存を断られます。この「断ってくれる」性質が、データを長く正しく保つための強みです（3.5 節と 4.3 節で実際に体験します）。
 
 ### 0.3 SQL の超ミニマム入門
 
@@ -203,6 +322,72 @@ JavaScript のコードと SQL の対応関係は次のとおり。
 | 削除 | `.from("books").delete().eq("id", 3)` | `DELETE FROM books WHERE id=3` |
 
 > **要点:** 「SQLは知らなくても書ける」けど「SQLを知っていると見通しがよくなる」。Supabaseには**SQLエディタ画面**があるので、迷ったらそこで生のSQLを書いて確認できます。
+
+#### 裏側で何が起きているか（通信の流れ）
+
+`supabase.from("books").select(...)` の1行は、手元で SQL に変わるわけではありません。たとえるなら、**レストランの注文**です。あなた（客）は日本語で注文票を書き、店員（supabase-js）がそれを厨房向けの伝票（HTTP リクエスト）にしてインターネット越しに届け、受付（API Gateway）が会員証（キー）を確認し、伝票係（PostgREST）が料理人向けの指示（SQL）に書き直し、料理人（PostgreSQL）が作った料理（データ）が逆の順番で戻ってきます。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 362" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-05-05" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="4" y="4" width="276" height="330" rx="10" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
+<rect x="288" y="4" width="428" height="330" rx="10" fill="#ecfdf5" stroke="#a7f3d0" stroke-width="1.5"/>
+<rect x="6" y="14" width="132" height="48" rx="8" fill="#ffffff" stroke="#3b82f6" stroke-width="2"/>
+<text x="72" y="34" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e40af">あなたのコード</text>
+<text x="72" y="52" text-anchor="middle" font-size="12" fill="#475569">Next.js の画面</text>
+<rect x="150" y="14" width="132" height="48" rx="8" fill="#ffffff" stroke="#3b82f6" stroke-width="2"/>
+<text x="216" y="34" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e40af">supabase-js</text>
+<text x="216" y="52" text-anchor="middle" font-size="12" fill="#475569">道具（ライブラリ）</text>
+<rect x="294" y="14" width="132" height="48" rx="8" fill="#ffffff" stroke="#10b981" stroke-width="2"/>
+<text x="360" y="34" text-anchor="middle" font-size="13" font-weight="bold" fill="#047857">API Gateway</text>
+<text x="360" y="52" text-anchor="middle" font-size="12" fill="#475569">玄関・キーの確認</text>
+<rect x="438" y="14" width="132" height="48" rx="8" fill="#ffffff" stroke="#10b981" stroke-width="2"/>
+<text x="504" y="34" text-anchor="middle" font-size="13" font-weight="bold" fill="#047857">PostgREST</text>
+<text x="504" y="52" text-anchor="middle" font-size="12" fill="#475569">HTTP を SQL に翻訳</text>
+<rect x="582" y="14" width="132" height="48" rx="8" fill="#ffffff" stroke="#10b981" stroke-width="2"/>
+<text x="648" y="34" text-anchor="middle" font-size="13" font-weight="bold" fill="#047857">PostgreSQL</text>
+<text x="648" y="52" text-anchor="middle" font-size="12" fill="#475569">データベース本体</text>
+<g stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4 4">
+<line x1="72" y1="62" x2="72" y2="326"/>
+<line x1="216" y1="62" x2="216" y2="326"/>
+<line x1="360" y1="62" x2="360" y2="326"/>
+<line x1="504" y1="62" x2="504" y2="326"/>
+<line x1="648" y1="62" x2="648" y2="326"/>
+</g>
+<text x="144" y="84" text-anchor="middle" font-size="12" fill="#1e293b">① .select() を呼ぶ</text>
+<line x1="72" y1="92" x2="214" y2="92" stroke="#475569" stroke-width="2" marker-end="url(#ar-05-05)"/>
+<text x="288" y="114" text-anchor="middle" font-size="12" fill="#1e293b">② HTTPS で送る</text>
+<text x="288" y="128" text-anchor="middle" font-size="12" font-family="Consolas, monospace" fill="#c2410c">GET /rest/v1/books</text>
+<line x1="216" y1="136" x2="358" y2="136" stroke="#475569" stroke-width="2" marker-end="url(#ar-05-05)"/>
+<text x="432" y="172" text-anchor="middle" font-size="12" fill="#1e293b">③ キーを確認して転送</text>
+<line x1="360" y1="180" x2="502" y2="180" stroke="#475569" stroke-width="2" marker-end="url(#ar-05-05)"/>
+<text x="576" y="202" text-anchor="middle" font-size="12" fill="#1e293b">④ SQL にして実行</text>
+<text x="576" y="216" text-anchor="middle" font-size="12" font-family="Consolas, monospace" fill="#c2410c">SELECT title, status</text>
+<line x1="504" y1="224" x2="646" y2="224" stroke="#475569" stroke-width="2" marker-end="url(#ar-05-05)"/>
+<text x="576" y="254" text-anchor="middle" font-size="12" fill="#1e293b">⑤ 結果の行</text>
+<line x1="648" y1="262" x2="506" y2="262" stroke="#475569" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#ar-05-05)"/>
+<text x="432" y="284" text-anchor="middle" font-size="12" fill="#1e293b">⑥ JSON にして返す</text>
+<line x1="504" y1="292" x2="218" y2="292" stroke="#475569" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#ar-05-05)"/>
+<text x="144" y="310" text-anchor="middle" font-size="12" fill="#1e293b">⑦ { data, error }</text>
+<line x1="216" y1="318" x2="74" y2="318" stroke="#475569" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#ar-05-05)"/>
+<text x="142" y="352" text-anchor="middle" font-size="12" font-weight="bold" fill="#1e40af">あなたのPC・ブラウザ側</text>
+<text x="502" y="352" text-anchor="middle" font-size="12" font-weight="bold" fill="#047857">Supabase 側（インターネットの向こう）</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図5-5: supabase-js の1行が、HTTP と SQL に姿を変えて往復する流れ（実線が行き、点線が帰り）</div>
+</div>
+
+1. **①** あなたのコードが `supabase.from('books').select('title, status')` を呼びます。
+2. **②** supabase-js が、それを `GET https://xxxx.supabase.co/rest/v1/books?select=title%2Cstatus` のような **HTTP リクエスト**（Web の世界の「お願いの手紙」）に組み立てて送ります。ヘッダー（手紙の封筒部分）には `.env.local` に書いた**キー**が入っています。
+3. **③** Supabase の玄関（API Gateway）がキーを確認し、正しければ中へ通します。
+4. **④** PostgREST（ポストグレスト）が URL を読み、`SELECT title, status FROM books` に相当する SQL に**翻訳**して PostgreSQL に渡します。このとき「anon（ログインしていない人）として実行する」という**身分（ロール）**も一緒に伝えます。
+5. **⑤** PostgreSQL は、その身分で**テーブルに入ってよいか（GRANT）**、**どの行を見せてよいか（RLS）** を確認してから結果の行を返します。
+6. **⑥⑦** PostgREST が結果を **JSON**（JavaScript のオブジェクトとほぼ同じ形の文字列）に変えて送り返し、supabase-js がそれを `{ data, error }` という形にしてあなたのコードに渡します。
+
+> **用語:** **HTTP リクエスト** = ブラウザやプログラムがサーバーに送る「お願い」。`GET`（ちょうだい）、`POST`（追加して）、`PATCH`（一部を書き換えて）、`DELETE`（消して）などの種類があり、それぞれ SELECT・INSERT・UPDATE・DELETE に対応します。
+
+> **ヒント:** この流れを覚えておくと、エラーの意味が読みやすくなります。③で止まれば「キーが違う」、⑤の GRANT で止まれば `permission denied for table`、⑤の RLS で行が全部はじかれれば「エラーなしの空配列 `[]`」になります。詳しくは 4.3.1 節・第5節・第9節で実例とともに見ていきます。
 
 ---
 
@@ -381,9 +566,9 @@ https://supabase.com
 
 **ステップ 2: GitHub アカウントでサインアップ**
 
-Supabase は GitHub アカウントでのサインアップを推奨しています（GitHub 連携のみ対応）。
+Supabase には、GitHub アカウントでサインアップする方法と、メールアドレス＋パスワードで登録する方法があります。本書では、入力が少なく、開発者なら持っておきたい GitHub アカウントを使う方法を紹介します（メールで登録した場合も、この先の手順は同じです）。
 
-1. 「Sign in with GitHub」ボタンをクリック
+1. 「Continue with GitHub」（または「Sign in with GitHub」）ボタンをクリック
 2. GitHub のログイン画面が表示されるので、自分の GitHub アカウントでログイン
 3. Supabase にアクセスを許可するかの確認画面が出るので「Authorize supabase」をクリック
 4. Supabase のダッシュボードにリダイレクトされれば成功
@@ -472,30 +657,89 @@ Supabase は GitHub アカウントでのサインアップを推奨していま
 
 **ステップ 5: プロジェクトダッシュボードの確認**
 
-セットアップが完了すると、プロジェクトのダッシュボードが表示されます。
+セットアップが完了すると、プロジェクトのダッシュボードが表示されます。この章でよく使う場所は、左のメニューと右上のボタンの4か所だけです。
 
-```
-┌──────────────────────────────────────────────────────────┐
-│  book-manager                                            │
-│                                                          │
-│  ┌─────────────────┐  ┌─────────────────┐               │
-│  │ Project URL      │  │ API Key (anon)  │               │
-│  │ https://xxxx     │  │ eyJhbGci...     │               │
-│  │ .supabase.co     │  │                 │               │
-│  └─────────────────┘  └─────────────────┘               │
-│                                                          │
-│  ── Getting Started ──                                   │
-│  [Table Editor] [SQL Editor] [Auth] [Storage]            │
-│                                                          │
-└──────────────────────────────────────────────────────────┘
-```
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 400" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<rect x="0" y="0" width="720" height="400" rx="10" fill="#1f1f1f"/>
+<path d="M0,10 A10,10 0 0 1 10,0 H710 A10,10 0 0 1 720,10 V32 H0 Z" fill="#e2e8f0"/>
+<circle cx="16" cy="16" r="5" fill="#f87171"/>
+<circle cx="32" cy="16" r="5" fill="#fbbf24"/>
+<circle cx="48" cy="16" r="5" fill="#34d399"/>
+<rect x="70" y="6" width="560" height="20" rx="10" fill="#ffffff"/>
+<text x="84" y="21" font-size="12" fill="#475569">supabase.com/dashboard/project/</text>
+<text x="272" y="21" font-size="12" font-weight="bold" fill="#c2410c">abcdefghijklmnop</text>
+<text x="400" y="21" font-size="12" fill="#c2410c">← プロジェクトID（Reference ID）</text>
+<rect x="0" y="32" width="720" height="40" fill="#1c1c1c"/>
+<text x="16" y="58" font-size="16" font-weight="bold" fill="#3ecf8e">supabase</text>
+<text x="100" y="57" font-size="13" fill="#a1a1aa">my-org  /  book-manager</text>
+<rect x="600" y="41" width="96" height="24" rx="6" fill="#1c1c1c" stroke="#3ecf8e" stroke-width="1.5"/>
+<text x="648" y="58" text-anchor="middle" font-size="13" font-weight="bold" fill="#3ecf8e">Connect</text>
+<rect x="0" y="72" width="176" height="328" fill="#181818"/>
+<g font-size="12" fill="#d4d4d8">
+<text x="34" y="98">Project Overview</text>
+<text x="34" y="124">Table Editor</text>
+<text x="34" y="150">SQL Editor</text>
+<text x="34" y="176">Database</text>
+<text x="34" y="202">Authentication</text>
+<text x="34" y="228">Storage</text>
+<text x="34" y="254">Edge Functions</text>
+<text x="34" y="280">Realtime</text>
+<text x="34" y="306">Advisors</text>
+<text x="34" y="332">Logs</text>
+<text x="34" y="384">Project Settings</text>
+</g>
+<g fill="#3f3f46">
+<rect x="14" y="88" width="12" height="12" rx="3"/>
+<rect x="14" y="114" width="12" height="12" rx="3"/>
+<rect x="14" y="140" width="12" height="12" rx="3"/>
+<rect x="14" y="166" width="12" height="12" rx="3"/>
+<rect x="14" y="192" width="12" height="12" rx="3"/>
+<rect x="14" y="218" width="12" height="12" rx="3"/>
+<rect x="14" y="244" width="12" height="12" rx="3"/>
+<rect x="14" y="270" width="12" height="12" rx="3"/>
+<rect x="14" y="296" width="12" height="12" rx="3"/>
+<rect x="14" y="322" width="12" height="12" rx="3"/>
+<rect x="14" y="374" width="12" height="12" rx="3"/>
+</g>
+<line x1="8" y1="356" x2="168" y2="356" stroke="#3f3f46" stroke-width="1"/>
+<rect x="8" y="109" width="160" height="22" rx="4" fill="none" stroke="#f97316" stroke-width="2"/>
+<rect x="8" y="135" width="160" height="22" rx="4" fill="none" stroke="#f97316" stroke-width="2"/>
+<rect x="8" y="369" width="160" height="22" rx="4" fill="none" stroke="#f97316" stroke-width="2"/>
+<circle cx="160" cy="120" r="10" fill="#f97316"/>
+<text x="160" y="124" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">1</text>
+<circle cx="160" cy="146" r="10" fill="#f97316"/>
+<text x="160" y="150" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">2</text>
+<circle cx="586" cy="53" r="10" fill="#f97316"/>
+<text x="586" y="57" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">3</text>
+<circle cx="160" cy="380" r="10" fill="#f97316"/>
+<text x="160" y="384" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">4</text>
+<text x="200" y="108" font-size="20" font-weight="bold" fill="#f4f4f5">book-manager</text>
+<text x="200" y="132" font-size="12" fill="#a1a1aa">Free plan ・ Northeast Asia (Tokyo)</text>
+<rect x="200" y="150" width="160" height="90" rx="8" fill="#262626" stroke="#3f3f46"/>
+<text x="214" y="176" font-size="12" fill="#a1a1aa">Database</text>
+<text x="214" y="204" font-size="18" font-weight="bold" fill="#f4f4f5">0 tables</text>
+<rect x="200" y="252" width="160" height="90" rx="8" fill="#262626" stroke="#3f3f46"/>
+<text x="214" y="278" font-size="12" fill="#a1a1aa">API requests</text>
+<text x="214" y="306" font-size="18" font-weight="bold" fill="#f4f4f5">0</text>
+<rect x="380" y="150" width="326" height="192" rx="10" fill="#ffffff"/>
+<text x="396" y="176" font-size="13" font-weight="bold" fill="#c2410c">この章で使う4か所</text>
+<text x="396" y="202" font-size="12" fill="#1e293b">1  Table Editor … 表を表計算ソフトのように見る</text>
+<text x="396" y="228" font-size="12" fill="#1e293b">2  SQL Editor … SQL を書いて実行する</text>
+<text x="396" y="254" font-size="12" fill="#1e293b">3  Connect … Project URL と公開用キーを表示</text>
+<text x="396" y="280" font-size="12" fill="#1e293b">4  Project Settings … API Keys・Data API など</text>
+<text x="396" y="310" font-size="12" fill="#64748b">※ 左のメニューは、狭い画面ではアイコンだけに</text>
+<text x="396" y="328" font-size="12" fill="#64748b">　 なります（マウスを乗せると名前が出ます）</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図5-6: プロジェクトのダッシュボード（画面イメージ。メニューの並びや表記は Supabase の更新で変わることがあります）</div>
+</div>
 
 > **重要: API キーを控えておく**
 >
-> ダッシュボードの「Settings」>「API」から以下の2つの値を確認・メモしてください。後ほどコードから Supabase に接続する際に必要です。
+> 後ほどコードから Supabase に接続する際に、次の2つの値が必要です。いちばん簡単なのは、画面上部の **「Connect」** ボタンを押して表示される画面からコピーする方法です。設定画面から探す場合は **「Project Settings」** の中の **「Data API」**（Project URL）と **「API Keys」**（キー）にあります（以前のダッシュボードでは「Settings」>「API」という1つの画面にまとまっていました）。
 >
 > - **Project URL**: `https://xxxxxxxx.supabase.co` の形式
-> - **anon (public) key**: `eyJhbGciOiJIUzI1NiIs...` のような長い文字列（実体は **JWT**：JSON Web Token と呼ばれる署名付きの文字列）
+> - **公開用キー**: 新しい形式の **Publishable key**（`sb_publishable_...` で始まる短めの文字列）、または従来の **anon (public) key**（`eyJhbGciOiJIUzI1NiIs...` で始まる長い文字列。実体は **JWT**：JSON Web Token と呼ばれる署名付きの文字列）。どちらも「ブラウザに置いてよい公開用のキー」で、本書ではどちらを使っても同じように動きます
 
 > **ANON Key と Service Role Key の違い（重要）**
 >
@@ -503,10 +747,66 @@ Supabase は GitHub アカウントでのサインアップを推奨していま
 >
 > | キー名 | 用途 | RLSの効果 | どこに置く |
 > |--------|------|-----------|-----------|
-> | **anon key**（アノン：anonymous の略。匿名キー） | ブラウザから使う公開キー | RLS が有効。ポリシーに従う | フロントエンド、`.env.local` の `NEXT_PUBLIC_` プレフィックス付きでOK |
-> | **service_role key**（サービスロール：管理者キー） | サーバー処理から使う特権キー | **RLSを完全にバイパス（無視）** | **絶対にフロントエンドに含めない**。サーバー側だけ |
+> | **anon key**（アノン：anonymous の略。匿名キー）／新形式では **Publishable key** | ブラウザから使う公開キー | RLS が有効。ポリシーに従う | フロントエンド、`.env.local` の `NEXT_PUBLIC_` プレフィックス付きでOK |
+> | **service_role key**（サービスロール：管理者キー）／新形式では **Secret key** | サーバー処理から使う特権キー | **RLSを完全にバイパス（無視）** | **絶対にフロントエンドに含めない**。サーバー側だけ |
 >
-> **service_role key が漏えいすると、全データの読み取り・書き換え・削除を誰でもできるようになります**。Gitにコミットしたり、ブラウザに渡したりするのは絶対に避けてください。
+> **service_role key（Secret key）が漏えいすると、全データの読み取り・書き換え・削除を誰でもできるようになります**。Gitにコミットしたり、ブラウザに渡したりするのは絶対に避けてください。
+
+キーは「家の鍵」にたとえると分かりやすくなります。**公開用キー**は「お店の入口の鍵（営業時間中は誰でも入れる）」で、入った後に何ができるかは店内のルール（RLS）が決めます。**秘密キー**は「店長のマスターキー」で、金庫も倉庫も全部開きます。マスターキーをお客さんに配ってはいけないのと同じで、秘密キーはブラウザに渡してはいけません。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 290" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<rect x="210" y="8" width="160" height="50" rx="8" fill="#f1f5f9" stroke="#cbd5e1"/>
+<text x="290" y="30" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e293b">ブラウザに渡る</text>
+<text x="290" y="48" text-anchor="middle" font-size="12" fill="#475569">（画面の JavaScript）</text>
+<rect x="380" y="8" width="160" height="50" rx="8" fill="#f1f5f9" stroke="#cbd5e1"/>
+<text x="460" y="30" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e293b">NEXT_PUBLIC_ を付ける</text>
+<text x="460" y="48" text-anchor="middle" font-size="12" fill="#475569">（.env.local の変数名）</text>
+<rect x="550" y="8" width="160" height="50" rx="8" fill="#f1f5f9" stroke="#cbd5e1"/>
+<text x="630" y="30" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e293b">サーバー側だけで使う</text>
+<text x="630" y="48" text-anchor="middle" font-size="12" fill="#475569">（NEXT_PUBLIC_ なし）</text>
+<rect x="10" y="68" width="190" height="96" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="24" y="92" font-size="14" font-weight="bold" fill="#1e40af">公開用キー</text>
+<text x="24" y="112" font-size="12" fill="#1e293b">Publishable key</text>
+<text x="24" y="128" font-size="12" font-family="Consolas, monospace" fill="#475569">sb_publishable_…</text>
+<text x="24" y="146" font-size="12" fill="#475569">旧: anon key（eyJ…）</text>
+<text x="24" y="160" font-size="12" fill="#1e40af">RLS のルールに従う</text>
+<rect x="10" y="176" width="190" height="96" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<text x="24" y="200" font-size="14" font-weight="bold" fill="#c2410c">秘密キー</text>
+<text x="24" y="220" font-size="12" fill="#1e293b">Secret key</text>
+<text x="24" y="236" font-size="12" font-family="Consolas, monospace" fill="#475569">sb_secret_…</text>
+<text x="24" y="254" font-size="12" fill="#475569">旧: service_role key</text>
+<text x="24" y="268" font-size="12" fill="#c2410c">RLS を素通り（全行OK）</text>
+<rect x="210" y="68" width="160" height="96" rx="8" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="290" y="108" text-anchor="middle" font-size="20" font-weight="bold" fill="#047857">OK</text>
+<text x="290" y="134" text-anchor="middle" font-size="12" fill="#475569">見られる前提で</text>
+<text x="290" y="150" text-anchor="middle" font-size="12" fill="#475569">作られたキー</text>
+<rect x="380" y="68" width="160" height="96" rx="8" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="460" y="108" text-anchor="middle" font-size="20" font-weight="bold" fill="#047857">OK</text>
+<text x="460" y="134" text-anchor="middle" font-size="12" fill="#475569">付けないと</text>
+<text x="460" y="150" text-anchor="middle" font-size="12" fill="#475569">画面から読めない</text>
+<rect x="550" y="68" width="160" height="96" rx="8" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="630" y="108" text-anchor="middle" font-size="20" font-weight="bold" fill="#047857">OK</text>
+<text x="630" y="134" text-anchor="middle" font-size="12" fill="#475569">サーバーから</text>
+<text x="630" y="150" text-anchor="middle" font-size="12" fill="#475569">使ってもよい</text>
+<rect x="210" y="176" width="160" height="96" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="290" y="216" text-anchor="middle" font-size="20" font-weight="bold" fill="#c2410c">NG</text>
+<text x="290" y="242" text-anchor="middle" font-size="12" fill="#475569">誰でも全データを</text>
+<text x="290" y="258" text-anchor="middle" font-size="12" fill="#475569">読み書きできてしまう</text>
+<rect x="380" y="176" width="160" height="96" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="460" y="216" text-anchor="middle" font-size="20" font-weight="bold" fill="#c2410c">NG</text>
+<text x="460" y="242" text-anchor="middle" font-size="12" fill="#475569">付けた瞬間に</text>
+<text x="460" y="258" text-anchor="middle" font-size="12" fill="#475569">ブラウザへ漏れる</text>
+<rect x="550" y="176" width="160" height="96" rx="8" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="630" y="216" text-anchor="middle" font-size="20" font-weight="bold" fill="#047857">OK</text>
+<text x="630" y="242" text-anchor="middle" font-size="12" fill="#475569">使ってよいのは</text>
+<text x="630" y="258" text-anchor="middle" font-size="12" fill="#475569">ここだけ</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図5-7: 2種類のキーを「どこに置いてよいか」。どちらのキーも、.env.local ごと Git にコミットしないのは共通</div>
+</div>
+
+> **注意: キーの形式が2種類ある理由**
+> Supabase は2025年から、新しい形式の **Publishable key（`sb_publishable_...`）** と **Secret key（`sb_secret_...`）** を導入しました。従来の **anon key / service_role key**（どちらも `eyJ...` で始まる長い JWT）は「Legacy（旧形式）」として扱われ、公式ドキュメントでは2026年末までに廃止する予定と案内されています。役割は同じなので、本書では変数名を `NEXT_PUBLIC_SUPABASE_ANON_KEY` のままにし、**値には Publishable key を貼り付ける**ことをおすすめします（従来の anon key が表示されるプロジェクトでは、それを貼っても動きます）。
 
 ### 2.3 リージョンの選び方
 
@@ -538,13 +838,15 @@ Supabase の無料プラン（Free Plan）には以下の制限があります�
 
 | 項目 | 無料プランの制限 |
 |------|-----------------|
-| **プロジェクト数** | 2つまで |
-| **データベース容量** | 500 MB |
+| **プロジェクト数** | 同時に動かせるのは2つまで |
+| **データベース容量** | 500 MB（プロジェクトごと） |
 | **ストレージ容量** | 1 GB |
-| **帯域幅** | 5 GB / 月 |
+| **転送量（Egress）** | 5 GB / 月（＋キャッシュ経由の転送 5 GB） |
 | **Edge Function 呼び出し** | 50万回 / 月 |
-| **認証ユーザー数** | 無制限（MAU ベースでない） |
+| **認証ユーザー数** | 月間アクティブユーザー（MAU）50,000人まで |
 | **一時停止** | 1週間アクセスがないと自動停止（再起動可） |
+
+> **注意:** 料金プランの数字は変わることがあります。最新の値は公式の料金ページ（supabase.com/pricing）で確認してください（上の表は2026年10月時点の内容です）。
 
 > **自動停止について:**
 > 無料プランでは、1週間以上ダッシュボードやAPIへのアクセスがないとプロジェクトが自動的に一時停止されます。停止されてもデータは消えません。ダッシュボードにアクセスして「Restore project」ボタンを押せば数分で復旧します。学習中は定期的にアクセスするようにしましょう。
@@ -963,7 +1265,61 @@ Supabase ダッシュボードの左メニューから「SQL Editor」をクリ�
 
 **ステップ 2: 新しいクエリを作成**
 
-「New query」ボタンをクリックし、以下の SQL をコピー＆ペーストします。
+「New query」ボタンをクリックし、以下の SQL をコピー＆ペーストします。SQL Editor の画面は、おおよそ次のような4つの部分でできています。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 360" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<rect x="0" y="0" width="720" height="360" rx="10" fill="#1f1f1f"/>
+<path d="M0,10 A10,10 0 0 1 10,0 H710 A10,10 0 0 1 720,10 V36 H0 Z" fill="#1c1c1c"/>
+<text x="16" y="24" font-size="14" font-weight="bold" fill="#f4f4f5">SQL Editor</text>
+<rect x="0" y="36" width="160" height="324" fill="#181818"/>
+<rect x="12" y="48" width="136" height="26" rx="6" fill="#262626" stroke="#3ecf8e" stroke-width="1.5"/>
+<text x="80" y="66" text-anchor="middle" font-size="12" font-weight="bold" fill="#3ecf8e">+ New query</text>
+<text x="14" y="98" font-size="12" fill="#71717a">PRIVATE</text>
+<rect x="12" y="106" width="136" height="24" rx="4" fill="#2a2a2a"/>
+<text x="22" y="123" font-size="12" fill="#e4e4e7">Untitled query</text>
+<rect x="160" y="36" width="560" height="28" fill="#1c1c1c"/>
+<rect x="168" y="40" width="130" height="24" rx="4" fill="#262626"/>
+<text x="180" y="57" font-size="12" fill="#e4e4e7">Untitled query</text>
+<rect x="160" y="64" width="560" height="160" fill="#1e1e1e"/>
+<g font-size="12" font-family="Consolas, monospace">
+<text x="174" y="86" fill="#52525b">1</text>
+<text x="196" y="86" fill="#6b7280">-- books テーブルを作る</text>
+<text x="174" y="106" fill="#52525b">2</text>
+<text x="196" y="106" fill="#c084fc">CREATE TABLE</text>
+<text x="290" y="106" fill="#e4e4e7">books (</text>
+<text x="174" y="126" fill="#52525b">3</text>
+<text x="212" y="126" fill="#e4e4e7">id uuid DEFAULT gen_random_uuid() PRIMARY KEY,</text>
+<text x="174" y="146" fill="#52525b">4</text>
+<text x="212" y="146" fill="#e4e4e7">title text NOT NULL,</text>
+<text x="174" y="166" fill="#52525b">5</text>
+<text x="212" y="166" fill="#e4e4e7">author text NOT NULL,</text>
+<text x="174" y="186" fill="#52525b">6</text>
+<text x="212" y="186" fill="#6b7280">…（続き）</text>
+</g>
+<rect x="588" y="190" width="120" height="26" rx="6" fill="#3ecf8e"/>
+<text x="648" y="208" text-anchor="middle" font-size="12" font-weight="bold" fill="#1c1c1c">Run  Ctrl+Enter</text>
+<rect x="160" y="224" width="560" height="28" fill="#1c1c1c"/>
+<text x="176" y="243" font-size="12" font-weight="bold" fill="#f4f4f5">Results</text>
+<line x1="170" y1="250" x2="230" y2="250" stroke="#3ecf8e" stroke-width="2"/>
+<rect x="160" y="252" width="560" height="108" fill="#181818"/>
+<text x="180" y="290" font-size="13" fill="#3ecf8e">Success. No rows returned</text>
+<text x="180" y="318" font-size="12" fill="#a1a1aa">（SELECT を実行したときは、ここに表の形で結果が出ます）</text>
+<circle cx="150" cy="61" r="10" fill="#f97316"/>
+<text x="150" y="65" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">1</text>
+<circle cx="560" cy="126" r="10" fill="#f97316"/>
+<text x="560" y="130" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">2</text>
+<circle cx="574" cy="203" r="10" fill="#f97316"/>
+<text x="574" y="207" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">3</text>
+<circle cx="440" cy="285" r="10" fill="#f97316"/>
+<text x="440" y="289" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">4</text>
+<text x="470" y="290" font-size="12" fill="#fdba74">1 New query → 2 貼り付け</text>
+<text x="470" y="310" font-size="12" fill="#fdba74">→ 3 Run → 4 結果を確認</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図5-8: SQL Editor の画面イメージ。①新しいクエリ → ②SQL を貼る → ③Run → ④結果欄を見る</div>
+</div>
+
+> **ヒント:** SQL Editor では、複数の SQL 文をまとめて貼って一度に Run できます。そのとき結果欄に表示されるのは**最後の文の結果だけ**です。途中の文が失敗すると、そこで止まって赤い `ERROR` が表示されます。
 
 > **▼ このコードがやること（先に日本語で）:** このアプリの中心となる **books（書籍）テーブルを新しく作る**SQLです。`CREATE TABLE` で「どんな列（カラム）を、どんなデータ型・制約で持つか」を一気に定義します。あわせて、行が更新されるたびに `updated_at`（更新日時）を自動で書き換える**トリガー**も用意します。長く見えますが、ほとんどが各列の説明コメントなので、まずはコピペで実行してOKです。
 
@@ -1233,7 +1589,7 @@ SQL を使わずに、Dashboard の GUI でテーブルを作成することも�
 
 **ステップ 4: カラムの追加**
 
-デフォルトで `id`（uuid, Primary Key）と `created_at`（timestamptz）が用意されています。残りのカラムを以下の手順で追加します:
+デフォルトで `id`（Primary Key）と `created_at`（timestamptz）が用意されています。ただし `id` の型は初期状態では `int8`（自動で増える連番）になっていることが多いので、4.3 節の SQL 版とそろえる場合は、`id` の型を `uuid` に変え、Default Value に `gen_random_uuid()` を指定してください。残りのカラムを以下の手順で追加します:
 
 1. 「Add column」ボタンをクリック
 2. 以下の情報を入力:
@@ -1303,6 +1659,8 @@ CREATE TRIGGER update_books_updated_at
   -- 上で作った関数を実行
   EXECUTE FUNCTION update_updated_at_column();
 ```
+
+> **注意:** GUI で作ったテーブルでも、コード（supabase-js）から使うには 4.3.1 節の「Data API への公開（GRANT）」が必要になる場合があります。Table Editor にも公開のオン／オフを切り替える表示が加わっていますが、画面の表記は変わりやすいので、迷ったら **4.3.1 節の GRANT の SQL をそのまま実行**してください。何度実行しても害はありません。
 
 ---
 
@@ -1381,9 +1739,63 @@ RLS がなければ、anon key を知っている人は誰でもすべてのデ�
   </div>
 </div>
 
+上の図を「1行ずつ何が起きているか」まで拡大したのが次の図です。RLS は、テーブルの**行を1つずつ取り出して、ポリシーの条件式に当てはめ、`true` になった行だけを通す**検問所のように働きます。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 300" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-05-10" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="190" y="6" width="340" height="32" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="360" y="27" text-anchor="middle" font-size="13" font-family="Consolas, monospace" font-weight="bold" fill="#1e40af">USING ( auth.uid() = user_id )</text>
+<rect x="10" y="104" width="160" height="96" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="90" y="128" text-anchor="middle" font-size="12" fill="#475569">ログイン中の人</text>
+<text x="90" y="156" text-anchor="middle" font-size="18" font-weight="bold" fill="#1e40af">ユーザー A</text>
+<text x="90" y="184" text-anchor="middle" font-size="12" font-family="Consolas, monospace" fill="#1e293b">auth.uid() = A</text>
+<line x1="170" y1="152" x2="216" y2="152" stroke="#475569" stroke-width="2" marker-end="url(#ar-05-10)"/>
+<rect x="220" y="50" width="280" height="30" fill="#f1f5f9" stroke="#cbd5e1"/>
+<text x="232" y="70" font-size="12" font-weight="bold" fill="#334155">id</text>
+<text x="282" y="70" font-size="12" font-weight="bold" fill="#334155">title</text>
+<text x="420" y="70" font-size="12" font-weight="bold" fill="#334155">user_id</text>
+<rect x="220" y="80" width="280" height="40" fill="#ecfdf5" stroke="#cbd5e1"/>
+<text x="232" y="105" font-size="13" fill="#1e293b">1</text>
+<text x="282" y="105" font-size="13" fill="#1e293b">こころ</text>
+<text x="420" y="105" font-size="13" font-weight="bold" fill="#047857">A</text>
+<rect x="220" y="120" width="280" height="40" fill="#f8fafc" stroke="#cbd5e1"/>
+<text x="232" y="145" font-size="13" fill="#94a3b8">2</text>
+<text x="282" y="145" font-size="13" fill="#94a3b8">人間失格</text>
+<text x="420" y="145" font-size="13" font-weight="bold" fill="#94a3b8">B</text>
+<rect x="220" y="160" width="280" height="40" fill="#ecfdf5" stroke="#cbd5e1"/>
+<text x="232" y="185" font-size="13" fill="#1e293b">3</text>
+<text x="282" y="185" font-size="13" fill="#1e293b">坊っちゃん</text>
+<text x="420" y="185" font-size="13" font-weight="bold" fill="#047857">A</text>
+<rect x="220" y="200" width="280" height="40" fill="#f8fafc" stroke="#cbd5e1"/>
+<text x="232" y="225" font-size="13" fill="#94a3b8">4</text>
+<text x="282" y="225" font-size="13" fill="#94a3b8">銀河鉄道の夜</text>
+<text x="420" y="225" font-size="13" font-weight="bold" fill="#94a3b8">C</text>
+<line x1="270" y1="50" x2="270" y2="240" stroke="#cbd5e1" stroke-width="1"/>
+<line x1="408" y1="50" x2="408" y2="240" stroke="#cbd5e1" stroke-width="1"/>
+<text x="520" y="105" font-size="12" font-family="Consolas, monospace" fill="#047857">A = A → true</text>
+<text x="640" y="105" font-size="13" font-weight="bold" fill="#047857">返す</text>
+<text x="520" y="145" font-size="12" font-family="Consolas, monospace" fill="#64748b">A = B → false</text>
+<text x="640" y="145" font-size="13" font-weight="bold" fill="#64748b">隠す</text>
+<text x="520" y="185" font-size="12" font-family="Consolas, monospace" fill="#047857">A = A → true</text>
+<text x="640" y="185" font-size="13" font-weight="bold" fill="#047857">返す</text>
+<text x="520" y="225" font-size="12" font-family="Consolas, monospace" fill="#64748b">A = C → false</text>
+<text x="640" y="225" font-size="13" font-weight="bold" fill="#64748b">隠す</text>
+<rect x="10" y="254" width="700" height="38" rx="8" fill="#f8fafc" stroke="#cbd5e1"/>
+<text x="360" y="278" text-anchor="middle" font-size="12" fill="#1e293b">結果: data に入るのは id 1 と 3 の2行だけ。B・C の行は「最初から無かった」ように扱われ、エラーにはなりません</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図5-10: RLS は1行ずつ条件式を計算し、true の行だけを返す（ユーザー A がアクセスした場合）</div>
+</div>
+
+> **ヒント:** 「行が隠される」とき、Supabase は**エラーを返しません**。見えない行は「存在しない行」と同じ扱いになるからです。これが、第9節で扱う「エラーは出ないのに `data` が空配列 `[]`」という定番トラブルの正体です。
+
 ### 5.3 書籍管理アプリでの RLS 設定（簡易版）
 
 本チュートリアルではまだ認証機能を実装していないため、まずは **誰でも全データにアクセスできる** シンプルなポリシーを設定します。認証機能の実装後に、より厳密なポリシーに変更します。
+
+> **注意:** RLS のポリシーは「入館した人が、どの行を触れるか」を決めるルールです。そもそも入館できなければ（4.3.1 節の **GRANT** をしていなければ）、ポリシーを書いても `permission denied for table books` で止まります。**4.3.1 節の GRANT を先に実行してから**、この節の SQL を実行してください。
 
 **SQL Editor で以下を実行してください:**
 
@@ -1547,6 +1959,53 @@ CREATE POLICY "Allow public update access"
 - **`USING`**: 既存の行に対する条件（SELECT, UPDATE, DELETE で使用）。「どの行が見えるか」
 - **`WITH CHECK`**: 新しく書き込まれる行に対する条件（INSERT, UPDATE で使用）。「どの行を書き込めるか」
 
+2つの条件が「いつ」チェックされるのかを、いちばん複雑な UPDATE で図にすると次のようになります。改札にたとえると、`USING` は**入口の改札**（この行に触ってよいか）、`WITH CHECK` は**出口の改札**（書き換えた結果を保存してよいか）です。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 262" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-05-11" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<text x="360" y="22" text-anchor="middle" font-size="14" font-weight="bold" fill="#1e293b">UPDATE books SET … WHERE … を実行したとき（1行ごとに）</text>
+<rect x="6" y="40" width="120" height="88" rx="10" fill="#f8fafc" stroke="#64748b" stroke-width="2"/>
+<text x="66" y="66" text-anchor="middle" font-size="13" font-weight="bold" fill="#475569">変更前の行</text>
+<text x="66" y="90" text-anchor="middle" font-size="12" font-family="Consolas, monospace" fill="#1e293b">user_id = A</text>
+<text x="66" y="110" text-anchor="middle" font-size="12" fill="#1e293b">status = 読みたい</text>
+<rect x="146" y="40" width="140" height="88" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="216" y="66" text-anchor="middle" font-size="14" font-weight="bold" fill="#1e40af">USING</text>
+<text x="216" y="90" text-anchor="middle" font-size="12" fill="#1e293b">入口の改札</text>
+<text x="216" y="110" text-anchor="middle" font-size="12" fill="#1e293b">この行に触ってよい？</text>
+<rect x="306" y="40" width="110" height="88" rx="10" fill="#f8fafc" stroke="#64748b" stroke-width="2"/>
+<text x="361" y="74" text-anchor="middle" font-size="13" font-weight="bold" fill="#475569">SET で</text>
+<text x="361" y="96" text-anchor="middle" font-size="13" font-weight="bold" fill="#475569">書き換え</text>
+<rect x="436" y="40" width="140" height="88" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<text x="506" y="66" text-anchor="middle" font-size="14" font-weight="bold" fill="#c2410c">WITH CHECK</text>
+<text x="506" y="90" text-anchor="middle" font-size="12" fill="#1e293b">出口の改札</text>
+<text x="506" y="110" text-anchor="middle" font-size="12" fill="#1e293b">この値で保存してよい？</text>
+<rect x="596" y="40" width="118" height="88" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="655" y="78" text-anchor="middle" font-size="13" font-weight="bold" fill="#047857">保存される</text>
+<text x="655" y="100" text-anchor="middle" font-size="12" fill="#475569">（更新成功）</text>
+<line x1="126" y1="84" x2="144" y2="84" stroke="#475569" stroke-width="2" marker-end="url(#ar-05-11)"/>
+<line x1="286" y1="84" x2="304" y2="84" stroke="#475569" stroke-width="2" marker-end="url(#ar-05-11)"/>
+<line x1="416" y1="84" x2="434" y2="84" stroke="#475569" stroke-width="2" marker-end="url(#ar-05-11)"/>
+<line x1="576" y1="84" x2="594" y2="84" stroke="#475569" stroke-width="2" marker-end="url(#ar-05-11)"/>
+<text x="216" y="150" text-anchor="middle" font-size="12" fill="#1e40af">false なら: その行は対象外</text>
+<text x="216" y="168" text-anchor="middle" font-size="12" fill="#1e40af">（エラーなしで 0 行更新）</text>
+<text x="506" y="150" text-anchor="middle" font-size="12" fill="#c2410c">false なら: エラーで中止</text>
+<text x="506" y="168" text-anchor="middle" font-size="12" fill="#c2410c">（row-level security 違反）</text>
+<text x="10" y="200" font-size="13" font-weight="bold" fill="#1e293b">操作ごとに使う条件</text>
+<rect x="6" y="210" width="168" height="40" rx="8" fill="#eff6ff" stroke="#3b82f6"/>
+<text x="90" y="235" text-anchor="middle" font-size="12" fill="#1e293b">SELECT → USING</text>
+<rect x="182" y="210" width="172" height="40" rx="8" fill="#fff7ed" stroke="#f97316"/>
+<text x="268" y="235" text-anchor="middle" font-size="12" fill="#1e293b">INSERT → WITH CHECK</text>
+<rect x="362" y="210" width="184" height="40" rx="8" fill="#ecfdf5" stroke="#10b981"/>
+<text x="454" y="235" text-anchor="middle" font-size="12" fill="#1e293b">UPDATE → USING ＋ WITH CHECK</text>
+<rect x="554" y="210" width="160" height="40" rx="8" fill="#eff6ff" stroke="#3b82f6"/>
+<text x="634" y="235" text-anchor="middle" font-size="12" fill="#1e293b">DELETE → USING</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図5-11: USING は「変更前の行」、WITH CHECK は「変更後の行」を検査する</div>
+</div>
+
 ### 5.4 認証実装後の RLS ポリシー（参考）
 
 第7章で認証機能を追加した後は、以下のようなポリシーに変更します。参考として掲載しておきます。
@@ -1629,11 +2088,60 @@ Supabase に接続するために必要な情報を環境変数として設定�
 
 1. Supabase Dashboard にログイン
 2. 対象プロジェクトを選択
-3. 左メニューの「Settings」(歯車アイコン) をクリック
-4. 「API」をクリック
+3. 画面上部の **「Connect」** ボタンをクリックし、表示された画面から Project URL と公開用キーをコピーする（いちばん簡単な方法）
+4. 「Connect」が見つからない場合は、左メニュー下の **「Project Settings」**（歯車アイコン）を開き、**「Data API」** で Project URL を、**「API Keys」** で公開用キーを確認する（以前のダッシュボードでは「Settings」>「API」という1つの画面でした）
 5. 以下の2つの値をコピー:
    - **Project URL**: `https://xxxxxxxx.supabase.co`
-   - **anon public key**: `eyJhbGciOiJIUzI1NiIs...`（長い文字列。JWT形式）
+   - **公開用キー**: **Publishable key**（`sb_publishable_...`）、または従来の **anon public key**（`eyJhbGciOiJIUzI1NiIs...` で始まる長い JWT 形式の文字列）
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 340" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<rect x="0" y="0" width="720" height="340" rx="10" fill="#1f1f1f"/>
+<path d="M0,10 A10,10 0 0 1 10,0 H710 A10,10 0 0 1 720,10 V36 H0 Z" fill="#1c1c1c"/>
+<text x="16" y="24" font-size="14" font-weight="bold" fill="#f4f4f5">Project Settings</text>
+<rect x="0" y="36" width="170" height="304" fill="#181818"/>
+<g font-size="12" fill="#a1a1aa">
+<text x="16" y="62">General</text>
+<text x="16" y="88">Compute and Disk</text>
+<text x="16" y="114">Infrastructure</text>
+<text x="16" y="140">Integrations</text>
+<text x="16" y="166" fill="#f4f4f5">Data API</text>
+<text x="16" y="218">JWT Keys</text>
+<text x="16" y="244">Log Drains</text>
+<text x="16" y="270">Add Ons</text>
+</g>
+<rect x="8" y="178" width="154" height="26" rx="4" fill="#2a2a2a"/>
+<text x="16" y="196" font-size="12" font-weight="bold" fill="#f4f4f5">API Keys</text>
+<circle cx="150" cy="162" r="10" fill="#f97316"/>
+<text x="150" y="166" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">1</text>
+<circle cx="150" cy="191" r="10" fill="#f97316"/>
+<text x="150" y="195" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">2</text>
+<text x="190" y="70" font-size="18" font-weight="bold" fill="#f4f4f5">API Keys</text>
+<text x="190" y="100" font-size="12" font-weight="bold" fill="#f4f4f5">Publishable and secret API keys</text>
+<line x1="190" y1="108" x2="390" y2="108" stroke="#3ecf8e" stroke-width="2"/>
+<text x="420" y="100" font-size="12" fill="#71717a">Legacy API Keys</text>
+<rect x="190" y="122" width="514" height="84" rx="8" fill="#262626" stroke="#3f3f46"/>
+<text x="206" y="146" font-size="13" font-weight="bold" fill="#f4f4f5">Publishable key</text>
+<text x="330" y="146" font-size="12" fill="#fdba74">← ブラウザに置いてよい公開用キー</text>
+<rect x="206" y="160" width="360" height="30" rx="6" fill="#1c1c1c" stroke="#3f3f46"/>
+<text x="218" y="180" font-size="12" font-family="Consolas, monospace" fill="#e4e4e7">sb_publishable_Ab12Cd34Ef56…</text>
+<rect x="578" y="160" width="70" height="30" rx="6" fill="#2a2a2a" stroke="#52525b"/>
+<text x="613" y="180" text-anchor="middle" font-size="12" fill="#f4f4f5">Copy</text>
+<circle cx="666" cy="175" r="10" fill="#f97316"/>
+<text x="666" y="179" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">3</text>
+<rect x="190" y="218" width="514" height="84" rx="8" fill="#262626" stroke="#f97316" stroke-width="1.5"/>
+<text x="206" y="242" font-size="13" font-weight="bold" fill="#f4f4f5">Secret keys</text>
+<text x="300" y="242" font-size="12" fill="#fdba74">← サーバー専用。ブラウザ・NEXT_PUBLIC_ は厳禁</text>
+<rect x="206" y="256" width="360" height="30" rx="6" fill="#1c1c1c" stroke="#3f3f46"/>
+<text x="218" y="276" font-size="12" font-family="Consolas, monospace" fill="#e4e4e7">sb_secret_••••••••••••</text>
+<rect x="578" y="256" width="70" height="30" rx="6" fill="#2a2a2a" stroke="#52525b"/>
+<text x="613" y="276" text-anchor="middle" font-size="12" fill="#f4f4f5">Reveal</text>
+<text x="190" y="326" font-size="12" fill="#a1a1aa">1 Data API … Project URL　2 API Keys … キーの一覧　3 Copy … 公開用キーをコピー</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図5-12: Project Settings の API Keys 画面（画面イメージ）。コピーするのは上の Publishable key だけ</div>
+</div>
+
+> **ヒント:** 「Legacy API Keys」のタブには、従来の anon key と service_role key（どちらも `eyJ...` で始まる長い文字列）が表示されます。古い記事や動画の手順で「anon key をコピー」と出てきたら、新しい画面では Publishable key がその代わりだと読み替えてください。
 
 **ステップ 2: `.env.local` ファイルの作成**
 

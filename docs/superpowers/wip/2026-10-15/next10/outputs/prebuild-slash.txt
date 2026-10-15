@@ -1,0 +1,6 @@
+
+> book-management@0.1.0 prebuild
+> node scripts/check-env.mjs
+
+✖ NEXT_PUBLIC_SUPABASE_URL の形が正しくありません: https://xyzbookdemo123.supabase.co/
+→ https://xxxx.supabase.co の形（最後に / を付けない）にしてください

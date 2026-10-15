@@ -1,0 +1,8 @@
+[1] BEGIN
+[1] INSERT INTO notes ... (買い物メモ)
+[1] COMMIT
+Ok(())
+[2] BEGIN
+[2] ROLLBACK
+Err("タイトルが空です")
+exit=0

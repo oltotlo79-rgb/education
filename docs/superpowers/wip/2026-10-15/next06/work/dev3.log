@@ -1,0 +1,16 @@
+▲ Next.js 16.4.1 (Turbopack)
+- Local:         http://localhost:3077
+- Network:       http://192.168.210.103:3077
+- Environments: .env.local
+✓ Ready in 724ms
+✓ Running next.config.ts took 43ms
+
+ GET /envtest 200 in 988ms (next.js: 517ms, application-code: 471ms)
+ GET /dbtest 200 in 406ms (next.js: 230ms, application-code: 175ms)
+  Reload env: .env.local
+✓ Compiled in 27ms
+ GET /envtest 200 in 215ms (next.js: 103ms, application-code: 111ms)
+ GET /envtest 200 in 66ms (next.js: 3ms, application-code: 64ms)
+ GET /envtest 200 in 52ms (next.js: 10ms, application-code: 42ms)
+ GET /dbtest 200 in 58ms (next.js: 24ms, application-code: 34ms)
+[?25h

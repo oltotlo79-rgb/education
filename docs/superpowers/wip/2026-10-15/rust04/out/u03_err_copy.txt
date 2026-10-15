@@ -1,0 +1,17 @@
+   Compiling design_lab v0.1.0 (...\design_lab)
+error[E0277]: the trait bound `String: Copy` is not satisfied
+  --> src\bin\u03_err_copy.rs:15:30
+   |
+15 |     println!("{:?}", largest(&titles));
+   |                      ------- ^^^^^^^ the trait `Copy` is not implemented for `String`
+   |                      |
+   |                      required by a bound introduced by this call
+   |
+note: required by a bound in `largest`
+  --> src\bin\u03_err_copy.rs:1:28
+   |
+ 1 | fn largest<T: PartialOrd + Copy>(items: &[T]) -> Option<T> {
+   |                            ^^^^ required by this bound in `largest`
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `design_lab` (bin "u03_err_copy") due to 1 previous error

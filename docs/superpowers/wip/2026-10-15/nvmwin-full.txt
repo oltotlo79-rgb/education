@@ -1,0 +1,3563 @@
+# nvm-windows Documentation
+
+---
+
+# Installers
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Installers
+
+NVM for Windows offers community and certified builds on amd64 (x64) and arm64 devices. See [Choosing an Edition](../guide/builds/) to understand which is right for you.
+
+## Community Build
+
+<Tabs>
+  <TabItem value="native" label="Installer" default>
+    Download and run the [setup.exe installer](https://github.com/nvm-windows/nvm/releases) (MIT License).
+
+    :::tip[Recommended Approach]
+    This installation approach provides a native GUI wizard to customize your Node.js workflows.
+    :::
+
+
+  </TabItem>
+  <TabItem value="winget" label="Winget">
+    :::warning[Coming Soon!]
+    We're still getting everything setup for winget.
+    :::
+
+    ```powershell
+      winget install nvm # MIT License
+    ```
+
+    :::info[Silent Installation]
+    Use this  option to silently install using the default configuration.
+    :::
+  </TabItem>
+  <TabItem value="upgrade" label="Upgrade from v1">
+    Download and run the [setup.exe installer](https://github.com/nvm-windows/nvm/releases) (MIT License). It automatically migrates v1 to v2.
+
+    :::warning[Legacy Updater]
+    The v1 updater is designed for minor/patch upgrades in the legacy v1.x.x line. It will not work with v2.
+    :::
+  </TabItem>
+</Tabs>
+
+## Certified Build
+
+:::info[Available September 2026]
+Code-signed Certified Build assets will be available from the customer portal.
+:::
+
+Certified builds are designed for remote installation through platforms like Active Directory and Microsoft Entra, but you can still install on a single computer using the MSI. See [Enterprise Deployment](./enterprise/requirements) to deploy NVM for Windows to many computers.
+
+|File|Use Case|
+|:-|:-|
+|[Intune](./enterprise/intune)|Deploy to a Microsoft Entra organization.|
+|[MSI Installer](./enterprise/ad)|Install on a single computer or deploy a sitewide deployment.|
+
+## Installing Node.js
+
+Once NVM for Windows is installed, use it to install one or more versions of Node.js.
+
+```powershell title="Example: Install the latest supported Node.js version"
+nvm install lts
+```
+
+## Warnings
+
+:::warning[Do not install community edition as Administrator!]
+Do not attempt to install the community edition as Administrator. Doing so will configure NVM for Windows for the administrator instead of the user account who will run Node.js. See [registered event source permissions](/permissions#community-installer-registered-event-source).
+:::
+
+:::warning[UAC for Logging]
+The community installer attempts to register NVM for Windows as a system event source, introducing a UAC prompt. If the user account does not have permission to do this, log entries will show "Unknown" instead of "NVM for Windows" as the event source in Windows Event Viewer, but this does not prevent native logging from working.
+:::
+
+---
+
+# Deploy with Active Directory
+
+import DocImage from '@site/docs/_components/DocImage';
+
+# Deploy with Active Directory
+
+**What you'll need:**
+
+- The NVM for Windows MSI installer and MST patch[^1] (available in the [customer portal](https://portal.author.io)).
+- Administrative access to your domain controller to create group policies.
+
+### Prepare the file server
+
+GPO software installation reads the MSI and MST from a network share. Domain Computers must be able to reach that share when the policy applies.
+
+Upload the NVM for Windows MSI and MST files from your deployment package to a file server accessible to **Domain Computers** and any users in the GPO scope. Grant read access to those principals.
+
+<DocImage src="/img/guide_fileserver.png" alt="Source Files" style={{ width: '95%', height: 'auto' }} />
+
+### 1. Open the Group Policy Management Console
+
+- **Using Run Command**: Press Windows Key + R, type `gpmc.msc`, and hit OK.
+- **Using Start Menu**: Click Start, type Group Policy Management, and select the top application result.
+- **Using Server Manager**: Open the Microsoft Server Manager Console, click Tools in the upper right-hand corner, and click Group Policy Management.
+
+### 2. Create Group Policy
+
+1. Right-click on the organizational unit containing the computer(s) where NVM for Windows will be installed. Select "Create a GPO in this domain, and link it here.".
+1. Click on the GPO. In the right-hand pane, select the "Scope" tab.
+1. Under "Security Filtering", click "Add". In the "Enter object name to select" section, add `Domain Computers`. If you have any security groups you wish to limit the installation to, add them as well. Click "Check Names" to assure they are all recognized. Click OK to proceeed.
+1. If "Authenticated Users" is present under "Security Filtering", remove it.
+1. Click the "Delegation" tab. Assure `Domain Computers` and any groups you specified are in the list.
+
+<DocImage src="/img/guide_gpo-create.png" alt="Create GPO" style={{ marginLeft: '2em', width: '80%', height: 'auto' }} />
+
+### 3. Configure Group Policy Installation Package
+
+1. Right-click the GPO and select "Edit".
+1. Navigate to **Computer Configuration** > **Policies** > **Software Settings** > **Software installation**. Make sure to select the _Computer Configuration_ and not the user configuration. Unlike the public edition, NVM for Windows certified builds are installed at the machine level[^2].
+
+<DocImage src="/img/guide_software_install_policy.png" alt="Find the GPO Software Installation Path" style={{ marginLeft: '2em', width: 'auto', height: 'auto' }} />
+
+3. Right-click "Software installation", then select "New > Package". This will open a file selection dialog.
+1. Navigate to the location on your file server where the NVM for Windows installation media was uploaded. Select the `.msi` file and press "Open". This will present a "Deploy Software" dialog.
+1. Select `Advanced` on the "Deploy Software" dialog, then "OK".
+1. Click on the "Deployment" tab and choose "Assigned" as the deployment type. Check "Uninstall this application when it falls out of the scope of management" if you wish to remove NVM for Windows when it no longer applies to users.
+
+:::warning[Automatic Uninstallation via GPO Consequences]
+Automatically uninstalling NVM for Windows when the application falls out of the scope of management **may have an unintended critical impact** on users erroneously removed from the installation scope as descrribed below.
+
+Uninstalling NVM for Windows removes all Node.js versions managed by NVM for Windows. This includes any global modules users have installed in these Node.js versions. It is possible to backup the Node.js storage directory before removing. This folder can be manually restored if NVM for Windows needs to be reinstalled later.
+
+Default storage directory: `%LOCALAPPDATA%\Author Software\nvm\installs`
+:::
+
+7. Click the "Modifications" tab, then click the "Add" button.
+1. Navigate to the file server and select the `.mst` file[^1]. By doing this, you're agreeing to the EULA on behalf of any user the application is installed for (required).
+1. Press "OK" to close the window.
+1. In the GPO manager, navigate to **Computer Configuration** > **Policies** > **Administrative Templates** > **System** > **Group Policy**.
+
+<DocImage src="/img/guide_loopback.png" alt="Enable Loopback Processing" style={{ marginLeft: '2em', width: '80%', height: 'auto' }} />
+
+11. Double-click to open the policy, choose "Enabled", and choose **Merge** or **Replace**.
+1. Click "OK".
+
+**Congratulations, you've created a group policy that will install NVM for Windows on user computers.**
+
+:::tip[Update Client Device]
+Run `gpupdate /force` in a terminal on the client device to immediately apply the policy.
+:::
+
+:::tip[Alternative User Configuration with Elevated Privileges]
+It is also possible to create the installer under the user configuration by elevating user privileges for the installation.
+
+This method moves the deployment to User Configuration so it triggers at logon, but configures Active Directory to temporarily bypass user restriction rules to execute the MSI with administrative authority.
+
+1. **Create or Edit a GPO**: Link it to the OU containing your target Users.
+1. **Configure Software Installation**: Add your MSI under User *Configuration* > *Policies* > *Software Settings* > *Software Installation*. Select *Advanced*, and you will now be able to check *Install this application at logon*.
+1. **Elevate Installer Privileges:**
+   1. Navigate to *Computer Configuration* > *Policies* > *Administrative Templates* > *Windows Components* > *Windows Installer*.
+   1. Double-click **Always install with elevated privileges**.
+   1. Set it to **Enabled**, click Apply, and click OK.
+   1. Navigate to *User Configuration* > *Policies* > *Administrative Templates* > *Windows Components* > *Windows Installer*.
+   1. Double-click **Always install with elevated privileges** there as well and set it to **Enabled**.
+
+:::warning[Temporary Security Risk]
+Enabling **Always install with elevated privileges** allows standard users to run any Windows Installer package with elevated privileges, which can be exploited by malicious actors.
+:::
+
+[^1]: The MST patch must be applied to automatically accept the EULA.
+[^2]: If you are upgrading your fleet of computers from public builds to certified builds, the certified build MSI installer will automatically migrate existing Node.js installations and user preferences.
+
+---
+
+# Deploy with Microsoft Intune
+
+# Deploy with Microsoft Intune
+
+Deploy NVM for Windows with the pre-built files found in the NVM for Windows download in the [customer portal](https://portal.author.io). No file server required. The installer runs as **System** and accepts the EULA automatically (`ACCEPT_EULA=1`).
+
+|File|Purpose|
+|:-|:-|
+|`nvm-windows-<version>-certified-amd64.intunewin`|Upload to Intune as the Win32 app package|
+|`nvm-windows-<version>-certified-amd64.intune.json`|Reference for install commands, detection rules, return codes, and MSI metadata|
+
+Complete [Prerequisites](./requirements) first. After installation, continue to [Configure policies](../../cfg/ad).
+
+### 1. Upload the app
+
+In the [Microsoft Intune admin center](https://go.microsoft.com/fwlink/?linkid=2109431):
+
+1. Go to **Apps** > **All apps** > **Create**.
+1. Select **Windows app (Win32)**.
+1. Select the app package file and upload `nvm-windows-<version>-certified-amd64.intunewin` from your deployment pack.
+1. Wait for Intune to extract and validate the package.
+
+### 2. App information
+
+Use the values from the companion `.intune.json` file:
+
+|Field|Value|
+|:-|:-|
+|Name|`NVM for Windows (Certified)`|
+|Publisher|`Author Software Inc.`|
+|Version|`<version>`|
+|Description|Certified build for amd64. See `.intune.json` for the exact string shipped with your package.|
+
+![App information](/img/install/image.png)
+
+### 3. Program settings
+
+|Setting|Value|
+|:-|:-|
+|Install command|`powershell.exe -ExecutionPolicy Bypass -File .\install.ps1`|
+|Uninstall command|`msiexec.exe /x "{DEFC7F94-F44C-4439-B5E7-AC274D576A8F}" /qn /norestart`|
+|Install behavior|**System**|
+|Device restart behavior|**No specific action** (suppress)|
+
+:::info[Product code]
+The uninstall command product code (`{DEFC7F94-F44C-4439-B5E7-AC274D576A8F}`) and other MSI metadata are listed under `msiInformation` in your `.intune.json`. Use the values from the manifest that ships with your build if they differ.
+:::
+
+Add the return codes from `.intune.json`:
+
+|Code|Type|
+|:-|:-|
+|`0`|Success|
+|`1707`|Success|
+|`3010`|Soft reboot|
+|`1603`|Retry|
+|`1618`|Retry|
+|`1619`|Retry|
+
+![Program settings](/img/install/image-2.png)
+
+### 4. Requirements
+
+|Setting|Recommendation|
+|:-|:-|
+|Operating system architecture|**x64** or **ARM64**|
+|Minimum OS|Windows 11 21H2|
+
+:::info
+Only select x64 **or** ARM64 for the operating system architecture. If you need both options, create separate Intune applications for each architecture. There is a dedicated `.intunewin` installer for each architecture.
+:::
+
+![Requirements](/img/install/image-1.png)
+
+
+### 5. Detection rules
+
+Add a **File** detection rule:
+
+|Setting|Value|
+|:-|:-|
+|Path|`%ProgramFiles%\Author Software\nvm`|
+|File or folder|`nvm.exe`|
+|Detection method|**File or folder exists**|
+|Associated with a 32-bit app on 64-bit clients|**No**|
+
+![Detection rules](/img/install/image-3.png)
+
+### 6. Dependencies
+
+Unnecessary (skip).
+
+### 7. Supercedence
+
+Unnecessary (skip) when deploying the first time. When deploying an update, configure **Supersedence** on this Win32 app so the new package replaces the previous one.
+
+:::warning[Upgrading from NVM for Windows v1]
+If your organization used NVM for Windows v1.1.7+, v2 will auto-migrate without supercedence. Versions below 1.1.7 should be uninstalled, but users will lose their existing installations and settings.
+
+If you created a custom Intune application from v1.1.7+, it needs to be superceded. See the maintenance guide for details.
+:::
+
+### 8. Assignments
+
+1. Complete the wizard and **Assign** the app to device or user groups.
+1. Confirm deployment status under **Apps** > **Monitor** > **App install status**.
+1. Install logs are written to `%ProgramData%\Author\nvm-certified-install.log` on the target device.
+
+---
+
+# Requirements
+
+import SymlinkPermissionExplainer from '../../_components/SymlinkPermissionExplainer.mdx';
+
+|Requirement|Guidance|
+|:-|:-|
+| **Installation&nbsp;Media** | Download NVM for Windows from the [customer portal](https://portal.author.io). The zip file contains everything you need. |
+| **Supported OS** | Windows 11[^1], Windows 2019+ |
+| **User Privileges** | No special permissions required, unless using [link mode](../../features/modes#link-mode) with UNC paths. |
+| **Proxy&nbsp;Domain&nbsp;Exceptions**<br/><br/><br/><br/> |1. licensing.author.io<br/>2. mirror.author.io _(if using Author Software Node.js mirror)_ <br/><br/>_Unnecessary in airgapped deployments._ |
+
+## User Privileges
+
+|If you plan to...|Required Privileges|
+|:-|:-|
+|_force_ [shim mode](../../features/modes#shim-mode-default)...| None. |
+|store Node.js versions on a local path...<br/>&nbsp;&nbsp;&raquo;&nbsp;*`%LOCALAPPDATA%\Author&nbsp;Software\nvm\installs` (default) is local*| None. |
+|use UNC paths (e.g. network shares/mapped drives like `\\server\path`) in [link mode](../../features/modes#link-mode)| `SeCreateSymbolicLinkPrivilege`\* |
+
+<SymlinkPermissionExplainer/>
+
+## Proxy Exceptions
+
+If your organization aggresively blocks traffic to domains, you must allow-list `licensing.author.io`. This domain provides license keys and public verification keys.
+
+If your organization plans to use the Author Software Node.js mirror service (available in the governance package), `mirror.author.io` must also be allowed.
+
+---
+
+[^1]: As an EOL operating system, Windows 10 is not officially supported. However; v2.0.0 works on Windows 10 in our lab with some minor visual variations from Windows 11.
+
+---
+
+# Build from Source
+
+# Build from Source
+
+Most users should install a prebuilt package instead — see [Installers](./installers).
+
+:::info[Community Build only]
+This guide covers the open-source/unsigned Inno Setup pipeline. [Certified builds](../guide/builds/) (signed MSI/Intune packs, ADMX, SBOM, etc.) are produced from private tooling and will be available through the [customer portal](https://portal.author.io) in September 2026.
+:::
+
+## Prerequisites
+
+|Tool|Notes|
+|:-|:-|
+|Windows 10/11 (amd64 or arm64)|Host architecture can also cross-build the other arch via `-Architecture`.|
+|[Go](https://go.dev/dl/)|Version in `cli/src/go.mod` (currently **1.26.2**).|
+|[qgo](https://github.com/quikdev/go)|Go build wrapper used by the CLI (`qgo` on `PATH`).|
+|[Zig](https://ziglang.org/download/)|Exact version in `shim/.zigversion` (currently **0.15.2**).|
+|[Inno Setup](https://jrsoftware.org/isdl.php)|**6.7.1+** with `ISCC.exe` on `PATH` (needed for the setup EXE).|
+|[go-winres](https://github.com/tc-hib/go-winres)|Windows resource embedding. The build script installs it with `go install` if missing.|
+|Git|Clone with submodules.|
+|PowerShell|Run `.\build\main.ps1` from the repo root.|
+|Network (for `-DownloadSync`)|Fetches prebuilt `sync.exe` from the GitHub Release.|
+
+Ensure `GOBIN`/`GOPATH\bin` is on `PATH` so tools installed by `go install` are found.
+
+## Get the source
+
+The public community monorepo wires CLI, common libraries, shims, and the installer as Git submodules:
+
+```
+nvm/
+├── bin/          # created by the build
+├── .dist/        # installer + staged sync release asset
+├── build/        # community build scripts
+├── cli/          # nvm.exe (Go)
+├── common/       # shared Go modules
+├── shim/         # node/proxy/reshim (Zig)
+└── installer/    # Inno Setup
+```
+
+```powershell
+git clone --recurse-submodules https://github.com/nvm-windows/nvm.git
+cd nvm
+```
+
+If you already cloned without submodules:
+
+```powershell
+git submodule update --init --recursive
+```
+
+:::warning[Private sync repo]
+`sync.exe` (`doctor` & `upgrade`) is freely available, but is **not** compiled from public source. It is not part of core nvm operations. It manages the **update and maintenance distribution path** used across community and certified builds, which is bound to Author service URLs and services. Custom-built versions should consider implementing their own upgrade/maintenance sidecar application.
+
+Community GitHub releases contain **two** assets per architecture:
+
+- `nvm-<version>-<arch>-setup.exe` — Inno Setup installer
+- `nvm-<version>-<arch>-sync.exe` — prebuilt sync for from-source builds
+
+Pass **`-DownloadSync`** so `.\build\main.ps1` fetches that sync asset into `bin\utils\sync.exe` before packaging.
+:::
+
+## Build
+
+### Public full build (recommended)
+
+Compiles CLI + shims, downloads prebuilt `sync.exe`, then builds the Inno Setup installer:
+
+```powershell
+.\build\main.ps1 -DownloadSync
+```
+
+`.\build.ps1` forwards to the same script.
+
+The download uses tag `v` + `cli/src/manifest.json` `version` from repo `nvm-windows/nvm`, asset `nvm-<version>-<arch>-sync.exe`. That release must already exist — the [community release workflow](https://github.com/nvm-windows/nvm/blob/main/.github/workflows/release.yml) uploads both `*-setup.exe` and `*-sync.exe` when it publishes.
+
+### Public component-only
+
+```powershell
+.\build\main.ps1 -Component Cli
+.\build\main.ps1 -Component Shims
+.\build\main.ps1 -Component Sync -DownloadSync
+```
+
+### Maintainer / CI
+
+With private sync submodule access, omit `-DownloadSync` to compile sync from source:
+
+```powershell
+.\build\main.ps1
+```
+
+### Common options
+
+```powershell
+# Explicit architecture
+.\build\main.ps1 -Architecture amd64 -DownloadSync
+.\build\main.ps1 -Architecture arm64 -DownloadSync
+
+# Pin sync to another published release
+.\build\main.ps1 -DownloadSync -SyncReleaseTag v2.0.0
+
+# Binaries only (skip Inno Setup)
+.\build\main.ps1 -DownloadSync -SkipInstaller
+
+# Custom output directory (default .\bin)
+.\build\main.ps1 -DownloadSync -BinRoot D:\out\nvm-bin
+```
+
+|Parameter|Values|Purpose|
+|:-|:-|:-|
+|`-Architecture`|`amd64`, `arm64`|Target CPU. Omit to auto-detect.|
+|`-Component`|`All` (default), `Cli`, `Shims`, `Sync`|What to build. Installer requires `All`.|
+|`-DownloadSync`|switch|Fetch release `*-sync.exe` instead of compiling private sync source.|
+|`-SyncReleaseTag`|tag|Override release tag (default: `v` + CLI manifest version).|
+|`-SyncReleaseRepo`|`owner/repo`|Override download repo (default: `nvm-windows/nvm`).|
+|`-SkipInstaller`|switch|Skip the setup EXE (only with `-Component All`).|
+|`-BinRoot`|path|Override binary output directory.|
+
+Exit code `0` means success. Non-zero stops at the first failed step.
+
+## Output
+
+|Artifact|Path|
+|:-|:-|
+|CLI|`bin\nvm.exe`|
+|Node shim|`bin\.shim\node.exe`|
+|Helpers|`bin\utils\proxy.exe`, `reshim.exe`, `sync.exe`|
+|Installer|`.dist\nvm-<version>-<arch>-setup.exe`|
+|Staged sync release asset|`.dist\nvm-<version>-<arch>-sync.exe`|
+
+`<version>` comes from `cli/src/manifest.json`. Sync worker DLLs are not packaged; they are fetched at runtime from `assets.nvm-windows.com` when needed.
+
+## Install what you built
+
+Run the generated setup EXE as a **standard user** (not elevated Administrator), same rules as the public [community installer](./installers#community-build):
+
+```powershell
+.\.dist\nvm-<version>-<arch>-setup.exe
+```
+
+Then install Node.js:
+
+```powershell
+nvm install lts
+```
+
+To remove a local build later, follow [Uninstall](./uninstall#community-builds).
+
+### Portable/binary-only use
+
+With `-SkipInstaller`, you can run `bin\nvm.exe` from a custom layout for development. Production installs should still use the Inno Setup package so PATH, preferences, protocol handlers, and uninstall metadata are registered correctly.
+
+## What each component is
+
+|Component|Language|Public source?|Role|
+|:-|:-|:-:|:-|
+|`cli`|Go|✓|`nvm.exe` — install/use/list/config/cache|
+|`shim`|Zig|✓|`node.exe` shim, `proxy.exe`, `reshim.exe` ([operating modes](../features/modes))|
+|`sync`|Go|—|Background update/doctor helper (`sync.exe`); use `-DownloadSync` or maintainer source|
+|`installer`|Inno Setup|✓|Per-user community setup EXE|
+
+## Troubleshooting
+
+|Symptom|What to check|
+|:-|:-|
+|`qgo` not found|Install [qgo](https://github.com/quikdev/go) and ensure it is on `PATH`.|
+|Wrong Go/Zig version|Match `cli/src/go.mod` and `shim/.zigversion`.|
+|Sync source missing / compile fails|Expected on public clones. Pass `-DownloadSync`, or build only `-Component Cli` / `-Component Shims`.|
+|`-DownloadSync` 404|Need a published release with `nvm-<version>-<arch>-sync.exe`. Bump/match `cli/src/manifest.json`, or pass `-SyncReleaseTag` to an existing tag.|
+|Installer step fails|Inno Setup **6.7.1+** (`ISCC.exe` on `PATH`). Confirm `cli/src/manifest.json` has `version`, `appUserModelId`, and `appId`.|
+|`go-winres` missing|Build script tries `go install github.com/tc-hib/go-winres@latest`. Put `GOPATH\bin` on `PATH`, then retry.|
+|Submodule empty/missing code|`git submodule update --init --recursive` (public: cli/common/shim; sync stays private).|
+
+CI and release wiring for community builds live in the repo at [`build/README.md`](https://github.com/nvm-windows/nvm/blob/main/build/README.md).
+
+## Related
+
+|Topic|Doc|
+|:-|:-|
+|Prebuilt installers|[Installers](./installers)|
+|Community vs certified|[Choosing an Edition](../guide/builds/)|
+|Remove an install|[Uninstall](./uninstall)|
+|Shim vs link mode|[Operating Modes](../features/modes)|
+
+---
+
+# Uninstall
+
+# Uninstall
+
+:::tip[NVM for Windows != Node.js]
+Uninstalling NVM for Windows (the application) from the computer is different from [`nvm uninstall`](../command/uninstall), which only removes installed Node.js versions while leaving NVM for Windows installed.
+:::
+
+:::warning[Backup Node.js Installations!]
+Uninstalling NVM for Windows removes all managed Node.js versions and their global modules. Back up the Node.js storage directory first if you may need those versions later. The default location is `%LOCALAPPDATA%\Author Software\nvm\installs` (see [Basic Configuration](../cfg/core#mode-and-install-location)).
+
+Choose the section that matches your [edition](../guide/builds/).
+:::
+
+## Community Builds
+
+Community builds install per-user under `%LOCALAPPDATA%\Author Software\nvm` with the open-source setup EXE. See [Installers](./installers#community-build).
+
+### Using the uninstaller
+
+1. Open **Settings** → **Apps** → **Installed apps** (or **Control Panel** → **Programs and Features**).
+1. Select **NVM for Windows** → **Uninstall**.
+1. Complete the setup wizard.
+
+Alternatively:
+
+```powershell
+winget uninstall nvm
+```
+
+Or run `unins000.exe` from the install directory (`%LOCALAPPDATA%\Author Software\nvm`).
+
+The community uninstaller removes:
+
+- Application files under `%LOCALAPPDATA%\Author Software\nvm`
+- Node.js versions under the configured install root (default `%LOCALAPPDATA%\Author Software\nvm\installs`)
+- User preferences under `HKCU\Software\Author Software\Preferences\nvm`
+- The `NVM_HOME` user environment variable and related `PATH` entries
+- The **NVM for Windows Sync** scheduled task
+- Per-version Apps entries (see [Windows Apps](/features/windows-apps))
+
+Open a **new** terminal after uninstall so `PATH` and environment changes apply.
+
+### Manual uninstall
+
+Use this only when the uninstaller is missing or fails.
+
+1. Close terminals and processes using `node`, `npm`, or `nvm`.
+1. Delete the sync task (if present):
+
+   ```powershell
+   schtasks /Delete /TN "NVM for Windows Sync" /F
+   ```
+
+1. Delete `%LOCALAPPDATA%\Author Software\nvm` (app files, installs, cache, shims). If you customized [`root`](../cfg/core#mode-and-install-location)/`InstallRoot`, delete that directory too (see [Basic Configuration](../cfg/core) and [registry reference](../cfg/registry)).
+1. Remove leftovers from the user environment:
+
+   - Delete `NVM_HOME` (and legacy `NVM_SYMLINK` if present) from **User** environment variables.
+   - Remove PATH entries that point at the NVM install directory, `.nodejs` shim path, or legacy `nvm`/`nodejs` symlink folders.
+1. Remove registry leftovers under the current user:
+
+   - `HKCU\Software\Author Software\Preferences\nvm`
+   - `HKCU\Software\Classes\nvm` (protocol handler)
+   - `HKCU\Software\Microsoft\Windows\CurrentVersion\Uninstall\nvm4w-node-v*` (per-version Apps entries)
+   - The Inno Setup uninstall key under `HKCU\Software\Microsoft\Windows\CurrentVersion\Uninstall\` (name ends in `_is1` for NVM for Windows)
+1. Sign out/open a new terminal and confirm `nvm`, `node`, and `npm` are no longer resolved.
+
+:::tip[Reinstall later]
+Community reinstall uses the [standard installer or winget](./installers#community-build). Restoring a backed-up installs folder only works if you place it at the same [`root`](../cfg/core#mode-and-install-location) path the new install expects.
+:::
+
+## Certified Builds
+
+Certified builds install machine-wide to `%ProgramFiles%\Author Software\nvm` as an MSI/Intune Win32 package. MDM or GPO uninstallation is preferred so detection and assignments stay consistent. See [enterprise requirements](./enterprise/requirements), [Intune](./enterprise/intune), [Active Directory](./enterprise/ad), and [Installers](./installers#certified-build).
+
+:::warning[Scope of removal]
+Uninstalling certified NVM for Windows removes Node.js versions managed for that user (default storage: `%LOCALAPPDATA%\Author Software\nvm\installs`) and can affect every account on the device that relied on the machine install. Back up installs before fleet-wide removal. See the GPO warning in [Deploy with Active Directory](./enterprise/ad).
+:::
+
+### Uninstall via GPO or Microsoft Entra (Intune)
+
+#### Active Directory GPO
+
+If NVM for Windows was deployed with Software Installation:
+
+1. Open the GPO that assigns the MSI (see [Deploy with Active Directory](./enterprise/ad)).
+1. Remove the package assignment, or rely on **Uninstall this application when it falls out of the scope of management** if that option was enabled at deploy time.
+1. Move computers/users out of the GPO security filter or OU so the package no longer applies.
+1. On clients, run `gpupdate /force` (or wait for the next policy refresh), then confirm the app is gone from **Apps**.
+
+Do not enable automatic uninstall-on-scope-exit without understanding the [impact on managed Node.js installs](./enterprise/ad).
+
+#### Microsoft Intune/Entra
+
+If deployed as a Win32 app (see [Deploy with Intune](./enterprise/intune)):
+
+1. In the [Intune admin center](https://go.microsoft.com/fwlink/?linkid=2109431), open the **NVM for Windows (Certified)** app.
+1. Change assignments so target groups receive **Uninstall**, or remove the install assignment and assign uninstall to those groups.
+1. Monitor **Apps** → **Monitor** → **App install status** until devices report uninstalled.
+
+The package uninstall command matches your deployment pack (from `.intune.json`):
+
+```powershell
+msiexec.exe /x "{PRODUCT-CODE}" /qn /norestart
+```
+
+Use the `productCode` under `msiInformation` in the `.intune.json` that shipped with your build. The example product code in the Intune guide may differ per release.
+
+{/* #### MECM
+
+Remove or retire the application deployment in Configuration Manager so clients run the MSI uninstall. See [Deploy with MECM](./enterprise/mecm) when that guide is complete.
+*/}
+
+### Manual uninstall
+
+For a single device (lab machine, break-glass, or non-MDM install):
+
+1. Prefer **Settings** → **Apps** → **NVM for Windows (Certified)** → **Uninstall**, or:
+
+   ```powershell
+   msiexec.exe /x "{PRODUCT-CODE}" /qn /norestart
+   ```
+
+   Product code is listed in your portal MSI/`.intune.json` (`msiInformation.productCode`).
+1. Confirm `%ProgramFiles%\Author Software\nvm` is gone (detection path used by Intune).
+1. Confirm per-user data is removed. The MSI runs a cleanup action that deletes `%LOCALAPPDATA%\Author Software\nvm` for the user context that performed uninstall. If AppData remains (for example another user profile on the same PC), delete that profile’s `%LOCALAPPDATA%\Author Software\nvm` while signed in as that user, or remove it with an elevated script that targets each profile.
+1. Optional policy cleanup (does **not** happen automatically with MSI uninstall):
+
+   - Clear or unlink ADMX policies under **Author Software** → **NVM for Windows** ([Administrative templates](../cfg/ad)).
+   - Remove leftover values under `HKLM\Software\Policies\Author Software\nvm` if you applied registry CSP/OMA-URI directly ([registry reference](../cfg/registry)).
+1. Optional: remove install logs under `%ProgramData%\Author\nvm-certified-install.log` if present.
+1. Open a new terminal and confirm `nvm` is no longer on PATH.
+
+:::info[Policies vs product]
+Uninstalling the MSI removes the product. Group Policy/Intune **configuration** profiles can still push keys under `HKLM\Software\Policies\Author Software\nvm` until you disable those policies.
+:::
+
+### Related
+
+|Topic|Doc|
+|:-|:-|
+|Which edition you have|[Choosing an Edition](../guide/builds/)|
+|Install again|[Installers](./installers)|
+|Enterprise prerequisites|[Requirements](./enterprise/requirements)|
+|Intune uninstall command|[Deploy with Intune](./enterprise/intune)|
+|GPO software removal|[Deploy with Active Directory](./enterprise/ad)|
+|Remove Node.js versions only|[`nvm uninstall`](../command/uninstall)|
+|Policy keys|[Registry reference](../cfg/registry)|
+
+---
+
+# Operating Modes
+
+import SymlinkPermissionExplainer from '../_components/SymlinkPermissionExplainer.mdx';
+
+# Operating Modes
+
+NVM for Windows operates in one of two modes: link or shim. These modes determine how Node.js, dependency managers, and global modules are executed. The operating mode can be switched at any time.
+
+```powershell title="Setting the Operational Mode"
+# Easy access
+nvm use shim
+nvm use link
+
+# Also available in the nvm configuration
+nvm cfg set mode=shim
+nvm cfg set mode=link
+```
+
+## Link Mode
+
+This mode uses links to locate the active system-wide version of `node.exe`. The link is part of the `PATH`. Running [`nvm use`](../command/use) changes the _target_ of the link path, not the path itself. `PATH` never changes.
+
+Link mode offers an experience that is as close as possible to simply running `node.exe` "as delivered" by [nodejs.org](https://nodejs.org). It offers zero latency, but does not provide the advanced modern workflow features available in Shim Mode.
+
+Version 2.0.0 introduced the "fallback" link creation strategy.
+
+```mermaid
+flowchart LR
+  j(1. Create NTFS Junction)-->ok{Success?}
+  ok-->|no|s(2. Create Symlink)
+  ok-->|yes|d{{Done}}
+```
+
+<SymlinkPermissionExplainer/>
+
+:::warning
+NVM for Windows v2 will not attempt to elevate permissions (i.e. no UAC prompt) on failure of symlink creation. If permissions block the creation of a link, a native desktop notification warns users and offers guidance.
+:::
+
+## Shim Mode (default)
+
+Shim mode offers a new, streamlined developer experience. When compared with Link Mode, Shim Mode comes with the benefit of avoiding esoteric permission requirements, but at the cost of a small amount of additional latency (~25-35ms total). This latency is negligible for most use cases. For this reason, Shim Mode is recommended for most users.
+
+Most users won't notice or feel the impact of shim latency, making shim mode recommended for most users.
+
+Shim mode features:
+
+- Auto-use pinned versions via `.nvmrc`, `.node-version`, `package.json`, or other custom runtime config files.
+- Auto-install missing versions on `nvm use`. (Optional)
+- Unified package manager mismatch handling.
+- Lockdown Node.js/V8 permissions. (Optional)
+- Publisher trust: Verifies node.exe publisher to prevent untrusted node.exe swaps.
+- Native event logging.
+- Unified/configurable cooldown periods across all major package managers (npm/yarn/pnpm). _Requires the Governance add-on, available September 2026._
+
+:::info
+Windows has a "universal latency tax". It uses [`CreateProcessW`](https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createprocessw) to launch _any_ executable. This tax is paid when the shim is launched and again when the shim runs `node.exe`. On average, `CreateProcessW` takes 15ms. The shim adds 1-3ms to identify the desired Node.js version and securely relay the command.
+
+`15ms (shim CreateProcessW) + 3ms (shim logic) + 15ms (shim CreateProcessW) = 33ms`
+:::
+
+## Comparison
+
+||Link|Shim|
+|:-|:-:|:-:|
+|Latency[^1]|0ms|25-35ms|
+|System Version|:heavy_check_mark:|:heavy_check_mark:|
+|Automatic Installtion|:heavy_check_mark:|:heavy_check_mark:|
+|Automatic Version Detection|:x:|:heavy_check_mark:|
+|Special Permissions<br/><br/>|[`SeCreateSymbolicLinkPrivilege`](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/security-policy-settings/create-symbolic-links)<br/>_for [UNC path](https://learn.microsoft.com/en-us/dotnet/standard/io/file-path-formats#unc-paths) symlinks_|None<br/><br/>|
+
+
+[^1]: Latency is predominantly from Windows `CreateProcessW` universal latency tax. The shim executable only adds ~1ms latency.
+
+---
+
+# What's new in v2
+
+# What's new in v2
+
+## High Level
+
+*   **No mandatory admin privileges**
+*   **Modern workflows without symlinks**
+*   **Version pinning** — .nvmrc, .node-version, package.json, or user-defined files
+*   **Faster downloads and installations**
+*   **Automatic installation of missing Node.js versions**
+*   **Developer and Enterprise-ready**
+*   **Fully rewritten for speed & maintainability** — Go and Zig
+*   **Dual Builds** — Community (MIT) & Certified (EULA)
+
+:::info[Code Signing Change]
+- Community builds are not code signed.
+- **Certified builds are 100% code-signed.**
+
+All signatures show "Author Software Inc" as the publisher. Project stewardship transfered to Author Software Inc, but remains managed by the same people.
+:::
+
+## Community & Certified Builds
+
+:::info[Certified Builds]
+Available September 2026.
+:::
+
+The Community build remains free and open-source (MIT). Certified builds add signed installers, optional **Trust Artifacts**, **Advanced Logging**, and **Governance** add-ons, and related controls (see [Choosing an Edition](../guide/builds/index.md)).
+
+## Node.js Installation
+
+- **Parallel installations** — install multiple Node.js versions at once
+- **Smaller downloads (40%)** — uses compact `.7z` archives
+- **Native extraction** — faster installs with fewer external unpacker dependencies
+- **Local air-gapped downloads** — install from a local archive directory when offline or restricted (see [Local Installations](./local-installations), [Air-gapped Installations](../guide/air-gapped-installations))
+- **Caching** — reuse downloaded/extracted assets on repeat installs ([Download Cache](./cache))
+
+:::tip[7-zip]
+While not required, NVM for Windows uses native 7-Zip for extraction if it is installed. 7-Zip's proprietary algorithms provide the fastet extraction speed. [7-Zip is free to download](https://www.7-zip.org).
+
+A slower embedded extractor is used if 7-Zip is not available.
+:::
+
+## Operating modes
+
+The biggest functional change is the introduction of [operational modes](./modes).
+
+- **Lightweight shims**: Zig-built shims for Node and related tooling commands (npm, npx, etc)
+- **Zero-latency link mode**: junction/symlink PATH model when shim interception is not needed
+
+Shim mode unlocks per-directory version switching and other automation. **Link mode** remains for legacy use while bypassing the esoteric permission models from v1.
+
+## Automation
+
+- **Per-directory version switching** — select Node from the current directory (for example `.nvmrc`) in shim mode ([Version resolution](../guide/version-resolution))
+- **Auto-install missing versions** — install a required version when a project needs one that is not present yet
+- **Auto-install default global modules** — optionally install a defined set of globals with each new Node.js version
+
+## Preferences
+
+- **User-defined aliases** — aliases for versions via `nvm alias` ([alias command](../command/alias/))
+- **User-defined default global modules** — configure packages installed with each new version ([`auto_installed_modules`](../cfg/core#downloads-and-mirrors))
+- **Windows Registry preferences** — user prefs and (on certified builds) machine policy via `nvm config` ([Basic Configuration](../cfg/core), [Registry Policy Reference](../cfg/registry))
+
+## Native Windows integrations
+
+- **Windows Apps** — installed Node.js versions appear in Apps & features ([Windows Apps](./windows-apps))
+- **Windows Event Viewer** — operational events in Event Viewer ([Event Logging](./log))
+- **Desktop Notification Center** — updates and notices in the Windows notification center ([Desktop Notifications](./notifications))
+- **Windows Registry** — user preferences stored under registry keys ([Windows Registry](./windows-registry))
+
+## Security and governance
+
+_(Governance add-on)_
+
+- **Restrict Node.js versions** — allow/block lists and firewall policies (for example block EOL) ([Version Firewall + Author Mirror](./author-mirror))
+- **Control NVM settings** — lock or override preferences with ADMX / GPO / Entra ([Administrative Templates](../cfg/ad))
+- **Advanced proxy support** — IWA (NTLM/Negotiate) and PAC/WPAD beyond basic HTTP proxy ([Download Mirrors](./mirrors#http-proxies))
+- **Custom Node.js mirrors** — Author policy-aware mirror (`mirror.author.io`) or other approved mirrors ([Download Mirrors](./mirrors), [Version Firewall + Author Mirror](./author-mirror))
+- **Active Directory and Entra integration** — deploy/manage via AD and Intune ([Enterprise Deployment](../install/enterprise/requirements))
+
+## Trust artifacts and observability
+
+- **SBOM, provenance, and VEX** _(Trust Artifacts add-on)_ — supply-chain trust materials with release packs ([Choosing an Edition](../guide/builds/))
+- **Fully auditable native logging** _(Advanced Logging add-on)_ — structured logging for SIEM/audit ([Event Logging](./log), [Choosing an Edition](../guide/builds/))
+
+---
+
+# Windows Apps Integration
+
+Installed versions of Node.js are visible in the Windows Apps screen. They can be uninstalled directly from there too.
+
+![1776491546067](/img/features/install/1776491546067.png)
+
+The operating system recognizes each version as a bona fide "official" installation.
+
+## Added Cybersecurity Value
+
+Version managers traditionally operate on "shadow installs", meaning Node.js exists wherever the version manager stores it. The OS doesn't differentiate it from any other file, such as a nefarious file named `node.exe` to mimick the real thing.
+
+By surfacing installations, NVM for Windows helps Windows itself distinguish between proper installations and slick knock-offs.
+
+Common scanning tools like Qualys or CrowdStrike identify "official" apps, including versions of Node.js installed by NVM for Windows. This produces tangible data sets for vulnerability assessments. Since each version is registered with the OS, these tools can identify rogue files renamed to node.exe that aren't among official installations. This makes it easier to detect malware masquerading as Node.
+
+NVM for Windows cryptographically verifies the publisher of the executable upon installation while Windows auditing/antivirus tracks changes if someone tries to overwrite the file. NVM for Windows shim mode also verifies node executables on every execution.
+
+---
+
+# Event Logging
+
+Critical events, such as installations, configuration changes, and security events are logged natively, available in Windows Event Viewer. This allows for clear organization observability and auditing using tools most organizations already familiar with.
+
+![1776532731980](/img/features/native/1776532731980.png)
+
+Only critical change events are logged by default. Additional logging is available through [configuration](../cfg/core#logging-and-announcements). It is possible to log every `node.exe` / `npm` / `npx` invocation (as well as other major package managers).
+
+:::warning[Event source registration]
+Community and certified builds both register an ETW provider (`NVMWindows.Events.man` + `NVMWindows.Events.dll` next to `nvm.exe`). Look under **Applications and Services Logs → NVM for Windows/Operational**, not only the classic Application log.
+
+If setup cannot elevate for `nvm --register-eventlog` (UAC canceled / non-admin), registration is skipped. Run that command later from an elevated terminal, or reinstall and accept the UAC prompt.
+:::
+
+:::tip[SIEM/Audit Logging]
+The **Advanced Logging** add-on will be available in September 2026. It writes structured entries, with well known SIEM event codes, to a dedicated native NVM for Windows log (not the Application log). This is designed for streamlined SIEM integration and straightforward querying.
+:::
+
+---
+
+# Desktop Notifications
+
+import DocImage from '@site/docs/_components/DocImage';
+
+NVM for Windows uses native desktop notifications with the Windows Notification Center. Missed notifications stay in the Notification Center until acknowledged. Personal notification preferences are honored.
+
+<div align="center">
+<DocImage
+	src="/img/features/native/native-notifications.png"
+	alt="Windows Notification Center"
+	style={{maxWidth: '980px'}}
+/>
+</div>
+
+## When notifications appear
+
+Most CLI notifications display **only when NVM is not already in the foreground** (ex: background agent). If you run `nvm` in an interactive terminal and that window has focus, those notifications are skipped so the UI does not interrupt work you are already watching.
+
+Background cases that still notify include:
+
+- Long-running installs started from another context
+- Scheduled sync/update checks (`sync.exe`)
+- License expiry reminders (certified editions)
+
+News and updates can be turned off with [`disable_announcements`](../cfg/core#logging-and-announcements). License expiry notifications are **not** suppressed by that setting.
+
+## CLI notifications
+
+These use Notification Center when the NVM process is **not** in the foreground:
+
+| Trigger | Title | Message (approx.) |
+|--------|--------|-------------------|
+| Install finished | _(empty)_ or failure title | Node.js vX installed/Node.js vX Installation Failed (plus error text) |
+| `nvm use` (default switch) | _(empty)_ | Now using Node.js vX by default. |
+| `nvm uninstall` | _(empty)_ | Joined status lines (uninstalled, skipped, active switch, cache purge, and similar) |
+| `nvm config set` | _(empty)_ | key set to value |
+| `nvm alias add` | _(empty)_ | "&lt;name&gt;" now refers to vX.X.X |
+| `nvm alias remove` | _(empty)_ | &lt;count&gt; alias(es) removed successfully. |
+| `nvm pin` | _(empty)_ | Success text for `.nvmrc`/`package.json` engines updates |
+| Symlink failure (Developer Mode off) | Help Enabling Symlinks |
+
+## Sync notifications
+
+Scheduled maintenance can also display notifications:
+
+| Trigger | Title | Notes |
+|--------|--------|--------|
+| News feed | Feed entry title | Body is the entry description with links; skipped when [`disable_announcements`](../cfg/core#logging-and-announcements) is true |
+| Update available | Update Available | Version availability with View/Upgrade links; skipped when [`disable_announcements`](../cfg/core#logging-and-announcements) is true |
+| License expiry<br/>_(certified builds)_ | Expiration warning | Not suppressed by [`disable_announcements`](../cfg/core#logging-and-announcements); at most one notification per milestone/day. |
+
+---
+
+# Windows Registry Integration
+
+As of v2.0.0, settings and preferences are stored in the registry under user keys. These can be modified with the [`nvm config`](../command/config) command. See [Basic Configuration](../cfg/core) for the full preference list.
+
+:::info[Attention v1 Users]
+Prior versions of NVM for Windows utilized a plain text `settings.txt` file. Some users experienced difficulties using special characters. This was caused by encoding type problems in older versions of Go. Windows handles locale encoding natively in the registry, eliminating this problem.
+:::
+
+On certified fleets, machine policy can override user preferences. See [Administrative Templates](../cfg/ad) and the [registry policy reference](../cfg/registry).
+
+---
+
+# Download Mirrors
+
+NVM for Windows downloads Node.js archives from one or more **Node mirrors**, and can fall back to one or more **npm registry** URLs in shim mode. Set these with [`nvm config`](../command/config) (or machine policy on certified fleets).
+
+This page covers basic mirror URLs and HTTP proxies available to Community and certified builds. For the Author policy-aware mirror and version firewall _(Governance)_, see [Version Firewall + Author Mirror](./author-mirror).
+
+## Node.js mirrors
+
+| Option | Registry | Default |
+|--------|----------|---------|
+| [`node_mirror`](../cfg/core#downloads-and-mirrors) | `MirrorNode` | https://nodejs.org/dist |
+
+Used when `nvm install` (and related commands) need to fetch a Windows Node.js `.7z` and checksums, after any [local install](./local-installations)/[cache](./cache) miss.
+
+In `nvm config`, pass one URL or a **comma-delimited** list. In the registry, store `MirrorNode` as **`REG_MULTI_SZ`** (one URL per entry).
+
+```powershell
+nvm config set node_mirror=https://nodejs.org/dist
+nvm config set node_mirror=https://npmmirror.com/mirrors/node
+nvm config set node_mirror=https://npmmirror.com/mirrors/node,https://nodejs.org/dist
+nvm config get node_mirror
+```
+
+Install resolution order:
+
+1. Local archive source ([`local_dir`](../cfg/registry#available-registry-keys)/version cache) when present (see [Local Installations](./local-installations) and [Download Cache](./cache)).
+2. Walk the ordered [`node_mirror`](../cfg/core#downloads-and-mirrors) list.
+3. Stop at the **first successful** response.
+
+Put the preferred mirror first. A public fallback is useful if the primary host is unreachable.
+
+`nvm env` shows the effective mirror list after config and policy merge.
+
+## npm registry mirrors
+
+| Option | Registry | Default |
+|--------|----------|---------|
+| [`npm_mirror`](../cfg/core#downloads-and-mirrors) | `MirrorNpm` | https://registry.npmjs.org |
+
+[`npm_mirror`](../cfg/core#downloads-and-mirrors) is **not** used to download Node.js installers. In **shim** mode it supplies a fallback npm (and related package-manager) registry URL when the user or project has not already set one.
+
+Same list rules as Node mirrors: comma-delimited in `nvm config`; **`REG_MULTI_SZ`** for `MirrorNpm` in the registry.
+
+```powershell
+nvm config set npm_mirror=https://registry.npmjs.org
+nvm config set npm_mirror=https://registry.npmmirror.com,https://registry.npmjs.org
+nvm config get npm_mirror
+```
+
+Keep Node mirrors and npm registries as separate concerns.
+
+## HTTP proxies
+
+Corporate networks often require an HTTP(S) proxy between NVM and the mirror. Resolve order:
+
+1. Explicit [`proxy`](../cfg/core#proxy)/`Proxy` setting (policy or config)
+2. Process environment (`HTTP_PROXY`, `HTTPS_PROXY`, etc.)
+3. Internet Explorer/WinINET system proxy settings
+
+| Config | Registry | Notes |
+|:-|:-|:-|
+| [`proxy`](../cfg/core#proxy) | `Proxy` | Proxy URL, e.g. `http://proxy.example.corp:8080` |
+| [`proxy_auth`](../cfg/registry#available-registry-keys) | `ProxyAuth` | `user:pass` or `Bearer YOUR_TOKEN` — stored **in plain text** |
+| [`proxy_auth_type`](../cfg/registry#available-registry-keys) | `ProxyAuthType` | `basic`, `bearer`, `ntlm`, `negotiate`, or `ntlm,negotiate` |
+
+:::info[Certified Builds]
+Available September 2026.
+:::
+
+| Capability | Community | Certified (Distribution/Audit) | Governance |
+|:-|:-:|:-:|:-:|
+| Proxy URL | ✓ | ✓ | ✓ |
+| Basic/Bearer auth | limited* | ✓ | ✓ |
+| IWA (NTLM/Negotiate, current user) | — | — | ✓ |
+| PAC/WPAD (WinHTTP) | — | — | ✓ |
+
+\*Community may embed credentials in the proxy URL; dedicated `ProxyAuth*` injection is a certified path.
+
+:::warning[ProxyAuth in the registry]
+`ProxyAuth` is plain text under policy/preferences. Use IWA (`ntlm`/`negotiate`) when regulations disallow stored passwords.
+:::
+
+:::info[No Digest or Browser Proxies]
+Digest auth is not supported due to its extensive requirements and minimal real-world usage.
+
+No interactive SAML/OIDC browser login capabilities exist for captive portals. Consider using PAC instead.
+:::
+
+## Related
+
+| Topic | Doc |
+|-------|-----|
+| Full preference table | [Basic Configuration](../cfg/core#downloads-and-mirrors) |
+| Policy/`.reg` types | [Registry Policy Reference](../cfg/registry) |
+| Author mirror & version firewall | [Version Firewall + Author Mirror](./author-mirror) |
+| Offline archives | [Air-gapped Installations](../guide/air-gapped-installations) |
+
+---
+
+# Version Firewall + Author Mirror
+
+import DocImage from '@site/docs/_components/DocImage';
+
+# Version Firewall + Author Mirror
+
+Governance builds can limit which Node.js versions install via a **local firewall** (static allow/block lists) and Author Software's **policy-aware Node.js mirror** at `https://mirror.author.io/runtime/nodejs` (lifecycle rules such as blocking end-of-life releases).
+
+For everyday [`node_mirror`](../cfg/core#downloads-and-mirrors)/[`npm_mirror`](../cfg/core#downloads-and-mirrors) URLs and HTTP proxies, see [Download Mirrors](./mirrors).
+
+## Firewall
+
+The NVM for Windows local firewall honors version allow/block lists defined in your organization's security policies (see [governance edition registry keys](/cfg/registry#governance-keys)). **Static** entries are enforced on the client before any download starts whenever `nvm install <version>` runs. That local check works in air-gapped environments.
+
+Lifecycle aliases such as `EOL` are not expanded by the local firewall; they are enforced when installs use the Author mirror (below).
+
+For outbound firewall allow-lists, see [Requirements](../install/enterprise/requirements#proxy-exceptions). Full key types live in the [registry policy reference](../cfg/registry) and [basic configuration](../cfg/core).
+
+## Author Mirror
+
+The Author mirror adds another layer of protection against unapproved Node.js downloads. It enforces *dynamic policies* through rules, complementary to local allow/block lists.
+
+:::warning[Connected Environments Only]
+The Author mirror is not available in air-gapped environments.
+:::
+
+Point [`node_mirror`](../cfg/core#downloads-and-mirrors) / `MirrorNode` at Author's mirror service: `https://mirror.author.io/runtime/nodejs`
+
+Allow outbound HTTPS to:
+
+- `licensing.author.io` — license and verification keys
+- `mirror.author.io` — Node archives
+
+On Author hosts, NVM may send:
+
+| Credential | Registry | Purpose |
+|:-|:-|:-|
+| Access token | `AccessToken` | `Authorization: Bearer …` on Author downloads; also used for license verification |
+| Access key | `AccessKey` | Signs a short-lived mirror JWT (`X-Author-License`) on Governance |
+
+Set these with portal scripts/policy, not everyday `nvm config docs` keys. If the only configured mirror is Author and auth fails, install fails with an authorization error. With multiple mirrors, NVM can fall through to the next URL after a failed attempt (unless the failure is a hard auth denial on a solo Author mirror).
+
+:::warning[Fallback skips Author policy]
+If `nodejs.org` (or another non-Author host) is later in [`node_mirror`](../cfg/core#downloads-and-mirrors), a failed Author request can fall through and download **without** Author lifecycle rules (`EOL`, hosted rulesets). Put Author first and omit public fallbacks when those rules must always apply.
+:::
+
+Optional: `ApplyVerboseLicenseMetadata` includes machine/user identity claims in mirror JWTs for auditing.
+
+## Enforce Dynamic Policies
+
+Dynamic policies are lifecycle aliases (i.e. `EOL`) that classify a range of versions. The Author mirror evaluates them when serving downloads. The same machine-policy lists that feed the [local firewall](#firewall) can also **seed** those aliases into the Author license JWT.
+
+There are two (combinable) ways to enforce dynamic policies on the Author mirror.
+
+### 1. From machine policy (JWT claims)
+
+`VersionAllowList` / `VersionBlockList` (see [Governance registry keys](/cfg/registry#governance-keys)) do double duty:
+
+- **Static entries** — enforced by the local firewall (above), before any download.
+- **Dynamic aliases** (`EOL`, `ALPHA`, `MAINTENANCE`) — ignored by the local firewall; included in the short-lived license JWT sent only to `mirror.author.io`. The mirror applies those lifecycle rules when serving the archive.
+
+| Policy entry | Local client | Author mirror (`mirror.author.io`) | Public mirror (`nodejs.org`) |
+|:-|:-|:-|:-|
+| `16.x` on block list | Denied before download | Not reached | Not reached |
+| `EOL` on block list | Allowed locally (alias ignored) | Denied if version is end-of-life | No Author JWT — not enforced |
+| Allow `20.x` only (no magic) | Non-20 denied locally | — | — |
+
+
+```ini title="Example: Refuse end-of-life downloads via the Author mirror"
+# Registry Keys
+VersionBlockList=EOL
+VersionAllowList=20.x
+                 22.x
+```
+
+What this does:
+
+1. **Locally:** `20.x` / `22.x` match the allow list. `EOL` is not expanded, so an end-of-life release is **not** stopped on the client by that alias alone. Because a dynamic alias is present, the allow list is also **not** treated as exclusive: other versions can still pass the local check.
+1. **On `mirror.author.io`:** the client sends a license claim derived from these lists (including `NOT EOL`). The mirror rejects end-of-life archives.
+1. **On `nodejs.org` (or any non-Author mirror):** no Author JWT — `EOL` does nothing. Put Author first in [`node_mirror`](../cfg/core#downloads-and-mirrors), or add static blocks (for example `16.x`) if you must enforce without the Author mirror.
+
+Air-gapped/[`local_install_only`](../cfg/registry#available-registry-keys) installs never hit the mirror, so `EOL` is not enforced in local environments. Use static allow/block lists (or stage only approved archives).
+
+
+### 2. Hosted Rules
+
+Hosted rules are configured through the customer portal:
+
+<DocImage src="/img/features/proxy/mirror_ruleset_form.png" alt="Mirror Rulesets" style={{ display: 'block', width: '100%', height: 'auto', margin: '0 auto' }} />
+
+These rules can be applied conditionally based on:
+
+- IP Address Range(s)
+- Geographic Location
+- Domains (e.g. Active Directory Domain ID, Entra ID)
+- User account/SID
+- Assigned Access Key (License Group)
+
+Rules matching your preferred conditions are applied to each request, providing fine-grained control over which versions are allowed to be downloaded.
+
+:::tip[Working in a Regulated Environment?]
+Organizations whose policies prevent storing any organization data on hosted services can disable hosted rules without impacting local rules processed by the mirror. Do this via the [Node Mirror configuration page](https://portal.author.io/nvm-windows/config).
+
+**Highly regulated organizations, or those with very strict compliance policies, can request this feature be removed entirely.** [Contact us](mailto:support@author.io) if you wish to remove hosted rules entirely.
+:::
+
+## Local (and air-gapped) installs
+
+| Config | Registry | Role |
+|:-|:-|:-|
+| [`local_dir`](../cfg/registry#available-registry-keys) | `LocalInstallDir` | Directory of pre-staged Node archives (+ checksums). Preferred over network when present. |
+| [`local_install_only`](../cfg/registry#available-registry-keys) | `LocalInstallOnly` | If on, **never** download; fail when the version is missing locally. |
+
+`AirGapped` is separate: it only forces **offline license JWKS** verification (`licensing.author.io` skipped). It does **not** by itself block Node downloads — use `LocalInstallOnly` (and/or remove remote mirrors) for install air-gaps. See [Local Installations](./local-installations) and [Air-gapped Installations](../guide/air-gapped-installations).
+
+## Related
+
+| Topic | Doc |
+|:-|:-|
+| Basic [`node_mirror`](../cfg/core#downloads-and-mirrors) / [`npm_mirror`](../cfg/core#downloads-and-mirrors) | [Download Mirrors](./mirrors) |
+| HTTP proxies | [Download Mirrors](./mirrors#http-proxies) |
+| User-facing config keys | [Basic Configuration](../cfg/core) |
+| Policy keys and `.reg` sample | [Registry Policy Reference](../cfg/registry) |
+| Firewall exceptions | [Requirements](../install/enterprise/requirements) |
+| Edition capabilities | [Choosing an Edition](../guide/builds/) |
+| Inspect mirrors/proxy | [`nvm env`](../command/env) |
+
+---
+
+# Local Installations
+
+Local installations let NVM for Windows install Node.js from archives already on disk instead of (or before) contacting a download mirror. Use this for air-gapped hosts, shared lab mirrors, or any environment where outbound downloads are blocked or undesirable.
+
+This differs from the ordinary [download cache](./cache): [`local_dir`](../cfg/registry#available-registry-keys) **replaces** `.cache/versions` as the archive root for installs. With [`local_install_only`](../cfg/registry#available-registry-keys), a miss never falls back to the network.
+
+## Settings
+
+| Option | Registry | Default | Effect |
+|--------|----------|---------|--------|
+| [`local_dir`](../cfg/registry#available-registry-keys) | `LocalInstallDir` | _(unset)_ | Directory of Node.js `.7z` archives used as the install source |
+| [`local_install_only`](../cfg/registry#available-registry-keys) | `LocalInstallOnly` | `false` | Install only from that local source; fail if the archive is missing |
+
+Both are overridable preferences (often set by [machine policy](../cfg/registry) on certified fleets). They are hidden from everyday `nvm config docs` output, but still work with `nvm config`:
+
+```powershell
+nvm config set local_dir=D:\node-archives
+nvm config set local_install_only=true
+nvm config get local_dir local_install_only
+```
+
+:::tip[Policy]
+Enterprise deployments usually lock these under Administrative Templates / registry policy so every machine shares the same archive share. See [`LocalInstallDir` / `LocalInstallOnly`](../cfg/registry).
+:::
+
+## Archive layout
+
+Place official Windows Node.js archives in [`local_dir`](../cfg/registry#available-registry-keys) (or the default version cache if you are not using [`local_dir`](../cfg/registry#available-registry-keys)):
+
+```text
+D:\node-archives\
+  node-v24.11.0-win-x64.7z
+  SHASUMS256-v24.11.0-win-x64.txt   # optional but recommended offline
+  node-v22.20.0-win-x64.7z
+  SHASUMS256-v22.20.0-win-x64.txt
+```
+
+- Archive name: `node-v{version}-win-{x64|arm64}.7z` (arch matches the machine).
+- Optional SHASUM file beside the archive: `SHASUMS256-v{version}-win-{arch}.txt`.
+
+On a connected machine you can populate a folder with [`nvm cache add`](../command/cache/add) and copy `.cache/versions` (or set that path as [`local_dir`](../cfg/registry#available-registry-keys) on the offline host).
+
+## Install flow
+
+```powershell
+nvm install 24.11.0
+```
+
+1. Look for `node-v24.11.0-win-*.7z` under [`local_dir`](../cfg/registry#available-registry-keys) (or `.cache/versions` when [`local_dir`](../cfg/registry#available-registry-keys) is unset).
+2. Run integrity checks (verify-cache, local SHASUM, trusted policy path, or live mirror SHASUM when online).
+3. If found and valid → extract and install.
+4. If missing and **[`local_install_only=true`](../cfg/registry#available-registry-keys)** → fail with `not found in local install directory` (no download).
+5. If missing and local-only is off → download from configured mirrors as usual.
+
+Machine policy with **both** `LocalInstallOnly` and `LocalInstallDir` set treats archives under that directory as a trusted local source for integrity when offline (archives still must sit under the configured root).
+
+For end-to-end offline steps (prefetch → media/share → configure → install), see [Air-gapped Installations](../guide/air-gapped-installations).
+
+## Related
+
+- [Air-gapped Installations](../guide/air-gapped-installations) — step-by-step offline workflow
+- [Download Cache](./cache) — default `.cache/versions` store and `--cache` / [`cache_downloads`](../cfg/core#downloads-and-mirrors)
+- [`nvm install`](../command/install/) — install flags and local-source notes
+- [Registry policy](../cfg/registry) — `LocalInstallDir`, `LocalInstallOnly`
+
+:::info[`air_gapped`]
+The separate [`air_gapped`](../cfg/registry#available-registry-keys) preference controls offline license/JWKS behavior for Author mirrors. It does **not** by itself redirect Node.js installs to a local archive folder — use [`local_dir`](../cfg/registry#available-registry-keys) / [`local_install_only`](../cfg/registry#available-registry-keys) for that.
+:::
+
+---
+
+# Download Cache
+
+NVM for Windows can keep downloaded Node.js archives on disk so later installs skip the network when a matching archive is already present. Manage that store with [`nvm cache`](../command/cache/), or turn automatic saving on with [`cache_downloads`](../cfg/core#downloads-and-mirrors).
+
+Caching helps when:
+
+- **Reinstalling often**: wipe/reinstall the same Node version without re-downloading.
+- **Flaky or metered networks**: keep a local copy so installs still work after a bad mirror or offline stretch
+- **Fleet/lab prep**: `nvm cache add` once, copy archives (or a shared [`local_dir`](../cfg/registry#available-registry-keys)) to other machines
+- **Air-gapped installs**: prefetch on a connected host, then install offline ([Air-gapped Installations](../guide/air-gapped-installations))
+
+:::info[Local installations]
+Caching can cover a simple offline laptop. For teams and shared archives, prefer [Local Installations](./local-installations) and the [Air-gapped Installations](../guide/air-gapped-installations) guide.
+:::
+
+By default **[`cache_downloads`](../cfg/core#downloads-and-mirrors) is `false`**: a normal `nvm install` will **reuse** a cached archive if one exists, but will **not** write a new archive unless you pass `--cache` or enable the preference.
+
+```powershell
+nvm install 24 --cache
+nvm install 24.11.0   # reuses the cached archive when present
+```
+
+## Where files live
+
+Under the NVM data root (parent of the install root; default `%LOCALAPPDATA%\Author Software\nvm`):
+
+| Store | Path | Contents |
+|-------|------|----------|
+| Versions | `.cache/versions` | Node.js `.7z` archives (`node-v{version}-win-{x64\|arm64}.7z`) |
+| Metadata | `.cache/metadata` | Sync/release index metadata (not install archives) |
+| HTTP | `.cache/http` | Short-lived HTTP bodies (for example SHASUM fetches) |
+
+If [`local_dir`](../cfg/registry#available-registry-keys) is set (see [registry policy](../cfg/registry)), that directory **replaces** `.cache/versions` as the archive source for installs.
+
+## Install behavior
+
+| Flag/setting | Effect |
+|----------------|--------|
+| [`nvm install --cache`](../command/install/) | Download (if needed) and **save** the archive |
+| [`nvm install --no-cache`](../command/install/) | Do not use or write the default version cache |
+| [`cache_downloads=true`](../cfg/core#downloads-and-mirrors) | Always save successful downloads (unless `--no-cache`) |
+| [`nvm cache add`](../command/cache/add) | Download and cache **without** installing |
+| [`local_install_only`](../cfg/registry#available-registry-keys) | No network: install only from [`local_dir`](../cfg/registry#available-registry-keys)/cache hit |
+
+Integrity on a cache hit is checked before reuse (local SHASUM beside the archive when present, download verify-cache, or live mirror SHASUM when online). A bad archive is removed and the install continues as a miss when network is allowed.
+
+## Managing the cache
+
+```powershell
+nvm cache                  # list (alias: nvm cache list/ls)
+nvm cache add 24 lts       # prefetch archives
+nvm cache remove version 24.1.0
+nvm cache remove metadata
+nvm cache remove all
+nvm list cached            # versions view of cached archives
+```
+
+[`allow_download_cache_removal`](../cfg/core#downloads-and-mirrors) (default `true`) controls whether cache deletes are allowed. Policy can set it to `false`; removals then report that they are blocked.
+
+Uninstall with `--purge` can also drop the matching cached archive for that version.
+
+## Related
+
+- [Air-gapped Installations](../guide/air-gapped-installations) — step-by-step offline workflow
+- [Local Installations](./local-installations)
+- Command reference: [`nvm cache`](../command/cache/)
+- Preferences: [`cache_downloads`](../cfg/core#downloads-and-mirrors), [`allow_download_cache_removal`](../cfg/core#downloads-and-mirrors)
+- Policy: [`LocalInstallDir`/`LocalInstallOnly`](../cfg/registry)
+
+---
+
+# Basic Configuration
+
+# Basic Configuration
+
+User preferences live in the Windows registry. Manage them with [`nvm config`](../command/config) (alias: `nvm cfg`).
+
+```powershell
+nvm config list
+nvm config get mode auto_use
+nvm config set auto_install=true
+nvm config reset auto_install
+nvm config docs
+```
+
+On certified fleets, machine policy can override these values. See [Administrative Templates](ad) and the [registry policy reference](registry).
+
+:::tip[Structured Docs]
+Use `nvm config docs --json` for machine-readable metadata.
+:::
+
+## Mode and install location
+
+| Option | Default | Values | Description |
+|--------|---------|--------|-------------|
+| `mode` | `shim` | `shim`, `link` | Specifies how Node.js commands and versions are managed, either through shim-based routing or direct junction/symlink linking. Same as `nvm use shim`/`nvm use link`. See [Operating Modes](../features/modes). |
+| `root` | `%LOCALAPPDATA%\Author Software\nvm\installs` | Directory path | Root directory where Node.js versions are installed. Changing this does not move existing installs; migrate files yourself or reinstall versions. |
+
+## Downloads and mirrors
+
+| Option | Default | Values | Description |
+|--------|---------|--------|-------------|
+| `node_mirror` | `https://nodejs.org/dist` | One or more URLs | Mirror URL(s) for downloading Node.js. In `nvm config`, pass a comma-delimited list. In the registry (`MirrorNode`), store as **`REG_MULTI_SZ`** (one URL per entry) — not a single comma-separated `REG_SZ`. See [Download Mirrors](../features/mirrors). |
+| `npm_mirror` | `https://registry.npmjs.org` | One or more URLs | Mirror URL(s) for the npm registry fallback. Same rules: comma-delimited in `nvm config`; **`REG_MULTI_SZ`** (`MirrorNpm`) in the registry. See [Download Mirrors](../features/mirrors). |
+| `cache_downloads` | `false` | Boolean | Whether to cache downloaded files for offline use. |
+| `allow_download_cache_removal` | `true` | Boolean | Allow removing cached downloads. |
+| `allow_insecure_downloads` | `false` | Boolean | Allow expired/invalid SSL certificates when downloading assets. |
+| `auto_installed_modules` | _(none)_ | Comma-delimited npm package names | Comma-delimited list of global npm modules to automatically install with new Node.js versions. (`REG_MULTI_SZ` as `AutoInstallModuleList` under policy.) |
+
+```powershell
+nvm config set node_mirror=https://npmmirror.com/mirrors/node
+nvm config set node_mirror=https://mirror.author.io/runtime/nodejs,https://nodejs.org/dist
+nvm config set cache_downloads=true
+nvm config set auto_installed_modules=typescript,prettier
+```
+
+## Proxy
+
+Proxies are automatically detected/applied from `HTTP_PROXY`, `HTTPS_PROXY`, or `NO_PROXY` environment variables.
+
+| Option | Default | Values | Description |
+|--------|---------|--------|-------------|
+|`proxy`|_(none)_|URL|The plain text URL of the proxy. This is a hidden from everyday `cfg docs` output since it is usually auto-detected.|
+
+On certified builds proxies are usually set by policy (see [registry reference](registry)).
+
+:::warning[Corporate Proxies]
+The community build supports basic proxies. IWA, WPAD, and PAC proxies are supported in Certified Builds, available September 2026.
+:::
+
+## Project detection and auto behavior
+
+These options apply primarily in **shim** mode (and related `nvm pin` workflows).
+
+| Option | Default | Values | Description |
+|--------|---------|--------|-------------|
+| `auto_detect` | `.nvmrc`, `.node-version`, `package.json` | Comma-delimited filenames | Project files to inspect for version (shim-only). |
+| `default_detect_file` | `.nvmrc` | Filename | The default file to write to when saving/pinning a version to a project. |
+| `auto_use` | `true` | Boolean | Automatically switch to auto-detected version to run the specified scripts without modifying the system version (shim-only). |
+| `auto_install` | `false` | Boolean | Automatically install missing auto-detected version (`node` shim + proxy: npm/npx/yarn/pnpm/globals; also `nvm pin`). |
+| `auto_install_prompt` | `true` | Boolean | Prompt before automatically installing missing auto-detected version (`node` shim + proxy; also `nvm pin`). |
+
+```powershell
+nvm config set auto_install=true auto_install_prompt=false
+nvm config set auto_detect=.nvmrc,.node-version
+```
+
+## Package managers
+
+| Option | Default | Values | Description |
+|--------|---------|--------|-------------|
+| `pm_mismatch_action` | `error` | `ignore`, `warn`, `error` | Action to take when a mismatch between npm/pnpm/yarn and Node.js versions is detected during install or use:<br/><br/><ul><li>ignore: stay silent</li><li>warn: continue after a warning</li><li> error: stop the operation (safest default)</li></ul>|
+
+## Logging and announcements
+
+| Option | Default | Values | Description |
+|--------|---------|--------|-------------|
+| `log_executions` | `false` | Boolean | Whether to log every Node.js invocation (ex: `node file.js`). (shim-only) |
+| `disable_announcements` | `false` | Boolean | Whether to disable project and release announcements. License expiry warnings still run. |
+
+```powershell
+nvm config set log_executions=true
+nvm config set disable_announcements=true
+```
+
+## Related settings
+
+_(not listed in `cfg docs`)_
+
+| Topic | Where |
+|-------|--------|
+| Version aliases (`stable=24.x`, etc.) | Prefer [`nvm alias`](../command/alias); values are stored as `aliases` |
+| Turn version management on/off | [`nvm on`](../command/on)/[`nvm off`](../command/off) (writes `enabled`) |
+| Active/last version | Managed by [`nvm use`](../command/use) (`active_version`, `last_version`) |
+| Shim security/V8 flags | [Registry reference](registry) (`EnforcePermissionModel`, `FreezeV8GlobalObjects`, `DisableEvalAndStringExecution`) |
+| Enterprise locks (mirrors, version allow/block lists, proxies) | [Administrative Templates](ad) and [registry policies](registry) |
+
+```powershell
+nvm config docs
+nvm config docs --json
+```
+
+---
+
+# Administrative Templates (Intune & GPO)
+
+# Administrative Templates (Intune & GPO)
+
+NVM for Windows certified governance builds come with ADMX/ADML templates. Use them in **on-premises Group Policy** or **Microsoft Intune** configuration profiles.
+
+|Resource|Guidance|
+|:-|:-|
+|ADMX file| Controls the technical registry settings. Available at [portal.author.io](https://portal.author.io).|
+|ADML file| Provides the language text for the settings. Available at [portal.author.io](https://portal.author.io).|
+|Target path| `HKLM\Software\Policies\Author Software\nvm`|
+
+Download the ADMX/ADML from the [customer portal](https://portal.author.io). For Win32 app installation through Intune, see [Install → Intune](../install/enterprise/intune).
+
+---
+
+## Intune policy configuration
+
+After NVM for Windows is [installed](../install/enterprise/intune), enforce settings with the imported administrative template.
+
+### 1. Import ADMX and ADML
+
+1. In [Intune admin center](https://go.microsoft.com/fwlink/?linkid=2109431), go to **Devices** > **Windows** > **Configuration**.
+1. Open the **Import ADMX** tab and select **Import**.
+1. Upload `NVMWindows.admx` and `en-US\NVMWindows.adml` from your deployment pack. No `Windows.admx` prerequisite is required.
+
+:::warning[error **131329** (0x20101)]
+1. On the device, run `certified\enhanced\policy\Get-NvmAdmxIngestDiagnostics.ps1` and note the **HRESULT** on `ADMX Ingestion` events (for example `0x8007000D` invalid ADMX data, `0x80070005` blocked registry path).
+1. Delete the prior NVM ADMX import in Intune, then re-import the updated template.
+1. Clear stale ingest state on the device, then sync again:
+
+```powershell
+Remove-Item -Recurse -Force "$env:ProgramData\Microsoft\PolicyManager\ADMXIngestion\*nvm*" -ErrorAction SilentlyContinue
+Get-ChildItem 'HKLM:\SOFTWARE\Microsoft\PolicyManager\AdmxInstalled' -Recurse |
+  Where-Object { $_.Name -match 'nvm' } |
+  Remove-Item -Recurse -Force
+```
+
+Until ADMX ingest succeeds, deploy values with a **Custom** configuration profile (Registry CSP OMA-URIs). Value names and types are in the [Central Registry Reference](registry).
+:::
+
+![alt text](/img/guide/deploy/policy/image-1.png)
+
+### 2. Create a configuration profile
+
+1. Go to **Devices** > **Configuration** > **Create** > **New policy**.
+1. Platform: **Windows 10 and later** (covers Windows 11 and Windows Server 2019 and later).
+1. Profile type: **Templates** → **Imported Administrative templates**.
+1. Navigate to **Author Software** > **NVM for Windows** and configure policies.
+
+![alt text](/img/guide/deploy/policy/image-2.png)
+
+Policy names match the GPO tree below. Registry value names are in the [Central Registry Reference](registry).
+
+:::tip[Registry CSP alternative]
+You can also deploy individual registry values with a **Settings catalog** or **Custom** configuration profile using Registry CSP OMA-URIs. Prefer ADMX import when available; use Registry CSP as a fallback or for one-off keys. See the [Central Registry Reference](registry).
+:::
+
+---
+
+## Group Policy (GPO) Deployment
+
+:::info[Domain Controller Access]
+You will need access to your domain controller to perform the tasks in this section.
+:::
+
+_On your domain controller:_
+
+1. Copy `NVMWindows.admx` to `\\domain\sysvol\domain\Policies\PolicyDefinitions`.
+1. Copy `en-US\NVMWindows.adml` to `\\domain\sysvol\domain\Policies\PolicyDefinitions\en-US`.
+1. Open the Group Policy Management Editor (`Windows Key + R`, type `gpedit.msc` and press **Enter**.)
+1. Locate the Group Policy Object (or create a new one) used to manage Node.js policies. Right click and select **Edit**.
+1. Navigate to **Computer Configuration** > **Policies** > **Administrative Templates** > **Author Software** > *NVM for Windows*.
+
+![GPO](/img/guide_gpo.png)
+
+Policy names below match the **Administrative Templates** tree in Group Policy Management Editor and Intune after ADMX import.
+
+```powershell
+Computer Configuration
+└── Policies
+    └── Administrative Templates
+        └── Author Software
+            └── NVM for Windows
+                ├── Disable Node.js version management
+                ├── Configure Node.js storage directory
+                ├── Allow users to change the Node.js storage directory
+                ├── Configure local Node.js installation mirror source directory
+                ├── Use local mirror for all Node.js installations
+                ├── Network
+                │   ├── Configure proxy server address
+                │   ├── Configure proxy authentication type
+                │   ├── Configure proxy authentication value
+                │   ├── Configure Node.js download mirror(s)
+                │   ├── Configure npm registry mirror(s)
+                │   ├── Always cache downloads
+                │   ├── Disable removal of cached downloads
+                │   ├── Disable NVM for Windows upgrades
+                │   └── Disable project and release announcements
+                ├── Environment
+                │   ├── Set operating mode
+                │   ├── Configure custom version aliases
+                │   ├── Configure auto-installed global npm modules
+                │   └── Shim mode
+                │       ├── Configure automatic version detection files (e.g. .nvmrc)
+                │       ├── Configure default auto-detect file
+                │       ├── Disable automatic version detection
+                │       ├── Disable automatic version installation
+                │       ├── Always prompt before automatic installation
+                │       ├── Disable native tool installation
+                │       └── Configure package manager mismatch action
+                └── Security
+                    ├── Skip live license JWKS (air-gapped JWT verify)
+                    ├── Configure allowed Node.js versions
+                    ├── Configure blocked Node.js versions
+                    ├── Disable insecure downloads
+                    ├── Include verbose identity metadata in mirror license tokens
+                    ├── Configure approved vendors (trusted code signers)
+                    └── Shim mode
+                        ├── Enable audit logging
+                        ├── Enforce Node.js permission model
+                        ├── Prevent modification of global JavaScript prototypes
+                        ├── Disallow dynamic code generation from strings
+                        └── Configure npm package minimum release age
+```
+
+:::tip[Language Support]
+Contact support@author.io to request a language other than English.
+:::
+
+---
+
+# Registry Policy Reference
+
+# Registry Policy Reference
+
+This reference contains the registry keys and values used to manage, secure, and configure NVM for Windows in enterprise environments.
+
+All administrative policies should be enforced within the **HKEY_LOCAL_MACHINE (HKLM)** hive. Settings applied here are mandatory and will override any conflicting preferences configured by individual users within the local application interface.
+
+:::tip[Policy Override Behavior]
+The application evaluates settings in the following order of priority:
+1. `HKLM\Software\Policies\Author Software\nvm` (Enforced Admin Policy)
+2. `HKCU\Software\Author Software\Preferences\nvm` (User-defined Preferences)
+:::
+
+## Available Registry Keys
+
+See [Administrative Templates](ad) for GPO and Intune deployment. Download ADMX/ADML from the [customer portal](https://portal.author.io). ADMX/ADML ship with the **Governance** pack; Distro/Audit can still set shared keys via Registry CSP/OMA-URI or `.reg`.
+
+**Overridable** in a description means users may also set the equivalent preference (`nvm config` / HKCU). Machine policy under `HKLM\Software\Policies\Author Software\nvm` always wins.
+
+|Name|Key|Description|
+|:-|:-|:-|
+|**Air-gapped license verify**|`AirGapped`|**Edition: Distro+.** Skip live JWKS fetch from `licensing.author.io`. Verify `AccessToken` only against the COSE-signed offline JWKS store (`JwksCose` or `nvm-jwks.cose` next to `nvm.exe`). Independent of `LocalInstallOnly`.<br /><br />- `0` = off<br />- `1` = on<br /><br />Default: `0`<br /><br />`REG_DWORD`|
+|**Version aliases**|`Aliases`|**Overridable.** Centrally managed aliases (e.g. `stable=24.9.0`). Blocks user-defined aliases when set by policy.<br /><br />`alias=version` per entry<br /><br />`REG_MULTI_SZ`|
+|**Allow cache deletion**|`AllowDownloadCacheDelete`|**Overridable** (`allow_download_cache_removal`). Whether cached downloads may be removed (`nvm cache remove`).<br /><br />- `0` = blocked<br />- `1` = allowed<br /><br />Default: `1`<br /><br />`REG_DWORD`|
+|**Allow insecure downloads**|`AllowInsecureDownloads`|**Overridable** (`allow_insecure_downloads`). Permit downloads when TLS certificates are expired or invalid.<br /><br />- `0` = blocked<br />- `1` = allowed<br /><br />Default: `0`<br /><br />`REG_DWORD`|
+|**Allow install root change**|`AllowRootDirChange`|**Overridable.** Whether users may change the install root.<br /><br />- `0` = blocked<br />- `1` = allowed<br /><br />Default: `1`<br /><br />`REG_DWORD`|
+|**Allow native tool install**|`AllowToolInstall`|**Overridable.** Allow `nvm install native-tools` (Python, VS Build Tools, etc.) (shim-only).<br /><br />- `0` = blocked<br />- `1` = allowed<br /><br />Default: `1`<br /><br />`REG_DWORD`|
+|**Allowed code signers**|`AllowedSigners`|**Overridable** (`allowed_signers`). Additional trusted `node.exe` signers. OpenJS Foundation, Node.js Foundation, and Author Software are always trusted (shim-only). One signer name per entry.<br /><br />`REG_MULTI_SZ`|
+|**Allowed thumbprints**|`AllowedThumbprints`|**Overridable** (`allowed_thumbprints`). Optional SHA-1 Authenticode leaf thumbprints (hex; separators optional). When non-empty, `node.exe` must match a pin after org allowlist. Empty disables pinning.<br /><br />`REG_MULTI_SZ`|
+|**Authenticode revocation**|`AuthenticodeRevocation`|**Overridable** (`authenticode_revocation`). CRL/OCSP mode for Authenticode:<br /><br />- `online` = network retrieval (install/sign/seed only; default)<br />- `cached` = local URL cache only<br />- `disabled` = no revocation checks<br /><br />Shim runtime never uses `online` (clamped to `cached`). `AirGapped` forces `cached` when `online` would apply.<br /><br />Default: `online`<br /><br />`REG_SZ`|
+|**Auto-detect files**|`AutoDetect`|**Overridable** (`auto_detect`). Project files scanned for version pins (shim-only). Overrides defaults.<br /><br />Default:<br/>&nbsp;&nbsp;`.nvmrc`<br/>&nbsp;&nbsp;`.node-version`<br/>&nbsp;&nbsp;`package.json`<br /><br />`REG_MULTI_SZ`|
+|**Auto-install missing version**|`AutoInstall`|**Overridable** (`auto_install`). Auto-install missing detected versions (shim mode).<br /><br />- `0` = off<br />- `1` = on<br /><br />Default: `0`<br /><br />`REG_DWORD`|
+|**Auto-install global modules**|`AutoInstallModuleList`|**Overridable** (`auto_installed_modules`). Global npm modules installed with each new Node.js version. One module name per entry.<br /><br />`REG_MULTI_SZ`|
+|**Prompt before auto-install**|`AutoInstallPrompt`|**Overridable** (`auto_install_prompt`). Confirm before auto-installing (shim mode).<br /><br />- `0` = no prompt<br />- `1` = prompt<br /><br />Default: `1`<br /><br />`REG_DWORD`|
+|**Auto-use detected version**|`AutoUse`|**Overridable** (`auto_use`). Auto-switch to detected version when running commands (shim mode).<br /><br />- `0` = off<br />- `1` = on<br /><br />Default: `1`<br /><br />`REG_DWORD`|
+|**Cache downloads**|`CacheDownloads`|**Overridable** (`cache_downloads`). Cache downloaded Node.js versions for offline reuse.<br /><br />- `0` = off/false<br />- `1` = on/true<br /><br />Default: `0`<br /><br />`REG_DWORD`|
+|**Default detect file**|`DefaultDetectFile`|**Overridable** (`default_detect_file`). File written when pinning a version (`nvm pin`) (shim-only).<br /><br />Default: `.nvmrc`<br /><br />`REG_SZ`|
+|**Disable announcements**|`DisableAnnouncements`|**Overridable** (`disable_announcements`). Suppress project and release announcements.<br /><br />- `0` = shown<br />- `1` = hidden<br /><br />Default: `0`<br /><br />`REG_DWORD`|
+|**Disallow eval/string code gen**|`DisableEvalAndStringExecution`|**Overridable** (`disable_eval_and_string_execution`). Shim prepends `--disallow-code-generation-from-strings`, blocking `eval()` and `new Function()` (shim-only). Does not affect `node:vm`.<br /><br />- `0` = off<br />- `1` = on<br /><br />Default: `0`<br /><br />`REG_DWORD`|
+|**Disable NVM upgrades**|`DisableUpgrade`|**Overridable.** Block in-app NVM upgrades (does not block AD/GPO package deployment).<br /><br />- `0` = allowed<br />- `1` = blocked<br /><br />Default: `0`<br /><br />`REG_DWORD`|
+|**Disable version management**|`Enabled`|**Overridable** (`nvm on`/`nvm off`). Forces version management on or off. When off, NVM does not manage or redirect Node.js commands.<br /><br />- `0` = off (`nvm off`)<br />- `1` = on<br /><br />Default: `1`<br /><br />`REG_DWORD`|
+|**Enforce permission model**|`EnforcePermissionModel`|**Overridable** (`enforce_permission_model`). Shim prepends Node permission-model flag on every `node.exe` launch (shim-only). Default-deny FS/network unless the process passes `--allow-*` at runtime. NVM does not inject `--allow-*` grants.<br /><br />- Node 23+: `--permission`<br />- Node 20–22: `--experimental-permission`<br />- Node &lt;20: no flag (unsupported)<br /><br />- `0` = off<br />- `1` = on<br /><br />Default: `0`<br /><br />`REG_DWORD`|
+|**Freeze V8 global objects**|`FreezeV8GlobalObjects`|**Overridable** (`freeze_v8_global_objects`). Shim prepends `--frozen-intrinsics` so built-in prototypes cannot be patched (shim-only; Node.js 12+). Adds measurable startup cost.<br /><br />- `0` = off<br />- `1` = on<br /><br />Default: `0`<br /><br />`REG_DWORD`|
+|**Install root**|`InstallRoot`|**Overridable** (`root`). Directory where Node.js versions are stored. Overrides machine and user preferences.<br /><br />Default: `%LOCALAPPDATA%\Author Software\nvm\installs`<br /><br />`REG_SZ`|
+|**Local install source**|`LocalInstallDir`|**Overridable** (`local_dir`). Alternate local directory for Node.js archives (air-gapped mirrors). Overrides cache.<br /><br />`REG_SZ`|
+|**Local install only**|`LocalInstallOnly`|**Overridable** (`local_install_only`). Restrict installs to `LocalInstallDir` only.<br /><br />- `0` = off<br />- `1` = on<br /><br />Default: `0`<br /><br />`REG_DWORD`|
+|**Audit logging**|`LogExecutions`|**Overridable** (`log_executions`). Log every Node.js invocation to the Windows Event Log (shim-only). Most useful on **Audit+** (structured ETW).<br /><br />- `0` = off<br />- `1` = on<br /><br />Default: `0`<br /><br />`REG_DWORD`|
+|**Node.js download mirrors**|`MirrorNode`|**Overridable** (`node_mirror`). Ordered mirror list; first successful response wins. See [Download Mirrors](../features/mirrors). Author `*.author.io` mirrors need Governance licensing — see [Version Firewall + Author Mirror](../features/author-mirror).<br /><br />Default: `https://nodejs.org/dist`<br /><br />`REG_MULTI_SZ`|
+|**npm registry mirrors**|`MirrorNpm`|**Overridable** (`npm_mirror`). Ordered npm registry list. Used as shim registry fallback.<br /><br />Default: `https://registry.npmjs.org`<br /><br />`REG_MULTI_SZ`|
+|**Operating mode**|`OperatingMode`|**Overridable** (`mode`). How NVM for Windows manages Node.js versions.<br /><br />**Shim** (recommended) uses signed shims to intercept `node`, `npm`, `npx`, `yarn`, and `pnpm`. Required for runtime policies (audit logging, auto-detect, ACL).<br /><br />**Link** uses NTFS junctions/symlinks on PATH.<br /><br />Default: `shim`<br /><br />`REG_SZ`|
+|**Package manager mismatch action**|`PackageManagerMismatchAction`|**Overridable** (`pm_mismatch_action`). Behavior when npm/pnpm/yarn version mismatches Node during install or use (shim-only).<br /><br />- `ignore`<br />- `warn`<br />- `error`<br /><br />Default: `error`<br /><br />`REG_SZ`|
+|**Proxy URL**|`Proxy`|**Overridable** (`proxy`). Proxy for downloads. Basic and Bearer work on all certified editions. See [Download Mirrors](../features/mirrors#http-proxies).<br /><br />`REG_SZ`|
+|**Proxy auth value**|`ProxyAuth`|**Overridable** (`proxy_auth`). Credentials or bearer token (stored in plain text).<br /><br />- `user:pass`<br />- `Bearer YOUR_TOKEN`<br /><br />`REG_SZ`|
+|**Proxy auth type**|`ProxyAuthType`|**Overridable** (`proxy_auth_type`). Authentication scheme for the configured proxy.<br /><br />- `basic`, `bearer` — all certified editions<br />- `ntlm`, `negotiate`, `ntlm,negotiate` — **Governance only** (IWA); PAC/WPAD also Governance-only<br /><br />`REG_SZ`|
+
+## Governance Keys
+
+These keys are part of the **Governance** feature set. They appear in the Governance ADMX pack.
+
+|Name|Key|Description|
+|:-|:-|:-|
+|**Verbose mirror license metadata**|`ApplyVerboseLicenseMetadata`|When on, Author mirror license JWTs include identity claims (`idp_username`, `idp_machine_name`, `idp_machine_id`). Does not set `AccessToken`/`AccessKey`.<br /><br />- `0` = omit claims<br />- `1` = include claims<br /><br />Default: `0`<br /><br />`REG_DWORD`|
+|**npm module minimum age**|`NpmModuleMinimumAge`|Minimum package publish age (cooldown), in minutes, for package manager installs (shim mode). Auto-converts for npm/pnpm/yarn.<br /><br />Default: `0` (disabled)<br /><br />`REG_DWORD`|
+|**Allowed Node.js versions**|`VersionAllowList`|Allow list for installs. Invalid entries fail enforcement. Allow wins over block. Also feeds Author-mirror JWT version claims (magic tokens such as `EOL`, `ALPHA`, `MAINTENANCE`, `ALL`).<br /><br />Supports exact semver, wildcards (e.g. `20.x`), aliases, and `NOT`/`!` negation (one rule per line).<br /><br />`REG_SZ`|
+|**Blocked Node.js versions**|`VersionBlockList`|Block list for installs. Same rule formats as `VersionAllowList`.<br /><br />`REG_SZ`|
+
+:::info[License secrets]
+`AccessToken`, `AccessKey`, and `JwksCose` are **not** ADMX policies. Deploy with portal scripts (`Set-NvmWindowsAccessToken.ps1` on stock certified build; `Set-NvmWindowsLicensing.ps1` for governance builds, which also sets `AccessKey` for Author mirrors) or `nvm license`.
+:::
+
+:::tip[GPO vs registry values]
+Several ADMX policies use inverted GPO labels (e.g. **Disable automatic version detection** writes `AutoUse=0` when enabled). The tables document the **registry value** admins should deploy via GPO, Intune (imported ADMX or Registry CSP), or Entra custom OMA-URI.
+{/* MECM support is planned. */}
+:::
+
+## Registry Import Example
+
+Save as `nvm-policy.reg`, replace placeholder paths and URLs for your environment, then double-click or run `reg import nvm-policy.reg` from an elevated command prompt.
+
+:::warning[`REG_MULTI_SZ` keys]
+`MirrorNode`, `MirrorNpm`, `Aliases`, `AutoDetect`, `AutoInstallModuleList`, `AllowedSigners`, and `AllowedThumbprints` are **`REG_MULTI_SZ`** (one string per entry). A `.reg` line like `"MirrorNode"="url1,url2"` creates a wrong **`REG_SZ`**. Set those with ADMX, Registry CSP, or PowerShell (below) — not comma-joined `REG_SZ` values.
+:::
+
+```powershell
+Windows Registry Editor Version 5.00
+
+; =============================================================================
+; NVM for Windows — machine policy (HKLM)
+; Path: HKLM\SOFTWARE\Policies\Author Software\nvm
+; =============================================================================
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Author Software\nvm]
+
+; --- Core / environment ---
+"OperatingMode"="shim"
+"Enabled"=dword:00000001
+"InstallRoot"="%LOCALAPPDATA%\\Author Software\\nvm\\installs"
+"AllowRootDirChange"=dword:00000000
+"LocalInstallDir"="D:\\Node\\local_mirror"
+"LocalInstallOnly"=dword:00000000
+"AirGapped"=dword:00000000
+
+; --- Version ACL (Governance) ---
+"VersionAllowList"="20.x\r\n22.x"
+"VersionBlockList"="!20.17.0"
+
+; --- Network / downloads (SZ / DWORD only here; MULTI_SZ via PowerShell below) ---
+"Proxy"="http://proxy.example.corp:8080"
+"ProxyAuthType"="ntlm"
+; "ProxyAuth"="service-account:password"
+; "ProxyAuth"="Bearer YOUR_TOKEN_HERE"
+"CacheDownloads"=dword:00000001
+"AllowDownloadCacheDelete"=dword:00000000
+"AllowInsecureDownloads"=dword:00000000
+"ApplyVerboseLicenseMetadata"=dword:00000000
+"DisableUpgrade"=dword:00000001
+"DisableAnnouncements"=dword:00000001
+
+; --- Shim runtime (requires OperatingMode=shim) ---
+"DefaultDetectFile"=".nvmrc"
+"AutoUse"=dword:00000001
+"AutoInstall"=dword:00000000
+"AutoInstallPrompt"=dword:00000001
+"AllowToolInstall"=dword:00000000
+"PackageManagerMismatchAction"="error"
+"LogExecutions"=dword:00000001
+"EnforcePermissionModel"=dword:00000001
+"FreezeV8GlobalObjects"=dword:00000001
+"DisableEvalAndStringExecution"=dword:00000001
+"NpmModuleMinimumAge"=dword:000005a0
+```
+
+After importing the `.reg` (or instead of it for list values), set multi-string keys elevated:
+
+```powershell
+$policy = 'HKLM:\SOFTWARE\Policies\Author Software\nvm'
+
+New-ItemProperty -Path $policy -Name MirrorNode -PropertyType MultiString -Force -Value @(
+  'https://mirror.author.io/runtime/nodejs'
+  'https://nodejs.org/dist'
+) | Out-Null
+
+New-ItemProperty -Path $policy -Name MirrorNpm -PropertyType MultiString -Force -Value @(
+  'https://npm.example.corp'
+  'https://registry.npmjs.org'
+) | Out-Null
+
+New-ItemProperty -Path $policy -Name Aliases -PropertyType MultiString -Force -Value @(
+  'stable=24.9.0'
+  'lts=22.17.0'
+) | Out-Null
+
+New-ItemProperty -Path $policy -Name AutoDetect -PropertyType MultiString -Force -Value @(
+  '.nvmrc'
+  '.node-version'
+  'package.json'
+) | Out-Null
+
+New-ItemProperty -Path $policy -Name AutoInstallModuleList -PropertyType MultiString -Force -Value @(
+  'typescript'
+  'eslint'
+  'prettier'
+) | Out-Null
+
+New-ItemProperty -Path $policy -Name AllowedSigners -PropertyType MultiString -Force -Value @(
+  'Contoso Ltd.'
+) | Out-Null
+```
+
+---
+
+# native-tools
+
+# nvm install native-tools
+
+Run `install_tools.bat` from the newest installed Node.js version that includes it.
+
+This is only necessary for compiling native modules.
+
+:::warning[Large Download]
+This utility often installs large files (3GB+), alternative installers (like chocolatey), and other runtimes (like Python). This plaintext script is shipped with Node.js. NVM for Windows does not validate it.
+:::
+
+:::tip[Recommendation]
+Disable this in regulated environments.
+:::
+
+## Usage
+
+```powershell
+nvm install native-tools
+```
+
+## Arguments
+
+This subcommand takes no arguments.
+
+## Flags
+
+This subcommand has no flags.
+
+## Behavior
+
+| Detail | Description |
+|--------|-------------|
+| Policy | Blocked when [`allow_tool_install`](../../cfg/registry#available-registry-keys) is disabled. |
+| Detection | Fails when no installed version includes `install_tools.bat`. |
+| Execution | Runs via `cmd.exe` in the detected tools directory. |
+
+## Example
+
+```powershell
+nvm install native-tools
+```
+
+---
+
+# uninstall
+
+# nvm uninstall
+
+Uninstall one or more versions of Node.js.
+
+**Aliases:** `rm`, `un`
+
+## Usage
+
+```powershell
+Usage: nvm uninstall (rm,un) <version> ... [flags]
+```
+
+## Arguments
+
+| Argument | Required | Description |
+|----------|----------|-------------|
+| `<version> ...` | Yes | One or more [version specifiers](../guide/version-resolution). Resolved before uninstall. |
+
+## Flags
+
+| Flag | Short | Description |
+|------|-------|-------------|
+| `--purge` | | Remove matching cached download artifact(s) for each uninstalled version. |
+
+Internal automation flags `--notify` and `--from-apps` exist in source and are hidden from help. `--from-apps` is used by Windows Apps (ARP `QuietUninstallString`) for non-interactive removal.
+
+## Examples
+
+```powershell
+# uninstall exact version
+nvm uninstall 20
+
+# uninstall multiple versions in one call
+nvm uninstall 20 18
+
+# uninstall and purge cache for the same version
+nvm uninstall 20.19.1 --purge
+
+# uninstall via alias
+nvm alias add oldlts 18.20.8
+nvm uninstall oldlts
+```
+
+## Sample output
+
+```powershell
+Removed Node.js v20.19.1
+Purged cached artifact for v20.19.1
+```
+
+## Verified transcript (local run)
+
+```powershell
+PS> nvm uninstall --help
+Usage: nvm uninstall (rm,un) <version> ... [flags]
+
+Uninstall one or more Node.js versions.
+
+Flags:
+	--purge    Purge the cache of this version (if cached).
+```
+
+## Notes
+
+- You can uninstall multiple versions in one command.
+- Use `--purge` when you want both runtime and artifact cleanup.
+- If uninstalling the active default, set another default with `nvm use`.
+
+See also [nvm list](./list/) and [nvm use](./use/).
+
+---
+
+# lts
+
+# nvm use lts
+
+Use the most recent LTS release, or a named LTS line.
+
+## Usage
+
+```powershell
+nvm use lts [alias]
+```
+
+## Arguments
+
+| Argument | Required | Description |
+|----------|----------|-------------|
+| `[alias]` | No | LTS codename (for example `iron`). Resolves to `lts/<alias>`. Omit for latest LTS. |
+
+## Examples
+
+```powershell
+nvm use lts
+nvm use lts iron
+```
+
+Equivalent to `nvm use lts/iron` when a codename is provided.
+
+---
+
+# latest
+
+# nvm use latest
+
+Use the highest semantic version among **installed** versions (not the newest remote release).
+
+## Usage
+
+```powershell
+nvm use latest
+```
+
+## Arguments
+
+This subcommand takes no arguments.
+
+## Example
+
+```powershell
+nvm use latest
+```
+
+---
+
+# last
+
+# nvm use last
+
+Switch back to the previously active default version.
+
+## Usage
+
+```powershell
+nvm use last
+```
+
+## Arguments
+
+This subcommand takes no arguments.
+
+## Example
+
+```powershell
+nvm use last
+```
+
+## Notes
+
+Fails with a message when no prior default is stored in settings.
+
+---
+
+# shim
+
+# nvm use shim
+
+Switch NVM to **shim** operating mode.
+
+## Usage
+
+```powershell
+nvm use shim
+```
+
+## Arguments
+
+This subcommand takes no arguments.
+
+## Example
+
+```powershell
+nvm use shim
+```
+
+## Sample output
+
+```powershell
+successfully switched to shim mode
+```
+
+See [Operating Modes](../../features/modes).
+
+---
+
+# link
+
+# nvm use link
+
+Switch NVM to **link** operating mode.
+
+## Usage
+
+```powershell
+nvm use link
+```
+
+## Arguments
+
+This subcommand takes no arguments.
+
+## Example
+
+```powershell
+nvm use link
+```
+
+## Sample output
+
+```powershell
+successfully switched to link mode
+```
+
+See [Operating Modes](../../features/modes).
+
+---
+
+# pin
+
+# nvm pin
+
+Create or update a run-command file (for example, `.nvmrc`).
+
+## Usage
+
+```powershell
+Usage: nvm pin [<version>] [flags]
+```
+
+## Arguments
+
+| Argument | Required | Description |
+|----------|----------|-------------|
+| `[<version>]` | No | [Version specifier](../guide/version-resolution) to resolve and write. If omitted, uses the current active version. Pinning file formats: [Version Selectors](../guide/version-resolution). |
+
+## Flags
+
+| Flag | Short | Description |
+|------|-------|-------------|
+| `--file` | `-f` | Target file to write. Must be in configured [`auto_detect`](../cfg/core#project-detection-and-auto-behavior) list. |
+| `--install` | `-i` | Install target version when missing. |
+| `--no-install` | `-n` | Do not auto-install missing version for this command. |
+
+## Examples
+
+```powershell
+# write current active version to default detect file
+nvm pin
+
+# write explicit version to .nvmrc
+nvm pin 24
+
+# write to .node-version
+nvm pin 22.14.0 --file=.node-version
+
+# write package.json engines.node/npm
+nvm pin 24 --file=package.json
+
+# install if missing before writing
+nvm pin 24 --install
+
+# force no-install behavior for this command
+nvm pin 24 --no-install
+```
+
+## Sample output
+
+```powershell
+Successfully pinned .nvmrc Node.js version to v24.1.0
+```
+
+## Verified transcript (local run)
+
+```powershell
+PS> nvm pin --help
+Usage: nvm pin [<version>] [flags]
+
+Flags:
+	-f, --file=.nvmrc
+	-i, --install
+	-n, --no-install
+```
+
+## Behavior notes
+
+- For `package.json`, command updates `engines.node` and `engines.npm`.
+- For text detect files, command writes normalized Node.js version content.
+- If `package.json` does not exist in the current directory, the command fails.
+
+This command pins project runtime intent for shim-mode auto-detection.
+
+---
+
+# releases
+
+# nvm list releases
+
+List downloadable Node.js releases from configured mirrors.
+
+## Usage
+
+```powershell
+nvm list releases [majors ...] [flags]
+```
+
+## Arguments
+
+| Argument | Required | Description |
+|----------|----------|-------------|
+| `[majors ...]` | No | Numeric major filters (`18`, `20`). |
+
+## Flags
+
+| Flag | Short | Description |
+|------|-------|-------------|
+| `--limit` | `-l` | Maximum rows (default: `20`). |
+| `--no-limit` | | List all matching releases. |
+| `--json` | | Structured JSON output. |
+
+## Examples
+
+```powershell
+nvm list releases
+nvm list releases --no-limit
+nvm list releases --limit 50
+nvm list releases 22 --json
+```
+
+**Note:** `list-remote` / `ls-remote` redirect here.
+
+---
+
+# cached
+
+# nvm list cached
+
+List Node.js versions present in the download cache.
+
+## Usage
+
+```powershell
+nvm list cached [majors ...] [flags]
+```
+
+## Arguments
+
+| Argument | Required | Description |
+|----------|----------|-------------|
+| `[majors ...]` | No | Numeric major filters (`18`, `20`). |
+
+## Flags
+
+| Flag | Short | Description |
+|------|-------|-------------|
+| `--json` | | Structured JSON output. |
+
+## Examples
+
+```powershell
+nvm list cached
+nvm list cached 20
+nvm list cached --json
+```
+
+---
+
+# add
+
+# nvm alias add
+
+Add or update a named alias for a Node.js version.
+
+## Usage
+
+```powershell
+nvm alias add <name> <version> [flags]
+```
+
+## Arguments
+
+| Argument | Required | Description |
+|----------|----------|-------------|
+| `<name>` | Yes | Alias name. Cannot contain spaces or use reserved names. |
+| `<version>` | Yes | Target [version specifier](../../guide/version-resolution) to resolve and store. |
+
+## Flags
+
+| Flag | Short | Description |
+|------|-------|-------------|
+| `--silent` | `-s` | Suppress interactive override prompt when the alias already exists. |
+
+## Examples
+
+```powershell
+nvm alias add legacy 18.20.8
+nvm alias add legacy 20.19.1 --silent
+nvm use legacy
+```
+
+## Sample output
+
+```powershell
+"legacy" now refers to v20.19.1
+```
+
+---
+
+# list
+
+# nvm alias list
+
+List configured version aliases.
+
+**Alias:** `ls`
+
+## Usage
+
+```powershell
+nvm alias list [alias ...] [flags]
+```
+
+## Arguments
+
+| Argument | Required | Description |
+|----------|----------|-------------|
+| `[alias ...]` | No | Filter output to specific alias names. |
+
+## Flags
+
+| Flag | Short | Description |
+|------|-------|-------------|
+| `--json` | | Output alias map as JSON. |
+
+## Examples
+
+```powershell
+nvm alias list
+nvm alias list legacy stable
+nvm alias list --json
+```
+
+## Sample output
+
+```powershell
+legacy -> v20.19.1
+```
+
+---
+
+# remove
+
+# nvm alias remove
+
+Remove one or more version aliases.
+
+**Alias:** `rm`
+
+## Usage
+
+```powershell
+nvm alias remove <alias> [<alias> ...]
+```
+
+## Arguments
+
+| Argument | Required | Description |
+|----------|----------|-------------|
+| `<alias> ...` | Yes | One or more alias names to remove. |
+
+## Examples
+
+```powershell
+nvm alias remove legacy
+nvm alias remove legacy stable
+```
+
+## Sample output
+
+```powershell
+1 alias removed successfully.
+```
+
+---
+
+# default
+
+# nvm default
+
+Show the current default Node.js version.
+
+## Usage
+
+```powershell
+Usage: nvm default [flags]
+```
+
+## Arguments
+
+This command takes no arguments.
+
+## Flags
+
+| Flag | Short | Description |
+|------|-------|-------------|
+| `--json` | | Output `default` and optional `last` as JSON. |
+
+## Output
+
+| Format | Fields |
+|--------|--------|
+| Text | `Default` (current active version or `none`), `Last` (previous default when available) |
+| JSON | `default`, optional `last` |
+
+## Examples
+
+```powershell
+nvm default
+nvm default --json
+```
+
+## Sample output
+
+```powershell
+Default : v24.1.0
+Last    : v22.14.0
+```
+
+## Verified transcript (local run)
+
+```powershell
+PS> nvm default --help
+Usage: nvm default [flags]
+
+Flags:
+	--json    Output in JSON format.
+```
+
+---
+
+# env
+
+# nvm env
+
+Display environment details used by NVM for Windows.
+
+## Usage
+
+```powershell
+Usage: nvm env [flags]
+```
+
+## Arguments
+
+This command takes no arguments.
+
+## Flags
+
+| Flag | Short | Description |
+|------|-------|-------------|
+| `--json` | | Full diagnostic report as JSON. |
+
+## Report sections
+
+| Section | Contents |
+|---------|----------|
+| Computer | Windows version/build, shell, admin and developer mode |
+| Installation | NVM version, install path, upgrade policy |
+| Version management | Mode, active version, install/cache roots, sizes and counts |
+| Mirrors | Node and npm mirror URLs and reachability |
+| License | Optional license summary when available |
+
+## Examples
+
+```powershell
+# human-readable diagnostics
+nvm env
+
+# machine-readable report for tooling/support
+nvm env --json
+
+# save to file for ticket attachment
+nvm env --json > nvm-env.json
+```
+
+## Sample output
+
+```powershell
+NVM For Windows
+├─ Version            : v2.0.0-alpha.1
+├─ Status             : on
+├─ Operating Mode     : shim
+└─ Installed Versions : 4
+```
+
+## Verified transcript (local run)
+
+```powershell
+PS> nvm env --help
+Usage: nvm env [flags]
+
+Flags:
+  --json    Output in JSON format.
+```
+
+Use this command when troubleshooting path, root, and runtime behavior.
+
+---
+
+# add
+
+# nvm cache add
+
+Download and cache Node.js archives without installing.
+
+## Usage
+
+```powershell
+nvm cache add <version> [<version> ...] [flags]
+```
+
+## Arguments
+
+| Argument | Required | Description |
+|----------|----------|-------------|
+| `<version> ...` | Yes | One or more [version specifiers](../../guide/version-resolution). |
+
+## Flags
+
+| Flag | Short | Description |
+|------|-------|-------------|
+| `--insecure` | | Accept invalid SSL certificates for download sources. |
+
+## Examples
+
+```powershell
+nvm cache add 24
+nvm cache add lts
+nvm cache add 24 --insecure
+```
+
+---
+
+# list
+
+# nvm cache list
+
+List cache stores and their files.
+
+**Alias:** `ls`
+
+## Usage
+
+```powershell
+nvm cache list [name ...] [flags]
+```
+
+## Arguments
+
+| Argument | Required | Description |
+|----------|----------|-------------|
+| `[name ...]` | No | Filter by cache name (for example `versions`, `metadata`). |
+
+## Flags
+
+| Flag | Short | Description |
+|------|-------|-------------|
+| `--json` | | Cache roots, file counts, and file lists as JSON. |
+
+## Examples
+
+```powershell
+nvm cache list
+nvm cache list --json
+```
+
+## Sample output
+
+```powershell
+Versions : node-v24.1.0-win-x64.7z
+Metadata : index.tab
+```
+
+---
+
+# version
+
+# nvm cache remove version
+
+Remove cached Node.js download archives. Default when you pass version arguments to `nvm cache remove`.
+
+## Usage
+
+```powershell
+nvm cache remove version [version ...] [flags]
+nvm cache remove [version ...] [flags]
+```
+
+## Arguments
+
+| Argument | Required | Description |
+|----------|----------|-------------|
+| `[version ...]` | No* | [Version specifiers](../../../guide/version-resolution) to remove. With `--all`, each token is a major or major.minor prefix. *Required unless `--prompt` is used. |
+
+## Flags
+
+| Flag | Short | Description |
+|------|-------|-------------|
+| `--all` | `-a` | Remove all cached versions matching each token as a prefix. |
+| `--prompt` | `-p` | Interactive artifact selection (GUI). |
+
+## Examples
+
+```powershell
+nvm cache remove version 24.1.0
+nvm cache remove 20 22
+nvm cache remove version 20.1 --all
+nvm cache remove version --prompt
+```
+
+---
+
+# metadata
+
+# nvm cache remove metadata
+
+Remove cached metadata files.
+
+## Usage
+
+```powershell
+nvm cache remove metadata [flags]
+```
+
+## Flags
+
+| Flag | Short | Description |
+|------|-------|-------------|
+| `--prompt` | `-p` | Interactive selection for metadata files. |
+
+## Examples
+
+```powershell
+nvm cache remove metadata
+nvm cache remove metadata --prompt
+```
+
+---
+
+# all
+
+# nvm cache remove all
+
+Clear both metadata and versions caches.
+
+## Usage
+
+```powershell
+nvm cache remove all
+```
+
+## Arguments
+
+This subcommand takes no arguments.
+
+## Flags
+
+This subcommand has no flags.
+
+## Example
+
+```powershell
+nvm cache remove all
+```
+
+---
+
+# list
+
+# nvm config list
+
+List effective NVM configuration values.
+
+**Aliases:** `cfg list`, `cfg ls`
+
+## Usage
+
+```powershell
+nvm config list [flags]
+```
+
+## Flags
+
+| Flag | Short | Description |
+|------|-------|-------------|
+| `--json` | | Output all settings as JSON. |
+
+## Examples
+
+```powershell
+nvm config list
+nvm config list --json
+```
+
+---
+
+# get
+
+# nvm config get
+
+Get one or more configuration values.
+
+## Usage
+
+```powershell
+nvm config get <name> [<name> ...] [flags]
+```
+
+## Arguments
+
+| Argument | Required | Description |
+|----------|----------|-------------|
+| `<name> ...` | Yes | Configuration option names. |
+
+## Flags
+
+| Flag | Short | Description |
+|------|-------|-------------|
+| `--json` | | Output requested keys as JSON. |
+
+## Examples
+
+```powershell
+nvm config get mode
+nvm config get mode root auto_install
+nvm config get mode root --json
+```
+
+---
+
+# set
+
+# nvm config set
+
+Set one or more configuration values.
+
+## Usage
+
+```powershell
+nvm config set <key=value> [<key=value> ...]
+```
+
+## Arguments
+
+| Argument | Required | Description |
+|----------|----------|-------------|
+| `<key=value> ...` | Yes | One or more assignments. See [value formats](/command/config#config-set-value-formats) on the parent page. |
+
+## Examples
+
+```powershell
+nvm config set mode=shim
+nvm config set auto_install=true auto_install_prompt=false
+nvm config set auto_detect=.nvmrc,.node-version,package.json
+nvm config set node_mirror=https://nodejs.org/dist
+```
+
+## Sample output
+
+```powershell
+mode : shim
+```
+
+---
+
+# reset
+
+# nvm config reset
+
+Reset configuration option(s) to their defaults.
+
+**Alias:** `rm`
+
+## Usage
+
+```powershell
+nvm config reset <name> [flags]
+nvm config reset all [flags]
+```
+
+## Subcommands
+
+| Subcommand | Description |
+|------------|-------------|
+| *(default)* | Reset one option by name. |
+| [`all`](./reset#reset-all) | Reset all options except protected keys (see below). |
+
+## Arguments
+
+| Argument | Required | Description |
+|----------|----------|-------------|
+| `<name>` | Yes (single reset) | Configuration option to reset. |
+
+## Flags
+
+| Flag | Short | Description |
+|------|-------|-------------|
+| `--quiet` | `-q` | Suppress non-essential output (`reset all` only). |
+
+## Reset all
+
+`nvm config reset all` deletes HKCU overrides so defaults apply again.
+
+**Preserved (not reset):**
+
+- [`root`](../../cfg/core#mode-and-install-location) — install directory stays as configured
+- Policy-managed options — skipped with a summary line
+
+## Examples
+
+```powershell
+nvm config reset cache_downloads
+nvm config reset root --quiet
+nvm config reset all
+nvm cfg rm all
+```
+
+## Sample output
+
+```powershell
+Reset 18 configuration option(s) to default.
+Skipped 1 policy-managed option(s): node_mirror
+```
+
+## Verified transcript (local run)
+
+```powershell
+PS> nvm config reset --help
+Usage: nvm config reset (rm) <command> [flags]
+
+Flags:
+  -q, --quiet   Suppress non-essential output.
+
+Commands:
+  all      Reset all configuration options to defaults except root.
+  option   Reset one configuration option to its default (e.g. nvm config reset cache_downloads).
+```
+
+---
+
+# docs
+
+# nvm config docs
+
+Print built-in documentation for every configuration option.
+
+## Usage
+
+```powershell
+nvm config docs [flags]
+```
+
+## Flags
+
+| Flag | Short | Description |
+|------|-------|-------------|
+| `--json` | | Option metadata as JSON. |
+
+## Examples
+
+```powershell
+nvm config docs
+nvm config docs --json
+```
+
+---
+
+# on
+
+# nvm on
+
+Enable Node.js management through NVM.
+
+## Usage
+
+```powershell
+Usage: nvm on
+```
+
+## Arguments
+
+This command takes no arguments.
+
+## Flags
+
+This command has no flags.
+
+## Behavior
+
+| Step | Detail |
+|------|--------|
+| Link setup | Mode-aware `.nodejs` target configuration |
+| Link mode | Repairs link target when an active version exists |
+| Shim mode | Runs shim refresh after activation |
+| Settings | Sets [`enabled=true`](../cfg/core#related-settings) |
+
+## Example
+
+```powershell
+nvm on
+```
+
+## Sample output
+
+```powershell
+NVM for Windows is now managing Node.js installations.
+```
+
+## Verified transcript (local run)
+
+```powershell
+PS> nvm on --help
+Usage: nvm on
+
+Manage Node.js with nvm.
+```
+
+## Typical use cases
+
+- Re-enable management after temporary `nvm off`
+- Restore expected links after manual path or link changes
+
+Use this after maintenance, troubleshooting, or temporary suspension with `nvm off`.
+
+---
+
+# off
+
+# nvm off
+
+Temporarily stop managing Node.js through NVM.
+
+## Usage
+
+```powershell
+Usage: nvm off
+```
+
+## Arguments
+
+This command takes no arguments.
+
+## Flags
+
+This command has no flags.
+
+## Behavior
+
+| Step | Detail |
+|------|--------|
+| Unlink | Removes the managed `.nodejs` target |
+| Settings | Sets [`enabled=false`](../cfg/core#related-settings) |
+| Installs | Installed Node.js versions remain on disk |
+
+## Example
+
+```powershell
+nvm off
+```
+
+## Sample output
+
+```powershell
+NVM for Windows is no longer managing Node.js installations.
+```
+
+## Verified transcript (local run)
+
+```powershell
+PS> nvm off --help
+Usage: nvm off
+
+Stop managing Node.js with nvm.
+```
+
+## Typical use cases
+
+- Short-term troubleshooting
+- Temporary handoff to unmanaged runtime experiments
+
+Use `nvm on` to re-enable management.
+
+---
+
+# doctor
+
+# nvm doctor
+
+Detect and fix common NVM for Windows issues.
+
+## Usage
+
+```powershell
+Usage: nvm doctor [<checks> ...] [flags]
+```
+
+## Arguments
+
+| Argument | Required | Description |
+|----------|----------|-------------|
+| `[checks ...]` | No | Specific check names to run. When omitted, all checks run. |
+
+## Flags
+
+| Flag | Short | Description |
+|------|-------|-------------|
+| `--autofix` | | Apply fixes automatically when supported. |
+| `--list` | | List available checks without running them. |
+| `--json` | | Structured JSON output for automation. |
+
+## Behavior
+
+| Detail | Description |
+|--------|-------------|
+| Backend | Delegates to `sync.exe doctor` |
+| Failure | Occurs if sync utility is missing or cannot be resolved |
+| Modes | Full check run, list-only, or autofix |
+
+## Examples
+
+```powershell
+# run all checks
+nvm doctor
+
+# enumerate available checks only
+nvm doctor --list
+
+# run selected checks
+nvm doctor path proxy
+
+# run fixes where supported
+nvm doctor --autofix
+
+# structured output for automation
+nvm doctor --json
+```
+
+## Sample output
+
+```powershell
+[OK] PATH layout
+[OK] Mirror reachability
+[WARN] Cached metadata is stale
+```
+
+## Verified transcript (local run)
+
+```powershell
+PS> nvm doctor --help
+Usage: nvm doctor [<checks> ...] [flags]
+
+Flags:
+  --autofix
+  --list
+  --json
+```
+
+In enterprise environments, run doctor after rollout and during workstation health checks.
+
+---
+
+# upgrade
+
+# nvm upgrade
+
+Upgrade NVM for Windows.
+
+## Usage
+
+```powershell
+Usage: nvm upgrade [flags]
+```
+
+## Arguments
+
+This command takes no arguments.
+
+## Flags
+
+| Flag | Short | Description |
+|------|-------|-------------|
+| `--check` | | Check for updates without performing the upgrade. |
+
+## Behavior
+
+| Detail | Description |
+|--------|-------------|
+| Backend | Delegates to `sync.exe upgrade` |
+| `--check` | Runs sync upgrade in check-only mode |
+| Policy | Upgrade execution blocked when [`disable_upgrade=true`](../cfg/registry#available-registry-keys); check-only still allowed |
+
+## Examples
+
+```powershell
+# check only
+nvm upgrade --check
+
+# perform upgrade flow
+nvm upgrade
+```
+
+## Sample output
+
+```powershell
+Checking for updates...
+No updates available.
+```
+
+## Verified transcript (local run)
+
+```powershell
+PS> nvm upgrade --help
+Usage: nvm upgrade [flags]
+
+Flags:
+  --check    Check for updates without performing the upgrade.
+```
+
+Use `--check` in scripts or monitoring jobs when you only need availability status.
+
+---
+
+# Permissions
+
+import SymlinkPermissionExplainer from './_components/SymlinkPermissionExplainer.mdx';
+
+# Permissions
+
+**No special permissions** are required to install or operate NVM for Windows. Users may _want_ to leverage special permissions in select circumstances though.
+
+## Community Installer: Registered Event Source
+
+The community installer attempts to register NVM for Windows as an application event source. This allows Windows Event Viewer to display "NVM for Windows" instead of "Unknown" for native logs it writes. This can be helpful for sorting and filtering logs in Windows Event Viewer.
+
+Windows requires administrative privileges to register an event source. The installer attempts to elevate privileges, triggering a UAC prompt. If the user account lacks these permissions (or refuses them), the event source will not be registered. Logs are still written to and readable from Windows Event Viewer with the aforementioned caveat.
+
+Most commnunity users have administrative rights on their own computer. For those who don't, such as users working on company computers or in highly regulated industries, consider using certified builds (available September 2026), which are not subject to this restriction.
+
+## Link Operating Mode: UNC Paths
+
+<SymlinkPermissionExplainer/>
+
+:::warning[No Elevation]
+Starting in v2, NVM for Windows will not attempt to elevate permissions on failure of symlink creation (i.e. no UAC prompt). If permissions block the creation of a link, the user is notified (desktop notification) with guidance.
+:::
+
+By default, NVM for Windows is configured to operate in the new "shim" mode.
+
+## Policy Management
+
+In secure/regulated environments, it may be desirable to enforce policies around specific features. This may include restricting which Node.js versions can be installed, what `node.exe` is allowed to access, how npm/pnpm/yarn manage module installation, which global modules can be installed, and more.
+
+These are all configuration controls, not operating system permissions. Policy enforcement is available in certified governance builds.
+
+---
+
+# Choosing an Edition
+
+# Choosing an Edition
+
+This guide details the differences between NVM for Windows community builds and certified builds, to help readers choose the option best suited for them.
+
+|Type|Audience|License|Availability|
+|:-|:-:|:-:|:-|
+|Community&nbsp;Build|Individuals|MIT|[nvm-windows.com](https://nvm-windows.com) or [github.com/nvm-windows](https://github.com/nvm-windows/nvm/releases)|
+|Certified&nbsp;Build|Organizations|EULA|September 2026 via Customer Portal|
+
+## Community Builds
+
+Community builds are designed for individual developers. They contain the full application with all features. They do not contain capabilities for centralized management. These builds are released using an open source `.exe` installer.
+
+:::warning[Community Builds Are Not Code-Signed]
+NVM for Windows v2 *community builds are not code-signed*. They may be subject to the Windows SmartScreen filter. NVM for Windows v1 has maintained a high reputation score with Microsoft for over a decade, but you may still see the SmartScreen filter during installation/upgrade.
+
+_Example:_
+
+![Example SmartScreen Filter](/img/guide_smartscreen.png)
+:::
+
+## Certified Builds
+
+Certified builds are designed for teams and organizations who need to centralize software distribution, audit activity, comply with regulations, & enforce usage/security policies. These builds deliver the same application while adding meaningful management capabilities. Distribution will be through the [Customer Portal](https://portal.author.io).
+
+### Key additions
+
+- **EV code-signed binaries**
+- **Deployment-ready installers** (Intune/MSI + Powershell Scripts)
+- **Financially-backed** (Author Software Inc)
+
+Additional capabilties are available as add-ons:
+
+|Add-on|Capabilities|
+|:-|:-|
+|**Advanced&nbsp;Logging**|Structured logging for SIEM integration.|
+|**Trust&nbsp;Artifacts**|SBOM, provenance, and VEX reports.|
+|**Governance**|Central policy management (ADMX/ADML + GPO/Entra scripts), advanced proxy support (IWA, WPAD/PAC), Node.js mirror (mirror.author.io), version firewall, shim-enforced Node.js permissions, unified package manager cooldown (npm/pnpm/yarn), and air-gap/local installations.|
+
+### Code Signing Authority
+
+NVM for Windows is distributed by Author Software Inc. Our EV code signing certificates are issued directly by Microsoft.
+
+:::note[Stewardship Transition]
+Early versions of NVM for Windows v1 were code-signed by Ecor Ventures LLC using certificates issued by Sectigo. In January 2025, project stewardship was transitioned to Author Software Inc.
+
+This transition was authorized by Corey Butler, the creator of NVM for Windows. He is the founder & Managing Director of Ecor Ventures LLC and the co-founder of Author Software Inc.
+:::
+
+### Auditing & Observability
+
+Both editions have native Windows Application logging with plaintext log entries using generic event codes. While these can be consumed by log aggregators, they are designed for developer reference, not auditing/observability.
+
+The Advanced Logging package for certified builds introduce comprehensive *structured* logging with a dedicated native log. Log entries are specifically designed for direct export to central SIEM systems.
+
+Structured logs allow SIEM systems to capture and query events with far greater precision and predictability. For example, an SIEM query can quickly identify which versions of Node.js are still regularly used by developers/agents in your organization, when unsupported/EOL versions are installed or finally uninstalled, or which npm modules are installed most often.
+
+### Trust Artifacts
+
+The **Trust Artifacts** add-on provides supply-chain materials with certified releases — for example SBOM, provenance, and VEX reports — so security and procurement teams can review what ships in each build without treating those materials as a separate “Compliance” product tier.
+
+### Policy Management
+
+The Governance package for certified builds introduce policy management. With these capabilities, it is possible to enforce security policies. For example:
+
+- Utilize corporate proxies (IWA, PAC/WPAD).
+- Block unapproved Node.js Versions (i.e. EOL, vulnerable, or unstable versions).
+- Require custom npm/yarn/pnpm cooldown periods.
+- Enforce Node.js permission model (`--permission` / `--experimental-permission`) so each `node.exe` starts default-deny; apps must pass `--allow-*` at runtime.
+- Freeze V8 intrinsics (`--frozen-intrinsics`) to prevent prototype pollution of built-ins.
+- Disallow `eval()` / `new Function()` (`--disallow-code-generation-from-strings`).
+- Limit to local installations (airgapping).
+- Restrict version installations (ex: lts/non-EOL/non-ALPHA) with the version firewall.
+
+Governance builds ship with ADMX/ADML files and official scripts to support Microsoft Active Directory group policies, Microsoft Entra, and other device management platforms.
+
+:::tip[Policy-Enforced Node.js Mirror]
+Certified governance builds include access to Author Software's Node.js mirror/proxy. This service provides policy enforcement at the mirror level, for restricting which Node.js versions can be downloaded by users.
+
+The mirror is only accessible through NVM for Windows, allowing organizations to block nodejs.org/dist while granting gated access to approved versions.
+:::
+
+### Enterprise Agreements
+
+Certified custom builds do not provide additional technical capabilites beyond those in the governenace build. Custom agreements are for organizations that need EULA redlining, additional compliance documentation, additional named insured, invoicing, onboarding support, and/or other services. For more information, contact support@author.io.
+
+---
+
+# Version Resolution
+
+import VersionConstraintTable from '../_components/VersionConstraintTable.mdx';
+import VersionSpecifierTable from '../_components/VersionSpecifierTable.mdx';
+
+# Version Resolution
+
+NVM for Windows accepts several ways to identify a Node.js version. Depending on the
+context, an input can name one release, identify a release line, or describe a
+range of acceptable releases. NVM for Windows resolves that input to a concrete Node.js
+version before performing an operation.
+
+There are two kinds of version input:
+
+- A **version specifier** is an operational command-line argument.
+- A **version constraint** describes acceptable versions in a project file.
+
+## Version specifiers
+
+Version specifiers are tokens passed to commands such as `install`, `use`, and
+`uninstall`.
+
+<VersionSpecifierTable />
+
+Commands that accept version specifiers include:
+
+- [`nvm install`](../command/install)
+- [`nvm uninstall`](../command/uninstall)
+- [`nvm use`](../command/use)
+- [`nvm pin`](../command/pin)
+- [`nvm alias add`](../command/alias/add)
+- [`nvm cache add`](../command/cache/add)
+- [`nvm cache remove version`](../command/cache/remove/version)
+
+### Examples
+
+```powershell
+# reserved aliases
+nvm install lts
+nvm use latest
+
+# named LTS line
+nvm install lts/iron
+
+# partial and exact versions
+nvm use 24.1
+nvm cache add 22.14.0
+
+# user-defined alias
+nvm alias add stable 24.1.0
+nvm use stable
+```
+
+## Version constraints
+
+Version constraints describe acceptable releases in project pinning and
+auto-detect files. Unlike a command-line specifier, a constraint can match a
+range of releases.
+
+<VersionConstraintTable />
+
+Constraints can appear in the following project files:
+
+| Source | Typical content | Behavior |
+|--------|-----------------|----------|
+| `.nvmrc` | Exact version or constraint | Auto-detection resolves a matching version. |
+| `.node-version` | Exact version or constraint | Uses the same resolution path as `.nvmrc`. |
+| `package.json` `engines.node` | Exact version or semver constraint | Auto-detection resolves a version satisfying the Node.js engine constraint. |
+
+Configured auto-detect files come from [`auto_detect`](../cfg/core#project-detection-and-auto-behavior). By default, NVM for Windows checks
+`.nvmrc`, `.node-version`, and `package.json`.
+
+## Resolution order {/* #resolution-order */}
+
+1. User alias mapping (from `nvm alias add`)
+2. Reserved aliases (`latest`, `lts`, `lts/<codename>`)
+3. Partial versions expanded to the best matching concrete release
+4. Semver constraints resolved in constraint-aware flows (for example `engines.node` or caret/tilde ranges in detect files)
+5. Read version string from the configured detect file in the current directory tree (auto-detect)
+6. Apply [`auto_use`](../cfg/core#project-detection-and-auto-behavior), [`auto_install`](../cfg/core#project-detection-and-auto-behavior), and related config when switching or installing
+
+## Auto-detect Node.js version by project
+
+In shim mode, NVM for Windows resolves the Node.js version from an auto-detect file (.nvmrc, .node-version, package.json, etc.). If no version can be resolved, it falls back to the default system version.
+
+## Pinning a Node.js version to a project
+
+`nvm pin` creates auto-detect files automatically. It accepts a version specifier, resolves it, and
+writes the exact version to the auto-detect file.
+
+```powershell
+# set the active version, then pin .nvmrc
+nvm use 24
+nvm pin 24 --file=.nvmrc
+
+# set package.json engines.node, engines.npm, and the equivalent devEngines properties
+nvm pin 24 --file=package.json
+```
+
+## Related docs
+
+- [Commands](/commands)
+- [Command workflows](./command-workflows)
+
+---
+
+# Command Workflows
+
+# Command Workflows
+
+This guide explains common end-to-end CLI workflows.
+
+## 1) New Machine Bootstrap
+
+Install the latest LTS version of Node.js:
+
+```powershell
+nvm install lts
+```
+
+Set as default version:
+
+```powershell
+nvm use lts
+```
+
+Verify the default version:
+
+```powershell
+nvm default
+node -v
+```
+
+Optional validation:
+
+```powershell
+nvm env
+nvm doctor
+```
+
+## 2) Multi-Version Project Testing
+
+Install multiple versions of Node.js at once:
+
+```powershell
+nvm install 18 20 22
+```
+
+All versions will be downloaded in parallel, then installed sequentially.
+
+Switch between versions for testing:
+
+```powershell
+nvm use 18
+npm test
+nvm use 20
+npm test
+nvm use 22
+npm test
+```
+
+Use aliases for convenience:
+
+```powershell
+nvm alias add legacy 18.20.8
+nvm alias add modern 24.1.0
+```
+
+## 3) Project Pinning with Run Command Files
+
+Set default version and create a local `.nvmrc` file:
+
+```powershell
+nvm use 24
+nvm pin 24 --file=.nvmrc
+```
+
+Or update package engines:
+
+```powershell
+nvm pin 24 --file=package.json
+```
+
+## 4) Download-Constrained Environments
+
+Pre-cache artifacts:
+
+```powershell
+nvm cache add 20 22 24
+nvm cache list
+```
+
+Use cache controls during install:
+
+```powershell
+nvm install 24 --cache
+```
+
+Cleanup after rollout:
+
+```powershell
+nvm cache remove version 20.19.1
+nvm cache remove all
+```
+
+## 5) Runtime Mode Management
+
+Switch mode:
+
+```powershell
+nvm use shim
+nvm use link
+```
+
+Temporarily disable/enable nvm:
+
+```powershell
+nvm off
+nvm on
+```
+
+## 6) Configuration and Policy-Aware Operations
+
+Inspect effective values:
+
+```powershell
+nvm config list
+nvm config get mode root auto_install
+```
+
+Apply updates:
+
+```powershell
+nvm config set mode=shim auto_install=true
+```
+
+Reset to defaults:
+
+```powershell
+nvm config reset auto_install
+```
+
+## 7) Health and Upgrade Workflow
+
+```powershell
+nvm doctor --list
+nvm doctor --autofix
+nvm upgrade --check
+nvm upgrade
+```
+
+## Related Docs
+
+- [Commands](../command/install)
+- [Version Specifiers](./version-resolution)
+- [Version Selectors](./version-resolution)
+- [nvm config](../command/config)
+- [Operating Modes](../features/modes)
+
+---
+
+# Air-gapped Installations
+
+# Air-gapped Installations
+
+This guide walks through installing Node.js with NVM for Windows when the target machine cannot reach public download mirrors (or must not).
+
+Feature background:
+
+- [Local Installations](../features/local-installations) — [`local_dir`](../cfg/registry#available-registry-keys)/[`local_install_only`](../cfg/registry#available-registry-keys)
+- [Download Cache](../features/cache) — `.cache/versions` and `nvm cache add`
+
+## Choose a pattern
+
+| Pattern | Best for | How |
+|---------|----------|-----|
+| **Prefetch into default cache** | One laptop/few machines | `nvm cache add` on a connected host, copy `%LOCALAPPDATA%\Author Software\nvm\.cache\versions` |
+| **Shared [`local_dir`](../cfg/registry#available-registry-keys)** | Labs, fleets, USB/internal shares | Point every offline host at the same archive folder and set [`local_install_only=true`](../cfg/registry#available-registry-keys) |
+| **Policy-locked local source** | Certified/Governance fleets | Set `LocalInstallDir` + `LocalInstallOnly` via [registry policy](../cfg/registry) or ADMX |
+
+For more than a few people, prefer a shared [`local_dir`](../cfg/registry#available-registry-keys) (or policy) over copying personal cache folders.
+
+## 1. Prefetch archives (connected host)
+
+On a machine with network access:
+
+```powershell
+nvm cache add 24 22 lts
+nvm cache list versions
+```
+
+Archives land under:
+
+`%LOCALAPPDATA%\Author Software\nvm\.cache\versions\`
+
+as `node-v{version}-win-{x64|arm64}.7z`. Optionally keep matching `SHASUMS256-v{version}-win-{arch}.txt` files beside each archive for offline integrity checks.
+
+You can also download the Windows `.7z` (and SHASUM) files manually from your approved Node.js mirror and place them in the same layout.
+
+## 2. Move content offline
+
+Copy the archive folder to:
+
+- USB/encrypted media
+- Internal file share
+- SCCM/Intune/other content distribution
+
+Example layout on the share:
+
+```text
+\\files\software\node-archives\
+  node-v24.11.0-win-x64.7z
+  SHASUMS256-v24.11.0-win-x64.txt
+  node-v22.20.0-win-x64.7z
+  SHASUMS256-v22.20.0-win-x64.txt
+```
+
+Use the architecture that matches the offline machines (`x64` or `arm64`).
+
+## 3. Configure the offline host
+
+### Option A — shared folder (`local_dir`)
+
+```powershell
+nvm config set local_dir=\\files\software\node-archives
+nvm config set local_install_only=true
+nvm config get local_dir local_install_only
+```
+
+[`local_dir`](../cfg/registry#available-registry-keys) replaces the default version cache as the install source. With [`local_install_only=true`](../cfg/registry#available-registry-keys), a missing archive fails instead of downloading.
+
+### Option B — copy into the default cache
+
+Copy archives into:
+
+`%LOCALAPPDATA%\Author Software\nvm\.cache\versions\`
+
+Then still set [`local_install_only=true`](../cfg/registry#available-registry-keys) if you must block network fallback (without [`local_dir`](../cfg/registry#available-registry-keys), installs look in that default cache first).
+
+### Option C — machine policy (certified)
+
+Set registry/ADMX:
+
+- `LocalInstallDir` → archive root
+- `LocalInstallOnly` → `1`
+
+See [registry policy reference](../cfg/registry). Policy can also treat archives under that root as a trusted local integrity source when both keys are set.
+
+## 4. Install
+
+```powershell
+nvm install 24.11.0
+nvm use 24.11.0
+node -v
+```
+
+Expected path: find archive → integrity check → extract. If the archive is missing and local-only is on, install stops with `not found in local install directory`.
+
+## 5. Refresh versions later
+
+Repeat prefetch on a connected host when new Node releases are approved, update the share or media, then run `nvm install` again on offline hosts. No change to [`local_dir`](../cfg/registry#available-registry-keys) is required if the folder path stays the same.
+
+## Troubleshooting
+
+| Symptom | Check |
+|---------|--------|
+| `not found in local install directory` | Exact version string; archive name `node-v…-win-….7z`; arch matches OS; [`local_dir`](../cfg/registry#available-registry-keys) path reachable |
+| Integrity/SHASUM failure | Corrupt copy; missing or wrong SHASUM sidecar; re-copy from connected host |
+| Still tries network | Confirm [`local_install_only=true`](../cfg/registry#available-registry-keys) (or policy `LocalInstallOnly=1`) |
+| Works on one PC, not another | Arch mismatch (`x64` vs `arm64`); different [`local_dir`](../cfg/registry#available-registry-keys); policy override |
+
+## Related
+
+- [Local Installations](../features/local-installations)
+- [Download Cache](../features/cache)
+- [`nvm install`](../command/install/)
+- [`nvm cache`](../command/cache/)
+- [Registry policy](../cfg/registry)
+
+:::info[`air_gapped` preference]
+[`air_gapped`](../cfg/registry#available-registry-keys) controls offline license/JWKS behavior for Author mirrors. It does **not** point Node installs at a local archive folder. Use [`local_dir`](../cfg/registry#available-registry-keys)/[`local_install_only`](../cfg/registry#available-registry-keys) (or the steps above) for that.
+:::
+
+---
+
+# Troubleshooting
+
+# Troubleshooting
+
+| Symptom | Likely Cause | Verify | Fix |
+|:-|:-|:-|:-|
+| `vX is not installed` on `nvm use X` | Requested version missing and auto-install disabled | `nvm list installed` | `nvm install X`; optionally `nvm use X --install` |
+| `No previously active version found.` on `nvm use last` | No prior default captured yet | `nvm default` | Set one version with `nvm use X`, then retry `nvm use last` |
+| `No versions installed.` | Fresh machine or install root mismatch | `nvm env`; `nvm config get root` | `nvm install lts`; correct root with `nvm config set root=...` |
+| `Blocked by this computer's policy.` | Policy-managed setting/operation | `nvm config list`; `nvm config get <key>` | Coordinate with IT policy owner; do not force local overrides |
+| `sync.exe not found` for `doctor` or `upgrade` | Missing/corrupt sync utility | `nvm env`; run `nvm doctor --list` | Reinstall/repair distribution so sync utility is restored |
+| Link mode fails to activate | Link/junction privilege or path issue | `nvm use link`; `nvm env` | Switch to shim (`nvm use shim`) or grant required link privileges |
+| Cache grows too large | Long-lived cache retention | `nvm cache list`; `nvm list cached` | `nvm cache remove version ...`; `nvm cache remove all` |
+| Mirror unreachable warnings | Network/proxy/mirror issue | `nvm env` mirror reachability section | Set mirrors/proxy with `nvm config set node_mirror=... npm_mirror=... proxy=...` |
+| Alias command rejected | Reserved alias name used | `nvm alias list` | Choose non-reserved alias (`legacy`, `stable24`, etc.) |
+| `package.json not found` with `nvm pin --file=package.json` | Command run in wrong directory | `dir package.json` | Run command in project root or use `.nvmrc` target |
+
+## Suggested Triage Flow
+
+1. Capture environment snapshot.
+
+```powershell
+nvm env
+nvm default
+nvm config list
+```
+
+2. Validate installed/runtime state.
+
+```powershell
+nvm list installed
+nvm list cached
+where.exe node
+```
+
+3. Run diagnostics.
+
+```powershell
+nvm doctor --list
+nvm doctor
+```
+
+4. Apply targeted fix (install, use, config, cache, or mode).
+
+5. Re-verify with `nvm env` and `nvm doctor`.
+
+## Enterprise Notes
+
+- In certified/managed environments, policy can intentionally block local mutation for specific settings.
+- Prefer policy-compliant remediation over manual registry edits.
+- For fleet issues, use `nvm env --json` and `nvm doctor --json` to collect machine-readable diagnostics.
+
+---
+
+# index
+
+import useBaseUrl from '@docusaurus/useBaseUrl';
+import {Redirect} from '@docusaurus/router';
+
+export default function Home() {
+  return <Redirect to={useBaseUrl('/install/installers')} />;
+}

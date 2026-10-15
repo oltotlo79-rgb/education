@@ -1,0 +1,14 @@
+﻿powershell.exe : npm : File C:\Program Files\nodejs\npm.ps1 cannot be loaded because running scripts is disabled on thi
+s system. For mor
+At line:1 char:455
++ ... 01'; $out = & powershell.exe -NoProfile -ExecutionPolicy Restricted - ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (npm : File C:\P...system. For mor:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+e information, see about_Execution_Policies at https:/go.microsoft.com/fwlink/?LinkID=135170.
+At line:1 char:49
++ $env:PATH='C:\Program Files\nodejs;'+$env:PATH; npm -v
++                                                 ~~~
+    + CategoryInfo          : SecurityError: (:) [], PSSecurityException
+    + FullyQualifiedErrorId : UnauthorizedAccess

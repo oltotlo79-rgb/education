@@ -1,0 +1,36 @@
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 320" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<rect x="16" y="8" width="688" height="186" rx="8" fill="#0f172a"/>
+<circle cx="34" cy="24" r="5" fill="#ef4444"/>
+<circle cx="52" cy="24" r="5" fill="#f59e0b"/>
+<circle cx="70" cy="24" r="5" fill="#10b981"/>
+<text x="360" y="28" text-anchor="middle" font-size="12" fill="#94a3b8">ターミナル</text>
+<text x="30" y="52" font-size="12" font-family="Consolas, monospace" fill="#e2e8f0">$ npm run build</text>
+<text x="30" y="70" font-size="12" font-family="Consolas, monospace" fill="#94a3b8">&gt; next build</text>
+<text x="30" y="88" font-size="12" font-family="Consolas, monospace" fill="#e2e8f0">▲ Next.js 16.4.1 (Turbopack)</text>
+<text x="30" y="106" font-size="12" font-family="Consolas, monospace" fill="#86efac">✓ Compiled successfully in 1798ms</text>
+<text x="43" y="124" font-size="12" font-family="Consolas, monospace" fill="#e2e8f0">Running TypeScript ...</text>
+<text x="30" y="142" font-size="12" font-family="Consolas, monospace" fill="#fca5a5">src/components/BookCard.tsx(7,39): error TS2551: Property 'titel' does not exist</text>
+<text x="30" y="160" font-size="12" font-family="Consolas, monospace" fill="#fca5a5">on type 'Book'. Did you mean 'title'?</text>
+<text x="30" y="178" font-size="12" font-family="Consolas, monospace" fill="#e2e8f0">Failed to type check.</text>
+<text x="700" y="160" text-anchor="end" font-size="12" fill="#94a3b8">※実際は1行</text>
+<text x="360" y="214" text-anchor="middle" font-size="12" font-weight="bold" fill="#475569">▼ 赤い行を4つに分解すると</text>
+<rect x="16" y="224" width="210" height="28" rx="6" fill="#dbeafe" stroke="#3b82f6"/>
+<text x="121" y="243" text-anchor="middle" font-size="12" font-family="Consolas, monospace" fill="#1e40af">src/components/BookCard.tsx</text>
+<rect x="232" y="224" width="64" height="28" rx="6" fill="#ffedd5" stroke="#f97316"/>
+<text x="264" y="243" text-anchor="middle" font-size="12" font-family="Consolas, monospace" fill="#c2410c">(7,39)</text>
+<rect x="302" y="224" width="104" height="28" rx="6" fill="#fee2e2" stroke="#ef4444"/>
+<text x="354" y="243" text-anchor="middle" font-size="12" font-family="Consolas, monospace" fill="#b91c1c">error TS2551</text>
+<rect x="412" y="224" width="292" height="28" rx="6" fill="#dcfce7" stroke="#10b981"/>
+<text x="558" y="243" text-anchor="middle" font-size="12" font-family="Consolas, monospace" fill="#047857">Property 'titel' does not exist…</text>
+<text x="121" y="276" text-anchor="middle" font-size="12" font-weight="bold" fill="#1e40af">① どのファイル？</text>
+<text x="121" y="296" text-anchor="middle" font-size="12" fill="#475569">BookCard.tsx</text>
+<text x="264" y="276" text-anchor="middle" font-size="12" font-weight="bold" fill="#c2410c">② どこ？</text>
+<text x="264" y="296" text-anchor="middle" font-size="12" fill="#475569">7行目39文字目</text>
+<text x="354" y="276" text-anchor="middle" font-size="12" font-weight="bold" fill="#b91c1c">③ 種類は？</text>
+<text x="354" y="296" text-anchor="middle" font-size="12" fill="#475569">型のエラー</text>
+<text x="558" y="276" text-anchor="middle" font-size="12" font-weight="bold" fill="#047857">④ 何が悪い？（直し方のヒント付き）</text>
+<text x="558" y="296" text-anchor="middle" font-size="12" fill="#475569">titel は存在しない。title のこと？</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図10-6: ビルドエラーの読み方（実際の出力を ①ファイル ②行と列 ③種類 ④内容 に分解）</div>
+</div>

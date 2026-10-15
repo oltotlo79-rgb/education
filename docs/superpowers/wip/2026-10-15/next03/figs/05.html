@@ -1,0 +1,35 @@
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 268" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-03-05" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="16" y="40" width="190" height="160" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<path d="M16,68 L16,50 Q16,40 26,40 L196,40 Q206,40 206,50 L206,68 Z" fill="#3b82f6"/>
+<text x="111" y="59" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">1回目のレンダー</text>
+<text x="111" y="122" font-size="22" font-weight="bold" fill="#1e40af" text-anchor="middle" font-family="Consolas, Cascadia Mono, monospace">count = 0</text>
+<text x="111" y="158" font-size="12" fill="#475569" text-anchor="middle">この回の関数の中では</text>
+<text x="111" y="176" font-size="12" fill="#475569" text-anchor="middle">count はずっと 0</text>
+<line x1="206" y1="120" x2="238" y2="120" stroke="#475569" stroke-width="2" marker-end="url(#ar-03-05)"/>
+<rect x="240" y="40" width="240" height="160" rx="10" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>
+<path d="M240,68 L240,50 Q240,40 250,40 L470,40 Q480,40 480,50 L480,68 Z" fill="#64748b"/>
+<text x="360" y="59" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">クリック時の handleClick</text>
+<text x="252" y="90" font-size="12" fill="#0f172a" font-family="Consolas, Cascadia Mono, monospace">setCount(count + 1);</text>
+<text x="252" y="106" font-size="12" fill="#c2410c">→ 0 + 1 で「1 にして」と予約</text>
+<text x="252" y="130" font-size="12" fill="#0f172a" font-family="Consolas, Cascadia Mono, monospace">setCount(count + 1);</text>
+<text x="252" y="146" font-size="12" fill="#c2410c">→ まだ 0 なので、また「1 にして」</text>
+<text x="252" y="170" font-size="12" fill="#0f172a" font-family="Consolas, Cascadia Mono, monospace">console.log(count);</text>
+<text x="252" y="186" font-size="12" fill="#c2410c">→ 0 と表示（まだ変わらない）</text>
+<line x1="480" y1="120" x2="512" y2="120" stroke="#475569" stroke-width="2" marker-end="url(#ar-03-05)"/>
+<rect x="514" y="40" width="190" height="160" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<path d="M514,68 L514,50 Q514,40 524,40 L694,40 Q704,40 704,50 L704,68 Z" fill="#10b981"/>
+<text x="609" y="59" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">2回目のレンダー</text>
+<text x="609" y="122" font-size="22" font-weight="bold" fill="#047857" text-anchor="middle" font-family="Consolas, Cascadia Mono, monospace">count = 1</text>
+<text x="609" y="158" font-size="12" fill="#475569" text-anchor="middle">予約の結果は 1</text>
+<text x="609" y="176" font-size="12" fill="#475569" text-anchor="middle">（2 にはならない）</text>
+<text x="111" y="26" font-size="12" fill="#64748b" text-anchor="middle">時間の流れ →</text>
+<rect x="16" y="212" width="688" height="48" rx="8" fill="#ecfdf5" stroke="#10b981"/>
+<text x="360" y="232" font-size="12" fill="#047857" text-anchor="middle">関数型更新 setCount((prev) =&gt; prev + 1) を2回書くと、予約が 0 → 1 → 2 と順に計算され、</text>
+<text x="360" y="250" font-size="12" fill="#047857" text-anchor="middle">2回目のレンダーは count = 2 になる（prev には「1つ前の予約まで反映した値」が入る）</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図3-5: レンダーごとの「スナップショット」。1回のレンダーの中で、state の値は写真のように固定されています</div>
+</div>

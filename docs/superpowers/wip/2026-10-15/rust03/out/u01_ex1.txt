@@ -1,0 +1,7 @@
+drop z
+block end
+drop y
+main end
+drop w
+drop x
+exit=0

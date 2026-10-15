@@ -1,0 +1,12 @@
+   Compiling design_lab v0.1.0 (...\design_lab)
+error[E0046]: not all trait items implemented, missing: `summary`
+  --> src\bin\u02_err_e0046.rs:13:1
+   |
+ 2 |     fn summary(&self) -> String;
+   |     ---------------------------- `summary` from trait
+...
+13 | impl Summary for User {
+   | ^^^^^^^^^^^^^^^^^^^^^ missing `summary` in implementation
+
+For more information about this error, try `rustc --explain E0046`.
+error: could not compile `design_lab` (bin "u02_err_e0046") due to 1 previous error

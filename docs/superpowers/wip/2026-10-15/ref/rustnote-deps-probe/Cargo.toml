@@ -1,0 +1,11 @@
+[package]
+name = "rustnote-deps-probe"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+argon2 = "=0.6.0"
+libsql = "=0.10.0"
+serde = { version = "1.0.229", features = ["derive"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+topcoat = "=0.10.0"

@@ -1,0 +1,30 @@
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 214" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-03-13" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="12" y="34" width="150" height="76" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="87" y="58" font-size="13" font-weight="bold" fill="#1e40af" text-anchor="middle">① ボタンを押す</text>
+<text x="87" y="80" font-size="12" fill="#475569" text-anchor="middle">「+1」ボタンの</text>
+<text x="87" y="98" font-size="12" fill="#475569" text-anchor="middle">onClick が動く</text>
+<rect x="194" y="34" width="150" height="76" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="269" y="58" font-size="13" font-weight="bold" fill="#c2410c" text-anchor="middle">② dispatch</text>
+<text x="269" y="80" font-size="12" fill="#0f172a" text-anchor="middle" font-family="Consolas, Cascadia Mono, monospace">{ type:</text>
+<text x="269" y="98" font-size="12" fill="#0f172a" text-anchor="middle" font-family="Consolas, Cascadia Mono, monospace">"increment" }</text>
+<rect x="376" y="34" width="150" height="76" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="451" y="58" font-size="13" font-weight="bold" fill="#047857" text-anchor="middle">③ reducer が計算</text>
+<text x="451" y="80" font-size="12" fill="#0f172a" text-anchor="middle" font-family="Consolas, Cascadia Mono, monospace">(state, action)</text>
+<text x="451" y="98" font-size="12" fill="#475569" text-anchor="middle">→ 次の state を返す</text>
+<rect x="558" y="34" width="150" height="76" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="633" y="58" font-size="13" font-weight="bold" fill="#047857" text-anchor="middle">④ 新しい state</text>
+<text x="633" y="80" font-size="12" fill="#0f172a" text-anchor="middle" font-family="Consolas, Cascadia Mono, monospace">{ count: 1 }</text>
+<text x="633" y="98" font-size="12" fill="#475569" text-anchor="middle">React が保存する</text>
+<line x1="162" y1="72" x2="192" y2="72" stroke="#475569" stroke-width="2" marker-end="url(#ar-03-13)"/>
+<line x1="344" y1="72" x2="374" y2="72" stroke="#475569" stroke-width="2" marker-end="url(#ar-03-13)"/>
+<line x1="526" y1="72" x2="556" y2="72" stroke="#475569" stroke-width="2" marker-end="url(#ar-03-13)"/>
+<path d="M633,110 L633,148 L87,148 L87,112" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#ar-03-13)"/>
+<text x="360" y="172" font-size="12.5" fill="#0f172a" text-anchor="middle">⑤ React が再レンダー → 画面に「カウント: 1」と表示 → 次のクリックを待つ</text>
+<text x="360" y="200" font-size="12" fill="#64748b" text-anchor="middle">reducer は「今の state」と「action」から「次の state」を返すだけの普通の関数（React なしでも動く）</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図3-12: useReducer の流れ。画面は「何が起きたか（action）」を送るだけで、計算は reducer にまとまっています</div>
+</div>

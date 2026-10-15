@@ -1,0 +1,13 @@
+error[E0499]: cannot borrow `s` as mutable more than once at a time
+ --> src\bin\u03_err_two_mut.rs:4:14
+  |
+3 |     let w1 = &mut s;
+  |              ------ first mutable borrow occurs here
+4 |     let w2 = &mut s;
+  |              ^^^^^^ second mutable borrow occurs here
+5 |     w1.push_str("A");
+  |     -- first borrow later used here
+
+For more information about this error, try `rustc --explain E0499`.
+error: could not compile `ownership-lab` (bin "u03_err_two_mut") due to 1 previous error
+exit=101

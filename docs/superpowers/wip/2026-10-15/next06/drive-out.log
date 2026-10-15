@@ -1,0 +1,45 @@
+[?25l[36m?[39m [1mWould you like to use the recommended Next.js defaults?[22m [90m»[39m [90m- Use arrow-keys. Return to submit.[39m
+[36m>[39m   [36m[4mYes, use recommended defaults[39m[24m[90m - TypeScript, ESLint, No React Compiler, Tailwind CSS, No src/ directory, App Router, Cache Components, AGENTS.md, Agent feedback[39m
+    No, customize settings[90m[39m
+[2K[1G[36m?[39m [1mWould you like to use the recommended Next.js defaults?[22m [90m»[39m [90m- Use arrow-keys. Return to submit.[39m
+    Yes, use recommended defaults[90m[39m
+[36m>[39m   [36m[4mNo, customize settings[39m[24m[90m - Choose your own preferences[39m
+[2K[1G[32m√[39m [1mWould you like to use the recommended Next.js defaults?[22m [90m»[39m No, customize settings
+[?25h[?25l[2K[1G[36m?[39m [1mWould you like to use [34mTypeScript[39m?[22m [90m»[39m No [90m/[39m [36m[4mYes[39m[24m[2K[1G[2K[1G[36m?[39m [1mWould you like to use [34mTypeScript[39m?[22m [90m»[39m No [90m/[39m [36m[4mYes[39m[24m[2K[1G[2K[1G[32m√[39m [1mWould you like to use [34mTypeScript[39m?[22m [90m...[39m No [90m/[39m [36m[4mYes[39m[24m
+[?25h[?25l[36m?[39m [1mWhich linter would you like to use?[22m [90m»[39m [90m- Use arrow-keys. Return to submit.[39m
+[36m>[39m   [36m[4mESLint[39m[24m[90m - More comprehensive lint rules[39m
+    Biome[90m[39m
+    None[90m[39m
+[2K[1G[32m√[39m [1mWhich linter would you like to use?[22m [90m»[39m ESLint
+[?25h[?25l[2K[1G[36m?[39m [1mWould you like to use [34mReact Compiler[39m?[22m [90m»[39m [36m[4mNo[39m[24m [90m/[39m Yes[2K[1G[2K[1G[36m?[39m [1mWould you like to use [34mReact Compiler[39m?[22m [90m»[39m [36m[4mNo[39m[24m [90m/[39m Yes[2K[1G[2K[1G[32m√[39m [1mWould you like to use [34mReact Compiler[39m?[22m [90m...[39m [36m[4mNo[39m[24m [90m/[39m Yes
+[?25h[?25l[2K[1G[36m?[39m [1mWould you like to use [34mTailwind CSS[39m?[22m [90m»[39m No [90m/[39m [36m[4mYes[39m[24m[2K[1G[2K[1G[36m?[39m [1mWould you like to use [34mTailwind CSS[39m?[22m [90m»[39m No [90m/[39m [36m[4mYes[39m[24m[2K[1G[2K[1G[32m√[39m [1mWould you like to use [34mTailwind CSS[39m?[22m [90m...[39m No [90m/[39m [36m[4mYes[39m[24m
+[?25h[?25l[2K[1G[36m?[39m [1mWould you like your code inside a [34m`src/` directory[39m?[22m [90m»[39m [36m[4mNo[39m[24m [90m/[39m Yes[2K[1G[2K[1G[36m?[39m [1mWould you like your code inside a [34m`src/` directory[39m?[22m [90m»[39m No [90m/[39m [36m[4mYes[39m[24m[2K[1G[2K[1G[32m√[39m [1mWould you like your code inside a [34m`src/` directory[39m?[22m [90m...[39m No [90m/[39m [36m[4mYes[39m[24m
+[?25h[?25l[2K[1G[36m?[39m [1mWould you like to use [34mApp Router[39m? (recommended)[22m [90m»[39m No [90m/[39m [36m[4mYes[39m[24m[2K[1G[2K[1G[36m?[39m [1mWould you like to use [34mApp Router[39m? (recommended)[22m [90m»[39m No [90m/[39m [36m[4mYes[39m[24m[2K[1G[2K[1G[32m√[39m [1mWould you like to use [34mApp Router[39m? (recommended)[22m [90m...[39m No [90m/[39m [36m[4mYes[39m[24m
+[?25h[?25l[2K[1G[36m?[39m [1mWould you like to use [34mCache Components[39m?[22m [90m»[39m No [90m/[39m [36m[4mYes[39m[24m[2K[1G[2K[1G[36m?[39m [1mWould you like to use [34mCache Components[39m?[22m [90m»[39m [36m[4mNo[39m[24m [90m/[39m Yes[2K[1G[2K[1G[32m√[39m [1mWould you like to use [34mCache Components[39m?[22m [90m...[39m [36m[4mNo[39m[24m [90m/[39m Yes
+[?25h[?25l[2K[1G[36m?[39m [1mWould you like to customize the [34mimport alias[39m (`@/*` by default)?[22m [90m»[39m [36m[4mNo[39m[24m [90m/[39m Yes[2K[1G[2K[1G[36m?[39m [1mWould you like to customize the [34mimport alias[39m (`@/*` by default)?[22m [90m»[39m [36m[4mNo[39m[24m [90m/[39m Yes[2K[1G[2K[1G[32m√[39m [1mWould you like to customize the [34mimport alias[39m (`@/*` by default)?[22m [90m...[39m [36m[4mNo[39m[24m [90m/[39m Yes
+[?25h[?25l[2K[1G[36m?[39m [1mWould you like to include [34mAGENTS.md[39m to guide coding agents to write up-to-date Next.js code?[22m [90m»[39m No [90m/[39m [36m[4mYes[39m[24m[2K[1G[2K[1G[36m?[39m [1mWould you like to include [34mAGENTS.md[39m to guide coding agents to write up-to-date Next.js code?[22m [90m»[39m No [90m/[39m [36m[4mYes[39m[24m[2K[1G[2K[1G[32m√[39m [1mWould you like to include [34mAGENTS.md[39m to guide coding agents to write up-to-date Next.js code?[22m [90m...[39m No [90m/[39m [36m[4mYes[39m[24m
+[?25h[?25l[2K[1G[36m?[39m [1mWould you like to help improve Next.js by letting agents prepare [34manonymized feedback[39m for your review as you code? (Disable anytime with `experimental.agentFeedback: false`.)[22m [90m»[39m No [90m/[39m [36m[4mYes[39m[24m[2K[1G[2K[1G[36m?[39m [1mWould you like to help improve Next.js by letting agents prepare [34manonymized feedback[39m for your review as you code? (Disable anytime with `experimental.agentFeedback: false`.)[22m [90m»[39m [36m[4mNo[39m[24m [90m/[39m Yes[2K[1G[2K[1G[32m√[39m [1mWould you like to help improve Next.js by letting agents prepare [34manonymized feedback[39m for your review as you code? (Disable anytime with `experimental.agentFeedback: false`.)[22m [90m...[39m [36m[4mNo[39m[24m [90m/[39m Yes
+[?25hCreating a new Next.js app in [32mC:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\next06\work\book-management[39m.
+
+[1mUsing npm.[22m
+
+Initializing project with template: app-tw 
+
+
+Installing dependencies:
+- [36mnext[39m
+- [36mreact[39m
+- [36mreact-dom[39m
+
+Installing devDependencies:
+- [36m@tailwindcss/turbopack[39m
+- [36m@types/node[39m
+- [36m@types/react[39m
+- [36m@types/react-dom[39m
+- [36meslint[39m
+- [36meslint-config-next[39m
+- [36mtailwindcss[39m
+- [36mtypescript[39m
+
+
+[exit] 4294967295 steps done: 11

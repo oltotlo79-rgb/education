@@ -475,17 +475,17 @@ App Router では、特別な名前を持つファイルにそれぞれ役割が
 // URL: /
 
 // `export default` でこのコンポーネントを「このファイルの主役」として外に公開
+// 関数名 `HomePage` は何でもよい（慣習的にページ名を付ける）。Next.js は名前ではなく default export を見ている
 export default function HomePage() {
-                                             // 関数名 `HomePage` は何でもよい（慣習的にページ名を付ける）。Next.js は名前ではなく default export を見ている
   // JSX（HTMLに似たReactの記法）を返す
   return (
     // `<div>`：レイアウト用の汎用ブロック要素。中身を1つにまとめるために使う
     <div>
-      // `<h1>`：ページの一番大きな見出し。1ページに1つだけ置くのが推奨
+      {/* `<h1>`：ページの一番大きな見出し。1ページに1つだけ置くのが推奨 */}
       <h1>書籍管理アプリへようこそ</h1>
-      // `<p>`：段落（paragraph）。普通の文章ブロック
+      {/* `<p>`：段落（paragraph）。普通の文章ブロック */}
       <p>あなたの読書記録を管理しましょう。</p>
-    // 閉じタグ。開いた `<div>` と必ず対応させる
+    {/* 閉じタグ。開いた `<div>` と必ず対応させる */}
     </div>
   // return の終わり
   );
@@ -682,20 +682,20 @@ export default function RootLayout({
 ```typescript
 // ファイルパス。`/books` のロード中UIになる
 // app/books/loading.tsx
-                                                // フォルダごとに置けるので、ページ単位で異なるローディング表現が可能
+// フォルダごとに置けるので、ページ単位で異なるローディング表現が可能
 
 // default export された関数がそのまま「ローディングUI」として使われる
+// 関数名は何でもよいが、慣習的に `XxxLoading` と付ける
 export default function BooksLoading() {
-                                                // 関数名は何でもよいが、慣習的に `XxxLoading` と付ける
   // 返す JSX
   return (
     // `className` は HTML の `class` 属性のJSX版（`class` はJSの予約語なので別名）
     <div className="loading-container">
-      // CSSアニメーションで作る回転するスピナー（自己終了タグ `/>` で書ける）
+      {/* CSSアニメーションで作る回転するスピナー（自己終了タグ `/>` で書ける） */}
       <div className="spinner" />
-      // ユーザーへの説明文
+      {/* ユーザーへの説明文 */}
       <p>書籍データを読み込んでいます...</p>
-    // ラッパーdivの閉じタグ
+    {/* ラッパーdivの閉じタグ */}
     </div>
   );
 // 関数の終わり
@@ -714,8 +714,8 @@ export default function BooksLoading() {
 // `/books` 配下でエラーが起きたときに自動で表示される
 // app/books/error.tsx
 // この1行でこのファイルを「ブラウザ側で動くコンポーネント」に切り替える
+// error.tsx ではこれを必ず先頭に書く（ファイルの一番上、importより前）
 "use client";
-                                                // error.tsx ではこれを必ず先頭に書く（ファイルの一番上、importより前）
 
 // default export 関数。Next.js が自動で呼び出す
 export default function BooksError({
@@ -726,22 +726,22 @@ export default function BooksError({
 // ↓ ここから TypeScript の型注釈
 }: {
   // 標準 Error 型に、Next.js が独自に付ける `digest`（任意）を合成した型
+  // digest はサーバーログとの紐付け用ID（本番環境で詳細メッセージを隠したいとき使う）
   error: Error & { digest?: string };
-                                                // digest はサーバーログとの紐付け用ID（本番環境で詳細メッセージを隠したいとき使う）
   // 引数なし・戻り値なしの関数型
   reset: () => void;
 }) {
   return (
     // エラー表示の枠
     <div className="error-container">
-      // タイトル
+      {/* タイトル */}
       <h2>エラーが発生しました</h2>
-      // `error.message`：例外が持つメッセージ文字列を表示
+      {/* `error.message`：例外が持つメッセージ文字列を表示 */}
+      {/* `{}` 内はJSの式。文字列補間に使う */}
       <p>{error.message}</p>
-                                                // `{}` 内はJSの式。文字列補間に使う
+      {/* ボタン押下で `reset()` を呼ぶ → Next.js が該当セグメントを再描画してくれる */}
+      {/* アロー関数で包んでいるのは「呼び出し時の引数（event）を渡さないため」 */}
       <button onClick={() => reset()}>もう一度試す</button>
-                                                // ボタン押下で `reset()` を呼ぶ → Next.js が該当セグメントを再描画してくれる
-                                                // アロー関数で包んでいるのは「呼び出し時の引数（event）を渡さないため」
     </div>
   );
 }
@@ -771,30 +771,30 @@ app/                                # アプリのルートフォルダ
 // params はオブジェクトとして渡される
 // Next.js 15 では params は Promise として渡されるため await が必要
 // `async` 関数にすると本体で `await` が使える
+// この `async function` をコンポーネントに使えるのは Server Component の特権
 export default async function BookDetailPage({
-                                                      // この `async function` をコンポーネントに使えるのは Server Component の特権
   // props.params: 動的セグメントの値が入ったオブジェクト
   params,
 // ↓ TypeScript 型注釈
 }: {
   // Next.js 15+ では params は Promise でラップされて渡される
+  // `{ id: string }` は「id という文字列プロパティを持つオブジェクト」型
   params: Promise<{ id: string }>;
-                                                      // `{ id: string }` は「id という文字列プロパティを持つオブジェクト」型
 }) {
   // `await` で Promise を解決し、分割代入で `id` だけ取り出す
+  // 例: URLが `/books/42` なら id は "42"（数値ではなく文字列！）
   const { id } = await params;
-                                                      // 例: URLが `/books/42` なら id は "42"（数値ではなく文字列！）
 
   return (
     // ページ全体のラッパー
     <div>
-      // 見出し
+      {/* 見出し */}
       <h1>書籍詳細</h1>
-      // 取り出した id を JSX に埋め込んで表示
+      {/* 取り出した id を JSX に埋め込んで表示 */}
       <p>書籍 ID: {id}</p>
+      {/* JSX の中のコメントは、この行のように波かっこ付きのブロックコメントで書く */}
+      {/* 例: const book = await getBookById(id); */}
       {/* 実際にはここで id を使ってデータベースから書籍情報を取得する */}
-                                                      // JSX の中のコメントは `{/* ... */}` の形にする
-                                                      // 例: const book = await getBookById(id);
     </div>
   );
 }
@@ -1250,39 +1250,39 @@ import { useState } from "react";
 // データベースから直接書籍一覧を取得する
 
 // `@/` はプロジェクトルートを示すエイリアス
+// ../../ のような相対パス地獄を避けるための設定（tsconfig.json で定義）
 import { SearchBar } from "@/components/SearchBar";
-                                                                    // ../../ のような相対パス地獄を避けるための設定（tsconfig.json で定義）
 // 書籍リストを描画する別の自作コンポーネントを取り込む
 import { BookList } from "@/components/BookList";
 
 // `async` 関数なので本体で `await` が使える
+// この関数自体が Server Component
 export default async function BooksPage() {
-                                                                    // この関数自体が Server Component
   // Server Component なので、サーバー上で直接データ取得ができる
   // この処理はブラウザには送信されない
   // `fetch` は Web標準のHTTP通信API
+  // Next.js は fetch を拡張してキャッシュ機能を追加している
   const response = await fetch("https://api.example.com/books", {
-                                                                    // Next.js は fetch を拡張してキャッシュ機能を追加している
     // 常に最新データを取得（SSR）
     // `"no-store"` でキャッシュを使わず毎回サーバーからデータ取得
+    // 他に "force-cache"（SSG的）、`next: { revalidate: N }`（ISR的）がある
     cache: "no-store",
-                                                                    // 他に "force-cache"（SSG的）、`next: { revalidate: N }`（ISR的）がある
   });
   // `response.json()` で本文JSONをJSオブジェクトに変換
   const books = await response.json();
 
   return (
     <div>
-      // ページタイトル
+      {/* ページタイトル */}
       <h1>書籍一覧</h1>
-      // JSX 内のコメント記法
+      {/* JSX 内のコメント記法 */}
       {/* Client Component: ユーザーの入力を受け付ける */}
-      // 検索バー（Client）。ここから下は子コンポーネント
+      {/* 検索バー（Client）。ここから下は子コンポーネント */}
       <SearchBar />
       {/* Server Component: 取得したデータを表示する */}
-      // 取得した books 配列を props として渡す
+      {/* 取得した books 配列を props として渡す */}
+      {/* `books={books}` は「booksというpropに変数booksの値を渡す」の意 */}
       <BookList books={books} />
-                                                                      // `books={books}` は「booksというpropに変数booksの値を渡す」の意
     </div>
   );
 }
@@ -1294,20 +1294,20 @@ export default async function BooksPage() {
 // 再利用される検索バー部品
 // components/SearchBar.tsx（Client Component）
 // この行がある＝このファイルは Client Component
+// ブラウザ側で動き、useState やイベントが使える
 "use client";
-                                                                     // ブラウザ側で動き、useState やイベントが使える
 
 // React の状態管理フック
 import { useState } from "react";
 // App Router 用のルーターフック
+// ※ `next/router` ではない！（あちらは旧 Pages Router 用）
 import { useRouter } from "next/navigation";
-                                                                     // ※ `next/router` ではない！（あちらは旧 Pages Router 用）
 
 // 名前付き export。`{ SearchBar }` で import される
 export function SearchBar() {
   // `useState` で「現在の検索文字列」を管理
+  // 配列の分割代入: [現在値, 更新関数] = useState(初期値)
   const [query, setQuery] = useState("");
-                                                                     // 配列の分割代入: [現在値, 更新関数] = useState(初期値)
   // ルーター操作用オブジェクトを取得（push/replace/back/refresh等が使える）
   const router = useRouter();
 
@@ -1317,8 +1317,8 @@ export function SearchBar() {
     e.preventDefault();
     // 検索クエリ付きで遷移
     // `router.push` で別URLに移動（履歴に追加）
+    // `encodeURIComponent` はURLに使えない文字（空白や日本語）を %エンコード
     router.push(`/books?q=${encodeURIComponent(query)}`);
-                                                                     // `encodeURIComponent` はURLに使えない文字（空白や日本語）を %エンコード
   };
 
   return (
@@ -1334,7 +1334,7 @@ export function SearchBar() {
         // 空欄時の薄いガイドテキスト
         placeholder="タイトルで検索..."
       />
-      // submit ボタン。クリックで form の onSubmit が走る
+      {/* submit ボタン。クリックで form の onSubmit が走る */}
       <button type="submit">検索</button>
     </form>
   );
@@ -1404,8 +1404,8 @@ import { useRouter } from "next/navigation";
 // components/BookCard.tsx（Server Component）
 
 // ※同じフォルダから import するときは "./" で始める
+// ここで Client Component を取り込んでも、子だけが Client になる
 import { FavoriteButton } from "./FavoriteButton";
-                                                                     // ここで Client Component を取り込んでも、子だけが Client になる
 
 // TypeScript の型定義（=この形のオブジェクト）
 type Book = {
@@ -1422,12 +1422,12 @@ export function BookCard({ book }: { book: Book }) {
   return (
     // カード枠（CSSでスタイル付け）
     <div className="book-card">
-      // タイトル表示
+      {/* タイトル表示 */}
       <h3>{book.title}</h3>
-      // 著者表示
+      {/* 著者表示 */}
       <p>{book.author}</p>
       {/* インタラクティブな部分だけ Client Component */}
-      // お気に入りボタンには id だけ渡す（最小限のpropsで境界を作る）
+      {/* お気に入りボタンには id だけ渡す（最小限のpropsで境界を作る） */}
       <FavoriteButton bookId={book.id} />
     </div>
   );
@@ -1453,8 +1453,8 @@ export function FavoriteButton({ bookId }: { bookId: string }) {
   // クリック時のハンドラ。async で await が使える
   const handleClick = async () => {
     // まず画面上の状態をトグル（楽観的更新）
+    // `!isFavorite` は「現在の値の反対」
     setIsFavorite(!isFavorite);
-                                                                     // `!isFavorite` は「現在の値の反対」
     // API を呼び出してお気に入り状態を保存
     // テンプレートリテラル（バッククォート ``）で URL を組み立てる
     await fetch(`/api/books/${bookId}/favorite`, {
@@ -1468,7 +1468,7 @@ export function FavoriteButton({ bookId }: { bookId: string }) {
   return (
     // ボタンクリックで handleClick を発動
     <button onClick={handleClick}>
-      // 三項演算子: state によって表示を切り替える
+      {/* 三項演算子: state によって表示を切り替える */}
       {isFavorite ? "★ お気に入り済み" : "☆ お気に入り"}
     </button>
   );
@@ -1553,30 +1553,30 @@ export function FavoriteButton({ bookId }: { bookId: string }) {
 ```typescript
 // 予約名 `layout.tsx`。`app/` 直下のものは「ルートレイアウト」と呼ばれる
 // app/layout.tsx
-                                                         // すべてのページを包む一番外側の枠になる（必須）
+// すべてのページを包む一番外側の枠になる（必須）
 
 // `import type` は「型だけ取り込む」記法
+// 実行時のJSには残らないのでバンドルが軽くなる
 import type { Metadata } from "next";
-                                                         // 実行時のJSには残らないのでバンドルが軽くなる
 // Google Fonts の Inter フォントを Next.js 経由で読み込む
+// `next/font/google` はビルド時にフォントをセルフホストして高速化してくれる
 import { Inter } from "next/font/google";
-                                                         // `next/font/google` はビルド時にフォントをセルフホストして高速化してくれる
 // 全ページに適用する CSS をインポート
+// 値として使わず副作用のためだけに読み込む書き方
 import "./globals.css";
-                                                         // 値として使わず副作用のためだけに読み込む書き方
 
 // Google Fonts の Inter フォントを最適化して読み込む
 // フォントのインスタンスを作る
+// `subsets: ["latin"]` は「ラテン文字だけ含む」指定でサイズ削減
 const inter = Inter({ subsets: ["latin"] });
-                                                         // `subsets: ["latin"]` は「ラテン文字だけ含む」指定でサイズ削減
 
 // `metadata` という名前で export すると Next.js が <head> を自動生成
+// 自分で <title> や <meta> を書く必要がない
 export const metadata: Metadata = {
-                                                         // 自分で <title> や <meta> を書く必要がない
   title: {
     // 子ページのタイトルに自動で「 | 書籍管理アプリ」を付ける
+    // `%s` の部分が子の title に置き換わる
     template: "%s | 書籍管理アプリ",
-                                                         // `%s` の部分が子の title に置き換わる
     // 子ページが title を指定しなかったときのデフォルト
     default: "書籍管理アプリ",
   },
@@ -1594,30 +1594,30 @@ export default function RootLayout({
 }) {
   return (
     // `<html>` はルートレイアウトでだけ書く
+    // lang="ja" は日本語ページであることをブラウザや支援技術に伝える
     <html lang="ja">
-                                                         // lang="ja" は日本語ページであることをブラウザや支援技術に伝える
-      // `<body>` もルートレイアウト専用
+      {/* `<body>` もルートレイアウト専用 */}
+      {/* `inter.className` でフォント用 CSS クラスを適用 */}
       <body className={inter.className}>
-                                                         // `inter.className` でフォント用 CSS クラスを適用
         {/* ここにヘッダーを配置 */}
-        // セマンティック要素 `<header>`：ページ上部のヘッダー領域
+        {/* セマンティック要素 `<header>`：ページ上部のヘッダー領域 */}
         <header className="site-header">
-          // `<nav>`：ナビゲーション領域を示すセマンティック要素
+          {/* `<nav>`：ナビゲーション領域を示すセマンティック要素 */}
           <nav>
-            // 普通のアンカー。ロゴ的リンク（後で `<Link>` に置き換えるのがベター）
+            {/* 普通のアンカー。ロゴ的リンク（後で `<Link>` に置き換えるのがベター） */}
             <a href="/">書籍管理アプリ</a>
           </nav>
         </header>
 
         {/* children に各ページの内容が入る */}
-        // `<main>`：ページの主要コンテンツ領域
+        {/* `<main>`：ページの主要コンテンツ領域 */}
+        {/* ここに `app/page.tsx` や `app/books/page.tsx` 等の中身が差し込まれる */}
         <main className="site-main">{children}</main>
-                                                         // ここに `app/page.tsx` や `app/books/page.tsx` 等の中身が差し込まれる
 
         {/* ここにフッターを配置 */}
-        // `<footer>`：ページ下部のフッター領域
+        {/* `<footer>`：ページ下部のフッター領域 */}
         <footer className="site-footer">
-          // `&copy;` は © の HTML エンティティ（特殊文字）
+          {/* `&copy;` は © の HTML エンティティ（特殊文字） */}
           <p>&copy; 2024 書籍管理アプリ</p>
         </footer>
       </body>
@@ -1690,13 +1690,13 @@ export default function BooksLayout({
     // ※ルート以外の layout.tsx は <html>/<body> を書かない
     <div className="books-layout">
       {/* サイドバー */}
-      // `<aside>`：補足コンテンツ用のセマンティック要素
+      {/* `<aside>`：補足コンテンツ用のセマンティック要素 */}
       <aside className="sidebar">
-        // ナビゲーション領域
+        {/* ナビゲーション領域 */}
         <nav>
-          // 箇条書きリスト
+          {/* 箇条書きリスト */}
           <ul>
-            // ※ 後ほど `<Link>` への置き換えを学ぶ
+            {/* ※ 後ほど `<Link>` への置き換えを学ぶ */}
             <li><a href="/books">書籍一覧</a></li>
             <li><a href="/books/new">書籍を追加</a></li>
             <li><a href="/books/favorites">お気に入り</a></li>
@@ -1705,9 +1705,9 @@ export default function BooksLayout({
       </aside>
 
       {/* メインコンテンツ */}
-      // `<section>`：意味的にひとまとまりの領域
+      {/* `<section>`：意味的にひとまとまりの領域 */}
       <section className="content">
-        // ここに /books/page.tsx や /books/[id]/page.tsx の内容が入る
+        {/* ここに /books/page.tsx や /books/[id]/page.tsx の内容が入る */}
         {children}
       </section>
     </div>
@@ -1793,19 +1793,19 @@ export function Navigation() {
   return (
     // セマンティック要素：ナビゲーション領域
     <nav>
-      // リスト
+      {/* リスト */}
       <ul>
-        // 1項目
+        {/* 1項目 */}
         <li>
-          // `href` で行き先URLを指定。<a> と似た書き方
+          {/* `href` で行き先URLを指定。<a> と似た書き方 */}
           <Link href="/">ホーム</Link>
         </li>
         <li>
-          // `/books` への高速遷移リンク
+          {/* `/books` への高速遷移リンク */}
           <Link href="/books">書籍一覧</Link>
         </li>
         <li>
-          // `/books/new` への遷移
+          {/* `/books/new` への遷移 */}
           <Link href="/books/new">書籍を追加</Link>
         </li>
       </ul>
@@ -1843,9 +1843,9 @@ type Book = {
 export function BookLink({ book }: { book: Book }) {
   return (
     // テンプレートリテラルで URL を組み立てる
+    // 例: book.id が "42" なら "/books/42" が生成される
     <Link href={`/books/${book.id}`}>
-                                                        // 例: book.id が "42" なら "/books/42" が生成される
-      // 表示テキストは book.title を埋め込み
+      {/* 表示テキストは book.title を埋め込み */}
       {book.title} の詳細を見る
     </Link>
   );
@@ -1937,9 +1937,9 @@ export function BookForm() {
   return (
     // submit イベントを上記関数に紐付け
     <form onSubmit={handleSubmit}>
-      // 実際には input 要素などを並べる
+      {/* 実際には input 要素などを並べる */}
       {/* フォームの内容（省略） */}
-      // submit ボタン
+      {/* submit ボタン */}
       <button type="submit">保存</button>
     </form>
   );
@@ -1964,28 +1964,28 @@ export function NavigationExample() {
   return (
     <div>
       {/* 指定したパスに遷移（履歴に追加） */}
-      // `push`: 履歴を1つ増やしながら遷移（ブラウザの戻るで前ページに戻れる）
+      {/* `push`: 履歴を1つ増やしながら遷移（ブラウザの戻るで前ページに戻れる） */}
       <button onClick={() => router.push("/books")}>
         書籍一覧へ
       </button>
 
       {/* 指定したパスに遷移（履歴を置換） */}
-      // `replace`: 現在の履歴エントリを上書きして遷移（戻れない）
+      {/* `replace`: 現在の履歴エントリを上書きして遷移（戻れない） */}
       <button onClick={() => router.replace("/books")}>
-        // ログイン後にログインページを履歴に残したくないときに使う
+        {/* ログイン後にログインページを履歴に残したくないときに使う */}
         書籍一覧へ（履歴を置換）
       </button>
 
       {/* ブラウザの「戻る」と同じ */}
-      // `back`: 履歴を1つ戻る
+      {/* `back`: 履歴を1つ戻る */}
       <button onClick={() => router.back()}>
         戻る
       </button>
 
       {/* ページのデータを再取得（再レンダリング） */}
-      // `refresh`: 現在のルートの Server Component を再実行・再描画
+      {/* `refresh`: 現在のルートの Server Component を再実行・再描画 */}
       <button onClick={() => router.refresh()}>
-        // ※ ページ全体リロードではない（state は保持される）
+        {/* ※ ページ全体リロードではない（state は保持される） */}
         更新
       </button>
     </div>
@@ -2045,9 +2045,9 @@ export function CurrentUrlInfo() {
 // 動的セグメントを含む書籍詳細ページ
 // app/books/[id]/page.tsx
 // 2つのヘルパー関数を取り込む
+// redirect: 任意の URL へ転送
+// notFound: 404扱いにして not-found.tsx を表示
 import { redirect, notFound } from "next/navigation";
-                                                                   // redirect: 任意の URL へ転送
-                                                                   // notFound: 404扱いにして not-found.tsx を表示
 
 // async Server Component
 export default async function BookDetailPage({
@@ -2065,8 +2065,8 @@ export default async function BookDetailPage({
   // データが null/undefined なら
   if (!book) {
     // この呼び出しで以降の処理は中断され not-found.tsx が表示される
+    // 関数の戻り値は never（戻ってこない関数の型）
     notFound();
-                                                                   // 関数の戻り値は never（戻ってこない関数の型）
   }
 
   // 非公開の書籍は一覧ページにリダイレクト
@@ -2079,7 +2079,7 @@ export default async function BookDetailPage({
   // 上の if を通り抜けた場合だけここに到達
   return (
     <div>
-      // タイトル表示
+      {/* タイトル表示 */}
       <h1>{book.title}</h1>
     </div>
   );
@@ -2161,8 +2161,8 @@ export function middleware(request: NextRequest) {
   // 未ログイン かつ /books 配下にアクセスしている
   if (!isLoggedIn && request.nextUrl.pathname.startsWith("/books")) {
     // /login に転送するレスポンスを返す
+    // `new URL("/login", request.url)` はベースURLを保ったまま絶対URLを作る
     return NextResponse.redirect(new URL("/login", request.url));
-                                                                    // `new URL("/login", request.url)` はベースURLを保ったまま絶対URLを作る
   }
 
   // 条件に合わない場合は普通に次の処理（=ページ描画）へ進める
@@ -2173,8 +2173,8 @@ export function middleware(request: NextRequest) {
 // `config` という名前で設定オブジェクトを export
 export const config = {
   // この matcher にマッチしたURLでだけ middleware が動く
+  // `:path*` は「任意の階層を含む」の意味
   matcher: ["/books/:path*"],
-                                                                    // `:path*` は「任意の階層を含む」の意味
 };
 ```
 
@@ -2414,8 +2414,8 @@ fetch(url, { cache: "force-cache" });
 // 一定間隔で再取得する中間方式
 // ISR - 60秒ごとにキャッシュを再検証
 // `next.revalidate` は Next.js が追加した独自オプション
+// 60 は秒数。指定間隔ごとに次のアクセス時に再取得
 fetch(url, { next: { revalidate: 60 } });
-                                                                              // 60 は秒数。指定間隔ごとに次のアクセス時に再取得
 ```
 
 | 戦略 | 説明 | 使用例 |
@@ -2472,8 +2472,8 @@ export function BookSearch() {
 
     // デバウンス: 入力が止まって300ms後に検索を実行
     // 300ms後に走るタイマーを仕掛ける
+    // 入力が続いている間はクリーンアップで毎回キャンセルされる（=デバウンス）
     const timer = setTimeout(async () => {
-                                                                     // 入力が続いている間はクリーンアップで毎回キャンセルされる（=デバウンス）
       // 「読み込み中」に切り替え
       setIsLoading(true);
       // エラー表示はリセット
@@ -2497,8 +2497,8 @@ export function BookSearch() {
         setBooks(data);
       // 通信失敗や上の throw を捕まえる
       } catch (err) {
+        // err が Error 型ならその message を、それ以外なら汎用文を表示
         setError(err instanceof Error ? err.message : "エラーが発生しました");
-                                                                     // err が Error 型ならその message を、それ以外なら汎用文を表示
       // 成功・失敗どちらでも最後に走る
       } finally {
         // 読み込み中フラグを解除
@@ -2526,17 +2526,17 @@ export function BookSearch() {
         placeholder="書籍を検索..."
       />
 
-      // 短絡評価: isLoading が true のときだけ <p> を描画
+      {/* 短絡評価: isLoading が true のときだけ <p> を描画 */}
       {isLoading && <p>検索中...</p>}
-      // エラー文字列があるときだけ表示
+      {/* エラー文字列があるときだけ表示 */}
       {error && <p className="error">{error}</p>}
 
       <ul>
-        // 配列を JSX 要素にマッピング
+        {/* 配列を JSX 要素にマッピング */}
         {books.map((book) => (
           // `key` は React に「どの項目が同じか」を伝える必須属性
           <li key={book.id}>
-            // タイトル - 著者 の形式で表示
+            {/* タイトル - 著者 の形式で表示 */}
             {book.title} - {book.author}
           </li>
         ))}
@@ -2664,16 +2664,16 @@ export default function BooksLoading() {
   return (
     <div className="loading-container">
       {/* スケルトンUI: 実際のコンテンツと同じ形状の灰色の枠 */}
+      {/* `style` 属性はオブジェクトを渡す（CSSのキャメルケース表記） */}
+      {/* `{{ ... }}` の外側はJSXの式、内側はJSオブジェクト */}
       <h1 className="skeleton" style={{ width: "200px", height: "32px" }} />
-                                                                    // `style` 属性はオブジェクトを渡す（CSSのキャメルケース表記）
-                                                                    // `{{ ... }}` の外側はJSXの式、内側はJSオブジェクト
 
       <div className="book-grid">
         {/* 6個のスケルトンカード */}
-        // `Array.from({ length: 6 })` で要素6個の配列を作る
+        {/* `Array.from({ length: 6 })` で要素6個の配列を作る */}
+        {/* 第1引数 `_` は使わないので慣習的にアンダースコア */}
+        {/* 第2引数 `i` は 0,1,2,...,5 のインデックス */}
         {Array.from({ length: 6 }).map((_, i) => (
-                                                                    // 第1引数 `_` は使わないので慣習的にアンダースコア
-                                                                    // 第2引数 `i` は 0,1,2,...,5 のインデックス
           // key にインデックスを使う（並び順が変わらないリストならOK）
           <div key={i} className="skeleton-card">
             <div
@@ -2683,13 +2683,13 @@ export default function BooksLoading() {
             />
             <div
               className="skeleton"
+              // タイトル代わりの細長い灰色ブロック
               style={{ width: "80%", height: "20px", marginTop: "8px" }}
-                                                                    // タイトル代わりの細長い灰色ブロック
             />
             <div
               className="skeleton"
+              // 著者代わりのさらに小さなブロック
               style={{ width: "60%", height: "16px", marginTop: "4px" }}
-                                                                    // 著者代わりのさらに小さなブロック
             />
           </div>
         ))}
@@ -2763,7 +2763,7 @@ App Router で「自前のHTTP API」を作りたいときは、`app/api/.../rou
 ```typescript
 // 予約名 `route.ts`。`/api/books` の HTTP API になる
 // app/api/books/route.ts
-                                                                   // page.tsx と同じフォルダには置けない（ルートが衝突するため）
+// page.tsx と同じフォルダには置けない（ルートが衝突するため）
 
 // レスポンスを作るヘルパー
 import { NextResponse } from "next/server";
@@ -2784,8 +2784,8 @@ export async function POST(request: Request) {
   // リクエストボディの JSON を解釈
   const body = await request.json();
   // ここで body を使ってDB保存などを行う
+  // 201 Created を返す例
   return NextResponse.json({ created: true, body }, { status: 201 });
-                                                                   // 201 Created を返す例
 }
 ```
 
@@ -2896,11 +2896,11 @@ Server Actions は `"use server"` ディレクティブで宣言します。`"us
 // この関数はサーバー上でのみ実行される
 // クライアントには関数の中身は送信されない
 // 引数 `FormData` は Web標準のフォーム値コンテナ
+// <form action={createBook}> の送信内容が自動で渡される
 export async function createBook(formData: FormData) {
-                                                                    // <form action={createBook}> の送信内容が自動で渡される
   // `formData.get("title")` で name="title" の値を取り出す
+  // 戻り値は `FormDataEntryValue | null` なので `as string` で型を絞り込む
   const title = formData.get("title") as string;
-                                                                    // 戻り値は `FormDataEntryValue | null` なので `as string` で型を絞り込む
   // 同じく著者
   const author = formData.get("author") as string;
   // 数値に変換（formData の値は基本文字列）
@@ -3006,14 +3006,14 @@ export default function NewBookPage() {
     <div>
       <h1>書籍を追加</h1>
 
-      // `<form action={...}>` に関数を渡せるのが Next.js の拡張
+      {/* `<form action={...}>` に関数を渡せるのが Next.js の拡張 */}
       {/* action 属性に Server Action を渡す */}
+      {/* Progressive Enhancement: JSが動かない環境でもHTMLだけで動く設計 */}
       {/* JavaScript が無効でも動作する（Progressive Enhancement） */}
-                                                                    // Progressive Enhancement: JSが動かない環境でもHTMLだけで動く設計
-      // 送信時に createBook がサーバーで実行される
+      {/* 送信時に createBook がサーバーで実行される */}
       <form action={createBook}>
         <div>
-          // `htmlFor` は HTML の `for` 属性のJSX版（forはJSの予約語）
+          {/* `htmlFor` は HTML の `for` 属性のJSX版（forはJSの予約語） */}
           <label htmlFor="title">タイトル</label>
           <input
             // テキスト入力
@@ -3047,7 +3047,7 @@ export default function NewBookPage() {
           />
         </div>
 
-        // submit ボタン
+        {/* submit ボタン */}
         <button type="submit">追加する</button>
       </form>
     </div>
@@ -3068,23 +3068,23 @@ export default function NewBookPage() {
 "use client";
 
 // React 19 で追加された Server Action 連携用フック
+// 旧名は useFormState（同じ用途）
 import { useActionState } from "react";
-                                                                     // 旧名は useFormState（同じ用途）
 // 別ファイルの Server Action を取り込む
 import { createBook } from "@/app/books/new/actions";
 
 export function BookFormClient() {
+  // 戻り値は [現在のstate, ラップ済み formAction, 送信中フラグ]
+  // 第2引数の null は state の初期値
+  // formAction は <form action={...}> に渡せるよう加工された関数
   const [state, formAction, isPending] = useActionState(createBook, null);
-                                                                    // 戻り値は [現在のstate, ラップ済み formAction, 送信中フラグ]
-                                                                    // 第2引数の null は state の初期値
-                                                                    // formAction は <form action={...}> に渡せるよう加工された関数
 
   return (
     // 元の createBook ではなく、ラップ済みの formAction を渡す
     <form action={formAction}>
       <div>
         <label htmlFor="title">タイトル</label>
-        // name="title" が formData のキーになる
+        {/* name="title" が formData のキーになる */}
         <input type="text" id="title" name="title" required />
       </div>
 
@@ -3099,16 +3099,16 @@ export function BookFormClient() {
       </div>
 
       {/* エラーメッセージの表示 */}
-      // `?.` はオプショナルチェイニング（state が null でも安全）
+      {/* `?.` はオプショナルチェイニング（state が null でも安全） */}
       {state?.error && (
         // Server Action が返した error メッセージを表示
         <p className="error-message">{state.error}</p>
       )}
 
       {/* 送信中はボタンを無効化 */}
-      // `disabled={isPending}` で送信中はクリック不可
+      {/* `disabled={isPending}` で送信中はクリック不可 */}
       <button type="submit" disabled={isPending}>
-        // ボタンラベルも切り替え
+        {/* ボタンラベルも切り替え */}
         {isPending ? "追加中..." : "追加する"}
       </button>
     </form>
@@ -3655,12 +3655,12 @@ export function formatDate(dateString: string): string {
  * クラス名を結合する（falsy な値は除外）
  * @example cn("base", isActive && "active", "extra") → "base active extra"
  */
+// `...classes` はレストパラメータ。可変長の引数を配列として受け取る
+// 型は「string か false か undefined か null の配列」
 export function cn(...classes: (string | false | undefined | null)[]): string {
-                                                                    // `...classes` はレストパラメータ。可変長の引数を配列として受け取る
-                                                                    // 型は「string か false か undefined か null の配列」
   // `filter(Boolean)` で false/undefined/null/"" を除外
+  // `join(" ")` で半角スペース区切りに連結
   return classes.filter(Boolean).join(" ");
-                                                                    // `join(" ")` で半角スペース区切りに連結
 }
 ```
 
@@ -3709,7 +3709,7 @@ export function Button({
       disabled={disabled}
       onClick={onClick}
     >
-      // ボタンの中身を表示
+      {/* ボタンの中身を表示 */}
       {children}
     </button>
   );
@@ -3925,7 +3925,7 @@ export default async function NewsPage() {
     <div>
       <h1>お知らせ</h1>
       <ul>
-        // 取得した記事を一覧表示
+        {/* 取得した記事を一覧表示 */}
         {news.map((item, i) => (
           <li key={i}>{item.title}（生成時刻: {item.builtAt}）</li>
         ))}
@@ -4295,8 +4295,8 @@ export default function Counter() {
   // ← ここでエラー
   // Server Component では useState を呼べない
   const [count, setCount] = useState(0);
+  // onClick も Server Component では使えない
   return <button onClick={() => setCount(count + 1)}>{count}</button>;
-                                                                    // onClick も Server Component では使えない
 }
 
 // ✅ 修正版
@@ -4334,8 +4334,8 @@ Components.
 // 関数本体に async を付けている
 export default async function BooksPage() {
   // ← async は Client Component で不可
+  // App Router の Client では関数を async にできない
   const books = await fetch("/api/books");
-                                                                    // App Router の Client では関数を async にできない
   return <div>...</div>;
 }
 
@@ -4408,8 +4408,8 @@ Error: You are attempting to export "metadata" from a component marked with
 "use client";
 
 // ← Client Component では不可
+// metadata は Server Component の機能なので Client では宣言できない
 export const metadata = { title: "書籍一覧" };
-                                                                    // metadata は Server Component の機能なので Client では宣言できない
 
 // ✅ 修正版: metadata は Server Component（page.tsx や layout.tsx）に置く
 // app/books/page.tsx（Server Component）
@@ -4459,15 +4459,15 @@ Warning: Text content did not match. Server: "2024年3月15日" Client: "3/15/20
 // ❌ サーバーとクライアントで結果が異なる可能性がある
 export default function DateDisplay() {
   // サーバーとブラウザで実行時刻が違えば表示も違う
+  // → Hydration エラーになる
   return <p>{new Date().toLocaleString()}</p>;
-                                                                    // → Hydration エラーになる
 }
 
 // ✅ 修正版 1: suppressHydrationWarning を使う
 export default function DateDisplay() {
+  // React の Hydration 不一致警告を抑制する属性
+  // 中身が動的でもよい場合の応急処置
   return <p suppressHydrationWarning>{new Date().toLocaleString()}</p>;
-                                                                    // React の Hydration 不一致警告を抑制する属性
-                                                                    // 中身が動的でもよい場合の応急処置
 }
 
 // ✅ 修正版 2: Client Component にして useEffect で設定

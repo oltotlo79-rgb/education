@@ -1,0 +1,19 @@
+   Compiling basics v0.1.0 (.../basics)
+error[E0061]: this function takes 2 arguments but 1 argument was supplied
+ --> src\main.rs:6:20
+  |
+6 |     println!("{}", add(1));
+  |                    ^^^--- argument #2 of type `i32` is missing
+  |
+note: function defined here
+ --> src\main.rs:1:4
+  |
+1 | fn add(a: i32, b: i32) -> i32 {
+  |    ^^^         ------
+help: provide the argument
+  |
+6 |     println!("{}", add(1, /* i32 */));
+  |                         +++++++++++
+
+For more information about this error, try `rustc --explain E0061`.
+error: could not compile `basics` (bin "basics") due to 1 previous error

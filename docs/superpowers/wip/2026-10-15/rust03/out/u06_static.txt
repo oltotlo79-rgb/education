@@ -1,0 +1,5 @@
+[RustNote] 200 OK
+[RustNote] 404 Not Found
+リテラルはプログラム全体で有効
+処理したリクエスト: 2
+exit=0

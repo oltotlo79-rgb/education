@@ -1,0 +1,13 @@
+import { act, StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import Demo from "../effect-log.tsx";
+import { click } from "./util.ts";
+const strict = process.argv.includes("--strict");
+const root = createRoot(document.getElementById("root")!);
+console.log("--- 初回表示 ---");
+await act(async () => root.render(strict ? <StrictMode><Demo /></StrictMode> : <Demo />));
+const [plus, hide] = [...document.querySelectorAll("button")];
+console.log("--- +1 を押す ---");
+await click(plus);
+console.log("--- 消す を押す ---");
+await click(hide);

@@ -1,0 +1,32 @@
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 290" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-10-05" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<text x="166" y="22" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e40af">あなたが書いたコード（ビルド前）</text>
+<rect x="16" y="32" width="300" height="150" rx="8" fill="#0f172a"/>
+<text x="30" y="58" font-size="12" font-family="Consolas, monospace" fill="#94a3b8">// Client Component の中</text>
+<text x="30" y="82" font-size="12" font-family="Consolas, monospace" fill="#e2e8f0">const appName =</text>
+<text x="46" y="102" font-size="12" font-family="Consolas, monospace" fill="#fdba74">process.env.NEXT_PUBLIC_APP_NAME;</text>
+<text x="30" y="132" font-size="12" font-family="Consolas, monospace" fill="#e2e8f0">const secret =</text>
+<text x="46" y="152" font-size="12" font-family="Consolas, monospace" fill="#93c5fd">process.env.SECRET_MESSAGE;</text>
+<line x1="320" y1="107" x2="398" y2="107" stroke="#475569" stroke-width="2" marker-end="url(#ar-10-05)"/>
+<text x="359" y="97" text-anchor="middle" font-size="12" font-weight="bold" fill="#c2410c">next build</text>
+<text x="554" y="22" text-anchor="middle" font-size="13" font-weight="bold" fill="#047857">ブラウザに配る JS（ビルド後）</text>
+<rect x="404" y="32" width="300" height="150" rx="8" fill="#0f172a"/>
+<text x="418" y="58" font-size="12" font-family="Consolas, monospace" fill="#94a3b8">// .next/static/chunks/〜.js</text>
+<text x="418" y="82" font-size="12" font-family="Consolas, monospace" fill="#e2e8f0">const appName =</text>
+<text x="434" y="102" font-size="12" font-family="Consolas, monospace" fill="#fdba74">"MyBookShelf-PUBLIC-123";</text>
+<text x="418" y="132" font-size="12" font-family="Consolas, monospace" fill="#e2e8f0">const secret =</text>
+<text x="434" y="152" font-size="12" font-family="Consolas, monospace" fill="#93c5fd">（値は入らない → undefined）</text>
+<rect x="16" y="198" width="340" height="80" rx="8" fill="#fff7ed" stroke="#f97316"/>
+<text x="30" y="222" font-size="13" font-weight="bold" fill="#c2410c">NEXT_PUBLIC_ が付いている</text>
+<text x="30" y="244" font-size="12" fill="#0f172a">値そのものが JS に書き込まれる。</text>
+<text x="30" y="264" font-size="12" fill="#0f172a">→ 開発者ツールで誰でも読める（公開情報だけ）</text>
+<rect x="364" y="198" width="340" height="80" rx="8" fill="#eff6ff" stroke="#3b82f6"/>
+<text x="378" y="222" font-size="13" font-weight="bold" fill="#1e40af">NEXT_PUBLIC_ が付いていない</text>
+<text x="378" y="244" font-size="12" fill="#0f172a">ブラウザ用の JS には入らない。</text>
+<text x="378" y="264" font-size="12" fill="#0f172a">→ サーバーで動くコードの中だけで使う</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図10-5: NEXT_PUBLIC_ 付きの環境変数は、ビルドの瞬間に「値」へ置き換わって JS に焼き付けられる</div>
+</div>

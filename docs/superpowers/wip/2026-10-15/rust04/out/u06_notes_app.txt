@@ -1,0 +1,8 @@
+   Compiling notes_app v0.1.0 (...\notes_app)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.35s
+     Running `target\debug\notes_app.exe`
+追加: #1 牛乳を買う
+追加: #2 本を返す
+追加: #3 電気代を払う
+ユーザー1のノート数: 2
+#1 の持ち主: 1

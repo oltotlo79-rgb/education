@@ -1,0 +1,10 @@
+import { JSDOM } from "jsdom";
+const dom = new JSDOM("<!doctype html><html><body><div id='root'></div></body></html>", { url: "http://localhost/" });
+const g = globalThis as any;
+g.window = dom.window;
+g.document = dom.window.document;
+g.HTMLElement = dom.window.HTMLElement;
+g.HTMLInputElement = dom.window.HTMLInputElement;
+g.Event = dom.window.Event;
+g.MouseEvent = dom.window.MouseEvent;
+g.IS_REACT_ACT_ENVIRONMENT = true;

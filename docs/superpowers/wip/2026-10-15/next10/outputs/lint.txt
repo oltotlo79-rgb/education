@@ -1,0 +1,10 @@
+
+> book-management@0.1.0 lint
+> eslint
+
+
+C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\next10\book-management\src\components\BookCard.tsx
+  4:7  warning  'unusedMessage' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+✖ 1 problem (0 errors, 1 warning)
+

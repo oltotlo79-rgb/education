@@ -1,0 +1,8 @@
+toggle 2: true
+rename 1: true
+toggle 9: false
+  #1 買い出し done=false
+  #2 掃除 done=true
+rust = 2, is = 2, fun = 1
+draft = 下書き2, history = ["下書き1"]
+exit=0

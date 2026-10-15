@@ -1,0 +1,8 @@
+
+> book-management@0.1.0 prebuild
+> node scripts/check-env.mjs
+
+✖ 次の環境変数が設定されていません:
+  - NEXT_PUBLIC_SUPABASE_URL
+  - NEXT_PUBLIC_SUPABASE_ANON_KEY
+→ 手元なら .env.local、Vercel なら Environment Variables を確認してください

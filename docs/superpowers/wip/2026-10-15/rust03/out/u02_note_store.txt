@@ -1,0 +1,4 @@
+NoteId(1) と NoteId(1) は同じ? true
+store:    #1 買い物 / 牛乳と卵 / done=true
+snapshot: #1 買い物 / 牛乳と卵 / done=false
+exit=0

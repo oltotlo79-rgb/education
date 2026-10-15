@@ -1,0 +1,13 @@
+error[E0502]: cannot borrow `score` as immutable because it is also borrowed as mutable
+ --> src\bin\u03_err_read_while_write.rs:4:24
+  |
+3 |     let writer = &mut score;
+  |                  ---------- mutable borrow occurs here
+4 |     println!("score = {score}");
+  |                        ^^^^^ immutable borrow occurs here
+5 |     *writer += 1;
+  |     ------------ mutable borrow later used here
+
+For more information about this error, try `rustc --explain E0502`.
+error: could not compile `ownership-lab` (bin "u03_err_read_while_write") due to 1 previous error
+exit=101

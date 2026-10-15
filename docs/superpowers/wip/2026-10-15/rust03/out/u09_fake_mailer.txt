@@ -1,0 +1,5 @@
+Ok(())
+Err("メールアドレスが不正です: not-an-email")
+送信件数: 1
+  宛先 alice@example.com: RustNote へようこそ
+exit=0

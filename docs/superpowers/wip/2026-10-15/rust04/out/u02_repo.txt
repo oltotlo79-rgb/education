@@ -1,0 +1,10 @@
+   Compiling design_lab v0.1.0 (...\design_lab)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.64s
+     Running `target\debug\u02_repo.exe`
+Ok(NoteId(1))
+Ok(NoteId(2))
+Err("タイトルが空です")
+Ok(NoteId(3))
+alice のノート: NoteId(1) 牛乳を買う
+alice のノート: NoteId(3) 電気代を払う
+Err("保存に失敗しました: DB に接続できません")

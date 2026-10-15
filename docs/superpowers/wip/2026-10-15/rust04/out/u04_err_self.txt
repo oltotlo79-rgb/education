@@ -1,0 +1,21 @@
+   Compiling design_lab v0.1.0 (...\design_lab)
+error[E0038]: the trait `Exporter` is not dyn compatible
+  --> src\bin\u04_err_self.rs:20:20
+   |
+20 |     let e: Box<dyn Exporter> = Box::new(Csv);
+   |                    ^^^^^^^^ `Exporter` is not dyn compatible
+   |
+note: for a trait to be dyn compatible it needs to allow building a vtable
+      for more information, visit <https://doc.rust-lang.org/reference/items/traits.html#dyn-compatibility>
+  --> src\bin\u04_err_self.rs:4:28
+   |
+ 1 | trait Exporter {
+   |       -------- this trait is not dyn compatible...
+...
+ 4 |     fn duplicate(&self) -> Self;
+   |                            ^^^^ ...because method `duplicate` references the `Self` type in its return type
+   = help: consider moving `duplicate` to another trait
+   = help: only type `Csv` implements `Exporter`; consider using it directly instead.
+
+For more information about this error, try `rustc --explain E0038`.
+error: could not compile `design_lab` (bin "u04_err_self") due to 1 previous error

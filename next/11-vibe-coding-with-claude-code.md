@@ -4,6 +4,99 @@ Claude Codeを使ってNext.jsアプリをバイブコーディング（自然�
 
 この章は完全な初学者向けです。「AIエージェントってそもそも何？」というところから始めて、本格的な開発フローまで一気通貫で解説します。読みながらわからない用語が出てきたら、各セクションの冒頭の用語解説に戻って確認してください。
 
+## この章のゴールと地図
+
+この章を読み終えると、次のことができるようになります。
+
+- Claude Code が「指示 → 計画 → 調べる → 変更する → 確かめる → 報告する」というループで動いていることを、自分の言葉で説明できる
+- あいまいな指示を「目的・場所と範囲・完成条件・確かめ方」がそろった指示に書き直せる
+- 権限設定（Permissions）とプランモード（Plan Mode）を使い、AI に勝手な操作をさせずに作業を進められる
+- Git のブランチとこまめなコミットを「命綱」にして、失敗してもすぐに元へ戻せる
+- CLAUDE.md・Rules・Skills・Hooks・Subagents・MCP のうち「いまどれを使えばいいか」を選べる
+- AI が書いたコードを鵜呑みにせず、差分・型チェック・テストで検証してから採用できる
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 356" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-11-01" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<text x="360" y="18" text-anchor="middle" font-size="12" fill="#475569">上から順に進みます。まず ★ の節を読み、残りは必要になったときに辞書として引きましょう</text>
+<rect x="10" y="32" width="112" height="60" rx="8" fill="#1e40af"/>
+<text x="66" y="56" text-anchor="middle" font-size="12" fill="#dbeafe">STEP 1</text>
+<text x="66" y="77" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">準備</text>
+<rect x="10" y="116" width="112" height="60" rx="8" fill="#c2410c"/>
+<text x="66" y="140" text-anchor="middle" font-size="12" fill="#ffedd5">STEP 2</text>
+<text x="66" y="161" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">設計と土台</text>
+<rect x="10" y="200" width="112" height="60" rx="8" fill="#047857"/>
+<text x="66" y="224" text-anchor="middle" font-size="12" fill="#d1fae5">STEP 3</text>
+<text x="66" y="245" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">開発ループ</text>
+<rect x="10" y="284" width="112" height="60" rx="8" fill="#475569"/>
+<text x="66" y="308" text-anchor="middle" font-size="12" fill="#e2e8f0">いつでも</text>
+<text x="66" y="329" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">困ったら参照</text>
+<line x1="66" y1="92" x2="66" y2="114" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-11-01)"/>
+<line x1="66" y1="176" x2="66" y2="198" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-11-01)"/>
+<rect x="140" y="32" width="126" height="60" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="2.5"/>
+<text x="203" y="57" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">0 前提知識 ★</text>
+<text x="203" y="77" text-anchor="middle" font-size="12" fill="#475569">用語・指示のコツ</text>
+<rect x="288" y="32" width="126" height="60" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.2"/>
+<text x="351" y="57" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">1 全体像</text>
+<text x="351" y="77" text-anchor="middle" font-size="12" fill="#475569">主な機能の一覧</text>
+<rect x="436" y="32" width="126" height="60" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="2.5"/>
+<text x="499" y="57" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">2 環境構築 ★</text>
+<text x="499" y="77" text-anchor="middle" font-size="12" fill="#475569">権限で安全に</text>
+<rect x="584" y="32" width="126" height="60" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.2"/>
+<text x="647" y="57" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">3 初期化</text>
+<text x="647" y="77" text-anchor="middle" font-size="12" fill="#475569">Next.js と Git</text>
+<line x1="266" y1="62" x2="286" y2="62" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-11-01)"/>
+<line x1="414" y1="62" x2="434" y2="62" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-11-01)"/>
+<line x1="562" y1="62" x2="582" y2="62" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-11-01)"/>
+<rect x="140" y="116" width="96" height="60" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="2.5"/>
+<text x="188" y="141" text-anchor="middle" font-size="13" font-weight="700" fill="#c2410c">4 要件定義</text>
+<text x="188" y="161" text-anchor="middle" font-size="12" fill="#475569">Plan Mode ★</text>
+<rect x="258" y="116" width="96" height="60" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="2.5"/>
+<text x="306" y="141" text-anchor="middle" font-size="13" font-weight="700" fill="#c2410c">5 CLAUDE.md</text>
+<text x="306" y="161" text-anchor="middle" font-size="12" fill="#475569">AIへの指示書 ★</text>
+<rect x="376" y="116" width="96" height="60" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="1.2"/>
+<text x="424" y="141" text-anchor="middle" font-size="13" font-weight="700" fill="#c2410c">6 Rules</text>
+<text x="424" y="161" text-anchor="middle" font-size="12" fill="#475569">場所別ルール</text>
+<rect x="494" y="116" width="96" height="60" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="1.2"/>
+<text x="542" y="141" text-anchor="middle" font-size="13" font-weight="700" fill="#c2410c">7 Skills</text>
+<text x="542" y="161" text-anchor="middle" font-size="12" fill="#475569">定型作業</text>
+<rect x="612" y="116" width="96" height="60" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="1.2"/>
+<text x="660" y="141" text-anchor="middle" font-size="13" font-weight="700" fill="#c2410c">8 Subagents</text>
+<text x="660" y="161" text-anchor="middle" font-size="12" fill="#475569">専門の助手</text>
+<line x1="236" y1="146" x2="256" y2="146" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-11-01)"/>
+<line x1="354" y1="146" x2="374" y2="146" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-11-01)"/>
+<line x1="472" y1="146" x2="492" y2="146" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-11-01)"/>
+<line x1="590" y1="146" x2="610" y2="146" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-11-01)"/>
+<rect x="140" y="200" width="175" height="60" rx="8" fill="#ecfdf5" stroke="#10b981" stroke-width="2.5"/>
+<text x="227" y="225" text-anchor="middle" font-size="13" font-weight="700" fill="#047857">9 機能実装 ★</text>
+<text x="227" y="245" text-anchor="middle" font-size="12" fill="#475569">指示→確認→コミット</text>
+<rect x="337" y="200" width="175" height="60" rx="8" fill="#ecfdf5" stroke="#10b981" stroke-width="1.2"/>
+<text x="424" y="225" text-anchor="middle" font-size="13" font-weight="700" fill="#047857">10 テスト</text>
+<text x="424" y="245" text-anchor="middle" font-size="12" fill="#475569">品質を確かめる</text>
+<rect x="534" y="200" width="175" height="60" rx="8" fill="#ecfdf5" stroke="#10b981" stroke-width="1.2"/>
+<text x="621" y="225" text-anchor="middle" font-size="13" font-weight="700" fill="#047857">11 デプロイ</text>
+<text x="621" y="245" text-anchor="middle" font-size="12" fill="#475569">公開前の最終確認</text>
+<line x1="315" y1="230" x2="335" y2="230" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-11-01)"/>
+<line x1="512" y1="230" x2="532" y2="230" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-11-01)"/>
+<rect x="140" y="284" width="570" height="60" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.2"/>
+<text x="425" y="309" text-anchor="middle" font-size="12" fill="#334155">12 Context と Memory　・　13 ショートカット　・　14 Worktrees　・　15 CLI フラグ</text>
+<text x="425" y="331" text-anchor="middle" font-size="12" fill="#334155">16 トラブル対応　・　17 ベストプラクティス　・　18 付録　・　練習問題（章末）</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図11-1: この章の地図。★ の節（0・2・4・5・9）が「最低限ここだけは」の部分です</div>
+</div>
+
+> **ヒント:** この章はとても長いです。Claude Code の機能を網羅した「辞書」の役割も兼ねているためです。初めて読むときは図11-1 の ★ の節を先に読み、残りは「CLAUDE.md って何だっけ？」「MCP を設定したい」と思ったときに引く使い方がおすすめです。
+
+**▼ この章の前提**
+
+- 第1〜10章で作った書籍管理アプリ（Next.js + TypeScript + Supabase）が手元にあること（なくても読めます）
+- ターミナルで `cd` や `npm run dev` を実行したことがあること
+- Git の `git add` / `git commit` を使ったことがあること（第1章で扱いました）
+
+> **注意:** 2〜11節（Phase 0〜9）のプロンプト例は、書籍管理アプリより少し大きい「タスク管理アプリ TaskFlow」を題材にしています。大きなアプリでも同じ進め方が通用することを見せるためです。一方、この章で新しく追加した「NG→OK 比較」「実践ウォークスルー」などの例は、第1〜10章で作った**書籍管理アプリ**を題材にしています。
+
 ---
 
 ## 0. 前提知識: AIアシスタントと一緒にコードを書くって何？
@@ -44,6 +137,43 @@ Claude Codeを使ってNext.jsアプリをバイブコーディング（自然�
 
 > **重要な注意:** バイブコーディングはコードの「品質保証は自分の責任」です。AIは間違いも書きます（前述のハルシネーション）。**生成されたコードを必ず読んで理解する**習慣を捨てないでください。
 
+**▼ たとえ話: あなたは「現場監督」、Claude Code は「腕のいい大工さん」**
+
+家を建てる現場を想像してください。大工さんは図面を読み、材料を切り、道具を使って、驚くほど速く作業を進めてくれます。でも「どんな家を建てるか」「この柱の位置で本当にいいか」を決めて、出来上がりを確認するのは現場監督の仕事です。大工さんに「いい感じの家を建てて」とだけ言えば、腕が良くても、施主の希望と違う家ができてしまいます。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 270" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-11-02" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="20" y="20" width="250" height="170" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<rect x="20" y="20" width="250" height="36" rx="10" fill="#3b82f6"/>
+<rect x="20" y="44" width="250" height="12" fill="#3b82f6"/>
+<text x="145" y="44" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">あなた ＝ 現場監督</text>
+<text x="40" y="84" font-size="13" fill="#1e293b">・何を作るかを決める</text>
+<text x="40" y="110" font-size="13" fill="#1e293b">・指示と制約を伝える</text>
+<text x="40" y="136" font-size="13" fill="#1e293b">・できた物を確かめる</text>
+<text x="40" y="162" font-size="13" fill="#1e293b">・採用かやり直しかを決める</text>
+<rect x="450" y="20" width="250" height="170" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<rect x="450" y="20" width="250" height="36" rx="10" fill="#f97316"/>
+<rect x="450" y="44" width="250" height="12" fill="#f97316"/>
+<text x="575" y="44" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">Claude Code ＝ 腕のいい大工</text>
+<text x="470" y="84" font-size="13" fill="#1e293b">・図面（コード）を読む</text>
+<text x="470" y="110" font-size="13" fill="#1e293b">・材料を加工する（編集）</text>
+<text x="470" y="136" font-size="13" fill="#1e293b">・道具を使う（コマンド）</text>
+<text x="470" y="162" font-size="13" fill="#1e293b">・進み具合を報告する</text>
+<text x="360" y="72" text-anchor="middle" font-size="12" fill="#1e40af">指示・制約・確かめ方</text>
+<line x1="280" y1="82" x2="440" y2="82" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-11-02)"/>
+<text x="360" y="132" text-anchor="middle" font-size="12" fill="#c2410c">計画・変更・報告</text>
+<line x1="440" y1="142" x2="280" y2="142" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-11-02)"/>
+<rect x="20" y="210" width="680" height="44" rx="8" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="360" y="238" text-anchor="middle" font-size="13" font-weight="700" fill="#047857">完成品の責任者はあなた。AI が書いたコードも、読んで理解してから採用します</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図11-2: バイブコーディングの役割分担。手を動かすのは AI、決めて確かめるのは人間</div>
+</div>
+
+この役割分担を忘れて「全部おまかせ」にすると、動くけれど誰も中身を説明できないアプリができあがります。以降の節で紹介するテクニックは、すべて「現場監督として上手に指示し、上手に確かめる」ための道具だと考えてください。
+
 ### 0.1.1 なぜAIに「お願い」だけでなく「文脈」と「制約」を渡すと結果が良くなるのか
 
 これがバイブコーディングの肝です。LLM は確率的に「次に来そうな文字」を選ぶ仕組みなので、入力に含まれる情報が多いほど、より正確で意図に近い答えを出せます。
@@ -51,6 +181,211 @@ Claude Codeを使ってNext.jsアプリをバイブコーディング（自然�
 たとえば「ボタンを作って」と言うだけだと、AIは「どんなボタン？色は？クリックしたら何が起きる？フレームワークは何？」を全部勝手に推測（つまり当てずっぽう）で埋めます。逆に「タスク一覧画面の右上に、Tailwind の bg-blue-600 でスタイリングした追加ボタン。クリックで TaskFormModal を開く。shadcn/ui の Button を使う」と書けば、推測の余地が無くなり、意図どおりのコードが返ってきます。
 
 このため本章では「仕様」「制約」「参考ファイル」「禁止事項」を丁寧にプロンプトに書き込む方法を繰り返し紹介します。
+
+### 0.1.2 指示文の NG→OK：同じお願いでも結果がこう変わる
+
+「具体的に書く」と言われても、何を書けばよいのか迷いますよね。良い指示に入っている要素は、次の図の4つ（＋制約）にほぼ集約できます。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 250" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<text x="360" y="22" text-anchor="middle" font-size="14" font-weight="700" fill="#0f172a">良い指示 ＝ 4つの要素 ＋ 制約</text>
+<rect x="20" y="38" width="160" height="128" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<rect x="20" y="38" width="160" height="34" rx="8" fill="#3b82f6"/>
+<rect x="20" y="62" width="160" height="10" fill="#3b82f6"/>
+<text x="100" y="61" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">① 目的</text>
+<text x="100" y="96" text-anchor="middle" font-size="13" font-weight="700" fill="#0f172a">何のために？</text>
+<text x="100" y="122" text-anchor="middle" font-size="12" fill="#475569">例: 積読の本を</text>
+<text x="100" y="142" text-anchor="middle" font-size="12" fill="#475569">目立たなくしたい</text>
+<rect x="193" y="38" width="160" height="128" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<rect x="193" y="38" width="160" height="34" rx="8" fill="#3b82f6"/>
+<rect x="193" y="62" width="160" height="10" fill="#3b82f6"/>
+<text x="273" y="61" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">② 場所と範囲</text>
+<text x="273" y="96" text-anchor="middle" font-size="13" font-weight="700" fill="#0f172a">どこを・どこまで？</text>
+<text x="273" y="122" text-anchor="middle" font-size="12" fill="#475569">例: StatusBadge.tsx</text>
+<text x="273" y="142" text-anchor="middle" font-size="12" fill="#475569">の設定だけ</text>
+<rect x="366" y="38" width="160" height="128" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<rect x="366" y="38" width="160" height="34" rx="8" fill="#3b82f6"/>
+<rect x="366" y="62" width="160" height="10" fill="#3b82f6"/>
+<text x="446" y="61" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">③ 完成条件</text>
+<text x="446" y="96" text-anchor="middle" font-size="13" font-weight="700" fill="#0f172a">どうなれば完成？</text>
+<text x="446" y="122" text-anchor="middle" font-size="12" fill="#475569">例: ラベルが「積読」</text>
+<text x="446" y="142" text-anchor="middle" font-size="12" fill="#475569">で背景が灰色</text>
+<rect x="539" y="38" width="160" height="128" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<rect x="539" y="38" width="160" height="34" rx="8" fill="#3b82f6"/>
+<rect x="539" y="62" width="160" height="10" fill="#3b82f6"/>
+<text x="619" y="61" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">④ 確かめ方</text>
+<text x="619" y="96" text-anchor="middle" font-size="13" font-weight="700" fill="#0f172a">どう確かめる？</text>
+<text x="619" y="122" text-anchor="middle" font-size="12" fill="#475569">例: npm run lint</text>
+<text x="619" y="142" text-anchor="middle" font-size="12" fill="#475569">がエラーなく通る</text>
+<rect x="20" y="178" width="679" height="30" rx="6" fill="#fff7ed" stroke="#f97316" stroke-width="1.2"/>
+<text x="360" y="198" text-anchor="middle" font-size="12" fill="#c2410c">＋ 制約（使う／使わない技術、触ってはいけないファイル）と参考ファイルを添えると、さらに確実</text>
+<text x="360" y="234" text-anchor="middle" font-size="13" font-weight="700" fill="#047857">そろうほど AI が「推測で埋める部分」が減り、意図どおりの変更になります</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図11-3: 良い指示に入れる4つの要素。迷ったらこの4つが書けているかを確認します</div>
+</div>
+
+実際に、第7章で作った `StatusBadge`（読書ステータスを色付きラベルで表示する部品）を少し変える指示で試してみましょう。
+
+#### 指示文の例1: 「読みたい」バッジを灰色の「積読」に変える
+
+> **▼ この指示文がやること（先に日本語で）:** StatusBadge のうち「読みたい（want_to_read）」の見た目だけを、灰色の「積読（つんどく：買ったまま読んでいない本）」ラベルに変えてもらう指示です。図11-3 の4要素（目的・場所と範囲・完成条件・確かめ方）と制約を、見出し付きで全部書いています。
+
+```text
+src/components/StatusBadge.tsx の statusConfig だけを変更してください。
+
+目的:
+まだ読んでいない本（want_to_read）を、読書中・読了の本より目立たなくしたい。
+
+変更内容:
+- want_to_read のラベルを「読みたい」から「積読」に変える
+- 色を黄色から灰色に変える（背景 bg-gray-100、文字 text-gray-700）
+
+守ること:
+- reading と completed の設定、ほかのファイルは変更しない
+- 新しいライブラリは追加しない
+
+確かめ方:
+- 変更後に npm run lint を実行し、結果を報告してください
+```
+
+**▼ 実行結果（Claude Code が行った変更を `git diff` で表示したもの）**
+
+```diff
+diff --git a/src/components/StatusBadge.tsx b/src/components/StatusBadge.tsx
+index 54f973a..229c542 100644
+--- a/src/components/StatusBadge.tsx
++++ b/src/components/StatusBadge.tsx
+@@ -19,8 +19,8 @@ const statusConfig: Record<
+     textColor: "text-green-800",
+   },
+   want_to_read: {
+-    label: "読みたい",
+-    bgColor: "bg-yellow-100",
+-    textColor: "text-yellow-800",
++    label: "積読",
++    bgColor: "bg-gray-100",
++    textColor: "text-gray-700",
+   },
+ };
+```
+
+```text
+ src/components/StatusBadge.tsx | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+```
+
+差分の下の2行は `git diff --stat`（変更の量だけを表示するコマンド）の結果です。「1ファイル・3行追加・3行削除」と、頼んだ範囲だけが変わったことがひと目で分かります。
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: 1行目で「場所と範囲」を宣言する
+
+```text
+src/components/StatusBadge.tsx の statusConfig だけを変更してください。
+```
+
+- ファイル名と、その中のどの部分（`statusConfig`）を触るのかを最初に書いています。
+- AI はプロジェクト全体を探し回らずに済み、関係ないファイルを書き換える心配も減ります。
+- 「だけ」という言葉が、範囲を絞る一番かんたんな道具です。
+
+##### 解説2: 「目的」は AI が迷ったときの道しるべ
+
+```text
+目的:
+まだ読んでいない本（want_to_read）を、読書中・読了の本より目立たなくしたい。
+```
+
+- 変更内容だけでなく「なぜ変えるのか」を書くと、指示に書いていない細かい判断（どの灰色にするか等）を、目的に沿った方向で決めてくれます。
+- 人間の同僚にお願いするときと同じで、理由が分かっているほうが仕事の質は上がります。
+
+##### 解説3: 「守ること」で余計な親切を止める
+
+```text
+守ること:
+- reading と completed の設定、ほかのファイルは変更しない
+- 新しいライブラリは追加しない
+```
+
+- AI は気を利かせて「ついでにアイコンも付けておきました」「ほかのバッジの色も統一しました」と範囲を広げがちです。
+- 触ってほしくない場所を先に書いておくと、差分が小さくなり、あなたのレビューも楽になります。
+
+##### 解説4: 「確かめ方」まで頼むと、AI が自分で検証してから報告する
+
+```text
+確かめ方:
+- 変更後に npm run lint を実行し、結果を報告してください
+```
+
+- `npm run lint` は、コードの書き方の誤りを機械的にチェックするコマンドです（第6章でプロジェクトを作るときに ESLint を有効にしました）。
+- 確かめ方を伝えておくと、Claude Code は変更後にこのコマンドを実行し、エラーが出れば自分で直してから報告します。公式のベストプラクティスでも「Claude が自分の作業を確かめる手段（テスト・ビルド・スクリーンショットなど）を渡す」ことが最も効果の高いコツとして挙げられています。
+
+> **用語: lint（リント）:** プログラムを実行せずに、書き方の誤りや危ないパターンを見つけてくれるチェックのこと。ESLint はその代表的な道具です。
+
+##### 解説5: 差分（diff）の読み方
+
+```diff
+   want_to_read: {
+-    label: "読みたい",
++    label: "積読",
+```
+
+- 先頭が `-` の行は「消えた行」、`+` の行は「増えた行」、記号のない行は変わっていない前後の行（文脈）です。
+- `@@ -19,8 +19,8 @@` は「変更前の19行目から8行ぶん、変更後の19行目から8行ぶん」という場所の目印です。
+- AI の仕事の確認は、この差分を読むことから始まります。
+
+> **つまずきポイント①: 「いい感じに」は AI にとって一番むずかしい注文**
+> 「分かりやすく」「いい感じに」「きれいに」は、人によって意味が違う言葉です。AI はその意味を自分で推測するため、アイコンを追加したり、関係ないファイルまで整えたりと、あなたの想像と違う変更を返しがちです。図11-3 の4要素に分解して書き直しましょう。
+
+**NG（あいまい）:**
+
+```text
+ステータスの表示をもっと分かりやすくして
+```
+
+**OK（具体的）:**
+
+```text
+src/components/StatusBadge.tsx の statusConfig だけを変更してください。
+want_to_read のラベルを「積読」に、色を灰色（bg-gray-100 / text-gray-700）に変えてください。
+ほかのステータスとほかのファイルは変更しないでください。
+```
+
+> **つまずきポイント②: 確かめ方を伝えないと「たぶん動きます」で終わる**
+> 確かめ方を書かないと、Claude Code はコードを書いた時点で「実装しました」と報告することがあります。実際に動くかどうかは、あなたが後で気づくことになります。最初から「何をもって完成とするか」と「それを確かめるコマンド」を渡しましょう。
+
+**NG（確かめ方がない）:**
+
+```text
+書籍一覧に並べ替え機能を作って
+```
+
+**OK（確かめ方つき）:**
+
+```text
+src/lib/sortBooks.ts に、書籍の配列を並べ替える関数 sortBooks を作ってください。
+並べ方は「タイトル順」「評価の高い順」「新しい順」の3種類です。
+同じフォルダに Vitest のテスト sortBooks.test.ts も作り、
+npx vitest run を実行して、全テストが通るまで修正してから報告してください。
+```
+
+> **つまずきポイント③: 範囲を絞らないと、差分が読み切れなくなる**
+> 「全体をリファクタリングして」のような広い指示は、数十ファイルにわたる大きな差分を生みます。どこが変わったのか追いきれず、レビューが形だけになってしまいます。1回の指示で変えるのは、自分が差分を読み切れる量（目安: 数ファイル・百行程度まで）にしましょう。
+
+**NG（範囲が広すぎる）:**
+
+```text
+コード全体をきれいにリファクタリングして
+```
+
+**OK（範囲を絞る）:**
+
+```text
+src/components/BookCard.tsx だけを対象に、読みやすさのための整理をしてください。
+画面の見た目と動作は変えないでください。
+変更後に npm run lint と npx tsc --noEmit を実行して結果を報告し、そこで止まってください。
+```
+
+> **用語: リファクタリング:** プログラムの動作を変えずに、中身（書き方や構造）を整理して読みやすくすること。
 
 ### 0.2 Claude Code でできることのイメージ
 
@@ -94,6 +429,164 @@ Claude Codeを使ってNext.jsアプリをバイブコーディング（自然�
 | `Bash` | シェルコマンドを実行（`npm install` など） |
 | `Agent` / `Task` | サブエージェントを起動して別タスクに委任 |
 
+> **ヒント:** Windows で Git for Windows が入っていない場合、Claude Code は `Bash` の代わりに `PowerShell` ツールでコマンドを実行します。役割は同じ「コマンドを実行する道具」です。
+
+#### Claude Code の作業ループ（指示 → 計画 → 調べる → 変更 → 確かめる → 報告）
+
+Claude Code は、あなたの指示を1回で「えいっ」と仕上げているわけではありません。上の表のツールを何度も使い分けながら、次の図のようなループを回しています。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 300" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-11-04" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="30" y="30" width="180" height="64" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="120" y="56" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">① あなたが指示する</text>
+<text x="120" y="77" text-anchor="middle" font-size="12" fill="#475569">目的・範囲・確かめ方</text>
+<rect x="270" y="30" width="180" height="64" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="360" y="56" text-anchor="middle" font-size="13" font-weight="700" fill="#c2410c">② 計画を立てる</text>
+<text x="360" y="77" text-anchor="middle" font-size="12" fill="#475569">やることを分解する</text>
+<rect x="510" y="30" width="180" height="64" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="600" y="56" text-anchor="middle" font-size="13" font-weight="700" fill="#c2410c">③ 調べる</text>
+<text x="600" y="77" text-anchor="middle" font-size="12" fill="#475569">Read・Grep でコードを読む</text>
+<rect x="510" y="180" width="180" height="64" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="600" y="206" text-anchor="middle" font-size="13" font-weight="700" fill="#c2410c">④ 変更・実行する</text>
+<text x="600" y="227" text-anchor="middle" font-size="12" fill="#475569">Edit・Bash を使う</text>
+<rect x="270" y="180" width="180" height="64" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="360" y="206" text-anchor="middle" font-size="13" font-weight="700" fill="#c2410c">⑤ 確かめる</text>
+<text x="360" y="227" text-anchor="middle" font-size="12" fill="#475569">テスト・lint・型チェック</text>
+<rect x="30" y="180" width="180" height="64" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="120" y="206" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">⑥ 報告 → あなたが確認</text>
+<text x="120" y="227" text-anchor="middle" font-size="12" fill="#475569">差分を読んで判断する</text>
+<line x1="210" y1="62" x2="268" y2="62" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-11-04)"/>
+<line x1="450" y1="62" x2="508" y2="62" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-11-04)"/>
+<line x1="600" y1="94" x2="600" y2="178" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-11-04)"/>
+<line x1="510" y1="212" x2="452" y2="212" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-11-04)"/>
+<line x1="270" y1="212" x2="212" y2="212" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-11-04)"/>
+<line x1="120" y1="180" x2="120" y2="96" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-11-04)"/>
+<path d="M420,180 L536,96" fill="none" stroke="#c2410c" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#ar-11-04)"/>
+<text x="300" y="136" text-anchor="middle" font-size="12" fill="#c2410c">③→④→⑤ は、うまくいくまで</text>
+<text x="300" y="154" text-anchor="middle" font-size="12" fill="#c2410c">Claude が自動で何度も回します</text>
+<rect x="612" y="168" width="76" height="22" rx="11" fill="#10b981"/>
+<text x="650" y="184" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">許可確認</text>
+<rect x="150" y="268" width="14" height="14" rx="3" fill="#eff6ff" stroke="#3b82f6"/>
+<text x="170" y="280" font-size="12" fill="#475569">あなた（人間）</text>
+<rect x="290" y="268" width="14" height="14" rx="3" fill="#fff7ed" stroke="#f97316"/>
+<text x="310" y="280" font-size="12" fill="#475569">Claude Code（AI）</text>
+<rect x="450" y="268" width="14" height="14" rx="3" fill="#10b981"/>
+<text x="470" y="280" font-size="12" fill="#475569">あなたの許可（設定しだい）</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図11-4: Claude Code の作業ループ。人間が関わるのは①と⑥、そして④の許可確認です</div>
+</div>
+
+ループの各段階で、あなたにできることを整理しておきます。
+
+| 段階 | Claude Code がしていること | あなたにできること |
+|------|--------------------------|------------------|
+| ① 指示 | あなたの文章を読む | 目的・場所と範囲・完成条件・確かめ方を書く（図11-3） |
+| ② 計画 | 手順を分解し、TODO リストにする | 大きな作業ではプランモードで計画だけ先に出させる（4節） |
+| ③ 調べる | `Read` / `Grep` / `Glob` で関係するコードを読む | 参考ファイルを `@ファイル名` で教えて探す手間を省く |
+| ④ 変更・実行 | `Edit` / `Write` / `Bash` でファイルを変えたりコマンドを打つ | 許可確認の画面で中身を読んでから許可する（下の図11-5） |
+| ⑤ 確かめる | テストや lint を実行し、失敗したら③に戻って直す | 「どのコマンドで確かめるか」を指示に書いておく |
+| ⑥ 報告 | 何をしたかをまとめて伝える | `git diff` で差分を読み、採用するか決める（0.4.1） |
+
+> **ヒント:** ループの途中でも、`Esc` キーを押せば Claude Code の作業をその場で止められます。「あ、方向が違う」と思ったら、早めに止めて指示を出し直すのがコツです（公式ドキュメントでも「軌道がずれたと気づいたらすぐに修正する」ことが推奨されています）。
+
+#### 画面イメージ: 「このコマンドを実行していい？」と聞かれたら
+
+④の段階で、Claude Code はファイルの編集やコマンドの実行の前に、あなたの許可を求めることがあります（どの操作で聞かれるかは、2-2 の権限設定と 2-3 のモードで決まります）。ターミナルでは、だいたい次のように表示されます。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 380" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<rect x="10" y="10" width="470" height="360" rx="8" fill="#0f172a"/>
+<rect x="10" y="10" width="470" height="28" rx="8" fill="#334155"/>
+<rect x="10" y="30" width="470" height="8" fill="#334155"/>
+<circle cx="28" cy="24" r="5" fill="#94a3b8"/>
+<circle cx="44" cy="24" r="5" fill="#94a3b8"/>
+<circle cx="60" cy="24" r="5" fill="#94a3b8"/>
+<text x="245" y="29" text-anchor="middle" font-size="12" fill="#e2e8f0">ターミナル — my-books-app</text>
+<g font-family="Consolas, Menlo, monospace" font-size="12">
+<text x="24" y="62" fill="#e2e8f0">&gt; npm run lint を実行して、エラーがあれば教えて</text>
+<text x="24" y="88" fill="#fdba74">● Bash(npm run lint)</text>
+<rect x="22" y="100" width="446" height="214" rx="6" fill="none" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="36" y="122" fill="#93c5fd" font-weight="700">Bash command</text>
+<text x="50" y="146" fill="#f8fafc">npm run lint</text>
+<text x="50" y="166" fill="#94a3b8">Run ESLint to check the code</text>
+<text x="36" y="190" fill="#cbd5e1">This command requires approval</text>
+<text x="36" y="214" fill="#f8fafc" font-weight="700">Do you want to proceed?</text>
+<text x="36" y="238" fill="#6ee7b7" font-weight="700">❯</text>
+<text x="50" y="238" fill="#6ee7b7" font-weight="700">Yes</text>
+<text x="50" y="258" fill="#e2e8f0">Yes, and don't ask again for: npm run lint *</text>
+<text x="50" y="278" fill="#e2e8f0">No</text>
+<text x="36" y="302" fill="#94a3b8">Esc to cancel · Tab to amend</text>
+<text x="24" y="344" fill="#94a3b8">⏸ manual mode on</text>
+</g>
+<line x1="472" y1="58" x2="490" y2="58" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="3 3"/>
+<line x1="472" y1="84" x2="490" y2="100" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="3 3"/>
+<line x1="472" y1="150" x2="490" y2="160" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="3 3"/>
+<line x1="472" y1="256" x2="490" y2="250" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="3 3"/>
+<line x1="472" y1="340" x2="490" y2="334" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="3 3"/>
+<circle cx="502" cy="54" r="10" fill="#f97316"/>
+<text x="502" y="58" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">1</text>
+<text x="518" y="54" font-size="13" font-weight="700" fill="#0f172a">あなたの指示</text>
+<text x="518" y="72" font-size="12" fill="#475569">入力欄に日本語で書いたもの</text>
+<circle cx="502" cy="100" r="10" fill="#f97316"/>
+<text x="502" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">2</text>
+<text x="518" y="100" font-size="13" font-weight="700" fill="#0f172a">使おうとしているツール</text>
+<text x="518" y="118" font-size="12" fill="#475569">Bash ＝ コマンドの実行</text>
+<circle cx="502" cy="160" r="10" fill="#f97316"/>
+<text x="502" y="164" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">3</text>
+<text x="518" y="160" font-size="13" font-weight="700" fill="#0f172a">実行する中身と説明</text>
+<text x="518" y="178" font-size="12" fill="#475569">ここを必ず読んでから選ぶ</text>
+<circle cx="502" cy="250" r="10" fill="#f97316"/>
+<text x="502" y="254" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">4</text>
+<text x="518" y="250" font-size="13" font-weight="700" fill="#0f172a">あなたの返事</text>
+<text x="518" y="268" font-size="12" fill="#475569">↑↓で選んで Enter</text>
+<circle cx="502" cy="334" r="10" fill="#f97316"/>
+<text x="502" y="338" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">5</text>
+<text x="518" y="334" font-size="13" font-weight="700" fill="#0f172a">いまのモード</text>
+<text x="518" y="352" font-size="12" fill="#475569">Shift+Tab で切り替え</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図11-5: 画面イメージ（Bash コマンドの許可確認）。文言や並びは Claude Code のバージョンによって少し変わります</div>
+</div>
+
+選択肢の意味は次のとおりです。
+
+| 選択肢 | 意味 | どんなときに選ぶ？ |
+|--------|------|------------------|
+| `Yes` | 今回だけ許可する | 中身を読んで問題ないとき（基本はこれ） |
+| `Yes, and don't ask again for: …` | 同じ種類のコマンドを今後は聞かずに許可する | `npm run lint` のように安全で何度も使うコマンド |
+| `No` | 実行させない | 中身が意図と違う、危なそう、よく分からないとき |
+
+- 「don't ask again」を選ぶと、Bash コマンドの場合は許可ルールが `.claude/settings.local.json` に保存され、次回以降のセッションでも有効になります。ファイル編集の許可は、そのセッションが終わるまでだけ有効です。
+- `Yes` か `No` にカーソルを合わせて `Tab` を押すと、コメント欄が開きます。`No` と一緒に「`npm run build` ではなく `npm run lint` だけにして」のように理由を書くと、Claude はそれを踏まえて作業を続けます。
+- 自動モード（auto mode）が使える環境では、`Yes, and switch to auto mode`（許可して自動モードに切り替える）という選択肢が増えることがあります。慣れるまでは選ばないほうが安心です（2-3 で説明します）。
+
+> **つまずきポイント④: 中身を読まずに Enter を連打してしまう**
+> 許可確認が何度も出ると、つい中身を見ずに `Yes` を押したくなります。でもこれは、現場監督が図面を見ずにハンコを押すのと同じです。読まずに許可するくらいなら、安全なコマンドだけを最初から `allow` に登録して（2-2）、確認の回数そのものを減らしましょう。
+
+**NG（読まずに許可）:** 次の画面で、何も考えずに `Yes` のまま Enter を押してしまう。リモートの履歴が強制的に上書きされ、チームの変更が消えることがあります。
+
+```text
+Bash command
+  git push --force origin main
+Do you want to proceed?
+❯ Yes
+  No
+```
+
+**OK（読んでから判断）:** コマンドを読み、`No` を選んで `Tab` でコメント欄を開き、「push は私が自分でやるので実行しないでください」と書いてから Enter を押す。
+
+```text
+Bash command
+  git push --force origin main
+Do you want to proceed?
+  Yes
+❯ No
+```
+
+2-2 の設定で `git push --force` を `deny`（禁止）に入れておけば、この確認画面すら出ずにブロックされます。「危ない操作は設定で止める・それ以外は読んでから許可する」の二段構えが安全です。
+
 ### 0.3 まず触ってみる: 最小コマンド集
 
 | やりたいこと | 入力するコマンド/操作 |
@@ -103,9 +596,71 @@ Claude Codeを使ってNext.jsアプリをバイブコーディング（自然�
 | プランモード切替 | `Shift+Tab` (読み取り専用で計画だけ立てる) |
 | 設定画面を開く | `/config` |
 | ヘルプ | `/help` |
-| 終了 | `/exit` または `Ctrl+D` |
+| 終了 | `/exit` または `Ctrl+D` を2回 |
 
 `/help` や `/clear` のように「スラッシュ `/` で始まるコマンド」を **スラッシュコマンド** と呼びます。チャット欄にメッセージを送るのではなく、Claude Code 自体に対する操作命令を表します。スラッシュコマンドは Tab キーで補完できます。
+
+**▼ 慣れてきたら覚えたい操作（2026年10月時点）**
+
+| やりたいこと | 入力するコマンド/操作 |
+|------------|----------------------|
+| 作業をその場で止める | `Esc` |
+| 直前の状態に巻き戻す | `Esc` を2回（入力欄が空のとき）または `/rewind` |
+| プロジェクト用の CLAUDE.md の下書きを作らせる | `/init` |
+| コンテキスト（AI の作業机）の使用量を見る | `/context` |
+| 許可ルール（allow / deny）を確認・編集する | `/permissions` |
+| 使うモデルを変える | `/model` |
+| 計画だけ立ててもらう（1回だけプランモード） | `/plan 計画してほしい内容` |
+| 使用量・料金の目安を見る | `/usage`（`/cost` も同じ） |
+
+#### 入力欄で使う3つの記号: `/`・`@`・`!`
+
+入力欄の先頭や途中に記号を書くと、ふつうの文章とは違う意味になります。
+
+| 記号 | 意味 | 例 |
+|------|------|-----|
+| `/` | スラッシュコマンド（Claude Code への操作命令）やスキルを呼ぶ | `/clear` |
+| `@` | ファイルを指定して、その中身を読ませる | `@src/components/BookCard.tsx を読んで説明して` |
+| `!` | 行頭に書くと、AI を通さずにそのままシェルコマンドを実行する | `!git status` |
+
+#### 入力例: `@` と `!` を使って質問する
+
+> **▼ この入力例がやること（先に日本語で）:** 1行目は `!` を使い、AI を通さずに自分で `git status` を実行して状態を確認します。2行目は `@` でファイルを指定して、その部品の役割を説明してもらいます。どちらも「何を見てほしいか」をはっきりさせる工夫です。
+
+```text
+!git status
+```
+
+```text
+@src/components/StatusBadge.tsx の statusConfig が何をしているか、初心者向けに3行で説明して
+```
+
+**▼ 実行結果（1行目の `!git status` の出力例。変更が無いとき）**
+
+```text
+On branch main
+nothing to commit, working tree clean
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: `!` はシェルの直通窓口
+
+```text
+!git status
+```
+
+- `!` で始めた行は Claude に送られず、その場でコマンドとして実行されます。結果は会話にも残るので、続けて「この状態で作業を始めて」と頼めます。
+- 自分で状態を確認したいだけのときに、ターミナルを切り替えずに済みます。
+
+##### 解説2: `@` は「このファイルを見て」の指さし
+
+```text
+@src/components/StatusBadge.tsx の statusConfig が…
+```
+
+- `@` に続けてファイルのパスを書くと、そのファイルの中身が会話に読み込まれます。`@` を入力するとファイル名の候補が出るので、Tab で補完できます。
+- 「どのファイルの話か」を AI に探させずに済むので、速く、正確になります。
 
 ### 0.4 安全に使うための基本ルール
 
@@ -115,6 +670,233 @@ Claude Codeを使ってNext.jsアプリをバイブコーディング（自然�
 4. **API キーや秘密情報を AI に直接見せない** — `.env.local` や `git-ignore` を活用。AIに `.env` の中身を「読んで」と頼んでも答えてくれますが、その内容が会話履歴に残るため漏えいリスクが上がります。
 5. **`git diff` や `pwd` で自分の状態を確認する** — 「いま自分はどのブランチにいて」「どのファイルが変更中で」「どこのディレクトリにいるか」を把握しないまま AI に指示を出すと、思わぬところに変更が入ってしまいます。
 6. **AIに自動でコミット・プッシュさせない** — コミット内容は人間が `git diff` で確認してから push しましょう。AI に直接 `git push` を実行させるのは原則禁止です。
+
+### 0.4.1 Git を命綱にする: ブランチ → 差分を読む → 小さくコミット → だめなら戻す
+
+上のルール1・5・6を、実際の手順にまとめたのが次の図です。登山にたとえると、Git のコミットは「岩に打ち込む杭」です。杭をこまめに打っておけば、足を滑らせても（AI が変な変更をしても）、直前の杭まで落ちるだけで済みます。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 300" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-11-06" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<line x1="30" y1="60" x2="690" y2="60" stroke="#64748b" stroke-width="3"/>
+<text x="80" y="44" font-size="12" fill="#475569">main（いつも動く状態を保つ）</text>
+<circle cx="60" cy="60" r="9" fill="#ffffff" stroke="#64748b" stroke-width="3"/>
+<path d="M60,60 C95,60 95,130 130,130 L570,130 C605,130 605,60 640,60" fill="none" stroke="#3b82f6" stroke-width="3"/>
+<circle cx="200" cy="130" r="9" fill="#ffffff" stroke="#3b82f6" stroke-width="3"/>
+<circle cx="320" cy="130" r="9" fill="#ffffff" stroke="#3b82f6" stroke-width="3"/>
+<circle cx="440" cy="130" r="9" fill="#ffffff" stroke="#3b82f6" stroke-width="3"/>
+<text x="200" y="114" text-anchor="middle" font-size="12" fill="#1e40af">① 関数を追加</text>
+<text x="320" y="114" text-anchor="middle" font-size="12" fill="#1e40af">② テストを追加</text>
+<text x="440" y="114" text-anchor="middle" font-size="12" fill="#1e40af">③ 画面につなぐ</text>
+<text x="140" y="158" font-size="12" fill="#1e40af">作業用ブランチ feature/sort-books</text>
+<path d="M440,130 L500,176" fill="none" stroke="#c2410c" stroke-width="2" stroke-dasharray="5 4"/>
+<line x1="498" y1="174" x2="514" y2="190" stroke="#c2410c" stroke-width="2.5"/>
+<line x1="514" y1="174" x2="498" y2="190" stroke="#c2410c" stroke-width="2.5"/>
+<text x="506" y="210" text-anchor="middle" font-size="12" fill="#c2410c">失敗した変更は git restore で捨てる</text>
+<circle cx="640" cy="60" r="10" fill="#10b981" stroke="#047857" stroke-width="2"/>
+<text x="640" y="44" text-anchor="middle" font-size="12" fill="#047857">確認できたらマージ</text>
+<rect x="20" y="226" width="155" height="64" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.2"/>
+<text x="97" y="250" text-anchor="middle" font-size="13" font-weight="700" fill="#0f172a">① ブランチを切る</text>
+<text x="97" y="274" text-anchor="middle" font-size="12" font-family="Consolas, Menlo, monospace" fill="#1e40af">git switch -c 名前</text>
+<rect x="195" y="226" width="155" height="64" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.2"/>
+<text x="272" y="250" text-anchor="middle" font-size="13" font-weight="700" fill="#0f172a">② 差分を読む</text>
+<text x="272" y="274" text-anchor="middle" font-size="12" font-family="Consolas, Menlo, monospace" fill="#1e40af">git status / diff</text>
+<rect x="370" y="226" width="155" height="64" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.2"/>
+<text x="447" y="250" text-anchor="middle" font-size="13" font-weight="700" fill="#0f172a">③ 小さくコミット</text>
+<text x="447" y="274" text-anchor="middle" font-size="12" font-family="Consolas, Menlo, monospace" fill="#1e40af">git add → commit</text>
+<rect x="545" y="226" width="155" height="64" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.2"/>
+<text x="622" y="250" text-anchor="middle" font-size="13" font-weight="700" fill="#0f172a">④ だめなら戻す</text>
+<text x="622" y="274" text-anchor="middle" font-size="12" font-family="Consolas, Menlo, monospace" fill="#1e40af">git restore ファイル</text>
+<line x1="175" y1="258" x2="193" y2="258" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-11-06)"/>
+<line x1="350" y1="258" x2="368" y2="258" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-11-06)"/>
+<line x1="525" y1="258" x2="543" y2="258" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-11-06)"/>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図11-6: Git を命綱にした進め方。main は触らず、作業用ブランチで小さな杭（コミット）を打ちながら進む</div>
+</div>
+
+- **ブランチを切る理由**: `main` ブランチを「いつでも動く状態」に保つためです。AI の作業はすべて作業用ブランチで行い、確認が済んでから `main` に取り込みます（マージ）。
+- **差分を読む理由**: AI は頼んでいないファイルまで触ることがあります。`git status` で「どのファイルが変わったか」、`git diff` で「どう変わったか」を毎回確かめます。
+- **小さくコミットする理由**: 1つの機能（または1つの小さな変更）ごとにコミットしておくと、失敗したときに「その1つだけ」を戻せます。
+
+#### Git で安全に進める一連のコマンド
+
+> **▼ このコードがやること（先に日本語で）:** 書籍アプリに並べ替え関数を追加する作業を、図11-6 の①〜④の順で進めるコマンドです。作業用ブランチを作り、Claude Code が作業した後に「何が変わったか」を確かめ、頼んでいない変更を元に戻し、頼んだ変更だけをコミットします。
+
+```bash
+# 作業前: 未コミットの変更が無いことを確かめる（何も表示されなければOK）
+git status --short
+# ① 作業用ブランチを作って、そこへ移動する
+git switch -c feature/sort-books
+
+# （ここで Claude Code に「sortBooks 関数とテストを作って」と頼む）
+
+# ② どのファイルが変わったかを一覧で見る
+git status --short
+# ② 既存ファイルの変更量と中身を見る
+git diff --stat
+git diff
+# ④ 頼んでいない変更（BookCard.tsx）を元に戻す
+git restore src/components/BookCard.tsx
+# 戻ったことを確かめる
+git status --short
+# ③ 頼んだ2ファイルだけをステージしてコミットする
+git add src/lib/sortBooks.ts src/lib/sortBooks.test.ts
+git commit -m "feat: 書籍の並べ替え関数 sortBooks を追加"
+# 履歴を確かめる
+git log --oneline
+```
+
+**▼ 実行結果**
+
+```text
+$ git status --short
+$ git switch -c feature/sort-books
+Switched to a new branch 'feature/sort-books'
+$ git status --short
+ M src/components/BookCard.tsx
+?? src/lib/sortBooks.test.ts
+?? src/lib/sortBooks.ts
+$ git diff --stat
+ src/components/BookCard.tsx | 1 +
+ 1 file changed, 1 insertion(+)
+$ git diff
+diff --git a/src/components/BookCard.tsx b/src/components/BookCard.tsx
+index 784951d..80ea6ae 100644
+--- a/src/components/BookCard.tsx
++++ b/src/components/BookCard.tsx
+@@ -1,3 +1,4 @@
+ export default function BookCard() {
++  // TODO: 並べ替えボタンを置く
+   return null;
+ }
+$ git restore src/components/BookCard.tsx
+$ git status --short
+?? src/lib/sortBooks.test.ts
+?? src/lib/sortBooks.ts
+$ git add src/lib/sortBooks.ts src/lib/sortBooks.test.ts
+$ git commit -m "feat: 書籍の並べ替え関数 sortBooks を追加"
+[feature/sort-books 6c09cc4] feat: 書籍の並べ替え関数 sortBooks を追加
+ 2 files changed, 63 insertions(+)
+ create mode 100644 src/lib/sortBooks.test.ts
+ create mode 100644 src/lib/sortBooks.ts
+$ git log --oneline
+6c09cc4 feat: 書籍の並べ替え関数 sortBooks を追加
+6f93c4b feat: 書籍カードを作成
+```
+
+（説明のため、BookCard.tsx を最小限の中身にした練習用リポジトリで実行した結果です。コミットの ID（`6c09cc4` など）は実行するたびに変わります。Windows では `LF will be replaced by CRLF` という改行コードの警告が出ることがありますが、エラーではありません。）
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: `git status --short` の記号を読む
+
+```text
+ M src/components/BookCard.tsx
+?? src/lib/sortBooks.test.ts
+```
+
+- `M` は Modified（既存ファイルが変更された）、`??` は Untracked（Git がまだ知らない新しいファイル）という意味です。
+- 頼んだのは「sortBooks の新規作成」だけなのに `M src/components/BookCard.tsx` が出ています。これが「頼んでいない変更」を見つける一番かんたんな方法です。
+
+##### 解説2: `git diff` は新しいファイルを表示しない
+
+```text
+$ git diff --stat
+ src/components/BookCard.tsx | 1 +
+```
+
+- `git diff` が表示するのは、Git がすでに知っているファイルの変更だけです。新しく作られた `sortBooks.ts` は表示されません。
+- そのため、まず `git status` で全体を見てから、`git diff` で中身を見る、という順番が大切です。新しいファイルの中身は、エディタで開くか `git add` した後に `git diff --staged` で確認できます。
+
+##### 解説3: `git restore` で1ファイルだけ元に戻す
+
+```bash
+git restore src/components/BookCard.tsx
+```
+
+- 指定したファイルを、最後のコミットの状態に戻します。ほかのファイル（新しく作った sortBooks.ts など）には影響しません。
+- **注意:** 戻した変更は取り消せません。戻す前に `git diff` で「本当に要らない変更か」を確かめましょう。
+
+##### 解説4: `git add` はファイルを指定する
+
+```bash
+git add src/lib/sortBooks.ts src/lib/sortBooks.test.ts
+git commit -m "feat: 書籍の並べ替え関数 sortBooks を追加"
+```
+
+- `git add .`（全部まとめて）ではなく、コミットしたいファイルを名指しすると、紛れ込んだ変更をコミットしてしまう事故を防げます。
+- コミットメッセージの `feat:` は「機能追加」を表す接頭辞です（5-4 の CLAUDE.md の Git ルールも参照）。
+
+> **つまずきポイント⑤: AI の変更を溜めこんで、まとめて1つの巨大コミットにする**
+> 何時間も AI に作業させてから `git add .` で全部まとめてコミットすると、後で「この不具合はどの変更のせい？」と調べるのが非常に大変になります。戻したいときも、良い変更まで一緒に戻すしかなくなります。1つの指示が終わって確認できたら、その場でコミットしましょう。
+
+**NG（溜めこんで全部まとめる）:**
+
+```bash
+# 一日の作業を最後にまとめてコミットしてしまう
+git add .
+git commit -m "いろいろ修正"
+```
+
+**OK（1つ確認できたら1コミット）:**
+
+```bash
+# 並べ替え関数とテストが通ったので、その2ファイルだけコミット
+git add src/lib/sortBooks.ts src/lib/sortBooks.test.ts
+git commit -m "feat: 書籍の並べ替え関数 sortBooks を追加"
+# 次に画面へつなぐ変更を確認できたら、それだけをコミット
+git add src/components/BookList.tsx
+git commit -m "feat: 書籍一覧に並べ替えボタンを追加"
+```
+
+### 0.4.2 巻き戻しの3段階: Esc・/rewind・Git
+
+「あ、まずい」と思ったときに使える道具は3つあります。軽いものから順に並べると次のとおりです。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 236" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-11-07" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<text x="20" y="22" font-size="12" fill="#475569">その場で止める</text>
+<text x="700" y="22" text-anchor="end" font-size="12" fill="#475569">確実に戻す</text>
+<line x1="112" y1="18" x2="622" y2="18" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-11-07)"/>
+<rect x="20" y="36" width="212" height="150" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<rect x="20" y="36" width="212" height="34" rx="10" fill="#3b82f6"/>
+<rect x="20" y="60" width="212" height="10" fill="#3b82f6"/>
+<text x="126" y="59" text-anchor="middle" font-size="13" font-weight="700" font-family="Consolas, Menlo, monospace" fill="#ffffff">Esc</text>
+<text x="126" y="96" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">作業を止める</text>
+<text x="126" y="122" text-anchor="middle" font-size="12" fill="#475569">いま動いている作業を</text>
+<text x="126" y="142" text-anchor="middle" font-size="12" fill="#475569">その場で中断する</text>
+<text x="126" y="162" text-anchor="middle" font-size="12" fill="#c2410c">（変更済みの分は残る）</text>
+<rect x="254" y="36" width="212" height="150" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<rect x="254" y="36" width="212" height="34" rx="10" fill="#f97316"/>
+<rect x="254" y="60" width="212" height="10" fill="#f97316"/>
+<text x="360" y="59" text-anchor="middle" font-size="13" font-weight="700" font-family="Consolas, Menlo, monospace" fill="#ffffff">Esc×2 / /rewind</text>
+<text x="360" y="96" text-anchor="middle" font-size="13" font-weight="700" fill="#c2410c">会話とコードを巻き戻す</text>
+<text x="360" y="122" text-anchor="middle" font-size="12" fill="#475569">Claude が編集したファイルと</text>
+<text x="360" y="142" text-anchor="middle" font-size="12" fill="#475569">会話を、指定した時点へ戻す</text>
+<text x="360" y="162" text-anchor="middle" font-size="12" fill="#c2410c">（コマンドでの変更は戻らない）</text>
+<rect x="488" y="36" width="212" height="150" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<rect x="488" y="36" width="212" height="34" rx="10" fill="#10b981"/>
+<rect x="488" y="60" width="212" height="10" fill="#10b981"/>
+<text x="594" y="59" text-anchor="middle" font-size="13" font-weight="700" font-family="Consolas, Menlo, monospace" fill="#ffffff">git restore / revert</text>
+<text x="594" y="96" text-anchor="middle" font-size="13" font-weight="700" fill="#047857">Git の記録で戻す</text>
+<text x="594" y="122" text-anchor="middle" font-size="12" fill="#475569">コミットした地点へなら</text>
+<text x="594" y="142" text-anchor="middle" font-size="12" fill="#475569">いつでも確実に戻れる</text>
+<text x="594" y="162" text-anchor="middle" font-size="12" fill="#047857">（いちばん頼れる命綱）</text>
+<text x="360" y="218" text-anchor="middle" font-size="12" fill="#475569">まず Esc で止め、どこまで戻すかを決めます。迷ったら Git で戻すのが確実です</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図11-7: 巻き戻しの3段階。右へ行くほど「確実に・大きく」戻せます</div>
+</div>
+
+- **`Esc`**: Claude Code の作業をすぐに止めます。止めた時点までに書き換えられたファイルはそのまま残ります。
+- **`Esc` を2回（または `/rewind`）**: Claude Code は、あなたが指示を送るたびに「チェックポイント（その時点の控え）」を自動で取っています。巻き戻しメニューで戻したい時点を選び、「コードと会話を戻す（Restore code and conversation）」「会話だけ戻す（Restore conversation）」「コードだけ戻す（Restore code）」などを選べます。
+- **Git**: コミットした地点へは、いつでも確実に戻れます。未コミットの変更を捨てるなら `git restore ファイル名`、コミット済みの変更を打ち消すなら `git revert コミットID` です。
+
+> **注意:** チェックポイント（`/rewind`）は Git の代わりにはなりません。`rm` や `mv` などの **Bash コマンドで行われた変更**や、Claude Code の外（エディタなど）で行った変更は記録されないため、巻き戻しても元に戻りません。公式ドキュメントでも「Git の代わりではない」と明記されています。大事な地点では必ずコミットしておきましょう。
 
 ---
 
@@ -145,7 +927,7 @@ Claude Codeを使ってNext.jsアプリをバイブコーディング（自然�
 
 ### 1-1. Claude Code とは
 
-Claude CodeはAnthropicが提供する公式CLIツールで、ターミナル上でClaudeと対話しながらソフトウェア開発を行えます。CLI、デスクトップアプリ（Mac/Windows）、Webアプリ（claude.ai/code）、IDE拡張（VS Code、JetBrains）で利用可能です。
+Claude CodeはAnthropicが提供する公式CLIツールで、ターミナル上でClaudeと対話しながらソフトウェア開発を行えます。CLI、デスクトップアプリ（Mac/Windows。Linux はベータ版）、Webアプリ（claude.ai/code）、IDE拡張（VS Code、JetBrains）などで利用可能です（2026年10月時点）。
 
 「CLI」とは Command Line Interface の略で、ターミナル（黒い画面）から文字入力で操作するタイプのアプリのことです。GUI（マウス操作のアプリ）と比べてキーボード中心で素早く操作でき、スクリプトとも連携しやすいのが特徴です。
 
@@ -194,6 +976,81 @@ Claude Codeは4層のスコープで設定を管理します。**最も具体的
 
 それぞれの詳細は後続の Phase で順番に登場します。「いま全部理解しなくてOK」、表は索引代わりに使ってください。
 
+### 1-4. どの機能を使えばいい？（使い分けの早見図）
+
+機能がたくさんあって迷ったら、「何をしたいか」から逆引きしてください。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 384" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-11-12" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<text x="20" y="18" font-size="13" font-weight="700" fill="#0f172a">こんなときは…</text>
+<text x="470" y="18" font-size="13" font-weight="700" fill="#0f172a">これを使う</text>
+<rect x="20" y="28" width="400" height="42" rx="6" fill="#f8fafc" stroke="#cbd5e1"/>
+<text x="36" y="54" font-size="13" fill="#1e293b">どの作業でも毎回守ってほしい決まりがある</text>
+<rect x="470" y="28" width="230" height="42" rx="6" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="585" y="54" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">CLAUDE.md（指示書）</text>
+<rect x="20" y="78" width="400" height="42" rx="6" fill="#f8fafc" stroke="#cbd5e1"/>
+<text x="36" y="104" font-size="13" fill="#1e293b">特定のフォルダ・ファイルだけの決まりがある</text>
+<rect x="470" y="78" width="230" height="42" rx="6" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="585" y="104" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">Rules（.claude/rules）</text>
+<rect x="20" y="128" width="400" height="42" rx="6" fill="#f8fafc" stroke="#cbd5e1"/>
+<text x="36" y="154" font-size="13" fill="#1e293b">同じ手順の作業を何度も頼む</text>
+<rect x="470" y="128" width="230" height="42" rx="6" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="585" y="154" text-anchor="middle" font-size="13" font-weight="700" fill="#c2410c">Skills（/名前 で呼ぶ）</text>
+<rect x="20" y="178" width="400" height="42" rx="6" fill="#f8fafc" stroke="#cbd5e1"/>
+<text x="36" y="204" font-size="13" fill="#1e293b">調査やレビューを別の担当に任せたい</text>
+<rect x="470" y="178" width="230" height="42" rx="6" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="585" y="204" text-anchor="middle" font-size="13" font-weight="700" fill="#c2410c">Subagents（専門の助手）</text>
+<rect x="20" y="228" width="400" height="42" rx="6" fill="#f8fafc" stroke="#cbd5e1"/>
+<text x="36" y="254" font-size="13" fill="#1e293b">GitHub や Supabase など外部とつなぎたい</text>
+<rect x="470" y="228" width="230" height="42" rx="6" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="585" y="254" text-anchor="middle" font-size="13" font-weight="700" fill="#c2410c">MCP（外部連携）</text>
+<rect x="20" y="278" width="400" height="42" rx="6" fill="#f8fafc" stroke="#cbd5e1"/>
+<text x="36" y="304" font-size="13" fill="#1e293b">AI の判断に任せず、必ず自動で実行・阻止したい</text>
+<rect x="470" y="278" width="230" height="42" rx="6" fill="#047857"/>
+<text x="585" y="304" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">Hooks（自動実行）</text>
+<rect x="20" y="328" width="400" height="42" rx="6" fill="#f8fafc" stroke="#cbd5e1"/>
+<text x="36" y="354" font-size="13" fill="#1e293b">実行してよい操作・いけない操作を決めたい</text>
+<rect x="470" y="328" width="230" height="42" rx="6" fill="#047857"/>
+<text x="585" y="354" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">Permissions（権限）</text>
+<line x1="424" y1="49" x2="466" y2="49" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-11-12)"/>
+<line x1="424" y1="99" x2="466" y2="99" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-11-12)"/>
+<line x1="424" y1="149" x2="466" y2="149" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-11-12)"/>
+<line x1="424" y1="199" x2="466" y2="199" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-11-12)"/>
+<line x1="424" y1="249" x2="466" y2="249" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-11-12)"/>
+<line x1="424" y1="299" x2="466" y2="299" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-11-12)"/>
+<line x1="424" y1="349" x2="466" y2="349" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-11-12)"/>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図11-8: 機能の使い分け早見図。青は「AI が読むお願い」、橙は「AI が使う道具」、緑は「AI の判断に関係なく必ず効く仕組み」</div>
+</div>
+
+いちばん大事な区別は、**「お願い」か「強制」か**です。
+
+- **CLAUDE.md・Rules は「お願い」**: Claude はこれを読んで従おうとしますが、公式ドキュメントにも「強制される設定ではなく、文脈（コンテキスト）として扱われる」と書かれています。うっかり守られないこともあります。
+- **Permissions・Hooks は「強制」**: AI がどう判断しようと、設定どおりに止めたり実行したりします。「`.env` を絶対に読ませない」「編集のたびに必ず整形する」のように、例外があっては困ることはこちらに書きます。
+
+> **つまずきポイント⑨: 「絶対にしてほしくないこと」を CLAUDE.md にしか書かない**
+> CLAUDE.md に「.env は読まないこと」と書いても、それはお願いです。長い作業で文脈が薄れたときなどに守られない可能性がゼロではありません。秘密情報や破壊的な操作は、Permissions の `deny` で止めましょう。
+
+**NG（お願いだけ）:**
+
+```markdown
+## 禁止事項
+- .env.local は絶対に読まないこと
+```
+
+**OK（設定で強制する。`.claude/settings.json`）:**
+
+```json
+{
+  "permissions": {
+    "deny": ["Read(.env.local)", "Edit(.env.local)"]
+  }
+}
+```
+
 ---
 
 ## 2. Phase 0：環境構築と安全設定
@@ -201,7 +1058,13 @@ Claude Codeは4層のスコープで設定を管理します。**最も具体的
 ### 2-1. Claude Code のインストール
 
 ```bash
-# Node.js 18以上が必要（npm を使うため、まず Node.js を入れておく）
+# 【おすすめ】公式インストーラーを使う方法（Node.js は不要・自動で更新される）
+# Windows の PowerShell で実行する場合
+irm https://claude.ai/install.ps1 | iex
+# macOS / Linux / WSL のターミナルで実行する場合
+curl -fsSL https://claude.ai/install.sh | bash
+
+# 【別の方法】npm でインストールする（Node.js 22 以上が必要）
 # Claude Code 本体を npm のグローバル領域にインストールする
 # -g は global の意味で、どのフォルダからでも claude コマンドが使えるようになる
 # @anthropic-ai/claude-code は npm 上のパッケージ名（スコープ名@パッケージ名）
@@ -211,13 +1074,17 @@ npm install -g @anthropic-ai/claude-code
 # --version は「現在のバージョン情報だけ出して終了」を意味する一般的なオプション
 claude --version
 
-# APIキーの設定（初回のみ）
+# ログイン（初回のみ）
 # 引数なしで claude を実行すると対話モードが起動する
-# 起動時に Anthropic の API キーまたはアカウント認証を求められる
+# 起動時に Claude のアカウント（または Anthropic の API キー）での認証を求められる
 claude
 ```
 
-`Node.js` はJavaScriptをパソコン上で動かすための実行環境です。バージョン 18 以上が必要で、なければ <https://nodejs.org> からインストールしてください。
+インストール方法は、公式インストーラー（上の2行のどちらか）がおすすめです。Node.js が無くても動き、新しいバージョンが出ると自動で更新されます。Windows では `winget install Anthropic.ClaudeCode` でも入れられます。
+
+`Node.js` はJavaScriptをパソコン上で動かすための実行環境です。npm でインストールする場合はバージョン 22 以上が必要で、なければ <https://nodejs.org> からインストールしてください（Next.js の開発自体にも Node.js は必要です）。
+
+> **ヒント:** Windows では、Git for Windows（第1章でインストールしたもの）が入っていると、Claude Code が `Bash` ツールでコマンドを実行できます。入っていなくても `PowerShell` ツールで動きますが、本章のコマンド例は Bash 形式なので、入れておくと読み替えが不要です。
 
 ### 2-2. 危険コマンドの禁止設定（Permissions）
 
@@ -325,9 +1192,11 @@ Claude Codeの ~/.claude/settings.json を設定してください。
       "Bash(chmod 777 *)",
       "Bash(shutdown*)",
       "Bash(reboot*)",
-      "Edit(/.git/**)",
-      "Edit(/.env)",
-      "Edit(/.env.local)"
+      "Edit(.git/**)",
+      "Edit(.env)",
+      "Edit(.env.local)",
+      "Read(.env)",
+      "Read(.env.local)"
     ]
   }
 }
@@ -340,24 +1209,248 @@ Claude Codeの ~/.claude/settings.json を設定してください。
 - `allow`: 自動的に許可するツール・コマンドのリスト。マッチしたら確認なしで実行される。
 - `deny`: 絶対に実行させないツール・コマンドのリスト。マッチしたら確認すら出ずブロック。
 - `Bash(...)`: Bash ツールの引数パターン。`*` はワイルドカードで任意の文字列にマッチ。
-- `Edit(/.env)`: Edit ツールで `/.env` を編集しようとするのをブロック。秘密情報の保護。
+- `Edit(.env)`: Edit ツール（Write などファイルを書き換える組み込みツールも含む）で `.env` を編集しようとするのをブロック。先頭に `/` を付けないファイル名だけの書き方は、作業フォルダ配下のどの階層の `.env` にもマッチします。
+- `Read(.env)`: `.env` の中身を Claude が読むのをブロック。0.4 のルール4「秘密情報を AI に直接見せない」を設定で強制できます。
+
+> **注意（以前の版からの修正）:** この教材の以前の版では `Edit(/.env)` のように先頭に `/` を付けていました。`/` で始まるパスは「その設定ファイルの場所を基準にした相対パス」という意味で、`~/.claude/settings.json`（ユーザー設定）に書くと `~/.claude/.env` を指してしまい、プロジェクトの `.env` を守れません。ユーザー設定ですべてのプロジェクトに効かせたいときは、上のようにファイル名だけで書きます（`//` で始めるとディスクのルートからの絶対パス、`~/` で始めるとホームフォルダからのパスになります）。
 
 > **Permission ルールの優先順位**: Deny > Ask > Allow（最初にマッチしたルールが適用）。つまり「`deny` に書いた条件は、`allow` に同じものがあっても deny が勝つ」。
 >
 > **ワイルドカード `*`**: パターンマッチで広範囲にブロック可能。`Bash(rm -rf *)` は `rm -rf /` も `rm -rf .` もブロックします。
 
+#### 権限ルールはどの順番で判定される？
+
+Claude Code がツールを使おうとするたびに、次の図の順番でルールが調べられます。お店の入口の警備員が「出入り禁止リスト → 要確認リスト → 顔パスリスト」の順に名簿を見るイメージです。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 244" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-11-08" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="10" y="40" width="100" height="56" rx="8" fill="#f8fafc" stroke="#475569" stroke-width="1.5"/>
+<text x="60" y="64" text-anchor="middle" font-size="12" fill="#0f172a">Claude が</text>
+<text x="60" y="82" text-anchor="middle" font-size="12" fill="#0f172a">ツールを使う</text>
+<rect x="134" y="40" width="128" height="56" rx="8" fill="#fff7ed" stroke="#c2410c" stroke-width="1.5"/>
+<text x="198" y="64" text-anchor="middle" font-size="13" font-weight="700" fill="#c2410c">deny に</text>
+<text x="198" y="83" text-anchor="middle" font-size="12" fill="#0f172a">一致する？</text>
+<rect x="286" y="40" width="128" height="56" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="350" y="64" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">ask に</text>
+<text x="350" y="83" text-anchor="middle" font-size="12" fill="#0f172a">一致する？</text>
+<rect x="438" y="40" width="128" height="56" rx="8" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="502" y="64" text-anchor="middle" font-size="13" font-weight="700" fill="#047857">allow に</text>
+<text x="502" y="83" text-anchor="middle" font-size="12" fill="#0f172a">一致する？</text>
+<rect x="590" y="40" width="120" height="56" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="650" y="64" text-anchor="middle" font-size="12" fill="#0f172a">どれにも</text>
+<text x="650" y="82" text-anchor="middle" font-size="12" fill="#0f172a">一致しない</text>
+<line x1="110" y1="68" x2="132" y2="68" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-11-08)"/>
+<line x1="262" y1="68" x2="284" y2="68" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-11-08)"/>
+<line x1="414" y1="68" x2="436" y2="68" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-11-08)"/>
+<line x1="566" y1="68" x2="588" y2="68" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-11-08)"/>
+<text x="274" y="34" text-anchor="middle" font-size="12" fill="#64748b">いいえ</text>
+<text x="426" y="34" text-anchor="middle" font-size="12" fill="#64748b">いいえ</text>
+<text x="578" y="34" text-anchor="middle" font-size="12" fill="#64748b">いいえ</text>
+<line x1="198" y1="96" x2="198" y2="148" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-11-08)"/>
+<line x1="350" y1="96" x2="350" y2="148" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-11-08)"/>
+<line x1="502" y1="96" x2="502" y2="148" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-11-08)"/>
+<line x1="650" y1="96" x2="650" y2="148" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-11-08)"/>
+<text x="206" y="127" font-size="12" fill="#64748b">はい</text>
+<text x="358" y="127" font-size="12" fill="#64748b">はい</text>
+<text x="510" y="127" font-size="12" fill="#64748b">はい</text>
+<rect x="134" y="150" width="128" height="56" rx="8" fill="#c2410c"/>
+<text x="198" y="174" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">ブロック</text>
+<text x="198" y="193" text-anchor="middle" font-size="12" fill="#ffedd5">確認も出ない</text>
+<rect x="286" y="150" width="128" height="56" rx="8" fill="#1e40af"/>
+<text x="350" y="174" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">必ず確認する</text>
+<text x="350" y="193" text-anchor="middle" font-size="12" fill="#dbeafe">図11-5 の画面</text>
+<rect x="438" y="150" width="128" height="56" rx="8" fill="#047857"/>
+<text x="502" y="174" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">確認なしで実行</text>
+<text x="502" y="193" text-anchor="middle" font-size="12" fill="#d1fae5">自動で許可</text>
+<rect x="590" y="150" width="120" height="56" rx="8" fill="#475569"/>
+<text x="650" y="174" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">モードしだい</text>
+<text x="650" y="193" text-anchor="middle" font-size="12" fill="#e2e8f0">Manual なら確認</text>
+<text x="360" y="232" text-anchor="middle" font-size="12" fill="#475569">deny → ask → allow の順に調べ、最初に一致したもので決まります。deny は allow より必ず優先されます</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図11-9: 権限ルールの判定順。どのスコープ（ユーザー・プロジェクトなど）に書いた deny でも、allow より先に効きます</div>
+</div>
+
+- 「どれにも一致しない」場合の動きはモードで変わります（2-3）。たとえば Manual（`default`）モードでは確認画面が出ます。
+- `git status` や `ls` のような**読み取り専用のコマンド**は、ルールに書かなくても最初から確認なしで実行されます。
+- 許可ルールは、Claude Code の中で `/permissions` と入力すると一覧で確認・追加・削除できます。
+
+#### 書籍アプリ用の小さな `.claude/settings.json`
+
+上の `~/.claude/settings.json` は「自分のパソコン全体」に効く大きな設定でした。ここでは、書籍管理アプリのリポジトリに置いて**チームで共有する**、最小限のプロジェクト設定を作ってみます。
+
+> **▼ このコードがやること（先に日本語で）:** 書籍アプリでよく使う「確かめるためのコマンド」（lint・ビルド・型チェック・テスト）は確認なしで実行させ、コミットと新しいパッケージの追加は必ず確認させ、秘密情報（`.env`）の読み書きと `git push`・`rm -rf` は禁止します。
+
+```json
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(npm run lint)",
+      "Bash(npm run build)",
+      "Bash(npx tsc --noEmit)",
+      "Bash(npx vitest run *)"
+    ],
+    "ask": [
+      "Bash(git commit *)",
+      "Bash(npm install *)"
+    ],
+    "deny": [
+      "Read(.env)",
+      "Read(.env.local)",
+      "Edit(.env)",
+      "Edit(.env.local)",
+      "Bash(git push *)",
+      "Bash(rm -rf *)"
+    ]
+  }
+}
+```
+
+**▼ 確かめ方（この設定を保存して Claude Code を起動し、`/permissions` を開くと、ルールが次の3つに分かれて並びます。表示を簡略化したイメージです）**
+
+```text
+Allow:  npm run lint / npm run build / npx tsc --noEmit / npx vitest run *
+Ask:    git commit * / npm install *
+Deny:   Read(.env) / Read(.env.local) / Edit(.env) / Edit(.env.local) / git push * / rm -rf *
+（それぞれ .claude/settings.json から読み込まれたルールとして表示される）
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: `$schema` でエディタに補完してもらう
+
+```json
+"$schema": "https://json.schemastore.org/claude-code-settings.json",
+```
+
+- JSON の「設計図（スキーマ）」の場所を書いておくと、VS Code などのエディタがキー名の補完や入力ミスの指摘をしてくれます。
+- Claude Code の動作には影響しません。書いておくと得をする「おまけ」です。
+
+> **用語: JSON:** `{ "キー": 値 }` の形でデータを書く書式。コメント（`//`）が書けないので、説明は別の場所に書きます。
+
+##### 解説2: `allow` には「確かめるためのコマンド」だけを入れる
+
+```json
+"allow": [
+  "Bash(npm run lint)",
+  "Bash(npx vitest run *)"
+]
+```
+
+- lint・ビルド・型チェック・テストは、何度実行してもファイルを壊さない「確かめる」ためのコマンドです。確認なしにしておくと、Claude Code が作業ループの⑤（確かめる）を止まらずに回せます。
+- `Bash(npx vitest run *)` の末尾の ` *`（スペース＋アスタリスク）は「後ろに何が続いてもよい」という意味で、`npx vitest run` 単体にも、`npx vitest run src/lib` にも一致します。
+
+##### 解説3: `ask` は「結果が残る操作」
+
+```json
+"ask": [
+  "Bash(git commit *)",
+  "Bash(npm install *)"
+]
+```
+
+- コミットやパッケージの追加は、プロジェクトに記録が残る操作です。毎回あなたが内容を見てから許可するように、`ask`（必ず確認）にしています。
+- `ask` に書いたコマンドは、`allow` に同じものがあっても毎回確認が出ます。判定の順番が deny → ask → allow だからです（図11-9）。
+
+##### 解説4: `deny` で「絶対にさせないこと」を決める
+
+```json
+"deny": [
+  "Read(.env)",
+  "Bash(git push *)"
+]
+```
+
+- `Read(.env)` で、Supabase のキーなどが入った `.env` を Claude が読めなくなります。
+- `git push` は、0.4 のルール6のとおり人間が自分で行う操作なので、禁止しています。
+
+> **つまずきポイント⑥: 確認が面倒で `allow` を広げすぎる**
+> 確認画面にうんざりして `"Bash"`（すべてのコマンド）や `"Bash(*)"` を `allow` に入れると、`rm -rf` も `git push --force` も確認なしで実行できる状態になります（`deny` に書いたものだけは止まりますが、思いつかなかった危険なコマンドは素通りです）。`allow` には、何度実行しても安全なコマンドを1つずつ名指しで入れましょう。
+
+**NG（何でも許可）:**
+
+```json
+{
+  "permissions": {
+    "allow": ["Bash"]
+  }
+}
+```
+
+**OK（安全なコマンドだけを名指しで許可）:**
+
+```json
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run lint)",
+      "Bash(npx tsc --noEmit)",
+      "Bash(npx vitest run *)"
+    ]
+  }
+}
+```
+
 ### 2-3. Permission Mode の種類と使い分け
 
-Claude Codeには6つのパーミッションモードがあります。**セッション中に `Shift+Tab` で切り替え可能**です。
+Claude Codeには6つのパーミッションモードがあります。**セッション中に `Shift+Tab` で切り替え可能**です（2026年10月時点の内容です）。
 
 | モード | コマンド | 説明 | 使う場面 |
 |--------|---------|------|---------|
-| **default** | `claude` | 各操作ごとに確認を求める | 通常の開発 |
-| **acceptEdits** | `claude --permission-mode acceptEdits` | ファイル編集は自動承認 | 信頼できるタスク |
-| **plan** | `claude --permission-mode plan` | 読み取り専用（編集不可） | 設計・調査フェーズ |
-| **auto** | `claude --permission-mode auto` | バックグラウンドで安全性チェック | CI/CD連携 |
-| **dontAsk** | `claude --permission-mode dontAsk` | 事前許可済みツールのみ | 自動化パイプライン |
-| **bypassPermissions** | `claude --dangerously-skip-permissions` | チェックなし（危険） | **使用非推奨** |
+| **default**（画面の表示名は Manual） | `claude --permission-mode default` | 読み取り以外は、各操作ごとに確認を求める | 初心者・大事な作業 |
+| **acceptEdits** | `claude --permission-mode acceptEdits` | ファイル編集と `mkdir`・`mv` などの基本操作は自動承認 | 差分を後でまとめて確認できるとき |
+| **plan** | `claude --permission-mode plan` | 読み取りと調査だけ。ソースの編集は計画を承認するまでできない | 設計・調査フェーズ |
+| **auto** | `claude --permission-mode auto` | 別の AI（分類器）が裏で安全性をチェックし、危険な操作だけ止めて自動で進む | 長い作業・確認疲れを減らしたいとき |
+| **dontAsk** | `claude --permission-mode dontAsk` | 事前に許可したツールだけ実行し、それ以外は自動で拒否 | CI などの無人の自動化 |
+| **bypassPermissions** | `claude --dangerously-skip-permissions` | チェックなし（危険） | **隔離したコンテナや仮想マシン以外では使用禁止** |
+
+> **注意（以前の版からの修正）:** 以前の版では「`claude` とだけ打つと default（毎回確認）モードで起動する」と説明していました。Claude Code v2.1.283 以降は、ターミナルで `claude` と打つと **auto モードで起動する**のが標準になっています（auto モードが使えない環境では Manual で起動します）。auto モードは便利ですが、公式ドキュメントにも「安全を保証するものではない」と書かれています。慣れるまでは、下の「デフォルトモードを設定する場合」の設定で、毎回 Manual（`default`）モードから始めるのがおすすめです。
+
+`Shift+Tab` を押すたびに、モードは次のように切り替わります。いまのモードは入力欄の下（ステータスバー）に `⏸ manual mode on` や `⏸ plan mode on` のように表示されます。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 262" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-11-09" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<text x="20" y="22" font-size="12" fill="#1e40af">慎重（確認が多い）</text>
+<text x="700" y="22" text-anchor="end" font-size="12" fill="#c2410c">おまかせ（確認が少ない）</text>
+<line x1="134" y1="18" x2="550" y2="18" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-11-09)"/>
+<rect x="20" y="38" width="128" height="112" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="84" y="62" text-anchor="middle" font-size="13" font-weight="700" font-family="Consolas, Menlo, monospace" fill="#1e40af">plan</text>
+<text x="84" y="90" text-anchor="middle" font-size="12" fill="#475569">読む・調べるだけ</text>
+<text x="84" y="110" text-anchor="middle" font-size="12" fill="#475569">編集は計画を</text>
+<text x="84" y="130" text-anchor="middle" font-size="12" fill="#475569">承認してから</text>
+<rect x="160" y="38" width="128" height="112" rx="8" fill="#ecfdf5" stroke="#10b981" stroke-width="2.5"/>
+<text x="224" y="62" text-anchor="middle" font-size="13" font-weight="700" font-family="Consolas, Menlo, monospace" fill="#047857">default</text>
+<text x="224" y="90" text-anchor="middle" font-size="12" fill="#475569">表示名は Manual</text>
+<text x="224" y="110" text-anchor="middle" font-size="12" fill="#475569">読む以外は毎回</text>
+<text x="224" y="130" text-anchor="middle" font-size="12" fill="#475569">あなたに確認</text>
+<rect x="300" y="38" width="128" height="112" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="364" y="62" text-anchor="middle" font-size="13" font-weight="700" font-family="Consolas, Menlo, monospace" fill="#1e40af">acceptEdits</text>
+<text x="364" y="90" text-anchor="middle" font-size="12" fill="#475569">ファイル編集と</text>
+<text x="364" y="110" text-anchor="middle" font-size="12" fill="#475569">mkdir 等は自動</text>
+<text x="364" y="130" text-anchor="middle" font-size="12" fill="#475569">それ以外は確認</text>
+<rect x="440" y="38" width="128" height="112" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="504" y="62" text-anchor="middle" font-size="13" font-weight="700" font-family="Consolas, Menlo, monospace" fill="#c2410c">auto</text>
+<text x="504" y="90" text-anchor="middle" font-size="12" fill="#475569">別の AI が</text>
+<text x="504" y="110" text-anchor="middle" font-size="12" fill="#475569">安全確認しながら</text>
+<text x="504" y="130" text-anchor="middle" font-size="12" fill="#475569">自動で進む</text>
+<rect x="580" y="38" width="128" height="112" rx="8" fill="#c2410c"/>
+<text x="644" y="62" text-anchor="middle" font-size="12" font-weight="700" font-family="Consolas, Menlo, monospace" fill="#ffffff">bypassPermissions</text>
+<text x="644" y="90" text-anchor="middle" font-size="12" fill="#ffedd5">確認もチェックも</text>
+<text x="644" y="110" text-anchor="middle" font-size="12" fill="#ffedd5">一切なし</text>
+<text x="644" y="130" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">普段は使わない</text>
+<text x="224" y="170" text-anchor="middle" font-size="12" font-weight="700" fill="#047857">★ 初心者はここから</text>
+<rect x="20" y="186" width="688" height="36" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.2"/>
+<text x="364" y="209" text-anchor="middle" font-size="12" fill="#334155">Shift+Tab を押すたびに: default → acceptEdits → plan → auto → default …（auto は使える環境のみ）</text>
+<text x="364" y="246" text-anchor="middle" font-size="12" fill="#475569">dontAsk（許可済み以外は自動で拒否）は CI 用で、Shift+Tab の切り替えには出てきません</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図11-10: パーミッションモードの違い。左ほど慎重、右ほどおまかせ。bypassPermissions は起動時に特別なオプションを付けたときだけ切り替えに加わります</div>
+</div>
 
 `--permission-mode` は「パーミッションモードを指定して起動する」フラグです。`--` で始まるオプションは「ロングオプション」と呼ばれ、後ろに値を渡せます。
 
@@ -372,7 +1465,8 @@ Claude Codeには6つのパーミッションモードがあります。**セッ
 ```
 
 - `permissions`: 設定のグループ名。
-- `defaultMode`: 何も指定せず `claude` と打ったときに使うモード。
+- `defaultMode`: 何も指定せず `claude` と打ったときに使うモード。`"default"` にすると、毎回 Manual（確認あり）モードで始まります。
+- この設定は `~/.claude/settings.json`（ユーザー設定）に書くのが確実です。なお、`"auto"` と `"bypassPermissions"` はプロジェクトの `.claude/settings.json` や `.claude/settings.local.json` に書いても効きません（共有の設定ファイルで勝手に危ないモードにされないための安全策です）。
 
 ### 2-4. MCP サーバーの設定
 
@@ -381,12 +1475,30 @@ MCP（Model Context Protocol）により、Claude Codeに外部サービスと�
 #### MCP設定ファイルの階層
 
 ```
-優先度: 高 ← → 低
+スコープ（効く範囲）と保存場所
 
-.claude/.mcp.local.json    ← 個人用（gitignore）
-.claude/.mcp.json          ← プロジェクト共有（Git管理）
-~/.claude/.mcp.json        ← 全プロジェクト共通
+local   （既定）: ~/.claude.json の中の「このプロジェクト用」の欄 ← 自分だけ・このプロジェクトだけ
+project         : プロジェクト直下の .mcp.json                 ← チームで共有（Git管理）
+user            : ~/.claude.json                               ← 自分の全プロジェクト共通
 ```
+
+> **注意（以前の版からの修正）:** 以前の版では `.claude/.mcp.json`・`.claude/.mcp.local.json`・`~/.claude/.mcp.json` という場所を紹介していましたが、これらは Claude Code が読み込む場所ではありません。プロジェクトで共有する MCP 設定は**プロジェクト直下（`package.json` と同じ場所）の `.mcp.json`**、個人用は `~/.claude.json` に保存されます（`~/.claude.json` は `claude mcp add` コマンドが自動で書き換えるので、手で編集する必要はほとんどありません）。
+
+コマンドで追加するのがいちばん簡単です。
+
+```bash
+# リモート（HTTP）の MCP サーバーをプロジェクト共有で追加する（.mcp.json に書き込まれる）
+claude mcp add --scope project --transport http supabase "https://mcp.supabase.com/mcp"
+# 自分のパソコンで動かす（stdio）MCP サーバーを、自分の全プロジェクト用に追加する
+claude mcp add --scope user --transport stdio playwright -- npx -y @playwright/mcp@latest
+# 登録済みのサーバーと接続状態を一覧する
+claude mcp list
+```
+
+- `--scope`: 効く範囲。`local`（既定）・`project`・`user` から選びます。
+- `--transport`: 接続方式。リモートのサーバーは `http`、自分のパソコンで動かすサーバーは `stdio` です。
+- `--` より後ろは「MCP サーバーを起動するコマンド」です。Claude Code 自身のオプションと混ざらないよう `--` で区切ります。
+- ログイン（OAuth 認証）が必要なサーバーは、Claude Code の中で `/mcp` と入力し、一覧からサーバーを選んで認証します。
 
 **Claude Codeへのプロンプト：**
 
@@ -404,37 +1516,30 @@ MCP（Model Context Protocol）により、Claude Codeに外部サービスと�
 3. Playwright MCP（オプション）
    - ブラウザテスト自動化に使用
 
-ユーザーレベル（~/.claude/.mcp.json）に設定してください。
+プロジェクトスコープ（プロジェクト直下の .mcp.json）に設定してください。
 トークンは環境変数から読み込む形式にしてください。
 ```
 
-**手動設定の場合 — `~/.claude/.mcp.json`：**
+**手動設定の場合 — プロジェクト直下の `.mcp.json`：**
 
 ```json
 {
   "mcpServers": {
     "github": {
-      "type": "stdio",
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-github"],
-      "env": {
-        "GITHUB_PERSONAL_ACCESS_TOKEN": "$GITHUB_TOKEN"
-      },
-      "allowedEnvVars": ["GITHUB_TOKEN"]
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "headers": {
+        "Authorization": "Bearer ${GITHUB_TOKEN}"
+      }
     },
     "supabase": {
-      "type": "stdio",
-      "command": "npx",
-      "args": ["-y", "@supabase/mcp-server"],
-      "env": {
-        "SUPABASE_ACCESS_TOKEN": "$SUPABASE_TOKEN"
-      },
-      "allowedEnvVars": ["SUPABASE_TOKEN"]
+      "type": "http",
+      "url": "https://mcp.supabase.com/mcp?read_only=true"
     },
     "playwright": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@anthropic-ai/mcp-server-playwright"]
+      "args": ["-y", "@playwright/mcp@latest"]
     }
   }
 }
@@ -444,19 +1549,21 @@ MCP（Model Context Protocol）により、Claude Codeに外部サービスと�
 
 - `mcpServers`: MCP サーバー定義をまとめるルートキー。
 - `"github"` などのキー: サーバーの識別名。Claude 側で参照するためのラベル。
-- `type`: 接続方式。`stdio`（標準入出力）/ `http` / `sse` から選ぶ。
+- `type`: 接続方式。`http`（リモートのサーバー。推奨）/ `stdio`（自分のパソコンで起動するサーバー）から選ぶ。`sse` は古い方式で非推奨。
+- `url`: リモートのサーバーの接続先。`?read_only=true` は Supabase の MCP サーバーを「読み取り専用」で使う指定で、AI がデータベースを書き換える事故を防げます。
+- `headers`: 接続時に送る HTTP ヘッダー。ここでは GitHub の個人アクセストークンを送っています。
+- `${GITHUB_TOKEN}`: 環境変数 `GITHUB_TOKEN` の値に置き換わる書き方。トークンそのものをファイルに書かずに済むので、`.mcp.json` を Git で共有しても安全です。
 - `command`: サーバーを起動するコマンド。`npx` は npm パッケージを直接実行するツール。
 - `args`: 上記コマンドに渡す引数の配列。`-y` は npx の「確認なしで進める」フラグ。
-- `env`: サーバーに渡す環境変数。`$GITHUB_TOKEN` でシェルの環境変数を参照。
-- `allowedEnvVars`: 参照を許可する環境変数のホワイトリスト。セキュリティのため明示が必要。
+- Supabase のサーバーはトークンを書く代わりに、Claude Code の中で `/mcp` を開いて「Authenticate」を選び、ブラウザでログインします。
 
 #### MCP接続タイプの違い
 
 | タイプ | 形式 | 用途 |
 |--------|------|------|
 | **stdio** | ローカルプロセス | npm パッケージ型のMCPサーバー |
-| **http** | HTTP接続 | リモートAPIサービス |
-| **sse** | Server-Sent Events | ストリーミング対応サービス |
+| **http** | HTTP接続 | リモートAPIサービス（推奨） |
+| **sse** | Server-Sent Events | 古い方式（**非推奨**。使えるなら http を選ぶ） |
 
 **HTTP型の例（Sentry連携）：**
 
@@ -464,61 +1571,67 @@ MCP（Model Context Protocol）により、Claude Codeに外部サービスと�
 {
   "mcpServers": {
     "sentry": {
-      "type": "sse",
-      "url": "https://mcp.sentry.io/stream"
+      "type": "http",
+      "url": "https://mcp.sentry.dev/mcp"
     }
   }
 }
 ```
 
-- `type: "sse"`: サーバーから送られてくるイベントを受け取り続けるタイプ。
-- `url`: 接続先 URL。
+- `type: "http"`: インターネット上の MCP サーバーに HTTP で接続するタイプ。
+- `url`: 接続先 URL。コマンドなら `claude mcp add --transport http sentry https://mcp.sentry.dev/mcp` と同じ意味です。追加後に `/mcp` でログインします。
 
 **OAuth認証付きの例：**
+
+多くのサーバーは、上の Sentry の例のように URL を登録して `/mcp` からログインするだけで使えます。サーバー側で事前に登録した OAuth アプリ（クライアント ID）を使う必要がある場合だけ、次のように `oauth` を書きます。
 
 ```json
 {
   "mcpServers": {
-    "github-oauth": {
+    "my-server": {
       "type": "http",
-      "url": "https://mcp.github.io",
-      "auth": {
-        "type": "oauth",
-        "clientId": "abc123",
-        "clientSecret": "$GITHUB_CLIENT_SECRET",
-        "redirectPort": 8080
-      },
-      "allowedEnvVars": ["GITHUB_CLIENT_SECRET"]
+      "url": "https://mcp.example.com/mcp",
+      "oauth": {
+        "clientId": "your-client-id",
+        "callbackPort": 8080
+      }
     }
   }
 }
 ```
 
-- `auth`: 認証情報のグループ。
-- `type: "oauth"`: OAuth2.0 認証フローを使用。
-- `clientId` / `clientSecret`: OAuth アプリケーションの ID と秘密鍵。
-- `redirectPort`: 認証完了後にリダイレクトを受け取るローカルポート。
+- `oauth`: OAuth 2.0 認証の設定をまとめるキー。
+- `clientId`: 事前に登録した OAuth アプリケーションの ID。
+- `callbackPort`: 認証完了後にブラウザから戻ってくる通信を受け取る、自分のパソコンのポート番号。
+- クライアントシークレット（秘密鍵）は設定ファイルには書きません。`claude mcp add-json` コマンドに `--client-secret` を付けて登録すると、OS のキーチェーンなど安全な場所に保存されます。
 
 #### MCP内で使える環境変数
 
 ```json
 {
-  "args": ["${CLAUDE_PROJECT_DIR}/scripts/server.js"],
-  "env": {
-    "SESSION": "${CLAUDE_SESSION_ID}",
-    "PROJECT": "${CLAUDE_PROJECT_DIR}"
+  "mcpServers": {
+    "local-tools": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["${CLAUDE_PROJECT_DIR:-.}/scripts/server.js"],
+      "env": {
+        "API_KEY": "${MY_API_KEY}",
+        "LOG_LEVEL": "${LOG_LEVEL:-info}"
+      }
+    }
   }
 }
 ```
 
-`${VAR}` の形式は Claude Code が用意した特殊変数の展開構文です。シェル変数とは異なり、Claude Code 側で値が差し込まれます。
+`${VAR}` の形式は、`.mcp.json` を読み込むときに環境変数の値へ置き換える展開構文です。`command`・`args`・`env`・`url`・`headers` の中で使えます。
 
-| 変数 | 説明 |
+| 書き方 | 説明 |
 |------|------|
-| `${CLAUDE_SESSION_ID}` | 現在のセッションID |
-| `${CLAUDE_PROJECT_DIR}` | プロジェクトルートパス |
-| `${CLAUDE_TOOLS_DIR}` | ツールディレクトリ |
-| `$VAR_NAME` | `allowedEnvVars` に登録した環境変数 |
+| `${VAR}` | 環境変数 `VAR` の値に置き換わる |
+| `${VAR:-既定値}` | `VAR` が設定されていればその値、なければ `:-` の後ろの既定値 |
+| `${CLAUDE_PROJECT_DIR:-.}` | プロジェクトのルートフォルダ。この変数は MCP サーバーの中でだけ設定されるため、`.mcp.json` で使うときは `:-.`（無ければカレントフォルダ）を付ける |
+
+> **注意（以前の版からの修正）:** 以前の版で紹介した `allowedEnvVars` というキーと `${CLAUDE_TOOLS_DIR}` という変数は、Claude Code には存在しません。また `auth` ではなく `oauth` が正しいキー名です。
 
 ### 2-5. Hooks の設定（イベント駆動自動化）
 
@@ -536,8 +1649,10 @@ Hooksは特定のイベントが発生した時に自動でコマンドを実行
 | `Notification` | 通知発火時 | デスクトップ通知連携 |
 | `Stop` | Claudeの応答完了時 | 最終チェック |
 | `PreCompact` | コンテキスト圧縮前 | 重要情報の退避 |
-| `PostCompact` | コンテキスト圧縮後 | コンテキスト再注入 |
+| `PostCompact` | コンテキスト圧縮後 | ログ記録などの後処理 |
 | `SessionEnd` | セッション終了時 | クリーンアップ |
+
+> **補足:** 上の表は主なイベントだけです。2026年10月時点では、許可確認の画面が出るときの `PermissionRequest`、サブエージェントが終わったときの `SubagentStop` など、全部で30種類以上のイベントがあります。最新の一覧は公式ドキュメントの Hooks リファレンスで確認してください。
 
 #### Hook設定の構造
 
@@ -592,7 +1707,7 @@ settings.jsonに追記してください。
 4. SessionStart: セッション開始時にリマインダーを表示
    「テストを書いてからコミットすること」
 5. Notification: デスクトップ通知（Windows用PowerShell）
-6. PostCompact: コンテキスト圧縮後にCLAUDE.mdの重要ルールを再注入
+6. SessionStart（compact）: コンテキスト圧縮後にCLAUDE.mdの重要ルールを再注入
 ```
 
 **手動設定の完全例（`~/.claude/settings.json` に追記）：**
@@ -606,7 +1721,7 @@ settings.jsonに追記してください。
         "hooks": [
           {
             "type": "command",
-            "command": "FILE=$(echo $CLAUDE_TOOL_INPUT | jq -r '.file_path // empty') && [ -n \"$FILE\" ] && npx prettier --write \"$FILE\" 2>/dev/null || true",
+            "command": "FILE=$(jq -r '.tool_input.file_path // empty') && [ -n \"$FILE\" ] && npx prettier --write \"$FILE\" 2>/dev/null || true",
             "timeout": 30
           }
         ]
@@ -616,7 +1731,7 @@ settings.jsonに追記してください。
         "hooks": [
           {
             "type": "command",
-            "command": "FILE=$(echo $CLAUDE_TOOL_INPUT | jq -r '.file_path // empty') && [ -n \"$FILE\" ] && [[ \"$FILE\" == *.ts || \"$FILE\" == *.tsx ]] && npx eslint --fix \"$FILE\" 2>/dev/null || true",
+            "command": "FILE=$(jq -r '.tool_input.file_path // empty') && [ -n \"$FILE\" ] && [[ \"$FILE\" == *.ts || \"$FILE\" == *.tsx ]] && npx eslint --fix \"$FILE\" 2>/dev/null || true",
             "timeout": 30
           }
         ]
@@ -635,18 +1750,16 @@ settings.jsonに追記してください。
     ],
     "SessionStart": [
       {
-        "matcher": "",
+        "matcher": "startup",
         "hooks": [
           {
             "type": "command",
             "command": "echo '[リマインダー] テストを書いてからコミットしてください。CLAUDE.mdの規約を遵守してください。'"
           }
         ]
-      }
-    ],
-    "PostCompact": [
+      },
       {
-        "matcher": "",
+        "matcher": "compact",
         "hooks": [
           {
             "type": "command",
@@ -673,7 +1786,10 @@ settings.jsonに追記してください。
 長いのでポイントだけ解説します。
 
 - `"matcher": "Edit|Write"`: 正規表現で「Edit または Write」を意味し、その両ツールの実行後に発火。
-- `FILE=$(echo $CLAUDE_TOOL_INPUT | jq -r '.file_path // empty')`: ツール入力 JSON から `file_path` フィールドを取り出す。`jq` は JSON 操作の定番ツール。
+- `FILE=$(jq -r '.tool_input.file_path // empty')`: Claude Code が**標準入力**に JSON で渡してくる情報から、編集したファイルのパス（`tool_input.file_path`）を取り出す。`jq` は JSON 操作の定番ツール。
+- `"matcher": "compact"`（SessionStart）: コンテキストの圧縮（compact）が終わってセッションが続くときに発火。SessionStart の標準出力は Claude のコンテキストに追加されるので、圧縮で薄れた重要ルールを思い出させる用途に使えます。
+
+> **注意（以前の版からの修正）:** 以前の版では `$CLAUDE_TOOL_INPUT` という環境変数からツールの入力を読んでいましたが、そのような環境変数はありません。フックへの入力は標準入力に JSON で届きます。また、`PostCompact` フックの標準出力は Claude には届かない（ログに残るだけ）ため、圧縮後のルール再注入は `SessionStart` の `compact` マッチャーで行うように修正しました。
 - `[ -n "$FILE" ] && ...`: `$FILE` が空でないときだけ次のコマンドを実行（&& は「左が成功したら右を実行」）。
 - `npx prettier --write "$FILE"`: Prettier で対象ファイルをフォーマット。`--write` は実ファイルへの書き戻し。
 - `2>/dev/null || true`: エラーを捨てて常に成功扱い。Hook 全体は壊さない設計。
@@ -841,7 +1957,7 @@ gitリポジトリを初期化して、以下を設定してください：
 
 ### 4-1. Plan Mode とは
 
-Plan Modeは**読み取り専用**のモードで、Claudeはコードを読んで分析はできますが、ファイルの作成・編集・コマンド実行はできません。**設計フェーズに最適**です。
+Plan Modeは**ソースコードを書き換えない**モードで、Claudeはコードを読んだり調査用のコマンドを実行したりして計画を立てますが、ファイルの作成・編集は、あなたが計画を承認するまでできません。**設計フェーズに最適**です。
 
 要件が定まる前に AI に勝手にコードを書かれてしまうと、後戻りが大変です。「最初は計画だけ立てる」というのを Plan Mode で強制できます。
 
@@ -853,7 +1969,8 @@ Plan Modeは**読み取り専用**のモードで、Claudeはコードを読ん�
 claude --permission-mode plan
 
 # セッション中に切り替え
-# Shift+Tab を押す → "plan" を選択
+# Shift+Tab を何回か押し、入力欄の下に「⏸ plan mode on」と出たら Plan Mode
+# 1回の指示だけ計画させたいときは、指示の先頭に /plan を付けて送る
 ```
 
 #### Plan Mode の活用フロー
@@ -867,11 +1984,152 @@ Plan Mode（設計） ──→ 方針合意 ──→ Default Mode（実装）
      │ ・API設計                           │
      │ ・実装方針の提案                      │
      ↓                                    ↓
-  承認オプション:
-  ├─ Auto Mode（安全チェック付き自動実行）
-  ├─ Accept Edits Mode（ファイル編集は自動承認）
-  ├─ Default Mode（各操作ごとに確認）
-  └─ Keep Planning（さらに設計を続行）
+  承認オプション（計画ができると表示される）:
+  ├─ Yes, and use auto mode（承認して auto モードで実装）
+  ├─ Yes, manually approve edits（承認して、編集を1つずつ確認しながら実装）
+  └─ No, keep planning（承認せず、計画の修正を続ける）
+```
+
+#### 実践: 書籍アプリの「並べ替え機能」をプランモードで計画する
+
+> **▼ この指示文がやること（先に日本語で）:** 書籍一覧に並べ替え機能を足す前に、`/plan` を付けて「計画だけ」を出してもらいます。どのファイルを新しく作り、どのファイルを変えるのかを先に見て、あなたが納得してから実装に進むための指示です。
+
+```text
+/plan 書籍一覧ページ（src/app/page.tsx）に並べ替え機能を追加したい。
+並べ方は「タイトル順」「評価の高い順」「新しい順」の3つ。
+並べ替えの処理は src/lib/sortBooks.ts に関数として切り出し、Vitest でテストする。
+URL のクエリ（?sort=title など）で並べ方を選べるようにしたい。
+まだコードは書かず、変更するファイルと手順を計画してください。
+```
+
+**▼ 実行結果（Claude Code が出した計画の例）**
+
+```text
+## 計画: 書籍一覧の並べ替え
+
+### 変更するファイル
+1. src/lib/sortBooks.ts（新規）: sortBooks(books, key) を作る
+2. src/lib/sortBooks.test.ts（新規）: 3種類の並べ方と「元の配列を変えない」ことをテスト
+3. src/components/SortSelect.tsx（新規）: 並べ方を選ぶセレクトボックス（Client Component）
+4. src/app/page.tsx（変更）: URL の sort を読み、sortBooks で並べてから BookList に渡す
+
+### 手順
+1. sortBooks とテストを作り、npx vitest run で確認する
+2. SortSelect を作り、選んだ値を URL の ?sort= に反映する
+3. page.tsx を変更し、npm run build で確認する
+
+### 確認したいこと
+- ?sort=abc のような想定外の値のときは「新しい順」にしてよいですか？
+```
+
+計画ができると、ターミナルには次のような選択肢が表示されます。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 360" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<rect x="10" y="10" width="470" height="340" rx="8" fill="#0f172a"/>
+<rect x="10" y="10" width="470" height="28" rx="8" fill="#334155"/>
+<rect x="10" y="30" width="470" height="8" fill="#334155"/>
+<circle cx="28" cy="24" r="5" fill="#94a3b8"/>
+<circle cx="44" cy="24" r="5" fill="#94a3b8"/>
+<circle cx="60" cy="24" r="5" fill="#94a3b8"/>
+<text x="245" y="29" text-anchor="middle" font-size="12" fill="#e2e8f0">ターミナル — my-books-app</text>
+<g font-family="Consolas, Menlo, monospace" font-size="12">
+<text x="24" y="62" fill="#e2e8f0">&gt; /plan 書籍一覧ページに並べ替え機能を追加したい…</text>
+<rect x="22" y="76" width="446" height="140" rx="6" fill="none" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="36" y="98" fill="#93c5fd" font-weight="700">計画: 書籍一覧の並べ替え</text>
+<text x="36" y="122" fill="#e2e8f0">1. src/lib/sortBooks.ts を新規作成</text>
+<text x="36" y="144" fill="#e2e8f0">2. src/lib/sortBooks.test.ts でテスト</text>
+<text x="36" y="166" fill="#e2e8f0">3. src/components/SortSelect.tsx を新規作成</text>
+<text x="36" y="188" fill="#e2e8f0">4. src/app/page.tsx を変更</text>
+<text x="36" y="208" fill="#94a3b8">（以下、手順と確認したいこと…）</text>
+<text x="36" y="242" fill="#6ee7b7" font-weight="700">❯</text>
+<text x="50" y="242" fill="#6ee7b7" font-weight="700">Yes, and use auto mode</text>
+<text x="50" y="264" fill="#e2e8f0">Yes, manually approve edits</text>
+<text x="50" y="286" fill="#e2e8f0">No, keep planning</text>
+<text x="24" y="336" fill="#94a3b8">⏸ plan mode on</text>
+</g>
+<line x1="472" y1="120" x2="490" y2="104" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="3 3"/>
+<line x1="472" y1="238" x2="490" y2="186" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="3 3"/>
+<line x1="472" y1="260" x2="490" y2="244" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="3 3"/>
+<line x1="472" y1="282" x2="490" y2="294" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="3 3"/>
+<line x1="472" y1="332" x2="490" y2="334" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="3 3"/>
+<circle cx="502" cy="100" r="10" fill="#f97316"/>
+<text x="502" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">1</text>
+<text x="518" y="100" font-size="13" font-weight="700" fill="#0f172a">計画の中身</text>
+<text x="518" y="118" font-size="12" fill="#475569">作る・変えるファイルを確認</text>
+<circle cx="502" cy="182" r="10" fill="#f97316"/>
+<text x="502" y="186" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">2</text>
+<text x="518" y="182" font-size="13" font-weight="700" fill="#0f172a">承認して auto で実装</text>
+<text x="518" y="200" font-size="12" fill="#475569">確認なしで一気に進む</text>
+<circle cx="502" cy="240" r="10" fill="#10b981"/>
+<text x="502" y="244" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">3</text>
+<text x="518" y="240" font-size="13" font-weight="700" fill="#047857">承認して1つずつ確認 ★</text>
+<text x="518" y="258" font-size="12" fill="#475569">初心者はこれがおすすめ</text>
+<circle cx="502" cy="294" r="10" fill="#f97316"/>
+<text x="502" y="298" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">4</text>
+<text x="518" y="294" font-size="13" font-weight="700" fill="#0f172a">承認せず計画を直す</text>
+<text x="518" y="312" font-size="12" fill="#475569">直してほしい点を伝える</text>
+<circle cx="502" cy="334" r="10" fill="#f97316"/>
+<text x="502" y="338" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">5</text>
+<text x="518" y="334" font-size="13" font-weight="700" fill="#0f172a">いまは plan モード</text>
+<text x="518" y="352" font-size="12" fill="#475569">ソースはまだ1行も変わらない</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図11-11: 画面イメージ（プランモードの承認画面）。文言はバージョンや設定によって少し変わります</div>
+</div>
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: `/plan` を先頭に付けると、その指示だけプランモードになる
+
+```text
+/plan 書籍一覧ページ（src/app/page.tsx）に並べ替え機能を追加したい。
+```
+
+- `Shift+Tab` でモードを切り替えなくても、指示の先頭に `/plan` を付けるだけで「計画だけ立てて」と伝えられます。
+- 計画を立てる間、Claude Code はコードを読んだり調べたりしますが、ソースファイルは書き換えません。
+
+##### 解説2: 計画の「変更するファイル」を真っ先に読む
+
+```text
+### 変更するファイル
+1. src/lib/sortBooks.ts（新規）: sortBooks(books, key) を作る
+```
+
+- 計画の中で一番大事なのは「どのファイルを新しく作り、どのファイルを変えるか」です。頼んでいないファイル（例: 認証まわり）が混ざっていたら、ここで止めます。
+- 「新規」と「変更」の区別も確認しましょう。既存ファイルの変更は、壊してしまう可能性があるぶん注意が必要です。
+
+##### 解説3: 「確認したいこと」には必ず答える
+
+```text
+### 確認したいこと
+- ?sort=abc のような想定外の値のときは「新しい順」にしてよいですか？
+```
+
+- AI が迷った点を質問してくれています。答えずに承認すると、AI が推測で決めた仕様のまま実装されます。
+- 「No, keep planning」を選んで「はい、新しい順にしてください」と答えると、計画が更新されます。
+
+##### 解説4: 承認の選択肢の選び方
+
+| 選択肢 | その後の動き | おすすめの場面 |
+|--------|-------------|---------------|
+| `Yes, and use auto mode` | 承認し、auto モードで確認なしに実装を進める | 計画が小さく、内容に完全に納得しているとき |
+| `Yes, manually approve edits` | 承認し、ファイル編集のたびに確認しながら実装する | **初心者はこれ**。差分を見ながら進められる |
+| `No, keep planning` | 承認せず、プランモードのまま計画を直す | 計画に直してほしい点があるとき |
+
+- auto モードが使えない環境では、1つ目の選択肢が `Yes, auto-accept edits`（ファイル編集を自動で承認）と表示されます。
+- `Ctrl+G` を押すと、計画をテキストエディタで開いて直接書き直せます。
+
+> **つまずきポイント⑦: 計画を読まずに「Yes」を押す**
+> プランモードの価値は「実装の前に、あなたが計画をチェックできる」ことです。計画を読まずに承認すると、プランモードを使わなかったのと同じになります。特に「変更するファイル」と「確認したいこと」は必ず読みましょう。
+
+**NG（読まずに承認する）:** 計画が表示されたら、すぐに `Yes, and use auto mode` を選ぶ。頼んでいない `SortSelect.tsx` の作成まで確認なしで進み、質問への答えも AI の推測で決まってしまう。
+
+**OK（読んで、直してから承認する）:** `No, keep planning` を選び、次のように伝えてから、もう一度計画を確認する。
+
+```text
+計画を次のように直してください。
+- 今回は手順1（sortBooks とテスト）だけにして、SortSelect と page.tsx の変更は次回にします
+- 想定外の ?sort= の値は「新しい順」で OK です
 ```
 
 ### 4-2. アプリ全体像の伝え方
@@ -1061,7 +2319,9 @@ C:\Program Files\ClaudeCode\CLAUDE.md   ← 企業ポリシー（IT管理者）
 
 > **重要**: これらは全て **結合（concatenate）** されます。上位が下位を上書きするのではなく、全てが読み込まれます。
 
-`AGENTS.md` という名前のファイルを置いている場合、`CLAUDE.md` と同様に扱われます（他のAIエージェントとの互換用）。両方ある場合は両方読まれます。
+`AGENTS.md`（ほかの AI コーディングツールと共通で使われる指示書の名前）しか無いリポジトリでは、Claude Code は `AGENTS.md` を `CLAUDE.md` の代わりに読みます。ただし、作業フォルダかその上のフォルダに `CLAUDE.md`（または `.claude/CLAUDE.md`・`CLAUDE.local.md`）があるときは、既定では **`CLAUDE.md` 側だけが読まれ、`AGENTS.md` は読まれません**。両方を使いたい場合は、`CLAUDE.md` の中に `@AGENTS.md` と1行書いて取り込みます。
+
+> **注意（以前の版からの修正）:** 以前の版では「両方ある場合は両方読まれる」と説明していましたが、2026年10月時点の既定の動きは上のとおりです（`/config` の設定で変更できます）。
 
 ### 5-3. 作成タイミング
 
@@ -1192,6 +2452,167 @@ src/
 ```
 
 最後の `@docs/requirements.md` のような行は、CLAUDE.md 内の **ファイル参照記法** です。`@` で始めるとそのファイルの中身がコンテキストに自動で取り込まれ、Claude がドキュメントを踏まえて作業できるようになります。
+
+### 5-4-1. 書籍アプリ用の小さな CLAUDE.md（実例）
+
+上のテンプレートは大きなチーム開発向けの「全部入り」です。第1〜10章の書籍管理アプリくらいの規模なら、もっと短い CLAUDE.md で十分です。公式ドキュメントでも「1つの CLAUDE.md は200行以内を目安に。長いほどコンテキストを消費し、指示が守られにくくなる」とされています。
+
+> **ヒント:** 何もない状態から書くのが大変なら、Claude Code の中で `/init` と入力してください。プロジェクトのファイルを調べて CLAUDE.md の下書きを作ってくれます。下書きを読み、間違いを直し、不要な行を削ってから使いましょう。
+
+#### 書籍管理アプリの CLAUDE.md
+
+> **▼ このコードがやること（先に日本語で）:** 書籍管理アプリのリポジトリの一番上に置く「AI への引き継ぎメモ」です。何のアプリか、よく使うコマンド、フォルダの役割、守ってほしい決まり、作業の進め方を、30行に収めています。Claude Code は起動するたびにこれを読んでから作業を始めます。
+
+```markdown
+# 書籍管理アプリ（my-books-app）
+
+読んだ本・読みたい本を記録する個人用の Web アプリ。
+
+## 技術スタック
+- Next.js（App Router）+ TypeScript + Tailwind CSS
+- データベースと認証: Supabase（books テーブル）
+
+## よく使うコマンド
+- 開発サーバー: `npm run dev`
+- Lint: `npm run lint`
+- 型チェック: `npx tsc --noEmit`
+- テスト: `npx vitest run`
+
+## フォルダの役割
+- `src/app/`: ページ（フォルダ名がそのまま URL になる）
+- `src/components/`: 画面の部品（BookCard、StatusBadge など）
+- `src/lib/`: Supabase クライアントと共通の関数
+- `src/types/`: 型定義（Book 型など）
+
+## コードの決まり
+- 書籍のステータスは `reading` / `completed` / `want_to_read` の3つだけ
+- Supabase からのデータ取得は Server Component で行う
+- `any` 型は使わない（分からないときは `unknown` にして絞り込む）
+
+## 作業の進め方
+- 変更したら `npm run lint` と `npx tsc --noEmit` を実行し、結果を報告する
+- 頼まれた範囲のファイルだけを変更する。ほかに直したい所があれば提案だけする
+- `.env.local` は読まない・書かない
+- `git push` はしない（人間が行う）
+```
+
+**▼ 実行結果（行数を数えて「200行以内」の目安を確かめる）**
+
+```text
+$ wc -l CLAUDE.md
+30 CLAUDE.md
+```
+
+`wc -l` はファイルの行数を数えるコマンドです（Windows では Git Bash で使えます）。30行なので、目安の200行に十分収まっています。
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: 冒頭の2行で「何のアプリか」を伝える
+
+```markdown
+# 書籍管理アプリ（my-books-app）
+
+読んだ本・読みたい本を記録する個人用の Web アプリ。
+```
+
+- 新人さんに最初に伝えるのと同じで、目的が分かっていると AI の判断（画面の文言、機能の優先度など）がぶれにくくなります。
+
+##### 解説2: 「よく使うコマンド」は確かめ方の辞書
+
+```markdown
+## よく使うコマンド
+- Lint: `npm run lint`
+- 型チェック: `npx tsc --noEmit`
+```
+
+- ここに書いておくと、指示のたびに「確かめ方」を書かなくても、Claude Code がこのコマンドで検証してくれるようになります（0.1.2 の解説4）。
+- 2-2 の `allow` に同じコマンドを入れておくと、確認画面も出ずに作業ループが回ります。
+
+##### 解説3: 決まりは「守れたかどうか確かめられる形」で書く
+
+```markdown
+- 書籍のステータスは `reading` / `completed` / `want_to_read` の3つだけ
+- `any` 型は使わない（分からないときは `unknown` にして絞り込む）
+```
+
+- 「きれいに書く」のような感想ではなく、「守ったか・守っていないか」がはっきり判定できる書き方にしています。
+- 禁止するだけでなく「代わりにどうするか」（`unknown` にする）も書くと、AI が迷いません。
+
+##### 解説4: 「作業の進め方」で、人間とAIの役割分担を決める
+
+```markdown
+- 頼まれた範囲のファイルだけを変更する。ほかに直したい所があれば提案だけする
+- `git push` はしない（人間が行う）
+```
+
+- 0.4 の「安全に使うための基本ルール」を、AI 自身に毎回読ませる形にしたものです。
+- ただし CLAUDE.md は「お願い」であり、絶対に守られる保証はありません。`.env` や `git push` のように**絶対に**させたくないことは、2-2 の `deny` やフックでも止めておきます（1-4 の使い分けの図も参照）。
+
+CLAUDE.md は、置き場所によって「いつ読まれるか」が違います。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 330" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-11-11" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<text x="170" y="24" text-anchor="middle" font-size="13" font-weight="700" fill="#0f172a">置き場所</text>
+<text x="565" y="24" text-anchor="middle" font-size="13" font-weight="700" fill="#0f172a">読まれるタイミング</text>
+<rect x="20" y="40" width="300" height="44" rx="6" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.2"/>
+<text x="32" y="58" font-size="12" font-weight="700" font-family="Consolas, Menlo, monospace" fill="#1e40af">~/.claude/CLAUDE.md</text>
+<text x="32" y="76" font-size="12" fill="#475569">自分の全プロジェクト共通のルール</text>
+<rect x="20" y="92" width="300" height="44" rx="6" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.2"/>
+<text x="32" y="110" font-size="12" font-weight="700" font-family="Consolas, Menlo, monospace" fill="#1e40af">./CLAUDE.md</text>
+<text x="32" y="128" font-size="12" fill="#475569">チームで共有するプロジェクトのルール</text>
+<rect x="20" y="144" width="300" height="44" rx="6" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.2"/>
+<text x="32" y="162" font-size="12" font-weight="700" font-family="Consolas, Menlo, monospace" fill="#1e40af">./CLAUDE.local.md</text>
+<text x="32" y="180" font-size="12" fill="#475569">このプロジェクトでの自分だけのメモ</text>
+<rect x="20" y="196" width="300" height="44" rx="6" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.2"/>
+<text x="32" y="214" font-size="12" font-weight="700" font-family="Consolas, Menlo, monospace" fill="#c2410c">./.claude/rules/testing.md</text>
+<text x="32" y="232" font-size="12" fill="#475569">paths に合うファイルを触ったとき用</text>
+<rect x="20" y="248" width="300" height="44" rx="6" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.2"/>
+<text x="32" y="266" font-size="12" font-weight="700" font-family="Consolas, Menlo, monospace" fill="#c2410c">./src/app/api/CLAUDE.md</text>
+<text x="32" y="284" font-size="12" fill="#475569">そのフォルダのファイル専用のルール</text>
+<rect x="430" y="40" width="270" height="148" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="565" y="64" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">セッション開始時に必ず読む</text>
+<text x="446" y="92" font-size="12" fill="#334155">・ユーザーの CLAUDE.md</text>
+<text x="446" y="114" font-size="12" fill="#334155">・プロジェクトの CLAUDE.md</text>
+<text x="446" y="136" font-size="12" fill="#334155">・CLAUDE.local.md</text>
+<text x="446" y="164" font-size="12" fill="#475569">（@ で取り込んだファイルも一緒に）</text>
+<rect x="430" y="200" width="270" height="92" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="1.5" stroke-dasharray="6 4"/>
+<text x="565" y="224" text-anchor="middle" font-size="13" font-weight="700" fill="#c2410c">必要になったときだけ読む</text>
+<text x="446" y="250" font-size="12" fill="#334155">関係ない作業では読まれない</text>
+<text x="446" y="274" font-size="12" fill="#334155">→ 作業机（コンテキスト）の節約</text>
+<line x1="320" y1="62" x2="428" y2="84" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#ar-11-11)"/>
+<line x1="320" y1="114" x2="428" y2="114" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#ar-11-11)"/>
+<line x1="320" y1="166" x2="428" y2="144" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#ar-11-11)"/>
+<line x1="320" y1="218" x2="428" y2="236" stroke="#f97316" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#ar-11-11)"/>
+<line x1="320" y1="270" x2="428" y2="262" stroke="#f97316" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#ar-11-11)"/>
+<text x="360" y="318" text-anchor="middle" font-size="12" fill="#475569">読み込まれた内容はすべて「足し算」されます（上書きではありません）。1ファイル200行以内が目安です</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図11-12: CLAUDE.md とルールファイルが読まれるタイミング。実線はいつも、点線は必要なときだけ</div>
+</div>
+
+> **つまずきポイント⑧: CLAUDE.md に「感想」や「何でも」を書きすぎる**
+> 「きれいなコードを書くこと」「ベストプラクティスに従うこと」は、人によって意味が違うので、AI にとっては何も書いていないのとほぼ同じです。逆に、思いついたことを全部書いて数百行になると、大事な決まりが埋もれて守られにくくなります。**確かめられる形で、短く**書きましょう。
+
+**NG（あいまい・書きすぎ）:**
+
+```markdown
+## ルール
+- きれいで読みやすいコードを書くこと
+- ベストプラクティスに従うこと
+- バグを出さないように気をつけること
+- （以下、思いついた注意が300行続く…）
+```
+
+**OK（具体的・短い）:**
+
+```markdown
+## コードの決まり
+- 部品（コンポーネント）は src/components/ に1ファイル1つ置く
+- any 型は使わない（分からないときは unknown にして絞り込む）
+- 変更後は npm run lint と npx tsc --noEmit を実行して結果を報告する
+```
 
 ### 5-5. CLAUDE.local.md（個人設定）
 
@@ -1620,11 +3041,11 @@ argument-hint: "[filepath]"
 disable-model-invocation: false
 # true=ユーザーが/で呼び出せる
 user-invocable: true
-# 使用可能なツール（スペース区切り）
+# 確認なしで使ってよいツール（スペースかカンマ区切り、またはリスト）
 allowed-tools: "Read Grep Edit"
-# 使用モデル
-model: claude-opus-4-6
-# 推論レベル（low/medium/high/max）
+# 使用モデル（opus / sonnet / haiku などの別名、またはモデルID）
+model: opus
+# 推論レベル（low/medium/high/xhigh/max）
 effort: high
 # forkでサブエージェントとして実行
 context: fork
@@ -1642,8 +3063,8 @@ paths: ["src/**/*.tsx"]
 - `argument-hint`: 補完時に表示する引数の説明（例 `[filepath]`）。
 - `disable-model-invocation`: Claude が自動でこの Skill を呼ぶのを禁止するか。
 - `user-invocable`: ユーザーがスラッシュコマンドとして呼べるか。
-- `allowed-tools`: この Skill 内で使えるツールを限定。
-- `model`: 使うモデル（Opus / Sonnet など）。
+- `allowed-tools`: この Skill を実行している間、**確認なしで使ってよい**ツール。使えるツールを「制限」するものではなく、許可を「先渡し」するものです（以前の版の「ツールを限定」という説明を修正しました）。
+- `model`: 使うモデル。`opus`・`sonnet`・`haiku` のような別名で書くと、その時点の最新版が使われます（2026年10月時点では Opus 5.5 など Claude 5 系）。
 - `effort`: 推論の深さ。high のほうが時間とコストがかかるが品質が上がる。
 - `context`: `fork` でサブエージェントとして独立コンテキストで実行。メインの会話を汚さない。
 - `agent`: ビルトインのサブエージェントタイプ。
@@ -1679,7 +3100,7 @@ paths: ["src/**/*.tsx"]
 - 機能: コードをレビューし、セキュリティ・パフォーマンス・規約の
   3観点で問題を検出・修正提案
 - ツール: Read, Grep, Glob
-- モデル: claude-opus-4-6
+- モデル: opus
 - context: fork（メインコンテキストを汚さない）
 
 ## Skill 2: /create-component（コンポーネント生成）
@@ -1720,7 +3141,7 @@ description: コードレビューを実施。セキュリティ・パフォー�
 argument-hint: "[filepath or empty for git diff]"
 user-invocable: true
 allowed-tools: Read Grep Glob Bash
-model: claude-opus-4-6
+model: opus
 effort: high
 context: fork
 ---
@@ -1786,7 +3207,7 @@ description: CLAUDE.mdとRulesに準拠したReactコンポーネントの雛形
 argument-hint: <ComponentName>
 user-invocable: true
 allowed-tools: Read Write Edit Bash
-model: claude-sonnet-4-6
+model: sonnet
 effort: medium
 ---
 
@@ -1823,17 +3244,109 @@ effort: medium
 - 使い方の例を1つ提示
 ```
 
+### 7-6-1. 書籍アプリ用の小さなスキル `/check`（確かめ係）
+
+上の2つは本格的な例でした。最初に作るなら、もっと小さく「毎回同じ確認作業」をスキルにするのがおすすめです。ここでは、変更のあとに lint・型チェック・テストをまとめて実行し、結果を表で報告してくれる `/check` を作ります。
+
+> **▼ このコードがやること（先に日本語で）:** `.claude/skills/check/SKILL.md` に置くスキルです。`/check` と入力すると、いま変わっているファイルの一覧を自動で読み込み、3つの確認コマンドを確認画面なしで実行し、結果を表にまとめます。このスキルはファイルを書き換えず、問題を見つけたら直し方を提案するだけにしています。
+
+```markdown
+---
+name: check
+description: 書籍アプリの変更を lint・型チェック・テストで確かめて、結果を表にまとめる。
+disable-model-invocation: true
+allowed-tools:
+  - Bash(npm run lint)
+  - Bash(npx tsc --noEmit)
+  - Bash(npx vitest run *)
+---
+
+# 変更の確認
+
+## いま変わっているファイル
+!`git status --short`
+
+## やること
+1. `npm run lint` を実行する
+2. `npx tsc --noEmit` を実行する
+3. `npx vitest run` を実行する
+4. 結果を「チェック / 結果 / メモ」の3列の表にまとめる（失敗したものはエラーの要点も書く）
+
+## 守ること
+- このスキルではファイルを編集しない。失敗を見つけたら、直し方の提案だけをする
+```
+
+**▼ 実行結果（`/check` と入力したときの報告の例。テストの数は 0.4.1 の sortBooks のテストを実行した場合）**
+
+```text
+いま変わっているファイル: src/lib/sortBooks.ts, src/lib/sortBooks.test.ts
+
+| チェック          | 結果 | メモ                         |
+|-------------------|------|------------------------------|
+| npm run lint      | 成功 | 警告なし                     |
+| npx tsc --noEmit  | 成功 | 型エラーなし                 |
+| npx vitest run    | 成功 | 1 ファイル・4 テストすべて通過 |
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: `name` がコマンド名になる
+
+```markdown
+name: check
+description: 書籍アプリの変更を lint・型チェック・テストで確かめて、結果を表にまとめる。
+```
+
+- フォルダ名と `name` を `check` にすると、`/check` で呼び出せます。
+- `description` は、スキルの一覧に表示される説明です。Claude が「このスキルを使うべきか」を判断する材料にもなります。
+
+##### 解説2: `disable-model-invocation: true` で「呼ばれたときだけ」動かす
+
+```markdown
+disable-model-invocation: true
+```
+
+- `true` にすると、Claude が自分の判断でこのスキルを使うことはなくなり、あなたが `/check` と入力したときだけ動きます。
+- 「いつ確認するか」を人間が決めたい作業に向いています。
+
+##### 解説3: `allowed-tools` で確認画面を省く
+
+```markdown
+allowed-tools:
+  - Bash(npm run lint)
+  - Bash(npx tsc --noEmit)
+  - Bash(npx vitest run *)
+```
+
+- ここに書いたコマンドは、このスキルを実行している間だけ確認なしで実行されます。
+- コマンドにスペースが入るので、1行に並べず、`-` で始まるリスト（YAML のリスト）の形で書いています。
+
+##### 解説4: `` !`git status --short` `` で、その瞬間の状態を埋め込む
+
+```markdown
+## いま変わっているファイル
+!`git status --short`
+```
+
+- `` !`コマンド` `` は、スキルが呼ばれた瞬間にコマンドを実行し、その結果をこの場所に貼り込む書き方です（7-4）。
+- Claude は「どのファイルが変わったか」を最初から知った状態で作業を始められます。
+
 ### 7-7. ビルトインSkills
 
 Claude Codeには組み込みのSkillもあります。
 
 | Skill | 用途 | 使い方 |
 |-------|------|--------|
-| `/commit` | 変更をコミット | `/commit` |
-| `/simplify` | コード改善レビュー | `/simplify focus on performance` |
+| `/code-review`（別名 `/review`） | 変更（差分）のバグを探すレビュー | `/code-review` |
+| `/security-review` | 変更のセキュリティ上の問題を探す | `/security-review` |
+| `/simplify` | コード改善レビュー（重複や読みにくさの整理） | `/simplify focus on performance` |
 | `/loop` | 定期実行 | `/loop 5m check if deploy finished` |
+| `/batch` | 大きな変更を小さく分けて並列に進める | `/batch 全コンポーネントの props 型を interface に統一` |
 | `/claude-api` | Claude APIリファレンス読み込み | `/claude-api` |
-| `/frontend-design` | 高品質UIコンポーネント生成 | 自動発火（UI実装時） |
+
+> **注意（以前の版からの修正）:** 以前の版では `/commit` と `/frontend-design` を組み込みの Skill として紹介していましたが、2026年10月時点の公式ドキュメントの組み込みコマンド一覧にはありません。コミットは「この変更をコミットして」と言葉で頼むか、自分で `.claude/skills/commit/SKILL.md` を作れば `/commit` で呼べるようになります。本章で `/commit` と書いている箇所は、この自作スキル（または同じ内容の依頼）のことだと読み替えてください。
+>
+> また、7-5 で作る自作の `/review` と `/simplify` は、組み込みの同名コマンドと名前が重なります。混乱を避けたい場合は `/team-review` のように別の名前にしておくと安心です。
 
 ---
 
@@ -1860,18 +3373,18 @@ Subagentsは**独立したAIエージェント**を定義し、特定のタス�
 name: agent-id
 # いつ委任するかの判断基準
 description: "説明文"
-# 使用モデル
-model: claude-opus-4-6
-# 許可するツール
-tools: Read Bash Edit Grep
-permissions:
-  allow: ["Bash(npm test*)"]
-  deny: ["Edit(/.env)", "WebFetch"]
+# 使用モデル（sonnet / opus / haiku / inherit、またはモデルID）
+model: opus
+# 使ってよいツール（カンマ区切り）
+tools: Read, Bash, Edit, Grep
+# 使わせないツール（カンマ区切り）
+disallowedTools: WebFetch
+# 権限モード（default / acceptEdits / plan など）
+permissionMode: default
 # プリロードするSkill
 skills: [review, create-component]
-memory:
-  # メモリ使用の可否
-  enabled: true
+# 会話をまたいで覚えておく場所（user / project / local）
+memory: project
 # worktreeで並列実行
 isolation: worktree
 ---
@@ -1879,12 +3392,15 @@ isolation: worktree
 
 - `name`: エージェント識別子。
 - `description`: メインのClaude がこのエージェントへ委任するか判断する材料。
-- `model`: 使用するモデル。
-- `tools`: このエージェント内で許可するツール（スペース区切り）。
-- `permissions.allow` / `deny`: ツール実行の許可・拒否。
+- `model`: 使用するモデル。`inherit` にするとメインの会話と同じモデルを使います。
+- `tools`: このエージェントが使えるツール（カンマ区切り）。省略するとメインと同じツールをすべて使えます。
+- `disallowedTools`: 使わせないツール。
+- `permissionMode`: このエージェントの権限モード（2-3 の表と同じ名前）。
 - `skills`: 起動時にあらかじめ読み込む Skill。
-- `memory.enabled`: メモリの使用可否。
+- `memory`: エージェント専用の記憶の保存場所。`project` なら `.claude/agent-memory/<名前>/` に保存されます。
 - `isolation: worktree`: worktree で別作業ツリーを使って並列実行。
+
+> **注意（以前の版からの修正）:** 以前の版の `permissions:`（allow / deny）と `memory: enabled:` という書き方は、サブエージェントの設定には存在しません。ツールの制限は `tools` と `disallowedTools`、確認の出方は `permissionMode` で指定します。
 
 ### 8-4. ビルトインSubagent
 
@@ -1906,7 +3422,7 @@ isolation: worktree
 ## Agent 1: code-reviewer.md
 - 名前: code-reviewer
 - 目的: コードレビューの専門エージェント
-- モデル: claude-opus-4-6
+- モデル: opus
 - 許可ツール: Read, Bash, Grep, Glob（Editは禁止）
 - 禁止: WebFetch, Edit（読み取り専用）
 - 動作:
@@ -1918,7 +3434,7 @@ isolation: worktree
 ## Agent 2: test-writer.md
 - 名前: test-writer
 - 目的: テストコード作成の専門エージェント
-- モデル: claude-sonnet-4-6（コスト効率重視）
+- モデル: sonnet（コスト効率重視）
 - 許可ツール: Read, Write, Edit, Bash, Grep
 - 許可Bash: npm test*, npx vitest*
 - 動作:
@@ -1936,12 +3452,9 @@ isolation: worktree
 ---
 name: code-reviewer
 description: コードレビューの専門エージェント。セキュリティ、パフォーマンス、規約準拠を検査し、問題を報告する。自身ではコードを編集しない。
-model: claude-opus-4-6
-tools: Read Bash Grep Glob
-permissions:
-  deny: ["Edit", "Write", "WebFetch"]
-memory:
-  enabled: false
+model: opus
+tools: Read, Bash, Grep, Glob
+disallowedTools: Edit, Write, WebFetch
 ---
 
 あなたはコードレビューの専門家です。
@@ -2381,7 +3894,7 @@ Claude Codeのコンテキストウィンドウには上限があります。長
 - コンテキストウィンドウの使用率が高くなった時
 ```
 
-> **注意**: `/compact` を実行するとCLAUDE.mdは再読み込みされますが、会話の細かいニュアンスは失われます。`PostCompact` Hookで重要な情報を再注入すると良いです。
+> **注意**: `/compact` を実行するとCLAUDE.mdは再読み込みされますが、会話の細かいニュアンスは失われます。`SessionStart` Hook（マッチャー `compact`）で重要な情報を再注入すると良いです（2-5 の設定例を参照）。
 
 ### 12-4. Memory システム
 
@@ -2805,7 +4318,7 @@ CLAUDE.mdの規約に準拠しているか再確認してから修正してく�
 | **CLAUDE.md（共有）** | `./CLAUDE.md` or `./.claude/CLAUDE.md` | Yes |
 | **CLAUDE.md（個人）** | `./CLAUDE.local.md` | No |
 | **CLAUDE.md（全体）** | `~/.claude/CLAUDE.md` | No |
-| **AGENTS.md（互換用）** | `./AGENTS.md` | Yes |
+| **AGENTS.md（CLAUDE.md が無いとき）** | `./AGENTS.md` | Yes |
 | **Rules** | `.claude/rules/*.md` | Yes |
 | **Skills** | `.claude/skills/<name>/SKILL.md` | Yes |
 | **Skills（個人）** | `~/.claude/skills/<name>/SKILL.md` | No |

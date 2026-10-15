@@ -1,0 +1,56 @@
+2026-10-15 20:50:08.346 JST [36972] LOG:  starting PostgreSQL 17.6 on x86_64-windows, compiled by msvc-19.44.35213, 64-bit
+2026-10-15 20:50:08.347 JST [36972] LOG:  listening on IPv4 address "127.0.0.1", port 54329
+2026-10-15 20:50:08.509 JST [42580] LOG:  database system was shut down at 2026-10-15 20:49:56 JST
+2026-10-15 20:50:08.546 JST [36972] LOG:  database system is ready to accept connections
+2026-10-15 20:52:51.599 JST [9900] ERROR:  new row for relation "books" violates check constraint "books_rating_check"
+2026-10-15 20:52:51.599 JST [9900] DETAIL:  Failing row contains (8ad56276-529e-49f6-9a10-b0b8a76045a0, テスト, テスト, null, null, 10, want_to_read, null, null, 2026-10-15 11:52:51.597226+00, 2026-10-15 11:52:51.597226+00).
+2026-10-15 20:52:51.599 JST [9900] STATEMENT:  INSERT INTO books (title, author, rating) VALUES ('テスト', 'テスト', 10)
+2026-10-15 20:52:51.601 JST [9900] ERROR:  new row for relation "books" violates check constraint "books_status_check"
+2026-10-15 20:52:51.601 JST [9900] DETAIL:  Failing row contains (8a1f471e-b670-46fd-a39f-67767e4acb3e, テスト, テスト, null, null, null, done, null, null, 2026-10-15 11:52:51.600921+00, 2026-10-15 11:52:51.600921+00).
+2026-10-15 20:52:51.601 JST [9900] STATEMENT:  INSERT INTO books (title, author, status) VALUES ('テスト', 'テスト', 'done')
+2026-10-15 20:52:51.602 JST [9900] ERROR:  null value in column "author" of relation "books" violates not-null constraint
+2026-10-15 20:52:51.602 JST [9900] DETAIL:  Failing row contains (360405e3-6a88-49ea-b728-3d8f0eeec31f, 著者なし, null, null, null, null, want_to_read, null, null, 2026-10-15 11:52:51.601778+00, 2026-10-15 11:52:51.601778+00).
+2026-10-15 20:52:51.602 JST [9900] STATEMENT:  INSERT INTO books (title) VALUES ('著者なし')
+2026-10-15 20:52:51.603 JST [9900] ERROR:  column "reading" does not exist at character 36
+2026-10-15 20:52:51.603 JST [9900] HINT:  Perhaps you meant to reference the column "books.rating".
+2026-10-15 20:52:51.603 JST [9900] STATEMENT:  SELECT * FROM books WHERE status = "reading"
+2026-10-15 20:52:51.604 JST [9900] ERROR:  invalid input syntax for type uuid: "2" at character 36
+2026-10-15 20:52:51.604 JST [9900] STATEMENT:  SELECT title FROM books WHERE id = '2'
+2026-10-15 20:52:51.604 JST [9900] ERROR:  relation "books" already exists
+2026-10-15 20:52:51.604 JST [9900] STATEMENT:  CREATE TABLE books (id uuid)
+2026-10-15 20:52:59.447 JST [18428] ERROR:  permission denied for table books
+2026-10-15 20:52:59.447 JST [18428] STATEMENT:  WITH pgrst_source AS ( SELECT "public"."books"."title", "public"."books"."status" FROM "public"."books"  ORDER BY "public"."books"."title" ASC   )  SELECT null::bigint AS total_result_set, pg_catalog.count(_postgrest_t) AS page_total, coalesce(json_agg(_postgrest_t), '[]') AS body, nullif(current_setting('response.headers', true), '') AS response_headers, nullif(current_setting('response.status', true), '') AS response_status, '' AS response_inserted FROM ( SELECT * FROM pgrst_source ) _postgrest_t
+2026-10-15 20:52:59.552 JST [18428] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-10-15 20:53:01.028 JST [40140] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-10-15 20:53:02.571 JST [25000] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-10-15 20:53:04.427 JST [25920] ERROR:  new row violates row-level security policy for table "books"
+2026-10-15 20:53:04.427 JST [25920] STATEMENT:  WITH pgrst_source AS (INSERT INTO "public"."books"("author", "title") SELECT "pgrst_body"."author", "pgrst_body"."title" FROM (SELECT $1 AS json_data) pgrst_payload, LATERAL (SELECT "author", "title" FROM json_to_record(pgrst_payload.json_data) AS _("author" text, "title" text) ) pgrst_body  RETURNING 1) SELECT '' AS total_result_set, pg_catalog.count(_postgrest_t) AS page_total, array[]::text[] AS header, ''::text AS body, nullif(current_setting('response.headers', true), '') AS response_headers, nullif(current_setting('response.status', true), '') AS response_status, '' AS response_inserted FROM (SELECT * FROM pgrst_source) _postgrest_t
+2026-10-15 20:53:04.447 JST [25920] ERROR:  new row violates row-level security policy for table "books"
+2026-10-15 20:53:04.447 JST [25920] STATEMENT:  WITH pgrst_source AS (INSERT INTO "public"."books"("author", "rating", "title") SELECT "pgrst_body"."author", "pgrst_body"."rating", "pgrst_body"."title" FROM (SELECT $1 AS json_data) pgrst_payload, LATERAL (SELECT "author", "rating", "title" FROM json_to_record(pgrst_payload.json_data) AS _("author" text, "rating" integer, "title" text) ) pgrst_body  RETURNING "public"."books"."author", "public"."books"."id", "public"."books"."rating", "public"."books"."status", "public"."books"."title") SELECT '' AS total_result_set, pg_catalog.count(_postgrest_t) AS page_total, array[]::text[] AS header, coalesce(json_agg(_postgrest_t), '[]') AS body, nullif(current_setting('response.headers', true), '') AS response_headers, nullif(current_setting('response.status', true), '') AS response_status, '' AS response_inserted FROM (SELECT "books"."title", "books"."author", "books"."rating", "books"."status" FROM "pgrst_source" AS "books"   ) _postgrest_t
+2026-10-15 20:53:04.507 JST [25920] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-10-15 20:53:06.230 JST [43816] ERROR:  new row for relation "books" violates check constraint "books_rating_check"
+2026-10-15 20:53:06.230 JST [43816] STATEMENT:  WITH pgrst_source AS (INSERT INTO "public"."books"("author", "rating", "title") SELECT "pgrst_body"."author", "pgrst_body"."rating", "pgrst_body"."title" FROM (SELECT $1 AS json_data) pgrst_payload, LATERAL (SELECT "author", "rating", "title" FROM json_to_record(pgrst_payload.json_data) AS _("author" text, "rating" integer, "title" text) ) pgrst_body  RETURNING "public"."books".*) SELECT '' AS total_result_set, pg_catalog.count(_postgrest_t) AS page_total, array[]::text[] AS header, coalesce(json_agg(_postgrest_t), '[]') AS body, nullif(current_setting('response.headers', true), '') AS response_headers, nullif(current_setting('response.status', true), '') AS response_status, '' AS response_inserted FROM (SELECT "books".* FROM "pgrst_source" AS "books"   ) _postgrest_t
+2026-10-15 20:53:06.778 JST [43816] ERROR:  invalid input syntax for type uuid: "2"
+2026-10-15 20:53:06.778 JST [43816] CONTEXT:  unnamed portal parameter $2 = '...'
+2026-10-15 20:53:06.778 JST [43816] STATEMENT:  WITH pgrst_source AS (UPDATE "public"."books" SET "status" = "pgrst_body"."status" FROM (SELECT $1 AS json_data) pgrst_payload, LATERAL (SELECT "status" FROM json_to_record(pgrst_payload.json_data) AS _("status" text) ) pgrst_body  WHERE  "public"."books"."id" = $2 RETURNING "public"."books".*) SELECT '' AS total_result_set, pg_catalog.count(_postgrest_t) AS page_total, array[]::text[] AS header, coalesce(json_agg(_postgrest_t), '[]') AS body, nullif(current_setting('response.headers', true), '') AS response_headers, nullif(current_setting('response.status', true), '') AS response_status, '' AS response_inserted FROM (SELECT "books".* FROM "pgrst_source" AS "books"   ) _postgrest_t
+2026-10-15 20:53:07.145 JST [43816] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-10-15 20:54:23.802 JST [47220] ERROR:  new row for relation "books" violates check constraint "books_rating_check"
+2026-10-15 20:54:23.802 JST [47220] STATEMENT:  WITH pgrst_source AS (INSERT INTO "public"."books"("author", "rating", "title") SELECT "pgrst_body"."author", "pgrst_body"."rating", "pgrst_body"."title" FROM (SELECT $1 AS json_data) pgrst_payload, LATERAL (SELECT "author", "rating", "title" FROM json_to_record(pgrst_payload.json_data) AS _("author" text, "rating" integer, "title" text) ) pgrst_body  RETURNING "public"."books".*) SELECT '' AS total_result_set, pg_catalog.count(_postgrest_t) AS page_total, array[]::text[] AS header, coalesce(json_agg(_postgrest_t), '[]') AS body, nullif(current_setting('response.headers', true), '') AS response_headers, nullif(current_setting('response.status', true), '') AS response_status, '' AS response_inserted FROM (SELECT "books".* FROM "pgrst_source" AS "books"   ) _postgrest_t
+2026-10-15 20:54:24.474 JST [47220] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-10-15 20:55:08.516 JST [30520] LOG:  checkpoint starting: time
+2026-10-15 20:55:25.267 JST [30520] LOG:  checkpoint complete: wrote 142 buffers (0.9%); 0 WAL file(s) added, 0 removed, 0 recycled; write=16.143 s, sync=0.555 s, total=16.752 s; sync files=90, longest=0.102 s, average=0.007 s; distance=510 kB, estimate=510 kB; lsn=0/1608E48, redo lsn=0/15F1E88
+2026-10-15 20:55:56.862 JST [45236] ERROR:  column "reading" does not exist at character 45
+2026-10-15 20:55:56.862 JST [45236] STATEMENT:  SELECT * FROM practice_books WHERE status = "reading"
+2026-10-15 20:56:20.629 JST [36972] LOG:  received fast shutdown request
+2026-10-15 20:56:20.634 JST [36972] LOG:  aborting any active transactions
+2026-10-15 20:56:20.644 JST [36972] LOG:  background worker "logical replication launcher" (PID 18164) exited with exit code 1
+2026-10-15 20:56:20.644 JST [30520] LOG:  shutting down
+2026-10-15 20:56:20.645 JST [30520] LOG:  checkpoint starting: shutdown immediate
+2026-10-15 20:56:20.843 JST [30520] LOG:  checkpoint complete: wrote 48 buffers (0.3%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.012 s, sync=0.161 s, total=0.199 s; sync files=39, longest=0.018 s, average=0.005 s; distance=234 kB, estimate=483 kB; lsn=0/162C7F8, redo lsn=0/162C7F8
+2026-10-15 20:56:20.865 JST [36972] LOG:  database system is shut down

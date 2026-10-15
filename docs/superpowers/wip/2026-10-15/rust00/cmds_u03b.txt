@@ -1,0 +1,6 @@
+cargo run -q -- Rust "Web アプリ"
+$env:GREETING = "おはよう"
+cargo run -q
+.\target\debug\practice.exe 1 2 3
+Remove-Item Env:GREETING
+cargo run -q

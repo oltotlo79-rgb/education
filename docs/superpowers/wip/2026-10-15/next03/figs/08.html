@@ -1,0 +1,30 @@
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 312" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-03-09" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="40" y="30" width="260" height="64" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="170" y="56" font-size="13" font-weight="bold" fill="#1e40af" text-anchor="middle">① キーボードで「R」を押す</text>
+<text x="170" y="78" font-size="12" fill="#475569" text-anchor="middle">入力欄で変化が起きる</text>
+<rect x="420" y="30" width="260" height="64" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="550" y="56" font-size="13" font-weight="bold" fill="#1e40af" text-anchor="middle">② onChange(e) が呼ばれる</text>
+<text x="550" y="78" font-size="12" fill="#475569" text-anchor="middle">e.target.value は "R"</text>
+<rect x="420" y="200" width="260" height="64" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="550" y="226" font-size="13" font-weight="bold" fill="#047857" text-anchor="middle">③ setText(e.target.value)</text>
+<text x="550" y="248" font-size="12" fill="#475569" text-anchor="middle">state の text が "R" になる</text>
+<rect x="40" y="200" width="260" height="64" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="170" y="226" font-size="13" font-weight="bold" fill="#047857" text-anchor="middle">④ 再レンダー</text>
+<text x="170" y="248" font-size="12" fill="#475569" text-anchor="middle">value={text} で入力欄に「R」を表示</text>
+<line x1="300" y1="62" x2="418" y2="62" stroke="#475569" stroke-width="2" marker-end="url(#ar-03-09)"/>
+<line x1="550" y1="94" x2="550" y2="198" stroke="#475569" stroke-width="2" marker-end="url(#ar-03-09)"/>
+<line x1="420" y1="232" x2="302" y2="232" stroke="#475569" stroke-width="2" marker-end="url(#ar-03-09)"/>
+<line x1="170" y1="200" x2="170" y2="96" stroke="#475569" stroke-width="2" marker-end="url(#ar-03-09)"/>
+<text x="180" y="152" font-size="12" fill="#64748b">次のキーへ</text>
+<circle cx="360" cy="147" r="50" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="360" y="140" font-size="14" font-weight="bold" fill="#c2410c" text-anchor="middle">state</text>
+<text x="360" y="158" font-size="12" fill="#0f172a" text-anchor="middle">text が</text>
+<text x="360" y="174" font-size="12" fill="#0f172a" text-anchor="middle">唯一の正解</text>
+<text x="360" y="298" font-size="12" fill="#c2410c" text-anchor="middle">onChange が無いと ③ が起きず、④ で元の値に戻されるので「入力できない」入力欄になる</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図3-8: 制御コンポーネントの入力ループ。1文字打つたびに ①→②→③→④ が1周します</div>
+</div>

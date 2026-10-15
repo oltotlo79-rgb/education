@@ -1,0 +1,51 @@
+▲ Next.js 16.4.1 (Turbopack)
+- Local:         http://localhost:3002
+- Network:       http://192.168.210.103:3002
+- Environments: .env.local
+✓ Ready in 1183ms
+✓ Running next.config.ts took 53ms
+- Cache Components enabled
+- Partial Prefetching enabled
+
+○ Compiling / ...
+書籍の取得に失敗しました: TypeError: fetch failed
+ GET / 200 in 9.3s (next.js: 1634ms, application-code: 7.7s)
+Error: Route "/": Next.js encountered uncached data during prerendering.
+
+`fetch(...)` or `connection()` accessed outside of `<Suspense>` prevents the route from being prerendered, blocking the page load and leading to a slower user experience.
+
+Ways to fix this:
+  - [stream] Provide a placeholder with `<Suspense fallback={...}>` around the data access
+  - [cache] Cache the data access with `"use cache"` (does not apply to `connection()`)
+  - [block] Set `export const instant = false` to allow a blocking route
+
+Learn more: https://nextjs.org/docs/messages/blocking-prerender-dynamic
+    at HomePage (src\app\page.tsx:10:6)
+   8 |     .from("books")
+   9 |     .select("*")
+> 10 |     .order("created_at", { ascending: false });
+     |      ^
+  11 |
+  12 |   if (error) {
+  13 |     console.error("書籍の取得に失敗しました:", error.message);
+書籍の取得に失敗しました: TypeError: fetch failed
+ GET / 200 in 7.1s (next.js: 2ms, application-code: 7.1s)
+Error: Route "/": Next.js encountered uncached data during prerendering.
+
+`fetch(...)` or `connection()` accessed outside of `<Suspense>` prevents the route from being prerendered, blocking the page load and leading to a slower user experience.
+
+Ways to fix this:
+  - [stream] Provide a placeholder with `<Suspense fallback={...}>` around the data access
+  - [cache] Cache the data access with `"use cache"` (does not apply to `connection()`)
+  - [block] Set `export const instant = false` to allow a blocking route
+
+Learn more: https://nextjs.org/docs/messages/blocking-prerender-dynamic
+    at HomePage (src\app\page.tsx:10:6)
+   8 |     .from("books")
+   9 |     .select("*")
+> 10 |     .order("created_at", { ascending: false });
+     |      ^
+  11 |
+  12 |   if (error) {
+  13 |     console.error("書籍の取得に失敗しました:", error.message);
+[?25h

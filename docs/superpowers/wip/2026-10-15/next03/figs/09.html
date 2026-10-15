@@ -1,0 +1,52 @@
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 476" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<rect x="10" y="10" width="440" height="456" rx="10" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+<path d="M10,40 L10,20 Q10,10 20,10 L440,10 Q450,10 450,20 L450,40 Z" fill="#e2e8f0"/>
+<circle cx="28" cy="25" r="5" fill="#f87171"/>
+<circle cx="44" cy="25" r="5" fill="#fbbf24"/>
+<circle cx="60" cy="25" r="5" fill="#34d399"/>
+<rect x="80" y="15" width="260" height="20" rx="10" fill="#ffffff"/>
+<text x="94" y="30" font-size="12" fill="#475569">localhost:3000</text>
+<text x="30" y="72" font-size="18" font-weight="bold" fill="#0f172a">書籍登録</text>
+<text x="30" y="98" font-size="12" fill="#475569">タイトル *</text>
+<rect x="30" y="106" width="400" height="26" rx="4" fill="#ffffff" stroke="#ef4444" stroke-width="1.5"/>
+<text x="30" y="150" font-size="12" fill="#dc2626">タイトルは必須です</text>
+<text x="250" y="150" font-size="12" fill="#dc2626" font-family="Consolas, Cascadia Mono, monospace">← errors.title</text>
+<text x="30" y="174" font-size="12" fill="#475569">著者 *</text>
+<rect x="30" y="182" width="400" height="26" rx="4" fill="#ffffff" stroke="#94a3b8"/>
+<text x="40" y="200" font-size="13" fill="#0f172a">田中</text>
+<text x="30" y="232" font-size="12" fill="#475569">価格 *</text>
+<rect x="30" y="240" width="400" height="26" rx="4" fill="#ffffff" stroke="#ef4444" stroke-width="1.5"/>
+<text x="40" y="258" font-size="13" fill="#0f172a">-100</text>
+<text x="30" y="284" font-size="12" fill="#dc2626">価格は0より大きい数値を入力してください</text>
+<text x="290" y="284" font-size="12" fill="#dc2626" font-family="Consolas, Cascadia Mono, monospace">← errors.price</text>
+<text x="30" y="308" font-size="12" fill="#475569">カテゴリ</text>
+<rect x="30" y="316" width="400" height="26" rx="4" fill="#ffffff" stroke="#94a3b8"/>
+<text x="40" y="334" font-size="13" fill="#0f172a">プログラミング</text>
+<text x="412" y="334" font-size="12" fill="#64748b">▼</text>
+<text x="30" y="366" font-size="12" fill="#475569">説明</text>
+<rect x="30" y="374" width="400" height="40" rx="4" fill="#ffffff" stroke="#94a3b8"/>
+<rect x="30" y="426" width="100" height="30" rx="6" fill="#3b82f6"/>
+<text x="80" y="446" font-size="13" fill="#ffffff" text-anchor="middle">登録する</text>
+<text x="470" y="40" font-size="13" font-weight="bold" fill="#0f172a">このときの state の中身</text>
+<text x="470" y="64" font-size="12" font-weight="bold" fill="#1e40af" font-family="Consolas, Cascadia Mono, monospace">formData</text>
+<rect x="470" y="72" width="240" height="154" rx="8" fill="#0f172a"/>
+<text x="482" y="94" font-size="12" fill="#e2e8f0" font-family="Consolas, Cascadia Mono, monospace">{</text>
+<text x="498" y="114" font-size="12" fill="#e2e8f0" font-family="Consolas, Cascadia Mono, monospace">title: <tspan fill="#fcd34d">""</tspan>,</text>
+<text x="498" y="134" font-size="12" fill="#e2e8f0">author: <tspan fill="#fcd34d">"田中"</tspan>,</text>
+<text x="498" y="154" font-size="12" fill="#e2e8f0" font-family="Consolas, Cascadia Mono, monospace">price: <tspan fill="#fcd34d">"-100"</tspan>,</text>
+<text x="498" y="174" font-size="12" fill="#e2e8f0" font-family="Consolas, Cascadia Mono, monospace">category: <tspan fill="#fcd34d">"programming"</tspan>,</text>
+<text x="498" y="194" font-size="12" fill="#e2e8f0" font-family="Consolas, Cascadia Mono, monospace">description: <tspan fill="#fcd34d">""</tspan></text>
+<text x="482" y="214" font-size="12" fill="#e2e8f0" font-family="Consolas, Cascadia Mono, monospace">}</text>
+<text x="470" y="252" font-size="12" font-weight="bold" fill="#c2410c" font-family="Consolas, Cascadia Mono, monospace">errors</text>
+<rect x="470" y="260" width="240" height="100" rx="8" fill="#0f172a"/>
+<text x="482" y="282" font-size="12" fill="#e2e8f0" font-family="Consolas, Cascadia Mono, monospace">{</text>
+<text x="498" y="302" font-size="12" fill="#e2e8f0">title: <tspan fill="#fca5a5">"タイトルは必須です"</tspan>,</text>
+<text x="498" y="322" font-size="12" fill="#e2e8f0">price: <tspan fill="#fca5a5">"価格は0より…"</tspan></text>
+<text x="482" y="342" font-size="12" fill="#e2e8f0" font-family="Consolas, Cascadia Mono, monospace">}</text>
+<text x="470" y="386" font-size="12" fill="#475569">errors に入っている項目だけ、</text>
+<text x="470" y="404" font-size="12" fill="#475569">入力欄の下に赤いメッセージが出る</text>
+<text x="470" y="430" font-size="12" fill="#475569">（author は OK なので errors に無い）</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図3-9: 書籍登録フォームの画面イメージ。タイトルを空、価格を -100 にして「登録する」を押したときの表示です</div>
+</div>

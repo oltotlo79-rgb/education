@@ -1,0 +1,10 @@
+   Compiling design_lab v0.1.0 (...\design_lab)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.70s
+     Running `target\debug\u04_state.exe`
+[memory] Ok(2)
+[memory] Ok(1)
+[memory] 件数 = 2
+[read-only] Err("ただいまメンテナンス中のため保存できません")
+[read-only] Err("ただいまメンテナンス中のため保存できません")
+[read-only] 件数 = 0
+起動失敗: 知らない保存先です: postgres

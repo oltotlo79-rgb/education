@@ -1,0 +1,9 @@
+   Compiling design_lab v0.1.0 (...\design_lab)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.88s
+     Running `target\debug\u05_manual.exe`
+OK: 買い物
+利用者向け(Display): タイトルを入力してください
+開発者向け(Debug):   Empty
+利用者向け(Display): タイトルは80文字以内にしてください（現在81文字）
+開発者向け(Debug):   TooLong { len: 81, max: 80 }
+Box<dyn Error>: タイトルを入力してください

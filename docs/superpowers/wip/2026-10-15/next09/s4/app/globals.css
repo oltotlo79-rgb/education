@@ -1,0 +1,46 @@
+/* (1) Tailwind 本体を読み込む（v3 の @tailwind 3行の代わり） */
+@import "tailwindcss";
+
+/* (2) dark: を「<html class="dark"> のとき」に効かせる */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* (3) 切り替わる色は普通の CSS 変数で持つ */
+:root {
+  --background: #ffffff;
+  --foreground: #0f172a;
+}
+
+.dark {
+  --background: #0f172a;
+  --foreground: #f8fafc;
+}
+
+/* (4) CSS 変数を Tailwind の色クラスとして登録する */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+}
+
+/* (5) ブランド色とアニメーションを登録する */
+@theme {
+  --color-primary-100: #e0e7ff;
+  --color-primary-600: #4f46e5;
+  --color-primary-700: #4338ca;
+  --animate-fade-in: fade-in 0.3s ease-out;
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+/* (6) 自作クラスは @utility で作る */
+@utility btn-primary {
+  @apply rounded-lg bg-primary-600 px-4 py-2 text-white hover:bg-primary-700;
+}

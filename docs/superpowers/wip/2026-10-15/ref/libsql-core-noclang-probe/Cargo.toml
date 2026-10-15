@@ -1,0 +1,11 @@
+[package]
+name = "libsql-core-noclang-probe"
+version = "0.1.0"
+edition = "2024"
+
+# Checks that libsql with only the `core` feature (local file DB, no TLS/ring)
+# builds on Windows ARM64 WITHOUT clang on PATH.
+[dependencies]
+libsql = { version = "=0.10.0", default-features = false, features = ["core"] }
+argon2 = "=0.6.0"
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }

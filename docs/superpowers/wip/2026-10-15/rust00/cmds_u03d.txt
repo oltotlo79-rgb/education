@@ -1,0 +1,3 @@
+ls src
+Get-ChildItem Env:USERNAME
+$env:PATH -split ";" | Select-String "cargo"

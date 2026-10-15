@@ -1,0 +1,5 @@
+len()           = 240 バイト
+chars().count() = 80 文字
+len() で判定:           false
+chars().count() で判定: true
+空白だけ: false

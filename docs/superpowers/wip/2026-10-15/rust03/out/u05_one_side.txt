@@ -1,0 +1,5 @@
+アリス
+alice@example.com
+alice@example.com
+id 部分 = 42
+exit=0

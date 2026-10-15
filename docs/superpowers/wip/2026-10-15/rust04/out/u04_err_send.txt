@@ -1,0 +1,39 @@
+   Compiling design_lab v0.1.0 (...\design_lab)
+error[E0277]: `dyn NoteRepository` cannot be shared between threads safely
+  --> src\bin\u04_err_send.rs:20:32
+   |
+20 |     let handle = thread::spawn(move || r.count());
+   |                  ------------- ^^^^^^^^^^^^^^^^^ `dyn NoteRepository` cannot be shared between threads safely
+   |                  |
+   |                  required by a bound introduced by this call
+   |
+   = help: the trait `Sync` is not implemented for `dyn NoteRepository`
+   = note: required for `Arc<dyn NoteRepository>` to implement `Send`
+note: required because it's used within this closure
+  --> src\bin\u04_err_send.rs:20:32
+   |
+20 |     let handle = thread::spawn(move || r.count());
+   |                                ^^^^^^^
+note: required by a bound in `spawn`
+  --> /rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library\std\src\thread\functions.rs:125:0
+
+error[E0277]: `dyn NoteRepository` cannot be sent between threads safely
+  --> src\bin\u04_err_send.rs:20:32
+   |
+20 |     let handle = thread::spawn(move || r.count());
+   |                  ------------- ^^^^^^^^^^^^^^^^^ `dyn NoteRepository` cannot be sent between threads safely
+   |                  |
+   |                  required by a bound introduced by this call
+   |
+   = help: the trait `Send` is not implemented for `dyn NoteRepository`
+   = note: required for `Arc<dyn NoteRepository>` to implement `Send`
+note: required because it's used within this closure
+  --> src\bin\u04_err_send.rs:20:32
+   |
+20 |     let handle = thread::spawn(move || r.count());
+   |                                ^^^^^^^
+note: required by a bound in `spawn`
+  --> /rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library\std\src\thread\functions.rs:125:0
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `design_lab` (bin "u04_err_send") due to 2 previous errors

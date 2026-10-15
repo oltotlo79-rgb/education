@@ -1,0 +1,2 @@
+Node.js のバージョン: v24.22.0
+いまいる場所: C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\next01\w\q6\Desktop\node-practice

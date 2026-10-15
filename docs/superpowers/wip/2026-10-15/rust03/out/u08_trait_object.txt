@@ -1,0 +1,5 @@
+メール送信 → alice@example.com: ノートが作成されました
+Slack投稿 → #dev: @here ノートが作成されました
+Box<Email> の大きさ: 8 バイト
+Box<dyn Notifier> の大きさ: 16 バイト
+exit=0

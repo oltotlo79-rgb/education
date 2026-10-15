@@ -1,0 +1,197 @@
+//// FILE: a_string.rs
+fn main() {
+    // 文字列リテラルは &str 型（プログラムに埋め込まれた、書き換えられない文字列）
+    let greeting: &str = "こんにちは";
+
+    // String::from で、書き足せる String を作る
+    let mut message = String::from(greeting);
+    // push_str で文字列を後ろに足す
+    message.push_str("、Rust");
+    // push で1文字（char）を足す
+    message.push('！');
+    println!("{message}");
+
+    // to_string でも String を作れる
+    let name = "さくら".to_string();
+    // format! は println! と同じ書き方で、表示せずに String を作る
+    let line = format!("{name}さん、{message}");
+    println!("{line}");
+
+    // + でつなぐこともできる（左側の String は使い切られる）
+    let a = String::from("Rust");
+    let b = a + "入門";
+    println!("{b}");
+}
+//// FILE: b_len_chars.rs
+fn main() {
+    let text = "aあ🦀";
+    // len() は「バイト数」を返す
+    println!("len(): {}", text.len());
+    // chars().count() は「文字数」を返す
+    println!("chars().count(): {}", text.chars().count());
+
+    // 1文字ずつ取り出して、それぞれが何バイトかを調べる
+    for c in text.chars() {
+        println!("'{c}' は {} バイト", c.len_utf8());
+    }
+    // 中身のバイトを16進数で並べて表示する
+    println!("bytes: {:02X?}", text.as_bytes());
+}
+//// FILE: c_str_param.rs
+// &str を受け取る関数は、String からも文字列リテラルからも呼べる
+fn shout(text: &str) -> String {
+    format!("{}！", text.to_uppercase())
+}
+
+fn main() {
+    let owned = String::from("rust");
+    // &owned と書くと、String を &str として「貸す」ことになる
+    println!("{}", shout(&owned));
+    // 文字列リテラルは、もともと &str
+    println!("{}", shout("hello"));
+    // 貸しただけなので、owned はこのあとも使える
+    println!("owned はまだ使える: {owned}");
+}
+//// FILE: d_slice.rs
+fn main() {
+    let ascii = "Rustacean";
+    // &文字列[開始..終了] で一部分（スライス）を取り出す。数字は「バイトの位置」
+    println!("{}", &ascii[0..4]);
+
+    let japanese = "日本語のノート";
+    // 日本語は1文字3バイトなので、0..6 は先頭の2文字
+    println!("{}", &japanese[0..6]);
+
+    // 「文字数」で切り出したいときは chars() を使う
+    let first_three: String = japanese.chars().take(3).collect();
+    println!("{first_three}");
+
+    // その位置が文字の区切りかどうかを調べられる
+    println!("2バイト目は文字の区切り? {}", japanese.is_char_boundary(2));
+    // get は、区切りでない位置なら None を返す（panic しない）
+    println!("{:?}", japanese.get(0..2));
+    println!("{:?}", japanese.get(0..3));
+}
+//// FILE: e_methods.rs
+fn main() {
+    let raw = "  Rust, Web,  DB  ";
+    // trim: 前後の空白を取り除く
+    println!("[{}]", raw.trim());
+    // to_lowercase: 小文字にする（to_uppercase なら大文字）
+    println!("{}", raw.trim().to_lowercase());
+    // contains / starts_with: 含むか・その文字で始まるか
+    println!("Web を含む? {}", raw.contains("Web"));
+    println!("Rust で始まる? {}", raw.trim().starts_with("Rust"));
+    // replace: 置き換えた新しい String を作る
+    println!("{}", raw.trim().replace(", ", " / "));
+    // split: 区切り文字で分ける。各部分の空白も trim で取り除く
+    for part in raw.split(',') {
+        println!("- [{}]", part.trim());
+    }
+    // lines: 改行で分ける（\n は改行を表す）
+    let memo = "1行目\n2行目\n3行目";
+    println!("行数: {}", memo.lines().count());
+}
+//// FILE: f_preview.rs
+// 長いタイトルを max 文字に切り詰め、切ったときは「…」を付ける
+fn preview(title: &str, max: usize) -> String {
+    if title.chars().count() <= max {
+        return title.to_string();
+    }
+    let head: String = title.chars().take(max).collect();
+    format!("{head}…")
+}
+
+// 連続した空白（全角スペースやタブも含む）を、半角スペース1つにまとめる
+fn squash_spaces(text: &str) -> String {
+    text.split_whitespace().collect::<Vec<&str>>().join(" ")
+}
+
+fn main() {
+    println!("{}", preview("短いタイトル", 10));
+    println!("{}", preview("とても長いタイトルなので一覧では省略したい", 10));
+    println!("[{}]", squash_spaces("  牛乳 と　　卵を\t買う  "));
+}
+//// FILE: g_rustnote.rs
+const MAX_TITLE_CHARS: usize = 80;
+
+// 文字数が 1〜80 の範囲なら true
+fn is_valid_title(title: &str) -> bool {
+    let count = title.chars().count();
+    (1..=MAX_TITLE_CHARS).contains(&count)
+}
+
+fn main() {
+    // 「あ」を 80 文字並べたタイトル（ちょうど上限）
+    let title = "あ".repeat(80);
+    println!("len()           = {} バイト", title.len());
+    println!("chars().count() = {} 文字", title.chars().count());
+
+    // もし len() で判定していたら、上限ちょうどの日本語タイトルを拒否してしまう
+    let by_len = title.len() <= MAX_TITLE_CHARS;
+    println!("len() で判定:           {by_len}");
+    println!("chars().count() で判定: {}", is_valid_title(&title));
+
+    // 前後の空白を取り除いてから判定する
+    println!("空白だけ: {}", is_valid_title("   ".trim()));
+}
+//// FILE: h_emoji.rs
+fn main() {
+    // 家族の絵文字は、3人の絵文字を「つなぎ文字」でつないだもの
+    let family = "👨‍👩‍👧";
+    println!("見た目は1文字: {family}");
+    println!("chars().count() = {}", family.chars().count());
+    println!("len() = {}", family.len());
+}
+//// FILE: err1_index.rs
+fn main() {
+    let s = String::from("hello");
+    let first = s[0];
+    println!("{first}");
+}
+//// FILE: err2_slice_panic.rs
+fn main() {
+    let title = String::from("日本語");
+    // 先頭の2バイトを取り出そうとする
+    let part = &title[0..2];
+    println!("{part}");
+}
+//// FILE: err3_string.rs
+fn main() {
+    let name: String = "Rust";
+    println!("{name}");
+}
+//// FILE: err4_add.rs
+fn main() {
+    let full = "Rust" + "入門";
+    println!("{full}");
+}
+//// FILE: ex1.rs
+fn main() {
+    for text in ["こんにちは", "Hello"] {
+        println!("{text}: {} バイト, {} 文字", text.len(), text.chars().count());
+    }
+}
+//// FILE: ex2.rs
+// text の中に target が何回出てくるかを数える
+fn count_char(text: &str, target: char) -> usize {
+    let mut count = 0;
+    for c in text.chars() {
+        if c == target {
+            count += 1;
+        }
+    }
+    count
+}
+
+fn main() {
+    println!("{}", count_char("あいあいあ", 'あ'));
+    println!("{}", count_char("Rust", 'x'));
+}
+//// FILE: ex3.rs
+fn main() {
+    let text = "Rust入門";
+    // 1文字ずつ取り出し、逆順にして、String に集める
+    let reversed: String = text.chars().rev().collect();
+    println!("{reversed}");
+}

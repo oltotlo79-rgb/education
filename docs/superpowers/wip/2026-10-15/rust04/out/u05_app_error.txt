@@ -1,0 +1,12 @@
+   Compiling design_lab v0.1.0 (...\design_lab)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.83s
+     Running `target\debug\u05_app_error.exe`
+200 OK: 牛乳を買う
+400 画面: タイトルを入力してください
+404 画面: ノートが見つかりません
+409 画面: ほかの画面で先に更新されました。読み込み直してください
+500 画面: 時間をおいてもう一度お試しください
+    ログ（原因）: DB に接続できません
+    ログ（原因）: 接続を拒否されました
+400 画面: メールアドレスの形式が正しくありません
+409 画面: そのメールアドレスは既に登録されています

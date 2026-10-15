@@ -1,0 +1,22 @@
+
+> book-management@0.1.0 dev
+> next dev
+
+⚠ Port 3000 is in use by process 9076, using available port 3001 instead.
+▲ Next.js 16.4.1 (Turbopack)
+- Local:         http://localhost:3001
+- Network:       http://192.168.210.103:3001
+- Environments: .env.local
+✓ Ready in 832ms
+✓ Running next.config.ts took 42ms
+⨯ Another next dev server is already running.
+
+- Local:        http://localhost:3000
+- PID:          9076
+- Dir:          C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\next06\work\book-management
+- Log:          .next\dev\logs\next-development.log
+
+You can access the existing server at http://localhost:3000,
+or run taskkill /PID 9076 /F to stop it and start a new one.
+[?25h
+exit=1

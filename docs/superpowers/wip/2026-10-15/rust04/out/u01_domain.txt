@@ -1,0 +1,12 @@
+   Compiling design_lab v0.1.0 (...\design_lab)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.37s
+     Running `target\debug\u01_domain.exe`
+  42 -> Ok(NoteId(42))
+ abc -> Err(NotANumber)
+   0 -> Err(NotPositive)
+  -5 -> Err(NotPositive)
+OK: alice@example.com (17バイト)
+NG: "alice.example.com" -> MissingAt
+NG: "a@b@c.com" -> Malformed
+NG: "bob@localhost" -> Malformed
+DB に渡す値: 7

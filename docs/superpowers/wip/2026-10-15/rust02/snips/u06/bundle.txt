@@ -1,0 +1,222 @@
+//// FILE: a_tuple.rs
+// 小さい方と大きい方を、タプルにまとめて2つ同時に返す
+fn min_max(a: i32, b: i32) -> (i32, i32) {
+    if a <= b { (a, b) } else { (b, a) }
+}
+
+fn main() {
+    // 型の違う値を、決まった個数だけひとまとめにできる
+    let note: (u64, &str, bool) = (1, "牛乳を買う", false);
+    // .0 .1 .2 で、何番目かを指定して取り出す
+    println!("ID: {}, タイトル: {}, 完了: {}", note.0, note.1, note.2);
+
+    // 分解して、それぞれに名前を付ける
+    let (id, title, done) = note;
+    println!("{id} / {title} / {done}");
+
+    let (low, high) = min_max(9, 3);
+    println!("小さい方: {low}, 大きい方: {high}");
+}
+//// FILE: b_array.rs
+fn main() {
+    // 配列: 同じ型の値を、決まった個数だけ並べる。型は [要素の型; 個数]
+    let scores: [u32; 5] = [72, 88, 95, 60, 81];
+    // [ ] の中の数（添え字）は 0 から数える
+    println!("先頭: {}", scores[0]);
+    println!("最後: {}", scores[scores.len() - 1]);
+    println!("個数: {}", scores.len());
+
+    // [初期値; 個数] で、同じ値を並べた配列を作れる
+    let zeros = [0; 4];
+    // {:?} で配列をまとめて表示する
+    println!("{zeros:?}");
+
+    // mut を付ければ、要素を書き換えられる（個数は変えられない）
+    let mut week = ["月", "火", "水"];
+    week[1] = "木";
+    println!("{week:?}");
+}
+//// FILE: c_slice.rs
+// &[u32] は「u32 の並びを借りて読む」型。配列からも Vec からも受け取れる
+fn total(values: &[u32]) -> u32 {
+    let mut sum = 0;
+    for v in values {
+        sum += v;
+    }
+    sum
+}
+
+fn main() {
+    let scores = [72, 88, 95, 60, 81];
+    // 配列全体を貸す
+    println!("全員の合計: {}", total(&scores));
+
+    // 1番目から3番目の手前まで（88 と 95）を貸す
+    let middle = &scores[1..3];
+    println!("middle = {middle:?}");
+    println!("middle の合計: {}", total(middle));
+    // 先頭から2つ、3番目から最後まで
+    println!("{:?} {:?}", &scores[..2], &scores[3..]);
+
+    // Vec も同じ関数に渡せる
+    let dynamic = vec![10, 20, 30];
+    println!("Vec の合計: {}", total(&dynamic));
+}
+//// FILE: d_vec.rs
+fn main() {
+    // Vec::new() で空の Vec を作る。後から要素を足すので mut を付ける
+    let mut titles: Vec<String> = Vec::new();
+    titles.push(String::from("牛乳を買う"));
+    titles.push(String::from("Rust の勉強"));
+    titles.push(String::from("部屋の掃除"));
+    println!("{titles:?}");
+    println!("件数: {}", titles.len());
+
+    // pop は最後の要素を取り出す（空なら None）
+    let last = titles.pop();
+    println!("取り出した: {last:?}");
+    println!("残り: {titles:?}");
+
+    // get は安全な取り出し。範囲外なら None
+    println!("1番目: {:?}", titles.get(1));
+    println!("9番目: {:?}", titles.get(9));
+
+    // vec! マクロで、最初から中身のある Vec を作る
+    let mut numbers = vec![5, 3, 8, 1];
+    numbers.sort();
+    println!("並べ替え: {numbers:?}");
+    println!("8 を含む? {}", numbers.contains(&8));
+    // remove(i) は i 番目を取り除いて、後ろを前に詰める
+    numbers.remove(0);
+    println!("先頭を削除: {numbers:?}");
+}
+//// FILE: e_capacity.rs
+fn main() {
+    let mut v: Vec<i32> = Vec::new();
+    println!("最初: len = {}, capacity = {}", v.len(), v.capacity());
+    for i in 1..=9 {
+        v.push(i);
+        println!("push({i}) 後: len = {}, capacity = {}", v.len(), v.capacity());
+    }
+
+    // 入る数が分かっているなら、最初に広さを確保しておける
+    let reserved: Vec<i32> = Vec::with_capacity(100);
+    println!("with_capacity(100): len = {}, capacity = {}", reserved.len(), reserved.capacity());
+}
+//// FILE: f_iter_mut.rs
+fn main() {
+    let mut prices = vec![100, 250, 980];
+    // &mut で借りると、要素を書き換えながら回せる
+    for price in &mut prices {
+        // *price は「借りている先の値そのもの」
+        *price = *price * 110 / 100;
+    }
+    println!("{prices:?}");
+
+    // 何番目かも一緒に欲しいときは enumerate を使う
+    for (i, price) in prices.iter().enumerate() {
+        println!("{i}: {price} 円");
+    }
+}
+//// FILE: g_page.rs
+// items のうち、page ページ目（1 始まり）の部分だけを貸して返す
+fn page_of(items: &[String], page: usize, per_page: usize) -> &[String] {
+    let start = (page - 1) * per_page;
+    // 開始位置が件数以上なら、空のスライスを返す
+    if start >= items.len() {
+        return &[];
+    }
+    // 終わりの位置は、件数を超えないようにそろえる
+    let end = (start + per_page).min(items.len());
+    &items[start..end]
+}
+
+fn main() {
+    let mut notes = Vec::new();
+    for i in 1..=7 {
+        notes.push(format!("ノート{i}"));
+    }
+    for page in 1..=4 {
+        println!("{page}ページ目: {:?}", page_of(&notes, page, 3));
+    }
+}
+//// FILE: h_rustnote.rs
+fn main() {
+    // (タイトル, 完了したか) のタプルを並べた Vec
+    let notes: Vec<(&str, bool)> = vec![
+        ("牛乳を買う", true),
+        ("Rust の勉強", false),
+        ("部屋の掃除", false),
+    ];
+    // 件数は、ループで notes を使い切る前に数えておく
+    let total = notes.len();
+
+    let mut done_count = 0;
+    for (title, done) in notes {
+        let mark = if done { "[x]" } else { "[ ]" };
+        println!("{mark} {title}");
+        if done {
+            done_count += 1;
+        }
+    }
+    println!("{total} 件中 {done_count} 件完了");
+}
+//// FILE: err1_oob.rs
+fn main() {
+    let titles = vec!["A", "B", "C"];
+    println!("{}", titles[10]);
+}
+//// FILE: err2_array_len.rs
+fn main() {
+    let rgb: [u8; 3] = [255, 0];
+    println!("{rgb:?}");
+}
+//// FILE: err3_push.rs
+fn main() {
+    let titles = Vec::new();
+    titles.push("牛乳を買う");
+    println!("{titles:?}");
+}
+//// FILE: err4_index_i32.rs
+fn main() {
+    let titles = vec!["A", "B", "C"];
+    let i: i32 = 1;
+    println!("{}", titles[i]);
+}
+//// FILE: ex1.rs
+// タプルの中身を入れ替えて返す
+fn swap(pair: (i32, char)) -> (char, i32) {
+    let (number, letter) = pair;
+    (letter, number)
+}
+
+fn main() {
+    println!("{:?}", swap((7, 'R')));
+}
+//// FILE: ex2.rs
+// 空でない並びから、いちばん大きい値を返す
+fn largest(values: &[i32]) -> i32 {
+    let mut max = values[0];
+    for v in values {
+        // v は &i32（借りた値）なので、*v で中の値を取り出して比べる
+        if *v > max {
+            max = *v;
+        }
+    }
+    max
+}
+
+fn main() {
+    println!("{}", largest(&[3, 9, -2, 7]));
+    println!("{}", largest(&vec![-5, -1, -8]));
+}
+//// FILE: ex3.rs
+fn main() {
+    let mut squares = Vec::new();
+    for n in 1..=5 {
+        squares.push(n * n);
+    }
+    println!("{squares:?}");
+    let last = squares.pop();
+    println!("取り出した: {last:?}, 残り: {squares:?}");
+}

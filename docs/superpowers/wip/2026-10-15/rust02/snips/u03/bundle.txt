@@ -1,0 +1,191 @@
+//// FILE: a_fn.rs
+// 2つの整数を受け取り、その合計を返す関数
+fn add(a: i32, b: i32) -> i32 {
+    // 最後の行にセミコロンを付けないと、その値が戻り値になる
+    a + b
+}
+
+// 何も返さない関数（-> 戻り値の型 を書かない）
+fn greet(name: &str) {
+    println!("こんにちは、{name}さん");
+}
+
+fn main() {
+    let total = add(3, 4);
+    println!("3 + 4 = {total}");
+    greet("Rust");
+    // 関数の呼び出し結果を、そのまま別の関数の引数にしてもよい
+    println!("入れ子: {}", add(add(1, 2), add(3, 4)));
+}
+//// FILE: b_block_expr.rs
+fn main() {
+    // { } のブロックも「値になる式」。最後の行の値がブロック全体の値になる
+    let area = {
+        let width = 3;
+        let height = 4;
+        width * height
+    };
+    println!("面積: {area}");
+
+    // if も式なので、結果をそのまま変数に入れられる
+    let size = if area >= 10 { "大" } else { "小" };
+    println!("大きさ: {size}");
+
+    // 最後の行にセミコロンを付けると、値は捨てられ () という「空の値」になる
+    let nothing = {
+        let x = 1;
+        let _y = x + 1;
+    };
+    println!("nothing の中身: {nothing:?}");
+}
+//// FILE: c_return.rs
+// 平均点を返す。人数が 0 のときは割り算できないので、先に 0 を返して終わる
+fn average(total: u32, count: u32) -> u32 {
+    if count == 0 {
+        // return は「ここで関数を終えて、この値を返す」
+        return 0;
+    }
+    total / count
+}
+
+fn main() {
+    println!("{}", average(270, 3));
+    println!("{}", average(0, 0));
+}
+//// FILE: d_unit.rs
+fn log(message: &str) {
+    println!("[log] {message}");
+}
+
+fn main() {
+    // 戻り値の型を書かない関数は、実は () という値を返している
+    let result = log("起動しました");
+    println!("log の戻り値: {result:?}");
+}
+//// FILE: e_price.rs
+// 税率（%）、送料無料になる金額、送料
+const TAX_RATE_PERCENT: u32 = 10;
+const FREE_SHIPPING_THRESHOLD: u32 = 5_000;
+const SHIPPING_FEE: u32 = 500;
+
+// 税込みの金額を返す
+fn with_tax(price: u32) -> u32 {
+    price * (100 + TAX_RATE_PERCENT) / 100
+}
+
+// 合計金額に応じた送料を返す。if の結果がそのまま戻り値になる
+fn shipping_fee(subtotal: u32) -> u32 {
+    if subtotal >= FREE_SHIPPING_THRESHOLD {
+        0
+    } else {
+        SHIPPING_FEE
+    }
+}
+
+// 小さな関数を組み合わせて、支払い総額を計算する
+fn total(price: u32, quantity: u32) -> u32 {
+    let subtotal = with_tax(price * quantity);
+    subtotal + shipping_fee(subtotal)
+}
+
+fn main() {
+    println!("1,000円 × 2個 = {} 円", total(1_000, 2));
+    println!("1,000円 × 5個 = {} 円", total(1_000, 5));
+}
+//// FILE: f_rustnote.rs
+const MAX_TITLE_CHARS: usize = 80;
+
+// 前後の空白を取り除いた版を返す
+fn normalize(raw: &str) -> &str {
+    raw.trim()
+}
+
+// 文字数を数える（日本語も 1 文字を 1 と数える）
+fn char_count(text: &str) -> usize {
+    text.chars().count()
+}
+
+// 1 以上 80 以下なら true を返す
+fn is_valid_length(len: usize) -> bool {
+    (1..=MAX_TITLE_CHARS).contains(&len)
+}
+
+// 判定結果を、人が読める文にして返す
+fn describe(raw: &str) -> String {
+    let title = normalize(raw);
+    let len = char_count(title);
+    if is_valid_length(len) {
+        format!("OK: 「{title}」（{len}文字）")
+    } else {
+        format!("NG: {len}文字は 1〜{MAX_TITLE_CHARS} 文字の範囲外です")
+    }
+}
+
+fn main() {
+    println!("{}", describe("  買い物リスト  "));
+    println!("{}", describe("    "));
+    // "あ" を 81 回くり返した文字列で試す
+    let long = "あ".repeat(81);
+    println!("{}", describe(&long));
+}
+//// FILE: err1_semicolon.rs
+fn add(a: i32, b: i32) -> i32 {
+    a + b;
+}
+
+fn main() {
+    println!("{}", add(1, 2));
+}
+//// FILE: err2_no_ret.rs
+fn add(a: i32, b: i32) {
+    a + b
+}
+
+fn main() {
+    println!("{}", add(1, 2));
+}
+//// FILE: err3_param_type.rs
+fn double(x) -> i32 {
+    x * 2
+}
+
+fn main() {
+    println!("{}", double(4));
+}
+//// FILE: err4_args.rs
+fn add(a: i32, b: i32) -> i32 {
+    a + b
+}
+
+fn main() {
+    println!("{}", add(1));
+}
+//// FILE: ex1.rs
+fn square(x: i32) -> i32 {
+    x * x
+}
+
+fn main() {
+    println!("{}", square(7));
+}
+//// FILE: ex2.rs
+// 摂氏（℃）を華氏（℉）に変換する
+fn fahrenheit(celsius: f64) -> f64 {
+    celsius * 9.0 / 5.0 + 32.0
+}
+
+fn main() {
+    println!("0℃ = {}℉", fahrenheit(0.0));
+    println!("36.5℃ = {:.1}℉", fahrenheit(36.5));
+    println!("100℃ = {}℉", fahrenheit(100.0));
+}
+//// FILE: ex3.rs
+fn main() {
+    let a = 10;
+    let b = {
+        let t = a * 2;
+        t + 1
+    };
+    let c = if b > 20 { b - 20 } else { 0 };
+    println!("{a} {b} {c}");
+}

@@ -1,0 +1,18 @@
+   Compiling design_lab v0.1.0 (...\design_lab)
+warning: unused `Result` that must be used
+  --> src\bin\u05_warn_unused.rs:10:5
+   |
+10 |     save_note("");
+   |     ^^^^^^^^^^^^^
+   |
+   = note: this `Result` may be an `Err` variant, which should be handled
+   = note: `#[warn(unused_must_use)]` (part of `#[warn(unused)]`) on by default
+help: use `let _ = ...` to ignore the resulting value
+   |
+10 |     let _ = save_note("");
+   |     +++++++
+
+warning: `design_lab` (bin "u05_warn_unused") generated 1 warning
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.39s
+     Running `target\debug\u05_warn_unused.exe`
+保存しました！

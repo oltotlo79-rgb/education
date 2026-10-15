@@ -1,0 +1,7 @@
+   Compiling design_lab v0.1.0 (...\design_lab)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.33s
+     Running `target\debug\u01_ids.exe`
+ユーザー7のノート42を探します
+ユーザー42のノート7を探します
+ユーザー7のノート42を探します
+UserId(7) / NoteId(42)
