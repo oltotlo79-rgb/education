@@ -22,7 +22,8 @@
 - 素材: scratchpad/next04/（bookapp 試作、ng 版、各種実出力）。
 - 他章影響: create-next-app 既定 cacheComponents: true で、loading.tsx/Suspense なしの動的ルートや export const revalidate が build 失敗。06〜08・10 で方針統一が必要。
 
-## next/07-crud-list-create.md — ほぼ完了（PDF 143p 生成済）
+## next/07-crud-list-create.md — **完成（2026-10-16 に main へ反映済み、コミット e90d823）**
+- 仕上げで行ったこと: 連続する囲みの結合7か所を `<!-- -->` で分離、太字記号の閉じ忘れ1か所を修正、PDF 再生成（143p）と図13枚の目視確認。
 - 追加: SVG 13（画面イメージ3、全てPNG確認済）、サンプル9（Node 25・tsc --strict）、つまずき8、章冒頭、8. 練習問題 7問、Supabase 2026 の GRANT 変更（42501）、publishable key、PGRST204、エラーコード表。
 - 既存修正: PGRST205、thenable の説明、catch に来ない件、error.tsx retry（16.3+）、useFormState→useActionState、Tailwind クラス名、リストの空行。
 - 未了: NG/OK の後の説明段落が次の囲みと同じ青枠に結合（見た目のみ）。
