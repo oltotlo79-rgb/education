@@ -1,0 +1,15 @@
+# ビルドの成果物（cargo build / topcoat asset bundle が作る）
+/target/
+
+# ローカルの SQLite / libSQL データベース（WAL などの付属ファイルも含む）
+*.db
+*.db-shm
+*.db-wal
+*.db-journal
+
+# 秘密の値を書いた環境変数ファイル（.env.example だけを共有する）
+.env
+
+# OS やエディタが作るファイル
+.DS_Store
+Thumbs.db
