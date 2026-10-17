@@ -1,0 +1,5 @@
+-- 同じ名前の表を2回作ろうとする
+CREATE TABLE memos (id INTEGER PRIMARY KEY, text TEXT NOT NULL);
+CREATE TABLE memos (id INTEGER PRIMARY KEY, text TEXT NOT NULL);
+-- IF NOT EXISTS を付けると「無ければ作る。あれば何もしない」になる
+CREATE TABLE IF NOT EXISTS memos (id INTEGER PRIMARY KEY, text TEXT NOT NULL);

@@ -1,0 +1,17 @@
+（準備: sql/schema.sql の 2 文を実行しました）
+（準備: sql/seed.sql の 2 文を実行しました）
+sql> COMMIT
+エラー: SQLite failure: `cannot commit - no transaction is active`
+
+sql> BEGIN
+OK
+
+sql> BEGIN
+エラー: SQLite failure: `cannot start a transaction within a transaction`
+
+sql> ROLLBACK
+OK
+
+sql> ROLLBACK
+エラー: SQLite failure: `cannot rollback - no transaction is active`
+

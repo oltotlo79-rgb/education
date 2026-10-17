@@ -1,0 +1,28 @@
+（準備: sql/schema.sql の 2 文を実行しました）
+（準備: sql/u04_big.sql の 2 文を実行しました）
+sql> EXPLAIN QUERY PLAN …
+QUERY PLAN
+- SCAN notes
+- USE TEMP B-TREE FOR ORDER BY
+
+sql> EXPLAIN QUERY PLAN SELECT id, title FROM notes WHERE id = 42
+QUERY PLAN
+- SEARCH notes USING INTEGER PRIMARY KEY (rowid=?)
+
+sql> CREATE INDEX idx_notes_user_updated ON notes (user_id, updated_at DESC, id DESC)
+OK
+
+sql> EXPLAIN QUERY PLAN …
+QUERY PLAN
+- SEARCH notes USING INDEX idx_notes_user_updated (user_id=?)
+
+sql> SELECT id, title, updated_at FROM notes WHERE user_id = 42 ORDER BY updated_at DESC, id DESC LIMIT 3
++-------+--------------+---------------------+
+| id    | title        | updated_at          |
++-------+--------------+---------------------+
+| 99041 | ノート 99041 | 2026-03-10 18:41:00 |
+| 98041 | ノート 98041 | 2026-03-10 02:01:00 |
+| 97041 | ノート 97041 | 2026-03-09 09:21:00 |
++-------+--------------+---------------------+
+(3 行)
+

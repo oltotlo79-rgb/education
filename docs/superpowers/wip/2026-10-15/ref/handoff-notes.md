@@ -1,5 +1,26 @@
 # 中断時点の引き継ぎメモ
 
+## 3回目の停止（2026-10-18）— Rust 07 巻の途中
+
+Rust 07 巻（Turso・libSQL）を1巻だけ仕上げる作業の途中で停止。main への反映はなし。下書きと素材は `rust07/` にある。
+
+| 部品 | 状態 |
+|---|---|
+| `rust07/parts/intro.md`（表紙・巻頭・学習地図・準備・道具 sql の全文） | **完成**（673行、図3、check_md OK、実出力貼り込み済み） |
+| `rust07/parts/unit01.md` | **本文完成**（約820行。目安より長いので連結時に削るか判断。check_md 未実行） |
+| `unit02.md`〜`unit08.md` | 本文なし。構成メモ・図の案・使う SQL と出力の対応だけ（`<!-- TODO: 未完 -->`） |
+| `unit09.md` | 本文なし。構成メモと実出力（u09_repo / u09_layers / u09_n_plus_1、E0038 など） |
+| `unit10.md` | 未着手（ファイルなし） |
+| `outro.md`（まとめ・用語ミニ辞典） | 未着手 |
+
+- 例はほぼ全単元ぶん実行済み。SQL は `rust07/sql-lab/sql/`、Rust は `rust07/sql-lab/src/bin/`、出力は `rust07/out/`（UNIT 01〜03・07）、`rust07/out456/`（UNIT 04〜06 の再実行と練習問題の解答）、エラー例は `rust07/errs/`・`errs09/`。
+- 連結は `rust07/assemble.py`（parts を連結し `図7-?:` を順に番号付けして `Rust/07_Turso_libSQL_SQL設計_実装_運用.md` に書き出す）。PDF は `_build_pdfs.py`、反映は `ref/publish.sh`（旧 `Rust/07_Turso_libSQL_SQL設計_実装_運用.pdf` を削除パスとして渡す）。
+- 図の id は `ar-07-<単元2桁><連番>`、巻頭は `ar-07-001`〜`003`。本文から図を番号で参照しない約束。
+- `sql-lab/Cargo.toml` に UNIT 09 用の `async-trait = "=0.1.92"` を追加済み。巻頭の Cargo.toml には入れていないので、UNIT 09 で `cargo add async-trait@0.1.92` と書くこと。
+- 担当が見つけた事実: SQLite エンジンは 3.47.0（libsql 0.10.0）。初回ビルド約1分・181 crate。bind の値が1つ多いと余りは黙って無視され `Ok(1)`。IN の変数は 32,766 個まで。N+1 は 1,000 件で約 259ms 対 4ms。索引で 2055→2899 ページ。debug ビルドの remote 接続のスタックあふれは `tokio::spawn` 内なら起きない（release は未確認）。
+- 直すこと: `sql-lab/src/bin/u05_conflict.rs` のコメント「第4巻 UNIT 07 の形」は誤りで、AppError は第4巻 UNIT 05。
+- 未検証: Turso 本物・ローカル libSQL サーバーへの接続成功時、トークン不正時のエラー文（この PC に Turso CLI・sqld なし）。
+
 ## 最新の状況（2026-10-17、2回目の停止時点）— まずここを読む
 
 ### main に反映済み（完成）

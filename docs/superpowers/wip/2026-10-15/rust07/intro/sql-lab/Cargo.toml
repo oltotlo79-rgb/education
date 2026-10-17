@@ -1,0 +1,9 @@
+[package]
+name = "sql-lab"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+libsql = "0.10.0"
+thiserror = "2.0.21"
+tokio = { version = "1.53.3", features = ["rt-multi-thread", "macros"] }

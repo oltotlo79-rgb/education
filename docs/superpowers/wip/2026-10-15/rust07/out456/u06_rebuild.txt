@@ -1,0 +1,37 @@
+（準備: migrations/0001_users.sql の 1 文を実行しました）
+（準備: migrations/0002_notes.sql の 2 文を実行しました）
+（準備: migrations/0003_sessions.sql の 3 文を実行しました）
+（準備: migrations/0004_notes_pinned.sql の 1 文を実行しました）
+（準備: sql/seed.sql の 2 文を実行しました）
+sql> BEGIN
+OK
+
+sql> CREATE TABLE notes_new ( …
+OK
+
+sql> INSERT INTO notes_new (id, user_id, title, body, done, version, created_at, updated_at, pinned) …
+OK（変更: 8 行）
+
+sql> DROP TABLE notes
+OK
+
+sql> ALTER TABLE notes_new RENAME TO notes
+OK
+
+sql> CREATE INDEX idx_notes_user_updated ON notes (user_id, updated_at DESC, id DESC)
+OK
+
+sql> COMMIT
+OK
+
+sql> SELECT COUNT(*) AS notes FROM notes
++-------+
+| notes |
++-------+
+| 8     |
++-------+
+(1 行)
+
+sql> UPDATE notes SET body = printf('%10001s', '') WHERE id = 1
+エラー: SQLite failure: `CHECK constraint failed: length(body) <= 10000`
+

@@ -1,0 +1,52 @@
+（準備: sql/schema.sql の 2 文を実行しました）
+（準備: sql/seed.sql の 2 文を実行しました）
+sql> SELECT COUNT(*) AS before FROM notes
++--------+
+| before |
++--------+
+| 8      |
++--------+
+(1 行)
+
+sql> BEGIN
+OK
+
+sql> INSERT INTO notes (user_id, title) VALUES (1, '取り消されるノート')
+OK（変更: 1 行）
+
+sql> SELECT COUNT(*) AS during FROM notes
++--------+
+| during |
++--------+
+| 9      |
++--------+
+(1 行)
+
+sql> ROLLBACK
+OK
+
+sql> SELECT COUNT(*) AS after_rollback FROM notes
++----------------+
+| after_rollback |
++----------------+
+| 8              |
++----------------+
+(1 行)
+
+sql> BEGIN
+OK
+
+sql> INSERT INTO notes (user_id, title) VALUES (1, '確定するノート')
+OK（変更: 1 行）
+
+sql> COMMIT
+OK
+
+sql> SELECT COUNT(*) AS after_commit FROM notes
++--------------+
+| after_commit |
++--------------+
+| 9            |
++--------------+
+(1 行)
+
