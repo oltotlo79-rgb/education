@@ -1,0 +1,4 @@
+（準備: sql/u01_create.sql の 8 文を実行しました）
+sql> DELETE FROM users WHERE id = 1
+エラー: SQLite failure: `FOREIGN KEY constraint failed`
+

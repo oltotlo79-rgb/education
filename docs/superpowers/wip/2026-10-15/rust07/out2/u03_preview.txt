@@ -1,0 +1,22 @@
+（準備: sql/schema.sql の 2 文を実行しました）
+（準備: sql/seed.sql の 2 文を実行しました）
+sql> SELECT id, title FROM notes WHERE user_id = 2 AND done = 1
++----+--------+
+| id | title  |
++----+--------+
+| 5  | 買い物 |
++----+--------+
+(1 行)
+
+sql> DELETE FROM notes WHERE user_id = 2 AND done = 1
+OK（変更: 1 行）
+
+sql> SELECT id, title, done FROM notes WHERE user_id = 2
++----+------------+------+
+| id | title      | done |
++----+------------+------+
+| 3  | 旅行の計画 | 0    |
+| 8  | ジムの予定 | 0    |
++----+------------+------+
+(2 行)
+
