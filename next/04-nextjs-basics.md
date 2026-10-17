@@ -95,6 +95,7 @@
 Next.js（読み: ネクストジェイエス）を理解するには「URL（ユーアールエル：Web上の住所）」「ルーティング（routing：URLとページを結びつける仕組み）」「レンダリング（rendering：HTMLを組み立てて画面に出す処理）」の3つの基本概念を押さえる必要があります。ここから始めましょう。
 
 > **この章で前提となる用語の超ざっくり予習:**
+>
 > - **サーバー**：インターネットの向こうにあるコンピューター。リクエストを受けて返事をする。
 > - **クライアント／ブラウザ**：ユーザーの手元のコンピューターで動くChromeやSafariなどのアプリ。
 > - **HTML**：画面に出る文字や画像のレイアウト情報を書いた文書。
@@ -218,6 +219,7 @@ React は「UIの部品を作るライブラリ」であり、それ以外の機
 | デプロイ（公開） | 別途設定が必要 | Vercel で数クリック |
 
 > **この章で学ぶこと:**
+>
 > - Next.js の概念と React との関係
 > - **App Router**（アップルーター：Next.js 13以降の新しいルーティング方式）によるルーティング
 > - **Server Components**（サーバー上で実行されるコンポーネント）と **Client Components**（ブラウザ上で実行されるコンポーネント）の使い分け
@@ -242,7 +244,7 @@ Next.js は **Vercel 社** が開発・メンテナンスしている React ベ�
       <div style="background: #1e40af; color: #fff; border-radius: 8px; padding: 8px 14px; font-size: 12px; font-weight: 600; text-align: center;">API Routes /<br/>Server Actions</div>
       <div style="background: #1e40af; color: #fff; border-radius: 8px; padding: 8px 14px; font-size: 12px; font-weight: 600; text-align: center;">画像最適化<br/>（next/image）</div>
       <div style="background: #1e40af; color: #fff; border-radius: 8px; padding: 8px 14px; font-size: 12px; font-weight: 600; text-align: center;">フォント最適化<br/>（next/font）</div>
-      <div style="background: #1e40af; color: #fff; border-radius: 8px; padding: 8px 14px; font-size: 12px; font-weight: 600; text-align: center;">ミドルウェア</div>
+      <div style="background: #1e40af; color: #fff; border-radius: 8px; padding: 8px 14px; font-size: 12px; font-weight: 600; text-align: center;">ミドルウェア<br/>（proxy.ts）</div>
     </div>
     <div style="text-align: center; color: #3b82f6; font-size: 18px; margin-bottom: 8px;">&#x2193; &#x2193; &#x2193;</div>
     <div style="border: 2px solid #38bdf8; border-radius: 10px; padding: 16px; background: #e0f7fa;">
@@ -468,6 +470,8 @@ Next.js には2つのルーティングシステムがあります。
 
 > **本チュートリアルでは App Router のみを使用します。** Pages Router（ページズルーター：`pages/` フォルダを使う Next.js の初期からあるルーティング方式）は旧バージョンとの互換性のために残されていますが、新規プロジェクトでは App Router を選択してください。Pages Router では「コンポーネントは原則 Client、データ取得は `getServerSideProps` などの専用関数で外側から差し込む」という設計でしたが、App Router では「コンポーネント自体を async にして直接 await する」という根本的に新しい設計になっています。
 
+<!-- -->
+
 > **なぜデフォルトが Server Component なのか:** App Router は React Server Components（RSC：サーバーで実行されブラウザに HTML だけが送られる新種のコンポーネント）を基盤にしています。ブラウザに送る JS の量を減らし、機密情報の漏えいを防ぎ、初回表示を速くするために「まずは全部サーバー側で動かす」のがデフォルトなのです。クライアントでの動きが必要な箇所だけを `"use client"` で明示的に切り出していきます。
 
 ### 2.2 ファイルベースルーティングの仕組み
@@ -598,7 +602,7 @@ export default function HomePage() {
 // ============================================================================
 // ファイルパス: app/layout.tsx
 // 役割      : すべてのページを「ヘッダー＋本文＋フッター」の枠で包む
-//             ＝ Next.jsアプリの **一番外側の共通レイアウト**
+//             ＝ Next.jsアプリの「一番外側の共通レイアウト」
 // ----------------------------------------------------------------------------
 // このファイルは Next.js が自動的に認識する「予約名」のひとつ。
 // app/ フォルダ直下に layout.tsx が必ず1つ必要。
@@ -1020,13 +1024,13 @@ URL の「42」が `id` という変数に入るまでの道のりを、図で�
 <rect x="392" y="86" width="120" height="28" rx="4" fill="#ffffff" stroke="#10b981" stroke-dasharray="4 3"/>
 <text x="452" y="105" font-size="13" fill="#0f172a" text-anchor="middle">{ id: "42" }</text>
 <text x="452" y="138" font-size="12" fill="#475569" text-anchor="middle">まだ封が閉じている</text>
-<text x="547" y="80" font-size="12" font-weight="bold" fill="#047857" text-anchor="middle">await</text>
-<line x1="531" y1="92" x2="562" y2="92" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-04-03)"/>
-<rect x="564" y="30" width="146" height="124" rx="10" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>
-<text x="637" y="52" font-size="12" font-weight="bold" fill="#475569" text-anchor="middle">④ 値を取り出す</text>
-<text x="637" y="90" font-size="14" font-weight="bold" fill="#0f172a" text-anchor="middle">id = "42"</text>
-<text x="637" y="116" font-size="12" fill="#c2410c" text-anchor="middle">文字列（string）</text>
-<text x="637" y="138" font-size="12" fill="#475569" text-anchor="middle">数値は Number(id)</text>
+<text x="551" y="82" font-size="12" font-weight="bold" fill="#047857" text-anchor="middle">await</text>
+<line x1="531" y1="92" x2="570" y2="92" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-04-03)"/>
+<rect x="572" y="30" width="138" height="124" rx="10" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>
+<text x="641" y="52" font-size="12" font-weight="bold" fill="#475569" text-anchor="middle">④ 値を取り出す</text>
+<text x="641" y="90" font-size="14" font-weight="bold" fill="#0f172a" text-anchor="middle">id = "42"</text>
+<text x="641" y="116" font-size="12" fill="#c2410c" text-anchor="middle">文字列（string）</text>
+<text x="641" y="138" font-size="12" fill="#475569" text-anchor="middle">数値は Number(id)</text>
 <text x="360" y="182" font-size="12" fill="#475569" text-anchor="middle">const { id } = await params; の1行が ③ → ④ の「封を開けて取り出す」にあたる</text>
 </svg>
 <div style="font-size: 12px; color: #64748b; margin-top: 6px;">図4-3: URL の「42」が id という変数に入るまで</div>
@@ -1535,11 +1539,14 @@ Server  [WherePage] Server Component を実行しました
 Client Component にするには、ファイルの **先頭**（import 文よりも上）に `"use client"` と記述します。これを **ディレクティブ**（directive：コンパイラやランタイムに対する命令文）と呼びます。
 
 > **`'use client'` の伝播ルール（重要）:**
+>
 > - `"use client"` を書いたファイルは、その時点で「Client Component の境界（ボーダー）」になります。
 > - その境界より下流（そのファイルが import する他のファイル）は、明示しなくても自動的に Client Component として扱われます。
 > - つまり「Client から import される Server Component」は実質作れません。
 > - 逆に「Server Component から import される Client Component」はOKです。これが普通の組み合わせ。
 > - 1つのページ内で「Server の骨組みの中に Client 部品を埋め込む」という構造が App Router の基本パターンです。
+
+<!-- -->
 
 > **▼ このコードがやること（先に日本語で）:** 「`"use client"` を書かないと自動的に Server Component（サーバー側で動く部品）になる」というデフォルトの形を確認します。Server Component は関数を `async` にしてサーバー上で直接データを取りに行ける反面、`useState` やボタンのクリック処理などブラウザ側の機能は使えません。ここではデータ取得は省略し、文字を表示するだけの最小例です。詳細はコード内コメントを参照してください。
 
@@ -1601,6 +1608,8 @@ export default function SearchBar() {
 > - キーボードで「Re」と打つと query が "" → "R" → "Re" に更新され、画面の入力欄もそれに追従する
 > - これは `useState` がブラウザのメモリに値を保持し、変更ごとに React が再描画するため
 > - サーバーはこの入力プロセスにまったく関与しない
+
+<!-- -->
 
 > **重要:** `"use client"` はそのファイルとそこから import されるすべてのモジュールを Client Component の境界として宣言します。つまり、Client Component の子コンポーネントも自動的に Client Component になります。
 
@@ -2223,6 +2232,8 @@ export function FavoriteButton({ bookId }: { bookId: string }) {
 
 > **注意:** 渡せるからといって、データベースの接続情報や秘密のキーを props で Client Component に渡してはいけません。props はブラウザに送られるので、開発者ツールで誰でも見られます（8節）。
 
+<!-- -->
+
 > **つまずきポイント（Server Component から Client Component に関数を渡す）:** React に慣れていると、親から子へ `onDelete={() => ...}` のように関数を渡したくなります。親が Server Component で子が Client Component の場合、これは関所を通れないので、ページを開いた瞬間にエラーになります。`npm run dev` で開いたときのターミナルの実際の出力です。
 
 ```text
@@ -2400,6 +2411,7 @@ export default function RootLayout({
 ```
 
 > **ポイント:**
+>
 > - ルートレイアウトは **必須** です。削除するとエラーになります。
 > - `<html>` と `<body>` タグはルートレイアウトにのみ記述します。
 > - `metadata` オブジェクトで SEO 用のタイトル・説明を設定できます。
@@ -3129,7 +3141,7 @@ export function CurrentUrlInfo() {
 
 ### 5.3 リダイレクト
 
-リダイレクト（redirect：別のURLに自動転送すること）は、Server Component の中で `redirect()` を呼ぶか、後述する `middleware.ts` で行います。
+リダイレクト（redirect：別のURLに自動転送すること）は、Server Component の中で `redirect()` を呼ぶか、後述する `proxy.ts`（Next.js 15 までの `middleware.ts`）で行います。
 
 #### Server Component でのリダイレクト
 
@@ -3374,10 +3386,10 @@ export function proxy(request: NextRequest) {
   return NextResponse.next();
 }
 
-// ミドルウェアを適用するパスを指定
+// proxy（関所）を適用するパスを指定
 // `config` という名前で設定オブジェクトを export
 export const config = {
-  // この matcher にマッチしたURLでだけ middleware が動く
+  // この matcher にマッチしたURLでだけ proxy が動く
   // `:path*` は「任意の階層を含む」の意味
   matcher: ["/books/:path*"],
 };
@@ -3728,6 +3740,8 @@ OK 版をビルドすると `/clock` は `ƒ /clock`（Dynamic：アクセスの
 ```
 
 > `connection()`（コネクション）は `next/server` が用意している関数で、`await connection()` と書くと「この先はリクエストが来てから実行する」という合図になります。データベースからの取得でも同じことが起きるので、「本番だけ一覧が更新されない」ときは、まず `npm run build` の結果で `○` と `ƒ` のどちらになっているかを確認しましょう。`cache: "no-store"` の `fetch`、`cookies()`・`headers()`、`searchParams` を使ったページも、自動で `ƒ` になります。
+
+<!-- -->
 
 > **注意（Cache Components を「Yes」にしたプロジェクトの場合）:** 第6章では `create-next-app` で Cache Components を **No** にするよう案内しています。もし Yes にすると、`next.config.ts` に `cacheComponents: true` が入り、キャッシュのしくみが Next.js 16 の新しい方式に切り替わります。この章のコードに関係する主な違いは次のとおりです（どれも Next.js 16.4.1 で実際に確かめました）。
 >
@@ -4665,7 +4679,7 @@ Server Action でデータを保存したら、一覧の画面にも新しいデ
 <rect x="22" y="44" width="196" height="46" rx="8" fill="#ffffff" stroke="#3b82f6"/>
 <text x="120" y="63" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">① 「追加」を押す</text>
 <text x="120" y="81" font-size="12" fill="#475569" text-anchor="middle">書名: 達人プログラマー</text>
-<text x="300" y="58" font-size="12" fill="#475569" text-anchor="middle">POST（FormData）</text>
+<text x="322" y="58" font-size="12" fill="#475569" text-anchor="middle">POST（FormData）</text>
 <path d="M219,67 L360,67 L360,96" fill="none" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-04-10)"/>
 <rect x="262" y="98" width="196" height="46" rx="8" fill="#ffffff" stroke="#10b981"/>
 <text x="360" y="117" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">② addBook を実行</text>
@@ -4782,6 +4796,8 @@ export default function ShelfPage() {
 - `revalidatePath` の引数には、新しくしたい画面の URL を書きます。書籍管理アプリなら、一覧のトップページ `/` や、詳細の `/books/42` などです。
 
 > **ヒント:** 保存したあとに別のページへ移動したいときは、`revalidatePath("/")` のあとに `redirect("/")` を呼びます（`next/navigation` の `redirect`）。順番は「**作り直しの印を付けてから、移動する**」です。`redirect` を先に呼ぶと、そこで処理が止まって後ろの行が実行されません（5.3 の「つまずきポイント」と同じく、`try` の中で呼ばないことにも注意）。
+
+<!-- -->
 
 > **つまずきポイント（`revalidatePath` を忘れて、保存したのに画面が古いまま）:** 保存処理だけ書いて `revalidatePath` を書き忘れると、データは保存されているのに画面が変わりません。開発モードではページを再読み込みすれば新しくなるので気づきにくく、**本番モード**（`npm run build` → `npm run start`）で初めて「何度読み込み直しても増えない」と困ることになります。`revalidatePath` の行をコメントにして本番モードで試した記録です。
 
@@ -5191,6 +5207,8 @@ const siteName = process.env.NEXT_PUBLIC_SITE_NAME;
 書籍管理アプリでは、Supabase を使います。環境変数の設定例は以下の通りです。
 
 > **▼ このコードがやること（先に日本語で）:** 書籍管理アプリで実際に使う Supabase（データベースサービス）の接続情報を `.env.local` に設定する具体例です。URL と匿名キーは公開してよいので `NEXT_PUBLIC_` を付け、全権限を持つサービスロールキーは絶対に公開しないため `NEXT_PUBLIC_` を付けません。この付け分けがそのままセキュリティの境界になります。詳細はコード内コメントを参照してください。
+
+<!-- -->
 
 > **注意（Supabase の API キーの名前）:** 2026年時点の Supabase ダッシュボードでは、API キーが **Publishable key**（`sb_publishable_` で始まる。公開してよい）と **Secret key**（`sb_secret_` で始まる。絶対に秘密）という名前で表示されます。以前の **anon key**・**service_role key**（`eyJ...` で始まる長い文字列）は、2026年末に廃止予定の旧方式です。本書では変数名は `NEXT_PUBLIC_SUPABASE_ANON_KEY` のまま、値に Publishable key を貼り付けます（第5・6章と同じ）。大切なのは、`.env.local` の**変数名**と、コードの `process.env.〇〇` の名前が一字一句そろっていることです。
 
@@ -5724,6 +5742,8 @@ export async function generateMetadata({
 
 > **いつ使う？ なぜ便利？** ブログ記事・商品ページ・プロフィールページなど「URLごとに内容が変わるページ」では、`generateMetadata` でタイトルや説明文を中身に合わせて変えるのが基本です。これをしないと全ページが同じタイトルになり、検索結果で見分けがつかず、クリックされにくくなります。
 
+<!-- -->
+
 > **用語: SEO（エスイーオー）** … Search Engine Optimization の略。Google などの検索結果で自分のページが上位に・分かりやすく表示されるよう整えること。タイトルと説明文はその一番の基本です。
 
 ---
@@ -5789,7 +5809,27 @@ export default async function NewsPage() {
 }
 ```
 
-**画面にはこう表示される:** 「お知らせ」見出しの下にニュース項目が並びます。「生成時刻」の部分に注目すると、ページを何度リロードしても**60秒間は同じ時刻**のまま（=作り置きを使い回している）で、60秒を過ぎてからアクセスすると**新しい時刻に更新**されます。これが「一定時間ごとに作り直す」動きです。
+**画面にはこう表示される:** 「お知らせ」見出しの下にニュース項目が並びます。「生成時刻」の部分に注目すると、ページを何度リロードしても**60秒間は同じ時刻**のまま（=作り置きを使い回している）で、60秒を過ぎてからアクセスすると、裏で作り直しが始まり、その次のアクセスから**新しい時刻に更新**されます。これが「一定時間ごとに作り直す」動きです。
+
+**▼ 実行結果**（`npm run build` → `npm run start` で起動し、`curl` で時間をあけて4回開いたときの「生成時刻」。ビルドは 20:50:31 に行い、最初のアクセスはその約2分後）
+
+```text
+  1秒後: 生成時刻: 20:50:31）
+ 31秒後: 生成時刻: 20:52:25）
+ 66秒後: 生成時刻: 20:52:25）
+ 73秒後: 生成時刻: 20:53:31）
+```
+
+- 1回目は、ビルド時に作った 20:50:31 の版がそのまま返りました。すでに60秒以上たっていたので、このアクセスをきっかけに裏で作り直しが始まります。
+- 2回目（31秒後）には、作り直された 20:52:25 の版が返っています。
+- 3回目（66秒後）は、20:52:25 から60秒を過ぎていたので、古い版をすぐ返しつつ裏で作り直し、4回目（73秒後）で新しい 20:53:31 の版になりました。6.1 節の図4-9 は、この記録を図にしたものです。
+
+`npm run build` の結果にも、`/news` が60秒（1m）ごとに作り直されることが表示されます（関係する行だけ抜粋）。
+
+```text
+Route (app)           Revalidate  Expire
+├ ○ /news                     1m      1y
+```
 
 #### ▼ コードを1つずつ分解して解説
 
@@ -5809,7 +5849,59 @@ export const revalidate = 60;
 
 > **いつ使う？ なぜ便利？** 「最新であってほしいけれど、1秒単位の鮮度までは要らない」ページ（ニュース、ランキング、在庫数の目安など）に最適です。アクセスのたびに毎回作り直す SSR より速く・安く、完全に作り置きの SSG より新しい、という「いいとこ取り」ができます。
 
+<!-- -->
+
 > **用語: ISR（Incremental Static Regeneration）** … 「少しずつ（インクリメンタルに）静的ページを再生成する」方式。第1章の表で出てきた SSG と SSR の中間にあたる方法だと考えると分かりやすいです。
+
+<!-- -->
+
+> **参考（Cache Components を「Yes」にした場合の書き方）:** 6.1 節の注意のとおり、`next.config.ts` に `cacheComponents: true` があるプロジェクトでは `export const revalidate = 60` は使えず、ビルドが次のエラーで止まります（実際の出力）。
+
+```text
+Error: Route segment config "revalidate" is not compatible with `nextConfig.cacheComponents`. Please remove it.
+```
+
+その場合は、ページの関数の先頭に `"use cache"` を書き、`cacheLife(...)` で「どれくらいの間隔で作り直すか」を指定します。`"minutes"` は「1分たったら、次のアクセスのときに裏で作り直す」という設定で、`revalidate = 60` とほぼ同じ意味になります。
+
+```tsx
+// app/news/page.tsx（Cache Components 版。cacheComponents: true のときだけ使える）
+import { cacheLife } from "next/cache";
+
+async function getNews() {
+  // 「ページを作った時刻」を確認用に作る
+  const now = new Date().toLocaleTimeString("ja-JP");
+  return [{ title: "新刊が入荷しました", builtAt: now }];
+}
+
+export default async function NewsPage() {
+  // このページの結果をキャッシュ（作り置き）する
+  "use cache";
+  // "minutes" は「1分たったら次のアクセスで裏で作り直す」という設定
+  cacheLife("minutes");
+
+  const news = await getNews();
+
+  return (
+    <div>
+      <h1>お知らせ</h1>
+      <ul>
+        {news.map((item, i) => (
+          <li key={i}>
+            {item.title}（生成時刻: {item.builtAt}）
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+```
+
+`cacheComponents: true` でビルドしたときの結果（関係する行だけ抜粋）です。`revalidate = 60` のときと同じく、1分（1m）ごとに作り直されることが分かります。
+
+```text
+Route (app)           Revalidate  Expire
+├ ○ /news                     1m      1h
+```
 
 ---
 
@@ -5881,6 +5973,8 @@ export async function POST(request: Request) {
 
 > **用語: API（エーピーアイ）** … プログラム同士がデータをやり取りするための「窓口・受付」のこと。人が見る画面（HTML）ではなく、機械が読むためのデータ（多くはJSON）を返します。
 
+<!-- -->
+
 > **用語: JSON（ジェイソン）** … `{"title":"坊っちゃん"}` のような「キーと値」でデータを表す、プログラム間でよく使われる共通フォーマット。
 
 ---
@@ -5908,13 +6002,13 @@ export async function POST(request: Request) {
 
 ---
 
-### Middleware（アクセス前に割り込んで認証チェックする）
+### Proxy（旧 Middleware：アクセス前に割り込んで認証チェックする）
 
 > **▼ このコードがやること（先に日本語で）:** ページが表示される**前に**「割り込み」を入れて、「この人はログイン済みか？」をチェックします。もしログインしていなければ、目的のページを見せずに**ログイン画面へ自動的に送り返し（リダイレクト）**ます。会員専用ページや管理画面を「ログインしていない人に見せない」ための、見張り番のような仕組みです。詳細はコード内コメントを参照してください。
 
 ```typescript
 // 置き場所が重要。プロジェクトの一番上（app/ と同じ階層）に置く
-// middleware.ts
+// proxy.ts（Next.js 15 までは middleware.ts という名前だった）
 // ※ app/ の中ではなく、ルート直下に1つだけ置く
 
 // リダイレクトや「通過OK」を返すためのヘルパー
@@ -5923,11 +6017,11 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 // ─────────────────────────────────────────────────────
-// middleware: ページに届く前に必ず通る「関所」
-// 予約名 middleware で export する必要がある。
+// proxy: ページに届く前に必ず通る「関所」
+// 予約名 proxy で export する必要がある（15 までは middleware）。
 // ─────────────────────────────────────────────────────
 // request にアクセス内容（URLやCookieなど）が入る
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   // Cookie から「ログインの証（トークン）」を読む
   // ログイン時に保存しておいた印を確認
   const token = request.cookies.get("token");
@@ -5956,17 +6050,30 @@ export const config = {
 
 **画面にはこう表示される:** ログインしていない状態で `/mypage` を開こうとすると、`/mypage` の中身は一切見えないまま、**一瞬で `/login`（ログイン画面）に飛ばされ**ます。逆にログイン済み（Cookie にトークンがある）なら、何ごともなく `/mypage` がそのまま表示されます。
 
+**▼ 実行結果**（`npm run build` → `npm run start` で起動し、`curl -i` で `/mypage` を開いたときの応答の見出し。2回目は `-b "token=abc"` でログインの証の Cookie を付けて送ったもの）
+
+```text
+$ curl -i http://localhost:3000/mypage
+HTTP/1.1 307 Temporary Redirect
+location: /login
+
+$ curl -i -b "token=abc" http://localhost:3000/mypage
+HTTP/1.1 200 OK
+```
+
+Cookie が無いときは `307`（転送）で `/login` へ送り返され、Cookie があるときは `200 OK` で `/mypage` の中身（`<h1>マイページ</h1>`）が返りました。`npm run build` の結果の最後には、`ƒ Proxy (Middleware)` という行が表示され、proxy.ts が組み込まれたことが分かります。
+
 #### ▼ コードを1つずつ分解して解説
 
-Middleware には「`middleware.ts` の置き場所」「`middleware` という関数名」「`config.matcher` で対象を絞る」という3つの約束があります。
+Proxy には「`proxy.ts` の置き場所」「`proxy` という関数名」「`config.matcher` で対象を絞る」という3つの約束があります（5.3 節の図4-8 も参照）。
 
 ---
 
-##### 解説1: `middleware.ts` は「ページの手前にある関所」
+##### 解説1: `proxy.ts` は「ページの手前にある関所」
 
 ```typescript
-// middleware.ts （プロジェクトのルート直下に置く）
-export function middleware(request: NextRequest) {
+// proxy.ts （プロジェクトのルート直下に置く）
+export function proxy(request: NextRequest) {
   const token = request.cookies.get("token");
   if (!token) {
     const loginUrl = new URL("/login", request.url);
@@ -5976,11 +6083,13 @@ export function middleware(request: NextRequest) {
 }
 ```
 
-- **Middleware（ミドルウェア）** は、ユーザーがページにたどり着く**直前に必ず通る「関所」**です。`middleware.ts` という名前のファイルを**プロジェクトの一番上（`app/` フォルダと同じ階層）に1つだけ**置きます。
+- **Proxy（プロキシ：代理人）** は、ユーザーがページにたどり着く**直前に必ず通る「関所」**です。`proxy.ts` という名前のファイルを**プロジェクトの一番上（`app/` フォルダと同じ階層）に1つだけ**置きます。Next.js 15 までは同じ役割のファイルを `middleware.ts`（ミドルウェア）と呼んでいました。
 - 中では `request`（届いたアクセス情報）を調べられます。ここでは `request.cookies.get("token")` で「ログインの証」を探しています。
 - 証が**無ければ** `NextResponse.redirect(...)` で**ログイン画面へ送り返し**、**有れば** `NextResponse.next()` で**そのまま通します**。`next()` は「邪魔せず通過させる」という意味です。
 
 > **用語: リダイレクト** … アクセスしてきた人を、別のURLへ自動的に送り直すこと。「この扉は今開けられないので、あちらの受付へどうぞ」と案内するイメージです。
+
+<!-- -->
 
 > **用語: Cookie（クッキー）／トークン** … Cookieはブラウザに小さなデータを保存しておく仕組み。ログインすると「あなたはログイン済みです」という印（トークン）をCookieに入れておき、次回以降そのトークンの有無でログイン状態を判断します。
 
@@ -5994,7 +6103,7 @@ export const config = {
 };
 ```
 
-- Middleware は放っておくと**すべてのアクセスに割り込んで**しまい、画像やトップページにまで関所がかかって無駄が出ます。そこで `config` の `matcher`（マッチャー＝対象を選ぶもの）で、**「効かせたいURLだけ」を指定**します。
+- Proxy は放っておくと**すべてのアクセスに割り込んで**しまい、画像やトップページにまで関所がかかって無駄が出ます。そこで `config` の `matcher`（マッチャー＝対象を選ぶもの）で、**「効かせたいURLだけ」を指定**します。
 - `"/mypage/:path*"` は「`/mypage` とその下のすべてのページ」という意味です。これで会員専用ページにだけログインチェックがかかり、トップページやログイン画面はチェックなしで開けます。
 
 > **いつ使う？ なぜ便利？** 「ログインしていない人に会員ページ・管理画面を見せたくない」というのが代表例です。各ページに毎回チェックを書くより、入口でまとめて見張るほうが書き漏れがなく安全です。ほかにも、言語ごとのページ振り分けや、地域によるアクセス制限などにも使われます。
@@ -6078,6 +6187,8 @@ export default function HomePage() {
 
 > **注意（Next.js 16 で `priority` → `preload`）:** Next.js 15 までは、この指定は `priority`（プライオリティ＝優先）という名前でした。Next.js 16 で `priority` は非推奨になり、`preload` に置き換わりました。古い記事の `priority` は `preload` と読み替えてください。公式ドキュメントでは、多くの場合は `loading="eager"`（すぐ読み込む）や `fetchPriority="high"`（優先度を上げる）でも十分だと案内されています。
 
+<!-- -->
+
 > **用語: alt（オルト）テキスト** … 画像の内容を文字で説明したもの。目の不自由な人向けの読み上げや、画像が表示できなかったときの代わりの表示に使われ、SEOにも効きます。
 
 ---
@@ -6132,10 +6243,22 @@ blurDataURL="data:image/png;base64,iVBORw0K... "
 
 ### エラー1: "useState" は Server Component で使用できない
 
+`npm run dev` 中にそのページを開いたときの、ターミナルの実際の出力です（Next.js 16.4.1。ファイル名は実験用のもの）。
+
+```text
+⨯ ./app/ng-usestate/page.tsx:1:10
+Error: You're importing a module that depends on `useState` into a React Server Component module. This API is only available in Client Components. To fix, mark the file (or its parent) with the `"use client"` directive.
+    Learn more: https://nextjs.org/docs/app/api-reference/directives/use-client
+> 1 | import { useState } from "react";
+    |          ^^^^^^^^
+  2 |
+  3 | export default function Counter() {
+  4 |   const [count, setCount] = useState(0);
+
+Ecmascript file had an error
 ```
-Error: useState only works in Client Components. Add the "use client" directive
-at the top of the file to use it.
-```
+
+エラー文の要点は「`useState` を使うモジュールを React Server Component に import している。この API は Client Component でしか使えない。直すにはファイル（またはその親）に `"use client"` を付けて」です。このエラーは「組み立て（コンパイル）の失敗」なので、直すまでは**ほかのページも開けなくなる**ことがあります（実験でも、関係ないページが 500 エラーになりました）。
 
 **原因:** Server Component（デフォルト）で `useState` や `useEffect` を使おうとしている。
 
@@ -6173,10 +6296,13 @@ export default function Counter() {
 
 ### エラー2: "async/await" は Client Component で使用できない
 
+ブラウザの開発者ツールの Console に、次のエラーが出ます（実際の出力。`<BooksPage>` の部分はコンポーネント名）。
+
+```text
+<BooksPage> is an async Client Component. Only Server Components can be async at the moment. This error is often caused by accidentally adding `'use client'` to a module that was originally written for the server.
 ```
-Error: async/await is not yet supported in Client Components, only Server
-Components.
-```
+
+実験では、このエラーと一緒に `fetch` が何度も繰り返され、Console が `Failed to load resource` で埋まりました。「関数に `async` を付けた Client Component は、描画のたびに処理をやり直してしまう」ためです。
 
 **原因:** `"use client"` を付けたコンポーネントで `async` 関数としてエクスポートしている。
 
@@ -6251,10 +6377,14 @@ import { useRouter } from "next/navigation";
 
 ### エラー4: metadata と "use client" の共存
 
+`npm run build` の実際の出力です（関係する部分だけ抜粋）。
+
+```text
+./app/ng-meta/page.tsx:3:14
+Error: You are attempting to export "metadata" from a component marked with "use client", which is disallowed. "metadata" must be resolved on the server before the page component is rendered. Keep your page as a Server Component and move Client Component logic to a separate file. Read more: https://nextjs.org/docs/app/api-reference/functions/generate-metadata#why-generatemetadata-is-server-component-only
 ```
-Error: You are attempting to export "metadata" from a component marked with
-"use client", which is unsupported.
-```
+
+最後の文「ページは Server Component のままにして、Client Component の処理は別のファイルに移して」が、そのまま直し方です（3.3 の「つまずきポイント」と同じ考え方）。
 
 **原因:** `"use client"` のファイルで `metadata` をエクスポートしている。メタデータは Server Component でのみエクスポート可能。
 
@@ -6299,27 +6429,47 @@ const apiKey = process.env.API_SECRET_KEY;
 const publicUrl = process.env.NEXT_PUBLIC_API_URL;
 ```
 
-> **注意:** 機密情報に `NEXT_PUBLIC_` を付けてはいけません。Server Action や API Route 経由でアクセスしてください。
+> **注意:** 機密情報に `NEXT_PUBLIC_` を付けてはいけません。秘密の値は Server Component・Server Action・Route Handler の中だけで使ってください。また、`NEXT_PUBLIC_` の無い秘密の変数を Client Component の中で**画面に表示**すると、ブラウザでは `undefined` でも、サーバーでの最初の描画で本物の値が HTML に入ってしまいます（8.2 の「つまずきポイント」で実験しました）。`NEXT_PUBLIC_` の値を変えたのに反映されないときは、開発サーバーの再起動か、もう一度ビルドが必要です（同じく 8.2）。
 
 ---
 
-### エラー6: "Text content does not match server-rendered HTML"（Hydration エラー）
+### エラー6: "Hydration failed because the server rendered text didn't match the client"（Hydration エラー）
 
-```
-Warning: Text content did not match. Server: "2024年3月15日" Client: "3/15/2024"
+React 19 では、ブラウザの開発者ツールの Console に次のエラーが出ます。`Math.random()`（実行するたびに違う数を返す）を Client Component で表示して試したときの実際の出力です（先頭と、食い違った場所の部分を抜粋）。`+` がブラウザで描画した値、`-` がサーバーの HTML の値です。
+
+```text
+Hydration failed because the server rendered text didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+...
+                        <NgHydrationPage>
+                          <NowText>
+                            <p>
++                             0.033854490369345513
+-                             0.399743962157744
 ```
 
-**原因:** サーバーとクライアントで異なる出力が生成されている。日時のフォーマットやランダム値でよく発生する。
+エラー文の箇条書きが、そのまま「よくある原因」の一覧になっています。「`typeof window` で分岐している」「`Date.now()` や `Math.random()` のように毎回変わる値」「利用者の地域設定で変わる日付の書式」などです。
+
+**原因:** Client Component の「サーバーでの最初の描画（図4-4 の③）」と「ブラウザでの描画（⑥）」で、違う内容になっている。日時のフォーマットやランダム値でよく発生する。なお、Hydration（ハイドレーション）は Client Component にだけ起きるので、`"use client"` の無い Server Component で時刻を表示しても、このエラーにはなりません（その場合は 6.1 の「時刻が止まる」問題に注意）。
 
 ```typescript
-// ❌ サーバーとクライアントで結果が異なる可能性がある
+// ❌ サーバーとクライアントで結果が異なる可能性がある（Client Component）
+"use client";
+
 export default function DateDisplay() {
   // サーバーとブラウザで実行時刻が違えば表示も違う
   // → Hydration エラーになる
   return <p>{new Date().toLocaleString()}</p>;
 }
 
-// ✅ 修正版 1: suppressHydrationWarning を使う
+// ✅ 修正版 1: suppressHydrationWarning を使う（Client Component のまま）
+"use client";
+
 export default function DateDisplay() {
   // React の Hydration 不一致警告を抑制する属性
   // 中身が動的でもよい場合の応急処置
@@ -6350,14 +6500,22 @@ export default function DateDisplay() {
 
 ---
 
-### エラー7: fetch でのキャッシュに関する警告
+### エラー7: 本文で扱ったそのほかのエラー（早見表）
 
-```
-Warning: fetch for "https://..." on "/" used "no-store" and
-should not be called inside a layout or template.
-```
+この章の本文の「つまずきポイント」で、実際の出力と直し方を紹介したエラーです。エラー文の一部で検索して、該当する節に戻ってください。
 
-**対処法:** `layout.tsx` 内では `cache: "no-store"` を避け、`page.tsx` で使う。
+| エラー文（の一部） | 何が起きているか | 戻る節 |
+|---|---|---|
+| `used params.id. params is a Promise and must be unwrapped with await` | `params` を `await` せずに読んだ | 2.4 |
+| `ReferenceError: window is not defined` | Client Component の描画中に `window` を読んだ（サーバーでの描画で失敗） | 3.2 |
+| `Event handlers cannot be passed to Client Component props` / `Functions cannot be passed directly to Client Components` | Server Component から Client Component に関数を渡した | 3.5 |
+| `Only plain objects, and a few built-ins, can be passed to Client Components` | クラスから作ったものを props で渡した | 3.5 |
+| （エラーは出ないが）`catch で捕まえたもの: Error: NEXT_REDIRECT` | `redirect()` を `try` の中で呼んだ | 5.3 |
+| `Types of parameters 'formData' and 'state' are incompatible` | `useActionState` に FormData だけを受け取る関数を渡した | 7.2 |
+| （エラーは出ないが）本番で一覧や時刻が更新されない | ページがビルド時に作り置きされた／`revalidatePath` を忘れた | 6.1・7.2 |
+| `Next.js encountered uncached or runtime data during prerendering` | Cache Components を Yes にしたプロジェクトで、`loading.tsx` の無いページが `params` などを使った | 6.1 の注意 |
+
+> **補足（この見出しにあった古い警告について）:** 以前の版では「`layout.tsx` で `cache: "no-store"` の `fetch` を使うと警告が出る」と書いていましたが、Next.js 16.4.1 で実際に試したところ、そのような警告は出ませんでした。`layout.tsx` で毎回データを取得すると、その下のすべてのページが毎回作り直しになる（6.1 の `ƒ`）点には注意してください。
 
 ---
 
@@ -6385,6 +6543,10 @@ should not be called inside a layout or template.
 | **Server Actions** | "use server" でサーバー処理を直接呼び出し。フォーム処理に最適 |
 | **環境変数** | NEXT_PUBLIC_ の有無でアクセス範囲が変わる |
 | **プロジェクト構成** | app/, components/, lib/, types/ の4層構造 |
+| **1回のアクセスの流れ** | サーバーで HTML を作る（Client Component も1回描画）→ 表示 → ハイドレーションで動き出す（図4-4） |
+| **props の境界** | Server から Client へ渡せるのは文字にできるものだけ。関数は渡さない（図4-5） |
+| **キャッシュ** | 本番ではページがビルド時に作り置きされることがある。`connection()`・`revalidate`・`revalidatePath` で更新を制御（図4-9・図4-10） |
+| **Next.js 16 の変更点** | `params` は必ず `await`、`middleware.ts` → `proxy.ts`、`priority` → `preload`、`error.tsx` の `retry` |
 
 > **次の章では:** Supabase のセットアップを行い、実際のデータベースと接続します。書籍管理アプリのバックエンドを構築し、この章で学んだ Server Components や Server Actions を使ってデータの読み書きを実装していきます。
 
@@ -6403,29 +6565,260 @@ should not be called inside a layout or template.
 4. `layout.tsx` と `page.tsx` の違いは何ですか？
 5. Server Actions を使う利点を2つ挙げてください。
 
-<details>
-<summary>解答を見る</summary>
+#### 確認問題の解答と解説
 
-1. **違い3つ:**
-   - Server Component はサーバーで実行、Client Component はブラウザで実行
-   - Server Component はデータベースに直接アクセスできる、Client Component はできない
-   - Client Component は useState/useEffect が使える、Server Component は使えない
+まず自分の言葉で答えてから読んでください。
 
-2. **Server / Client の判断:**
-   - データベースから書籍一覧を取得 → **Server Component**（DBに直接アクセス可能）
-   - 検索バー → **Client Component**（useState でリアルタイム入力を管理）
-   - 書籍カードの静的表示 → **Server Component**（インタラクティブ性不要）
+**問1の解答（Server Component と Client Component の違い）**
 
-3. **環境変数のアクセス範囲:**
-   - `NEXT_PUBLIC_API_KEY` → Server Component と Client Component の両方で使用可能
-   - `API_SECRET_KEY` → Server Component のみ（Client Component では `undefined`）
+- Server Component はサーバーで実行され、Client Component はブラウザでも実行される（最初の1回はサーバーでも描画される。図4-4 の③）
+- Server Component はデータベースや秘密のキーに直接アクセスできる。Client Component はできない（書いてもブラウザでは使えず、秘密は漏れる危険がある）
+- Client Component は `useState`・`useEffect`・`onClick` などが使える。Server Component は使えない
 
-4. **layout.tsx と page.tsx の違い:**
-   - `layout.tsx` は複数のページで共有される外枠（ヘッダー、サイドバーなど）。ページ遷移しても状態が保持される
-   - `page.tsx` はそのルート固有のメインコンテンツ。遷移のたびに再レンダリングされる
+**解説:** 3つとも「どこで動くか」から説明できます。サーバーで動くから DB に近く秘密を守れる、ブラウザで動くからクリックや入力に反応できる、という関係です。「Client Component はブラウザ**だけ**で動く」と答えた人は、3.1.1 の実験（ターミナルに「実行場所: サーバー」と出た）をもう一度見てください。
 
-5. **Server Actions の利点:**
-   - API ルートを別途作成する必要がなく、コードがシンプルになる
-   - サーバー上で直接実行されるため、機密情報（DBの接続情報など）がクライアントに漏れない
+**問2の解答（Server / Client の判断）**
 
-</details>
+- データベースから書籍一覧を取得して表示 → **Server Component**（DB に直接アクセスでき、データ入りの HTML がすぐ届く）
+- 検索バー（入力をリアルタイムに反映）→ **Client Component**（`useState` と `onChange` が必要）
+- 書籍カードの静的な表示 → **Server Component**（動きが無いので、ブラウザに JavaScript を送る必要が無い）
+
+**解説:** 判断の基準は「その部品に、利用者の操作に反応する動きがあるか」です。動きが無いものは Server Component のまま、動きがある部品だけを小さく切り出して `"use client"` を付けます（3.3 の「つまずきポイント」）。
+
+**問3の解答（環境変数のアクセス範囲）**
+
+- `NEXT_PUBLIC_API_KEY` → Server Component と Client Component の両方で使える。ただし**ビルドのときにブラウザ用の JavaScript に値が書き込まれ、誰でも見られる**
+- `API_SECRET_KEY` → サーバー（Server Component・Server Action・Route Handler）だけで使う。Client Component ではブラウザで `undefined` になる
+
+**解説:** 名前に `API_KEY` と付いていても、`NEXT_PUBLIC_` を付けた時点で「公開してよい値」として扱われます（図4-11）。秘密のキーに `NEXT_PUBLIC_` を付けてはいけません。また、`API_SECRET_KEY` を Client Component の中で画面に表示すると、サーバーでの最初の描画で本物の値が HTML に入ってしまう点にも注意しましょう（8.2 の「つまずきポイント」）。
+
+**問4の解答（layout.tsx と page.tsx の違い）**
+
+- `layout.tsx` は、そのフォルダ以下の複数のページで共有される外枠（ヘッダー、サイドバーなど）。`{children}` の位置にページが入る。ページを移動しても作り直されず、状態が保たれる
+- `page.tsx` は、その URL 固有の中身。ページを移動すると入れ替わる
+
+**解説:** 図4-6 の「箱の中に箱」を思い出してください。5.1 の実験では、レイアウトの中のカウンターは `<Link>` で移動しても 3 のまま残りました（`<a>` だと 0 に戻る）。
+
+**問5の解答（Server Actions の利点）**
+
+- API（`route.ts`）を別に作らなくても、フォームから直接サーバーの関数を呼べるので、コードが短くなる
+- 関数の中身はサーバーで実行されるので、DB の接続情報などの秘密がブラウザに送られない
+- `revalidatePath` と組み合わせると、保存と画面の更新が1回の通信で済む（図4-10）
+- `<form action>` に渡せば、JavaScript が動かない環境でも送信できる
+
+**解説:** 2つ挙げられれば十分です。ただし、Server Action は「誰でも POST で呼び出せる公開の入り口」でもあるので、本物のアプリでは関数の中で必ずログインの確認や入力チェックをします（Next.js の公式ドキュメントでも強く注意されています）。
+
+## 練習問題（解答・解説つき）
+
+本文の内容を、手を動かして確かめる問題です。まず自分で考えて（できれば紙やエディタに書いて）から、後ろの「解答と解説」を見てください。
+
+### 問題1: ファイルをどこに置く？（2節）
+
+次の画面を表示するには、`app/` フォルダの下にどんな名前のファイルを作ればよいでしょうか。フォルダも含めて答えてください。
+
+1. `/about` のページ
+2. `/books/42/edit`（42 は書籍ごとに変わる）の編集ページ
+3. `/docs/a`・`/docs/a/b`・`/docs/a/b/c` のどれでも表示される1つのページ
+4. `/books` 以下のページでデータを取得している間に出す「読み込み中」の表示
+
+### 問題2: 古いサンプルを今の書き方に直す（2.4節）
+
+インターネットで見つけた次のコードを Next.js 16 で使うと、どうなるでしょうか。また、正しく動くように直してください。
+
+```tsx
+// app/books/[id]/page.tsx（古い書き方）
+export default function BookDetailPage({
+  params,
+}: {
+  params: { id: string };
+}) {
+  return <h1>書籍 {params.id} の詳細</h1>;
+}
+```
+
+### 問題3: ボタンを1つ足したらエラーになった（3節）
+
+次の `app/books/page.tsx` に「いいね」ボタンを足したところ、ページを開くと 500 エラーになりました。データ取得はサーバーで行ったまま、ボタンが動くように直してください。
+
+```tsx
+// app/books/page.tsx
+export default async function BooksPage() {
+  const books = ["リーダブルコード", "達人プログラマー"];
+  return (
+    <div>
+      <h1>書籍一覧（{books.length}冊）</h1>
+      <button onClick={() => console.log("いいね")}>いいね</button>
+    </div>
+  );
+}
+```
+
+### 問題4: ログはどこに出る？（3.1.1節）
+
+次の Client Component を Server Component のページに置き、`npm run dev` でページを1回開いてから、ボタンを1回押しました。(a)〜(c) のログは、それぞれ「サーバーのターミナル」「ブラウザの Console」のどちらに出るでしょうか（両方の場合もあります）。
+
+```tsx
+"use client";
+
+import { useEffect } from "react";
+
+export function Hello() {
+  // (a) 描画のたびに出すログ
+  console.log("描画しました");
+  useEffect(() => {
+    // (b) 画面に出た後に出すログ
+    console.log("画面に出ました");
+  }, []);
+  // (c) ボタンを押したときに出すログ
+  return <button onClick={() => console.log("押されました")}>押す</button>;
+}
+```
+
+### 問題5: Link か router.push か（5節）
+
+次の場面では、`<Link>` と `router.push` のどちらを使うのがよいでしょうか。理由も答えてください。
+
+1. 画面上部のメニューにある「書籍一覧」「書籍を追加」
+2. 登録フォームで「保存」を押し、保存に成功したら、その本の詳細ページへ移動する
+3. 一覧に並んだ書籍カードを押すと、その本の詳細ページへ移動する
+
+### 問題6: 本番だけ一覧が増えない（6.1・7.2節）
+
+次の Server Action で本を追加すると、`npm run dev` では一覧（`/`）を再読み込みすれば増えて見えるのに、`npm run build` → `npm run start` の本番モードでは、何度再読み込みしても増えません。原因と直し方を答えてください（`saveBook` は、データベースに保存する処理のまねをする自作の関数とします）。
+
+```ts
+// app/actions.ts
+"use server";
+
+import { saveBook } from "@/lib/books";
+
+export async function addBook(formData: FormData) {
+  const title = String(formData.get("title") ?? "").trim();
+  if (!title) {
+    return;
+  }
+  await saveBook(title);
+}
+```
+
+### 問題7: 環境変数の仕分け（8節）
+
+`.env.local` に次の4つを書きました。
+
+```bash
+NEXT_PUBLIC_SUPABASE_URL="https://abcdefghijklm.supabase.co"
+NEXT_PUBLIC_SUPABASE_ANON_KEY="sb_publishable_xxxxxxxxxxxxxxxx"
+SUPABASE_SERVICE_ROLE_KEY="sb_secret_xxxxxxxxxxxxxxxx"
+NEXT_PUBLIC_ADMIN_PASSWORD="p@ssw0rd"
+```
+
+1. ビルド後、ブラウザ用の JavaScript に値が書き込まれるのはどれですか。
+2. この中で、設定のしかたが危ないものはどれですか。どう直しますか。
+3. ある Client Component に `<p>{process.env.SUPABASE_SERVICE_ROLE_KEY}</p>` と書いてしまいました。ブラウザの画面には何が出て、何が問題ですか。
+
+### 解答と解説
+
+#### 問題1の解答
+
+1. `app/about/page.tsx`
+2. `app/books/[id]/edit/page.tsx`
+3. `app/docs/[...slug]/page.tsx`
+4. `app/books/loading.tsx`
+
+**解説:** URL の区切り（`/`）ごとにフォルダを作り、最後に `page.tsx` を置くのが基本です（図4-3）。変化する部分は `[id]` のように角括弧のフォルダにし、何階層でも受け取りたいときは `[...slug]` にします。`loading.tsx` は、置いたフォルダとその下のページの「読み込み中」表示になるので、`/books` 以下すべてに効かせたいなら `app/books/` に置きます（図4-2）。
+
+#### 問題2の解答
+
+**どうなるか:** 型チェックも `next build` も通ってしまいますが、画面には id が空のまま「書籍  の詳細」と表示され、開発サーバーのターミナルに `` Route "/books/[id]" used `params.id`. `params` is a Promise and must be unwrapped with `await` ... `` というエラーが出ます（2.4 の「つまずきポイント」の実験結果）。
+
+```tsx
+// app/books/[id]/page.tsx（直したもの）
+export default async function BookDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  return <h1>書籍 {id} の詳細</h1>;
+}
+```
+
+**解説:** 直すところは3つです。①関数に `async` を付ける、②型を `Promise<{ id: string }>` にする、③`await params` で封を開けてから `id` を取り出す。`searchParams` も同じように直します。
+
+#### 問題3の解答
+
+**原因:** `"use client"` の無い `page.tsx` は Server Component です。Server Component の中で `onClick` に関数を渡しているので、ターミナルに `Event handlers cannot be passed to Client Component props.` というエラーが出ます（`<button onClick={function onClick} children=...>` の部分が指し示されます。実際に試して確認したエラー文です）。
+
+```tsx
+// app/books/LikeButton.tsx（動きが必要なボタンだけを Client Component にする）
+"use client";
+
+export function LikeButton() {
+  return <button onClick={() => console.log("いいね")}>いいね</button>;
+}
+```
+
+```tsx
+// app/books/page.tsx（ページは Server Component のまま）
+import { LikeButton } from "./LikeButton";
+
+export default async function BooksPage() {
+  const books = ["リーダブルコード", "達人プログラマー"];
+  return (
+    <div>
+      <h1>書籍一覧（{books.length}冊）</h1>
+      <LikeButton />
+    </div>
+  );
+}
+```
+
+**解説:** `page.tsx` の先頭に `"use client"` を付けても動きますが、ページ全体が Client Component になり、`async` でのデータ取得や `metadata` が使えなくなります（3.3 の「つまずきポイント」）。動きが必要な部品だけを切り出すのが正解です。
+
+#### 問題4の解答
+
+- (a) `描画しました` … **両方**。最初の HTML を作るためにサーバーで1回（ターミナル）、ハイドレーションのためにブラウザで（Console。開発中は Strict Mode で2回）実行されます。
+- (b) `画面に出ました` … **ブラウザの Console だけ**。`useEffect` はブラウザで画面に表示された後にだけ実行されます。
+- (c) `押されました` … **ブラウザの Console だけ**。クリックはブラウザで起きるからです。
+
+**解説:** 3.1.1 の実験結果と同じです。「Client Component の関数本体はサーバーでも動く」「`useEffect` とイベントの中はブラウザだけ」の2点が分かっていれば、`window is not defined` のエラー（3.2）も防げます。
+
+#### 問題5の解答
+
+1. **`<Link>`** … いつでも行ける場所への道案内なので。本物の `<a href>` になり、新しいタブで開いたり、検索エンジンがたどったりできる
+2. **`router.push`** … 「保存に成功したら」という**処理の結果のあとで**移動したいので（Server Action で保存しているなら、Server Action の中で `redirect()` を使う方法もある）
+3. **`<Link>`** … 1 と同じく、利用者が選んで進む道案内なので
+
+**解説:** 迷ったら `<Link>`、「何かが終わってから移動」のときだけ `router.push`（図4-7）。一覧のカードをボタンにして `router.push` で移動させると、右クリックで新しいタブを開けない不便なリンクになってしまいます。
+
+#### 問題6の解答
+
+**原因:** 保存したあとに `revalidatePath` を呼んでいないので、Next.js は一覧（`/`）の作り置きが古くなったことを知りません。本番モードでは、`/` がビルド時に作り置き（`○ Static`）されているので、何度読み込み直しても作り置きが返ります。開発モードではページを毎回作り直すので、気づきにくいのです（7.2 の「つまずきポイント」の実験と同じ）。
+
+```ts
+// app/actions.ts（直したもの）
+"use server";
+
+import { revalidatePath } from "next/cache";
+import { saveBook } from "@/lib/books";
+
+export async function addBook(formData: FormData) {
+  const title = String(formData.get("title") ?? "").trim();
+  if (!title) {
+    return;
+  }
+  await saveBook(title);
+  // 一覧の画面が古くなったことを Next.js に伝える
+  revalidatePath("/");
+}
+```
+
+**解説:** 「データを変えたら、そのデータを表示している画面の URL を `revalidatePath` に渡す」がセットです（図4-10）。詳細ページ `/books/[id]` にも表示しているなら、そのパスも作り直します。
+
+#### 問題7の解答
+
+1. `NEXT_PUBLIC_` が付いた3つ（`NEXT_PUBLIC_SUPABASE_URL`・`NEXT_PUBLIC_SUPABASE_ANON_KEY`・`NEXT_PUBLIC_ADMIN_PASSWORD`）。
+2. `NEXT_PUBLIC_ADMIN_PASSWORD` が危険です。管理者のパスワードがブラウザ用の JavaScript に書き込まれ、誰でも読めてしまいます。`NEXT_PUBLIC_` を外して `ADMIN_PASSWORD` にし、サーバー（Server Action など）の中だけで使います。すでに公開してしまった値は、パスワード自体を変更します。
+3. ブラウザの画面には（ハイドレーションのあと）何も表示されません（ブラウザでは `undefined`）。しかし、サーバーでの最初の描画では本物の Secret key が読めるので、**サーバーから届く HTML に Secret key がそのまま入ってしまいます**。さらに Hydration エラーも出ます。Client Component では秘密の変数を読まず、必要な処理はサーバー側で行います。
+
+**解説:** `NEXT_PUBLIC_` は「チラシに印刷してよい」という付箋でした（図4-11）。Publishable key（旧 anon key）は Row Level Security で守られている前提なので公開してかまいませんが、Secret key（旧 service_role key）やパスワードは絶対に付箋を付けてはいけません。3 は 8.2 の「つまずきポイント」で実際に確かめた落とし穴です。
