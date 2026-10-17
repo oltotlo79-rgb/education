@@ -12,7 +12,10 @@
 
 > **なぜTypeScriptを学ぶの？** JavaScriptだけでもアプリは作れますが、TypeScriptを使うと「コードを書いている途中で間違いに気づける」「エディタ（コードを書くソフト）が賢く補完してくれる」というメリットがあります。最初は少し面倒に感じるかもしれませんが、慣れると「TypeScriptなしでは開発できない！」と思うようになります。
 
+<!-- -->
+
 > **大事なポイント（先に伝えておくと安心）:**
+>
 > - **型は実行時には消える** — TypeScript の型情報は「人間と TypeScript コンパイラだけが見えるメモ」。プログラムが実際に動くときには影響しません（これを「型消去」と呼びます）。
 > - **`const` をデフォルトにする** — 値を入れ替える必要がないなら必ず `const`（再代入禁止）。「ここは入れ替わらない」とコードを読む人に伝えられて、バグも減ります。
 > - **`null` と `undefined`** — どちらも「値がない」を表しますが、`undefined`（アンディファインド：未定義）は「まだ何も入れていない」、`null`（ヌル：明示的な空）は「意図的に空にしている」を表します。
@@ -118,9 +121,15 @@ npm install -D typescript
 
 > **注意:** `node ファイル名.ts` で TypeScript のファイルを直接実行できるのは、**Node.js 22.18 以降**（23.6 以降、24、25 など）です。`node --version` で確かめ、古い場合は第1章の手順で LTS 版に更新してください。バージョンによっては `ExperimentalWarning: Type Stripping is an experimental feature...`（型を消す機能はまだ実験中です）という警告が1行出ますが、動作には問題ありません。
 
+<!-- -->
+
 > **注意:** `npx tsc` は「このフォルダに入れた TypeScript の `tsc` を動かす」という意味です。`npm install -D typescript` をする**前に** `npx tsc` を打つと、`tsc` という名前の**無関係なパッケージ**をインストールしようとしてしまいます。必ず先にインストールしてください。
 
+<!-- -->
+
 > **注意:** 練習用フォルダには `tsconfig.json`（7節で学ぶ設定ファイル）を置かないでください。置いたまま `npx tsc ファイル名.ts` のようにファイル名を指定すると、新しい TypeScript では `error TS5112: tsconfig.json is present but will not be loaded if files are specified on commandline.` というエラーになります。
+
+<!-- -->
 
 > **この章の実行結果について:** 実行結果とエラーメッセージは、Node.js 25.9 と TypeScript 7.0（`npm install -D typescript` で入る版）で実際に動かして貼り付けたものです。`C:\ts-practice` の部分は、あなたのフォルダの場所に置き換えて読んでください。Next.js のプロジェクトでは TypeScript 5 系が入ることがあり、エラーの「補足」部分の並び方が少し違いますが、読み方は同じです。
 
@@ -136,6 +145,7 @@ npm install -D typescript
 7. [TypeScript の設定（tsconfig.json）](#7-typescript-の設定tsconfigjson)
 8. [よくあるエラーと対処法](#8-よくあるエラーと対処法)
 9. [発展: アプリでは使っていない重要なTypeScript機能](#発展-アプリでは使っていない重要なtypescript機能)
+10. [練習問題（解答・解説つき）](#練習問題解答解説つき)
 
 ---
 
@@ -171,6 +181,8 @@ let x = 1;
 値に名前を付けて保存する仕組みです。本書では原則 `const`（コンスト：constant の略。再代入できない変数）を使い、必要なときだけ `let`（レット：再代入できる変数）を使います。古い書き方の `var`（バー：variable の略。古い変数宣言）はバグの元なので使いません。
 
 > **なぜ `const` をデフォルトにするのか？** 変数を見ただけで「これは中身が変わらない」と分かると、コードを読む人の負担が減ります。「もしかして他で書き換えてる？」と疑う必要がないからです。React/Next.js のコードではほぼ全ての変数を `const` で宣言します。
+
+<!-- -->
 
 > **▼ このコードがやること（先に日本語で）:** 値に名前を付けて保存する「変数」を、`const`（あとで変えられない）と `let`（あとで変えられる）の2通りで作ってみます。一番大事なのは「**変えない値は `const` を使う**」という習慣——うっかり書き換えてしまうバグを未然に防げます。詳しい1行ごとの意味はコード内のコメントを見てください。
 
@@ -832,6 +844,8 @@ TypeScript のコードは直接ブラウザや Node.js（ノードジェイエ�
 >
 > 例えば `const age: number = 25;` は、コンパイル後には `const age = 25;` になります。型注釈の `: number` の部分が消えるイメージです。つまり「実行時に型でエラーを止める」ことはできません。型チェックは**コーディング中の VS Code と、コンパイル時の `tsc` だけ**が担当します。
 
+<!-- -->
+
 > **補足（最近の Node.js）:** Node.js 22.18 以降は、`node ファイル名.ts` で TypeScript のファイルを**直接**実行できます。ただしこれは、Node.js が実行の直前に「型の部分を消して JavaScript にしている」だけです。つまり上の図の「型チェック」の段階は**飛ばされます**。次の「試してみよう」で、本当にそうなるかを確かめます。
 
 #### 試してみよう: node は型を見ない、tsc は型だけを見る
@@ -1047,7 +1061,7 @@ VS Code では、`tsc` を打たなくても、コードを書いたその場で
 <text x="202" y="134" font-size="12" font-family="Consolas, monospace" fill="#cccccc">parameter of type 'string'. <tspan fill="#9d9d9d">ts(2345)</tspan></text>
 <line x1="190" y1="144" x2="570" y2="144" stroke="#454545"/>
 <text x="202" y="162" font-size="12" fill="#3794ff">問題の表示 (Alt+F8)　　クイック フィックス... (Ctrl+.)</text>
-<polygon points="192,194 192,212 196.5,207.5 199.5,214.5 202.5,213 199.5,206.5 205,206" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+<polygon points="197,205 197,223 201.5,218.5 204.5,225.5 207.5,224 204.5,217.5 210,217" fill="#ffffff" stroke="#000000" stroke-width="1"/>
 <rect x="10" y="224" width="700" height="86" fill="#181818"/>
 <line x1="10" y1="224" x2="710" y2="224" stroke="#2b2b2b"/>
 <text x="26" y="244" font-size="12" fill="#e7e7e7">問題　1</text>
@@ -1059,8 +1073,8 @@ VS Code では、`tsc` を打たなくても、コードを書いたその場で
 <line x1="33" y1="285" x2="39" y2="291" stroke="#f14c4c" stroke-width="1.5"/>
 <line x1="39" y1="285" x2="33" y2="291" stroke="#f14c4c" stroke-width="1.5"/>
 <text x="50" y="292" font-size="12" font-family="Consolas, monospace" fill="#cccccc">Argument of type 'number' is not assignable to parameter of type 'string'. ts(2345) <tspan fill="#9d9d9d">[Ln 6, Col 19]</tspan></text>
-<circle cx="218" cy="200" r="10" fill="#f97316"/>
-<text x="218" y="205" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">1</text>
+<circle cx="244" cy="197" r="10" fill="#f97316"/>
+<text x="244" y="202" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">1</text>
 <circle cx="570" cy="94" r="10" fill="#f97316"/>
 <text x="570" y="99" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">2</text>
 <circle cx="690" cy="265" r="10" fill="#f97316"/>
@@ -2273,6 +2287,7 @@ const num: void = 42;
 `null`（ヌル：明示的な「無」）は「値が意図的に空」であることを表し、`undefined`（アンディファインド：未定義）は「値が未定義」であることを表します。
 
 > **使い分けの目安:**
+>
 > - `undefined`：自然発生する「値がない」。変数を宣言しただけで初期化していない、関数が何も return しないとき、オブジェクトの存在しないプロパティを読んだとき。
 > - `null`：プログラマが「ここは意図的に空ですよ」と明示するときに使う。例えば API で「ユーザーが見つからない」場合に `null` を返すなど。
 > - **迷ったら `undefined` を使う** のが TypeScript の流儀。`null` は外部から値が来る場合（API, DB など）に限定するのが一般的。
@@ -3354,7 +3369,7 @@ type NonNullable<T> = T extends null | undefined ? never : T;
 // ----------------------------------------------------------------------------
 // 「ユニオン型」（| で区切って列挙）を使い、値を3つの文字列のどれかに限定する。
 // こうすると status = "yomu" のような typo が即座にエラーになる。
-type ReadingStatus = "want-to-read" | "reading" | "completed";
+type ReadingStatus = "want_to_read" | "reading" | "completed";
 //                       ↑読みたい     ↑読書中    ↑読了
 
 
@@ -3441,7 +3456,7 @@ interface ReadingRecord extends Book {
   // 読み終わった日
   endDate?: string;
   // メモ
-  notes?: string;
+  memo?: string;
   // 現在のページ（読書中のみ意味を持つ）
   currentPage?: number;
 }
@@ -3548,7 +3563,7 @@ const myReading: ReadingRecord = {
   status: "reading",
   startDate: "2025-07-01",
   currentPage: 150,
-  notes: "第5章まで読了。ジェネリクスの説明がわかりやすい。",
+  memo: "第5章まで読了。ジェネリクスの説明がわかりやすい。",
 };
 
 // フィルターを使った検索
@@ -3897,6 +3912,8 @@ function identity<T>(arg: T): T {
 
 > **用語: ジェネリクス（総称型）** … 型を「あとで決める変数」のように扱う仕組み。`<T>` のように山カッコで書き、1つの関数や型をあらゆる型に対応させられます。
 
+<!-- -->
+
 > **用語: 型パラメータ** … `<T>` の `T` のこと。関数の引数（パラメータ）が「値の入れ物」であるのに対し、型パラメータは「型の入れ物」です。
 
 ---
@@ -3971,6 +3988,8 @@ const inferred = identity("world");
 </div>
 
 > **ジェネリクスのありがたみ:** 上の `identity` 関数は、もし型を毎回手書きだったら `identityString` `identityNumber` `identityBoolean`... と無限に増えてしまう。`<T>` 1つで全てに対応できる。配列メソッドの `Array.prototype.map<U>(callback)` などはまさにこの仕組みで動いている。
+
+<!-- -->
 
 > **▼ このコードがやること（先に日本語で）:** 型パラメータは1つだけでなく、`<T, U>` のように**複数**持てます。ここでは2つの値をペア（タプル）にして返す `pair` 関数を作ります。あわせて `T`・`U`・`K`・`V` といった「型パラメータ名のよくある慣習」も紹介します（意味は普通の変数名と同じく自由ですが、慣習に従うと読みやすい）。
 
@@ -4969,7 +4988,7 @@ function isDirection(value: string): value is Direction {
 // ===== 読書ステータスの定義 =====
 
 // 3つの文字列リテラルだけを許す型。
-type ReadingStatus = "want-to-read" | "reading" | "completed";
+type ReadingStatus = "want_to_read" | "reading" | "completed";
 
 // 書籍の基本型。
 interface Book {
@@ -5000,7 +5019,7 @@ const book3: Book = {
   id: "3",
   title: "Next.js入門",
   author: "鈴木一郎",
-  status: "want-to-read",
+  status: "want_to_read",
 };
 
 // --- エラーになる例 ---
@@ -5012,7 +5031,7 @@ const invalidBook: Book = {
   // "finished" は ReadingStatus の3つに含まれていない。
   status: "finished",
   // Type '"finished"' is not assignable to type 'ReadingStatus'
-  // → "want-to-read" | "reading" | "completed" のどれかにしてください
+  // → "want_to_read" | "reading" | "completed" のどれかにしてください
 };
 ```
 
@@ -5025,8 +5044,8 @@ const invalidBook: Book = {
 function getStatusLabel(status: ReadingStatus): string {
   // switch 文で値ごとに分岐。
   switch (status) {
-    // status が "want-to-read" のとき。
-    case "want-to-read":
+    // status が "want_to_read" のとき。
+    case "want_to_read":
       // return すると関数が即終了。break 不要。
       return "読みたい";
     case "reading":
@@ -5042,7 +5061,7 @@ function getStatusLabel(status: ReadingStatus): string {
 // ステータス → 色コード（#で始まる16進数）の変換。
 function getStatusColor(status: ReadingStatus): string {
   switch (status) {
-    case "want-to-read":
+    case "want_to_read":
       // オレンジ
       return "#f39c12";
     case "reading":
@@ -5058,9 +5077,9 @@ function getStatusColor(status: ReadingStatus): string {
 function getStatusIcon(status: ReadingStatus): string {
   // Record<K, V> は「K 型のキーを全部持ち、値がすべて V 型」のオブジェクトを表す Utility Type。
   const icons: Record<ReadingStatus, string> = {
-    // キー名にハイフンが含まれるのでクォートが必要。
-    "want-to-read": "bookmark",
-    // 普通の識別子はクォート省略可。
+    // キー名が普通の識別子（英数字と _ だけ）なので、クォートは省略できる。
+    // "want-to-read" のようにハイフンを含むキーなら "..." で囲む必要がある。
+    want_to_read: "bookmark",
     reading: "book-open",
     completed: "check-circle",
   };
@@ -5120,10 +5139,10 @@ console.log(updatedBook.status);
 
 // ステータスに応じて異なる追加情報を持つ型
 type BookWithDetails =
-  // ユニオンの1つ目: status="want-to-read" のとき。
+  // ユニオンの1つ目: status="want_to_read" のとき。
   | {
       // ↑ 「判別タグ」。これがあるとTSがバリエーションを区別できる。
-      status: "want-to-read";
+      status: "want_to_read";
       title: string;
       // 読みたい理由
       // この種類だけが reason を持つ。
@@ -5150,7 +5169,7 @@ type BookWithDetails =
 function displayBookInfo(book: BookWithDetails): string {
   // book.status を見て分岐。
   switch (book.status) {
-    case "want-to-read":
+    case "want_to_read":
       // ここでは book.reason にアクセス可能
       // この case 内では TS が「book は『1つ目』のバリエーション」と絞り込む。
       return `「${book.title}」を読みたい（理由: ${book.reason}）`;
@@ -5333,6 +5352,8 @@ Next.js プロジェクトでは、`next.config.ts` と `tsconfig.json` の両�
 ```
 
 > **ポイント**: Next.js では `"jsx": "preserve"` が使われます。これは JSX の変換を Next.js（SWC）に任せるためです。`"noEmit": true` なので TypeScript コンパイラ自身は JavaScript を出力しません。
+
+<!-- -->
 
 > **▼ このコードがやること（先に日本語で）:** これから使う Next.js で実際に登場する「型付き」コードを先取りで眺めます。ページの情報（`Metadata`）、サーバーでデータを取得する `async`（非同期）関数と `await`、props の型定義などです。今は細部を理解しなくてOK——「これまで学んだ型の知識が、こういう実際の画面コードで使われるんだ」と雰囲気をつかむのが目的です。
 
@@ -5815,7 +5836,7 @@ Found 2 errors in the same file, starting at: errors.ts:8
 
 番号ごとの読み方をまとめると、次のとおりです。
 
-| 番号 | 部分 | 例 | 読み方 |
+| No. | 部分 | 例 | 読み方 |
 |---|---|---|---|
 | (1)(2) | 場所 | `errors.ts:8:3` | `errors.ts` の **8行目・3文字目**。VS Code なら `Ctrl + G` で行番号へジャンプできる |
 | (3) | エラー番号 | `TS2322` | エラーの種類の番号。`TS2322` で検索すると解説が見つかる |
@@ -5934,6 +5955,10 @@ const colorName = "red" satisfies Color;
 
 `strictNullChecks` が有効な場合に発生する、**null や undefined の可能性がある値にアクセスしようとしたとき**のエラーです。
 
+> **注意（メッセージの表示が変わっています）:** 古い TypeScript では、このエラーは見出しのとおり `Object is possibly 'undefined'.` と表示されていました。現在の TypeScript では、**どの変数が**怪しいのかまで書いてくれる形に変わっています。undefined の場合は `error TS18048: 'user.email' is possibly 'undefined'.`、null の場合は `error TS18047: 'button' is possibly 'null'.` のように表示されます（この節のコード中のエラー文も、現在の表示に合わせています）。意味はどちらも「その値は undefined（null）かもしれないので、そのまま使えません」です。
+
+<!-- -->
+
 > **▼ このコードがやること（先に日本語で）:** 「`Object is possibly 'undefined'`（値が無いかもしれない）」エラーの対処法を、配列アクセスやオプショナルなプロパティなど色々な場面で見ます。直し方は3つ——①`if` で「無いか」を先に確認、②`?.`（無ければ undefined を返す）、③`??`（無ければ代替値を使う）。クラッシュを防ぐ実践的なテクニック集です。
 
 ```typescript
@@ -5980,7 +6005,7 @@ const user: User = { name: "田中" };
 // 悪い例
 // user.email は string|undefined。undefined に .toUpperCase は呼べない。
 console.log(user.email.toUpperCase());
-// エラー: Object is possibly 'undefined'
+// エラー: 'user.email' is possibly 'undefined'.
 // email は設定されていないかもしれない
 
 // 良い例（方法1: if チェック）
@@ -6036,7 +6061,7 @@ const name = userMap.get("user1") ?? "不明";
 const button = document.querySelector("#submit-btn");
 // null かもしれないものに addEventListener は呼べない。
 button.addEventListener("click", handleClick);
-// エラー: Object is possibly 'null'
+// エラー: 'button' is possibly 'null'.
 // querySelector は要素が見つからない場合 null を返す
 
 // 良い例（方法1: null チェック）
@@ -6190,7 +6215,8 @@ interface ApiData {
 // 戻り値の型を Promise<ApiData> と明示。
 async function fetchData(): Promise<ApiData> {
   const response = await fetch("/api/data");
-  // 取得結果を ApiData 型として扱う（型アサーション）。
+  // 取得結果を ApiData 型として扱う（型注釈）。
+  // response.json() の結果は any なので、中身が本当にこの形かは実はチェックされない（下のつまずきポイント参照）。
   const data: ApiData = await response.json();
 
   // 型安全にアクセスできる
@@ -6201,6 +6227,82 @@ async function fetchData(): Promise<ApiData> {
   return data;
 }
 ```
+
+> **つまずきポイント: `as` や `!` でエラーを「黙らせる」のは最後の手段** — `値 as 型`（型アサーション）は「この値はこの型です。私が保証します」と TypeScript に**言い切る**書き方です。TypeScript はそれを信じてチェックをやめるので、エラーは消えます。しかし中身が本当にその形かは**誰も確かめていない**ため、間違っていれば実行時にクラッシュします。上の良い例の `const data: ApiData = await response.json();` も、`json()` の結果が `any` なので、実質的には同じく「信じているだけ」です。
+
+**NG 例**（`as-ng.ts`）: サーバーから届いた JSON を `as Book` で言い切ってしまう
+
+```typescript
+interface Book {
+  title: string;
+  price: number;
+}
+
+// サーバーから届いた JSON 文字列（price が抜けている！）
+const json = '{"title":"TypeScript入門"}';
+
+// as Book で「これは Book です」と言い切ってしまう
+const book = JSON.parse(json) as Book;
+console.log(book.price.toLocaleString());
+```
+
+`npx tsc --noEmit --strict --target esnext as-ng.ts` は**エラーなし**。ところが実行すると落ちます。
+
+**▼ 実行結果**（`node as-ng.ts`。node 内部の行は省略）
+
+```text
+C:\ts-practice\as-ng.ts:11
+console.log(book.price.toLocaleString());
+                       ^
+
+TypeError: Cannot read properties of undefined (reading 'toLocaleString')
+
+Node.js v25.9.0
+```
+
+**OK 例**（`as-ok.ts`）: いったん `unknown` で受け取り、型ガード関数で中身を確かめてから使う
+
+```typescript
+interface Book {
+  title: string;
+  price: number;
+}
+
+// 「本当に Book の形をしているか」を実行時に調べる型ガード関数
+function isBook(value: unknown): value is Book {
+  if (typeof value !== "object" || value === null) {
+    return false;
+  }
+  // in で「そのプロパティを持っているか」を確かめてから、型を調べる
+  return (
+    "title" in value &&
+    typeof value.title === "string" &&
+    "price" in value &&
+    typeof value.price === "number"
+  );
+}
+
+const json = '{"title":"TypeScript入門"}';
+
+// JSON.parse の結果は「まだ何か分からない」ので unknown として受け取る
+const data: unknown = JSON.parse(json);
+
+if (isBook(data)) {
+  console.log(data.price.toLocaleString());
+} else {
+  console.log("本のデータの形が正しくありません:", data);
+}
+```
+
+**▼ 実行結果**（`tsc` はエラーなし）
+
+```text
+本のデータの形が正しくありません: { title: 'TypeScript入門' }
+```
+
+- `unknown` で受け取ると、確かめるまで中身に触れなくなります（2.8 参照）。`isBook` が `true` を返したときだけ `Book` として扱えるので、`price` が無いデータで落ちることがありません。
+- 末尾の `!`（非 null アサーション。8.2 のエラーパターン4）も同じ仲間で、「絶対に null ではない」と言い切るだけです。`as` や `!` を書きたくなったら、まず `if` や型ガードで確かめられないかを考えましょう。
+- 書籍管理アプリでは Supabase のライブラリが「データベースの列に合わせた型」を付けて返してくれるので、自分で `as` を書く場面はほとんどありません。
 
 ### 8.4 エラー対処のまとめフローチャート
 
@@ -6444,6 +6546,73 @@ const move: Direction = Direction.Up;
 
 - `= "UP"` のように、各メンバーに好きな値（ここでは文字列）を指定することもできます。
 - 数値の enum だと表示したとき `0` などになって意味が分かりにくいですが、文字列を割り当てておくと `console.log(move)` で `"UP"` と表示され、**動作確認のとき分かりやすい**という利点があります。
+
+> **つまずきポイント: enum は `node ファイル名.ts` では動かない** — この章の練習で使っている `node ファイル名.ts` は、型の部分を「消すだけ」で実行する仕組みです。ところが `enum` は型ではなく、**JavaScript のコード（オブジェクト）を新しく作り出す**特別な構文なので、消すだけでは済みません。そのため Node.js は実行を拒否します（Next.js では変換ツールが enum も処理するので、アプリの中では動きます）。
+
+**NG 例**（`enum-ng.ts`）
+
+```typescript
+enum Signal {
+  Red = "RED",
+  Yellow = "YELLOW",
+  Green = "GREEN",
+}
+
+console.log(Signal.Red);
+```
+
+**▼ 実行結果**（`node enum-ng.ts`。node 内部の行は省略）
+
+```text
+C:\ts-practice\enum-ng.ts:1
+  > enum Signal {
+      Red = "RED",
+      Yellow = "YELLOW",
+      Green = "GREEN",
+  > }
+
+SyntaxError [ERR_UNSUPPORTED_TYPESCRIPT_SYNTAX]: TypeScript enum is not supported in strip-only mode
+  code: 'ERR_UNSUPPORTED_TYPESCRIPT_SYNTAX'
+}
+
+Node.js v25.9.0
+```
+
+- `TypeScript enum is not supported in strip-only mode` は「型を消すだけのモード（strip-only mode）では、TypeScript の enum は使えません」という意味です。なお `npx tsc` の型チェックでは、このファイルにエラーは出ません。
+
+**OK 例**（`enum-ok.ts`）: `as const` を付けたオブジェクトで、enum と同じことをする
+
+```typescript
+// enum の代わりに「as const を付けたオブジェクト」で選択肢をまとめる
+const Signal = {
+  Red: "RED",
+  Yellow: "YELLOW",
+  Green: "GREEN",
+} as const;
+
+// 値の一覧から型を作る → "RED" | "YELLOW" | "GREEN"
+type Signal = (typeof Signal)[keyof typeof Signal];
+
+function canGo(signal: Signal): boolean {
+  return signal === Signal.Green;
+}
+
+console.log(Signal.Red);
+console.log(canGo(Signal.Green));
+console.log(canGo("RED"));
+```
+
+**▼ 実行結果**（`tsc` はエラーなし）
+
+```text
+RED
+true
+false
+```
+
+- `as const`（このあと発展編で詳しく扱います）を付けると、`Signal.Red` の型が `string` ではなく `"RED"` という決め打ちの値になります。
+- `type Signal = (typeof Signal)[keyof typeof Signal];` は「`Signal` オブジェクトの値を全部集めたユニオン型」を作る決まり文句です。`keyof typeof Signal` で `"Red" | "Yellow" | "Green"`（キーの一覧）を作り、そのキーで値の型を取り出しています。最初は丸ごと覚えてしまって構いません。
+- この形なら型を消しても普通のオブジェクトが残るだけなので、`node` でもそのまま動きます。最近の TypeScript のコードでは、enum の代わりにこの書き方や、単純な文字列リテラルのユニオン型（6章）がよく使われます。
 
 ---
 
@@ -6741,6 +6910,33 @@ const city1 = user1.address?.city ?? "未設定";
 
 > **用語: Null合体演算子** … `??` を使って「値が無いときだけ別の値（デフォルト値）を使う」書き方。
 
+`||` との違いは、値が `0` のときにはっきり表れます。
+
+> **つまずきポイント: 「0 冊」が「情報なし」に化ける（`||` の落とし穴）** — `||` は左側が `0`・`""`（空文字）・`false` などの「偽っぽい値」のときにも右側を使います。そのため、`0` や空文字が**正しい値**である場面で `||` を使うと、データが勝手に置き換わってしまいます。
+
+**NG 例と OK 例**（`nullish.ts`）
+
+```typescript
+// 在庫数。0 は「在庫が 0 冊」という正しい値
+const stock: number | null = 0;
+
+// || は 0 や "" も「値がない」扱いにしてしまう
+console.log(stock || "在庫情報なし");
+
+// ?? は null と undefined のときだけ右側を使う
+console.log(stock ?? "在庫情報なし");
+```
+
+**▼ 実行結果**（`tsc` はエラーなし）
+
+```text
+在庫情報なし
+0
+```
+
+- 1行目（`||`、NG）は「在庫 0 冊」なのに「在庫情報なし」と表示してしまいました。2行目（`??`、OK）は `0` をそのまま表示しています。
+- 「`null` や `undefined` のときだけ代わりの値を使いたい」なら `??`、と覚えておけば安全です。ページ数・評価・価格のように `0` があり得る数値では特に注意しましょう。
+
 ---
 
 ### ジェネリック関数（型を後から決められる関数）
@@ -6829,6 +7025,327 @@ const d = wrap<string>("world");
 
 ---
 
+## 練習問題（解答・解説つき）
+
+この章の内容を、手を動かして確かめましょう。どの問題も、冒頭の「この章のサンプルを動かす準備」で作った練習用フォルダで試せます。**まず自分で考えて（できれば実際に打って動かして）から**、後ろの「解答と解説」を見てください。
+
+### 問題1: 型注釈を付ける（3節）
+
+次の JavaScript の関数に型注釈を付けて、TypeScript の関数にしてください。`price`（単価）と `quantity`（冊数）は数値、`discount`（値引き額）は数値で、**省略したら 0** とします。戻り値も数値です。また、型を付けたあとに `calcTotal("1000", 3)` と呼ぶと、`tsc` は何と言うでしょうか。
+
+```javascript
+function calcTotal(price, quantity, discount) {
+  return price * quantity - discount;
+}
+```
+
+### 問題2: エラーメッセージを読む（8節の冒頭）
+
+次の `q2.ts` を型チェックすると、下のエラーが出ました。(1) 何行目の何文字目が問題か、(2) 何型の値を何型の場所に入れようとしたのか、(3)「入れる場所の型」はどこで決められているか、(4) 直し方を答えてください。
+
+```typescript
+interface Book {
+  title: string;
+  isbn: string;
+}
+
+const book: Book = {
+  title: "TypeScript入門",
+  isbn: 9784000000000,
+};
+```
+
+```text
+q2.ts:8:3 - error TS2322: Type 'number' is not assignable to type 'string'.
+
+8   isbn: 9784000000000,
+    ~~~~
+
+  q2.ts:3:3 - The expected type comes from property 'isbn' which is declared here on type 'Book'
+    3   isbn: string;
+        ~~~~
+
+
+Found 1 error in q2.ts:8
+```
+
+### 問題3: 参照とコピー（0.10.1）
+
+次のコードを実行すると、3行の表示はそれぞれどうなるでしょうか。実行する前に予想してください。
+
+```typescript
+const a = { title: "入門", tags: ["TS"] };
+const b = a;
+const c = { ...a };
+
+b.title = "実践";
+c.tags.push("React");
+
+console.log(a.title);
+console.log(a.tags);
+console.log(a === b, a === c);
+```
+
+### 問題4: ユニオン型の絞り込み（6.1.1）
+
+`string | number | boolean` のどれかを受け取り、次のような表示用の文字を返す関数 `toLabel` を書いてください。
+
+- 文字列なら `文字列: TypeScript` のように、そのまま付ける
+- 数値なら `数値: 3.0` のように、小数点以下1桁にする（`toFixed(1)` を使う）
+- 真偽値なら `true` は `真偽値: はい`、`false` は `真偽値: いいえ`
+
+### 問題5: 判別可能なユニオン型と never（6.3・2.9）
+
+本の一覧を読み込む画面の状態を、次の型で表します。
+
+```typescript
+type BooksState =
+  | { status: "loading" }
+  | { status: "success"; books: string[] }
+  | { status: "error"; message: string };
+```
+
+(1) この状態を受け取り、`読み込み中…`、`2冊: TypeScript入門, React実践ガイド`、`エラー: 通信に失敗しました` のような文字を返す関数 `render` を `switch` で書いてください。`default` には、2.9 で学んだ `never` を使った網羅性チェックを入れてください。
+(2) あとから `BooksState` に `| { status: "empty" }` を追加したのに `render` を直し忘れると、何が起きるでしょうか。
+
+### 問題6: ジェネリクス（5節）
+
+配列の最後の要素を返す関数 `last` を、ジェネリクスを使って書いてください。空の配列なら `undefined` を返します。そのうえで、`last(["TypeScript入門", "React実践ガイド"])` と `last([2980, 3300, 1980])` の戻り値の型は何になるか答えてください。
+
+### 問題7: async / await の実行順（7.3.1）
+
+次のコードを実行すると、`A`・`B`・`C`・`D`・`1冊目 完了`・`2冊目 完了` の6行は、どの順番で表示されるでしょうか。
+
+```typescript
+function wait(ms: number): Promise<void> {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
+async function task(name: string, ms: number): Promise<string> {
+  await wait(ms);
+  console.log(`${name} 完了`);
+  return name;
+}
+
+async function main(): Promise<void> {
+  console.log("A");
+  const first = task("1冊目", 200);
+  const second = task("2冊目", 100);
+  console.log("B");
+  const results = await Promise.all([first, second]);
+  console.log("C", results);
+}
+
+main();
+console.log("D");
+```
+
+### 解答と解説
+
+#### 解答1
+
+```typescript
+// price（単価）・quantity（冊数）・discount（値引き額。省略したら 0）
+function calcTotal(
+  price: number,
+  quantity: number,
+  discount: number = 0,
+): number {
+  return price * quantity - discount;
+}
+
+console.log(calcTotal(1000, 3));
+console.log(calcTotal(1000, 3, 500));
+```
+
+**▼ 実行結果**（`node q1.ts`。`tsc` はエラーなし）
+
+```text
+3000
+2500
+```
+
+`calcTotal("1000", 3)` と呼んだ場合の型チェックの結果は次のとおりです。
+
+```text
+q1-ng.ts:9:23 - error TS2345: Argument of type 'string' is not assignable to parameter of type 'number'.
+
+9 console.log(calcTotal("1000", 3));
+                        ~~~~~~
+
+
+Found 1 error in q1-ng.ts:9
+```
+
+- 関数の引数は、TypeScript が推論できない代表的な場所なので、必ず型を書きます（3.3）。
+- `discount: number = 0` のように `= 値` を付けると「省略されたときの値（デフォルト値）」になり、引数を省略できるようになります。`discount?: number` と書く方法もありますが、その場合は中で `undefined` の対応が必要になるので、ここではデフォルト値のほうが簡単です。
+- ちなみにこの間違った呼び出しも `node` で実行すると、`"1000" * 3` が自動で数値として計算されて `3000` と表示されてしまいます。たまたま正しく見えるだけなので、やはり型チェックが頼りです。
+
+#### 解答2
+
+- (1) `q2.ts:8:3` なので、**8行目の3文字目**（`isbn` の部分）です。
+- (2) `Type 'number' is not assignable to type 'string'.` なので、**number 型の値（`9784000000000`）を、string 型の場所に**入れようとしています。
+- (3) 補足の `q2.ts:3:3 - The expected type comes from property 'isbn' which is declared here on type 'Book'` から、**3行目の `isbn: string;`（`Book` 型の定義）**で決められていると分かります。
+- (4) ISBN は「先頭の 0 や `-` を含むことがある、計算には使わない番号」なので、値のほうを文字列 `isbn: "9784000000000",` に直すのが正解です。型を `isbn: number` に変える直し方もエラー自体は消えますが、「番号のように見えても計算しない値（電話番号・郵便番号・ISBN など）は文字列で持つ」のが定石です。
+
+#### 解答3
+
+**▼ 実行結果**（`node q3.ts`）
+
+```text
+実践
+[ 'TS', 'React' ]
+true false
+```
+
+- 1行目: `b` は `a` と**同じ荷物の住所**なので、`b.title = "実践"` は `a` の荷物を書き換えます。
+- 2行目: `c` は `{ ...a }` で作った**別の荷物**ですが、スプレッドは1段目だけのコピー（浅いコピー）なので、中の配列 `tags` は `a` と**共有**されています。`c.tags.push("React")` で `a.tags` にも `"React"` が増えます（図2-3の③と同じ）。
+- 3行目: `a === b` は同じ住所なので `true`、`a === c` は別の住所なので `false` です。
+
+#### 解答4
+
+```typescript
+function toLabel(value: string | number | boolean): string {
+  if (typeof value === "string") {
+    // ここでは string
+    return `文字列: ${value}`;
+  }
+  if (typeof value === "number") {
+    // ここでは number
+    return `数値: ${value.toFixed(1)}`;
+  }
+  // 残りは boolean だけ
+  return `真偽値: ${value ? "はい" : "いいえ"}`;
+}
+
+console.log(toLabel("TypeScript"));
+console.log(toLabel(3));
+console.log(toLabel(false));
+```
+
+**▼ 実行結果**（`node q4.ts`。`tsc` はエラーなし）
+
+```text
+文字列: TypeScript
+数値: 3.0
+真偽値: いいえ
+```
+
+- `typeof` で1つずつ調べて `return` するたびに、候補が `string | number | boolean` → `number | boolean` → `boolean` と減っていきます（図2-12と同じ流れ）。
+- 最後の行では `value` が `boolean` に確定しているので、条件 `? :`（三項演算子）にそのまま使えます。
+
+#### 解答5
+
+```typescript
+type BooksState =
+  | { status: "loading" }
+  | { status: "success"; books: string[] }
+  | { status: "error"; message: string };
+
+function render(state: BooksState): string {
+  switch (state.status) {
+    case "loading":
+      return "読み込み中…";
+    case "success":
+      return `${state.books.length}冊: ${state.books.join(", ")}`;
+    case "error":
+      return `エラー: ${state.message}`;
+    default: {
+      // ここに来ることは無いはず。来たら型エラーで教えてもらう
+      const unreachable: never = state;
+      return unreachable;
+    }
+  }
+}
+
+const loaded: BooksState = {
+  status: "success",
+  books: ["TypeScript入門", "React実践ガイド"],
+};
+
+console.log(render({ status: "loading" }));
+console.log(render(loaded));
+console.log(render({ status: "error", message: "通信に失敗しました" }));
+```
+
+**▼ 実行結果**（`node q5.ts`。`tsc` はエラーなし）
+
+```text
+読み込み中…
+2冊: TypeScript入門, React実践ガイド
+エラー: 通信に失敗しました
+```
+
+(2) `BooksState` に `| { status: "empty" }` を追加して `render` を直さないと、型チェックで次のエラーになります。
+
+```text
+q5-ng.ts:17:13 - error TS2322: Type '{ status: "empty"; }' is not assignable to type 'never'.
+
+17       const unreachable: never = state;
+               ~~~~~~~~~~~
+
+
+Found 1 error in q5-ng.ts:17
+```
+
+- `case "success":` の中では `state` が `success` の形に絞り込まれるので、`state.books` が使えます（判別可能なユニオン型。6.3）。
+- 3つの `case` で全部の形を処理しきると、`default` に来る `state` の型は `never`（ありえない）になり、`never` 型の変数に代入できます。
+- 新しく `"empty"` が増えると、`default` に `{ status: "empty" }` が残ってしまうので代入できず、**直し忘れを型エラーで教えてくれます**。なお、このとき `node` で実行すると今までどおり動いてしまう（3行とも同じ表示）ので、やはり型チェックが大切です。`case "empty": return "本がありません";` を足せば直ります。
+- `default: { ... }` のように `{ }` で囲んでいるのは、`case` の中で `const` を宣言するときの作法です（ほかの `case` と変数名がぶつからないようにするため）。
+
+#### 解答6
+
+```typescript
+function last<T>(items: T[]): T | undefined {
+  // 要素が無ければ undefined、あれば最後の要素を返す
+  if (items.length === 0) {
+    return undefined;
+  }
+  return items[items.length - 1];
+}
+
+const lastTitle = last(["TypeScript入門", "React実践ガイド"]);
+const lastPrice = last([2980, 3300, 1980]);
+
+console.log(lastTitle);
+console.log(lastPrice);
+console.log(last<string>([]));
+```
+
+**▼ 実行結果**（`node q6.ts`。`tsc` はエラーなし）
+
+```text
+React実践ガイド
+1980
+undefined
+```
+
+- `lastTitle` の型は `string | undefined`、`lastPrice` の型は `number | undefined` です（VS Code でホバーすると確かめられます）。渡した配列から `T` が自動で決まります。
+- 戻り値に `| undefined` が付くのは、空の配列を渡されると返す要素が無いからです。「無いかもしれない」を型で正直に表しておくと、使う側が `??` や `if` で備えられます。
+- `last<string>([1, 2])` のように型と中身が食い違うと、`error TS2322: Type 'number' is not assignable to type 'string'.` が要素ごとに出ます。
+
+#### 解答7
+
+**▼ 実行結果**（`node q7.ts`。`tsc` はエラーなし）
+
+```text
+A
+B
+D
+2冊目 完了
+1冊目 完了
+C [ '1冊目', '2冊目' ]
+```
+
+- `A` → `B` までは `main` の中で順番に実行されます。`task(...)` は呼んだ瞬間にタイマーを動かし始めますが、`await` していないので待たずに `B` へ進みます。
+- `await Promise.all(...)` で `main` が一時停止すると、呼び出し元に戻って `D` が表示されます（図2-14と同じ仕組み）。
+- タイマーは 100ミリ秒の「2冊目」が先に鳴るので、`2冊目 完了` → `1冊目 完了` の順です。
+- `Promise.all` の結果の配列は、**完了した順ではなく渡した順**（`first`、`second`）に並ぶので、`[ '1冊目', '2冊目' ]` になります。
+
+---
+
 ## まとめ
 
 この章では、TypeScript の基礎として以下の内容を学びました。
@@ -6836,13 +7353,17 @@ const d = wrap<string>("world");
 | トピック | 学んだこと |
 |---------|-----------|
 | TypeScript とは | JavaScript のスーパーセットであり、型安全性を提供する |
+| tsc と node の役割 | `tsc` は型だけを調べる検査係、`node ファイル名.ts` は型を消して動かす実行係（型の間違いは見ない） |
+| 参照とコピー | オブジェクトの変数には「住所（参照）」が入る。`{ ...元 }` は1段目だけのコピー、丸ごとなら `structuredClone` |
 | 基本的な型 | `string`, `number`, `boolean`, `array`, `tuple`, `object`, `any`, `unknown`, `never`, `void`, `null`, `undefined` |
 | 型注釈と型推論 | 明示的に型を書く方法と、TypeScript が自動で型を判断する仕組み |
 | interface と type | オブジェクトの形を定義する2つの方法とその使い分け |
 | ジェネリクス | 型をパラメータ化して再利用性を高める仕組み |
 | ユニオン型とリテラル型 | 複数の型や特定の値のみを許可する型定義 |
+| 型の絞り込み | `if` と `typeof` / `=== null` / 型ガード関数で候補を減らしてから使う。型は「値の集まり」で、狭い → 広いは代入できる |
 | tsconfig.json | TypeScript プロジェクトの設定ファイル |
-| よくあるエラー | 代表的な型エラーの原因と対処法 |
+| 非同期処理 | `Promise` は「あとで届く約束」。`await` で中身を取り出す（付け忘れると `Promise<T>` のまま）。同時に待つなら `Promise.all` |
+| よくあるエラー | 代表的な型エラーの原因と対処法。**場所 → 番号 → 本文 → 補足**の順に読む |
 
 ### 次の章へ
 
