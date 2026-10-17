@@ -28,6 +28,162 @@
 > - **shadcn/ui（シャドシーエヌ・ユーアイ）**: コピー＆ペーストで自分のプロジェクトに取り込む形のUIコンポーネント集。Tailwind CSS と Radix UI ベース。
 > - **CSS Modules**: 「`Button.module.css`」のような特別な命名のCSSファイルを使うと、クラス名が自動で一意になり、コンポーネントごとにスコープが分離される仕組み。
 
+### この章のゴールと地図
+
+この章は「見た目」の章です。文章だけだとイメージしにくいので、**クラスを付ける前と後の画面**をできるだけ絵で並べながら進めます。まず、この章を読み終えたときにできるようになっていてほしいことを確認しましょう。
+
+**この章のゴール（読み終えたらチェック）:**
+
+- [ ] `bg-blue-500 px-4 py-2` のような Tailwind のクラス名を見て、「どんな見た目になるか」を言える
+- [ ] `padding`（内側の余白）・`border`（枠線）・`margin`（外側の余白）の違いを図で説明できる
+- [ ] `sm:` `md:` `lg:` を使って、画面の幅ごとに並び方を変えられる（「`sm:` はスマホ用」という勘違いをしない）
+- [ ] `hover:` `focus:` `dark:` など「状態によって変わる見た目」を書ける
+- [ ] Tailwind CSS v3 と v4（2026年時点の最新版）の設定方法の違いが分かり、どちらのプロジェクトでも迷わない
+- [ ] 文字と背景の色の組み合わせが「読みやすいか」を数値（コントラスト比）で確かめられる
+
+**この章の地図:** 0〜2節で「見た目の土台」を作り、3〜4節で「部品と動き」を足し、5〜6節で「使う人への配慮」を仕上げます。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 300" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-09-01" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<text x="15" y="25" font-size="12" fill="#475569">色分け:</text>
+<rect x="72" y="14" width="12" height="12" rx="2" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="90" y="25" font-size="12" fill="#1e40af">見た目の土台</text>
+<rect x="180" y="14" width="12" height="12" rx="2" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="198" y="25" font-size="12" fill="#c2410c">部品と動き</text>
+<rect x="276" y="14" width="12" height="12" rx="2" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="294" y="25" font-size="12" fill="#047857">使う人への配慮</text>
+<rect x="396" y="14" width="12" height="12" rx="2" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>
+<text x="414" y="25" font-size="12" fill="#475569">まとめ</text>
+<rect x="15" y="40" width="150" height="62" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="90" y="65" text-anchor="middle" font-size="14" font-weight="bold" fill="#1e40af">0. 超基礎</text>
+<text x="90" y="87" text-anchor="middle" font-size="12" fill="#1e40af">CSS とクラスの読み方</text>
+<rect x="195" y="40" width="150" height="62" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="270" y="65" text-anchor="middle" font-size="14" font-weight="bold" fill="#1e40af">1. Tailwind の設定</text>
+<text x="270" y="87" text-anchor="middle" font-size="12" fill="#1e40af">色・層・v4 の書き方</text>
+<rect x="375" y="40" width="150" height="62" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="450" y="65" text-anchor="middle" font-size="14" font-weight="bold" fill="#1e40af">2. レスポンシブ</text>
+<text x="450" y="87" text-anchor="middle" font-size="12" fill="#1e40af">画面幅で並びを変える</text>
+<rect x="555" y="40" width="150" height="62" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<text x="630" y="65" text-anchor="middle" font-size="14" font-weight="bold" fill="#c2410c">3. UI 部品</text>
+<text x="630" y="87" text-anchor="middle" font-size="12" fill="#c2410c">トースト・空状態など</text>
+<line x1="166" y1="71" x2="193" y2="71" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-09-01)"/>
+<line x1="346" y1="71" x2="373" y2="71" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-09-01)"/>
+<line x1="526" y1="71" x2="553" y2="71" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-09-01)"/>
+<path d="M630,103 L630,131 L90,131 L90,158" fill="none" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-09-01)"/>
+<rect x="15" y="160" width="150" height="62" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<text x="90" y="185" text-anchor="middle" font-size="14" font-weight="bold" fill="#c2410c">4. アニメーション</text>
+<text x="90" y="207" text-anchor="middle" font-size="12" fill="#c2410c">hover と transition</text>
+<rect x="195" y="160" width="150" height="62" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="270" y="185" text-anchor="middle" font-size="14" font-weight="bold" fill="#047857">5. ダークモード</text>
+<text x="270" y="207" text-anchor="middle" font-size="12" fill="#047857">色を一斉に切り替え</text>
+<rect x="375" y="160" width="150" height="62" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="450" y="185" text-anchor="middle" font-size="14" font-weight="bold" fill="#047857">6. アクセシビリティ</text>
+<text x="450" y="207" text-anchor="middle" font-size="12" fill="#047857">誰でも使える工夫</text>
+<rect x="555" y="160" width="150" height="62" rx="10" fill="#f8fafc" stroke="#64748b" stroke-width="2"/>
+<text x="630" y="185" text-anchor="middle" font-size="14" font-weight="bold" fill="#475569">7・8. 完成形</text>
+<text x="630" y="207" text-anchor="middle" font-size="12" fill="#475569">画面と部品の全体図</text>
+<line x1="166" y1="191" x2="193" y2="191" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-09-01)"/>
+<line x1="346" y1="191" x2="373" y2="191" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-09-01)"/>
+<line x1="526" y1="191" x2="553" y2="191" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-09-01)"/>
+<path d="M630,223 L630,264 L563,264" fill="none" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-09-01)"/>
+<rect x="160" y="244" width="400" height="40" rx="20" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="360" y="269" text-anchor="middle" font-size="14" font-weight="bold" fill="#047857">ゴール: 「動くだけ」→「使いたくなる」アプリへ</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図9-1: この章の地図（0節から順に進み、最後に練習問題で確認する）</div>
+</div>
+
+この章を終えると、書籍一覧の画面は次のように変わります。左は「クラスを1つも付けていない」素の HTML、右はこの章で仕上げた後の画面イメージです。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 350" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-09-02" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+<linearGradient id="gd-09-02" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e0e7ff"/><stop offset="1" stop-color="#c7d2fe"/></linearGradient>
+</defs>
+<text x="177" y="22" text-anchor="middle" font-size="14" font-weight="bold" fill="#64748b">Before: クラスを付ける前</text>
+<text x="542" y="22" text-anchor="middle" font-size="14" font-weight="bold" fill="#047857">After: この章で仕上げた後</text>
+<rect x="10" y="34" width="335" height="306" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="10" y="34" width="335" height="26" rx="10" fill="#f1f5f9"/>
+<rect x="10" y="48" width="335" height="12" fill="#f1f5f9"/>
+<line x1="10" y1="60" x2="345" y2="60" stroke="#cbd5e1" stroke-width="1"/>
+<circle cx="26" cy="47" r="4" fill="#f87171"/>
+<circle cx="40" cy="47" r="4" fill="#fbbf24"/>
+<circle cx="54" cy="47" r="4" fill="#34d399"/>
+<rect x="70" y="38" width="200" height="18" rx="9" fill="#ffffff" stroke="#e2e8f0"/>
+<text x="82" y="51" font-size="12" fill="#64748b">localhost:3000</text>
+<g font-family="Times New Roman, Yu Mincho, serif" fill="#000000">
+<text x="22" y="90" font-size="22" font-weight="bold">BookShelf</text>
+<text x="22" y="112" font-size="13" fill="#0000ee" text-decoration="underline">書籍一覧　新規登録</text>
+<text x="22" y="140" font-size="17" font-weight="bold">書籍一覧</text>
+<text x="22" y="162" font-size="13">・リーダブルコード</text>
+<text x="34" y="180" font-size="12">Dustin Boswell 読了 ★★★★☆</text>
+<text x="22" y="202" font-size="13">・達人プログラマー</text>
+<text x="34" y="220" font-size="12">David Thomas 読書中 ★★★★★</text>
+<text x="22" y="242" font-size="13">・Clean Code</text>
+<text x="34" y="260" font-size="12">Robert C. Martin 読みたい</text>
+</g>
+<rect x="22" y="272" width="46" height="22" rx="2" fill="#efefef" stroke="#767676"/>
+<text x="45" y="288" text-anchor="middle" font-size="12" fill="#000000">追加</text>
+<text x="22" y="326" font-size="12" fill="#94a3b8">※ ブラウザ標準の見た目のまま</text>
+<line x1="349" y1="190" x2="371" y2="190" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-09-02)"/>
+<rect x="375" y="34" width="335" height="306" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="375" y="34" width="335" height="26" rx="10" fill="#f1f5f9"/>
+<rect x="375" y="48" width="335" height="12" fill="#f1f5f9"/>
+<line x1="375" y1="60" x2="710" y2="60" stroke="#cbd5e1" stroke-width="1"/>
+<circle cx="391" cy="47" r="4" fill="#f87171"/>
+<circle cx="405" cy="47" r="4" fill="#fbbf24"/>
+<circle cx="419" cy="47" r="4" fill="#34d399"/>
+<rect x="435" y="38" width="200" height="18" rx="9" fill="#ffffff" stroke="#e2e8f0"/>
+<text x="447" y="51" font-size="12" fill="#64748b">localhost:3000</text>
+<rect x="376" y="61" width="333" height="34" fill="#4f46e5"/>
+<rect x="388" y="70" width="11" height="15" rx="2" fill="#ffffff"/>
+<text x="406" y="83" font-size="14" font-weight="bold" fill="#ffffff">BookShelf</text>
+<text x="600" y="83" font-size="12" fill="#ffffff">一覧</text>
+<text x="638" y="83" font-size="12" fill="#e0e7ff">新規登録</text>
+<text x="389" y="124" font-size="16" font-weight="bold" fill="#0f172a">書籍一覧</text>
+<rect x="630" y="107" width="66" height="24" rx="8" fill="#4f46e5"/>
+<text x="663" y="123" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">+ 追加</text>
+<rect x="389" y="140" width="150" height="92" rx="10" fill="#e2e8f0"/>
+<rect x="389" y="138" width="150" height="92" rx="10" fill="#ffffff" stroke="#e2e8f0"/>
+<rect x="397" y="146" width="134" height="30" rx="6" fill="url(#gd-09-02)"/>
+<rect x="481" y="152" width="44" height="18" rx="9" fill="#d1fae5"/>
+<text x="503" y="165" text-anchor="middle" font-size="12" fill="#047857">読了</text>
+<text x="399" y="194" font-size="12" font-weight="bold" fill="#0f172a">リーダブルコード</text>
+<text x="399" y="210" font-size="12" fill="#64748b">Dustin Boswell</text>
+<text x="399" y="225" font-size="12" fill="#facc15">★★★★<tspan fill="#cbd5e1">★</tspan></text>
+<rect x="547" y="140" width="150" height="92" rx="10" fill="#e2e8f0"/>
+<rect x="547" y="138" width="150" height="92" rx="10" fill="#ffffff" stroke="#e2e8f0"/>
+<rect x="555" y="146" width="134" height="30" rx="6" fill="url(#gd-09-02)"/>
+<rect x="633" y="152" width="50" height="18" rx="9" fill="#e0e7ff"/>
+<text x="658" y="165" text-anchor="middle" font-size="12" fill="#4338ca">読書中</text>
+<text x="557" y="194" font-size="12" font-weight="bold" fill="#0f172a">達人プログラマー</text>
+<text x="557" y="210" font-size="12" fill="#64748b">David Thomas</text>
+<text x="557" y="225" font-size="12" fill="#facc15">★★★★★</text>
+<rect x="389" y="240" width="150" height="92" rx="10" fill="#e2e8f0"/>
+<rect x="389" y="238" width="150" height="92" rx="10" fill="#ffffff" stroke="#e2e8f0"/>
+<rect x="397" y="246" width="134" height="30" rx="6" fill="url(#gd-09-02)"/>
+<rect x="469" y="252" width="56" height="18" rx="9" fill="#fef9c3"/>
+<text x="497" y="265" text-anchor="middle" font-size="12" fill="#a16207">読みたい</text>
+<text x="399" y="294" font-size="12" font-weight="bold" fill="#0f172a">Clean Code</text>
+<text x="399" y="310" font-size="12" fill="#64748b">Robert C. Martin</text>
+<text x="399" y="325" font-size="12" fill="#94a3b8">評価なし</text>
+<rect x="547" y="240" width="150" height="92" rx="10" fill="#e2e8f0"/>
+<rect x="547" y="238" width="150" height="92" rx="10" fill="#ffffff" stroke="#e2e8f0"/>
+<rect x="555" y="246" width="134" height="30" rx="6" fill="url(#gd-09-02)"/>
+<rect x="639" y="252" width="44" height="18" rx="9" fill="#d1fae5"/>
+<text x="661" y="265" text-anchor="middle" font-size="12" fill="#047857">読了</text>
+<text x="557" y="294" font-size="12" font-weight="bold" fill="#0f172a">プログラマー脳</text>
+<text x="557" y="310" font-size="12" fill="#64748b">Felienne Hermans</text>
+<text x="557" y="325" font-size="12" fill="#facc15">★★★★<tspan fill="#cbd5e1">★</tspan></text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図9-2: 画面イメージ — 同じデータでも、クラスを付ける前（左）と後（右）でここまで印象が変わる</div>
+</div>
+
+> **ヒント:** この章のクラスは、ブラウザだけで試せる公式サイト **Tailwind Play**（`https://play.tailwindcss.com`）に貼り付けると、インストールなしで見た目をすぐ確認できます。「このクラスを足すと何が変わる？」と迷ったら、1つずつ足したり消したりして目で確かめるのが一番の近道です。
+
 ---
 
 ## 目次
@@ -42,6 +198,7 @@
 7. [最終的な画面の説明](#7-最終的な画面の説明)
 8. [コンポーネント構成図（最終版）](#8-コンポーネント構成図最終版)
 9. [発展: アプリでは使っていない重要なスタイリング機能](#発展-アプリでは使っていない重要なスタイリング機能)
+10. [練習問題（解答・解説つき）](#練習問題解答解説つき)
 
 ---
 
@@ -87,6 +244,71 @@
 └──────────┘
 ```
 
+上の補足で出てきた「ボックスモデル」を図にすると、次のような**入れ子の箱**になります。額縁に入れた絵をイメージすると覚えやすいです。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 300" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<rect x="30" y="30" width="380" height="230" fill="#fff7ed" stroke="#f97316" stroke-width="1.5" stroke-dasharray="6 4"/>
+<text x="40" y="50" font-size="12" font-weight="bold" fill="#c2410c">margin</text>
+<rect x="70" y="70" width="300" height="150" fill="#ecfdf5" stroke="#475569" stroke-width="6"/>
+<text x="84" y="94" font-size="12" font-weight="bold" fill="#047857">padding</text>
+<rect x="135" y="110" width="170" height="70" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="220" y="142" text-anchor="middle" font-size="16" font-weight="bold" fill="#1e40af">送信</text>
+<text x="220" y="164" text-anchor="middle" font-size="12" fill="#1e40af">content</text>
+<line x1="440" y1="44" x2="394" y2="44" stroke="#c2410c" stroke-width="1.5"/>
+<circle cx="394" cy="44" r="3" fill="#c2410c"/>
+<text x="445" y="48" font-size="13" font-weight="bold" fill="#c2410c">margin（マージン）＝外側の余白</text>
+<text x="445" y="66" font-size="12" fill="#c2410c">Tailwind: m-4, mt-2, mx-auto</text>
+<line x1="440" y1="100" x2="373" y2="100" stroke="#334155" stroke-width="1.5"/>
+<circle cx="373" cy="100" r="3" fill="#334155"/>
+<text x="445" y="104" font-size="13" font-weight="bold" fill="#334155">border（ボーダー）＝枠線</text>
+<text x="445" y="122" font-size="12" fill="#334155">Tailwind: border, border-2, rounded-lg</text>
+<line x1="440" y1="152" x2="336" y2="152" stroke="#047857" stroke-width="1.5"/>
+<circle cx="336" cy="152" r="3" fill="#047857"/>
+<text x="445" y="156" font-size="13" font-weight="bold" fill="#047857">padding（パディング）＝内側の余白</text>
+<text x="445" y="174" font-size="12" fill="#047857">Tailwind: p-4, px-4, py-2</text>
+<line x1="440" y1="204" x2="298" y2="174" stroke="#1e40af" stroke-width="1.5"/>
+<circle cx="298" cy="174" r="3" fill="#1e40af"/>
+<text x="445" y="208" font-size="13" font-weight="bold" fill="#1e40af">content（コンテンツ）＝中身</text>
+<text x="445" y="226" font-size="12" fill="#1e40af">文字や画像そのもの（w-* / h-*）</text>
+<text x="360" y="288" text-anchor="middle" font-size="12" fill="#475569">たとえ: 額縁の絵 ― 絵＝content／台紙＝padding／額縁＝border／壁との間隔＝margin</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図9-3: ボックスモデル（内側から content → padding → border → margin の順に包まれる）</div>
+</div>
+
+ポイントは、**padding は箱の「内側」なので背景色が塗られる**のに対し、**margin は箱の「外側」なので透明**だということです。この違いが次のつまずきにつながります。
+
+> **つまずきポイント: 「ボタンを大きくしたい」のに margin を付けてしまう**
+>
+> ボタンの青い部分そのものを大きくしたいのに `m-4`（外側の余白）を付けると、青い部分は小さいまま、周りに**透明なすき間**ができるだけです。「中を広げたい → padding」「周りとの間を空けたい → margin」と覚えましょう。
+
+```html
+<!-- NG: ボタンを大きくしたくて m-4（外側の余白）を付けた -->
+<!-- → 青い部分は小さいまま。周りに見えないすき間ができるだけ -->
+<button class="m-4 bg-blue-500 text-white">送信</button>
+```
+
+```html
+<!-- OK: ボタンの「内側」を広げたいので px-4 py-2（内側の余白）を付ける -->
+<!-- → 青い部分そのものが大きくなり、押しやすくなる -->
+<button class="px-4 py-2 bg-blue-500 text-white">送信</button>
+```
+
+**▼ 表示の違い**（点線は「margin が取っている、目に見えない場所」を分かりやすく描いたもの）
+
+<div style="max-width: 720px; margin: 18px auto; display: flex; gap: 16px; font-family: 'Yu Gothic UI', 'Yu Gothic', Meiryo, sans-serif;">
+<div style="flex: 1; border: 2px solid #f97316; border-radius: 10px; background: #fff7ed; padding: 12px 14px;">
+<div style="font-size: 13px; font-weight: bold; color: #c2410c; margin-bottom: 10px;">NG: m-4 bg-blue-500 text-white</div>
+<div style="display: inline-block; outline: 1.5px dashed #f97316; background: #ffffff;"><span style="display: inline-block; margin: 16px; background: #3b82f6; color: #ffffff; font-size: 13px; line-height: 1.4;">送信</span></div>
+<div style="font-size: 12px; color: #475569; margin-top: 10px;">青い部分は文字ぴったりの小ささ。点線の内側は透明なすき間</div>
+</div>
+<div style="flex: 1; border: 2px solid #10b981; border-radius: 10px; background: #ecfdf5; padding: 12px 14px;">
+<div style="font-size: 13px; font-weight: bold; color: #047857; margin-bottom: 10px;">OK: px-4 py-2 bg-blue-500 text-white</div>
+<div style="display: inline-block; padding: 16px 0;"><span style="display: inline-block; padding: 8px 16px; background: #3b82f6; color: #ffffff; font-size: 13px; line-height: 1.4;">送信</span></div>
+<div style="font-size: 12px; color: #475569; margin-top: 10px;">青い部分そのものが広がり、ボタンらしく押しやすい</div>
+</div>
+</div>
+
 ### 0.2 主要なCSSプロパティ
 
 | プロパティ | 何を変える？ | 例 |
@@ -125,6 +347,191 @@
 
 CSSファイルを書く必要がありません。HTMLにクラスを書くだけで完結します。
 
+では、上のボタンのクラスを**1つずつ足していくと、見た目がどう変わるか**を並べてみましょう。1つのクラスが1つの変化を担当していることがよく分かります。
+
+<div style="max-width: 640px; margin: 18px auto; font-family: 'Yu Gothic UI', 'Yu Gothic', Meiryo, sans-serif;">
+<div style="border: 1px solid #cbd5e1; border-radius: 10px; overflow: hidden; background: #ffffff;">
+<div style="background: #f1f5f9; padding: 8px 14px; font-size: 13px; font-weight: bold; color: #334155; display: flex;"><div style="width: 50%;">足したクラス</div><div style="width: 50%;">見た目（ブラウザでの表示）</div></div>
+<div style="display: flex; align-items: center; padding: 10px 14px; border-top: 1px solid #e2e8f0;"><div style="width: 50%; font-family: Consolas, monospace; font-size: 13px; color: #1e293b;">① クラスなし</div><div style="width: 50%;"><span style="font-size: 14px; color: #0f172a;">送信</span><span style="font-size: 12px; color: #64748b; margin-left: 12px;">← ただの文字に見える</span></div></div>
+<div style="display: flex; align-items: center; padding: 10px 14px; border-top: 1px solid #e2e8f0;"><div style="width: 50%; font-family: Consolas, monospace; font-size: 13px; color: #1e293b;">② + bg-blue-500</div><div style="width: 50%;"><span style="font-size: 14px; color: #0f172a; background: #3b82f6;">送信</span><span style="font-size: 12px; color: #64748b; margin-left: 12px;">← 背景が青に</span></div></div>
+<div style="display: flex; align-items: center; padding: 10px 14px; border-top: 1px solid #e2e8f0;"><div style="width: 50%; font-family: Consolas, monospace; font-size: 13px; color: #1e293b;">③ + text-white</div><div style="width: 50%;"><span style="font-size: 14px; color: #ffffff; background: #3b82f6;">送信</span><span style="font-size: 12px; color: #64748b; margin-left: 12px;">← 文字が白に</span></div></div>
+<div style="display: flex; align-items: center; padding: 10px 14px; border-top: 1px solid #e2e8f0;"><div style="width: 50%; font-family: Consolas, monospace; font-size: 13px; color: #1e293b;">④ + px-4 py-2</div><div style="width: 50%;"><span style="display: inline-block; font-size: 14px; color: #ffffff; background: #3b82f6; padding: 8px 16px;">送信</span><span style="font-size: 12px; color: #64748b; margin-left: 12px;">← 内側に余白</span></div></div>
+<div style="display: flex; align-items: center; padding: 10px 14px; border-top: 1px solid #e2e8f0;"><div style="width: 50%; font-family: Consolas, monospace; font-size: 13px; color: #1e293b;">⑤ + rounded-lg</div><div style="width: 50%;"><span style="display: inline-block; font-size: 14px; color: #ffffff; background: #3b82f6; padding: 8px 16px; border-radius: 8px;">送信</span><span style="font-size: 12px; color: #64748b; margin-left: 12px;">← 角が丸く</span></div></div>
+<div style="display: flex; align-items: center; padding: 10px 14px; border-top: 1px solid #e2e8f0;"><div style="width: 50%; font-family: Consolas, monospace; font-size: 13px; color: #1e293b;">⑥ + hover:bg-blue-700</div><div style="width: 50%;"><span style="display: inline-block; font-size: 14px; color: #ffffff; background: #3b82f6; padding: 8px 16px; border-radius: 8px;">送信</span><span style="font-size: 12px; color: #64748b; margin: 0 8px;">→ 乗せると</span><span style="display: inline-block; font-size: 14px; color: #ffffff; background: #1d4ed8; padding: 8px 16px; border-radius: 8px;">送信</span></div></div>
+</div>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px; text-align: center;">図9-4: Before/After — クラスを1つ足すごとに、見た目が1か所ずつ変わる</div>
+</div>
+
+> **注意:** ①で「ボタンなのに、ただの文字に見える」のは間違いではありません。Tailwind は読み込まれた瞬間に、ブラウザが勝手に付ける枠線や灰色の背景をいったん全部リセットします（この仕組みを **Preflight（プリフライト：飛行前の点検、の意味）** と呼びます）。「真っ白な状態から、必要な見た目だけをクラスで足していく」のが Tailwind の考え方です。
+
+#### Tailwind はどうやって CSS を作っているのか
+
+「クラス名を書くだけで見た目が変わる」のは魔法ではありません。Tailwind は**あなたが書いたファイルを文字として読み、見つけたクラス名の分だけ CSS を自動で書き出している**のです。料理にたとえると、「注文票（クラス名）を読んだ料理人（Tailwind）が、注文された料理（CSS）だけを作る」イメージです。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 230" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-09-05" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="8" y="30" width="158" height="140" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="87" y="55" text-anchor="middle" font-size="14" font-weight="bold" fill="#1e40af">① あなたが書く</text>
+<text x="20" y="84" font-size="12" fill="#64748b">page.tsx</text>
+<text x="20" y="106" font-size="12" font-family="Consolas, monospace" fill="#1e293b">className=</text>
+<text x="20" y="124" font-size="12" font-family="Consolas, monospace" fill="#1e293b">"bg-blue-500 px-4"</text>
+<text x="20" y="152" font-size="12" fill="#1e40af">（注文票を書く）</text>
+<rect x="190" y="30" width="158" height="140" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<text x="269" y="55" text-anchor="middle" font-size="14" font-weight="bold" fill="#c2410c">② Tailwind が読む</text>
+<text x="269" y="88" text-anchor="middle" font-size="12" fill="#7c2d12">ファイルを文字として</text>
+<text x="269" y="108" text-anchor="middle" font-size="12" fill="#7c2d12">読み、クラス名を</text>
+<text x="269" y="128" text-anchor="middle" font-size="12" fill="#7c2d12">探し出す</text>
+<text x="269" y="152" text-anchor="middle" font-size="12" fill="#c2410c">（注文票を読む）</text>
+<rect x="372" y="30" width="158" height="140" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<text x="451" y="55" text-anchor="middle" font-size="14" font-weight="bold" fill="#c2410c">③ CSS を作る</text>
+<text x="384" y="86" font-size="12" font-family="Consolas, monospace" fill="#1e293b">.bg-blue-500 {…}</text>
+<text x="384" y="106" font-size="12" font-family="Consolas, monospace" fill="#1e293b">.px-4 {…}</text>
+<text x="384" y="130" font-size="12" fill="#7c2d12">使ったクラスだけ</text>
+<text x="451" y="152" text-anchor="middle" font-size="12" fill="#c2410c">（料理を作る）</text>
+<rect x="554" y="30" width="158" height="140" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="633" y="55" text-anchor="middle" font-size="14" font-weight="bold" fill="#047857">④ ブラウザが表示</text>
+<rect x="598" y="76" width="70" height="34" rx="8" fill="#3b82f6"/>
+<text x="633" y="98" text-anchor="middle" font-size="13" font-weight="bold" fill="#ffffff">送信</text>
+<text x="633" y="130" text-anchor="middle" font-size="12" fill="#047857">青いボタンになる</text>
+<text x="633" y="152" text-anchor="middle" font-size="12" fill="#047857">（料理が届く）</text>
+<line x1="167" y1="100" x2="188" y2="100" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-09-05)"/>
+<line x1="349" y1="100" x2="370" y2="100" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-09-05)"/>
+<line x1="531" y1="100" x2="552" y2="100" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-09-05)"/>
+<rect x="60" y="186" width="600" height="32" rx="8" fill="#f8fafc" stroke="#cbd5e1"/>
+<text x="360" y="207" text-anchor="middle" font-size="13" fill="#475569">使っていないクラス（例: bg-red-500）の CSS は作られない → CSS が小さく軽い</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図9-5: Tailwind がクラス名から CSS を作る流れ（Next.js では npm run dev 中に自動で行われる）</div>
+</div>
+
+この流れを、実際に自分の手で確かめてみましょう。
+
+#### 試してみよう: クラスが CSS に変わる瞬間を見る
+
+> **▼ このコードがやること（先に日本語で）:** Tailwind を Next.js の外で小さく動かして、`bg-blue-500` などのクラスが本当に CSS に変換される様子を確かめます。HTML に書いたクラスの分だけ CSS ができる（図9-5の②③）ことを、出来上がったファイルを読んで体験するのが目的です。アプリ本体とは別の練習用フォルダで試すので、失敗しても安心です。
+
+まず、練習用のフォルダを作って Tailwind をインストールします。
+
+```bash
+# 練習用のフォルダを作って移動する（アプリのフォルダとは別の場所で OK）
+mkdir tw-practice
+cd tw-practice
+# package.json（道具の一覧表）を作る
+npm init -y
+# Tailwind 本体と、コマンドで動かすための CLI をインストールする
+npm install tailwindcss @tailwindcss/cli
+```
+
+次に、2つのファイルを作ります。
+
+```css
+/* input.css: Tailwind を読み込むだけの1行 */
+@import "tailwindcss";
+```
+
+```html
+<!doctype html>
+<html lang="ja">
+  <body>
+    <!-- この1行のクラスが、どんなCSSに変わるかを確かめる -->
+    <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+      送信
+    </button>
+  </body>
+</html>
+```
+
+最後に、Tailwind に CSS を作らせます。
+
+```bash
+# input.css を元に、フォルダ内のファイルからクラスを探して output.css を作る
+npx @tailwindcss/cli -i input.css -o output.css
+```
+
+**▼ 実行結果**（ターミナルの表示）
+
+```text
+≈ tailwindcss v4.3.3
+
+Done in 35ms
+```
+
+**▼ 実行結果**（できた `output.css` の抜粋。全体は約190行で、ここでは「色などの値」と「クラス本体」の部分だけを抜き出しています）
+
+```css
+@layer theme {
+  :root, :host {
+    --color-blue-500: oklch(62.3% 0.214 259.815);
+    --color-blue-700: oklch(48.8% 0.243 264.376);
+    --color-white: #fff;
+    --spacing: 0.25rem;
+    --radius-lg: 0.5rem;
+  }
+}
+@layer utilities {
+  .rounded-lg {
+    border-radius: var(--radius-lg);
+  }
+  .bg-blue-500 {
+    background-color: var(--color-blue-500);
+  }
+  .px-4 {
+    padding-inline: calc(var(--spacing) * 4);
+  }
+  .py-2 {
+    padding-block: calc(var(--spacing) * 2);
+  }
+  .text-white {
+    color: var(--color-white);
+  }
+  @media (hover: hover) {
+    .hover\:bg-blue-700:hover {
+      background-color: var(--color-blue-700);
+    }
+  }
+}
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: `@import "tailwindcss";` で Tailwind を読み込む
+
+```css
+@import "tailwindcss";
+```
+
+- `@import`（インポート）は「別の CSS をここに取り込む」という、CSS に元からある命令です。`"tailwindcss"` を取り込むと、Tailwind の仕組み一式が使えるようになります。
+- これは **Tailwind CSS v4** の書き方で、1.1 節のアプリの `globals.css` も同じ1行から始まります。古い記事で見かける `@tailwind base;` などの3行は **v3** の書き方で、v4 ではこの1行に置き換わりました（詳しくは 1.1.1 節）。
+
+##### 解説2: `npx @tailwindcss/cli -i input.css -o output.css` の意味
+
+```bash
+npx @tailwindcss/cli -i input.css -o output.css
+```
+
+- `npx` は「インストールした道具をその場で実行する」コマンドです。`@tailwindcss/cli` が Tailwind をコマンドで動かす道具です。
+- `-i input.css` は「入力（input）はこのファイル」、`-o output.css` は「出力（output）はこのファイルに書いて」という指定です。
+- Tailwind はフォルダの中のファイル（今回は `index.html`）を文字として読み、クラス名を探してから `output.css` を書き出します。図9-5の②③がまさにこの瞬間です。
+
+> **用語: CLI（シーエルアイ、Command Line Interface）** … ターミナルに文字のコマンドを打って動かす道具のこと。Next.js のアプリでは CLI の代わりに `@tailwindcss/postcss` という部品が `npm run dev` の裏で同じ仕事をしてくれるので、普段は自分でこのコマンドを打つ必要はありません。
+
+##### 解説3: 出力された CSS を読んでみる
+
+```css
+.px-4 {
+  padding-inline: calc(var(--spacing) * 4);
+}
+```
+
+- **クラス1つにつき、CSS のルールが1つ**作られています。`index.html` に書いた6つのクラスの分だけが並び、書いていない `bg-red-500` などは1行も出てきません。
+- `var(--spacing)` は `0.25rem`（4px）なので、`calc(var(--spacing) * 4)` は「4px × 4 = 16px」です。`padding-inline` は「左右の padding」という意味なので、`px-4` は「左右に16pxの内側余白」になります。
+- `hover:bg-blue-700` は `@media (hover: hover)` の中に入っています。これは「**マウスのようにホバーできる端末のときだけ**効かせる」という意味で、スマホで指が触れたときに色が戻らなくなる問題を防いでいます（v4 からの動き）。
+- 色の値 `oklch(...)` は、人の目の感じ方に近い新しい色の書き方です。中身を覚える必要はなく、「`--color-blue-500` という名前の青」と読めれば十分です。
+
+> **用語: oklch（オーケーエルシーエイチ）** … 色を「明るさ・鮮やかさ・色合い」の3つの数字で表す、CSS の新しい色の書き方。Tailwind v4 の標準の色はこの形式で定義されている。
+
 ### 0.4 Tailwindクラス命名のパターン
 
 ほぼ全クラスは「**プロパティの省略** + `-` + **値**」の形をしています。
@@ -145,6 +552,226 @@ CSSファイルを書く必要がありません。HTMLにクラスを書くだ�
 | `w-full` | 幅100% | `width: 100%;` |
 | `hover:bg-blue-700` | マウスホバー時の色 | `:hover { background: ...; }` |
 
+> **つまずきポイント: クラス名を `${}` で組み立てると、色が付かない**
+>
+> 「色の名前を変数にして `bg-${color}-100` と書けば短く済む」と考えがちですが、これは**動きません**。図9-5の②のとおり、Tailwind はファイルを**文字として読むだけ**で、プログラムを実行しません。ファイルの中に `bg-blue-100` という**完成した文字**が無い限り、その CSS は作られないのです。
+
+```tsx
+// NG: クラス名を文字列の組み立てで作っている
+// → ファイルの中に "bg-blue-100" という文字が無いので、CSS が作られない
+<span className={`bg-${color}-100 text-${color}-700`}>{label}</span>
+```
+
+```tsx
+// OK: 完成したクラス名を「辞書」に丸ごと書いておき、そこから選ぶ
+const colorClasses = {
+  blue: "bg-blue-100 text-blue-700",
+  green: "bg-green-100 text-green-700",
+};
+<span className={colorClasses[color]}>{label}</span>;
+```
+
+本当に CSS が作られないのか、先ほどの練習用フォルダで確かめてみましょう。
+
+#### 試してみよう: 組み立てたクラス名が無視されることを確かめる
+
+> **▼ このコードがやること（先に日本語で）:** 読書状況バッジの色を「文字列をつなげて」作る NG 版と、「完成したクラス名を辞書に書いておく」OK 版を用意し、Tailwind がそれぞれから CSS を作れるかを比べます。`tw-practice` の中に `ng` と `ok` の2つのフォルダを作り、どちらにも 0.3 節と同じ1行だけの `input.css` を置いて試します。
+
+```tsx
+// ng/StatusBadge.tsx（NG 版）
+type Props = { color: "blue" | "green" | "yellow"; label: string };
+
+export function StatusBadge({ color, label }: Props) {
+  // NG: クラス名を文字列の組み立てで作っている
+  return <span className={`bg-${color}-100 text-${color}-700`}>{label}</span>;
+}
+```
+
+```tsx
+// ok/StatusBadge.tsx（OK 版）
+type Props = { color: "blue" | "green" | "yellow"; label: string };
+
+// OK: 完成したクラス名を「辞書」に丸ごと書いておく
+const colorClasses = {
+  blue: "bg-blue-100 text-blue-700",
+  green: "bg-green-100 text-green-700",
+  yellow: "bg-yellow-100 text-yellow-700",
+};
+
+export function StatusBadge({ color, label }: Props) {
+  return <span className={colorClasses[color]}>{label}</span>;
+}
+```
+
+```bash
+# NG 版のフォルダで CSS を作る
+cd ng
+npx @tailwindcss/cli -i input.css -o output.css
+# OK 版のフォルダで CSS を作る
+cd ../ok
+npx @tailwindcss/cli -i input.css -o output.css
+```
+
+**▼ 実行結果**（それぞれの `output.css` を VS Code で開き、`@layer utilities` の部分を見たもの）
+
+```text
+---- ng/output.css（中身が空っぽ！）----
+@layer utilities;
+
+---- ok/output.css ----
+@layer utilities {
+  .bg-blue-100 {
+    background-color: var(--color-blue-100);
+  }
+  .bg-green-100 {
+    background-color: var(--color-green-100);
+  }
+  .bg-yellow-100 {
+    background-color: var(--color-yellow-100);
+  }
+  .text-blue-700 {
+    color: var(--color-blue-700);
+  }
+  .text-green-700 {
+    color: var(--color-green-700);
+  }
+  .text-yellow-700 {
+    color: var(--color-yellow-700);
+  }
+}
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: NG 版はなぜ空っぽなのか
+
+```tsx
+<span className={`bg-${color}-100 text-${color}-700`}>{label}</span>
+```
+
+- Tailwind から見ると、このファイルに書かれているのは `bg-${color}-100` という**ただの文字の並び**です。`color` に何が入るかは、アプリを実行するまで分かりません。
+- そのため Tailwind は「`bg-blue-100` が使われている」と気付けず、CSS を1つも作りません。ブラウザでは `class="bg-blue-100"` が付いているのに**色が付かない**、という不思議な状態になります。
+
+##### 解説2: OK 版は「完成した文字」を書いておく
+
+```tsx
+const colorClasses = {
+  blue: "bg-blue-100 text-blue-700",
+  green: "bg-green-100 text-green-700",
+  yellow: "bg-yellow-100 text-yellow-700",
+};
+```
+
+- 辞書（オブジェクト）の中に `"bg-blue-100"` などの**完成したクラス名**がそのまま書いてあるので、Tailwind は文字として見つけられます。
+- 実行時は `colorClasses[color]` で、`color` に合った文字列を取り出すだけです。本章 4.4 節の `AnimatedButton` の `variantStyles` もこの「辞書パターン」です。2.2 節の `statusBadge` は `switch` 文ですが、各 `case` に**完成したクラス名**を書いている点は同じなので、正しく動きます。
+
+> **用語: 辞書パターン（マッピング）** … 「キー → 値」の対応表を先に作っておき、キーで値を選ぶ書き方。Tailwind ではクラス名を必ず完成した形で書くための定番のやり方。
+
+---
+
+もう1つ、クラス名の書き方でよくあるつまずきがあります。
+
+> **つまずきポイント: 同じ種類のクラスを2つ書いたら、後ろが勝つ…とは限らない**
+>
+> `className="p-2 p-4"` と `className="p-4 p-2"` は、どちらも結果は同じ **16px（p-4）** になります。CSS では「**CSS ファイルの中で後に書かれたルール**」が勝つので、`className` の中の順番は関係ありません。Tailwind は数字の小さい順に CSS を並べるため、`.p-2` の後に `.p-4` が来て、`p-4` が常に勝ちます。
+
+```html
+<!-- NG: 「後ろに書いた p-2 で上書きできる」と思っている -->
+<!-- → 実際は p-4（16px）が勝ち、思った通りにならない -->
+<div class="p-4 p-2">本棚</div>
+```
+
+```html
+<!-- OK: 同じ種類（padding）のクラスは1つだけ書く -->
+<div class="p-2">本棚</div>
+```
+
+実際に Tailwind が作った CSS（`p-2` と `p-4` を両方使ったときの抜粋）は次のとおりで、`.p-4` が後ろにあることが分かります。
+
+```css
+@layer utilities {
+  .p-2 {
+    padding: calc(var(--spacing) * 2);
+  }
+  .p-4 {
+    padding: calc(var(--spacing) * 4);
+  }
+}
+```
+
+状況によってクラスを切り替えたいときは、「両方書いて後ろで上書き」ではなく、**条件に合うほうだけを付ける**のが正しいやり方です。そのための小さな道具を作ってみましょう。
+
+#### 条件でクラスを付け外しする `cn` 関数
+
+> **▼ このコードがやること（先に日本語で）:** 「今のページなら濃い色、それ以外は薄い色、押せないときは半透明」のように、状態によって付けるクラスを選んで1つの文字列にまとめる関数を作ります。条件が成り立たない部分は捨てられるので、同じ種類のクラスが2つ同時に付くことがありません。クラス名は完成した形で書いているので、Tailwind もちゃんと見つけられます。
+
+```typescript
+// cn.ts
+// 条件つきでクラス名をつなげる小さな関数
+// false / null / undefined / "" はまとめて捨てる
+function cn(...classes: (string | false | null | undefined)[]): string {
+  return classes.filter(Boolean).join(" ");
+}
+
+// ページ番号ボタンのクラスを作る関数
+function pageButtonClass(isCurrent: boolean, isDisabled: boolean): string {
+  return cn(
+    // どの状態でも共通のクラス
+    "rounded-lg px-3 py-1 text-sm",
+    // 現在のページだけ濃い色
+    isCurrent && "bg-indigo-600 text-white",
+    // それ以外は薄い色
+    !isCurrent && "bg-gray-100 text-gray-700",
+    // 押せないときは半透明
+    isDisabled && "opacity-50",
+  );
+}
+
+console.log(pageButtonClass(true, false));
+console.log(pageButtonClass(false, false));
+console.log(pageButtonClass(false, true));
+```
+
+**▼ 実行結果**（`node cn.ts` で実行）
+
+```text
+rounded-lg px-3 py-1 text-sm bg-indigo-600 text-white
+rounded-lg px-3 py-1 text-sm bg-gray-100 text-gray-700
+rounded-lg px-3 py-1 text-sm bg-gray-100 text-gray-700 opacity-50
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: `...classes` で好きな数の引数を受け取る
+
+```typescript
+function cn(...classes: (string | false | null | undefined)[]): string {
+```
+
+- `...classes`（残余引数）は「渡された引数を**いくつでも配列にまとめて**受け取る」書き方です。`cn("a", "b", "c")` と呼ぶと、`classes` は `["a", "b", "c"]` になります。
+- 型 `(string | false | null | undefined)[]` は「文字列か、false・null・undefined のどれかが並んだ配列」という意味です。`isCurrent && "..."` は条件が成り立たないと `false` になるので、`false` も受け取れるようにしています。
+
+##### 解説2: `filter(Boolean)` で不要なものを捨てて `join(" ")` でつなぐ
+
+```typescript
+return classes.filter(Boolean).join(" ");
+```
+
+- `filter(Boolean)` は「**true 扱いになるものだけを残す**」定番の書き方です。`false`・`null`・`undefined`・`""`（空文字）が捨てられます。
+- `join(" ")` は配列をスペース区切りの1つの文字列にします。これで `className` にそのまま渡せる形になります。
+
+##### 解説3: `条件 && "クラス"` で付けるかどうかを決める
+
+```typescript
+isCurrent && "bg-indigo-600 text-white",
+!isCurrent && "bg-gray-100 text-gray-700",
+```
+
+- `A && B` は「A が true なら B、false なら false」になる式です。`isCurrent` が true のときだけ濃い色のクラスが残ります。
+- `!isCurrent`（`!` は「〜でない」）と組み合わせると、**どちらか片方だけ**が必ず付きます。実行結果の1行目と2行目で、背景色のクラスが1つずつしか入っていないことを確かめてください。
+
+> **ヒント:** 実際の開発では、同じ働きをする `clsx` というライブラリや、さらに「後から書いたクラスで上書きされたように整理してくれる」`tailwind-merge` を組み合わせた `cn` 関数がよく使われます（shadcn/ui も採用）。仕組みは上の数行と同じなので、まずは自作版で考え方をつかみましょう。
+
 ### 0.5 数値スケール
 
 Tailwind の数値（`p-4`, `text-xl`）は**4の倍数のpx**などの規則があります。
@@ -162,6 +789,44 @@ Tailwind の数値（`p-4`, `text-xl`）は**4の倍数のpx**などの規則が
 | `text-xl` | 1.25rem | 20px |
 | `text-2xl` | 1.5rem | 24px |
 
+余白の数字を「長さ」として並べると、次のようになります。数字が2倍になると余白も2倍になる、という素直な関係です。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 232" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<text x="20" y="35" font-size="13" font-family="Consolas, monospace" fill="#1e293b">p-1</text>
+<rect x="80" y="21" width="20" height="18" rx="3" fill="#3b82f6"/>
+<text x="110" y="35" font-size="12" fill="#334155">4 × 1 = 4px（0.25rem）</text>
+<text x="20" y="67" font-size="13" font-family="Consolas, monospace" fill="#1e293b">p-2</text>
+<rect x="80" y="53" width="40" height="18" rx="3" fill="#3b82f6"/>
+<text x="130" y="67" font-size="12" fill="#334155">4 × 2 = 8px（0.5rem）</text>
+<text x="20" y="99" font-size="13" font-family="Consolas, monospace" fill="#1e293b">p-4</text>
+<rect x="80" y="85" width="80" height="18" rx="3" fill="#3b82f6"/>
+<text x="170" y="99" font-size="12" fill="#334155">4 × 4 = 16px（1rem）</text>
+<text x="20" y="131" font-size="13" font-family="Consolas, monospace" fill="#1e293b">p-6</text>
+<rect x="80" y="117" width="120" height="18" rx="3" fill="#3b82f6"/>
+<text x="210" y="131" font-size="12" fill="#334155">4 × 6 = 24px（1.5rem）</text>
+<text x="20" y="163" font-size="13" font-family="Consolas, monospace" fill="#1e293b">p-8</text>
+<rect x="80" y="149" width="160" height="18" rx="3" fill="#3b82f6"/>
+<text x="250" y="163" font-size="12" fill="#334155">4 × 8 = 32px（2rem）</text>
+<text x="20" y="195" font-size="13" font-family="Consolas, monospace" fill="#1e293b">p-12</text>
+<rect x="80" y="181" width="240" height="18" rx="3" fill="#3b82f6"/>
+<text x="330" y="195" font-size="12" fill="#334155">4 × 12 = 48px（3rem）</text>
+<text x="20" y="225" font-size="12" fill="#64748b">青い棒の長さ＝余白の大きさ（見やすいよう実寸の5倍で描画）</text>
+<rect x="500" y="14" width="210" height="196" rx="10" fill="#f8fafc" stroke="#cbd5e1"/>
+<text x="514" y="40" font-size="13" font-weight="bold" fill="#334155">読み方のコツ</text>
+<text x="514" y="64" font-size="12" fill="#334155">「数字 × 4px」が大きさ</text>
+<text x="514" y="88" font-size="12" font-family="Consolas, monospace" fill="#1e293b">p-4   → 16px</text>
+<text x="514" y="108" font-size="12" font-family="Consolas, monospace" fill="#1e293b">m-2   → 8px</text>
+<text x="514" y="128" font-size="12" font-family="Consolas, monospace" fill="#1e293b">gap-6 → 24px</text>
+<text x="514" y="156" font-size="12" fill="#c2410c">v4 は半端な数も使える</text>
+<text x="514" y="178" font-size="12" font-family="Consolas, monospace" fill="#c2410c">p-13  → 52px</text>
+<text x="514" y="198" font-size="12" fill="#64748b">（v3 では p-13 は無い）</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図9-6: 余白の数値スケール（p- だけでなく m-・gap-・w- なども同じ物差しを使う）</div>
+</div>
+
+> **ヒント:** Tailwind v4 では、余白の大きさが `calc(var(--spacing) * 数字)`（`--spacing` は 0.25rem）という**計算式**で作られます（0.3節の実行結果を参照）。そのため `p-13`（52px）や `w-72`（288px）のように、表に無い数字も自由に使えます。v3 では決められた数字しか使えなかったので、古い記事を読むときは注意しましょう。
+
 ### 0.6 色のスケール
 
 色は `red-50` 〜 `red-950` の11段階で、数字が大きいほど濃くなります。
@@ -173,21 +838,115 @@ Tailwind の数値（`p-4`, `text-xl`）は**4の倍数のpx**などの規則が
 
 > **コツ:** 「背景は薄い色（100, 200）、文字は濃い色（700, 800, 900）」という組み合わせがおすすめ。`bg-blue-100 text-blue-800` で柔らかい青のバッジになります。
 
+実際の色で見てみましょう。下は本アプリのメインカラー（primary）に使うインディゴの11段階です（1.1節の `globals.css` で定義する値と同じ色）。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 262" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<text x="10" y="20" font-size="13" font-weight="bold" fill="#334155">インディゴ（本アプリの primary）の11段階</text>
+<rect x="10" y="30" width="60" height="56" rx="6" fill="#eef2ff" stroke="#e2e8f0"/>
+<rect x="74" y="30" width="60" height="56" rx="6" fill="#e0e7ff"/>
+<rect x="138" y="30" width="60" height="56" rx="6" fill="#c7d2fe"/>
+<rect x="202" y="30" width="60" height="56" rx="6" fill="#a5b4fc"/>
+<rect x="266" y="30" width="60" height="56" rx="6" fill="#818cf8"/>
+<rect x="330" y="30" width="60" height="56" rx="6" fill="#6366f1"/>
+<rect x="394" y="30" width="60" height="56" rx="6" fill="#4f46e5"/>
+<rect x="458" y="30" width="60" height="56" rx="6" fill="#4338ca"/>
+<rect x="522" y="30" width="60" height="56" rx="6" fill="#3730a3"/>
+<rect x="586" y="30" width="60" height="56" rx="6" fill="#312e81"/>
+<rect x="650" y="30" width="60" height="56" rx="6" fill="#1e1b4b"/>
+<g font-size="12" text-anchor="middle" fill="#334155">
+<text x="40" y="104">50</text>
+<text x="104" y="104">100</text>
+<text x="168" y="104">200</text>
+<text x="232" y="104">300</text>
+<text x="296" y="104">400</text>
+<text x="360" y="104">500</text>
+<text x="424" y="104">600</text>
+<text x="488" y="104">700</text>
+<text x="552" y="104">800</text>
+<text x="616" y="104">900</text>
+<text x="680" y="104">950</text>
+</g>
+<path d="M10,114 L10,120 L198,120 L198,114" fill="none" stroke="#475569" stroke-width="1.5"/>
+<text x="104" y="138" text-anchor="middle" font-size="12" fill="#475569">背景・バッジの地</text>
+<path d="M330,114 L330,120 L454,120 L454,114" fill="none" stroke="#475569" stroke-width="1.5"/>
+<text x="392" y="138" text-anchor="middle" font-size="12" fill="#475569">ボタン・強調</text>
+<path d="M458,114 L458,120 L710,120 L710,114" fill="none" stroke="#475569" stroke-width="1.5"/>
+<text x="584" y="138" text-anchor="middle" font-size="12" fill="#475569">文字・濃い背景</text>
+<text x="10" y="172" font-size="13" font-weight="bold" fill="#334155">組み合わせの良い例・悪い例</text>
+<rect x="10" y="186" width="84" height="30" rx="15" fill="#e0e7ff"/>
+<text x="52" y="206" text-anchor="middle" font-size="13" font-weight="bold" fill="#4338ca">読書中</text>
+<text x="104" y="199" font-size="12" font-family="Consolas, monospace" fill="#1e293b">bg-indigo-100</text>
+<text x="104" y="215" font-size="12" font-family="Consolas, monospace" fill="#1e293b">text-indigo-700</text>
+<text x="10" y="244" font-size="13" font-weight="bold" fill="#047857">○ 読みやすい（6.4:1）</text>
+<rect x="246" y="186" width="84" height="30" rx="8" fill="#4f46e5"/>
+<text x="288" y="206" text-anchor="middle" font-size="13" font-weight="bold" fill="#ffffff">保存</text>
+<text x="340" y="199" font-size="12" font-family="Consolas, monospace" fill="#1e293b">bg-indigo-600</text>
+<text x="340" y="215" font-size="12" font-family="Consolas, monospace" fill="#1e293b">text-white</text>
+<text x="246" y="244" font-size="13" font-weight="bold" fill="#047857">○ 読みやすい（6.3:1）</text>
+<rect x="482" y="186" width="84" height="30" rx="15" fill="#6366f1"/>
+<text x="524" y="206" text-anchor="middle" font-size="13" font-weight="bold" fill="#4f46e5">読書中</text>
+<text x="576" y="199" font-size="12" font-family="Consolas, monospace" fill="#1e293b">bg-indigo-500</text>
+<text x="576" y="215" font-size="12" font-family="Consolas, monospace" fill="#1e293b">text-indigo-600</text>
+<text x="482" y="244" font-size="13" font-weight="bold" fill="#c2410c">× 読めない（1.4:1）</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図9-7: 色の濃淡スケールと、背景・文字の組み合わせ方（かっこ内はコントラスト比。6.3節で解説）</div>
+</div>
+
+右端の悪い例のように、**近い濃さどうし（500 と 600 など）を組み合わせると、文字が背景に溶けて読めなくなります**。「背景と文字は、数字を 400 以上離す」を目安にすると失敗しにくいです。
+
+> **注意:** Tailwind v4 の標準の色は `oklch(...)` という書き方で定義されていて、v3 の16進数（`#3b82f6` など）とはごくわずかに色味が違います。この章に出てくる16進数は v3 の値ですが、見た目の差はほとんど分からない程度なので、気にせず読み進めて大丈夫です。
+
 ### 0.7 レスポンシブの書き方
 
 「PCでは横並び、スマホでは縦並び」のように画面サイズで変えるには **接頭辞（prefix、プレフィックス：先頭につける目印）** を付けます。
 
 ```html
 <!-- ↓ Tailwind の典型的なレスポンシブ指定 -->
+<!-- flex          : 中の子要素を flex レイアウトで並べる（これが無いと下の2つは効かない） -->
 <!-- flex-col      : flex レイアウトで「縦並び」（column）にする -->
 <!-- md:flex-row   : 「md」接頭辞は 768px 以上で適用。横並び（row）に切り替わる -->
 <!-- ※ flex-col と md:flex-row の両方を書くことで、 -->
 <!--   「小さい画面では縦、大きくなったら横」と動的に切り替わる -->
-<div class="flex-col md:flex-row">
+<div class="flex flex-col md:flex-row">
   <!-- スマホ: 縦並び（flex-col） -->
   <!-- 768px 以上（md）: 横並び（flex-row） -->
 </div>
 ```
+
+> **注意:** `flex-col` や `flex-row` は「flex レイアウトの**並ぶ向き**」を決めるだけのクラスです。並べ方そのもの（`display: flex`）を決める `flex` を付け忘れると、`md:flex-row` を書いても横並びになりません。必ず `flex flex-col md:flex-row` のようにセットで書きます。
+
+このクラスを付けた箱の中に A・B・C の3つを入れると、画面の幅によって次のように並び方が変わります。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 272" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-09-08" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<text x="360" y="22" text-anchor="middle" font-size="13" font-family="Consolas, monospace" fill="#1e293b">class="flex flex-col md:flex-row gap-2"</text>
+<rect x="60" y="40" width="130" height="196" rx="16" fill="#ffffff" stroke="#334155" stroke-width="2"/>
+<rect x="105" y="47" width="40" height="6" rx="3" fill="#cbd5e1"/>
+<rect x="76" y="64" width="98" height="44" rx="6" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="125" y="92" text-anchor="middle" font-size="15" font-weight="bold" fill="#1e40af">A</text>
+<rect x="76" y="116" width="98" height="44" rx="6" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="125" y="144" text-anchor="middle" font-size="15" font-weight="bold" fill="#c2410c">B</text>
+<rect x="76" y="168" width="98" height="44" rx="6" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="125" y="196" text-anchor="middle" font-size="15" font-weight="bold" fill="#047857">C</text>
+<text x="125" y="258" text-anchor="middle" font-size="12" fill="#334155">スマホ（768px 未満）: 縦並び</text>
+<text x="246" y="128" text-anchor="middle" font-size="12" fill="#475569">画面が広がると</text>
+<line x1="206" y1="140" x2="282" y2="140" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-09-08)"/>
+<rect x="300" y="64" width="380" height="156" rx="8" fill="#ffffff" stroke="#334155" stroke-width="2"/>
+<rect x="282" y="220" width="416" height="10" rx="4" fill="#cbd5e1"/>
+<rect x="318" y="112" width="110" height="60" rx="6" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="373" y="148" text-anchor="middle" font-size="15" font-weight="bold" fill="#1e40af">A</text>
+<rect x="436" y="112" width="110" height="60" rx="6" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="491" y="148" text-anchor="middle" font-size="15" font-weight="bold" fill="#c2410c">B</text>
+<rect x="554" y="112" width="110" height="60" rx="6" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="609" y="148" text-anchor="middle" font-size="15" font-weight="bold" fill="#047857">C</text>
+<text x="490" y="258" text-anchor="middle" font-size="12" fill="#334155">タブレット・PC（768px 以上）: md:flex-row で横並び</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図9-8: 画面イメージ — 同じ HTML でも、画面の幅によって縦並び ⇔ 横並びが切り替わる</div>
+</div>
 
 | 接頭辞 | 何以上で適用？ | 想定デバイス |
 |--------|--------------|--------------|
@@ -213,39 +972,47 @@ Tailwind の数値（`p-4`, `text-xl`）は**4の倍数のpx**などの規則が
 
 `app/globals.css` にアプリ全体で使うカスタムスタイルを定義します。**CSS カスタムプロパティ（CSS Custom Properties / CSS variables：`--name` のように定義し `var(--name)` で参照する変数機能）** を使い、ライトモードとダークモードの両方に対応できる設計にします。
 
-このセクションで出てくる Tailwind 独自ディレクティブも先に整理しておきます。
+> **注意（Tailwind のバージョンについて）:** この章のコードは、2026年10月時点で `create-next-app` が入れる **Tailwind CSS v4**（公式ドキュメントの最新は v4.3）の書き方です。ネットの記事や少し前に作ったプロジェクトでは **v3** の書き方（`@tailwind base;` などの3行 ＋ `tailwind.config.ts`）もよく見かけます。v3 との違いは **1.1.1 節**、v3 の設定ファイルは **1.3 節**（参考）にまとめました。どちらの版かは `package.json` の `"tailwindcss"` の数字（`^4.…` か `^3.…` か）で確認できます。
 
-- `@tailwind base / components / utilities` : それぞれのレイヤーのCSSを「ここに展開してね」と Tailwind に指示する命令。
-- `@layer base { ... }` : ベース層（最も優先度が低い）にCSSを追加するブロック。
-- `@layer components { ... }` : 自作のコンポーネントクラス（.btn など）を入れる層。
-- `@layer utilities { ... }` : 自作のユーティリティクラスを入れる層。
-- `@apply クラス名1 クラス名2` : CSS内でTailwindクラスを展開する命令。長いクラス指定を1つにまとめるのに便利。
+このセクションで出てくる Tailwind 独自の命令（ディレクティブ）も先に整理しておきます。
 
-> **▼ このコードがやること（先に日本語で）:** アプリ全体で使う「色・影・角丸・アニメーション」をまとめて定義する土台のCSSファイルを作ります。ポイントは、色などを `--color-primary-500` のような「CSS変数（名前を付けた値の入れ物）」にしておくことです。こうすると、ダークモードのときは変数の中身を入れ替えるだけで画面全体の色が一気に切り替わります。各行の細かい意味はコード内コメントで丁寧に説明しています。
+- `@import "tailwindcss";` : Tailwind 本体を読み込む1行。これが無いと Tailwind のクラスは一切効かない。
+- `@custom-variant dark (…);` : `dark:` を「いつ効かせるか」を決める命令。本アプリでは `<html class="dark">` のときに効かせる。
+- `@theme { … }` : 色・影・角丸・アニメーションなどの値を登録し、`bg-primary-600` のような**クラスとして使えるようにする**ブロック。
+- `@layer base { … }` : ベース層（最も優先度が低い）に、`body` や `h1` の初期スタイルを追加するブロック。
+- `@layer components { … }` : 自作のコンポーネントクラス（`.btn` など）を入れる層。
+- `@utility 名前 { … }` : 自作のユーティリティクラス（`glass` など）を作る命令。
+- `@apply クラス名1 クラス名2` : CSS の中で Tailwind のクラスを展開する命令。長いクラス指定を1つにまとめるのに便利。
+
+> **▼ このコードがやること（先に日本語で）:** アプリ全体で使う「色・影・角丸・アニメーション」をまとめて定義する土台のCSSファイルを作ります。ポイントは、色などを `--color-primary-500` のような「CSS変数（名前を付けた値の入れ物）」にして `@theme` に登録することです。登録すると `bg-primary-500` のようなクラスとして使えるうえ、ダークモードのときは変数の中身を入れ替えるだけで画面全体の色が一気に切り替わります。v3 では `tailwind.config.ts` に分けて書いていた設定も、このファイル1枚にまとまっています。各行の細かい意味はコード内コメントで丁寧に説明しています。
 
 ```css
 /* app/globals.css
    ↑ このファイルはアプリ全体に適用される「グローバルCSS」。
      Next.js の App Router では app/layout.tsx で import "./globals.css" すると
-     アプリのすべてのページに反映される。 */
+     アプリのすべてのページに反映される。
+     ※ Tailwind CSS v4（2026年の create-next-app が入れる版）の書き方。
+       v3 の書き方との違いは 1.1.1 節と 1.3 節を参照。 */
 
-/* @tailwind ディレクティブは Tailwind CSS が提供する特別な命令文。
-   ビルド時に、それぞれ大量のCSSコードに展開される。
-   この3行が無いと Tailwind のクラスは一切効かない。 */
-/* base   : ブラウザ標準スタイルのリセット（normalize.css 的なもの）+ HTML要素のデフォルト */
-@tailwind base;
-/* components: .btn など、@layer components { ... } で定義したクラス */
-@tailwind components;
-/* utilities : bg-red-500, p-4 などのユーティリティクラス本体 */
-@tailwind utilities;
+/* @import "tailwindcss" は Tailwind CSS 本体を読み込む1行。
+   ビルド時に、リセットCSS（base）と、bg-red-500・p-4 などのクラス（utilities）に展開される。
+   この1行が無いと Tailwind のクラスは一切効かない。 */
+@import "tailwindcss";
+
+/* dark: の付いたクラスを「<html class="dark"> のとき」に効かせる宣言。
+   これが無いと、v4 の dark: は OS の設定（ダーク/ライト）にしか反応しない。
+   5.3節のテーマ切り替えボタンで、ユーザーが自分で選べるようにするために必要。 */
+@custom-variant dark (&:where(.dark, .dark *));
 
 /* ========================================
-   1. CSS カスタムプロパティ（カラートークン）
+   1. テーマ（Tailwind のクラスになる値＝カラートークンなど）
    ======================================== */
-/* :root は「ドキュメントのルート要素（≒ <html> タグ）」を指す擬似クラスセレクタ。
-   ここに変数を定義すると、ページ全体のどこからでも var(--変数名) で参照できる。
+/* @theme の中に書いた CSS 変数は、名前の前半（--color- など）に応じて Tailwind のクラスになる。
+   例: --color-primary-600 → bg-primary-600 / text-primary-600 / border-primary-600 など
+   同時に :root（≒ <html>）の CSS 変数としても出力されるので、
+   ページのどこからでも var(--color-primary-600) で参照できる。
    このように共通の値を変数化したものを「デザイントークン（design tokens）」と呼ぶ。 */
-:root {
+@theme {
   /* プライマリカラー（インディゴ系：青と紫の中間のような色） */
   /* --color- で始まる名前は「CSSカスタムプロパティ（CSS変数）」。
      値（例：#eef2ff）は16進数カラーコード。先頭の # の後の2桁ずつが
@@ -283,19 +1050,20 @@ Tailwind の数値（`p-4`, `text-xl`）は**4の倍数のpx**などの規則が
   --color-secondary-950: #022c22;
 
   /* 背景・テキスト（セマンティック＝意味ベースの命名） */
-  /* ページ全体の背景色（白） */
+  /* ここに書くのは「ライトモードの値」。ダークモードの値は下の .dark で上書きする */
+  /* ページ全体の背景色（白）→ bg-background */
   --color-background: #ffffff;
-  /* 前景色＝メインの文字色（ほぼ黒） */
+  /* 前景色＝メインの文字色（ほぼ黒）→ text-foreground */
   --color-foreground: #0f172a;
-  /* muted = 弱めた色。補足テキスト用 */
+  /* muted = 弱めた色。補足テキスト用 → text-muted */
   --color-muted: #64748b;
-  /* さらに薄い補足文字色 */
+  /* さらに薄い補足文字色 → text-muted-foreground */
   --color-muted-foreground: #94a3b8;
-  /* 枠線の色 */
+  /* 枠線の色 → border-border */
   --color-border: #e2e8f0;
-  /* カード（書籍カードなど）の背景色 */
+  /* カード（書籍カードなど）の背景色 → bg-card */
   --color-card: #ffffff;
-  /* カード内の文字色 */
+  /* カード内の文字色 → text-card-foreground */
   --color-card-foreground: #0f172a;
 
   /* 状態カラー（操作結果や状態を伝えるための色） */
@@ -308,15 +1076,18 @@ Tailwind の数値（`p-4`, `text-xl`）は**4の倍数のpx**などの規則が
   /* 情報＝青 */
   --color-info: #3b82f6;
 
-  /* シャドウ（box-shadow：影） */
+  /* シャドウ（box-shadow：影）→ shadow-sm / shadow-md / shadow-lg */
   /* box-shadow の値は「横ずれ 縦ずれ ぼかし 広がり 色」の順に書く */
   /* rgb(0 0 0 / 0.05) は黒で透明度5%という意味 */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   /* 2つの影を重ねる */
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  /* 独自の影を新規追加 → shadow-card / shadow-card-hover */
+  --shadow-card: 0 2px 8px -2px rgb(0 0 0 / 0.08), 0 4px 12px -4px rgb(0 0 0 / 0.04);
+  --shadow-card-hover: 0 8px 24px -4px rgb(0 0 0 / 0.12), 0 4px 8px -4px rgb(0 0 0 / 0.08);
 
-  /* ボーダー半径（角丸の大きさ） */
+  /* ボーダー半径（角丸の大きさ）→ rounded-sm / rounded-md / rounded-lg / rounded-xl */
   /* rem は「ルート要素のフォントサイズを基準とする単位」。普通は 1rem = 16px */
   /* = 6px */
   --radius-sm: 0.375rem;
@@ -326,9 +1097,144 @@ Tailwind の数値（`p-4`, `text-xl`）は**4の倍数のpx**などの規則が
   --radius-lg: 0.75rem;
   /* = 16px */
   --radius-xl: 1rem;
+
+  /* フォント → font-sans / font-mono */
+  /* 先頭から探して、利用可能な最初のフォントが使われる。
+     Inter は日本語を含まないので、2番目に日本語フォントを置く */
+  --font-sans: Inter, "Noto Sans JP", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+
+  /* 標準には無い超小サイズの文字 → text-2xs（10px / 行間14px） */
+  --text-2xs: 0.625rem;
+  --text-2xs--line-height: 0.875rem;
+
+  /* アニメーション → animate-fade-in など */
+  /* 書き方: "<キーフレーム名> <時間> <イージング> <繰り返し> <塗り潰し>" */
+  --animate-fade-in: fade-in 0.3s ease-out;
+  --animate-fade-out: fade-out 0.3s ease-out;
+  --animate-slide-in-right: slide-in-right 0.3s ease-out;
+  --animate-slide-in-up: slide-in-up 0.4s ease-out;
+  --animate-scale-in: scale-in 0.2s ease-out;
+  /* infinite: 無限ループ、linear: 等速 */
+  --animate-shimmer: shimmer 2s infinite linear;
+  --animate-toast-in: toast-slide-in 0.3s ease-out;
+  /* forwards: 終了状態をキープ */
+  --animate-toast-out: toast-slide-out 0.3s ease-in forwards;
+
+  /* @keyframes はアニメーションの「始まりから終わりまでのコマ」を定義する。
+     from { 開始状態 } to { 終了状態 } の形が基本。
+     0% { ... } 100% { ... } のようにパーセント刻みで複数指定もできる。
+     @theme の中に書くと、そのアニメーションを使ったときだけ CSS に出力される。 */
+
+  /* fade-in: 少し下から、透明 → 不透明にフェードイン */
+  @keyframes fade-in {
+    from {
+      /* 透明（見えない） */
+      opacity: 0;
+      /* 8px 下にずらした位置から始まる */
+      transform: translateY(8px);
+    }
+    to {
+      /* 不透明（見える） */
+      opacity: 1;
+      /* 元の位置へ */
+      transform: translateY(0);
+    }
+  }
+
+  /* fade-out: 上記の逆。表示状態 → 透明＋少し下に消える */
+  @keyframes fade-out {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+  }
+
+  /* 右からスライドイン（X軸＝横方向の動き） */
+  @keyframes slide-in-right {
+    from {
+      opacity: 0;
+      /* 16px 右にずれた位置 */
+      transform: translateX(16px);
+    }
+    to {
+      opacity: 1;
+      /* 元の位置 */
+      transform: translateX(0);
+    }
+  }
+
+  /* 下からスライドアップ（カードの一斉登場などに使う） */
+  @keyframes slide-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* scale-in: 少し小さい状態 → 通常サイズに拡大しながら出現 */
+  @keyframes scale-in {
+    from {
+      opacity: 0;
+      /* 95% の大きさ */
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      /* 100%（等倍） */
+      transform: scale(1);
+    }
+  }
+
+  /* shimmer: ローディングスケルトンの光が左から右へ流れるアニメーション */
+  @keyframes shimmer {
+    0% {
+      /* 背景画像を左外側に配置 */
+      background-position: -200% 0;
+    }
+    100% {
+      /* 右外側まで動かす */
+      background-position: 200% 0;
+    }
+  }
+
+  /* トーストが右から滑り込んでくる */
+  @keyframes toast-slide-in {
+    from {
+      opacity: 0;
+      /* 100% = 自身の幅ぶん右にいる状態 */
+      transform: translateX(100%);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  /* トーストが右に滑り出ていく（消える時） */
+  @keyframes toast-slide-out {
+    from {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateX(100%);
+    }
+  }
 }
 
-/* ダークモード用のカスタムプロパティ */
+/* ========================================
+   2. ダークモード用の上書き
+   ======================================== */
 /* <html class="dark"> のように dark クラスが付いたとき、
    この中の変数だけが上書きされる。CSS変数の「値だけを差し替える」
    仕組みなので、各コンポーネントで dark:bg-... を一つずつ書かなくても
@@ -345,17 +1251,12 @@ Tailwind の数値（`p-4`, `text-xl`）は**4の倍数のpx**などの規則が
   /* カード背景は背景より少し明るい暗色 */
   --color-card: #1e293b;
   --color-card-foreground: #f8fafc;
-
-  /* 影は暗い画面ではより濃く（透明度を上げる）と見える */
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.3);
 }
 
 /* ========================================
-   2. ベースレイヤー
+   3. ベースレイヤー
    ======================================== */
-/* @layer base は Tailwind の「層（layer）」のひとつ。
+/* @layer base は「層（layer）」のひとつ。
    ここに書くと、ユーティリティクラスより優先度が低くなるので
    個別の Tailwind クラスで上書きしやすい。 */
 @layer base {
@@ -370,10 +1271,10 @@ Tailwind の数値（`p-4`, `text-xl`）は**4の倍数のpx**などの規則が
   }
 
   body {
-    /* @apply は Tailwind 独自のディレクティブ。CSS内で Tailwind クラスを使うための書き方。 */
-    /* bg-[var(--color-background)] : 背景色を CSS 変数から取得（任意値構文 [ ]） */
-    /* text-[var(--color-foreground)] : 文字色を CSS 変数から取得 */
-    @apply bg-[var(--color-background)] text-[var(--color-foreground)];
+    /* @apply は CSS の中で Tailwind のクラスを使うための書き方。 */
+    /* bg-background : 背景色を --color-background に（ダークでは .dark の値になる） */
+    /* text-foreground : 文字色を --color-foreground に */
+    @apply bg-background text-foreground;
     /* OpenType の合字機能を有効化（綺麗な文字に） */
     font-feature-settings: "rlig" 1, "calt" 1;
     /* ダークモード切替時に背景・文字色を 0.3 秒かけて滑らかに変える */
@@ -422,23 +1323,31 @@ Tailwind の数値（`p-4`, `text-xl`）は**4の倍数のpx**などの規則が
 }
 
 /* ========================================
-   3. コンポーネントレイヤー
+   4. コンポーネントレイヤー
    ======================================== */
 /* @layer components はベースより優先度が高く、ユーティリティより低い層。
-   .btn のような再利用可能なクラスをここに定義する。 */
+   .btn のような再利用可能なクラスをここに定義する。
+   ※ v4 では「自作クラスを @apply で取り込む（@apply btn）」ことはできないので、
+     共通部分は「.btn, .btn-primary, ...」のようにセレクタを並べて1か所に書く。 */
 @layer components {
   /* ボタンの共通スタイル（全ボタンの土台） */
-  .btn {
+  /* カンマで区切って並べたクラスすべてに、同じスタイルが当たる */
+  .btn,
+  .btn-primary,
+  .btn-secondary,
+  .btn-outline,
+  .btn-danger,
+  .btn-ghost {
     /* inline-flex                  : display: inline-flex（横並び＋インライン要素） */
     /* items-center                 : 縦方向中央揃え（align-items: center） */
     /* justify-center               : 横方向中央揃え（justify-content: center） */
-    /* rounded-lg                   : 角丸 0.5rem */
+    /* rounded-lg                   : 角丸 0.75rem（上の --radius-lg） */
     /* px-4 py-2                    : 横16px、縦8px の内側余白 */
     /* text-sm                      : フォントサイズ 0.875rem (14px) */
     /* font-medium                  : 文字太さ 500 */
     /* transition-all duration-200  : 全プロパティを 200ms かけて変化 */
     /* ease-in-out                  : 加速→減速のカーブ */
-    /* focus-visible:outline-none   : キーボードフォーカス時のデフォルト輪郭線を消す */
+    /* focus-visible:outline-hidden : キーボードフォーカス時のデフォルト輪郭線を消す */
     /* focus-visible:ring-2         : 代わりに 2px のリング（box-shadow） */
     /* focus-visible:ring-offset-2  : リングを要素から 2px 離す */
     /* disabled:pointer-events-none : 無効化時はクリックできない */
@@ -447,19 +1356,18 @@ Tailwind の数値（`p-4`, `text-xl`）は**4の倍数のpx**などの規則が
            rounded-lg px-4 py-2
            text-sm font-medium
            transition-all duration-200 ease-in-out
-           focus-visible:outline-none focus-visible:ring-2
+           focus-visible:outline-hidden focus-visible:ring-2
            focus-visible:ring-offset-2
            disabled:pointer-events-none disabled:opacity-50;
   }
 
   .btn-primary {
-    /* btn                          : 上で定義した .btn を継承（@apply の中でカスタムクラスも使える） */
+    /* 共通部分は上でまとめて指定済みなので、ここでは色だけを足す */
     /* bg-primary-600 text-white    : インディゴ背景に白文字 */
     /* hover:bg-primary-700         : ホバー時にやや濃く */
     /* active:bg-primary-800        : クリック中（押している瞬間）はさらに濃く */
     /* focus-visible:ring-primary-500 : フォーカスリングをインディゴで */
-    @apply btn
-           bg-primary-600 text-white
+    @apply bg-primary-600 text-white
            hover:bg-primary-700
            active:bg-primary-800
            focus-visible:ring-primary-500;
@@ -467,8 +1375,7 @@ Tailwind の数値（`p-4`, `text-xl`）は**4の倍数のpx**などの規則が
 
   .btn-secondary {
     /* セカンダリ（エメラルド系）のボタン。primary と同じ構造で色だけ違う */
-    @apply btn
-           bg-secondary-600 text-white
+    @apply bg-secondary-600 text-white
            hover:bg-secondary-700
            active:bg-secondary-800
            focus-visible:ring-secondary-500;
@@ -482,8 +1389,7 @@ Tailwind の数値（`p-4`, `text-xl`）は**4の倍数のpx**などの規則が
     /* active:bg-primary-100       : 押下時はもう少し濃く */
     /* dark:border-primary-400 ... : ダークモード用は明るめのプライマリで */
     /* dark:hover:bg-primary-950   : ダークでのホバーは超暗いプライマリ */
-    @apply btn
-           border-2 border-primary-600 text-primary-600
+    @apply border-2 border-primary-600 text-primary-600
            hover:bg-primary-50
            active:bg-primary-100
            dark:border-primary-400 dark:text-primary-400
@@ -493,8 +1399,7 @@ Tailwind の数値（`p-4`, `text-xl`）は**4の倍数のpx**などの規則が
 
   .btn-danger {
     /* 危険な操作（削除など）用の赤いボタン */
-    @apply btn
-           bg-red-600 text-white
+    @apply bg-red-600 text-white
            hover:bg-red-700
            active:bg-red-800
            focus-visible:ring-red-500;
@@ -502,21 +1407,21 @@ Tailwind の数値（`p-4`, `text-xl`）は**4の倍数のpx**などの規則が
 
   .btn-ghost {
     /* ゴーストボタン：通常は背景なし、ホバー時だけ薄く塗る控えめなボタン */
-    @apply btn
-           text-gray-600 hover:bg-gray-100
+    @apply text-gray-600 hover:bg-gray-100
            dark:text-gray-400 dark:hover:bg-gray-800
            focus-visible:ring-gray-500;
   }
 
-  /* カードの共通スタイル */
-  .card {
-    /* rounded-xl                                 : 角丸 1rem */
-    /* border border-[var(--color-border)]        : 枠線をCSS変数経由で */
-    /* bg-[var(--color-card)]                     : 背景色 */
-    /* text-[var(--color-card-foreground)]        : 文字色 */
-    /* shadow-sm                                  : 小さめの影 */
-    @apply rounded-xl border border-[var(--color-border)]
-           bg-[var(--color-card)] text-[var(--color-card-foreground)]
+  /* カードの共通スタイル（.card と .card-hover の両方に当てる） */
+  .card,
+  .card-hover {
+    /* rounded-xl              : 角丸 1rem（上の --radius-xl） */
+    /* border border-border    : 枠線の色を --color-border に */
+    /* bg-card                 : 背景色を --color-card に */
+    /* text-card-foreground    : 文字色を --color-card-foreground に */
+    /* shadow-sm               : 小さめの影（上の --shadow-sm） */
+    @apply rounded-xl border border-border
+           bg-card text-card-foreground
            shadow-sm;
     /* 影と位置変化を 0.2 秒かけて滑らかに */
     transition: box-shadow 0.2s ease, transform 0.2s ease;
@@ -526,37 +1431,42 @@ Tailwind の数値（`p-4`, `text-xl`）は**4の倍数のpx**などの規則が
     /* card に「ホバーで影を大きく＋少し上に浮く」を追加 */
     /* hover:shadow-lg     : ホバー時に大きな影 */
     /* hover:-translate-y-1: 上に -0.25rem (4px) 移動 */
-    @apply card hover:shadow-lg hover:-translate-y-1;
+    @apply hover:shadow-lg hover:-translate-y-1;
   }
 
   /* 入力フィールドの共通スタイル */
   .input {
     /* w-full                              : 横幅100% */
-    /* rounded-lg border ...               : 角丸＋枠線 */
+    /* rounded-lg border border-border     : 角丸＋枠線 */
+    /* bg-background                       : 背景色 */
     /* px-4 py-2.5                         : 内側余白（py-2.5 は 0.625rem = 10px） */
     /* text-sm                             : 14px */
-    /* placeholder:text-...                : placeholder（入力前の薄い案内文）の色 */
+    /* placeholder:text-muted-foreground   : placeholder（入力前の薄い案内文）の色 */
     /* focus:border-primary-500            : フォーカス時の枠線色 */
-    /* focus:outline-none                  : ブラウザ標準のアウトラインを消す */
+    /* focus:outline-hidden                : ブラウザ標準のアウトラインを消す */
     /* focus:ring-2                        : 代わりに2pxリング */
     /* focus:ring-primary-500/20           : リングの色＝primary-500 の透明度20% */
     /* disabled:cursor-not-allowed         : 無効化時はカーソルが「禁止マーク」に */
     /* disabled:opacity-50                 : 無効時は半透明 */
     /* dark:focus:border-primary-400       : ダーク × フォーカス時の枠線色 */
-    @apply w-full rounded-lg border border-[var(--color-border)]
-           bg-[var(--color-background)]
+    @apply w-full rounded-lg border border-border
+           bg-background
            px-4 py-2.5
            text-sm
-           placeholder:text-[var(--color-muted-foreground)]
-           focus:border-primary-500 focus:outline-none focus:ring-2
+           placeholder:text-muted-foreground
+           focus:border-primary-500 focus:outline-hidden focus:ring-2
            focus:ring-primary-500/20
            disabled:cursor-not-allowed disabled:opacity-50
            dark:focus:border-primary-400 dark:focus:ring-primary-400/20;
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
   }
 
-  /* バッジ（badge：ラベルや状態を示す小さな印） */
-  .badge {
+  /* バッジ（badge：ラベルや状態を示す小さな印）の共通部分 */
+  .badge,
+  .badge-primary,
+  .badge-success,
+  .badge-warning,
+  .badge-error {
     /* inline-flex items-center : 横並びで中央揃え（中にアイコン入れる時のため） */
     /* rounded-full             : 角丸を最大（円形/カプセル形） */
     /* px-2.5 py-0.5            : 横10px、縦2px の余白 */
@@ -571,219 +1481,93 @@ Tailwind の数値（`p-4`, `text-xl`）は**4の倍数のpx**などの規則が
     /* 「読書中」など、注目度を上げたいバッジ */
     /* bg-primary-100 text-primary-700 : 薄い背景に濃い文字色 */
     /* dark:bg-primary-900 dark:text-primary-300 : ダークモードは反転 */
-    @apply badge bg-primary-100 text-primary-700
+    @apply bg-primary-100 text-primary-700
            dark:bg-primary-900 dark:text-primary-300;
   }
 
   .badge-success {
     /* 「読了」など成功状態を表す緑バッジ */
-    @apply badge bg-green-100 text-green-700
+    @apply bg-green-100 text-green-700
            dark:bg-green-900 dark:text-green-300;
   }
 
   .badge-warning {
     /* 「読みたい」「注意」など警告を表す黄バッジ */
-    @apply badge bg-yellow-100 text-yellow-700
+    @apply bg-yellow-100 text-yellow-700
            dark:bg-yellow-900 dark:text-yellow-300;
   }
 
   .badge-error {
     /* エラー状態を表す赤バッジ */
-    @apply badge bg-red-100 text-red-700
+    @apply bg-red-100 text-red-700
            dark:bg-red-900 dark:text-red-300;
   }
 }
 
 /* ========================================
-   4. ユーティリティレイヤー
+   5. 自作ユーティリティ（@utility）
    ======================================== */
-/* @layer utilities は最も優先度の高い層。
-   Tailwind が標準で提供しないユーティリティをここに自作できる。 */
-@layer utilities {
-  /* テキスト省略（複数行対応） */
-  /* line-clamp は「N 行を超えたら省略記号「…」で打ち切る」機能 */
-  .line-clamp-1 {
-    /* WebKit 系の特殊な display 値（複数行省略に必要） */
-    display: -webkit-box;
-    /* 1 行で打ち切る */
-    -webkit-line-clamp: 1;
-    /* ボックスを縦方向に並べる */
-    -webkit-box-orient: vertical;
-    /* はみ出た部分を非表示 */
-    overflow: hidden;
-  }
+/* @utility 名前 { ... } で、Tailwind に無い小さな便利クラスを自作できる。
+   作ったクラスは p-4 などと同じ「ユーティリティ」として扱われ、
+   hover: や md: などの接頭辞も付けられる。
+   ※ 複数行の省略表示 line-clamp-1 / line-clamp-2 / line-clamp-3 は
+     Tailwind に最初から入っているので、自作する必要はない。 */
 
-  .line-clamp-2 {
-    display: -webkit-box;
-    /* 2 行で打ち切る */
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+/* container: 中央寄せ＋画面幅に応じた左右の余白
+   （v4 の標準の container は「最大幅」だけなので、中央寄せと余白をここで足す） */
+@utility container {
+  /* 左右の margin を auto にして中央寄せ */
+  margin-inline: auto;
+  /* 全画面共通の最小余白 = 16px */
+  padding-inline: 1rem;
+  /* 640px 以上 = 32px */
+  @variant sm {
+    padding-inline: 2rem;
   }
-
-  .line-clamp-3 {
-    display: -webkit-box;
-    /* 3 行で打ち切る */
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+  /* 1024px 以上 = 64px */
+  @variant lg {
+    padding-inline: 4rem;
   }
-
-  /* スクロールバーのカスタマイズ */
-  .scrollbar-thin {
-    /* Firefox 用: スクロールバーを細く */
-    scrollbar-width: thin;
-    /* つまみ色 トラック色 */
-    scrollbar-color: var(--color-muted-foreground) transparent;
+  /* 1536px 以上では、最大幅を標準の 1536px より少し狭く（読みやすさのため） */
+  @variant 2xl {
+    max-width: 1400px;
   }
+}
 
-  /* ::-webkit-scrollbar は Chrome/Safari 用のスクロールバー擬似要素 */
-  .scrollbar-thin::-webkit-scrollbar {
+/* スクロールバーのカスタマイズ */
+@utility scrollbar-thin {
+  /* Firefox 用: スクロールバーを細く */
+  scrollbar-width: thin;
+  /* つまみ色 トラック色 */
+  scrollbar-color: var(--color-muted-foreground) transparent;
+
+  /* &::-webkit-scrollbar は Chrome/Safari 用のスクロールバー擬似要素 */
+  &::-webkit-scrollbar {
     /* 縦スクロールバーの幅 */
     width: 6px;
     /* 横スクロールバーの高さ */
     height: 6px;
   }
 
-  .scrollbar-thin::-webkit-scrollbar-track {
+  &::-webkit-scrollbar-track {
     /* スクロールバーの「軌道（背景部分）」を透明に */
     background: transparent;
   }
 
-  .scrollbar-thin::-webkit-scrollbar-thumb {
+  &::-webkit-scrollbar-thumb {
     /* つまみの色 */
     background-color: var(--color-muted-foreground);
     /* つまみを丸く */
     border-radius: 3px;
   }
-
-  /* グラスモーフィズム（glassmorphism：すりガラス風効果） */
-  .glass {
-    /* bg-white/80      : 白の透明度80%背景（数字 / 数字 で透明度指定） */
-    /* backdrop-blur-md : 背景をぼかす（半透明の向こう側がモザイク状に） */
-    /* dark:bg-gray-900/80 : ダーク時は暗い半透明背景 */
-    @apply bg-white/80 backdrop-blur-md dark:bg-gray-900/80;
-  }
 }
 
-/* ========================================
-   5. アニメーション定義
-   ======================================== */
-/* @keyframes はアニメーションの「始まりから終わりまでのコマ」を定義する。
-   from { 開始状態 } to { 終了状態 } の形が基本。
-   0% { ... } 100% { ... } のようにパーセント刻みで複数指定もできる。 */
-
-/* fadeIn: 少し下から、透明 → 不透明にフェードイン */
-@keyframes fadeIn {
-  from {
-    /* 透明（見えない） */
-    opacity: 0;
-    /* 8px 下にずらした位置から始まる */
-    transform: translateY(8px);
-  }
-  to {
-    /* 不透明（見える） */
-    opacity: 1;
-    /* 元の位置へ */
-    transform: translateY(0);
-  }
-}
-
-/* fadeOut: 上記の逆。表示状態 → 透明＋少し下に消える */
-@keyframes fadeOut {
-  from {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  to {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-}
-
-/* 右からスライドイン（X軸＝横方向の動き） */
-@keyframes slideInRight {
-  from {
-    opacity: 0;
-    /* 16px 右にずれた位置 */
-    transform: translateX(16px);
-  }
-  to {
-    opacity: 1;
-    /* 元の位置 */
-    transform: translateX(0);
-  }
-}
-
-/* 下からスライドアップ（カードの一斉登場などに使う） */
-@keyframes slideInUp {
-  from {
-    opacity: 0;
-    transform: translateY(16px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* scaleIn: 少し小さい状態 → 通常サイズに拡大しながら出現 */
-@keyframes scaleIn {
-  from {
-    opacity: 0;
-    /* 95% の大きさ */
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    /* 100%（等倍） */
-    transform: scale(1);
-  }
-}
-
-/* spin: 1周回転（ローディングスピナー用） */
-@keyframes spin {
-  to {
-    /* 360度回す */
-    transform: rotate(360deg);
-  }
-}
-
-/* shimmer: ローディングスケルトンの光が左から右へ流れるアニメーション */
-@keyframes shimmer {
-  0% {
-    /* 背景画像を左外側に配置 */
-    background-position: -200% 0;
-  }
-  100% {
-    /* 右外側まで動かす */
-    background-position: 200% 0;
-  }
-}
-
-/* トーストが右から滑り込んでくる */
-@keyframes toastSlideIn {
-  from {
-    opacity: 0;
-    /* 100% = 自身の幅ぶん右にいる状態 */
-    transform: translateX(100%);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-/* トーストが右に滑り出ていく（消える時） */
-@keyframes toastSlideOut {
-  from {
-    opacity: 1;
-    transform: translateX(0);
-  }
-  to {
-    opacity: 0;
-    transform: translateX(100%);
-  }
+/* グラスモーフィズム（glassmorphism：すりガラス風効果） */
+@utility glass {
+  /* bg-white/80      : 白の透明度80%背景（数字 / 数字 で透明度指定） */
+  /* backdrop-blur-md : 背景をぼかす（半透明の向こう側がモザイク状に） */
+  /* dark:bg-gray-900/80 : ダーク時は暗い半透明背景 */
+  @apply bg-white/80 backdrop-blur-md dark:bg-gray-900/80;
 }
 ```
 
@@ -793,40 +1577,76 @@ Tailwind の数値（`p-4`, `text-xl`）は**4の倍数のpx**などの規則が
 
 ---
 
-##### 解説1: Tailwind を読み込む3行（`@tailwind`）
+##### 解説1: Tailwind を読み込み、ダークモードの合図を決める（`@import` / `@custom-variant`）
 
 ```css
-/* base   : ブラウザ標準スタイルのリセット（normalize.css 的なもの）+ HTML要素のデフォルト */
-@tailwind base;
-/* components: .btn など、@layer components { ... } で定義したクラス */
-@tailwind components;
-/* utilities : bg-red-500, p-4 などのユーティリティクラス本体 */
-@tailwind utilities;
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
 ```
 
-- `@tailwind`（アットマーク・テイルウィンド）は Tailwind 専用の「命令文」です。ビルド時にこの1行が**数千行のCSS**に展開されます。
-- `base` は「ブラウザごとに違う初期スタイルをそろえるリセット」、`components` は「`.btn` など自作のまとまったクラス」、`utilities` は「`p-4`・`bg-red-500` などの細かい1機能クラス」を入れる場所です。
-- **この3行が無いと Tailwind のクラスは一切効きません。** 必ずファイルの先頭に書きます。
+- `@import "tailwindcss";` は Tailwind CSS 本体を読み込む1行です。ビルド時にこの1行が、ブラウザごとの違いをそろえるリセット CSS（base）と、`p-4`・`bg-red-500` などのクラス（utilities）に**展開**されます。
+- **この1行が無いと Tailwind のクラスは一切効きません。** 必ずファイルの先頭に書きます。
+- `@custom-variant dark (…)` は「`dark:` の付いたクラスを**いつ**効かせるか」を決める宣言です。`&:where(.dark, .dark *)` は「`dark` クラスが付いた要素自身か、その中にある要素」という意味で、`<html class="dark">` にすればページ全体が当てはまります。書き忘れると、v4 の `dark:` は OS の設定にしか反応しません（5.1 節のつまずきポイント）。
 
-> **用語: ディレクティブ（directive）** … CSSやツールに対する「特別な指示」を表す命令文のこと。`@` から始まるものが多い（`@tailwind`, `@layer`, `@apply` など）。
+> **用語: ディレクティブ（directive）** … CSSやツールに対する「特別な指示」を表す命令文のこと。`@` から始まるものが多い（`@import`, `@theme`, `@layer`, `@apply` など）。
+
+`@import "tailwindcss"` で読み込まれる CSS は、base（土台）・components（部品）・utilities（便利クラス）という**層（レイヤー）**に分けて並べられます。
+
+3つの層は、**積み重なった棚**のような関係です。上の段ほど強く、同じ要素に別々の段からスタイルが当たってぶつかったときは、上の段のものが勝ちます。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 252" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-09-09" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<text x="30" y="22" text-anchor="middle" font-size="12" font-weight="bold" fill="#475569">強い</text>
+<line x1="30" y1="226" x2="30" y2="34" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-09-09)"/>
+<text x="30" y="244" text-anchor="middle" font-size="12" font-weight="bold" fill="#475569">弱い</text>
+<rect x="60" y="30" width="330" height="58" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="76" y="54" font-size="14" font-weight="bold" fill="#1e40af">utilities（ユーティリティ）</text>
+<text x="76" y="76" font-size="12" fill="#1e40af">p-4 / bg-red-500 / hover:… / 自作の便利クラス</text>
+<rect x="60" y="99" width="330" height="58" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<text x="76" y="123" font-size="14" font-weight="bold" fill="#c2410c">components（コンポーネント）</text>
+<text x="76" y="145" font-size="12" fill="#c2410c">.btn / .card / .badge / .input</text>
+<rect x="60" y="168" width="330" height="58" rx="8" fill="#f8fafc" stroke="#64748b" stroke-width="2"/>
+<text x="76" y="192" font-size="14" font-weight="bold" fill="#475569">base（ベース）</text>
+<text x="76" y="214" font-size="12" fill="#475569">html / body / h1 / a の土台とリセット</text>
+<rect x="420" y="30" width="290" height="196" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
+<text x="436" y="56" font-size="13" font-weight="bold" fill="#334155">例: ぶつかったら上の段が勝つ</text>
+<text x="436" y="84" font-size="12" font-family="Consolas, monospace" fill="#1e293b">&lt;button class="btn p-0"&gt;</text>
+<text x="436" y="112" font-size="12" fill="#c2410c">.btn の padding（components）</text>
+<text x="452" y="130" font-size="12" fill="#c2410c">→ 上下 8px・左右 16px</text>
+<text x="436" y="156" font-size="12" fill="#1e40af">p-0 の padding（utilities）</text>
+<text x="452" y="174" font-size="12" fill="#1e40af">→ 0</text>
+<text x="436" y="206" font-size="13" font-weight="bold" fill="#047857">結果: padding は 0（p-0 の勝ち）</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図9-9: CSS の3つの層（レイヤー）と強さの順番（実際には一番下に、色などの変数を置く theme の層もある）</div>
+</div>
+
+この仕組みのおかげで、「`.btn` で共通の見た目を作っておき、特定のボタンだけ `p-0` や `w-full` などのユーティリティで**部分的に上書きする**」ことが安心してできます。
+
+v3 では、この部分を `@tailwind base;` `@tailwind components;` `@tailwind utilities;` の3行で書き、ダークモードの方式は `tailwind.config.ts` の `darkMode: "class"` で指定していました（1.3 節）。古い記事でこの3行を見かけたら「v3 の書き方だな」と読み替えてください。
 
 ---
 
-##### 解説2: 色に名前を付ける（CSS変数 / カラートークン）
+##### 解説2: 色に名前を付けてクラスにする（`@theme` / カラートークン）
 
 ```css
-:root {
+@theme {
   /* 一番薄いインディゴ（背景バッジ等に使う） */
   --color-primary-50: #eef2ff;
-  /* ... 中略 ... */
   /* ボタン背景でよく使う濃さ */
   --color-primary-600: #4f46e5;
+  /* ページ全体の背景色（白）→ bg-background */
+  --color-background: #ffffff;
 }
 ```
 
-- `:root`（ルート）は「ページの一番外側（`<html>`）」を指します。ここに変数を書くと、ページのどこからでも `var(--変数名)` で呼び出せます。
-- `--color-primary-600` のように `--` で始まる名前が **CSS変数（カスタムプロパティ）** です。値の `#4f46e5` は色を表す16進数コードで、`#` の後ろ2桁ずつが「赤・緑・青」の強さを表します。
-- 色を直接 `#4f46e5` と書かず変数にしておくと、後で色を変えたいとき**1か所直すだけ**で全体に反映できます。
+- （上はコードの抜粋です）`@theme { … }` の中に書いた `--color-primary-600` のような **CSS変数（カスタムプロパティ）** は、Tailwind の**クラスとして使える**ようになります。名前が `--color-` で始まるので「色」と判断され、`bg-primary-600`（背景）・`text-primary-600`（文字）・`border-primary-600`（枠線）などが一度に使えるようになります。
+- 同時に `:root`（ページの一番外側＝`<html>`）の CSS 変数としても出力されるので、`var(--color-primary-600)` と書けばページのどこからでも呼び出せます。本章のコンポーネントで使っている `bg-[var(--color-card)]` は、こちらの使い方です。
+- 値の `#4f46e5` は色を表す16進数コードで、`#` の後ろ2桁ずつが「赤・緑・青」の強さを表します。色を直接書かず変数にしておくと、後で色を変えたいとき**1か所直すだけ**で全体に反映できます。
+- 影（`--shadow-`）・角丸（`--radius-`）・フォント（`--font-`）・文字サイズ（`--text-`）も同じしくみで、**名前の前半で何のクラスになるかが決まります**（1.1.1 節の「名前空間」）。
 
 > **用語: カラートークン（color tokens）／デザイントークン** … 「primary-600 はこの色」のように、デザインで使う値に意味のある名前を付けて一元管理したもの。チームでデザインの一貫性を保つための定番手法。
 
@@ -846,8 +1666,9 @@ Tailwind の数値（`p-4`, `text-xl`）は**4の倍数のpx**などの規則が
 ```
 
 - `<html class="dark">` のように `dark` クラスが付いたときだけ、この中の**変数の値が上書き**されます。
-- ポイントは「**新しいクラスを足すのではなく、同じ変数の中身だけを差し替える**」こと。背景の変数を黒に、文字の変数を白に入れ替えるだけで、画面全体がダークモードに変わります。
+- ポイントは「**新しいクラスを足すのではなく、同じ変数の中身だけを差し替える**」こと。`bg-background` などのクラスは中で `var(--color-background)` を使っているので、変数を黒に入れ替えるだけで画面全体がダークモードに変わります。
 - 各コンポーネントで `dark:bg-...` を一つずつ書かなくて済むのが、CSS変数方式の最大の利点です。
+- ただし影（`--shadow-sm` など）は、ここで上書きしても変わりません。v4 の `shadow-sm` などのクラスは、`@theme` の値がクラスの中に直接書き込まれるためです。ダークモードで影を変えたいときは `dark:shadow-lg` のように `dark:` を使います。
 
 > **用語: ダークモード（dark mode）** … 背景を黒・濃灰にした暗い配色モード。夜間や暗所での目の負担を減らす目的で用意する。
 
@@ -858,14 +1679,14 @@ Tailwind の数値（`p-4`, `text-xl`）は**4の倍数のpx**などの規則が
 ```css
 @layer base {
   body {
-    @apply bg-[var(--color-background)] text-[var(--color-foreground)];
+    @apply bg-background text-foreground;
     transition: background-color 0.3s ease, color 0.3s ease;
   }
 }
 ```
 
 - `@layer base`（レイヤー・ベース）は「**一番優先度の低い層**」にスタイルを置く指定です。低い層に置くと、後から個別の Tailwind クラスで簡単に上書きできます。
-- `@apply`（アプライ）は「**CSSの中でTailwindクラスを使う**」ための命令です。`bg-[var(--color-background)]` は「背景色を解説2のCSS変数から取ってくる」という意味で、`[ ]`（角カッコ）はTailwindに無い任意の値を直接書く構文です。
+- `@apply`（アプライ）は「**CSSの中でTailwindクラスを使う**」ための命令です。`bg-background` は解説2で `@theme` に登録した `--color-background` を背景色にするクラスです。
 - `transition: ... 0.3s ease` で、ダークモード切替時に背景と文字色が**0.3秒かけて滑らかに**変わるようにしています。
 
 > **用語: レイヤー（layer）／@apply** … `@layer` はCSSの優先順位を整理するための「層」。`@apply` は長くなりがちなTailwindクラス指定をCSS側にまとめる書き方。
@@ -876,99 +1697,465 @@ Tailwind の数値（`p-4`, `text-xl`）は**4の倍数のpx**などの規則が
 
 ```css
 @layer components {
-  .btn {
+  .btn,
+  .btn-primary,
+  .btn-secondary,
+  .btn-outline,
+  .btn-danger,
+  .btn-ghost {
     @apply inline-flex items-center justify-center
            rounded-lg px-4 py-2
            text-sm font-medium
            transition-all duration-200 ease-in-out
            disabled:pointer-events-none disabled:opacity-50;
   }
+
   .btn-primary {
-    @apply btn
-           bg-primary-600 text-white
+    @apply bg-primary-600 text-white
            hover:bg-primary-700;
   }
 }
 ```
 
-- `.btn` は「全ボタン共通の土台」です。`inline-flex items-center justify-center` で中身を中央寄せ、`rounded-lg` で角丸、`px-4 py-2` で内側余白、`transition-all duration-200` で変化を200msかけて滑らかにしています。
+- （上はコードの抜粋です）`.btn, .btn-primary, …` のように**カンマで区切ってクラスを並べる**と、並べたすべてのクラスに同じスタイルが当たります。これが「全ボタン共通の土台」です。
+- 中身は、`inline-flex items-center justify-center` で中身を中央寄せ、`rounded-lg` で角丸、`px-4 py-2` で内側余白、`transition-all duration-200` で変化を200msかけて滑らかにする指定です。
 - `disabled:opacity-50` は「ボタンが無効化されたときは半透明にする」指定で、`disabled:` は状態に応じてスタイルを変える接頭辞です。
-- `.btn-primary` は `@apply btn ...` のように**`.btn` を継承**してから色（インディゴ背景＋白文字）だけを足しています。こうすると共通部分を何度も書かずに済みます。
+- `.btn-primary` には、土台に足りない**色だけ**（インディゴ背景＋白文字）を書いています。こうすると共通部分を何度も書かずに済みます。
+- v3 では `.btn-primary { @apply btn …; }` のように**自作クラスを `@apply` で取り込む**書き方もできましたが、v4 の `@apply` で取り込めるのは Tailwind のクラス（と `@utility` で作ったクラス）だけです。そのため本章では「セレクタを並べる」方法を使っています。
 
 > **用語: ホバー（hover）** … マウスカーソルを要素の上に乗せた状態。`hover:bg-primary-700` は「乗せたときだけ背景を濃くする」という指定。
+
+完成した `.btn-primary`（本文のコード全体）は、操作の状態によって次の5通りの見た目に切り替わります。PDF や紙ではマウスを乗せられないので、それぞれの状態を並べて描きました。
+
+<div style="max-width: 720px; margin: 18px auto; font-family: 'Yu Gothic UI', 'Yu Gothic', Meiryo, sans-serif;">
+<div style="display: flex; gap: 10px; justify-content: center;">
+<div style="flex: 1; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px 6px 10px; text-align: center; background: #f8fafc;"><span style="display: inline-block; padding: 8px 16px; border-radius: 8px; background: #4f46e5; color: #ffffff; font-size: 14px;">保存</span><div style="font-size: 13px; font-weight: bold; color: #334155; margin-top: 12px;">通常</div><div style="font-family: Consolas, monospace; font-size: 12px; color: #64748b; word-break: break-all;">bg-primary-600</div></div>
+<div style="flex: 1; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px 6px 10px; text-align: center; background: #f8fafc;"><span style="display: inline-block; padding: 8px 16px; border-radius: 8px; background: #4338ca; color: #ffffff; font-size: 14px;">保存</span><div style="font-size: 13px; font-weight: bold; color: #334155; margin-top: 12px;">マウスを乗せた</div><div style="font-family: Consolas, monospace; font-size: 12px; color: #64748b; word-break: break-all;">hover:bg-primary-700</div></div>
+<div style="flex: 1; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px 6px 10px; text-align: center; background: #f8fafc;"><span style="display: inline-block; padding: 8px 16px; border-radius: 8px; background: #3730a3; color: #ffffff; font-size: 14px;">保存</span><div style="font-size: 13px; font-weight: bold; color: #334155; margin-top: 12px;">押している瞬間</div><div style="font-family: Consolas, monospace; font-size: 12px; color: #64748b; word-break: break-all;">active:bg-primary-800</div></div>
+<div style="flex: 1; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px 6px 10px; text-align: center; background: #f8fafc;"><span style="display: inline-block; padding: 8px 16px; border-radius: 8px; background: #4f46e5; color: #ffffff; font-size: 14px; box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #6366f1;">保存</span><div style="font-size: 13px; font-weight: bold; color: #334155; margin-top: 12px;">Tab キーで選択</div><div style="font-family: Consolas, monospace; font-size: 12px; color: #64748b; word-break: break-all;">focus-visible:ring-2</div></div>
+<div style="flex: 1; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px 6px 10px; text-align: center; background: #f8fafc;"><span style="display: inline-block; padding: 8px 16px; border-radius: 8px; background: #4f46e5; color: #ffffff; font-size: 14px; opacity: 0.5;">保存</span><div style="font-size: 13px; font-weight: bold; color: #334155; margin-top: 12px;">押せない</div><div style="font-family: Consolas, monospace; font-size: 12px; color: #64748b; word-break: break-all;">disabled:opacity-50</div></div>
+</div>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px; text-align: center;">図9-10: .btn-primary の状態ごとの見た目（色が少しずつ濃くなる・輪が出る・薄くなる、の違いに注目）</div>
+</div>
+
+「押せる」「今押している」「キーボードでここを選んでいる」「今は押せない」が見た目だけで伝わることで、ユーザーは迷わずに操作できます。特に **Tab キーで選択したときの輪（フォーカスリング）** は、マウスを使わない人にとって「今どこにいるか」を知る唯一の手がかりなので、消さないようにしましょう。
 
 ---
 
 ##### 解説6: カードと入力欄の共通スタイル（`.card` / `.input`）
 
 ```css
-.card {
-  @apply rounded-xl border border-[var(--color-border)]
-         bg-[var(--color-card)] text-[var(--color-card-foreground)]
+.card,
+.card-hover {
+  @apply rounded-xl border border-border
+         bg-card text-card-foreground
          shadow-sm;
   transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
 .input {
-  @apply w-full rounded-lg border border-[var(--color-border)]
+  @apply w-full rounded-lg border border-border
          px-4 py-2.5 text-sm
-         focus:border-primary-500 focus:outline-none focus:ring-2;
+         focus:border-primary-500 focus:outline-hidden focus:ring-2;
 }
 ```
 
-- `.card` は書籍カードなどの土台です。角丸・枠線・背景・影を、すべてCSS変数経由で指定しているので**ダークモードでも自動で色が変わります**。
-- `.input` は入力欄の共通スタイル。`w-full` で横幅いっぱい、`focus:ring-2` は「クリックして入力中のとき、枠の周りに2pxの光るリングを出す」指定で、`focus:` は入力欄が選択された状態を表します。
+- `.card` は書籍カードなどの土台です。`border-border` は「枠線の色を `--color-border` に」、`bg-card` は「背景を `--color-card` に」という指定で、どれも解説2の変数経由なので**ダークモードでも自動で色が変わります**。
+- `.input` は入力欄の共通スタイル。`w-full` で横幅いっぱい、`focus:outline-hidden` はブラウザ標準の輪郭線を消す指定（v3 の `outline-none` に当たる）、`focus:ring-2` は「クリックして入力中のとき、枠の周りに2pxの光るリングを出す」指定です。`focus:` は入力欄が選択された状態を表します。
 - このように共通スタイルを `@layer components` にまとめておくと、HTML側では `<div class="card">` と書くだけで統一された見た目になります。
 
 > **用語: フォーカス（focus）** … 入力欄やボタンが「いま操作対象として選ばれている」状態。キーボード操作のユーザーにとって、どこが選択中かを示すリング表示が重要になる。
 
 ---
 
-##### 解説7: 自作ユーティリティと省略表示（`@layer utilities` の `line-clamp`）
+##### 解説7: 自作ユーティリティを作る（`@utility`）
 
 ```css
-@layer utilities {
-  .line-clamp-2 {
-    display: -webkit-box;
-    /* 2 行で打ち切る */
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
+@utility glass {
+  @apply bg-white/80 backdrop-blur-md dark:bg-gray-900/80;
 }
 ```
 
-- `@layer utilities` は「**一番優先度の高い層**」で、Tailwindに無い便利クラスを自作する場所です。
-- `.line-clamp-2` は「**2行を超えた文章を「…」で打ち切る**」クラスです。長いタイトルがカードからはみ出さないように使います。
-- `-webkit-line-clamp` の数字を変えると打ち切る行数が変わります（`line-clamp-1` なら1行、`line-clamp-3` なら3行）。
+- `@utility 名前 { … }` は、Tailwind に無い便利クラスを**自作**する書き方です（名前の前に `.` は付けません）。作ったクラスは `p-4` などと同じユーティリティとして扱われ、`md:glass` のように接頭辞も付けられます。
+- `glass` は「半透明の白＋向こう側をぼかす」で、すりガラスのように見せるクラスです。同じやり方で、`container`（中央寄せと画面幅に応じた余白）と `scrollbar-thin`（細いスクロールバー）も作っています。`@variant sm { … }` は「`sm:` の条件（640px 以上）のときだけ」という意味です。
+- 長いタイトルを「…」で打ち切る `line-clamp-1`〜`line-clamp-3` は、Tailwind に**最初から入っている**ので自作は不要です（以前の版では自作していました）。Tailwind が作る CSS は次のとおりで、`-webkit-line-clamp` の数字が打ち切る行数です。
+
+```css
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+```
 
 > **用語: ユーティリティクラス（utility class）** … `p-4`（余白16px）のように「1つの機能だけを持つ小さなクラス」。これらを組み合わせてデザインするのがTailwindの考え方。
 
 ---
 
-##### 解説8: 動きの素材を定義する（`@keyframes`）
+##### 解説8: 動きの素材を定義する（`--animate-*` と `@keyframes`）
 
 ```css
-@keyframes fadeIn {
-  from {
-    /* 透明（見えない） */
-    opacity: 0;
-    /* 8px 下にずらした位置から始まる */
-    transform: translateY(8px);
-  }
-  to {
-    /* 不透明（見える） */
-    opacity: 1;
-    /* 元の位置へ */
-    transform: translateY(0);
+@theme {
+  --animate-fade-in: fade-in 0.3s ease-out;
+
+  @keyframes fade-in {
+    from {
+      /* 透明（見えない） */
+      opacity: 0;
+      /* 8px 下にずらした位置から始まる */
+      transform: translateY(8px);
+    }
+    to {
+      /* 不透明（見える） */
+      opacity: 1;
+      /* 元の位置へ */
+      transform: translateY(0);
+    }
   }
 }
 ```
 
 - `@keyframes`（キーフレーム）は「**アニメーションの始まり（`from`）と終わり（`to`）のコマ**」を定義します。
-- この `fadeIn` は「透明で8px下にいる状態」から「不透明で元の位置」へ変化します。つまり**少し下からふわっと現れる**動きです。
+- この `fade-in` は「透明で8px下にいる状態」から「不透明で元の位置」へ変化します。つまり**少し下からふわっと現れる**動きです。
+- `--animate-fade-in: fade-in 0.3s ease-out;` は「`fade-in` のコマを 0.3 秒、最後ゆっくり（ease-out）で再生する」という登録で、これで `animate-fade-in` というクラスが使えるようになります。`@keyframes` を `@theme` の中に書いておくと、そのアニメーションを実際に使ったときだけ CSS に出力されます。
 - `opacity`（透明度：0で透明、1で不透明）と `transform: translateY(...)`（縦方向の移動）を組み合わせるのがフェードイン演出の定番です。
 
 > **用語: キーフレーム（keyframe）** … アニメーションの途中経過を指定する「コマ」。`from`/`to` のほか `0%`/`50%`/`100%` のようにパーセントで複数指定もできる。
+
+---
+
+### 1.1.1 v3 と v4 の違い（古い記事・古いプロジェクトを読むときのために）
+
+1.1 節の `globals.css` は **v4** の書き方です。一方、ネットの記事や 2024年ごろまでに作られたプロジェクトでは、**v3** の書き方（`@tailwind` の3行 ＋ `tailwind.config.ts`）がまだよく見つかります。両者の違いを整理しておきましょう。いちばん大きな違いは、**設定が JavaScript のファイル（`tailwind.config.ts`）から CSS ファイルの中へ引っ越した**ことです。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 292" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-09-10" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<text x="175" y="20" text-anchor="middle" font-size="13" font-weight="bold" fill="#475569">v3 まで（1.3 節・古い記事）</text>
+<rect x="10" y="30" width="330" height="252" rx="12" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>
+<rect x="30" y="44" width="290" height="96" rx="8" fill="#ffffff" stroke="#94a3b8"/>
+<text x="42" y="64" font-size="12" font-weight="bold" fill="#334155">app/globals.css</text>
+<text x="42" y="88" font-size="12" font-family="Consolas, monospace" fill="#1e293b">@tailwind base;</text>
+<text x="42" y="106" font-size="12" font-family="Consolas, monospace" fill="#1e293b">@tailwind components;</text>
+<text x="42" y="124" font-size="12" font-family="Consolas, monospace" fill="#1e293b">@tailwind utilities;</text>
+<text x="175" y="160" text-anchor="middle" font-size="12" fill="#475569">＋ 設定ファイルが別に必要</text>
+<rect x="30" y="170" width="290" height="96" rx="8" fill="#ffffff" stroke="#94a3b8"/>
+<text x="42" y="190" font-size="12" font-weight="bold" fill="#334155">tailwind.config.ts</text>
+<text x="42" y="214" font-size="12" font-family="Consolas, monospace" fill="#1e293b">darkMode: "class",</text>
+<text x="42" y="232" font-size="12" font-family="Consolas, monospace" fill="#1e293b">content: [ … ],</text>
+<text x="42" y="250" font-size="12" font-family="Consolas, monospace" fill="#1e293b">theme: { extend: { colors } }</text>
+<text x="360" y="142" text-anchor="middle" font-size="12" fill="#475569">v4</text>
+<line x1="344" y1="155" x2="377" y2="155" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-09-10)"/>
+<text x="545" y="20" text-anchor="middle" font-size="13" font-weight="bold" fill="#047857">v4（この章の 1.1 節）</text>
+<rect x="380" y="30" width="330" height="252" rx="12" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<rect x="400" y="44" width="290" height="172" rx="8" fill="#ffffff" stroke="#10b981"/>
+<text x="412" y="64" font-size="12" font-weight="bold" fill="#047857">app/globals.css だけで完結</text>
+<text x="412" y="90" font-size="12" font-family="Consolas, monospace" fill="#1e293b">@import "tailwindcss";</text>
+<text x="412" y="110" font-size="12" font-family="Consolas, monospace" fill="#1e293b">@custom-variant dark (…);</text>
+<text x="412" y="130" font-size="12" font-family="Consolas, monospace" fill="#1e293b">@theme {</text>
+<text x="428" y="150" font-size="12" font-family="Consolas, monospace" fill="#1e293b">--color-primary-600: …;</text>
+<text x="412" y="170" font-size="12" font-family="Consolas, monospace" fill="#1e293b">}</text>
+<text x="412" y="196" font-size="12" font-family="Consolas, monospace" fill="#1e293b">@utility glass { … }</text>
+<text x="545" y="242" text-anchor="middle" font-size="12" font-weight="bold" fill="#047857">tailwind.config.ts は不要</text>
+<text x="545" y="262" text-anchor="middle" font-size="12" fill="#047857">（使い続けるなら @config で明示）</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図9-11: v3 と v4 のファイル構成の違い（v4 では設定が CSS ファイルの中に集まる）</div>
+</div>
+
+v3 と v4 の書き方の対応表です。
+
+| やりたいこと | v3（古い書き方） | v4（この章） |
+|---|---|---|
+| Tailwind を読み込む | `@tailwind base;` など3行 | `@import "tailwindcss";` の1行 |
+| クラスを探すファイルの指定 | `tailwind.config.ts` の `content` | 指定不要（`.gitignore` に書かれたもの以外を自動で探す）。足りない場所だけ `@source` で追加 |
+| 色・フォント・影などを追加 | `theme.extend.colors` など | CSS の `@theme { --color-primary-600: #4f46e5; }` |
+| CSS 変数を色クラスにする | `primary: { 600: "var(--…)" }` | `@theme inline { --color-background: var(--background); }` |
+| アニメーションを追加 | `theme.extend.keyframes` と `animation` | `@theme` の中に `--animate-fade-in: …;` と `@keyframes` |
+| ダークモードを class で切替 | `darkMode: "class"` | `@custom-variant dark (&:where(.dark, .dark *));` |
+| 自作クラス（`.btn` など） | `@layer components { .btn { … } }`（`@apply btn` で取り込める） | `@layer components` はそのまま使える（ただし `@apply btn` は不可）。接頭辞を付けたい小さなクラスは `@utility glass { … }` |
+| `container` の中央寄せ・余白 | `theme.container` の `center` / `padding` | `@utility container { margin-inline: auto; … }` |
+| JS の設定ファイルを使い続ける | 自動で読まれる | `@config "../tailwind.config.ts";` と書いたときだけ読まれる |
+
+ほかに、**名前や初期値が変わったクラス**もあります。古い記事のコードを v4 のプロジェクトで使うときは、次の点に気を付けてください。
+
+| v3 | v4 | メモ |
+|---|---|---|
+| `shadow-sm` / `shadow` | `shadow-xs` / `shadow-sm` | 影・角丸・ぼかしの名前が1段ずつずれた |
+| `rounded-sm` / `rounded` | `rounded-xs` / `rounded-sm` | 同上 |
+| `outline-none` | `outline-hidden` | 「輪郭線を見えなくする」意味のものは改名 |
+| `ring`（太さ3px） | `ring-3` | v4 の `ring` は 1px。この章の `ring-2` のように太さを書いていれば影響なし |
+| `border`（色は gray-200） | `border`（色は文字色） | 枠線の色は `border-gray-200` のように**必ず書く** |
+
+> **ヒント:** 既存の v3 プロジェクトは、公式の自動変換ツール `npx @tailwindcss/upgrade` で v4 の書き方へまとめて書き換えられます（Node.js 20 以上が必要）。必ず新しいブランチで試し、変更点を目で確認してから取り込みましょう。
+
+参考までに、`create-next-app` が最初に作る `app/globals.css` は次の内容です（2026年10月時点の公式テンプレート）。上の表の `@import` と `@theme inline` がもう使われていることが分かります。1.1 節の `globals.css` は、このファイルを丸ごと置き換えたものです。
+
+```css
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+```
+
+#### v4 の globals.css を小さく作って動かす
+
+> **▼ このコードがやること（先に日本語で）:** 1.1 節の `globals.css` は長いので、その中から代表的な4つ「ダークモードの切り替え方式」「切り替わる色の登録」「ブランド色とアニメーションの追加」「自作のボタンクラス」だけを取り出した**最小版**を作ります。練習用フォルダで CLI に通し、`bg-primary-600` や `btn-primary` などのクラスが本当に作られるかを確かめます。
+
+```css
+/* app/globals.css（v4 版の最小構成） */
+
+/* (1) Tailwind 本体を読み込む（v3 の @tailwind 3行の代わり） */
+@import "tailwindcss";
+
+/* (2) dark: を「<html class="dark"> のとき」に効かせる */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* (3) 切り替わる色は普通の CSS 変数で持つ */
+:root {
+  --background: #ffffff;
+  --foreground: #0f172a;
+}
+
+.dark {
+  --background: #0f172a;
+  --foreground: #f8fafc;
+}
+
+/* (4) CSS 変数を Tailwind の色クラスとして登録する */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+}
+
+/* (5) ブランド色とアニメーションを登録する */
+@theme {
+  --color-primary-100: #e0e7ff;
+  --color-primary-600: #4f46e5;
+  --color-primary-700: #4338ca;
+  --animate-fade-in: fade-in 0.3s ease-out;
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+/* (6) 自作クラスは @utility で作る */
+@utility btn-primary {
+  @apply rounded-lg bg-primary-600 px-4 py-2 text-white hover:bg-primary-700;
+}
+```
+
+```tsx
+// app/page.tsx（上の CSS で作ったクラスを使ってみる）
+export default function Page() {
+  return (
+    <main className="bg-background p-8 text-foreground">
+      <button className="btn-primary animate-fade-in">保存</button>
+      <span className="bg-primary-100 dark:bg-primary-700">読書中</span>
+    </main>
+  );
+}
+```
+
+```bash
+# 練習用フォルダで、app/globals.css を入力にして out.css を作る
+npx @tailwindcss/cli -i app/globals.css -o out.css
+```
+
+**▼ 実行結果**（`out.css` の `@layer utilities` の部分。`page.tsx` で使ったクラスだけが作られている）
+
+```css
+@layer utilities {
+  .animate-fade-in {
+    animation: var(--animate-fade-in);
+  }
+  .btn-primary {
+    border-radius: var(--radius-lg);
+    background-color: var(--color-primary-600);
+    padding-inline: calc(var(--spacing) * 4);
+    padding-block: calc(var(--spacing) * 2);
+    color: var(--color-white);
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-primary-700);
+      }
+    }
+  }
+  .bg-background {
+    background-color: var(--background);
+  }
+  .bg-primary-100 {
+    background-color: var(--color-primary-100);
+  }
+  .p-8 {
+    padding: calc(var(--spacing) * 8);
+  }
+  .text-foreground {
+    color: var(--foreground);
+  }
+  .dark\:bg-primary-700:where(.dark, .dark *) {
+    background-color: var(--color-primary-700);
+  }
+}
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: `@custom-variant dark` でダークモードの合図を決める
+
+```css
+@custom-variant dark (&:where(.dark, .dark *));
+```
+
+- v4 の `dark:` は、何も書かないと **OS の設定（ダーク/ライト）に自動で連動**します。この章のように「ボタンで切り替えたい」ときは、この1行で「`dark` クラスが付いた要素とその中身のときに `dark:` を効かせる」と教えます（v3 の `darkMode: "class"` に当たります）。
+- 実行結果の最後の `.dark\:bg-primary-700:where(.dark, .dark *)` が、この設定どおりに作られたクラスです。
+
+##### 解説2: 切り替わる色は `:root` / `.dark` ＋ `@theme inline`
+
+```css
+:root {
+  --background: #ffffff;
+}
+.dark {
+  --background: #0f172a;
+}
+@theme inline {
+  --color-background: var(--background);
+}
+```
+
+- `:root` と `.dark` で同じ名前の変数 `--background` に別の値を入れておき、`@theme inline` で「`--color-background` という色は、`var(--background)` を使ってね」と Tailwind に登録します。
+- 名前が `--color-` で始まるので、`bg-background` や `text-background` などのクラスが使えるようになります。実行結果の `.bg-background { background-color: var(--background); }` のとおり、**クラスが直接 `var(--background)` を見る**ので、`.dark` で値が変わればクラスの色も変わります。
+- `inline` を付けるのは「変数の中身（`var(--background)`）をそのままクラスに書き込んで」という意味です。切り替わる値を参照するときは `@theme inline` を使うのが公式のおすすめです。
+- 1.1 節では別のやり方として、`@theme` に**ライトの値を直接**書き、`.dark` で同じ名前の変数を上書きしました。どちらも「変数の中身が入れ替わるとクラスの色が変わる」点は同じです。`create-next-app` の初期ファイルはこちらの `@theme inline` 方式なので、両方読めるようにしておきましょう。
+
+##### 解説3: `@theme` に書いた名前がクラス名になる
+
+```css
+@theme {
+  --color-primary-600: #4f46e5;
+  --animate-fade-in: fade-in 0.3s ease-out;
+}
+```
+
+- `@theme` の中の変数は、**名前の前半（名前空間）で何のクラスになるかが決まります**。`--color-primary-600` は `bg-primary-600`・`text-primary-600` などに、`--animate-fade-in` は `animate-fade-in` になります。
+- `@keyframes` を `@theme` の中に書いておくと、そのアニメーションを使ったときだけ CSS に出力されます。
+- v3 では `tailwind.config.ts` の `extend.colors` や `animation` に書いていた内容が、ここに引っ越したと考えると分かりやすいです。
+
+> **用語: 名前空間（namespace）** … 変数名の先頭部分（`--color-`、`--font-`、`--animate-`、`--breakpoint-` など）のこと。Tailwind v4 はこの部分を見て、どの種類のクラスを作るかを決める。
+
+##### 解説4: 自作クラスは `@utility` で作る
+
+```css
+@utility btn-primary {
+  @apply rounded-lg bg-primary-600 px-4 py-2 text-white hover:bg-primary-700;
+}
+```
+
+- v3 では `@layer components { .btn-primary { … } }` と書いていた自作クラスを、v4 では `@utility 名前 { … }` と書きます（名前の前に `.` は付けません）。
+- 中では `@apply` で既存のクラスをまとめられます。実行結果を見ると、`hover:bg-primary-700` もきちんと `&:hover` の中に展開されています。
+- `@utility` で作ったクラスは普通のユーティリティと同じ扱いになるので、`hover:btn-primary` や `md:btn-primary` のように接頭辞も付けられます。
+- 1.1 節のアプリでは、ボタンを `@layer components` に書きました。components の層のクラスは、あとから `p-0` などのユーティリティで**部分的に上書きできる「部品」**です（図9-9）。一方 `@utility` で作ったクラスは utilities の層に入ります。「部品（ボタン・カード）は `@layer components`、小さな道具（`glass` など）は `@utility`」と使い分けるのがおすすめです。
+
+---
+
+> **つまずきポイント: v4 のプロジェクトで `tailwind.config.ts` に色を足しても効かない**
+>
+> ネットの記事（v3 時代のもの）を見て `tailwind.config.ts` を作り、`extend.colors` に `primary` を足したのに、`bg-primary-600` が真っ白のまま……。これは **v4 が `tailwind.config.ts` を自動では読まない**からです。
+
+```ts
+// tailwind.config.ts（v3 時代の記事どおりに作った設定ファイル）
+import type { Config } from "tailwindcss";
+
+const config: Config = {
+  content: ["./app/**/*.{ts,tsx}"],
+  theme: {
+    extend: {
+      colors: {
+        primary: { 600: "#4f46e5" },
+      },
+    },
+  },
+};
+
+export default config;
+```
+
+```css
+/* NG: app/globals.css が @import だけ → 上の設定ファイルは読まれない */
+@import "tailwindcss";
+```
+
+```css
+/* OK その1: @config で設定ファイルの場所を教える（globals.css から見た相対パス） */
+@import "tailwindcss";
+@config "../tailwind.config.ts";
+```
+
+```css
+/* OK その2（おすすめ）: v4 の書き方で、色を CSS に直接書く */
+@import "tailwindcss";
+
+@theme {
+  --color-primary-600: #4f46e5;
+}
+```
+
+`<button className="bg-primary-600 text-white">保存</button>` というページを用意して、NG と OK その1 を CLI で実際に比べた結果が次です。
+
+**▼ 実行結果**（それぞれの出力の `@layer utilities` の部分）
+
+```text
+---- NG（@import だけ）: bg-primary-600 が作られていない ----
+@layer utilities {
+  .text-white {
+    color: var(--color-white);
+  }
+}
+
+---- OK その1（@config あり）: bg-primary-600 が作られた ----
+@layer utilities {
+  .bg-primary-600 {
+    background-color: #4f46e5;
+  }
+  .text-white {
+    color: var(--color-white);
+  }
+}
+```
+
+> **注意:** `globals.css` が `src/app/globals.css` にある場合、`@config` のパスは `"../../tailwind.config.ts"` になります（`globals.css` の場所から数えるため）。また、`@config` で読み込めるのは色やフォントなどの設定で、v3 の `corePlugins`・`safelist`・`separator` は v4 では使えません。新しく書くなら「OK その2」の `@theme` がおすすめです。
 
 ---
 
@@ -994,9 +2181,13 @@ Tailwind の数値（`p-4`, `text-xl`）は**4の倍数のpx**などの規則が
 - **コントラスト比**: WCAG 2.1 AA 基準（4.5:1 以上）を満たす
 - **ダークモード対応**: 各カラーに明暗の両バリエーションを用意する
 
-### 1.3 tailwind.config.ts のカスタマイズ
+### 1.3 （参考）v3 の tailwind.config.ts
 
-> **▼ このコードがやること（先に日本語で）:** Tailwind CSS の動作を決める設定ファイルを作ります。「ダークモードの切り替え方法」「どのファイルからクラスを探すか」「自分で追加した色・影・アニメーション」などをここにまとめます。特に、先ほど作った CSS 変数を `var(--color-primary-500)` の形で Tailwind に登録することで、`bg-primary-500` のようなクラスが使えるようになります。設定項目ごとの意味はコメントを参照してください。
+> **注意:** この節は **v3 のプロジェクト向けの参考**です。v4（この章のアプリ）では、ここに書いてある設定はすべて 1.1 節の `globals.css`（`@custom-variant`・`@theme`・`@utility`）に書き済みなので、**このファイルは作りません**。v4 のプロジェクトに置いても自動では読まれません（1.1.1 節のつまずきポイント）。古い記事や v3 のプロジェクトで `tailwind.config.ts` を見かけたときに読めるよう、設定項目ごとの意味を解説しておきます。
+
+それでは、v3 の設定ファイルを見ていきましょう（1.1 節の v4 版と見比べると、同じ値が並んでいることが分かります）。
+
+> **▼ このコードがやること（先に日本語で）:** v3 のプロジェクトで Tailwind CSS の動作を決めていた設定ファイルの例です（v4 のこの章のアプリでは作りません）。「ダークモードの切り替え方法」「どのファイルからクラスを探すか」「自分で追加した色・影・アニメーション」などをここにまとめます。特に、先ほど作った CSS 変数を `var(--color-primary-500)` の形で Tailwind に登録することで、`bg-primary-500` のようなクラスが使えるようになります。設定項目ごとの意味はコメントを参照してください。
 
 ```typescript
 // tailwind.config.ts
@@ -1072,7 +2263,7 @@ const config: Config = {
       // ========================================
       colors: {
         // プライマリカラー（インディゴ系）
-        // CSS変数（globals.css で定義した --color-primary-XX）を経由することで
+        // CSS変数（globals.css の :root で定義した --color-primary-XX）を経由することで
         // ダークモード時に変数の値だけ差し替えれば自動で色が変わる
         primary: {
           // bg-primary-50 のように使える
@@ -1463,6 +2654,218 @@ className="grid-cols-1 md:grid-cols-2 lg:grid-cols-4"  ← 正しい
 > 2. CSSのカスケード（後優先）の仕組みと相性が良いこと。「最小画面 → 上書き」が自然な流れになる。
 > 3. パフォーマンス的にも、モバイルでは多くのスタイルがスキップできて軽くなる。
 
+「なぜ小さい画面から書くと上手くいくのか」を、画面の幅を**物差し**にして描くと次のようになります。それぞれのクラスは「その幅**から右側ずっと**」効き続け、重なったところでは**下の行（より大きい画面向け）が勝ちます**。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 268" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<line x1="200" y1="58" x2="200" y2="226" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="400" y1="92" x2="400" y2="226" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3 3"/>
+<line x1="520" y1="126" x2="520" y2="226" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3 3"/>
+<rect x="40" y="24" width="660" height="26" rx="4" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>
+<polygon points="700,24 714,37 700,50" fill="#64748b"/>
+<text x="50" y="42" font-size="12" fill="#334155">grid-cols-1（接頭辞なし ＝ 0px から全部）</text>
+<rect x="200" y="58" width="500" height="26" rx="4" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<polygon points="700,58 714,71 700,84" fill="#3b82f6"/>
+<text x="210" y="76" font-size="12" fill="#1e40af">sm:grid-cols-2（640px 以上ずっと）</text>
+<rect x="400" y="92" width="300" height="26" rx="4" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<polygon points="700,92 714,105 700,118" fill="#f97316"/>
+<text x="410" y="110" font-size="12" fill="#c2410c">lg:grid-cols-3（1024px 以上）</text>
+<rect x="520" y="126" width="180" height="26" rx="4" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<polygon points="700,126 714,139 700,152" fill="#10b981"/>
+<text x="530" y="144" font-size="12" fill="#047857">xl:grid-cols-4</text>
+<text x="40" y="174" font-size="12" font-weight="bold" fill="#334155">実際に効く列数（重なったところは下の行が勝つ）</text>
+<rect x="40" y="182" width="160" height="28" fill="#e2e8f0"/>
+<text x="120" y="201" text-anchor="middle" font-size="13" font-weight="bold" fill="#334155">1列</text>
+<rect x="200" y="182" width="200" height="28" fill="#dbeafe"/>
+<text x="300" y="201" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e40af">2列</text>
+<rect x="400" y="182" width="120" height="28" fill="#ffedd5"/>
+<text x="460" y="201" text-anchor="middle" font-size="13" font-weight="bold" fill="#c2410c">3列</text>
+<rect x="520" y="182" width="180" height="28" fill="#d1fae5"/>
+<text x="610" y="201" text-anchor="middle" font-size="13" font-weight="bold" fill="#047857">4列</text>
+<line x1="40" y1="226" x2="700" y2="226" stroke="#475569" stroke-width="1.5"/>
+<g stroke="#475569" stroke-width="1.5">
+<line x1="40" y1="221" x2="40" y2="231"/>
+<line x1="200" y1="221" x2="200" y2="231"/>
+<line x1="290" y1="221" x2="290" y2="231"/>
+<line x1="400" y1="221" x2="400" y2="231"/>
+<line x1="520" y1="221" x2="520" y2="231"/>
+<line x1="640" y1="221" x2="640" y2="231"/>
+</g>
+<g font-size="12" text-anchor="middle" fill="#334155">
+<text x="40" y="245">0</text>
+<text x="200" y="245">640</text>
+<text x="290" y="245" fill="#94a3b8">768</text>
+<text x="400" y="245">1024</text>
+<text x="520" y="245">1280</text>
+<text x="640" y="245">1536</text>
+</g>
+<text x="700" y="263" text-anchor="end" font-size="12" fill="#64748b">画面の幅（px）→</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図9-12: モバイルファーストの物差し（BookGrid の指定 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4）</div>
+</div>
+
+#### 試してみよう: 画面幅ごとに「勝つクラス」を計算する
+
+> **▼ このコードがやること（先に日本語で）:** `grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4` のようなクラスの並びを受け取り、「画面の幅が○px のとき、最終的にどのクラスが効くか」を計算して表示します。ブラウザが CSS に対して行っている判断（図9-12）を、小さなプログラムでまねしてみるのが目的です。上の「悪い例」（大きい画面から書いた指定）も並べて、なぜ動かないのかを数字で確かめます。
+
+```typescript
+// breakpoints.ts
+// Tailwind の初期ブレークポイント（この幅「以上」で効く）
+const breakpoints: Record<string, number> = {
+  sm: 640,
+  md: 768,
+  lg: 1024,
+  xl: 1280,
+};
+
+// className の中から「その画面幅で最終的に効くクラス」を探す関数
+function activeClass(className: string, width: number): string {
+  let winner = "";
+  let winnerMin = -1;
+  // スペースで区切って、クラスを1つずつ調べる
+  for (const token of className.split(" ")) {
+    // "lg:grid-cols-3" → prefix = "lg", name = "grid-cols-3"
+    const [prefix, name] = token.includes(":")
+      ? token.split(":")
+      : ["", token];
+    // 接頭辞なしは 0px 以上＝いつでも効く
+    const minWidth = prefix === "" ? 0 : breakpoints[prefix];
+    // 条件を満たすもののうち「より大きい画面向け」が勝つ
+    // （Tailwind は sm → md → lg → xl の順に CSS を出力するため）
+    if (width >= minWidth && minWidth > winnerMin) {
+      winner = name;
+      winnerMin = minWidth;
+    }
+  }
+  return winner;
+}
+
+// OK: 本章の BookGrid と同じ「小さい画面から順に足す」書き方
+const good = "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
+// NG: 「大きい画面から書いて、小さい画面で減らそう」とした書き方
+const bad = "grid-cols-4 md:grid-cols-2 sm:grid-cols-1";
+
+for (const width of [375, 640, 900, 1440]) {
+  const label = String(width).padStart(4, " ");
+  console.log(
+    `${label}px  OK→ ${activeClass(good, width).padEnd(11)}  NG→ ${activeClass(bad, width)}`,
+  );
+}
+```
+
+**▼ 実行結果**（`node breakpoints.ts` で実行）
+
+```text
+ 375px  OK→ grid-cols-1  NG→ grid-cols-4
+ 640px  OK→ grid-cols-2  NG→ grid-cols-1
+ 900px  OK→ grid-cols-2  NG→ grid-cols-2
+1440px  OK→ grid-cols-4  NG→ grid-cols-2
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: ブレークポイントの表を作る
+
+```typescript
+const breakpoints: Record<string, number> = {
+  sm: 640,
+  md: 768,
+  lg: 1024,
+  xl: 1280,
+};
+```
+
+- 2.1 節の表と同じ「接頭辞 → 何px 以上で効くか」の対応表です。`Record<string, number>` は「キーが文字列で、値が数値のオブジェクト」という型です。
+- `breakpoints["lg"]` のように書くと `1024` が取り出せます。
+
+##### 解説2: クラスを「接頭辞」と「名前」に分ける
+
+```typescript
+const [prefix, name] = token.includes(":")
+  ? token.split(":")
+  : ["", token];
+```
+
+- `token.includes(":")` で「`:` が入っているか」を調べます。入っていれば `split(":")` で `"lg:grid-cols-3"` を `["lg", "grid-cols-3"]` に分けます。
+- 入っていなければ接頭辞なしなので、`["", token]` として扱います。左側の `const [prefix, name]` は、配列の1つ目と2つ目に名前を付けて取り出す**分割代入**です。
+
+##### 解説3: 「より大きい画面向け」が勝つ
+
+```typescript
+if (width >= minWidth && minWidth > winnerMin) {
+  winner = name;
+  winnerMin = minWidth;
+}
+```
+
+- `width >= minWidth` は「今の画面幅で、このクラスの条件を満たしているか」。`minWidth > winnerMin` は「今までの候補より、大きい画面向けのクラスか」です。両方を満たすと勝者が入れ替わります。
+- Tailwind は CSS を「接頭辞なし → `sm:` → `md:` → `lg:` → `xl:`」の順に書き出すので、条件を満たすクラスが複数あると**後ろ（大きい画面向け）が勝ちます**。このプログラムはその順番をまねしています。
+- 実行結果の NG 列を見てください。375px のスマホで **4列**（`grid-cols-4` しか条件を満たさない）、1440px の PC で **2列**（`md:grid-cols-2` が `sm:grid-cols-1` より強い）になっています。大きい画面から書くと、狙いと正反対の結果になるのです。
+
+> **ヒント:** Tailwind v4 が作る CSS では、`sm:` は `@media (width >= 40rem)` という書き方になります（40rem = 640px）。2.1 節の表にある `@media (min-width: 640px)` と意味は同じで、新しい書き方になっただけです。
+
+もう1つ、接頭辞の読み方でとても多い勘違いがあります。
+
+> **つまずきポイント: `sm:` は「スマホ用」ではなく「640px 以上用」**
+>
+> `sm` は small の略なので「スマホのときだけ」と読みたくなりますが、正しくは **「640px 以上の画面で」** という意味です。スマホ（多くは 640px 未満）に効かせたいスタイルは、接頭辞を**付けずに**書きます。
+
+```html
+<!-- NG: 「スマホ（sm）では隠す」つもりで sm:hidden と書いた -->
+<!-- → 実際は「640px 以上で隠す」なので、スマホでは見え、PC で消える -->
+<nav class="sm:hidden">メニュー</nav>
+```
+
+```html
+<!-- OK: まず全画面で隠し（hidden）、640px 以上で表示（sm:flex）に戻す -->
+<!-- → スマホでは隠れ、PC では横並びで表示される -->
+<nav class="hidden sm:flex">メニュー</nav>
+```
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 268" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<rect x="10" y="8" width="340" height="30" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="180" y="28" text-anchor="middle" font-size="13" font-weight="bold" fill="#c2410c">NG: class="sm:hidden"（スマホで隠すつもり）</text>
+<rect x="30" y="52" width="96" height="170" rx="14" fill="#ffffff" stroke="#334155" stroke-width="2"/>
+<rect x="38" y="70" width="80" height="24" rx="4" fill="#4f46e5"/>
+<text x="78" y="87" text-anchor="middle" font-size="12" fill="#ffffff">メニュー</text>
+<rect x="38" y="104" width="80" height="10" rx="3" fill="#e2e8f0"/>
+<rect x="38" y="120" width="64" height="10" rx="3" fill="#e2e8f0"/>
+<rect x="38" y="136" width="80" height="10" rx="3" fill="#e2e8f0"/>
+<rect x="150" y="70" width="190" height="124" rx="6" fill="#ffffff" stroke="#334155" stroke-width="2"/>
+<rect x="140" y="194" width="210" height="8" rx="3" fill="#cbd5e1"/>
+<rect x="160" y="82" width="170" height="24" rx="4" fill="none" stroke="#f97316" stroke-width="1.5" stroke-dasharray="4 3"/>
+<text x="245" y="99" text-anchor="middle" font-size="12" fill="#c2410c">（メニューが無い）</text>
+<rect x="160" y="116" width="170" height="10" rx="3" fill="#e2e8f0"/>
+<rect x="160" y="132" width="130" height="10" rx="3" fill="#e2e8f0"/>
+<rect x="160" y="148" width="170" height="10" rx="3" fill="#e2e8f0"/>
+<text x="78" y="242" text-anchor="middle" font-size="13" font-weight="bold" fill="#c2410c">× 見えてしまう</text>
+<text x="245" y="242" text-anchor="middle" font-size="13" font-weight="bold" fill="#c2410c">× 消えてしまう</text>
+<text x="78" y="261" text-anchor="middle" font-size="12" fill="#64748b">スマホ 375px</text>
+<text x="245" y="261" text-anchor="middle" font-size="12" fill="#64748b">PC 1280px</text>
+<rect x="370" y="8" width="340" height="30" rx="8" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="540" y="28" text-anchor="middle" font-size="13" font-weight="bold" fill="#047857">OK: class="hidden sm:flex"（スマホだけ隠す）</text>
+<rect x="390" y="52" width="96" height="170" rx="14" fill="#ffffff" stroke="#334155" stroke-width="2"/>
+<rect x="398" y="70" width="80" height="10" rx="3" fill="#e2e8f0"/>
+<rect x="398" y="86" width="64" height="10" rx="3" fill="#e2e8f0"/>
+<rect x="398" y="102" width="80" height="10" rx="3" fill="#e2e8f0"/>
+<rect x="510" y="70" width="190" height="124" rx="6" fill="#ffffff" stroke="#334155" stroke-width="2"/>
+<rect x="500" y="194" width="210" height="8" rx="3" fill="#cbd5e1"/>
+<rect x="520" y="82" width="170" height="24" rx="4" fill="#4f46e5"/>
+<text x="605" y="99" text-anchor="middle" font-size="12" fill="#ffffff">メニュー（横並び）</text>
+<rect x="520" y="116" width="170" height="10" rx="3" fill="#e2e8f0"/>
+<rect x="520" y="132" width="130" height="10" rx="3" fill="#e2e8f0"/>
+<rect x="520" y="148" width="170" height="10" rx="3" fill="#e2e8f0"/>
+<text x="438" y="242" text-anchor="middle" font-size="13" font-weight="bold" fill="#047857">○ 隠れる</text>
+<text x="605" y="242" text-anchor="middle" font-size="13" font-weight="bold" fill="#047857">○ 表示される</text>
+<text x="438" y="261" text-anchor="middle" font-size="12" fill="#64748b">スマホ 375px</text>
+<text x="605" y="261" text-anchor="middle" font-size="12" fill="#64748b">PC 1280px</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図9-13: 画面イメージ — sm:hidden（左）は狙いと正反対になる。スマホだけ隠すなら hidden sm:flex（右）</div>
+</div>
+
+覚え方は「**接頭辞なし＝スマホを含む全部、`sm:`＝ちょっと広い画面から上**」です。逆に「スマホのときだけ表示したい（ハンバーガーボタンなど）」場合は、`md:hidden`（768px 以上で隠す）のように書きます。6.1 節のヘッダーでも、PC 用のナビは `hidden md:flex`、ハンバーガーボタンは `md:hidden` という組み合わせを使っています。
+
 ### 2.2 書籍カードのグリッドをレスポンシブ対応
 
 > **▼ このコードがやること（先に日本語で）:** 書籍カードを「画面サイズに応じて列数が変わる格子（グリッド）」に並べるコンポーネントを作ります。カギは Tailwind の「レスポンシブ接頭辞」で、`grid-cols-1`（スマホは1列）に `sm:grid-cols-2`（少し広い画面は2列）などを並べるだけで、面倒なメディアクエリを書かずに列数を切り替えられます。なお書籍が0冊のときは専用の空状態を表示する分岐も入っています。
@@ -1795,7 +3198,7 @@ export function BookCard({ book }: BookCardProps) {
             sm:text-base
           "
           /* ▼ クラスの読み解き ▼
-             line-clamp-2                    : 2 行を超えたら省略「…」（globals.css で定義）
+             line-clamp-2                    : 2 行を超えたら省略「…」（Tailwind 標準のクラス）
              text-sm font-semibold           : 14px の太字
              leading-tight                   : 行間を狭め（line-height: 1.25）
              text-[var(--color-foreground)]  : 文字色をCSS変数で指定（ダーク対応のため）
@@ -2555,7 +3958,7 @@ function ToastItem({ toast }: { toast: ToastType }) {
           opacity-70
           transition-opacity
           hover:opacity-100
-          focus:outline-none focus:ring-2 focus:ring-offset-2
+          focus:outline-hidden focus:ring-2 focus:ring-offset-2
           ${config.iconClass}
         `}
         /* opacity-70 → hover:opacity-100: 普段は薄め、ホバーでくっきり */
@@ -2816,7 +4219,7 @@ type PaginationProps = {
   currentPage: number;
   // 全体のページ数
   totalPages: number;
-  // ベースとなるURLパス（例: "/books"）
+  // ベースとなるURLパス（例: 一覧ページなら "/"）
   basePath: string;
 };
 
@@ -2836,7 +4239,7 @@ export function Pagination({
     const params = new URLSearchParams(searchParams.toString());
     // 数値を文字列にして set
     params.set("page", String(page));
-    // 例: "/books?page=2&search=react"
+    // 例: "/?page=2&search=react"
     return `${basePath}?${params.toString()}`;
   };
 
@@ -2901,7 +4304,7 @@ export function Pagination({
     inline-flex h-10 w-10 items-center justify-center
     rounded-lg text-sm font-medium
     transition-all duration-200
-    focus-visible:outline-none focus-visible:ring-2
+    focus-visible:outline-hidden focus-visible:ring-2
     focus-visible:ring-primary-500 focus-visible:ring-offset-2
   `;
   /* ▼ クラスの読み解き ▼
@@ -2946,7 +4349,7 @@ export function Pagination({
     text-gray-600 hover:bg-gray-100
     transition-all duration-200
     dark:text-gray-400 dark:hover:bg-gray-800
-    focus-visible:outline-none focus-visible:ring-2
+    focus-visible:outline-hidden focus-visible:ring-2
     focus-visible:ring-primary-500 focus-visible:ring-offset-2
   `;
 
@@ -3122,7 +4525,7 @@ const createPageUrl = (page: number): string => {
 
 - `URLSearchParams` は「`?key=val&...` というクエリ文字列を扱う標準の道具」です。今のURLのクエリを複製してから操作します。
 - `params.set("page", String(page))` で `page` の値だけを上書きします。`String(page)` は数値を文字列に変換しています（クエリは文字列のため）。
-- これにより `?search=react` のような**既存の検索条件を消さずに**、ページ番号だけ差し替えたURL（例: `/books?page=2&search=react`）を作れます。
+- これにより `?search=react` のような**既存の検索条件を消さずに**、ページ番号だけ差し替えたURL（例: `/?page=2&search=react`）を作れます。
 
 > **用語: クエリパラメータ／URLSearchParams** … URLの `?` 以降の `key=value` 部分のこと。`URLSearchParams` はそれを安全に読み書きするブラウザ標準API。
 
@@ -3504,7 +4907,7 @@ export function BookCardSkeleton() {
            bg-gradient-to-r ... from/via/to   : 左→右の3色グラデーション（中央だけ明るい）
            bg-[length:200%_100%]              : 背景画像のサイズを横200%に
                                                  → 余分な部分が画面外にあり、shimmer で動かして光が流れる演出
-           animate-shimmer                    : tailwind.config で定義したアニメーションを再生
+           animate-shimmer                    : globals.css の @theme で定義したアニメーションを再生
         */
       />
 
@@ -3668,6 +5071,72 @@ Tailwind CSS にはトランジション用のユーティリティクラスが�
 > - 要素が消える時 → `ease-in`（じわっと加速して消える）
 > - 行き来する時（トグル等）→ `ease-in-out`
 
+4つのイージングを「時間（横）」と「どこまで進んだか（縦）」のグラフにすると、違いが一目で分かります。線の傾きが急なところほど、速く動いています。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 230" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<g fill="none" stroke="#e2e8f0" stroke-width="1">
+<rect x="40" y="50" width="110" height="110"/>
+<rect x="220" y="50" width="110" height="110"/>
+<rect x="400" y="50" width="110" height="110"/>
+<rect x="580" y="50" width="110" height="110"/>
+</g>
+<g stroke="#475569" stroke-width="1.5">
+<line x1="40" y1="160" x2="158" y2="160"/>
+<line x1="40" y1="160" x2="40" y2="42"/>
+<line x1="220" y1="160" x2="338" y2="160"/>
+<line x1="220" y1="160" x2="220" y2="42"/>
+<line x1="400" y1="160" x2="518" y2="160"/>
+<line x1="400" y1="160" x2="400" y2="42"/>
+<line x1="580" y1="160" x2="698" y2="160"/>
+<line x1="580" y1="160" x2="580" y2="42"/>
+</g>
+<g font-size="12" fill="#64748b">
+<text x="158" y="176" text-anchor="end">時間</text>
+<text x="44" y="46">進み</text>
+<text x="338" y="176" text-anchor="end">時間</text>
+<text x="224" y="46">進み</text>
+<text x="518" y="176" text-anchor="end">時間</text>
+<text x="404" y="46">進み</text>
+<text x="698" y="176" text-anchor="end">時間</text>
+<text x="584" y="46">進み</text>
+</g>
+<text x="95" y="22" text-anchor="middle" font-size="14" font-weight="bold" fill="#475569">linear</text>
+<path d="M40,160 C40,160 150,50 150,50" fill="none" stroke="#64748b" stroke-width="3"/>
+<text x="95" y="196" text-anchor="middle" font-size="12" fill="#334155">ずっと同じ速さ</text>
+<text x="95" y="214" text-anchor="middle" font-size="12" fill="#64748b">（スピナーの回転）</text>
+<text x="275" y="22" text-anchor="middle" font-size="14" font-weight="bold" fill="#c2410c">ease-in</text>
+<path d="M220,160 C264,160 330,50 330,50" fill="none" stroke="#f97316" stroke-width="3"/>
+<text x="275" y="196" text-anchor="middle" font-size="12" fill="#334155">ゆっくり → 速い</text>
+<text x="275" y="214" text-anchor="middle" font-size="12" fill="#64748b">（消えるとき向き）</text>
+<text x="455" y="22" text-anchor="middle" font-size="14" font-weight="bold" fill="#047857">ease-out</text>
+<path d="M400,160 C400,160 422,50 510,50" fill="none" stroke="#10b981" stroke-width="3"/>
+<text x="455" y="196" text-anchor="middle" font-size="12" fill="#334155">速い → ゆっくり</text>
+<text x="455" y="214" text-anchor="middle" font-size="12" fill="#64748b">（現れるとき向き）</text>
+<text x="635" y="22" text-anchor="middle" font-size="14" font-weight="bold" fill="#1e40af">ease-in-out</text>
+<path d="M580,160 C624,160 602,50 690,50" fill="none" stroke="#3b82f6" stroke-width="3"/>
+<text x="635" y="196" text-anchor="middle" font-size="12" fill="#334155">ゆっくり→速い→ゆっくり</text>
+<text x="635" y="214" text-anchor="middle" font-size="12" fill="#64748b">（行き来するとき）</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図9-14: イージングの違い（線が急なところほど速く動く。上の表の cubic-bezier の数値をそのまま描いたもの）</div>
+</div>
+
+> **つまずきポイント: `transition` を `hover:` の側に付けてしまう**
+>
+> `transition` は「変化をなめらかにする」設定なので、**変化が起きる前から**要素に付いている必要があります。`hover:transition` と書くと、マウスを乗せたときはなめらかに変わりますが、離した瞬間に `transition` も一緒に外れるので、**元に戻る動きがパッと一瞬**になってしまいます。
+
+```html
+<!-- NG: transition を hover: の中に入れた -->
+<!-- → 乗せたときはなめらかだが、離したときにパッと戻ってしまう -->
+<button class="bg-blue-500 hover:bg-blue-700 hover:transition hover:duration-300">保存</button>
+```
+
+```html
+<!-- OK: transition は「いつでも」付けておき、変える色だけを hover: にする -->
+<!-- → 乗せたときも離したときも、300ms かけてなめらかに変わる -->
+<button class="bg-blue-500 transition duration-300 hover:bg-blue-700">保存</button>
+```
+
 ### 4.2 カードホバーエフェクト
 
 **ホバーエフェクト（hover effect：マウスを乗せた時に発動する視覚効果）** は、ユーザーに「ここはクリックできる」「ここに注目すべき」と伝える重要な合図になります。やりすぎると煩わしいので、微妙な変化（影が深くなる・少し浮く・色が変わる）を組み合わせるのがコツです。
@@ -3829,7 +5298,7 @@ const [isVisible, setIsVisible] = useState(false);
 const [displayChildren, setDisplayChildren] = useState(children);
 ```
 
-- `usePathname()` は「**現在のURLパス**（`/books` など）」を取得するNext.jsのHookです。ページが変わるとこの値が変わります。
+- `usePathname()` は「**現在のURLパス**（`/` や `/books/new` など）」を取得するNext.jsのHookです。ページが変わるとこの値が変わります。
 - `isVisible` は「いま表示状態（不透明・元位置）か」を表すアニメ用フラグ。最初は `false`（透明・少し下）です。
 - `displayChildren` は「**今画面に出している中身**」。新しいページに切り替わる瞬間を制御するために、子要素を直接描かず一度stateに入れています。
 
@@ -3914,7 +5383,7 @@ export default function RootLayout({
         <ToastProvider>
           <Header />
           {/* main: メインコンテンツのセマンティック要素
-              container: tailwind.config の container 設定でレスポンシブ最大幅
+              container: globals.css の @utility container で中央寄せ＋レスポンシブな余白
               flex-1: 余り領域を全て使う（ヘッダーとフッターの間を埋める）
               py-8: 上下 32px の余白 */}
           <main className="container flex-1 py-8">
@@ -4015,7 +5484,7 @@ export function AnimatedButton({
         inline-flex items-center justify-center
         rounded-lg font-medium
         transition-all duration-200 ease-out
-        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
+        focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-offset-2
         disabled:pointer-events-none disabled:opacity-50
         active:scale-[0.97]
         ${variantStyles[variant]}
@@ -4166,7 +5635,7 @@ const sizeStyles = {
 
 ### 5.1 Tailwind のダークモード設定
 
-`tailwind.config.ts` で `darkMode: "class"` を設定済みなので、`<html>` タグに `dark` クラスを付与することでダークモードが有効になります。
+1.1 節の `globals.css` で `@custom-variant dark (&:where(.dark, .dark *));` を設定済みなので、`<html>` タグに `dark` クラスを付与することでダークモードが有効になります（v3 では `tailwind.config.ts` の `darkMode: "class"` で同じことを指定します）。
 
 ダークモード実装には大きく2つのパターンがあります。
 
@@ -4181,6 +5650,83 @@ const sizeStyles = {
 <!-- このクラスが付くと、すべての dark:〜 のスタイルが有効化される -->
 <html lang="ja" class="dark">
 ```
+
+本アプリの「CSS 変数を切り替える方式」で、ボタンを押してから画面の色が変わるまでの流れを図にすると次のとおりです。**部品（コンポーネント）側は何も書き換えず、変数の中身だけが入れ替わる**のがポイントです。照明のスイッチを1つ切り替えると、部屋の家具を1つずつ塗り直さなくても部屋全体の見え方が変わる、というイメージです。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 232" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-09-15" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="8" y="20" width="158" height="146" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="87" y="45" text-anchor="middle" font-size="14" font-weight="bold" fill="#1e40af">① ボタンを押す</text>
+<rect x="50" y="62" width="74" height="30" rx="15" fill="#1e293b"/>
+<circle cx="108" cy="77" r="11" fill="#ffffff"/>
+<text x="87" y="122" text-anchor="middle" font-size="12" fill="#1e40af">ThemeToggle</text>
+<text x="87" y="142" text-anchor="middle" font-size="12" fill="#1e40af">（5.3節）</text>
+<rect x="190" y="20" width="158" height="146" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<text x="269" y="45" text-anchor="middle" font-size="14" font-weight="bold" fill="#c2410c">② dark が付く</text>
+<text x="269" y="76" text-anchor="middle" font-size="12" font-family="Consolas, monospace" fill="#1e293b">&lt;html</text>
+<text x="269" y="94" text-anchor="middle" font-size="12" font-family="Consolas, monospace" fill="#1e293b">class="dark"&gt;</text>
+<text x="269" y="122" text-anchor="middle" font-size="12" fill="#7c2d12">JS が付け外しする</text>
+<text x="269" y="142" text-anchor="middle" font-size="12" fill="#7c2d12">（applyTheme）</text>
+<rect x="372" y="20" width="158" height="146" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<text x="451" y="45" text-anchor="middle" font-size="14" font-weight="bold" fill="#c2410c">③ 変数が入れ替わる</text>
+<text x="388" y="72" font-size="12" font-family="Consolas, monospace" fill="#1e293b">.dark {</text>
+<text x="402" y="90" font-size="12" font-family="Consolas, monospace" fill="#1e293b">--color-card:</text>
+<text x="416" y="108" font-size="12" font-family="Consolas, monospace" fill="#1e293b">#1e293b;</text>
+<text x="388" y="126" font-size="12" font-family="Consolas, monospace" fill="#1e293b">}</text>
+<text x="451" y="150" text-anchor="middle" font-size="12" fill="#7c2d12">（globals.css）</text>
+<rect x="554" y="20" width="158" height="146" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="633" y="45" text-anchor="middle" font-size="14" font-weight="bold" fill="#047857">④ 色が変わる</text>
+<rect x="574" y="60" width="118" height="46" rx="6" fill="#1e293b" stroke="#334155"/>
+<text x="633" y="88" text-anchor="middle" font-size="12" fill="#f8fafc">書籍カード</text>
+<text x="633" y="128" text-anchor="middle" font-size="12" fill="#047857">var(--color-card) を</text>
+<text x="633" y="146" text-anchor="middle" font-size="12" fill="#047857">使う所が全部変わる</text>
+<line x1="167" y1="93" x2="188" y2="93" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-09-15)"/>
+<line x1="349" y1="93" x2="370" y2="93" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-09-15)"/>
+<line x1="531" y1="93" x2="552" y2="93" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-09-15)"/>
+<rect x="40" y="184" width="640" height="34" rx="8" fill="#f8fafc" stroke="#cbd5e1"/>
+<text x="360" y="206" text-anchor="middle" font-size="13" fill="#475569">BookCard などのクラスは1文字も変えずに、変数の値だけでテーマが切り替わる</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図9-15: ダークモードが切り替わる流れ（CSS 変数方式）</div>
+</div>
+
+> **つまずきポイント: v4 で `dark:` のクラスが、ボタンを押しても効かない**
+>
+> Tailwind v4 の `dark:` は、何も設定しないと **OS のダークモード設定に連動する**作りになっています。5.3 節の ThemeToggle で `<html class="dark">` を付けても、パソコンの設定がライトのままなら `dark:bg-…` は効きません。v3 の `darkMode: "class"` に当たる1行を、`globals.css` に足す必要があります。
+
+```css
+/* NG: v4 で何も設定していない → dark: は OS の設定にしか反応しない */
+@import "tailwindcss";
+```
+
+```css
+/* OK: dark: を「dark クラスが付いた要素とその中身」で効かせる */
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+```
+
+`<div class="bg-white dark:bg-slate-900">本棚</div>` を CLI に通して、作られた CSS を比べると違いがはっきりします。
+
+**▼ 実行結果**（それぞれの出力の `dark:bg-slate-900` の部分）
+
+```text
+---- NG: 「OS がダークのとき」という条件になっている ----
+  @media (prefers-color-scheme: dark) {
+    .dark\:bg-slate-900 {
+      background-color: var(--color-slate-900);
+    }
+  }
+
+---- OK: 「.dark の中にいるとき」という条件になっている ----
+  .dark\:bg-slate-900:where(.dark, .dark *) {
+    background-color: var(--color-slate-900);
+  }
+```
+
+- NG の `@media (prefers-color-scheme: dark)` は「OS（パソコンやスマホ）の設定がダークのとき」という意味です。アプリのボタンでは切り替えられません。
+- OK の `:where(.dark, .dark *)` は「`dark` クラスが付いた要素自身か、その中にある要素のとき」という意味です。`<html>` に `dark` を付ければ、ページの中の全部が当てはまります。
 
 ### 5.2 dark: クラスの使い方
 
@@ -4229,6 +5775,36 @@ Tailwind の `dark:` バリアントを使うと、ダークモード時に適�
 > 1. **CSS変数を切り替える方式**（本アプリで採用）: `:root` に変数を定義し、`.dark` で値を上書き。コンポーネント側は `bg-[var(--color-card)]` のように変数を参照するだけで自動切替。
 > 2. **`dark:` クラスを毎回書く方式**: コンポーネントの各クラスに `dark:` 付きを並べる。直感的だが冗長になる。
 > 3. **両者の併用**: 本アプリも基本色は CSS 変数、細かい補正は `dark:` で行うハイブリッド方式。
+
+同じ書籍カードを、ライトとダークで並べた Before/After です。カードの HTML とクラスは**まったく同じ**で、`<html>` に `dark` クラスがあるかどうかだけが違います。
+
+<div style="max-width: 720px; margin: 18px auto; font-family: 'Yu Gothic UI', 'Yu Gothic', Meiryo, sans-serif;">
+<div style="display: flex; gap: 14px;">
+<div style="flex: 1; border: 1px solid #cbd5e1; border-radius: 12px; overflow: hidden;">
+<div style="background: #f1f5f9; padding: 6px 12px; font-size: 12px; font-weight: bold; color: #334155;">ライト（html に dark クラスなし）</div>
+<div style="background: #ffffff; padding: 16px;">
+<div style="border: 1px solid #e2e8f0; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+<div style="height: 64px; background: linear-gradient(135deg, #e0e7ff, #c7d2fe);"></div>
+<div style="padding: 10px 12px;"><div style="font-size: 14px; font-weight: bold; color: #0f172a;">リーダブルコード</div><div style="font-size: 12px; color: #64748b;">Dustin Boswell</div><div style="margin-top: 8px;"><span style="display: inline-block; background: #e0e7ff; color: #4338ca; font-size: 12px; padding: 2px 10px; border-radius: 999px;">読書中</span></div><div style="margin-top: 10px;"><span style="display: inline-block; background: #4f46e5; color: #ffffff; font-size: 12px; padding: 6px 14px; border-radius: 8px;">詳細を見る</span></div></div>
+</div>
+</div>
+</div>
+<div style="flex: 1; border: 1px solid #cbd5e1; border-radius: 12px; overflow: hidden;">
+<div style="background: #1e293b; padding: 6px 12px; font-size: 12px; font-weight: bold; color: #e2e8f0;">ダーク（html class="dark"）</div>
+<div style="background: #0f172a; padding: 16px;">
+<div style="border: 1px solid #334155; background: #1e293b; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 2px rgba(0,0,0,0.3);">
+<div style="height: 64px; background: linear-gradient(135deg, #312e81, #3730a3);"></div>
+<div style="padding: 10px 12px;"><div style="font-size: 14px; font-weight: bold; color: #f8fafc;">リーダブルコード</div><div style="font-size: 12px; color: #94a3b8;">Dustin Boswell</div><div style="margin-top: 8px;"><span style="display: inline-block; background: #312e81; color: #a5b4fc; font-size: 12px; padding: 2px 10px; border-radius: 999px;">読書中</span></div><div style="margin-top: 10px;"><span style="display: inline-block; background: #4f46e5; color: #ffffff; font-size: 12px; padding: 6px 14px; border-radius: 8px;">詳細を見る</span></div></div>
+</div>
+</div>
+</div>
+</div>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px; text-align: center;">図9-16: Before/After — 同じ書籍カードのライト表示（左）とダーク表示（右）</div>
+</div>
+
+左右を見比べると、ダークでは「背景だけ黒くする」のではなく、**カードは背景より少し明るい色（#1e293b）、補足の文字は少し明るい灰色（#94a3b8）、バッジは濃い地に明るい文字**と、すべての組み合わせが「暗い背景でも読みやすい」ように入れ替わっていることが分かります。1.1 節の `.dark { … }` で変数ごとに値を用意したのは、このためです。
+
+> **ヒント:** ダークモードの背景には真っ黒（`#000000`）より、少し青みのある濃い灰色（slate-900 の `#0f172a` など）を使うのが定番です。真っ黒に真っ白の文字だと明暗の差が強すぎて、長く読むと目が疲れやすくなります。
 
 ### 5.3 テーマ切り替えボタンの実装
 
@@ -4412,7 +5988,7 @@ export function ThemeToggle() {
         hover:bg-gray-100 hover:text-gray-900
         dark:text-gray-400
         dark:hover:bg-gray-800 dark:hover:text-gray-100
-        focus-visible:outline-none focus-visible:ring-2
+        focus-visible:outline-hidden focus-visible:ring-2
         focus-visible:ring-primary-500 focus-visible:ring-offset-2
       "
       /* ▼ クラスの読み解き ▼
@@ -4599,8 +6175,8 @@ export function Header() {
 
   // ナビゲーションアイテムを配列で管理。後でmapで展開する
   const navItems = [
-    { href: "/", label: "ホーム" },
-    { href: "/books", label: "書籍一覧" },
+    // 書籍一覧はトップページ（/）に置いている
+    { href: "/", label: "書籍一覧" },
     { href: "/books/new", label: "新規登録" },
   ];
 
@@ -4621,7 +6197,7 @@ export function Header() {
       role="banner"
     >
       <div className="container flex h-16 items-center justify-between">
-        {/* container: tailwind.config の container 設定
+        {/* container: globals.css の @utility container（中央寄せ＋余白）
             flex h-16 items-center justify-between:
               横並び、高さ64px、縦中央、両端寄せ */}
 
@@ -5230,15 +6806,180 @@ useEffect(() => {
 
 | 組み合わせ | ライトモード | ダークモード | 基準 |
 |:---|:---:|:---:|:---:|
-| メインテキスト / 背景 | 15.4:1 (#0f172a / #ffffff) | 16.0:1 (#f8fafc / #0f172a) | AA |
-| ミュートテキスト / 背景 | 5.5:1 (#64748b / #ffffff) | 5.7:1 (#94a3b8 / #0f172a) | AA |
-| プライマリボタン文字 / ボタン背景 | 8.6:1 (#ffffff / #4f46e5) | -- | AA |
-| エラーテキスト / エラー背景 | 4.6:1 (#991b1b / #fef2f2) | 5.1:1 | AA |
+| メインテキスト / 背景 | 17.9:1 (#0f172a / #ffffff) | 17.1:1 (#f8fafc / #0f172a) | AA |
+| ミュートテキスト / 背景 | 4.8:1 (#64748b / #ffffff) | 7.0:1 (#94a3b8 / #0f172a) | AA |
+| プライマリボタン文字 / ボタン背景 | 6.3:1 (#ffffff / #4f46e5) | 6.3:1（ライトと同じ色） | AA |
+| エラーテキスト / エラー背景 | 7.6:1 (#991b1b / #fef2f2) | 5.3:1 (#fca5a5 / #7f1d1d) | AA |
+
+> **注意:** 上の表の数値は、下の「試してみよう」のプログラムで計算し直した値です（以前の版の数値には誤りがあったため修正しました）。どの組み合わせも AA の基準を満たしている、という結論は変わりません。
 
 **確認ツール:**
+
 - Chrome DevTools: Elements パネルの Color Contrast 表示
 - [WebAIM Contrast Checker](https://webaim.org/resources/contrastchecker/)
 - axe DevTools ブラウザ拡張
+
+数字だけだとピンと来ないので、実際の色で並べてみます。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 200" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<rect x="10" y="16" width="132" height="84" rx="10" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5"/>
+<text x="76" y="54" text-anchor="middle" font-size="16" font-weight="bold" fill="#0f172a">読みやすさ</text>
+<text x="76" y="80" text-anchor="middle" font-size="14" fill="#0f172a">Aa 123</text>
+<rect x="152" y="16" width="132" height="84" rx="10" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5"/>
+<text x="218" y="54" text-anchor="middle" font-size="16" font-weight="bold" fill="#64748b">読みやすさ</text>
+<text x="218" y="80" text-anchor="middle" font-size="14" fill="#64748b">Aa 123</text>
+<rect x="294" y="16" width="132" height="84" rx="10" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5"/>
+<text x="360" y="54" text-anchor="middle" font-size="16" font-weight="bold" fill="#9ca3af">読みやすさ</text>
+<text x="360" y="80" text-anchor="middle" font-size="14" fill="#9ca3af">Aa 123</text>
+<rect x="436" y="16" width="132" height="84" rx="10" fill="#3b82f6"/>
+<text x="502" y="54" text-anchor="middle" font-size="16" font-weight="bold" fill="#ffffff">読みやすさ</text>
+<text x="502" y="80" text-anchor="middle" font-size="14" fill="#ffffff">Aa 123</text>
+<rect x="578" y="16" width="132" height="84" rx="10" fill="#4f46e5"/>
+<text x="644" y="54" text-anchor="middle" font-size="16" font-weight="bold" fill="#ffffff">読みやすさ</text>
+<text x="644" y="80" text-anchor="middle" font-size="14" fill="#ffffff">Aa 123</text>
+<g font-size="14" font-weight="bold" fill="#334155" text-anchor="middle">
+<text x="76" y="124">17.9 : 1</text>
+<text x="218" y="124">4.8 : 1</text>
+<text x="360" y="124">2.5 : 1</text>
+<text x="502" y="124">3.7 : 1</text>
+<text x="644" y="124">6.3 : 1</text>
+</g>
+<g font-size="12" fill="#64748b" text-anchor="middle">
+<text x="76" y="144">本文の色 / 白</text>
+<text x="218" y="144">補足文の色 / 白</text>
+<text x="360" y="144">薄い灰色 / 白</text>
+<text x="502" y="144">白 / blue-500</text>
+<text x="644" y="144">白 / primary-600</text>
+</g>
+<g font-size="13" font-weight="bold" text-anchor="middle">
+<text x="76" y="166" fill="#047857">○ 合格</text>
+<text x="218" y="166" fill="#047857">○ 合格（ぎりぎり）</text>
+<text x="360" y="166" fill="#c2410c">× 不合格</text>
+<text x="502" y="166" fill="#c2410c">× 小さい文字は不可</text>
+<text x="644" y="166" fill="#047857">○ 合格</text>
+</g>
+<text x="360" y="192" text-anchor="middle" font-size="12" fill="#475569">合格ライン（AA）: ふつうの文字は 4.5 : 1 以上、大きな見出しは 3 : 1 以上</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図9-17: コントラスト比の見本（数字が大きいほど、文字と背景の明るさの差が大きく読みやすい）</div>
+</div>
+
+#### 試してみよう: コントラスト比を自分で計算する
+
+> **▼ このコードがやること（先に日本語で）:** 「文字の色」と「背景の色」の16進数カラーを受け取り、WCAG（Web のアクセシビリティ指針）が決めている計算式でコントラスト比を求めます。本アプリで使っている色の組み合わせを一度に調べ、4.5:1 以上なら「合格」と表示します。上の表の数値は、このプログラムで計算したものです。
+
+```typescript
+// contrast.ts
+// "#4f46e5" のような16進数カラーを、0〜1 の「明るさ（相対輝度）」に変える
+function luminance(hex: string): number {
+  // "#4f46e5" → [0x4f, 0x46, 0xe5] → 0〜1 の範囲に直す
+  const [r, g, b] = [1, 3, 5].map(
+    (i) => parseInt(hex.slice(i, i + 2), 16) / 255,
+  );
+  // 人の目の感じ方に合わせて補正する（WCAG の計算式）
+  const linear = (c: number) =>
+    c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+  // 緑を一番明るく、青を一番暗く感じるので重みを変えて足す
+  return 0.2126 * linear(r) + 0.7152 * linear(g) + 0.0722 * linear(b);
+}
+
+// 2色のコントラスト比（1〜21）を求める
+function contrast(text: string, background: string): number {
+  const a = luminance(text);
+  const b = luminance(background);
+  const light = Math.max(a, b);
+  const dark = Math.min(a, b);
+  return (light + 0.05) / (dark + 0.05);
+}
+
+// 調べたい「文字色 / 背景色」の組み合わせ
+const pairs: [string, string, string][] = [
+  ["本文（ライト）", "#0f172a", "#ffffff"],
+  ["本文（ダーク）", "#f8fafc", "#0f172a"],
+  ["補足文（ライト）", "#64748b", "#ffffff"],
+  ["補足文（ダーク）", "#94a3b8", "#0f172a"],
+  ["ボタン文字", "#ffffff", "#4f46e5"],
+  ["エラー文字", "#991b1b", "#fef2f2"],
+  ["エラー文字（ダーク）", "#fca5a5", "#7f1d1d"],
+  ["白文字 / blue-500 のボタン", "#ffffff", "#3b82f6"],
+  ["薄すぎる灰色の文字", "#9ca3af", "#ffffff"],
+];
+
+for (const [label, text, background] of pairs) {
+  const ratio = contrast(text, background);
+  // 本文の合格ラインは 4.5:1 以上（WCAG 2.1 AA）
+  const result = ratio >= 4.5 ? "合格" : "不合格";
+  // 比率を右寄せ5桁で揃えてから、判定と名前を後ろに並べる
+  console.log(`${ratio.toFixed(2).padStart(5, " ")}:1  ${result}  ${label}`);
+}
+```
+
+**▼ 実行結果**（`node contrast.ts` で実行）
+
+```text
+17.85:1  合格  本文（ライト）
+17.06:1  合格  本文（ダーク）
+ 4.76:1  合格  補足文（ライト）
+ 6.96:1  合格  補足文（ダーク）
+ 6.29:1  合格  ボタン文字
+ 7.60:1  合格  エラー文字
+ 5.28:1  合格  エラー文字（ダーク）
+ 3.68:1  不合格  白文字 / blue-500 のボタン
+ 2.54:1  不合格  薄すぎる灰色の文字
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: 16進数カラーを 0〜1 の数に直す
+
+```typescript
+const [r, g, b] = [1, 3, 5].map(
+  (i) => parseInt(hex.slice(i, i + 2), 16) / 255,
+);
+```
+
+- `"#4f46e5"` の1〜2文字目が赤、3〜4文字目が緑、5〜6文字目が青の強さです。`hex.slice(i, i + 2)` で2文字ずつ取り出し、`parseInt(…, 16)` で16進数を普通の数（0〜255）に直します。
+- 最後に `/ 255` で 0〜1 の範囲にそろえます。`[1, 3, 5].map(…)` で、赤・緑・青の3つを一度に計算しています。
+
+##### 解説2: 人の目の感じ方に合わせて「明るさ」を出す
+
+```typescript
+const linear = (c: number) =>
+  c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+return 0.2126 * linear(r) + 0.7152 * linear(g) + 0.0722 * linear(b);
+```
+
+- 画面の色の数値と、人が感じる明るさは比例しません。`linear` はその「ずれ」を直す WCAG の決まった式です（`**` は「〜乗」）。
+- 人の目は**緑をいちばん明るく、青をいちばん暗く**感じるので、緑に 0.7152、青に 0.0722 という重みを掛けて足します。これが「相対輝度」と呼ばれる明るさです。
+
+> **用語: 相対輝度（そうたいきど、relative luminance）** … 色の明るさを「真っ黒 = 0、真っ白 = 1」の範囲で表した数。コントラスト比の計算に使う。
+
+##### 解説3: 明るいほうと暗いほうの比を取る
+
+```typescript
+const light = Math.max(a, b);
+const dark = Math.min(a, b);
+return (light + 0.05) / (dark + 0.05);
+```
+
+- 2色のうち明るいほうを分子、暗いほうを分母にして割り算します。`+ 0.05` は、真っ黒（0）で割ってしまわないための決まりの数です。
+- 結果は「白と黒」の **21:1** が最大、「同じ色どうし」の **1:1** が最小になります。実行結果を見ると、`blue-500` の背景に白い文字は 3.68:1 しかなく、ふつうの大きさの文字には足りないことが分かります。
+
+> **つまずきポイント: 「おしゃれに見えるから」と薄い色を選んでしまう**
+>
+> 薄い灰色の文字（`text-gray-400` など）や、`bg-blue-500` に白い小さな文字は、すっきりして見えますが**コントラストが足りません**。明るい屋外でスマホを見る人や、視力の弱い人には読めなくなります。補足の文字は `text-gray-500`（4.8:1）より濃い色を、白い文字を載せるボタンは `600` 以上の背景を選びましょう。
+
+```html
+<!-- NG: 薄い灰色の文字（2.5:1）と、blue-500 に白い小さな文字（3.7:1） -->
+<p class="text-gray-400">2024年に登録</p>
+<button class="bg-blue-500 text-sm text-white">保存</button>
+```
+
+```html
+<!-- OK: 補足文は gray-600（7.6:1）、ボタンは blue-600（5.2:1）にする -->
+<p class="text-gray-600">2024年に登録</p>
+<button class="bg-blue-600 text-sm text-white">保存</button>
+```
 
 ---
 
@@ -5251,7 +6992,6 @@ useEffect(() => {
   <div style="background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center;">
     <div style="font-weight: 700; font-size: 15px;">📖 BookShelf</div>
     <div style="display: flex; gap: 16px; font-size: 12px;">
-      <span style="opacity: 0.9;">ホーム</span>
       <span style="border-bottom: 2px solid white; padding-bottom: 2px;">書籍一覧</span>
       <span style="opacity: 0.9;">新規登録</span>
       <span style="background: rgba(255,255,255,0.2); border-radius: 50%; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; font-size: 11px;">🌙</span>
@@ -5328,18 +7068,21 @@ useEffect(() => {
 </div>
 
 **ヘッダー:**
+
 - 画面上部に `sticky` で固定。スクロールしても常に表示される
 - `glass` クラスによる半透明のすりガラス効果（`backdrop-blur-md`）
 - 左にロゴ（本のアイコン + "BookShelf"）、中央にナビゲーションリンク、右にテーマ切り替えボタン
 - モバイルではハンバーガーメニューに切り替わる
 
 **メインコンテンツ:**
+
 - ページタイトルと書籍数を表示。右端に「新規登録」ボタン
 - 検索バーとフィルター（ステータス、並び順）
 - 書籍カードがレスポンシブグリッドで並ぶ。各カードはホバーで浮き上がるアニメーション付き
 - カードにはサムネイル、タイトル（最大2行で省略）、著者名、星評価を表示
 
 **フッター:**
+
 - 著作権表示、外部リンク
 
 ### 7.2 新規登録ページ
@@ -5349,7 +7092,6 @@ useEffect(() => {
   <div style="background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center;">
     <div style="font-weight: 700; font-size: 15px;">📖 BookShelf</div>
     <div style="display: flex; gap: 16px; font-size: 12px;">
-      <span style="opacity: 0.9;">ホーム</span>
       <span style="opacity: 0.9;">書籍一覧</span>
       <span style="border-bottom: 2px solid white; padding-bottom: 2px;">新規登録</span>
     </div>
@@ -5410,6 +7152,7 @@ useEffect(() => {
 </div>
 
 **レイアウト:**
+
 - フォームは `max-w-2xl` で中央配置。カードスタイルで背景と分離
 - 「← 書籍一覧に戻る」のパンくずリンクをフォーム上部に配置
 - 必須フィールドには `*` マーク。バリデーションエラー時はフィールド下に赤文字でメッセージ表示
@@ -5424,7 +7167,6 @@ useEffect(() => {
   <div style="background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center;">
     <div style="font-weight: 700; font-size: 15px;">📖 BookShelf</div>
     <div style="display: flex; gap: 16px; font-size: 12px;">
-      <span style="opacity: 0.9;">ホーム</span>
       <span style="opacity: 0.9;">書籍一覧</span>
       <span style="opacity: 0.9;">新規登録</span>
     </div>
@@ -5476,6 +7218,7 @@ useEffect(() => {
 </div>
 
 **レイアウト:**
+
 - 上段は2カラム: 左に表紙画像（`aspect-[3/4]`）、右に書籍情報
 - モバイルでは1カラムに切り替わり、画像が上、情報が下に配置される
 - ステータスバッジが右上に表示される
@@ -5490,7 +7233,6 @@ useEffect(() => {
   <div style="background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center;">
     <div style="font-weight: 700; font-size: 15px;">📖 BookShelf</div>
     <div style="display: flex; gap: 16px; font-size: 12px;">
-      <span style="opacity: 0.9;">ホーム</span>
       <span style="opacity: 0.9;">書籍一覧</span>
       <span style="opacity: 0.9;">新規登録</span>
     </div>
@@ -5551,6 +7293,7 @@ useEffect(() => {
 </div>
 
 **レイアウト:**
+
 - 新規登録ページとほぼ同じフォームレイアウトを再利用
 - 違いは: タイトルが「書籍情報を編集」、ボタンラベルが「更新する」、パンくずが「← 書籍詳細に戻る」
 - フォームの各フィールドには既存データが pre-fill される
@@ -5600,7 +7343,7 @@ useEffect(() => {
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px;">
     <div style="background:#dbeafe;border:2px solid #3b82f6;border-radius:8px;padding:8px 12px;box-shadow:0 2px 12px rgba(0,0,0,0.08);">
       <div style="font-weight:700;color:#1e40af;font-size:12px;">書籍一覧ページ</div>
-      <div style="font-size:10px;color:#3b82f6;margin-bottom:6px;">app/books/page.tsx</div>
+      <div style="font-size:10px;color:#3b82f6;margin-bottom:6px;">app/page.tsx</div>
       <div style="display:flex;flex-wrap:wrap;gap:4px;">
         <span style="background:#d1fae5;border:1px solid #10b981;border-radius:4px;padding:2px 6px;font-size:10px;color:#166534;">BookGrid</span>
         <span style="background:#fef3c7;border:1px solid #f59e0b;border-radius:4px;padding:2px 6px;font-size:10px;color:#92400e;">Pagination</span>
@@ -5661,8 +7404,9 @@ useEffect(() => {
 
 | 項目 | 実装内容 | ファイル |
 |:-----|:---------|:---------|
-| グローバルスタイル | CSS カスタムプロパティ、ベースレイヤー、コンポーネントレイヤー | `app/globals.css` |
-| Tailwind 設定 | カスタムカラー、アニメーション、フォント、シャドウ | `tailwind.config.ts` |
+| グローバルスタイル | `@theme` のカラートークン・影・アニメーション、`.dark` の上書き、ベース／コンポーネントレイヤー、`@utility` | `app/globals.css` |
+| Tailwind 設定 | ダークモードの方式（`@custom-variant`）、カスタムカラー、アニメーション、フォント、シャドウ | `app/globals.css`（v3 では `tailwind.config.ts`） |
+| v3 との違い | 設定ファイルの引っ越し、名前が変わったクラスの対応表 | 1.1.1 節 / 1.3 節（参考） |
 | レスポンシブグリッド | 1列→2列→3列→4列のブレークポイント対応 | `components/BookGrid.tsx` |
 | トースト通知 | Context API ベースの成功/エラー通知 | `contexts/ToastContext.tsx`, `components/Toast.tsx` |
 | ページネーション | ページ番号計算ロジック付きナビゲーション | `components/Pagination.tsx` |
@@ -5674,7 +7418,7 @@ useEffect(() => {
 | アクセシビリティ | aria属性、キーボードナビ、フォーカストラップ、コントラスト比 | 各コンポーネント |
 | 確認ダイアログ | モーダル + フォーカストラップ + Escape 対応 | `components/ConfirmDialog.tsx` |
 
-次の章では、テストの書き方とデプロイについて学びます。
+次の章では、テストの書き方とデプロイについて学びます。その前に、章末の「練習問題」で、この章のつまずきやすいポイントを確認しておきましょう。
 
 ---
 
@@ -5737,6 +7481,66 @@ useEffect(() => {
 - 見た目のイメージ: `[タイトル ··········· ボタン ボタン]` のように、左右の端に内容が分かれます。
 
 > **用語: items / justify** … `items-*` は「並びと垂直な向き」の揃え、`justify-*` は「並びと同じ向き」の配置を決めるクラス。横並び（`flex`）なら items=縦、justify=横になる。
+
+この「並びと同じ向き」を**主軸（しゅじく）**、「並びと垂直な向き」を**交差軸（こうさじく）**と呼びます。電車の線路にたとえると、主軸は「電車が進む向き」、交差軸は「線路を横切る向き」です。`justify-*` はいつも主軸、`items-*` はいつも交差軸を担当します。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 292" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-09-18a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#c2410c"/></marker>
+<marker id="ar-09-18b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1e40af"/></marker>
+</defs>
+<text x="175" y="24" text-anchor="middle" font-size="14" font-weight="bold" fill="#334155">flex（横並び）</text>
+<rect x="60" y="40" width="230" height="140" rx="8" fill="#f8fafc" stroke="#64748b" stroke-width="1.5" stroke-dasharray="5 4"/>
+<rect x="76" y="85" width="60" height="50" rx="6" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="106" y="115" text-anchor="middle" font-size="14" font-weight="bold" fill="#1e40af">A</text>
+<rect x="146" y="85" width="60" height="50" rx="6" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="176" y="115" text-anchor="middle" font-size="14" font-weight="bold" fill="#c2410c">B</text>
+<rect x="216" y="85" width="60" height="50" rx="6" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="246" y="115" text-anchor="middle" font-size="14" font-weight="bold" fill="#047857">C</text>
+<line x1="62" y1="198" x2="288" y2="198" stroke="#c2410c" stroke-width="2" marker-end="url(#ar-09-18a)"/>
+<text x="175" y="220" text-anchor="middle" font-size="13" font-weight="bold" fill="#c2410c">主軸（justify-* が担当）＝ 横</text>
+<line x1="40" y1="176" x2="40" y2="44" stroke="#1e40af" stroke-width="2" marker-start="url(#ar-09-18b)" marker-end="url(#ar-09-18b)"/>
+<text x="26" y="110" text-anchor="middle" font-size="12" font-weight="bold" fill="#1e40af" transform="rotate(-90 26 110)">交差軸（items-*）＝ 縦</text>
+<text x="545" y="24" text-anchor="middle" font-size="14" font-weight="bold" fill="#334155">flex flex-col（縦並び）</text>
+<rect x="430" y="40" width="230" height="150" rx="8" fill="#f8fafc" stroke="#64748b" stroke-width="1.5" stroke-dasharray="5 4"/>
+<rect x="500" y="52" width="90" height="36" rx="6" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="545" y="75" text-anchor="middle" font-size="14" font-weight="bold" fill="#1e40af">A</text>
+<rect x="500" y="96" width="90" height="36" rx="6" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="545" y="119" text-anchor="middle" font-size="14" font-weight="bold" fill="#c2410c">B</text>
+<rect x="500" y="140" width="90" height="36" rx="6" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="545" y="163" text-anchor="middle" font-size="14" font-weight="bold" fill="#047857">C</text>
+<line x1="680" y1="42" x2="680" y2="188" stroke="#c2410c" stroke-width="2" marker-end="url(#ar-09-18a)"/>
+<text x="700" y="115" text-anchor="middle" font-size="12" font-weight="bold" fill="#c2410c" transform="rotate(90 700 115)">主軸（justify-*）＝ 縦</text>
+<line x1="432" y1="208" x2="658" y2="208" stroke="#1e40af" stroke-width="2" marker-start="url(#ar-09-18b)" marker-end="url(#ar-09-18b)"/>
+<text x="545" y="230" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e40af">交差軸（items-* が担当）＝ 横</text>
+<rect x="110" y="250" width="500" height="32" rx="8" fill="#fff7ed" stroke="#f97316"/>
+<text x="360" y="271" text-anchor="middle" font-size="13" font-weight="bold" fill="#7c2d12">flex-col にすると、justify と items が担当する向きが入れ替わる</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図9-18: Flexbox の主軸と交差軸（横並びと縦並びで、justify-* と items-* の向きが逆になる）</div>
+</div>
+
+> **つまずきポイント: `flex-col` にしたら `justify-center` で横の中央にならない**
+>
+> 縦並び（`flex-col`）にすると主軸が**縦**になるので、`justify-center` は「縦方向の中央」寄せになり、横方向には効きません。横方向は初期値の「横いっぱいに引き伸ばす（`stretch`）」のままなので、ボタンが箱の幅いっぱいに広がってしまいます。ボタンを**横方向の中央**に小さく置きたいなら、交差軸を担当する `items-center` を使います（図9-18の右側）。
+
+```tsx
+{/* NG: 縦並びのボタンを「横の中央」に寄せたくて justify-center を付けた */}
+{/* → flex-col の主軸は縦なので横には効かず、ボタンは横いっぱいに伸びたまま */}
+<div className="flex flex-col justify-center gap-2">
+  <button>保存</button>
+  <button>キャンセル</button>
+</div>
+```
+
+```tsx
+{/* OK: flex-col のときの「横」は交差軸 → items-center を使う */}
+{/* → ボタンが中身の幅に縮み、横方向の真ん中にそろう */}
+<div className="flex flex-col items-center gap-2">
+  <button>保存</button>
+  <button>キャンセル</button>
+</div>
+```
 
 ---
 
@@ -5840,6 +7644,72 @@ useEffect(() => {
 
 > **用語: 任意の値（arbitrary value）** … `grid-cols-[...]` のように角かっこの中に好きな値を直接書く Tailwind の機能。用意されたクラスでは足りないときの「逃げ道」。
 
+2つのグリッドの並び方を図にすると次のとおりです。左は「列の数を決める」やり方、右は「1列の最小の幅を決めて、列の数はおまかせ」にするやり方です。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 262" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<text x="30" y="22" font-size="13" font-family="Consolas, monospace" fill="#1e293b">grid grid-cols-3 gap-4</text>
+<rect x="120" y="40" width="16" height="136" fill="#fed7aa"/>
+<rect x="226" y="40" width="16" height="136" fill="#fed7aa"/>
+<rect x="30" y="100" width="302" height="16" fill="#fed7aa"/>
+<g fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5">
+<rect x="30" y="40" width="90" height="60" rx="6"/>
+<rect x="136" y="40" width="90" height="60" rx="6"/>
+<rect x="242" y="40" width="90" height="60" rx="6"/>
+<rect x="30" y="116" width="90" height="60" rx="6"/>
+<rect x="136" y="116" width="90" height="60" rx="6"/>
+<rect x="242" y="116" width="90" height="60" rx="6"/>
+</g>
+<g font-size="16" font-weight="bold" fill="#1e40af" text-anchor="middle">
+<text x="75" y="76">1</text>
+<text x="181" y="76">2</text>
+<text x="287" y="76">3</text>
+<text x="75" y="152">4</text>
+<text x="181" y="152">5</text>
+<text x="287" y="152">6</text>
+</g>
+<g font-size="12" fill="#64748b" text-anchor="middle">
+<text x="75" y="196">1列目</text>
+<text x="181" y="196">2列目</text>
+<text x="287" y="196">3列目</text>
+</g>
+<rect x="30" y="212" width="14" height="14" fill="#fed7aa"/>
+<text x="52" y="224" font-size="12" fill="#c2410c">＝ gap-4 のすき間（縦も横も 16px）</text>
+<text x="30" y="250" font-size="12" fill="#334155">4つ目から自動で次の行へ折り返す</text>
+<text x="372" y="22" font-size="13" font-family="Consolas, monospace" fill="#1e293b">auto-fill + minmax(8rem, 1fr)</text>
+<rect x="372" y="36" width="330" height="58" rx="6" fill="#f8fafc" stroke="#10b981" stroke-width="1.5"/>
+<g fill="#d1fae5" stroke="#10b981" stroke-width="1.5">
+<rect x="378" y="42" width="58" height="46" rx="5"/>
+<rect x="443" y="42" width="58" height="46" rx="5"/>
+<rect x="508" y="42" width="58" height="46" rx="5"/>
+</g>
+<g fill="none" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="4 3">
+<rect x="573" y="42" width="58" height="46" rx="5"/>
+<rect x="638" y="42" width="58" height="46" rx="5"/>
+</g>
+<g font-size="14" font-weight="bold" fill="#047857" text-anchor="middle">
+<text x="407" y="70">A</text>
+<text x="472" y="70">B</text>
+<text x="537" y="70">C</text>
+</g>
+<text x="372" y="114" font-size="12" fill="#047857">広い画面 → 5列できる（点線は空きの列）</text>
+<rect x="372" y="128" width="140" height="106" rx="6" fill="#f8fafc" stroke="#10b981" stroke-width="1.5"/>
+<g fill="#d1fae5" stroke="#10b981" stroke-width="1.5">
+<rect x="378" y="134" width="61" height="44" rx="5"/>
+<rect x="445" y="134" width="61" height="44" rx="5"/>
+<rect x="378" y="184" width="61" height="44" rx="5"/>
+</g>
+<g font-size="14" font-weight="bold" fill="#047857" text-anchor="middle">
+<text x="408" y="161">A</text>
+<text x="475" y="161">B</text>
+<text x="408" y="211">C</text>
+</g>
+<text x="528" y="172" font-size="12" fill="#047857">狭い画面 → 2列に減り、</text>
+<text x="528" y="192" font-size="12" fill="#047857">C は次の行へ</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図9-19: Grid の並び方（左: 列の数を指定 / 右: 列の最小幅を指定して、列の数は画面幅まかせ）</div>
+</div>
+
 ---
 
 ### 擬似クラス・状態（hover・focus・before/after）
@@ -5858,7 +7728,7 @@ useEffect(() => {
 </button>
 
 <input
-  className="rounded border px-3 py-2 focus:border-blue-500 focus:outline-none"
+  className="rounded border px-3 py-2 focus:border-blue-500 focus:outline-hidden"
   placeholder="検索…"
 />
 
@@ -5889,7 +7759,7 @@ useEffect(() => {
 ##### 解説2: `focus:` で「選択中」を強調する
 
 ```tsx
-<input className="... focus:border-blue-500 focus:outline-none" />
+<input className="... focus:border-blue-500 focus:outline-hidden" />
 <button className="... focus:ring-2 focus:ring-blue-300">
 ```
 
@@ -5973,6 +7843,66 @@ useEffect(() => {
 - 見た目のイメージ: 画像の右上角に赤い丸の「NEW」が乗っかります。
 
 > **用語: absolute（絶対配置）** … 通常の並びから外して、基準の箱の中で座標を指定して置く方式。バッジ・吹き出し・オーバーレイなど「重ねたい」ものに使う。`inset-*` は上下左右の距離をまとめて書くクラス。
+
+`relative` と `absolute` はセットで使うものなので、片方を忘れると次のような失敗が起きます。
+
+> **つまずきポイント: `absolute` のバッジが、とんでもない場所に飛んでいく**
+>
+> `absolute` の要素は「外側に向かって探して、**最初に見つかった `relative`（など位置の指定がある）箱**」を基準にします。画像を包む `div` に `relative` を付け忘れると、基準がさらに外側（最終的にはページ全体）になり、バッジが画像から離れた画面の角に表示されてしまいます。
+
+```tsx
+{/* NG: 画像を包む div に relative が無い */}
+{/* → バッジの基準がページ全体になり、画面の右上に飛んでいく */}
+<div className="inline-block">
+  <img src="/book.jpg" alt="表紙" className="rounded" />
+  <span className="absolute -top-2 -right-2 rounded-full bg-red-500 px-2 text-xs text-white">
+    NEW
+  </span>
+</div>
+```
+
+```tsx
+{/* OK: 画像を包む div に relative を付けて「ここが基準」と宣言する */}
+{/* → バッジが画像の右上の角にぴったり乗る */}
+<div className="relative inline-block">
+  <img src="/book.jpg" alt="表紙" className="rounded" />
+  <span className="absolute -top-2 -right-2 rounded-full bg-red-500 px-2 text-xs text-white">
+    NEW
+  </span>
+</div>
+```
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 248" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-09-20" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#c2410c"/></marker>
+</defs>
+<rect x="10" y="4" width="340" height="28" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="180" y="23" text-anchor="middle" font-size="13" font-weight="bold" fill="#c2410c">NG: 親に relative が無い</text>
+<rect x="10" y="46" width="340" height="192" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="22" y="66" font-size="12" fill="#64748b">ページ全体</text>
+<rect x="60" y="92" width="90" height="120" rx="6" fill="#c7d2fe"/>
+<text x="105" y="157" text-anchor="middle" font-size="13" fill="#3730a3">表紙</text>
+<rect x="302" y="38" width="44" height="20" rx="10" fill="#ef4444"/>
+<text x="324" y="52" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">NEW</text>
+<path d="M152,90 Q230,62 298,52" fill="none" stroke="#c2410c" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#ar-09-20)"/>
+<text x="170" y="128" font-size="12" fill="#c2410c">画像ではなく、ページの</text>
+<text x="170" y="146" font-size="12" fill="#c2410c">角にくっついてしまう</text>
+<rect x="370" y="4" width="340" height="28" rx="8" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="540" y="23" text-anchor="middle" font-size="13" font-weight="bold" fill="#047857">OK: 親に relative を付ける</text>
+<rect x="370" y="46" width="340" height="192" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="382" y="66" font-size="12" fill="#64748b">ページ全体</text>
+<text x="410" y="233" font-size="12" font-weight="bold" fill="#047857">relative（基準の箱）</text>
+<rect x="420" y="92" width="90" height="120" rx="6" fill="#c7d2fe"/>
+<rect x="416" y="88" width="98" height="128" rx="8" fill="none" stroke="#10b981" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="465" y="157" text-anchor="middle" font-size="13" fill="#3730a3">表紙</text>
+<rect x="474" y="84" width="44" height="20" rx="10" fill="#ef4444"/>
+<text x="496" y="98" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">NEW</text>
+<text x="540" y="146" font-size="12" fill="#047857">画像の右上の角に</text>
+<text x="540" y="164" font-size="12" fill="#047857">ぴったり乗る</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図9-20: absolute の基準（左: relative が無いと遠くの箱が基準になる / 右: relative の箱が基準になる）</div>
+</div>
 
 ---
 
@@ -6063,5 +7993,214 @@ useEffect(() => {
 - この「変形（transform）＋なめらか（transition）」の組み合わせが、**気持ちよく反応するボタン**の黄金パターンです。
 
 > **用語: transition（トランジション）** … プロパティの変化を、指定した時間をかけて滑らかにつなぐ機能。`transform` と組み合わせると自然な動きの演出になる。
+
+---
+
+## 練習問題（解答・解説つき）
+
+この章の内容を確かめる問題です。まず自分で考えてから、下の解答・解説を読みましょう。手を動かせる問題は、Tailwind Play（`https://play.tailwindcss.com`）や 0.3 節の練習用フォルダで実際に試すと理解が深まります。
+
+### 問題1: 窮屈なボタンを広げる（ボックスモデル）
+
+次のボタンは、文字のまわりに余白が無くて窮屈です。**青い部分の内側**を「上下 8px・左右 16px」広げるには、どのクラスを足せばよいでしょうか。
+
+```html
+<button class="bg-blue-600 text-white">保存</button>
+```
+
+**解答:** `py-2 px-4` を足します。
+
+```html
+<!-- py-2 = 上下 8px、px-4 = 左右 16px の「内側の余白」 -->
+<button class="bg-blue-600 px-4 py-2 text-white">保存</button>
+```
+
+**解説:**
+
+- 「青い部分の**内側**」を広げたいので、使うのは padding（`p-`）です。`m-`（margin）を足しても青い部分は大きくならず、外側に透明なすき間ができるだけでした（0.1 節のつまずきポイント）。
+- `py-` は上下（y方向）、`px-` は左右（x方向）です。数字は「×4px」なので、8px は `2`、16px は `4` になります（図9-6）。
+
+### 問題2: 画面幅ごとの列数（レスポンシブ）
+
+`class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"` の箱は、画面の幅が **(a) 500px (b) 800px (c) 1100px** のとき、それぞれ何列になるでしょうか。
+
+**解答:** (a) 1列 (b) 2列 (c) 3列
+
+**解説:**
+
+- `md:` は 768px 以上、`lg:` は 1024px 以上で効きます。500px ではどちらも効かないので、接頭辞なしの `grid-cols-1` だけが残ります。
+- 800px は 768px 以上・1024px 未満なので `md:grid-cols-2` まで。1100px では `md:` と `lg:` の両方が条件を満たしますが、**より大きい画面向けの `lg:` が勝ちます**（図9-12）。
+- 2.1 節の `breakpoints.ts` の `good` をこのクラスに、幅の配列を `[500, 800, 1100]` に書き換えて実行すると、OK 列に `grid-cols-1` / `grid-cols-2` / `grid-cols-3` と表示されて確かめられます。
+
+### 問題3: スマホだけ表示したいボタン（`sm:` の意味）
+
+「スマホではハンバーガーボタンを表示し、**768px 以上では隠したい**」とき、ボタンに付けるクラスとして正しいものはどれでしょうか。
+
+- (A) `sm:block`
+- (B) `md:hidden`
+- (C) `sm:hidden md:block`
+
+**解答:** (B) `md:hidden`
+
+**解説:**
+
+- 接頭辞の無い状態ではボタンは表示されています。`md:hidden` で「768px 以上になったら隠す」と上書きするので、スマホでだけ見えるボタンになります。6.1 節のヘッダーと同じ書き方です。
+- (A) は「640px 以上で表示」で、もともと表示されているので何も変わりません。
+- (C) は「640〜767px で隠し、768px 以上でまた表示」になり、狙いと正反対です。`sm:` を「スマホ用」と読んでしまうと、こうした間違いが起きます（図9-13）。
+
+### 問題4: 色が付かないボタン（動的クラス名）
+
+次のボタンは、`variant` に何を渡しても背景色が付きません。**理由**と**直し方**を答えてください。
+
+```tsx
+type Props = { variant: "primary" | "danger" };
+
+export function Button({ variant }: Props) {
+  const color = variant === "primary" ? "indigo" : "red";
+  return <button className={`bg-${color}-600 text-white`}>OK</button>;
+}
+```
+
+**解答:** Tailwind はファイルを文字として読むだけなので、`bg-indigo-600` や `bg-red-600` という**完成したクラス名**がファイルの中に無く、その CSS が作られないためです。完成したクラス名を辞書に書いておく形に直します。
+
+```tsx
+type Props = { variant: "primary" | "danger" };
+
+// 完成したクラス名を辞書に書いておく
+const variantClasses = {
+  primary: "bg-indigo-600",
+  danger: "bg-red-600",
+};
+
+export function Button({ variant }: Props) {
+  return <button className={`${variantClasses[variant]} text-white`}>OK</button>;
+}
+```
+
+**▼ 実行結果**（直す前と後のファイルを CLI に通した、`@layer utilities` の部分）
+
+```text
+---- 直す前: text-white しか作られていない ----
+@layer utilities {
+  .text-white {
+    color: var(--color-white);
+  }
+}
+
+---- 直した後: 2つの背景色が作られた ----
+@layer utilities {
+  .bg-indigo-600 {
+    background-color: var(--color-indigo-600);
+  }
+  .bg-red-600 {
+    background-color: var(--color-red-600);
+  }
+  .text-white {
+    color: var(--color-white);
+  }
+}
+```
+
+**解説:**
+
+- 直した後も `` `${variantClasses[variant]} text-white` `` のように `${}` を使っていますが、問題ありません。大事なのは**クラス名そのもの（`bg-indigo-600`）が、どこかに完成した形で書いてあること**です。
+- 0.4 節の「試してみよう」と同じ仕組みです。
+
+### 問題5: v4 の globals.css を書く（Tailwind v4 の設定）
+
+Tailwind v4 のプロジェクトで、次の2つを実現したいです。`app/globals.css` に何を書けばよいでしょうか。
+
+1. ThemeToggle で `<html class="dark">` を付けたときに、`dark:` のクラスが効くようにする
+2. `#0ea5e9` という色を `brand-500` という名前で登録し、`bg-brand-500` を使えるようにする
+
+**解答:**
+
+```css
+@import "tailwindcss";
+
+/* (1) dark: を dark クラスで切り替える */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* (2) 自分の色を登録する */
+@theme {
+  --color-brand-500: #0ea5e9;
+}
+```
+
+**▼ 実行結果**（`<div class="bg-brand-500 dark:bg-slate-900"></div>` を CLI に通した、`@layer utilities` の部分）
+
+```css
+@layer utilities {
+  .bg-brand-500 {
+    background-color: var(--color-brand-500);
+  }
+  .dark\:bg-slate-900:where(.dark, .dark *) {
+    background-color: var(--color-slate-900);
+  }
+}
+```
+
+**解説:**
+
+- (1) v4 の `dark:` は、何もしないと OS の設定に連動します。`@custom-variant dark (…)` の1行で「`dark` クラスの中にいるとき」に変えます（5.1 節のつまずきポイント）。
+- (2) `@theme` の中に `--color-` で始まる変数を書くと、その名前の色クラス（`bg-brand-500`・`text-brand-500` など）が作られます。v3 のように `tailwind.config.ts` に書いても、v4 では `@config` を書かない限り読まれません（1.1.1 節）。
+
+### 問題6: 影がパッと消えるカード（transition）
+
+次のカードは、マウスを乗せると影がなめらかに大きくなるのに、**離すと影がパッと元に戻って**しまいます。どう直せばよいでしょうか。
+
+```html
+<article class="rounded-xl bg-white shadow-sm hover:shadow-lg hover:transition-shadow hover:duration-300">
+  リーダブルコード
+</article>
+```
+
+**解答:** `transition-shadow` と `duration-300` を `hover:` の外に出します。
+
+```html
+<!-- transition は「いつでも」付けておき、変えたい影だけを hover: にする -->
+<article class="rounded-xl bg-white shadow-sm transition-shadow duration-300 hover:shadow-lg">
+  リーダブルコード
+</article>
+```
+
+**解説:**
+
+- `transition` は「変化をなめらかにする」設定なので、**変化が起きる前と後の両方で**要素に付いている必要があります。
+- `hover:transition-shadow` だと、マウスを離した瞬間に transition も外れるため、戻る動きだけが一瞬になります（4.1 節のつまずきポイント）。
+
+### 問題7: この灰色は本文に使える？（コントラスト）
+
+白い背景（`#ffffff`）に、`#94a3b8` の文字で本文を書こうとしています。これは WCAG 2.1 AA の基準を満たすでしょうか。満たさない場合、どうすればよいでしょうか。
+
+**解答:** 満たしません（約 2.6:1 で、本文の基準 4.5:1 に届かない）。`#64748b`（4.8:1）や `#475569`（7.6:1）のように、もっと濃い灰色を使います。
+
+**解説:**
+
+- 6.3 節の `contrast.ts` の `pairs` に `["問題7", "#94a3b8", "#ffffff"]` を足して実行すると、`2.56:1  不合格` と表示されます。
+- 面白いのは、**同じ `#94a3b8` でも、ダークモードの背景 `#0f172a` の上では 6.96:1 で合格**になることです。本アプリのダークモードで補足文に `#94a3b8` を使っているのはこのためで、「色の合否は背景との組み合わせで決まる」ことが分かります。
+
+### 問題8: 縦並びのまま横の中央へ（Flexbox）
+
+ボタンを縦に並べたまま、**横方向の真ん中**にそろえたいです。`???` に入るクラスはどれでしょうか。
+
+```tsx
+<div className="flex flex-col ??? gap-2">
+  <button>保存</button>
+  <button>キャンセル</button>
+</div>
+```
+
+- (A) `justify-center`
+- (B) `items-center`
+- (C) `text-center`
+
+**解答:** (B) `items-center`
+
+**解説:**
+
+- `flex-col` のときの主軸は**縦**、交差軸は**横**です。横方向の揃えは交差軸の担当なので `items-center` を使います（図9-18）。
+- (A) `justify-center` は主軸（縦）方向の中央寄せです。横方向は初期値の `stretch`（横いっぱいに伸ばす）のままなので、ボタンが箱の幅いっぱいに広がります。
+- (C) `text-center` は「箱の中の**文字**を中央に寄せる」クラスで、ボタンという箱そのものの幅や位置は変わりません（横いっぱいに伸びたまま）。
 
 ---
