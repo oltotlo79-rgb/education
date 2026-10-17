@@ -25,9 +25,100 @@
 >
 > 例えるなら、命令的UIは「友達に道を教えるとき、最初の交差点を右、次の信号を左、3軒目の家…」と1手ずつ指示する方法。宣言的UIは「○○駅前の郵便局」と最終目的地だけ伝え、行き方はカーナビ（=React）に任せる方法です。
 
+### この章のゴールと地図
+
+この章はとても長いので、最初に「どこへ向かうのか」を確認しておきましょう。山登りの前に登山マップを見ておくのと同じで、「今どこにいて、頂上まであとどれくらいか」が分かっていると、途中で迷子になりません。
+
+**この章を読み終えると、次のことができるようになります。**
+
+1. JSX で画面の見た目を書き、`{ }` で変数や計算結果を埋め込める
+2. 画面を部品（コンポーネント）に分け、props でデータを親から子へ渡せる
+3. `useState` で「変わる値」を持ち、ボタンや入力欄の操作で画面を更新できる
+4. フォームの入力を state と同期させ（制御コンポーネント）、送信時に入力チェックができる
+5. `useEffect` が「いつ」実行されるかを説明しながら使える
+6. よくある間違い（state の直接変更・`onClick={f()}`・key の付け忘れ・依存配列の書き忘れ）を見つけて直せる
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 334" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-03-01" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="16" y="8" width="12" height="12" rx="2" fill="#eff6ff" stroke="#3b82f6"/>
+<text x="34" y="19" font-size="12" fill="#1e40af">見た目を書く</text>
+<rect x="130" y="8" width="12" height="12" rx="2" fill="#fff7ed" stroke="#f97316"/>
+<text x="148" y="19" font-size="12" fill="#c2410c">部品と状態</text>
+<rect x="232" y="8" width="12" height="12" rx="2" fill="#ecfdf5" stroke="#10b981"/>
+<text x="250" y="19" font-size="12" fill="#047857">外の世界とつなぐ</text>
+<rect x="364" y="8" width="12" height="12" rx="2" fill="#f8fafc" stroke="#64748b"/>
+<text x="382" y="19" font-size="12" fill="#475569">確かめる</text>
+<rect x="16" y="44" width="116" height="68" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="74" y="68" font-size="12" font-weight="bold" fill="#1e40af" text-anchor="middle">節 0</text>
+<text x="74" y="92" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">HTML と DOM</text>
+<rect x="160" y="44" width="116" height="68" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="218" y="68" font-size="12" font-weight="bold" fill="#1e40af" text-anchor="middle">節 1</text>
+<text x="218" y="92" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">React とは</text>
+<rect x="304" y="44" width="116" height="68" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="362" y="68" font-size="12" font-weight="bold" fill="#1e40af" text-anchor="middle">節 2</text>
+<text x="362" y="92" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">JSX / TSX</text>
+<rect x="448" y="44" width="116" height="68" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="506" y="64" font-size="12" font-weight="bold" fill="#c2410c" text-anchor="middle">節 3</text>
+<text x="506" y="84" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">コンポーネント</text>
+<text x="506" y="102" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">と props</text>
+<rect x="592" y="44" width="116" height="68" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="650" y="64" font-size="12" font-weight="bold" fill="#c2410c" text-anchor="middle">節 4</text>
+<text x="650" y="84" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">State</text>
+<text x="650" y="102" font-size="12" fill="#475569" text-anchor="middle">（useState）</text>
+<rect x="592" y="168" width="116" height="68" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="650" y="192" font-size="12" font-weight="bold" fill="#c2410c" text-anchor="middle">節 5</text>
+<text x="650" y="216" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">イベント</text>
+<rect x="448" y="168" width="116" height="68" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="506" y="188" font-size="12" font-weight="bold" fill="#047857" text-anchor="middle">節 6</text>
+<text x="506" y="208" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">useEffect と</text>
+<text x="506" y="226" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">各種フック</text>
+<rect x="304" y="168" width="116" height="68" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="362" y="192" font-size="12" font-weight="bold" fill="#047857" text-anchor="middle">節 7</text>
+<text x="362" y="216" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">カスタムフック</text>
+<rect x="160" y="168" width="116" height="68" rx="10" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>
+<text x="218" y="192" font-size="12" font-weight="bold" fill="#475569" text-anchor="middle">節 8</text>
+<text x="218" y="216" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">よくあるミス</text>
+<rect x="16" y="168" width="116" height="68" rx="10" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>
+<text x="74" y="192" font-size="12" font-weight="bold" fill="#475569" text-anchor="middle">章末</text>
+<text x="74" y="216" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">練習問題</text>
+<line x1="132" y1="78" x2="158" y2="78" stroke="#475569" stroke-width="2" marker-end="url(#ar-03-01)"/>
+<line x1="276" y1="78" x2="302" y2="78" stroke="#475569" stroke-width="2" marker-end="url(#ar-03-01)"/>
+<line x1="420" y1="78" x2="446" y2="78" stroke="#475569" stroke-width="2" marker-end="url(#ar-03-01)"/>
+<line x1="564" y1="78" x2="590" y2="78" stroke="#475569" stroke-width="2" marker-end="url(#ar-03-01)"/>
+<line x1="650" y1="112" x2="650" y2="166" stroke="#475569" stroke-width="2" marker-end="url(#ar-03-01)"/>
+<line x1="592" y1="202" x2="566" y2="202" stroke="#475569" stroke-width="2" marker-end="url(#ar-03-01)"/>
+<line x1="448" y1="202" x2="422" y2="202" stroke="#475569" stroke-width="2" marker-end="url(#ar-03-01)"/>
+<line x1="304" y1="202" x2="278" y2="202" stroke="#475569" stroke-width="2" marker-end="url(#ar-03-01)"/>
+<line x1="160" y1="202" x2="134" y2="202" stroke="#475569" stroke-width="2" marker-end="url(#ar-03-01)"/>
+<line x1="74" y1="236" x2="74" y2="264" stroke="#475569" stroke-width="2" marker-end="url(#ar-03-01)"/>
+<rect x="16" y="266" width="692" height="58" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+<text x="362" y="290" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">ゴール: 第7章の書籍管理アプリのコードを「読める・直せる」ようになる</text>
+<text x="362" y="312" font-size="12" fill="#475569" text-anchor="middle">一覧の部品（BookCard）は節2〜3、登録フォーム（BookForm）は節4〜5の知識でできています</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図3-1: この章の学習地図。上の段を左から右へ、下の段を右から左へ進みます</div>
+</div>
+
+**この章の知識が、このあとどこで使われるか:**
+
+| この章の節 | 学ぶこと | このあと登場する場所 |
+|---|---|---|
+| 2〜3（JSX・コンポーネント・props） | 見た目の書き方、部品への分割、データの受け渡し | 第7章の一覧画面の部品（`BookCard`・`RatingStars`・`StatusBadge` など） |
+| 4〜5（state・イベント） | 変わる値の保持、入力フォーム、送信 | 第7章の登録フォーム `BookForm`、第8章の編集・削除ボタン |
+| 6〜7（useEffect・各種フック） | 表示したあとに動く処理、後片付け、ロジックの再利用 | タイマーやイベント監視など「ブラウザでしかできない処理」（データ取得の主役は第4章で学ぶ Server Component） |
+| 8（よくあるミス） | バグの見つけ方と直し方 | エラーが出たときの原因探し全般 |
+
+**この章の読み進め方:** 各サンプルは「**▼ このコードがやること（日本語の説明）→ コード → 実行結果 → 1つずつ分解した解説**」の順に並んでいます。最初はコードを細かく読まず、まず日本語の説明と実行結果だけを読んで「何が起きるのか」をつかみ、そのあとで解説を読むと理解しやすくなります。途中の **つまずきポイント** は、初心者が実際によくハマる失敗を「NG（ダメな書き方）→ OK（正しい書き方）」で並べたものです。
+
+> **ヒント（この章のコードの動かし方）:** `▼ 実行結果` が付いている `.ts` ファイルのサンプルは、Node.js（v22.18 以降。本書では v25 で確認）で `node ファイル名.ts` と実行すると、同じ結果が出ます（Node.js が型注釈を取り除いてから実行してくれます）。`react` を `import` しているサンプルは、空のフォルダで `npm init -y` → `npm pkg set type=module` → `npm install react react-dom` を実行してから試してください。画面を持つ `.tsx` のコンポーネントは、第6章で作る Next.js プロジェクトに `app/practice/page.tsx` のようなファイルを作り、1行目に `"use client";` と書き、試したいコンポーネントに `export default` を付けて貼り付けると、`http://localhost:3000/practice` で動きを確認できます（`"use client"` の意味は第4章で学びます）。
+
 ---
 
 ## 目次
+
+- [この章のゴールと地図](#この章のゴールと地図)
 
 0. [前提知識: HTMLとDOMの超基礎](#0-前提知識-htmlとdomの超基礎)
 1. [React とは](#1-react-とは)
@@ -43,6 +134,7 @@
     - [6.10 useReducer（複数のstateをまとめる）](#610-usereducer複数のstateをまとめる)
 7. [カスタムフック](#7-カスタムフック)
 8. [よくあるミスと対処法](#8-よくあるミスと対処法)
+9. [練習問題（解答・解説つき）](#練習問題解答解説つき)
 
 ---
 
@@ -204,6 +296,85 @@ React の最大の特徴は **「コンポーネント」**（Component：コン
 - **再利用できる**: `BookCard` は何度でも使い回せる
 - **組み合わせできる**: 小さなコンポーネントを組み合わせて大きなコンポーネントを作る
 
+上の木構造を、実際のブラウザ画面に重ねてみると次のようになります。色付きの枠1つ1つが「コンポーネント」です。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 420" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<rect x="10" y="10" width="700" height="400" rx="10" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+<path d="M10,42 L10,20 Q10,10 20,10 L700,10 Q710,10 710,20 L710,42 Z" fill="#e2e8f0"/>
+<circle cx="30" cy="26" r="5" fill="#f87171"/>
+<circle cx="46" cy="26" r="5" fill="#fbbf24"/>
+<circle cx="62" cy="26" r="5" fill="#34d399"/>
+<rect x="84" y="16" width="320" height="20" rx="10" fill="#ffffff"/>
+<text x="98" y="31" font-size="12" fill="#475569">localhost:3000</text>
+<rect x="30" y="62" width="660" height="40" rx="6" fill="#1e40af"/>
+<text x="46" y="88" font-size="15" font-weight="bold" fill="#ffffff">書籍管理アプリ</text>
+<text x="580" y="87" font-size="12" fill="#ffffff">一覧</text>
+<text x="626" y="87" font-size="12" fill="#ffffff">登録</text>
+<rect x="24" y="56" width="672" height="52" rx="8" fill="none" stroke="#10b981" stroke-width="2" stroke-dasharray="6 4"/>
+<rect x="600" y="45" width="90" height="20" rx="10" fill="#10b981"/>
+<text x="645" y="59" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">Header</text>
+<rect x="34" y="132" width="350" height="30" rx="6" fill="#ffffff" stroke="#94a3b8"/>
+<text x="46" y="152" font-size="12" fill="#94a3b8">タイトルで検索…</text>
+<rect x="392" y="132" width="66" height="30" rx="6" fill="#3b82f6"/>
+<text x="425" y="152" font-size="13" fill="#ffffff" text-anchor="middle">検索</text>
+<rect x="24" y="124" width="444" height="46" rx="8" fill="none" stroke="#3b82f6" stroke-width="2" stroke-dasharray="6 4"/>
+<rect x="364" y="114" width="96" height="20" rx="10" fill="#3b82f6"/>
+<text x="412" y="128" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">SearchBar</text>
+<rect x="24" y="192" width="444" height="206" rx="8" fill="none" stroke="#f59e0b" stroke-width="2" stroke-dasharray="6 4"/>
+<rect x="34" y="183" width="84" height="20" rx="10" fill="#f59e0b"/>
+<text x="76" y="197" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">BookList</text>
+<rect x="34" y="214" width="136" height="174" rx="8" fill="#ffffff" stroke="#ef4444" stroke-width="1.5"/>
+<rect x="44" y="226" width="116" height="68" rx="4" fill="#e2e8f0"/>
+<text x="102" y="265" font-size="12" fill="#64748b" text-anchor="middle">表紙</text>
+<text x="44" y="314" font-size="13" font-weight="bold" fill="#0f172a">React入門</text>
+<text x="44" y="334" font-size="12" fill="#64748b">田中太郎</text>
+<text x="44" y="354" font-size="12" fill="#0f172a">¥2,800</text>
+<rect x="44" y="362" width="56" height="20" rx="4" fill="#fee2e2"/>
+<text x="72" y="376" font-size="12" fill="#b91c1c" text-anchor="middle">削除</text>
+<rect x="64" y="205" width="80" height="20" rx="10" fill="#ef4444"/>
+<text x="104" y="219" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">BookCard</text>
+<rect x="178" y="214" width="136" height="174" rx="8" fill="#ffffff" stroke="#ef4444" stroke-width="1.5"/>
+<rect x="188" y="226" width="116" height="68" rx="4" fill="#e2e8f0"/>
+<text x="246" y="265" font-size="12" fill="#64748b" text-anchor="middle">表紙</text>
+<text x="188" y="314" font-size="13" font-weight="bold" fill="#0f172a">TypeScript実践</text>
+<text x="188" y="334" font-size="12" fill="#64748b">鈴木花子</text>
+<text x="188" y="354" font-size="12" fill="#0f172a">¥3,200</text>
+<rect x="188" y="362" width="56" height="20" rx="4" fill="#fee2e2"/>
+<text x="216" y="376" font-size="12" fill="#b91c1c" text-anchor="middle">削除</text>
+<rect x="208" y="205" width="80" height="20" rx="10" fill="#ef4444"/>
+<text x="248" y="219" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">BookCard</text>
+<rect x="322" y="214" width="136" height="174" rx="8" fill="#ffffff" stroke="#ef4444" stroke-width="1.5"/>
+<rect x="332" y="226" width="116" height="68" rx="4" fill="#e2e8f0"/>
+<text x="390" y="265" font-size="12" fill="#64748b" text-anchor="middle">表紙</text>
+<text x="332" y="314" font-size="13" font-weight="bold" fill="#0f172a">Next.js徹底解説</text>
+<text x="332" y="334" font-size="12" fill="#64748b">佐藤一郎</text>
+<text x="332" y="354" font-size="12" fill="#0f172a">¥3,500</text>
+<rect x="332" y="362" width="56" height="20" rx="4" fill="#fee2e2"/>
+<text x="360" y="376" font-size="12" fill="#b91c1c" text-anchor="middle">削除</text>
+<rect x="352" y="205" width="80" height="20" rx="10" fill="#ef4444"/>
+<text x="392" y="219" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">BookCard</text>
+<rect x="494" y="140" width="192" height="248" rx="8" fill="#f8fafc" stroke="#cbd5e1"/>
+<text x="508" y="166" font-size="14" font-weight="bold" fill="#0f172a">本を登録</text>
+<text x="508" y="192" font-size="12" fill="#475569">タイトル</text>
+<rect x="508" y="198" width="164" height="26" rx="4" fill="#ffffff" stroke="#94a3b8"/>
+<text x="508" y="244" font-size="12" fill="#475569">著者</text>
+<rect x="508" y="250" width="164" height="26" rx="4" fill="#ffffff" stroke="#94a3b8"/>
+<text x="508" y="296" font-size="12" fill="#475569">価格</text>
+<rect x="508" y="302" width="164" height="26" rx="4" fill="#ffffff" stroke="#94a3b8"/>
+<rect x="508" y="344" width="164" height="30" rx="6" fill="#10b981"/>
+<text x="590" y="364" font-size="13" fill="#ffffff" text-anchor="middle">登録する</text>
+<rect x="484" y="124" width="212" height="274" rx="8" fill="none" stroke="#3b82f6" stroke-width="2" stroke-dasharray="6 4"/>
+<rect x="580" y="114" width="108" height="20" rx="10" fill="#3b82f6"/>
+<text x="634" y="128" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">AddBookForm</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図3-2: 書籍管理アプリの画面イメージ。点線や色枠で囲んだ1つ1つがコンポーネント（部品）です</div>
+</div>
+
+画面をよく見ると、`BookCard` が3つ並んでいます。これは「本のカード」という**1つの設計図（コンポーネント）** に、3冊それぞれ違うデータ（タイトル・著者・価格）を渡して、3回使っているからです。データの渡し方（props）は 3.2 で学びます。
+
+> **ヒント（画面をコンポーネントに分けるコツ）:** 完成した画面のスクリーンショットに、ペンで枠を描き込んでみましょう。枠を描く目安は2つです。①**同じ形がくり返されている所**（本のカードが何枚も並ぶ、など）、②**役割に名前を付けられる所**（「検索欄」「登録フォーム」など）。枠に付けた名前が、そのままコンポーネント名の候補になります。
+
 ### 1.2 仮想DOM の仕組み
 
 ブラウザが持つ **DOM（Document Object Model）** を直接操作すると、非常に遅くなります。React は「仮想DOM（Virtual DOM）」という仕組みを使って、この問題を解決します。
@@ -339,6 +510,147 @@ const element = React.createElement("h1", null, "こんにちは、React！");
 
 JSX のおかげで、UI の構造を直感的に記述できます。なお、ブラウザがコードを動かす前に「JSX → JavaScript」への変換が必ず走っている、というのは重要なポイントです。エラーメッセージや devtools の表示で `createElement` が出てきても驚かないようにしましょう。
 
+JSX が画面に表示されるまでの流れを、絵で確認しておきましょう。たとえるなら、JSX は「料理の注文票」です。注文票（JSX）は厨房向けの伝票（`createElement` の呼び出し）に書き直され、それをもとに「料理の設計メモ」（React 要素）が作られ、最後にコック（React DOM）が実際の料理（画面の DOM）を作ります。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 376" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-03-02" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<text x="16" y="30" font-size="13" font-weight="bold" fill="#1e40af">① あなたが書く JSX</text>
+<rect x="16" y="40" width="284" height="120" rx="8" fill="#0f172a"/>
+<text x="36" y="80" font-size="13" fill="#e2e8f0" font-family="Consolas, Cascadia Mono, monospace"><tspan fill="#f59e0b">&lt;h1</tspan> <tspan fill="#93c5fd">className</tspan>=<tspan fill="#fcd34d">"title"</tspan><tspan fill="#f59e0b">&gt;</tspan></text>
+<text x="56" y="104" font-size="13" fill="#e2e8f0">こんにちは</text>
+<text x="36" y="128" font-size="13" fill="#f59e0b" font-family="Consolas, Cascadia Mono, monospace">&lt;/h1&gt;</text>
+<text x="360" y="76" font-size="12" fill="#475569" text-anchor="middle">ビルドツールが</text>
+<text x="360" y="92" font-size="12" fill="#475569" text-anchor="middle">自動で変換</text>
+<line x1="300" y1="102" x2="418" y2="102" stroke="#475569" stroke-width="2" marker-end="url(#ar-03-02)"/>
+<text x="420" y="30" font-size="13" font-weight="bold" fill="#c2410c">② 変換後の JavaScript</text>
+<rect x="420" y="40" width="284" height="120" rx="8" fill="#0f172a"/>
+<text x="436" y="66" font-size="12.5" fill="#60a5fa" font-family="Consolas, Cascadia Mono, monospace">createElement(</text>
+<text x="456" y="86" font-size="12.5" fill="#fcd34d" font-family="Consolas, Cascadia Mono, monospace">"h1",</text>
+<text x="456" y="106" font-size="12.5" fill="#e2e8f0" font-family="Consolas, Cascadia Mono, monospace">{ className: <tspan fill="#fcd34d">"title"</tspan> },</text>
+<text x="456" y="126" font-size="12.5" fill="#fcd34d">"こんにちは"</text>
+<text x="436" y="146" font-size="12.5" fill="#60a5fa" font-family="Consolas, Cascadia Mono, monospace">)</text>
+<path d="M562,160 L562,184 L262,184 L262,212" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#ar-03-02)"/>
+<text x="412" y="178" font-size="12" fill="#475569" text-anchor="middle">実行すると（関数を呼ぶと）</text>
+<text x="16" y="206" font-size="13" font-weight="bold" fill="#047857">③ React 要素（ただのオブジェクト）</text>
+<rect x="16" y="214" width="284" height="150" rx="8" fill="#0f172a"/>
+<text x="32" y="238" font-size="12.5" fill="#e2e8f0" font-family="Consolas, Cascadia Mono, monospace">{</text>
+<text x="48" y="258" font-size="12.5" fill="#e2e8f0" font-family="Consolas, Cascadia Mono, monospace">type: <tspan fill="#fcd34d">"h1"</tspan>,</text>
+<text x="48" y="278" font-size="12.5" fill="#e2e8f0" font-family="Consolas, Cascadia Mono, monospace">props: {</text>
+<text x="64" y="298" font-size="12.5" fill="#e2e8f0" font-family="Consolas, Cascadia Mono, monospace">className: <tspan fill="#fcd34d">"title"</tspan>,</text>
+<text x="64" y="318" font-size="12.5" fill="#e2e8f0">children: <tspan fill="#fcd34d">"こんにちは"</tspan></text>
+<text x="48" y="338" font-size="12.5" fill="#e2e8f0" font-family="Consolas, Cascadia Mono, monospace">}</text>
+<text x="32" y="356" font-size="12.5" fill="#e2e8f0" font-family="Consolas, Cascadia Mono, monospace">}</text>
+<text x="360" y="262" font-size="12" fill="#475569" text-anchor="middle">React DOM が</text>
+<text x="360" y="278" font-size="12" fill="#475569" text-anchor="middle">画面に反映</text>
+<line x1="300" y1="290" x2="418" y2="290" stroke="#475569" stroke-width="2" marker-end="url(#ar-03-02)"/>
+<text x="420" y="206" font-size="13" font-weight="bold" fill="#475569">④ ブラウザの画面（DOM）</text>
+<rect x="420" y="214" width="284" height="150" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+<path d="M420,236 L420,222 Q420,214 428,214 L696,214 Q704,214 704,222 L704,236 Z" fill="#e2e8f0"/>
+<circle cx="436" cy="225" r="4" fill="#f87171"/>
+<circle cx="450" cy="225" r="4" fill="#fbbf24"/>
+<circle cx="464" cy="225" r="4" fill="#34d399"/>
+<text x="440" y="282" font-size="26" font-weight="bold" fill="#0f172a">こんにちは</text>
+<text x="440" y="320" font-size="12" fill="#64748b" font-family="Consolas, Cascadia Mono, monospace">&lt;h1 class="title"&gt;</text>
+<text x="440" y="344" font-size="12" fill="#c2410c">className は HTML では class になる</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図3-3: JSX が画面に表示されるまで。JSX は関数呼び出しに変換され、その結果の「オブジェクト」を React が DOM に反映します</div>
+</div>
+
+#### JSX の正体を Node.js で確かめる
+
+> **▼ このコードがやること（先に日本語で）:** JSX を使わずに、変換後の書き方（`createElement`）を直接呼び出して「React 要素」を作り、その中身を表示します。さらに、その React 要素から HTML の文字列を作ってみます。「JSX は見た目こそ HTML だが、正体は**ただの JavaScript のオブジェクト**」ということを、自分の目で確かめるのが目的です。
+
+```ts
+// ファイル名: jsx-object.ts
+// React 本体から createElement（JSX の正体）と Children を取り込む
+import { createElement, Children } from "react";
+// React 要素を HTML の文字列に変換する関数を取り込む
+import { renderToStaticMarkup } from "react-dom/server";
+
+// (1) <h1 className="title">こんにちは</h1> と同じ意味の呼び出し
+const heading = createElement("h1", { className: "title" }, "こんにちは");
+
+// React 要素の中身をのぞいてみる
+console.log("type :", heading.type);
+console.log("props:", heading.props);
+
+// (2) 入れ子の JSX は、createElement の入れ子になる
+// <ul><li>りんご</li><li>バナナ</li></ul> と同じ意味
+const list = createElement(
+  "ul",
+  null,
+  createElement("li", { key: "a" }, "りんご"),
+  createElement("li", { key: "b" }, "バナナ"),
+);
+console.log("ul の子要素の数:", Children.count(list.props.children));
+
+// (3) React 要素（ただのオブジェクト）から HTML を作る
+console.log(renderToStaticMarkup(heading));
+console.log(renderToStaticMarkup(list));
+```
+
+**▼ 実行方法**（空のフォルダで実行します。最初の3行は1回だけで OK）
+
+```bash
+npm init -y
+npm pkg set type=module
+npm install react react-dom
+node jsx-object.ts
+```
+
+**▼ 実行結果**
+
+```text
+type : h1
+props: { className: 'title', children: 'こんにちは' }
+ul の子要素の数: 2
+<h1 class="title">こんにちは</h1>
+<ul><li>りんご</li><li>バナナ</li></ul>
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: createElement で React 要素を作る
+
+```ts
+const heading = createElement("h1", { className: "title" }, "こんにちは");
+```
+
+- `createElement(タグ名, 属性のオブジェクト, 中身)` は、JSX の `<h1 className="title">こんにちは</h1>` をビルドツールが変換した**あとの姿**です。
+- 戻り値の `heading` は画面そのものではなく、「h1 を作ってほしい」という**設計メモ（React 要素）** です。この時点では、まだどこにも表示されていません。
+
+> **用語:** **React 要素（React element）** … 「どのタグを、どんな属性と中身で作るか」を書いたただのオブジェクト。JSX を書くと、この React 要素が作られる。
+
+---
+
+##### 解説2: React 要素の中身は type と props
+
+```ts
+console.log("type :", heading.type);
+console.log("props:", heading.props);
+```
+
+- `type` には `"h1"` というタグ名、`props` には属性（`className`）と中身（`children`）がまとめて入っています。
+- タグで囲んだ中身が `children` という名前で `props` に入る点に注目してください。これが 3.2 で学ぶ **children props** の正体です。
+- 実際の React 要素には `key` などほかの項目もありますが、まずは「`type` と `props` を持つオブジェクト」と覚えれば十分です。
+
+---
+
+##### 解説3: React 要素から HTML ができる
+
+```ts
+console.log(renderToStaticMarkup(heading));
+```
+
+- `renderToStaticMarkup` は、React 要素（設計メモ）を HTML の文字列に変換する関数です（Next.js がサーバーで HTML を作るときも、似た仕組みが動いています）。
+- 結果の `<h1 class="title">` を見ると、JSX で書いた `className` が HTML の `class` に変わっています。JSX で `class` ではなく `className` と書く理由（2.2 で説明）が、ここで確かめられます。
+- `list` では `key` を渡しましたが、HTML には出てきません。`key` は React が内部で使うだけの目印だからです（8.3 で詳しく学びます）。
+
+> **用語:** **レンダリング（rendering）** … React 要素から実際の画面（DOM や HTML）を作ること。
+
 ### 2.2 基本的な構文
 
 #### 最小の React コンポーネント
@@ -407,9 +719,9 @@ JSX では、**必ず1つのルート要素** で囲む必要があります。
 // 並列に複数の要素を書くと「どれが戻り値？」と JS が判断できずエラーになる。
 function App() {
   return (
-    {/* ← 1つ目のルート要素 */}
+    // ← 1つ目のルート要素
     <h1>タイトル</h1>
-    {/* ← 2つ目のルート要素 → ❌ エラー */}
+    // ← 2つ目のルート要素 → ❌ エラー
     <p>本文</p>
   );
 }
@@ -435,12 +747,13 @@ function App() {
 }
 ```
 
-> **▼ ブラウザでの表示:**
->
-> ```
-> タイトル              ← <h1> 大きな見出し
-> 本文                  ← <p>  通常の段落
-> ```
+**▼ ブラウザでの表示:**
+
+```text
+タイトル              ← <h1> 大きな見出し
+本文                  ← <p>  通常の段落
+```
+
 > ただし HTML 出力に余計な `<div>` タグが1つ増える点に注意。
 
 ```tsx
@@ -450,11 +763,11 @@ function App() {
 // Fragment は「論理的に1つにまとめるが、DOMには何も出さない」特殊なラッパー。
 function App() {
   return (
-    {/* 開始タグ: 名前のないタグ */}
+    // 開始タグ: 名前のないタグ（return の直後は JSX の外なので // でコメントを書く）
     <>
       <h1>タイトル</h1>
       <p>本文</p>
-    {/* 終了タグ */}
+      {/* 終了タグの直前は JSX の中なので、この形でコメントを書く */}
     </>
   );
 }
@@ -470,11 +783,12 @@ function App() {
 
 ```tsx
   return (
-    {/* 開始タグ: 名前のないタグ */}
+    // 開始タグ: 名前のないタグ（return の直後は JSX の外なので // でコメントを書く）
     <>
 ```
 
 - JSXには「**returnで返せるのは1つの要素だけ**」というルールがあります。複数の要素を並べたいときは、必ず何か1つの要素で包む必要があります。
+- `return (` の直後は、まだ JSX の「外」なので、コメントは普通の JavaScript と同じ `//` で書きます。`{/* */}` 形式のコメントが使えるのは、`<>` や `<div>` などのタグの「内側」だけです（外側に書くと構文エラーになります）。
 - `<>` は **Fragment（フラグメント）** の開始タグです。`<div>` と違い「論理的に1つにまとめるが、実際のHTMLには何も出力しない」特殊な空タグです。
 - `( )` で囲んでいるのは、JSXを複数行に分けて書くためです（returnの直後で改行すると別の意味になるため、括弧で1つの式にまとめています）。
 
@@ -487,7 +801,7 @@ function App() {
 ```tsx
       <h1>タイトル</h1>
       <p>本文</p>
-    {/* 終了タグ */}
+      {/* 終了タグの直前は JSX の中なので、この形でコメントを書く */}
     </>
   );
 ```
@@ -551,17 +865,17 @@ function App() {
 }
 ```
 
-> **▼ ブラウザでの表示:**
->
-> ```
-> 名前: [               ] ← input ボックス
->
-> 赤いテキスト              ← color:red, font-size:16px で表示
->
-> [ロゴ画像]
->
-> [               ]        ← 別の input ボックス
-> ```
+**▼ ブラウザでの表示:**
+
+```text
+名前: [               ] ← input ボックス
+
+赤いテキスト              ← color:red, font-size:16px で表示
+
+[ロゴ画像]
+
+[               ]        ← 別の input ボックス
+```
 
 #### ▼ コードを1つずつ分解して解説
 
@@ -680,17 +994,17 @@ function App() {
 }
 ```
 
-> **▼ ブラウザでの表示（2026年5月10日に開いた場合の例）:**
->
-> ```
-> ようこそ、田中太郎さん！      ← <h1> 大きな見出し
->
-> 年齢: 25歳（来年は26歳）
->
-> 今日の日付: 2026/5/10
->
-> 田中太郎さんは25歳です
-> ```
+**▼ ブラウザでの表示（2026年5月10日に開いた場合の例）:**
+
+```text
+ようこそ、田中太郎さん！      ← <h1> 大きな見出し
+
+年齢: 25歳（来年は26歳）
+
+今日の日付: 2026/5/10
+
+田中太郎さんは25歳です
+```
 
 #### ▼ コードを1つずつ分解して解説
 
@@ -837,13 +1151,13 @@ function Notification() {
 }
 ```
 
-> **▼ ブラウザでの表示:**
->
-> ```
-> ダッシュボード                          ← <h1>
-> 未読メッセージが5件あります。           ← (a) は表示される
->                                         ← (b) hasError=false なので非表示
-> ```
+**▼ ブラウザでの表示:**
+
+```text
+ダッシュボード                          ← <h1>
+未読メッセージが5件あります。           ← (a) は表示される
+                                        ← (b) hasError=false なので非表示
+```
 
 **注意**: `&&` 演算子を使う際、左辺が数値の `0` だと `0` がそのまま画面に表示されてしまいます。
 
@@ -1001,7 +1315,8 @@ type Book = {
   author: string;
   // 税込価格
   price: number;
-  isAvailable: boolean;// 在庫があるか（true=あり, false=なし）
+  // 在庫があるか（true=あり, false=なし）
+  isAvailable: boolean;
 };
 
 function BookList() {
@@ -1054,26 +1369,26 @@ function BookList() {
 }
 ```
 
-> **▼ ブラウザでの表示:**
->
-> ```
-> 書籍一覧
-> ──────────────────────────────────
-> React入門
-> 著者: 田中太郎
-> 価格: ¥2,800
-> 状態: 在庫あり          ← 緑色
-> ──────────────────────────────────
-> TypeScript実践
-> 著者: 鈴木花子
-> 価格: ¥3,200
-> 状態: 在庫なし          ← 赤色
-> ──────────────────────────────────
-> Next.js徹底解説
-> 著者: 佐藤一郎
-> 価格: ¥3,500
-> 状態: 在庫あり          ← 緑色
-> ```
+**▼ ブラウザでの表示:**
+
+```text
+書籍一覧
+──────────────────────────────────
+React入門
+著者: 田中太郎
+価格: ¥2,800
+状態: 在庫あり          ← 緑色
+──────────────────────────────────
+TypeScript実践
+著者: 鈴木花子
+価格: ¥3,200
+状態: 在庫なし          ← 赤色
+──────────────────────────────────
+Next.js徹底解説
+著者: 佐藤一郎
+価格: ¥3,500
+状態: 在庫あり          ← 緑色
+```
 
 #### ▼ コードを1つずつ分解して解説
 
@@ -1089,7 +1404,8 @@ type Book = {
   author: string;
   // 税込価格
   price: number;
-  isAvailable: boolean;// 在庫があるか（true=あり, false=なし）
+  // 在庫があるか（true=あり, false=なし）
+  isAvailable: boolean;
 };
 ```
 
@@ -1157,6 +1473,30 @@ type Book = {
 ---
 
 **重要**: `key` プロパティ（key prop：キー プロップ。Reactがリスト要素を識別するための特別な属性）には、配列内で一意（ユニーク）な値を指定します。データベースから取得した `id` がベストです。`index` は最後の手段です（要素の並び替え・追加・削除で不具合の原因になります）。`key` は React 内部の差分計算（reconciliation）専用で、子コンポーネントから `props.key` として読むことはできません。
+
+> **つまずきポイント（map の key 忘れ）:** `map` で並べた要素に `key` を付け忘れても、画面には普通に表示されます。そのため気づきにくいのですが、ブラウザの開発者ツールの Console には、React 19 では次のような警告が出ています（`FruitList` の部分は、あなたのコンポーネント名になります）。「画面は出ているから大丈夫」と放置すると、8.3 で見るような「入力した文字が別の行に移る」バグの原因になります。
+
+```text
+Each child in a list should have a unique "key" prop.
+
+Check the render method of `FruitList`. See https://react.dev/link/warning-keys for more information.
+```
+
+```tsx
+// ❌ NG: map で返す <li> に key が無い（表示はされるが Console に警告が出る）
+{fruits.map((fruit) => (
+  <li>{fruit}</li>
+))}
+```
+
+```tsx
+// ✅ OK: map で返す「一番外側の要素」に、重複しない値を key として付ける
+{fruits.map((fruit) => (
+  <li key={fruit}>{fruit}</li>
+))}
+```
+
+> key は「`map` の中で `return` している一番外側の要素」に付けます。`<li>` の中の `<span>` に付けても意味がありません。また、ここでは果物の名前が重複しない前提で `fruit` を key にしていますが、データに `id` があるなら `id` を使うのが一番安全です。
 
 #### フィルタリングと map の組み合わせ
 
@@ -1366,7 +1706,7 @@ function App() {
 
 > **propsドリリング**（Props Drilling：プロップスドリリング）について: 親 → 子 → 孫… と何階層も同じ props を「素通し」で渡し続ける現象です。階層が深くなるとコード保守が辛くなるため、後の章で扱う **Context**（コンテキスト）や状態管理ライブラリで解決します。
 >
-> **リフトアップ**（Lifting State Up：状態を持ち上げる）について: 兄弟コンポーネント間で同じ state を共有したいとき、共通の親に state を「持ち上げ」、props と更新関数を子に配るパターンです。例えば「親が `items` を持ち、子A が読み出し、子B が更新」という構図にします。
+> **リフトアップ**（Lifting State Up：状態を持ち上げる）について: 兄弟コンポーネント間で同じ state を共有したいとき、共通の親に state を「持ち上げ」、props と更新関数を子に配るパターンです。例えば「親が `items` を持ち、子A が読み出し、子B が更新」という構図にします（state を学んだあと、5.5 で図と動くサンプルを使って詳しく説明します）。
 
 #### 基本的な Props
 
@@ -1409,14 +1749,14 @@ function App() {
 }
 ```
 
-> **▼ ブラウザでの表示:**
->
-> ```
-> こんにちは、田中さん！        ← <h1>
-> こんにちは、鈴木さん！        ← <h1>
-> こんにちは、佐藤さん！        ← <h1>
-> ```
->
+**▼ ブラウザでの表示:**
+
+```text
+こんにちは、田中さん！        ← <h1>
+こんにちは、鈴木さん！        ← <h1>
+こんにちは、佐藤さん！        ← <h1>
+```
+
 > 同じ Greeting コンポーネントが3回呼ばれ、それぞれ異なる name を受け取って描画されている。コンポーネントの再利用性がこれで実現できる。
 
 #### ▼ コードを1つずつ分解して解説
@@ -2355,6 +2695,51 @@ function Counter() {
 
 > この結果、ボタンをクリックしても画面には **「カウント: 0」** のまま変わりません。コンソールには値が増えていきますが、React は変数の変化を検知できないのです。
 
+なぜこうなるのかを、たとえ話で考えてみましょう。コンポーネント関数は、画面を描くたびに**最初から最後まで実行し直される**「使い捨てのメモ用紙」のようなものです。`let count = 0;` と書いた変数はメモ用紙に書いた数字なので、描き直しのたびに新しい用紙になり、また 0 から始まります。一方 `useState` で作った state は、**React が用意したロッカーに預けた値**です。メモ用紙（関数）が何度新しくなっても、React がロッカーから最新の値を取り出して渡してくれます。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 290" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-03-03" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#f97316"/></marker>
+<marker id="ar-03-04" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#10b981"/></marker>
+</defs>
+<rect x="8" y="8" width="348" height="274" rx="12" fill="#fff7ed" stroke="#fed7aa"/>
+<text x="182" y="34" font-size="14" font-weight="bold" fill="#c2410c" text-anchor="middle">✕ 普通の変数（let）</text>
+<rect x="28" y="50" width="308" height="48" rx="8" fill="#ffffff" stroke="#f97316"/>
+<text x="40" y="70" font-size="13" font-weight="bold" fill="#0f172a">① Counter() が実行される</text>
+<text x="40" y="90" font-size="12" fill="#475569" font-family="Consolas, Cascadia Mono, monospace">let count = 0;</text>
+<line x1="182" y1="98" x2="182" y2="118" stroke="#f97316" stroke-width="2" marker-end="url(#ar-03-03)"/>
+<rect x="28" y="120" width="308" height="48" rx="8" fill="#ffffff" stroke="#f97316"/>
+<text x="40" y="140" font-size="13" font-weight="bold" fill="#0f172a">② クリック: count = count + 1</text>
+<text x="40" y="160" font-size="12" fill="#475569">変数は 1 になるが、画面は「0」のまま</text>
+<line x1="182" y1="168" x2="182" y2="188" stroke="#f97316" stroke-width="2" marker-end="url(#ar-03-03)"/>
+<rect x="28" y="190" width="308" height="48" rx="8" fill="#ffffff" stroke="#f97316"/>
+<text x="40" y="210" font-size="13" font-weight="bold" fill="#0f172a">③ もう一度 Counter() が実行されると</text>
+<text x="40" y="230" font-size="12" fill="#475569">let count = 0 からやり直し → 0 に戻る</text>
+<text x="182" y="266" font-size="13" font-weight="bold" fill="#c2410c" text-anchor="middle">値を覚えておけず、画面も変わらない</text>
+<rect x="364" y="8" width="348" height="274" rx="12" fill="#ecfdf5" stroke="#a7f3d0"/>
+<text x="538" y="34" font-size="14" font-weight="bold" fill="#047857" text-anchor="middle">○ state（useState）</text>
+<rect x="384" y="50" width="308" height="48" rx="8" fill="#ffffff" stroke="#10b981"/>
+<text x="396" y="70" font-size="13" font-weight="bold" fill="#0f172a">① Counter() が実行される</text>
+<text x="396" y="90" font-size="12" fill="#475569" font-family="Consolas, Cascadia Mono, monospace">const [count, setCount] = useState(0);</text>
+<line x1="538" y1="98" x2="538" y2="118" stroke="#10b981" stroke-width="2" marker-end="url(#ar-03-04)"/>
+<rect x="384" y="120" width="308" height="48" rx="8" fill="#ffffff" stroke="#10b981"/>
+<text x="396" y="140" font-size="13" font-weight="bold" fill="#0f172a">② クリック: setCount(count + 1)</text>
+<text x="396" y="160" font-size="12" fill="#475569">React が「1」を預かり、再実行を予約する</text>
+<line x1="538" y1="168" x2="538" y2="188" stroke="#10b981" stroke-width="2" marker-end="url(#ar-03-04)"/>
+<rect x="384" y="190" width="308" height="48" rx="8" fill="#ffffff" stroke="#10b981"/>
+<text x="396" y="210" font-size="13" font-weight="bold" fill="#0f172a">③ React が Counter() を再実行</text>
+<text x="396" y="230" font-size="12" fill="#475569">useState(0) が 1 を返す → 画面は「1」</text>
+<text x="538" y="266" font-size="13" font-weight="bold" fill="#047857" text-anchor="middle">値を覚えていて、画面も自動で変わる</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図3-4: 普通の変数と state の違い。state の値は React が預かっていて、再実行のたびに最新の値を返してくれます</div>
+</div>
+
+ポイントは2つです。
+
+- 普通の変数を書き換えても、React には「画面を描き直して」という合図が届きません（図の左②）。
+- `setCount` は「値を預け直す」と同時に「描き直して」という合図を React に送る関数です（図の右②）。だから画面が変わります。
+
 ### 4.2 useState の使い方
 
 > **▼ このコードがやること（先に日本語で）:** 「ボタンを押すと数字が増えたり減ったりする**カウンター**」を作ります。これはReactで最も基本的な「動く部品」です。カギは `useState`——「**コンポーネントが値を覚えておく**ための道具」です。`const [count, setCount] = useState(0)` の一行で「今の値（`count`）」と「値を変える関数（`setCount`）」をセットで受け取り、ボタンが押されたら `setCount` を呼んで値を変えます。**`setCount` を呼ぶと、Reactが自動で画面を描き直してくれる**——この「値を変えたら画面も自動更新」が `useState` の最大のポイントです。
@@ -2545,6 +2930,33 @@ const [isVisible, setIsVisible] = useState(false);
 const [user, setUser] = useState<User | null>(null);
 ```
 
+> **つまずきポイント（フックを if の中で呼ぶ）:** `useState` などのフックは、**コンポーネントの一番上の階層で、毎回同じ順番で**呼ぶ決まりがあります（Rules of Hooks：フックのルール）。React は「1番目の useState」「2番目の useState」…と**呼ばれた順番**でロッカー（図3-4）を割り当てているので、`if` の中で呼ぶと、条件によって順番がずれて、別の state の値を取り出してしまうからです。第6章で作る Next.js プロジェクト（ESLint を有効にしたもの）では、ESLint（コードの書き方チェッカー）が次のエラーで教えてくれます。
+
+```text
+React Hook "useState" is called conditionally. React Hooks must be called in the exact same order in every component render
+```
+
+```tsx
+// ❌ NG: 条件によって useState が呼ばれたり呼ばれなかったりする
+function Greeting({ isLoggedIn }: { isLoggedIn: boolean }) {
+  if (isLoggedIn) {
+    const [name, setName] = useState("");
+  }
+  const [count, setCount] = useState(0);
+  return <p>{count}</p>;
+}
+```
+
+```tsx
+// ✅ OK: フックは必ず一番上で、毎回同じ順番で呼ぶ
+function Greeting({ isLoggedIn }: { isLoggedIn: boolean }) {
+  const [name, setName] = useState("");
+  const [count, setCount] = useState(0);
+  // 条件分岐は、フックを呼び終わったあと（表示の部分）で行う
+  return <p>{isLoggedIn ? `${name}さん: ${count}` : "ログインしてください"}</p>;
+}
+```
+
 ### 4.3 state の更新とリレンダリング
 
 <div style="max-width: 680px; margin: 20px auto; font-family: 'Segoe UI', sans-serif; background: #f8fafc; border-radius: 12px; padding: 24px; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
@@ -2654,6 +3066,44 @@ function Counter() {
 
 > この結果、ボタンをクリックすると **「カウント: 1」** になります。+2 になると期待しますが、同じレンダリング内では `count` は古い値（0）のままなので、両方とも `setCount(0 + 1)` = `setCount(1)` になります。
 
+この動きは「**レンダーごとのスナップショット（写真）**」と考えると分かりやすくなります。コンポーネント関数が1回実行されるたびに、その時点の state を写した写真が1枚撮られ、その回の関数の中（クリック時の処理も含む）では、ずっとその写真の値を見ています。`setCount` は写真を書き換えるのではなく、「次の写真ではこの値にしてね」と**予約**するだけです。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 268" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-03-05" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="16" y="40" width="190" height="160" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<path d="M16,68 L16,50 Q16,40 26,40 L196,40 Q206,40 206,50 L206,68 Z" fill="#3b82f6"/>
+<text x="111" y="59" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">1回目のレンダー</text>
+<text x="111" y="122" font-size="22" font-weight="bold" fill="#1e40af" text-anchor="middle" font-family="Consolas, Cascadia Mono, monospace">count = 0</text>
+<text x="111" y="158" font-size="12" fill="#475569" text-anchor="middle">この回の関数の中では</text>
+<text x="111" y="176" font-size="12" fill="#475569" text-anchor="middle">count はずっと 0</text>
+<line x1="206" y1="120" x2="238" y2="120" stroke="#475569" stroke-width="2" marker-end="url(#ar-03-05)"/>
+<rect x="240" y="40" width="240" height="160" rx="10" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>
+<path d="M240,68 L240,50 Q240,40 250,40 L470,40 Q480,40 480,50 L480,68 Z" fill="#64748b"/>
+<text x="360" y="59" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">クリック時の handleClick</text>
+<text x="252" y="90" font-size="12" fill="#0f172a" font-family="Consolas, Cascadia Mono, monospace">setCount(count + 1);</text>
+<text x="252" y="106" font-size="12" fill="#c2410c">→ 0 + 1 で「1 にして」と予約</text>
+<text x="252" y="130" font-size="12" fill="#0f172a" font-family="Consolas, Cascadia Mono, monospace">setCount(count + 1);</text>
+<text x="252" y="146" font-size="12" fill="#c2410c">→ まだ 0 なので、また「1 にして」</text>
+<text x="252" y="170" font-size="12" fill="#0f172a" font-family="Consolas, Cascadia Mono, monospace">console.log(count);</text>
+<text x="252" y="186" font-size="12" fill="#c2410c">→ 0 と表示（まだ変わらない）</text>
+<line x1="480" y1="120" x2="512" y2="120" stroke="#475569" stroke-width="2" marker-end="url(#ar-03-05)"/>
+<rect x="514" y="40" width="190" height="160" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<path d="M514,68 L514,50 Q514,40 524,40 L694,40 Q704,40 704,50 L704,68 Z" fill="#10b981"/>
+<text x="609" y="59" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">2回目のレンダー</text>
+<text x="609" y="122" font-size="22" font-weight="bold" fill="#047857" text-anchor="middle" font-family="Consolas, Cascadia Mono, monospace">count = 1</text>
+<text x="609" y="158" font-size="12" fill="#475569" text-anchor="middle">予約の結果は 1</text>
+<text x="609" y="176" font-size="12" fill="#475569" text-anchor="middle">（2 にはならない）</text>
+<text x="111" y="26" font-size="12" fill="#64748b" text-anchor="middle">時間の流れ →</text>
+<rect x="16" y="212" width="688" height="48" rx="8" fill="#ecfdf5" stroke="#10b981"/>
+<text x="360" y="232" font-size="12" fill="#047857" text-anchor="middle">関数型更新 setCount((prev) =&gt; prev + 1) を2回書くと、予約が 0 → 1 → 2 と順に計算され、</text>
+<text x="360" y="250" font-size="12" fill="#047857" text-anchor="middle">2回目のレンダーは count = 2 になる（prev には「1つ前の予約まで反映した値」が入る）</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図3-5: レンダーごとの「スナップショット」。1回のレンダーの中で、state の値は写真のように固定されています</div>
+</div>
+
 **解決策: 関数型更新を使う**
 
 `setXxx(値)` の代わりに `setXxx((prev) => 新しい値)` と書くと、React は「予約された変更を順番に適用」してくれます。`prev` には「これまでに予約された変更を全部反映した最新値」が渡されます。
@@ -2683,9 +3133,128 @@ function Counter() {
 
 > この結果、ボタンをクリックすると **「カウント: 2」** → **「カウント: 4」** → ... と2ずつ増えます。関数型更新なら、直前の最新値に基づいて計算されるため、正しく動作します。
 
+#### 「予約」の処理順を Node.js で確かめる
+
+> **▼ このコードがやること（先に日本語で）:** React の中で起きている「state 更新の予約」を、React を使わずに小さな模型で再現します。予約には「次の値そのもの（例: `1`）」と「前の値から次の値を作る関数（例: `(prev) => prev + 1`）」の2種類があり、React は予約を**書いた順番どおりに**処理します。3つのパターンで、次のレンダーの `count` がいくつになるかを計算します。
+
+```ts
+// ファイル名: state-queue.ts
+// React の「state 更新の予約」をまねした小さな模型
+// （React 本体のコードではなく、考え方をつかむためのものです）
+
+// 予約できるのは「次の値そのもの」か「前の値から次の値を作る関数」
+type Update = number | ((prev: number) => number);
+
+// 予約を前から順番に処理して、次のレンダーで使う値を求める
+function applyUpdates(current: number, queue: Update[]): number {
+  let value = current;
+  for (const update of queue) {
+    // 関数なら「ここまでの最新の値」を渡して計算し、値ならそのまま置き換える
+    value = typeof update === "function" ? update(value) : update;
+  }
+  return value;
+}
+
+// このレンダーの count は 0 で固定されている（スナップショット）
+const count = 0;
+
+// ---- パターンA: setCount(count + 1) を2回 ----
+const queueA: Update[] = [];
+// 1回目: count は 0 なので「1 にして」と予約
+queueA.push(count + 1);
+// 2回目: count はまだ 0 なので、また「1 にして」と予約
+queueA.push(count + 1);
+console.log("A: 予約の中身 =", queueA);
+console.log("A: 次のレンダーの count =", applyUpdates(count, queueA));
+
+// ---- パターンB: setCount((prev) => prev + 1) を2回 ----
+const queueB: Update[] = [];
+queueB.push((prev) => prev + 1);
+queueB.push((prev) => prev + 1);
+console.log("B: 次のレンダーの count =", applyUpdates(count, queueB));
+
+// ---- パターンC: setCount(5) のあとに setCount((prev) => prev * 2) ----
+const queueC: Update[] = [];
+queueC.push(5);
+queueC.push((prev) => prev * 2);
+console.log("C: 次のレンダーの count =", applyUpdates(count, queueC));
+```
+
+**▼ 実行結果**（`node state-queue.ts`）
+
+```text
+A: 予約の中身 = [ 1, 1 ]
+A: 次のレンダーの count = 1
+B: 次のレンダーの count = 2
+C: 次のレンダーの count = 10
+```
+
+この3つの結果は、本物の React で同じボタン処理を書いたときの結果（A は 1、B は 2、C は 10）と一致します。
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: 予約の2つの形を型で表す
+
+```ts
+type Update = number | ((prev: number) => number);
+```
+
+- `setCount(1)` のように**値**を渡す予約と、`setCount((prev) => prev + 1)` のように**関数**を渡す予約の2種類があることを、ユニオン型（`|`）で表しています。
+- 関数のほうの `prev` は「previous（前の）」の略で、「1つ前の予約まで反映した値」が入ります。
+
+---
+
+##### 解説2: 予約を順番に処理する
+
+```ts
+for (const update of queue) {
+  value = typeof update === "function" ? update(value) : update;
+}
+```
+
+- `typeof update === "function"` で「関数かどうか」を調べ、関数なら**ここまでの最新の値**を渡して呼び出し、値ならその値で置き換えます。
+- パターンA は予約が `[1, 1]` なので「1 にする → 1 にする」で結果は 1。値の予約は、それまでの計算を**上書き**してしまうことが分かります。
+- パターンC は「5 にする → 前の値（5）を2倍」で 10 になります。値と関数を混ぜても、書いた順に処理されます。
+
+---
+
+##### 解説3: count がずっと 0 なのがポイント
+
+```ts
+const count = 0;
+queueA.push(count + 1);
+queueA.push(count + 1);
+```
+
+- 模型でも `count` は `const` で 0 に固定しています。これが「1回のレンダーの中では state はスナップショット（写真）」という意味です。
+- だから `count + 1` は何回書いても `1` になります。前の値をもとに何度も更新したいときは、関数型更新 `(prev) => prev + 1` を使います。
+
+> **用語:** **関数型更新（updater function）** … `setXxx((prev) => 次の値)` のように、値の代わりに「前の値から次の値を計算する関数」を渡す書き方。
+
+<!-- -->
+
+> **つまずきポイント（set した直後に値を使う）:** `setCount` を呼んだ直後に `count` を使うと、まだ古い値のままです。「保存しました: 1件」のように**新しい値を使いたいときは、先に変数に計算しておき**、その変数を state 更新と表示の両方に使います。
+
+```tsx
+// ❌ NG: setCount の直後でも count は古い値（0 件のとき「0 件になりました」と出る）
+const handleAdd = () => {
+  setCount(count + 1);
+  alert(`${count} 件になりました`);
+};
+```
+
+```tsx
+// ✅ OK: 次の値を先に変数に入れて、state 更新と表示の両方に使う
+const handleAdd = () => {
+  const nextCount = count + 1;
+  setCount(nextCount);
+  alert(`${nextCount} 件になりました`);
+};
+```
+
 ### 4.4 オブジェクトの state
 
-> **▼ このコードがやること（先に日本語で）:** 1つの値（数字など）ではなく、「名前・メール・年齢…」を**まとめて持つオブジェクト**を state にする例です。ここで一番大事なのは更新のしかた——オブジェクトの一部だけを変えたいときも、**古いオブジェクトを直接書き換えてはいけません**。第3章で学んだ**スプレッド構文 `...`** で「今の全項目をコピー」してから、変えたい項目だけを上書きした**新しいオブジェクトを作って** `setXxx` に渡します。「直接いじらず、新しく作り替えて差し替える」がReactのstate更新の鉄則です（理由はコード内で説明します）。
+> **▼ このコードがやること（先に日本語で）:** 1つの値（数字など）ではなく、「名前・メール・年齢…」を**まとめて持つオブジェクト**を state にする例です。ここで一番大事なのは更新のしかた——オブジェクトの一部だけを変えたいときも、**古いオブジェクトを直接書き換えてはいけません**。第2章で学んだ**スプレッド構文 `...`** で「今の全項目をコピー」してから、変えたい項目だけを上書きした**新しいオブジェクトを作って** `setXxx` に渡します。「直接いじらず、新しく作り替えて差し替える」がReactのstate更新の鉄則です（理由はコード内で説明します）。
 
 ```tsx
 // useState フックを取り込む
@@ -2794,6 +3363,8 @@ function ProfileEditor() {
 
 > **制御コンポーネント / 非制御コンポーネント:** value と onChange の両方で state とつなぐ書き方が**制御コンポーネント**（Controlled Component：Reactのstateが入力値の真実の出どころ）。逆に value を指定せず DOM 任せにする書き方は**非制御コンポーネント**（Uncontrolled Component：DOM自身が値を保持し、必要なときだけ ref で読み取る）。本書では基本的に制御コンポーネントを使います。
 
+<!-- -->
+
 > この結果、画面には4つの入力欄と、その下にプレビューが表示されます。入力欄に文字を入力すると、**リアルタイムにプレビュー部分が更新**されます。例えば名前の入力欄を「鈴木花子」に変更すると、プレビューの名前も即座に **「名前: 鈴木花子」** に変わります。
 
 #### ▼ コードを1つずつ分解して解説
@@ -2830,7 +3401,7 @@ function ProfileEditor() {
 
 - `e.target.value` は入力欄の現在の文字列です。`e` はイベント情報、`.target` が入力欄そのもの、`.value` が中身です。
 - `...profile` は**スプレッド構文**で、「今の `profile` の全項目をコピーして展開する」という意味です。
-- そのあと `name: e.target.value` で `name` だけを上書きします。結果として「**他の項目はそのまま・名前だけ新しい**、新しいオブジェクト**」ができ、それを `setProfile` に渡します。
+- そのあと `name: e.target.value` で `name` だけを上書きします。結果として「**他の項目はそのまま・名前だけ新しい、新しいオブジェクト**」ができ、それを `setProfile` に渡します。
 
 > **用語:** **スプレッド構文（`...`）** … オブジェクトや配列の中身を展開してコピーする記法。state更新で「新しいオブジェクトを作る」のに使う。
 
@@ -2880,6 +3451,141 @@ setProfile(profile);
 // OK: 新しいオブジェクトを作成
 setProfile({ ...profile, name: "新しい名前" });
 ```
+
+なぜ直接書き換えるとダメなのでしょうか。React は state が変わったかどうかを、**中身を1つずつ見比べるのではなく、「前と同じ箱（オブジェクト）かどうか」だけで判断している**からです。たとえるなら、宅配便の受付係が「箱の中身」ではなく「箱の伝票番号」だけを見て「新しい荷物かどうか」を決めているようなものです。同じ箱の中身をこっそり入れ替えても、伝票番号が同じなので「新しい荷物は来ていない」と判断されてしまいます。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 270" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-03-06" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#f97316"/></marker>
+<marker id="ar-03-07" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#10b981"/></marker>
+</defs>
+<rect x="8" y="8" width="348" height="254" rx="12" fill="#fff7ed" stroke="#fed7aa"/>
+<text x="182" y="32" font-size="14" font-weight="bold" fill="#c2410c" text-anchor="middle">✕ 直接書き換え</text>
+<text x="182" y="52" font-size="12" fill="#475569" text-anchor="middle" font-family="Consolas, Cascadia Mono, monospace">user.name = "鈴木"; setUser(user);</text>
+<rect x="24" y="72" width="88" height="30" rx="6" fill="#ffffff" stroke="#94a3b8"/>
+<text x="68" y="92" font-size="13" fill="#0f172a" text-anchor="middle">前の値</text>
+<rect x="24" y="132" width="88" height="30" rx="6" fill="#ffffff" stroke="#94a3b8"/>
+<text x="68" y="152" font-size="13" fill="#0f172a" text-anchor="middle">次の値</text>
+<rect x="196" y="78" width="144" height="80" rx="8" fill="#ffffff" stroke="#f97316" stroke-width="2"/>
+<text x="268" y="98" font-size="12" fill="#64748b" text-anchor="middle">オブジェクト（1個）</text>
+<text x="268" y="122" font-size="13" fill="#0f172a" text-anchor="middle">name: "鈴木"</text>
+<text x="268" y="144" font-size="12" fill="#c2410c" text-anchor="middle">元の「田中」は消えた</text>
+<line x1="112" y1="87" x2="194" y2="104" stroke="#f97316" stroke-width="2" marker-end="url(#ar-03-06)"/>
+<line x1="112" y1="147" x2="194" y2="134" stroke="#f97316" stroke-width="2" marker-end="url(#ar-03-06)"/>
+<rect x="24" y="180" width="316" height="66" rx="8" fill="#ffffff" stroke="#fed7aa"/>
+<text x="182" y="204" font-size="13" fill="#0f172a" text-anchor="middle">Object.is(前の値, 次の値) → true</text>
+<text x="182" y="228" font-size="12" fill="#c2410c" text-anchor="middle">同じ箱 → React「変化なし」→ 画面そのまま</text>
+<rect x="364" y="8" width="348" height="254" rx="12" fill="#ecfdf5" stroke="#a7f3d0"/>
+<text x="538" y="32" font-size="14" font-weight="bold" fill="#047857" text-anchor="middle">○ 新しいオブジェクトを作る</text>
+<text x="538" y="52" font-size="12" fill="#475569" text-anchor="middle" font-family="Consolas, Cascadia Mono, monospace">setUser({ ...user, name: "鈴木" });</text>
+<rect x="380" y="72" width="88" height="30" rx="6" fill="#ffffff" stroke="#94a3b8"/>
+<text x="424" y="92" font-size="13" fill="#0f172a" text-anchor="middle">前の値</text>
+<rect x="380" y="132" width="88" height="30" rx="6" fill="#ffffff" stroke="#94a3b8"/>
+<text x="424" y="152" font-size="13" fill="#0f172a" text-anchor="middle">次の値</text>
+<rect x="552" y="64" width="144" height="46" rx="8" fill="#ffffff" stroke="#94a3b8"/>
+<text x="624" y="83" font-size="12" fill="#64748b" text-anchor="middle">元のオブジェクト</text>
+<text x="624" y="102" font-size="13" fill="#0f172a" text-anchor="middle">name: "田中"</text>
+<rect x="552" y="124" width="144" height="46" rx="8" fill="#ffffff" stroke="#10b981" stroke-width="2"/>
+<text x="624" y="143" font-size="12" fill="#047857" text-anchor="middle">新しいオブジェクト</text>
+<text x="624" y="162" font-size="13" fill="#0f172a" text-anchor="middle">name: "鈴木"</text>
+<line x1="468" y1="87" x2="550" y2="87" stroke="#10b981" stroke-width="2" marker-end="url(#ar-03-07)"/>
+<line x1="468" y1="147" x2="550" y2="147" stroke="#10b981" stroke-width="2" marker-end="url(#ar-03-07)"/>
+<rect x="380" y="180" width="316" height="66" rx="8" fill="#ffffff" stroke="#a7f3d0"/>
+<text x="538" y="204" font-size="13" fill="#0f172a" text-anchor="middle">Object.is(前の値, 次の値) → false</text>
+<text x="538" y="228" font-size="12" fill="#047857" text-anchor="middle">別の箱 → React「変化あり」→ 再レンダー</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図3-6: React は「中身」ではなく「同じ箱（参照）かどうか」で変化を判断します</div>
+</div>
+
+#### 「同じ箱かどうか」を Node.js で確かめる
+
+> **▼ このコードがやること（先に日本語で）:** React が state の変化を判断するときに使う `Object.is`（2つの値が「同じもの」かを調べる関数）を使って、①直接書き換えた場合、②スプレッド構文で新しいオブジェクトを作った場合、③入れ子（ネスト）のオブジェクトの場合、で結果がどう変わるかを確かめます。
+
+```ts
+// ファイル名: reference.ts
+// 本のデータの型（info の中にもう1段オブジェクトがある）
+type Book = {
+  title: string;
+  info: { pages: number };
+};
+
+// ---- NG: 直接書き換える ----
+const before1: Book = { title: "React入門", info: { pages: 200 } };
+// 「新しい変数」に入れても、指している箱は同じ
+const after1 = before1;
+after1.title = "React入門 第2版";
+// React は Object.is(前の値, 次の値) で「変わったか」を判定する
+console.log("NG: 同じ箱か →", Object.is(before1, after1));
+console.log("NG: 元の title →", before1.title);
+
+// ---- OK: スプレッド構文で新しい箱を作る ----
+const before2: Book = { title: "React入門", info: { pages: 200 } };
+const after2 = { ...before2, title: "React入門 第2版" };
+console.log("OK: 同じ箱か →", Object.is(before2, after2));
+console.log("OK: 元の title →", before2.title);
+
+// ---- 注意: スプレッド構文は「1段目」しかコピーしない ----
+const after3 = { ...before2 };
+console.log("info は同じ箱か →", Object.is(before2.info, after3.info));
+
+// ネストした値を変えるときは、その段もスプレッドで作り直す
+const after4 = { ...before2, info: { ...before2.info, pages: 250 } };
+console.log("作り直した info は同じ箱か →", Object.is(before2.info, after4.info));
+console.log("元の pages →", before2.info.pages, "/ 新しい pages →", after4.info.pages);
+```
+
+**▼ 実行結果**（`node reference.ts`）
+
+```text
+NG: 同じ箱か → true
+NG: 元の title → React入門 第2版
+OK: 同じ箱か → false
+OK: 元の title → React入門
+info は同じ箱か → true
+作り直した info は同じ箱か → false
+元の pages → 200 / 新しい pages → 250
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: 別の変数に入れても「同じ箱」
+
+```ts
+const after1 = before1;
+after1.title = "React入門 第2版";
+```
+
+- `const after1 = before1;` はオブジェクトをコピーしているように見えますが、実際は**同じ箱を指す名札をもう1枚付けただけ**です。
+- そのため `after1.title` を変えると、`before1.title` も変わってしまいます（実行結果の2行目）。
+- `Object.is(before1, after1)` が `true`（同じもの）なので、これを `setXxx` に渡しても React は「変化なし」と判断し、画面を更新しません。
+
+> **用語:** **参照（reference）** … オブジェクトや配列が「どの箱か」を指し示す情報。変数に入っているのは箱そのものではなく、この参照（箱の場所）。
+
+---
+
+##### 解説2: スプレッド構文なら「新しい箱」
+
+```ts
+const after2 = { ...before2, title: "React入門 第2版" };
+```
+
+- `{ ...before2 }` で中身を新しい箱にコピーし、`title` だけ上書きしています。
+- `Object.is` が `false`（別もの）になるので、React は「変化あり」と判断して再レンダーします。元の `before2` も壊れていません。
+
+---
+
+##### 解説3: スプレッドは1段目だけ
+
+```ts
+const after3 = { ...before2 };
+console.log("info は同じ箱か →", Object.is(before2.info, after3.info));
+```
+
+- スプレッド構文がコピーするのは**1段目だけ**です。`info` のような入れ子のオブジェクトは、コピー後も元と**同じ箱**を指しています（これを「浅いコピー」と呼びます）。
+- 入れ子の値を変えたいときは、`info: { ...before2.info, pages: 250 }` のように、**変えたい段まで全部スプレッドで作り直します**。このあと見る「ネストしたオブジェクトの更新」は、まさにこの書き方です。
+
+> **用語:** **浅いコピー（shallow copy）** … 1段目だけをコピーし、入れ子の中身は元と共有したままのコピー。スプレッド構文 `...` は浅いコピー。
 
 #### ネストしたオブジェクトの更新
 
@@ -2942,6 +3648,30 @@ function AddressEditor() {
 ```
 
 > この結果、画面には **「住所: 東京都渋谷区道玄坂1-1-1」** と表示され、入力欄で市区町村を変更すると住所表示がリアルタイムに更新されます。例えば「新宿区」と入力すると、**「住所: 東京都新宿区道玄坂1-1-1」** に変わります。
+
+<!-- -->
+
+> **つまずきポイント（1段目だけコピーして、中を書き換える）:** 「スプレッドでコピーしたから大丈夫」と思って、コピーの**中の段**を直接書き換えてしまう失敗です。外側の箱は新しいので画面は一見ちゃんと更新されますが、`address` は元と同じ箱なので、**前回の state まで書き換わって**しまいます。「前の値と比べる処理」や `React.memo`（6.8）が正しく動かなくなる、見つけにくいバグの原因です。
+
+```tsx
+// ❌ NG: 外側だけコピーして、中の address を直接書き換える
+const handleCityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const nextUser = { ...user };
+  // nextUser.address は user.address と同じ箱なので、元の state も変わってしまう
+  nextUser.address.city = e.target.value;
+  setUser(nextUser);
+};
+```
+
+```tsx
+// ✅ OK: 変えたい段（address）もスプレッドで新しく作る
+const handleCityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  setUser({
+    ...user,
+    address: { ...user.address, city: e.target.value },
+  });
+};
+```
 
 ### 4.5 配列の state
 
@@ -3344,6 +4074,142 @@ function ClickExamples() {
 <button onClick={() => handleClick()}>クリック</button>
 ```
 
+`()` が1つ付くかどうかの違いですが、起きることはまったく違います。たとえるなら、`onClick={関数}` は「ボタンが押されたら、この電話番号にかけてください」と**電話番号のメモを渡す**こと。`onClick={関数()}` は、メモを渡す代わりに**今この場で電話をかけてしまう**ことです。電話はすぐにつながってしまい、ボタンには「通話の結果（多くは何もない `undefined`）」しか残りません。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 236" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-03-08" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="16" y="34" width="338" height="194" rx="10" fill="#f8fafc"/>
+<rect x="366" y="34" width="338" height="194" rx="10" fill="#f8fafc"/>
+<text x="185" y="24" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">① 描画（レンダー）するとき</text>
+<text x="535" y="24" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">② ユーザーがクリックしたとき</text>
+<text x="28" y="56" font-size="13" font-weight="bold" fill="#047857">✓ OK: onClick={() =&gt; deleteBook(1)}</text>
+<rect x="28" y="66" width="314" height="56" rx="8" fill="#ffffff" stroke="#10b981" stroke-width="1.5"/>
+<text x="40" y="88" font-size="12.5" fill="#0f172a">関数を「渡す」だけ。まだ何も起きない</text>
+<text x="40" y="108" font-size="12" fill="#475569">onClick の中身: function（関数）</text>
+<line x1="342" y1="94" x2="376" y2="94" stroke="#475569" stroke-width="2" marker-end="url(#ar-03-08)"/>
+<rect x="378" y="66" width="314" height="56" rx="8" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="390" y="88" font-size="12.5" fill="#0f172a">React が受け取った関数を呼ぶ</text>
+<text x="390" y="108" font-size="12" fill="#047857">→ 本 1 を削除（期待どおり）</text>
+<text x="28" y="150" font-size="13" font-weight="bold" fill="#c2410c">✕ NG: onClick={deleteBook(2)}</text>
+<rect x="28" y="160" width="314" height="56" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="40" y="182" font-size="12.5" fill="#0f172a">描画した瞬間に deleteBook(2) が動く</text>
+<text x="40" y="202" font-size="12" fill="#c2410c">→ 本 2 が勝手に削除される！</text>
+<line x1="342" y1="188" x2="376" y2="188" stroke="#475569" stroke-width="2" marker-end="url(#ar-03-08)"/>
+<rect x="378" y="160" width="314" height="56" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="390" y="182" font-size="12.5" fill="#0f172a">onClick の中身は undefined（空）</text>
+<text x="390" y="202" font-size="12" fill="#475569">→ クリックしても何も起きない</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図3-7: 関数を「渡す」か「その場で呼ぶ」か。() を付けると描画のタイミングで実行されてしまいます</div>
+</div>
+
+#### 「渡す」と「呼ぶ」の違いを Node.js で確かめる
+
+> **▼ このコードがやること（先に日本語で）:** `<button>` の代わりになる小さな模型（描画のときに `onClick` を受け取って覚えておき、クリックされたら呼ぶ）を作り、①アロー関数で包んで渡した場合と、②`deleteBook(2)` と `()` 付きで書いた場合で、「いつ」削除処理が動くかを比べます。
+
+```ts
+// ファイル名: onclick.ts
+// クリックされたときに呼ぶ関数の型（関数 か、何もなし）
+type ClickHandler = (() => void) | undefined;
+
+// <button> の代わりになる小さな模型
+// 「描画」のときに onClick を受け取って覚えておき、クリックされたら呼ぶ
+function renderButton(label: string, onClick: ClickHandler) {
+  console.log(`[描画] ${label} ボタン（onClick の中身: ${typeof onClick}）`);
+  return {
+    click() {
+      console.log(`[クリック] ${label} ボタン`);
+      if (onClick) {
+        onClick();
+      } else {
+        console.log("  → onClick が空なので何も起きない");
+      }
+    },
+  };
+}
+
+// 本を削除する関数（ここではメッセージを出すだけ）
+function deleteBook(id: number): void {
+  console.log(`  → 本 ${id} を削除しました`);
+}
+
+// OK: アロー関数で包んで「クリックされたら deleteBook(1) を呼ぶ関数」を渡す
+const okButton = renderButton("OK", () => deleteBook(1));
+// NG: deleteBook(2) を「今ここで」呼び、その戻り値（undefined）を渡してしまう
+const ngButton = renderButton("NG", deleteBook(2));
+
+console.log("--- ここでユーザーがクリック ---");
+okButton.click();
+ngButton.click();
+```
+
+**▼ 実行結果**（`node onclick.ts`）
+
+```text
+[描画] OK ボタン（onClick の中身: function）
+  → 本 2 を削除しました
+[描画] NG ボタン（onClick の中身: undefined）
+--- ここでユーザーがクリック ---
+[クリック] OK ボタン
+  → 本 1 を削除しました
+[クリック] NG ボタン
+  → onClick が空なので何も起きない
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: 描画のときに onClick を受け取る模型
+
+```ts
+function renderButton(label: string, onClick: ClickHandler) {
+  console.log(`[描画] ${label} ボタン（onClick の中身: ${typeof onClick}）`);
+```
+
+- React の `<button onClick={...}>` も、**描画のときに** `onClick` の値を受け取って覚えておき、クリックされたときにそれを呼びます。模型はこの動きをまねしています。
+- `typeof onClick` は値の種類を文字列で返します。関数なら `"function"`、何もなければ `"undefined"` です。
+
+---
+
+##### 解説2: () を付けると「その場で」実行される
+
+```ts
+const ngButton = renderButton("NG", deleteBook(2));
+```
+
+- `deleteBook(2)` と書いた瞬間に関数が実行されます。実行結果を見ると、**まだ誰もクリックしていないのに**「本 2 を削除しました」が `[描画] NG ボタン` より先に出ています。
+- `deleteBook` は何も返さない（`void`）ので、`renderButton` に渡るのは `undefined` です。だからクリックしても何も起きません。
+- 「削除されてほしくない時に削除され、削除してほしい時に何も起きない」——これが `onClick={f()}` の怖さです。
+
+---
+
+##### 解説3: TypeScript は事前に教えてくれる
+
+- 実はこの NG の行は、TypeScript の型チェックでエラーになります（Node.js の `node onclick.ts` は型チェックをせずに型注釈を取り除くだけなので、あえて動かして結果を見ています）。React のコードで `onClick={handleClick()}` と書いた場合も、VS Code が次のように赤線で知らせてくれます。
+
+```text
+Type 'void' is not assignable to type 'MouseEventHandler<HTMLButtonElement> | undefined'.
+```
+
+- 「`void`（何もない）を、クリック時の関数を入れる場所には入れられません」という意味です。このエラーを見たら「`()` を付けていないか？」を疑いましょう。
+
+> **つまずきポイント（onClick={setCount(count + 1)}）:** state を更新する関数を `()` 付きで渡すと、描画のたびに `setCount` が実行され、それがまた描画を起こし…と無限にくり返されます。React は途中で止めて、画面が真っ白になり次のエラーを出します。
+
+```text
+Too many re-renders. React limits the number of renders to prevent an infinite loop.
+```
+
+```tsx
+// ❌ NG: 描画のたびに setCount が実行され、無限ループになる
+<button onClick={setCount(count + 1)}>+1</button>
+```
+
+```tsx
+// ✅ OK: 「クリックされたら setCount を呼ぶ関数」をアロー関数で作って渡す
+<button onClick={() => setCount(count + 1)}>+1</button>
+```
+
 ### 5.2 onChange
 
 > **▼ このコードがやること（先に日本語で）:** 入力欄（テキスト・チェックボックス・ラジオボタン・セレクト）に何か入力・選択されたときに反応する **`onChange`** の使い方です。基本の流れは「**入力された値を state に保存し、その state を入力欄の表示に反映する**」というワンセット。これにより「**画面の見た目（入力欄）と、プログラムが持つ値（state）が常に一致する**」状態を作れます（これを"制御された入力"と呼びます）。入力の種類ごとに「値の取り出し方」が少し違う点も、コード内で1つずつ確認します。
@@ -3537,6 +4403,63 @@ function InputExamples() {
 > **用語:** **name属性** … 同じ name のラジオボタンは1つのグループになり、同時に1つだけ選択できる。
 
 ---
+
+#### 制御コンポーネントの「1文字ごとのループ」
+
+ここまでの入力欄は、すべて「`value`（表示する値）は state から、変更は `onChange` で state へ」という形でした。これを**制御コンポーネント**と呼びます。1文字入力するたびに、裏では次のループが1周しています。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 312" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-03-09" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="40" y="30" width="260" height="64" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="170" y="56" font-size="13" font-weight="bold" fill="#1e40af" text-anchor="middle">① キーボードで「R」を押す</text>
+<text x="170" y="78" font-size="12" fill="#475569" text-anchor="middle">入力欄で変化が起きる</text>
+<rect x="420" y="30" width="260" height="64" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="550" y="56" font-size="13" font-weight="bold" fill="#1e40af" text-anchor="middle">② onChange(e) が呼ばれる</text>
+<text x="550" y="78" font-size="12" fill="#475569" text-anchor="middle">e.target.value は "R"</text>
+<rect x="420" y="200" width="260" height="64" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="550" y="226" font-size="13" font-weight="bold" fill="#047857" text-anchor="middle">③ setText(e.target.value)</text>
+<text x="550" y="248" font-size="12" fill="#475569" text-anchor="middle">state の text が "R" になる</text>
+<rect x="40" y="200" width="260" height="64" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="170" y="226" font-size="13" font-weight="bold" fill="#047857" text-anchor="middle">④ 再レンダー</text>
+<text x="170" y="248" font-size="12" fill="#475569" text-anchor="middle">value={text} で入力欄に「R」を表示</text>
+<line x1="300" y1="62" x2="418" y2="62" stroke="#475569" stroke-width="2" marker-end="url(#ar-03-09)"/>
+<line x1="550" y1="94" x2="550" y2="198" stroke="#475569" stroke-width="2" marker-end="url(#ar-03-09)"/>
+<line x1="420" y1="232" x2="302" y2="232" stroke="#475569" stroke-width="2" marker-end="url(#ar-03-09)"/>
+<line x1="170" y1="200" x2="170" y2="96" stroke="#475569" stroke-width="2" marker-end="url(#ar-03-09)"/>
+<text x="180" y="152" font-size="12" fill="#64748b">次のキーへ</text>
+<circle cx="360" cy="147" r="50" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="360" y="140" font-size="14" font-weight="bold" fill="#c2410c" text-anchor="middle">state</text>
+<text x="360" y="158" font-size="12" fill="#0f172a" text-anchor="middle">text が</text>
+<text x="360" y="174" font-size="12" fill="#0f172a" text-anchor="middle">唯一の正解</text>
+<text x="360" y="298" font-size="12" fill="#c2410c" text-anchor="middle">onChange が無いと ③ が起きず、④ で元の値に戻されるので「入力できない」入力欄になる</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図3-8: 制御コンポーネントの入力ループ。1文字打つたびに ①→②→③→④ が1周します</div>
+</div>
+
+たとえるなら、入力欄は「自分では何も覚えていない電光掲示板」で、表示する文字はすべて state（司令室）が決めています。キーが押されると掲示板は司令室に「R が押されました」と報告し（②）、司令室が記録を書き換え（③）、その記録どおりに掲示板の表示を更新します（④）。表示と記録がずれることがないので、「入力中の値をそのままプレビューに出す」「文字数を数える」「送信前にチェックする」といった処理が簡単に書けます。
+
+> **つまずきポイント（value だけ書いて onChange を忘れる）:** `value={text}` だけを書いて `onChange` を書き忘れると、キーを押しても文字が入りません。図のループの ③ が起きないので、④ で毎回「元の値（空文字）」に戻されてしまうからです。Console には次の警告が出ます。
+
+```text
+You provided a `value` prop to a form field without an `onChange` handler. This will render a read-only field. If the field should be mutable use `defaultValue`. Otherwise, set either `onChange` or `readOnly`.
+```
+
+```tsx
+// ❌ NG: value はあるのに onChange が無い → 何を打っても入力欄は空のまま
+const [text, setText] = useState("");
+return <input value={text} />;
+```
+
+```tsx
+// ✅ OK: value と onChange をセットで書く
+const [text, setText] = useState("");
+return <input value={text} onChange={(e) => setText(e.target.value)} />;
+```
+
+> 警告文にあるとおり、「最初の値だけ決めて、あとはブラウザ任せでよい」場合は `defaultValue`（非制御コンポーネント）、「表示するだけで入力させない」場合は `readOnly` を使います。本書のフォームは基本的に `value` + `onChange` の制御コンポーネントで書きます。
 
 ### 5.3 onSubmit（フォーム送信）
 
@@ -3758,7 +4681,7 @@ const [formData, setFormData] = useState<BookFormData>({
 });
 ```
 
-- `useState`（ユーズ・ステート）は、第4章で学んだ「**変化する値を持つための道具**」です。`const [今の値, 値を変える関数] = useState(初期値)` の形で使います。
+- `useState`（ユーズ・ステート）は、この章の 4.2 で学んだ「**変化する値を持つための道具**」です。`const [今の値, 値を変える関数] = useState(初期値)` の形で使います。
 - ここでは「今の値」を `formData`、「値を変える関数」を `setFormData` という名前にしています。
 - 入力欄は5つ（タイトル・著者・価格・カテゴリ・説明）ありますが、**5個バラバラにstateを作るのではなく、1つのオブジェクト（`{ }` でまとめたもの）にまとめて**持っています。こうすると管理が楽になります。
 - 初期値はすべて空文字 `""`（からの文字列）。ただしカテゴリだけは最初から `"programming"` を選んだ状態にしています。
@@ -3809,7 +4732,7 @@ const handleChange = (
 ```
 
 - **`e`（イベントオブジェクト）** … 入力が変化したとき、Reactが「何が起きたか」の情報を `e` という箱に入れて渡してくれます。`e: React.ChangeEvent<...>` はその `e` の型で、「`<input>` か `<select>` か `<textarea>` の変化イベント」という意味です（`|` は「または」）。**この型指定はおまじない**と思って大丈夫です。1つの関数で3種類の入力欄すべてを処理できるようにしています。
-- **`const { name, value } = e.target;`** … `e.target`（イー・ターゲット）は「**変化が起きた入力欄そのもの**」を指します。そこから `name`（その欄の名前）と `value`（今入力されている値）を取り出しています。`const { name, value } = ...` は第3章で学んだ「**分割代入**」（オブジェクトから必要な項目だけ取り出す書き方）です。
+- **`const { name, value } = e.target;`** … `e.target`（イー・ターゲット）は「**変化が起きた入力欄そのもの**」を指します。そこから `name`（その欄の名前）と `value`（今入力されている値）を取り出しています。`const { name, value } = ...` は第2章で学んだ「**分割代入**」（オブジェクトから必要な項目だけ取り出す書き方）です。
   - `name` は、下の `<input name="title" ... />` の `name="title"` の部分から来ます。つまり「どの欄が変化したか」が文字列で分かります。
 
 - **`...formData`（スプレッド構文）** … `...`（ドット3つ）は「**今ある `formData` の中身を、まるごとコピーして展開する**」という意味です。これを「スプレッド構文（spread＝展開）」と呼びます。
@@ -3937,25 +4860,201 @@ return (
 - **`A && B`** … `&&`（アンド）を使った `A && B` は「**Aに中身があれば B を表示、Aがからっぽなら何も表示しない**」という、Reactでとてもよく使う「条件付き表示」のテクニックです。
   - `errors.title` にエラーメッセージ（文字列）が入っていれば、その右の `<p style={{ color: "red" }}>...</p>`（赤い文字の段落）が表示されます。
   - エラーが無ければ（`undefined`）何も表示されません。
-- `style={{ color: "red" }}` の `{{ }}`（中カッコ2つ）は、第3章で説明した「**JSXの中にスタイルのオブジェクトを書く**」書き方です（外側は「JSの世界に入る」印、内側は「スタイルのオブジェクト」）。
+- `style={{ color: "red" }}` の `{{ }}`（中カッコ2つ）は、この章の 2.2 で説明した「**JSXの中にスタイルのオブジェクトを書く**」書き方です（外側は「JSの世界に入る」印、内側は「スタイルのオブジェクト」）。
 
 > **ここまでのまとめ:** 難しく見えたコードも、分解すれば「①入力を1つの箱に保存し（スプレッド構文＋動的キー）、②送信時にページ再読み込みを止めて（preventDefault）、③入力チェックし（validate）、④OKなら完了画面に切り替える（早期return）」という流れでした。`Partial<Record<keyof ...>>` のような型も、「エラーを項目ごとに覚える箱」という目的さえ分かれば怖くありません。**一度で全部覚えなくて大丈夫**です。フォームを作るたびにこの節へ戻ってくれば、少しずつ手に馴染んでいきます。
+
+<!-- -->
 
 > この結果、画面には書籍登録フォームが表示されます:
 >
 > **書籍登録**
 >
-> タイトル *: 【入力欄】
-> 著者 *: 【入力欄】
-> 価格 *: 【入力欄】
-> カテゴリ: 【セレクトボックス（プログラミング）】
-> 説明: 【テキストエリア】
+> - タイトル \*: 【入力欄】
+> - 著者 \*: 【入力欄】
+> - 価格 \*: 【入力欄】
+> - カテゴリ: 【セレクトボックス（プログラミング）】
+> - 説明: 【テキストエリア】
 >
-> 【登録する】ボタン
+> 【登録する】ボタン（「\*」は必須項目の印）
 >
 > 何も入力せずに【登録する】を押すと、各必須項目の下に赤字で **「タイトルは必須です」** 等のエラーメッセージが表示されます。
 >
 > すべての必須項目を入力して送信すると、**「登録完了！」** 画面に切り替わり、**「「React入門」を登録しました。」** と表示されます。
+
+タイトルを空のまま、著者に「田中」、価格に「-100」と入力して【登録する】を押したときの画面と、そのときの state の中身を並べると次のようになります。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 476" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<rect x="10" y="10" width="440" height="456" rx="10" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+<path d="M10,40 L10,20 Q10,10 20,10 L440,10 Q450,10 450,20 L450,40 Z" fill="#e2e8f0"/>
+<circle cx="28" cy="25" r="5" fill="#f87171"/>
+<circle cx="44" cy="25" r="5" fill="#fbbf24"/>
+<circle cx="60" cy="25" r="5" fill="#34d399"/>
+<rect x="80" y="15" width="260" height="20" rx="10" fill="#ffffff"/>
+<text x="94" y="30" font-size="12" fill="#475569">localhost:3000</text>
+<text x="30" y="72" font-size="18" font-weight="bold" fill="#0f172a">書籍登録</text>
+<text x="30" y="98" font-size="12" fill="#475569">タイトル *</text>
+<rect x="30" y="106" width="400" height="26" rx="4" fill="#ffffff" stroke="#ef4444" stroke-width="1.5"/>
+<text x="30" y="150" font-size="12" fill="#dc2626">タイトルは必須です</text>
+<text x="250" y="150" font-size="12" fill="#dc2626" font-family="Consolas, Cascadia Mono, monospace">← errors.title</text>
+<text x="30" y="174" font-size="12" fill="#475569">著者 *</text>
+<rect x="30" y="182" width="400" height="26" rx="4" fill="#ffffff" stroke="#94a3b8"/>
+<text x="40" y="200" font-size="13" fill="#0f172a">田中</text>
+<text x="30" y="232" font-size="12" fill="#475569">価格 *</text>
+<rect x="30" y="240" width="400" height="26" rx="4" fill="#ffffff" stroke="#ef4444" stroke-width="1.5"/>
+<text x="40" y="258" font-size="13" fill="#0f172a">-100</text>
+<text x="30" y="284" font-size="12" fill="#dc2626">価格は0より大きい数値を入力してください</text>
+<text x="290" y="284" font-size="12" fill="#dc2626" font-family="Consolas, Cascadia Mono, monospace">← errors.price</text>
+<text x="30" y="308" font-size="12" fill="#475569">カテゴリ</text>
+<rect x="30" y="316" width="400" height="26" rx="4" fill="#ffffff" stroke="#94a3b8"/>
+<text x="40" y="334" font-size="13" fill="#0f172a">プログラミング</text>
+<text x="412" y="334" font-size="12" fill="#64748b">▼</text>
+<text x="30" y="366" font-size="12" fill="#475569">説明</text>
+<rect x="30" y="374" width="400" height="40" rx="4" fill="#ffffff" stroke="#94a3b8"/>
+<rect x="30" y="426" width="100" height="30" rx="6" fill="#3b82f6"/>
+<text x="80" y="446" font-size="13" fill="#ffffff" text-anchor="middle">登録する</text>
+<text x="470" y="40" font-size="13" font-weight="bold" fill="#0f172a">このときの state の中身</text>
+<text x="470" y="64" font-size="12" font-weight="bold" fill="#1e40af" font-family="Consolas, Cascadia Mono, monospace">formData</text>
+<rect x="470" y="72" width="240" height="154" rx="8" fill="#0f172a"/>
+<text x="482" y="94" font-size="12" fill="#e2e8f0" font-family="Consolas, Cascadia Mono, monospace">{</text>
+<text x="498" y="114" font-size="12" fill="#e2e8f0" font-family="Consolas, Cascadia Mono, monospace">title: <tspan fill="#fcd34d">""</tspan>,</text>
+<text x="498" y="134" font-size="12" fill="#e2e8f0">author: <tspan fill="#fcd34d">"田中"</tspan>,</text>
+<text x="498" y="154" font-size="12" fill="#e2e8f0" font-family="Consolas, Cascadia Mono, monospace">price: <tspan fill="#fcd34d">"-100"</tspan>,</text>
+<text x="498" y="174" font-size="12" fill="#e2e8f0" font-family="Consolas, Cascadia Mono, monospace">category: <tspan fill="#fcd34d">"programming"</tspan>,</text>
+<text x="498" y="194" font-size="12" fill="#e2e8f0" font-family="Consolas, Cascadia Mono, monospace">description: <tspan fill="#fcd34d">""</tspan></text>
+<text x="482" y="214" font-size="12" fill="#e2e8f0" font-family="Consolas, Cascadia Mono, monospace">}</text>
+<text x="470" y="252" font-size="12" font-weight="bold" fill="#c2410c" font-family="Consolas, Cascadia Mono, monospace">errors</text>
+<rect x="470" y="260" width="240" height="100" rx="8" fill="#0f172a"/>
+<text x="482" y="282" font-size="12" fill="#e2e8f0" font-family="Consolas, Cascadia Mono, monospace">{</text>
+<text x="498" y="302" font-size="12" fill="#e2e8f0">title: <tspan fill="#fca5a5">"タイトルは必須です"</tspan>,</text>
+<text x="498" y="322" font-size="12" fill="#e2e8f0">price: <tspan fill="#fca5a5">"価格は0より…"</tspan></text>
+<text x="482" y="342" font-size="12" fill="#e2e8f0" font-family="Consolas, Cascadia Mono, monospace">}</text>
+<text x="470" y="386" font-size="12" fill="#475569">errors に入っている項目だけ、</text>
+<text x="470" y="404" font-size="12" fill="#475569">入力欄の下に赤いメッセージが出る</text>
+<text x="470" y="430" font-size="12" fill="#475569">（author は OK なので errors に無い）</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図3-9: 書籍登録フォームの画面イメージ。タイトルを空、価格を -100 にして「登録する」を押したときの表示です</div>
+</div>
+
+`errors` オブジェクトに入っている項目（`title` と `price`）の下にだけ、赤いメッセージが出ていることが分かります。`{errors.title && <p>...</p>}` は「`errors.title` に文字が入っていれば表示する」という意味でした（解説6）。
+
+#### 入力チェックだけを Node.js で試す
+
+> **▼ このコードがやること（先に日本語で）:** 上のフォームの `validate` から「チェックする部分」だけを取り出し、画面を作らずに Node.js で動かします。3種類の入力（全部空・空白だけのタイトルと負の価格・正しい入力）を渡して、どの項目にエラーが付くかを表示します。画面と切り離した「ただの関数」にしておくと、こうして**画面を操作せずに動作を確かめられる**のが利点です。
+
+```ts
+// ファイル名: validate.ts
+// 5.3 のフォームと同じ形の入力データ
+type BookFormData = {
+  title: string;
+  author: string;
+  price: string;
+  category: string;
+  description: string;
+};
+
+// 「エラーが出た項目だけ、項目名 → メッセージ」が入る型
+type FormErrors = Partial<Record<keyof BookFormData, string>>;
+
+// 5.3 の validate から「チェックする部分」だけを取り出した関数
+// （setErrors を呼ぶ代わりに、見つけたエラーを return する）
+function findErrors(formData: BookFormData): FormErrors {
+  const newErrors: FormErrors = {};
+  if (formData.title.trim() === "") {
+    newErrors.title = "タイトルは必須です";
+  }
+  if (formData.author.trim() === "") {
+    newErrors.author = "著者は必須です";
+  }
+  if (formData.price === "" || Number(formData.price) <= 0) {
+    newErrors.price = "価格は0より大きい数値を入力してください";
+  }
+  return newErrors;
+}
+
+// ラベルと入力データを受け取り、チェック結果を表示する
+function check(label: string, formData: BookFormData): void {
+  const errors = findErrors(formData);
+  // エラーの数が 0 なら送信してよい
+  const canSubmit = Object.keys(errors).length === 0;
+  console.log(`【${label}】 送信できる: ${canSubmit}`);
+  console.log(errors);
+}
+
+// 何も入力していないフォーム（カテゴリだけ最初から選ばれている）
+const emptyForm: BookFormData = {
+  title: "",
+  author: "",
+  price: "",
+  category: "programming",
+  description: "",
+};
+
+check("全部空", emptyForm);
+check("空白だけのタイトルと負の価格", {
+  ...emptyForm,
+  title: "   ",
+  author: "田中",
+  price: "-100",
+});
+check("正しい入力", {
+  ...emptyForm,
+  title: "React入門",
+  author: "田中",
+  price: "2800",
+});
+```
+
+**▼ 実行結果**（`node validate.ts`）
+
+```text
+【全部空】 送信できる: false
+{
+  title: 'タイトルは必須です',
+  author: '著者は必須です',
+  price: '価格は0より大きい数値を入力してください'
+}
+【空白だけのタイトルと負の価格】 送信できる: false
+{ title: 'タイトルは必須です', price: '価格は0より大きい数値を入力してください' }
+【正しい入力】 送信できる: true
+{}
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: エラーを集める箱の型
+
+```ts
+type FormErrors = Partial<Record<keyof BookFormData, string>>;
+```
+
+- 5.3 の解説2で分解した `Partial<Record<keyof BookFormData, string>>` に、`FormErrors` という短い名前を付けています。長い型は名前を付けると読みやすくなります。
+- 実行結果の `{ title: '...', price: '...' }` のように、**エラーがある項目だけ**が入ります。正しい入力では空のオブジェクト `{}` です。
+
+---
+
+##### 解説2: 空白だけの入力もはじける
+
+```ts
+if (formData.title.trim() === "") {
+```
+
+- 2つ目の入力ではタイトルにスペースを3つ入れていますが、`.trim()` で前後の空白を取り除くと空文字になるので、ちゃんとエラーになっています。
+- 価格の `"-100"` は `Number("-100")` で `-100` になり、`<= 0` に当てはまるのでエラーです。
+
+---
+
+##### 解説3: エラーの数で「送信してよいか」を決める
+
+```ts
+const canSubmit = Object.keys(errors).length === 0;
+```
+
+- `Object.keys(errors)` はエラーの項目名の配列（例: `["title", "price"]`）を返します。その数（`length`）が 0 なら送信 OK です。
+- 5.3 の `validate` も、最後に同じ式を `return` しています。チェックのロジックを関数に切り出しておくと、こうして**画面を操作しなくても動作を確かめられる**ので、バグを早く見つけられます。
+
+> **ヒント:** 画面のコンポーネントの中に処理を全部書くのではなく、「計算やチェックはただの関数に切り出し、コンポーネントはそれを呼ぶだけ」にしておくと、コードが読みやすく、確かめやすくなります。
 
 ### 5.4 イベントオブジェクトの型 一覧
 
@@ -3969,6 +5068,199 @@ return (
 | `onSubmit`（form） | `React.FormEvent<HTMLFormElement>` |
 | `onKeyDown` | `React.KeyboardEvent<HTMLInputElement>` |
 | `onFocus` / `onBlur` | `React.FocusEvent<HTMLInputElement>` |
+
+### 5.5 データは下へ、イベントは上へ（state のリフトアップ）
+
+3.2 で「props は親から子への一方通行」と学びました。では、**子で起きた出来事（入力やクリック）を親に伝えたい**ときはどうするのでしょうか。答えは「**親が関数を props で渡しておき、子はそれを呼ぶ**」です。
+
+会社にたとえると、親は「上司」、子は「部下」です。上司は部下に資料（データ）を配り（props）、「何かあったらこの内線番号に電話して」と内線番号（関数）も渡しておきます。部下は自分で資料を書き換えず、何かあれば内線で上司に報告します。上司が資料を更新して配り直すと、部下の手元の資料も新しくなります。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 348" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-03-10" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#3b82f6"/></marker>
+<marker id="ar-03-11" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#f97316"/></marker>
+</defs>
+<rect x="40" y="20" width="640" height="80" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="360" y="45" font-size="14" font-weight="bold" fill="#1e40af" text-anchor="middle">BookSearchPage（親）</text>
+<text x="360" y="67" font-size="12" fill="#0f172a" text-anchor="middle" font-family="Consolas, Cascadia Mono, monospace">const [query, setQuery] = useState("");</text>
+<text x="360" y="88" font-size="12" fill="#475569" text-anchor="middle">子から知らせが来たら setQuery で更新 → 新しい props で子を描き直す</text>
+<line x1="90" y1="100" x2="90" y2="230" stroke="#3b82f6" stroke-width="2.5" marker-end="url(#ar-03-10)"/>
+<text x="100" y="146" font-size="12" font-weight="bold" fill="#1e40af">① props で渡す</text>
+<text x="100" y="164" font-size="12" fill="#1e40af" font-family="Consolas, Cascadia Mono, monospace">query</text>
+<text x="100" y="180" font-size="12" fill="#1e40af" font-family="Consolas, Cascadia Mono, monospace">onQueryChange</text>
+<line x1="290" y1="232" x2="290" y2="102" stroke="#f97316" stroke-width="2.5" marker-end="url(#ar-03-11)"/>
+<text x="300" y="168" font-size="12" font-weight="bold" fill="#c2410c">② 入力されたら呼ぶ</text>
+<text x="300" y="186" font-size="12" fill="#c2410c" font-family="Consolas, Cascadia Mono, monospace">onQueryChange("React")</text>
+<line x1="560" y1="100" x2="560" y2="230" stroke="#3b82f6" stroke-width="2.5" marker-end="url(#ar-03-10)"/>
+<text x="570" y="146" font-size="12" font-weight="bold" fill="#1e40af">③ 結果を渡す</text>
+<text x="570" y="164" font-size="12" fill="#1e40af" font-family="Consolas, Cascadia Mono, monospace">books</text>
+<rect x="40" y="232" width="300" height="72" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="190" y="260" font-size="14" font-weight="bold" fill="#c2410c" text-anchor="middle">SearchBox（子）</text>
+<text x="190" y="284" font-size="12" fill="#475569" text-anchor="middle">入力欄を表示し、入力を親に知らせる</text>
+<rect x="420" y="232" width="260" height="72" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="550" y="260" font-size="14" font-weight="bold" fill="#047857" text-anchor="middle">BookList（子）</text>
+<text x="550" y="284" font-size="12" fill="#475569" text-anchor="middle">受け取った books を並べるだけ</text>
+<line x1="40" y1="330" x2="80" y2="330" stroke="#3b82f6" stroke-width="3"/>
+<text x="88" y="335" font-size="12" fill="#0f172a">データ（props）は 親 → 子 へ流れる</text>
+<line x1="380" y1="330" x2="420" y2="330" stroke="#f97316" stroke-width="3"/>
+<text x="428" y="335" font-size="12" fill="#0f172a">イベント（関数呼び出し）は 子 → 親 へ戻る</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図3-10: データは下へ、イベントは上へ。兄弟の SearchBox と BookList は、共通の親を通してだけ情報をやり取りします</div>
+</div>
+
+さらに、**兄弟のコンポーネント同士で同じ値を使いたい**とき（検索欄に打った文字で、別の部品の一覧を絞り込む、など）は、その値を**共通の親に持たせます**。これを「**state のリフトアップ**（Lifting State Up：状態を持ち上げる）」と呼びます。兄弟同士は直接やり取りできないので、親が「情報のハブ（中継地点）」になるのです。
+
+#### 検索欄と一覧で検索語を共有する
+
+> **▼ このコードがやること（先に日本語で）:** 検索欄（`SearchBox`）に文字を打つと、その文字をタイトルに含む本だけが一覧（`BookList`）に表示される画面を作ります。検索語 `query` は、2つの子の共通の親 `BookSearchPage` が state として持ちます。親は、検索欄には「今の検索語」と「変わったら呼ぶ関数」を、一覧には「絞り込んだ結果」を、それぞれ props で渡します。
+
+```tsx
+import { useState } from "react";
+
+// 本1冊の型
+type Book = {
+  id: number;
+  title: string;
+};
+
+// ---- 子1: 検索欄 ----
+// 親から「今の検索語」と「検索語が変わったら呼ぶ関数」を受け取る
+type SearchBoxProps = {
+  query: string;
+  onQueryChange: (nextQuery: string) => void;
+};
+
+function SearchBox({ query, onQueryChange }: SearchBoxProps) {
+  return (
+    <input
+      value={query}
+      // 入力されたら、親から受け取った関数を呼んで「上へ」知らせる
+      onChange={(e) => onQueryChange(e.target.value)}
+      placeholder="タイトルで検索"
+    />
+  );
+}
+
+// ---- 子2: 検索結果の一覧 ----
+// 親から「表示する本の配列」だけを受け取る（自分では state を持たない）
+type BookListProps = {
+  books: Book[];
+};
+
+function BookList({ books }: BookListProps) {
+  // 1冊もなければメッセージだけ返す（早期 return）
+  if (books.length === 0) {
+    return <p>見つかりませんでした</p>;
+  }
+  return (
+    <ul>
+      {books.map((book) => (
+        <li key={book.id}>{book.title}</li>
+      ))}
+    </ul>
+  );
+}
+
+// ---- 親: state を持ち、2つの子に配る ----
+const ALL_BOOKS: Book[] = [
+  { id: 1, title: "React入門" },
+  { id: 2, title: "TypeScript実践" },
+  { id: 3, title: "React Hooks 徹底解説" },
+];
+
+export default function BookSearchPage() {
+  // 兄弟（SearchBox と BookList）で共有したい値は、共通の親が持つ
+  const [query, setQuery] = useState<string>("");
+
+  // state から「表示する本」を計算する（これは state にしない）
+  const visibleBooks = ALL_BOOKS.filter((book) => book.title.includes(query));
+
+  return (
+    <div>
+      <h2>書籍検索</h2>
+      {/* 下へ: 今の検索語と、変更を知らせてもらう関数を渡す */}
+      <SearchBox query={query} onQueryChange={setQuery} />
+      <p>{visibleBooks.length}件ヒット</p>
+      {/* 下へ: 計算した結果だけを渡す */}
+      <BookList books={visibleBooks} />
+    </div>
+  );
+}
+```
+
+**▼ 実行結果**（画面の変化。React 19 で実際に入力して確認した結果です）
+
+| 操作 | 画面に表示される内容 |
+|------|----------------------|
+| 最初に開いたとき | 書籍検索 / 3件ヒット / ・React入門 ・TypeScript実践 ・React Hooks 徹底解説 |
+| 検索欄に「React」と入力 | 書籍検索 / 2件ヒット / ・React入門 ・React Hooks 徹底解説 |
+| 検索欄を「Vue」に書き換え | 書籍検索 / 0件ヒット / 見つかりませんでした |
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: 子は「関数を呼ぶ」ことで親に知らせる
+
+```tsx
+type SearchBoxProps = {
+  query: string;
+  onQueryChange: (nextQuery: string) => void;
+};
+```
+
+- `onQueryChange` は「文字列を1つ受け取る関数」という型の props です。親からは `setQuery` がそのまま渡されます。
+- 子の `SearchBox` は、入力されるたびに `onQueryChange(e.target.value)` を呼ぶだけです。**自分では検索語を覚えていません**（`useState` がありません）。
+- props の名前を `onXxx`（「Xxx が起きたときに呼ばれる」の意味）にするのが React の習慣です。`onClick` や `onChange` と同じ考え方です。
+
+> **用語:** **コールバック props** … 親が子に渡す関数の props。子で何かが起きたときに呼ばれ、親に知らせる役目をする。
+
+---
+
+##### 解説2: 共有したい state は共通の親に置く
+
+```tsx
+const [query, setQuery] = useState<string>("");
+```
+
+- 検索語は `SearchBox`（入力する側）と `BookList`（絞り込まれる側）の両方に関係します。だから2人の共通の親である `BookSearchPage` に置きます。
+- もし `SearchBox` の中に `useState` を書いてしまうと、`BookList` からはその値を見る方法がありません。兄弟同士は直接 props を渡し合えないからです。
+
+> **用語:** **state のリフトアップ** … 複数の子で共有したい state を、共通の親コンポーネントへ移すこと。
+
+---
+
+##### 解説3: 計算で求められる値は state にしない
+
+```tsx
+const visibleBooks = ALL_BOOKS.filter((book) => book.title.includes(query));
+```
+
+- 「表示する本の一覧」は、`query` が決まれば計算で求められます。このような値は **state にせず、レンダーのたびに計算する**のが React の基本です。
+- `visibleBooks` まで state にすると、「`query` は変えたのに `visibleBooks` の更新を忘れた」という食い違いが起きやすくなります。state は「それ以上減らせない最小限の値」だけにしましょう。
+- `includes` は「その文字列を含むか」を調べるメソッドです。`query` が空文字のときは全部の本が当てはまるので、最初は3件とも表示されます。
+
+> **つまずきポイント（子で props を書き換える）:** 子の中で受け取った props に代入しても、親の state は変わりません。props は「親から借りた資料のコピー」のようなもので、書き換えても親の原本には届かないからです。子から変更したいときは、必ず親から受け取った関数を呼びます。
+
+```tsx
+// ❌ NG: 受け取った query に代入しても、親の state は変わらない（入力しても文字が増えない）
+function SearchBox({ query }: { query: string }) {
+  return (
+    <input
+      value={query}
+      onChange={(e) => {
+        query = e.target.value;
+      }}
+    />
+  );
+}
+```
+
+```tsx
+// ✅ OK: 親から受け取った関数を呼んで、親に「変えて」と頼む
+function SearchBox({ query, onQueryChange }: SearchBoxProps) {
+  return <input value={query} onChange={(e) => onQueryChange(e.target.value)} />;
+}
+```
 
 ---
 
@@ -4242,6 +5534,36 @@ function EffectExamples() {
 
 ---
 
+> **つまずきポイント（依存配列の書き忘れで値が古いまま）:** 「1秒ごとに +1 する」つもりで次の NG のように書くと、画面は「1」になったまま止まります。effect は最初の1回しか作られないので、中の `seconds` は**作られたときのスナップショット（0）のまま**です。毎秒「0 + 1 = 1 にして」と予約し続けるだけなので、1 から増えません（React 19 で実際に動かして確認した結果です）。ESLint は次の警告で教えてくれます。
+
+```text
+React Hook useEffect has a missing dependency: 'seconds'. Either include it or remove the dependency array. You can also do a functional update 'setSeconds(s => ...)' if you only need 'seconds' in the 'setSeconds' call
+```
+
+```tsx
+// ❌ NG: effect の中で seconds を使っているのに、依存配列が空
+useEffect(() => {
+  const id = setInterval(() => {
+    // この seconds は、effect を作ったとき（0）の値のまま
+    setSeconds(seconds + 1);
+  }, 1000);
+  return () => clearInterval(id);
+}, []);
+```
+
+```tsx
+// ✅ OK: 関数型更新にすれば seconds を使わないので、依存配列は空のままでよい
+useEffect(() => {
+  const id = setInterval(() => {
+    // prev には常に最新の値が入る
+    setSeconds((prev) => prev + 1);
+  }, 1000);
+  return () => clearInterval(id);
+}, []);
+```
+
+> 警告文の後半「functional update（関数型更新）を使えば…」が、まさにこの OK の書き方です。もう1つの直し方は依存配列を `[seconds]` にすることですが、その場合は1秒ごとにタイマーを止めて作り直すことになるので、このケースでは関数型更新のほうがすっきりします。
+
 #### 実践例: API からデータを取得
 
 ```tsx
@@ -4371,6 +5693,34 @@ function UserList() {
 - `await fetch(...)` でデータを取りに行き、`await response.json()` で中身をJavaScriptのデータに変換して `setUsers` に保存します。
 
 > **用語:** **async / await** … 非同期処理（通信など）を同期的に見える形で書く構文。`await` は結果が返るまで待つ。
+
+<!-- -->
+
+> **つまずきポイント（useEffect に async 関数を直接渡す）:** 「内側に関数を作るのは面倒だから」と `useEffect(async () => {...})` と書くのは NG です。`async` 関数は必ず Promise（あとで結果が届く約束の箱）を返しますが、useEffect が「戻り値」として受け取れるのは**クリーンアップ関数だけ**だからです。TypeScript は次のエラーで止めてくれます。
+
+```text
+Argument of type '() => Promise<void>' is not assignable to parameter of type 'EffectCallback'.
+  Type 'Promise<void>' is not assignable to type 'void | Destructor'.
+```
+
+```tsx
+// ❌ NG: useEffect に async 関数を直接渡している
+useEffect(async () => {
+  const response = await fetch("/api/books");
+  setBooks(await response.json());
+}, []);
+```
+
+```tsx
+// ✅ OK: effect の中で async 関数を作り、すぐに呼ぶ
+useEffect(() => {
+  const fetchBooks = async () => {
+    const response = await fetch("/api/books");
+    setBooks(await response.json());
+  };
+  fetchBooks();
+}, []);
+```
 
 ---
 
@@ -4739,6 +6089,178 @@ function WindowSizeDisplay() {
     </div>
   </div>
 </div>
+
+上の図を、時間の流れに沿って横に並べ直すと次のようになります。「① レンダー → ② effect」が基本の組で、2回目以降は「③ 前回の片付け」が ② の直前に割り込む、と覚えると整理しやすくなります。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 248" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-03-12" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="16" y="36" width="210" height="172" rx="10" fill="#eff6ff"/>
+<rect x="236" y="36" width="300" height="172" rx="10" fill="#fff7ed"/>
+<rect x="546" y="36" width="160" height="172" rx="10" fill="#f8fafc"/>
+<text x="121" y="60" font-size="13" font-weight="bold" fill="#1e40af" text-anchor="middle">マウント（初めて表示）</text>
+<text x="386" y="60" font-size="13" font-weight="bold" fill="#c2410c" text-anchor="middle">更新（count が 0 → 1）</text>
+<text x="626" y="60" font-size="13" font-weight="bold" fill="#475569" text-anchor="middle">アンマウント（消える）</text>
+<rect x="28" y="80" width="88" height="46" rx="8" fill="#ffffff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="72" y="99" font-size="12" font-weight="bold" fill="#1e40af" text-anchor="middle">① レンダー</text>
+<text x="72" y="117" font-size="12" fill="#0f172a" text-anchor="middle">count = 0</text>
+<rect x="124" y="80" width="88" height="46" rx="8" fill="#ffffff" stroke="#10b981" stroke-width="1.5"/>
+<text x="168" y="99" font-size="12" font-weight="bold" fill="#047857" text-anchor="middle">② effect</text>
+<text x="168" y="117" font-size="12" fill="#0f172a" text-anchor="middle">count = 0</text>
+<rect x="246" y="80" width="88" height="46" rx="8" fill="#ffffff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="290" y="99" font-size="12" font-weight="bold" fill="#1e40af" text-anchor="middle">① レンダー</text>
+<text x="290" y="117" font-size="12" fill="#0f172a" text-anchor="middle">count = 1</text>
+<rect x="342" y="80" width="88" height="46" rx="8" fill="#ffffff" stroke="#f97316" stroke-width="1.5"/>
+<text x="386" y="99" font-size="12" font-weight="bold" fill="#c2410c" text-anchor="middle">③ 片付け</text>
+<text x="386" y="117" font-size="12" fill="#0f172a" text-anchor="middle">count = 0</text>
+<rect x="438" y="80" width="88" height="46" rx="8" fill="#ffffff" stroke="#10b981" stroke-width="1.5"/>
+<text x="482" y="99" font-size="12" font-weight="bold" fill="#047857" text-anchor="middle">② effect</text>
+<text x="482" y="117" font-size="12" fill="#0f172a" text-anchor="middle">count = 1</text>
+<rect x="582" y="80" width="88" height="46" rx="8" fill="#ffffff" stroke="#f97316" stroke-width="1.5"/>
+<text x="626" y="99" font-size="12" font-weight="bold" fill="#c2410c" text-anchor="middle">③ 片付け</text>
+<text x="626" y="117" font-size="12" fill="#0f172a" text-anchor="middle">count = 1</text>
+<line x1="16" y1="148" x2="712" y2="148" stroke="#475569" stroke-width="2" marker-end="url(#ar-03-12)"/>
+<text x="708" y="140" font-size="12" fill="#475569" text-anchor="end">時間</text>
+<line x1="72" y1="126" x2="72" y2="144" stroke="#94a3b8" stroke-width="1.5"/>
+<line x1="168" y1="126" x2="168" y2="144" stroke="#94a3b8" stroke-width="1.5"/>
+<line x1="290" y1="126" x2="290" y2="144" stroke="#94a3b8" stroke-width="1.5"/>
+<line x1="386" y1="126" x2="386" y2="144" stroke="#94a3b8" stroke-width="1.5"/>
+<line x1="482" y1="126" x2="482" y2="144" stroke="#94a3b8" stroke-width="1.5"/>
+<line x1="626" y1="126" x2="626" y2="144" stroke="#94a3b8" stroke-width="1.5"/>
+<circle cx="72" cy="148" r="4" fill="#475569"/>
+<circle cx="168" cy="148" r="4" fill="#475569"/>
+<circle cx="290" cy="148" r="4" fill="#475569"/>
+<circle cx="386" cy="148" r="4" fill="#475569"/>
+<circle cx="482" cy="148" r="4" fill="#475569"/>
+<circle cx="626" cy="148" r="4" fill="#475569"/>
+<text x="121" y="176" font-size="12" fill="#475569" text-anchor="middle">画面に出たあとで</text>
+<text x="121" y="194" font-size="12" fill="#475569" text-anchor="middle">effect が動く</text>
+<text x="386" y="176" font-size="12" fill="#475569" text-anchor="middle">前回（count = 0）の effect を片付けてから</text>
+<text x="386" y="194" font-size="12" fill="#475569" text-anchor="middle">新しい effect が動く</text>
+<text x="626" y="176" font-size="12" fill="#475569" text-anchor="middle">最後の片付けだけ</text>
+<text x="626" y="194" font-size="12" fill="#475569" text-anchor="middle">が動く</text>
+<rect x="40" y="224" width="12" height="12" rx="2" fill="#ffffff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="58" y="235" font-size="12" fill="#0f172a">① レンダー（関数が呼ばれる）</text>
+<rect x="290" y="224" width="12" height="12" rx="2" fill="#ffffff" stroke="#10b981" stroke-width="1.5"/>
+<text x="308" y="235" font-size="12" fill="#0f172a">② effect の実行</text>
+<rect x="470" y="224" width="12" height="12" rx="2" fill="#ffffff" stroke="#f97316" stroke-width="1.5"/>
+<text x="488" y="235" font-size="12" fill="#0f172a">③ クリーンアップ（片付け）</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図3-11: useEffect の実行タイミング（依存配列 [count]、Strict Mode なしの場合）。下のサンプルの実際のログと同じ順番です</div>
+</div>
+
+#### 実行順序をログで確かめる
+
+> **▼ このコードがやること（先に日本語で）:** 子コンポーネント `CountLogger` の中に、①レンダー（関数が呼ばれた）、②effect の実行、③クリーンアップ、のそれぞれで `console.log` を仕込みます。そして「最初の表示 → 【+1】ボタン → 【消す】ボタン」と操作したときに、ログがどの順番で出るかを確かめます。クリーンアップの中の `count` が「いつの値」なのかにも注目してください。
+
+```tsx
+import { useEffect, useState } from "react";
+
+// count を受け取って表示するだけの子コンポーネント
+function CountLogger({ count }: { count: number }) {
+  // ① コンポーネント関数が呼ばれた（レンダー）
+  console.log(`① レンダー（count = ${count}）`);
+
+  useEffect(() => {
+    // ② 画面に反映されたあとで実行される
+    console.log(`② effect 実行（count = ${count}）`);
+
+    // ③ 次の effect の前・画面から消えるときに実行される
+    return () => {
+      console.log(`③ クリーンアップ（count = ${count} の effect を片付け）`);
+    };
+  }, [count]);
+
+  return <p>count: {count}</p>;
+}
+
+export default function EffectTimingDemo() {
+  const [count, setCount] = useState<number>(0);
+  const [isVisible, setIsVisible] = useState<boolean>(true);
+
+  return (
+    <div>
+      {/* isVisible が false になると CountLogger は画面から消える */}
+      {isVisible && <CountLogger count={count} />}
+      <button onClick={() => setCount(count + 1)}>+1</button>
+      <button onClick={() => setIsVisible(false)}>消す</button>
+    </div>
+  );
+}
+```
+
+**▼ 実行結果**（ブラウザの Console。React 19 で実際に操作して記録したものです。`---` の行は操作の区切りとして書き足しています）
+
+```text
+--- 最初の表示 ---
+① レンダー（count = 0）
+② effect 実行（count = 0）
+--- 【+1】を押す ---
+① レンダー（count = 1）
+③ クリーンアップ（count = 0 の effect を片付け）
+② effect 実行（count = 1）
+--- 【消す】を押す ---
+③ クリーンアップ（count = 1 の effect を片付け）
+```
+
+開発モードで **Strict Mode** が有効な場合（Next.js の開発サーバーは最初から有効です）は、最初の表示と更新のときにレンダーが2回ずつ呼ばれ、最初の表示では「effect → 片付け → effect」と、わざと1往復多く実行されます。実際のログは次のとおりです。
+
+```text
+--- 最初の表示 ---
+① レンダー（count = 0）
+① レンダー（count = 0）
+② effect 実行（count = 0）
+③ クリーンアップ（count = 0 の effect を片付け）
+② effect 実行（count = 0）
+--- 【+1】を押す ---
+① レンダー（count = 1）
+① レンダー（count = 1）
+③ クリーンアップ（count = 0 の effect を片付け）
+② effect 実行（count = 1）
+--- 【消す】を押す ---
+③ クリーンアップ（count = 1 の effect を片付け）
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: レンダーのログは「関数が呼ばれた」印
+
+```tsx
+function CountLogger({ count }: { count: number }) {
+  console.log(`① レンダー（count = ${count}）`);
+```
+
+- コンポーネント関数の本体に直接書いた `console.log` は、関数が呼ばれるたび（レンダーのたび）に実行されます。
+- このタイミングでは、まだ画面は更新されていません。「新しい見た目の設計図（JSX）を作っている最中」です。
+
+---
+
+##### 解説2: effect は画面に反映された「あと」
+
+```tsx
+  useEffect(() => {
+    console.log(`② effect 実行（count = ${count}）`);
+```
+
+- ログを見ると、必ず ① のあとに ② が出ています。effect は「画面に反映し終わったあと」に実行されるからです。
+- 依存配列が `[count]` なので、【+1】で `count` が変わったときだけ再実行されます。【消す】のときは再実行されません。
+
+---
+
+##### 解説3: クリーンアップは「前回の値」で動く
+
+```tsx
+    return () => {
+      console.log(`③ クリーンアップ（count = ${count} の effect を片付け）`);
+    };
+```
+
+- 【+1】を押したときのクリーンアップは `count = 0` と表示されています。クリーンアップは「**前回の effect が作った片付け係**」なので、前回のスナップショット（0）を覚えているのです。
+- 【消す】を押すと `CountLogger` が画面から消える（アンマウント）ので、最後のクリーンアップだけが実行されます。タイマーやイベント監視を止めるのは、まさにこのタイミングです（6.4）。
+
+> **用語:** **アンマウント（unmount）** … コンポーネントが画面から取り除かれること。最後のクリーンアップが実行される。
 
 ---
 
@@ -5360,6 +6882,136 @@ function counterReducer(state: CounterState, action: CounterAction): CounterStat
 
 ---
 
+`useReducer` の流れを図にすると、次のようになります。レストランにたとえると、ボタン（お客さん）は「何が欲しいか」を注文票（action）に書いて渡すだけで、料理の作り方（状態の計算）は厨房（reducer）が全部知っている、という分担です。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 214" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-03-13" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="12" y="34" width="150" height="76" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="87" y="58" font-size="13" font-weight="bold" fill="#1e40af" text-anchor="middle">① ボタンを押す</text>
+<text x="87" y="80" font-size="12" fill="#475569" text-anchor="middle">「+1」ボタンの</text>
+<text x="87" y="98" font-size="12" fill="#475569" text-anchor="middle">onClick が動く</text>
+<rect x="194" y="34" width="150" height="76" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="269" y="58" font-size="13" font-weight="bold" fill="#c2410c" text-anchor="middle">② dispatch</text>
+<text x="269" y="80" font-size="12" fill="#0f172a" text-anchor="middle" font-family="Consolas, Cascadia Mono, monospace">{ type:</text>
+<text x="269" y="98" font-size="12" fill="#0f172a" text-anchor="middle" font-family="Consolas, Cascadia Mono, monospace">"increment" }</text>
+<rect x="376" y="34" width="150" height="76" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="451" y="58" font-size="13" font-weight="bold" fill="#047857" text-anchor="middle">③ reducer が計算</text>
+<text x="451" y="80" font-size="12" fill="#0f172a" text-anchor="middle" font-family="Consolas, Cascadia Mono, monospace">(state, action)</text>
+<text x="451" y="98" font-size="12" fill="#475569" text-anchor="middle">→ 次の state を返す</text>
+<rect x="558" y="34" width="150" height="76" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="633" y="58" font-size="13" font-weight="bold" fill="#047857" text-anchor="middle">④ 新しい state</text>
+<text x="633" y="80" font-size="12" fill="#0f172a" text-anchor="middle" font-family="Consolas, Cascadia Mono, monospace">{ count: 1 }</text>
+<text x="633" y="98" font-size="12" fill="#475569" text-anchor="middle">React が保存する</text>
+<line x1="162" y1="72" x2="192" y2="72" stroke="#475569" stroke-width="2" marker-end="url(#ar-03-13)"/>
+<line x1="344" y1="72" x2="374" y2="72" stroke="#475569" stroke-width="2" marker-end="url(#ar-03-13)"/>
+<line x1="526" y1="72" x2="556" y2="72" stroke="#475569" stroke-width="2" marker-end="url(#ar-03-13)"/>
+<path d="M633,110 L633,148 L87,148 L87,112" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#ar-03-13)"/>
+<text x="360" y="172" font-size="12.5" fill="#0f172a" text-anchor="middle">⑤ React が再レンダー → 画面に「カウント: 1」と表示 → 次のクリックを待つ</text>
+<text x="360" y="200" font-size="12" fill="#64748b" text-anchor="middle">reducer は「今の state」と「action」から「次の state」を返すだけの普通の関数（React なしでも動く）</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図3-12: useReducer の流れ。画面は「何が起きたか（action）」を送るだけで、計算は reducer にまとまっています</div>
+</div>
+
+#### reducer を React なしで動かしてみる
+
+> **▼ このコードがやること（先に日本語で）:** 上のカウンターの `counterReducer` は、React の機能を何も使っていない「ただの関数」です。そこで、ボタンを「+1, +1, -1, リセット」の順に押したつもりで action を並べ、Node.js で1つずつ reducer に通して、状態がどう変わるかを表示します。最後に、配列の `reduce` メソッドで同じ計算を一気に行い、「reducer」という名前の由来も確かめます。
+
+```ts
+// ファイル名: reducer.ts
+// 状態の形
+type CounterState = { count: number };
+
+// 操作（action）の種類
+type CounterAction =
+  | { type: "increment" }
+  | { type: "decrement" }
+  | { type: "reset" };
+
+// 6.10 と同じ reducer 関数（React を使わない、ただの関数）
+function counterReducer(state: CounterState, action: CounterAction): CounterState {
+  switch (action.type) {
+    case "increment":
+      return { count: state.count + 1 };
+    case "decrement":
+      return { count: state.count - 1 };
+    case "reset":
+      return { count: 0 };
+    default:
+      return state;
+  }
+}
+
+// ボタンを「+1, +1, -1, リセット」の順に押したつもりの action の列
+const actions: CounterAction[] = [
+  { type: "increment" },
+  { type: "increment" },
+  { type: "decrement" },
+  { type: "reset" },
+];
+
+// dispatch の代わりに、action を1つずつ reducer に通す
+let state: CounterState = { count: 0 };
+for (const action of actions) {
+  const next = counterReducer(state, action);
+  console.log(`${action.type}: ${state.count} → ${next.count}`);
+  state = next;
+}
+
+// 配列の reduce を使うと「最終状態」を一度に計算できる（名前の由来）
+const finalState = actions.reduce(counterReducer, { count: 0 });
+console.log("reduce で計算した最終状態:", finalState);
+```
+
+**▼ 実行結果**（`node reducer.ts`）
+
+```text
+increment: 0 → 1
+increment: 1 → 2
+decrement: 2 → 1
+reset: 1 → 0
+reduce で計算した最終状態: { count: 0 }
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: dispatch の代わりに reducer を直接呼ぶ
+
+```ts
+const next = counterReducer(state, action);
+```
+
+- React の中で `dispatch(action)` が呼ばれると、React は内部でこれと同じように `counterReducer(今の state, action)` を呼び、返ってきた値を新しい state として保存します（図の ③④）。
+- reducer は「今の state」と「action」だけで次の state が決まる関数なので、React がなくてもこうして動作を確かめられます。
+
+---
+
+##### 解説2: 毎回「新しいオブジェクト」を返している
+
+```ts
+case "increment":
+  return { count: state.count + 1 };
+```
+
+- reducer は `state.count++` のように元の state を書き換えず、`{ count: ... }` という**新しいオブジェクト**を返しています。4.4 で学んだ「直接書き換えず、新しく作って差し替える」ルールは、reducer でも同じです。
+
+---
+
+##### 解説3: 名前の由来は配列の reduce
+
+```ts
+const finalState = actions.reduce(counterReducer, { count: 0 });
+```
+
+- 配列の `reduce`（リデュース：まとめる）は、「初期値」と「要素を1つずつ取り込む関数」を受け取り、配列全体を1つの値にまとめるメソッドです。
+- 「今の状態」と「次の action」から「次の状態」を作る関数は、`reduce` にそのまま渡せる形をしています。だから **reducer**（まとめる係）と呼ばれます。
+
+> **用語:** **純粋関数（pure function）** … 同じ入力には必ず同じ出力を返し、外の値を書き換えない関数。reducer は純粋関数として書く。
+
+---
+
 ## 7. カスタムフック
 
 ### 7.1 なぜカスタムフックを作るのか
@@ -5811,7 +7463,9 @@ function useToggle(initialValue: boolean = false): [boolean, () => void] {
 
 ### 7.3 useBooks フックの予告
 
-後の章（第5章以降）で、書籍管理アプリのために以下のような `useBooks` カスタムフックを実装します。
+カスタムフックを使うと、書籍管理アプリのデータ操作を次のような `useBooks` フックにまとめる設計もできます。ここでは「カスタムフックで整理すると、画面側のコードがどれだけすっきりするか」の完成イメージとして眺めてください。
+
+> **注意:** 本書のアプリ（第7章以降）では、一覧のデータ取得を Next.js の **Server Component**（サーバー側で動く部品。第4章で学びます）が担当するため、この `useBooks` はそのままの形では登場しません。ただし「ロジックを1か所にまとめて、画面は表示に集中させる」という考え方は、第7章の `BookForm` などの設計でもそのまま活きています。
 
 ```tsx
 // 予告: 後の章で実装するカスタムフック
@@ -5837,8 +7491,8 @@ type UseBooksReturn = {
 
 function useBooks(): UseBooksReturn {
   // API との通信、state 管理、検索ロジックなどを
-  // このフックに集約する予定
-  // → 第5章「API連携」で詳しく実装します
+  // このフックに集約するイメージ（中身は省略。本書のアプリでは第7章以降の
+  // Server Component と Supabase で同じ役割を実現します）
 }
 
 // 使い方（完成イメージ）
@@ -6054,7 +7708,7 @@ function InfiniteLoopExample() {
 
   // 修正3: useMemo でオブジェクトの参照を安定させる
   // useMemo は「依存配列が変わるまで同じ値（参照）を返す」フック。
-  // （useMemo については次章以降で詳しく解説します）
+  // （useMemo の使い方は 6.7 で解説しました）
 
   return <p>カウント: {count}</p>;
 }
@@ -6266,6 +7920,202 @@ function KeyExample() {
 
 ---
 
+何が起きているのかを、Before / After の図で確認しましょう。key は、教室の座席表で使う「名札」のようなものです。**座席番号（index）** で生徒を覚えていると、先頭に転校生が座った瞬間に全員の番号が1つずつずれて、先生（React）は「1番の席の人＝さっきまで1番だった人」と思い込み、その人のノート（入力欄の中身）を別の生徒に渡してしまいます。**名札（id）** で覚えていれば、席が動いても取り違えません。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 410" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-03-14" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<text x="16" y="24" font-size="14" font-weight="bold" fill="#c2410c">✕ index を key にした場合</text>
+<rect x="16" y="36" width="288" height="148" rx="10" fill="#f8fafc" stroke="#cbd5e1"/>
+<text x="30" y="56" font-size="12" font-weight="bold" fill="#475569">追加する前</text>
+<rect x="28" y="66" width="60" height="30" rx="6" fill="#e2e8f0"/>
+<text x="58" y="86" font-size="12" fill="#0f172a" text-anchor="middle" font-family="Consolas, Cascadia Mono, monospace">key=0</text>
+<text x="100" y="86" font-size="13" font-weight="bold" fill="#0f172a">りんご</text>
+<rect x="176" y="66" width="116" height="30" rx="4" fill="#ffffff" stroke="#94a3b8"/>
+<text x="186" y="86" font-size="13" fill="#0f172a">赤い</text>
+<rect x="28" y="104" width="60" height="30" rx="6" fill="#e2e8f0"/>
+<text x="58" y="124" font-size="12" fill="#0f172a" text-anchor="middle" font-family="Consolas, Cascadia Mono, monospace">key=1</text>
+<text x="100" y="124" font-size="13" font-weight="bold" fill="#0f172a">バナナ</text>
+<rect x="176" y="104" width="116" height="30" rx="4" fill="#ffffff" stroke="#94a3b8"/>
+<text x="186" y="124" font-size="13" fill="#0f172a">黄色い</text>
+<text x="350" y="100" font-size="12" fill="#475569" text-anchor="middle">先頭に追加</text>
+<line x1="306" y1="110" x2="394" y2="110" stroke="#475569" stroke-width="2" marker-end="url(#ar-03-14)"/>
+<rect x="396" y="36" width="308" height="148" rx="10" fill="#fff7ed" stroke="#fed7aa"/>
+<text x="410" y="56" font-size="12" font-weight="bold" fill="#475569">「みかん」を先頭に追加したあと</text>
+<rect x="408" y="66" width="60" height="30" rx="6" fill="#e2e8f0"/>
+<text x="438" y="86" font-size="12" fill="#0f172a" text-anchor="middle" font-family="Consolas, Cascadia Mono, monospace">key=0</text>
+<text x="480" y="86" font-size="13" font-weight="bold" fill="#0f172a">みかん</text>
+<rect x="556" y="66" width="108" height="30" rx="4" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="566" y="86" font-size="13" fill="#c2410c">赤い</text>
+<text x="684" y="87" font-size="15" font-weight="bold" fill="#dc2626" text-anchor="middle">✕</text>
+<rect x="408" y="104" width="60" height="30" rx="6" fill="#e2e8f0"/>
+<text x="438" y="124" font-size="12" fill="#0f172a" text-anchor="middle" font-family="Consolas, Cascadia Mono, monospace">key=1</text>
+<text x="480" y="124" font-size="13" font-weight="bold" fill="#0f172a">りんご</text>
+<rect x="556" y="104" width="108" height="30" rx="4" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="566" y="124" font-size="13" fill="#c2410c">黄色い</text>
+<text x="684" y="125" font-size="15" font-weight="bold" fill="#dc2626" text-anchor="middle">✕</text>
+<rect x="408" y="142" width="60" height="30" rx="6" fill="#e2e8f0"/>
+<text x="438" y="162" font-size="12" fill="#0f172a" text-anchor="middle" font-family="Consolas, Cascadia Mono, monospace">key=2</text>
+<text x="480" y="162" font-size="13" font-weight="bold" fill="#0f172a">バナナ</text>
+<rect x="556" y="142" width="108" height="30" rx="4" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="566" y="162" font-size="12" fill="#94a3b8">（空）</text>
+<text x="684" y="163" font-size="15" font-weight="bold" fill="#dc2626" text-anchor="middle">✕</text>
+<text x="16" y="214" font-size="14" font-weight="bold" fill="#047857">✓ id を key にした場合</text>
+<rect x="16" y="226" width="288" height="148" rx="10" fill="#f8fafc" stroke="#cbd5e1"/>
+<text x="30" y="246" font-size="12" font-weight="bold" fill="#475569">追加する前</text>
+<rect x="28" y="256" width="60" height="30" rx="6" fill="#e2e8f0"/>
+<text x="58" y="276" font-size="12" fill="#0f172a" text-anchor="middle" font-family="Consolas, Cascadia Mono, monospace">key=1</text>
+<text x="100" y="276" font-size="13" font-weight="bold" fill="#0f172a">りんご</text>
+<rect x="176" y="256" width="116" height="30" rx="4" fill="#ffffff" stroke="#94a3b8"/>
+<text x="186" y="276" font-size="13" fill="#0f172a">赤い</text>
+<rect x="28" y="294" width="60" height="30" rx="6" fill="#e2e8f0"/>
+<text x="58" y="314" font-size="12" fill="#0f172a" text-anchor="middle" font-family="Consolas, Cascadia Mono, monospace">key=2</text>
+<text x="100" y="314" font-size="13" font-weight="bold" fill="#0f172a">バナナ</text>
+<rect x="176" y="294" width="116" height="30" rx="4" fill="#ffffff" stroke="#94a3b8"/>
+<text x="186" y="314" font-size="13" fill="#0f172a">黄色い</text>
+<text x="350" y="290" font-size="12" fill="#475569" text-anchor="middle">先頭に追加</text>
+<line x1="306" y1="300" x2="394" y2="300" stroke="#475569" stroke-width="2" marker-end="url(#ar-03-14)"/>
+<rect x="396" y="226" width="308" height="148" rx="10" fill="#ecfdf5" stroke="#a7f3d0"/>
+<text x="410" y="246" font-size="12" font-weight="bold" fill="#475569">「みかん」を先頭に追加したあと</text>
+<rect x="408" y="256" width="60" height="30" rx="6" fill="#e2e8f0"/>
+<text x="438" y="276" font-size="12" fill="#0f172a" text-anchor="middle" font-family="Consolas, Cascadia Mono, monospace">key=3</text>
+<text x="480" y="276" font-size="13" font-weight="bold" fill="#0f172a">みかん</text>
+<rect x="556" y="256" width="108" height="30" rx="4" fill="#ffffff" stroke="#10b981" stroke-width="1.5"/>
+<text x="566" y="276" font-size="12" fill="#94a3b8">（空）</text>
+<text x="684" y="277" font-size="15" font-weight="bold" fill="#047857" text-anchor="middle">✓</text>
+<rect x="408" y="294" width="60" height="30" rx="6" fill="#e2e8f0"/>
+<text x="438" y="314" font-size="12" fill="#0f172a" text-anchor="middle" font-family="Consolas, Cascadia Mono, monospace">key=1</text>
+<text x="480" y="314" font-size="13" font-weight="bold" fill="#0f172a">りんご</text>
+<rect x="556" y="294" width="108" height="30" rx="4" fill="#ffffff" stroke="#10b981" stroke-width="1.5"/>
+<text x="566" y="314" font-size="13" fill="#047857">赤い</text>
+<text x="684" y="315" font-size="15" font-weight="bold" fill="#047857" text-anchor="middle">✓</text>
+<rect x="408" y="332" width="60" height="30" rx="6" fill="#e2e8f0"/>
+<text x="438" y="352" font-size="12" fill="#0f172a" text-anchor="middle" font-family="Consolas, Cascadia Mono, monospace">key=2</text>
+<text x="480" y="352" font-size="13" font-weight="bold" fill="#0f172a">バナナ</text>
+<rect x="556" y="332" width="108" height="30" rx="4" fill="#ffffff" stroke="#10b981" stroke-width="1.5"/>
+<text x="566" y="352" font-size="13" fill="#047857">黄色い</text>
+<text x="684" y="353" font-size="15" font-weight="bold" fill="#047857" text-anchor="middle">✓</text>
+<text x="360" y="400" font-size="12" fill="#475569" text-anchor="middle">React は同じ key の行（DOM）を使い回す。index は「位置」なので、先頭に追加するとメモが別の果物に付いてしまう</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図3-13: key の付け方によるリストの使い回しの違い（Before / After）。入力欄のメモは DOM が覚えている値です</div>
+</div>
+
+#### key による「使い回し」を Node.js でまねしてみる
+
+> **▼ このコードがやること（先に日本語で）:** React がリストを描き直すときの「同じ key の行（DOM）は使い回す」という動きを、小さな模型で再現します。「りんご（メモ: 赤い）」「バナナ（メモ: 黄色い）」が並んだ状態で先頭に「みかん」を追加し、①index を key にした場合と ②id を key にした場合で、各行のメモ欄がどうなるかを表示します。
+
+```ts
+// ファイル名: key-sim.ts
+// 画面に並んでいる「行」1つ分（React が作った DOM の代わり）
+type Row = {
+  // この行に付いている key
+  key: string;
+  // 行の中の入力欄にユーザーが打った文字（DOM が覚えている状態）
+  memo: string;
+};
+
+// 表示したいデータ1件分
+type Fruit = {
+  id: number;
+  name: string;
+};
+
+// key の決め方（index を使うか、id を使うか）を関数で受け取る
+type GetKey = (fruit: Fruit, index: number) => string;
+
+// 新しいデータを描くとき、同じ key の行があればそれを使い回す（React のまね）
+function rerender(prevRows: Row[], fruits: Fruit[], getKey: GetKey): Row[] {
+  return fruits.map((fruit, index) => {
+    const key = getKey(fruit, index);
+    // 同じ key の行を探す。見つかればその行（メモ入り）をそのまま使う
+    const reused = prevRows.find((row) => row.key === key);
+    const memo = reused ? reused.memo : "";
+    console.log(`  ${fruit.name}: key=${key} → メモ欄「${memo || "(空)"}」`);
+    return { key, memo };
+  });
+}
+
+const before: Fruit[] = [
+  { id: 1, name: "りんご" },
+  { id: 2, name: "バナナ" },
+];
+// 先頭に「みかん」を追加したあとのデータ
+const after: Fruit[] = [{ id: 3, name: "みかん" }, ...before];
+
+// ---- index を key にした場合 ----
+const byIndex: GetKey = (_fruit, index) => String(index);
+// 追加前の画面: りんごの行に「赤い」、バナナの行に「黄色い」とメモしてある
+const indexRows: Row[] = [
+  { key: "0", memo: "赤い" },
+  { key: "1", memo: "黄色い" },
+];
+console.log("【index を key にした場合】");
+rerender(indexRows, after, byIndex);
+
+// ---- id を key にした場合 ----
+const byId: GetKey = (fruit) => String(fruit.id);
+const idRows: Row[] = [
+  { key: "1", memo: "赤い" },
+  { key: "2", memo: "黄色い" },
+];
+console.log("【id を key にした場合】");
+rerender(idRows, after, byId);
+```
+
+**▼ 実行結果**（`node key-sim.ts`）
+
+```text
+【index を key にした場合】
+  みかん: key=0 → メモ欄「赤い」
+  りんご: key=1 → メモ欄「黄色い」
+  バナナ: key=2 → メモ欄「(空)」
+【id を key にした場合】
+  みかん: key=3 → メモ欄「(空)」
+  りんご: key=1 → メモ欄「赤い」
+  バナナ: key=2 → メモ欄「黄色い」
+```
+
+本物の React（React 19）で同じ操作をした場合も、入力欄の中身はこの模型とまったく同じ結果になりました。
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: 同じ key の行を探して使い回す
+
+```ts
+const reused = prevRows.find((row) => row.key === key);
+const memo = reused ? reused.memo : "";
+```
+
+- `find` は「条件に合う最初の要素」を返す配列のメソッドです（見つからなければ `undefined`）。
+- React も、描き直す前と後で**同じ key の要素を「同じもの」とみなして DOM を使い回します**。入力欄に打った文字のように DOM 自身が覚えている値は、その DOM と一緒に引き継がれます。
+- 同じ key が見つからなければ、新しい DOM（空のメモ欄）が作られます。
+
+---
+
+##### 解説2: index だと「位置」で対応づけてしまう
+
+```ts
+const byIndex: GetKey = (_fruit, index) => String(index);
+```
+
+- index を key にすると、先頭に「みかん」が入った瞬間、「みかん」が key=0 になります。key=0 は追加前に「りんご（赤い）」の行だったので、**みかんの行に「赤い」が引き継がれて**しまいます。
+- 引数名の先頭の `_`（`_fruit`）は「この引数は使わない」という印として、よく使われる書き方です。
+
+---
+
+##### 解説3: id なら「データそのもの」で対応づけられる
+
+```ts
+const byId: GetKey = (fruit) => String(fruit.id);
+```
+
+- id はデータごとに決まっていて、並び順が変わっても変わりません。だから「りんご」は追加の前も後も key=1 で、メモ「赤い」が正しく残ります。
+- 新しく来た「みかん」は key=3 で、前の画面には無かったので新しい空の行になります。これが期待どおりの動きです。
+
+---
+
 **key のベストプラクティス:**
 
 ```tsx
@@ -6395,6 +8245,197 @@ function KeyExample() {
 
 ---
 
+## 練習問題（解答・解説つき）
+
+この章の内容を確かめる問題です。まず自分で考えて（できれば紙やエディタに書いて）から、後ろの「解答と解説」を見てください。答えを見る前に「なぜそうなるか」を一言で説明できれば、理解できている証拠です。
+
+### 問題1: JSX のルール違反を直す（2節）
+
+次のコンポーネントには、JSX のルール違反が3つあります。すべて直してください。
+
+```tsx
+function Profile() {
+  return (
+    <h2 class="name">田中太郎</h2>
+    <img src="/avatar.png" alt="アバター">
+  );
+}
+```
+
+### 問題2: props を受け取るコンポーネントを作る（3節）
+
+`title`（文字列）と `price`（数値）を props で受け取り、`React入門（2,800円）` のように表示する `BookTitle` コンポーネントを、props の型定義つきで書いてください（価格は3桁ごとにカンマを入れます）。
+
+### 問題3: 1回のクリックで count はいくつになる？（4節）
+
+`count` の初期値が 0 のとき、次のボタンを**1回だけ**押すと、画面の `count` はいくつになるでしょう。
+
+```tsx
+const handleClick = () => {
+  setCount(count + 1);
+  setCount(count + 1);
+  setCount((prev) => prev + 1);
+};
+```
+
+### 問題4: 削除ボタンのバグを2つ見つける（4〜5節）
+
+次の TODO 削除のコードには、バグが2つあります。それぞれ何が起きるかを説明し、直してください。
+
+```tsx
+const handleDelete = (id: number) => {
+  const index = todos.findIndex((todo) => todo.id === id);
+  todos.splice(index, 1);
+  setTodos(todos);
+};
+
+// 一覧の中の削除ボタン
+<button onClick={handleDelete(todo.id)}>削除</button>
+```
+
+### 問題5: ログの順番を答える（6節）
+
+次の `CityLabel` を `city="東京"` で表示し、次に `city="大阪"` に変え、最後に画面から消しました。Console に出るログを順番に書いてください（Strict Mode なしの場合）。
+
+```tsx
+function CityLabel({ city }: { city: string }) {
+  console.log("A: レンダー", city);
+  useEffect(() => {
+    console.log("B: effect", city);
+    return () => console.log("C: 片付け", city);
+  }, [city]);
+  return <p>{city}</p>;
+}
+```
+
+### 問題6: key に一番ふさわしいのは？（2.5・8.3節）
+
+本の一覧を `books.map((book, index) => <BookCard key={???} book={book} />)` で表示します。`???` に入れるものとして一番ふさわしいものを選び、ほかの2つがダメな理由も答えてください。
+
+- (a) `index`
+- (b) `Math.random()`
+- (c) `book.id`
+
+### 問題7: 文字が入力できない入力欄（5.2節）
+
+次の入力欄は、キーボードで文字を打っても何も入力されません。理由を説明し、入力できるように直してください。
+
+```tsx
+function NameInput() {
+  const [name, setName] = useState("");
+  return <input value={name} />;
+}
+```
+
+---
+
+### 解答と解説
+
+#### 問題1の解答
+
+```tsx
+function Profile() {
+  return (
+    // (1) 複数の要素は Fragment（または div）で1つに包む
+    <>
+      {/* (2) class ではなく className */}
+      <h2 className="name">田中太郎</h2>
+      {/* (3) 中身のないタグは /> で閉じる */}
+      <img src="/avatar.png" alt="アバター" />
+    </>
+  );
+}
+```
+
+- (1) `return` で返せるのは1つの要素だけです（2.2「複数の要素を返す場合」）。元のコードでは `JSX expressions must have one parent element.` というエラーになります。
+- (2) `class` は JavaScript の予約語なので、JSX では `className` と書きます。図3-3 で見たとおり、HTML になるときに `class` に戻ります。
+- (3) JSX では `<img>` や `<input>` のような自己閉じタグも、必ず `/>` で閉じます。
+
+#### 問題2の解答
+
+```tsx
+// props の形を型で決める
+type BookTitleProps = {
+  title: string;
+  price: number;
+};
+
+function BookTitle({ title, price }: BookTitleProps) {
+  // toLocaleString() で 2800 を "2,800" にする
+  return (
+    <p>
+      {title}（{price.toLocaleString()}円）
+    </p>
+  );
+}
+
+// 使い方: 文字列は "..."、数値は { } で渡す
+<BookTitle title="React入門" price={2800} />
+```
+
+- props の型は `type 〇〇Props = { ... }` で決め、引数で `{ title, price }` と分割代入して受け取るのが定番です（3.2）。
+- 数値の props は `price={2800}` のように `{ }` で渡します。`price="2800"` と書くと文字列になり、`Type 'string' is not assignable to type 'number'.` という型エラーになります。
+
+#### 問題3の解答
+
+**答え: 2**
+
+- この回のレンダーでは `count` は 0 のスナップショットなので、最初の2行はどちらも「1 にして」という予約です。3行目は「前の値 + 1」という関数の予約です。
+- 予約の列は `[1, 1, (prev) => prev + 1]` になり、React は書いた順に「1 にする → 1 にする → 1 + 1 = 2」と処理します（4.3・図3-5）。
+- 4.3 の `state-queue.ts` で、予約の列をこの3つにして `applyUpdates` を呼ぶと、同じく 2 が得られます。本物の React で試しても 2 になります。
+
+#### 問題4の解答
+
+- **バグ1: `onClick={handleDelete(todo.id)}`** … `()` を付けているので、ボタンを**描画した瞬間に** `handleDelete` が実行されてしまいます。クリックしていないのに削除処理が走り、逆にクリックしても何も起きません（5.1・図3-7）。TypeScript では `Type 'void' is not assignable to type 'MouseEventHandler<HTMLButtonElement> | undefined'.` というエラーになります。
+- **バグ2: `splice` で直接書き換えて同じ配列を渡している** … `splice` は元の配列を直接変更する破壊的メソッドです。`setTodos(todos)` に「同じ箱」を渡しているので、React は「変化なし」と判断し、画面が更新されません（4.4・図3-6、8.1）。
+
+```tsx
+const handleDelete = (id: number) => {
+  // filter で「削除する TODO 以外」を集めた新しい配列を作る
+  setTodos(todos.filter((todo) => todo.id !== id));
+};
+
+// アロー関数で包んで「クリックされたら呼ぶ関数」を渡す
+<button onClick={() => handleDelete(todo.id)}>削除</button>
+```
+
+#### 問題5の解答
+
+```text
+A: レンダー 東京
+B: effect 東京
+A: レンダー 大阪
+C: 片付け 東京
+B: effect 大阪
+C: 片付け 大阪
+```
+
+- 最初の表示（マウント）では「レンダー → effect」の順です。effect は画面に反映されたあとに動きます。
+- `city` が変わると「レンダー → **前回（東京）の片付け** → 新しい effect」の順になります。片付けの中の `city` は、その effect を作ったときの値（東京）のままです。
+- 画面から消える（アンマウント）ときは、最後の片付け（大阪）だけが動きます。6.5 の図3-11・ログのサンプルと同じ流れです（このログは React 19 で実際に動かして確認したものです）。
+
+#### 問題6の解答
+
+**答え: (c) `book.id`**
+
+- (a) `index` … 並び替え・先頭への追加・削除をすると、key と本の対応がずれて、入力中の値などが別の本に付いてしまいます（8.3・図3-13）。本の一覧は追加・削除されるので不向きです。
+- (b) `Math.random()` … 描画のたびに違う値になるので、毎回すべての行が「新しいもの」と判断され、作り直されます。入力中の文字が消えたり、ムダな処理が増えたりします。
+- (c) `book.id` … データベースが付けた一意な番号で、並び順に関係なく変わりません。key の理想的な値です。
+
+#### 問題7の解答
+
+- `value={name}` で入力欄の表示を state に固定しているのに、`onChange` が無いので state が変わりません。キーを押しても、次の描画で元の値（空文字）に戻されてしまいます（5.2・図3-8 の ③ が起きない）。Console には `You provided a \`value\` prop to a form field without an \`onChange\` handler.` で始まる警告が出ます。
+
+```tsx
+function NameInput() {
+  const [name, setName] = useState("");
+  // value と onChange をセットで書く（制御コンポーネント）
+  return <input value={name} onChange={(e) => setName(e.target.value)} />;
+}
+```
+
+---
+
 ## まとめ
 
 この章で学んだ React の基礎をまとめます。
@@ -6409,4 +8450,4 @@ function KeyExample() {
 | **useEffect** | 副作用（API取得、DOM操作等）を実行するフック |
 | **カスタムフック** | ロジックを再利用可能な関数に切り出す仕組み |
 
-**次の章（第4章）** では、React Router を使ったルーティングと、より実践的な画面遷移の実装に進みます。
+**次の章（第4章）** では、この章で学んだ React の上に乗っている **Next.js** の基礎（App Router によるファイルベースのルーティング、Server Component と Client Component の使い分けなど）に進みます。
