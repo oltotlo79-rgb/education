@@ -1,0 +1,3 @@
+エラー: マイグレーション 0005_tags に失敗しました
+  原因: SQLite failure: `Cannot add a NOT NULL column with default value NULL`
+適用済みの版: ["0001_users", "0002_notes", "0003_sessions", "0004_notes_pinned"]
