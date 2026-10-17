@@ -1,0 +1,31 @@
+（準備: sql/schema.sql の 2 文を実行しました）
+（準備: sql/seed.sql の 2 文を実行しました）
+sql> BEGIN
+OK
+
+sql> INSERT INTO notes (user_id, title) VALUES (1, 'A')
+OK（変更: 1 行）
+
+sql> COMMIT
+OK
+
+sql> BEGIN
+OK
+
+sql> INSERT INTO notes (user_id, title) VALUES (1, 'B')
+OK（変更: 1 行）
+
+sql> INSERT INTO notes (user_id, title) VALUES (1, 'C')
+OK（変更: 1 行）
+
+sql> ROLLBACK
+OK
+
+sql> SELECT COUNT(*) AS notes FROM notes
++-------+
+| notes |
++-------+
+| 9     |
++-------+
+(1 行)
+

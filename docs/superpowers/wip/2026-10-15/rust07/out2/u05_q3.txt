@@ -1,0 +1,19 @@
+（準備: sql/schema.sql の 2 文を実行しました）
+（準備: sql/seed.sql の 2 文を実行しました）
+sql> UPDATE notes SET title = '買い物リスト（A）', version = version + 1 WHERE id = 1 AND user_id = 1 AND version = 1
+OK（変更: 1 行）
+
+sql> UPDATE notes SET title = '買い物リスト（B）', version = version + 1 WHERE id = 1 AND user_id = 1 AND version = 1
+OK（変更: 0 行）
+
+sql> UPDATE notes SET title = '買い物リスト（B）', version = version + 1 WHERE id = 1 AND user_id = 1 AND version = 2
+OK（変更: 1 行）
+
+sql> SELECT id, title, version FROM notes WHERE id = 1
++----+-------------------+---------+
+| id | title             | version |
++----+-------------------+---------+
+| 1  | 買い物リスト（B） | 3       |
++----+-------------------+---------+
+(1 行)
+

@@ -16,7 +16,7 @@ impl From<libsql::Error> for RepoError {
     }
 }
 
-// 利用者への返事を決める層の失敗（第4巻 UNIT 07 の形）
+// 利用者への返事を決める層の失敗（第4巻 UNIT 05 の形）
 #[derive(Debug)]
 enum AppError {
     NotFound,
