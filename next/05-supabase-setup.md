@@ -12,7 +12,10 @@
 
 > **データベースはなぜ必要？** 変数や配列にデータを保持しても、ブラウザを閉じれば消えてしまいます。データベースはハードディスクにデータを保存するので、アプリを再起動してもデータが残ります。SNSの投稿、ECサイトの商品情報、そしてこのアプリの書籍情報も、すべてデータベースに保存されています。
 
+<!-- -->
+
 > **補足: 用語の読み方**
+>
 > - **BaaS**（バース／ビーエーエーエス：Backend as a Service の略。サーバーやDBを自前で構築せずに使えるクラウドサービス）
 > - **PostgreSQL**（ポストグレスキューエル：オープンソースのリレーショナルデータベース。Supabaseの中核）
 > - **JWT**（ジョット／ジェイダブリュティー：JSON Web Token の略。ログイン状態を表すデジタル証明書のような文字列）
@@ -111,9 +114,9 @@ RDB では、データを **テーブル（表）** に保存します。
 
 | id | title | author | status |
 |----|-------|--------|--------|
-| 1 | リーダブルコード | Boswell | done |
+| 1 | リーダブルコード | Boswell | completed |
 | 2 | プロを目指す人〜 | 鈴木僚太 | reading |
-| 3 | 達人プログラマー | Thomas | unread |
+| 3 | 達人プログラマー | Thomas | want_to_read |
 
 > 横の見出し（`id` ・ `title` ・ `author` ・ `status`）が **カラム（列）**、データ1件ぶんの各行が **レコード（行）** です。
 
@@ -152,21 +155,21 @@ RDB では、データを **テーブル（表）** に保存します。
 <text x="60" y="110" text-anchor="middle" font-size="13" fill="#047857">1</text>
 <text x="98" y="110" font-size="13" fill="#1e293b">リーダブルコード</text>
 <text x="278" y="110" font-size="13" fill="#1e293b">Boswell</text>
-<text x="378" y="110" font-size="13" fill="#1e293b">done</text>
+<text x="376" y="110" font-size="12" fill="#1e293b">completed</text>
 <text x="60" y="140" text-anchor="middle" font-size="13" fill="#047857">2</text>
 <text x="98" y="140" font-size="13" fill="#1e293b">プロを目指す人〜</text>
 <text x="278" y="140" font-size="13" fill="#1e293b">鈴木僚太</text>
-<text x="378" y="140" font-size="13" fill="#1e293b">reading</text>
+<text x="376" y="140" font-size="12" fill="#1e293b">reading</text>
 <text x="60" y="170" text-anchor="middle" font-size="13" fill="#047857">3</text>
 <text x="98" y="170" font-size="13" fill="#1e293b">達人プログラマー</text>
 <text x="278" y="170" font-size="13" fill="#1e293b">Thomas</text>
-<text x="378" y="170" font-size="13" fill="#1e293b">unread</text>
+<text x="376" y="170" font-size="12" fill="#1e293b">want_to_read</text>
 <rect x="90" y="60" width="170" height="120" fill="none" stroke="#3b82f6" stroke-width="3"/>
 <rect x="30" y="120" width="440" height="30" fill="none" stroke="#f97316" stroke-width="3"/>
 <rect x="30" y="60" width="60" height="120" fill="none" stroke="#10b981" stroke-width="3"/>
-<path d="M30,180 H120 L112,202 H38 Z" fill="#ffffff" stroke="#64748b" stroke-width="1.5"/>
-<text x="75" y="197" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e293b">books</text>
-<text x="130" y="198" font-size="12" fill="#64748b">← シート1枚 ＝ テーブル1つ（名前は books）</text>
+<path d="M370,180 H460 L452,202 H378 Z" fill="#ffffff" stroke="#64748b" stroke-width="1.5"/>
+<text x="415" y="197" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e293b">books</text>
+<text x="466" y="198" font-size="12" fill="#64748b">← シート1枚 ＝ テーブル</text>
 <path d="M495,40 C420,22 230,22 180,56" fill="none" stroke="#3b82f6" stroke-width="2" marker-end="url(#ar-05-02)"/>
 <text x="500" y="38" font-size="14" font-weight="bold" fill="#1e40af">① カラム（列）</text>
 <text x="500" y="56" font-size="12" fill="#475569">縦の項目。title 列には</text>
@@ -238,8 +241,8 @@ id | title              | author       | status
 -- VALUES (..., ..., ...): 上で並べたカラムと同じ順番で値を指定
 -- 'SQL入門'             : title カラムに入れる文字列リテラル
 -- 'ミック'              : author カラムに入れる文字列
--- 'unread'              : status カラムに入れる文字列
-INSERT INTO books (title, author, status) VALUES ('SQL入門', 'ミック', 'unread');
+-- 'want_to_read'              : status カラムに入れる文字列
+INSERT INTO books (title, author, status) VALUES ('SQL入門', 'ミック', 'want_to_read');
 ```
 
 **▼ 実行結果:** `INSERT 0 1`（1件追加された）
@@ -252,13 +255,13 @@ INSERT INTO books (title, author, status) VALUES ('SQL入門', 'ミック', 'unr
 
 ```sql
 -- UPDATE books     : books テーブルの既存行を書き換える宣言
--- SET status='done': どのカラムをどの値に変えるかを指定（=は代入）
+-- SET status='completed': どのカラムをどの値に変えるかを指定（=は代入）
 -- WHERE id = 2     : 「id が 2 の行だけ」更新対象にする絞り込み条件
 --                    WHERE を忘れると全行が書き換わるので超危険
-UPDATE books SET status = 'done' WHERE id = 2;
+UPDATE books SET status = 'completed' WHERE id = 2;
 ```
 
-**▼ 実行結果:** `UPDATE 1`（1件更新された）。id=2 のレコードの status が `'reading'` から `'done'` に変わります。
+**▼ 実行結果:** `UPDATE 1`（1件更新された）。id=2 のレコードの status が `'reading'` から `'completed'` に変わります。
 
 > **`WHERE` を必ず付ける!**: `WHERE` を忘れると**全レコードが書き換わってしまいます**。常に「どの行を対象にするか」を明示しましょう。
 
@@ -276,6 +279,382 @@ DELETE FROM books WHERE id = 3;
 **▼ 実行結果:** `DELETE 1`（1件削除された）。
 
 > **これも `WHERE` 必須!**: 忘れると全件削除です。バックアップ無しで実行すると地獄を見ます。
+
+#### 通しで試す: 4つの命令で表がどう変わるか
+
+ここまでの4つの命令を、練習用の小さな表で1回ずつ実行して、表がどう変わるかを確かめましょう。第2節でプロジェクトを作ったあと、4.3 節で開き方を説明する **SQL Editor** に貼り付けて「Run」を押せば、同じことを試せます（今は読むだけでも大丈夫です）。
+
+> **▼ このコードがやること（先に日本語で）:** 練習用の表 `practice_books` を作って本を3冊入れ、「1冊追加」「1冊の状態を書き換え」「1冊削除」を順番に行ってから、最後に表の中身を全部表示します。本番の `books` テーブルとは別の名前なので、何度実行しても本番のデータには影響しません。
+
+```sql
+-- 同じ名前の練習用の表があれば、いったん消す（何度でもやり直せるようにするため）
+DROP TABLE IF EXISTS practice_books;
+
+-- 練習用の表を作る（id・題名・著者・状態の4列）
+CREATE TABLE practice_books (
+  id integer PRIMARY KEY,
+  title text NOT NULL,
+  author text NOT NULL,
+  status text NOT NULL
+);
+
+-- 最初の3冊をまとめて入れる（( ) をカンマで区切ると複数行になる）
+INSERT INTO practice_books (id, title, author, status) VALUES
+  (1, 'リーダブルコード', 'Boswell', 'completed'),
+  (2, 'プロを目指す人〜', '鈴木僚太', 'reading'),
+  (3, '達人プログラマー', 'Thomas', 'want_to_read');
+
+-- C（作成）: 4冊目を追加する
+INSERT INTO practice_books (id, title, author, status) VALUES (4, 'SQL入門', 'ミック', 'want_to_read');
+
+-- U（更新）: id が 2 の本だけを「読み終えた」にする
+UPDATE practice_books SET status = 'completed' WHERE id = 2;
+
+-- D（削除）: id が 3 の本だけを消す
+DELETE FROM practice_books WHERE id = 3;
+
+-- R（読み取り）: 最後に全部を id の小さい順に表示する
+SELECT * FROM practice_books ORDER BY id;
+```
+
+**▼ 実行結果**（PostgreSQL 17 の psql で1文ずつ実行した出力。SQL Editor では最後の `SELECT` の表だけが結果欄に表示されます）
+
+```text
+DROP TABLE
+CREATE TABLE
+INSERT 0 3
+INSERT 0 1
+UPDATE 1
+DELETE 1
+ id |      title       |  author  |    status
+----+------------------+----------+--------------
+  1 | リーダブルコード | Boswell  | completed
+  2 | プロを目指す人〜 | 鈴木僚太 | completed
+  4 | SQL入門          | ミック   | want_to_read
+(3 rows)
+```
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 386" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<rect x="8" y="8" width="344" height="182" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="22" y="32" font-size="14" font-weight="bold" fill="#1e40af">SELECT（読む）</text>
+<text x="22" y="50" font-size="12" font-family="Consolas, Cascadia Mono, monospace" fill="#334155">SELECT * FROM practice_books</text>
+<text x="22" y="65" font-size="12" font-family="Consolas, Cascadia Mono, monospace" fill="#334155">WHERE status = 'reading';</text>
+<rect x="22" y="72" width="250" height="22" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1"/>
+<text x="28" y="88" font-size="12" font-weight="bold" fill="#334155">id</text>
+<text x="58" y="88" font-size="12" font-weight="bold" fill="#334155">title</text>
+<text x="178" y="88" font-size="12" font-weight="bold" fill="#334155">status</text>
+<rect x="22" y="94" width="250" height="22" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+<text x="28" y="110" font-size="12" fill="#94a3b8">1</text>
+<text x="58" y="110" font-size="12" fill="#94a3b8">リーダブルコード</text>
+<text x="178" y="110" font-size="12" fill="#94a3b8">completed</text>
+<rect x="22" y="116" width="250" height="22" fill="#dbeafe" stroke="#cbd5e1" stroke-width="1"/>
+<text x="28" y="132" font-size="12" fill="#1e293b">2</text>
+<text x="58" y="132" font-size="12" font-weight="bold" fill="#1e293b">プロを目指す人〜</text>
+<text x="178" y="132" font-size="12" font-weight="bold" fill="#1e293b">reading</text>
+<rect x="22" y="116" width="250" height="22" fill="none" stroke="#3b82f6" stroke-width="2.5"/>
+<rect x="22" y="138" width="250" height="22" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+<text x="28" y="154" font-size="12" fill="#94a3b8">3</text>
+<text x="58" y="154" font-size="12" fill="#94a3b8">達人プログラマー</text>
+<text x="178" y="154" font-size="12" fill="#94a3b8">want_to_read</text>
+<line x1="52" y1="72" x2="52" y2="160" stroke="#cbd5e1" stroke-width="1"/>
+<line x1="172" y1="72" x2="172" y2="160" stroke="#cbd5e1" stroke-width="1"/>
+<text x="276" y="94" font-size="12" font-weight="bold" fill="#1e40af">条件に合う</text>
+<text x="276" y="111" font-size="12" fill="#475569">行だけを</text>
+<text x="276" y="128" font-size="12" fill="#475569">取り出す。</text>
+<text x="276" y="145" font-size="12" fill="#475569">表そのものは</text>
+<text x="276" y="162" font-size="12" fill="#475569">変わらない</text>
+<rect x="368" y="8" width="344" height="182" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="382" y="32" font-size="14" font-weight="bold" fill="#047857">INSERT（追加）</text>
+<text x="382" y="50" font-size="12" font-family="Consolas, Cascadia Mono, monospace" fill="#334155">INSERT INTO practice_books (…)</text>
+<text x="382" y="65" font-size="12" font-family="Consolas, Cascadia Mono, monospace" fill="#334155">VALUES (4, 'SQL入門', 'want_to_read');</text>
+<rect x="382" y="72" width="250" height="22" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1"/>
+<text x="388" y="88" font-size="12" font-weight="bold" fill="#334155">id</text>
+<text x="418" y="88" font-size="12" font-weight="bold" fill="#334155">title</text>
+<text x="538" y="88" font-size="12" font-weight="bold" fill="#334155">status</text>
+<rect x="382" y="94" width="250" height="22" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+<text x="388" y="110" font-size="12" fill="#1e293b">1</text>
+<text x="418" y="110" font-size="12" fill="#1e293b">リーダブルコード</text>
+<text x="538" y="110" font-size="12" fill="#1e293b">completed</text>
+<rect x="382" y="116" width="250" height="22" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+<text x="388" y="132" font-size="12" fill="#1e293b">2</text>
+<text x="418" y="132" font-size="12" fill="#1e293b">プロを目指す人〜</text>
+<text x="538" y="132" font-size="12" fill="#1e293b">reading</text>
+<rect x="382" y="138" width="250" height="22" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+<text x="388" y="154" font-size="12" fill="#1e293b">3</text>
+<text x="418" y="154" font-size="12" fill="#1e293b">達人プログラマー</text>
+<text x="538" y="154" font-size="12" fill="#1e293b">want_to_read</text>
+<rect x="382" y="160" width="250" height="22" fill="#d1fae5" stroke="#cbd5e1" stroke-width="1"/>
+<text x="388" y="176" font-size="12" font-weight="bold" fill="#1e293b">4</text>
+<text x="418" y="176" font-size="12" font-weight="bold" fill="#1e293b">SQL入門</text>
+<text x="538" y="176" font-size="12" font-weight="bold" fill="#1e293b">want_to_read</text>
+<rect x="382" y="160" width="250" height="22" fill="none" stroke="#10b981" stroke-width="2.5"/>
+<line x1="412" y1="72" x2="412" y2="182" stroke="#cbd5e1" stroke-width="1"/>
+<line x1="532" y1="72" x2="532" y2="182" stroke="#cbd5e1" stroke-width="1"/>
+<text x="636" y="94" font-size="12" font-weight="bold" fill="#047857">一番下に</text>
+<text x="636" y="111" font-size="12" fill="#475569">行が1つ</text>
+<text x="636" y="128" font-size="12" fill="#475569">増える</text>
+<rect x="8" y="196" width="344" height="182" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<text x="22" y="220" font-size="14" font-weight="bold" fill="#c2410c">UPDATE（書き換え）</text>
+<text x="22" y="238" font-size="12" font-family="Consolas, Cascadia Mono, monospace" fill="#334155">UPDATE practice_books SET status = 'completed'</text>
+<text x="22" y="253" font-size="12" font-family="Consolas, Cascadia Mono, monospace" fill="#334155">WHERE id = 2;</text>
+<rect x="22" y="260" width="250" height="22" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1"/>
+<text x="28" y="276" font-size="12" font-weight="bold" fill="#334155">id</text>
+<text x="58" y="276" font-size="12" font-weight="bold" fill="#334155">title</text>
+<text x="178" y="276" font-size="12" font-weight="bold" fill="#334155">status</text>
+<rect x="22" y="282" width="250" height="22" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+<text x="28" y="298" font-size="12" fill="#1e293b">1</text>
+<text x="58" y="298" font-size="12" fill="#1e293b">リーダブルコード</text>
+<text x="178" y="298" font-size="12" fill="#1e293b">completed</text>
+<rect x="22" y="304" width="250" height="22" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+<text x="28" y="320" font-size="12" fill="#1e293b">2</text>
+<text x="58" y="320" font-size="12" fill="#1e293b">プロを目指す人〜</text>
+<rect x="172" y="304" width="100" height="22" fill="#ffedd5" stroke="#cbd5e1" stroke-width="1"/>
+<text x="178" y="320" font-size="12" font-weight="bold" fill="#1e293b">completed</text>
+<rect x="22" y="304" width="250" height="22" fill="none" stroke="#f97316" stroke-width="2.5"/>
+<rect x="22" y="326" width="250" height="22" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+<text x="28" y="342" font-size="12" fill="#1e293b">3</text>
+<text x="58" y="342" font-size="12" fill="#1e293b">達人プログラマー</text>
+<text x="178" y="342" font-size="12" fill="#1e293b">want_to_read</text>
+<line x1="52" y1="260" x2="52" y2="348" stroke="#cbd5e1" stroke-width="1"/>
+<line x1="172" y1="260" x2="172" y2="348" stroke="#cbd5e1" stroke-width="1"/>
+<text x="276" y="282" font-size="12" font-weight="bold" fill="#c2410c">id=2 の行の</text>
+<text x="276" y="299" font-size="12" fill="#475569">status だけ</text>
+<text x="276" y="316" font-size="12" fill="#475569">reading →</text>
+<text x="276" y="333" font-size="12" fill="#475569">completed</text>
+<text x="276" y="350" font-size="12" fill="#475569">に変わる</text>
+<rect x="368" y="196" width="344" height="182" rx="10" fill="#f8fafc" stroke="#64748b" stroke-width="2"/>
+<text x="382" y="220" font-size="14" font-weight="bold" fill="#475569">DELETE（削除）</text>
+<text x="382" y="238" font-size="12" font-family="Consolas, Cascadia Mono, monospace" fill="#334155">DELETE FROM practice_books</text>
+<text x="382" y="253" font-size="12" font-family="Consolas, Cascadia Mono, monospace" fill="#334155">WHERE id = 3;</text>
+<rect x="382" y="260" width="250" height="22" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1"/>
+<text x="388" y="276" font-size="12" font-weight="bold" fill="#334155">id</text>
+<text x="418" y="276" font-size="12" font-weight="bold" fill="#334155">title</text>
+<text x="538" y="276" font-size="12" font-weight="bold" fill="#334155">status</text>
+<rect x="382" y="282" width="250" height="22" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+<text x="388" y="298" font-size="12" fill="#1e293b">1</text>
+<text x="418" y="298" font-size="12" fill="#1e293b">リーダブルコード</text>
+<text x="538" y="298" font-size="12" fill="#1e293b">completed</text>
+<rect x="382" y="304" width="250" height="22" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+<text x="388" y="320" font-size="12" fill="#1e293b">2</text>
+<text x="418" y="320" font-size="12" fill="#1e293b">プロを目指す人〜</text>
+<text x="538" y="320" font-size="12" fill="#1e293b">reading</text>
+<rect x="382" y="326" width="250" height="22" fill="#e2e8f0" stroke="#cbd5e1" stroke-width="1"/>
+<text x="388" y="342" font-size="12" fill="#94a3b8">3</text>
+<text x="418" y="342" font-size="12" fill="#94a3b8">達人プログラマー</text>
+<text x="538" y="342" font-size="12" fill="#94a3b8">want_to_read</text>
+<line x1="386" y1="337" x2="628" y2="337" stroke="#64748b" stroke-width="1.5"/>
+<line x1="412" y1="260" x2="412" y2="348" stroke="#cbd5e1" stroke-width="1"/>
+<line x1="532" y1="260" x2="532" y2="348" stroke="#cbd5e1" stroke-width="1"/>
+<text x="636" y="282" font-size="12" font-weight="bold" fill="#475569">id=3 の行が</text>
+<text x="636" y="299" font-size="12" fill="#475569">消える。</text>
+<text x="636" y="316" font-size="12" fill="#475569">元に戻す</text>
+<text x="636" y="333" font-size="12" fill="#475569">命令は無い</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図5-3: 同じ3行の表に4つの命令を実行したときの変化（色の付いた行が変わった所）</div>
+</div>
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: DROP TABLE IF EXISTS で「やり直せる」ようにする
+
+```sql
+DROP TABLE IF EXISTS practice_books;
+```
+
+- `DROP TABLE` は表を丸ごと消す命令です。`IF EXISTS` を付けると「あれば消す、なければ何もしない」になり、初回でもエラーになりません。
+- 練習用のスクリプトの先頭にこれを書いておくと、何度実行しても同じ状態から始められます。**本番の `books` には絶対に使わない**でください（中身ごと消えます）。
+
+> **用語:** **DROP** = 表などの「入れ物」そのものを消す命令。DELETE は「中身の行」を消す命令で、表は残ります。
+
+##### 解説2: 結果のメッセージは「何行に効いたか」
+
+```text
+INSERT 0 3
+UPDATE 1
+DELETE 1
+```
+
+- `INSERT 0 3` の最後の数字は「追加した行数」です（真ん中の `0` は歴史的な理由で残っている値なので、気にしなくて大丈夫です）。
+- `UPDATE 1`・`DELETE 1` は「1行を書き換えた」「1行を消した」という意味です。**ここが予想と違う数なら、WHERE の条件を疑う**のが鉄則です（次のつまずきポイントを参照）。
+
+##### 解説3: ORDER BY で並び順を決める
+
+```sql
+SELECT * FROM practice_books ORDER BY id;
+```
+
+- データベースは、`ORDER BY` を書かない限り**行の並び順を約束しません**。追加した順に出てくるとは限らないので、順番が大事なときは必ず `ORDER BY 列名` を付けます。
+- 小さい順（昇順）が基本で、大きい順にしたいときは `ORDER BY id DESC` と書きます。
+
+> **ヒント:** 試し終わったら `DROP TABLE practice_books;` で練習用の表を片付けておきましょう。
+
+<!-- -->
+
+> **つまずきポイント: UPDATE / DELETE で WHERE を忘れて、全行が変わってしまう**
+>
+> `WHERE` は「どの行に効かせるか」の指定です。書き忘れても**エラーにはならず**、表のすべての行が対象になります。上の練習の直後の表（id が 1・2・4 の3行）で、id 4 の本だけを「読書中（reading）」にしたい場面を比べると、次のようになります。
+
+```sql
+-- ❌ NG: WHERE がないので、全部の行の status が 'reading' になる
+UPDATE practice_books SET status = 'reading';
+```
+
+```text
+UPDATE 3
+```
+
+```sql
+-- ✅ OK: まず同じ条件で SELECT して、対象が狙った1行だけか確かめる
+SELECT id, title, status FROM practice_books WHERE id = 4;
+
+-- 確かめた条件をそのまま付けて UPDATE する
+UPDATE practice_books SET status = 'reading' WHERE id = 4;
+```
+
+```text
+ id |  title  |    status
+----+---------+--------------
+  4 | SQL入門 | want_to_read
+(1 row)
+
+UPDATE 1
+```
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 300" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-05-04" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="6" y="6" width="708" height="140" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="20" y="28" font-size="12" font-weight="bold" fill="#475569">変更前</text>
+<rect x="20" y="36" width="250" height="22" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1"/>
+<text x="26" y="52" font-size="12" font-weight="bold" fill="#334155">id</text>
+<text x="56" y="52" font-size="12" font-weight="bold" fill="#334155">title</text>
+<text x="176" y="52" font-size="12" font-weight="bold" fill="#334155">status</text>
+<rect x="20" y="58" width="250" height="22" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+<text x="26" y="74" font-size="12" fill="#1e293b">1</text>
+<text x="56" y="74" font-size="12" fill="#1e293b">リーダブルコード</text>
+<text x="176" y="74" font-size="12" fill="#1e293b">completed</text>
+<rect x="20" y="80" width="250" height="22" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+<text x="26" y="96" font-size="12" fill="#1e293b">2</text>
+<text x="56" y="96" font-size="12" fill="#1e293b">プロを目指す人〜</text>
+<text x="176" y="96" font-size="12" fill="#1e293b">completed</text>
+<rect x="20" y="102" width="250" height="22" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+<text x="26" y="118" font-size="12" fill="#1e293b">4</text>
+<text x="56" y="118" font-size="12" fill="#1e293b">SQL入門</text>
+<text x="176" y="118" font-size="12" fill="#1e293b">want_to_read</text>
+<line x1="50" y1="36" x2="50" y2="124" stroke="#cbd5e1" stroke-width="1"/>
+<line x1="170" y1="36" x2="170" y2="124" stroke="#cbd5e1" stroke-width="1"/>
+<text x="360" y="30" text-anchor="middle" font-size="18" font-weight="bold" fill="#c2410c">NG</text>
+<text x="360" y="50" text-anchor="middle" font-size="12" font-family="Consolas, Cascadia Mono, monospace" fill="#334155">UPDATE practice_books</text>
+<text x="360" y="65" text-anchor="middle" font-size="12" font-family="Consolas, Cascadia Mono, monospace" fill="#334155">SET status = 'reading';</text>
+<line x1="274" y1="100" x2="446" y2="100" stroke="#475569" stroke-width="2.5" marker-end="url(#ar-05-04)"/>
+<text x="360" y="122" text-anchor="middle" font-size="12" font-weight="bold" fill="#c2410c">UPDATE 3（全行が変わった）</text>
+<text x="452" y="28" font-size="12" font-weight="bold" fill="#475569">変更後</text>
+<rect x="452" y="36" width="250" height="22" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1"/>
+<text x="458" y="52" font-size="12" font-weight="bold" fill="#334155">id</text>
+<text x="488" y="52" font-size="12" font-weight="bold" fill="#334155">title</text>
+<text x="608" y="52" font-size="12" font-weight="bold" fill="#334155">status</text>
+<rect x="452" y="58" width="250" height="22" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+<text x="458" y="74" font-size="12" fill="#1e293b">1</text>
+<text x="488" y="74" font-size="12" fill="#1e293b">リーダブルコード</text>
+<rect x="602" y="58" width="100" height="22" fill="#ffedd5" stroke="#cbd5e1" stroke-width="1"/>
+<text x="608" y="74" font-size="12" font-weight="bold" fill="#1e293b">reading</text>
+<rect x="452" y="80" width="250" height="22" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+<text x="458" y="96" font-size="12" fill="#1e293b">2</text>
+<text x="488" y="96" font-size="12" fill="#1e293b">プロを目指す人〜</text>
+<rect x="602" y="80" width="100" height="22" fill="#ffedd5" stroke="#cbd5e1" stroke-width="1"/>
+<text x="608" y="96" font-size="12" font-weight="bold" fill="#1e293b">reading</text>
+<rect x="452" y="102" width="250" height="22" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+<text x="458" y="118" font-size="12" fill="#1e293b">4</text>
+<text x="488" y="118" font-size="12" fill="#1e293b">SQL入門</text>
+<rect x="602" y="102" width="100" height="22" fill="#ffedd5" stroke="#cbd5e1" stroke-width="1"/>
+<text x="608" y="118" font-size="12" font-weight="bold" fill="#1e293b">reading</text>
+<line x1="482" y1="36" x2="482" y2="124" stroke="#cbd5e1" stroke-width="1"/>
+<line x1="602" y1="36" x2="602" y2="124" stroke="#cbd5e1" stroke-width="1"/>
+<rect x="6" y="156" width="708" height="140" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="20" y="178" font-size="12" font-weight="bold" fill="#475569">変更前</text>
+<rect x="20" y="186" width="250" height="22" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1"/>
+<text x="26" y="202" font-size="12" font-weight="bold" fill="#334155">id</text>
+<text x="56" y="202" font-size="12" font-weight="bold" fill="#334155">title</text>
+<text x="176" y="202" font-size="12" font-weight="bold" fill="#334155">status</text>
+<rect x="20" y="208" width="250" height="22" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+<text x="26" y="224" font-size="12" fill="#1e293b">1</text>
+<text x="56" y="224" font-size="12" fill="#1e293b">リーダブルコード</text>
+<text x="176" y="224" font-size="12" fill="#1e293b">completed</text>
+<rect x="20" y="230" width="250" height="22" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+<text x="26" y="246" font-size="12" fill="#1e293b">2</text>
+<text x="56" y="246" font-size="12" fill="#1e293b">プロを目指す人〜</text>
+<text x="176" y="246" font-size="12" fill="#1e293b">completed</text>
+<rect x="20" y="252" width="250" height="22" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+<text x="26" y="268" font-size="12" fill="#1e293b">4</text>
+<text x="56" y="268" font-size="12" fill="#1e293b">SQL入門</text>
+<text x="176" y="268" font-size="12" fill="#1e293b">want_to_read</text>
+<line x1="50" y1="186" x2="50" y2="274" stroke="#cbd5e1" stroke-width="1"/>
+<line x1="170" y1="186" x2="170" y2="274" stroke="#cbd5e1" stroke-width="1"/>
+<text x="360" y="180" text-anchor="middle" font-size="18" font-weight="bold" fill="#047857">OK</text>
+<text x="360" y="200" text-anchor="middle" font-size="12" font-family="Consolas, Cascadia Mono, monospace" fill="#334155">UPDATE practice_books</text>
+<text x="360" y="215" text-anchor="middle" font-size="12" font-family="Consolas, Cascadia Mono, monospace" fill="#334155">SET status = 'reading'</text>
+<text x="360" y="230" text-anchor="middle" font-size="12" font-family="Consolas, Cascadia Mono, monospace" fill="#334155">WHERE id = 4;</text>
+<line x1="274" y1="250" x2="446" y2="250" stroke="#475569" stroke-width="2.5" marker-end="url(#ar-05-04)"/>
+<text x="360" y="272" text-anchor="middle" font-size="12" font-weight="bold" fill="#047857">UPDATE 1（狙った1行だけ）</text>
+<text x="452" y="178" font-size="12" font-weight="bold" fill="#475569">変更後</text>
+<rect x="452" y="186" width="250" height="22" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1"/>
+<text x="458" y="202" font-size="12" font-weight="bold" fill="#334155">id</text>
+<text x="488" y="202" font-size="12" font-weight="bold" fill="#334155">title</text>
+<text x="608" y="202" font-size="12" font-weight="bold" fill="#334155">status</text>
+<rect x="452" y="208" width="250" height="22" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+<text x="458" y="224" font-size="12" fill="#1e293b">1</text>
+<text x="488" y="224" font-size="12" fill="#1e293b">リーダブルコード</text>
+<text x="608" y="224" font-size="12" fill="#1e293b">completed</text>
+<rect x="452" y="230" width="250" height="22" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+<text x="458" y="246" font-size="12" fill="#1e293b">2</text>
+<text x="488" y="246" font-size="12" fill="#1e293b">プロを目指す人〜</text>
+<text x="608" y="246" font-size="12" fill="#1e293b">completed</text>
+<rect x="452" y="252" width="250" height="22" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+<text x="458" y="268" font-size="12" fill="#1e293b">4</text>
+<text x="488" y="268" font-size="12" fill="#1e293b">SQL入門</text>
+<rect x="602" y="252" width="100" height="22" fill="#d1fae5" stroke="#cbd5e1" stroke-width="1"/>
+<text x="608" y="268" font-size="12" font-weight="bold" fill="#1e293b">reading</text>
+<line x1="482" y1="186" x2="482" y2="274" stroke="#cbd5e1" stroke-width="1"/>
+<line x1="602" y1="186" x2="602" y2="274" stroke="#cbd5e1" stroke-width="1"/>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図5-4: WHERE を忘れた UPDATE（上）と、正しく絞り込んだ UPDATE（下）</div>
+</div>
+
+> **ヒント:** 「SELECT で確かめてから、`SELECT ... FROM` の部分だけを `UPDATE ... SET` や `DELETE FROM` に書き換える」習慣をつけると、WHERE の書き忘れや条件ミスを実行前に見つけられます。結果のメッセージ（`UPDATE 3` など）の数字も必ず見ましょう。
+
+<!-- -->
+
+> **つまずきポイント: 文字列をダブルクォート `"` で囲んでしまう**
+>
+> SQL では、**文字列はシングルクォート `'...'`** で囲みます。ダブルクォート `"..."` は「列名や表名」を表す記号なので、`"Boswell"` と書くと「Boswell という名前の列」を探しにいってエラーになります。JavaScript ではどちらのクォートでも文字列になるので、特に間違えやすいポイントです。
+
+```sql
+-- ❌ NG: "Boswell" が列名だと解釈される
+SELECT * FROM practice_books WHERE author = "Boswell";
+```
+
+```text
+ERROR:  column "Boswell" does not exist
+LINE 1: SELECT * FROM practice_books WHERE author = "Boswell";
+                                                    ^
+```
+
+```sql
+-- ✅ OK: 文字列はシングルクォートで囲む
+SELECT * FROM practice_books WHERE author = 'Boswell';
+```
+
+```text
+ id |      title       | author  |  status
+----+------------------+---------+-----------
+  1 | リーダブルコード | Boswell | completed
+(1 row)
+```
+
+- エラー文の `^` は「ここがおかしい」という位置の目印です。英語のエラーでも、**`column "..." does not exist`（列が存在しない）** と、`"` で囲んだ文字がそのまま列名として出てくる点に注目すれば原因に気づけます。
 
 ### 0.4 CRUDという言葉
 
@@ -306,7 +685,7 @@ const { data } = await supabase.from("books").select("*");
 console.log(data);
 // ▼ data の中身（実行結果のイメージ）
 // [
-//   { id: 1, title: "リーダブルコード", author: "Boswell", status: "done" },
+//   { id: 1, title: "リーダブルコード", author: "Boswell", status: "completed" },
 //   { id: 2, title: "プロを目指す人〜", author: "鈴木僚太", status: "reading" },
 //   ...
 // ]
@@ -318,7 +697,7 @@ JavaScript のコードと SQL の対応関係は次のとおり。
 |------|----------------------|-----|
 | 読む | `.from("books").select("*")` | `SELECT * FROM books` |
 | 追加 | `.from("books").insert({ title: "..." })` | `INSERT INTO books (...)` |
-| 更新 | `.from("books").update({ status: "done" }).eq("id", 2)` | `UPDATE books SET status='done' WHERE id=2` |
+| 更新 | `.from("books").update({ status: "completed" }).eq("id", 2)` | `UPDATE books SET status='completed' WHERE id=2` |
 | 削除 | `.from("books").delete().eq("id", 3)` | `DELETE FROM books WHERE id=3` |
 
 > **要点:** 「SQLは知らなくても書ける」けど「SQLを知っていると見通しがよくなる」。Supabaseには**SQLエディタ画面**があるので、迷ったらそこで生のSQLを書いて確認できます。
@@ -364,7 +743,7 @@ JavaScript のコードと SQL の対応関係は次のとおり。
 <text x="432" y="172" text-anchor="middle" font-size="12" fill="#1e293b">③ キーを確認して転送</text>
 <line x1="360" y1="180" x2="502" y2="180" stroke="#475569" stroke-width="2" marker-end="url(#ar-05-05)"/>
 <text x="576" y="202" text-anchor="middle" font-size="12" fill="#1e293b">④ SQL にして実行</text>
-<text x="576" y="216" text-anchor="middle" font-size="12" font-family="Consolas, monospace" fill="#c2410c">SELECT title, status</text>
+<text x="576" y="216" text-anchor="middle" font-size="12" font-family="Consolas, monospace" fill="#c2410c">SELECT title, …</text>
 <line x1="504" y1="224" x2="646" y2="224" stroke="#475569" stroke-width="2" marker-end="url(#ar-05-05)"/>
 <text x="576" y="254" text-anchor="middle" font-size="12" fill="#1e293b">⑤ 結果の行</text>
 <line x1="648" y1="262" x2="506" y2="262" stroke="#475569" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#ar-05-05)"/>
@@ -386,6 +765,8 @@ JavaScript のコードと SQL の対応関係は次のとおり。
 6. **⑥⑦** PostgREST が結果を **JSON**（JavaScript のオブジェクトとほぼ同じ形の文字列）に変えて送り返し、supabase-js がそれを `{ data, error }` という形にしてあなたのコードに渡します。
 
 > **用語:** **HTTP リクエスト** = ブラウザやプログラムがサーバーに送る「お願い」。`GET`（ちょうだい）、`POST`（追加して）、`PATCH`（一部を書き換えて）、`DELETE`（消して）などの種類があり、それぞれ SELECT・INSERT・UPDATE・DELETE に対応します。
+
+<!-- -->
 
 > **ヒント:** この流れを覚えておくと、エラーの意味が読みやすくなります。③で止まれば「キーが違う」、⑤の GRANT で止まれば `permission denied for table`、⑤の RLS で行が全部はじかれれば「エラーなしの空配列 `[]`」になります。詳しくは 4.3.1 節・第5節・第9節で実例とともに見ていきます。
 
@@ -486,6 +867,7 @@ Supabase がどのような構成になっているか、全体像を見てみ�
 **ポイント:** Supabase はオープンソースのツールを組み合わせて構築されています。PostgreSQL を中核として、PostgREST（自動 API 生成）、GoTrue（認証）、Realtime（リアルタイム通信）などが連携しています。
 
 > **登場する各サービスの読み方と役割:**
+>
 > - **Kong**（コング：API Gateway。すべてのリクエストを最初に受け取る玄関口）
 > - **GoTrue**（ゴートゥルー：認証サーバー。ログイン・サインアップ・JWT発行を担当）
 > - **PostgREST**（ポストグレストレスト：DBのテーブル定義から自動的にRESTful APIを生成するソフトウェア）
@@ -741,6 +1123,8 @@ Supabase には、GitHub アカウントでサインアップする方法と、�
 > - **Project URL**: `https://xxxxxxxx.supabase.co` の形式
 > - **公開用キー**: 新しい形式の **Publishable key**（`sb_publishable_...` で始まる短めの文字列）、または従来の **anon (public) key**（`eyJhbGciOiJIUzI1NiIs...` で始まる長い文字列。実体は **JWT**：JSON Web Token と呼ばれる署名付きの文字列）。どちらも「ブラウザに置いてよい公開用のキー」で、本書ではどちらを使っても同じように動きます
 
+<!-- -->
+
 > **ANON Key と Service Role Key の違い（重要）**
 >
 > Supabase のプロジェクトには2種類のAPIキーが発行されます。混同すると重大な事故になります。
@@ -766,17 +1150,17 @@ Supabase には、GitHub アカウントでサインアップする方法と、�
 <text x="630" y="30" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e293b">サーバー側だけで使う</text>
 <text x="630" y="48" text-anchor="middle" font-size="12" fill="#475569">（NEXT_PUBLIC_ なし）</text>
 <rect x="10" y="68" width="190" height="96" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
-<text x="24" y="92" font-size="14" font-weight="bold" fill="#1e40af">公開用キー</text>
-<text x="24" y="112" font-size="12" fill="#1e293b">Publishable key</text>
-<text x="24" y="128" font-size="12" font-family="Consolas, monospace" fill="#475569">sb_publishable_…</text>
-<text x="24" y="146" font-size="12" fill="#475569">旧: anon key（eyJ…）</text>
-<text x="24" y="160" font-size="12" fill="#1e40af">RLS のルールに従う</text>
+<text x="24" y="88" font-size="14" font-weight="bold" fill="#1e40af">公開用キー</text>
+<text x="24" y="106" font-size="12" fill="#1e293b">Publishable key</text>
+<text x="24" y="122" font-size="12" font-family="Consolas, monospace" fill="#475569">sb_publishable_…</text>
+<text x="24" y="139" font-size="12" fill="#475569">旧: anon key（eyJ…）</text>
+<text x="24" y="157" font-size="12" fill="#1e40af">RLS のルールに従う</text>
 <rect x="10" y="176" width="190" height="96" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
-<text x="24" y="200" font-size="14" font-weight="bold" fill="#c2410c">秘密キー</text>
-<text x="24" y="220" font-size="12" fill="#1e293b">Secret key</text>
-<text x="24" y="236" font-size="12" font-family="Consolas, monospace" fill="#475569">sb_secret_…</text>
-<text x="24" y="254" font-size="12" fill="#475569">旧: service_role key</text>
-<text x="24" y="268" font-size="12" fill="#c2410c">RLS を素通り（全行OK）</text>
+<text x="24" y="196" font-size="14" font-weight="bold" fill="#c2410c">秘密キー</text>
+<text x="24" y="214" font-size="12" fill="#1e293b">Secret key</text>
+<text x="24" y="230" font-size="12" font-family="Consolas, monospace" fill="#475569">sb_secret_…</text>
+<text x="24" y="247" font-size="12" fill="#475569">旧: service_role key</text>
+<text x="24" y="265" font-size="12" fill="#c2410c">RLS を素通り（全行OK）</text>
 <rect x="210" y="68" width="160" height="96" rx="8" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
 <text x="290" y="108" text-anchor="middle" font-size="20" font-weight="bold" fill="#047857">OK</text>
 <text x="290" y="134" text-anchor="middle" font-size="12" fill="#475569">見られる前提で</text>
@@ -847,6 +1231,8 @@ Supabase の無料プラン（Free Plan）には以下の制限があります�
 | **一時停止** | 1週間アクセスがないと自動停止（再起動可） |
 
 > **注意:** 料金プランの数字は変わることがあります。最新の値は公式の料金ページ（supabase.com/pricing）で確認してください（上の表は2026年10月時点の内容です）。
+
+<!-- -->
 
 > **自動停止について:**
 > 無料プランでは、1週間以上ダッシュボードやAPIへのアクセスがないとプロジェクトが自動的に一時停止されます。停止されてもデータは消えません。ダッシュボードにアクセスして「Restore project」ボタンを押せば数分で復旧します。学習中は定期的にアクセスするようにしましょう。
@@ -1034,6 +1420,8 @@ PostgreSQL で使う主なデータ型を紹介します。
 > **`text` vs `varchar(n)` について:**
 > PostgreSQL では `text` と `varchar` の性能差はほとんどありません。長さの制限が本当に必要な場合以外は `text` を使うのがシンプルです。Supabase の公式ドキュメントでも `text` が推奨されています。
 
+<!-- -->
+
 > **`timestamptz` と `timestamp` の違い:**
 > `timestamptz` は "timestamp with time zone" の略で、タイムゾーン情報を保持する型です。世界中どこからINSERTしてもUTCに換算して保存され、SELECT時はクライアントのタイムゾーンに自動変換されます。`timestamp`（タイムゾーンなし）だと「東京の23時」「ロンドンの23時」が同じ値になって混乱するので、原則 `timestamptz` を使います。
 
@@ -1070,7 +1458,7 @@ PostgreSQL で使う主なデータ型を紹介します。
       status <span style="color: #2563eb; font-size: 10px; font-weight: 600;">DEFAULT 'want_to_read'</span> <span style="color: #94a3b8; float: right;">text</span>
     </div>
     <div style="padding: 8px 16px; font-size: 12px; border-bottom: 1px solid #e2e8f0;">
-      notes <span style="color: #94a3b8; float: right;">text</span>
+      memo <span style="color: #94a3b8; float: right;">text</span>
     </div>
     <div style="padding: 8px 16px; font-size: 12px; border-bottom: 1px solid #e2e8f0;">
       cover_url <span style="color: #94a3b8; float: right;">text</span>
@@ -1196,13 +1584,13 @@ status text DEFAULT 'want_to_read' CHECK (status IN ('reading', 'completed', 'wa
 > **なぜ `enum` 型ではなく `text` + `CHECK` か？**
 > PostgreSQL には `enum` 型がありますが、後から値を削除するのが難しいという問題があります。`text` + `CHECK` であれば、将来的に `CHECK` 制約を変更するだけで値を追加・変更・削除できます。
 
-#### `notes` - text
+#### `memo` - text
 
 ```sql
--- notes : カラム名（読書メモ）
+-- memo : カラム名（読書メモ）
 -- text  : 文字列型（長文OK）
 -- NULL許可（メモは任意）
-notes text
+memo text
 ```
 
 - **役割:** 読書メモ・感想
@@ -1304,7 +1692,7 @@ Supabase ダッシュボードの左メニューから「SQL Editor」をクリ�
 <line x1="170" y1="250" x2="230" y2="250" stroke="#3ecf8e" stroke-width="2"/>
 <rect x="160" y="252" width="560" height="108" fill="#181818"/>
 <text x="180" y="290" font-size="13" fill="#3ecf8e">Success. No rows returned</text>
-<text x="180" y="318" font-size="12" fill="#a1a1aa">（SELECT を実行したときは、ここに表の形で結果が出ます）</text>
+<text x="180" y="318" font-size="12" fill="#a1a1aa">（SELECT のときは表が出ます）</text>
 <circle cx="150" cy="61" r="10" fill="#f97316"/>
 <text x="150" y="65" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">1</text>
 <circle cx="560" cy="126" r="10" fill="#f97316"/>
@@ -1320,6 +1708,8 @@ Supabase ダッシュボードの左メニューから「SQL Editor」をクリ�
 </div>
 
 > **ヒント:** SQL Editor では、複数の SQL 文をまとめて貼って一度に Run できます。そのとき結果欄に表示されるのは**最後の文の結果だけ**です。途中の文が失敗すると、そこで止まって赤い `ERROR` が表示されます。
+
+<!-- -->
 
 > **▼ このコードがやること（先に日本語で）:** このアプリの中心となる **books（書籍）テーブルを新しく作る**SQLです。`CREATE TABLE` で「どんな列（カラム）を、どんなデータ型・制約で持つか」を一気に定義します。あわせて、行が更新されるたびに `updated_at`（更新日時）を自動で書き換える**トリガー**も用意します。長く見えますが、ほとんどが各列の説明コメントなので、まずはコピペで実行してOKです。
 
@@ -1378,8 +1768,8 @@ CREATE TABLE books (
   status text DEFAULT 'want_to_read'
     CHECK (status IN ('reading', 'completed', 'want_to_read')),
 
-  -- notes : 読書メモ。任意（NULL可能）
-  notes text,
+  -- memo : 読書メモ。任意（NULL可能）
+  memo text,
 
   -- (5) 画像URL
   -- cover_url : 表紙画像のURLを格納。Supabase Storage 等のURLを想定
@@ -1467,7 +1857,7 @@ COMMENT ON COLUMN books.publisher IS '出版社';
 COMMENT ON COLUMN books.published_date IS '出版日';
 COMMENT ON COLUMN books.rating IS '評価（1-5）';
 COMMENT ON COLUMN books.status IS '読書状態（reading/completed/want_to_read）';
-COMMENT ON COLUMN books.notes IS 'メモ・感想';
+COMMENT ON COLUMN books.memo IS 'メモ・感想';
 COMMENT ON COLUMN books.cover_url IS '表紙画像URL';
 COMMENT ON COLUMN books.created_at IS '作成日時';
 COMMENT ON COLUMN books.updated_at IS '更新日時';
@@ -1567,6 +1957,261 @@ Success. No rows returned.
 
 左メニューの「Table Editor」をクリックすると、作成した `books` テーブルが表示されているはずです。テーブル名をクリックすると、カラムの一覧やデータ（まだ空）が確認できます。
 
+#### 制約が本当に効くか試してみる
+
+CREATE TABLE で書いた `NOT NULL` や `CHECK` が、本当に「おかしな値」を断ってくれるかを確かめておきましょう。わざと間違ったデータを入れてみるのがいちばん分かりやすい方法です。
+
+> **▼ このコードがやること（先に日本語で）:** `books` テーブルに、①評価が範囲外（10）、②読書状態が決められた3つ以外（'done'）、③必須の著者が空、という3種類のおかしなデータを入れようとして、データベースに断られることを確認します。最後に正しいデータを1件入れて、省略した列に初期値（DEFAULT）が入ることも確かめ、片付けとして削除します。
+
+```sql
+-- ① rating（評価）に範囲外の 10 を入れてみる → CHECK 制約で断られるはず
+INSERT INTO books (title, author, rating) VALUES ('テスト', 'テスト', 10);
+
+-- ② status（読書状態）に決められた3つ以外の 'done' を入れてみる → これも CHECK で断られるはず
+INSERT INTO books (title, author, status) VALUES ('テスト', 'テスト', 'done');
+
+-- ③ 必須の author（著者）を省略してみる → NOT NULL で断られるはず
+INSERT INTO books (title) VALUES ('著者なし');
+
+-- ④ 正しいデータ。title と author だけを指定し、残りは初期値に任せる
+INSERT INTO books (title, author) VALUES ('こころ', '夏目漱石');
+
+-- ⑤ 入った行を確かめる
+SELECT title, author, status, rating FROM books;
+
+-- ⑥ 片付け: 確認用に入れた行を消しておく（8.1 節で改めてサンプルを入れるため）
+DELETE FROM books WHERE title = 'こころ';
+```
+
+**▼ 実行結果**（PostgreSQL 17 の psql で1文ずつ実行した出力。SQL Editor でまとめて Run すると、最初の ERROR の所で止まるので、**1文ずつ貼り替えて実行**してください）
+
+```text
+ERROR:  new row for relation "books" violates check constraint "books_rating_check"
+DETAIL:  Failing row contains (caf7938a-8cd0-4f79-8cdb-73aa147d02a5, テスト, テスト, null, null, 10, want_to_read, null, null, 2026-10-17 02:29:33.925622+00, 2026-10-17 02:29:33.925622+00).
+ERROR:  new row for relation "books" violates check constraint "books_status_check"
+DETAIL:  Failing row contains (1a9b07ea-b3ec-4544-8799-3d585642b520, テスト, テスト, null, null, null, done, null, null, 2026-10-17 02:29:33.933411+00, 2026-10-17 02:29:33.933411+00).
+ERROR:  null value in column "author" of relation "books" violates not-null constraint
+DETAIL:  Failing row contains (13b59f42-4ad4-4538-b428-ebb5c2497e31, 著者なし, null, null, null, null, want_to_read, null, null, 2026-10-17 02:29:33.93456+00, 2026-10-17 02:29:33.93456+00).
+INSERT 0 1
+ title  |  author  |    status    | rating
+--------+----------+--------------+--------
+ こころ | 夏目漱石 | want_to_read |
+(1 row)
+
+DELETE 1
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: エラー文は「どの表の」「どの制約に」違反したかを教えてくれる
+
+```text
+ERROR:  new row for relation "books" violates check constraint "books_rating_check"
+```
+
+- 直訳すると「`books` 表への新しい行が、チェック制約 `books_rating_check` に違反しています」です。
+- `books_rating_check` は、CREATE TABLE で `rating integer CHECK (...)` と書いたときに PostgreSQL が自動で付けた制約の名前です（「表名_列名_check」という決まった付け方）。名前を見れば、どの列のルールに引っかかったかが分かります。
+- SQL Editor では、同じ英文の前に `23514` のような**エラーコード**（エラーの種類を表す番号）が添えられて表示されることがあります。`23514` は CHECK 違反、`23502` は NOT NULL 違反です。
+
+##### 解説2: DETAIL には「入れようとした1行」がまるごと出る
+
+```text
+DETAIL:  Failing row contains (caf7938a-..., テスト, テスト, null, null, 10, want_to_read, ...).
+```
+
+- `Failing row contains (...)` は「失敗した行の中身」です。列は CREATE TABLE で書いた順番（id, title, author, publisher, …）に並んでいます。
+- 自分では指定していない `id`（UUID）や `want_to_read`、日時が入っていることに注目してください。**DEFAULT（初期値）が埋められた後**に制約がチェックされている、という順番がここから読み取れます。
+
+##### 解説3: NOT NULL 違反は「どの列が空だったか」が分かる
+
+```text
+ERROR:  null value in column "author" of relation "books" violates not-null constraint
+```
+
+- 「`books` 表の `author` 列に null（空）が入ろうとして、NOT NULL 制約に違反した」という意味です。
+- 第7章で作る登録フォームでは、著者を空のまま送らないよう**画面側でも必須チェック**をします。画面とデータベースの二重の守りがあると、どちらかにバグがあってもおかしなデータが保存されません。
+
+> **用語:** **制約（constraint）** = 列に入れてよい値のルール。違反するとデータベースが保存を断り、エラーを返す。
+
+### 4.3.1 Data API にテーブルを公開する（GRANT）
+
+テーブルを作っただけでは、まだ **supabase-js（あなたの Next.js アプリ）からは使えません**。2026年に Supabase の仕様が変わり、新しく作ったテーブルは、自分で「公開します」と宣言するまでアプリ側の通信（**Data API**：supabase-js が使う、URL でデータベースを操作する窓口）から見えなくなったためです。
+
+| プロジェクトを作った時期 | 新しく作ったテーブル |
+|---|---|
+| 2026年5月30日より前 | これまでは自動で Data API に公開されていた（ただし 2026年10月30日からは、既存プロジェクトでも新しいテーブルは自動で公開されなくなる） |
+| 2026年5月30日以降 | **自動では公開されない**。GRANT を書いて公開する必要がある |
+
+公開の宣言に使うのが **GRANT（グラント：権限を与える SQL の命令）** です。たとえるなら、GRANT は**ビルの入館証**、第5節で設定する RLS は**部屋の中の棚ごとの貸し出しルール**です。入館証がなければ建物に入れず、入館できても棚のルールで許された本しか手に取れません。supabase-js からの通信は、この2つの関門を順番に通ります。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 300" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-05-09" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="8" y="60" width="120" height="80" rx="10" fill="#f8fafc" stroke="#64748b" stroke-width="2"/>
+<text x="68" y="88" text-anchor="middle" font-size="14" font-weight="bold" fill="#475569">リクエスト</text>
+<text x="68" y="110" text-anchor="middle" font-size="12" fill="#1e293b">公開用キーで</text>
+<text x="68" y="128" text-anchor="middle" font-size="12" fill="#1e293b">（anon として）</text>
+<rect x="160" y="40" width="170" height="120" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<text x="245" y="68" text-anchor="middle" font-size="14" font-weight="bold" fill="#c2410c">関門1: GRANT</text>
+<text x="245" y="94" text-anchor="middle" font-size="12" fill="#1e293b">この表に入って</text>
+<text x="245" y="112" text-anchor="middle" font-size="12" fill="#1e293b">よいか？</text>
+<text x="245" y="140" text-anchor="middle" font-size="12" fill="#64748b">（テーブル単位）</text>
+<rect x="362" y="40" width="170" height="120" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="447" y="68" text-anchor="middle" font-size="14" font-weight="bold" fill="#1e40af">関門2: RLS</text>
+<text x="447" y="94" text-anchor="middle" font-size="12" fill="#1e293b">この行を見せて</text>
+<text x="447" y="112" text-anchor="middle" font-size="12" fill="#1e293b">よいか？</text>
+<text x="447" y="140" text-anchor="middle" font-size="12" fill="#64748b">（1行ずつ）</text>
+<rect x="564" y="40" width="148" height="120" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="638" y="68" text-anchor="middle" font-size="14" font-weight="bold" fill="#047857">成功</text>
+<text x="638" y="94" text-anchor="middle" font-size="12" fill="#1e293b">許可された行だけ</text>
+<text x="638" y="112" text-anchor="middle" font-size="12" fill="#1e293b">が data に入る</text>
+<line x1="128" y1="100" x2="158" y2="100" stroke="#475569" stroke-width="2" marker-end="url(#ar-05-09)"/>
+<line x1="330" y1="100" x2="360" y2="100" stroke="#475569" stroke-width="2" marker-end="url(#ar-05-09)"/>
+<text x="346" y="92" text-anchor="middle" font-size="12" font-weight="bold" fill="#047857">OK</text>
+<line x1="532" y1="100" x2="562" y2="100" stroke="#475569" stroke-width="2" marker-end="url(#ar-05-09)"/>
+<text x="548" y="92" text-anchor="middle" font-size="12" font-weight="bold" fill="#047857">OK</text>
+<line x1="245" y1="160" x2="245" y2="200" stroke="#f97316" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#ar-05-09)"/>
+<rect x="150" y="202" width="190" height="88" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="245" y="224" text-anchor="middle" font-size="12" font-weight="bold" fill="#c2410c">NG（GRANT がない）</text>
+<text x="245" y="244" text-anchor="middle" font-size="12" font-family="Consolas, monospace" fill="#1e293b">error.code: 42501</text>
+<text x="245" y="262" text-anchor="middle" font-size="12" font-family="Consolas, monospace" fill="#1e293b">permission denied</text>
+<text x="245" y="280" text-anchor="middle" font-size="12" font-family="Consolas, monospace" fill="#1e293b">for table books</text>
+<line x1="447" y1="160" x2="447" y2="200" stroke="#3b82f6" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#ar-05-09)"/>
+<rect x="352" y="202" width="190" height="88" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="447" y="224" text-anchor="middle" font-size="12" font-weight="bold" fill="#1e40af">NG（許可ルールがない）</text>
+<text x="447" y="244" text-anchor="middle" font-size="12" font-family="Consolas, monospace" fill="#1e293b">data: []</text>
+<text x="447" y="262" text-anchor="middle" font-size="12" font-family="Consolas, monospace" fill="#1e293b">error: null</text>
+<text x="447" y="280" text-anchor="middle" font-size="12" fill="#1e40af">エラーにならない！</text>
+<rect x="564" y="202" width="148" height="88" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+<text x="638" y="224" text-anchor="middle" font-size="12" font-weight="bold" fill="#475569">直す場所</text>
+<text x="638" y="248" text-anchor="middle" font-size="12" fill="#c2410c">関門1 → この節</text>
+<text x="638" y="270" text-anchor="middle" font-size="12" fill="#1e40af">関門2 → 第5節</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図5-9: supabase-js からの通信は「GRANT（表に入れるか）」と「RLS（どの行か）」の2つの関門を通る</div>
+</div>
+
+GRANT は「**だれ（ロール）** に、**どの表** の、**どの操作** を許すか」を書きます。Supabase では、通信してきた相手を次の3つの**ロール**（role：役割・身分）に分けて扱います。
+
+| ロール | どんな相手か | 本書での使い道 |
+|---|---|---|
+| `anon` | ログインしていない人（公開用キーだけで来た人） | 認証を入れるまでの書籍管理アプリは、すべてこの身分で動く |
+| `authenticated` | ログインした人 | 発展の「認証」で使う |
+| `service_role` | 秘密キー（Secret key）を使うサーバー側の処理 | 管理用のスクリプトなど。RLS を素通りする |
+
+#### books テーブルを公開する SQL
+
+> **▼ このコードがやること（先に日本語で）:** まず安全のために `books` の RLS をオンにし（許可ルールは第5節で作ります）、続けて3つのロールに `books` の読み取り・追加・更新・削除を許可します。最後に「だれにどの権限があるか」を一覧表示して、正しく公開できたかを確かめます。
+
+```sql
+-- 安全のため、先に RLS をオンにしておく（オンにした直後は「全部拒否」。許可ルールは第5節で作る）
+ALTER TABLE books ENABLE ROW LEVEL SECURITY;
+
+-- anon（ログインしていない人）に、books の読み取り・追加・更新・削除を許す
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.books TO anon;
+
+-- authenticated（ログインした人）にも同じ操作を許す
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.books TO authenticated;
+
+-- service_role（秘密キーを使うサーバー側の処理）にも同じ操作を許す
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.books TO service_role;
+
+-- 確認: books に対して、どのロールがどの権限を持っているかを一覧にする
+SELECT grantee, string_agg(privilege_type, ', ' ORDER BY privilege_type) AS privileges
+FROM information_schema.role_table_grants
+WHERE table_schema = 'public' AND table_name = 'books'
+  AND grantee IN ('anon', 'authenticated', 'service_role')
+GROUP BY grantee
+ORDER BY grantee;
+```
+
+**▼ 実行結果**（psql の出力。SQL Editor では最後の SELECT の表が表示されます）
+
+```text
+ALTER TABLE
+GRANT
+GRANT
+GRANT
+    grantee    |           privileges
+---------------+--------------------------------
+ anon          | DELETE, INSERT, SELECT, UPDATE
+ authenticated | DELETE, INSERT, SELECT, UPDATE
+ service_role  | DELETE, INSERT, SELECT, UPDATE
+(3 rows)
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: GRANT 操作 ON 表 TO ロール
+
+```sql
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.books TO anon;
+```
+
+- 英語の語順どおり「**SELECT・INSERT・UPDATE・DELETE を、`public.books` について、`anon` に与える**」と読みます。
+- `public.books` の `public` は**スキーマ**（テーブルを入れておくフォルダのようなもの）の名前です。何も指定せずに作ったテーブルは `public` に入ります。
+- 認証を入れる前の書籍管理アプリは、画面から本を追加・編集・削除するので、`anon` にも4つの操作すべてを許しています。発展の「認証」を入れたら、`anon` からは書き込みの権限を外します（`REVOKE`：GRANT の取り消し）。
+
+> **用語:** **ロール（role）** = データベースが「相手がだれか」を区別するための身分。**スキーマ（schema）** = テーブルなどをまとめて入れておく名前付きの入れ物。
+
+##### 解説2: 先に RLS をオンにする理由
+
+```sql
+ALTER TABLE books ENABLE ROW LEVEL SECURITY;
+```
+
+- GRANT だけを実行して RLS がオフのままだと、公開用キーを知っている**だれでも全行を読み書きできる**状態になります。公開用キーはブラウザで丸見えなので、これはとても危険です。
+- そこで「入館証を配る前に、まず全部の棚に鍵をかける」順番にしています。RLS をオンにした直後は許可ルールが1つもないので、データは1行も見えません（次の第5節でルールを作ります）。
+
+##### 解説3: 確認用の SELECT は「権限の一覧表」を読んでいる
+
+```sql
+SELECT grantee, string_agg(privilege_type, ', ' ORDER BY privilege_type) AS privileges
+FROM information_schema.role_table_grants
+```
+
+- `information_schema.role_table_grants` は、PostgreSQL が自動で用意している「だれに・どの表の・どの権限があるか」の一覧表です。
+- `string_agg(...)` は、同じロールの権限を「DELETE, INSERT, …」のように1つの文字列につなげる関数です。3つのロールに4つずつ権限が並んでいれば成功です。
+- 2026年5月より前に作ったプロジェクトでは、自動で付いていた `REFERENCES`・`TRIGGER`・`TRUNCATE` なども並ぶことがあります。上の4つが含まれていれば問題ありません。
+
+> **つまずきポイント: GRANT を忘れて `permission denied for table books` になる**
+>
+> テーブルも RLS のポリシーも正しく作ったのに、supabase-js から読むと必ずエラーになる場合は、関門1（GRANT）で止まっています。新しいプロジェクトで最も起きやすいトラブルです。
+
+```ts
+// books を読む（6.5 節の接続テストと同じ処理）
+const { data, error } = await supabase.from('books').select('title, status');
+console.log('data :', data);
+console.log('error:', error);
+```
+
+```text
+// ❌ NG: GRANT をしていないとき（PostgREST 14 + supabase-js 2.117 の実際の出力）
+data : null
+error: {
+  code: '42501',
+  details: null,
+  hint: null,
+  message: 'permission denied for table books'
+}
+```
+
+```text
+// ✅ OK: この節の GRANT と、第5節のポリシーを作ったあと（表に2冊入っている場合）
+data : [
+  { title: 'こころ', status: 'reading' },
+  { title: '人間失格', status: 'completed' }
+]
+error: null
+```
+
+> **ヒント:** エラーコード `42501` は「権限が足りない」という意味の PostgreSQL の番号です。環境によっては `hint` に `GRANT SELECT ON public.books TO anon;` のような直し方の例が表示されることもあります。GRANT の SQL は何度実行しても害はないので、迷ったらこの節の SQL をもう一度実行してください。
+
+<!-- -->
+
+> **注意:** プロジェクト作成画面のセキュリティ設定に「新しいテーブルを自動で公開する（Automatically expose new tables）」のような項目がある場合、そこをオンにすると従来どおり自動で公開されます。ただし本書では、**何を公開しているかを自分で把握できる**ように、GRANT を書く方法をおすすめします（画面の表記は変わることがあります）。
+
 ### 4.4 Supabase Dashboard での GUI 操作手順（代替手段）
 
 SQL を使わずに、Dashboard の GUI でテーブルを作成することもできます。ここではその手順を説明します。
@@ -1612,13 +2257,15 @@ SQL を使わずに、Dashboard の GUI でテーブルを作成することも�
    - `published_date` (date, Nullable)
    - `rating` (int4, Nullable)
    - `status` (text, Default: 'want_to_read')
-   - `notes` (text, Nullable)
+   - `memo` (text, Nullable)
    - `cover_url` (text, Nullable)
    - `updated_at` (timestamptz, Default: now())
 
 4. すべてのカラムを追加したら「Save」ボタンをクリック
 
 > **注意:** GUI では CHECK 制約やトリガーを設定できないため、別途 SQL Editor で以下を実行する必要があります:
+
+<!-- -->
 
 > **▼ このコードがやること（先に日本語で）:** GUI（画面ボタン操作）でテーブルを作った場合に**足りない設定を後から付け足す**SQLです。`ALTER TABLE ... ADD CONSTRAINT` で「rating は1〜5」「status は3つの値だけ」という**CHECK制約**を追加し、さらに `updated_at` 自動更新の**トリガー**も作ります。GUI操作の仕上げとして実行する、と捉えてください。
 
@@ -1687,6 +2334,7 @@ RLS がなければ、anon key を知っている人は誰でもすべてのデ�
 > **RLSを無効化したら何が起きる？**
 >
 > RLSがOFFの状態でテーブルを世に公開すると、anon key（フロントに埋め込まれている公開キー）を知る誰でもが
+>
 > 1. 全データを SELECT で読める（個人情報の漏えい）
 > 2. 任意のデータを INSERT できる（スパム書き込み）
 > 3. 既存データを UPDATE で改ざんできる
@@ -1994,17 +2642,70 @@ CREATE POLICY "Allow public update access"
 <text x="506" y="150" text-anchor="middle" font-size="12" fill="#c2410c">false なら: エラーで中止</text>
 <text x="506" y="168" text-anchor="middle" font-size="12" fill="#c2410c">（row-level security 違反）</text>
 <text x="10" y="200" font-size="13" font-weight="bold" fill="#1e293b">操作ごとに使う条件</text>
-<rect x="6" y="210" width="168" height="40" rx="8" fill="#eff6ff" stroke="#3b82f6"/>
-<text x="90" y="235" text-anchor="middle" font-size="12" fill="#1e293b">SELECT → USING</text>
-<rect x="182" y="210" width="172" height="40" rx="8" fill="#fff7ed" stroke="#f97316"/>
-<text x="268" y="235" text-anchor="middle" font-size="12" fill="#1e293b">INSERT → WITH CHECK</text>
-<rect x="362" y="210" width="184" height="40" rx="8" fill="#ecfdf5" stroke="#10b981"/>
-<text x="454" y="235" text-anchor="middle" font-size="12" fill="#1e293b">UPDATE → USING ＋ WITH CHECK</text>
-<rect x="554" y="210" width="160" height="40" rx="8" fill="#eff6ff" stroke="#3b82f6"/>
-<text x="634" y="235" text-anchor="middle" font-size="12" fill="#1e293b">DELETE → USING</text>
+<rect x="6" y="210" width="146" height="40" rx="8" fill="#eff6ff" stroke="#3b82f6"/>
+<text x="79" y="235" text-anchor="middle" font-size="12" fill="#1e293b">SELECT → USING</text>
+<rect x="158" y="210" width="166" height="40" rx="8" fill="#fff7ed" stroke="#f97316"/>
+<text x="241" y="235" text-anchor="middle" font-size="12" fill="#1e293b">INSERT → WITH CHECK</text>
+<rect x="330" y="210" width="230" height="40" rx="8" fill="#ecfdf5" stroke="#10b981"/>
+<text x="445" y="235" text-anchor="middle" font-size="12" fill="#1e293b">UPDATE → USING ＋ WITH CHECK</text>
+<rect x="566" y="210" width="148" height="40" rx="8" fill="#eff6ff" stroke="#3b82f6"/>
+<text x="640" y="235" text-anchor="middle" font-size="12" fill="#1e293b">DELETE → USING</text>
 </svg>
 <div style="font-size: 12px; color: #64748b; margin-top: 6px;">図5-11: USING は「変更前の行」、WITH CHECK は「変更後の行」を検査する</div>
 </div>
+
+> **つまずきポイント: RLS をオンにしたのに許可ルールを作らず、`data` が空配列 `[]` になる**
+>
+> RLS は「書いたぶんだけ許可」のホワイトリスト方式です。オンにしただけでポリシーが1つもないと、すべての行が隠されます。しかも**エラーにはならない**ので、「データが入っていない」と勘違いしやすいのが厄介な点です。
+
+```text
+// ❌ NG: GRANT 済み・RLS オン・ポリシーなし で books を読んだときの実際の出力
+data : []
+error: null
+```
+
+```sql
+-- ✅ OK: 読み取り（SELECT）を許可するポリシーを作る
+CREATE POLICY "Allow public read access"
+  ON books
+  FOR SELECT
+  USING (true);
+```
+
+```text
+// ✅ OK: ポリシーを作ったあと、同じコードで読んだときの出力（表に2冊入っている場合）
+data : [
+  { title: 'こころ', status: 'reading' },
+  { title: '人間失格', status: 'completed' }
+]
+error: null
+```
+
+- 見分け方のコツは、**SQL Editor で `SELECT * FROM books;` を実行してみる**ことです。SQL Editor はテーブルの持ち主（`postgres`）として実行されるので RLS の影響を受けません。SQL Editor では行が見えるのにアプリでは `[]` なら、原因は RLS のポリシーです。
+
+> **つまずきポイント: 読み取りのポリシーだけ作って、追加（INSERT）が `new row violates row-level security policy` で失敗する**
+>
+> ポリシーは操作（SELECT / INSERT / UPDATE / DELETE）ごとに別々です。`FOR SELECT` のポリシーしかない状態で追加しようとすると、今度はエラーになります（読み取りと違って、書き込みの拒否はエラーとして返ってきます）。
+
+```text
+// ❌ NG: SELECT のポリシーしかない状態で insert したときの実際の出力
+error: {
+  code: '42501',
+  details: null,
+  hint: null,
+  message: 'new row violates row-level security policy for table "books"'
+}
+```
+
+```sql
+-- ✅ OK: 追加（INSERT）用のポリシーも作る。INSERT は「これから書く行」を調べるので WITH CHECK を使う
+CREATE POLICY "Allow public insert access"
+  ON books
+  FOR INSERT
+  WITH CHECK (true);
+```
+
+- 同じ `42501` でも、`permission denied for table books`（関門1: GRANT がない）と、`new row violates row-level security policy`（関門2: RLS のポリシーがない）は**直す場所が違います**。メッセージの英文まで読んで区別しましょう。
 
 ### 5.4 認証実装後の RLS ポリシー（参考）
 
@@ -2157,9 +2858,10 @@ Supabase に接続するために必要な情報を環境変数として設定�
 # NEXT_PUBLIC_SUPABASE_URL : Supabase プロジェクトのAPIエンドポイント
 #   NEXT_PUBLIC_ プレフィックスはNext.jsの約束で「ブラウザにも値を渡してOK」を意味する
 NEXT_PUBLIC_SUPABASE_URL=https://xxxxxxxx.supabase.co
-# NEXT_PUBLIC_SUPABASE_ANON_KEY : 匿名（anon）APIキー
+# NEXT_PUBLIC_SUPABASE_ANON_KEY : 公開用キー（Publishable key。sb_publishable_ で始まる）
 #   ブラウザに埋め込まれて公開される前提のキー。RLSと組み合わせて安全に使う
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+#   旧形式の anon key（eyJ... で始まる長い文字列）を貼っても動く（2026年末に廃止予定）
+NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_xxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
 > **重要な注意点:**
@@ -2169,8 +2871,142 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.xxxxxxxxxxxxx
 > 3. `.env.local` は **絶対に Git にコミットしないでください**。`.gitignore` に含まれていることを確認しましょう
 > 4. **service_role key（管理者キー）を `.env.local` に書く場合は、絶対に `NEXT_PUBLIC_` を付けてはいけません**。付けるとブラウザに漏れます
 
+<!-- -->
+
 > **`NEXT_PUBLIC_` プレフィックスの仕組み:**
 > Next.js は `process.env.XXX` を「ビルド時に値を埋め込む」処理をします。`NEXT_PUBLIC_` で始まる名前のものだけがブラウザ向けバンドルにも埋め込まれます。そうでないものはサーバー側（API Route や Server Component）でしか参照できません。これにより「ブラウザに渡したい変数」と「サーバーに隠したい変数」を分けて管理できます。
+
+<!-- -->
+
+> **つまずきポイント: 秘密キー（Secret key / service_role key）に `NEXT_PUBLIC_` を付けてしまう**
+>
+> 「動かないから、とりあえず強いキーにしてみよう」と秘密キーを `NEXT_PUBLIC_` 付きの変数に入れると、ビルドした瞬間に**全世界へ公開**されます。RLS も素通りするので、だれでも全データを消せる状態になります。
+
+```bash
+# ❌ NG: 秘密キーに NEXT_PUBLIC_ を付けている（ブラウザ向けのファイルに埋め込まれてしまう）
+NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY=sb_secret_xxxxxxxxxxxxxxxx
+```
+
+```bash
+# ✅ OK: 画面から使うのは公開用キーだけ。秘密キーが必要になったら NEXT_PUBLIC_ を付けずにサーバー側だけで使う
+NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_xxxxxxxxxxxxxxxx
+SUPABASE_SECRET_KEY=sb_secret_xxxxxxxxxxxxxxxx
+```
+
+- 本書の書籍管理アプリでは、秘密キーは**一度も使いません**。`.env.local` には URL と公開用キーの2行だけを書けば十分です。
+- もし秘密キーを `NEXT_PUBLIC_` 付きで公開してしまった（Git に push した、デプロイした）場合は、Project Settings の API Keys 画面でそのキーを削除・作り直し（ローテーション）してください。変数名を直すだけでは、すでに漏れたキーは無効になりません。
+
+#### キーの置き方を点検するスクリプト
+
+`.env.local` の書き間違いを、目で見るだけでなくプログラムで点検してみましょう。6.5 節で作る作業用フォルダ（`supabase-playground`）に置いて実行できます。
+
+> **▼ このコードがやること（先に日本語で）:** 環境変数のうち名前に `SUPABASE` を含み `_KEY` で終わるものを1つずつ調べ、値の書き出し（`sb_publishable_` / `sb_secret_` / 旧形式の JWT の中身）から「公開用」か「秘密」かを判定します。秘密キーなのに `NEXT_PUBLIC_` が付いていたら NG と表示します。通信はせず、手元の値を調べるだけです。
+
+```ts
+// 07-key-check.ts : .env.local のキーの置き方が安全かを点検する
+// 実行方法: node --env-file=.env.local 07-key-check.ts
+// （通信はしません。手元の環境変数を調べるだけです）
+
+// キーの文字列を見て「公開用」か「秘密」かを判定する関数
+function keyKind(value: string): string {
+  if (value.startsWith('sb_publishable_')) {
+    return '公開用（Publishable key）';
+  }
+  if (value.startsWith('sb_secret_')) {
+    return '秘密（Secret key）';
+  }
+  // 旧形式のキーは「.」で3つに区切られた JWT で、真ん中の部分に role が書かれている
+  if (value.startsWith('eyJ')) {
+    try {
+      const middle = value.split('.')[1];
+      const payload = JSON.parse(Buffer.from(middle, 'base64url').toString('utf8'));
+      if (payload.role === 'anon') {
+        return '公開用（旧 anon key）';
+      }
+      if (payload.role === 'service_role') {
+        return '秘密（旧 service_role key）';
+      }
+    } catch {
+      return '不明（JWT として読めません）';
+    }
+  }
+  return '不明';
+}
+
+// 見つかった問題の数
+let problems = 0;
+
+// すべての環境変数のうち、名前に SUPABASE を含み、_KEY で終わるものを調べる
+for (const [name, value] of Object.entries(process.env)) {
+  if (!value || !name.includes('SUPABASE') || !name.endsWith('_KEY')) {
+    continue;
+  }
+  const kind = keyKind(value);
+  // NEXT_PUBLIC_ 付きの変数は、ブラウザに送られる
+  const goesToBrowser = name.startsWith('NEXT_PUBLIC_');
+  // 秘密キーがブラウザに送られる設定になっていたら NG
+  const ok = !(goesToBrowser && kind.startsWith('秘密'));
+  if (!ok) {
+    problems++;
+  }
+  const mark = ok ? 'OK' : 'NG';
+  const advice = ok ? '' : '  ← 秘密キーに NEXT_PUBLIC_ を付けてはいけません';
+  console.log(`${mark}  ${name} : ${kind}${advice}`);
+}
+
+if (problems === 0) {
+  console.log('問題は見つかりませんでした');
+} else {
+  console.log(`${problems}件の問題があります。キーを作り直す（ローテーション）ことも検討してください`);
+}
+```
+
+**▼ 実行結果**（Node.js 25.9 で実行。キーはダミーの値です。上が正しい `.env.local`、下が NG 例の `.env.local` で実行したもの）
+
+```text
+$ node --env-file=.env.local 07-key-check.ts
+OK  NEXT_PUBLIC_SUPABASE_ANON_KEY : 公開用（Publishable key）
+OK  SUPABASE_SECRET_KEY : 秘密（Secret key）
+問題は見つかりませんでした
+
+$ node --env-file=.env.local 07-key-check.ts
+OK  NEXT_PUBLIC_SUPABASE_ANON_KEY : 公開用（旧 anon key）
+NG  NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY : 秘密（旧 service_role key）  ← 秘密キーに NEXT_PUBLIC_ を付けてはいけません
+1件の問題があります。キーを作り直す（ローテーション）ことも検討してください
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: キーの「書き出し」で種類を見分ける
+
+```ts
+if (value.startsWith('sb_publishable_')) {
+  return '公開用（Publishable key）';
+}
+```
+
+- `startsWith('...')` は「文字列が `...` で始まるか」を調べるメソッドです。新しい形式のキーは、先頭を見るだけで公開用か秘密かが分かるように作られています。
+- 旧形式のキー（`eyJ` で始まる JWT）は先頭が同じなので、真ん中の部分を Base64URL という方式で元の文字に戻し、中に書かれた `role`（`anon` か `service_role` か）を読んでいます。
+
+> **用語:** **JWT（ジョット）** = 「.」で区切られた3つの部分（ヘッダー・中身・署名）からなる文字列。中身は暗号化ではなく**ただの変換**なので、だれでも読めます。だから秘密の情報を入れてはいけません。
+
+##### 解説2: Object.entries で環境変数を全部調べる
+
+```ts
+for (const [name, value] of Object.entries(process.env)) {
+```
+
+- `process.env` は「環境変数の名前 → 値」の入ったオブジェクトです。`Object.entries(...)` で `[名前, 値]` の組の配列に変え、`for ... of` で1組ずつ取り出しています。
+- `--env-file=.env.local` を付けて実行すると、`.env.local` の中身が `process.env` に読み込まれます。
+
+##### 解説3: 「秘密 かつ NEXT_PUBLIC_」だけを NG にする
+
+```ts
+const ok = !(goesToBrowser && kind.startsWith('秘密'));
+```
+
+- `&&` は「両方とも true のとき true」、先頭の `!` は「反対にする」です。つまり「ブラウザに送られる **かつ** 秘密キー」のときだけ `ok` が false（NG）になります。
+- 秘密キーでも `NEXT_PUBLIC_` が付いていなければ（サーバー専用なら）OK、公開用キーに `NEXT_PUBLIC_` が付いているのも OK、という図5-7 のルールをそのままコードにしたものです。
 
 **ステップ 3: `.gitignore` に追加されていることを確認**
 
@@ -2347,6 +3183,8 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey);
 4. `process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY`: 環境変数から API キーを取得
 5. エラーチェック: 環境変数が未設定の場合、分かりやすいエラーメッセージを表示
 
+> **ヒント:** 第4章 8.3 節では、`@supabase/ssr` の `createBrowserClient` / `createServerClient` を使ったクライアントの作り方を紹介しました。あちらは**ログイン状態をクッキーで受け渡す**ための作り方で、認証を入れるときに必要になります。この章のようにログインなしでデータを読み書きする段階では、ここで作った `createClient` の1つで十分です。
+
 ### 6.4 TypeScript 型の自動生成（supabase gen types）
 
 Supabase CLI を使うと、データベースのスキーマ（テーブル定義）から TypeScript の型を自動生成できます。これにより、コード内でテーブル名やカラム名の入力補完が効くようになり、タイプミスを防げます。
@@ -2446,7 +3284,7 @@ export type Database = {
           rating: number | null;
           // text → string | null
           status: string | null;
-          notes: string | null;
+          memo: string | null;
           cover_url: string | null;
           // timestamptz → ISO文字列
           created_at: string | null;
@@ -2466,7 +3304,7 @@ export type Database = {
           rating?: number | null;
           // DEFAULTがあるので省略可
           status?: string | null;
-          notes?: string | null;
+          memo?: string | null;
           cover_url?: string | null;
           created_at?: string | null;
           updated_at?: string | null;
@@ -2481,7 +3319,7 @@ export type Database = {
           published_date?: string | null;
           rating?: number | null;
           status?: string | null;
-          notes?: string | null;
+          memo?: string | null;
           cover_url?: string | null;
           created_at?: string | null;
           updated_at?: string | null;
@@ -2572,6 +3410,7 @@ export const BOOK_STATUS_LABELS: Record<BookStatus, string> = {
 ```
 
 > **`gen:types` スクリプトの中身解説:**
+>
 > - `supabase gen types typescript` : Supabase CLI のサブコマンド。TypeScriptの型を生成
 > - `--project-id "..."` : 対象プロジェクトIDを指定
 > - `--schema public` : publicスキーマを対象に
@@ -2584,6 +3423,149 @@ export const BOOK_STATUS_LABELS: Record<BookStatus, string> = {
 # npm run スクリプト名 で package.json の scripts を実行
 npm run gen:types
 ```
+
+### 6.5 画面を作る前に、ターミナルから接続を確かめる
+
+Next.js の画面を作り始める前に、「Supabase に本当につながるか」「GRANT や RLS の設定が正しいか」を、小さなスクリプトで確かめておきましょう。画面を作ってから問題が見つかると、原因が「画面のコード」なのか「データベースの設定」なのかを切り分けにくくなるからです。料理で言えば、本番の前に**味見**をしておくイメージです。
+
+Node.js 25 は TypeScript のファイルをそのまま実行できるので（型のチェックはせず、型の部分を取り除いて実行します）、準備は少しで済みます。
+
+**ステップ 1: 作業用フォルダを作る**
+
+```bash
+# 作業用フォルダを作って、その中に移動する
+mkdir supabase-playground
+cd supabase-playground
+
+# package.json を作る（-y は質問に全部「はい」で答えるオプション）
+npm init -y
+
+# import 文を使えるように、このフォルダを「ES モジュール」の設定にする
+npm pkg set type=module
+
+# Supabase の公式ライブラリを入れる
+npm install @supabase/supabase-js
+```
+
+**ステップ 2: `.env.local` を置く**
+
+`supabase-playground` フォルダの中にも、6.2 節と同じ2行の `.env.local` を作ります（Next.js のプロジェクトとは別のフォルダなので、コピーして置きます）。
+
+**ステップ 3: 接続テストのスクリプトを書く**
+
+> **▼ このコードがやること（先に日本語で）:** `.env.local` から URL と公開用キーを読み込んで Supabase に接続し、`books` テーブルから題名と読書状態を取り出して、返ってきた `data` と `error` の両方をそのまま表示します。設定のどこに問題があるかで表示が変わるので、「診断用の聴診器」として何度でも使えます。
+
+```ts
+// 01-check.ts : Supabase につながるか確かめる「接続テスト」スクリプト
+// 実行方法: node --env-file=.env.local 01-check.ts
+
+// Supabase の公式ライブラリから「クライアントを作る関数」を取り込む
+import { createClient } from '@supabase/supabase-js';
+
+// .env.local に書いた接続情報を読み込む（--env-file オプションが読み込んでくれる）
+const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+// 読み込めていなければ、原因が分かるメッセージを出して終了する
+if (!url || !key) {
+  console.error('環境変数が読み込めていません。--env-file=.env.local を付けましたか？');
+  process.exit(1);
+}
+
+// 接続窓口（クライアント）を作る
+const supabase = createClient(url, key);
+
+// books テーブルから title と status を取り出す（title の順に並べる）
+const { data, error } = await supabase
+  .from('books')
+  .select('title, status')
+  .order('title');
+
+// 結果の「2つの箱」を両方とも表示してみる
+console.log('data :', data);
+console.log('error:', error);
+```
+
+**▼ 実行結果**（Node.js 25.9 / supabase-js 2.117.3 / PostgREST 14.18 / PostgreSQL 17 の環境で、設定の段階ごとに実行した実際の出力）
+
+```text
+$ node --env-file=.env.local 01-check.ts
+（段階A: テーブルを作っただけで、4.3.1 節の GRANT をしていない）
+data : null
+error: {
+  code: '42501',
+  details: null,
+  hint: null,
+  message: 'permission denied for table books'
+}
+
+$ node --env-file=.env.local 01-check.ts
+（段階B: GRANT と RLS のオンまで済んだが、第5節のポリシーをまだ作っていない）
+data : []
+error: null
+
+$ node --env-file=.env.local 01-check.ts
+（段階C: 第5節のポリシーまで作り、表に2冊入っている）
+data : [
+  { title: 'こころ', status: 'reading' },
+  { title: '人間失格', status: 'completed' }
+]
+error: null
+```
+
+段階Cの形が出れば、データベース側の準備は完了です。段階A・Bのどちらかで止まっていたら、図5-9 の「直す場所」に戻ってください。
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: `--env-file=.env.local` で環境変数を読み込む
+
+```bash
+node --env-file=.env.local 01-check.ts
+```
+
+- Next.js は `.env.local` を自動で読み込みますが、`node` コマンドで直接スクリプトを動かすときは自動では読み込まれません。`--env-file=ファイル名` を付けると、そのファイルの「名前=値」が `process.env` に入ります。
+- `.env.local` の中身を画面に表示したり、ファイルをどこかに貼り付けたりせずに済むので、安全に試せます。
+
+##### 解説2: トップレベル await
+
+```ts
+const { data, error } = await supabase
+  .from('books')
+  .select('title, status')
+  .order('title');
+```
+
+- 関数の外で `await` を書けるのは、ステップ1の `npm pkg set type=module` で ES モジュールとして動かしているからです（トップレベル await）。
+- `.order('title')` は SQL の `ORDER BY title` にあたり、結果の並び順を決めます。
+
+##### 解説3: `data` と `error` を「両方」表示する
+
+```ts
+console.log('data :', data);
+console.log('error:', error);
+```
+
+- 診断用なので、成功・失敗を決めつけずに2つとも表示しています。段階A では `data` が `null` で `error` に中身があり、段階B・C では `error` が `null` です。
+- 段階B のように「`error` は `null` なのに `data` が空」という形は、7.1 節の図5-13 で「成功だけど0件」として整理します。
+
+> **つまずきポイント: `--env-file` を付け忘れて、環境変数が読み込まれない**
+>
+> `node 01-check.ts` とだけ打つと、`.env.local` は読み込まれません。スクリプトの先頭で値の有無を確かめているので、次のメッセージで止まります。
+
+```text
+$ node 01-check.ts
+環境変数が読み込めていません。--env-file=.env.local を付けましたか？
+```
+
+```text
+$ node --env-file=.env.local 01-check.ts
+（✅ OK: 正しく読み込まれ、段階A〜C のどれかの結果が表示される）
+```
+
+- ファイル名を打ち間違えた場合は、Node.js 自身が `.env.lcoal: not found`（`.env.lcoal` の部分は打ち間違えた名前）というメッセージを出して止まります。Windows では、先頭に `C:\Program Files
+odejs
+ode.exe:` のような Node.js の場所が付いて表示されます。
+- Next.js の開発サーバー（`npm run dev`）で `.env.local` を書き換えたときは、**サーバーを再起動するまで新しい値が反映されない**ことにも注意してください（9.1 節）。
 
 ---
 
@@ -2680,7 +3662,7 @@ console.log('書籍一覧:', data);
 //     published_date: '1987-09-04',
 //     rating: 5,
 //     status: 'completed',
-//     notes: '名作。何度も読み返したい。',
+//     memo: '名作。何度も読み返したい。',
 //     cover_url: null,
 //     created_at: '2024-01-15T10:30:00.000Z',
 //     updated_at: '2024-01-15T10:30:00.000Z'
@@ -2726,6 +3708,96 @@ if (error) {
 > **用語:** **例外（throw）を投げない設計** = エラーを `try/catch` で捕まえるのではなく、戻り値の `error` で受け取る方式。Supabaseはこちらを採用している。
 
 ---
+
+#### `{ data, error }` の読み方: 3つのパターン
+
+supabase-js の戻り値は、**2つの箱が並んだ封筒**だと考えると整理しやすくなります。封筒を開けると、必ず `data` の箱と `error` の箱が入っていて、どちらに何が入っているかで結果が分かります。実際の出力（6.5 節・7.5 節）から整理すると、パターンは次の3つです。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 290" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-05-13" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="110" y="6" width="500" height="36" rx="8" fill="#0f172a"/>
+<text x="360" y="29" text-anchor="middle" font-size="12" font-family="Consolas, monospace" fill="#e2e8f0">const { data, error } = await supabase.from('books').select(...)</text>
+<line x1="300" y1="42" x2="130" y2="70" stroke="#475569" stroke-width="2" marker-end="url(#ar-05-13)"/>
+<line x1="360" y1="42" x2="360" y2="70" stroke="#475569" stroke-width="2" marker-end="url(#ar-05-13)"/>
+<line x1="420" y1="42" x2="590" y2="70" stroke="#475569" stroke-width="2" marker-end="url(#ar-05-13)"/>
+<rect x="8" y="72" width="232" height="212" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="124" y="96" text-anchor="middle" font-size="14" font-weight="bold" fill="#047857">① 成功（行がある）</text>
+<rect x="20" y="108" width="208" height="74" rx="6" fill="#ffffff" stroke="#10b981" stroke-width="1.5"/>
+<text x="30" y="126" font-size="12" font-weight="bold" fill="#047857">data</text>
+<text x="30" y="148" font-size="12" font-family="Consolas, monospace" fill="#1e293b">[ { title: 'こころ' },</text>
+<text x="30" y="168" font-size="12" font-family="Consolas, monospace" fill="#1e293b">  { title: '人間失格' } ]</text>
+<rect x="20" y="192" width="208" height="44" rx="6" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="30" y="210" font-size="12" font-weight="bold" fill="#64748b">error</text>
+<text x="30" y="228" font-size="12" font-family="Consolas, monospace" fill="#94a3b8">null</text>
+<text x="124" y="266" text-anchor="middle" font-size="12" fill="#047857">→ data を画面に並べる</text>
+<rect x="244" y="72" width="232" height="212" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="360" y="96" text-anchor="middle" font-size="14" font-weight="bold" fill="#1e40af">② 成功（0件）</text>
+<rect x="256" y="108" width="208" height="74" rx="6" fill="#ffffff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="266" y="126" font-size="12" font-weight="bold" fill="#1e40af">data</text>
+<text x="266" y="152" font-size="12" font-family="Consolas, monospace" fill="#1e293b">[]</text>
+<text x="290" y="152" font-size="12" fill="#475569">（空の配列）</text>
+<text x="266" y="172" font-size="12" fill="#475569">条件・RLS で0件</text>
+<rect x="256" y="192" width="208" height="44" rx="6" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="266" y="210" font-size="12" font-weight="bold" fill="#64748b">error</text>
+<text x="266" y="228" font-size="12" font-family="Consolas, monospace" fill="#94a3b8">null</text>
+<text x="360" y="266" text-anchor="middle" font-size="12" fill="#1e40af">→「まだ本がありません」</text>
+<rect x="480" y="72" width="232" height="212" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<text x="596" y="96" text-anchor="middle" font-size="14" font-weight="bold" fill="#c2410c">③ 失敗</text>
+<rect x="492" y="108" width="208" height="74" rx="6" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="502" y="126" font-size="12" font-weight="bold" fill="#64748b">data</text>
+<text x="502" y="152" font-size="12" font-family="Consolas, monospace" fill="#94a3b8">null</text>
+<rect x="492" y="192" width="208" height="44" rx="6" fill="#ffffff" stroke="#f97316" stroke-width="1.5"/>
+<text x="502" y="210" font-size="12" font-weight="bold" fill="#c2410c">error</text>
+<text x="502" y="228" font-size="12" font-family="Consolas, monospace" fill="#1e293b">{ code: '23514', … }</text>
+<text x="596" y="266" text-anchor="middle" font-size="12" fill="#c2410c">→ 失敗したことを知らせる</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図5-13: 戻り値の3パターン。色の付いた箱に中身があり、点線の箱は null</div>
+</div>
+
+- 判定の順番は「**まず `error` を見る → 次に `data` が空かどうかを見る**」です。①と②はどちらも `error` が `null`（成功）なので、`error` だけでは区別できません。
+- ②の「0件」は失敗ではありません。条件に合う行がない、または RLS で隠された、のどちらかです（9.2 節）。
+
+> **つまずきポイント: `error` を確認せずに `data` を使って、`TypeError` で止まる**
+>
+> 失敗したときの `data` は `null` です。`error` を見ずに `data.length` のように中身を読もうとすると、supabase-js ではなく**あなたのコード**が例外を投げて止まります。
+
+```ts
+// ❌ NG: error を見ずに data を使っている（rating に範囲外の 10 を入れて、わざと失敗させた例）
+const { data } = await supabase
+  .from('books')
+  .insert({ title: 'テスト', author: 'テスト', rating: 10 })
+  .select();
+console.log(`${data.length}件追加しました`);
+```
+
+```text
+console.log(`${data.length}件追加しました`);
+                    ^
+
+TypeError: Cannot read properties of null (reading 'length')
+```
+
+```ts
+// ✅ OK: 先に error を調べ、失敗なら data に触らずに抜ける
+const { data, error } = await supabase
+  .from('books')
+  .insert({ title: 'テスト', author: 'テスト', rating: 10 })
+  .select();
+if (error) {
+  console.error('追加に失敗しました:', error.message);
+} else {
+  console.log(`${data.length}件追加しました`);
+}
+```
+
+```text
+追加に失敗しました: new row for relation "books" violates check constraint "books_rating_check"
+```
+
+- `TypeError: Cannot read properties of null (reading 'length')` は「`null` の `length` を読もうとした」という意味です。この形のエラーを見たら、**直前の `error` チェックが抜けていないか**を疑いましょう（上の NG 出力は、Node.js 25.9 で実行したときのものから、ファイルの場所を示す行を省いています）。
 
 #### 特定のカラムのみ取得
 
@@ -2810,7 +3882,7 @@ const { data, error } = await supabase
 | `.lte(column, value)` | `<= value` | 以下 | `.lte('rating', 2)` |
 | `.like(column, pattern)` | `LIKE pattern` | パターン一致 | `.like('title', '%森%')` |
 | `.ilike(column, pattern)` | `ILIKE pattern` | パターン一致（大文字小文字無視） | `.ilike('author', '%murakami%')` |
-| `.is(column, value)` | `IS value` | NULL チェック | `.is('notes', null)` |
+| `.is(column, value)` | `IS value` | NULL チェック | `.is('memo', null)` |
 | `.in(column, values)` | `IN (values)` | 複数値のいずれか | `.in('status', ['reading', 'completed'])` |
 
 #### ソート
@@ -2908,6 +3980,92 @@ const { data, error } = await supabase
 > **`.single()` の注意点:**
 > `.single()` は結果が0件または2件以上の場合にエラーを返します。必ず1件だけ返ることが保証される場面（主キーで検索する場合など）でのみ使用してください。0件の可能性がある場合は `.maybeSingle()` を使用します（0件なら data が null になり、エラーにはなりません）。
 
+#### 試してみる: 0件のときの `.single()` と `.maybeSingle()`
+
+「主キーで検索するなら必ず1件」と思いがちですが、URL の ID が古い（もう削除された本）など、0件になる場面は意外とあります。実際の違いを確かめておきましょう。
+
+> **▼ このコードがやること（先に日本語で）:** 存在しない ID で `books` を1件取り出そうとし、`.single()` を使った場合と `.maybeSingle()` を使った場合で、戻り値がどう違うかを並べて表示します。
+
+```ts
+// 04-single.ts : 0件のときの .single() と .maybeSingle() の違い
+// 実行方法: node --env-file=.env.local 04-single.ts
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
+
+// 存在しない id（形式は正しい UUID）
+const missingId = '00000000-0000-0000-0000-000000000000';
+
+// (1) .single() : 「ちょうど1件」でなければエラー
+const one = await supabase.from('books').select('title').eq('id', missingId).single();
+console.log('(1) single     ->', { data: one.data, error: one.error });
+
+// (2) .maybeSingle() : 0件なら data が null（エラーではない）
+const maybe = await supabase.from('books').select('title').eq('id', missingId).maybeSingle();
+console.log('(2) maybeSingle->', { data: maybe.data, error: maybe.error });
+```
+
+**▼ 実行結果**（6.5 節の作業用フォルダで実行した実際の出力）
+
+```text
+(1) single     -> {
+  data: null,
+  error: {
+    code: 'PGRST116',
+    details: 'The result contains 0 rows',
+    hint: null,
+    message: 'Cannot coerce the result to a single JSON object'
+  }
+}
+(2) maybeSingle-> { data: null, error: null }
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: `process.env.〇〇!` の `!`
+
+```ts
+process.env.NEXT_PUBLIC_SUPABASE_URL!
+```
+
+- 末尾の `!` は TypeScript の **non-null アサーション**で、「この値は undefined ではないと約束する」という印です。6.5 節の `01-check.ts` のように値の有無を確かめる処理を省いて、短く書くために使っています。
+- Node.js で実行するときは型の部分が取り除かれるだけなので、実際に値が無ければ、その後の処理で失敗します。本番のコード（6.3 節）では、`!` に頼らず値を確かめる書き方をしています。
+
+##### 解説2: PGRST116 は「1件ではなかった」という意味
+
+```text
+code: 'PGRST116',
+details: 'The result contains 0 rows',
+message: 'Cannot coerce the result to a single JSON object'
+```
+
+- `PGRST` で始まるコードは、PostgreSQL ではなく **PostgREST**（図5-5 の翻訳係）が出すエラーです。
+- `Cannot coerce the result to a single JSON object` は「結果を1つのオブジェクトにまとめられない」、`details` の `The result contains 0 rows` は「結果が0行だった」という意味です。2件以上のときは、ここに件数が入ります。
+
+> **つまずきポイント: 0件があり得るのに `.single()` を使い、「見つからない」がエラー扱いになる**
+>
+> 詳細ページで「その本はもうありません」と案内したいのに、`.single()` だと 0件が `error` 側に入るため、通信エラーなどと区別しにくくなります。
+
+```ts
+// ❌ NG: 0件のときも error になり、「本が無い」のか「通信に失敗した」のかを区別しにくい
+const { data, error } = await supabase.from('books').select('*').eq('id', id).single();
+```
+
+```ts
+// ✅ OK: 0件は data が null（エラーではない）。本当の失敗だけが error に入る
+const { data, error } = await supabase.from('books').select('*').eq('id', id).maybeSingle();
+if (error) {
+  console.error('読み込みに失敗しました:', error.message);
+} else if (data === null) {
+  console.log('その本は見つかりませんでした');
+} else {
+  console.log('見つかりました:', data.title);
+}
+```
+
 ### 7.2 INSERT（データの作成）
 
 #### 単一行の挿入
@@ -2935,7 +4093,7 @@ const newBook: BookInsert = {
   // 任意。指定しないと 'want_to_read'
   status: 'completed',
   // 任意
-  notes: '名作。何度も読み返したい。',
+  memo: '名作。何度も読み返したい。',
   // id, cover_url, created_at, updated_at は省略 → DBが自動で埋める
 };
 
@@ -2963,7 +4121,7 @@ console.log('挿入されたデータ:', data);
 //     published_date: '1987-09-04',
 //     rating: 5,
 //     status: 'completed',
-//     notes: '名作。何度も読み返したい。',
+//     memo: '名作。何度も読み返したい。',
 //     cover_url: null,
 //     created_at: '2024-01-15T10:30:00.000Z',
 //     updated_at: '2024-01-15T10:30:00.000Z'
@@ -3009,7 +4167,7 @@ const { data, error } = await supabase
 ```
 
 - `.insert(newBook)` で「`newBook` を1件追加する」クエリになります。
-- 末尾の `.select()` がポイントです。これを**付けないと**、追加は成功しても戻り値の `data` は空になります（性能上の理由）。
+- 末尾の `.select()` がポイントです。これを**付けないと**、追加は成功しても戻り値の `data` は `null` になります（空の配列 `[]` ではなく `null` です。保存した行を送り返さない分、通信が軽くなるため）。
 - `.select()` を付けると、自動生成された `id` や `created_at` を含む「実際に保存された行」が `data` に返ってきます。
 
 > **用語:** **insert** = テーブルに新しい行を追加する操作（SQLの INSERT に相当）。追加後の行を使いたいときは `.select()` をつなげる。
@@ -3018,6 +4176,71 @@ const { data, error } = await supabase
 
 > **`.select()` を付ける理由:**
 > `.insert()` だけだとレスポンスにデータが含まれません（パフォーマンス上の理由）。挿入したデータ（自動生成された id や created_at を含む）を取得したい場合は `.select()` を付けてください。
+
+#### 試してみる: `.select()` の有無で戻り値はどう変わるか
+
+> **▼ このコードがやること（先に日本語で）:** 本を2冊追加します。1冊目は `.select()` を付けずに、2冊目は `.select(...)` を付けて追加し、それぞれの `data`・`error`・`status`（HTTP のステータス番号）を表示して比べます。
+
+```ts
+// 02-insert.ts : .select() を「付けない insert」と「付けた insert」の違いを見る
+// 実行方法: node --env-file=.env.local 02-insert.ts
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
+
+// (1) .select() を付けずに追加する
+const first = await supabase
+  .from('books')
+  .insert({ title: '銀河鉄道の夜', author: '宮沢賢治' });
+console.log('(1) data:', first.data, '/ error:', first.error, '/ status:', first.status);
+
+// (2) .select() を付けて追加する（保存された行が返ってくる）
+const second = await supabase
+  .from('books')
+  .insert({ title: '坊っちゃん', author: '夏目漱石', rating: 4 })
+  .select('title, author, rating, status');
+console.log('(2) data:', second.data, '/ error:', second.error, '/ status:', second.status);
+```
+
+**▼ 実行結果**（第5節の4つのポリシーを作った状態で実行した実際の出力）
+
+```text
+(1) data: null / error: null / status: 201
+(2) data: [
+  { title: '坊っちゃん', author: '夏目漱石', rating: 4, status: 'want_to_read' }
+] / error: null / status: 201
+```
+
+- (1) も (2) も `status: 201`（HTTP で「作成できました」という意味の番号）で、追加そのものは成功しています。違うのは `data` だけで、(1) は `null`、(2) は保存された行の配列です。
+- (2) の `status: 'want_to_read'` は自分では指定していない値です。CREATE TABLE の `DEFAULT 'want_to_read'` が入ったことが、`.select()` で返ってきた行から確かめられます。
+
+> **つまずきポイント: `.select()` を付けずに、追加した本の `id` を使おうとする**
+>
+> 「登録したら、その本の詳細ページへ移動する」といった処理では、データベースが作った `id` が必要です。`.select()` を付けないと `data` が `null` なので、`id` を取り出せません。
+
+```ts
+// ❌ NG: .select() がないので data は null。data[0].id で TypeError になる
+const { data, error } = await supabase.from('books').insert({ title: 'こころ', author: '夏目漱石' });
+```
+
+```ts
+// ✅ OK: .select('id') で、作られた行の id だけを返してもらう
+const { data, error } = await supabase
+  .from('books')
+  .insert({ title: 'こころ', author: '夏目漱石' })
+  .select('id')
+  .single();
+if (error) {
+  console.error('登録に失敗しました:', error.message);
+} else {
+  console.log('作られた本の id:', data.id);
+}
+```
+
+- 1件だけ追加したときは、`.select('id').single()` と続けると、配列ではなく `{ id: '...' }` という1つのオブジェクトで受け取れます。
 
 #### 複数行の挿入
 
@@ -3089,7 +4312,7 @@ const updates: BookUpdate = {
   // 状態を 'completed' に
   status: 'completed',
   // メモを上書き
-  notes: '読了。面白かった！',
+  memo: '読了。面白かった！',
   // title や author は省略 → 既存値のまま
 };
 
@@ -3116,7 +4339,7 @@ console.log('更新されたデータ:', data);
 //     title: 'ノルウェイの森',
 //     rating: 4,           ← 更新された
 //     status: 'completed', ← 更新された
-//     notes: '読了。面白かった！', ← 更新された
+//     memo: '読了。面白かった！', ← 更新された
 //     updated_at: '2024-01-16T15:00:00.000Z', ← トリガーにより自動更新
 //     ...
 //   }
@@ -3136,7 +4359,7 @@ const updates: BookUpdate = {
   // 状態を 'completed' に
   status: 'completed',
   // メモを上書き
-  notes: '読了。面白かった！',
+  memo: '読了。面白かった！',
   // title や author は省略 → 既存値のまま
 };
 ```
@@ -3182,6 +4405,125 @@ const { data, error } = await supabase
   // 対象の絞り込み（忘れずに!）
   .eq('id', bookId)
   .select();
+```
+
+#### 試してみる: 更新が「効いたかどうか」を確かめる
+
+UPDATE は、条件に合う行が1つも無くても**エラーになりません**（「0行を更新しました」という成功扱い）。そのため、更新が本当に効いたかは、`.select()` で返ってきた行の数で確かめるのが確実です。
+
+> **▼ このコードがやること（先に日本語で）:** 3通りの条件で「読書状態を completed（読了）にする」更新を試します。(1) id に `'2'` のような番号を渡した場合、(2) 形式は正しいが存在しない id の場合、(3) 実在する本を題名で指定した場合です。最後に、更新できた件数を表示します。
+
+```ts
+// 05-update.ts : 更新の結果を「件数」で確かめる
+// 実行方法: node --env-file=.env.local 05-update.ts
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
+
+// (1) id を「2」のような番号で指定してしまった（id は UUID なので形式が違う）
+const wrongType = await supabase
+  .from('books')
+  .update({ status: 'completed' })
+  .eq('id', '2')
+  .select();
+console.log('(1)', { data: wrongType.data, error: wrongType.error });
+
+// (2) 形式は正しいが、存在しない id を指定した
+const notFound = await supabase
+  .from('books')
+  .update({ status: 'completed' })
+  .eq('id', '00000000-0000-0000-0000-000000000000')
+  .select();
+console.log('(2)', { data: notFound.data, error: notFound.error });
+
+// (3) 実在する本を title で探して更新した
+const ok = await supabase
+  .from('books')
+  .update({ status: 'completed' })
+  .eq('title', 'こころ')
+  .select('title, status');
+console.log('(3)', { data: ok.data, error: ok.error });
+
+// 更新できた件数は data の長さで分かる
+console.log('更新された件数:', ok.data?.length ?? 0);
+```
+
+**▼ 実行結果**（実際の出力）
+
+```text
+(1) {
+  data: null,
+  error: {
+    code: '22P02',
+    details: null,
+    hint: null,
+    message: 'invalid input syntax for type uuid: "2"'
+  }
+}
+(2) { data: [], error: null }
+(3) { data: [ { title: 'こころ', status: 'completed' } ], error: null }
+更新された件数: 1
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: 22P02 は「値の形式が列の型に合わない」
+
+```text
+code: '22P02',
+message: 'invalid input syntax for type uuid: "2"'
+```
+
+- 「uuid 型として読めない入力です: "2"」という意味です。`books.id` は UUID（`550e8400-...` のような36文字）なので、第0節の練習用の表のような `1`・`2` という番号は受け付けません。
+- 画面の URL から id を取り出すときなどに、別の値（番号や空文字）を渡してしまうと、このエラーになります。
+
+##### 解説2: 0行の更新は「成功」として返ってくる
+
+```text
+(2) { data: [], error: null }
+```
+
+- 条件に合う行が無かっただけなので、`error` は `null` です。`if (error)` だけで成功と判断すると、**何も更新されていないのに「更新しました」と表示する**バグになります。
+- RLS で UPDATE が許されていない行も、同じく「見えない＝対象外」として0行になります（図5-11 の USING）。
+
+##### 解説3: `?.` と `??` で件数を安全に数える
+
+```ts
+console.log('更新された件数:', ok.data?.length ?? 0);
+```
+
+- `ok.data?.length` は「`data` が null でなければ `length` を読む。null なら `undefined`」という安全な読み方です（オプショナルチェーン）。
+- `?? 0` は「左側が null か undefined なら 0 を使う」という意味です（Null 合体演算子）。失敗して `data` が `null` でも、件数を 0 と表示できます。
+
+> **つまずきポイント: 更新できたかを `error` だけで判断してしまう**
+>
+> 上の (2) のように、対象が0行でも `error` は `null` です。更新の成否は「返ってきた行の数」で判断します。
+
+```ts
+// ❌ NG: error が無ければ成功とみなしている（0行でも「更新しました」と出てしまう）
+const { error } = await supabase.from('books').update({ status: 'completed' }).eq('id', bookId);
+if (!error) {
+  console.log('更新しました');
+}
+```
+
+```ts
+// ✅ OK: .select() で更新後の行を返してもらい、件数まで確かめる
+const { data, error } = await supabase
+  .from('books')
+  .update({ status: 'completed' })
+  .eq('id', bookId)
+  .select('id');
+if (error) {
+  console.error('更新に失敗しました:', error.message);
+} else if (data.length === 0) {
+  console.log('対象の本が見つかりませんでした（id が違うか、RLS で許可されていません）');
+} else {
+  console.log('更新しました');
+}
 ```
 
 ### 7.4 DELETE（データの削除）
@@ -3305,6 +4647,67 @@ async function fetchBooks() {
 }
 ```
 
+#### 試してみる: わざと失敗させて `error` の中身を観察する
+
+エラー処理を書くときは、**実際の `error` の中身を一度見ておく**のがいちばんの近道です。4.3 節の「制約が本当に効くか試してみる」と同じ失敗を、今度は supabase-js から起こしてみましょう。
+
+> **▼ このコードがやること（先に日本語で）:** 評価（rating）に範囲外の 10 を入れた本を追加しようとして、データベースに断らせます。返ってきた `error` の `code`・`message`・`details` と、そのときの `data` を1行ずつ表示します。
+
+```ts
+// 03-error.ts : わざと失敗させて、error の中身を観察する
+// 実行方法: node --env-file=.env.local 03-error.ts
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
+
+// rating は CHECK 制約で 1〜5 しか入らない。そこへ 10 を入れてみる
+const { data, error } = await supabase
+  .from('books')
+  .insert({ title: 'テスト', author: 'テスト', rating: 10 })
+  .select();
+
+// 失敗したら error に「なぜ失敗したか」が入り、data は null になる
+if (error) {
+  console.log('失敗しました');
+  console.log('  code   :', error.code);
+  console.log('  message:', error.message);
+  console.log('  details:', error.details);
+  console.log('  data は:', data);
+} else {
+  console.log('成功しました:', data);
+}
+```
+
+**▼ 実行結果**（実際の出力）
+
+```text
+失敗しました
+  code   : 23514
+  message: new row for relation "books" violates check constraint "books_rating_check"
+  details: null
+  data は: null
+```
+
+- `code` の `23514` は、4.3 節で SQL Editor から見たのと同じ「CHECK 制約違反」の番号です。supabase-js 経由でも、PostgreSQL のエラーがほぼそのまま届くことが分かります。
+- 画面に表示するときは、英語の `message` をそのまま見せるより、`code` で場合分けして「評価は1〜5で入力してください」のような日本語に置き換えると親切です（第7章のフォームでは、送信前に画面側でもチェックします）。
+
+**よく出会うエラーの早見表**（この章で実際に出力を確かめたもの）
+
+| `error.code` | `message`（抜粋） | 意味 | 直し方 |
+|---|---|---|---|
+| `42501` | `permission denied for table books` | 表への GRANT がない（関門1） | 4.3.1 節の GRANT |
+| `42501` | `new row violates row-level security policy` | 書き込みを許す RLS ポリシーがない（関門2） | 5.3 節の INSERT / UPDATE ポリシー |
+| `23514` | `violates check constraint "books_rating_check"` | CHECK 制約違反（rating が1〜5以外 など） | 値を直す。画面でも入力チェック |
+| `23502` | `null value in column "author" ... violates not-null constraint` | 必須の列が空（4.3 節では SQL Editor で確認） | 必須項目を入れて送る |
+| `22P02` | `invalid input syntax for type uuid` | 値の形式が列の型に合わない | 正しい UUID を渡す |
+| `PGRST116` | `Cannot coerce the result to a single JSON object` | `.single()` で結果が1件でない | 0件があり得るなら `.maybeSingle()` |
+| `PGRST205` | `Could not find the table 'public.book' in the schema cache` | 表の名前の打ち間違い（`book` と `books`） | `hint` の候補（`'public.books'`）を確認 |
+
+> **ヒント:** `PGRST205` のときは、`hint` に `Perhaps you meant the table 'public.books'`（もしかして public.books ですか？）のように正しい名前の候補が出ます。英語のエラーでも `hint` まで読むと、答えがそのまま書いてあることがよくあります。
+
 ---
 
 ## 8. テストデータの投入
@@ -3322,9 +4725,9 @@ Supabase の SQL Editor で以下の SQL を実行して、テスト用のサン
 -- ============================================
 
 -- INSERT INTO books : books テーブルに行を追加
--- (title, author, publisher, published_date, rating, status, notes) : 値を入れるカラム名
+-- (title, author, publisher, published_date, rating, status, memo) : 値を入れるカラム名
 -- VALUES (...), (...), ... : 複数行を一度に追加する書き方（カンマで区切る）
-INSERT INTO books (title, author, publisher, published_date, rating, status, notes) VALUES
+INSERT INTO books (title, author, publisher, published_date, rating, status, memo) VALUES
 -- 1件目: ノルウェイの森
 (
   -- title
@@ -3339,7 +4742,7 @@ INSERT INTO books (title, author, publisher, published_date, rating, status, not
   5,
   -- status（CHECK制約で許可された値）
   'completed',
-  -- notes
+  -- memo
   '名作。静かで美しい文体に引き込まれた。何度も読み返したくなる作品。'
 ),
 -- 2件目: 人間失格
@@ -3412,7 +4815,7 @@ const sampleBooks: BookInsert[] = [
     published_date: '1987-09-04',
     rating: 5,
     status: 'completed',
-    notes: '名作。静かで美しい文体に引き込まれた。何度も読み返したくなる作品。',
+    memo: '名作。静かで美しい文体に引き込まれた。何度も読み返したくなる作品。',
   },
   {
     title: '人間失格',
@@ -3421,7 +4824,7 @@ const sampleBooks: BookInsert[] = [
     published_date: '1948-06-25',
     rating: 4,
     status: 'completed',
-    notes: '太宰治の代表作。人間の弱さと苦悩が痛いほど伝わってくる。',
+    memo: '太宰治の代表作。人間の弱さと苦悩が痛いほど伝わってくる。',
   },
   {
     title: 'こころ',
@@ -3430,16 +4833,16 @@ const sampleBooks: BookInsert[] = [
     published_date: '1914-09-20',
     rating: 5,
     status: 'reading',
-    notes: '先生の手紙の部分を読んでいる。明治時代の人間関係の複雑さが興味深い。',
+    memo: '先生の手紙の部分を読んでいる。明治時代の人間関係の複雑さが興味深い。',
   },
   {
     title: '銀河鉄道の夜',
     author: '宮沢賢治',
     publisher: '岩波書店',
     published_date: '1934-01-01',
-    // ratingとnotesは省略
+    // rating は省略（未評価なので NULL になる）
     status: 'want_to_read',
-    notes: '友人に勧められた。幻想的な世界観が気になる。',
+    memo: '友人に勧められた。幻想的な世界観が気になる。',
   },
   {
     title: 'コンビニ人間',
@@ -3448,7 +4851,7 @@ const sampleBooks: BookInsert[] = [
     published_date: '2016-07-27',
     rating: 4,
     status: 'completed',
-    notes: '芥川賞受賞作。「普通」とは何かを考えさせられた。読みやすく一気に読了。',
+    memo: '芥川賞受賞作。「普通」とは何かを考えさせられた。読みやすく一気に読了。',
   },
 ];
 
@@ -3515,12 +4918,12 @@ seedBooks();
 
 **🗂 Table Editor ＞ books**　　`[+ Insert row]`　`[Filter]`　`[Sort]`
 
-| id | title | author | rating | status | notes |
+| id | title | author | rating | status | memo |
 |----|-------|--------|:------:|--------|-------|
 | 3f.. | ノルウェイの森 | 村上春樹 | 5 | completed | 名作... |
 | 7a.. | 人間失格 | 太宰治 | 4 | completed | 太宰... |
 | b2.. | こころ | 夏目漱石 | 5 | reading | 先生... |
-| e5.. | 銀河鉄道の夜 | 宮沢賢治 | NULL | want_read | 友人... |
+| e5.. | 銀河鉄道の夜 | 宮沢賢治 | NULL | want_to_read | 友人... |
 | 1c.. | コンビニ人間 | 村田沙耶香 | 4 | completed | 芥川... |
 
 > *Showing 5 rows* — Table Editor 上では、登録した行（レコード）がこのように一覧表示されます。
@@ -3561,6 +4964,25 @@ SELECT COUNT(*) FROM books;
 -- COUNT(*) as count : 各グループの件数を取得し、列名を count にする
 SELECT status, COUNT(*) as count FROM books GROUP BY status;
 ```
+
+**▼ 実行結果**（8.1 節の5件だけが入った状態で、最後の2つの SELECT を psql で実行した出力）
+
+```text
+ count
+-------
+     5
+(1 row)
+
+    status    | count
+--------------+-------
+ completed    |     3
+ reading      |     1
+ want_to_read |     1
+(3 rows)
+```
+
+- `GROUP BY status` は「status が同じ行を1つのグループにまとめる」、`COUNT(*)` は「グループの中の行数を数える」という意味です。読了3冊・読書中1冊・読みたい1冊、と集計できています。
+- `GROUP BY` の結果の並び順も約束されていないので、順番をそろえたいときは `ORDER BY status` を付け足します。
 
 ---
 
@@ -3671,7 +5093,7 @@ const { error: signOutError } = await supabase.auth.signOut();
 
 ### 認証後の厳密なRLSポリシー: 「自分のデータだけ」を守る
 
-> **▼ このコードがやること（先に日本語で）:** ログイン機能とセットで使う、**「自分が作ったデータだけ読める・書ける」**という厳しいルール（ポリシー）を SQL で定義します。本編のRLSは「ログインしていれば誰でもOK」レベルでしたが、実際のサービスでは「他人の家計簿や日記が見えてしまう」と大問題です。ここでは、テーブルに `user_id`（持ち主のID）列を足し、その列が**今ログインしている人のIDと一致する行だけ**操作を許可するようにします。
+> **▼ このコードがやること（先に日本語で）:** ログイン機能とセットで使う、**「自分が作ったデータだけ読める・書ける」**という厳しいルール（ポリシー）を SQL で定義します。本編のRLS（5.3 節）は「ログインしていなくても誰でも全部OK」という開発用の設定でしたが、実際のサービスでは「他人の家計簿や日記が見えてしまう」と大問題です。ここでは、テーブルに `user_id`（持ち主のID）列を足し、その列が**今ログインしている人のIDと一致する行だけ**操作を許可するようにします。
 
 ```sql
 -- ============================================================================
@@ -3689,6 +5111,17 @@ ALTER TABLE books
 
 -- RLSを有効化（まだなら）。これが無いとポリシーは効かない
 ALTER TABLE books ENABLE ROW LEVEL SECURITY;
+
+-- (0) 本編（5.3 節）で作った開発用の「誰でもOK」ポリシーを先に消す
+--     ポリシーは「どれか1つでも true なら許可」（OR）で組み合わさるため、
+--     残したままだと USING (true) のせいで、全員が全部の行を見られてしまう
+DROP POLICY IF EXISTS "Allow public read access" ON books;
+DROP POLICY IF EXISTS "Allow public insert access" ON books;
+DROP POLICY IF EXISTS "Allow public update access" ON books;
+DROP POLICY IF EXISTS "Allow public delete access" ON books;
+
+-- (0') ログインしていない人（anon）からは、書き込みの権限（4.3.1 節の GRANT）を取り上げる
+REVOKE INSERT, UPDATE, DELETE ON public.books FROM anon;
 
 -- (1) 読み取り(SELECT)ポリシー: 自分のbooksだけ見える
 -- CREATE POLICY "ポリシー名" : 新しいルールを作る
@@ -3767,6 +5200,83 @@ CREATE POLICY "自分の本だけ更新できる"
 - UPDATE で両方を書いているのは、「他人の本を勝手に編集できない（USING）」だけでなく「更新のついでに `user_id` を他人のものに書き換えて乗っ取る、を防ぐ（WITH CHECK）」ためです。
 
 > **用語:** **許可リスト方式** = 「明示的に許可したものだけOK、それ以外は全部禁止」という考え方。セキュリティの基本姿勢。
+
+#### SQL Editor で RLS を体験する（ログイン中の人になりきる）
+
+ポリシーが本当に「自分の本だけ」を返すかは、アプリを作る前に SQL Editor で確かめられます。PostgREST が裏でやっていること（4.3.1 節の図5-9）を、手で再現するイメージです。
+
+> **▼ このコードがやること（先に日本語で）:** 取引（トランザクション）の中だけ、身分を「ログインした人（authenticated）」に切り替え、「今ログインしているのはユーザー A です」という情報をセットしてから `books` を読みます。最後に `ROLLBACK` で取引ごと取り消すので、設定はその場限りで元に戻ります。
+
+```sql
+-- 取引を始める（ここから ROLLBACK までの設定は、この取引の中だけで有効）
+BEGIN;
+
+-- 身分を「ログインした人」に切り替える（アプリからの通信と同じ条件にする）
+SET LOCAL ROLE authenticated;
+
+-- 「今ログインしているのはユーザー A」という情報をセットする（auth.uid() がこの値を返す）
+SET LOCAL request.jwt.claim.sub = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa';
+
+-- 見える本と、それが自分の本かどうか（is_mine）を表示する
+SELECT title, auth.uid() = user_id AS is_mine FROM books ORDER BY title;
+
+-- 取引を取り消して、身分などを元に戻す
+ROLLBACK;
+```
+
+**▼ 実行結果**（PostgreSQL 17 の psql の出力。ユーザー A が「こころ」「坊っちゃん」、ユーザー B が「人間失格」「銀河鉄道の夜」の持ち主になっている表で実行）
+
+```text
+BEGIN
+SET
+SET
+   title    | is_mine
+------------+---------
+ こころ     | t
+ 坊っちゃん | t
+(2 rows)
+
+ROLLBACK
+```
+
+- 自分で試すときは、ダッシュボードの **Authentication → Users** で作ったユーザーの ID（UUID）を、`'aaaaaaaa-...'` の所に貼り付けてください。持ち主の列 `user_id` にも、そのユーザーの ID が入っている必要があります。
+- `SET LOCAL ROLE anon;`（ログインしていない人）に変えて同じ SELECT をすると、`auth.uid()` が null になるので `(0 rows)` になります。
+- SQL Editor の Run ボタンの近くにある、**実行するロールを選ぶメニュー**（初期表示は `postgres`）でも、同じ「なりきり」ができます（画面の表記は変わることがあります）。
+
+> **用語:** **トランザクション（取引）** = 複数の SQL をひとまとまりとして扱う仕組み。`BEGIN` で始め、`COMMIT` で確定、`ROLLBACK` で全部取り消し。**SET LOCAL** = その取引の中だけ設定を変える命令。
+
+<!-- -->
+
+> **つまずきポイント: 開発用の `USING (true)` ポリシーを消し忘れて、他人の本まで見える**
+>
+> RLS のポリシーは、同じ操作に何枚あっても「**どれか1枚でも true なら許可**」（OR）で判定されます。5.3 節の `"Allow public read access"`（USING (true)）を残したまま「自分の本だけ読める」を足しても、`true` の方が勝ってしまい、意味がありません。
+
+```text
+-- ❌ NG: 開発用ポリシーを残したまま、ユーザー A になりきって SELECT した結果
+    title     | is_mine
+--------------+---------
+ こころ       | t
+ 人間失格     | f
+ 坊っちゃん   | t
+ 銀河鉄道の夜 | f
+(4 rows)
+```
+
+```sql
+-- ✅ OK: 開発用の「誰でもOK」ポリシーを消してから、もう一度確かめる
+DROP POLICY IF EXISTS "Allow public read access" ON books;
+```
+
+```text
+-- ✅ OK: 同じ SELECT の結果（is_mine がすべて t = 自分の本だけ）
+   title    | is_mine
+------------+---------
+ こころ     | t
+ 坊っちゃん | t
+(2 rows)
+```
+
+- 今あるポリシーの一覧は `SELECT policyname, cmd, qual FROM pg_policies WHERE tablename = 'books';` で確認できます。`qual` 列が `true` のポリシーが残っていないかを見るのがコツです。
 
 ### Storage: 画像やファイルのアップロードと公開URLの取得
 
@@ -4139,28 +5649,32 @@ supabase
 
 **対処法:**
 
-1. **環境変数を確認する**
-   ```bash
-   # .env.local の内容を確認（ターミナルで実行）
-   # cat : ファイルの中身を表示するUnixコマンド
-   cat .env.local
-   ```
-   - `NEXT_PUBLIC_SUPABASE_URL` が正しいか確認
-   - `NEXT_PUBLIC_SUPABASE_ANON_KEY` が正しいか確認
-   - URL の末尾にスラッシュ `/` がないか確認（不要です）
-   - 余分な空白や改行がないか確認
+**① 環境変数を確認する**
 
-2. **プロジェクトが起動しているか確認**
-   - Supabase Dashboard にアクセスして、プロジェクトが「Active」状態か確認
-   - 一時停止されている場合は「Restore project」をクリック
+```bash
+# .env.local の内容を確認（ターミナルで実行）
+# cat : ファイルの中身を表示するUnixコマンド（Windows の PowerShell でも使えます）
+cat .env.local
+```
 
-3. **開発サーバーを再起動**
-   ```bash
-   # 環境変数の変更はサーバー再起動が必要
-   # Ctrl + C で停止してから
-   # npm run dev : Next.jsの開発サーバーを起動するコマンド
-   npm run dev
-   ```
+- `NEXT_PUBLIC_SUPABASE_URL` が正しいか確認
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` が正しいか確認
+- URL の末尾にスラッシュ `/` がないか確認（不要です）
+- 余分な空白や改行がないか確認
+
+**② プロジェクトが起動しているか確認**
+
+- Supabase Dashboard にアクセスして、プロジェクトが「Active」状態か確認
+- 一時停止されている場合は「Restore project」をクリック
+
+**③ 開発サーバーを再起動**
+
+```bash
+# 環境変数の変更はサーバー再起動が必要
+# Ctrl + C で停止してから
+# npm run dev : Next.jsの開発サーバーを起動するコマンド
+npm run dev
+```
 
 #### エラー: `TypeError: fetch failed` または `ECONNREFUSED`
 
@@ -4174,6 +5688,54 @@ supabase
 
 ### 9.2 RLS でデータが取得できない
 
+「データが返ってこない」ときは、やみくもに設定を変える前に、**どこで止まっているか**を順番に切り分けるのが近道です。次の図の順に確かめてください。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 384" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-05-14" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="210" y="8" width="300" height="40" rx="8" fill="#f1f5f9" stroke="#64748b" stroke-width="1.5"/>
+<text x="360" y="33" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e293b">data と error を表示して確かめる（6.5 節）</text>
+<line x1="360" y1="48" x2="360" y2="70" stroke="#475569" stroke-width="2" marker-end="url(#ar-05-14)"/>
+<rect x="250" y="72" width="220" height="40" rx="20" fill="#ffffff" stroke="#475569" stroke-width="2"/>
+<text x="360" y="97" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e293b">error に中身がある？</text>
+<path d="M250,92 H170 V136" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#ar-05-14)"/>
+<text x="210" y="86" text-anchor="middle" font-size="12" font-weight="bold" fill="#c2410c">はい</text>
+<path d="M470,92 H550 V136" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#ar-05-14)"/>
+<text x="510" y="86" text-anchor="middle" font-size="12" font-weight="bold" fill="#1e40af">いいえ</text>
+<rect x="8" y="140" width="332" height="40" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="18" y="165" font-size="12" font-family="Consolas, monospace" fill="#1e293b">permission denied for table</text>
+<text x="330" y="165" text-anchor="end" font-size="12" font-weight="bold" fill="#c2410c">→ 4.3.1 の GRANT</text>
+<rect x="8" y="188" width="332" height="40" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="18" y="213" font-size="12" font-family="Consolas, monospace" fill="#1e293b">violates row-level security</text>
+<text x="330" y="213" text-anchor="end" font-size="12" font-weight="bold" fill="#c2410c">→ 5.3 のポリシー</text>
+<rect x="8" y="236" width="332" height="40" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="18" y="261" font-size="12" font-family="Consolas, monospace" fill="#1e293b">fetch failed など通信の失敗</text>
+<text x="330" y="261" text-anchor="end" font-size="12" font-weight="bold" fill="#c2410c">→ 9.1 節</text>
+<rect x="8" y="284" width="332" height="40" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="18" y="309" font-size="12" font-family="Consolas, monospace" fill="#1e293b">23514 / 23502（制約違反）</text>
+<text x="330" y="309" text-anchor="end" font-size="12" font-weight="bold" fill="#c2410c">→ 送る値を直す</text>
+<rect x="8" y="332" width="332" height="40" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="18" y="357" font-size="12" font-family="Consolas, monospace" fill="#1e293b">PGRST116 / PGRST205 など</text>
+<text x="330" y="357" text-anchor="end" font-size="12" font-weight="bold" fill="#c2410c">→ 7.5 の早見表</text>
+<rect x="400" y="140" width="300" height="40" rx="20" fill="#ffffff" stroke="#475569" stroke-width="2"/>
+<text x="550" y="165" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e293b">data が空の配列 [] ？</text>
+<line x1="550" y1="180" x2="550" y2="206" stroke="#475569" stroke-width="2" marker-end="url(#ar-05-14)"/>
+<text x="566" y="198" font-size="12" font-weight="bold" fill="#c2410c">はい</text>
+<rect x="400" y="208" width="300" height="96" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="412" y="230" font-size="12" font-weight="bold" fill="#1e40af">SQL Editor で SELECT * FROM books;</text>
+<text x="412" y="252" font-size="12" fill="#1e293b">行が見える → RLS の SELECT ポリシー（5.3）</text>
+<text x="412" y="274" font-size="12" fill="#1e293b">行が無い → データ未投入（8.1）か、</text>
+<text x="412" y="294" font-size="12" fill="#1e293b">　　　　　 .eq などの条件の値違い</text>
+<path d="M700,160 H712 V347 H704" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#ar-05-14)"/>
+<text x="706" y="317" text-anchor="end" font-size="12" font-weight="bold" fill="#1e40af">いいえ</text>
+<rect x="400" y="322" width="300" height="50" rx="8" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="550" y="352" text-anchor="middle" font-size="13" font-weight="bold" fill="#047857">成功！ 画面に表示する（第6章へ）</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図5-14: データが返らないときの切り分け。まず error、次に data が空かどうかを見る</div>
+</div>
+
 #### 症状: `data` が空配列 `[]` で返ってくる（エラーは出ない）
 
 これは Supabase で最もよくあるハマりポイントです。
@@ -4182,7 +5744,7 @@ supabase
 
 **確認手順:**
 
-1. Supabase Dashboard の「Authentication」>「Policies」で books テーブルのポリシーを確認
+1. ダッシュボードの **Policies** 画面（左メニューの「Authentication」または「Database」の中にあります。画面の構成は更新で変わることがあります）で books テーブルのポリシーを確認するか、下の `pg_policies` を使った SQL で確認
 2. ポリシーが存在するか、`USING (true)` になっているか確認
 
 **対処法:**
@@ -4251,6 +5813,12 @@ ALTER TABLE books DISABLE ROW LEVEL SECURITY;
 ALTER TABLE books ENABLE ROW LEVEL SECURITY;
 ```
 
+#### エラー: `permission denied for table books`（コード `42501`）
+
+**原因:** テーブルが Data API に公開されていない（GRANT がない）。2026年5月30日以降に作ったプロジェクトでは、新しいテーブルは自動では公開されません。
+
+**対処法:** 4.3.1 節の GRANT の SQL を実行してください。RLS のポリシーをいくら直しても、このエラーは消えません（図5-9 の関門1で止まっているため）。
+
 #### 症状: INSERT はできるが SELECT でデータが返らない
 
 **原因:** SELECT のポリシーが設定されていない、または条件が間違っている。
@@ -4278,21 +5846,21 @@ npm run gen:types
 **対処法:**
 
 ```typescript
-// 自動生成された型を使用する
-// '@/types/book' は src/types/book.ts （6.4で作った）
-import type { Book } from '@/types/book';
-
-// 悪い例: 手動で型を定義しない
+// ❌ 悪い例: 手動で型を定義している（抜粋）
+// UUID は string なのに number にしている → 型不一致
 interface Book {
-  // UUID は string なのに number にしている → 型不一致
   id: number;
-  // ...
+  title: string;
 }
-
-// 良い例: 自動生成された型を使う
-// Database['public']['Tables']['books']['Row'] で正しい型が得られる
-type Book = Database['public']['Tables']['books']['Row'];
 ```
+
+```typescript
+// ✅ 良い例: 自動生成された型（6.4 で作った src/types/book.ts）を取り込んで使う
+// Book の中身は Database['public']['Tables']['books']['Row'] と同じで、id は string になっている
+import type { Book } from '@/types/book';
+```
+
+- 同じファイルの中で `Book` という名前を `import` と `interface` の両方で作ると、名前がぶつかって別のエラーになります。手で書いた型は消して、自動生成された型に一本化しましょう。
 
 #### エラー: `Could not find a declaration file for module '@supabase/supabase-js'`
 
@@ -4332,7 +5900,7 @@ CREATE TABLE IF NOT EXISTS books (
 );
 ```
 
-#### エラー: `new row violates check constraint "books_rating_check"`
+#### エラー: `new row for relation "books" violates check constraint "books_rating_check"`
 
 **原因:** `rating` カラムに 1〜5 の範囲外の値を挿入しようとした。
 
@@ -4347,7 +5915,7 @@ const book = { title: 'テスト', author: 'テスト', rating: 10 };
 const book = { title: 'テスト', author: 'テスト', rating: 5 };
 ```
 
-#### エラー: `new row violates check constraint "books_status_check"`
+#### エラー: `new row for relation "books" violates check constraint "books_status_check"`
 
 **原因:** `status` カラムに許可されていない値を挿入しようとした。
 
@@ -4365,11 +5933,11 @@ const book = { title: 'テスト', author: 'テスト', status: 'completed' };
 
 ### 9.5 よくある質問
 
-**Q: anon key が漏れたらどうなりますか？**
+**Q: anon key（Publishable key）が漏れたらどうなりますか？**
 
 A: anon key は「公開キー」なので、ブラウザの JavaScript から見える前提で設計されています。RLS を正しく設定していれば、anon key だけではデータに不正アクセスできません。ただし、RLS を無効にしている場合は危険です。本番環境では必ず RLS を有効にしてください。
 
-**Q: service_role key はいつ使いますか？**
+**Q: service_role key（Secret key）はいつ使いますか？**
 
 A: `service_role` key は RLS をバイパスする管理者用のキーです。**絶対にフロントエンドに含めないでください。** サーバーサイドのバッチ処理やマイグレーションスクリプトでのみ使用します。漏えいすると全データの読み書きが攻撃者に許されるため、Gitリポジトリ・公開URL・ブラウザJSに含めるのは厳禁です。
 
@@ -4395,6 +5963,190 @@ ALTER TABLE books DROP COLUMN page_count;
 -- smallint : 小さい整数型（-32768〜32767）
 ALTER TABLE books ALTER COLUMN rating TYPE smallint;
 ```
+
+---
+
+## 練習問題（解答・解説つき）
+
+この章の内容が身に付いたかを確かめましょう。まず自分で考えてから、後ろの「解答と解説」を読んでください。SQL の問題は SQL Editor で、コードの問題は 6.5 節の作業用フォルダ（`supabase-playground`）で実際に試すと、理解がぐっと深まります。問題1・6は、8.1 節のサンプル5冊が入った状態を前提にしています。
+
+### 問題1: 条件と並び替え（SQL）
+
+`books` テーブルから、評価（rating）が4以上の本の「題名（title）と評価」を、**評価の高い順**に表示する SQL を書いてください。評価が同じ本どうしは、**出版日（published_date）の古い順**に並べます。
+
+### 問題2: 危ない DELETE（SQL）
+
+「銀河鉄道の夜」だけを削除するつもりで、次の SQL を実行しようとしています。何が起きるかと、安全な直し方を答えてください。
+
+```sql
+DELETE FROM books;
+```
+
+### 問題3: エラーメッセージを読む（GRANT）
+
+2026年10月に新しく作ったプロジェクトで、`books` テーブルを SQL で作り、5.3 節のポリシーもすべて作りました。ところが supabase-js で読むと、次のエラーが返ってきます。原因と直し方を答えてください。
+
+```text
+error: { code: '42501', details: null, hint: null, message: 'permission denied for table books' }
+```
+
+### 問題4: エラーが無いのに空っぽ（RLS）
+
+supabase-js で `books` を読むと、`error` は `null` なのに `data` が `[]`（空の配列）です。考えられる原因を2つ挙げ、それぞれをどう確かめるかを答えてください。
+
+### 問題5: キーの置き方（セキュリティ）
+
+次の (a)〜(d) のうち、**やってはいけない**ものをすべて選んでください。
+
+- (a) `.env.local` に `NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_...` と書く
+- (b) `.env.local` に `NEXT_PUBLIC_SUPABASE_SECRET_KEY=sb_secret_...` と書く
+- (c) サーバー側の処理だけで使うため、`.env.local` に `SUPABASE_SECRET_KEY=sb_secret_...` と書く
+- (d) チームで共有するために、`.env.local` を GitHub の公開リポジトリにコミットする
+
+### 問題6: 3つのパターンを書き分ける（supabase-js）
+
+読書状態が `reading`（読書中）の本の題名を、題名の順に1行ずつ `- こころ` のような形で表示するスクリプト `q6-reading.ts` を書いてください。読み込みに失敗したときはエラーメッセージを、1冊も無いときは「読書中の本はありません」と表示します。
+
+### 問題7: INSERT のポリシー（USING と WITH CHECK）
+
+次の SQL を実行すると、エラーになります。なぜエラーになるのかと、正しい書き方を答えてください。
+
+```sql
+CREATE POLICY "bad insert" ON books FOR INSERT USING (true);
+```
+
+### 解答と解説
+
+#### 問題1 の解答
+
+```sql
+-- rating が 4 以上の本だけを取り出し、評価の高い順、同じ評価なら出版日の古い順に並べる
+SELECT title, rating
+FROM books
+WHERE rating >= 4
+ORDER BY rating DESC, published_date;
+```
+
+```text
+     title      | rating
+----------------+--------
+ こころ         |      5
+ ノルウェイの森 |      5
+ 人間失格       |      4
+ コンビニ人間   |      4
+(4 rows)
+```
+
+- `WHERE rating >= 4` で「4以上」に絞り、`ORDER BY rating DESC` で「大きい順」にします（`DESC` を付けないと小さい順）。
+- `ORDER BY` はカンマで区切ると「1つ目が同じなら2つ目で比べる」という意味になります。評価5の「こころ」（1914年）と「ノルウェイの森」（1987年）は、出版日の古い順に並びました。
+- 評価が NULL の「銀河鉄道の夜」は、`NULL >= 4` が true にならないので出てきません。
+
+#### 問題2 の解答
+
+`WHERE` が無いので、**全部の本（5冊）が削除されます**。しかも元に戻す命令はありません（図5-3・図5-4）。次のように、先に SELECT で対象を確かめてから、同じ条件で DELETE します。
+
+```sql
+-- まず、消す予定の行が1行だけかを確かめる
+SELECT id, title FROM books WHERE title = '銀河鉄道の夜';
+
+-- 確かめた条件をそのまま付けて削除する
+DELETE FROM books WHERE title = '銀河鉄道の夜';
+```
+
+- 実行後のメッセージが `DELETE 1` であることも確認しましょう。同じ題名の本が複数あるかもしれないときは、SELECT で確かめた `id` を使って `WHERE id = '...'` と指定するのが確実です。
+
+#### 問題3 の解答
+
+**原因:** テーブルが Data API に公開されていません（GRANT がない）。2026年5月30日以降に作ったプロジェクトでは、新しく作ったテーブルは自動では公開されないためです。RLS のポリシー（図5-9 の関門2）より手前の、関門1で止まっています。
+
+**直し方:** 4.3.1 節の GRANT を実行します。
+
+```sql
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.books TO anon;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.books TO authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.books TO service_role;
+```
+
+- 同じ `42501` でも、メッセージが `new row violates row-level security policy` なら原因は RLS のポリシー側です。コードの番号だけでなく、英文のメッセージまで読んで区別しましょう。
+
+#### 問題4 の解答
+
+1. **RLS の SELECT ポリシーが無い（または条件が合わない）**: RLS はポリシーが無いと全行を隠し、エラーは出しません。SQL Editor で `SELECT * FROM books;` を実行して行が見えるなら、こちらが原因です。`SELECT policyname, cmd, qual FROM pg_policies WHERE tablename = 'books';` で、`cmd` が `SELECT` のポリシーがあるかを確かめます。
+2. **そもそも条件に合う行が無い**: テーブルが空（8.1 節のデータを入れていない）か、`.eq('status', 'readng')` のように条件の値を打ち間違えている場合です。SQL Editor で同じ条件の SELECT を実行して確かめます。
+
+- どちらも「`error` が `null` の0件」なので、`error` だけを見ていても気づけません（図5-13 の②、図5-14）。
+
+#### 問題5 の解答
+
+**(b) と (d)** です。
+
+- (b): 秘密キーに `NEXT_PUBLIC_` を付けると、ブラウザ向けのファイルに埋め込まれて全世界に公開されます。RLS も素通りするので、だれでも全データを消せてしまいます（図5-7）。
+- (d): `.env.local` は、公開用キーしか書いていなくても Git にコミットしません。`.gitignore` の `.env*.local` で除外されているのはそのためです。チームで共有したいときは、変数名だけを書いた見本ファイル（例: `.env.example`）を用意し、値は個別に渡します。
+- (a) は本書の標準の書き方、(c) は「サーバー側だけで使う」なら正しい置き方です（本書のアプリでは秘密キーは使いません）。
+
+#### 問題6 の解答
+
+```ts
+// q6-reading.ts : 読書中の本の題名を表示する
+// 実行方法: node --env-file=.env.local q6-reading.ts
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
+
+// status が reading の本の title だけを、title の順に取り出す
+const { data, error } = await supabase
+  .from('books')
+  .select('title')
+  .eq('status', 'reading')
+  .order('title');
+
+// ① 失敗 → ② 0件 → ③ 1件以上 の順に調べる
+if (error) {
+  console.error('読み込みに失敗しました:', error.message);
+} else if (data.length === 0) {
+  console.log('読書中の本はありません');
+} else {
+  for (const book of data) {
+    console.log(`- ${book.title}`);
+  }
+}
+```
+
+**▼ 実行結果**（上は 8.1 節のサンプル5冊が入った状態、下は「こころ」を読了に変えて読書中の本を無くした状態で実行した実際の出力）
+
+```text
+$ node --env-file=.env.local q6-reading.ts
+- こころ
+
+$ node --env-file=.env.local q6-reading.ts
+読書中の本はありません
+```
+
+- 図5-13 の3パターン（失敗・0件・行がある）を、`if` → `else if` → `else` の順で書き分けるのがポイントです。`error` を最初に調べるので、`data` が `null` のときに `data.length` を読んでしまう心配がありません。
+- `for (const book of data)` は、配列の要素を1つずつ `book` に入れて繰り返す書き方です。
+
+#### 問題7 の解答
+
+実際に実行すると、次のエラーになります。
+
+```text
+ERROR:  only WITH CHECK expression allowed for INSERT
+```
+
+INSERT は「まだ存在しない、これから書き込む行」を調べる操作なので、「既存の行のうちどれを対象にするか」を決める `USING` は使えません。`WITH CHECK` で書きます（図5-11）。
+
+```sql
+-- INSERT のポリシーは WITH CHECK で書く
+CREATE POLICY "Allow public insert access"
+  ON books
+  FOR INSERT
+  WITH CHECK (true);
+```
+
+- 覚え方: **SELECT・DELETE は USING だけ、INSERT は WITH CHECK だけ、UPDATE は両方**。
 
 ---
 
@@ -4454,7 +6206,7 @@ ALTER TABLE books ALTER COLUMN rating TYPE smallint;
 1. Supabase アカウントを作成し、プロジェクトをセットアップした
 2. リレーショナルデータベースの基礎を学んだ
 3. 書籍管理アプリの `books` テーブルを設計・作成した
-4. RLS を設定してセキュリティを確保した
+4. GRANT でテーブルを Data API に公開し、RLS で「どの行を触れるか」を設定した
 5. Supabase クライアントをセットアップした
 6. CRUD の全操作（SELECT / INSERT / UPDATE / DELETE）を学んだ
 7. テストデータを投入してデータベースの動作を確認した
