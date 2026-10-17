@@ -3031,12 +3031,14 @@ Supabase に接続するためのクライアントを作成します。
 
 **ステップ 1: ファイルの作成**
 
-`src/lib/supabase.ts` ファイルを作成します。
+`lib/supabase.ts` ファイルを作成します（この教材では `src/` フォルダを使わず、`app/`・`components/`・`lib/` をプロジェクト直下に置きます）。
+
+> **注意:** ここで作るのは、この章で接続を確かめるための「1ファイル版」です。第6章では、Server Component 用の `lib/supabase/server.ts` と Client Component 用の `lib/supabase/client.ts` の2つに分けて作り直し、第7章以降はその2つを使います。
 
 ```bash
 # mkdir -p : 中間ディレクトリも含めて作る（既にあってもエラーにならない）
-# src/lib  : srcの下にlibディレクトリを作るパス
-mkdir -p src/lib
+# lib      : プロジェクト直下に lib ディレクトリを作るパス
+mkdir -p lib
 ```
 
 **ステップ 2: クライアントコードの記述**
@@ -3045,7 +3047,7 @@ mkdir -p src/lib
 
 ```typescript
 // ============================================================================
-// ファイルパス: src/lib/supabase.ts
+// ファイルパス: lib/supabase.ts
 // 役割      : アプリ全体で使う「Supabaseクライアント」を1個だけ作って共有する
 // ----------------------------------------------------------------------------
 // このファイルを作っておくと、他のファイルから
@@ -3062,8 +3064,8 @@ import { createClient } from '@supabase/supabase-js';
 // (2) DBスキーマから自動生成した型を取り込む
 //     `import type` は「型情報だけ取り込み、実行時のJSには残さない」記法
 //     Database はテーブル定義から自動生成された型（後述）
-//     @ は src/ を表すパスエイリアス（tsconfig.json の paths で設定済み）
-//     よって @/types/supabase は src/types/supabase.ts を指す
+//     @ はプロジェクト直下を表すパスエイリアス（tsconfig.json の paths で設定済み）
+//     よって @/types/supabase は types/supabase.ts を指す
 import type { Database } from '@/types/supabase';
 
 // (3) 環境変数から接続情報を取得
@@ -3122,7 +3124,7 @@ import type { Database } from '@/types/supabase';
 
 - `import { createClient } from '@supabase/supabase-js'` は、Supabaseの公式SDKから「クライアントを作る関数」だけを取り込む書き方です（名前付きインポート）。
 - `import type { Database }` は「**型情報だけ**を取り込む」書き方で、実行時のJavaScriptには残りません。`Database` はテーブル定義から自動生成した型です（このあとの 6.4 で作ります）。
-- `@/types/supabase` の `@` は「`src/` フォルダ」を指す近道（パスエイリアス）で、`src/types/supabase.ts` を意味します。
+- `@/types/supabase` の `@` は「プロジェクト直下」を指す近道（パスエイリアス）で、`types/supabase.ts` を意味します。
 
 > **用語:** **import** = 別ファイルやパッケージの機能を「持ち込む」命令。**SDK** = ある機能を使うための道具一式（ここではSupabase操作用のライブラリ）。
 
@@ -3210,7 +3212,7 @@ npx supabase login
 
 **ステップ 3: 型定義ファイルの生成**
 
-> **▼ このコードがやること（先に日本語で）:** データベースのテーブル定義を読み取り、それに対応する**TypeScriptの型定義を自動で作って `src/types/supabase.ts` に書き出す**コマンドです。これを実行しておくと、コードで `books` のカラム名を間違えたときにエディタが教えてくれるようになります。`--project-id` の部分は自分のプロジェクトIDに置き換えるのを忘れないでください。
+> **▼ このコードがやること（先に日本語で）:** データベースのテーブル定義を読み取り、それに対応する**TypeScriptの型定義を自動で作って `types/supabase.ts` に書き出す**コマンドです。これを実行しておくと、コードで `books` のカラム名を間違えたときにエディタが教えてくれるようになります。`--project-id` の部分は自分のプロジェクトIDに置き換えるのを忘れないでください。
 
 ```bash
 # プロジェクトのリファレンス ID を確認
@@ -3220,8 +3222,8 @@ npx supabase login
 # npx supabase gen types typescript : DBスキーマからTSの型定義を生成するサブコマンド
 # --project-id "..."   : 対象のプロジェクトID（自分のものに置き換え）
 # --schema public      : publicスキーマのテーブルを対象にする（標準のスキーマ名）
-# > src/types/supabase.ts : 標準出力をファイルにリダイレクト（ファイルが上書きされる）
-npx supabase gen types typescript --project-id "あなたのプロジェクトID" --schema public > src/types/supabase.ts
+# > types/supabase.ts : 標準出力をファイルにリダイレクト（ファイルが上書きされる）
+npx supabase gen types typescript --project-id "あなたのプロジェクトID" --schema public > types/supabase.ts
 ```
 
 > **注意:** `あなたのプロジェクトID` は Supabase Dashboard の URL に含まれる英数字の文字列です。
@@ -3231,16 +3233,16 @@ npx supabase gen types typescript --project-id "あなたのプロジェクトID
 事前にディレクトリを作成しておく必要があります:
 
 ```bash
-# src/types ディレクトリがなければ作る
-mkdir -p src/types
+# types ディレクトリがなければ作る
+mkdir -p types
 ```
 
 **ステップ 5: 生成される型定義ファイルの確認**
 
-自動生成された `src/types/supabase.ts` は以下のような内容になります（一部抜粋）:
+自動生成された `types/supabase.ts` は以下のような内容になります（一部抜粋）:
 
 ```typescript
-// src/types/supabase.ts
+// types/supabase.ts
 // このファイルは自動生成されます。手動で編集しないでください。
 
 // Json型 : PostgreSQLのjsonb等で扱える値の型を表現
@@ -3357,12 +3359,12 @@ export type Database = {
 > **▼ このコードがやること（先に日本語で）:** 自動生成された長い型（`Database['public']['Tables']['books']['Row']` など）に、`Book` や `BookInsert` といった**短い別名（エイリアス）を付けてまとめる**ファイルです。こうしておくと、各ファイルで毎回長い型名を書かずに済みます。あわせて、読書状態の3つの値だけを許す型と、その**日本語ラベル**も用意しています。
 
 ```typescript
-// src/types/book.ts
+// types/book.ts
 // books テーブル専用の型エイリアスをまとめたファイル
 
 // 自動生成された Database 型を取り込む
 // import type : 型だけ取り込む（実行時のコードには出力されない）
-// './supabase' は同じ src/types フォルダの supabase.ts
+// './supabase' は同じ types フォルダの supabase.ts
 import type { Database } from './supabase';
 
 // books テーブルの型エイリアス
@@ -3404,7 +3406,7 @@ export const BOOK_STATUS_LABELS: Record<BookStatus, string> = {
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "gen:types": "supabase gen types typescript --project-id \"あなたのプロジェクトID\" --schema public > src/types/supabase.ts"
+    "gen:types": "supabase gen types typescript --project-id \"あなたのプロジェクトID\" --schema public > types/supabase.ts"
   }
 }
 ```
@@ -3414,7 +3416,7 @@ export const BOOK_STATUS_LABELS: Record<BookStatus, string> = {
 > - `supabase gen types typescript` : Supabase CLI のサブコマンド。TypeScriptの型を生成
 > - `--project-id "..."` : 対象プロジェクトIDを指定
 > - `--schema public` : publicスキーマを対象に
-> - `> src/types/supabase.ts` : 出力先ファイル（リダイレクト）
+> - `> types/supabase.ts` : 出力先ファイル（リダイレクト）
 > - JSON内のダブルクォートはエスケープ（`\"`）が必要
 
 これにより、テーブル定義を変更した後は以下のコマンドで型を再生成できます:
@@ -5855,7 +5857,7 @@ interface Book {
 ```
 
 ```typescript
-// ✅ 良い例: 自動生成された型（6.4 で作った src/types/book.ts）を取り込んで使う
+// ✅ 良い例: 自動生成された型（6.4 で作った types/book.ts）を取り込んで使う
 // Book の中身は Database['public']['Tables']['books']['Row'] と同じで、id は string になっている
 import type { Book } from '@/types/book';
 ```
