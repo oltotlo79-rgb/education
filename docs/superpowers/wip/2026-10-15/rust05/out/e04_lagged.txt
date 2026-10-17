@@ -1,0 +1,6 @@
+   Compiling async_lab v0.1.0 (...\async_lab)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.75s
+     Running `target\debug\e04_lagged.exe`
+追いつけず 3 件を読み飛ばしました
+受け取り: 4
+受け取り: 5

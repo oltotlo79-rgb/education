@@ -1,0 +1,6 @@
+   Compiling practice v0.1.0 (C:\Users\you\rust-study\practice)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.34s
+     Running `target\debug\practice.exe`
+memo\today.txt
+memo\tomorrow.txt
+[exit=0]

@@ -1,0 +1,180 @@
+
+===== GET /health
+HTTP/1.1 200 OK
+{"status":"ok"}
+
+===== GET / (未ログイン: 案内ページ) と CSS アセット
+<link rel="stylesheet" href="/_topcoat/assets/style-e9b983efabcfc6c3.css">
+HTTP/1.1 200 OK
+content-type: text/css
+cache-control: public, max-age=31536000, immutable
+
+===== GET /notes 未ログイン -> 303 /login
+HTTP/1.1 303 See Other
+location: /login
+set-cookie: flash=login_required; HttpOnly; SameSite=Lax; Path=/; Max-Age=300
+
+===== POST /signup 不正な入力 -> 400
+HTTP/1.1 400 Bad Request
+<p class="field-error">メールアドレスに @ がありません</p>
+<p class="field-error">パスワードは8文字以上にしてください</p>
+
+===== POST /signup alice -> 303 /notes + セッションのクッキー
+HTTP/1.1 303 See Other
+location: /notes
+set-cookie: __Host-session=IY3v56YtisMsg9AUVSg1rlGawqwpcLYZ49ySAL5IKp4%3D; HttpOnly; SameSite=Lax; Secure; Path=/; Max-Age=2592000
+set-cookie: flash=signed_up; HttpOnly; SameSite=Lax; Path=/; Max-Age=300
+
+===== GET /notes（フラッシュ『登録しました』）
+<p class="flash success" role="status">登録しました。ようこそ RustNote へ！</p>
+<h1>ノート</h1>
+<p class="empty">まだノートがありません。最初の1件を書いてみましょう。</p>
+
+===== POST /signup 同じメール -> 409
+HTTP/1.1 409 Conflict
+
+===== POST /logout -> 303 /login、ログイン画面にフラッシュ
+HTTP/1.1 303 See Other
+location: /login
+set-cookie: __Host-session=; HttpOnly; SameSite=Lax; Secure; Path=/; Max-Age=0; Expires=Fri, 17 Oct 2025 02:45:18 GMT
+set-cookie: flash=logged_out; HttpOnly; SameSite=Lax; Path=/; Max-Age=300
+<p class="flash success" role="status">ログアウトしました</p>
+
+===== POST /login パスワード違い -> 401
+HTTP/1.1 401 Unauthorized
+
+===== POST /login 正しい -> 303 /notes
+HTTP/1.1 303 See Other
+location: /notes
+set-cookie: __Host-session=ylEnq5sFkrimsGS169uGrAy4RcYNInhMUqUOTh3-z6M%3D; HttpOnly; SameSite=Lax; Secure; Path=/; Max-Age=2592000
+set-cookie: flash=logged_in; HttpOnly; SameSite=Lax; Path=/; Max-Age=300
+
+===== POST /notes 空タイトル -> 400
+HTTP/1.1 400 Bad Request
+<p class="field-error">タイトルを入力してください</p>
+
+===== POST /notes 作成 -> 303 /notes/1
+HTTP/1.1 303 See Other
+location: /notes/1
+set-cookie: flash=note_created; HttpOnly; SameSite=Lax; Path=/; Max-Age=300
+
+===== GET /notes/1（エスケープ・フラッシュ）
+<p class="flash success" role="status">ノートを作成しました</p>
+<h1>買い物 &lt;b&gt;リスト&lt;/b&gt;</h1>
+<div class="note-body">牛乳 &lt;script&gt;alert(1)&lt;/script&gt;</div>
+
+===== もう2件作成して一覧と検索
+<a href="/notes/3">100% やる</a>
+<a href="/notes/2">Rust の勉強</a>
+<a href="/notes/1">買い物 &lt;b&gt;リスト&lt;/b&gt;</a>
+<span>1 / 1 ページ（全3件）</span>
+--- ?q=所有権
+<a href="/notes/2">Rust の勉強</a>
+<span>1 / 1 ページ（全1件）</span>
+--- ?q=100%（% は普通の文字として検索）
+<a href="/notes/3">100% やる</a>
+--- ?page=abc -> 400
+400
+
+===== GET /notes/1/edit（version=1 が埋め込まれている）
+<input type="hidden" name="version" value="1">
+
+===== POST /notes/1/edit version=1 -> 303
+HTTP/1.1 303 See Other
+location: /notes/1
+set-cookie: flash=note_updated; HttpOnly; SameSite=Lax; Path=/; Max-Age=300
+
+===== POST /notes/1/edit 古い version=1 -> 409（最新の version=2 で再表示）
+HTTP/1.1 409 Conflict
+<p class="form-notice">ほかの画面で先に更新されました。読み込み直してください。保存されている最新のタイトルは「買い物（更新）」です。この内容で上書きする場合は、もう一度「保存する」を押してください。</p>
+<input type="hidden" name="version" value="2">
+
+===== POST /notes/1/toggle -> 303 /notes/1、完了バッジ
+HTTP/1.1 303 See Other
+location: /notes/1
+set-cookie: flash=note_toggled; HttpOnly; SameSite=Lax; Path=/; Max-Age=300
+<span class="badge">完了</span>
+
+===== bob を登録。alice のノートは bob から 404
+GET  /notes/1           -> 404
+GET  /notes/1/edit      -> 404
+POST /notes/1/edit      -> 404
+POST /notes/1/toggle    -> 404
+POST /notes/1/delete    -> 404
+--- 404 の画面
+<h1>404 Not Found</h1>
+<p>ページが見つかりません</p>
+
+===== CSRF: 他サイトからの POST（Sec-Fetch-Site: cross-site）-> 403
+HTTP/1.1 403 Forbidden
+--- Origin が違う（Sec-Fetch-Site なし）-> 403
+HTTP/1.1 403 Forbidden
+
+===== POST /notes/1/delete -> 303 /notes、その後 404
+HTTP/1.1 303 See Other
+location: /notes
+set-cookie: flash=note_deleted; HttpOnly; SameSite=Lax; Path=/; Max-Age=300
+GET /notes/1 -> 404
+
+===== 存在しない URL・不正な ID -> 404
+/nope        -> 404
+/notes/abc   -> 404
+/notes/0     -> 404
+
+===== POST /logout -> 303、古いセッションでは /notes に入れない
+HTTP/1.1 303 See Other
+location: /login
+set-cookie: flash=logged_out; HttpOnly; SameSite=Lax; Path=/; Max-Age=300
+set-cookie: __Host-session=; HttpOnly; SameSite=Lax; Secure; Path=/; Max-Age=0; Expires=Fri, 17 Oct 2025 02:45:25 GMT
+GET /notes -> 303
+
+===== DB の中身（sessions / schema_migrations）
+(サーバーのログを参照)
+
+===== サーバーのログ（標準エラー出力）
+マイグレーションを適用しました: 0001_users
+マイグレーションを適用しました: 0002_notes
+マイグレーションを適用しました: 0003_sessions
+RustNote を起動しました: http://127.0.0.1:3300
+GET / -> 200 OK (782.6µs)
+GET /_topcoat/assets/style-e9b983efabcfc6c3.css -> 200 OK (379.4µs)
+GET /notes -> 303 See Other (266.1µs)
+POST /signup -> 400 Bad Request (439.2µs)
+POST /signup -> 400 Bad Request (326.2µs)
+POST /signup -> 303 See Other (388.7353ms)
+GET /notes -> 200 OK (3.2532ms)
+POST /signup -> 409 Conflict (375.9065ms)
+POST /logout -> 303 See Other (6.0236ms)
+GET /login -> 200 OK (392.8µs)
+POST /login -> 401 Unauthorized (398.4735ms)
+POST /login -> 303 See Other (405.8562ms)
+POST /notes -> 400 Bad Request (6.1189ms)
+POST /notes -> 400 Bad Request (4.986ms)
+POST /notes -> 303 See Other (8.8032ms)
+GET /notes/1 -> 200 OK (6.9729ms)
+POST /notes -> 303 See Other (8.822ms)
+POST /notes -> 303 See Other (8.02ms)
+GET /notes -> 200 OK (4.8586ms)
+GET /notes -> 200 OK (5.2732ms)
+GET /notes -> 200 OK (4.2308ms)
+GET /notes -> 400 Bad Request (2.3895ms)
+GET /notes/1/edit -> 200 OK (4.0708ms)
+POST /notes/1/edit -> 303 See Other (26.2849ms)
+POST /notes/1/edit -> 409 Conflict (7.9545ms)
+POST /notes/1/edit -> 409 Conflict (6.8239ms)
+POST /notes/1/toggle -> 303 See Other (10.7682ms)
+GET /notes/1 -> 200 OK (3.9675ms)
+POST /signup -> 303 See Other (625.1699ms)
+GET /notes/1 -> 404 Not Found (4.5801ms)
+GET /notes/1/edit -> 404 Not Found (4.5053ms)
+POST /notes/1/edit -> 404 Not Found (3.6959ms)
+POST /notes/1/toggle -> 404 Not Found (3.362ms)
+POST /notes/1/delete -> 404 Not Found (3.6655ms)
+GET /notes/1 -> 404 Not Found (3.7756ms)
+POST /notes/1/delete -> 303 See Other (21.1996ms)
+GET /notes/1 -> 404 Not Found (4.3518ms)
+GET /nope -> 404 Not Found (2.6098ms)
+GET /notes/abc -> 404 Not Found (2.5925ms)
+GET /notes/0 -> 404 Not Found (3.0238ms)
+POST /logout -> 303 See Other (21.1049ms)
+GET /notes -> 303 See Other (329.4µs)

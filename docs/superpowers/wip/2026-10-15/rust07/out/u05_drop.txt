@@ -1,0 +1,8 @@
+① 始める前: a = 8, b = 8
+② tx の中: tx = 9, b = 8
+   a.is_autocommit() = false
+③ drop の後: a = 8, b = 8
+   a.is_autocommit() = true
+④ save_two("1件目", "") = Err(SqliteFailure(275, "CHECK constraint failed: length(title) BETWEEN 1 AND 80"))
+   その後: a = 8
+⑤ save_two("1件目", "2件目") の後: a = 10, b = 10

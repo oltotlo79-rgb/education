@@ -15,7 +15,7 @@ export default function BookNotFound() {
       </p>
       {/* 一覧ページへ戻るボタン */}
       <Link
-        href="/books"
+        href="/"
         className="mt-6 inline-block rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
       >
         一覧に戻る

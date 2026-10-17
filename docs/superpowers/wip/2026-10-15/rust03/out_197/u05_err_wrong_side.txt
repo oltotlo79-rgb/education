@@ -1,0 +1,14 @@
+error[E0621]: explicit lifetime required in the type of `prefix`
+ --> src\bin\u05_err_wrong_side.rs:3:9
+  |
+3 |         prefix
+  |         ^^^^^^ lifetime `'a` required
+  |
+help: add explicit lifetime `'a` to the type of `prefix`
+  |
+1 | fn after_prefix<'a>(text: &'a str, prefix: &'a str) -> &'a str {
+  |                                             ++
+
+For more information about this error, try `rustc --explain E0621`.
+error: could not compile `ownership-lab` (bin "u05_err_wrong_side") due to 1 previous error
+exit=101

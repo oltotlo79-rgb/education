@@ -1,0 +1,16 @@
+error[E0072]: recursive type `List` has infinite size
+ --> src\bin\u08_err_recursive.rs:1:1
+  |
+1 | enum List {
+  | ^^^^^^^^^
+2 |     Cons(i32, List),
+  |               ---- recursive without indirection
+  |
+help: insert some indirection (e.g., a `Box`, `Rc`, or `&`) to break the cycle
+  |
+2 |     Cons(i32, Box<List>),
+  |               ++++    +
+
+For more information about this error, try `rustc --explain E0072`.
+error: could not compile `ownership-lab` (bin "u08_err_recursive") due to 1 previous error
+exit=101

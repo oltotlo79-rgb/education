@@ -1,17 +1,27 @@
+// 読書ステータスとして使ってよい値を、この3つだけに限定する
+type Status = "want_to_read" | "reading" | "completed";
+
 // 本のデータの「形」を決める（TypeScript の型。第2章で詳しく学びます）
 type Book = {
   title: string;
-  isRead: boolean;
+  status: Status;
 };
 
-// 決めた形に合わせて、本のデータを2冊ぶん作る
+// ステータスの値と、画面に出す日本語の対応表
+const labels = {
+  want_to_read: "読みたい",
+  reading: "読書中",
+  completed: "読了",
+};
+
+// 決めた形に合わせて、本のデータを3冊ぶん作る
 const books: Book[] = [
-  { title: "リーダブルコード", isRead: true },
-  { title: "達人プログラマー", isRead: false },
+  { title: "リーダブルコード", status: "completed" },
+  { title: "達人プログラマー", status: "reading" },
+  { title: "プログラミング TypeScript", status: "want_to_read" },
 ];
 
-// 1冊ずつ取り出して、読んだかどうかを表示する
+// 1冊ずつ取り出して、タイトルとステータスを表示する
 for (const book of books) {
-  const status = book.isRead ? "読了" : "未読";
-  console.log(`${book.title}: ${status}`);
+  console.log(`${book.title}: ${labels[book.status]}`);
 }

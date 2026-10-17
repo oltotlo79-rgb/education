@@ -1,0 +1,33 @@
+   Compiling note_domain v0.1.0 (...\note_domain)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.78s
+     Running unittests src\lib.rs (target\debug\deps\note_domain-5281fd8cc8224548.exe)
+
+running 8 tests
+test status::tests::only_draft_is_editable ... ok
+test status::tests::publish_then_archive_then_restore ... ok
+test status::tests::transition_table ... ok
+test title::tests::boundary_80_and_81_chars ... ok
+test title::tests::rejects_empty_and_spaces_only ... ok
+test title::tests::trims_spaces ... ok
+test title::tests::unwrap_on_empty_panics - should panic ... ok
+test title::tests::single_char_is_ok ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\note_flow.rs (target\debug\deps\note_flow-e135a213709d78f8.exe)
+
+running 2 tests
+test error_message_for_too_long_title ... ok
+test create_publish_and_fail_to_publish_archived ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests note_domain
+
+running 2 tests
+test src\status.rs - status::NoteStatus::apply (line 40) ... ok
+test src\title.rs - title::NoteTitle::parse (line 35) ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+all doctests ran in 0.57s; merged doctests compilation took 0.39s

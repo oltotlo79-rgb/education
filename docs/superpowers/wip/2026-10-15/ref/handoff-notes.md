@@ -1,4 +1,61 @@
-# 中断時点の引き継ぎメモ（2026-10-15）
+# 中断時点の引き継ぎメモ
+
+## 最新の状況（2026-10-17、2回目の停止時点）— まずここを読む
+
+### main に反映済み（完成）
+- next/: **全12章（00〜11）完成**。PDF も再生成済み。
+- Rust/: **00・02・03・04 巻**（Markdown で全面書き直し、PDF は `Rust/pdf/`。旧 `Rust/*.pdf` は該当巻だけ削除済み）。
+- `Rust/rustnote/`: RustNote アプリの完全なソース（Rust 1.99.0 で fmt / clippy / test 41件 成功。Secret 型でトークンを隠す修正済み）。
+
+### 未完成（本文は未執筆。素材だけこのフォルダにある）
+| 巻 | 状態 | 素材（このフォルダ内） |
+|---|---|---|
+| Rust 01 環境構築 | 本文 0。実出力 約60件・練習プロジェクト取得済み | `rust01/`（out/, rust-study/） |
+| Rust 05 async | 本文 0。UNIT 01〜09 の例31本と実出力、エラー例19本 | `rust05/`（async_lab/, errs/, out/） |
+| Rust 06 HTTP/Topcoat | 本文 0。UNIT 01 と 02 の一部の実出力 | `rust06/`（web_lab/, out/） |
+| Rust 07 Turso/libSQL | 本文 0。UNIT 01〜07 のコードと実出力44件 | `rust07/`（sql-lab/, out/, errs/） |
+| Rust 08 認証認可 | 本文 0。UNIT 01 の例1本、Better Auth 1.7.10 のデモ結果（下記） | `rust08/` |
+| Rust 09 RustNote 設計 | 本文 0。ほぼ全単元の実出力 | `rust09/`（out/, rustnote_lab/, note_layers/ ほか） |
+| Rust 10 CRUD | 本文 0。RustNote のコピーと起動確認、PowerShell の補助スクリプト | `rust10/` |
+| Rust 11 品質保証 | 本文 0。UNIT 01 のテストと実出力 | `rust11/`（qa_lab/, log-test-baseline.txt） |
+| Rust 12 Fly.io | 本文 0。素材なし（読んだのみ） | — |
+| Rust 13 完全コード | 未着手 | — |
+
+共通の材料: `ref/rust-volume-brief.md`（執筆ブリーフ）、`ref/decisions.md`（統一の決定事項）、`ref/topcoat-0.10-reference.md`、`ref/rustnote-design-notes.md`、`ref/check_md.py`（品質チェック）、`ref/publish.sh`（main と作業ブランチへ反映するスクリプト。パスはこの PC 用）。
+
+### 担当が見つけた事実（再開時に本文へ反映する）
+- Rust 1.99: `TryFrom` 失敗の文言が「number too large/small to fit in target type」に変更。RefCell の二重借用 panic は「RefCell already borrowed」。
+- `.await` の前に `drop(guard)` しても MutexGuard の Send エラーは消えない（`{}` で囲むか同期関数に分ける）。
+- libsql 0.10 のローカル DB は foreign_keys が既定で ON。bind の値が足りないと NULL 扱いでエラーにならない。`row.get` の型違いは unreachable の panic。未コミットの transaction は drop でロールバック（第3巻の予告を確認済み）。Windows ARM64 の debug ビルドで remote 接続の execute が main スレッドのスタックオーバーフロー（release か tokio::spawn で回避）。
+- reqwest 0.13 は Windows ARM64 で clang-cl が必要。閉じたポートへの接続は約2秒後に os error 10061。
+- Topcoat: `start` は起動時に何も表示しない。既定で `vary` ヘッダーが付く。Ctrl+C で新規受付停止→処理中を最大30秒待つ。`topcoat dev` は dev.js を差し込む。1.97 でのビルドエラー文「rustc 1.97.1 is not supported ... topcoat@0.10.0 requires rustc 1.98」。
+- Turso CLI は Windows 版がなく WSL が必要。トークンの `--expiration` は `Nd` か `never`。Edge replica は新規非推奨、embedded replica は継続。PITR は `--from-db --timestamp`。Turso Cloud では `PRAGMA user_version` 読み取り専用。
+- flyctl の公式 install.ps1 は常に x64 版（ARM64 ではエミュレーション）。ARM64 では rustup-init が VS を自動導入できず、Build Tools for Visual Studio 2026 の「MSVC Build Tools for ARM64/ARM64EC」を手動で選ぶ。
+- PowerShell 5.1: 日本語は `[Console]::OutputEncoding = UTF8` を最初の curl より前に。.ps1 は BOM 付き UTF-8 でないと Shift-JIS 扱い。Git の MinGW curl では日本語の form 値が化けるので `[uri]::EscapeDataString` で先にエンコード。
+- Better Auth 1.7.10 デモ（rust08 担当）: 登録 200（cookie `better-auth.session_token`、HttpOnly、SameSite=Lax、7日）、重複 422、ログイン失敗 401（未登録と同じ）、10秒で4回目 429、Origin 不一致 403、DB の session.token は生のトークン、password は scrypt。
+- OWASP Argon2id: m=19456,t=2,p=1（argon2 0.6 の既定と一致）。NIST SP 800-63B-4: 単要素パスワードは15文字以上。
+
+### RustNote 実装の改善候補（担当が指摘。未対応）
+1. 検索欄に label / aria-label がない。エラー表示が aria-describedby で入力欄と結び付いていない。入力欄の枠線 #e2e8f0 のコントラストが 1.23:1（非テキストは 3:1 必要）。
+2. 登録時の 409「登録済み」でメールの存在が分かる（ログインはダミーハッシュで対策済み）。ログイン/登録のレート制限なし。Argon2 の同時実行数の上限なし。パスワード最小 8 文字（NIST は単要素なら15）。DUMMY_HASH の初回生成で1回だけ遅い。セッションは固定30日でアイドルタイムアウトなし。
+3. `NoteTitle::parse` がゼロ幅スペースだけのタイトルを通す。最終ページより先で「まだノートがありません」と表示。削除に確認がない。絵文字で maxlength とサーバーの文字数が食い違う可能性。狭い画面用の CSS がない。全ページ同じ `<title>`。
+4. `/health` が `SELECT 1` だけ（DB ファイル消失でも 200）。`main.rs` がポート確保前に「起動しました」と表示。
+5. デプロイ: Dockerfile の既定 `DATABASE_URL=/data/rustnote.db` で secrets を忘れると一時ディスクで動く。起動時 migration は複数マシン同時起動で競合しうる・migration 単独コマンドがなく release_command を使えない。ci.yml の `actions/checkout@v7` は存在未確認、`.github/workflows/` に置かないと動かない。release-and-startup-errors.txt は古いビルドのログの可能性。
+6. RustNote のログは tracing ではなく eprintln!。
+
+### next/ の残る懸念（任意）
+- 第7章の `app/page.tsx` が独自に `<header>`・`<main>` を持つため、第6章の layout と合わせるとヘッダーが二重になる。
+- 第8章の BookForm は第7章と作りが違う（「更新版」として掲載）。
+
+### 作業中に起きた副作用（ユーザーへ報告済み）
+- rust08 担当が `taskkill /F /IM node.exe` を実行し、その時点で動いていた node.exe を全て強制終了した（自分の起動分以外も含む）。
+- ref 調査の下位エージェントが crates.io API へのリクエストの User-Agent にユーザーのメールアドレスを入れてしまった（その後は不使用）。
+- rust01 担当が誤って 1.98.0 ツールチェーンを入れ、削除済み。既定は stable 1.97.1 のまま、1.99.0 が追加インストール済み。
+- `%APPDATA%\create-next-app-nodejs\Config\config.json` が更新された（無害な既定値）。空フォルダ `C:	w-short` が残っている。
+
+---
+
+# 以下は 1回目の停止時（2026-10-15）の記録
 
 ## next/10-deployment.md
 - 本文は未編集（差分なし）。
@@ -22,8 +79,7 @@
 - 素材: scratchpad/next04/（bookapp 試作、ng 版、各種実出力）。
 - 他章影響: create-next-app 既定 cacheComponents: true で、loading.tsx/Suspense なしの動的ルートや export const revalidate が build 失敗。06〜08・10 で方針統一が必要。
 
-## next/07-crud-list-create.md — **完成（2026-10-16 に main へ反映済み、コミット e90d823）**
-- 仕上げで行ったこと: 連続する囲みの結合7か所を `<!-- -->` で分離、太字記号の閉じ忘れ1か所を修正、PDF 再生成（143p）と図13枚の目視確認。
+## next/07-crud-list-create.md — ほぼ完了（PDF 143p 生成済）
 - 追加: SVG 13（画面イメージ3、全てPNG確認済）、サンプル9（Node 25・tsc --strict）、つまずき8、章冒頭、8. 練習問題 7問、Supabase 2026 の GRANT 変更（42501）、publishable key、PGRST204、エラーコード表。
 - 既存修正: PGRST205、thenable の説明、catch に来ない件、error.tsx retry（16.3+）、useFormState→useActionState、Tailwind クラス名、リストの空行。
 - 未了: NG/OK の後の説明段落が次の囲みと同じ青枠に結合（見た目のみ）。

@@ -1,0 +1,5 @@
+① NULL → String: Err(NullValue)
+② 存在しない列 4: Err(NullValue)
+③ 2 → bool: Err(InvalidColumnType)
+④ execute で SELECT: Err(ExecuteReturnedRows)
+⑤ 999 番の行: false

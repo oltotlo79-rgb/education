@@ -1,0 +1,3 @@
+abc abc
+abcd
+exit=0

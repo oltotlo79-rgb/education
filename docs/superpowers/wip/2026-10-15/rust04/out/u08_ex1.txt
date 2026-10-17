@@ -1,0 +1,2 @@
+ハッシュの長さ: 18
+{"id":1,"email":"alice@example.com"}

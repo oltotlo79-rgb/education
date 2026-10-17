@@ -1,0 +1,19 @@
+   Compiling async_lab v0.1.0 (...\async_lab)
+error[E0382]: borrow of moved value: `title`
+ --> src\bin\e04_send_moved.rs:9:23
+  |
+6 |     let title = String::from("買い物メモ");
+  |         ----- move occurs because `title` has type `String`, which does not implement the `Copy` trait
+7 |     tx.send(title).await.unwrap();
+  |             ----- value moved here
+8 |     // 送ったあとで、もう一度 title を使おうとする
+9 |     println!("送ったもの: {title}");
+  |                            ^^^^^ value borrowed here after move
+  |
+help: consider cloning the value if the performance cost is acceptable
+  |
+7 |     tx.send(title.clone()).await.unwrap();
+  |                  ++++++++
+
+For more information about this error, try `rustc --explain E0382`.
+error: could not compile `async_lab` (bin "e04_send_moved") due to 1 previous error

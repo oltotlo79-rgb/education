@@ -1,0 +1,60 @@
+▲ Next.js 16.4.1 (Turbopack)
+- Environments: .env.local
+✓ Running next.config.ts took 26ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 933ms
+  Running TypeScript ...
+  Finished TypeScript in 1536ms ...
+  Collecting page data using 11 workers ...
+  Generating static pages using 11 workers (0/17) ...
+[RootLayout] サーバーで描画しました
+[RootLayout] サーバーで描画しました
+[RootLayout] サーバーで描画しました
+[server] SECRET_API_KEY = himitsu-12345
+[server] NEXT_PUBLIC_SITE_NAME = ほんだなアプリ
+[RootLayout] サーバーで描画しました
+[RootLayout] サーバーで描画しました
+[RootLayout] サーバーで描画しました
+  Generating static pages using 11 workers (4/17) 
+  Generating static pages using 11 workers (8/17) 
+[RootLayout] サーバーで描画しました
+[RootLayout] サーバーで描画しました
+catch で捕まえたもの: 読み込みに失敗しました
+[RootLayout] サーバーで描画しました
+[RootLayout] サーバーで描画しました
+[RootLayout] サーバーで描画しました
+[RootLayout] サーバーで描画しました
+[RootLayout] サーバーで描画しました
+[RootLayout] サーバーで描画しました
+  Generating static pages using 11 workers (12/17) 
+[RootLayout] サーバーで描画しました
+[WherePage] Server Component を実行しました
+[ClientLogger] 描画しました（実行場所: サーバー）
+✓ Generating static pages using 11 workers (17/17) in 386ms
+  Finalizing page optimization ...
+
+Route (app)           Revalidate  Expire
+┌ ○ /
+├ ○ /_not-found
+├ ƒ /books/[id]
+├ ƒ /clock
+├ ○ /env-check
+├ ○ /login
+├ ○ /mypage
+├ ○ /nav-demo
+├ ○ /news                     1m      1y
+├ ○ /ok-func
+├ ○ /ok-redirect
+├ ○ /ok-window
+├ ƒ /search
+├ ○ /shelf
+├ ƒ /slow
+└ ○ /where
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

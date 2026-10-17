@@ -1,0 +1,9 @@
+   Compiling async_lab v0.1.0 (...\async_lab)
+error[E0599]: no method named `status` found for opaque type `impl Future<Output = Result<Response, reqwest::Error>>` in the current scope
+ --> src\bin\e08_forgot_await.rs:6:29
+  |
+6 |     println!("{}", response.status());
+  |                             ^^^^^^ method not found in `impl Future<Output = Result<Response, reqwest::Error>>`
+
+For more information about this error, try `rustc --explain E0599`.
+error: could not compile `async_lab` (bin "e08_forgot_await") due to 1 previous error

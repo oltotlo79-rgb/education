@@ -1,0 +1,102 @@
+   Compiling windows_aarch64_msvc v0.52.6
+   Compiling shlex v2.0.1
+   Compiling find-msvc-tools v0.1.14
+   Compiling cfg-if v1.0.5
+   Compiling untrusted v0.9.0
+   Compiling getrandom v0.2.17
+   Compiling cc v1.8.0
+   Compiling windows-targets v0.52.6
+   Compiling windows-sys v0.52.0
+   Compiling ring v0.17.14
+warning: ring@0.17.14: Compiler family detection failed due to error: ToolNotFound: failed to find tool "clang": program not found (see https://docs.rs/cc/latest/cc/#compile-time-requirements for help)
+warning: ring@0.17.14: Compiler family detection failed due to error: ToolNotFound: failed to find tool "clang": program not found (see https://docs.rs/cc/latest/cc/#compile-time-requirements for help)
+warning: ring@0.17.14: Compiler family detection failed due to error: ToolNotFound: failed to find tool "clang": program not found (see https://docs.rs/cc/latest/cc/#compile-time-requirements for help)
+warning: ring@0.17.14: Compiler family detection failed due to error: ToolNotFound: failed to find tool "clang": program not found (see https://docs.rs/cc/latest/cc/#compile-time-requirements for help)
+error: failed to run custom build command for `ring v0.17.14`
+
+Caused by:
+  process didn't exit successfully: `target\debug\build\ring-1d47c9bd909157dd\build-script-build` (exit code: 1)
+  --- stdout
+  cargo:rerun-if-env-changed=CARGO_MANIFEST_DIR
+  cargo:rerun-if-env-changed=CARGO_PKG_NAME
+  cargo:rerun-if-env-changed=CARGO_PKG_VERSION_MAJOR
+  cargo:rerun-if-env-changed=CARGO_PKG_VERSION_MINOR
+  cargo:rerun-if-env-changed=CARGO_PKG_VERSION_PATCH
+  cargo:rerun-if-env-changed=CARGO_PKG_VERSION_PRE
+  cargo:rerun-if-env-changed=CARGO_MANIFEST_LINKS
+  cargo:rerun-if-env-changed=RING_PREGENERATE_ASM
+  cargo:rerun-if-env-changed=OUT_DIR
+  cargo:rerun-if-env-changed=CARGO_CFG_TARGET_ARCH
+  cargo:rerun-if-env-changed=CARGO_CFG_TARGET_OS
+  cargo:rerun-if-env-changed=CARGO_CFG_TARGET_ENV
+  cargo:rerun-if-env-changed=CARGO_CFG_TARGET_ENDIAN
+  cargo:rerun-if-env-changed=CC_PREFER_CLANG_CL_OVER_MSVC
+  CC_PREFER_CLANG_CL_OVER_MSVC = None
+  cargo:rerun-if-env-changed=VCINSTALLDIR
+  VCINSTALLDIR = None
+  cargo:rerun-if-env-changed=VSTEL_MSBuildProjectFullPath
+  VSTEL_MSBuildProjectFullPath = None
+  cargo:rerun-if-env-changed=VCToolsVersion
+  VCToolsVersion = None
+  cargo:rerun-if-env-changed=VSCMD_ARG_VCVARS_SPECTRE
+  VSCMD_ARG_VCVARS_SPECTRE = None
+  cargo:rerun-if-env-changed=WindowsSdkDir
+  WindowsSdkDir = None
+  cargo:rerun-if-env-changed=WindowsSDKVersion
+  WindowsSDKVersion = None
+  cargo:rerun-if-env-changed=LIB
+  LIB = None
+  PATH = Some(target\debug;target\debug\deps;...\Program Files\Git\usr\local\bin;C:\Program Files\Git\usr\bin;C:\Program Files\Git\usr\bin;C:\Program Files\Git\usr\bin;...\Program Files\ImageMagick-7.1.2-Q16-HDRI;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0;C:\Windows\System32\OpenSSH;C:\Program Files\Git\cmd;C:\Program Files\nodejs;C:\Program Files\Docker\Docker\resources\bin;C:\Program Files\GitHub CLI;C:\Program Files\ImageMagick-7.1.2-Q16-HDRI;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0;C:\Windows\System32\OpenSSH;C:\Program Files\Git\cmd;C:\Program Files\nodejs;C:\Program Files\Docker\Docker\resources\bin;...\Microsoft VS Code\bin;...\Androi;  d\Sdk\cmdline-tools\latest\bin;...\Program Files\Git\usr\bin\vendor_perl;C:\Program Files\Git\usr\bin\core_perl;...\bin)
+  cargo:rerun-if-env-changed=INCLUDE
+  INCLUDE = None
+  cargo:rerun-if-env-changed=CC_aarch64-pc-windows-msvc
+  CC_aarch64-pc-windows-msvc = None
+  cargo:rerun-if-env-changed=CC_aarch64_pc_windows_msvc
+  CC_aarch64_pc_windows_msvc = None
+  cargo:rerun-if-env-changed=HOST_CC
+  HOST_CC = None
+  cargo:rerun-if-env-changed=CC
+  CC = None
+  cargo:rerun-if-env-changed=CRATE_CC_NO_DEFAULTS
+  CRATE_CC_NO_DEFAULTS = None
+  cargo:rerun-if-env-changed=CFLAGS
+  CFLAGS = None
+  cargo:rerun-if-env-changed=HOST_CFLAGS
+  HOST_CFLAGS = None
+  cargo:rerun-if-env-changed=CFLAGS_aarch64_pc_windows_msvc
+  CFLAGS_aarch64_pc_windows_msvc = None
+  cargo:rerun-if-env-changed=CFLAGS_aarch64-pc-windows-msvc
+  CFLAGS_aarch64-pc-windows-msvc = None
+  cargo:rerun-if-env-changed=CC_ENABLE_DEBUG_OUTPUT
+  cargo:warning=Compiler family detection failed due to error: ToolNotFound: failed to find tool "clang": program not found (see https://docs.rs/cc/latest/cc/#compile-time-requirements for help)
+  cargo:rerun-if-env-changed=CRATE_CC_NO_DEFAULTS
+  CRATE_CC_NO_DEFAULTS = None
+  cargo:rerun-if-env-changed=CC_ENABLE_DEBUG_OUTPUT
+  cargo:warning=Compiler family detection failed due to error: ToolNotFound: failed to find tool "clang": program not found (see https://docs.rs/cc/latest/cc/#compile-time-requirements for help)
+  cargo:rerun-if-env-changed=CRATE_CC_NO_DEFAULTS
+  CRATE_CC_NO_DEFAULTS = None
+  cargo:rerun-if-env-changed=CFLAGS
+  CFLAGS = None
+  cargo:rerun-if-env-changed=HOST_CFLAGS
+  HOST_CFLAGS = None
+  cargo:rerun-if-env-changed=CFLAGS_aarch64_pc_windows_msvc
+  CFLAGS_aarch64_pc_windows_msvc = None
+  cargo:rerun-if-env-changed=CFLAGS_aarch64-pc-windows-msvc
+  CFLAGS_aarch64-pc-windows-msvc = None
+  cargo:rerun-if-env-changed=CFLAGS
+  CFLAGS = None
+  cargo:rerun-if-env-changed=HOST_CFLAGS
+  HOST_CFLAGS = None
+  cargo:rerun-if-env-changed=CFLAGS_aarch64_pc_windows_msvc
+  CFLAGS_aarch64_pc_windows_msvc = None
+  cargo:rerun-if-env-changed=CFLAGS_aarch64-pc-windows-msvc
+  CFLAGS_aarch64-pc-windows-msvc = None
+  cargo:warning=Compiler family detection failed due to error: ToolNotFound: failed to find tool "clang": program not found (see https://docs.rs/cc/latest/cc/#compile-time-requirements for help)
+  cargo:warning=Compiler family detection failed due to error: ToolNotFound: failed to find tool "clang": program not found (see https://docs.rs/cc/latest/cc/#compile-time-requirements for help)
+
+  --- stderr
+
+
+  error occurred in cc-rs: failed to find tool "clang": program not found (see https://docs.rs/cc/latest/cc/#compile-time-requirements for help)
+
+

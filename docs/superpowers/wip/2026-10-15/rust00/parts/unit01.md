@@ -373,7 +373,7 @@ fn main() {
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.28s
      Running `target\debug\practice.exe`
 
-thread 'main' (43864) panicked at src\main.rs:6:26:
+thread 'main' (50284) panicked at src\main.rs:6:26:
 index out of bounds: the len is 3 but the index is 10
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 error: process didn't exit successfully: `target\debug\practice.exe` (exit code: 101)
@@ -383,7 +383,7 @@ error: process didn't exit successfully: `target\debug\practice.exe` (exit code:
 
 | 出力の部分 | 意味 |
 |---|---|
-| `thread 'main' (43864) panicked` | メインの処理（スレッド）がパニックした。括弧の数字はスレッドの番号 |
+| `thread 'main' (50284) panicked` | メインの処理（スレッド）がパニックした。括弧の数字はスレッドの番号 |
 | `at src\main.rs:6:26` | 場所は `src\main.rs` の **6行目・26文字目** |
 | `index out of bounds: the len is 3 but the index is 10` | 「範囲外の番号。長さは 3 なのに、番号 10 を指定した」 |
 | `note: run with RUST_BACKTRACE=1 ...` | 「もっと詳しい経路を見たければ、この設定で実行して」という補足 |

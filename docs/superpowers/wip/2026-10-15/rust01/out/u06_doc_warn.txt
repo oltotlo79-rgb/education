@@ -1,0 +1,14 @@
+> cargo doc --no-deps
+ Documenting quality-check v0.1.0 (C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust01\rust-study\quality-check)
+warning: unresolved link to `NoteTitle`
+ --> src\lib.rs:8:23
+  |
+8 | /// 前後の空白は数えない。詳しくは [`NoteTitle`] を参照。
+  |                                      ^^^^^^^^^ no item named `NoteTitle` in scope
+  |
+  = help: to escape `[` and `]` characters, add '\' before them like `\[` or `\]`
+  = note: `#[warn(rustdoc::broken_intra_doc_links)]` on by default
+
+warning: `quality-check` (lib doc) generated 1 warning
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.52s
+   Generated C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust01\rust-study\quality-check\target\doc\quality_check\index.html

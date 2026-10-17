@@ -1,0 +1,2 @@
+OK [牛乳]
+NG タイトルを入力してください at line 1 column 15

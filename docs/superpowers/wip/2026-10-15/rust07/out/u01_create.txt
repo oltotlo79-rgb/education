@@ -1,0 +1,36 @@
+sql> CREATE TABLE users ( …
+OK
+
+sql> CREATE TABLE notes ( …
+OK
+
+sql> INSERT INTO users (email, password_hash) VALUES ('alice@example.com', 'dummy-a')
+OK（変更: 1 行）
+
+sql> INSERT INTO users (email, password_hash) VALUES ('bob@example.com', 'dummy-b')
+OK（変更: 1 行）
+
+sql> INSERT INTO notes (user_id, title) VALUES (1, '買い物リスト')
+OK（変更: 1 行）
+
+sql> INSERT INTO notes (user_id, title, body) VALUES (2, '旅行の計画', '京都で紅葉を見る')
+OK（変更: 1 行）
+
+sql> SELECT id, email, password_hash FROM users
++----+-------------------+---------------+
+| id | email             | password_hash |
++----+-------------------+---------------+
+| 1  | alice@example.com | dummy-a       |
+| 2  | bob@example.com   | dummy-b       |
++----+-------------------+---------------+
+(2 行)
+
+sql> SELECT * FROM notes
++----+---------+--------------+------------------+------+
+| id | user_id | title        | body             | done |
++----+---------+--------------+------------------+------+
+| 1  | 1       | 買い物リスト |                  | 0    |
+| 2  | 2       | 旅行の計画   | 京都で紅葉を見る | 0    |
++----+---------+--------------+------------------+------+
+(2 行)
+

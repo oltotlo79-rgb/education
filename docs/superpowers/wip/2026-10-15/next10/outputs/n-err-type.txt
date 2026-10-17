@@ -1,0 +1,19 @@
+
+> book-management@0.1.0 prebuild
+> node scripts/check-env.mjs
+
+✔ 必要な環境変数 2 個はすべて設定されています
+
+> book-management@0.1.0 build
+> next build
+
+▲ Next.js 16.4.1 (Turbopack)
+- Environments: .env.local
+✓ Running next.config.ts took 44ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 1502ms
+  Running TypeScript ...
+components/BookCard.tsx(7,39): error TS2551: Property 'titel' does not exist on type 'Book'. Did you mean 'title'?
+Failed to type check.
+

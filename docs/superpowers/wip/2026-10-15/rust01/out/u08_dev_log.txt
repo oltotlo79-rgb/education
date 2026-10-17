@@ -1,0 +1,27 @@
+
+  topcoat dev server
+  watching for file changes...
+
+起動しました: http://127.0.0.1:3000
+  ready on http://127.0.0.1:3000
+
+起動しました: http://127.0.0.1:3000
+  ready on http://127.0.0.1:3000
+
+  build failed
+
+[1m[91merror[0m[1m[97m: expected view node[0m
+  [1m[96m--> [0msrc\main.rs:35:21
+   [1m[96m|[0m
+[1m[96m35[0m [1m[96m|[0m                 <h1>Hello, Topcoat!</h1>
+   [1m[96m|[0m                     [1m[91m^^^^^[0m
+
+  previous build still running; waiting for changes...
+
+起動しました: http://127.0.0.1:3000
+  ready on http://127.0.0.1:3000
+
+  application exited (exit code: 1)
+
+  waiting for changes...
+

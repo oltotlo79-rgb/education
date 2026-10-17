@@ -1,0 +1,9 @@
+#1 牛乳を買う（完了: false）
+本文: 低脂肪のもの
+Note { id: 1, title: "牛乳を買う", body: "低脂肪のもの", done: false }
+Note {
+    id: 1,
+    title: "牛乳を買う",
+    body: "低脂肪のもの",
+    done: false,
+}

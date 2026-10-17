@@ -1,0 +1,7 @@
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 6.26s
+     Running `target\debug\rustnote.exe`
+Error: DB（data/rustnote.db）を開けませんでした
+
+Caused by:
+    Failed to connect to database: `Unable to open connection to local database data/rustnote.db: 14`
+error: process didn't exit successfully: `target\debug\rustnote.exe` (exit code: 1)

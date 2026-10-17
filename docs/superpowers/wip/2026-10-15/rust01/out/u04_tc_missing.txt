@@ -1,0 +1,2 @@
+error: toolchain '1.98.0-aarch64-pc-windows-msvc' is not installed
+help: run `rustup toolchain install` to install it

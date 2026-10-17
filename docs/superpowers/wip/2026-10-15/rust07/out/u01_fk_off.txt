@@ -1,0 +1,36 @@
+（準備: sql/u01_create.sql の 8 文を実行しました）
+sql> PRAGMA foreign_keys = OFF
+OK
+
+sql> INSERT INTO notes (user_id, title) VALUES (99, '持ち主のいないノート')
+OK（変更: 1 行）
+
+sql> SELECT id, user_id, title FROM notes
++----+---------+----------------------+
+| id | user_id | title                |
++----+---------+----------------------+
+| 1  | 1       | 買い物リスト         |
+| 2  | 2       | 旅行の計画           |
+| 3  | 99      | 持ち主のいないノート |
++----+---------+----------------------+
+(3 行)
+
+sql> PRAGMA foreign_key_check
++-------+-------+--------+------+
+| table | rowid | parent | fkid |
++-------+-------+--------+------+
+| notes | 3     | users  | 0    |
++-------+-------+--------+------+
+(1 行)
+
+sql> PRAGMA foreign_keys = ON
+OK
+
+sql> PRAGMA foreign_keys
++--------------+
+| foreign_keys |
++--------------+
+| 1            |
++--------------+
+(1 行)
+

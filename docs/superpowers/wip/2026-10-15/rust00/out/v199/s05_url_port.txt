@@ -1,0 +1,9 @@
+   Compiling practice v0.1.0 (C:\Users\you\rust-study\practice)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.28s
+     Running `target\debug\practice.exe`
+スキーム: http
+ホスト  : 127.0.0.1
+ポート  : 8080
+パス    : /notes/42/edit
+クエリ  : from=list
+[exit=0]

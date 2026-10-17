@@ -13,19 +13,19 @@ error[E0277]: cannot add `i64` to `i32`
   |
   = help: the trait `Add<i64>` is not implemented for `i32`
 help: the following other types implement trait `Add<Rhs>`
- --> /rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library\core\src\ops\arith.rs:98:8
+ --> /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\ops\arith.rs:98:8
   |
   = note: `i32` implements `Add`
- ::: /rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library\core\src\ops\arith.rs:113:0
+ ::: /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\ops\arith.rs:113:0
   |
   = note: in this macro invocation
- --> /rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library\core\src\internal_macros.rs:22:8
+ --> /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\internal_macros.rs:22:8
   |
   = note: `&i32` implements `Add<i32>`
- ::: /rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library\core\src\internal_macros.rs:33:8
+ ::: /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\internal_macros.rs:33:8
   |
   = note: `i32` implements `Add<&i32>`
- ::: /rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library\core\src\internal_macros.rs:44:8
+ ::: /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\internal_macros.rs:44:8
   |
   = note: `&i32` implements `Add`
   = note: this error originates in the macro `add_impl` (in Nightly builds, run with -Z macro-backtrace for more info)

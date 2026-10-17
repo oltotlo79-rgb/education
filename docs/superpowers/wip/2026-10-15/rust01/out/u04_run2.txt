@@ -1,0 +1,7 @@
+> cargo run
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.01s
+     Running `target\debug\hello-rust.exe`
+Hello, Rust!
+OS          : windows
+CPU         : aarch64
+パッケージ  : hello-rust 0.1.0

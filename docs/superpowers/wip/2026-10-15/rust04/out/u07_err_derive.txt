@@ -1,0 +1,15 @@
+   Compiling nodrv v0.1.0 (...\nodrv)
+error: cannot find derive macro `Serialize` in this scope
+   --> src\main.rs:4:10
+    |
+  4 | #[derive(Serialize)]
+    |          ^^^^^^^^^
+    |
+note: `Serialize` is a trait, not a derive macro
+   --> ...\serde_core-1.0.229\src\ser\mod.rs:234:1
+    |
+234 | pub trait Serialize {
+    | ^^^^^^^^^^^^^^^^^^^
+    = help: consider implementing `Serialize` for your type manually
+
+error: could not compile `nodrv` (bin "nodrv") due to 1 previous error

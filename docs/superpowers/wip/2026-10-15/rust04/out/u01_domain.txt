@@ -1,5 +1,5 @@
    Compiling design_lab v0.1.0 (...\design_lab)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.37s
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.36s
      Running `target\debug\u01_domain.exe`
   42 -> Ok(NoteId(42))
  abc -> Err(NotANumber)

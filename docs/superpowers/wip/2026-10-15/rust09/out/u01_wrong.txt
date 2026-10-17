@@ -1,0 +1,28 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.90s
+     Running tests\acceptance_wrong.rs (target\debug\deps\acceptance_wrong-46b88c5c86f4aed6.exe)
+
+running 1 test
+test ac05_other_users_note_is_forbidden ... FAILED
+
+failures:
+
+---- ac05_other_users_note_is_forbidden stdout ----
+POST /signup -> 303 See Other (501.7234ms)
+POST /signup -> 303 See Other (669.1028ms)
+POST /notes -> 303 See Other (6.954ms)
+GET /notes/1 -> 404 Not Found (3.8167ms)
+
+thread 'ac05_other_users_note_is_forbidden' (54392) panicked at tests\acceptance_wrong.rs:20:5:
+assertion `left == right` failed
+  left: 404
+ right: 403
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    ac05_other_users_note_is_forbidden
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.21s
+
+error: test failed, to rerun pass `--test acceptance_wrong`

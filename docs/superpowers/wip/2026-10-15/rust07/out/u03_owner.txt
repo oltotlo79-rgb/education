@@ -1,0 +1,36 @@
+（準備: sql/schema.sql の 2 文を実行しました）
+（準備: sql/seed.sql の 2 文を実行しました）
+sql> UPDATE notes SET title = '乗っ取り' WHERE id = 3
+OK（変更: 1 行）
+
+sql> SELECT id, user_id, title FROM notes WHERE id = 3
++----+---------+----------+
+| id | user_id | title    |
++----+---------+----------+
+| 3  | 2       | 乗っ取り |
++----+---------+----------+
+(1 行)
+
+sql> UPDATE notes SET title = '旅行の計画' WHERE id = 3
+OK（変更: 1 行）
+
+sql> UPDATE notes SET title = '乗っ取り' WHERE id = 3 AND user_id = 1
+OK（変更: 0 行）
+
+sql> DELETE FROM notes WHERE id = 3 AND user_id = 1
+OK（変更: 0 行）
+
+sql> SELECT id, user_id, title FROM notes WHERE id = 3 AND user_id = 1
++----+---------+-------+
+| id | user_id | title |
++----+---------+-------+
+(0 行)
+
+sql> SELECT id, user_id, title FROM notes WHERE id = 3
++----+---------+------------+
+| id | user_id | title      |
++----+---------+------------+
+| 3  | 2       | 旅行の計画 |
++----+---------+------------+
+(1 行)
+

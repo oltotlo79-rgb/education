@@ -1,5 +1,5 @@
    Compiling design_lab v0.1.0 (...\design_lab)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.77s
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.43s
      Running `target\debug\u05_anyhow.exe seed.txt`
 投入: 牛乳を買う
 投入: 本を返す

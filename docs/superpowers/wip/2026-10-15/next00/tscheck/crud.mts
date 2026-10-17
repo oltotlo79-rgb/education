@@ -12,7 +12,7 @@ let nextId = 1;
 
 // C: Create（作成）… 新しい本を本棚に追加する
 function createBook(title: string): void {
-  books.push({ id: nextId, title: title, status: "unread" });
+  books.push({ id: nextId, title: title, status: "want_to_read" });
   nextId = nextId + 1;
 }
 
@@ -41,8 +41,8 @@ createBook("達人プログラマー");
 console.log("① 2冊を登録した直後");
 listBooks();
 
-updateStatus(1, "finished");
-console.log("② 1番を読了(finished)にした後");
+updateStatus(1, "completed");
+console.log("② 1番を読了(completed)にした後");
 listBooks();
 
 deleteBook(2);

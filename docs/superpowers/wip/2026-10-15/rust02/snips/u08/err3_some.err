@@ -1,0 +1,18 @@
+   Compiling basics v0.1.0 (.../basics)
+error[E0308]: mismatched types
+ --> src\main.rs:3:21
+  |
+2 | fn half(n: u32) -> Option<u32> {
+  |                    ----------- expected `Option<u32>` because of return type
+3 |     if n % 2 == 0 { n / 2 } else { None }
+  |                     ^^^^^ expected `Option<u32>`, found `u32`
+  |
+  = note: expected enum `Option<u32>`
+             found type `u32`
+help: try wrapping the expression in `Some`
+  |
+3 |     if n % 2 == 0 { Some(n / 2) } else { None }
+  |                     +++++     +
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `basics` (bin "basics") due to 1 previous error

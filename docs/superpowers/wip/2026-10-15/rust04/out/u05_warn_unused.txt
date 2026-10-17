@@ -13,6 +13,6 @@ help: use `let _ = ...` to ignore the resulting value
    |     +++++++
 
 warning: `design_lab` (bin "u05_warn_unused") generated 1 warning
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.39s
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.65s
      Running `target\debug\u05_warn_unused.exe`
 保存しました！

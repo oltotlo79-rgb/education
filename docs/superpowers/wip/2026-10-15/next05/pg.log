@@ -54,3 +54,56 @@
 2026-10-15 20:56:20.645 JST [30520] LOG:  checkpoint starting: shutdown immediate
 2026-10-15 20:56:20.843 JST [30520] LOG:  checkpoint complete: wrote 48 buffers (0.3%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.012 s, sync=0.161 s, total=0.199 s; sync files=39, longest=0.018 s, average=0.005 s; distance=234 kB, estimate=483 kB; lsn=0/162C7F8, redo lsn=0/162C7F8
 2026-10-15 20:56:20.865 JST [36972] LOG:  database system is shut down
+2026-10-17 11:27:11.077 JST [49452] LOG:  starting PostgreSQL 17.6 on x86_64-windows, compiled by msvc-19.44.35213, 64-bit
+2026-10-17 11:27:11.080 JST [49452] LOG:  listening on IPv4 address "127.0.0.1", port 54329
+2026-10-17 11:27:11.175 JST [50800] LOG:  database system was shut down at 2026-10-15 20:56:20 JST
+2026-10-17 11:27:11.225 JST [49452] LOG:  database system is ready to accept connections
+2026-10-17 11:28:23.364 JST [53212] ERROR:  column "Boswell" does not exist at character 45
+2026-10-17 11:28:23.364 JST [53212] STATEMENT:  SELECT * FROM practice_books WHERE author = "Boswell";
+2026-10-17 11:28:30.048 JST [53124] ERROR:  column "Boswell" does not exist at character 45
+2026-10-17 11:28:30.048 JST [53124] STATEMENT:  SELECT * FROM practice_books WHERE author = "Boswell";
+2026-10-17 11:29:33.932 JST [30152] ERROR:  new row for relation "books" violates check constraint "books_rating_check"
+2026-10-17 11:29:33.932 JST [30152] DETAIL:  Failing row contains (caf7938a-8cd0-4f79-8cdb-73aa147d02a5, テスト, テスト, null, null, 10, want_to_read, null, null, 2026-10-17 02:29:33.925622+00, 2026-10-17 02:29:33.925622+00).
+2026-10-17 11:29:33.932 JST [30152] STATEMENT:  INSERT INTO books (title, author, rating) VALUES ('テスト', 'テスト', 10);
+2026-10-17 11:29:33.933 JST [30152] ERROR:  new row for relation "books" violates check constraint "books_status_check"
+2026-10-17 11:29:33.933 JST [30152] DETAIL:  Failing row contains (1a9b07ea-b3ec-4544-8799-3d585642b520, テスト, テスト, null, null, null, done, null, null, 2026-10-17 02:29:33.933411+00, 2026-10-17 02:29:33.933411+00).
+2026-10-17 11:29:33.933 JST [30152] STATEMENT:  INSERT INTO books (title, author, status) VALUES ('テスト', 'テスト', 'done');
+2026-10-17 11:29:33.934 JST [30152] ERROR:  null value in column "author" of relation "books" violates not-null constraint
+2026-10-17 11:29:33.934 JST [30152] DETAIL:  Failing row contains (13b59f42-4ad4-4538-b428-ebb5c2497e31, 著者なし, null, null, null, null, want_to_read, null, null, 2026-10-17 02:29:33.93456+00, 2026-10-17 02:29:33.93456+00).
+2026-10-17 11:29:33.934 JST [30152] STATEMENT:  INSERT INTO books (title) VALUES ('著者なし');
+2026-10-17 11:32:11.170 JST [53456] LOG:  checkpoint starting: time
+2026-10-17 11:32:18.400 JST [53456] LOG:  checkpoint complete: wrote 67 buffers (0.4%); 0 WAL file(s) added, 0 removed, 0 recycled; write=7.186 s, sync=0.034 s, total=7.231 s; sync files=48, longest=0.002 s, average=0.001 s; distance=273 kB, estimate=273 kB; lsn=0/1671000, redo lsn=0/1670F70
+2026-10-17 11:35:16.587 JST [55144] ERROR:  new row for relation "books" violates check constraint "books_rating_check"
+2026-10-17 11:35:16.587 JST [55144] STATEMENT:  WITH pgrst_source AS (INSERT INTO "public"."books"("author", "rating", "title") SELECT "pgrst_body"."author", "pgrst_body"."rating", "pgrst_body"."title" FROM (SELECT $1 AS json_data) pgrst_payload, LATERAL (SELECT "author", "rating", "title" FROM json_to_record(pgrst_payload.json_data) AS _("author" text, "rating" integer, "title" text) ) pgrst_body  RETURNING "public"."books".*) SELECT '' AS total_result_set, pg_catalog.count(_postgrest_t) AS page_total, array[]::text[] AS header, coalesce(json_agg(_postgrest_t), '[]') AS body, nullif(current_setting('response.headers', true), '') AS response_headers, nullif(current_setting('response.status', true), '') AS response_status, '' AS response_inserted FROM (SELECT "books".* FROM "pgrst_source" AS "books"   ) _postgrest_t
+2026-10-17 11:35:16.889 JST [55144] ERROR:  new row for relation "books" violates check constraint "books_rating_check"
+2026-10-17 11:35:16.889 JST [55144] STATEMENT:  WITH pgrst_source AS (INSERT INTO "public"."books"("author", "rating", "title") SELECT "pgrst_body"."author", "pgrst_body"."rating", "pgrst_body"."title" FROM (SELECT $1 AS json_data) pgrst_payload, LATERAL (SELECT "author", "rating", "title" FROM json_to_record(pgrst_payload.json_data) AS _("author" text, "rating" integer, "title" text) ) pgrst_body  RETURNING "public"."books".*) SELECT '' AS total_result_set, pg_catalog.count(_postgrest_t) AS page_total, array[]::text[] AS header, coalesce(json_agg(_postgrest_t), '[]') AS body, nullif(current_setting('response.headers', true), '') AS response_headers, nullif(current_setting('response.status', true), '') AS response_status, '' AS response_inserted FROM (SELECT "books".* FROM "pgrst_source" AS "books"   ) _postgrest_t
+2026-10-17 11:35:16.911 JST [55144] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-10-17 11:37:11.426 JST [53456] LOG:  checkpoint starting: time
+2026-10-17 11:37:15.121 JST [53456] LOG:  checkpoint complete: wrote 29 buffers (0.2%); 0 WAL file(s) added, 0 removed, 0 recycled; write=3.479 s, sync=0.196 s, total=3.696 s; sync files=23, longest=0.084 s, average=0.009 s; distance=105 kB, estimate=257 kB; lsn=0/168B6B0, redo lsn=0/168B620
+2026-10-17 11:37:18.191 JST [42328] ERROR:  only WITH CHECK expression allowed for INSERT
+2026-10-17 11:37:18.191 JST [42328] STATEMENT:  CREATE POLICY "bad insert" ON books FOR INSERT USING (true);
+2026-10-17 11:37:23.585 JST [17248] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-10-17 11:37:33.936 JST [54680] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-10-17 11:39:18.554 JST [49452] LOG:  received fast shutdown request
+2026-10-17 11:39:18.563 JST [49452] LOG:  aborting any active transactions
+2026-10-17 11:39:18.574 JST [49452] LOG:  background worker "logical replication launcher" (PID 52228) exited with exit code 1
+2026-10-17 11:39:18.574 JST [53456] LOG:  shutting down
+2026-10-17 11:39:18.575 JST [53456] LOG:  checkpoint starting: shutdown immediate
+2026-10-17 11:39:18.589 JST [53456] LOG:  checkpoint complete: wrote 7 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.003 s, sync=0.003 s, total=0.015 s; sync files=6, longest=0.001 s, average=0.001 s; distance=9 kB, estimate=232 kB; lsn=0/168DBA8, redo lsn=0/168DBA8
+2026-10-17 11:39:18.603 JST [49452] LOG:  database system is shut down
+2026-10-17 11:43:39.345 JST [25324] LOG:  starting PostgreSQL 17.6 on x86_64-windows, compiled by msvc-19.44.35213, 64-bit
+2026-10-17 11:43:39.346 JST [25324] LOG:  listening on IPv4 address "127.0.0.1", port 54329
+2026-10-17 11:43:39.412 JST [55220] LOG:  database system was shut down at 2026-10-17 11:39:18 JST
+2026-10-17 11:43:39.446 JST [25324] LOG:  database system is ready to accept connections
+2026-10-17 11:43:43.636 JST [7880] ERROR:  column "Boswell" does not exist at character 45
+2026-10-17 11:43:43.636 JST [7880] STATEMENT:  SELECT * FROM practice_books WHERE author = "Boswell";
+2026-10-17 11:44:53.460 JST [25324] LOG:  received fast shutdown request
+2026-10-17 11:44:53.461 JST [25324] LOG:  aborting any active transactions
+2026-10-17 11:44:53.468 JST [25324] LOG:  background worker "logical replication launcher" (PID 56232) exited with exit code 1
+2026-10-17 11:44:53.469 JST [55032] LOG:  shutting down
+2026-10-17 11:44:53.469 JST [55032] LOG:  checkpoint starting: shutdown immediate
+2026-10-17 11:44:53.517 JST [55032] LOG:  checkpoint complete: wrote 54 buffers (0.3%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.015 s, sync=0.018 s, total=0.049 s; sync files=36, longest=0.002 s, average=0.001 s; distance=276 kB, estimate=276 kB; lsn=0/16D2BD8, redo lsn=0/16D2BD8
+2026-10-17 11:44:53.533 JST [25324] LOG:  database system is shut down

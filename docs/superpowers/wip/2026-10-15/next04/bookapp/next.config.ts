@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
-// CC=0 で従来モデル、それ以外は create-next-app 推奨デフォルト（Cache Components 有効）
-const cc = process.env.CC !== "0";
+// CC=1 のときだけ Cache Components を有効にする（本書は No）
+const cc = process.env.CC === "1";
 
 const nextConfig: NextConfig = {
   cacheComponents: cc,

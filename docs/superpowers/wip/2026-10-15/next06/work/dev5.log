@@ -1,0 +1,24 @@
+▲ Next.js 16.4.1 (Turbopack)
+- Local:         http://localhost:3077
+- Network:       http://192.168.210.103:3077
+✓ Ready in 677ms
+✓ Running next.config.ts took 40ms
+
+○ Compiling / ...
+⨯ Error: 環境変数 NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY が設定されていません。.env.local ファイルを確認してください。
+    at createClient (src\lib\supabase\server.ts:18:11)
+    at Page (src\app\page.tsx:4:38)
+  16 |   // どちらかが空なら、原因と直し方が分かるメッセージでわざと止める
+  17 |   if (!supabaseUrl || !supabaseKey) {
+> 18 |     throw new Error(
+     |           ^
+  19 |       "環境変数 NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY が設定されていません。" +
+  20 |         ".env.local ファイルを確認してください。"
+  21 |     ); {
+  digest: '366980926'
+}
+ GET / 500 in 725ms (next.js: 524ms, application-code: 202ms)
+  Reload env: .env.local
+✓ Compiled in 22ms
+ GET / 200 in 7.6s (next.js: 54ms, application-code: 7.6s)
+[?25h

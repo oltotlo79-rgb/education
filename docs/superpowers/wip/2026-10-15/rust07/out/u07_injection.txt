@@ -1,0 +1,12 @@
+① 文字列を混ぜる版で "x' OR '1'='1" を探す
+   実行した SQL: SELECT email FROM users WHERE email = 'x' OR '1'='1'
+   見つかった: ["alice@example.com", "bob@example.com", "carol@example.com"]
+② bind する版で同じ文字列を探す
+   見つかった: []
+③ 文字列を混ぜる版で id = "0 OR 1=1 --" を削除（ノートは 8 件）
+   実行した SQL: DELETE FROM notes WHERE id = 0 OR 1=1 -- AND user_id = 1
+   消えた行: 8（残り 0 件）
+④ bind する版で同じ id を削除（ノートは 8 件）
+   結果: Err("id が数ではありません: \"0 OR 1=1 --\"（404 にする）")
+   Bob のノート 3 を指定: Ok(0)
+   残り 8 件

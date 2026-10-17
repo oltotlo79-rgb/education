@@ -1,0 +1,10 @@
+
+> book-management@0.1.0 start
+> next start -p 3001
+
+▲ Next.js 16.4.1
+- Local:         http://localhost:3001
+- Network:       http://192.168.210.103:3001
+✓ Ready in 175ms
+✓ Running next.config.ts took 39ms
+書籍の取得に失敗しました: TypeError: fetch failed

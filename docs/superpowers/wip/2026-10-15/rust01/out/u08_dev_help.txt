@@ -1,0 +1,10 @@
+Start a development server
+
+Usage: topcoat.exe dev [OPTIONS]
+
+Options:
+      --bin <BIN>          Build the named binary target
+  -p, --package <PACKAGE>  Build the named package
+  -r, --release            Build with the `release` profile
+      --profile <NAME>     Build with the named cargo profile
+  -h, --help               Print help

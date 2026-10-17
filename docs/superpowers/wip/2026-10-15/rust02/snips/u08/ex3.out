@@ -1,0 +1,3 @@
+open → Some(Open)
+done → Some(Done)
+everything → None

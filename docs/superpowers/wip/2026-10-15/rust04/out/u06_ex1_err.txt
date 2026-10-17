@@ -1,0 +1,15 @@
+   Compiling design_lab v0.1.0 (...\design_lab)
+error[E0603]: function `audit` is private
+  --> src\bin\u06_ex1_err.rs:70:34
+   |
+70 |     println!("{}", app::service::audit(&note));
+   |                                  ^^^^^ private function
+   |
+note: the function `audit` is defined here
+  --> src\bin\u06_ex1_err.rs:47:9
+   |
+47 |         pub(super) fn audit(note: &Note) -> String {
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+For more information about this error, try `rustc --explain E0603`.
+error: could not compile `design_lab` (bin "u06_ex1_err") due to 1 previous error

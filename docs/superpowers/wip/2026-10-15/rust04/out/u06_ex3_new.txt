@@ -1,0 +1,3 @@
+    Creating binary (application) `seed` package
+      Adding `seed` as member of workspace at `...\ws_lab`
+note: see more `Cargo.toml` keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html

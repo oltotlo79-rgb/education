@@ -147,14 +147,16 @@ cargo test
 | 項目 | 版・内容 |
 |---|---|
 | OS | Windows 11（ARM64）。コマンドは PowerShell を主に、WSL / macOS / Linux は補足で示します |
-| Rust | rustc 1.97.1 / cargo 1.97.1（`stable-aarch64-pc-windows-msvc`） |
+| Rust | **1.98 以上**（本書シリーズの基準）。動作確認は rustc 1.99.0 / cargo 1.99.0（`aarch64-pc-windows-msvc`） |
 | edition | 2024（`cargo new` の既定値） |
 | thiserror | 2.0.21（UNIT 05・09。エラー型を短く書く） |
 | anyhow | 1.0.104（UNIT 05。アプリの入口でエラーをまとめる） |
 | serde | 1.0.229（`derive` 機能つき。UNIT 07・08） |
 | serde_json | 1.0.154（UNIT 08。JSON の読み書き） |
 
-> **ヒント:** 版の数字は「`cargo add` したときの最新版」です。あなたが試すときにはもっと新しい版が入るかもしれませんが、同じ大きな番号（thiserror なら `2.`、serde なら `1.`）の中では、この巻のコードはそのまま動くはずです。版の数字の読み方は UNIT 07 で学びます。
+手元の Rust の版は `rustc --version` で確かめられます。1.98 より古ければ、`rustup update` で最新の安定版に更新してください。
+
+> **ヒント:** クレートの版の数字は「`cargo add` したときの最新版」です。あなたが試すときにはもっと新しい版が入るかもしれませんが、同じ大きな番号（thiserror なら `2.`、serde なら `1.`）の中では、この巻のコードはそのまま動くはずです。版の数字の読み方は UNIT 07 で学びます。
 
 ### 練習用プロジェクトを用意する
 
@@ -172,7 +174,7 @@ cargo add serde --features derive
 
 <!--OUT:intro_cargo_add-->
 
-`Cargo.toml` は次のようになります。
+最後に、`Cargo.toml` の `[package]` の中、`edition = "2024"` の次の行に `rust-version = "1.98"` を手で1行足します（`cargo new` では入りません）。「このプロジェクトは Rust 1.98 以上でビルドしてください」という宣言で、詳しくは UNIT 07 で説明します。できあがった `Cargo.toml` は次のとおりです。
 
 <!--FILE:toml:design_lab/Cargo.toml-->
 

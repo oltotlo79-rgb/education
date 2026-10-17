@@ -1,0 +1,863 @@
+===== snips/u01/a_let.rs
+--- stdout
+タイトル: Rust入門
+ノートの数: 3
+--- stderr
+===== snips/u01/b_mut.rs
+--- stdout
+はじめ: 0
+1件完了: 1
+さらに2件完了: 3
+--- stderr
+===== snips/u01/c_shadow.rs
+--- stdout
+[  42  ]
+[42]
+43
+--- stderr
+===== snips/u01/c2_scope.rs
+--- stdout
+ブロックの中: 10
+ブロックの外: 1
+--- stderr
+===== snips/u01/d_const.rs
+--- stdout
+タイトルは最大 80 文字
+セッションの有効期限: 2592000 秒
+百万: 1000000
+--- stderr
+===== snips/u01/e_config.rs
+--- stdout
+待ち受けポート: 3000
+壊れた設定のときのポート: 8080
+1 回目の接続を試みます
+2 回目の接続を試みます
+3 回目の接続を試みます
+上限の 3 回に達しました
+--- stderr
+===== snips/u01/err1_e0384.rs
+--- stdout
+--- stderr
+error[E0384]: cannot assign twice to immutable variable `count`
+ --> src\main.rs:4:5
+  |
+2 |     let count = 1;
+  |         ----- first assignment to `count`
+3 |     println!("{count}");
+4 |     count = 2;
+  |     ^^^^^^^^^ cannot assign twice to immutable variable
+  |
+help: consider making this binding mutable
+  |
+2 |     let mut count = 1;
+  |         +++
+
+For more information about this error, try `rustc --explain E0384`.
+error: could not compile `basics` (bin "basics") due to 1 previous error
+===== snips/u01/err2_e0308.rs
+--- stdout
+--- stderr
+error[E0308]: mismatched types
+ --> src\main.rs:4:13
+  |
+2 |     let mut input = " 42 ";
+  |                     ------ expected due to this value
+3 |     input = input.trim();
+4 |     input = input.parse::<u32>().expect("数字ではありません");
+  |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `&str`, found `u32`
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `basics` (bin "basics") due to 1 previous error
+===== snips/u01/err3_const.rs
+--- stdout
+--- stderr
+error: missing type for `const` item
+ --> src\main.rs:1:22
+  |
+1 | const MAX_TITLE_CHARS = 80;
+  |                      ^ help: provide a type for the constant: `: i32`
+
+error: could not compile `basics` (bin "basics") due to 1 previous error
+===== snips/u01/err4_unused_mut.rs
+--- stdout
+RustNote
+--- stderr
+warning: variable does not need to be mutable
+ --> src\main.rs:2:9
+  |
+2 |     let mut name = "RustNote";
+  |         ----^^^^
+  |         |
+  |         help: remove this `mut`
+  |
+  = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: `basics` (bin "basics") generated 1 warning (run `cargo fix --bin "basics" -p basics` to apply 1 suggestion)
+===== snips/u01/ex1_mut.rs
+--- stdout
+1
+2
+--- stderr
+===== snips/u01/ex1_shadow.rs
+--- stdout
+1
+2
+--- stderr
+===== snips/u01/ex2.rs
+--- stdout
+税込み: 1320 円
+--- stderr
+===== snips/u01/ex3.rs
+--- stdout
+内側: 12
+外側: 6
+--- stderr
+===== snips/u01/f_rustnote.rs
+--- stdout
+タイトル「牛乳を買う」は 5 文字です（上限 80 文字）
+--- stderr
+===== snips/u02/a_types.rs
+--- stdout
+-5 200 3000000000 0.75 false あ
+i32: -2147483648 〜 2147483647
+u8 : 0 〜 255
+u64 の最大: 18446744073709551615
+char は 4 バイト
+--- stderr
+===== snips/u02/b_overflow_panic.rs
+--- stdout
+在庫: 255
+--- stderr
+
+thread 'main' (22628) panicked at src\main.rs:6:16:
+attempt to add with overflow
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+error: process didn't exit successfully: `target\debug\basics.exe` (exit code: 101)
+===== snips/u02/c_overflow_methods.rs
+--- stdout
+wrapping_add:    4
+checked_add:     None
+checked_add(5):  Some(255)
+saturating_add:  255
+overflowing_add: (4, true)
+--- stderr
+===== snips/u02/d_as_tryfrom.rs
+--- stdout
+300 as u8   = 44
+-1 as u32   = 4294967295
+3.99 as i32 = 3
+u32::from(200u8) = 200
+u8::try_from(300) = Err(TryFromIntError(PosOverflow))
+u8::try_from(100) = Ok(100)
+--- stderr
+===== snips/u02/e_float.rs
+--- stdout
+0.1 + 0.2 = 0.30000000000000004
+0.1 + 0.2 == 0.3 ? false
+ほぼ等しい ? true
+表示を丸める: 0.30
+7 / 2 = 3
+7 % 2 = 1
+7.0 / 2.0 = 3.5
+1.0 / 0.0 = inf
+--- stderr
+===== snips/u02/err1_mix.rs
+--- stdout
+--- stderr
+error[E0308]: mismatched types
+ --> src\main.rs:4:23
+  |
+4 |     let sum = count + total;
+  |                       ^^^^^ expected `i32`, found `i64`
+
+error[E0277]: cannot add `i64` to `i32`
+ --> src\main.rs:4:21
+  |
+4 |     let sum = count + total;
+  |                     ^ no implementation for `i32 + i64`
+  |
+  = help: the trait `Add<i64>` is not implemented for `i32`
+help: the following other types implement trait `Add<Rhs>`
+ --> /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\ops\arith.rs:98:8
+  |
+  = note: `i32` implements `Add`
+ ::: /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\ops\arith.rs:113:0
+  |
+  = note: in this macro invocation
+ --> /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\internal_macros.rs:22:8
+  |
+  = note: `&i32` implements `Add<i32>`
+ ::: /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\internal_macros.rs:33:8
+  |
+  = note: `i32` implements `Add<&i32>`
+ ::: /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\internal_macros.rs:44:8
+  |
+  = note: `&i32` implements `Add`
+  = note: this error originates in the macro `add_impl` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+Some errors have detailed explanations: E0277, E0308.
+For more information about an error, try `rustc --explain E0277`.
+error: could not compile `basics` (bin "basics") due to 2 previous errors
+===== snips/u02/err2_literal.rs
+--- stdout
+--- stderr
+error: literal out of range for `u8`
+ --> src\main.rs:2:21
+  |
+2 |     let level: u8 = 256;
+  |                     ^^^
+  |
+  = note: the literal `256` does not fit into the type `u8` whose range is `0..=255`
+  = note: `#[deny(overflowing_literals)]` on by default
+
+error: could not compile `basics` (bin "basics") due to 1 previous error
+===== snips/u02/err3_neg.rs
+--- stdout
+--- stderr
+error[E0600]: cannot apply unary operator `-` to type `u32`
+ --> src\main.rs:2:22
+  |
+2 |     let stock: u32 = -1;
+  |                      ^^ cannot apply unary operator `-`
+  |
+  = note: unsigned values cannot be negated
+help: you may have meant the maximum value of `u32`
+  |
+2 -     let stock: u32 = -1;
+2 +     let stock: u32 = u32::MAX;
+  |
+
+For more information about this error, try `rustc --explain E0600`.
+error: could not compile `basics` (bin "basics") due to 1 previous error
+===== snips/u02/err4_fix.rs
+--- stdout
+3.5
+--- stderr
+===== snips/u02/err4_int_float.rs
+--- stdout
+--- stderr
+error[E0277]: cannot divide `{integer}` by `{float}`
+ --> src\main.rs:3:22
+  |
+3 |     let half = total / 2.0;
+  |                      ^ no implementation for `{integer} / {float}`
+  |
+  = help: the trait `Div<{float}>` is not implemented for `{integer}`
+  = help: the following other types implement trait `Div<Rhs>`:
+            `&f128` implements `Div<f128>`
+            `&f128` implements `Div`
+            `&f16` implements `Div<f16>`
+            `&f16` implements `Div`
+            `&f32` implements `Div<f32>`
+            `&f32` implements `Div`
+            `&f64` implements `Div<f64>`
+            `&f64` implements `Div`
+          and 62 others
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `basics` (bin "basics") due to 1 previous error
+===== snips/u02/err5_ambiguous.rs
+--- stdout
+--- stderr
+error[E0689]: can't call method `abs` on ambiguous numeric type `{float}`
+ --> src\main.rs:4:30
+  |
+4 |     let diff = (a + b - 0.3).abs();
+  |                              ^^^
+
+For more information about this error, try `rustc --explain E0689`.
+error: could not compile `basics` (bin "basics") due to 1 previous error
+===== snips/u02/ex1.rs
+--- stdout
+None
+44
+255
+--- stderr
+===== snips/u02/ex2.rs
+--- stdout
+8080: ポート 8080 を使います
+70000: 使えません（number too large to fit in target type）
+-1: 使えません（number too small to fit in target type）
+--- stderr
+===== snips/u02/ex3.rs
+--- stdout
+平均: 82.3 点
+--- stderr
+===== snips/u02/f_bool_char.rs
+--- stdout
+編集できる: false
+閲覧できる: true
+ログアウト中: false
+'あ' の番号: 12354 (16進数で 3042)
+0x41 は Some('A')
+'7' を数に: Some(7)
+'A' は英字? true
+'あ' は ASCII の英数字? false
+--- stderr
+===== snips/u02/g_price.rs
+--- stdout
+合計: 3750 円
+金額が大きすぎます
+ID 42 を使います
+ID -7 は使えません: number too small to fit in target type
+--- stderr
+===== snips/u02/h_rustnote.rs
+--- stdout
+?page=1 → 1 ページ目, 0 件飛ばす
+?page=3 → 3 ページ目, 40 件飛ばす
+?page=0 → 1 ページ目, 0 件飛ばす
+?page=-2 → 1 ページ目, 0 件飛ばす
+?page=abc → 1 ページ目, 0 件飛ばす
+--- stderr
+===== snips/u03/a_fn.rs
+--- stdout
+3 + 4 = 7
+こんにちは、Rustさん
+入れ子: 10
+--- stderr
+===== snips/u03/b_block_expr.rs
+--- stdout
+面積: 12
+大きさ: 大
+ブロックの中で表示だけする
+nothing の中身: ()
+--- stderr
+===== snips/u03/c_return.rs
+--- stdout
+90
+0
+--- stderr
+===== snips/u03/d_unit.rs
+--- stdout
+[log] 起動しました
+log の戻り値: ()
+--- stderr
+===== snips/u03/e_price.rs
+--- stdout
+1,000円 × 2個 = 2700 円
+1,000円 × 5個 = 5500 円
+--- stderr
+===== snips/u03/err1_semicolon.rs
+--- stdout
+--- stderr
+error[E0308]: mismatched types
+ --> src\main.rs:1:27
+  |
+1 | fn add(a: i32, b: i32) -> i32 {
+  |    ---                    ^^^ expected `i32`, found `()`
+  |    |
+  |    implicitly returns `()` as its body has no tail or `return` expression
+2 |     a + b;
+  |          - help: remove this semicolon to return this value
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `basics` (bin "basics") due to 1 previous error
+===== snips/u03/err2_no_ret.rs
+--- stdout
+--- stderr
+error[E0308]: mismatched types
+ --> src\main.rs:2:5
+  |
+1 | fn add(a: i32, b: i32) {
+  |                       - help: try adding a return type: `-> i32`
+2 |     a + b
+  |     ^^^^^ expected `()`, found `i32`
+
+error[E0277]: `()` doesn't implement `std::fmt::Display`
+ --> src\main.rs:6:20
+  |
+6 |     println!("{}", add(1, 2));
+  |               --   ^^^^^^^^^ `()` cannot be formatted with the default formatter
+  |               |
+  |               required by this formatting parameter
+  |
+  = help: the trait `std::fmt::Display` is not implemented for `()`
+  = note: in format strings you may be able to use `{:?}` (or `{:#?}` for pretty-print) instead
+
+Some errors have detailed explanations: E0277, E0308.
+For more information about an error, try `rustc --explain E0277`.
+error: could not compile `basics` (bin "basics") due to 2 previous errors
+===== snips/u03/err3_param_type.rs
+--- stdout
+--- stderr
+error: expected one of `:`, `@`, or `|`, found `)`
+ --> src\main.rs:1:12
+  |
+1 | fn double(x) -> i32 {
+  |            ^ expected one of `:`, `@`, or `|`
+  |
+help: if this is a parameter name, give it a type
+  |
+1 | fn double(x: TypeName) -> i32 {
+  |            ++++++++++
+help: if this is a type, explicitly ignore the parameter name
+  |
+1 | fn double(_: x) -> i32 {
+  |           ++
+
+error: could not compile `basics` (bin "basics") due to 1 previous error
+===== snips/u03/err4_args.rs
+--- stdout
+--- stderr
+error[E0061]: this function takes 2 arguments but 1 argument was supplied
+ --> src\main.rs:6:20
+  |
+6 |     println!("{}", add(1));
+  |                    ^^^--- argument #2 of type `i32` is missing
+  |
+note: function defined here
+ --> src\main.rs:1:4
+  |
+1 | fn add(a: i32, b: i32) -> i32 {
+  |    ^^^         ------
+help: provide the argument
+  |
+6 |     println!("{}", add(1, /* i32 */));
+  |                         +++++++++++
+
+For more information about this error, try `rustc --explain E0061`.
+error: could not compile `basics` (bin "basics") due to 1 previous error
+===== snips/u03/ex1.rs
+--- stdout
+49
+--- stderr
+===== snips/u03/ex2.rs
+--- stdout
+0℃ = 32℉
+36.5℃ = 97.7℉
+100℃ = 212℉
+--- stderr
+===== snips/u03/ex3.rs
+--- stdout
+10 21 1
+--- stderr
+===== snips/u03/f_rustnote.rs
+--- stdout
+OK: 「買い物リスト」（6文字）
+NG: 0文字は 1〜80 文字の範囲外です
+NG: 81文字は 1〜80 文字の範囲外です
+--- stderr
+===== snips/u04/a_if.rs
+--- stdout
+合格です
+72 は偶数
+--- stderr
+===== snips/u04/b_loop.rs
+--- stdout
+100 を超えた最初の 2 の累乗: 128
+--- stderr
+===== snips/u04/c_while.rs
+--- stdout
+残り 3
+残り 2
+残り 1
+発射！
+--- stderr
+===== snips/u04/d_for.rs
+--- stdout
+i = 0
+i = 1
+i = 2
+1 2 3 
+9 6 3 0 
+りんご
+みかん
+ぶどう
+--- stderr
+===== snips/u04/e_match.rs
+--- stdout
+200: 成功
+202: 受け付けました
+301: リダイレクト
+404: 見つかりません
+418: リクエストの誤り
+503: サーバーの誤り
+999: 不明なコード
+--- stderr
+===== snips/u04/err1_if_types.rs
+--- stdout
+--- stderr
+error[E0308]: `if` and `else` have incompatible types
+ --> src\main.rs:3:43
+  |
+3 |     let label = if n > 0 { "正の数" } else { 0 };
+  |                            --------          ^ expected `&str`, found integer
+  |                            |
+  |                            expected because of this
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `basics` (bin "basics") due to 1 previous error
+===== snips/u04/err2_if_no_else.rs
+--- stdout
+--- stderr
+error[E0317]: `if` may be missing an `else` clause
+ --> src\main.rs:3:17
+  |
+3 |     let label = if n > 0 { "正の数" };
+  |                 ^^^^^^^^^^^--------^^
+  |                 |          |
+  |                 |          found here
+  |                 expected `&str`, found `()`
+  |
+  = note: `if` expressions without `else` evaluate to `()`
+  = help: consider adding an `else` block that evaluates to the expected type
+
+For more information about this error, try `rustc --explain E0317`.
+error: could not compile `basics` (bin "basics") due to 1 previous error
+===== snips/u04/err3_e0004.rs
+--- stdout
+--- stderr
+error[E0004]: non-exhaustive patterns: `0_u16..=199_u16`, `300_u16..=399_u16` and `600_u16..=u16::MAX` not covered
+ --> src\main.rs:3:23
+  |
+3 |     let label = match code {
+  |                       ^^^^ patterns `0_u16..=199_u16`, `300_u16..=399_u16` and `600_u16..=u16::MAX` not covered
+  |
+  = note: the matched value is of type `u16`
+help: ensure that all possible cases are being handled by adding a match arm with a wildcard pattern, a match arm with multiple or-patterns as shown, or multiple match arms
+  |
+6 ~         500..=599 => "サーバーの誤り",
+7 ~         0_u16..=199_u16 | 300_u16..=399_u16 | 600_u16..=u16::MAX => todo!(),
+  |
+
+For more information about this error, try `rustc --explain E0004`.
+error: could not compile `basics` (bin "basics") due to 1 previous error
+===== snips/u04/err4_if_int.rs
+--- stdout
+--- stderr
+error[E0308]: mismatched types
+ --> src\main.rs:3:8
+  |
+3 |     if unread {
+  |        ^^^^^^ expected `bool`, found integer
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `basics` (bin "basics") due to 1 previous error
+===== snips/u04/ex1.rs
+--- stdout
+1 2 Fizz 4 Buzz Fizz 7 8 Fizz Buzz 11 Fizz 13 14 FizzBuzz 
+--- stderr
+===== snips/u04/ex2.rs
+--- stdout
+1 から 14 まで足すと 105 で、初めて 100 以上になる
+--- stderr
+===== snips/u04/ex3.rs
+--- stdout
+その他
+--- stderr
+===== snips/u04/f_guard_label.rs
+--- stdout
+-3度: 氷点下
+0度: ちょうど 0 度
+18度: 過ごしやすい
+35度: 真夏日
+1 × 1 = 1
+1 × 2 = 2
+1 × 3 = 3
+2 × 1 = 2
+2 × 2 = 4 を見つけたので終了
+--- stderr
+===== snips/u04/g_retry.rs
+--- stdout
+1 回目: 503 のため再試行します
+2 回目: 503 のため再試行します
+3 回目で成功（200）
+--- stderr
+===== snips/u04/h_rustnote.rs
+--- stdout
+1/3 ページ: 次へ →
+2/3 ページ: ← 前へ | 次へ →
+3/3 ページ: ← 前へ
+--- stderr
+===== snips/u05/a_string.rs
+--- stdout
+こんにちは、Rust！
+さくらさん、こんにちは、Rust！
+Rust入門
+--- stderr
+===== snips/u05/b_len_chars.rs
+--- stdout
+len(): 8
+chars().count(): 3
+'a' は 1 バイト
+'あ' は 3 バイト
+'🦀' は 4 バイト
+bytes: [61, E3, 81, 82, F0, 9F, A6, 80]
+--- stderr
+===== snips/u05/c_str_param.rs
+--- stdout
+RUST！
+HELLO！
+owned はまだ使える: rust
+--- stderr
+===== snips/u05/d_slice.rs
+--- stdout
+Rust
+日本
+日本語
+2バイト目は文字の区切り? false
+None
+Some("日")
+--- stderr
+===== snips/u05/e_methods.rs
+--- stdout
+[Rust, Web,  DB]
+rust, web,  db
+Web を含む? true
+Rust で始まる? true
+Rust / Web /  DB
+- [Rust]
+- [Web]
+- [DB]
+行数: 3
+--- stderr
+===== snips/u05/err1_index.rs
+--- stdout
+--- stderr
+error[E0277]: the type `str` cannot be indexed by `{integer}`
+ --> src\main.rs:3:19
+  |
+3 |     let first = s[0];
+  |                   ^ string indices are ranges of `usize`
+  |
+  = help: the trait `SliceIndex<str>` is not implemented for `{integer}`
+  = note: you can use `.chars().nth()` or `.bytes().nth()`
+          for more information, see chapter 8 in The Book: <https://doc.rust-lang.org/book/ch08-02-strings.html#indexing-into-strings>
+help: `usize` implements trait `SliceIndex<T>`
+ --> /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\slice\index.rs:179:0
+  |
+  = note: `SliceIndex<[T]>`
+ --> /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\bstr\traits.rs:197:0
+  |
+  = note: `SliceIndex<ByteStr>`
+  = note: required for `String` to implement `Index<{integer}>`
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `basics` (bin "basics") due to 1 previous error
+===== snips/u05/err2_slice_panic.rs
+--- stdout
+--- stderr
+
+thread 'main' (53696) panicked at src\main.rs:4:22:
+end byte index 2 is not a char boundary; it is inside '日' (bytes 0..3 of string)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+error: process didn't exit successfully: `target\debug\basics.exe` (exit code: 101)
+===== snips/u05/err3_string.rs
+--- stdout
+--- stderr
+error[E0308]: mismatched types
+ --> src\main.rs:2:24
+  |
+2 |     let name: String = "Rust";
+  |               ------   ^^^^^^ expected `String`, found `&str`
+  |               |
+  |               expected due to this
+  |
+help: try using a conversion method
+  |
+2 |     let name: String = "Rust".to_string();
+  |                              ++++++++++++
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `basics` (bin "basics") due to 1 previous error
+===== snips/u05/err4_add.rs
+--- stdout
+--- stderr
+error[E0369]: cannot add `&str` to `&str`
+ --> src\main.rs:2:23
+  |
+2 |     let full = "Rust" + "入門";
+  |                ------ ^ ------ &str
+  |                |      |
+  |                |      `+` cannot be used to concatenate two `&str` strings
+  |                &str
+  |
+  = note: string concatenation requires an owned `String` on the left
+help: create an owned `String` from a string reference
+  |
+2 |     let full = "Rust".to_owned() + "入門";
+  |                      +++++++++++
+
+For more information about this error, try `rustc --explain E0369`.
+error: could not compile `basics` (bin "basics") due to 1 previous error
+===== snips/u05/ex1.rs
+--- stdout
+こんにちは: 15 バイト, 5 文字
+Hello: 5 バイト, 5 文字
+--- stderr
+===== snips/u05/ex2.rs
+--- stdout
+3
+0
+--- stderr
+===== snips/u05/ex3.rs
+--- stdout
+門入tsuR
+--- stderr
+===== snips/u05/f_preview.rs
+--- stdout
+短いタイトル
+とても長いタイトルな…
+[牛乳 と 卵を 買う]
+--- stderr
+===== snips/u05/g_rustnote.rs
+--- stdout
+len()           = 240 バイト
+chars().count() = 80 文字
+len() で判定:           false
+chars().count() で判定: true
+空白だけ: false
+--- stderr
+===== snips/u05/h_emoji.rs
+--- stdout
+見た目は1文字: 👨‍👩‍👧
+chars().count() = 5
+len() = 18
+--- stderr
+===== snips/u06/a_tuple.rs
+--- stdout
+ID: 1, タイトル: 牛乳を買う, 完了: false
+1 / 牛乳を買う / false
+小さい方: 3, 大きい方: 9
+--- stderr
+===== snips/u06/b_array.rs
+--- stdout
+先頭: 72
+最後: 81
+個数: 5
+[0, 0, 0, 0]
+["月", "木", "水"]
+--- stderr
+===== snips/u06/c_slice.rs
+--- stdout
+全員の合計: 396
+middle = [88, 95]
+middle の合計: 183
+[72, 88] [60, 81]
+Vec の合計: 60
+--- stderr
+===== snips/u06/d_vec.rs
+--- stdout
+["牛乳を買う", "Rust の勉強", "部屋の掃除"]
+件数: 3
+取り出した: Some("部屋の掃除")
+残り: ["牛乳を買う", "Rust の勉強"]
+1番目: Some("Rust の勉強")
+9番目: None
+並べ替え: [1, 3, 5, 8]
+8 を含む? true
+先頭を削除: [3, 5, 8]
+--- stderr
+===== snips/u06/e_capacity.rs
+--- stdout
+最初: len = 0, capacity = 0
+push(1) 後: len = 1, capacity = 4
+push(2) 後: len = 2, capacity = 4
+push(3) 後: len = 3, capacity = 4
+push(4) 後: len = 4, capacity = 4
+push(5) 後: len = 5, capacity = 8
+push(6) 後: len = 6, capacity = 8
+push(7) 後: len = 7, capacity = 8
+push(8) 後: len = 8, capacity = 8
+push(9) 後: len = 9, capacity = 16
+with_capacity(100): len = 0, capacity = 100
+--- stderr
+===== snips/u06/err1_oob.rs
+--- stdout
+--- stderr
+
+thread 'main' (15212) panicked at src\main.rs:3:26:
+index out of bounds: the len is 3 but the index is 10
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+error: process didn't exit successfully: `target\debug\basics.exe` (exit code: 101)
+===== snips/u06/err2_array_len.rs
+--- stdout
+--- stderr
+error[E0308]: mismatched types
+ --> src\main.rs:2:24
+  |
+2 |     let rgb: [u8; 3] = [255, 0];
+  |              -------   ^^^^^^^^ expected an array with a size of 3, found one with a size of 2
+  |              |
+  |              expected due to this
+  |
+help: consider specifying the actual array length
+  |
+2 -     let rgb: [u8; 3] = [255, 0];
+2 +     let rgb: [u8; 2] = [255, 0];
+  |
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `basics` (bin "basics") due to 1 previous error
+===== snips/u06/err3_push.rs
+--- stdout
+--- stderr
+error[E0596]: cannot borrow `titles` as mutable, as it is not declared as mutable
+ --> src\main.rs:3:5
+  |
+3 |     titles.push("牛乳を買う");
+  |     ^^^^^^ cannot borrow as mutable
+  |
+help: consider changing this to be mutable
+  |
+2 |     let mut titles = Vec::new();
+  |         +++
+
+For more information about this error, try `rustc --explain E0596`.
+error: could not compile `basics` (bin "basics") due to 1 previous error
+===== snips/u06/err4_index_i32.rs
+--- stdout
+--- stderr
+error[E0277]: the type `[&str]` cannot be indexed by `i32`
+ --> src\main.rs:4:27
+  |
+4 |     println!("{}", titles[i]);
+  |                           ^ slice indices are of type `usize` or ranges of `usize`
+  |
+  = help: the trait `SliceIndex<[&str]>` is not implemented for `i32`
+help: `usize` implements trait `SliceIndex<T>`
+ --> /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\slice\index.rs:179:0
+  |
+  = note: `SliceIndex<[T]>`
+ --> /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\bstr\traits.rs:197:0
+  |
+  = note: `SliceIndex<ByteStr>`
+  = note: required for `Vec<&str>` to implement `Index<i32>`
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `basics` (bin "basics") due to 1 previous error
+===== snips/u06/ex1.rs
+--- stdout
+('R', 7)
+--- stderr
+===== snips/u06/ex2.rs
+--- stdout
+9
+-1
+--- stderr
+===== snips/u06/ex3.rs
+--- stdout
+[1, 4, 9, 16, 25]
+取り出した: Some(25), 残り: [1, 4, 9, 16]
+--- stderr
+===== snips/u06/f_iter_mut.rs
+--- stdout
+[110, 275, 1078]
+0: 110 円
+1: 275 円
+2: 1078 円
+--- stderr
+===== snips/u06/g_page.rs
+--- stdout
+1ページ目: ["ノート1", "ノート2", "ノート3"]
+2ページ目: ["ノート4", "ノート5", "ノート6"]
+3ページ目: ["ノート7"]
+4ページ目: []
+--- stderr
+===== snips/u06/h_rustnote.rs
+--- stdout
+[x] 牛乳を買う
+[ ] Rust の勉強
+[ ] 部屋の掃除
+3 件中 1 件完了
+--- stderr

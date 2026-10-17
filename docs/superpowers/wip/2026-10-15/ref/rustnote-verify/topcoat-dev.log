@@ -1,0 +1,11 @@
+
+  topcoat dev server
+ Downloading crates ...
+  Downloaded rustix v1.1.5
+  watching for file changes...
+
+マイグレーションを適用しました: 0001_users
+マイグレーションを適用しました: 0002_notes
+マイグレーションを適用しました: 0003_sessions
+RustNote を起動しました: http://127.0.0.1:3301
+GET / -> 200 OK (1.1496ms)

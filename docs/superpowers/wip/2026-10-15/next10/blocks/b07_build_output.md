@@ -1,0 +1,33 @@
+ビルドが成功すると、以下のような出力が表示されます。これは、この教材の書籍管理アプリと同じページ構成のプロジェクトを、Next.js 16.4.1 で実際にビルドしたときの出力です。
+
+```text
+> book-management@0.1.0 build
+> next build
+
+▲ Next.js 16.4.1 (Turbopack)
+- Environments: .env.local
+✓ Running next.config.ts took 27ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 3.9s
+  Running TypeScript ...
+  Finished TypeScript in 1666ms ...
+  Collecting page data using 8 workers ...
+  Generating static pages using 8 workers (0/5) ...
+  Generating static pages using 8 workers (1/5)
+  Generating static pages using 8 workers (2/5)
+  Generating static pages using 8 workers (3/5)
+✓ Generating static pages using 8 workers (5/5) in 630ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ƒ /
+├ ○ /_not-found
+├ ƒ /books/[id]
+├ ƒ /books/[id]/edit
+└ ○ /books/new
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+```

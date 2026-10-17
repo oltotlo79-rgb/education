@@ -6,6 +6,9 @@ error[E0284]: type annotations needed
   |         ^^^^       ----- type must be known at this point
   |
   = note: cannot satisfy `<_ as FromStr>::Err == _`
+  = note: the type must also implement `FromStr`
+note: required by a bound in `core::str::<impl str>::parse`
+ --> /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\str\mod.rs:2782:4
 help: consider giving `page` an explicit type
   |
 3 |     let page: /* Type */ = "3".parse().unwrap();

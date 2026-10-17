@@ -97,19 +97,19 @@ def mini_table(x0, y0, cols, rows, styles=None):
 
 
 def fig_5_3():
-    cols = [("id", 34), ("title", 128), ("status", 82)]
-    base = [["1", "リーダブルコード", "done"], ["2", "プロを目指す人〜", "reading"], ["3", "達人プログラマー", "unread"]]
+    cols = [("id", 30), ("title", 120), ("status", 100)]
+    base = [["1", "リーダブルコード", "completed"], ["2", "プロを目指す人〜", "reading"], ["3", "達人プログラマー", "want_to_read"]]
     panels = [
-        (8, 8, BLUE, "SELECT（読む）", "SELECT * FROM books", "WHERE status = 'reading';", base,
+        (8, 8, BLUE, "SELECT（読む）", "SELECT * FROM practice_books", "WHERE status = 'reading';", base,
          {0: {"textfill": "#94a3b8"}, 1: {"fill": "#dbeafe", "outline": "#3b82f6", "bold_cols": {1, 2}}, 2: {"textfill": "#94a3b8"}},
          ["条件に合う", "行だけを", "取り出す。", "表そのものは", "変わらない"]),
-        (368, 8, GREEN, "INSERT（追加）", "INSERT INTO books (…)", "VALUES (4, 'SQL入門', 'unread');", base + [["4", "SQL入門", "unread"]],
+        (368, 8, GREEN, "INSERT（追加）", "INSERT INTO practice_books (…)", "VALUES (4, 'SQL入門', 'want_to_read');", base + [["4", "SQL入門", "want_to_read"]],
          {3: {"fill": "#d1fae5", "outline": "#10b981", "bold_cols": {0, 1, 2}}},
          ["一番下に", "行が1つ", "増える"]),
-        (8, 184, ORANGE, "UPDATE（書き換え）", "UPDATE books SET status = 'done'", "WHERE id = 2;", base,
+        (8, 196, ORANGE, "UPDATE（書き換え）", "UPDATE practice_books SET status = 'completed'", "WHERE id = 2;", base,
          {1: {"cellfill": {2: "#ffedd5"}, "bold_cols": {2}, "outline": "#f97316"}},
-         ["id=2 の行の", "status だけ", "reading →", "done に", "変わる"]),
-        (368, 184, GRAY, "DELETE（削除）", "DELETE FROM books", "WHERE id = 3;", base,
+         ["id=2 の行の", "status だけ", "reading →", "completed", "に変わる"]),
+        (368, 196, GRAY, "DELETE（削除）", "DELETE FROM practice_books", "WHERE id = 3;", base,
          {2: {"fill": "#e2e8f0", "textfill": "#94a3b8", "strike": True}},
          ["id=3 の行が", "消える。", "元に戻す", "命令は無い"]),
     ]
@@ -117,39 +117,39 @@ def fig_5_3():
     for (px, py, col, title, sql1, sql2, rows, styles, note) in panels:
         if title.startswith("UPDATE"):
             rows = [r[:] for r in rows]
-            rows[1][2] = "done"
-        body.append(rect(px, py, 344, 168, fill=col[0], stroke=col[1], sw=2, rx=10))
+            rows[1][2] = "completed"
+        body.append(rect(px, py, 344, 182, fill=col[0], stroke=col[1], sw=2, rx=10))
         body.append(t(px + 14, py + 24, title, 14, col[2], bold=True))
         body.append(t(px + 14, py + 42, sql1, 12, "#334155", mono=True))
         body.append(t(px + 14, py + 57, sql2, 12, "#334155", mono=True))
         body += mini_table(px + 14, py + 64, cols, rows, styles)
         for k, s in enumerate(note):
             body.append(t(px + 268, py + 86 + k * 17, s, 12, col[2] if k == 0 else "#475569", bold=(k == 0)))
-    return block("5-3", 720, 360, body, "同じ3行の表に4つの命令を実行したときの変化（色の付いた行が変わった所）")
+    return block("5-3", 720, 386, body, "同じ3行の表に4つの命令を実行したときの変化（色の付いた行が変わった所）")
 
 
 # ---------------------------------------------------------------- 5-4
 def fig_5_4():
-    cols = [("id", 40), ("title", 128), ("status", 82)]
-    before = [["1", "リーダブルコード", "done"], ["2", "プロを目指す人〜", "reading"], ["4", "SQL入門", "unread"]]
+    cols = [("id", 30), ("title", 120), ("status", 100)]
+    before = [["1", "リーダブルコード", "completed"], ["2", "プロを目指す人〜", "completed"], ["4", "SQL入門", "want_to_read"]]
     body = []
     mk = "ar-05-04"
-    for (y, col, label, sql, sub, after, styles, result) in [
-        (14, ORANGE, "NG", "UPDATE practice_books", "SET status = 'done';",
-         [["1", "リーダブルコード", "done"], ["2", "プロを目指す人〜", "done"], ["4", "SQL入門", "done"]],
+    for (y, col, label, sqls, after, styles, result) in [
+        (14, ORANGE, "NG", ["UPDATE practice_books", "SET status = 'reading';"],
+         [["1", "リーダブルコード", "reading"], ["2", "プロを目指す人〜", "reading"], ["4", "SQL入門", "reading"]],
          {i: {"cellfill": {2: "#ffedd5"}, "bold_cols": {2}} for i in range(3)}, "UPDATE 3（全行が変わった）"),
-        (164, GREEN, "OK", "UPDATE practice_books", "SET status = 'done' WHERE id = 2;",
-         [["1", "リーダブルコード", "done"], ["2", "プロを目指す人〜", "done"], ["4", "SQL入門", "unread"]],
-         {1: {"cellfill": {2: "#d1fae5"}, "bold_cols": {2}}}, "UPDATE 1（狙った1行だけ）"),
+        (164, GREEN, "OK", ["UPDATE practice_books", "SET status = 'reading'", "WHERE id = 4;"],
+         [["1", "リーダブルコード", "completed"], ["2", "プロを目指す人〜", "completed"], ["4", "SQL入門", "reading"]],
+         {2: {"cellfill": {2: "#d1fae5"}, "bold_cols": {2}}}, "UPDATE 1（狙った1行だけ）"),
     ]:
         body.append(rect(6, y - 8, 708, 140, fill=col[0], stroke=col[1], sw=1.5, rx=10))
         body.append(t(20, y + 14, "変更前", 12, "#475569", bold=True))
         body += mini_table(20, y + 22, cols, before)
-        body.append(t(360, y + 22, label, 18, col[2], anchor="middle", bold=True))
-        body.append(t(360, y + 44, sql, 12, "#334155", anchor="middle", mono=True))
-        body.append(t(360, y + 60, sub, 12, "#334155", anchor="middle", mono=True))
-        body.append(line(282, y + 76, 446, y + 76, stroke="#475569", sw=2.5, marker=mk))
-        body.append(t(360, y + 100, result, 12, col[2], anchor="middle", bold=True))
+        body.append(t(360, y + 16, label, 18, col[2], anchor="middle", bold=True))
+        for k, sq in enumerate(sqls):
+            body.append(t(360, y + 36 + k * 15, sq, 12, "#334155", anchor="middle", mono=True))
+        body.append(line(274, y + 86, 446, y + 86, stroke="#475569", sw=2.5, marker=mk))
+        body.append(t(360, y + 108, result, 12, col[2], anchor="middle", bold=True))
         body.append(t(452, y + 14, "変更後", 12, "#475569", bold=True))
         body += mini_table(452, y + 22, cols, after, styles)
     return block("5-4", 720, 300, body, "WHERE を忘れた UPDATE（上）と、正しく絞り込んだ UPDATE（下）", marker=mk)

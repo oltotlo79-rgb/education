@@ -17,6 +17,8 @@
 
 > **用語:** newtype（ニュータイプ：既存の型を1つだけ包んだ、意味の違う新しい型。`struct UserId(i64);` のように書く）
 
+<!-- -->
+
 > **用語:** primitive obsession（プリミティブ・オブセッション：何でも `i64` や `String` のような基本の型のまま扱ってしまう癖。取り違えや未検証の値が紛れ込む原因になる）
 
 ### 図で理解する
@@ -273,7 +275,7 @@ RustNote の `domain` には、この単元で作った型がそのまま入り�
 | `UserId` | `i64` | DB から読んだ値 / ログイン中のセッション | ノートの持ち主との取り違え |
 | `NoteId` | `i64` | URL の `{id}` を `parse` / DB から読んだ値 | 0 以下・数字でない ID、`UserId` との取り違え |
 | `Email` | `String`（小文字化済み） | `Email::parse` | 形式違い・大文字小文字の違いによる二重登録 |
-| `NoteTitle` | `String`（trim 済み・1〜80文字） | `NoteTitle::parse` | 空タイトル・長すぎるタイトル |
+| `NoteTitle` | `String`（trim 済み・1〜`MAX_TITLE_CHARS`（80）文字） | `NoteTitle::parse` | 空タイトル・長すぎるタイトル |
 
 たとえば `GET /notes/{id}` では、URL の `{id}` を受け取ったらすぐ `NoteId` に変換し、失敗したら 404 を返します。その先の処理は `NoteId` しか受け取らないので、「数字でない ID で DB を検索してしまう」心配がありません。ID の `i64` は、Turso / libSQL（SQLite 系）の `INTEGER` 型の列とそのまま対応します。
 

@@ -27,18 +27,19 @@ type Props = {
 // -------------------------------------------------
 // データベースに保存されている英語のステータス値を
 // 日本語の表示ラベルに変換します。
-// 例: "unread" → "未読"
+// 例: "want_to_read" → "読みたい"
+// 値とラベルは第7章の StatusBadge と同じにそろえています。
 // -------------------------------------------------
 // 引数 status は文字列、戻り値も文字列
 function getStatusLabel(status: string): string {
   // Record<キーの型, 値の型> は「キーと値の型を指定したオブジェクト」を表す型
   const statusMap: Record<string, string> = {
-    // DB の値 "unread" を「未読」に対応付け
-    unread: "未読",
+    // DB の値 "want_to_read" を「読みたい」に対応付け
+    want_to_read: "読みたい",
     // DB の値 "reading" を「読書中」に対応付け
     reading: "読書中",
-    // DB の値 "finished" を「読了」に対応付け
-    finished: "読了",
+    // DB の値 "completed" を「読了」に対応付け
+    completed: "読了",
   };
   // 該当があれば日本語、無ければ元の値をそのまま返す（フォールバック）
   return statusMap[status] || status;
@@ -54,16 +55,16 @@ function getStatusLabel(status: string): string {
 function getStatusColor(status: string): string {
   // status の値で分岐
   switch (status) {
-    // 未読のとき
-    case "unread":
-      // 背景はグレー、文字は濃いグレー
-      return "bg-gray-100 text-gray-800";
+    // 読みたい（まだ読んでいない）とき
+    case "want_to_read":
+      // 背景は薄い黄、文字は濃い黄（第7章の StatusBadge と同じ色）
+      return "bg-yellow-100 text-yellow-800";
     // 読書中のとき
     case "reading":
       // 背景は薄い青、文字は濃い青
       return "bg-blue-100 text-blue-800";
     // 読了のとき
-    case "finished":
+    case "completed":
       // 背景は薄い緑、文字は濃い緑
       return "bg-green-100 text-green-800";
     // 想定外の値が来たとき
@@ -196,7 +197,7 @@ export default async function BookDetailPage({ params }: Props) {
       ------------------------------------------- */}
       <Link
         // 遷移先の URL
-        href="/books"
+        href="/"
         // インラインフレックスで矢印とテキストを横並びに
         className="inline-flex items-center text-sm text-blue-600 hover:text-blue-800 mb-6"
       >

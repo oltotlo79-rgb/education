@@ -1,0 +1,8 @@
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.88s
+     Running `C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/rust09/target\debug\rustnote.exe`
+RustNote を起動しました: http://127.0.0.1:3100
+GET / -> 200 OK (557.2µs)
+HEAD /_topcoat/assets/style-e9b983efabcfc6c3.css -> 200 OK (25.7704ms)
+[error] サーバーの中でエラーが起きました <- DB の操作に失敗しました <- SQLite failure: `no such table: users`
+POST /signup -> 500 Internal Server Error (690.4298ms)
+error: process didn't exit successfully: `C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/rust09/target\debug\rustnote.exe` (exit code: 1)

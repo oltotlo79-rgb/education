@@ -1,0 +1,14 @@
+   Compiling basics v0.1.0 (.../basics)
+error[E0433]: cannot find type `HashMap` in this scope
+ --> src\main.rs:2:22
+  |
+2 |     let mut counts = HashMap::new();
+  |                      ^^^^^^^ use of undeclared type `HashMap`
+  |
+help: consider importing this struct
+  |
+1 + use std::collections::HashMap;
+  |
+
+For more information about this error, try `rustc --explain E0433`.
+error: could not compile `basics` (bin "basics") due to 1 previous error

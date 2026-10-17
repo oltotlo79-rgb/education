@@ -1,0 +1,327 @@
+//// FILE: a_enum.rs
+// 一覧の絞り込み条件。3つのうち「どれか1つ」の値をとる
+#[derive(Debug, Clone, Copy, PartialEq)]
+enum Filter {
+    All,
+    Open,
+    Done,
+}
+
+// 絞り込み条件を、画面に出す日本語にする
+fn label(filter: Filter) -> &'static str {
+    match filter {
+        Filter::All => "すべて",
+        Filter::Open => "未完了",
+        Filter::Done => "完了済み",
+    }
+}
+
+fn main() {
+    let current = Filter::Open;
+    println!("{:?} → {}", current, label(current));
+    println!("未完了を選んでいる? {}", current == Filter::Open);
+
+    for f in [Filter::All, Filter::Open, Filter::Done] {
+        println!("- {}", label(f));
+    }
+}
+//// FILE: b_enum_data.rs
+// 操作の種類ごとに、持つデータの形が違う
+enum Command {
+    List,
+    Add(String),
+    Toggle(u64),
+    Rename { id: u64, title: String },
+    Quit,
+}
+
+fn describe(cmd: &Command) -> String {
+    match cmd {
+        Command::List => String::from("一覧を表示"),
+        // ( ) の中の値に名前を付けて取り出す
+        Command::Add(title) => format!("「{title}」を追加"),
+        Command::Toggle(id) => format!("#{id} の完了を切り替え"),
+        // { } の形のものは、フィールド名で取り出す
+        Command::Rename { id, title } => format!("#{id} を「{title}」に改名"),
+        Command::Quit => String::from("終了"),
+    }
+}
+
+fn main() {
+    let commands = vec![
+        Command::Add(String::from("牛乳を買う")),
+        Command::Toggle(1),
+        Command::Rename {
+            id: 1,
+            title: String::from("低脂肪乳を買う"),
+        },
+        Command::List,
+        Command::Quit,
+    ];
+    for cmd in &commands {
+        println!("{}", describe(cmd));
+    }
+}
+//// FILE: c_option.rs
+// keyword を含む最初のタイトルの位置を返す。見つからなければ None
+fn find_title(titles: &[&str], keyword: &str) -> Option<usize> {
+    for (i, title) in titles.iter().enumerate() {
+        if title.contains(keyword) {
+            return Some(i);
+        }
+    }
+    None
+}
+
+fn main() {
+    let titles = ["牛乳を買う", "Rust の勉強", "部屋の掃除"];
+
+    // match で Some と None の両方の場合を書く
+    match find_title(&titles, "Rust") {
+        Some(i) => println!("{i} 番目に見つかりました: {}", titles[i]),
+        None => println!("見つかりません"),
+    }
+
+    // if let: Some のときだけ処理したいとき
+    if let Some(i) = find_title(&titles, "掃除") {
+        println!("掃除は {i} 番目");
+    }
+
+    // unwrap_or: None のときに使う代わりの値を決める
+    let pos = find_title(&titles, "旅行").unwrap_or(999);
+    println!("旅行の位置（なければ 999）: {pos}");
+
+    // map: Some の中身だけを変換する（None は None のまま）
+    let shown = find_title(&titles, "牛乳").map(|i| i + 1);
+    println!("1 から数えた位置: {shown:?}");
+
+    // is_some: あるかないかだけを調べる
+    println!("旅行はある? {}", find_title(&titles, "旅行").is_some());
+}
+//// FILE: d_let_else.rs
+// "key=value" の形の文字列から value を取り出す。形が違えば None
+fn value_of(pair: &str) -> Option<&str> {
+    // split_once は、最初の '=' で2つに分ける。'=' がなければ None
+    let Some((_key, value)) = pair.split_once('=') else {
+        return None;
+    };
+    Some(value.trim())
+}
+
+fn main() {
+    println!("{:?}", value_of("page= 3"));
+    println!("{:?}", value_of("page"));
+}
+//// FILE: e_patterns.rs
+struct Point {
+    x: i32,
+    y: i32,
+}
+
+fn main() {
+    // 構造体を分解して、フィールドの値に名前を付ける
+    let p = Point { x: 3, y: -2 };
+    let Point { x, y } = p;
+    println!("x = {x}, y = {y}");
+
+    // match で構造体の「形」を調べる
+    let points = [
+        Point { x: 0, y: 0 },
+        Point { x: 0, y: 5 },
+        Point { x: 2, y: -1 },
+        Point { x: 4, y: 4 },
+    ];
+    for point in points {
+        let place = match point {
+            Point { x: 0, y: 0 } => "原点",
+            // .. は「残りのフィールドは何でもよい」
+            Point { x: 0, .. } => "y 軸の上",
+            Point { y, .. } if y < 0 => "x 軸より下",
+            _ => "その他",
+        };
+        println!("{place}");
+    }
+
+    // @ で「範囲に合った値」に名前を付ける
+    let age = 17;
+    match age {
+        n @ 0..=17 => println!("{n} 歳は未成年"),
+        n => println!("{n} 歳は成年"),
+    }
+
+    // matches! は「パターンに合うか」を true / false で返す
+    let c = 'b';
+    println!("小文字の英字? {}", matches!(c, 'a'..='z'));
+}
+//// FILE: f_parse_command.rs
+#[derive(Debug)]
+enum Command {
+    List,
+    Add(String),
+    Done(u64),
+    Quit,
+}
+
+// 1行の入力を Command に変換する。解釈できなければ None
+fn parse_command(line: &str) -> Option<Command> {
+    let line = line.trim();
+    // 最初の空白で「命令」と「残り」に分ける。空白がなければ残りは ""
+    let (word, rest) = line.split_once(' ').unwrap_or((line, ""));
+    let rest = rest.trim();
+    match word {
+        "list" => Some(Command::List),
+        "quit" => Some(Command::Quit),
+        // タイトルが空の add は受け付けない
+        "add" if !rest.is_empty() => Some(Command::Add(rest.to_string())),
+        "done" => match rest.parse::<u64>() {
+            Ok(id) => Some(Command::Done(id)),
+            Err(_) => None,
+        },
+        _ => None,
+    }
+}
+
+fn main() {
+    let inputs = ["list", "add 牛乳を買う", "add", "done 1", "done abc", "quit", "hello"];
+    for line in inputs {
+        println!("{line:?} → {:?}", parse_command(line));
+    }
+}
+//// FILE: g_rustnote.rs
+// URL の ?q= の値。付いていないこともあるので Option で受け取る
+fn search_query(raw: Option<&str>) -> Option<String> {
+    let Some(text) = raw else {
+        return None;
+    };
+    let text = text.trim();
+    // 空白だけの検索語は「検索なし」とみなす
+    if text.is_empty() {
+        None
+    } else {
+        Some(text.to_string())
+    }
+}
+
+fn main() {
+    let titles = ["牛乳を買う", "Rust の勉強", "Rust で CLI を作る"];
+    for raw in [None, Some("   "), Some(" Rust ")] {
+        match search_query(raw) {
+            None => println!("{raw:?} → 検索なし: {} 件すべて表示", titles.len()),
+            Some(q) => {
+                let mut hits = 0;
+                for title in titles {
+                    if title.contains(q.as_str()) {
+                        hits += 1;
+                    }
+                }
+                println!("{raw:?} → 「{q}」で検索: {hits} 件");
+            }
+        }
+    }
+}
+//// FILE: err1_e0004.rs
+enum Filter {
+    All,
+    Open,
+    Done,
+}
+
+fn label(filter: Filter) -> &'static str {
+    match filter {
+        Filter::All => "すべて",
+        Filter::Open => "未完了",
+    }
+}
+
+fn main() {
+    println!("{}", label(Filter::Done));
+}
+//// FILE: err2_unwrap.rs
+fn find_title(titles: &[&str], keyword: &str) -> Option<usize> {
+    for (i, title) in titles.iter().enumerate() {
+        if title.contains(keyword) {
+            return Some(i);
+        }
+    }
+    None
+}
+
+fn main() {
+    let titles = ["牛乳を買う", "Rust の勉強"];
+    let i = find_title(&titles, "旅行").unwrap();
+    println!("{}", titles[i]);
+}
+//// FILE: err3_some.rs
+// 偶数なら半分を返す。奇数なら None
+fn half(n: u32) -> Option<u32> {
+    if n % 2 == 0 { n / 2 } else { None }
+}
+
+fn main() {
+    println!("{:?}", half(10));
+}
+//// FILE: err4_option_add.rs
+fn main() {
+    let stock: Option<i32> = Some(3);
+    let next = stock + 1;
+    println!("{next}");
+}
+//// FILE: ex1.rs
+enum Filter {
+    All,
+    Open,
+    Done,
+    Archived,
+}
+
+fn label(filter: Filter) -> &'static str {
+    match filter {
+        Filter::All => "すべて",
+        Filter::Open => "未完了",
+        Filter::Done => "完了済み",
+        Filter::Archived => "アーカイブ",
+    }
+}
+
+fn main() {
+    for f in [Filter::All, Filter::Open, Filter::Done, Filter::Archived] {
+        println!("{}", label(f));
+    }
+}
+//// FILE: ex2.rs
+// 最初の1文字を返す。空文字列なら None
+fn first_char(text: &str) -> Option<char> {
+    text.chars().next()
+}
+
+fn main() {
+    for text in ["Rust", "日本語", ""] {
+        match first_char(text) {
+            Some(c) => println!("{text:?} の最初の文字: {c}"),
+            None => println!("{text:?} は空です"),
+        }
+    }
+    println!("代わりの値: {}", first_char("").unwrap_or('?'));
+}
+//// FILE: ex3.rs
+#[derive(Debug)]
+enum Filter {
+    All,
+    Open,
+    Done,
+}
+
+fn parse_filter(text: &str) -> Option<Filter> {
+    match text {
+        "all" => Some(Filter::All),
+        "open" => Some(Filter::Open),
+        "done" => Some(Filter::Done),
+        _ => None,
+    }
+}
+
+fn main() {
+    for text in ["open", "done", "everything"] {
+        println!("{text} → {:?}", parse_filter(text));
+    }
+}

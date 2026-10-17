@@ -1,0 +1,10 @@
+<!-- ↓ Tailwind の典型的なレスポンシブ指定 -->
+<!-- flex          : 中の子要素を flex レイアウトで並べる（これが無いと下の2つは効かない） -->
+<!-- flex-col      : flex レイアウトで「縦並び」（column）にする -->
+<!-- md:flex-row   : 「md」接頭辞は 768px 以上で適用。横並び（row）に切り替わる -->
+<!-- ※ flex-col と md:flex-row の両方を書くことで、 -->
+<!--   「小さい画面では縦、大きくなったら横」と動的に切り替わる -->
+<div class="flex flex-col md:flex-row">
+  <!-- スマホ: 縦並び（flex-col） -->
+  <!-- 768px 以上（md）: 横並び（flex-row） -->
+</div>

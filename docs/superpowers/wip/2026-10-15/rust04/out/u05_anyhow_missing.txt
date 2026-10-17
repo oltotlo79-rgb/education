@@ -1,5 +1,5 @@
    Compiling design_lab v0.1.0 (...\design_lab)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.54s
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.41s
      Running `target\debug\u05_anyhow.exe missing.txt`
 Error: シードの投入に失敗しました
 

@@ -1,0 +1,11 @@
+> cargo run
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+   Compiling hello-rust v0.1.0 (C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust01\rust-study\hello-rust)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 12.93s
+     Running `target\debug\hello-rust.exe`
+Hello, Rust!
+OS          : windows
+CPU         : aarch64
+パッケージ  : hello-rust 0.1.0

@@ -1,0 +1,9 @@
+   Compiling note_layers v0.1.0 (...\note_layers)
+error[E0432]: unresolved import `crate::routes`
+ --> src\main.rs:4:12
+  |
+4 | use crate::routes::create_note;
+  |            ^^^^^^ could not find `routes` in the crate root
+
+For more information about this error, try `rustc --explain E0432`.
+error: could not compile `note_layers` (bin "note_layers") due to 1 previous error

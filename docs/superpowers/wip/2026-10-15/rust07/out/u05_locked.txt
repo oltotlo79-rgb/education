@@ -1,0 +1,3 @@
+① 待たない b: Err(SqliteFailure(5, "database is locked"))
+② a が COMMIT（314 ミリ秒後）
+② 待つ b: Ok(1)（330 ミリ秒待った）

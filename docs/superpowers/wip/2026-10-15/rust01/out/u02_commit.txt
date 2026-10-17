@@ -1,0 +1,8 @@
+[main (root-commit) d779d78] 最初のコミット
+ 6 files changed, 36 insertions(+)
+ create mode 100644 .env.example
+ create mode 100644 .gitattributes
+ create mode 100644 .gitignore
+ create mode 100644 Cargo.toml
+ create mode 100644 check.ps1
+ create mode 100644 src/main.rs

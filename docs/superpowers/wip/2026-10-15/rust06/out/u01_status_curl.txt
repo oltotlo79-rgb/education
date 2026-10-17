@@ -1,0 +1,75 @@
+### curl.exe -i http://127.0.0.1:3000/
+HTTP/1.1 200 OK
+Content-Type: text/plain; charset=utf-8
+Content-Length: 25
+
+トップページです
+
+### curl.exe -i http://127.0.0.1:3000/nothing
+HTTP/1.1 404 Not Found
+Content-Type: text/plain; charset=utf-8
+Content-Length: 34
+
+ページが見つかりません
+
+### curl.exe -i http://127.0.0.1:3000/admin
+HTTP/1.1 403 Forbidden
+Content-Type: text/plain; charset=utf-8
+Content-Length: 28
+
+ここは見られません
+
+### curl.exe -i http://127.0.0.1:3000/old-page
+HTTP/1.1 301 Moved Permanently
+Content-Type: text/plain; charset=utf-8
+Content-Length: 0
+Location: /
+
+
+### curl.exe -i -X DELETE http://127.0.0.1:3000/
+HTTP/1.1 405 Method Not Allowed
+Content-Type: text/plain; charset=utf-8
+Content-Length: 31
+Allow: GET
+
+その方法は使えません
+
+### curl.exe -i -d message=hello http://127.0.0.1:3000/messages
+HTTP/1.1 303 See Other
+Content-Type: text/plain; charset=utf-8
+Content-Length: 0
+Location: /
+
+
+### curl.exe -i -L -d message=hello http://127.0.0.1:3000/messages
+HTTP/1.1 303 See Other
+Content-Type: text/plain; charset=utf-8
+Content-Length: 0
+Location: /
+
+HTTP/1.1 200 OK
+Content-Type: text/plain; charset=utf-8
+Content-Length: 25
+
+トップページです
+
+### curl.exe -i -L -X POST -d message=hello http://127.0.0.1:3000/messages
+HTTP/1.1 303 See Other
+Content-Type: text/plain; charset=utf-8
+Content-Length: 0
+Location: /
+
+HTTP/1.1 405 Method Not Allowed
+Content-Type: text/plain; charset=utf-8
+Content-Length: 31
+Allow: GET
+
+その方法は使えません
+
+### curl.exe -I http://127.0.0.1:3000/
+HTTP/1.1 405 Method Not Allowed
+Content-Type: text/plain; charset=utf-8
+Content-Length: 31
+Allow: GET
+
+

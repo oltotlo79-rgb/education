@@ -1,0 +1,42 @@
+（準備: sql/schema.sql の 2 文を実行しました）
+（準備: sql/seed.sql の 2 文を実行しました）
+sql> SELECT id, titel FROM notes
+エラー: SQLite failure: `no such column: titel`
+
+sql> SELECT * FROM note
+エラー: SQLite failure: `no such table: note`
+
+sql> SELECT id, email, title FROM notes JOIN users ON users.id = notes.user_id
+エラー: SQLite failure: `ambiguous column name: id`
+
+sql> SELECT NULL = NULL AS eq, NULL IS NULL AS is_null, 1 = NULL AS one_eq_null
++------+---------+-------------+
+| eq   | is_null | one_eq_null |
++------+---------+-------------+
+| NULL | 1       | NULL        |
++------+---------+-------------+
+(1 行)
+
+sql> SELECT id, title FROM notes WHERE title = "title"
++----+--------------+
+| id | title        |
++----+--------------+
+| 1  | 買い物リスト |
+| 2  | Rust の勉強  |
+| 3  | 旅行の計画   |
+| 4  | 読書メモ     |
+| 5  | 買い物       |
+| 6  | SQL の練習   |
+| 7  | 100% 達成    |
+| 8  | ジムの予定   |
++----+--------------+
+(8 行)
+
+sql> SELECT id, title FROM notes WHERE title = "買い物"
++----+--------+
+| id | title  |
++----+--------+
+| 5  | 買い物 |
++----+--------+
+(1 行)
+

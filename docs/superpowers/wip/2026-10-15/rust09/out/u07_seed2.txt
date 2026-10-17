@@ -1,0 +1,3 @@
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.37s
+     Running `target\debug\examples\seed.exe`
+demo@example.com は登録済みなので、何もしません

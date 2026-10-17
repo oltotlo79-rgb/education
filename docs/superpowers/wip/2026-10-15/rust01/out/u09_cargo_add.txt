@@ -1,0 +1,54 @@
+> cargo add libsql@=0.10.0
+    Updating crates.io index
+      Adding libsql =0.10.0 to dependencies
+             Features:
+             + core
+             + hrana
+             + libsql-sys
+             + parser
+             + remote
+             + replication
+             + serde
+             + stream
+             + sync
+             + tls
+             - cloudflare
+             - encryption
+             - wasm
+    Blocking waiting for file lock on package cache
+    Updating crates.io index
+    Blocking waiting for file lock on package cache
+     Locking 211 packages to highest Rust 1.99.0 compatible versions
+      Adding generic-array v0.14.7 (available: v0.14.9)
+> cargo add tokio --features rt-multi-thread,macros
+    Blocking waiting for file lock on package cache
+    Updating crates.io index
+      Adding tokio v1.53.3 to dependencies
+             Features:
+             + macros
+             + rt
+             + rt-multi-thread
+             + tokio-macros
+             - bytes
+             - fs
+             - full
+             - io-std
+             - io-uring
+             - io-util
+             - libc
+             - mio
+             - net
+             - parking_lot
+             - process
+             - schedule-latency
+             - signal
+             - signal-hook-registry
+             - socket2
+             - sync
+             - taskdump
+             - test-util
+             - time
+             - tracing
+             - windows-sys
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache

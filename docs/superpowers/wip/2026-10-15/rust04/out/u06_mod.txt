@@ -1,5 +1,5 @@
    Compiling design_lab v0.1.0 (...\design_lab)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.96s
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.68s
      Running `target\debug\u06_mod.exe`
 図書館に本を返す (version 2)
 owner_id は同じ crate なので読める: 1

@@ -1,0 +1,18 @@
+   Compiling practice v0.1.0 (C:\Users\you\rust-study\practice)
+error[E0277]: cannot multiply `u32` by `{float}`
+ --> src\main.rs:4:26
+  |
+4 |     let with_tax = price * 1.08;
+  |                          ^ no implementation for `u32 * {float}`
+  |
+  = help: the trait `Mul<{float}>` is not implemented for `u32`
+  = help: the following other types implement trait `Mul<Rhs>`:
+            `&u32` implements `Mul<u32>`
+            `&u32` implements `Mul`
+            `u32` implements `Mul<&u32>`
+            `u32` implements `Mul<Duration>`
+            `u32` implements `Mul`
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `practice` (bin "practice") due to 1 previous error
+[exit=101]

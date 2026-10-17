@@ -21,7 +21,7 @@ export default function SearchBar() {
   const router = useRouter();
   // 現在の ?q=... を読むため
   const searchParams = useSearchParams();
-  // 現在のパス（例: /books）を取得
+  // 現在のパス（一覧ページなら /）を取得
   const pathname = usePathname();
 
   // -------------------------------------------------
@@ -60,8 +60,8 @@ export default function SearchBar() {
       // -------------------------------------------------
       // 値が空の場合はパラメータを削除し、
       // URLをクリーンに保ちます。
-      // 例: /books?q=React&status=reading
-      //     検索クエリが空なら /books?status=reading
+      // 例: /?q=React&status=reading
+      //     検索クエリが空なら /?status=reading
       // -------------------------------------------------
       // 空白以外の文字が含まれていれば
       if (query.trim()) {
@@ -196,9 +196,9 @@ export default function SearchBar() {
             className="block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
           >
             <option value="">すべてのステータス</option>
-            <option value="unread">未読</option>
+            <option value="want_to_read">読みたい</option>
             <option value="reading">読書中</option>
-            <option value="finished">読了</option>
+            <option value="completed">読了</option>
           </select>
         </div>
 

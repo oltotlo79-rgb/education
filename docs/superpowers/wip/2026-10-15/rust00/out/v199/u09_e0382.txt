@@ -1,0 +1,20 @@
+   Compiling practice v0.1.0 (C:\Users\you\rust-study\practice)
+error[E0382]: borrow of moved value: `title`
+ --> src\main.rs:5:24
+  |
+2 |     let title = String::from("牛乳を買う");
+  |         ----- move occurs because `title` has type `String`, which does not implement the `Copy` trait
+3 |     let saved = title;
+  |                 ----- value moved here
+4 |     println!("保存したタイトル: {saved}");
+5 |     println!("元のタイトル: {title}");
+  |                              ^^^^^ value borrowed here after move
+  |
+help: consider cloning the value if the performance cost is acceptable
+  |
+3 |     let saved = title.clone();
+  |                      ++++++++
+
+For more information about this error, try `rustc --explain E0382`.
+error: could not compile `practice` (bin "practice") due to 1 previous error
+[exit=101]

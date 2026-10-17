@@ -1,7 +1,6 @@
 ▲ Next.js 16.4.1
 - Local:         http://localhost:3000
 - Network:       http://192.168.210.103:3000
-✓ Ready in 180ms
-✓ Running next.config.ts took 42ms
-[RootLayout] サーバーで描画しました
-[RootLayout] サーバーで描画しました
+✓ Ready in 144ms
+✓ Running next.config.ts took 38ms
+[addBook] 「達人プログラマー」を追加しました（全2冊）

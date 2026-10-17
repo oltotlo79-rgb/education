@@ -1,0 +1,2 @@
+2行目: 郵便局へ行く / Highlight { line_no: 2, text: "郵便局へ行く" }
+exit=0

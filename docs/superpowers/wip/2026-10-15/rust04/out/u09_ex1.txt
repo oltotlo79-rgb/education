@@ -1,0 +1,3 @@
+None -> Ok(Development)
+Some("production") -> Ok(Production)
+Some("prod") -> Err("APP_ENV の値 \"prod\" が正しくありません（development か production）")

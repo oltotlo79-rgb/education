@@ -1,0 +1,6 @@
+> cargo install topcoat-cli --version 0.10.0 --locked
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Updating crates.io index
+error: cannot install package `topcoat-cli 0.10.0`, it requires rustc 1.98 or newer, while the currently active rustc version is 1.97.1
+`topcoat-cli 0.6.2` supports rustc 1.95

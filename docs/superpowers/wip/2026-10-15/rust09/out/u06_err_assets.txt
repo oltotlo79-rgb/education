@@ -1,0 +1,7 @@
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.39s
+     Running `target\debug\rustnote.exe`
+Error: アセットの束（assets/）がありません。先に `topcoat asset bundle` を実行するか、`topcoat dev` で起動してください
+
+Caused by:
+    no asset bundle at target\debug\assets
+error: process didn't exit successfully: `target\debug\rustnote.exe` (exit code: 1)

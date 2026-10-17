@@ -1,0 +1,26 @@
+http://127.0.0.1:3060 で待っています（Ctrl+C で終了）
+GET /
+  -> 200 OK
+GET /nothing
+  -> 404 Not Found
+GET /admin
+  -> 403 Forbidden
+GET /old-page
+  -> 301 Moved Permanently
+DELETE /
+  -> 405 Method Not Allowed
+POST /messages
+  本文: message=hello
+  -> 303 See Other
+POST /messages
+  本文: message=hello
+  -> 303 See Other
+GET /
+  -> 200 OK
+POST /messages
+  本文: message=hello
+  -> 303 See Other
+POST /
+  -> 405 Method Not Allowed
+HEAD /
+  -> 405 Method Not Allowed

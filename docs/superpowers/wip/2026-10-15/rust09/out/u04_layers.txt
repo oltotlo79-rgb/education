@@ -1,0 +1,6 @@
+   Compiling note_layers v0.1.0 (...\note_layers)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.02s
+     Running `target\debug\note_layers.exe`
+303 → /notes/1
+400 タイトルは1〜80文字です（現在0文字）
+保存されたタイトル: ["牛乳を買う"]

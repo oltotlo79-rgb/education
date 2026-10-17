@@ -1,4 +1,4 @@
 合計: 3750 円
 金額が大きすぎます
 ID 42 を使います
-ID -7 は使えません: out of range integral type conversion attempted
+ID -7 は使えません: number too small to fit in target type

@@ -1,0 +1,21 @@
+error[E0521]: borrowed data escapes outside of function
+ --> src\bin\u06_err_force_static.rs:2:5
+  |
+1 | fn remember(cache: &mut Vec<&'static str>, text: &str) {
+  |             -----                          ----  - let's call the lifetime of this reference `'1`
+  |             |                              |
+  |             |                              `text` is a reference that is only valid in the function body
+  |             `cache` declared here, outside of the function body
+2 |     cache.push(text);
+  |     ^^^^^^^^^^^^^^^^
+  |     |
+  |     `text` escapes the function body here
+  |     argument requires that `'1` must outlive `'static`
+  |
+  = note: requirement occurs because of a mutable reference to `Vec<&str>`
+  = note: mutable references are invariant over their type parameter
+  = help: see <https://doc.rust-lang.org/nomicon/subtyping.html> for more information about variance
+
+For more information about this error, try `rustc --explain E0521`.
+error: could not compile `ownership-lab` (bin "u06_err_force_static") due to 1 previous error
+exit=101

@@ -1,0 +1,7 @@
+Could not start libsql-server.
+To install it, follow the instructions at https://github.com/tursodatabase/libsql/blob/main/docs/BUILD-RUN.md
+Also make sure sqld is on your PATH
+Error: exec: "sqld": executable file not found in $PATH
+total 16
+drwxr-xr-x  2 yuya yuya  4096 Oct 17 14:16 .
+drwxrwxrwt 48 root root 12288 Oct 17 14:16 ..

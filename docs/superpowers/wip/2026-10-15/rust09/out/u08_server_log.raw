@@ -1,0 +1,24 @@
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.29s
+     Running `C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/rust09/target\debug\rustnote.exe`
+マイグレーションを適用しました: 0001_users
+マイグレーションを適用しました: 0002_notes
+マイグレーションを適用しました: 0003_sessions
+RustNote を起動しました: http://127.0.0.1:3100
+GET /notes -> 303 See Other (1.2513ms)
+GET /notes -> 303 See Other (280.9µs)
+GET / -> 200 OK (487.5µs)
+GET /notes -> 303 See Other (264.4µs)
+POST /signup -> 303 See Other (596.6727ms)
+GET /notes -> 200 OK (4.4949ms)
+POST /notes -> 303 See Other (7.7371ms)
+GET /notes/1 -> 200 OK (5.2297ms)
+GET /notes/1/edit -> 200 OK (4.5457ms)
+POST /notes/1/edit -> 303 See Other (7.7245ms)
+POST /notes/1/toggle -> 303 See Other (6.5936ms)
+GET /notes/abc -> 404 Not Found (3.1879ms)
+GET /notes/999 -> 404 Not Found (4.5654ms)
+POST /notes/1/delete -> 303 See Other (6.3048ms)
+POST /logout -> 303 See Other (6.3814ms)
+GET /nope -> 404 Not Found (278.9µs)
+[error] サーバーの中でエラーが起きました <- DB の操作に失敗しました <- SQLite failure: `no such table: users`
+POST /signup -> 500 Internal Server Error (632.4546ms)

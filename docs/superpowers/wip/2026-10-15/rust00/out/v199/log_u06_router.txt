@@ -1,0 +1,7 @@
+http://127.0.0.1:8080 で待っています（止めるには Ctrl+C）
+GET /health -> 200 OK
+GET /notes -> 404 Not Found
+POST /health -> 404 Not Found
+GET / -> 200 OK
+GET /favicon.ico -> 404 Not Found
+  -> 404 Not Found

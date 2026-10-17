@@ -1,0 +1,50 @@
+   Compiling async_lab v0.1.0 (...\async_lab)
+error[E0277]: `Password` doesn't implement `Debug`
+   --> src\bin\e09_instrument_debug.rs:6:1
+    |
+  6 | #[instrument]
+    | ^^^^^^^^^^^^^ the trait `Debug` is not implemented for `Password`
+    |
+    = note: required for `&Password` to implement `Debug`
+note: required by a bound in `debug`
+   --> ...\tracing-core-0.1.36\src\field.rs:379:8
+    |
+377 | pub fn debug<T>(t: T) -> DebugValue<T>
+    |        ----- required by a bound in this function
+378 | where
+379 |     T: fmt::Debug,
+    |        ^^^^^^^^^^ required by this bound in `debug`
+    = note: this error originates in the attribute macro `instrument` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: consider annotating `Password` with `#[derive(Debug)]`
+    |
+  4 + #[derive(Debug)]
+  5 | struct Password(String);
+    |
+
+error[E0277]: `Password` doesn't implement `Debug`
+   --> src\bin\e09_instrument_debug.rs:6:1
+    |
+  6 | #[instrument]
+    | ^^^^^^^^^^^^^ the trait `Debug` is not implemented for `Password`
+    |
+help: the trait `Value` is conditionally implemented for `DebugValue<T>`
+   --> ...\tracing-core-0.1.36\src\field.rs:744:1
+    |
+744 | / impl<T> Value for DebugValue<T>
+745 | | where
+746 | |     T: fmt::Debug,
+    | |________----------^
+    |          |
+    |          unsatisfied requirement introduced here: `&Password: Debug`
+    = note: required for `&Password` to implement `Debug`
+    = note: required for `DebugValue<&Password>` to implement `Value`
+    = note: required for the cast from `&DebugValue<&Password>` to `&dyn Value`
+    = note: this error originates in the macro `$crate::valueset_all` which comes from the expansion of the attribute macro `instrument` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: consider annotating `Password` with `#[derive(Debug)]`
+    |
+  4 + #[derive(Debug)]
+  5 | struct Password(String);
+    |
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `async_lab` (bin "e09_instrument_debug") due to 2 previous errors

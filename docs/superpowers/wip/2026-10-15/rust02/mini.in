@@ -1,0 +1,12 @@
+help
+add 牛乳を買う
+add   Rust の勉強  
+add
+list
+done 1
+done 9
+find Rust
+del 2
+list
+hello
+quit

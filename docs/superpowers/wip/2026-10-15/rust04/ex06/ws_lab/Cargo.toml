@@ -1,0 +1,12 @@
+[workspace]
+resolver = "3"
+members = ["crates/app", "crates/domain", "crates/seed"]
+
+# メンバー全員で共有する package の設定
+[workspace.package]
+edition = "2024"
+rust-version = "1.98"
+
+# メンバー全員で版をそろえる依存クレート
+[workspace.dependencies]
+thiserror = "2.0.21"

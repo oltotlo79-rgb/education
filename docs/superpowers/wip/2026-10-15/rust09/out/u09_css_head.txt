@@ -1,0 +1,7 @@
+HTTP/1.1 200 OK
+content-type: text/css
+cache-control: public, max-age=31536000, immutable
+vary: accept-encoding
+content-length: 4659
+date: Sat, 17 Oct 2026 05:12:10 GMT
+

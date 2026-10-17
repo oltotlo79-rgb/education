@@ -1,5 +1,5 @@
    Compiling design_lab v0.1.0 (...\design_lab)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.57s
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.26s
      Running `target\debug\u03_generic.exe`
 Some(9)
 Some(1.5)

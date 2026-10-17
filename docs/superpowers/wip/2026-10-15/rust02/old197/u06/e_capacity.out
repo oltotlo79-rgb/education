@@ -1,0 +1,11 @@
+最初: len = 0, capacity = 0
+push(1) 後: len = 1, capacity = 4
+push(2) 後: len = 2, capacity = 4
+push(3) 後: len = 3, capacity = 4
+push(4) 後: len = 4, capacity = 4
+push(5) 後: len = 5, capacity = 8
+push(6) 後: len = 6, capacity = 8
+push(7) 後: len = 7, capacity = 8
+push(8) 後: len = 8, capacity = 8
+push(9) 後: len = 9, capacity = 16
+with_capacity(100): len = 0, capacity = 100

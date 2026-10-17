@@ -1,0 +1,9 @@
+error[E0515]: cannot return reference to local variable `title`
+ --> src\bin\u05_err_return_local.rs:3:5
+  |
+3 |     &title
+  |     ^^^^^^ returns a reference to data owned by the current function
+
+For more information about this error, try `rustc --explain E0515`.
+error: could not compile `ownership-lab` (bin "u05_err_return_local") due to 1 previous error
+exit=101

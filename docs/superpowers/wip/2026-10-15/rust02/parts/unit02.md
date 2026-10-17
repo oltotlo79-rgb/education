@@ -98,29 +98,7 @@
 > **▼ このコードがやること（先に日本語で）:** 整数・小数・真偽値・文字の値を作って表示し、いくつかの整数型の「最小値と最大値」と、文字型が使うバイト数を調べます。
 
 ```rust
-fn main() {
-    // 整数: 型を書かなければ i32 になる
-    let temperature = -5;
-    // 型を書いて決める。u8 は 0〜255 の整数
-    let level: u8 = 200;
-    // 数字の後ろに型名を付けて決める書き方もある
-    let big = 3_000_000_000u64;
-    // 小数: 型を書かなければ f64 になる
-    let ratio = 0.75;
-    // 真偽値: true か false のどちらか
-    let done = false;
-    // 文字: シングルクォート ' で1文字だけを囲む
-    let mark = 'あ';
-
-    println!("{temperature} {level} {big} {ratio} {done} {mark}");
-
-    // 型ごとの最小値と最大値
-    println!("i32: {} 〜 {}", i32::MIN, i32::MAX);
-    println!("u8 : {} 〜 {}", u8::MIN, u8::MAX);
-    println!("u64 の最大: {}", u64::MAX);
-    // その型が何バイトを使うか
-    println!("char は {} バイト", std::mem::size_of::<char>());
-}
+@@CODE u02/a_types.rs@@
 ```
 
 ```powershell
@@ -130,11 +108,7 @@ cargo run
 **▼ 実行結果**
 
 ```text
--5 200 3000000000 0.75 false あ
-i32: -2147483648 〜 2147483647
-u8 : 0 〜 255
-u64 の最大: 18446744073709551615
-char は 4 バイト
+@@OUT u02/a_types@@
 ```
 
 #### ▼ コードを1つずつ分解して解説
@@ -182,32 +156,20 @@ println!("char は {} バイト", std::mem::size_of::<char>());
 > **▼ このコードがやること（先に日本語で）:** 0〜255 しか入らない `u8` の 255 に 1 を足して、はみ出したらどうなるかを確かめます。
 
 ```rust
-fn main() {
-    // 文字列から作った値（コンパイルの時点では中身が分からない値）
-    let stock: u8 = "255".parse().unwrap();
-    println!("在庫: {stock}");
-    // u8 の最大は 255。1 を足すと入りきらない
-    let next = stock + 1;
-    println!("次: {next}");
-}
+@@CODE u02/b_overflow_panic.rs@@
 ```
 
 **▼ 実行結果**（画面に出る全文）
 
 ```text
-在庫: 255
-
-thread 'main' (19992) panicked at src\main.rs:6:16:
-attempt to add with overflow
-note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
-error: process didn't exit successfully: `target\debug\basics.exe` (exit code: 101)
+@@RUN u02/b_overflow_panic@@
 ```
 
 #### ▼ コードを1つずつ分解して解説
 
 ##### 解説1: panic（パニック）とは
 
-- **panic** は「これ以上安全に続けられないので、プログラムを止めます」という Rust の非常停止です。`attempt to add with overflow` は「足し算がはみ出そうとした」という意味、`src\main.rs:6:16` は止まった場所（6行目16文字目）です。`(19992)` はスレッドの番号で、実行のたびに変わります。
+- **panic** は「これ以上安全に続けられないので、プログラムを止めます」という Rust の非常停止です。`attempt to add with overflow` は「足し算がはみ出そうとした」という意味、`src\main.rs:6:16` は止まった場所（6行目16文字目）です。`thread 'main'` の後ろのかっこ内の数はスレッド（処理の流れ）の番号で、実行のたびに変わります。
 - `cargo run` で作られる**開発用ビルド（debug）**では、はみ出しを検出して止めてくれます。
 - `cargo run --release` の**リリースビルド**では検査を省くため、止まらずに**黙って一周**します（このコードなら `次: 0` と表示されました）。どちらにしても、はみ出しは「起きないように書く」か「起きたら気づけるように書く」べきものです。
 
@@ -221,28 +183,13 @@ error: process didn't exit successfully: `target\debug\basics.exe` (exit code: 1
 > **▼ このコードがやること（先に日本語で）:** 250 に 10 を足す計算を、「一周する」「失敗を知らせる」「上限で止める」など4通りのやり方で行い、結果を見比べます。
 
 ```rust
-fn main() {
-    let stock: u8 = 250;
-    // wrapping_add: はみ出したら 0 に戻って数え直す（時計の針のように一周する）
-    println!("wrapping_add:    {}", stock.wrapping_add(10));
-    // checked_add: はみ出したら None（計算できなかった）を返す
-    println!("checked_add:     {:?}", stock.checked_add(10));
-    println!("checked_add(5):  {:?}", stock.checked_add(5));
-    // saturating_add: はみ出したら最大値で止める
-    println!("saturating_add:  {}", stock.saturating_add(10));
-    // overflowing_add: 一周した結果と「はみ出したかどうか」の両方を返す
-    println!("overflowing_add: {:?}", stock.overflowing_add(10));
-}
+@@CODE u02/c_overflow_methods.rs@@
 ```
 
 **▼ 実行結果**
 
 ```text
-wrapping_add:    4
-checked_add:     None
-checked_add(5):  Some(255)
-saturating_add:  255
-overflowing_add: (4, true)
+@@OUT u02/c_overflow_methods@@
 ```
 
 #### ▼ コードを1つずつ分解して解説
@@ -272,36 +219,13 @@ println!("checked_add:     {:?}", stock.checked_add(10));
 > **▼ このコードがやること（先に日本語で）:** 300 を `u8` に、-1 を `u32` に、3.99 を整数に変換してみます。`as` だと数が化けてしまうこと、`TryFrom` なら「入らない」ことを教えてくれることを確かめます。
 
 ```rust
-fn main() {
-    // as: 型を強制的に変換する。入りきらない分は黙って捨てられる
-    let big: i32 = 300;
-    let small = big as u8;
-    println!("300 as u8   = {small}");
-    let minus: i32 = -1;
-    println!("-1 as u32   = {}", minus as u32);
-    // 小数 → 整数は、小数点以下が切り捨てられる
-    println!("3.99 as i32 = {}", 3.99_f64 as i32);
-
-    // From: 必ず成功する変換（小さい型 → 大きい型）
-    let level: u8 = 200;
-    let wide = u32::from(level);
-    println!("u32::from(200u8) = {wide}");
-
-    // TryFrom: 失敗するかもしれない変換。結果は Ok(値) か Err(理由)
-    println!("u8::try_from(300) = {:?}", u8::try_from(big));
-    println!("u8::try_from(100) = {:?}", u8::try_from(100_i32));
-}
+@@CODE u02/d_as_tryfrom.rs@@
 ```
 
 **▼ 実行結果**
 
 ```text
-300 as u8   = 44
--1 as u32   = 4294967295
-3.99 as i32 = 3
-u32::from(200u8) = 200
-u8::try_from(300) = Err(TryFromIntError(PosOverflow))
-u8::try_from(100) = Ok(100)
+@@OUT u02/d_as_tryfrom@@
 ```
 
 #### ▼ コードを1つずつ分解して解説
@@ -323,41 +247,13 @@ u8::try_from(100) = Ok(100)
 > **▼ このコードがやること（先に日本語で）:** 0.1 + 0.2 がぴったり 0.3 にならないことを確かめ、誤差を許した比べ方と、表示の丸め方を試します。整数と小数の割り算の違いも見ます。
 
 ```rust
-fn main() {
-    // 型を f64 と書いておく（書かないと .abs() が使えない。下の「よくあるエラー」参照）
-    let a: f64 = 0.1;
-    let b: f64 = 0.2;
-    // 0.1 + 0.2 は、ぴったり 0.3 にはならない
-    println!("0.1 + 0.2 = {}", a + b);
-    println!("0.1 + 0.2 == 0.3 ? {}", a + b == 0.3);
-    // 小さな誤差を許して比べる
-    let close = (a + b - 0.3).abs() < 1e-9;
-    println!("ほぼ等しい ? {close}");
-    // 表示だけ小数点以下2桁にそろえる
-    println!("表示を丸める: {:.2}", a + b);
-
-    // 整数どうしの割り算は、小数点以下を切り捨てる
-    println!("7 / 2 = {}", 7 / 2);
-    // % は割り算の余り
-    println!("7 % 2 = {}", 7 % 2);
-    // 小数どうしなら、小数の答えになる
-    println!("7.0 / 2.0 = {}", 7.0 / 2.0);
-    // 小数を 0 で割ってもエラーにならず「無限大」になる
-    println!("1.0 / 0.0 = {}", 1.0_f64 / 0.0);
-}
+@@CODE u02/e_float.rs@@
 ```
 
 **▼ 実行結果**
 
 ```text
-0.1 + 0.2 = 0.30000000000000004
-0.1 + 0.2 == 0.3 ? false
-ほぼ等しい ? true
-表示を丸める: 0.30
-7 / 2 = 3
-7 % 2 = 1
-7.0 / 2.0 = 3.5
-1.0 / 0.0 = inf
+@@OUT u02/e_float@@
 ```
 
 #### ▼ コードを1つずつ分解して解説
@@ -379,38 +275,13 @@ fn main() {
 > **▼ このコードがやること（先に日本語で）:** ログイン状態を表す真偽値を組み合わせて判定し、文字を番号に変換したり、文字の種類を調べたりします。
 
 ```rust
-fn main() {
-    let logged_in = true;
-    let is_owner = false;
-    // && は「かつ」、|| は「または」、! は「ではない」
-    println!("編集できる: {}", logged_in && is_owner);
-    println!("閲覧できる: {}", logged_in || is_owner);
-    println!("ログアウト中: {}", !logged_in);
-
-    // char は Unicode の1文字。番号（コードポイント）に変換できる
-    let c = 'あ';
-    println!("'{c}' の番号: {} (16進数で {:X})", c as u32, c as u32);
-    // 番号から char に戻す（存在しない番号もあるので、結果は Some か None）
-    println!("0x41 は {:?}", char::from_u32(0x41));
-    // 数字の文字を数に変換する
-    println!("'7' を数に: {:?}", '7'.to_digit(10));
-    // 文字の種類を調べる
-    println!("'A' は英字? {}", 'A'.is_alphabetic());
-    println!("'あ' は ASCII の英数字? {}", 'あ'.is_ascii_alphanumeric());
-}
+@@CODE u02/f_bool_char.rs@@
 ```
 
 **▼ 実行結果**
 
 ```text
-編集できる: false
-閲覧できる: true
-ログアウト中: false
-'あ' の番号: 12354 (16進数で 3042)
-0x41 は Some('A')
-'7' を数に: Some(7)
-'A' は英字? true
-'あ' は ASCII の英数字? false
+@@OUT u02/f_bool_char@@
 ```
 
 #### ▼ コードを1つずつ分解して解説
@@ -435,44 +306,13 @@ fn main() {
 > **▼ このコードがやること（先に日本語で）:** 単価（円）×個数を、はみ出しを検出しながら計算します。続いて、データベースから届いた `i64` の ID を、マイナスなら拒否しながら `u64` へ変換します。
 
 ```rust
-fn main() {
-    // 金額は小数ではなく「円（整数）」で持つ
-    let unit_price: u32 = 1_250;
-    // 個数はフォームから u16 で届いたとする
-    let quantity: u16 = 3;
-
-    // u16 → u32 は必ず成功するので From を使う
-    let quantity = u32::from(quantity);
-    // 掛け算がはみ出したら None になる checked_mul を使う
-    match unit_price.checked_mul(quantity) {
-        Some(total) => println!("合計: {total} 円"),
-        None => println!("金額が大きすぎます"),
-    }
-
-    // 極端に大きな個数も試す
-    let huge: u32 = 4_000_000;
-    match unit_price.checked_mul(huge) {
-        Some(total) => println!("合計: {total} 円"),
-        None => println!("金額が大きすぎます"),
-    }
-
-    // データベースの ID は i64 で届くことが多い。負の値は ID として不正
-    for raw_id in [42_i64, -7] {
-        match u64::try_from(raw_id) {
-            Ok(id) => println!("ID {id} を使います"),
-            Err(e) => println!("ID {raw_id} は使えません: {e}"),
-        }
-    }
-}
+@@CODE u02/g_price.rs@@
 ```
 
 **▼ 実行結果**
 
 ```text
-合計: 3750 円
-金額が大きすぎます
-ID 42 を使います
-ID -7 は使えません: out of range integral type conversion attempted
+@@OUT u02/g_price@@
 ```
 
 #### ▼ コードを1つずつ分解して解説
@@ -491,7 +331,7 @@ match unit_price.checked_mul(quantity) {
 
 ##### 解説2: `try_from` の `Err` を表示する
 
-- `u64::try_from(-7)` は失敗し、`Err(e)` の `e` に理由が入ります。`{e}` で表示すると `out of range integral type conversion attempted`（範囲外の整数変換が試みられた）という説明になります。
+- `u64::try_from(-7)` は失敗し、`Err(e)` の `e` に理由が入ります。`{e}` で表示すると `number too small to fit in target type`（数が小さすぎて変換先の型に入らない）という説明になります。大きすぎるときは `number too large to fit in target type` です。
 - `for raw_id in [42_i64, -7]` は「42 と -7 で1回ずつ同じ処理をくり返す」書き方です（UNIT 04）。
 
 ### よくあるエラーと読み方
@@ -499,50 +339,11 @@ match unit_price.checked_mul(quantity) {
 #### エラー1: E0308 / E0277 違う整数型どうしを足した
 
 ```rust
-fn main() {
-    let count: i32 = 10;
-    let total: i64 = 1_000;
-    let sum = count + total;
-    println!("{sum}");
-}
+@@CODE u02/err1_mix.rs@@
 ```
 
 ```text
-   Compiling basics v0.1.0 (.../basics)
-error[E0308]: mismatched types
- --> src\main.rs:4:23
-  |
-4 |     let sum = count + total;
-  |                       ^^^^^ expected `i32`, found `i64`
-
-error[E0277]: cannot add `i64` to `i32`
- --> src\main.rs:4:21
-  |
-4 |     let sum = count + total;
-  |                     ^ no implementation for `i32 + i64`
-  |
-  = help: the trait `Add<i64>` is not implemented for `i32`
-help: the following other types implement trait `Add<Rhs>`
- --> /rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library\core\src\ops\arith.rs:98:8
-  |
-  = note: `i32` implements `Add`
- ::: /rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library\core\src\ops\arith.rs:113:0
-  |
-  = note: in this macro invocation
- --> /rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library\core\src\internal_macros.rs:22:8
-  |
-  = note: `&i32` implements `Add<i32>`
- ::: /rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library\core\src\internal_macros.rs:33:8
-  |
-  = note: `i32` implements `Add<&i32>`
- ::: /rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library\core\src\internal_macros.rs:44:8
-  |
-  = note: `&i32` implements `Add`
-  = note: this error originates in the macro `add_impl` (in Nightly builds, run with -Z macro-backtrace for more info)
-
-Some errors have detailed explanations: E0277, E0308.
-For more information about an error, try `rustc --explain E0277`.
-error: could not compile `basics` (bin "basics") due to 2 previous errors
+@@ERR u02/err1_mix@@
 ```
 
 - **読み方:** 長く見えますが、大事なのは最初の2つの見出しだけです。`expected i32, found i64`（i32 が来るはずが i64 が来た）と `cannot add i64 to i32`（i32 に i64 は足せない）。後半の `help:` は「i32 に足せる型の一覧」なので、慣れるまでは読み飛ばしてかまいません。
@@ -552,24 +353,11 @@ error: could not compile `basics` (bin "basics") due to 2 previous errors
 #### エラー2: 型の範囲を超える数を直接書いた
 
 ```rust
-fn main() {
-    let level: u8 = 256;
-    println!("{level}");
-}
+@@CODE u02/err2_literal.rs@@
 ```
 
 ```text
-   Compiling basics v0.1.0 (.../basics)
-error: literal out of range for `u8`
- --> src\main.rs:2:21
-  |
-2 |     let level: u8 = 256;
-  |                     ^^^
-  |
-  = note: the literal `256` does not fit into the type `u8` whose range is `0..=255`
-  = note: `#[deny(overflowing_literals)]` on by default
-
-error: could not compile `basics` (bin "basics") due to 1 previous error
+@@ERR u02/err2_literal@@
 ```
 
 - **何が起きたか:** `256` は `u8` の範囲 `0..=255`（0以上255以下）に入りません。直接書いた数（**リテラル**）なら、コンパイラが事前に見つけてくれます。
@@ -578,29 +366,11 @@ error: could not compile `basics` (bin "basics") due to 1 previous error
 #### エラー3: E0600 符号なしの型にマイナスを入れた
 
 ```rust
-fn main() {
-    let stock: u32 = -1;
-    println!("{stock}");
-}
+@@CODE u02/err3_neg.rs@@
 ```
 
 ```text
-   Compiling basics v0.1.0 (.../basics)
-error[E0600]: cannot apply unary operator `-` to type `u32`
- --> src\main.rs:2:22
-  |
-2 |     let stock: u32 = -1;
-  |                      ^^ cannot apply unary operator `-`
-  |
-  = note: unsigned values cannot be negated
-help: you may have meant the maximum value of `u32`
-  |
-2 -     let stock: u32 = -1;
-2 +     let stock: u32 = u32::MAX;
-  |
-
-For more information about this error, try `rustc --explain E0600`.
-error: could not compile `basics` (bin "basics") due to 1 previous error
+@@ERR u02/err3_neg@@
 ```
 
 - **何が起きたか:** `u32` は 0 以上しか表せないので、`-`（マイナス記号）が使えません。`help` は「最大値のつもりでしたか？」と推測していますが、多くの場合の正解は**マイナスも入る型（`i32` など）にする**ことです。
@@ -608,35 +378,11 @@ error: could not compile `basics` (bin "basics") due to 1 previous error
 #### エラー4: E0277 整数を小数で割った
 
 ```rust
-fn main() {
-    let total = 7;
-    let half = total / 2.0;
-    println!("{half}");
-}
+@@CODE u02/err4_int_float.rs@@
 ```
 
 ```text
-   Compiling basics v0.1.0 (.../basics)
-error[E0277]: cannot divide `{integer}` by `{float}`
- --> src\main.rs:3:22
-  |
-3 |     let half = total / 2.0;
-  |                      ^ no implementation for `{integer} / {float}`
-  |
-  = help: the trait `Div<{float}>` is not implemented for `{integer}`
-  = help: the following other types implement trait `Div<Rhs>`:
-            `&f128` implements `Div<f128>`
-            `&f128` implements `Div`
-            `&f16` implements `Div<f16>`
-            `&f16` implements `Div`
-            `&f32` implements `Div<f32>`
-            `&f32` implements `Div`
-            `&f64` implements `Div<f64>`
-            `&f64` implements `Div`
-          and 62 others
-
-For more information about this error, try `rustc --explain E0277`.
-error: could not compile `basics` (bin "basics") due to 1 previous error
+@@ERR u02/err4_int_float@@
 ```
 
 - **何が起きたか:** 整数（`{integer}`）と小数（`{float}`）は混ぜて計算できません。`{integer}` は「まだ i32 か u8 かは決まっていないが、整数のどれか」という意味です。
@@ -647,24 +393,11 @@ error: could not compile `basics` (bin "basics") due to 1 previous error
 例5で型を書かずに `.abs()` を呼ぶと、エラーになります。
 
 ```rust
-fn main() {
-    let a = 0.1;
-    let b = 0.2;
-    let diff = (a + b - 0.3).abs();
-    println!("{diff}");
-}
+@@CODE u02/err5_ambiguous.rs@@
 ```
 
 ```text
-   Compiling basics v0.1.0 (.../basics)
-error[E0689]: can't call method `abs` on ambiguous numeric type `{float}`
- --> src\main.rs:4:30
-  |
-4 |     let diff = (a + b - 0.3).abs();
-  |                              ^^^
-
-For more information about this error, try `rustc --explain E0689`.
-error: could not compile `basics` (bin "basics") due to 1 previous error
+@@ERR u02/err5_ambiguous@@
 ```
 
 - **何が起きたか:** `{float}` は「f32 か f64 か、まだ決まっていない小数」です。型が決まらないと、どの型の `abs` を呼べばよいか分かりません。
@@ -677,31 +410,13 @@ RustNote のノート一覧は1ページに20件ずつ表示し、URL の `?page
 > **▼ このコードがやること（先に日本語で）:** いろいろな `?page=` の値を `u32` に変換し、そのページで「先頭から何件を飛ばすか」を計算します。
 
 ```rust
-// 1ページに表示するノートの件数
-const PER_PAGE: u32 = 20;
-
-fn main() {
-    // URL の ?page= に入ってくる文字列をいくつか試す
-    for raw in ["1", "3", "0", "-2", "abc"] {
-        // 数（u32）にできなければ 1 ページ目とみなす
-        let page: u32 = raw.parse().unwrap_or(1);
-        // 0 ページ目は存在しないので、最低でも 1 にそろえる
-        let page = page.max(1);
-        // 先頭から何件を飛ばして表示するか
-        let offset = (page - 1) * PER_PAGE;
-        println!("?page={raw} → {page} ページ目, {offset} 件飛ばす");
-    }
-}
+@@CODE u02/h_rustnote.rs@@
 ```
 
 **▼ 実行結果**
 
 ```text
-?page=1 → 1 ページ目, 0 件飛ばす
-?page=3 → 3 ページ目, 40 件飛ばす
-?page=0 → 1 ページ目, 0 件飛ばす
-?page=-2 → 1 ページ目, 0 件飛ばす
-?page=abc → 1 ページ目, 0 件飛ばす
+@@OUT u02/h_rustnote@@
 ```
 
 - `u32` で受け取ると、`-2` は**数への変換の時点で失敗する**ので、マイナスのページが紛れ込みません。型を選ぶことが、そのまま入力チェックになっています。
@@ -721,20 +436,13 @@ fn main() {
 **解答1.**
 
 ```rust
-fn main() {
-    let x: u8 = 200;
-    println!("{:?}", x.checked_add(100));
-    println!("{}", x.wrapping_add(100));
-    println!("{}", x.saturating_add(100));
-}
+@@CODE u02/ex1.rs@@
 ```
 
 **▼ 実行結果**
 
 ```text
-None
-44
-255
+@@OUT u02/ex1@@
 ```
 
 - 本当の答え 300 は 255 を超えます。`checked_add` は `None`、`wrapping_add` は 300 − 256 = 44、`saturating_add` は上限の 255 です。
@@ -742,22 +450,13 @@ None
 **解答2.**
 
 ```rust
-fn main() {
-    for raw in [8080_i64, 70000, -1] {
-        match u16::try_from(raw) {
-            Ok(port) => println!("{raw}: ポート {port} を使います"),
-            Err(e) => println!("{raw}: 使えません（{e}）"),
-        }
-    }
-}
+@@CODE u02/ex2.rs@@
 ```
 
 **▼ 実行結果**
 
 ```text
-8080: ポート 8080 を使います
-70000: 使えません（out of range integral type conversion attempted）
--1: 使えません（out of range integral type conversion attempted）
+@@OUT u02/ex2@@
 ```
 
 - `u16` は 0〜65535 なので、70000 も -1 も入りません。`as u16` を使っていたら 70000 は 4464 に化けて、別のポートで起動してしまうところでした。
@@ -765,22 +464,13 @@ fn main() {
 **解答3.**
 
 ```rust
-fn main() {
-    let a: u32 = 80;
-    let b: u32 = 95;
-    let c: u32 = 72;
-    // 合計は整数のまま計算する
-    let sum = a + b + c;
-    // 割る直前に f64 へ変換する
-    let average = sum as f64 / 3.0;
-    println!("平均: {average:.1} 点");
-}
+@@CODE u02/ex3.rs@@
 ```
 
 **▼ 実行結果**
 
 ```text
-平均: 82.3 点
+@@OUT u02/ex3@@
 ```
 
 - `sum / 3` のまま割ると整数の割り算で 82 になってしまいます。割る直前に `as f64` で小数にするのがポイントです。`{average:.1}` は「小数点以下1桁」の書式です。

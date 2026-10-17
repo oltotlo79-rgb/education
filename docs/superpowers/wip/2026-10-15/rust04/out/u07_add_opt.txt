@@ -1,0 +1,30 @@
+    Updating crates.io index
+      Adding serde v1.0.229 to optional dependencies
+             Features:
+             + derive
+             + serde_derive
+             + std
+             - alloc
+             - rc
+             - unstable
+      Adding feature `serde`
+    Updating crates.io index
+     Locking 7 packages to highest Rust 1.99.0 compatible versions
+    Updating crates.io index
+      Adding serde_json v1.0.154 to optional dependencies
+             Features:
+             + std
+             - alloc
+             - arbitrary_precision
+             - float_roundtrip
+             - indexmap
+             - preserve_order
+             - raw_value
+             - unbounded_depth
+      Adding feature `serde_json`
+    Updating crates.io index
+     Locking 4 packages to highest Rust 1.99.0 compatible versions
+      Adding itoa v1.0.18
+      Adding memchr v2.8.3
+      Adding serde_json v1.0.154
+      Adding zmij v1.0.23

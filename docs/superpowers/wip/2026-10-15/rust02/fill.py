@@ -49,7 +49,17 @@ def repl(m):
         return strip_status(err, drop_compiling=True)
     if kind == "RUN":
         e = strip_status(err, drop_compiling=True)
-        return (out + "\n" + e).strip("\n") if e else out
+        if not e:
+            return out
+        if not out:
+            return e
+        kept = [
+            line
+            for line in err.split("\n")
+            if not line.strip().startswith(("Finished ", "Running ", "Compiling "))
+        ]
+        lead = "\n" if kept and kept[0].strip() == "" else ""
+        return out + "\n" + lead + e
     raise SystemExit("unknown kind " + kind)
 
 

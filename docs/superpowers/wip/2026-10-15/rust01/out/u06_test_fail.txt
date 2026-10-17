@@ -1,0 +1,26 @@
+> cargo test
+   Compiling quality-check v0.1.0 (C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust01\rust-study\quality-check)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.43s
+     Running unittests src\lib.rs (target\debug\deps\quality_check-6f17ed3c6a6ff512.exe)
+
+running 4 tests
+test tests::accepts_exactly_80_chars ... FAILED
+test tests::rejects_81_chars ... ok
+test tests::rejects_blank_title ... ok
+test tests::accepts_japanese_title ... ok
+
+failures:
+
+---- tests::accepts_exactly_80_chars stdout ----
+
+thread 'tests::accepts_exactly_80_chars' (53492) panicked at src\lib.rs:40:9:
+80 文字は OK のはず
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    tests::accepts_exactly_80_chars
+
+test result: FAILED. 3 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--lib`

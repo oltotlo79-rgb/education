@@ -1,20 +1,22 @@
-fn main() {
-    // (タイトル, 完了したか) のタプルを並べた Vec
-    let notes: Vec<(&str, bool)> = vec![
-        ("牛乳を買う", true),
-        ("Rust の勉強", false),
-        ("部屋の掃除", false),
-    ];
-    // 件数は、ループで notes を使い切る前に数えておく
-    let total = notes.len();
-
-    let mut done_count = 0;
-    for (title, done) in notes {
-        let mark = if done { "[x]" } else { "[ ]" };
-        println!("{mark} {title}");
-        if done {
-            done_count += 1;
+// 空でない並びから、いちばん大きい値を返す
+fn largest(values: &[i32]) -> i32 {
+    let mut max = values[0];
+    for v in values {
+        // v は &i32（借りた値）なので、*v で中の値を取り出して比べる
+        if *v > max {
+            max = *v;
         }
     }
-    println!("{total} 件中 {done_count} 件完了");
+    max
+}
+
+fn main() {
+    // 配列を渡す
+    println!("{}", largest(&[3, 9, -2, 7]));
+    // Vec を渡す
+    let mut temps = Vec::new();
+    temps.push(-5);
+    temps.push(-1);
+    temps.push(-8);
+    println!("{}", largest(&temps));
 }

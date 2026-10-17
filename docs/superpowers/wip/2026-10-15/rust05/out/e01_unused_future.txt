@@ -1,0 +1,14 @@
+   Compiling async_lab v0.1.0 (...\async_lab)
+warning: unused implementer of `Future` that must be used
+ --> src\bin\e01_unused_future.rs:8:5
+  |
+8 |     save_note();
+  |     ^^^^^^^^^^^
+  |
+  = note: futures do nothing unless you `.await` or poll them
+  = note: `#[warn(unused_must_use)]` (part of `#[warn(unused)]`) on by default
+
+warning: `async_lab` (bin "e01_unused_future") generated 1 warning
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.73s
+     Running `target\debug\e01_unused_future.exe`
+終わり

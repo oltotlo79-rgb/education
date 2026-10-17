@@ -1,0 +1,12 @@
+   Compiling rustnote_lab v0.1.0 (...\rustnote_lab)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.31s
+     Running `target\debug\u09_contrast.exe`
+OK 17.06 : 1（必要 4.5）本文の文字 #0f172a / #f8fafc
+OK  4.55 : 1（必要 4.5）補足の文字（更新日時） #64748b / #f8fafc
+OK  5.18 : 1（必要 4.5）リンク・副ボタン #c2410c / #ffffff
+OK  5.18 : 1（必要 4.5）主ボタンの文字 #ffffff / #c2410c
+OK  7.31 : 1（必要 4.5）主ボタン（hover） #ffffff / #9a3412
+OK  5.21 : 1（必要 4.5）成功のお知らせ #047857 / #ecfdf5
+OK  4.84 : 1（必要 4.5）注意のお知らせ #b45309 / #fffbeb
+OK  4.83 : 1（必要 4.5）エラーの文字 #dc2626 / #ffffff
+NG  1.23 : 1（必要 3.0）入力欄の枠線 #e2e8f0 / #ffffff

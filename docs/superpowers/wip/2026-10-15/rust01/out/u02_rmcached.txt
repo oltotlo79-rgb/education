@@ -1,0 +1,4 @@
+$ git rm --cached .env
+rm '.env'
+$ git status --short
+D  .env

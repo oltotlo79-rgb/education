@@ -1,0 +1,4 @@
+i/lf    w/lf    attr/                 	.env.example
+i/lf    w/lf    attr/                 	.gitignore
+i/lf    w/lf    attr/                 	Cargo.toml
+i/lf    w/lf    attr/                 	src/main.rs

@@ -1,0 +1,11 @@
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 6.26s
+     Running `C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/rust09/target\debug\rustnote.exe`
+Error: DB（data/rustnote.db）を開けませんでした
+
+Caused by:
+    Failed to connect to database: `Unable to open connection to local database data/rustnote.db: 14`
+error: process didn't exit successfully: `C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/rust09/target\debug\rustnote.exe` (exit code: 1)

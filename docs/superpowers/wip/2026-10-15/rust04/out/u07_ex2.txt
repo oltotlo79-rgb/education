@@ -1,0 +1,3 @@
+[text] 牛乳を買う / 低脂肪のもの
+[csv] "牛乳を買う","低脂肪のもの"
+markdown=false json=false

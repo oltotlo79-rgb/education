@@ -1,0 +1,3 @@
+Get-NetTCPConnection -LocalPort 8080 -State Listen | Select-Object LocalAddress, LocalPort, State, OwningProcess
+Get-Process -Id (Get-NetTCPConnection -LocalPort 8080 -State Listen).OwningProcess
+netstat -ano | findstr :8080

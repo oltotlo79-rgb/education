@@ -1,0 +1,6 @@
+--- before UTF8 setting:
+shift_jis
+--- after:
+<h1>�m�[�g</h1>
+%E8%B2%B7%E3%81%84%E7%89%A9%20100%25
+5.1.26100.9457

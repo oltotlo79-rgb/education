@@ -1,0 +1,18 @@
+> cargo clippy --all-targets -- -D warnings
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Checking quality-check v0.1.0 (C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust01\rust-study\quality-check)
+error: manual `RangeInclusive::contains` implementation
+  --> src\lib.rs:20:9
+   |
+20 |         count >= 1 && count <= MAX_TITLE_CHARS
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: use: `(1..=MAX_TITLE_CHARS).contains(&count)`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#manual_range_contains
+   = note: `-D clippy::manual-range-contains` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[allow(clippy::manual_range_contains)]`
+
+error: could not compile `quality-check` (lib) due to 1 previous error
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `quality-check` (lib test) due to 1 previous error
+（終了コード: 101）

@@ -1,0 +1,7 @@
+検索: q=[milk] page=2
+検索: q=[book] page=1
+検索: q=[] page=3
+履歴: q=[milk] page=2
+履歴: q=[book] page=1
+履歴: q=[] page=3
+exit=0

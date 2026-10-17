@@ -1,0 +1,15 @@
+[ ] #10 牛乳を買う（本文 6 文字）
+[x] #10 牛乳を買う（本文 6 文字）
+alice のノート? true
+bob のノート? false
+Note {
+    id: NoteId(
+        10,
+    ),
+    user_id: UserId(
+        1,
+    ),
+    title: "牛乳を買う",
+    body: "低脂肪のもの",
+    done: true,
+}

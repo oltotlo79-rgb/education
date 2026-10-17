@@ -1,0 +1,20 @@
+error[E0277]: the size for values of type `(dyn Notifier + 'static)` cannot be known at compilation time
+ --> src\bin\u08_err_unsized_param.rs:5:16
+  |
+5 | fn announce(n: dyn Notifier) {
+  |                ^^^^^^^^^^^^ doesn't have a size known at compile-time
+  |
+  = help: the trait `Sized` is not implemented for `(dyn Notifier + 'static)`
+help: you can use `impl Trait` as the argument type
+  |
+5 - fn announce(n: dyn Notifier) {
+5 + fn announce(n: impl Notifier) {
+  |
+help: function arguments must have a statically known size, borrowed types always have a known size
+  |
+5 | fn announce(n: &dyn Notifier) {
+  |                +
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `ownership-lab` (bin "u08_err_unsized_param") due to 1 previous error
+exit=101

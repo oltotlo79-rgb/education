@@ -1,0 +1,8 @@
+-- ① 始めていないのに COMMIT
+COMMIT;
+-- ② BEGIN の中でもう一度 BEGIN
+BEGIN;
+BEGIN;
+ROLLBACK;
+-- ③ ROLLBACK の後にもう一度 ROLLBACK
+ROLLBACK;

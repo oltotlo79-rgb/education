@@ -1,5 +1,5 @@
    Compiling design_lab v0.1.0 (...\design_lab)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.85s
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.03s
      Running `target\debug\u04_dyn.exe`
 --- テキスト ---
 牛乳を買う

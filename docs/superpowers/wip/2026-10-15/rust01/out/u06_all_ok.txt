@@ -1,0 +1,30 @@
+> cargo fmt --check
+（終了コード: 0）
+> cargo clippy --all-targets -- -D warnings
+    Checking quality-check v0.1.0 (C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust01\rust-study\quality-check)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.25s
+> cargo test
+   Compiling quality-check v0.1.0 (C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust01\rust-study\quality-check)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.51s
+     Running unittests src\lib.rs (target\debug\deps\quality_check-6f17ed3c6a6ff512.exe)
+
+running 4 tests
+test tests::accepts_japanese_title ... ok
+test tests::rejects_81_chars ... ok
+test tests::accepts_exactly_80_chars ... ok
+test tests::rejects_blank_title ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests quality_check
+
+running 1 test
+test src\lib.rs - is_valid_title (line 13) ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+all doctests ran in 0.53s; merged doctests compilation took 0.45s
+> cargo doc --no-deps
+ Documenting quality-check v0.1.0 (C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust01\rust-study\quality-check)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.35s
+   Generated C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust01\rust-study\quality-check\target\doc\quality_check\index.html

@@ -1,0 +1,9 @@
+   Compiling practice v0.1.0 (C:\Users\you\rust-study\practice)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.28s
+     Running `target\debug\practice.exe`
+
+thread 'main' (50284) panicked at src\main.rs:6:26:
+index out of bounds: the len is 3 but the index is 10
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+error: process didn't exit successfully: `target\debug\practice.exe` (exit code: 101)
+[exit=101]

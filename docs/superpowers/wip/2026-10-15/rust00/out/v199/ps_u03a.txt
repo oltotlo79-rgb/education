@@ -1,0 +1,62 @@
+PS C:\Users\you> Get-Location
+
+Path
+----
+C:\Users\you\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-...
+
+
+PS C:\Users\you> mkdir shell-practice
+
+
+    ディレクトリ: C:\Users\you\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344d
+    ebc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust00\home
+
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d-----        2026/10/17     11:30                shell-practice
+
+
+PS C:\Users\you> cd shell-practice
+PS C:\Users\you\shell-practice> Set-Content memo.txt "はじめての PowerShell" -Encoding utf8
+PS C:\Users\you\shell-practice> ls
+
+
+    ディレクトリ: C:\Users\you\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344d
+    ebc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust00\home\shell-practice
+
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        2026/10/17     11:30             31 memo.txt
+
+
+PS C:\Users\you\shell-practice> cat memo.txt
+はじめての PowerShell
+PS C:\Users\you\shell-practice> Copy-Item memo.txt memo-backup.txt
+PS C:\Users\you\shell-practice> ls
+
+
+    ディレクトリ: C:\Users\you\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344d
+    ebc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust00\home\shell-practice
+
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        2026/10/17     11:30             31 memo-backup.txt
+-a----        2026/10/17     11:30             31 memo.txt
+
+
+PS C:\Users\you\shell-practice> Remove-Item memo-backup.txt
+PS C:\Users\you\shell-practice> cd ..
+PS C:\Users\you> cargo --version
+cargo 1.99.0 (5f94df478 2026-08-27)
+PS C:\Users\you> rustc --version
+rustc 1.99.0 (b940084d7 2026-09-28)
+PS C:\Users\you> Get-Command cargo
+
+CommandType     Name                                               Version    Source
+-----------     ----                                               -------    ------
+Application     cargo.exe                                          0.0.0.0    C:\Users\you\.car...
+
+

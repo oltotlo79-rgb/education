@@ -1,0 +1,48 @@
+# GitHub Actions の CI 設定の例。
+# 使うときは、リポジトリの .github/workflows/ci.yml にコピーする。
+# RustNote のフォルダがリポジトリの一番上なら、working-directory と workspaces の行を消す。
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: Rust/rustnote
+    steps:
+      - uses: actions/checkout@v7
+
+      # rust-toolchain.toml と同じ 1.99.0 を入れる
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: 1.99.0
+          components: rustfmt, clippy
+
+      # 依存クレートのビルド結果をキャッシュして、2 回目から速くする
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: Rust/rustnote
+
+      - name: 整形の確認
+        run: cargo fmt --check
+
+      - name: Clippy（警告もエラーとして扱う）
+        run: cargo clippy --all-targets --locked -- -D warnings
+
+      - name: テスト
+        run: cargo test --locked
+
+  docker:
+    # テストが通ったら、コンテナイメージがビルドできるかも確かめる
+    needs: test
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - name: docker build
+        run: docker build -t rustnote Rust/rustnote

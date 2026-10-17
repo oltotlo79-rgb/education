@@ -1,0 +1,22 @@
+   Compiling basics v0.1.0 (.../basics)
+error[E0603]: tuple struct constructor `NoteTitle` is private
+  --> src\main.rs:13:23
+   |
+ 2 |     pub struct NoteTitle(String);
+   |                          ------ a constructor is private if any of the fields is private
+...
+13 |     let title = note::NoteTitle(String::new());
+   |                       ^^^^^^^^^ private tuple struct constructor
+   |
+note: the tuple struct constructor `NoteTitle` is defined here
+  --> src\main.rs:2:5
+   |
+ 2 |     pub struct NoteTitle(String);
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+help: consider making the field publicly accessible
+   |
+ 2 |     pub struct NoteTitle(pub String);
+   |                          +++
+
+For more information about this error, try `rustc --explain E0603`.
+error: could not compile `basics` (bin "basics") due to 1 previous error

@@ -1,0 +1,25 @@
+⚠ Port 3000 is in use by process 50292, using available port 3001 instead.
+▲ Next.js 16.4.1 (Turbopack)
+- Local:         http://localhost:3001
+- Network:       http://192.168.210.103:3001
+✓ Ready in 2.9s
+✓ Running next.config.ts took 59ms
+
+○ Compiling / ...
+⨯ Error: 環境変数 NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY が設定されていません。.env.local ファイルを確認してください。
+    at createClient (lib\supabase\server.ts:18:11)
+    at Page (app\page.tsx:4:38)
+  16 |   // どちらかが空なら、原因と直し方が分かるメッセージでわざと止める
+  17 |   if (!supabaseUrl || !supabaseKey) {
+> 18 |     throw new Error(
+     |           ^
+  19 |       "環境変数 NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY が設定されていません。" +
+  20 |         ".env.local ファイルを確認してください。"
+  21 |     ); {
+  digest: '310640217'
+}
+ GET / 500 in 580ms (next.js: 259ms, application-code: 321ms)
+  Reload env: .env.local
+✓ Compiled in 26ms
+ GET / 200 in 7.5s (next.js: 61ms, application-code: 7.4s)
+[?25h

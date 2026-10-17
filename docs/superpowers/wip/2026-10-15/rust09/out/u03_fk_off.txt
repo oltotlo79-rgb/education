@@ -1,0 +1,5 @@
+   Compiling rustnote_lab v0.1.0 (...\rustnote_lab)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.88s
+     Running `target\debug\u03_fk_off.exe`
+Error: SqliteFailure(787, "FOREIGN KEY constraint failed")
+error: process didn't exit successfully: `target\debug\u03_fk_off.exe` (exit code: 1)

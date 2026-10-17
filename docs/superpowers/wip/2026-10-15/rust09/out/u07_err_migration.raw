@@ -1,0 +1,13 @@
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+   Compiling rustnote v0.1.0 (C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust09\rustnote)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1m 17s
+     Running `C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/rust09/target\debug\rustnote.exe`
+Error: マイグレーションに失敗しました
+
+Caused by:
+    0: マイグレーション 0004_tags に失敗しました
+    1: SQLite failure: `no such table: main.tag`
+error: process didn't exit successfully: `C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/rust09/target\debug\rustnote.exe` (exit code: 1)

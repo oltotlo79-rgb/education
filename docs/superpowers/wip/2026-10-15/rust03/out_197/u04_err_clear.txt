@@ -1,0 +1,13 @@
+error[E0502]: cannot borrow `s` as mutable because it is also borrowed as immutable
+  --> src\bin\u04_err_clear.rs:11:5
+   |
+10 |     let word = first_word(&s);
+   |                           -- immutable borrow occurs here
+11 |     s.clear();
+   |     ^^^^^^^^^ mutable borrow occurs here
+12 |     println!("word = {word}");
+   |                       ---- immutable borrow later used here
+
+For more information about this error, try `rustc --explain E0502`.
+error: could not compile `ownership-lab` (bin "u04_err_clear") due to 1 previous error
+exit=101

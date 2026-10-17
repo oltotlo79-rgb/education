@@ -1,0 +1,48 @@
+//! ノートのタイトルを調べる小さなライブラリ（品質コマンドの練習用）。
+
+/// タイトルに使える最大の文字数。
+pub const MAX_TITLE_CHARS: usize = 80;
+
+/// タイトルが 1〜80 文字なら `true` を返す。
+///
+/// 前後の空白は数えない。詳しくは [`NoteTitle`] を参照。
+///
+/// # 例
+///
+/// ```
+/// use quality_check::is_valid_title;
+///
+/// assert!(is_valid_title("買い物リスト"));
+/// assert!(!is_valid_title("   "));
+/// ```
+pub fn is_valid_title(title: &str) -> bool {
+    let count = title.trim().len();
+        count >= 1 && count <= MAX_TITLE_CHARS
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn accepts_japanese_title() {
+        assert!(is_valid_title("買い物リスト"));
+    }
+
+    #[test]
+    fn rejects_blank_title() {
+        assert!(!is_valid_title("   "));
+    }
+
+    #[test]
+    fn accepts_exactly_80_chars() {
+        let title = "あ".repeat(80);
+        assert!(is_valid_title(&title), "80 文字は OK のはず");
+    }
+
+    #[test]
+    fn rejects_81_chars() {
+        let title = "あ".repeat(81);
+        assert!(!is_valid_title(&title));
+    }
+}

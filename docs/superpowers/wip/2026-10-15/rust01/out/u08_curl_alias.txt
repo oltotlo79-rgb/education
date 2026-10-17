@@ -1,0 +1,7 @@
+curl : オブジェクト参照がオブジェクト インスタンスに設定されていません。
+発生場所 行:1 文字:1
++ curl http://127.0.0.1:3000/health
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [Invoke-WebRequest], NullReferenceException
+    + FullyQualifiedErrorId : System.NullReferenceException,Microsoft.PowerShell.Commands.InvokeWebRequestCommand
+ 

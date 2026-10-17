@@ -1,0 +1,3 @@
+① UPDATE（値が1つ足りない）: Ok(0)
+② INSERT（値が1つ足りない）: Err(SqliteFailure(1299, "NOT NULL constraint failed: notes.title"))
+③ この文の ? の数: 2

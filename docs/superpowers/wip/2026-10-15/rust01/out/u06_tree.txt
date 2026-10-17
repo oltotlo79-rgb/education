@@ -1,0 +1,14 @@
+> cargo tree --depth 1
+libsql-check v0.1.0 (C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust01\rust-study\libsql-check)
+├── libsql v0.10.0
+└── tokio v1.53.3
+> cargo tree -i ring
+ring v0.17.14
+├── rustls v0.22.4
+│   ├── hyper-rustls v0.25.0
+│   │   └── libsql v0.10.0
+│   │       └── libsql-check v0.1.0 (C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust01\rust-study\libsql-check)
+│   └── tokio-rustls v0.25.0
+│       └── hyper-rustls v0.25.0 (*)
+└── rustls-webpki v0.102.8
+    └── rustls v0.22.4 (*)

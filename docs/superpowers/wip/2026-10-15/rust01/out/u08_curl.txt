@@ -1,0 +1,18 @@
+> curl.exe -i http://127.0.0.1:3000/
+HTTP/1.1 200 OK
+content-type: text/html; charset=utf-8
+vary: Accept
+vary: accept-encoding
+content-length: 182
+date: Sat, 17 Oct 2026 05:11:52 GMT
+
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><title>Topcoat の確認</title></head><body><h1>Hello, Topcoat!</h1><p>環境構築ができました。</p></body></html>
+> curl.exe http://127.0.0.1:3000/health
+ok
+> curl.exe -i http://127.0.0.1:3000/nothing
+HTTP/1.1 404 Not Found
+content-type: text/plain; charset=utf-8
+content-length: 9
+date: Sat, 17 Oct 2026 05:11:53 GMT
+
+not found

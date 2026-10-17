@@ -1,0 +1,44 @@
+npm warn exec The following package was not found and will be installed: create-next-app@16.4.2
+Creating a new Next.js app in [32mC:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\next06\work2\book-management[39m.
+
+[1mUsing npm.[22m
+
+Initializing project with template: app-tw 
+
+
+Installing dependencies:
+- [36mnext[39m
+- [36mreact[39m
+- [36mreact-dom[39m
+
+Installing devDependencies:
+- [36m@tailwindcss/turbopack[39m
+- [36m@types/node[39m
+- [36m@types/react[39m
+- [36m@types/react-dom[39m
+- [36meslint[39m
+- [36meslint-config-next[39m
+- [36mtailwindcss[39m
+- [36mtypescript[39m
+
+npm warn deprecated eslint@9.39.5: This version is no longer supported. Please see https://eslint.org/version-support for other options.
+
+added 363 packages, and audited 364 packages in 5m
+
+145 packages are looking for funding
+  run `npm fund` for details
+
+5 high severity vulnerabilities
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+
+Generating route types...
+✓ Types generated successfully
+
+Initialized a git repository.
+
+[32mSuccess![39m Created book-management at C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\next06\work2\book-management
+

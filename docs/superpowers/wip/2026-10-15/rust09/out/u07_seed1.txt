@@ -1,0 +1,7 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 9.39s
+     Running `target\debug\examples\seed.exe`
+ノートを作りました: id=1 買い物
+ノートを作りました: id=2 Rust の復習
+ノートを作りました: id=3 100% やる
+ログイン: demo@example.com / demo-password

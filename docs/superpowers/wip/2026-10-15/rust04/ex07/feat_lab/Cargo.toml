@@ -1,0 +1,18 @@
+[package]
+name = "feat_lab"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.98"
+
+[dependencies]
+serde = { version = "1.0.229", features = ["derive"], optional = true }
+serde_json = { version = "1.0.154", optional = true }
+itoa = "1.0.18"
+
+[features]
+# 何も指定しないときに ON になる機能
+default = ["markdown"]
+# 依存を増やさない、コードだけの機能
+markdown = []
+# ON にすると serde と serde_json が依存に加わる
+json = ["dep:serde", "dep:serde_json"]

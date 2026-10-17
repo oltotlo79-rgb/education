@@ -1,0 +1,14 @@
+    Updating crates.io index
+     Locking 6 packages to highest Rust 1.98 compatible versions
+   Compiling proc-macro2 v1.0.107
+   Compiling quote v1.0.47
+   Compiling unicode-ident v1.0.27
+   Compiling thiserror v2.0.21
+   Compiling syn v3.0.9
+   Compiling thiserror-impl v2.0.21
+   Compiling domain v0.1.0 (...\domain)
+   Compiling app v0.1.0 (...\app)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 7.50s
+     Running `target\debug\app.exe`
+OK: 牛乳を買う
+NG: タイトルを入力してください

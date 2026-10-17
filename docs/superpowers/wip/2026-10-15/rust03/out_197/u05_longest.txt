@@ -1,0 +1,3 @@
+長いほう: ownership
+長いほう: lifetime annotation
+exit=0

@@ -1,0 +1,2 @@
+新しく適用したもの: ["0001_users", "0002_notes", "0003_sessions", "0004_notes_pinned", "0005_tags"]
+適用済みの版: ["0001_users", "0002_notes", "0003_sessions", "0004_notes_pinned", "0005_tags"]

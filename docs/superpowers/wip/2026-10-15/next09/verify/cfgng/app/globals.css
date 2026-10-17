@@ -1,0 +1,2 @@
+/* NG: app/globals.css が @import だけ → 上の設定ファイルは読まれない */
+@import "tailwindcss";

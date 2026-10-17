@@ -1,0 +1,46 @@
+book-management-app/
+├── app/
+│   ├── layout.tsx
+│   ├── page.tsx
+│   ├── globals.css
+│   ├── loading.tsx
+│   ├── error.tsx
+│   ├── api/
+│   │   └── health/
+│   │       └── route.ts
+│   └── books/
+│       ├── new/
+│       │   └── page.tsx
+│       └── [id]/
+│           ├── page.tsx
+│           ├── not-found.tsx
+│           └── edit/
+│               └── page.tsx
+├── components/
+│   ├── Header.tsx
+│   ├── BookCard.tsx
+│   ├── BookList.tsx
+│   ├── BookForm.tsx
+│   ├── DeleteButton.tsx
+│   ├── StatusBadge.tsx
+│   ├── RatingStars.tsx
+│   ├── LoadingSpinner.tsx
+│   ├── SearchBar.tsx
+│   └── SortSelect.tsx
+├── lib/
+│   └── supabase/
+│       ├── client.ts
+│       └── server.ts
+├── types/
+│   └── book.ts
+├── public/
+│   └── favicon.ico
+├── scripts/
+│   └── check-env.mjs
+├── .env.local
+├── .gitignore
+├── eslint.config.mjs
+├── next.config.ts
+├── package.json
+├── tsconfig.json
+└── README.md

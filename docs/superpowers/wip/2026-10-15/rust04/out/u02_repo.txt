@@ -1,5 +1,5 @@
    Compiling design_lab v0.1.0 (...\design_lab)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.64s
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.34s
      Running `target\debug\u02_repo.exe`
 Ok(NoteId(1))
 Ok(NoteId(2))

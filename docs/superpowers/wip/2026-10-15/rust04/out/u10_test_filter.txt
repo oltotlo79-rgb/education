@@ -1,0 +1,15 @@
+   Compiling note_domain v0.1.0 (...\note_domain)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.61s
+     Running unittests src\lib.rs (target\debug\deps\note_domain-5281fd8cc8224548.exe)
+
+running 1 test
+test status::tests::transition_table ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 7 filtered out; finished in 0.00s
+
+     Running tests\note_flow.rs (target\debug\deps\note_flow-e135a213709d78f8.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+

@@ -1,0 +1,8 @@
+C:\Windows\System32\curl.exe
+curl 8.21.0 (Windows) libcurl/8.21.0 Schannel zlib/1.3.2 WinIDN WinLDAP
+location: /notes/3
+location: /notes/4
+<a href="/notes/4">卵</a>
+<a href="/notes/3">牛乳</a>
+<a href="/notes/2">買い物</a>
+<a href="/notes/1">������</a>

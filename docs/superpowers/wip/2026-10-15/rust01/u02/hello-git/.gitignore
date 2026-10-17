@@ -1,0 +1,10 @@
+# ビルドの成果物（cargo build が作る）
+/target/
+
+# ローカルの SQLite / libSQL データベース
+*.db
+*.db-shm
+*.db-wal
+
+# 秘密の値を書いた環境変数ファイル（見本の .env.example だけを共有する）
+.env

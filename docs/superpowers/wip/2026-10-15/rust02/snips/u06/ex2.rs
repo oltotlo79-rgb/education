@@ -11,6 +11,12 @@ fn largest(values: &[i32]) -> i32 {
 }
 
 fn main() {
+    // 配列を渡す
     println!("{}", largest(&[3, 9, -2, 7]));
-    println!("{}", largest(&vec![-5, -1, -8]));
+    // Vec を渡す
+    let mut temps = Vec::new();
+    temps.push(-5);
+    temps.push(-1);
+    temps.push(-8);
+    println!("{}", largest(&temps));
 }

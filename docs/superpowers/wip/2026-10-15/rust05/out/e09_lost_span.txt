@@ -1,0 +1,6 @@
+   Compiling async_lab v0.1.0 (...\async_lab)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.91s
+     Running `target\debug\e09_lost_span.exe`
+[32m INFO[0m [1mrequest[0m[1m{[0m[3mrequest_id[0m[2m=[0m7[1m}[0m[2m:[0m [2me09_lost_span[0m[2m:[0m リクエストの処理を始めます
+[32m INFO[0m [2me09_lost_span[0m[2m:[0m ① 裏でメールを送りました
+[32m INFO[0m [1mrequest[0m[1m{[0m[3mrequest_id[0m[2m=[0m7[1m}[0m[2m:[0m [2me09_lost_span[0m[2m:[0m ② 裏でメールを送りました

@@ -1,0 +1,11 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.02s
+   Doc-tests note_domain
+
+running 3 tests
+test src\status.rs - status::NoteStatus::apply (line 40) ... ok
+test src\title.rs - title::NoteTitle::parse (line 35) ... ok
+test src\status.rs - status::NoteStatus::is_editable (line 63) ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+all doctests ran in 0.52s; merged doctests compilation took 0.42s

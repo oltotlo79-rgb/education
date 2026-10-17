@@ -1,0 +1,3 @@
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.88s
+     Running `target\debug\rustnote.exe`
+RustNote を起動しました: http://127.0.0.1:3100

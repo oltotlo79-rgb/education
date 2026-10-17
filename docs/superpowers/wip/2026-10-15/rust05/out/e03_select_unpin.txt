@@ -1,0 +1,64 @@
+   Compiling async_lab v0.1.0 (...\async_lab)
+error[E0277]: `PhantomPinned` cannot be unpinned
+  --> src\bin\e03_select_unpin.rs:9:9
+   |
+ 9 | /         tokio::select! {
+10 | |             // 同じ締め切りを、ループのたびに見張りたい
+11 | |             _ = &mut deadline => {
+12 | |                 println!("締め切りです");
+...  |
+19 | |         }
+   | |         ^
+   | |         |
+   | |_________within `(PhantomData<&()>, PhantomPinned)`, the trait `Unpin` is not implemented for `PhantomPinned`
+   |           required by a bound introduced by this call
+   |
+   = note: consider using the `pin!` macro
+           consider using `Box::pin` if you need to access the pinned value outside of the current scope
+   = note: required because it appears within the type `(PhantomData<&()>, PhantomPinned)`
+   = note: required for `Sleep` to implement `Unpin`
+   = note: required for `&mut Sleep` to implement `Future`
+   = note: required for `&mut Sleep` to implement `IntoFuture`
+   = note: this error originates in the macro `$crate::select` which comes from the expansion of the macro `tokio::select` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: `PhantomPinned` cannot be unpinned
+  --> src\bin\e03_select_unpin.rs:9:9
+   |
+ 9 | /         tokio::select! {
+10 | |             // 同じ締め切りを、ループのたびに見張りたい
+11 | |             _ = &mut deadline => {
+12 | |                 println!("締め切りです");
+...  |
+19 | |         }
+   | |         ^
+   | |         |
+   | |_________within `(PhantomData<&()>, PhantomPinned)`, the trait `Unpin` is not implemented for `PhantomPinned`
+   |           required by a bound introduced by this call
+   |
+   = note: consider using the `pin!` macro
+           consider using `Box::pin` if you need to access the pinned value outside of the current scope
+   = note: required because it appears within the type `(PhantomData<&()>, PhantomPinned)`
+   = note: required for `Sleep` to implement `Unpin`
+   = note: required for `&mut Sleep` to implement `Future`
+   = note: this error originates in the macro `$crate::select` which comes from the expansion of the macro `tokio::select` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: `PhantomPinned` cannot be unpinned
+  --> src\bin\e03_select_unpin.rs:9:9
+   |
+ 9 | /         tokio::select! {
+10 | |             // 同じ締め切りを、ループのたびに見張りたい
+11 | |             _ = &mut deadline => {
+12 | |                 println!("締め切りです");
+...  |
+19 | |         }
+   | |_________^ within `(PhantomData<&()>, PhantomPinned)`, the trait `Unpin` is not implemented for `PhantomPinned`
+   |
+   = note: consider using the `pin!` macro
+           consider using `Box::pin` if you need to access the pinned value outside of the current scope
+   = note: required because it appears within the type `(PhantomData<&()>, PhantomPinned)`
+   = note: required for `Sleep` to implement `Unpin`
+   = note: required for `&mut Sleep` to implement `Future`
+   = note: this error originates in the macro `$crate::select` which comes from the expansion of the macro `tokio::select` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `async_lab` (bin "e03_select_unpin") due to 3 previous errors

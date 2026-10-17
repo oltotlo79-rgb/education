@@ -1,0 +1,5 @@
+   Compiling practice v0.1.0 (C:\Users\you\rust-study\practice)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.24s
+     Running `target\debug\practice.exe`
+1 から 10 までの合計: 55
+[exit=0]

@@ -1,0 +1,2 @@
+# rustfmt（cargo fmt / topcoat fmt --rustfmt）の設定
+edition = "2024"

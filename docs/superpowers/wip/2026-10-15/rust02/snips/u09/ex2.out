@@ -1,0 +1,2 @@
+Ok(150)
+Err(ParseIntError { kind: InvalidDigit })

@@ -1,0 +1,11 @@
+   Compiling async_lab v0.1.0 (...\async_lab)
+error[E0728]: `await` is only allowed inside `async` functions and blocks
+ --> src\bin\e01_await_in_sync.rs:5:52
+  |
+4 | fn load_note() -> String {
+  | ------------------------ this is not `async`
+5 |     tokio::time::sleep(Duration::from_millis(100)).await;
+  |                                                    ^^^^^ only allowed inside `async` functions and blocks
+
+For more information about this error, try `rustc --explain E0728`.
+error: could not compile `async_lab` (bin "e01_await_in_sync") due to 1 previous error

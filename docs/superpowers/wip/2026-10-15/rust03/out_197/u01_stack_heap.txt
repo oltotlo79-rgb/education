@@ -1,0 +1,6 @@
+n = 5
+s = hello / len = 5 / cap = 5
+s = hello, world / len = 12 / cap = 12
+i32 の大きさ: 4 バイト
+String の持ち手の大きさ: 24 バイト
+exit=0

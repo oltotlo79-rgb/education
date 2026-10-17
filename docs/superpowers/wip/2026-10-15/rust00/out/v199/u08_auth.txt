@@ -1,0 +1,8 @@
+   Compiling practice v0.1.0 (C:\Users\you\rust-study\practice)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.34s
+     Running `target\debug\practice.exe`
+[認証] 間違ったパスワード -> None
+[認証] 正しいパスワード   -> Some(1)
+[認可] ノート 10 -> 200 OK「牛乳を買う」
+[認可] ノート 11 -> 404 Not Found
+[exit=0]

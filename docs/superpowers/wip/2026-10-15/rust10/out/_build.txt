@@ -1,0 +1,16 @@
+   Compiling libsql v0.10.0
+   Compiling rustnote v0.1.0 (C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust10\rustnote)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1m 08s
+
+real	1m8.849s
+user	0m0.139s
+sys	0m0.077s
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 17.90s
+  Executable unittests src\lib.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/rust10/target\debug\deps\rustnote-5cafc6c87c537344.exe)
+  Executable unittests src\main.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/rust10/target\debug\deps\rustnote-f46d7aa1268a13dc.exe)
+  Executable tests\http.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/rust10/target\debug\deps\http-9c37f549b35c0170.exe)
+  Executable tests\repository.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/rust10/target\debug\deps\repository-411ae9b50fa8c3de.exe)
+
+real	0m18.238s
+user	0m0.030s
+sys	0m0.218s

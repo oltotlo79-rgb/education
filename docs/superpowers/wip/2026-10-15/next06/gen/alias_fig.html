@@ -12,21 +12,22 @@
 <text x="90" y="96" text-anchor="middle" font-size="12" fill="#1e40af" font-family="Consolas, Menlo, monospace">"@/components/Header"</text>
 <rect x="190" y="34" width="160" height="80" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
 <text x="270" y="56" text-anchor="middle" font-size="12" fill="#64748b">② tsconfig.json の paths</text>
-<text x="270" y="78" text-anchor="middle" font-size="12" fill="#c2410c" font-family="Consolas, Menlo, monospace">"@/*": ["./src/*"]</text>
-<text x="270" y="98" text-anchor="middle" font-size="12" fill="#c2410c">@/ を ./src/ に置き換え</text>
+<text x="270" y="78" text-anchor="middle" font-size="12" fill="#c2410c" font-family="Consolas, Menlo, monospace">"@/*": ["./*"]</text>
+<text x="270" y="98" text-anchor="middle" font-size="12" fill="#c2410c">@/ を ./ に置き換え</text>
 <rect x="370" y="34" width="160" height="80" rx="8" fill="#f8fafc" stroke="#475569" stroke-width="2"/>
 <text x="450" y="56" text-anchor="middle" font-size="12" fill="#64748b">③ 置き換え後のパス</text>
-<text x="450" y="84" text-anchor="middle" font-size="12" fill="#475569" font-family="Consolas, Menlo, monospace">./src/components/Header</text>
+<text x="450" y="84" text-anchor="middle" font-size="12" fill="#475569" font-family="Consolas, Menlo, monospace">./components/Header</text>
 <rect x="550" y="34" width="160" height="80" rx="8" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
 <text x="630" y="56" text-anchor="middle" font-size="12" fill="#64748b">④ 拡張子を補って発見</text>
-<text x="630" y="84" text-anchor="middle" font-size="12" fill="#047857" font-family="Consolas, Menlo, monospace">src/components/</text>
+<text x="630" y="84" text-anchor="middle" font-size="12" fill="#047857" font-family="Consolas, Menlo, monospace">components/</text>
 <text x="630" y="102" text-anchor="middle" font-size="12" fill="#047857" font-family="Consolas, Menlo, monospace">Header.tsx</text>
 <line x1="170" y1="74" x2="188" y2="74" stroke="#475569" stroke-width="2" marker-end="url(#ar-06-08)"/>
 <line x1="350" y1="74" x2="368" y2="74" stroke="#475569" stroke-width="2" marker-end="url(#ar-06-08)"/>
 <line x1="530" y1="74" x2="548" y2="74" stroke="#475569" stroke-width="2" marker-end="url(#ar-06-08)"/>
 <line x1="10" y1="136" x2="710" y2="136" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="4 4"/>
 <text x="20" y="162" font-size="13" font-weight="bold" fill="#1e293b">(B) 相対パスだと「../ で何階層のぼるか」を数える必要がある</text>
-<text x="70" y="196" font-size="13" fill="#1e293b" font-family="Consolas, Menlo, monospace">src/</text>
+<text x="70" y="196" font-size="13" fill="#1e293b" font-family="Consolas, Menlo, monospace">./</text>
+<text x="240" y="196" font-size="12" fill="#475569">← プロジェクト直下</text>
 <text x="90" y="222" font-size="13" fill="#1e293b" font-family="Consolas, Menlo, monospace">app/</text>
 <text x="110" y="248" font-size="13" fill="#1e293b" font-family="Consolas, Menlo, monospace">books/</text>
 <text x="130" y="274" font-size="13" fill="#1e293b" font-family="Consolas, Menlo, monospace">[id]/</text>
@@ -46,15 +47,15 @@
 <text x="190" y="236" font-size="12" fill="#c2410c">③ ../</text>
 <path d="M 145 218 C 165 212, 165 198, 145 192" fill="none" stroke="#f97316" stroke-width="2" marker-end="url(#ar-06-08b)"/>
 <text x="170" y="210" font-size="12" fill="#c2410c">④ ../</text>
-<path d="M 60 196 L 50 196 L 50 374 L 84 374" fill="none" stroke="#10b981" stroke-width="2" marker-end="url(#ar-06-08c)"/>
-<rect x="400" y="180" width="310" height="96" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
-<text x="555" y="202" text-anchor="middle" font-size="12" font-weight="bold" fill="#c2410c">相対パスで書くと</text>
-<text x="555" y="230" text-anchor="middle" font-size="12" fill="#c2410c" font-family="Consolas, Menlo, monospace">import Header from</text>
-<text x="555" y="250" text-anchor="middle" font-size="12" fill="#c2410c" font-family="Consolas, Menlo, monospace">"../../../../components/Header";</text>
-<rect x="400" y="296" width="310" height="96" rx="8" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
-<text x="555" y="318" text-anchor="middle" font-size="12" font-weight="bold" fill="#047857">@/ で書くと（どこからでも同じ）</text>
-<text x="555" y="346" text-anchor="middle" font-size="12" fill="#047857" font-family="Consolas, Menlo, monospace">import Header from</text>
-<text x="555" y="366" text-anchor="middle" font-size="12" fill="#047857" font-family="Consolas, Menlo, monospace">"@/components/Header";</text>
+<path d="M 64 191 L 50 191 L 50 373 L 84 373" fill="none" stroke="#10b981" stroke-width="2" marker-end="url(#ar-06-08c)"/>
+<rect x="420" y="180" width="290" height="96" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<text x="565" y="202" text-anchor="middle" font-size="12" font-weight="bold" fill="#c2410c">相対パスで書くと</text>
+<text x="565" y="230" text-anchor="middle" font-size="12" fill="#c2410c" font-family="Consolas, Menlo, monospace">import Header from</text>
+<text x="565" y="250" text-anchor="middle" font-size="12" fill="#c2410c" font-family="Consolas, Menlo, monospace">"../../../../components/Header";</text>
+<rect x="420" y="296" width="290" height="96" rx="8" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="565" y="318" text-anchor="middle" font-size="12" font-weight="bold" fill="#047857">@/ で書くと（どこからでも同じ）</text>
+<text x="565" y="346" text-anchor="middle" font-size="12" fill="#047857" font-family="Consolas, Menlo, monospace">import Header from</text>
+<text x="565" y="366" text-anchor="middle" font-size="12" fill="#047857" font-family="Consolas, Menlo, monospace">"@/components/Header";</text>
 </svg>
-<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図6-8: パスエイリアス @/ が実際のファイルにたどり着くまで（A）と、相対パスとの比較（B）</div>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図X: パスエイリアス @/ が実際のファイルにたどり着くまで（A）と、相対パスとの比較（B）</div>
 </div>

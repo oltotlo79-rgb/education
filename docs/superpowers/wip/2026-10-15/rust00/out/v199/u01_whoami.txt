@@ -1,0 +1,8 @@
+   Compiling practice v0.1.0 (C:\Users\you\rust-study\practice)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.42s
+     Running `target\debug\practice.exe`
+OS の種類: windows
+CPU の種類: aarch64
+プロセス ID: 53604
+1 から 100 までの合計: 5050
+[exit=0]

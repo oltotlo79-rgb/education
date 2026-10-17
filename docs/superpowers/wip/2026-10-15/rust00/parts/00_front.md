@@ -194,7 +194,7 @@ RustNote は、次の3つの登場人物でできています。
 <text x="514" y="130" font-size="12" fill="#047857" text-anchor="middle">問い合わせ</text>
 <line x1="558" y1="196" x2="470" y2="196" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-02)"/>
 <text x="514" y="216" font-size="12" fill="#047857" text-anchor="middle">結果の行</text>
-<text x="360" y="330" font-size="12" fill="#64748b" text-anchor="middle">開発中は、同じ組み立てを自分の PC の中で動かします（DB はローカルのファイル）</text>
+<text x="360" y="330" font-size="12" fill="#64748b" text-anchor="middle">開発中は同じ組み立てを自分の PC で動かします（http://127.0.0.1:3000、DB はローカルのファイル）</text>
 </svg>
 <div style="font-size: 12px; color: #64748b; margin-top: 6px;">図0-3: RustNote のシステム構成。ブラウザ ⇔ Fly.io 上の Rust サーバー ⇔ Turso データベース</div>
 </div>
@@ -435,6 +435,8 @@ cd practice
 >
 > これは Cargo（カーゴ）という道具の「今コンパイルしています」「終わりました」「実行します」という報告です（UNIT 04 で説明します）。この巻の実行結果では、説明に必要なとき以外はこの3行を省き、**プログラム自身の出力だけ**を載せます。`cargo run -q` と打つと、この3行を出さずに実行できます。
 
+<!-- -->
+
 > **ヒント:** この巻に出てくる `C:\Users\you\...` の `you` の部分は、あなたの Windows のユーザー名に読み替えてください。プロセス番号や時刻など、実行するたびに変わる値もあります。
 
 ### 使うツールと版
@@ -445,12 +447,12 @@ cd practice
 |---|---|---|
 | Windows 11 | ARM64 版（x64 版でも同じ手順） | すべての作業 |
 | PowerShell | 5.1（Windows に最初から入っているもの） | コマンドを打つ（UNIT 03 以降） |
-| Rust（rustc・cargo） | 1.97.1、edition 2024 | すべての Rust コード |
+| Rust（rustc・cargo） | 1.99.0、edition 2024（1.98 以上なら同じ手順） | すべての Rust コード |
 | curl.exe | 8.x（Windows に最初から入っているもの） | HTTP のやりとりを見る（UNIT 05・06） |
 | ブラウザ | Chrome または Edge | 作ったサーバーにアクセスする（UNIT 06） |
 | SQLite のコマンドラインツール | 3.50（参考） | SQL の例の確認だけに使用（UNIT 07。読者は見るだけでよい） |
 
-> **注意:** この巻ではまだ Topcoat・Turso・Fly.io は使いません。Rust に最初から付いてくる機能（**標準ライブラリ**）だけで、Web の仕組みを体験します。Topcoat を使うための Rust の版などは、第1巻で改めて確認します。
+> **注意:** この巻ではまだ Topcoat・Turso・Fly.io は使いません。Rust に最初から付いてくる機能（**標準ライブラリ**）だけで、Web の仕組みを体験します。このシリーズで使う Topcoat 0.10 は **Rust 1.98 以上**が必要なので、シリーズ全体で「Rust 1.98 以上、動作確認は 1.99.0」を基準にしています。インストールと版の確かめ方は第1巻で説明します。
 >
 > WSL（Windows の中で Linux を動かす仕組み）や macOS・Linux を使う人は、コマンドの違いを各単元の「補足」で示します。
 

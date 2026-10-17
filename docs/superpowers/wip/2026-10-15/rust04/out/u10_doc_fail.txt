@@ -1,0 +1,29 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.02s
+   Doc-tests note_domain
+
+running 2 tests
+test src\status.rs - status::NoteStatus::apply (line 40) ... ok
+test src\title.rs - title::NoteTitle::parse (line 35) ... FAILED
+
+failures:
+
+---- src\title.rs - title::NoteTitle::parse (line 35) stdout ----
+Test executable failed (exit status: 101).
+
+stderr:
+
+thread 'main' (17708) panicked at ...\doctest_bundle_2024.rs:21:1:
+assertion `left == right` failed
+  left: "牛乳を買う"
+ right: "  牛乳を買う "
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+
+failures:
+    src\title.rs - title::NoteTitle::parse (line 35)
+
+test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+all doctests ran in 0.70s; merged doctests compilation took 0.46s
+error: doctest failed, to rerun pass `--doc`

@@ -1,0 +1,9 @@
+   Compiling design_lab v0.1.0 (...\design_lab)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.38s
+     Running `target\debug\u08_errors.exe`
+NG  {"title": "牛乳", "done": "yes"}       → invalid type: string "yes", expected a boolean at line 1 column 33
+NG  {"title": "牛乳", "done": false,}      → trailing comma at line 1 column 35
+NG  {"title": "牛乳", "done": fal          → EOF while parsing a value at line 1 column 31
+NG  {"title": "牛乳"                       → EOF while parsing an object at line 1 column 18
+OK  NoteJson { title: "牛乳", done: false }
+NG                                       → EOF while parsing a value at line 1 column 0

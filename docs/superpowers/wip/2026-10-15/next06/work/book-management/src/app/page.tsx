@@ -33,18 +33,18 @@ export default function HomePage() {
         {/* バッジを横並びにする領域 */}
         {/* mt-4: 上マージン16px / flex: 横並び / space-x-2: 子要素間に8px間隔 */}
         <div className="mt-4 flex space-x-2">
-          {/* 未読バッジ */}
-          {/* inline-block: インラインブロック表示 / bg-gray-100: 薄グレー背景 / text-gray-700: 濃グレー文字 */}
+          {/* 読みたいバッジ：黄系 */}
+          {/* inline-block: インラインブロック表示 / bg-yellow-100: 薄い黄の背景 / text-yellow-800: 濃い黄の文字 */}
           {/* text-xs: 12px / px-2.5 py-1: パディング / rounded-full: 完全な丸（カプセル形） / font-medium: 中太字 */}
-          <span className="inline-block bg-gray-100 text-gray-700 text-xs px-2.5 py-1 rounded-full font-medium">
-            未読
+          <span className="inline-block bg-yellow-100 text-yellow-800 text-xs px-2.5 py-1 rounded-full font-medium">
+            読みたい
           </span>
           {/* 読書中バッジ：青系 */}
-          <span className="inline-block bg-blue-100 text-blue-700 text-xs px-2.5 py-1 rounded-full font-medium">
+          <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2.5 py-1 rounded-full font-medium">
             読書中
           </span>
           {/* 読了バッジ：緑系 */}
-          <span className="inline-block bg-green-100 text-green-700 text-xs px-2.5 py-1 rounded-full font-medium">
+          <span className="inline-block bg-green-100 text-green-800 text-xs px-2.5 py-1 rounded-full font-medium">
             読了
           </span>
         </div>

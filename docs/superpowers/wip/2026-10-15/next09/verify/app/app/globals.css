@@ -1,0 +1,582 @@
+/* app/globals.css
+   ↑ このファイルはアプリ全体に適用される「グローバルCSS」。
+     Next.js の App Router では app/layout.tsx で import "./globals.css" すると
+     アプリのすべてのページに反映される。
+     ※ Tailwind CSS v4（2026年の create-next-app が入れる版）の書き方。
+       v3 の書き方との違いは 1.1.1 節と 1.3 節を参照。 */
+
+/* @import "tailwindcss" は Tailwind CSS 本体を読み込む1行。
+   ビルド時に、リセットCSS（base）と、bg-red-500・p-4 などのクラス（utilities）に展開される。
+   この1行が無いと Tailwind のクラスは一切効かない。 */
+@import "tailwindcss";
+
+/* dark: の付いたクラスを「<html class="dark"> のとき」に効かせる宣言。
+   これが無いと、v4 の dark: は OS の設定（ダーク/ライト）にしか反応しない。
+   5.3節のテーマ切り替えボタンで、ユーザーが自分で選べるようにするために必要。 */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ========================================
+   1. テーマ（Tailwind のクラスになる値＝カラートークンなど）
+   ======================================== */
+/* @theme の中に書いた CSS 変数は、名前の前半（--color- など）に応じて Tailwind のクラスになる。
+   例: --color-primary-600 → bg-primary-600 / text-primary-600 / border-primary-600 など
+   同時に :root（≒ <html>）の CSS 変数としても出力されるので、
+   ページのどこからでも var(--color-primary-600) で参照できる。
+   このように共通の値を変数化したものを「デザイントークン（design tokens）」と呼ぶ。 */
+@theme {
+  /* プライマリカラー（インディゴ系：青と紫の中間のような色） */
+  /* --color- で始まる名前は「CSSカスタムプロパティ（CSS変数）」。
+     値（例：#eef2ff）は16進数カラーコード。先頭の # の後の2桁ずつが
+     赤・緑・青の強さを 00〜FF で表す。 */
+  /* 一番薄いインディゴ（背景バッジ等に使う） */
+  --color-primary-50: #eef2ff;
+  /* 薄め */
+  --color-primary-100: #e0e7ff;
+  --color-primary-200: #c7d2fe;
+  --color-primary-300: #a5b4fc;
+  --color-primary-400: #818cf8;
+  /* 標準のプライマリ色 */
+  --color-primary-500: #6366f1;
+  /* ボタン背景でよく使う濃さ */
+  --color-primary-600: #4f46e5;
+  /* ホバー時の濃さ */
+  --color-primary-700: #4338ca;
+  --color-primary-800: #3730a3;
+  --color-primary-900: #312e81;
+  /* 一番濃いインディゴ（ダークモード背景等） */
+  --color-primary-950: #1e1b4b;
+
+  /* セカンダリカラー（エメラルド系：緑系の鮮やかな色） */
+  --color-secondary-50: #ecfdf5;
+  --color-secondary-100: #d1fae5;
+  --color-secondary-200: #a7f3d0;
+  --color-secondary-300: #6ee7b7;
+  --color-secondary-400: #34d399;
+  /* 標準のセカンダリ色 */
+  --color-secondary-500: #10b981;
+  --color-secondary-600: #059669;
+  --color-secondary-700: #047857;
+  --color-secondary-800: #065f46;
+  --color-secondary-900: #064e3b;
+  --color-secondary-950: #022c22;
+
+  /* 背景・テキスト（セマンティック＝意味ベースの命名） */
+  /* ここに書くのは「ライトモードの値」。ダークモードの値は下の .dark で上書きする */
+  /* ページ全体の背景色（白）→ bg-background */
+  --color-background: #ffffff;
+  /* 前景色＝メインの文字色（ほぼ黒）→ text-foreground */
+  --color-foreground: #0f172a;
+  /* muted = 弱めた色。補足テキスト用 → text-muted */
+  --color-muted: #64748b;
+  /* さらに薄い補足文字色 → text-muted-foreground */
+  --color-muted-foreground: #94a3b8;
+  /* 枠線の色 → border-border */
+  --color-border: #e2e8f0;
+  /* カード（書籍カードなど）の背景色 → bg-card */
+  --color-card: #ffffff;
+  /* カード内の文字色 → text-card-foreground */
+  --color-card-foreground: #0f172a;
+
+  /* 状態カラー（操作結果や状態を伝えるための色） */
+  /* 成功＝緑 */
+  --color-success: #10b981;
+  /* 警告＝黄/オレンジ */
+  --color-warning: #f59e0b;
+  /* エラー＝赤 */
+  --color-error: #ef4444;
+  /* 情報＝青 */
+  --color-info: #3b82f6;
+
+  /* シャドウ（box-shadow：影）→ shadow-sm / shadow-md / shadow-lg */
+  /* box-shadow の値は「横ずれ 縦ずれ ぼかし 広がり 色」の順に書く */
+  /* rgb(0 0 0 / 0.05) は黒で透明度5%という意味 */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  /* 2つの影を重ねる */
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  /* 独自の影を新規追加 → shadow-card / shadow-card-hover */
+  --shadow-card: 0 2px 8px -2px rgb(0 0 0 / 0.08), 0 4px 12px -4px rgb(0 0 0 / 0.04);
+  --shadow-card-hover: 0 8px 24px -4px rgb(0 0 0 / 0.12), 0 4px 8px -4px rgb(0 0 0 / 0.08);
+
+  /* ボーダー半径（角丸の大きさ）→ rounded-sm / rounded-md / rounded-lg / rounded-xl */
+  /* rem は「ルート要素のフォントサイズを基準とする単位」。普通は 1rem = 16px */
+  /* = 6px */
+  --radius-sm: 0.375rem;
+  /* = 8px */
+  --radius-md: 0.5rem;
+  /* = 12px */
+  --radius-lg: 0.75rem;
+  /* = 16px */
+  --radius-xl: 1rem;
+
+  /* フォント → font-sans / font-mono */
+  /* 先頭から探して、利用可能な最初のフォントが使われる。
+     Inter は日本語を含まないので、2番目に日本語フォントを置く */
+  --font-sans: Inter, "Noto Sans JP", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+
+  /* 標準には無い超小サイズの文字 → text-2xs（10px / 行間14px） */
+  --text-2xs: 0.625rem;
+  --text-2xs--line-height: 0.875rem;
+
+  /* アニメーション → animate-fade-in など */
+  /* 書き方: "<キーフレーム名> <時間> <イージング> <繰り返し> <塗り潰し>" */
+  --animate-fade-in: fade-in 0.3s ease-out;
+  --animate-fade-out: fade-out 0.3s ease-out;
+  --animate-slide-in-right: slide-in-right 0.3s ease-out;
+  --animate-slide-in-up: slide-in-up 0.4s ease-out;
+  --animate-scale-in: scale-in 0.2s ease-out;
+  /* infinite: 無限ループ、linear: 等速 */
+  --animate-shimmer: shimmer 2s infinite linear;
+  --animate-toast-in: toast-slide-in 0.3s ease-out;
+  /* forwards: 終了状態をキープ */
+  --animate-toast-out: toast-slide-out 0.3s ease-in forwards;
+
+  /* @keyframes はアニメーションの「始まりから終わりまでのコマ」を定義する。
+     from { 開始状態 } to { 終了状態 } の形が基本。
+     0% { ... } 100% { ... } のようにパーセント刻みで複数指定もできる。
+     @theme の中に書くと、そのアニメーションを使ったときだけ CSS に出力される。 */
+
+  /* fade-in: 少し下から、透明 → 不透明にフェードイン */
+  @keyframes fade-in {
+    from {
+      /* 透明（見えない） */
+      opacity: 0;
+      /* 8px 下にずらした位置から始まる */
+      transform: translateY(8px);
+    }
+    to {
+      /* 不透明（見える） */
+      opacity: 1;
+      /* 元の位置へ */
+      transform: translateY(0);
+    }
+  }
+
+  /* fade-out: 上記の逆。表示状態 → 透明＋少し下に消える */
+  @keyframes fade-out {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+  }
+
+  /* 右からスライドイン（X軸＝横方向の動き） */
+  @keyframes slide-in-right {
+    from {
+      opacity: 0;
+      /* 16px 右にずれた位置 */
+      transform: translateX(16px);
+    }
+    to {
+      opacity: 1;
+      /* 元の位置 */
+      transform: translateX(0);
+    }
+  }
+
+  /* 下からスライドアップ（カードの一斉登場などに使う） */
+  @keyframes slide-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* scale-in: 少し小さい状態 → 通常サイズに拡大しながら出現 */
+  @keyframes scale-in {
+    from {
+      opacity: 0;
+      /* 95% の大きさ */
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      /* 100%（等倍） */
+      transform: scale(1);
+    }
+  }
+
+  /* shimmer: ローディングスケルトンの光が左から右へ流れるアニメーション */
+  @keyframes shimmer {
+    0% {
+      /* 背景画像を左外側に配置 */
+      background-position: -200% 0;
+    }
+    100% {
+      /* 右外側まで動かす */
+      background-position: 200% 0;
+    }
+  }
+
+  /* トーストが右から滑り込んでくる */
+  @keyframes toast-slide-in {
+    from {
+      opacity: 0;
+      /* 100% = 自身の幅ぶん右にいる状態 */
+      transform: translateX(100%);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  /* トーストが右に滑り出ていく（消える時） */
+  @keyframes toast-slide-out {
+    from {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateX(100%);
+    }
+  }
+}
+
+/* ========================================
+   2. ダークモード用の上書き
+   ======================================== */
+/* <html class="dark"> のように dark クラスが付いたとき、
+   この中の変数だけが上書きされる。CSS変数の「値だけを差し替える」
+   仕組みなので、各コンポーネントで dark:bg-... を一つずつ書かなくても
+   ダークモードに対応できる。 */
+.dark {
+  /* ほぼ黒（slate-900）に */
+  --color-background: #0f172a;
+  /* 文字は逆に白系に */
+  --color-foreground: #f8fafc;
+  --color-muted: #94a3b8;
+  --color-muted-foreground: #64748b;
+  /* 暗い枠線 */
+  --color-border: #334155;
+  /* カード背景は背景より少し明るい暗色 */
+  --color-card: #1e293b;
+  --color-card-foreground: #f8fafc;
+}
+
+/* ========================================
+   3. ベースレイヤー
+   ======================================== */
+/* @layer base は「層（layer）」のひとつ。
+   ここに書くと、ユーティリティクラスより優先度が低くなるので
+   個別の Tailwind クラスで上書きしやすい。 */
+@layer base {
+  /* HTML・Body のリセットと基本設定 */
+  html {
+    /* ページ内リンクのスクロールをなめらかに */
+    scroll-behavior: smooth;
+    /* Mac の Chrome/Safari でフォントを滑らかに表示 */
+    -webkit-font-smoothing: antialiased;
+    /* Mac の Firefox でフォントを滑らかに表示 */
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    /* @apply は CSS の中で Tailwind のクラスを使うための書き方。 */
+    /* bg-background : 背景色を --color-background に（ダークでは .dark の値になる） */
+    /* text-foreground : 文字色を --color-foreground に */
+    @apply bg-background text-foreground;
+    /* OpenType の合字機能を有効化（綺麗な文字に） */
+    font-feature-settings: "rlig" 1, "calt" 1;
+    /* ダークモード切替時に背景・文字色を 0.3 秒かけて滑らかに変える */
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  /* フォーカスリングのデフォルトスタイル */
+  /* :focus-visible は「キーボードでフォーカスされたとき」のみ発火する擬似クラス。
+     マウスクリック時には発火しないので、マウスユーザーに邪魔にならない。 */
+  *:focus-visible {
+    /* outline-2          : outline（外側の輪郭線）の太さ 2px */
+    /* outline-offset-2   : outline を要素から 2px 離す */
+    /* outline-primary-500: outline の色を primary-500 に */
+    @apply outline-2 outline-offset-2 outline-primary-500;
+  }
+
+  /* 見出しのデフォルトスタイル */
+  h1 {
+    /* text-3xl       : 文字サイズ 1.875rem (30px) */
+    /* font-bold      : 文字の太さを「bold（700）」に */
+    /* tracking-tight : 文字間隔（letter-spacing）を狭く（-0.025em） */
+    @apply text-3xl font-bold tracking-tight;
+  }
+
+  h2 {
+    /* text-2xl       : 1.5rem (24px) */
+    /* font-semibold  : 太字よりやや細い 600 */
+    @apply text-2xl font-semibold tracking-tight;
+  }
+
+  h3 {
+    /* text-xl        : 1.25rem (20px) */
+    @apply text-xl font-semibold;
+  }
+
+  /* リンクのデフォルトスタイル */
+  a {
+    /* text-primary-600           : ライトモード時の文字色 */
+    /* hover:text-primary-700     : ホバー時はより濃く */
+    /* dark:text-primary-400      : ダークモード時はより明るく（dark: 接頭辞） */
+    /* dark:hover:text-primary-300: ダーク × ホバーの組み合わせ */
+    @apply text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300;
+    /* 色変化を 0.15 秒かけて滑らかに */
+    transition: color 0.15s ease;
+  }
+}
+
+/* ========================================
+   4. コンポーネントレイヤー
+   ======================================== */
+/* @layer components はベースより優先度が高く、ユーティリティより低い層。
+   .btn のような再利用可能なクラスをここに定義する。
+   ※ v4 では「自作クラスを @apply で取り込む（@apply btn）」ことはできないので、
+     共通部分は「.btn, .btn-primary, ...」のようにセレクタを並べて1か所に書く。 */
+@layer components {
+  /* ボタンの共通スタイル（全ボタンの土台） */
+  /* カンマで区切って並べたクラスすべてに、同じスタイルが当たる */
+  .btn,
+  .btn-primary,
+  .btn-secondary,
+  .btn-outline,
+  .btn-danger,
+  .btn-ghost {
+    /* inline-flex                  : display: inline-flex（横並び＋インライン要素） */
+    /* items-center                 : 縦方向中央揃え（align-items: center） */
+    /* justify-center               : 横方向中央揃え（justify-content: center） */
+    /* rounded-lg                   : 角丸 0.75rem（上の --radius-lg） */
+    /* px-4 py-2                    : 横16px、縦8px の内側余白 */
+    /* text-sm                      : フォントサイズ 0.875rem (14px) */
+    /* font-medium                  : 文字太さ 500 */
+    /* transition-all duration-200  : 全プロパティを 200ms かけて変化 */
+    /* ease-in-out                  : 加速→減速のカーブ */
+    /* focus-visible:outline-hidden : キーボードフォーカス時のデフォルト輪郭線を消す */
+    /* focus-visible:ring-2         : 代わりに 2px のリング（box-shadow） */
+    /* focus-visible:ring-offset-2  : リングを要素から 2px 離す */
+    /* disabled:pointer-events-none : 無効化時はクリックできない */
+    /* disabled:opacity-50          : 無効化時は半透明（50%） */
+    @apply inline-flex items-center justify-center
+           rounded-lg px-4 py-2
+           text-sm font-medium
+           transition-all duration-200 ease-in-out
+           focus-visible:outline-hidden focus-visible:ring-2
+           focus-visible:ring-offset-2
+           disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .btn-primary {
+    /* 共通部分は上でまとめて指定済みなので、ここでは色だけを足す */
+    /* bg-primary-600 text-white    : インディゴ背景に白文字 */
+    /* hover:bg-primary-700         : ホバー時にやや濃く */
+    /* active:bg-primary-800        : クリック中（押している瞬間）はさらに濃く */
+    /* focus-visible:ring-primary-500 : フォーカスリングをインディゴで */
+    @apply bg-primary-600 text-white
+           hover:bg-primary-700
+           active:bg-primary-800
+           focus-visible:ring-primary-500;
+  }
+
+  .btn-secondary {
+    /* セカンダリ（エメラルド系）のボタン。primary と同じ構造で色だけ違う */
+    @apply bg-secondary-600 text-white
+           hover:bg-secondary-700
+           active:bg-secondary-800
+           focus-visible:ring-secondary-500;
+  }
+
+  .btn-outline {
+    /* アウトラインボタン：枠線だけのスタイル */
+    /* border-2 border-primary-600 : 2px の枠線をプライマリ色で */
+    /* text-primary-600            : 文字色もプライマリ */
+    /* hover:bg-primary-50         : ホバー時にうっすら塗りつぶし */
+    /* active:bg-primary-100       : 押下時はもう少し濃く */
+    /* dark:border-primary-400 ... : ダークモード用は明るめのプライマリで */
+    /* dark:hover:bg-primary-950   : ダークでのホバーは超暗いプライマリ */
+    @apply border-2 border-primary-600 text-primary-600
+           hover:bg-primary-50
+           active:bg-primary-100
+           dark:border-primary-400 dark:text-primary-400
+           dark:hover:bg-primary-950
+           focus-visible:ring-primary-500;
+  }
+
+  .btn-danger {
+    /* 危険な操作（削除など）用の赤いボタン */
+    @apply bg-red-600 text-white
+           hover:bg-red-700
+           active:bg-red-800
+           focus-visible:ring-red-500;
+  }
+
+  .btn-ghost {
+    /* ゴーストボタン：通常は背景なし、ホバー時だけ薄く塗る控えめなボタン */
+    @apply text-gray-600 hover:bg-gray-100
+           dark:text-gray-400 dark:hover:bg-gray-800
+           focus-visible:ring-gray-500;
+  }
+
+  /* カードの共通スタイル（.card と .card-hover の両方に当てる） */
+  .card,
+  .card-hover {
+    /* rounded-xl              : 角丸 1rem（上の --radius-xl） */
+    /* border border-border    : 枠線の色を --color-border に */
+    /* bg-card                 : 背景色を --color-card に */
+    /* text-card-foreground    : 文字色を --color-card-foreground に */
+    /* shadow-sm               : 小さめの影（上の --shadow-sm） */
+    @apply rounded-xl border border-border
+           bg-card text-card-foreground
+           shadow-sm;
+    /* 影と位置変化を 0.2 秒かけて滑らかに */
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+  }
+
+  .card-hover {
+    /* card に「ホバーで影を大きく＋少し上に浮く」を追加 */
+    /* hover:shadow-lg     : ホバー時に大きな影 */
+    /* hover:-translate-y-1: 上に -0.25rem (4px) 移動 */
+    @apply hover:shadow-lg hover:-translate-y-1;
+  }
+
+  /* 入力フィールドの共通スタイル */
+  .input {
+    /* w-full                              : 横幅100% */
+    /* rounded-lg border border-border     : 角丸＋枠線 */
+    /* bg-background                       : 背景色 */
+    /* px-4 py-2.5                         : 内側余白（py-2.5 は 0.625rem = 10px） */
+    /* text-sm                             : 14px */
+    /* placeholder:text-muted-foreground   : placeholder（入力前の薄い案内文）の色 */
+    /* focus:border-primary-500            : フォーカス時の枠線色 */
+    /* focus:outline-hidden                : ブラウザ標準のアウトラインを消す */
+    /* focus:ring-2                        : 代わりに2pxリング */
+    /* focus:ring-primary-500/20           : リングの色＝primary-500 の透明度20% */
+    /* disabled:cursor-not-allowed         : 無効化時はカーソルが「禁止マーク」に */
+    /* disabled:opacity-50                 : 無効時は半透明 */
+    /* dark:focus:border-primary-400       : ダーク × フォーカス時の枠線色 */
+    @apply w-full rounded-lg border border-border
+           bg-background
+           px-4 py-2.5
+           text-sm
+           placeholder:text-muted-foreground
+           focus:border-primary-500 focus:outline-hidden focus:ring-2
+           focus:ring-primary-500/20
+           disabled:cursor-not-allowed disabled:opacity-50
+           dark:focus:border-primary-400 dark:focus:ring-primary-400/20;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  /* バッジ（badge：ラベルや状態を示す小さな印）の共通部分 */
+  .badge,
+  .badge-primary,
+  .badge-success,
+  .badge-warning,
+  .badge-error {
+    /* inline-flex items-center : 横並びで中央揃え（中にアイコン入れる時のため） */
+    /* rounded-full             : 角丸を最大（円形/カプセル形） */
+    /* px-2.5 py-0.5            : 横10px、縦2px の余白 */
+    /* text-xs                  : 12px */
+    /* font-medium              : 太さ500 */
+    @apply inline-flex items-center rounded-full
+           px-2.5 py-0.5
+           text-xs font-medium;
+  }
+
+  .badge-primary {
+    /* 「読書中」など、注目度を上げたいバッジ */
+    /* bg-primary-100 text-primary-700 : 薄い背景に濃い文字色 */
+    /* dark:bg-primary-900 dark:text-primary-300 : ダークモードは反転 */
+    @apply bg-primary-100 text-primary-700
+           dark:bg-primary-900 dark:text-primary-300;
+  }
+
+  .badge-success {
+    /* 「読了」など成功状態を表す緑バッジ */
+    @apply bg-green-100 text-green-700
+           dark:bg-green-900 dark:text-green-300;
+  }
+
+  .badge-warning {
+    /* 「読みたい」「注意」など警告を表す黄バッジ */
+    @apply bg-yellow-100 text-yellow-700
+           dark:bg-yellow-900 dark:text-yellow-300;
+  }
+
+  .badge-error {
+    /* エラー状態を表す赤バッジ */
+    @apply bg-red-100 text-red-700
+           dark:bg-red-900 dark:text-red-300;
+  }
+}
+
+/* ========================================
+   5. 自作ユーティリティ（@utility）
+   ======================================== */
+/* @utility 名前 { ... } で、Tailwind に無い小さな便利クラスを自作できる。
+   作ったクラスは p-4 などと同じ「ユーティリティ」として扱われ、
+   hover: や md: などの接頭辞も付けられる。
+   ※ 複数行の省略表示 line-clamp-1 / line-clamp-2 / line-clamp-3 は
+     Tailwind に最初から入っているので、自作する必要はない。 */
+
+/* container: 中央寄せ＋画面幅に応じた左右の余白
+   （v4 の標準の container は「最大幅」だけなので、中央寄せと余白をここで足す） */
+@utility container {
+  /* 左右の margin を auto にして中央寄せ */
+  margin-inline: auto;
+  /* 全画面共通の最小余白 = 16px */
+  padding-inline: 1rem;
+  /* 640px 以上 = 32px */
+  @variant sm {
+    padding-inline: 2rem;
+  }
+  /* 1024px 以上 = 64px */
+  @variant lg {
+    padding-inline: 4rem;
+  }
+  /* 1536px 以上では、最大幅を標準の 1536px より少し狭く（読みやすさのため） */
+  @variant 2xl {
+    max-width: 1400px;
+  }
+}
+
+/* スクロールバーのカスタマイズ */
+@utility scrollbar-thin {
+  /* Firefox 用: スクロールバーを細く */
+  scrollbar-width: thin;
+  /* つまみ色 トラック色 */
+  scrollbar-color: var(--color-muted-foreground) transparent;
+
+  /* &::-webkit-scrollbar は Chrome/Safari 用のスクロールバー擬似要素 */
+  &::-webkit-scrollbar {
+    /* 縦スクロールバーの幅 */
+    width: 6px;
+    /* 横スクロールバーの高さ */
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    /* スクロールバーの「軌道（背景部分）」を透明に */
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    /* つまみの色 */
+    background-color: var(--color-muted-foreground);
+    /* つまみを丸く */
+    border-radius: 3px;
+  }
+}
+
+/* グラスモーフィズム（glassmorphism：すりガラス風効果） */
+@utility glass {
+  /* bg-white/80      : 白の透明度80%背景（数字 / 数字 で透明度指定） */
+  /* backdrop-blur-md : 背景をぼかす（半透明の向こう側がモザイク状に） */
+  /* dark:bg-gray-900/80 : ダーク時は暗い半透明背景 */
+  @apply bg-white/80 backdrop-blur-md dark:bg-gray-900/80;
+}

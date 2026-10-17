@@ -5,7 +5,7 @@
 type BookRow = {
   id: string;
   title: string;
-  author: string | null;
+  author: string;
   publisher: string | null;
   published_date: string | null;
   rating: number | null;
@@ -32,16 +32,17 @@ function toFormData(book: BookRow): BookFormData {
     publisher: book.publisher ?? "",
     published_date: book.published_date ?? "",
     rating: book.rating ?? null,
-    status: book.status ?? "unread",
+    status: book.status ?? "want_to_read",
     memo: book.memo ?? "",
   };
 }
 
 // BookForm が .update() に渡す中身と同じ変換（"" → null、空白を除去）
+// 著者は必須なので null にはしない
 function toUpdatePayload(form: BookFormData) {
   return {
     title: form.title.trim(),
-    author: form.author.trim() || null,
+    author: form.author.trim(),
     publisher: form.publisher.trim() || null,
     published_date: form.published_date || null,
     rating: form.rating,

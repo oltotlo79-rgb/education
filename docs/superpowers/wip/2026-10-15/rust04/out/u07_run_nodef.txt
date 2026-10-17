@@ -1,0 +1,5 @@
+   Compiling feat_lab v0.1.0 (...\feat_lab)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.35s
+     Running `target\debug\feat_lab.exe`
+[text] 牛乳を買う / 低脂肪のもの
+markdown=false json=false

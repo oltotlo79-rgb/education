@@ -115,8 +115,8 @@ export default function DeleteButton({ bookId, bookTitle }: Props) {
       // データを再取得し、削除された書籍が一覧から
       // 消えていることを確認できるようにします。
       // -------------------------------------------------
-      // 一覧ページへ
-      router.push("/books");
+      // 一覧ページ（/）へ
+      router.push("/");
       // サーバー側データを再取得
       router.refresh();
     } catch (err) {

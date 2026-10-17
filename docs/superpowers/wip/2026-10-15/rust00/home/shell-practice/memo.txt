@@ -1,1 +1,1 @@
-�͂��߂Ă� PowerShell
+﻿はじめての PowerShell

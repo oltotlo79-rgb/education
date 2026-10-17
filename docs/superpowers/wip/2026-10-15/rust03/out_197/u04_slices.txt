@@ -1,0 +1,10 @@
+hello
+good
+part = rust / len = 4
+配列の合計 = 225
+Vec の合計 = 100
+Vec の一部の合計 = 50
+&String の大きさ: 8 バイト
+&str の大きさ: 16 バイト
+&[i32] の大きさ: 16 バイト
+exit=0

@@ -1,5 +1,5 @@
 
-thread 'main' (552) panicked at src\bin\u04_err_boundary.rs:3:18:
+thread 'main' (52792) panicked at src\bin\u04_err_boundary.rs:3:18:
 end byte index 1 is not a char boundary; it is inside 'あ' (bytes 0..3 of string)
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 exit=101

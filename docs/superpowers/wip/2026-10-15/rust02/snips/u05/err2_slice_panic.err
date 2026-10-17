@@ -1,8 +1,8 @@
    Compiling basics v0.1.0 (.../basics)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.33s
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.35s
      Running `target\debug\basics.exe`
 
-thread 'main' (45508) panicked at src\main.rs:4:22:
+thread 'main' (53696) panicked at src\main.rs:4:22:
 end byte index 2 is not a char boundary; it is inside '日' (bytes 0..3 of string)
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 error: process didn't exit successfully: `target\debug\basics.exe` (exit code: 101)

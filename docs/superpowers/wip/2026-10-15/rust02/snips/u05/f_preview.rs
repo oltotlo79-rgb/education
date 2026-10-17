@@ -14,6 +14,9 @@ fn squash_spaces(text: &str) -> String {
 
 fn main() {
     println!("{}", preview("短いタイトル", 10));
-    println!("{}", preview("とても長いタイトルなので一覧では省略したい", 10));
+    println!(
+        "{}",
+        preview("とても長いタイトルなので一覧では省略したい", 10)
+    );
     println!("[{}]", squash_spaces("  牛乳 と　　卵を\t買う  "));
 }

@@ -1,0 +1,4 @@
+   Compiling design_lab v0.1.0 (...\design_lab)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.31s
+     Running `target\debug\u09_env.exe`
+http://127.0.0.1:3000 で待ち受けます（のつもり）

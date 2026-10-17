@@ -1,0 +1,12 @@
+   Compiling rustnote_lab v0.1.0 (...\rustnote_lab)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 25.84s
+     Running `target\debug\u07_inspect.exe rustnote.db`
+[テーブル]
+  notes
+  schema_migrations
+  sessions
+  users
+[schema_migrations]
+  0001_users  2026-10-17 05:12:34
+  0002_notes  2026-10-17 05:12:34
+  0003_sessions  2026-10-17 05:12:34

@@ -1,0 +1,50 @@
+p='next/10-deployment.md'
+raw=open(p,'rb').read().decode('utf-8'); crlf='\r\n' in raw
+t=raw.replace('\r\n','\n')
+def rep(old,new,count=1):
+    global t
+    n=t.count(old)
+    assert n==count, (n, old[:70])
+    t=t.replace(old,new)
+rep('書いたコード（src/）','書いたコード（app/ など）')
+rep('図10-2: ビルド（next build）の前と後。src/ のコードが、','図10-2: ビルド（next build）の前と後。app/ や components/ のコードが、')
+rep(">src/components/BookCard.tsx(7,39): error TS2551: Property 'titel' does not exist<", ">components/BookCard.tsx(7,39): error TS2551: Property 'titel' does not exist<")
+rep('fill="#1e40af">src/components/BookCard.tsx</text>','fill="#1e40af">components/BookCard.tsx</text>')
+rep('// src/components/EnvViewer.tsx（実験用の部品）','// components/EnvViewer.tsx（実験用の部品）')
+rep('// src/app/env-check/page.tsx（実験用のページ。/env-check で開ける）','// app/env-check/page.tsx（実験用のページ。/env-check で開ける）')
+rep('// src/app/env-check-ok/page.tsx（OK:','// app/env-check-ok/page.tsx（OK:')
+rep('// src/lib/publicEnv.ts（OK:','// lib/publicEnv.ts（OK:')
+rep('`./src/components/BookCard.tsx:12:5`','`./components/BookCard.tsx:12:5`')
+rep('Next.js 15 では `./src/components/BookCard.tsx:7:39` と `Type error: ...` の形、16 では `src/components/BookCard.tsx(7,39): error TS2551: ...`',
+    'Next.js 15 では `./components/BookCard.tsx:7:39` と `Type error: ...` の形、16 では `components/BookCard.tsx(7,39): error TS2551: ...`')
+rep("\nsrc/components/BookCard.tsx(7,39): error TS2551: Property 'titel'","\ncomponents/BookCard.tsx(7,39): error TS2551: Property 'titel'")
+rep('// src/components/BookCard.tsx の一部（NG:','// components/BookCard.tsx の一部（NG:')
+rep('// src/components/BookCard.tsx の一部（OK:','// components/BookCard.tsx の一部（OK:')
+rep('ls src/components/BookCard.tsx','ls components/BookCard.tsx')
+rep('./src/app/page.tsx:2:1','./app/page.tsx:2:1')
+rep("Import map: aliased to relative './src/components/bookCard' inside of [project]/","Import map: aliased to relative './components/bookCard' inside of [project]/")
+rep('git ls-files src/components\n','git ls-files components\n',2)
+rep('\nsrc/components/bookCard.tsx\n```','\ncomponents/bookCard.tsx\n```')
+rep('git mv src/components/bookCard.tsx src/components/BookCard.tsx','git mv components/bookCard.tsx components/BookCard.tsx',2)
+rep('R  src/components/bookCard.tsx -> src/components/BookCard.tsx','R  components/bookCard.tsx -> components/BookCard.tsx')
+rep('./src/app/books/new/page.tsx:2:10','./app/books/new/page.tsx:2:10')
+rep(r'C:\...\book-management\src\components\BookCard.tsx', r'C:\...\book-management\components\BookCard.tsx')
+rep(r'C:\...\book-management\src\components\Stars.tsx', r'C:\...\book-management\components\Stars.tsx')
+rep('// src/app/books/[id]/edit/page.tsx（NG:','// app/books/[id]/edit/page.tsx（NG:')
+rep('// src/app/books/[id]/edit/page.tsx（OK:','// app/books/[id]/edit/page.tsx（OK:')
+rep('// src/app/api/health/route.ts','// app/api/health/route.ts')
+rep('// src/app/layout.tsx','// app/layout.tsx')
+rep('// src/app/page.tsx（書籍一覧ページ）','// app/page.tsx（書籍一覧ページ）')
+rep('// src/app/books/[id]/page.tsx（generateMetadata','// app/books/[id]/page.tsx（generateMetadata')
+rep("\nsrc/components/BookCard.tsx(7,39): error TS2551: Property 'auther'","\ncomponents/BookCard.tsx(7,39): error TS2551: Property 'auther'")
+rep('1. `src/components/BookCard.tsx` の **7行目・39文字目**です。','1. `components/BookCard.tsx` の **7行目・39文字目**です。')
+tree = open(r'C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/next10/blocks/appendix_tree.txt', encoding='utf-8').read().strip('\n')
+table = open(r'C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/next10/blocks/appendix_table.txt', encoding='utf-8').read().strip('\n')
+i=t.index('book-management-app/\n├── public/'); j=t.index('└── README.md\n```',i)+len('└── README.md')
+t=t[:i]+tree+t[j:]
+end_row='| `src/types/book.ts` | 型定義 | Book 型の定義 |'
+i=t.index('| `src/app/layout.tsx` | レイアウト'); j=t.index(end_row,i)+len(end_row)
+t=t[:i]+table+t[j:]
+s=t.replace('\n','\r\n') if crlf else t
+open(p,'wb').write(s.encode('utf-8'))
+print('ok')

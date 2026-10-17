@@ -1,0 +1,27 @@
+（準備: sql/u01_create.sql の 8 文を実行しました）
+sql> INSERT INTO users (email, password_hash) VALUES ('alice@example.com', 'dummy-x')
+エラー: SQLite failure: `UNIQUE constraint failed: users.email`
+
+sql> INSERT INTO users (email) VALUES ('carol@example.com')
+エラー: SQLite failure: `NOT NULL constraint failed: users.password_hash`
+
+sql> INSERT INTO notes (user_id, title) VALUES (1, '')
+エラー: SQLite failure: `CHECK constraint failed: length(title) BETWEEN 1 AND 80`
+
+sql> INSERT INTO notes (user_id, title, done) VALUES (1, 'テスト', 2)
+エラー: SQLite failure: `CHECK constraint failed: done IN (0, 1)`
+
+sql> INSERT INTO notes (user_id, title) VALUES (99, '持ち主のいないノート')
+エラー: SQLite failure: `FOREIGN KEY constraint failed`
+
+sql> INSERT INTO notes (user_id title) VALUES (1, 'カンマ忘れ')
+エラー: SQLite failure: `near "title": syntax error`
+
+sql> SELECT (SELECT COUNT(*) FROM users) AS users_count, (SELECT COUNT(*) FROM notes) AS notes_count
++-------------+-------------+
+| users_count | notes_count |
++-------------+-------------+
+| 2           | 2           |
++-------------+-------------+
+(1 行)
+

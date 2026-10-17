@@ -1,0 +1,19 @@
+error[E0716]: temporary value dropped while borrowed
+ --> src\bin\u06_err_temporary.rs:2:23
+  |
+2 |     let title: &str = String::from("  買い物  ").trim();
+  |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^       - temporary value is freed at the end of this statement
+  |                       |
+  |                       creates a temporary value which is freed while still in use
+3 |     println!("[{title}]");
+  |                 ----- borrow later used here
+  |
+help: consider using a `let` binding to create a longer lived value
+  |
+2 ~     let binding = String::from("  買い物  ");
+3 ~     let title: &str = binding.trim();
+  |
+
+For more information about this error, try `rustc --explain E0716`.
+error: could not compile `ownership-lab` (bin "u06_err_temporary") due to 1 previous error
+exit=101

@@ -17,8 +17,8 @@ type DeleteResult = {
 function makeTable(): Book[] {
   return [
     { id: "a1", title: "React実践ガイド", status: "reading" },
-    { id: "b2", title: "TypeScript入門", status: "unread" },
-    { id: "c3", title: "Next.js実践", status: "finished" },
+    { id: "b2", title: "TypeScript入門", status: "want_to_read" },
+    { id: "c3", title: "Next.js実践", status: "completed" },
     { id: "d4", title: "SQL入門", status: "reading" },
   ];
 }

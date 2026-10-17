@@ -1,0 +1,6 @@
+   Compiling practice v0.1.0 (C:\Users\you\rust-study\practice)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.34s
+     Running `target\debug\practice.exe`
+42 -> 数値 42
+4x2 -> 変換できません（invalid digit found in string）
+[exit=0]

@@ -1,0 +1,22 @@
+   Compiling async_lab v0.1.0 (...\async_lab)
+error[E0521]: borrowed data escapes outside of function
+  --> src\bin\e07_borrow_escape.rs:5:5
+   |
+ 3 |   async fn hash_password(password: &str) -> String {
+   |                          --------  - let's call the lifetime of this reference `'1`
+   |                          |
+   |                          `password` is a reference that is only valid in the function body
+ 4 |       // 借り物の password を、そのまま別スレッドへ持ち込もうとする
+ 5 | /     tokio::task::spawn_blocking(move || {
+ 6 | |         Argon2::default()
+ 7 | |             .hash_password(password.as_bytes())
+ 8 | |             .unwrap()
+ 9 | |             .to_string()
+10 | |     })
+   | |      ^
+   | |      |
+   | |______`password` escapes the function body here
+   |        argument requires that `'1` must outlive `'static`
+
+For more information about this error, try `rustc --explain E0521`.
+error: could not compile `async_lab` (bin "e07_borrow_escape") due to 1 previous error

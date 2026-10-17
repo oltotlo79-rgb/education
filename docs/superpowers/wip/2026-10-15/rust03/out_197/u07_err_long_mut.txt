@@ -1,0 +1,13 @@
+error[E0502]: cannot borrow `notes` as immutable because it is also borrowed as mutable
+  --> src\bin\u07_err_long_mut.rs:12:17
+   |
+11 |     let first = &mut notes[0];
+   |                      ----- mutable borrow occurs here
+12 |     let total = notes.len();
+   |                 ^^^^^ immutable borrow occurs here
+13 |     first.done = true;
+   |     ----------------- mutable borrow later used here
+
+For more information about this error, try `rustc --explain E0502`.
+error: could not compile `ownership-lab` (bin "u07_err_long_mut") due to 1 previous error
+exit=101

@@ -1,0 +1,5 @@
+"42" → 数 42
+"-7" → 数 -7
+"abc" → 失敗: invalid digit found in string
+"" → 失敗: cannot parse integer from empty string
+Err(ParseIntError { kind: InvalidDigit })

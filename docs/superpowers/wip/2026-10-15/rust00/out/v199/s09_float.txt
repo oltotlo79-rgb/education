@@ -1,0 +1,6 @@
+   Compiling practice v0.1.0 (C:\Users\you\rust-study\practice)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.28s
+     Running `target\debug\practice.exe`
+税込み（整数で計算）: 129
+税込み（小数で計算）: 129.60000000000002
+[exit=0]

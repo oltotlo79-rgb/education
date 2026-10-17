@@ -1,0 +1,21 @@
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.61s
+     Running `C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/rust09/target\debug\rustnote.exe`
+マイグレーションを適用しました: 0001_users
+マイグレーションを適用しました: 0002_notes
+マイグレーションを適用しました: 0003_sessions
+RustNote を起動しました: http://127.0.0.1:3100
+GET / -> 200 OK (542.1µs)
+GET /notes -> 303 See Other (289.1µs)
+POST /signup -> 303 See Other (864.0605ms)
+GET /notes -> 200 OK (5.3586ms)
+POST /notes -> 303 See Other (6.0273ms)
+GET /notes/1 -> 200 OK (5.0017ms)
+GET /notes/1/edit -> 200 OK (3.6475ms)
+POST /notes/1/edit -> 303 See Other (9.0036ms)
+POST /notes/1/toggle -> 303 See Other (6.5866ms)
+GET /notes/abc -> 404 Not Found (4.6264ms)
+GET /notes/999 -> 404 Not Found (3.2837ms)
+POST /notes/1/delete -> 303 See Other (5.6288ms)
+POST /logout -> 303 See Other (6.785ms)
+GET /nope -> 404 Not Found (334.7µs)
+error: process didn't exit successfully: `C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/rust09/target\debug\rustnote.exe` (exit code: 1)

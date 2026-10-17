@@ -1,0 +1,7 @@
+Set-Location : 引数 'Files' を受け入れる位置指定パラメーターが見つかりません。
+発生場所 行:1 文字:1
++ cd C:\Program Files
++ ~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidArgument: (:) [Set-Location]、ParameterBindingException
+    + FullyQualifiedErrorId : PositionalParameterNotFound,Microsoft.PowerShell.Commands.SetLocationCommand
+ 

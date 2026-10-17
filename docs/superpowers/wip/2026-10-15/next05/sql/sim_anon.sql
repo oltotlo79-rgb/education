@@ -1,0 +1,4 @@
+BEGIN;
+SET LOCAL ROLE anon;
+SELECT title FROM books ORDER BY title;
+ROLLBACK;

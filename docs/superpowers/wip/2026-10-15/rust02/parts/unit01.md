@@ -103,17 +103,7 @@ cargo run
 > **▼ このコードがやること（先に日本語で）:** 文字と数にそれぞれ名前を付けて、画面に表示します。`println!` の中の `{}` が「ここに値を差し込む」印です。
 
 ```rust
-fn main() {
-    // title という名前に、文字列 "Rust入門" を結び付ける
-    let title = "Rust入門";
-    // count という名前に、数 3 を結び付ける
-    let count = 3;
-
-    // {} の位置に、後ろに書いた値が入って表示される
-    println!("タイトル: {}", title);
-    // {count} のように、波かっこの中へ変数名を直接書いてもよい
-    println!("ノートの数: {count}");
-}
+@@CODE u01/a_let.rs@@
 ```
 
 ```powershell
@@ -123,8 +113,7 @@ cargo run
 **▼ 実行結果**
 
 ```text
-タイトル: Rust入門
-ノートの数: 3
+@@OUT u01/a_let@@
 ```
 
 #### ▼ コードを1つずつ分解して解説
@@ -170,27 +159,13 @@ println!("ノートの数: {count}");
 > **▼ このコードがやること（先に日本語で）:** 完了したノートの数を数える変数を作り、1を足したり2を足したりして、そのたびに表示します。数が変わる変数なので `mut` を付けます。
 
 ```rust
-fn main() {
-    // mut を付けると、あとから中身を入れ替えられる変数になる
-    let mut done_count = 0;
-    println!("はじめ: {done_count}");
-
-    // 今の値に 1 を足して、同じ変数へ入れ直す
-    done_count = done_count + 1;
-    println!("1件完了: {done_count}");
-
-    // += は「自分に足して入れ直す」の短い書き方
-    done_count += 2;
-    println!("さらに2件完了: {done_count}");
-}
+@@CODE u01/b_mut.rs@@
 ```
 
 **▼ 実行結果**
 
 ```text
-はじめ: 0
-1件完了: 1
-さらに2件完了: 3
+@@OUT u01/b_mut@@
 ```
 
 #### ▼ コードを1つずつ分解して解説
@@ -213,6 +188,7 @@ done_count += 2;
 
 - 1行目は「右側を先に計算（0 + 1 = 1）してから、その結果を `done_count` に入れる」という意味です。数学の「等しい」ではなく「入れる」です。
 - `+=` は `done_count = done_count + 2` の短縮形です。`-=` `*=` `/=` も同じように使えます。
+- `cargo clippy` を実行すると、1行目の書き方には「`done_count += 1` と書けます」という提案が出ます。ここでは仕組みを見せるために、あえて長い形で書いています。
 - 再代入できるのは**同じ型の値だけ**です。数の変数に文字列を入れることはできません（下の「よくあるエラー」で実際に試します）。
 
 #### 例3: シャドーイングで段階的に変換する
@@ -220,28 +196,13 @@ done_count += 2;
 > **▼ このコードがやること（先に日本語で）:** 画面から届いたような「前後に空白のある文字列」を、空白を取り除き、さらに数へ変換します。3段階とも `input` という同じ名前を使い、そのたびに新しい変数を作り直しています。
 
 ```rust
-fn main() {
-    // 段階1: 画面から受け取った文字列（前後に空白がある）
-    let input = "  42  ";
-    println!("[{input}]");
-
-    // 段階2: 同じ名前で「前後の空白を取り除いた版」を作り直す
-    let input = input.trim();
-    println!("[{input}]");
-
-    // 段階3: さらに同じ名前で「数（u32 型）に変換した版」を作り直す
-    let input: u32 = input.parse().expect("数字ではありません");
-    // 数になったので足し算ができる
-    println!("{}", input + 1);
-}
+@@CODE u01/c_shadow.rs@@
 ```
 
 **▼ 実行結果**
 
 ```text
-[  42  ]
-[42]
-43
+@@OUT u01/c_shadow@@
 ```
 
 #### ▼ コードを1つずつ分解して解説
@@ -273,23 +234,13 @@ let input: u32 = input.parse().expect("数字ではありません");
 > **▼ このコードがやること（先に日本語で）:** `{ }` で囲んだ範囲の中でだけ同じ名前の変数を作り直し、範囲を出たら元の値が見えることを確かめます。
 
 ```rust
-fn main() {
-    let level = 1;
-    {
-        // このブロック { } の中だけで有効な、新しい level を作る
-        let level = level * 10;
-        println!("ブロックの中: {level}");
-    }
-    // ブロックを出ると、新しい level は消え、元の level が見える
-    println!("ブロックの外: {level}");
-}
+@@CODE u01/c2_scope.rs@@
 ```
 
 **▼ 実行結果**
 
 ```text
-ブロックの中: 10
-ブロックの外: 1
+@@OUT u01/c2_scope@@
 ```
 
 #### ▼ コードを1つずつ分解して解説
@@ -305,30 +256,13 @@ fn main() {
 > **▼ このコードがやること（先に日本語で）:** タイトルの最大文字数やセッションの日数など、プログラム全体で変わらない値を定数にして使います。定数同士の計算もしてみます。
 
 ```rust
-// 定数はファイルのどこからでも使える。型の注釈（: usize など）が必須
-const MAX_TITLE_CHARS: usize = 80;
-// 定数の値は、コンパイルするときに計算できる式なら書ける
-const SECONDS_PER_DAY: u64 = 24 * 60 * 60;
-const SESSION_DAYS: u64 = 30;
-
-fn main() {
-    println!("タイトルは最大 {MAX_TITLE_CHARS} 文字");
-
-    let session_seconds = SESSION_DAYS * SECONDS_PER_DAY;
-    println!("セッションの有効期限: {session_seconds} 秒");
-
-    // 数字の中の _ は読みやすくするための区切りで、値は変わらない
-    let big = 1_000_000;
-    println!("百万: {big}");
-}
+@@CODE u01/d_const.rs@@
 ```
 
 **▼ 実行結果**
 
 ```text
-タイトルは最大 80 文字
-セッションの有効期限: 2592000 秒
-百万: 1000000
+@@OUT u01/d_const@@
 ```
 
 #### ▼ コードを1つずつ分解して解説
@@ -346,6 +280,8 @@ const MAX_TITLE_CHARS: usize = 80;
 
 > **用語:** **usize / u64** … どちらも「0以上の整数」の型です。`usize` は長さや個数、`u64` は大きな数に使います。整数の型は UNIT 02 で詳しく学びます。
 
+<!-- -->
+
 > **ヒント:** `const` によく似た `static`（スタティック）もあります。`static` は「プログラムの実行中ずっと同じ場所に1つだけ存在する値」です。初心者のうちは、決まった値には `const` を使えば困りません。
 
 ### もう一歩: 実務に近い形
@@ -357,43 +293,13 @@ const MAX_TITLE_CHARS: usize = 80;
 > **▼ このコードがやること（先に日本語で）:** 文字列のポート番号を数へ変換します。数字でなかったときは既定値 8080 を使います。最後に、接続を3回まで試すふりをして、試行回数を数えます。
 
 ```rust
-// 設定値の「既定値」と「上限」は定数にしておく
-const DEFAULT_PORT: u16 = 8080;
-const MAX_RETRIES: u32 = 3;
-
-fn main() {
-    // 環境変数などから届いた「文字列の」ポート番号を想定する
-    let port = " 3000 ";
-    // 段階1: 空白を取り除く（文字列のまま）
-    let port = port.trim();
-    // 段階2: 数（u16）へ変換する。変換に失敗したら既定値を使う
-    let port: u16 = port.parse().unwrap_or(DEFAULT_PORT);
-    println!("待ち受けポート: {port}");
-
-    // 数字ではない文字列だった場合も試す
-    let broken = "abc";
-    let broken: u16 = broken.trim().parse().unwrap_or(DEFAULT_PORT);
-    println!("壊れた設定のときのポート: {broken}");
-
-    // 変化する状態（試行回数）だけを mut にする
-    let mut attempts = 0;
-    while attempts < MAX_RETRIES {
-        attempts += 1;
-        println!("{attempts} 回目の接続を試みます");
-    }
-    println!("上限の {MAX_RETRIES} 回に達しました");
-}
+@@CODE u01/e_config.rs@@
 ```
 
 **▼ 実行結果**
 
 ```text
-待ち受けポート: 3000
-壊れた設定のときのポート: 8080
-1 回目の接続を試みます
-2 回目の接続を試みます
-3 回目の接続を試みます
-上限の 3 回に達しました
+@@OUT u01/e_config@@
 ```
 
 #### ▼ コードを1つずつ分解して解説
@@ -424,32 +330,11 @@ while attempts < MAX_RETRIES {
 #### エラー1: E0384 不変の変数に2回代入した
 
 ```rust
-fn main() {
-    let count = 1;
-    println!("{count}");
-    count = 2;
-    println!("{count}");
-}
+@@CODE u01/err1_e0384.rs@@
 ```
 
 ```text
-   Compiling basics v0.1.0 (.../basics)
-error[E0384]: cannot assign twice to immutable variable `count`
- --> src\main.rs:4:5
-  |
-2 |     let count = 1;
-  |         ----- first assignment to `count`
-3 |     println!("{count}");
-4 |     count = 2;
-  |     ^^^^^^^^^ cannot assign twice to immutable variable
-  |
-help: consider making this binding mutable
-  |
-2 |     let mut count = 1;
-  |         +++
-
-For more information about this error, try `rustc --explain E0384`.
-error: could not compile `basics` (bin "basics") due to 1 previous error
+@@ERR u01/err1_e0384@@
 ```
 
 - **読み方:** 1行目の `error[E0384]` がエラーの番号と要約です（「不変の変数 `count` に2回代入することはできません」）。`--> src\main.rs:4:5` は「src\main.rs の4行目5文字目」という場所です。`^^^^` の下線が問題の箇所、`-----` が関係する箇所（最初の代入）を指しています。
@@ -460,27 +345,11 @@ error: could not compile `basics` (bin "basics") due to 1 previous error
 #### エラー2: E0308 mut の変数に別の型の値を入れた
 
 ```rust
-fn main() {
-    let mut input = " 42 ";
-    input = input.trim();
-    input = input.parse::<u32>().expect("数字ではありません");
-    println!("{input}");
-}
+@@CODE u01/err2_e0308.rs@@
 ```
 
 ```text
-   Compiling basics v0.1.0 (.../basics)
-error[E0308]: mismatched types
- --> src\main.rs:4:13
-  |
-2 |     let mut input = " 42 ";
-  |                     ------ expected due to this value
-3 |     input = input.trim();
-4 |     input = input.parse::<u32>().expect("数字ではありません");
-  |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `&str`, found `u32`
-
-For more information about this error, try `rustc --explain E0308`.
-error: could not compile `basics` (bin "basics") due to 1 previous error
+@@ERR u01/err2_e0308@@
 ```
 
 - **読み方:** `mismatched types` は「型が合っていません」。`expected &str, found u32` は「&str（文字列）が来るはずなのに u32（数）が来た」です。`expected due to this value` が、型が決まった場所（2行目の `" 42 "`）を指しています。
@@ -490,22 +359,11 @@ error: could not compile `basics` (bin "basics") due to 1 previous error
 #### エラー3: 定数に型を書き忘れた
 
 ```rust
-const MAX_TITLE_CHARS = 80;
-
-fn main() {
-    println!("{MAX_TITLE_CHARS}");
-}
+@@CODE u01/err3_const.rs@@
 ```
 
 ```text
-   Compiling basics v0.1.0 (.../basics)
-error: missing type for `const` item
- --> src\main.rs:1:22
-  |
-1 | const MAX_TITLE_CHARS = 80;
-  |                      ^ help: provide a type for the constant: `: i32`
-
-error: could not compile `basics` (bin "basics") due to 1 previous error
+@@ERR u01/err3_const@@
 ```
 
 - **何が起きたか:** `const` には型注釈が必須です。
@@ -514,24 +372,11 @@ error: could not compile `basics` (bin "basics") due to 1 previous error
 #### 警告: 使っていない mut
 
 ```rust
-fn main() {
-    let mut name = "RustNote";
-    println!("{name}");
-}
+@@CODE u01/err4_unused_mut.rs@@
 ```
 
 ```text
-warning: variable does not need to be mutable
- --> src\main.rs:2:9
-  |
-2 |     let mut name = "RustNote";
-  |         ----^^^^
-  |         |
-  |         help: remove this `mut`
-  |
-  = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
-
-warning: `basics` (bin "basics") generated 1 warning (run `cargo fix --bin "basics" -p basics` to apply 1 suggestion)
+@@ERRBODY u01/err4_unused_mut@@
 ```
 
 - `warning`（警告）はエラーではないので、プログラムは実行されます（`RustNote` と表示されます）。
@@ -546,23 +391,13 @@ warning: `basics` (bin "basics") generated 1 warning (run `cargo fix --bin "basi
 > **▼ このコードがやること（先に日本語で）:** 空白付きのタイトルを整え、その文字数を上限と並べて表示します。
 
 ```rust
-const MAX_TITLE_CHARS: usize = 80;
-
-fn main() {
-    // フォームから届いたタイトル（前後に空白がついている）
-    let title = "   牛乳を買う   ";
-    // 前後の空白を取り除いた版を、同じ名前で作り直す（シャドーイング）
-    let title = title.trim();
-    // 文字数を数える（日本語も 1 文字を 1 と数える方法。UNIT 05 で詳しく）
-    let chars = title.chars().count();
-    println!("タイトル「{title}」は {chars} 文字です（上限 {MAX_TITLE_CHARS} 文字）");
-}
+@@CODE u01/f_rustnote.rs@@
 ```
 
 **▼ 実行結果**
 
 ```text
-タイトル「牛乳を買う」は 5 文字です（上限 80 文字）
+@@OUT u01/f_rustnote@@
 ```
 
 この「整える → 数える → 上限と比べる」の流れは、UNIT 05 で文字数の数え方を、UNIT 09 で「範囲外ならエラーを返す」書き方を足して、`NoteTitle::parse` という検証関数に育てていきます。
@@ -572,12 +407,7 @@ fn main() {
 **問題1.** 次のコードは E0384 になります。（a）`mut` を使う方法、（b）シャドーイングを使う方法の2通りで直してください。
 
 ```rust
-fn main() {
-    let count = 1;
-    println!("{count}");
-    count = 2;
-    println!("{count}");
-}
+@@CODE u01/err1_e0384.rs@@
 ```
 
 **問題2.** `let price = "1200";` から始めて、シャドーイングを使って数（`u32`）に変換し、10% の税を足した金額 `税込み: 1320 円` を表示してください。
@@ -585,15 +415,7 @@ fn main() {
 **問題3.** 次のコードを実行すると何が表示されるでしょうか。実行する前に予想してください。
 
 ```rust
-fn main() {
-    let x = 5;
-    let x = x + 1;
-    {
-        let x = x * 2;
-        println!("内側: {x}");
-    }
-    println!("外側: {x}");
-}
+@@CODE u01/ex3.rs@@
 ```
 
 ### 解答と解説
@@ -623,8 +445,7 @@ fn main() {
 **▼ 実行結果**（どちらも同じ）
 
 ```text
-1
-2
+@@OUT u01/ex1_mut@@
 ```
 
 - (a) は「同じ箱の中身を入れ替える」、(b) は「新しい箱を作って名札を移す」です。結果は同じですが、「数を数えていく」なら (a)、「別の意味の値に作り直す」なら (b) が自然です。
@@ -632,20 +453,13 @@ fn main() {
 **解答2.**
 
 ```rust
-fn main() {
-    let price = "1200";
-    // 文字列を数に変換し、同じ名前で作り直す
-    let price: u32 = price.parse().expect("数字ではありません");
-    // 10% の税を足す（整数のまま計算するため、先に 110 を掛けてから 100 で割る）
-    let price = price * 110 / 100;
-    println!("税込み: {price} 円");
-}
+@@CODE u01/ex2.rs@@
 ```
 
 **▼ 実行結果**
 
 ```text
-税込み: 1320 円
+@@OUT u01/ex2@@
 ```
 
 - 整数の割り算は小数点以下が切り捨てられるので、`price / 100 * 110` の順だと端数が失われることがあります。**先に掛けてから割る**のが整数計算のコツです（UNIT 02）。
@@ -653,8 +467,7 @@ fn main() {
 **解答3.**
 
 ```text
-内側: 12
-外側: 6
+@@OUT u01/ex3@@
 ```
 
 - 2行目で `x` は 6 の新しい箱になります。ブロックの中では `x * 2` = 12 の箱が作られますが、`}` で消えるので、外側では 6 が表示されます。

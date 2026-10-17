@@ -1,0 +1,386 @@
+//// FILE: a_struct.rs
+// #[derive(Debug)] を付けると、{:?} で中身を表示できるようになる
+#[derive(Debug)]
+struct Note {
+    id: u64,
+    title: String,
+    body: String,
+    done: bool,
+}
+
+fn main() {
+    // 「フィールド名: 値」を並べて、Note の値（インスタンス）を作る
+    let note = Note {
+        id: 1,
+        title: String::from("牛乳を買う"),
+        body: String::from("低脂肪のもの"),
+        done: false,
+    };
+    // 値.フィールド名 で取り出す
+    println!("#{} {}（完了: {}）", note.id, note.title, note.done);
+    println!("本文: {}", note.body);
+    // {:?} は1行で、{:#?} は複数行で見やすく表示する
+    println!("{note:?}");
+    println!("{note:#?}");
+}
+//// FILE: b_mut_update.rs
+#[derive(Debug)]
+struct Note {
+    id: u64,
+    title: String,
+    done: bool,
+}
+
+// 引数と同じ名前のフィールドは、名前だけ書けばよい（省略記法）
+fn make_note(id: u64, title: &str) -> Note {
+    Note {
+        id,
+        title: title.to_string(),
+        done: false,
+    }
+}
+
+fn main() {
+    // フィールドを書き換えるので mut を付ける（mut はインスタンス全体に付く）
+    let mut note = make_note(1, "牛乳を買う");
+    note.done = true;
+    println!("{note:?}");
+
+    // ..note は「残りのフィールドは note と同じ値にする」（構造体更新記法）
+    let another = Note {
+        id: 2,
+        title: String::from("卵を買う"),
+        ..note
+    };
+    println!("{another:?}");
+}
+//// FILE: c_impl.rs
+struct Note {
+    id: u64,
+    title: String,
+    done: bool,
+}
+
+// impl ブロックに、Note 専用の関数をまとめる
+impl Note {
+    // 関連関数: self を受け取らない。Note::new(...) と呼ぶ。値を「作る」窓口によく使う
+    fn new(id: u64, title: &str) -> Self {
+        Self {
+            id,
+            title: title.trim().to_string(),
+            done: false,
+        }
+    }
+
+    // &self: 読むだけのメソッド
+    fn summary(&self) -> String {
+        let mark = if self.done { "[x]" } else { "[ ]" };
+        format!("{mark} #{} {}", self.id, self.title)
+    }
+
+    // &mut self: 中身を書き換えるメソッド
+    fn toggle(&mut self) {
+        self.done = !self.done;
+    }
+
+    // self: インスタンスを使い切って、中身を取り出すメソッド
+    fn into_title(self) -> String {
+        self.title
+    }
+}
+
+fn main() {
+    let mut note = Note::new(1, "  牛乳を買う ");
+    println!("{}", note.summary());
+    note.toggle();
+    println!("{}", note.summary());
+    let title = note.into_title();
+    println!("取り出したタイトル: {title}");
+}
+//// FILE: d_newtype.rs
+// タプル構造体: フィールドに名前がなく、.0 で取り出す
+// 中身は同じ i64 でも型が別なので、取り違えをコンパイラが見つけてくれる
+#[derive(Debug, Clone, Copy, PartialEq)]
+struct NoteId(i64);
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+struct UserId(i64);
+
+fn find_note(id: NoteId) -> String {
+    format!("ノート {} を探します", id.0)
+}
+
+fn main() {
+    let note_id = NoteId(7);
+    let user_id = UserId(7);
+    println!("{}", find_note(note_id));
+    println!("{note_id:?} と {user_id:?}");
+    // PartialEq を derive したので == で比べられる
+    println!("同じ? {}", note_id == NoteId(7));
+}
+//// FILE: e_notelist.rs
+struct Note {
+    id: u64,
+    title: String,
+    done: bool,
+}
+
+impl Note {
+    fn summary(&self) -> String {
+        let mark = if self.done { "[x]" } else { "[ ]" };
+        format!("{mark} #{} {}", self.id, self.title)
+    }
+}
+
+// ノートの一覧と「次に振る番号」をまとめて持つ構造体
+struct NoteList {
+    notes: Vec<Note>,
+    next_id: u64,
+}
+
+impl NoteList {
+    fn new() -> Self {
+        Self {
+            notes: Vec::new(),
+            next_id: 1,
+        }
+    }
+
+    // ノートを足して、振った ID を返す
+    fn add(&mut self, title: &str) -> u64 {
+        let id = self.next_id;
+        self.next_id += 1;
+        self.notes.push(Note {
+            id,
+            title: title.to_string(),
+            done: false,
+        });
+        id
+    }
+
+    // ID が見つかれば完了を切り替えて true、見つからなければ false
+    fn toggle(&mut self, id: u64) -> bool {
+        for note in &mut self.notes {
+            if note.id == id {
+                note.done = !note.done;
+                return true;
+            }
+        }
+        false
+    }
+
+    fn done_count(&self) -> usize {
+        let mut count = 0;
+        for note in &self.notes {
+            if note.done {
+                count += 1;
+            }
+        }
+        count
+    }
+
+    fn print(&self) {
+        for note in &self.notes {
+            println!("{}", note.summary());
+        }
+    }
+}
+
+fn main() {
+    let mut list = NoteList::new();
+    let milk = list.add("牛乳を買う");
+    list.add("Rust の勉強");
+    list.toggle(milk);
+    println!("ID 99 の切り替え: {}", list.toggle(99));
+    list.print();
+    println!("完了: {} / {}", list.done_count(), list.notes.len());
+}
+//// FILE: f_rustnote.rs
+#[derive(Debug, Clone, Copy, PartialEq)]
+struct UserId(i64);
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+struct NoteId(i64);
+
+#[derive(Debug)]
+struct Note {
+    id: NoteId,
+    user_id: UserId,
+    title: String,
+    body: String,
+    done: bool,
+}
+
+impl Note {
+    fn new(id: NoteId, user_id: UserId, title: &str, body: &str) -> Self {
+        Self {
+            id,
+            user_id,
+            title: title.trim().to_string(),
+            body: body.to_string(),
+            done: false,
+        }
+    }
+
+    // 一覧に出す1行
+    fn headline(&self) -> String {
+        let mark = if self.done { "[x]" } else { "[ ]" };
+        let chars = self.body.chars().count();
+        format!("{mark} #{} {}（本文 {chars} 文字）", self.id.0, self.title)
+    }
+
+    // POST /notes/{id}/toggle で使う: 完了と未完了を切り替える
+    fn toggle_done(&mut self) {
+        self.done = !self.done;
+    }
+
+    // 持ち主かどうか（他人のノートは見せない）
+    fn is_owned_by(&self, user: UserId) -> bool {
+        self.user_id == user
+    }
+}
+
+fn main() {
+    let alice = UserId(1);
+    let bob = UserId(2);
+    let mut note = Note::new(NoteId(10), alice, " 牛乳を買う ", "低脂肪のもの");
+    println!("{}", note.headline());
+    note.toggle_done();
+    println!("{}", note.headline());
+    println!("alice のノート? {}", note.is_owned_by(alice));
+    println!("bob のノート? {}", note.is_owned_by(bob));
+    println!("{note:#?}");
+}
+//// FILE: err1_missing.rs
+struct Note {
+    id: u64,
+    title: String,
+    done: bool,
+}
+
+fn main() {
+    let note = Note {
+        id: 1,
+        title: String::from("牛乳を買う"),
+    };
+    println!("{} {} {}", note.id, note.title, note.done);
+}
+//// FILE: err2_mut.rs
+struct Note {
+    done: bool,
+}
+
+impl Note {
+    fn toggle(&mut self) {
+        self.done = !self.done;
+    }
+}
+
+fn main() {
+    let note = Note { done: false };
+    note.toggle();
+    println!("{}", note.done);
+}
+//// FILE: err3_debug.rs
+struct Note {
+    title: String,
+}
+
+fn main() {
+    let note = Note {
+        title: String::from("牛乳を買う"),
+    };
+    println!("{note:?}");
+}
+//// FILE: err4_newtype.rs
+struct NoteId(i64);
+struct UserId(i64);
+
+fn find_note(id: NoteId) -> i64 {
+    id.0
+}
+
+fn main() {
+    let user_id = UserId(7);
+    println!("{}", find_note(user_id));
+}
+//// FILE: err5_typo.rs
+struct Note {
+    title: String,
+}
+
+impl Note {
+    fn summary(&self) -> String {
+        format!("ノート: {}", self.title)
+    }
+}
+
+fn main() {
+    let note = Note {
+        title: String::from("牛乳を買う"),
+    };
+    println!("{}", note.summery());
+}
+//// FILE: ex1.rs
+struct Note {
+    title: String,
+}
+
+impl Note {
+    // タイトルが 10 文字を超えるなら true
+    fn is_long(&self) -> bool {
+        self.title.chars().count() > 10
+    }
+}
+
+fn main() {
+    let short = Note {
+        title: String::from("牛乳を買う"),
+    };
+    let long = Note {
+        title: String::from("週末にまとめて片付ける部屋の大掃除"),
+    };
+    println!("{}: {}", short.title, short.is_long());
+    println!("{}: {}", long.title, long.is_long());
+}
+//// FILE: ex2.rs
+struct Counter {
+    count: u32,
+}
+
+impl Counter {
+    fn new() -> Self {
+        Self { count: 0 }
+    }
+
+    fn increment(&mut self) {
+        self.count += 1;
+    }
+
+    fn get(&self) -> u32 {
+        self.count
+    }
+}
+
+fn main() {
+    let mut counter = Counter::new();
+    for _ in 0..3 {
+        counter.increment();
+    }
+    println!("count = {}", counter.get());
+}
+//// FILE: ex3.rs
+struct Note {
+    id: u64,
+    title: String,
+    done: bool,
+}
+
+fn main() {
+    let note = Note {
+        id: 1,
+        title: String::from("牛乳を買う"),
+        done: false,
+    };
+    println!("{} {} {}", note.id, note.title, note.done);
+}

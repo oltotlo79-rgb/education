@@ -1,0 +1,7 @@
+# docker build のときにコンテナへ送らないもの
+target/
+*.db
+*.db-shm
+*.db-wal
+.env
+.git/

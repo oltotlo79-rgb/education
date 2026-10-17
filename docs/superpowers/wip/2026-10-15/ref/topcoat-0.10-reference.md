@@ -589,3 +589,96 @@ All paths are under `C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Doc
 - A Linux/Docker build and the Fly.io deploy itself (Docker was not started).
 - docs.rs HTML pages and the tokio.rs announcement blog post (crate-embedded docs were used instead).
 - Housekeeping: I accidentally created an **empty directory `C:\tw-short`** outside the scratch area. A safety check blocked me from removing it. Please delete it manually.
+
+---
+
+## 17. Facts learned while building `Rust/rustnote/` (2026-10-17, all VERIFIED unless marked)
+
+The full app is at `C:\Users\oltot\Documents\git-projects\def\Rust\rustnote\`. All of these came from compiling it with `cargo +1.99.0` and testing it with `Router::handle` and curl.
+
+### Custom errors always become 500
+
+- **The router has no extension point for custom error types.** `error_into_response` downcasts only Topcoat's own types: `ForbiddenError`, `BadRequestError`, `ContentTooLargeError`, `InternalServerError`, `NotFoundError`, `MethodNotAllowedError`, `RedirectError`, `SeeOther`, `UnauthorizedError`, `ServiceUnavailableError` and `TooManyRequestsError`. Anything else becomes a bare `500 internal server error`.
+- **There is no 409 / Conflict router error at all.** Render a view with `(StatusCode::CONFLICT)` instead.
+- RustNote's pattern for its own `AppError` (thiserror):
+  - `?` converts `AppError` into `topcoat::Error`, through the blanket `From<E: std::error::Error + Send + Sync>`.
+  - The root `#[layout]` wraps `(slot)` in `error_boundary(fallback: |error| error_page(cx, error), (slot))`.
+  - `error_page` does `error.downcast_ref::<AppError>()` and renders `(app_error.status_code())` plus a message.
+  - It also handles `NotFoundError` (404) and `BadRequestError` (400).
+  - Every other error goes back up with `return Err(error)`, so redirects still work.
+  - This only covers **pages**, because `#[route]` handlers are not wrapped by layouts.
+
+### Form POSTs as pages
+
+- **`#[page(POST)] async fn x(cx: &Cx) -> Result<()>`** works for form POSTs that always redirect: `Err(see_other(url).into())`. Because it is a page, layouts and their `error_boundary` wrap it, so an `AppError::NotFound` becomes a branded 404.
+- A layer sees these redirects as `Err(SeeOther)`, not as a `Response`. Use `error.downcast_ref::<SeeOther>()` to log them as 303.
+
+### `view!` inside a plain function
+
+- **`view!` in a plain (non-component) function needs `cx =>`.** This includes a helper called from an `error_boundary` fallback.
+- Without it, compilation fails with `error[E0425]: cannot find value '__cx' in this scope`.
+- Working form: `fn error_page(cx: &Cx, error: Error) -> Result<impl View + '_> { Ok(view! { cx => ... }) }`.
+
+### One `view!` per handler
+
+- In page handlers that can re-render a form in several ways, return **one** `view!` at the end. Compute `(status, form_state)` first, then pass it to a single component call.
+- RustNote does this in `signup.rs`, `notes.rs` and `edit.rs`.
+- Why (UNVERIFIED as a compile error): each `view!` expansion has its own type, so two different `Ok(view!{...})` returns cannot share one `impl View`.
+
+### `module_param!` with a domain type
+
+- `module_param!(pub id: NoteId, error = not_found)` works with an application newtype that implements `FromStr` and `Display`. Here `NoteId::from_str` rejects ≤0 and non-numbers.
+- The generated type is `Id(NoteId)`. Read it with `*path_param::<Id>(cx)?` and build links with `href!(show, Id(note_id))`.
+- `/notes/abc`, `/notes/0` and `/notes/-1` all give 404.
+
+### `#[memoize(as_ref)]` on a `Result`
+
+- On `async fn f(cx: &Cx) -> Result<Option<User>, AppError>` it returns `Result<&Option<User>, &AppError>`.
+- In 0.10.0, `?` does not work on `&topcoat::Error`, and `AppError` is not `Clone`. RustNote therefore maps `Err(e)` to `AppError::internal(e.to_string())`.
+- The `?` support on `Result<T, &topcoat::Error>` (#514) exists only on `main`, not in 0.10.0.
+
+### Testing with `asset!` without running the bundler
+
+`Manifest` and `ManifestEntry` have public fields, and `Asset::id()` is public. Build the catalog by hand:
+
+```rust
+let manifest = Manifest { version: 1, assets: vec![ManifestEntry {
+    id: STYLESHEET.id(), file: "style.css".into(), hash: String::new(), content_type: "text/css".into() }] };
+router_builder.assets(AssetConfig::hosted_at("/test-assets", manifest))
+```
+
+The stylesheet then renders as `/test-assets/style.css`. `AssetBundle::load()` is not used in tests.
+
+### Flash messages through cookies
+
+1. `cookies(cx).add(cookie!{"flash" = code; Path = "/"; HttpOnly; SameSite = Lax; MaxAge = Duration::minutes(5)})`, written in the POST page body before `Err(see_other)`. The `Set-Cookie` is present on the 303.
+2. In the next GET page body, `jar.get("flash")` and `jar.remove(Cookie::build(("flash", "")).path("/").build())` emit `Max-Age=0`.
+
+Do this in page bodies, not in the layout. The order between the layout body and the page body is not specified.
+
+### libSQL
+
+- libSQL 0.10 `INSERT/UPDATE ... RETURNING` works on local files.
+- A UNIQUE violation surfaces as a `libsql::Error` whose `to_string()` contains `UNIQUE constraint failed`. Map it to `RepoError::UniqueViolation`.
+- **One connection per operation** (`database.connect()` each call) plus `PRAGMA foreign_keys = ON; PRAGMA busy_timeout = 5000;` through `execute_batch` works fine locally.
+- `libsql::Database` is not `Clone`; wrap it in `Arc`.
+
+### Async traits
+
+`async-trait` 0.1.92 makes `Arc<dyn NoteRepository + Send + Sync>` with async methods compile. This is what volume 4's `AppState` design needs.
+
+### Tooling
+
+- `topcoat dev` and `topcoat asset bundle` honour `CARGO_TARGET_DIR`. The bundle lands in `$CARGO_TARGET_DIR/debug/assets`.
+- `topcoat dev` also worked with `RUSTUP_TOOLCHAIN=1.99.0`, and the `dev.js` script tag was injected.
+- **`topcoat fmt` formatter glitch:** a long string literal with `.to_string()` inside a component argument (`error: Some("…long…".to_string())`) gets reformatted as `.to_string(\n\n)`. It still compiles, but it is ugly. Workaround: move the string to a `const` or a local variable first.
+
+### Windows and curl
+
+- `curl.exe` on Windows (Git Bash) receives non-ASCII command-line arguments in the ANSI code page (CP932), so `--data-urlencode "title=買い物"` sends mojibake.
+- Percent-encode UTF-8 yourself for smoke tests: `python -c "import urllib.parse,sys;print(urllib.parse.quote(sys.argv[1], safe=''))"`.
+
+### Not verified
+
+- **Docker build and Fly.io deploy of RustNote:** Docker Desktop was not started. The Docker Hub tags `rust:1.99.0-bookworm` and `debian:bookworm-slim` were confirmed to exist through the Hub API.
+- **Turso remote connection:** the code path is `Builder::new_remote` and there was no Turso account.

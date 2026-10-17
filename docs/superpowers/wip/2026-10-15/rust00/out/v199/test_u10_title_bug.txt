@@ -1,0 +1,33 @@
+   Compiling practice v0.1.0 (C:\Users\you\rust-study\practice)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.46s
+     Running unittests src\main.rs (target\debug\deps\practice-7d4a8a329333a0ec.exe)
+
+running 4 tests
+test tests::eighty_one_characters_is_invalid ... ok
+test tests::empty_title_is_invalid ... ok
+test tests::eighty_characters_is_valid ... FAILED
+test tests::counts_japanese_characters ... FAILED
+
+failures:
+
+---- tests::eighty_characters_is_valid stdout ----
+
+thread 'tests::eighty_characters_is_valid' (54260) panicked at src\main.rs:39:9:
+assertion failed: is_valid_title(&title)
+
+---- tests::counts_japanese_characters stdout ----
+
+thread 'tests::counts_japanese_characters' (3680) panicked at src\main.rs:27:9:
+assertion `left == right` failed
+  left: 15
+ right: 5
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    tests::counts_japanese_characters
+    tests::eighty_characters_is_valid
+
+test result: FAILED. 2 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--bin practice`

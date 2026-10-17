@@ -1,0 +1,3 @@
+.gitignore:10:.env	.env
+.gitignore:5:*.db	rustnote.db
+.gitignore:2:/target/	target/debug/hello-git.exe

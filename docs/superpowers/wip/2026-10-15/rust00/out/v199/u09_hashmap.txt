@@ -1,0 +1,26 @@
+   Compiling practice v0.1.0 (C:\Users\you\rust-study\practice)
+error[E0433]: cannot find type `HashMap` in this scope
+ --> src\main.rs:3:21
+  |
+3 |     let mut stock = HashMap::new();
+  |                     ^^^^^^^ use of undeclared type `HashMap`
+  |
+help: consider importing this struct
+  |
+1 + use std::collections::HashMap;
+  |
+
+error[E0433]: cannot find type `HashMap` in this scope
+ --> src\main.rs:7:22
+  |
+7 |     let mut prices = HashMap::new();
+  |                      ^^^^^^^ use of undeclared type `HashMap`
+  |
+help: consider importing this struct
+  |
+1 + use std::collections::HashMap;
+  |
+
+For more information about this error, try `rustc --explain E0433`.
+error: could not compile `practice` (bin "practice") due to 2 previous errors
+[exit=101]

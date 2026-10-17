@@ -1,0 +1,15 @@
+error[E0502]: cannot borrow `v` as mutable because it is also borrowed as immutable
+ --> src\bin\u07_err_push_in_loop.rs:5:13
+  |
+3 |     for n in &v {
+  |              --
+  |              |
+  |              immutable borrow occurs here
+  |              immutable borrow later used here
+4 |         if *n == 2 {
+5 |             v.push(20);
+  |             ^^^^^^^^^^ mutable borrow occurs here
+
+For more information about this error, try `rustc --explain E0502`.
+error: could not compile `ownership-lab` (bin "u07_err_push_in_loop") due to 1 previous error
+exit=101

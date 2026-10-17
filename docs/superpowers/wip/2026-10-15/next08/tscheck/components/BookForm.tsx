@@ -7,6 +7,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 // ブラウザ向けの Supabase クライアント
 import { createClient } from "@/lib/supabase/client";
+// 第7章の StatusBadge で定義したステータスの型（型だけを読み込む）
+import { type BookStatus } from "./StatusBadge";
 
 // -------------------------------------------------
 // 型定義
@@ -27,8 +29,8 @@ type BookFormData = {
   published_date: string;
   // 評価（1〜5 または null）
   rating: number | null;
-  // ステータス（"unread" / "reading" / "finished"）
-  status: string;
+  // ステータス（"want_to_read" / "reading" / "completed" のどれか）
+  status: BookStatus;
   // メモ
   memo: string;
 };
@@ -72,8 +74,8 @@ const defaultFormData: BookFormData = {
   published_date: "",
   // 評価なし
   rating: null,
-  // デフォルトは「未読」
-  status: "unread",
+  // デフォルトは「読みたい」（第7章と同じ）
+  status: "want_to_read",
   // 空文字
   memo: "",
 };
@@ -171,8 +173,9 @@ export default function BookForm({
     // -------------------------------------------------
     // バリデーション
     // -------------------------------------------------
-    // タイトルは必須項目です。空の場合はエラーを
-    // 表示して処理を中断します。
+    // タイトルと著者は必須項目です（第7章の BookForm と
+    // 同じルール。DB の列も NOT NULL）。空の場合は
+    // エラーを表示して処理を中断します。
     // trim() で前後の空白を除去してからチェックする
     // ことで「スペースだけ」の入力もエラー扱いに。
     // -------------------------------------------------
@@ -182,6 +185,12 @@ export default function BookForm({
       // 送信中フラグを戻す
       setIsSubmitting(false);
       // 処理を中断
+      return;
+    }
+    // 著者が空白のみ または 空文字の場合
+    if (!formData.author.trim()) {
+      setError("著者は必須です。");
+      setIsSubmitting(false);
       return;
     }
 
@@ -207,8 +216,9 @@ export default function BookForm({
           .update({
             // 前後の空白を除去
             title: formData.title.trim(),
+            // 著者は必須なので null にしない（空白を除くだけ）
+            author: formData.author.trim(),
             // 空文字なら null（DB をクリーンに保つ）
-            author: formData.author.trim() || null,
             publisher: formData.publisher.trim() || null,
             // 空文字なら null
             published_date: formData.published_date || null,
@@ -252,7 +262,7 @@ export default function BookForm({
           // INSERT 文に相当
           .insert({
             title: formData.title.trim(),
-            author: formData.author.trim() || null,
+            author: formData.author.trim(),
             publisher: formData.publisher.trim() || null,
             published_date: formData.published_date || null,
             rating: formData.rating,
@@ -269,9 +279,9 @@ export default function BookForm({
         }
 
         // -------------------------------------------------
-        // 登録成功: 一覧ページにリダイレクト
+        // 登録成功: 一覧ページ（/）にリダイレクト
         // -------------------------------------------------
-        router.push("/books");
+        router.push("/");
         router.refresh();
       }
     } catch (err) {
@@ -359,13 +369,16 @@ export default function BookForm({
           htmlFor="author"
           className="block text-sm font-medium text-gray-700"
         >
-          著者
+          {/* 著者もタイトルと同じく必須 */}
+          著者 <span className="text-red-500">*</span>
         </label>
         <input
           type="text"
           id="author"
           // name="author" → handleChange で formData.author が更新される
           name="author"
+          // ブラウザ側の必須チェック
+          required
           value={formData.author}
           onChange={handleChange}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
@@ -454,9 +467,9 @@ export default function BookForm({
           onChange={handleChange}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
         >
-          <option value="unread">未読</option>
+          <option value="want_to_read">読みたい</option>
           <option value="reading">読書中</option>
-          <option value="finished">読了</option>
+          <option value="completed">読了</option>
         </select>
       </div>
 

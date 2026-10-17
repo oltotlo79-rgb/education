@@ -29,7 +29,7 @@ export async function updateBookTitle(id: string, formData: FormData) {
 
   // 詳細ページと一覧ページのキャッシュを捨てる
   revalidatePath(`/books/${id}`);
-  revalidatePath("/books");
+  revalidatePath("/");
   // 詳細ページへ移動する（この行より後ろは実行されない）
   redirect(`/books/${id}`);
 }

@@ -80,7 +80,7 @@ export default async function BookEditPage({ params }: Props) {
     // null はそのまま
     rating: book.rating ?? null,
     // status は null だと困るのでデフォルトを設定
-    status: book.status ?? "unread",
+    status: book.status ?? "want_to_read",
     memo: book.memo ?? "",
   };
 

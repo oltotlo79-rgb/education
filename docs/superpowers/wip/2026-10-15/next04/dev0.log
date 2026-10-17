@@ -2,14 +2,187 @@
 - Local:         http://localhost:3000
 - Network:       http://192.168.210.103:3000
 - Environments: .env.local
-✓ Ready in 2.4s
-✓ Running next.config.ts took 90ms
+✓ Ready in 2.1s
+✓ Running next.config.ts took 149ms
 
 ○ Compiling /books/[id] ...
 [RootLayout] サーバーで描画しました
 [BooksLayout] サーバーで描画しました
-[BookDetailPage] id=42 のページを描画しました
- GET /books/42 200 in 3.2s (next.js: 1995ms, application-code: 1178ms)
+Error: Route "/books/[id]" used `params.id`. `params` is a Promise and must be unwrapped with `await` or `React.use()` before accessing its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at BookDetailPage (app\books\[id]\page.tsx:7:25)
+  5 |   params: { id: string };
+  6 | }) {
+> 7 |   return <h1>書籍 {params.id} の詳細</h1>;
+    |                       ^
+  8 | }
+  9 |
+ GET /books/42 200 in 7.2s (next.js: 6.8s, application-code: 368ms)
 [RootLayout] サーバーで描画しました
- GET /ng-layoutfetch 200 in 1127ms (next.js: 30ms, application-code: 1097ms)
+ GET /search 200 in 58ms (next.js: 15ms, application-code: 43ms)
+✓ Compiled in 6ms
+[RootLayout] サーバーで描画しました
+ GET /ok-func 200 in 41ms (next.js: 7ms, application-code: 34ms)
+[RootLayout] サーバーで描画しました
+ GET /ok-func 200 in 29ms (next.js: 1.6ms, application-code: 27ms)
+[deleteBook] 「リーダブルコード」を削除しました
+ POST /ok-func 200 in 14ms (next.js: 1.8ms, application-code: 12ms)
+  └─ ƒ deleteBook("リーダブルコード") in 1ms app/ok-func/actions.ts
+[RootLayout] サーバーで描画しました
+ GET /ok-window 200 in 45ms (next.js: 12ms, application-code: 33ms)
+✓ Compiled in 16ms
+[RootLayout] サーバーで描画しました
+⨯ Error: Functions cannot be passed directly to Client Components unless you explicitly expose it by marking it with "use server". Or maybe you meant to call this function rather than return it.
+  <... format={function format}>
+              ^^^^^^^^^^^^^^^^^
+    at ignore-listed frames {
+  digest: '3320552714'
+}
+ GET /ng-func2 500 in 368ms (next.js: 7ms, application-code: 361ms)
+[RootLayout] サーバーで描画しました
+⨯ Error: Only plain objects, and a few built-ins, can be passed to Client Components from Server Components. Classes or null prototypes are not supported.
+  <... book={{title: ...}}>
+            ^^^^^^^^^^^^^^
+    at ignore-listed frames {
+  digest: '3765270734'
+}
+ GET /ng-class 500 in 48ms (next.js: 10ms, application-code: 38ms)
+[RootLayout] サーバーで描画しました
+[BooksLayout] サーバーで描画しました
+[BookDetailPage] id=42 のページを描画しました
+ GET /books/42 200 in 172ms (next.js: 15ms, application-code: 157ms)
+[RootLayout] サーバーで描画しました
+ GET /demo/a 200 in 61ms (next.js: 14ms, application-code: 47ms)
+[RootLayout] サーバーで描画しました
+ GET /demo/b 200 in 74ms (next.js: 20ms, application-code: 54ms)
+[RootLayout] サーバーで描画しました
+ GET /demo/a 200 in 39ms (next.js: 2ms, application-code: 37ms)
+[RootLayout] サーバーで描画しました
+ GET /demo/a 200 in 39ms (next.js: 2ms, application-code: 37ms)
+[RootLayout] サーバーで描画しました
+ GET /demo/b 200 in 37ms (next.js: 2ms, application-code: 35ms)
+ GET /demo/a 200 in 36ms (next.js: 4ms, application-code: 32ms)
+ GET /demo/b 200 in 20ms (next.js: 2.0ms, application-code: 18ms)
+[RootLayout] サーバーで描画しました
+ GET /nav-demo 200 in 117ms (next.js: 16ms, application-code: 101ms)
+[BooksLayout] サーバーで描画しました
+[BookDetailPage] id=1 のページを描画しました
+ GET /books/1 200 in 49ms (next.js: 13ms, application-code: 36ms)
+[RootLayout] サーバーで描画しました
+catch で捕まえたもの: 読み込みに失敗しました
+ GET /ok-redirect 307 in 73ms (next.js: 16ms, application-code: 57ms)
+[RootLayout] サーバーで描画しました
+catch で捕まえたもの: 読み込みに失敗しました
+ GET /ok-redirect 307 in 50ms (next.js: 1.7ms, application-code: 49ms)
+[RootLayout] サーバーで描画しました
+catch で捕まえたもの: Error: NEXT_REDIRECT
+    at NgRedirectPage (app\ng-redirect\page.tsx:7:13)
+   5 |   try {
+   6 |     // 何かの処理に失敗した、という想定で一覧へ転送したい
+>  7 |     redirect("/shelf");
+     |             ^
+   8 |   } catch (error) {
+   9 |     console.log("catch で捕まえたもの:", error);
+  10 |   } {
+  digest: 'NEXT_REDIRECT;replace;/shelf;307;'
+}
+ GET /ng-redirect 200 in 111ms (next.js: 17ms, application-code: 95ms)
+[RootLayout] サーバーで描画しました
+catch で捕まえたもの: Error: NEXT_REDIRECT
+    at NgRedirectPage (app\ng-redirect\page.tsx:7:13)
+   5 |   try {
+   6 |     // 何かの処理に失敗した、という想定で一覧へ転送したい
+>  7 |     redirect("/shelf");
+     |             ^
+   8 |   } catch (error) {
+   9 |     console.log("catch で捕まえたもの:", error);
+  10 |   } {
+  digest: 'NEXT_REDIRECT;replace;/shelf;307;'
+}
+ GET /ng-redirect 200 in 36ms (next.js: 1.3ms, application-code: 35ms)
+[RootLayout] サーバーで描画しました
+catch で捕まえたもの: Error: NEXT_REDIRECT
+    at NgRedirectPage (app\ng-redirect\page.tsx:7:13)
+   5 |   try {
+   6 |     // 何かの処理に失敗した、という想定で一覧へ転送したい
+>  7 |     redirect("/shelf");
+     |             ^
+   8 |   } catch (error) {
+   9 |     console.log("catch で捕まえたもの:", error);
+  10 |   } {
+  digest: 'NEXT_REDIRECT;replace;/shelf;307;'
+}
+ GET /ng-redirect 200 in 36ms (next.js: 1.4ms, application-code: 34ms)
+✓ Compiled in 33ms
+✓ Compiled in 32ms
+[RootLayout] サーバーで描画しました
+ GET /env-ok 200 in 56ms (next.js: 9ms, application-code: 47ms)
+⨯ ./lib/secret.ts:2:1
+Error: You're importing a module that depends on "server-only". This API is only available in Server Components in the App Router, but you are using it in the Pages Router.
+    Learn more: https://nextjs.org/docs/app/building-your-application/rendering/server-components
+  [90m1 |[0m [90m// lib/secret.ts（サーバー専用の処理をまとめるファイル）[0m
+[31m[1m>[0m [90m2 |[0m [36mimport[0m [32m"server-only"[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m3 |[0m
+  [90m4 |[0m [36mexport[0m [36mfunction[0m getSecretKey() {
+  [90m5 |[0m   [36mreturn[0m process.env.[33mSECRET_API_KEY[0m ?? [32m""[0m;
+
+Ecmascript file had an error
+
+Import traces:
+  Client Component Browser:
+    ./lib/secret.ts [Client Component Browser]
+    ./app/so-ng/ShowSecret.tsx [Client Component Browser]
+    ./app/so-ng/ShowSecret.tsx [Server Component]
+    ./app/so-ng/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/secret.ts [Client Component SSR]
+    ./app/so-ng/ShowSecret.tsx [Client Component SSR]
+    ./app/so-ng/ShowSecret.tsx [Server Component]
+    ./app/so-ng/page.tsx [Server Component]
+
+
+
+./lib/secret.ts:2:1
+Error: 'server-only' cannot be imported from a Client Component module
+  [90m1 |[0m [90m// lib/secret.ts（サーバー専用の処理をまとめるファイル）[0m
+[31m[1m>[0m [90m2 |[0m [36mimport[0m [32m"server-only"[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m3 |[0m
+  [90m4 |[0m [36mexport[0m [36mfunction[0m getSecretKey() {
+  [90m5 |[0m   [36mreturn[0m process.env.[33mSECRET_API_KEY[0m ?? [32m""[0m;
+
+It should only be used from a Server Component.
+
+Import traces:
+  Client Component Browser:
+    ./lib/secret.ts [Client Component Browser]
+    ./app/so-ng/ShowSecret.tsx [Client Component Browser]
+    ./app/so-ng/ShowSecret.tsx [Server Component]
+    ./app/so-ng/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/secret.ts [Client Component SSR]
+    ./app/so-ng/ShowSecret.tsx [Client Component SSR]
+    ./app/so-ng/ShowSecret.tsx [Server Component]
+    ./app/so-ng/page.tsx [Server Component]
+
+
+ GET /so-ng 500 in 1651ms (next.js: 1474ms, application-code: 177ms)
+ GET / 500 in 273ms (next.js: 224ms, application-code: 50ms)
+ GET /q3 500 in 185ms (next.js: 175ms, application-code: 10ms)
+[RootLayout] サーバーで描画しました
+ GET / 200 in 54ms (next.js: 16ms, application-code: 38ms)
+[RootLayout] サーバーで描画しました
+⨯ Error: Event handlers cannot be passed to Client Component props.
+  <button onClick={function onClick} children=...>
+                  ^^^^^^^^^^^^^^^^^^
+If you need interactivity, consider converting part of this to a Client Component.
+    at ignore-listed frames {
+  digest: '1655668901'
+}
+ GET /q3 500 in 82ms (next.js: 21ms, application-code: 61ms)
+[RootLayout] サーバーで描画しました
+ GET / 200 in 35ms (next.js: 2ms, application-code: 33ms)
+✓ Compiled in 82ms
 [?25h

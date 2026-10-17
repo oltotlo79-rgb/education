@@ -1,0 +1,9 @@
+   Compiling basics v0.1.0 (.../basics)
+error[E0063]: missing field `done` in initializer of `Note`
+ --> src\main.rs:8:16
+  |
+8 |     let note = Note {
+  |                ^^^^ missing `done`
+
+For more information about this error, try `rustc --explain E0063`.
+error: could not compile `basics` (bin "basics") due to 1 previous error

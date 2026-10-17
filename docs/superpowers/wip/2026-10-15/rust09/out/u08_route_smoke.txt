@@ -1,0 +1,16 @@
+﻿GET    /health              -> 200 
+GET    /                    -> 200 
+GET    /notes               -> 303 → /login
+POST   /signup              -> 303 → /notes
+GET    /notes               -> 200 
+POST   /notes               -> 303 → /notes/1
+GET    /notes/1             -> 200 
+GET    /notes/1/edit        -> 200 
+POST   /notes/1/edit        -> 303 → /notes/1
+POST   /notes/1/toggle      -> 303 → /notes/1
+GET    /notes/abc           -> 404 
+GET    /notes/999           -> 404 
+DELETE /notes               -> 405 
+POST   /notes/1/delete      -> 303 → /notes
+POST   /logout              -> 303 → /login
+GET    /nope                -> 404 

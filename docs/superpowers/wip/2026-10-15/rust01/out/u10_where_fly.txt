@@ -1,0 +1,2 @@
+C:\Users\oltot\.fly\bin\fly.exe
+C:\Users\oltot\.fly\bin\flyctl.exe

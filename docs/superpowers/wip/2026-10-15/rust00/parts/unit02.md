@@ -26,7 +26,7 @@
 <div style="max-width: 720px; margin: 18px auto; text-align: center;">
 <svg viewBox="0 0 720 330" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
 <rect x="20" y="14" width="150" height="32" rx="6" fill="#f8fafc" stroke="#475569" stroke-width="1.5"/>
-<text x="95" y="35" font-size="13" font-weight="700" fill="#334155" text-anchor="middle">C:\（ドライブ）</text>
+<text font-family="Cascadia Mono, Consolas, Yu Gothic UI, monospace" x="95" y="35" font-size="13" font-weight="700" fill="#334155" text-anchor="middle">C:\（ドライブ）</text>
 <path d="M50,46 L50,72 L80,72" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
 <rect x="80" y="58" width="120" height="28" rx="6" fill="#fff7ed" stroke="#f97316"/>
 <text x="140" y="77" font-size="13" fill="#9a3412" text-anchor="middle">Users</text>
@@ -53,7 +53,7 @@
 <text x="525" y="267" font-size="13" fill="#334155" text-anchor="middle">main.rs</text>
 <rect x="400" y="166" width="300" height="40" rx="8" fill="#eff6ff" stroke="#3b82f6"/>
 <text x="412" y="184" font-size="12" font-weight="700" fill="#1e40af">太枠 = 今いるフォルダ（カレントディレクトリ）</text>
-<text x="412" y="200" font-size="12" fill="#334155">PowerShell の表示: PS C:\Users\you\rust-study\practice&gt;</text>
+<text font-family="Cascadia Mono, Consolas, Yu Gothic UI, monospace" x="412" y="200" font-size="12" fill="#334155">PS C:\Users\you\rust-study\practice&gt;</text>
 <rect x="430" y="22" width="270" height="110" rx="10" fill="#f8fafc" stroke="#cbd5e1"/>
 <rect x="446" y="40" width="16" height="16" rx="3" fill="#fff7ed" stroke="#f97316"/>
 <text x="470" y="53" font-size="12" fill="#334155">フォルダ（中に入れ物を持てる）</text>

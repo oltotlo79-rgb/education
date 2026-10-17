@@ -1,0 +1,4 @@
+error: cyclic package dependency: package `domain v0.1.0 (...\cycle_ws\domain)` depends on itself. Cycle:
+package `domain v0.1.0 (...\cycle_ws\domain)`
+    ... which satisfies path dependency `domain` of package `web v0.1.0 (...\cycle_ws\web)`
+    ... which satisfies path dependency `web` of package `domain v0.1.0 (...\cycle_ws\domain)`

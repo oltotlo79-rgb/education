@@ -1,0 +1,10 @@
+   Compiling design_lab v0.1.0 (...\design_lab)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.48s
+     Running `target\debug\u09_config.exe`
+1: Ok(Config { host: "127.0.0.1", port: 3000, database_url: "file:rustnote.db", database_auth_token: None })
+2: Config { host: "0.0.0.0", port: 8080, database_url: "libsql://rustnote-example.turso.io", database_auth_token: Some(Secret(********)) }
+   待ち受け: 0.0.0.0:8080 / DB: libsql://rustnote-example.turso.io
+   トークンの長さ: Some(24)
+3: 起動できません: DATABASE_AUTH_TOKEN が設定されていません
+4: 起動できません: PORT の値 "80a" が正しくありません: invalid digit found in string
+env: 起動できません: DATABASE_URL が設定されていません

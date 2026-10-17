@@ -1,0 +1,6 @@
+   Compiling practice v0.1.0 (C:\Users\you\rust-study\practice)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.30s
+     Running `target\debug\practice.exe`
+エラー: 名前を 1 つ渡してください（例: cargo run -- Hanako）
+error: process didn't exit successfully: `target\debug\practice.exe` (exit code: 2)
+[exit=2]

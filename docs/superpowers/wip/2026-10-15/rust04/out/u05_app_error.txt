@@ -1,5 +1,5 @@
    Compiling design_lab v0.1.0 (...\design_lab)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.83s
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.77s
      Running `target\debug\u05_app_error.exe`
 200 OK: 牛乳を買う
 400 画面: タイトルを入力してください

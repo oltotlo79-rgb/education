@@ -1,0 +1,9 @@
+   Compiling basics v0.1.0 (.../basics)
+error[E0308]: mismatched types
+ --> src\main.rs:3:8
+  |
+3 |     if unread {
+  |        ^^^^^^ expected `bool`, found integer
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `basics` (bin "basics") due to 1 previous error

@@ -1,0 +1,24 @@
+| `app/layout.tsx` | レイアウト | アプリ全体の共通レイアウト。Header を含む |
+| `app/page.tsx` | ページ | トップページ＝書籍一覧ページ（`/`）。Supabase からデータを取得して表示 |
+| `app/globals.css` | スタイル | Tailwind CSS のベーススタイル（`@import "tailwindcss";`） |
+| `app/loading.tsx` | ページ | 読み込み中に表示する画面（第7章） |
+| `app/error.tsx` | ページ | エラーが起きたときの画面（第7章） |
+| `app/books/new/page.tsx` | ページ | 新規書籍追加ページ。BookForm を使用 |
+| `app/books/[id]/page.tsx` | ページ | 書籍詳細ページ。動的ルートでIDに基づく表示 |
+| `app/books/[id]/not-found.tsx` | ページ | 存在しない id を開いたときの案内画面（第8章） |
+| `app/books/[id]/edit/page.tsx` | ページ | 書籍編集ページ。既存データの更新 |
+| `components/Header.tsx` | コンポーネント | ヘッダーナビゲーション（第6章） |
+| `components/BookCard.tsx` | コンポーネント | 書籍カードの表示。一覧ページで使用 |
+| `components/BookList.tsx` | コンポーネント | 書籍カードを並べて一覧にする（第7章） |
+| `components/BookForm.tsx` | コンポーネント | 書籍の追加・編集フォーム。新規追加と編集で共用 |
+| `components/DeleteButton.tsx` | コンポーネント | 削除ボタン。確認ダイアログ付き |
+| `components/StatusBadge.tsx` | コンポーネント | 読書ステータス（読みたい・読書中・読了）のバッジ |
+| `components/RatingStars.tsx` | コンポーネント | 星評価の表示 |
+| `components/LoadingSpinner.tsx` | コンポーネント | 読み込み中のくるくるアニメーション |
+| `components/SearchBar.tsx` | コンポーネント | テキスト検索とステータスフィルタ（第8章） |
+| `components/SortSelect.tsx` | コンポーネント | 並び替えの選択（第8章） |
+| `lib/supabase/client.ts` | ユーティリティ | ブラウザ側（Client Component）用の Supabase クライアント |
+| `lib/supabase/server.ts` | ユーティリティ | サーバー側（Server Component）用の Supabase クライアント |
+| `app/api/health/route.ts` | API | ヘルスチェック（第10章 2.9.1 で追加した場合） |
+| `scripts/check-env.mjs` | スクリプト | ビルド前の環境変数チェック（第10章 1.4.1 で追加した場合） |
+| `types/book.ts` | 型定義 | Book 型の定義 |

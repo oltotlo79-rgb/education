@@ -1,13 +1,13 @@
 Get-Location
 mkdir shell-practice
 cd shell-practice
-Set-Content memo.txt "はじめての PowerShell"
+Set-Content memo.txt "はじめての PowerShell" -Encoding utf8
 ls
 cat memo.txt
 Copy-Item memo.txt memo-backup.txt
 ls
 Remove-Item memo-backup.txt
 cd ..
-Get-Command cargo
 cargo --version
-carg run
+rustc --version
+Get-Command cargo

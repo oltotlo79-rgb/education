@@ -1,0 +1,22 @@
+   Compiling practice v0.1.0 (C:\Users\you\rust-study\practice)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.35s
+     Running `target\debug\practice.exe`
+パス全体  : src/main.rs
+ファイル名: Some("main.rs")
+拡張子    : Some("rs")
+親フォルダ: Some("src")
+
+Cargo.toml             -> 存在する? true
+src/main.rs            -> 存在する? true
+main.rs                -> 存在する? false
+./src/../Cargo.toml    -> 存在する? true
+
+今いるフォルダの中身:
+  [フォルダ] .git
+  [ファイル] .gitignore
+  [ファイル] Cargo.lock
+  [ファイル] Cargo.toml
+  [フォルダ] memo
+  [フォルダ] src
+  [フォルダ] target
+[exit=0]

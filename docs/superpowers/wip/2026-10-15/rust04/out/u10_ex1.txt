@@ -1,0 +1,17 @@
+   Compiling toggle v0.1.0 (...\toggle)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.26s
+     Running unittests src\lib.rs (target\debug\deps\toggle-cea6960573bc22ad.exe)
+
+running 3 tests
+test tests::from_done_column ... ok
+test tests::toggle_flips ... ok
+test tests::toggle_twice_returns_to_start ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests toggle
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

@@ -1,0 +1,4 @@
+folder: 強 2
+memo:   強 2
+main 終了
+exit=0

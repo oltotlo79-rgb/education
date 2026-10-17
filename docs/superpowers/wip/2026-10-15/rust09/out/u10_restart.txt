@@ -1,0 +1,7 @@
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.49s
+     Running `target\debug\rustnote.exe`
+マイグレーションを適用しました: 0001_users
+マイグレーションを適用しました: 0002_notes
+マイグレーションを適用しました: 0003_sessions
+RustNote を起動しました: http://127.0.0.1:3100
+POST /signup -> 303 See Other (630.4072ms)

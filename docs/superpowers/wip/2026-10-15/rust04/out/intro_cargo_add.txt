@@ -17,7 +17,7 @@
              - raw_value
              - unbounded_depth
     Updating crates.io index
-     Locking 14 packages to latest Rust 1.97.1 compatible versions
+     Locking 14 packages to highest Rust 1.99.0 compatible versions
     Updating crates.io index
       Adding serde v1.0.229 to dependencies
              Features:

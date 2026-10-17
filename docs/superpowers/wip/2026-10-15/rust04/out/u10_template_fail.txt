@@ -1,0 +1,24 @@
+   Compiling note_domain v0.1.0 (...\tmpl_fail)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.31s
+     Running unittests src\lib.rs (target\debug\deps\note_domain-5281fd8cc8224548.exe)
+
+running 1 test
+test tests::it_works ... FAILED
+
+failures:
+
+---- tests::it_works stdout ----
+
+thread 'tests::it_works' (42500) panicked at src\lib.rs:12:9:
+assertion `left == right` failed
+  left: 4
+ right: 5
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    tests::it_works
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--lib`

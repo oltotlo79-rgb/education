@@ -1,0 +1,298 @@
+//// FILE: a_result.rs
+fn main() {
+    for raw in ["42", "-7", "abc", ""] {
+        // parse は Result を返す。成功なら Ok(値)、失敗なら Err(理由)
+        let result: Result<i32, std::num::ParseIntError> = raw.parse::<i32>();
+        match result {
+            Ok(n) => println!("{raw:?} → 数 {n}"),
+            // {e} で、失敗の理由を人向けの文で表示する
+            Err(e) => println!("{raw:?} → 失敗: {e}"),
+        }
+    }
+    // {:?} だと、プログラマー向けの詳しい形で表示される
+    println!("{:?}", "abc".parse::<i32>());
+}
+//// FILE: b_question.rs
+use std::num::ParseIntError;
+
+// 2つの文字列を数にして足す。どちらかが数でなければ、その時点で Err を返す
+fn add_strings(a: &str, b: &str) -> Result<i32, ParseIntError> {
+    // ? は「Ok なら中身を取り出して続ける。Err ならその Err をすぐ返す」
+    let x: i32 = a.trim().parse()?;
+    let y: i32 = b.trim().parse()?;
+    Ok(x + y)
+}
+
+fn main() {
+    println!("{:?}", add_strings("10", " 32 "));
+    println!("{:?}", add_strings("10", "abc"));
+}
+//// FILE: b2_without_q.rs
+use std::num::ParseIntError;
+
+// ? を使わずに書いた add_strings（中身は同じ動き）
+fn add_strings(a: &str, b: &str) -> Result<i32, ParseIntError> {
+    let x: i32 = match a.trim().parse() {
+        Ok(v) => v,
+        Err(e) => return Err(e),
+    };
+    let y: i32 = match b.trim().parse() {
+        Ok(v) => v,
+        Err(e) => return Err(e),
+    };
+    Ok(x + y)
+}
+
+fn main() {
+    println!("{:?}", add_strings("10", " 32 "));
+    println!("{:?}", add_strings("10", "abc"));
+}
+//// FILE: c_custom_error.rs
+use std::fmt;
+
+const MAX_TITLE_CHARS: usize = 80;
+
+// タイトルの検証で起こりうる失敗を enum で列挙する
+#[derive(Debug, PartialEq)]
+enum TitleError {
+    Empty,
+    TooLong { max: usize, actual: usize },
+}
+
+// 利用者に見せるメッセージを決める（{} で表示できるようになる）
+impl fmt::Display for TitleError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            TitleError::Empty => write!(f, "タイトルを入力してください"),
+            TitleError::TooLong { max, actual } => {
+                write!(f, "タイトルは{max}文字以内にしてください（現在{actual}文字）")
+            }
+        }
+    }
+}
+
+fn check_title(raw: &str) -> Result<String, TitleError> {
+    let title = raw.trim();
+    let count = title.chars().count();
+    if count == 0 {
+        return Err(TitleError::Empty);
+    }
+    if count > MAX_TITLE_CHARS {
+        return Err(TitleError::TooLong {
+            max: MAX_TITLE_CHARS,
+            actual: count,
+        });
+    }
+    Ok(title.to_string())
+}
+
+fn main() {
+    let long = "あ".repeat(81);
+    for raw in ["  牛乳を買う ", "   ", long.as_str()] {
+        match check_title(raw) {
+            Ok(title) => println!("OK: {title}"),
+            Err(e) => println!("NG: {e}  /  {e:?}"),
+        }
+    }
+    // PartialEq を derive したので、結果を == で比べられる（テストで便利）
+    println!("{}", check_title("") == Err(TitleError::Empty));
+}
+//// FILE: d_config.rs
+// 設定の読み込みで起こりうる失敗
+#[derive(Debug)]
+enum ConfigError {
+    Missing,
+    NotANumber(String),
+    OutOfRange(u32),
+}
+
+// ポート番号の文字列（ないかもしれない）を検証して u16 にする
+fn parse_port(raw: Option<&str>) -> Result<u16, ConfigError> {
+    // ok_or: None を Err(...) に変える。? で、なければすぐ返す
+    let text = raw.ok_or(ConfigError::Missing)?;
+    // map_err: ParseIntError を、自分のエラー型 ConfigError に変える
+    let value: u32 = text
+        .trim()
+        .parse()
+        .map_err(|_| ConfigError::NotANumber(text.to_string()))?;
+    // u16 に入らない値（65536 以上）を弾く
+    u16::try_from(value).map_err(|_| ConfigError::OutOfRange(value))
+}
+
+fn main() {
+    for raw in [Some("8080"), None, Some("abc"), Some("70000")] {
+        println!("{raw:?} → {:?}", parse_port(raw));
+    }
+}
+//// FILE: e_main_result.rs
+use std::num::ParseIntError;
+
+// main も Result を返せる。Err で終わると、エラーを表示して「失敗」として終了する
+fn main() -> Result<(), ParseIntError> {
+    let count: u32 = "12".parse()?;
+    println!("count = {count}");
+    let broken: u32 = "12a".parse()?;
+    println!("ここには来ない: {broken}");
+    Ok(())
+}
+//// FILE: g_rustnote.rs
+use std::fmt;
+
+const MAX_TITLE_CHARS: usize = 80;
+
+#[derive(Debug, PartialEq)]
+enum TitleError {
+    Empty,
+    TooLong { max: usize, actual: usize },
+}
+
+impl fmt::Display for TitleError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            TitleError::Empty => write!(f, "タイトルを入力してください"),
+            TitleError::TooLong { max, actual } => {
+                write!(f, "タイトルは{max}文字以内にしてください（現在{actual}文字）")
+            }
+        }
+    }
+}
+
+// 検証に通ったタイトルだけを入れる型
+#[derive(Debug)]
+struct NoteTitle(String);
+
+impl NoteTitle {
+    // 1〜80 文字に収まっていれば NoteTitle を作る。そうでなければ理由を返す
+    fn parse(raw: &str) -> Result<Self, TitleError> {
+        let title = raw.trim();
+        let count = title.chars().count();
+        if count == 0 {
+            return Err(TitleError::Empty);
+        }
+        if count > MAX_TITLE_CHARS {
+            return Err(TitleError::TooLong {
+                max: MAX_TITLE_CHARS,
+                actual: count,
+            });
+        }
+        Ok(Self(title.to_string()))
+    }
+
+    fn as_str(&self) -> &str {
+        &self.0
+    }
+}
+
+// フォームから届いた「新しいノート」を検証済みの形で持つ
+struct NewNote {
+    title: NoteTitle,
+    body: String,
+}
+
+impl NewNote {
+    fn from_form(title: &str, body: &str) -> Result<Self, TitleError> {
+        // タイトルが不正なら、? でその Err をそのまま返す
+        let title = NoteTitle::parse(title)?;
+        Ok(Self {
+            title,
+            body: body.trim().to_string(),
+        })
+    }
+}
+
+fn main() {
+    let long = "長".repeat(81);
+    let forms = [
+        ("  牛乳を買う ", "低脂肪のもの"),
+        ("", "本文だけ"),
+        (long.as_str(), ""),
+    ];
+    for (title, body) in forms {
+        match NewNote::from_form(title, body) {
+            Ok(note) => println!(
+                "作成: 「{}」（本文 {} 文字）",
+                note.title.as_str(),
+                note.body.chars().count()
+            ),
+            Err(e) => println!("入力エラー: {e}"),
+        }
+    }
+}
+//// FILE: err1_unwrap.rs
+fn main() {
+    let raw = "abc";
+    let count: u32 = raw.parse().unwrap();
+    println!("{count}");
+}
+//// FILE: err2_q_main.rs
+fn main() {
+    let count: u32 = "12".parse()?;
+    println!("{count}");
+}
+//// FILE: err3_q_convert.rs
+#[derive(Debug)]
+enum ConfigError {
+    Missing,
+}
+
+fn parse_port(raw: Option<&str>) -> Result<u16, ConfigError> {
+    let text = raw.ok_or(ConfigError::Missing)?;
+    let port: u16 = text.parse()?;
+    Ok(port)
+}
+
+fn main() {
+    println!("{:?}", parse_port(Some("8080")));
+}
+//// FILE: err4_unused.rs
+fn check(raw: &str) -> Result<u32, std::num::ParseIntError> {
+    raw.parse()
+}
+
+fn main() {
+    check("abc");
+    println!("チェックしました");
+}
+//// FILE: ex1.rs
+// 年齢の文字列を検証して u8 にする
+fn parse_age(raw: &str) -> Result<u8, String> {
+    let age: u8 = raw
+        .trim()
+        .parse()
+        .map_err(|_| format!("「{raw}」は 0〜255 の数ではありません"))?;
+    if age > 150 {
+        return Err(format!("{age} 歳は大きすぎます"));
+    }
+    Ok(age)
+}
+
+fn main() {
+    for raw in ["20", "abc", "200", "300"] {
+        match parse_age(raw) {
+            Ok(age) => println!("OK: {age} 歳"),
+            Err(message) => println!("NG: {message}"),
+        }
+    }
+}
+//// FILE: ex2.rs
+use std::num::ParseIntError;
+
+// 「時間」と「分」の文字列から、合計の分数を求める
+fn total_minutes(hours: &str, minutes: &str) -> Result<u32, ParseIntError> {
+    let h: u32 = hours.parse()?;
+    let m: u32 = minutes.parse()?;
+    Ok(h * 60 + m)
+}
+
+fn main() {
+    println!("{:?}", total_minutes("2", "30"));
+    println!("{:?}", total_minutes("2", "半"));
+}
+//// FILE: ex3.rs
+use std::num::ParseIntError;
+
+fn main() -> Result<(), ParseIntError> {
+    let count: u32 = "12".parse()?;
+    println!("{count}");
+    Ok(())
+}

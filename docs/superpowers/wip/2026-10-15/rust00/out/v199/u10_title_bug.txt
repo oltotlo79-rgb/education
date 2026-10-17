@@ -1,0 +1,7 @@
+   Compiling practice v0.1.0 (C:\Users\you\rust-study\practice)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.26s
+     Running `target\debug\practice.exe`
+"Rust": 文字数 4, 正しい? true
+"牛乳を買う": 文字数 15, 正しい? true
+"": 文字数 0, 正しい? false
+[exit=0]

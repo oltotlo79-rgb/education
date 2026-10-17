@@ -1,0 +1,17 @@
+   Compiling design_lab v0.1.0 (...\design_lab)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.40s
+     Running `target\debug\u08_dto.exe`
+入力 {"title": "  牛乳を買う ", "body": "低脂肪"}
+  （保存した: owner_id=7, version=1）
+  201 {"id":1,"title":"牛乳を買う","body":"低脂肪","isDone":false}
+入力 {"title": "本を返す"}
+  （保存した: owner_id=7, version=1）
+  201 {"id":1,"title":"本を返す","body":"","isDone":false}
+入力 {"title": "   "}
+  400 入力エラー: タイトルを入力してください
+入力 {"body": "タイトルなし"}
+  400 形式エラー: missing field `title` at line 1 column 30
+入力 {"title": "牛乳", "owner_id": 1}
+  400 形式エラー: unknown field `owner_id`, expected `title` or `body` at line 1 column 30
+入力 {"title": 123}
+  400 形式エラー: invalid type: integer `123`, expected a string at line 1 column 13

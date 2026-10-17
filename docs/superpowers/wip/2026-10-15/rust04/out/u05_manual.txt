@@ -1,5 +1,5 @@
    Compiling design_lab v0.1.0 (...\design_lab)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.88s
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.71s
      Running `target\debug\u05_manual.exe`
 OK: 買い物
 利用者向け(Display): タイトルを入力してください

@@ -1,0 +1,11 @@
+> cargo fmt --check
+Diff in \\?\C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust01\rust-study\quality-check\src\lib.rs:17:
+ /// ```
+ pub fn is_valid_title(title: &str) -> bool {
+     let count = title.trim().len();
+[31m-        count >= 1 && count <= MAX_TITLE_CHARS
+[0m[32m+    count >= 1 && count <= MAX_TITLE_CHARS
+[0m }
+ 
+ #[cfg(test)]
+（終了コード: 1）

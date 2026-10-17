@@ -62,7 +62,7 @@
 <line x1="440" y1="125" x2="516" y2="125" stroke="#475569" stroke-width="2" marker-end="url(#ar-04-10)"/>
 <line x1="440" y1="165" x2="516" y2="165" stroke="#475569" stroke-width="2" marker-end="url(#ar-04-10)"/>
 <line x1="440" y1="205" x2="516" y2="205" stroke="#475569" stroke-width="2" marker-end="url(#ar-04-10)"/>
-<text x="478" y="58" font-size="12" fill="#475569" text-anchor="middle">status_code()</text>
+<text x="446" y="60" font-size="12" fill="#475569" text-anchor="start">status_code()</text>
 <text x="360" y="272" font-size="12" fill="#475569" text-anchor="middle">画面には言い換えた文章（500 は詳細を隠す）、ログには source() で原因の連鎖を書く</text>
 </svg>
 <div style="font-size: 12px; color: #64748b; margin-top: 6px;">図4-10: エラーの層。中の層の細かい失敗を、アプリの分類を経て HTTP の返事に変える</div>

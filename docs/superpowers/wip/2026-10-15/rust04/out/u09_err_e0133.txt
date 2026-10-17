@@ -1,0 +1,11 @@
+   Compiling design_lab v0.1.0 (...\design_lab)
+error[E0133]: call to unsafe function `set_var` is unsafe and requires unsafe block
+ --> src\bin\u09_err_e0133.rs:5:5
+  |
+5 |     env::set_var("PORT", "8080");
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ call to unsafe function
+  |
+  = note: consult the function's documentation for information on how to avoid undefined behavior
+
+For more information about this error, try `rustc --explain E0133`.
+error: could not compile `design_lab` (bin "u09_err_e0133") due to 1 previous error

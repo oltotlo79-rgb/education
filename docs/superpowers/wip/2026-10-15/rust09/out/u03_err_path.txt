@@ -1,0 +1,13 @@
+   Compiling rustnote_lab v0.1.0 (...\rustnote_lab)
+error: couldn't read `src\bin\../migrations/0001_users.sql`: 指定されたパスが見つかりません。 (os error 3)
+ --> src\bin\u03_err_path.rs:6:25
+  |
+6 | const USERS_SQL: &str = include_str!("../migrations/0001_users.sql");
+  |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+help: there is a file with the same name in a different directory
+  |
+6 | const USERS_SQL: &str = include_str!("../../migrations/0001_users.sql");
+  |                                          +++
+
+error: could not compile `rustnote_lab` (bin "u03_err_path") due to 1 previous error

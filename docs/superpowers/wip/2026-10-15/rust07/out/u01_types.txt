@@ -1,0 +1,48 @@
+sql> SELECT typeof(42) AS a, typeof(3.14) AS b, typeof('こんにちは') AS c, typeof(x'CAFE') AS d, typeof(NULL) AS e
++---------+------+------+------+------+
+| a       | b    | c    | d    | e    |
++---------+------+------+------+------+
+| integer | real | text | blob | null |
++---------+------+------+------+------+
+(1 行)
+
+sql> SELECT length('あいう') AS chars, length(CAST('あいう' AS BLOB)) AS bytes
++-------+-------+
+| chars | bytes |
++-------+-------+
+| 3     | 9     |
++-------+-------+
+(1 行)
+
+sql> CREATE TABLE loose (n INTEGER)
+OK
+
+sql> INSERT INTO loose VALUES ('12'), ('abc')
+OK（変更: 2 行）
+
+sql> SELECT n, typeof(n) FROM loose
++-----+-----------+
+| n   | typeof(n) |
++-----+-----------+
+| 12  | integer   |
+| abc | text      |
++-----+-----------+
+(2 行)
+
+sql> CREATE TABLE strict_t (n INTEGER) STRICT
+OK
+
+sql> INSERT INTO strict_t VALUES ('12')
+OK（変更: 1 行）
+
+sql> INSERT INTO strict_t VALUES ('abc')
+エラー: SQLite failure: `cannot store TEXT value in INTEGER column strict_t.n`
+
+sql> SELECT n, typeof(n) FROM strict_t
++----+-----------+
+| n  | typeof(n) |
++----+-----------+
+| 12 | integer   |
++----+-----------+
+(1 行)
+

@@ -1,0 +1,1 @@
+failed to bundle assets: io error for asset at ...\rustnote\assets\styles.css: 指定されたファイルが見つかりません。 (os error 2)

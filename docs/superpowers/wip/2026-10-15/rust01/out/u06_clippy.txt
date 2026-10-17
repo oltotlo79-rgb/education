@@ -1,0 +1,13 @@
+> cargo clippy
+    Checking quality-check v0.1.0 (C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust01\rust-study\quality-check)
+warning: manual `RangeInclusive::contains` implementation
+  --> src\lib.rs:20:9
+   |
+20 |         count >= 1 && count <= MAX_TITLE_CHARS
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: use: `(1..=MAX_TITLE_CHARS).contains(&count)`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#manual_range_contains
+   = note: `#[warn(clippy::manual_range_contains)]` on by default
+
+warning: `quality-check` (lib) generated 1 warning (run `cargo clippy --fix --lib -p quality-check -- ` to apply 1 suggestion)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.20s

@@ -1,0 +1,18 @@
+   Compiling basics v0.1.0 (.../basics)
+error[E0369]: cannot add `&str` to `&str`
+ --> src\main.rs:2:23
+  |
+2 |     let full = "Rust" + "入門";
+  |                ------ ^ ------ &str
+  |                |      |
+  |                |      `+` cannot be used to concatenate two `&str` strings
+  |                &str
+  |
+  = note: string concatenation requires an owned `String` on the left
+help: create an owned `String` from a string reference
+  |
+2 |     let full = "Rust".to_owned() + "入門";
+  |                      +++++++++++
+
+For more information about this error, try `rustc --explain E0369`.
+error: could not compile `basics` (bin "basics") due to 1 previous error

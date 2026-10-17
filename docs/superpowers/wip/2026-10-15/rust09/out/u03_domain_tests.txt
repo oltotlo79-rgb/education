@@ -1,0 +1,18 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.29s
+     Running unittests src\lib.rs (target\debug\deps\rustnote-5cafc6c87c537344.exe)
+
+running 11 tests
+test domain::tests::password_length_is_checked_and_hidden_in_debug ... ok
+test domain::tests::note_title_rejects_empty_and_spaces ... ok
+test domain::tests::note_title_counts_characters_not_bytes ... ok
+test domain::tests::note_query_defaults_and_offset ... ok
+test domain::tests::note_page_counts_pages ... ok
+test domain::tests::note_body_normalizes_newlines_and_limits_length ... ok
+test domain::tests::email_rejects_bad_forms ... ok
+test domain::tests::note_title_is_trimmed ... ok
+test domain::tests::new_note_collects_all_errors ... ok
+test domain::tests::note_id_parses_only_positive_numbers ... ok
+test domain::tests::email_is_normalized ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 8 filtered out; finished in 0.00s
+

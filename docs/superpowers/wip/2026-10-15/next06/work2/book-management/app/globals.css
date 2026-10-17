@@ -1,0 +1,4 @@
+/* app/globals.css */
+
+/* Tailwind CSS v4 を読み込む。この1行で、flex や bg-white などのクラスがすべて使えるようになる */
+@import "tailwindcss";

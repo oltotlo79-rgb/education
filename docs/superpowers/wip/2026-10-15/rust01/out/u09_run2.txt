@@ -1,0 +1,6 @@
+> cargo run
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.19s
+     Running `target\debug\libsql-check.exe`
+SQLite 互換エンジンの版: 3.47.0
+pings の行数: 2
+接続 OK: check.db

@@ -1,0 +1,11 @@
+    Updating crates.io index
+      Adding serde v1.0.229 to dependencies
+             Features:
+             + std
+             - alloc
+             - derive
+             - rc
+             - serde_derive
+             - unstable
+    Updating crates.io index
+     Locking 7 packages to highest Rust 1.99.0 compatible versions

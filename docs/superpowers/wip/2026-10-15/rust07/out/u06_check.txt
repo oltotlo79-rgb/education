@@ -1,0 +1,23 @@
+sql> SELECT name FROM sqlite_schema WHERE type = 'table' ORDER BY name
++-------------------+
+| name              |
++-------------------+
+| notes             |
+| schema_migrations |
+| sessions          |
+| sqlite_sequence   |
+| users             |
++-------------------+
+(5 行)
+
+sql> SELECT version FROM schema_migrations ORDER BY version
++-------------------+
+| version           |
++-------------------+
+| 0001_users        |
+| 0002_notes        |
+| 0003_sessions     |
+| 0004_notes_pinned |
++-------------------+
+(4 行)
+

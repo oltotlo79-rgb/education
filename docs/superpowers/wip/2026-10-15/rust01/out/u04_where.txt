@@ -1,0 +1,3 @@
+C:\Users\oltot\.cargo\bin\cargo.exe
+C:\Users\oltot\.cargo\bin\rustc.exe
+C:\Users\oltot\.cargo\bin\rustup.exe

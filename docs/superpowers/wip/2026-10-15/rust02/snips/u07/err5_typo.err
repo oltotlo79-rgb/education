@@ -1,0 +1,18 @@
+   Compiling basics v0.1.0 (.../basics)
+error[E0599]: no method named `summery` found for struct `Note` in the current scope
+  --> src\main.rs:15:25
+   |
+ 1 | struct Note {
+   | ----------- method `summery` not found for this struct
+...
+15 |     println!("{}", note.summery());
+   |                         ^^^^^^^
+   |
+help: there is a method `summary` with a similar name
+   |
+15 -     println!("{}", note.summery());
+15 +     println!("{}", note.summary());
+   |
+
+For more information about this error, try `rustc --explain E0599`.
+error: could not compile `basics` (bin "basics") due to 1 previous error

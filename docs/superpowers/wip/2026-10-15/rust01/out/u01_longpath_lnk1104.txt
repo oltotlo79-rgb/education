@@ -1,0 +1,39 @@
+   Compiling proc-macro2 v1.0.107
+   Compiling unicode-ident v1.0.27
+   Compiling quote v1.0.47
+   Compiling windows-link v0.2.1
+   Compiling cfg-if v1.0.5
+   Compiling version_check v0.9.5
+   Compiling serde_core v1.0.229
+   Compiling windows_aarch64_msvc v0.52.6
+   Compiling serde v1.0.229
+   Compiling pin-project-lite v0.2.17
+   Compiling once_cell v1.21.4
+   Compiling log v0.4.34
+   Compiling windows-sys v0.61.2
+   Compiling shlex v2.0.1
+error: linking with `link.exe` failed: exit code: 1104
+  |
+  = note: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostARM64\\arm64\\link.exe" "/NOLOGO" "C:\\Users\\oltot\\AppData\\Local\\Temp\\claude\\C--Users-oltot-Documents-git-projects-def\\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\\scratchpad\\rust01\\rust-study\\libsql-check\\../../u05/t-noclang\\debug\\build\\proc-macro2-03fc13ec4959ac03\\rustcDAWCBq\\symbols.o" "<2 object files omitted>" "<sysroot>\\lib\\rustlib\\aarch64-pc-windows-msvc\\lib/{libstd-*,libpanic_unwind-*,libcfg_if-*,libwindows_link-*,librustc_demangle-*,libstd_detect-*,libhashbrown-*,librustc_std_workspace_alloc-*,libunwind-*,librustc_std_workspace_core-*,liballoc-*,libcore-*,libcompiler_builtins-*}.rlib" "kernel32.lib" "kernel32.lib" "kernel32.lib" "ntdll.lib" "userenv.lib" "ws2_32.lib" "dbghelp.lib" "/defaultlib:msvcrt" "/NXCOMPAT" "/OUT:C:\\Users\\oltot\\AppData\\Local\\Temp\\claude\\C--Users-oltot-Documents-git-projects-def\\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\\scratchpad\\rust01\\rust-study\\libsql-check\\../../u05/t-noclang\\debug\\build\\proc-macro2-03fc13ec4959ac03\\build_script_build-03fc13ec4959ac03.exe" "/OPT:REF,NOICF" "/DEBUG" "/PDBALTPATH:%_PDB%" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\intrinsic.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\liballoc.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\libcore.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\libstd.natvis"
+  = note: some arguments are omitted. use `--verbose` to show all linker arguments
+  = note: LINK : fatal error LNK1104: ファイル 'C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust01\rust-study\libsql-check\..\..\u05\t-noclang\debug\build\proc-macro2-03fc13ec4959ac03\build_script_build-03fc13ec4959ac03.exe' を開くことができません。
+          
+
+error: could not compile `proc-macro2` (build script) due to 1 previous error
+warning: build failed, waiting for other jobs to finish...
+error: linking with `link.exe` failed: exit code: 1104
+  |
+  = note: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostARM64\\arm64\\link.exe" "/NOLOGO" "C:\\Users\\oltot\\AppData\\Local\\Temp\\claude\\C--Users-oltot-Documents-git-projects-def\\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\\scratchpad\\rust01\\rust-study\\libsql-check\\../../u05/t-noclang\\debug\\build\\windows_aarch64_msvc-54b54d62c7380199\\rustcJnAxgS\\symbols.o" "<2 object files omitted>" "<sysroot>\\lib\\rustlib\\aarch64-pc-windows-msvc\\lib/{libstd-*,libpanic_unwind-*,libcfg_if-*,libwindows_link-*,librustc_demangle-*,libstd_detect-*,libhashbrown-*,librustc_std_workspace_alloc-*,libunwind-*,librustc_std_workspace_core-*,liballoc-*,libcore-*,libcompiler_builtins-*}.rlib" "kernel32.lib" "kernel32.lib" "kernel32.lib" "ntdll.lib" "userenv.lib" "ws2_32.lib" "dbghelp.lib" "/defaultlib:msvcrt" "/NXCOMPAT" "/OUT:C:\\Users\\oltot\\AppData\\Local\\Temp\\claude\\C--Users-oltot-Documents-git-projects-def\\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\\scratchpad\\rust01\\rust-study\\libsql-check\\../../u05/t-noclang\\debug\\build\\windows_aarch64_msvc-54b54d62c7380199\\build_script_build-54b54d62c7380199.exe" "/OPT:REF,NOICF" "/DEBUG" "/PDBALTPATH:%_PDB%" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\intrinsic.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\liballoc.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\libcore.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\libstd.natvis"
+  = note: some arguments are omitted. use `--verbose` to show all linker arguments
+  = note: LINK : fatal error LNK1104: ファイル 'C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust01\rust-study\libsql-check\..\..\u05\t-noclang\debug\build\windows_aarch64_msvc-54b54d62c7380199\build_script_build-54b54d62c7380199.exe' を開くことができません。
+          
+
+error: could not compile `windows_aarch64_msvc` (build script) due to 1 previous error
+error: linking with `link.exe` failed: exit code: 1104
+  |
+  = note: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostARM64\\arm64\\link.exe" "/NOLOGO" "C:\\Users\\oltot\\AppData\\Local\\Temp\\claude\\C--Users-oltot-Documents-git-projects-def\\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\\scratchpad\\rust01\\rust-study\\libsql-check\\../../u05/t-noclang\\debug\\build\\serde_core-c3d41b4c00fbab7d\\rustcIoWDSN\\symbols.o" "<2 object files omitted>" "<sysroot>\\lib\\rustlib\\aarch64-pc-windows-msvc\\lib/{libstd-*,libpanic_unwind-*,libcfg_if-*,libwindows_link-*,librustc_demangle-*,libstd_detect-*,libhashbrown-*,librustc_std_workspace_alloc-*,libunwind-*,librustc_std_workspace_core-*,liballoc-*,libcore-*,libcompiler_builtins-*}.rlib" "kernel32.lib" "kernel32.lib" "kernel32.lib" "ntdll.lib" "userenv.lib" "ws2_32.lib" "dbghelp.lib" "/defaultlib:msvcrt" "/NXCOMPAT" "/OUT:C:\\Users\\oltot\\AppData\\Local\\Temp\\claude\\C--Users-oltot-Documents-git-projects-def\\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\\scratchpad\\rust01\\rust-study\\libsql-check\\../../u05/t-noclang\\debug\\build\\serde_core-c3d41b4c00fbab7d\\build_script_build-c3d41b4c00fbab7d.exe" "/OPT:REF,NOICF" "/DEBUG" "/PDBALTPATH:%_PDB%" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\intrinsic.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\liballoc.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\libcore.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\libstd.natvis"
+  = note: some arguments are omitted. use `--verbose` to show all linker arguments
+  = note: LINK : fatal error LNK1104: ファイル 'C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust01\rust-study\libsql-check\..\..\u05\t-noclang\debug\build\serde_core-c3d41b4c00fbab7d\build_script_build-c3d41b4c00fbab7d.exe' を開くことができません。
+          
+
+error: could not compile `serde_core` (build script) due to 1 previous error

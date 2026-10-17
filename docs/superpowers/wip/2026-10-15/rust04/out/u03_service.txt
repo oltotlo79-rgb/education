@@ -1,5 +1,5 @@
    Compiling design_lab v0.1.0 (...\design_lab)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.60s
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.75s
      Running `target\debug\u03_service.exe`
 見つかった: 牛乳を買う
 見つかった: 牛乳パックを捨てる

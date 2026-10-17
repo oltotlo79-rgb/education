@@ -429,7 +429,10 @@ fn squash_spaces(text: &str) -> String {
 
 fn main() {
     println!("{}", preview("短いタイトル", 10));
-    println!("{}", preview("とても長いタイトルなので一覧では省略したい", 10));
+    println!(
+        "{}",
+        preview("とても長いタイトルなので一覧では省略したい", 10)
+    );
     println!("[{}]", squash_spaces("  牛乳 と　　卵を\t買う  "));
 }
 ```
@@ -489,10 +492,10 @@ error[E0277]: the type `str` cannot be indexed by `{integer}`
   = note: you can use `.chars().nth()` or `.bytes().nth()`
           for more information, see chapter 8 in The Book: <https://doc.rust-lang.org/book/ch08-02-strings.html#indexing-into-strings>
 help: `usize` implements trait `SliceIndex<T>`
- --> /rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library\core\src\slice\index.rs:214:0
+ --> /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\slice\index.rs:179:0
   |
   = note: `SliceIndex<[T]>`
- --> /rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library\core\src\bstr\traits.rs:197:0
+ --> /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\bstr\traits.rs:197:0
   |
   = note: `SliceIndex<ByteStr>`
   = note: required for `String` to implement `Index<{integer}>`
@@ -519,7 +522,7 @@ fn main() {
 **▼ 実行結果**
 
 ```text
-thread 'main' (45508) panicked at src\main.rs:4:22:
+thread 'main' (53696) panicked at src\main.rs:4:22:
 end byte index 2 is not a char boundary; it is inside '日' (bytes 0..3 of string)
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 error: process didn't exit successfully: `target\debug\basics.exe` (exit code: 101)
@@ -674,7 +677,11 @@ len() = 18
 ```rust
 fn main() {
     for text in ["こんにちは", "Hello"] {
-        println!("{text}: {} バイト, {} 文字", text.len(), text.chars().count());
+        println!(
+            "{text}: {} バイト, {} 文字",
+            text.len(),
+            text.chars().count()
+        );
     }
 }
 ```

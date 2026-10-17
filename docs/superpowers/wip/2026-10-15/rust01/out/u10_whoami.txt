@@ -1,0 +1,3 @@
+> fly auth whoami
+Error: no access token available. Please login with 'flyctl auth login'
+（終了コード: 1）

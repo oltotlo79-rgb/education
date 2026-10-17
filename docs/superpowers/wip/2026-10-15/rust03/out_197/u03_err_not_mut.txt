@@ -1,0 +1,14 @@
+error[E0596]: cannot borrow `memo` as mutable, as it is not declared as mutable
+ --> src\bin\u03_err_not_mut.rs:7:16
+  |
+7 |     add_suffix(&mut memo);
+  |                ^^^^^^^^^ cannot borrow as mutable
+  |
+help: consider changing this to be mutable
+  |
+6 |     let mut memo = String::from("メモ");
+  |         +++
+
+For more information about this error, try `rustc --explain E0596`.
+error: could not compile `ownership-lab` (bin "u03_err_not_mut") due to 1 previous error
+exit=101

@@ -12,5 +12,5 @@ help: use `let _ = ...` to ignore the resulting value
   |         +++++++
 
 warning: `basics` (bin "basics") generated 1 warning
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.33s
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.28s
      Running `target\debug\basics.exe`

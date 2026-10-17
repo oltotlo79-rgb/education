@@ -1,0 +1,15 @@
+error[E0040]: explicit use of destructor method
+  --> src\bin\u01_err_explicit_drop.rs:11:7
+   |
+11 |     a.drop();
+   |       ^^^^ explicit destructor calls not allowed
+   |
+help: consider using `drop` function
+   |
+11 -     a.drop();
+11 +     drop(a);
+   |
+
+For more information about this error, try `rustc --explain E0040`.
+error: could not compile `ownership-lab` (bin "u01_err_explicit_drop") due to 1 previous error
+exit=101

@@ -1,0 +1,3 @@
+/* OK: dark: を「dark クラスが付いた要素とその中身」で効かせる */
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));

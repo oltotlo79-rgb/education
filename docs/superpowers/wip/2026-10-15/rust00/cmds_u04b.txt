@@ -1,0 +1,6 @@
+ls
+cat Cargo.toml
+cat src\main.rs
+ls target\debug
+.\target\debug\hello.exe
+ls target\release\hello.exe

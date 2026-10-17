@@ -1,8 +1,8 @@
    Compiling design_lab v0.1.0 (...\design_lab)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.70s
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.67s
      Running `target\debug\u04_state.exe`
-[memory] Ok(2)
 [memory] Ok(1)
+[memory] Ok(2)
 [memory] 件数 = 2
 [read-only] Err("ただいまメンテナンス中のため保存できません")
 [read-only] Err("ただいまメンテナンス中のため保存できません")

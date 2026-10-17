@@ -2,7 +2,7 @@
 const book = {
   title: "こころ",
   author: "夏目漱石",
-  status: "finished",
+  status: "completed",
 };
 
 // 通信で送れるように、オブジェクトを JSON という「ただの文字列」に変換する

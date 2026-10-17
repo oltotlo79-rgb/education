@@ -1,0 +1,32 @@
+
+> book-management@0.1.0 build
+> next build
+
+▲ Next.js 16.4.1 (Turbopack)
+- Environments: .env.local
+✓ Running next.config.ts took 32ms
+
+  Creating an optimized production build ...
+
+> Build error occurred
+Error: Turbopack build failed with 1 error:
+./components/Header.tsx:15:10
+Error: You're importing a module that depends on `usePathname` into a React Server Component module. This API is only available in Client Components. To fix, mark the file (or its parent) with the `"use client"` directive.
+    Learn more: https://nextjs.org/docs/app/api-reference/directives/use-client
+  13 | // named import: usePathname フック（現在のURLパスを取得）
+  14 | // 注意: import元は "next/navigation"（App Router用）。Pages Router の "next/router" とは別物
+> 15 | import { usePathname } from "next/navigation";
+     |          ^^^^^^^^^^^
+  16 |
+  17 | /**
+  18 |  * 共通ヘッダーコンポーネント
+
+Ecmascript file had an error
+
+Import trace:
+  Server Component:
+    ./components/Header.tsx
+    ./app/layout.tsx
+
+
+    at ignore-listed frames

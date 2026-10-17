@@ -1,0 +1,25 @@
+（準備: sql/schema.sql の 2 文を実行しました）
+（準備: sql/seed.sql の 2 文を実行しました）
+sql> UPDATE notes SET title = '' WHERE id = 1 AND user_id = 1
+エラー: SQLite failure: `CHECK constraint failed: length(title) BETWEEN 1 AND 80`
+
+sql> UPDATE notes SET body = NULL WHERE id = 1 AND user_id = 1
+エラー: SQLite failure: `NOT NULL constraint failed: notes.body`
+
+sql> INSERT INTO notes (user_id, title, body) VALUES (1, 'タイトルだけ')
+エラー: SQLite failure: `2 values for 3 columns`
+
+sql> UPDATE notes SET user_id = 99 WHERE id = 1 AND user_id = 1
+エラー: SQLite failure: `FOREIGN KEY constraint failed`
+
+sql> UPDATE notes SET done = 1
+OK（変更: 8 行）
+
+sql> SELECT done, COUNT(*) AS notes FROM notes GROUP BY done
++------+-------+
+| done | notes |
++------+-------+
+| 1    | 8     |
++------+-------+
+(1 行)
+

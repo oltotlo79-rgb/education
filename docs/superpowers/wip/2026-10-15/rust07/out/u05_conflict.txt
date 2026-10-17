@@ -1,0 +1,26 @@
+warning: field `0` is never read
+  --> src\bin\u05_conflict.rs:10:14
+   |
+10 |     Database(libsql::Error),
+   |     -------- ^^^^^^^^^^^^^
+   |     |
+   |     field in this variant
+   |
+   = note: `RepoError` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+help: consider changing the field to be of unit type to suppress this warning while preserving the field numbering, or remove the field
+   |
+10 -     Database(libsql::Error),
+10 +     Database(()),
+   |
+
+   DB: title = 買い物リスト, version = 1
+タブ A が保存（version 1 のつもり）
+   結果: Ok(2)
+   DB: title = 買い物リスト（A）, version = 2
+タブ B が保存（version 1 のつもり）
+   結果: Err(VersionMismatch)
+   → Conflict → HTTP 409
+   DB: title = 買い物リスト（A）, version = 2
+Bob のノート 3 を Alice が保存しようとする
+   → NotFound → HTTP 404

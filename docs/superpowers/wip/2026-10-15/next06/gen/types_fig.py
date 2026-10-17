@@ -1,7 +1,7 @@
-rows = ["id", "title", "author", "status", "rating", "memo", "created_at", "updated_at"]
-book = ["Y"] * 8
-ins = ["N", "R", "R", "O", "O", "O", "N", "N"]
-upd = ["N", "O", "O", "O", "O", "O", "N", "N"]
+rows = ["id", "title", "author", "publisher", "published_date", "rating", "status", "memo", "created_at", "updated_at"]
+book = ["Y"] * 10
+ins = ["N", "R", "R", "O", "O", "O", "O", "O", "N", "N"]
+upd = ["N", "O", "O", "O", "O", "O", "O", "O", "N", "N"]
 style = {
     "Y": ("#ecfdf5", "#10b981", "#047857", "あり"),
     "R": ("#ecfdf5", "#10b981", "#047857", "必須"),
@@ -10,7 +10,7 @@ style = {
 }
 out = []
 out.append('<div style="max-width: 720px; margin: 18px auto; text-align: center;">')
-out.append('<svg viewBox="0 0 720 345" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">')
+out.append('<svg viewBox="0 0 720 405" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">')
 cols = [(180, "Book", "取得（SELECT）"), (360, "BookInsert", "登録（INSERT）"), (540, "BookUpdate", "更新（UPDATE）")]
 out.append('<rect x="20" y="14" width="150" height="44" rx="6" fill="#f8fafc" stroke="#475569" stroke-width="1.5"/>')
 out.append('<text x="95" y="41" text-anchor="middle" font-size="13" font-weight="bold" fill="#475569">項目名</text>')
@@ -25,7 +25,7 @@ for i, r in enumerate(rows):
         fill, stroke, color, label = style[v]
         out.append(f'<rect x="{x}" y="{y}" width="170" height="26" rx="5" fill="{fill}" stroke="{stroke}" stroke-width="1.5"/>')
         out.append(f'<text x="{x+85}" y="{y+18}" text-anchor="middle" font-size="12" fill="{color}">{label}</text>')
-ly = 318
+ly = 378
 items = [("#ecfdf5", "#10b981", "必ず入っている／必ず送る"), ("#fff7ed", "#f97316", "送っても送らなくてもよい"), ("#f8fafc", "#cbd5e1", "型に含めない（DBが自動で付ける）")]
 x = 30
 for fill, stroke, label in items:

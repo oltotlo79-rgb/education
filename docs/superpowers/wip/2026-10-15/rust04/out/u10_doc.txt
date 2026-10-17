@@ -1,0 +1,3 @@
+ Documenting note_domain v0.1.0 (...\note_domain)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.23s
+   Generated ...\index.html

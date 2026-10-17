@@ -1,0 +1,9 @@
+   Compiling basics v0.1.0 (.../basics)
+error[E0689]: can't call method `abs` on ambiguous numeric type `{float}`
+ --> src\main.rs:4:30
+  |
+4 |     let diff = (a + b - 0.3).abs();
+  |                              ^^^
+
+For more information about this error, try `rustc --explain E0689`.
+error: could not compile `basics` (bin "basics") due to 1 previous error

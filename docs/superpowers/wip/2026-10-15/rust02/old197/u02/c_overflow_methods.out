@@ -1,0 +1,5 @@
+wrapping_add:    4
+checked_add:     None
+checked_add(5):  Some(255)
+saturating_add:  255
+overflowing_add: (4, true)

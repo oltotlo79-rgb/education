@@ -35,7 +35,7 @@ function applyChange(
 }
 
 // 「ステータス欄を読了に変えた」という入力を再現する
-const next = applyChange(initialData, "status", "finished");
+const next = applyChange(initialData, "status", "completed");
 console.log("変更前の status:", initialData.status);
 console.log("変更後の status:", next.status);
 console.log("title はそのまま:", next.title);
@@ -44,7 +44,7 @@ console.log("新しいオブジェクトになった?:", !Object.is(initialData,
 
 // NG: 元のオブジェクトを直接書き換えると「同じオブジェクト」のまま
 const sameObject = initialData;
-sameObject.status = "finished";
+sameObject.status = "completed";
 console.log(
   "直接書き換えたら別物になった?:",
   !Object.is(initialData, sameObject),

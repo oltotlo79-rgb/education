@@ -1,0 +1,8 @@
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.52s
+     Running `target\debug\rustnote.exe`
+RustNote を起動しました: http://127.0.0.1:abc
+Error: サーバーを起動できませんでした（HOST / PORT を確認してください）
+
+Caused by:
+    PORT must be a valid port number: invalid digit found in string
+error: process didn't exit successfully: `target\debug\rustnote.exe` (exit code: 1)

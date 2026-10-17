@@ -1,0 +1,6 @@
+i/lf    w/lf    attr/text=auto eol=lf 	.env.example
+i/lf    w/lf    attr/text=auto eol=lf 	.gitattributes
+i/lf    w/lf    attr/text=auto eol=lf 	.gitignore
+i/lf    w/lf    attr/text=auto eol=lf 	Cargo.toml
+i/lf    w/lf    attr/text eol=crlf    	check.ps1
+i/lf    w/lf    attr/text=auto eol=lf 	src/main.rs

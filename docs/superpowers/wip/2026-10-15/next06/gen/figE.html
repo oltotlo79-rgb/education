@@ -1,0 +1,33 @@
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 330" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs><marker id="ar-06-env" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker></defs>
+<rect x="10" y="90" width="250" height="130" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<text x="135" y="114" text-anchor="middle" font-size="13" font-weight="bold" fill="#c2410c">.env.local（ファイル）</text>
+<text x="20" y="140" font-size="12" fill="#c2410c" font-family="Consolas, Menlo, monospace">NEXT_PUBLIC_SUPABASE_URL=…</text>
+<text x="20" y="162" font-size="12" fill="#c2410c" font-family="Consolas, Menlo, monospace">NEXT_PUBLIC_SUPABASE_ANON_KEY=…</text>
+<text x="20" y="184" font-size="12" fill="#64748b" font-family="Consolas, Menlo, monospace">SECRET_TOKEN=…</text>
+<text x="135" y="206" text-anchor="middle" font-size="12" fill="#64748b">（3行目は説明用の例）</text>
+<rect x="285" y="105" width="160" height="100" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="365" y="135" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e40af">process.env</text>
+<text x="365" y="157" text-anchor="middle" font-size="12" fill="#1e40af">サーバー側の</text>
+<text x="365" y="177" text-anchor="middle" font-size="12" fill="#1e40af">「環境変数の入れ物」</text>
+<line x1="260" y1="155" x2="283" y2="155" stroke="#475569" stroke-width="2" marker-end="url(#ar-06-env)"/>
+<text x="160" y="70" text-anchor="middle" font-size="12" fill="#475569">① npm run dev の起動時に読む</text>
+<text x="160" y="244" text-anchor="middle" font-size="12" fill="#475569">保存し直すと「Reload env」で読み直す</text>
+<rect x="490" y="20" width="220" height="110" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="600" y="46" text-anchor="middle" font-size="13" font-weight="bold" fill="#047857">サーバーで動くコード</text>
+<text x="600" y="68" text-anchor="middle" font-size="12" fill="#047857">Server Component / server.ts</text>
+<text x="600" y="92" text-anchor="middle" font-size="12" fill="#047857">3つとも読める</text>
+<text x="600" y="114" text-anchor="middle" font-size="12" fill="#64748b">（ブラウザには届かない）</text>
+<rect x="490" y="180" width="220" height="130" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="600" y="206" text-anchor="middle" font-size="13" font-weight="bold" fill="#047857">ブラウザで動くコード</text>
+<text x="600" y="228" text-anchor="middle" font-size="12" fill="#047857">Client Component / client.ts</text>
+<text x="600" y="252" text-anchor="middle" font-size="12" fill="#047857">NEXT_PUBLIC_ 付きの2つだけ</text>
+<text x="600" y="274" text-anchor="middle" font-size="12" fill="#c2410c">SECRET_TOKEN は undefined</text>
+<text x="600" y="296" text-anchor="middle" font-size="12" fill="#64748b">（値は JS に文字列で埋め込み）</text>
+<line x1="445" y1="135" x2="488" y2="85" stroke="#475569" stroke-width="2" marker-end="url(#ar-06-env)"/>
+<line x1="445" y1="180" x2="488" y2="235" stroke="#475569" stroke-width="2" marker-end="url(#ar-06-env)"/>
+<text x="462" y="164" font-size="12" fill="#475569">②</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図X: .env.local の値がコードに届くまで（NEXT_PUBLIC_ 付きだけがブラウザまで届く）</div>
+</div>

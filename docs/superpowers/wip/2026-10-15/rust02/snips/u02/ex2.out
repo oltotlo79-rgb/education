@@ -1,3 +1,3 @@
 8080: ポート 8080 を使います
-70000: 使えません（out of range integral type conversion attempted）
--1: 使えません（out of range integral type conversion attempted）
+70000: 使えません（number too large to fit in target type）
+-1: 使えません（number too small to fit in target type）

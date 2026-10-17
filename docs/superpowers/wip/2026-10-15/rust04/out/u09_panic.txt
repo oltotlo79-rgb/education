@@ -1,0 +1,8 @@
+   Compiling design_lab v0.1.0 (...\design_lab)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 4.34s
+     Running `target\debug\u09_panic.exe`
+
+thread 'main' (55840) panicked at src\bin\u09_panic.rs:5:40:
+called `Result::unwrap()` on an `Err` value: NotPresent
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+error: process didn't exit successfully: `target\debug\u09_panic.exe` (exit code: 101)

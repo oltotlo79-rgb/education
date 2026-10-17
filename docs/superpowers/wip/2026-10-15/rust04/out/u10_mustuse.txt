@@ -1,0 +1,17 @@
+   Compiling toggle v0.1.0 (...\mustuse)
+warning: unused return value of `Progress::toggle` that must be used
+ --> examples\forget.rs:6:5
+  |
+6 |     progress.toggle();
+  |     ^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_must_use)]` (part of `#[warn(unused)]`) on by default
+help: use `let _ = ...` to ignore the resulting value
+  |
+6 |     let _ = progress.toggle();
+  |     +++++++
+
+warning: `toggle` (example "forget") generated 1 warning
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.23s
+     Running `target\debug\examples\forget.exe`
+Open

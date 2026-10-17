@@ -1,0 +1,7 @@
+シェル          : PowerShell 5.1.26100.9457
+現在のフォルダ  : C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust01\u01\日本語 フォルダ
+OS              : Microsoft Windows 11 Home (ビルド 26200)
+PC の CPU       : ARM64
+このシェルの種類: AMD64
+パスの文字      : 注意（空白や日本語が含まれています）
+OneDrive        : OK（同期フォルダの外です）

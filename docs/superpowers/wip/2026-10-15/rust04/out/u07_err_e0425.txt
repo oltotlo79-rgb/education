@@ -1,0 +1,17 @@
+   Compiling feat_lab v0.1.0 (...\feat_lab)
+error[E0425]: cannot find function `export_json` in this scope
+  --> src\main.rs:36:27
+   |
+36 |     println!("[json] {}", export_json(&note));
+   |                           ^^^^^^^^^^^ not found in this scope
+   |
+note: found an item that was configured out
+  --> src\main.rs:21:4
+   |
+20 | #[cfg(feature = "json")]
+   |       ---------------- the item is gated behind the `json` feature
+21 | fn export_json(note: &Note) -> String {
+   |    ^^^^^^^^^^^
+
+For more information about this error, try `rustc --explain E0425`.
+error: could not compile `feat_lab` (bin "feat_lab") due to 1 previous error

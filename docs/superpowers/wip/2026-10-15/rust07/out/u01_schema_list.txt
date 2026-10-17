@@ -1,0 +1,19 @@
+（準備: migrations/0001_users.sql の 1 文を実行しました）
+（準備: migrations/0002_notes.sql の 2 文を実行しました）
+（準備: migrations/0003_sessions.sql の 3 文を実行しました）
+sql> SELECT type, name, tbl_name FROM sqlite_schema ORDER BY tbl_name, type DESC, name
++-------+-----------------------------+-----------------+
+| type  | name                        | tbl_name        |
++-------+-----------------------------+-----------------+
+| table | notes                       | notes           |
+| index | idx_notes_user_updated      | notes           |
+| table | sessions                    | sessions        |
+| index | idx_sessions_expires        | sessions        |
+| index | idx_sessions_user           | sessions        |
+| index | sqlite_autoindex_sessions_1 | sessions        |
+| table | sqlite_sequence             | sqlite_sequence |
+| table | users                       | users           |
+| index | sqlite_autoindex_users_1    | users           |
++-------+-----------------------------+-----------------+
+(9 行)
+

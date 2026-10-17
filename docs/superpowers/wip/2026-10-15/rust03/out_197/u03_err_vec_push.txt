@@ -1,0 +1,13 @@
+error[E0502]: cannot borrow `v` as mutable because it is also borrowed as immutable
+ --> src\bin\u03_err_vec_push.rs:4:5
+  |
+3 |     let first = &v[0];
+  |                  - immutable borrow occurs here
+4 |     v.push(4);
+  |     ^^^^^^^^^ mutable borrow occurs here
+5 |     println!("first = {first}");
+  |                        ----- immutable borrow later used here
+
+For more information about this error, try `rustc --explain E0502`.
+error: could not compile `ownership-lab` (bin "u03_err_vec_push") due to 1 previous error
+exit=101

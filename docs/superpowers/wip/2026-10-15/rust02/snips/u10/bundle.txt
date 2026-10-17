@@ -1,0 +1,268 @@
+//// FILE: a_hashmap.rs
+use std::collections::HashMap;
+
+fn main() {
+    // キー（ID）から値（タイトル）を引く表を作る
+    let mut titles: HashMap<u64, String> = HashMap::new();
+    titles.insert(1, String::from("牛乳を買う"));
+    titles.insert(2, String::from("Rust の勉強"));
+    titles.insert(3, String::from("部屋の掃除"));
+
+    // get は、キーがあれば Some(&値)、なければ None
+    println!("1: {:?}", titles.get(&1));
+    println!("9: {:?}", titles.get(&9));
+    println!("2 はある? {}", titles.contains_key(&2));
+
+    // 同じキーで insert すると上書きされ、前の値が Some で返る
+    let old = titles.insert(2, String::from("Rust の復習"));
+    println!("上書き前の値: {old:?}");
+
+    // remove は、取り除いた値を返す
+    let removed = titles.remove(&3);
+    println!("削除: {removed:?}, 残り {} 件", titles.len());
+
+    // HashMap の順番は決まっていないので、表示するときはキーで並べ替える
+    let mut ids: Vec<&u64> = titles.keys().collect();
+    ids.sort();
+    for id in ids {
+        println!("#{id} {}", titles[id]);
+    }
+}
+//// FILE: b_entry.rs
+use std::collections::{BTreeMap, HashMap};
+
+fn main() {
+    let tags = ["rust", "web", "rust", "db", "rust", "web"];
+
+    let mut counts: HashMap<&str, u32> = HashMap::new();
+    for tag in tags {
+        // entry(キー).or_insert(0) は「なければ 0 を入れて」、その値の場所を返す
+        *counts.entry(tag).or_insert(0) += 1;
+    }
+    println!("rust の件数: {}", counts["rust"]);
+
+    // BTreeMap に入れ直すと、キーの順に並ぶ
+    let sorted: BTreeMap<&str, u32> = counts.into_iter().collect();
+    println!("{sorted:?}");
+}
+//// FILE: c_closure.rs
+// f は「i32 を受け取って i32 を返すもの」なら何でもよい
+fn apply_twice(f: impl Fn(i32) -> i32, value: i32) -> i32 {
+    f(f(value))
+}
+
+fn main() {
+    // クロージャ: |引数| 式 の形で、その場で作る小さな関数
+    let double = |x: i32| x * 2;
+    println!("{}", double(21));
+
+    // 周りの変数（tax_rate）を取り込んで使える
+    let tax_rate = 10;
+    let with_tax = |price: u32| price * (100 + tax_rate) / 100;
+    println!("{}", with_tax(1_000));
+
+    // 関数に「処理そのもの」を渡す
+    println!("{}", apply_twice(double, 5));
+    println!("{}", apply_twice(|x| x + 100, 5));
+}
+//// FILE: d_iter.rs
+fn main() {
+    let numbers = vec![1, 2, 3, 4, 5, 6];
+
+    // 1つずつ取り出す → 偶数だけ残す → 10 倍する → Vec に集める
+    let result: Vec<i32> = numbers
+        .iter()
+        .filter(|n| *n % 2 == 0)
+        .map(|n| n * 10)
+        .collect();
+    println!("{result:?}");
+
+    // 合計・個数
+    let sum: i32 = numbers.iter().sum();
+    let big = numbers.iter().filter(|n| **n > 3).count();
+    println!("合計 {sum}, 3 より大きいのは {big} 個");
+
+    // find は条件に合う最初の1つ（Option）を返す
+    println!("{:?}", numbers.iter().find(|n| **n > 4));
+
+    // any: 1つでも合うか / all: 全部合うか
+    let any_big = numbers.iter().any(|n| *n > 5);
+    let all_positive = numbers.iter().all(|n| *n > 0);
+    println!("{any_big} {all_positive}");
+
+    // 元の Vec は変わらない
+    println!("{numbers:?}");
+}
+//// FILE: e_lazy.rs
+fn main() {
+    let titles = ["牛乳を買う", "Rust の勉強", "部屋の掃除"];
+
+    // map を書いただけでは、まだ何も実行されない
+    let lengths = titles.iter().map(|t| {
+        println!("  「{t}」を処理中");
+        t.chars().count()
+    });
+    println!("まだ何も処理していない");
+
+    // collect で取り出し始めたときに、1つずつ処理が流れる
+    let lengths: Vec<usize> = lengths.collect();
+    println!("{lengths:?}");
+}
+//// FILE: f_module.rs
+// mod で、関係するものを1つの部屋（モジュール）にまとめる
+mod note {
+    // pub を付けたものだけが、部屋の外から使える
+    pub struct NoteTitle(String);
+
+    impl NoteTitle {
+        pub fn parse(raw: &str) -> Option<Self> {
+            let title = raw.trim();
+            if is_valid_length(title) {
+                Some(Self(title.to_string()))
+            } else {
+                None
+            }
+        }
+
+        pub fn as_str(&self) -> &str {
+            &self.0
+        }
+    }
+
+    // pub がないので、部屋の外からは呼べない（部屋の中だけの道具）
+    fn is_valid_length(title: &str) -> bool {
+        (1..=80).contains(&title.chars().count())
+    }
+}
+
+// use で、長い住所（note::NoteTitle）を短い名前で書けるようにする
+use note::NoteTitle;
+
+fn main() {
+    match NoteTitle::parse("  牛乳を買う ") {
+        Some(title) => println!("OK: {}", title.as_str()),
+        None => println!("NG"),
+    }
+    println!("空のタイトルは作れない: {}", NoteTitle::parse("").is_none());
+}
+//// FILE: g_report.rs
+use std::collections::BTreeMap;
+
+struct Note {
+    title: String,
+    tag: String,
+    done: bool,
+}
+
+impl Note {
+    fn new(title: &str, tag: &str, done: bool) -> Self {
+        Self {
+            title: title.to_string(),
+            tag: tag.to_string(),
+            done,
+        }
+    }
+}
+
+fn main() {
+    let notes = vec![
+        Note::new("牛乳を買う", "買い物", true),
+        Note::new("Rust の勉強", "勉強", false),
+        Note::new("卵を買う", "買い物", false),
+        Note::new("Topcoat を調べる", "勉強", false),
+        Note::new("部屋の掃除", "家事", true),
+    ];
+
+    // 未完了のノートのタイトルだけを集める
+    let open: Vec<&str> = notes
+        .iter()
+        .filter(|n| !n.done)
+        .map(|n| n.title.as_str())
+        .collect();
+    println!("未完了: {open:?}");
+
+    // タグごとの件数（BTreeMap なのでタグ名の順に並ぶ）
+    let mut per_tag: BTreeMap<&str, usize> = BTreeMap::new();
+    for note in &notes {
+        *per_tag.entry(note.tag.as_str()).or_insert(0) += 1;
+    }
+    println!("タグ別: {per_tag:?}");
+
+    // 完了率（%）
+    let done = notes.iter().filter(|n| n.done).count();
+    let rate = done as f64 / notes.len() as f64 * 100.0;
+    println!("完了率: {rate:.0}%（{done}/{} 件）", notes.len());
+
+    // 「買」を含むタイトルを、番号付きの文字列にする
+    let lines: Vec<String> = notes
+        .iter()
+        .filter(|n| n.title.contains("買"))
+        .enumerate()
+        .map(|(i, n)| format!("{}. {}", i + 1, n.title))
+        .collect();
+    println!("{}", lines.join(" / "));
+}
+//// FILE: err1_no_use.rs
+fn main() {
+    let mut counts = HashMap::new();
+    counts.insert("rust", 1);
+    println!("{counts:?}");
+}
+//// FILE: err2_collect.rs
+fn main() {
+    let numbers = vec![1, 2, 3, 4];
+    let evens = numbers.iter().filter(|n| **n % 2 == 0).collect();
+    println!("{evens:?}");
+}
+//// FILE: err3_lazy.rs
+fn main() {
+    let titles = ["牛乳を買う", "Rust の勉強"];
+    titles.iter().map(|t| println!("{t}"));
+}
+//// FILE: err4_private.rs
+mod note {
+    pub struct NoteTitle(String);
+
+    impl NoteTitle {
+        pub fn as_str(&self) -> &str {
+            &self.0
+        }
+    }
+}
+
+fn main() {
+    // parse を通さずに、空のタイトルを直接作ろうとする
+    let title = note::NoteTitle(String::new());
+    println!("{}", title.as_str());
+}
+//// FILE: ex1.rs
+use std::collections::{BTreeMap, HashMap};
+
+fn main() {
+    let text = "rust web rust db web rust";
+    let mut counts: HashMap<&str, u32> = HashMap::new();
+    for word in text.split_whitespace() {
+        *counts.entry(word).or_insert(0) += 1;
+    }
+    let sorted: BTreeMap<&str, u32> = counts.into_iter().collect();
+    for (word, count) in sorted {
+        println!("{word}: {count}");
+    }
+}
+//// FILE: ex2.rs
+fn main() {
+    // 1〜10 のうち奇数だけを2乗して合計する
+    let total: u32 = (1..=10).filter(|n| n % 2 == 1).map(|n| n * n).sum();
+    println!("{total}");
+}
+//// FILE: ex3.rs
+mod text_utils {
+    // pub を付けて、モジュールの外から呼べるようにする
+    pub fn shout(text: &str) -> String {
+        format!("{}！", text.to_uppercase())
+    }
+}
+
+fn main() {
+    println!("{}", text_utils::shout("rust"));
+}

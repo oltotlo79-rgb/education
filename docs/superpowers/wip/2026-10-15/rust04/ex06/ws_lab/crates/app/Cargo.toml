@@ -1,0 +1,9 @@
+[package]
+name = "app"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+# 同じ workspace の domain を、フォルダの場所で指定して使う
+domain = { path = "../domain" }

@@ -1,0 +1,24 @@
+   Compiling basics v0.1.0 (.../basics)
+error[E0004]: non-exhaustive patterns: `Filter::Done` not covered
+  --> src\main.rs:8:11
+   |
+ 8 |     match filter {
+   |           ^^^^^^ pattern `Filter::Done` not covered
+   |
+note: `Filter` defined here
+  --> src\main.rs:1:6
+   |
+ 1 | enum Filter {
+   |      ^^^^^^
+...
+ 4 |     Done,
+   |     ---- not covered
+   = note: the matched value is of type `Filter`
+help: ensure that all possible cases are being handled by adding a match arm with a wildcard pattern or an explicit pattern as shown
+   |
+10 ~         Filter::Open => "未完了",
+11 ~         Filter::Done => todo!(),
+   |
+
+For more information about this error, try `rustc --explain E0004`.
+error: could not compile `basics` (bin "basics") due to 1 previous error

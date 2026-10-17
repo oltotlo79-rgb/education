@@ -1,0 +1,12 @@
+   Compiling practice v0.1.0 (C:\Users\you\rust-study\practice)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.28s
+     Running unittests src\main.rs (target\debug\deps\practice-7d4a8a329333a0ec.exe)
+
+running 4 tests
+test tests::counts_japanese_characters ... ok
+test tests::empty_title_is_invalid ... ok
+test tests::eighty_one_characters_is_invalid ... ok
+test tests::eighty_characters_is_valid ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

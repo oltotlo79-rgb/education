@@ -1,0 +1,5 @@
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 8.99s
+     Running `target\debug\u03_pragma.exe`
+foreign_keys = 1
+busy_timeout = 0
+sqlite_version = 3.47.0

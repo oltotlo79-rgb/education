@@ -1,0 +1,6 @@
+   Compiling practice v0.1.0 (C:\Users\you\rust-study\practice)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.29s
+     Running `target\debug\practice.exe`
+Error: Os { code: 2, kind: NotFound, message: "指定されたファイルが見つかりません。" }
+error: process didn't exit successfully: `target\debug\practice.exe` (exit code: 1)
+[exit=1]

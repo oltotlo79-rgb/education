@@ -1,0 +1,29 @@
+### cargo build --release
+    Finished `release` profile [optimized] target(s) in 1m 15s
+### topcoat asset bundle --release
+bundled assets into C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/ref/rustnote-target\release\assets
+manifest.toml
+style-e9b983efabcfc6c3.css
+### run release with HOST=0.0.0.0 PORT=8090
+  TCP         0.0.0.0:8090           0.0.0.0:0              LISTENING       40792
+HTTP/1.1 200 OK
+{"status":"ok"}
+マイグレーションを適用しました: 0001_users
+マイグレーションを適用しました: 0002_notes
+マイグレーションを適用しました: 0003_sessions
+RustNote を起動しました: http://0.0.0.0:8090
+### startup error: Turso URL without token
+Error: 設定を読み込めませんでした
+
+Caused by:
+    DATABASE_URL が Turso（libsql://example.turso.io）なのに DATABASE_AUTH_TOKEN が設定されていません
+exit=1
+### startup error: no asset bundle (copy exe elsewhere)
+マイグレーションを適用しました: 0001_users
+マイグレーションを適用しました: 0002_notes
+マイグレーションを適用しました: 0003_sessions
+Error: アセットの束（assets/）がありません。先に `topcoat asset bundle` を実行するか、`topcoat dev` で起動してください
+
+Caused by:
+    no asset bundle at C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\ref\rustnote-verify\noassets\assets
+exit=1

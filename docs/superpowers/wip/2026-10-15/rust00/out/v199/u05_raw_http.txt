@@ -1,0 +1,21 @@
+   Compiling practice v0.1.0 (C:\Users\you\rust-study\practice)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.40s
+     Running `target\debug\practice.exe`
+----- ヘッダー部分 -----
+HTTP/1.1 200 OK
+Date: Sat, 17 Oct 2026 02:30:02 GMT
+Content-Type: text/html; charset=utf-8
+Transfer-Encoding: chunked
+Connection: close
+Server: cloudflare
+Last-Modified: Tue, 13 Oct 2026 20:08:28 GMT
+Allow: GET, HEAD
+Accept-Ranges: bytes
+Age: 11679
+cf-cache-status: HIT
+CF-RAY: a4bbe10c7ef7440f-KIX
+alt-svc: h3=":443"; ma=86400
+----- 本文の先頭 60 文字 -----
+241
+<!doctype html><html lang=en><head><meta charset=utf-8>
+[exit=0]

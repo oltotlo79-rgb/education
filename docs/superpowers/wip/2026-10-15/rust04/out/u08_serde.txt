@@ -1,0 +1,12 @@
+   Compiling design_lab v0.1.0 (...\design_lab)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.61s
+     Running `target\debug\u08_serde.exe`
+1行で: {"title":"牛乳を買う","body":"低脂肪のもの","done":false}
+整形して:
+{
+  "title": "牛乳を買う",
+  "body": "低脂肪のもの",
+  "done": false
+}
+読み込んだ: NoteJson { title: "本を返す", body: "図書館へ", done: true }
+タイトルだけ: 本を返す

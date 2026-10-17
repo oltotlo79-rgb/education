@@ -1,0 +1,17 @@
+starts a local development server for Turso.
+
+If you're using a libSQL client SDK that supports SQLite database files on the local filesystem, then you might not need this server at all.
+Instead, you can use a file: URL with the path to the file you want the SDK to read and write.
+
+Usage:
+  turso dev [flags]
+
+Flags:
+  -a, --auth-jwt-key-file string   Path to a file with a JWT decoding key used to authenticate clients in the Hrana and HTTP APIs. The key is either a PKCS#8-encoded Ed25519 public key in PEM, or just plain bytes of the Ed25519 public key in URL-safe base64.
+  -f, --db-file string             A file name to persist the data of this dev session
+  -h, --help                       help for dev
+  -p, --port int                   the port to which bind the server (default 8080)
+  -v, --version                    sqld version
+
+Global Flags:
+  -c, --config-path string   Path to the directory with config file

@@ -101,24 +101,7 @@
 > **▼ このコードがやること（先に日本語で）:** 2つの数を足して返す関数 `add` と、あいさつを表示するだけの関数 `greet` を作り、`main` から呼び出します。
 
 ```rust
-// 2つの整数を受け取り、その合計を返す関数
-fn add(a: i32, b: i32) -> i32 {
-    // 最後の行にセミコロンを付けないと、その値が戻り値になる
-    a + b
-}
-
-// 何も返さない関数（-> 戻り値の型 を書かない）
-fn greet(name: &str) {
-    println!("こんにちは、{name}さん");
-}
-
-fn main() {
-    let total = add(3, 4);
-    println!("3 + 4 = {total}");
-    greet("Rust");
-    // 関数の呼び出し結果を、そのまま別の関数の引数にしてもよい
-    println!("入れ子: {}", add(add(1, 2), add(3, 4)));
-}
+@@CODE u03/a_fn.rs@@
 ```
 
 ```powershell
@@ -128,9 +111,7 @@ cargo run
 **▼ 実行結果**
 
 ```text
-3 + 4 = 7
-こんにちは、Rustさん
-入れ子: 10
+@@OUT u03/a_fn@@
 ```
 
 #### ▼ コードを1つずつ分解して解説
@@ -179,34 +160,13 @@ println!("入れ子: {}", add(add(1, 2), add(3, 4)));
 > **▼ このコードがやること（先に日本語で）:** `{ }` で囲んだブロックの計算結果や、`if` の結果を変数に入れます。最後が文で終わるブロックの値が `()` になることも確かめます。
 
 ```rust
-fn main() {
-    // { } のブロックも「値になる式」。最後の行の値がブロック全体の値になる
-    let area = {
-        let width = 3;
-        let height = 4;
-        width * height
-    };
-    println!("面積: {area}");
-
-    // if も式なので、結果をそのまま変数に入れられる
-    let size = if area >= 10 { "大" } else { "小" };
-    println!("大きさ: {size}");
-
-    // 最後が「文」（セミコロン付き）のブロックは、() という「空の値」になる
-    let nothing = {
-        println!("ブロックの中で表示だけする");
-    };
-    println!("nothing の中身: {nothing:?}");
-}
+@@CODE u03/b_block_expr.rs@@
 ```
 
 **▼ 実行結果**
 
 ```text
-面積: 12
-大きさ: 大
-ブロックの中で表示だけする
-nothing の中身: ()
+@@OUT u03/b_block_expr@@
 ```
 
 #### ▼ コードを1つずつ分解して解説
@@ -251,26 +211,13 @@ warning: unused arithmetic operation that must be used
 > **▼ このコードがやること（先に日本語で）:** 合計点と人数から平均点を計算します。人数が 0 のときは割り算ができないので、計算する前に 0 を返して関数を終えます。
 
 ```rust
-// 平均点を返す。人数が 0 のときは割り算できないので、先に 0 を返して終わる
-fn average(total: u32, count: u32) -> u32 {
-    if count == 0 {
-        // return は「ここで関数を終えて、この値を返す」
-        return 0;
-    }
-    total / count
-}
-
-fn main() {
-    println!("{}", average(270, 3));
-    println!("{}", average(0, 0));
-}
+@@CODE u03/c_return.rs@@
 ```
 
 **▼ 実行結果**
 
 ```text
-90
-0
+@@OUT u03/c_return@@
 ```
 
 #### ▼ コードを1つずつ分解して解説
@@ -286,26 +233,18 @@ fn main() {
 > **▼ このコードがやること（先に日本語で）:** 表示するだけの関数の戻り値をあえて変数に受け取り、中身が `()` であることを確かめます。
 
 ```rust
-fn log(message: &str) {
-    println!("[log] {message}");
-}
-
-fn main() {
-    // 戻り値の型を書かない関数は、実は () という値を返している
-    let result = log("起動しました");
-    println!("log の戻り値: {result:?}");
-}
+@@CODE u03/d_unit.rs@@
 ```
 
 **▼ 実行結果**
 
 ```text
-[log] 起動しました
-log の戻り値: ()
+@@OUT u03/d_unit@@
 ```
 
 - `fn log(message: &str)` は `fn log(message: &str) -> ()` と同じ意味です。`-> ()` は省略するのが決まりです。
 - Rust では「すべての関数が何かの値を返す」と考えると、文と式の仕組みがすっきり理解できます。
+- なお、`cargo clippy` は「`()` を変数に入れても意味がありません」と警告します（例2の `nothing` も同じです）。ここでは中身を確かめるために、わざと受け取っています。
 
 ### もう一歩: 実務に近い形
 
@@ -316,42 +255,13 @@ log の戻り値: ()
 > **▼ このコードがやること（先に日本語で）:** 「税込みにする」「送料を決める」「総額を出す」の3つの関数を作り、組み合わせて支払い総額を計算します。税込み 5,000 円以上なら送料無料です。
 
 ```rust
-// 税率（%）、送料無料になる金額、送料
-const TAX_RATE_PERCENT: u32 = 10;
-const FREE_SHIPPING_THRESHOLD: u32 = 5_000;
-const SHIPPING_FEE: u32 = 500;
-
-// 税込みの金額を返す
-fn with_tax(price: u32) -> u32 {
-    price * (100 + TAX_RATE_PERCENT) / 100
-}
-
-// 合計金額に応じた送料を返す。if の結果がそのまま戻り値になる
-fn shipping_fee(subtotal: u32) -> u32 {
-    if subtotal >= FREE_SHIPPING_THRESHOLD {
-        0
-    } else {
-        SHIPPING_FEE
-    }
-}
-
-// 小さな関数を組み合わせて、支払い総額を計算する
-fn total(price: u32, quantity: u32) -> u32 {
-    let subtotal = with_tax(price * quantity);
-    subtotal + shipping_fee(subtotal)
-}
-
-fn main() {
-    println!("1,000円 × 2個 = {} 円", total(1_000, 2));
-    println!("1,000円 × 5個 = {} 円", total(1_000, 5));
-}
+@@CODE u03/e_price.rs@@
 ```
 
 **▼ 実行結果**
 
 ```text
-1,000円 × 2個 = 2700 円
-1,000円 × 5個 = 5500 円
+@@OUT u03/e_price@@
 ```
 
 #### ▼ コードを1つずつ分解して解説
@@ -388,29 +298,11 @@ fn total(price: u32, quantity: u32) -> u32 {
 #### エラー1: E0308 最後の式にセミコロンを付けてしまった
 
 ```rust
-fn add(a: i32, b: i32) -> i32 {
-    a + b;
-}
-
-fn main() {
-    println!("{}", add(1, 2));
-}
+@@CODE u03/err1_semicolon.rs@@
 ```
 
 ```text
-   Compiling basics v0.1.0 (.../basics)
-error[E0308]: mismatched types
- --> src\main.rs:1:27
-  |
-1 | fn add(a: i32, b: i32) -> i32 {
-  |    ---                    ^^^ expected `i32`, found `()`
-  |    |
-  |    implicitly returns `()` as its body has no tail or `return` expression
-2 |     a + b;
-  |          - help: remove this semicolon to return this value
-
-For more information about this error, try `rustc --explain E0308`.
-error: could not compile `basics` (bin "basics") due to 1 previous error
+@@ERR u03/err1_semicolon@@
 ```
 
 - **読み方:** `expected i32, found ()` は「i32 を返すと約束したのに、`()` が返っている」。`implicitly returns () as its body has no tail or return expression` は「本体に最後の式も `return` もないので、`()` を返していることになる」という意味です。
@@ -420,39 +312,11 @@ error: could not compile `basics` (bin "basics") due to 1 previous error
 #### エラー2: E0308 戻り値の型を書き忘れた
 
 ```rust
-fn add(a: i32, b: i32) {
-    a + b
-}
-
-fn main() {
-    println!("{}", add(1, 2));
-}
+@@CODE u03/err2_no_ret.rs@@
 ```
 
 ```text
-   Compiling basics v0.1.0 (.../basics)
-error[E0308]: mismatched types
- --> src\main.rs:2:5
-  |
-1 | fn add(a: i32, b: i32) {
-  |                       - help: try adding a return type: `-> i32`
-2 |     a + b
-  |     ^^^^^ expected `()`, found `i32`
-
-error[E0277]: `()` doesn't implement `std::fmt::Display`
- --> src\main.rs:6:20
-  |
-6 |     println!("{}", add(1, 2));
-  |               --   ^^^^^^^^^ `()` cannot be formatted with the default formatter
-  |               |
-  |               required by this formatting parameter
-  |
-  = help: the trait `std::fmt::Display` is not implemented for `()`
-  = note: in format strings you may be able to use `{:?}` (or {:#?} for pretty-print) instead
-
-Some errors have detailed explanations: E0277, E0308.
-For more information about an error, try `rustc --explain E0277`.
-error: could not compile `basics` (bin "basics") due to 2 previous errors
+@@ERR u03/err2_no_ret@@
 ```
 
 - **読み方:** エラー1の逆です。`->` がないので「`()` を返す関数」とみなされ、最後の式 `a + b`（i32）と食い違いました。2つ目の E0277 は、その `()` を `{}` で表示しようとしたために出た**連鎖のエラー**です。
@@ -463,33 +327,11 @@ error: could not compile `basics` (bin "basics") due to 2 previous errors
 #### エラー3: 引数の型を書き忘れた
 
 ```rust
-fn double(x) -> i32 {
-    x * 2
-}
-
-fn main() {
-    println!("{}", double(4));
-}
+@@CODE u03/err3_param_type.rs@@
 ```
 
 ```text
-   Compiling basics v0.1.0 (.../basics)
-error: expected one of `:`, `@`, or `|`, found `)`
- --> src\main.rs:1:12
-  |
-1 | fn double(x) -> i32 {
-  |            ^ expected one of `:`, `@`, or `|`
-  |
-help: if this is a parameter name, give it a type
-  |
-1 | fn double(x: TypeName) -> i32 {
-  |            ++++++++++
-help: if this is a type, explicitly ignore the parameter name
-  |
-1 | fn double(_: x) -> i32 {
-  |           ++
-
-error: could not compile `basics` (bin "basics") due to 1 previous error
+@@ERR u03/err3_param_type@@
 ```
 
 - **読み方:** `expected one of :, @, or |, found )` は「`x` の後ろには `:` などが来るはずなのに `)` が来た」という**文法のエラー**です。エラー番号がないのは、型を調べる前の「文の形」の段階で止まったからです。
@@ -498,35 +340,11 @@ error: could not compile `basics` (bin "basics") due to 1 previous error
 #### エラー4: E0061 引数の数が合わない
 
 ```rust
-fn add(a: i32, b: i32) -> i32 {
-    a + b
-}
-
-fn main() {
-    println!("{}", add(1));
-}
+@@CODE u03/err4_args.rs@@
 ```
 
 ```text
-   Compiling basics v0.1.0 (.../basics)
-error[E0061]: this function takes 2 arguments but 1 argument was supplied
- --> src\main.rs:6:20
-  |
-6 |     println!("{}", add(1));
-  |                    ^^^--- argument #2 of type `i32` is missing
-  |
-note: function defined here
- --> src\main.rs:1:4
-  |
-1 | fn add(a: i32, b: i32) -> i32 {
-  |    ^^^         ------
-help: provide the argument
-  |
-6 |     println!("{}", add(1, /* i32 */));
-  |                         +++++++++++
-
-For more information about this error, try `rustc --explain E0061`.
-error: could not compile `basics` (bin "basics") due to 1 previous error
+@@ERR u03/err4_args@@
 ```
 
 - **読み方:** 「この関数は引数を2つ取るのに、1つしか渡されていません」。`argument #2 of type i32 is missing` は「2番目の i32 の引数がない」。`note: function defined here` が関数の定義の場所を教えてくれます。
@@ -539,49 +357,13 @@ UNIT 01 で作った「タイトルの文字数チェック」を、**名前の�
 > **▼ このコードがやること（先に日本語で）:** タイトルの空白を取り除き、文字数を数え、1〜80文字の範囲かどうかを判定して、結果を文章で返します。空白だけのタイトルと、81文字のタイトルも試します。
 
 ```rust
-const MAX_TITLE_CHARS: usize = 80;
-
-// 前後の空白を取り除いた版を返す
-fn normalize(raw: &str) -> &str {
-    raw.trim()
-}
-
-// 文字数を数える（日本語も 1 文字を 1 と数える）
-fn char_count(text: &str) -> usize {
-    text.chars().count()
-}
-
-// 1 以上 80 以下なら true を返す
-fn is_valid_length(len: usize) -> bool {
-    (1..=MAX_TITLE_CHARS).contains(&len)
-}
-
-// 判定結果を、人が読める文にして返す
-fn describe(raw: &str) -> String {
-    let title = normalize(raw);
-    let len = char_count(title);
-    if is_valid_length(len) {
-        format!("OK: 「{title}」（{len}文字）")
-    } else {
-        format!("NG: {len}文字は 1〜{MAX_TITLE_CHARS} 文字の範囲外です")
-    }
-}
-
-fn main() {
-    println!("{}", describe("  買い物リスト  "));
-    println!("{}", describe("    "));
-    // "あ" を 81 回くり返した文字列で試す
-    let long = "あ".repeat(81);
-    println!("{}", describe(&long));
-}
+@@CODE u03/f_rustnote.rs@@
 ```
 
 **▼ 実行結果**
 
 ```text
-OK: 「買い物リスト」（6文字）
-NG: 0文字は 1〜80 文字の範囲外です
-NG: 81文字は 1〜80 文字の範囲外です
+@@OUT u03/f_rustnote@@
 ```
 
 - `(1..=MAX_TITLE_CHARS)` は「1 以上 80 以下」という**範囲**を表します（`..=` は「終わりも含む」）。`.contains(&len)` は「その範囲に len が入っているか」を `true` / `false` で返します。`&` は「値を貸す」記号で、第3巻で詳しく学びます。
@@ -603,15 +385,7 @@ fn square(x: i32) -> i32 {
 **問題3.** 次のプログラムが表示する値を予想してください。
 
 ```rust
-fn main() {
-    let a = 10;
-    let b = {
-        let t = a * 2;
-        t + 1
-    };
-    let c = if b > 20 { b - 20 } else { 0 };
-    println!("{a} {b} {c}");
-}
+@@CODE u03/ex3.rs@@
 ```
 
 ### 解答と解説
@@ -619,42 +393,25 @@ fn main() {
 **解答1.** 最後の `x * x;` のセミコロンで値が捨てられ、関数が `()` を返すことになるため E0308 になります。セミコロンを消します。
 
 ```rust
-fn square(x: i32) -> i32 {
-    x * x
-}
-
-fn main() {
-    println!("{}", square(7));
-}
+@@CODE u03/ex1.rs@@
 ```
 
 **▼ 実行結果**
 
 ```text
-49
+@@OUT u03/ex1@@
 ```
 
 **解答2.**
 
 ```rust
-// 摂氏（℃）を華氏（℉）に変換する
-fn fahrenheit(celsius: f64) -> f64 {
-    celsius * 9.0 / 5.0 + 32.0
-}
-
-fn main() {
-    println!("0℃ = {}℉", fahrenheit(0.0));
-    println!("36.5℃ = {:.1}℉", fahrenheit(36.5));
-    println!("100℃ = {}℉", fahrenheit(100.0));
-}
+@@CODE u03/ex2.rs@@
 ```
 
 **▼ 実行結果**
 
 ```text
-0℃ = 32℉
-36.5℃ = 97.7℉
-100℃ = 212℉
+@@OUT u03/ex2@@
 ```
 
 - `f64` どうしの計算なので、`9` ではなく `9.0` のように小数で書きます（`celsius * 9` だと UNIT 02 のエラー4と同じ E0277 になります）。
@@ -662,7 +419,7 @@ fn main() {
 **解答3.**
 
 ```text
-10 21 1
+@@OUT u03/ex3@@
 ```
 
 - `b` のブロックは `t = 20` を作り、最後の式 `t + 1` = 21 が値になります。`c` は `21 > 20` なので `21 - 20` = 1 です。

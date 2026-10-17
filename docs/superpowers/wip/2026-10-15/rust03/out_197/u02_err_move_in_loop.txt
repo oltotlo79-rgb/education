@@ -1,0 +1,25 @@
+error[E0382]: use of moved value: `title`
+ --> src\bin\u02_err_move_in_loop.rs:8:14
+  |
+6 |     let title = String::from("買い物");
+  |         ----- move occurs because `title` has type `String`, which does not implement the `Copy` trait
+7 |     for _ in 0..2 {
+  |     ------------- inside of this loop
+8 |         save(title);
+  |              ^^^^^ value moved here, in previous iteration of loop
+  |
+note: consider changing this parameter type in function `save` to borrow instead if owning the value isn't necessary
+ --> src\bin\u02_err_move_in_loop.rs:1:16
+  |
+1 | fn save(title: String) {
+  |    ----        ^^^^^^ this parameter takes ownership of the value
+  |    |
+  |    in this function
+help: consider cloning the value if the performance cost is acceptable
+  |
+8 |         save(title.clone());
+  |                   ++++++++
+
+For more information about this error, try `rustc --explain E0382`.
+error: could not compile `ownership-lab` (bin "u02_err_move_in_loop") due to 1 previous error
+exit=101

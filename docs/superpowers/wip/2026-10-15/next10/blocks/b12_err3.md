@@ -1,0 +1,1 @@
+> **補足（この教材のアプリの場合）:** 第7章で作った `lib/supabase/server.ts`（`@supabase/ssr` を使う版）では、環境変数が無いときのエラー文は `Your project's URL and Key are required to create a Supabase client!` になります。しかもこのエラーは**ビルドのときではなく、ページを開いたとき（実行時）**に出ます。ビルドが成功しても安心できない理由と、ビルドの時点で気づくための工夫は「1.4.1」と「2.9.2」で扱います。

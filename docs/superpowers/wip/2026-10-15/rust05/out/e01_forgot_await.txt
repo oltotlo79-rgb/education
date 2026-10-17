@@ -1,0 +1,21 @@
+   Compiling async_lab v0.1.0 (...\async_lab)
+error[E0308]: mismatched types
+ --> src\bin\e01_forgot_await.rs:8:22
+  |
+8 |     let count: u32 = count_notes();
+  |                ---   ^^^^^^^^^^^^^ expected `u32`, found future
+  |                |
+  |                expected due to this
+  |
+note: calling an async function returns a future
+ --> src\bin\e01_forgot_await.rs:8:22
+  |
+8 |     let count: u32 = count_notes();
+  |                      ^^^^^^^^^^^^^
+help: consider `await`ing on the `Future`
+  |
+8 |     let count: u32 = count_notes().await;
+  |                                   ++++++
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `async_lab` (bin "e01_forgot_await") due to 1 previous error

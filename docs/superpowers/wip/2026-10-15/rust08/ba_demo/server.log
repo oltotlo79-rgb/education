@@ -1,0 +1,23 @@
+[2m2026-10-17T05:14:45.871Z[0m [31mERROR[0m [1m[Better Auth]:[0m Database schema mismatch
+
+  Missing tables
+    user, session, account, verification
+
+  help: Run `npx auth migrate` to add the missing tables and columns.
+Better Auth: http://localhost:3400/api/auth
+[2m2026-10-17T05:14:57.481Z[0m [33mWARN[0m [1m[Better Auth]:[0m Rate limiting could not determine a client IP and is falling back to a single shared per-path bucket. Ensure your runtime forwards a trusted client IP header, then set `advanced.ipAddress.ipAddressHeaders` or `advanced.ipAddress.trustedProxies` so the address can be resolved.
+[2m2026-10-17T05:15:00.796Z[0m [33mWARN[0m [1m[Better Auth]:[0m Invalid password
+[2m2026-10-17T05:15:01.535Z[0m [33mWARN[0m [1m[Better Auth]:[0m User not found
+[2m2026-10-17T05:15:02.014Z[0m [33mWARN[0m [1m[Better Auth]:[0m Invalid password
+[2m2026-10-17T05:15:13.414Z[0m [33mWARN[0m [1m[Better Auth]:[0m Invalid password
+[2m2026-10-17T05:15:14.067Z[0m [33mWARN[0m [1m[Better Auth]:[0m Invalid password
+[2m2026-10-17T05:15:14.632Z[0m [33mWARN[0m [1m[Better Auth]:[0m Invalid password
+[2m2026-10-17T05:15:15.681Z[0m [31mERROR[0m [1m[Better Auth]:[0m Invalid origin: https://evil.example
+[2m2026-10-17T05:15:16.298Z[0m [31mERROR[0m [1m[Better Auth]:[0m Blocked cross-site navigation login attempt (CSRF protection) {
+  secFetchSite: 'cross-site',
+  secFetchMode: 'navigate',
+  secFetchDest: null
+}
+[2m2026-10-17T05:15:30.890Z[0m [33mWARN[0m [1m[Better Auth]:[0m Invalid password
+[2m2026-10-17T05:15:31.207Z[0m [33mWARN[0m [1m[Better Auth]:[0m Invalid password
+[2m2026-10-17T05:15:31.513Z[0m [33mWARN[0m [1m[Better Auth]:[0m Invalid password

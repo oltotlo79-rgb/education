@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+/* (1) dark: を dark クラスで切り替える */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* (2) 自分の色を登録する */
+@theme {
+  --color-brand-500: #0ea5e9;
+}

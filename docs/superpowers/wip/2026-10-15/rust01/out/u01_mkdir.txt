@@ -1,0 +1,11 @@
+
+
+    ディレクトリ: C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d
+    -93d7-e55dbf9acedd\scratchpad\rust01\u01
+
+
+Mode                 LastWriteTime         Length Name                                                                 
+----                 -------------         ------ ----                                                                 
+d-----        2026/10/17     11:49                rust-study                                                           
+
+
