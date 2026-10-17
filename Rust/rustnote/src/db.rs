@@ -25,7 +25,12 @@ impl Db {
     /// 設定に従って、ローカルファイルかリモート（Turso）の DB を開く
     pub async fn open(config: &Config) -> Result<Db, libsql::Error> {
         if config.is_remote() {
-            let token = config.database_auth_token.clone().unwrap_or_default();
+            // 秘密のトークンは、接続するこの場所でだけ取り出す
+            let token = config
+                .database_auth_token
+                .as_ref()
+                .map(|secret| secret.expose().to_string())
+                .unwrap_or_default();
             let database = Builder::new_remote(config.database_url.clone(), token)
                 .build()
                 .await?;
