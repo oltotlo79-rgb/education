@@ -948,7 +948,7 @@ $LASTEXITCODE
 <div style="max-width: 720px; margin: 18px auto; text-align: center;">
 <svg viewBox="0 0 720 330" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
 <rect x="20" y="14" width="150" height="32" rx="6" fill="#f8fafc" stroke="#475569" stroke-width="1.5"/>
-<text x="95" y="35" font-size="13" font-weight="700" fill="#334155" text-anchor="middle">C:\（ドライブ）</text>
+<text font-family="Cascadia Mono, Consolas, Yu Gothic UI, monospace" x="95" y="35" font-size="13" font-weight="700" fill="#334155" text-anchor="middle">C:\（ドライブ）</text>
 <path d="M50,46 L50,72 L80,72" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
 <rect x="80" y="58" width="120" height="28" rx="6" fill="#fff7ed" stroke="#f97316"/>
 <text x="140" y="77" font-size="13" fill="#9a3412" text-anchor="middle">Users</text>
@@ -975,7 +975,7 @@ $LASTEXITCODE
 <text x="525" y="267" font-size="13" fill="#334155" text-anchor="middle">main.rs</text>
 <rect x="400" y="166" width="300" height="40" rx="8" fill="#eff6ff" stroke="#3b82f6"/>
 <text x="412" y="184" font-size="12" font-weight="700" fill="#1e40af">太枠 = 今いるフォルダ（カレントディレクトリ）</text>
-<text x="412" y="200" font-size="12" fill="#334155">PowerShell の表示: PS C:\Users\you\rust-study\practice&gt;</text>
+<text font-family="Cascadia Mono, Consolas, Yu Gothic UI, monospace" x="412" y="200" font-size="12" fill="#334155">PS C:\Users\you\rust-study\practice&gt;</text>
 <rect x="430" y="22" width="270" height="110" rx="10" fill="#f8fafc" stroke="#cbd5e1"/>
 <rect x="446" y="40" width="16" height="16" rx="3" fill="#fff7ed" stroke="#f97316"/>
 <text x="470" y="53" font-size="12" fill="#334155">フォルダ（中に入れ物を持てる）</text>
@@ -1425,18 +1425,18 @@ memo\tomorrow.txt
 <rect x="22" y="16" width="200" height="28" rx="6" fill="#0c1222"/>
 <text x="36" y="35" font-size="12" fill="#e2e8f0">Windows PowerShell</text>
 <text x="690" y="33" font-size="13" fill="#94a3b8" text-anchor="end">－　□　×</text>
-<g font-family="Cascadia Mono, Consolas, Yu Gothic UI, monospace" font-size="13">
-<text x="26" y="72" fill="#e2e8f0"><tspan fill="#facc15">PS C:\Users\you&gt;</tspan> cd rust-study\practice</text>
-<text x="26" y="96" fill="#e2e8f0"><tspan fill="#facc15">PS C:\Users\you\rust-study\practice&gt;</tspan> ls src</text>
-<text x="46" y="122" fill="#94a3b8">ディレクトリ: C:\Users\you\rust-study\practice\src</text>
-<text x="26" y="148" fill="#e2e8f0">Mode            LastWriteTime   Length Name</text>
-<text x="26" y="168" fill="#e2e8f0">----            -------------   ------ ----</text>
-<text x="26" y="188" fill="#e2e8f0">-a----   2026/10/17     11:30      689 main.rs</text>
-<text x="26" y="218" fill="#e2e8f0"><tspan fill="#facc15">PS C:\Users\you\rust-study\practice&gt;</tspan> cargo --version</text>
-<text x="26" y="240" fill="#e2e8f0">cargo 1.99.0 (5f94df478 2026-08-27)</text>
-<text x="26" y="266" fill="#e2e8f0"><tspan fill="#facc15">PS C:\Users\you\rust-study\practice&gt;</tspan> cargo run -q -- Hanako</text>
-<text x="26" y="288" fill="#e2e8f0">こんにちは、Hanako さん</text>
-<text x="26" y="310" fill="#e2e8f0"><tspan fill="#facc15">PS C:\Users\you\rust-study\practice&gt;</tspan> <tspan fill="#e2e8f0">_</tspan></text>
+<g font-family="Cascadia Mono, Consolas, Yu Gothic UI, monospace" font-size="13" xml:space="preserve" style="white-space: pre">
+<text x="26" y="72" fill="#e2e8f0"><tspan fill="#facc15">PS C:\Users\you&gt;</tspan> cd rust-study\practice</text>
+<text x="26" y="96" fill="#e2e8f0"><tspan fill="#facc15">PS C:\Users\you\rust-study\practice&gt;</tspan> ls src</text>
+<text x="46" y="122" fill="#94a3b8">ディレクトリ: C:\Users\you\rust-study\practice\src</text>
+<text x="26" y="148" fill="#e2e8f0">Mode            LastWriteTime   Length Name</text>
+<text x="26" y="168" fill="#e2e8f0">----            -------------   ------ ----</text>
+<text x="26" y="188" fill="#e2e8f0">-a----   2026/10/17     11:30      689 main.rs</text>
+<text x="26" y="218" fill="#e2e8f0"><tspan fill="#facc15">PS C:\Users\you\rust-study\practice&gt;</tspan> cargo --version</text>
+<text x="26" y="240" fill="#e2e8f0">cargo 1.99.0 (5f94df478 2026-08-27)</text>
+<text x="26" y="266" fill="#e2e8f0"><tspan fill="#facc15">PS C:\Users\you\rust-study\practice&gt;</tspan> cargo run -q -- Hanako</text>
+<text x="26" y="288" fill="#e2e8f0">こんにちは、Hanako さん</text>
+<text x="26" y="310" fill="#e2e8f0"><tspan fill="#facc15">PS C:\Users\you\rust-study\practice&gt;</tspan> <tspan fill="#e2e8f0">_</tspan></text>
 </g>
 </svg>
 <div style="font-size: 12px; color: #64748b; margin-top: 6px;">図3-2: PowerShell の画面イメージ。黄色がプロンプト（今いるフォルダ）、白が入力と結果</div>
@@ -1921,7 +1921,7 @@ cargo run -q -- a "b c" d
 </defs>
 <rect x="12" y="40" width="140" height="90" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
 <text x="82" y="66" font-size="14" font-weight="700" fill="#1e40af" text-anchor="middle">ソースコード</text>
-<text x="82" y="88" font-size="12" fill="#334155" text-anchor="middle">src\main.rs</text>
+<text font-family="Cascadia Mono, Consolas, Yu Gothic UI, monospace" x="82" y="88" font-size="12" fill="#334155" text-anchor="middle">src\main.rs</text>
 <text x="82" y="108" font-size="12" fill="#334155" text-anchor="middle">人が読める文字</text>
 <rect x="196" y="40" width="140" height="90" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
 <text x="266" y="66" font-size="14" font-weight="700" fill="#c2410c" text-anchor="middle">コンパイル</text>
@@ -1961,20 +1961,20 @@ Cargo のプロジェクトは、次のような決まった形のフォルダ�
 <marker id="ar-00-12" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
 </defs>
 <rect x="14" y="14" width="330" height="272" rx="12" fill="#f8fafc" stroke="#475569" stroke-width="1.5"/>
-<text x="30" y="40" font-size="14" font-weight="700" fill="#334155">hello\（プロジェクトのフォルダ）</text>
+<text font-family="Cascadia Mono, Consolas, Yu Gothic UI, monospace" x="30" y="40" font-size="14" font-weight="700" fill="#334155">hello\（プロジェクトのフォルダ）</text>
 <rect x="34" y="54" width="290" height="44" rx="8" fill="#fff7ed" stroke="#f97316"/>
 <text x="46" y="73" font-size="13" font-weight="700" fill="#9a3412">Cargo.toml</text>
 <text x="46" y="90" font-size="12" fill="#334155">名前・版・使うクレートの一覧（設定）</text>
 <rect x="34" y="106" width="290" height="44" rx="8" fill="#eff6ff" stroke="#3b82f6"/>
-<text x="46" y="125" font-size="13" font-weight="700" fill="#1e40af">src\main.rs</text>
+<text font-family="Cascadia Mono, Consolas, Yu Gothic UI, monospace" x="46" y="125" font-size="13" font-weight="700" fill="#1e40af">src\main.rs</text>
 <text x="46" y="142" font-size="12" fill="#334155">ソースコード（あなたが書く）</text>
 <rect x="34" y="158" width="290" height="44" rx="8" fill="#ffffff" stroke="#94a3b8"/>
 <text x="46" y="177" font-size="13" font-weight="700" fill="#334155">Cargo.lock</text>
 <text x="46" y="194" font-size="12" fill="#334155">実際に使ったクレートの版の記録（自動）</text>
 <rect x="34" y="210" width="290" height="62" rx="8" fill="#ecfdf5" stroke="#10b981"/>
-<text x="46" y="229" font-size="13" font-weight="700" fill="#047857">target\（自動で作られる）</text>
-<text x="46" y="247" font-size="12" fill="#334155">debug\hello.exe　…　cargo build</text>
-<text x="46" y="264" font-size="12" fill="#334155">release\hello.exe … --release 付き</text>
+<text font-family="Cascadia Mono, Consolas, Yu Gothic UI, monospace" x="46" y="229" font-size="13" font-weight="700" fill="#047857">target\（自動で作られる）</text>
+<text font-family="Cascadia Mono, Consolas, Yu Gothic UI, monospace" x="46" y="247" font-size="12" fill="#334155">debug\hello.exe　…　cargo build</text>
+<text font-family="Cascadia Mono, Consolas, Yu Gothic UI, monospace" x="46" y="264" font-size="12" fill="#334155">release\hello.exe … --release 付き</text>
 <rect x="420" y="40" width="286" height="66" rx="10" fill="#ffffff" stroke="#475569"/>
 <text x="436" y="64" font-size="13" font-weight="700" fill="#334155" font-family="Cascadia Mono, Consolas, monospace">cargo new hello</text>
 <text x="436" y="88" font-size="12" fill="#334155">フォルダ・Cargo.toml・main.rs を作る</text>
@@ -2973,9 +2973,10 @@ fn main() {
 <rect x="30" y="74" width="110" height="50" rx="8" fill="#ffffff" stroke="#3b82f6"/>
 <text x="85" y="104" font-size="12" fill="#1e40af" text-anchor="middle">ブラウザ</text>
 <line x1="142" y1="99" x2="186" y2="99" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-15)"/>
-<text x="164" y="150" font-size="12" fill="#047857" text-anchor="middle">同じ PC の中からは届く</text>
+<text x="30" y="150" font-size="12" fill="#047857">同じ PC の中からは届く</text>
 <line x1="180" y1="236" x2="250" y2="132" stroke="#dc2626" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#ar-00-16)"/>
-<text x="164" y="186" font-size="12" fill="#b91c1c" text-anchor="middle">外の PC からは届かない ×</text>
+<text x="30" y="178" font-size="12" fill="#b91c1c">外の PC からは</text>
+<text x="30" y="196" font-size="12" fill="#b91c1c">届かない ×</text>
 <rect x="110" y="236" width="140" height="40" rx="8" fill="#ffffff" stroke="#94a3b8"/>
 <text x="180" y="261" font-size="12" fill="#334155" text-anchor="middle">別の PC・スマホ</text>
 <text x="540" y="22" font-size="14" font-weight="700" fill="#c2410c" text-anchor="middle">0.0.0.0:8080 で待つ（Fly.io）</text>
@@ -2988,7 +2989,8 @@ fn main() {
 <text x="450" y="96" font-size="12" fill="#c2410c" text-anchor="middle">Fly.io の</text>
 <text x="450" y="114" font-size="12" fill="#c2410c" text-anchor="middle">受付（443）</text>
 <line x1="512" y1="99" x2="546" y2="99" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-15)"/>
-<text x="540" y="150" font-size="12" fill="#047857" text-anchor="middle">外からの https を 8080 番へ取り次ぐ</text>
+<text x="620" y="150" font-size="12" fill="#047857" text-anchor="middle">外からの https を</text>
+<text x="620" y="168" font-size="12" fill="#047857" text-anchor="middle">8080 番へ取り次ぐ</text>
 <line x1="540" y1="236" x2="460" y2="130" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-15)"/>
 <rect x="470" y="236" width="140" height="40" rx="8" fill="#ffffff" stroke="#94a3b8"/>
 <text x="540" y="261" font-size="12" fill="#334155" text-anchor="middle">世界中のブラウザ</text>
@@ -3248,14 +3250,14 @@ GET /favicon.ico -> 404 Not Found
 <text x="26" y="222" font-size="12" fill="#94a3b8">（CSS が無いので、飾りのない見た目）</text>
 <rect x="370" y="10" width="340" height="230" rx="10" fill="#0c1222" stroke="#334155"/>
 <text x="386" y="34" font-size="12" fill="#94a3b8">PowerShell（サーバー側）</text>
-<g font-family="Cascadia Mono, Consolas, Yu Gothic UI, monospace" font-size="12" fill="#e2e8f0">
-<text x="386" y="62">http://127.0.0.1:8080 で待っています</text>
-<text x="386" y="84">GET /health -&gt; 200 OK</text>
-<text x="386" y="106">GET /notes -&gt; 404 Not Found</text>
-<text x="386" y="128">POST /health -&gt; 404 Not Found</text>
-<text x="386" y="150" fill="#facc15">GET / -&gt; 200 OK</text>
-<text x="386" y="172" fill="#facc15">GET /favicon.ico -&gt; 404 Not Found</text>
-<text x="386" y="194" fill="#facc15">  -&gt; 404 Not Found</text>
+<g font-family="Cascadia Mono, Consolas, Yu Gothic UI, monospace" font-size="12" fill="#e2e8f0" xml:space="preserve" style="white-space: pre">
+<text x="386" y="62">http://127.0.0.1:8080 で待っています</text>
+<text x="386" y="84">GET /health -&gt; 200 OK</text>
+<text x="386" y="106">GET /notes -&gt; 404 Not Found</text>
+<text x="386" y="128">POST /health -&gt; 404 Not Found</text>
+<text x="386" y="150" fill="#facc15">GET / -&gt; 200 OK</text>
+<text x="386" y="172" fill="#facc15">GET /favicon.ico -&gt; 404 Not Found</text>
+<text x="386" y="194" fill="#facc15">  -&gt; 404 Not Found</text>
 </g>
 <text x="386" y="226" font-size="12" fill="#facc15">黄色 = ブラウザで1回開いたときの記録</text>
 </svg>
@@ -3449,7 +3451,7 @@ Content-Length: 40
 ### 図で理解する
 
 <div style="max-width: 720px; margin: 18px auto; text-align: center;">
-<svg viewBox="0 0 720 250" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<svg viewBox="0 0 720 270" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
 <defs>
 <marker id="ar-00-17" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#047857"/></marker>
 </defs>
@@ -3478,10 +3480,8 @@ Content-Length: 40
 <text x="610" y="191" font-size="16" font-weight="700" fill="#047857" text-anchor="middle">2 → 3</text>
 <line x1="292" y1="185" x2="356" y2="185" stroke="#047857" stroke-width="2" marker-end="url(#ar-00-17)"/>
 <line x1="482" y1="185" x2="546" y2="185" stroke="#047857" stroke-width="2" marker-end="url(#ar-00-17)"/>
-<text x="324" y="226" font-size="12" fill="#047857" text-anchor="middle">引き継ぐ</text>
-<text x="514" y="226" font-size="12" fill="#047857" text-anchor="middle">引き継ぐ</text>
-<text x="324" y="150" font-size="12" fill="#b91c1c" text-anchor="middle">消える</text>
-<text x="514" y="150" font-size="12" fill="#b91c1c" text-anchor="middle">消える</text>
+<text x="20" y="140" font-size="12" fill="#b91c1c">毎回 0 から</text>
+<text x="360" y="258" font-size="12" fill="#334155" text-anchor="middle">メモリの値はプロセスの終わりに消える　／　緑の矢印 = ファイルの値を次の起動が引き継ぐ</text>
 </svg>
 <div style="font-size: 12px; color: #64748b; margin-top: 6px;">図7-1: メモリの値はプロセスが終わると消え、ストレージに書いた値は次の起動に引き継がれる</div>
 </div>
@@ -3573,12 +3573,14 @@ Content-Length: 40
 <text x="429" y="144" font-size="13" fill="#0f172a" text-anchor="middle">3</text>
 <text x="494" y="144" font-size="13" font-weight="700" fill="#c2410c" text-anchor="middle">2</text>
 <text x="546" y="144" font-size="13" fill="#0f172a">歯医者の予約</text>
-<path d="M478,84 C380,84 380,79 288,79" fill="none" stroke="#c2410c" stroke-width="2" marker-end="url(#ar-00-18)"/>
-<path d="M478,114 C390,114 380,82 288,82" fill="none" stroke="#c2410c" stroke-width="2" marker-end="url(#ar-00-18)"/>
-<path d="M478,144 C380,144 380,109 288,109" fill="none" stroke="#c2410c" stroke-width="2" marker-end="url(#ar-00-18)"/>
-<text x="24" y="164" font-size="12" fill="#334155">UNIQUE = 同じメールアドレスは2回登録できない</text>
-<text x="24" y="188" font-size="12" fill="#334155">user_id の矢印 = 「このノートの持ち主は users の何番か」</text>
-<text x="24" y="210" font-size="12" fill="#334155">→ Hanako（1番）のノートは 1・2、Taro（2番）のノートは 3</text>
+<path d="M400,79 C360,79 330,77 290,77" fill="none" stroke="#c2410c" stroke-width="2" marker-end="url(#ar-00-18)"/>
+<path d="M400,109 C350,109 340,83 290,83" fill="none" stroke="#c2410c" stroke-width="2" marker-end="url(#ar-00-18)"/>
+<path d="M400,139 C350,139 340,109 290,109" fill="none" stroke="#c2410c" stroke-width="2" marker-end="url(#ar-00-18)"/>
+<text x="344" y="168" font-size="12" fill="#c2410c" text-anchor="middle">user_id の値で</text>
+<text x="344" y="184" font-size="12" fill="#c2410c" text-anchor="middle">持ち主を指す</text>
+<text x="24" y="148" font-size="12" fill="#334155">UNIQUE = 同じメールアドレスは</text>
+<text x="24" y="164" font-size="12" fill="#334155">2回登録できない</text>
+<text x="24" y="210" font-size="12" fill="#334155">Hanako（1番）のノートは 1・2、Taro（2番）のノートは 3</text>
 </svg>
 <div style="font-size: 12px; color: #64748b; margin-top: 6px;">図7-3: users と notes のつながり。user_id が「持ち主」を表す</div>
 </div>
@@ -4036,7 +4038,7 @@ cargo run -q
 </div>
 
 <div style="max-width: 720px; margin: 18px auto; text-align: center;">
-<svg viewBox="0 0 720 220" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<svg viewBox="0 0 720 222" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
 <defs>
 <marker id="ar-00-21" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
 <marker id="ar-00-22" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/></marker>
@@ -4054,8 +4056,8 @@ cargo run -q
 <line x1="186" y1="72" x2="252" y2="72" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-21)"/>
 <line x1="454" y1="72" x2="520" y2="72" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-21)"/>
 <path d="M615,108 C615,170 99,170 99,110" fill="none" stroke="#dc2626" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#ar-00-22)"/>
-<text x="360" y="160" font-size="13" font-weight="700" fill="#b91c1c" text-anchor="middle">× 逆向きには戻せない（一方向）</text>
-<text x="360" y="200" font-size="12" fill="#334155" text-anchor="middle">ログインのときは、入力されたパスワードを同じ手順で変換して、保存された値と照らし合わせる</text>
+<text x="360" y="184" font-size="13" font-weight="700" fill="#b91c1c" text-anchor="middle">× 逆向きには戻せない（一方向）</text>
+<text x="360" y="208" font-size="12" fill="#334155" text-anchor="middle">ログインのときは、入力されたパスワードを同じ手順で変換して、保存された値と照らし合わせる</text>
 </svg>
 <div style="font-size: 12px; color: #64748b; margin-top: 6px;">図8-3: パスワードはハッシュにして保存する。DB が盗まれても、元のパスワードは分からない</div>
 </div>
@@ -4447,32 +4449,39 @@ Rust のコンパイラのエラーメッセージは、**とても親切な先�
 <div style="max-width: 720px; margin: 18px auto; text-align: center;">
 <svg viewBox="0 0 720 420" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
 <rect x="10" y="10" width="420" height="400" rx="10" fill="#0c1222"/>
-<g font-family="Cascadia Mono, Consolas, monospace" font-size="12.5" fill="#e2e8f0">
-<text x="22" y="36"><tspan fill="#f87171" font-weight="700">error[E0308]</tspan>: mismatched types</text>
-<text x="22" y="58"><tspan fill="#60a5fa"> --&gt;</tspan> src\main.rs:8:11</text>
-<text x="22" y="80" fill="#60a5fa">  |</text>
-<text x="22" y="102"><tspan fill="#60a5fa">8 |</tspan>     greet(name);</text>
-<text x="22" y="124"><tspan fill="#60a5fa">  |</tspan>     <tspan fill="#60a5fa">-----</tspan> <tspan fill="#f87171">^^^^ expected `&amp;str`,</tspan></text>
-<text x="22" y="146"><tspan fill="#60a5fa">  |</tspan>           <tspan fill="#f87171">found `String`</tspan></text>
-<text x="22" y="168"><tspan fill="#60a5fa">  |     |</tspan></text>
-<text x="22" y="190"><tspan fill="#60a5fa">  |     arguments to this function</tspan></text>
-<text x="22" y="212"><tspan fill="#60a5fa">  |     are incorrect</tspan></text>
-<text x="22" y="234"><tspan fill="#4ade80" font-weight="700">note</tspan>: function defined here</text>
-<text x="22" y="256"><tspan fill="#60a5fa"> --&gt;</tspan> src\main.rs:2:4</text>
-<text x="22" y="278"><tspan fill="#60a5fa">2 |</tspan> fn greet(name: &amp;str) {</text>
-<text x="22" y="300"><tspan fill="#60a5fa">  |</tspan>    <tspan fill="#4ade80">^^^^^</tspan> <tspan fill="#60a5fa">----------</tspan></text>
-<text x="22" y="322"><tspan fill="#38bdf8" font-weight="700">help</tspan>: consider borrowing here</text>
-<text x="22" y="344"><tspan fill="#60a5fa">8 |</tspan>     greet(<tspan fill="#4ade80">&amp;</tspan>name);</text>
-<text x="22" y="366"><tspan fill="#60a5fa">  |</tspan>           <tspan fill="#4ade80">+</tspan></text>
-<text x="22" y="396">For more information ... --explain E0308</text>
+<g font-family="Cascadia Mono, Consolas, monospace" font-size="12.5" fill="#e2e8f0" xml:space="preserve" style="white-space: pre">
+<text x="22" y="36"><tspan fill="#f87171" font-weight="700">error[E0308]</tspan>: mismatched types</text>
+<text x="22" y="58"><tspan fill="#60a5fa"> --&gt;</tspan> src\main.rs:8:11</text>
+<text x="22" y="80" fill="#60a5fa">  |</text>
+<text x="22" y="102"><tspan fill="#60a5fa">8 |</tspan>     greet(name);</text>
+<text x="22" y="124"><tspan fill="#60a5fa">  |</tspan>     <tspan fill="#60a5fa">-----</tspan> <tspan fill="#f87171">^^^^ expected `&amp;str`,</tspan></text>
+<text x="22" y="146"><tspan fill="#60a5fa">  |</tspan>           <tspan fill="#f87171">found `String`</tspan></text>
+<text x="22" y="168"><tspan fill="#60a5fa">  |     |</tspan></text>
+<text x="22" y="190"><tspan fill="#60a5fa">  |     arguments to this function</tspan></text>
+<text x="22" y="212"><tspan fill="#60a5fa">  |     are incorrect</tspan></text>
+<text x="22" y="234"><tspan fill="#4ade80" font-weight="700">note</tspan>: function defined here</text>
+<text x="22" y="256"><tspan fill="#60a5fa"> --&gt;</tspan> src\main.rs:2:4</text>
+<text x="22" y="278"><tspan fill="#60a5fa">2 |</tspan> fn greet(name: &amp;str) {</text>
+<text x="22" y="300"><tspan fill="#60a5fa">  |</tspan>    <tspan fill="#4ade80">^^^^^</tspan> <tspan fill="#60a5fa">----------</tspan></text>
+<text x="22" y="322"><tspan fill="#38bdf8" font-weight="700">help</tspan>: consider borrowing here</text>
+<text x="22" y="344"><tspan fill="#60a5fa">8 |</tspan>     greet(<tspan fill="#4ade80">&amp;</tspan>name);</text>
+<text x="22" y="366"><tspan fill="#60a5fa">  |</tspan>           <tspan fill="#4ade80">+</tspan></text>
+<text x="22" y="396">For more information ... --explain E0308</text>
 </g>
-<line x1="132" y1="32" x2="452" y2="32" stroke="#dc2626" stroke-width="1.5"/>
-<line x1="210" y1="54" x2="452" y2="80" stroke="#3b82f6" stroke-width="1.5"/>
-<line x1="330" y1="120" x2="452" y2="134" stroke="#dc2626" stroke-width="1.5"/>
-<line x1="300" y1="200" x2="452" y2="188" stroke="#3b82f6" stroke-width="1.5"/>
-<line x1="210" y1="230" x2="452" y2="246" stroke="#10b981" stroke-width="1.5"/>
-<line x1="260" y1="318" x2="452" y2="306" stroke="#0284c7" stroke-width="1.5"/>
-<line x1="330" y1="392" x2="452" y2="372" stroke="#475569" stroke-width="1.5"/>
+<circle cx="420" cy="32" r="3" fill="#dc2626"/>
+<line x1="420" y1="32" x2="452" y2="32" stroke="#dc2626" stroke-width="1.5"/>
+<circle cx="420" cy="54" r="3" fill="#3b82f6"/>
+<line x1="420" y1="54" x2="452" y2="80" stroke="#3b82f6" stroke-width="1.5"/>
+<circle cx="420" cy="120" r="3" fill="#dc2626"/>
+<line x1="420" y1="120" x2="452" y2="134" stroke="#dc2626" stroke-width="1.5"/>
+<circle cx="420" cy="186" r="3" fill="#3b82f6"/>
+<line x1="420" y1="186" x2="452" y2="188" stroke="#3b82f6" stroke-width="1.5"/>
+<circle cx="420" cy="230" r="3" fill="#10b981"/>
+<line x1="420" y1="230" x2="452" y2="246" stroke="#10b981" stroke-width="1.5"/>
+<circle cx="420" cy="318" r="3" fill="#0284c7"/>
+<line x1="420" y1="318" x2="452" y2="306" stroke="#0284c7" stroke-width="1.5"/>
+<circle cx="420" cy="392" r="3" fill="#475569"/>
+<line x1="420" y1="392" x2="452" y2="372" stroke="#475569" stroke-width="1.5"/>
 <rect x="454" y="14" width="256" height="40" rx="6" fill="#fef2f2" stroke="#dc2626"/>
 <text x="464" y="31" font-size="12" font-weight="700" fill="#b91c1c">① エラー番号と要約</text>
 <text x="464" y="47" font-size="12" fill="#334155">E0308 = 型が合わない</text>
@@ -4495,7 +4504,7 @@ Rust のコンパイラのエラーメッセージは、**とても親切な先�
 <text x="464" y="369" font-size="12" font-weight="700" fill="#334155">⑦ もっと詳しい説明の読み方</text>
 <text x="464" y="385" font-size="12" fill="#334155">rustc --explain E0308</text>
 </svg>
-<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図9-1: エラーメッセージの部品（紙面に合わせて長い行は折り返している）。①→②→③の順に読み、⑥の提案を検討する</div>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図9-1: エラーメッセージの部品（紙面に合わせて長い行は折り返している。右端の点がその行）。①→②→③の順に読み、⑥の提案を検討する</div>
 </div>
 
 エラーが出たときの進め方は、次の流れです。
@@ -5534,7 +5543,7 @@ test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 基本は第0巻から第13巻まで、**番号順**に読みます。それぞれの巻が、前の巻の知識を使うように作られているからです。
 
 <div style="max-width: 720px; margin: 18px auto; text-align: center;">
-<svg viewBox="0 0 720 250" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<svg viewBox="0 72 720 176" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
 <defs>
 <marker id="ar-00-26" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
 </defs>
@@ -5656,83 +5665,83 @@ Claude Code（クロード コード）のような AI のアシスタントは�
 
 ## 用語ミニ辞典
 
-この巻に出てきた用語を、五十音順（英字は最後）に並べました。
+この巻に出てきた用語を、五十音順（数字・英字は最後）に並べました。「初出の単元」は、その用語を最初に説明した UNIT の番号です。
 
-| 用語 | 読み | 意味 | 初出 |
+| 用語 | 読み | 意味 | 初出の単元 |
 |---|---|---|---|
-| アプリ（プログラム） | アプリ | 決まった手順を書いたもの。動かしていない状態のもの | UNIT 01 |
-| 暗号化 | あんごうか | 途中で盗み見や書き換えをされないように、データを変換すること。HTTPS で使う | UNIT 05 |
-| 一方向 | いっぽうこう | ハッシュ値から元のデータに戻せない性質 | UNIT 08 |
-| 永続化 | えいぞくか | プログラムが終わってもデータが残るように保存すること | UNIT 07 |
-| エイリアス | エイリアス | コマンドの別名。PowerShell の `ls` は `Get-ChildItem` の別名 | UNIT 03 |
-| エラー（error） | エラー | 直さないとコンパイルが終わらない問題 | UNIT 09 |
-| 拡張子 | かくちょうし | ファイル名の最後の `.` から後ろ（`.rs` など）。中身の種類の目印 | UNIT 02 |
-| カレントディレクトリ | カレントディレクトリ | 今いるフォルダ。相対パスの出発点 | UNIT 02 |
-| 環境変数 | かんきょうへんすう | OS やシェルが持つ「名前＝値」のメモ。設定や秘密を渡すのに使う | UNIT 03 |
-| 機械語 | きかいご | CPU がそのまま実行できる命令の並び | UNIT 04 |
-| クライアント | クライアント | サーバーに頼みごとをする側（ブラウザなど） | UNIT 06 |
-| クレート | クレート | Rust のプログラムや部品のひとまとまり | UNIT 04 |
-| 警告（warning） | けいこく | コンパイルは通るが、間違いの可能性やより良い書き方を知らせる指摘 | UNIT 08 |
-| 構造体（struct） | こうぞうたい | 関係のある値をまとめた、自分で作る型 | UNIT 08 |
-| コマンドライン引数 | コマンドラインひきすう | コマンドの後ろに並べて、プログラムに渡す値 | UNIT 01 |
-| コンパイル | コンパイル | ソースコードを機械語に翻訳すること。翻訳する道具がコンパイラ（Rust では `rustc`） | UNIT 04 |
-| サーバー | サーバー | リクエストを待ち受けて、レスポンスを返す側のプログラム | UNIT 06 |
-| シェル | シェル | コマンドを読んで、OS にプログラムの起動などを頼むプログラム（PowerShell・bash） | UNIT 03 |
-| 終了コード | しゅうりょうコード | プロセスが終わるときに OS へ渡す数。0 は成功 | UNIT 01 |
-| 主キー | しゅキー | テーブルの1行を特定するための列（`id` など）。同じ値は2つない | UNIT 07 |
-| ステータスコード | ステータスコード | HTTP のレスポンスの結果を表す3桁の数（200・404 など） | UNIT 05 |
-| ストレージ | ストレージ | 電源を切ってもデータが残る記憶装置（SSD など） | UNIT 01 |
-| 制約 | せいやく | データベースの列に付けるルール（NOT NULL・UNIQUE・CHECK など） | UNIT 07 |
-| セッション | セッション | ログインした状態を覚えておくしくみ。トークンを Cookie で受け渡す | UNIT 08 |
-| 絶対パス | ぜったいパス | ドライブ名（`C:\`）から書いた、どこからでも同じ場所を指すパス | UNIT 02 |
-| 相対パス | そうたいパス | 今いるフォルダから見た道順で書いたパス | UNIT 02 |
-| ソルト | ソルト | パスワードのハッシュに混ぜる、人ごとに違う乱数 | UNIT 08 |
-| ソースコード | ソースコード | 人が読み書きするプログラムの文章 | UNIT 04 |
-| 端末（ターミナル） | たんまつ | 文字を入力して結果を表示する窓 | UNIT 03 |
-| テスト | テスト | プログラムが期待どおりに動くかを確かめる小さなプログラム | UNIT 10 |
-| テーブル | テーブル | データベースの表。行（1件）と列（項目）でできている | UNIT 07 |
-| データベース（DB） | データベース | データを整理して保存し、探したり書き換えたりするプログラム | UNIT 07 |
-| 認可 | にんか | その操作をしてよいかを判断すること | UNIT 08 |
-| 認証 | にんしょう | 相手が誰かを確かめること（ログイン） | UNIT 08 |
-| ハッシュ | ハッシュ | データから決まった長さの値を作る一方向の変換。パスワードの保存に使う | UNIT 08 |
-| バイト | バイト | データの大きさの単位。UTF-8 では英数字が1バイト、日本語がふつう3バイト | UNIT 10 |
-| パス | パス | ファイルやフォルダの場所を表す文字列。URL の中の `/notes` などもパスと呼ぶ | UNIT 02 |
-| パニック | パニック | Rust のプログラムが実行中に問題を見つけて止まること。終了コードは 101 | UNIT 01 |
-| 標準エラー出力 | ひょうじゅんエラーしゅつりょく | エラーの知らせを書く出口（`eprintln!`） | UNIT 01 |
-| 標準出力 | ひょうじゅんしゅつりょく | ふつうの結果を書く出口（`println!`） | UNIT 01 |
-| 標準ライブラリ | ひょうじゅんライブラリ | Rust に最初から付いてくる道具箱（`std`） | UNIT 01 |
-| フォルダ（ディレクトリ） | フォルダ | ファイルやフォルダを入れる入れ物 | UNIT 02 |
+| アプリ（プログラム） | アプリ | 決まった手順を書いたもの。動かしていない状態のもの | 01 |
+| 暗号化 | あんごうか | 途中で盗み見や書き換えをされないように、データを変換すること。HTTPS で使う | 05 |
+| 一方向 | いっぽうこう | ハッシュ値から元のデータに戻せない性質 | 08 |
+| 永続化 | えいぞくか | プログラムが終わってもデータが残るように保存すること | 07 |
+| エイリアス | エイリアス | コマンドの別名。PowerShell の `ls` は `Get-ChildItem` の別名 | 03 |
+| エラー（error） | エラー | 直さないとコンパイルが終わらない問題 | 09 |
+| 拡張子 | かくちょうし | ファイル名の最後の `.` から後ろ（`.rs` など）。中身の種類の目印 | 02 |
+| カレントディレクトリ | カレントディレクトリ | 今いるフォルダ。相対パスの出発点 | 02 |
+| 環境変数 | かんきょうへんすう | OS やシェルが持つ「名前＝値」のメモ。設定や秘密を渡すのに使う | 03 |
+| 機械語 | きかいご | CPU がそのまま実行できる命令の並び | 04 |
+| クライアント | クライアント | サーバーに頼みごとをする側（ブラウザなど） | 06 |
+| クレート | クレート | Rust のプログラムや部品のひとまとまり | 04 |
+| 警告（warning） | けいこく | コンパイルは通るが、間違いの可能性やより良い書き方を知らせる指摘 | 08 |
+| 構造体（struct） | こうぞうたい | 関係のある値をまとめた、自分で作る型 | 08 |
+| コマンドライン引数 | コマンドラインひきすう | コマンドの後ろに並べて、プログラムに渡す値 | 01 |
+| コンパイル | コンパイル | ソースコードを機械語に翻訳すること。翻訳する道具がコンパイラ（Rust では `rustc`） | 04 |
+| サーバー | サーバー | リクエストを待ち受けて、レスポンスを返す側のプログラム | 06 |
+| シェル | シェル | コマンドを読んで、OS にプログラムの起動などを頼むプログラム（PowerShell・bash） | 03 |
+| 終了コード | しゅうりょうコード | プロセスが終わるときに OS へ渡す数。0 は成功 | 01 |
+| 主キー | しゅキー | テーブルの1行を特定するための列（`id` など）。同じ値は2つない | 07 |
+| ステータスコード | ステータスコード | HTTP のレスポンスの結果を表す3桁の数（200・404 など） | 05 |
+| ストレージ | ストレージ | 電源を切ってもデータが残る記憶装置（SSD など） | 01 |
+| 制約 | せいやく | データベースの列に付けるルール（NOT NULL・UNIQUE・CHECK など） | 07 |
+| セッション | セッション | ログインした状態を覚えておくしくみ。トークンを Cookie で受け渡す | 08 |
+| 絶対パス | ぜったいパス | ドライブ名（`C:\`）から書いた、どこからでも同じ場所を指すパス | 02 |
+| 相対パス | そうたいパス | 今いるフォルダから見た道順で書いたパス | 02 |
+| ソルト | ソルト | パスワードのハッシュに混ぜる、人ごとに違う乱数 | 08 |
+| ソースコード | ソースコード | 人が読み書きするプログラムの文章 | 04 |
+| 端末（ターミナル） | たんまつ | 文字を入力して結果を表示する窓 | 03 |
+| テスト | テスト | プログラムが期待どおりに動くかを確かめる小さなプログラム | 10 |
+| テーブル | テーブル | データベースの表。行（1件）と列（項目）でできている | 07 |
+| データベース（DB） | データベース | データを整理して保存し、探したり書き換えたりするプログラム | 07 |
+| 認可 | にんか | その操作をしてよいかを判断すること | 08 |
+| 認証 | にんしょう | 相手が誰かを確かめること（ログイン） | 08 |
+| ハッシュ | ハッシュ | データから決まった長さの値を作る一方向の変換。パスワードの保存に使う | 08 |
+| バイト | バイト | データの大きさの単位。UTF-8 では英数字が1バイト、日本語がふつう3バイト | 10 |
+| パス | パス | ファイルやフォルダの場所を表す文字列。URL の中の `/notes` などもパスと呼ぶ | 02 |
+| パニック | パニック | Rust のプログラムが実行中に問題を見つけて止まること。終了コードは 101 | 01 |
+| 標準エラー出力 | ひょうじゅんエラーしゅつりょく | エラーの知らせを書く出口（`eprintln!`） | 01 |
+| 標準出力 | ひょうじゅんしゅつりょく | ふつうの結果を書く出口（`println!`） | 01 |
+| 標準ライブラリ | ひょうじゅんライブラリ | Rust に最初から付いてくる道具箱（`std`） | 01 |
+| フォルダ（ディレクトリ） | フォルダ | ファイルやフォルダを入れる入れ物 | 02 |
 | フレームワーク | フレームワーク | アプリでよく使う仕組みをまとめた部品集。Topcoat など | 巻頭 |
-| プロセス | プロセス | 実行中のプログラム | UNIT 01 |
-| プロトコル | プロトコル | やりとりの書き方の決まり。HTTP など | UNIT 05 |
-| プロンプト | プロンプト | コマンドの入力を待っている印（`PS C:\Users\you>`） | UNIT 03 |
-| ポート | ポート | 1台のコンピュータの中で、どのプロセスに届けるかを決める番号 | UNIT 06 |
-| マイグレーション | マイグレーション | テーブルの形を変える手順を、順番に記録して適用するしくみ | UNIT 07 |
-| メソッド（HTTP） | メソッド | リクエストで「何をしてほしいか」を表す言葉（GET・POST） | UNIT 05 |
-| メモリ | メモリ | 作業中のデータを置く、速いが電源を切ると消える記憶装置 | UNIT 01 |
-| 文字コード | もじコード | 文字と数値の対応表。UTF-8・Shift_JIS など | UNIT 03 |
-| リクエスト | リクエスト | クライアントからサーバーへのお願い | UNIT 05 |
-| ルーティング | ルーティング | メソッドとパスによって、処理を振り分けること | UNIT 06 |
-| レスポンス | レスポンス | サーバーからの返事 | UNIT 05 |
-| 0.0.0.0 | ゼロゼロゼロゼロ | 「すべての入口で待つ」という待ち受け側の指定 | UNIT 06 |
-| 127.0.0.1（localhost） | ローカルホスト | 自分の PC を指す特別な住所 | UNIT 06 |
-| Argon2id | アルゴンツー・アイディー | パスワード専用の、わざと遅いハッシュ関数 | UNIT 08 |
-| bind / listen | バインド／リッスン | ポートを借りる届け出／来客を待つこと | UNIT 06 |
-| Cargo | カーゴ | Rust のプロジェクト管理の道具。ビルド・実行・テストなどを取り仕切る | UNIT 04 |
-| Cookie | クッキー | サーバーがブラウザに預ける小さなメモ。リクエストのたびに送り返される | UNIT 08 |
-| CPU | シーピーユー | 命令を実行して計算する部品 | UNIT 01 |
-| curl | カール | HTTP のリクエストを送り、結果を文字で見せる道具。Windows では `curl.exe` | UNIT 05 |
-| DNS | ディーエヌエス | ホスト名を IP アドレスに引き直すしくみ | UNIT 05 |
-| edition | エディション | Rust の文法の版。このシリーズは 2024 | UNIT 04 |
-| HTML | エイチティーエムエル | Web ページの中身を書く言葉 | UNIT 05 |
-| HTTP / HTTPS | エイチティーティーピー | ブラウザとサーバーのやりとりの決まり。HTTPS は暗号化版 | UNIT 05 |
-| IDOR | アイドア | ID を書き換えるだけで他人のデータが見えてしまう不具合 | UNIT 08 |
-| IP アドレス | アイピーアドレス | ネットワーク上のコンピュータの住所 | UNIT 06 |
-| OS | オーエス | コンピュータの資源をプロセスに割り振る基本のソフト（Windows など） | UNIT 01 |
-| PowerShell | パワーシェル | Windows のシェル。この教材の主な作業環境 | UNIT 03 |
-| PRG | ピーアールジー | POST の後に 303 で GET のページへ移動させる作法 | UNIT 05 |
-| SQL | エスキューエル | データベースにお願いするための言葉 | UNIT 07 |
-| TCP | ティーシーピー | 2台の間で、データを順番どおり確実に届けるしくみ。HTTP はこの上を流れる | UNIT 05 |
-| Turso / libSQL | ターソ／リブエスキューエル | RustNote が使うデータベースのサービスと、その中身のデータベース | UNIT 07 |
-| URL | ユーアールエル | Web 上の宛先。スキーム・ホスト・ポート・パス・クエリでできている | UNIT 05 |
-| UTF-8 | ユーティーエフエイト | 世界中の文字を表せる文字コード。Rust の文字列はこれ | UNIT 03 |
+| プロセス | プロセス | 実行中のプログラム | 01 |
+| プロトコル | プロトコル | やりとりの書き方の決まり。HTTP など | 05 |
+| プロンプト | プロンプト | コマンドの入力を待っている印（`PS C:\Users\you>`） | 03 |
+| ポート | ポート | 1台のコンピュータの中で、どのプロセスに届けるかを決める番号 | 06 |
+| マイグレーション | マイグレーション | テーブルの形を変える手順を、順番に記録して適用するしくみ | 07 |
+| メソッド（HTTP） | メソッド | リクエストで「何をしてほしいか」を表す言葉（GET・POST） | 05 |
+| メモリ | メモリ | 作業中のデータを置く、速いが電源を切ると消える記憶装置 | 01 |
+| 文字コード | もじコード | 文字と数値の対応表。UTF-8・Shift_JIS など | 03 |
+| リクエスト | リクエスト | クライアントからサーバーへのお願い | 05 |
+| ルーティング | ルーティング | メソッドとパスによって、処理を振り分けること | 06 |
+| レスポンス | レスポンス | サーバーからの返事 | 05 |
+| 0.0.0.0 | ゼロゼロゼロゼロ | 「すべての入口で待つ」という待ち受け側の指定 | 06 |
+| 127.0.0.1（localhost） | ローカルホスト | 自分の PC を指す特別な住所 | 06 |
+| Argon2id | アルゴンツー・アイディー | パスワード専用の、わざと遅いハッシュ関数 | 08 |
+| bind / listen | バインド／リッスン | ポートを借りる届け出／来客を待つこと | 06 |
+| Cargo | カーゴ | Rust のプロジェクト管理の道具。ビルド・実行・テストなどを取り仕切る | 04 |
+| Cookie | クッキー | サーバーがブラウザに預ける小さなメモ。リクエストのたびに送り返される | 08 |
+| CPU | シーピーユー | 命令を実行して計算する部品 | 01 |
+| curl | カール | HTTP のリクエストを送り、結果を文字で見せる道具。Windows では `curl.exe` | 05 |
+| DNS | ディーエヌエス | ホスト名を IP アドレスに引き直すしくみ | 05 |
+| edition | エディション | Rust の文法の版。このシリーズは 2024 | 04 |
+| HTML | エイチティーエムエル | Web ページの中身を書く言葉 | 05 |
+| HTTP / HTTPS | エイチティーティーピー | ブラウザとサーバーのやりとりの決まり。HTTPS は暗号化版 | 05 |
+| IDOR | アイドア | ID を書き換えるだけで他人のデータが見えてしまう不具合 | 08 |
+| IP アドレス | アイピーアドレス | ネットワーク上のコンピュータの住所 | 06 |
+| OS | オーエス | コンピュータの資源をプロセスに割り振る基本のソフト（Windows など） | 01 |
+| PowerShell | パワーシェル | Windows のシェル。この教材の主な作業環境 | 03 |
+| PRG | ピーアールジー | POST の後に 303 で GET のページへ移動させる作法 | 05 |
+| SQL | エスキューエル | データベースにお願いするための言葉 | 07 |
+| TCP | ティーシーピー | 2台の間で、データを順番どおり確実に届けるしくみ。HTTP はこの上を流れる | 05 |
+| Turso / libSQL | ターソ／リブエスキューエル | RustNote が使うデータベースのサービスと、その中身のデータベース | 07 |
+| URL | ユーアールエル | Web 上の宛先。スキーム・ホスト・ポート・パス・クエリでできている | 05 |
+| UTF-8 | ユーティーエフエイト | 世界中の文字を表せる文字コード。Rust の文字列はこれ | 03 |
