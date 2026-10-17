@@ -1,0 +1,60 @@
+（準備: sql/schema.sql の 2 文を実行しました）
+（準備: sql/seed.sql の 2 文を実行しました）
+sql> SELECT id, title, updated_at FROM notes WHERE user_id = 2 ORDER BY updated_at DESC
++----+------------+---------------------+
+| id | title      | updated_at          |
++----+------------+---------------------+
+| 5  | 買い物     | 2026-10-07 19:30:00 |
+| 8  | ジムの予定 | 2026-10-07 19:30:00 |
+| 3  | 旅行の計画 | 2026-10-03 12:30:00 |
++----+------------+---------------------+
+(3 行)
+
+sql> SELECT id, title, updated_at FROM notes WHERE user_id = 2 ORDER BY updated_at DESC, id DESC
++----+------------+---------------------+
+| id | title      | updated_at          |
++----+------------+---------------------+
+| 8  | ジムの予定 | 2026-10-07 19:30:00 |
+| 5  | 買い物     | 2026-10-07 19:30:00 |
+| 3  | 旅行の計画 | 2026-10-03 12:30:00 |
++----+------------+---------------------+
+(3 行)
+
+sql> SELECT id, title FROM notes WHERE user_id = 1 ORDER BY updated_at DESC, id DESC LIMIT 2 OFFSET 2
++----+-------------+
+| id | title       |
++----+-------------+
+| 4  | 読書メモ    |
+| 2  | Rust の勉強 |
++----+-------------+
+(2 行)
+
+sql> SELECT id, user_id, title FROM notes WHERE title LIKE '%買い物%' OR body LIKE '%買い物%'
++----+---------+--------------+
+| id | user_id | title        |
++----+---------+--------------+
+| 1  | 1       | 買い物リスト |
+| 5  | 2       | 買い物       |
++----+---------+--------------+
+(2 行)
+
+sql> SELECT id, title FROM notes WHERE user_id = 1 AND title LIKE '%%%'
++----+--------------+
+| id | title        |
++----+--------------+
+| 1  | 買い物リスト |
+| 2  | Rust の勉強  |
+| 4  | 読書メモ     |
+| 6  | SQL の練習   |
+| 7  | 100% 達成    |
++----+--------------+
+(5 行)
+
+sql> SELECT id, title FROM notes WHERE user_id = 1 AND title LIKE '%\%%' ESCAPE '\'
++----+-----------+
+| id | title     |
++----+-----------+
+| 7  | 100% 達成 |
++----+-----------+
+(1 行)
+

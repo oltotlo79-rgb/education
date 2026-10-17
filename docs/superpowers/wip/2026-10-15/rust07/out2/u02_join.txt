@@ -1,0 +1,27 @@
+（準備: sql/schema.sql の 2 文を実行しました）
+（準備: sql/seed.sql の 2 文を実行しました）
+sql> SELECT notes.id, users.email, notes.title …
++----+-------------------+--------------+
+| id | email             | title        |
++----+-------------------+--------------+
+| 1  | alice@example.com | 買い物リスト |
+| 2  | alice@example.com | Rust の勉強  |
+| 3  | bob@example.com   | 旅行の計画   |
+| 4  | alice@example.com | 読書メモ     |
+| 5  | bob@example.com   | 買い物       |
+| 6  | alice@example.com | SQL の練習   |
+| 7  | alice@example.com | 100% 達成    |
+| 8  | bob@example.com   | ジムの予定   |
++----+-------------------+--------------+
+(8 行)
+
+sql> SELECT users.email, COUNT(notes.id) AS note_count …
++-------------------+------------+
+| email             | note_count |
++-------------------+------------+
+| alice@example.com | 5          |
+| bob@example.com   | 3          |
+| carol@example.com | 0          |
++-------------------+------------+
+(3 行)
+

@@ -1,0 +1,26 @@
+（準備: sql/schema.sql の 2 文を実行しました）
+（準備: sql/seed.sql の 2 文を実行しました）
+sql> SELECT users.id, users.email, notes.id AS note_id …
++----+-------------------+---------+
+| id | email             | note_id |
++----+-------------------+---------+
+| 3  | carol@example.com | NULL    |
++----+-------------------+---------+
+(1 行)
+
+sql> SELECT 'Rust' LIKE 'rust' AS ascii_like, 'Rust' = 'rust' AS ascii_eq
++------------+----------+
+| ascii_like | ascii_eq |
++------------+----------+
+| 1          | 0        |
++------------+----------+
+(1 行)
+
+sql> SELECT id, title FROM notes WHERE title LIKE '%rust%'
++----+-------------+
+| id | title       |
++----+-------------+
+| 2  | Rust の勉強 |
++----+-------------+
+(1 行)
+

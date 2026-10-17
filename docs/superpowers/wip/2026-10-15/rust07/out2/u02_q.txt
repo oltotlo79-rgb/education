@@ -1,0 +1,28 @@
+（準備: sql/schema.sql の 2 文を実行しました）
+（準備: sql/seed.sql の 2 文を実行しました）
+sql> SELECT COUNT(*) AS done_notes FROM notes WHERE user_id = 1 AND done = 1
++------------+
+| done_notes |
++------------+
+| 1          |
++------------+
+(1 行)
+
+sql> SELECT id, title, created_at FROM notes WHERE user_id = 2 ORDER BY created_at ASC, id ASC
++----+------------+---------------------+
+| id | title      | created_at          |
++----+------------+---------------------+
+| 3  | 旅行の計画 | 2026-10-03 12:30:00 |
+| 5  | 買い物     | 2026-10-05 18:00:00 |
+| 8  | ジムの予定 | 2026-10-08 06:30:00 |
++----+------------+---------------------+
+(3 行)
+
+sql> SELECT id, title FROM notes WHERE user_id = 1 ORDER BY updated_at DESC, id DESC LIMIT 2 OFFSET 4
++----+--------------+
+| id | title        |
++----+--------------+
+| 1  | 買い物リスト |
++----+--------------+
+(1 行)
+
