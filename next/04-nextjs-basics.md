@@ -1,10 +1,101 @@
 # 第4章: Next.js の基礎
 
+## この章のゴールと地図
+
+この章は、Next.js（ネクストジェイエス）で書籍管理アプリを作るための「土台の知識」をまとめた、本書でいちばん大事な章の1つです。とても長いので、最初に「どこへ向かうのか」を地図で確認しておきましょう。旅行の前に路線図を見ておくと、途中で「今どこ？」と迷わずに済むのと同じです。
+
+**この章を読み終えると、次のことができるようになります。**
+
+1. `app/` フォルダにファイルを置いて、URL とページを対応させられる（`page.tsx`・`layout.tsx`・`loading.tsx`・`error.tsx`・`[id]`）
+2. あるコンポーネントが「サーバーで動くのか、ブラウザで動くのか」を説明でき、`"use client"` を必要な部品にだけ付けられる
+3. 1回のアクセスで「サーバーで HTML を作る → ブラウザに届く → ハイドレーションでボタンが動き出す」流れを、図を使って説明できる
+4. `<Link>` と `router.push` を使い分けて、ページを移動できる
+5. Server Component でデータを取得し、`loading.tsx` / `error.tsx` で「読み込み中」「失敗した」画面を出せる
+6. Server Action でフォームを処理し、`revalidatePath` で一覧を最新の状態にできる
+7. `NEXT_PUBLIC_` の有無で、環境変数がどこから見えるか（どこに漏れるか）を説明できる
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 276" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-04-01" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="21" y="10" width="12" height="12" rx="2" fill="#eff6ff" stroke="#3b82f6"/>
+<text x="39" y="21" font-size="12" fill="#1e40af">画面の骨組み</text>
+<rect x="141" y="10" width="12" height="12" rx="2" fill="#fff7ed" stroke="#f97316"/>
+<text x="159" y="21" font-size="12" fill="#c2410c">サーバーとブラウザの分担</text>
+<rect x="321" y="10" width="12" height="12" rx="2" fill="#ecfdf5" stroke="#10b981"/>
+<text x="339" y="21" font-size="12" fill="#047857">データを読む・書く</text>
+<rect x="471" y="10" width="12" height="12" rx="2" fill="#f8fafc" stroke="#64748b"/>
+<text x="489" y="21" font-size="12" fill="#475569">準備・確かめる</text>
+<rect x="21" y="44" width="118" height="72" rx="10" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>
+<text x="80" y="64" font-size="12" font-weight="bold" fill="#475569" text-anchor="middle">節 0〜1</text>
+<text x="80" y="86" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">前提と全体像</text>
+<text x="80" y="105" font-size="12" fill="#475569" text-anchor="middle">たとえ話で準備</text>
+<rect x="161" y="44" width="118" height="72" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="220" y="64" font-size="12" font-weight="bold" fill="#1e40af" text-anchor="middle">節 2</text>
+<text x="220" y="86" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">App Router</text>
+<text x="220" y="105" font-size="12" fill="#475569" text-anchor="middle">URL＝フォルダ</text>
+<rect x="301" y="44" width="118" height="72" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="2.5"/>
+<text x="360" y="64" font-size="12" font-weight="bold" fill="#c2410c" text-anchor="middle">節 3 ★山場</text>
+<text x="360" y="86" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">Server と Client</text>
+<text x="360" y="105" font-size="12" fill="#475569" text-anchor="middle">どこで動く？</text>
+<rect x="441" y="44" width="118" height="72" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="500" y="64" font-size="12" font-weight="bold" fill="#1e40af" text-anchor="middle">節 4</text>
+<text x="500" y="86" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">レイアウト</text>
+<text x="500" y="105" font-size="12" fill="#475569" text-anchor="middle">枠を入れ子に</text>
+<rect x="581" y="44" width="118" height="72" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="640" y="64" font-size="12" font-weight="bold" fill="#1e40af" text-anchor="middle">節 5</text>
+<text x="640" y="86" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">ナビゲーション</text>
+<text x="640" y="105" font-size="12" fill="#475569" text-anchor="middle">Link と push</text>
+<line x1="140" y1="80" x2="159" y2="80" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-04-01)"/>
+<line x1="280" y1="80" x2="299" y2="80" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-04-01)"/>
+<line x1="420" y1="80" x2="439" y2="80" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-04-01)"/>
+<line x1="560" y1="80" x2="579" y2="80" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-04-01)"/>
+<line x1="640" y1="117" x2="640" y2="176" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-04-01)"/>
+<rect x="581" y="178" width="118" height="72" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="640" y="198" font-size="12" font-weight="bold" fill="#047857" text-anchor="middle">節 6</text>
+<text x="640" y="220" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">データ取得</text>
+<text x="640" y="239" font-size="12" fill="#475569" text-anchor="middle">待つ・失敗する</text>
+<rect x="441" y="178" width="118" height="72" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="500" y="198" font-size="12" font-weight="bold" fill="#047857" text-anchor="middle">節 7</text>
+<text x="500" y="220" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">Server Actions</text>
+<text x="500" y="239" font-size="12" fill="#475569" text-anchor="middle">フォームを送る</text>
+<rect x="301" y="178" width="118" height="72" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="360" y="198" font-size="12" font-weight="bold" fill="#c2410c" text-anchor="middle">節 8</text>
+<text x="360" y="220" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">環境変数</text>
+<text x="360" y="239" font-size="12" fill="#475569" text-anchor="middle">秘密を守る</text>
+<rect x="161" y="178" width="118" height="72" rx="10" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>
+<text x="220" y="198" font-size="12" font-weight="bold" fill="#475569" text-anchor="middle">節 9〜10・発展</text>
+<text x="220" y="220" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">構成とエラー</text>
+<text x="220" y="239" font-size="12" fill="#475569" text-anchor="middle">困ったら戻る</text>
+<rect x="21" y="178" width="118" height="72" rx="10" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>
+<text x="80" y="198" font-size="12" font-weight="bold" fill="#475569" text-anchor="middle">章末</text>
+<text x="80" y="220" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">練習問題</text>
+<text x="80" y="239" font-size="12" fill="#475569" text-anchor="middle">解答・解説つき</text>
+<line x1="580" y1="214" x2="561" y2="214" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-04-01)"/>
+<line x1="440" y1="214" x2="421" y2="214" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-04-01)"/>
+<line x1="300" y1="214" x2="281" y2="214" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-04-01)"/>
+<line x1="160" y1="214" x2="141" y2="214" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-04-01)"/>
+<text x="360" y="268" font-size="12" fill="#475569" text-anchor="middle">★ 節3 が一番の山場。迷ったら図4-4（時系列）と図4-5（境界）に戻ってくる</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図4-1: この章の地図（矢印の順に読み進める。色は話題のまとまり）</div>
+</div>
+
+**読み進め方のヒント:**
+
+- 0〜1節は、たとえ話中心の準備運動です。「サーバー」「レンダリング」という言葉にピンと来ない人は、ここを飛ばさずに読んでください。
+- 各サンプルは「**▼ このコードがやること（日本語）→ コード → ▼ 実行結果 → 1つずつ分解した解説**」の順に並んでいます。最初はコードを細かく読まず、日本語の説明と実行結果だけを読んで「何が起きるのか」をつかんでから、解説を読むと理解しやすくなります。
+- **つまずきポイント** は、初心者が実際によくハマる失敗を「❌ NG（ダメな書き方）→ ✅ OK（直し方）」で並べたものです。エラーが出たときに見比べられるよう、実際のエラー文も載せています。
+- 章末に「練習問題（解答・解説つき）」があります。読み終えたら、まず答えを見ずに解いてみてください。
+
+> **この章の「▼ 実行結果」について:** 実行結果は、Next.js 16.4.1（2026年10月時点の最新安定版）・React 19・TypeScript 5 で、本書と同じ手順で作ったプロジェクトを実際に動かして記録したものです（個人のフォルダ名などは伏せています）。第6章の案内どおり、`create-next-app` で **Cache Components を「No」** にしたプロジェクトを前提にしています。「Yes」にした場合の違いは、6.1 節の最後の「注意」でまとめて説明します。Next.js 15 でも、ほとんどのコードはそのまま動きます。
+
 ## 0. 前提知識: URL・ルーティング・サーバーレンダリング
 
 Next.js（読み: ネクストジェイエス）を理解するには「URL（ユーアールエル：Web上の住所）」「ルーティング（routing：URLとページを結びつける仕組み）」「レンダリング（rendering：HTMLを組み立てて画面に出す処理）」の3つの基本概念を押さえる必要があります。ここから始めましょう。
 
 > **この章で前提となる用語の超ざっくり予習:**
+>
 > - **サーバー**：インターネットの向こうにあるコンピューター。リクエストを受けて返事をする。
 > - **クライアント／ブラウザ**：ユーザーの手元のコンピューターで動くChromeやSafariなどのアプリ。
 > - **HTML**：画面に出る文字や画像のレイアウト情報を書いた文書。
@@ -128,6 +219,7 @@ React は「UIの部品を作るライブラリ」であり、それ以外の機
 | デプロイ（公開） | 別途設定が必要 | Vercel で数クリック |
 
 > **この章で学ぶこと:**
+>
 > - Next.js の概念と React との関係
 > - **App Router**（アップルーター：Next.js 13以降の新しいルーティング方式）によるルーティング
 > - **Server Components**（サーバー上で実行されるコンポーネント）と **Client Components**（ブラウザ上で実行されるコンポーネント）の使い分け
@@ -152,7 +244,7 @@ Next.js は **Vercel 社** が開発・メンテナンスしている React ベ�
       <div style="background: #1e40af; color: #fff; border-radius: 8px; padding: 8px 14px; font-size: 12px; font-weight: 600; text-align: center;">API Routes /<br/>Server Actions</div>
       <div style="background: #1e40af; color: #fff; border-radius: 8px; padding: 8px 14px; font-size: 12px; font-weight: 600; text-align: center;">画像最適化<br/>（next/image）</div>
       <div style="background: #1e40af; color: #fff; border-radius: 8px; padding: 8px 14px; font-size: 12px; font-weight: 600; text-align: center;">フォント最適化<br/>（next/font）</div>
-      <div style="background: #1e40af; color: #fff; border-radius: 8px; padding: 8px 14px; font-size: 12px; font-weight: 600; text-align: center;">ミドルウェア</div>
+      <div style="background: #1e40af; color: #fff; border-radius: 8px; padding: 8px 14px; font-size: 12px; font-weight: 600; text-align: center;">ミドルウェア<br/>（proxy.ts）</div>
     </div>
     <div style="text-align: center; color: #3b82f6; font-size: 18px; margin-bottom: 8px;">&#x2193; &#x2193; &#x2193;</div>
     <div style="border: 2px solid #38bdf8; border-radius: 10px; padding: 16px; background: #e0f7fa;">
@@ -378,6 +470,8 @@ Next.js には2つのルーティングシステムがあります。
 
 > **本チュートリアルでは App Router のみを使用します。** Pages Router（ページズルーター：`pages/` フォルダを使う Next.js の初期からあるルーティング方式）は旧バージョンとの互換性のために残されていますが、新規プロジェクトでは App Router を選択してください。Pages Router では「コンポーネントは原則 Client、データ取得は `getServerSideProps` などの専用関数で外側から差し込む」という設計でしたが、App Router では「コンポーネント自体を async にして直接 await する」という根本的に新しい設計になっています。
 
+<!-- -->
+
 > **なぜデフォルトが Server Component なのか:** App Router は React Server Components（RSC：サーバーで実行されブラウザに HTML だけが送られる新種のコンポーネント）を基盤にしています。ブラウザに送る JS の量を減らし、機密情報の漏えいを防ぎ、初回表示を速くするために「まずは全部サーバー側で動かす」のがデフォルトなのです。クライアントでの動きが必要な箇所だけを `"use client"` で明示的に切り出していきます。
 
 ### 2.2 ファイルベースルーティングの仕組み
@@ -475,17 +569,17 @@ App Router では、特別な名前を持つファイルにそれぞれ役割が
 // URL: /
 
 // `export default` でこのコンポーネントを「このファイルの主役」として外に公開
+// 関数名 `HomePage` は何でもよい（慣習的にページ名を付ける）。Next.js は名前ではなく default export を見ている
 export default function HomePage() {
-                                             // 関数名 `HomePage` は何でもよい（慣習的にページ名を付ける）。Next.js は名前ではなく default export を見ている
   // JSX（HTMLに似たReactの記法）を返す
   return (
     // `<div>`：レイアウト用の汎用ブロック要素。中身を1つにまとめるために使う
     <div>
-      // `<h1>`：ページの一番大きな見出し。1ページに1つだけ置くのが推奨
+      {/* `<h1>`：ページの一番大きな見出し。1ページに1つだけ置くのが推奨 */}
       <h1>書籍管理アプリへようこそ</h1>
-      // `<p>`：段落（paragraph）。普通の文章ブロック
+      {/* `<p>`：段落（paragraph）。普通の文章ブロック */}
       <p>あなたの読書記録を管理しましょう。</p>
-    // 閉じタグ。開いた `<div>` と必ず対応させる
+    {/* 閉じタグ。開いた `<div>` と必ず対応させる */}
     </div>
   // return の終わり
   );
@@ -508,7 +602,7 @@ export default function HomePage() {
 // ============================================================================
 // ファイルパス: app/layout.tsx
 // 役割      : すべてのページを「ヘッダー＋本文＋フッター」の枠で包む
-//             ＝ Next.jsアプリの **一番外側の共通レイアウト**
+//             ＝ Next.jsアプリの「一番外側の共通レイアウト」
 // ----------------------------------------------------------------------------
 // このファイルは Next.js が自動的に認識する「予約名」のひとつ。
 // app/ フォルダ直下に layout.tsx が必ず1つ必要。
@@ -682,20 +776,20 @@ export default function RootLayout({
 ```typescript
 // ファイルパス。`/books` のロード中UIになる
 // app/books/loading.tsx
-                                                // フォルダごとに置けるので、ページ単位で異なるローディング表現が可能
+// フォルダごとに置けるので、ページ単位で異なるローディング表現が可能
 
 // default export された関数がそのまま「ローディングUI」として使われる
+// 関数名は何でもよいが、慣習的に `XxxLoading` と付ける
 export default function BooksLoading() {
-                                                // 関数名は何でもよいが、慣習的に `XxxLoading` と付ける
   // 返す JSX
   return (
     // `className` は HTML の `class` 属性のJSX版（`class` はJSの予約語なので別名）
     <div className="loading-container">
-      // CSSアニメーションで作る回転するスピナー（自己終了タグ `/>` で書ける）
+      {/* CSSアニメーションで作る回転するスピナー（自己終了タグ `/>` で書ける） */}
       <div className="spinner" />
-      // ユーザーへの説明文
+      {/* ユーザーへの説明文 */}
       <p>書籍データを読み込んでいます...</p>
-    // ラッパーdivの閉じタグ
+    {/* ラッパーdivの閉じタグ */}
     </div>
   );
 // 関数の終わり
@@ -714,8 +808,8 @@ export default function BooksLoading() {
 // `/books` 配下でエラーが起きたときに自動で表示される
 // app/books/error.tsx
 // この1行でこのファイルを「ブラウザ側で動くコンポーネント」に切り替える
+// error.tsx ではこれを必ず先頭に書く（ファイルの一番上、importより前）
 "use client";
-                                                // error.tsx ではこれを必ず先頭に書く（ファイルの一番上、importより前）
 
 // default export 関数。Next.js が自動で呼び出す
 export default function BooksError({
@@ -726,22 +820,22 @@ export default function BooksError({
 // ↓ ここから TypeScript の型注釈
 }: {
   // 標準 Error 型に、Next.js が独自に付ける `digest`（任意）を合成した型
+  // digest はサーバーログとの紐付け用ID（本番環境で詳細メッセージを隠したいとき使う）
   error: Error & { digest?: string };
-                                                // digest はサーバーログとの紐付け用ID（本番環境で詳細メッセージを隠したいとき使う）
   // 引数なし・戻り値なしの関数型
   reset: () => void;
 }) {
   return (
     // エラー表示の枠
     <div className="error-container">
-      // タイトル
+      {/* タイトル */}
       <h2>エラーが発生しました</h2>
-      // `error.message`：例外が持つメッセージ文字列を表示
+      {/* `error.message`：例外が持つメッセージ文字列を表示 */}
+      {/* `{}` 内はJSの式。文字列補間に使う */}
       <p>{error.message}</p>
-                                                // `{}` 内はJSの式。文字列補間に使う
+      {/* ボタン押下で `reset()` を呼ぶ → Next.js が該当セグメントを再描画してくれる */}
+      {/* アロー関数で包んでいるのは「呼び出し時の引数（event）を渡さないため」 */}
       <button onClick={() => reset()}>もう一度試す</button>
-                                                // ボタン押下で `reset()` を呼ぶ → Next.js が該当セグメントを再描画してくれる
-                                                // アロー関数で包んでいるのは「呼び出し時の引数（event）を渡さないため」
     </div>
   );
 }
@@ -750,6 +844,103 @@ export default function BooksError({
 **画面にはこう表示される:** 書籍データの取得中にエラーが発生すると、「エラーが発生しました」という見出しとエラーメッセージ、そして「もう一度試す」ボタンが表示されます。ボタンを押すと、そのセグメントの再レンダリングが試みられます。
 
 > **補足: `not-found.tsx` もある:** `notFound()` 関数（後述）が呼ばれたときや404相当の状態のときに表示するUIとして `not-found.tsx` という予約ファイルも置けます。`error.tsx` と兄弟関係にあります。
+
+<!-- -->
+
+> **注意（Next.js 16.3 以降の `retry`）:** Next.js 16.3 から、`error.tsx` には `reset` のほかに **`retry`** という関数も渡されるようになり、公式ドキュメントでは「たいていは `retry` を使う」と案内されています。違いは次のとおりです。
+>
+> - `retry()` … データを**取り直してから**、その部分を描き直す
+> - `reset()` … データは取り直さず、エラー表示を消して描き直すだけ
+>
+> サーバーでのデータ取得に失敗したときは、取り直さないと同じ失敗を繰り返しやすいので `retry` が向いています。上のコードの `reset` を `retry` に置き換える（型も `retry: () => void` にする）だけで使えます。
+
+`page.tsx`・`loading.tsx`・`error.tsx` が「いつ」画面に出てくるのかを、`/books` を開いたときの画面のイメージで見てみましょう。ポイントは、**入れ替わるのは中央の部分だけ**で、ヘッダーや左のメニュー（`layout.tsx` が描いている部分）はずっと同じまま、ということです。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 300" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-04-02" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<text x="120" y="22" font-size="12" font-weight="bold" fill="#c2410c" text-anchor="middle">① 待っている間（0.1秒）</text>
+<text x="360" y="22" font-size="12" font-weight="bold" fill="#047857" text-anchor="middle">② データが届いた（2秒後）</text>
+<text x="600" y="22" font-size="12" font-weight="bold" fill="#b91c1c" text-anchor="middle">③ 失敗したとき（②の代わり）</text>
+<rect x="10" y="34" width="220" height="230" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+<rect x="10" y="34" width="220" height="26" rx="8" fill="#e2e8f0"/>
+<rect x="10" y="50" width="220" height="10" fill="#e2e8f0"/>
+<circle cx="22" cy="47" r="3" fill="#f87171"/>
+<circle cx="32" cy="47" r="3" fill="#fbbf24"/>
+<circle cx="42" cy="47" r="3" fill="#34d399"/>
+<rect x="54" y="39" width="168" height="16" rx="8" fill="#ffffff"/>
+<text x="62" y="51" font-size="12" fill="#475569">localhost:3000/books</text>
+<rect x="10" y="60" width="220" height="26" fill="#1e40af"/>
+<text x="20" y="78" font-size="12" font-weight="bold" fill="#ffffff">書籍管理アプリ</text>
+<rect x="11" y="86" width="58" height="170" fill="#f1f5f9"/>
+<text x="40" y="106" font-size="12" fill="#475569" text-anchor="middle">メニュー</text>
+<text x="40" y="128" font-size="12" fill="#3b82f6" text-anchor="middle">一覧</text>
+<text x="40" y="148" font-size="12" fill="#3b82f6" text-anchor="middle">追加</text>
+<text x="80" y="110" font-size="12" fill="#475569">読み込んでいます...</text>
+<rect x="80" y="122" width="130" height="12" rx="3" fill="#e2e8f0"/>
+<rect x="80" y="142" width="110" height="12" rx="3" fill="#e2e8f0"/>
+<rect x="80" y="170" width="130" height="12" rx="3" fill="#e2e8f0"/>
+<rect x="80" y="190" width="90" height="12" rx="3" fill="#e2e8f0"/>
+<rect x="80" y="210" width="120" height="12" rx="3" fill="#e2e8f0"/>
+<rect x="78" y="232" width="144" height="22" rx="4" fill="#fff7ed" stroke="#f97316"/>
+<text x="150" y="248" font-size="12" font-weight="bold" fill="#c2410c" text-anchor="middle">loading.tsx</text>
+<line x1="232" y1="150" x2="248" y2="150" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-04-02)"/>
+<rect x="250" y="34" width="220" height="230" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+<rect x="250" y="34" width="220" height="26" rx="8" fill="#e2e8f0"/>
+<rect x="250" y="50" width="220" height="10" fill="#e2e8f0"/>
+<circle cx="262" cy="47" r="3" fill="#f87171"/>
+<circle cx="272" cy="47" r="3" fill="#fbbf24"/>
+<circle cx="282" cy="47" r="3" fill="#34d399"/>
+<rect x="294" y="39" width="168" height="16" rx="8" fill="#ffffff"/>
+<text x="302" y="51" font-size="12" fill="#475569">localhost:3000/books</text>
+<rect x="250" y="60" width="220" height="26" fill="#1e40af"/>
+<text x="260" y="78" font-size="12" font-weight="bold" fill="#ffffff">書籍管理アプリ</text>
+<rect x="251" y="86" width="58" height="170" fill="#f1f5f9"/>
+<text x="280" y="106" font-size="12" fill="#475569" text-anchor="middle">メニュー</text>
+<text x="280" y="128" font-size="12" fill="#3b82f6" text-anchor="middle">一覧</text>
+<text x="280" y="148" font-size="12" fill="#3b82f6" text-anchor="middle">追加</text>
+<text x="320" y="110" font-size="12" font-weight="bold" fill="#0f172a">書籍一覧（2冊）</text>
+<rect x="318" y="120" width="144" height="42" rx="6" fill="#f8fafc" stroke="#cbd5e1"/>
+<text x="326" y="138" font-size="12" fill="#0f172a">リーダブルコード</text>
+<text x="326" y="154" font-size="12" fill="#64748b">Dustin Boswell</text>
+<rect x="318" y="170" width="144" height="42" rx="6" fill="#f8fafc" stroke="#cbd5e1"/>
+<text x="326" y="188" font-size="12" fill="#0f172a">達人プログラマー</text>
+<text x="326" y="204" font-size="12" fill="#64748b">David Thomas</text>
+<rect x="318" y="232" width="144" height="22" rx="4" fill="#ecfdf5" stroke="#10b981"/>
+<text x="390" y="248" font-size="12" font-weight="bold" fill="#047857" text-anchor="middle">page.tsx</text>
+<rect x="490" y="34" width="220" height="230" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+<rect x="490" y="34" width="220" height="26" rx="8" fill="#e2e8f0"/>
+<rect x="490" y="50" width="220" height="10" fill="#e2e8f0"/>
+<circle cx="502" cy="47" r="3" fill="#f87171"/>
+<circle cx="512" cy="47" r="3" fill="#fbbf24"/>
+<circle cx="522" cy="47" r="3" fill="#34d399"/>
+<rect x="534" y="39" width="168" height="16" rx="8" fill="#ffffff"/>
+<text x="542" y="51" font-size="12" fill="#475569">localhost:3000/books</text>
+<rect x="490" y="60" width="220" height="26" fill="#1e40af"/>
+<text x="500" y="78" font-size="12" font-weight="bold" fill="#ffffff">書籍管理アプリ</text>
+<rect x="491" y="86" width="58" height="170" fill="#f1f5f9"/>
+<text x="520" y="106" font-size="12" fill="#475569" text-anchor="middle">メニュー</text>
+<text x="520" y="128" font-size="12" fill="#3b82f6" text-anchor="middle">一覧</text>
+<text x="520" y="148" font-size="12" fill="#3b82f6" text-anchor="middle">追加</text>
+<rect x="558" y="100" width="144" height="110" rx="6" fill="#fef2f2" stroke="#ef4444"/>
+<text x="630" y="126" font-size="12" font-weight="bold" fill="#b91c1c" text-anchor="middle">エラーが発生しました</text>
+<text x="630" y="148" font-size="12" fill="#7f1d1d" text-anchor="middle">取得に失敗しました</text>
+<rect x="584" y="164" width="92" height="28" rx="5" fill="#ef4444"/>
+<text x="630" y="183" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">もう一度試す</text>
+<rect x="558" y="232" width="144" height="22" rx="4" fill="#fef2f2" stroke="#ef4444"/>
+<text x="630" y="248" font-size="12" font-weight="bold" fill="#b91c1c" text-anchor="middle">error.tsx</text>
+<text x="360" y="290" font-size="12" fill="#475569" text-anchor="middle">上のヘッダーと左のメニュー（layout.tsx）は3つとも同じ。入れ替わるのは中央だけ</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図4-2: 画面イメージ ― loading.tsx・page.tsx・error.tsx が表示される瞬間</div>
+</div>
+
+- **①** データを取りに行っている間は、`loading.tsx` の中身が中央に表示されます。何も出ない真っ白な画面より、「今読み込み中です」と分かるほうが利用者は安心します。
+- **②** データが届くと、Next.js が自動で中央を `page.tsx` の中身に差し替えます。自分で「切り替える」コードを書く必要はありません。
+- **③** データ取得の途中でエラーが `throw` されると、②の代わりに `error.tsx` が表示されます。ヘッダーやメニューは残っているので、利用者はほかのページへ移動したり、「もう一度試す」を押したりできます。
+
+この「待つ」動きは 6.3 節で、ストリーミング（届いた順に少しずつ送る仕組み）として実際に時間を測って確かめます。
 
 ### 2.4 動的ルーティング（[id]）
 
@@ -771,30 +962,30 @@ app/                                # アプリのルートフォルダ
 // params はオブジェクトとして渡される
 // Next.js 15 では params は Promise として渡されるため await が必要
 // `async` 関数にすると本体で `await` が使える
+// この `async function` をコンポーネントに使えるのは Server Component の特権
 export default async function BookDetailPage({
-                                                      // この `async function` をコンポーネントに使えるのは Server Component の特権
   // props.params: 動的セグメントの値が入ったオブジェクト
   params,
 // ↓ TypeScript 型注釈
 }: {
   // Next.js 15+ では params は Promise でラップされて渡される
+  // `{ id: string }` は「id という文字列プロパティを持つオブジェクト」型
   params: Promise<{ id: string }>;
-                                                      // `{ id: string }` は「id という文字列プロパティを持つオブジェクト」型
 }) {
   // `await` で Promise を解決し、分割代入で `id` だけ取り出す
+  // 例: URLが `/books/42` なら id は "42"（数値ではなく文字列！）
   const { id } = await params;
-                                                      // 例: URLが `/books/42` なら id は "42"（数値ではなく文字列！）
 
   return (
     // ページ全体のラッパー
     <div>
-      // 見出し
+      {/* 見出し */}
       <h1>書籍詳細</h1>
-      // 取り出した id を JSX に埋め込んで表示
+      {/* 取り出した id を JSX に埋め込んで表示 */}
       <p>書籍 ID: {id}</p>
+      {/* JSX の中のコメントは、この行のように波かっこ付きのブロックコメントで書く */}
+      {/* 例: const book = await getBookById(id); */}
       {/* 実際にはここで id を使ってデータベースから書籍情報を取得する */}
-                                                      // JSX の中のコメントは `{/* ... */}` の形にする
-                                                      // 例: const book = await getBookById(id);
     </div>
   );
 }
@@ -806,6 +997,44 @@ export default async function BookDetailPage({
 - `/books/abc` にアクセスすると「書籍 ID: abc」と表示されます。
 
 URL のその部分がそのまま `id` パラメータとして使えるわけです。
+
+URL の「42」が `id` という変数に入るまでの道のりを、図で追ってみましょう。郵便物にたとえると、`params` は「中身の入った封筒（Promise）」で、`await` が「封を開ける」動作にあたります。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 196" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-04-03" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="10" y="30" width="140" height="124" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="80" y="52" font-size="12" font-weight="bold" fill="#1e40af" text-anchor="middle">① ブラウザの URL</text>
+<rect x="18" y="72" width="124" height="26" rx="13" fill="#ffffff" stroke="#94a3b8"/>
+<text x="80" y="90" font-size="13" fill="#0f172a" text-anchor="middle">/books/<tspan fill="#c2410c" font-weight="bold">42</tspan></text>
+<text x="80" y="124" font-size="12" fill="#475569" text-anchor="middle">「42」の部分が</text>
+<text x="80" y="142" font-size="12" fill="#475569" text-anchor="middle">変化する部分</text>
+<line x1="151" y1="92" x2="182" y2="92" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-04-03)"/>
+<rect x="184" y="30" width="156" height="124" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="262" y="52" font-size="12" font-weight="bold" fill="#c2410c" text-anchor="middle">② フォルダ名と照合</text>
+<text x="262" y="82" font-size="13" fill="#0f172a" text-anchor="middle">app/books/</text>
+<text x="262" y="104" font-size="13" fill="#0f172a" text-anchor="middle"><tspan fill="#c2410c" font-weight="bold">[id]</tspan>/page.tsx</text>
+<text x="262" y="134" font-size="12" fill="#475569" text-anchor="middle">[id] に「42」を当てはめる</text>
+<line x1="341" y1="92" x2="372" y2="92" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-04-03)"/>
+<rect x="374" y="30" width="156" height="124" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="452" y="52" font-size="12" font-weight="bold" fill="#047857" text-anchor="middle">③ params が届く</text>
+<text x="452" y="76" font-size="12" fill="#475569" text-anchor="middle">Promise（封筒）</text>
+<rect x="392" y="86" width="120" height="28" rx="4" fill="#ffffff" stroke="#10b981" stroke-dasharray="4 3"/>
+<text x="452" y="105" font-size="13" fill="#0f172a" text-anchor="middle">{ id: "42" }</text>
+<text x="452" y="138" font-size="12" fill="#475569" text-anchor="middle">まだ封が閉じている</text>
+<text x="551" y="82" font-size="12" font-weight="bold" fill="#047857" text-anchor="middle">await</text>
+<line x1="531" y1="92" x2="570" y2="92" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-04-03)"/>
+<rect x="572" y="30" width="138" height="124" rx="10" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>
+<text x="641" y="52" font-size="12" font-weight="bold" fill="#475569" text-anchor="middle">④ 値を取り出す</text>
+<text x="641" y="90" font-size="14" font-weight="bold" fill="#0f172a" text-anchor="middle">id = "42"</text>
+<text x="641" y="116" font-size="12" fill="#c2410c" text-anchor="middle">文字列（string）</text>
+<text x="641" y="138" font-size="12" fill="#475569" text-anchor="middle">数値は Number(id)</text>
+<text x="360" y="182" font-size="12" fill="#475569" text-anchor="middle">const { id } = await params; の1行が ③ → ④ の「封を開けて取り出す」にあたる</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図4-3: URL の「42」が id という変数に入るまで</div>
+</div>
 
 #### ▼ コードを1つずつ分解して解説
 
@@ -842,6 +1071,54 @@ export default async function BookDetailPage({
 - **注意点：取り出した `id` は数値ではなく文字列です。** URLが `/books/42` でも、`id` は数値の `42` ではなく文字列の `"42"` になります。数値として計算したいときは `Number(id)` で変換します。
 
 > **用語: Promise（プロミス）** … 「将来この値を渡します」という約束を表すオブジェクト。`await` を付けると、その約束が果たされる（値が届く）まで待ってから次の行へ進みます。
+
+<!-- -->
+
+> **つまずきポイント（`await` を忘れて `params.id` と書く）:** Next.js 14 以前の解説記事やサンプルでは、`params.id` のように直接読み出していました。Next.js 15 から `params` は Promise（封筒）になり、16 では封を開けずに読む書き方は完全に使えなくなりました。古い書き方をそのまま写すと、次の2通りのどちらかになります。
+
+型を `Promise<...>` と正しく書いた上で `params.id` と読むと、型チェック（`npx tsc --noEmit`）がエラーで教えてくれます。
+
+```text
+app/books/[id]/page.tsx(7,25): error TS2339: Property 'id' does not exist on type 'Promise<{ id: string; }>'.
+```
+
+もっと怖いのは、型まで古い書き方（`params: { id: string }`）にしてしまった場合です。このときは型チェックも `next build` も**通ってしまい**、画面には id が空のまま「書籍  の詳細」と表示されます。開発サーバーのターミナルにだけ、次のエラーが出ます（`npm run dev` で `/books/42` を開いたときの実際の出力）。
+
+```text
+Error: Route "/books/[id]" used `params.id`. `params` is a Promise and must be unwrapped with `await` or `React.use()` before accessing its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at BookDetailPage (app\books\[id]\page.tsx:7:25)
+  5 |   params: { id: string };
+  6 | }) {
+> 7 |   return <h1>書籍 {params.id} の詳細</h1>;
+    |                       ^
+  8 | }
+  9 |
+```
+
+```tsx
+// ❌ NG: 型が古い書き方で、params を await せずに読んでいる（id が空になる）
+export default function BookDetailPage({
+  params,
+}: {
+  params: { id: string };
+}) {
+  return <h1>書籍 {params.id} の詳細</h1>;
+}
+```
+
+```tsx
+// ✅ OK: 型は Promise<...>、関数は async にして await で封を開けてから読む
+export default async function BookDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  return <h1>書籍 {id} の詳細</h1>;
+}
+```
+
+> エラー文に `Promise` や `must be unwrapped with await` という言葉が出てきたら、「`await` を忘れているかも」と思い出してください。インターネットで見つけた古いサンプルを使うときは、`params` と `searchParams` の書き方を必ず確認しましょう。
 
 ---
 
@@ -943,6 +1220,88 @@ export default async function DocsPage({
 //   パス: react / hooks / useEffect
 ```
 
+#### クエリパラメータ（`?q=...`）を page.tsx で受け取る
+
+URL には、`/search?q=react&page=2` のように `?` の後ろに「キー=値」を付けることもできます（0.1 節のクエリパラメータ）。検索ワードやページ番号のように「同じページだけど、表示の条件が違う」ときに使います。フォルダ名は増やさず、`page.tsx` の引数 `searchParams` で受け取ります。
+
+> **▼ このコードがやること（先に日本語で）:** `/search?q=react&page=2` の `?` より後ろの部分を、ページの中で受け取って表示します。`[id]` のときの `params` と同じく、`searchParams` という引数に Promise（封筒）で届くので、`await` で開けてから使います。届く値はすべて**文字列**なので、ページ番号の計算には `Number()` で数値に変えます。
+
+```tsx
+// app/search/page.tsx
+// URL の例: /search?q=react&page=2
+export default async function SearchPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; page?: string }>;
+}) {
+  // ? 以降の値を取り出す。無いときは右側の値（デフォルト値）を使う
+  const { q = "", page = "1" } = await searchParams;
+  // URL から来る値は文字列なので、計算に使う前に数値へ変換する
+  const pageNumber = Number(page);
+
+  return (
+    <div>
+      <h1>「{q}」の検索結果</h1>
+      <p>
+        {pageNumber} ページ目を表示中（次は {pageNumber + 1} ページ目）
+      </p>
+    </div>
+  );
+}
+```
+
+**▼ 実行結果**（`npm run dev` で起動し、ブラウザで開いたときにできあがった HTML。開発者ツールの Elements タブで見たもの）
+
+`http://localhost:3000/search?q=react&page=2` を開いたとき:
+
+```text
+<div><h1>「react」の検索結果</h1><p>2 ページ目を表示中（次は 3 ページ目）</p></div>
+```
+
+`?` 以降を付けずに `http://localhost:3000/search` を開いたとき:
+
+```text
+<div><h1>「」の検索結果</h1><p>1 ページ目を表示中（次は 2 ページ目）</p></div>
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: `searchParams` も Promise で届く
+
+```tsx
+export default async function SearchPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; page?: string }>;
+}) {
+```
+
+- `searchParams`（サーチパラムス）は、URL の `?` より後ろを「キーと値のオブジェクト」にしたものです。`?q=react&page=2` なら `{ q: "react", page: "2" }` が届きます。
+- `params` と同じく Next.js 15 以降は Promise で届くので、関数に `async` を付けて `await` します。
+- `q?: string` の `?` は「**無いこともある**」という意味です。利用者が `?q=` を付けずにアクセスすることもあるので、省略可能にしておきます。
+
+> **用語: クエリパラメータとパス** … `/books/42` の「42」のように URL の**道筋（パス）**の一部になっている値は `[id]` フォルダと `params` で、`?q=react` のように **`?` の後ろに付け足す値**は `searchParams` で受け取ります。「どのページか」はパス、「そのページをどう表示するか（絞り込み・並び順・ページ番号）」はクエリ、と覚えると使い分けやすくなります。
+
+##### 解説2: 分割代入のデフォルト値で「無いとき」に備える
+
+```tsx
+  const { q = "", page = "1" } = await searchParams;
+```
+
+- `{ q = "", page = "1" }` は、取り出すと同時に「値が無かったら `""` や `"1"` を使う」と決めておく書き方です（分割代入のデフォルト値）。
+- 実行結果の2つ目のように、`/search` だけを開いても `q` は空文字、`page` は `"1"` になるので、エラーにならずに表示できます。
+
+##### 解説3: 文字列のまま足し算しない
+
+```tsx
+  const pageNumber = Number(page);
+```
+
+- URL から来る値は**いつも文字列**です。`page` が `"2"` のまま `page + 1` とすると、文字列の連結になって `"21"` になってしまいます。
+- `Number(page)` で数値の `2` に変えてから `+ 1` しているので、「次は 3 ページ目」と正しく表示されます。
+
+> **ヒント:** ブラウザ側（Client Component）で今の URL のクエリを読みたいときは、5.2.1 で紹介する `useSearchParams` フックを使います。`page.tsx`（Server Component）では引数の `searchParams`、Client Component では `useSearchParams`、と覚えておきましょう。
+
 ---
 
 ## 3. Server Components vs Client Components
@@ -1017,16 +1376,177 @@ Next.js App Router の最大の特徴は、**デフォルトですべてのコ�
   </div>
 </div>
 
+### 3.1.1 1回のアクセスで何が起きているか（時系列で見る）
+
+上の図は「Server Component がサーバーで動く」ことを表していますが、初心者がいちばん混乱するのは「**Client Component はいつ・どこで動くのか**」です。レストランにたとえてみましょう。
+
+- 厨房（サーバー）で料理（HTML）を作り、テーブル（ブラウザ）に運びます。テーブルに届いた瞬間から、料理は**見える**し写真も撮れます。
+- ところが、テーブルの「呼び出しボタン」（Client Component のボタン）は、電池（JavaScript）を入れるまで押しても鳴りません。この**電池を入れる作業がハイドレーション**（Hydration：水を与える＝動きを吹き込む）です。
+- 呼び出しボタンも、**見た目だけは厨房で一緒に作られて**運ばれてきます。つまり Client Component も、最初の1回はサーバーで描画されるのです。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 420" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-04-04" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<text x="22" y="30" font-size="12" font-weight="bold" fill="#475569" text-anchor="middle">時間</text>
+<line x1="22" y1="40" x2="22" y2="404" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-04-04)"/>
+<rect x="40" y="10" width="280" height="400" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="180" y="30" font-size="13" font-weight="bold" fill="#1e40af" text-anchor="middle">ブラウザ（利用者のパソコン）</text>
+<rect x="400" y="10" width="280" height="400" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="540" y="30" font-size="13" font-weight="bold" fill="#047857" text-anchor="middle">サーバー（Next.js）</text>
+<rect x="56" y="46" width="248" height="44" rx="8" fill="#ffffff" stroke="#3b82f6"/>
+<text x="180" y="65" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">① /books を開く</text>
+<text x="180" y="82" font-size="12" fill="#475569" text-anchor="middle">（サーバーにリクエストを送る）</text>
+<text x="360" y="62" font-size="12" fill="#475569" text-anchor="middle">GET /books</text>
+<line x1="305" y1="70" x2="414" y2="70" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-04-04)"/>
+<rect x="416" y="96" width="248" height="48" rx="8" fill="#ffffff" stroke="#10b981"/>
+<text x="540" y="116" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">② layout と page を実行</text>
+<text x="540" y="134" font-size="12" fill="#475569" text-anchor="middle">（DB からデータも取得する）</text>
+<rect x="416" y="152" width="248" height="48" rx="8" fill="#ffffff" stroke="#10b981"/>
+<text x="540" y="172" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">③ Client Component も1回描画</text>
+<text x="540" y="190" font-size="12" fill="#475569" text-anchor="middle">→ 見た目だけの HTML を作る</text>
+<text x="360" y="222" font-size="12" fill="#475569" text-anchor="middle">HTML を送る</text>
+<line x1="415" y1="230" x2="306" y2="230" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-04-04)"/>
+<rect x="56" y="240" width="248" height="48" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="180" y="260" font-size="13" font-weight="bold" fill="#c2410c" text-anchor="middle">④ HTML をすぐ表示（見える）</text>
+<text x="180" y="278" font-size="12" fill="#475569" text-anchor="middle">ただし、ボタンはまだ押せない</text>
+<rect x="56" y="298" width="248" height="40" rx="8" fill="#ffffff" stroke="#3b82f6"/>
+<text x="180" y="323" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">⑤ Client 部品の JS を読み込む</text>
+<rect x="56" y="348" width="248" height="48" rx="8" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="180" y="368" font-size="13" font-weight="bold" fill="#047857" text-anchor="middle">⑥ ハイドレーション完了</text>
+<text x="180" y="386" font-size="12" fill="#475569" text-anchor="middle">ボタンが押せる・useEffect が動く</text>
+<rect x="416" y="298" width="248" height="98" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-dasharray="5 4"/>
+<text x="540" y="334" font-size="12" fill="#475569" text-anchor="middle">ここから先はブラウザの仕事</text>
+<text x="540" y="354" font-size="12" fill="#475569" text-anchor="middle">（Server Component の JS は</text>
+<text x="540" y="372" font-size="12" fill="#475569" text-anchor="middle">ブラウザに送られない）</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図4-4: 1回のアクセスの時系列 ― 「見える」のは④、「押せる」のは⑥</div>
+</div>
+
+ポイントは次の3つです。
+
+- **④で、もう画面は見えている。** サーバーで完成した HTML が届くので、データの入った画面がすぐ表示されます（SEO に強く、初回表示が速い理由）。
+- **③で、Client Component もサーバーで1回動いている。** `"use client"` は「ブラウザ**だけ**で動く」という意味ではなく、「ブラウザ**でも**動く（ブラウザでの動きを担当する）」という意味です。だから Client Component の中で、いきなり `window`（ブラウザにしかない物）を触るとエラーになります（3.2 の最後の「つまずきポイント」）。
+- **⑥まで、ボタンは押せない。** 回線が遅いと④と⑥の間が長くなり、「表示されているのに押しても反応しない」時間ができます。
+
+#### どこで動くのか、ログで確かめる
+
+> **▼ このコードがやること（先に日本語で）:** Server Component（ページ）と Client Component（ボタン）の両方に `console.log` を書いて、ログが**サーバーのターミナル**と**ブラウザのコンソール**のどちらに出るかを確かめます。Client Component では `typeof window`（window があるかどうか）を調べて「今どこで動いているか」も表示します。図4-4 の③と⑥が本当に起きていることを、自分の目で確認するための実験です。
+
+```tsx
+// app/where/page.tsx（"use client" が無いので Server Component）
+import { ClientLogger } from "./ClientLogger";
+
+export default function WherePage() {
+  // このログはどこに出る？
+  console.log("[WherePage] Server Component を実行しました");
+
+  return (
+    <div>
+      <h1>どこで動く？実験</h1>
+      {/* ここに Client Component を埋め込む */}
+      <ClientLogger />
+    </div>
+  );
+}
+```
+
+```tsx
+// app/where/ClientLogger.tsx（Client Component）
+"use client";
+
+import { useEffect, useState } from "react";
+
+export function ClientLogger() {
+  const [count, setCount] = useState(0);
+
+  // window が存在するかどうかで「今どこで動いているか」を判定する
+  const place = typeof window === "undefined" ? "サーバー" : "ブラウザ";
+  // 描画（関数の実行）のたびにログを出す
+  console.log(`[ClientLogger] 描画しました（実行場所: ${place}）`);
+
+  // useEffect の中身は「ブラウザで画面に出た後」にだけ実行される
+  useEffect(() => {
+    console.log("[ClientLogger] useEffect を実行しました");
+  }, []);
+
+  return (
+    <button onClick={() => setCount(count + 1)}>押した回数: {count}</button>
+  );
+}
+```
+
+**▼ 実行結果**（`npm run dev` で起動し、ブラウザで `http://localhost:3000/where` を開いたとき）
+
+開発サーバーを起動したターミナルには、次のように出ます（1行目はルートレイアウトに書いたログです）。
+
+```text
+[RootLayout] サーバーで描画しました
+[WherePage] Server Component を実行しました
+[ClientLogger] 描画しました（実行場所: サーバー）
+ GET /where 200 in 42ms (next.js: 1.8ms, application-code: 40ms)
+```
+
+ブラウザの開発者ツール（F12）の Console タブには、次のように出ます（React DevTools の案内と `[HMR] connected` の行は省略。行頭の `Server` は、灰色の小さな札として表示されます）。
+
+```text
+Server  [RootLayout] サーバーで描画しました
+Server  [WherePage] Server Component を実行しました
+[ClientLogger] 描画しました（実行場所: ブラウザ）
+[ClientLogger] 描画しました（実行場所: ブラウザ）
+[ClientLogger] useEffect を実行しました
+[ClientLogger] useEffect を実行しました
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: Server Component のログは「サーバーのターミナル」に出る
+
+```tsx
+  console.log("[WherePage] Server Component を実行しました");
+```
+
+- `WherePage` には `"use client"` が無いので Server Component です。この関数はサーバー（`npm run dev` を実行しているパソコンの Node.js）で動くので、ログは**ターミナル**に出ます。
+- ブラウザの Console にも `Server` という札付きで同じ文が出ていますが、これは**開発中だけ**、Next.js がサーバーのログを写して見せてくれているものです。本番ではブラウザには出ません。ブラウザでこのコードが動いたわけではない点に注意しましょう。
+
+##### 解説2: Client Component も、最初の1回はサーバーで動く
+
+```tsx
+  const place = typeof window === "undefined" ? "サーバー" : "ブラウザ";
+  console.log(`[ClientLogger] 描画しました（実行場所: ${place}）`);
+```
+
+- `typeof window === "undefined"` は「`window`（ブラウザだけにある物）が存在しない＝今はサーバーで動いている」という判定です。
+- ターミナルに「実行場所: サーバー」と出ているのが図4-4 の③です。Client Component も、最初の HTML を作るためにサーバーで1回描画されます。
+- ブラウザの Console に「実行場所: ブラウザ」と出ているのが⑤〜⑥です。同じ関数が、**サーバーとブラウザの両方で**実行されたことが分かります。
+
+> **用語: ハイドレーション（Hydration）** … サーバーから届いた「見た目だけの HTML」に、ブラウザ側で JavaScript を結び付け、ボタンのクリックなどに反応できる状態にする処理。サーバーで作った見た目と、ブラウザで作り直した見た目が**一致している**ことが前提で、食い違うと「Hydration エラー」になります（10 節のエラー6）。
+
+##### 解説3: ブラウザでは2回ずつ出る（開発中だけ）・useEffect はブラウザだけ
+
+```tsx
+  useEffect(() => {
+    console.log("[ClientLogger] useEffect を実行しました");
+  }, []);
+```
+
+- ブラウザの Console で同じログが2回ずつ出ているのは、開発中だけ有効な React の **Strict Mode**（ストリクトモード：不具合を見つけやすくするために、描画や useEffect をわざと2回実行する仕組み）のためです。本番ビルドでは1回です。
+- `useEffect` のログは**ターミナルには出ていません**。`useEffect` は「ブラウザで画面に表示された後」にだけ実行されるからです。ブラウザでしかできないこと（`window` を使う、`localStorage` を読むなど）は、`useEffect` の中に書くのが基本です。
+
 ### 3.2 "use client" ディレクティブ
 
 Client Component にするには、ファイルの **先頭**（import 文よりも上）に `"use client"` と記述します。これを **ディレクティブ**（directive：コンパイラやランタイムに対する命令文）と呼びます。
 
 > **`'use client'` の伝播ルール（重要）:**
+>
 > - `"use client"` を書いたファイルは、その時点で「Client Component の境界（ボーダー）」になります。
 > - その境界より下流（そのファイルが import する他のファイル）は、明示しなくても自動的に Client Component として扱われます。
 > - つまり「Client から import される Server Component」は実質作れません。
 > - 逆に「Server Component から import される Client Component」はOKです。これが普通の組み合わせ。
 > - 1つのページ内で「Server の骨組みの中に Client 部品を埋め込む」という構造が App Router の基本パターンです。
+
+<!-- -->
 
 > **▼ このコードがやること（先に日本語で）:** 「`"use client"` を書かないと自動的に Server Component（サーバー側で動く部品）になる」というデフォルトの形を確認します。Server Component は関数を `async` にしてサーバー上で直接データを取りに行ける反面、`useState` やボタンのクリック処理などブラウザ側の機能は使えません。ここではデータ取得は省略し、文字を表示するだけの最小例です。詳細はコード内コメントを参照してください。
 
@@ -1089,6 +1609,8 @@ export default function SearchBar() {
 > - これは `useState` がブラウザのメモリに値を保持し、変更ごとに React が再描画するため
 > - サーバーはこの入力プロセスにまったく関与しない
 
+<!-- -->
+
 > **重要:** `"use client"` はそのファイルとそこから import されるすべてのモジュールを Client Component の境界として宣言します。つまり、Client Component の子コンポーネントも自動的に Client Component になります。
 
 #### ▼ コードを1つずつ分解して解説
@@ -1146,6 +1668,66 @@ import { useState } from "react";
 - `placeholder`（プレースホルダー）は、何も入力していないときに薄く表示される案内文です。
 
 > **用語: 制御コンポーネント（controlled component）** … 入力欄の値をReactのstateで管理する方式。「画面の表示」と「stateの値」が常に一致し、入力内容をプログラムから自由に読み書きできます。
+
+<!-- -->
+
+> **つまずきポイント（Client Component の中でいきなり `window` を使う）:** 「`"use client"` を付けたからブラウザで動くはず」と考えて、関数の本体で `window.innerWidth`（ブラウザの画面幅）を読むと、ページが表示されずにエラーになります。図4-4 の③のとおり、Client Component も**最初の1回はサーバーで描画される**ので、サーバーには無い `window` を読もうとして失敗するのです。`npm run dev` で開いたときのターミナルの実際の出力です（実験用に `app/ng-window/` フォルダに置いた例）。
+
+```text
+⨯ ReferenceError: window is not defined
+    at WindowWidth (app\ng-window\WindowWidth.tsx:6:17)
+  4 | export function WindowWidth() {
+  5 |   // ブラウザの画面幅を読む
+> 6 |   const width = window.innerWidth;
+    |                 ^
+  7 |   return <p>画面の幅は {width}px です</p>;
+  8 | }
+  9 | {
+  digest: '477784383'
+}
+ GET /ng-window 500 in 60ms (next.js: 2ms, application-code: 58ms)
+```
+
+```tsx
+// ❌ NG: app/ng-window/WindowWidth.tsx（描画中に window を読んでいる）
+"use client";
+
+export function WindowWidth() {
+  // ブラウザの画面幅を読む
+  const width = window.innerWidth;
+  return <p>画面の幅は {width}px です</p>;
+}
+```
+
+```tsx
+// ✅ OK: app/ok-window/WindowWidth.tsx（window は useEffect の中で読む）
+"use client";
+
+import { useEffect, useState } from "react";
+
+export function WindowWidth() {
+  // 最初は「まだ分からない」を表す null にしておく（サーバーでも同じ値になる）
+  const [width, setWidth] = useState<number | null>(null);
+
+  // useEffect の中はブラウザでだけ実行されるので window を安全に使える
+  useEffect(() => {
+    setWidth(window.innerWidth);
+  }, []);
+
+  if (width === null) {
+    return <p>画面の幅を調べています...</p>;
+  }
+  return <p>画面の幅は {width}px です</p>;
+}
+```
+
+OK 版を幅 900px のブラウザで開くと、表示は次のようになります（最初の一瞬だけ「調べています...」が出て、すぐ切り替わります）。
+
+```text
+<p>画面の幅は 900px です</p>
+```
+
+> `window`・`document`・`localStorage`・`navigator` など「ブラウザにしか無い物」は、**`useEffect` の中か、クリックなどのイベントの中**で使う、と覚えておきましょう。どちらもブラウザでしか実行されない場所です。
 
 ---
 
@@ -1211,6 +1793,56 @@ import { useState } from "react";
 | useState / useEffect | | **必須** |
 | ブラウザ API（localStorage 等） | 不可 | **必須** |
 
+> **つまずきポイント（エラーが出たから、とページ全体に `"use client"` を付ける）:** ボタンを1つ置きたいだけなのに、`useState` のエラーが出たからといってページ（`page.tsx`）の先頭に `"use client"` を付けてしまうのは、よくある遠回りです。ページ全体が Client Component になると、①`async` にしてデータを直接取得できなくなる（エラー2）、②`metadata` を書けなくなる（エラー4）、③ページ全体の JavaScript がブラウザに送られて重くなる、と損ばかりです。`"use client"` は**木の葉っぱ（いちばん末端の小さな部品）にだけ**付けるのがコツです。
+
+```tsx
+// ❌ NG: app/books/page.tsx（ボタン1つのためにページ全体を Client Component にした）
+"use client";
+
+import { useState } from "react";
+
+export default function BooksPage() {
+  const [likes, setLikes] = useState(0);
+  // Client Component なので、ここで await を使ったデータ取得はできない
+  return (
+    <div>
+      <h1>書籍一覧</h1>
+      <button onClick={() => setLikes(likes + 1)}>いいね {likes}</button>
+    </div>
+  );
+}
+```
+
+```tsx
+// ✅ OK: app/books/page.tsx（ページは Server Component のまま）
+import { LikeButton } from "./LikeButton";
+
+export default async function BooksPage() {
+  // Server Component なので、ここでデータ取得もできる
+  return (
+    <div>
+      <h1>書籍一覧</h1>
+      {/* 動きが必要な部分だけを Client Component に切り出す */}
+      <LikeButton />
+    </div>
+  );
+}
+```
+
+```tsx
+// ✅ OK: app/books/LikeButton.tsx（"use client" はこの小さな部品にだけ付ける）
+"use client";
+
+import { useState } from "react";
+
+export function LikeButton() {
+  const [likes, setLikes] = useState(0);
+  return <button onClick={() => setLikes(likes + 1)}>いいね {likes}</button>;
+}
+```
+
+> 見た目はどちらも同じですが、OK 版ではブラウザに送られる JavaScript が `LikeButton` の分だけで済み、ページ本体ではデータ取得や `metadata` がそのまま使えます。
+
 ### 3.4 書籍管理アプリでの使い分け例
 
 書籍管理アプリの具体的なページで、どのようにコンポーネントを分割するか見てみましょう。
@@ -1250,39 +1882,39 @@ import { useState } from "react";
 // データベースから直接書籍一覧を取得する
 
 // `@/` はプロジェクトルートを示すエイリアス
+// ../../ のような相対パス地獄を避けるための設定（tsconfig.json で定義）
 import { SearchBar } from "@/components/SearchBar";
-                                                                    // ../../ のような相対パス地獄を避けるための設定（tsconfig.json で定義）
 // 書籍リストを描画する別の自作コンポーネントを取り込む
 import { BookList } from "@/components/BookList";
 
 // `async` 関数なので本体で `await` が使える
+// この関数自体が Server Component
 export default async function BooksPage() {
-                                                                    // この関数自体が Server Component
   // Server Component なので、サーバー上で直接データ取得ができる
   // この処理はブラウザには送信されない
   // `fetch` は Web標準のHTTP通信API
+  // Next.js は fetch を拡張してキャッシュ機能を追加している
   const response = await fetch("https://api.example.com/books", {
-                                                                    // Next.js は fetch を拡張してキャッシュ機能を追加している
     // 常に最新データを取得（SSR）
     // `"no-store"` でキャッシュを使わず毎回サーバーからデータ取得
+    // 他に "force-cache"（SSG的）、`next: { revalidate: N }`（ISR的）がある
     cache: "no-store",
-                                                                    // 他に "force-cache"（SSG的）、`next: { revalidate: N }`（ISR的）がある
   });
   // `response.json()` で本文JSONをJSオブジェクトに変換
   const books = await response.json();
 
   return (
     <div>
-      // ページタイトル
+      {/* ページタイトル */}
       <h1>書籍一覧</h1>
-      // JSX 内のコメント記法
+      {/* JSX 内のコメント記法 */}
       {/* Client Component: ユーザーの入力を受け付ける */}
-      // 検索バー（Client）。ここから下は子コンポーネント
+      {/* 検索バー（Client）。ここから下は子コンポーネント */}
       <SearchBar />
       {/* Server Component: 取得したデータを表示する */}
-      // 取得した books 配列を props として渡す
+      {/* 取得した books 配列を props として渡す */}
+      {/* `books={books}` は「booksというpropに変数booksの値を渡す」の意 */}
       <BookList books={books} />
-                                                                      // `books={books}` は「booksというpropに変数booksの値を渡す」の意
     </div>
   );
 }
@@ -1294,20 +1926,20 @@ export default async function BooksPage() {
 // 再利用される検索バー部品
 // components/SearchBar.tsx（Client Component）
 // この行がある＝このファイルは Client Component
+// ブラウザ側で動き、useState やイベントが使える
 "use client";
-                                                                     // ブラウザ側で動き、useState やイベントが使える
 
 // React の状態管理フック
 import { useState } from "react";
 // App Router 用のルーターフック
+// ※ `next/router` ではない！（あちらは旧 Pages Router 用）
 import { useRouter } from "next/navigation";
-                                                                     // ※ `next/router` ではない！（あちらは旧 Pages Router 用）
 
 // 名前付き export。`{ SearchBar }` で import される
 export function SearchBar() {
   // `useState` で「現在の検索文字列」を管理
+  // 配列の分割代入: [現在値, 更新関数] = useState(初期値)
   const [query, setQuery] = useState("");
-                                                                     // 配列の分割代入: [現在値, 更新関数] = useState(初期値)
   // ルーター操作用オブジェクトを取得（push/replace/back/refresh等が使える）
   const router = useRouter();
 
@@ -1317,8 +1949,8 @@ export function SearchBar() {
     e.preventDefault();
     // 検索クエリ付きで遷移
     // `router.push` で別URLに移動（履歴に追加）
+    // `encodeURIComponent` はURLに使えない文字（空白や日本語）を %エンコード
     router.push(`/books?q=${encodeURIComponent(query)}`);
-                                                                     // `encodeURIComponent` はURLに使えない文字（空白や日本語）を %エンコード
   };
 
   return (
@@ -1334,7 +1966,7 @@ export function SearchBar() {
         // 空欄時の薄いガイドテキスト
         placeholder="タイトルで検索..."
       />
-      // submit ボタン。クリックで form の onSubmit が走る
+      {/* submit ボタン。クリックで form の onSubmit が走る */}
       <button type="submit">検索</button>
     </form>
   );
@@ -1404,8 +2036,8 @@ import { useRouter } from "next/navigation";
 // components/BookCard.tsx（Server Component）
 
 // ※同じフォルダから import するときは "./" で始める
+// ここで Client Component を取り込んでも、子だけが Client になる
 import { FavoriteButton } from "./FavoriteButton";
-                                                                     // ここで Client Component を取り込んでも、子だけが Client になる
 
 // TypeScript の型定義（=この形のオブジェクト）
 type Book = {
@@ -1422,12 +2054,12 @@ export function BookCard({ book }: { book: Book }) {
   return (
     // カード枠（CSSでスタイル付け）
     <div className="book-card">
-      // タイトル表示
+      {/* タイトル表示 */}
       <h3>{book.title}</h3>
-      // 著者表示
+      {/* 著者表示 */}
       <p>{book.author}</p>
       {/* インタラクティブな部分だけ Client Component */}
-      // お気に入りボタンには id だけ渡す（最小限のpropsで境界を作る）
+      {/* お気に入りボタンには id だけ渡す（最小限のpropsで境界を作る） */}
       <FavoriteButton bookId={book.id} />
     </div>
   );
@@ -1453,8 +2085,8 @@ export function FavoriteButton({ bookId }: { bookId: string }) {
   // クリック時のハンドラ。async で await が使える
   const handleClick = async () => {
     // まず画面上の状態をトグル（楽観的更新）
+    // `!isFavorite` は「現在の値の反対」
     setIsFavorite(!isFavorite);
-                                                                     // `!isFavorite` は「現在の値の反対」
     // API を呼び出してお気に入り状態を保存
     // テンプレートリテラル（バッククォート ``）で URL を組み立てる
     await fetch(`/api/books/${bookId}/favorite`, {
@@ -1468,7 +2100,7 @@ export function FavoriteButton({ bookId }: { bookId: string }) {
   return (
     // ボタンクリックで handleClick を発動
     <button onClick={handleClick}>
-      // 三項演算子: state によって表示を切り替える
+      {/* 三項演算子: state によって表示を切り替える */}
       {isFavorite ? "★ お気に入り済み" : "☆ お気に入り"}
     </button>
   );
@@ -1540,6 +2172,158 @@ export function FavoriteButton({ bookId }: { bookId: string }) {
 
 **画面にはこう表示される:** ページ上部に検索バー、その下に書籍カードが並んで表示されます。各カードには書籍タイトル、著者名、お気に入りボタンがあります。検索バーに文字を入力するとリアルタイムに反映され、お気に入りボタンをクリックすると「☆ お気に入り」が「★ お気に入り済み」に切り替わります。
 
+### 3.5 サーバーからクライアントへ渡せるもの（props の境界）
+
+3.4 の例では、Server Component の `BookCard` が Client Component の `FavoriteButton` に `bookId={book.id}`（文字列）を渡していました。このように、サーバー側からブラウザ側の部品へ props を渡すときには、1つ大事な決まりがあります。**渡せるのは「文字にして運べるもの」だけ**です。
+
+たとえるなら、`"use client"` の境目は**国境の関所（税関）**です。サーバーで作った props は、いったん文字の形（シリアライズ：serialize＝運べる形に変換すること）にしてブラウザへ送られます。手紙やメモ（文字列・数値・データの表）は通れますが、「その場で動く機械」（ふつうの関数）は文字にできないので通れません。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 318" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-04-05" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="10" y="10" width="340" height="280" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="180" y="30" font-size="13" font-weight="bold" fill="#047857" text-anchor="middle">サーバー側（Server Component）</text>
+<rect x="370" y="10" width="340" height="280" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="540" y="30" font-size="13" font-weight="bold" fill="#1e40af" text-anchor="middle">ブラウザ側（Client Component）</text>
+<line x1="360" y1="8" x2="360" y2="292" stroke="#475569" stroke-width="2" stroke-dasharray="6 4"/>
+<rect x="22" y="110" width="132" height="64" rx="8" fill="#ffffff" stroke="#10b981"/>
+<text x="88" y="136" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">page.tsx など</text>
+<text x="88" y="156" font-size="12" fill="#475569" text-anchor="middle">（親）</text>
+<rect x="172" y="44" width="170" height="26" rx="5" fill="#ffffff" stroke="#10b981"/>
+<text x="257" y="62" font-size="12" fill="#0f172a" text-anchor="middle">✓ 文字列・数値・true/false</text>
+<rect x="172" y="76" width="170" height="26" rx="5" fill="#ffffff" stroke="#10b981"/>
+<text x="257" y="94" font-size="12" fill="#0f172a" text-anchor="middle">✓ 配列・ふつうのオブジェクト</text>
+<rect x="172" y="108" width="170" height="26" rx="5" fill="#ffffff" stroke="#10b981"/>
+<text x="257" y="126" font-size="12" fill="#0f172a" text-anchor="middle">✓ Date（日付）・null</text>
+<rect x="172" y="140" width="170" height="26" rx="5" fill="#ffffff" stroke="#10b981"/>
+<text x="257" y="158" font-size="12" fill="#0f172a" text-anchor="middle">✓ Server Action の関数</text>
+<rect x="172" y="172" width="170" height="26" rx="5" fill="#ffffff" stroke="#10b981"/>
+<text x="257" y="190" font-size="12" fill="#0f172a" text-anchor="middle">✓ JSX（children として）</text>
+<line x1="343" y1="57" x2="468" y2="57" stroke="#10b981" stroke-width="1.5" marker-end="url(#ar-04-05)"/>
+<line x1="343" y1="89" x2="468" y2="89" stroke="#10b981" stroke-width="1.5" marker-end="url(#ar-04-05)"/>
+<line x1="343" y1="121" x2="468" y2="121" stroke="#10b981" stroke-width="1.5" marker-end="url(#ar-04-05)"/>
+<line x1="343" y1="153" x2="468" y2="153" stroke="#10b981" stroke-width="1.5" marker-end="url(#ar-04-05)"/>
+<line x1="343" y1="185" x2="468" y2="185" stroke="#10b981" stroke-width="1.5" marker-end="url(#ar-04-05)"/>
+<rect x="470" y="44" width="226" height="154" rx="8" fill="#ffffff" stroke="#3b82f6"/>
+<text x="583" y="102" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">FavoriteButton など（子）</text>
+<text x="583" y="124" font-size="12" fill="#475569" text-anchor="middle">props で受け取って使える</text>
+<text x="583" y="144" font-size="12" fill="#475569" text-anchor="middle">（文字の形で運ばれてくる）</text>
+<rect x="172" y="216" width="170" height="26" rx="5" fill="#fef2f2" stroke="#ef4444"/>
+<text x="257" y="234" font-size="12" fill="#b91c1c" text-anchor="middle">✗ ふつうの関数（onClick 等）</text>
+<rect x="172" y="250" width="170" height="26" rx="5" fill="#fef2f2" stroke="#ef4444"/>
+<text x="257" y="268" font-size="12" fill="#b91c1c" text-anchor="middle">✗ クラスから作ったもの</text>
+<line x1="343" y1="229" x2="354" y2="229" stroke="#ef4444" stroke-width="1.5"/>
+<line x1="343" y1="263" x2="354" y2="263" stroke="#ef4444" stroke-width="1.5"/>
+<text x="368" y="234" font-size="13" font-weight="bold" fill="#ef4444">✗</text>
+<text x="368" y="268" font-size="13" font-weight="bold" fill="#ef4444">✗</text>
+<text x="390" y="234" font-size="12" fill="#b91c1c">関所で止められてエラーになる</text>
+<text x="390" y="268" font-size="12" fill="#b91c1c">（実行結果は下のつまずきポイント）</text>
+<text x="360" y="310" font-size="12" fill="#475569" text-anchor="middle">点線＝"use client" の境目（関所）。通れるのは「文字にして運べるもの」だけ</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図4-5: サーバーからクライアントへ props で渡せるもの・渡せないもの</div>
+</div>
+
+- **文字列・数値・配列・ふつうのオブジェクト・`Date` など**は、そのまま渡せます。データベースから取ってきた書籍データ（`{ id, title, author }` のようなオブジェクト）を渡すのは、いちばんよくある使い方です。
+- **Server Action**（7節で学ぶ `"use server"` の関数）は、関数ですが特別に渡せます。中身はサーバーに残ったまま、「呼び出すための番号札」だけがブラウザへ運ばれるからです。
+- **JSX を `children` として渡す**こともできます。たとえば Client Component の開閉パネルの中に、サーバーで作った一覧を入れられます（サーバーで作り終えた「見た目」として運ばれます）。
+- **ふつうの関数（`onClick={() => ...}` など）は渡せません。** クリックされたときの処理は、Client Component の**中で**作ります。
+
+> **注意:** 渡せるからといって、データベースの接続情報や秘密のキーを props で Client Component に渡してはいけません。props はブラウザに送られるので、開発者ツールで誰でも見られます（8節）。
+
+<!-- -->
+
+> **つまずきポイント（Server Component から Client Component に関数を渡す）:** React に慣れていると、親から子へ `onDelete={() => ...}` のように関数を渡したくなります。親が Server Component で子が Client Component の場合、これは関所を通れないので、ページを開いた瞬間にエラーになります。`npm run dev` で開いたときのターミナルの実際の出力です。
+
+```text
+⨯ Error: Event handlers cannot be passed to Client Component props.
+  <... title=... onDelete={function onDelete}>
+                          ^^^^^^^^^^^^^^^^^^^
+If you need interactivity, consider converting part of this to a Client Component.
+    at ignore-listed frames {
+  digest: '1517905263'
+}
+ GET /ng-func 500 in 64ms (next.js: 2ms, application-code: 62ms)
+```
+
+```tsx
+// ❌ NG: app/ng-func/page.tsx（Server Component から関数を渡している）
+import { DeleteButton } from "./DeleteButton";
+
+export default function NgFuncPage() {
+  return (
+    <DeleteButton
+      title="リーダブルコード"
+      onDelete={() => console.log("削除しました")}
+    />
+  );
+}
+```
+
+```tsx
+// ❌ NG: app/ng-func/DeleteButton.tsx（関数を props で受け取るつもりの子）
+"use client";
+
+export function DeleteButton({
+  title,
+  onDelete,
+}: {
+  title: string;
+  onDelete: () => void;
+}) {
+  return <button onClick={onDelete}>「{title}」を削除</button>;
+}
+```
+
+OK 版では、親から渡すのは文字列だけにして、クリックしたときの処理は子（Client Component）の中で作ります。サーバーでやりたい処理（データベースからの削除など）は Server Action にして、子から呼び出します。
+
+```ts
+// ✅ OK: app/ok-func/actions.ts
+"use server";
+
+export async function deleteBook(title: string) {
+  // 本物のアプリならここでデータベースから削除する
+  console.log(`[deleteBook] 「${title}」を削除しました`);
+}
+```
+
+```tsx
+// ✅ OK: app/ok-func/page.tsx（Server Component）
+import { DeleteButton } from "./DeleteButton";
+
+export default function OkFuncPage() {
+  // 渡すのは「文字列」だけ。関数は渡さない
+  return <DeleteButton title="リーダブルコード" />;
+}
+```
+
+```tsx
+// ✅ OK: app/ok-func/DeleteButton.tsx（Client Component）
+"use client";
+
+import { deleteBook } from "./actions";
+
+export function DeleteButton({ title }: { title: string }) {
+  // クリックされたときの処理は Client Component の中で作る
+  const handleClick = async () => {
+    await deleteBook(title);
+  };
+
+  return <button onClick={handleClick}>「{title}」を削除</button>;
+}
+```
+
+OK 版でボタンを押したときの、ターミナルの実際の出力です。最後の行は、Next.js 16 の開発サーバーが「どの Server Action が、どんな引数で呼ばれたか」を表示してくれているものです。
+
+```text
+[deleteBook] 「リーダブルコード」を削除しました
+ POST /ok-func 200 in 14ms (next.js: 1.8ms, application-code: 12ms)
+  └─ ƒ deleteBook("リーダブルコード") in 1ms app/ok-func/actions.ts
+```
+
+> エラー文の `Event handlers cannot be passed to Client Component props`（イベント処理の関数は Client Component の props に渡せない）は、まさに「関所で止められた」という意味です。`onClick` のような名前でなくても、ふつうの関数を渡すと `Functions cannot be passed directly to Client Components ...` という似たエラーになります。また、`class Book { ... }` のようなクラスから `new` で作ったものを渡すと、`Only plain objects, and a few built-ins, can be passed to Client Components from Server Components.`（ふつうのオブジェクトと一部の組み込みの型しか渡せない）というエラーになります。どちらも実際に試して確認したエラー文です。
+
 ---
 
 ## 4. レイアウトとテンプレート
@@ -1553,30 +2337,30 @@ export function FavoriteButton({ bookId }: { bookId: string }) {
 ```typescript
 // 予約名 `layout.tsx`。`app/` 直下のものは「ルートレイアウト」と呼ばれる
 // app/layout.tsx
-                                                         // すべてのページを包む一番外側の枠になる（必須）
+// すべてのページを包む一番外側の枠になる（必須）
 
 // `import type` は「型だけ取り込む」記法
+// 実行時のJSには残らないのでバンドルが軽くなる
 import type { Metadata } from "next";
-                                                         // 実行時のJSには残らないのでバンドルが軽くなる
 // Google Fonts の Inter フォントを Next.js 経由で読み込む
+// `next/font/google` はビルド時にフォントをセルフホストして高速化してくれる
 import { Inter } from "next/font/google";
-                                                         // `next/font/google` はビルド時にフォントをセルフホストして高速化してくれる
 // 全ページに適用する CSS をインポート
+// 値として使わず副作用のためだけに読み込む書き方
 import "./globals.css";
-                                                         // 値として使わず副作用のためだけに読み込む書き方
 
 // Google Fonts の Inter フォントを最適化して読み込む
 // フォントのインスタンスを作る
+// `subsets: ["latin"]` は「ラテン文字だけ含む」指定でサイズ削減
 const inter = Inter({ subsets: ["latin"] });
-                                                         // `subsets: ["latin"]` は「ラテン文字だけ含む」指定でサイズ削減
 
 // `metadata` という名前で export すると Next.js が <head> を自動生成
+// 自分で <title> や <meta> を書く必要がない
 export const metadata: Metadata = {
-                                                         // 自分で <title> や <meta> を書く必要がない
   title: {
     // 子ページのタイトルに自動で「 | 書籍管理アプリ」を付ける
+    // `%s` の部分が子の title に置き換わる
     template: "%s | 書籍管理アプリ",
-                                                         // `%s` の部分が子の title に置き換わる
     // 子ページが title を指定しなかったときのデフォルト
     default: "書籍管理アプリ",
   },
@@ -1594,30 +2378,30 @@ export default function RootLayout({
 }) {
   return (
     // `<html>` はルートレイアウトでだけ書く
+    // lang="ja" は日本語ページであることをブラウザや支援技術に伝える
     <html lang="ja">
-                                                         // lang="ja" は日本語ページであることをブラウザや支援技術に伝える
-      // `<body>` もルートレイアウト専用
+      {/* `<body>` もルートレイアウト専用 */}
+      {/* `inter.className` でフォント用 CSS クラスを適用 */}
       <body className={inter.className}>
-                                                         // `inter.className` でフォント用 CSS クラスを適用
         {/* ここにヘッダーを配置 */}
-        // セマンティック要素 `<header>`：ページ上部のヘッダー領域
+        {/* セマンティック要素 `<header>`：ページ上部のヘッダー領域 */}
         <header className="site-header">
-          // `<nav>`：ナビゲーション領域を示すセマンティック要素
+          {/* `<nav>`：ナビゲーション領域を示すセマンティック要素 */}
           <nav>
-            // 普通のアンカー。ロゴ的リンク（後で `<Link>` に置き換えるのがベター）
+            {/* 普通のアンカー。ロゴ的リンク（後で `<Link>` に置き換えるのがベター） */}
             <a href="/">書籍管理アプリ</a>
           </nav>
         </header>
 
         {/* children に各ページの内容が入る */}
-        // `<main>`：ページの主要コンテンツ領域
+        {/* `<main>`：ページの主要コンテンツ領域 */}
+        {/* ここに `app/page.tsx` や `app/books/page.tsx` 等の中身が差し込まれる */}
         <main className="site-main">{children}</main>
-                                                         // ここに `app/page.tsx` や `app/books/page.tsx` 等の中身が差し込まれる
 
         {/* ここにフッターを配置 */}
-        // `<footer>`：ページ下部のフッター領域
+        {/* `<footer>`：ページ下部のフッター領域 */}
         <footer className="site-footer">
-          // `&copy;` は © の HTML エンティティ（特殊文字）
+          {/* `&copy;` は © の HTML エンティティ（特殊文字） */}
           <p>&copy; 2024 書籍管理アプリ</p>
         </footer>
       </body>
@@ -1627,6 +2411,7 @@ export default function RootLayout({
 ```
 
 > **ポイント:**
+>
 > - ルートレイアウトは **必須** です。削除するとエラーになります。
 > - `<html>` と `<body>` タグはルートレイアウトにのみ記述します。
 > - `metadata` オブジェクトで SEO 用のタイトル・説明を設定できます。
@@ -1690,13 +2475,13 @@ export default function BooksLayout({
     // ※ルート以外の layout.tsx は <html>/<body> を書かない
     <div className="books-layout">
       {/* サイドバー */}
-      // `<aside>`：補足コンテンツ用のセマンティック要素
+      {/* `<aside>`：補足コンテンツ用のセマンティック要素 */}
       <aside className="sidebar">
-        // ナビゲーション領域
+        {/* ナビゲーション領域 */}
         <nav>
-          // 箇条書きリスト
+          {/* 箇条書きリスト */}
           <ul>
-            // ※ 後ほど `<Link>` への置き換えを学ぶ
+            {/* ※ 後ほど `<Link>` への置き換えを学ぶ */}
             <li><a href="/books">書籍一覧</a></li>
             <li><a href="/books/new">書籍を追加</a></li>
             <li><a href="/books/favorites">お気に入り</a></li>
@@ -1705,9 +2490,9 @@ export default function BooksLayout({
       </aside>
 
       {/* メインコンテンツ */}
-      // `<section>`：意味的にひとまとまりの領域
+      {/* `<section>`：意味的にひとまとまりの領域 */}
       <section className="content">
-        // ここに /books/page.tsx や /books/[id]/page.tsx の内容が入る
+        {/* ここに /books/page.tsx や /books/[id]/page.tsx の内容が入る */}
         {children}
       </section>
     </div>
@@ -1736,6 +2521,155 @@ export default function BooksLayout({
 </div>
 
 `/books` や `/books/123` にアクセスすると、ルートレイアウトのヘッダー・フッターに加えて、書籍セクション専用のサイドバーが表示されます。トップページ（`/`）にはサイドバーは表示されません。
+
+レイアウトは「**箱の中に箱を入れる**」ように重なります。ロシアの人形マトリョーシカのように、外側の箱（ルートレイアウト）の中に、`/books` 用の箱（books のレイアウト）が入り、そのさらに中にページ本体が入ります。そして、ページを移動しても外側の箱は**作り直されません**。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 300" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<text x="180" y="18" font-size="12" font-weight="bold" fill="#475569" text-anchor="middle">① /books/42 を開いたときの入れ子</text>
+<rect x="10" y="28" width="340" height="262" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="22" y="48" font-size="12" font-weight="bold" fill="#1e40af">app/layout.tsx（ルートレイアウト）</text>
+<text x="180" y="68" font-size="12" fill="#1e40af" text-anchor="middle">― ヘッダー ―</text>
+<rect x="28" y="78" width="304" height="180" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="40" y="98" font-size="12" font-weight="bold" fill="#c2410c">app/books/layout.tsx（サイドバー）</text>
+<rect x="40" y="110" width="62" height="136" rx="4" fill="#ffedd5"/>
+<text x="71" y="182" font-size="12" fill="#c2410c" text-anchor="middle">メニュー</text>
+<rect x="112" y="110" width="208" height="136" rx="6" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="216" y="140" font-size="12" font-weight="bold" fill="#047857" text-anchor="middle">app/books/[id]/page.tsx</text>
+<text x="216" y="160" font-size="12" fill="#047857" text-anchor="middle">（ページ本体）</text>
+<text x="216" y="200" font-size="14" font-weight="bold" fill="#0f172a" text-anchor="middle">書籍 42 の詳細</text>
+<text x="180" y="278" font-size="12" fill="#1e40af" text-anchor="middle">― フッター ―</text>
+<text x="545" y="18" font-size="12" font-weight="bold" fill="#475569" text-anchor="middle">② /books/42 → /books/7 へ移動すると</text>
+<rect x="380" y="28" width="330" height="54" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="392" y="50" font-size="12" font-weight="bold" fill="#1e40af">ルートレイアウト（ヘッダー・フッター）</text>
+<text x="392" y="70" font-size="12" fill="#475569">→ そのまま（作り直さない）</text>
+<rect x="380" y="92" width="330" height="54" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="392" y="114" font-size="12" font-weight="bold" fill="#c2410c">books のレイアウト（サイドバー）</text>
+<text x="392" y="134" font-size="12" fill="#475569">→ そのまま（入力中の文字なども残る）</text>
+<rect x="380" y="156" width="330" height="74" rx="8" fill="#ecfdf5" stroke="#10b981" stroke-width="2.5"/>
+<text x="392" y="178" font-size="12" font-weight="bold" fill="#047857">page.tsx（ページ本体）</text>
+<text x="392" y="199" font-size="13" fill="#0f172a">書籍 42 の詳細　→　書籍 7 の詳細</text>
+<text x="392" y="220" font-size="12" font-weight="bold" fill="#047857">→ ここだけ入れ替わる</text>
+<text x="545" y="258" font-size="12" fill="#475569" text-anchor="middle">Link で移動すると、変わらない外側の箱は</text>
+<text x="545" y="278" font-size="12" fill="#475569" text-anchor="middle">作り直さないので速く、状態も保たれる</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図4-6: レイアウトは入れ子の箱。ページ移動で入れ替わるのは中身だけ</div>
+</div>
+
+#### レイアウトの入れ子をログと HTML で確かめる
+
+> **▼ このコードがやること（先に日本語で）:** ルートレイアウト・`/books` のレイアウト・詳細ページの3つに `console.log` を書いて、`/books/42` を開いたときに**どの順番で、どれが実行されるか**をターミナルで確かめます。さらに、ブラウザに届いた HTML を見て、3つの部品が本当に「箱の中に箱」の形に組み合わさっていることを確認します。
+
+```tsx
+// app/layout.tsx（ルートレイアウト。実験用に console.log を足したもの）
+import type { Metadata } from "next";
+import Link from "next/link";
+import "./globals.css";
+
+export const metadata: Metadata = {
+  title: "実験用アプリ",
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  console.log("[RootLayout] サーバーで描画しました");
+  return (
+    <html lang="ja">
+      <body>
+        <header>
+          <Link href="/">ホーム</Link>
+        </header>
+        <main>{children}</main>
+      </body>
+    </html>
+  );
+}
+```
+
+```tsx
+// app/books/layout.tsx（/books 以下の全ページを包む枠）
+export default function BooksLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  console.log("[BooksLayout] サーバーで描画しました");
+
+  return (
+    <div className="books-layout">
+      <aside>書籍メニュー</aside>
+      {/* children の位置に page.tsx の中身が入る */}
+      <section>{children}</section>
+    </div>
+  );
+}
+```
+
+```tsx
+// app/books/[id]/page.tsx（/books/42 などで表示されるページ）
+export default async function BookDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  console.log(`[BookDetailPage] id=${id} のページを描画しました`);
+
+  return <h1>書籍 {id} の詳細</h1>;
+}
+```
+
+**▼ 実行結果**（`npm run dev` で起動し、`http://localhost:3000/books/42` を開いたとき）
+
+ターミナルの出力:
+
+```text
+[RootLayout] サーバーで描画しました
+[BooksLayout] サーバーで描画しました
+[BookDetailPage] id=42 のページを描画しました
+ GET /books/42 200 in 46ms (next.js: 12ms, application-code: 35ms)
+```
+
+ブラウザに表示された HTML（開発者ツールの Elements タブで `<body>` の中を見たもの。Next.js が内部で使う `<script>` などは省略）:
+
+```text
+<header><a href="/">ホーム</a></header><main><div class="books-layout"><aside>書籍メニュー</aside><section><h1>書籍 42 の詳細</h1></section></div></main>
+```
+
+1行だと読みにくいので、改行と字下げを入れて整えると次のとおりです。
+
+```html
+<header><a href="/">ホーム</a></header>
+<main>
+  <div class="books-layout">
+    <aside>書籍メニュー</aside>
+    <section>
+      <h1>書籍 42 の詳細</h1>
+    </section>
+  </div>
+</main>
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: 外側から順に、全部サーバーで実行される
+
+- ターミナルに3行のログが「ルート → books → ページ」の順で出ています。どれも Server Component なので、**サーバーで**実行されています（ブラウザには HTML だけが届きます）。
+- `/books/42` という1つの URL を開いただけで、URL に関係する `layout.tsx` が**全部**使われることが分かります。`app/layout.tsx` は全ページ、`app/books/layout.tsx` は `/books` 以下のページで必ず使われます。
+
+##### 解説2: `{children}` の位置に、内側の箱がはめ込まれる
+
+```tsx
+      <section>{children}</section>
+```
+
+- HTML を見ると、`<main>`（ルートレイアウトの `{children}` の場所）の中に books のレイアウトの `<div class="books-layout">` があり、さらにその `<section>`（books レイアウトの `{children}` の場所）の中にページの `<h1>` が入っています。
+- つまり `children` は「**この場所に、1つ内側の箱を入れてください**」という差し込み口です。図4-6 の①が、そのまま HTML になっていることが確かめられました。
+
+> **ヒント:** `<Link>` を使って `/books/42` から `/books/7` へ移動すると、Next.js は変わらない外側の箱（2つのレイアウト）を作り直さず、ページ本体だけを取り替えます（図4-6 の②）。だから、サイドバーの検索欄に入力した文字やスクロール位置が消えません。逆に、ページを移動するたびにレイアウトの中身も作り直したい場合は、`layout.tsx` の代わりに `template.tsx` という予約ファイルを使います。
 
 ### 4.3 書籍管理アプリのレイアウト構成
 
@@ -1772,6 +2706,8 @@ export default function BooksLayout({
   </div>
 </div>
 
+> **注意（第6章以降で作るアプリとの違い）:** 上の図は「レイアウトが入れ子になる」ことを説明するための構成例です。第6章から実際に作る書籍管理アプリでは、話を簡単にするため、**書籍一覧はトップページ `/`（`app/page.tsx`）** に置き、新規登録は `/books/new`、詳細は `/books/[id]`、編集は `/books/[id]/edit` とします（`app/books/layout.tsx` のサイドバーは作りません）。「一覧に戻る」リンクの行き先も `/` になります。
+
 ---
 
 ## 5. ナビゲーション
@@ -1793,19 +2729,19 @@ export function Navigation() {
   return (
     // セマンティック要素：ナビゲーション領域
     <nav>
-      // リスト
+      {/* リスト */}
       <ul>
-        // 1項目
+        {/* 1項目 */}
         <li>
-          // `href` で行き先URLを指定。<a> と似た書き方
+          {/* `href` で行き先URLを指定。<a> と似た書き方 */}
           <Link href="/">ホーム</Link>
         </li>
         <li>
-          // `/books` への高速遷移リンク
+          {/* `/books` への高速遷移リンク */}
           <Link href="/books">書籍一覧</Link>
         </li>
         <li>
-          // `/books/new` への遷移
+          {/* `/books/new` への遷移 */}
           <Link href="/books/new">書籍を追加</Link>
         </li>
       </ul>
@@ -1843,9 +2779,9 @@ type Book = {
 export function BookLink({ book }: { book: Book }) {
   return (
     // テンプレートリテラルで URL を組み立てる
+    // 例: book.id が "42" なら "/books/42" が生成される
     <Link href={`/books/${book.id}`}>
-                                                        // 例: book.id が "42" なら "/books/42" が生成される
-      // 表示テキストは book.title を埋め込み
+      {/* 表示テキストは book.title を埋め込み */}
       {book.title} の詳細を見る
     </Link>
   );
@@ -1899,6 +2835,60 @@ export function BookLink({ book }: { book: Book }) {
 
 > **用語: テンプレートリテラル** … バッククォートで囲む文字列で、`${変数}` の形で値を埋め込めます。URLやメッセージを「固定部分＋変化する値」で組み立てるときに便利です。
 
+<!-- -->
+
+> **つまずきポイント（アプリ内のリンクに `<a>` を使う）:** HTML に慣れていると、アプリの中のページ同士も `<a href="...">` でつないでしまいがちです。見た目は同じリンクですが、`<a>` だとクリックのたびに**ページ全体が読み込み直し**になり、レイアウトの中の状態（入力中の文字やカウンターの値など）が消えてしまいます。次のレイアウトで、実際に比べてみました。
+
+```tsx
+// app/demo/layout.tsx（/demo/a と /demo/b で共通の枠）
+import Link from "next/link";
+import { Counter } from "./Counter";
+
+export default function DemoLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <div>
+      {/* レイアウトの中のカウンター（ページを移動しても残ってほしい） */}
+      <Counter />
+      <nav>
+        {/* ❌ NG: ふつうの a タグ */}
+        <a href="/demo/b">a タグで B へ</a>
+        {/* ✅ OK: Next.js の Link */}
+        <Link href="/demo/b">Link で B へ</Link>
+        <Link href="/demo/a">Link で A へ</Link>
+      </nav>
+      {children}
+    </div>
+  );
+}
+```
+
+```tsx
+// app/demo/Counter.tsx（Client Component）
+"use client";
+
+import { useState } from "react";
+
+export function Counter() {
+  const [count, setCount] = useState(0);
+  return <button onClick={() => setCount(count + 1)}>カウント: {count}</button>;
+}
+```
+
+ブラウザでカウンターを3回押してから移動したときの記録です（ページ A・B の `page.tsx` は見出しを出すだけ）。
+
+```text
+A で3回押した: ページ A / カウント: 3
+a タグで B へ移動: ページ B / カウント: 0
+A に戻って3回押した: ページ A / カウント: 3
+Link で B へ移動: ページ B / カウント: 3
+```
+
+> `<a>` で移動した2行目はカウントが **0 に戻っています**（ページ全体を読み込み直したため）。`<Link>` で移動した4行目は **3 のまま**です（変わらないレイアウトはそのまま残り、ページ本体だけが入れ替わったため。図4-6）。アプリの中のページへは `<Link>`、外部のサイト（`https://...`）へは `<a>`、と使い分けましょう。なお、`<Link>` の先読み（プリフェッチ）は、`npm run build` してから `npm run start` で動かす本番モードで働きます。開発モード（`npm run dev`）では先読みしないので、「本番だと速い」ことは本番モードで確かめてください。
+
 ---
 
 ### 5.2 useRouter フック
@@ -1937,9 +2927,9 @@ export function BookForm() {
   return (
     // submit イベントを上記関数に紐付け
     <form onSubmit={handleSubmit}>
-      // 実際には input 要素などを並べる
+      {/* 実際には input 要素などを並べる */}
       {/* フォームの内容（省略） */}
-      // submit ボタン
+      {/* submit ボタン */}
       <button type="submit">保存</button>
     </form>
   );
@@ -1964,28 +2954,28 @@ export function NavigationExample() {
   return (
     <div>
       {/* 指定したパスに遷移（履歴に追加） */}
-      // `push`: 履歴を1つ増やしながら遷移（ブラウザの戻るで前ページに戻れる）
+      {/* `push`: 履歴を1つ増やしながら遷移（ブラウザの戻るで前ページに戻れる） */}
       <button onClick={() => router.push("/books")}>
         書籍一覧へ
       </button>
 
       {/* 指定したパスに遷移（履歴を置換） */}
-      // `replace`: 現在の履歴エントリを上書きして遷移（戻れない）
+      {/* `replace`: 現在の履歴エントリを上書きして遷移（戻れない） */}
       <button onClick={() => router.replace("/books")}>
-        // ログイン後にログインページを履歴に残したくないときに使う
+        {/* ログイン後にログインページを履歴に残したくないときに使う */}
         書籍一覧へ（履歴を置換）
       </button>
 
       {/* ブラウザの「戻る」と同じ */}
-      // `back`: 履歴を1つ戻る
+      {/* `back`: 履歴を1つ戻る */}
       <button onClick={() => router.back()}>
         戻る
       </button>
 
       {/* ページのデータを再取得（再レンダリング） */}
-      // `refresh`: 現在のルートの Server Component を再実行・再描画
+      {/* `refresh`: 現在のルートの Server Component を再実行・再描画 */}
       <button onClick={() => router.refresh()}>
-        // ※ ページ全体リロードではない（state は保持される）
+        {/* ※ ページ全体リロードではない（state は保持される） */}
         更新
       </button>
     </div>
@@ -2000,6 +2990,122 @@ export function NavigationExample() {
 | `router.back()` | ブラウザの戻るボタンと同じ | 詳細ページから一覧に戻る |
 | `router.refresh()` | 現在のページを再取得 | データ更新後の再読み込み |
 | `router.prefetch(url)` | 指定した URL を先読み | 近く遷移しそうなページの準備 |
+
+#### Link と router.push を並べて比べる
+
+`<Link>` と `router.push` は、どちらも「ページを移動する」道具ですが、役割が違います。`<Link>` は**道に立てておく案内板**で、利用者が自分で選んで進みます。`router.push` は**タクシーの運転手への指示**で、「荷物を積み終わったら（保存が終わったら）、あそこへ行って」とプログラムが行き先を告げます。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 300" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-04-07" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="10" y="10" width="340" height="250" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<rect x="10" y="10" width="340" height="32" rx="10" fill="#3b82f6"/>
+<text x="180" y="31" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">&lt;Link&gt;：画面に置いておく案内板</text>
+<rect x="22" y="58" width="92" height="36" rx="6" fill="#ffffff" stroke="#3b82f6"/>
+<text x="68" y="81" font-size="12" fill="#0f172a" text-anchor="middle">リンクを置く</text>
+<line x1="115" y1="76" x2="132" y2="76" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-04-07)"/>
+<rect x="134" y="58" width="92" height="36" rx="6" fill="#ffffff" stroke="#3b82f6"/>
+<text x="180" y="81" font-size="12" fill="#0f172a" text-anchor="middle">利用者が押す</text>
+<line x1="227" y1="76" x2="244" y2="76" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-04-07)"/>
+<rect x="246" y="58" width="92" height="36" rx="6" fill="#ffffff" stroke="#3b82f6"/>
+<text x="292" y="81" font-size="12" fill="#0f172a" text-anchor="middle">すぐ移動</text>
+<text x="26" y="128" font-size="12" fill="#047857">✓ 本物の &lt;a href&gt; として HTML に出る</text>
+<text x="26" y="154" font-size="12" fill="#047857">✓ 新しいタブで開ける・検索エンジンもたどれる</text>
+<text x="26" y="180" font-size="12" fill="#047857">✓ 本番モードでは自動で先読みされる</text>
+<text x="26" y="206" font-size="12" fill="#047857">✓ Server Component の中でも使える</text>
+<text x="180" y="244" font-size="12" font-weight="bold" fill="#1e40af" text-anchor="middle">使い所: メニュー・一覧の各項目・「戻る」</text>
+<rect x="370" y="10" width="340" height="250" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<rect x="370" y="10" width="340" height="32" rx="10" fill="#f97316"/>
+<text x="540" y="31" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">router.push：処理が終わってから移動</text>
+<rect x="382" y="58" width="92" height="36" rx="6" fill="#ffffff" stroke="#f97316"/>
+<text x="428" y="81" font-size="12" fill="#0f172a" text-anchor="middle">ボタンを押す</text>
+<line x1="475" y1="76" x2="492" y2="76" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-04-07)"/>
+<rect x="494" y="58" width="92" height="36" rx="6" fill="#ffffff" stroke="#f97316"/>
+<text x="540" y="81" font-size="12" fill="#0f172a" text-anchor="middle">保存を待つ</text>
+<line x1="587" y1="76" x2="604" y2="76" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-04-07)"/>
+<rect x="606" y="58" width="92" height="36" rx="6" fill="#ffffff" stroke="#f97316"/>
+<text x="652" y="81" font-size="12" fill="#0f172a" text-anchor="middle">push で移動</text>
+<text x="386" y="128" font-size="12" fill="#047857">✓ 処理の結果で行き先を決められる</text>
+<text x="386" y="154" font-size="12" fill="#b91c1c">✗ &lt;a&gt; にならない（新しいタブで開けない）</text>
+<text x="386" y="180" font-size="12" fill="#b91c1c">✗ Client Component の中でしか使えない</text>
+<text x="386" y="206" font-size="12" fill="#b91c1c">✗ 自動の先読みはされない</text>
+<text x="540" y="244" font-size="12" font-weight="bold" fill="#c2410c" text-anchor="middle">使い所: 保存・ログイン・削除の後</text>
+<text x="360" y="288" font-size="12" fill="#475569" text-anchor="middle">迷ったら Link。「何かが終わってから移動したい」ときだけ router.push を使う</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図4-7: Link（案内板）と router.push（行き先の指示）の違い</div>
+</div>
+
+> **▼ このコードがやること（先に日本語で）:** 1つのページに `<Link>` と、`router.push` で移動するボタンを並べて置き、ブラウザに届いた HTML がどう違うかを確かめます。ボタンは「保存の代わりに 0.5 秒待ってから」移動するようにして、`router.push` が「処理が終わってから移動する」道具であることを体験します。
+
+```tsx
+// app/nav-demo/page.tsx（Server Component）
+import Link from "next/link";
+import { SaveButton } from "./SaveButton";
+
+export default function NavDemoPage() {
+  return (
+    <div>
+      {/* Link は「ここへ行けます」と画面に置いておくリンク */}
+      <Link href="/books/1">1冊目の詳細へ（Link）</Link>
+      {/* router.push は「処理が終わったら移動する」ためのボタン */}
+      <SaveButton />
+    </div>
+  );
+}
+```
+
+```tsx
+// app/nav-demo/SaveButton.tsx（Client Component）
+"use client";
+
+import { useRouter } from "next/navigation";
+
+export function SaveButton() {
+  const router = useRouter();
+
+  const handleClick = async () => {
+    // 本当はここで保存処理をする（今回は 0.5 秒待つだけ）
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    // 保存が終わったら、プログラムから詳細ページへ移動する
+    router.push("/books/1");
+  };
+
+  return <button onClick={handleClick}>保存して詳細へ（router.push）</button>;
+}
+```
+
+**▼ 実行結果**（`npm run dev` で `http://localhost:3000/nav-demo` を開いたときの HTML と、ボタンを押したときの記録）
+
+```text
+<div><a href="/books/1">1冊目の詳細へ（Link）</a><button>保存して詳細へ（router.push）</button></div>
+```
+
+```text
+ボタンを押してから 0.7 秒後に移動: /books/1
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: `<Link>` は本物の `<a href>` になる
+
+- HTML を見ると、`<Link>` は `<a href="/books/1">` という**ふつうのリンク**として出力されています。だから、右クリックで「新しいタブで開く」ができ、検索エンジンもこのリンクをたどってページを見つけられます。
+- その上で、クリックされたときは Next.js がページ全体の読み込み直しを止めて、必要な部分だけを差し替えます（5.1 の比較表）。「ふつうのリンクの良さ」と「速い移動」の両方を持っているのが `<Link>` です。
+- `<Link>` はただリンクを置くだけなので、`page.tsx` のような Server Component の中にそのまま書けます。
+
+##### 解説2: `router.push` は「処理の後で」移動するための道具
+
+```tsx
+  const handleClick = async () => {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    router.push("/books/1");
+  };
+```
+
+- `router.push` は**関数の中から呼ぶ**ので、「保存が成功したら移動」「失敗したら移動しない」のように、処理の結果に合わせて動きを変えられます。記録のとおり、ボタンを押してから約0.7秒後（0.5秒の待ち時間＋移動の時間）に移動しました。
+- 一方、HTML の中では `<button>` のままで、行き先の URL はどこにも書かれていません。そのため、新しいタブで開くことも、検索エンジンがたどることもできません。**ただ移動するだけなら `<Link>`**、**何かが終わってから移動するなら `router.push`** と使い分けます。
+- `useRouter` はブラウザで動くフックなので、`SaveButton` には `"use client"` が必要です。
 
 ### 5.2.1 usePathname / useSearchParams（補足）
 
@@ -2035,7 +3141,7 @@ export function CurrentUrlInfo() {
 
 ### 5.3 リダイレクト
 
-リダイレクト（redirect：別のURLに自動転送すること）は、Server Component の中で `redirect()` を呼ぶか、後述する `middleware.ts` で行います。
+リダイレクト（redirect：別のURLに自動転送すること）は、Server Component の中で `redirect()` を呼ぶか、後述する `proxy.ts`（Next.js 15 までの `middleware.ts`）で行います。
 
 #### Server Component でのリダイレクト
 
@@ -2045,9 +3151,9 @@ export function CurrentUrlInfo() {
 // 動的セグメントを含む書籍詳細ページ
 // app/books/[id]/page.tsx
 // 2つのヘルパー関数を取り込む
+// redirect: 任意の URL へ転送
+// notFound: 404扱いにして not-found.tsx を表示
 import { redirect, notFound } from "next/navigation";
-                                                                   // redirect: 任意の URL へ転送
-                                                                   // notFound: 404扱いにして not-found.tsx を表示
 
 // async Server Component
 export default async function BookDetailPage({
@@ -2065,8 +3171,8 @@ export default async function BookDetailPage({
   // データが null/undefined なら
   if (!book) {
     // この呼び出しで以降の処理は中断され not-found.tsx が表示される
+    // 関数の戻り値は never（戻ってこない関数の型）
     notFound();
-                                                                   // 関数の戻り値は never（戻ってこない関数の型）
   }
 
   // 非公開の書籍は一覧ページにリダイレクト
@@ -2079,7 +3185,7 @@ export default async function BookDetailPage({
   // 上の if を通り抜けた場合だけここに到達
   return (
     <div>
-      // タイトル表示
+      {/* タイトル表示 */}
       <h1>{book.title}</h1>
     </div>
   );
@@ -2135,25 +3241,136 @@ import { redirect, notFound } from "next/navigation";
 
 > **用語: 早期リターン的な中断** … `notFound()` / `redirect()` は戻り値の型が `never`（＝戻ってこない関数）で、呼んだ時点で処理が打ち切られます。そのため `if` で条件を満たしたらすぐ抜ける書き方ができます。
 
+<!-- -->
+
+> **つまずきポイント（`redirect()` を `try` の中で呼ぶ）:** `redirect()` は、実は「`NEXT_REDIRECT` という特別なエラーを `throw`（投げる）して処理を止め、Next.js がそれを受け取って転送する」という仕組みで動いています。そのため、`try { ... } catch { ... }` の `try` の中で `redirect()` を呼ぶと、自分の `catch` がそのエラーを**横取り**してしまい、転送されずにページがそのまま表示されます。`npm run dev` で `/ng-redirect` を開いたときの実際の出力です。
+
+```text
+catch で捕まえたもの: Error: NEXT_REDIRECT
+    at NgRedirectPage (app\ng-redirect\page.tsx:7:13)
+   5 |   try {
+   6 |     // 何かの処理に失敗した、という想定で一覧へ転送したい
+>  7 |     redirect("/shelf");
+     |             ^
+   8 |   } catch (error) {
+   9 |     console.log("catch で捕まえたもの:", error);
+  10 |   } {
+  digest: 'NEXT_REDIRECT;replace;/shelf;307;'
+}
+ GET /ng-redirect 200 in 36ms (next.js: 1.3ms, application-code: 35ms)
+```
+
+転送されず（`200` ＝ ふつうに表示）、画面には `<p>ここが表示されてしまう</p>` が出ました。
+
+```tsx
+// ❌ NG: app/ng-redirect/page.tsx（redirect を try の中で呼んでいる）
+import { redirect } from "next/navigation";
+
+export default async function NgRedirectPage() {
+  try {
+    // 何かの処理に失敗した、という想定で一覧へ転送したい
+    redirect("/shelf");
+  } catch (error) {
+    console.log("catch で捕まえたもの:", error);
+  }
+  return <p>ここが表示されてしまう</p>;
+}
+```
+
+```tsx
+// ✅ OK: app/ok-redirect/page.tsx（try / catch では結果だけ受け取り、redirect は外で呼ぶ）
+import { redirect } from "next/navigation";
+
+// 失敗するかもしれない処理のまね（今回は必ず失敗する）
+async function loadSomething(): Promise<boolean> {
+  throw new Error("読み込みに失敗しました");
+}
+
+export default async function OkRedirectPage() {
+  let loaded = false;
+  try {
+    loaded = await loadSomething();
+  } catch (error) {
+    console.log("catch で捕まえたもの:", (error as Error).message);
+  }
+
+  // redirect は try / catch の「外」で呼ぶ
+  if (!loaded) {
+    redirect("/shelf");
+  }
+  return <p>読み込みに成功しました</p>;
+}
+```
+
+OK 版を `curl -i`（応答の見出しも表示するコマンド）で開いたときの出力と、ターミナルの出力です。`307 Temporary Redirect` と `location: /shelf` は「`/shelf` へ移動してください」という転送の合図です。
+
+```text
+HTTP/1.1 307 Temporary Redirect
+location: /shelf
+```
+
+```text
+catch で捕まえたもの: 読み込みに失敗しました
+ GET /ok-redirect 307 in 50ms (next.js: 1.7ms, application-code: 49ms)
+```
+
+> `notFound()` も同じ仕組み（特別なエラーを投げる）なので、`try` の中で呼ばないようにしましょう。7節の Server Action の中で `redirect()` を使うときも同じです。
+
 ---
 
-#### middleware.ts でのリダイレクト
+#### proxy.ts（旧 middleware.ts）でのリダイレクト
 
-`middleware.ts`（ミドルウェア：リクエストとレスポンスの間に挟まる処理。Next.js では Edge Runtime（軽量な実行環境）で動く）をプロジェクトルートに置くことで、ページが描画される**前の段階**でリダイレクトを行えます。認証チェック、地域別の振り分け、A/Bテストなどに使えます。
+`proxy.ts`（プロキシ：リクエストとページの間に割り込む「関所」の処理）をプロジェクトルートに置くことで、ページが描画される**前の段階**でリダイレクトを行えます。認証チェック、地域別の振り分け、A/Bテストなどに使えます。
 
-> **▼ このコードがやること（先に日本語で）:** ページが表示される「前の段階」で割り込み、未ログインのユーザーを `/login` に転送する関所（ミドルウェア）を作ります。リクエストの Cookie からログイン状態を判定し、条件に合えば転送、合わなければそのまま通します。最後の `config.matcher` で「どの URL にこの関所を効かせるか」を指定する点もポイントです。詳細はコード内コメントを参照してください。
+> **注意（Next.js 16 で名前が変わりました）:** Next.js 15 までは、このファイルは `middleware.ts`（ミドルウェア）、関数名は `middleware` でした。Next.js 16 で **`proxy.ts`・関数名 `proxy`** に変わり、古い名前は「非推奨（deprecated：まだ動くが、いずれ使えなくなる予定）」になりました。また、`proxy.ts` は Node.js の実行環境で動きます（以前の `middleware.ts` は Edge Runtime という軽量な実行環境で動いていました）。古い解説記事の `middleware.ts` は `proxy.ts` と読み替えてください。なお、`next build` の結果には今も `ƒ Proxy (Middleware)` と表示されます。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 216" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-04-08" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="10" y="40" width="120" height="64" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="70" y="66" font-size="13" font-weight="bold" fill="#1e40af" text-anchor="middle">ブラウザ</text>
+<text x="70" y="88" font-size="12" fill="#475569" text-anchor="middle">/books を開く</text>
+<line x1="131" y1="72" x2="183" y2="72" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-04-08)"/>
+<rect x="185" y="36" width="150" height="72" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="2.5"/>
+<text x="260" y="62" font-size="13" font-weight="bold" fill="#c2410c" text-anchor="middle">proxy.ts（関所）</text>
+<text x="260" y="84" font-size="12" fill="#475569" text-anchor="middle">Cookie を確認する</text>
+<text x="390" y="62" font-size="12" fill="#047857" text-anchor="middle">ログイン済み</text>
+<line x1="336" y1="72" x2="443" y2="72" stroke="#10b981" stroke-width="1.5" marker-end="url(#ar-04-08)"/>
+<rect x="445" y="40" width="130" height="64" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="510" y="66" font-size="13" font-weight="bold" fill="#047857" text-anchor="middle">layout / page</text>
+<text x="510" y="88" font-size="12" fill="#475569" text-anchor="middle">を描画する</text>
+<line x1="576" y1="72" x2="598" y2="72" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-04-08)"/>
+<rect x="600" y="40" width="110" height="64" rx="10" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>
+<text x="655" y="66" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">200 OK</text>
+<text x="655" y="88" font-size="12" fill="#475569" text-anchor="middle">ページが届く</text>
+<line x1="260" y1="109" x2="260" y2="144" stroke="#ef4444" stroke-width="1.5" marker-end="url(#ar-04-08)"/>
+<text x="270" y="132" font-size="12" fill="#b91c1c">未ログイン</text>
+<rect x="185" y="146" width="150" height="48" rx="10" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
+<text x="260" y="166" font-size="12" font-weight="bold" fill="#b91c1c" text-anchor="middle">307 で /login へ</text>
+<text x="260" y="184" font-size="12" fill="#7f1d1d" text-anchor="middle">ページは描画しない</text>
+<path d="M184,170 L70,170 L70,107" fill="none" stroke="#ef4444" stroke-width="1.5" marker-end="url(#ar-04-08)"/>
+<text x="120" y="162" font-size="12" fill="#b91c1c" text-anchor="middle">転送の合図</text>
+<text x="520" y="160" font-size="12" fill="#475569" text-anchor="middle">matcher に合う URL にだけ関所が立つ</text>
+<text x="520" y="180" font-size="12" fill="#475569" text-anchor="middle">（それ以外は proxy.ts を素通り）</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図4-8: proxy.ts は、ページを描画する前に立つ関所</div>
+</div>
+
+> **▼ このコードがやること（先に日本語で）:** ページが表示される「前の段階」で割り込み、未ログインのユーザーを `/login` に転送する関所（プロキシ）を作ります。リクエストの Cookie からログイン状態を判定し、条件に合えば転送、合わなければそのまま通します。最後の `config.matcher` で「どの URL にこの関所を効かせるか」を指定する点もポイントです。詳細はコード内コメントを参照してください。
 
 ```typescript
 // ファイル名は固定。app/ の外、プロジェクト直下に置く
-// middleware.ts（プロジェクトルート）
+// proxy.ts（プロジェクトルート。Next.js 15 までの middleware.ts）
 
-// Edge ランタイム用のレスポンスヘルパー
+// リダイレクトや「通過OK」を返すためのレスポンスヘルパー
 import { NextResponse } from "next/server";
 // 型だけ取り込み（リクエスト型）
 import type { NextRequest } from "next/server";
 
-// `middleware` という名前で export すると Next.js が自動呼び出し
-export function middleware(request: NextRequest) {
+// `proxy` という名前で export すると Next.js が自動呼び出し
+export function proxy(request: NextRequest) {
   // 例: 未ログインユーザーを /books ページからリダイレクト
   // Cookie から `session` の値を取得（あればログイン中とみなす）
   const isLoggedIn = request.cookies.get("session");
@@ -2161,20 +3378,20 @@ export function middleware(request: NextRequest) {
   // 未ログイン かつ /books 配下にアクセスしている
   if (!isLoggedIn && request.nextUrl.pathname.startsWith("/books")) {
     // /login に転送するレスポンスを返す
+    // `new URL("/login", request.url)` はベースURLを保ったまま絶対URLを作る
     return NextResponse.redirect(new URL("/login", request.url));
-                                                                    // `new URL("/login", request.url)` はベースURLを保ったまま絶対URLを作る
   }
 
   // 条件に合わない場合は普通に次の処理（=ページ描画）へ進める
   return NextResponse.next();
 }
 
-// ミドルウェアを適用するパスを指定
+// proxy（関所）を適用するパスを指定
 // `config` という名前で設定オブジェクトを export
 export const config = {
-  // この matcher にマッチしたURLでだけ middleware が動く
+  // この matcher にマッチしたURLでだけ proxy が動く
+  // `:path*` は「任意の階層を含む」の意味
   matcher: ["/books/:path*"],
-                                                                    // `:path*` は「任意の階層を含む」の意味
 };
 ```
 
@@ -2406,23 +3623,133 @@ Next.js の `fetch` には、標準仕様にはない独自のオプションが
 // `cache: "no-store"` でキャッシュを使わない
 fetch(url, { cache: "no-store" });
 
-// ビルド時に1回だけ取得し、以降は同じ結果を返す
-// SSG - ビルド時にデータを取得し、キャッシュ（デフォルト）
+// 1回取得したら保存しておき、以降は同じ結果を返す
+// SSG - データをキャッシュ（Next.js 14 まではこれがデフォルトだった）
 // `cache: "force-cache"` で強制キャッシュ
 fetch(url, { cache: "force-cache" });
 
 // 一定間隔で再取得する中間方式
 // ISR - 60秒ごとにキャッシュを再検証
 // `next.revalidate` は Next.js が追加した独自オプション
+// 60 は秒数。指定間隔ごとに次のアクセス時に再取得
 fetch(url, { next: { revalidate: 60 } });
-                                                                              // 60 は秒数。指定間隔ごとに次のアクセス時に再取得
 ```
 
 | 戦略 | 説明 | 使用例 |
 |---|---|---|
 | `cache: "no-store"` | 毎回取得（SSR） | ユーザー固有のデータ |
-| `cache: "force-cache"` | ビルド時に取得（SSG） | 変更の少ないデータ |
+| `cache: "force-cache"` | 1回取得して使い回す（SSG） | 変更の少ないデータ |
 | `next: { revalidate: N }` | N秒ごとに再検証（ISR） | ニュース記事など |
+| 何も指定しない | キャッシュしない（ただしページが作り置きされると、ビルド時の1回だけになる。下の「つまずきポイント」） | ― |
+
+> **注意（Next.js 15 で「何も指定しないとき」の動きが変わりました）:** Next.js 14 までは、`fetch` に何も指定しないと `force-cache`（保存して使い回す）になっていました。Next.js 15 からは逆に、**何も指定しないとキャッシュしません**。古い解説記事の「fetch はデフォルトでキャッシュされる」という説明は、今の Next.js には当てはまらないので注意してください。
+
+#### キャッシュと再検証のしくみを図で見る
+
+`revalidate`（リバリデート：再検証）は「作り置きの賞味期限」のようなものです。お弁当屋さんにたとえると、`revalidate = 60` は「作ってから60秒たったお弁当は、次のお客さんが来たときに**とりあえずそれを渡しつつ**、裏で新しいお弁当を作り始める」というルールです。お客さんを待たせない代わりに、期限切れ直後の1人だけは少し古いお弁当を受け取ります。下の図は、発展の「ISR」で実際に `revalidate = 60` のページを動かして記録した時刻をそのまま並べたものです。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 236" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-04-09" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<text x="360" y="20" font-size="12" font-weight="bold" fill="#475569" text-anchor="middle">export const revalidate = 60 のページ（作り置きの中身の移り変わり）</text>
+<rect x="70" y="36" width="166" height="30" rx="4" fill="#f8fafc" stroke="#64748b"/>
+<text x="153" y="56" font-size="12" fill="#0f172a" text-anchor="middle">20:50:31 の版</text>
+<rect x="236" y="36" width="270" height="30" rx="4" fill="#fff7ed" stroke="#f97316"/>
+<text x="371" y="56" font-size="12" fill="#0f172a" text-anchor="middle">20:52:25 の版</text>
+<rect x="506" y="36" width="200" height="30" rx="4" fill="#ecfdf5" stroke="#10b981"/>
+<text x="606" y="56" font-size="12" fill="#0f172a" text-anchor="middle">20:53:31 の版</text>
+<text x="236" y="88" font-size="12" fill="#c2410c" text-anchor="middle">↑ 裏で作り直し</text>
+<text x="506" y="88" font-size="12" fill="#047857" text-anchor="middle">↑ 裏で作り直し</text>
+<line x1="60" y1="118" x2="708" y2="118" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-04-09)"/>
+<text x="700" y="108" font-size="12" fill="#475569" text-anchor="end">時間</text>
+<line x1="80" y1="112" x2="80" y2="124" stroke="#475569" stroke-width="1.5"/>
+<line x1="230" y1="112" x2="230" y2="124" stroke="#475569" stroke-width="1.5"/>
+<line x1="360" y1="112" x2="360" y2="124" stroke="#475569" stroke-width="1.5"/>
+<line x1="500" y1="112" x2="500" y2="124" stroke="#475569" stroke-width="1.5"/>
+<line x1="630" y1="112" x2="630" y2="124" stroke="#475569" stroke-width="1.5"/>
+<text x="80" y="142" font-size="12" font-weight="bold" fill="#0f172a" text-anchor="middle">next build</text>
+<text x="230" y="142" font-size="12" font-weight="bold" fill="#0f172a" text-anchor="middle">1秒後</text>
+<text x="360" y="142" font-size="12" font-weight="bold" fill="#0f172a" text-anchor="middle">31秒後</text>
+<text x="500" y="142" font-size="12" font-weight="bold" fill="#0f172a" text-anchor="middle">66秒後</text>
+<text x="630" y="142" font-size="12" font-weight="bold" fill="#0f172a" text-anchor="middle">73秒後</text>
+<text x="80" y="166" font-size="12" fill="#475569" text-anchor="middle">作り置きを</text>
+<text x="80" y="184" font-size="12" fill="#475569" text-anchor="middle">1つ作る</text>
+<text x="230" y="166" font-size="12" fill="#c2410c" text-anchor="middle">20:50:31 を返す</text>
+<text x="230" y="184" font-size="12" fill="#c2410c" text-anchor="middle">（期限切れ→更新）</text>
+<text x="360" y="166" font-size="12" fill="#047857" text-anchor="middle">20:52:25 を返す</text>
+<text x="360" y="184" font-size="12" fill="#047857" text-anchor="middle">（期限内）</text>
+<text x="500" y="166" font-size="12" fill="#c2410c" text-anchor="middle">20:52:25 を返す</text>
+<text x="500" y="184" font-size="12" fill="#c2410c" text-anchor="middle">（期限切れ→更新）</text>
+<text x="630" y="166" font-size="12" fill="#047857" text-anchor="middle">20:53:31 を返す</text>
+<text x="630" y="184" font-size="12" fill="#047857" text-anchor="middle">（新しい版）</text>
+<text x="360" y="222" font-size="12" fill="#475569" text-anchor="middle">期限切れ直後の1回は「古い版をすぐ返し、裏で作り直す」。待たせない代わりに、1回だけ古い</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図4-9: revalidate = 60 の作り置きが更新されていく様子（実際の記録）</div>
+</div>
+
+- 「1秒後」のアクセスでは、作り置き（ビルド時の 20:50:31 版）がすでに60秒以上たっていたので、**古い版をすぐ返しつつ**、裏で作り直しが始まりました。
+- 「31秒後」のアクセスでは、作り直された 20:52:25 版が返っています。まだ60秒たっていないので、そのまま使い回されます。
+- 「66秒後」は 20:52:25 版から60秒を過ぎたので、また古い版を返しながら裏で作り直し、「73秒後」には新しい 20:53:31 版が返りました。
+
+> **つまずきポイント（本番にしたら時刻やデータが変わらなくなった）:** `npm run dev`（開発モード）では、ページはアクセスのたびに作り直されます。ところが `npm run build` → `npm run start`（本番モード）にすると、Next.js は「アクセスのたびに変わる要素が無い」と判断したページを、**ビルドのときに1回だけ作って保存（静的化）**します。すると、時刻やデータが**ビルドした瞬間のまま止まって**しまいます。次の時刻を表示するだけのページで確かめました。
+
+```tsx
+// ❌ NG: app/clock/page.tsx（ビルド時に1回だけ作られて、時刻が止まる）
+export default function ClockPage() {
+  // このコードが「いつ」実行されたかを時刻で確かめる
+  const now = new Date().toLocaleTimeString("ja-JP");
+  return <p>このページを作った時刻: {now}</p>;
+}
+```
+
+`npm run build` の結果（関係する行だけ抜粋）。`/clock` の左に `○`（Static：作り置き）が付いています。
+
+```text
+Route (app)
+├ ○ /clock
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+```
+
+`npm run start` で起動し、時間をあけて2回 `curl` で開いた結果です（`<!-- -->` は React が文字の区切りに入れる目印で、画面には出ません）。2回とも、ビルドしたときの時刻のままです。
+
+```text
+<p>このページを作った時刻: <!-- -->20:47:16</p>
+<p>このページを作った時刻: <!-- -->20:47:16</p>
+```
+
+```tsx
+// ✅ OK: app/clock/page.tsx（アクセスのたびにサーバーで作り直す）
+import { connection } from "next/server";
+
+export default async function ClockPage() {
+  // 「このページはアクセスのたびにサーバーで実行する」と宣言する
+  await connection();
+  const now = new Date().toLocaleTimeString("ja-JP");
+  return <p>このページを作った時刻: {now}</p>;
+}
+```
+
+OK 版をビルドすると `/clock` は `ƒ /clock`（Dynamic：アクセスのたびに作る）になり、3秒あけて2回開くと時刻が変わりました。
+
+```text
+<p>このページを作った時刻: <!-- -->11:31:41</p>
+<p>このページを作った時刻: <!-- -->11:31:44</p>
+```
+
+> `connection()`（コネクション）は `next/server` が用意している関数で、`await connection()` と書くと「この先はリクエストが来てから実行する」という合図になります。データベースからの取得でも同じことが起きるので、「本番だけ一覧が更新されない」ときは、まず `npm run build` の結果で `○` と `ƒ` のどちらになっているかを確認しましょう。`cache: "no-store"` の `fetch`、`cookies()`・`headers()`、`searchParams` を使ったページも、自動で `ƒ` になります。
+
+<!-- -->
+
+> **注意（Cache Components を「Yes」にしたプロジェクトの場合）:** 第6章では `create-next-app` で Cache Components を **No** にするよう案内しています。もし Yes にすると、`next.config.ts` に `cacheComponents: true` が入り、キャッシュのしくみが Next.js 16 の新しい方式に切り替わります。この章のコードに関係する主な違いは次のとおりです（どれも Next.js 16.4.1 で実際に確かめました）。
+>
+> - `await params`・`await searchParams`・`await connection()`・`cache: "no-store"` の `fetch` などを使うページに `loading.tsx`（または `<Suspense>`）が無いと、`npm run build` が `Next.js encountered uncached or runtime data during prerendering.` というエラーで止まります。同じフォルダに `loading.tsx` を置けば通ります。
+> - `export const revalidate = 60` のような書き方は使えず、`Route segment config "revalidate" is not compatible with nextConfig.cacheComponents. Please remove it.` というエラーになります。代わりに `"use cache"` と `cacheLife(...)` を使います（発展の「ISR」で例を紹介します）。
+> - 上の NG 版の時刻ページは、黙って止まるのではなく `Next.js encountered the unstable value new Date() while prerendering.` というエラーで「`await connection()` を書いてね」と教えてくれます。
+>
+> 新しい方式は強力ですが、ここまでの説明と書き方が変わる部分が多いので、本書では No（従来の方式）で進めます。
 
 ### 6.2 Client Component でのデータ取得
 
@@ -2472,8 +3799,8 @@ export function BookSearch() {
 
     // デバウンス: 入力が止まって300ms後に検索を実行
     // 300ms後に走るタイマーを仕掛ける
+    // 入力が続いている間はクリーンアップで毎回キャンセルされる（=デバウンス）
     const timer = setTimeout(async () => {
-                                                                     // 入力が続いている間はクリーンアップで毎回キャンセルされる（=デバウンス）
       // 「読み込み中」に切り替え
       setIsLoading(true);
       // エラー表示はリセット
@@ -2497,8 +3824,8 @@ export function BookSearch() {
         setBooks(data);
       // 通信失敗や上の throw を捕まえる
       } catch (err) {
+        // err が Error 型ならその message を、それ以外なら汎用文を表示
         setError(err instanceof Error ? err.message : "エラーが発生しました");
-                                                                     // err が Error 型ならその message を、それ以外なら汎用文を表示
       // 成功・失敗どちらでも最後に走る
       } finally {
         // 読み込み中フラグを解除
@@ -2526,17 +3853,17 @@ export function BookSearch() {
         placeholder="書籍を検索..."
       />
 
-      // 短絡評価: isLoading が true のときだけ <p> を描画
+      {/* 短絡評価: isLoading が true のときだけ <p> を描画 */}
       {isLoading && <p>検索中...</p>}
-      // エラー文字列があるときだけ表示
+      {/* エラー文字列があるときだけ表示 */}
       {error && <p className="error">{error}</p>}
 
       <ul>
-        // 配列を JSX 要素にマッピング
+        {/* 配列を JSX 要素にマッピング */}
         {books.map((book) => (
           // `key` は React に「どの項目が同じか」を伝える必須属性
           <li key={book.id}>
-            // タイトル - 著者 の形式で表示
+            {/* タイトル - 著者 の形式で表示 */}
             {book.title} - {book.author}
           </li>
         ))}
@@ -2664,16 +3991,16 @@ export default function BooksLoading() {
   return (
     <div className="loading-container">
       {/* スケルトンUI: 実際のコンテンツと同じ形状の灰色の枠 */}
+      {/* `style` 属性はオブジェクトを渡す（CSSのキャメルケース表記） */}
+      {/* `{{ ... }}` の外側はJSXの式、内側はJSオブジェクト */}
       <h1 className="skeleton" style={{ width: "200px", height: "32px" }} />
-                                                                    // `style` 属性はオブジェクトを渡す（CSSのキャメルケース表記）
-                                                                    // `{{ ... }}` の外側はJSXの式、内側はJSオブジェクト
 
       <div className="book-grid">
         {/* 6個のスケルトンカード */}
-        // `Array.from({ length: 6 })` で要素6個の配列を作る
+        {/* `Array.from({ length: 6 })` で要素6個の配列を作る */}
+        {/* 第1引数 `_` は使わないので慣習的にアンダースコア */}
+        {/* 第2引数 `i` は 0,1,2,...,5 のインデックス */}
         {Array.from({ length: 6 }).map((_, i) => (
-                                                                    // 第1引数 `_` は使わないので慣習的にアンダースコア
-                                                                    // 第2引数 `i` は 0,1,2,...,5 のインデックス
           // key にインデックスを使う（並び順が変わらないリストならOK）
           <div key={i} className="skeleton-card">
             <div
@@ -2683,13 +4010,13 @@ export default function BooksLoading() {
             />
             <div
               className="skeleton"
+              // タイトル代わりの細長い灰色ブロック
               style={{ width: "80%", height: "20px", marginTop: "8px" }}
-                                                                    // タイトル代わりの細長い灰色ブロック
             />
             <div
               className="skeleton"
+              // 著者代わりのさらに小さなブロック
               style={{ width: "60%", height: "16px", marginTop: "4px" }}
-                                                                    // 著者代わりのさらに小さなブロック
             />
           </div>
         ))}
@@ -2754,6 +4081,85 @@ export default function BooksLoading() {
   </div>
 </div>
 
+#### loading.tsx が「先に」届く様子を時間で測る
+
+上の流れ図のとおりなら、ブラウザには「まず `loading.tsx` の中身、データが届いたら `page.tsx` の中身」の順で HTML が届くはずです。本当にそうなっているのかを、届いた時刻を測って確かめてみましょう。
+
+> **▼ このコードがやること（先に日本語で）:** わざと2秒かかるページ（`app/slow/page.tsx`）と、その読み込み中に出す `loading.tsx` を作ります。そして、そのページを読み込む小さなプログラム（`stream-check.mjs`）で、「何秒目に・どちらの中身が届いたか」を表示します。ページ全体が2秒後にまとめて届くのではなく、`loading.tsx` の部分がすぐ届くことを確かめるのが目的です。
+
+```tsx
+// app/slow/page.tsx
+import { connection } from "next/server";
+
+// 2秒かかるデータ取得のまね（本物ならデータベースへの問い合わせ）
+async function getBooksSlowly() {
+  await new Promise((resolve) => setTimeout(resolve, 2000));
+  return ["リーダブルコード", "達人プログラマー"];
+}
+
+export default async function SlowPage() {
+  // 「アクセスのたびにサーバーで実行する」と宣言（ビルド時の作り置きをさせない）
+  await connection();
+  const books = await getBooksSlowly();
+
+  return (
+    <ul>
+      {books.map((title) => (
+        <li key={title}>{title}</li>
+      ))}
+    </ul>
+  );
+}
+```
+
+```tsx
+// app/slow/loading.tsx（page.tsx の準備ができるまで代わりに表示される）
+export default function SlowLoading() {
+  return <p>読み込み中です...</p>;
+}
+```
+
+```js
+// stream-check.mjs（プロジェクトの外でもよい。ページが「何秒目に・どんな中身で」届くかを調べる）
+const start = Date.now();
+const response = await fetch("http://localhost:3000/slow");
+const decoder = new TextDecoder();
+
+// レスポンスの本文を「届いた塊（チャンク）ごと」に読む
+for await (const chunk of response.body) {
+  const text = decoder.decode(chunk, { stream: true });
+  const seconds = ((Date.now() - start) / 1000).toFixed(2);
+  const found = [];
+  if (text.includes("読み込み中です")) found.push("loading.tsx の中身");
+  if (text.includes("リーダブルコード")) found.push("page.tsx の中身");
+  console.log(`${seconds}秒: ${chunk.length}バイト受信 ${found.join(" / ")}`);
+}
+```
+
+**▼ 実行結果**（`npm run build` → `npm run start` で起動したあと、別のターミナルで `node stream-check.mjs` を実行）
+
+```text
+0.17秒: 1659バイト受信 loading.tsx の中身
+0.17秒: 4835バイト受信 loading.tsx の中身
+2.13秒: 259バイト受信 page.tsx の中身
+2.13秒: 1190バイト受信 page.tsx の中身
+2.13秒: 14バイト受信 
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: 0.17秒で「読み込み中です...」が届いている
+
+- 最初の2つの塊は、アクセスしてから **0.17秒** で届いています。中身は `loading.tsx` の「読み込み中です...」を含む HTML です。データ取得（2秒）を待たずに、まず「枠と読み込み中の表示」だけを先に送っているのです。
+- これが図4-2 の①の画面です。利用者は真っ白な画面で待たされず、すぐに「読み込み中」と分かります。
+
+##### 解説2: 2.13秒で、同じ通信の続きとして本体が届く
+
+- 2秒の待ち時間が終わった **2.13秒** の時点で、`page.tsx` の中身（書籍の一覧）が届いています。新しくページを読み直したのではなく、**同じ1回の通信の続き**として後から流れてきている点がポイントです。
+- このように、できた部分から順番に送る仕組みを **ストリーミング（Streaming：流し送り）** と呼びます。ブラウザは後から届いた部分で「読み込み中です...」を差し替えます（図4-2 の②）。
+
+> **用語: チャンク（chunk）** … 通信で届くデータの「ひと塊」。大きなデータは、いくつかの塊に分かれて少しずつ届きます。`for await (const chunk of response.body)` は「塊が届くたびに、中の処理を1回実行する」という書き方です。
+
 ### 6.4 Route Handlers（補足）
 
 App Router で「自前のHTTP API」を作りたいときは、`app/api/.../route.ts` というファイルを置きます。これを **Route Handler**（ルートハンドラ：URLとHTTPメソッドに対応する関数を書くファイル）と呼びます。Server Component から直接DBにアクセスできる App Router では出番は減りましたが、外部から `fetch` で叩かれるエンドポイントを公開したい場合に使います。
@@ -2763,7 +4169,7 @@ App Router で「自前のHTTP API」を作りたいときは、`app/api/.../rou
 ```typescript
 // 予約名 `route.ts`。`/api/books` の HTTP API になる
 // app/api/books/route.ts
-                                                                   // page.tsx と同じフォルダには置けない（ルートが衝突するため）
+// page.tsx と同じフォルダには置けない（ルートが衝突するため）
 
 // レスポンスを作るヘルパー
 import { NextResponse } from "next/server";
@@ -2784,8 +4190,8 @@ export async function POST(request: Request) {
   // リクエストボディの JSON を解釈
   const body = await request.json();
   // ここで body を使ってDB保存などを行う
+  // 201 Created を返す例
   return NextResponse.json({ created: true, body }, { status: 201 });
-                                                                   // 201 Created を返す例
 }
 ```
 
@@ -2793,7 +4199,7 @@ export async function POST(request: Request) {
 
 画像は `next/image` の `<Image>` コンポーネントを使うと、自動でサイズ最適化・WebP変換・遅延ロードが行われます。
 
-> **▼ このコードがやること（先に日本語で）:** 画像を `<img>` ではなく `next/image` の `<Image>` で表示し、サイズ最適化・WebP変換・遅延読み込みを自動で効かせます。`width`/`height` はレイアウト崩れ防止のために必須、`alt`（代替テキスト）もアクセシビリティのために必須です。最重要画像には `priority` を付ける、という使い方を学べます。詳細はコード内コメントを参照してください。
+> **▼ このコードがやること（先に日本語で）:** 画像を `<img>` ではなく `next/image` の `<Image>` で表示し、サイズ最適化・WebP変換・遅延読み込みを自動で効かせます。`width`/`height` はレイアウト崩れ防止のために必須、`alt`（代替テキスト）もアクセシビリティのために必須です。最重要画像には `preload`（Next.js 15 までは `priority`）を付ける、という使い方を学べます。詳細はコード内コメントを参照してください。
 
 ```typescript
 // default export の Image コンポーネント
@@ -2811,7 +4217,8 @@ export function BookCover() {
       // 画像のレイアウト崩れを防ぐ
       height={300}
       // LCP（最大コンテンツ描画）に関わる重要画像はこれを付ける
-      priority
+      // （Next.js 15 までの priority。16 から preload という名前になった）
+      preload
     />
   );
 }
@@ -2896,11 +4303,11 @@ Server Actions は `"use server"` ディレクティブで宣言します。`"us
 // この関数はサーバー上でのみ実行される
 // クライアントには関数の中身は送信されない
 // 引数 `FormData` は Web標準のフォーム値コンテナ
+// <form action={createBook}> の送信内容が自動で渡される
 export async function createBook(formData: FormData) {
-                                                                    // <form action={createBook}> の送信内容が自動で渡される
   // `formData.get("title")` で name="title" の値を取り出す
+  // 戻り値は `FormDataEntryValue | null` なので `as string` で型を絞り込む
   const title = formData.get("title") as string;
-                                                                    // 戻り値は `FormDataEntryValue | null` なので `as string` で型を絞り込む
   // 同じく著者
   const author = formData.get("author") as string;
   // 数値に変換（formData の値は基本文字列）
@@ -2991,7 +4398,7 @@ export async function createBook(formData: FormData) {
 
 #### Server Component のフォーム（JavaScript 不要）
 
-> **▼ このコードがやること（先に日本語で）:** 先ほどの Server Action を使う「書籍追加フォーム」を Server Component として作ります。`<form action={createBook}>` のように `action` 属性に関数を直接渡せるのが Next.js の拡張で、JavaScript が動かない環境でも送信できる堅牢な作りになります（Progressive Enhancement）。各 `<input>` の `name` 属性が、サーバー側で値を取り出すときのキー名になる点が重要です。詳細はコード内コメントを参照してください。
+> **▼ このコードがやること（先に日本語で）:** 先ほどの Server Action を使う「書籍追加フォーム」を Server Component として作ります。`<form action={submitBook}>` のように `action` 属性に関数を直接渡せるのが Next.js（React 19）の拡張で、JavaScript が動かない環境でも送信できる堅牢な作りになります（Progressive Enhancement）。`<form action>` に直接渡す関数は「何も返さない」形にする決まりがあるので、結果を返す `createBook` を、何も返さない `submitBook` で包んで渡しています。各 `<input>` の `name` 属性が、サーバー側で値を取り出すときのキー名になる点も重要です。詳細はコード内コメントを参照してください。
 
 ```typescript
 // 新規追加ページ。"use client" を書かないので Server
@@ -3002,18 +4409,24 @@ import { createBook } from "./actions";
 
 // 同期関数でOK（このページ自体は async データ取得をしない）
 export default function NewBookPage() {
+  // <form action> に直接渡す Server Action は「何も返さない」形にする
+  // createBook は結果（error など）を返すので、何も返さない関数で包む
+  async function submitBook(formData: FormData) {
+    // この関数の中身もサーバーで実行される、という印
+    "use server";
+    await createBook(formData);
+  }
+
   return (
     <div>
       <h1>書籍を追加</h1>
 
-      // `<form action={...}>` に関数を渡せるのが Next.js の拡張
-      {/* action 属性に Server Action を渡す */}
+      {/* `<form action={...}>` に関数を渡せるのが Next.js の拡張 */}
       {/* JavaScript が無効でも動作する（Progressive Enhancement） */}
-                                                                    // Progressive Enhancement: JSが動かない環境でもHTMLだけで動く設計
-      // 送信時に createBook がサーバーで実行される
-      <form action={createBook}>
+      {/* 送信時に submitBook（→ createBook）がサーバーで実行される */}
+      <form action={submitBook}>
         <div>
-          // `htmlFor` は HTML の `for` 属性のJSX版（forはJSの予約語）
+          {/* `htmlFor` は HTML の `for` 属性のJSX版（forはJSの予約語） */}
           <label htmlFor="title">タイトル</label>
           <input
             // テキスト入力
@@ -3047,7 +4460,7 @@ export default function NewBookPage() {
           />
         </div>
 
-        // submit ボタン
+        {/* submit ボタン */}
         <button type="submit">追加する</button>
       </form>
     </div>
@@ -3056,6 +4469,14 @@ export default function NewBookPage() {
 ```
 
 **画面にはこう表示される:** 「書籍を追加」という見出しの下に、タイトル、著者、出版年の入力フィールドと「追加する」ボタンが表示されます。各フィールドに入力して「追加する」ボタンを押すと、フォームのデータがサーバーに送信され、`createBook` 関数がサーバー上で実行されます。
+
+> **注意（`createBook` をそのまま `action` に渡すと型エラー）:** `<form action={createBook}>` と直接渡したくなりますが、`createBook` は `{ error: ... }` などの結果を**返す**関数なので、`npx tsc --noEmit` で次のエラーになります（「`action` に渡せるのは、何も返さない（`void`）関数だけ」という意味）。
+
+```text
+app/books/new/page.tsx(18,13): error TS2322: Type '(formData: FormData) => Promise<{ error: string; success?: undefined; } | { success: boolean; error?: undefined; }>' is not assignable to type 'string | ((formData: FormData) => void | Promise<void>) | undefined'.
+```
+
+> 上のコードのように何も返さない関数で包むか、次の Client Component 版のように `useActionState` を使って結果を受け取るようにします。関数の本体の先頭に `"use server";` と書くと、その関数1つだけを Server Action にできます（ファイルの先頭に書くと、ファイル内の全関数が Server Action になります）。
 
 #### Client Component のフォーム（ローディング状態の管理）
 
@@ -3068,23 +4489,35 @@ export default function NewBookPage() {
 "use client";
 
 // React 19 で追加された Server Action 連携用フック
+// 旧名は useFormState（同じ用途）
 import { useActionState } from "react";
-                                                                     // 旧名は useFormState（同じ用途）
 // 別ファイルの Server Action を取り込む
 import { createBook } from "@/app/books/new/actions";
 
+// フォームの状態（Server Action が返した結果）の型
+type FormState = { error?: string; success?: boolean } | null;
+
+// useActionState に渡す関数は「(前回の状態, フォームの中身)」の2つを受け取る形にする
+async function submitBook(
+  _prevState: FormState,
+  formData: FormData
+): Promise<FormState> {
+  // 中身は Server Action の createBook に任せる
+  return createBook(formData);
+}
+
 export function BookFormClient() {
-  const [state, formAction, isPending] = useActionState(createBook, null);
-                                                                    // 戻り値は [現在のstate, ラップ済み formAction, 送信中フラグ]
-                                                                    // 第2引数の null は state の初期値
-                                                                    // formAction は <form action={...}> に渡せるよう加工された関数
+  // 戻り値は [現在のstate, ラップ済み formAction, 送信中フラグ]
+  // 第2引数の null は state の初期値
+  // formAction は <form action={...}> に渡せるよう加工された関数
+  const [state, formAction, isPending] = useActionState(submitBook, null);
 
   return (
     // 元の createBook ではなく、ラップ済みの formAction を渡す
     <form action={formAction}>
       <div>
         <label htmlFor="title">タイトル</label>
-        // name="title" が formData のキーになる
+        {/* name="title" が formData のキーになる */}
         <input type="text" id="title" name="title" required />
       </div>
 
@@ -3099,16 +4532,16 @@ export function BookFormClient() {
       </div>
 
       {/* エラーメッセージの表示 */}
-      // `?.` はオプショナルチェイニング（state が null でも安全）
+      {/* `?.` はオプショナルチェイニング（state が null でも安全） */}
       {state?.error && (
         // Server Action が返した error メッセージを表示
         <p className="error-message">{state.error}</p>
       )}
 
       {/* 送信中はボタンを無効化 */}
-      // `disabled={isPending}` で送信中はクリック不可
+      {/* `disabled={isPending}` で送信中はクリック不可 */}
       <button type="submit" disabled={isPending}>
-        // ボタンラベルも切り替え
+        {/* ボタンラベルも切り替え */}
         {isPending ? "追加中..." : "追加する"}
       </button>
     </form>
@@ -3132,18 +4565,60 @@ export function BookFormClient() {
 import { useActionState } from "react";
 import { createBook } from "@/app/books/new/actions";
 
+type FormState = { error?: string; success?: boolean } | null;
+
+async function submitBook(
+  _prevState: FormState,
+  formData: FormData
+): Promise<FormState> {
+  return createBook(formData);
+}
+
 export function BookFormClient() {
-  const [state, formAction, isPending] = useActionState(createBook, null);
+  const [state, formAction, isPending] = useActionState(submitBook, null);
 ```
 
 - `useActionState`（ユーズ・アクション・ステート）は、React 19 で追加された「**Server Action とフォームをつなぐ**」フックです（旧名は `useFormState`）。ブラウザ側のフックなので `"use client"` が必須です。
-- 第1引数に Server Action（`createBook`）、第2引数に state の初期値（`null`）を渡します。
+- 第1引数に「送信されたときに呼ぶ関数」（`submitBook`）、第2引数に state の初期値（`null`）を渡します。
+- `useActionState` に渡す関数は、**1つ目の引数に「前回の state」、2つ目の引数に「フォームの中身（FormData）」**を受け取る決まりです。`createBook` は FormData の1つだけを受け取る形なので、2つ受け取る `submitBook` で包み、中で `createBook(formData)` を呼んでいます。`_prevState` の先頭の `_` は「受け取るけれど使わない」という目印です。
 - 戻り値は3つの値の配列で、分割代入で受け取ります。
-  - `state`：Server Action が `return` した値（例: `{ error: "..." }`）。
+  - `state`：`submitBook`（つまり `createBook`）が `return` した値（例: `{ error: "..." }`）。
   - `formAction`：`<form action={...}>` に渡せるよう**加工済みの送信関数**。
   - `isPending`：送信処理中かどうかの `true`/`false`。
 
 > **用語: useActionState** … Server Action の「実行結果(state)」「送信用の関数」「送信中フラグ」をまとめて受け取れるReactフック。フォームの送信状態を簡単に扱えます。
+
+<!-- -->
+
+> **つまずきポイント（`useActionState` に、FormData だけを受け取る関数を渡す）:** `useActionState(createBook, null)` と、Server Action をそのまま渡したくなりますが、`useActionState` は渡した関数を「`(前回の state, FormData)`」の順で呼び出します。`createBook(formData)` のように引数が1つの関数を渡すと、`formData` に**前回の state（最初は `null`）**が入ってしまい、`formData.get(...)` で落ちます。TypeScript も型チェックで次のように教えてくれます（`npx tsc --noEmit` の出力の先頭部分）。
+
+```text
+components/BookFormClient.tsx(16,57): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(action: (state: { error: string; success?: undefined; } | { success: boolean; error?: undefined; } | null) => { error: string; success?: undefined; } | { success: boolean; error?: undefined; } | Promise<{ error: string; success?: undefined; } | { ...; } | null> | null, initialState: { ...; } | ... 1 more ... | null, permalink?: string | undefined): [state: ...]', gave the following error.
+    Argument of type '(formData: FormData) => Promise<{ error: string; success?: undefined; } | { success: boolean; error?: undefined; }>' is not assignable to parameter of type '(state: { error: string; success?: undefined; } | { success: boolean; error?: undefined; } | null) => { error: string; success?: undefined; } | { success: boolean; error?: undefined; } | Promise<{ error: string; success?: undefined; } | { ...; } | null> | null'.
+      Types of parameters 'formData' and 'state' are incompatible.
+        Type '{ error: string; success?: undefined; } | { success: boolean; error?: undefined; } | null' is not assignable to type 'FormData'.
+          Type 'null' is not assignable to type 'FormData'.
+```
+
+```tsx
+// ❌ NG: 1つ目の引数に state が入るのに、FormData を受け取るつもりの関数を渡している
+const [state, formAction, isPending] = useActionState(createBook, null);
+```
+
+```tsx
+// ✅ OK: (前回の state, FormData) の2つを受け取る関数で包んでから渡す
+async function submitBook(
+  _prevState: FormState,
+  formData: FormData
+): Promise<FormState> {
+  return createBook(formData);
+}
+
+const [state, formAction, isPending] = useActionState(submitBook, null);
+```
+
+> エラー文の最後の `Types of parameters 'formData' and 'state' are incompatible`（引数 formData と state の型が合わない）が決め手です。最初から `useActionState` 用に作るなら、Server Action 自体を `createBook(prevState, formData)` の形で書いてもかまいません。
 
 ---
 
@@ -3186,9 +4661,181 @@ export function BookFormClient() {
 
 ---
 
+#### 送信してから画面が新しくなるまで（revalidatePath）
+
+Server Action でデータを保存したら、一覧の画面にも新しいデータが出てほしいですよね。ここで大事になるのが `revalidatePath`（リバリデート・パス：この URL の画面を作り直して、と伝える関数）です。お店にたとえると、「在庫を補充した店員が、店頭の在庫表示の札を『古い』と書き換えて、新しい札に取り替える」作業にあたります。補充（保存）だけして札を替えないと、お客さん（画面）には古い在庫数が見え続けます。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 400" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-04-10" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="10" y="10" width="220" height="330" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="120" y="30" font-size="13" font-weight="bold" fill="#1e40af" text-anchor="middle">ブラウザ</text>
+<rect x="250" y="10" width="220" height="330" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="360" y="30" font-size="13" font-weight="bold" fill="#047857" text-anchor="middle">Next.js サーバー</text>
+<rect x="490" y="10" width="220" height="330" rx="10" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>
+<text x="600" y="30" font-size="13" font-weight="bold" fill="#475569" text-anchor="middle">データ（DB）</text>
+<rect x="22" y="44" width="196" height="46" rx="8" fill="#ffffff" stroke="#3b82f6"/>
+<text x="120" y="63" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">① 「追加」を押す</text>
+<text x="120" y="81" font-size="12" fill="#475569" text-anchor="middle">書名: 達人プログラマー</text>
+<text x="322" y="58" font-size="12" fill="#475569" text-anchor="middle">POST（FormData）</text>
+<path d="M219,67 L360,67 L360,96" fill="none" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-04-10)"/>
+<rect x="262" y="98" width="196" height="46" rx="8" fill="#ffffff" stroke="#10b981"/>
+<text x="360" y="117" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">② addBook を実行</text>
+<text x="360" y="135" font-size="12" fill="#475569" text-anchor="middle">（入力チェックをする）</text>
+<line x1="459" y1="121" x2="500" y2="121" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-04-10)"/>
+<rect x="502" y="98" width="196" height="46" rx="8" fill="#ffffff" stroke="#64748b"/>
+<text x="600" y="117" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">③ 本棚に1冊保存</text>
+<text x="600" y="135" font-size="12" fill="#475569" text-anchor="middle">（本物は Supabase）</text>
+<rect x="262" y="158" width="196" height="50" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<text x="360" y="178" font-size="12" font-weight="bold" fill="#c2410c" text-anchor="middle">④ revalidatePath("/shelf")</text>
+<text x="360" y="197" font-size="12" fill="#475569" text-anchor="middle">「/shelf は古い」と印を付ける</text>
+<rect x="262" y="222" width="196" height="46" rx="8" fill="#ffffff" stroke="#10b981"/>
+<text x="360" y="241" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">⑤ /shelf を描き直す</text>
+<text x="360" y="259" font-size="12" fill="#475569" text-anchor="middle">（同じ通信の中で）</text>
+<text x="160" y="236" font-size="12" fill="#475569" text-anchor="middle">新しい画面の情報</text>
+<path d="M261,245 L120,245 L120,280" fill="none" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-04-10)"/>
+<rect x="22" y="282" width="196" height="48" rx="8" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="120" y="302" font-size="13" font-weight="bold" fill="#047857" text-anchor="middle">⑥ 画面が新しくなる</text>
+<text x="120" y="320" font-size="12" fill="#475569" text-anchor="middle">本棚（2冊）・再読み込みなし</text>
+<text x="360" y="366" font-size="12" fill="#475569" text-anchor="middle">revalidatePath を忘れると ④⑤ が起きず、保存はされても画面は古いまま</text>
+<text x="360" y="386" font-size="12" fill="#475569" text-anchor="middle">（下の「つまずきポイント」で実験）</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図4-10: Server Action でフォームを送ってから、画面が新しくなるまで</div>
+</div>
+
+> **▼ このコードがやること（先に日本語で）:** 書名を入力して「追加」を押すと、本棚（書籍の一覧）に1冊増える小さなページを作ります。データベースの代わりに、サーバーのメモリ上の配列（`shelf`）に保存します。保存したあとに `revalidatePath("/shelf")` を呼んで、「`/shelf` の画面を作り直して」と Next.js に伝えるのがポイントです。
+
+```ts
+// lib/shelf.ts（データベースの代わりに、サーバーのメモリ上の配列を使う）
+export const shelf: string[] = ["リーダブルコード"];
+```
+
+```ts
+// app/shelf/actions.ts
+"use server";
+
+import { revalidatePath } from "next/cache";
+import { shelf } from "@/lib/shelf";
+
+export async function addBook(formData: FormData) {
+  // name="title" の入力欄の値を取り出し、前後の空白を取り除く
+  const title = String(formData.get("title") ?? "").trim();
+  if (!title) {
+    return;
+  }
+
+  // データを保存する（本物のアプリでは Supabase に INSERT する）
+  shelf.push(title);
+  console.log(`[addBook] 「${title}」を追加しました（全${shelf.length}冊）`);
+
+  // 「/shelf の画面は古くなった」と Next.js に伝え、作り直してもらう
+  revalidatePath("/shelf");
+}
+```
+
+```tsx
+// app/shelf/page.tsx（Server Component）
+import { shelf } from "@/lib/shelf";
+import { addBook } from "./actions";
+
+export default function ShelfPage() {
+  return (
+    <div>
+      <h1>本棚（{shelf.length}冊）</h1>
+      <ul>
+        {shelf.map((title) => (
+          <li key={title}>{title}</li>
+        ))}
+      </ul>
+      {/* action に Server Action を渡す */}
+      <form action={addBook}>
+        <input name="title" placeholder="書名" />
+        <button type="submit">追加</button>
+      </form>
+    </div>
+  );
+}
+```
+
+**▼ 実行結果**（`npm run dev` で `http://localhost:3000/shelf` を開き、「達人プログラマー」と入力して「追加」を押したとき）
+
+ブラウザの表示（`<form>` より前の部分。上が押す前、下が押した後）:
+
+```text
+<div><h1>本棚（1冊）</h1><ul><li>リーダブルコード</li></ul>
+<div><h1>本棚（2冊）</h1><ul><li>リーダブルコード</li><li>達人プログラマー</li></ul>
+```
+
+ターミナルの出力（押した後の部分）:
+
+```text
+[addBook] 「達人プログラマー」を追加しました（全2冊）
+[RootLayout] サーバーで描画しました
+ POST /shelf 200 in 31ms (next.js: 2ms, application-code: 29ms)
+  └─ ƒ addBook({}) in 2ms app/shelf/actions.ts
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: フォーム送信は POST として届き、Server Action が動く
+
+- ターミナルの `POST /shelf` が、図4-10 の①→② です。Server Action は、裏では **POST**（データを送る種類の通信）で呼び出されています。
+- `└─ ƒ addBook({}) ...` は、Next.js 16 の開発サーバーが「`addBook` が呼ばれた」ことを表示してくれている行です（`{}` は FormData を簡単に表示したもの）。
+- `[addBook] ...（全2冊）` のログがターミナルに出ていることから、保存処理（図4-10 の③）がサーバーで実行されたことが分かります。
+
+##### 解説2: `revalidatePath` のおかげで、同じ通信の中で画面が新しくなる
+
+```ts
+  revalidatePath("/shelf");
+```
+
+- ログの次に `[RootLayout] サーバーで描画しました` が出ています。これが図4-10 の⑤で、`revalidatePath` で「古い」と印を付けられた `/shelf` を、Next.js がその場で描き直しています。
+- ブラウザの表示は、ページの再読み込みをしていないのに「本棚（2冊）」に変わりました（⑥）。送信と画面の更新が**1回の通信**で済むのが Server Actions の便利なところです。
+- `revalidatePath` の引数には、新しくしたい画面の URL を書きます。書籍管理アプリなら、一覧のトップページ `/` や、詳細の `/books/42` などです。
+
+> **ヒント:** 保存したあとに別のページへ移動したいときは、`revalidatePath("/")` のあとに `redirect("/")` を呼びます（`next/navigation` の `redirect`）。順番は「**作り直しの印を付けてから、移動する**」です。`redirect` を先に呼ぶと、そこで処理が止まって後ろの行が実行されません（5.3 の「つまずきポイント」と同じく、`try` の中で呼ばないことにも注意）。
+
+<!-- -->
+
+> **つまずきポイント（`revalidatePath` を忘れて、保存したのに画面が古いまま）:** 保存処理だけ書いて `revalidatePath` を書き忘れると、データは保存されているのに画面が変わりません。開発モードではページを再読み込みすれば新しくなるので気づきにくく、**本番モード**（`npm run build` → `npm run start`）で初めて「何度読み込み直しても増えない」と困ることになります。`revalidatePath` の行をコメントにして本番モードで試した記録です。
+
+```ts
+// ❌ NG: app/shelf/actions.ts（保存はするが、画面を作り直すよう伝えていない）
+  shelf.push(title);
+  console.log(`[addBook] 「${title}」を追加しました（全${shelf.length}冊）`);
+  // revalidatePath("/shelf");
+```
+
+ブラウザの表示（上から「押す前」「押した後」「再読み込みした後」）:
+
+```text
+<div><h1>本棚（1冊）</h1><ul><li>リーダブルコード</li></ul>
+<div><h1>本棚（1冊）</h1><ul><li>リーダブルコード</li></ul>
+<div><h1>本棚（1冊）</h1><ul><li>リーダブルコード</li></ul>
+```
+
+ターミナルの出力:
+
+```text
+[addBook] 「達人プログラマー」を追加しました（全2冊）
+```
+
+```ts
+// ✅ OK: 保存したら、その結果を表示している画面の URL を revalidatePath に渡す
+  shelf.push(title);
+  console.log(`[addBook] 「${title}」を追加しました（全${shelf.length}冊）`);
+  revalidatePath("/shelf");
+```
+
+> ターミナルには「全2冊」と出ているのに、画面はずっと1冊のままです。これは `/shelf` がビルド時に作り置き（`○ Static`）されていて、誰も「作り直して」と言っていないからです（6.1 のつまずきポイントと同じ仕組み）。OK 版に戻して同じ手順を試すと、押した直後も再読み込み後も「本棚（2冊）」になりました。**データを変えたら `revalidatePath`** とセットで覚えましょう。
+
+---
+
 ### 7.3 書籍の追加/編集での利用予告
 
-次章以降で、Server Actions を使って以下の機能を実装します:
+書籍管理アプリの「追加・編集・削除」を Server Actions で作るとしたら、次のような関数になります:
 
 <div style="max-width: 680px; margin: 20px auto; font-family: 'Segoe UI', sans-serif;">
   <div style="border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.06);">
@@ -3204,7 +4851,7 @@ export function BookFormClient() {
       <div style="display: flex; gap: 8px; flex-wrap: wrap;">
         <div style="flex: 1; min-width: 180px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 10px; font-size: 11px; line-height: 1.7; color: #14532d;">
           <div style="font-weight: 700; color: #22c55e; margin-bottom: 4px;">createBook</div>
-          1. フォームデータの取得<br/>2. バリデーション<br/>3. Supabase に INSERT<br/>4. /books にリダイレクト
+          1. フォームデータの取得<br/>2. バリデーション<br/>3. Supabase に INSERT<br/>4. / （一覧）にリダイレクト
         </div>
         <div style="flex: 1; min-width: 180px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 10px; font-size: 11px; line-height: 1.7; color: #78350f;">
           <div style="font-weight: 700; color: #f59e0b; margin-bottom: 4px;">updateBook</div>
@@ -3212,14 +4859,14 @@ export function BookFormClient() {
         </div>
         <div style="flex: 1; min-width: 180px; background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 10px; font-size: 11px; line-height: 1.7; color: #7f1d1d;">
           <div style="font-weight: 700; color: #ef4444; margin-bottom: 4px;">deleteBook</div>
-          1. 確認チェック<br/>2. Supabase から DELETE<br/>3. /books にリダイレクト
+          1. 確認チェック<br/>2. Supabase から DELETE<br/>3. / （一覧）にリダイレクト
         </div>
       </div>
     </div>
   </div>
 </div>
 
-> **予告:** 第6章「Supabase との連携」で、実際のデータベースと接続してこれらの Server Actions を完成させます。
+> **予告:** 第7〜8章で、実際のデータベース（Supabase）とつないで、書籍の追加・編集・削除を作ります。本書のアプリでは、学びやすさを優先してブラウザ側（Client Component）から Supabase を呼び出す方法を主に使い、Server Actions で書く方法は参考として紹介します。どちらの方法でも、この章で学んだ「保存したら画面を最新にする（`revalidatePath` や `router.refresh()`）」という考え方は同じです。
 
 ---
 
@@ -3232,23 +4879,27 @@ Next.js では、プロジェクトルートに `.env.local` ファイルを作�
 > **▼ このコードがやること（先に日本語で）:** APIキーやデータベース接続情報などの設定値を、コードに直接書かずに `.env.local` というファイルにまとめて管理します。`KEY="値"` の形で1行に1つ書きます。変数名の先頭に `NEXT_PUBLIC_` を付けるとブラウザにも公開され、付けないとサーバー側だけで使える（＝機密情報を守れる）という違いが最大のポイントです。詳細はコード内コメントを参照してください。
 
 ```bash
-# .env.local（プロジェクトルートに作成）                              # `#` から始まる行はコメント。シェル/dotenv 共通の記法
+# .env.local（プロジェクトルートに作成）
+# `#` から始まる行はコメント。シェル/dotenv 共通の記法
 
-# データベース接続情報（サーバーサイドのみ）                          # NEXT_PUBLIC_ なしなのでブラウザには漏れない
+# データベース接続情報（サーバーサイドのみ）
+# NEXT_PUBLIC_ なしなのでブラウザ用の JavaScript には入らない
 # `KEY="VALUE"` の形で1行1変数。`=` の前後にスペースを入れない
 DATABASE_URL="postgresql://user:password@localhost:5432/bookapp"
 
-# Supabase 接続情報（サーバーサイドのみ）                              # 機密キーは絶対 NEXT_PUBLIC_ を付けない
+# Supabase 接続情報（サーバーサイドのみ）
+# 機密キーには絶対 NEXT_PUBLIC_ を付けない
 # Supabase プロジェクトのURL
 SUPABASE_URL="https://xxxxx.supabase.co"
-# サービスロールキー（DB全権限。絶対に公開してはいけない）
-SUPABASE_SERVICE_ROLE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6..."
+# Secret key（旧 service_role key。DB全権限。絶対に公開してはいけない）
+SUPABASE_SERVICE_ROLE_KEY="sb_secret_xxxxxxxxxxxxxxxx"
 
-# Supabase 接続情報（クライアントサイドでも使用可能）                  # NEXT_PUBLIC_ プレフィックスでブラウザJSにも埋め込まれる
+# Supabase 接続情報（クライアントサイドでも使用可能）
+# NEXT_PUBLIC_ を付けると、ブラウザ用の JavaScript にも値が埋め込まれる
 # 同じURLでも公開してよい想定なら NEXT_PUBLIC_ を付ける
 NEXT_PUBLIC_SUPABASE_URL="https://xxxxx.supabase.co"
-# 匿名キー（Row Level Security で制限される前提なので公開OK）
-NEXT_PUBLIC_SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6..."
+# Publishable key（旧 anon key。Row Level Security で制限される前提なので公開OK）
+NEXT_PUBLIC_SUPABASE_ANON_KEY="sb_publishable_xxxxxxxxxxxxxxxx"
 ```
 
 > **重要:** `.env.local` は `.gitignore` に含まれているため、Git にコミットされません。APIキーやパスワードなどの機密情報を安全に管理できます。
@@ -3275,8 +4926,9 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6..."
       <div style="background: #f0fdf4; border-radius: 6px; padding: 6px 10px; font-size: 12px; font-weight: 600; color: #14532d; margin-bottom: 8px; text-align: center;">SUPABASE_SERVICE_ROLE_KEY</div>
       <div style="display: flex; flex-direction: column; gap: 4px;">
         <div style="background: #dcfce7; border-radius: 6px; padding: 5px 10px; font-size: 12px; color: #14532d;">&#x2705; Server Component</div>
-        <div style="background: #fee2e2; border-radius: 6px; padding: 5px 10px; font-size: 12px; color: #7f1d1d;">&#x274C; Client Component（undefined）</div>
-        <div style="background: #dcfce7; border-radius: 6px; padding: 5px 10px; font-size: 12px; color: #14532d;">&#x2705; ブラウザには絶対に送信されない</div>
+        <div style="background: #fee2e2; border-radius: 6px; padding: 5px 10px; font-size: 12px; color: #7f1d1d;">&#x274C; Client Component（ブラウザでは undefined）</div>
+        <div style="background: #dcfce7; border-radius: 6px; padding: 5px 10px; font-size: 12px; color: #14532d;">&#x2705; ブラウザ用の JS には入らない</div>
+        <div style="background: #fee2e2; border-radius: 6px; padding: 5px 10px; font-size: 12px; color: #7f1d1d;">&#x26A0;&#xFE0F; Client で表示すると HTML に出る（下記）</div>
       </div>
     </div>
   </div>
@@ -3301,7 +4953,7 @@ export default async function BooksPage() {
   // "https://xxxxx.supabase.co"
   // サーバーのコンソールに出力（ブラウザDevToolsには出ない）
   console.log(url);
-  // "eyJhbGciOi..."
+  // "sb_secret_..."
   // ※ 本番ではこれをログに出さないこと
   console.log(serviceKey);
   // "https://xxxxx.supabase.co"
@@ -3312,7 +4964,7 @@ export default async function BooksPage() {
 }
 ```
 
-> **▼ このコードがやること（先に日本語で）:** 同じ `process.env` でも、Client Component（ブラウザ側）では `NEXT_PUBLIC_` 付きの変数しか読めない、という違いを確かめる例です。`NEXT_PUBLIC_` なしの機密キーを参照すると `undefined`（値なし）になり、これは「漏らさないための安全な仕様」です。どの変数がどちらで使えるかを区別できるようになるのが目標です。詳細はコード内コメントを参照してください。
+> **▼ このコードがやること（先に日本語で）:** 同じ `process.env` でも、Client Component（ブラウザ側）では `NEXT_PUBLIC_` 付きの変数しか読めない、という違いを確かめる例です。`NEXT_PUBLIC_` なしの機密キーを参照すると、ブラウザでは `undefined`（値なし）になります。ブラウザ用の JavaScript に秘密の値が入らないようにするための仕様です。ただし「だから Client Component で秘密の変数を書いても安全」ではない点に注意してください（このあとの「つまずきポイント」で実験します）。詳細はコード内コメントを参照してください。
 
 ```typescript
 // ブラウザ側では NEXT_PUBLIC_ 付きしか参照できない
@@ -3329,11 +4981,12 @@ export function SomeClient() {
   // ブラウザのコンソールに表示される
   console.log(publicUrl);
 
-  // ❌ NEXT_PUBLIC_ なしは undefined
-  // バンドルに含まれない＝undefined
+  // ❌ NEXT_PUBLIC_ なしは、ブラウザでは undefined
+  // ブラウザ用の JS（バンドル）には値が入らない
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  // undefined（安全！）
-  // 機密情報が漏れない設計になっている
+  // ブラウザのコンソールには undefined と出る
+  // ※ ただし、この値を画面に表示すると、サーバーでの最初の描画で
+  //    本物の値が HTML に入ってしまう（下の「つまずきポイント」）
   console.log(serviceKey);
 
   return <div>...</div>;
@@ -3347,26 +5000,233 @@ export function SomeClient() {
 | **機密情報** | なし | `SUPABASE_SERVICE_ROLE_KEY`、`DATABASE_URL` |
 | **公開しても安全な情報** | `NEXT_PUBLIC_` | `NEXT_PUBLIC_SUPABASE_URL`、`NEXT_PUBLIC_SUPABASE_ANON_KEY` |
 
+#### 環境変数は「いつ・どこに」入るのか
+
+`NEXT_PUBLIC_` の正体は、「**ビルドのときに、値をブラウザ用の JavaScript に文字として書き込む**」という印です。たとえるなら、`.env.local` は金庫で、`NEXT_PUBLIC_` は「このメモはチラシに印刷して配ってよい」という付箋です。付箋の付いたメモだけがチラシ（ブラウザ用の JavaScript）に印刷され、付箋の無いメモは金庫（サーバー）から出ません。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 300" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-04-11" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="10" y="80" width="196" height="120" rx="10" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>
+<text x="108" y="104" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">.env.local（金庫）</text>
+<text x="22" y="130" font-size="12" fill="#b91c1c">SECRET_API_KEY</text>
+<text x="22" y="148" font-size="12" fill="#475569">  =himitsu-12345</text>
+<text x="22" y="172" font-size="12" fill="#047857">NEXT_PUBLIC_SITE_NAME</text>
+<text x="22" y="190" font-size="12" fill="#475569">  =ほんだなアプリ</text>
+<line x1="207" y1="140" x2="240" y2="140" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-04-11)"/>
+<rect x="242" y="104" width="124" height="72" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="304" y="134" font-size="12" font-weight="bold" fill="#c2410c" text-anchor="middle">npm run build</text>
+<text x="304" y="154" font-size="12" fill="#475569" text-anchor="middle">（ビルド）</text>
+<line x1="367" y1="124" x2="400" y2="80" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-04-11)"/>
+<line x1="367" y1="158" x2="400" y2="196" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-04-11)"/>
+<rect x="402" y="20" width="308" height="104" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="414" y="44" font-size="12" font-weight="bold" fill="#047857">サーバー用のプログラム（Node.js）</text>
+<text x="414" y="68" font-size="12" fill="#0f172a">process.env を、動くときにその場で読む</text>
+<text x="414" y="92" font-size="12" fill="#0f172a">→ SECRET も SITE_NAME も両方読める</text>
+<text x="414" y="112" font-size="12" fill="#475569">（ファイルはサーバーの中だけにある）</text>
+<rect x="402" y="146" width="308" height="104" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="414" y="170" font-size="12" font-weight="bold" fill="#1e40af">ブラウザ用の JavaScript（誰でも見られる）</text>
+<text x="414" y="194" font-size="12" fill="#0f172a">NEXT_PUBLIC_ の値だけ、文字で書き込まれる</text>
+<text x="414" y="216" font-size="12" fill="#047857">→ "ほんだなアプリ" が JS の中に入る</text>
+<text x="414" y="238" font-size="12" fill="#b91c1c">→ SECRET は入らない（ブラウザでは undefined）</text>
+<rect x="10" y="262" width="700" height="32" rx="6" fill="#fef2f2" stroke="#ef4444"/>
+<text x="360" y="283" font-size="12" fill="#b91c1c" text-anchor="middle">落とし穴: Client Component もサーバーで1回描画される（図4-4 の③）→ そこで SECRET を表示すると HTML に本物の値が混ざる</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図4-11: 環境変数がどこに入るか（NEXT_PUBLIC_ はビルド時にブラウザ用 JS へ書き込まれる）</div>
+</div>
+
+#### 環境変数がどこに入ったかを確かめる
+
+> **▼ このコードがやること（先に日本語で）:** 秘密のキー（`SECRET_API_KEY`）と公開してよいサイト名（`NEXT_PUBLIC_SITE_NAME`）を `.env.local` に書き、Server Component と Client Component の両方から読んでみます。さらにビルドしてできあがったファイルを検索し、それぞれの値が「ブラウザ用の JavaScript に入ったか」を確かめます。図4-11 が本当かどうかを、自分の目で確認する実験です。
+
+```bash
+# .env.local
+SECRET_API_KEY=himitsu-12345
+NEXT_PUBLIC_SITE_NAME=ほんだなアプリ
+```
+
+```tsx
+// app/env-check/page.tsx（Server Component）
+import { EnvClient } from "./EnvClient";
+
+export default function EnvCheckPage() {
+  // サーバーでは NEXT_PUBLIC_ の有無に関係なく読める
+  console.log("[server] SECRET_API_KEY =", process.env.SECRET_API_KEY);
+  console.log("[server] NEXT_PUBLIC_SITE_NAME =", process.env.NEXT_PUBLIC_SITE_NAME);
+
+  return (
+    <div>
+      <h1>環境変数チェック</h1>
+      <EnvClient />
+    </div>
+  );
+}
+```
+
+```tsx
+// app/env-check/EnvClient.tsx（Client Component。実験のため、わざと秘密の値も読んでいる）
+"use client";
+
+export function EnvClient() {
+  return (
+    <ul>
+      <li>サイト名: {process.env.NEXT_PUBLIC_SITE_NAME}</li>
+      <li>秘密のキー: {String(process.env.SECRET_API_KEY)}</li>
+    </ul>
+  );
+}
+```
+
+**▼ 実行結果**
+
+`npm run dev` で `/env-check` を開いたときのターミナル（Server Component のログ）:
+
+```text
+[server] SECRET_API_KEY = himitsu-12345
+[server] NEXT_PUBLIC_SITE_NAME = ほんだなアプリ
+```
+
+`npm run build` のあと、ブラウザ用の JavaScript が置かれる `.next/static` フォルダを `grep -rl`（その文字を含むファイル名を表示するコマンド）で検索した結果です。秘密のキーはどのファイルにも無く（何も表示されない）、サイト名は1つのファイルに入っていました。
+
+```text
+$ grep -rl "himitsu-12345" .next/static
+$ grep -rl "ほんだなアプリ" .next/static
+.next/static/chunks/0863qupusboaq.js
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: サーバーでは、どちらの変数も読める
+
+- ターミナルに両方の値が出ています。Server Component はサーバー（Node.js）で動くので、`.env.local` のすべての値を `process.env.〇〇` で読めます。
+- 秘密のキーを使ってデータベースや外部サービスにアクセスする処理は、このように**サーバー側**に書きます。
+
+##### 解説2: ブラウザ用の JavaScript には `NEXT_PUBLIC_` の値だけが入る
+
+- `.next/static` は、ブラウザにダウンロードされる JavaScript の置き場所です。そこに「ほんだなアプリ」という**値そのもの**が書き込まれていました。`NEXT_PUBLIC_` 付きの変数は、ビルドのときに `process.env.NEXT_PUBLIC_SITE_NAME` の部分が `"ほんだなアプリ"` という文字に置き換えられるからです。
+- 一方「himitsu-12345」はどこにも無く、ブラウザで `process.env.SECRET_API_KEY` を読むと `undefined` になります。ここまでは図4-11 のとおりです。
+- ところが、この実験にはもう1つ大事な落とし穴が隠れていました。次の「つまずきポイント」を見てください。
+
+> **つまずきポイント（Client Component で秘密の環境変数を表示して、HTML に漏れる）:** 上の `EnvClient` は「ブラウザでは `undefined` になるから安全」に見えますが、そうではありません。図4-4 の③のとおり、Client Component も**最初の1回はサーバーで描画**されます。そのとき `process.env.SECRET_API_KEY` には本物の値が入っているので、**サーバーが作った HTML に秘密の値がそのまま書き込まれます**。ビルドで作られた HTML（`.next/server/app/env-check.html`）を検索した実際の結果です。
+
+```text
+<ul><li>サイト名: <!-- -->ほんだなアプリ</li><li>秘密のキー: <!-- -->himitsu-12345</li></ul>
+```
+
+さらにブラウザでは、サーバーの HTML（`himitsu-12345`）とブラウザでの描画（`undefined`）が食い違うので、開発者ツールの Console に Hydration エラーが出ます（先頭と、食い違った場所の部分を抜粋）。
+
+```text
+Hydration failed because the server rendered text didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
+...
+                        <EnvClient>
+                          <ul>
+                            <li>
+                            <li>
++                             undefined
+-                             himitsu-12345
+```
+
+画面の表示は最終的に「秘密のキー: undefined」に置き換わりますが、HTML を見れば誰でも `himitsu-12345` を読めてしまいます。
+
+```tsx
+// ❌ NG: Client Component の中で、NEXT_PUBLIC_ の無い秘密の変数を読む
+"use client";
+
+export function EnvClient() {
+  return <li>秘密のキー: {String(process.env.SECRET_API_KEY)}</li>;
+}
+```
+
+```tsx
+// ✅ OK: app/env-ok/page.tsx（Server Component）
+import { EnvClient } from "./EnvClient";
+
+export default function EnvOkPage() {
+  // 秘密のキーはサーバーの中で使うだけにする
+  // Client Component には「設定されているかどうか」という結果だけを渡す
+  const hasKey = Boolean(process.env.SECRET_API_KEY);
+
+  return (
+    <EnvClient
+      siteName={process.env.NEXT_PUBLIC_SITE_NAME ?? ""}
+      hasKey={hasKey}
+    />
+  );
+}
+```
+
+```tsx
+// ✅ OK: app/env-ok/EnvClient.tsx（Client Component は props で受け取って表示するだけ）
+"use client";
+
+export function EnvClient({
+  siteName,
+  hasKey,
+}: {
+  siteName: string;
+  hasKey: boolean;
+}) {
+  return (
+    <ul>
+      <li>サイト名: {siteName}</li>
+      <li>秘密のキー: {hasKey ? "設定済み" : "未設定"}</li>
+    </ul>
+  );
+}
+```
+
+OK 版を `npm run dev` で開き、届いた HTML を検索した結果です。秘密の値は入っていません。
+
+```text
+<ul><li>サイト名: <!-- -->ほんだなアプリ</li><li>秘密のキー: <!-- -->設定済み</li></ul>
+```
+
+> **ヒント（`server-only` で「うっかり」を防ぐ）:** 秘密の値を使う関数を `lib/secret.ts` のようなファイルにまとめ、ファイルの先頭に `import "server-only";` と書いておくと、そのファイルを Client Component から import した時点でエラーになり、うっかり漏らすのを防げます（実際に試すと `'server-only' cannot be imported from a Client Component module` というエラーが出ました）。Next.js では `server-only` を別途インストールしなくても使えます。
+
+<!-- -->
+
+> **つまずきポイント（`NEXT_PUBLIC_` の値を変えたのに、画面が古い値のまま）:** `NEXT_PUBLIC_` の値は**ビルドのとき**に JavaScript に書き込まれます（図4-11）。そのため、`.env.local` を書き換えても、すでに起動しているサーバーやビルド済みのファイルには反映されません。開発中は `npm run dev` を一度止めて起動し直す、本番では**もう一度ビルドする**（Vercel なら再デプロイする）必要があります。また、変数名を文字列で組み立てて読む書き方は、置き換えの対象になりません。
+
+```tsx
+// ❌ NG: 変数名を組み立てて読むと、ビルド時の置き換えが行われない（ブラウザでは undefined）
+const name = "NEXT_PUBLIC_SITE_NAME";
+const siteName = process.env[name];
+```
+
+```tsx
+// ✅ OK: process.env.NEXT_PUBLIC_〇〇 と、名前をそのまま書く
+const siteName = process.env.NEXT_PUBLIC_SITE_NAME;
+```
+
+> Next.js の公式ドキュメントにも「`process.env[varName]` のような動的な参照は埋め込まれない」と書かれています。`NEXT_PUBLIC_` の変数は、必ず `process.env.` の後ろに名前をそのまま書きましょう。
+
 ### 8.3 Supabase の接続情報の管理
 
 書籍管理アプリでは、Supabase を使います。環境変数の設定例は以下の通りです。
 
 > **▼ このコードがやること（先に日本語で）:** 書籍管理アプリで実際に使う Supabase（データベースサービス）の接続情報を `.env.local` に設定する具体例です。URL と匿名キーは公開してよいので `NEXT_PUBLIC_` を付け、全権限を持つサービスロールキーは絶対に公開しないため `NEXT_PUBLIC_` を付けません。この付け分けがそのままセキュリティの境界になります。詳細はコード内コメントを参照してください。
 
-```bash
-# .env.local                                                       # 開発機ローカル用の環境変数ファイル
+<!-- -->
 
-# Supabase プロジェクト URL（公開OK）                                  # ブラウザにも露出してOKな値
-# NEXT_PUBLIC_ 付きでClient/Server 両方で使える
+> **注意（Supabase の API キーの名前）:** 2026年時点の Supabase ダッシュボードでは、API キーが **Publishable key**（`sb_publishable_` で始まる。公開してよい）と **Secret key**（`sb_secret_` で始まる。絶対に秘密）という名前で表示されます。以前の **anon key**・**service_role key**（`eyJ...` で始まる長い文字列）は、2026年末に廃止予定の旧方式です。本書では変数名は `NEXT_PUBLIC_SUPABASE_ANON_KEY` のまま、値に Publishable key を貼り付けます（第5・6章と同じ）。大切なのは、`.env.local` の**変数名**と、コードの `process.env.〇〇` の名前が一字一句そろっていることです。
+
+```bash
+# .env.local
+# 開発機ローカル用の環境変数ファイル
+
+# Supabase プロジェクト URL（公開OK）
+# ブラウザにも露出してOKな値。NEXT_PUBLIC_ 付きで Client/Server 両方で使える
 NEXT_PUBLIC_SUPABASE_URL="https://abcdefghijklm.supabase.co"
 
-# Supabase 匿名キー（公開OK - Row Level Security で保護される）
-# 公開キー。RLS で安全に絞られている前提
-NEXT_PUBLIC_SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+# Supabase の Publishable key（公開OK。旧 anon key でも可）
+# Row Level Security（RLS）で読める範囲が絞られている前提なので公開してよい
+NEXT_PUBLIC_SUPABASE_ANON_KEY="sb_publishable_xxxxxxxxxxxxxxxx"
 
-# Supabase サービスロールキー（絶対に公開してはいけない）
+# Supabase の Secret key（旧 service_role key。絶対に公開してはいけない）
 # NEXT_PUBLIC_ なし＝Server 限定
-SUPABASE_SERVICE_ROLE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+SUPABASE_SERVICE_ROLE_KEY="sb_secret_xxxxxxxxxxxxxxxx"
 ```
 
 > **▼ このコードがやること（先に日本語で）:** ブラウザ側（Client Component）から Supabase に接続するための「クライアント」を作る関数を定義します。公開してよい `NEXT_PUBLIC_` 付きの URL と匿名キーだけを使うのがポイントです。`!`（non-null assertion）は「この値は undefined ではないと TypeScript に約束する」記号で、設定漏れがあると実行時にエラーになります。詳細はコード内コメントを参照してください。
@@ -3571,6 +5431,8 @@ export async function createClient() {
   </div>
 </div>
 
+> **注意（第6章で作る実際の構成）:** 上の図は、Next.js でよく使われるフォルダの分け方の例です。第6章から実際に作る書籍管理アプリでは、`src/` フォルダは使わずに `app/`・`components/`・`lib/`・`types/` をプロジェクト直下に置き、書籍一覧はトップページの `app/page.tsx` にします（`app/books/` の下は `new/` と `[id]/`・`[id]/edit/` だけ）。正確なファイル一覧は第6章の「4.1 ディレクトリ構成」を見てください。
+
 ### 9.2 各ディレクトリの役割
 
 | ディレクトリ | 役割 | 含まれるもの |
@@ -3590,38 +5452,47 @@ export async function createClient() {
 ```typescript
 // 型定義の置き場
 // types/book.ts
-// アプリ全体で使う書籍の型定義
+// アプリ全体で使う書籍の型定義（第6章で実際に作る型と同じ形）
+
+// 読書ステータス。この3つの文字列のどれか（ユニオン型）
+// want_to_read＝読みたい、reading＝読書中、completed＝読了
+export type BookStatus = "reading" | "completed" | "want_to_read";
 
 // 名前付き export。`import { Book } from "@/types/book"` で使う
 export type Book = {
-  // データベース上の主キー（UUID または文字列ID）
+  // データベース上の主キー（UUID 文字列）
   id: string;
-  // 書籍タイトル
+  // 書籍タイトル（必須）
   title: string;
-  // 著者名
+  // 著者名（必須）
   author: string;
-  // 出版年。スネークケースは Supabase の列名と合わせるため
-  published_year: number;
-  // 説明文（null 許容）。`string | null` は型のユニオン
-  description: string | null;
-  // 表紙画像のURL（任意）
-  cover_image_url: string | null;
-  // お気に入りフラグ
-  is_favorite: boolean;
+  // 出版社（未入力なら null）。`string | null` は型のユニオン
+  publisher: string | null;
+  // 出版日（"2024-01-15" のような文字列。未入力なら null）
+  // スネークケースは Supabase の列名と合わせるため
+  published_date: string | null;
+  // 評価（1〜5。未評価なら null）
+  rating: number | null;
+  // 読書ステータス
+  status: BookStatus;
+  // メモ・感想（未入力なら null）
+  memo: string | null;
   // 作成日時（ISO 8601 文字列）
   created_at: string;
   // 更新日時
   updated_at: string;
 };
 
-// フォーム送信時に使う型（id や日時は不要）
-// 新規追加・編集フォーム専用の入力データ型
-export type BookFormData = {
+// 新規登録のときに送るデータの型（id や日時はデータベースが付けるので不要）
+export type BookInsert = {
   title: string;
   author: string;
-  published_year: number;
   // `?` で「省略可能」のオプショナルプロパティ
-  description?: string;
+  publisher?: string | null;
+  published_date?: string | null;
+  rating?: number | null;
+  status?: BookStatus;
+  memo?: string | null;
 };
 ```
 
@@ -3634,7 +5505,8 @@ export type BookFormData = {
 
 /**
  * 日付文字列を日本語のフォーマットに変換する
- * @example formatDate("2024-01-15") → "2024年1月15日"             // `@example` は JSDoc の例示タグ。IDEで吹き出しに表示される
+ * （`@example` は JSDoc の例示タグ。IDE で吹き出しに表示される）
+ * @example formatDate("2024-01-15") → "2024年1月15日"
  */
 // 引数も戻り値も string と明示
 export function formatDate(dateString: string): string {
@@ -3655,12 +5527,12 @@ export function formatDate(dateString: string): string {
  * クラス名を結合する（falsy な値は除外）
  * @example cn("base", isActive && "active", "extra") → "base active extra"
  */
+// `...classes` はレストパラメータ。可変長の引数を配列として受け取る
+// 型は「string か false か undefined か null の配列」
 export function cn(...classes: (string | false | undefined | null)[]): string {
-                                                                    // `...classes` はレストパラメータ。可変長の引数を配列として受け取る
-                                                                    // 型は「string か false か undefined か null の配列」
   // `filter(Boolean)` で false/undefined/null/"" を除外
+  // `join(" ")` で半角スペース区切りに連結
   return classes.filter(Boolean).join(" ");
-                                                                    // `join(" ")` で半角スペース区切りに連結
 }
 ```
 
@@ -3709,7 +5581,7 @@ export function Button({
       disabled={disabled}
       onClick={onClick}
     >
-      // ボタンの中身を表示
+      {/* ボタンの中身を表示 */}
       {children}
     </button>
   );
@@ -3870,6 +5742,8 @@ export async function generateMetadata({
 
 > **いつ使う？ なぜ便利？** ブログ記事・商品ページ・プロフィールページなど「URLごとに内容が変わるページ」では、`generateMetadata` でタイトルや説明文を中身に合わせて変えるのが基本です。これをしないと全ページが同じタイトルになり、検索結果で見分けがつかず、クリックされにくくなります。
 
+<!-- -->
+
 > **用語: SEO（エスイーオー）** … Search Engine Optimization の略。Google などの検索結果で自分のページが上位に・分かりやすく表示されるよう整えること。タイトルと説明文はその一番の基本です。
 
 ---
@@ -3925,7 +5799,7 @@ export default async function NewsPage() {
     <div>
       <h1>お知らせ</h1>
       <ul>
-        // 取得した記事を一覧表示
+        {/* 取得した記事を一覧表示 */}
         {news.map((item, i) => (
           <li key={i}>{item.title}（生成時刻: {item.builtAt}）</li>
         ))}
@@ -3935,7 +5809,27 @@ export default async function NewsPage() {
 }
 ```
 
-**画面にはこう表示される:** 「お知らせ」見出しの下にニュース項目が並びます。「生成時刻」の部分に注目すると、ページを何度リロードしても**60秒間は同じ時刻**のまま（=作り置きを使い回している）で、60秒を過ぎてからアクセスすると**新しい時刻に更新**されます。これが「一定時間ごとに作り直す」動きです。
+**画面にはこう表示される:** 「お知らせ」見出しの下にニュース項目が並びます。「生成時刻」の部分に注目すると、ページを何度リロードしても**60秒間は同じ時刻**のまま（=作り置きを使い回している）で、60秒を過ぎてからアクセスすると、裏で作り直しが始まり、その次のアクセスから**新しい時刻に更新**されます。これが「一定時間ごとに作り直す」動きです。
+
+**▼ 実行結果**（`npm run build` → `npm run start` で起動し、`curl` で時間をあけて4回開いたときの「生成時刻」。ビルドは 20:50:31 に行い、最初のアクセスはその約2分後）
+
+```text
+  1秒後: 生成時刻: 20:50:31）
+ 31秒後: 生成時刻: 20:52:25）
+ 66秒後: 生成時刻: 20:52:25）
+ 73秒後: 生成時刻: 20:53:31）
+```
+
+- 1回目は、ビルド時に作った 20:50:31 の版がそのまま返りました。すでに60秒以上たっていたので、このアクセスをきっかけに裏で作り直しが始まります。
+- 2回目（31秒後）には、作り直された 20:52:25 の版が返っています。
+- 3回目（66秒後）は、20:52:25 から60秒を過ぎていたので、古い版をすぐ返しつつ裏で作り直し、4回目（73秒後）で新しい 20:53:31 の版になりました。6.1 節の図4-9 は、この記録を図にしたものです。
+
+`npm run build` の結果にも、`/news` が60秒（1m）ごとに作り直されることが表示されます（関係する行だけ抜粋）。
+
+```text
+Route (app)           Revalidate  Expire
+├ ○ /news                     1m      1y
+```
 
 #### ▼ コードを1つずつ分解して解説
 
@@ -3955,7 +5849,59 @@ export const revalidate = 60;
 
 > **いつ使う？ なぜ便利？** 「最新であってほしいけれど、1秒単位の鮮度までは要らない」ページ（ニュース、ランキング、在庫数の目安など）に最適です。アクセスのたびに毎回作り直す SSR より速く・安く、完全に作り置きの SSG より新しい、という「いいとこ取り」ができます。
 
+<!-- -->
+
 > **用語: ISR（Incremental Static Regeneration）** … 「少しずつ（インクリメンタルに）静的ページを再生成する」方式。第1章の表で出てきた SSG と SSR の中間にあたる方法だと考えると分かりやすいです。
+
+<!-- -->
+
+> **参考（Cache Components を「Yes」にした場合の書き方）:** 6.1 節の注意のとおり、`next.config.ts` に `cacheComponents: true` があるプロジェクトでは `export const revalidate = 60` は使えず、ビルドが次のエラーで止まります（実際の出力）。
+
+```text
+Error: Route segment config "revalidate" is not compatible with `nextConfig.cacheComponents`. Please remove it.
+```
+
+その場合は、ページの関数の先頭に `"use cache"` を書き、`cacheLife(...)` で「どれくらいの間隔で作り直すか」を指定します。`"minutes"` は「1分たったら、次のアクセスのときに裏で作り直す」という設定で、`revalidate = 60` とほぼ同じ意味になります。
+
+```tsx
+// app/news/page.tsx（Cache Components 版。cacheComponents: true のときだけ使える）
+import { cacheLife } from "next/cache";
+
+async function getNews() {
+  // 「ページを作った時刻」を確認用に作る
+  const now = new Date().toLocaleTimeString("ja-JP");
+  return [{ title: "新刊が入荷しました", builtAt: now }];
+}
+
+export default async function NewsPage() {
+  // このページの結果をキャッシュ（作り置き）する
+  "use cache";
+  // "minutes" は「1分たったら次のアクセスで裏で作り直す」という設定
+  cacheLife("minutes");
+
+  const news = await getNews();
+
+  return (
+    <div>
+      <h1>お知らせ</h1>
+      <ul>
+        {news.map((item, i) => (
+          <li key={i}>
+            {item.title}（生成時刻: {item.builtAt}）
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+```
+
+`cacheComponents: true` でビルドしたときの結果（関係する行だけ抜粋）です。`revalidate = 60` のときと同じく、1分（1m）ごとに作り直されることが分かります。
+
+```text
+Route (app)           Revalidate  Expire
+├ ○ /news                     1m      1h
+```
 
 ---
 
@@ -4027,6 +5973,8 @@ export async function POST(request: Request) {
 
 > **用語: API（エーピーアイ）** … プログラム同士がデータをやり取りするための「窓口・受付」のこと。人が見る画面（HTML）ではなく、機械が読むためのデータ（多くはJSON）を返します。
 
+<!-- -->
+
 > **用語: JSON（ジェイソン）** … `{"title":"坊っちゃん"}` のような「キーと値」でデータを表す、プログラム間でよく使われる共通フォーマット。
 
 ---
@@ -4054,13 +6002,13 @@ export async function POST(request: Request) {
 
 ---
 
-### Middleware（アクセス前に割り込んで認証チェックする）
+### Proxy（旧 Middleware：アクセス前に割り込んで認証チェックする）
 
 > **▼ このコードがやること（先に日本語で）:** ページが表示される**前に**「割り込み」を入れて、「この人はログイン済みか？」をチェックします。もしログインしていなければ、目的のページを見せずに**ログイン画面へ自動的に送り返し（リダイレクト）**ます。会員専用ページや管理画面を「ログインしていない人に見せない」ための、見張り番のような仕組みです。詳細はコード内コメントを参照してください。
 
 ```typescript
 // 置き場所が重要。プロジェクトの一番上（app/ と同じ階層）に置く
-// middleware.ts
+// proxy.ts（Next.js 15 までは middleware.ts という名前だった）
 // ※ app/ の中ではなく、ルート直下に1つだけ置く
 
 // リダイレクトや「通過OK」を返すためのヘルパー
@@ -4069,11 +6017,11 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 // ─────────────────────────────────────────────────────
-// middleware: ページに届く前に必ず通る「関所」
-// 予約名 middleware で export する必要がある。
+// proxy: ページに届く前に必ず通る「関所」
+// 予約名 proxy で export する必要がある（15 までは middleware）。
 // ─────────────────────────────────────────────────────
 // request にアクセス内容（URLやCookieなど）が入る
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   // Cookie から「ログインの証（トークン）」を読む
   // ログイン時に保存しておいた印を確認
   const token = request.cookies.get("token");
@@ -4102,17 +6050,30 @@ export const config = {
 
 **画面にはこう表示される:** ログインしていない状態で `/mypage` を開こうとすると、`/mypage` の中身は一切見えないまま、**一瞬で `/login`（ログイン画面）に飛ばされ**ます。逆にログイン済み（Cookie にトークンがある）なら、何ごともなく `/mypage` がそのまま表示されます。
 
+**▼ 実行結果**（`npm run build` → `npm run start` で起動し、`curl -i` で `/mypage` を開いたときの応答の見出し。2回目は `-b "token=abc"` でログインの証の Cookie を付けて送ったもの）
+
+```text
+$ curl -i http://localhost:3000/mypage
+HTTP/1.1 307 Temporary Redirect
+location: /login
+
+$ curl -i -b "token=abc" http://localhost:3000/mypage
+HTTP/1.1 200 OK
+```
+
+Cookie が無いときは `307`（転送）で `/login` へ送り返され、Cookie があるときは `200 OK` で `/mypage` の中身（`<h1>マイページ</h1>`）が返りました。`npm run build` の結果の最後には、`ƒ Proxy (Middleware)` という行が表示され、proxy.ts が組み込まれたことが分かります。
+
 #### ▼ コードを1つずつ分解して解説
 
-Middleware には「`middleware.ts` の置き場所」「`middleware` という関数名」「`config.matcher` で対象を絞る」という3つの約束があります。
+Proxy には「`proxy.ts` の置き場所」「`proxy` という関数名」「`config.matcher` で対象を絞る」という3つの約束があります（5.3 節の図4-8 も参照）。
 
 ---
 
-##### 解説1: `middleware.ts` は「ページの手前にある関所」
+##### 解説1: `proxy.ts` は「ページの手前にある関所」
 
 ```typescript
-// middleware.ts （プロジェクトのルート直下に置く）
-export function middleware(request: NextRequest) {
+// proxy.ts （プロジェクトのルート直下に置く）
+export function proxy(request: NextRequest) {
   const token = request.cookies.get("token");
   if (!token) {
     const loginUrl = new URL("/login", request.url);
@@ -4122,11 +6083,13 @@ export function middleware(request: NextRequest) {
 }
 ```
 
-- **Middleware（ミドルウェア）** は、ユーザーがページにたどり着く**直前に必ず通る「関所」**です。`middleware.ts` という名前のファイルを**プロジェクトの一番上（`app/` フォルダと同じ階層）に1つだけ**置きます。
+- **Proxy（プロキシ：代理人）** は、ユーザーがページにたどり着く**直前に必ず通る「関所」**です。`proxy.ts` という名前のファイルを**プロジェクトの一番上（`app/` フォルダと同じ階層）に1つだけ**置きます。Next.js 15 までは同じ役割のファイルを `middleware.ts`（ミドルウェア）と呼んでいました。
 - 中では `request`（届いたアクセス情報）を調べられます。ここでは `request.cookies.get("token")` で「ログインの証」を探しています。
 - 証が**無ければ** `NextResponse.redirect(...)` で**ログイン画面へ送り返し**、**有れば** `NextResponse.next()` で**そのまま通します**。`next()` は「邪魔せず通過させる」という意味です。
 
 > **用語: リダイレクト** … アクセスしてきた人を、別のURLへ自動的に送り直すこと。「この扉は今開けられないので、あちらの受付へどうぞ」と案内するイメージです。
+
+<!-- -->
 
 > **用語: Cookie（クッキー）／トークン** … Cookieはブラウザに小さなデータを保存しておく仕組み。ログインすると「あなたはログイン済みです」という印（トークン）をCookieに入れておき、次回以降そのトークンの有無でログイン状態を判断します。
 
@@ -4140,7 +6103,7 @@ export const config = {
 };
 ```
 
-- Middleware は放っておくと**すべてのアクセスに割り込んで**しまい、画像やトップページにまで関所がかかって無駄が出ます。そこで `config` の `matcher`（マッチャー＝対象を選ぶもの）で、**「効かせたいURLだけ」を指定**します。
+- Proxy は放っておくと**すべてのアクセスに割り込んで**しまい、画像やトップページにまで関所がかかって無駄が出ます。そこで `config` の `matcher`（マッチャー＝対象を選ぶもの）で、**「効かせたいURLだけ」を指定**します。
 - `"/mypage/:path*"` は「`/mypage` とその下のすべてのページ」という意味です。これで会員専用ページにだけログインチェックがかかり、トップページやログイン画面はチェックなしで開けます。
 
 > **いつ使う？ なぜ便利？** 「ログインしていない人に会員ページ・管理画面を見せたくない」というのが代表例です。各ページに毎回チェックを書くより、入口でまとめて見張るほうが書き漏れがなく安全です。ほかにも、言語ごとのページ振り分けや、地域によるアクセス制限などにも使われます。
@@ -4149,7 +6112,7 @@ export const config = {
 
 ### next/image の詳細（画像を自動で最適化する）
 
-> **▼ このコードがやること（先に日本語で）:** 普通の `<img>` タグの代わりに Next.js の `<Image>` を使い、**画像を自動で軽く・速く・きれいに**表示します。`fill`（親要素いっぱいに広げる）、`priority`（最優先で読み込む）、`sizes`（画面幅ごとの表示サイズ指定）、`placeholder`（読み込み中にぼかしを出す）といった便利なオプションの使い方を1つにまとめた例です。画像が多いページの表示速度を大きく改善できます。詳細はコード内コメントを参照してください。
+> **▼ このコードがやること（先に日本語で）:** 普通の `<img>` タグの代わりに Next.js の `<Image>` を使い、**画像を自動で軽く・速く・きれいに**表示します。`fill`（親要素いっぱいに広げる）、`preload`（最優先で読み込む。Next.js 15 までの `priority`）、`sizes`（画面幅ごとの表示サイズ指定）、`placeholder`（読み込み中にぼかしを出す）といった便利なオプションの使い方を1つにまとめた例です。画像が多いページの表示速度を大きく改善できます。詳細はコード内コメントを参照してください。
 
 ```typescript
 // どのページでも使える例として page.tsx に書く
@@ -4172,7 +6135,7 @@ export default function HomePage() {
         // 元画像の高さ
         height={450}
         // このページで「最初に見える重要画像」を最優先で読み込む
-        priority
+        preload
       />
 
       {/* ───── (2) サイズが可変な画像: fill で親要素いっぱいに広げる ───── */}
@@ -4202,11 +6165,11 @@ export default function HomePage() {
 
 #### ▼ コードを1つずつ分解して解説
 
-`<Image>` には便利なオプションがいくつもあります。よく使う `width/height`・`priority`・`fill`・`sizes`・`placeholder` を順に見ていきましょう。
+`<Image>` には便利なオプションがいくつもあります。よく使う `width/height`・`preload`・`fill`・`sizes`・`placeholder` を順に見ていきましょう。
 
 ---
 
-##### 解説1: `width` / `height` と `priority`
+##### 解説1: `width` / `height` と `preload`
 
 ```typescript
 <Image
@@ -4214,13 +6177,17 @@ export default function HomePage() {
   alt="本の表紙"
   width={300}
   height={450}
-  priority
+  preload
 />
 ```
 
 - `next/image` の `<Image>` は、普通の `<img>` の代わりに使うと **Next.js が画像を自動で最適化**してくれる部品です。`src` は画像の場所、`alt` は画像の説明文（読み上げソフトや、表示に失敗したときに使われるので必ず書きます）。
 - `width` と `height` は**元画像の縦横の大きさ**です。これを指定しておくと、画像が読み込まれる前から「ここに300×450の場所を空けておく」ことができ、**読み込み後に他の文字や要素がガタッとずれるのを防げます**。
-- `priority`（プライオリティ＝優先）を付けると、その画像を**最優先で読み込み**ます。ページを開いてすぐ目に入る大きな画像（記事のトップ画像など）に付けると、表示が体感で速くなります。逆に、下のほうにあって最初は見えない画像には付けません（付けすぎると逆効果）。
+- `preload`（プリロード＝先に読み込む）を付けると、その画像を**最優先で読み込み**ます。ページを開いてすぐ目に入る大きな画像（記事のトップ画像など）に付けると、表示が体感で速くなります。逆に、下のほうにあって最初は見えない画像には付けません（付けすぎると逆効果）。
+
+> **注意（Next.js 16 で `priority` → `preload`）:** Next.js 15 までは、この指定は `priority`（プライオリティ＝優先）という名前でした。Next.js 16 で `priority` は非推奨になり、`preload` に置き換わりました。古い記事の `priority` は `preload` と読み替えてください。公式ドキュメントでは、多くの場合は `loading="eager"`（すぐ読み込む）や `fetchPriority="high"`（優先度を上げる）でも十分だと案内されています。
+
+<!-- -->
 
 > **用語: alt（オルト）テキスト** … 画像の内容を文字で説明したもの。目の不自由な人向けの読み上げや、画像が表示できなかったときの代わりの表示に使われ、SEOにも効きます。
 
@@ -4276,10 +6243,22 @@ blurDataURL="data:image/png;base64,iVBORw0K... "
 
 ### エラー1: "useState" は Server Component で使用できない
 
+`npm run dev` 中にそのページを開いたときの、ターミナルの実際の出力です（Next.js 16.4.1。ファイル名は実験用のもの）。
+
+```text
+⨯ ./app/ng-usestate/page.tsx:1:10
+Error: You're importing a module that depends on `useState` into a React Server Component module. This API is only available in Client Components. To fix, mark the file (or its parent) with the `"use client"` directive.
+    Learn more: https://nextjs.org/docs/app/api-reference/directives/use-client
+> 1 | import { useState } from "react";
+    |          ^^^^^^^^
+  2 |
+  3 | export default function Counter() {
+  4 |   const [count, setCount] = useState(0);
+
+Ecmascript file had an error
 ```
-Error: useState only works in Client Components. Add the "use client" directive
-at the top of the file to use it.
-```
+
+エラー文の要点は「`useState` を使うモジュールを React Server Component に import している。この API は Client Component でしか使えない。直すにはファイル（またはその親）に `"use client"` を付けて」です。このエラーは「組み立て（コンパイル）の失敗」なので、直すまでは**ほかのページも開けなくなる**ことがあります（実験でも、関係ないページが 500 エラーになりました）。
 
 **原因:** Server Component（デフォルト）で `useState` や `useEffect` を使おうとしている。
 
@@ -4295,8 +6274,8 @@ export default function Counter() {
   // ← ここでエラー
   // Server Component では useState を呼べない
   const [count, setCount] = useState(0);
+  // onClick も Server Component では使えない
   return <button onClick={() => setCount(count + 1)}>{count}</button>;
-                                                                    // onClick も Server Component では使えない
 }
 
 // ✅ 修正版
@@ -4317,10 +6296,13 @@ export default function Counter() {
 
 ### エラー2: "async/await" は Client Component で使用できない
 
+ブラウザの開発者ツールの Console に、次のエラーが出ます（実際の出力。`<BooksPage>` の部分はコンポーネント名）。
+
+```text
+<BooksPage> is an async Client Component. Only Server Components can be async at the moment. This error is often caused by accidentally adding `'use client'` to a module that was originally written for the server.
 ```
-Error: async/await is not yet supported in Client Components, only Server
-Components.
-```
+
+実験では、このエラーと一緒に `fetch` が何度も繰り返され、Console が `Failed to load resource` で埋まりました。「関数に `async` を付けた Client Component は、描画のたびに処理をやり直してしまう」ためです。
 
 **原因:** `"use client"` を付けたコンポーネントで `async` 関数としてエクスポートしている。
 
@@ -4334,8 +6316,8 @@ Components.
 // 関数本体に async を付けている
 export default async function BooksPage() {
   // ← async は Client Component で不可
+  // App Router の Client では関数を async にできない
   const books = await fetch("/api/books");
-                                                                    // App Router の Client では関数を async にできない
   return <div>...</div>;
 }
 
@@ -4395,10 +6377,14 @@ import { useRouter } from "next/navigation";
 
 ### エラー4: metadata と "use client" の共存
 
+`npm run build` の実際の出力です（関係する部分だけ抜粋）。
+
+```text
+./app/ng-meta/page.tsx:3:14
+Error: You are attempting to export "metadata" from a component marked with "use client", which is disallowed. "metadata" must be resolved on the server before the page component is rendered. Keep your page as a Server Component and move Client Component logic to a separate file. Read more: https://nextjs.org/docs/app/api-reference/functions/generate-metadata#why-generatemetadata-is-server-component-only
 ```
-Error: You are attempting to export "metadata" from a component marked with
-"use client", which is unsupported.
-```
+
+最後の文「ページは Server Component のままにして、Client Component の処理は別のファイルに移して」が、そのまま直し方です（3.3 の「つまずきポイント」と同じ考え方）。
 
 **原因:** `"use client"` のファイルで `metadata` をエクスポートしている。メタデータは Server Component でのみエクスポート可能。
 
@@ -4408,8 +6394,8 @@ Error: You are attempting to export "metadata" from a component marked with
 "use client";
 
 // ← Client Component では不可
+// metadata は Server Component の機能なので Client では宣言できない
 export const metadata = { title: "書籍一覧" };
-                                                                    // metadata は Server Component の機能なので Client では宣言できない
 
 // ✅ 修正版: metadata は Server Component（page.tsx や layout.tsx）に置く
 // app/books/page.tsx（Server Component）
@@ -4443,31 +6429,51 @@ const apiKey = process.env.API_SECRET_KEY;
 const publicUrl = process.env.NEXT_PUBLIC_API_URL;
 ```
 
-> **注意:** 機密情報に `NEXT_PUBLIC_` を付けてはいけません。Server Action や API Route 経由でアクセスしてください。
+> **注意:** 機密情報に `NEXT_PUBLIC_` を付けてはいけません。秘密の値は Server Component・Server Action・Route Handler の中だけで使ってください。また、`NEXT_PUBLIC_` の無い秘密の変数を Client Component の中で**画面に表示**すると、ブラウザでは `undefined` でも、サーバーでの最初の描画で本物の値が HTML に入ってしまいます（8.2 の「つまずきポイント」で実験しました）。`NEXT_PUBLIC_` の値を変えたのに反映されないときは、開発サーバーの再起動か、もう一度ビルドが必要です（同じく 8.2）。
 
 ---
 
-### エラー6: "Text content does not match server-rendered HTML"（Hydration エラー）
+### エラー6: "Hydration failed because the server rendered text didn't match the client"（Hydration エラー）
 
-```
-Warning: Text content did not match. Server: "2024年3月15日" Client: "3/15/2024"
+React 19 では、ブラウザの開発者ツールの Console に次のエラーが出ます。`Math.random()`（実行するたびに違う数を返す）を Client Component で表示して試したときの実際の出力です（先頭と、食い違った場所の部分を抜粋）。`+` がブラウザで描画した値、`-` がサーバーの HTML の値です。
+
+```text
+Hydration failed because the server rendered text didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+...
+                        <NgHydrationPage>
+                          <NowText>
+                            <p>
++                             0.033854490369345513
+-                             0.399743962157744
 ```
 
-**原因:** サーバーとクライアントで異なる出力が生成されている。日時のフォーマットやランダム値でよく発生する。
+エラー文の箇条書きが、そのまま「よくある原因」の一覧になっています。「`typeof window` で分岐している」「`Date.now()` や `Math.random()` のように毎回変わる値」「利用者の地域設定で変わる日付の書式」などです。
+
+**原因:** Client Component の「サーバーでの最初の描画（図4-4 の③）」と「ブラウザでの描画（⑥）」で、違う内容になっている。日時のフォーマットやランダム値でよく発生する。なお、Hydration（ハイドレーション）は Client Component にだけ起きるので、`"use client"` の無い Server Component で時刻を表示しても、このエラーにはなりません（その場合は 6.1 の「時刻が止まる」問題に注意）。
 
 ```typescript
-// ❌ サーバーとクライアントで結果が異なる可能性がある
+// ❌ サーバーとクライアントで結果が異なる可能性がある（Client Component）
+"use client";
+
 export default function DateDisplay() {
   // サーバーとブラウザで実行時刻が違えば表示も違う
+  // → Hydration エラーになる
   return <p>{new Date().toLocaleString()}</p>;
-                                                                    // → Hydration エラーになる
 }
 
-// ✅ 修正版 1: suppressHydrationWarning を使う
+// ✅ 修正版 1: suppressHydrationWarning を使う（Client Component のまま）
+"use client";
+
 export default function DateDisplay() {
+  // React の Hydration 不一致警告を抑制する属性
+  // 中身が動的でもよい場合の応急処置
   return <p suppressHydrationWarning>{new Date().toLocaleString()}</p>;
-                                                                    // React の Hydration 不一致警告を抑制する属性
-                                                                    // 中身が動的でもよい場合の応急処置
 }
 
 // ✅ 修正版 2: Client Component にして useEffect で設定
@@ -4494,14 +6500,22 @@ export default function DateDisplay() {
 
 ---
 
-### エラー7: fetch でのキャッシュに関する警告
+### エラー7: 本文で扱ったそのほかのエラー（早見表）
 
-```
-Warning: fetch for "https://..." on "/" used "no-store" and
-should not be called inside a layout or template.
-```
+この章の本文の「つまずきポイント」で、実際の出力と直し方を紹介したエラーです。エラー文の一部で検索して、該当する節に戻ってください。
 
-**対処法:** `layout.tsx` 内では `cache: "no-store"` を避け、`page.tsx` で使う。
+| エラー文（の一部） | 何が起きているか | 戻る節 |
+|---|---|---|
+| `used params.id. params is a Promise and must be unwrapped with await` | `params` を `await` せずに読んだ | 2.4 |
+| `ReferenceError: window is not defined` | Client Component の描画中に `window` を読んだ（サーバーでの描画で失敗） | 3.2 |
+| `Event handlers cannot be passed to Client Component props` / `Functions cannot be passed directly to Client Components` | Server Component から Client Component に関数を渡した | 3.5 |
+| `Only plain objects, and a few built-ins, can be passed to Client Components` | クラスから作ったものを props で渡した | 3.5 |
+| （エラーは出ないが）`catch で捕まえたもの: Error: NEXT_REDIRECT` | `redirect()` を `try` の中で呼んだ | 5.3 |
+| `Types of parameters 'formData' and 'state' are incompatible` | `useActionState` に FormData だけを受け取る関数を渡した | 7.2 |
+| （エラーは出ないが）本番で一覧や時刻が更新されない | ページがビルド時に作り置きされた／`revalidatePath` を忘れた | 6.1・7.2 |
+| `Next.js encountered uncached or runtime data during prerendering` | Cache Components を Yes にしたプロジェクトで、`loading.tsx` の無いページが `params` などを使った | 6.1 の注意 |
+
+> **補足（この見出しにあった古い警告について）:** 以前の版では「`layout.tsx` で `cache: "no-store"` の `fetch` を使うと警告が出る」と書いていましたが、Next.js 16.4.1 で実際に試したところ、そのような警告は出ませんでした。`layout.tsx` で毎回データを取得すると、その下のすべてのページが毎回作り直しになる（6.1 の `ƒ`）点には注意してください。
 
 ---
 
@@ -4529,6 +6543,10 @@ should not be called inside a layout or template.
 | **Server Actions** | "use server" でサーバー処理を直接呼び出し。フォーム処理に最適 |
 | **環境変数** | NEXT_PUBLIC_ の有無でアクセス範囲が変わる |
 | **プロジェクト構成** | app/, components/, lib/, types/ の4層構造 |
+| **1回のアクセスの流れ** | サーバーで HTML を作る（Client Component も1回描画）→ 表示 → ハイドレーションで動き出す（図4-4） |
+| **props の境界** | Server から Client へ渡せるのは文字にできるものだけ。関数は渡さない（図4-5） |
+| **キャッシュ** | 本番ではページがビルド時に作り置きされることがある。`connection()`・`revalidate`・`revalidatePath` で更新を制御（図4-9・図4-10） |
+| **Next.js 16 の変更点** | `params` は必ず `await`、`middleware.ts` → `proxy.ts`、`priority` → `preload`、`error.tsx` の `retry` |
 
 > **次の章では:** Supabase のセットアップを行い、実際のデータベースと接続します。書籍管理アプリのバックエンドを構築し、この章で学んだ Server Components や Server Actions を使ってデータの読み書きを実装していきます。
 
@@ -4547,29 +6565,260 @@ should not be called inside a layout or template.
 4. `layout.tsx` と `page.tsx` の違いは何ですか？
 5. Server Actions を使う利点を2つ挙げてください。
 
-<details>
-<summary>解答を見る</summary>
+#### 確認問題の解答と解説
 
-1. **違い3つ:**
-   - Server Component はサーバーで実行、Client Component はブラウザで実行
-   - Server Component はデータベースに直接アクセスできる、Client Component はできない
-   - Client Component は useState/useEffect が使える、Server Component は使えない
+まず自分の言葉で答えてから読んでください。
 
-2. **Server / Client の判断:**
-   - データベースから書籍一覧を取得 → **Server Component**（DBに直接アクセス可能）
-   - 検索バー → **Client Component**（useState でリアルタイム入力を管理）
-   - 書籍カードの静的表示 → **Server Component**（インタラクティブ性不要）
+**問1の解答（Server Component と Client Component の違い）**
 
-3. **環境変数のアクセス範囲:**
-   - `NEXT_PUBLIC_API_KEY` → Server Component と Client Component の両方で使用可能
-   - `API_SECRET_KEY` → Server Component のみ（Client Component では `undefined`）
+- Server Component はサーバーで実行され、Client Component はブラウザでも実行される（最初の1回はサーバーでも描画される。図4-4 の③）
+- Server Component はデータベースや秘密のキーに直接アクセスできる。Client Component はできない（書いてもブラウザでは使えず、秘密は漏れる危険がある）
+- Client Component は `useState`・`useEffect`・`onClick` などが使える。Server Component は使えない
 
-4. **layout.tsx と page.tsx の違い:**
-   - `layout.tsx` は複数のページで共有される外枠（ヘッダー、サイドバーなど）。ページ遷移しても状態が保持される
-   - `page.tsx` はそのルート固有のメインコンテンツ。遷移のたびに再レンダリングされる
+**解説:** 3つとも「どこで動くか」から説明できます。サーバーで動くから DB に近く秘密を守れる、ブラウザで動くからクリックや入力に反応できる、という関係です。「Client Component はブラウザ**だけ**で動く」と答えた人は、3.1.1 の実験（ターミナルに「実行場所: サーバー」と出た）をもう一度見てください。
 
-5. **Server Actions の利点:**
-   - API ルートを別途作成する必要がなく、コードがシンプルになる
-   - サーバー上で直接実行されるため、機密情報（DBの接続情報など）がクライアントに漏れない
+**問2の解答（Server / Client の判断）**
 
-</details>
+- データベースから書籍一覧を取得して表示 → **Server Component**（DB に直接アクセスでき、データ入りの HTML がすぐ届く）
+- 検索バー（入力をリアルタイムに反映）→ **Client Component**（`useState` と `onChange` が必要）
+- 書籍カードの静的な表示 → **Server Component**（動きが無いので、ブラウザに JavaScript を送る必要が無い）
+
+**解説:** 判断の基準は「その部品に、利用者の操作に反応する動きがあるか」です。動きが無いものは Server Component のまま、動きがある部品だけを小さく切り出して `"use client"` を付けます（3.3 の「つまずきポイント」）。
+
+**問3の解答（環境変数のアクセス範囲）**
+
+- `NEXT_PUBLIC_API_KEY` → Server Component と Client Component の両方で使える。ただし**ビルドのときにブラウザ用の JavaScript に値が書き込まれ、誰でも見られる**
+- `API_SECRET_KEY` → サーバー（Server Component・Server Action・Route Handler）だけで使う。Client Component ではブラウザで `undefined` になる
+
+**解説:** 名前に `API_KEY` と付いていても、`NEXT_PUBLIC_` を付けた時点で「公開してよい値」として扱われます（図4-11）。秘密のキーに `NEXT_PUBLIC_` を付けてはいけません。また、`API_SECRET_KEY` を Client Component の中で画面に表示すると、サーバーでの最初の描画で本物の値が HTML に入ってしまう点にも注意しましょう（8.2 の「つまずきポイント」）。
+
+**問4の解答（layout.tsx と page.tsx の違い）**
+
+- `layout.tsx` は、そのフォルダ以下の複数のページで共有される外枠（ヘッダー、サイドバーなど）。`{children}` の位置にページが入る。ページを移動しても作り直されず、状態が保たれる
+- `page.tsx` は、その URL 固有の中身。ページを移動すると入れ替わる
+
+**解説:** 図4-6 の「箱の中に箱」を思い出してください。5.1 の実験では、レイアウトの中のカウンターは `<Link>` で移動しても 3 のまま残りました（`<a>` だと 0 に戻る）。
+
+**問5の解答（Server Actions の利点）**
+
+- API（`route.ts`）を別に作らなくても、フォームから直接サーバーの関数を呼べるので、コードが短くなる
+- 関数の中身はサーバーで実行されるので、DB の接続情報などの秘密がブラウザに送られない
+- `revalidatePath` と組み合わせると、保存と画面の更新が1回の通信で済む（図4-10）
+- `<form action>` に渡せば、JavaScript が動かない環境でも送信できる
+
+**解説:** 2つ挙げられれば十分です。ただし、Server Action は「誰でも POST で呼び出せる公開の入り口」でもあるので、本物のアプリでは関数の中で必ずログインの確認や入力チェックをします（Next.js の公式ドキュメントでも強く注意されています）。
+
+## 練習問題（解答・解説つき）
+
+本文の内容を、手を動かして確かめる問題です。まず自分で考えて（できれば紙やエディタに書いて）から、後ろの「解答と解説」を見てください。
+
+### 問題1: ファイルをどこに置く？（2節）
+
+次の画面を表示するには、`app/` フォルダの下にどんな名前のファイルを作ればよいでしょうか。フォルダも含めて答えてください。
+
+1. `/about` のページ
+2. `/books/42/edit`（42 は書籍ごとに変わる）の編集ページ
+3. `/docs/a`・`/docs/a/b`・`/docs/a/b/c` のどれでも表示される1つのページ
+4. `/books` 以下のページでデータを取得している間に出す「読み込み中」の表示
+
+### 問題2: 古いサンプルを今の書き方に直す（2.4節）
+
+インターネットで見つけた次のコードを Next.js 16 で使うと、どうなるでしょうか。また、正しく動くように直してください。
+
+```tsx
+// app/books/[id]/page.tsx（古い書き方）
+export default function BookDetailPage({
+  params,
+}: {
+  params: { id: string };
+}) {
+  return <h1>書籍 {params.id} の詳細</h1>;
+}
+```
+
+### 問題3: ボタンを1つ足したらエラーになった（3節）
+
+次の `app/books/page.tsx` に「いいね」ボタンを足したところ、ページを開くと 500 エラーになりました。データ取得はサーバーで行ったまま、ボタンが動くように直してください。
+
+```tsx
+// app/books/page.tsx
+export default async function BooksPage() {
+  const books = ["リーダブルコード", "達人プログラマー"];
+  return (
+    <div>
+      <h1>書籍一覧（{books.length}冊）</h1>
+      <button onClick={() => console.log("いいね")}>いいね</button>
+    </div>
+  );
+}
+```
+
+### 問題4: ログはどこに出る？（3.1.1節）
+
+次の Client Component を Server Component のページに置き、`npm run dev` でページを1回開いてから、ボタンを1回押しました。(a)〜(c) のログは、それぞれ「サーバーのターミナル」「ブラウザの Console」のどちらに出るでしょうか（両方の場合もあります）。
+
+```tsx
+"use client";
+
+import { useEffect } from "react";
+
+export function Hello() {
+  // (a) 描画のたびに出すログ
+  console.log("描画しました");
+  useEffect(() => {
+    // (b) 画面に出た後に出すログ
+    console.log("画面に出ました");
+  }, []);
+  // (c) ボタンを押したときに出すログ
+  return <button onClick={() => console.log("押されました")}>押す</button>;
+}
+```
+
+### 問題5: Link か router.push か（5節）
+
+次の場面では、`<Link>` と `router.push` のどちらを使うのがよいでしょうか。理由も答えてください。
+
+1. 画面上部のメニューにある「書籍一覧」「書籍を追加」
+2. 登録フォームで「保存」を押し、保存に成功したら、その本の詳細ページへ移動する
+3. 一覧に並んだ書籍カードを押すと、その本の詳細ページへ移動する
+
+### 問題6: 本番だけ一覧が増えない（6.1・7.2節）
+
+次の Server Action で本を追加すると、`npm run dev` では一覧（`/`）を再読み込みすれば増えて見えるのに、`npm run build` → `npm run start` の本番モードでは、何度再読み込みしても増えません。原因と直し方を答えてください（`saveBook` は、データベースに保存する処理のまねをする自作の関数とします）。
+
+```ts
+// app/actions.ts
+"use server";
+
+import { saveBook } from "@/lib/books";
+
+export async function addBook(formData: FormData) {
+  const title = String(formData.get("title") ?? "").trim();
+  if (!title) {
+    return;
+  }
+  await saveBook(title);
+}
+```
+
+### 問題7: 環境変数の仕分け（8節）
+
+`.env.local` に次の4つを書きました。
+
+```bash
+NEXT_PUBLIC_SUPABASE_URL="https://abcdefghijklm.supabase.co"
+NEXT_PUBLIC_SUPABASE_ANON_KEY="sb_publishable_xxxxxxxxxxxxxxxx"
+SUPABASE_SERVICE_ROLE_KEY="sb_secret_xxxxxxxxxxxxxxxx"
+NEXT_PUBLIC_ADMIN_PASSWORD="p@ssw0rd"
+```
+
+1. ビルド後、ブラウザ用の JavaScript に値が書き込まれるのはどれですか。
+2. この中で、設定のしかたが危ないものはどれですか。どう直しますか。
+3. ある Client Component に `<p>{process.env.SUPABASE_SERVICE_ROLE_KEY}</p>` と書いてしまいました。ブラウザの画面には何が出て、何が問題ですか。
+
+### 解答と解説
+
+#### 問題1の解答
+
+1. `app/about/page.tsx`
+2. `app/books/[id]/edit/page.tsx`
+3. `app/docs/[...slug]/page.tsx`
+4. `app/books/loading.tsx`
+
+**解説:** URL の区切り（`/`）ごとにフォルダを作り、最後に `page.tsx` を置くのが基本です（図4-3）。変化する部分は `[id]` のように角括弧のフォルダにし、何階層でも受け取りたいときは `[...slug]` にします。`loading.tsx` は、置いたフォルダとその下のページの「読み込み中」表示になるので、`/books` 以下すべてに効かせたいなら `app/books/` に置きます（図4-2）。
+
+#### 問題2の解答
+
+**どうなるか:** 型チェックも `next build` も通ってしまいますが、画面には id が空のまま「書籍  の詳細」と表示され、開発サーバーのターミナルに `` Route "/books/[id]" used `params.id`. `params` is a Promise and must be unwrapped with `await` ... `` というエラーが出ます（2.4 の「つまずきポイント」の実験結果）。
+
+```tsx
+// app/books/[id]/page.tsx（直したもの）
+export default async function BookDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  return <h1>書籍 {id} の詳細</h1>;
+}
+```
+
+**解説:** 直すところは3つです。①関数に `async` を付ける、②型を `Promise<{ id: string }>` にする、③`await params` で封を開けてから `id` を取り出す。`searchParams` も同じように直します。
+
+#### 問題3の解答
+
+**原因:** `"use client"` の無い `page.tsx` は Server Component です。Server Component の中で `onClick` に関数を渡しているので、ターミナルに `Event handlers cannot be passed to Client Component props.` というエラーが出ます（`<button onClick={function onClick} children=...>` の部分が指し示されます。実際に試して確認したエラー文です）。
+
+```tsx
+// app/books/LikeButton.tsx（動きが必要なボタンだけを Client Component にする）
+"use client";
+
+export function LikeButton() {
+  return <button onClick={() => console.log("いいね")}>いいね</button>;
+}
+```
+
+```tsx
+// app/books/page.tsx（ページは Server Component のまま）
+import { LikeButton } from "./LikeButton";
+
+export default async function BooksPage() {
+  const books = ["リーダブルコード", "達人プログラマー"];
+  return (
+    <div>
+      <h1>書籍一覧（{books.length}冊）</h1>
+      <LikeButton />
+    </div>
+  );
+}
+```
+
+**解説:** `page.tsx` の先頭に `"use client"` を付けても動きますが、ページ全体が Client Component になり、`async` でのデータ取得や `metadata` が使えなくなります（3.3 の「つまずきポイント」）。動きが必要な部品だけを切り出すのが正解です。
+
+#### 問題4の解答
+
+- (a) `描画しました` … **両方**。最初の HTML を作るためにサーバーで1回（ターミナル）、ハイドレーションのためにブラウザで（Console。開発中は Strict Mode で2回）実行されます。
+- (b) `画面に出ました` … **ブラウザの Console だけ**。`useEffect` はブラウザで画面に表示された後にだけ実行されます。
+- (c) `押されました` … **ブラウザの Console だけ**。クリックはブラウザで起きるからです。
+
+**解説:** 3.1.1 の実験結果と同じです。「Client Component の関数本体はサーバーでも動く」「`useEffect` とイベントの中はブラウザだけ」の2点が分かっていれば、`window is not defined` のエラー（3.2）も防げます。
+
+#### 問題5の解答
+
+1. **`<Link>`** … いつでも行ける場所への道案内なので。本物の `<a href>` になり、新しいタブで開いたり、検索エンジンがたどったりできる
+2. **`router.push`** … 「保存に成功したら」という**処理の結果のあとで**移動したいので（Server Action で保存しているなら、Server Action の中で `redirect()` を使う方法もある）
+3. **`<Link>`** … 1 と同じく、利用者が選んで進む道案内なので
+
+**解説:** 迷ったら `<Link>`、「何かが終わってから移動」のときだけ `router.push`（図4-7）。一覧のカードをボタンにして `router.push` で移動させると、右クリックで新しいタブを開けない不便なリンクになってしまいます。
+
+#### 問題6の解答
+
+**原因:** 保存したあとに `revalidatePath` を呼んでいないので、Next.js は一覧（`/`）の作り置きが古くなったことを知りません。本番モードでは、`/` がビルド時に作り置き（`○ Static`）されているので、何度読み込み直しても作り置きが返ります。開発モードではページを毎回作り直すので、気づきにくいのです（7.2 の「つまずきポイント」の実験と同じ）。
+
+```ts
+// app/actions.ts（直したもの）
+"use server";
+
+import { revalidatePath } from "next/cache";
+import { saveBook } from "@/lib/books";
+
+export async function addBook(formData: FormData) {
+  const title = String(formData.get("title") ?? "").trim();
+  if (!title) {
+    return;
+  }
+  await saveBook(title);
+  // 一覧の画面が古くなったことを Next.js に伝える
+  revalidatePath("/");
+}
+```
+
+**解説:** 「データを変えたら、そのデータを表示している画面の URL を `revalidatePath` に渡す」がセットです（図4-10）。詳細ページ `/books/[id]` にも表示しているなら、そのパスも作り直します。
+
+#### 問題7の解答
+
+1. `NEXT_PUBLIC_` が付いた3つ（`NEXT_PUBLIC_SUPABASE_URL`・`NEXT_PUBLIC_SUPABASE_ANON_KEY`・`NEXT_PUBLIC_ADMIN_PASSWORD`）。
+2. `NEXT_PUBLIC_ADMIN_PASSWORD` が危険です。管理者のパスワードがブラウザ用の JavaScript に書き込まれ、誰でも読めてしまいます。`NEXT_PUBLIC_` を外して `ADMIN_PASSWORD` にし、サーバー（Server Action など）の中だけで使います。すでに公開してしまった値は、パスワード自体を変更します。
+3. ブラウザの画面には（ハイドレーションのあと）何も表示されません（ブラウザでは `undefined`）。しかし、サーバーでの最初の描画では本物の Secret key が読めるので、**サーバーから届く HTML に Secret key がそのまま入ってしまいます**。さらに Hydration エラーも出ます。Client Component では秘密の変数を読まず、必要な処理はサーバー側で行います。
+
+**解説:** `NEXT_PUBLIC_` は「チラシに印刷してよい」という付箋でした（図4-11）。Publishable key（旧 anon key）は Row Level Security で守られている前提なので公開してかまいませんが、Secret key（旧 service_role key）やパスワードは絶対に付箋を付けてはいけません。3 は 8.2 の「つまずきポイント」で実際に確かめた落とし穴です。
