@@ -5511,7 +5511,7 @@ grant select, insert, update, delete on public.books to authenticated;
 
 **5. メモの列名がテーブルと違う（`memo` と `notes`）**
 
-第5章の SQL のとおりに books テーブルを作った場合、メモの列名が `notes` になっています。この章のコードは `memo` という列名で INSERT するので、`Could not find the 'memo' column of 'books' in the schema cache`（code: `PGRST204`）というエラーになります。Supabase ダッシュボードの Table Editor で列名を確かめ、どちらかにそろえてください。テーブル側を `memo` に合わせる場合は、SQL Editor で次の1行を実行します。
+この章のコードは `memo` という列名で INSERT します。第5章の SQL のとおりに作ったテーブルなら列名は `memo` ですが、この教材の古い版や自分で作ったテーブルで列名が `notes` などになっていると、`Could not find the 'memo' column of 'books' in the schema cache`（code: `PGRST204`）というエラーになります。Supabase ダッシュボードの Table Editor で列名を確かめ、どちらかにそろえてください。テーブル側を `memo` に合わせる場合は、SQL Editor で次の1行を実行します。
 
 ```sql
 -- books テーブルの notes 列の名前を memo に変える（中のデータはそのまま残る）
