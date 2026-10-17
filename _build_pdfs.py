@@ -133,6 +133,7 @@ pre {{
   /* In a PDF there is no horizontal scrolling, so long lines must wrap
      instead of being clipped off the right edge of the page. */
   overflow-x: hidden;
+  overflow-y: hidden;
   white-space: pre-wrap;
   word-break: break-word;
   overflow-wrap: anywhere;
@@ -155,6 +156,9 @@ pre code {{
    that wrap too so nothing is clipped in the PDF. */
 .codehilite {{
   overflow-x: hidden;
+  /* overflow-x: hidden alone turns overflow-y into auto, and a glyph from a
+     fallback font that is a hair too tall then shows a vertical scrollbar. */
+  overflow-y: hidden;
 }}
 .codehilite pre {{
   white-space: pre-wrap;
