@@ -1,0 +1,29 @@
+（準備: sql/schema.sql の 2 文を実行しました）
+（準備: sql/u04_big.sql の 2 文を実行しました）
+sql> PRAGMA page_size
++-----------+
+| page_size |
++-----------+
+| 4096      |
++-----------+
+(1 行)
+
+sql> PRAGMA page_count
++------------+
+| page_count |
++------------+
+| 2055       |
++------------+
+(1 行)
+
+sql> CREATE INDEX idx_notes_user_updated ON notes (user_id, updated_at DESC, id DESC)
+OK
+
+sql> PRAGMA page_count
++------------+
+| page_count |
++------------+
+| 2899       |
++------------+
+(1 行)
+

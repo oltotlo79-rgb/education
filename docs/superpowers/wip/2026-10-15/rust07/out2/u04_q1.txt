@@ -1,0 +1,7 @@
+（準備: sql/schema.sql の 2 文を実行しました）
+（準備: sql/u04_big.sql の 2 文を実行しました）
+（準備: sql/u04_index.sql の 1 文を実行しました）
+sql> EXPLAIN QUERY PLAN …
+QUERY PLAN
+- SEARCH notes USING INDEX idx_notes_user_updated (user_id=?)
+

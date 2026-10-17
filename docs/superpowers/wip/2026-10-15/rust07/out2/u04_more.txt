@@ -1,0 +1,23 @@
+（準備: sql/schema.sql の 2 文を実行しました）
+（準備: sql/u04_big.sql の 2 文を実行しました）
+（準備: sql/u04_index.sql の 1 文を実行しました）
+sql> EXPLAIN QUERY PLAN SELECT id, title FROM notes WHERE updated_at >= '2026-03-01'
+QUERY PLAN
+- SCAN notes
+
+sql> EXPLAIN QUERY PLAN SELECT id FROM notes WHERE user_id = 42 AND title LIKE '%買い物%'
+QUERY PLAN
+- SEARCH notes USING INDEX idx_notes_user_updated (user_id=?)
+
+sql> EXPLAIN QUERY PLAN SELECT id FROM users WHERE email = 'user42@example.com'
+QUERY PLAN
+- SEARCH users USING COVERING INDEX sqlite_autoindex_users_1 (email=?)
+
+sql> EXPLAIN QUERY PLAN SELECT id FROM users WHERE lower(email) = 'user42@example.com'
+QUERY PLAN
+- SCAN users USING COVERING INDEX sqlite_autoindex_users_1
+
+sql> EXPLAIN QUERY PLAN SELECT COUNT(*) FROM notes WHERE user_id = 42
+QUERY PLAN
+- SEARCH notes USING COVERING INDEX idx_notes_user_updated (user_id=?)
+

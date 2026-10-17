@@ -1,0 +1,23 @@
+（準備: sql/schema.sql の 2 文を実行しました）
+（準備: sql/u04_big.sql の 2 文を実行しました）
+（準備: sql/u04_index.sql の 1 文を実行しました）
+sql> CREATE INDEX idx_notes_user_updated ON notes (user_id, updated_at DESC, id DESC)
+エラー: SQLite failure: `index idx_notes_user_updated already exists`
+
+sql> CREATE INDEX idx_notes_usr ON notes (usr_id)
+エラー: SQLite failure: `no such column: usr_id`
+
+sql> DROP INDEX idx_notes_user_updated
+OK
+
+sql> CREATE INDEX idx_notes_updated_user ON notes (updated_at DESC, user_id)
+OK
+
+sql> EXPLAIN QUERY PLAN …
+QUERY PLAN
+- SCAN notes USING INDEX idx_notes_updated_user
+- USE TEMP B-TREE FOR LAST TERM OF ORDER BY
+
+sql> DROP INDEX idx_nope
+エラー: SQLite failure: `no such index: idx_nope`
+
