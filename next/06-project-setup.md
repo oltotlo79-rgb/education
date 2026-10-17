@@ -15,10 +15,13 @@
 この章を終えると、ブラウザで開発サーバー（Development Server：開発中にアプリを確認するためのローカルサーバー。`http://localhost:3000` でアクセスできる）にアクセスし、ヘッダー付きのトップページが表示される状態になります。
 
 > **用語のミニ解説：**
+>
 > - **ビルド（build）**: ソースコード（人間が書いたコード）を、ブラウザや Node.js が実行できる形式に変換する作業のこと。TypeScript を JavaScript に変換したり、複数ファイルを1つにまとめたりします。
 > - **devサーバ（開発サーバー）**: コードを書きながら動作確認するためのローカル（自分のPC上）で動くWebサーバー。ファイルを保存すると自動的にブラウザの表示が更新されます。
 > - **依存関係（dependencies）**: あなたのアプリが動くために必要な外部のライブラリ（React や Next.js など）のこと。`package.json` に一覧が書かれます。
 > - **環境変数（environment variable）**: アプリの外側からプログラムに渡す設定値。コードに直接書きたくない秘密情報（API キーなど）や、開発環境と本番環境で値を変えたい設定に使います。
+
+<!-- -->
 
 > **ポイント：** この章はコードを書く量が多いですが、一つ一つのファイルの役割を理解しながら進めてください。「なぜこのファイルが必要なのか」を意識すると、後の章で迷わなくなります。
 
@@ -104,6 +107,7 @@
 8. [共通ヘッダーコンポーネント](#8-共通ヘッダーコンポーネント)
 9. [開発サーバーの起動と動作確認](#9-開発サーバーの起動と動作確認)
 10. [データフローの全体像](#10-データフローの全体像)
+11. [練習問題（解答・解説つき）](#練習問題解答解説つき)
 
 ---
 
@@ -126,10 +130,20 @@ npx create-next-app@latest book-management
 > **`npx` とは？**
 > `npx` は npm 5.2 以降に同梱されているコマンドで、パッケージをグローバルインストールせずに一時的に実行できます。`create-next-app@latest` は「最新版の create-next-app を使う」という意味です。プロジェクト作成のためだけに使うコマンドを、PCに永久にインストールせずに済むので便利です。
 
+<!-- -->
+
 > **`npm` と `npx` の違い:**
 > `npm install` はパッケージを「インストール」して使えるようにするコマンドで、`npx` はパッケージを「実行」するコマンドです。`create-next-app` はプロジェクト作成時に一度だけ使うので、インストールせずに `npx` で実行します。
 
-> **注意（バージョン）:** この章の画面や出力は、2026年10月時点の最新版である **create-next-app 16.4.1 / Next.js 16.4.1** で実際に確かめたものです。Next.js 16 を動かすには **Node.js 20.9 以上**が必要です（第1章で入れた Node.js のバージョンは `node --version` で確認できます）。`@latest` は「その日の最新版」なので、時期によって質問の文言や数字が少し変わることがあります。
+<!-- -->
+
+> **ヒント（最初に1回だけ聞かれる確認）:** そのパソコンで初めて `npx create-next-app@latest` を実行すると、質問の前に `Need to install the following packages:` に続けて `create-next-app@16.4.1`（版の数字）と `Ok to proceed? (y)` が表示されることがあります。「この道具をダウンロードして実行してよいですか？」という確認なので、`y` を押して Enter で進めてください。
+
+<!-- -->
+
+> **注意（バージョン）:** この章の画面や出力は、2026年10月時点の最新版である **create-next-app 16.4.1 / Next.js 16.4.1** で実際に確かめたものです。Next.js 16 を動かすには **Node.js 20.9 以上**が必要です（第1章で入れた Node.js のバージョンは `node --version` で確認できます）。`@latest` は「その日の最新版」なので、時期によって質問の文言や数字が少し変わることがあります（執筆中に create-next-app 16.4.2 が出ましたが、質問とその後の表示は 16.4.1 と同じでした）。
+
+<!-- -->
 
 > **つまずきポイント: プロジェクト名に大文字や空白を入れてしまう**
 >
@@ -194,10 +208,10 @@ npx create-next-app@latest book-management
 <text x="40" y="176" font-size="12" fill="#fdba74">↑ ↓キーで「No, customize settings」に合わせて Enter を押す</text>
 <text x="40" y="198" font-size="12" fill="#94a3b8">※ 推奨（Yes）を選ぶと Cache Components が有効になる → 第7章のトップページが build で失敗する</text>
 </svg>
-<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図X: 最初の質問の画面イメージ（矢印キーで「カスタマイズ」を選ぶ）</div>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図6-2: 最初の質問の画面イメージ（矢印キーで「カスタマイズ」を選ぶ）</div>
 </div>
 
-> **なぜ推奨設定を使わないのか:** 推奨設定には「`src/` フォルダを作らない」「Cache Components（キャッシュ・コンポーネンツ）を有効にする」という2つが含まれています。本書のコードは `src/` フォルダがある前提で、しかも Cache Components が有効だと第7章のトップページが `next build`（本番用ビルド）で失敗します。そのため、1つずつ自分で答える「カスタマイズ」を選びます。
+> **なぜ推奨設定を使わないのか:** 推奨設定には「Cache Components（キャッシュ・コンポーネンツ）を有効にする」という項目が含まれています。Cache Components が有効だと、第7章で作るトップページ（サーバーで Supabase からデータを取るページ）が `next build`（本番用ビルド）で失敗します。そのため、1つずつ自分で答える「カスタマイズ」を選び、Cache Components だけは No にします。
 
 カスタマイズを選ぶと、残りの質問が1つずつ表示されます。すべて答え終わると、ターミナルは次のようになります（これは実際の画面を元に描いた画面イメージです）。
 
@@ -246,7 +260,7 @@ npx create-next-app@latest book-management
 <text x="46" y="344" font-size="12" font-family="Consolas, Menlo, monospace" xml:space="preserve"><tspan fill="#f8fafc" font-weight="bold">  with `experimental.agentFeedback: false`.)</tspan><tspan fill="#94a3b8"> ... </tspan><tspan fill="#22d3ee" text-decoration="underline">No</tspan><tspan fill="#94a3b8"> / </tspan><tspan fill="#e2e8f0">Yes</tspan></text>
 <text x="46" y="366" font-size="12" font-family="Consolas, Menlo, monospace" xml:space="preserve"><tspan fill="#e2e8f0">Creating a new Next.js app in C:\Users\you\projects\book-management.</tspan></text>
 </svg>
-<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図X: create-next-app の質問に答え終わった画面イメージ（水色の下線が選んだ答え。番号は下の表と対応）</div>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図6-3: create-next-app の質問に答え終わった画面イメージ（水色の下線が選んだ答え。番号は下の表と対応）</div>
 </div>
 
 文字だけで書くと、実際の表示は次のとおりです（Windows では先頭の印が `√`、macOS では `✔` になります）。
@@ -271,15 +285,15 @@ npx create-next-app@latest book-management
 
 | 番号 | 質問 | 回答 | 理由 |
 |------|------|------|------|
-| ① | **recommended defaults**（推奨設定を使うか） | **No, customize settings** | 推奨設定は `src/` なし・Cache Components ありで、本書の手順と合いません。1つずつ自分で答えます。 |
+| ① | **recommended defaults**（推奨設定を使うか） | **No, customize settings** | 推奨設定は Cache Components が有効になっていて、本書の手順と合いません。1つずつ自分で答えます。 |
 | ② | **TypeScript** | Yes | 型安全性により、変数や関数の引数に間違った値を渡すミスをコンパイル時に検出できます。特にチーム開発やアプリが大規模になったときに威力を発揮します。本チュートリアルでは、Book 型などを定義してデータの構造を明確にします。 |
 | ③ | **linter**（どのコードチェック道具を使うか） | ESLint | JavaScript/TypeScript のコードを静的解析し、バグの原因になりやすい書き方やスタイルの不統一を自動検出します。例えば、未使用の変数がある場合に警告を出してくれます。Biome という別の道具も選べますが、情報が多い ESLint にします。 |
 | ④ | **React Compiler** | No | React のコードを自動で速くしてくれる仕組みです。便利ですが、学習中は「書いたとおりに動く」ほうが理解しやすいので使いません（後から有効にできます）。 |
 | ⑤ | **Tailwind CSS** | Yes | ユーティリティファーストの CSS フレームワークです。HTML（JSX）の中にクラス名を書くだけでスタイリングできるため、CSS ファイルを別途管理する必要がありません。詳しくは次のセクションで解説します。 |
-| ⑥ | **`src/` directory** | **Yes** | ソースコードを `src/` ディレクトリにまとめることで、設定ファイル（`package.json`, `next.config.ts` など）とソースコードが明確に分離されます。第7章以降のファイルの場所（`src/components/…`）もこの前提です。**既定値は No なので、必ず Yes に切り替えてください。** |
+| ⑥ | **`src/` directory** | **No**（既定値のまま） | `src/` フォルダを作らず、`app/`・`components/`・`lib/`・`types/` をプロジェクトの直下（`package.json` と同じ場所）に置きます。フォルダが1段浅くなるので、どのファイルがどこにあるか見通しやすくなります。第7章以降のファイルの場所（`components/BookCard.tsx`、`app/page.tsx` など）もこの前提です。 |
 | ⑦ | **App Router** | Yes | Next.js 13 以降で導入された新しいルーティング方式です。ファイルシステムベースのルーティング、Server Components、レイアウトのネストなど、モダンな機能が使えます。Pages Router（旧方式）より推奨されています。 |
 | ⑧ | **Cache Components** | **No** | ページの表示結果をうまく使い回すための新しい仕組みです。有効にすると「データを取りに行く処理は `<Suspense>` で囲む」などの追加ルールが必要になり、第7章のトップページ（サーバーで Supabase からデータを取るページ）が `next build` で失敗します。**既定値は Yes なので、必ず No に切り替えてください。** |
-| ⑨ | **Import alias** | No（デフォルト） | デフォルトの `@/*` エイリアスをそのまま使います。`@/components/Header` のように `src/` ディレクトリ内のファイルを短いパスでインポートできます。 |
+| ⑨ | **Import alias** | No（デフォルト） | デフォルトの `@/*` エイリアスをそのまま使います。`@/components/Header` のように、プロジェクト直下のファイルを短いパスでインポートできます。 |
 | ⑩ | **AGENTS.md** | Yes | AI のコーディング支援（第11章の Claude Code など）に「この Next.js は新しい版なので、手元の説明書を読んでから書いてね」と伝えるメモ書きのファイルを作ります。アプリの動作には影響しません。 |
 | ⑪ | **anonymized feedback**（匿名のフィードバック） | No（どちらでも可） | AI のコーディング支援が、Next.js の改善に役立つ匿名の感想を下書きしてくれる機能です。アプリの動作には関係ないので、迷ったら No で構いません。 |
 
@@ -289,52 +303,70 @@ npx create-next-app@latest book-management
 
 > **つまずきポイント: 推奨設定（Yes, use recommended defaults）のまま進めてしまう**
 >
-> 最初の質問で何も考えずに Enter を押すと、推奨設定が選ばれ、残りの質問は表示されずにすぐプロジェクトが作られます。見た目は成功しますが、`src/` フォルダが無く、Cache Components も有効になっています。
+> 最初の質問で何も考えずに Enter を押すと、推奨設定が選ばれ、残りの質問は表示されずにすぐプロジェクトが作られます。見た目は成功しますが、**Cache Components が有効**になっています（匿名フィードバックも有効になります）。この章のうちは何も困らないので、第7章で `npm run build` するまで気づかないのが厄介な点です。
 
 <div style="max-width: 720px; margin: 18px auto; text-align: center;">
-<svg viewBox="0 0 720 330" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
-<rect x="10" y="10" width="340" height="310" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
-<text x="180" y="34" text-anchor="middle" font-size="13" font-weight="bold" fill="#c2410c">NG: Enter 連打で「推奨設定」を選んだ</text>
-<rect x="370" y="10" width="340" height="310" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
-<text x="540" y="34" text-anchor="middle" font-size="13" font-weight="bold" fill="#047857">OK: 「カスタマイズ」で本書どおりに答えた</text>
-<text x="26" y="64" font-size="13" fill="#1e293b" font-family="Consolas, Menlo, monospace">book-management/</text>
-<text x="44" y="88" font-size="13" fill="#c2410c" font-family="Consolas, Menlo, monospace">app/</text>
-<text x="176" y="88" font-size="12" fill="#c2410c">← src/ が無い</text>
-<text x="62" y="112" font-size="13" fill="#1e293b" font-family="Consolas, Menlo, monospace">layout.tsx</text>
-<text x="62" y="136" font-size="13" fill="#1e293b" font-family="Consolas, Menlo, monospace">page.tsx</text>
-<text x="44" y="160" font-size="13" fill="#1e293b" font-family="Consolas, Menlo, monospace">public/</text>
-<text x="44" y="184" font-size="13" fill="#c2410c" font-family="Consolas, Menlo, monospace">next.config.ts</text>
-<text x="176" y="184" font-size="12" fill="#c2410c">← Cache Components 有効</text>
-<text x="44" y="208" font-size="13" fill="#c2410c" font-family="Consolas, Menlo, monospace">tsconfig.json</text>
-<text x="386" y="64" font-size="13" fill="#1e293b" font-family="Consolas, Menlo, monospace">book-management/</text>
-<text x="404" y="88" font-size="13" fill="#047857" font-family="Consolas, Menlo, monospace">src/</text>
-<text x="536" y="88" font-size="12" fill="#047857">← コードはここ</text>
-<text x="422" y="112" font-size="13" fill="#1e293b" font-family="Consolas, Menlo, monospace">app/</text>
-<text x="440" y="136" font-size="13" fill="#1e293b" font-family="Consolas, Menlo, monospace">layout.tsx</text>
-<text x="440" y="160" font-size="13" fill="#1e293b" font-family="Consolas, Menlo, monospace">page.tsx</text>
-<text x="404" y="184" font-size="13" fill="#1e293b" font-family="Consolas, Menlo, monospace">public/</text>
-<text x="404" y="208" font-size="13" fill="#047857" font-family="Consolas, Menlo, monospace">next.config.ts</text>
-<text x="536" y="208" font-size="12" fill="#047857">← 余計な設定なし</text>
-<text x="404" y="232" font-size="13" fill="#047857" font-family="Consolas, Menlo, monospace">tsconfig.json</text>
-<rect x="26" y="236" width="308" height="30" rx="6" fill="#ffffff" stroke="#f97316" stroke-width="1.5"/>
-<text x="180" y="256" text-anchor="middle" font-size="12" fill="#c2410c" font-family="Consolas, Menlo, monospace">tsconfig: "@/*": ["./*"]</text>
-<rect x="386" y="260" width="308" height="30" rx="6" fill="#ffffff" stroke="#10b981" stroke-width="1.5"/>
-<text x="540" y="280" text-anchor="middle" font-size="12" fill="#047857" font-family="Consolas, Menlo, monospace">tsconfig: "@/*": ["./src/*"]</text>
-<text x="180" y="290" text-anchor="middle" font-size="12" fill="#c2410c">本書のパス（src/components/…）と食い違う</text>
-<text x="180" y="310" text-anchor="middle" font-size="12" fill="#c2410c">第7章のトップページが build で失敗する</text>
-<text x="540" y="310" text-anchor="middle" font-size="12" fill="#047857">第7章以降のコードがそのまま動く</text>
+<svg viewBox="0 0 720 345" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<rect x="20" y="12" width="200" height="40" rx="6" fill="#f8fafc" stroke="#475569" stroke-width="1.5"/>
+<text x="120" y="37" text-anchor="middle" font-size="13" font-weight="bold" fill="#475569">質問</text>
+<rect x="235" y="12" width="210" height="40" rx="6" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="340" y="30" text-anchor="middle" font-size="13" font-weight="bold" fill="#c2410c">推奨設定（Enter 連打）</text>
+<text x="340" y="46" text-anchor="middle" font-size="12" fill="#c2410c">Yes, use recommended defaults</text>
+<rect x="460" y="12" width="240" height="40" rx="6" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="580" y="30" text-anchor="middle" font-size="13" font-weight="bold" fill="#047857">本書の設定（カスタマイズ）</text>
+<text x="580" y="46" text-anchor="middle" font-size="12" fill="#047857">No, customize settings</text>
+<rect x="20" y="60" width="680" height="26" rx="5" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<text x="120" y="78" text-anchor="middle" font-size="12" fill="#1e293b" font-family="Consolas, Menlo, monospace">TypeScript</text>
+<text x="340" y="78" text-anchor="middle" font-size="12" font-weight="normal" fill="#475569">Yes</text>
+<text x="580" y="78" text-anchor="middle" font-size="12" font-weight="normal" fill="#475569">Yes</text>
+<rect x="20" y="88" width="680" height="26" rx="5" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<text x="120" y="106" text-anchor="middle" font-size="12" fill="#1e293b" font-family="Consolas, Menlo, monospace">Linter</text>
+<text x="340" y="106" text-anchor="middle" font-size="12" font-weight="normal" fill="#475569">ESLint</text>
+<text x="580" y="106" text-anchor="middle" font-size="12" font-weight="normal" fill="#475569">ESLint</text>
+<rect x="20" y="116" width="680" height="26" rx="5" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<text x="120" y="134" text-anchor="middle" font-size="12" fill="#1e293b" font-family="Consolas, Menlo, monospace">React Compiler</text>
+<text x="340" y="134" text-anchor="middle" font-size="12" font-weight="normal" fill="#475569">No</text>
+<text x="580" y="134" text-anchor="middle" font-size="12" font-weight="normal" fill="#475569">No</text>
+<rect x="20" y="144" width="680" height="26" rx="5" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<text x="120" y="162" text-anchor="middle" font-size="12" fill="#1e293b" font-family="Consolas, Menlo, monospace">Tailwind CSS</text>
+<text x="340" y="162" text-anchor="middle" font-size="12" font-weight="normal" fill="#475569">Yes</text>
+<text x="580" y="162" text-anchor="middle" font-size="12" font-weight="normal" fill="#475569">Yes</text>
+<rect x="20" y="172" width="680" height="26" rx="5" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<text x="120" y="190" text-anchor="middle" font-size="12" fill="#1e293b" font-family="Consolas, Menlo, monospace">src/ directory</text>
+<text x="340" y="190" text-anchor="middle" font-size="12" font-weight="normal" fill="#475569">No</text>
+<text x="580" y="190" text-anchor="middle" font-size="12" font-weight="normal" fill="#475569">No</text>
+<rect x="20" y="200" width="680" height="26" rx="5" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<text x="120" y="218" text-anchor="middle" font-size="12" fill="#1e293b" font-family="Consolas, Menlo, monospace">App Router</text>
+<text x="340" y="218" text-anchor="middle" font-size="12" font-weight="normal" fill="#475569">Yes</text>
+<text x="580" y="218" text-anchor="middle" font-size="12" font-weight="normal" fill="#475569">Yes</text>
+<rect x="20" y="228" width="680" height="26" rx="5" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<text x="120" y="246" text-anchor="middle" font-size="12" fill="#1e293b" font-family="Consolas, Menlo, monospace">Cache Components</text>
+<text x="340" y="246" text-anchor="middle" font-size="12" font-weight="bold" fill="#c2410c">Yes</text>
+<text x="580" y="246" text-anchor="middle" font-size="12" font-weight="bold" fill="#047857">No</text>
+<rect x="20" y="256" width="680" height="26" rx="5" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+<text x="120" y="274" text-anchor="middle" font-size="12" fill="#1e293b" font-family="Consolas, Menlo, monospace">AGENTS.md</text>
+<text x="340" y="274" text-anchor="middle" font-size="12" font-weight="normal" fill="#475569">Yes</text>
+<text x="580" y="274" text-anchor="middle" font-size="12" font-weight="normal" fill="#475569">Yes</text>
+<rect x="20" y="284" width="680" height="26" rx="5" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<text x="120" y="302" text-anchor="middle" font-size="12" fill="#1e293b" font-family="Consolas, Menlo, monospace">Agent feedback</text>
+<text x="340" y="302" text-anchor="middle" font-size="12" font-weight="bold" fill="#c2410c">Yes</text>
+<text x="580" y="302" text-anchor="middle" font-size="12" font-weight="bold" fill="#047857">No</text>
+<text x="360" y="330" text-anchor="middle" font-size="12" fill="#c2410c">違いは橙色の2行。Cache Components が Yes だと第7章で npm run build が失敗する</text>
 </svg>
-<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図X: 推奨設定を選んだ場合（左）と、本書どおりにカスタマイズした場合（右）の違い</div>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図6-4: 推奨設定と本書の設定の違い（推奨設定のままだと Cache Components が有効になる）</div>
 </div>
 
-直し方は「作り直す」のがいちばん確実です。まだ何も書いていないので、失うものはありません。
+推奨設定で作ってしまったかどうかは、`next.config.ts` を開けば分かります。
 
 NG（推奨設定のまま作ったプロジェクトを使い続ける）:
 
 ```text
-book-management/app/page.tsx       ← src/ が無い
-book-management/next.config.ts     ← cacheComponents: true が入っている
+book-management/next.config.ts の中に、次の2行がある
+  cacheComponents: true,
+  partialPrefetching: true,
 ```
+
+直し方は2つあります。1つ目は、この2行を消すことです（詳しくは 1.7 で説明します）。2つ目は「作り直す」ことで、まだ何も書いていないので失うものはありません。
 
 OK（フォルダを消して、カスタマイズで作り直す）:
 
@@ -354,10 +386,10 @@ npx create-next-app@latest book-management
 > **▼ このコードがやること（先に日本語で）:** 対話の質問に1つずつ答える代わりに、答えを「オプション（`--` で始まる追加の指定）」としてコマンドに全部書いておく方法です。オプションを1つでも付けると質問は表示されず、書かなかった項目は推奨設定の値になります。本書の答えをすべて書いておけば、矢印キーの操作ミスが起きません。
 
 ```bash
-# 本書の答え（TypeScript / ESLint / Tailwind / src あり / App Router /
+# 本書の答え（TypeScript / ESLint / Tailwind / src なし / App Router /
 # React Compiler なし / Cache Components なし / エイリアス @/* / npm を使う /
 # AGENTS.md あり / 匿名フィードバックなし）をオプションで指定する
-npx create-next-app@latest book-management --ts --eslint --tailwind --src-dir --app --no-react-compiler --no-cache-components --import-alias "@/*" --use-npm --agents-md --no-agent-feedback
+npx create-next-app@latest book-management --ts --eslint --tailwind --no-src-dir --app --no-react-compiler --no-cache-components --import-alias "@/*" --use-npm --agents-md --no-agent-feedback
 ```
 
 **▼ 実行結果**（パスは例。数字は時期によって変わります）
@@ -412,19 +444,19 @@ Success! Created book-management at C:\Users\you\projects\book-management
 ##### 解説1: `--` で始まるオプションが「質問への答え」になる
 
 ```bash
---ts --eslint --tailwind --src-dir --app
+--ts --eslint --tailwind --app
 ```
 
-- `--ts` は ② TypeScript に Yes、`--eslint` は ③ で ESLint、`--tailwind` は ⑤ に Yes、`--src-dir` は ⑥ に Yes、`--app` は ⑦ に Yes と答えたのと同じです。
+- `--ts` は ② TypeScript に Yes、`--eslint` は ③ で ESLint、`--tailwind` は ⑤ に Yes、`--app` は ⑦ に Yes と答えたのと同じです。
 - 質問と同じ内容を、キー操作ではなく文字で先に伝えているだけです。
 
 ##### 解説2: `--no-` で始まるオプションは「No と答える」
 
 ```bash
---no-react-compiler --no-cache-components --no-agent-feedback
+--no-src-dir --no-react-compiler --no-cache-components --no-agent-feedback
 ```
 
-- `--no-` を頭に付けると「その機能は使わない」という意味になります。④ React Compiler、⑧ Cache Components、⑪ 匿名フィードバックをすべて No にしています。
+- `--no-` を頭に付けると「その機能は使わない」という意味になります。⑥ `src/` フォルダ、④ React Compiler、⑧ Cache Components、⑪ 匿名フィードバックをすべて No にしています。
 - 特に `--no-cache-components` は大切です。付け忘れると推奨設定の Yes が使われてしまいます。
 
 ##### 解説3: 残りのオプション
@@ -438,13 +470,17 @@ Success! Created book-management at C:\Users\you\projects\book-management
 
 > **用語:** 「オプション（フラグ）」とは、コマンドの後ろに付けて動きを細かく指定する追加の文字列です。`--` で始まるものが多く、`npx create-next-app@latest --help` で一覧を見られます。
 
+<!-- -->
+
 > **静的解析（static analysis）とは？**
 > コードを実行せずに、ソースコードを読み解いて問題を見つける手法のこと。ESLint がこの役割を担います。例えば「この変数は宣言されているけど使われていない」「`if` 文の条件が常に true になる」といった問題を、実行前にチェックしてくれます。
+
+<!-- -->
 
 > **パスエイリアスとは？（重要）**
 > 通常、別のファイルをインポートするときは相対パス（`../../components/Header` のように、現在のファイルからの相対位置）を使います。深い階層になると `../../../../` のように `../` が増えて読みづらくなります。
 >
-> パスエイリアスを使うと、`@/components/Header` のように `src/` を起点とした絶対インポート（プロジェクトのルートからのパス）で書けるようになります。ファイルを移動してもインポート文を直さなくてよいので、リファクタリング（コードの整理）も楽になります。
+> パスエイリアスを使うと、`@/components/Header` のようにプロジェクトのルート（`package.json` がある場所）を起点とした絶対インポートで書けるようになります。ファイルを移動してもインポート文を直さなくてよいので、リファクタリング（コードの整理）も楽になります。
 
 ### 1.3 なぜ Tailwind CSS を選ぶのか
 
@@ -560,7 +596,10 @@ node_modules/braces
 
 > **「added XXX packages」とは？:** `npm install` が `node_modules/` フォルダに何個のパッケージを置いたかを示します。React/Next.js本体に加えて、依存パッケージ（依存関係でついてくる関連ライブラリ）が一緒に入るので 300〜400個程度になります（今回は 363個）。これが普通です。
 
+<!-- -->
+
 > **`npm install` で何が起きているか:**
+>
 > 1. `package.json` に書かれた依存パッケージのリストを読み取る
 > 2. npm レジストリ（https://www.npmjs.com）から、それぞれのパッケージをダウンロード
 > 3. ダウンロードしたパッケージを `node_modules/` フォルダに展開
@@ -599,12 +638,13 @@ node_modules/braces
 <line x1="435" y1="130" x2="548" y2="170" stroke="#475569" stroke-width="2" marker-end="url(#ar-06-05)"/>
 <text x="488" y="172" text-anchor="middle" font-size="12" fill="#475569">③ 記録</text>
 </svg>
-<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図6-2: npm install の流れ（買い物メモ → お店 → 冷蔵庫とレシート）</div>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図6-5: npm install の流れ（買い物メモ → お店 → 冷蔵庫とレシート）</div>
 </div>
 
 Git に入れる（チームで共有する）のはメモとレシート、つまり `package.json` と `package-lock.json` だけです。冷蔵庫の中身（`node_modules/`）は、メモとレシートさえあれば `npm install` でいつでも同じ状態に作り直せるので、共有しません。
 
 > **`dependencies` と `devDependencies` の違い:**
+>
 > - **`dependencies`**: アプリが本番環境で動くために必要なパッケージ。例: React、Next.js本体。
 > - **`devDependencies`**: 開発中だけ必要なパッケージ。例: TypeScript（本番ではJavaScriptに変換済み）、ESLint（本番では使わない）。
 >
@@ -633,12 +673,11 @@ book-management/
     next.svg            ... Next.js ロゴ（デフォルトサンプル）
     vercel.svg          ... Vercel ロゴ（デフォルトサンプル）
     window.svg          ... ウィンドウアイコン（デフォルトサンプル）
-  src/                  ... アプリのソースコードを置くフォルダ
-    app/                ... App Router のルートディレクトリ。フォルダ構成がそのままURLになる
-      favicon.ico       ... ブラウザのタブに表示されるアイコン
-      globals.css       ... グローバル CSS（Tailwind CSS を読み込む）
-      layout.tsx        ... ルートレイアウト（全ページ共通の枠）
-      page.tsx          ... トップページ（ / にアクセスしたときの表示）
+  app/                  ... App Router のルートディレクトリ。フォルダ構成がそのままURLになる
+    favicon.ico         ... ブラウザのタブに表示されるアイコン
+    globals.css         ... グローバル CSS（Tailwind CSS を読み込む）
+    layout.tsx          ... ルートレイアウト（全ページ共通の枠）
+    page.tsx            ... トップページ（ / にアクセスしたときの表示）
   .gitignore            ... Git で管理しないファイルの指定
   AGENTS.md             ... AI コーディング支援向けの説明書（質問⑩で Yes にしたので作られた）
   eslint.config.mjs     ... ESLint の設定ファイル
@@ -739,7 +778,7 @@ book-management/
 <rect x="532" y="493" width="14" height="14" rx="3" fill="#fdf2f8" stroke="#db2777" stroke-width="1.5"/>
 <text x="552" y="504" font-size="12" fill="#475569">説明書（読むだけ）</text>
 </svg>
-<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図X: create-next-app が作ったファイルと、それぞれの役割（色は「触ってよいか」の目安）</div>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図6-6: create-next-app が作ったファイルと、それぞれの役割（色は「触ってよいか」の目安）</div>
 </div>
 
 > **ヒント:** 先頭が `.`（ドット）のファイルやフォルダ（`.git/`、`.next/`、`.gitignore`）は、macOS の Finder では**隠しファイル**として表示されません（Windows のエクスプローラーでも `.git/` は隠しフォルダになります）。VS Code のエクスプローラーならほぼすべて表示されます（`.git/` だけは VS Code でも既定で隠されます）。
@@ -753,11 +792,13 @@ book-management/
 | `next.config.ts` | Next.js の動作をカスタマイズする設定ファイルです。画像の外部ドメイン許可などを設定できます。今回は Tailwind CSS を読み込むための設定（`turbopack.rules`）が最初から書かれています。 |
 | `eslint.config.mjs` | ESLint のルール設定です。`eslint-config-next` の推奨ルール（`core-web-vitals` と `typescript`）が最初から有効になっています。 |
 | `AGENTS.md` | AI のコーディング支援に向けた説明書です。「この Next.js は新しい版なので、`node_modules/next/dist/docs/` の説明書を読んでから書くこと」といった注意が書かれています。 |
-| `src/app/layout.tsx` | すべてのページを囲むルートレイアウトです。`<html>` と `<body>` タグを含み、共通のヘッダーやフッターを配置します。 |
-| `src/app/page.tsx` | トップページのコンポーネントです。URL `/` にアクセスしたときに表示されます。 |
-| `src/app/globals.css` | アプリ全体に適用されるグローバル CSS です。先頭の `@import "tailwindcss";` の1行で Tailwind CSS が読み込まれます。 |
+| `app/layout.tsx` | すべてのページを囲むルートレイアウトです。`<html>` と `<body>` タグを含み、共通のヘッダーやフッターを配置します。 |
+| `app/page.tsx` | トップページのコンポーネントです。URL `/` にアクセスしたときに表示されます。 |
+| `app/globals.css` | アプリ全体に適用されるグローバル CSS です。先頭の `@import "tailwindcss";` の1行で Tailwind CSS が読み込まれます。 |
 
 > **注意（古い記事との違い）:** 少し前の記事や本では、`tailwind.config.ts`（Tailwind の設定）、`postcss.config.mjs`（PostCSS の設定）、`.eslintrc.json`（ESLint の古い形式の設定）というファイルが登場します。現在の create-next-app が入れる **Tailwind CSS v4** は設定ファイルなしで動き（色などのカスタマイズは CSS の中に書きます）、ESLint の設定も `eslint.config.mjs` という新しい形式に変わったため、これらのファイルは作られません。**無くて正常**なので、自分で作る必要はありません。
+
+<!-- -->
 
 > **`.gitignore` で何を除外するか、なぜか:**
 > Git の管理から除外する（コミットしない）べきファイルの種類を `.gitignore` ファイルに書きます。`create-next-app` が自動生成する `.gitignore` には、次のようなものが含まれます。
@@ -917,8 +958,8 @@ npx next --version
     ],
     // パスエイリアスの定義
     "paths": {
-      // @/foo は src/foo を指す
-      "@/*": ["./src/*"]
+      // @/foo はプロジェクト直下の foo を指す（./ は tsconfig.json がある場所）
+      "@/*": ["./*"]
     }
   },
   // 型チェック対象（.next/ の中に自動生成される型も含める）
@@ -1296,7 +1337,7 @@ Tailwind CSS では、ブレークポイントのプレフィックスを付け�
 <text x="581" y="214" text-anchor="middle" font-size="12" fill="#047857" font-family="Consolas, Menlo, monospace">lg:grid-cols-3</text>
 <text x="360" y="240" text-anchor="middle" font-size="12" fill="#64748b">プレフィックス付きのクラスは「その幅以上」で効き、より広い幅のクラスが後から上書きする</text>
 </svg>
-<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図6-3: ブレークポイントの物差しと、grid-cols-1 md:grid-cols-2 lg:grid-cols-3 の見え方</div>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図6-7: ブレークポイントの物差しと、grid-cols-1 md:grid-cols-2 lg:grid-cols-3 の見え方</div>
 </div>
 
 ### 2.4 「このクラスを付けるとこう表示される」具体例
@@ -1491,10 +1532,15 @@ book-management@0.1.0 C:\Users\you\projects\book-management
 
 > **用語:** 「依存関係（dependency）」とは、ある部品が動くために必要な別の部品との関係のことです。`npm ls` はこの関係を木（ツリー）の形で見せてくれます。
 
+<!-- -->
+
 > **`^` の意味:** `^2.49.1` は「メジャーバージョン 2 の範囲で最新版を許容する」という意味です。`2.49.1` から `2.99.99` まではインストール可能ですが、`3.0.0` はインストールされません。これにより、破壊的変更を避けつつ最新のバグ修正やパフォーマンス改善を受けられます。
+
+<!-- -->
 
 > **セマンティックバージョニング（SemVer）の補足:**
 > バージョン番号は `メジャー.マイナー.パッチ` の形（例: `2.49.1`）になっています。
+>
 > - **メジャー（2）**: 互換性のない変更（古い書き方が動かなくなる可能性あり）
 > - **マイナー（49）**: 機能追加（後方互換あり）
 > - **パッチ（1）**: バグ修正
@@ -1513,7 +1559,7 @@ book-management@0.1.0 C:\Users\you\projects\book-management
 
 <div style="max-width:680px;margin:20px auto;font-family:'Segoe UI',sans-serif;">
   <!-- Root -->
-  <div style="background:#e0f2fe;border:2px solid #0284c7;border-radius:10px;padding:12px 18px;text-align:center;font-weight:700;color:#0369a1;font-size:15px;margin-bottom:4px;">src/</div>
+  <div style="background:#e0f2fe;border:2px solid #0284c7;border-radius:10px;padding:12px 18px;text-align:center;font-weight:700;color:#0369a1;font-size:15px;margin-bottom:4px;">book-management/（プロジェクト直下）</div>
   <div style="display:flex;justify-content:center;gap:0;margin-bottom:4px;">
     <div style="border-left:2px solid #cbd5e1;height:18px;"></div>
   </div>
@@ -1567,10 +1613,10 @@ book-management@0.1.0 C:\Users\you\projects\book-management
   </div>
 </div>
 
-テキスト形式でも示します。
+テキスト形式でも示します（`package.json` などの設定ファイルは省略しています）。
 
 ```
-src/
+book-management/
 ├── app/                            # App Router のルート。フォルダ名 = URL になる
 │   ├── page.tsx                    # / にアクセスしたときのページ（トップ：書籍一覧）
 │   ├── layout.tsx                  # 全ページ共通の枠（HTMLタグ、ヘッダーなど）
@@ -1690,7 +1736,7 @@ src/
 <line x1="250" y1="392" x2="290" y2="392" stroke="#f97316" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#ar-06-07b)"/>
 <text x="298" y="397" font-size="12" fill="#475569">設定値を読み込む（import ではない）</text>
 </svg>
-<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図6-4: ファイル同士の import 関係（矢印は上から下への一方通行）</div>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図6-8: ファイル同士の import 関係（矢印は上から下への一方通行）</div>
 </div>
 
 この図から、次の2つのルールが読み取れます。
@@ -1708,15 +1754,17 @@ src/
 # ディレクトリの作成
 # mkdir: Make Directory の略。フォルダを作成するコマンド
 # -p: 親フォルダが存在しなければ一緒に作る（既に存在してもエラーにならない）
-mkdir -p src/app/books/new
+mkdir -p app/books/new
 # [id] は角括弧の意味を持つ特殊文字なので、シェルで誤解されないようにバックスラッシュでエスケープ
-mkdir -p src/app/books/\[id\]/edit
-mkdir -p src/components
-mkdir -p src/lib/supabase
-mkdir -p src/types
+mkdir -p app/books/\[id\]/edit
+mkdir -p components
+mkdir -p lib/supabase
+mkdir -p types
 ```
 
 > **注意:** `[id]` は角括弧を含むため、シェルによってはエスケープが必要です。うまくいかない場合は、VS Code のエクスプローラーからフォルダを手動で作成してください。
+
+<!-- -->
 
 > **▼ このコードがやること（先に日本語で）:** さきほど作ったフォルダの中に、これから編集していく「空っぽのファイル」を一気に用意します。`touch` は中身が空のファイルを作るコマンドで、中身は後の節で書き込んでいきます。Windows の PowerShell には `touch` がないので、その場合は下の「4.3.1」の PowerShell 版を使ってください。
 
@@ -1724,81 +1772,78 @@ mkdir -p src/types
 # ファイルの作成（中身は後ほど記述）
 # touch: 空のファイルを作成するコマンド（既に存在する場合は最終更新時刻だけ変える）
 # 共通ヘッダー
-touch src/components/Header.tsx
+touch components/Header.tsx
 # 書籍カード
-touch src/components/BookCard.tsx
+touch components/BookCard.tsx
 # 書籍フォーム
-touch src/components/BookForm.tsx
+touch components/BookForm.tsx
 # 書籍一覧
-touch src/components/BookList.tsx
+touch components/BookList.tsx
 # 削除ボタン
-touch src/components/DeleteButton.tsx
+touch components/DeleteButton.tsx
 # ステータスバッジ
-touch src/components/StatusBadge.tsx
+touch components/StatusBadge.tsx
 # 評価表示
-touch src/components/RatingStars.tsx
+touch components/RatingStars.tsx
 # ローディング
-touch src/components/LoadingSpinner.tsx
+touch components/LoadingSpinner.tsx
 # Supabase クライアント（ブラウザ用）
-touch src/lib/supabase/client.ts
+touch lib/supabase/client.ts
 # Supabase クライアント（サーバー用）
-touch src/lib/supabase/server.ts
+touch lib/supabase/server.ts
 # Book型定義
-touch src/types/book.ts
+touch types/book.ts
 ```
 
 #### 4.3.1 サンプル: Windows の PowerShell で同じフォルダとファイルを作る
 
-> **▼ このコードがやること（先に日本語で）:** 上の `mkdir -p` と `touch` は macOS / Linux（と Git Bash）向けの書き方です。Windows の PowerShell では、フォルダもファイルも `New-Item`（新しい項目を作る）というコマンドで作ります。カンマ `,` で区切ると、いくつもまとめて作れます。最後に `Get-ChildItem` で、作ったものを一覧表示して確かめます。
+> **▼ このコードがやること（先に日本語で）:** 上の `mkdir -p` と `touch` は macOS / Linux（と Git Bash）向けの書き方です。Windows の PowerShell では、フォルダもファイルも `New-Item`（新しい項目を作る）というコマンドで作ります。カンマ `,` で区切ると、いくつもまとめて作れます。最後に、作ったものを一覧表示して確かめます。どれも `book-management` フォルダの中で実行します。
 
 ```powershell
 # フォルダをまとめて作る（-Force: 途中のフォルダも作り、既にあってもエラーにしない）
 # [id] を含むパスは "..." で囲めば、そのままの名前で作られる
-New-Item -ItemType Directory -Force -Path "src/app/books/new", "src/app/books/[id]/edit", "src/components", "src/lib/supabase", "src/types" | Out-Null
+New-Item -ItemType Directory -Force -Path "app/books/new", "app/books/[id]/edit", "components", "lib/supabase", "types" | Out-Null
 
 # 空のファイルをまとめて作る（| Out-Null は、作るたびに出る長い表示を消すため）
-New-Item -ItemType File -Path "src/components/Header.tsx", "src/components/BookCard.tsx", "src/components/BookForm.tsx", "src/components/BookList.tsx", "src/components/DeleteButton.tsx", "src/components/StatusBadge.tsx", "src/components/RatingStars.tsx", "src/components/LoadingSpinner.tsx", "src/lib/supabase/client.ts", "src/lib/supabase/server.ts", "src/types/book.ts" | Out-Null
+New-Item -ItemType File -Path "components/Header.tsx", "components/BookCard.tsx", "components/BookForm.tsx", "components/BookList.tsx", "components/DeleteButton.tsx", "components/StatusBadge.tsx", "components/RatingStars.tsx", "components/LoadingSpinner.tsx", "lib/supabase/client.ts", "lib/supabase/server.ts", "types/book.ts" | Out-Null
 
-# src の中身を、下の階層まで名前だけで一覧表示する
-Get-ChildItem -Recurse -Name src
+# 4つのフォルダの中身を、下の階層まで「いまの場所から見たパス」で一覧表示する
+Get-ChildItem -Recurse app, components, lib, types | Resolve-Path -Relative
 ```
 
 **▼ 実行結果**
 
 ```text
-app
-components
-lib
-types
-app\books
-app\globals.css
-app\layout.tsx
-app\page.tsx
-app\books\new
-app\books\[id]
-app\books\[id]\edit
-components\BookCard.tsx
-components\BookForm.tsx
-components\BookList.tsx
-components\DeleteButton.tsx
-components\Header.tsx
-components\LoadingSpinner.tsx
-components\RatingStars.tsx
-components\StatusBadge.tsx
-lib\supabase
-lib\supabase\client.ts
-lib\supabase\server.ts
-types\book.ts
+.\app\books
+.\app\favicon.ico
+.\app\globals.css
+.\app\layout.tsx
+.\app\page.tsx
+.\app\books\new
+.\app\books\[id]
+.\app\books\[id]\edit
+.\components\BookCard.tsx
+.\components\BookForm.tsx
+.\components\BookList.tsx
+.\components\DeleteButton.tsx
+.\components\Header.tsx
+.\components\LoadingSpinner.tsx
+.\components\RatingStars.tsx
+.\components\StatusBadge.tsx
+.\lib\supabase
+.\lib\supabase\client.ts
+.\lib\supabase\server.ts
+.\types\book.ts
 ```
 
-（`app\favicon.ico` も実際には表示されます。ここでは本章で作ったものが分かるよう、説明用に作った最小のフォルダで実行した結果を載せています。）
+（`app\` の中の4つは create-next-app が作ったファイルです。本章で作ったものが分かるよう、説明用に `app\` だけを用意した小さなフォルダで実行した結果を載せています。）
 
 #### ▼ コードを1つずつ分解して解説
 
 ##### 解説1: `New-Item -ItemType Directory` でフォルダを作る
 
 ```powershell
-New-Item -ItemType Directory -Force -Path "src/app/books/new", "src/app/books/[id]/edit"
+New-Item -ItemType Directory -Force -Path "app/books/new", "app/books/[id]/edit"
 ```
 
 - `-ItemType Directory` は「フォルダを作る」という指定です。`-Path` の後ろに作りたい場所を書きます。
@@ -1808,7 +1853,7 @@ New-Item -ItemType Directory -Force -Path "src/app/books/new", "src/app/books/[i
 ##### 解説2: ファイルを作るときは `-Force` を付けない
 
 ```powershell
-New-Item -ItemType File -Path "src/types/book.ts" | Out-Null
+New-Item -ItemType File -Path "types/book.ts" | Out-Null
 ```
 
 - `-ItemType File` は「空のファイルを作る」という指定です。
@@ -1816,23 +1861,24 @@ New-Item -ItemType File -Path "src/types/book.ts" | Out-Null
 - 付けずに2回実行すると、2回目は次のエラーになります（1行目を抜粋）。ファイルは無事なので心配いりません。
 
 ```text
-New-Item : The file 'C:\Users\you\projects\book-management\src\types\book.ts' already exists.
+New-Item : The file 'C:\Users\you\projects\book-management\types\book.ts' already exists.
 ```
 
-##### 解説3: `Get-ChildItem -Recurse -Name` で確かめる
+##### 解説3: 作ったものを一覧で確かめる
 
 ```powershell
-Get-ChildItem -Recurse -Name src
+Get-ChildItem -Recurse app, components, lib, types | Resolve-Path -Relative
 ```
 
-- `Get-ChildItem` はフォルダの中身を表示するコマンド（`ls` や `dir` と同じ）です。`-Recurse` で下の階層まで、`-Name` で名前だけを表示します。
+- `Get-ChildItem` はフォルダの中身を表示するコマンド（`ls` や `dir` と同じ）です。`-Recurse` を付けると、下の階層まで全部たどります。
+- `| Resolve-Path -Relative` は、表示を「いまの場所から見たパス」（`.\app\page.tsx` のような形）に変える指定です。先頭の `.\` は「いまいる場所」という意味です。
 - 区切りが `\`（Windows の書き方）になりますが、`/` で書いた場所と同じ意味です。
 
 > **用語:** 「PowerShell（パワーシェル）」とは、Windows に最初から入っているコマンドを打つための道具です。VS Code のターミナルも、Windows では既定で PowerShell が開きます。
 
 ### 4.4 `@/` はどこを指す？（パスエイリアスの解決）
 
-この章のコードでは、`import Header from "@/components/Header";` のように、先頭が `@/` のパスがたくさん出てきます。1.2 の質問⑨で「`@/*` をそのまま使う」と答えたので、`@/` は **`src/` フォルダの近道**として働きます。住所にたとえると、`@/` は「本社ビル（src）」という略称です。「本社ビルの3階（components）の Header さん」と書けば、どの支店から手紙を出しても同じ人に届きます。一方、相対パス（`../`）は「ここから2つ戻って右」という道案内なので、出発地点が変わるたびに書き直しが必要です。
+この章のコードでは、`import Header from "@/components/Header";` のように、先頭が `@/` のパスがたくさん出てきます。1.2 の質問⑨で「`@/*` をそのまま使う」と答えたので、`@/` は **プロジェクト直下（`package.json` がある場所）の近道**として働きます。住所にたとえると、`@/` は「本社ビル」という略称です。「本社ビルの3階（components）の Header さん」と書けば、どの支店から手紙を出しても同じ人に届きます。一方、相対パス（`../`）は「ここから2つ戻って右」という道案内なので、出発地点が変わるたびに書き直しが必要です。
 
 <div style="max-width: 720px; margin: 18px auto; text-align: center;">
 <svg viewBox="0 0 720 440" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
@@ -1863,7 +1909,7 @@ Get-ChildItem -Recurse -Name src
 <line x1="10" y1="136" x2="710" y2="136" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="4 4"/>
 <text x="20" y="162" font-size="13" font-weight="bold" fill="#1e293b">(B) 相対パスだと「../ で何階層のぼるか」を数える必要がある</text>
 <text x="70" y="196" font-size="13" fill="#1e293b" font-family="Consolas, Menlo, monospace">./</text>
-<text x="240" y="196" font-size="12" fill="#475569">← プロジェクト直下（book-management/）</text>
+<text x="240" y="196" font-size="12" fill="#475569">← プロジェクト直下</text>
 <text x="90" y="222" font-size="13" fill="#1e293b" font-family="Consolas, Menlo, monospace">app/</text>
 <text x="110" y="248" font-size="13" fill="#1e293b" font-family="Consolas, Menlo, monospace">books/</text>
 <text x="130" y="274" font-size="13" fill="#1e293b" font-family="Consolas, Menlo, monospace">[id]/</text>
@@ -1893,22 +1939,22 @@ Get-ChildItem -Recurse -Name src
 <text x="565" y="346" text-anchor="middle" font-size="12" fill="#047857" font-family="Consolas, Menlo, monospace">import Header from</text>
 <text x="565" y="366" text-anchor="middle" font-size="12" fill="#047857" font-family="Consolas, Menlo, monospace">"@/components/Header";</text>
 </svg>
-<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図X: パスエイリアス @/ が実際のファイルにたどり着くまで（A）と、相対パスとの比較（B）</div>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図6-9: パスエイリアス @/ が実際のファイルにたどり着くまで（A）と、相対パスとの比較（B）</div>
 </div>
 
-(A) のとおり、`@/` の置き換えは `tsconfig.json` の `"paths"` に書かれたルール（`"@/*": ["./src/*"]`）だけで決まります。Next.js も VS Code もこのルールを読んで、同じファイルにたどり着きます。拡張子（`.tsx` や `.ts`）は書かなくても自動で補われます。
+(A) のとおり、`@/` の置き換えは `tsconfig.json` の `"paths"` に書かれたルール（`"@/*": ["./*"]`）だけで決まります。`./` は「`tsconfig.json` があるフォルダ」、つまりプロジェクト直下のことです。Next.js も VS Code もこのルールを読んで、同じファイルにたどり着きます。拡張子（`.tsx` や `.ts`）は書かなくても自動で補われます。
 
-#### 4.4.1 つまずきポイント: `@/` のあとに `src/` まで書いてしまう
+#### 4.4.1 つまずきポイント: 古い記事をまねて `@/src/...` と書いてしまう
 
 > **つまずきポイント: `@/src/components/Header` と書いてしまう**
 >
-> 「ファイルは `src/components/Header.tsx` にあるから」と、`@/` のあとに `src/` まで書いてしまうミスはとても多いです。`@/` がすでに `src/` を意味しているので、`src/` が2回重なります。
+> インターネット上の記事には、`src/` フォルダを使う構成（1.2 の質問⑥で Yes を選んだ構成）で書かれたものがたくさんあります。そうした記事をまねて、`@/` のあとに `src/` を付けてしまうミスはとても多いです。本書の構成には `src/` フォルダが無いので、ファイルが見つかりません。
 
-NG（`src/` が2回になる）:
+NG（存在しない `src/` を付けている）:
 
 ```typescript
-// src/app/layout.tsx（一部）
-// @/ は src/ のことなので、src/src/components/Header を探しに行ってしまう
+// app/layout.tsx（一部）
+// @/ はプロジェクト直下のことなので、./src/components/Header を探しに行ってしまう
 import Header from "@/src/components/Header";
 ```
 
@@ -1917,37 +1963,36 @@ import Header from "@/src/components/Header";
 ```text
 > Build error occurred
 Error: Turbopack build failed with 1 error:
-./src/app/layout.tsx:17:1
+./app/layout.tsx:17:1
 Error: Module not found: Can't resolve '@/src/components/Header'
   15 | // default import: Header コンポーネントを取り込む
-  16 | // @/components/Header は src/components/Header（パスエイリアス @/ = src/）
+  16 | // @/components/Header はプロジェクト直下の components/Header（パスエイリアス @/ = プロジ...
 > 17 | import Header from "@/src/components/Header";
      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   18 |
   19 | /**
   20 |  * フォント設定
 
-Import map: aliased to relative './src/src/components/Header' inside of [project]/
+Import map: aliased to relative './src/components/Header' inside of [project]/
 
 
 https://nextjs.org/docs/messages/module-not-found
 ```
 
-`Module not found: Can't resolve '...'` は「そのファイルが見つかりません」という意味です。最後のほうの `aliased to relative './src/src/components/Header'` に、`@/` を置き換えた結果 `src/src/` になってしまったことがはっきり出ています。
+`Module not found: Can't resolve '...'` は「そのファイルが見つかりません」という意味です。最後のほうの `aliased to relative './src/components/Header'` に、`@/` を `./` に置き換えた結果、**プロジェクト直下の `src/components/Header` を探しに行った**ことがはっきり出ています（16行目の `...` は、長い行を Next.js が省略して表示したものです）。
 
-OK（`@/` のあとは `src/` の中の場所から書く）:
+OK（`@/` のあとは、プロジェクト直下からの場所を書く）:
 
 ```typescript
-// src/app/layout.tsx（一部）
-// @/ = src/ なので、src/ の中の components から書き始める
+// app/layout.tsx（一部）
+// @/ = プロジェクト直下なので、components から書き始める
 import Header from "@/components/Header";
 ```
 
 > **ヒント（ほかの「見つからない」原因）:** 同じ `Module not found` は、次のようなときにも出ます。
 >
 > - **ファイル名の大文字・小文字の違い**: `@/components/header`（小文字の h）。Windows や macOS では動いてしまうことがありますが、本番（第10章の Vercel など Linux のサーバー）ではエラーになります。ファイル名と import の文字は一字一句そろえましょう。
-> - **フォルダを `src/` の外に作った**: `book-management/components/Header.tsx` のように `src/` の外に置くと、`@/components/Header`（＝ `src/components/Header`）では見つかりません。VS Code のエクスプローラーで、`components` が `src` の中にあるか確認してください。
-
+> - **フォルダを違う場所に作った**: `app/components/Header.tsx` のように `app/` の中に `components/` を作ると、`@/components/Header`（＝ プロジェクト直下の `components/Header`）では見つかりません。VS Code のエクスプローラーで、`components` が `app` と同じ高さ（`package.json` と同じ場所）にあるか確認してください。
 
 ---
 
@@ -1973,7 +2018,11 @@ Supabase クライアントの設定には、以下の2つの情報が必要で�
 
 > **注意（ダッシュボードの表記）:** Supabase の画面は改良が続いていて、ボタンの位置や名前が変わることがあります。見つからないときは、プロジェクトの画面で「API Keys」や「Connect」という文字を探してください。
 
+<!-- -->
+
 > **注意（古い anon key について）:** 以前の Supabase では、Publishable key の代わりに **anon key**（`eyJhbGciOi...` で始まる長い文字列）を使っていました。anon key は同じ「API Keys」の画面にまだあり、今も同じように使えますが、Supabase は **2026年末までに廃止する予定**です。これから作るプロジェクトでは Publishable key を使ってください。どちらを使っても、この後のコードは同じです。
+
+<!-- -->
 
 > **注意（Secret key は絶対に使わない）:** 同じ画面に **Secret key**（`sb_secret_` で始まる）も表示されます。これは RLS（第5章で設定した行レベルのセキュリティ）を無視してすべてのデータを読み書きできる「合鍵」です。ブラウザに届く `NEXT_PUBLIC_` 付きの環境変数には**絶対に入れない**でください。本書のアプリでは Secret key は使いません。
 
@@ -1998,6 +2047,8 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_xxxxxxxxxxxxxxxxxxxxxxxx
 
 > **なぜ変数名が `ANON_KEY` のままなのか:** 中身は Publishable key ですが、変数名は第7章以降のコード（`process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY`）に合わせて `NEXT_PUBLIC_SUPABASE_ANON_KEY` にしています。変数名は「コードとファイルで同じ名前なら何でもよい」ラベルにすぎないので、昔からの名前を使い続けても問題ありません。大切なのは、**`.env.local` の名前とコードの名前が一字一句そろっていること**です（下の 5.2.2 で、そろっていないときの症状を確かめます）。
 
+<!-- -->
+
 > **`NEXT_PUBLIC_` プレフィックスの重要性:**
 > Next.js では、環境変数に `NEXT_PUBLIC_` プレフィックスを付けると、ブラウザ側の JavaScript からもアクセスできるようになります。プレフィックスがない環境変数はサーバー側でのみ使用可能です。
 >
@@ -2006,54 +2057,871 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_xxxxxxxxxxxxxxxxxxxxxxxx
 `.env.local` に書いた値が、どうやってコードに届くのかを図にすると次のようになります。
 
 <div style="max-width: 720px; margin: 18px auto; text-align: center;">
-<svg viewBox="0 0 720 345" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
-<rect x="20" y="12" width="200" height="40" rx="6" fill="#f8fafc" stroke="#475569" stroke-width="1.5"/>
-<text x="120" y="37" text-anchor="middle" font-size="13" font-weight="bold" fill="#475569">質問</text>
-<rect x="235" y="12" width="210" height="40" rx="6" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
-<text x="340" y="30" text-anchor="middle" font-size="13" font-weight="bold" fill="#c2410c">推奨設定（Enter 連打）</text>
-<text x="340" y="46" text-anchor="middle" font-size="12" fill="#c2410c">Yes, use recommended defaults</text>
-<rect x="460" y="12" width="240" height="40" rx="6" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
-<text x="580" y="30" text-anchor="middle" font-size="13" font-weight="bold" fill="#047857">本書の設定（カスタマイズ）</text>
-<text x="580" y="46" text-anchor="middle" font-size="12" fill="#047857">No, customize settings</text>
-<rect x="20" y="60" width="680" height="26" rx="5" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
-<text x="120" y="78" text-anchor="middle" font-size="12" fill="#1e293b" font-family="Consolas, Menlo, monospace">TypeScript</text>
-<text x="340" y="78" text-anchor="middle" font-size="12" font-weight="normal" fill="#475569">Yes</text>
-<text x="580" y="78" text-anchor="middle" font-size="12" font-weight="normal" fill="#475569">Yes</text>
-<rect x="20" y="88" width="680" height="26" rx="5" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
-<text x="120" y="106" text-anchor="middle" font-size="12" fill="#1e293b" font-family="Consolas, Menlo, monospace">Linter</text>
-<text x="340" y="106" text-anchor="middle" font-size="12" font-weight="normal" fill="#475569">ESLint</text>
-<text x="580" y="106" text-anchor="middle" font-size="12" font-weight="normal" fill="#475569">ESLint</text>
-<rect x="20" y="116" width="680" height="26" rx="5" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
-<text x="120" y="134" text-anchor="middle" font-size="12" fill="#1e293b" font-family="Consolas, Menlo, monospace">React Compiler</text>
-<text x="340" y="134" text-anchor="middle" font-size="12" font-weight="normal" fill="#475569">No</text>
-<text x="580" y="134" text-anchor="middle" font-size="12" font-weight="normal" fill="#475569">No</text>
-<rect x="20" y="144" width="680" height="26" rx="5" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
-<text x="120" y="162" text-anchor="middle" font-size="12" fill="#1e293b" font-family="Consolas, Menlo, monospace">Tailwind CSS</text>
-<text x="340" y="162" text-anchor="middle" font-size="12" font-weight="normal" fill="#475569">Yes</text>
-<text x="580" y="162" text-anchor="middle" font-size="12" font-weight="normal" fill="#475569">Yes</text>
-<rect x="20" y="172" width="680" height="26" rx="5" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
-<text x="120" y="190" text-anchor="middle" font-size="12" fill="#1e293b" font-family="Consolas, Menlo, monospace">src/ directory</text>
-<text x="340" y="190" text-anchor="middle" font-size="12" font-weight="normal" fill="#475569">No</text>
-<text x="580" y="190" text-anchor="middle" font-size="12" font-weight="normal" fill="#475569">No</text>
-<rect x="20" y="200" width="680" height="26" rx="5" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
-<text x="120" y="218" text-anchor="middle" font-size="12" fill="#1e293b" font-family="Consolas, Menlo, monospace">App Router</text>
-<text x="340" y="218" text-anchor="middle" font-size="12" font-weight="normal" fill="#475569">Yes</text>
-<text x="580" y="218" text-anchor="middle" font-size="12" font-weight="normal" fill="#475569">Yes</text>
-<rect x="20" y="228" width="680" height="26" rx="5" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
-<text x="120" y="246" text-anchor="middle" font-size="12" fill="#1e293b" font-family="Consolas, Menlo, monospace">Cache Components</text>
-<text x="340" y="246" text-anchor="middle" font-size="12" font-weight="bold" fill="#c2410c">Yes</text>
-<text x="580" y="246" text-anchor="middle" font-size="12" font-weight="bold" fill="#047857">No</text>
-<rect x="20" y="256" width="680" height="26" rx="5" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
-<text x="120" y="274" text-anchor="middle" font-size="12" fill="#1e293b" font-family="Consolas, Menlo, monospace">AGENTS.md</text>
-<text x="340" y="274" text-anchor="middle" font-size="12" font-weight="normal" fill="#475569">Yes</text>
-<text x="580" y="274" text-anchor="middle" font-size="12" font-weight="normal" fill="#475569">Yes</text>
-<rect x="20" y="284" width="680" height="26" rx="5" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
-<text x="120" y="302" text-anchor="middle" font-size="12" fill="#1e293b" font-family="Consolas, Menlo, monospace">Agent feedback</text>
-<text x="340" y="302" text-anchor="middle" font-size="12" font-weight="bold" fill="#c2410c">Yes</text>
-<text x="580" y="302" text-anchor="middle" font-size="12" font-weight="bold" fill="#047857">No</text>
-<text x="360" y="330" text-anchor="middle" font-size="12" fill="#c2410c">違いは橙色の2行。Cache Components が Yes だと第7章で npm run build が失敗する</text>
+<svg viewBox="0 0 720 330" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs><marker id="ar-06-env" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker></defs>
+<rect x="10" y="90" width="250" height="130" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<text x="135" y="114" text-anchor="middle" font-size="13" font-weight="bold" fill="#c2410c">.env.local（ファイル）</text>
+<text x="20" y="140" font-size="12" fill="#c2410c" font-family="Consolas, Menlo, monospace">NEXT_PUBLIC_SUPABASE_URL=…</text>
+<text x="20" y="162" font-size="12" fill="#c2410c" font-family="Consolas, Menlo, monospace">NEXT_PUBLIC_SUPABASE_ANON_KEY=…</text>
+<text x="20" y="184" font-size="12" fill="#64748b" font-family="Consolas, Menlo, monospace">SECRET_TOKEN=…</text>
+<text x="135" y="206" text-anchor="middle" font-size="12" fill="#64748b">（3行目は説明用の例）</text>
+<rect x="285" y="105" width="160" height="100" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="365" y="135" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e40af">process.env</text>
+<text x="365" y="157" text-anchor="middle" font-size="12" fill="#1e40af">サーバー側の</text>
+<text x="365" y="177" text-anchor="middle" font-size="12" fill="#1e40af">「環境変数の入れ物」</text>
+<line x1="260" y1="155" x2="283" y2="155" stroke="#475569" stroke-width="2" marker-end="url(#ar-06-env)"/>
+<text x="160" y="70" text-anchor="middle" font-size="12" fill="#475569">① npm run dev の起動時に読む</text>
+<text x="160" y="244" text-anchor="middle" font-size="12" fill="#475569">保存し直すと「Reload env」で読み直す</text>
+<rect x="490" y="20" width="220" height="110" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="600" y="46" text-anchor="middle" font-size="13" font-weight="bold" fill="#047857">サーバーで動くコード</text>
+<text x="600" y="68" text-anchor="middle" font-size="12" fill="#047857">Server Component / server.ts</text>
+<text x="600" y="92" text-anchor="middle" font-size="12" fill="#047857">3つとも読める</text>
+<text x="600" y="114" text-anchor="middle" font-size="12" fill="#64748b">（ブラウザには届かない）</text>
+<rect x="490" y="180" width="220" height="130" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="600" y="206" text-anchor="middle" font-size="13" font-weight="bold" fill="#047857">ブラウザで動くコード</text>
+<text x="600" y="228" text-anchor="middle" font-size="12" fill="#047857">Client Component / client.ts</text>
+<text x="600" y="252" text-anchor="middle" font-size="12" fill="#047857">NEXT_PUBLIC_ 付きの2つだけ</text>
+<text x="600" y="274" text-anchor="middle" font-size="12" fill="#c2410c">SECRET_TOKEN は undefined</text>
+<text x="600" y="296" text-anchor="middle" font-size="12" fill="#64748b">（値は JS に文字列で埋め込み）</text>
+<line x1="445" y1="135" x2="488" y2="85" stroke="#475569" stroke-width="2" marker-end="url(#ar-06-env)"/>
+<line x1="445" y1="180" x2="488" y2="235" stroke="#475569" stroke-width="2" marker-end="url(#ar-06-env)"/>
+<text x="462" y="164" font-size="12" fill="#475569">②</text>
 </svg>
-<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図X: 推奨設定と本書の設定の違い（推奨設定のままだと Cache Components が有効になる）</div>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図6-10: .env.local の値がコードに届くまで（NEXT_PUBLIC_ 付きだけがブラウザまで届く）</div>
+</div>
+
+ポイントは②です。ブラウザで動くコードには `process.env` という入れ物がそもそもありません。そこで Next.js は、ブラウザ用の JavaScript を作るときに `process.env.NEXT_PUBLIC_SUPABASE_URL` という部分を見つけて、**値そのもの（`"https://....supabase.co"` という文字列）に書き換えて埋め込みます**。実際に開発サーバーが作ったブラウザ用のファイルを調べると、`NEXT_PUBLIC_` 付きの値は文字列として埋め込まれ、付いていない変数は `process.env.SECRET_TOKEN` のまま（ブラウザでは中身がないので `undefined`）になっていました。
+
+> **ENV ファイルの種類と読み込み順（Next.js）:**
+> Next.js では複数の `.env` 系ファイルを使い分けられます。同じ変数が複数のファイルにある場合、上のものが優先されます。
+>
+> | ファイル | いつ読み込まれるか | Gitに入れる？ |
+> |---------|----------------|-------------|
+> | `.env.local` | 全環境（開発・本番ともに）。ただしテスト環境（`NODE_ENV=test`）では読まれない | **入れない**（.gitignoreで除外） |
+> | `.env.development` | 開発時（`npm run dev`）のみ | 既定では除外される（秘密を含まないなら共有してもよい） |
+> | `.env.production` | 本番時（`npm run build` / `npm run start`）のみ | 既定では除外される（秘密を含まないなら共有してもよい） |
+> | `.env` | すべての環境（デフォルト値） | 既定では除外される（秘密を含まないなら共有してもよい） |
+>
+> 読み込み優先順位（高 → 低）: `.env.local` > `.env.development` / `.env.production` > `.env`
+>
+> **覚え方:** 「`.local` が付くファイルは個人専用＝Gitに入れない＝秘密情報を入れてOK」。`.env.local` だけは絶対にコミットしない、と覚えれば事故を防げます。
+
+<!-- -->
+
+> **`.env.local` がGitにアップロードされない理由:**
+> `create-next-app` が自動生成した `.gitignore` ファイルには `.env*` が含まれています（`.env` で始まるファイルはすべて除外、という意味）。そのため、`.env.local` は Git にコミットされず、API キーが公開リポジトリに漏洩する心配はありません。
+
+**必ず `xxxxxxxxxxxxxxxx` の部分を、自分のプロジェクトの値に置き換えてください。**
+
+#### 5.2.1 サンプル: `.env.local` が読めているかを確かめるスクリプト
+
+> **▼ このコードがやること（先に日本語で）:** アプリを起動する前に、`.env.local` に必要な2つの値が正しい名前で書かれているかを確かめる小さなスクリプトです。Node.js の `--env-file` オプションで `.env.local` を読み込ませてから実行し、値があれば `OK`、無ければ `NG` と表示します。秘密を画面に出しすぎないよう、値は先頭20文字だけ見せます。
+
+```typescript
+// scripts/check-env.ts
+// .env.local に必要な2つの値が書かれているかを、アプリを起動せずに確かめるスクリプト
+
+// 確かめたい環境変数の名前を配列にまとめる
+const names = ["NEXT_PUBLIC_SUPABASE_URL", "NEXT_PUBLIC_SUPABASE_ANON_KEY"];
+
+// 1つずつ取り出して、値があるかどうかを表示する
+for (const name of names) {
+  // process.env[name] で、その名前の環境変数の値を読む（無ければ undefined）
+  const value = process.env[name];
+  if (value) {
+    // 秘密を画面に出しすぎないよう、先頭20文字だけ見せる
+    console.log(`OK  ${name} = ${value.slice(0, 20)}...`);
+  } else {
+    console.log(`NG  ${name} が見つかりません`);
+  }
+}
+```
+
+`book-management/` の中に `scripts` フォルダを作ってこのファイルを保存し、プロジェクトのフォルダで次のように実行します。
+
+```bash
+# --env-file=.env.local: このファイルの中身を環境変数として読み込んでから実行する
+node --env-file=.env.local scripts/check-env.ts
+```
+
+**▼ 実行結果**（説明用のダミーの値で実行したもの）
+
+```text
+OK  NEXT_PUBLIC_SUPABASE_URL = https://abcdefghijkl...
+OK  NEXT_PUBLIC_SUPABASE_ANON_KEY = sb_publishable_dummy...
+```
+
+ファイル名を打ち間違えると（`.env.locl`）、スクリプトが動く前に Node.js が止まります。
+
+```bash
+# わざとファイル名を打ち間違える
+node --env-file=.env.locl scripts/check-env.ts
+```
+
+**▼ 実行結果**
+
+```text
+C:\Program Files\nodejs\node.exe: .env.locl: not found
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: 名前の一覧を配列にして、順番に調べる
+
+```typescript
+const names = ["NEXT_PUBLIC_SUPABASE_URL", "NEXT_PUBLIC_SUPABASE_ANON_KEY"];
+
+for (const name of names) {
+  const value = process.env[name];
+```
+
+- 調べたい名前を配列（`[ ]` で囲んだ並び）にまとめ、`for (const name of names)` で1つずつ取り出しています。
+- `process.env[name]` は、`process.env.NEXT_PUBLIC_SUPABASE_URL` と書くのと同じ意味です。名前を変数で指定したいときは `[ ]` を使います。
+
+##### 解説2: 値があれば OK、無ければ NG
+
+```typescript
+if (value) {
+  console.log(`OK  ${name} = ${value.slice(0, 20)}...`);
+} else {
+  console.log(`NG  ${name} が見つかりません`);
+}
+```
+
+- 値が無いとき `process.env[name]` は `undefined` になり、`if (value)` は偽になります。
+- `value.slice(0, 20)` は「先頭から20文字だけ切り出す」という意味です。キーを丸ごと画面に出さないための工夫です。
+
+##### 解説3: `--env-file` は Node.js の機能
+
+```bash
+node --env-file=.env.local scripts/check-env.ts
+```
+
+- `--env-file=ファイル名` を付けると、Node.js がそのファイルを読んで `process.env` に入れてから実行してくれます。Next.js が `.env.local` を読む仕組みとは別ですが、「書いた名前と値がちゃんと読めるか」を確かめるには十分です。
+- `.ts` ファイルをそのまま実行できるのは、第2章で学んだとおり Node.js が型の部分を消して動かしてくれるからです（Node.js 24 以降なら追加の設定なしで動きます）。
+
+> **用語:** 「スクリプト」とは、手作業の確認や準備を自動でやってくれる小さなプログラムのことです。アプリ本体とは別に `scripts/` のようなフォルダにまとめておくのが一般的です。
+
+#### 5.2.2 つまずきポイント: 変数名がコードとそろっていない
+
+> **つまずきポイント: Supabase の画面に出ている変数名をそのまま使ってしまう**
+>
+> Supabase の「Connect」画面には、Next.js 用の設定例として `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` という名前が表示されることがあります。これをそのまま貼ると、本書のコードが読む `NEXT_PUBLIC_SUPABASE_ANON_KEY` と名前が違うため、キーが「無い」ことになります。
+
+NG（変数名がコードと違う）:
+
+```bash
+# book-management/.env.local
+NEXT_PUBLIC_SUPABASE_URL=https://xxxxxxxxxxxxxxxx.supabase.co
+# 名前が PUBLISHABLE_KEY になっている（コードは ANON_KEY を読む）
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_xxxxxxxxxxxxxxxxxxxxxxxx
+```
+
+この状態で 5.2.1 のスクリプトを実行すると、2つ目が NG になります。
+
+**▼ 実行結果**
+
+```text
+OK  NEXT_PUBLIC_SUPABASE_URL = https://abcdefghijkl...
+NG  NEXT_PUBLIC_SUPABASE_ANON_KEY が見つかりません
+```
+
+OK（値はそのまま、名前だけ本書のコードに合わせる）:
+
+```bash
+# book-management/.env.local
+NEXT_PUBLIC_SUPABASE_URL=https://xxxxxxxxxxxxxxxx.supabase.co
+# 名前を ANON_KEY にする（値は Publishable key のまま）
+NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_xxxxxxxxxxxxxxxxxxxxxxxx
+```
+
+#### 5.2.3 つまずきポイント: `.env.local` の名前や場所が違う
+
+> **つまずきポイント: `.env.local.txt` になっている／`app/` の中に置いている**
+>
+> Windows のメモ帳で保存すると、`.env.local.txt` のように `.txt` が勝手に付くことがあります（エクスプローラーの設定によっては `.txt` が見えません）。また、`app/` などのフォルダの中に置いてしまうと Next.js は読みません。`.env.local` は **`package.json` と同じ場所**に、**拡張子なしの名前**で置きます。
+
+NG（名前や場所が違う）:
+
+```text
+book-management/.env.local.txt      ← .txt が付いている
+book-management/app/.env.local      ← app/ の中にある
+```
+
+OK（`package.json` と同じ場所に、正しい名前で置く）:
+
+```text
+book-management/.env.local
+book-management/package.json
+```
+
+見分け方は簡単です。`npm run dev` の起動時の表示に **`- Environments: .env.local`** の行があるかを見てください。この行が無ければ、Next.js は `.env.local` を見つけられていません。次は `.env.local.txt` しか無い状態で起動し、Supabase を使うページ（第7章で作るトップページと同じ形のもの）を開いたときの実際の表示です。
+
+**▼ 実行結果**
+
+```text
+⚠ Port 3000 is in use by process 50292, using available port 3001 instead.
+▲ Next.js 16.4.1 (Turbopack)
+- Local:         http://localhost:3001
+- Network:       http://192.168.x.x:3001
+✓ Ready in 2.9s
+✓ Running next.config.ts took 59ms
+
+○ Compiling / ...
+⨯ Error: 環境変数 NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY が設定されていません。.env.local ファイルを確認してください。
+    at createClient (lib\supabase\server.ts:18:11)
+    at Page (app\page.tsx:4:38)
+  16 |   // どちらかが空なら、原因と直し方が分かるメッセージでわざと止める
+  17 |   if (!supabaseUrl || !supabaseKey) {
+> 18 |     throw new Error(
+     |           ^
+  19 |       "環境変数 NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY が設定されていません。" +
+  20 |         ".env.local ファイルを確認してください。"
+  21 |     ); {
+  digest: '310640217'
+}
+ GET / 500 in 580ms (next.js: 259ms, application-code: 321ms)
+```
+
+（このときは別のアプリが 3000 番を使っていたので、1行目のとおり自動で 3001 番で起動しています。9.4 の表も見てください。）
+`- Environments: .env.local` の行が無く、次の 5.3 で作る `server.ts` のエラーチェックが「設定されていません」と知らせています。`GET / 500` の 500 は「サーバー側でエラーが起きた」という意味です。
+
+#### 5.2.4 つまずきポイント: `.env.local` を直したのに反映されない
+
+> **つまずきポイント: 直したつもりが、開発サーバーに伝わっていない**
+>
+> Next.js 16 の開発サーバーは、`.env.local` を**保存し直すと自動で読み直して**くれます。そのときターミナルに `Reload env: .env.local` と表示されます。
+
+上の 5.2.3 の状態のまま、エディタで `.env.local` を正しい名前で保存したときの実際の表示です。
+
+**▼ 実行結果**
+
+```text
+  Reload env: .env.local
+✓ Compiled in 26ms
+ GET / 200 in 7.5s (next.js: 61ms, application-code: 7.4s)
+```
+
+`GET / 200`（200 は「成功」）に変わりました。ただし、**ファイル名を変更しただけ**（`.env.local.txt` → `.env.local`）のときは、この自動読み直しが起きないことがありました。筆者の実験でも、名前を変えただけでは `500` のままで、もう一度エディタで保存したところで `Reload env` が出て直りました。
+
+NG（`Reload env` が出ていないのに、ブラウザだけ再読み込みし続ける）:
+
+```text
+（ターミナルに Reload env: .env.local が出ていない）
+```
+
+OK（確実な直し方: 開発サーバーを起動し直す）:
+
+```bash
+# ターミナルで Ctrl+C を押して開発サーバーを止めてから、もう一度起動する
+npm run dev
+```
+
+起動し直したら、`- Environments: .env.local` の行が出ていることを確認してください。「迷ったら再起動」と覚えておけば、`.env.local` まわりの「直したのに直らない」はほぼ防げます。
+
+### 5.3 lib/supabase/client.ts と server.ts の作成
+
+データベースとやり取りするための「窓口（Supabase クライアント）」を作るファイルを2つ用意します。窓口が2つあるのは、Next.js のコードには**サーバーで動くもの**と**ブラウザで動くもの**の2種類があるからです。お店にたとえると、`server.ts` は**店の奥の事務所の電話**、`client.ts` は**店頭のお客さん用の電話**です。どちらも同じ倉庫（Supabase）につながりますが、置き場所と使い方が少し違います。
+
+> **注意（第5章で作った `lib/supabase.ts` について）:** 第5章では、接続の動作確認のために `lib/supabase.ts` という1ファイル版のクライアントを作りました。第7章以降は、この章で作る2つのファイル（`lib/supabase/server.ts` と `lib/supabase/client.ts`）を使います。1ファイル版は役目を終えたので削除して構いません（`lib/supabase.ts` と `lib/supabase/` フォルダが並んでいると、どちらを使うのか紛らわしくなるためです）。
+
+| ファイル | 使う場所 | 呼び出し方 | 第7章以降の例 |
+|----------|---------|-----------|--------------|
+| `lib/supabase/server.ts` | Server Component（`"use client"` が無いファイル） | `const supabase = await createClient();` | トップページ `app/page.tsx` で書籍一覧を読む |
+| `lib/supabase/client.ts` | Client Component（`"use client"` があるファイル） | `const supabase = createClient();` | 登録フォームや削除ボタンで書き込む |
+
+#### 5.3.1 lib/supabase/client.ts（ブラウザ用）
+
+`lib/supabase/client.ts` ファイルに以下のコードを記述します。
+
+> **▼ このコードがやること（先に日本語で）:** ブラウザで動く部品（Client Component）から使う、Supabase への窓口を作る関数 `createClient` を用意します。さきほど `.env.local` に書いた URL とキーを読み込み、もし設定が抜けていたら、原因がすぐ分かるエラーをわざと出してから止まります。設定がそろっていれば、`@supabase/ssr` の `createBrowserClient` に渡して窓口を作り、返します。
+
+```typescript
+// lib/supabase/client.ts
+// ブラウザで動く部品（Client Component）から使う Supabase クライアントを作るファイル
+
+// @supabase/ssr から「ブラウザ用のクライアントを作る関数」を名前付きインポートする
+import { createBrowserClient } from "@supabase/ssr";
+
+// Client Component から呼び出す関数。呼ぶたびに Supabase への窓口を作って返す
+export function createClient() {
+  // .env.local に書いた接続先 URL を読み出す
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  // .env.local に書いた Publishable key（旧 anon key でも可）を読み出す
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  // どちらかが空なら、原因と直し方が分かるメッセージでわざと止める
+  if (!supabaseUrl || !supabaseKey) {
+    throw new Error(
+      "環境変数 NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY が設定されていません。" +
+        ".env.local ファイルを確認してください。"
+    );
+  }
+
+  // URL とキーを渡して、ブラウザ用のクライアントを作って返す
+  return createBrowserClient(supabaseUrl, supabaseKey);
+}
+```
+
+#### 5.3.2 lib/supabase/server.ts（サーバー用）
+
+`lib/supabase/server.ts` ファイルに以下のコードを記述します。
+
+> **▼ このコードがやること（先に日本語で）:** サーバーで動く部品（Server Component）から使う窓口を作る関数 `createClient` を用意します。前半の「環境変数を読んで、無ければ止める」部分は `client.ts` と同じです。違うのは後半で、サーバーでは「いま届いたリクエストの Cookie（クッキー：ブラウザが持っている小さなメモ）」を Supabase に読み書きさせる方法も一緒に渡します。Cookie を受け取るのに時間がかかる場合があるので、関数に `async` を付けています。
+
+```typescript
+// lib/supabase/server.ts
+// サーバーで動く部品（Server Component）から使う Supabase クライアントを作るファイル
+
+// @supabase/ssr から「サーバー用のクライアントを作る関数」を名前付きインポートする
+import { createServerClient } from "@supabase/ssr";
+// Next.js が用意している「いま届いたリクエストの Cookie を読み書きする関数」
+import { cookies } from "next/headers";
+
+// Server Component から呼び出す関数。cookies() を待つので async にする
+export async function createClient() {
+  // .env.local に書いた接続先 URL を読み出す
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  // .env.local に書いた Publishable key（旧 anon key でも可）を読み出す
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  // どちらかが空なら、原因と直し方が分かるメッセージでわざと止める
+  if (!supabaseUrl || !supabaseKey) {
+    throw new Error(
+      "環境変数 NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY が設定されていません。" +
+        ".env.local ファイルを確認してください。"
+    );
+  }
+
+  // いま処理しているリクエストの Cookie 置き場を受け取る
+  const cookieStore = await cookies();
+
+  // URL・キー・Cookie の読み書き方法を渡して、サーバー用のクライアントを作って返す
+  return createServerClient(supabaseUrl, supabaseKey, {
+    cookies: {
+      // Supabase が Cookie を読みたいときに呼ばれる
+      getAll() {
+        return cookieStore.getAll();
+      },
+      // Supabase が Cookie を書きたいときに呼ばれる
+      setAll(cookiesToSet) {
+        try {
+          // 受け取った Cookie を1つずつ書き込む
+          cookiesToSet.forEach(({ name, value, options }) =>
+            cookieStore.set(name, value, options)
+          );
+        } catch {
+          // Server Component の表示中は Cookie を書けないので、ここに来ても無視してよい
+          // （このアプリはログイン機能を使わないため、実害はない）
+        }
+      },
+    },
+  });
+}
+```
+
+この2つのファイルは、Next.js 16.4.1・`@supabase/ssr` 0.12.7 で `npm run build`（型チェックを含む本番用ビルド）が通ることを確認しています。
+
+**コードの解説:**
+
+| 部分 | 解説 |
+|----|------|
+| `import { createBrowserClient } from "@supabase/ssr";` | Supabase の Next.js 向けライブラリから、ブラウザ用の窓口を作る関数を取り出します。中括弧 `{}` で囲むのが「named import（名前付きインポート）」で、ライブラリが公開している特定の関数だけを取り出します。 |
+| `import { createServerClient } from "@supabase/ssr";` | 同じライブラリから、サーバー用の窓口を作る関数を取り出します。 |
+| `import { cookies } from "next/headers";` | Next.js の、リクエストの Cookie を扱う関数です。サーバーでしか使えません（ブラウザ用の `client.ts` では使いません）。 |
+| `process.env.NEXT_PUBLIC_SUPABASE_URL` | `.env.local` に定義した環境変数を読み取ります。`process.env` は環境変数が入っている入れ物です。 |
+| `if (!supabaseUrl \|\| !supabaseKey)` | どちらかが未設定（`undefined` や空文字）の場合にエラーを投げます。`.env.local` の作成忘れや変数名の打ち間違いを早く見つけられます。 |
+| `export function createClient()` / `export async function createClient()` | 窓口を作る関数を外に公開します。2つのファイルで**同じ名前**にしているので、使う側は import 元（`client` か `server` か）を変えるだけで済みます。 |
+| `createServerClient(url, key, { cookies: { getAll, setAll } })` | サーバー用の窓口を作ります。3つ目の引数で「Cookie の読み方（`getAll`）と書き方（`setAll`）」を教えています。 |
+
+> **import 文の種類（重要）:**
+> JavaScript/TypeScript には3種類のインポート方法があります。
+>
+> - **default import**: `import React from "react";` のように中括弧なし。各ファイルにつき1つだけ `export default` できる主要なものを取り出す。
+> - **named import**: `import { useState } from "react";` のように中括弧あり。複数の名前を指定して取り出せる（例: `import { useState, useEffect } from "react";`）。
+> - **type import**: `import type { Book } from "@/types/book";` のように `type` キーワード付き。型のみをインポートし、ビルド時に取り除かれる（JavaScriptには型がないため）。
+
+<!-- -->
+
+> **なぜ「1つの supabase を共有」ではなく「呼ぶたびに作る関数」なのか:**
+> 古い記事では、`export const supabase = createClient(...)` のように**1つだけ作って全ファイルで使い回す**書き方（シングルトンパターン）がよく出てきます。ブラウザだけで動くアプリならそれでも動きますが、Next.js のサーバーは**たくさんの人のリクエストを同時に**処理します。サーバー用の窓口は「いま処理しているリクエストの Cookie」を使うので、1つを全員で共有すると、Aさんの Cookie で Bさんの処理をしてしまう恐れがあります。そこで、**使う場所で `createClient()` を呼んで、その場で窓口を作る**書き方にしています。
+
+<!-- -->
+
+> **Server Component と Client Component で Supabase を使うときの違い（重要）:**
+>
+> Next.js の App Router では、コンポーネントが「Server Component」（サーバー側で実行）か「Client Component」（ブラウザ側で実行）かを区別します。それぞれで Supabase を使う際の注意点が異なります。
+>
+> | 観点 | Server Component | Client Component |
+> |------|------------------|------------------|
+> | ファイル先頭の宣言 | （宣言なし。デフォルト） | `"use client"` を書く |
+> | 実行場所 | サーバー（あなたのPC or 本番サーバー） | ユーザーのブラウザ |
+> | 使う窓口 | `@/lib/supabase/server` の `createClient`（`await` が必要） | `@/lib/supabase/client` の `createClient` |
+> | 使える React フック | 使えない（useState など不可） | 使える |
+> | データ取得 | `await supabase.from(...)` を直接書ける | ボタンを押したときの処理（イベント）などの中で呼ぶ |
+> | 環境変数 | サーバー専用変数（`NEXT_PUBLIC_` なし）も読める | `NEXT_PUBLIC_` 付きの変数のみ |
+> | このチュートリアル | 一覧ページ・詳細ページなど、データを**読んで表示**する画面 | 登録フォームや削除ボタンなど、データを**書き込む**操作 |
+>
+> 第7章では、トップページ（`app/page.tsx`）を Server Component にして `server.ts` の窓口で書籍一覧を読み、登録フォーム（`app/books/new/page.tsx`）を Client Component にして `client.ts` の窓口で書き込みます。
+
+#### ▼ コードを1つずつ分解して解説
+
+上のコードを、初心者がつまずきやすい部分ごとに**1つずつ**ていねいに見ていきましょう。
+
+---
+
+##### 解説1: 窓口を作る関数を「名前付きインポート」する
+
+```typescript
+import { createBrowserClient } from "@supabase/ssr";
+```
+
+- `import ... from "..."` は、別のファイルやライブラリから機能を**取り込む**ための構文です。
+- `{ createBrowserClient }` のように波括弧 `{ }` で囲むのが「名前付きインポート」で、そのライブラリが公開している**特定の名前の機能だけ**をピンポイントで取り出します。
+- ここでは `@supabase/ssr`（節3でインストールした Supabase の Next.js 向けライブラリ）から、`createBrowserClient`（ブラウザ用の窓口を作る関数）だけを取り出しています。`server.ts` では同じように `createServerClient` を取り出します。
+
+> **用語:** 「ライブラリ」とは、誰かが作って公開してくれた便利な機能のかたまりのことです。`npm install` で自分のプロジェクトに取り込み、`import` で必要な部分だけ呼び出して使います。
+
+---
+
+##### 解説2: 環境変数から接続情報を読み取る
+
+```typescript
+// .env.local に書いた接続先 URL を読み出す
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+// .env.local に書いた Publishable key（旧 anon key でも可）を読み出す
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+```
+
+- `process.env`（プロセス・エンブ）は、**環境変数の入れ物**です。さきほど `.env.local` に書いた値が、ここに入ってきます。
+- `process.env.NEXT_PUBLIC_SUPABASE_URL` と書くと、`.env.local` の `NEXT_PUBLIC_SUPABASE_URL=...` の値（URL）を取り出せます。
+- `process.env.〇〇` は**省略せずにこの形のまま**書くのが大切です。ブラウザ用のファイルでは、Next.js がこの形の部分を探して値に書き換えるので（図の②）、`const env = process.env;` のように一度まとめてから取り出すと、書き換えが働かず `undefined` になってしまいます。
+- URL とキーをコードに直接書かず、外部の設定ファイル経由で渡すことで、**秘密情報の漏洩を防ぎ**、環境ごとに値を切り替えられます。
+
+> **用語:** 「環境変数」とは、コードの外側からプログラムへ渡す設定値のことです。API キーのような秘密情報や、開発用と本番用で変えたい値を、コード本体と分けて管理するために使います。
+
+---
+
+##### 解説3: 設定が抜けていたらわざとエラーを出す
+
+```typescript
+if (!supabaseUrl || !supabaseKey) {
+  throw new Error(
+    "環境変数 NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY が設定されていません。" +
+      ".env.local ファイルを確認してください。"
+  );
+}
+```
+
+- `!supabaseUrl` の `!`（エクスクラメーション）は「否定」の記号で、「`supabaseUrl` が空っぽ（`undefined` や空文字）なら `true`」という意味になります。`||` は「または」です。
+- つまりこの `if` は「URL かキーのどちらかがちゃんと取れなかったとき」だけ中に入ります。
+- `throw new Error(...)` は、エラーを**わざと発生させて処理を止める**書き方です。原因（環境変数が未設定）と対処法（`.env.local` を確認）をメッセージに書いておくと、5.2.3 で見たように、エラー画面を見ただけで原因が分かります。
+- `+` は文字列をつなげる演算子で、長いメッセージを2行に分けて書いています。
+- このチェックを通り抜けた後は、TypeScript も「`supabaseUrl` と `supabaseKey` は空ではない文字列だ」と分かるので、次の行で安心して渡せます。
+
+> **用語:** 「例外（throw / Error）」とは、処理を続けられない問題が起きたときに発生させる中断の合図です。早い段階でわかりやすく失敗させることを「フェイルファスト（fail fast）」と呼び、原因究明を楽にします。
+
+---
+
+##### 解説4: サーバー用は Cookie の読み書き方法も渡す
+
+```typescript
+const cookieStore = await cookies();
+
+return createServerClient(supabaseUrl, supabaseKey, {
+  cookies: {
+    getAll() {
+      return cookieStore.getAll();
+    },
+    setAll(cookiesToSet) {
+      try {
+        cookiesToSet.forEach(({ name, value, options }) =>
+          cookieStore.set(name, value, options)
+        );
+      } catch {
+        // Server Component の表示中は Cookie を書けないので、ここに来ても無視してよい
+      }
+    },
+  },
+});
+```
+
+- `await cookies()` で、いま処理しているリクエストの Cookie 置き場を受け取ります。`await` を使うので、関数全体に `async` が付いています（だから使う側も `await createClient()` と書きます）。
+- `getAll()` は「Cookie を全部見せて」、`setAll()` は「この Cookie を書いておいて」と Supabase から頼まれたときの答え方です。
+- `try { ... } catch { ... }` は「やってみて、失敗したら何もしない」という書き方です。Server Component の表示中は Cookie を書き込めない決まりがあり、そのときに出る失敗を無視しています。ログイン機能を使わない本書のアプリでは、ここで困ることはありません。
+- ブラウザ用の `createBrowserClient` は、ブラウザが自分で Cookie を扱えるので、この3つ目の引数がいりません。
+
+> **用語:** 「Cookie（クッキー）」とは、Webサイトがブラウザに預けておく小さなメモです。ログイン状態を覚えておく、などに使われます。
+
+---
+
+##### 解説5: 2つのファイルで同じ名前 `createClient` にしている理由
+
+```typescript
+// サーバーで動くページでの使い方（第7章のトップページなど）
+import { createClient } from "@/lib/supabase/server";
+
+// ブラウザで動く部品での使い方（第7章の登録フォームなど）
+import { createClient } from "@/lib/supabase/client";
+```
+
+- どちらも関数名は `createClient` です。違うのは **import 元のパス**（`server` か `client` か）だけです。
+- 使う側は「このファイルはサーバー？ブラウザ？」を考えて、import 元を選ぶだけで済みます。
+- 逆を選ぶとエラーになります。たとえば `"use client"` の部品で `server` の方を import すると、ブラウザでは使えない `cookies()` を呼ぼうとして失敗します。迷ったら、ファイルの先頭に `"use client"` があるかどうかで判断してください。
+
+> **用語:** 「export」は、ファイルの中で作ったものを**外部に公開する**指定です。逆に他ファイルでそれを受け取るのが「import」です。この2つでファイル間の機能の受け渡しを行います。
+
+---
+
+## 6. 型定義ファイルの作成
+
+### 6.1 types/book.ts の作成
+
+`types/book.ts` ファイルに以下のコードを記述します。この型定義は、アプリ全体で書籍データの構造を統一するために使います。項目（列）は、第5章で作った `books` テーブルと同じ並び・同じ名前にしています。
+
+> **▼ このコードがやること（先に日本語で）:** 「書籍データはどんな形をしているか」を TypeScript の型として書き出し、アプリ全体で構造を統一します。型とは「このデータには title と author が必須」といった設計図のことで、間違ったデータを使うとコードを動かす前に気づけます。場面ごとに必要な項目が違うため、取得用の `Book`・登録用の `BookInsert`・更新用の `BookUpdate` の3つに分けている点が要チェックです。後半ではステータスの日本語ラベルや色も定数としてまとめています。
+
+```typescript
+// types/book.ts
+// 書籍データに関する型と定数をまとめて定義するファイル
+
+/**
+ * 読書ステータスの型定義
+ *
+ * - "reading"      : 読書中（今読んでいる途中）
+ * - "completed"    : 読了（読み終わった）
+ * - "want_to_read" : 読みたい（これから読む）
+ */
+// type: TypeScript の型エイリアス（型に名前を付ける構文）
+// "reading" | "completed" | "want_to_read": ユニオン型。この3つの文字列のいずれかしか取れない
+// export: 他のファイルからこの型をインポートできるようにする
+export type BookStatus = "reading" | "completed" | "want_to_read";
+
+/**
+ * 書籍データの型定義（データベースから取得した完全なデータ）
+ *
+ * Supabase の books テーブル（第5章で作成）の1行に対応します。
+ * すべての列が含まれており、データベースから取得した
+ * 書籍データはこの型に一致します。
+ */
+// type Book = { ... }: オブジェクトの形を表す型を Book という名前で定義
+export type Book = {
+  /** 書籍ID（UUID形式、Supabase が自動生成） */
+  // UUID は "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" 形式の文字列
+  id: string;
+
+  /** 書籍のタイトル（必須） */
+  // 例: "リーダブルコード"
+  title: string;
+
+  /** 著者名（必須） */
+  // 例: "Dustin Boswell"
+  author: string;
+
+  /** 出版社（任意、未入力の場合は null） */
+  // string | null: 文字列か null のどちらか（ユニオン型）
+  publisher: string | null;
+
+  /** 出版日（任意。"2024-01-15" のような日付の文字列、未入力なら null） */
+  // データベースの date 型は、JavaScript では文字列として届く
+  published_date: string | null;
+
+  /** 評価（1〜5の整数、未評価の場合は null） */
+  // number | null: 数値か null のどちらか
+  rating: number | null;
+
+  /** 読書ステータス（デフォルト: "want_to_read"） */
+  // 上で定義した BookStatus 型（3つの文字列のどれか）
+  status: BookStatus;
+
+  /** メモ・感想（任意、未入力の場合は null） */
+  // 文字列または null
+  memo: string | null;
+
+  /** 作成日時（ISO 8601 形式の文字列、Supabase が自動生成） */
+  // 例: "2026-10-15T10:30:00.000Z"
+  created_at: string;
+
+  /** 更新日時（ISO 8601 形式の文字列、Supabase が自動生成） */
+  // 行が更新されるたびに Supabase のトリガーが書き換える
+  updated_at: string;
+};
+
+/**
+ * 書籍の新規登録時に送るデータの型定義
+ *
+ * id, created_at, updated_at はデータベースが自動生成するため、
+ * 送信データには含めません。
+ * title と author は必須、それ以外はオプショナル（省略可能）です。
+ */
+export type BookInsert = {
+  /** 書籍のタイトル（必須） */
+  // 必須項目（? が付いていない）
+  title: string;
+
+  /** 著者名（必須） */
+  // 必須項目。空文字や null にせず、必ず名前を入れて送る
+  author: string;
+
+  /** 出版社（省略時は null） */
+  // ?: オプショナル。省略可能
+  publisher?: string | null;
+
+  /** 出版日（省略時は null） */
+  // 省略してもよいし、明示的に null を送ってもよい
+  published_date?: string | null;
+
+  /** 評価（1〜5、省略時は null） */
+  // 同上
+  rating?: number | null;
+
+  /** 読書ステータス（省略時は "want_to_read" がデフォルト） */
+  // 省略時の値はDB側のデフォルトで補う
+  status?: BookStatus;
+
+  /** メモ・感想（省略時は null） */
+  // 同上
+  memo?: string | null;
+};
+
+/**
+ * 書籍の更新時に送るデータの型定義
+ *
+ * 更新したい列だけを送ればよいため、
+ * すべての項目がオプショナルです。
+ * Partial<BookInsert> と同じ意味ですが、明示的に定義しています。
+ */
+export type BookUpdate = {
+  /** 書籍のタイトル */
+  // すべて ? 付き（更新時は変更したい項目のみ送る）
+  title?: string;
+
+  /** 著者名 */
+  // 同上（送る場合は空にしない）
+  author?: string;
+
+  /** 出版社（null で消去） */
+  // 同上
+  publisher?: string | null;
+
+  /** 出版日（null で消去） */
+  // 同上
+  published_date?: string | null;
+
+  /** 評価（1〜5、null で評価をクリア） */
+  // null を明示的に送ると評価をリセットできる
+  rating?: number | null;
+
+  /** 読書ステータス */
+  // 同上
+  status?: BookStatus;
+
+  /** メモ・感想（null でメモをクリア） */
+  // 同上
+  memo?: string | null;
+};
+
+/**
+ * ステータスの表示ラベル定義
+ *
+ * コンポーネントでステータスを日本語表示するときに使います。
+ * 例: statusLabels["reading"] → "読書中"
+ */
+// Record<BookStatus, string>: TypeScript の組み込み型。
+// 「キーが BookStatus 型、値が string 型のオブジェクト」を意味する
+// 3つのキー（reading, completed, want_to_read）すべてが必須になる
+export const statusLabels: Record<BookStatus, string> = {
+  // "reading" の表示用ラベル
+  reading: "読書中",
+  // "completed" の表示用ラベル
+  completed: "読了",
+  // "want_to_read" の表示用ラベル
+  want_to_read: "読みたい",
+};
+
+/**
+ * ステータスに対応する色のクラス定義
+ *
+ * StatusBadge コンポーネントでバッジの色を切り替えるときに使います。
+ * Tailwind CSS のクラス名を直接指定しています（第7章の StatusBadge と同じ色）。
+ */
+// Record<BookStatus, { bg: string; text: string }>:
+// キーが BookStatus、値が { bg: string; text: string } 型のオブジェクト
+// 各ステータスごとに「背景色クラス」と「文字色クラス」を持つ
+export const statusColors: Record<
+  BookStatus,
+  { bg: string; text: string }
+> = {
+  // 読書中: 青系（進行中の印象）
+  reading: {
+    // 背景は薄い青
+    bg: "bg-blue-100",
+    // 文字は濃い青
+    text: "text-blue-800",
+  },
+  // 読了: 緑系（完了の印象）
+  completed: {
+    // 背景は薄い緑
+    bg: "bg-green-100",
+    // 文字は濃い緑
+    text: "text-green-800",
+  },
+  // 読みたい: 黄系（これから、の印象）
+  want_to_read: {
+    // 背景は薄い黄
+    bg: "bg-yellow-100",
+    // 文字は濃い黄
+    text: "text-yellow-800",
+  },
+};
+```
+
+**コードの解説:**
+
+| 型 / 定数 | 用途 |
+|-----------|------|
+| `BookStatus` | 読書ステータスを3つのリテラル型のユニオンで定義します。`"reading" \| "completed" \| "want_to_read"` 以外の値を代入しようとすると、TypeScript がコンパイルエラーを出します。第5章のテーブルの CHECK 制約（この3つ以外は保存できない決まり）と同じ3つです。 |
+| `Book` | データベースの `books` テーブルの1行に対応する型です。`supabase.from("books").select("*")` の返り値はこの型の配列になります。 |
+| `BookInsert` | 新規登録時に必要なデータの型です。`title` と `author` が必須、それ以外はオプショナル（`?` 付き）です。`id` や `created_at` はデータベースが自動で付与するため含みません。 |
+| `BookUpdate` | 更新時に送るデータの型です。すべての項目がオプショナルで、変更したい項目だけを送ります。 |
+| `statusLabels` | ステータスの文字列を日本語ラベルに変換するためのマッピングオブジェクトです。`Record<BookStatus, string>` は「キーが `BookStatus` 型、値が `string` 型のオブジェクト」を意味します。 |
+| `statusColors` | ステータスに対応する Tailwind CSS のクラス名をマッピングしたオブジェクトです。StatusBadge コンポーネントでバッジの背景色と文字色を動的に切り替えるために使います。 |
+
+> **注意（著者は必須）:** `author` は `title` と同じく**必須**です。第5章のテーブルでも `author text NOT NULL`（空を許さない）になっています。登録フォームで著者が空のまま送ると、データベースに保存できません。「著者が分からない本」を登録したいときも、空にせず「不明」などの文字を入れる決まりにします。
+
+<!-- -->
+
+> **第7章とのつながり:** 第7章では、説明の流れに合わせて `BookCard.tsx` の中に `Book` 型、`StatusBadge.tsx` の中に `BookStatus` 型を書きながら学びます。中身はこのファイルの型と同じ形なので、どちらから import しても同じように使えます。
+
+<!-- -->
+
+> **Supabase の自動生成型（Database 型）について:**
+> 大規模プロジェクトでは Supabase CLI で `npx supabase gen types typescript` を実行し、データベースの定義からTypeScriptの型を自動生成することがあります（第5章でも紹介しました）。生成された型は次のような形をしています（抜粋）。
+>
+> ```typescript
+> export type Database = {
+>   public: {
+>     Tables: {
+>       books: {
+>         // SELECTで返ってくる行の型
+>         Row: { id: string; title: string; author: string };
+>         // INSERT時に渡す型
+>         Insert: { title: string; author: string };
+>         // UPDATE時に渡す型
+>         Update: { title?: string; author?: string };
+>       };
+>     };
+>   };
+> };
+> ```
+>
+> 本チュートリアルでは学習のしやすさのため、手書きで `Book`, `BookInsert`, `BookUpdate` を定義しています。仕組みは同じです。第5章で自動生成版の `types/book.ts` を作った場合は、この章のコードで上書きして構いません（型の名前は同じです）。
+
+<!-- -->
+
+> **なぜ3つの型を分けるのか？**
+>
+> データベースとやり取りする場面によって、必要な項目が異なります。
+>
+> - **取得（SELECT）:** すべての項目が返ってくる → `Book` 型
+> - **登録（INSERT）:** `id` や `created_at` は不要 → `BookInsert` 型
+> - **更新（UPDATE）:** 変更したい項目だけ送る → `BookUpdate` 型
+>
+> 型を分けることで、各場面で正確なデータ構造を強制でき、バグを防げます。
+
+3つの型の違いを1枚の表にすると、次のようになります。伝票にたとえると、`Book` は「倉庫から届いた控え（全項目が埋まっている）」、`BookInsert` は「新規注文の用紙（番号や日付は倉庫側が書く）」、`BookUpdate` は「変更届（変えたい欄だけ書けばよい）」です。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 405" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<rect x="20" y="14" width="150" height="44" rx="6" fill="#f8fafc" stroke="#475569" stroke-width="1.5"/>
+<text x="95" y="41" text-anchor="middle" font-size="13" font-weight="bold" fill="#475569">項目名</text>
+<rect x="180" y="14" width="170" height="44" rx="6" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="265" y="33" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e40af">Book</text>
+<text x="265" y="50" text-anchor="middle" font-size="12" fill="#64748b">取得（SELECT）</text>
+<rect x="360" y="14" width="170" height="44" rx="6" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="445" y="33" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e40af">BookInsert</text>
+<text x="445" y="50" text-anchor="middle" font-size="12" fill="#64748b">登録（INSERT）</text>
+<rect x="540" y="14" width="170" height="44" rx="6" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="625" y="33" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e40af">BookUpdate</text>
+<text x="625" y="50" text-anchor="middle" font-size="12" fill="#64748b">更新（UPDATE）</text>
+<text x="95" y="84" text-anchor="middle" font-size="13" fill="#1e293b" font-family="Consolas, Menlo, monospace">id</text>
+<rect x="180" y="66" width="170" height="26" rx="5" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="265" y="84" text-anchor="middle" font-size="12" fill="#047857">あり</text>
+<rect x="360" y="66" width="170" height="26" rx="5" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+<text x="445" y="84" text-anchor="middle" font-size="12" fill="#94a3b8">なし</text>
+<rect x="540" y="66" width="170" height="26" rx="5" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+<text x="625" y="84" text-anchor="middle" font-size="12" fill="#94a3b8">なし</text>
+<text x="95" y="114" text-anchor="middle" font-size="13" fill="#1e293b" font-family="Consolas, Menlo, monospace">title</text>
+<rect x="180" y="96" width="170" height="26" rx="5" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="265" y="114" text-anchor="middle" font-size="12" fill="#047857">あり</text>
+<rect x="360" y="96" width="170" height="26" rx="5" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="445" y="114" text-anchor="middle" font-size="12" fill="#047857">必須</text>
+<rect x="540" y="96" width="170" height="26" rx="5" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="625" y="114" text-anchor="middle" font-size="12" fill="#c2410c">省略可（?）</text>
+<text x="95" y="144" text-anchor="middle" font-size="13" fill="#1e293b" font-family="Consolas, Menlo, monospace">author</text>
+<rect x="180" y="126" width="170" height="26" rx="5" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="265" y="144" text-anchor="middle" font-size="12" fill="#047857">あり</text>
+<rect x="360" y="126" width="170" height="26" rx="5" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="445" y="144" text-anchor="middle" font-size="12" fill="#047857">必須</text>
+<rect x="540" y="126" width="170" height="26" rx="5" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="625" y="144" text-anchor="middle" font-size="12" fill="#c2410c">省略可（?）</text>
+<text x="95" y="174" text-anchor="middle" font-size="13" fill="#1e293b" font-family="Consolas, Menlo, monospace">publisher</text>
+<rect x="180" y="156" width="170" height="26" rx="5" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="265" y="174" text-anchor="middle" font-size="12" fill="#047857">あり</text>
+<rect x="360" y="156" width="170" height="26" rx="5" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="445" y="174" text-anchor="middle" font-size="12" fill="#c2410c">省略可（?）</text>
+<rect x="540" y="156" width="170" height="26" rx="5" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="625" y="174" text-anchor="middle" font-size="12" fill="#c2410c">省略可（?）</text>
+<text x="95" y="204" text-anchor="middle" font-size="13" fill="#1e293b" font-family="Consolas, Menlo, monospace">published_date</text>
+<rect x="180" y="186" width="170" height="26" rx="5" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="265" y="204" text-anchor="middle" font-size="12" fill="#047857">あり</text>
+<rect x="360" y="186" width="170" height="26" rx="5" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="445" y="204" text-anchor="middle" font-size="12" fill="#c2410c">省略可（?）</text>
+<rect x="540" y="186" width="170" height="26" rx="5" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="625" y="204" text-anchor="middle" font-size="12" fill="#c2410c">省略可（?）</text>
+<text x="95" y="234" text-anchor="middle" font-size="13" fill="#1e293b" font-family="Consolas, Menlo, monospace">rating</text>
+<rect x="180" y="216" width="170" height="26" rx="5" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="265" y="234" text-anchor="middle" font-size="12" fill="#047857">あり</text>
+<rect x="360" y="216" width="170" height="26" rx="5" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="445" y="234" text-anchor="middle" font-size="12" fill="#c2410c">省略可（?）</text>
+<rect x="540" y="216" width="170" height="26" rx="5" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="625" y="234" text-anchor="middle" font-size="12" fill="#c2410c">省略可（?）</text>
+<text x="95" y="264" text-anchor="middle" font-size="13" fill="#1e293b" font-family="Consolas, Menlo, monospace">status</text>
+<rect x="180" y="246" width="170" height="26" rx="5" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="265" y="264" text-anchor="middle" font-size="12" fill="#047857">あり</text>
+<rect x="360" y="246" width="170" height="26" rx="5" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="445" y="264" text-anchor="middle" font-size="12" fill="#c2410c">省略可（?）</text>
+<rect x="540" y="246" width="170" height="26" rx="5" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="625" y="264" text-anchor="middle" font-size="12" fill="#c2410c">省略可（?）</text>
+<text x="95" y="294" text-anchor="middle" font-size="13" fill="#1e293b" font-family="Consolas, Menlo, monospace">memo</text>
+<rect x="180" y="276" width="170" height="26" rx="5" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="265" y="294" text-anchor="middle" font-size="12" fill="#047857">あり</text>
+<rect x="360" y="276" width="170" height="26" rx="5" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="445" y="294" text-anchor="middle" font-size="12" fill="#c2410c">省略可（?）</text>
+<rect x="540" y="276" width="170" height="26" rx="5" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="625" y="294" text-anchor="middle" font-size="12" fill="#c2410c">省略可（?）</text>
+<text x="95" y="324" text-anchor="middle" font-size="13" fill="#1e293b" font-family="Consolas, Menlo, monospace">created_at</text>
+<rect x="180" y="306" width="170" height="26" rx="5" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="265" y="324" text-anchor="middle" font-size="12" fill="#047857">あり</text>
+<rect x="360" y="306" width="170" height="26" rx="5" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+<text x="445" y="324" text-anchor="middle" font-size="12" fill="#94a3b8">なし</text>
+<rect x="540" y="306" width="170" height="26" rx="5" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+<text x="625" y="324" text-anchor="middle" font-size="12" fill="#94a3b8">なし</text>
+<text x="95" y="354" text-anchor="middle" font-size="13" fill="#1e293b" font-family="Consolas, Menlo, monospace">updated_at</text>
+<rect x="180" y="336" width="170" height="26" rx="5" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="265" y="354" text-anchor="middle" font-size="12" fill="#047857">あり</text>
+<rect x="360" y="336" width="170" height="26" rx="5" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+<text x="445" y="354" text-anchor="middle" font-size="12" fill="#94a3b8">なし</text>
+<rect x="540" y="336" width="170" height="26" rx="5" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+<text x="625" y="354" text-anchor="middle" font-size="12" fill="#94a3b8">なし</text>
+<rect x="30" y="378" width="14" height="14" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="50" y="390" font-size="12" fill="#475569">必ず入っている／必ず送る</text>
+<rect x="250" y="378" width="14" height="14" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="270" y="390" font-size="12" fill="#475569">送っても送らなくてもよい</text>
+<rect x="470" y="378" width="14" height="14" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+<text x="490" y="390" font-size="12" fill="#475569">型に含めない（DBが自動で付ける）</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図6-11: Book / BookInsert / BookUpdate に入る項目の比較</div>
 </div>
 
 #### ▼ コードを1つずつ分解して解説
@@ -2274,14 +3142,14 @@ const myStatus: BookStatus = "completed";
 
 ### 7.1 app/layout.tsx の作成
 
-`src/app/layout.tsx` はすべてのページを囲む「外枠」のようなものです。HTML の `<html>` と `<body>` タグを含み、全ページ共通のヘッダーや CSS をここで設定します。
+`app/layout.tsx` はすべてのページを囲む「外枠」のようなものです。HTML の `<html>` と `<body>` タグを含み、全ページ共通のヘッダーや CSS をここで設定します。
 
-以下のコードで `src/app/layout.tsx` を書き換えます（`create-next-app` が生成したデフォルトの内容を完全に置き換えます）。
+以下のコードで `app/layout.tsx` を書き換えます（`create-next-app` が生成したデフォルトの内容を完全に置き換えます）。
 
 > **▼ このコードがやること（先に日本語で）:** すべてのページを包む「共通の外枠」を作ります。`<html>` や `<body>` タグ、日本語フォント、ブラウザのタブに出るタイトル、そして全ページ上部のヘッダーをここでまとめて設定します。各ページの中身は `{children}`（チルドレン：差し込み口）の場所にはめ込まれる、という仕組みがポイントです。フォントやレイアウトの細かい指定はコメントと解説表で1つずつ確認できます。
 
 ```typescript
-// src/app/layout.tsx
+// app/layout.tsx
 // 全ページに適用される「ルートレイアウト」。<html> と <body> はここでしか書かない
 
 // type import: Metadata 型だけをインポート（実体はビルド後のコードに残らない）
@@ -2296,7 +3164,7 @@ import { Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
 
 // default import: Header コンポーネントを取り込む
-// @/components/Header は src/components/Header（パスエイリアス @/ = src/）
+// @/components/Header はプロジェクト直下の components/Header（パスエイリアス @/ = プロジェクト直下）
 import Header from "@/components/Header";
 
 /**
@@ -2387,7 +3255,7 @@ export default function RootLayout({
 | `import type { Metadata } from "next";` | Next.js のメタデータ型をインポートします。`type` キーワードは「型のみインポート」を意味し、ランタイムには影響しません（ビルド時に消える）。 |
 | `import { Noto_Sans_JP } from "next/font/google";` | Google Fonts から Noto Sans JP フォントをインポートします。`next/font` を使うと、フォントがビルド時にダウンロードされ、パフォーマンスが最適化されます。 |
 | `import "./globals.css";` | Tailwind CSS のグローバルスタイルを読み込みます。この1行がないと Tailwind のクラスが機能しません。`./` は同じフォルダにあるファイルを指す相対パス。 |
-| `import Header from "@/components/Header";` | 共通ヘッダーコンポーネントをインポートします。`@/` は `src/` ディレクトリのエイリアスです。これにより `../../components/Header` のように相対パスを書かなくて済みます。 |
+| `import Header from "@/components/Header";` | 共通ヘッダーコンポーネントをインポートします。`@/` はプロジェクト直下を指すエイリアスです。これにより `../components/Header` のように相対パスを書かなくて済みます。 |
 | `subsets: ["latin"]` | ラテン文字のサブセットを読み込みます。日本語文字はデフォルトで含まれます。 |
 | `weight: ["400", "500", "700"]` | 使用するフォントウェイト（太さ）を指定します。400 = 通常、500 = やや太字、700 = 太字。指定しない太さは使えなくなる代わりに、ダウンロードサイズが減ります。 |
 | `display: "swap"` | フォントの読み込み方式を指定します。`"swap"` はフォント読み込み完了前にシステムフォントで表示し、読み込み後に切り替えます（FOIT: Flash Of Invisible Text を防ぐ）。 |
@@ -2417,9 +3285,9 @@ import Header from "@/components/Header";
 - 1行目の `import type` は「**型だけ**を取り込む」インポートで、ビルド後のコードには残りません（型は実行時には不要なため）。
 - 2行目の `{ Noto_Sans_JP }` は波括弧付きの「名前付きインポート」で、日本語フォントを読み込む関数を取り出しています。
 - 3行目の `import "./globals.css";` は**左側に名前がない**特殊な形で、「このファイルを読み込むだけ」を意味します。これで Tailwind のスタイルが全ページに効きます。
-- 4行目の `import Header` は波括弧なしの「デフォルトインポート」。`@/` は `src/` の近道（パスエイリアス）なので、`@/components/Header` は `src/components/Header` を指します。
+- 4行目の `import Header` は波括弧なしの「デフォルトインポート」。`@/` はプロジェクト直下の近道（パスエイリアス）なので、`@/components/Header` は `components/Header` を指します。
 
-> **用語:** 「パスエイリアス（`@/`）」とは、長い相対パス（`../../components/...`）を短く書くための別名です。`src/` を起点にできるので、ファイルを移動してもインポート文を直さずに済みます。
+> **用語:** 「パスエイリアス（`@/`）」とは、長い相対パス（`../../components/...`）を短く書くための別名です。プロジェクト直下を起点にできるので、ファイルを移動してもインポート文を直さずに済みます。
 
 ---
 
@@ -2518,14 +3386,14 @@ export default function RootLayout({
 <line x1="480" y1="235" x2="364" y2="228" stroke="#475569" stroke-width="2" marker-end="url(#ar-06-11)"/>
 <text x="482" y="168" text-anchor="middle" font-size="12" fill="#475569">どちらか一方が入る</text>
 </svg>
-<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図6-6: layout.tsx（額縁）と page.tsx（絵）の関係</div>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図6-12: layout.tsx（額縁）と page.tsx（絵）の関係</div>
 </div>
 
 ---
 
 ### 7.2 globals.css の確認
 
-`src/app/globals.css` を開くと、`create-next-app` が作った次のような内容が入っています。
+`app/globals.css` を開くと、`create-next-app` が作った次のような内容が入っています。
 
 ```css
 @import "tailwindcss";
@@ -2559,13 +3427,15 @@ body {
 先頭の `@import "tailwindcss";` 以外は、最初のサンプルページ用の設定（パソコンがダークモードのときに背景を黒くする、など）です。本書のアプリでは色やフォントを Tailwind のクラスと `layout.tsx` で指定するので、**ファイルの中身を次の1行（とコメント）だけに書き換えてください**。
 
 ```css
-/* src/app/globals.css */
+/* app/globals.css */
 
 /* Tailwind CSS v4 を読み込む。この1行で、flex や bg-white などのクラスがすべて使えるようになる */
 @import "tailwindcss";
 ```
 
 > **なぜ残りを消すのか:** 残しておくと、パソコンがダークモードのときだけ文字色が白っぽくなり、白いカードの上の文字が読みにくくなることがあります。「自分のパソコンでは普通なのに、友達のパソコンでは見た目が違う」という原因の分かりにくい違いを防ぐため、最初に消しておきます（ダークモード対応は第9章で扱います）。
+
+<!-- -->
 
 > **用語:** 「`@import`」は、CSS の中で別の CSS を読み込む命令です。`@import "tailwindcss";` は「Tailwind CSS の部品一式を読み込む」という意味で、Tailwind CSS v4 ではこの1行だけで準備が整います。
 
@@ -2578,7 +3448,7 @@ body {
 NG（v3 の書き方）:
 
 ```css
-/* src/app/globals.css（v4 では NG） */
+/* app/globals.css（v4 では NG） */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -2587,7 +3457,7 @@ NG（v3 の書き方）:
 OK（v4 の書き方）:
 
 ```css
-/* src/app/globals.css */
+/* app/globals.css */
 @import "tailwindcss";
 ```
 
@@ -2609,12 +3479,12 @@ NG の書き方では、`flex`（横並び）のような一部のクラスだ�
 
 ### 8.1 components/Header.tsx の作成
 
-`src/components/Header.tsx` ファイルに以下のコードを記述します。
+`components/Header.tsx` ファイルに以下のコードを記述します。
 
 > **▼ このコードがやること（先に日本語で）:** 全ページの上部に出る「ナビゲーションバー（共通ヘッダー）」を作ります。アプリ名のロゴと、「書籍一覧」「書籍を登録する」へのリンクを並べ、いま開いているページのリンクだけ色を変えて目立たせます。`usePathname()` という機能で現在のURLを取得するため、先頭に `"use client"` と書いてブラウザ側で動くコンポーネントにしている点がポイントです。スタイル（色や余白）の意味は各行のコメントを参照してください。
 
 ```typescript
-// src/components/Header.tsx
+// components/Header.tsx
 // 全ページ上部に表示する共通ヘッダー（ナビゲーションバー）
 
 // "use client": このファイルを Client Component として宣言する特別な文字列
@@ -2810,7 +3680,7 @@ const pathname = usePathname();
 NG（`"use client"` が無い）:
 
 ```typescript
-// src/components/Header.tsx（先頭部分）
+// components/Header.tsx（先頭部分）
 // "use client" が無いので、このファイルは Server Component として扱われる
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -2823,7 +3693,7 @@ import { usePathname } from "next/navigation";
 ```text
 > Build error occurred
 Error: Turbopack build failed with 1 error:
-./src/components/Header.tsx:15:10
+./components/Header.tsx:15:10
 Error: You're importing a module that depends on `usePathname` into a React Server Component module. This API is only available in Client Components. To fix, mark the file (or its parent) with the `"use client"` directive.
     Learn more: https://nextjs.org/docs/app/api-reference/directives/use-client
   13 | // named import: usePathname フック（現在のURLパスを取得）
@@ -2838,8 +3708,8 @@ Ecmascript file had an error
 
 Import trace:
   Server Component:
-    ./src/components/Header.tsx
-    ./src/app/layout.tsx
+    ./components/Header.tsx
+    ./app/layout.tsx
 ```
 
 英文は「`usePathname` に頼るモジュールを、React Server Component に import しています。この機能は Client Component でしか使えません。直すには、ファイル（またはその親）に `"use client"` を付けてください」という意味です。最後の `Import trace`（読み込みの道すじ）からは、`layout.tsx`（Server Component）が `Header.tsx` を読み込み、その `Header.tsx` も Server Component のまま `usePathname` を使っている、という流れが読み取れます。
@@ -2847,7 +3717,7 @@ Import trace:
 OK（ファイルの一番上、import より前に書く）:
 
 ```typescript
-// src/components/Header.tsx（先頭部分）
+// components/Header.tsx（先頭部分）
 // "use client" は必ずファイルの一番上（import より前）に書く
 "use client";
 
@@ -2855,7 +3725,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 ```
 
-> **ヒント:** エラーの1行目に出るファイル名と行番号（`./src/components/Header.tsx:15:10` は「15行目の10文字目」）を見れば、どこを直せばよいかが分かります。エラーは怖がらずに、まず「どのファイルの何行目か」だけでも読む習慣をつけましょう。
+> **ヒント:** エラーの1行目に出るファイル名と行番号（`./components/Header.tsx:15:10` は「15行目の10文字目」）を見れば、どこを直せばよいかが分かります。エラーは怖がらずに、まず「どのファイルの何行目か」だけでも読む習慣をつけましょう。
 
 ---
 
@@ -2863,12 +3733,12 @@ import { usePathname } from "next/navigation";
 
 ### 9.1 仮のトップページを作成
 
-動作確認のため、`src/app/page.tsx` を以下の内容に書き換えます（`create-next-app` のデフォルト内容を置き換えます）。
+動作確認のため、`app/page.tsx` を以下の内容に書き換えます（`create-next-app` のデフォルト内容を置き換えます）。
 
 > **▼ このコードがやること（先に日本語で）:** トップページ（URL が `/` のページ）に、動作確認用の仮の画面を表示します。見出しと説明文、白いカード、3色のステータスバッジを並べて、Tailwind CSS のスタイルがちゃんと効いているかを目で確かめられるようにしています。中身はまだ仮で、本物の書籍一覧は次の章で作る、という位置づけです。クラス名（`bg-white` など）の意味は各行のコメントにあります。
 
 ```typescript
-// src/app/page.tsx
+// app/page.tsx
 // URL "/" にアクセスしたときに表示されるトップページ
 
 // export default function: ファイルのメインコンポーネントとしてエクスポート
@@ -3058,7 +3928,7 @@ npm run dev
 <line x1="468" y1="325" x2="488" y2="325" stroke="#f97316" stroke-width="1.5"/>
 <text x="494" y="329" font-size="12" fill="#c2410c">200 = 表示に成功</text>
 </svg>
-<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図X: npm run dev を実行したときのターミナルの画面イメージ（右は各行の意味）</div>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図6-13: npm run dev を実行したときのターミナルの画面イメージ（右は各行の意味）</div>
 </div>
 
 > **ヒント:** 開発サーバーは、**ターミナルを開いている間ずっと動き続ける**プログラムです。このターミナルでは他のコマンドを打てなくなるので、別のコマンド（`npm install` など）を実行したいときは、VS Code のターミナルの「＋」で**新しいターミナルを開いて**そちらで実行してください。止めるときは、開発サーバーが動いているターミナルで `Ctrl+C` を押します。
@@ -3101,16 +3971,18 @@ npm run dev
 <rect x="440" y="114" width="256" height="24" rx="12" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
 <text x="568" y="130" text-anchor="middle" font-size="12" fill="#c2410c">③ 現在地の「書籍一覧」が薄い青になる</text>
 </svg>
-<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図X: http://localhost:3000 を開いたときの画面イメージ（実際の表示を元に作図）</div>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図6-14: http://localhost:3000 を開いたときの画面イメージ（実際の表示を元に作図）</div>
 </div>
 
 **ヘッダー部分:**
+
 - 画面最上部に白い背景のヘッダーバーが表示されます
 - 左側に「書籍管理アプリ」というテキストが太字で表示されます
 - 右側に「書籍一覧」というテキストリンクと「書籍を登録する」という青いボタンが表示されます
 - 「書籍一覧」リンクは現在のページなので、薄い青の背景でハイライトされています
 
 **メインコンテンツ部分:**
+
 - ヘッダーの下に薄いグレー（`bg-gray-50`）の背景があります
 - 「書籍一覧」という大きな見出し（30px, 太字）が表示されます
 - その下に「登録された書籍がここに表示されます。」という説明文があります
@@ -3131,8 +4003,8 @@ npm run dev
 
 | 症状 | 原因 | 対処法 |
 |------|------|--------|
-| `Module not found: Can't resolve '@/components/Header'` | ファイルが存在しない、またはパスが間違っている | `src/components/Header.tsx` が正しい場所に作成されているか確認してください。ファイル名の大文字小文字も一致している必要があります。`@/src/...` と書いていないかも確認します（4.4.1）。 |
-| スタイルが全く適用されない | `globals.css` が正しく読み込まれていない | `src/app/layout.tsx` で `import "./globals.css";` が記述されているか、`globals.css` の1行目が `@import "tailwindcss";` か確認してください（7.2.1）。 |
+| `Module not found: Can't resolve '@/components/Header'` | ファイルが存在しない、またはパスが間違っている | `components/Header.tsx` が正しい場所に作成されているか確認してください。ファイル名の大文字小文字も一致している必要があります。`@/src/...` と書いていないかも確認します（4.4.1）。 |
+| スタイルが全く適用されない | `globals.css` が正しく読み込まれていない | `app/layout.tsx` で `import "./globals.css";` が記述されているか、`globals.css` の1行目が `@import "tailwindcss";` か確認してください（7.2.1）。 |
 | `環境変数 NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY が設定されていません` | `.env.local` が未作成、名前・場所が違う、変数名が違う | `.env.local` がプロジェクトのルートディレクトリ（`package.json` と同じ階層）にあり、起動時に `- Environments: .env.local` が出ているか確認してください。保存し直すと `Reload env` で読み直されますが、迷ったら `Ctrl+C` で止めて `npm run dev` で起動し直すのが確実です（5.2.2〜5.2.4）。 |
 | `⚠ Port 3000 is in use ... using available port 3001 instead.` | 3000 番を別のアプリが使っている | Next.js 16 は空いている番号（3001 など）に**自動で切り替えて**起動します。表示された `Local:` の URL（`http://localhost:3001` など）をブラウザで開いてください。 |
 | `⨯ Another next dev server is already running.` | 同じフォルダで開発サーバーを2つ起動しようとした | すでに動いている方を使います（9.4.1）。 |
@@ -3294,7 +4166,7 @@ npm run dev
 |---------|------|---------|
 | 1. ユーザーの操作 | ブラウザ | ユーザーがボタンをクリックしたり、フォームに入力したりします。例: 「書籍を登録する」ボタンを押す。 |
 | 2. コンポーネントからの呼び出し | UI Components | React コンポーネント内で Supabase クライアントの関数を呼び出します。例: `supabase.from("books").insert(newBook)` |
-| 3. HTTP リクエスト | Supabase Client | `@supabase/supabase-js` ライブラリが、JavaScript のコードを HTTPS リクエストに変換して Supabase のサーバーに送信します。URL や Anon Key は `.env.local` の環境変数から読み取られます。 |
+| 3. HTTP リクエスト | Supabase Client | `@supabase/supabase-js` ライブラリが、JavaScript のコードを HTTPS リクエストに変換して Supabase のサーバーに送信します。URL や Publishable key は `.env.local` の環境変数から読み取られます。 |
 | 4. SQL クエリの実行 | Supabase API | Supabase の REST API（PostgREST）がリクエストを受け取り、対応する SQL クエリに変換して PostgreSQL データベースに実行します。RLS（行レベルセキュリティ）によるアクセス制御もこのタイミングで適用されます。 |
 | 5. クエリ結果 | PostgreSQL | データベースがクエリを実行し、結果を返します。 |
 | 6. JSON レスポンス | Supabase API | クエリ結果を JSON 形式に変換し、クライアントにレスポンスとして返します。 |
@@ -3303,46 +4175,49 @@ npm run dev
 
 ### 10.3 具体例: 書籍一覧の取得
 
-実際のコードでデータがどう流れるか、具体例で見てみましょう（このコードは次の章で実装します）。
+実際のコードでデータがどう流れるか、具体例で見てみましょう（第7章では、これと同じ処理をトップページ `app/page.tsx` の中に書きます）。
 
-> **▼ このコードがやること（先に日本語で）:** データベースから書籍の一覧を取り出す処理を、具体的なコードで追いかけます。さきほど作った Supabase クライアントを使い、「books テーブルから全件を、新しい順に取得する」という指示を出しています。`await`（待つ）は通信が終わるまで結果を待つための合図で、戻り値を `data`（成功データ）と `error`（エラー）に分けて受け取り、必ずエラーの有無を確認するのが安全な書き方です。この1行の裏で、前の図の通信ステップが自動で実行されています。
+> **▼ このコードがやること（先に日本語で）:** データベースから書籍の一覧を取り出す処理を、具体的なコードで追いかけます。さきほど作ったサーバー用の Supabase クライアントを使い、「books テーブルから全件を、新しい順に取得する」という指示を出しています。`await`（待つ）は通信が終わるまで結果を待つための合図で、戻り値を `data`（成功データ）と `error`（エラー）に分けて受け取り、必ずエラーの有無を確認するのが安全な書き方です。この1つの呼び出しの裏で、前の図の通信ステップが自動で実行されています。
 
 ```typescript
-// 書籍一覧を取得するコードの流れ
+// 書籍一覧を取得する関数（第7章のトップページで使う処理の骨組み）
 
-// 1. Supabase クライアントをインポート
-// named import で supabase 変数だけを取り込む（lib/supabase.ts で export const supabase したもの）
-import { supabase } from "@/lib/supabase";
+// 1. サーバー用の Supabase クライアントを作る関数をインポート
+import { createClient } from "@/lib/supabase/server";
 // Book 型もインポート（型情報のみ。ランタイムには影響なし）
-import { Book } from "@/types/book";
+import type { Book } from "@/types/book";
 
-// 2. データベースから書籍一覧を取得
-// await: Promise（非同期処理の結果）を待つキーワード。async 関数内でのみ使用可能
-// 戻り値は { data, error } のオブジェクトなので、分割代入で取り出す
-const { data, error } = await supabase
-  // books テーブルを指定（SQL の FROM books に相当）
-  .from("books")
-  // すべてのカラムを取得（SQL の SELECT * に相当）
-  .select("*")
-  // 作成日の降順（新しい順）に並び替え（SQL の ORDER BY に相当）
-  .order("created_at", {
-    // false で降順（新しい順）。true なら昇順（古い順）
-    ascending: false
-  });
+// async: 中で await を使う関数に付ける印。戻り値は「あとで Book の配列が届く約束（Promise）」
+export async function getBooks(): Promise<Book[]> {
+  // 2. サーバー用の窓口を作る（中で cookies() を待つので await が必要）
+  const supabase = await createClient();
 
-// 3. エラーハンドリング
-// if (error): error が null/undefined でなければ true（エラーが発生した）
-if (error) {
-  // console.error: 開発者ツールのコンソールにエラーログを赤色で出力
-  console.error("書籍の取得に失敗しました:", error.message);
-  // ここで関数を抜ける
-  return;
+  // 3. データベースから書籍一覧を取得
+  // 戻り値は { data, error } のオブジェクトなので、分割代入で取り出す
+  const { data, error } = await supabase
+    // books テーブルを指定（SQL の FROM books に相当）
+    .from("books")
+    // すべての列を取得（SQL の SELECT * に相当）
+    .select("*")
+    // 作成日の降順（新しい順）に並び替え（SQL の ORDER BY に相当）
+    .order("created_at", { ascending: false });
+
+  // 4. エラーハンドリング
+  // error が null でなければ true（エラーが発生した）
+  if (error) {
+    // サーバーのターミナルにエラーの内容を出す
+    console.error("書籍の取得に失敗しました:", error.message);
+    // 失敗したときは空の配列を返して、画面が真っ白にならないようにする
+    return [];
+  }
+
+  // 5. data は書籍の配列。万一 null のときに備えて ?? で空配列にする
+  const books: Book[] = data ?? [];
+  return books;
 }
-
-// 4. data は Book[] 型（書籍の配列）
-// data の型は自動で Book[] と推論されるが、明示的に型注釈を付けることもできる
-const books: Book[] = data;
 ```
+
+（このコードは、本章で作ったファイルと一緒に `npx tsc --noEmit` で型チェックを通ることを確認しています。第7章では、この中身をトップページの関数の中に直接書きます。）
 
 この1つの `supabase.from("books").select("*")` の呼び出しの裏側で、上の図の 2 → 3 → 4 → 5 → 6 → 7 のステップがすべて自動的に実行されています。Supabase クライアントがこれらの複雑な処理を抽象化してくれるため、開発者は SQL を直接書くことなく、シンプルな JavaScript/TypeScript のコードでデータベースを操作できます。
 
@@ -3352,34 +4227,35 @@ const books: Book[] = data;
 
 ---
 
-##### 解説1: 共有クライアントと型をインポートする
+##### 解説1: サーバー用クライアントと型をインポートする
 
 ```typescript
-import { supabase } from "@/lib/supabase";
-import { Book } from "@/types/book";
+import { createClient } from "@/lib/supabase/server";
+import type { Book } from "@/types/book";
 ```
 
-- 1行目で、さきほど `lib/supabase.ts` で作って `export` した `supabase`（データベースの窓口）を取り込んでいます。これで通信の準備は完了です。
-- 2行目で `Book` 型を取り込み、取得したデータが「書籍の形」をしていることを TypeScript に伝えられるようにします。
-- どちらも `@/`（= `src/`）から始まるパスエイリアスを使い、相対パスより読みやすく書いています。
+- 1行目で、5.3 で作った `lib/supabase/server.ts` から、窓口を作る関数 `createClient` を取り込んでいます。このコードはサーバーで動くので、`client` ではなく `server` の方を使います。
+- 2行目で `Book` 型を取り込み、取得したデータが「書籍の形」をしていることを TypeScript に伝えられるようにします。型だけなので `import type` にしています。
+- どちらも `@/`（= プロジェクト直下）から始まるパスエイリアスを使い、相対パスより読みやすく書いています。
 
 > **用語:** 「型のインポート」とは、`Book` のような型定義を別ファイルから取り込むことです。データの形を共有することで、プロジェクト全体で同じ構造を保てます。
 
 ---
 
-##### 解説2: await で取得結果を待ち、分割代入で受け取る
+##### 解説2: 窓口を作り、await で取得結果を待つ
 
 ```typescript
+const supabase = await createClient();
+
 const { data, error } = await supabase
   .from("books")
   .select("*")
-  .order("created_at", {
-    ascending: false
-  });
+  .order("created_at", { ascending: false });
 ```
 
+- 1行目の `await createClient()` で、サーバー用の窓口を作ります。中で Cookie を受け取るのを待つので `await` が必要です（付け忘れると、窓口ではなく「あとで届く約束（Promise）」が入ってしまい、次の `.from` でエラーになります）。
 - `await`（アウェイト）は、**通信が終わるまで結果を待つ**ための合図です。データベースとのやり取りには時間がかかるため、答えが返ってくるまでここで待機します。
-- `.from("books")` で対象テーブルを、`.select("*")` で全カラムを、`.order("created_at", { ascending: false })` で「作成日の新しい順」を指定しています。SQL の `FROM` / `SELECT *` / `ORDER BY` に対応します。
+- `.from("books")` で対象テーブルを、`.select("*")` で全列を、`.order("created_at", { ascending: false })` で「作成日の新しい順」を指定しています。SQL の `FROM` / `SELECT *` / `ORDER BY` に対応します。
 - 戻り値は `{ data, error }` という形のオブジェクトなので、`const { data, error } = ...`（分割代入）で**成功データとエラーを同時に取り出して**います。
 
 > **用語:** 「await / 非同期処理」とは、時間のかかる処理（通信など）の完了を待つ仕組みです。待っている間ほかの処理を止めず、結果が来たら続きを実行します。
@@ -3391,15 +4267,16 @@ const { data, error } = await supabase
 ```typescript
 if (error) {
   console.error("書籍の取得に失敗しました:", error.message);
-  return;
+  return [];
 }
 
-const books: Book[] = data;
+const books: Book[] = data ?? [];
+return books;
 ```
 
 - `if (error)` は「エラーが入っていれば（通信が失敗していれば）」という意味です。Supabase はエラーを**例外で投げず `error` に入れて返す**ため、自分でこのチェックをするのが安全な書き方です。
-- 失敗時は `console.error(...)` で原因をコンソールに出し、`return` で処理を中断します。失敗したのに先へ進んでしまう事故を防げます。
-- 問題がなければ、`data` を `Book[]`（書籍の配列）として受け取ります。`[]` は「その型がいくつも並んだ配列」を表します。
+- 失敗時は `console.error(...)` で原因をサーバーのターミナルに出し、空の配列 `[]` を返します。失敗したのに先へ進んでしまう事故を防げます。
+- 問題がなければ、`data` を `Book[]`（書籍の配列）として受け取ります。`?? []` は「左側が `null` なら右側の空配列を使う」という書き方です。
 
 > **用語:** 「エラーハンドリング」とは、失敗が起きたときの対処をあらかじめ書いておくことです。通信は必ず成功するとは限らないため、`error` の確認はセットで行います。
 
@@ -3411,30 +4288,142 @@ const books: Book[] = data;
 
 | 項目 | 内容 |
 |------|------|
-| Next.js プロジェクトの作成 | `create-next-app` で TypeScript + Tailwind CSS + App Router のプロジェクトを作成しました。 |
+| Next.js プロジェクトの作成 | `create-next-app` の質問で「カスタマイズ」を選び、TypeScript + ESLint + Tailwind CSS + App Router、`src/` なし、Cache Components なしのプロジェクトを作成しました。 |
 | Tailwind CSS の基礎 | ユーティリティファーストの概念と、よく使うクラスを学びました。 |
-| パッケージのインストール | `@supabase/supabase-js` をインストールしました。 |
-| ディレクトリ構成の設計 | `app/`（ページ）、`components/`（UI部品）、`lib/`（ユーティリティ）、`types/`（型定義）の4つのディレクトリで整理する構成にしました。 |
-| Supabase クライアントの設定 | `.env.local` に環境変数を設定し、`lib/supabase.ts` でクライアントを初期化しました。 |
-| 型定義の作成 | `Book`, `BookInsert`, `BookUpdate` の3つの型と、ステータス関連の定数を定義しました。 |
-| ルートレイアウトの設定 | 日本語フォント、メタデータ、全ページ共通のレイアウト構造を設定しました。 |
+| パッケージのインストール | `@supabase/supabase-js` と `@supabase/ssr` をインストールしました。 |
+| ディレクトリ構成の設計 | プロジェクト直下の `app/`（ページ）、`components/`（UI部品）、`lib/`（ユーティリティ）、`types/`（型定義）の4つのディレクトリで整理する構成にしました。 |
+| Supabase クライアントの設定 | `.env.local` に URL と Publishable key を設定し、`lib/supabase/server.ts`（サーバー用）と `lib/supabase/client.ts`（ブラウザ用）の2つでクライアントを作れるようにしました。 |
+| 型定義の作成 | `Book`, `BookInsert`, `BookUpdate` の3つの型と、ステータス（読書中・読了・読みたい）関連の定数を定義しました。 |
+| ルートレイアウトの設定 | 日本語フォント、メタデータ、全ページ共通のレイアウト構造を設定し、`globals.css` を `@import "tailwindcss";` の1行にしました。 |
 | ヘッダーコンポーネントの作成 | ナビゲーション付きの共通ヘッダーを作成しました。 |
 | 動作確認 | 開発サーバーを起動し、ブラウザで表示を確認しました。 |
 
 **作成したファイル一覧:**
 
-```
-src/
+```text
+book-management/
+├── .env.local            ✅ 作成済み（Git には入らない）
 ├── app/
-│   ├── layout.tsx    ✅ 作成済み
-│   ├── page.tsx      ✅ 作成済み（仮の内容）
-│   └── globals.css   ✅ 確認済み
+│   ├── layout.tsx        ✅ 作成済み
+│   ├── page.tsx          ✅ 作成済み（仮の内容）
+│   └── globals.css       ✅ 書き換え済み
 ├── components/
-│   └── Header.tsx    ✅ 作成済み
+│   └── Header.tsx        ✅ 作成済み（ほかは空のファイル）
 ├── lib/
-│   └── supabase.ts   ✅ 作成済み
+│   └── supabase/
+│       ├── client.ts     ✅ 作成済み
+│       └── server.ts     ✅ 作成済み
 └── types/
-    └── book.ts       ✅ 作成済み
+    └── book.ts           ✅ 作成済み
 ```
 
+**この章のチェックリスト:**
+
+- [ ] `npm run dev` の表示に `- Environments: .env.local` が出ている
+- [ ] `http://localhost:3000`（または表示された URL）で、ヘッダーと「セットアップ完了」のカードが見える
+- [ ] `next.config.ts` に `cacheComponents: true` の行が無い
+- [ ] `app/`・`components/`・`lib/`・`types/` が `package.json` と同じ場所にある
+- [ ] `scripts/typo-demo.ts` を作った場合は削除した
+
 次の章では、書籍一覧の表示機能を実装します。`BookCard`、`BookList`、`StatusBadge`、`RatingStars`、`LoadingSpinner` の各コンポーネントを作成し、Supabase からデータを取得してトップページに表示します。
+
+---
+
+## 練習問題（解答・解説つき）
+
+学んだことを確かめましょう。まず自分で考えてから、後ろの「解答と解説」を読んで答え合わせをしてください。
+
+### 問題1: create-next-app の答え
+
+`npx create-next-app@latest book-management` を実行したら、最初に「Would you like to use the recommended Next.js defaults?」と聞かれました。本書の手順では何を選び、その後の質問のうち**既定値から変える必要がある**のはどれでしょうか。また、その理由を1つ答えてください。
+
+### 問題2: `@/` の行き先
+
+`tsconfig.json` の `"paths"` が `"@/*": ["./*"]` のとき、`app/books/[id]/edit/page.tsx` の中で次のように書きました。この import は、どのファイルを読み込もうとしますか。また、同じファイルを相対パスで書くとどうなりますか。
+
+```typescript
+import Header from "@/components/Header";
+```
+
+### 問題3: エラーメッセージを読む
+
+`npm run build` をしたら、次のエラーが出ました。どこをどう直せばよいでしょうか。
+
+```text
+./app/layout.tsx:17:1
+Error: Module not found: Can't resolve '@/src/components/Header'
+```
+
+### 問題4: どちらの窓口を使う？
+
+次の2つのファイルでは、`lib/supabase/server.ts` と `lib/supabase/client.ts` のどちらの `createClient` を import すべきでしょうか。
+
+- (a) 先頭に `"use client"` が書かれた、登録フォームの部品 `components/BookForm.tsx`
+- (b) `"use client"` が無く、`export default async function` で書かれたトップページ `app/page.tsx`
+
+### 問題5: 環境変数のトラブル
+
+`.env.local` に次のように書いて `npm run dev` したところ、Supabase を使うページで「環境変数 NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY が設定されていません」と表示されました。原因と直し方を答えてください。
+
+```bash
+NEXT_PUBLIC_SUPABASE_URL=https://xxxxxxxxxxxxxxxx.supabase.co
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_xxxxxxxxxxxxxxxxxxxxxxxx
+```
+
+### 問題6: `NEXT_PUBLIC_` の意味
+
+`.env.local` に `SECRET_TOKEN=abc123`（`NEXT_PUBLIC_` なし）と書きました。この値を、(a) Server Component、(b) Client Component の中で `process.env.SECRET_TOKEN` として読むと、それぞれどうなりますか。
+
+### 問題7: Tailwind CSS が効かない
+
+画面の横並び（`flex`）は効いているのに、文字の色や大きさ（`text-gray-600`、`text-3xl`）が全く付きません。`app/globals.css` は次のようになっていました。原因と直し方を答えてください。
+
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+### 解答と解説
+
+#### 問題1の解答
+
+**解答:** 最初の質問では **「No, customize settings」**（カスタマイズ）を選びます。その後の質問で既定値から変えるのは **⑧ Cache Components を No にする**ことです（⑪ 匿名フィードバックも本書では No にしていますが、こちらはどちらでも構いません）。
+
+**解説:** 推奨設定には Cache Components の有効化が含まれています。Cache Components が有効だと、第7章のトップページのように「サーバーで毎回データを取りに行くページ」が `npm run build` で `Next.js encountered uncached or runtime data during prerendering.` というエラーになります（1.7）。`src/` フォルダの質問⑥は既定値の No のままで、本書の構成（`app/` などをプロジェクト直下に置く）と一致します。
+
+#### 問題2の解答
+
+**解答:** プロジェクト直下の `components/Header.tsx` を読み込みます。相対パスで書くと `import Header from "../../../../components/Header";` です。
+
+**解説:** `@/` は `./`（`tsconfig.json` があるプロジェクト直下）に置き換えられ、`./components/Header` になります。拡張子 `.tsx` は自動で補われます（4.4 の図）。相対パスは「ファイルのあるフォルダ（`edit/`）」から数えるので、`edit/` → `[id]/` → `books/` → `app/` → プロジェクト直下、と4回 `../` でのぼってから `components/Header` に進みます。`@/` を使えば、どの深さのファイルからでも同じ文字列で書けます。
+
+#### 問題3の解答
+
+**解答:** `app/layout.tsx` の17行目の import を `import Header from "@/components/Header";` に直します。
+
+**解説:** `./app/layout.tsx:17:1` は「`app/layout.tsx` の17行目の1文字目」という場所の情報です。本書の構成には `src/` フォルダが無いので、`@/src/components/Header`（＝ `./src/components/Header`）は存在しません（4.4.1）。`src/` を使う構成の記事をまねたときによく起きるミスです。
+
+#### 問題4の解答
+
+**解答:** (a) は `@/lib/supabase/client`、(b) は `@/lib/supabase/server` です。
+
+**解説:** `"use client"` があるファイルはブラウザで動く Client Component なので、ブラウザ用の `client.ts` を使います。`"use client"` が無いファイルはサーバーで動く Server Component なので、Cookie を扱える `server.ts` を使い、`const supabase = await createClient();` のように `await` を付けて呼びます（5.3 の解説5）。逆にすると、ブラウザでは使えない `cookies()` を呼ぼうとしてエラーになります。
+
+#### 問題5の解答
+
+**解答:** 2行目の変数名が、コードが読む名前（`NEXT_PUBLIC_SUPABASE_ANON_KEY`）と違うのが原因です。`NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_...` に直して保存し、ターミナルに `Reload env: .env.local` が出るのを確認します（出なければ `Ctrl+C` で止めて `npm run dev` で起動し直します）。
+
+**解説:** `lib/supabase/server.ts` と `client.ts` は `process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY` を読むので、名前が1文字でも違うと値は `undefined` になり、5.3 で書いたチェックがエラーを出します。中身が Publishable key でも、変数名は本書のコードに合わせて `ANON_KEY` にします（5.2.2）。`node --env-file=.env.local scripts/check-env.ts` で事前に確かめる習慣をつけると、起動前に気づけます。
+
+#### 問題6の解答
+
+**解答:** (a) Server Component では `"abc123"` が読めます。(b) Client Component（ブラウザで動くとき）では `undefined` になります。
+
+**解説:** Next.js は `.env.local` の値をサーバー側の `process.env` に入れます。ブラウザ用の JavaScript には、`NEXT_PUBLIC_` 付きの変数だけが**文字列として埋め込まれ**ます（5.2 の図）。`NEXT_PUBLIC_` が付いていない値はブラウザに届かないので、秘密にしたい値（Secret key など）は `NEXT_PUBLIC_` を付けずに、サーバーのコードだけで使います。逆に言えば、`NEXT_PUBLIC_` を付けた値は誰でも見られる前提で扱う必要があります。
+
+#### 問題7の解答
+
+**解答:** Tailwind CSS v3 の古い書き方になっているのが原因です。`app/globals.css` を `@import "tailwindcss";` の1行に書き換えます。
+
+**解説:** create-next-app が入れる Tailwind CSS v4 では、色や文字サイズの見本帳（テーマ）を `@import "tailwindcss";` で読み込みます。古い3行ではテーマが読み込まれないため、エラーは出ないのに `bg-white` や `text-3xl` などのクラスが作られません（7.2.1 の実験では、できた CSS が 12,332 バイトから 1,236 バイトに減っていました）。
