@@ -166,7 +166,7 @@ Route (app)                              Size     First Load JS
 <marker id="ar-10-02" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
 </defs>
 <rect x="16" y="20" width="200" height="200" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
-<text x="116" y="46" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e40af">書いたコード（src/）</text>
+<text x="116" y="46" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e40af">書いたコード（app/ など）</text>
 <rect x="32" y="60" width="168" height="26" rx="4" fill="#ffffff" stroke="#bfdbfe"/>
 <text x="42" y="78" font-size="12" font-family="Consolas, monospace" fill="#0f172a">page.tsx</text>
 <rect x="32" y="92" width="168" height="26" rx="4" fill="#ffffff" stroke="#bfdbfe"/>
@@ -199,7 +199,7 @@ Route (app)                              Size     First Load JS
 <line x1="460" y1="120" x2="500" y2="120" stroke="#475569" stroke-width="2" marker-end="url(#ar-10-02)"/>
 <text x="360" y="242" text-anchor="middle" font-size="12" fill="#64748b">ファイル名の英数字（ハッシュ）は、中身が変わるたびに変わります</text>
 </svg>
-<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図10-2: ビルド（next build）の前と後。src/ のコードが、.next/ フォルダの「配る用のファイル」に変換される</div>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図10-2: ビルド（next build）の前と後。app/ や components/ のコードが、.next/ フォルダの「配る用のファイル」に変換される</div>
 </div>
 
 > **ビルド失敗が出たら？:** TypeScriptの型エラーや lint エラーが残っているとビルドできません。エラーメッセージのファイル名と行番号を見て修正します。**ローカルでビルドが通ってからデプロイする習慣**をつけると安全です。本番のVercel上でビルドに失敗すると、せっかく `git push` しても新しいバージョンが反映されないため、必ず手元で `npm run build` を1回通してからプッシュしましょう。
@@ -371,7 +371,7 @@ SECRET_MESSAGE=TopSecret-XYZ-789
 ```
 
 ```tsx
-// src/components/EnvViewer.tsx（実験用の部品）
+// components/EnvViewer.tsx（実験用の部品）
 "use client";
 
 export default function EnvViewer() {
@@ -390,7 +390,7 @@ export default function EnvViewer() {
 ```
 
 ```tsx
-// src/app/env-check/page.tsx（実験用のページ。/env-check で開ける）
+// app/env-check/page.tsx（実験用のページ。/env-check で開ける）
 import EnvViewer from "@/components/EnvViewer";
 
 export default function EnvCheckPage() {
@@ -520,7 +520,7 @@ Next.js は Client Component も、まずサーバー側（このページでは
 **OK:** 秘密の値は Server Component（`"use client"` を書かないファイル）や API の中だけで使い、画面には「結果」だけを出す。
 
 ```tsx
-// src/app/env-check-ok/page.tsx（OK: "use client" を書かない＝ Server Component）
+// app/env-check-ok/page.tsx（OK: "use client" を書かない＝ Server Component）
 export default function EnvCheckOkPage() {
   // Server Component の中なら、秘密の値を読んでもブラウザ用の JS には入らない
   const hasSecret = Boolean(process.env.SECRET_MESSAGE);
@@ -580,7 +580,7 @@ Next.js がビルドのときに値へ置き換えるのは、ソースコード
 **OK: 使う変数ごとに `process.env.NEXT_PUBLIC_〜` と書き、1か所にまとめておく**
 
 ```ts
-// src/lib/publicEnv.ts（OK: 名前をそのまま書いておけば、ビルド時に値へ置き換わる）
+// lib/publicEnv.ts（OK: 名前をそのまま書いておけば、ビルド時に値へ置き換わる）
 export const publicEnv = {
   // アプリ名（実験用）
   appName: process.env.NEXT_PUBLIC_APP_NAME,
@@ -933,7 +933,7 @@ export default nextConfig;
 エラーメッセージは英語で出ますが、構造はだいたい同じです。次の3点を順番に確認すれば、ほとんどのエラーは特定できます。
 
 1. **エラーの種類**: `Type error`、`Module not found`、`SyntaxError` など、一番上の行
-2. **ファイル名と行番号**: `./src/components/BookCard.tsx:12:5` のように出る部分（12行目の5文字目）
+2. **ファイル名と行番号**: `./components/BookCard.tsx:12:5` のように出る部分（12行目の5文字目）
 3. **エラーの詳細メッセージ**: 何が問題なのか具体的に書かれている部分
 
 本物の出力で練習してみましょう。次の図は、Next.js 16.4.1 で `BookCard.tsx` の `book.title` を、わざと `book.titel` と打ち間違えてビルドしたときの出力です。
@@ -950,13 +950,13 @@ export default nextConfig;
 <text x="30" y="88" font-size="12" font-family="Consolas, monospace" fill="#e2e8f0">▲ Next.js 16.4.1 (Turbopack)</text>
 <text x="30" y="106" font-size="12" font-family="Consolas, monospace" fill="#86efac">✓ Compiled successfully in 1798ms</text>
 <text x="43" y="124" font-size="12" font-family="Consolas, monospace" fill="#e2e8f0">Running TypeScript ...</text>
-<text x="30" y="142" font-size="12" font-family="Consolas, monospace" fill="#fca5a5">src/components/BookCard.tsx(7,39): error TS2551: Property 'titel' does not exist</text>
+<text x="30" y="142" font-size="12" font-family="Consolas, monospace" fill="#fca5a5">components/BookCard.tsx(7,39): error TS2551: Property 'titel' does not exist</text>
 <text x="30" y="160" font-size="12" font-family="Consolas, monospace" fill="#fca5a5">on type 'Book'. Did you mean 'title'?</text>
 <text x="30" y="178" font-size="12" font-family="Consolas, monospace" fill="#e2e8f0">Failed to type check.</text>
 <text x="700" y="160" text-anchor="end" font-size="12" fill="#94a3b8">※実際は1行</text>
 <text x="360" y="214" text-anchor="middle" font-size="12" font-weight="bold" fill="#475569">▼ 赤い行を4つに分解すると</text>
 <rect x="16" y="224" width="210" height="28" rx="6" fill="#dbeafe" stroke="#3b82f6"/>
-<text x="121" y="243" text-anchor="middle" font-size="12" font-family="Consolas, monospace" fill="#1e40af">src/components/BookCard.tsx</text>
+<text x="121" y="243" text-anchor="middle" font-size="12" font-family="Consolas, monospace" fill="#1e40af">components/BookCard.tsx</text>
 <rect x="232" y="224" width="64" height="28" rx="6" fill="#ffedd5" stroke="#f97316"/>
 <text x="264" y="243" text-anchor="middle" font-size="12" font-family="Consolas, monospace" fill="#c2410c">(7,39)</text>
 <rect x="302" y="224" width="104" height="28" rx="6" fill="#fee2e2" stroke="#ef4444"/>
@@ -975,7 +975,7 @@ export default nextConfig;
 <div style="font-size: 12px; color: #64748b; margin-top: 6px;">図10-6: ビルドエラーの読み方（実際の出力を ①ファイル ②行と列 ③種類 ④内容 に分解）</div>
 </div>
 
-> **ヒント:** Next.js 15 では `./src/components/BookCard.tsx:7:39` と `Type error: ...` の形、16 では `src/components/BookCard.tsx(7,39): error TS2551: ...` の形で表示されます。見た目は違っても「ファイル名・行・列・種類・内容」が入っている点は同じです。
+> **ヒント:** Next.js 15 では `./components/BookCard.tsx:7:39` と `Type error: ...` の形、16 では `components/BookCard.tsx(7,39): error TS2551: ...` の形で表示されます。見た目は違っても「ファイル名・行・列・種類・内容」が入っている点は同じです。
 
 #### エラー1: TypeScript の型エラー
 
@@ -1008,7 +1008,7 @@ type Book = {
 
 ```text
   Running TypeScript ...
-src/components/BookCard.tsx(7,39): error TS2551: Property 'titel' does not exist on type 'Book'. Did you mean 'title'?
+components/BookCard.tsx(7,39): error TS2551: Property 'titel' does not exist on type 'Book'. Did you mean 'title'?
 Failed to type check.
 ```
 
@@ -1017,14 +1017,14 @@ Failed to type check.
 **NG: プロパティ名を打ち間違えている**
 
 ```tsx
-// src/components/BookCard.tsx の一部（NG: titel は Book 型に無い）
+// components/BookCard.tsx の一部（NG: titel は Book 型に無い）
 <h2 className="font-bold">{book.titel}</h2>
 ```
 
 **OK: 型定義どおりの名前を使う**
 
 ```tsx
-// src/components/BookCard.tsx の一部（OK: Book 型の title）
+// components/BookCard.tsx の一部（OK: Book 型の title）
 <h2 className="font-bold">{book.title}</h2>
 ```
 
@@ -1041,7 +1041,7 @@ Module not found: Can't resolve '@/components/BookCard'
 ```bash
 # ls = list（一覧表示）コマンド。指定したファイルが存在するか確認するために使う
 # 存在しない場合は「No such file or directory」と表示される
-ls src/components/BookCard.tsx
+ls components/BookCard.tsx
 
 # ファイル名の大文字・小文字も確認（Linux ではケースセンシティブ）
 # BookCard.tsx と bookCard.tsx は別のファイルとして扱われます
@@ -1053,7 +1053,7 @@ ls src/components/BookCard.tsx
 ```text
 > Build error occurred
 Error: Turbopack build failed with 1 error:
-./src/app/page.tsx:2:1
+./app/page.tsx:2:1
 Error: Module not found: Can't resolve '@/components/bookCard'
   1 | import { createClient } from "@/lib/supabase/server";
 > 2 | import BookCard from "@/components/bookCard";
@@ -1062,7 +1062,7 @@ Error: Module not found: Can't resolve '@/components/bookCard'
   4 |
   5 | export default async function HomePage() {
 
-Import map: aliased to relative './src/components/bookCard' inside of [project]/
+Import map: aliased to relative './components/bookCard' inside of [project]/
 
 
 https://nextjs.org/docs/messages/module-not-found
@@ -1078,13 +1078,13 @@ Next.js 16 の Turbopack は Windows でも大文字・小文字を区別して�
 # 名前を変えたあとで、Git が変更に気づいているか確かめる
 git status --short
 # Git が覚えているファイル名を表示する
-git ls-files src/components
+git ls-files components
 ```
 
 ```text
 PS> git status --short
-PS> git ls-files src/components
-src/components/bookCard.tsx
+PS> git ls-files components
+components/bookCard.tsx
 ```
 
 `git status` には何も出ず（＝変更なしと思われている）、Git はまだ古い `bookCard.tsx` という名前を覚えています。
@@ -1093,14 +1093,14 @@ src/components/bookCard.tsx
 
 ```powershell
 # 古い名前 → 新しい名前 の順に書く
-git mv src/components/bookCard.tsx src/components/BookCard.tsx
+git mv components/bookCard.tsx components/BookCard.tsx
 git status --short
 ```
 
 ```text
-PS> git mv src/components/bookCard.tsx src/components/BookCard.tsx
+PS> git mv components/bookCard.tsx components/BookCard.tsx
 PS> git status --short
-R  src/components/bookCard.tsx -> src/components/BookCard.tsx
+R  components/bookCard.tsx -> components/BookCard.tsx
 ```
 
 先頭の `R` は Renamed（名前の変更）の意味です。これをコミットして push すれば、GitHub と Vercel にも新しい名前が届きます。
@@ -1154,7 +1154,7 @@ import { useState } from 'react';
 ```text
 > Build error occurred
 Error: Turbopack build failed with 2 errors:
-./src/app/books/new/page.tsx:2:10
+./app/books/new/page.tsx:2:10
 Error: You're importing a module that depends on `useRouter` into a React Server Component module. This API is only available in Client Components. To fix, mark the file (or its parent) with the `"use client"` directive.
     Learn more: https://nextjs.org/docs/app/api-reference/directives/use-client
   1 | import { useState } from "react";
@@ -1200,7 +1200,7 @@ npm run lint
 > eslint
 
 
-C:\...\book-management\src\components\BookCard.tsx
+C:\...\book-management\components\BookCard.tsx
   4:7  warning  'unusedMessage' is assigned a value but never used  @typescript-eslint/no-unused-vars
 
 ✖ 1 problem (0 errors, 1 warning)
@@ -1229,7 +1229,7 @@ export default function Stars({ editable }: { editable: boolean }) {
 **▼ 実行結果（`npm run lint`）**
 
 ```text
-C:\...\book-management\src\components\Stars.tsx
+C:\...\book-management\components\Stars.tsx
   9:31  error  React Hook "useState" is called conditionally. React Hooks must be called in the exact same order in every component render. Did you accidentally call a React Hook after an early return?  react-hooks/rules-of-hooks
 
 ✖ 1 problem (1 error, 0 warnings)
@@ -1263,7 +1263,7 @@ Next.js 15 から、ページに渡される `params`（URL の `[id]` の部分
 **NG: Next.js 14 までの書き方**
 
 ```tsx
-// src/app/books/[id]/edit/page.tsx（NG: params を Promise として扱っていない）
+// app/books/[id]/edit/page.tsx（NG: params を Promise として扱っていない）
 type Props = {
   params: { id: string };
 };
@@ -1288,7 +1288,7 @@ export default function EditBookPage({ params }: Props) {
 **OK: `Promise<...>` 型にして、`await params` で中身を取り出す**
 
 ```tsx
-// src/app/books/[id]/edit/page.tsx（OK: Next.js 15 以降の書き方）
+// app/books/[id]/edit/page.tsx（OK: Next.js 15 以降の書き方）
 type Props = {
   // params は Promise（あとから値が届く箱）
   params: Promise<{ id: string }>;
@@ -2266,7 +2266,7 @@ push すると Vercel が自動で Preview デプロイを作ります。GitHub 
 > **▼ このコードがやること（先に日本語で）:** `/api/health` という URL を開くと、「アプリが動いているか」「本番かプレビューか」「どのコミットの版か」「Supabase の環境変数が登録されているか（true / false だけ）」を JSON で返します。値そのものは返さないので、本番に置いたままでも安全です。
 
 ```ts
-// src/app/api/health/route.ts
+// app/api/health/route.ts
 // /api/health にアクセスすると「いま動いているアプリの状態」を JSON で返す
 export function GET() {
   return Response.json({
@@ -2911,7 +2911,7 @@ module.exports = nextConfig;
 #### ルートレイアウトでのメタデータ設定
 
 ```typescript
-// src/app/layout.tsx
+// app/layout.tsx
 // Metadata 型を next からインポート。TypeScript の型チェックに使う
 import type { Metadata } from 'next';
 
@@ -2964,7 +2964,7 @@ export const metadata: Metadata = {
 #### 各ページでのメタデータ設定
 
 ```typescript
-// src/app/page.tsx（書籍一覧ページ）
+// app/page.tsx（書籍一覧ページ）
 import type { Metadata } from 'next';
 
 // このページ固有のメタデータを定義
@@ -2978,7 +2978,7 @@ export const metadata: Metadata = {
 #### 動的なメタデータ（書籍詳細ページ）
 
 ```typescript
-// src/app/books/[id]/page.tsx（generateMetadata の部分だけの抜粋。ページ本体の関数は第8章のまま）
+// app/books/[id]/page.tsx（generateMetadata の部分だけの抜粋。ページ本体の関数は第8章のまま）
 import type { Metadata } from "next";
 // サーバー用の Supabase クライアント（第7章で作ったもの）
 import { createClient } from "@/lib/supabase/server";
@@ -3531,35 +3531,42 @@ jobs:
 
 ```
 book-management-app/
+├── app/
+│   ├── layout.tsx
+│   ├── page.tsx
+│   ├── globals.css
+│   ├── loading.tsx
+│   ├── error.tsx
+│   ├── api/
+│   │   └── health/
+│   │       └── route.ts
+│   └── books/
+│       ├── new/
+│       │   └── page.tsx
+│       └── [id]/
+│           ├── page.tsx
+│           ├── not-found.tsx
+│           └── edit/
+│               └── page.tsx
+├── components/
+│   ├── Header.tsx
+│   ├── BookCard.tsx
+│   ├── BookList.tsx
+│   ├── BookForm.tsx
+│   ├── DeleteButton.tsx
+│   ├── StatusBadge.tsx
+│   ├── RatingStars.tsx
+│   ├── LoadingSpinner.tsx
+│   ├── SearchBar.tsx
+│   └── SortSelect.tsx
+├── lib/
+│   └── supabase/
+│       ├── client.ts
+│       └── server.ts
+├── types/
+│   └── book.ts
 ├── public/
 │   └── favicon.ico
-├── src/
-│   ├── app/
-│   │   ├── layout.tsx
-│   │   ├── page.tsx
-│   │   ├── globals.css
-│   │   ├── api/
-│   │   │   └── health/
-│   │   │       └── route.ts
-│   │   └── books/
-│   │       ├── new/
-│   │       │   └── page.tsx
-│   │       └── [id]/
-│   │           ├── page.tsx
-│   │           └── edit/
-│   │               └── page.tsx
-│   ├── components/
-│   │   ├── BookCard.tsx
-│   │   ├── BookForm.tsx
-│   │   ├── Header.tsx
-│   │   ├── DeleteButton.tsx
-│   │   └── StarRating.tsx
-│   ├── lib/
-│   │   └── supabase/
-│   │       ├── client.ts
-│   │       └── server.ts
-│   └── types/
-│       └── book.ts
 ├── scripts/
 │   └── check-env.mjs
 ├── .env.local
@@ -3575,22 +3582,30 @@ book-management-app/
 
 | ファイルパス | 種類 | 説明 |
 |------------|------|------|
-| `src/app/layout.tsx` | レイアウト | アプリ全体の共通レイアウト。Header を含む |
-| `src/app/page.tsx` | ページ | トップページ＝書籍一覧ページ（`/`）。Supabase からデータを取得して表示 |
-| `src/app/globals.css` | スタイル | Tailwind CSS のベーススタイル |
-| `src/app/books/new/page.tsx` | ページ | 新規書籍追加ページ。BookForm を使用 |
-| `src/app/books/[id]/page.tsx` | ページ | 書籍詳細ページ。動的ルートでIDに基づく表示 |
-| `src/app/books/[id]/edit/page.tsx` | ページ | 書籍編集ページ。既存データの更新 |
-| `src/components/BookCard.tsx` | コンポーネント | 書籍カードの表示。一覧ページで使用 |
-| `src/components/BookForm.tsx` | コンポーネント | 書籍の追加・編集フォーム。新規追加と編集で共用 |
-| `src/components/Header.tsx` | コンポーネント | ヘッダーナビゲーション |
-| `src/components/DeleteButton.tsx` | コンポーネント | 削除ボタン。確認ダイアログ付き |
-| `src/components/StarRating.tsx` | コンポーネント | 星評価の表示・入力コンポーネント |
-| `src/lib/supabase/client.ts` | ユーティリティ | ブラウザ側（Client Component）用の Supabase クライアント |
-| `src/lib/supabase/server.ts` | ユーティリティ | サーバー側（Server Component）用の Supabase クライアント |
-| `src/app/api/health/route.ts` | API | ヘルスチェック（第10章 2.9.1 で追加した場合） |
+| `app/layout.tsx` | レイアウト | アプリ全体の共通レイアウト。Header を含む |
+| `app/page.tsx` | ページ | トップページ＝書籍一覧ページ（`/`）。Supabase からデータを取得して表示 |
+| `app/globals.css` | スタイル | Tailwind CSS のベーススタイル（`@import "tailwindcss";`） |
+| `app/loading.tsx` | ページ | 読み込み中に表示する画面（第7章） |
+| `app/error.tsx` | ページ | エラーが起きたときの画面（第7章） |
+| `app/books/new/page.tsx` | ページ | 新規書籍追加ページ。BookForm を使用 |
+| `app/books/[id]/page.tsx` | ページ | 書籍詳細ページ。動的ルートでIDに基づく表示 |
+| `app/books/[id]/not-found.tsx` | ページ | 存在しない id を開いたときの案内画面（第8章） |
+| `app/books/[id]/edit/page.tsx` | ページ | 書籍編集ページ。既存データの更新 |
+| `components/Header.tsx` | コンポーネント | ヘッダーナビゲーション（第6章） |
+| `components/BookCard.tsx` | コンポーネント | 書籍カードの表示。一覧ページで使用 |
+| `components/BookList.tsx` | コンポーネント | 書籍カードを並べて一覧にする（第7章） |
+| `components/BookForm.tsx` | コンポーネント | 書籍の追加・編集フォーム。新規追加と編集で共用 |
+| `components/DeleteButton.tsx` | コンポーネント | 削除ボタン。確認ダイアログ付き |
+| `components/StatusBadge.tsx` | コンポーネント | 読書ステータス（読みたい・読書中・読了）のバッジ |
+| `components/RatingStars.tsx` | コンポーネント | 星評価の表示 |
+| `components/LoadingSpinner.tsx` | コンポーネント | 読み込み中のくるくるアニメーション |
+| `components/SearchBar.tsx` | コンポーネント | テキスト検索とステータスフィルタ（第8章） |
+| `components/SortSelect.tsx` | コンポーネント | 並び替えの選択（第8章） |
+| `lib/supabase/client.ts` | ユーティリティ | ブラウザ側（Client Component）用の Supabase クライアント |
+| `lib/supabase/server.ts` | ユーティリティ | サーバー側（Server Component）用の Supabase クライアント |
+| `app/api/health/route.ts` | API | ヘルスチェック（第10章 2.9.1 で追加した場合） |
 | `scripts/check-env.mjs` | スクリプト | ビルド前の環境変数チェック（第10章 1.4.1 で追加した場合） |
-| `src/types/book.ts` | 型定義 | Book 型の定義 |
+| `types/book.ts` | 型定義 | Book 型の定義 |
 | `.env.local` | 環境変数 | Supabase の接続情報（Git管理外） |
 | `next.config.ts` | 設定 | Next.js の設定ファイル（`cacheComponents` は入れない） |
 | `eslint.config.mjs` | 設定 | ESLint の設定（`npm run lint` で使う） |
@@ -3622,7 +3637,7 @@ Route (app)
 
 ```text
   Running TypeScript ...
-src/components/BookCard.tsx(7,39): error TS2551: Property 'auther' does not exist on type 'Book'. Did you mean 'author'?
+components/BookCard.tsx(7,39): error TS2551: Property 'auther' does not exist on type 'Book'. Did you mean 'author'?
 Failed to type check.
 ```
 
@@ -3669,7 +3684,7 @@ Hobby プランで運用中、最新のデプロイ（v3）にバグがあり、
 
 #### 問題2の解答
 
-1. `src/components/BookCard.tsx` の **7行目・39文字目**です。
+1. `components/BookCard.tsx` の **7行目・39文字目**です。
 2. `book.auther` を `book.author` に直します。
 
 **解説:** `(7,39)` は「行, 列」、`error TS2551` は TypeScript の型エラーの種類です。`Property 'auther' does not exist on type 'Book'`（Book 型に auther というプロパティは無い）のあとに `Did you mean 'author'?`（author のこと？）とヒントが出ています。英語のつづり間違いはよくある原因なので、ヒントの単語と自分のコードを1文字ずつ見比べましょう（図10-6）。
