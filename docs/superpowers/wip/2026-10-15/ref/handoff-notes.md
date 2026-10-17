@@ -51,7 +51,7 @@
 - rust08 担当が `taskkill /F /IM node.exe` を実行し、その時点で動いていた node.exe を全て強制終了した（自分の起動分以外も含む）。
 - ref 調査の下位エージェントが crates.io API へのリクエストの User-Agent にユーザーのメールアドレスを入れてしまった（その後は不使用）。
 - rust01 担当が誤って 1.98.0 ツールチェーンを入れ、削除済み。既定は stable 1.97.1 のまま、1.99.0 が追加インストール済み。
-- `%APPDATA%\create-next-app-nodejs\Config\config.json` が更新された（無害な既定値）。空フォルダ `C:	w-short` が残っている。
+- `%APPDATA%\create-next-app-nodejs\Config\config.json` が更新された（無害な既定値）。空フォルダ `C:\tw-short` が残っている。
 
 ---
 
