@@ -5,21 +5,58 @@
 //! | `DATABASE_URL` | ローカルの DB ファイルのパス、または Turso の URL（`libsql://...`） | `rustnote.db` |
 //! | `DATABASE_AUTH_TOKEN` | Turso の認証トークン（リモートのときだけ必要） | なし |
 //! | `HOST` / `PORT` | 待ち受けるアドレス。`topcoat::start` が直接読む | `127.0.0.1` / `3000` |
+//!
+//! トークンのような秘密の値は `Secret` 型に包む。`{:?}` で設定全体をログに出しても、
+//! 中身は `Secret(********)` としか表示されない。
 
 use std::env;
+use std::fmt;
 
 use thiserror::Error;
 
 /// DATABASE_URL が無いときに使うローカルの DB ファイル
 pub const DEFAULT_DATABASE_URL: &str = "rustnote.db";
 
+// ---------------------------------------------------------------------------
+// 秘密の値を包む型
+// ---------------------------------------------------------------------------
+
+/// 秘密の値（Turso のトークンなど）。
+/// Debug は derive せずに手で書き、中身の代わりに `********` を表示する。
+/// Display は実装しないので、`{}` で表示しようとするとコンパイルエラーになる。
+#[derive(Clone, PartialEq, Eq)]
+pub struct Secret(String);
+
+impl Secret {
+    pub fn new(value: String) -> Secret {
+        Secret(value)
+    }
+
+    /// 中身が本当に必要な場所（DB に接続するとき）だけで呼ぶ。
+    /// わざと目立つ名前にして、秘密を使っている場所をすぐ見つけられるようにしている
+    pub fn expose(&self) -> &str {
+        &self.0
+    }
+}
+
+// {:?} で表示されても中身を出さない
+impl fmt::Debug for Secret {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.write_str("Secret(********)")
+    }
+}
+
+// ---------------------------------------------------------------------------
+// 設定
+// ---------------------------------------------------------------------------
+
 /// アプリの設定
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Config {
     /// ローカルファイルのパス（例: `rustnote.db`）か、Turso の URL（例: `libsql://...`）
     pub database_url: String,
-    /// Turso の認証トークン。ローカルファイルのときは `None`
-    pub database_auth_token: Option<String>,
+    /// Turso の認証トークン（秘密）。ローカルファイルのときは `None`
+    pub database_auth_token: Option<Secret>,
 }
 
 /// 設定を読めなかった理由
@@ -36,15 +73,18 @@ impl Config {
     pub fn from_env() -> Result<Config, ConfigError> {
         let database_url =
             read_var("DATABASE_URL")?.unwrap_or_else(|| DEFAULT_DATABASE_URL.to_string());
-        // 空文字の DATABASE_AUTH_TOKEN は「設定されていない」と同じに扱う
-        let database_auth_token = read_var("DATABASE_AUTH_TOKEN")?.filter(|t| !t.is_empty());
+        // 空文字の DATABASE_AUTH_TOKEN は「設定されていない」と同じに扱う。
+        // 読んだらすぐ Secret に包み、String のまま持ち歩かない
+        let database_auth_token = read_var("DATABASE_AUTH_TOKEN")?
+            .filter(|t| !t.is_empty())
+            .map(Secret::new);
         Config::new(database_url, database_auth_token)
     }
 
     /// 値を直接指定して設定を作る（テストでも使う）
     pub fn new(
         database_url: String,
-        database_auth_token: Option<String>,
+        database_auth_token: Option<Secret>,
     ) -> Result<Config, ConfigError> {
         let config = Config {
             database_url,
@@ -110,10 +150,28 @@ mod tests {
 
         let config = Config::new(
             "libsql://example.turso.io".to_string(),
-            Some("token".to_string()),
+            Some(Secret::new("token".to_string())),
         )
         .unwrap();
         assert!(config.is_remote());
+    }
+
+    #[test]
+    fn debug_output_hides_the_token() {
+        let config = Config::new(
+            "libsql://example.turso.io".to_string(),
+            Some(Secret::new("very-secret-token".to_string())),
+        )
+        .unwrap();
+
+        // 設定全体を {:?} で表示しても、トークンの中身は出ない
+        let shown = format!("{config:?}");
+        assert!(!shown.contains("very-secret-token"), "{shown}");
+        assert!(shown.contains("database_auth_token: Some(Secret(********))"));
+
+        // 中身が必要な場所では expose() で取り出す
+        let token = config.database_auth_token.as_ref().map(Secret::expose);
+        assert_eq!(token, Some("very-secret-token"));
     }
 
     #[test]
