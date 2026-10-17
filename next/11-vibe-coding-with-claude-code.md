@@ -334,6 +334,7 @@ src/components/StatusBadge.tsx の statusConfig だけを変更してくださ�
 - AI の仕事の確認は、この差分を読むことから始まります。
 
 > **つまずきポイント①: 「いい感じに」は AI にとって一番むずかしい注文**
+>
 > 「分かりやすく」「いい感じに」「きれいに」は、人によって意味が違う言葉です。AI はその意味を自分で推測するため、アイコンを追加したり、関係ないファイルまで整えたりと、あなたの想像と違う変更を返しがちです。図11-3 の4要素に分解して書き直しましょう。
 
 **NG（あいまい）:**
@@ -351,6 +352,7 @@ want_to_read のラベルを「積読」に、色を灰色（bg-gray-100 / text-
 ```
 
 > **つまずきポイント②: 確かめ方を伝えないと「たぶん動きます」で終わる**
+>
 > 確かめ方を書かないと、Claude Code はコードを書いた時点で「実装しました」と報告することがあります。実際に動くかどうかは、あなたが後で気づくことになります。最初から「何をもって完成とするか」と「それを確かめるコマンド」を渡しましょう。
 
 **NG（確かめ方がない）:**
@@ -369,6 +371,7 @@ npx vitest run を実行して、全テストが通るまで修正してから�
 ```
 
 > **つまずきポイント③: 範囲を絞らないと、差分が読み切れなくなる**
+>
 > 「全体をリファクタリングして」のような広い指示は、数十ファイルにわたる大きな差分を生みます。どこが変わったのか追いきれず、レビューが形だけになってしまいます。1回の指示で変えるのは、自分が差分を読み切れる量（目安: 数ファイル・百行程度まで）にしましょう。
 
 **NG（範囲が広すぎる）:**
@@ -563,6 +566,7 @@ Claude Code は、あなたの指示を1回で「えいっ」と仕上げてい�
 - 自動モード（auto mode）が使える環境では、`Yes, and switch to auto mode`（許可して自動モードに切り替える）という選択肢が増えることがあります。慣れるまでは選ばないほうが安心です（2-3 で説明します）。
 
 > **つまずきポイント④: 中身を読まずに Enter を連打してしまう**
+>
 > 許可確認が何度も出ると、つい中身を見ずに `Yes` を押したくなります。でもこれは、現場監督が図面を見ずにハンコを押すのと同じです。読まずに許可するくらいなら、安全なコマンドだけを最初から `allow` に登録して（2-2）、確認の回数そのものを減らしましょう。
 
 **NG（読まずに許可）:** 次の画面で、何も考えずに `Yes` のまま Enter を押してしまう。リモートの履歴が強制的に上書きされ、チームの変更が消えることがあります。
@@ -830,6 +834,7 @@ git commit -m "feat: 書籍の並べ替え関数 sortBooks を追加"
 - コミットメッセージの `feat:` は「機能追加」を表す接頭辞です（5-4 の CLAUDE.md の Git ルールも参照）。
 
 > **つまずきポイント⑤: AI の変更を溜めこんで、まとめて1つの巨大コミットにする**
+>
 > 何時間も AI に作業させてから `git add .` で全部まとめてコミットすると、後で「この不具合はどの変更のせい？」と調べるのが非常に大変になります。戻したいときも、良い変更まで一緒に戻すしかなくなります。1つの指示が終わって確認できたら、その場でコミットしましょう。
 
 **NG（溜めこんで全部まとめる）:**
@@ -920,6 +925,8 @@ git commit -m "feat: 書籍一覧に並べ替えボタンを追加"
 16. [トラブルシューティング](#16-トラブルシューティング)
 17. [ベストプラクティス総まとめ](#17-ベストプラクティス総まとめ)
 18. [付録：設定ファイルパス早見表](#18-付録設定ファイルパス早見表)
+
+章末: [付録：開発開始から完了までのチェックリスト](#付録開発開始から完了までのチェックリスト)　／　[練習問題（解答・解説つき）](#練習問題解答解説つき)（8問）
 
 ---
 
@@ -1031,7 +1038,8 @@ Claude Codeは4層のスコープで設定を管理します。**最も具体的
 - **CLAUDE.md・Rules は「お願い」**: Claude はこれを読んで従おうとしますが、公式ドキュメントにも「強制される設定ではなく、文脈（コンテキスト）として扱われる」と書かれています。うっかり守られないこともあります。
 - **Permissions・Hooks は「強制」**: AI がどう判断しようと、設定どおりに止めたり実行したりします。「`.env` を絶対に読ませない」「編集のたびに必ず整形する」のように、例外があっては困ることはこちらに書きます。
 
-> **つまずきポイント⑨: 「絶対にしてほしくないこと」を CLAUDE.md にしか書かない**
+> **つまずきポイント⑥: 「絶対にしてほしくないこと」を CLAUDE.md にしか書かない**
+>
 > CLAUDE.md に「.env は読まないこと」と書いても、それはお願いです。長い作業で文脈が薄れたときなどに守られない可能性がゼロではありません。秘密情報や破壊的な操作は、Permissions の `deny` で止めましょう。
 
 **NG（お願いだけ）:**
@@ -1214,6 +1222,8 @@ Claude Codeの ~/.claude/settings.json を設定してください。
 
 > **注意（以前の版からの修正）:** この教材の以前の版では `Edit(/.env)` のように先頭に `/` を付けていました。`/` で始まるパスは「その設定ファイルの場所を基準にした相対パス」という意味で、`~/.claude/settings.json`（ユーザー設定）に書くと `~/.claude/.env` を指してしまい、プロジェクトの `.env` を守れません。ユーザー設定ですべてのプロジェクトに効かせたいときは、上のようにファイル名だけで書きます（`//` で始めるとディスクのルートからの絶対パス、`~/` で始めるとホームフォルダからのパスになります）。
 
+<!-- -->
+
 > **Permission ルールの優先順位**: Deny > Ask > Allow（最初にマッチしたルールが適用）。つまり「`deny` に書いた条件は、`allow` に同じものがあっても deny が勝つ」。
 >
 > **ワイルドカード `*`**: パターンマッチで広範囲にブロック可能。`Bash(rm -rf *)` は `rm -rf /` も `rm -rf .` もブロックします。
@@ -1367,7 +1377,8 @@ Deny:   Read(.env) / Read(.env.local) / Edit(.env) / Edit(.env.local) / git push
 - `Read(.env)` で、Supabase のキーなどが入った `.env` を Claude が読めなくなります。
 - `git push` は、0.4 のルール6のとおり人間が自分で行う操作なので、禁止しています。
 
-> **つまずきポイント⑥: 確認が面倒で `allow` を広げすぎる**
+> **つまずきポイント⑦: 確認が面倒で `allow` を広げすぎる**
+>
 > 確認画面にうんざりして `"Bash"`（すべてのコマンド）や `"Bash(*)"` を `allow` に入れると、`rm -rf` も `git push --force` も確認なしで実行できる状態になります（`deny` に書いたものだけは止まりますが、思いつかなかった危険なコマンドは素通りです）。`allow` には、何度実行しても安全なコマンドを1つずつ名指しで入れましょう。
 
 **NG（何でも許可）:**
@@ -1872,6 +1883,7 @@ Next.jsの新規プロジェクトを作成してください。以下の構成�
 - ESLint: 使用する
 - src/ ディレクトリ: 使用する
 - import alias: @/*
+- Cache Components: 使用しない（No）
 - パッケージマネージャ: npm
 
 create-next-app 実行後、追加で以下もインストール:
@@ -1890,6 +1902,8 @@ create-next-app 実行後、追加で以下もインストール:
 
 「まだ機能のコードは書かないでください」と書くことで、AIが暴走して未承認のページや機能を追加するのを防いでいます。
 
+> **注意:** 2026年10月時点の最新安定版 Next.js 16 の `create-next-app` では、推奨設定をそのまま使わず「カスタマイズ」を選び、**Cache Components は No** にしてください（第6章と同じ方針です）。Yes にすると、データベースから毎回データを読むページが `npm run build` で失敗することがあり、初心者には原因が分かりにくいためです。AI に作業させる場合も、このように**選択肢の答えまで指示に書いておく**と、AI が勝手に既定値を選ぶのを防げます。
+
 ### 3-2. Git リポジトリの初期化
 
 **Claude Codeへのプロンプト：**
@@ -1900,7 +1914,7 @@ gitリポジトリを初期化して、以下を設定してください：
 1. .gitignore に以下を追加
    - .env*（.env.exampleは除外）
    - .claude/settings.local.json
-   - .claude/.mcp.local.json
+   - CLAUDE.local.md
    - node_modules/
    - .next/
    - *.log
@@ -1928,8 +1942,6 @@ gitリポジトリを初期化して、以下を設定してください：
 .claude/
 ├── settings.json          # プロジェクト共有設定
 ├── settings.local.json    # 個人設定（gitignore）
-├── .mcp.json              # MCP設定（プロジェクト共有）
-├── .mcp.local.json        # MCP設定（個人用、gitignore）
 ├── rules/                 # パス別自動適用ルール
 │   ├── components.md
 │   ├── api-routes.md
@@ -1950,6 +1962,8 @@ gitリポジトリを初期化して、以下を設定してください：
 ```
 
 ここで作るディレクトリは後の Phase で1つずつ埋めていきます。先に「箱」だけ作っておくと、後の設定作業が見通しよく進みます。
+
+> **注意（以前の版からの修正）:** 以前の版では、この図の `.claude/` の中に `.mcp.json` と `.mcp.local.json` を置いていました。MCP の共有設定 `.mcp.json` は `.claude/` の中ではなく**プロジェクト直下**に置き、個人用の MCP 設定は `~/.claude.json` に保存されます（2-4 参照）。
 
 ---
 
@@ -2119,7 +2133,8 @@ URL のクエリ（?sort=title など）で並べ方を選べるようにした�
 - auto モードが使えない環境では、1つ目の選択肢が `Yes, auto-accept edits`（ファイル編集を自動で承認）と表示されます。
 - `Ctrl+G` を押すと、計画をテキストエディタで開いて直接書き直せます。
 
-> **つまずきポイント⑦: 計画を読まずに「Yes」を押す**
+> **つまずきポイント⑧: 計画を読まずに「Yes」を押す**
+>
 > プランモードの価値は「実装の前に、あなたが計画をチェックできる」ことです。計画を読まずに承認すると、プランモードを使わなかったのと同じになります。特に「変更するファイル」と「確認したいこと」は必ず読みましょう。
 
 **NG（読まずに承認する）:** 計画が表示されたら、すぐに `Yes, and use auto mode` を選ぶ。頼んでいない `SortSelect.tsx` の作成まで確認なしで進み、質問への答えも AI の推測で決まってしまう。
@@ -2167,7 +2182,7 @@ URL のクエリ（?sort=title など）で並べ方を選べるようにした�
 12. アクティビティログ
 
 ## 技術スタック
-- フロントエンド: Next.js 15 (App Router), TypeScript, Tailwind CSS v4, shadcn/ui
+- フロントエンド: Next.js 16 (App Router), TypeScript, Tailwind CSS v4, shadcn/ui
 - バックエンド: Next.js Route Handlers
 - データベース: Supabase (PostgreSQL)
 - 認証: Supabase Auth
@@ -2193,8 +2208,9 @@ URL のクエリ（?sort=title など）で並べ方を選べるようにした�
 ```
 
 > **なぜPlan Modeを使うのか？**
-> - コードを書けないため、設計に集中できる
-> - 誤ってファイルが生成されるリスクがゼロ
+>
+> - 計画を承認するまでソースを書き換えないため、設計に集中できる
+> - 誤ってファイルが生成されるリスクがない
 > - 要件の漏れを防げる
 
 ### 4-3. 画面設計の詳細化
@@ -2342,7 +2358,7 @@ C:\Program Files\ClaudeCode\CLAUDE.md   ← 企業ポリシー（IT管理者）
 - アプリ名、目的、ターゲットユーザーの1-2行の要約
 
 # 技術スタック
-- 使用する全技術とバージョン（Next.js 15, TypeScript 5.x, etc.）
+- 使用する全技術とバージョン（Next.js 16, TypeScript, etc.）
 
 # ディレクトリ構成
 src/
@@ -2592,7 +2608,8 @@ CLAUDE.md は、置き場所によって「いつ読まれるか」が違いま�
 <div style="font-size: 12px; color: #64748b; margin-top: 6px;">図11-12: CLAUDE.md とルールファイルが読まれるタイミング。実線はいつも、点線は必要なときだけ</div>
 </div>
 
-> **つまずきポイント⑧: CLAUDE.md に「感想」や「何でも」を書きすぎる**
+> **つまずきポイント⑨: CLAUDE.md に「感想」や「何でも」を書きすぎる**
+>
 > 「きれいなコードを書くこと」「ベストプラクティスに従うこと」は、人によって意味が違うので、AI にとっては何も書いていないのとほぼ同じです。逆に、思いついたことを全部書いて数百行になると、大事な決まりが埋もれて守られにくくなります。**確かめられる形で、短く**書きましょう。
 
 **NG（あいまい・書きすぎ）:**
@@ -3730,6 +3747,435 @@ task.assignee が null の場合の条件分岐が漏れている
 
 「ストップ」と明確に伝えると、Claude は途中でも作業を中断して指示を仰ぎます。
 
+### 9-7. 実践ウォークスルー：「確かめ方」つきで並べ替え関数を作る
+
+ここまでの道具（4要素の指示・プランモード・Git・テスト）を全部使って、書籍管理アプリに並べ替え関数を足す流れを通しでやってみます。4-1 で計画した「手順1（sortBooks とテスト）」の部分です。
+
+#### 手順1: ブランチを切り、確かめ方つきで依頼する
+
+```bash
+# 作業用ブランチを作って移動する（0.4.1）
+git switch -c feature/sort-books
+```
+
+```text
+src/lib/sortBooks.ts に、書籍の配列を並べ替える関数 sortBooks を作ってください。
+
+目的:
+トップページ（/）の書籍一覧を、利用者が好きな順番で見られるようにする準備です。
+
+仕様:
+- 並べ方は "title"（タイトルのあいうえお順）、"rating"（評価の高い順。評価なしは最後）、"newest"（登録が新しい順）の3種類
+- 引数で受け取った配列そのものは書き換えず、並べ替えた新しい配列を返す
+
+確かめ方:
+- 同じフォルダに Vitest のテスト sortBooks.test.ts を作り、3種類の並べ方と「元の配列を書き換えないこと」をテストする
+- npx vitest run を実行し、全テストが通るまで直してから報告する
+- テストの期待値は変えないこと。期待値が間違っていると思ったら、直す前に理由を説明して止まる
+
+範囲:
+- この2ファイル以外は変更しない
+```
+
+#### 手順2: Claude Code が作ったコードとテスト
+
+> **▼ このコードがやること（先に日本語で）:** `sortBooks` は、書籍の配列と並べ方（3種類のどれか）を受け取り、並べ替えた**新しい配列**を返す関数です。テストのほうは、3冊ぶんの見本データを使って「タイトル順・評価順・新しい順に正しく並ぶか」「元の配列が書き換わっていないか」を自動で確かめます。
+
+**`src/lib/sortBooks.ts`**
+
+```ts
+// 並べ替えに使う項目だけを持つ「書籍の形」
+export interface SortableBook {
+  title: string;
+  rating: number | null;
+  created_at: string;
+}
+
+// 並べ替えの種類は3通りだけに限定する
+export type SortKey = "title" | "rating" | "newest";
+
+// 書籍の配列を受け取り、並べ替えた「新しい配列」を返す
+export function sortBooks<T extends SortableBook>(books: T[], key: SortKey): T[] {
+  // 元の配列を書き換えないよう、コピーしてから並べ替える
+  const copied = [...books];
+
+  if (key === "title") {
+    // 日本語の読み順（あいうえお順）で比べる
+    return copied.sort((a, b) => a.title.localeCompare(b.title, "ja"));
+  }
+
+  if (key === "rating") {
+    // 評価なし（null）は 0 とみなし、評価の高い順に並べる
+    return copied.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
+  }
+
+  // 新しい順: 登録日時を数値（ミリ秒）に直して大きい順に並べる
+  return copied.sort(
+    (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+  );
+}
+```
+
+**`src/lib/sortBooks.test.ts`**
+
+```ts
+// Vitest のテスト用の関数を読み込む
+import { describe, expect, it } from "vitest";
+// テストしたい関数を読み込む
+import { sortBooks } from "./sortBooks";
+
+// テストで使う3冊ぶんのデータ
+const books = [
+  { title: "すいみん学", rating: 3, created_at: "2026-01-10T09:00:00Z" },
+  { title: "あめの本", rating: null, created_at: "2026-03-05T09:00:00Z" },
+  { title: "かぜの歌", rating: 5, created_at: "2026-02-20T09:00:00Z" },
+];
+
+describe("sortBooks", () => {
+  it("タイトルのあいうえお順に並ぶ", () => {
+    const result = sortBooks(books, "title");
+    expect(result.map((b) => b.title)).toEqual(["あめの本", "かぜの歌", "すいみん学"]);
+  });
+
+  it("評価の高い順に並び、評価なしは最後になる", () => {
+    const result = sortBooks(books, "rating");
+    expect(result.map((b) => b.rating)).toEqual([5, 3, null]);
+  });
+
+  it("登録が新しい順に並ぶ", () => {
+    const result = sortBooks(books, "newest");
+    expect(result[0].title).toBe("あめの本");
+  });
+
+  it("元の配列は書き換えない", () => {
+    sortBooks(books, "title");
+    expect(books[0].title).toBe("すいみん学");
+  });
+});
+```
+
+**▼ 実行結果（`npx vitest run`。Vitest 3.2.7、パスの一部は伏せています）**
+
+```text
+
+ RUN  v3.2.7 C:/…/my-books-app
+
+ ✓ src/lib/sortBooks.test.ts (4 tests) 9ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  11:29:28
+   Duration  1.18s (transform 127ms, setup 0ms, collect 127ms, tests 9ms, environment 0ms, prepare 637ms)
+```
+
+`✓` が付いて「4 passed（4つ成功）」と出れば、Claude Code の報告どおりに動いていることを**あなた自身が**確かめられたことになります。テストを動かす準備（Vitest のインストールと設定）は 10-1 を参照してください。
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: 型で「受け取れる値」をしぼる
+
+```ts
+export type SortKey = "title" | "rating" | "newest";
+```
+
+- `SortKey` は「この3つの文字列のどれか」しか受け付けない型です。`sortBooks(books, "price")` のように存在しない並べ方を渡すと、型チェック（`npx tsc --noEmit`）でエラーになります。
+- `<T extends SortableBook>` は「`title`・`rating`・`created_at` を持っていれば、ほかの項目（`author` や `memo` など）があってもよい」という意味です。書籍アプリの `Book` 型をそのまま渡せます。
+
+##### 解説2: `[...books]` で配列をコピーしてから並べ替える
+
+```ts
+const copied = [...books];
+```
+
+- `...`（スプレッド構文）で、配列の中身を新しい配列に並べ直してコピーしています。
+- JavaScript の `sort` は**元の配列そのものを並べ替えてしまう**ので、コピーしないと、呼び出した側のデータまで順番が変わってしまいます（下の「よくある展開」を参照）。
+
+##### 解説3: 3種類の並べ方
+
+```ts
+return copied.sort((a, b) => a.title.localeCompare(b.title, "ja"));
+```
+
+- `localeCompare(…, "ja")` は、日本語の読み順で2つの文字列を比べる関数です。
+- 評価順では `b.rating ?? 0` のように、評価なし（`null`）を 0 とみなして最後に回しています。`??` は「左が `null` か `undefined` なら右を使う」という演算子です。
+
+##### 解説4: テストは「見本データ」と「期待する結果」のペア
+
+```ts
+it("元の配列は書き換えない", () => {
+  sortBooks(books, "title");
+  expect(books[0].title).toBe("すいみん学");
+});
+```
+
+- `it("説明", () => { … })` が1つのテストです。`expect(実際の値).toBe(期待する値)` で、結果が期待どおりかを確かめます。
+- 「元の配列を書き換えない」のように、**仕様に書いた約束ごと**をテストにしておくと、AI が後でコードを書き換えても約束が守られているかを自動で確かめられます。
+
+#### 手順3（よくある展開）: 最初の版でテストが落ちたら
+
+実際の作業では、Claude Code の最初の版がテストに落ちることもよくあります。たとえば、コピーを忘れて次のように書いてしまった場合です。
+
+**NG（最初の版。`sortBooks.ts` の抜粋）:** 配列をコピーせずに並べ替えている
+
+```ts
+// （最初の版）配列をそのまま並べ替えている
+const copied = books;
+```
+
+**▼ 実行結果（`npx vitest run`。パスの一部は伏せています）**
+
+```text
+
+ RUN  v3.2.7 C:/…/my-books-app
+
+ ❯ src/lib/sortBooks.test.ts (4 tests | 1 failed) 13ms
+   ✓ sortBooks > タイトルのあいうえお順に並ぶ 7ms
+   ✓ sortBooks > 評価の高い順に並び、評価なしは最後になる 0ms
+   ✓ sortBooks > 登録が新しい順に並ぶ 1ms
+   × sortBooks > 元の配列は書き換えない 4ms
+     → expected 'あめの本' to be 'すいみん学' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/lib/sortBooks.test.ts > sortBooks > 元の配列は書き換えない
+AssertionError: expected 'あめの本' to be 'すいみん学' // Object.is equality
+
+Expected: "すいみん学"
+Received: "あめの本"
+
+ ❯ src/lib/sortBooks.test.ts:31:28
+     29|   it("元の配列は書き換えない", () => {
+     30|     sortBooks(books, "title");
+     31|     expect(books[0].title).toBe("すいみん学");
+       |                            ^
+     32|   });
+     33| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 3 passed (4)
+   Start at  11:29:34
+   Duration  933ms (transform 52ms, setup 0ms, collect 59ms, tests 13ms, environment 0ms, prepare 84ms)
+```
+
+**OK（直した版）:** コピーしてから並べ替える
+
+```ts
+// 元の配列を書き換えないよう、コピーしてから並べ替える
+const copied = [...books];
+```
+
+- `Expected`（期待した値）が「すいみん学」、`Received`（実際の値）が「あめの本」です。タイトル順に並べ替えたせいで、元の `books` の先頭まで入れ替わってしまったことが分かります。
+- 指示に「全テストが通るまで直してから報告する」と書いておいたので、Claude Code はこの失敗を自分で読み、`[...books]` に直して再実行し、成功してから報告してきます。**確かめ方を渡しておくと、AI が自分のミスを自分で見つけて直せる**、というのがこの例のポイントです。
+
+#### 手順4: 差分を読んでコミットする
+
+最後に、0.4.1 の手順で `git status` と `git diff` を確認し、頼んだ2ファイルだけをコミットします。次の「画面につなぐ」作業（`SortSelect` と `page.tsx`）は、また別の指示・別のコミットにします。
+
+### 9-8. AI の出力を鵜呑みにしない：検証チェックリスト
+
+テストが通っても、それだけで安心はできません。空港の保安検査のように、AI の変更は**いくつもの関所**を通してから採用します。どの関所も、それぞれ別の種類の間違いを見つけるのが得意です。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 346" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-11-13" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="230" y="8" width="260" height="32" rx="16" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="360" y="29" text-anchor="middle" font-size="13" font-weight="700" fill="#c2410c">AI が作った変更（未コミット）</text>
+<rect x="120" y="58" width="400" height="46" rx="8" fill="#f8fafc" stroke="#3b82f6" stroke-width="1.5"/>
+<rect x="120" y="58" width="80" height="46" rx="8" fill="#3b82f6"/>
+<text x="160" y="86" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">関所 1</text>
+<text x="214" y="77" font-size="13" font-weight="700" fill="#0f172a">目で読む（差分レビュー）</text>
+<text x="214" y="95" font-size="12" fill="#475569">git status・git diff。頼んでいない変更はないか</text>
+<rect x="120" y="120" width="400" height="46" rx="8" fill="#f8fafc" stroke="#1e40af" stroke-width="1.5"/>
+<rect x="120" y="120" width="80" height="46" rx="8" fill="#1e40af"/>
+<text x="160" y="148" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">関所 2</text>
+<text x="214" y="139" font-size="13" font-weight="700" fill="#0f172a">機械に調べさせる</text>
+<text x="214" y="157" font-size="12" fill="#475569">npx tsc --noEmit（型）・npm run lint</text>
+<rect x="120" y="182" width="400" height="46" rx="8" fill="#f8fafc" stroke="#f97316" stroke-width="1.5"/>
+<rect x="120" y="182" width="80" height="46" rx="8" fill="#f97316"/>
+<text x="160" y="210" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">関所 3</text>
+<text x="214" y="201" font-size="13" font-weight="700" fill="#0f172a">動かして確かめる</text>
+<text x="214" y="219" font-size="12" fill="#475569">npm run dev → ブラウザで実際に操作する</text>
+<rect x="120" y="244" width="400" height="46" rx="8" fill="#f8fafc" stroke="#10b981" stroke-width="1.5"/>
+<rect x="120" y="244" width="80" height="46" rx="8" fill="#10b981"/>
+<text x="160" y="272" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">関所 4</text>
+<text x="214" y="263" font-size="13" font-weight="700" fill="#0f172a">テストで確かめる</text>
+<text x="214" y="281" font-size="12" fill="#475569">npx vitest run（テストは書き換えさせない）</text>
+<rect x="230" y="306" width="260" height="32" rx="16" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="360" y="327" text-anchor="middle" font-size="13" font-weight="700" fill="#047857">すべて OK → 採用してコミット</text>
+<line x1="320" y1="40" x2="320" y2="56" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-11-13)"/>
+<line x1="320" y1="104" x2="320" y2="118" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-11-13)"/>
+<line x1="320" y1="166" x2="320" y2="180" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-11-13)"/>
+<line x1="320" y1="228" x2="320" y2="242" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-11-13)"/>
+<line x1="320" y1="290" x2="320" y2="304" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-11-13)"/>
+<text x="330" y="116" font-size="12" font-weight="700" fill="#047857">OK</text>
+<text x="330" y="178" font-size="12" font-weight="700" fill="#047857">OK</text>
+<text x="330" y="240" font-size="12" font-weight="700" fill="#047857">OK</text>
+<text x="330" y="302" font-size="12" font-weight="700" fill="#047857">OK</text>
+<line x1="520" y1="81" x2="552" y2="81" stroke="#c2410c" stroke-width="1.5"/>
+<line x1="520" y1="143" x2="552" y2="143" stroke="#c2410c" stroke-width="1.5"/>
+<line x1="520" y1="205" x2="552" y2="205" stroke="#c2410c" stroke-width="1.5"/>
+<line x1="520" y1="267" x2="552" y2="267" stroke="#c2410c" stroke-width="1.5"/>
+<line x1="552" y1="81" x2="552" y2="267" stroke="#c2410c" stroke-width="1.5"/>
+<line x1="552" y1="175" x2="572" y2="175" stroke="#c2410c" stroke-width="1.5" marker-end="url(#ar-11-13)"/>
+<text x="540" y="72" font-size="12" font-weight="700" fill="#c2410c">NG</text>
+<rect x="574" y="118" width="136" height="114" rx="8" fill="#fff7ed" stroke="#c2410c" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="642" y="143" text-anchor="middle" font-size="12" fill="#c2410c">エラー全文と</text>
+<text x="642" y="165" text-anchor="middle" font-size="12" fill="#c2410c">期待する動きを</text>
+<text x="642" y="187" text-anchor="middle" font-size="12" fill="#c2410c">伝えて直させ、</text>
+<text x="642" y="209" text-anchor="middle" font-size="12" fill="#c2410c">関所1からやり直す</text>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図11-13: AI の変更を採用するまでの4つの関所。どこかで NG なら、直してもらって最初からやり直します</div>
+</div>
+
+**▼ AI の出力を採用する前のチェックリスト**
+
+1. □ `git status` に、頼んでいないファイルが混ざっていない（関所1）
+2. □ `git diff` の全行を読み、説明できない行がない。分からない行は「この行は何をしていますか？」と Claude に聞いて理解してから進む（関所1）
+3. □ 実在しない関数・オプション・パッケージを使っていない。怪しいものは公式ドキュメントや型チェックで確かめる（関所1・2）
+4. □ `npx tsc --noEmit` と `npm run lint` がエラーなく通る（関所2）
+5. □ `npm run dev` で実際に画面を操作した。成功するとき・失敗するとき・データが0件のとき、の3パターンを試した（関所3）
+6. □ `npx vitest run` が通る。**テストの期待値が勝手に書き換えられていない**（関所4）
+7. □ API キーやパスワードがコードに直接書かれていない。`.env.local` に置くべき値が混ざっていない
+8. □ Claude の「完了しました」という報告の内容と、実際の差分が一致している
+
+> **ヒント:** チェックリストの2番は、とても大事です。AI が書いたコードを説明できないまま採用すると、次に不具合が起きたとき、あなたも AI も原因を推測するしかなくなります。「動いたから OK」ではなく「説明できるから OK」を合格ラインにしましょう。
+
+#### 型チェックで「存在しないメソッド」を見つける
+
+> **▼ このコードがやること（先に日本語で）:** 書籍をタイトル順に取り出す関数です。NG 版は、AI が別のライブラリ（Prisma など）の書き方と混同して、Supabase には**存在しない** `findMany` というメソッドを使っています。OK 版は Supabase の正しい書き方（`select` で取り出し、`order` で並べ替え）です。型チェックの結果を比べると、ハルシネーションが機械的に見つかることが分かります。
+
+**NG（`src/lib/getBooks.ts`。AI が提案した版）**
+
+```ts
+// サーバー用の Supabase クライアントを作る関数を読み込む
+import { createClient } from "@/lib/supabase/server";
+
+// 書籍をタイトル順に取得する
+export async function getBooksSortedByTitle() {
+  const supabase = await createClient();
+  // AI が提案したコード: findMany は supabase-js には存在しない
+  const { data, error } = await supabase
+    .from("books")
+    .findMany({ orderBy: { title: "asc" } });
+  if (error) throw error;
+  return data;
+}
+```
+
+**▼ 実行結果（`npx tsc --noEmit`。supabase-js 2.117.3 / TypeScript 7.0.2）**
+
+```text
+src/lib/getBooks.ts(10,6): error TS2339: Property 'findMany' does not exist on type 'PostgrestQueryBuilder<any, any, any, "books", unknown>'.
+```
+
+**OK（直した版）**
+
+```ts
+// サーバー用の Supabase クライアントを作る関数を読み込む
+import { createClient } from "@/lib/supabase/server";
+
+// 書籍をタイトル順に取得する
+export async function getBooksSortedByTitle() {
+  const supabase = await createClient();
+  // supabase-js の正しい書き方: select で取得し、order で並べ替える
+  const { data, error } = await supabase
+    .from("books")
+    .select("*")
+    .order("title", { ascending: true });
+  if (error) throw error;
+  return data;
+}
+```
+
+**▼ 実行結果（`npx tsc --noEmit`）**
+
+```text
+（何も表示されずに終了）
+```
+
+（型チェックのためだけに、`@/lib/supabase/server` を supabase-js で作った簡易版に置き換えた練習用フォルダで実行した結果です。第7章の本物の `createClient` でも、`findMany` については同じ TS2339 のエラーになります。）
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: エラーメッセージの読み方
+
+```text
+src/lib/getBooks.ts(10,6): error TS2339: Property 'findMany' does not exist on type 'PostgrestQueryBuilder<…>'.
+```
+
+- `(10,6)` は「10行目の6文字目」、`TS2339` は TypeScript のエラー番号です。
+- 「`findMany` というプロパティ（メソッド）は、`PostgrestQueryBuilder`（Supabase のクエリを組み立てる部品）には存在しない」という意味です。つまり **AI が存在しない書き方をした**ことが、型チェックだけで分かります。
+
+##### 解説2: 正しい書き方は公式ドキュメントで確かめる
+
+```ts
+.select("*")
+.order("title", { ascending: true });
+```
+
+- Supabase では、`from("テーブル名")` の後に `select`（取り出す）、`order`（並べ替え）、`eq`（条件）などをつなげて書きます（第7章で `order("created_at", { ascending: false })` を使いました）。
+- AI に「findMany は存在しないとエラーが出ました。supabase-js の公式ドキュメントに沿った書き方で直してください」とエラー全文を貼って頼むのが近道です。
+
+> **つまずきポイント⑩: AI が「それっぽい」存在しないメソッドを使う**
+>
+> AI は、似たライブラリ（Prisma、Drizzle など）の書き方を混ぜてしまうことがあります。見た目は自然なので、読んだだけでは気づきにくいのが厄介な点です。「型チェック（`npx tsc --noEmit`）を通す」を確かめ方に入れておけば、存在しないメソッドは上のように機械的に見つかります。
+
+**NG（存在しないメソッドを信じる）:**
+
+```ts
+// Prisma 風の書き方が混ざっている
+const { data } = await supabase
+  .from("books")
+  .findMany({ orderBy: { title: "asc" } });
+```
+
+**OK（supabase-js の書き方）:**
+
+```ts
+// select で取得し、order で並べ替える
+const { data } = await supabase
+  .from("books")
+  .select("*")
+  .order("title", { ascending: true });
+```
+
+> **つまずきポイント⑪: 「テストが通るようにして」と頼み、テストのほうを書き換えられる**
+>
+> テストが失敗したときに「テストが通るようにして」とだけ頼むと、AI がコードではなく**テストの期待値**を書き換えて、無理やり成功させることがあります。こうなるとテストは何も守ってくれません。9-7 の指示のように「テストの期待値は変えない」と書き、テストファイルの差分も必ず読みましょう。
+
+**NG（テストを書き換えて通した差分）:** 9-7 の「最初の版」のバグが残ったまま、テストが「成功」してしまいます。
+
+```diff
+diff --git a/src/lib/sortBooks.test.ts b/src/lib/sortBooks.test.ts
+index ae01d85..6283a3c 100644
+--- a/src/lib/sortBooks.test.ts
++++ b/src/lib/sortBooks.test.ts
+@@ -26,8 +26,8 @@ describe("sortBooks", () => {
+     expect(result[0].title).toBe("あめの本");
+   });
+ 
+-  it("元の配列は書き換えない", () => {
++  it("並べ替え後は先頭が変わる", () => {
+     sortBooks(books, "title");
+-    expect(books[0].title).toBe("すいみん学");
++    expect(books[0].title).toBe("あめの本");
+   });
+ });
+```
+
+**OK（期待値を守らせる指示）:**
+
+```text
+npx vitest run で「元の配列は書き換えない」のテストが失敗しています。
+テストファイル（sortBooks.test.ts）は変更せず、sortBooks.ts のほうを直してください。
+テストの期待値が間違っていると思う場合は、直す前に理由を説明して止まってください。
+```
+
 ---
 
 ## 10. Phase 8：テスト・品質管理
@@ -3876,13 +4322,56 @@ Claude Codeのコンテキストウィンドウには上限があります。長
 
 前述のとおりコンテキストウィンドウは AI が一度に扱えるトークン数の上限のことです。会話・読み込みファイル・指示すべてがこの「容器」に入り、満杯になると古いものから消えたり要約されたりします。
 
+**▼ たとえ話: コンテキストは Claude の「作業机」**
+
+机の上には、仕事の指示書（CLAUDE.md）、これまでのやり取りのメモ（会話の履歴）、読みかけの資料（読んだファイルやコマンドの出力）が積まれていきます。机が資料で埋まってくると、大事な指示書が資料の下に埋もれて見落とされやすくなります。人間と同じで、ときどき机を片付けるのが良い仕事のコツです。
+
+<div style="max-width: 720px; margin: 18px auto; text-align: center;">
+<svg viewBox="0 0 720 262" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-11-14" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="20" y="20" width="400" height="226" rx="10" fill="#f8fafc" stroke="#475569" stroke-width="1.5"/>
+<text x="220" y="44" text-anchor="middle" font-size="13" font-weight="700" fill="#0f172a">コンテキストウィンドウ（Claude の作業机）</text>
+<rect x="40" y="58" width="360" height="28" rx="4" fill="#e2e8f0"/>
+<text x="220" y="77" text-anchor="middle" font-size="12" fill="#334155">システムの指示・ツールの説明</text>
+<rect x="40" y="90" width="360" height="28" rx="4" fill="#dbeafe"/>
+<text x="220" y="109" text-anchor="middle" font-size="12" fill="#1e40af">CLAUDE.md・メモリ（毎回最初に読む）</text>
+<rect x="40" y="122" width="360" height="40" rx="4" fill="#ffedd5"/>
+<text x="220" y="147" text-anchor="middle" font-size="12" fill="#9a3412">会話の履歴（あなたの指示と Claude の返事）</text>
+<rect x="40" y="166" width="360" height="46" rx="4" fill="#fed7aa"/>
+<text x="220" y="185" text-anchor="middle" font-size="12" fill="#9a3412">読んだファイル・コマンドの出力</text>
+<text x="220" y="203" text-anchor="middle" font-size="12" fill="#9a3412">（いちばん膨らみやすい）</text>
+<rect x="40" y="216" width="360" height="22" rx="4" fill="#ffffff" stroke="#94a3b8" stroke-dasharray="4 3"/>
+<text x="220" y="231" text-anchor="middle" font-size="12" fill="#64748b">空き</text>
+<rect x="450" y="20" width="250" height="62" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<text x="575" y="46" text-anchor="middle" font-size="13" font-weight="700" font-family="Consolas, Menlo, monospace" fill="#1e40af">/context</text>
+<text x="575" y="68" text-anchor="middle" font-size="12" fill="#475569">机の上の使用量を見る</text>
+<rect x="450" y="96" width="250" height="70" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+<text x="575" y="122" text-anchor="middle" font-size="13" font-weight="700" font-family="Consolas, Menlo, monospace" fill="#c2410c">/compact</text>
+<text x="575" y="142" text-anchor="middle" font-size="12" fill="#475569">履歴を要約して空きを作る</text>
+<text x="575" y="160" text-anchor="middle" font-size="12" fill="#475569">（同じ作業を続けるとき）</text>
+<rect x="450" y="180" width="250" height="66" rx="8" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+<text x="575" y="205" text-anchor="middle" font-size="13" font-weight="700" font-family="Consolas, Menlo, monospace" fill="#047857">/clear</text>
+<text x="575" y="224" text-anchor="middle" font-size="12" fill="#475569">机を片付けて新しく始める</text>
+<text x="575" y="241" text-anchor="middle" font-size="12" fill="#475569">（別の作業を始めるとき）</text>
+<line x1="448" y1="131" x2="404" y2="142" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-11-14)"/>
+<line x1="448" y1="213" x2="424" y2="213" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-11-14)"/>
+</svg>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図11-14: コンテキストウィンドウは Claude の作業机。いっぱいになる前に /compact か /clear で片付けます</div>
+</div>
+
+- CLAUDE.md とメモリは、`/compact` や `/clear` の後も毎回読み込まれます。だから「毎回守ってほしいこと」は会話ではなく CLAUDE.md に書くのです。
+- 読んだファイルやコマンドの出力は、机をいちばん占領します。「`npm run build` の出力を全部見せて」のような依頼を繰り返すと、すぐに机が埋まります。
+
 ### 12-2. Context管理コマンド
 
 | コマンド | 説明 |
 |---------|------|
 | `/compact` | 手動でコンテキストを圧縮（会話を要約して容量削減） |
 | `/clear` | コンテキストを完全にクリア（新しいセッション開始） |
-| `/cost` | 現在のトークン使用量とコストを確認 |
+| `/usage` | 料金・プランの使用量の目安を確認（`/cost` は同じコマンドの別名） |
+| `/context` | いまのコンテキストの使用量を色付きの図で表示 |
 
 ### 12-3. /compact の使いどころ
 
@@ -3895,6 +4384,34 @@ Claude Codeのコンテキストウィンドウには上限があります。長
 ```
 
 > **注意**: `/compact` を実行するとCLAUDE.mdは再読み込みされますが、会話の細かいニュアンスは失われます。`SessionStart` Hook（マッチャー `compact`）で重要な情報を再注入すると良いです（2-5 の設定例を参照）。
+
+公式のベストプラクティスでは、**関係のない次の作業に移るときは `/clear`** で机をまっさらにすることが勧められています。同じ機能の続きなら `/compact`、別の機能なら `/clear`、と使い分けると覚えやすいです。
+
+> **つまずきポイント⑫: 同じ会話で何度も「違う、そうじゃない」と直し続ける**
+>
+> うまくいかない修正を同じ会話で何度も重ねると、机の上が「失敗した案」で埋まり、Claude がかえって混乱していきます。公式ドキュメントでも、同じ問題で2回以上修正してもうまくいかないときは、`/clear` して、学んだことを反映した良い指示で最初からやり直すよう勧めています。
+
+**NG（泥沼の追加修正）:**
+
+```text
+違う、そうじゃない
+まだ動かない。もう一回直して
+さっきの方法に戻して、でも別のやり方で
+```
+
+**OK（`/clear` して、分かったことを入れて指示し直す）:**
+
+```text
+/clear
+```
+
+```text
+src/lib/sortBooks.ts の sortBooks で、評価順（"rating"）の並びが正しくありません。
+分かっていること:
+- 評価なし（null）の本が先頭に来てしまう。期待は「評価なしは最後」
+- npx vitest run の「評価の高い順に並び、評価なしは最後になる」が失敗する
+sortBooks.ts だけを直し、npx vitest run が通ったら報告してください。テストは変更しないでください。
+```
 
 ### 12-4. Memory システム
 
@@ -3959,13 +4476,14 @@ Route Handlersで統一する決定をした。理由はテストの書きやす
 |------|------|------------|
 | `Enter` | プロンプト送信 | Chat |
 | `Escape` | キャンセル/中断 | Chat |
+| `Escape` を2回 | 入力欄が空なら巻き戻しメニュー（`/rewind`）、文字があれば入力の消去 | Chat |
 | `Shift+Tab` | パーミッションモード切り替え | Chat |
-| `Ctrl+C` | 実行中断 | Global |
-| `Ctrl+D` | 終了 | Global |
-| `Ctrl+L` | 入力クリア | Chat |
+| `Ctrl+C` | 実行中断（何も動いていなければ入力の消去、もう1回で終了） | Global |
+| `Ctrl+D` | 終了（800ミリ秒以内に2回押す） | Global |
+| `Ctrl+L` | 画面の再描画（入力や会話は消えない） | Chat |
 | `Ctrl+O` | 詳細表示（thinking表示）切り替え | Global |
 | `Ctrl+R` | 履歴検索 | Global |
-| `Alt+T`（Win/Linux） | Thinking Mode 切り替え | Chat |
+| `Alt+T`（Win/Linux） | Thinking Mode 切り替え（Claude 5 系のモデルは常に考えるので効果なし） | Chat |
 | `Ctrl+G` | 外部エディタで編集 | Chat |
 
 ### 13-3. カスタマイズ例
@@ -3996,7 +4514,7 @@ Route Handlersで統一する決定をした。理由はテストの書きやす
 - `$schema`: エディタが入力補完するための JSON Schema 参照。
 - `bindings`: コンテキストごとのバインディング配列。
 - `context`: バインディングが効く場面（Chat / Global など）。
-- `"ctrl+k": "chat:clearInput"`: Ctrl+K に「入力欄をクリア」を割り当て。
+- `"ctrl+k": "chat:clearInput"`: Ctrl+K に `chat:clearInput` を割り当て。名前に反して入力は消えず、画面の再描画（表示が崩れたときの立て直し）をする操作です（既定では Ctrl+L）。
 - `"ctrl+u": null`: 既存のバインディングを無効化。
 
 ### 13-4. 利用可能なコンテキスト
@@ -4018,7 +4536,7 @@ ctrl+k          # Control + K
 shift+tab       # Shift + Tab
 ctrl+shift+c    # 複数修飾キー
 ctrl+x ctrl+e   # コード入力（Ctrl+X → Ctrl+E）
-K               # 大文字 = Shift暗黙
+shift+k         # Shift + K（K と k は同じ扱いなので、Shift は明示する）
 escape, enter   # 特殊キー名
 ```
 
@@ -4062,7 +4580,7 @@ gitignoreされたファイルをworktreeにコピーするための設定：
 .env
 .env.local
 .claude/settings.local.json
-.claude/.mcp.local.json
+CLAUDE.local.md
 ```
 
 - 各行に「gitignore されているがworktreeにはコピーしたい」ファイル名を書く。
@@ -4100,7 +4618,7 @@ claude -c
 claude -r "session-name"
 # セッションに名前をつけて開始（後で -r で呼び戻せる）
 claude -n "my-feature"
-# Pull Request #123 連携セッションを再開
+# Pull Request #123 にひも付いたセッションの一覧から選んで再開
 claude --from-pr 123
 ```
 
@@ -4117,7 +4635,7 @@ claude --permission-mode auto
 claude --model opus
 # Sonnet モデルを使用（安価・高速）
 claude --model sonnet
-# 推論レベルを最高に上げる
+# 推論レベル（low / medium / high / xhigh / max）を指定する。最上位は max
 claude --effort high
 ```
 
@@ -4247,7 +4765,7 @@ CLAUDE.mdの規約に準拠しているか再確認してから修正してく�
 | 機能 | フェーズ | 設定場所 |
 |------|---------|---------|
 | 危険コマンドのブロック | Phase 0（最初） | `~/.claude/settings.json` |
-| MCP連携 | Phase 0 | `~/.claude/.mcp.json` |
+| MCP連携 | Phase 0 | `.mcp.json`（共有）/ `~/.claude.json`（個人） |
 | Hooks（自動フォーマット等） | Phase 0 | `settings.json` |
 | Keybindings | Phase 0 | `~/.claude/keybindings.json` |
 | CLAUDE.md | Phase 3（要件確定後） | プロジェクトルート |
@@ -4325,9 +4843,9 @@ CLAUDE.mdの規約に準拠しているか再確認してから修正してく�
 | **Subagents** | `.claude/agents/<name>.md` | Yes |
 | **Subagents（個人）** | `~/.claude/agents/<name>.md` | No |
 | **Hooks** | `settings.json` 内の `hooks` | 設定場所による |
-| **MCP（共有）** | `.claude/.mcp.json` | Yes |
-| **MCP（個人）** | `.claude/.mcp.local.json` | No |
-| **MCP（全体）** | `~/.claude/.mcp.json` | No |
+| **MCP（共有・project スコープ）** | `.mcp.json`（プロジェクト直下） | Yes |
+| **MCP（個人・local スコープ）** | `~/.claude.json` の中のプロジェクト別の欄 | No |
+| **MCP（全体・user スコープ）** | `~/.claude.json` | No |
 | **Keybindings** | `~/.claude/keybindings.json` | No |
 | **Memory** | `~/.claude/projects/<project>/memory/` | No |
 | **Worktree** | `.claude/worktrees/<name>/` | No |
@@ -4393,11 +4911,215 @@ CLAUDE.mdの規約に準拠しているか再確認してから修正してく�
 
 ---
 
+## 練習問題（解答・解説つき）
+
+この章の内容が身に付いたかを確かめましょう。まず自分で考えてから、後ろの「解答と解説」を読んでください。Claude Code が手元にある人は、実際に書籍管理アプリで試すとより理解が深まります。
+
+### 問題1: あいまいな指示を書き直す（0.1.2）
+
+次の指示は、Claude Code に意図が伝わりにくい例です。「トップページ（`/`）の書籍一覧の上に、登録されている本の冊数を『全 3 冊』のように表示したい」という意図が伝わるよう、図11-3 の4要素（目的・場所と範囲・完成条件・確かめ方）を入れて書き直してください。
+
+```text
+一覧ページをいい感じにして
+```
+
+### 問題2: 権限ルールの判定を予想する（2-2・2-3）
+
+`.claude/settings.json` が次のとき、Manual（`default`）モードで Claude Code が (a)〜(d) のコマンドを実行しようとしたら、それぞれどうなりますか？ 「確認なしで実行」「確認が出る」「ブロック」のどれかで答えてください。
+
+```json
+{
+  "permissions": {
+    "allow": ["Bash(npm run *)", "Bash(git commit *)"],
+    "ask": ["Bash(git commit *)"],
+    "deny": ["Bash(npm run deploy)"]
+  }
+}
+```
+
+- (a) `npm run lint`
+- (b) `npm run deploy`
+- (c) `git commit -m "feat: 並べ替えを追加"`
+- (d) `npm install zod`
+
+### 問題3: 報告と差分が合わない（0.4.1・9-8）
+
+`sortBooks.ts` とそのテストだけを作るよう頼んだところ、Claude Code から「並べ替え機能を実装し、テストも通りました」と報告がありました。`git status --short` の結果は次のとおりです。あなたは次に何を確かめ、どう対処しますか？
+
+```text
+ M src/lib/sortBooks.test.ts
+ M src/lib/supabase/server.ts
+?? src/components/SortSelect.tsx
+?? src/lib/sortBooks.ts
+```
+
+（`sortBooks.test.ts` は、前回のコミットで一度作ってあったものとします。）
+
+### 問題4: どの機能に書く？（1-4）
+
+次の (a)〜(e) をかなえるには、CLAUDE.md・Rules・Skills・Hooks・Permissions のどれを使うのが最も適切ですか？
+
+- (a) 「部品（コンポーネント）は `src/components/` に1ファイル1つ置く」という決まりを、どの作業でも守ってほしい
+- (b) Claude がファイルを編集するたびに、必ず Prettier で整形したい
+- (c) `.env.local` を、どんな場合でも Claude に読ませたくない
+- (d) 「lint・型チェック・テストを実行して結果を表にまとめる」という作業を、`/` で始まる短い命令で何度も頼みたい
+- (e) `src/app/api/` の中のファイルを触るときだけ守ってほしい決まりがある
+
+### 問題5: 計画に頼んでいない変更が入っている（4-1）
+
+プランモードで「`sortBooks` 関数とテストを作る」計画を頼んだところ、計画の「変更するファイル」に次の行が含まれていました。承認画面ではどの選択肢を選び、何と伝えますか？
+
+```text
+3. src/app/layout.tsx（変更）: ヘッダーのデザインを新しくする
+```
+
+### 問題6: どこまで戻す？（0.4.2）
+
+次の (a)〜(c) の場面で、最も適切な「戻し方」を答えてください。
+
+- (a) Claude Code が作業中だが、明らかに頼んだのと違うファイルを編集し始めた
+- (b) コミットしていない状態で、Claude が `Edit` ツールで書き換えた3つのファイルを、2つ前の指示を送った時点の状態に戻したい
+- (c) 昨日コミットして push 済みの変更に不具合があったので、その変更を取り消したい
+
+### 問題7: 同じバグで3回つまずいた（12-3）
+
+`sortBooks` の評価順のバグを直そうと、同じ会話で3回修正を頼みましたが、まだ直りません。このあと別の機能（書籍の削除）にも取りかかる予定です。どうするのがよいですか？
+
+### 問題8: AI のコードの問題を見つける（9-8）
+
+Claude Code が次のコードを提案しました。問題点と、それを機械的に見つける方法、正しい書き方を答えてください。
+
+```ts
+// サーバー用の Supabase クライアントを作る関数を読み込む
+import { createClient } from "@/lib/supabase/server";
+
+// 書籍をタイトル順に取得する
+export async function getBooks() {
+  const supabase = await createClient();
+  const { data } = await supabase.from("books").select("*").sortBy("title");
+  return data;
+}
+```
+
+### 解答と解説
+
+#### 問題1の解答
+
+```text
+src/app/page.tsx だけを変更してください。
+
+目的:
+登録した本が何冊あるかを、一覧を見た瞬間に分かるようにしたい。
+
+変更内容:
+- 書籍一覧の上に「全 N 冊」（N は取得した書籍の件数）と表示する
+- 0 冊のときは表示しない（今ある「書籍が登録されていません」の案内だけにする）
+
+守ること:
+- BookList などほかのファイルは変更しない
+
+確かめ方:
+- npm run lint と npx tsc --noEmit を実行し、結果を報告してください
+- 私は npm run dev で、本が 0 冊・3 冊のときの表示を確認します
+```
+
+**解説:** 「いい感じに」を、①目的（冊数がすぐ分かる）、②場所と範囲（`src/app/page.tsx` だけ）、③完成条件（「全 N 冊」と表示、0冊のときは出さない）、④確かめ方（lint と型チェック、あなたのブラウザ確認）に分解しました。特に「0冊のとき」のような**境目のケース**を書いておくと、AI の推測に任せる部分が減ります。文面は人によって違ってかまいません。4つの要素がそろっていれば正解です。
+
+#### 問題2の解答
+
+| コマンド | 結果 | 理由 |
+|---|---|---|
+| (a) `npm run lint` | 確認なしで実行 | deny・ask には一致せず、allow の `Bash(npm run *)` に一致 |
+| (b) `npm run deploy` | ブロック | allow にも一致するが、先に調べる deny の `Bash(npm run deploy)` に一致 |
+| (c) `git commit -m "…"` | 確認が出る | allow にも書いてあるが、先に調べる ask に一致 |
+| (d) `npm install zod` | 確認が出る | どのルールにも一致せず、Manual モードなので確認 |
+
+**解説:** ルールは **deny → ask → allow** の順に調べられ、最初に一致したもので決まります（図11-9）。(b) と (c) のように、allow に同じものが入っていても、deny や ask が先に勝ちます。(d) のように「どれにも一致しない」ときの動きはモードしだいで、Manual なら確認が出ます。
+
+#### 問題3の解答
+
+1. **`sortBooks.test.ts` の差分を読む**: `git diff src/lib/sortBooks.test.ts` で、テストの期待値が書き換えられていないかを確認します（つまずきポイント⑪）。
+2. **頼んでいない `server.ts` を戻す**: `git diff src/lib/supabase/server.ts` で中身を確認し、不要なら `git restore src/lib/supabase/server.ts` で元に戻します。
+3. **頼んでいない `SortSelect.tsx` を消す**: 新しいファイル（`??`）は `git restore` では消えないので、今回使わないならファイルを削除します（次の作業で使うなら、別のコミットに回します）。
+4. **自分でテストを実行**: `npx vitest run` を自分で実行して、報告どおり通ることを確かめます。
+5. **頼んだ2ファイルだけコミット**: `git add src/lib/sortBooks.ts src/lib/sortBooks.test.ts` の後に `git commit` します。
+
+**解説:** 「テストも通りました」という報告は、差分を読むまでは「自己申告」にすぎません。`git status` で頼んでいないファイル（`server.ts`・`SortSelect.tsx`）を見つけたら、中身を確かめてから戻すか、別の作業として切り分けます。テストファイルが変更されている場合は、期待値が都合よく変えられていないかを必ず確認しましょう。
+
+#### 問題4の解答
+
+- (a) **CLAUDE.md**（どの作業でも守ってほしい決まり）
+- (b) **Hooks**（`PostToolUse` で Edit/Write の後に必ず実行。2-5）
+- (c) **Permissions**（`deny` に `Read(.env.local)` を入れる。2-2）
+- (d) **Skills**（`/check` のようなスキルを作る。7-6-1）
+- (e) **Rules**（`.claude/rules/` に `paths` 付きで置く。`src/app/api/CLAUDE.md` でも可）
+
+**解説:** (b) と (c) は「AI の判断に関係なく必ず効いてほしい」ことなので、お願いである CLAUDE.md ではなく、仕組みで強制する Hooks・Permissions を使います（1-4 の図11-8）。(a) と (e) の違いは、全体に効かせるか、特定の場所だけに効かせるかです。
+
+#### 問題5の解答
+
+`No, keep planning` を選び、次のように伝えます。
+
+```text
+計画から「3. src/app/layout.tsx の変更」を外してください。
+今回は sortBooks.ts と sortBooks.test.ts の2ファイルだけを作ります。
+ヘッダーのデザインは変更しないでください。
+```
+
+**解説:** 承認（`Yes, …`）を選ぶと、その計画のまま実装が始まってしまいます。計画の段階で範囲外の変更を見つけたら、`No, keep planning` で計画を直させるのがいちばん手間がかかりません。計画が直ったことを確認してから、`Yes, manually approve edits` で承認しましょう。
+
+#### 問題6の解答
+
+- (a) **`Esc` で止める**。そのうえで「〇〇は編集しないでください」と指示し直します。
+- (b) **`Esc` を2回（または `/rewind`）** で巻き戻しメニューを開き、2つ前の指示の時点を選んで「コードを戻す（Restore code）」を選びます。
+- (c) **`git revert コミットID`** で、その変更を打ち消すコミットを新しく作ります。
+
+**解説:** (b) のチェックポイントは、Claude が `Edit`・`Write` で行った変更なら戻せますが、`rm` などの Bash コマンドで行った変更は戻せません。(c) のように push 済みのコミットは、履歴を書き換える `git reset --hard` ではなく、打ち消しのコミットを追加する `git revert` を使うのが安全です（チームの履歴を壊しません）。
+
+#### 問題7の解答
+
+`/clear` で会話をリセットし、ここまでに分かったこと（どの入力で、何が期待と違うか、どのテストが落ちるか）を書いた**新しい良い指示**で、もう一度頼みます。削除機能に移るときも、その前に `/clear` します。
+
+**解説:** 同じ会話で失敗した修正を重ねると、コンテキスト（作業机）が失敗した案で埋まり、Claude がかえって混乱します。公式ドキュメントでも、2回以上修正してもうまくいかないときは `/clear` してやり直すことが勧められています。関係のない次の作業に移るときも `/clear` が基本です。CLAUDE.md は `/clear` の後も読み込まれるので、決まりごとが消える心配はありません。
+
+#### 問題8の解答
+
+**問題点:** `sortBy` というメソッドは supabase-js に存在しません（AI のハルシネーション）。
+
+**見つけ方:** `npx tsc --noEmit` で型チェックをすると、次のエラーが出ます（supabase-js 2.117.3 / TypeScript 7.0.2 で確認）。
+
+```text
+src/lib/getBooks.ts(7,61): error TS2339: Property 'sortBy' does not exist on type 'PostgrestFilterBuilder<any, any, any, any[], "books", unknown, "GET", false>'.
+```
+
+**正しい書き方:**
+
+```ts
+// サーバー用の Supabase クライアントを作る関数を読み込む
+import { createClient } from "@/lib/supabase/server";
+
+// 書籍をタイトル順に取得する
+export async function getBooks() {
+  const supabase = await createClient();
+  // select で取得し、order で並べ替える
+  const { data } = await supabase
+    .from("books")
+    .select("*")
+    .order("title", { ascending: true });
+  return data;
+}
+```
+
+**解説:** 見た目が自然なので読むだけでは見落としがちですが、型チェックなら確実に見つかります（9-8 の関所2）。あわせて、元のコードは `error` を受け取っていないので、取得に失敗しても気づけません。第7章のように `error` も受け取って確認するのが安全です。
+
+---
+
 > **最後に**: バイブコーディングの核心は「AIに丸投げ」ではなく「AIと対話しながら品質の高いコードを段階的に構築する」ことです。
 >
 > Claude Codeの全機能（Settings、Hooks、Skills、Rules、MCP、Plan Mode、Worktrees、Subagents、Memory）を適切なフェーズで活用し、要件を明確にし、段階的に進め、各段階でレビューすることで、プロダクション品質のアプリケーションを効率的に開発できます。
 >
 > 特に重要な3つの習慣：
+>
 > 1. **「まだコードは書かないで」** — 方針合意を先に取る
 > 2. **「完了したら一度止まって」** — 段階的レビューで品質を維持
 > 3. **「/review → /commit」** — レビューしてからコミットする
