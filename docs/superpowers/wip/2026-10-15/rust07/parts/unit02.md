@@ -38,7 +38,7 @@
 
 ### 図で理解する
 
-`SELECT` 文は「書く順番」と「DB が処理する順番」が違います。下の図は、Alice（user_id 1）の未完了でないノートを新しい順に 2 件読む文で、行がどう減っていくかを表しています。
+`SELECT` 文は「書く順番」と「DB が処理する順番」が違います。下の図は、Alice（user_id 1）のノートを新しい順に 2 件読む文で、行がどう減っていくかを表しています。
 
 <div style="max-width:720px;margin:18px auto;text-align:center;">
 <svg viewBox="0 0 720 270" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">

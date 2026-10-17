@@ -1,5 +1,13 @@
 # 中断時点の引き継ぎメモ
 
+## 2026-10-18: Rust 07 巻を UNIT 01〜07 まで main に反映（59eb69c）
+
+- `Rust/07_Turso_libSQL_SQL設計_実装_運用.md`（5,700行・図19枚・147ページ）と `Rust/pdf/07_…pdf` を main へ。UNIT 08〜10 は本文に「準備中」と明記。**旧 `Rust/07_Turso_libSQL_SQL設計_実装_運用.pdf` は UNIT 08〜10 が入るまで残してある**（完成したら publish.sh に削除パスとして渡す）。
+- 続きの書き方: `rust07/parts/unit08.md`〜`unit10.md` を書き、`rust07/assemble.py` の `ORDER` を `range(1, 11)` に戻し、`parts/intro.md` の「（準備中）」3か所とお知らせ・ヒント、`parts/outro.md` のお知らせを外して、チェックリストと用語に UNIT 08〜10 分を足す。
+- UNIT 08 の素材（実行済み）: `sql-lab/src/bin/u08_local.rs`・`u08_open.rs`（出力は parts/unit08.md の構成メモ）、`u08_replica.rs`（コンパイルのみ確認）。debug ビルドで閉じたポートへの remote execute は `thread 'main' has overflowed its stack`（exit 0xc00000fd）、**release ビルドと tokio::spawn の中では起きず Hrana のエラーが返る**ことを 2026-10-18 に確認。core だけの features での E0599 は未作成。
+- UNIT 09 の素材: `parts/unit09.md` の実出力と `src/bin/u09_*.rs`。UNIT 10 は未着手。
+- `_build_pdfs.py` に `overflow-y: hidden` を追加（コード枠に縦スクロールバーが出ることがあったため）。既存の他の PDF は再生成していない。
+
 ## 3回目の停止（2026-10-18）— Rust 07 巻の途中
 
 Rust 07 巻（Turso・libSQL）を1巻だけ仕上げる作業の途中で停止。main への反映はなし。下書きと素材は `rust07/` にある。

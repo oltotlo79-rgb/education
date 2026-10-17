@@ -389,7 +389,7 @@ sql> SELECT version FROM schema_migrations ORDER BY version
 <defs>
 <marker id="ar-07-062" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
 </defs>
-<rect x="250" y="16" width="220" height="40" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<rect x="170" y="16" width="380" height="40" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
 <text x="360" y="41" font-size="12" fill="#0f172a" text-anchor="middle">ALTER TABLE notes ADD COLUMN color TEXT NOT NULL</text>
 <line x1="300" y1="56" x2="190" y2="84" stroke="#475569" stroke-width="2" marker-end="url(#ar-07-062)"/>
 <line x1="420" y1="56" x2="530" y2="84" stroke="#475569" stroke-width="2" marker-end="url(#ar-07-062)"/>
