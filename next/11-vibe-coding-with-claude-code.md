@@ -95,7 +95,7 @@ Claude Codeを使ってNext.jsアプリをバイブコーディング（自然�
 - ターミナルで `cd` や `npm run dev` を実行したことがあること
 - Git の `git add` / `git commit` を使ったことがあること（第1章で扱いました）
 
-> **注意:** 2〜11節（Phase 0〜9）のプロンプト例は、書籍管理アプリより少し大きい「タスク管理アプリ TaskFlow」を題材にしています。大きなアプリでも同じ進め方が通用することを見せるためです。一方、この章で新しく追加した「NG→OK 比較」「実践ウォークスルー」などの例は、第1〜10章で作った**書籍管理アプリ**を題材にしています。
+> **注意:** 2〜11節（Phase 0〜9）のプロンプト例は、書籍管理アプリより少し大きい「タスク管理アプリ TaskFlow」を題材にしています。大きなアプリでも同じ進め方が通用することを見せるためです。一方、この章で新しく追加した「NG→OK 比較」「実践ウォークスルー」などの例は、第1〜10章で作った**書籍管理アプリ**を題材にしています。TaskFlow の例は `src/` フォルダを使う構成ですが、書籍管理アプリは第6章のとおり `src/` を使わず、`app/`・`components/`・`lib/` をプロジェクト直下に置いています（例: `components/StatusBadge.tsx`、`lib/supabase/server.ts`）。パスの違いに注意してください。
 
 ---
 
@@ -231,7 +231,7 @@ Claude Codeを使ってNext.jsアプリをバイブコーディング（自然�
 > **▼ この指示文がやること（先に日本語で）:** StatusBadge のうち「読みたい（want_to_read）」の見た目だけを、灰色の「積読（つんどく：買ったまま読んでいない本）」ラベルに変えてもらう指示です。図11-3 の4要素（目的・場所と範囲・完成条件・確かめ方）と制約を、見出し付きで全部書いています。
 
 ```text
-src/components/StatusBadge.tsx の statusConfig だけを変更してください。
+components/StatusBadge.tsx の statusConfig だけを変更してください。
 
 目的:
 まだ読んでいない本（want_to_read）を、読書中・読了の本より目立たなくしたい。
@@ -251,10 +251,10 @@ src/components/StatusBadge.tsx の statusConfig だけを変更してくださ�
 **▼ 実行結果（Claude Code が行った変更を `git diff` で表示したもの）**
 
 ```diff
-diff --git a/src/components/StatusBadge.tsx b/src/components/StatusBadge.tsx
+diff --git a/components/StatusBadge.tsx b/components/StatusBadge.tsx
 index 54f973a..229c542 100644
---- a/src/components/StatusBadge.tsx
-+++ b/src/components/StatusBadge.tsx
+--- a/components/StatusBadge.tsx
++++ b/components/StatusBadge.tsx
 @@ -19,8 +19,8 @@ const statusConfig: Record<
      textColor: "text-green-800",
    },
@@ -270,7 +270,7 @@ index 54f973a..229c542 100644
 ```
 
 ```text
- src/components/StatusBadge.tsx | 6 +++---
+ components/StatusBadge.tsx | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 ```
 
@@ -281,7 +281,7 @@ index 54f973a..229c542 100644
 ##### 解説1: 1行目で「場所と範囲」を宣言する
 
 ```text
-src/components/StatusBadge.tsx の statusConfig だけを変更してください。
+components/StatusBadge.tsx の statusConfig だけを変更してください。
 ```
 
 - ファイル名と、その中のどの部分（`statusConfig`）を触るのかを最初に書いています。
@@ -346,7 +346,7 @@ src/components/StatusBadge.tsx の statusConfig だけを変更してくださ�
 **OK（具体的）:**
 
 ```text
-src/components/StatusBadge.tsx の statusConfig だけを変更してください。
+components/StatusBadge.tsx の statusConfig だけを変更してください。
 want_to_read のラベルを「積読」に、色を灰色（bg-gray-100 / text-gray-700）に変えてください。
 ほかのステータスとほかのファイルは変更しないでください。
 ```
@@ -364,7 +364,7 @@ want_to_read のラベルを「積読」に、色を灰色（bg-gray-100 / text-
 **OK（確かめ方つき）:**
 
 ```text
-src/lib/sortBooks.ts に、書籍の配列を並べ替える関数 sortBooks を作ってください。
+lib/sortBooks.ts に、書籍の配列を並べ替える関数 sortBooks を作ってください。
 並べ方は「タイトル順」「評価の高い順」「新しい順」の3種類です。
 同じフォルダに Vitest のテスト sortBooks.test.ts も作り、
 npx vitest run を実行して、全テストが通るまで修正してから報告してください。
@@ -383,7 +383,7 @@ npx vitest run を実行して、全テストが通るまで修正してから�
 **OK（範囲を絞る）:**
 
 ```text
-src/components/BookCard.tsx だけを対象に、読みやすさのための整理をしてください。
+components/BookCard.tsx だけを対象に、読みやすさのための整理をしてください。
 画面の見た目と動作は変えないでください。
 変更後に npm run lint と npx tsc --noEmit を実行して結果を報告し、そこで止まってください。
 ```
@@ -624,7 +624,7 @@ Do you want to proceed?
 | 記号 | 意味 | 例 |
 |------|------|-----|
 | `/` | スラッシュコマンド（Claude Code への操作命令）やスキルを呼ぶ | `/clear` |
-| `@` | ファイルを指定して、その中身を読ませる | `@src/components/BookCard.tsx を読んで説明して` |
+| `@` | ファイルを指定して、その中身を読ませる | `@components/BookCard.tsx を読んで説明して` |
 | `!` | 行頭に書くと、AI を通さずにそのままシェルコマンドを実行する | `!git status` |
 
 #### 入力例: `@` と `!` を使って質問する
@@ -636,7 +636,7 @@ Do you want to proceed?
 ```
 
 ```text
-@src/components/StatusBadge.tsx の statusConfig が何をしているか、初心者向けに3行で説明して
+@components/StatusBadge.tsx の statusConfig が何をしているか、初心者向けに3行で説明して
 ```
 
 **▼ 実行結果（1行目の `!git status` の出力例。変更が無いとき）**
@@ -660,7 +660,7 @@ nothing to commit, working tree clean
 ##### 解説2: `@` は「このファイルを見て」の指さし
 
 ```text
-@src/components/StatusBadge.tsx の statusConfig が…
+@components/StatusBadge.tsx の statusConfig が…
 ```
 
 - `@` に続けてファイルのパスを書くと、そのファイルの中身が会話に読み込まれます。`@` を入力するとファイル名の候補が出るので、Tab で補完できます。
@@ -742,11 +742,11 @@ git status --short
 git diff --stat
 git diff
 # ④ 頼んでいない変更（BookCard.tsx）を元に戻す
-git restore src/components/BookCard.tsx
+git restore components/BookCard.tsx
 # 戻ったことを確かめる
 git status --short
 # ③ 頼んだ2ファイルだけをステージしてコミットする
-git add src/lib/sortBooks.ts src/lib/sortBooks.test.ts
+git add lib/sortBooks.ts lib/sortBooks.test.ts
 git commit -m "feat: 書籍の並べ替え関数 sortBooks を追加"
 # 履歴を確かめる
 git log --oneline
@@ -759,56 +759,56 @@ $ git status --short
 $ git switch -c feature/sort-books
 Switched to a new branch 'feature/sort-books'
 $ git status --short
- M src/components/BookCard.tsx
-?? src/lib/sortBooks.test.ts
-?? src/lib/sortBooks.ts
+ M components/BookCard.tsx
+?? lib/sortBooks.test.ts
+?? lib/sortBooks.ts
 $ git diff --stat
- src/components/BookCard.tsx | 1 +
+ components/BookCard.tsx | 1 +
  1 file changed, 1 insertion(+)
 $ git diff
-diff --git a/src/components/BookCard.tsx b/src/components/BookCard.tsx
+diff --git a/components/BookCard.tsx b/components/BookCard.tsx
 index 784951d..80ea6ae 100644
---- a/src/components/BookCard.tsx
-+++ b/src/components/BookCard.tsx
+--- a/components/BookCard.tsx
++++ b/components/BookCard.tsx
 @@ -1,3 +1,4 @@
  export default function BookCard() {
 +  // TODO: 並べ替えボタンを置く
    return null;
  }
-$ git restore src/components/BookCard.tsx
+$ git restore components/BookCard.tsx
 $ git status --short
-?? src/lib/sortBooks.test.ts
-?? src/lib/sortBooks.ts
-$ git add src/lib/sortBooks.ts src/lib/sortBooks.test.ts
+?? lib/sortBooks.test.ts
+?? lib/sortBooks.ts
+$ git add lib/sortBooks.ts lib/sortBooks.test.ts
 $ git commit -m "feat: 書籍の並べ替え関数 sortBooks を追加"
-[feature/sort-books 6c09cc4] feat: 書籍の並べ替え関数 sortBooks を追加
+[feature/sort-books f9d7434] feat: 書籍の並べ替え関数 sortBooks を追加
  2 files changed, 63 insertions(+)
- create mode 100644 src/lib/sortBooks.test.ts
- create mode 100644 src/lib/sortBooks.ts
+ create mode 100644 lib/sortBooks.test.ts
+ create mode 100644 lib/sortBooks.ts
 $ git log --oneline
-6c09cc4 feat: 書籍の並べ替え関数 sortBooks を追加
-6f93c4b feat: 書籍カードを作成
+f9d7434 feat: 書籍の並べ替え関数 sortBooks を追加
+53d9d84 feat: 書籍カードを作成
 ```
 
-（説明のため、BookCard.tsx を最小限の中身にした練習用リポジトリで実行した結果です。コミットの ID（`6c09cc4` など）は実行するたびに変わります。Windows では `LF will be replaced by CRLF` という改行コードの警告が出ることがありますが、エラーではありません。）
+（説明のため、BookCard.tsx を最小限の中身にした練習用リポジトリで実行した結果です。コミットの ID（`f9d7434` など）は実行するたびに変わります。Windows では `LF will be replaced by CRLF` という改行コードの警告が出ることがありますが、エラーではありません。）
 
 #### ▼ コードを1つずつ分解して解説
 
 ##### 解説1: `git status --short` の記号を読む
 
 ```text
- M src/components/BookCard.tsx
-?? src/lib/sortBooks.test.ts
+ M components/BookCard.tsx
+?? lib/sortBooks.test.ts
 ```
 
 - `M` は Modified（既存ファイルが変更された）、`??` は Untracked（Git がまだ知らない新しいファイル）という意味です。
-- 頼んだのは「sortBooks の新規作成」だけなのに `M src/components/BookCard.tsx` が出ています。これが「頼んでいない変更」を見つける一番かんたんな方法です。
+- 頼んだのは「sortBooks の新規作成」だけなのに `M components/BookCard.tsx` が出ています。これが「頼んでいない変更」を見つける一番かんたんな方法です。
 
 ##### 解説2: `git diff` は新しいファイルを表示しない
 
 ```text
 $ git diff --stat
- src/components/BookCard.tsx | 1 +
+ components/BookCard.tsx | 1 +
 ```
 
 - `git diff` が表示するのは、Git がすでに知っているファイルの変更だけです。新しく作られた `sortBooks.ts` は表示されません。
@@ -817,7 +817,7 @@ $ git diff --stat
 ##### 解説3: `git restore` で1ファイルだけ元に戻す
 
 ```bash
-git restore src/components/BookCard.tsx
+git restore components/BookCard.tsx
 ```
 
 - 指定したファイルを、最後のコミットの状態に戻します。ほかのファイル（新しく作った sortBooks.ts など）には影響しません。
@@ -826,7 +826,7 @@ git restore src/components/BookCard.tsx
 ##### 解説4: `git add` はファイルを指定する
 
 ```bash
-git add src/lib/sortBooks.ts src/lib/sortBooks.test.ts
+git add lib/sortBooks.ts lib/sortBooks.test.ts
 git commit -m "feat: 書籍の並べ替え関数 sortBooks を追加"
 ```
 
@@ -849,10 +849,10 @@ git commit -m "いろいろ修正"
 
 ```bash
 # 並べ替え関数とテストが通ったので、その2ファイルだけコミット
-git add src/lib/sortBooks.ts src/lib/sortBooks.test.ts
+git add lib/sortBooks.ts lib/sortBooks.test.ts
 git commit -m "feat: 書籍の並べ替え関数 sortBooks を追加"
 # 次に画面へつなぐ変更を確認できたら、それだけをコミット
-git add src/components/BookList.tsx
+git add components/BookList.tsx
 git commit -m "feat: 書籍一覧に並べ替えボタンを追加"
 ```
 
@@ -1351,7 +1351,7 @@ Deny:   Read(.env) / Read(.env.local) / Edit(.env) / Edit(.env.local) / git push
 ```
 
 - lint・ビルド・型チェック・テストは、何度実行してもファイルを壊さない「確かめる」ためのコマンドです。確認なしにしておくと、Claude Code が作業ループの⑤（確かめる）を止まらずに回せます。
-- `Bash(npx vitest run *)` の末尾の ` *`（スペース＋アスタリスク）は「後ろに何が続いてもよい」という意味で、`npx vitest run` 単体にも、`npx vitest run src/lib` にも一致します。
+- `Bash(npx vitest run *)` の末尾の ` *`（スペース＋アスタリスク）は「後ろに何が続いてもよい」という意味で、`npx vitest run` 単体にも、`npx vitest run lib` にも一致します。
 
 ##### 解説3: `ask` は「結果が残る操作」
 
@@ -2009,9 +2009,9 @@ Plan Mode（設計） ──→ 方針合意 ──→ Default Mode（実装）
 > **▼ この指示文がやること（先に日本語で）:** 書籍一覧に並べ替え機能を足す前に、`/plan` を付けて「計画だけ」を出してもらいます。どのファイルを新しく作り、どのファイルを変えるのかを先に見て、あなたが納得してから実装に進むための指示です。
 
 ```text
-/plan 書籍一覧ページ（src/app/page.tsx）に並べ替え機能を追加したい。
+/plan 書籍一覧ページ（app/page.tsx）に並べ替え機能を追加したい。
 並べ方は「タイトル順」「評価の高い順」「新しい順」の3つ。
-並べ替えの処理は src/lib/sortBooks.ts に関数として切り出し、Vitest でテストする。
+並べ替えの処理は lib/sortBooks.ts に関数として切り出し、Vitest でテストする。
 URL のクエリ（?sort=title など）で並べ方を選べるようにしたい。
 まだコードは書かず、変更するファイルと手順を計画してください。
 ```
@@ -2022,10 +2022,10 @@ URL のクエリ（?sort=title など）で並べ方を選べるようにした�
 ## 計画: 書籍一覧の並べ替え
 
 ### 変更するファイル
-1. src/lib/sortBooks.ts（新規）: sortBooks(books, key) を作る
-2. src/lib/sortBooks.test.ts（新規）: 3種類の並べ方と「元の配列を変えない」ことをテスト
-3. src/components/SortSelect.tsx（新規）: 並べ方を選ぶセレクトボックス（Client Component）
-4. src/app/page.tsx（変更）: URL の sort を読み、sortBooks で並べてから BookList に渡す
+1. lib/sortBooks.ts（新規）: sortBooks(books, key) を作る
+2. lib/sortBooks.test.ts（新規）: 3種類の並べ方と「元の配列を変えない」ことをテスト
+3. components/SortSelect.tsx（新規）: 並べ方を選ぶセレクトボックス（Client Component）
+4. app/page.tsx（変更）: URL の sort を読み、sortBooks で並べてから BookList に渡す
 
 ### 手順
 1. sortBooks とテストを作り、npx vitest run で確認する
@@ -2051,10 +2051,10 @@ URL のクエリ（?sort=title など）で並べ方を選べるようにした�
 <text x="24" y="62" fill="#e2e8f0">&gt; /plan 書籍一覧ページに並べ替え機能を追加したい…</text>
 <rect x="22" y="76" width="446" height="140" rx="6" fill="none" stroke="#3b82f6" stroke-width="1.5"/>
 <text x="36" y="98" fill="#93c5fd" font-weight="700">計画: 書籍一覧の並べ替え</text>
-<text x="36" y="122" fill="#e2e8f0">1. src/lib/sortBooks.ts を新規作成</text>
-<text x="36" y="144" fill="#e2e8f0">2. src/lib/sortBooks.test.ts でテスト</text>
-<text x="36" y="166" fill="#e2e8f0">3. src/components/SortSelect.tsx を新規作成</text>
-<text x="36" y="188" fill="#e2e8f0">4. src/app/page.tsx を変更</text>
+<text x="36" y="122" fill="#e2e8f0">1. lib/sortBooks.ts を新規作成</text>
+<text x="36" y="144" fill="#e2e8f0">2. lib/sortBooks.test.ts でテスト</text>
+<text x="36" y="166" fill="#e2e8f0">3. components/SortSelect.tsx を新規作成</text>
+<text x="36" y="188" fill="#e2e8f0">4. app/page.tsx を変更</text>
 <text x="36" y="208" fill="#94a3b8">（以下、手順と確認したいこと…）</text>
 <text x="36" y="242" fill="#6ee7b7" font-weight="700">❯</text>
 <text x="50" y="242" fill="#6ee7b7" font-weight="700">Yes, and use auto mode</text>
@@ -2096,7 +2096,7 @@ URL のクエリ（?sort=title など）で並べ方を選べるようにした�
 ##### 解説1: `/plan` を先頭に付けると、その指示だけプランモードになる
 
 ```text
-/plan 書籍一覧ページ（src/app/page.tsx）に並べ替え機能を追加したい。
+/plan 書籍一覧ページ（app/page.tsx）に並べ替え機能を追加したい。
 ```
 
 - `Shift+Tab` でモードを切り替えなくても、指示の先頭に `/plan` を付けるだけで「計画だけ立てて」と伝えられます。
@@ -2106,7 +2106,7 @@ URL のクエリ（?sort=title など）で並べ方を選べるようにした�
 
 ```text
 ### 変更するファイル
-1. src/lib/sortBooks.ts（新規）: sortBooks(books, key) を作る
+1. lib/sortBooks.ts（新規）: sortBooks(books, key) を作る
 ```
 
 - 計画の中で一番大事なのは「どのファイルを新しく作り、どのファイルを変えるか」です。頼んでいないファイル（例: 認証まわり）が混ざっていたら、ここで止めます。
@@ -2494,11 +2494,11 @@ src/
 - 型チェック: `npx tsc --noEmit`
 - テスト: `npx vitest run`
 
-## フォルダの役割
-- `src/app/`: ページ（フォルダ名がそのまま URL になる）
-- `src/components/`: 画面の部品（BookCard、StatusBadge など）
-- `src/lib/`: Supabase クライアントと共通の関数
-- `src/types/`: 型定義（Book 型など）
+## フォルダの役割（`src/` フォルダは使わない）
+- `app/`: ページ（フォルダ名がそのまま URL になる）
+- `components/`: 画面の部品（BookCard、StatusBadge など）
+- `lib/`: Supabase クライアントと共通の関数
+- `types/`: 型定義（Book 型など）
 
 ## コードの決まり
 - 書籍のステータスは `reading` / `completed` / `want_to_read` の3つだけ
@@ -2586,7 +2586,7 @@ CLAUDE.md は、置き場所によって「いつ読まれるか」が違いま�
 <text x="32" y="214" font-size="12" font-weight="700" font-family="Consolas, Menlo, monospace" fill="#c2410c">./.claude/rules/testing.md</text>
 <text x="32" y="232" font-size="12" fill="#475569">paths に合うファイルを触ったとき用</text>
 <rect x="20" y="248" width="300" height="44" rx="6" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.2"/>
-<text x="32" y="266" font-size="12" font-weight="700" font-family="Consolas, Menlo, monospace" fill="#c2410c">./src/app/api/CLAUDE.md</text>
+<text x="32" y="266" font-size="12" font-weight="700" font-family="Consolas, Menlo, monospace" fill="#c2410c">./app/api/CLAUDE.md</text>
 <text x="32" y="284" font-size="12" fill="#475569">そのフォルダのファイル専用のルール</text>
 <rect x="430" y="40" width="270" height="148" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
 <text x="565" y="64" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">セッション開始時に必ず読む</text>
@@ -2626,7 +2626,7 @@ CLAUDE.md は、置き場所によって「いつ読まれるか」が違いま�
 
 ```markdown
 ## コードの決まり
-- 部品（コンポーネント）は src/components/ に1ファイル1つ置く
+- 部品（コンポーネント）は components/ に1ファイル1つ置く
 - any 型は使わない（分からないときは unknown にして絞り込む）
 - 変更後は npm run lint と npx tsc --noEmit を実行して結果を報告する
 ```
@@ -3296,7 +3296,7 @@ allowed-tools:
 **▼ 実行結果（`/check` と入力したときの報告の例。テストの数は 0.4.1 の sortBooks のテストを実行した場合）**
 
 ```text
-いま変わっているファイル: src/lib/sortBooks.ts, src/lib/sortBooks.test.ts
+いま変わっているファイル: lib/sortBooks.ts, lib/sortBooks.test.ts
 
 | チェック          | 結果 | メモ                         |
 |-------------------|------|------------------------------|
@@ -3759,7 +3759,7 @@ git switch -c feature/sort-books
 ```
 
 ```text
-src/lib/sortBooks.ts に、書籍の配列を並べ替える関数 sortBooks を作ってください。
+lib/sortBooks.ts に、書籍の配列を並べ替える関数 sortBooks を作ってください。
 
 目的:
 トップページ（/）の書籍一覧を、利用者が好きな順番で見られるようにする準備です。
@@ -3781,7 +3781,7 @@ src/lib/sortBooks.ts に、書籍の配列を並べ替える関数 sortBooks を
 
 > **▼ このコードがやること（先に日本語で）:** `sortBooks` は、書籍の配列と並べ方（3種類のどれか）を受け取り、並べ替えた**新しい配列**を返す関数です。テストのほうは、3冊ぶんの見本データを使って「タイトル順・評価順・新しい順に正しく並ぶか」「元の配列が書き換わっていないか」を自動で確かめます。
 
-**`src/lib/sortBooks.ts`**
+**`lib/sortBooks.ts`**
 
 ```ts
 // 並べ替えに使う項目だけを持つ「書籍の形」
@@ -3816,7 +3816,7 @@ export function sortBooks<T extends SortableBook>(books: T[], key: SortKey): T[]
 }
 ```
 
-**`src/lib/sortBooks.test.ts`**
+**`lib/sortBooks.test.ts`**
 
 ```ts
 // Vitest のテスト用の関数を読み込む
@@ -3860,12 +3860,12 @@ describe("sortBooks", () => {
 
  RUN  v3.2.7 C:/…/my-books-app
 
- ✓ src/lib/sortBooks.test.ts (4 tests) 9ms
+ ✓ lib/sortBooks.test.ts (4 tests) 13ms
 
  Test Files  1 passed (1)
       Tests  4 passed (4)
-   Start at  11:29:28
-   Duration  1.18s (transform 127ms, setup 0ms, collect 127ms, tests 9ms, environment 0ms, prepare 637ms)
+   Start at  11:52:51
+   Duration  1.98s (transform 323ms, setup 0ms, collect 293ms, tests 13ms, environment 0ms, prepare 932ms)
 ```
 
 `✓` が付いて「4 passed（4つ成功）」と出れば、Claude Code の報告どおりに動いていることを**あなた自身が**確かめられたことになります。テストを動かす準備（Vitest のインストールと設定）は 10-1 を参照してください。
@@ -3928,22 +3928,22 @@ const copied = books;
 
  RUN  v3.2.7 C:/…/my-books-app
 
- ❯ src/lib/sortBooks.test.ts (4 tests | 1 failed) 13ms
-   ✓ sortBooks > タイトルのあいうえお順に並ぶ 7ms
+ ❯ lib/sortBooks.test.ts (4 tests | 1 failed) 18ms
+   ✓ sortBooks > タイトルのあいうえお順に並ぶ 10ms
    ✓ sortBooks > 評価の高い順に並び、評価なしは最後になる 0ms
    ✓ sortBooks > 登録が新しい順に並ぶ 1ms
-   × sortBooks > 元の配列は書き換えない 4ms
+   × sortBooks > 元の配列は書き換えない 6ms
      → expected 'あめの本' to be 'すいみん学' // Object.is equality
 
 ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
 
- FAIL  src/lib/sortBooks.test.ts > sortBooks > 元の配列は書き換えない
+ FAIL  lib/sortBooks.test.ts > sortBooks > 元の配列は書き換えない
 AssertionError: expected 'あめの本' to be 'すいみん学' // Object.is equality
 
 Expected: "すいみん学"
 Received: "あめの本"
 
- ❯ src/lib/sortBooks.test.ts:31:28
+ ❯ lib/sortBooks.test.ts:31:28
      29|   it("元の配列は書き換えない", () => {
      30|     sortBooks(books, "title");
      31|     expect(books[0].title).toBe("すいみん学");
@@ -3956,8 +3956,8 @@ Received: "あめの本"
 
  Test Files  1 failed (1)
       Tests  1 failed | 3 passed (4)
-   Start at  11:29:34
-   Duration  933ms (transform 52ms, setup 0ms, collect 59ms, tests 13ms, environment 0ms, prepare 84ms)
+   Start at  11:53:00
+   Duration  621ms (transform 57ms, setup 0ms, collect 60ms, tests 18ms, environment 0ms, prepare 113ms)
 ```
 
 **OK（直した版）:** コピーしてから並べ替える
@@ -4049,7 +4049,7 @@ const copied = [...books];
 
 > **▼ このコードがやること（先に日本語で）:** 書籍をタイトル順に取り出す関数です。NG 版は、AI が別のライブラリ（Prisma など）の書き方と混同して、Supabase には**存在しない** `findMany` というメソッドを使っています。OK 版は Supabase の正しい書き方（`select` で取り出し、`order` で並べ替え）です。型チェックの結果を比べると、ハルシネーションが機械的に見つかることが分かります。
 
-**NG（`src/lib/getBooks.ts`。AI が提案した版）**
+**NG（`lib/getBooks.ts`。AI が提案した版）**
 
 ```ts
 // サーバー用の Supabase クライアントを作る関数を読み込む
@@ -4070,7 +4070,7 @@ export async function getBooksSortedByTitle() {
 **▼ 実行結果（`npx tsc --noEmit`。supabase-js 2.117.3 / TypeScript 7.0.2）**
 
 ```text
-src/lib/getBooks.ts(10,6): error TS2339: Property 'findMany' does not exist on type 'PostgrestQueryBuilder<any, any, any, "books", unknown>'.
+lib/getBooks.ts(10,6): error TS2339: Property 'findMany' does not exist on type 'PostgrestQueryBuilder<any, any, any, "books", unknown>'.
 ```
 
 **OK（直した版）**
@@ -4105,7 +4105,7 @@ export async function getBooksSortedByTitle() {
 ##### 解説1: エラーメッセージの読み方
 
 ```text
-src/lib/getBooks.ts(10,6): error TS2339: Property 'findMany' does not exist on type 'PostgrestQueryBuilder<…>'.
+lib/getBooks.ts(10,6): error TS2339: Property 'findMany' does not exist on type 'PostgrestQueryBuilder<…>'.
 ```
 
 - `(10,6)` は「10行目の6文字目」、`TS2339` は TypeScript のエラー番号です。
@@ -4151,10 +4151,10 @@ const { data } = await supabase
 **NG（テストを書き換えて通した差分）:** 9-7 の「最初の版」のバグが残ったまま、テストが「成功」してしまいます。
 
 ```diff
-diff --git a/src/lib/sortBooks.test.ts b/src/lib/sortBooks.test.ts
+diff --git a/lib/sortBooks.test.ts b/lib/sortBooks.test.ts
 index ae01d85..6283a3c 100644
---- a/src/lib/sortBooks.test.ts
-+++ b/src/lib/sortBooks.test.ts
+--- a/lib/sortBooks.test.ts
++++ b/lib/sortBooks.test.ts
 @@ -26,8 +26,8 @@ describe("sortBooks", () => {
      expect(result[0].title).toBe("あめの本");
    });
@@ -4406,7 +4406,7 @@ Claude Codeのコンテキストウィンドウには上限があります。長
 ```
 
 ```text
-src/lib/sortBooks.ts の sortBooks で、評価順（"rating"）の並びが正しくありません。
+lib/sortBooks.ts の sortBooks で、評価順（"rating"）の並びが正しくありません。
 分かっていること:
 - 評価なし（null）の本が先頭に来てしまう。期待は「評価なしは最後」
 - npx vitest run の「評価の高い順に並び、評価なしは最後になる」が失敗する
@@ -4947,10 +4947,10 @@ CLAUDE.mdの規約に準拠しているか再確認してから修正してく�
 `sortBooks.ts` とそのテストだけを作るよう頼んだところ、Claude Code から「並べ替え機能を実装し、テストも通りました」と報告がありました。`git status --short` の結果は次のとおりです。あなたは次に何を確かめ、どう対処しますか？
 
 ```text
- M src/lib/sortBooks.test.ts
- M src/lib/supabase/server.ts
-?? src/components/SortSelect.tsx
-?? src/lib/sortBooks.ts
+ M lib/sortBooks.test.ts
+ M lib/supabase/server.ts
+?? components/SortSelect.tsx
+?? lib/sortBooks.ts
 ```
 
 （`sortBooks.test.ts` は、前回のコミットで一度作ってあったものとします。）
@@ -4959,18 +4959,18 @@ CLAUDE.mdの規約に準拠しているか再確認してから修正してく�
 
 次の (a)〜(e) をかなえるには、CLAUDE.md・Rules・Skills・Hooks・Permissions のどれを使うのが最も適切ですか？
 
-- (a) 「部品（コンポーネント）は `src/components/` に1ファイル1つ置く」という決まりを、どの作業でも守ってほしい
+- (a) 「部品（コンポーネント）は `components/` に1ファイル1つ置く」という決まりを、どの作業でも守ってほしい
 - (b) Claude がファイルを編集するたびに、必ず Prettier で整形したい
 - (c) `.env.local` を、どんな場合でも Claude に読ませたくない
 - (d) 「lint・型チェック・テストを実行して結果を表にまとめる」という作業を、`/` で始まる短い命令で何度も頼みたい
-- (e) `src/app/api/` の中のファイルを触るときだけ守ってほしい決まりがある
+- (e) `app/api/` の中のファイルを触るときだけ守ってほしい決まりがある
 
 ### 問題5: 計画に頼んでいない変更が入っている（4-1）
 
 プランモードで「`sortBooks` 関数とテストを作る」計画を頼んだところ、計画の「変更するファイル」に次の行が含まれていました。承認画面ではどの選択肢を選び、何と伝えますか？
 
 ```text
-3. src/app/layout.tsx（変更）: ヘッダーのデザインを新しくする
+3. app/layout.tsx（変更）: ヘッダーのデザインを新しくする
 ```
 
 ### 問題6: どこまで戻す？（0.4.2）
@@ -5006,7 +5006,7 @@ export async function getBooks() {
 #### 問題1の解答
 
 ```text
-src/app/page.tsx だけを変更してください。
+app/page.tsx だけを変更してください。
 
 目的:
 登録した本が何冊あるかを、一覧を見た瞬間に分かるようにしたい。
@@ -5023,7 +5023,7 @@ src/app/page.tsx だけを変更してください。
 - 私は npm run dev で、本が 0 冊・3 冊のときの表示を確認します
 ```
 
-**解説:** 「いい感じに」を、①目的（冊数がすぐ分かる）、②場所と範囲（`src/app/page.tsx` だけ）、③完成条件（「全 N 冊」と表示、0冊のときは出さない）、④確かめ方（lint と型チェック、あなたのブラウザ確認）に分解しました。特に「0冊のとき」のような**境目のケース**を書いておくと、AI の推測に任せる部分が減ります。文面は人によって違ってかまいません。4つの要素がそろっていれば正解です。
+**解説:** 「いい感じに」を、①目的（冊数がすぐ分かる）、②場所と範囲（`app/page.tsx` だけ）、③完成条件（「全 N 冊」と表示、0冊のときは出さない）、④確かめ方（lint と型チェック、あなたのブラウザ確認）に分解しました。特に「0冊のとき」のような**境目のケース**を書いておくと、AI の推測に任せる部分が減ります。文面は人によって違ってかまいません。4つの要素がそろっていれば正解です。
 
 #### 問題2の解答
 
@@ -5038,11 +5038,11 @@ src/app/page.tsx だけを変更してください。
 
 #### 問題3の解答
 
-1. **`sortBooks.test.ts` の差分を読む**: `git diff src/lib/sortBooks.test.ts` で、テストの期待値が書き換えられていないかを確認します（つまずきポイント⑪）。
-2. **頼んでいない `server.ts` を戻す**: `git diff src/lib/supabase/server.ts` で中身を確認し、不要なら `git restore src/lib/supabase/server.ts` で元に戻します。
+1. **`sortBooks.test.ts` の差分を読む**: `git diff lib/sortBooks.test.ts` で、テストの期待値が書き換えられていないかを確認します（つまずきポイント⑪）。
+2. **頼んでいない `server.ts` を戻す**: `git diff lib/supabase/server.ts` で中身を確認し、不要なら `git restore lib/supabase/server.ts` で元に戻します。
 3. **頼んでいない `SortSelect.tsx` を消す**: 新しいファイル（`??`）は `git restore` では消えないので、今回使わないならファイルを削除します（次の作業で使うなら、別のコミットに回します）。
 4. **自分でテストを実行**: `npx vitest run` を自分で実行して、報告どおり通ることを確かめます。
-5. **頼んだ2ファイルだけコミット**: `git add src/lib/sortBooks.ts src/lib/sortBooks.test.ts` の後に `git commit` します。
+5. **頼んだ2ファイルだけコミット**: `git add lib/sortBooks.ts lib/sortBooks.test.ts` の後に `git commit` します。
 
 **解説:** 「テストも通りました」という報告は、差分を読むまでは「自己申告」にすぎません。`git status` で頼んでいないファイル（`server.ts`・`SortSelect.tsx`）を見つけたら、中身を確かめてから戻すか、別の作業として切り分けます。テストファイルが変更されている場合は、期待値が都合よく変えられていないかを必ず確認しましょう。
 
@@ -5052,7 +5052,7 @@ src/app/page.tsx だけを変更してください。
 - (b) **Hooks**（`PostToolUse` で Edit/Write の後に必ず実行。2-5）
 - (c) **Permissions**（`deny` に `Read(.env.local)` を入れる。2-2）
 - (d) **Skills**（`/check` のようなスキルを作る。7-6-1）
-- (e) **Rules**（`.claude/rules/` に `paths` 付きで置く。`src/app/api/CLAUDE.md` でも可）
+- (e) **Rules**（`.claude/rules/` に `paths` 付きで置く。`app/api/CLAUDE.md` でも可）
 
 **解説:** (b) と (c) は「AI の判断に関係なく必ず効いてほしい」ことなので、お願いである CLAUDE.md ではなく、仕組みで強制する Hooks・Permissions を使います（1-4 の図11-8）。(a) と (e) の違いは、全体に効かせるか、特定の場所だけに効かせるかです。
 
@@ -5061,7 +5061,7 @@ src/app/page.tsx だけを変更してください。
 `No, keep planning` を選び、次のように伝えます。
 
 ```text
-計画から「3. src/app/layout.tsx の変更」を外してください。
+計画から「3. app/layout.tsx の変更」を外してください。
 今回は sortBooks.ts と sortBooks.test.ts の2ファイルだけを作ります。
 ヘッダーのデザインは変更しないでください。
 ```
@@ -5089,7 +5089,7 @@ src/app/page.tsx だけを変更してください。
 **見つけ方:** `npx tsc --noEmit` で型チェックをすると、次のエラーが出ます（supabase-js 2.117.3 / TypeScript 7.0.2 で確認）。
 
 ```text
-src/lib/getBooks.ts(7,61): error TS2339: Property 'sortBy' does not exist on type 'PostgrestFilterBuilder<any, any, any, any[], "books", unknown, "GET", false>'.
+lib/getBooks.ts(7,61): error TS2339: Property 'sortBy' does not exist on type 'PostgrestFilterBuilder<any, any, any, any[], "books", unknown, "GET", false>'.
 ```
 
 **正しい書き方:**
