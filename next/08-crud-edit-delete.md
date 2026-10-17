@@ -16,7 +16,10 @@
 
 > **動的ルーティングとは？** URLの一部を変数として扱う仕組みです。例えば `/books/abc123` と `/books/xyz789` は、同じページ定義（`/books/[id]/page.tsx`）で処理されます。`[id]` の部分がそれぞれ `abc123` や `xyz789` に置き換わります。「URLの中の変わる部分」を **動的セグメント（dynamic segment）** と呼びます。セグメントとは URL を `/` で区切った 1 区画のことで、`/books/abc123` なら `books` と `abc123` がそれぞれ 1 セグメントになります。
 
+<!-- -->
+
 > **HTTP メソッドのざっくり整理:** ブラウザがサーバーに対して行う操作には種類があり、これを HTTP メソッドと呼びます。CRUD と対応付けると次のようになります。
+>
 > - **GET**: ページやデータを「読む」（Read）。一覧表示や詳細表示で使う。何度実行しても結果が変わらない。
 > - **POST**: 新しいデータを「作る」（Create）。フォーム送信などで使う。実行のたびに新しいレコードが増える。
 > - **PUT / PATCH**: 既存データを「書き換える」（Update）。同じリクエストを 2 回送っても結果が同じ（これを **冪等性（べきとうせい）** と呼びます）。
@@ -45,8 +48,8 @@
 <text x="360" y="22" text-anchor="middle" font-size="14" font-weight="700" fill="#475569">この章で作る画面のつながり</text>
 <rect x="20" y="40" width="170" height="74" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="6 4"/>
 <text x="105" y="66" text-anchor="middle" font-size="15" font-weight="700" fill="#475569">一覧ページ</text>
-<text x="105" y="86" text-anchor="middle" font-size="12" fill="#64748b" font-family="Consolas, monospace">/books</text>
-<text x="105" y="104" text-anchor="middle" font-size="12" fill="#64748b">一覧表示は第7章</text>
+<text x="105" y="86" text-anchor="middle" font-size="12" fill="#64748b" font-family="Consolas, monospace">/</text>
+<text x="105" y="104" text-anchor="middle" font-size="12" fill="#64748b">第7章で作成済み</text>
 <rect x="275" y="40" width="170" height="74" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
 <text x="360" y="66" text-anchor="middle" font-size="15" font-weight="700" fill="#1e40af">詳細ページ</text>
 <text x="360" y="86" text-anchor="middle" font-size="12" fill="#1e40af" font-family="Consolas, monospace">/books/[id]</text>
@@ -78,10 +81,10 @@
 <rect x="545" y="266" width="155" height="28" rx="6" fill="#f8fafc" stroke="#cbd5e1"/>
 <text x="622" y="285" text-anchor="middle" font-size="12" fill="#475569">§9 練習問題</text>
 </svg>
-<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図8-1: この章の地図（点線の一覧ページは第7章で作った一覧表示。§ は節の番号）</div>
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図8-1: この章の地図（点線の一覧ページ app/page.tsx は第7章で作成済み。§ は節の番号）</div>
 </div>
 
-**前提として必要なもの:** 第7章までの書籍管理アプリ（書籍の一覧表示と、新規登録ページ `/books/new` が動いていること）と、Supabase の `books` テーブルに本が数冊登録されていること。
+**前提として必要なもの:** 第7章までの書籍管理アプリ（一覧ページ `/` と新規登録ページ `/books/new` が動いていること）と、Supabase の `books` テーブルに本が数冊登録されていること。
 
 ---
 
@@ -385,7 +388,7 @@ export default function Counter() {
 
 ボタンを押した後に**プログラム的に別ページに遷移**したいときは `useRouter` を使います。`<Link>` は「ユーザーがクリックして遷移する」ためのもの、`useRouter` は「コードが勝手に遷移させる」ためのもの、と覚えると分かりやすいです。
 
-> **▼ このコードがやること（先に日本語で）:** ボタンを押したら、JavaScript のコードから別ページ（`/books`）へ自動で移動させる例です。`useRouter` で取得した `router` オブジェクトの `push` を呼ぶと、リンクをクリックしたのと同じように画面が切り替わります。初心者は「リンクは人がクリック、`router.push` はプログラムが移動させる」という違いだけ覚えておけば十分です。各メソッドの使い分けはこのあとの表とコメントで補足します。
+> **▼ このコードがやること（先に日本語で）:** ボタンを押したら、JavaScript のコードから一覧ページ（`/`）へ自動で移動させる例です。`useRouter` で取得した `router` オブジェクトの `push` を呼ぶと、リンクをクリックしたのと同じように画面が切り替わります。初心者は「リンクは人がクリック、`router.push` はプログラムが移動させる」という違いだけ覚えておけば十分です。各メソッドの使い分けはこのあとの表とコメントで補足します。
 
 ```tsx
 // useRouter はクライアントコンポーネント専用なので、この宣言が必須
@@ -399,8 +402,8 @@ export default function MyComponent() {
 
   // ボタンクリック時に呼ばれる関数
   const handleClick = () => {
-    // /books に遷移する（履歴に積まれる＝戻るボタンで戻れる）
-    router.push("/books");
+    // 一覧ページ（/）に遷移する（履歴に積まれる＝戻るボタンで戻れる）
+    router.push("/");
     // 現在ページのサーバー側データを最新化（必要時のみ呼ぶ）
     router.refresh();
   };
@@ -414,7 +417,7 @@ export default function MyComponent() {
 
 | メソッド | 用途 | 例 |
 |----------|------|-----|
-| `router.push("/books")` | 新しいURLに遷移 | 削除後に一覧へ戻る |
+| `router.push("/")` | 新しいURLに遷移 | 削除後に一覧（`/`）へ戻る |
 | `router.replace("/login")` | 履歴を残さず遷移 | ログイン誘導 |
 | `router.back()` | ブラウザの戻るボタンと同じ | キャンセル |
 | `router.refresh()` | 現在ページを再取得 | データ更新後の反映 |
@@ -433,6 +436,8 @@ export default function MyComponent() {
 
 > **フォームの送信フローについて補足:** 一般的に Web のフォームは「ユーザーが入力 → 送信ボタン → ブラウザがサーバーに POST → サーバーが処理 → 結果ページを返す」という流れで動きます。この章のフォームはちょっと違っていて、「ユーザーが入力 → 送信ボタン → JavaScript が `e.preventDefault()` で標準送信をキャンセル → Supabase クライアント経由で直接 DB に書き込み → `router.push` でページ遷移」という SPA 的な流れになっています。標準送信ではないので、ページがリロードされず、画面のチラつきがありません。
 
+<!-- -->
+
 > **ブラウザのキャッシュと再送信について:** フォーム送信後にブラウザの「更新」ボタンを押すと、「フォームを再送信しますか？」というダイアログが出ることがあります。これは「同じ POST をもう一度送ろうとしている」状態で、二重登録の原因になります。本章のように `router.push` で別ページに遷移すると、再読み込みしても遷移先のページが更新されるだけで、フォームは再送信されません（これを Post/Redirect/Get パターンと呼びます）。
 
 ---
@@ -447,8 +452,8 @@ Next.js App Router では、フォルダ名を `[パラメータ名]` のよう�
 
 ```
 app/
+  page.tsx            → /（一覧ページ。第7章で作成）
   books/
-    page.tsx          → /books（一覧ページ）
     new/
       page.tsx        → /books/new（新規登録ページ）
     [id]/
@@ -541,18 +546,19 @@ type Props = {
 // -------------------------------------------------
 // データベースに保存されている英語のステータス値を
 // 日本語の表示ラベルに変換します。
-// 例: "unread" → "未読"
+// 例: "want_to_read" → "読みたい"
+// 値とラベルは第7章の StatusBadge と同じにそろえています。
 // -------------------------------------------------
 // 引数 status は文字列、戻り値も文字列
 function getStatusLabel(status: string): string {
   // Record<キーの型, 値の型> は「キーと値の型を指定したオブジェクト」を表す型
   const statusMap: Record<string, string> = {
-    // DB の値 "unread" を「未読」に対応付け
-    unread: "未読",
+    // DB の値 "want_to_read" を「読みたい」に対応付け
+    want_to_read: "読みたい",
     // DB の値 "reading" を「読書中」に対応付け
     reading: "読書中",
-    // DB の値 "finished" を「読了」に対応付け
-    finished: "読了",
+    // DB の値 "completed" を「読了」に対応付け
+    completed: "読了",
   };
   // 該当があれば日本語、無ければ元の値をそのまま返す（フォールバック）
   return statusMap[status] || status;
@@ -568,16 +574,16 @@ function getStatusLabel(status: string): string {
 function getStatusColor(status: string): string {
   // status の値で分岐
   switch (status) {
-    // 未読のとき
-    case "unread":
-      // 背景はグレー、文字は濃いグレー
-      return "bg-gray-100 text-gray-800";
+    // 読みたい（まだ読んでいない）とき
+    case "want_to_read":
+      // 背景は薄い黄、文字は濃い黄（第7章の StatusBadge と同じ色）
+      return "bg-yellow-100 text-yellow-800";
     // 読書中のとき
     case "reading":
       // 背景は薄い青、文字は濃い青
       return "bg-blue-100 text-blue-800";
     // 読了のとき
-    case "finished":
+    case "completed":
       // 背景は薄い緑、文字は濃い緑
       return "bg-green-100 text-green-800";
     // 想定外の値が来たとき
@@ -710,7 +716,7 @@ export default async function BookDetailPage({ params }: Props) {
       ------------------------------------------- */}
       <Link
         // 遷移先の URL
-        href="/books"
+        href="/"
         // インラインフレックスで矢印とテキストを横並びに
         className="inline-flex items-center text-sm text-blue-600 hover:text-blue-800 mb-6"
       >
@@ -1212,7 +1218,7 @@ export default function BookNotFound() {
       </p>
       {/* 一覧ページへ戻るボタン */}
       <Link
-        href="/books"
+        href="/"
         className="mt-6 inline-block rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
       >
         一覧に戻る
@@ -1270,6 +1276,8 @@ export default function BookNotFound() {
 書籍情報を編集する機能を実装します。編集機能では、前章で作成した `BookForm` コンポーネントを再利用し、既存データを初期値としてフォームに表示します。
 
 > **「編集」と冪等性:** 編集（UPDATE）は何度実行しても最終結果が同じになる操作（冪等性がある）です。同じデータで 2 回更新ボタンを押しても、データベースの状態は同じになります。これは新規登録（INSERT）と大きく異なる点で、INSERT は押すたびにレコードが増えてしまいます。
+
+<!-- -->
 
 > **同時編集の競合について:** 複数のユーザーが同じ書籍を同時に編集して保存すると、後から保存した方の内容で上書きされます（**最後の書き込みが勝つ＝Last Write Wins**）。このチュートリアルの実装ではこの問題を意識せず単純に上書きしますが、より高度なアプリでは「更新日時を比較して古いデータの上書きを拒否する」「ロックを取る」といった対策が必要になります。
 
@@ -1574,8 +1582,10 @@ try {
 - 送信先の処理: 新規登録時は INSERT、編集時は UPDATE
 
 > **`defaultValue` と `value` の違い:** React の input には 2 通りの値の渡し方があります。
+>
 > - `defaultValue`: 最初に 1 回だけ反映される（**非制御コンポーネント**）。ユーザーの入力は React の状態に同期されない。
 > - `value`: 常に渡された値が表示される（**制御コンポーネント**）。`onChange` で React の状態を更新しないと、入力できなくなる。
+>
 > 本章のフォームは `value` + `onChange` の **制御コンポーネント** 方式です。状態を React 側で完全に管理するので、検証や送信処理が書きやすくなります。
 
 **ファイル: `components/BookForm.tsx`**
@@ -1592,6 +1602,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 // ブラウザ向けの Supabase クライアント
 import { createClient } from "@/lib/supabase/client";
+// 第7章の StatusBadge で定義したステータスの型（型だけを読み込む）
+import { type BookStatus } from "./StatusBadge";
 
 // -------------------------------------------------
 // 型定義
@@ -1612,8 +1624,8 @@ type BookFormData = {
   published_date: string;
   // 評価（1〜5 または null）
   rating: number | null;
-  // ステータス（"unread" / "reading" / "finished"）
-  status: string;
+  // ステータス（"want_to_read" / "reading" / "completed" のどれか）
+  status: BookStatus;
   // メモ
   memo: string;
 };
@@ -1657,8 +1669,8 @@ const defaultFormData: BookFormData = {
   published_date: "",
   // 評価なし
   rating: null,
-  // デフォルトは「未読」
-  status: "unread",
+  // デフォルトは「読みたい」（第7章と同じ）
+  status: "want_to_read",
   // 空文字
   memo: "",
 };
@@ -1756,8 +1768,9 @@ export default function BookForm({
     // -------------------------------------------------
     // バリデーション
     // -------------------------------------------------
-    // タイトルは必須項目です。空の場合はエラーを
-    // 表示して処理を中断します。
+    // タイトルと著者は必須項目です（第7章の BookForm と
+    // 同じルール。DB の列も NOT NULL）。空の場合は
+    // エラーを表示して処理を中断します。
     // trim() で前後の空白を除去してからチェックする
     // ことで「スペースだけ」の入力もエラー扱いに。
     // -------------------------------------------------
@@ -1767,6 +1780,12 @@ export default function BookForm({
       // 送信中フラグを戻す
       setIsSubmitting(false);
       // 処理を中断
+      return;
+    }
+    // 著者が空白のみ または 空文字の場合
+    if (!formData.author.trim()) {
+      setError("著者は必須です。");
+      setIsSubmitting(false);
       return;
     }
 
@@ -1792,8 +1811,9 @@ export default function BookForm({
           .update({
             // 前後の空白を除去
             title: formData.title.trim(),
+            // 著者は必須なので null にしない（空白を除くだけ）
+            author: formData.author.trim(),
             // 空文字なら null（DB をクリーンに保つ）
-            author: formData.author.trim() || null,
             publisher: formData.publisher.trim() || null,
             // 空文字なら null
             published_date: formData.published_date || null,
@@ -1837,7 +1857,7 @@ export default function BookForm({
           // INSERT 文に相当
           .insert({
             title: formData.title.trim(),
-            author: formData.author.trim() || null,
+            author: formData.author.trim(),
             publisher: formData.publisher.trim() || null,
             published_date: formData.published_date || null,
             rating: formData.rating,
@@ -1854,9 +1874,9 @@ export default function BookForm({
         }
 
         // -------------------------------------------------
-        // 登録成功: 一覧ページにリダイレクト
+        // 登録成功: 一覧ページ（/）にリダイレクト
         // -------------------------------------------------
-        router.push("/books");
+        router.push("/");
         router.refresh();
       }
     } catch (err) {
@@ -1944,13 +1964,16 @@ export default function BookForm({
           htmlFor="author"
           className="block text-sm font-medium text-gray-700"
         >
-          著者
+          {/* 著者もタイトルと同じく必須 */}
+          著者 <span className="text-red-500">*</span>
         </label>
         <input
           type="text"
           id="author"
           // name="author" → handleChange で formData.author が更新される
           name="author"
+          // ブラウザ側の必須チェック
+          required
           value={formData.author}
           onChange={handleChange}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
@@ -2039,9 +2062,9 @@ export default function BookForm({
           onChange={handleChange}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
         >
-          <option value="unread">未読</option>
+          <option value="want_to_read">読みたい</option>
           <option value="reading">読書中</option>
-          <option value="finished">読了</option>
+          <option value="completed">読了</option>
         </select>
       </div>
 
@@ -2115,7 +2138,7 @@ export default function BookForm({
 
 4. **ボタンテキストの切り替え**: `isEdit` フラグに応じて、ボタンのテキストが「登録する」と「更新する」で切り替わります。送信中の表示も「登録中...」と「更新中...」で異なります。
 
-5. **リダイレクト先の違い**: 新規登録後は一覧ページ（`/books`）へ、編集後は詳細ページ（`/books/${bookId}`）へリダイレクトします。
+5. **リダイレクト先の違い**: 新規登録後は一覧ページ（`/`）へ、編集後は詳細ページ（`/books/${bookId}`）へリダイレクトします。
 
 > **`type="submit"` と `type="button"` の違い:** `<form>` 内のボタンは、`type` 属性を指定しないと既定で `submit` 扱いになり、クリックするとフォームが送信されてしまいます。「キャンセル」のように送信を伴わないボタンには必ず `type="button"` を明示してください。逆に「更新する／登録する」ボタンは送信したいので `type="submit"` を指定し、フォームの `onSubmit` ハンドラを発火させます。
 
@@ -2207,8 +2230,9 @@ if (isEdit && bookId) {
     .update({
       // 前後の空白を除去
       title: formData.title.trim(),
+      // 著者は必須なので null にしない（空白を除くだけ）
+      author: formData.author.trim(),
       // 空文字なら null（DB をクリーンに保つ）
-      author: formData.author.trim() || null,
       publisher: formData.publisher.trim() || null,
       // 空文字なら null
       published_date: formData.published_date || null,
@@ -2223,7 +2247,8 @@ if (isEdit && bookId) {
 
 - 送信処理の中心です。`if (isEdit && bookId)` で「編集モードかつIDがある」ときだけ UPDATE（更新）を実行し、そうでなければ（`else` 側で）INSERT（新規追加）を実行します。
 - `.update({ ... })` で更新したい内容を渡し、`.eq("id", bookId)` で「IDが一致する1件だけ」に絞り込みます。**この `.eq()` を忘れると全件が更新されてしまう**ため、UPDATE/DELETE では絶対に付けます。
-- `formData.author.trim() || null` は「前後の空白を除いた結果が空文字なら `null` を入れる」という意味です（`||` は左が空っぽのとき右を使う）。空文字ではなく `null` を入れることで、データベースを「未入力＝null」というきれいな状態に保てます。
+- `formData.publisher.trim() || null` は「前後の空白を除いた結果が空文字なら `null` を入れる」という意味です（`||` は左が空っぽのとき右を使う）。空文字ではなく `null` を入れることで、データベースを「未入力＝null」というきれいな状態に保てます。
+- ただし **著者は必須**（第7章と同じルールで、DB の `author` 列も NOT NULL）なので、`formData.author.trim()` と空白を除くだけにしています。空のまま送られないよう、送信前のバリデーションで止めています。
 
 > **用語:** **`.eq("id", bookId)`** は「id 列が bookId と等しい行だけ」を対象にする絞り込み（SQL の `WHERE id = ...` に相当）。**UPDATE** は既存データの書き換え、**INSERT** は新しいデータの追加を指すデータベース操作です。
 
@@ -2300,7 +2325,7 @@ function applyChange(
 }
 
 // 「ステータス欄を読了に変えた」という入力を再現する
-const next = applyChange(initialData, "status", "finished");
+const next = applyChange(initialData, "status", "completed");
 console.log("変更前の status:", initialData.status);
 console.log("変更後の status:", next.status);
 console.log("title はそのまま:", next.title);
@@ -2309,7 +2334,7 @@ console.log("新しいオブジェクトになった?:", !Object.is(initialData,
 
 // NG: 元のオブジェクトを直接書き換えると「同じオブジェクト」のまま
 const sameObject = initialData;
-sameObject.status = "finished";
+sameObject.status = "completed";
 console.log(
   "直接書き換えたら別物になった?:",
   !Object.is(initialData, sameObject),
@@ -2329,7 +2354,7 @@ for (const v of samples) {
 
 ```text
 変更前の status: reading
-変更後の status: finished
+変更後の status: completed
 title はそのまま: React実践ガイド
 新しいオブジェクトになった?: true
 直接書き換えたら別物になった?: false
@@ -2350,7 +2375,7 @@ return {
 };
 ```
 
-- `...prev` で7つの欄をすべてコピーしてから、`[name]: value` で1つだけ上書きします。`name` が `"status"` なら `status: "finished"` と書いたのと同じです。
+- `...prev` で7つの欄をすべてコピーしてから、`[name]: value` で1つだけ上書きします。`name` が `"status"` なら `status: "completed"` と書いたのと同じです。
 - 実行結果で `title はそのまま: React実践ガイド` と出ているとおり、上書きしなかった欄は元の値が残ります。
 
 ##### 解説2: React は「別のオブジェクトになったか」で画面を描き直す
@@ -2366,7 +2391,7 @@ console.log("新しいオブジェクトになった?:", !Object.is(initialData,
 
 ```ts
 const sameObject = initialData;
-sameObject.status = "finished";
+sameObject.status = "completed";
 ```
 
 - `sameObject` は `initialData` と **同じ箱を指す別名** にすぎません。中身を書き換えても箱は同じなので、結果は `false`（別物になっていない）です。
@@ -2380,7 +2405,7 @@ const withOr = JSON.stringify(v || "既定値");
 ```
 
 - 実行結果の下4行を見比べてください。`null` と `undefined` ではどちらも「既定値」になりますが、`""`（空文字）と `0` では結果が分かれます。
-- 編集ページで `book.publisher ?? ""` と `??` を使うのは、「`null` だけを空文字に直したい」からです。逆に `BookForm` の `formData.author.trim() || null` で `||` を使うのは、「空文字を `null` に直したい」からです。目的に合わせて使い分けています。
+- 編集ページで `book.publisher ?? ""` と `??` を使うのは、「`null` だけを空文字に直したい」からです。逆に `BookForm` の `formData.publisher.trim() || null` で `||` を使うのは、「空文字を `null` に直したい」からです。目的に合わせて使い分けています。
 
 > **つまずきポイント4: state のオブジェクトを直接書き換えてしまう。** `formData.title = "新しいタイトル"` のように書いても、React は変化に気付かないので画面が更新されません（しかも、次に `setFormData` を呼んだときに思わぬ値が混ざる原因になります）。state を変えるときは、必ず **set 関数に新しいオブジェクトを渡します**。
 
@@ -2496,7 +2521,7 @@ export default async function BookEditPage({ params }: Props) {
     // null はそのまま
     rating: book.rating ?? null,
     // status は null だと困るのでデフォルトを設定
-    status: book.status ?? "unread",
+    status: book.status ?? "want_to_read",
     memo: book.memo ?? "",
   };
 
@@ -2626,7 +2651,7 @@ export default async function BookEditPage({ params }: Props) {
 
 新規登録ページ（`/books/new`）と見比べると、違いは「欄に最初から値が入っている」「ボタンの文字が『更新する』」「タイトルの上に『〇〇の情報を編集します』と出る」の3点だけです。同じ `BookForm` を props で2役に切り替えていることが、画面からも分かります。
 
-> **Server Action という別パターン:** 本章ではクライアントコンポーネント側で Supabase を直接呼び出していますが、Next.js には「Server Action」という別の更新手段もあります。`"use server"` ディレクティブを付けた関数をフォームに直接渡し、サーバー側で更新→`revalidatePath` でキャッシュ破棄→`redirect` で遷移、という流れにできます。今回の教材では学習コストを抑えるためクライアント直書きを採用していますが、認証情報を守りたい場合や複雑なバリデーションをサーバーで行いたい場合は Server Action の方が向いています。`revalidatePath("/books")` を呼ぶと、その URL に紐づくサーバーコンポーネントのキャッシュが破棄され、次のアクセスで最新データが取得されます。
+> **Server Action という別パターン:** 本章ではクライアントコンポーネント側で Supabase を直接呼び出していますが、Next.js には「Server Action」という別の更新手段もあります。`"use server"` ディレクティブを付けた関数をフォームに直接渡し、サーバー側で更新→`revalidatePath` でキャッシュ破棄→`redirect` で遷移、という流れにできます。今回の教材では学習コストを抑えるためクライアント直書きを採用していますが、認証情報を守りたい場合や複雑なバリデーションをサーバーで行いたい場合は Server Action の方が向いています。`revalidatePath("/")` を呼ぶと、その URL に紐づくサーバーコンポーネントのキャッシュが破棄され、次のアクセスで最新データが取得されます。
 
 #### ▼ コードを1つずつ分解して解説
 
@@ -2671,14 +2696,14 @@ const initialData = {
   // null はそのまま
   rating: book.rating ?? null,
   // status は null だと困るのでデフォルトを設定
-  status: book.status ?? "unread",
+  status: book.status ?? "want_to_read",
   memo: book.memo ?? "",
 };
 ```
 
 - データベースから取った `book` を、フォームに渡す形（`initialData`）に整え直しています。
 - ポイントは `?? ""` で **`null` を空文字に変換** している点です。React の入力欄に `null` を渡すと「非制御コンポーネント」になってしまい、入力が React 側で管理できなくなるため、文字列の欄はすべて空文字にそろえます。
-- `rating` だけは数値か `null` のままで構わない（評価なしを表せる）ので `?? null`、`status` は空だと困るので `?? "unread"` とデフォルトを与えています。
+- `rating` だけは数値か `null` のままで構わない（評価なしを表せる）ので `?? null`、`status` は空だと困るので `?? "want_to_read"` とデフォルトを与えています。
 
 > **用語:** **制御コンポーネント** は入力値を React の state で管理する方式で、`value` には必ず文字列（や数値）を渡します。`null` を渡すと**非制御コンポーネント**扱いになり、入力が state に同期されなくなります。
 
@@ -2758,7 +2783,7 @@ const initialData = {
 type BookRow = {
   id: string;
   title: string;
-  author: string | null;
+  author: string;
   publisher: string | null;
   published_date: string | null;
   rating: number | null;
@@ -2785,16 +2810,17 @@ function toFormData(book: BookRow): BookFormData {
     publisher: book.publisher ?? "",
     published_date: book.published_date ?? "",
     rating: book.rating ?? null,
-    status: book.status ?? "unread",
+    status: book.status ?? "want_to_read",
     memo: book.memo ?? "",
   };
 }
 
 // BookForm が .update() に渡す中身と同じ変換（"" → null、空白を除去）
+// 著者は必須なので null にはしない
 function toUpdatePayload(form: BookFormData) {
   return {
     title: form.title.trim(),
-    author: form.author.trim() || null,
+    author: form.author.trim(),
     publisher: form.publisher.trim() || null,
     published_date: form.published_date || null,
     rating: form.rating,
@@ -3097,7 +3123,7 @@ export async function updateBookTitle(id: string, formData: FormData) {
 
   // 詳細ページと一覧ページのキャッシュを捨てる
   revalidatePath(`/books/${id}`);
-  revalidatePath("/books");
+  revalidatePath("/");
   // 詳細ページへ移動する（この行より後ろは実行されない）
   redirect(`/books/${id}`);
 }
@@ -3162,7 +3188,7 @@ export function EditTitleFormWithHidden({ id, title }: Props) {
 "use server";
 
 revalidatePath(`/books/${id}`);
-revalidatePath("/books");
+revalidatePath("/");
 redirect(`/books/${id}`);
 ```
 
@@ -3250,7 +3276,7 @@ if (typeof id !== "string" || id === "") {
       </div>
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
         <div style="background:#10b981;color:white;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">5</div>
-        <div style="font-size:12px;color:#14532d;">削除完了 → router.push("/books")</div>
+        <div style="font-size:12px;color:#14532d;">削除完了 → router.push("/")</div>
       </div>
       <div style="display:flex;align-items:center;gap:8px;">
         <div style="background:#10b981;color:white;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">6</div>
@@ -3278,7 +3304,7 @@ if (typeof id !== "string" || id === "") {
 <text x="60" y="101" font-size="18" font-weight="700" fill="#ffffff">TypeScript入門</text>
 <text x="60" y="152" font-size="13" fill="#475569">出版社 未設定</text>
 <text x="60" y="180" font-size="13" fill="#475569">評価 ★★★☆☆</text>
-<text x="60" y="208" font-size="13" fill="#475569">ステータス 未読</text>
+<text x="60" y="208" font-size="13" fill="#475569">ステータス 読みたい</text>
 <rect x="556" y="222" width="60" height="30" rx="5" fill="#3b82f6"/>
 <text x="586" y="242" text-anchor="middle" font-size="12" fill="#ffffff">編集する</text>
 <rect x="622" y="222" width="60" height="30" rx="5" fill="#dc2626"/>
@@ -3430,8 +3456,8 @@ export default function DeleteButton({ bookId, bookTitle }: Props) {
       // データを再取得し、削除された書籍が一覧から
       // 消えていることを確認できるようにします。
       // -------------------------------------------------
-      // 一覧ページへ
-      router.push("/books");
+      // 一覧ページ（/）へ
+      router.push("/");
       // サーバー側データを再取得
       router.refresh();
     } catch (err) {
@@ -3529,7 +3555,7 @@ export default function DeleteButton({ bookId, bookTitle }: Props) {
 
 - `"use client"` ディレクティブが必須です。`window.confirm()` や `onClick` イベントハンドラはブラウザ側でしか動作しないためです。サーバー側には `window` オブジェクト自体が存在しません。
 - `isDeleting` 状態によるローディング管理で、二重クリックによる二重削除を防いでいます。ボタンの `disabled` 属性と組み合わせることで、処理中は追加のクリックを受け付けません。なお DELETE は冪等（何度実行しても結果が同じ）なので、仮に 2 回送られてもデータが壊れることはありませんが、不要なネットワーク負荷を避ける意味でガードします。
-- 削除後は `router.push("/books")` で一覧ページに遷移し、`router.refresh()` でサーバーコンポーネントのキャッシュを更新します。これにより、一覧ページで最新のデータが表示されます。
+- 削除後は `router.push("/")` で一覧ページに遷移し、`router.refresh()` でサーバーコンポーネントのキャッシュを更新します。これにより、一覧ページで最新のデータが表示されます。
 - エラー時は `alert()` でユーザーに通知し、`isDeleting` を `false` に戻してリトライ可能にしています。
 
 > **このボタンは独立した `<button>` であり、フォームの `type="submit"` ではありません。** もしフォーム内に置く場合は `type="button"` を明示しないと、親フォームの送信が発火してしまうので注意してください。今回は親が `<form>` ではなくただの `<div>` なのでこの問題は起きません。
@@ -3595,8 +3621,8 @@ try {
 ##### 解説3: 成功時は一覧へ戻し、失敗時はリトライ可能にする
 
 ```tsx
-  // 一覧ページへ
-  router.push("/books");
+  // 一覧ページ（/）へ
+  router.push("/");
   // サーバー側データを再取得
   router.refresh();
 } catch (err) {
@@ -3607,7 +3633,7 @@ try {
 }
 ```
 
-- 削除に成功したら、消した本の詳細ページはもう存在しないので `router.push("/books")` で一覧へ戻します。
+- 削除に成功したら、消した本の詳細ページはもう存在しないので `router.push("/")` で一覧へ戻します。
 - 続く `router.refresh()` は「サーバーコンポーネントのデータを取り直す」命令です。これを呼ばないとキャッシュが残り、一覧に消したはずの本が表示されたままになることがあります。
 - 失敗したときは `catch` に入り、`alert` でユーザーに知らせ、`setIsDeleting(false)` で旗を下ろして**もう一度試せる状態**に戻します（成功時は遷移するので旗を戻す必要はありません）。
 
@@ -3641,12 +3667,12 @@ try {
 <rect x="20" y="136" width="320" height="32" fill="#fff7ed" stroke="#fdba74"/>
 <text x="34" y="157" font-size="12" fill="#c2410c" font-family="Consolas, monospace">b2</text>
 <text x="84" y="157" font-size="12" fill="#c2410c">TypeScript入門</text>
-<text x="250" y="157" font-size="12" fill="#c2410c" font-family="Consolas, monospace">unread</text>
+<text x="250" y="157" font-size="12" fill="#c2410c" font-family="Consolas, monospace">want_to_read</text>
 <line x1="28" y1="152" x2="332" y2="152" stroke="#c2410c" stroke-width="2"/>
 <rect x="20" y="168" width="320" height="32" fill="#fff7ed" stroke="#fdba74"/>
 <text x="34" y="189" font-size="12" fill="#c2410c" font-family="Consolas, monospace">c3</text>
 <text x="84" y="189" font-size="12" fill="#c2410c">Next.js実践</text>
-<text x="250" y="189" font-size="12" fill="#c2410c" font-family="Consolas, monospace">finished</text>
+<text x="250" y="189" font-size="12" fill="#c2410c" font-family="Consolas, monospace">completed</text>
 <line x1="28" y1="184" x2="332" y2="184" stroke="#c2410c" stroke-width="2"/>
 <rect x="20" y="200" width="320" height="32" fill="#fff7ed" stroke="#fdba74"/>
 <text x="34" y="221" font-size="12" fill="#c2410c" font-family="Consolas, monospace">d4</text>
@@ -3666,12 +3692,12 @@ try {
 <rect x="380" y="136" width="320" height="32" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
 <text x="394" y="157" font-size="12" fill="#c2410c" font-family="Consolas, monospace">b2</text>
 <text x="444" y="157" font-size="12" fill="#c2410c">TypeScript入門</text>
-<text x="610" y="157" font-size="12" fill="#c2410c" font-family="Consolas, monospace">unread</text>
+<text x="610" y="157" font-size="12" fill="#c2410c" font-family="Consolas, monospace">want_to_read</text>
 <line x1="388" y1="152" x2="692" y2="152" stroke="#c2410c" stroke-width="2"/>
 <rect x="380" y="168" width="320" height="32" fill="#ffffff" stroke="#e2e8f0"/>
 <text x="394" y="189" font-size="12" fill="#1e293b" font-family="Consolas, monospace">c3</text>
 <text x="444" y="189" font-size="12" fill="#1e293b">Next.js実践</text>
-<text x="610" y="189" font-size="12" fill="#1e293b" font-family="Consolas, monospace">finished</text>
+<text x="610" y="189" font-size="12" fill="#1e293b" font-family="Consolas, monospace">completed</text>
 <rect x="380" y="200" width="320" height="32" fill="#ffffff" stroke="#e2e8f0"/>
 <text x="394" y="221" font-size="12" fill="#1e293b" font-family="Consolas, monospace">d4</text>
 <text x="444" y="221" font-size="12" fill="#1e293b">SQL入門</text>
@@ -3709,8 +3735,8 @@ type DeleteResult = {
 function makeTable(): Book[] {
   return [
     { id: "a1", title: "React実践ガイド", status: "reading" },
-    { id: "b2", title: "TypeScript入門", status: "unread" },
-    { id: "c3", title: "Next.js実践", status: "finished" },
+    { id: "b2", title: "TypeScript入門", status: "want_to_read" },
+    { id: "c3", title: "Next.js実践", status: "completed" },
     { id: "d4", title: "SQL入門", status: "reading" },
   ];
 }
@@ -3916,7 +3942,7 @@ const { error } = await supabase.from("books").delete().eq("id", bookId);
 if (error) {
   throw error;
 }
-router.push("/books");
+router.push("/");
 ```
 
 **OK（正しい・抜粋）:**
@@ -3936,7 +3962,7 @@ if (error) {
 if (!data || data.length === 0) {
   throw new Error("削除できませんでした（対象が無いか、権限がありません）");
 }
-router.push("/books");
+router.push("/");
 ```
 
 > **ヒント:** `.select()` で削除した行を返してもらうには、その行を **読む（SELECT）権限** も必要です。開発用の「全部許可」ポリシー（7-2 の `FOR ALL`）なら読み取りも許可されているので、そのまま動きます。
@@ -3979,7 +4005,7 @@ export default function SearchBar() {
   const router = useRouter();
   // 現在の ?q=... を読むため
   const searchParams = useSearchParams();
-  // 現在のパス（例: /books）を取得
+  // 現在のパス（一覧ページなら /）を取得
   const pathname = usePathname();
 
   // -------------------------------------------------
@@ -4018,8 +4044,8 @@ export default function SearchBar() {
       // -------------------------------------------------
       // 値が空の場合はパラメータを削除し、
       // URLをクリーンに保ちます。
-      // 例: /books?q=React&status=reading
-      //     検索クエリが空なら /books?status=reading
+      // 例: /?q=React&status=reading
+      //     検索クエリが空なら /?status=reading
       // -------------------------------------------------
       // 空白以外の文字が含まれていれば
       if (query.trim()) {
@@ -4154,9 +4180,9 @@ export default function SearchBar() {
             className="block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
           >
             <option value="">すべてのステータス</option>
-            <option value="unread">未読</option>
+            <option value="want_to_read">読みたい</option>
             <option value="reading">読書中</option>
-            <option value="finished">読了</option>
+            <option value="completed">読了</option>
           </select>
         </div>
 
@@ -4255,7 +4281,7 @@ if (query.trim()) {
 
 - 検索条件を URL に書き込むとき、**値があるときだけ付け、空なら消す**ことで URL を読みやすく保っています。
 - `query.trim()` で前後の空白を除き、中身があれば `params.set("q", ...)` で `?q=...` を設定します。
-- 空のときは `params.delete("q")` で `?q=` を消します。これにより `/books?status=reading` のように「使っている条件だけ」が URL に残ります。
+- 空のときは `params.delete("q")` で `?q=` を消します。これにより `/?status=reading` のように「使っている条件だけ」が URL に残ります。
 
 > **用語:** **`URLSearchParams`** はクエリ文字列を組み立て・編集するための道具で、`.set()` で項目を追加/上書き、`.delete()` で項目を削除できます。
 
@@ -4265,7 +4291,7 @@ if (query.trim()) {
 
 検索バーコンポーネントを一覧ページに組み込み、Supabase のクエリを検索条件に対応させます。
 
-**ファイル: `app/books/page.tsx`（更新版）**
+**ファイル: `app/page.tsx`（更新版）**
 
 > **▼ このコードがやること（先に日本語で）:** 前章で作った一覧ページを、検索・フィルタ・ソートに対応させた更新版です。URL の検索パラメータ（`q` / `status` / `sort` / `order`）を読み取り、その条件に合わせて Supabase へのクエリを少しずつ組み立てていきます。`ilike` は大文字小文字を区別しない部分一致検索、`.or()` は「タイトル または 著者名」のどちらかにマッチさせる指定です。初心者は「URL の条件を見て → クエリに条件を足していき → 最後にまとめて実行する」という組み立て方に注目してください。各条件の詳細はコード内のコメントで説明しています。
 
@@ -4309,20 +4335,20 @@ type Props = {
 // -------------------------------------------------
 function getStatusLabel(status: string): string {
   const statusMap: Record<string, string> = {
-    unread: "未読",
+    want_to_read: "読みたい",
     reading: "読書中",
-    finished: "読了",
+    completed: "読了",
   };
   return statusMap[status] || status;
 }
 
 function getStatusColor(status: string): string {
   switch (status) {
-    case "unread":
-      return "bg-gray-100 text-gray-800";
+    case "want_to_read":
+      return "bg-yellow-100 text-yellow-800";
     case "reading":
       return "bg-blue-100 text-blue-800";
-    case "finished":
+    case "completed":
       return "bg-green-100 text-green-800";
     default:
       return "bg-gray-100 text-gray-800";
@@ -4718,7 +4744,7 @@ export default function SortSelect() {
 
 - Supabase の `.order()` メソッドは、PostgreSQL の `ORDER BY` 句に対応しています。第1引数にカラム名、第2引数のオブジェクトで `ascending: true` を指定すると昇順、`ascending: false`（または省略）で降順になります。
 - ソート条件もURLの検索パラメータに反映されるため、検索・フィルタと同様にブラウザの履歴管理やURL共有が可能です。
-- 検索・フィルタとソートは独立して動作します。例えば「未読」フィルタをかけた状態で「評価（高い順）」にソートすると、「未読かつ評価の高い順」で表示されます。
+- 検索・フィルタとソートは独立して動作します。例えば「読みたい」フィルタをかけた状態で「評価（高い順）」にソートすると、「読みたい かつ 評価の高い順」で表示されます。
 
 #### ▼ コードを1つずつ分解して解説
 
@@ -4780,7 +4806,7 @@ const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
 
 ### 6-1. 新規登録のテスト
 
-1. ブラウザで `http://localhost:3000/books` にアクセスします
+1. ブラウザで `http://localhost:3000/` にアクセスします
 2. 右上の「新規登録」ボタンをクリックします
 3. `http://localhost:3000/books/new` に遷移したことを確認します
 4. 以下の情報を入力します:
@@ -4795,7 +4821,7 @@ const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
 6. **期待される結果**: 一覧ページにリダイレクトされ、登録した書籍が一覧に表示されていること
 
 7. 同様に、もう2冊登録します:
-   - タイトル: `TypeScript入門`, 著者: `鈴木花子`, ステータス: `未読`, 評価: `3`
+   - タイトル: `TypeScript入門`, 著者: `鈴木花子`, ステータス: `読みたい`, 評価: `3`
    - タイトル: `Next.js実践`, 著者: `田中一郎`, ステータス: `読了`, 評価: `5`
 
 ### 6-2. 詳細表示のテスト
@@ -4847,10 +4873,10 @@ const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
    - 「React実践ガイド」のみが表示されること
    - URL に `?q=React` が含まれていること
    - 「1件の書籍が見つかりました（検索: 「React」）」と表示されること
-4. 検索バーをクリアし、ステータスフィルタで「未読」を選択します
+4. 検索バーをクリアし、ステータスフィルタで「読みたい」を選択します
 5. **期待される結果**:
-   - ステータスが「未読」の書籍のみが表示されること
-   - URL に `?status=unread` が含まれていること
+   - ステータスが「読みたい」の書籍のみが表示されること
+   - URL に `?status=want_to_read` が含まれていること
 6. 「クリア」ボタンをクリックして検索条件をリセットします
 7. **期待される結果**: 全書籍が表示されること
 
@@ -5035,12 +5061,12 @@ Next.js のサーバーコンポーネントはデータをキャッシュする
 **対処法:** `router.push()` の後に `router.refresh()` を呼びます。
 
 ```tsx
-router.push("/books");
+router.push("/");
 // サーバーコンポーネントのキャッシュを更新（最新データで再取得）
 router.refresh();
 ```
 
-> **Server Action を使っている場合は `revalidatePath` を使う:** `revalidatePath("/books")` を呼ぶと、指定した URL のキャッシュが破棄され、次のアクセスで最新データが取れます。Server Action 内では `router.refresh` が呼べないので、こちらを使います。
+> **Server Action を使っている場合は `revalidatePath` を使う:** `revalidatePath("/")` を呼ぶと、指定した URL のキャッシュが破棄され、次のアクセスで最新データが取れます。Server Action 内では `router.refresh` が呼べないので、こちらを使います。
 
 ### 7-3. リダイレクトが動作しない
 
@@ -5059,8 +5085,8 @@ import { redirect } from "next/navigation";
 
 export default async function Page() {
   // 何らかの条件でリダイレクト
-  // この行で関数全体が中断され、ブラウザは /books に飛ぶ
-  redirect("/books");
+  // この行で関数全体が中断され、ブラウザは一覧ページ（/）に飛ぶ
+  redirect("/");
 }
 ```
 
@@ -5084,7 +5110,7 @@ import { useRouter } from "next/navigation";
 try {
   // ... Supabase 操作
   // エラーが発生するとここまで到達しない
-  router.push("/books");
+  router.push("/");
 } catch (err) {
   // コンソールでエラーを確認
   console.error("Error:", err);
@@ -5103,6 +5129,8 @@ try {
 ```
 
 **原因:** RLS ポリシーが書き込み操作を許可していません。
+
+> **注意:** 同じ `42501` でも、メッセージが `permission denied for table books` のときは、RLS ではなく **テーブルへの権限（GRANT）が足りない** のが原因です。新しい Supabase プロジェクトでは、作ったテーブルを API から使うために GRANT が必要です（第5章の手順を確認してください）。
 
 **対処法:**
 
@@ -5244,10 +5272,8 @@ new row for relation "books" violates check constraint "books_status_check"
 
 **原因:** テーブルに付けた **制約**（その列に入れてよい値のルール）に合わない値を送っています。エラーコード（`error.code`）で種類が分かります。
 
-| エラーコード | 意味 | この章でよくある原因 |
-|---|---|---|
-| `23502` | not-null 制約違反（空を許さない列に `null` を送った） | `BookForm` は空欄を `null` に変換して送るため、著者を空のまま保存すると、`author` 列が `NOT NULL` のテーブルではこのエラーになる |
-| `23514` | check 制約違反（決められた候補以外の値を送った） | `status` 列の `CHECK (status IN (...))` に書かれた値と、フォームの `<option value="...">` の綴りが違う |
+- **`23502`（not-null 制約違反）**: 空を許さない必須の列（`title`・`author`）に `null` を送った。この章の `BookForm` は送信前に空欄を止めているが、そのチェックを消したり、別のフォームで空の著者を `null` に変えて送ったりすると起きる。
+- **`23514`（check 制約違反）**: 決められた候補以外の値を送った。`status` 列の `CHECK (status IN (...))` に書かれた値と、フォームの `<option value="...">` の綴りが違う（例: `completed` を `complete` と書いた）。評価 `rating` の「1〜5」の範囲外の数を送った場合も同じエラーになる。
 
 **対処法:**
 
@@ -5262,11 +5288,11 @@ FROM pg_constraint
 WHERE conrelid = 'books'::regclass;
 ```
 
-- `conname` は制約の名前（例: `books_status_check`）、`pg_get_constraintdef(oid)` は制約の中身（例: `CHECK ((status = ANY (ARRAY['reading'::text, ...])))`）です。
+- `conname` は制約の名前（例: `books_status_check`）、`pg_get_constraintdef(oid)` は制約の中身（例: `CHECK ((status = ANY (ARRAY['want_to_read'::text, ...])))`）です。
 - `NOT NULL` はこの一覧に出ないことがあります。その場合は Table Editor で、その列が null を許可しているかどうかを確認してください。
 
-2. **check 制約違反（23514）** なら、フォームの `<option value="...">` の綴りを、制約に書かれている値とそろえます。第5章で作ったテーブル定義の `status` の候補と、この章で使っているステータスの値（`unread` / `reading` / `finished`）が一致しているかを確認してください。
-3. **not-null 制約違反（23502）** なら、フォーム側でもその欄を必須にします（`<input required>` を付け、送信前に空ならエラーメッセージを出す）。データベースのルールとフォームのルールをそろえるのが根本的な解決です。
+2. **check 制約違反（23514）** なら、送った値と、制約に書かれている値を1文字ずつ見比べます。この教材のステータスは第5章のテーブル定義・第7章・この章のすべてで `want_to_read` / `reading` / `completed` の3つにそろえてあるので、`<option value="...">` を自分で書き換えたときの打ち間違いがよくある原因です。
+3. **not-null 制約違反（23502）** なら、フォーム側でもその欄を必須にします（`<input required>` を付け、送信前に空ならエラーメッセージを出す。この章の `BookForm` ではタイトルと著者がそうなっています）。データベースのルールとフォームのルールをそろえるのが根本的な解決です。
 
 
 ---
@@ -5279,16 +5305,10 @@ WHERE conrelid = 'books'::regclass;
   <div style="text-align:center;font-size:14px;font-weight:700;color:#1e293b;margin-bottom:16px;">書籍管理アプリ - ページ遷移図</div>
   <!-- Page cards in grid -->
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
-    <!-- HOME -->
-    <div style="background:#e8f5e9;border:2px solid #4caf50;border-radius:10px;padding:12px 14px;box-shadow:0 2px 12px rgba(0,0,0,0.08);">
-      <div style="font-weight:700;color:#2e7d32;font-size:14px;">/</div>
-      <div style="font-size:12px;color:#1b5e20;">トップページ</div>
-      <div style="margin-top:6px;font-size:11px;color:#4caf50;">↓ 「書籍一覧へ」</div>
-    </div>
     <!-- LIST -->
     <div style="background:#e3f2fd;border:2px solid #2196f3;border-radius:10px;padding:12px 14px;box-shadow:0 2px 12px rgba(0,0,0,0.08);">
-      <div style="font-weight:700;color:#1565c0;font-size:14px;">/books</div>
-      <div style="font-size:12px;color:#0d47a1;">書籍一覧ページ</div>
+      <div style="font-weight:700;color:#1565c0;font-size:14px;">/</div>
+      <div style="font-size:12px;color:#0d47a1;">書籍一覧ページ（トップページ）</div>
       <div style="font-size:11px;color:#64748b;margin-top:2px;">検索・フィルタ・ソート</div>
     </div>
     <!-- NEW -->
@@ -5304,7 +5324,7 @@ WHERE conrelid = 'books'::regclass;
       <div style="font-size:11px;color:#64748b;margin-top:2px;">全情報表示・編集/削除ボタン</div>
     </div>
     <!-- EDIT -->
-    <div style="grid-column:1/3;max-width:340px;margin:0 auto;background:#fce4ec;border:2px solid #e91e63;border-radius:10px;padding:12px 14px;box-shadow:0 2px 12px rgba(0,0,0,0.08);">
+    <div style="background:#fce4ec;border:2px solid #e91e63;border-radius:10px;padding:12px 14px;box-shadow:0 2px 12px rgba(0,0,0,0.08);">
       <div style="font-weight:700;color:#880e4f;font-size:14px;">/books/[id]/edit</div>
       <div style="font-size:12px;color:#ad1457;">書籍編集ページ</div>
       <div style="font-size:11px;color:#64748b;margin-top:2px;">BookForm (isEdit=true)</div>
@@ -5380,7 +5400,7 @@ export default async function BookDetailPage({ params }: Props) {
 
 - (a) `supabase.from("books").delete().eq("id", bookId)`
 - (b) `supabase.from("books").delete()`
-- (c) `supabase.from("books").delete().eq("status", "finished")`
+- (c) `supabase.from("books").delete().eq("status", "completed")`
 - (d) `supabase.from("books").delete().eq("id", bookId).select()`
 
 **▼ 解答:** (b) と (c)
