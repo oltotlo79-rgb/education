@@ -41,21 +41,21 @@
 <rect x="255" y="15" width="210" height="240" rx="12" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
 <path d="M255,27 a12,12 0 0 1 12,-12 h186 a12,12 0 0 1 12,12 v41 h-210 z" fill="#c2410c"/>
 <text x="360" y="42" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">② 全体像をつかむ</text>
-<text x="360" y="60" text-anchor="middle" font-size="12" fill="#ffffff">1〜5節・8節</text>
+<text x="360" y="60" text-anchor="middle" font-size="12" fill="#ffffff">1〜6節・9節</text>
 <text x="271" y="98" font-size="13" fill="#c2410c">1. 教材の目的</text>
 <text x="271" y="126" font-size="13" fill="#c2410c">2. Web アプリの動き</text>
-<text x="271" y="154" font-size="13" fill="#c2410c">3. 完成形と道のり</text>
-<text x="271" y="182" font-size="13" fill="#c2410c">4〜5. 技術スタック</text>
-<text x="271" y="210" font-size="13" fill="#c2410c">8. アーキテクチャ</text>
+<text x="271" y="154" font-size="13" fill="#c2410c">3〜4. 完成形と道のり</text>
+<text x="271" y="182" font-size="13" fill="#c2410c">5〜6. 技術スタック</text>
+<text x="271" y="210" font-size="13" fill="#c2410c">9. アーキテクチャ</text>
 <text x="360" y="240" text-anchor="middle" font-size="12" fill="#64748b">まずは流し読みで OK</text>
 <rect x="495" y="15" width="210" height="240" rx="12" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
 <path d="M495,27 a12,12 0 0 1 12,-12 h186 a12,12 0 0 1 12,12 v41 h-210 z" fill="#047857"/>
 <text x="600" y="42" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">③ 進め方を知る</text>
-<text x="600" y="60" text-anchor="middle" font-size="12" fill="#ffffff">6〜7節・9〜12節</text>
-<text x="511" y="98" font-size="13" fill="#047857">6〜7. 前提と学べること</text>
-<text x="511" y="126" font-size="13" fill="#047857">9. 学習のアドバイス</text>
-<text x="511" y="154" font-size="13" fill="#047857">10〜11. FAQ・用語集</text>
-<text x="511" y="182" font-size="13" fill="#047857">12. 練習問題</text>
+<text x="600" y="60" text-anchor="middle" font-size="12" fill="#ffffff">7〜8節・10〜13節</text>
+<text x="511" y="98" font-size="13" fill="#047857">7〜8. 前提と学べること</text>
+<text x="511" y="126" font-size="13" fill="#047857">10. 学習のアドバイス</text>
+<text x="511" y="154" font-size="13" fill="#047857">11〜12. FAQ・用語集</text>
+<text x="511" y="182" font-size="13" fill="#047857">13. 練習問題</text>
 <text x="600" y="240" text-anchor="middle" font-size="12" fill="#64748b">最後に問題で確かめる</text>
 <line x1="227" y1="135" x2="252" y2="135" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-01)"/>
 <line x1="467" y1="135" x2="492" y2="135" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-01)"/>
@@ -370,8 +370,8 @@ console.log(`  ポート番号  : "${url.port}"`);
 
 > **つまずきポイント:** 1つ目の URL には `:443` と書いたのに、ポート番号が `""`（空っぽ）と表示されました。これは **https の既定（デフォルト）のポート番号が 443 なので、書いても書かなくても同じ意味になり、「省略された」扱いになる** からです（http の既定は 80）。逆に、開発中に使う `localhost:3000` の `3000` は既定値ではないので**省略できません**。
 >
-> - **NG:** `http://localhost/books` … ポート番号を省略したので 80 番の窓口に行ってしまい、開発中のアプリにつながらない
-> - **OK:** `http://localhost:3000/books` … `npm run dev` が待っている 3000 番の窓口に届く
+> - **NG:** `http://localhost/books/new` … ポート番号を省略したので 80 番の窓口に行ってしまい、開発中のアプリにつながらない
+> - **OK:** `http://localhost:3000/books/new` … `npm run dev` が待っている 3000 番の窓口に届く
 
 ### 0.4 フロントエンドとバックエンドの違い
 
@@ -657,13 +657,17 @@ npm run dev
 # まとめると「package.json に書かれている dev スクリプトを動かしてね」という意味
 ```
 ```
+> book-management@0.1.0 dev
 > next dev
 
-   ▲ Next.js 15.0.0
-   - Local:        http://localhost:3000
-
- ✓ Ready in 2.1s
+▲ Next.js 16.4.1 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.x.x:3000
+- Environments: .env.local
+✓ Ready in 7.0s
 ```
+
+（第6章で作るプロジェクトを、Next.js 16.4.1 で実際に起動したときの出力です。このあとにも数行続きます。`Network:` の数字や `Ready in` の秒数は環境によって変わり、`.env.local`（第6章で作る設定ファイル）が無ければ `Environments:` の行は出ません）
 
 ブラウザで `http://localhost:3000` を開くと、自分で作ったページが表示されます。`localhost`（ローカルホスト）は「自分自身のPC」を意味する特別な住所、`3000` はポート番号（同じPC内のどの窓口かの番号）です。`http://` と `localhost` の間にある `://` はURLの「スキーム（通信の種類）」と「住所」を区切る決まりの記号です。
 
@@ -742,6 +746,8 @@ npm run dev
 </div>
 
 > **ヒント:** この自動更新の仕組みを、Next.js では **Fast Refresh（ファスト・リフレッシュ）** と呼びます。保存しても画面が変わらないときは、①ファイルを保存し忘れていないか（VS Code のタブの名前の横に ● が付いていたら未保存）、②`npm run dev` を動かしているターミナルにエラーが出ていないか、の2つを確かめましょう。
+
+<!-- -->
 
 > **つまずきポイント:** `npm run dev` を、プロジェクトのフォルダ**ではない場所**で実行してしまう。`npm run dev` は「今いるフォルダの `package.json` に書かれた `dev` の命令を実行する」コマンドなので、`package.json` が無い場所では何もできません。
 
@@ -1034,7 +1040,7 @@ Console.log("こんにちは");
 ReferenceError: Console is not defined
 ```
 
-（実際には、この行の前後にファイル名や `at ...` の行も表示されます。読み方は「9. この教材を進めるにあたってのアドバイス」で説明します）
+（実際には、この行の前後にファイル名や `at ...` の行も表示されます。読み方は「10. この教材を進めるにあたってのアドバイス」で説明します）
 
 **OK:** すべて小文字の `console` と書く
 
@@ -1346,7 +1352,9 @@ server.listen(3000, async () => {
 - `fetch(...)` がブラウザ役です。`response.status` に**ステータスコード**（200＝成功）、`await response.text()` に本文（HTML）が入ります。
 - `server.close()` でサーバーを止めます。これが無いと、プログラムは次の注文を待ち続けて終わりません。
 
-> **ヒント（やってみよう）:** 最後の `server.close();` の行の先頭に `//` を付けて（コメントにして）実行すると、サーバーが動いたままになります。その間にブラウザで `http://localhost:3000/books` を開くと「ようこそ、本の店へ」と表示され、ターミナルには `[サーバー] 注文を受けました: GET /books` と記録されます（ブラウザはタブのアイコン画像 `/favicon.ico` も自動で注文するので、その記録も出ることがあります）。止めるときはターミナルで `Ctrl + C` を押します。これが、本書で使う `npm run dev`（開発サーバー）の小さな模型です。
+> **ヒント（やってみよう）:** 最後の `server.close();` の行の先頭に `//` を付けて（コメントにして）実行すると、サーバーが動いたままになります。その間にブラウザで `http://localhost:3000/hello` を開くと「ようこそ、本の店へ」と表示され、ターミナルには `[サーバー] 注文を受けました: GET /hello` と記録されます（ブラウザはタブのアイコン画像 `/favicon.ico` も自動で注文するので、その記録も出ることがあります）。止めるときはターミナルで `Ctrl + C` を押します。これが、本書で使う `npm run dev`（開発サーバー）の小さな模型です。
+
+<!-- -->
 
 > **つまずきポイント:** すでに別のプログラムが 3000 番の部屋（ポート）を使っているときに、もう1つ 3000 番で待ち受けようとする。たとえば `npm run dev` を動かしたまま、別のターミナルで上の `server.ts` を実行するとこうなります。
 
@@ -1364,7 +1372,7 @@ Error: listen EADDRINUSE: address already in use :::3000
 **OK:** 先に動いているほうを `Ctrl + C` で止めてから実行する（または、`server.listen(3000, ...)` と `fetch("http://localhost:3000/about")` の `3000` を、空いている `3001` などに書き換える）
 
 - `EADDRINUSE` は "Error ADDRess IN USE"（その住所はもう使われている）の略です。1つの部屋には1つのプログラムしか入れない、というポートのルールに引っかかりました。
-- Next.js の開発サーバーは、3000 番がふさがっていると自動で 3001 番などに切り替え、ターミナルに「Port 3000 is in use」という警告を出します。その場合はブラウザでも `http://localhost:3001` を開く必要があります。`npm run dev` の出力に表示される `Local:` の URL を確かめるクセをつけましょう。
+- Next.js の開発サーバーは、3000 番がふさがっていると自動で 3001 番などに切り替え、ターミナルに `⚠ Port 3000 is in use by process 9076, using available port 3001 instead.`（3000 番は使用中なので、空いている 3001 番を使います。数字は場合によって変わります）のような警告を出します。その場合はブラウザでも `http://localhost:3001` を開く必要があります。`npm run dev` の出力に表示される `Local:` の URL を確かめるクセをつけましょう。
 
 ### クライアントとサーバー
 
@@ -1429,6 +1437,8 @@ Webの世界では、「お願いする側」と「応える側」の2つの役�
 </div>
 
 > **用語:** **開発者ツール（DevTools、デブツールズ）** … ブラウザに付いている「中身をのぞく道具」です。Chrome や Edge では `F12` キー（Mac は `⌘ + Option + I`）で開き、「Console（コンソール）」タブに、ブラウザで動いたコードの `console.log` が表示されます。
+
+<!-- -->
 
 > **つまずきポイント:** 「`console.log` を書いたのに、どこにも出てこない」——Next.js では、そのコードが**サーバーで動くか、ブラウザで動くか**によって、`console.log` の出力先が変わります。探す場所をまちがえているだけ、ということがとても多いです（第4章で実際に試します。ここでは読むだけで OK です）。
 
@@ -1517,7 +1527,7 @@ export default function LikeButton() {
           <div style="font-size: 16px; font-weight: 700; color: #1e293b;">達人プログラマー</div>
           <div style="font-size: 13px; color: #64748b; margin-top: 4px;">著者: David Thomas</div>
         </div>
-        <span style="background: #fef3c7; color: #92400e; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;">📕 未読</span>
+        <span style="background: #fef3c7; color: #92400e; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;">📕 読みたい</span>
       </div>
       <div style="margin-top: 10px; display: flex; gap: 8px;">
         <span style="background: #eff6ff; color: #1e40af; padding: 4px 12px; border-radius: 6px; font-size: 12px; cursor: pointer;">編集</span>
@@ -1548,17 +1558,17 @@ export default function LikeButton() {
       <label style="display: block; font-size: 13px; font-weight: 600; color: #334155; margin-bottom: 6px;">著者</label>
       <div style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 14px; font-size: 14px; color: #94a3b8;">著者名を入力</div>
     </div>
-    <!-- 出版年 -->
+    <!-- 評価 -->
     <div style="margin-bottom: 20px;">
-      <label style="display: block; font-size: 13px; font-weight: 600; color: #334155; margin-bottom: 6px;">出版年</label>
-      <div style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 14px; font-size: 14px; color: #94a3b8;">例: 2024</div>
+      <label style="display: block; font-size: 13px; font-weight: 600; color: #334155; margin-bottom: 6px;">評価（1〜5）</label>
+      <div style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 14px; font-size: 14px; color: #94a3b8;">例: 4</div>
     </div>
     <!-- ステータス -->
     <div style="margin-bottom: 20px;">
       <label style="display: block; font-size: 13px; font-weight: 600; color: #334155; margin-bottom: 8px;">ステータス</label>
       <div style="display: flex; gap: 16px;">
         <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 14px; color: #475569;">
-          <span style="display: inline-block; width: 18px; height: 18px; border: 2px solid #cbd5e1; border-radius: 50%; background: white;"></span> 未読
+          <span style="display: inline-block; width: 18px; height: 18px; border: 2px solid #cbd5e1; border-radius: 50%; background: white;"></span> 読みたい
         </span>
         <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 14px; color: #475569;">
           <span style="display: inline-block; width: 18px; height: 18px; border: 2px solid #cbd5e1; border-radius: 50%; background: white;"></span> 読書中
@@ -1598,7 +1608,7 @@ export default function LikeButton() {
 <circle cx="44" cy="33" r="4" fill="#f59e0b"/>
 <circle cx="56" cy="33" r="4" fill="#10b981"/>
 <rect x="70" y="24" width="242" height="18" rx="9" fill="#ffffff"/>
-<text x="80" y="37.5" font-family="Consolas, monospace" font-size="12" fill="#334155">localhost:3000/books</text>
+<text x="80" y="37.5" font-family="Consolas, monospace" font-size="12" fill="#334155">localhost:3000/</text>
 <rect x="30" y="52" width="280" height="20" rx="4" fill="#3b82f6"/>
 <text x="38" y="66.5" font-size="12" font-weight="700" fill="#ffffff">書籍一覧</text>
 <text x="302" y="66.5" text-anchor="end" font-size="12" fill="#ffffff">＋ 新規登録</text>
@@ -1612,8 +1622,8 @@ export default function LikeButton() {
 <text x="279" y="114.5" text-anchor="middle" font-size="12" fill="#1e40af">読書中</text>
 <rect x="30" y="124" width="280" height="20" rx="4" fill="#f8fafc" stroke="#e2e8f0"/>
 <text x="38" y="138.5" font-size="12" fill="#1e293b">こころ</text>
-<rect x="256" y="126" width="46" height="16" rx="8" fill="#fef3c7"/>
-<text x="279" y="138.5" text-anchor="middle" font-size="12" fill="#92400e">未読</text>
+<rect x="250" y="126" width="56" height="16" rx="8" fill="#fef3c7"/>
+<text x="278" y="138.5" text-anchor="middle" font-size="12" fill="#92400e">読みたい</text>
 <rect x="400" y="20" width="300" height="130" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
 <path d="M400,28 a8,8 0 0 1 8,-8 h284 a8,8 0 0 1 8,8 v18 h-300 z" fill="#e2e8f0"/>
 <circle cx="412" cy="33" r="4" fill="#ef4444"/>
@@ -1684,7 +1694,7 @@ export default function LikeButton() {
 ### 主な機能
 
 - **一覧表示**: 登録した書籍をリスト形式で表示
-- **新規登録**: タイトル・著者・出版年・ステータス・メモを入力して書籍を登録
+- **新規登録**: タイトル・著者・評価・ステータス・メモを入力して書籍を登録
 - **編集**: 登録済みの書籍情報を変更
 - **削除**: 不要な書籍データを削除
 - **検索**: タイトルや著者名で書籍を絞り込み
@@ -1708,7 +1718,7 @@ let nextId = 1;
 
 // C: Create（作成）… 新しい本を本棚に追加する
 function createBook(title: string): void {
-  books.push({ id: nextId, title: title, status: "unread" });
+  books.push({ id: nextId, title: title, status: "want_to_read" });
   nextId = nextId + 1;
 }
 
@@ -1737,8 +1747,8 @@ createBook("達人プログラマー");
 console.log("① 2冊を登録した直後");
 listBooks();
 
-updateStatus(1, "finished");
-console.log("② 1番を読了(finished)にした後");
+updateStatus(1, "completed");
+console.log("② 1番を読了(completed)にした後");
 listBooks();
 
 deleteBook(2);
@@ -1756,13 +1766,13 @@ node crud.ts
 
 ```text
 ① 2冊を登録した直後
-  1: リーダブルコード [unread]
-  2: 達人プログラマー [unread]
-② 1番を読了(finished)にした後
-  1: リーダブルコード [finished]
-  2: 達人プログラマー [unread]
+  1: リーダブルコード [want_to_read]
+  2: 達人プログラマー [want_to_read]
+② 1番を読了(completed)にした後
+  1: リーダブルコード [completed]
+  2: 達人プログラマー [want_to_read]
 ③ 2番を削除した後
-  1: リーダブルコード [finished]
+  1: リーダブルコード [completed]
 ```
 
 #### ▼ コードを1つずつ分解して解説
@@ -1782,12 +1792,12 @@ let nextId = 1;
 
 ```typescript
 function createBook(title: string): void {
-  books.push({ id: nextId, title: title, status: "unread" });
+  books.push({ id: nextId, title: title, status: "want_to_read" });
   nextId = nextId + 1;
 }
 ```
 
-- `books.push(...)` で、配列の最後に本を1冊追加します。登録したばかりの本の状態は `"unread"`（未読）です。
+- `books.push(...)` で、配列の最後に本を1冊追加します。登録したばかりの本の状態は `"want_to_read"`（読みたい）です。本書のアプリでも、読書ステータスは `want_to_read`（読みたい）・`reading`（読書中）・`completed`（読了）の3つの値を使います。
 - 戻り値の型の `void`（ボイド）は、「この関数は何も返さない」という意味です。
 
 ##### 解説3: Read — for...of で全部表示する
@@ -1826,123 +1836,129 @@ books = books.filter((b) => b.id !== id);
 
 ---
 
-## 3. 学習ロードマップ
+## 4. 学習ロードマップ
 
 以下のステップで、段階的にアプリを完成させていきます。焦らず、一つずつ進めていきましょう。「ロードマップ（roadmap）」は「道筋を示した地図」という意味の英単語です。
 
-<div style="max-width: 680px; margin: 20px auto; font-family: 'Segoe UI', sans-serif;">
+<div style="max-width: 680px; margin: 20px auto 0; font-family: 'Segoe UI', sans-serif;">
   <!-- 第0章 -->
   <div style="display: flex; align-items: center; margin-bottom: 4px;">
     <div style="width: 40px; text-align: center; font-size: 20px;">📘</div>
-    <div style="flex: 1; background: #e8f5e9; border-left: 4px solid #4caf50; border-radius: 0 8px 8px 0; padding: 12px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
+    <div style="flex: 1; background: #e8f5e9; border-left: 4px solid #4caf50; border-radius: 0 8px 8px 0; padding: 8px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
       <div style="font-weight: 700; color: #1b5e20; font-size: 14px;">第0章: はじめに（この章）</div>
       <div style="font-size: 12px; color: #2e7d32;">全体概要・技術スタック・学習ロードマップ</div>
     </div>
   </div>
-  <div style="text-align: center; color: #94a3b8; font-size: 18px; margin: 2px 0;">↓</div>
+  <div style="text-align: center; color: #94a3b8; font-size: 16px; line-height: 1.3; margin: 0;">↓</div>
   <!-- 第1章 -->
   <div style="display: flex; align-items: center; margin-bottom: 4px;">
     <div style="width: 40px; text-align: center; font-size: 20px;">🔧</div>
-    <div style="flex: 1; background: #e3f2fd; border-left: 4px solid #2196f3; border-radius: 0 8px 8px 0; padding: 12px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
+    <div style="flex: 1; background: #e3f2fd; border-left: 4px solid #2196f3; border-radius: 0 8px 8px 0; padding: 8px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
       <div style="font-weight: 700; color: #0d47a1; font-size: 14px;">第1章: 開発環境のセットアップ</div>
       <div style="font-size: 12px; color: #1565c0;">Node.js / VS Code / Git / ターミナルを準備する</div>
     </div>
   </div>
-  <div style="text-align: center; color: #94a3b8; font-size: 18px; margin: 2px 0;">↓</div>
+  <div style="text-align: center; color: #94a3b8; font-size: 16px; line-height: 1.3; margin: 0;">↓</div>
   <!-- 第2章 -->
   <div style="display: flex; align-items: center; margin-bottom: 4px;">
     <div style="width: 40px; text-align: center; font-size: 20px;">📝</div>
-    <div style="flex: 1; background: #e3f2fd; border-left: 4px solid #2196f3; border-radius: 0 8px 8px 0; padding: 12px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
+    <div style="flex: 1; background: #e3f2fd; border-left: 4px solid #2196f3; border-radius: 0 8px 8px 0; padding: 8px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
       <div style="font-weight: 700; color: #0d47a1; font-size: 14px;">第2章: TypeScript の基礎</div>
       <div style="font-size: 12px; color: #1565c0;">型の基本を学ぶ</div>
     </div>
   </div>
-  <div style="text-align: center; color: #94a3b8; font-size: 18px; margin: 2px 0;">↓</div>
+  <div style="text-align: center; color: #94a3b8; font-size: 16px; line-height: 1.3; margin: 0;">↓</div>
   <!-- 第3章 -->
   <div style="display: flex; align-items: center; margin-bottom: 4px;">
     <div style="width: 40px; text-align: center; font-size: 20px;">⚛️</div>
-    <div style="flex: 1; background: #e3f2fd; border-left: 4px solid #2196f3; border-radius: 0 8px 8px 0; padding: 12px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
+    <div style="flex: 1; background: #e3f2fd; border-left: 4px solid #2196f3; border-radius: 0 8px 8px 0; padding: 8px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
       <div style="font-weight: 700; color: #0d47a1; font-size: 14px;">第3章: React の基礎</div>
       <div style="font-size: 12px; color: #1565c0;">コンポーネント・State・イベントの考え方</div>
     </div>
   </div>
-  <div style="text-align: center; color: #94a3b8; font-size: 18px; margin: 2px 0;">↓</div>
+  <div style="text-align: center; color: #94a3b8; font-size: 16px; line-height: 1.3; margin: 0;">↓</div>
   <!-- 第4章 -->
   <div style="display: flex; align-items: center; margin-bottom: 4px;">
     <div style="width: 40px; text-align: center; font-size: 20px;">🚀</div>
-    <div style="flex: 1; background: #e3f2fd; border-left: 4px solid #2196f3; border-radius: 0 8px 8px 0; padding: 12px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
+    <div style="flex: 1; background: #e3f2fd; border-left: 4px solid #2196f3; border-radius: 0 8px 8px 0; padding: 8px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
       <div style="font-weight: 700; color: #0d47a1; font-size: 14px;">第4章: Next.js の基礎</div>
       <div style="font-size: 12px; color: #1565c0;">App Router・Server / Client Components</div>
     </div>
   </div>
-  <div style="text-align: center; color: #94a3b8; font-size: 18px; margin: 2px 0;">↓</div>
+  <div style="text-align: center; color: #94a3b8; font-size: 16px; line-height: 1.3; margin: 0;">↓</div>
+</div>
+
+<div style="max-width: 680px; margin: 0 auto; font-family: 'Segoe UI', sans-serif;">
   <!-- 第5章 -->
   <div style="display: flex; align-items: center; margin-bottom: 4px;">
     <div style="width: 40px; text-align: center; font-size: 20px;">🗄️</div>
-    <div style="flex: 1; background: #fff3e0; border-left: 4px solid #ff9800; border-radius: 0 8px 8px 0; padding: 12px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
+    <div style="flex: 1; background: #fff3e0; border-left: 4px solid #ff9800; border-radius: 0 8px 8px 0; padding: 8px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
       <div style="font-weight: 700; color: #e65100; font-size: 14px;">第5章: Supabase セットアップとデータベース設計</div>
       <div style="font-size: 12px; color: #ef6c00;">データベースを準備する</div>
     </div>
   </div>
-  <div style="text-align: center; color: #94a3b8; font-size: 18px; margin: 2px 0;">↓</div>
+  <div style="text-align: center; color: #94a3b8; font-size: 16px; line-height: 1.3; margin: 0;">↓</div>
   <!-- 第6章 -->
   <div style="display: flex; align-items: center; margin-bottom: 4px;">
     <div style="width: 40px; text-align: center; font-size: 20px;">🏗️</div>
-    <div style="flex: 1; background: #fff3e0; border-left: 4px solid #ff9800; border-radius: 0 8px 8px 0; padding: 12px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
+    <div style="flex: 1; background: #fff3e0; border-left: 4px solid #ff9800; border-radius: 0 8px 8px 0; padding: 8px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
       <div style="font-weight: 700; color: #e65100; font-size: 14px;">第6章: プロジェクトセットアップ</div>
       <div style="font-size: 12px; color: #ef6c00;">書籍管理アプリの土台を作る</div>
     </div>
   </div>
-  <div style="text-align: center; color: #94a3b8; font-size: 18px; margin: 2px 0;">↓</div>
+  <div style="text-align: center; color: #94a3b8; font-size: 16px; line-height: 1.3; margin: 0;">↓</div>
   <!-- 第7章 -->
   <div style="display: flex; align-items: center; margin-bottom: 4px;">
     <div style="width: 40px; text-align: center; font-size: 20px;">📋</div>
-    <div style="flex: 1; background: #fce4ec; border-left: 4px solid #e91e63; border-radius: 0 8px 8px 0; padding: 12px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
+    <div style="flex: 1; background: #fce4ec; border-left: 4px solid #e91e63; border-radius: 0 8px 8px 0; padding: 8px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
       <div style="font-weight: 700; color: #880e4f; font-size: 14px;">第7章: 一覧表示と登録機能</div>
       <div style="font-size: 12px; color: #ad1457;">CRUD の Read と Create</div>
     </div>
   </div>
-  <div style="text-align: center; color: #94a3b8; font-size: 18px; margin: 2px 0;">↓</div>
+  <div style="text-align: center; color: #94a3b8; font-size: 16px; line-height: 1.3; margin: 0;">↓</div>
   <!-- 第8章 -->
   <div style="display: flex; align-items: center; margin-bottom: 4px;">
     <div style="width: 40px; text-align: center; font-size: 20px;">✏️</div>
-    <div style="flex: 1; background: #fce4ec; border-left: 4px solid #e91e63; border-radius: 0 8px 8px 0; padding: 12px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
+    <div style="flex: 1; background: #fce4ec; border-left: 4px solid #e91e63; border-radius: 0 8px 8px 0; padding: 8px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
       <div style="font-weight: 700; color: #880e4f; font-size: 14px;">第8章: 編集・削除・詳細表示</div>
       <div style="font-size: 12px; color: #ad1457;">CRUD の Update と Delete、検索・並び替え</div>
     </div>
   </div>
-  <div style="text-align: center; color: #94a3b8; font-size: 18px; margin: 2px 0;">↓</div>
+  <div style="text-align: center; color: #94a3b8; font-size: 16px; line-height: 1.3; margin: 0;">↓</div>
+</div>
+
+<div style="max-width: 680px; margin: 0 auto; font-family: 'Segoe UI', sans-serif;">
   <!-- 第9章 -->
   <div style="display: flex; align-items: center; margin-bottom: 4px;">
     <div style="width: 40px; text-align: center; font-size: 20px;">🎨</div>
-    <div style="flex: 1; background: #f3e5f5; border-left: 4px solid #9c27b0; border-radius: 0 8px 8px 0; padding: 12px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
+    <div style="flex: 1; background: #f3e5f5; border-left: 4px solid #9c27b0; border-radius: 0 8px 8px 0; padding: 8px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
       <div style="font-weight: 700; color: #4a148c; font-size: 14px;">第9章: スタイリング & UI ポリッシュ</div>
       <div style="font-size: 12px; color: #6a1b9a;">見た目と使いやすさを仕上げる</div>
     </div>
   </div>
-  <div style="text-align: center; color: #94a3b8; font-size: 18px; margin: 2px 0;">↓</div>
+  <div style="text-align: center; color: #94a3b8; font-size: 16px; line-height: 1.3; margin: 0;">↓</div>
   <!-- 第10章 -->
   <div style="display: flex; align-items: center; margin-bottom: 4px;">
     <div style="width: 40px; text-align: center; font-size: 20px;">🌐</div>
-    <div style="flex: 1; background: #f3e5f5; border-left: 4px solid #9c27b0; border-radius: 0 8px 8px 0; padding: 12px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
+    <div style="flex: 1; background: #f3e5f5; border-left: 4px solid #9c27b0; border-radius: 0 8px 8px 0; padding: 8px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
       <div style="font-weight: 700; color: #4a148c; font-size: 14px;">第10章: デプロイと総まとめ</div>
       <div style="font-size: 12px; color: #6a1b9a;">アプリをインターネットに公開する</div>
     </div>
   </div>
-  <div style="text-align: center; color: #94a3b8; font-size: 18px; margin: 2px 0;">↓</div>
+  <div style="text-align: center; color: #94a3b8; font-size: 16px; line-height: 1.3; margin: 0;">↓</div>
   <!-- 完成 -->
   <div style="display: flex; align-items: center; margin-bottom: 4px;">
     <div style="width: 40px; text-align: center; font-size: 20px;">🎉</div>
-    <div style="flex: 1; background: #fffde7; border-left: 4px solid #fdd835; border-radius: 0 8px 8px 0; padding: 12px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
+    <div style="flex: 1; background: #fffde7; border-left: 4px solid #fdd835; border-radius: 0 8px 8px 0; padding: 8px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
       <div style="font-weight: 700; color: #f57f17; font-size: 14px;">完成！</div>
       <div style="font-size: 12px; color: #f9a825;">書籍管理アプリの完成です。おめでとうございます！</div>
     </div>
   </div>
-  <div style="text-align: center; color: #94a3b8; font-size: 18px; margin: 2px 0;">↓</div>
+  <div style="text-align: center; color: #94a3b8; font-size: 16px; line-height: 1.3; margin: 0;">↓</div>
   <!-- 第11章 -->
   <div style="display: flex; align-items: center;">
     <div style="width: 40px; text-align: center; font-size: 20px;">🤖</div>
-    <div style="flex: 1; background: #eceff1; border-left: 4px solid #607d8b; border-radius: 0 8px 8px 0; padding: 12px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
+    <div style="flex: 1; background: #eceff1; border-left: 4px solid #607d8b; border-radius: 0 8px 8px 0; padding: 8px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
       <div style="font-weight: 700; color: #263238; font-size: 14px;">第11章: Claude Code × Next.js バイブコーディング（発展）</div>
       <div style="font-size: 12px; color: #455a64;">AI と一緒に、さらに機能を足していく</div>
     </div>
@@ -2005,7 +2021,7 @@ books = books.filter((b) => b.id !== id);
 
 ---
 
-## 4. 使用技術スタック一覧
+## 5. 使用技術スタック一覧
 
 このチュートリアルで使用する技術の一覧と、それぞれの役割をまとめます。「スタック（stack）」は「積み重ね」という意味で、複数の技術を組み合わせて使うことを指します。
 
@@ -2013,10 +2029,10 @@ books = books.filter((b) => b.id !== id);
 |------|---------------|----------|------|
 | **TypeScript** | 5.x | プログラミング言語 | JavaScript（Webブラウザで動くプログラミング言語）に「型」（データの種類の指定）を追加した言語。コードの安全性と可読性を向上させる |
 | **React** | 19.x | UIライブラリ（User Interface Library：画面の部品を作るための道具箱） | ユーザーインターフェース（画面）を効率的に構築するためのライブラリ。Meta社（旧Facebook）が開発 |
-| **Next.js** | 15.x | Webフレームワーク（Framework：アプリ開発の骨組みを提供するソフトウェア） | Reactベースのフレームワーク。ルーティング（URLに応じたページの切り替え）やサーバーサイド機能を提供する。Vercel社が開発 |
+| **Next.js** | 16.x | Webフレームワーク（Framework：アプリ開発の骨組みを提供するソフトウェア） | Reactベースのフレームワーク。ルーティング（URLに応じたページの切り替え）やサーバーサイド機能を提供する。Vercel社が開発 |
 | **Supabase** | - | BaaS（Backend as a Service：バックエンド機能をクラウドで提供するサービス） | データベース・認証・APIを提供するサービス。バックエンドを自前で構築する手間を省ける。オープンソース |
-| **Node.js** | 20.x 以上 | ランタイム（Runtime：プログラムを実行する環境） | JavaScriptをブラウザの外（自分のPC上）で実行するための環境。開発ツールの動作に必要 |
-| **npm** | 10.x | パッケージマネージャ（Package Manager：ライブラリの管理ツール） | 他の開発者が作った便利なプログラム（パッケージ）をインストール・管理するツール |
+| **Node.js** | 24（LTS）推奨・22 以上 | ランタイム（Runtime：プログラムを実行する環境） | JavaScriptをブラウザの外（自分のPC上）で実行するための環境。開発ツールの動作に必要 |
+| **npm** | 11.x（Node.js 24 に付属） | パッケージマネージャ（Package Manager：ライブラリの管理ツール） | 他の開発者が作った便利なプログラム（パッケージ）をインストール・管理するツール |
 | **Git** | 2.x | バージョン管理システム（VCS：コードの変更履歴を記録する仕組み） | コードの変更履歴を記録・管理するツール。「いつ、誰が、何を変えたか」を追跡できる |
 | **VS Code** | 最新版 | コードエディタ（IDE：統合開発環境に近い高機能エディタ） | コードを書くためのエディタ。Microsoft社が開発。豊富な拡張機能が利用可能 |
 
@@ -2156,7 +2172,7 @@ Supabaseは、データベース（データの保管庫）やユーザー認証
 
 ---
 
-## 5. なぜこの技術スタックを選んだのか
+## 6. なぜこの技術スタックを選んだのか
 
 技術にはたくさんの選択肢があります。ここでは、今回の技術スタックを選んだ理由を、他の選択肢と比較しながら説明します。
 
@@ -2227,7 +2243,7 @@ Supabaseは、データベース（データの保管庫）やユーザー認証
 
 ---
 
-## 6. 前提知識
+## 7. 前提知識
 
 このチュートリアルを始めるにあたって、以下の知識があると学習がスムーズに進みます。
 
@@ -2247,7 +2263,7 @@ Supabaseは、データベース（データの保管庫）やユーザー認証
 
 ---
 
-## 7. この教材で学べること
+## 8. この教材で学べること
 
 チュートリアルを完走すると、以下のスキルが身につきます。一つずつチェックを付けながら進めていきましょう！（Markdownの `- [ ]` は「未完了のチェックボックス」を表す書き方です）
 
@@ -2297,7 +2313,7 @@ Supabaseは、データベース（データの保管庫）やユーザー認証
 
 ---
 
-## 8. アプリのアーキテクチャ（全体構成図）
+## 9. アプリのアーキテクチャ（全体構成図）
 
 最終的に完成するアプリの全体像を、以下の図で確認しましょう。今は全てを理解する必要はありません。チュートリアルを進めるうちに、それぞれの役割が自然と分かるようになります。「アーキテクチャ（architecture）」は「建築物の構造／設計」という意味で、ソフトウェアでは「全体の構成」を指します。
 
@@ -2374,10 +2390,11 @@ Supabaseは、データベース（データの保管庫）やユーザー認証
         <code style="background: #ede7f6; padding: 1px 5px; border-radius: 4px; font-size: 11px;">id</code>
         <code style="background: #ede7f6; padding: 1px 5px; border-radius: 4px; font-size: 11px;">title</code>
         <code style="background: #ede7f6; padding: 1px 5px; border-radius: 4px; font-size: 11px;">author</code>
-        <code style="background: #ede7f6; padding: 1px 5px; border-radius: 4px; font-size: 11px;">published_year</code><br>
+        <code style="background: #ede7f6; padding: 1px 5px; border-radius: 4px; font-size: 11px;">rating</code><br>
         <code style="background: #ede7f6; padding: 1px 5px; border-radius: 4px; font-size: 11px;">status</code>
         <code style="background: #ede7f6; padding: 1px 5px; border-radius: 4px; font-size: 11px;">memo</code>
         <code style="background: #ede7f6; padding: 1px 5px; border-radius: 4px; font-size: 11px;">created_at</code>
+        <code style="background: #ede7f6; padding: 1px 5px; border-radius: 4px; font-size: 11px;">updated_at</code>
       </div>
     </div>
   </div>
@@ -2387,10 +2404,13 @@ Supabaseは、データベース（データの保管庫）やユーザー認証
 > - `id` … レコード（行）を一意に識別するための番号。主キー（Primary Key）。
 > - `title` … 書籍タイトル（文字列）。
 > - `author` … 著者名（文字列）。
-> - `published_year` … 出版年（数値）。
-> - `status` … 読書状態。「未読／読書中／読了」のいずれか。
+> - `rating` … 評価（1〜5 の整数。まだ評価していなければ空＝null）。
+> - `status` … 読書状態。`want_to_read`（読みたい）／`reading`（読書中）／`completed`（読了）のいずれか。
 > - `memo` … 自由記述メモ（文字列、長め）。
 > - `created_at` … レコードが作成された日時。自動で入る。
+> - `updated_at` … レコードが最後に更新された日時。自動で入る。
+>
+> ほかにも出版社・出版日・表紙画像の URL などの列があります。テーブルの設計は第5章でくわしく行います。
 
 ### データの流れ（具体例: 書籍を新規登録する場合）
 
@@ -2490,18 +2510,18 @@ Supabaseは、データベース（データの保管庫）やユーザー認証
 <text x="27" y="66" font-family="Consolas, monospace" font-size="12" fill="#1e293b">{</text>
 <text x="39" y="84" font-family="Consolas, monospace" font-size="12" fill="#1e293b">title: "こころ",</text>
 <text x="39" y="102" font-family="Consolas, monospace" font-size="12" fill="#1e293b">author: "夏目漱石",</text>
-<text x="39" y="120" font-family="Consolas, monospace" font-size="12" fill="#1e293b">status: "finished"</text>
+<text x="39" y="120" font-family="Consolas, monospace" font-size="12" fill="#1e293b">status: "completed"</text>
 <text x="27" y="138" font-family="Consolas, monospace" font-size="12" fill="#1e293b">}</text>
 <rect x="270" y="42" width="180" height="120" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
 <path d="M270,48 L360,84 L450,48" fill="none" stroke="#fdba74" stroke-width="2"/>
 <text x="282" y="108" font-family="Consolas, monospace" font-size="12" fill="#c2410c">{"title":"こころ",</text>
 <text x="282" y="126" font-family="Consolas, monospace" font-size="12" fill="#c2410c">"author":"夏目漱石",</text>
-<text x="282" y="144" font-family="Consolas, monospace" font-size="12" fill="#c2410c">"status":"finished"}</text>
+<text x="282" y="144" font-family="Consolas, monospace" font-size="12" fill="#c2410c">"status":"completed"}</text>
 <rect x="525" y="42" width="180" height="120" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
 <text x="537" y="66" font-family="Consolas, monospace" font-size="12" fill="#1e293b">{</text>
 <text x="549" y="84" font-family="Consolas, monospace" font-size="12" fill="#1e293b">title: "こころ",</text>
 <text x="549" y="102" font-family="Consolas, monospace" font-size="12" fill="#1e293b">author: "夏目漱石",</text>
-<text x="549" y="120" font-family="Consolas, monospace" font-size="12" fill="#1e293b">status: "finished"</text>
+<text x="549" y="120" font-family="Consolas, monospace" font-size="12" fill="#1e293b">status: "completed"</text>
 <text x="537" y="138" font-family="Consolas, monospace" font-size="12" fill="#1e293b">}</text>
 <text x="232" y="94" text-anchor="middle" font-family="Consolas, monospace" font-size="12" fill="#1e40af">stringify</text>
 <line x1="199" y1="102" x2="266" y2="102" stroke="#475569" stroke-width="2" marker-end="url(#ar-00-15)"/>
@@ -2523,7 +2543,7 @@ Supabaseは、データベース（データの保管庫）やユーザー認証
 const book = {
   title: "こころ",
   author: "夏目漱石",
-  status: "finished",
+  status: "completed",
 };
 
 // 通信で送れるように、オブジェクトを JSON という「ただの文字列」に変換する
@@ -2547,7 +2567,7 @@ node json.ts
 **▼ 実行結果**
 
 ```text
-{"title":"こころ","author":"夏目漱石","status":"finished"}
+{"title":"こころ","author":"夏目漱石","status":"completed"}
 string
 夏目漱石
 object
@@ -2600,7 +2620,7 @@ console.log(typeof received);
 
 ---
 
-## 9. この教材を進めるにあたってのアドバイス
+## 10. この教材を進めるにあたってのアドバイス
 
 プログラミング学習を効果的に進めるためのアドバイスをまとめました。
 
@@ -2829,7 +2849,7 @@ console.log(`合計は ${total} 円です`);
 
 ---
 
-## 10. よくある質問（FAQ）
+## 11. よくある質問（FAQ）
 
 FAQ は Frequently Asked Questions（よく聞かれる質問）の略です。
 
@@ -2864,7 +2884,7 @@ FAQ は Frequently Asked Questions（よく聞かれる質問）の略です。
 
 ---
 
-## 11. 用語集（Glossary）— 困ったらここへ戻ってくる
+## 12. 用語集（Glossary）— 困ったらここへ戻ってくる
 
 このチュートリアルを読んでいて分からない単語に出会ったら、まずこの用語集を見てください。**完璧に覚える必要はありません**。「あ、こういう意味だったな」と思い出せれば十分です。Glossary は「用語集」を表す英単語です。
 
@@ -2994,7 +3014,7 @@ FAQ は Frequently Asked Questions（よく聞かれる質問）の略です。
 
 ---
 
-## 12. 練習問題（解答・解説つき）
+## 13. 練習問題（解答・解説つき）
 
 この章の内容を、7つの問題で確かめましょう。まず自分で考えてから、後ろの「解答と解説」を読んでください。プログラムを動かす問題（問題5・問題7）は、第1章で Node.js を入れたあとに挑戦すれば大丈夫です。
 
@@ -3002,7 +3022,7 @@ FAQ は Frequently Asked Questions（よく聞かれる質問）の略です。
 
 #### 問題1: URL を部品に分ける
 
-`http://localhost:3000/books?status=reading` という URL について、(1) スキーム、(2) ホスト名、(3) ポート番号、(4) パス、(5) クエリ文字列 をそれぞれ答えてください。
+`http://localhost:3000/?status=reading` という URL について、(1) スキーム、(2) ホスト名、(3) ポート番号、(4) パス、(5) クエリ文字列 をそれぞれ答えてください。
 
 #### 問題2: 拡張子から中身を当てる
 
@@ -3062,13 +3082,13 @@ $ npm run dev
 
 #### 問題1の解答
 
-(1) `http:`（http）、(2) `localhost`、(3) `3000`、(4) `/books`、(5) `?status=reading`
+(1) `http:`（http）、(2) `localhost`、(3) `3000`、(4) `/`、(5) `?status=reading`
 
 **解説:** 0.3節の `url.ts` と同じように、プログラムに確かめさせることもできます。
 
 ```typescript
 // 問題1の URL を部品に分ける
-const url = new URL("http://localhost:3000/books?status=reading");
+const url = new URL("http://localhost:3000/?status=reading");
 console.log(url.protocol);
 console.log(url.hostname);
 console.log(url.port);
@@ -3081,12 +3101,13 @@ console.log(url.searchParams.get("status"));
 http:
 localhost
 3000
-/books
+/
 ?status=reading
 reading
 ```
 
 - `localhost:3000` は、0.6節で見た「自分の PC の 3000 番の部屋」です。ここでは http の既定値（80）ではないので、ポート番号がきちんと `3000` と表示されます。
+- パスの `/` は「サイトのいちばん上（トップページ）」を表します。本書のアプリでは、書籍の一覧ページが `/` です。
 - `?status=reading` のようなクエリ文字列は、「読書中の本だけ」のような絞り込みの条件を URL に載せるときによく使われる形です。
 
 #### 問題2の解答
