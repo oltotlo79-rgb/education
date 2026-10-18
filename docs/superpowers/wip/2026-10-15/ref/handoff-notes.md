@@ -1,5 +1,13 @@
 # 中断時点の引き継ぎメモ
 
+## 2026-10-19: Rust 07 巻に UNIT 08 を追加して main に反映（0a50245）
+
+- 本文は UNIT 01〜08（6,600行・図22枚・168ページ）。巻頭・巻末の「準備中」は UNIT 09・10 だけ。**旧 `Rust/07_Turso_libSQL_SQL設計_実装_運用.pdf` はまだ残してある**（UNIT 10 まで入ったら publish.sh に削除パスとして渡す）。
+- 続き: `rust07/parts/unit09.md`（構成メモと実出力あり）と `unit10.md`（未着手）を書き、`assemble.py` の `range(1, 9)` を `range(1, 11)` に、intro の表の（準備中）2か所・お知らせ・ヒント（「UNIT 10 で扱います」）、outro のお知らせ・チェックリスト・用語を更新する。
+- UNIT 08 の実出力は `rust07/out8/`。追加した例: `sql-lab/src/bin/u08_err_stack.rs`・`u08_stack_spawn.rs`・`u08_q3.rs`・`u08_q3_leak.rs`、features が core だけの E0599 は `rust07/core-only/`（ビルドは `CARGO_TARGET_DIR=ref/libsql-core-noclang-probe/target` で clang なし）。
+- 確かめた事実（2026-10-19）: remote の `build` は接続せず 4ms で成功し、最初の SQL で失敗する。replica の `build` は中で接続して約2秒後に `sync error`、コピーのファイルは作られない。debug の main で remote `execute` はスタックあふれ（終了コード -1073741571 = 0xC00000FD）、`query` では起きない。release と `tokio::spawn` では Hrana のエラーが返る。リモートの SQL エラーも `Hrana` に包まれる（libsql 0.10 のソース `hrana/mod.rs` で確認、本物の Turso では未確認）。
+- RustNote の `main.rs` は起動時の migration を main の中で実行する。Windows の debug ビルドで Turso につなぐとスタックあふれの可能性あり（未確認。本文では「`--release` で試すと安全」とだけ書いた）。
+
 ## 2026-10-18: Rust 07 巻を UNIT 01〜07 まで main に反映（59eb69c）
 
 - `Rust/07_Turso_libSQL_SQL設計_実装_運用.md`（5,700行・図19枚・147ページ）と `Rust/pdf/07_…pdf` を main へ。UNIT 08〜10 は本文に「準備中」と明記。**旧 `Rust/07_Turso_libSQL_SQL設計_実装_運用.pdf` は UNIT 08〜10 が入るまで残してある**（完成したら publish.sh に削除パスとして渡す）。
