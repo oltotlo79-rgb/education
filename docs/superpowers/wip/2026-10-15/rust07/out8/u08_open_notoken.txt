@@ -1,0 +1,2 @@
+設定エラー: libsql://rustnote-example.turso.io につなぐには DATABASE_AUTH_TOKEN が必要です
+exit 1

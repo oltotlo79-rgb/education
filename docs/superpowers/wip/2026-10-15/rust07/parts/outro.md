@@ -29,7 +29,14 @@
 - ☐ 値を `?1`・`params!`・`named_params!` で bind し、文字列連結が SQL インジェクションを生む理由を説明できる（UNIT 07）
 - ☐ `NullValue`・`InvalidColumnType`・`ExecuteReturnedRows`・エラー番号を読み分けられる。型の取り違えは panic し、bind の数の食い違いはエラーにならないことを知っている（UNIT 07）
 
-> **お知らせ:** この版には UNIT 01〜07 を収録しています。UNIT 08（local・remote・embedded replica）・UNIT 09（Repository・行の変換・N+1）・UNIT 10（backup・token・監視・障害対応）は準備中で、次の更新で追加します。それまでの間、これらのテーマは RustNote のソース（`Rust/rustnote/src/db.rs`・`src/repository/`・`src/error.rs`）で実際の形を確かめられます。
+**置き場所を選ぶ**
+
+- ☐ ローカル・リモート・組み込みレプリカの3つの形で、データの場所と読み書きの行き先を図で説明し、アプリを動かす場所に合わせて選べる（UNIT 08）
+- ☐ read-your-writes と `sync` の関係を説明でき、ほかのサーバーの書き込みが `sync` まで見えないことを知っている（UNIT 08）
+- ☐ DB の URL とトークンを環境変数から読み、トークンを `Secret` 型に包んで画面やログに出さない。足りない設定は起動時に止められる（UNIT 08）
+- ☐ `os error 10061`・`Hrana`・`Sync is not supported`・E0599（features の不足）・debug ビルドのスタックあふれを見分けて直せる（UNIT 08）
+
+> **お知らせ:** この版には UNIT 01〜08 を収録しています。UNIT 09（Repository・行の変換・N+1）・UNIT 10（backup・token・監視・障害対応）は準備中で、次の更新で追加します。それまでの間、これらのテーマは RustNote のソース（`Rust/rustnote/src/repository/`・`src/error.rs`）で実際の形を確かめられます。
 
 次の第8巻では、この巻で作った `users` 表と `sessions` 表を使って、メールアドレスとパスワードによる登録・ログイン・ログアウト（認証）と、「その人がその操作をしてよいか」の確認（認可）を学びます。
 
@@ -89,3 +96,14 @@
 | SQL インジェクション | 入力が SQL の文法として解釈され、意図と違う SQL が実行される脆弱性 | UNIT 07 |
 | `Value` | libsql で、種類の分からない値をそのまま受け取る enum | UNIT 07 |
 | `SqliteFailure` | libsql のエラーの種類の1つ。SQLite のエラー番号と文を持つ | UNIT 07 |
+| ローカル / リモート | 手元のファイルの DB を開く形（`new_local`）／ネットの向こうの DB に毎回問い合わせる形（`new_remote`） | UNIT 08 |
+| 組み込みレプリカ | embedded replica。Turso の DB のコピーを手元のファイルに置き、読むのはコピー・書くのは Turso にする形 | UNIT 08 |
+| primary | プライマリ。コピーの元になる本体の DB | UNIT 08 |
+| sync / sync_interval | 手元のコピーを最新にすること／それを裏で自動的に行う間隔 | UNIT 08 |
+| read-your-writes | 書き込みが成功したら、書いたアプリ自身のコピーにはすぐ反映されること | UNIT 08 |
+| 環境変数 | プログラムの外から渡す設定の値。`DATABASE_URL`・`DATABASE_AUTH_TOKEN` など | UNIT 08 |
+| トークン | Turso の DB に入るための秘密の文字列。コードにもログにも出さない | UNIT 08 |
+| `Secret` 型 | 秘密の値を包み、`{:?}` で表示しても中身を `********` で隠す型 | UNIT 08 |
+| Hrana | libsql がリモートの DB とやり取りするときの通信の仕組み。リモートのエラーは `Hrana(…)` で返る | UNIT 07・08 |
+| features | クレートの機能を部品ごとに選ぶ仕組み。libsql の `core`・`remote`・`replication`・`tls` など | UNIT 08 |
+| スタックあふれ | 関数の作業用のメモリ（スタック）が足りなくなって、プログラムが異常終了すること | UNIT 08 |

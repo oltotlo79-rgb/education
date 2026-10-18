@@ -1,0 +1,6 @@
+u08_local.db: 1回目に開いたとき 2 件
+u08_local.db: 開き直したとき 2 件
+u08_local.db: sync エラー: Sync is not supported in databases opened in File mode.
+:memory:: 1回目に開いたとき 1 件
+:memory:: 開き直したとき エラー: SQLite failure: `no such table: memos`
+:memory:: sync エラー: Sync is not supported in databases opened in Memory mode.

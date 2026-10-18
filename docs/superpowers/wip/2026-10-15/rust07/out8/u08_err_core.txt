@@ -1,0 +1,31 @@
+error[E0599]: no associated function or constant named `new_remote` found for struct `libsql::Builder<T>` in the current scope
+  --> src\main.rs:6:23
+   |
+ 6 |     let db = Builder::new_remote(
+   |                       ^^^^^^^^^^ associated function or constant not found in `libsql::Builder<_>`
+   |
+note: if you're trying to build a new `libsql::Builder<_>`, consider using `libsql::Builder::new_local` which returns `libsql::Builder<libsql::database::builder::Local>`
+  --> C:\Users\oltot\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\libsql-0.10.0\src\database\builder.rs:38:9
+   |
+38 |         pub fn new_local(path: impl AsRef<std::path::Path>) -> Builder<Local> {
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: method call on a diverging inference variable
+  --> src\main.rs:12:20
+   |
+12 |     let _conn = db.connect()?;
+   |                    ^^^^^^^
+   |
+   = help: consider providing a type annotation
+   = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+   = note: for more information, see issue #156047 <https://github.com/rust-lang/rust/issues/156047>
+   = note: `#[warn(method_call_on_diverging_infer_var)]` (part of `#[warn(future_incompatible)]`) on by default
+
+error[E0599]: no method named `connect` found for type `!` in the current scope
+  --> src\main.rs:12:20
+   |
+12 |     let _conn = db.connect()?;
+   |                    ^^^^^^^ method not found in `!`
+
+For more information about this error, try `rustc --explain E0599`.
+error: could not compile `core-only` (bin "core-only") due to 2 previous errors; 2 warnings emitted

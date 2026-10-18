@@ -1,0 +1,2 @@
+選んだ形: Remote { url: "http://127.0.0.1:9", token: Secret(********) }
+失敗（2048 ミリ秒）: Hrana: `http error: `error trying to connect: tcp connect error: 対象のコンピューターによって拒否されたため、接続できませんでした。 (os error 10061)``

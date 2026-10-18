@@ -1,0 +1,3 @@
+選んだ形: リモート
+失敗（2033 ミリ秒）: Hrana: `http error: `error trying to connect: tcp connect error: 対象のコンピューターによって拒否されたため、接続できませんでした。 (os error 10061)``
+exit 0

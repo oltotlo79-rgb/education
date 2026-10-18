@@ -1,0 +1,2 @@
+結果: Err(Hrana(Http("error trying to connect: tcp connect error: 対象のコンピューターによって拒否されたため、接続できませんでした。 (os error 10061)")))
+exit 0

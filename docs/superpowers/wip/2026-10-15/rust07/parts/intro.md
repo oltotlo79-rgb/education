@@ -125,11 +125,11 @@ DB は「入れて、出す」だけの箱に見えますが、使い方を間�
 | UNIT 05 | transaction・ACID・競合 | 複数の変更を「全部成功か、全部取り消しか」にまとめる |
 | UNIT 06 | migration と schema version | 表の形の変更を、番号付きの手順として記録し、順に適用する |
 | UNIT 07 | libsql Rust SDK の接続とパラメーターの bind | Rust から SQL を実行し、値は文字列連結せずに bind する |
-| UNIT 08 | local・remote・embedded replica（準備中） | DB を手元に置くか、クラウドに置くか、両方を組み合わせるか |
+| UNIT 08 | local・remote・embedded replica | DB を手元に置くか、クラウドに置くか、両方を組み合わせるか |
 | UNIT 09 | Repository・行の変換・N+1（準備中） | SQL を1か所に集め、DB の行を検証済みの型へ変換する |
 | UNIT 10 | backup・token・監視・障害対応（準備中） | 壊れたとき・漏れたときに、慌てず戻せるように準備する |
 
-> **お知らせ:** この版には UNIT 01〜07 を収録しています。UNIT 08〜10 は準備中で、次の更新で追加します。本文の中の「UNIT 08〜10 で学びます」という予告は、これから追加する単元を指しています。
+> **お知らせ:** この版には UNIT 01〜08 を収録しています。UNIT 09・10 は準備中で、次の更新で追加します。本文の中の「UNIT 09・10 で学びます」という予告は、これから追加する単元を指しています。
 
 ### SQLite・libSQL・Turso の関係
 
@@ -179,7 +179,7 @@ DB は「入れて、出す」だけの箱に見えますが、使い方を間�
 <div style="font-size: 12px; color: #64748b; margin-top: 6px;">図7-?: SQLite・libSQL・Turso と libsql クレートの関係。同じ Rust のコードで、手元のファイルにもクラウドにもつなげる</div>
 </div>
 
-> **ヒント:** 練習では、Turso のアカウントも、インターネットへの接続もいりません。この版の UNIT 01〜07 は、すべて手元の DB ファイル（またはメモリの中だけの DB）で最後まで試せます。Turso Cloud につなぐ操作は、準備中の UNIT 08・10 で扱います。
+> **ヒント:** 練習では、Turso のアカウントも、インターネットへの接続もいりません。この版の UNIT 01〜08 は、すべて手元の DB ファイル（またはメモリの中だけの DB）で最後まで試せます。UNIT 08 のリモートの例も、手元の何も動いていないポートにつないで、失敗のしかたを確かめます。Turso Cloud の DB の作り方とトークンの管理は、準備中の UNIT 10 で扱います。
 
 ### 前提知識（先に読んでおく巻）
 
@@ -334,7 +334,7 @@ Caused by:
 - **直し方:** LLVM をインストールし、`C:\Program Files\LLVM\bin` を PATH に入れてから、PowerShell を開き直してビルドし直します。winget を使う場合は `winget install -e --id LLVM.LLVM` です。`clang --version` で版が表示されれば準備完了です。
 - **x64 版の Windows・macOS・Linux:** 通常はこの手順はいりません。
 
-> **ヒント:** どうしても clang を入れられないときは、`Cargo.toml` の libsql の行を `libsql = { version = "0.10.0", default-features = false, features = ["core"] }` に変えると、clang なしでビルドできます。ただし、この形では**ローカルのファイルしか扱えません**（Turso のサーバーにつなぐ `Builder::new_remote` などが使えなくなります）。UNIT 08 のリモートの例以外は、この形でも最後まで試せます。
+> **ヒント:** どうしても clang を入れられないときは、`Cargo.toml` の libsql の行を `libsql = { version = "0.10.0", default-features = false, features = ["core"] }` に変えると、clang なしでビルドできます。ただし、この形では**ローカルのファイルしか扱えません**（Turso のサーバーにつなぐ `Builder::new_remote` などが使えなくなります）。UNIT 08 のリモートと組み込みレプリカの例以外は、この形でも最後まで試せます。
 
 ### SQL を試す道具 `sql` を用意する
 
