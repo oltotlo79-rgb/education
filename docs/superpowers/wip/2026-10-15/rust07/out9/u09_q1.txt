@@ -1,0 +1,13 @@
+--- Alice のノート一覧 ---
+[  ] #7 100% 達成（持ち主 1）
+[  ] #6 SQL の練習（持ち主 1）
+[  ] #4 読書メモ（持ち主 1）
+[済] #2 Rust の勉強（持ち主 1）
+[  ] #1 買い物リスト（持ち主 1）
+--- 1件だけ探す ---
+Alice が #2 を探す: Some(Note { id: NoteId(2), owner: UserId(1), title: NoteTitle("Rust の勉強"), done: true })
+Alice が #3（Bob のノート）を探す: None
+--- ノートの数 ---
+Alice: 5 件
+Bob: 3 件
+Carol: 0 件

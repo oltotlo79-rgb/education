@@ -1,0 +1,14 @@
+--- 会員 3 人で比べる ---
+N+1 版: SQL 4 回
+JOIN 版: SQL 1 回
+  alice@example.com ノート 5 件（完了 1 件）
+  bob@example.com ノート 3 件（完了 1 件）
+  carol@example.com ノート 0 件（完了 0 件）
+結果は同じ？ true
+--- IN で「最近見たノート」をまとめて読む ---
+  SQL: SELECT id, title FROM notes WHERE user_id = ?1 AND id IN (?2, ?3, ?4) ORDER BY id
+  [(1, "買い物リスト"), (4, "読書メモ"), (6, "SQL の練習")]（SQL 1 回）
+--- 会員を 1,000 人増やして比べる ---
+N+1 版: SQL 1004 回、268.5556ms
+JOIN 版: SQL 1 回、6.5576ms
+会員 1003 人分。結果は同じ？ true

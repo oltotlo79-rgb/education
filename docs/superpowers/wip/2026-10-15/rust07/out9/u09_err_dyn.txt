@@ -1,0 +1,19 @@
+error[E0038]: the trait `NoteRepository` is not dyn compatible
+  --> src\bin\u09_err_dyn.rs:25:23
+   |
+25 |     let repo: Arc<dyn NoteRepository + Send + Sync> = Arc::new(MemoryRepo);
+   |                       ^^^^^^^^^^^^^^ `NoteRepository` is not dyn compatible
+   |
+note: for a trait to be dyn compatible it needs to allow building a vtable
+      for more information, visit <https://doc.rust-lang.org/reference/items/traits.html#dyn-compatibility>
+  --> src\bin\u09_err_dyn.rs:9:14
+   |
+ 8 | trait NoteRepository {
+   |       -------------- this trait is not dyn compatible...
+ 9 |     async fn find(&self, id: i64) -> Option<Note>;
+   |              ^^^^ ...because method `find` is `async`
+   = help: consider moving `find` to another trait
+   = help: only type `MemoryRepo` implements `NoteRepository`; consider using it directly instead.
+
+For more information about this error, try `rustc --explain E0038`.
+error: could not compile `sql-lab` (bin "u09_err_dyn") due to 1 previous error

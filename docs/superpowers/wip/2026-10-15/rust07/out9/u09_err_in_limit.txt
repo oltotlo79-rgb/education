@@ -1,0 +1,2 @@
+32766 個: 見つかったノート 8 件
+32767 個: エラー: SQLite failure: `variable number must be between ?1 and ?32766`

@@ -1,0 +1,8 @@
+N+1 版: SQL 6 回
+JOIN 版: SQL 1 回
+  ジムの予定（bob@example.com）
+  100% 達成（alice@example.com）
+  SQL の練習（alice@example.com）
+  買い物（bob@example.com）
+  読書メモ（alice@example.com）
+結果は同じ？ true

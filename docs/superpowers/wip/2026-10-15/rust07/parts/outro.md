@@ -36,7 +36,14 @@
 - ☐ DB の URL とトークンを環境変数から読み、トークンを `Secret` 型に包んで画面やログに出さない。足りない設定は起動時に止められる（UNIT 08）
 - ☐ `os error 10061`・`Hrana`・`Sync is not supported`・E0599（features の不足）・debug ビルドのスタックあふれを見分けて直せる（UNIT 08）
 
-> **お知らせ:** この版には UNIT 01〜08 を収録しています。UNIT 09（Repository・行の変換・N+1）・UNIT 10（backup・token・監視・障害対応）は準備中で、次の更新で追加します。それまでの間、これらのテーマは RustNote のソース（`Rust/rustnote/src/repository/`・`src/error.rs`）で実際の形を確かめられます。
+**SQL を1か所に集める**
+
+- ☐ 表の SQL を Repository に集め、ハンドラーが SQL を知らずに trait の約束だけで動くように書ける（UNIT 09）
+- ☐ `NOTE_COLUMNS` と `row_to_note` で行を検証済みの型に変換し、失敗したら「表.列」と行の id を添えた `InvalidData` にできる（UNIT 09）
+- ☐ `#[async_trait]` の trait を `Arc<dyn … + Send + Sync>` で持ち、`RepoError` を 404・409・500 に変換できる。E0038 の意味が分かる（UNIT 09）
+- ☐ N+1 を SQL の回数で見つけ、`LEFT JOIN`・`GROUP BY`・`IN` で1回にまとめられる。`JOIN` と `LEFT JOIN`、`COUNT(*)` と `COUNT(列)` の違いを説明できる（UNIT 09）
+
+> **お知らせ:** この版には UNIT 01〜09 を収録しています。UNIT 10（backup・token・監視・障害対応）は準備中で、次の更新で追加します。
 
 次の第8巻では、この巻で作った `users` 表と `sessions` 表を使って、メールアドレスとパスワードによる登録・ログイン・ログアウト（認証）と、「その人がその操作をしてよいか」の確認（認可）を学びます。
 
@@ -107,3 +114,10 @@
 | Hrana | libsql がリモートの DB とやり取りするときの通信の仕組み。リモートのエラーは `Hrana(…)` で返る | UNIT 07・08 |
 | features | クレートの機能を部品ごとに選ぶ仕組み。libsql の `core`・`remote`・`replication`・`tls` など | UNIT 08 |
 | スタックあふれ | 関数の作業用のメモリ（スタック）が足りなくなって、プログラムが異常終了すること | UNIT 08 |
+| Repository | リポジトリ。データのしまい方・取り出し方を引き受ける部品。SQL はこの中にだけ書く | UNIT 09 |
+| 行の変換（row_to_note） | DB の1行を、検証済みのドメインの型に変える関数。失敗したら場所を添えたエラーにする | UNIT 09 |
+| `#[async_trait]` | `async fn` を持つ trait を `dyn` で使えるように書き換えるマクロ（async-trait クレート） | UNIT 09 |
+| dyn compatible | trait を `dyn`（実行時に実装を選ぶ形）で使える性質。満たさないと E0038 になる | UNIT 09 |
+| N+1 問題 | 一覧で1回、その N 件それぞれで1回ずつ SQL を送り、DB と N+1 回往復してしまうこと | UNIT 09 |
+| `COALESCE` | 最初の `NULL` でない値を返す関数。`COALESCE(SUM(done), 0)` で `NULL` を 0 にする | UNIT 09 |
+| `IN` | 列の値が、並べた値のどれかと一致するかを調べる条件。`?` は 32,766 個まで | UNIT 01・09 |
