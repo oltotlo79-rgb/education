@@ -1,5 +1,13 @@
 # 中断時点の引き継ぎメモ
 
+## 2026-10-20: Rust 07 巻に UNIT 09 を追加して main に反映（8bd5889）
+
+- 本文は UNIT 01〜09（7,800行・図24枚・198ページ）。「準備中」は UNIT 10 だけ。**旧 `Rust/07_Turso_libSQL_SQL設計_実装_運用.pdf` はまだ残してある**（UNIT 10 が入ったら publish.sh に削除パスとして渡す）。
+- 続き: `rust07/parts/unit10.md`（未着手。backup・token・監視・障害対応）を書き、`assemble.py` を `range(1, 11)` に、intro の表の（準備中）1か所・お知らせ（2か所の「UNIT 10」）・ヒント（「準備中の UNIT 10 で扱います」）、outro のお知らせ・チェックリスト・用語を更新する。
+- UNIT 10 の素材: 本物の Turso は未使用。`scratchpad/turso/` に公式ドキュメント（cli_db_tokens_create・cli_db_export/import・features_point-in-time-recovery・cloud_durability など）の保存あり。RustNote の `/health`（`src/routes/health.rs`、`SELECT 1` だけ）と `log_if_internal`（`src/views.rs`）。
+- UNIT 09 の実出力は `rust07/out9/`。追加した例: `u09_err_columns.rs`・`u09_err_in_limit.rs`・`u09_q1.rs`・`u09_q2.rs`・`sql/u09_inner_join.sql`。`cargo add async-trait@0.1.92` の出力は `rust07/addprobe`（rust-version 1.98、lock から async-trait を外して取得）。
+- 確かめた事実: RustNote のテストは `:memory:` ではなく一時フォルダの `test.db`（`tests/common/mod.rs`）。RustNote のテストに Repository の別実装は無い（本文は「差し替えられる形」とだけ書いた）。UNIT 08 の「第11巻で使います」は削除済み。
+
 ## 2026-10-19: Rust 07 巻に UNIT 08 を追加して main に反映（0a50245）
 
 - 本文は UNIT 01〜08（6,600行・図22枚・168ページ）。巻頭・巻末の「準備中」は UNIT 09・10 だけ。**旧 `Rust/07_Turso_libSQL_SQL設計_実装_運用.pdf` はまだ残してある**（UNIT 10 まで入ったら publish.sh に削除パスとして渡す）。
