@@ -5,7 +5,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 OUT = Path("C:/Users/oltot/Documents/git-projects/def/Rust/07_Turso_libSQL_SQL設計_実装_運用.md")
-ORDER = ["intro.md"] + [f"unit{n:02}.md" for n in range(1, 10)] + ["outro.md"]
+ORDER = ["intro.md"] + [f"unit{n:02}.md" for n in range(1, 11)] + ["outro.md"]
 
 texts = []
 for name in ORDER:

@@ -1,0 +1,4 @@
+﻿ATTACH の前に u10a/backpu.db はある?: false
+ATTACH の後に u10a/backpu.db はある?: true
+Error: SqliteFailure(1, "no such table: bk.notes")
+exit 1

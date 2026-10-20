@@ -1,0 +1,7 @@
+﻿1件目: 買い物リスト
+① rows と row が残ったまま: エラー: SQLite failure: `cannot VACUUM - SQL statements in progress`
+① rows だけ捨てた後: エラー: SQLite failure: `cannot VACUUM - SQL statements in progress`
+② 1回目: 成功
+② 2回目: エラー: SQLite failure: `output file already exists`
+③ transaction の中: エラー: SQLite failure: `cannot VACUUM from within a transaction`
+exit 0

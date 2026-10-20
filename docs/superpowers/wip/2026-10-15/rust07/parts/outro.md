@@ -43,7 +43,13 @@
 - ☐ `#[async_trait]` の trait を `Arc<dyn … + Send + Sync>` で持ち、`RepoError` を 404・409・500 に変換できる。E0038 の意味が分かる（UNIT 09）
 - ☐ N+1 を SQL の回数で見つけ、`LEFT JOIN`・`GROUP BY`・`IN` で1回にまとめられる。`JOIN` と `LEFT JOIN`、`COUNT(*)` と `COUNT(列)` の違いを説明できる（UNIT 09）
 
-> **お知らせ:** この版には UNIT 01〜09 を収録しています。UNIT 10（backup・token・監視・障害対応）は準備中で、次の更新で追加します。
+**壊れても・漏れても戻せるようにする**
+
+- ☐ `VACUUM INTO ?1` で DB を開いたまま写しを作り、写しを開いて件数と `PRAGMA integrity_check` で確かめられる。動いている DB のファイルを直接コピーしない理由を説明できる（UNIT 10）
+- ☐ 写しを `ATTACH` して、消えた行だけを transaction の中で戻せる。写しの後に書いたデータは戻らないことと、戻した後に確かめる理由を説明できる（UNIT 10）
+- ☐ Turso Cloud の PITR が「過去の時刻から新しい DB を作る」しくみだと知っている。トークンに期限と必要な権限だけを付け、漏れたときは invalidate → create → 値の入れ替え → 動き直す → 確かめる の順で動ける（UNIT 10）
+- ☐ `SELECT 1` だけのヘルスチェックの弱点を説明し、表まで確かめる確認と、`[warn]`・`[error]` の印を付けたログを書ける。障害のときに「気づく → 止める → 調べる → 戻す → 確かめる → 振り返る」の順で動ける（UNIT 10）
+- ☐ `cannot VACUUM - SQL statements in progress`・`output file already exists`・`cannot VACUUM from within a transaction`・`no such table: bk.notes` を読み分けて直せる（UNIT 10）
 
 次の第8巻では、この巻で作った `users` 表と `sessions` 表を使って、メールアドレスとパスワードによる登録・ログイン・ログアウト（認証）と、「その人がその操作をしてよいか」の確認（認可）を学びます。
 
@@ -121,3 +127,13 @@
 | N+1 問題 | 一覧で1回、その N 件それぞれで1回ずつ SQL を送り、DB と N+1 回往復してしまうこと | UNIT 09 |
 | `COALESCE` | 最初の `NULL` でない値を返す関数。`COALESCE(SUM(done), 0)` で `NULL` を 0 にする | UNIT 09 |
 | `IN` | 列の値が、並べた値のどれかと一致するかを調べる条件。`?` は 32,766 個まで | UNIT 01・09 |
+| backup（写し） | DB のある瞬間の状態を、別のファイルや場所に残したもの。写しの後に書いたデータは入らない | UNIT 06・10 |
+| `VACUUM INTO` | DB を開いたまま、つじつまの合った写しを別のファイルに書き出す SQL。同じ名前のファイルがあると失敗する | UNIT 10 |
+| `PRAGMA integrity_check` | DB のファイルが壊れていないかを調べる命令。問題がなければ `ok` を返す | UNIT 10 |
+| `ATTACH` / `DETACH` | 別の DB ファイルを名前を付けて今の接続に横付けする／外す。ファイルが無いと空の DB を作ってしまう | UNIT 10 |
+| PITR | point-in-time recovery。Turso Cloud が COMMIT ごとに残す backup から、過去の時刻の状態で新しい DB を作るしくみ | UNIT 10 |
+| トークンの無効化 | `turso db tokens invalidate`。署名の鍵を作り直し、その DB（と同じグループ）のトークンを全部使えなくする | UNIT 10 |
+| 読み込み専用トークン | `--read-only` で作る、読むだけで書けないトークン。集計や写しを取るだけのツールに渡す | UNIT 10 |
+| ヘルスチェック | アプリが元気かを外から確かめる仕組み。RustNote は `GET /health`。失敗なら 503 を返す | UNIT 10 |
+| 監視 | アプリと DB が正しく動いているかを、ヘルスチェックやログで見続けること | UNIT 10 |
+| 障害（インシデント） | アプリが使えない・データが消えた・秘密が漏れた、のように利用者に影響が出る出来事 | UNIT 10 |

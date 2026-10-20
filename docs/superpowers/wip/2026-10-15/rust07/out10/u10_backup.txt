@@ -1,0 +1,6 @@
+﻿app.db: users 3 件、notes 8 件
+写しを作りました: u10/backup-2026-10-21.db（20480 バイト）
+app.db: 書き足した後の notes 9 件
+写し: users 3 件、notes 8 件
+写しの integrity_check: ok
+exit 0

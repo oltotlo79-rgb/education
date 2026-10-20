@@ -5,7 +5,7 @@ S=/c/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects
 REPO=/c/Users/oltot/Documents/git-projects/def
 D=$REPO/docs/superpowers/wip/2026-10-15/rust07
 cd $S
-for dir in parts sql-lab/sql sql-lab/src out2 out8 out9 core-only/src; do
+for dir in parts sql-lab/sql sql-lab/src out2 out8 out9 out10 core-only/src; do
   [ -d "$dir" ] || continue
   find "$dir" -type f ! -name "*.db" | while read f; do mkdir -p "$D/$(dirname "$f")"; cp "$f" "$D/$f"; done
 done

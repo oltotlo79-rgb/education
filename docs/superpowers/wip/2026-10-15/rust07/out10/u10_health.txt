@@ -1,0 +1,6 @@
+﻿u10h/app.db: SELECT 1 → ok / 表の確認 → ok（migration 2 件）
+u10h/ap.db: SELECT 1 → ok / 表の確認 → 失敗: SQLite failure: `no such table: schema_migrations`
+notes の件数: 8
+[warn] 遅い SQL（1449 ms）: 1 から 300 万まで数える
+数えた数: 3000000
+exit 0

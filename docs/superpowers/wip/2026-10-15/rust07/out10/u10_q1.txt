@@ -1,0 +1,4 @@
+﻿整理の前: ["app.db", "backup-2026-10-17.db", "backup-2026-10-18.db", "backup-2026-10-19.db", "backup-2026-10-20.db", "backup-2026-10-21.db", "memo.txt"]
+消した写し: ["backup-2026-10-17.db", "backup-2026-10-18.db"]
+整理の後: ["app.db", "backup-2026-10-19.db", "backup-2026-10-20.db", "backup-2026-10-21.db", "memo.txt"]
+exit 0
