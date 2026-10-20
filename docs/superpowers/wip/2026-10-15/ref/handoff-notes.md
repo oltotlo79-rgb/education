@@ -1,5 +1,12 @@
 # 中断時点の引き継ぎメモ
 
+## 2026-10-21: Rust 07 巻に UNIT 10 を追加して巻を完成（main 17a950d）
+
+- 本文は UNIT 01〜10（8,758行・図27枚）、PDF は 222 ページ。巻頭・巻末の「準備中」とお知らせは外した。**旧 `Rust/07_Turso_libSQL_SQL設計_実装_運用.pdf` は削除済み**（`Rust/pdf/` の新しい PDF に置き換え）。Rust 07 巻はこれで完成。
+- UNIT 10 の例は `rust07/sql-lab/src/bin/u10_*.rs`、実出力は `rust07/out10/`。Turso CLI のコマンド（db create・db show --url・tokens create/invalidate・db export・--from-db --timestamp・--from-file）は公式ドキュメント（`scratchpad/turso/`、2026-10-17 取得）の形だけを載せ、実行していないと本文に明記した。
+- 確かめた事実（2026-10-21）: libsql 0.10 のローカル DB の journal_mode は `delete`。`VACUUM INTO ?1` はファイル名の bind ができる。読みかけの `Rows` だけでなく、受け取った `Row` も文を持つので、`drop(rows)` だけでは `cannot VACUUM - SQL statements in progress` が消えない（`local/rows.rs` で `Row` が `Statement` を持つ）。同名の写しは `output file already exists`、transaction 中は `cannot VACUUM from within a transaction`。`ATTACH` は存在しないファイルを空の DB として作る（`no such table: bk.notes`）。VACUUM/ATTACH の `execute` の戻り値は直前の DML の行数のまま（本文では使っていない）。
+- RustNote について本文に書いたこと: `/health` は `SELECT 1` だけで、ローカルのパスを打ち間違えると起動時の migration が空の DB に表を作り、200 のまま空のアプリとして動く。手がかりは起動ログの「マイグレーションを適用しました: 0001_users」。トークンは起動時に1回だけ読むので、入れ替えには再起動が要る。RustNote のコードは変更していない。
+
 ## 2026-10-20: Rust 07 巻に UNIT 09 を追加して main に反映（8bd5889）
 
 - 本文は UNIT 01〜09（7,800行・図24枚・198ページ）。「準備中」は UNIT 10 だけ。**旧 `Rust/07_Turso_libSQL_SQL設計_実装_運用.pdf` はまだ残してある**（UNIT 10 が入ったら publish.sh に削除パスとして渡す）。
