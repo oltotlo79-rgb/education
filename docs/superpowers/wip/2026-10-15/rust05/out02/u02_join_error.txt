@@ -1,0 +1,7 @@
+
+thread 'tokio-rt-worker' (18992) panicked at src\bin\u02_join_error.rs:9:14:
+index out of bounds: the len is 0 but the index is 0
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+① 失敗: task 13 panicked with message "index out of bounds: the len is 0 but the index is 0" / is_panic = true
+② 失敗: task 14 was cancelled / is_cancelled = true
+main は最後まで動きました

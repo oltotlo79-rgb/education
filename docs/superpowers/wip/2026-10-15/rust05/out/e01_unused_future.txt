@@ -9,6 +9,6 @@ warning: unused implementer of `Future` that must be used
   = note: `#[warn(unused_must_use)]` (part of `#[warn(unused)]`) on by default
 
 warning: `async_lab` (bin "e01_unused_future") generated 1 warning
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.73s
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.70s
      Running `target\debug\e01_unused_future.exe`
 終わり

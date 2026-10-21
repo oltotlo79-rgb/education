@@ -1,0 +1,12 @@
+    Checking async_lab v0.1.0 (...\async_lab)
+error: unused implementer of `std::future::Future` that must be used
+ --> src\bin\e01_unused_future.rs:8:5
+  |
+8 |     save_note();
+  |     ^^^^^^^^^^^
+  |
+  = note: futures do nothing unless you `.await` or poll them
+  = note: `-D unused-must-use` implied by `-D warnings`
+  = help: to override `-D warnings` add `#[allow(unused_must_use)]`
+
+error: could not compile `async_lab` (bin "e01_unused_future") due to 1 previous error

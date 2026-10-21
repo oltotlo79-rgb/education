@@ -1,0 +1,4 @@
+wait() の Future:                    120 バイト
+keeps_buffer() の Future:            1152 バイト
+uses_buffer_before_await() の Future: 136 バイト
+結果: 1024 1024 ()

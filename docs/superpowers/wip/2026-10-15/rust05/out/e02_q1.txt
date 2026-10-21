@@ -1,0 +1,31 @@
+   Compiling async_lab v0.1.0 (...\async_lab)
+error[E0373]: async block may outlive the current function, but it borrows `owner`, which is owned by the current function
+ --> src\bin\e02_q1.rs:6:35
+  |
+6 |         handles.push(tokio::spawn(async {
+  |                                   ^^^^^ may outlive borrowed value `owner`
+7 |             format!("{owner} さんのノート{number}")
+  |                       ----- `owner` is borrowed here
+  |
+  = note: async blocks are not executed immediately and must either take a reference or ownership of outside variables they use
+help: to force the async block to take ownership of `owner` (and any other referenced variables), use the `move` keyword
+  |
+6 |         handles.push(tokio::spawn(async move {
+  |                                         ++++
+
+error[E0373]: async block may outlive the current function, but it borrows `number`, which is owned by the current function
+ --> src\bin\e02_q1.rs:6:35
+  |
+6 |         handles.push(tokio::spawn(async {
+  |                                   ^^^^^ may outlive borrowed value `number`
+7 |             format!("{owner} さんのノート{number}")
+  |                                           ------ `number` is borrowed here
+  |
+  = note: async blocks are not executed immediately and must either take a reference or ownership of outside variables they use
+help: to force the async block to take ownership of `number` (and any other referenced variables), use the `move` keyword
+  |
+6 |         handles.push(tokio::spawn(async move {
+  |                                         ++++
+
+For more information about this error, try `rustc --explain E0373`.
+error: could not compile `async_lab` (bin "e02_q1") due to 2 previous errors

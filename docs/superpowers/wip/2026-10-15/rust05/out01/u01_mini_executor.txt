@@ -1,0 +1,14 @@
+make_tea() を呼んだ。まだ何も表示されていないはず
+実行係: 1 回目の poll
+  [make_tea] 開始
+    Countdown: Pending を返す（あと 2 回）
+実行係: 2 回目の poll
+    Countdown: Pending を返す（あと 1 回）
+実行係: 3 回目の poll
+    Countdown: Ready を返す
+  [make_tea] 1つ目の待ちが終わった: 完了
+    Countdown: Pending を返す（あと 1 回）
+実行係: 4 回目の poll
+    Countdown: Ready を返す
+  [make_tea] 2つ目の待ちが終わった: 完了
+結果: お茶

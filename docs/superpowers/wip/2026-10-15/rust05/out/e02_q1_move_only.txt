@@ -1,0 +1,23 @@
+   Compiling async_lab v0.1.0 (...\async_lab)
+error[E0382]: use of moved value: `owner`
+ --> src\bin\e02_q1_move_only.rs:6:35
+  |
+3 |     let owner = String::from("hanako");
+  |         ----- move occurs because `owner` has type `String`, which does not implement the `Copy` trait
+4 |     let mut handles = Vec::new();
+5 |     for number in 1..=3 {
+  |     ------------------- inside of this loop
+6 |         handles.push(tokio::spawn(async move {
+  |                                   ^^^^^^^^^^ value moved here, in previous iteration of loop
+7 |             format!("{owner} さんのノート{number}")
+  |                       ----- use occurs due to use in coroutine
+  |
+help: consider cloning the value before moving it into the closure
+  |
+6 ~         let value = owner.clone();
+7 ~         handles.push(tokio::spawn(async move {
+8 ~             format!("{value} さんのノート{number}")
+  |
+
+For more information about this error, try `rustc --explain E0382`.
+error: could not compile `async_lab` (bin "e02_q1_move_only") due to 1 previous error

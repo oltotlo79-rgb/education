@@ -1,0 +1,7 @@
+1: 成功 hanako
+2: アプリのエラー ユーザー 2 はいません
+
+thread 'tokio-rt-worker' (29704) panicked at src\bin\u02_q3.rs:9:14:
+ユーザー 3 で想定外のことが起きました
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+3: タスクが失敗 task 15 panicked with message "ユーザー 3 で想定外のことが起きました"
