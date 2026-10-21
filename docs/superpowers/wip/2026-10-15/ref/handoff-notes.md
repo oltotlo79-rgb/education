@@ -1,5 +1,13 @@
 # 中断時点の引き継ぎメモ
 
+## 2026-10-22: Rust 05 巻を UNIT 01・02 まで main に反映（98bf0d1）
+
+- `Rust/05_Rustバックエンド_async_並行処理_ジョブ_運用.md`（2,267行・図7枚）と `Rust/pdf/05_…pdf`（61ページ）を main へ。UNIT 03〜10 は本文の表とお知らせに「準備中」と明記。**旧 `Rust/05_Rustバックエンド_async_並行処理_ジョブ_運用.pdf` は残してある**（UNIT 10 まで入ったら publish.sh に削除パスとして渡す）。
+- 下書きは `rust05/parts/`（intro・unit01・unit02・outro）。連結は `rust05/assemble.py`（いまは `range(1, 3)`。単元を足したら増やす）、素材の保存は `rust05/save_wip.sh`。図の id は `ar-05-<単元2桁><連番>`（巻頭は `ar-05-001`・`002`）、キャプションは `図5-?:`。
+- 続きの書き方: `parts/unit03.md` から書き、intro の表の「（準備中）」とお知らせ、outro のお知らせ・チェックリスト・用語を更新する。UNIT 03〜09 の例は `async_lab/src/bin/u03_*`〜`u09_*`、エラー例は `errs/e03_*`〜`e09_*`（出力は `out/`）。**u03 以降の実行結果は保存されていないので、書くときに実行し直す**。UNIT 10（バックグラウンドジョブ）は素材なし。
+- 練習プロジェクトは本文では `async_lab`（実出力の `Compiling async_lab` に合わせた）。`cargo add tokio@=1.53.3 --features full` の実出力は `rust05/probe/cargo_add.txt`。
+- 確かめた事実（2026-10-22）: tokio 1.54.0 が出ているため、`cargo add tokio@1.53.3`（`=` なし）だと 1.54.0 が入る。本書は `@=1.53.3` で固定した（第7巻の巻頭は `=` なしのまま。読者の手元では 1.54.0 になる可能性があるが未修正）。Topcoat 0.10 は `topcoat-router-0.10.0/src/service.rs` の `internal_serve` で、接続ごとに `tokio::spawn` し、`tokio::select!` で accept と停止の合図を選び、`watch::channel` で処理中の接続に停止を伝えて最大 `shutdown_timeout` 待つ（UNIT 03・04・06 で使える）。`enable_all()` を忘れたランタイムで sleep すると `A Tokio 1.x context was found, but timers are disabled.` で panic。Rust 1.99 の panic 表示は `thread 'tokio-rt-worker' (OS のスレッド番号) panicked at …`。
+
 ## 2026-10-21: Rust 07 巻に UNIT 10 を追加して巻を完成（main 17a950d）
 
 - 本文は UNIT 01〜10（8,758行・図27枚）、PDF は 222 ページ。巻頭・巻末の「準備中」とお知らせは外した。**旧 `Rust/07_Turso_libSQL_SQL設計_実装_運用.pdf` は削除済み**（`Rust/pdf/` の新しい PDF に置き換え）。Rust 07 巻はこれで完成。
