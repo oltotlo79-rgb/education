@@ -43,4 +43,8 @@ async fn main() {
     println!("{result:?}（{:.1} 秒）", start.elapsed().as_secs_f64());
     // 取り消された子タスクの片付けが表示される時間を少しだけ待つ
     tokio::time::sleep(Duration::from_millis(50)).await;
+    println!(
+        "main が終わります（{:.1} 秒）",
+        start.elapsed().as_secs_f64()
+    );
 }

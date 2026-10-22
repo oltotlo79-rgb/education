@@ -1,0 +1,10 @@
+① DB 500ms / キャッシュ 100ms
+  cache: 最後まで終わりました
+  片付け: cache
+  片付け: primary_db
+キャッシュが勝ち: キャッシュの結果（0.1 秒）
+② DB 100ms / キャッシュ 500ms
+  primary_db: 最後まで終わりました
+  片付け: primary_db
+  片付け: cache
+DB が勝ち: 本命の DB の結果（0.1 秒）

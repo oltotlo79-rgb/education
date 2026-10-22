@@ -12,7 +12,7 @@ done
 mkdir -p "$D/probe"
 cp probe/*.txt "$D/probe/" 2>/dev/null || true
 cp async_lab/Cargo.toml async_lab/Cargo.lock async_lab/rust-toolchain.toml "$D/async_lab/"
-cp assemble.py save_wip.sh mask.py cap.sh errcap.sh "$D/"
+cp assemble.py save_wip.sh mask.py cap.sh errcap.sh render.py "$D/"
 git -C $REPO add docs/superpowers/wip/2026-10-15/rust05
 if ! git -C $REPO diff --cached --quiet; then
   git -C $REPO commit -q -m "wip: $1

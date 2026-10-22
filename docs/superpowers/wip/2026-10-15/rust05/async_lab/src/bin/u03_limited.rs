@@ -18,9 +18,9 @@ async fn main() {
     for id in 1..=6 {
         // 袋がいっぱいなら、どれか1つ終わるまで待ってから次を入れる
         if set.len() >= LIMIT {
-            if let Some(joined) = set.join_next().await {
-                done.push(joined.unwrap());
-            }
+            // 袋には LIMIT 個入っているので、join_next は必ず Some を返す
+            let joined = set.join_next().await.expect("袋は空ではない");
+            done.push(joined.expect("子タスクが panic しました"));
         }
         println!("{:.2} 秒: {id} 番を開始", start.elapsed().as_secs_f64());
         set.spawn(download(id));
