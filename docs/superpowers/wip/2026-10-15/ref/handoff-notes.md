@@ -1,5 +1,12 @@
 # 中断時点の引き継ぎメモ
 
+## 2026-10-23: Rust 05 巻に UNIT 03 を追加して main に反映（6b0007a）
+
+- 本文は UNIT 01〜03（3,228行・図11枚・83ページ）。「準備中」は UNIT 04〜10。旧 `Rust/05_…pdf` はまだ残してある。`assemble.py` は `range(1, 4)`。
+- UNIT 03 の実出力は `rust05/out03/`。追加した例: `u03_deadline.rs`（pin! した締め切り）・`u03_select_restart.rs` / `u03_select_resume.rs`（ループ内 select! のやり直し問題と直し方）・`u03_q1`〜`u03_q3`。`u03_limited.rs` は clippy の collapsible_if を避けるため、入れ子の `if let` を `expect` に書き換えた。`u03_joinset_fail.rs` は最後に「main が終わります（0.3 秒）」を足し、C の片付けが JoinSet の取り消しによるもの（プログラム終了ではない）と分かるようにした。
+- 確かめた事実（tokio 1.53.3 のソース）: `JoinSet` の `Drop` は中のタスクを全部 `abort` する。`join_all` は子が panic すると `resume_unwind` で投げ直す。`TcpListener::accept` と `JoinSet::join_next` はキャンセル安全と明記。Topcoat の `internal_serve` は `let mut shutdown = pin!(shutdown);` を loop の外で作り、`select!` の枝で `&mut shutdown` を使う（本文で引用）。
+- 作業中に気づいたこと: スクラッチ領域の一部（`rust04/render.py`・`rust_txt/`・`rust_png/` など）が消えていた（原因不明。Temp の掃除の可能性）。図の確認用スクリプトは `rust05/render.py` に作り直し、`save_wip.sh` で作業ブランチにも保存するようにした。旧 PDF のテキスト抽出（`rust_txt/`）が必要なら、旧 PDF から PyMuPDF で取り直す。
+
 ## 2026-10-22: Rust 05 巻を UNIT 01・02 まで main に反映（98bf0d1）
 
 - `Rust/05_Rustバックエンド_async_並行処理_ジョブ_運用.md`（2,267行・図7枚）と `Rust/pdf/05_…pdf`（61ページ）を main へ。UNIT 03〜10 は本文の表とお知らせに「準備中」と明記。**旧 `Rust/05_Rustバックエンド_async_並行処理_ジョブ_運用.pdf` は残してある**（UNIT 10 まで入ったら publish.sh に削除パスとして渡す）。
