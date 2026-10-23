@@ -1,5 +1,12 @@
 # 中断時点の引き継ぎメモ
 
+## 2026-10-24: Rust 05 巻に UNIT 04 を追加して main に反映（317e15c）
+
+- 本文は UNIT 01〜04（4,246行・図15枚・109ページ）。「準備中」は UNIT 05〜10。旧 `Rust/05_…pdf` はまだ残してある。`assemble.py` は `range(1, 5)`。
+- UNIT 04 の実出力は `rust05/out04/`（エラー例 e04_* の出力は `rust05/out/`）。追加した例: `u04_try_send.rs`（Full ですぐ断る）・`u04_forgot_drop.rs`（drop(tx) 忘れで終わらない。select! で1秒だけ待つ）・`u04_q1`〜`u04_q3`（容量5・Reset の依頼と ask 関数・watch の止める合図）。
+- 確かめた事実（tokio 1.53.3 のソース）: `mpsc::Sender::send` は select! で負けると値が捨てられる（cancel safety の注記）。`mpsc::Receiver::recv`・`watch::Receiver::changed` はキャンセル安全。`watch` の `borrow` は読み込みの鍵を持つ。`JoinHandle` は `Unpin`。`oneshot::Sender::send(mut self, …)`。`broadcast::channel<T: Clone>`。Topcoat の `internal_serve` は `drain`・`cutoff`・`done` の3つの watch を「送り口を drop して合図」「受け取り口の数で生きているタスクを数える（`done_tx.closed()`）」に使う（本文で引用）。
+- 次は UNIT 05（Mutex・RwLock・Semaphore）。素材は `u05_std_mutex`・`u05_tokio_mutex`・`u05_rwlock`・`u05_semaphore`・`u05_sync_helper` と `errs/e05_*`（guard_await・drop_guard・double_lock・guard_no_spawn）。第3巻 UNIT 10 の「第5巻への橋渡し」（鍵を持ったまま .await しない）を受ける。
+
 ## 2026-10-23: Rust 05 巻に UNIT 03 を追加して main に反映（6b0007a）
 
 - 本文は UNIT 01〜03（3,228行・図11枚・83ページ）。「準備中」は UNIT 04〜10。旧 `Rust/05_…pdf` はまだ残してある。`assemble.py` は `range(1, 4)`。
