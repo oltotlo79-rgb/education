@@ -1,9 +1,9 @@
    Compiling async_lab v0.1.0 (...\async_lab)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.67s
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.72s
      Running `target\debug\e04_send_closed.exe`
 送れません: channel closed / 戻ってきた値: ノート1
 
-thread 'main' (12712) panicked at src\bin\e04_send_closed.rs:15:44:
+thread 'main' (25592) panicked at src\bin\e04_send_closed.rs:15:44:
 called `Result::unwrap()` on an `Err` value: SendError { .. }
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 error: process didn't exit successfully: `target\debug\e04_send_closed.exe` (exit code: 101)
