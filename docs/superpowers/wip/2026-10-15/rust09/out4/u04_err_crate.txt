@@ -1,0 +1,10 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+error[E0432]: unresolved import `crate::domain`
+ --> examples\e04_crate.rs:2:12
+  |
+2 | use crate::domain::NoteTitle;
+  |            ^^^^^^ could not find `domain` in the crate root
+
+For more information about this error, try `rustc --explain E0432`.
+error: could not compile `rustnote` (example "e04_crate") due to 1 previous error
+exit=101

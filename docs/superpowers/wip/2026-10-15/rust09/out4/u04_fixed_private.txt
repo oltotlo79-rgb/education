@@ -1,0 +1,2 @@
+rustnote::repository::notes::LibsqlNoteRepository
+exit=0

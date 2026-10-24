@@ -1,0 +1,17 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 26.31s
+     Running tests\u04_panic.rs (target\debug\deps\u04_panic-be1d0970f9a0d880.exe)
+
+running 1 test
+POST /signup -> 303 See Other (665.5233ms)
+
+thread 'panic_in_a_page_becomes_plain_500' (75824) panicked at tests\u04_panic.rs:30:9:
+internal error: entered unreachable code: search は呼ばれないはず
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+状態コード: 500 Internal Server Error
+本文: "internal server error"
+test panic_in_a_page_becomes_plain_500 ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.73s
+
+exit=0

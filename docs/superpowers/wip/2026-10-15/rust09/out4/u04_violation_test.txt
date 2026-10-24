@@ -1,0 +1,27 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.01s
+     Running tests\architecture.rs (target\debug\deps\architecture-9dc89633c9b57438.exe)
+
+running 5 tests
+test r1_domain_stands_alone ... ok
+test r3_repository_does_not_know_screens ... ok
+test r2_only_the_db_side_uses_libsql ... FAILED
+test r5_only_auth_hashes_passwords ... ok
+test r4_routes_go_through_repositories ... ok
+
+failures:
+
+---- r2_only_the_db_side_uses_libsql stdout ----
+
+thread 'r2_only_the_db_side_uses_libsql' (80420) panicked at tests\architecture.rs:122:9:
+routes が libsql を使っています。SQL は repository に書きます
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    r2_only_the_db_side_uses_libsql
+
+test result: FAILED. 4 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+error: test failed, to rerun pass `--test architecture`
+exit=101

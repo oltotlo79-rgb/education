@@ -1,0 +1,12 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.46s
+     Running tests\swap.rs (target\debug\deps\swap-62514f9b5e31f478.exe)
+
+running 1 test
+POST /signup -> 303 See Other (1.1952706s)
+[error] サーバーの中でエラーが起きました <- DB の値を読み取れません: ディスクが壊れました（テストのための失敗）
+GET /notes -> 500 Internal Server Error (2.832ms)
+test notes_page_is_500_when_note_storage_is_broken ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.25s
+
+exit=0

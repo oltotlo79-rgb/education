@@ -1,0 +1,14 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.75s
+     Running tests\architecture.rs (target\debug\deps\architecture-9dc89633c9b57438.exe)
+
+running 5 tests
+test r1_domain_stands_alone ... ok
+test r2_only_the_db_side_uses_libsql ... ok
+test r3_repository_does_not_know_screens ... ok
+test r4_routes_go_through_repositories ... ok
+test r5_only_auth_hashes_passwords ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.65s
+
+exit=0

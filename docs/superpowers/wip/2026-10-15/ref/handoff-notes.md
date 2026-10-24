@@ -1,5 +1,16 @@
 # 中断時点の引き継ぎメモ
 
+## 2026-10-25: Rust 09 巻に UNIT 04（プロジェクト構成と依存の向き）を追加して main に反映（7ddd583）
+
+統括が1人で執筆（サブエージェントなし）。本文 4,655 行・図14枚（UNIT 04 で5枚追加）・126 ページ。旧 PDF（`Rust/09_….pdf`）は残してある。
+
+- 下書き: `rust09/parts/unit04.src.md`（`@@FILE:…@@`・`@@OUT:…@@` の目印入り）を `rust09/fill04.py` で埋めて `parts/unit04.md` を作り、`assemble.py`（`range(1, 5)`）で連結する。intro・outro は UNIT 01〜04 収録に更新、outro に UNIT 04 のチェックリストと用語表を追加。
+- 練習用コピー（`rust09/book/rustnote/`、`src/` は本物と同一を確認）に足したもの: `examples/u04_deps.rs`、`tests/architecture.rs`（R-1〜R-6）・`swap.rs`・`u04_q3.rs`・`u04_panic.rs`。テスト計 62 件が 1.99.0 で通り、fmt・clippy（all-targets、-D warnings）も通る。実出力は `rust09/out4/`（`bcap.sh` の保存先を out2 から out4 に変更）。
+- 問1（ノートの複製）の解答は、別のコピー `rust09/dup_probe/`（変更したファイルだけ保存）で `src/routes/notes/id/duplicate.rs` を足して確かめた。クレートの循環は `rust09/cycle_ws/`（app ⇄ views）で取り直した。
+- 確かめた事実: RustNote のモジュールの依存は `domain` が何も使わない（thiserror のみ）、libsql は db・repository・error だけ、相互依存は `auth ⇄ routes` と `routes ⇄ views`（どちらも `href!`）の2組。`routes/health.rs` は `app_state(cx).db.ping()` で DB を直接使う（文字の検査では見えない）。examples から `crate::` は E0432、`rustnote::repository::notes::…` は E0603（`pub use` の入口なら通り、`type_name` は `rustnote::repository::notes::LibsqlNoteRepository`）。trait のメソッド不足は E0046。**ページの処理の中の panic は Topcoat 0.10 の `Router::handle_with` が `catch_unwind` で受け止め、本文 `internal server error` の 500 を返す**（RustNote のエラー画面もアクセスログの行も出ず、テストは ok のまま）。
+- 本文で触れた RustNote の改善候補（コード未変更）: なし（新規の指摘はなし。panic 時にアクセスログが残らない点は Topcoat 側の挙動として記載）。
+- 作業中の出来事: スクラッチパッドの `main-wt`（main の worktree）が中身ごと消えて「prunable」になっていた。残っていたファイルが origin/main と同一なのを確かめてから、同じ場所に `git worktree add` で作り直した。
+
 ## 2026-10-24: Rust 09 巻・Rust 01 巻を UNIT 01〜03 まで main に反映（09: fb8b0fd、01: bfa5759）
 
 サブエージェント2つに並行して書かせ、統括が確認（check_md・出力の照合・図の目視・RustNote 未変更の確認）してから反映した。どちらも旧 PDF は残してある。下書きと素材は `rust09/`・`rust01/` に保存（d22b785）。

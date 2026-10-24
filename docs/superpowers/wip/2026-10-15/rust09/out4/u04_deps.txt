@@ -1,0 +1,25 @@
+--- モジュールごとの依存（24 個のファイルを調べた）
+auth       → domain error flash routes state
+             外: argon2 topcoat
+config     → （なし）
+             外: thiserror
+db         → config
+             外: libsql thiserror
+domain     → （なし）
+             外: thiserror
+error      → domain
+             外: libsql thiserror topcoat
+flash      → （なし）
+             外: topcoat
+repository → db domain error
+             外: async_trait libsql topcoat
+routes     → auth domain error flash state views
+             外: serde topcoat
+state      → db repository
+             外: topcoat
+views      → domain error flash routes
+             外: topcoat
+--- 互いに使い合っている組
+auth ⇄ routes
+routes ⇄ views
+exit=0

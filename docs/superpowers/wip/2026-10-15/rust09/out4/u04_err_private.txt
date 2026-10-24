@@ -1,0 +1,18 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+error[E0603]: module `notes` is private
+  --> examples\e04_private.rs:2:27
+   |
+ 2 | use rustnote::repository::notes::LibsqlNoteRepository;
+   |                           ^^^^^  -------------------- struct `LibsqlNoteRepository` is not publicly re-exported
+   |                           |
+   |                           private module
+   |
+note: the module `notes` is defined here
+  --> src\repository.rs:15:1
+   |
+15 | mod notes;
+   | ^^^^^^^^^
+
+For more information about this error, try `rustc --explain E0603`.
+error: could not compile `rustnote` (example "e04_private") due to 1 previous error
+exit=101

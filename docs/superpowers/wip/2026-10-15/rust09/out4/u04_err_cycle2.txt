@@ -1,0 +1,4 @@
+error: cyclic package dependency: package `app v0.1.0 (...\cycle_ws\app)` depends on itself. Cycle:
+package `app v0.1.0 (...\cycle_ws\app)`
+    ... which satisfies path dependency `app` of package `views v0.1.0 (...\cycle_ws\views)`
+    ... which satisfies path dependency `views` of package `app v0.1.0 (...\cycle_ws\app)`
