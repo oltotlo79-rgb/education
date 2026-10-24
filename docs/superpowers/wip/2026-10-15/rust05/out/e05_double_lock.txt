@@ -1,5 +1,5 @@
    Compiling async_lab v0.1.0 (...\async_lab)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.79s
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.70s
      Running `target\debug\e05_double_lock.exe`
 1回目の lock: 取れた（1 件）
 2回目の lock: 1 秒待っても取れない（自分が持っている鍵を待っている）
