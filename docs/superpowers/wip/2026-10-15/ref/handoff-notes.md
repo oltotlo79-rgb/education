@@ -1,5 +1,12 @@
 # 中断時点の引き継ぎメモ
 
+## 2026-10-24: Rust 05 巻に UNIT 10 を追加して巻を完成（main b6d7e7e・旧 PDF 削除 b9e7a87）
+
+- 本文は UNIT 01〜10（10,384行・図36枚・270ページ）。巻頭・巻末の「準備中」とお知らせを外し、チェックリストを学習地図の3段（async の土台／渡す・守る・止める／外とつなぎ・見守る）に分けた。**旧 `Rust/05_….pdf` は削除済み。Rust 05 巻はこれで完成。**
+- UNIT 10 は素材なしから作った。`async_lab/src/job_queue.rs`（libsql の jobs 表。claim は `UPDATE … WHERE id = (SELECT … LIMIT 1) RETURNING`、fail は CASE で queued/dead）と `u10_*`・`errs/e10_*`。実出力は `rust05/out10/`。`cargo add libsql@=0.10.0` の実出力は `probe/cargo_add_libsql.txt`（Locking 114 packages）。lab に libsql を足した後の全 bin のビルドは約 65 秒。
+- 確かめた事実（2026-10-24）: SELECT と UPDATE を分けた claim（間に 50ms）は2つの worker が同じ #1 を取る。1文の claim なら2 worker・10件で重複 0。lease 300ms で落ちた worker の仕事を 0.4 秒後に別 worker が attempts=2 で取り直す。CHECK 違反は `SqliteFailure(275, "CHECK constraint failed: …")`。**Windows で名前に update を含む exe（e10_select_then_update.exe）は `os error 740`（要求された操作には管理者特権が必要です）で起動できない**。名前を変えると同じ中身で動いた。
+- publish.sh の注意: 旧 PDF を消すときは、先に作業ツリーからファイルを `rm` してから publish.sh にパスを渡す（ファイルが残っていると削除にならず、何も変わらない）。
+
 ## 2026-10-24: Rust 05 巻に UNIT 09 を追加して main に反映（64e4fb2）
 
 - 本文は UNIT 01〜09（9,121行・図32枚・235ページ）。「準備中」は UNIT 10 だけ。`assemble.py` は `range(1, 10)`。実出力は `rust05/out09/`（NO_COLOR=1 で取得）。追加した例: `u09_access_log`（request_id のスパン・2リクエスト同時・JSON）・`u09_q1`（with_env_filter）・`u09_q2`（skip(token)）。`u09_metrics` は clippy の manual_is_multiple_of に合わせ `!n.is_multiple_of(5)` に変更。
