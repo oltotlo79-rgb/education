@@ -1,8 +1,8 @@
    Compiling async_lab v0.1.0 (...\async_lab)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.18s
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.80s
      Running `target\debug\e07_blocking_panic.exe`
 
-thread 'tokio-rt-worker' (61044) panicked at src\bin\e07_blocking_panic.rs:6:37:
+thread 'tokio-rt-worker' (66584) panicked at src\bin\e07_blocking_panic.rs:6:37:
 called `Option::unwrap()` on a `None` value
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 Err(JoinError::Panic(Id(13), "called `Option::unwrap()` on a `None` value", ...))

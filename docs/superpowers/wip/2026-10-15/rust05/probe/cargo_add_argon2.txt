@@ -1,0 +1,27 @@
+    Updating crates.io index
+      Adding argon2 =0.6.0 to dependencies
+             Features:
+             + alloc
+             + getrandom
+             + password-hash
+             - kdf
+             - parallel
+             - rand_core
+             - zeroize
+    Updating crates.io index
+     Locking 15 packages to highest Rust 1.98 compatible versions
+      Adding argon2 v0.6.0
+      Adding base64ct v1.8.3
+      Adding blake2 v0.11.0
+      Adding block-buffer v0.12.1
+      Adding cmov v0.5.4
+      Adding cpufeatures v0.3.1
+      Adding crypto-common v0.2.2
+      Adding ctutils v0.4.5
+      Adding digest v0.11.3
+      Adding getrandom v0.4.3
+      Adding hybrid-array v0.4.15
+      Adding password-hash v0.6.1
+      Adding phc v0.6.1
+      Adding r-efi v6.0.0
+      Adding typenum v1.20.1

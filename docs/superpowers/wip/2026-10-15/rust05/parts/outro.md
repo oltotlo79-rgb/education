@@ -35,8 +35,12 @@
 - ☐ キャンセルが `.await` の所でしか起きないことから、「全部か、何もしないか」の変更の間に `.await` を置かない書き方と、`tokio::spawn` で仕事を続けさせて待つことだけに上限を付ける書き方ができる（UNIT 06）
 - ☐ `std::thread::sleep` や重い計算のように `.await` の無い処理には timeout が効かないことを、実行結果で説明できる（UNIT 06）
 - ☐ `CancellationToken`（親と子の札）と `TaskTracker`（`close` してから `wait`）で、Ctrl+C を受けて「受付停止 → 合図 → 上限つきで待つ → 打ち切り」の順に止まるプログラムを書ける。Topcoat が既定 30 秒の猶予で同じ順に止まることを知っている（UNIT 06）
+- ☐ 重い計算や同期の I/O を async の中でそのまま行うと同じスレッドのタスクが止まることを、「心臓の鼓動」で示せる。CPU バウンドと I/O バウンドの違いを説明できる（UNIT 07）
+- ☐ `spawn_blocking` で blocking スレッドに任せ、`Ok(Ok)`・`Ok(Err)`・`Err(JoinError)` の3つに分けて結果を扱える。借り物を渡したときの E0521 を `to_string`・`clone` と `move` で直せる（UNIT 07）
+- ☐ Semaphore と `spawn_blocking` で、Argon2 のような重い計算の同時実行数に上限を付けられる。上限が無いと blocking スレッドが 512 本まで増え、メモリと CPU を使い切る理由を説明できる（UNIT 07）
+- ☐ `spawn_blocking` の仕事は取り消せず、ランタイムの片付けでも終わりを待たれることを知っていて、必ず終わる仕事だけを渡せる。速さを測るときに debug と release を区別できる（UNIT 07）
 
-> **お知らせ:** この版には UNIT 01〜06 を収録しています。UNIT 07（spawn_blocking）・UNIT 08（HTTP クライアント・再試行）・UNIT 09（tracing）・UNIT 10（バックグラウンドジョブ）は準備中で、次の更新から順に追加します。それまでの間、重い計算を逃がす `spawn_blocking` が RustNote でどう使われているかは、`Rust/rustnote/src/auth.rs` で確かめられます。
+> **お知らせ:** この版には UNIT 01〜07 を収録しています。UNIT 08（HTTP クライアント・再試行）・UNIT 09（tracing）・UNIT 10（バックグラウンドジョブ）は準備中で、次の更新から順に追加します。
 
 次の第6巻では、この巻で学んだタスクの上で動く Web フレームワーク Topcoat を使って、HTTP のリクエストと答えのしくみを学びます。
 
@@ -110,3 +114,10 @@
 | tokio-util | tokio と一緒に使う道具の集まり。`CancellationToken`・`TaskTracker` など | UNIT 06 |
 | CancellationToken | 停止の合図を配る札。`child_token` で子の札を作り、`cancel` で取り消す | UNIT 06 |
 | TaskTracker | 作ったタスクを覚えておき、`close` の後の `wait` で全部の終わりを待つ係 | UNIT 06 |
+| blocking | ブロッキング。終わるまでスレッドを手放さずに占有し続けること | UNIT 07 |
+| CPU バウンド / I/O バウンド | 計算そのものに時間がかかる処理／返事を待つ時間がほとんどの処理 | UNIT 07 |
+| blocking スレッド | `spawn_blocking` の仕事のために tokio が用意するスレッド。既定の上限は 512 本 | UNIT 07 |
+| `spawn_blocking` | 同期のクロージャを blocking スレッドで動かし、引換券を返す関数。始まったら取り消せない | UNIT 07 |
+| Argon2id | アルゴン・ツー・アイディー。わざと時間とメモリがかかるように作られた、パスワードのハッシュの方式 | UNIT 07 |
+| PHC 文字列 | `$argon2id$v=19$m=…$塩$ハッシュ` の形で、方式・設定・塩・ハッシュをまとめた保存用の文字列 | UNIT 07 |
+| release ビルド | 最適化を有効にしたビルド（`--release`）。debug ビルドより計算がずっと速い | UNIT 07 |
