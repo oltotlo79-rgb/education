@@ -1,0 +1,5 @@
+   Compiling async_lab v0.1.0 (...\async_lab)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.59s
+     Running `target\debug\e10_double_claim.exe`
+worker2 が取った仕事: Some(1)
+worker1 が取った仕事: Some(1)

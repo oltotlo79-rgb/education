@@ -1,0 +1,7 @@
+   Compiling async_lab v0.1.0 (...\async_lab)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.32s
+     Running `target\debug\e10_select_then_update.exe`
+error: could not execute process `target\debug\e10_select_then_update.exe` (never executed)
+
+Caused by:
+  要求された操作には管理者特権が必要です。 (os error 740)

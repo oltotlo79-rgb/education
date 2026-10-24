@@ -1,0 +1,9 @@
+0.04 秒: #1 ok@example.com 成功（1 回目）
+0.08 秒: #2 flaky@example.com 失敗（1 回目）: 時間切れ → queued
+0.12 秒: #3 broken@example.com 失敗（1 回目）: 宛先のサーバーが受け取りを拒否しました → queued
+0.22 秒: #2 flaky@example.com 失敗（2 回目）: 時間切れ → queued
+0.26 秒: #3 broken@example.com 失敗（2 回目）: 宛先のサーバーが受け取りを拒否しました → queued
+0.48 秒: #2 flaky@example.com 成功（3 回目）
+0.53 秒: #3 broken@example.com 失敗（3 回目）: 宛先のサーバーが受け取りを拒否しました → dead
+最後の件数: [("dead", 1), ("done", 2)]
+dead: #3 broken@example.com（3 回）最後のエラー: 宛先のサーバーが受け取りを拒否しました

@@ -1,0 +1,5 @@
+   Compiling async_lab v0.1.0 (...\async_lab)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.03s
+     Running `target\debug\e10_bad_status.exe`
+Error: SqliteFailure(275, "CHECK constraint failed: status IN ('queued', 'running', 'done', 'dead')")
+error: process didn't exit successfully: `target\debug\e10_bad_status.exe` (exit code: 1)

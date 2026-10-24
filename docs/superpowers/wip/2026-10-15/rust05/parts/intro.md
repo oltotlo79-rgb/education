@@ -131,9 +131,8 @@ Web アプリのサーバーには、たくさんの人から同時にリクエ�
 | UNIT 07 | spawn_blocking と重い計算 | パスワードのハッシュのような重い仕事を、別の場所に逃がす |
 | UNIT 08 | HTTP クライアント・再試行・冪等性 | 外の API を呼び、失敗したら賢くやり直す |
 | UNIT 09 | tracing・構造化ログ・メトリクス | 何が起きたかを、あとからたどれるように記録する |
-| UNIT 10 | バックグラウンドジョブと運用（準備中） | 画面の外で動く仕事を、落ちても続けられる形にする |
+| UNIT 10 | バックグラウンドジョブと運用 | 画面の外で動く仕事を、落ちても続けられる形にする |
 
-> **お知らせ:** この版には UNIT 01〜09 を収録しています。UNIT 10 は準備中で、次の更新で追加します。本文の中の「UNIT 10 で学びます」のような予告は、これから追加する単元を指しています。
 
 ### この巻に出てくる名前の整理
 
@@ -227,8 +226,9 @@ cargo test
 | reqwest | 0.13.5（UNIT 08。HTTP クライアント。ARM64 版の Windows では、ビルドに clang が必要） |
 | serde / serde_json | 1.0.229 / 1.0.154（UNIT 08・09。JSON との変換） |
 | tracing / tracing-subscriber | 0.1.44 / 0.3.23（UNIT 09。ログ） |
+| libsql | 0.10.0（UNIT 10。仕事を DB に保存する。第7巻・RustNote と同じ） |
 
-UNIT 01〜05 で使うクレートは tokio だけで、UNIT 06 で tokio-util を、UNIT 07 で argon2 を、UNIT 08 で reqwest と serde を、UNIT 09 で tracing と tracing-subscriber を足します。ほかのクレートは、使う単元で `cargo add` します。
+UNIT 01〜05 で使うクレートは tokio だけで、UNIT 06 で tokio-util を、UNIT 07 で argon2 を、UNIT 08 で reqwest と serde を、UNIT 09 で tracing と tracing-subscriber を、UNIT 10 で libsql を足します。ほかのクレートは、使う単元で `cargo add` します。
 
 ### 練習用プロジェクトを用意する
 
