@@ -1,5 +1,12 @@
 # 中断時点の引き継ぎメモ
 
+## 2026-10-24: Rust 05 巻に UNIT 06 を追加して main に反映（2430d9d）
+
+- 本文は UNIT 01〜06（6,122行・図23枚・157ページ）。「準備中」は UNIT 07〜10。旧 `Rust/05_…pdf` はまだ残してある。`assemble.py` は `range(1, 7)`。
+- UNIT 06 の実出力は `rust05/out06/`。Ctrl+C の例（`u06_shutdown`・`u06_q3`）は `sendctrlc.py <exe> 1.3` で、新しいコンソールに Ctrl+C を送って取った。追加した例: `u06_fix_elapsed`・`u06_q1`〜`u06_q3`、`errs/e06_elapsed_question.rs`（E0277）・`errs/e06_tracker_not_closed.rs`（close 忘れで wait が終わらない。len は 0）。`cargo add tokio-util@=0.7.20 --features rt` の実出力は `rust05/probe/cargo_add_tokio_util.txt`（probe に rust-version 1.98 があるので「Locking 7 packages to highest Rust 1.98 compatible versions」）。
+- 確かめた事実: tokio-util 0.7.20 は `sync`（CancellationToken）が機能なしで使え、`task`（TaskTracker）は `rt` が必要。Topcoat 0.10 の `serve` は Ctrl+C か Unix の SIGTERM で graceful shutdown、`DEFAULT_SHUTDOWN_TIMEOUT` は 30 秒（`topcoat-router-0.10.0/src/service.rs`）。RustNote のコードに tokio の timeout は無く、ローカル DB の `PRAGMA busy_timeout = 5000` だけ。
+- 次は UNIT 07（spawn_blocking）。素材は `u07_blocking`・`u07_hash_time`・`u07_password`・`u07_limit` と `errs/e07_*`（blocking_panic・borrow_escape）。RustNote の `auth.rs` の spawn_blocking と、Argon2 の同時実行数の上限が無い点（UNIT 05 で予告済み）、DUMMY_HASH の LazyLock の初回が worker スレッドで重い計算をする点を扱う。
+
 ## 2026-10-24: Rust 05 巻に UNIT 05 を追加して main に反映（69231d7）
 
 - 本文は UNIT 01〜05（5,263行・図19枚・133ページ）。「準備中」は UNIT 06〜10。旧 `Rust/05_…pdf` はまだ残してある。`assemble.py` は `range(1, 6)`。
