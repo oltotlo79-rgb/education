@@ -1,0 +1,5 @@
+サーバー: http://127.0.0.1:PORT
+① ステータス: 200 OK
+① 本文: こんにちは、RustNote です
+② ステータス: 404 Not Found / 成功?: false
+③ エラー: HTTP status client error (404 Not Found) for url (http://127.0.0.1:PORT/nothing)

@@ -1,0 +1,9 @@
+① 接続できない: error sending request for url (http://127.0.0.1:PORT/)
+    原因: client error (Connect)
+    原因: tcp connect error
+    原因: 対象のコンピューターによって拒否されたため、接続できませんでした。 (os error 10061)
+    is_connect = true / is_timeout = false
+    （2.0 秒かかった）
+② 時間切れ: error sending request for url (http://127.0.0.1:PORT/)
+    原因: operation timed out
+    is_connect = false / is_timeout = true

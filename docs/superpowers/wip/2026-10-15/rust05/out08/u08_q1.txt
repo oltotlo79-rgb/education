@@ -1,0 +1,8 @@
+① 調子の悪いサーバー（503 が2回続く）
+  0.00 秒: 1 回目 → 503 Service Unavailable
+  140ms 待ってやり直します
+  0.15 秒: 2 回目 → 503 Service Unavailable
+結果: Err("2 回やっても成功しませんでした")
+② 存在しない URL（404 はやり直さない）
+  0.00 秒: 1 回目 → 404 Not Found
+結果: Err("HTTP status client error (404 Not Found) for url (http://127.0.0.1:PORT/nothing)")

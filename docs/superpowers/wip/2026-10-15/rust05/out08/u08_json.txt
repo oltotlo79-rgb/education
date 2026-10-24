@@ -1,0 +1,3 @@
+/weather: 東京 は 18.5 度
+/broken: 失敗 error decoding response body for url (http://127.0.0.1:PORT/broken)
+    原因: missing field `celsius` at line 1 column 17

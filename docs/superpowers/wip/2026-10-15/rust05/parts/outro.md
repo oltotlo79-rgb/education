@@ -39,8 +39,12 @@
 - ☐ `spawn_blocking` で blocking スレッドに任せ、`Ok(Ok)`・`Ok(Err)`・`Err(JoinError)` の3つに分けて結果を扱える。借り物を渡したときの E0521 を `to_string`・`clone` と `move` で直せる（UNIT 07）
 - ☐ Semaphore と `spawn_blocking` で、Argon2 のような重い計算の同時実行数に上限を付けられる。上限が無いと blocking スレッドが 512 本まで増え、メモリと CPU を使い切る理由を説明できる（UNIT 07）
 - ☐ `spawn_blocking` の仕事は取り消せず、ランタイムの片付けでも終わりを待たれることを知っていて、必ず終わる仕事だけを渡せる。速さを測るときに debug と release を区別できる（UNIT 07）
+- ☐ reqwest の `Client` を1つ作って使い回し、`connect_timeout` と `timeout` で上限を付けて GET できる。`send()` の `Ok` は「答えが届いた」で、4xx・5xx は `error_for_status` で `Err` にすることを知っている（UNIT 08）
+- ☐ `#[derive(Deserialize)]` の struct で JSON の答えを受け取り、`missing field` などの形の違いを、エラーの `source()` の連なりから読める（UNIT 08）
+- ☐ `is_connect`・`is_timeout` で通信の失敗を見分け、5xx・429・時間切れ・接続できない、だけを、指数バックオフ＋ジッター＋回数の上限で再試行できる（UNIT 08）
+- ☐ 時間切れは「失敗」ではなく「分からない」なので、冪等でない操作は冪等キーが無ければ自動で再試行しない理由を説明できる。RustNote の PRG（303）の意味が分かる（UNIT 08）
 
-> **お知らせ:** この版には UNIT 01〜07 を収録しています。UNIT 08（HTTP クライアント・再試行）・UNIT 09（tracing）・UNIT 10（バックグラウンドジョブ）は準備中で、次の更新から順に追加します。
+> **お知らせ:** この版には UNIT 01〜08 を収録しています。UNIT 09（tracing）・UNIT 10（バックグラウンドジョブ）は準備中で、次の更新から順に追加します。
 
 次の第6巻では、この巻で学んだタスクの上で動く Web フレームワーク Topcoat を使って、HTTP のリクエストと答えのしくみを学びます。
 
@@ -121,3 +125,15 @@
 | Argon2id | アルゴン・ツー・アイディー。わざと時間とメモリがかかるように作られた、パスワードのハッシュの方式 | UNIT 07 |
 | PHC 文字列 | `$argon2id$v=19$m=…$塩$ハッシュ` の形で、方式・設定・塩・ハッシュをまとめた保存用の文字列 | UNIT 07 |
 | release ビルド | 最適化を有効にしたビルド（`--release`）。debug ビルドより計算がずっと速い | UNIT 07 |
+| HTTP クライアント | HTTP のリクエストを送り、答えを受け取る側のプログラム | UNIT 08 |
+| reqwest | リクエスト。Rust でよく使われる HTTP クライアントのクレート | UNIT 08 |
+| ステータスコード | HTTP の答えに付く3桁の数字。2xx 成功・4xx 頼んだ側の問題・5xx 答える側の問題 | UNIT 08 |
+| `error_for_status` | 4xx・5xx の答えを `Err` に変える reqwest のメソッド | UNIT 08 |
+| serde / `Deserialize` | データの形の変換を自動で書く道具。`Deserialize` は JSON などから struct を作る | UNIT 08 |
+| 原因の連なり（source） | エラーを包んでいる奥のエラー。`error.source()` で1つずつたどれる | UNIT 08 |
+| 再試行（retry） | 失敗した操作を、もう一度行うこと | UNIT 08 |
+| 指数バックオフ | 再試行の間隔を倍々にのばしていくこと。上限を付けて使う | UNIT 08 |
+| ジッター | 再試行の間隔に足す、ばらつき。やり直しの時刻を散らす | UNIT 08 |
+| 冪等 | べきとう。同じ操作を1回しても何回しても、結果が同じになる性質 | UNIT 08 |
+| 冪等キー | 操作ごとの整理番号。同じキーの2回目を、受ける側が見分けられる | UNIT 08 |
+| PRG | Post/Redirect/Get。POST の成功後に 303 で GET のページへ移し、再読み込みで二重に送られないようにする形 | UNIT 08 |
