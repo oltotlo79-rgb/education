@@ -1,0 +1,12 @@
+起動しました。Ctrl+C で止まります
+  worker2: 仕事をしました
+  worker1: 仕事をしました
+  worker1: 仕事をしました
+  worker2: 仕事をしました
+Ctrl+C を受け取りました。停止を始めます
+  worker2: 停止の合図を受け取った。片付けます
+  worker1: 停止の合図を受け取った。片付けます
+  worker1: 終了
+  worker2: 終了
+全員きれいに終わりました
+[exit code 0, helper 0]

@@ -1,0 +1,2 @@
+成功: 100ms で応答（0.1 秒）
+時間切れ: deadline has elapsed / Elapsed(())（0.5 秒）

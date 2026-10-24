@@ -1,0 +1,20 @@
+   Compiling async_lab v0.1.0 (...\async_lab)
+error[E0277]: `?` couldn't convert the error to `String`
+  --> src\bin\e06_elapsed_question.rs:11:75
+   |
+11 |     let answer = timeout(Duration::from_millis(500), call_service()).await?;
+   |                  ---------------------------------------------------------^ the trait `From<Elapsed>` is not implemented for `String`
+   |                  |
+   |                  this can't be annotated with `?` because it has type `Result<_, Elapsed>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = help: `String` implements trait `From<T>`:
+             From<&String>
+             From<&mut str>
+             From<&str>
+             From<Box<str>>
+             From<Cow<'_, str>>
+             From<char>
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `async_lab` (bin "e06_elapsed_question") due to 1 previous error

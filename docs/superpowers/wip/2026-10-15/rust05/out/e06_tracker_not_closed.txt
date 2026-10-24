@@ -1,0 +1,6 @@
+   Compiling async_lab v0.1.0 (...\async_lab)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.91s
+     Running `target\debug\e06_tracker_not_closed.exe`
+  タスク2: 終了
+  タスク1: 終了
+1 秒待っても wait が終わりません（残りのタスク: 0）

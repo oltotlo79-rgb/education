@@ -1,0 +1,28 @@
+    Updating crates.io index
+      Adding tokio-util =0.7.20 to dependencies
+             Features:
+             + futures-util
+             + rt
+             - __docs_rs
+             - codec
+             - compat
+             - full
+             - futures-io
+             - hashbrown
+             - io
+             - io-util
+             - join-map
+             - libc
+             - net
+             - slab
+             - time
+             - tracing
+    Updating crates.io index
+     Locking 7 packages to highest Rust 1.98 compatible versions
+      Adding futures-core v0.3.34
+      Adding futures-macro v0.3.34
+      Adding futures-sink v0.3.34
+      Adding futures-task v0.3.34
+      Adding futures-util v0.3.34
+      Adding slab v0.4.12
+      Adding tokio-util v0.7.20
