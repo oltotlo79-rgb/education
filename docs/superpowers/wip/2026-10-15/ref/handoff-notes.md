@@ -1,5 +1,19 @@
 # 中断時点の引き継ぎメモ
 
+## 2026-10-24: Rust 09 巻・Rust 01 巻を UNIT 01〜03 まで main に反映（09: fb8b0fd、01: bfa5759）
+
+サブエージェント2つに並行して書かせ、統括が確認（check_md・出力の照合・図の目視・RustNote 未変更の確認）してから反映した。どちらも旧 PDF は残してある。下書きと素材は `rust09/`・`rust01/` に保存（d22b785）。
+
+- **Rust 09**（3,251行・図9枚・90ページ）: `rust09/parts/`（intro・unit01〜03・outro）、連結は `rust09/assemble.py`（`range(1, 4)`）。練習用の RustNote のコピーは `rust09/book/rustnote/`（`src/` は本物と同じ。足したのは `tests/` の acceptance・screens・flow・states・mistakes と `examples/u03_*`。53件のテストが通る）。実出力は `rust09/out2/`（28件、すべて 1.99.0 で取り直し）。
+  - 確かめた事実: POST だけのルートへの GET は 405（`allow: POST`、本文 0 バイト、アクセスログ無し）。flash を消す Set-Cookie は1年前の Expires。SQLite の `trim` は半角空白だけ（全角空白1つの `length(trim(…))` は 1）。UNIQUE は大文字小文字を区別。ON DELETE なしの外部キーでは子が残る親を消すと `FOREIGN KEY constraint failed`。
+  - 本文に書いた RustNote の改善点（コード未変更）: 検索欄にラベルが無い、ゼロ幅スペースだけのタイトルが型と CHECK を通る、空白だけのタイトルは DB の CHECK では止まらない（アプリは止める）、CSS に `@media` が無い、ログインの試行回数の制限が無い（スコープ外と記載）。第0巻の「空白だけのタイトルは第9巻で決める」には UNIT 01 の AC-03・UNIT 03 で「認めない」と答えた。
+  - UNIT 04 以降の準備の形: 教材の `Rust/rustnote` を作業フォルダにコピーし、`tests/`・`examples/` に足す（`src/` は変えない）。
+- **Rust 01**（2,548行・図11枚・68ページ）: `rust01/parts/`、連結は `rust01/assemble.py`（`range(1, 4)`）、実出力は `rust01/out2/`。巻末のお知らせで、UNIT 04 が入るまで Rust は公式サイトで入れるよう案内した。
+  - 確かめた事実: `CARGO_TARGET_DIR` で深くすると、実行ファイルのパスが 259 文字までは成功・260 文字以上で LNK1104（`LongPathsEnabled=1` でも失敗）。Git Bash の `usr/bin/bash.exe` は ARM64 版の Git でも x64 で、そこから起動した PowerShell は `PROCESSOR_ARCHITECTURE=AMD64`。CRLF のスクリプトは WSL（Ubuntu 24.04.1）で `$'\r'` のエラーになり `sed -i 's/\r$//'` で直る。rust-analyzer は cargo が無いと `Failed to load the project … program not found`。PowerShell は 5.1.26100.9711。
+  - **要確認（UNIT 05 を書く前に）**: この PC の Build Tools は Visual Studio Build Tools **2022**（17.14、MSVC 14.44.35207）。下の「担当が見つけた事実」の「Build Tools for Visual Studio 2026」と食い違う。
+  - **統括の判断待ち**: RustNote に `.gitattributes` と `.vscode` が無い（`git ls-files --eol Rust/rustnote` の attr が空。`core.autocrlf=true` の PC では CRLF で取り出される）。本文は「自分のリポジトリでは足す」とだけ書いた。
+  - 他巻との食い違い: 第2〜5・7巻の前提知識は「第1巻で rustup・cargo・fmt を準備済み」だが、第1巻の UNIT 04・06 はまだ準備中。巻頭の表の Turso CLI v1.0.34・flyctl v0.4.57 は保存済みの出力から（UNIT 07〜10 で確認し直す）。この PC には 1.97.1（既定）・1.99.0 のほかに 1.90.0 のツールチェーンもある（今回の作業より前から）。
+
 ## 2026-10-24: Rust 05 巻に UNIT 10 を追加して巻を完成（main b6d7e7e・旧 PDF 削除 b9e7a87）
 
 - 本文は UNIT 01〜10（10,384行・図36枚・270ページ）。巻頭・巻末の「準備中」とお知らせを外し、チェックリストを学習地図の3段（async の土台／渡す・守る・止める／外とつなぎ・見守る）に分けた。**旧 `Rust/05_….pdf` は削除済み。Rust 05 巻はこれで完成。**
