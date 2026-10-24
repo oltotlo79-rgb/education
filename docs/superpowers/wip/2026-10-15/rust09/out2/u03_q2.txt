@@ -1,0 +1,7 @@
+--- そろえずに、そのまま入れる
+Alice@Example.com: OK
+alice@example.com: OK
+--- Email::parse でそろえてから入れる
+Alice@Example.com → alice@example.com: OK
+alice@example.com → alice@example.com: NG SQLite failure: `UNIQUE constraint failed: users.email`
+exit=0

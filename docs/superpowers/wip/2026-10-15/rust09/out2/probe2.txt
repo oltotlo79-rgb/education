@@ -1,0 +1,24 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.64s
+     Running tests\probe.rs (target\debug\deps\probe-251de4b6842b899c.exe)
+
+running 1 test
+POST /signup -> 303 See Other (521.2529ms)
+GET /notes -> 200 OK (5.5309ms)
+<form method="get" action="/notes" class="search-form"><input name="q" type="search" placeholder="キーワードで検索"><button type="submit">検索</button></form>
+POST /notes -> 400 Bad Request (4.3413ms)
+
+thread 'probe' (68620) panicked at tests\probe.rs:15:25:
+end byte index 767 is not a char boundary; it is inside 'ト' (bytes 765..768 of string)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test probe ... FAILED
+
+failures:
+
+failures:
+    probe
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.55s
+
+error: test failed, to rerun pass `--test probe`
+exit=101

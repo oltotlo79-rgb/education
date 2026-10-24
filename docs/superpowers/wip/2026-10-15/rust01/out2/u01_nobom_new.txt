@@ -1,0 +1,23 @@
+発生場所 C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55
+dbf9acedd\scratchpad\rust01\u01\nobom\whereami.ps1:6 文字:7
++     9 { "x64" }
++       ~
+式またはステートメントのトークン '{' を使用できません。
+発生場所 C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55
+dbf9acedd\scratchpad\rust01\u01\nobom\whereami.ps1:7 文字:8
++     12 { "ARM64" }
++        ~
+式またはステートメントのトークン '{' を使用できません。
+発生場所 C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55
+dbf9acedd\scratchpad\rust01\u01\nobom\whereami.ps1:9 文字:1
++ }
++ ~
+式またはステートメントのトークン '}' を使用できません。
+発生場所 C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55
+dbf9acedd\scratchpad\rust01\u01\nobom\whereami.ps1:28 文字:1
++ }
++ ~
+式またはステートメントのトークン '}' を使用できません。
+    + CategoryInfo          : ParserError: (:) [], ParseException
+    + FullyQualifiedErrorId : UnexpectedToken
+ 

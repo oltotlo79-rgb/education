@@ -1,0 +1,19 @@
+--- NoteTitle::parse（前後の空白を除いて 1〜80 文字）
+牛乳を買う: OK "牛乳を買う"
+前後に空白: OK "買い物"
+空: NG タイトルを入力してください
+空白3つ: NG タイトルを入力してください
+「あ」80個: OK "あああああ…"（80 文字）
+「あ」81個: NG タイトルは80文字以内にしてください（現在81文字）
+--- Email::parse（小文字にそろえる）
+"  Alice@Example.COM ": OK "alice@example.com"
+"alice": NG メールアドレスに @ がありません
+"alice@example": NG メールアドレスの形式が正しくありません
+--- NoteId（URL の /notes/{id} の部分）
+"42": OK 42
+"0": NG ID は 1 以上の数です
+"abc": NG ID は数字で指定してください
+--- Password::parse（8〜128 文字。{:?} でも中身は出ない）
+"short": NG パスワードは8文字以上にしてください
+"correct horse battery": OK Password(***)
+exit=0

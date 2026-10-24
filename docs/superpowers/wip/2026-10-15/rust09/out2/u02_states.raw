@@ -1,0 +1,24 @@
+   Compiling rustnote v0.1.0 (C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust09\book\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.33s
+     Running tests\states.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/rust09/target\debug\deps\states-a9e2e08f16d176d0.exe)
+
+running 1 test
+POST /signup -> 303 See Other (418.421ms)
+GET /notes -> 200 OK (2.5087ms)
+[空] 200
+    あり: まだノートがありません。
+POST /notes -> 400 Bad Request (2.5551ms)
+[入力エラー] 400
+    あり: タイトルを入力してください
+    あり: >memo</textarea>
+GET /notes -> 200 OK (2.8296ms)
+[2ページある] 200
+    あり: 1 / 2 ページ（全21件）
+    あり: 次へ →
+GET /notes -> 200 OK (1.9618ms)
+[検索0件] 200
+    あり: 条件に合うノートはありません。
+test list_page_states ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.52s
+

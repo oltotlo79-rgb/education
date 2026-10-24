@@ -1,0 +1,3 @@
+0 1 1
+delete NG SQLite failure: `FOREIGN KEY constraint failed`
+exit=0

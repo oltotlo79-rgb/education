@@ -1,0 +1,22 @@
+   Compiling rustnote v0.1.0 (C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust09\book\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.99s
+     Running tests\probe.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/rust09/target\debug\deps\probe-251de4b6842b899c.exe)
+
+running 1 test
+POST /signup -> 303 See Other (532.6548ms)
+POST /notes -> 303 See Other (5.3367ms)
+GET toggle: 405 Method Not Allowed allow=Some("POST") location=None body=
+GET delete: 405 Method Not Allowed allow=Some("POST") location=None body=
+POST /nope -> 404 Not Found (2.2759ms)
+POST /nope: 404 Not Found allow=None location=None body=<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>RustNote</title><link rel="stylesheet" href="/test-assets/style.css"></head><body><header class="site-header"><a class="brand" href="/">RustNote</a><nav><a href="/not
+POST /note -> 404 Not Found (1.1392ms)
+POST /note: 404 Not Found allow=None location=None body=<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>RustNote</title><link rel="stylesheet" href="/test-assets/style.css"></head><body><header class="site-header"><a class="brand" href="/">RustNote</a><nav><a href="/not
+GET /notes -> 400 Bad Request (1.1592ms)
+page=abc: 400 Bad Request allow=None location=None body=<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>RustNote</title><link rel="stylesheet" href="/test-assets/style.css"></head><body><header class="site-header"><a class="brand" href="/">RustNote</a><nav><a href="/not
+POST /notes -> 400 Bad Request (1.0502ms)
+POST notes missing body: 400 Bad Request allow=None location=None body=<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>RustNote</title><link rel="stylesheet" href="/test-assets/style.css"></head><body><header class="site-header"><a class="brand" href="/">RustNote</a><nav><a href="/not
+GET /logout: 405 Method Not Allowed allow=Some("POST") location=None body=
+test probe ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.56s
+

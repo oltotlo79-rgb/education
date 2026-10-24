@@ -1,0 +1,7 @@
+シェル          : PowerShell 5.1.26100.9711
+現在のフォルダ  : C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust01\u01\rust-study
+OS              : Microsoft Windows 11 Home (ビルド 26200)
+PC の CPU       : ARM64
+このシェルの種類: AMD64
+パスの文字      : OK（半角英数字と記号だけ）
+OneDrive        : OK（同期フォルダの外です）

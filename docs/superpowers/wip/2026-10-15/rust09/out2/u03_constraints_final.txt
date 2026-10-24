@@ -1,0 +1,12 @@
+適用したマイグレーション: ["0001_users", "0002_notes", "0003_sessions"]
+OK  alice を登録（1 行）
+NG  同じメールでもう一度登録 → SQLite failure: `UNIQUE constraint failed: users.email`
+NG  空のタイトル → SQLite failure: `CHECK constraint failed: length(title) BETWEEN 1 AND 80`
+NG  done に 2 を入れる → SQLite failure: `CHECK constraint failed: done IN (0, 1)`
+NG  いないユーザー 999 のノート → SQLite failure: `FOREIGN KEY constraint failed`
+OK  alice のノート（1 行）
+OK  alice のセッション（1 行）
+OK  alice を削除（1 行）
+残っている notes: 0 行
+残っている sessions: 0 行
+exit=0

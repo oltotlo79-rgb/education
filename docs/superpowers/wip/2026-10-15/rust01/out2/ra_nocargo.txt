@@ -1,0 +1,48 @@
+2026-10-24T13:35:13.5148943+09:00 ERROR failed fetching cargo workspace root e="cargo" "locate-project" "--workspace" "--manifest-path" "C:\\Users\\oltot\\AppData\\Local\\Temp\\claude\\C--Users-oltot-Documents-git-projects-def\\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\\scratchpad\\rust01\\u02\\hello-git\\.\\Cargo.toml" failed cargo_toml=C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust01\u02\hello-git\.\Cargo.toml
+2026-10-24T13:35:13.517312+09:00 ERROR failed fetching toolchain version for ManifestPath { file: AbsPathBuf("C:\\Users\\oltot\\AppData\\Local\\Temp\\claude\\C--Users-oltot-Documents-git-projects-def\\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\\scratchpad\\rust01\\u02\\hello-git\\.\\Cargo.toml") } workspace e=Failed to query rust toolchain version via `"cargo" "--version"`, is your toolchain setup correctly?
+2026-10-24T13:35:13.5199189+09:00  WARN failed to run `"cargo" "rustc" "-Z" "unstable-options" "--print" "cfg" "--" "-O"`, falling back to invoking rustc directly e="cargo" "rustc" "-Z" "unstable-options" "--print" "cfg" "--" "-O" failed
+2026-10-24T13:35:13.5200945+09:00  WARN failed to run `"cargo" "rustc" "-Z" "unstable-options" "--print" "target-spec-json" "--" "-Z" "unstable-options"`, falling back to invoking rustc directly e="cargo" "rustc" "-Z" "unstable-options" "--print" "target-spec-json" "--" "-Z" "unstable-options" failed
+2026-10-24T13:35:13.5203181+09:00  WARN failed to get rustc cfgs e=unable to fetch cfgs via `"rustc" "--print" "cfg" "-O"`
+
+Caused by:
+    0: "rustc" "--print" "cfg" "-O" failed
+    1: program not found
+
+Stack backtrace:
+   0: std::backtrace_rs::backtrace::win64::trace
+             at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\..\..\backtrace\src\backtrace\win64.rs:85
+   1: std::backtrace_rs::backtrace::trace_unsynchronized
+             at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\..\..\backtrace\src\backtrace\mod.rs:66
+   2: std::backtrace::Backtrace::create
+             at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\backtrace.rs:331
+   3: core::slice::sort::stable::quicksort::quicksort::<usize, <usize as core::cmp::PartialOrd>::lt>
+   4: project_model::toolchain_info::rustc_cfg::get
+   5: std::sys::backtrace::__rust_begin_short_backtrace::<<project_model::workspace::ProjectWorkspace>::load_cargo::{closure#1}::{closure#0}, alloc::vec::Vec<cfg::cfg_expr::CfgAtom>>
+   6: core::slice::sort::stable::quicksort::quicksort::<usize, <usize as core::cmp::PartialOrd>::lt>
+   7: std::sys::thread::windows::impl$0::new::thread_start
+             at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\sys\thread\windows.rs:58
+   8: BaseThreadInitThunk
+   9: RtlUserThreadStart
+2026-10-24T13:35:13.5988912+09:00 ERROR failed fetching data layout for ManifestPath { file: AbsPathBuf("C:\\Users\\oltot\\AppData\\Local\\Temp\\claude\\C--Users-oltot-Documents-git-projects-def\\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\\scratchpad\\rust01\\u02\\hello-git\\.\\Cargo.toml") } workspace e=unable to fetch target-data-layout via `"rustc" "-Z" "unstable-options" "--print" "target-spec-json"`
+Error: Failed to load the project at C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust01\u02\hello-git\.\Cargo.toml
+
+Caused by:
+    0: Failed to read Cargo metadata from Cargo.toml file C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust01\u02\hello-git\.\Cargo.toml, None
+    1: Failed to run `"cargo" "metadata" "--format-version" "1" "--manifest-path" "C:\\Users\\oltot\\AppData\\Local\\Temp\\claude\\C--Users-oltot-Documents-git-projects-def\\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\\scratchpad\\rust01\\u02\\hello-git\\.\\Cargo.toml"`
+    2: program not found
+
+Stack backtrace:
+   0: std::backtrace_rs::backtrace::win64::trace
+             at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\..\..\backtrace\src\backtrace\win64.rs:85
+   1: std::backtrace_rs::backtrace::trace_unsynchronized
+             at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\..\..\backtrace\src\backtrace\mod.rs:66
+   2: std::backtrace::Backtrace::create
+             at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\backtrace.rs:331
+   3: <anyhow::Error as core::convert::From<core::io::error::Error>>::from
+   4: <project_model::cargo_workspace::CargoWorkspace>::new
+   5: RINvNtNtCsejLvsiA6Zi9_3std3sys9backtrace28___rust_begin_short_backtraceNCNCNvMs_NtCscVDpMRZ9kz8_13project_model9workspaceNtB1g_16ProjectWorkspace10load_cargos_0s1_0INtNtCsip3OuOtVa1i_4core6result6ResultTNtCsjFKfJyYOD9A_14cargo_metadata8MetadataINtNtB2H_6op
+   6: core::slice::sort::stable::quicksort::quicksort::<usize, <usize as core::cmp::PartialOrd>::lt>
+   7: std::sys::thread::windows::impl$0::new::thread_start
+             at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\sys\thread\windows.rs:58
+   8: BaseThreadInitThunk
+   9: RtlUserThreadStart

@@ -1,0 +1,19 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+error: async functions cannot be used for tests
+  --> tests\e01_test_attr.rs:8:1
+   |
+ 8 |   async fn ac08_logged_in_user_skips_login_and_signup() {
+   |   ^----
+   |   |
+   |  _`async` because of this
+   | |
+ 9 | |     let app = test_app().await;
+10 | |     let alice = app.sign_up("alice@example.com", "correct horse battery").await;
+11 | |     let response = app.get("/login", Some(&alice)).await;
+12 | |     assert_eq!(response.status(), StatusCode::SEE_OTHER);
+13 | |     assert_eq!(location(&response), "/notes");
+14 | | }
+   | |_^
+
+error: could not compile `rustnote` (test "e01_test_attr") due to 1 previous error
+exit=101

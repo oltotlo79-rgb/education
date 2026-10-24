@@ -1,0 +1,263 @@
+   Compiling proc-macro2 v1.0.107
+   Compiling unicode-ident v1.0.27
+   Compiling quote v1.0.47
+   Compiling cfg-if v1.0.5
+   Compiling itoa v1.0.18
+   Compiling pin-project-lite v0.2.17
+   Compiling memchr v2.8.3
+   Compiling serde_core v1.0.229
+   Compiling version_check v0.9.5
+   Compiling windows-link v0.2.1
+   Compiling serde v1.0.229
+   Compiling typenum v1.20.1
+   Compiling futures-core v0.3.34
+   Compiling getrandom v0.2.17
+   Compiling hashbrown v0.17.1
+   Compiling equivalent v1.0.3
+   Compiling futures-task v0.3.34
+   Compiling windows-sys v0.61.2
+   Compiling smallvec v1.16.3
+   Compiling parking_lot_core v0.9.12
+   Compiling rand_core v0.6.4
+   Compiling siphasher v1.0.4
+   Compiling scopeguard v1.2.0
+   Compiling log v0.4.34
+   Compiling indexmap v2.14.2
+   Compiling lock_api v0.4.14
+   Compiling once_cell v1.21.4
+   Compiling generic-array v0.14.7
+   Compiling futures-sink v0.3.34
+   Compiling thiserror v2.0.21
+   Compiling zerocopy v0.8.63
+   Compiling slab v0.4.12
+   Compiling futures-channel v0.3.34
+   Compiling windows_aarch64_msvc v0.52.6
+   Compiling parking_lot v0.12.5
+   Compiling stable_deref_trait v1.2.1
+   Compiling futures-io v0.3.34
+   Compiling heck v0.5.0
+   Compiling syn v3.0.9
+   Compiling syn v2.0.119
+   Compiling base64 v0.22.1
+   Compiling elsa v1.11.2
+   Compiling zmij v1.0.23
+   Compiling anymap3 v1.1.0
+   Compiling crypto-common v0.1.7
+   Compiling winnow v1.0.4
+   Compiling windows-targets v0.52.6
+   Compiling tracing-core v0.1.36
+   Compiling subtle v2.6.1
+   Compiling fnv v1.0.7
+   Compiling bytes v1.12.1
+   Compiling httparse v1.10.1
+   Compiling hybrid-array v0.4.15
+   Compiling tower-service v0.3.3
+   Compiling http v1.5.0
+   Compiling percent-encoding v2.3.2
+   Compiling shlex v2.0.1
+   Compiling toml_datetime v1.1.2+spec-1.1.0
+   Compiling find-msvc-tools v0.1.14
+   Compiling toml_parser v1.1.5+spec-1.1.0
+   Compiling tokio v1.53.3
+   Compiling block-buffer v0.12.1
+   Compiling crypto-common v0.2.2
+   Compiling const-oid v0.10.2
+   Compiling cpufeatures v0.2.17
+   Compiling toml_edit v0.25.17+spec-1.1.0
+   Compiling cc v1.8.0
+   Compiling serde_json v1.0.154
+   Compiling tower-layer v0.3.3
+   Compiling proc-macro-crate v3.5.0
+   Compiling httpdate v1.0.3
+   Compiling block-buffer v0.10.4
+   Compiling topcoat-core-grammar v0.10.0
+   Compiling either v1.19.0
+   Compiling bitflags v2.13.2
+   Compiling digest v0.10.7
+   Compiling getrandom v0.3.4
+   Compiling autocfg v1.5.1
+   Compiling cpufeatures v0.3.1
+   Compiling crc32fast v1.5.2
+   Compiling ppv-lite86 v0.2.21
+   Compiling windows-sys v0.52.0
+   Compiling toml_writer v1.1.3+spec-1.1.0
+   Compiling ref-cast v1.0.27
+   Compiling alloc-no-stdlib v3.0.0
+   Compiling rand_chacha v0.3.1
+   Compiling alloc-stdlib v0.3.0
+   Compiling form_urlencoded v1.2.2
+   Compiling block-padding v0.3.3
+   Compiling socket2 v0.6.5
+   Compiling mio v1.2.4
+   Compiling adler2 v2.0.1
+   Compiling glob v0.3.4
+   Compiling ryu v1.0.23
+   Compiling rustversion v1.0.23
+   Compiling simd-adler32 v0.3.10
+   Compiling cmov v0.5.4
+   Compiling inout v0.1.4
+   Compiling rand v0.8.8
+   Compiling clang-sys v1.9.1
+   Compiling ctutils v0.4.3
+   Compiling miniz_oxide v0.9.1
+   Compiling brotli-decompressor v6.0.1
+   Compiling rand_core v0.9.5
+   Compiling uncased v0.9.10
+   Compiling prettyplease v0.2.37
+   Compiling libc v0.2.191
+   Compiling rustix v0.38.44
+   Compiling tracing-attributes v0.1.31
+   Compiling rand_chacha v0.9.0
+   Compiling flate2 v1.1.10
+   Compiling cipher v0.4.4
+   Compiling serde_derive v1.0.229
+   Compiling futures-macro v0.3.34
+   Compiling tokio-macros v2.7.2
+   Compiling thiserror-impl v2.0.21
+   Compiling ref-cast-impl v1.0.27
+   Compiling brotli v9.0.0
+   Compiling errno v0.3.14
+   Compiling windows-sys v0.59.0
+   Compiling matchit v0.9.2
+   Compiling ipnet v2.12.2
+   Compiling atomic-waker v1.1.2
+   Compiling futures-util v0.3.34
+   Compiling tracing v0.1.44
+   Compiling zeroize v1.9.1
+   Compiling getrandom v0.4.3
+   Compiling minimal-lexical v0.2.1
+   Compiling regex-syntax v0.8.11
+   Compiling compression-core v0.4.33
+   Compiling nom v7.1.3
+   Compiling rustls-pki-types v1.15.1
+   Compiling home v0.5.12
+   Compiling rand v0.9.5
+   Compiling indexmap v1.9.3
+   Compiling topcoat-core v0.10.0
+   Compiling sha1 v0.10.7
+   Compiling digest v0.11.3
+   Compiling serde_spanned v1.1.2
+   Compiling libloading v0.8.9
+   Compiling data-encoding v2.11.1
+   Compiling bindgen v0.66.1
+   Compiling try-lock v0.2.5
+   Compiling anyhow v1.0.104
+   Compiling want v0.3.2
+   Compiling topcoat-view v0.10.0
+   Compiling cexpr v0.6.0
+   Compiling toml v1.1.8+spec-1.1.0
+   Compiling sha2 v0.11.1
+   Compiling compression-codecs v0.4.45
+   Compiling regex-automata v0.4.18
+   Compiling which v4.4.2
+   Compiling topcoat-view-grammar v0.10.0
+   Compiling pin-project-internal v1.1.13
+   Compiling socket2 v0.5.10
+   Compiling ring v0.17.14
+   Compiling ahash v0.8.12
+   Compiling http v0.2.12
+   Compiling regex v1.13.1
+   Compiling lazy_static v1.5.1
+   Compiling rustc-hash v1.1.0
+   Compiling lazycell v1.3.0
+   Compiling shlex v1.3.0
+   Compiling sync_wrapper v1.0.2
+   Compiling hashbrown v0.12.3
+   Compiling peeking_take_while v0.1.2
+   Compiling pin-project v1.1.13
+   Compiling tower v0.5.3
+   Compiling topcoat-asset v0.10.0
+warning: ring@0.17.14: Compiler family detection failed due to error: ToolNotFound: failed to find tool "clang": program not found (see https://docs.rs/cc/latest/cc/#compile-time-requirements for help)
+warning: ring@0.17.14: Compiler family detection failed due to error: ToolNotFound: failed to find tool "clang": program not found (see https://docs.rs/cc/latest/cc/#compile-time-requirements for help)
+warning: ring@0.17.14: Compiler family detection failed due to error: ToolNotFound: failed to find tool "clang": program not found (see https://docs.rs/cc/latest/cc/#compile-time-requirements for help)
+warning: ring@0.17.14: Compiler family detection failed due to error: ToolNotFound: failed to find tool "clang": program not found (see https://docs.rs/cc/latest/cc/#compile-time-requirements for help)
+error: failed to run custom build command for `ring v0.17.14`
+
+Caused by:
+  process didn't exit successfully: `target\debug\build\ring-1d47c9bd909157dd\build-script-build` (exit code: 1)
+  --- stdout
+  cargo:rerun-if-env-changed=CARGO_MANIFEST_DIR
+  cargo:rerun-if-env-changed=CARGO_PKG_NAME
+  cargo:rerun-if-env-changed=CARGO_PKG_VERSION_MAJOR
+  cargo:rerun-if-env-changed=CARGO_PKG_VERSION_MINOR
+  cargo:rerun-if-env-changed=CARGO_PKG_VERSION_PATCH
+  cargo:rerun-if-env-changed=CARGO_PKG_VERSION_PRE
+  cargo:rerun-if-env-changed=CARGO_MANIFEST_LINKS
+  cargo:rerun-if-env-changed=RING_PREGENERATE_ASM
+  cargo:rerun-if-env-changed=OUT_DIR
+  cargo:rerun-if-env-changed=CARGO_CFG_TARGET_ARCH
+  cargo:rerun-if-env-changed=CARGO_CFG_TARGET_OS
+  cargo:rerun-if-env-changed=CARGO_CFG_TARGET_ENV
+  cargo:rerun-if-env-changed=CARGO_CFG_TARGET_ENDIAN
+  cargo:rerun-if-env-changed=CC_PREFER_CLANG_CL_OVER_MSVC
+  CC_PREFER_CLANG_CL_OVER_MSVC = None
+  cargo:rerun-if-env-changed=VCINSTALLDIR
+  VCINSTALLDIR = None
+  cargo:rerun-if-env-changed=VSTEL_MSBuildProjectFullPath
+  VSTEL_MSBuildProjectFullPath = None
+  cargo:rerun-if-env-changed=VCToolsVersion
+  VCToolsVersion = None
+  cargo:rerun-if-env-changed=VSCMD_ARG_VCVARS_SPECTRE
+  VSCMD_ARG_VCVARS_SPECTRE = None
+  cargo:rerun-if-env-changed=WindowsSdkDir
+  WindowsSdkDir = None
+  cargo:rerun-if-env-changed=WindowsSDKVersion
+  WindowsSDKVersion = None
+  cargo:rerun-if-env-changed=LIB
+  LIB = None
+  PATH = Some(target\debug;target\debug\deps;...\Program Files\Git\clangarm64\bin;C:\Program Files\Git\usr\local\bin;C:\Program Files\Git\usr\bin;C:\Program Files\Git\usr\bin;C:\Program Files\Git\clangarm64\bin;C:\Program Files\Git\usr\bin;...\Program Files\ImageMagick-7.1.2-Q16-HDRI;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0;C:\Windows\System32\OpenSSH;C:\Program Files\Git\cmd;C:\Program Files\nodejs;C:\Program Files\Docker\Docker\resources\bin;C:\Program Files\GitHub CLI;C:\Program Files\ImageMagick-7.1.2-Q16-HDRI;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0;C:\Windows\System32\OpenSSH;C:\Program Files\Git\cmd;C:\Program Files\nodejs;C:\Program Files\Docker\Docker\resources\bin;...\Microsoft VS Code\bin;...\Androi;  d\Sdk\cmdline-tools\latest\bin;...\Program Files\Git\usr\bin\vendor_perl;C:\Program Files\Git\usr\bin\core_perl;...\bin)
+  cargo:rerun-if-env-changed=INCLUDE
+  INCLUDE = None
+  cargo:rerun-if-env-changed=CC_aarch64-pc-windows-msvc
+  CC_aarch64-pc-windows-msvc = None
+  cargo:rerun-if-env-changed=CC_aarch64_pc_windows_msvc
+  CC_aarch64_pc_windows_msvc = None
+  cargo:rerun-if-env-changed=HOST_CC
+  HOST_CC = None
+  cargo:rerun-if-env-changed=CC
+  CC = None
+  cargo:rerun-if-env-changed=CRATE_CC_NO_DEFAULTS
+  CRATE_CC_NO_DEFAULTS = None
+  cargo:rerun-if-env-changed=CFLAGS
+  CFLAGS = None
+  cargo:rerun-if-env-changed=HOST_CFLAGS
+  HOST_CFLAGS = None
+  cargo:rerun-if-env-changed=CFLAGS_aarch64_pc_windows_msvc
+  CFLAGS_aarch64_pc_windows_msvc = None
+  cargo:rerun-if-env-changed=CFLAGS_aarch64-pc-windows-msvc
+  CFLAGS_aarch64-pc-windows-msvc = None
+  cargo:rerun-if-env-changed=CC_ENABLE_DEBUG_OUTPUT
+  cargo:warning=Compiler family detection failed due to error: ToolNotFound: failed to find tool "clang": program not found (see https://docs.rs/cc/latest/cc/#compile-time-requirements for help)
+  cargo:rerun-if-env-changed=CRATE_CC_NO_DEFAULTS
+  CRATE_CC_NO_DEFAULTS = None
+  cargo:rerun-if-env-changed=CC_ENABLE_DEBUG_OUTPUT
+  cargo:warning=Compiler family detection failed due to error: ToolNotFound: failed to find tool "clang": program not found (see https://docs.rs/cc/latest/cc/#compile-time-requirements for help)
+  cargo:rerun-if-env-changed=CRATE_CC_NO_DEFAULTS
+  CRATE_CC_NO_DEFAULTS = None
+  cargo:rerun-if-env-changed=CFLAGS
+  CFLAGS = None
+  cargo:rerun-if-env-changed=HOST_CFLAGS
+  HOST_CFLAGS = None
+  cargo:rerun-if-env-changed=CFLAGS_aarch64_pc_windows_msvc
+  CFLAGS_aarch64_pc_windows_msvc = None
+  cargo:rerun-if-env-changed=CFLAGS_aarch64-pc-windows-msvc
+  CFLAGS_aarch64-pc-windows-msvc = None
+  cargo:rerun-if-env-changed=CFLAGS
+  CFLAGS = None
+  cargo:rerun-if-env-changed=HOST_CFLAGS
+  HOST_CFLAGS = None
+  cargo:rerun-if-env-changed=CFLAGS_aarch64_pc_windows_msvc
+  CFLAGS_aarch64_pc_windows_msvc = None
+  cargo:rerun-if-env-changed=CFLAGS_aarch64-pc-windows-msvc
+  CFLAGS_aarch64-pc-windows-msvc = None
+  cargo:warning=Compiler family detection failed due to error: ToolNotFound: failed to find tool "clang": program not found (see https://docs.rs/cc/latest/cc/#compile-time-requirements for help)
+  cargo:warning=Compiler family detection failed due to error: ToolNotFound: failed to find tool "clang": program not found (see https://docs.rs/cc/latest/cc/#compile-time-requirements for help)
+
+  --- stderr
+
+
+  error occurred in cc-rs: failed to find tool "clang": program not found (see https://docs.rs/cc/latest/cc/#compile-time-requirements for help)
+
+
+warning: build failed, waiting for other jobs to finish...
+exit=101

@@ -1,0 +1,20 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.36s
+     Running tests\mistakes.rs (target\debug\deps\mistakes-4b9f6b7878cdffc1.exe)
+
+running 1 test
+POST /signup -> 303 See Other (481.16ms)
+POST /notes -> 400 Bad Request (2.411ms)
+POST /notes（body なし） -> 400 Bad Request
+    本文: 715 バイト
+    見出し: 400 Bad Request
+    説明: 送信された内容を読み取れませんでした
+GET /notes -> 400 Bad Request (2.0836ms)
+GET /notes?page=abc -> 400 Bad Request
+    本文: 715 バイト
+    見出し: 400 Bad Request
+    説明: 送信された内容を読み取れませんでした
+test unreadable_input ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.53s
+
+exit=0

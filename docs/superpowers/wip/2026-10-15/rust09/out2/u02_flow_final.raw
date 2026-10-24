@@ -1,0 +1,21 @@
+   Compiling rustnote v0.1.0 (C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust09\book\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.10s
+     Running tests\flow.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/rust09/target\debug\deps\flow-4a51733f40431b48.exe)
+
+running 1 test
+POST /signup -> 303 See Other (395.8434ms)
+POST /notes -> 303 See Other (4.6116ms)
+1) POST /notes -> 303 See Other
+   Location: /notes/1
+   Set-Cookie: flash=note_created; HttpOnly; SameSite=Lax; Path=/; Max-Age=300
+GET /notes/1 -> 200 OK (3.7115ms)
+2) GET /notes/1 -> 200 OK
+   Set-Cookie: flash=; Path=/; Max-Age=0; Expires=Fri, 24 Oct 2025 04:53:17 GMT
+   「ノートを作成しました」が出た: はい
+GET /notes/1 -> 200 OK (2.5189ms)
+3) GET /notes/1 -> 200 OK
+   「ノートを作成しました」が出た: いいえ
+test create_note_with_prg ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.43s
+

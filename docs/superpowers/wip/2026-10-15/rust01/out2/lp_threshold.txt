@@ -1,0 +1,5 @@
+target_len=229 exe_len=255 exit=0 LNK1104=False
+target_len=233 exe_len=259 exit=0 LNK1104=False
+target_len=234 exe_len=260 exit=101 LNK1104=True
+target_len=235 exe_len=261 exit=101 LNK1104=True
+target_len=239 exe_len=265 exit=101 LNK1104=True

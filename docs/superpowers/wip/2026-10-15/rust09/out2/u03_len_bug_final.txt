@@ -1,0 +1,4 @@
+「あ」27 個のタイトル
+    len()           = 81 → false
+    chars().count() = 27 → true
+exit=0

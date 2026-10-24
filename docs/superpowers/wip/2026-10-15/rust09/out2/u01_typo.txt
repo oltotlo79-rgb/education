@@ -1,0 +1,4 @@
+error: no test target named `acceptanse` in default-run packages
+
+help: a target with a similar name exists: `acceptance`
+exit=101

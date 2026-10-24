@@ -1,0 +1,11 @@
+ M src/main.rs
+?? .vscode/
+diff --git a/src/main.rs b/src/main.rs
+index e7a11a9..66449d7 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -1,3 +1,3 @@
+ fn main() {
+-    println!("Hello, world!");
++    println!("Hello, Rust!");
+ }

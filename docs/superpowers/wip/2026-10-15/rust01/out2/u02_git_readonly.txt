@@ -1,0 +1,18 @@
+git version 2.53.0.windows.2
+C:\Program Files\Git\clangarm64\bin\git.exe
+C:\Program Files\Git\cmd\git.exe
+diff.astextplain.textconv=astextplain
+filter.lfs.clean=git-lfs clean -- %f
+filter.lfs.smudge=git-lfs smudge -- %f
+filter.lfs.process=git-lfs filter-process
+filter.lfs.required=true
+http.sslbackend=schannel
+core.autocrlf=true
+core.fscache=true
+core.symlinks=false
+pull.rebase=false
+credential.helper=manager
+credential.https://dev.azure.com.usehttppath=true
+init.defaultbranch=master
+file:C:/Program Files/Git/etc/gitconfig	true
+file:C:/Program Files/Git/etc/gitconfig	master

@@ -1,0 +1,30 @@
+   Compiling rustnote v0.1.0 (C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust09\book\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.92s
+     Running tests\acceptance.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/rust09/target\debug\deps\acceptance-0f2d784d56c401b2.exe)
+
+running 3 tests
+test ac08_logged_in_user_skips_login_and_signup ... ok
+test ac02_logged_out_user_is_sent_to_login ... ok
+test ac05_other_users_note_is_forbidden ... FAILED
+
+failures:
+
+---- ac05_other_users_note_is_forbidden stdout ----
+POST /signup -> 303 See Other (394.9415ms)
+POST /signup -> 303 See Other (438.6321ms)
+POST /notes -> 303 See Other (4.4981ms)
+GET /notes/1 -> 404 Not Found (2.862ms)
+
+thread 'ac05_other_users_note_is_forbidden' (68436) panicked at tests\acceptance.rs:64:5:
+assertion `left == right` failed
+  left: 404
+ right: 403
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    ac05_other_users_note_is_forbidden
+
+test result: FAILED. 2 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.87s
+
+error: test failed, to rerun pass `--test acceptance`

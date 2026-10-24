@@ -1,0 +1,15 @@
+crlf.sh: line 2: set: -^M: invalid option
+set: usage: set [-abefhkmnptuvxBCEHPT] [-o option-name] [--] [-] [arg ...]
+hello from WSL^M
+crlf.sh: line 4: cd: $'/tmp\r': No such file or directory
+crlf.sh: line 5: $'pwd\r': command not found
+[exit=]
+---
+#!/bin/bash^M$
+set -e^M$
+echo "hello from WSL"^M$
+cd /tmp^M$
+pwd^M$
+---
+crlf.sh: Bourne-Again shell script, ASCII text executable, with CRLF line terminators
+lf.sh:   Bourne-Again shell script, ASCII text executable

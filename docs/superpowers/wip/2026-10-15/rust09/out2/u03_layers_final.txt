@@ -1,0 +1,21 @@
+[牛乳を買う]
+    型: OK
+    DB: OK
+[空]
+    型: NG: タイトルを入力してください
+    DB: NG: SQLite failure: `CHECK constraint failed: length(title) BETWEEN 1 AND 80`
+[空白3つ]
+    型: NG: タイトルを入力してください
+    DB: OK
+    → 答えが食い違う
+[全角の空白1つ]
+    型: NG: タイトルを入力してください
+    DB: OK
+    → 答えが食い違う
+[ゼロ幅スペース1つ]
+    型: OK
+    DB: OK
+[「あ」81個]
+    型: NG: タイトルは80文字以内にしてください（現在81文字）
+    DB: NG: SQLite failure: `CHECK constraint failed: length(title) BETWEEN 1 AND 80`
+exit=0

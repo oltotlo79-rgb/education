@@ -1,0 +1,13 @@
+50956ca .env を Git の管理から外す
+45dbcd4 うっかり .env を入れた
+d779d78 最初のコミット
+50956ca .env を Git の管理から外す
+45dbcd4 うっかり .env を入れた
+HOST=127.0.0.1
+PORT=3000
+DATABASE_URL=libsql://rustnote-taro.turso.io
+DATABASE_AUTH_TOKEN=eyJhbGciOi...secret
+d779d78 Taro Yamada <taro@example.com> 最初のコミット
+.gitignore:10:.env	.env
+.gitignore:5:*.db	rustnote.db
+.gitignore:2:/target/	target/debug/hello-git.exe

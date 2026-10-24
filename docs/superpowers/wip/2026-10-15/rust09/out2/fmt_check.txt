@@ -1,0 +1,115 @@
+Diff in \\?\...\rustnote\examples\u03_layers.rs:34:
+         };
+         // DB の制約（検査を通さず、入力をそのまま INSERT する）
+         let by_db = match conn
+[31m-            .execute(
+[0m[31m-                "INSERT INTO notes (user_id, title) VALUES (1, ?1)",
+[0m[31m-                [input],
+[0m[31m-            )
+[0m[32m+            .execute("INSERT INTO notes (user_id, title) VALUES (1, ?1)", [input])
+[0m             .await
+         {
+             Ok(_) => "OK".to_string(),
+Diff in \\?\...\rustnote\examples\u03_len_bug.rs:16:
+ fn main() {
+     let title = "あ".repeat(27);
+     println!("「あ」27 個のタイトル");
+[31m-    println!("    len()           = {} → {}", title.len(), is_valid_by_bytes(&title));
+[0m[32m+    println!(
+[0m[32m+        "    len()           = {} → {}",
+[0m[32m+        title.len(),
+[0m[32m+        is_valid_by_bytes(&title)
+[0m[32m+    );
+[0m     println!(
+         "    chars().count() = {} → {}",
+         title.chars().count(),
+Diff in \\?\...\rustnote\examples\u03_q1.rs:36:
+ async fn main() -> anyhow::Result<()> {
+     // 型の守り: 1〜3 以外は Priority にならない
+     for value in [1, 2, 4] {
+[31m-        println!("Priority::from_db({value}) = {:?}", Priority::from_db(value));
+[0m[32m+        println!(
+[0m[32m+            "Priority::from_db({value}) = {:?}",
+[0m[32m+            Priority::from_db(value)
+[0m[32m+        );
+[0m     }
+     println!("Priority::Low.to_db() = {}", Priority::Low.to_db());
+ 
+Diff in \\?\...\rustnote\tests\flow.rs:87:
+         "   「ノートを削除しました」が出た: {}",
+         yes_no(html.contains("ノートを削除しました"))
+     );
+[31m-    println!("   「牛乳を買う」が残っている: {}", yes_no(html.contains("牛乳を買う")));
+[0m[32m+    println!(
+[0m[32m+        "   「牛乳を買う」が残っている: {}",
+[0m[32m+        yes_no(html.contains("牛乳を買う"))
+[0m[32m+    );
+[0m }
+ 
+Diff in \\?\...\rustnote\tests\mistakes.rs:53:
+     let app = test_app().await;
+     let cookie = app.sign_up("alice@example.com", PASSWORD).await;
+ 
+[31m-    let response = app
+[0m[31m-        .post_form("/note", "title=a&body=", Some(&cookie))
+[0m[31m-        .await;
+[0m[32m+    let response = app.post_form("/note", "title=a&body=", Some(&cookie)).await;
+[0m     show("POST /note", response).await;
+ }
+ 
+Diff in \\?\...\rustnote\tests\screens.rs:37:
+ 
+     // 登録すると、ログインした状態になる
+     let cookie = app.sign_up("alice@example.com", PASSWORD).await;
+[31m-    let html = show("一覧（空）", "GET /notes", app.get("/notes", Some(&cookie)).await).await;
+[0m[32m+    let html = show(
+[0m[32m+        "一覧（空）",
+[0m[32m+        "GET /notes",
+[0m[32m+        app.get("/notes", Some(&cookie)).await,
+[0m[32m+    )
+[0m[32m+    .await;
+[0m     assert!(html.contains("まだノートがありません"));
+ 
+     // タイトルを空にして作成を送ると、一覧の画面が 400 で出直す
+Diff in \\?\...\rustnote\tests\screens.rs:49:
+     let url = app.create_note(&cookie, "牛乳を買う", "2本").await;
+     show("詳細", "GET /notes/1", app.get(&url, Some(&cookie)).await).await;
+     let edit = format!("{url}/edit");
+[31m-    show("編集", "GET /notes/1/edit", app.get(&edit, Some(&cookie)).await).await;
+[0m[32m+    show(
+[0m[32m+        "編集",
+[0m[32m+        "GET /notes/1/edit",
+[0m[32m+        app.get(&edit, Some(&cookie)).await,
+[0m[32m+    )
+[0m[32m+    .await;
+[0m     show("エラー", "GET /nope", app.get("/nope", Some(&cookie)).await).await;
+ }
+ 
+Diff in \\?\...\rustnote\tests\states.rs:16:
+     let html = body_text(response).await;
+     println!("[{state}] {status}");
+     for text in expected {
+[31m-        let found = if html.contains(text) { "あり" } else { "なし" };
+[0m[32m+        let found = if html.contains(text) {
+[0m[32m+            "あり"
+[0m[32m+        } else {
+[0m[32m+            "なし"
+[0m[32m+        };
+[0m         println!("    {found}: {text}");
+     }
+ }
+Diff in \\?\...\rustnote\tests\states.rs:50:
+         notes.insert(alice, &note).await.unwrap();
+     }
+     let response = app.get("/notes", Some(&cookie)).await;
+[31m-    check("2ページある", response, &["1 / 2 ページ（全21件）", "次へ →"]).await;
+[0m[32m+    check(
+[0m[32m+        "2ページある",
+[0m[32m+        response,
+[0m[32m+        &["1 / 2 ページ（全21件）", "次へ →"],
+[0m[32m+    )
+[0m[32m+    .await;
+[0m 
+     // 4) 検索して1件も当たらない状態（「空」とは違う文を出す）
+     let response = app.get("/notes?q=zzz", Some(&cookie)).await;
+exit=1

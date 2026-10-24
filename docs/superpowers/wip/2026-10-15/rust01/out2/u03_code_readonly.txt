@@ -1,0 +1,6 @@
+1.129.1
+8a7abeba6e03ea3af87bfbce9a1b7e48fed567b8
+arm64
+C:\Users\oltot\AppData\Local\Programs\Microsoft VS Code\bin\code
+C:\Users\oltot\AppData\Local\Programs\Microsoft VS Code\bin\code.cmd
+rust-lang.rust-analyzer@0.3.3081

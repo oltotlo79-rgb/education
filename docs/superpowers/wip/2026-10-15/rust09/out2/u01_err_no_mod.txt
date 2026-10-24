@@ -1,0 +1,15 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+error[E0432]: unresolved import `common`
+ --> tests\e01_no_mod.rs:2:5
+  |
+2 | use common::{location, test_app};
+  |     ^^^^^^ use of unresolved module or unlinked crate `common`
+  |
+help: to make use of source file tests\common\mod.rs, use `mod common` in this file to declare the module
+  |
+2 + mod common;
+  |
+
+For more information about this error, try `rustc --explain E0432`.
+error: could not compile `rustnote` (test "e01_no_mod") due to 1 previous error
+exit=101
