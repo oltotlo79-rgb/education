@@ -1,5 +1,11 @@
 # 中断時点の引き継ぎメモ
 
+## 2026-10-24: Rust 05 巻に UNIT 07 を追加して main に反映（5c76831）
+
+- 本文は UNIT 01〜07（6,937行・図26枚・178ページ）。「準備中」は UNIT 08〜10。`assemble.py` は `range(1, 8)`。実出力は `rust05/out07/`。追加した例: `u07_not_cancelled`（timeout で待つのをやめても spawn_blocking は最後まで動き、main の後も待たれる）・`u07_q2`（count_lines_async）・`u07_q3`（Hasher 3）。`cargo add argon2@=0.6.0` の実出力は `probe/cargo_add_argon2.txt`（probe では ctutils 0.4.5、lab は 0.4.3）。
+- 確かめた事実: Argon2id 既定（m=19456,t=2,p=1）で debug 0.40 秒・release 0.02 秒（この PC、論理プロセッサ 12）。tokio 1.53.3: `max_blocking_threads` 既定 512、`spawn_blocking` は abort できずランタイムの片付けでも終わりを待つ（`task/blocking.rs`）、`tokio::fs` は中で spawn_blocking。RustNote の Dockerfile は `cargo build --release --locked`。
+- RustNote の改善候補として本文に書いたこと（コードは未変更）: Argon2 の同時実行数の上限が無い（Semaphore の Hasher で直せる）。`authenticate` の `&DUMMY_HASH` で LazyLock の初回計算がワーカースレッドで動く（起動時に spawn_blocking の中で force しておく関数を auth.rs に用意する案）。
+
 ## 2026-10-24: Rust 05 巻に UNIT 06 を追加して main に反映（2430d9d）
 
 - 本文は UNIT 01〜06（6,122行・図23枚・157ページ）。「準備中」は UNIT 07〜10。旧 `Rust/05_…pdf` はまだ残してある。`assemble.py` は `range(1, 7)`。
