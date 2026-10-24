@@ -1,5 +1,11 @@
 # 中断時点の引き継ぎメモ
 
+## 2026-10-24: Rust 05 巻に UNIT 08 を追加して main に反映（ef0929e）
+
+- 本文は UNIT 01〜08（8,128行・図29枚・209ページ）。「準備中」は UNIT 09・10。`assemble.py` は `range(1, 9)`。実出力は `rust05/out08/`（ポート番号は `PORT` に置換）。追加した例: `u08_json`（serde で受け取り・missing field）・`u08_q1`（再試行2回）・`u08_q3`（ジッター無しの backoff 表）。練習用サーバー `async_lab/src/mini_server.rs`（148行）は本文に全文を載せた。
+- `cargo add reqwest@=0.13.5 --features json`・`serde@=1.0.229 --features derive` の実出力は `probe/cargo_add_reqwest.txt`・`cargo_add_serde.txt`。新しい probe でも aws-lc-sys を含めて約 33 秒でビルドでき、u08_get が同じ結果になった（この PC は LLVM/clang あり）。
+- 確かめた事実: reqwest 0.13.5 の `ClientBuilder::timeout` は「Default is no timeout」、`Client` は中で Arc を使う（clone で共有）。Windows で閉じたポートへの接続は毎回約 2 秒後に os error 10061。RustNote は reqwest を使わず、`POST /notes` は毎回 insert（冪等キーなし）して 303 で詳細へ（PRG）。
+
 ## 2026-10-24: Rust 05 巻に UNIT 07 を追加して main に反映（5c76831）
 
 - 本文は UNIT 01〜07（6,937行・図26枚・178ページ）。「準備中」は UNIT 08〜10。`assemble.py` は `range(1, 8)`。実出力は `rust05/out07/`。追加した例: `u07_not_cancelled`（timeout で待つのをやめても spawn_blocking は最後まで動き、main の後も待たれる）・`u07_q2`（count_lines_async）・`u07_q3`（Hasher 3）。`cargo add argon2@=0.6.0` の実出力は `probe/cargo_add_argon2.txt`（probe では ctutils 0.4.5、lab は 0.4.3）。
