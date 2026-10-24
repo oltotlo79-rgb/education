@@ -1,5 +1,12 @@
 # 中断時点の引き継ぎメモ
 
+## 2026-10-24: Rust 05 巻に UNIT 05 を追加して main に反映（69231d7）
+
+- 本文は UNIT 01〜05（5,263行・図19枚・133ページ）。「準備中」は UNIT 06〜10。旧 `Rust/05_…pdf` はまだ残してある。`assemble.py` は `range(1, 6)`。
+- UNIT 05 の実出力は `rust05/out05/`。追加した例: `errs/e05_std_deadlock.rs`（current_thread + join! で標準 Mutex を持ったまま .await → 本当に止まる。Git Bash の `timeout 5` で止めて exit=124）・`u05_fix_deadlock.rs`（tokio Mutex で直る）・`u05_q1`（{ } で直す）・`u05_q2`（Semaphore 3枚）。問3は道具の選び方（コードなし）。
+- 確かめた事実: Rust 1.99.0 でも `drop(guard)` の後の `.await` で「future cannot be sent」が消えない。spawn しないと通り、clippy の `await_holding_lock` だけが出る。tokio 1.53.3 のドキュメント: Semaphore は公平（求めた順）、RwLock は公平（書き込み優先）、mutex.rs に「標準の Mutex を async で使うのは問題なく、むしろ好ましいことが多い」。tokio の `Mutex::lock` は `Result` を返さない。RustNote は Mutex 類を使わず、`LazyLock`（DUMMY_HASH）だけ。
+- 次は UNIT 06（timeout・キャンセル・graceful shutdown）。素材は `u06_timeout`・`u06_cancel`・`u06_shutdown`（tokio-util の CancellationToken・TaskTracker）・`u06_blocking_timeout` と `sendctrlc.py`（Ctrl+C を送る補助）。Topcoat の `internal_serve` の drain → cutoff の流れ（UNIT 02〜04 で引用済み）と、`serve.rs` の「Ctrl+C か SIGTERM で graceful shutdown、処理中は最大30秒」を本文でつなぐ。
+
 ## 2026-10-24: Rust 05 巻に UNIT 04 を追加して main に反映（317e15c）
 
 - 本文は UNIT 01〜04（4,246行・図15枚・109ページ）。「準備中」は UNIT 05〜10。旧 `Rust/05_…pdf` はまだ残してある。`assemble.py` は `range(1, 5)`。
