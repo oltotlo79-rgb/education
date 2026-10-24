@@ -1,0 +1,5 @@
+http_requests_total 20
+http_errors_total 4
+http_duration_bucket{le="0.05"} 10
+http_duration_bucket{le="0.2"} 15
+http_duration_bucket{le="+Inf"} 20

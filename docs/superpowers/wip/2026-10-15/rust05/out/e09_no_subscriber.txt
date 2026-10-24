@@ -1,4 +1,4 @@
    Compiling async_lab v0.1.0 (...\async_lab)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.45s
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.57s
      Running `target\debug\e09_no_subscriber.exe`
 main の最後まで来ました

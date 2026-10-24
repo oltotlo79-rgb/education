@@ -1,0 +1,9 @@
+   0.001094500s  INFO handle_request{path="/notes" user_id=42 method="GET"}: u09_spans: リクエスト開始
+   0.023701300s  WARN handle_request{path="/notes" user_id=42 method="GET"}:check_password{user_id=42 password_len=11}: u09_spans: この例では、どんなパスワードでも通します
+   0.023786400s  INFO handle_request{path="/notes" user_id=42 method="GET"}:check_password{user_id=42 password_len=11}: u09_spans: close time.busy=139µs time.idle=22.4ms
+   0.054912000s  INFO handle_request{path="/notes" user_id=42 method="GET"}:find_user{user_id=42}: u09_spans: ユーザーを見つけました
+   0.054978900s  INFO handle_request{path="/notes" user_id=42 method="GET"}:find_user{user_id=42}: u09_spans: close time.busy=99.8µs time.idle=31.0ms
+   0.139673400s  INFO handle_request{path="/notes" user_id=42 method="GET"}:search_notes{user_id=42 query="買い物"}: u09_spans: 検索しました hits=3
+   0.139761200s  INFO handle_request{path="/notes" user_id=42 method="GET"}:search_notes{user_id=42 query="買い物"}: u09_spans: close time.busy=127µs time.idle=84.6ms
+   0.139794000s  INFO handle_request{path="/notes" user_id=42 method="GET"}: u09_spans: リクエスト完了 name=hanako hits=3
+   0.139812100s  INFO handle_request{path="/notes" user_id=42 method="GET"}: u09_spans: close time.busy=764µs time.idle=138ms

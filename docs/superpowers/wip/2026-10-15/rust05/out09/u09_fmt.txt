@@ -1,0 +1,4 @@
+2026-10-24T04:44:26.394409Z  INFO u09_fmt: RustNote を起動しました
+2026-10-24T04:44:26.394547Z  INFO u09_fmt: ノートを作成しました user_id=42 note_id=7
+2026-10-24T04:44:26.394558Z  WARN u09_fmt: 応答が遅めです path=/notes/7 elapsed=35ms
+2026-10-24T04:44:26.394578Z ERROR u09_fmt: ヘルスチェックに失敗しました error="DB に接続できません"

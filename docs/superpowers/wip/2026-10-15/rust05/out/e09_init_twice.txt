@@ -1,9 +1,9 @@
    Compiling async_lab v0.1.0 (...\async_lab)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.67s
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.77s
      Running `target\debug\e09_init_twice.exe`
-[2m2026-10-17T05:17:38.876581Z[0m [32m INFO[0m [2me09_init_twice[0m[2m:[0m 1回目の登録
+2026-10-24T04:44:31.190025Z  INFO e09_init_twice: 1回目の登録
 
-thread 'main' (59292) panicked at ...\tracing-subscriber-0.3.23\src\fmt\mod.rs:520:14:
+thread 'main' (59120) panicked at ...\tracing-subscriber-0.3.23\src\fmt\mod.rs:520:14:
 Unable to install global subscriber: SetGlobalDefaultError("a global default trace dispatcher has already been set")
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 error: process didn't exit successfully: `target\debug\e09_init_twice.exe` (exit code: 101)

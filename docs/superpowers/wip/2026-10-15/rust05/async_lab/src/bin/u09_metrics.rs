@@ -46,7 +46,7 @@ impl Metrics {
 async fn handle(n: u64) -> bool {
     let millis = [10, 30, 120, 250][(n % 4) as usize];
     tokio::time::sleep(Duration::from_millis(millis)).await;
-    n % 5 != 0
+    !n.is_multiple_of(5)
 }
 
 #[tokio::main]

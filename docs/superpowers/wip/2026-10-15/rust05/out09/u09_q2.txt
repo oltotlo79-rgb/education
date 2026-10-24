@@ -1,0 +1,2 @@
+ INFO call_translation_api{user_id=42 text="買い物メモ" token_len=24}: u09_q2: 翻訳しました
+ INFO u09_q2: 結果 translated=（訳）買い物メモ

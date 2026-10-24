@@ -1,0 +1,4 @@
+{"level":"INFO","fields":{"message":"ノートを読みました"},"target":"u09_access_log","span":{"user_id":7,"name":"load_notes"},"spans":[{"method":"GET","path":"/slow","request_id":2,"name":"request"},{"user_id":7,"name":"load_notes"}]}
+{"level":"INFO","fields":{"message":"ノートを読みました"},"target":"u09_access_log","span":{"user_id":42,"name":"load_notes"},"spans":[{"method":"GET","path":"/notes","request_id":1,"name":"request"},{"user_id":42,"name":"load_notes"}]}
+{"level":"INFO","fields":{"message":"リクエスト完了","status":200,"elapsed_ms":37},"target":"u09_access_log","span":{"method":"GET","path":"/notes","request_id":1,"name":"request"},"spans":[{"method":"GET","path":"/notes","request_id":1,"name":"request"}]}
+{"level":"WARN","fields":{"message":"遅いリクエスト","status":200,"elapsed_ms":292},"target":"u09_access_log","span":{"method":"GET","path":"/slow","request_id":2,"name":"request"},"spans":[{"method":"GET","path":"/slow","request_id":2,"name":"request"}]}

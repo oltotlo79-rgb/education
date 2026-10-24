@@ -1,0 +1,2 @@
+{"timestamp":"2026-10-24T04:44:28.850049Z","level":"DEBUG","fields":{"message":"DB から削除します"},"target":"u09_json","span":{"note_id":7,"user_id":42,"name":"delete_note"},"spans":[{"note_id":7,"user_id":42,"name":"delete_note"}]}
+{"timestamp":"2026-10-24T04:44:28.850152Z","level":"INFO","fields":{"message":"ノートを削除しました"},"target":"u09_json","span":{"note_id":7,"user_id":42,"name":"delete_note"},"spans":[{"note_id":7,"user_id":42,"name":"delete_note"}]}

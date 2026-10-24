@@ -1,0 +1,43 @@
+    Updating crates.io index
+      Adding tracing-subscriber =0.3.23 to dependencies
+             Features:
+             + alloc
+             + ansi
+             + env-filter
+             + fmt
+             + json
+             + matchers
+             + nu-ansi-term
+             + once_cell
+             + registry
+             + serde
+             + serde_json
+             + sharded-slab
+             + smallvec
+             + std
+             + thread_local
+             + tracing
+             + tracing-log
+             + tracing-serde
+             - chrono
+             - local-time
+             - parking_lot
+             - regex
+             - time
+             - valuable
+             - valuable-serde
+             - valuable_crate
+    Updating crates.io index
+     Locking 12 packages to highest Rust 1.98 compatible versions
+      Adding aho-corasick v1.1.5
+      Adding lazy_static v1.5.1
+      Adding matchers v0.2.0
+      Adding nu-ansi-term v0.50.3
+      Adding regex-automata v0.4.18
+      Adding regex-syntax v0.8.11
+      Adding sharded-slab v0.1.7
+      Adding thread_local v1.1.10
+      Adding tracing-log v0.2.0
+      Adding tracing-serde v0.2.0
+      Adding tracing-subscriber v0.3.23
+      Adding valuable v0.1.1

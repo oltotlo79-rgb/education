@@ -1,0 +1,5 @@
+TIME  INFO u09_q1: RustNote を起動しました
+TIME  INFO u09_q1: ノートを作成しました user_id=42 note_id=7
+TIME  WARN u09_q1: 応答が遅めです path=/notes/7 elapsed=35ms
+TIME ERROR u09_q1: ヘルスチェックに失敗しました error="DB に接続できません"
+TIME DEBUG u09_q1: 細かい調査用のログ
