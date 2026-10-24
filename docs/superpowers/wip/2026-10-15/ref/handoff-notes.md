@@ -1,5 +1,10 @@
 # 中断時点の引き継ぎメモ
 
+## 2026-10-24: Rust 05 巻に UNIT 09 を追加して main に反映（64e4fb2）
+
+- 本文は UNIT 01〜09（9,121行・図32枚・235ページ）。「準備中」は UNIT 10 だけ。`assemble.py` は `range(1, 10)`。実出力は `rust05/out09/`（NO_COLOR=1 で取得）。追加した例: `u09_access_log`（request_id のスパン・2リクエスト同時・JSON）・`u09_q1`（with_env_filter）・`u09_q2`（skip(token)）。`u09_metrics` は clippy の manual_is_multiple_of に合わせ `!n.is_multiple_of(5)` に変更。
+- 確かめた事実: tracing-subscriber 0.3.23 の `fmt().init()`（builder）は RUST_LOG を読まない（`fmt::init()` 関数は env-filter があれば読む）、既定の書き出し先は stdout、`NO_COLOR` で色なし、2回目の `init` は「a global default trace dispatcher has already been set」で panic（`try_init` は Err）。`#[instrument]` の E0277 で rustc は `#[derive(Debug)]` を勧めるが、それだとパスワードがログに出る（本文で注意）。reqwest 0.13.5 は tracing ではなく log クレートを使う。RustNote のログは eprintln!（access_log・log_if_internal・health）で、tracing への置き換えを改善候補として本文に記載（コード未変更）。
+
 ## 2026-10-24: Rust 05 巻に UNIT 08 を追加して main に反映（ef0929e）
 
 - 本文は UNIT 01〜08（8,128行・図29枚・209ページ）。「準備中」は UNIT 09・10。`assemble.py` は `range(1, 9)`。実出力は `rust05/out08/`（ポート番号は `PORT` に置換）。追加した例: `u08_json`（serde で受け取り・missing field）・`u08_q1`（再試行2回）・`u08_q3`（ジッター無しの backoff 表）。練習用サーバー `async_lab/src/mini_server.rs`（148行）は本文に全文を載せた。
