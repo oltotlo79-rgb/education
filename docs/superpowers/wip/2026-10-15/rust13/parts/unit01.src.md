@@ -1,0 +1,600 @@
+## UNIT 01: 版を固定する設定ファイル
+
+### この単元のゴール
+
+- `Cargo.toml`・`Cargo.lock`・`rust-toolchain.toml`・`rustfmt.toml`・`.gitignore`・`.env.example` の6つのファイルについて、それぞれ誰が読み、何を決めているかを説明できる
+- `"=1.53.3"` と `"1.53.3"` の版の書き方の違いと、`Cargo.lock` と `--locked` が「誰の PC でも同じ物を作る」ために何をしているかを説明できる
+- features（クレートの機能のスイッチ）は、依存のつながり全体で**足し算**されることを、実際の出力で確かめられる
+- 版が古い・機能の名前の打ち間違い・`Cargo.lock` の食い違いなどのエラーを読み、どのファイルを直せばよいかを判断できる
+
+### たとえ話でつかむ
+
+料理教室で、全員に同じケーキを焼いてもらう場面を考えます。先生は、次のような紙を配ります。
+
+- **材料表**には「小麦粉 A 社の 1.53.3 番」「卵 M サイズ」のように、銘柄と規格まで書いてあります。「小麦粉 適量」では、人によって違うケーキになるからです。
+- **買い物のレシート**には、実際に買った品物が全部、ロット番号つきで並んでいます。材料表に書いていない、小麦粉の袋の中に入っていた乾燥剤まで載っています。次に買うときも、同じロットを選べます。
+- **オーブンの型番**も決めておきます。型番が古いオーブンでは、焼けない温度があるからです。
+- **盛り付けの決まり**があれば、誰が作っても同じ見た目になります。
+- **持ち帰らない物の札**を、生ごみや、家の鍵に付けておきます。
+- **鍵の置き場所のメモ**には「玄関の鍵は、ここに置く」とだけ書きます。鍵そのものは、紙に貼りません。
+
+RustNote の6つの設定ファイルは、この紙と同じ役目をしています。
+
+| 料理教室 | RustNote のファイル | 読むもの |
+|---|---|---|
+| 材料表（銘柄と規格） | `Cargo.toml`（使うクレートと版） | cargo |
+| 買い物のレシート（ロット番号つき） | `Cargo.lock`（選ばれた全クレートの版と指紋） | cargo |
+| オーブンの型番 | `rust-toolchain.toml`（Rust の版） | rustup |
+| 盛り付けの決まり | `rustfmt.toml`（整形の設定） | rustfmt（`cargo fmt`） |
+| 持ち帰らない物の札 | `.gitignore`（Git に入れないファイル） | Git |
+| 鍵の置き場所のメモ | `.env.example`（環境変数の見本。秘密の値は書かない） | 人（コピーして `.env` にする） |
+
+> **用語:** 版の固定（はんのこてい：使う道具や部品の版を、1つに決めて書いておくこと。英語では pin（ピン留め）とも言う）
+
+<!-- -->
+
+> **用語:** 依存クレート（いぞんクレート：自分のプログラムが使う、ほかの人が作ったクレート。そのクレートが使うクレートも、間接的な依存になる）
+
+### 図で理解する
+
+6つのファイルを、読む道具ごとに並べると、次のようになります。
+
+<div style="max-width:720px;margin:18px auto;text-align:center;">
+<svg viewBox="0 0 720 330" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-13-0101" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="20" y="20" width="210" height="40" rx="6" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="125" y="45" font-size="13" font-weight="700" fill="#1e40af" text-anchor="middle">Cargo.toml</text>
+<rect x="20" y="70" width="210" height="40" rx="6" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="125" y="95" font-size="13" font-weight="700" fill="#1e40af" text-anchor="middle">Cargo.lock</text>
+<rect x="20" y="120" width="210" height="40" rx="6" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="125" y="145" font-size="13" font-weight="700" fill="#047857" text-anchor="middle">rust-toolchain.toml</text>
+<rect x="20" y="170" width="210" height="40" rx="6" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="125" y="195" font-size="13" font-weight="700" fill="#047857" text-anchor="middle">rustfmt.toml</text>
+<rect x="20" y="220" width="210" height="40" rx="6" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<text x="125" y="245" font-size="13" font-weight="700" fill="#c2410c" text-anchor="middle">.gitignore</text>
+<rect x="20" y="270" width="210" height="40" rx="6" fill="#f8fafc" stroke="#64748b" stroke-width="2"/>
+<text x="125" y="295" font-size="13" font-weight="700" fill="#475569" text-anchor="middle">.env.example</text>
+<rect x="300" y="44" width="130" height="56" rx="8" fill="#ffffff" stroke="#3b82f6" stroke-width="2"/>
+<text x="365" y="68" font-size="13" font-weight="700" fill="#0f172a" text-anchor="middle">cargo</text>
+<text x="365" y="88" font-size="11" fill="#475569" text-anchor="middle">部品を集めて組む</text>
+<rect x="300" y="140" width="130" height="56" rx="8" fill="#ffffff" stroke="#10b981" stroke-width="2"/>
+<text x="365" y="164" font-size="13" font-weight="700" fill="#0f172a" text-anchor="middle">rustup・rustfmt</text>
+<text x="365" y="184" font-size="11" fill="#475569" text-anchor="middle">版を選ぶ・形を整える</text>
+<rect x="300" y="238" width="130" height="56" rx="8" fill="#ffffff" stroke="#f97316" stroke-width="2"/>
+<text x="365" y="262" font-size="13" font-weight="700" fill="#0f172a" text-anchor="middle">Git・人</text>
+<text x="365" y="282" font-size="11" fill="#475569" text-anchor="middle">共有する・しない</text>
+<line x1="230" y1="40" x2="296" y2="64" stroke="#475569" stroke-width="2" marker-end="url(#ar-13-0101)"/>
+<line x1="230" y1="90" x2="296" y2="80" stroke="#475569" stroke-width="2" marker-end="url(#ar-13-0101)"/>
+<line x1="230" y1="140" x2="296" y2="160" stroke="#475569" stroke-width="2" marker-end="url(#ar-13-0101)"/>
+<line x1="230" y1="190" x2="296" y2="176" stroke="#475569" stroke-width="2" marker-end="url(#ar-13-0101)"/>
+<line x1="230" y1="240" x2="296" y2="258" stroke="#475569" stroke-width="2" marker-end="url(#ar-13-0101)"/>
+<line x1="230" y1="290" x2="296" y2="274" stroke="#475569" stroke-width="2" marker-end="url(#ar-13-0101)"/>
+<text x="460" y="62" font-size="12" fill="#0f172a">どのクレートを、どの版で使うか</text>
+<text x="460" y="84" font-size="12" fill="#0f172a">→ 誰の PC でも同じ部品で組む</text>
+<text x="460" y="158" font-size="12" fill="#0f172a">Rust 1.99.0 を使う・整形の決まり</text>
+<text x="460" y="180" font-size="12" fill="#0f172a">→ 誰が直しても同じ形になる</text>
+<text x="460" y="256" font-size="12" fill="#0f172a">DB・秘密・成果物は共有しない</text>
+<text x="460" y="278" font-size="12" fill="#0f172a">→ 見本だけを共有する</text>
+</svg>
+<div style="font-size:12px;color:#64748b;margin-top:6px;">図13-?: 6つの設定ファイルと、それを読む道具。cargo が部品をそろえ、rustup と rustfmt が版と形をそろえ、Git と人が「共有しない物」を分ける</div>
+</div>
+
+- **青の2つ**（`Cargo.toml`・`Cargo.lock`）は、cargo が読みます。使う部品と、その版を決めます。
+- **緑の2つ**（`rust-toolchain.toml`・`rustfmt.toml`）は、rustup と rustfmt が読みます。Rust そのものの版と、コードの見た目を決めます。
+- **橙と灰の2つ**（`.gitignore`・`.env.example`）は、Git と人のためのファイルです。共有してはいけない物（DB のファイル・秘密の値）を、共有する物から分けます。
+
+`Cargo.toml` に書いたクレートは 10 個だけですが、それぞれが別のクレートを使っているので、実際に必要になる部品はずっと多くなります。
+
+<div style="max-width:720px;margin:18px auto;text-align:center;">
+<svg viewBox="0 0 720 220" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-13-0102" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="20" y="70" width="180" height="80" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="110" y="98" font-size="13" font-weight="700" fill="#1e40af" text-anchor="middle">Cargo.toml</text>
+<text x="110" y="122" font-size="20" font-weight="800" fill="#0f172a" text-anchor="middle">10 個</text>
+<text x="110" y="142" font-size="11" fill="#475569" text-anchor="middle">直接使うクレート</text>
+<rect x="270" y="40" width="190" height="140" rx="8" fill="#ffffff" stroke="#3b82f6" stroke-width="2"/>
+<text x="365" y="70" font-size="13" font-weight="700" fill="#1e40af" text-anchor="middle">Cargo.lock</text>
+<text x="365" y="104" font-size="20" font-weight="800" fill="#0f172a" text-anchor="middle">361 個</text>
+<text x="365" y="128" font-size="11" fill="#475569" text-anchor="middle">間接の依存も全部</text>
+<text x="365" y="148" font-size="11" fill="#475569" text-anchor="middle">ほかの OS 用の物も含む</text>
+<text x="365" y="168" font-size="11" fill="#475569" text-anchor="middle">版と指紋（checksum）つき</text>
+<rect x="530" y="70" width="170" height="80" rx="8" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="615" y="98" font-size="13" font-weight="700" fill="#047857" text-anchor="middle">この PC で組む</text>
+<text x="615" y="122" font-size="20" font-weight="800" fill="#0f172a" text-anchor="middle">289 個</text>
+<text x="615" y="142" font-size="11" fill="#475569" text-anchor="middle">cargo build のとき</text>
+<line x1="200" y1="110" x2="266" y2="110" stroke="#475569" stroke-width="2" marker-end="url(#ar-13-0102)"/>
+<line x1="460" y1="110" x2="526" y2="110" stroke="#475569" stroke-width="2" marker-end="url(#ar-13-0102)"/>
+<text x="233" y="98" font-size="11" fill="#475569" text-anchor="middle">版を選ぶ</text>
+<text x="493" y="98" font-size="11" fill="#475569" text-anchor="middle">必要な物</text>
+<text x="493" y="132" font-size="11" fill="#475569" text-anchor="middle">だけ</text>
+<text x="360" y="208" font-size="12" fill="#0f172a" text-anchor="middle">Cargo.toml は人が書く「材料表」、Cargo.lock は cargo が書く「レシート」</text>
+</svg>
+<div style="font-size:12px;color:#64748b;margin-top:6px;">図13-?: 直接使う 10 個のクレートから、cargo が版を選んで 361 個の一覧（Cargo.lock）を作り、この PC（Windows ARM64）でのビルドには、そのうち 289 個を使う</div>
+</div>
+
+- 361 個は、`Cargo.lock` の `[[package]]` の数です（RustNote 自身を含みます）。289 個は、この PC で `cargo build` したときに表示された `Compiling` の行の数です。この PC では使わない、ほかの OS 用のクレート（Linux や macOS でだけ使う物など）と、テストでだけ使うクレートは、`cargo build` ではコンパイルされません。
+- 数はこれから先の版で変わりますが、「直接書いたのは少しでも、実際の部品はその何十倍にもなる」ことは変わりません。だから、版を人の記憶に頼らず、ファイルで固定しておくのです。
+
+### まず動かす最小コード
+
+この単元の「コード」は、設定ファイルそのものです。まず全文を読み、次に、その設定で RustNote がビルドでき、確かめの3つのコマンドが通ることを確かめます。
+
+#### 例1-1: Cargo.toml の全文
+
+> **▼ このファイルがやること（先に日本語で）:** パッケージの名前と版、使う Rust の最低の版（1.98）、使うクレート（9個）とテストでだけ使うクレート（1個）を、版を `=` で1つに固定して書きます。tokio と serde には、使う機能（features）も書きます。
+
+```toml
+@@FILE:rustnote/Cargo.toml@@
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: [package] は、このパッケージの名札
+
+- `name = "rustnote"` は、パッケージの名前です。ライブラリを外から使うときの `rustnote::domain` の `rustnote` は、この名前です（第9巻 UNIT 04）。
+- `edition = "2024"` は、Rust の書き方の世代です。同じ Rust 1.99.0 でも、edition が違うと、使える書き方や警告が少し変わります。
+- `rust-version = "1.98"` は、「このパッケージをビルドするには、Rust 1.98 以上が必要」という宣言です。Topcoat 0.10 が 1.98 以上を求めているので、それに合わせています。これより古い Rust でビルドしようとすると、コンパイルを始める前に止まります（エラー1）。
+- `publish = false` は、`cargo publish` で crates.io（クレートの公開場所）に**うっかり公開しない**ための印です。RustNote は教材のアプリなので、公開しません。
+- `default-run = "rustnote"` は、`cargo run` で動かす実行ファイルを決めます。RustNote の実行ファイルは `src/main.rs` の1つだけなので、無くても同じように動きます。あとで `src/bin/` に道具の実行ファイルを足したときも、`cargo run` が RustNote 本体を選ぶように、先に書いてあります。
+
+##### 解説2: "=1.53.3" は「この版だけ」
+
+- `anyhow = "=1.0.104"` のように、版の前に `=` を付けると、**その版だけ**を使います。`=` を付けずに `"1.0.104"` と書くと、「1.0.104 以上、2.0.0 未満」の意味になり、cargo はその範囲で新しい版を選んでよくなります（例1-3で確かめます）。
+- RustNote は、教材の出力と同じ結果になるように、直接使うクレートを全部 `=` で固定しています。`Cargo.toml` の上のコメント「教材と同じ結果になるよう、直接使うクレートの版は `=` で固定している」が、その理由です。
+- 一方で、間接的に使われるクレートの版は、`Cargo.toml` には書きません。それを固定するのが `Cargo.lock` です（解説4）。
+
+##### 解説3: features は、クレートの機能のスイッチ
+
+- `tokio = { version = "=1.53.3", features = ["rt-multi-thread", "macros"] }` は、tokio の機能のうち、複数のスレッドで動くランタイム（`rt-multi-thread`）と、`#[tokio::main]` や `#[tokio::test]` を書くためのマクロ（`macros`）を使う、という意味です（第4巻 UNIT 07、第5巻 UNIT 02）。
+- `serde = { version = "=1.0.229", features = ["derive"] }` の `derive` は、`#[derive(Deserialize)]` と書いてフォームの値を構造体に変える機能です。
+- 機能を細かく選べるのは、使わない機能のぶんだけ、コンパイルの時間と、できあがるプログラムの大きさを減らせるからです。ただし、features には「依存のつながり全体で足し算される」という性質があります（例1-4）。
+
+##### 解説4: [dev-dependencies] は、テストのときだけ
+
+- `tempfile` は、テストごとに使い捨ての一時フォルダを作るクレートです。`[dev-dependencies]` に書いたクレートは、`tests/`・`examples/`・`#[cfg(test)]` のテストからだけ使えます。本番の実行ファイルには入りません（問1で確かめます）。
+
+#### 例1-2: rust-toolchain.toml と rustfmt.toml の全文
+
+> **▼ このファイルがやること（先に日本語で）:** `rust-toolchain.toml` は、このフォルダの中で `cargo` や `rustc` を実行したときに使う Rust の版を 1.99.0 に決め、rustfmt と clippy も一緒に入れるよう指定します。`rustfmt.toml` は、`cargo fmt` が edition 2024 の決まりで整形するよう指定します。
+
+```toml
+@@FILE:rustnote/rust-toolchain.toml@@
+```
+
+```toml
+@@FILE:rustnote/rustfmt.toml@@
+```
+
+`Cargo.toml` の `rust-version = "1.98"` は「1.98 以上なら何でもよい」、`rust-toolchain.toml` の `channel = "1.99.0"` は「このフォルダでは 1.99.0 を使う」です。最低の版と、実際に使う版を、別々のファイルで決めています。
+
+#### 例1-3: 決めた版でビルドし、3つの確かめを通す
+
+> **▼ このコマンドがやること（先に日本語で）:** コピーしたフォルダで、`Cargo.lock` を書き換えないようにして（`--locked`）、RustNote をビルドします。続いて、整形の確かめ・Clippy・テストの3つを、`ci.yml` と同じ形で実行します。
+
+```powershell
+# このフォルダで使われる Rust の版を確かめる
+rustup show active-toolchain
+# Cargo.lock のとおりの版でビルドする
+cargo build --locked
+# 確かめの3つ（ci.yml と同じ）
+cargo fmt --check
+cargo clippy --all-targets --locked -- -D warnings
+cargo test --locked
+```
+
+**▼ 実行結果**（`cargo build --locked` は `Compiling` の行が 289 行続くので、最後の3行だけを載せています）
+
+```text
+@@OUT:intro_toolchain@@
+```
+
+```text
+@@OUTTAIL:u01_build:3@@
+```
+
+`cargo fmt --check` は、整形が必要な所が無ければ、何も表示しません。`cargo clippy` の最後の3行と、`cargo test` の区切りと結果の行です。
+
+```text
+@@OUTTAIL:u01_clippy:3@@
+```
+
+```text
+@@OUTGREP:u01_test:Finished|Running|test result|Doc-tests@@
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: overridden by は「フォルダの設定で上書きした」
+
+- `rustup show active-toolchain` の `(overridden by '...\rustnote\rust-toolchain.toml')` は、「PC の既定の版ではなく、このファイルで決めた版を使っています」という意味です。この PC の既定の版は 1.97.1 ですが、RustNote のフォルダでは 1.99.0 が使われています。
+- だから、PC ごとに既定の版が違っても、RustNote のフォルダの中では、全員が同じ 1.99.0 でビルドします。
+
+##### 解説2: --locked は「Cargo.lock を書き換えるな」
+
+- `cargo build` は、`Cargo.toml` と `Cargo.lock` が食い違っていると、`Cargo.lock` を自動で書き直してからビルドします。`--locked` を付けると、書き直す必要があるときは、ビルドせずにエラーで止まります（エラー3）。
+- 「レシートと違う物を、黙って買ってこない」ための指定です。RustNote の `Dockerfile`（`cargo build --release --locked`）と `ci.yml` も、`--locked` を付けています。
+
+##### 解説3: 3つの確かめは、全部「何も言われない」が合格
+
+- `cargo fmt --check` は、何も表示しないのが合格です。`cargo clippy ... -- -D warnings` は、警告が1つでもあればエラーにします。`Finished` で終われば合格です。`cargo test --locked` は、全部の `test result:` が `ok.` なら合格です。
+- RustNote のテストは、ユニットテスト 19 件、`tests/http.rs` の 14 件、`tests/repository.rs` の 8 件、合わせて 41 件です。
+
+### もう一歩: 実務に近い形
+
+#### 例1-4: 直接の依存を一覧にする
+
+> **▼ このコマンドがやること（先に日本語で）:** `cargo tree` は、依存のつながりを木の形で表示します。`--depth 1` で、RustNote が直接使うクレートだけに絞ります。
+
+```powershell
+cargo tree --locked --depth 1
+```
+
+**▼ 実行結果**
+
+```text
+@@OUT:u01_tree@@
+```
+
+- `Cargo.toml` に書いた 10 個が、`Cargo.lock` で選ばれた版で並んでいます。`[dev-dependencies]` の下が、テストでだけ使う `tempfile` です。
+- `async-trait` の `(proc-macro)` は、「コンパイルのときにコードを書き足すマクロのクレート」という印です。`#[async_trait]` の印を付けた trait を、dyn で使える形に書き換えます（第9巻 UNIT 04）。
+
+#### 例1-5: "=1.53.3" と "1.53.3" の違いを確かめる
+
+> **▼ このコマンドがやること（先に日本語で）:** `cargo update -p tokio --dry-run` は、「tokio を新しくしたら、どの版になるか」を、`Cargo.lock` を書き換えずに表示します（`--dry-run` は「試しに動かすだけ」）。まず今の `Cargo.toml` のまま実行し、次に tokio の行の `=` を消して、もう一度実行します。確かめたら `=` を元に戻します。
+
+```powershell
+# 今のまま（version = "=1.53.3"）
+cargo update -p tokio --dry-run
+```
+
+```text
+@@OUT:u01_update_pinned@@
+```
+
+`Cargo.toml` の tokio の行を、`version = "=1.53.3"` から `version = "1.53.3"`（`=` を消しただけ）に変えて、同じコマンドを実行します。
+
+```text
+@@OUT:u01_update_caret@@
+```
+
+- `=` があるときは、`Locking 0 packages`（変える版は 0 個）でした。`=1.53.3` の範囲には、1.53.3 しか無いからです。
+- `=` を消すと、`Updating tokio v1.53.3 -> v1.54.1` と表示されました。`"1.53.3"` は「1.53.3 以上、2.0.0 未満」の意味なので、この範囲でいちばん新しい 1.54.1 を選べるのです。
+- `to highest Rust 1.98 compatible version` は、「Rust 1.98 で使える版の中で、いちばん新しい版」という意味です。cargo は、`Cargo.toml` の `rust-version` を見て、それより新しい Rust を求めるクレートの版を、選ばないようにしています。
+<div style="max-width:720px;margin:18px auto;text-align:center;">
+<svg viewBox="0 0 720 200" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-13-0103" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<line x1="180" y1="50" x2="690" y2="50" stroke="#475569" stroke-width="2" marker-end="url(#ar-13-0103)"/>
+<line x1="220" y1="44" x2="220" y2="56" stroke="#475569" stroke-width="2"/>
+<line x1="330" y1="44" x2="330" y2="56" stroke="#475569" stroke-width="2"/>
+<line x1="400" y1="44" x2="400" y2="56" stroke="#475569" stroke-width="2"/>
+<line x1="630" y1="44" x2="630" y2="56" stroke="#475569" stroke-width="2"/>
+<text x="220" y="34" font-size="12" fill="#0f172a" text-anchor="middle">1.53.3</text>
+<text x="330" y="34" font-size="12" fill="#0f172a" text-anchor="middle">1.54.0</text>
+<text x="400" y="34" font-size="12" fill="#0f172a" text-anchor="middle">1.54.1</text>
+<text x="630" y="34" font-size="12" fill="#0f172a" text-anchor="middle">2.0.0</text>
+<text x="690" y="76" font-size="11" fill="#475569" text-anchor="end">新しい版 →</text>
+<text x="20" y="104" font-size="13" font-weight="700" fill="#1e40af">"=1.53.3"</text>
+<circle cx="220" cy="100" r="8" fill="#3b82f6"/>
+<text x="240" y="104" font-size="12" fill="#1e40af">この版だけ（cargo update でも変わらない）</text>
+<text x="20" y="150" font-size="13" font-weight="700" fill="#047857">"1.53.3"</text>
+<text x="20" y="168" font-size="11" fill="#475569">（"^1.53.3" と同じ）</text>
+<rect x="220" y="140" width="410" height="16" rx="8" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<circle cx="220" cy="148" r="6" fill="#10b981"/>
+<circle cx="630" cy="148" r="6" fill="#ffffff" stroke="#10b981" stroke-width="2"/>
+<circle cx="400" cy="148" r="6" fill="#047857"/>
+<text x="400" y="186" font-size="12" fill="#047857" text-anchor="middle">この範囲でいちばん新しい 1.54.1 を選べる（2.0.0 は含まない）</text>
+</svg>
+<div style="font-size:12px;color:#64748b;margin-top:6px;">図13-?: 版の書き方と、選べる版の範囲。= を付けるとその版だけ、付けないと「上の桁が同じ範囲」の新しい版まで選べる</div>
+</div>
+
+- `26 unchanged dependencies behind latest` は、「もっと新しい版が出ているのに、今の決まりでは選べないクレートが 26 個ある」という意味です。`=` で固定すると、新しい版の改善も、自分で版を上げるまで入りません。固定は「同じ結果」の代わりに、「版を上げる作業を自分で決める」ことでもあります。
+
+> **注意:** `--dry-run` を付け忘れると、`Cargo.lock` が本当に書き換わります。この例を試すときは、必ず `--dry-run` を付け、終わったら `Cargo.toml` の `=` を元に戻してください。
+
+#### 例1-6: features は、依存のつながり全体で足し算される
+
+> **▼ このコマンドがやること（先に日本語で）:** `cargo tree -p tokio --depth 0 -f "{p} [{f}]"` は、tokio だけを表示し、`{f}` の所に、**実際に有効になっている機能**を並べます。
+
+```powershell
+cargo tree --locked -p tokio --depth 0 -e normal -f "{p} [{f}]"
+```
+
+**▼ 実行結果**
+
+```text
+@@OUT:u01_tokio_features@@
+```
+
+- RustNote の `Cargo.toml` に書いた機能は `rt-multi-thread` と `macros` の2つだけなのに、`fs`・`net`・`signal`・`full` など、たくさんの機能が有効になっています。
+- これは、RustNote が使うほかのクレートも、tokio の機能を求めているからです。`cargo tree -e features -i tokio` で調べると、libsql が使う `libsql_replication` が tokio の `full`（ほぼ全部の機能）を、`topcoat` が `macros`・`net`・`signal` を有効にしていることが分かります（それぞれのクレートの `Cargo.toml` にも、そう書いてあります）。cargo は、1つのビルドの中の tokio を1つにまとめ、**誰かが求めた機能を全部足したもの**でコンパイルします。
+- そのため、試しに RustNote の `Cargo.toml` から `"macros"` を消しても、ビルドは通ってしまいます（`cargo build --locked` は `Finished` で終わりました）。ほかのクレートが `macros` を有効にしてくれているからです。
+- それでも、RustNote の `Cargo.toml` には `macros` を書いておきます。libsql や topcoat が次の版で tokio の使い方を変えたら、RustNote の `#[tokio::main]` は突然コンパイルできなくなるからです。**自分が使う機能は、自分の `Cargo.toml` に書く**のが決まりです。だれも `macros` を有効にしていないと何が起きるかは、エラー5で確かめます。
+
+<div style="max-width:720px;margin:18px auto;text-align:center;">
+<svg viewBox="0 0 720 250" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-13-0104" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="20" y="20" width="250" height="56" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="145" y="43" font-size="13" font-weight="700" fill="#1e40af" text-anchor="middle">rustnote の Cargo.toml</text>
+<text x="145" y="64" font-size="12" fill="#0f172a" text-anchor="middle">rt-multi-thread・macros</text>
+<rect x="20" y="96" width="250" height="56" rx="8" fill="#f8fafc" stroke="#64748b" stroke-width="2"/>
+<text x="145" y="119" font-size="13" font-weight="700" fill="#475569" text-anchor="middle">topcoat の Cargo.toml</text>
+<text x="145" y="140" font-size="12" fill="#0f172a" text-anchor="middle">macros・net・signal</text>
+<rect x="20" y="172" width="250" height="56" rx="8" fill="#f8fafc" stroke="#64748b" stroke-width="2"/>
+<text x="145" y="195" font-size="13" font-weight="700" fill="#475569" text-anchor="middle">libsql_replication の Cargo.toml</text>
+<text x="145" y="216" font-size="12" fill="#0f172a" text-anchor="middle">full（ほぼ全部）</text>
+<line x1="270" y1="48" x2="426" y2="110" stroke="#475569" stroke-width="2" marker-end="url(#ar-13-0104)"/>
+<line x1="270" y1="124" x2="426" y2="124" stroke="#475569" stroke-width="2" marker-end="url(#ar-13-0104)"/>
+<line x1="270" y1="200" x2="426" y2="138" stroke="#475569" stroke-width="2" marker-end="url(#ar-13-0104)"/>
+<text x="145" y="92" font-size="16" font-weight="800" fill="#475569" text-anchor="middle">＋</text>
+<text x="145" y="168" font-size="16" font-weight="800" fill="#475569" text-anchor="middle">＋</text>
+<rect x="430" y="70" width="270" height="108" rx="8" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="565" y="96" font-size="13" font-weight="700" fill="#047857" text-anchor="middle">tokio v1.53.3（1つにまとめる）</text>
+<text x="565" y="120" font-size="12" fill="#0f172a" text-anchor="middle">全部を足した機能でコンパイル</text>
+<text x="565" y="142" font-size="11" fill="#475569" text-anchor="middle">full・macros・net・signal・</text>
+<text x="565" y="160" font-size="11" fill="#475569" text-anchor="middle">rt-multi-thread・fs・time ほか</text>
+</svg>
+<div style="font-size:12px;color:#64748b;margin-top:6px;">図13-?: features の足し算。1つのビルドの中の tokio は1つにまとめられ、誰かが求めた機能を全部足したものでコンパイルされる。だから自分が書き忘れた機能も、ほかのクレートのおかげで使えてしまうことがある</div>
+</div>
+
+features とは別の話ですが、1つのビルドの中に、版の違う同じクレートが同時に入ることもあります。`Cargo.lock` の RustNote の項目を見てみましょう（抜き出しています）。
+
+```toml
+@@LOCK:rustnote@@
+```
+
+- `"thiserror 2.0.21"` だけ、名前の後ろに版が付いています。`Cargo.lock` に thiserror が 1.0.69 と 2.0.21 の2つあるので、どちらかを区別するためです。
+
+```powershell
+cargo tree --locked -i thiserror@1.0.69 --edges normal
+```
+
+```text
+@@OUT:u01_tree_thiserror@@
+```
+
+- `-i`（invert：逆向き）は、「このクレートを使っているのは誰か」をたどります。thiserror 1.0.69 は libsql が使い、RustNote 自身は 2.0.21 を使っていました。1.x と 2.x のように、上の桁が違う版は「互換性のない別物」とみなされるので、1つのビルドの中に両方が入ってもかまわないのです。
+
+#### 例1-7: .gitignore と .env.example の全文
+
+> **▼ このファイルがやること（先に日本語で）:** `.gitignore` は、Git に入れないファイルの名前の決まりを書きます。`.env.example` は、RustNote が読む環境変数の名前と、開発用の値の見本を書きます。秘密の値（Turso のトークン）は、空のままにしてあります。
+
+```text
+@@FILE:rustnote/.gitignore@@
+```
+
+```text
+@@FILE:rustnote/.env.example@@
+```
+
+- `.gitignore` の `*.db` は「名前が `.db` で終わるファイル全部」です。開発で作った DB には、自分で試しに登録したメールアドレスなどが入るので、Git に入れません。`*.db-shm`・`*.db-wal`・`*.db-journal` は、SQLite が DB の横に作る作業用のファイルです。
+- `.env` は Git に入れず、`.env.example` だけを共有します。`.env.example` を `.env` という名前でコピーし、自分の値を書き込んで使います。RustNote の `main.rs` は、起動するときに `dotenvy::dotenv().ok()` で `.env` を読みます（`.env` が無ければ何もしません。UNIT 03（準備中））。
+- `Cargo.lock` は `.gitignore` に**書いていません**。アプリ（実行ファイルを作るパッケージ）では、`Cargo.lock` を Git に入れて共有するのが、Cargo の公式の考え方です。共有しないと、PC ごとに違う版の部品でビルドすることになるからです。
+
+### よくあるエラーと読み方
+
+この節のエラーは、どれも練習用のコピーの設定ファイルを1か所だけ書き換えて出したものです。確かめ終わったら、そのファイルを必ず元に戻してください。
+
+#### エラー1: Rust の版が古い（rust-version）
+
+`rust-toolchain.toml` が無いフォルダや、`cargo +stable build` のように版を指定して、Rust 1.97.1 でビルドしようとした場合です（この PC の既定の版 `stable` は 1.97.1 です）。
+
+```powershell
+cargo +stable check --locked
+```
+
+（`requires rustc 1.98` の行が 35 行続くので、途中を省いています）
+
+```text
+@@OUTHEAD:u01_err_msrv:5@@
+  …（途中を省略）…
+@@OUTTAIL:u01_err_msrv:2@@
+```
+
+- **何が起きたか:** 「rustc 1.97.1 は、次のパッケージに対応していません」というエラーです。`rustnote@0.1.0 requires rustc 1.98` は、RustNote の `Cargo.toml` の `rust-version = "1.98"`、`topcoat@0.10.0 requires rustc 1.98` は、Topcoat 側の同じ宣言です。同じ名前が何回か出ていますが、読むのは、パッケージの名前と `requires rustc 1.98` の部分だけで十分です。
+- このエラーは、**コンパイルを始める前に**出ます。古い Rust で途中まで長いコンパイルをして、分かりにくいエラーで止まるより、ずっと親切です。`rust-version` を書いておく理由がこれです。
+- **直し方:** RustNote のフォルダでは、`+stable` を付けずに `cargo check --locked` とします。`rust-toolchain.toml` があるので 1.99.0 が使われます。1.99.0 がまだ入っていない PC では、`rustup toolchain install 1.99.0 --profile minimal --component rustfmt,clippy` で入れます（既定の版は変わりません）。
+
+> **注意:** `cargo +1.97.1 check` のように、PC に入っていない版の名前を指定すると、この PC の rustup は、その版を**自動でダウンロードして入れました**（`warn: the missing active toolchain ... has been auto-installed` と表示されます）。版を試すときは、`rustup toolchain list` で入っている版を確かめてから指定しましょう。入れてしまった版は、`rustup toolchain uninstall 版の名前` で消せます。
+
+#### エラー2: 機能の名前を打ち間違えた
+
+`Cargo.toml` の tokio の `"macros"` を、`"macro"`（`s` が無い）と打ち間違えた場合です。
+
+```toml
+tokio = { version = "=1.53.3", features = ["rt-multi-thread", "macro"] }
+```
+
+```powershell
+cargo build --locked
+```
+
+```text
+@@OUT:u01_err_typo@@
+```
+
+- **何が起きたか:** 「tokio の版を選べませんでした」というエラーです。その下の `package rustnote depends on tokio with feature macro but tokio does not have that feature.`（RustNote は tokio の `macro` という機能を求めていますが、tokio にその機能はありません）が本当の理由です。
+- `versions that meet the requirements =1.53.3 (locked to 1.53.3) are: 1.53.3` は、「条件に合う版は 1.53.3 だけで、その版には `macro` という機能が無いので、選べる版がもう無い」という意味です。
+- **直し方:** `help: there is a feature macros with a similar name`（似た名前の `macros` という機能があります）のとおり、`"macros"` に直します。機能の名前は、クレートの docs.rs のページの「Feature flags」で確かめられます。
+
+#### エラー3: --locked なのに、Cargo.lock を書き換える必要がある
+
+`Cargo.toml` の dotenvy の版を、`"=0.15.7"` から `"=0.15.6"` に変えて、`--locked` でビルドした場合です。
+
+```powershell
+cargo build --locked
+```
+
+```text
+@@OUT:u01_err_locked@@
+```
+
+- **何が起きたか:** 「`--locked` が指定されたので、Cargo.lock を書き換えられません」というエラーです。`Cargo.toml` は 0.15.6 を求めているのに、`Cargo.lock` には 0.15.7 が書いてあるので、ビルドするには `Cargo.lock` を書き直す必要がありました。
+- **これはエラーで正しい:** CI や Docker のビルドで、`Cargo.lock` と違う版が黙って使われるのを止めるために、わざと `--locked` を付けています。
+- **直し方:** 版を本当に変えたいときは、`--locked` を付けずに `cargo build`（または `cargo update -p dotenvy`）を実行して `Cargo.lock` を更新し、`Cargo.toml` と `Cargo.lock` を**一緒に**コミットします。この練習では、`Cargo.toml` を `"=0.15.7"` に戻します。
+- `help:` の `--offline`（ネットにつながずに作る）の案内は、ネットを使わずに `Cargo.lock` を作り直したいときの方法です。今回は版を戻せばよいので、使いません。
+
+#### エラー4: Cargo.lock の指紋（checksum）が違う
+
+`Cargo.lock` の dotenvy の `checksum` の、先頭の1文字だけを書き換えた場合です。
+
+```toml
+[[package]]
+name = "dotenvy"
+version = "0.15.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0aaf95b3e5c8f23aa320147307562d361db0ae0d51242340f558153b4eb2439b"
+```
+
+```powershell
+cargo build --locked
+```
+
+```text
+@@OUT:u01_err_checksum@@
+```
+
+- **何が起きたか:** 「dotenvy 0.15.7 の checksum が、ロックファイルの間で変わりました」というエラーです。`checksum` は、crates.io から取ってきたクレートの中身から計算した**指紋**（SHA-256）です。本物の指紋は `1aaf95b3…` で始まるのに、`Cargo.lock` には `0aaf95b3…` と書いてあったので、cargo は「同じ物か確かめられない」と止まりました。
+- その下の3つの点は、考えられる原因です。ロックファイルが壊れている、ミラー（代わりの取得先）が違う中身を返した、取得先そのものが壊れている、のどれかです。
+- **これはエラーで正しい:** 途中で中身をすり替えられたクレートを、気づかずにビルドしてしまう事故を防いでいます。`Cargo.lock` を Git で共有すると、この指紋も全員で共有されます。
+- **直し方:** `Cargo.lock` は手で書き換えるファイルではありません（先頭に `It is not intended for manual editing.` と書いてあります）。教材のフォルダから `Cargo.lock` をコピーし直します。
+
+#### エラー5: 誰も macros を有効にしていない（E0433・E0752）
+
+例1-6で、RustNote では `"macros"` を消してもビルドが通ることを見ました。では、ほかのクレートが助けてくれない場合はどうなるでしょう。tokio だけを使う小さなプロジェクト（`feat_demo`）で試します。
+
+```toml
+@@FILE:snippets/feat_demo_wrong.toml@@
+```
+
+```rust
+@@FILE:feat_demo/src/main.rs@@
+```
+
+```powershell
+cargo build
+```
+
+```text
+@@OUT:u01_err_nomacros@@
+```
+
+- **何が起きたか:** 1つ目の `error[E0433]: cannot find main in tokio` は、「tokio の中に `main` が見つかりません」です。`#[tokio::main]` は、`macros` の機能を有効にしたときだけ tokio の中に現れるので、機能が無いと「無い物を使った」エラーになります。
+- 2つ目の `error[E0752]: main function is not allowed to be async` は、「`main` 関数を `async` にはできません」です。本当は `#[tokio::main]` が `async fn main` を普通の `fn main` に書き換えてくれるはずでしたが、1つ目のエラーでそれが働かなかったので、続けてこのエラーが出ました。**最初のエラーから直す**と、2つ目は一緒に消えます。
+- **直し方:** `Cargo.toml` の features に `"macros"` を足します。
+
+```toml
+@@FILE:feat_demo/Cargo.toml@@
+```
+
+```powershell
+cargo run -q
+```
+
+```text
+@@OUT:u01_fixed_macros@@
+```
+
+### RustNote ではここで使う
+
+この単元のファイルは、RustNote のほかのファイルから、次のように使われています。
+
+| 使う場所 | 書いてあること | つながるファイル |
+|---|---|---|
+| `Dockerfile` | `FROM rust:1.99.0-bookworm AS builder` | `rust-toolchain.toml` と同じ 1.99.0 |
+| `Dockerfile` | `RUN cargo install topcoat-cli --version 0.10.0 --locked` | `Cargo.toml` の topcoat と同じ 0.10.0 |
+| `Dockerfile` | `RUN cargo build --release --locked` | `Cargo.lock`（`--locked`） |
+| `ci.yml` | `toolchain: 1.99.0` と `components: rustfmt, clippy` | `rust-toolchain.toml` |
+| `ci.yml` | `cargo clippy --all-targets --locked -- -D warnings`・`cargo test --locked` | `Cargo.lock` |
+| `.dockerignore` | `target/`・`*.db`・`.env` を送らない | `.gitignore` と同じ考え方 |
+| `src/main.rs` | `dotenvy::dotenv().ok();` | `.env.example` をコピーした `.env` |
+
+- Rust の版（1.99.0）は、`rust-toolchain.toml`・`Dockerfile`・`ci.yml` の3か所に書いてあります。版を上げるときは、この3か所を**一緒に**変えます。1か所だけ変えると、「自分の PC では通るのに、CI では通らない」という食い違いが起きます。
+- topcoat の版（0.10.0）も、`Cargo.toml` のクレートと、`Dockerfile` の CLI の2か所です。クレートと CLI は同じ Topcoat の一部なので、版を上げるときは両方を一緒に上げます。
+
+### 練習問題
+
+**問1:** `tempfile` は `[dev-dependencies]` に書いてあります。もし `src/lib.rs` の中で `tempfile::tempdir()` を使う関数を書いたら、どうなるでしょうか。予想してから、練習用のコピーで確かめてください（確かめたら元に戻します）。また、なぜ `tempfile` を `[dependencies]` ではなく `[dev-dependencies]` に書くのかを答えてください。
+
+**問2:** ARM64 版の Windows で RustNote をビルドするには、LLVM（clang）が必要でした（第9巻の巻頭）。これは、暗号のクレート `ring` を C のコンパイラでビルドするためです。では、RustNote の `Cargo.toml` には `ring` が無いのに、なぜ `ring` がビルドされるのでしょうか。`cargo tree` で、`ring` を使っているクレートをたどってください。
+
+**問3:** 練習用のコピーで `git init` し、`.env.example` を `.env` にコピーし、`rustnote.db` という名前の空でないファイルを作ります。そのうえで、次の2つを確かめてください。
+
+1. `git check-ignore -v` で、`.env`・`rustnote.db`・`rustnote.db-wal`・`target/debug/rustnote.exe`・`.env.example`・`Cargo.lock` のうち、どれが Git から外されるか。外されるものは、`.gitignore` の何行目の決まりによるか。
+2. `git status --short` に、`.env` と `rustnote.db` が出てこないこと。
+
+### 解答と解説
+
+**問1の解答:**
+
+予想: コンパイルエラーになる。`[dev-dependencies]` のクレートは、ライブラリの本体（`src/`）からは見えないからです。`src/lib.rs` の最後に、次の関数を足して確かめます。
+
+```rust
+@@FILE:snippets/q1_snippet.rs@@
+```
+
+```powershell
+cargo build --locked
+```
+
+```text
+@@OUT:u01_q1_devdep@@
+```
+
+- `cannot find module or crate tempfile in this scope`（この場所では `tempfile` というモジュールもクレートも見つかりません）と、使った2か所でエラーになりました。`help:` は「`cargo add tempfile` で `Cargo.toml` に足してください」と案内していますが、テストのための道具を本体の依存にするのは、正しい直し方ではありません。
+- `[dev-dependencies]` に書くのは、本番の実行ファイルに**入れる必要が無い**からです。入れないぶん、本番のビルドが速くなり、できあがる実行ファイルも小さくなり、本番で動くコードが使うクレートの数（気をつけて見ておくべき範囲）も減ります。
+- 確かめたら、足した関数を消して、`src/lib.rs` を元に戻します。
+
+**問2の解答:**
+
+```powershell
+cargo tree --locked -i ring --edges normal
+```
+
+```text
+@@OUT:u01_tree_ring@@
+```
+
+- 下から読むと、`rustnote → libsql → hyper-rustls → rustls → ring` とつながっています。libsql が Turso（ネットの向こうの DB）と暗号化して通信するために rustls（TLS という暗号化の仕組みを Rust で書いたクレート）を使い、rustls が暗号の計算に ring を使っているのです。
+- `(*)` は、「この先は、上ですでに表示した」という印です。同じつながりを何度も書かないように省いています。
+- RustNote の `Cargo.toml` に書いていないクレートでも、ビルドに必要な道具（ここでは clang）を求めることがあります。ビルドが止まったら、エラーに出てきたクレートの名前で `cargo tree -i` を調べると、「誰のために必要なのか」が分かります。
+
+**問3の解答:**
+
+```powershell
+git init
+Copy-Item .env.example .env
+Set-Content rustnote.db "x"
+git check-ignore -v .env rustnote.db rustnote.db-wal target/debug/rustnote.exe .env.example Cargo.lock
+```
+
+```text
+@@OUT:u01_q3_checkignore@@
+```
+
+```powershell
+git status --short
+```
+
+```text
+@@OUT:u01_q3_status@@
+```
+
+1. 外されるのは `.env`（11 行目の `.env`）、`rustnote.db`（5 行目の `*.db`）、`rustnote.db-wal`（7 行目の `*.db-wal`）、`target/debug/rustnote.exe`（2 行目の `/target/`）の4つです。`-v`（verbose）を付けると、「どのファイルの何行目の、どの決まりに当たったか」が、`.gitignore:11:.env` の形で表示されます。`.env.example` と `Cargo.lock` は表示されません。外されない（Git で共有する）からです。
+2. `git status --short` の `??`（まだ Git に入れていないファイル）の一覧に、`.env` と `rustnote.db` はありません。フォルダの中には確かにあるのに、Git からは見えていないのです。`.gitignore` の決まりの、いちばんの目的は、この「うっかり共有しない」ことです。
+
+- `git check-ignore` は、ファイルが本当にあるかどうかに関係なく、名前だけで調べます。`target/debug/rustnote.exe` は、このフォルダにはまだありません（ビルドの成果物は別の場所に作っています）が、名前の決まりで判定されました。
+- `/target/` の先頭の `/` は、「`.gitignore` のあるフォルダの直下の `target` だけ」という意味です。`src/target/` のような、下のほうのフォルダの `target` は外しません。
+
+### まとめ
+
+- `Cargo.toml` は人が書く材料表、`Cargo.lock` は cargo が書くレシート（全クレートの版と指紋）。RustNote は直接使うクレートを `=` で固定し、`Cargo.lock` を Git で共有して、`--locked` で書き換えを止める。
+- Rust の版は、`rust-version`（最低の版）と `rust-toolchain.toml`（このフォルダで使う版）で決め、`Dockerfile` と `ci.yml` にも同じ版を書く。features は依存のつながり全体で足し算されるので、自分が使う機能は自分の `Cargo.toml` に書く。
+- 秘密の値と DB と成果物は `.gitignore` で共有から外し、環境変数は `.env.example` という見本だけを共有する。

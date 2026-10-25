@@ -1,0 +1,6 @@
+    Updating crates.io index
+     Locking 1 package to highest Rust 1.98 compatible version
+    Updating tokio v1.53.3 -> v1.54.1
+note: pass `--verbose` to see 25 unchanged dependencies behind latest
+warning: not updating lockfile due to dry run
+exit=0

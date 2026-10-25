@@ -1,0 +1,10 @@
+error: failed to select a version for `tokio`.
+    ... required by package `rustnote v0.1.0 (...\rustnote)`
+versions that meet the requirements `=1.53.3` (locked to 1.53.3) are: 1.53.3
+
+package `rustnote` depends on `tokio` with feature `macro` but `tokio` does not have that feature.
+help: there is a feature `macros` with a similar name
+
+
+failed to select a version for `tokio` which could resolve this conflict
+exit=101

@@ -1,0 +1,76 @@
+   Compiling fastrand v2.5.0
+   Compiling tempfile v3.27.0
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 9.82s
+     Running unittests src\lib.rs (target\debug\deps\rustnote-5cafc6c87c537344.exe)
+
+running 19 tests
+test config::tests::local_sqld_over_http_needs_no_token ... ok
+test config::tests::local_file_needs_no_token ... ok
+test config::tests::turso_url_needs_a_token ... ok
+test config::tests::debug_output_hides_the_token ... ok
+test domain::tests::email_is_normalized ... ok
+test domain::tests::email_rejects_bad_forms ... ok
+test domain::tests::note_query_defaults_and_offset ... ok
+test domain::tests::note_title_counts_characters_not_bytes ... ok
+test domain::tests::note_body_normalizes_newlines_and_limits_length ... ok
+test domain::tests::new_note_collects_all_errors ... ok
+test domain::tests::note_id_parses_only_positive_numbers ... ok
+test domain::tests::note_page_counts_pages ... ok
+test domain::tests::note_title_is_trimmed ... ok
+test domain::tests::note_title_rejects_empty_and_spaces ... ok
+test domain::tests::password_length_is_checked_and_hidden_in_debug ... ok
+test error::tests::repo_errors_map_to_app_errors ... ok
+test error::tests::status_codes_and_public_messages ... ok
+test flash::tests::codes_round_trip ... ok
+test repository::notes::tests::like_special_characters_are_escaped ... ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src\main.rs (target\debug\deps\rustnote-f46d7aa1268a13dc.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\http.rs (target\debug\deps\http-9c37f549b35c0170.exe)
+
+running 14 tests
+test health_returns_ok_json ... ok
+test notes_require_login ... ok
+test top_page_shows_links_when_logged_out ... ok
+test flash_message_is_shown_once ... ok
+test cross_site_post_is_403 ... ok
+test create_note_follows_prg_and_escapes_html ... ok
+test invalid_ids_and_unknown_urls_are_404 ... ok
+test empty_title_is_400 ... ok
+test edit_with_stale_version_is_409 ... ok
+test toggle_and_delete_redirect ... ok
+test list_searches_and_paginates ... ok
+test signup_validates_input_and_rejects_duplicates ... ok
+test other_users_notes_are_404 ... ok
+test login_and_logout ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.23s
+
+     Running tests\repository.rs (target\debug\deps\repository-411ae9b50fa8c3de.exe)
+
+running 8 tests
+test migrations_are_applied_only_once ... ok
+test duplicate_email_is_a_unique_violation ... ok
+test deleting_a_session_logs_out ... ok
+test update_uses_optimistic_locking ... ok
+test sessions_expire ... ok
+test notes_are_isolated_per_owner ... ok
+test toggle_and_delete ... ok
+test search_filters_by_keyword_and_paginates ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.18s
+
+   Doc-tests rustnote
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+exit=0

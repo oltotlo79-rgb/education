@@ -1,0 +1,570 @@
+0tokio v1.53.3
+1async-compression v0.4.50
+2async-compression feature "brotli"
+3tower-http feature "compression-br"
+4topcoat-router v0.10.0
+5topcoat-router feature "compression"
+6topcoat feature "compression"
+7topcoat feature "default"
+8rustnote v0.1.0 (...\rustnote)
+9rustnote feature "default" (command-line)
+5topcoat-router feature "default"
+6topcoat v0.10.0
+7topcoat feature "asset"
+8topcoat feature "default" (*)
+7topcoat feature "compression" (*)
+7topcoat feature "cookie"
+8topcoat feature "default" (*)
+7topcoat feature "default" (*)
+7topcoat feature "discover"
+8topcoat feature "default" (*)
+7topcoat feature "font"
+8topcoat feature "default" (*)
+7topcoat feature "icon"
+8topcoat feature "default" (*)
+7topcoat feature "router"
+8topcoat feature "compression" (*)
+8topcoat feature "default" (*)
+8topcoat feature "serve"
+9topcoat feature "default" (*)
+7topcoat feature "runtime"
+8topcoat feature "default" (*)
+7topcoat feature "serve" (*)
+7topcoat feature "session"
+8topcoat feature "default" (*)
+7topcoat feature "topcoat-router"
+8topcoat feature "compression" (*)
+8topcoat feature "serve" (*)
+7topcoat feature "view"
+8topcoat feature "default" (*)
+8topcoat feature "icon" (*)
+8topcoat feature "router" (*)
+6topcoat-asset v0.10.0
+7topcoat-asset feature "default"
+8topcoat v0.10.0 (*)
+8topcoat-font v0.10.0
+9topcoat-font feature "asset"
+10topcoat feature "asset" (*)
+9topcoat-font feature "default"
+10topcoat v0.10.0 (*)
+9topcoat-font feature "discover"
+10topcoat feature "discover" (*)
+9topcoat-font feature "router"
+10topcoat feature "router" (*)
+9topcoat-font feature "view"
+10topcoat feature "view" (*)
+8topcoat-runtime v0.10.0
+9topcoat-runtime feature "default"
+10topcoat v0.10.0 (*)
+9topcoat-runtime feature "router"
+10topcoat feature "router" (*)
+7topcoat-asset feature "router"
+8topcoat feature "router" (*)
+8topcoat-asset feature "serve"
+9topcoat feature "serve" (*)
+7topcoat-asset feature "serve" (*)
+7topcoat-asset feature "view"
+8topcoat feature "view" (*)
+8topcoat-asset feature "router" (*)
+8topcoat-font feature "view" (*)
+6topcoat-cookie v0.10.0
+7topcoat-cookie feature "default"
+8topcoat v0.10.0 (*)
+8topcoat-session v0.10.0
+9topcoat-session feature "cookie"
+10topcoat feature "cookie" (*)
+9topcoat-session feature "default"
+10topcoat v0.10.0 (*)
+9topcoat-session feature "router"
+10topcoat feature "router" (*)
+7topcoat-cookie feature "router"
+8topcoat feature "router" (*)
+6topcoat-font v0.10.0 (*)
+6topcoat-runtime v0.10.0 (*)
+6topcoat-session v0.10.0 (*)
+5topcoat-router feature "discover"
+6topcoat feature "discover" (*)
+5topcoat-router feature "serve"
+6topcoat feature "serve" (*)
+6topcoat-router feature "websocket"
+7topcoat-runtime v0.10.0 (*)
+5topcoat-router feature "tokio"
+6topcoat-router feature "serve" (*)
+5topcoat-router feature "websocket" (*)
+2async-compression feature "default"
+3tower-http v0.7.1
+4tower-http feature "compression-br" (*)
+4tower-http feature "compression-gzip"
+5topcoat-router v0.10.0 (*)
+4tower-http feature "default"
+5topcoat-router v0.10.0 (*)
+4tower-http feature "futures-core"
+5tower-http feature "compression-br" (*)
+5tower-http feature "compression-gzip" (*)
+4tower-http feature "tokio-util"
+5tower-http feature "compression-br" (*)
+5tower-http feature "compression-gzip" (*)
+2async-compression feature "gzip"
+3tower-http feature "compression-gzip" (*)
+2async-compression feature "tokio"
+3tower-http v0.7.1 (*)
+1hyper-util v0.1.21
+2hyper-util feature "default"
+3topcoat-router v0.10.0 (*)
+2hyper-util feature "http1"
+3hyper-util feature "server-auto"
+4topcoat-router v0.10.0 (*)
+2hyper-util feature "http2"
+3hyper-util feature "server-auto" (*)
+2hyper-util feature "server"
+3hyper-util feature "server-auto" (*)
+2hyper-util feature "server-auto" (*)
+2hyper-util feature "tokio"
+3topcoat-router v0.10.0 (*)
+3hyper-util feature "tokio" (*)
+1tower-http v0.7.1 (*)
+1tokio feature "bytes"
+2tokio feature "io-util"
+3h2 v0.3.27
+4h2 feature "default"
+5hyper v0.14.32
+6hyper feature "client"
+7hyper-rustls v0.25.0
+8hyper-rustls feature "acceptor"
+9hyper-rustls feature "default"
+10libsql v0.10.0
+11libsql feature "core"
+12libsql feature "default"
+13rustnote v0.1.0 (...\rustnote) (*)
+12libsql feature "replication"
+13libsql feature "default" (*)
+13libsql feature "sync"
+14libsql feature "default" (*)
+12libsql feature "sync" (*)
+11libsql feature "default" (*)
+11libsql feature "hrana"
+12libsql feature "remote"
+13libsql feature "default" (*)
+13libsql feature "sync" (*)
+11libsql feature "libsql-sys"
+12libsql feature "core" (*)
+11libsql feature "parser"
+12libsql feature "hrana" (*)
+12libsql feature "replication" (*)
+12libsql feature "sync" (*)
+11libsql feature "remote" (*)
+11libsql feature "replication" (*)
+11libsql feature "serde"
+12libsql feature "hrana" (*)
+12libsql feature "replication" (*)
+12libsql feature "sync" (*)
+11libsql feature "stream"
+12libsql feature "hrana" (*)
+12libsql feature "replication" (*)
+12libsql feature "sync" (*)
+11libsql feature "sync" (*)
+11libsql feature "tls"
+12libsql feature "default" (*)
+11libsql feature "tokio"
+12libsql feature "sync" (*)
+8hyper-rustls feature "default" (*)
+8hyper-rustls feature "http1"
+9hyper-rustls feature "default" (*)
+8hyper-rustls feature "log"
+9hyper-rustls feature "logging"
+10hyper-rustls feature "default" (*)
+8hyper-rustls feature "logging" (*)
+8hyper-rustls feature "native-tokio"
+9hyper-rustls feature "default" (*)
+8hyper-rustls feature "ring"
+9hyper-rustls feature "acceptor" (*)
+9hyper-rustls feature "default" (*)
+8hyper-rustls feature "rustls-native-certs"
+9hyper-rustls feature "native-tokio" (*)
+8hyper-rustls feature "tls12"
+9hyper-rustls feature "default" (*)
+8hyper-rustls feature "tokio-runtime"
+9hyper-rustls feature "acceptor" (*)
+9hyper-rustls feature "native-tokio" (*)
+8hyper-rustls feature "webpki-roots"
+9libsql v0.10.0 (*)
+7hyper-timeout v0.4.1
+8hyper-timeout feature "default"
+9tonic v0.11.0
+10tonic-web v0.11.0
+11tonic-web feature "default"
+12libsql v0.10.0 (*)
+10tonic feature "channel"
+11tonic feature "transport"
+12tonic feature "default"
+13libsql v0.10.0 (*)
+10tonic feature "codegen"
+11libsql_replication v0.10.0
+12libsql_replication feature "default"
+13libsql v0.10.0 (*)
+11tonic feature "default" (*)
+10tonic feature "default" (*)
+10tonic feature "prost"
+11libsql_replication v0.10.0 (*)
+11tonic feature "default" (*)
+10tonic feature "transport" (*)
+7libsql v0.10.0 (*)
+7hyper feature "full"
+8tonic v0.11.0 (*)
+6hyper feature "default"
+7axum v0.6.20
+8tonic v0.11.0 (*)
+7hyper-timeout v0.4.1 (*)
+7libsql v0.10.0 (*)
+7tonic v0.11.0 (*)
+6hyper feature "full" (*)
+6hyper feature "h2"
+7hyper feature "http2"
+8libsql v0.10.0 (*)
+8hyper feature "full" (*)
+6hyper feature "http1"
+7libsql v0.10.0 (*)
+7hyper feature "full" (*)
+7hyper-rustls feature "http1" (*)
+6hyper feature "http2" (*)
+6hyper feature "runtime"
+7libsql v0.10.0 (*)
+7hyper feature "full" (*)
+7hyper-rustls feature "tokio-runtime" (*)
+6hyper feature "server"
+7hyper feature "full" (*)
+7hyper-rustls feature "acceptor" (*)
+6hyper feature "socket2"
+7hyper feature "tcp"
+8hyper feature "runtime" (*)
+6hyper feature "stream"
+7axum v0.6.20 (*)
+7libsql v0.10.0 (*)
+7tonic-web v0.11.0 (*)
+7hyper feature "full" (*)
+6hyper feature "tcp" (*)
+5tonic v0.11.0 (*)
+3h2 v0.4.20
+4h2 feature "default"
+5hyper v1.12.0
+6hyper feature "default"
+7hyper-util v0.1.21 (*)
+7topcoat-router v0.10.0 (*)
+6hyper feature "http1"
+7topcoat-router v0.10.0 (*)
+7hyper-util feature "http1" (*)
+6hyper feature "http2"
+7topcoat-router v0.10.0 (*)
+7hyper-util feature "http2" (*)
+6hyper feature "server"
+7topcoat-router v0.10.0 (*)
+7hyper-util feature "server" (*)
+3tokio-tungstenite v0.29.0
+4tokio-tungstenite feature "connect"
+5topcoat v0.10.0 (*)
+4tokio-tungstenite feature "handshake"
+5topcoat-router v0.10.0 (*)
+5tokio-tungstenite feature "connect" (*)
+4tokio-tungstenite feature "stream"
+5tokio-tungstenite feature "connect" (*)
+3tokio feature "full"
+4libsql_replication v0.10.0 (*)
+3tokio-util feature "io-util"
+4libsql v0.10.0 (*)
+2tokio feature "process"
+3tokio feature "full" (*)
+1tokio feature "default"
+2h2 v0.3.27 (*)
+2h2 v0.4.20 (*)
+2hyper v0.14.32 (*)
+2hyper v1.12.0 (*)
+2hyper-rustls v0.25.0 (*)
+2hyper-timeout v0.4.1 (*)
+2libsql v0.10.0 (*)
+2libsql_replication v0.10.0 (*)
+2rustnote v0.1.0 (...\rustnote) (*)
+2tokio-io-timeout v1.2.1
+3tokio-io-timeout feature "default"
+4hyper-timeout v0.4.1 (*)
+2tokio-rustls v0.25.0
+3hyper-rustls v0.25.0 (*)
+3tokio-rustls feature "logging"
+4hyper-rustls feature "logging" (*)
+3tokio-rustls feature "tls12"
+4hyper-rustls feature "tls12" (*)
+2tokio-stream v0.1.19
+3tokio-stream feature "default"
+4libsql v0.10.0 (*)
+4libsql_replication v0.10.0 (*)
+4tonic v0.11.0 (*)
+4tonic-web v0.11.0 (*)
+3tokio-stream feature "time"
+4tokio-stream feature "default" (*)
+2tokio-util v0.7.20
+3tower v0.4.13
+4tower feature "__common"
+5tower feature "buffer"
+6tonic v0.11.0 (*)
+5tower feature "discover"
+6tonic v0.11.0 (*)
+6tower feature "balance"
+7tonic v0.11.0 (*)
+5tower feature "limit"
+6tonic v0.11.0 (*)
+5tower feature "load"
+6tonic v0.11.0 (*)
+6tower feature "balance" (*)
+5tower feature "util"
+6axum v0.6.20 (*)
+6libsql v0.10.0 (*)
+6tonic v0.11.0 (*)
+4tower feature "balance" (*)
+4tower feature "buffer" (*)
+4tower feature "default"
+5libsql v0.10.0 (*)
+5tower-http v0.4.4
+6tower-http feature "cors"
+7tonic-web v0.11.0 (*)
+6tower-http feature "default"
+7libsql v0.10.0 (*)
+7tonic-web v0.11.0 (*)
+6tower-http feature "set-header"
+7libsql v0.10.0 (*)
+6tower-http feature "tower"
+7tower-http feature "util"
+8libsql v0.10.0 (*)
+6tower-http feature "trace"
+7libsql v0.10.0 (*)
+6tower-http feature "tracing"
+7tower-http feature "trace" (*)
+6tower-http feature "util" (*)
+4tower feature "discover" (*)
+4tower feature "futures-core"
+5tower feature "__common" (*)
+5tower feature "ready-cache"
+6tower feature "balance" (*)
+4tower feature "futures-util"
+5tower feature "make"
+6tonic v0.11.0 (*)
+6tower feature "balance" (*)
+5tower feature "ready-cache" (*)
+5tower feature "util" (*)
+4tower feature "indexmap"
+5tower feature "ready-cache" (*)
+4tower feature "limit" (*)
+4tower feature "load" (*)
+4tower feature "log"
+5tower feature "default" (*)
+4tower feature "make" (*)
+4tower feature "pin-project"
+5tower feature "util" (*)
+4tower feature "pin-project-lite"
+5tower feature "__common" (*)
+5tower feature "make" (*)
+5tower feature "ready-cache" (*)
+5tower feature "timeout"
+6tonic v0.11.0 (*)
+4tower feature "rand"
+5tower feature "balance" (*)
+4tower feature "ready-cache" (*)
+4tower feature "slab"
+5tower feature "balance" (*)
+4tower feature "timeout" (*)
+4tower feature "tokio"
+5tower feature "buffer" (*)
+5tower feature "limit" (*)
+5tower feature "load" (*)
+5tower feature "make" (*)
+5tower feature "ready-cache" (*)
+5tower feature "timeout" (*)
+4tower feature "tokio-util"
+5tower feature "buffer" (*)
+5tower feature "limit" (*)
+4tower feature "tracing"
+5tower feature "buffer" (*)
+5tower feature "limit" (*)
+5tower feature "load" (*)
+5tower feature "log" (*)
+5tower feature "ready-cache" (*)
+4tower feature "util" (*)
+3tokio-util feature "codec"
+4h2 v0.3.27 (*)
+4h2 v0.4.20 (*)
+4libsql v0.10.0 (*)
+3tokio-util feature "default"
+4h2 v0.3.27 (*)
+4h2 v0.4.20 (*)
+4libsql v0.10.0 (*)
+4libsql_replication v0.10.0 (*)
+3tokio-util feature "io"
+4h2 v0.3.27 (*)
+4h2 v0.4.20 (*)
+4tower-http v0.7.1 (*)
+4tokio-util feature "io-util" (*)
+3tokio-util feature "io-util" (*)
+3tokio-util feature "libc"
+4tokio-util feature "codec" (*)
+2tonic v0.11.0 (*)
+2topcoat v0.10.0 (*)
+2topcoat-asset v0.10.0 (*)
+2topcoat-core v0.10.0
+3topcoat-core feature "default"
+4topcoat v0.10.0 (*)
+4topcoat-asset v0.10.0
+5topcoat-asset feature "default"
+6topcoat-font v0.10.0
+7topcoat-font feature "asset"
+8topcoat-font-grammar feature "asset"
+9topcoat-font-macro feature "asset"
+10topcoat feature "asset" (*)
+7topcoat-font feature "default"
+8topcoat-font-grammar v0.10.0
+9topcoat-font-grammar feature "asset" (*)
+9topcoat-font-grammar feature "default"
+10topcoat-font-macro v0.10.0 (proc-macro)
+11topcoat-font-macro feature "asset" (*)
+11topcoat-font-macro feature "default"
+12topcoat v0.10.0 (*)
+6topcoat-runtime v0.10.0
+7topcoat-runtime feature "default"
+8topcoat-runtime-grammar v0.10.0
+9topcoat-runtime-grammar feature "default"
+10topcoat-runtime-macro v0.10.0 (proc-macro)
+11topcoat-runtime-macro feature "default"
+12topcoat v0.10.0 (*)
+11topcoat-runtime-macro feature "discover"
+12topcoat feature "discover" (*)
+9topcoat-runtime-grammar feature "discover"
+10topcoat-runtime-macro feature "discover" (*)
+4topcoat-asset v0.10.0 (*)
+4topcoat-cookie v0.10.0 (*)
+4topcoat-font v0.10.0 (*)
+4topcoat-font v0.10.0 (*)
+4topcoat-icon v0.10.0
+5topcoat-icon feature "default"
+6topcoat v0.10.0 (*)
+6topcoat-icon-grammar v0.10.0
+7topcoat-icon-grammar feature "default"
+8topcoat-icon-macro v0.10.0 (proc-macro)
+9topcoat-icon-macro feature "default"
+10topcoat v0.10.0 (*)
+4topcoat-router v0.10.0
+5topcoat-router feature "default"
+6topcoat-runtime-grammar v0.10.0 (*)
+4topcoat-router v0.10.0 (*)
+4topcoat-runtime v0.10.0 (*)
+4topcoat-runtime v0.10.0 (*)
+4topcoat-session v0.10.0 (*)
+4topcoat-view v0.10.0
+5topcoat-view feature "default"
+6topcoat v0.10.0 (*)
+6topcoat-asset v0.10.0 (*)
+6topcoat-font v0.10.0 (*)
+6topcoat-icon v0.10.0 (*)
+6topcoat-router v0.10.0 (*)
+6topcoat-router v0.10.0 (*)
+6topcoat-runtime v0.10.0 (*)
+6topcoat-runtime v0.10.0 (*)
+6topcoat-view-grammar v0.10.0
+7topcoat-view-grammar feature "default"
+8topcoat-view-macro v0.10.0 (proc-macro)
+9topcoat-view-macro feature "default"
+10topcoat v0.10.0 (*)
+10topcoat-font v0.10.0 (*)
+10topcoat-icon v0.10.0 (*)
+10topcoat-runtime v0.10.0 (*)
+10topcoat-runtime v0.10.0 (*)
+5topcoat-view feature "http"
+6topcoat-router v0.10.0 (*)
+6topcoat-router v0.10.0 (*)
+2topcoat-router v0.10.0 (*)
+2topcoat-runtime v0.10.0 (*)
+2topcoat-session v0.10.0 (*)
+2tower v0.4.13 (*)
+1tokio feature "fs"
+2topcoat-asset v0.10.0 (*)
+2libsql feature "sync" (*)
+2tokio feature "full" (*)
+1tokio feature "full" (*)
+1tokio feature "io-std"
+2tokio feature "full" (*)
+2tower feature "make" (*)
+1tokio feature "io-util" (*)
+1tokio feature "libc"
+2tokio feature "net"
+3topcoat v0.10.0 (*)
+3hyper feature "tcp" (*)
+3tokio feature "full" (*)
+3tonic feature "transport" (*)
+3tokio-tungstenite feature "connect" (*)
+3topcoat-router feature "serve" (*)
+2tokio feature "process" (*)
+2tokio feature "signal"
+3topcoat v0.10.0 (*)
+3tokio feature "full" (*)
+1tokio feature "macros"
+2rustnote v0.1.0 (...\rustnote) (*)
+2topcoat v0.10.0 (*)
+2tokio feature "full" (*)
+2topcoat-router feature "serve" (*)
+1tokio feature "mio"
+2tokio feature "net" (*)
+2tokio feature "process" (*)
+2tokio feature "signal" (*)
+1tokio feature "net" (*)
+1tokio feature "parking_lot"
+2tokio feature "full" (*)
+1tokio feature "process" (*)
+1tokio feature "rt"
+2topcoat-asset v0.10.0 (*)
+2topcoat-runtime v0.10.0 (*)
+2hyper feature "runtime" (*)
+2hyper feature "tcp" (*)
+2tokio feature "full" (*)
+2tokio feature "rt-multi-thread"
+3rustnote v0.1.0 (...\rustnote) (*)
+3tokio feature "full" (*)
+2tokio-util feature "io-util" (*)
+2tower feature "buffer" (*)
+2topcoat-router feature "serve" (*)
+2hyper-util feature "tokio" (*)
+1tokio feature "rt-multi-thread" (*)
+1tokio feature "signal" (*)
+1tokio feature "signal-hook-registry"
+2tokio feature "process" (*)
+2tokio feature "signal" (*)
+1tokio feature "socket2"
+2tokio feature "net" (*)
+1tokio feature "sync"
+2hyper v0.14.32 (*)
+2hyper v1.12.0 (*)
+2libsql v0.10.0 (*)
+2tokio-stream v0.1.19 (*)
+2tokio-util v0.7.20 (*)
+2topcoat-core v0.10.0 (*)
+2topcoat-runtime v0.10.0 (*)
+2topcoat-session v0.10.0 (*)
+2tower v0.4.13 (*)
+2tokio feature "full" (*)
+2tower feature "buffer" (*)
+2tower feature "limit" (*)
+2tower feature "ready-cache" (*)
+2topcoat-router feature "serve" (*)
+1tokio feature "time"
+2tokio-io-timeout v1.2.1 (*)
+2hyper feature "runtime" (*)
+2hyper feature "tcp" (*)
+2tokio feature "full" (*)
+2tokio-stream feature "time" (*)
+2tonic feature "transport" (*)
+2tower feature "limit" (*)
+2tower feature "load" (*)
+2tower feature "timeout" (*)
+2topcoat-router feature "serve" (*)
+2hyper-util feature "tokio" (*)
+1tokio feature "tokio-macros"
+2tokio feature "macros" (*)
+1tokio feature "windows-sys"
+2tokio feature "net" (*)
+2tokio feature "process" (*)
+2tokio feature "signal" (*)

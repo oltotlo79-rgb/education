@@ -1,0 +1,13 @@
+rustnote v0.1.0 (...\rustnote)
+├── anyhow v1.0.104
+├── argon2 v0.6.0
+├── async-trait v0.1.92 (proc-macro)
+├── dotenvy v0.15.7
+├── libsql v0.10.0
+├── serde v1.0.229
+├── thiserror v2.0.21
+├── tokio v1.53.3
+└── topcoat v0.10.0
+[dev-dependencies]
+└── tempfile v3.27.0
+exit=0

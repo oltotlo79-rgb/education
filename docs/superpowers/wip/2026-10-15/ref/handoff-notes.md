@@ -1,5 +1,15 @@
 # 中断時点の引き継ぎメモ
 
+## 2026-10-26: Rust 13 巻（完全コード）を巻頭と UNIT 01 まで main に反映（cc5094c）
+
+「完成から最も遠いファイル」として、未着手だった第13巻に着手。統括が1人で執筆（サブエージェントなし）。本文 1,107 行・図6枚・30 ページ。旧 PDF（`Rust/13_….pdf`）は残してある。
+
+- 構成（旧 PDF の学習地図を、今の RustNote の 42 ファイルに割り当て直した）: 01 設定ファイル（Cargo.toml・Cargo.lock・rust-toolchain.toml・rustfmt.toml・.gitignore・.env.example）/ 02 migrations・db.rs / 03 config・main・lib / 04 domain・error / 05 repository / 06 auth・flash・state / 07 routes.rs・views・signup・login・logout・health / 08 notes の CRUD / 09 style.css / 10 tests・Dockerfile・.dockerignore・fly.toml・ci.yml・README。巻末に総合演習・解答・全巻の用語集・索引（準備中）。
+- 下書き: `rust13/parts/`（intro・unit01.src.md・unit01.md・outro）。`unit01.src.md` の目印（`@@FILE:`・`@@OUT:`・`@@OUTHEAD:名前:N@@`・`@@OUTTAIL:`・`@@OUTGREP:名前:正規表現@@`・`@@LOCK:パッケージ名@@`）を `rust13/fill.py unit01` で埋め、`assemble.py`（`range(1, 2)`）で連結。実出力は `rust13/out/`（`cap.sh` で取得・`mask13.py` で伏せ字）。練習用コピーはスクラッチの `rust13/rustnote/`（Git 管理ファイルだけをコピー。全ファイルが本物と同一を確認）、ビルド先は `rust13/target`。
+- 確かめた事実: `cargo build --locked` で Compiling は 289 個、Cargo.lock の `[[package]]` は 361 個。テストは 41 件（unit 19・http 14・repository 8）。`cargo update -p tokio --dry-run` は `=1.53.3` だと 0 個、`1.53.3` だと `tokio v1.53.3 -> v1.54.1`（MSRV 1.98 を考慮、26 個が latest より古いまま）。**tokio の features は依存全体で足し算され、libsql_replication が `full`、topcoat が `macros`・`net`・`signal` を有効にするので、RustNote の Cargo.toml から `macros` を消してもビルドが通る**（単体の feat_demo では E0433「cannot find `main` in `tokio`」と E0752）。thiserror は 1.0.69（libsql）と 2.0.21（RustNote）が共存。ring ← rustls ← hyper-rustls ← libsql。`cargo +stable check` は `rustc 1.97.1 is not supported ... requires rustc 1.98` が 35 行。feature の打ち間違いは `help: there is a feature macros with a similar name`。checksum を1文字変えると `checksum for dotenvy v0.15.7 changed between lock files`。
+- **他巻との食い違い（要修正候補）**: 第9巻の巻頭の版の表「tokio 1.53.3（`rt-multi-thread` と `macros` の機能だけ）」は、RustNote の Cargo.toml が指定する機能のことで、実際に有効な機能はもっと多い。「Cargo.toml で指定している機能は…」と言い直すとよい。
+- 作業中の出来事: `cargo +1.97.1 check` を実行したら、rustup が `1.97.1-aarch64-pc-windows-msvc` を自動でインストールした（既定の stable も 1.97.1 だが、名前の違う別のツールチェーン扱い）。すぐ `rustup toolchain uninstall` で消し、`cargo +stable` で取り直した。ツールチェーンの一覧は元どおり（stable・1.90.0・1.99.0）。本文の注意書きにも反映した。
+
 ## 2026-10-25: Rust 09 巻に UNIT 04（プロジェクト構成と依存の向き）を追加して main に反映（7ddd583）
 
 統括が1人で執筆（サブエージェントなし）。本文 4,655 行・図14枚（UNIT 04 で5枚追加）・126 ページ。旧 PDF（`Rust/09_….pdf`）は残してある。

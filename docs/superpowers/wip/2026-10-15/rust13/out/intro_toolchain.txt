@@ -1,0 +1,2 @@
+1.99.0-aarch64-pc-windows-msvc (overridden by '...\rustnote\rust-toolchain.toml')
+exit=0

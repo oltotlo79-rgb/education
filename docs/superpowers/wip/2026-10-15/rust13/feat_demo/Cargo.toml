@@ -1,0 +1,8 @@
+[package]
+name = "feat_demo"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+# macros を足すと、#[tokio::main] が使える
+tokio = { version = "=1.53.3", features = ["rt-multi-thread", "macros"] }
