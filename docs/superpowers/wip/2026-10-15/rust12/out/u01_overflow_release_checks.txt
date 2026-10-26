@@ -1,0 +1,6 @@
+count = 255
+
+thread 'main' (130896) panicked at examples\u01_overflow.rs:11:16:
+attempt to add with overflow
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+exit=101

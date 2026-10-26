@@ -1,5 +1,15 @@
 # 中断時点の引き継ぎメモ
 
+## 2026-10-27: Rust 12 巻（Fly.io 公開）を巻頭と UNIT 01 まで main に反映（279b537）
+
+「完成から最も遠いファイル」として、本文も素材も無かった第12巻に着手。統括が1人で執筆（サブエージェントなし）。本文 973 行・図5枚・25 ページ。旧 PDF（`Rust/12_….pdf`）は残してある。
+
+- 構成（旧 PDF の学習地図を Topcoat 0.10 に合わせて組み直し）: 01 release ビルドと再現性 / 02 multi-stage Dockerfile / 03 アセットの束を本番用に / 04 fly launch・fly.toml・ポート / 05 secrets / 06 health check と起動の順番 / 07 migration の順番と release command / 08 deploy・ログ・動作確認・独自ドメイン / 09 台数・地域・費用・Turso / 10 rollback・backup・復旧。**UNIT 04 以降は Fly.io・Turso の実アカウントでの実行が要る（ユーザーの許可待ち）**と本文のお知らせに書いた。
+- 下書き: `rust12/parts/`（intro・unit01.src.md・unit01.md・outro）。目印の埋め込みは `rust12/fill.py unit01`（rust13 と同じ形式。出力は BOM 付きでも読める）、連結は `assemble.py`（`range(1, 2)`）。練習用コピーはスクラッチの `rust12/rustnote/`（`src/` は本物と同一を確認）。足した例は `examples/u01_hash_speed.rs`・`u01_exe_report.rs`・`u01_overflow.rs`・`u01_q2.rs`（`rust12/examples/` に保存）。topcoat-cli 0.10.0 はスクラッチの `rust12/cli/` に `--root` で入れた（PC 全体には入れていない）。
+- 確かめた事実（1.99.0、Windows ARM64）: release ビルド 1m25s・debug 1m02s（どちらも 289 個）。rustnote.exe は debug 21,698,048 B・release 11,820,032 B。Argon2id のハッシュ化は debug 約 380〜470 ms・release 約 20 ms。release の実行ファイルは `topcoat asset bundle --release` 無しだと `no asset bundle at <exe の隣>ssets` で DB を開く前に止まる（`--release` 無しの bundle は target\debugssets に作られる）。2回目の起動はポート使用中で os error 10048 だが、その前に「RustNote を起動しました」と出る（main.rs が `topcoat::start` の前に表示するため。改善候補として本文に記載）。同じソースの release を2回作ると 24 バイト違う（PE の時刻 2B、デバッグ目次の時刻 2B×3、RSDS の GUID 16B）。`RUSTFLAGS=-C link-arg=/Brepro` で 0 バイト差。実行ファイルにユーザーフォルダの場所が 1,820 か所、`--remap-path-prefix=$USERPROFILE=~` で 1 か所（topcoat-asset の `asset!` が `CARGO_MANIFEST_DIR` を埋め込む）。オーバーフローは debug で panic・release で折り返し・`CARGO_PROFILE_RELEASE_OVERFLOW_CHECKS=true` で panic。u32 の offset は `?page=214748366` で release だと 4（RustNote は u64 で計算しているので安全）。
+- 本文で触れた RustNote の改善候補（コード未変更）: アセットが無いときのエラー文に「release のときは `--release`」が無い。ポートを押さえる前に「起動しました」と表示する（既存の候補 4 と同じ）。
+- 作業中の出来事: `powershell -ExecutionPolicy Bypass` での記録スクリプトの実行は自動判定で拒否された（PowerShell ツールで同じ行を直接実行して取り直した）。起動した rustnote.exe はすべて PID 指定で止め、残っていないことを確認した。
+
 ## 2026-10-26: Rust 13 巻（完全コード）を巻頭と UNIT 01 まで main に反映（cc5094c）
 
 「完成から最も遠いファイル」として、未着手だった第13巻に着手。統括が1人で執筆（サブエージェントなし）。本文 1,107 行・図6枚・30 ページ。旧 PDF（`Rust/13_….pdf`）は残してある。

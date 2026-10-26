@@ -1,0 +1,3 @@
+count = 255
+count + 1 = 0
+exit=0
