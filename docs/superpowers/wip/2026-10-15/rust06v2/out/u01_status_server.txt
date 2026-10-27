@@ -1,0 +1,10 @@
+http://127.0.0.1:3000 で待っています（Ctrl+C で終了）
+GET /
+GET /nothing
+GET /admin
+GET /old-page
+DELETE /
+HEAD /
+POST /messages
+POST /messages
+GET /messages

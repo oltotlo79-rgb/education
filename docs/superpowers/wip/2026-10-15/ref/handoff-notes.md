@@ -1,5 +1,15 @@
 # 中断時点の引き継ぎメモ
 
+## 2026-10-28: Rust 08・10・06 巻を巻頭と UNIT 01 まで main に反映（08: 05a1ae0、10: 92f3a6a、06: ddf8002）
+
+「完成から最も遠い3つ」として、本文が無かった4巻（06・08・10・11）のうち、素材の少ない 08・10 と、06 を選んだ（11 は UNIT 01 のテストまで素材があるので後回し）。統括が1人で執筆（サブエージェントなし）。どの巻も旧 PDF は残してある。素材は `rust08v2/`・`rust10v2/`・`rust06v2/` に保存（以前の `rust08/`・`rust10/`・`rust06/` は古い素材のまま残してある）。
+
+- 共通の道具: スクラッチの `maskx.py`（どの rustNN でも使える伏せ字。`target-shared` → `target`）と `capx.sh`（`VOL=rust08 capx.sh 名前 コマンド`）。08 と 10 は RustNote のコピーを別々に持ち、ビルド先 `target-shared` を共有した。各巻の `fill.py`・`assemble.py` は rust12 のものの書き換え。**bash の heredoc で Python や Rust を書くと `\\` が化けることがある**ので、バックスラッシュを含むファイルは Write ツールで書いた。
+- **Rust 08**（1,100 行・図4枚・31 ページ）: UNIT 01 = 認証・セッション・認可と脅威モデル。確かめた事実: 未ログインの /notes は 303 → /login、他人のノートは 404。クッキーは `__Host-session` の 46 文字・`HttpOnly; SameSite=Lax; Secure; Path=/; Max-Age=2592000`、`sessions.token_hash` は 32 バイトでトークンそのものは 0 件。Origin `https://evil.example` や `Sec-Fetch-Site: cross-site` の POST は 403・本文 `forbidden`・アクセスログに出ない（OriginPolicy が層より前で動く）、ヘッダーが無い POST と同じ Origin は通る。`notes.find(NoteId)` は E0308（UserId の場所に NoteId）＋E0061。持ち主の条件の無い SQL で bob に alice のノートが見える。10 回まちがえても 10 回とも 401・11 回目に成功（回数の制限が無いことを脅威モデルの表に「守りが無い」と明記）。ログアウトで sessions の行が 1→0、`Max-Age=0` と1年前の Expires。
+- **Rust 10**（978 行・図4枚・26 ページ）: UNIT 01 = 一覧・空のとき・持ち主の条件。確かめた事実: 0 件で「まだノートがありません。最初の1件を書いてみましょう。」、同じ秒の3件は 3,2,1（`updated_at DESC, id DESC`）、3件目を1日前にすると 2,1,3、bob は空で「1 / 1 ページ（全0件）」、タイトルの `<b>…</b> & <script>` はエスケープされる。**`ORDER BY updated_at DESC` だけでも、今の SQLite は同点を id の大きい順に返した**（索引を足しても同じ）。本文では「試して同じでも、SQL の決まりでは保証されないので id を足す」と正直に書いた。`for note in page.notes`（clone を外す）で E0382、help どおり `&page.notes` にすると E0507×2＋E0505（view! が値を受け取るため）。完了の切り替えで updated_at が今になり上に移る。件数の SQL にだけ持ち主の条件を忘れると bob に「全3件」。
+- **Rust 06**（949 行・図4枚・25 ページ）: ファイル名を設計書どおり `06_Web基礎_HTTPとTopcoat_0_10完全ガイド.md` にした（旧 PDF は `…_0_5完全ガイド.pdf` のまま残す）。UNIT 01 = HTTP の要求・応答・状態コード。外のクレートなしの `http_lab`（`u01_raw`・`u01_status`・`u01_len_bug`・`u01_q1`）を 1.99.0 で作り直した。curl は Windows の `curl.exe` 8.21.0。Content-Length に文字数（12）を入れると本文が「こんにち」で切れる。止めたあとの接続は `curl: (7) Failed to connect … after 2029 ms`。`POST /health` は `_` に落ちて 404（本当は 405＋Allow が正しい、と解答で説明）。PowerShell 5.1 の文字化けには `[Console]::OutputEncoding = [System.Text.Encoding]::UTF8`。
+- 起動したサーバー（rustnote.exe・u01_*.exe）は、すべて PID 指定で止め、残っていないことを確認した。
+
 ## 2026-10-27: 方針決定 — Fly.io・Turso のアカウントで実際には公開しない（ユーザーの決定）
 
 ユーザーの言葉: 「Fly.io と Turso のアカウントで実際に公開しなくていい」。第12巻の巻頭のお知らせをこの方針に直して main に反映した（PDF 再生成）。

@@ -1,0 +1,29 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+error[E0308]: `?` operator has incompatible types
+  --> examples\e01_find_without_owner.rs:12:33
+   |
+12 |     let note = state.notes.find(NoteId::new(1)?).await?;
+   |                                 ^^^^^^^^^^^^^^^ expected `UserId`, found `NoteId`
+   |
+   = note: `?` operator cannot convert from `NoteId` to `UserId`
+
+error[E0061]: this method takes 2 arguments but 1 argument was supplied
+  --> examples\e01_find_without_owner.rs:12:28
+   |
+12 |     let note = state.notes.find(NoteId::new(1)?).await?;
+   |                            ^^^^----------------- argument #2 of type `NoteId` is missing
+   |
+note: method defined here
+  --> src\repository\notes.rs:21:14
+   |
+21 |     async fn find(&self, owner: UserId, id: NoteId) -> Result<Option<Note>, RepoError>;
+   |              ^^^^
+help: provide the argument
+   |
+12 |     let note = state.notes.find(NoteId::new(1)?, /* NoteId */).await?;
+   |                                                ++++++++++++++
+
+Some errors have detailed explanations: E0061, E0308.
+For more information about an error, try `rustc --explain E0061`.
+error: could not compile `rustnote` (example "e01_find_without_owner") due to 2 previous errors
+exit=101

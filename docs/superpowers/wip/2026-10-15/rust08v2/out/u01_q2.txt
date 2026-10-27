@@ -1,0 +1,18 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.46s
+     Running tests\u01_q2.rs (target\debug\deps\u01_q2-d924c1589f8ead12.exe)
+
+running 1 test
+POST /signup -> 303 See Other (433.8285ms)
+ログイン中の sessions の行: 1 件
+POST /logout -> 303 See Other (12.6138ms)
+ログアウトの返事: 303 See Other
+消すためのクッキー: __Host-session=; HttpOnly; SameSite=Lax; Secure; Path=/; Max-Age=0; Expires=Mon, 27 Oct 2025 15:04:10 GMT
+ログアウト後の sessions の行: 0 件
+GET /notes -> 303 See Other (2.5015ms)
+古いクッキーで /notes → 303 See Other（移動先 /login）
+test logout_deletes_the_session_record ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.48s
+
+exit=0

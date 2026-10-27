@@ -1,0 +1,19 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.51s
+     Running tests\u01_q3.rs (target\debug\deps\u01_q3-f9715f282720c475.exe)
+
+running 1 test
+POST /signup -> 303 See Other (439.0876ms)
+POST /notes -> 303 See Other (6.562ms)
+GET /notes -> 200 OK (4.1019ms)
+/notes → （空の文は無し）
+GET /notes -> 200 OK (3.3416ms)
+/notes?q=宿題 → 条件に合うノートはありません。
+POST /signup -> 303 See Other (422.86ms)
+GET /notes -> 200 OK (2.7616ms)
+/notes（bob）→ まだノートがありません。最初の1件を書いてみましょう。
+test empty_messages_differ ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.90s
+
+exit=0

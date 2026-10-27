@@ -1,0 +1,18 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.31s
+     Running tests\u01_session.rs (target\debug\deps\u01_session-7d82e6b13d3770c3.exe)
+
+running 1 test
+POST /signup -> 303 See Other (421.6028ms)
+--- ブラウザに渡すクッキー
+名前: __Host-session
+値（トークン）: qPxZTv…（46 文字）
+属性: HttpOnly; SameSite=Lax; Secure; Path=/; Max-Age=2592000
+--- DB の sessions 表
+token_hash: 32 バイト / user_id: 1 / 期限まで: 約 30 日
+トークンと同じ値が入っている行: 0 件
+test session_cookie_and_record ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.45s
+
+exit=0

@@ -1,0 +1,55 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+error[E0507]: cannot move out of `note.title` which is behind a shared reference
+   --> src\routes\notes.rs:91:69
+    |
+ 53 |       Ok(view! {
+    |  ________-
+ 54 | |         <h1>"ノート"</h1>
+ 55 | |
+ 56 | |         <form method="get" action=(href!(index)) class="search-form">
+...   |
+ 91 | |                         <a href=(href!(id::show, id::Id(note.id)))>(note.title)</a>
+    | |                                                                     ^^^^^^^^^^ move occurs because `note.title` has type `std::string::String`, which does not implement the `Copy` trait
+...   |
+104 | |         pagination(page: page, query: query)
+105 | |     })
+    | |_____- `note.title` moved due to this method call
+    |
+note: `topcoat::view::internal::NodeClassify::classify` takes ownership of the receiver `self`, which moves `note.title`
+   --> ...\node_classify.rs:18:17
+    |
+ 18 |     fn classify(self) -> (Self::Parts, Self::Unit);
+    |                 ^^^^
+
+error[E0507]: cannot move out of `note.updated_at` which is behind a shared reference
+   --> src\routes\notes.rs:97:30
+    |
+ 53 |       Ok(view! {
+    |  ________-
+ 54 | |         <h1>"ノート"</h1>
+ 55 | |
+ 56 | |         <form method="get" action=(href!(index)) class="search-form">
+...   |
+ 97 | |                             (note.updated_at)
+    | |                              ^^^^^^^^^^^^^^^ move occurs because `note.updated_at` has type `std::string::String`, which does not implement the `Copy` trait
+...   |
+104 | |         pagination(page: page, query: query)
+105 | |     })
+    | |_____- `note.updated_at` moved due to this method call
+
+error[E0505]: cannot move out of value because it is borrowed
+   --> src\routes\notes.rs:104:26
+    |
+ 46 |     let page = app_state(cx)
+    |         ---- binding `page` declared here
+...
+ 89 |                 for note in &page.notes {
+    |                             ----------- borrow of value occurs here
+...
+104 |         pagination(page: page, query: query)
+    |                          ^^^^ move out of value occurs here
+
+Some errors have detailed explanations: E0505, E0507.
+For more information about an error, try `rustc --explain E0505`.
+error: could not compile `rustnote` (lib) due to 3 previous errors
+exit=101

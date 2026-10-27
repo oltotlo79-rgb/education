@@ -1,0 +1,36 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 19.78s
+     Running tests\u01_list.rs (target\debug\deps\u01_list-d04e2970d522cf0b.exe)
+
+running 3 tests
+test empty_then_newest_first ... POST /signup -> 303 See Other (466.6657ms)
+GET /notes -> 200 OK (9.5072ms)
+[ノートが 0 件] 空の文が出る: true
+POST /notes -> 303 See Other (9.6777ms)
+POST /notes -> 303 See Other (11.3172ms)
+POST /notes -> 303 See Other (7.7175ms)
+GET /notes -> 200 OK (5.0939ms)
+[3 件作った] 並び順: ["3件目", "2件目", "1件目"]
+[3 件作った] ページ送り: true
+POST /signup -> 303 See Other (396.9523ms)
+GET /notes -> 200 OK (3.432ms)
+[bob の一覧] 空の文が出る: true / alice のノートが出る: false
+[bob の一覧] ページ送り: true
+ok
+test ordered_by_updated_at_then_id ... POST /signup -> 303 See Other (426.5175ms)
+POST /notes -> 303 See Other (6.6846ms)
+POST /notes -> 303 See Other (7.1091ms)
+POST /notes -> 303 See Other (6.2833ms)
+GET /notes -> 200 OK (8.3724ms)
+[3件目を 1 日前の更新にした] 並び順: ["2件目", "1件目", "3件目"]
+ok
+test titles_are_escaped ... POST /signup -> 303 See Other (427.4357ms)
+POST /notes -> 303 See Other (5.3111ms)
+GET /notes -> 200 OK (3.8569ms)
+タグのまま入っている: false
+文字に置き換わっている: true
+ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.87s
+
+exit=0
