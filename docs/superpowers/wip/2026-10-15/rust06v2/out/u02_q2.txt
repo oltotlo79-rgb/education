@@ -1,0 +1,5 @@
+### curl.exe -s -o NUL -w "%{http_code}" http://127.0.0.1:3001/
+200
+### curl.exe -s -o NUL -w "%{http_code}" http://127.0.0.1:3000/
+000
+(curl の終了コード: 7)

@@ -1,0 +1,18 @@
+   Compiling web_lab v0.1.0 (...\web_lab)
+error[E0599]: no method named `expect` found for opaque type `impl Future<Output = Result<(), std::io::Error>>` in the current scope
+  --> src\main.rs:34:10
+   |
+33 | /     topcoat::start(router)
+34 | |         .expect("サーバーを起動できませんでした");
+   | |         -^^^^^^ method not found in `impl Future<Output = Result<(), std::io::Error>>`
+   | |_________|
+   |
+   |
+help: consider `await`ing on the `Future` and calling the method on its `Output`
+   |
+34 |         .await.expect("サーバーを起動できませんでした");
+   |          ++++++
+
+For more information about this error, try `rustc --explain E0599`.
+error: could not compile `web_lab` (bin "web_lab") due to 1 previous error
+exit=101

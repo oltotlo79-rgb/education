@@ -1,0 +1,16 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.84s
+     Running tests\u01_q3.rs (target\debug\deps\u01_q3-f9715f282720c475.exe)
+
+running 1 test
+7文字（下の端 - 1） → Err(パスワードは8文字以上にしてください)
+8文字（下の端） → Ok(Password(***))
+128文字（上の端） → Ok(Password(***))
+129文字（上の端 + 1） → Err(パスワードは128文字以内にしてください)
+空白7つ + a（8文字） → Ok(Password(***))
+日本語8文字（24 バイト） → Ok(Password(***))
+test password_boundaries ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+exit=0

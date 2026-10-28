@@ -1,0 +1,18 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.65s
+     Running tests\u01_q2.rs (target\debug\deps\u01_q2-d924c1589f8ead12.exe)
+
+running 1 test
+"1" → Ok(1)
+"0" → Err(ID は 1 以上の数です)
+"-1" → Err(ID は 1 以上の数です)
+"9223372036854775807" → Ok(9223372036854775807)
+"9223372036854775808" → Err(ID は数字で指定してください)
+"abc" → Err(ID は数字で指定してください)
+" 1" → Err(ID は数字で指定してください)
+"01" → Ok(1)
+test note_id_boundaries ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+exit=0

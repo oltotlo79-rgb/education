@@ -1,0 +1,29 @@
+    Updating crates.io index
+      Adding tokio =1.53.3 to dependencies
+             Features:
+             + libc
+             + macros
+             + net
+             + rt
+             + rt-multi-thread
+             + socket2
+             + tokio-macros
+             - bytes
+             - fs
+             - full
+             - io-std
+             - io-uring
+             - io-util
+             - mio
+             - parking_lot
+             - process
+             - schedule-latency
+             - signal
+             - signal-hook-registry
+             - sync
+             - taskdump
+             - test-util
+             - time
+             - tracing
+             - windows-sys
+exit=0

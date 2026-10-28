@@ -1,5 +1,15 @@
 # 中断時点の引き継ぎメモ
 
+## 2026-10-29: Rust 11 巻を巻頭と UNIT 01 まで、Rust 13 巻と Rust 06 巻に UNIT 02 を main に反映（11: 10ce685、13: 6b94b08、06: 39938d5）
+
+「完成から最も遠い3つ」として、本文が無かった 11 と、UNIT 01 だけだった巻のうち、巻末の分だけ残りが多い 13 と、いちばん短かった 06 を選んだ。統括が1人で執筆（サブエージェントなし）。素材は `rust11v2/`・`rust13/`（追記）・`rust06v2/`（追記）。
+
+- **重要: Topcoat 0.11.0 が出ている。** `cargo add topcoat@=0.10.0` の表示に `Adding topcoat v0.10.0 (available: v0.11.0)`。全巻は `=0.10.0` に固定しているのでそのまま動く。第6巻の本文と巻頭に「この本は 0.10.0 に固定」と書いた。上げるかどうかはユーザーの判断（上げるなら RustNote・全巻のコードと出力の取り直しが要る）。
+- **Rust 11**（992 行・図4枚・28 ページ）: UNIT 01 = ユニットテスト・境界値・表の形のテスト。RustNote のコピー `rust11/rustnote/`（`src/` 同一を確認）に `tests/u01_title_table.rs`（10 行の表＋len() で数える間違えた版）、`examples/u01_counts.rs`、`tests/u01_q1〜q3.rs` を足した。確かめた事実: 間違えた版は 80・81・空白込み80 の3行でだけ NG（短い日本語や家族の絵文字の行は ok のまま）。家族の絵文字は 5 文字・18 バイト・UTF-16 で 8、濁点を分けた「が」は 2 文字、ゼロ幅スペースだけでも NoteTitle に合格。`#[test] async fn` は `error: async functions cannot be used for tests`。`assert_eq!` の失敗は `left: false / right: true`。Email の 254/255 バイトの境界、NoteId の `9223372036854775808` は「数字で指定してください」（大きすぎる数も NotANumber 扱い）・`"01"` は 1・`" 1"` は不合格、Password は trim せず日本語 8 文字も合格。HTML の maxlength は UTF-16 単位という記述は HTML の決まりとして書き、実際のブラウザは UNIT 05 で確かめると明記。
+- **Rust 13**（2,018 行・図9枚・53 ページ）: UNIT 02 = migrations と db.rs。`examples/u02_migrate.rs`・`u02_state.rs`・`u02_pragmas.rs`・`u02_q2.rs`・`u02_q3.rs`。確かめた事実: migrate 2回目は `[]`。libsql の素の接続でも journal_mode=wal（ファイルに記録）・**foreign_keys=1**、busy_timeout は 0（RustNote は 5000）。0003 の最後の索引の列名を打ち間違えると sessions と1つ目の索引も rollback で残らず、直すと 0003 だけ流れる。適用済みの 0002 を書き換えると古い DB は変わらず新しい DB だけ pinned が増える。0004_note_pinned を正しく足すと 0004 だけ流れ、41 件のテストも通る（コピーの src を一時的に変更して確認し、元に戻した）。一覧の SQL は `SEARCH notes USING INDEX idx_notes_user_updated (user_id=?)` で並べ替え不要、持ち主の条件が無いと `SCAN notes` と `USE TEMP B-TREE FOR ORDER BY`。無いフォルダは `Unable to open connection to local database …: 14`。
+- **Rust 06**（1,626 行・図6枚・44 ページ）: UNIT 02 = Topcoat 0.10 の最小のアプリ。`rust06/web_lab/`（`src/main.rs`・`src/bin/u02_serve.rs`・`u02_q1.rs`）。確かめた事実: 新しい target で 164 個・約 31 秒。`topcoat::start` は何も表示しない。GET / は `vary: Accept` と `vary: accept-encoding` 付き、無い URL は `not found`（text/plain の 404）、POST / は 405・`allow: GET, HEAD`、HEAD は本文なし、`--compressed` で `content-encoding: gzip`・`transfer-encoding: chunked`。`.await` 忘れは E0599（impl Future に expect が無い）、RouterBuilderDiscoverExt の use 忘れは E0599（help に discover_fonts も出る）、PORT=abc は `InvalidInput "PORT must be a valid port number: invalid digit found in string"`、bin が2つだと `cargo run could not determine which binary to run`。`TcpListener::bind` してから表示して `topcoat::serve` に渡すと、2つ目は `AddrInUse` で表示なしに止まる（RustNote の「起動しました」が先に出る改善点の直し方として本文に記載）。
+- 起動したサーバーは、すべて PID 指定で止め、残っていないことを確認した。
+
 ## 2026-10-28: Rust 08・10・06 巻を巻頭と UNIT 01 まで main に反映（08: 05a1ae0、10: 92f3a6a、06: ddf8002）
 
 「完成から最も遠い3つ」として、本文が無かった4巻（06・08・10・11）のうち、素材の少ない 08・10 と、06 を選んだ（11 は UNIT 01 のテストまで素材があるので後回し）。統括が1人で執筆（サブエージェントなし）。どの巻も旧 PDF は残してある。素材は `rust08v2/`・`rust10v2/`・`rust06v2/` に保存（以前の `rust08/`・`rust10/`・`rust06/` は古い素材のまま残してある）。

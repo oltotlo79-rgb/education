@@ -108,7 +108,7 @@
 | 単元 | テーマ | 読むファイル |
 |---|---|---|
 | UNIT 01 | 版を固定する設定ファイル | `Cargo.toml`・`Cargo.lock`・`rust-toolchain.toml`・`rustfmt.toml`・`.gitignore`・`.env.example` |
-| UNIT 02 | 表を作る SQL と DB の入口（準備中） | `migrations/0001〜0003`・`src/db.rs` |
+| UNIT 02 | 表を作る SQL と DB の入口 | `migrations/0001〜0003`・`src/db.rs` |
 | UNIT 03 | 設定と起動の順番（準備中） | `src/config.rs`・`src/main.rs`・`src/lib.rs` |
 | UNIT 04 | ドメインの型とエラーの分類（準備中） | `src/domain.rs`・`src/error.rs` |
 | UNIT 05 | リポジトリ（準備中） | `src/repository.rs`・`src/repository/` の3つ |
@@ -118,7 +118,7 @@
 | UNIT 09 | 見た目（準備中） | `assets/style.css` |
 | UNIT 10 | テスト・Docker・Fly.io・CI（準備中） | `tests/` の3つ・`Dockerfile`・`.dockerignore`・`fly.toml`・`ci.yml`・`README.md` |
 
-> **お知らせ:** この版には UNIT 01 を収録しています。UNIT 02〜10 と、巻末の総合演習・解答・全巻の用語集・索引は準備中で、次の更新から順に追加します。
+> **お知らせ:** この版には UNIT 01〜02 を収録しています。UNIT 03〜10 と、巻末の総合演習・解答・全巻の用語集・索引は準備中で、次の更新から順に追加します。
 
 ### RustNote の全ファイル
 

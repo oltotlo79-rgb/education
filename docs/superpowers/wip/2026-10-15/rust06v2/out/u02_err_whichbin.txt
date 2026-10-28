@@ -1,0 +1,3 @@
+error: `cargo run` could not determine which binary to run. Use the `--bin` option to specify a binary, or the `default-run` manifest key.
+available binaries: u02_serve, web_lab
+exit=101

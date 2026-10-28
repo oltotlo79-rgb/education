@@ -1,0 +1,36 @@
+    Updating crates.io index
+      Adding topcoat =0.10.0 to dependencies
+             Features:
+             + asset
+             + compression
+             + cookie
+             + discover
+             + font
+             + icon
+             + router
+             + runtime
+             + serve
+             + session
+             + view
+             - alpine-ajax
+             - anyhow
+             - datastar
+             - font-fontsource
+             - fs
+             - full
+             - htmx
+             - icon-iconify
+             - mail
+             - mail-smtp
+             - multipart
+             - sitemap
+             - sse
+             - tailwind
+             - tower
+             - ui
+             - websocket
+    Updating crates.io index
+     Locking 214 packages to highest Rust 1.99.0 compatible versions
+      Adding generic-array v0.14.7 (available: v0.14.9)
+      Adding topcoat v0.10.0 (available: v0.11.0)
+exit=0

@@ -1,0 +1,25 @@
+   Compiling web_lab v0.1.0 (...\web_lab)
+error[E0599]: no method named `discover` found for struct `RouterBuilder` in the current scope
+  --> src\main.rs:31:36
+   |
+31 |     let router = Router::builder().discover().build();
+   |                                    ^^^^^^^^
+   |
+  ::: ...\router.rs:14:8
+   |
+14 |     fn discover(self) -> Self;
+   |        -------- the method is available for `RouterBuilder` here
+   |
+   = help: items from traits can only be used if the trait is in scope
+help: trait `RouterBuilderDiscoverExt` which provides `discover` is implemented but not in scope; perhaps you want to import it
+   |
+ 4 + use topcoat::router::RouterBuilderDiscoverExt;
+   |
+help: there is a method `discover_fonts` with a similar name
+   |
+31 |     let router = Router::builder().discover_fonts().build();
+   |                                            ++++++
+
+For more information about this error, try `rustc --explain E0599`.
+error: could not compile `web_lab` (bin "web_lab") due to 1 previous error
+exit=101

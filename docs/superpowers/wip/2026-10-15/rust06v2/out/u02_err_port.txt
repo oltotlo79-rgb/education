@@ -1,0 +1,5 @@
+
+thread 'main' (154412) panicked at src\main.rs:35:10:
+サーバーを起動できませんでした: Custom { kind: InvalidInput, error: "PORT must be a valid port number: invalid digit found in string" }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+exit=101

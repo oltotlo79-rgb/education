@@ -1,0 +1,6 @@
+[RustNote の一覧]
+    SEARCH notes USING INDEX idx_notes_user_updated (user_id=?)
+[持ち主の条件が無い一覧]
+    SCAN notes
+    USE TEMP B-TREE FOR ORDER BY
+exit=0

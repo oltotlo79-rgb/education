@@ -1,6 +1,6 @@
 ## この巻のまとめ
 
-この版に収録した UNIT 01 で、次のことができるようになったかを確かめましょう。できたものに印を付けてください。
+この版に収録した UNIT 01〜02 で、次のことができるようになったかを確かめましょう。できたものに印を付けてください。
 
 **UNIT 01: HTTP の要求・応答・状態コード**
 
@@ -12,11 +12,20 @@
 - ☐ `curl.exe` の `-i`・`-d`・`-X`・`-I`・`-L`・`-v` を使い分け、`-v` の `>`・`<`・`*` の行を読み分けられる
 - ☐ curl の `(7)`（たどり着けない）と、404（たどり着いたが、ページが無い）を見分けられる
 
-> **お知らせ:** この版には UNIT 01 を収録しています。UNIT 02（Topcoat 0.10 の最小のアプリ）・UNIT 03（ルーター・page・route・layout）・UNIT 04（URL の部品と Cx）・UNIT 05（view!・コンポーネント・HTML のエスケープ）・UNIT 06（フォーム・JSON・PRG）・UNIT 07（app_context・memoize）・UNIT 08（アセット・CSS・束）・UNIT 09（runtime・signal・procedure・shard）・UNIT 10（エラー・クッキー・セッション・CSRF）は準備中で、次の更新から順に追加します。それまでの間、Topcoat を使った完成したアプリの例は、教材のフォルダの `Rust/rustnote/src/routes.rs` から読み始められます。
+**UNIT 02: Topcoat 0.10 の最小のアプリ**
+
+- ☐ `cargo add topcoat@=0.10.0` と Tokio で、ページが1つのアプリを作って起動できる。`=` で版を固定する理由を言える
+- ☐ `#[page("/")]`・`Router::builder().discover().build()`・`topcoat::start(router).await` の役割を説明できる
+- ☐ 404・405 と `allow`・HEAD・`Content-Length`・圧縮を、Topcoat が代わりにしてくれることを、`curl.exe` で確かめられる
+- ☐ `HOST` と `PORT` の環境変数で待ち受ける場所を変えられる。`PORT` が数でないときのエラーを読める
+- ☐ `topcoat::start` が何も表示しないことと、`TcpListener::bind` で押さえてから表示して `topcoat::serve` に渡す書き方を説明できる
+- ☐ `.await` の書き忘れ（E0599）、`RouterBuilderDiscoverExt` の `use` の書き忘れ（E0599）、実行ファイルが2つあるときの `--bin` のエラーを読める
+
+> **お知らせ:** この版には UNIT 01〜02 を収録しています。UNIT 03（ルーター・page・route・layout）・UNIT 04（URL の部品と Cx）・UNIT 05（view!・コンポーネント・HTML のエスケープ）・UNIT 06（フォーム・JSON・PRG）・UNIT 07（app_context・memoize）・UNIT 08（アセット・CSS・束）・UNIT 09（runtime・signal・procedure・shard）・UNIT 10（エラー・クッキー・セッション・CSRF）は準備中で、次の更新から順に追加します。それまでの間、Topcoat を使った完成したアプリの例は、教材のフォルダの `Rust/rustnote/src/routes.rs` から読み始められます。
 
 ## 用語ミニ辞典
 
-この巻（UNIT 01）に出てきた用語です。
+この巻（UNIT 01〜02）に出てきた用語です。
 
 ### UNIT 01 の用語
 
@@ -37,3 +46,19 @@
 | `TcpListener` | 決まったアドレスとポートで、接続を待つ標準ライブラリの型 |
 | `127.0.0.1` | 「この PC 自身」を表すアドレス。ほかの PC からはつながらない |
 | curl の `(7)` | サーバーに接続できなかったときの curl のエラー |
+
+### UNIT 02 の用語
+
+| 用語 | 意味 |
+|---|---|
+| Web フレームワーク | 要求を読み、URL ごとの処理に振り分け、応答を返す、といった決まった仕事を引き受けてくれる道具 |
+| ルーター | 要求の URL とメソッドを見て、どの関数に処理させるかを決める仕組み |
+| `#[page("/")]` | この関数は `GET /`（と HEAD）に答える、という Topcoat の属性マクロ |
+| `discover()` | プログラムの中の `#[page]` の関数を、全部自動で集める（`RouterBuilderDiscoverExt` を use して使う） |
+| `topcoat::start` | 環境変数 `HOST`・`PORT`（無ければ 127.0.0.1:3000）で待ち受けを始める。起動しても何も表示しない |
+| `topcoat::serve` | 自分で押さえた待ち受けの場所（`TcpListener` など）とルーターを受け取って、要求をさばく |
+| `view!` | HTML をほぼそのまま書いて、ページの中身を作るマクロ |
+| `vary` | この応答が、要求のどのヘッダーによって変わるかを伝えるヘッダー |
+| `content-encoding: gzip` | 本文を gzip で圧縮してある、という印 |
+| `default-run` | 実行ファイルが2つ以上あるとき、`cargo run` で動かすものを決める `Cargo.toml` の設定 |
+
