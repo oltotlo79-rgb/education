@@ -1,0 +1,17 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.47s
+     Running tests\u02_err_name.rs (target\debug\deps\u02_err_name-9c4aff559b955ba0.exe)
+
+running 1 test
+POST /signup -> 303 See Other (387.4675ms)
+POST /notes -> 400 Bad Request (2.1269ms)
+[name が subject] 400 Bad Request / 「送信された内容を読み取れませんでした」: true
+POST /notes -> 400 Bad Request (1.8745ms)
+[本文の欄が無い] 400 Bad Request / 「送信された内容を読み取れませんでした」: true
+POST /notes -> 303 See Other (5.9389ms)
+[余分な欄がある] 303 See Other / 「送信された内容を読み取れませんでした」: false
+test wrong_field_name ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.41s
+
+exit=0

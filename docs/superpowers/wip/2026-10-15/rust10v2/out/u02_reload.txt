@@ -1,0 +1,22 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.75s
+     Running tests\u02_reload.rs (target\debug\deps\u02_reload-c30daf2536228748.exe)
+
+running 1 test
+POST /signup -> 303 See Other (388.9575ms)
+POST /notes -> 303 See Other (6.7285ms)
+POST /notes → 303 See Other（Location: /notes/1）
+GET /notes/1 -> 200 OK (3.8365ms)
+再読み込み 1 回目: GET /notes/1 → 200 OK
+GET /notes/1 -> 200 OK (2.8887ms)
+再読み込み 2 回目: GET /notes/1 → 200 OK
+GET /notes/1 -> 200 OK (2.9527ms)
+再読み込み 3 回目: GET /notes/1 → 200 OK
+ノートの id: [1]
+POST /notes -> 303 See Other (6.5562ms)
+同じ POST をもう一度送る → 303 See Other（Location: /notes/2）
+ノートの id: [1, 2]
+test reload_after_redirect_does_not_duplicate ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.43s
+
+exit=0

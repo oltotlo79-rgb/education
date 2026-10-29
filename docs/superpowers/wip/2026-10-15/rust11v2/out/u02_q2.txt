@@ -1,0 +1,15 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.81s
+     Running tests\u02_q2.rs (target\debug\deps\u02_q2-6804b1bc9d1c3136.exe)
+
+running 1 test
+find_user（T - 1秒）→ 見つかる: true
+find_user（T ちょうど）→ 見つかる: false
+find_user（T + 1秒）→ 見つかる: false
+delete_expired（T - 1秒）→ 0 件消した
+delete_expired（T ちょうど）→ 1 件消した
+test session_expiry_boundary ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+exit=0

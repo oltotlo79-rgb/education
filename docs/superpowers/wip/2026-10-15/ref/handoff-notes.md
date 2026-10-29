@@ -1,5 +1,16 @@
 # 中断時点の引き継ぎメモ
 
+## 2026-10-30: Rust 08・10・11 巻に UNIT 02 を main に反映（08: 2af635b、10: 8194c47、11: b2796c6）
+
+「完成から最も遠い3つ」として、UNIT 01 だけだった巻のうち、08・10・11 を選んだ（12 も UNIT 01 だけだが、UNIT 02 は Docker が要り、デーモンを起動する副作用を避けて見送り）。統括が1人で執筆（サブエージェントなし）。素材は `rust08v2/`・`rust10v2/`・`rust11v2/`（追記）。
+
+- **Rust 08**（1,795 行・図7枚・50 ページ）: UNIT 02 = パスワード・Argon2id・salt。`examples/u02_hash.rs`・`u02_speed.rs`、`tests/u02_stored.rs`・`u02_q2.rs`・`u02_q3.rs`、`errs/e02_old_api.rs`。確かめた事実: 同じパスワードでも PHC 文字列は毎回違い（salt 22 文字・ハッシュ 43 文字・全体 97 文字）、照合はどちらも true。release で DefaultHasher 8,721,779 回／秒、Argon2id 39 回／秒（約 22 万倍、Windows ARM64）。保存ハッシュを `broken` にすると正しいパスワードでも 500（ログ `invalid encoding`）。argon2 0.5 の書き方は E0432（SaltString・rand_core は feature の外）と E0061（hash_password は引数1つ）。失敗のログインは約 380〜410 ms でそろうが、**未登録メールの1回目だけ 804 ms**（DUMMY_HASH が LazyLock のため。改善点として本文に記載、コードは変えていない）。400 の出し直しでパスワードは返さない。
+- **Rust 10**（1,907 行・図7枚・51 ページ）: UNIT 02 = 作成のフォーム・入力の検査・PRG。`tests/u02_create.rs`・`u02_reload.rs`・`u02_err_name.rs`・`u02_q1〜q3.rs`、`errs/e02_string.rs`。確かめた事実: 成功は 303・`Location: /notes/1`・`flash=note_created; HttpOnly; SameSite=Lax; Path=/; Max-Age=300`、移動先の GET でお知らせを出して `Max-Age=0` と1年前の Expires で消す。失敗は 400・Location なし・`<details … open="">`・入力が残る・両方のエラーが出る・保存 0 件。再読み込み3回で id は [1] のまま、同じ POST の再送で [1, 2]（二重送信は PRG では防げないと明記）。name が subject／body の欄なしは 400「送信された内容を読み取れませんでした」（ログはアクセスログだけ）、余分な欄は無視されて 303。`\r\n` は `\n` にそろえて保存（10 文字 → 8 文字）。エスケープは場所ごとに違い、属性の値では `"` → `&quot;`（`<` `>` はそのまま）、本文では `<` `>` → `&lt;` `&gt;`（`"` はそのまま）。
+- **Rust 11**（1,932 行・図7枚・52 ページ）: UNIT 02 = リポジトリの結合テスト。`tests/u02_contract.rs`・`u02_owner_delete.rs`・`u02_shared.rs`・`u02_q1〜q3.rs`。確かめた事実（コピーの `src/repository/notes.rs` を一時的に壊して確認し、元に戻して `src/` 同一を確認）: `ESCAPE '\'` を消すと `like_special_characters_are_escaped`（ユニット）は通り、`search_filters_by_keyword_and_paginates` だけが 198 行目で `left: 0 right: 1`。DELETE の `AND user_id = ?2` を消すと `notes_are_isolated_per_owner` が 90 行目で失敗、**params が1つ余っても libsql はエラーにしない**。1つの DB ファイルを使い回すテストは、消してから8回で UNIQUE 6・`database is locked` 1・`table notes already exists` 1（毎回1つは通る）、消さずに2回目は両方 UNIQUE。LIKE は ASCII だけ大文字小文字を区別しない（`ｒｕｓｔ`・`äpfel` は 0 件）。セッションは期限ちょうどで見つからず、delete_expired で消える。users を消すと notes・sessions も CASCADE で消える。
+- 図の `\` が ¥ に見える件は、SVG の tspan と説明文の span に Consolas を当てて直した（第11巻 図11-7）。heredoc で Python を書くと `\\` が `\` になり、`re.sub` の置換文字列でも `\r` が CR になるので、バックスラッシュを含む置き換えは Write で書いた .py か chr(92) で行うこと。
+- 一時フォルダの `rustnote-shared-test.db*` は消した。起動したサーバーは無し。
+- 決定待ち（変わらず）: Topcoat 0.11.0 へ上げるか、Build Tools 2022 と「2026」の表記、RustNote の `.gitattributes`。
+
 ## 2026-10-29: Rust 11 巻を巻頭と UNIT 01 まで、Rust 13 巻と Rust 06 巻に UNIT 02 を main に反映（11: 10ce685、13: 6b94b08、06: 39938d5）
 
 「完成から最も遠い3つ」として、本文が無かった 11 と、UNIT 01 だけだった巻のうち、巻末の分だけ残りが多い 13 と、いちばん短かった 06 を選んだ。統括が1人で執筆（サブエージェントなし）。素材は `rust11v2/`・`rust13/`（追記）・`rust06v2/`（追記）。
