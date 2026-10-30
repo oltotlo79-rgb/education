@@ -1407,7 +1407,7 @@ RustNote の `src/main.rs` の最後の部分です（抜き出しています�
 
 - 例2-2と同じく、`topcoat::start(router).await` で待ち受けています。`HOST` と `PORT` を読むのも同じです。公開するとき（Fly.io）は `HOST=0.0.0.0`・`PORT=8080` にします（第12巻）。
 - 例2-3で見たとおり、`eprintln!` で「起動しました」を、`start` の**前**に表示しています。ポートが使われていると、この表示のあとにエラーで止まります。例2-3の形（`TcpListener::bind` で押さえてから表示し、`topcoat::serve` に渡す）にすれば直せます（RustNote のコードは変えていません）。
-- RustNote のルーターは、`discover()` ではなく、`module_router!()` で作っています（`src/routes.rs` の `build_router`）。ファイルの並びをそのまま URL の並びにする書き方で、UNIT 03で扱います。
+- RustNote のルーターは、`discover()` ではなく、`module_router!()` で作っています（`src/routes.rs` の `build_router`）。ファイルの並びをそのまま URL の並びにする書き方で、UNIT 03 で扱います。
 
 ### 練習問題
 
@@ -2147,7 +2147,7 @@ pub fn build_router(state: AppState, assets: impl Into<AssetConfig>) -> Router {
 ```
 
 - 例3-1と同じく、`module_router!()` で名簿を作っています。`.cookies()`・`.sessions(…)`・`.assets(…)`・`.app_context(…)` は、ページから使う道具を、ルーターに登録しています（UNIT 07・08・10）。
-- `routes.rs` の先頭のコメントには、ファイルと URL の対応の表があります。`routes/notes/id/edit.rs` が `/notes/{id}/edit` になる、のように、**ファイルの並びが、そのまま URL の並び**です。`{id}` の部分は、UNIT 04で扱います。
+- `routes.rs` の先頭のコメントには、ファイルと URL の対応の表があります。`routes/notes/id/edit.rs` が `/notes/{id}/edit` になる、のように、**ファイルの並びが、そのまま URL の並び**です。`{id}` の部分は、UNIT 04 で扱います。
 
 同じファイルに、全ページを包むレイアウトと、アクセスログのレイヤーもあります（抜き出しています）。
 
@@ -2853,7 +2853,7 @@ error[E0277]: the trait bound `&NoteId: topcoat::view::internal::NodeClassify` i
 
 - **何が起きたか:** 「`&NoteId` に、`NodeViewParts` という trait が実装されていません」というエラーです。`view!` の `( )` に入れられるのは、文字（`&str`・`String`）・数（`i32`・`u64` など）・`bool` など、Topcoat が**画面に出し方を知っている型**だけです（`help:` に、入れられる型の一部が並んでいます）。`NoteId` に `Display` を書いても、それだけでは入れられません。
 - **直し方:** `(id.to_string())` で文字にしてから入れます。数を入れたいなら `(id.get())` のように、中の数を取り出してもかまいません。
-- **学べること:** 「どう表示するか」を `view!` が勝手に決めないので、HTML に入る文字は、いつも自分で選んだものになります。エスケープ（危ない文字の書き換え）の話は UNIT 05で扱います。
+- **学べること:** 「どう表示するか」を `view!` が勝手に決めないので、HTML に入る文字は、いつも自分で選んだものになります。エスケープ（危ない文字の書き換え）の話は UNIT 05 で扱います。
 
 ### RustNote ではここで使う
 
@@ -5277,7 +5277,7 @@ pub const STYLESHEET: Asset = asset!("assets/style.css");
     )?;
 ```
 
-- 束が無いと分かったら、DB を開く前に止まります。準備の足りない状態で、途中まで動いてしまわないようにする順番です（第9巻 UNIT 06（準備中））。
+- 束が無いと分かったら、DB を開く前に止まります。準備の足りない状態で、途中まで動いてしまわないようにする順番です（第9巻 UNIT 06）。
 - テストでは、束を作らずに済むように、CSS の URL だけを決めた目録（`AssetConfig::hosted_at("/test-assets", manifest)`）を渡しています（`tests/common/mod.rs` の `test_assets`）。本番の Dockerfile では、`cargo build --release` のあとに `topcoat asset bundle --release` を実行し、`assets/` を実行ファイルの隣にコピーしています（第12巻 UNIT 02・03（準備中））。
 
 ### 練習問題
