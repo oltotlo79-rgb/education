@@ -1,0 +1,71 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.62s
+     Running tests\u08_q.rs (target\debug\deps\u08_q-ba6e4d36e4e39c35.exe)
+
+running 2 tests
+test q1_q2_page_out_of_range ... POST /signup -> 303 See Other (412.687ms)
+POST /notes -> 303 See Other (5.889ms)
+POST /notes -> 303 See Other (9.3341ms)
+POST /notes -> 303 See Other (6.7359ms)
+POST /notes -> 303 See Other (6.3339ms)
+POST /notes -> 303 See Other (6.5118ms)
+POST /notes -> 303 See Other (6.1367ms)
+POST /notes -> 303 See Other (6.67ms)
+POST /notes -> 303 See Other (5.048ms)
+POST /notes -> 303 See Other (5.3947ms)
+POST /notes -> 303 See Other (6.5256ms)
+POST /notes -> 303 See Other (5.4014ms)
+POST /notes -> 303 See Other (5.7228ms)
+POST /notes -> 303 See Other (6.6775ms)
+POST /notes -> 303 See Other (5.9039ms)
+POST /notes -> 303 See Other (5.6913ms)
+POST /notes -> 303 See Other (5.6067ms)
+POST /notes -> 303 See Other (5.4672ms)
+POST /notes -> 303 See Other (6.2257ms)
+POST /notes -> 303 See Other (5.6124ms)
+POST /notes -> 303 See Other (5.3824ms)
+POST /notes -> 303 See Other (5.3676ms)
+POST /notes -> 303 See Other (5.9326ms)
+POST /notes -> 303 See Other (6.7175ms)
+POST /notes -> 303 See Other (5.3832ms)
+POST /notes -> 303 See Other (5.6363ms)
+GET /notes -> 200 OK (3.4446ms)
+問 GET /notes?page=3 → 200 OK・0 件・3 / 2 ページ（全25件）・空のときの文: まだノートがありません。最初の1件を書いてみましょう。
+GET /notes -> 200 OK (2.9599ms)
+問 GET /notes?page=4294967295 → 200 OK・0 件・4294967295 / 2 ページ（全25件）・空のときの文: まだノートがありません。最初の1件を書いてみましょう。
+GET /notes -> 400 Bad Request (1.73ms)
+問 GET /notes?page=4294967296 → 400 Bad Request・0 件・（なし）・空のときの文: （なし）
+ok
+test q3_cursor_without_id ... POST /signup -> 303 See Other (415.3196ms)
+POST /notes -> 303 See Other (9.9641ms)
+POST /notes -> 303 See Other (8.8761ms)
+POST /notes -> 303 See Other (11.67ms)
+POST /notes -> 303 See Other (9.7072ms)
+POST /notes -> 303 See Other (7.8182ms)
+POST /notes -> 303 See Other (8.7547ms)
+POST /notes -> 303 See Other (8.6396ms)
+POST /notes -> 303 See Other (8.6446ms)
+POST /notes -> 303 See Other (7.6252ms)
+POST /notes -> 303 See Other (7.6908ms)
+POST /notes -> 303 See Other (7.5724ms)
+POST /notes -> 303 See Other (36.7686ms)
+POST /notes -> 303 See Other (10.5994ms)
+POST /notes -> 303 See Other (8.7974ms)
+POST /notes -> 303 See Other (13.8891ms)
+POST /notes -> 303 See Other (8.9079ms)
+POST /notes -> 303 See Other (6.4627ms)
+POST /notes -> 303 See Other (5.9207ms)
+POST /notes -> 303 See Other (5.4738ms)
+POST /notes -> 303 See Other (5.5772ms)
+POST /notes -> 303 See Other (5.3922ms)
+POST /notes -> 303 See Other (5.7558ms)
+POST /notes -> 303 See Other (5.0825ms)
+POST /notes -> 303 See Other (5.3357ms)
+POST /notes -> 303 See Other (5.0203ms)
+問3 25 件の updated_at の種類: 1
+問3 続きの印が updated_at だけ → 2ページ目: []
+問3 続きの印が updated_at と id → 2ページ目: ["ノート05", "ノート04", "ノート03", "ノート02", "ノート01"]
+ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.29s
+
+exit=0

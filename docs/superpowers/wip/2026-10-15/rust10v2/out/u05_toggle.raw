@@ -1,0 +1,21 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.80s
+     Running tests\u05_toggle.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/target10\debug\deps\u05_toggle-874ea50a04b4562f.exe)
+
+running 1 test
+POST /signup -> 303 See Other (497.6648ms)
+POST /notes -> 303 See Other (9.542ms)
+作った直後の DB: done=0 version=1
+POST /notes/1/toggle -> 303 See Other (9.1872ms)
+1 回目の POST: 303 See Other（Location: /notes/1・flash=note_toggled）
+GET /notes/1 -> 200 OK (6.4145ms)
+   詳細の画面: 完了の印=true・ボタン「未完了に戻す」・お知らせ=true
+   DB: done=1 version=2
+POST /notes/1/toggle -> 303 See Other (9.9279ms)
+2 回目の POST: 303 See Other（Location: /notes/1・flash=note_toggled）
+GET /notes/1 -> 200 OK (4.8673ms)
+   詳細の画面: 完了の印=false・ボタン「完了にする」・お知らせ=true
+   DB: done=0 version=3
+test toggle_twice ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.58s
+

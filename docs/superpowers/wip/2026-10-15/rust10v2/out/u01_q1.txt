@@ -1,19 +1,19 @@
    Compiling rustnote v0.1.0 (...\rustnote)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 13.14s
-     Running tests\u01_q1.rs (target\debug\deps\u01_q1-81fa10c5a5eabbd3.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.26s
+     Running tests\u01_q1.rs (target\debug\deps\u01_q1-bce08f7bd283041f.exe)
 
 running 1 test
-POST /signup -> 303 See Other (415.3854ms)
-POST /notes -> 303 See Other (6.5261ms)
-POST /notes -> 303 See Other (6.1675ms)
-POST /notes -> 303 See Other (8.6278ms)
-POST /notes/1/toggle -> 303 See Other (16.379ms)
-GET /notes -> 200 OK (14.0618ms)
+POST /signup -> 303 See Other (420.6426ms)
+POST /notes -> 303 See Other (6.669ms)
+POST /notes -> 303 See Other (6.1696ms)
+POST /notes -> 303 See Other (5.6107ms)
+POST /notes/1/toggle -> 303 See Other (10.7107ms)
+GET /notes -> 200 OK (9.9974ms)
 並び順: ["1件目", "3件目", "2件目"]
 完了の印の付いた行: 1
 「完了」のバッジ: 1
 test toggled_note_moves_to_top_with_badge ... ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.50s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.49s
 
 exit=0

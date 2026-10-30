@@ -1,0 +1,35 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.63s
+     Running tests\u07_q.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/target10\debug\deps\u07_q-edb3750b0278f30c.exe)
+
+running 3 tests
+test q1_case_and_width ... POST /signup -> 303 See Other (429.9507ms)
+POST /notes -> 303 See Other (14.7792ms)
+POST /notes -> 303 See Other (7.0226ms)
+POST /notes -> 303 See Other (10.6034ms)
+GET /notes -> 200 OK (5.9943ms)
+問1 q=rust   → ["Rust 入門"]
+GET /notes -> 200 OK (3.7217ms)
+問1 q=RUST   → ["Rust 入門"]
+GET /notes -> 200 OK (3.2471ms)
+問1 q=ｒｕｓｔ   → ["ｒｕｓｔ の本"]
+GET /notes -> 200 OK (3.7548ms)
+問1 q=äpfel  → []
+GET /notes -> 200 OK (7.9546ms)
+問1 q=Äpfel  → ["Äpfel kaufen"]
+ok
+test q2_long_keyword ... POST /signup -> 303 See Other (409.0156ms)
+GET /notes -> 200 OK (4.6344ms)
+問2 送ったキーワード: 101 文字 → 入力欄の値: 100 文字
+ok
+test q3_bad_page_number ... POST /signup -> 303 See Other (511.3987ms)
+POST /notes -> 303 See Other (7.39ms)
+GET /notes -> 400 Bad Request (3.5735ms)
+問3 GET /notes?q=%E7%89%9B%E4%B9%B3&page=abc → 400 Bad Request（見つかった: []）
+GET /notes -> 200 OK (6.7036ms)
+問3 GET /notes?q=%E7%89%9B%E4%B9%B3&page=0 → 200 OK（見つかった: ["牛乳を買う"]）
+GET /notes -> 400 Bad Request (2.6014ms)
+問3 GET /notes?q=%E7%89%9B%E4%B9%B3&page=-1 → 400 Bad Request（見つかった: []）
+ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.50s
+

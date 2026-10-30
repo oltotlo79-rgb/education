@@ -1,0 +1,42 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.66s
+     Running tests\u04_q.rs (target\debug\deps\u04_q-4e9785dbf3d4f039.exe)
+
+running 3 tests
+test q1_back_button ... POST /signup -> 303 See Other (421.5ms)
+POST /notes -> 303 See Other (5.6034ms)
+GET /notes/1/edit -> 200 OK (5.9538ms)
+POST /notes/1/edit -> 303 See Other (6.2597ms)
+問1 version=1 で「牛乳を2本買う」を保存 → 303 See Other
+POST /notes/1/edit -> 409 Conflict (7.2559ms)
+問1 version=1 で「牛乳を3本買う」を保存 → 409 Conflict
+問1 DB: title="牛乳を2本買う" body="1本" version=2 updated_at=2026-10-30 13:53:01
+ok
+test q2_body_only_change ... POST /signup -> 303 See Other (399.6ms)
+POST /notes -> 303 See Other (5.0083ms)
+GET /notes/1/edit -> 200 OK (3.185ms)
+GET /notes/1/edit -> 200 OK (2.5608ms)
+POST /notes/1/edit -> 303 See Other (5.8143ms)
+問2 タブ A（本文だけ直す）→ 303 See Other
+POST /notes/1/edit -> 409 Conflict (15.0158ms)
+問2 タブ B（タイトルだけ直す）→ 409 Conflict
+問2 お知らせ: ほかの画面で先に更新されました。読み込み直してください。保存されている最新のタイトルは「牛乳を買う」です。この内容で上書きする場合は、もう一度「保存する」を押してください。
+POST /notes/1/edit -> 303 See Other (6.2546ms)
+問2 タブ B がそのまま、もう一度保存 → 303 See Other
+問2 DB: title="牛乳を買う（急ぎ）" body="1本" version=3 updated_at=2026-10-30 13:53:01
+ok
+test q3_not_found_before_validation ... POST /signup -> 303 See Other (415.1565ms)
+POST /signup -> 303 See Other (399.2015ms)
+POST /notes -> 303 See Other (5.1114ms)
+POST /notes/1/edit -> 400 Bad Request (5.0016ms)
+問3 alice POST /notes/1/edit    title="" → 400 Bad Request
+POST /notes/1/edit -> 404 Not Found (3.8061ms)
+問3 bob   POST /notes/1/edit    title="" → 404 Not Found
+POST /notes/1/edit -> 404 Not Found (2.5049ms)
+問3 bob   POST /notes/1/edit    title="卵を買う" → 404 Not Found
+POST /notes/999/edit -> 404 Not Found (2.4414ms)
+問3 alice POST /notes/999/edit  title="" → 404 Not Found
+ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.79s
+
+exit=0

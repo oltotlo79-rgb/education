@@ -14,6 +14,16 @@ s = open(sys.argv[1], encoding="utf-8").read()
 bs = chr(92)
 bad = [t for t in re.findall(r"<text[^>]*>[^<]*</text>", s) if bs in t and "Consolas" not in t]
 bad += [t for t in re.findall(r'<div style="font-size:12px;color:#64748b;[^"]*">[^\n]*', s) if bs in t and "Consolas" not in t]
+# 本文・見出し（コードの外）の素の \ も、日本語のフォントでは ¥ に見える
+fence = False
+for no, line in enumerate(s.split("\n"), 1):
+    if line.startswith("```"):
+        fence = not fence
+        continue
+    if fence or line.startswith("<") or "@@" in line:
+        continue
+    if bs in re.sub(r"``.+?``|`[^`]*`", "", line):
+        bad.append(f"{no} 行目: {line}")
 for t in bad:
     print("¥ に見える \\ :", t[:100])
 sys.exit(1 if bad else 0)

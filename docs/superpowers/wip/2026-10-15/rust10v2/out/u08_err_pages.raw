@@ -1,0 +1,88 @@
+   Compiling rustnote v0.1.0 (C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust10\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.44s
+     Running tests\u08_pages.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/target10\debug\deps\u08_pages-752aa2bb9d3d78d3.exe)
+
+running 1 test
+POST /signup -> 303 See Other (438.4698ms)
+POST /notes -> 303 See Other (8.4087ms)
+POST /notes -> 303 See Other (9.4317ms)
+POST /notes -> 303 See Other (9.3375ms)
+POST /notes -> 303 See Other (7.3265ms)
+POST /notes -> 303 See Other (8.2333ms)
+POST /notes -> 303 See Other (6.965ms)
+POST /notes -> 303 See Other (6.5257ms)
+POST /notes -> 303 See Other (6.675ms)
+POST /notes -> 303 See Other (6.6486ms)
+POST /notes -> 303 See Other (8.4861ms)
+POST /notes -> 303 See Other (7.7526ms)
+POST /notes -> 303 See Other (8.7807ms)
+POST /notes -> 303 See Other (5.6999ms)
+POST /notes -> 303 See Other (5.5591ms)
+POST /notes -> 303 See Other (6.8895ms)
+POST /notes -> 303 See Other (5.816ms)
+POST /notes -> 303 See Other (6.3678ms)
+POST /notes -> 303 See Other (5.7078ms)
+POST /notes -> 303 See Other (5.6186ms)
+POST /notes -> 303 See Other (6.7425ms)
+POST /notes -> 303 See Other (5.9618ms)
+POST /notes -> 303 See Other (6.5923ms)
+POST /notes -> 303 See Other (5.7952ms)
+POST /notes -> 303 See Other (7.6811ms)
+POST /notes -> 303 See Other (6.4028ms)
+POST /notes -> 303 See Other (5.9359ms)
+POST /notes -> 303 See Other (10.4351ms)
+POST /notes -> 303 See Other (6.9778ms)
+POST /notes -> 303 See Other (7.7ms)
+POST /notes -> 303 See Other (6.5695ms)
+POST /notes -> 303 See Other (7.23ms)
+POST /notes -> 303 See Other (7.0354ms)
+POST /notes -> 303 See Other (7.1722ms)
+POST /notes -> 303 See Other (8.9096ms)
+POST /notes -> 303 See Other (7.9107ms)
+POST /notes -> 303 See Other (8.612ms)
+POST /notes -> 303 See Other (9.1151ms)
+POST /notes -> 303 See Other (9.9146ms)
+POST /notes -> 303 See Other (8.1972ms)
+POST /notes -> 303 See Other (8.0942ms)
+POST /notes -> 303 See Other (8.2283ms)
+POST /notes -> 303 See Other (7.3206ms)
+POST /notes -> 303 See Other (7.2858ms)
+POST /notes -> 303 See Other (7.2946ms)
+POST /notes -> 303 See Other (6.7663ms)
+POST /notes -> 303 See Other (7.1225ms)
+POST /notes -> 303 See Other (7.8795ms)
+POST /notes -> 303 See Other (7.3436ms)
+POST /notes -> 303 See Other (6.7682ms)
+POST /notes -> 303 See Other (6.9814ms)
+POST /notes -> 303 See Other (7.177ms)
+POST /notes -> 303 See Other (6.8611ms)
+POST /notes -> 303 See Other (7.3317ms)
+POST /notes -> 303 See Other (11.4592ms)
+POST /notes -> 303 See Other (10.5717ms)
+GET /notes -> 200 OK (6.9627ms)
+GET /notes: 20 件（ノート45 〜 ノート26）
+   1 / 2 ページ（全55件）　前へ: （なし）　次へ: /notes?page=2
+GET /notes -> 200 OK (5.0033ms)
+GET /notes?page=2: 20 件（ノート25 〜 ノート06）
+   2 / 2 ページ（全55件）　前へ: /notes?page=1　次へ: （なし）
+GET /notes -> 200 OK (8.1558ms)
+GET /notes?page=3: 15 件（ノート05 〜 メモ01）
+   3 / 2 ページ（全55件）　前へ: /notes?page=2　次へ: （なし）
+GET /notes -> 200 OK (6.2753ms)
+GET /notes?q=ノート&page=2: 20 件（ノート25 〜 ノート06）
+   2 / 2 ページ（全45件）　前へ: /notes?q=%E3%83%8E%E3%83%BC%E3%83%88&page=1　次へ: （なし）
+GET /notes -> 200 OK (5.1198ms)
+
+thread 'forty_five_notes' (216848) panicked at tests\common\mod.rs:76:49:
+called `Result::unwrap()` on an `Err` value: http::Error(InvalidUri(InvalidUriChar))
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test forty_five_notes ... FAILED
+
+failures:
+
+failures:
+    forty_five_notes
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.92s
+
+error: test failed, to rerun pass `--test u08_pages`

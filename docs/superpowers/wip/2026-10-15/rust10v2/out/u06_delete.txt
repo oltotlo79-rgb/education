@@ -1,0 +1,22 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.17s
+     Running tests\u06_delete.rs (target\debug\deps\u06_delete-3b5156e880dce559.exe)
+
+running 1 test
+POST /signup -> 303 See Other (444.1683ms)
+POST /notes -> 303 See Other (10.2683ms)
+POST /notes -> 303 See Other (8.7761ms)
+1. 削除の前の id: [1, 2]
+POST /notes/1/delete -> 303 See Other (7.6138ms)
+2. POST /notes/1/delete → 303 See Other（Location: /notes・flash=note_deleted）
+   削除のあとの id: [2]
+GET /notes -> 200 OK (5.7574ms)
+3. 一覧: お知らせ「ノートを削除しました」=true・「牛乳を買う」=false・「卵を買う」=true
+GET /notes/1 -> 404 Not Found (4.9156ms)
+4. GET /notes/1 → 404 Not Found
+POST /notes/1/delete -> 404 Not Found (4.6181ms)
+5. もう一度 POST /notes/1/delete → 404 Not Found
+test delete_a_note ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.51s
+
+exit=0

@@ -1,0 +1,2 @@
+（いまの CSS）完了にする: outline auto 1px rgb(16, 16, 16)
+（:focus { outline: none; } を足したあと）完了にする: outline none 3px rgb(194, 65, 12)

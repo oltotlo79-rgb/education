@@ -1,0 +1,57 @@
+   Compiling rustnote v0.1.0 (C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust10\rustnote)
+warning: function `escape_like` is never used
+   --> src\repository\notes.rs:221:4
+    |
+221 | fn escape_like(keyword: &str) -> String {
+    |    ^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `rustnote` (lib) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 8.13s
+     Running tests\u07_search.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/target10\debug\deps\u07_search-3ee22547c7532a34.exe)
+
+running 1 test
+POST /signup -> 303 See Other (416.5437ms)
+POST /notes -> 303 See Other (5.9495ms)
+POST /notes -> 303 See Other (6.8136ms)
+POST /notes -> 303 See Other (8.716ms)
+POST /notes -> 303 See Other (6.2745ms)
+POST /notes -> 303 See Other (8.7159ms)
+POST /notes -> 303 See Other (6.0444ms)
+GET /notes -> 200 OK (4.8385ms)
+q="100%"
+   見つかった: ["100 円の牛乳", "セール 100% オフ"]
+   入力欄の値: "100%"・1 / 1 ページ（全2件）
+GET /notes -> 200 OK (2.8538ms)
+q="file_name"
+   見つかった: ["file-name を決める", "file_name の決め方"]
+   入力欄の値: "file_name"・1 / 1 ページ（全2件）
+GET /notes -> 200 OK (2.8295ms)
+q="\\"
+   見つかった: []
+   入力欄の値: "\\"・1 / 1 ページ（全0件）
+GET /notes -> 200 OK (2.7397ms)
+q="牛乳"
+   見つかった: ["買い物メモ", "100 円の牛乳"]
+   入力欄の値: "牛乳"・1 / 1 ページ（全2件）
+GET /notes -> 200 OK (3.1497ms)
+q="%"
+   見つかった: ["買い物メモ", "C:\\tmp の掃除", "file-name を決める", "file_name の決め方", "100 円の牛乳", "セール 100% オフ"]
+   入力欄の値: "%"・1 / 1 ページ（全6件）
+GET /notes -> 200 OK (2.9356ms)
+q="_"
+   見つかった: ["買い物メモ", "C:\\tmp の掃除", "file-name を決める", "file_name の決め方", "100 円の牛乳", "セール 100% オフ"]
+   入力欄の値: "_"・1 / 1 ページ（全6件）
+GET /notes -> 200 OK (2.6919ms)
+q="  牛乳  "
+   見つかった: ["買い物メモ", "100 円の牛乳"]
+   入力欄の値: "牛乳"・1 / 1 ページ（全2件）
+GET /notes -> 200 OK (2.787ms)
+q="   "
+   見つかった: ["買い物メモ", "C:\\tmp の掃除", "file-name を決める", "file_name の決め方", "100 円の牛乳", "セール 100% オフ"]
+   入力欄の値: "（なし）"・1 / 1 ページ（全6件）
+test search_special_characters ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.51s
+

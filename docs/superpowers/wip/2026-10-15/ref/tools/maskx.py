@@ -1,6 +1,6 @@
 """出力のパスを伏せる（標準入力 → 標準出力）。
 
-- スクラッチの target-shared        -> target
+- スクラッチの target-shared・targetNN -> target
 - スクラッチの rustNN/<プロジェクト> -> ...<区切り><プロジェクト>
 - そのほかのユーザーフォルダの下のパス -> ...<区切り><最後の部分>
 """
@@ -31,13 +31,13 @@ bases = [
 for base in bases:
     for sep in (BS, "/"):
         data = data.replace(base + sep + "target-shared", "target")
-        data = data.replace(base + sep + "target11", "target")
+        data = re.sub(re.escape(base + sep) + r"target\d\d(?!\d)", "target", data)
         pattern = re.escape(base + sep) + r"rust\d\d\w*" + re.escape(sep)
         data = re.sub(pattern, lambda m: "..." + BS, data)
 # {:?} で表示したパス（\ が \\ になっている）も同じように伏せる
 DBS = BS * 2
 data = data.replace(SCRATCH.replace(BS, DBS) + DBS + "target-shared", "target")
-data = data.replace(SCRATCH.replace(BS, DBS) + DBS + "target11", "target")
+data = re.sub(re.escape(SCRATCH.replace(BS, DBS) + DBS) + r"target\d\d(?!\d)", "target", data)
 data = re.sub(re.escape(SCRATCH.replace(BS, DBS) + DBS) + r"rust\d\d\w*" + re.escape(DBS), lambda m: "..." + DBS, data)
 # target/debug\ のように区切りが混ざったものを、\ にそろえる
 for profile in ("debug", "release"):

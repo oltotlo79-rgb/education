@@ -230,39 +230,39 @@ cargo test --test u01_list -- --nocapture --test-threads=1
 **▼ 実行結果**
 
 ```text
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 19.78s
-     Running tests\u01_list.rs (target\debug\deps\u01_list-d04e2970d522cf0b.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.46s
+     Running tests\u01_list.rs (target\debug\deps\u01_list-0d57f366070afeda.exe)
 
 running 3 tests
-test empty_then_newest_first ... POST /signup -> 303 See Other (466.6657ms)
-GET /notes -> 200 OK (9.5072ms)
+test empty_then_newest_first ... POST /signup -> 303 See Other (583.2082ms)
+GET /notes -> 200 OK (5.6154ms)
 [ノートが 0 件] 空の文が出る: true
-POST /notes -> 303 See Other (9.6777ms)
-POST /notes -> 303 See Other (11.3172ms)
-POST /notes -> 303 See Other (7.7175ms)
-GET /notes -> 200 OK (5.0939ms)
+POST /notes -> 303 See Other (10.0323ms)
+POST /notes -> 303 See Other (10.109ms)
+POST /notes -> 303 See Other (9.5529ms)
+GET /notes -> 200 OK (5.5839ms)
 [3 件作った] 並び順: ["3件目", "2件目", "1件目"]
 [3 件作った] ページ送り: true
-POST /signup -> 303 See Other (396.9523ms)
-GET /notes -> 200 OK (3.432ms)
+POST /signup -> 303 See Other (574.0721ms)
+GET /notes -> 200 OK (5.5192ms)
 [bob の一覧] 空の文が出る: true / alice のノートが出る: false
 [bob の一覧] ページ送り: true
 ok
-test ordered_by_updated_at_then_id ... POST /signup -> 303 See Other (426.5175ms)
-POST /notes -> 303 See Other (6.6846ms)
-POST /notes -> 303 See Other (7.1091ms)
-POST /notes -> 303 See Other (6.2833ms)
-GET /notes -> 200 OK (8.3724ms)
+test ordered_by_updated_at_then_id ... POST /signup -> 303 See Other (532.8901ms)
+POST /notes -> 303 See Other (9.5425ms)
+POST /notes -> 303 See Other (8.5775ms)
+POST /notes -> 303 See Other (9.3065ms)
+GET /notes -> 200 OK (16.4698ms)
 [3件目を 1 日前の更新にした] 並び順: ["2件目", "1件目", "3件目"]
 ok
-test titles_are_escaped ... POST /signup -> 303 See Other (427.4357ms)
-POST /notes -> 303 See Other (5.3111ms)
-GET /notes -> 200 OK (3.8569ms)
+test titles_are_escaped ... POST /signup -> 303 See Other (591.5261ms)
+POST /notes -> 303 See Other (6.9616ms)
+GET /notes -> 200 OK (5.1461ms)
 タグのまま入っている: false
 文字に置き換わっている: true
 ok
 
-test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.87s
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.45s
 ```
 
 #### ▼ コードを1つずつ分解して解説
@@ -382,7 +382,7 @@ cargo run -q --example u01_order
 **▼ 実行結果**
 
 ```text
-updated_at: ["2026-10-27 15:12:41"]
+updated_at: ["2026-10-30 13:35:47"]
 ORDER BY updated_at DESC         → ["3件目", "2件目", "1件目"]
 ORDER BY updated_at DESC, id DESC → ["3件目", "2件目", "1件目"]
 ```
@@ -419,7 +419,7 @@ error[E0382]: use of partially moved value
     |                          ^^^^ value used here after partial move
     |
 note: the `for` loop is desugared into a call to `std::iter::IntoIterator::into_iter`, which takes ownership of the receiver `self`, which moves value
-   --> /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\iter\traits\collect.rs:312:17
+   --> /rustc/58cf8f9c35b355199727627d07ae34a4e2846d67/library\core\src\iter\traits\collect.rs:312:17
     = note: partial move occurs because value has type `std::vec::Vec<Note>`, which does not implement the `Copy` trait
 help: consider iterating over a slice of the `std::vec::Vec<Note>`'s content to avoid moving into the `for` loop
     |
@@ -532,7 +532,7 @@ DB を検索するところは、図の③で見た SQL です（`src/repository
 ```
 
 - 持ち主の条件を含む `condition` を、件数の SQL と一覧の SQL の**両方で使い回して**います。条件を1か所に書くので、片方だけ書き忘れる心配がありません（問2）。
-- キーワードが無いときは、`?2` に `%`（何にでも一致する）を入れます。キーワードの中の `%` や `_` をただの文字として扱う `escape_like` は、UNIT 07（準備中）で扱います。
+- キーワードが無いときは、`?2` に `%`（何にでも一致する）を入れます。キーワードの中の `%` や `_` をただの文字として扱う `escape_like` は、UNIT 07 で扱います。
 
 ### 練習問題
 
@@ -604,22 +604,22 @@ cargo test --test u01_q1 -- --nocapture
 
 ```text
    Compiling rustnote v0.1.0 (...\rustnote)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 13.14s
-     Running tests\u01_q1.rs (target\debug\deps\u01_q1-81fa10c5a5eabbd3.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.26s
+     Running tests\u01_q1.rs (target\debug\deps\u01_q1-bce08f7bd283041f.exe)
 
 running 1 test
-POST /signup -> 303 See Other (415.3854ms)
-POST /notes -> 303 See Other (6.5261ms)
-POST /notes -> 303 See Other (6.1675ms)
-POST /notes -> 303 See Other (8.6278ms)
-POST /notes/1/toggle -> 303 See Other (16.379ms)
-GET /notes -> 200 OK (14.0618ms)
+POST /signup -> 303 See Other (420.6426ms)
+POST /notes -> 303 See Other (6.669ms)
+POST /notes -> 303 See Other (6.1696ms)
+POST /notes -> 303 See Other (5.6107ms)
+POST /notes/1/toggle -> 303 See Other (10.7107ms)
+GET /notes -> 200 OK (9.9974ms)
 並び順: ["1件目", "3件目", "2件目"]
 完了の印の付いた行: 1
 「完了」のバッジ: 1
 test toggled_note_moves_to_top_with_badge ... ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.50s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.49s
 ```
 
 - 1件目がいちばん上に移りました。完了の切り替え（`toggle_done`）の SQL は、`done` を反対にするのと一緒に、`updated_at = datetime('now')` で更新の時刻を今にするからです（`src/repository/notes.rs`）。残りの2件は、どちらも1時間前の同じ時刻なので、`id DESC` で 3件目、2件目の順です。
@@ -749,22 +749,22 @@ cargo test --test u01_q3 -- --nocapture
 
 ```text
    Compiling rustnote v0.1.0 (...\rustnote)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.51s
-     Running tests\u01_q3.rs (target\debug\deps\u01_q3-f9715f282720c475.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.29s
+     Running tests\u01_q3.rs (target\debug\deps\u01_q3-ead5ae5e7277cf12.exe)
 
 running 1 test
-POST /signup -> 303 See Other (439.0876ms)
-POST /notes -> 303 See Other (6.562ms)
-GET /notes -> 200 OK (4.1019ms)
+POST /signup -> 303 See Other (485.3685ms)
+POST /notes -> 303 See Other (10.3552ms)
+GET /notes -> 200 OK (7.401ms)
 /notes → （空の文は無し）
-GET /notes -> 200 OK (3.3416ms)
+GET /notes -> 200 OK (4.7077ms)
 /notes?q=宿題 → 条件に合うノートはありません。
-POST /signup -> 303 See Other (422.86ms)
-GET /notes -> 200 OK (2.7616ms)
+POST /signup -> 303 See Other (440.9546ms)
+GET /notes -> 200 OK (4.159ms)
 /notes（bob）→ まだノートがありません。最初の1件を書いてみましょう。
 test empty_messages_differ ... ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.90s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.98s
 ```
 
 - alice は「買い物」のノートを持っているので、`/notes` には空の文が出ません。「宿題」で検索すると「条件に合うノートはありません。」、ノートを1件も持っていない bob には「まだノートがありません。最初の1件を書いてみましょう。」が出ました。

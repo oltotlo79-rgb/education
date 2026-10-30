@@ -1,0 +1,38 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.96s
+     Running tests\u10_journey.rs (target\debug\deps\u10_journey-53b14666b48745e2.exe)
+
+running 1 test
+POST /signup -> 303 See Other (404.3796ms)
+✓ 1. alice が新規登録できる
+GET /notes -> 200 OK (3.4273ms)
+✓ 2. 最初の一覧は空で、次にすることを伝える
+POST /notes -> 303 See Other (6.1585ms)
+✓ 3. 作成すると 303 で詳細へ移る
+POST /notes -> 400 Bad Request (4.2904ms)
+✓ 4. 空のタイトルは 400 で、保存しない
+GET /notes/1 -> 200 OK (2.6538ms)
+✓ 5. 詳細では、タイトルの < > が文字として出る
+GET /notes -> 200 OK (2.7523ms)
+GET /notes -> 200 OK (3.1904ms)
+✓ 6. 検索は、% をただの文字として探す
+POST /notes/1/edit -> 303 See Other (7.9543ms)
+✓ 7. 編集を保存すると 303
+POST /notes/1/edit -> 303 See Other (8.553ms)
+
+thread 'whole_journey' (212604) panicked at tests\u10_journey.rs:81:5:
+assertion `left == right` failed: 8. 古い version の保存は 409 のはず
+  left: 303
+ right: 409
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test whole_journey ... FAILED
+
+failures:
+
+failures:
+    whole_journey
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.47s
+
+error: test failed, to rerun pass `--test u10_journey`
+exit=101

@@ -1,0 +1,7 @@
+1. a「RustNote」 枠: auto
+2. a「ノート一覧」 枠: auto
+3. button「ログアウト」 枠: auto
+4. a「編集」 枠: auto
+5. button「完了にする」 枠: auto
+6. button「削除」 枠: auto
+7. a「← 一覧に戻る」 枠: auto

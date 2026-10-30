@@ -1,0 +1,111 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.64s
+     Running tests\u08_shift.rs (target\debug\deps\u08_shift-5027c48d9c286717.exe)
+
+running 3 tests
+test a_note_is_added ... POST /signup -> 303 See Other (419.9347ms)
+POST /notes -> 303 See Other (6.8235ms)
+POST /notes -> 303 See Other (6.3571ms)
+POST /notes -> 303 See Other (9.0361ms)
+POST /notes -> 303 See Other (8.8327ms)
+POST /notes -> 303 See Other (7.3517ms)
+POST /notes -> 303 See Other (6.3724ms)
+POST /notes -> 303 See Other (7.9296ms)
+POST /notes -> 303 See Other (7.1052ms)
+POST /notes -> 303 See Other (8.3817ms)
+POST /notes -> 303 See Other (7.2777ms)
+POST /notes -> 303 See Other (6.3771ms)
+POST /notes -> 303 See Other (6.5231ms)
+POST /notes -> 303 See Other (5.8131ms)
+POST /notes -> 303 See Other (10.6643ms)
+POST /notes -> 303 See Other (10.2797ms)
+POST /notes -> 303 See Other (7.3177ms)
+POST /notes -> 303 See Other (6.4385ms)
+POST /notes -> 303 See Other (7.9872ms)
+POST /notes -> 303 See Other (8.6853ms)
+POST /notes -> 303 See Other (8.8112ms)
+POST /notes -> 303 See Other (6.9225ms)
+POST /notes -> 303 See Other (8.1227ms)
+POST /notes -> 303 See Other (7.1388ms)
+POST /notes -> 303 See Other (6.6925ms)
+POST /notes -> 303 See Other (5.8536ms)
+GET /notes -> 200 OK (4.574ms)
+1. 1ページ目: ノート25 〜 ノート06
+POST /notes -> 303 See Other (6.5745ms)
+2. 「新しいノート」を作った
+GET /notes -> 200 OK (7.164ms)
+3. 2ページ目を開く
+   2ページ目: ["ノート06", "ノート05", "ノート04", "ノート03", "ノート02", "ノート01"]
+   2回出た: ["ノート06"]　どちらにも出なかった: []
+ok
+test a_note_is_deleted ... POST /signup -> 303 See Other (413.1477ms)
+POST /notes -> 303 See Other (5.6776ms)
+POST /notes -> 303 See Other (6.9035ms)
+POST /notes -> 303 See Other (6.3355ms)
+POST /notes -> 303 See Other (8.183ms)
+POST /notes -> 303 See Other (7.4084ms)
+POST /notes -> 303 See Other (6.6566ms)
+POST /notes -> 303 See Other (6.9631ms)
+POST /notes -> 303 See Other (7.8838ms)
+POST /notes -> 303 See Other (6.7955ms)
+POST /notes -> 303 See Other (7.4457ms)
+POST /notes -> 303 See Other (6.7818ms)
+POST /notes -> 303 See Other (5.786ms)
+POST /notes -> 303 See Other (6.6268ms)
+POST /notes -> 303 See Other (5.5508ms)
+POST /notes -> 303 See Other (6.4692ms)
+POST /notes -> 303 See Other (6.5854ms)
+POST /notes -> 303 See Other (7.5588ms)
+POST /notes -> 303 See Other (9.8097ms)
+POST /notes -> 303 See Other (6.4743ms)
+POST /notes -> 303 See Other (6.047ms)
+POST /notes -> 303 See Other (5.0492ms)
+POST /notes -> 303 See Other (5.7485ms)
+POST /notes -> 303 See Other (8.8208ms)
+POST /notes -> 303 See Other (7.5517ms)
+POST /notes -> 303 See Other (6.1662ms)
+GET /notes -> 200 OK (4.4578ms)
+1. 1ページ目: ノート25 〜 ノート06
+POST /notes/20/delete -> 303 See Other (5.9512ms)
+2. 「ノート20」を削除した
+GET /notes -> 200 OK (4.8368ms)
+3. 2ページ目を開く
+   2ページ目: ["ノート04", "ノート03", "ノート02", "ノート01"]
+   2回出た: []　どちらにも出なかった: ["ノート05"]
+ok
+test cursor_instead_of_offset ... POST /signup -> 303 See Other (415.4941ms)
+POST /notes -> 303 See Other (6.9455ms)
+POST /notes -> 303 See Other (7.2353ms)
+POST /notes -> 303 See Other (7.2103ms)
+POST /notes -> 303 See Other (6.1458ms)
+POST /notes -> 303 See Other (6.3267ms)
+POST /notes -> 303 See Other (6.0429ms)
+POST /notes -> 303 See Other (5.2914ms)
+POST /notes -> 303 See Other (6.2689ms)
+POST /notes -> 303 See Other (7.3157ms)
+POST /notes -> 303 See Other (7.7433ms)
+POST /notes -> 303 See Other (7.5303ms)
+POST /notes -> 303 See Other (7.5512ms)
+POST /notes -> 303 See Other (8.3383ms)
+POST /notes -> 303 See Other (9.1286ms)
+POST /notes -> 303 See Other (8.0751ms)
+POST /notes -> 303 See Other (6.9095ms)
+POST /notes -> 303 See Other (6.3653ms)
+POST /notes -> 303 See Other (6.3265ms)
+POST /notes -> 303 See Other (6.8499ms)
+POST /notes -> 303 See Other (6.5782ms)
+POST /notes -> 303 See Other (6.0628ms)
+POST /notes -> 303 See Other (6.5943ms)
+POST /notes -> 303 See Other (6.488ms)
+POST /notes -> 303 See Other (6.7396ms)
+POST /notes -> 303 See Other (6.5245ms)
+1. 1ページ目: ノート25 〜 ノート06（続きの印: updated_at=2026-10-30 14:30:45 id=6）
+POST /notes -> 303 See Other (3.4389ms)
+2. 「新しいノート」を作った
+3. 続きの印のあとを読む
+   2ページ目: ["ノート05", "ノート04", "ノート03", "ノート02", "ノート01"]
+   2回出た: []　どちらにも出なかった: []
+ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.89s
+
+exit=0

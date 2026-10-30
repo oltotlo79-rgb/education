@@ -1,0 +1,74 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.82s
+     Running tests\u09_flash.rs (target\debug\deps\u09_flash-512f8e90453c6dda.exe)
+
+running 1 test
+POST /signup -> 303 See Other (513.2513ms)
+1. 新規登録: POST /signup → 303 See Other → /notes
+   予約: flash=signed_up; HttpOnly; SameSite=Lax; Path=/; Max-Age=300
+GET /notes -> 200 OK (6.3206ms)
+   /notes の画面: <p class="flash success" role="status">登録しました。ようこそ RustNote へ！</p>
+   消す: （なし）
+GET /notes -> 200 OK (7.7951ms)
+   再読み込み: <p class="flash success" role="status">登録しました。ようこそ RustNote へ！</p>
+POST /notes -> 303 See Other (6.585ms)
+2. 作成: POST /notes → 303 See Other → /notes/1
+   予約: flash=note_created; HttpOnly; SameSite=Lax; Path=/; Max-Age=300
+GET /notes/1 -> 200 OK (5.4321ms)
+   /notes/1 の画面: <p class="flash success" role="status">ノートを作成しました</p>
+   消す: （なし）
+GET /notes/1 -> 200 OK (3.387ms)
+   再読み込み: <p class="flash success" role="status">ノートを作成しました</p>
+POST /notes/1/edit -> 303 See Other (8.8889ms)
+3. 保存: POST /notes/1/edit → 303 See Other → /notes/1
+   予約: flash=note_updated; HttpOnly; SameSite=Lax; Path=/; Max-Age=300
+GET /notes/1 -> 200 OK (7.3295ms)
+   /notes/1 の画面: <p class="flash success" role="status">ノートを保存しました</p>
+   消す: （なし）
+GET /notes/1 -> 200 OK (3.3644ms)
+   再読み込み: <p class="flash success" role="status">ノートを保存しました</p>
+POST /notes/1/toggle -> 303 See Other (7.9554ms)
+4. 完了の切り替え: POST /notes/1/toggle → 303 See Other → /notes/1
+   予約: flash=note_toggled; HttpOnly; SameSite=Lax; Path=/; Max-Age=300
+GET /notes/1 -> 200 OK (9.7298ms)
+   /notes/1 の画面: <p class="flash success" role="status">完了の状態を切り替えました</p>
+   消す: （なし）
+GET /notes/1 -> 200 OK (3.2129ms)
+   再読み込み: <p class="flash success" role="status">完了の状態を切り替えました</p>
+POST /notes/1/delete -> 303 See Other (10.6138ms)
+5. 削除: POST /notes/1/delete → 303 See Other → /notes
+   予約: flash=note_deleted; HttpOnly; SameSite=Lax; Path=/; Max-Age=300
+GET /notes -> 200 OK (7.9702ms)
+   /notes の画面: <p class="flash success" role="status">ノートを削除しました</p>
+   消す: （なし）
+GET /notes -> 200 OK (3.7107ms)
+   再読み込み: <p class="flash success" role="status">ノートを削除しました</p>
+POST /logout -> 303 See Other (8.3039ms)
+6. ログアウト: POST /logout → 303 See Other → /login
+   予約: flash=logged_out; HttpOnly; SameSite=Lax; Path=/; Max-Age=300
+GET /login -> 200 OK (234.1µs)
+   /login の画面: <p class="flash success" role="status">ログアウトしました</p>
+   消す: （なし）
+GET /login -> 200 OK (68.6µs)
+   再読み込み: <p class="flash success" role="status">ログアウトしました</p>
+GET /notes -> 303 See Other (38.3µs)
+7. ログインせずに一覧: GET /notes → 303 See Other → /login
+   予約: flash=login_required; HttpOnly; SameSite=Lax; Path=/; Max-Age=300
+GET /login -> 200 OK (57.5µs)
+   /login の画面: <p class="flash warning" role="status">ログインしてください</p>
+   消す: （なし）
+GET /login -> 200 OK (50.9µs)
+   再読み込み: <p class="flash warning" role="status">ログインしてください</p>
+POST /login -> 303 See Other (528.2474ms)
+8. ログイン: POST /login → 303 See Other → /notes
+   予約: flash=logged_in; HttpOnly; SameSite=Lax; Path=/; Max-Age=300
+GET /notes -> 200 OK (5.9836ms)
+   /notes の画面: <p class="flash success" role="status">ログインしました</p>
+   消す: （なし）
+GET /notes -> 200 OK (5.4114ms)
+   再読み込み: <p class="flash success" role="status">ログインしました</p>
+test eight_flashes ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.20s
+
+exit=0

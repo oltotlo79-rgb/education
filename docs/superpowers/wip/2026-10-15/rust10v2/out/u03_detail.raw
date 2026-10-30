@@ -1,0 +1,37 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.69s
+     Running tests\u03_detail.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/target10\debug\deps\u03_detail-a30d15660f9271a6.exe)
+
+running 1 test
+test detail_answers_by_owner_and_id ... POST /signup -> 303 See Other (436.758ms)
+POST /signup -> 303 See Other (391.2964ms)
+POST /notes -> 303 See Other (6.3269ms)
+alice のノート: /notes/1
+--- 表 ---
+GET /notes/1 -> 200 OK (6.2485ms)
+alice      GET /notes/1                     200 OK
+GET /notes/1 -> 404 Not Found (3.3472ms)
+bob        GET /notes/1                     404 Not Found
+GET /notes/999 -> 404 Not Found (2.8712ms)
+bob        GET /notes/999                   404 Not Found
+GET /notes/999 -> 404 Not Found (2.8065ms)
+alice      GET /notes/999                   404 Not Found
+GET /notes/abc -> 404 Not Found (1.3674ms)
+alice      GET /notes/abc                   404 Not Found
+GET /notes/0 -> 404 Not Found (1.3121ms)
+alice      GET /notes/0                     404 Not Found
+GET /notes/-1 -> 404 Not Found (2.5427ms)
+alice      GET /notes/-1                    404 Not Found
+GET /notes/9223372036854775808 -> 404 Not Found (1.4297ms)
+alice      GET /notes/9223372036854775808   404 Not Found
+GET /notes/1 -> 303 See Other (45.5µs)
+guest      GET /notes/1                     303 See Other → /login
+GET /notes/1 -> 404 Not Found (2.5757ms)
+GET /notes/999 -> 404 Not Found (2.5216ms)
+--- bob から見た2つの 404 ---
+状態コード: 404 Not Found / 404 Not Found
+本文の長さ: 690 / 690 バイト
+本文がまったく同じ: true
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.88s
+

@@ -1,0 +1,34 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.46s
+     Running tests\u01_list.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/target10\debug\deps\u01_list-0d57f366070afeda.exe)
+
+running 3 tests
+test empty_then_newest_first ... POST /signup -> 303 See Other (583.2082ms)
+GET /notes -> 200 OK (5.6154ms)
+[ノートが 0 件] 空の文が出る: true
+POST /notes -> 303 See Other (10.0323ms)
+POST /notes -> 303 See Other (10.109ms)
+POST /notes -> 303 See Other (9.5529ms)
+GET /notes -> 200 OK (5.5839ms)
+[3 件作った] 並び順: ["3件目", "2件目", "1件目"]
+[3 件作った] ページ送り: true
+POST /signup -> 303 See Other (574.0721ms)
+GET /notes -> 200 OK (5.5192ms)
+[bob の一覧] 空の文が出る: true / alice のノートが出る: false
+[bob の一覧] ページ送り: true
+ok
+test ordered_by_updated_at_then_id ... POST /signup -> 303 See Other (532.8901ms)
+POST /notes -> 303 See Other (9.5425ms)
+POST /notes -> 303 See Other (8.5775ms)
+POST /notes -> 303 See Other (9.3065ms)
+GET /notes -> 200 OK (16.4698ms)
+[3件目を 1 日前の更新にした] 並び順: ["2件目", "1件目", "3件目"]
+ok
+test titles_are_escaped ... POST /signup -> 303 See Other (591.5261ms)
+POST /notes -> 303 See Other (6.9616ms)
+GET /notes -> 200 OK (5.1461ms)
+タグのまま入っている: false
+文字に置き換わっている: true
+ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.45s
+

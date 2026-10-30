@@ -1,0 +1,42 @@
+   Compiling rustnote v0.1.0 (C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust10\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.22s
+     Running unittests src\lib.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/target10\debug\deps\rustnote-c39f4ee352b39312.exe)
+
+running 19 tests
+test config::tests::debug_output_hides_the_token ... ok
+test config::tests::local_file_needs_no_token ... ok
+test config::tests::local_sqld_over_http_needs_no_token ... ok
+test config::tests::turso_url_needs_a_token ... ok
+test domain::tests::email_is_normalized ... ok
+test domain::tests::new_note_collects_all_errors ... ok
+test domain::tests::note_body_normalizes_newlines_and_limits_length ... ok
+test domain::tests::note_id_parses_only_positive_numbers ... ok
+test domain::tests::note_title_counts_characters_not_bytes ... ok
+test domain::tests::email_rejects_bad_forms ... ok
+test domain::tests::note_title_is_trimmed ... ok
+test domain::tests::note_query_defaults_and_offset ... ok
+test domain::tests::note_page_counts_pages ... FAILED
+test domain::tests::note_title_rejects_empty_and_spaces ... ok
+test domain::tests::password_length_is_checked_and_hidden_in_debug ... ok
+test error::tests::repo_errors_map_to_app_errors ... ok
+test flash::tests::codes_round_trip ... ok
+test error::tests::status_codes_and_public_messages ... ok
+test repository::notes::tests::like_special_characters_are_escaped ... ok
+
+failures:
+
+---- domain::tests::note_page_counts_pages stdout ----
+
+thread 'domain::tests::note_page_counts_pages' (128972) panicked at src\domain.rs:513:9:
+assertion `left == right` failed
+  left: 1
+ right: 2
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    domain::tests::note_page_counts_pages
+
+test result: FAILED. 18 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--lib`

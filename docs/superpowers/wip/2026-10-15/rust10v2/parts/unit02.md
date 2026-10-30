@@ -108,7 +108,7 @@
 
 - ②の 303 は「次は、この URL を **GET で**取りに来てください」という返事です。本文の画面はありません。
 - ブラウザは③で、自分で `/notes/1` を GET します。アドレス欄も `/notes/1` に変わります。だから⑤の再読み込みは「GET /notes/1 をもう一度」になり、ノートは増えません。
-- お知らせ（「ノートを作成しました」）は、クッキーで②から③へ受け渡し、④で表示したら消します。これで、⑥ではもう出ません（お知らせのくわしい仕組みは UNIT 09（準備中））。
+- お知らせ（「ノートを作成しました」）は、クッキーで②から③へ受け渡し、④で表示したら消します。これで、⑥ではもう出ません（お知らせのくわしい仕組みは UNIT 09）。
 
 検査は、タイトルと本文を**両方とも**調べてから、結果をまとめます。
 
@@ -279,12 +279,12 @@ cargo test --test u02_create -- --nocapture --test-threads=1
 **▼ 実行結果**（`POST /notes -> …` のような行は、RustNote のアクセスログです。Expires の日時は、実行した日によって変わります）
 
 ```text
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.78s
-     Running tests\u02_create.rs (target\debug\deps\u02_create-b3f494a9a5c39448.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.21s
+     Running tests\u02_create.rs (target\debug\deps\u02_create-c932d3cf649ad3d9.exe)
 
 running 2 tests
-test invalid_input_is_shown_again_with_400 ... POST /signup -> 303 See Other (399.688ms)
-POST /notes -> 400 Bad Request (3.5364ms)
+test invalid_input_is_shown_again_with_400 ... POST /signup -> 303 See Other (418.1849ms)
+POST /notes -> 400 Bad Request (4.4522ms)
 [タイトルが空] POST /notes → 400 Bad Request
    Location ヘッダー: false
 <details class="new-note" open="">
@@ -299,30 +299,30 @@ POST /notes -> 400 Bad Request (3.5364ms)
 </form>
 </details>
 notes 表の件数: 0
-POST /notes -> 400 Bad Request (5.9791ms)
+POST /notes -> 400 Bad Request (6.6684ms)
 [両方とも不合格] POST /notes → 400 Bad Request
    「タイトルを入力してください」: true
    「本文は10000文字以内にしてください（現在10001文字）」: true
    本文の入力欄に 10,001 文字が残っている: true
 notes 表の件数: 0
 ok
-test success_redirects_with_303 ... POST /signup -> 303 See Other (405.093ms)
-POST /notes -> 303 See Other (7.377ms)
+test success_redirects_with_303 ... POST /signup -> 303 See Other (629.3647ms)
+POST /notes -> 303 See Other (7.0825ms)
 1. POST /notes → 303 See Other
    Location: /notes/1
    Set-Cookie: flash=note_created; HttpOnly; SameSite=Lax; Path=/; Max-Age=300
-GET /notes/1 -> 200 OK (4.793ms)
+GET /notes/1 -> 200 OK (4.7185ms)
 2. GET /notes/1
    お知らせ「ノートを作成しました」: true
    タイトル「買い物メモ」: true
-   Set-Cookie: flash=; Path=/; Max-Age=0; Expires=Wed, 29 Oct 2025 15:16:39 GMT
-GET /notes/1 -> 200 OK (3.5781ms)
+   Set-Cookie: flash=; Path=/; Max-Age=0; Expires=Thu, 30 Oct 2025 13:36:19 GMT
+GET /notes/1 -> 200 OK (3.4728ms)
 3. もう一度 GET /notes/1（再読み込み）
    お知らせ「ノートを作成しました」: false
 notes 表の件数: 1
 ok
 
-test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.90s
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.12s
 ```
 
 #### ▼ コードを1つずつ分解して解説
@@ -411,26 +411,26 @@ cargo test --test u02_reload -- --nocapture
 **▼ 実行結果**
 
 ```text
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.75s
-     Running tests\u02_reload.rs (target\debug\deps\u02_reload-c30daf2536228748.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.15s
+     Running tests\u02_reload.rs (target\debug\deps\u02_reload-ff61c2c393f9c231.exe)
 
 running 1 test
-POST /signup -> 303 See Other (388.9575ms)
-POST /notes -> 303 See Other (6.7285ms)
+POST /signup -> 303 See Other (446.5839ms)
+POST /notes -> 303 See Other (15.8617ms)
 POST /notes → 303 See Other（Location: /notes/1）
-GET /notes/1 -> 200 OK (3.8365ms)
+GET /notes/1 -> 200 OK (12.7988ms)
 再読み込み 1 回目: GET /notes/1 → 200 OK
-GET /notes/1 -> 200 OK (2.8887ms)
+GET /notes/1 -> 200 OK (9.4475ms)
 再読み込み 2 回目: GET /notes/1 → 200 OK
-GET /notes/1 -> 200 OK (2.9527ms)
+GET /notes/1 -> 200 OK (7.83ms)
 再読み込み 3 回目: GET /notes/1 → 200 OK
 ノートの id: [1]
-POST /notes -> 303 See Other (6.5562ms)
+POST /notes -> 303 See Other (10.3436ms)
 同じ POST をもう一度送る → 303 See Other（Location: /notes/2）
 ノートの id: [1, 2]
 test reload_after_redirect_does_not_duplicate ... ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.43s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.54s
 ```
 
 - 再読み込みを3回しても、ノートの id は `[1]` のままです。くり返されたのは GET だけだからです。
@@ -549,20 +549,20 @@ cargo test --test u02_err_name -- --nocapture
 ```
 
 ```text
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.47s
-     Running tests\u02_err_name.rs (target\debug\deps\u02_err_name-9c4aff559b955ba0.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.25s
+     Running tests\u02_err_name.rs (target\debug\deps\u02_err_name-d48f1d2996b9f549.exe)
 
 running 1 test
-POST /signup -> 303 See Other (387.4675ms)
-POST /notes -> 400 Bad Request (2.1269ms)
+POST /signup -> 303 See Other (396.8765ms)
+POST /notes -> 400 Bad Request (2.2781ms)
 [name が subject] 400 Bad Request / 「送信された内容を読み取れませんでした」: true
-POST /notes -> 400 Bad Request (1.8745ms)
+POST /notes -> 400 Bad Request (1.4834ms)
 [本文の欄が無い] 400 Bad Request / 「送信された内容を読み取れませんでした」: true
-POST /notes -> 303 See Other (5.9389ms)
+POST /notes -> 303 See Other (5.1911ms)
 [余分な欄がある] 303 See Other / 「送信された内容を読み取れませんでした」: false
 test wrong_field_name ... ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.41s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.43s
 ```
 
 - **何が起きたか:** `name` が `subject` のときと、本文の欄そのものが無いときは、`400 Bad Request` と「送信された内容を読み取れませんでした」になりました。Topcoat の `Form<NoteForm>` が、送られてきた値を `NoteForm` に変えようとして、`title`（または `body`）が見つからなかったからです。この 400 は、`create` の中のコードが動く**前**に返るので、項目ごとのエラーも、入力の出し直しもありません。サーバーのログにも、アクセスログの1行のほかは何も残りません。
@@ -603,7 +603,7 @@ pub async fn create(cx: &Cx, Form(input): Form<NoteForm>) -> Result<impl View> {
 ```
 
 - `#[page(POST)]` で、`/notes` への POST をこの関数が受け取ります（同じ URL の GET は `index`）。`Form(input): Form<NoteForm>` が、送られてきたフォームを `NoteForm` に変えます。ここで失敗するのが、エラー2の 400 です。
-- 成功したときの 303 は、`return Err(see_other(…).into())` と、**エラーの形**で返しています。Topcoat の `see_other` は `router::error` にある「エラーの形の返事」で、`Err` で返すと、画面を作るのをやめて、303 の返事になります（第6巻 UNIT 06（準備中））。`href!(id::show, id::Id(note.id))` は、詳細ページの URL（`/notes/1`）を、型を確かめながら作ります。
+- 成功したときの 303 は、`return Err(see_other(…).into())` と、**エラーの形**で返しています。Topcoat の `see_other` は `router::error` にある「エラーの形の返事」で、`Err` で返すと、画面を作るのをやめて、303 の返事になります（第6巻 UNIT 06）。`href!(id::show, id::Id(note.id))` は、詳細ページの URL（`/notes/1`）を、型を確かめながら作ります。
 - 失敗したときは、`(StatusCode::BAD_REQUEST)` で状態コードを 400 にしてから、一覧の画面（`notes_index`）を、入力済みのフォームと一緒に作り直します。一覧の部分も一緒に出すので、利用者はもとの画面のまま、エラーを直せます。
 
 検査の関数 `NewNote::parse` です（`src/domain.rs` から抜き出しています）。
@@ -724,22 +724,22 @@ cargo test --test u02_q1 -- --nocapture
 ```
 
 ```text
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.73s
-     Running tests\u02_q1.rs (target\debug\deps\u02_q1-c95d3e8f58bcc743.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.18s
+     Running tests\u02_q1.rs (target\debug\deps\u02_q1-23282a983bbe2a35.exe)
 
 running 1 test
-POST /signup -> 303 See Other (386.115ms)
-POST /notes -> 303 See Other (6.0805ms)
+POST /signup -> 303 See Other (425.47ms)
+POST /notes -> 303 See Other (9.635ms)
 [前後に空白] 303 See Other
    保存されたタイトル: ["買い物"]
-POST /notes -> 400 Bad Request (4.1825ms)
+POST /notes -> 400 Bad Request (7.8748ms)
 [81 文字] 400 Bad Request
    「タイトルは80文字以内にしてください（現在81文字）」: true
    入力欄に 81 文字が残っている: true
    保存されたタイトル: ["買い物"]
 test title_is_trimmed_and_limited ... ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.42s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.47s
 ```
 
 - 前後に空白があるタイトルは、`"買い物"` として保存されました。`NoteTitle::parse` が `trim()` で前後の空白を取ってから、文字数を数えて保存するからです。
@@ -792,22 +792,22 @@ cargo test --test u02_q2 -- --nocapture
 ```
 
 ```text
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.84s
-     Running tests\u02_q2.rs (target\debug\deps\u02_q2-6804b1bc9d1c3136.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.15s
+     Running tests\u02_q2.rs (target\debug\deps\u02_q2-2cfd71d17b7bceae.exe)
 
 running 1 test
-POST /signup -> 303 See Other (394.3234ms)
+POST /signup -> 303 See Other (411.072ms)
 送ったフォーム: title=%E6%94%B9%E8%A1%8C&body=1%E8%A1%8C%E7%9B%AE%0D%0A2%E8%A1%8C%E7%9B%AE%0D%0A
-POST /notes -> 303 See Other (7.528ms)
+POST /notes -> 303 See Other (6.6879ms)
 送った本文: "1行目\r\n2行目\r\n"（10 文字）
 保存された本文: "1行目\n2行目\n"（SQLite の length: 8）
 test newlines_are_normalized ... ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.53s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.44s
 ```
 
 - 送った本文は 10 文字（`\r` と `\n` を1文字ずつ数える）でしたが、保存された本文は `"1行目\n2行目\n"` の 8 文字でした。`NoteBody::parse` が、`\r\n` を `\n` にそろえてから保存するからです。フォームの中の `%0D%0A` が、`\r\n` です。
-- そろえるのは、文字数を数える**前**です。そろえないと、改行が 1,000 個ある本文は、見た目より 1,000 文字多く数えられて、「10,000 文字まで」の決まりに早く引っかかってしまいます。保存する形がそろっていれば、検索（UNIT 07（準備中））や比べるときにも困りません。
+- そろえるのは、文字数を数える**前**です。そろえないと、改行が 1,000 個ある本文は、見た目より 1,000 文字多く数えられて、「10,000 文字まで」の決まりに早く引っかかってしまいます。保存する形がそろっていれば、検索（UNIT 07）や比べるときにも困りません。
 
 **問3の解答:**
 
@@ -871,28 +871,28 @@ cargo test --test u02_q3 -- --nocapture
 ```
 
 ```text
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.49s
-     Running tests\u02_q3.rs (target\debug\deps\u02_q3-91faee38663bf341.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.19s
+     Running tests\u02_q3.rs (target\debug\deps\u02_q3-6907ab08fcaab11f.exe)
 
 running 1 test
-POST /signup -> 303 See Other (417.1372ms)
-POST /notes -> 400 Bad Request (7.3145ms)
+POST /signup -> 303 See Other (434.0817ms)
+POST /notes -> 400 Bad Request (10.6401ms)
 [400 で出し直す] 400 Bad Request
    <input id="title" name="title" value="<b>&quot;大事&quot;</b>" required="" maxlength="80">
    " がそのまま入っている（value から抜け出せる）: false
-POST /notes -> 303 See Other (5.1299ms)
-GET /notes/1 -> 200 OK (5.8205ms)
+POST /notes -> 303 See Other (7.5609ms)
+GET /notes/1 -> 200 OK (4.2772ms)
 [詳細ページ] <h1>&lt;b&gt;"大事"&lt;/b&gt;</h1>
    本物の <b> タグになっている: false
 test title_is_escaped ... ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.46s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.49s
 ```
 
 - どちらも、本物の `<b>` タグにはなりませんでした。Topcoat の `view!` は、値を入れる**場所に合わせて**、危ない文字を書き換えます（エスケープ）。
   - (a) 入力欄の `value="…"` の中では、`"` が `&quot;` になりました。`"` がそのままだと、そこで `value` が終わってしまい、うしろに好きな属性を書かれてしまうからです。`value="…"` の中の `<` と `>` は、タグの始まりにはならないので、そのままです。
   - (b) 見出しの中では、`<` と `>` が `&lt;` と `&gt;` になりました。ここでは `<` がタグの始まりになるからです。`"` は、ここでは何も起こさないので、そのままです。
-- ブラウザには、どちらも `<b>"大事"</b>` という**文字**として表示されます。もし、ここに `<script>` を書かれて、それがそのまま HTML に入ると、ほかの人の画面で好きなプログラムを動かされてしまいます（XSS）。RustNote では、ノートは持ち主しか見られませんが、それでも、利用者の入力は**必ずエスケープして**画面に出します。エスケープの仕組みは、第6巻 UNIT 05（準備中）でくわしく扱います。
+- ブラウザには、どちらも `<b>"大事"</b>` という**文字**として表示されます。もし、ここに `<script>` を書かれて、それがそのまま HTML に入ると、ほかの人の画面で好きなプログラムを動かされてしまいます（XSS）。RustNote では、ノートは持ち主しか見られませんが、それでも、利用者の入力は**必ずエスケープして**画面に出します。エスケープの仕組みは、第6巻 UNIT 05 でくわしく扱います。
 
 ### まとめ
 

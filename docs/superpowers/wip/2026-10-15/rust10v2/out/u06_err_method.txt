@@ -1,0 +1,16 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.78s
+     Running tests\u06_delete.rs (target\debug\deps\u06_delete-3b5156e880dce559.exe)
+
+running 1 test
+POST /signup -> 303 See Other (415.0539ms)
+POST /notes -> 303 See Other (8.4906ms)
+POST /notes -> 303 See Other (10.989ms)
+1. 削除の前の id: [1, 2]
+2. POST /notes/1/delete → 405 Method Not Allowed（allow: DELETE）
+   id: [1, 2]
+test delete_a_note ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.46s
+
+exit=0

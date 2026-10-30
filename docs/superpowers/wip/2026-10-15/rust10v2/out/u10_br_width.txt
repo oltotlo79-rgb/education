@@ -1,0 +1,12 @@
+/notes         320px: 横幅 332px × はみ出す（li 286→315px）
+/notes/2       320px: 横幅 320px ○
+/notes/3       320px: 横幅 537px × はみ出す（h1 246→500px）
+/notes/3/edit  320px: 横幅 320px ○
+/notes         375px: 横幅 375px ○
+/notes/2       375px: 横幅 375px ○
+/notes/3       375px: 横幅 537px × はみ出す（h1 301→500px）
+/notes/3/edit  375px: 横幅 375px ○
+/notes         768px: 横幅 768px ○
+/notes/2       768px: 横幅 768px ○
+/notes/3       768px: 横幅 768px ○
+/notes/3/edit  768px: 横幅 768px ○

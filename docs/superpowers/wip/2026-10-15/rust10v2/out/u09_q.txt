@@ -1,0 +1,24 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.62s
+     Running tests\u09_q.rs (target\debug\deps\u09_q-a8d4e89e85bfe011.exe)
+
+running 2 tests
+test q1_handmade_cookie ... POST /signup -> 303 See Other (450.4604ms)
+GET /notes -> 200 OK (3.1307ms)
+問1 flash=%3Cscript%3Ealert(1)%3C%2Fscript%3E → お知らせ「（なし）」
+GET /notes -> 200 OK (2.9362ms)
+問1 flash=note_deleted → お知らせ「ノートを削除しました」
+GET /notes -> 200 OK (2.7997ms)
+問1 flash=NOTE_DELETED → お知らせ「（なし）」
+ok
+test q2_two_tabs ... POST /signup -> 303 See Other (420.1572ms)
+POST /notes -> 303 See Other (6.4634ms)
+問2 タブ A: POST /notes → 303 See Other（移動先 /notes/1）
+GET /notes -> 200 OK (5.5522ms)
+問2 タブ B: GET /notes → お知らせ「ノートを作成しました」
+GET /notes/1 -> 200 OK (2.6541ms)
+問2 タブ A: GET /notes/1 → お知らせ「（なし）」
+ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.96s
+
+exit=0

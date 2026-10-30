@@ -1,0 +1,24 @@
+   Compiling rustnote v0.1.0 (C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust10\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.41s
+     Running tests\u07_inject.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/target10\debug\deps\u07_inject-0c0f29c4ee998d40.exe)
+
+running 1 test
+POST /signup -> 303 See Other (445.4978ms)
+POST /signup -> 303 See Other (401.8503ms)
+POST /notes -> 303 See Other (6.144ms)
+POST /notes -> 303 See Other (7.2998ms)
+POST /notes -> 303 See Other (6.7482ms)
+GET /notes -> 200 OK (4.7006ms)
+bob が q="買い物" で検索 → 200 OK
+   見つかった: ["bob の買い物"]
+[error] サーバーの中でエラーが起きました <- DB の操作に失敗しました <- SQLite failure: `unrecognized token: "\"`
+GET /notes -> 500 Internal Server Error (2.2534ms)
+bob が q="'" で検索 → 500 Internal Server Error
+   見つかった: []
+GET /notes -> 200 OK (3.0016ms)
+bob が q="' OR 1=1) OR (title LIKE '" で検索 → 200 OK
+   見つかった: ["bob の買い物", "alice の病院の予約", "alice の給料の明細"]
+test keyword_with_sql ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.90s
+

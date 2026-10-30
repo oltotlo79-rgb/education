@@ -1,18 +1,19 @@
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.73s
-     Running tests\u02_q1.rs (target\debug\deps\u02_q1-c95d3e8f58bcc743.exe)
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.18s
+     Running tests\u02_q1.rs (target\debug\deps\u02_q1-23282a983bbe2a35.exe)
 
 running 1 test
-POST /signup -> 303 See Other (386.115ms)
-POST /notes -> 303 See Other (6.0805ms)
+POST /signup -> 303 See Other (425.47ms)
+POST /notes -> 303 See Other (9.635ms)
 [前後に空白] 303 See Other
    保存されたタイトル: ["買い物"]
-POST /notes -> 400 Bad Request (4.1825ms)
+POST /notes -> 400 Bad Request (7.8748ms)
 [81 文字] 400 Bad Request
    「タイトルは80文字以内にしてください（現在81文字）」: true
    入力欄に 81 文字が残っている: true
    保存されたタイトル: ["買い物"]
 test title_is_trimmed_and_limited ... ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.42s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.47s
 
 exit=0

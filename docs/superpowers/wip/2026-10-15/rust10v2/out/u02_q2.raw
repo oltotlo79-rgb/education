@@ -1,0 +1,14 @@
+   Compiling rustnote v0.1.0 (C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust10\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.15s
+     Running tests\u02_q2.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/target10\debug\deps\u02_q2-2cfd71d17b7bceae.exe)
+
+running 1 test
+POST /signup -> 303 See Other (411.072ms)
+送ったフォーム: title=%E6%94%B9%E8%A1%8C&body=1%E8%A1%8C%E7%9B%AE%0D%0A2%E8%A1%8C%E7%9B%AE%0D%0A
+POST /notes -> 303 See Other (6.6879ms)
+送った本文: "1行目\r\n2行目\r\n"（10 文字）
+保存された本文: "1行目\n2行目\n"（SQLite の length: 8）
+test newlines_are_normalized ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.44s
+

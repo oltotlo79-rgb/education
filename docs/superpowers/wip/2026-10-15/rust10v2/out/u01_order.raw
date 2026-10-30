@@ -1,0 +1,3 @@
+updated_at: ["2026-10-30 13:35:47"]
+ORDER BY updated_at DESC         → ["3件目", "2件目", "1件目"]
+ORDER BY updated_at DESC, id DESC → ["3件目", "2件目", "1件目"]

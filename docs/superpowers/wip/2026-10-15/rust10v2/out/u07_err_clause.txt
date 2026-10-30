@@ -1,0 +1,49 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.95s
+     Running tests\u07_search.rs (target\debug\deps\u07_search-3ee22547c7532a34.exe)
+
+running 1 test
+POST /signup -> 303 See Other (425.8147ms)
+POST /notes -> 303 See Other (9.2287ms)
+POST /notes -> 303 See Other (8.006ms)
+POST /notes -> 303 See Other (7.2551ms)
+POST /notes -> 303 See Other (6.9958ms)
+POST /notes -> 303 See Other (7.8576ms)
+POST /notes -> 303 See Other (7.5205ms)
+GET /notes -> 200 OK (5.7146ms)
+q="100%"
+   見つかった: []
+   入力欄の値: "100%"・1 / 1 ページ（全0件）
+GET /notes -> 200 OK (3.6013ms)
+q="file_name"
+   見つかった: []
+   入力欄の値: "file_name"・1 / 1 ページ（全0件）
+GET /notes -> 200 OK (2.9711ms)
+q="\\"
+   見つかった: []
+   入力欄の値: "\\"・1 / 1 ページ（全0件）
+GET /notes -> 200 OK (2.783ms)
+q="牛乳"
+   見つかった: ["買い物メモ", "100 円の牛乳"]
+   入力欄の値: "牛乳"・1 / 1 ページ（全2件）
+GET /notes -> 200 OK (2.665ms)
+q="%"
+   見つかった: ["C:\\tmp の掃除"]
+   入力欄の値: "%"・1 / 1 ページ（全1件）
+GET /notes -> 200 OK (4.8ms)
+q="_"
+   見つかった: ["C:\\tmp の掃除"]
+   入力欄の値: "_"・1 / 1 ページ（全1件）
+GET /notes -> 200 OK (5.0514ms)
+q="  牛乳  "
+   見つかった: ["買い物メモ", "100 円の牛乳"]
+   入力欄の値: "牛乳"・1 / 1 ページ（全2件）
+GET /notes -> 200 OK (4.7006ms)
+q="   "
+   見つかった: ["買い物メモ", "C:\\tmp の掃除", "file-name を決める", "file_name の決め方", "100 円の牛乳", "セール 100% オフ"]
+   入力欄の値: "（なし）"・1 / 1 ページ（全6件）
+test search_special_characters ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.53s
+
+exit=0

@@ -1,0 +1,31 @@
+   Compiling rustnote v0.1.0 (C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust10\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.75s
+     Running tests\u06_guard.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/target10\debug\deps\u06_guard-7d6860174d00b65b.exe)
+
+running 1 test
+POST /signup -> 303 See Other (446.225ms)
+POST /signup -> 303 See Other (427.0651ms)
+POST /notes -> 303 See Other (12.0775ms)
+GET /notes/1 -> 200 OK (7.783ms)
+1. RustNote の中のリンクを開く: GET /notes/1/delete → 405 Method Not Allowed（allow: POST）／ノートは残っている
+POST /notes -> 303 See Other (11.0661ms)
+GET /notes/2 -> 200 OK (10.1076ms)
+2. ほかのサイトのリンクを開く: GET /notes/2/delete → 405 Method Not Allowed（allow: POST）／ノートは残っている
+POST /notes -> 303 See Other (10.2227ms)
+GET /notes/3 -> 200 OK (10.1449ms)
+3. ほかのサイトのフォーム（Origin）: POST /notes/3/delete → 403 Forbidden／ノートは残っている
+POST /notes -> 303 See Other (15.492ms)
+GET /notes/4 -> 200 OK (13.4244ms)
+4. ほかのサイトのフォーム（Sec-Fetch-Site）: POST /notes/4/delete → 403 Forbidden／ノートは残っている
+POST /notes -> 303 See Other (12.8105ms)
+POST /notes/5/delete -> 404 Not Found (7.5578ms)
+GET /notes/5 -> 200 OK (11.4632ms)
+5. bob のボタン: POST /notes/5/delete → 404 Not Found／ノートは残っている
+POST /notes -> 303 See Other (14.4032ms)
+POST /notes/6/delete -> 303 See Other (10.8098ms)
+GET /notes/6 -> 404 Not Found (6.0413ms)
+6. alice のボタン: POST /notes/6/delete → 303 See Other／ノートは消えた
+test ways_to_trigger_delete ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.06s
+

@@ -1,0 +1,47 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.53s
+     Running tests\u07_search.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/target10\debug\deps\u07_search-3ee22547c7532a34.exe)
+
+running 1 test
+POST /signup -> 303 See Other (481.0026ms)
+POST /notes -> 303 See Other (10.0204ms)
+POST /notes -> 303 See Other (6.8075ms)
+POST /notes -> 303 See Other (9.8529ms)
+POST /notes -> 303 See Other (10.0448ms)
+POST /notes -> 303 See Other (7.537ms)
+POST /notes -> 303 See Other (7.1228ms)
+GET /notes -> 200 OK (4.4382ms)
+q="100%"
+   見つかった: ["セール 100% オフ"]
+   入力欄の値: "100%"・1 / 1 ページ（全1件）
+GET /notes -> 200 OK (3.5604ms)
+q="file_name"
+   見つかった: ["file_name の決め方"]
+   入力欄の値: "file_name"・1 / 1 ページ（全1件）
+GET /notes -> 200 OK (3.749ms)
+q="\\"
+   見つかった: ["C:\\tmp の掃除"]
+   入力欄の値: "\\"・1 / 1 ページ（全1件）
+GET /notes -> 200 OK (4.5841ms)
+q="牛乳"
+   見つかった: ["買い物メモ", "100 円の牛乳"]
+   入力欄の値: "牛乳"・1 / 1 ページ（全2件）
+GET /notes -> 200 OK (4.7178ms)
+q="%"
+   見つかった: ["セール 100% オフ"]
+   入力欄の値: "%"・1 / 1 ページ（全1件）
+GET /notes -> 200 OK (3.637ms)
+q="_"
+   見つかった: ["file_name の決め方"]
+   入力欄の値: "_"・1 / 1 ページ（全1件）
+GET /notes -> 200 OK (3.3782ms)
+q="  牛乳  "
+   見つかった: ["買い物メモ", "100 円の牛乳"]
+   入力欄の値: "牛乳"・1 / 1 ページ（全2件）
+GET /notes -> 200 OK (3.4687ms)
+q="   "
+   見つかった: ["買い物メモ", "C:\\tmp の掃除", "file-name を決める", "file_name の決め方", "100 円の牛乳", "セール 100% オフ"]
+   入力欄の値: "（なし）"・1 / 1 ページ（全6件）
+test search_special_characters ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.60s
+

@@ -1,0 +1,38 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.90s
+     Running tests\u10_journey.rs (target\debug\deps\u10_journey-53b14666b48745e2.exe)
+
+running 1 test
+POST /signup -> 303 See Other (429.7503ms)
+✓ 1. alice が新規登録できる
+GET /notes -> 200 OK (3.8095ms)
+✓ 2. 最初の一覧は空で、次にすることを伝える
+POST /notes -> 303 See Other (6.0285ms)
+✓ 3. 作成すると 303 で詳細へ移る
+POST /notes -> 400 Bad Request (4.8383ms)
+✓ 4. 空のタイトルは 400 で、保存しない
+GET /notes/1 -> 200 OK (4.5607ms)
+✓ 5. 詳細では、タイトルの < > が文字として出る
+GET /notes -> 200 OK (4.3488ms)
+GET /notes -> 200 OK (3.6572ms)
+✓ 6. 検索は、% をただの文字として探す
+POST /notes/1/edit -> 303 See Other (8.1249ms)
+✓ 7. 編集を保存すると 303
+POST /notes/1/edit -> 409 Conflict (8.4311ms)
+✓ 8. 古い version で保存すると 409
+POST /notes/1/toggle -> 303 See Other (5.5817ms)
+GET /notes/1 -> 200 OK (4.3037ms)
+✓ 9. 完了を切り替えると、ボタンが「未完了に戻す」になる
+POST /signup -> 303 See Other (418.8563ms)
+GET /notes/1 -> 404 Not Found (8.1235ms)
+POST /notes/1/delete -> 404 Not Found (5.7335ms)
+✓ 10. bob には、alice のノートが見えず、消せない
+POST /notes/1/delete -> 303 See Other (8.7628ms)
+✓ 11. alice が削除すると、一覧へ移り、0 件になる
+POST /logout -> 303 See Other (7.4896ms)
+GET /notes -> 303 See Other (3.4228ms)
+✓ 12. ログアウトすると、古いクッキーでは一覧を開けない
+test whole_journey ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.96s
+
+exit=0

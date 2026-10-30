@@ -1,0 +1,46 @@
+   Compiling rustnote v0.1.0 (C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust10\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.21s
+     Running tests\u02_create.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/target10\debug\deps\u02_create-c932d3cf649ad3d9.exe)
+
+running 2 tests
+test invalid_input_is_shown_again_with_400 ... POST /signup -> 303 See Other (418.1849ms)
+POST /notes -> 400 Bad Request (4.4522ms)
+[タイトルが空] POST /notes → 400 Bad Request
+   Location ヘッダー: false
+<details class="new-note" open="">
+<summary>新しいノートを書く</summary>
+<form method="post" action="/notes" class="note-form">
+<label for="title">タイトル（80文字まで）</label>
+<input id="title" name="title" value="" required="" maxlength="80">
+<p class="field-error">タイトルを入力してください</p>
+<label for="body">本文（10000文字まで）</label>
+<textarea id="body" name="body" rows="6">牛乳</textarea>
+<button type="submit">作成する</button>
+</form>
+</details>
+notes 表の件数: 0
+POST /notes -> 400 Bad Request (6.6684ms)
+[両方とも不合格] POST /notes → 400 Bad Request
+   「タイトルを入力してください」: true
+   「本文は10000文字以内にしてください（現在10001文字）」: true
+   本文の入力欄に 10,001 文字が残っている: true
+notes 表の件数: 0
+ok
+test success_redirects_with_303 ... POST /signup -> 303 See Other (629.3647ms)
+POST /notes -> 303 See Other (7.0825ms)
+1. POST /notes → 303 See Other
+   Location: /notes/1
+   Set-Cookie: flash=note_created; HttpOnly; SameSite=Lax; Path=/; Max-Age=300
+GET /notes/1 -> 200 OK (4.7185ms)
+2. GET /notes/1
+   お知らせ「ノートを作成しました」: true
+   タイトル「買い物メモ」: true
+   Set-Cookie: flash=; Path=/; Max-Age=0; Expires=Thu, 30 Oct 2025 13:36:19 GMT
+GET /notes/1 -> 200 OK (3.4728ms)
+3. もう一度 GET /notes/1（再読み込み）
+   お知らせ「ノートを作成しました」: false
+notes 表の件数: 1
+ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.12s
+

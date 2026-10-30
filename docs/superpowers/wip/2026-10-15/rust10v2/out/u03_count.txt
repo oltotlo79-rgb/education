@@ -1,0 +1,25 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.63s
+     Running tests\u03_count.rs (target\debug\deps\u03_count-41b511d4400f63cb.exe)
+
+running 1 test
+POST /signup -> 303 See Other (437.9191ms)
+POST /signup -> 303 See Other (416.3689ms)
+POST /notes -> 303 See Other (6.9696ms)
+POST /notes -> 303 See Other (6.8389ms)
+POST /notes -> 303 See Other (5.5854ms)
+alice のノートは 3 件（id は 1・2・3）
+GET /notes/1 -> 404 Not Found (3.4285ms)
+bob GET /notes/1 → 404 Not Found
+GET /notes/2 -> 404 Not Found (3.1225ms)
+bob GET /notes/2 → 404 Not Found
+GET /notes/3 -> 404 Not Found (2.744ms)
+bob GET /notes/3 → 404 Not Found
+GET /notes/4 -> 404 Not Found (2.5219ms)
+bob GET /notes/4 → 404 Not Found
+GET /notes/5 -> 404 Not Found (2.6501ms)
+bob GET /notes/5 → 404 Not Found
+test counting_other_notes ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.92s
+
+exit=0

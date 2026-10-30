@@ -9,7 +9,7 @@ error[E0382]: use of partially moved value
     |                          ^^^^ value used here after partial move
     |
 note: the `for` loop is desugared into a call to `std::iter::IntoIterator::into_iter`, which takes ownership of the receiver `self`, which moves value
-   --> /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\iter\traits\collect.rs:312:17
+   --> /rustc/58cf8f9c35b355199727627d07ae34a4e2846d67/library\core\src\iter\traits\collect.rs:312:17
     = note: partial move occurs because value has type `std::vec::Vec<Note>`, which does not implement the `Copy` trait
 help: consider iterating over a slice of the `std::vec::Vec<Note>`'s content to avoid moving into the `for` loop
     |

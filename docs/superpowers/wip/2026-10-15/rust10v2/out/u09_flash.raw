@@ -1,0 +1,72 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.61s
+     Running tests\u09_flash.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/target10\debug\deps\u09_flash-512f8e90453c6dda.exe)
+
+running 1 test
+POST /signup -> 303 See Other (443.7315ms)
+1. 新規登録: POST /signup → 303 See Other → /notes
+   予約: flash=signed_up; HttpOnly; SameSite=Lax; Path=/; Max-Age=300
+GET /notes -> 200 OK (8.3631ms)
+   /notes の画面: <p class="flash success" role="status">登録しました。ようこそ RustNote へ！</p>
+   消す: flash=; Path=/; Max-Age=0; Expires=Thu, 30 Oct 2025 14:38:27 GMT
+GET /notes -> 200 OK (9.8328ms)
+   再読み込み: （なし）
+POST /notes -> 303 See Other (10.9729ms)
+2. 作成: POST /notes → 303 See Other → /notes/1
+   予約: flash=note_created; HttpOnly; SameSite=Lax; Path=/; Max-Age=300
+GET /notes/1 -> 200 OK (6.0736ms)
+   /notes/1 の画面: <p class="flash success" role="status">ノートを作成しました</p>
+   消す: flash=; Path=/; Max-Age=0; Expires=Thu, 30 Oct 2025 14:38:27 GMT
+GET /notes/1 -> 200 OK (4.2047ms)
+   再読み込み: （なし）
+POST /notes/1/edit -> 303 See Other (9.4319ms)
+3. 保存: POST /notes/1/edit → 303 See Other → /notes/1
+   予約: flash=note_updated; HttpOnly; SameSite=Lax; Path=/; Max-Age=300
+GET /notes/1 -> 200 OK (6.6994ms)
+   /notes/1 の画面: <p class="flash success" role="status">ノートを保存しました</p>
+   消す: flash=; Path=/; Max-Age=0; Expires=Thu, 30 Oct 2025 14:38:27 GMT
+GET /notes/1 -> 200 OK (3.8741ms)
+   再読み込み: （なし）
+POST /notes/1/toggle -> 303 See Other (9.4943ms)
+4. 完了の切り替え: POST /notes/1/toggle → 303 See Other → /notes/1
+   予約: flash=note_toggled; HttpOnly; SameSite=Lax; Path=/; Max-Age=300
+GET /notes/1 -> 200 OK (5.1409ms)
+   /notes/1 の画面: <p class="flash success" role="status">完了の状態を切り替えました</p>
+   消す: flash=; Path=/; Max-Age=0; Expires=Thu, 30 Oct 2025 14:38:27 GMT
+GET /notes/1 -> 200 OK (4.7644ms)
+   再読み込み: （なし）
+POST /notes/1/delete -> 303 See Other (6.9404ms)
+5. 削除: POST /notes/1/delete → 303 See Other → /notes
+   予約: flash=note_deleted; HttpOnly; SameSite=Lax; Path=/; Max-Age=300
+GET /notes -> 200 OK (4.8224ms)
+   /notes の画面: <p class="flash success" role="status">ノートを削除しました</p>
+   消す: flash=; Path=/; Max-Age=0; Expires=Thu, 30 Oct 2025 14:38:27 GMT
+GET /notes -> 200 OK (3.9167ms)
+   再読み込み: （なし）
+POST /logout -> 303 See Other (5.9314ms)
+6. ログアウト: POST /logout → 303 See Other → /login
+   予約: flash=logged_out; HttpOnly; SameSite=Lax; Path=/; Max-Age=300
+GET /login -> 200 OK (145.5µs)
+   /login の画面: <p class="flash success" role="status">ログアウトしました</p>
+   消す: flash=; Path=/; Max-Age=0; Expires=Thu, 30 Oct 2025 14:38:27 GMT
+GET /login -> 200 OK (69.1µs)
+   再読み込み: （なし）
+GET /notes -> 303 See Other (41.3µs)
+7. ログインせずに一覧: GET /notes → 303 See Other → /login
+   予約: flash=login_required; HttpOnly; SameSite=Lax; Path=/; Max-Age=300
+GET /login -> 200 OK (75.8µs)
+   /login の画面: <p class="flash warning" role="status">ログインしてください</p>
+   消す: flash=; Path=/; Max-Age=0; Expires=Thu, 30 Oct 2025 14:38:27 GMT
+GET /login -> 200 OK (56.4µs)
+   再読み込み: （なし）
+POST /login -> 303 See Other (424.7443ms)
+8. ログイン: POST /login → 303 See Other → /notes
+   予約: flash=logged_in; HttpOnly; SameSite=Lax; Path=/; Max-Age=300
+GET /notes -> 200 OK (3.8698ms)
+   /notes の画面: <p class="flash success" role="status">ログインしました</p>
+   消す: flash=; Path=/; Max-Age=0; Expires=Thu, 30 Oct 2025 14:38:28 GMT
+GET /notes -> 200 OK (2.7524ms)
+   再読み込み: （なし）
+test eight_flashes ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.00s
+

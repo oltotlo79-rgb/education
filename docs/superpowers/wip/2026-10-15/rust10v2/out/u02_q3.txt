@@ -1,19 +1,19 @@
    Compiling rustnote v0.1.0 (...\rustnote)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.49s
-     Running tests\u02_q3.rs (target\debug\deps\u02_q3-91faee38663bf341.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.19s
+     Running tests\u02_q3.rs (target\debug\deps\u02_q3-6907ab08fcaab11f.exe)
 
 running 1 test
-POST /signup -> 303 See Other (417.1372ms)
-POST /notes -> 400 Bad Request (7.3145ms)
+POST /signup -> 303 See Other (434.0817ms)
+POST /notes -> 400 Bad Request (10.6401ms)
 [400 で出し直す] 400 Bad Request
    <input id="title" name="title" value="<b>&quot;大事&quot;</b>" required="" maxlength="80">
    " がそのまま入っている（value から抜け出せる）: false
-POST /notes -> 303 See Other (5.1299ms)
-GET /notes/1 -> 200 OK (5.8205ms)
+POST /notes -> 303 See Other (7.5609ms)
+GET /notes/1 -> 200 OK (4.2772ms)
 [詳細ページ] <h1>&lt;b&gt;"大事"&lt;/b&gt;</h1>
    本物の <b> タグになっている: false
 test title_is_escaped ... ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.46s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.49s
 
 exit=0

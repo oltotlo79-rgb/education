@@ -1,0 +1,21 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.80s
+     Running tests\u07_like.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/target10\debug\deps\u07_like-2dccc71866e70aaa.exe)
+
+running 1 test
+POST /signup -> 303 See Other (461.8486ms)
+POST /notes -> 303 See Other (13.3389ms)
+POST /notes -> 303 See Other (15.1095ms)
+POST /notes -> 303 See Other (10.284ms)
+POST /notes -> 303 See Other (9.4939ms)
+POST /notes -> 303 See Other (9.5772ms)
+%100%%         ESCAPE なし → ["セール 100% オフ", "100 円の牛乳"]
+%100\%%        ESCAPE なし → []
+%100\%%        ESCAPE あり → ["セール 100% オフ"]
+%file_name%    ESCAPE なし → ["file_name の決め方", "file-name を決める"]
+%file\_name%   ESCAPE あり → ["file_name の決め方"]
+%\%            ESCAPE なし → ["C:\\tmp の掃除"]
+%\\%           ESCAPE あり → ["C:\\tmp の掃除"]
+test like_patterns ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.55s
+

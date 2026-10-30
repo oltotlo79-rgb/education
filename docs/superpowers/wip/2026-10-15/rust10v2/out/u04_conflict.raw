@@ -1,0 +1,24 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.71s
+     Running tests\u04_conflict.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/target10\debug\deps\u04_conflict-bde64e3ea3b6ed00.exe)
+
+running 1 test
+POST /signup -> 303 See Other (408.4008ms)
+POST /notes -> 303 See Other (4.6362ms)
+GET /notes/1/edit -> 200 OK (3.4296ms)
+GET /notes/1/edit -> 200 OK (3.3032ms)
+1. タブ A の version=Some("1")、タブ B の version=Some("1")
+POST /notes/1/edit -> 303 See Other (6.7144ms)
+2. タブ A の保存: 303 See Other
+   DB: title="牛乳を2本買う" body="1本" version=2 updated_at=2026-10-30 13:52:59
+POST /notes/1/edit -> 409 Conflict (5.9838ms)
+3. タブ B の保存: 409 Conflict
+   お知らせ: ほかの画面で先に更新されました。読み込み直してください。保存されている最新のタイトルは「牛乳を2本買う」です。この内容で上書きする場合は、もう一度「保存する」を押してください。
+   出し直したフォーム: version=Some("2") title="牛乳と卵を買う"
+   DB: title="牛乳を2本買う" body="1本" version=2 updated_at=2026-10-30 13:52:59
+POST /notes/1/edit -> 303 See Other (7.2331ms)
+4. タブ B の2回目の保存: 303 See Other
+   DB: title="牛乳と卵を買う" body="1本" version=3 updated_at=2026-10-30 13:52:59
+test two_tabs ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.47s
+

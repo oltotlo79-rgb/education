@@ -1,0 +1,27 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+warning: unused import: `crate::flash`
+  --> src\routes\notes\id.rs:21:5
+   |
+21 | use crate::flash;
+   |     ^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `rustnote` (lib) generated 1 warning (run `cargo fix --lib -p rustnote` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.46s
+     Running tests\u09_late.rs (target\debug\deps\u09_late-a06b2f7fae643603.exe)
+
+running 1 test
+POST /signup -> 303 See Other (407.8711ms)
+POST /notes -> 303 See Other (5.8905ms)
+POST /notes/1/toggle -> 303 See Other (6.4392ms)
+1. POST /notes/1/toggle → 303 See Other（flash=note_toggled）
+GET /notes/1 -> 200 OK (3.3178ms)
+2. GET /notes/1: お知らせ「（なし）」・flash を消した: false
+GET /notes -> 200 OK (4.5124ms)
+3. GET /notes: お知らせ「完了の状態を切り替えました」・flash を消した: true
+test which_page_shows_the_flash ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.45s
+
+exit=0

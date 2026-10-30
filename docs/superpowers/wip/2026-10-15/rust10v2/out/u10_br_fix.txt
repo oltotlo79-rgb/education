@@ -1,0 +1,10 @@
+--- いまの CSS
+/notes    320px: 横幅 332px × はみ出す（h1 の高さ 44px）
+/notes/3  320px: 横幅 537px × はみ出す（h1 の高さ 133px）
+/notes    375px: 横幅 375px ○（h1 の高さ 44px）
+/notes/3  375px: 横幅 537px × はみ出す（h1 の高さ 133px）
+--- 足した CSS: h1, .note-list a { overflow-wrap: anywhere; }
+/notes    320px: 横幅 320px ○（h1 の高さ 44px）
+/notes/3  320px: 横幅 320px ○（h1 の高さ 177px）
+/notes    375px: 横幅 375px ○（h1 の高さ 44px）
+/notes/3  375px: 横幅 375px ○（h1 の高さ 177px）

@@ -1,0 +1,10 @@
+details open=true
+1. a「RustNote」 枠: auto
+2. a「ノート一覧」 枠: auto
+3. button「ログアウト」 枠: auto
+4. input name=q「」 枠: auto
+5. button「検索」 枠: auto
+6. summary「新しいノートを書く」 枠: auto
+7. input name=title「タイトル（80文字まで）」 枠: auto
+8. textarea name=body「本文（10000文字まで）」 枠: auto
+9. button「作成する」 枠: auto

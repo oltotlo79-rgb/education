@@ -1,0 +1,38 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.64s
+     Running tests\u03_q.rs (target\debug\deps\u03_q-a77e3e5c319af303.exe)
+
+running 3 tests
+test q1_guest_with_a_bad_id ... GET /notes/abc -> 303 See Other (530.3µs)
+問1 guest GET /notes/abc → 303 See Other → /login
+GET /notes/999 -> 303 See Other (40.8µs)
+問1 guest GET /notes/999 → 303 See Other → /login
+ok
+test q2_other_spellings_of_one ... POST /signup -> 303 See Other (409.2546ms)
+POST /notes -> 303 See Other (6.3844ms)
+GET /notes/1 -> 200 OK (4.9309ms)
+問2 GET /notes/1     → 200 OK（編集の入り口: /notes/1/edit）
+GET /notes/01 -> 200 OK (4.0676ms)
+問2 GET /notes/01    → 200 OK（編集の入り口: /notes/1/edit）
+GET /notes/+1 -> 200 OK (2.6269ms)
+問2 GET /notes/+1    → 200 OK（編集の入り口: /notes/1/edit）
+GET /notes/%31 -> 200 OK (3.0043ms)
+問2 GET /notes/%31   → 200 OK（編集の入り口: /notes/1/edit）
+GET /notes/1.0 -> 404 Not Found (1.5456ms)
+問2 GET /notes/1.0   → 404 Not Found（編集の入り口: -）
+GET /notes/%201 -> 404 Not Found (1.4309ms)
+問2 GET /notes/%201  → 404 Not Found（編集の入り口: -）
+ok
+test q3_bob_posts_to_alice_note ... POST /signup -> 303 See Other (426.1942ms)
+POST /signup -> 303 See Other (445.7772ms)
+POST /notes -> 303 See Other (10.528ms)
+POST /notes/1/toggle -> 404 Not Found (7.4585ms)
+問3 bob POST /notes/1/toggle → 404 Not Found
+POST /notes/1/delete -> 404 Not Found (6.2142ms)
+問3 bob POST /notes/1/delete → 404 Not Found
+GET /notes/1 -> 200 OK (5.8571ms)
+問3 alice GET /notes/1 → 200 OK（完了の印: false）
+ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.39s
+
+exit=0

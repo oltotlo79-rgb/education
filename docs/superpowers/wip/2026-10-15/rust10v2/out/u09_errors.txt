@@ -1,0 +1,24 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.67s
+     Running tests\u09_errors.rs (target\debug\deps\u09_errors-d3de2e19fde2c640.exe)
+
+running 1 test
+POST /signup -> 303 See Other (473.0589ms)
+POST /notes -> 303 See Other (53.9841ms)
+POST /notes -> 400 Bad Request (13.6449ms)
+入力の間違い（空のタイトル）: 400 Bad Request・同じ画面・入力欄の下・タイトルを入力してください
+POST /notes -> 400 Bad Request (2.5663ms)
+フォームの形の間違い: 400 Bad Request・エラーの画面・送信された内容を読み取れませんでした
+GET /notes/999 -> 404 Not Found (4.6554ms)
+無いノート: 404 Not Found・エラーの画面・ページが見つかりません
+POST /notes/1/edit -> 409 Conflict (8.9011ms)
+古い version: 409 Conflict・同じ画面・フォームの上・ほかの画面で先に更新されました。読み込み直してく…
+GET で削除: 405 Method Not Allowed・Topcoat の短い返事・（本文なし）
+ほかのサイトからの POST: 403 Forbidden・Topcoat の短い返事・forbidden
+[error] サーバーの中でエラーが起きました <- DB の操作に失敗しました <- Hrana: `http error: `error trying to connect: tcp connect error: 対象のコンピューターによって拒否されたため、接続できませんでした。 (os error 10061)``
+POST /login -> 500 Internal Server Error (2.0319275s)
+DB に届かない: 500 Internal Server Error・エラーの画面・時間をおいてもう一度お試しください
+test error_summary ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.64s
+
+exit=0

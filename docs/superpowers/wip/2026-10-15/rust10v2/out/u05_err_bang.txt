@@ -1,0 +1,21 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.93s
+     Running tests\u05_toggle.rs (target\debug\deps\u05_toggle-874ea50a04b4562f.exe)
+
+running 1 test
+POST /signup -> 303 See Other (423.9361ms)
+POST /notes -> 303 See Other (5.4114ms)
+作った直後の DB: done=0 version=1
+[error] サーバーの中でエラーが起きました <- DB の操作に失敗しました <- SQLite failure: `unrecognized token: "!"`
+POST /notes/1/toggle -> 500 Internal Server Error (2.139ms)
+1 回目の POST: 500 Internal Server Error
+   DB: done=0 version=1
+[error] サーバーの中でエラーが起きました <- DB の操作に失敗しました <- SQLite failure: `unrecognized token: "!"`
+POST /notes/1/toggle -> 500 Internal Server Error (1.584ms)
+2 回目の POST: 500 Internal Server Error
+   DB: done=0 version=1
+test toggle_twice ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.46s
+
+exit=0

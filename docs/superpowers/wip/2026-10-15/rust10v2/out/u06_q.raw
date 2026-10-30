@@ -1,0 +1,19 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.62s
+     Running tests\u06_q.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/target10\debug\deps\u06_q-3131a7efed3ec934.exe)
+
+running 1 test
+POST /signup -> 303 See Other (452.2877ms)
+POST /signup -> 303 See Other (532.9001ms)
+POST /notes -> 303 See Other (14.2664ms)
+POST /notes -> 303 See Other (7.4678ms)
+POST /notes -> 303 See Other (6.1221ms)
+POST /notes -> 303 See Other (7.2875ms)
+問1 消す前:     users=2 notes=4（うち bob の分 1） sessions=2
+問1 DELETE FROM users … → 1 行
+問1 alice を消したあと: users=1 notes=1（うち bob の分 1） sessions=1
+GET /notes -> 303 See Other (1.3137ms)
+問1 alice のクッキーで GET /notes → 303 See Other
+test q1_delete_a_user ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.06s
+

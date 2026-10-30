@@ -1,0 +1,25 @@
+   Compiling rustnote v0.1.0 (C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust10\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 10.99s
+     Running tests\u03_count.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/target10\debug\deps\u03_count-41b511d4400f63cb.exe)
+
+running 1 test
+POST /signup -> 303 See Other (453.7465ms)
+POST /signup -> 303 See Other (406.3222ms)
+POST /notes -> 303 See Other (16.3978ms)
+POST /notes -> 303 See Other (7.3278ms)
+POST /notes -> 303 See Other (6.5093ms)
+alice のノートは 3 件（id は 1・2・3）
+GET /notes/1 -> 403 Forbidden (6.9004ms)
+bob GET /notes/1 → 403 Forbidden
+GET /notes/2 -> 403 Forbidden (5.4724ms)
+bob GET /notes/2 → 403 Forbidden
+GET /notes/3 -> 403 Forbidden (4.5852ms)
+bob GET /notes/3 → 403 Forbidden
+GET /notes/4 -> 404 Not Found (4.016ms)
+bob GET /notes/4 → 404 Not Found
+GET /notes/5 -> 404 Not Found (3.6911ms)
+bob GET /notes/5 → 404 Not Found
+test counting_other_notes ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.94s
+

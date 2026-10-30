@@ -1,0 +1,18 @@
+   Compiling rustnote v0.1.0 (C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust10\rustnote)
+error[E0308]: mismatched types
+  --> src\routes\notes\id\edit.rs:90:36
+   |
+90 |                     form.version = latest.version;
+   |                     ------------   ^^^^^^^^^^^^^^ expected `Option<i64>`, found `i64`
+   |                     |
+   |                     expected due to the type of this binding
+   |
+   = note: expected enum `std::option::Option<i64>`
+              found type `i64`
+help: try wrapping the expression in `Some`
+   |
+90 |                     form.version = Some(latest.version);
+   |                                    +++++              +
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `rustnote` (lib) due to 1 previous error

@@ -1,0 +1,22 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.69s
+     Running tests\u07_inject.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/target10\debug\deps\u07_inject-0c0f29c4ee998d40.exe)
+
+running 1 test
+POST /signup -> 303 See Other (445.1599ms)
+POST /signup -> 303 See Other (490.0331ms)
+POST /notes -> 303 See Other (13.2672ms)
+POST /notes -> 303 See Other (7.0073ms)
+POST /notes -> 303 See Other (6.9963ms)
+GET /notes -> 200 OK (8.4381ms)
+bob が q="買い物" で検索 → 200 OK
+   見つかった: ["bob の買い物"]
+GET /notes -> 200 OK (4.5065ms)
+bob が q="'" で検索 → 200 OK
+   見つかった: []
+GET /notes -> 200 OK (2.9415ms)
+bob が q="' OR 1=1) OR (title LIKE '" で検索 → 200 OK
+   見つかった: []
+test keyword_with_sql ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.00s
+

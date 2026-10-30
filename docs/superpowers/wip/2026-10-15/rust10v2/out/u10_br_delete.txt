@@ -1,0 +1,12 @@
+（Tab で「削除」へ移り、Enter を押したあと）
+{
+  "flash": "ノートを削除しました",
+  "titles": [
+    "完了したノート",
+    "https://example.com/notes/2026/10/30/a-very-long-address-without-any-spaces",
+    "週末の予定"
+  ],
+  "url": "http://127.0.0.1:3000/notes"
+}
+（RustNote の窓のアクセスログ）
+POST /notes/1/delete -> 303 See Other (10.0015ms)

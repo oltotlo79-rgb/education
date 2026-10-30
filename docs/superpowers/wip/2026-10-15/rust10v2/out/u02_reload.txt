@@ -1,22 +1,23 @@
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.75s
-     Running tests\u02_reload.rs (target\debug\deps\u02_reload-c30daf2536228748.exe)
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.15s
+     Running tests\u02_reload.rs (target\debug\deps\u02_reload-ff61c2c393f9c231.exe)
 
 running 1 test
-POST /signup -> 303 See Other (388.9575ms)
-POST /notes -> 303 See Other (6.7285ms)
+POST /signup -> 303 See Other (446.5839ms)
+POST /notes -> 303 See Other (15.8617ms)
 POST /notes → 303 See Other（Location: /notes/1）
-GET /notes/1 -> 200 OK (3.8365ms)
+GET /notes/1 -> 200 OK (12.7988ms)
 再読み込み 1 回目: GET /notes/1 → 200 OK
-GET /notes/1 -> 200 OK (2.8887ms)
+GET /notes/1 -> 200 OK (9.4475ms)
 再読み込み 2 回目: GET /notes/1 → 200 OK
-GET /notes/1 -> 200 OK (2.9527ms)
+GET /notes/1 -> 200 OK (7.83ms)
 再読み込み 3 回目: GET /notes/1 → 200 OK
 ノートの id: [1]
-POST /notes -> 303 See Other (6.5562ms)
+POST /notes -> 303 See Other (10.3436ms)
 同じ POST をもう一度送る → 303 See Other（Location: /notes/2）
 ノートの id: [1, 2]
 test reload_after_redirect_does_not_duplicate ... ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.43s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.54s
 
 exit=0

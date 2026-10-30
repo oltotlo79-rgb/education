@@ -1,0 +1,22 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.96s
+     Running tests\u04_conflict.rs (target\debug\deps\u04_conflict-bde64e3ea3b6ed00.exe)
+
+running 1 test
+POST /signup -> 303 See Other (503.1721ms)
+POST /notes -> 303 See Other (7.2834ms)
+GET /notes/1/edit -> 200 OK (4.5631ms)
+GET /notes/1/edit -> 200 OK (6.1256ms)
+1. タブ A の version=Some("1")、タブ B の version=Some("1")
+POST /notes/1/edit -> 303 See Other (8.8616ms)
+2. タブ A の保存: 303 See Other
+   DB: title="牛乳を2本買う" body="1本" version=2 updated_at=2026-10-30 13:53:12
+POST /notes/1/edit -> 303 See Other (8.568ms)
+3. タブ B の保存: 303 See Other
+   DB: title="牛乳と卵を買う" body="1本" version=3 updated_at=2026-10-30 13:53:12
+（409 にならなかったので、ここで終わり）
+test two_tabs ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.58s
+
+exit=0

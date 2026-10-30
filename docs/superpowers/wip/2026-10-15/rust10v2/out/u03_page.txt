@@ -1,0 +1,20 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.75s
+     Running tests\u03_page.rs (target\debug\deps\u03_page-45f11462733fe872.exe)
+
+running 1 test
+POST /signup -> 303 See Other (675.6152ms)
+POST /notes -> 303 See Other (8.4331ms)
+GET /notes/1 -> 200 OK (6.0281ms)
+--- ノートの部分 ---
+<article class="note"><h1>&lt;b&gt;牛乳&lt;/b&gt;を買う</h1><p class="meta">作成: 2026-10-30 13:43:31 ／ 更新: 2026-10-30 13:43:31</p><div class="note-body">1本
+低脂肪 &amp; 冷やす</div></article>
+--- 次の操作への入り口 ---
+<a class="button" href="/notes/1/edit">編集</a>
+<form method="post" action="/notes/1/toggle">
+<form method="post" action="/notes/1/delete">
+<p><a href="/notes">← 一覧に戻る</a></p>
+test detail_page_parts ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.71s
+
+exit=0

@@ -1,0 +1,83 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+error[E0277]: the trait bound `NoteId: HrefParam` is not satisfied
+   --> src\routes\notes\id.rs:63:37
+    |
+ 63 |             <a class="button" href=(href!(edit::edit_page, id))>"編集"</a>
+    |                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |                                     |
+    |                                     unsatisfied trait bound
+    |                                     required by a bound introduced by this call
+    |
+help: the trait `HrefParam` is not implemented for `NoteId`
+   --> src\domain.rs:69:1
+    |
+ 69 | pub struct NoteId(i64);
+    | ^^^^^^^^^^^^^^^^^
+help: the following other types implement trait `HrefParam`
+   --> src\routes\notes\id.rs:27:1
+    |
+ 27 |   module_param!(pub id: NoteId, error = not_found);
+    |   ^^^^^^^^^^^^^^^^^^^^ `id::Id`
+    |
+   ::: ...\href.rs:69:1
+    |
+ 69 | / impl<T> HrefParam for &T
+ 70 | | where
+ 71 | |     T: HrefParam,
+    | |_________________^ `&T`
+    = note: required for `(NoteId,)` to implement `HrefParams`
+note: required by a bound in `href`
+   --> ...\href.rs:446:8
+    |
+443 | pub fn href<T, P>(target: T, params: P) -> Href<T, P, (), &'static str>
+    |        ---- required by a bound in this function
+...
+446 |     P: HrefParams,
+    |        ^^^^^^^^^^ required by this bound in `href`
+    = note: this error originates in the macro `href` which comes from the expansion of the macro `module_param` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `NoteId: HrefParam` is not satisfied
+   --> src\routes\notes\id.rs:45:8
+    |
+ 45 |       Ok(view! {
+    |  ________^
+ 46 | |         flash_banner(flash: flash)
+ 47 | |         <article class=(if note.done { "note done" } else { "note" })>
+ 48 | |             <h1>(note.title)</h1>
+...   |
+ 78 | |         <p><a href=(href!(super::index))>"← 一覧に戻る"</a></p>
+ 79 | |     })
+    | |_____^ unsatisfied trait bound
+    |
+help: the trait `HrefParam` is not implemented for `NoteId`
+   --> src\domain.rs:69:1
+    |
+ 69 | pub struct NoteId(i64);
+    | ^^^^^^^^^^^^^^^^^
+help: the following other types implement trait `HrefParam`
+   --> src\routes\notes\id.rs:27:1
+    |
+ 27 |   module_param!(pub id: NoteId, error = not_found);
+    |   ^^^^^^^^^^^^^^^^^^^^ `id::Id`
+    |
+   ::: ...\href.rs:69:1
+    |
+ 69 | / impl<T> HrefParam for &T
+ 70 | | where
+ 71 | |     T: HrefParam,
+    | |_________________^ `&T`
+    = note: required for `(NoteId,)` to implement `HrefParams`
+    = note: required for `Href<edit_page, (NoteId,), (), &str>` to implement `AttributeValueViewParts`
+note: required by a bound in `topcoat::view::internal::Builder::<'a, 'b, 'c>::attribute_unescaped`
+   --> ...\builder.rs:102:43
+    |
+100 |     pub fn attribute_unescaped(
+    |            ------------------- required by a bound in this associated function
+101 |         &mut self,
+102 |         (key, value): (&'static str, impl AttributeValueViewParts),
+    |                                           ^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `Builder::<'a, 'b, 'c>::attribute_unescaped`
+    = note: this error originates in the macro `view` which comes from the expansion of the macro `module_param` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `rustnote` (lib) due to 2 previous errors
+exit=101

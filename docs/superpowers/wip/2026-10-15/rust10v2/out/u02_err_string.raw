@@ -1,0 +1,25 @@
+   Compiling rustnote v0.1.0 (C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust10\rustnote)
+error[E0308]: arguments to this function are incorrect
+   --> examples\e02_string.rs:14:16
+    |
+ 14 |     let note = NewNote::parse(input.title, input.body);
+    |                ^^^^^^^^^^^^^^ -----------  ---------- expected `&str`, found `String`
+    |                               |
+    |                               expected `&str`, found `String`
+    |
+note: associated function defined here
+   --> src\domain.rs:331:12
+    |
+331 |     pub fn parse(title: &str, body: &str) -> Result<NewNote, NoteInputErrors> {
+    |            ^^^^^
+help: consider borrowing here
+    |
+ 14 |     let note = NewNote::parse(&input.title, input.body);
+    |                               +
+help: consider borrowing here
+    |
+ 14 |     let note = NewNote::parse(input.title, &input.body);
+    |                                            +
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `rustnote` (example "e02_string") due to 1 previous error

@@ -1,0 +1,43 @@
+   Compiling rustnote v0.1.0 (C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust10\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.38s
+     Running tests\u10_journey.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/target10\debug\deps\u10_journey-53b14666b48745e2.exe)
+
+running 1 test
+POST /signup -> 303 See Other (413.7612ms)
+✓ 1. alice が新規登録できる
+GET /notes -> 200 OK (6.2741ms)
+✓ 2. 最初の一覧は空で、次にすることを伝える
+POST /notes -> 303 See Other (8.3646ms)
+✓ 3. 作成すると 303 で詳細へ移る
+POST /notes -> 400 Bad Request (6.1886ms)
+✓ 4. 空のタイトルは 400 で、保存しない
+GET /notes/1 -> 200 OK (5.8278ms)
+✓ 5. 詳細では、タイトルの < > が文字として出る
+GET /notes -> 200 OK (5.096ms)
+GET /notes -> 200 OK (3.7153ms)
+✓ 6. 検索は、% をただの文字として探す
+POST /notes/1/edit -> 303 See Other (11.3756ms)
+✓ 7. 編集を保存すると 303
+POST /notes/1/edit -> 409 Conflict (8.6709ms)
+✓ 8. 古い version で保存すると 409
+POST /notes/1/toggle -> 303 See Other (5.3237ms)
+GET /notes/1 -> 200 OK (4.0212ms)
+✓ 9. 完了を切り替えると、ボタンが「未完了に戻す」になる
+POST /signup -> 303 See Other (390.6524ms)
+GET /notes/1 -> 200 OK (3.0966ms)
+
+thread 'whole_journey' (217256) panicked at tests\u10_journey.rs:96:5:
+assertion `left == right` failed: 10. bob には alice のノートが 404 のはず
+  left: 200
+ right: 404
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test whole_journey ... FAILED
+
+failures:
+
+failures:
+    whole_journey
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.90s
+
+error: test failed, to rerun pass `--test u10_journey`

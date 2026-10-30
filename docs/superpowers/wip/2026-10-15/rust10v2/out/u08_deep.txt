@@ -1,0 +1,16 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.63s
+     Running tests\u08_deep.rs (target\debug\deps\u08_deep-4324d61dcfba94e9.exe)
+
+running 1 test
+POST /signup -> 303 See Other (416.7615ms)
+200000 件を作った（1.07s）
+OFFSET の読み方: SEARCH notes USING INDEX idx_notes_user_updated (user_id=?)
+cursor の読み方: SEARCH notes USING INDEX idx_notes_user_updated (user_id=? AND updated_at<?)
+1 回目: OFFSET   33.91ms（ノート20 〜 ノート1）／ cursor  148.90µs（ノート20 〜 ノート1）
+2 回目: OFFSET   35.32ms（ノート20 〜 ノート1）／ cursor  132.20µs（ノート20 〜 ノート1）
+3 回目: OFFSET   33.24ms（ノート20 〜 ノート1）／ cursor  134.10µs（ノート20 〜 ノート1）
+test deep_page ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.62s
+
+exit=0

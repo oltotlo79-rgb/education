@@ -1,0 +1,80 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.67s
+     Running tests\u08_pages.rs (target\debug\deps\u08_pages-752aa2bb9d3d78d3.exe)
+
+running 1 test
+POST /signup -> 303 See Other (432.6997ms)
+POST /notes -> 303 See Other (8.31ms)
+POST /notes -> 303 See Other (9.1929ms)
+POST /notes -> 303 See Other (7.8823ms)
+POST /notes -> 303 See Other (7.1342ms)
+POST /notes -> 303 See Other (6.7637ms)
+POST /notes -> 303 See Other (7.1324ms)
+POST /notes -> 303 See Other (6.4568ms)
+POST /notes -> 303 See Other (8.1703ms)
+POST /notes -> 303 See Other (6.5675ms)
+POST /notes -> 303 See Other (6.9314ms)
+POST /notes -> 303 See Other (7.4519ms)
+POST /notes -> 303 See Other (8.3053ms)
+POST /notes -> 303 See Other (11.961ms)
+POST /notes -> 303 See Other (8.3908ms)
+POST /notes -> 303 See Other (6.2695ms)
+POST /notes -> 303 See Other (12.9478ms)
+POST /notes -> 303 See Other (10.1916ms)
+POST /notes -> 303 See Other (9.9974ms)
+POST /notes -> 303 See Other (7.1128ms)
+POST /notes -> 303 See Other (6.2506ms)
+POST /notes -> 303 See Other (6.1044ms)
+POST /notes -> 303 See Other (5.8484ms)
+POST /notes -> 303 See Other (10.832ms)
+POST /notes -> 303 See Other (12.7019ms)
+POST /notes -> 303 See Other (10.2794ms)
+POST /notes -> 303 See Other (19.1751ms)
+POST /notes -> 303 See Other (10.4339ms)
+POST /notes -> 303 See Other (6.4887ms)
+POST /notes -> 303 See Other (7.0098ms)
+POST /notes -> 303 See Other (7.9602ms)
+POST /notes -> 303 See Other (8.4661ms)
+POST /notes -> 303 See Other (9.4147ms)
+POST /notes -> 303 See Other (8.0115ms)
+POST /notes -> 303 See Other (10.3397ms)
+POST /notes -> 303 See Other (7.0627ms)
+POST /notes -> 303 See Other (10.9812ms)
+POST /notes -> 303 See Other (9.2601ms)
+POST /notes -> 303 See Other (7.0548ms)
+POST /notes -> 303 See Other (7.7872ms)
+POST /notes -> 303 See Other (8.1043ms)
+POST /notes -> 303 See Other (8.8181ms)
+POST /notes -> 303 See Other (8.464ms)
+POST /notes -> 303 See Other (8.4373ms)
+POST /notes -> 303 See Other (7.2597ms)
+POST /notes -> 303 See Other (8.3437ms)
+POST /notes -> 303 See Other (6.9803ms)
+POST /notes -> 303 See Other (7.0423ms)
+POST /notes -> 303 See Other (8.4661ms)
+POST /notes -> 303 See Other (5.8093ms)
+POST /notes -> 303 See Other (6.5922ms)
+POST /notes -> 303 See Other (8.2774ms)
+POST /notes -> 303 See Other (10.388ms)
+POST /notes -> 303 See Other (8.2738ms)
+POST /notes -> 303 See Other (5.9033ms)
+POST /notes -> 303 See Other (7.3855ms)
+GET /notes -> 200 OK (5.495ms)
+GET /notes: 20 件（ノート45 〜 ノート26）
+   1 / 3 ページ（全55件）　前へ: （なし）　次へ: /notes?page=2
+GET /notes -> 200 OK (3.5624ms)
+GET /notes?page=2: 20 件（ノート25 〜 ノート06）
+   2 / 3 ページ（全55件）　前へ: /notes?page=1　次へ: /notes?page=3
+GET /notes -> 200 OK (3.7888ms)
+GET /notes?page=3: 15 件（ノート05 〜 メモ01）
+   3 / 3 ページ（全55件）　前へ: /notes?page=2　次へ: （なし）
+GET /notes -> 200 OK (4.2475ms)
+GET /notes?q=ノート&page=2: 20 件（ノート25 〜 ノート06）
+   2 / 3 ページ（全45件）　前へ: /notes?q=%E3%83%8E%E3%83%BC%E3%83%88&page=1　次へ: /notes?q=%E3%83%8E%E3%83%BC%E3%83%88&page=3
+GET /notes -> 200 OK (3.2607ms)
+GET /notes -> 200 OK (3.6456ms)
+「次へ」をたどる GET /notes?q=%E3%83%8E%E3%83%BC%E3%83%88&page=3: 5 件（ノート05 〜 ノート01）
+test forty_five_notes ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.95s
+
+exit=0

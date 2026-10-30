@@ -1,0 +1,32 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.35s
+     Running tests\u06_guard.rs (target\debug\deps\u06_guard-7d6860174d00b65b.exe)
+
+running 1 test
+POST /signup -> 303 See Other (408.926ms)
+POST /signup -> 303 See Other (502.9181ms)
+POST /notes -> 303 See Other (6.4954ms)
+GET /notes/1/delete -> 303 See Other (6.9647ms)
+GET /notes/1 -> 404 Not Found (5.3966ms)
+1. RustNote の中のリンクを開く: GET /notes/1/delete → 303 See Other／ノートは消えた
+POST /notes -> 303 See Other (6.9619ms)
+GET /notes/2/delete -> 303 See Other (6.6123ms)
+GET /notes/2 -> 404 Not Found (3.866ms)
+2. ほかのサイトのリンクを開く: GET /notes/2/delete → 303 See Other／ノートは消えた
+POST /notes -> 303 See Other (5.6812ms)
+GET /notes/3 -> 200 OK (3.6433ms)
+3. ほかのサイトのフォーム（Origin）: POST /notes/3/delete → 403 Forbidden／ノートは残っている
+POST /notes -> 303 See Other (6.2306ms)
+GET /notes/4 -> 200 OK (5.0979ms)
+4. ほかのサイトのフォーム（Sec-Fetch-Site）: POST /notes/4/delete → 403 Forbidden／ノートは残っている
+POST /notes -> 303 See Other (5.7343ms)
+GET /notes/5 -> 200 OK (4.212ms)
+5. bob のボタン: POST /notes/5/delete → 405 Method Not Allowed（allow: GET, HEAD）／ノートは残っている
+POST /notes -> 303 See Other (5.813ms)
+GET /notes/6 -> 200 OK (3.1953ms)
+6. alice のボタン: POST /notes/6/delete → 405 Method Not Allowed（allow: GET, HEAD）／ノートは残っている
+test ways_to_trigger_delete ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.01s
+
+exit=0

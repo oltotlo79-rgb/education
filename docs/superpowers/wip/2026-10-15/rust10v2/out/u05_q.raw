@@ -1,0 +1,34 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.64s
+     Running tests\u05_q.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/target10\debug\deps\u05_q-37909d7f58e8cb5b.exe)
+
+running 3 tests
+test q1_edit_after_toggle ... POST /signup -> 303 See Other (409.4935ms)
+POST /notes -> 303 See Other (6.5048ms)
+GET /notes/1/edit -> 200 OK (3.8664ms)
+問1 編集のフォームを開く（version=1）
+POST /notes/1/toggle -> 303 See Other (6.9846ms)
+問1 完了を切り替える → 303 See Other
+POST /notes/1/edit -> 409 Conflict (7.3962ms)
+問1 開いておいたフォームで保存 → 409 Conflict
+ok
+test q2_toggle_or_set ... POST /signup -> 303 See Other (505.5469ms)
+POST /notes -> 303 See Other (5.8529ms)
+POST /notes -> 303 See Other (6.9524ms)
+問2 UPDATE notes SET done = 1 - done WHERE id = ?1
+問2   → 1回目のあと done=1、2回目のあと done=0
+問2 UPDATE notes SET done = 1 WHERE id = ?1
+問2   → 1回目のあと done=1、2回目のあと done=1
+ok
+test q3_list_order_after_toggle ... POST /signup -> 303 See Other (398.2538ms)
+POST /notes -> 303 See Other (7.5773ms)
+POST /notes -> 303 See Other (8.6856ms)
+POST /notes -> 303 See Other (7.4863ms)
+GET /notes -> 200 OK (3.5126ms)
+問3 切り替える前の一覧: ["3件目", "2件目", "1件目"]
+POST /notes/1/toggle -> 303 See Other (9.749ms)
+GET /notes -> 200 OK (5.5704ms)
+問3 1件目を切り替えたあと: ["1件目（完了）", "3件目", "2件目"]
+ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.57s
+

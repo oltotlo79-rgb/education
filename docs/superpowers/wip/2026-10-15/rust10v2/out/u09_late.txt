@@ -1,0 +1,17 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.71s
+     Running tests\u09_late.rs (target\debug\deps\u09_late-a06b2f7fae643603.exe)
+
+running 1 test
+POST /signup -> 303 See Other (440.6278ms)
+POST /notes -> 303 See Other (11.2007ms)
+POST /notes/1/toggle -> 303 See Other (8.44ms)
+1. POST /notes/1/toggle → 303 See Other（flash=note_toggled）
+GET /notes/1 -> 200 OK (6.3179ms)
+2. GET /notes/1: お知らせ「完了の状態を切り替えました」・flash を消した: true
+GET /notes -> 200 OK (5.0788ms)
+3. GET /notes: お知らせ「（なし）」・flash を消した: false
+test which_page_shows_the_flash ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.49s
+
+exit=0

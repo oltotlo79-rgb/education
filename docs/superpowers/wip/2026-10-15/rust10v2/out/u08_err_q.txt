@@ -1,0 +1,90 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+warning: unused variable: `query`
+   --> src\views.rs:157:41
+    |
+157 | pub async fn pagination(page: NotePage, query: NoteQuery) -> Result<impl View> {
+    |                                         ^^^^^ help: if this is intentional, prefix it with an underscore: `_query`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: `rustnote` (lib) generated 1 warning (run `cargo fix --lib -p rustnote` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.86s
+     Running tests\u08_pages.rs (target\debug\deps\u08_pages-752aa2bb9d3d78d3.exe)
+
+running 1 test
+POST /signup -> 303 See Other (435.8136ms)
+POST /notes -> 303 See Other (11.53ms)
+POST /notes -> 303 See Other (13.435ms)
+POST /notes -> 303 See Other (12.0527ms)
+POST /notes -> 303 See Other (12.1492ms)
+POST /notes -> 303 See Other (10.2502ms)
+POST /notes -> 303 See Other (11.8313ms)
+POST /notes -> 303 See Other (11.6148ms)
+POST /notes -> 303 See Other (12.9446ms)
+POST /notes -> 303 See Other (12.4178ms)
+POST /notes -> 303 See Other (13.5148ms)
+POST /notes -> 303 See Other (13.5409ms)
+POST /notes -> 303 See Other (13.1987ms)
+POST /notes -> 303 See Other (12.2767ms)
+POST /notes -> 303 See Other (12.1295ms)
+POST /notes -> 303 See Other (12.7508ms)
+POST /notes -> 303 See Other (13.0419ms)
+POST /notes -> 303 See Other (15.8884ms)
+POST /notes -> 303 See Other (12.2054ms)
+POST /notes -> 303 See Other (12.9899ms)
+POST /notes -> 303 See Other (14.261ms)
+POST /notes -> 303 See Other (42.4061ms)
+POST /notes -> 303 See Other (20.2159ms)
+POST /notes -> 303 See Other (7.3425ms)
+POST /notes -> 303 See Other (6.2148ms)
+POST /notes -> 303 See Other (5.8756ms)
+POST /notes -> 303 See Other (6.0067ms)
+POST /notes -> 303 See Other (10.1602ms)
+POST /notes -> 303 See Other (10.4197ms)
+POST /notes -> 303 See Other (8.4095ms)
+POST /notes -> 303 See Other (7.9492ms)
+POST /notes -> 303 See Other (7.0203ms)
+POST /notes -> 303 See Other (7.171ms)
+POST /notes -> 303 See Other (6.6464ms)
+POST /notes -> 303 See Other (5.8224ms)
+POST /notes -> 303 See Other (8.3739ms)
+POST /notes -> 303 See Other (6.515ms)
+POST /notes -> 303 See Other (7.2386ms)
+POST /notes -> 303 See Other (6.047ms)
+POST /notes -> 303 See Other (5.6966ms)
+POST /notes -> 303 See Other (6.847ms)
+POST /notes -> 303 See Other (5.6748ms)
+POST /notes -> 303 See Other (7.715ms)
+POST /notes -> 303 See Other (7.1654ms)
+POST /notes -> 303 See Other (7.377ms)
+POST /notes -> 303 See Other (6.0191ms)
+POST /notes -> 303 See Other (6.0133ms)
+POST /notes -> 303 See Other (6.3172ms)
+POST /notes -> 303 See Other (7.7721ms)
+POST /notes -> 303 See Other (9.0561ms)
+POST /notes -> 303 See Other (7.296ms)
+POST /notes -> 303 See Other (8.558ms)
+POST /notes -> 303 See Other (8.4717ms)
+POST /notes -> 303 See Other (6.9591ms)
+POST /notes -> 303 See Other (6.4788ms)
+POST /notes -> 303 See Other (8.5936ms)
+GET /notes -> 200 OK (5.978ms)
+GET /notes: 20 件（ノート45 〜 ノート26）
+   1 / 3 ページ（全55件）　前へ: （なし）　次へ: /notes?page=2
+GET /notes -> 200 OK (3.2998ms)
+GET /notes?page=2: 20 件（ノート25 〜 ノート06）
+   2 / 3 ページ（全55件）　前へ: /notes?page=1　次へ: /notes?page=3
+GET /notes -> 200 OK (2.8784ms)
+GET /notes?page=3: 15 件（ノート05 〜 メモ01）
+   3 / 3 ページ（全55件）　前へ: /notes?page=2　次へ: （なし）
+GET /notes -> 200 OK (3.3106ms)
+GET /notes?q=ノート&page=2: 20 件（ノート25 〜 ノート06）
+   2 / 3 ページ（全45件）　前へ: /notes?page=1　次へ: /notes?page=3
+GET /notes -> 200 OK (3.2899ms)
+GET /notes -> 200 OK (3.9877ms)
+「次へ」をたどる GET /notes?page=3: 15 件（ノート05 〜 メモ01）
+test forty_five_notes ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.06s
+
+exit=0

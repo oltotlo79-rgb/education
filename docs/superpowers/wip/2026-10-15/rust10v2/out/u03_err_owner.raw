@@ -1,0 +1,38 @@
+   Compiling rustnote v0.1.0 (C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust10\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.20s
+     Running tests\u03_detail.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/target10\debug\deps\u03_detail-a30d15660f9271a6.exe)
+
+running 1 test
+test detail_answers_by_owner_and_id ... POST /signup -> 303 See Other (447.0919ms)
+POST /signup -> 303 See Other (412.8248ms)
+POST /notes -> 303 See Other (9.23ms)
+alice のノート: /notes/1
+--- 表 ---
+GET /notes/1 -> 200 OK (5.3032ms)
+alice      GET /notes/1                     200 OK
+GET /notes/1 -> 200 OK (4.7902ms)
+bob        GET /notes/1                     200 OK
+GET /notes/999 -> 404 Not Found (5.0304ms)
+bob        GET /notes/999                   404 Not Found
+GET /notes/999 -> 404 Not Found (4.6138ms)
+alice      GET /notes/999                   404 Not Found
+GET /notes/abc -> 404 Not Found (2.1532ms)
+alice      GET /notes/abc                   404 Not Found
+GET /notes/0 -> 404 Not Found (2.0411ms)
+alice      GET /notes/0                     404 Not Found
+GET /notes/-1 -> 404 Not Found (2.147ms)
+alice      GET /notes/-1                    404 Not Found
+GET /notes/9223372036854775808 -> 404 Not Found (1.7748ms)
+alice      GET /notes/9223372036854775808   404 Not Found
+GET /notes/1 -> 303 See Other (69µs)
+guest      GET /notes/1                     303 See Other → /login
+GET /notes/1 -> 200 OK (5.4336ms)
+GET /notes/999 -> 404 Not Found (3.4145ms)
+--- bob から見た2つの 404 ---
+状態コード: 200 OK / 404 Not Found
+本文の長さ: 1066 / 690 バイト
+本文がまったく同じ: false
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.93s
+
