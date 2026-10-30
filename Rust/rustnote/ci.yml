@@ -11,17 +11,17 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     defaults:
       run:
         working-directory: Rust/rustnote
     steps:
       - uses: actions/checkout@v7
 
-      # rust-toolchain.toml と同じ 1.99.0 を入れる
+      # rust-toolchain.toml と同じ 1.99.1 を入れる
       - uses: dtolnay/rust-toolchain@master
         with:
-          toolchain: 1.99.0
+          toolchain: 1.99.1
           components: rustfmt, clippy
 
       # 依存クレートのビルド結果をキャッシュして、2 回目から速くする
@@ -41,7 +41,7 @@ jobs:
   docker:
     # テストが通ったら、コンテナイメージがビルドできるかも確かめる
     needs: test
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v7
       - name: docker build

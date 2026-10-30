@@ -1,5 +1,5 @@
-# このフォルダの中で cargo を実行すると、Rust 1.99.0 が使われる
+# このフォルダの中で cargo を実行すると、Rust 1.99.1 が使われる
 # （既定のツールチェーンは変更しない）
 [toolchain]
-channel = "1.99.0"
+channel = "1.99.1"
 components = ["rustfmt", "clippy"]

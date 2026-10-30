@@ -8,11 +8,11 @@
 # 実行:   docker run --rm -p 8080:8080 rustnote
 
 # ---- 1. builder ----
-FROM rust:1.99.0-bookworm AS builder
+FROM rust:1.99.1-bookworm AS builder
 WORKDIR /app
 
-# アセットの束を作る topcoat CLI（アプリの Topcoat と同じ 0.10.0）
-RUN cargo install topcoat-cli --version 0.10.0 --locked
+# アセットの束を作る topcoat CLI（アプリの Topcoat と同じ 0.11.0）
+RUN cargo install topcoat-cli --version 0.11.0 --locked
 
 # ソースをコピーしてビルドする（Cargo.lock の版をそのまま使う）
 COPY . .
