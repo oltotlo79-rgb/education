@@ -6556,7 +6556,7 @@ pub fn error_page(cx: &Cx, error: Error) -> Result<impl View + '_> {
 
 - 自分のエラーの型（`AppError`・`RepoError`）と、Topcoat の `NotFoundError`・`BadRequestError` だけを画面にし、ほかは `return Err(error);` で返します（例10-1・エラー3）。`AppError::Internal`（DB に接続できない など）は 500 の画面にし、`log_if_internal` で**窓に記録**してから、利用者には「時間をおいて…」だけを見せます（問1と同じ考え方です。第4巻 UNIT 05）。
 - お知らせ（「ノートを作成しました」）は、例10-2のテーマと同じ、ふつうのクッキー（`flash`）で、移った先のページに受け渡しています（`src/flash.rs`。第10巻 UNIT 02）。
-- ログインは、例10-2と同じく `session::start`・`token_hash`・`stop` を使い、記録は DB の `sessions` 表に、ハッシュと期限を保存しています（`src/auth.rs`。第8巻 UNIT 05（準備中））。
+- ログインは、例10-2と同じく `session::start`・`token_hash`・`stop` を使い、記録は DB の `sessions` 表に、ハッシュと期限を保存しています（`src/auth.rs`。第8巻 UNIT 05）。
 
 ### 練習問題
 
