@@ -6437,7 +6437,7 @@ error: could not compile `rustnote` (lib) due to 1 previous error
 
 - **守りのテスト:** RustNote の `tests/http.rs` には、この巻の守りのうち、ログインしていないときの 303（`notes_require_login`）・他人のノートの 404（`other_users_notes_are_404`。`POST /notes/{id}/edit` まで確かめている）・ログアウトのあとのクッキー（`login_and_logout`）・ほかのサイトからの POST の 403（`cross_site_post_is_403`）が入っています。
 - **まだ入っていない守り（改善点）:** 例10-1の「ログインのたびにトークンが変わり、前のトークンは使えない」と、「失敗の画面が、メールの所を除いて同じ」は、`tests/http.rs` にありません（`login_and_logout` は、失敗の文が入っているかだけを見ています）。第11巻 UNIT 06 で、守りの回帰テストとして足していきます。
-- **監査の記録（改善点）:** 今の RustNote が残すのは、例10-2のアクセスログだけです。例10-3の `audit.rs` は、この単元の練習としてコピーに足したもので、`Rust/rustnote` には入れていません。記録の形（1行の文字列）を、あとで探しやすい形にする方法（`tracing`）は、第11巻 UNIT 07（準備中） で扱います。
+- **監査の記録（改善点）:** 今の RustNote が残すのは、例10-2のアクセスログだけです。例10-3の `audit.rs` は、この単元の練習としてコピーに足したもので、`Rust/rustnote` には入れていません。記録の形（1行の文字列）を、あとで探しやすい形にする方法（`tracing`）は、第11巻 UNIT 07 で扱います。
 - **事故の対応:** 全員のセッションを終わらせるのは `DELETE FROM sessions` の1文、1人だけなら `DELETE FROM sessions WHERE user_id = ?` です（UNIT 05 の例5-2）。どちらも、RustNote には画面がありません。本番の DB に SQL を送って行います。
 
 ### 練習問題
@@ -6454,7 +6454,7 @@ error: could not compile `rustnote` (lib) due to 1 previous error
 
 - 例10-3の記録で、同じ `ip=` からの `login_failed` の数を、決まった時間（たとえば1分）ごとに数えます。同じ `email=` への `login_failed` の数も数えます。1つの `ip=` から、いろいろな `email=` への失敗が続けば、総当たりです。ただし、`email=` は伏せてあるので（`a…@example.com`）、正確に数えたいときは、伏せる代わりに、メールアドレスの SHA-256 の先頭の数文字を書く、という方法もあります。
 - 気づいたあとは、UNIT 04 の例（`examples/u04_limiter.rs`）のような、回数の制限を足します。Better Auth は、ログインと登録を、1つの IP から 10 秒に 3 回までにしています（UNIT 08）。
-- 数えるのを人の目に任せず、「1分に 20 回を超えたら知らせる」のように、自動で見張るしくみは、第11巻 UNIT 07（準備中） で扱います。
+- 数えるのを人の目に任せず、「1分に 20 回を超えたら知らせる」のように、自動で見張るしくみは、第11巻 UNIT 07 で扱います。
 
 **問2の解答:**
 
