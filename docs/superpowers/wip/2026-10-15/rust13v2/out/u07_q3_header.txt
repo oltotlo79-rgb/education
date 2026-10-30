@@ -1,0 +1,13 @@
+HTTP/1.1 200 OK
+content-type: text/html; charset=utf-8
+
+<header class="site-header">
+<a class="brand" href="/">RustNote</a>
+<nav>
+<a href="/notes">ノート一覧</a>
+<span class="user-email">&lt;b&gt;bold&lt;/b&gt;@example.com</span>
+<form method="post" action="/logout">
+<button type="submit" class="link-button">ログアウト</button>
+</form>
+</nav>
+</header>

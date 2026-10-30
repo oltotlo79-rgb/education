@@ -1,0 +1,5 @@
+Error: アセットの束（assets/）がありません。先に `topcoat asset bundle` を実行するか、`topcoat dev` で起動してください
+
+Caused by:
+    no asset bundle at /app/assets
+（終了コード: 1）

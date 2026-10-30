@@ -1,0 +1,3 @@
+HTTP/1.1 200 OK
+set-cookie: flash=; Path=/; Max-Age=0; Expires=Thu, 30 Oct 2025 20:55:26 GMT
+お知らせの表示: <p class="flash warning" role="status">ログインしてください</p>

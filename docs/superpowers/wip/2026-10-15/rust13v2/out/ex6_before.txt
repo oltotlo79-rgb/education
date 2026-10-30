@@ -1,0 +1,23 @@
+
+running 1 test
+page_after_the_last_says_so --- FAILED
+
+failures:
+
+---- page_after_the_last_says_so stdout ----
+POST /signup -> 303 See Other (434.5969ms)
+POST /notes -> 303 See Other (6.6912ms)
+GET /notes -> 200 OK (5.958ms)
+
+thread 'page_after_the_last_says_so' (142936) panicked at tests\http.rs:356:5:
+assertion failed: html.contains("このページにはノートがありません。")
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    page_after_the_last_says_so
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 15 filtered out; finished in 0.47s
+
+error: test failed, to rerun pass `--test http`
+exit=101

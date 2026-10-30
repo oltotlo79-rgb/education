@@ -1,0 +1,2 @@
+rustnote:trixie 170MB
+rustnote:bookworm 172MB

@@ -1,0 +1,39 @@
+diff --git a/src/routes/notes.rs b/src/routes/notes.rs
+index 42406ec..0f339ed 100644
+--- a/src/routes/notes.rs
++++ b/src/routes/notes.rs
+@@ -77,7 +77,10 @@ async fn notes_index(
+ 
+         if page.notes.is_empty() {
+             <p class="empty">
+-                if keyword.is_some() {
++                if page.total_count > 0 {
++                    // ノートはあるが、このページには無い（最後より大きいページ。総合演習6）
++                    "このページにはノートがありません。"
++                } else if keyword.is_some() {
+                     "条件に合うノートはありません。"
+                 } else {
+                     "まだノートがありません。最初の1件を書いてみましょう。"
+diff --git a/tests/http.rs b/tests/http.rs
+index 14e32ab..0150f12 100644
+--- a/tests/http.rs
++++ b/tests/http.rs
+@@ -345,6 +345,18 @@ async fn list_searches_and_paginates() {
+     assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+ }
+ 
++#[tokio::test]
++async fn page_after_the_last_says_so() {
++    let app = test_app().await;
++    let cookie = app.sign_up("alice@example.com", PASSWORD).await;
++    app.create_note(&cookie, "メモ", "").await;
++
++    // ノートはあるが、99 ページ目には無い。「まだノートがありません」は出さない
++    let html = body_text(app.get("/notes?page=99", Some(&cookie)).await).await;
++    assert!(html.contains("このページにはノートがありません。"));
++    assert!(!html.contains("まだノートがありません"));
++}
++
+ #[tokio::test]
+ async fn cross_site_post_is_403() {
+     let app = test_app().await;

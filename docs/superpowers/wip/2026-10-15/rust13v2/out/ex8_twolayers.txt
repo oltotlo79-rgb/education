@@ -1,0 +1,20 @@
+
+running 1 test
+security_headers_are_set --- FAILED
+
+failures:
+
+---- security_headers_are_set stdout ----
+
+thread 'security_headers_are_set' (114608) panicked at ...\router.rs:341:14:
+multiple discovered layers registered for the same path ""
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    security_headers_are_set
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 16 filtered out; finished in 0.02s
+
+error: test failed, to rerun pass `--test http`
+exit=101

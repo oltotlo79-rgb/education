@@ -1,0 +1,17 @@
+error[E0015]: cannot call non-const function `make_dummy_hash` in statics
+ --> examples\e06_static.rs:8:29
+  |
+8 | static DUMMY_HASH: String = make_dummy_hash();
+  |                             ^^^^^^^^^^^^^^^^^
+  |
+note: function `make_dummy_hash` is not const
+ --> examples\e06_static.rs:4:1
+  |
+4 | fn make_dummy_hash() -> String {
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  = note: calls in statics are limited to constant functions, tuple structs and tuple variants
+  = note: consider wrapping this expression in `std::sync::LazyLock::new(|| ...)`
+
+For more information about this error, try `rustc --explain E0015`.
+error: could not compile `rustnote` (example "e06_static") due to 1 previous error
+exit=101

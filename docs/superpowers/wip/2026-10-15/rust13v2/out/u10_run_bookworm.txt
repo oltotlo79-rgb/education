@@ -1,0 +1,15 @@
+--- rustnote:bookworm
+大きさ 37890813 バイト・利用者 app・待ち受け 8080/tcp
+ldd (Debian GLIBC 2.36-9+deb12u14) 2.36
+uid=10001(app) gid=10001(app) groups=10001(app)
+total 16616
+drwxr-xr-x 2 root root     4096 Oct 30 21:36 assets
+-rwxr-xr-x 1 root root 17010480 Oct 30 21:36 rustnote
+HTTP/1.1 200 OK
+content-type: application/json
+{"status":"ok"}
+--- コンテナのログ
+マイグレーションを適用しました: 0001_users
+マイグレーションを適用しました: 0002_notes
+マイグレーションを適用しました: 0003_sessions
+RustNote を起動しました: http://0.0.0.0:8080

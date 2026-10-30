@@ -1,0 +1,38 @@
+error: rustc 1.97.1 is not supported by the following packages:
+  rustnote@0.1.0 requires rustc 1.99
+  rustnote@0.1.0 requires rustc 1.99
+  topcoat@0.11.0 requires rustc 1.99
+  topcoat-asset@0.11.0 requires rustc 1.99
+  topcoat-asset@0.11.0 requires rustc 1.99
+  topcoat-cookie@0.11.0 requires rustc 1.99
+  topcoat-core@0.11.0 requires rustc 1.99
+  topcoat-core@0.11.0 requires rustc 1.99
+  topcoat-core-grammar@0.11.0 requires rustc 1.99
+  topcoat-core-macro@0.11.0 requires rustc 1.99
+  topcoat-font@0.11.0 requires rustc 1.99
+  topcoat-font@0.11.0 requires rustc 1.99
+  topcoat-font@0.11.0 requires rustc 1.99
+  topcoat-font@0.11.0 requires rustc 1.99
+  topcoat-font@0.11.0 requires rustc 1.99
+  topcoat-font@0.11.0 requires rustc 1.99
+  topcoat-font-grammar@0.11.0 requires rustc 1.99
+  topcoat-font-macro@0.11.0 requires rustc 1.99
+  topcoat-icon@0.11.0 requires rustc 1.99
+  topcoat-icon@0.11.0 requires rustc 1.99
+  topcoat-icon-grammar@0.11.0 requires rustc 1.99
+  topcoat-icon-macro@0.11.0 requires rustc 1.99
+  topcoat-router@0.11.0 requires rustc 1.99
+  topcoat-router@0.11.0 requires rustc 1.99
+  topcoat-router-grammar@0.11.0 requires rustc 1.99
+  topcoat-router-macro@0.11.0 requires rustc 1.99
+  topcoat-runtime@0.11.0 requires rustc 1.99
+  topcoat-runtime@0.11.0 requires rustc 1.99
+  topcoat-runtime-grammar@0.11.0 requires rustc 1.99
+  topcoat-runtime-macro@0.11.0 requires rustc 1.99
+  topcoat-session@0.11.0 requires rustc 1.99
+  topcoat-view@0.11.0 requires rustc 1.99
+  topcoat-view@0.11.0 requires rustc 1.99
+  topcoat-view-grammar@0.11.0 requires rustc 1.99
+  topcoat-view-macro@0.11.0 requires rustc 1.99
+
+exit=101

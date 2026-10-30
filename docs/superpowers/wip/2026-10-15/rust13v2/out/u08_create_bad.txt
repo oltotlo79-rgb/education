@@ -1,0 +1,29 @@
+HTTP/1.1 400 Bad Request
+content-type: text/html; charset=utf-8
+
+<h1>ノート</h1>
+<form method="get" action="/notes" class="search-form">
+<input name="q" type="search" placeholder="キーワードで検索">
+<button type="submit">検索</button>
+</form>
+<details class="new-note" open="">
+<summary>新しいノートを書く</summary>
+<form method="post" action="/notes" class="note-form">
+<label for="title">タイトル（80文字まで）</label>
+<input id="title" name="title" value="" required="" maxlength="80">
+<p class="field-error">タイトルを入力してください</p>
+<label for="body">本文（10000文字まで）</label>
+<textarea id="body" name="body" rows="6">xxxxxxxxxx…（x が全部で 10,001 個。ここでは先頭の 10 個だけ表示）</textarea>
+<p class="field-error">本文は10000文字以内にしてください（現在10001文字）</p>
+<button type="submit">作成する</button>
+</form>
+</details>
+<ul class="note-list">
+<li class="note-item">
+<a href="/notes/1">買い物</a>
+<span class="updated">更新: 2026-10-30 21:08:30</span>
+</li>
+</ul>
+<nav class="pagination">
+<span>1 / 1 ページ（全1件）</span>
+</nav>

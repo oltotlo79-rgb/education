@@ -1,0 +1,3 @@
+   Compiling rustnote v0.1.0 (...\fixed)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 9.29s
+exit=0

@@ -1,0 +1,125 @@
+From 3435f9bfb088af61e27e9748d66d1670f5b807fc Mon Sep 17 00:00:00 2001
+From: rustnote <rustnote@example.invalid>
+Date: Sat, 31 Oct 2026 06:58:57 +0900
+Subject: [PATCH 3/9] =?UTF-8?q?=E6=BC=94=E7=BF=923:=20NoteQuery=20?=
+ =?UTF-8?q?=E3=81=AE=E9=A0=85=E7=9B=AE=E3=82=92=20private=20=E3=81=AB?=
+ =?UTF-8?q?=E3=81=99=E3=82=8B?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ src/domain.rs           | 24 +++++++++++++++++-------
+ src/repository/notes.rs |  4 ++--
+ src/routes/notes.rs     |  2 +-
+ src/views.rs            |  4 ++--
+ 4 files changed, 22 insertions(+), 12 deletions(-)
+
+diff --git a/src/domain.rs b/src/domain.rs
+index bb3e7dd..f45bb20 100644
+--- a/src/domain.rs
++++ b/src/domain.rs
+@@ -354,9 +354,9 @@ impl NewNote {
+ #[derive(Debug, Clone, PartialEq, Eq)]
+ pub struct NoteQuery {
+     /// 検索キーワード。空なら None（すべて表示）
+-    pub keyword: Option<String>,
+-    /// 1 から始まるページ番号
+-    pub page: u32,
++    keyword: Option<String>,
++    /// 1 から始まるページ番号（new が 1 以上にそろえる）
++    page: u32,
+ }
+ 
+ impl NoteQuery {
+@@ -372,6 +372,16 @@ impl NoteQuery {
+         }
+     }
+ 
++    /// 検索キーワード（無ければ None）
++    pub fn keyword(&self) -> Option<&str> {
++        self.keyword.as_deref()
++    }
++
++    /// 1 から始まるページ番号
++    pub fn page(&self) -> u32 {
++        self.page
++    }
++
+     /// SQL の OFFSET（何件読み飛ばすか）
+     pub fn offset(&self) -> u64 {
+         u64::from(self.page - 1) * u64::from(PER_PAGE)
+@@ -511,16 +521,16 @@ mod tests {
+     #[test]
+     fn note_query_defaults_and_offset() {
+         let query = NoteQuery::new(Some("  "), None);
+-        assert_eq!(query.keyword, None);
+-        assert_eq!(query.page, 1);
++        assert_eq!(query.keyword(), None);
++        assert_eq!(query.page(), 1);
+         assert_eq!(query.offset(), 0);
+ 
+         let query = NoteQuery::new(Some(" rust "), Some(3));
+-        assert_eq!(query.keyword.as_deref(), Some("rust"));
++        assert_eq!(query.keyword(), Some("rust"));
+         assert_eq!(query.offset(), 40);
+ 
+         // page=0 は 1 として扱う
+-        assert_eq!(NoteQuery::new(None, Some(0)).page, 1);
++        assert_eq!(NoteQuery::new(None, Some(0)).page(), 1);
+     }
+ 
+     #[test]
+diff --git a/src/repository/notes.rs b/src/repository/notes.rs
+index c2254bf..1edc5ed 100644
+--- a/src/repository/notes.rs
++++ b/src/repository/notes.rs
+@@ -89,7 +89,7 @@ impl NoteRepository for LibsqlNoteRepository {
+     async fn search(&self, owner: UserId, query: &NoteQuery) -> Result<NotePage, RepoError> {
+         let conn = self.db.connect().await?;
+         // キーワードが無いときは「%」（何にでも一致する）で検索する
+-        let pattern = match &query.keyword {
++        let pattern = match query.keyword() {
+             Some(keyword) => format!("%{}%", escape_like(keyword)),
+             None => "%".to_string(),
+         };
+@@ -126,7 +126,7 @@ impl NoteRepository for LibsqlNoteRepository {
+ 
+         Ok(NotePage {
+             notes,
+-            page: query.page,
++            page: query.page(),
+             total_count: u64::try_from(total_count).unwrap_or(0),
+         })
+     }
+diff --git a/src/routes/notes.rs b/src/routes/notes.rs
+index 0f5b353..42406ec 100644
+--- a/src/routes/notes.rs
++++ b/src/routes/notes.rs
+@@ -48,7 +48,7 @@ async fn notes_index(
+         .search(owner, &query)
+         .await
+         .map_err(AppError::from)?;
+-    let keyword = query.keyword.clone();
++    let keyword = query.keyword().map(str::to_string);
+ 
+     Ok(view! {
+         <h1>"ノート"</h1>
+diff --git a/src/views.rs b/src/views.rs
+index 29670b1..e7e8eb1 100644
+--- a/src/views.rs
++++ b/src/views.rs
+@@ -157,8 +157,8 @@ pub async fn note_form(
+ pub async fn pagination(page: NotePage, query: NoteQuery) -> Result<impl View> {
+     let link = |page_number: u32| {
+         let mut params: Vec<(&str, String)> = Vec::new();
+-        if let Some(keyword) = &query.keyword {
+-            params.push(("q", keyword.clone()));
++        if let Some(keyword) = query.keyword() {
++            params.push(("q", keyword.to_string()));
+         }
+         params.push(("page", page_number.to_string()));
+         href!(crate::routes::notes::index).query(params)
+-- 
+2.53.0.windows.2
+

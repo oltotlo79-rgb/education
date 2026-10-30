@@ -1,0 +1,4 @@
+rust:1.99.1-bookworm: arm64・526706530
+debian:bookworm-slim: arm64・28145111
+rust:1.99.1-trixie: arm64・556578291
+debian:trixie-slim: arm64・30223976

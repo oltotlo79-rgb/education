@@ -1,0 +1,7 @@
+1回目の migrate: []
+2回目の migrate: []
+適用済みの版: ["0001_users", "0002_notes", "0003_sessions"]
+表: ["notes", "schema_migrations", "sessions", "sqlite_sequence", "users"]
+索引: ["idx_notes_user_updated", "idx_sessions_expires", "idx_sessions_user"]
+notes の列: ["id", "user_id", "title", "body", "done", "version", "created_at", "updated_at"]
+exit=0

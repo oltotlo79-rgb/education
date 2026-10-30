@@ -1,0 +1,111 @@
+From b33513ce72fc82527817532956afd0fb31b7cc5d Mon Sep 17 00:00:00 2001
+From: rustnote <rustnote@example.invalid>
+Date: Sat, 31 Oct 2026 06:57:31 +0900
+Subject: [PATCH 2/9] =?UTF-8?q?=E6=BC=94=E7=BF=922:=20=E5=BE=85=E3=81=A1?=
+ =?UTF-8?q?=E5=8F=97=E3=81=91=E3=81=AE=E5=A0=B4=E6=89=80=E3=82=92=20DB=20?=
+ =?UTF-8?q?=E3=82=88=E3=82=8A=E5=85=88=E3=81=AB=E5=8F=96=E3=82=8B?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ Cargo.toml    |  2 +-
+ src/config.rs |  6 +++---
+ src/main.rs   | 23 +++++++++++++++--------
+ 3 files changed, 19 insertions(+), 12 deletions(-)
+
+diff --git a/Cargo.toml b/Cargo.toml
+index 5c9d1bb..5170661 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -26,7 +26,7 @@ serde = { version = "=1.0.229", features = ["derive"] }
+ # エラー型を短く書く
+ thiserror = "=2.0.21"
+ # 非同期ランタイム
+-tokio = { version = "=1.54.1", features = ["rt-multi-thread", "macros"] }
++tokio = { version = "=1.54.1", features = ["rt-multi-thread", "macros", "net"] }
+ # Web フレームワーク
+ topcoat = "=0.11.0"
+ 
+diff --git a/src/config.rs b/src/config.rs
+index 5c67e03..cebcf04 100644
+--- a/src/config.rs
++++ b/src/config.rs
+@@ -4,7 +4,7 @@
+ //! |---|---|---|
+ //! | `DATABASE_URL` | ローカルの DB ファイルのパス、または Turso の URL（`libsql://...`） | `rustnote.db` |
+ //! | `DATABASE_AUTH_TOKEN` | Turso の認証トークン（リモートのときだけ必要） | なし |
+-//! | `HOST` / `PORT` | 待ち受けるアドレス。`topcoat::start` が直接読む | `127.0.0.1` / `3000` |
++//! | `HOST` / `PORT` | 待ち受けるアドレス。main が DB を開く前に `listen_address` で読んで bind する | `127.0.0.1` / `3000` |
+ //!
+ //! トークンのような秘密の値は `Secret` 型に包む。`{:?}` で設定全体をログに出しても、
+ //! 中身は `Secret(********)` としか表示されない。
+@@ -120,8 +120,8 @@ fn read_var(name: &'static str) -> Result<Option<String>, ConfigError> {
+     }
+ }
+ 
+-/// 起動時のログに出す「待ち受けアドレス」。
+-/// `topcoat::start` と同じ規則（HOST / PORT、既定 127.0.0.1:3000）で組み立てる。
++/// 待ち受けるアドレス（HOST / PORT、既定 127.0.0.1:3000）。
++/// main が、DB を開く前に、この値で TcpListener::bind する。
+ pub fn listen_address() -> String {
+     let host = env::var("HOST").unwrap_or_else(|_| "127.0.0.1".to_string());
+     let port = env::var("PORT").unwrap_or_else(|_| "3000".to_string());
+diff --git a/src/main.rs b/src/main.rs
+index b9ceb6c..80a9f6c 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -4,8 +4,9 @@
+ //! 1. .env があれば環境変数として読み込む（開発用。本番では使わない）
+ //! 2. 設定（Config）を環境変数から作る
+ //! 3. アセット（CSS）の束を読み込む
+-//! 4. DB を開き、まだ適用していないマイグレーションを適用する
+-//! 5. ルーターを組み立て、HOST:PORT（既定 127.0.0.1:3000）で待ち受ける
++//! 4. HOST:PORT（既定 127.0.0.1:3000）の待ち受けの場所を取る（DB に触る前に）
++//! 5. DB を開き、まだ適用していないマイグレーションを適用する
++//! 6. ルーターを組み立て、4 の場所で受け付けを始める
+ //!
+ //! 起動時の失敗は anyhow で「何をしようとして失敗したか」を付けて表示し、終了する。
+ 
+@@ -16,6 +17,7 @@ use rustnote::{
+     routes,
+     state::AppState,
+ };
++use tokio::net::TcpListener;
+ use topcoat::asset::AssetBundle;
+ 
+ #[tokio::main]
+@@ -31,6 +33,13 @@ async fn main() -> anyhow::Result<()> {
+         "アセットの束（assets/）がありません。先に `topcoat asset bundle` を実行するか、`topcoat dev` で起動してください",
+     )?;
+ 
++    // 待ち受けの場所を、DB に触る前に取る。PORT が数でない・ポートがほかで使われている、
++    // なら、DB のファイルを作る前に、ここで止まる
++    let address = config::listen_address();
++    let listener = TcpListener::bind(&address).await.with_context(|| {
++        format!("{address} で待ち受けられません（HOST / PORT を確認してください）")
++    })?;
++
+     let db = Db::open(&config)
+         .await
+         .with_context(|| format!("DB（{}）を開けませんでした", config.database_url))?;
+@@ -43,12 +52,10 @@ async fn main() -> anyhow::Result<()> {
+ 
+     let router = routes::build_router(AppState::new(db), assets);
+ 
+-    eprintln!(
+-        "RustNote を起動しました: http://{}",
+-        config::listen_address()
+-    );
+-    topcoat::start(router)
++    // 待ち受けの場所はもう取れているので、この知らせは本当に受け付けられる状態で出る
++    eprintln!("RustNote を起動しました: http://{}", listener.local_addr()?);
++    topcoat::serve(listener, router)
+         .await
+-        .context("サーバーを起動できませんでした（HOST / PORT を確認してください）")?;
++        .context("サーバーが止まりました")?;
+     Ok(())
+ }
+-- 
+2.53.0.windows.2
+

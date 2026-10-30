@@ -1,0 +1,5 @@
+Error: マイグレーション 0003_sessions に失敗しました
+
+Caused by:
+    SQLite failure: `no such column: expire_at`
+exit=1

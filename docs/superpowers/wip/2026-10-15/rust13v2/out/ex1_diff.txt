@@ -1,0 +1,80 @@
+diff --git a/src/domain.rs b/src/domain.rs
+index d616270..bb3e7dd 100644
+--- a/src/domain.rs
++++ b/src/domain.rs
+@@ -13,7 +13,7 @@ use thiserror::Error;
+ // アプリ全体の定数
+ // ---------------------------------------------------------------------------
+ 
+-/// タイトルの最大文字数（chars().count() で数える。SQLite の length() と同じ）
++/// タイトルの最大文字数（chars().count() で数える。制御文字は parse で断るので、SQLite の length() と同じになる）
+ pub const MAX_TITLE_CHARS: usize = 80;
+ /// 本文の最大文字数
+ pub const MAX_BODY_CHARS: usize = 10_000;
+@@ -214,6 +214,8 @@ pub enum TitleError {
+     Empty,
+     #[error("タイトルは{max}文字以内にしてください（現在{len}文字）")]
+     TooLong { len: usize, max: usize },
++    #[error("タイトルに使えない文字（改行や制御文字）が含まれています")]
++    ControlChar,
+ }
+ 
+ /// 検査済みのタイトル（前後の空白を除いて 1〜80 文字）
+@@ -226,6 +228,11 @@ impl NoteTitle {
+     /// 文字列を検査し、合格したときだけ NoteTitle を返す
+     pub fn parse(input: &str) -> Result<NoteTitle, TitleError> {
+         let trimmed = input.trim();
++        // NUL などの制御文字は断る。SQLite の length() は NUL より前しか数えないので、
++        // 通すと DB の CHECK で断られて 500 になる（第11巻 UNIT 04）
++        if trimmed.chars().any(char::is_control) {
++            return Err(TitleError::ControlChar);
++        }
+         // 文字数は chars().count() で数える（len() はバイト数なので日本語で狂う）
+         let len = trimmed.chars().count();
+         if len == 0 {
+@@ -417,6 +424,21 @@ mod tests {
+         assert_eq!(NoteTitle::parse("   "), Err(TitleError::Empty));
+     }
+ 
++    #[test]
++    fn note_title_rejects_control_characters() {
++        assert_eq!(NoteTitle::parse("\0"), Err(TitleError::ControlChar));
++        assert_eq!(
++            NoteTitle::parse("買い\u{7}物"),
++            Err(TitleError::ControlChar)
++        );
++        assert_eq!(
++            NoteTitle::parse("1行目\n2行目"),
++            Err(TitleError::ControlChar)
++        );
++        // 前後の空白（タブ・改行も）は trim で消えるので通る
++        assert!(NoteTitle::parse("\t買い物\n").is_ok());
++    }
++
+     #[test]
+     fn note_title_counts_characters_not_bytes() {
+         // 日本語 80 文字は 240 バイトだが、文字数では 80 なので合格
+diff --git a/tests/http.rs b/tests/http.rs
+index 1f9e911..14e32ab 100644
+--- a/tests/http.rs
++++ b/tests/http.rs
+@@ -188,6 +188,19 @@ async fn empty_title_is_400() {
+     assert!(body_text(response).await.contains("現在81文字"));
+ }
+ 
++#[tokio::test]
++async fn control_characters_in_title_are_400() {
++    let app = test_app().await;
++    let cookie = app.sign_up("alice@example.com", PASSWORD).await;
++
++    // NUL（%00）1文字のタイトルは、500 ではなく 400 で断る
++    let response = app
++        .post_form("/notes", "title=%00&body=", Some(&cookie))
++        .await;
++    assert_eq!(response.status(), StatusCode::BAD_REQUEST);
++    assert!(body_text(response).await.contains("タイトルに使えない文字"));
++}
++
+ #[tokio::test]
+ async fn other_users_notes_are_404() {
+     let app = test_app().await;

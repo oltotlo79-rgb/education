@@ -1,0 +1,46 @@
+--- NoteTitle::parse
+"  買い物  " → Ok(NoteTitle("買い物"))
+"" → Err(Empty)
+"   " → Err(Empty)
+"\t買い物\t" → Ok(NoteTitle("買い物"))
+"\0" → Ok(NoteTitle("\0"))
+a×80 → Ok(80)
+a×81 → Err(TooLong { len: 81, max: 80 })
+😀×80 → Ok(80)
+--- NoteBody::parse
+Ok(NoteBody("1行目\n2行目"))
+10001 文字 → Err(TooLong { len: 10001, max: 10000 })
+--- NewNote::parse（両方まちがい）
+Err(NoteInputErrors { title: Some(Empty), body: Some(TooLong { len: 10001, max: 10000 }) })
+--- Email::parse
+"  Alice@Example.COM " → Ok(Email("alice@example.com"))
+"alice" → Err(MissingAt)
+"@example.com" → Err(Malformed)
+"alice@example" → Err(Malformed)
+"a@b@c.com" → Err(Malformed)
+"ａｌｉｃｅ@example.com" → Ok(Email("ａｌｉｃｅ@example.com"))
+--- Password::parse
+"short" → Err(TooShort { min: 8 })
+"correct horse battery" → Ok(Password(***))
+" 空白も 文字 " → Ok(Password(***))
+"あいうえおかきく" → Ok(Password(***))
+--- NoteId（URL の {id}）
+"42" → Ok(NoteId(42))
+"0" → Err(NotPositive)
+"-3" → Err(NotPositive)
+"abc" → Err(NotANumber)
+"01" → Ok(NoteId(1))
+" 1" → Err(NotANumber)
+"9223372036854775808" → Err(NotANumber)
+--- NoteQuery::new
+キーワードの文字数 Some(4)・page 3・offset 40
+キーワードの文字数 None・page 1・offset 0
+キーワードの文字数 Some(100)・page 1・offset 0
+--- AppError の分類（状態コード・画面に出す文）
+"InvalidTitle" → 400 Bad Request・「タイトルを入力してください」
+"NotFound" → 404 Not Found・「ページが見つかりません」
+"Conflict" → 409 Conflict・「ほかの画面で先に更新されました。読み込み直してください」
+"Internal" → 500 Internal Server Error・「時間をおいてもう一度お試しください」
+"EmailTaken" → 409 Conflict・「そのメールアドレスは既に登録されています」
+"Internal" → 500 Internal Server Error・「時間をおいてもう一度お試しください」
+exit=0

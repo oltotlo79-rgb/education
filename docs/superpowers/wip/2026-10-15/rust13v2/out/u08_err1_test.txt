@@ -1,0 +1,48 @@
+
+running 1 test
+list_searches_and_paginates --- FAILED
+
+failures:
+
+---- list_searches_and_paginates stdout ----
+POST /signup -> 303 See Other (476.5616ms)
+POST /notes -> 303 See Other (9.5407ms)
+POST /notes -> 303 See Other (9.7443ms)
+POST /notes -> 303 See Other (6.3093ms)
+POST /notes -> 303 See Other (6.4422ms)
+POST /notes -> 303 See Other (5.8671ms)
+POST /notes -> 303 See Other (12.3779ms)
+POST /notes -> 303 See Other (5.2672ms)
+POST /notes -> 303 See Other (6.0335ms)
+POST /notes -> 303 See Other (7.755ms)
+POST /notes -> 303 See Other (7.5123ms)
+POST /notes -> 303 See Other (8.3908ms)
+POST /notes -> 303 See Other (7.5261ms)
+POST /notes -> 303 See Other (8.5189ms)
+POST /notes -> 303 See Other (8.41ms)
+POST /notes -> 303 See Other (9.1915ms)
+POST /notes -> 303 See Other (8.044ms)
+POST /notes -> 303 See Other (8.8569ms)
+POST /notes -> 303 See Other (8.3586ms)
+POST /notes -> 303 See Other (8.0098ms)
+POST /notes -> 303 See Other (9.181ms)
+POST /notes -> 303 See Other (7.4013ms)
+POST /notes -> 303 See Other (8.2309ms)
+
+thread 'list_searches_and_paginates' (222680) panicked at ...\href.rs:308:17:
+no value provided for path parameter "id" in `/notes/{id}`
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'list_searches_and_paginates' (222680) panicked at tests\http.rs:317:5:
+assertion `left == right` failed
+  left: 0
+ right: 20
+
+
+failures:
+    list_searches_and_paginates
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 13 filtered out; finished in 0.69s
+
+error: test failed, to rerun pass `--test http`
+exit=101

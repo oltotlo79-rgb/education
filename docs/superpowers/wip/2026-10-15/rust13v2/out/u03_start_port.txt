@@ -1,0 +1,9 @@
+マイグレーションを適用しました: 0001_users
+マイグレーションを適用しました: 0002_notes
+マイグレーションを適用しました: 0003_sessions
+RustNote を起動しました: http://127.0.0.1:abc
+Error: サーバーを起動できませんでした（HOST / PORT を確認してください）
+
+Caused by:
+    PORT must be a valid port number: invalid digit found in string
+（このあとのフォルダの中: ok.db port.db ）

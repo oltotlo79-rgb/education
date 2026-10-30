@@ -1,0 +1,18 @@
+--- 画面の幅 1280px（一覧）
+.container の幅 760px・横のはみ出し なし・ヘッダーの中身/枠 1280px / 1280px
+詳細（長い URL）: .note-body の幅 686px・横のはみ出し なし
+--- 画面の幅 375px（一覧）
+.container の幅 375px・横のはみ出し あり（392px / 375px）・ヘッダーの中身/枠 392px / 375px
+詳細（長い URL）: .note-body の幅 301px・横のはみ出し あり（392px / 375px）
+--- 画面の幅 320px（一覧）
+.container の幅 320px・横のはみ出し あり（392px / 320px）・ヘッダーの中身/枠 392px / 320px
+詳細（長い URL）: .note-body の幅 246px・横のはみ出し あり（392px / 320px）
+--- 一覧の、CSS が効いた結果
+完了のリンク: color: rgb(100, 116, 139)・text-decoration-line: line-through
+完了でないリンク: color: rgb(194, 65, 12)・text-decoration-line: underline
+ページ送り: display: flex・justify-content: center
+作成のボタン: background-color: rgb(194, 65, 12)・color: rgb(255, 255, 255)
+本文: white-space: pre-wrap・overflow-wrap: anywhere・高さ 54px
+--- axe（アクセシビリティの検査）
+/notes: landmark-unique（1 か所）
+/notes/1: 問題なし

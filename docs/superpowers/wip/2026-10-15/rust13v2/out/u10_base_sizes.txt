@@ -1,0 +1,4 @@
+debian:bookworm-slim 138MB
+debian:trixie-slim 142MB
+rust:1.99.1-bookworm 2.08GB
+rust:1.99.1-trixie 2.22GB

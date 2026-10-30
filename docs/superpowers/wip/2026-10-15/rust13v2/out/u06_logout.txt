@@ -1,0 +1,4 @@
+HTTP/1.1 303 See Other
+location: /login
+set-cookie: __Host-session=; HttpOnly; SameSite=Lax; Secure; Path=/; Max-Age=0; Expires=Thu, 30 Oct 2025 20:55:29 GMT
+set-cookie: flash=logged_out; HttpOnly; SameSite=Lax; Path=/; Max-Age=300

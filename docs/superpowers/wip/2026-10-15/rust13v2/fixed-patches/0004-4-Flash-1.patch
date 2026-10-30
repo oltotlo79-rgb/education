@@ -1,0 +1,99 @@
+From 5dd4efc0a4fc3c55a8714da30505c456ad8770e7 Mon Sep 17 00:00:00 2001
+From: rustnote <rustnote@example.invalid>
+Date: Sat, 31 Oct 2026 06:59:35 +0900
+Subject: [PATCH 4/9] =?UTF-8?q?=E6=BC=94=E7=BF=924:=20Flash=20=E3=81=AE?=
+ =?UTF-8?q?=E7=A8=AE=E9=A1=9E=E3=81=AE=E4=B8=80=E8=A6=A7=E3=82=921?=
+ =?UTF-8?q?=E3=81=8B=E6=89=80=E3=81=AB=E3=81=BE=E3=81=A8=E3=82=81=E3=80=81?=
+ =?UTF-8?q?=E8=B6=B3=E3=81=97=E5=BF=98=E3=82=8C=E3=82=92=E3=83=86=E3=82=B9?=
+ =?UTF-8?q?=E3=83=88=E3=81=A7=E6=AD=A2=E3=82=81=E3=82=8B?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ src/flash.rs | 51 +++++++++++++++++++++++++++++++++++++++------------
+ 1 file changed, 39 insertions(+), 12 deletions(-)
+
+diff --git a/src/flash.rs b/src/flash.rs
+index c4d7fa9..e7afb20 100644
+--- a/src/flash.rs
++++ b/src/flash.rs
+@@ -31,6 +31,18 @@ pub enum Flash {
+ }
+ 
+ impl Flash {
++    /// すべての種類。from_code とテストは、この一覧だけを使う（総合演習4）
++    const ALL: [Flash; 8] = [
++        Flash::SignedUp,
++        Flash::LoggedIn,
++        Flash::LoggedOut,
++        Flash::LoginRequired,
++        Flash::NoteCreated,
++        Flash::NoteUpdated,
++        Flash::NoteToggled,
++        Flash::NoteDeleted,
++    ];
++
+     /// クッキーに入れる短いコード
+     fn code(self) -> &'static str {
+         match self {
+@@ -47,17 +59,7 @@ impl Flash {
+ 
+     /// コードから種類に戻す（知らないコードなら None）
+     fn from_code(code: &str) -> Option<Flash> {
+-        let all = [
+-            Flash::SignedUp,
+-            Flash::LoggedIn,
+-            Flash::LoggedOut,
+-            Flash::LoginRequired,
+-            Flash::NoteCreated,
+-            Flash::NoteUpdated,
+-            Flash::NoteToggled,
+-            Flash::NoteDeleted,
+-        ];
+-        all.into_iter().find(|flash| flash.code() == code)
++        Flash::ALL.into_iter().find(|flash| flash.code() == code)
+     }
+ 
+     /// 画面に出す文章
+@@ -107,11 +109,36 @@ pub fn take(cx: &Cx) -> Option<Flash> {
+ mod tests {
+     use super::Flash;
+ 
++    /// 種類の数。種類を足すと、この match の腕が足りずにコンパイルエラーになるので、
++    /// ここの数と ALL の両方を直すことを思い出せる
++    fn kinds() -> usize {
++        match Flash::SignedUp {
++            Flash::SignedUp
++            | Flash::LoggedIn
++            | Flash::LoggedOut
++            | Flash::LoginRequired
++            | Flash::NoteCreated
++            | Flash::NoteUpdated
++            | Flash::NoteToggled
++            | Flash::NoteDeleted => 8,
++        }
++    }
++
++    #[test]
++    fn all_kinds_are_listed() {
++        assert_eq!(Flash::ALL.len(), kinds());
++    }
++
+     #[test]
+     fn codes_round_trip() {
+-        for flash in [Flash::SignedUp, Flash::NoteDeleted, Flash::LoginRequired] {
++        // 全部の種類が、コードから元に戻せること・コードが重ならないこと
++        for flash in Flash::ALL {
+             assert_eq!(Flash::from_code(flash.code()), Some(flash));
+         }
++        let mut codes: Vec<&str> = Flash::ALL.iter().map(|flash| flash.code()).collect();
++        codes.sort_unstable();
++        codes.dedup();
++        assert_eq!(codes.len(), Flash::ALL.len());
+         assert_eq!(Flash::from_code("<script>"), None);
+     }
+ }
+-- 
+2.53.0.windows.2
+

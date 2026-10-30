@@ -1,0 +1,13 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.04s
+     Running unittests src\lib.rs (target\debug\deps\rustnote-c39f4ee352b39312.exe)
+
+running 4 tests
+test config::tests::local_file_needs_no_token ... ok
+test config::tests::local_sqld_over_http_needs_no_token ... ok
+test config::tests::debug_output_hides_the_token ... ok
+test config::tests::turso_url_needs_a_token ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 15 filtered out; finished in 0.00s
+
+exit=0

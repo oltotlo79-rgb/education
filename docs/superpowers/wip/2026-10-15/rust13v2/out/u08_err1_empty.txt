@@ -1,0 +1,23 @@
+HTTP/1.1 200 OK
+content-type: text/html; charset=utf-8
+
+<h1>ノート</h1>
+<form method="get" action="/notes" class="search-form">
+<input name="q" type="search" placeholder="キーワードで検索">
+<button type="submit">検索</button>
+</form>
+<details class="new-note">
+<summary>新しいノートを書く</summary>
+<form method="post" action="/notes" class="note-form">
+<label for="title">タイトル（80文字まで）</label>
+<input id="title" name="title" value="" required="" maxlength="80">
+<label for="body">本文（10000文字まで）</label>
+<textarea id="body" name="body" rows="6">
+</textarea>
+<button type="submit">作成する</button>
+</form>
+</details>
+<p class="empty">まだノートがありません。最初の1件を書いてみましょう。</p>
+<nav class="pagination">
+<span>1 / 1 ページ（全0件）</span>
+</nav>

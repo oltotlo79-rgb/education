@@ -1,0 +1,14 @@
+HTTP/1.1 401 Unauthorized
+content-type: text/html; charset=utf-8
+
+<h1>ログイン</h1>
+<form method="post" action="/login" class="auth-form">
+<p class="form-notice">メールアドレスまたはパスワードが違います</p>
+<label for="email">メールアドレス</label>
+<input id="email" name="email" type="email" value="alice@example.com" required="" autocomplete="email">
+<label for="password">パスワード</label>
+<input id="password" name="password" type="password" required="" autocomplete="current-password">
+<button type="submit">ログイン</button>
+</form>
+<p>はじめての方は <a href="/signup">新規登録</a>
+</p>

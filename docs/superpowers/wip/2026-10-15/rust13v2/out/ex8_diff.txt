@@ -1,0 +1,94 @@
+diff --git a/src/routes.rs b/src/routes.rs
+index bf4c16b..504174c 100644
+--- a/src/routes.rs
++++ b/src/routes.rs
+@@ -28,9 +28,9 @@ use topcoat::{
+     context::Cx,
+     cookie::RouterBuilderCookieExt,
+     router::{
+-        Body, Next, Router, Slot,
++        Body, HeaderMap, HeaderValue, Next, Router, Slot,
+         error::{SeeOther, see_other},
+-        href, layer, layout, module_router, not_found, page,
++        header, href, layer, layout, module_router, not_found, page,
+         request::{method, uri},
+         response::Response,
+     },
+@@ -64,11 +64,16 @@ pub fn build_router(state: AppState, assets: impl Into<AssetConfig>) -> Router {
+ // error_boundary（404 の画面）まで届ける
+ not_found!();
+ 
+-/// アクセスログ: 「GET /notes -> 200 OK (1.2ms)」のように標準エラー出力へ書く
++/// アクセスログ: 「GET /notes -> 200 OK (1.2ms)」のように標準エラー出力へ書く。
++/// 守りのヘッダーも、ここで付ける（1つのモジュールに #[layer] は1つだけなので、まとめて書く）
+ #[layer]
+ async fn access_log(cx: &Cx, body: Body, next: Next<'_>) -> Result<Response> {
+     let started = std::time::Instant::now();
+-    let result = next.run(cx, body).await;
++    let mut result = next.run(cx, body).await;
++    // 303 のリダイレクトは、ここではまだ Err なので付かない（中身の無い応答なので困らない）
++    if let Ok(response) = &mut result {
++        add_security_headers(response.headers_mut());
++    }
+     // ヘルスチェックは数十秒ごとに来るので、ログに出さない
+     if uri(cx).path() != "/health" {
+         let status = match &result {
+@@ -88,6 +93,32 @@ async fn access_log(cx: &Cx, body: Body, next: Next<'_>) -> Result<Response> {
+     result
+ }
+ 
++/// 守りのヘッダーを付ける（総合演習8・第11巻 UNIT 03 の問2）
++fn add_security_headers(headers: &mut HeaderMap) {
++    // Content-Type と違う種類だと推し量らせない
++    headers.insert(
++        header::X_CONTENT_TYPE_OPTIONS,
++        HeaderValue::from_static("nosniff"),
++    );
++    // ほかのサイトの iframe の中に表示させない（クリックジャッキングを防ぐ）
++    headers.insert(header::X_FRAME_OPTIONS, HeaderValue::from_static("DENY"));
++    // ほかのサイトへ移るとき、元の URL（検索の言葉など）を伝えない
++    headers.insert(
++        header::REFERRER_POLICY,
++        HeaderValue::from_static("same-origin"),
++    );
++    // 読み込んでよいのは、このサイトの物だけ。topcoat dev の自動の再読み込みは、
++    // 別のポートのスクリプトを使うので、dev のとき（TOPCOAT_DEV_URL がある）は付けない
++    if std::env::var_os("TOPCOAT_DEV_URL").is_none() {
++        headers.insert(
++            header::CONTENT_SECURITY_POLICY,
++            HeaderValue::from_static(
++                "default-src 'self'; frame-ancestors 'none'; form-action 'self'; base-uri 'none'",
++            ),
++        );
++    }
++}
++
+ /// すべてのページを包むレイアウト（HTML の外枠・ヘッダー・エラー画面）
+ #[layout]
+ async fn root_layout(cx: &Cx, slot: Slot<'_>) -> Result<impl View> {
+diff --git a/tests/http.rs b/tests/http.rs
+index 0150f12..3719005 100644
+--- a/tests/http.rs
++++ b/tests/http.rs
+@@ -345,6 +345,21 @@ async fn list_searches_and_paginates() {
+     assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+ }
+ 
++#[tokio::test]
++async fn security_headers_are_set() {
++    let app = test_app().await;
++    // ふつうの画面にも、エラーの画面にも付く
++    for uri in ["/login", "/nope"] {
++        let response = app.get(uri, None).await;
++        let headers = response.headers();
++        assert_eq!(headers["x-content-type-options"], "nosniff", "{uri}");
++        assert_eq!(headers["x-frame-options"], "DENY", "{uri}");
++        assert_eq!(headers["referrer-policy"], "same-origin", "{uri}");
++        let csp = headers["content-security-policy"].to_str().unwrap();
++        assert!(csp.contains("frame-ancestors 'none'"), "{uri}: {csp}");
++    }
++}
++
+ #[tokio::test]
+ async fn page_after_the_last_says_so() {
+     let app = test_app().await;

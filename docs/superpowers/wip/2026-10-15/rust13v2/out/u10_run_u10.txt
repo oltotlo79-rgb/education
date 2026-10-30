@@ -1,0 +1,15 @@
+利用者 app・待ち受け 8080/tcp・CMD [/app/rustnote]
+大きさ 170MB
+ldd (Debian GLIBC 2.41-12+deb13u4) 2.41
+uid=10001(app) gid=10001(app) groups=10001(app)
+total 16744
+drwxr-xr-x 2 root root     4096 Oct 30 21:40 assets
+-rwxr-xr-x 1 root root 17140968 Oct 30 21:40 rustnote
+HTTP/1.1 200 OK
+content-type: application/json
+{"status":"ok"}
+--- コンテナのログ
+マイグレーションを適用しました: 0001_users
+マイグレーションを適用しました: 0002_notes
+マイグレーションを適用しました: 0003_sessions
+RustNote を起動しました: http://0.0.0.0:8080

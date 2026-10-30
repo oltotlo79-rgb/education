@@ -1,0 +1,22 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.00s
+     Running unittests src\lib.rs (target\debug\deps\rustnote-c39f4ee352b39312.exe)
+
+running 13 tests
+test domain::tests::email_is_normalized ... ok
+test domain::tests::email_rejects_bad_forms ... ok
+test domain::tests::new_note_collects_all_errors ... ok
+test domain::tests::note_body_normalizes_newlines_and_limits_length ... ok
+test domain::tests::note_id_parses_only_positive_numbers ... ok
+test domain::tests::note_page_counts_pages ... ok
+test domain::tests::note_title_rejects_empty_and_spaces ... ok
+test domain::tests::note_title_counts_characters_not_bytes ... ok
+test domain::tests::password_length_is_checked_and_hidden_in_debug ... ok
+test domain::tests::note_title_is_trimmed ... ok
+test error::tests::repo_errors_map_to_app_errors ... ok
+test domain::tests::note_query_defaults_and_offset ... ok
+test error::tests::status_codes_and_public_messages ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 6 filtered out; finished in 0.00s
+
+exit=0

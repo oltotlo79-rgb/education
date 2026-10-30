@@ -1,0 +1,4 @@
+HTTP/1.1 303 See Other
+location: /notes
+set-cookie: flash=signed_up; HttpOnly; SameSite=Lax; Path=/; Max-Age=300
+set-cookie: __Host-session=wwqgCF…; HttpOnly; SameSite=Lax; Secure; Path=/; Max-Age=2592000

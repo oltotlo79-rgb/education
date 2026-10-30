@@ -1,0 +1,3 @@
+ヘッダーの display: display: flex（CSS が読めている）
+CSP の違反の知らせ: 0 件
+axe: 問題なし

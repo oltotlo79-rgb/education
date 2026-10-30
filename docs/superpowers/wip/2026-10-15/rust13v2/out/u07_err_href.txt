@@ -1,0 +1,62 @@
+error[E0277]: the trait bound `site_header: HrefTarget` is not satisfied
+   --> examples\e07_href.rs:14:18
+    |
+ 14 |         <a href=(href!(rustnote::views::site_header))>"戻る"</a>
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |                  |
+    |                  the trait `HrefTarget` is not implemented for `site_header`
+    |                  required by a bound introduced by this call
+    |
+    = help: the following other types implement trait `HrefTarget`:
+              &'static str
+              &'static topcoat::router::Path
+              &T
+              RouteFn
+              create
+              edit_page
+              home
+              login_page
+            and 11 others
+note: required by a bound in `href`
+   --> ...\href.rs:445:8
+    |
+443 | pub fn href<T, P>(target: T, params: P) -> Href<T, P, (), &'static str>
+    |        ---- required by a bound in this function
+444 | where
+445 |     T: HrefTarget,
+    |        ^^^^^^^^^^ required by this bound in `href`
+    = note: this error originates in the macro `href` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `site_header: HrefTarget` is not satisfied
+   --> examples\e07_href.rs:13:8
+    |
+ 13 |       Ok(view! {
+    |  ________^
+ 14 | |         <a href=(href!(rustnote::views::site_header))>"戻る"</a>
+ 15 | |     })
+    | |_____^ the trait `HrefTarget` is not implemented for `site_header`
+    |
+    = help: the following other types implement trait `HrefTarget`:
+              &'static str
+              &'static topcoat::router::Path
+              &T
+              RouteFn
+              create
+              edit_page
+              home
+              login_page
+            and 11 others
+    = note: required for `Href<site_header, (), (), &str>` to implement `AttributeValueViewParts`
+note: required by a bound in `topcoat::view::internal::Builder::<'a, 'b, 'c>::attribute_unescaped`
+   --> ...\builder.rs:102:43
+    |
+100 |     pub fn attribute_unescaped(
+    |            ------------------- required by a bound in this associated function
+101 |         &mut self,
+102 |         (key, value): (&'static str, impl AttributeValueViewParts),
+    |                                           ^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `Builder::<'a, 'b, 'c>::attribute_unescaped`
+    = note: this error originates in the macro `view` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `rustnote` (example "e07_href") due to 2 previous errors
+exit=101

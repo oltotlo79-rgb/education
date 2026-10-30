@@ -1,0 +1,7 @@
+--- topcoat dev で動かした RustNote の GET /login
+HTTP/1.1 200 OK
+x-content-type-options: nosniff
+x-frame-options: DENY
+referrer-policy: same-origin
+--- 本文の <script>
+<script src="http://127.0.0.1:（topcoat dev のポート）/dev.js">

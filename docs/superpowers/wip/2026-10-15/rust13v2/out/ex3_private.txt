@@ -1,0 +1,28 @@
+   Compiling rustnote v0.1.0 (...\fixed)
+error[E0616]: field `keyword` of struct `NoteQuery` is private
+  --> src\routes\notes.rs:51:25
+   |
+51 |     let keyword = query.keyword.clone();
+   |                         ^^^^^^^ private field
+
+error[E0616]: field `keyword` of struct `NoteQuery` is private
+   --> src\views.rs:160:39
+    |
+160 |         if let Some(keyword) = &query.keyword {
+    |                                       ^^^^^^^ private field
+
+error[E0616]: field `keyword` of struct `NoteQuery` is private
+  --> src\repository\notes.rs:92:36
+   |
+92 |         let pattern = match &query.keyword {
+   |                                    ^^^^^^^ private field
+
+error[E0616]: field `page` of struct `NoteQuery` is private
+   --> src\repository\notes.rs:129:25
+    |
+129 |             page: query.page,
+    |                         ^^^^ private field
+
+For more information about this error, try `rustc --explain E0616`.
+error: could not compile `rustnote` (lib) due to 4 previous errors
+exit=101

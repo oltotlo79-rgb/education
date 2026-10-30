@@ -1,0 +1,20 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+error[E0433]: cannot find module or crate `tempfile` in this scope
+  --> src\lib.rs:30:5
+   |
+30 |     tempfile::tempdir().expect("一時フォルダを作れません")
+   |     ^^^^^^^^ use of unresolved module or unlinked crate `tempfile`
+   |
+   = help: if you wanted to use a crate named `tempfile`, use `cargo add tempfile` to add it to your `Cargo.toml`
+
+error[E0433]: cannot find module or crate `tempfile` in this scope
+  --> src\lib.rs:29:25
+   |
+29 | pub fn scratch_dir() -> tempfile::TempDir {
+   |                         ^^^^^^^^ use of unresolved module or unlinked crate `tempfile`
+   |
+   = help: if you wanted to use a crate named `tempfile`, use `cargo add tempfile` to add it to your `Cargo.toml`
+
+For more information about this error, try `rustc --explain E0433`.
+error: could not compile `rustnote` (lib) due to 2 previous errors
+exit=101

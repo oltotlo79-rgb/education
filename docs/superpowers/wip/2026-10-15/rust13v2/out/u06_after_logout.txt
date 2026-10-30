@@ -1,0 +1,3 @@
+HTTP/1.1 303 See Other
+location: /login
+set-cookie: flash=login_required; HttpOnly; SameSite=Lax; Path=/; Max-Age=300

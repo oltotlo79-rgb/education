@@ -1,0 +1,27 @@
+--- GET /login
+HTTP/1.1 200 OK
+x-content-type-options: nosniff
+x-frame-options: DENY
+referrer-policy: same-origin
+content-security-policy: default-src 'self'; frame-ancestors 'none'; form-action 'self'; base-uri 'none'
+--- GET /nope（404）
+HTTP/1.1 404 Not Found
+x-content-type-options: nosniff
+x-frame-options: DENY
+referrer-policy: same-origin
+content-security-policy: default-src 'self'; frame-ancestors 'none'; form-action 'self'; base-uri 'none'
+--- GET /health
+HTTP/1.1 200 OK
+x-content-type-options: nosniff
+x-frame-options: DENY
+referrer-policy: same-origin
+content-security-policy: default-src 'self'; frame-ancestors 'none'; form-action 'self'; base-uri 'none'
+--- POST /login（失敗・401）
+HTTP/1.1 401 Unauthorized
+x-content-type-options: nosniff
+x-frame-options: DENY
+referrer-policy: same-origin
+content-security-policy: default-src 'self'; frame-ancestors 'none'; form-action 'self'; base-uri 'none'
+--- POST /signup（成功・303）
+HTTP/1.1 303 See Other
+location: /notes

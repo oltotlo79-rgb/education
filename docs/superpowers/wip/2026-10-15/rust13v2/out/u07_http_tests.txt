@@ -1,0 +1,15 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.98s
+     Running tests\http.rs (target\debug\deps\http-afc265ac134dcb62.exe)
+
+running 6 tests
+test top_page_shows_links_when_logged_out ... ok
+test health_returns_ok_json ... ok
+test cross_site_post_is_403 ... ok
+test flash_message_is_shown_once ... ok
+test signup_validates_input_and_rejects_duplicates ... ok
+test login_and_logout ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 8 filtered out; finished in 2.02s
+
+exit=0

@@ -1,0 +1,15 @@
+error[E0277]: the `?` operator can only be applied to values that implement `Try`
+  --> examples\e05_await.rs:10:36
+   |
+10 |     let conn: libsql::Connection = db.connect()?;
+   |                                    ^^^^^^^^^^^^^ the `?` operator cannot be applied to type `impl Future<Output = Result<Connection, libsql::Error>>`
+   |
+   = help: the nightly-only, unstable trait `Try` is not implemented for `impl Future<Output = Result<Connection, libsql::Error>>`
+help: consider `await`ing on the `Future`
+   |
+10 |     let conn: libsql::Connection = db.connect().await?;
+   |                                                ++++++
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `rustnote` (example "e05_await") due to 1 previous error
+exit=101

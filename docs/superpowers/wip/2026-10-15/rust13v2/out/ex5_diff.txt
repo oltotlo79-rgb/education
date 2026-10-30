@@ -1,0 +1,44 @@
+diff --git a/assets/style.css b/assets/style.css
+index 0957487..72716f6 100644
+--- a/assets/style.css
++++ b/assets/style.css
+@@ -37,6 +37,8 @@ a {
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
++  /* 狭い画面では折り返す（総合演習5。幅 375px でヘッダーが 392px になっていた） */
++  flex-wrap: wrap;
+   gap: 16px;
+   padding: 12px 24px;
+   background: var(--color-card);
+@@ -52,6 +54,7 @@ a {
+ 
+ .site-header nav {
+   display: flex;
++  flex-wrap: wrap;
+   align-items: center;
+   gap: 16px;
+ }
+diff --git a/src/views.rs b/src/views.rs
+index e7e8eb1..db49194 100644
+--- a/src/views.rs
++++ b/src/views.rs
+@@ -33,7 +33,8 @@ pub async fn site_header(user: Option<User>) -> Result<impl View> {
+     Ok(view! {
+         <header class="site-header">
+             <a class="brand" href=(href!(crate::routes::home))>"RustNote"</a>
+-            <nav>
++            // 画面に nav が2つあるので、読み上げで区別できるよう名前を付ける（総合演習5）
++            <nav aria-label="メインメニュー">
+                 if let Some(user) = user {
+                     <a href=(href!(crate::routes::notes::index))>"ノート一覧"</a>
+                     <span class="user-email">(user.email.as_str())</span>
+@@ -167,7 +168,7 @@ pub async fn pagination(page: NotePage, query: NoteQuery) -> Result<impl View> {
+     let next = page.has_next().then(|| link(page.page + 1));
+ 
+     Ok(view! {
+-        <nav class="pagination">
++        <nav class="pagination" aria-label="ページ送り">
+             if let Some(prev) = prev {
+                 <a href=(prev)>"← 前へ"</a>
+             }

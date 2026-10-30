@@ -1,0 +1,13 @@
+HTML の <link> の href: /_topcoat/assets/style-e9b983efabcfc6c3.css
+HTTP/1.1 200 OK
+content-type: text/css
+cache-control: public, max-age=31536000, immutable
+content-length: 4659
+--- 中身の先頭 120 バイト
+/* RustNote のスタイル（素の CSS。Tailwind などは使わない） */
+
+:root {
+  --color-text: #0f172a;
+  --co
+--- 印（ハッシュ）を変えた URL
+404

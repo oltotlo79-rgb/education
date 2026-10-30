@@ -1,0 +1,21 @@
+HTTP/1.1 200 OK
+content-type: text/html; charset=utf-8
+
+<article class="note done">
+<h1>買い物（日曜）</h1>
+<p class="meta">
+<span class="badge">完了</span>作成: 2026-10-30 21:08:30 ／ 更新: 2026-10-30 21:08:33</p>
+<div class="note-body">卵</div>
+</article>
+<div class="note-actions">
+<a class="button" href="/notes/1/edit">編集</a>
+<form method="post" action="/notes/1/toggle">
+<button type="submit" class="secondary">未完了に戻す</button>
+</form>
+<form method="post" action="/notes/1/delete">
+<button type="submit" class="danger">削除</button>
+</form>
+</div>
+<p>
+<a href="/notes">← 一覧に戻る</a>
+</p>

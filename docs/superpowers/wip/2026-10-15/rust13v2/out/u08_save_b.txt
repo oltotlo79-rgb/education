@@ -1,0 +1,16 @@
+HTTP/1.1 409 Conflict
+content-type: text/html; charset=utf-8
+
+<h1>ノートを編集</h1>
+<form method="post" action="/notes/1/edit" class="note-form">
+<p class="form-notice">ほかの画面で先に更新されました。読み込み直してください。保存されている最新のタイトルは「買い物（土曜）」です。この内容で上書きする場合は、もう一度「保存する」を押してください。</p>
+<input type="hidden" name="version" value="2">
+<label for="title">タイトル（80文字まで）</label>
+<input id="title" name="title" value="買い物（日曜）" required="" maxlength="80">
+<label for="body">本文（10000文字まで）</label>
+<textarea id="body" name="body" rows="6">卵</textarea>
+<button type="submit">保存する</button>
+</form>
+<p>
+<a href="/notes/1">← 保存せずに戻る</a>
+</p>

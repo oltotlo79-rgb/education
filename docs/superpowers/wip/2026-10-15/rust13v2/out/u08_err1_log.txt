@@ -1,0 +1,10 @@
+マイグレーションを適用しました: 0001_users
+マイグレーションを適用しました: 0002_notes
+マイグレーションを適用しました: 0003_sessions
+RustNote を起動しました: http://127.0.0.1:3014
+POST /signup -> 303 See Other (68.1986ms)
+GET /notes -> 200 OK (5.9997ms)
+POST /notes -> 303 See Other (22.2928ms)
+thread 'tokio-rt-worker' (206068) panicked at ...\href.rs:308:17:
+no value provided for path parameter "id" in `/notes/{id}`
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

@@ -1,0 +1,7 @@
+new で作った: page 1・offset 0
+直接作った: page 0
+
+thread 'main' (225180) panicked at src\domain.rs:370:19:
+attempt to subtract with overflow
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+exit=101

@@ -1,0 +1,5 @@
+.gitignore:11:.env	.env
+.gitignore:5:*.db	rustnote.db
+.gitignore:7:*.db-wal	rustnote.db-wal
+.gitignore:2:/target/	target/debug/rustnote.exe
+exit=0

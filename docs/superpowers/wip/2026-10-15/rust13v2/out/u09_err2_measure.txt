@@ -1,0 +1,3 @@
+ページ送り: display: block・justify-content: normal・margin-top: 0px
+ノートの本文（詳細）: white-space: normal
+検索のフォーム（.empty より前の規則）: display: flex

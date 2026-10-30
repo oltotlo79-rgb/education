@@ -1,0 +1,16 @@
+HTTP/1.1 200 OK
+content-type: text/html; charset=utf-8
+
+<h1>ノートを編集</h1>
+<form method="post" action="/notes/1/edit" class="note-form">
+<input type="hidden" name="version" value="1">
+<label for="title">タイトル（80文字まで）</label>
+<input id="title" name="title" value="買い物" required="" maxlength="80">
+<label for="body">本文（10000文字まで）</label>
+<textarea id="body" name="body" rows="6">牛乳
+卵</textarea>
+<button type="submit">保存する</button>
+</form>
+<p>
+<a href="/notes/1">← 保存せずに戻る</a>
+</p>

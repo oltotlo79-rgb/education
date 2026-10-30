@@ -1,0 +1,15 @@
+マイグレーションを適用しました: 0001_users
+マイグレーションを適用しました: 0002_notes
+マイグレーションを適用しました: 0003_sessions
+RustNote を起動しました: http://127.0.0.1:3014
+GET / -> 200 OK (295.7µs)
+GET /nope -> 404 Not Found (99.5µs)
+POST /login -> 400 Bad Request (86.7µs)
+POST /signup -> 303 See Other (32.7839ms)
+GET /notes -> 200 OK (4.786ms)
+POST /signup -> 409 Conflict (26.8877ms)
+POST /login -> 401 Unauthorized (21.8503ms)
+POST /signup -> 400 Bad Request (145.1µs)
+POST /logout -> 303 See Other (24.8237ms)
+POST /signup -> 303 See Other (59.1586ms)
+GET /notes -> 200 OK (7.0888ms)

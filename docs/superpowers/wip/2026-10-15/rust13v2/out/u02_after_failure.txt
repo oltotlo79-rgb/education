@@ -1,0 +1,4 @@
+適用済みの版: ["0001_users", "0002_notes"]
+表: ["notes", "schema_migrations", "sqlite_sequence", "users"]
+索引: ["idx_notes_user_updated"]
+exit=0

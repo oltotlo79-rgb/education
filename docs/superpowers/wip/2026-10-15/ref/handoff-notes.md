@@ -1,5 +1,16 @@
 # 中断時点の引き継ぎメモ
 
+## 2026-10-31（続き4）: 第13巻の UNIT 03〜10 と総合演習（main: 2f7a4a7 U03・849d9ab U04・395a338 U05・9915137 U06・0d593c2 U07・6294bf5 U08・f12e177 U09・5ecc346 U10・f9d14ba 総合演習）
+
+素材は `rust13v2/`（parts の src・meta・intro・outro、out の .txt、errs_u03〜u09、examples（u02〜u06 の練習のプログラム）、u09lab（Playwright の measure.mjs と package.json）、fixed-patches（総合演習の9つのコミット。`git am` で当たる）、cap13_*.sh と道具の .py）。ビルド先は `rust13/target`（教材のコピー）と `target_fixed`（総合演習のコピー）。
+
+- **残り:** 第13巻は「全巻の用語集・索引」だけ（第12巻と第1巻を仕上げてから、全巻の用語ミニ辞典を集めて作る。読みの順に並べるなら pykakasi を入れる）。そのあと finish_volume・旧 `Rust/13_….pdf` の削除。
+- **RustNote を変えたところ（版合わせ）:** `Dockerfile` の FROM を `rust:1.99.1-trixie`・`debian:trixie-slim` に替えた（Docker 29.3.1・linux/arm64 で bookworm と trixie の両方をビルド・起動して確かめてから。trixie: イメージ 170MB・glibc 2.41・最初のビルド 235 秒）。README の「Docker は未検証」を直した。コードの改善点は、教材のフォルダでは直さず、総合演習のコピーでだけ直した。
+- **Docker Desktop:** `docker version` が応答しなかったのは、`\\.\pipe\dockerBackendApiServer: Access is denied`（古いプロセスが残っていた）。Docker の全プロセスを止めて 10 秒待ってから起動し直すと動いた。
+- **確かめた事実（抜粋）:** NoteTitle は NUL・全角のメール・😀×80 を通す。release では `NoteQuery{page:0}.offset()` が 85899345900。`#[async_trait]` 無しの dyn は E0038。持ち主の条件を消すと notes_are_isolated_per_owner だけが止める。update の find を省くと他人のノートに 409。ログイン失敗の時間は A39・B41・C36 ms、ダミー照合を外すと B は 4 ms。アクセスログに 405・403 は残らない。`href!` の {id} 忘れはコンパイルが通り、表示でパニック（500、アクセスログにも残らない）。最後より大きいページで「まだノートがありません」。日時は UTC のまま。幅 375・320px でヘッダーが 392px。CSS の閉じ括弧忘れ・変数名の誤り・asset! の名前の誤りは cargo build を通る（asset! は bundle で止まる）。1つのモジュールに #[layer] を2つ書くと、ルーターを組み立てるときにパニック。Argon2 の整理券で 690 → 199 MiB・78.5 → 116.7 rps。topcoat dev の dev.js は別のポートなので CSP の default-src 'self' だと止まる（dev のときは CSP を付けない）。
+- **注意:** Git Bash の `$!` は Windows の PID ではない。`taskkill //PID $!` は別のプロセスを止めることがある（総合演習2で python の待ち受けが消えた）。`taskkill //IM rustnote.exe` を使う。
+- **次:** 第12巻（UNIT 01 を 1.99.1・trixie にそろえてから UNIT 02〜10。Docker は動く。Fly.io・Turso の実アカウントは使わない）→ 第1巻 UNIT 04〜10 → 第13巻の用語集・索引。
+
 ## 2026-10-31（続き3）: 第11巻を完成（main: 75d1c40 UNIT 05・0b0e084 UNIT 06・78e4f5c UNIT 07・a9ad4be UNIT 08・c629320 UNIT 09・94e3efc UNIT 10）
 
 素材は `rust11v2/`（parts・out（.raw を除く）・errs・variants（metrics.rs）・staging_u07・staging_u08・e2e（Playwright。node_modules を除く）・fuzz_lab・rustnote/（tests・examples・Cargo.*）・cap11_*.sh）。練習用のコピーは3つ（`rust11/rustnote`・UNIT 07 と 10 用の `rustnote_u07`（target11b）・cargo-mutants 用の `rustnote_mut`（http・u06_attacks・repository だけ））。

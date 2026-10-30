@@ -1,0 +1,3 @@
+開けません: Failed to connect to database: `Unable to open connection to local database ...\rustnote.db: 14`
+フォルダを作ってから: 開けました（ファイルがある: true）
+exit=0

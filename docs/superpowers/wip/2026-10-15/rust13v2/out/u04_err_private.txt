@@ -1,0 +1,16 @@
+error[E0423]: cannot initialize a tuple struct which contains private fields
+  --> examples\e04_private.rs:7:14
+   |
+ 7 |     let id = NoteId(0);
+   |              ^^^^^^
+   |
+   = note: a struct named `NoteId` exists in another namespace
+note: constructor is not visible here due to private fields
+  --> src\domain.rs:69:19
+   |
+69 | pub struct NoteId(i64);
+   |                   ^^^ private field
+
+For more information about this error, try `rustc --explain E0423`.
+error: could not compile `rustnote` (example "e04_private") due to 1 previous error
+exit=101

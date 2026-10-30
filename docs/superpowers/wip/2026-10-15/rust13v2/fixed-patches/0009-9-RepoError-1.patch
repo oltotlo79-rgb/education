@@ -1,0 +1,100 @@
+From 013d9703d71aab1a1ce6cf50d0e4d4f83f3eca77 Mon Sep 17 00:00:00 2001
+From: rustnote <rustnote@example.invalid>
+Date: Sat, 31 Oct 2026 07:07:33 +0900
+Subject: [PATCH 9/9] =?UTF-8?q?=E6=BC=94=E7=BF=929:=20RepoError=20?=
+ =?UTF-8?q?=E3=81=AE=E5=88=86=E9=A1=9E=E3=81=AE=E8=A1=A8=E3=82=921?=
+ =?UTF-8?q?=E3=81=8B=E6=89=80=E3=81=AB=E3=81=99=E3=82=8B?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ src/error.rs | 37 +++++++++++++++++++++++++++++++++----
+ src/views.rs |  8 ++------
+ 2 files changed, 35 insertions(+), 10 deletions(-)
+
+diff --git a/src/error.rs b/src/error.rs
+index 4e8f9c0..a635d15 100644
+--- a/src/error.rs
++++ b/src/error.rs
+@@ -76,18 +76,28 @@ pub enum AppError {
+     Internal(#[source] BoxError),
+ }
+ 
+-// DB の失敗を、利用者への返事の分類に変換する
++// DB の失敗を、利用者への返事の分類に変換する。
++// 表は AppError::classify の1か所だけにし、Internal のときは原因（元の RepoError）を持っておく
+ impl From<RepoError> for AppError {
+     fn from(error: RepoError) -> Self {
++        match AppError::classify(&error) {
++            AppError::Internal(_) => AppError::Internal(Box::new(error)),
++            same => same,
++        }
++    }
++}
++
++impl AppError {
++    /// RepoError を、借りたまま同じ分類の AppError にする（総合演習9）。
++    /// From<RepoError> と、エラー画面（views::error_page）の両方が、この1つの表を使う
++    pub fn classify(error: &RepoError) -> AppError {
+         match error {
+             RepoError::VersionMismatch => AppError::Conflict,
+             RepoError::NotFound => AppError::NotFound,
+-            other => AppError::Internal(Box::new(other)),
++            other => AppError::internal(other.to_string()),
+         }
+     }
+-}
+ 
+-impl AppError {
+     /// 想定外の失敗を Internal に包む
+     pub fn internal(error: impl Into<BoxError>) -> AppError {
+         AppError::Internal(error.into())
+@@ -136,6 +146,25 @@ mod tests {
+         ));
+     }
+ 
++    #[test]
++    fn classify_and_from_agree() {
++        // 借りて分類しても、渡して変換しても、同じ状態コードになる
++        let make = || {
++            [
++                RepoError::VersionMismatch,
++                RepoError::NotFound,
++                RepoError::UniqueViolation("x".to_string()),
++                RepoError::InvalidData("y".to_string()),
++            ]
++        };
++        for (borrowed, owned) in make().iter().zip(make()) {
++            assert_eq!(
++                AppError::classify(borrowed).status_code(),
++                AppError::from(owned).status_code()
++            );
++        }
++    }
++
+     #[test]
+     fn status_codes_and_public_messages() {
+         assert_eq!(
+diff --git a/src/views.rs b/src/views.rs
+index db49194..6dc7b45 100644
+--- a/src/views.rs
++++ b/src/views.rs
+@@ -203,12 +203,8 @@ pub fn error_page(cx: &Cx, error: Error) -> Result<impl View + '_> {
+         log_if_internal(app_error.status_code(), &error);
+         (app_error.status_code(), app_error.public_message())
+     } else if let Some(repo_error) = error.downcast_ref::<RepoError>() {
+-        // AppError に直したときと同じ分類で答える（From<RepoError> for AppError と同じ表）
+-        let same_as = match repo_error {
+-            RepoError::NotFound => AppError::NotFound,
+-            RepoError::VersionMismatch => AppError::Conflict,
+-            _ => AppError::internal("database"),
+-        };
++        // AppError に直したときと同じ分類で答える（表は AppError::classify の1か所だけ）
++        let same_as = AppError::classify(repo_error);
+         log_if_internal(same_as.status_code(), &error);
+         (same_as.status_code(), same_as.public_message())
+     } else if error.downcast_ref::<NotFoundError>().is_some() {
+-- 
+2.53.0.windows.2
+

@@ -1,0 +1,11 @@
+error: checksum for `dotenvy v0.15.7` changed between lock files
+
+this could be indicative of a few possible errors:
+
+    * the lock file is corrupt
+    * a replacement source in use (e.g., a mirror) returned a different checksum
+    * the source itself may be corrupt in one way or another
+
+unable to verify that `dotenvy v0.15.7` is the same as when the lockfile was generated
+
+exit=101

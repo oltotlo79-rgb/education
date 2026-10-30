@@ -1,0 +1,2 @@
+curl の終了コード: 0
+HTTP/1.1 500 Internal Server Error

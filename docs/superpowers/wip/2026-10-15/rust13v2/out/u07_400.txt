@@ -1,0 +1,10 @@
+HTTP/1.1 400 Bad Request
+content-type: text/html; charset=utf-8
+
+<section class="error-page">
+<h1>400 Bad Request</h1>
+<p>送信された内容を読み取れませんでした</p>
+<p>
+<a href="/">トップページへ戻る</a>
+</p>
+</section>

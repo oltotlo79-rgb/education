@@ -1,0 +1,8 @@
+起動して登録したあと: 30 MiB
+  Success rate:	100.00%
+  Slowest:	1.4117 sec
+  Fastest:	0.0690 sec
+  Average:	0.3877 sec
+  Requests/sec:	116.6845
+  [303] 480 responses
+同時 48 のログインのあと: 199 MiB

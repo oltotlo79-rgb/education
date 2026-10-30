@@ -1,0 +1,15 @@
+   Compiling rustnote v0.1.0 (...\fixed)
+error[E0451]: fields `keyword` and `page` of struct `NoteQuery` are private
+ --> tests\ex3_construct.rs:7:9
+  |
+6 |     let query = NoteQuery {
+  |                 --------- in this type
+7 |         keyword: None,
+  |         ^^^^^^^ private field
+8 |         page: 0,
+  |         ^^^^ private field
+
+For more information about this error, try `rustc --explain E0451`.
+error: could not compile `rustnote` (test "ex3_construct") due to 1 previous error
+warning: build failed, waiting for other jobs to finish...
+exit=101

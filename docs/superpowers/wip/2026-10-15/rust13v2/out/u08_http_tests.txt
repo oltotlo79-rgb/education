@@ -1,0 +1,16 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.64s
+     Running tests\http.rs (target\debug\deps\http-afc265ac134dcb62.exe)
+
+running 8 tests
+test notes_require_login ... ok
+test create_note_follows_prg_and_escapes_html ... ok
+test empty_title_is_400 ... ok
+test invalid_ids_and_unknown_urls_are_404 ... ok
+test toggle_and_delete_redirect ... ok
+test edit_with_stale_version_is_409 ... ok
+test list_searches_and_paginates ... ok
+test other_users_notes_are_404 ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 6 filtered out; finished in 0.88s
+
+exit=0

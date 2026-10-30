@@ -1,0 +1,30 @@
+--- users
+登録: User { id: UserId(1), email: Email("alice@example.com") }
+同じメールで登録: Err("UniqueViolation(SQLite failure: `UNIQUE constraint failed: users.email`)")
+メールで探す: Some((UserId(1), "$argon2id$dummy"))
+--- notes（持ち主ごと）
+追加: id 1・version 1・done false
+alice が探す: Some("買い物")
+bob が探す: None
+無い ID を探す: None
+--- update（楽観的ロック）
+version 1 で更新: title "買い物（土曜）"・version 2
+古い version 1 で更新: Err("VersionMismatch")
+bob が更新: Err("NotFound")
+完了に切り替え: done true・version 3
+切り替えのあと、version 2 で更新: Err("VersionMismatch")
+--- search（キーワードとページ送り）
+q=None page=None → 総数 26・このページ 20 件・1/2 ページ・先頭 ["値段", "セール", "メモ 23"]
+q=None page=Some(2) → 総数 26・このページ 6 件・2/2 ページ・先頭 ["メモ 5", "メモ 4", "メモ 3"]
+q=Some("100%") page=None → 総数 1・このページ 1 件・1/1 ページ・先頭 ["セール"]
+q=Some("100") page=None → 総数 2・このページ 2 件・1/1 ページ・先頭 ["値段", "セール"]
+bob の一覧: 総数 0
+--- delete
+1回目: Ok(())
+2回目: Err("NotFound")
+--- sessions
+期限内のトークン: Some("alice@example.com")
+期限切れのトークン: None
+期限切れの掃除: 1 件
+ログアウトのあと: None
+exit=0

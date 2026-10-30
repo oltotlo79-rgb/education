@@ -1,0 +1,25 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+error[E0004]: non-exhaustive patterns: `&AppError::TooManyNotes` not covered
+   --> src\error.rs:100:15
+    |
+100 |         match self {
+    |               ^^^^ pattern `&AppError::TooManyNotes` not covered
+    |
+note: `AppError` defined here
+   --> src\error.rs:58:10
+    |
+ 58 | pub enum AppError {
+    |          ^^^^^^^^
+...
+ 76 |     TooManyNotes,
+    |     ------------ not covered
+    = note: the matched value is of type `&AppError`
+help: ensure that all possible cases are being handled by adding a match arm with a wildcard pattern or an explicit pattern as shown
+    |
+108 ~             AppError::Internal(_) => StatusCode::INTERNAL_SERVER_ERROR,
+109 ~             &AppError::TooManyNotes => todo!(),
+    |
+
+For more information about this error, try `rustc --explain E0004`.
+error: could not compile `rustnote` (lib) due to 1 previous error
+exit=101

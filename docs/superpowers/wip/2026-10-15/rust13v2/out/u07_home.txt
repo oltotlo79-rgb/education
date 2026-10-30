@@ -1,0 +1,31 @@
+HTTP/1.1 200 OK
+content-type: text/html; charset=utf-8
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RustNote</title>
+<link rel="stylesheet" href="/_topcoat/assets/style-e9b983efabcfc6c3.css">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="/">RustNote</a>
+<nav>
+<a href="/login">ログイン</a>
+<a href="/signup">新規登録</a>
+</nav>
+</header>
+<main class="container">
+<section class="hero">
+<h1>RustNote</h1>
+<p>Rust と Topcoat で作った、シンプルなメモアプリです。</p>
+<p class="actions">
+<a class="button" href="/signup">新規登録</a>
+<a class="button secondary" href="/login">ログイン</a>
+</p>
+</section>
+</main>
+</body>
+</html>

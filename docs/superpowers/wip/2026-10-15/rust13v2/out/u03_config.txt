@@ -1,0 +1,13 @@
+1. 何も設定しない
+  → Ok: Config { database_url: "rustnote.db", database_auth_token: None }（remote: false）
+2. ローカルのファイル
+  → Ok: Config { database_url: "data/rustnote.db", database_auth_token: None }（remote: false）
+3. Turso の URL・トークン無し
+  → Err: DATABASE_URL が Turso（libsql://rustnote-demo.turso.io）なのに DATABASE_AUTH_TOKEN が設定されていません
+4. Turso の URL・トークンが空
+  → Err: DATABASE_URL が Turso（libsql://rustnote-demo.turso.io）なのに DATABASE_AUTH_TOKEN が設定されていません
+5. Turso の URL・トークンあり
+  → Ok: Config { database_url: "libsql://rustnote-demo.turso.io", database_auth_token: Some(Secret(********)) }（remote: true）
+6. 手元の sqld（http）・トークン無し
+  → Ok: Config { database_url: "http://127.0.0.1:8080", database_auth_token: None }（remote: true）
+exit=0

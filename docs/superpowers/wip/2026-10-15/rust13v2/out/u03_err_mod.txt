@@ -1,0 +1,84 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+error[E0432]: unresolved import `crate::flash`
+  --> src\auth.rs:28:12
+   |
+28 | use crate::flash::{self, Flash};
+   |            ^^^^^ could not find `flash` in the crate root
+
+error[E0432]: unresolved import `crate::flash`
+  --> src\routes\login.rs:16:12
+   |
+16 | use crate::flash::{self, Flash};
+   |            ^^^^^ could not find `flash` in the crate root
+
+error[E0432]: unresolved import `crate::flash`
+  --> src\routes\logout.rs:13:12
+   |
+13 | use crate::flash::{self, Flash};
+   |            ^^^^^ could not find `flash` in the crate root
+
+error[E0432]: unresolved import `crate::flash`
+  --> src\routes\notes\id\delete.rs:13:12
+   |
+13 | use crate::flash::{self, Flash};
+   |            ^^^^^ could not find `flash` in the crate root
+
+error[E0432]: unresolved import `crate::flash`
+  --> src\routes\notes\id\edit.rs:26:12
+   |
+26 | use crate::flash::{self, Flash};
+   |            ^^^^^ could not find `flash` in the crate root
+
+error[E0432]: unresolved import `crate::flash`
+  --> src\routes\notes\id\toggle.rs:13:12
+   |
+13 | use crate::flash::{self, Flash};
+   |            ^^^^^ could not find `flash` in the crate root
+
+error[E0432]: unresolved import `crate::flash`
+  --> src\routes\notes\id.rs:21:5
+   |
+21 | use crate::flash;
+   |     ^^^^^^^-----
+   |            |
+   |            no `flash` in the root
+   |
+help: consider importing this struct instead
+   |
+21 | use crate::views::__flash_banner_props::flash;
+   |            +++++++++++++++++++++++++++++
+
+error[E0432]: unresolved import `crate::flash`
+  --> src\routes\notes.rs:19:12
+   |
+19 | use crate::flash::{self, Flash};
+   |            ^^^^^ could not find `flash` in the crate root
+
+error[E0432]: unresolved import `crate::flash`
+  --> src\routes\signup.rs:21:12
+   |
+21 | use crate::flash::{self, Flash};
+   |            ^^^^^ could not find `flash` in the crate root
+
+error[E0432]: unresolved import `crate::flash`
+  --> src\routes.rs:42:5
+   |
+42 | use crate::flash;
+   |     ^^^^^^^-----
+   |            |
+   |            no `flash` in the root
+   |
+help: consider importing this struct instead
+   |
+42 | use crate::views::__flash_banner_props::flash;
+   |            +++++++++++++++++++++++++++++
+
+error[E0432]: unresolved import `crate::flash`
+  --> src\views.rs:20:12
+   |
+20 | use crate::flash::Flash;
+   |            ^^^^^ could not find `flash` in the crate root
+
+For more information about this error, try `rustc --explain E0432`.
+error: could not compile `rustnote` (lib) due to 11 previous errors
+exit=101

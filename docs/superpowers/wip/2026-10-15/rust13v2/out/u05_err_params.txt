@@ -1,0 +1,40 @@
+error[E0599]: the method `into_value` exists for struct `UserId`, but its trait bounds were not satisfied
+  --> examples\e05_params.rs:17:13
+   |
+17 |             libsql::params![owner],
+   |             ^^^^^^^^^^^^^^^^^^^^^^ method cannot be called on `UserId` due to unsatisfied trait bounds
+   |
+  ::: src\domain.rs:44:1
+   |
+44 | pub struct UserId(i64);
+   | ----------------- doesn't satisfy `UserId: Into<Value>`, `UserId: IntoValue` or `UserId: TryInto<Value>`
+   |
+  ::: ...\value.rs:7:1
+   |
+ 7 | pub enum Value {
+   | -------------- doesn't satisfy `Value: TryFrom<&UserId>`, `Value: TryFrom<&mut UserId>` or `Value: TryFrom<UserId>`
+   |
+   = note: the following trait bounds were not satisfied:
+           `UserId: TryInto<Value>`
+           which is required by `UserId: IntoValue`
+           `Value: TryFrom<UserId>`
+           which is required by `UserId: IntoValue`
+           `UserId: Into<Value>`
+           which is required by `UserId: IntoValue`
+           `&UserId: TryInto<Value>`
+           which is required by `&UserId: IntoValue`
+           `Value: TryFrom<&UserId>`
+           which is required by `&UserId: IntoValue`
+           `&UserId: Into<Value>`
+           which is required by `&UserId: IntoValue`
+           `&mut UserId: TryInto<Value>`
+           which is required by `&mut UserId: IntoValue`
+           `Value: TryFrom<&mut UserId>`
+           which is required by `&mut UserId: IntoValue`
+           `&mut UserId: Into<Value>`
+           which is required by `&mut UserId: IntoValue`
+   = note: this error originates in the macro `libsql::params` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+For more information about this error, try `rustc --explain E0599`.
+error: could not compile `rustnote` (example "e05_params") due to 1 previous error
+exit=101

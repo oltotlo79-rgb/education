@@ -1,0 +1,10 @@
+[Db::connect の接続]
+    journal_mode = wal
+    foreign_keys = 1
+    busy_timeout = 5000
+[libsql の素の接続]
+    journal_mode = wal
+    foreign_keys = 1
+    busy_timeout = 0
+フォルダの中のファイル: ["u02.db", "u02.db-shm", "u02.db-wal"]
+exit=0

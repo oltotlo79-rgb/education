@@ -1,0 +1,25 @@
+
+running 1 test
+control_characters_in_title_are_400 --- FAILED
+
+failures:
+
+---- control_characters_in_title_are_400 stdout ----
+POST /signup -> 303 See Other (562.8378ms)
+[error] サーバーの中でエラーが起きました <- DB の操作に失敗しました <- SQLite failure: `CHECK constraint failed: length(title) BETWEEN 1 AND 80`
+POST /notes -> 500 Internal Server Error (4.7605ms)
+
+thread 'control_characters_in_title_are_400' (138736) panicked at tests\http.rs:200:5:
+assertion `left == right` failed
+  left: 500
+ right: 400
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    control_characters_in_title_are_400
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 14 filtered out; finished in 0.60s
+
+error: test failed, to rerun pass `--test http`
+exit=101

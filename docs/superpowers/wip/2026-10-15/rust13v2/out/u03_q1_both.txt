@@ -1,0 +1,5 @@
+Error: 設定を読み込めませんでした
+
+Caused by:
+    DATABASE_URL が Turso（libsql://from-env.example）なのに DATABASE_AUTH_TOKEN が設定されていません
+（このあとのフォルダの中: ok.db port.db ）

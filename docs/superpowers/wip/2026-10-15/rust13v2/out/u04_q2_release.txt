@@ -1,0 +1,4 @@
+new で作った: page 1・offset 0
+直接作った: page 0
+直接作った: offset 85899345900
+exit=0

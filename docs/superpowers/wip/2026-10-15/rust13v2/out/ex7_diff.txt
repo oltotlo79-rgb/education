@@ -1,0 +1,43 @@
+diff --git a/Cargo.toml b/Cargo.toml
+index 5170661..96ee5f5 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -26,7 +26,7 @@ serde = { version = "=1.0.229", features = ["derive"] }
+ # エラー型を短く書く
+ thiserror = "=2.0.21"
+ # 非同期ランタイム
+-tokio = { version = "=1.54.1", features = ["rt-multi-thread", "macros", "net"] }
++tokio = { version = "=1.54.1", features = ["rt-multi-thread", "macros", "net", "sync"] }
+ # Web フレームワーク
+ topcoat = "=0.11.0"
+ 
+diff --git a/src/auth.rs b/src/auth.rs
+index ca5d45a..e5c66a0 100644
+--- a/src/auth.rs
++++ b/src/auth.rs
+@@ -32,10 +32,17 @@ use crate::state::app_state;
+ // パスワード（Argon2id）
+ // ---------------------------------------------------------------------------
+ 
++/// Argon2 を同時に計算する数の上限（CPU の数）。超えた分は、ここで順番を待つ。
++/// 1回に 19 MiB 使うので、同時の数を決めると、使うメモリの上限も決まる（総合演習7・第11巻 UNIT 09）
++static ARGON2_SLOTS: LazyLock<tokio::sync::Semaphore> = LazyLock::new(|| {
++    tokio::sync::Semaphore::new(std::thread::available_parallelism().map_or(4, |n| n.get()))
++});
++
+ /// パスワードを Argon2id でハッシュ化し、PHC 文字列（$argon2id$v=19$...）にする。
+ /// 塩（salt）は argon2 クレートが毎回ランダムに作る。
+ pub async fn hash_password(password: &Password) -> Result<String, AppError> {
+     let password = password.clone();
++    let _slot = ARGON2_SLOTS.acquire().await.map_err(AppError::internal)?;
+     // 重い計算なので、非同期の処理を止めないよう別スレッドで行う
+     let joined = tokio::task::spawn_blocking(move || {
+         Argon2::default()
+@@ -54,6 +61,7 @@ pub async fn hash_password(password: &Password) -> Result<String, AppError> {
+ pub async fn verify_password(password: &str, phc: &str) -> Result<bool, AppError> {
+     let password = password.to_string();
+     let phc = phc.to_string();
++    let _slot = ARGON2_SLOTS.acquire().await.map_err(AppError::internal)?;
+     let joined = tokio::task::spawn_blocking(move || {
+         // 保存してある文字列を読み取る。読めないならデータが壊れている（内部エラー）
+         let parsed = PasswordHash::new(&phc)?;

@@ -1,0 +1,26 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.42s
+     Running unittests src\lib.rs (target\debug\deps\rustnote-c39f4ee352b39312.exe)
+
+running 2 tests
+test flash::tests::codes_round_trip ... ok
+test flash::tests::archived_round_trips ... FAILED
+
+failures:
+
+---- flash::tests::archived_round_trips stdout ----
+
+thread 'flash::tests::archived_round_trips' (210896) panicked at src\flash.rs:123:9:
+assertion `left == right` failed
+  left: None
+ right: Some(NoteArchived)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    flash::tests::archived_round_trips
+
+test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 18 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--lib`
+exit=101

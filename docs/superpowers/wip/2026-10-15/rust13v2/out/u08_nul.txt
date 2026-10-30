@@ -1,0 +1,10 @@
+HTTP/1.1 500 Internal Server Error
+content-type: text/html; charset=utf-8
+
+<section class="error-page">
+<h1>500 Internal Server Error</h1>
+<p>時間をおいてもう一度お試しください</p>
+<p>
+<a href="/">トップページへ戻る</a>
+</p>
+</section>

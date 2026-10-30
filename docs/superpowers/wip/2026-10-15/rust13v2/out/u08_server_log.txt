@@ -1,0 +1,28 @@
+マイグレーションを適用しました: 0001_users
+マイグレーションを適用しました: 0002_notes
+マイグレーションを適用しました: 0003_sessions
+RustNote を起動しました: http://127.0.0.1:3014
+POST /signup -> 303 See Other (57.5429ms)
+POST /notes -> 303 See Other (9.201ms)
+GET /notes/1 -> 200 OK (4.5982ms)
+POST /notes -> 400 Bad Request (5.34ms)
+GET /notes -> 200 OK (5.5183ms)
+GET /notes -> 400 Bad Request (2.621ms)
+GET /notes -> 200 OK (3.911ms)
+GET /notes/1/edit -> 200 OK (6.1147ms)
+POST /notes/1/edit -> 303 See Other (10.265ms)
+POST /notes/1/edit -> 409 Conflict (12.1475ms)
+POST /notes/1/edit -> 303 See Other (26.432ms)
+POST /notes/1/toggle -> 303 See Other (25.0589ms)
+GET /notes/1 -> 200 OK (5.9665ms)
+POST /signup -> 303 See Other (56.4974ms)
+GET /notes/1 -> 404 Not Found (6.2117ms)
+POST /notes/1/toggle -> 404 Not Found (16.8712ms)
+POST /notes/1/edit -> 404 Not Found (4.6564ms)
+GET /notes/abc -> 404 Not Found (2.8684ms)
+GET /notes/0 -> 404 Not Found (2.6874ms)
+GET /notes/999 -> 404 Not Found (13.5996ms)
+[error] サーバーの中でエラーが起きました <- DB の操作に失敗しました <- SQLite failure: `CHECK constraint failed: length(title) BETWEEN 1 AND 80`
+POST /notes -> 500 Internal Server Error (5.616ms)
+POST /notes/1/delete -> 303 See Other (25.3509ms)
+GET /notes/1 -> 404 Not Found (4.8401ms)

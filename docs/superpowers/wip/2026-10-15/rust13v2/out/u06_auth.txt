@@ -1,0 +1,10 @@
+方式 argon2id・版 v=19・設定 m=19456,t=2,p=1
+塩 22 文字・ハッシュ 43 文字
+同じパスワードの2回目と同じ文字列か: false
+塩は同じか: false
+ハッシュを作る時間: 20 ミリ秒
+"correct horse battery" → true（19 ミリ秒）
+"correct horse batterY" → false（18 ミリ秒）
+" correct horse battery" → false（20 ミリ秒）
+壊れた PHC → 画面の文「時間をおいてもう一度お試しください」・原因「invalid encoding」
+exit=0

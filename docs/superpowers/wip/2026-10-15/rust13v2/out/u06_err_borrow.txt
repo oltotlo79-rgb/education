@@ -1,0 +1,20 @@
+error[E0521]: borrowed data escapes outside of function
+  --> examples\e06_borrow.rs:8:5
+   |
+ 7 |   async fn hash(password: &Password) -> String {
+   |                 --------  - let's call the lifetime of this reference `'1`
+   |                 |
+   |                 `password` is a reference that is only valid in the function body
+ 8 | /     tokio::task::spawn_blocking(|| {
+ 9 | |         Argon2::default()
+10 | |             .hash_password(password.as_str().as_bytes())
+11 | |             .map(|hash| hash.to_string())
+12 | |     })
+   | |      ^
+   | |      |
+   | |______`password` escapes the function body here
+   |        argument requires that `'1` must outlive `'static`
+
+For more information about this error, try `rustc --explain E0521`.
+error: could not compile `rustnote` (example "e06_borrow") due to 1 previous error
+exit=101

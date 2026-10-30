@@ -1,0 +1,80 @@
+diff --git a/src/flash.rs b/src/flash.rs
+index c4d7fa9..e7afb20 100644
+--- a/src/flash.rs
++++ b/src/flash.rs
+@@ -31,6 +31,18 @@ pub enum Flash {
+ }
+ 
+ impl Flash {
++    /// すべての種類。from_code とテストは、この一覧だけを使う（総合演習4）
++    const ALL: [Flash; 8] = [
++        Flash::SignedUp,
++        Flash::LoggedIn,
++        Flash::LoggedOut,
++        Flash::LoginRequired,
++        Flash::NoteCreated,
++        Flash::NoteUpdated,
++        Flash::NoteToggled,
++        Flash::NoteDeleted,
++    ];
++
+     /// クッキーに入れる短いコード
+     fn code(self) -> &'static str {
+         match self {
+@@ -47,17 +59,7 @@ impl Flash {
+ 
+     /// コードから種類に戻す（知らないコードなら None）
+     fn from_code(code: &str) -> Option<Flash> {
+-        let all = [
+-            Flash::SignedUp,
+-            Flash::LoggedIn,
+-            Flash::LoggedOut,
+-            Flash::LoginRequired,
+-            Flash::NoteCreated,
+-            Flash::NoteUpdated,
+-            Flash::NoteToggled,
+-            Flash::NoteDeleted,
+-        ];
+-        all.into_iter().find(|flash| flash.code() == code)
++        Flash::ALL.into_iter().find(|flash| flash.code() == code)
+     }
+ 
+     /// 画面に出す文章
+@@ -107,11 +109,36 @@ pub fn take(cx: &Cx) -> Option<Flash> {
+ mod tests {
+     use super::Flash;
+ 
++    /// 種類の数。種類を足すと、この match の腕が足りずにコンパイルエラーになるので、
++    /// ここの数と ALL の両方を直すことを思い出せる
++    fn kinds() -> usize {
++        match Flash::SignedUp {
++            Flash::SignedUp
++            | Flash::LoggedIn
++            | Flash::LoggedOut
++            | Flash::LoginRequired
++            | Flash::NoteCreated
++            | Flash::NoteUpdated
++            | Flash::NoteToggled
++            | Flash::NoteDeleted => 8,
++        }
++    }
++
++    #[test]
++    fn all_kinds_are_listed() {
++        assert_eq!(Flash::ALL.len(), kinds());
++    }
++
+     #[test]
+     fn codes_round_trip() {
+-        for flash in [Flash::SignedUp, Flash::NoteDeleted, Flash::LoginRequired] {
++        // 全部の種類が、コードから元に戻せること・コードが重ならないこと
++        for flash in Flash::ALL {
+             assert_eq!(Flash::from_code(flash.code()), Some(flash));
+         }
++        let mut codes: Vec<&str> = Flash::ALL.iter().map(|flash| flash.code()).collect();
++        codes.sort_unstable();
++        codes.dedup();
++        assert_eq!(codes.len(), Flash::ALL.len());
+         assert_eq!(Flash::from_code("<script>"), None);
+     }
+ }

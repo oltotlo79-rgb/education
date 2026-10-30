@@ -1,0 +1,2 @@
+  alice@example.com・トークンのハッシュ 32 バイト（blob）・期限まで 2592000 秒
+sessions の行: 1 件
