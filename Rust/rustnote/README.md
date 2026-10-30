@@ -1,6 +1,6 @@
 # RustNote
 
-Rust の Web フレームワーク **Topcoat 0.10** と **Turso / libSQL** で作った、ログイン付きのメモアプリです。
+Rust の Web フレームワーク **Topcoat 0.11** と **Turso / libSQL** で作った、ログイン付きのメモアプリです。
 教材「Rust バックエンド」シリーズで、少しずつ作りながら学ぶサンプルの完成形です。
 
 ## できること
@@ -17,19 +17,19 @@ Rust の Web フレームワーク **Topcoat 0.10** と **Turso / libSQL** で�
 
 | 項目 | 版 |
 |---|---|
-| Rust | 1.98 以上（動作確認は 1.99.0。`rust-toolchain.toml` で 1.99.0 を指定） |
-| Topcoat（Web フレームワーク） | 0.10.0（`topcoat-cli` も 0.10.0） |
+| Rust | 1.99 以上（動作確認は 1.99.1。`rust-toolchain.toml` で 1.99.1 を指定） |
+| Topcoat（Web フレームワーク） | 0.11.0（`topcoat-cli` も 0.11.0） |
 | libsql（Turso / libSQL クライアント） | 0.10.0 |
 | argon2（パスワードのハッシュ化） | 0.6.0 |
 | tokio / thiserror / anyhow / async-trait / serde / dotenvy | `Cargo.toml` を参照（版は `=` で固定） |
 
 ## 準備
 
-1. **Rust**（rustup）を入れる。このフォルダで `cargo` を実行すると、`rust-toolchain.toml` により Rust 1.99.0 が自動で使われます。
+1. **Rust**（rustup）を入れる。このフォルダで `cargo` を実行すると、`rust-toolchain.toml` により Rust 1.99.1 が自動で使われます。
 2. **topcoat CLI** を入れる（開発サーバーとアセットの束を作るのに使います）。
 
    ```powershell
-   cargo install topcoat-cli --version 0.10.0 --locked
+   cargo install topcoat-cli --version 0.11.0 --locked
    ```
 
 3. **Windows（ARM64）の場合は LLVM（clang）も必要**です。libsql が使う `ring`（暗号のライブラリ）のビルドに clang を使うためです。

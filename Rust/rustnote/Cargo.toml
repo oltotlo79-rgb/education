@@ -2,8 +2,8 @@
 name = "rustnote"
 version = "0.1.0"
 edition = "2024"
-# Topcoat 0.10 は Rust 1.98 以上が必要（動作確認は 1.99.0）
-rust-version = "1.98"
+# Topcoat 0.11 は Rust 1.99 以上が必要（動作確認は 1.99.1）
+rust-version = "1.99"
 description = "RustNote: Topcoat + libSQL で作るログイン付きメモアプリ（教材のサンプル）"
 publish = false
 default-run = "rustnote"
@@ -26,9 +26,9 @@ serde = { version = "=1.0.229", features = ["derive"] }
 # エラー型を短く書く
 thiserror = "=2.0.21"
 # 非同期ランタイム
-tokio = { version = "=1.53.3", features = ["rt-multi-thread", "macros"] }
+tokio = { version = "=1.54.1", features = ["rt-multi-thread", "macros"] }
 # Web フレームワーク
-topcoat = "=0.10.0"
+topcoat = "=0.11.0"
 
 [dev-dependencies]
 # テストごとに使い捨ての一時フォルダ（DB ファイル置き場）を作る
