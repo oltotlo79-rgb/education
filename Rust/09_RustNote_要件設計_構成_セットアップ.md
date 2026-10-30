@@ -6453,7 +6453,7 @@ RustNote の色の決まりです（`assets/style.css` の `:root`）。
 <text x="400" y="94" font-size="12" fill="#0f172a">・今どこにいるか（フォーカスの枠）が見える</text>
 <text x="400" y="122" font-size="12" fill="#0f172a">・読み上げソフトで、意味が通じる</text>
 <text x="400" y="150" font-size="12" fill="#0f172a">・狭い画面（スマートフォン）でも使える</text>
-<text x="400" y="178" font-size="12" fill="#0f172a">→ 第10巻 UNIT 10（準備中）</text>
+<text x="400" y="178" font-size="12" fill="#0f172a">→ 第10巻 UNIT 10</text>
 </svg>
 <div style="font-size:12px;color:#64748b;margin-top:6px;">図9-24: 確かめ方の2つ。HTML と色で決まることはテストで毎回確かめ、操作や見え方は、ブラウザで人が確かめる</div>
 </div>
