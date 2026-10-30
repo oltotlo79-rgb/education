@@ -4132,7 +4132,7 @@ cargo test --test u06_guard -- --nocapture
 
 - 消えたのは、6の alice のボタンだけでした。
 - 1と2の **GET** は `405 Method Not Allowed`（`allow: POST`）です。`#[page(POST)]` のページは、POST しか受け付けません。リンクを開いただけ・ブラウザが先読みしただけ・検索サイトの巡回が来ただけ、では消えません。
-- 3と4の、ほかのサイトからの **POST** は `403 Forbidden` です。Topcoat の OriginPolicy が、ルーターの入口で止めました。alice のクッキーが付いていても、止まります（第8巻 UNIT 01・06（準備中））。
+- 3と4の、ほかのサイトからの **POST** は `403 Forbidden` です。Topcoat の OriginPolicy が、ルーターの入口で止めました。alice のクッキーが付いていても、止まります（第8巻 UNIT 01・06）。
 - 5の **bob** は `404` です。SQL の `AND user_id = ?2` で、消せる行が 0 行だったからです（UNIT 03 の問3）。
 
 ### よくあるエラーと読み方

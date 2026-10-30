@@ -6632,7 +6632,7 @@ set-cookie: theme=asxgipR70vCpIonhi5%2FngvMpGyTNGKrAGb77+CGeG4s%3Ddark; Path=/
 
 - **SameSite=Lax:** セッションのクッキーには `SameSite=Lax` が付いています。ブラウザは、ほかのサイトからの **POST** に、このクッキーを付けません。OriginPolicy が見落とした要求があっても、ログイン中の人として扱われません。
 - **状態を変える操作は POST だけ:** エラー2のとおり、GET には `SameSite=Lax` のクッキーが付いてしまい、OriginPolicy も止めません。GET で状態を変えないことで、2つの守りが働く範囲に、すべての操作を入れています。
-- **OriginPolicy:** ほかのサイトからの POST を、ルーターの最初で 403 にします。この3つを重ねて、CSRF を防いでいます。RustNote は、3つとも満たしています（第8巻 UNIT 06（準備中））。
+- **OriginPolicy:** ほかのサイトからの POST を、ルーターの最初で 403 にします。この3つを重ねて、CSRF を防いでいます。RustNote は、3つとも満たしています（第8巻 UNIT 06）。
 
 ### まとめ
 
