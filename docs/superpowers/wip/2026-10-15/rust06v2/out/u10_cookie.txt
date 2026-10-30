@@ -1,0 +1,12 @@
+### curl.exe -s http://127.0.0.1:3000/
+<p>テーマ: light</p><p>ログイン: （していない）</p>
+
+### curl.exe -i -X POST http://127.0.0.1:3000/theme
+HTTP/1.1 303 See Other
+location: /
+set-cookie: theme=dark; Path=/
+content-length: 0
+
+
+### curl.exe -s -H "Cookie: theme=dark" http://127.0.0.1:3000/
+<p>テーマ: dark</p><p>ログイン: （していない）</p>

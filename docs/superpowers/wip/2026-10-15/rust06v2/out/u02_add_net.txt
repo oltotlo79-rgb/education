@@ -1,5 +1,5 @@
     Updating crates.io index
-      Adding tokio =1.53.3 to dependencies
+      Adding tokio =1.54.1 to dependencies
              Features:
              + libc
              + macros

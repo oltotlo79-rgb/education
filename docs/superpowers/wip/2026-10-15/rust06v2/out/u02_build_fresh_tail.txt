@@ -1,2 +1,2 @@
    Compiling web_lab v0.1.0 (...\web_lab)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 31.48s
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 21.90s

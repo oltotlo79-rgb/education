@@ -1,0 +1,23 @@
+### curl.exe -i -X POST -H "Origin: https://evil.example" -H "Sec-Fetch-Site: cross-site" http://127.0.0.1:3000/theme
+HTTP/1.1 403 Forbidden
+content-type: text/plain; charset=utf-8
+content-length: 9
+
+forbidden
+
+
+### curl.exe -i -X POST -H "Origin: http://127.0.0.1:3000" -H "Sec-Fetch-Site: same-origin" http://127.0.0.1:3000/theme
+HTTP/1.1 303 See Other
+location: /
+set-cookie: theme=dark; Path=/
+content-length: 0
+
+
+
+### curl.exe -i -H "Origin: https://evil.example" -H "Sec-Fetch-Site: cross-site" http://127.0.0.1:3000/
+HTTP/1.1 200 OK
+content-type: text/html; charset=utf-8
+content-length: 65
+
+<p>テーマ: light</p><p>ログイン: （していない）</p>
+

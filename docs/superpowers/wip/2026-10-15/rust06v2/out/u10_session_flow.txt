@@ -1,0 +1,21 @@
+### curl.exe -i -d "name=alice" http://127.0.0.1:3000/login
+HTTP/1.1 303 See Other
+location: /
+set-cookie: __Host-session=HA6WQQJ4_rfGYdRRfOj224DLJkenBzNG75aDu58OfEI%3D; HttpOnly; SameSite=Lax; Secure; Path=/; Max-Age=2592000
+content-length: 0
+
+### curl.exe -s -H "Cookie: （上の __Host-session=…）" http://127.0.0.1:3000/
+<p>テーマ: light</p><p>ログイン: alice</p>
+
+### curl.exe -s -H "Cookie: （トークンの1文字目を変えたもの）" http://127.0.0.1:3000/
+<p>テーマ: light</p><p>ログイン: （していない）</p>
+
+### curl.exe -i -X POST -H "Cookie: （__Host-session=…）" http://127.0.0.1:3000/logout
+HTTP/1.1 303 See Other
+location: /
+set-cookie: __Host-session=; HttpOnly; SameSite=Lax; Secure; Path=/; Max-Age=0; Expires=Thu, 30 Oct 2025 12:26:22 GMT
+content-length: 0
+
+
+### curl.exe -s -H "Cookie: （ログアウトの前のトークン）" http://127.0.0.1:3000/
+<p>テーマ: light</p><p>ログイン: （していない）</p>

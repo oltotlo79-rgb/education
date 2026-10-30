@@ -1,0 +1,35 @@
+   Compiling web_lab v0.1.0 (...\web_lab)
+error[E0277]: the trait bound `impl Future<Output = <_ as Surrogated>::Surrogate>: Surrogate` is not satisfied
+  --> src\bin\e09_render.rs:17:8
+   |
+17 |       Ok(view! {
+   |  ________^
+18 | |         <head>topcoat::runtime::script()</head>
+19 | |         <p>"2倍: " $(double(21))</p>
+20 | |     })
+   | |_____^ unsatisfied trait bound
+   |
+   = help: the trait `topcoat::runtime::Surrogate` is not implemented for `impl Future<Output = <<double as TypedProcedure>::Output as Surrogated>::Surrogate>`
+   = help: the following other types implement trait `topcoat::runtime::Surrogate`:
+             &'__lifetime ArraySurrogate<T, N>
+             &'__lifetime BoolSurrogate
+             &'__lifetime F64Surrogate
+             &'__lifetime I128Surrogate
+             &'__lifetime I16Surrogate
+             &'__lifetime I32Surrogate
+             &'__lifetime I64Surrogate
+             &'__lifetime I8Surrogate
+           and 82 others
+   = note: the full name for the type has been written to '...\web_lab\target\debug\deps\e09_render.long-type-13446065555610017225.txt'
+   = note: consider using `--verbose` to print the full type name to the console
+   = note: this error originates in the macro `::topcoat::runtime::expr` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: consider removing this method call, as the receiver has type `&ProcedureSurrogate<double>` and `&ProcedureSurrogate<double>: topcoat::runtime::Surrogate` trivially holds
+   |
+19 -         <p>"2倍: " $(double(21))</p>
+20 -     })
+19 +         <p>"2倍: " $(double)
+   |
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `web_lab` (bin "e09_render") due to 1 previous error
+exit=101

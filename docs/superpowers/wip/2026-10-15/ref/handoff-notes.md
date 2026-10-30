@@ -1,5 +1,16 @@
 # 中断時点の引き継ぎメモ
 
+## 2026-10-30（続き）: 版を最新に上げ、第6巻を完成（main: fbe63e4 RustNote、7764a49〜4837802 第6巻）
+
+ユーザーの指示「全て完了まで進めて / バージョンはあげる / 全て最新に合わせる」。サブエージェントなし。計画は `ref/tools/PLAN_ALL.md`。
+
+- **版:** Rust 1.99.1（toolchain をインストール。既定の stable は 1.97.1 のまま）、topcoat =0.11.0（rust-version 1.99、topcoat-cli 0.11.0 を ~/.cargo/bin に入れた）、tokio =1.54.1、cargo update で間接の依存も更新（generic-array だけ crypto-common が =0.14.7 に固定）。CI は ubuntu-26.04（runner-images にある）、checkout@v7、rust-cache@v2（v2.9.3）。Dockerfile は rust:1.99.1-bookworm のまま（trixie へは第12巻で docker build して確かめてから）。Docker Desktop はプロセスはあるが `docker version` が応答しない。
+- **RustNote:** コードの変更なしで 0.11 に上がった（41 テスト・clippy・fmt・asset bundle・起動して GET /・/health・/login）。
+- **第6巻:** ファイル名を `06_Web基礎_HTTPとTopcoat_0_11完全ガイド` に変え、旧 0_10 の md/pdf と旧 0_5 の PDF を削除。UNIT 01〜02 は 0.11 で取り直し（cargo add の表示が「22 deactivated features」にまとまる、初回ビルド 164 個・約 22 秒）。UNIT 03〜10 を新しく書いた（185 ページ・図 21 枚）。
+- **確かめた事実（0.11）:** module_router の `_`→`-`、末尾 `/` は 308、同じ URL の page 2つは起動時 panic `duplicate route registered`、`#[page]` 忘れの href! は E0573、`(slot)` 忘れは unused variable の警告だけ。モジュールの #[layer] は当たらない URL を通らない（RustNote は not_found!() で通している）。query の空の値は None、`missing field` の 400、`%2F` は1区切りの中で `/`。view! は自作の型を入れると E0277（NodeViewParts）、本文は < > & を、属性の値は " & をエスケープ（topcoat-view の escape.rs の表どおり）、属性名に `=` は panic で 500。Json の本文の上限は既定 2 MiB（413）。app_context の登録し忘れ・二重登録は panic。memoize で5回の呼び出しが1回に（外すと6回・約 0.25 秒）。asset bundle は `target/<profile>/assets` に作り、同じ web_lab の別の --bin で bundle すると置き換わる（500）。topcoat dev は起動時にソースを同じ内容で書き直す（mtime だけ変わる）。runtime: ブラウザ（claude-in-chrome）で +1・説明は通信 0 件、2倍は POST /api/double。procedure の引数は `[{"t":"usize","bits":64,"v":"21"}]`、usize::MAX で `value * 2` が overflow panic（500）。ページの確かめは procedure を守らない（curl でメモが消える）。session: 1文字変えたトークン・ログアウト後のトークンは通らない、`redirect` は 307、`.cookies()` 忘れは CookieJarCell の panic。
+- **注意:** Git Bash の `curl.exe` は Git 付属の curl 8.18（brotli あり）。本の出力は `/c/Windows/System32/curl.exe`（8.21.0）で取る（`--compressed` の結果が gzip と br で変わる）。
+- **道具（ref/tools/）:** `finish_unit.py <巻> <N>`（巻頭の表・お知らせ・巻末のチェックリストと用語・assemble の範囲。meta は `parts/unitNN.meta.md`）、`finish_volume.py <巻>`（お知らせを外す）、`clear_refs.py`（完成した UNIT への「（準備中）」を全巻から外す）、`build_vol.sh <巻> <N> <md>`（fill→assemble→check→PDF→検査）。
+
 ## 2026-10-30: Rust 08・10・11 巻に UNIT 02 を main に反映（08: 2af635b、10: 8194c47、11: b2796c6）
 
 「完成から最も遠い3つ」として、UNIT 01 だけだった巻のうち、08・10・11 を選んだ（12 も UNIT 01 だけだが、UNIT 02 は Docker が要り、デーモンを起動する副作用を避けて見送り）。統括が1人で執筆（サブエージェントなし）。素材は `rust08v2/`・`rust10v2/`・`rust11v2/`（追記）。

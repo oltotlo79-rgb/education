@@ -1,0 +1,16 @@
+### curl.exe -i http://127.0.0.1:3000/about/
+HTTP/1.1 308 Permanent Redirect
+location: /about
+content-length: 0
+date: Fri, 30 Oct 2026 11:37:49 GMT
+
+
+
+### curl.exe -i http://127.0.0.1:3000/blog_posts
+HTTP/1.1 404 Not Found
+content-type: text/plain; charset=utf-8
+content-length: 9
+date: Fri, 30 Oct 2026 11:37:49 GMT
+
+not found
+

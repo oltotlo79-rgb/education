@@ -1,0 +1,10 @@
+### curl.exe -i -H "Origin: https://evil.example" -H "Sec-Fetch-Site: cross-site" -H "Content-Type: application/json" --data-binary "@noargs.json" http://127.0.0.1:3000/api/clear
+HTTP/1.1 403 Forbidden
+content-type: text/plain; charset=utf-8
+content-length: 9
+
+forbidden
+
+
+### curl.exe -s -H "Cookie: admin=yes" http://127.0.0.1:3000/admin
+<p>メモは 3 件</p>

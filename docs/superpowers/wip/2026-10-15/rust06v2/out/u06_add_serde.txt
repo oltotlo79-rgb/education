@@ -1,0 +1,10 @@
+    Updating crates.io index
+      Adding serde =1.0.229 to dependencies
+             Features:
+             + derive
+             + serde_derive
+             + std
+             - alloc
+             - rc
+             - unstable
+exit=0

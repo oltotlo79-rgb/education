@@ -1,0 +1,27 @@
+   Compiling web_lab v0.1.0 (...\web_lab)
+error[E0308]: mismatched types
+  --> src\bin\e06_okredirect.rs:25:8
+   |
+23 |         return Ok(view! { <p>"タイトルを入力してください"</p> });
+   |                   --------------------------------------------- the expected `async` block
+24 |     }
+25 |     Ok(see_other(href!(home).resolve(cx)))
+   |     -- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `ScopeView<MoveView<{async block@...}>>`, found `SeeOther`
+   |     |
+   |     arguments to this enum variant are incorrect
+   |
+   = note: expected struct `topcoat::view::internal::ScopeView<topcoat::view::internal::MoveView<{async block@src\bin\e06_okredirect.rs:23:19: 23:51}>>`
+              found struct `SeeOther`
+help: the type constructed contains `SeeOther` due to the type of the argument passed
+  --> src\bin\e06_okredirect.rs:25:5
+   |
+25 |     Ok(see_other(href!(home).resolve(cx)))
+   |     ^^^----------------------------------^
+   |        |
+   |        this argument influences the type of `Ok`
+note: tuple variant defined here
+  --> /rustc/58cf8f9c35b355199727627d07ae34a4e2846d67/library\core\src\result.rs:562:4
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `web_lab` (bin "e06_okredirect") due to 1 previous error
+exit=101

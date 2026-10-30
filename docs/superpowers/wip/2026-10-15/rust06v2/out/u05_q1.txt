@@ -1,0 +1,2 @@
+### curl.exe -s "http://127.0.0.1:3000/"
+<h1>ノート（2 件）</h1><section class="panel"><h2>一覧</h2><ul><li class="note done" data-tag="買い物">牛乳を買う ✓<span class="tag">買い物</span></li><li class="note">本を返す</li></ul></section><p>まだ残っています</p><input type="checkbox" checked="">

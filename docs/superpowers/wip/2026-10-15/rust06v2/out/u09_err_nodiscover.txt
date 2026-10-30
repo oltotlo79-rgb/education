@@ -1,0 +1,8 @@
+### curl.exe -s -o NUL -w "%{http_code}" http://127.0.0.1:3000/
+200
+### curl.exe -i -H "Content-Type: application/json" --data-binary "@args21.json" http://127.0.0.1:3000/api/double
+HTTP/1.1 404 Not Found
+content-type: text/plain; charset=utf-8
+content-length: 9
+
+not found

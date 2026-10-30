@@ -1,0 +1,38 @@
+### curl.exe -i http://127.0.0.1:3000/
+HTTP/1.1 200 OK
+content-type: text/html; charset=utf-8
+vary: Accept
+vary: accept-encoding
+content-length: 261
+date: Fri, 30 Oct 2026 11:37:48 GMT
+
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><title>UNIT 03 の練習</title></head><body><nav><a href="/">トップ</a><a href="/about" class="nav">この場所について</a><a href="/blog-posts">記事</a></nav><h1>トップ</h1></body></html>
+
+### curl.exe -i http://127.0.0.1:3000/about
+HTTP/1.1 200 OK
+content-type: text/html; charset=utf-8
+vary: Accept
+vary: accept-encoding
+content-length: 303
+date: Fri, 30 Oct 2026 11:37:48 GMT
+
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><title>UNIT 03 の練習</title></head><body><nav><a href="/">トップ</a><a href="/about" aria-current="page" class="nav active">この場所について</a><a href="/blog-posts">記事</a></nav><h1>この場所について</h1></body></html>
+
+### curl.exe -i http://127.0.0.1:3000/blog-posts
+HTTP/1.1 200 OK
+content-type: text/html; charset=utf-8
+vary: Accept
+vary: accept-encoding
+content-length: 267
+date: Fri, 30 Oct 2026 11:37:48 GMT
+
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><title>UNIT 03 の練習</title></head><body><nav><a href="/">トップ</a><a href="/about" class="nav">この場所について</a><a href="/blog-posts">記事</a></nav><h1>記事の一覧</h1></body></html>
+
+### curl.exe -i http://127.0.0.1:3000/api/health
+HTTP/1.1 200 OK
+content-type: text/plain; charset=utf-8
+content-length: 2
+date: Fri, 30 Oct 2026 11:37:49 GMT
+
+ok
+

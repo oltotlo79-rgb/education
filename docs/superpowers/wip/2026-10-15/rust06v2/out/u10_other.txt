@@ -1,0 +1,15 @@
+### curl.exe -i "http://127.0.0.1:3000/old"
+HTTP/1.1 307 Temporary Redirect
+location: /
+content-length: 0
+
+
+
+### curl.exe -i "http://127.0.0.1:3000/boom"
+HTTP/1.1 500 Internal Server Error
+content-type: text/plain; charset=utf-8
+content-length: 21
+
+internal server error
+
+

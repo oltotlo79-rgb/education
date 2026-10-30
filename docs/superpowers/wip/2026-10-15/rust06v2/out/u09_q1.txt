@@ -1,0 +1,16 @@
+### curl.exe -i -H "Content-Type: application/json" --data-binary "@args21.json" http://127.0.0.1:3000/api/double
+HTTP/1.1 200 OK
+content-type: application/json
+content-length: 32
+
+{"t":"usize","bits":64,"v":"42"}
+
+
+### curl.exe -i -H "Content-Type: application/json" --data-binary "@argsbig.json" http://127.0.0.1:3000/api/double
+HTTP/1.1 400 Bad Request
+content-type: text/plain; charset=utf-8
+content-length: 47
+
+bad request: 2倍にすると大きすぎます
+
+

@@ -1,0 +1,8 @@
+### topcoat asset clean
+removed ...\web_lab\target\debug\assets
+### cargo run --bin u08_assets
+
+thread 'main' (201628) panicked at src\bin\u08_assets.rs:35:37:
+アセットの束を読み込めません: Custom { kind: NotFound, error: "no asset bundle at ...\\web_lab\\target\\debug\\assets" }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+exit=101

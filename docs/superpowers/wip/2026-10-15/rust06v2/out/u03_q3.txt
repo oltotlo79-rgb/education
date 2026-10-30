@@ -1,0 +1,12 @@
+### curl.exe -I http://127.0.0.1:3000/api/health
+HTTP/1.1 200 OK
+content-type: text/plain; charset=utf-8
+content-length: 2
+date: Fri, 30 Oct 2026 11:37:49 GMT
+
+### curl.exe -i -X POST http://127.0.0.1:3000/api/health
+HTTP/1.1 405 Method Not Allowed
+allow: GET, HEAD
+content-length: 0
+date: Fri, 30 Oct 2026 11:37:49 GMT
+

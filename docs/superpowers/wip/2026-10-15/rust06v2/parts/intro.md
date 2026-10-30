@@ -1,11 +1,11 @@
 <div style="page-break-after: always; text-align: center; margin: 0; padding: 0;">
 <img src="assets/cover.jpg" alt="表紙" style="width: 100%; max-height: 175mm; object-fit: cover; border-radius: 10px;">
 <div style="margin-top: 14px; font-size: 11px; letter-spacing: 0.18em; color: #c2410c; font-weight: 700;">VOLUME 06 / RUST BACKEND MASTERY</div>
-<div style="font-size: 26px; font-weight: 800; color: #0f172a; margin-top: 6px; line-height: 1.35;">Web 基礎と Topcoat 0.10 完全ガイド</div>
+<div style="font-size: 26px; font-weight: 800; color: #0f172a; margin-top: 6px; line-height: 1.35;">Web 基礎と Topcoat 0.11 完全ガイド</div>
 <div style="font-size: 13px; color: #475569; margin-top: 8px;">HTTP の要求と応答から、Topcoat のページ・ルーター・view!・フォーム・アセット・セッションまでを、動かして確かめる</div>
 </div>
 
-# 第6巻: Web 基礎と Topcoat 0.10 完全ガイド
+# 第6巻: Web 基礎と Topcoat 0.11 完全ガイド
 
 ## この巻で身に付けること
 
@@ -18,7 +18,7 @@ Web のサーバーは、いきなり道具（フレームワーク）から始�
 - フォームを送ったあとに再読み込みしたら、同じデータがもう1件できてしまった
 - 日本語の文字が、途中で切れて表示される
 
-そこで、この巻の最初の単元では、道具を使わずに、**標準ライブラリだけ**で小さなサーバーを書き、HTTP の要求と応答が「ただの文字のやり取り」であることを、自分の目で確かめます。そのうえで、UNIT 02 から、RustNote でも使っている Web フレームワーク **Topcoat 0.10** の使い方を、1つずつ学びます。
+そこで、この巻の最初の単元では、道具を使わずに、**標準ライブラリだけ**で小さなサーバーを書き、HTTP の要求と応答が「ただの文字のやり取り」であることを、自分の目で確かめます。そのうえで、UNIT 02 から、RustNote でも使っている Web フレームワーク **Topcoat 0.11** の使い方を、1つずつ学びます。
 
 ### 到達目標
 
@@ -26,7 +26,7 @@ Web のサーバーは、いきなり道具（フレームワーク）から始�
 
 - HTTP の要求（メソッド・パス・ヘッダー・本文）と応答（状態コード・ヘッダー・本文）の形を説明し、`curl.exe -i` や `-v` の表示を読める
 - 状態コード（200・303・403・404・405 など）と、GET・POST の使い分けを説明できる
-- Topcoat 0.10 で、ページ（`#[page]`）・ルーター・レイアウト・URL の部品の読み取り・`view!` とコンポーネントを使った画面を作れる
+- Topcoat 0.11 で、ページ（`#[page]`）・ルーター・レイアウト・URL の部品の読み取り・`view!` とコンポーネントを使った画面を作れる
 - フォームを受け取り、成功したら 303 で GET の画面へ移す（PRG）形を作れる
 - 共有の状態（`app_context`）・アセット（CSS の束）・エラー・クッキー・セッション・ほかのサイトからの送信の守りを、Topcoat の仕組みで扱える
 
@@ -54,7 +54,7 @@ Web のサーバーは、いきなり道具（フレームワーク）から始�
 <rect x="282" y="40" width="130" height="70" rx="8" fill="#ffffff" stroke="#3b82f6" stroke-width="2"/>
 <text x="347" y="60" font-size="12" font-weight="700" fill="#3b82f6" text-anchor="middle">UNIT 02</text>
 <text x="347" y="80" font-size="13" font-weight="700" fill="#0f172a" text-anchor="middle">最小のアプリ</text>
-<text x="347" y="99" font-size="12" fill="#475569" text-anchor="middle">Topcoat 0.10</text>
+<text x="347" y="99" font-size="12" fill="#475569" text-anchor="middle">Topcoat 0.11</text>
 <rect x="429" y="40" width="130" height="70" rx="8" fill="#ffffff" stroke="#3b82f6" stroke-width="2"/>
 <text x="494" y="60" font-size="12" font-weight="700" fill="#3b82f6" text-anchor="middle">UNIT 03</text>
 <text x="494" y="80" font-size="13" font-weight="700" fill="#0f172a" text-anchor="middle">ルーター</text>
@@ -107,17 +107,15 @@ Web のサーバーは、いきなり道具（フレームワーク）から始�
 | 単元 | テーマ | ひとことで言うと |
 |---|---|---|
 | UNIT 01 | HTTP の要求・応答・状態コード | 標準ライブラリだけのサーバーで、HTTP がただの文字だと確かめる |
-| UNIT 02 | Topcoat 0.10 の最小のアプリ | ページを1つ作って起動する |
-| UNIT 03 | ルーター・page・route・layout（準備中） | URL ごとに処理を分け、共通の外枠で包む |
-| UNIT 04 | URL の部品（path・query）と Cx（準備中） | `/notes/{id}` や `?page=2` を型にして読む |
-| UNIT 05 | view!・コンポーネント・HTML のエスケープ（準備中） | 画面を部品に分け、入力を安全に表示する |
-| UNIT 06 | フォーム・JSON・PRG（準備中） | 送られてきた値を型にし、303 で移る |
-| UNIT 07 | app_context・memoize（準備中） | DB などを全部の処理で共有し、同じ問い合わせを1回にする |
-| UNIT 08 | アセット・CSS・束（準備中） | `asset!` と `topcoat asset bundle` |
-| UNIT 09 | runtime・signal・procedure・shard（準備中） | ブラウザの中で動く部分と、その守り方 |
-| UNIT 10 | エラー・クッキー・セッション・CSRF（準備中） | 400・404・リダイレクトと、ログインの仕組みの土台 |
-
-> **お知らせ:** この版には UNIT 01〜02 を収録しています。UNIT 03〜10 は準備中で、次の更新から順に追加します。以前の版（Topcoat 0.5 の版）の PDF は、この版がそろうまで残してあります。Topcoat は 0.5 から 0.10 までに書き方が大きく変わっているので、以前の版のコードは、0.10 では動かないことがあります。
+| UNIT 02 | Topcoat 0.11 の最小のアプリ | ページを1つ作って起動する |
+| UNIT 03 | ルーター・page・route・layout | URL ごとに処理を分け、共通の外枠で包む |
+| UNIT 04 | URL の部品（path・query）と Cx | `/notes/{id}` や `?page=2` を型にして読む |
+| UNIT 05 | view!・コンポーネント・HTML のエスケープ | 画面を部品に分け、入力を安全に表示する |
+| UNIT 06 | フォーム・JSON・PRG | 送られてきた値を型にし、303 で移る |
+| UNIT 07 | app_context・memoize | DB などを全部の処理で共有し、同じ問い合わせを1回にする |
+| UNIT 08 | アセット・CSS・束 | `asset!` と `topcoat asset bundle` |
+| UNIT 09 | runtime・signal・procedure・shard | ブラウザの中で動く部分と、その守り方 |
+| UNIT 10 | エラー・クッキー・セッション・CSRF | 400・404・リダイレクトと、ログインの仕組みの土台 |
 
 ### 前提知識（先に読んでおく巻）
 
@@ -143,10 +141,10 @@ Web のサーバーは、いきなり道具（フレームワーク）から始�
 | 項目 | 版・内容 |
 |---|---|
 | OS | Windows 11（ARM64）。コマンドは PowerShell を主に、WSL / macOS / Linux は補足で示します |
-| Rust | **1.98 以上**（本書シリーズの基準）。動作確認は rustc 1.99.0 / cargo 1.99.0（`aarch64-pc-windows-msvc`） |
+| Rust | **1.99 以上**（本書シリーズの基準。Topcoat 0.11 が 1.99 以上を求めます）。動作確認は rustc 1.99.1 / cargo 1.99.1（`aarch64-pc-windows-msvc`） |
 | edition | 2024 |
 | curl | 8.21.0（Windows に入っている `curl.exe`。PowerShell では `curl` だけだと別のコマンドになるので、必ず `curl.exe` と打ちます） |
-| topcoat | 0.10.0（UNIT 02 から使います。UNIT 01 では使いません。2026-10 には 0.11.0 も出ていますが、この本は 0.10.0 に固定しています） |
+| topcoat | 0.11.0（2026-10-24 に出た版。UNIT 02 から使います。UNIT 01 では使いません） |
 
 ### 練習用のプロジェクトを用意する
 
@@ -155,8 +153,8 @@ UNIT 01 では、外のクレートを1つも使いません。練習用のプ�
 ```powershell
 cargo new http_lab
 cd http_lab
-# このフォルダでは Rust 1.99.0 を使う（第13巻 UNIT 01）
-Set-Content rust-toolchain.toml "[toolchain]`nchannel = `"1.99.0`""
+# このフォルダでは Rust 1.99.1 を使う（第13巻 UNIT 01）
+Set-Content rust-toolchain.toml "[toolchain]`nchannel = `"1.99.1`""
 New-Item -ItemType Directory src\bin
 ```
 

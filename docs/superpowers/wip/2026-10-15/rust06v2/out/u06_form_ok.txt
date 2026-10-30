@@ -1,0 +1,8 @@
+### curl.exe -i -d "title=%E8%B2%B7%E3%81%84%E7%89%A9" http://127.0.0.1:3000/
+HTTP/1.1 303 See Other
+location: /
+content-length: 0
+
+
+### curl.exe -s http://127.0.0.1:3000/
+<h1>メモ</h1><form method="post" action="/"><input name="title" value=""><button type="submit">保存</button></form><ul><li>買い物</li></ul>

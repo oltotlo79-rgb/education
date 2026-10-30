@@ -1,0 +1,4 @@
+
+thread 'tokio-rt-worker' (212564) panicked at ...\renderer.rs:90:44:
+failed to resolve asset Asset { id: AssetId(582545301376341735) } in the asset catalog
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

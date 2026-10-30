@@ -1,0 +1,8 @@
+### curl.exe -i -X POST http://127.0.0.1:3000/theme（の set-cookie の行）
+set-cookie: theme=asxgipR70vCpIonhi5%2FngvMpGyTNGKrAGb77+CGeG4s%3Ddark; Path=/
+
+### curl.exe -s -H "Cookie: （上の theme=…）" http://127.0.0.1:3000/
+<p>テーマ: dark</p><p>ログイン: （していない）</p>
+
+### curl.exe -s -H "Cookie: theme=dark" http://127.0.0.1:3000/（署名を付けずに書き換えた）
+<p>テーマ: light</p><p>ログイン: （していない）</p>

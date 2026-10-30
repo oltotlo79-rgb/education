@@ -1,0 +1,23 @@
+topcoat #web #framework #ssr #html #server
+A modular, batteries-included Rust web framework for server-rendered apps.
+version: 0.11.0
+license: MIT
+rust-version: 1.99
+documentation: https://docs.rs/topcoat/0.11.0
+repository: https://github.com/tokio-rs/topcoat
+crates.io: https://crates.io/crates/topcoat/0.11.0
+features:
+ +default         = [asset, compression, cookie, font, icon, router, runtime, serve, session, view, discover]
+  asset           = [dep:topcoat-asset, topcoat-font?/asset, topcoat-font-macro?/asset]
+  compression     = [router, topcoat-router/compression]
+  cookie          = [dep:topcoat-cookie, topcoat-session?/cookie]
+  discover        = [dep:inventory, topcoat-font?/discover, topcoat-router?/discover, topcoat-router-macro?/discover, topcoat-runtime-macro?/discover]
+  font            = [dep:topcoat-font, dep:topcoat-font-macro]
+  icon            = [dep:topcoat-icon, dep:topcoat-icon-macro, view]
+  router          = [dep:topcoat-router, dep:topcoat-router-macro, view, topcoat-asset?/router, topcoat-cookie?/router, topcoat-font?/router, topcoat-mail?/router, topcoat-runtime?/router, topcoat-session?/router]
+  runtime         = [dep:topcoat-runtime, dep:topcoat-runtime-macro]
+  serve           = [router, dep:futures-util, dep:tokio, dep:tokio-tungstenite, topcoat-asset?/serve, topcoat-router/serve]
+  session         = [dep:topcoat-session]
+  view            = [dep:topcoat-view, dep:topcoat-view-macro, topcoat-asset?/view, topcoat-font?/view, topcoat-l10n?/view]
+  22 deactivated features
+note: to see how you depend on topcoat, run `cargo tree --invert topcoat@0.11.0`

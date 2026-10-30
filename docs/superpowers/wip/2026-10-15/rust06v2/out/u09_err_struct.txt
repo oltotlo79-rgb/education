@@ -1,0 +1,85 @@
+   Compiling web_lab v0.1.0 (...\web_lab)
+error[E0277]: the trait bound `Cart: SignalValue` is not satisfied
+   --> src\bin\e09_struct.rs:18:16
+    |
+ 18 |     let cart = signal(cx, || Cart { items: 0 });
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
+    |
+help: the trait `Surrogated` is not implemented for `Cart`
+   --> src\bin\e09_struct.rs:12:1
+    |
+ 12 | struct Cart {
+    | ^^^^^^^^^^^
+    = help: the following other types implement trait `Surrogated`:
+              &'__lifetime Option<T>
+              &'__lifetime Result<T, E>
+              &'__lifetime Signal<T>
+              &'__lifetime Vec<T>
+              &'__lifetime [T; N]
+              &'__lifetime [T]
+              &'__lifetime bool
+              &'__lifetime f64
+            and 81 others
+    = note: required for `Cart` to implement `SignalValue`
+note: required by a bound in `signal`
+   --> ...\signal.rs:302:8
+    |
+300 | pub fn signal<T>(cx: &Cx, init: impl FnOnce() -> T) -> Signal<T>
+    |        ------ required by a bound in this function
+301 | where
+302 |     T: SignalValue,
+    |        ^^^^^^^^^^^ required by this bound in `signal`
+
+error[E0277]: `&'a Cart` cannot be used in runtime expressions
+   --> src\bin\e09_struct.rs:18:16
+    |
+ 18 |     let cart = signal(cx, || Cart { items: 0 });
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `for<'a> Surrogated` is not implemented for `&'a Cart`
+    |
+    = note: declare a struct with `#[record]` to use it in runtime expressions
+    = help: the following other types implement trait `Surrogated`:
+              &'__lifetime Option<T>
+              &'__lifetime Result<T, E>
+              &'__lifetime Signal<T>
+              &'__lifetime Vec<T>
+              &'__lifetime [T; N]
+              &'__lifetime [T]
+              &'__lifetime bool
+              &'__lifetime f64
+            and 81 others
+    = note: required for `Cart` to implement `SignalValue`
+note: required by a bound in `signal`
+   --> ...\signal.rs:302:8
+    |
+300 | pub fn signal<T>(cx: &Cx, init: impl FnOnce() -> T) -> Signal<T>
+    |        ------ required by a bound in this function
+301 | where
+302 |     T: SignalValue,
+    |        ^^^^^^^^^^^ required by this bound in `signal`
+
+error[E0599]: the method `get` exists for struct `SignalSurrogate<Cart>`, but its trait bounds were not satisfied
+  --> src\bin\e09_struct.rs:21:26
+   |
+12 |   struct Cart {
+   |   ----------- doesn't satisfy `Cart: Surrogated`
+...
+19 |       Ok(view! {
+   |  ________-
+20 | |         <head>topcoat::runtime::script()</head>
+21 | |         <p>"かご: " $(cart.get().items)</p>
+   | |                           -^^^ method cannot be called on `SignalSurrogate<Cart>` due to unsatisfied trait bounds
+   | |___________________________|
+   |
+   |
+   = note: the following trait bounds were not satisfied:
+           `Cart: Surrogated`
+note: the trait `Surrogated` must be implemented
+  --> ...\surrogate.rs:35:1
+   |
+35 | pub trait Surrogated {
+   | ^^^^^^^^^^^^^^^^^^^^
+
+Some errors have detailed explanations: E0277, E0599.
+For more information about an error, try `rustc --explain E0277`.
+error: could not compile `web_lab` (bin "e09_struct") due to 3 previous errors
+exit=101

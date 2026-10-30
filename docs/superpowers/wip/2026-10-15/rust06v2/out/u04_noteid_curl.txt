@@ -1,0 +1,32 @@
+### curl.exe -i http://127.0.0.1:3000/notes/7
+HTTP/1.1 200 OK
+content-type: text/html; charset=utf-8
+content-length: 24
+
+<h1>ノート 7 番</h1>
+
+
+### curl.exe -i http://127.0.0.1:3000/notes/0
+HTTP/1.1 404 Not Found
+content-type: text/plain; charset=utf-8
+content-length: 9
+
+not found
+
+
+### curl.exe -i http://127.0.0.1:3000/notes/-5
+HTTP/1.1 404 Not Found
+content-type: text/plain; charset=utf-8
+content-length: 9
+
+not found
+
+
+### curl.exe -i http://127.0.0.1:3000/notes/abc
+HTTP/1.1 404 Not Found
+content-type: text/plain; charset=utf-8
+content-length: 9
+
+not found
+
+

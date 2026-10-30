@@ -1,0 +1,6 @@
+### curl.exe -i http://127.0.0.1:3000/old
+HTTP/1.1 500 Internal Server Error
+content-type: text/html; charset=utf-8
+content-length: 145
+
+<header>UNIT 10 のサイト</header><main><h1>時間をおいてもう一度お試しください</h1><p><a href="/">トップへ</a></p></main>

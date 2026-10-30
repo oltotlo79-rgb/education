@@ -1,0 +1,9 @@
+### curl.exe -i http://127.0.0.1:3000/contact
+HTTP/1.1 200 OK
+content-type: text/html; charset=utf-8
+vary: Accept
+vary: accept-encoding
+content-length: 311
+date: Fri, 30 Oct 2026 11:37:53 GMT
+
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><title>UNIT 03 の練習</title></head><body><nav><a href="/">トップ</a><a href="/about" class="nav">この場所について</a><a href="/blog-posts">記事</a><a href="/contact">お問い合わせ</a></nav><h1>お問い合わせ</h1></body></html>

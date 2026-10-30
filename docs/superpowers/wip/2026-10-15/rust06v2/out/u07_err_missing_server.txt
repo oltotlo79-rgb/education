@@ -1,0 +1,4 @@
+
+thread 'tokio-rt-worker' (215316) panicked at src\bin\e07_missing.rs:15:18:
+attempted to access app context of type `"e07_missing::AppConfig"`, but this type was not registered for this context
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

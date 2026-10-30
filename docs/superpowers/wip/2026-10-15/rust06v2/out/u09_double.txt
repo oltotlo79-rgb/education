@@ -1,0 +1,7 @@
+### curl.exe -i -H "Content-Type: application/json" --data-binary "@args21.json" http://127.0.0.1:3000/api/double
+HTTP/1.1 200 OK
+content-type: application/json
+content-length: 32
+
+{"t":"usize","bits":64,"v":"42"}
+

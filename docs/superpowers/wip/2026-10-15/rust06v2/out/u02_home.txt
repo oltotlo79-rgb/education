@@ -3,6 +3,6 @@ content-type: text/html; charset=utf-8
 vary: Accept
 vary: accept-encoding
 content-length: 228
-date: Wed, 28 Oct 2026 21:52:33 GMT
+date: Fri, 30 Oct 2026 11:31:05 GMT
 
 <!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><title>はじめての Topcoat</title></head><body><h1>こんにちは、Topcoat！</h1><p>この HTML は Rust のプログラムが作りました。</p></body></html>

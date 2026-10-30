@@ -1,0 +1,14 @@
+### curl.exe -i -H "Content-Type: application/json" --data-binary "@empty.json" http://127.0.0.1:3000/api/memos
+HTTP/1.1 400 Bad Request
+content-type: text/plain; charset=utf-8
+content-length: 82
+
+bad request: invalid JSON value: missing field `title` at line 1 column 2 (at `.`)
+
+
+### curl.exe -i -H "Content-Type: application/json" --data-binary "@broken.json" http://127.0.0.1:3000/api/memos
+HTTP/1.1 400 Bad Request
+content-type: text/plain; charset=utf-8
+content-length: 91
+
+bad request: invalid JSON syntax: EOF while parsing a value at line 2 column 0 (at `title`)

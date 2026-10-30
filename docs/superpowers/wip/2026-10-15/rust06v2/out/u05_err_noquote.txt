@@ -1,0 +1,9 @@
+   Compiling web_lab v0.1.0 (...\web_lab)
+error: expected view node
+  --> src\bin\e05_noquote.rs:11:13
+   |
+11 |         <h1>こんにちは</h1>
+   |             ^^^^^^^^^^
+
+error: could not compile `web_lab` (bin "e05_noquote") due to 1 previous error
+exit=101

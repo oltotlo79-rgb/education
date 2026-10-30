@@ -1,0 +1,2 @@
+bundled assets into ...\web_lab\target\debug\assets
+exit=0

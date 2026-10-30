@@ -1,0 +1,8 @@
+### curl.exe -i "http://127.0.0.1:3000/notes?q=a+b%26c"
+HTTP/1.1 200 OK
+content-type: text/html; charset=utf-8
+content-length: 39
+
+<p>検索: a b&amp;c / ページ: 1</p>
+
+

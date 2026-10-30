@@ -1,0 +1,22 @@
+### curl.exe -i http://127.0.0.1:3000/admin
+HTTP/1.1 403 Forbidden
+content-type: text/plain; charset=utf-8
+content-length: 9
+
+forbidden
+
+
+### curl.exe -s -H "Cookie: admin=yes" http://127.0.0.1:3000/admin
+<p>メモは 3 件</p>
+
+### curl.exe -i -H "Content-Type: application/json" --data-binary "@noargs.json" http://127.0.0.1:3000/api/clear
+HTTP/1.1 200 OK
+content-type: application/json
+content-length: 31
+
+{"t":"usize","bits":64,"v":"3"}
+
+
+### curl.exe -s -H "Cookie: admin=yes" http://127.0.0.1:3000/admin
+<p>メモは 0 件</p>
+

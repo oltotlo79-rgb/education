@@ -1,0 +1,24 @@
+   Compiling web_lab v0.1.0 (...\web_lab)
+error: page functions cannot take more than one request body parameter
+  --> src\bin\e06_twobody.rs:18:45
+   |
+18 | async fn create(Form(form): Form<MemoForm>, Json(json): Json<MemoForm>) -> Result<impl View> {
+   |                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `Form`, `Json`, `Result`, `View`, and `view`
+ --> src\bin\e06_twobody.rs:4:5
+  |
+4 |     Result,
+  |     ^^^^^^
+5 |     router::{
+6 |         content::{Form, Json},
+  |                   ^^^^  ^^^^
+...
+9 |     view::{View, view},
+  |            ^^^^  ^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `web_lab` (bin "e06_twobody") generated 1 warning
+error: could not compile `web_lab` (bin "e06_twobody") due to 1 previous error; 1 warning emitted
+exit=101

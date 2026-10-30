@@ -1,0 +1,7 @@
+### curl.exe -i -d "title=++" http://127.0.0.1:3000/
+HTTP/1.1 400 Bad Request
+content-type: text/html; charset=utf-8
+content-length: 208
+
+<h1>メモ</h1><form method="post" action="/"><input name="title" value="  "><p class="error">タイトルを入力してください</p><button type="submit">保存</button></form><ul><li>買い物</li></ul>
+

@@ -1,0 +1,24 @@
+### curl.exe -i "http://127.0.0.1:3000/notes?page=abc"
+HTTP/1.1 400 Bad Request
+content-type: text/plain; charset=utf-8
+content-length: 75
+
+bad request: invalid query value: invalid digit found in string (at `page`)
+
+
+### curl.exe -i "http://127.0.0.1:3000/notes?page="
+HTTP/1.1 200 OK
+content-type: text/html; charset=utf-8
+content-length: 42
+
+<p>検索: （なし） / ページ: 1</p>
+
+
+### curl.exe -i "http://127.0.0.1:3000/notes/abc"
+HTTP/1.1 404 Not Found
+content-type: text/plain; charset=utf-8
+content-length: 9
+
+not found
+
+

@@ -1,0 +1,8 @@
+### curl.exe -i -d "title=milk" http://127.0.0.1:3000/
+HTTP/1.1 303 See Other
+location: /
+content-length: 0
+
+
+### curl.exe -s http://127.0.0.1:3000/
+<ul><li>milk</li></ul>

@@ -1,0 +1,15 @@
+### curl.exe -i -H "Content-Type: application/json" --data-binary "@noargs.json" http://127.0.0.1:3000/api/clear-safe
+HTTP/1.1 403 Forbidden
+content-type: text/plain; charset=utf-8
+content-length: 9
+
+forbidden
+
+
+### curl.exe -i -H "Cookie: admin=yes" -H "Content-Type: application/json" --data-binary "@noargs.json" http://127.0.0.1:3000/api/clear-safe
+HTTP/1.1 200 OK
+content-type: application/json
+content-length: 31
+
+{"t":"usize","bits":64,"v":"3"}
+

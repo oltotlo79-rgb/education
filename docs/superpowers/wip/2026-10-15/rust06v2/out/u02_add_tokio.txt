@@ -1,5 +1,5 @@
     Updating crates.io index
-      Adding tokio =1.53.3 to dependencies
+      Adding tokio =1.54.1 to dependencies
              Features:
              + macros
              + rt
@@ -26,7 +26,4 @@
              - time
              - tracing
              - windows-sys
-    Updating crates.io index
-     Locking 1 package to highest Rust 1.99.0 compatible version
- Downgrading tokio v1.54.1 -> v1.53.3 (available: v1.54.1)
 exit=0

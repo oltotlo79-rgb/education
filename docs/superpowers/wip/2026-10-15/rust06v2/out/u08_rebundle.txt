@@ -1,0 +1,5 @@
+### （h1 の色を変えてから）topcoat asset bundle --bin u08_assets
+bundled assets into ...\web_lab\target\debug\assets
+### Get-ChildItem target\debug\assets -Name
+manifest.toml
+site-7b62d7c4c2b2ded6.css

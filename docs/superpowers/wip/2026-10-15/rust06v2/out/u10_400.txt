@@ -1,0 +1,16 @@
+### curl.exe -i "http://127.0.0.1:3000/search"
+HTTP/1.1 400 Bad Request
+content-type: text/html; charset=utf-8
+content-length: 133
+
+<header>UNIT 10 のサイト</header><main><h1>検索の言葉を入れてください</h1><p><a href="/">トップへ</a></p></main>
+
+
+### curl.exe -i "http://127.0.0.1:3000/search?q=rust"
+HTTP/1.1 200 OK
+content-type: text/html; charset=utf-8
+content-length: 84
+
+<header>UNIT 10 のサイト</header><main><h1>「rust」の検索結果</h1></main>
+
+

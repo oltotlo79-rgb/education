@@ -1,0 +1,50 @@
+   Compiling web_lab v0.1.0 (...\web_lab)
+error[E0277]: `Rc<std::string::String>` cannot be sent between threads safely
+   --> src\bin\e07_rc.rs:13:22
+    |
+ 13 |         .app_context(AppConfig { site_name: Rc::new("メモ帳".to_string()) })
+    |          ----------- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `Rc<std::string::String>` cannot be sent between threads safely
+    |          |
+    |          required by a bound introduced by this call
+    |
+    = help: within `AppConfig`, the trait `Send` is not implemented for `Rc<std::string::String>`
+note: required because it appears within the type `AppConfig`
+   --> src\bin\e07_rc.rs:6:8
+    |
+  6 | struct AppConfig {
+    |        ^^^^^^^^^
+note: required by a bound in `RouterBuilder::app_context`
+   --> ...\builder.rs:357:18
+    |
+355 |     pub fn app_context<T>(mut self, value: T) -> Self
+    |            ----------- required by a bound in this associated function
+356 |     where
+357 |         T: Any + Send + Sync,
+    |                  ^^^^ required by this bound in `RouterBuilder::app_context`
+
+error[E0277]: `Rc<std::string::String>` cannot be shared between threads safely
+   --> src\bin\e07_rc.rs:13:22
+    |
+ 13 |         .app_context(AppConfig { site_name: Rc::new("メモ帳".to_string()) })
+    |          ----------- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `Rc<std::string::String>` cannot be shared between threads safely
+    |          |
+    |          required by a bound introduced by this call
+    |
+    = help: within `AppConfig`, the trait `Sync` is not implemented for `Rc<std::string::String>`
+note: required because it appears within the type `AppConfig`
+   --> src\bin\e07_rc.rs:6:8
+    |
+  6 | struct AppConfig {
+    |        ^^^^^^^^^
+note: required by a bound in `RouterBuilder::app_context`
+   --> ...\builder.rs:357:25
+    |
+355 |     pub fn app_context<T>(mut self, value: T) -> Self
+    |            ----------- required by a bound in this associated function
+356 |     where
+357 |         T: Any + Send + Sync,
+    |                         ^^^^ required by this bound in `RouterBuilder::app_context`
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `web_lab` (bin "e07_rc") due to 2 previous errors
+exit=101

@@ -1,0 +1,12 @@
+   Compiling web_lab v0.1.0 (...\web_lab)
+error[E0573]: cannot find type `about_page` in this scope
+  --> src\bin\e03_href.rs:17:24
+   |
+17 |         <a href=(href!(about_page))>"この場所について"</a>
+   |                        ^^^^^^^^^^ not found in this scope
+   |
+   = note: a function named `about_page` exists in another namespace
+
+For more information about this error, try `rustc --explain E0573`.
+error: could not compile `web_lab` (bin "e03_href") due to 1 previous error
+exit=101

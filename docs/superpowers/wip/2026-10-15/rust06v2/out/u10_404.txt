@@ -1,0 +1,32 @@
+### curl.exe -i "http://127.0.0.1:3000/"
+HTTP/1.1 200 OK
+content-type: text/html; charset=utf-8
+content-length: 68
+
+<header>UNIT 10 のサイト</header><main><h1>トップ</h1></main>
+
+
+### curl.exe -i "http://127.0.0.1:3000/items/2"
+HTTP/1.1 200 OK
+content-type: text/html; charset=utf-8
+content-length: 75
+
+<header>UNIT 10 のサイト</header><main><h1>2 番: みかん</h1></main>
+
+
+### curl.exe -i "http://127.0.0.1:3000/items/9"
+HTTP/1.1 404 Not Found
+content-type: text/html; charset=utf-8
+content-length: 127
+
+<header>UNIT 10 のサイト</header><main><h1>ページが見つかりません</h1><p><a href="/">トップへ</a></p></main>
+
+
+### curl.exe -i "http://127.0.0.1:3000/nothing/here"
+HTTP/1.1 404 Not Found
+content-type: text/html; charset=utf-8
+content-length: 127
+
+<header>UNIT 10 のサイト</header><main><h1>ページが見つかりません</h1><p><a href="/">トップへ</a></p></main>
+
+

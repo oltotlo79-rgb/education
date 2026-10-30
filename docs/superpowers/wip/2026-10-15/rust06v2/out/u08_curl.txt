@@ -1,0 +1,18 @@
+### curl.exe -s http://127.0.0.1:3000/
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><title>UNIT 08</title><link rel="stylesheet" href="/_topcoat/assets/site-7becc8b6682e6054.css"></head><body><h1>アセットの練習</h1></body></html>
+
+### curl.exe -i http://127.0.0.1:3000/_topcoat/assets/site-7becc8b6682e6054.css
+HTTP/1.1 200 OK
+content-type: text/css
+cache-control: public, max-age=31536000, immutable
+content-length: 117
+
+/* UNIT 08 の練習用の見た目 */
+body {
+  font-family: sans-serif;
+  margin: 2rem;
+}
+
+h1 {
+  color: #1e40af;
+}

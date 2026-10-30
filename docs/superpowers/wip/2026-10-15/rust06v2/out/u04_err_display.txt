@@ -1,0 +1,48 @@
+   Compiling web_lab v0.1.0 (...\web_lab)
+error[E0277]: the trait bound `&NoteId: topcoat::view::internal::NodeClassify` is not satisfied
+  --> src\bin\e04_display.rs:57:36
+   |
+57 |             Ok(view! { <h1>"ノート " (id) " 番"</h1> })
+   |                -----------------------^^--------------
+   |                |                      |
+   |                |                      the trait `NodeViewParts` is not implemented for `&NoteId`
+   |                required by a bound introduced by this call
+   |
+   = help: the following other types implement trait `NodeViewParts`:
+             &&'b T
+             &bool
+             &char
+             &f32
+             &f64
+             &i128
+             &i16
+             &i32
+           and 56 others
+   = note: required for `&NoteId` to implement `topcoat::view::internal::NodeClassify`
+
+error[E0277]: the trait bound `&NoteId: NodeViewParts` is not satisfied
+  --> src\bin\e04_display.rs:57:16
+   |
+57 |             Ok(view! { <h1>"ノート " (id) " 番"</h1> })
+   |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `NodeViewParts` is not implemented for `&NoteId`
+   |
+   = help: the following other types implement trait `NodeViewParts`:
+             &&'b T
+             &bool
+             &char
+             &f32
+             &f64
+             &i128
+             &i16
+             &i32
+           and 56 others
+note: required by a bound in `topcoat::view::internal::Builder::<'a, 'b, 'c>::node`
+  --> ...\builder.rs:55:40
+   |
+55 |     pub fn node(&mut self, value: impl NodeViewParts) {
+   |                                        ^^^^^^^^^^^^^ required by this bound in `Builder::<'a, 'b, 'c>::node`
+   = note: this error originates in the macro `view` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `web_lab` (bin "e04_display") due to 2 previous errors
+exit=101

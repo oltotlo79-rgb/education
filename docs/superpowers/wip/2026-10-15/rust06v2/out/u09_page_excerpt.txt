@@ -1,0 +1,13 @@
+### curl.exe -s http://127.0.0.1:3000/
+<!--::topcoat::signal({&quot;t&quot;:&quot;signal&quot;,&quot;id&quot;:&quot;b4419cc41caf26e5432cdcb030a5c804&quot;,&quot;v&quot;:{&quot;t&quot;:&quot;usize&quot;,&quot;bits&quot;:64,&quot;v&quot;:&quot;1&quot;}})-->
+<!--::topcoat::signal({&quot;t&quot;:&quot;signal&quot;,&quot;id&quot;:&quot;ec97a701a0af29d73734d8de751e9b94&quot;,&quot;v&quot;:false})-->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>UNIT 09</title>
+<script type="module" src="/_topcoat/assets/topcoat-f8e40bad0d18978e.js" data-topcoat-usize-bits="64">
+</script>
+…
+<button data-topcoat-on:click="(__local0) => (cx.hydrate({&quot;t&quot;:&quot;Signal&quot;,&quot;id&quot;:&quot;b4419cc41caf26e5432cdcb030a5c804&quot;})).increment()">+1</button>
+…（以下、ほかのボタンと説明の文が続きます）

@@ -1,4 +1,4 @@
-//! Topcoat 0.10 の、いちばん小さな Web アプリ。GET / に HTML を返す。
+//! Topcoat 0.11 の、いちばん小さな Web アプリ。GET / に HTML を返す。
 //! 実行: cargo run
 
 use topcoat::{

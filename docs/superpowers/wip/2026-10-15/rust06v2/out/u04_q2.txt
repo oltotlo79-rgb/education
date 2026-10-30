@@ -1,0 +1,24 @@
+### curl.exe -i "http://127.0.0.1:3000/users/a%2Fb"
+HTTP/1.1 200 OK
+content-type: text/html; charset=utf-8
+content-length: 31
+
+<h1>a/b さんのページ</h1>
+
+
+### curl.exe -i "http://127.0.0.1:3000/users/a/b"
+HTTP/1.1 404 Not Found
+content-type: text/plain; charset=utf-8
+content-length: 9
+
+not found
+
+
+### curl.exe -i "http://127.0.0.1:3000/notes/99999999999999999999"
+HTTP/1.1 404 Not Found
+content-type: text/plain; charset=utf-8
+content-length: 9
+
+not found
+
+

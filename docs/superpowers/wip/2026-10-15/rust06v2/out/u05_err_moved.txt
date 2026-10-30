@@ -1,0 +1,24 @@
+   Compiling web_lab v0.1.0 (...\web_lab)
+error[E0382]: use of moved value: `title`
+  --> src\bin\e05_moved.rs:12:8
+   |
+10 |       let title = String::from("買い物メモ");
+   |           ----- move occurs because `title` has type `std::string::String`, which does not implement the `Copy` trait
+11 |       let header = view! { <h1>(title)</h1> };
+   |                    --------------------------
+   |                    |            |
+   |                    |            variable moved due to use in coroutine
+   |                    value moved here
+12 |       Ok(view! {
+   |  ________^
+13 | |         (header)
+14 | |         <p>"タイトルは " (title.len()) " バイトです"</p>
+   | |                           ----- use occurs due to use in coroutine
+15 | |     })
+   | |_____^ value used here after move
+   |
+   = note: this error originates in the macro `view` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+For more information about this error, try `rustc --explain E0382`.
+error: could not compile `web_lab` (bin "e05_moved") due to 1 previous error
+exit=101

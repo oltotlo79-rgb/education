@@ -1,0 +1,13 @@
+### curl.exe -i "http://127.0.0.1:3000/name?attr=data-ok"
+HTTP/1.1 200 OK
+content-type: text/html; charset=utf-8
+content-length: 43
+
+<p data-ok="1">属性の名前を試す</p>
+
+### curl.exe -i "http://127.0.0.1:3000/name?attr=onclick%3Dalert(1)%20x"
+HTTP/1.1 500 Internal Server Error
+content-length: 21
+
+internal server error
+

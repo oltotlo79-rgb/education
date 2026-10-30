@@ -1,0 +1,28 @@
+### /
+HTTP/1.1 200 OK
+content-type: text/html; charset=utf-8
+content-length: 82
+
+<html><body><header>サイトの見出し</header><h1>トップ</h1></body></html>
+
+### /settings
+HTTP/1.1 200 OK
+content-type: text/html; charset=utf-8
+content-length: 139
+
+<html><body><header>サイトの見出し</header><div class="settings"><nav>設定のメニュー</nav><h1>設定</h1></div></body></html>
+
+### /settings/profile
+HTTP/1.1 200 OK
+content-type: text/html; charset=utf-8
+content-length: 151
+
+<html><body><header>サイトの見出し</header><div class="settings"><nav>設定のメニュー</nav><h1>プロフィール</h1></div></body></html>
+
+### /settings/nothing
+HTTP/1.1 404 Not Found
+content-type: text/plain; charset=utf-8
+content-length: 9
+
+not found
+

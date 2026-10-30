@@ -1,0 +1,23 @@
+### curl.exe -i http://127.0.0.1:3000/api/memos
+HTTP/1.1 200 OK
+content-type: application/json
+content-length: 2
+
+[]
+
+
+### curl.exe -i -H "Content-Type: application/json" --data-binary "@memo.json" http://127.0.0.1:3000/api/memos
+HTTP/1.1 201 Created
+content-type: application/json
+content-length: 23
+
+{"id":1,"title":"milk"}
+
+
+### curl.exe -i http://127.0.0.1:3000/api/memos
+HTTP/1.1 200 OK
+content-type: application/json
+content-length: 25
+
+[{"id":1,"title":"milk"}]
+

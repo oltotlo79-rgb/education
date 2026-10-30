@@ -1,0 +1,6 @@
+### curl.exe -i -A "RustNote-test/1.0" http://127.0.0.1:3000/whoami
+HTTP/1.1 200 OK
+content-type: text/html; charset=utf-8
+content-length: 50
+
+<p>GET /whoami / User-Agent: RustNote-test/1.0</p>

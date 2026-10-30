@@ -1,0 +1,4 @@
+### curl.exe -s -w " （%{time_total} 秒）" http://127.0.0.1:3000/
+<header>ログイン中: <span class="badge">alice</span></header><p>ページ: alice / id 2 は いない</p><span class="badge">alice</span><span class="badge">alice</span> （0.113606 秒）
+### curl.exe -s -w " （%{time_total} 秒）" http://127.0.0.1:3000/
+<header>ログイン中: <span class="badge">alice</span></header><p>ページ: alice / id 2 は いない</p><span class="badge">alice</span><span class="badge">alice</span> （0.116494 秒）

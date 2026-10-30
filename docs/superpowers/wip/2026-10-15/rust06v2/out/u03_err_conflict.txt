@@ -1,0 +1,5 @@
+
+thread 'main' (212584) panicked at src\bin\e03_conflict.rs:30:35:
+duplicate route registered for `GET /about`
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+exit=101

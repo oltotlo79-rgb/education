@@ -1,0 +1,4 @@
+### curl.exe -s http://127.0.0.1:3000/
+<link rel="stylesheet" href="/_topcoat/assets/site-7b62d7c4c2b2ded6.css">
+### curl.exe -s -o NUL -w "%{http_code}" http://127.0.0.1:3000/_topcoat/assets/site-7becc8b6682e6054.css
+404

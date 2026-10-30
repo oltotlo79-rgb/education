@@ -1,0 +1,3 @@
+Banner なし: <h1>トップ</h1>
+Banner あり: <p class="banner">メンテナンスのお知らせ</p><h1>トップ</h1>
+exit=0

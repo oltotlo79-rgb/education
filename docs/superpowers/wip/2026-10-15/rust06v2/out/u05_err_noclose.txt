@@ -1,0 +1,9 @@
+   Compiling web_lab v0.1.0 (...\web_lab)
+error: closing tag `section` does not match opening tag `p`
+  --> src\bin\e05_noclose.rs:14:11
+   |
+14 |         </section>
+   |           ^^^^^^^
+
+error: could not compile `web_lab` (bin "e05_noclose") due to 1 previous error
+exit=101

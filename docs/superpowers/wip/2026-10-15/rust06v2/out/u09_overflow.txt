@@ -1,0 +1,6 @@
+### curl.exe -i -H "Content-Type: application/json" --data-binary "@argsbig.json" http://127.0.0.1:3000/api/double
+HTTP/1.1 500 Internal Server Error
+content-length: 21
+
+internal server error
+

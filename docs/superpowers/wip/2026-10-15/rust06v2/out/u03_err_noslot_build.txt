@@ -1,0 +1,12 @@
+   Compiling web_lab v0.1.0 (...\web_lab)
+warning: unused variable: `slot`
+ --> src\bin\e03_noslot.rs:9:22
+  |
+9 | async fn root_layout(slot: Slot<'_>) -> Result<impl View> {
+  |                      ^^^^ help: if this is intentional, prefix it with an underscore: `_slot`
+  |
+  = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: `web_lab` (bin "e03_noslot") generated 1 warning (run `cargo fix --bin "e03_noslot" -p web_lab` to apply 1 suggestion)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.45s
+exit=0

@@ -1,0 +1,2 @@
+### curl.exe -s "http://127.0.0.1:3000/"
+<p>&lt;script&gt;alert("x")&lt;/script&gt; &amp; 'quote'</p><a href="/notes" title="<script>alert(&quot;x&quot;)</script> &amp; 'quote'">一覧</a>

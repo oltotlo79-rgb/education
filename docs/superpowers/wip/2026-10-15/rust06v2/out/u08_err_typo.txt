@@ -1,0 +1,3 @@
+### topcoat asset bundle --bin e08_typo
+failed to bundle assets: io error for asset at ...\web_lab\assets\sitee.css: 指定されたファイルが見つかりません。 (os error 2)
+exit=1

@@ -1,0 +1,32 @@
+### curl.exe -i "http://127.0.0.1:3000/notes"
+HTTP/1.1 200 OK
+content-type: text/html; charset=utf-8
+content-length: 42
+
+<p>検索: （なし） / ページ: 1</p>
+
+
+### curl.exe -i "http://127.0.0.1:3000/notes?q=rust&page=2"
+HTTP/1.1 200 OK
+content-type: text/html; charset=utf-8
+content-length: 34
+
+<p>検索: rust / ページ: 2</p>
+
+
+### curl.exe -i "http://127.0.0.1:3000/notes/7"
+HTTP/1.1 200 OK
+content-type: text/html; charset=utf-8
+content-length: 24
+
+<h1>ノート 7 番</h1>
+
+
+### curl.exe -i "http://127.0.0.1:3000/users/%E5%A4%AA%E9%83%8E"
+HTTP/1.1 200 OK
+content-type: text/html; charset=utf-8
+content-length: 34
+
+<h1>太郎 さんのページ</h1>
+
+
