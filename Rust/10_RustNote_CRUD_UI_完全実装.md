@@ -110,7 +110,7 @@
 | UNIT 01 | 一覧・空のとき・持ち主の条件 | 自分のノートだけを、決まった順番で並べる |
 | UNIT 02 | 作成のフォーム・入力の検査・PRG | 失敗は 400 で出し直し、成功は 303 で移る |
 | UNIT 03 | 詳細・URL の ID・見つからないとき | 無いノートも他人のノートも、同じ 404 にする |
-| UNIT 04 | 編集・入力済みのフォーム・競合（準備中） | 別のタブの更新を、黙って上書きしない |
+| UNIT 04 | 編集・入力済みのフォーム・競合 | 別のタブの更新を、黙って上書きしない |
 | UNIT 05 | 完了の切り替え・1文の SQL（準備中） | 読んでから書く形にせず、DB に1回で切り替えさせる |
 | UNIT 06 | 削除・確かめ・消し方の選び方（準備中） | GET では消さない。消す前に確かめる |
 | UNIT 07 | 検索・LIKE のエスケープ（準備中） | `%` や `_` を、ただの文字として探す |
@@ -118,7 +118,7 @@
 | UNIT 09 | お知らせ（フラッシュ）・エラーのまとめ（準備中） | 移った先で一度だけ出し、エラーは同じ画面で見せる |
 | UNIT 10 | 狭い画面・アクセシビリティ・総合の試験（準備中） | スマートフォンとキーボードでも使えるかを確かめる |
 
-> **お知らせ:** この版には UNIT 01〜03 を収録しています。UNIT 04〜10 は準備中で、次の更新から順に追加します。
+> **お知らせ:** この版には UNIT 01〜04 を収録しています。UNIT 05〜10 は準備中で、次の更新から順に追加します。
 
 ### 前提知識（先に読んでおく巻）
 
@@ -2323,7 +2323,7 @@ error: could not compile `rustnote` (lib) due to 2 previous errors
 
 ### RustNote ではここで使う
 
-- 詳細の画面は `src/routes/notes/id.rs` の `show` です。`find_own_note` は、編集の画面（`src/routes/notes/id/edit.rs`）でも、表示・保存・競合のときの読み直しの3か所で使っています（UNIT 04（準備中））。
+- 詳細の画面は `src/routes/notes/id.rs` の `show` です。`find_own_note` は、編集の画面（`src/routes/notes/id/edit.rs`）でも、表示・保存・競合のときの読み直しの3か所で使っています（UNIT 04）。
 - 完了の切り替えと削除は、`find_own_note` を通らず、`UPDATE … WHERE id = ?1 AND user_id = ?2`・`DELETE … WHERE id = ?1 AND user_id = ?2` で、1つの SQL の中に持ち主の条件を入れています（問3・UNIT 05・06（準備中））。
 - `src/error.rs` の先頭の表に「`NotFound` … 存在しないノート、**他人のノート**（あること自体を隠す）」と書いてあります。決まりを1か所に書いておくと、新しい画面を足すときにも迷いません。
 
@@ -2454,9 +2454,755 @@ cargo test --test u03_q -- --nocapture --test-threads=1
 - 無いノートと他人のノートは、同じ 404 で、本文まで1バイトも違わない。403 にすると、ID を順に試すだけで、ほかの人のノートの数が分かってしまう。持ち主の条件を SQL から外しても、コンパイルもテストも通るので、他人として開くテストで確かめる。
 - URL は `href!` で作り、`{id}` には `module_param!` が作った `Id(…)` で渡す。`NoteId` をそのまま渡すと `E0277` で止まる。
 
+## UNIT 04: 編集・入力済みのフォーム・競合
+
+### この単元のゴール
+
+- 編集のフォーム（`GET /notes/{id}/edit`）が、今の値を入れた入力欄と、`version` の hidden を出すことと、保存（`POST`）で `version` が 1 増えることを確かめられる
+- 2つのタブで同じノートを直したとき、あとから保存したほうが **409** になり、入力を残したまま、最新の `version` でフォームを出し直す流れを説明できる
+- `UPDATE … AND version = ?5` の条件を外すと、**先に保存した内容が黙って消える**（失われた更新）ことを、実際に確かめて説明できる
+- hidden の `version` を忘れたときの 400 と、`Option<i64>` の場所に `i64` を入れたときの `E0308` を読める
+
+### たとえ話でつかむ
+
+みんなで使う、ホワイトボードの予定表を考えます。
+
+- 書き直したい人は、まず予定表の**写真**を撮り、自分の席で直す内容を考えます。写真の隅には、ボードの**版の番号**（たとえば「1版」）が写っています。
+- 席から戻って書き直すとき、ボードの番号が写真と同じ「1版」なら、そのまま書き直し、番号を「2版」にします。
+- もし番号が「2版」になっていたら、ほかの人が先に書き直したということです。黙って自分の内容で上書きすると、その人の書いた所が消えてしまいます。そこで、いったん手を止めて、「**先に直した人がいます。今のボードはこうです。それでも書き直しますか**」と確かめます。
+- ボードを使っている間じゅう、ほかの人に触らせない（鍵をかける）方法もあります。でも、写真を撮ったまま帰ってしまう人がいたら、誰も書けなくなります。
+
+| ホワイトボード | RustNote の編集 |
+|---|---|
+| 写真を撮る（隅に版の番号） | 編集のフォームを開く（hidden の `version`） |
+| 番号が同じなら書き直し、番号を進める | `UPDATE … WHERE … AND version = ?5` と `version = version + 1` |
+| 番号が進んでいたら、手を止めて確かめる | 0 行の更新 → `VersionMismatch` → **409** で、最新の版の番号と題を見せて出し直す |
+| ほかの人に触らせない鍵 | 悲観的ロック。Web の画面では使わない |
+
+> **用語:** 楽観的ロック（「同時に直す人は、めったにいない」と考えて、鍵はかけずに、保存のときに版の番号（`version`）が変わっていないかだけを確かめる方法。第7巻 UNIT 05）
+
+<!-- -->
+
+> **用語:** 失われた更新（lost update：2人が同じデータを直したとき、あとから保存した人の内容が、先に保存した人の内容を、黙って上書きしてしまうこと）
+
+<!-- -->
+
+> **用語:** 409 Conflict（「今のデータの状態と、ぶつかっています」という返事。RustNote では、ほかの画面で先に保存されたときに使う）
+
+### 図で理解する
+
+2つのタブで、同じノートを直したときの流れです。
+
+<div style="max-width:720px;margin:18px auto;text-align:center;">
+<svg viewBox="0 0 720 380" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-10-0401" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="20" y="10" width="140" height="34" rx="6" fill="#f8fafc" stroke="#64748b" stroke-width="2"/>
+<text x="90" y="32" font-size="13" font-weight="700" fill="#0f172a" text-anchor="middle">タブ A</text>
+<rect x="290" y="10" width="140" height="34" rx="6" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="360" y="32" font-size="13" font-weight="700" fill="#1e40af" text-anchor="middle">DB（notes）</text>
+<rect x="560" y="10" width="140" height="34" rx="6" fill="#f8fafc" stroke="#64748b" stroke-width="2"/>
+<text x="630" y="32" font-size="13" font-weight="700" fill="#0f172a" text-anchor="middle">タブ B</text>
+<line x1="90" y1="44" x2="90" y2="370" stroke="#94a3b8" stroke-width="2" stroke-dasharray="4 4"/>
+<line x1="360" y1="44" x2="360" y2="370" stroke="#94a3b8" stroke-width="2" stroke-dasharray="4 4"/>
+<line x1="630" y1="44" x2="630" y2="370" stroke="#94a3b8" stroke-width="2" stroke-dasharray="4 4"/>
+<text x="360" y="68" font-size="12" fill="#0f172a" text-anchor="middle">① A も B も編集のフォームを開く（どちらも version=1）</text>
+<line x1="90" y1="104" x2="356" y2="104" stroke="#475569" stroke-width="2" marker-end="url(#ar-10-0401)"/>
+<text x="225" y="96" font-size="11" fill="#0f172a" text-anchor="middle">② 保存（version=1）</text>
+<text x="372" y="108" font-size="11" fill="#047857" text-anchor="start">1行を更新 → version=2</text>
+<line x1="356" y1="128" x2="94" y2="128" stroke="#10b981" stroke-width="2" marker-end="url(#ar-10-0401)"/>
+<text x="225" y="146" font-size="11" font-weight="700" fill="#047857" text-anchor="middle">303 → 詳細「保存しました」</text>
+<line x1="630" y1="184" x2="364" y2="184" stroke="#475569" stroke-width="2" marker-end="url(#ar-10-0401)"/>
+<text x="495" y="176" font-size="11" fill="#0f172a" text-anchor="middle">③ 保存（version=1 のまま）</text>
+<text x="348" y="188" font-size="11" fill="#c2410c" text-anchor="end">version=2 なので、更新は 0 行</text>
+<line x1="364" y1="216" x2="626" y2="216" stroke="#f97316" stroke-width="2" marker-end="url(#ar-10-0401)"/>
+<text x="495" y="236" font-size="11" font-weight="700" fill="#c2410c" text-anchor="middle">409 で出し直す</text>
+<text x="495" y="254" font-size="11" fill="#475569" text-anchor="middle">B の入力は残す・hidden は version=2</text>
+<text x="495" y="270" font-size="11" fill="#475569" text-anchor="middle">「最新のタイトルは…」のお知らせ</text>
+<line x1="630" y1="310" x2="364" y2="310" stroke="#475569" stroke-width="2" marker-end="url(#ar-10-0401)"/>
+<text x="495" y="302" font-size="11" fill="#0f172a" text-anchor="middle">④ B が確かめて、もう一度保存（version=2）</text>
+<text x="348" y="314" font-size="11" fill="#047857" text-anchor="end">1行を更新 → version=3</text>
+<line x1="364" y1="342" x2="626" y2="342" stroke="#10b981" stroke-width="2" marker-end="url(#ar-10-0401)"/>
+<text x="495" y="362" font-size="11" font-weight="700" fill="#047857" text-anchor="middle">303 → 詳細（B の内容で上書き）</text>
+</svg>
+<div style="font-size:12px;color:#64748b;margin-top:6px;">図10-10: 2つのタブの楽観的ロック。あとから古い version で保存した B は 409 になり、最新の内容を知ってから、自分で上書きを選ぶ</div>
+</div>
+
+保存の SQL と、1行も更新されなかったときの見分け方です（`src/repository/notes.rs` の `update`）。
+
+<div style="max-width:720px;margin:18px auto;text-align:center;">
+<svg viewBox="0 0 720 250" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-10-0402" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="20" y="20" width="680" height="76" rx="8" fill="#0f172a"/>
+<text x="40" y="44" font-size="12" fill="#e2e8f0" font-family="Consolas, monospace">UPDATE notes SET title = ?1, body = ?2, version = version + 1, …</text>
+<text x="40" y="64" font-size="12" fill="#e2e8f0" font-family="Consolas, monospace"> WHERE id = ?3 AND user_id = ?4 AND <tspan fill="#fbbf24">version = ?5</tspan></text>
+<text x="40" y="84" font-size="12" fill="#e2e8f0" font-family="Consolas, monospace"> RETURNING …</text>
+<line x1="200" y1="96" x2="140" y2="130" stroke="#475569" stroke-width="2" marker-end="url(#ar-10-0402)"/>
+<line x1="460" y1="96" x2="460" y2="130" stroke="#475569" stroke-width="2" marker-end="url(#ar-10-0402)"/>
+<rect x="20" y="134" width="240" height="60" rx="8" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="140" y="158" font-size="12" font-weight="700" fill="#047857" text-anchor="middle">1行返った</text>
+<text x="140" y="178" font-size="11" fill="#0f172a" text-anchor="middle">Ok(新しいノート) → 303</text>
+<rect x="300" y="134" width="320" height="60" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<text x="460" y="158" font-size="12" font-weight="700" fill="#c2410c" text-anchor="middle">0行（何も返らない）</text>
+<text x="460" y="178" font-size="11" fill="#0f172a" text-anchor="middle">id と持ち主だけで、もう一度探す（find）</text>
+<line x1="400" y1="194" x2="330" y2="214" stroke="#475569" stroke-width="2" marker-end="url(#ar-10-0402)"/>
+<line x1="520" y1="194" x2="590" y2="214" stroke="#475569" stroke-width="2" marker-end="url(#ar-10-0402)"/>
+<text x="300" y="236" font-size="11" font-weight="700" fill="#c2410c" text-anchor="middle">ある → VersionMismatch（409）</text>
+<text x="600" y="236" font-size="11" font-weight="700" fill="#b91c1c" text-anchor="middle">無い → NotFound（404）</text>
+</svg>
+<div style="font-size:12px;color:#64748b;margin-top:6px;">図10-11: 保存の SQL。version が合ったときだけ1行が更新され、version が1つ進む。0行なら、id と持ち主だけで探し直して、版の違い（409）か、無いノート（404）かを見分ける</div>
+</div>
+
+### まず動かす最小コード
+
+#### 例4-1: 編集のフォームを開き、hidden の version ごと送り返す
+
+編集のフォームは、作成と同じ部品（`src/views.rs` の `note_form`）を使います。違いは、`version` があるときに hidden の入力欄を出すことです（抜き出しています）。
+
+```rust
+<form method="post" action=(action) class="note-form">
+    if let Some(notice) = form.notice {
+        <p class="form-notice">(notice)</p>
+    }
+    if let Some(version) = form.version {
+        <input type="hidden" name="version" value=(version)>
+    }
+    // …（タイトルの input・本文の textarea・ボタン）
+</form>
+```
+
+送られてきた値は、`src/routes/notes/id/edit.rs` の `EditForm` に入ります。
+
+```rust
+#[derive(Deserialize)]
+pub struct EditForm {
+    title: String,
+    body: String,
+    /// フォームを開いたときの version
+    version: i64,
+}
+```
+
+> **▼ このコードがやること（先に日本語で）:** alice がノートを1件作り、DB の行を表示します。次に、編集のフォームの HTML から、ブラウザが送り返す値（hidden の `version`・タイトル・本文）を読み取って表示します。1秒待ってから、タイトルだけを変えて、読み取った `version` ごと保存（POST）し、返事と、保存したあとの DB の行を表示します。
+
+```rust
+//! 第10巻 UNIT 04: 編集のフォームを開き、ブラウザと同じように、hidden の version ごと送り返して保存する。
+//! 実行: cargo test --test u04_edit -- --nocapture
+
+mod common;
+
+use common::{TestApp, body_text, encode, location, test_app};
+
+/// 編集フォームの HTML から、送り返す値（version・title・body）を読む。
+/// version の hidden が無ければ None（ブラウザも、無い項目は送らない）
+fn form_values(html: &str) -> (Option<String>, String, String) {
+    let attr = |tag: &str, name: &str| -> Option<String> {
+        let key = format!("{name}=\"");
+        let start = tag.find(&key)? + key.len();
+        let end = tag[start..].find('"')? + start;
+        Some(tag[start..end].to_string())
+    };
+    let version = html
+        .split("<input")
+        .find(|t| t.contains("name=\"version\""))
+        .and_then(|t| attr(t, "value"));
+    let title = html
+        .split("<input")
+        .find(|t| t.contains("name=\"title\""))
+        .and_then(|t| attr(t, "value"))
+        .unwrap_or_default();
+    let body = html
+        .split("<textarea")
+        .nth(1)
+        .and_then(|t| t.split_once('>'))
+        .map(|(_, rest)| rest.split("</textarea>").next().unwrap_or("").to_string())
+        .unwrap_or_default();
+    (version, title, body)
+}
+
+/// フォームの送信の本文を作る（version が None なら、その項目を入れない）
+fn edit_form(version: Option<&str>, title: &str, body: &str) -> String {
+    let mut form = format!("title={}&body={}", encode(title), encode(body));
+    if let Some(version) = version {
+        form = format!("version={version}&{form}");
+    }
+    form
+}
+
+/// notes 表の1件目の、タイトル・本文・version・更新日時
+async fn note_row(app: &TestApp) -> String {
+    let conn = app.db.db.connect().await.expect("DB に接続できません");
+    let mut rows = conn
+        .query(
+            "SELECT title, body, version, updated_at FROM notes WHERE id = 1",
+            (),
+        )
+        .await
+        .expect("読めません");
+    let row = rows
+        .next()
+        .await
+        .expect("行を読めません")
+        .expect("行が無い");
+    format!(
+        "title={:?} body={:?} version={} updated_at={}",
+        row.get::<String>(0).unwrap(),
+        row.get::<String>(1).unwrap(),
+        row.get::<i64>(2).unwrap(),
+        row.get::<String>(3).unwrap()
+    )
+}
+
+#[tokio::test]
+async fn edit_and_save() {
+    let app = test_app().await;
+    let alice = app
+        .sign_up("alice@example.com", "correct horse battery")
+        .await;
+    app.create_note(&alice, "牛乳を買う", "1本").await;
+    println!("1. 作った直後の DB: {}", note_row(&app).await);
+
+    let html = body_text(app.get("/notes/1/edit", Some(&alice)).await).await;
+    let (version, title, body) = form_values(&html);
+    println!("2. 編集フォームの値: version={version:?} title={title:?} body={body:?}");
+
+    // updated_at は秒の単位なので、1秒あけてから保存する
+    tokio::time::sleep(std::time::Duration::from_millis(1100)).await;
+    let form = edit_form(version.as_deref(), "牛乳を2本買う", &body);
+    let response = app.post_form("/notes/1/edit", &form, Some(&alice)).await;
+    let status = response.status();
+    let to = response
+        .headers()
+        .get("location")
+        .map(|_| location(&response).to_string())
+        .unwrap_or_else(|| "（なし）".to_string());
+    let text = body_text(response).await;
+    println!("3. 保存の POST: {status}（Location: {to}）");
+    if !status.is_redirection() {
+        // エラーの画面の、見出しと文だけを表示する
+        let section = text
+            .split("<section class=\"error-page\">")
+            .nth(1)
+            .and_then(|t| t.split("</section>").next())
+            .unwrap_or(text.as_str());
+        println!("   画面: {section}");
+    }
+    println!("4. 保存したあとの DB: {}", note_row(&app).await);
+}
+```
+
+```powershell
+cargo test --test u04_edit -- --nocapture
+```
+
+```text
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.66s
+     Running tests\u04_edit.rs (target\debug\deps\u04_edit-de707e459482dd3a.exe)
+
+running 1 test
+POST /signup -> 303 See Other (443.2502ms)
+POST /notes -> 303 See Other (12.957ms)
+1. 作った直後の DB: title="牛乳を買う" body="1本" version=1 updated_at=2026-10-30 13:52:55
+GET /notes/1/edit -> 200 OK (7.8587ms)
+2. 編集フォームの値: version=Some("1") title="牛乳を買う" body="1本"
+POST /notes/1/edit -> 303 See Other (30.5831ms)
+3. 保存の POST: 303 See Other（Location: /notes/1）
+4. 保存したあとの DB: title="牛乳を2本買う" body="1本" version=2 updated_at=2026-10-30 13:52:57
+test edit_and_save ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.72s
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: フォームには、今の値と version が入っている
+
+- 2のフォームの値は、`version=Some("1")`・`title="牛乳を買う"`・`body="1本"` でした。編集の画面（`edit_page`）は、`find_own_note` で読んだノートを `NoteFormState::from_input` に入れ、`version: Some(note.version)` を足しています。入力欄に今の値が入っているので、直したい所だけを変えられます。
+- `version` は hidden（画面に見えない入力欄）なので、利用者は気づきません。でも、ブラウザは、ほかの入力欄と同じように、この値も送り返します。**「どの版を見て直したか」**を、フォームが覚えて運んでいるのです。
+
+##### 解説2: 保存すると、version が 1 進み、updated_at が変わる
+
+- 3の保存は `303 See Other` で、`Location: /notes/1`（詳細）でした。作成と同じ PRG です（UNIT 02）。
+- 4の DB では、タイトルが `牛乳を2本買う` に、`version` が `1` から `2` に、`updated_at` が1秒あとの時刻に変わりました。`UPDATE` の `version = version + 1` と `updated_at = datetime('now')` です。`datetime('now')` は秒までなので、テストでは1秒待ってから保存しています。
+- 本文は送り返した `1本` のままです。HTML のフォームは、変えていない項目も、全部送ります。
+
+### もう一歩: 実務に近い形
+
+#### 例4-2: 2つのタブで、同じノートを直す
+
+> **▼ このコードがやること（先に日本語で）:** 同じノートの編集のフォームを、2回開きます（タブ A とタブ B）。タブ A が先にタイトルを `牛乳を2本買う` にして保存し、次にタブ B が、古い `version` のまま `牛乳と卵を買う` にして保存します。タブ B の返事の、状態コード・お知らせの文・出し直したフォームの `version` とタイトルを表示します。最後に、タブ B が出し直したフォームで、もう一度保存します。それぞれのあとで、DB の行を表示します。
+
+```rust
+//! 第10巻 UNIT 04: 2つのタブで同じノートの編集フォームを開き、順に保存する（楽観的ロック）。
+//! 実行: cargo test --test u04_conflict -- --nocapture
+
+mod common;
+
+use common::{TestApp, body_text, encode, test_app};
+
+/// 編集フォームの HTML から、送り返す値（version・title・body）を読む。
+/// version の hidden が無ければ None（ブラウザも、無い項目は送らない）
+fn form_values(html: &str) -> (Option<String>, String, String) {
+    let attr = |tag: &str, name: &str| -> Option<String> {
+        let key = format!("{name}=\"");
+        let start = tag.find(&key)? + key.len();
+        let end = tag[start..].find('"')? + start;
+        Some(tag[start..end].to_string())
+    };
+    let version = html
+        .split("<input")
+        .find(|t| t.contains("name=\"version\""))
+        .and_then(|t| attr(t, "value"));
+    let title = html
+        .split("<input")
+        .find(|t| t.contains("name=\"title\""))
+        .and_then(|t| attr(t, "value"))
+        .unwrap_or_default();
+    let body = html
+        .split("<textarea")
+        .nth(1)
+        .and_then(|t| t.split_once('>'))
+        .map(|(_, rest)| rest.split("</textarea>").next().unwrap_or("").to_string())
+        .unwrap_or_default();
+    (version, title, body)
+}
+
+/// フォームの送信の本文を作る（version が None なら、その項目を入れない）
+fn edit_form(version: Option<&str>, title: &str, body: &str) -> String {
+    let mut form = format!("title={}&body={}", encode(title), encode(body));
+    if let Some(version) = version {
+        form = format!("version={version}&{form}");
+    }
+    form
+}
+
+/// notes 表の1件目の、タイトル・本文・version・更新日時
+async fn note_row(app: &TestApp) -> String {
+    let conn = app.db.db.connect().await.expect("DB に接続できません");
+    let mut rows = conn
+        .query(
+            "SELECT title, body, version, updated_at FROM notes WHERE id = 1",
+            (),
+        )
+        .await
+        .expect("読めません");
+    let row = rows
+        .next()
+        .await
+        .expect("行を読めません")
+        .expect("行が無い");
+    format!(
+        "title={:?} body={:?} version={} updated_at={}",
+        row.get::<String>(0).unwrap(),
+        row.get::<String>(1).unwrap(),
+        row.get::<i64>(2).unwrap(),
+        row.get::<String>(3).unwrap()
+    )
+}
+
+/// HTML から、class="form-notice" のお知らせの文を取り出す
+fn notice(html: &str) -> Option<&str> {
+    let start = html.find("<p class=\"form-notice\">")? + "<p class=\"form-notice\">".len();
+    let end = html[start..].find("</p>")? + start;
+    Some(&html[start..end])
+}
+
+#[tokio::test]
+async fn two_tabs() {
+    let app = test_app().await;
+    let alice = app
+        .sign_up("alice@example.com", "correct horse battery")
+        .await;
+    app.create_note(&alice, "牛乳を買う", "1本").await;
+
+    // タブ A とタブ B で、同じ編集フォームを開く
+    let tab_a = body_text(app.get("/notes/1/edit", Some(&alice)).await).await;
+    let tab_b = body_text(app.get("/notes/1/edit", Some(&alice)).await).await;
+    let (va, _, body_a) = form_values(&tab_a);
+    let (vb, _, body_b) = form_values(&tab_b);
+    println!("1. タブ A の version={va:?}、タブ B の version={vb:?}");
+
+    // タブ A が先に保存する
+    let form = edit_form(va.as_deref(), "牛乳を2本買う", &body_a);
+    let status = app
+        .post_form("/notes/1/edit", &form, Some(&alice))
+        .await
+        .status();
+    println!("2. タブ A の保存: {status}");
+    println!("   DB: {}", note_row(&app).await);
+
+    // タブ B が、古い version のまま保存する
+    let form = edit_form(vb.as_deref(), "牛乳と卵を買う", &body_b);
+    let response = app.post_form("/notes/1/edit", &form, Some(&alice)).await;
+    let status = response.status();
+    let html = body_text(response).await;
+    let (v_new, title_kept, _) = form_values(&html);
+    println!("3. タブ B の保存: {status}");
+    if status != topcoat::router::StatusCode::CONFLICT {
+        println!("   DB: {}", note_row(&app).await);
+        println!("（409 にならなかったので、ここで終わり）");
+        return;
+    }
+    println!("   お知らせ: {}", notice(&html).unwrap_or("（なし）"));
+    println!("   出し直したフォーム: version={v_new:?} title={title_kept:?}");
+    println!("   DB: {}", note_row(&app).await);
+
+    // タブ B が、出し直したフォームで、もう一度保存する
+    let form = edit_form(v_new.as_deref(), &title_kept, &body_b);
+    let status = app
+        .post_form("/notes/1/edit", &form, Some(&alice))
+        .await
+        .status();
+    println!("4. タブ B の2回目の保存: {status}");
+    println!("   DB: {}", note_row(&app).await);
+}
+```
+
+```powershell
+cargo test --test u04_conflict -- --nocapture
+```
+
+```text
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.71s
+     Running tests\u04_conflict.rs (target\debug\deps\u04_conflict-bde64e3ea3b6ed00.exe)
+
+running 1 test
+POST /signup -> 303 See Other (408.4008ms)
+POST /notes -> 303 See Other (4.6362ms)
+GET /notes/1/edit -> 200 OK (3.4296ms)
+GET /notes/1/edit -> 200 OK (3.3032ms)
+1. タブ A の version=Some("1")、タブ B の version=Some("1")
+POST /notes/1/edit -> 303 See Other (6.7144ms)
+2. タブ A の保存: 303 See Other
+   DB: title="牛乳を2本買う" body="1本" version=2 updated_at=2026-10-30 13:52:59
+POST /notes/1/edit -> 409 Conflict (5.9838ms)
+3. タブ B の保存: 409 Conflict
+   お知らせ: ほかの画面で先に更新されました。読み込み直してください。保存されている最新のタイトルは「牛乳を2本買う」です。この内容で上書きする場合は、もう一度「保存する」を押してください。
+   出し直したフォーム: version=Some("2") title="牛乳と卵を買う"
+   DB: title="牛乳を2本買う" body="1本" version=2 updated_at=2026-10-30 13:52:59
+POST /notes/1/edit -> 303 See Other (7.2331ms)
+4. タブ B の2回目の保存: 303 See Other
+   DB: title="牛乳と卵を買う" body="1本" version=3 updated_at=2026-10-30 13:52:59
+test two_tabs ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.47s
+```
+
+##### 解説1: あとから古い version で保存すると 409
+
+- 3のタブ B の保存は **`409 Conflict`** で、DB は `牛乳を2本買う`・`version=2` のままでした。タブ A の内容は消えていません。
+- SQL の `AND version = ?5` に、タブ B は `1` を渡しました。DB の `version` は `2` なので、条件に合う行は無く、更新は 0 行です。リポジトリは、id と持ち主だけで探し直し、ノートはあるので `VersionMismatch` を返しました（図の2つ目）。
+- お知らせは、`AppError::Conflict` の文（「ほかの画面で先に更新されました。読み込み直してください」）に、最新のタイトル（`牛乳を2本買う`）と、「もう一度『保存する』を押すと上書きする」ことを足した文です。
+
+##### 解説2: 入力は残し、version だけを新しくする
+
+- 出し直したフォームは、`title="牛乳と卵を買う"`（タブ B が書いた内容）と、`version=Some("2")`（最新の版）でした。入力を捨てて最新の内容に置き換えると、タブ B で書いた内容が消えてしまうからです。
+- 4のもう一度の保存は `303` で、DB は `牛乳と卵を買う`・`version=3` になりました。今度は、タブ B が「最新は `牛乳を2本買う` だ」と**知ったうえで**、上書きを選んでいます。黙って消えるのと、確かめてから上書きするのとは、違います。
+- 鍵をかける方法（悲観的ロック）を使わないのは、Web の画面では、フォームを開いたまま、タブを閉じたり、何時間も放っておいたりできるからです。鍵を外す時を、サーバーは知ることができません。
+
+### よくあるエラーと読み方
+
+#### エラー1（エラーが出ない間違い）: UPDATE から version の条件を外した
+
+`src/repository/notes.rs` の `update` の SQL を、`WHERE id = ?3 AND user_id = ?4` にした場合です（練習用のコピーで書き換え、確かめたら元に戻します）。例4-2のテストを、そのまま動かします。
+
+```text
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.96s
+     Running tests\u04_conflict.rs (target\debug\deps\u04_conflict-bde64e3ea3b6ed00.exe)
+
+running 1 test
+POST /signup -> 303 See Other (503.1721ms)
+POST /notes -> 303 See Other (7.2834ms)
+GET /notes/1/edit -> 200 OK (4.5631ms)
+GET /notes/1/edit -> 200 OK (6.1256ms)
+1. タブ A の version=Some("1")、タブ B の version=Some("1")
+POST /notes/1/edit -> 303 See Other (8.8616ms)
+2. タブ A の保存: 303 See Other
+   DB: title="牛乳を2本買う" body="1本" version=2 updated_at=2026-10-30 13:53:12
+POST /notes/1/edit -> 303 See Other (8.568ms)
+3. タブ B の保存: 303 See Other
+   DB: title="牛乳と卵を買う" body="1本" version=3 updated_at=2026-10-30 13:53:12
+（409 にならなかったので、ここで終わり）
+test two_tabs ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.58s
+```
+
+- **何が起きたか:** タブ B の保存も `303` で、DB は `牛乳と卵を買う`・`version=3` になりました。タブ A が保存した `牛乳を2本買う` は、**誰にも知らされずに消えました**。タブ A の人は「保存しました」を見たので、自分の内容が残っていると思っています。
+- **気づきにくい理由:** エラーは1つも出ません。`version = version + 1` は残っているので、`version` も進み続けます。`params!` は5つの値を渡したままですが、使わない `?5` があっても、libsql はエラーにしませんでした（UNIT 03 のエラー1と同じです）。
+- **学べること:** 楽観的ロックは、保存の SQL の `WHERE` に**版の条件があるときだけ**働きます。「同じノートを2つの画面で順に保存する」テストを残しておくと、この条件を消したときに気づけます。
+
+#### エラー2: フォームから hidden の version を外した（400）
+
+`note_form` から、`if let Some(version) = form.version { … }` の3行を消した場合です。例4-1のテストを動かします（フォームから読み取れた値だけを送ります）。
+
+```text
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 8.64s
+     Running tests\u04_edit.rs (target\debug\deps\u04_edit-de707e459482dd3a.exe)
+
+running 1 test
+POST /signup -> 303 See Other (449.5027ms)
+POST /notes -> 303 See Other (6.1036ms)
+1. 作った直後の DB: title="牛乳を買う" body="1本" version=1 updated_at=2026-10-30 13:53:22
+GET /notes/1/edit -> 200 OK (3.0533ms)
+2. 編集フォームの値: version=None title="牛乳を買う" body="1本"
+POST /notes/1/edit -> 400 Bad Request (11.3186ms)
+3. 保存の POST: 400 Bad Request（Location: （なし））
+   画面: <h1>400 Bad Request</h1><p>送信された内容を読み取れませんでした</p><p><a href="/">トップページへ戻る</a></p>
+4. 保存したあとの DB: title="牛乳を買う" body="1本" version=1 updated_at=2026-10-30 13:53:22
+test edit_and_save ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.62s
+```
+
+- **何が起きたか:** 2のフォームの値が `version=None` になり、送った POST は **`400 Bad Request`**「送信された内容を読み取れませんでした」でした。DB は変わっていません。
+- **理由:** `EditForm` の `version: i64` は、必ず要る項目です。フォームに `version` が無いので、Topcoat の `Form` が、送られてきた値を `EditForm` に変えられませんでした（UNIT 02 のエラー2と同じ形です）。
+- **もし `Option<i64>` にしていたら:** 400 にはならず、`version` の無い保存を、そのまま受け付ける作りになりがちです。そうすると、版を確かめずに上書きする道ができてしまいます。RustNote は、`version` を必ず要る項目にしているので、hidden を消したら、まず保存が止まって気づけます。
+
+#### エラー3: `Option<i64>` の場所に `i64` を入れた（E0308）
+
+409 のときに、フォームの version を最新にする行を、`form.version = latest.version;` と書いた場合です。
+
+```text
+   Compiling rustnote v0.1.0 (...\rustnote)
+error[E0308]: mismatched types
+  --> src\routes\notes\id\edit.rs:90:36
+   |
+90 |                     form.version = latest.version;
+   |                     ------------   ^^^^^^^^^^^^^^ expected `Option<i64>`, found `i64`
+   |                     |
+   |                     expected due to the type of this binding
+   |
+   = note: expected enum `std::option::Option<i64>`
+              found type `i64`
+help: try wrapping the expression in `Some`
+   |
+90 |                     form.version = Some(latest.version);
+   |                                    +++++              +
+```
+
+- **何が起きたか:** 「型が合いません。`Option<i64>` を期待しましたが、`i64` でした」です。`NoteFormState` の `version` は `Option<i64>` です。作成のフォームには `version` が無い（`None`）ので、`Option` にしています。
+- **直し方:** `help:` のとおり `Some(latest.version)` と包みます。
+
+### RustNote ではここで使う
+
+- 編集は `src/routes/notes/id/edit.rs` の `edit_page`（GET）と `update`（POST）です。ファイルの先頭のコメントに、成功（303）・入力の問題（400）・version が古い（409）・他人や無い（404）の表があります。
+- `update` は、入力の検査より**先に** `find_own_note` を呼んで、他人のノートを 404 にします（問3）。
+- 保存の SQL は `src/repository/notes.rs` の `update` です。`version` を使った楽観的ロックの SQL そのものは、第7巻 UNIT 05 でも確かめています。
+- `version` の列は、`migrations/0002_notes.sql` で `version INTEGER NOT NULL DEFAULT 1` として作っています。
+
+### 練習問題
+
+**問1:** 保存したあと、ブラウザの「戻る」で、保存の前の編集のフォームに戻り、別の内容でもう一度保存すると、どうなるでしょうか。
+
+**問2:** タブ A は本文だけを `低脂肪を2本` に直して保存し、タブ B はタイトルだけを `牛乳を買う（急ぎ）` に直して保存します。タブ B は 409 になりますが、お知らせを読んだうえで、そのままもう一度保存します。DB の本文は、どうなるでしょうか。
+
+**問3:** bob が、alice のノートの編集（`POST /notes/1/edit`）に、空のタイトルを送ると、400 と 404 のどちらになるでしょうか。
+
+### 解答と解説
+
+```rust
+//! 第10巻 UNIT 04 練習問題。
+//! 実行: cargo test --test u04_q -- --nocapture --test-threads=1
+
+mod common;
+
+use common::{TestApp, body_text, encode, test_app};
+
+const PASSWORD: &str = "correct horse battery";
+
+/// 編集フォームの HTML から、送り返す値（version・title・body）を読む。
+/// version の hidden が無ければ None（ブラウザも、無い項目は送らない）
+fn form_values(html: &str) -> (Option<String>, String, String) {
+    let attr = |tag: &str, name: &str| -> Option<String> {
+        let key = format!("{name}=\"");
+        let start = tag.find(&key)? + key.len();
+        let end = tag[start..].find('"')? + start;
+        Some(tag[start..end].to_string())
+    };
+    let version = html
+        .split("<input")
+        .find(|t| t.contains("name=\"version\""))
+        .and_then(|t| attr(t, "value"));
+    let title = html
+        .split("<input")
+        .find(|t| t.contains("name=\"title\""))
+        .and_then(|t| attr(t, "value"))
+        .unwrap_or_default();
+    let body = html
+        .split("<textarea")
+        .nth(1)
+        .and_then(|t| t.split_once('>'))
+        .map(|(_, rest)| rest.split("</textarea>").next().unwrap_or("").to_string())
+        .unwrap_or_default();
+    (version, title, body)
+}
+
+/// フォームの送信の本文を作る（version が None なら、その項目を入れない）
+fn edit_form(version: Option<&str>, title: &str, body: &str) -> String {
+    let mut form = format!("title={}&body={}", encode(title), encode(body));
+    if let Some(version) = version {
+        form = format!("version={version}&{form}");
+    }
+    form
+}
+
+/// notes 表の1件目の、タイトル・本文・version・更新日時
+async fn note_row(app: &TestApp) -> String {
+    let conn = app.db.db.connect().await.expect("DB に接続できません");
+    let mut rows = conn
+        .query(
+            "SELECT title, body, version, updated_at FROM notes WHERE id = 1",
+            (),
+        )
+        .await
+        .expect("読めません");
+    let row = rows
+        .next()
+        .await
+        .expect("行を読めません")
+        .expect("行が無い");
+    format!(
+        "title={:?} body={:?} version={} updated_at={}",
+        row.get::<String>(0).unwrap(),
+        row.get::<String>(1).unwrap(),
+        row.get::<i64>(2).unwrap(),
+        row.get::<String>(3).unwrap()
+    )
+}
+
+/// HTML から、class="form-notice" のお知らせの文を取り出す
+fn notice(html: &str) -> Option<&str> {
+    let start = html.find("<p class=\"form-notice\">")? + "<p class=\"form-notice\">".len();
+    let end = html[start..].find("</p>")? + start;
+    Some(&html[start..end])
+}
+
+/// 問1: 保存したあと、ブラウザの「戻る」で古いフォームに戻り、もう一度保存する
+#[tokio::test]
+async fn q1_back_button() {
+    let app = test_app().await;
+    let alice = app.sign_up("alice@example.com", PASSWORD).await;
+    app.create_note(&alice, "牛乳を買う", "1本").await;
+    let html = body_text(app.get("/notes/1/edit", Some(&alice)).await).await;
+    let (version, _, body) = form_values(&html);
+    for title in ["牛乳を2本買う", "牛乳を3本買う"] {
+        let form = edit_form(version.as_deref(), title, &body);
+        let status = app
+            .post_form("/notes/1/edit", &form, Some(&alice))
+            .await
+            .status();
+        println!(
+            "問1 version={} で「{title}」を保存 → {status}",
+            version.as_deref().unwrap_or("-")
+        );
+    }
+    println!("問1 DB: {}", note_row(&app).await);
+}
+
+/// 問2: タブ A は本文だけ、タブ B はタイトルだけを直す
+#[tokio::test]
+async fn q2_body_only_change() {
+    let app = test_app().await;
+    let alice = app.sign_up("alice@example.com", PASSWORD).await;
+    app.create_note(&alice, "牛乳を買う", "1本").await;
+    let tab_a = body_text(app.get("/notes/1/edit", Some(&alice)).await).await;
+    let tab_b = body_text(app.get("/notes/1/edit", Some(&alice)).await).await;
+    let (va, title_a, _) = form_values(&tab_a);
+    let (vb, _, body_b) = form_values(&tab_b);
+
+    let form = edit_form(va.as_deref(), &title_a, "低脂肪を2本");
+    let status = app
+        .post_form("/notes/1/edit", &form, Some(&alice))
+        .await
+        .status();
+    println!("問2 タブ A（本文だけ直す）→ {status}");
+    let form = edit_form(vb.as_deref(), "牛乳を買う（急ぎ）", &body_b);
+    let response = app.post_form("/notes/1/edit", &form, Some(&alice)).await;
+    let status = response.status();
+    let html = body_text(response).await;
+    let (v_new, title_kept, body_kept) = form_values(&html);
+    println!("問2 タブ B（タイトルだけ直す）→ {status}");
+    println!("問2 お知らせ: {}", notice(&html).unwrap_or("（なし）"));
+    let form = edit_form(v_new.as_deref(), &title_kept, &body_kept);
+    let status = app
+        .post_form("/notes/1/edit", &form, Some(&alice))
+        .await
+        .status();
+    println!("問2 タブ B がそのまま、もう一度保存 → {status}");
+    println!("問2 DB: {}", note_row(&app).await);
+}
+
+/// 問3: 自分のものでないノートに、正しくない入力を送る
+#[tokio::test]
+async fn q3_not_found_before_validation() {
+    let app = test_app().await;
+    let alice = app.sign_up("alice@example.com", PASSWORD).await;
+    let bob = app.sign_up("bob@example.com", PASSWORD).await;
+    app.create_note(&alice, "牛乳を買う", "").await;
+    let cases = [
+        ("alice", alice.as_str(), "/notes/1/edit", ""),
+        ("bob", bob.as_str(), "/notes/1/edit", ""),
+        ("bob", bob.as_str(), "/notes/1/edit", "卵を買う"),
+        ("alice", alice.as_str(), "/notes/999/edit", ""),
+    ];
+    for (who, cookie, path, title) in cases {
+        let form = edit_form(Some("1"), title, "");
+        let status = app.post_form(path, &form, Some(cookie)).await.status();
+        println!("問3 {who:<5} POST {path:<16} title={title:?} → {status}");
+    }
+}
+```
+
+```powershell
+cargo test --test u04_q -- --nocapture --test-threads=1
+```
+
+```text
+問1 version=1 で「牛乳を2本買う」を保存 → 303 See Other
+問1 version=1 で「牛乳を3本買う」を保存 → 409 Conflict
+問1 DB: title="牛乳を2本買う" body="1本" version=2 updated_at=2026-10-30 13:53:01
+問2 タブ A（本文だけ直す）→ 303 See Other
+問2 タブ B（タイトルだけ直す）→ 409 Conflict
+問2 お知らせ: ほかの画面で先に更新されました。読み込み直してください。保存されている最新のタイトルは「牛乳を買う」です。この内容で上書きする場合は、もう一度「保存する」を押してください。
+問2 タブ B がそのまま、もう一度保存 → 303 See Other
+問2 DB: title="牛乳を買う（急ぎ）" body="1本" version=3 updated_at=2026-10-30 13:53:01
+問3 alice POST /notes/1/edit    title="" → 400 Bad Request
+問3 bob   POST /notes/1/edit    title="" → 404 Not Found
+問3 bob   POST /notes/1/edit    title="卵を買う" → 404 Not Found
+問3 alice POST /notes/999/edit  title="" → 404 Not Found
+```
+
+（問題の答えの行だけを抜き出しています）
+
+**問1の解答:**
+
+- 1回目は `303`、2回目は **`409 Conflict`** でした。「戻る」で開いたフォームの hidden は、保存の前の `version=1` のままだからです。DB は1回目の `牛乳を2本買う`・`version=2` のままです。
+- 別のタブで直したときだけでなく、**同じタブの古い画面**から保存したときにも、楽観的ロックが守ってくれます。
+
+**問2の解答:**
+
+- DB の本文は `1本` に戻り、タブ A が保存した `低脂肪を2本` は消えました。タイトルは `牛乳を買う（急ぎ）`、`version=3` です。
+- 理由は、409 のお知らせにあります。お知らせは「保存されている最新の**タイトル**は『牛乳を買う』です」と、タイトルだけを見せます。タブ A は本文だけを直したので、タイトルは元のままです。タブ B の人には、何が変わったのかが分かりません。出し直したフォームの本文は、タブ B が送った `1本` のままなので、そのまま保存すると、A の本文を上書きします。
+- 409 で止めること自体は、うまく働いています。足りないのは、**何が変わったかを見せる**ことです。最新の本文もお知らせに出す、変わった項目に印を付ける、などの直し方があります。これは、RustNote に残る改善点です（RustNote のコードは変えていません）。
+
+**問3の解答:**
+
+- bob の空のタイトルは **`404 Not Found`** でした。正しいタイトル（`卵を買う`）でも 404、alice が無いノート（`/notes/999`）に空のタイトルを送っても 404 です。alice が自分のノートに空のタイトルを送ったときだけ、`400 Bad Request` になります。
+- `update` が、入力の検査より先に `find_own_note` を呼んでいるからです。見せないノートの編集の画面は、どんな入力のときにも出しません。「自分のノートでなければ、何をしても 404」と、決まりが1つで済みます。
+
+### まとめ
+
+- 編集のフォームは、今の値と hidden の `version` を出し、保存の SQL は `version` が合ったときだけ1行を更新して、`version` を 1 進める。
+- 古い `version` の保存は 0 行の更新になり、`VersionMismatch` → **409** で、入力を残し、最新の `version` とタイトルを見せて出し直す。もう一度保存すると、知ったうえでの上書きになる。`AND version = ?5` を外すと、エラーなく先の保存が消える（失われた更新）。
+- `version` は必ず要る項目（`i64`）にして、hidden を忘れたら 400 で止まるようにする。409 のお知らせがタイトルだけなので、本文だけの変更に気づけないのは、RustNote に残る改善点。
+
 ## この巻のまとめ
 
-この版に収録した UNIT 01〜03 で、次のことができるようになったかを確かめましょう。できたものに印を付けてください。
+この版に収録した UNIT 01〜04 で、次のことができるようになったかを確かめましょう。できたものに印を付けてください。
 
 **UNIT 01: 一覧・空のとき・持ち主の条件**
 
@@ -2486,11 +3232,20 @@ cargo test --test u03_q -- --nocapture --test-threads=1
 - ☐ 持ち主の条件を SQL から外しても、コンパイルもテストも通ってしまうことと、他人として開くテストの大切さを説明できる
 - ☐ `module_param!` が作る `Id` 型で `href!(…, Id(id))` と書く理由と、`E0277`（`HrefParam`）を読める
 
-> **お知らせ:** この版には UNIT 01〜03 を収録しています。UNIT 04（編集・入力済みのフォーム・競合）・UNIT 05（完了の切り替え・1文の SQL）・UNIT 06（削除・確かめ・消し方の選び方）・UNIT 07（検索・LIKE のエスケープ）・UNIT 08（ページ送り・OFFSET と cursor）・UNIT 09（お知らせ・エラーのまとめ）・UNIT 10（狭い画面・アクセシビリティ・総合の試験）は準備中で、次の更新から順に追加します。それまでの間、それぞれの画面のコードは、`Rust/rustnote/src/routes/notes.rs` と `src/routes/notes/` の各ファイルの先頭のコメントで確かめられます。
+**UNIT 04: 編集・入力済みのフォーム・競合**
+
+- ☐ 編集のフォームが、今の値と hidden の `version` を出し、保存で `version` が 1 進むことを、テストで確かめられる
+- ☐ 2つのタブで直したとき、あとから古い `version` で保存したほうが 409 になり、入力を残して最新の `version` で出し直す流れを説明できる
+- ☐ `AND version = ?5` を外すと、エラーなく先の保存が消える（失われた更新）ことを説明できる
+- ☐ 楽観的ロックと悲観的ロックの違いと、Web の画面で鍵をかけない理由を言える
+- ☐ hidden の `version` を忘れたときの 400 と、`Option<i64>` に `i64` を入れたときの `E0308` を読める
+- ☐ 409 のお知らせがタイトルだけなので、本文だけの変更に気づけないという改善点を説明できる
+
+> **お知らせ:** この版には UNIT 01〜04 を収録しています。UNIT 05（完了の切り替え・1文の SQL）・UNIT 06（削除・確かめ・消し方の選び方）・UNIT 07（検索・LIKE のエスケープ）・UNIT 08（ページ送り・OFFSET と cursor）・UNIT 09（お知らせ・エラーのまとめ）・UNIT 10（狭い画面・アクセシビリティ・総合の試験）は準備中で、次の更新から順に追加します。それまでの間、それぞれの画面のコードは、`Rust/rustnote/src/routes/notes.rs` と `src/routes/notes/` の各ファイルの先頭のコメントで確かめられます。
 
 ## 用語ミニ辞典
 
-この巻（UNIT 01〜03）に出てきた用語です。
+この巻（UNIT 01〜04）に出てきた用語です。
 
 ### UNIT 01 の用語
 
@@ -2538,3 +3293,17 @@ cargo test --test u03_q -- --nocapture --test-threads=1
 | `href!` | 行き先のページと引数から URL を作るマクロ。行き先が無い・型が違うとコンパイルが止まる |
 | `white-space: pre-wrap` | 改行や空白を、書いたとおりに表示する CSS の指定 |
 | E0277 | ある型が、必要な trait（ここでは `HrefParam`）を実装していないエラー |
+
+### UNIT 04 の用語
+
+| 用語 | 意味 |
+|---|---|
+| 楽観的ロック | 鍵をかけずに、保存のときに版の番号（`version`）が変わっていないかだけを確かめる方法 |
+| 悲観的ロック | 直している間、ほかの人に触らせないように鍵をかける方法。Web の画面では使わない |
+| 失われた更新（lost update） | あとから保存した内容が、先に保存した内容を、黙って上書きしてしまうこと |
+| `version` | ノートの版の番号。保存のたびに 1 増える。編集のフォームの hidden で運ぶ |
+| hidden の入力欄 | 画面に見えないが、ほかの入力欄と同じように送られる `<input type="hidden">` |
+| 409 Conflict | 今のデータの状態とぶつかっている、という返事。先に保存されたときに使う |
+| `VersionMismatch` | 保存の SQL が 0 行で、ノートはあるとき（版が違う）のリポジトリのエラー。409 になる |
+| `datetime('now')` | SQLite の今の日時（UTC、秒まで）。`updated_at` に入れる |
+| E0308 | 型が合わないエラー（ここでは `Option<i64>` の場所に `i64`） |
