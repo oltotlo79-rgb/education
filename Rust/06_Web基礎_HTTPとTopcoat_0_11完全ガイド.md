@@ -1,11 +1,11 @@
 <div style="page-break-after: always; text-align: center; margin: 0; padding: 0;">
 <img src="assets/cover.jpg" alt="表紙" style="width: 100%; max-height: 175mm; object-fit: cover; border-radius: 10px;">
 <div style="margin-top: 14px; font-size: 11px; letter-spacing: 0.18em; color: #c2410c; font-weight: 700;">VOLUME 06 / RUST BACKEND MASTERY</div>
-<div style="font-size: 26px; font-weight: 800; color: #0f172a; margin-top: 6px; line-height: 1.35;">Web 基礎と Topcoat 0.10 完全ガイド</div>
+<div style="font-size: 26px; font-weight: 800; color: #0f172a; margin-top: 6px; line-height: 1.35;">Web 基礎と Topcoat 0.11 完全ガイド</div>
 <div style="font-size: 13px; color: #475569; margin-top: 8px;">HTTP の要求と応答から、Topcoat のページ・ルーター・view!・フォーム・アセット・セッションまでを、動かして確かめる</div>
 </div>
 
-# 第6巻: Web 基礎と Topcoat 0.10 完全ガイド
+# 第6巻: Web 基礎と Topcoat 0.11 完全ガイド
 
 ## この巻で身に付けること
 
@@ -18,7 +18,7 @@ Web のサーバーは、いきなり道具（フレームワーク）から始�
 - フォームを送ったあとに再読み込みしたら、同じデータがもう1件できてしまった
 - 日本語の文字が、途中で切れて表示される
 
-そこで、この巻の最初の単元では、道具を使わずに、**標準ライブラリだけ**で小さなサーバーを書き、HTTP の要求と応答が「ただの文字のやり取り」であることを、自分の目で確かめます。そのうえで、UNIT 02 から、RustNote でも使っている Web フレームワーク **Topcoat 0.10** の使い方を、1つずつ学びます。
+そこで、この巻の最初の単元では、道具を使わずに、**標準ライブラリだけ**で小さなサーバーを書き、HTTP の要求と応答が「ただの文字のやり取り」であることを、自分の目で確かめます。そのうえで、UNIT 02 から、RustNote でも使っている Web フレームワーク **Topcoat 0.11** の使い方を、1つずつ学びます。
 
 ### 到達目標
 
@@ -26,7 +26,7 @@ Web のサーバーは、いきなり道具（フレームワーク）から始�
 
 - HTTP の要求（メソッド・パス・ヘッダー・本文）と応答（状態コード・ヘッダー・本文）の形を説明し、`curl.exe -i` や `-v` の表示を読める
 - 状態コード（200・303・403・404・405 など）と、GET・POST の使い分けを説明できる
-- Topcoat 0.10 で、ページ（`#[page]`）・ルーター・レイアウト・URL の部品の読み取り・`view!` とコンポーネントを使った画面を作れる
+- Topcoat 0.11 で、ページ（`#[page]`）・ルーター・レイアウト・URL の部品の読み取り・`view!` とコンポーネントを使った画面を作れる
 - フォームを受け取り、成功したら 303 で GET の画面へ移す（PRG）形を作れる
 - 共有の状態（`app_context`）・アセット（CSS の束）・エラー・クッキー・セッション・ほかのサイトからの送信の守りを、Topcoat の仕組みで扱える
 
@@ -54,7 +54,7 @@ Web のサーバーは、いきなり道具（フレームワーク）から始�
 <rect x="282" y="40" width="130" height="70" rx="8" fill="#ffffff" stroke="#3b82f6" stroke-width="2"/>
 <text x="347" y="60" font-size="12" font-weight="700" fill="#3b82f6" text-anchor="middle">UNIT 02</text>
 <text x="347" y="80" font-size="13" font-weight="700" fill="#0f172a" text-anchor="middle">最小のアプリ</text>
-<text x="347" y="99" font-size="12" fill="#475569" text-anchor="middle">Topcoat 0.10</text>
+<text x="347" y="99" font-size="12" fill="#475569" text-anchor="middle">Topcoat 0.11</text>
 <rect x="429" y="40" width="130" height="70" rx="8" fill="#ffffff" stroke="#3b82f6" stroke-width="2"/>
 <text x="494" y="60" font-size="12" font-weight="700" fill="#3b82f6" text-anchor="middle">UNIT 03</text>
 <text x="494" y="80" font-size="13" font-weight="700" fill="#0f172a" text-anchor="middle">ルーター</text>
@@ -107,7 +107,7 @@ Web のサーバーは、いきなり道具（フレームワーク）から始�
 | 単元 | テーマ | ひとことで言うと |
 |---|---|---|
 | UNIT 01 | HTTP の要求・応答・状態コード | 標準ライブラリだけのサーバーで、HTTP がただの文字だと確かめる |
-| UNIT 02 | Topcoat 0.10 の最小のアプリ | ページを1つ作って起動する |
+| UNIT 02 | Topcoat 0.11 の最小のアプリ | ページを1つ作って起動する |
 | UNIT 03 | ルーター・page・route・layout（準備中） | URL ごとに処理を分け、共通の外枠で包む |
 | UNIT 04 | URL の部品（path・query）と Cx（準備中） | `/notes/{id}` や `?page=2` を型にして読む |
 | UNIT 05 | view!・コンポーネント・HTML のエスケープ（準備中） | 画面を部品に分け、入力を安全に表示する |
@@ -117,7 +117,7 @@ Web のサーバーは、いきなり道具（フレームワーク）から始�
 | UNIT 09 | runtime・signal・procedure・shard（準備中） | ブラウザの中で動く部分と、その守り方 |
 | UNIT 10 | エラー・クッキー・セッション・CSRF（準備中） | 400・404・リダイレクトと、ログインの仕組みの土台 |
 
-> **お知らせ:** この版には UNIT 01〜02 を収録しています。UNIT 03〜10 は準備中で、次の更新から順に追加します。以前の版（Topcoat 0.5 の版）の PDF は、この版がそろうまで残してあります。Topcoat は 0.5 から 0.10 までに書き方が大きく変わっているので、以前の版のコードは、0.10 では動かないことがあります。
+> **お知らせ:** この版には UNIT 01〜02 を収録しています。UNIT 03〜10 は準備中で、次の更新から順に追加します。以前の版（Topcoat 0.5 の版）の PDF は、この版がそろうまで残してあります。Topcoat は 0.5 から 0.11 までに書き方が大きく変わっているので、以前の版のコードは、0.11 では動かないことがあります。
 
 ### 前提知識（先に読んでおく巻）
 
@@ -143,10 +143,10 @@ Web のサーバーは、いきなり道具（フレームワーク）から始�
 | 項目 | 版・内容 |
 |---|---|
 | OS | Windows 11（ARM64）。コマンドは PowerShell を主に、WSL / macOS / Linux は補足で示します |
-| Rust | **1.98 以上**（本書シリーズの基準）。動作確認は rustc 1.99.0 / cargo 1.99.0（`aarch64-pc-windows-msvc`） |
+| Rust | **1.99 以上**（本書シリーズの基準。Topcoat 0.11 が 1.99 以上を求めます）。動作確認は rustc 1.99.1 / cargo 1.99.1（`aarch64-pc-windows-msvc`） |
 | edition | 2024 |
 | curl | 8.21.0（Windows に入っている `curl.exe`。PowerShell では `curl` だけだと別のコマンドになるので、必ず `curl.exe` と打ちます） |
-| topcoat | 0.10.0（UNIT 02 から使います。UNIT 01 では使いません。2026-10 には 0.11.0 も出ていますが、この本は 0.10.0 に固定しています） |
+| topcoat | 0.11.0（2026-10-24 に出た版。UNIT 02 から使います。UNIT 01 では使いません） |
 
 ### 練習用のプロジェクトを用意する
 
@@ -155,8 +155,8 @@ UNIT 01 では、外のクレートを1つも使いません。練習用のプ�
 ```powershell
 cargo new http_lab
 cd http_lab
-# このフォルダでは Rust 1.99.0 を使う（第13巻 UNIT 01）
-Set-Content rust-toolchain.toml "[toolchain]`nchannel = `"1.99.0`""
+# このフォルダでは Rust 1.99.1 を使う（第13巻 UNIT 01）
+Set-Content rust-toolchain.toml "[toolchain]`nchannel = `"1.99.1`""
 New-Item -ItemType Directory src\bin
 ```
 
@@ -908,11 +908,11 @@ Content-Length: 34
 - 状態コードは、2xx（うまくいった）・3xx（別の場所へ。`Location` で行き先を教える）・4xx（頼み方が違う。404・403・405 は直し方が違う）・5xx（サーバーの失敗）。curl の `(7)` は、そもそもサーバーにたどり着けていない。
 - GET は見るだけ、POST は変える。POST が成功したら 303 で GET の画面へ移す（PRG）と、再読み込みで二重に保存されない。
 
-## UNIT 02: Topcoat 0.10 の最小のアプリ
+## UNIT 02: Topcoat 0.11 の最小のアプリ
 
 ### この単元のゴール
 
-- `cargo add` で Topcoat 0.10.0 と Tokio を足し、ページが1つだけの Web アプリを作って起動できる
+- `cargo add` で Topcoat 0.11.0 と Tokio を足し、ページが1つだけの Web アプリを作って起動できる
 - `#[page("/")]`・`Router::builder().discover().build()`・`topcoat::start` の3つが、それぞれ何をしているかを説明できる
 - UNIT 01 で自分で書いた処理（`Content-Length`・404・405・HEAD）を、Topcoat が代わりにしてくれることを、`curl.exe` の表示で確かめられる
 - `HOST` と `PORT` の環境変数で待ち受ける場所を変え、`.await` の書き忘れ・`use` の書き忘れ・ポートの指定の間違いのエラーを読める
@@ -995,21 +995,21 @@ UNIT 02 では、**受付の係を雇います**。
 
 #### 例2-1: プロジェクトを作り、Topcoat と Tokio を足す
 
-> **▼ このコマンドがやること（先に日本語で）:** 新しいプロジェクトを作り、Rust の版を 1.99.0 に固定してから、`cargo add` で Topcoat（版を 0.10.0 に固定）と Tokio（非同期のランタイム）を足します。
+> **▼ このコマンドがやること（先に日本語で）:** 新しいプロジェクトを作り、Rust の版を 1.99.1 に固定してから、`cargo add` で Topcoat（版を 0.11.0 に固定）と Tokio（非同期のランタイム）を足します。
 
 ```powershell
 cargo new web_lab
 cd web_lab
-Set-Content rust-toolchain.toml "[toolchain]`nchannel = `"1.99.0`""
-cargo add topcoat@=0.10.0
-cargo add tokio@=1.53.3 --features rt-multi-thread,macros
+Set-Content rust-toolchain.toml "[toolchain]`nchannel = `"1.99.1`""
+cargo add topcoat@=0.11.0
+cargo add tokio@=1.54.1 --features rt-multi-thread,macros
 ```
 
-**▼ 実行結果**（`cargo add topcoat@=0.10.0` の表示）
+**▼ 実行結果**（`cargo add topcoat@=0.11.0` の表示）
 
 ```text
     Updating crates.io index
-      Adding topcoat =0.10.0 to dependencies
+      Adding topcoat =0.11.0 to dependencies
              Features:
              + asset
              + compression
@@ -1022,31 +1022,15 @@ cargo add tokio@=1.53.3 --features rt-multi-thread,macros
              + serve
              + session
              + view
-             - alpine-ajax
-             - anyhow
-             - datastar
-             - font-fontsource
-             - fs
-             - full
-             - htmx
-             - icon-iconify
-             - mail
-             - mail-smtp
-             - multipart
-             - sitemap
-             - sse
-             - tailwind
-             - tower
-             - ui
-             - websocket
+             22 deactivated features
     Updating crates.io index
-     Locking 214 packages to highest Rust 1.99.0 compatible versions
+     Locking 220 packages to highest Rust 1.99.1 compatible versions
       Adding generic-array v0.14.7 (available: v0.14.9)
-      Adding topcoat v0.10.0 (available: v0.11.0)
 ```
 
-- `+` の付いた features（`asset`・`router`・`view` など）が、既定で有効になる機能です。`-` の付いたもの（`tailwind`・`websocket` など）は、必要なときに自分で足します。
-- 最後の `Adding topcoat v0.10.0 (available: v0.11.0)` は、「0.10.0 を入れましたが、0.11.0 も出ています」というお知らせです。この本は、すべての巻で **0.10.0 に固定**しています。`@=0.10.0` の `=` を付けているので、勝手に 0.11.0 にはなりません（第13巻 UNIT 01）。Topcoat は、版が上がると書き方が変わることがあるので、版を上げるときは、自分で決めて、まとめて直します。
+- `+` の付いた features（`asset`・`router`・`view` など）が、既定で有効になる機能です。そのほかの機能（`tailwind`・`websocket`・`l10n` など）は既定では無効で、数が多いので、`22 deactivated features`（無効の機能が 22 個）とだけ表示されます。一覧は `cargo info -v topcoat@0.11.0` で見られます。必要なときに、自分で足します。
+- `Locking 220 packages to highest Rust 1.99.1 compatible versions` は、「Rust 1.99.1 で使える範囲で、いちばん新しい版を選んで、220 個のクレートの版を `Cargo.lock` に書きました」という意味です。`Adding generic-array v0.14.7 (available: v0.14.9)` は、「もっと新しい 0.14.9 もありますが、0.14.7 にしました」というお知らせです。間接的に使う `crypto-common` が `=0.14.7` と版を固定しているからで、気にしなくて大丈夫です。
+- `@=0.11.0` の `=` を付けているので、Topcoat に新しい版が出ても、勝手には上がりません（第13巻 UNIT 01）。Topcoat は、版が上がると書き方が変わることがあるので、版を上げるときは、自分で決めて、まとめて直します。この本も、0.10.0 から 0.11.0 に上げたときに、すべての巻のコードを動かし直しました。
 
 できあがった `Cargo.toml` です（この単元の最後に、もう1つの機能を足したあとの形です。例2-3で説明します）。
 
@@ -1057,8 +1041,8 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-tokio = { version = "=1.53.3", features = ["rt-multi-thread", "macros", "net"] }
-topcoat = "=0.10.0"
+tokio = { version = "=1.54.1", features = ["rt-multi-thread", "macros", "net"] }
+topcoat = "=0.11.0"
 ```
 
 #### 例2-2: ページが1つだけのアプリ
@@ -1066,7 +1050,7 @@ topcoat = "=0.10.0"
 > **▼ このコードがやること（先に日本語で）:** `GET /` に答える関数 `home` に `#[page("/")]` の名札を付け、`view!` で HTML を作って返します。`main` では、名札の付いた関数を `discover()` で集めてルーターを作り、`topcoat::start` に渡して、待ち受けを始めます。
 
 ```rust
-//! Topcoat 0.10 の、いちばん小さな Web アプリ。GET / に HTML を返す。
+//! Topcoat 0.11 の、いちばん小さな Web アプリ。GET / に HTML を返す。
 //! 実行: cargo run
 
 use topcoat::{
@@ -1108,11 +1092,11 @@ async fn main() {
 cargo run --bin web_lab
 ```
 
-最初の1回は、Topcoat が使うクレートをコンパイルするので、少し時間がかかります（この PC では、`Compiling` の行が 164 行出て、約 31 秒でした）。
+最初の1回は、Topcoat が使うクレートをコンパイルするので、少し時間がかかります（この PC では、`Compiling` の行が 164 行出て、約 22 秒でした）。
 
 ```text
    Compiling web_lab v0.1.0 (...\web_lab)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 31.48s
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 21.90s
 ```
 
 **サーバーの窓には、何も表示されません。** `topcoat::start` は、起動しても何も表示しないからです。止まっているように見えますが、待ち受けています。2つ目の窓から、`curl.exe` で確かめます。
@@ -1129,7 +1113,7 @@ content-type: text/html; charset=utf-8
 vary: Accept
 vary: accept-encoding
 content-length: 228
-date: Wed, 28 Oct 2026 21:52:33 GMT
+date: Fri, 30 Oct 2026 11:31:05 GMT
 
 <!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><title>はじめての Topcoat</title></head><body><h1>こんにちは、Topcoat！</h1><p>この HTML は Rust のプログラムが作りました。</p></body></html>
 ```
@@ -1170,7 +1154,7 @@ curl.exe -I http://127.0.0.1:3000/
 HTTP/1.1 404 Not Found
 content-type: text/plain; charset=utf-8
 content-length: 9
-date: Wed, 28 Oct 2026 21:52:34 GMT
+date: Fri, 30 Oct 2026 11:31:05 GMT
 
 not found
 
@@ -1178,7 +1162,7 @@ not found
 HTTP/1.1 405 Method Not Allowed
 allow: GET, HEAD
 content-length: 0
-date: Wed, 28 Oct 2026 21:52:34 GMT
+date: Fri, 30 Oct 2026 11:31:05 GMT
 
 
 
@@ -1188,7 +1172,7 @@ content-type: text/html; charset=utf-8
 vary: Accept
 vary: accept-encoding
 content-length: 228
-date: Wed, 28 Oct 2026 21:52:34 GMT
+date: Fri, 30 Oct 2026 11:31:05 GMT
 ```
 
 - 無い URL（`/nothing`）は `404 Not Found` で、本文は `not found` だけです。ページに名札を付けていない URL は、Topcoat が自動で 404 にします。自分の画面（ヘッダーやトップへのリンクの付いたもの）で 404 を出したいときは、`not_found!()` とレイアウトを使います（UNIT 03・10（準備中））。
@@ -1201,7 +1185,7 @@ date: Wed, 28 Oct 2026 21:52:34 GMT
 
 `topcoat::start` は、何も表示しません。「起動しました」と表示したくて、`start` の前に `println!` を書くと、困ったことが起きます。ポートを押さえる**前**に表示するので、ほかのプログラムがポートを使っていて起動に失敗したときも、「起動しました」と出てしまうのです（第12巻 UNIT 01 のエラー2で、RustNote が実際にそうなっているのを見ました）。
 
-そこで、待ち受けの場所を**自分で先に押さえて**から表示し、押さえた場所を Topcoat に渡す書き方をします。`topcoat::start` の中身（Topcoat 0.10.0 の `serve.rs`）も、`TcpListener::bind` で押さえてから `serve` を呼ぶ形になっています。
+そこで、待ち受けの場所を**自分で先に押さえて**から表示し、押さえた場所を Topcoat に渡す書き方をします。`topcoat::start` の中身（Topcoat 0.11.0 の `serve.rs`）も、`TcpListener::bind` で押さえてから `serve` を呼ぶ形になっています。
 
 <div style="max-width:720px;margin:18px auto;text-align:center;">
 <svg viewBox="0 0 720 250" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
@@ -1271,7 +1255,7 @@ async fn main() -> std::io::Result<()> {
 このプログラムは `tokio::net::TcpListener` を使うので、Tokio の `net` の機能を、自分の `Cargo.toml` に足します。Topcoat がすでに `net` を有効にしているので、足さなくてもビルドは通りますが、**自分が使う機能は自分の `Cargo.toml` に書く**のが決まりです（第13巻 UNIT 01）。
 
 ```powershell
-cargo add tokio@=1.53.3 --features rt-multi-thread,macros,net
+cargo add tokio@=1.54.1 --features rt-multi-thread,macros,net
 ```
 
 `src/bin/u02_serve.rs` として保存し、1つ目の窓で起動します。続けて、2つ目の窓で、同じものをもう1つ起動します。
@@ -1383,7 +1367,7 @@ cargo run --bin web_lab
 
 ```text
 
-thread 'main' (154412) panicked at src\main.rs:35:10:
+thread 'main' (202724) panicked at src\main.rs:35:10:
 サーバーを起動できませんでした: Custom { kind: InvalidInput, error: "PORT must be a valid port number: invalid digit found in string" }
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 ```
@@ -1507,7 +1491,7 @@ content-type: text/html; charset=utf-8
 vary: Accept
 vary: accept-encoding
 content-length: 258
-date: Wed, 28 Oct 2026 21:55:22 GMT
+date: Fri, 30 Oct 2026 11:31:29 GMT
 
 <!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><title>このアプリについて</title></head><body><h1>このアプリについて</h1><p>第6巻 UNIT 02 の練習で作りました。</p><p><a href="/">トップへ戻る</a></p></body></html>
 ```
@@ -1548,7 +1532,7 @@ vary: Accept
 vary: accept-encoding
 content-encoding: gzip
 transfer-encoding: chunked
-date: Wed, 28 Oct 2026 21:55:22 GMT
+date: Fri, 30 Oct 2026 11:31:29 GMT
 ```
 
 - `--compressed` を付けると、curl は `Accept-Encoding`（受け取れる圧縮の形式）のヘッダーを付けて送ります。Topcoat は、本文を gzip で圧縮し、`content-encoding: gzip`（本文は gzip で圧縮してあります）を付けて返しました。圧縮したので、`content-length` の代わりに、`transfer-encoding: chunked`（本文を区切って少しずつ送ります）になっています。curl は、受け取った本文を元に戻して表示します（ここでは、ヘッダーの部分だけを載せています）。
@@ -1557,7 +1541,7 @@ date: Wed, 28 Oct 2026 21:55:22 GMT
 
 ### まとめ
 
-- `cargo add topcoat@=0.10.0` と Tokio を足し、`#[page("/")]` を付けた関数と、`Router::builder().discover().build()`・`topcoat::start(router).await` の数行で、Web アプリが動く。版は `=` で固定する（0.11.0 が出ていても、0.10.0 のまま）。
+- `cargo add topcoat@=0.11.0` と Tokio を足し、`#[page("/")]` を付けた関数と、`Router::builder().discover().build()`・`topcoat::start(router).await` の数行で、Web アプリが動く。版は `=` で固定する（新しい版が出ても、勝手には上がらない）。
 - 要求の振り分け・`Content-Length`・404・405 と `allow`・HEAD・圧縮は、Topcoat がする。`topcoat::start` は `HOST` と `PORT` を読み、起動しても何も表示しない。
 - 「待っています」と表示したいときは、`TcpListener::bind` で先に押さえてから表示し、`topcoat::serve` に渡す。`.await` の書き忘れ、trait の `use` の書き忘れ、実行ファイルが2つあるときの `--bin` のエラーを読めるようにしておく。
 
@@ -1575,9 +1559,9 @@ date: Wed, 28 Oct 2026 21:55:22 GMT
 - ☐ `curl.exe` の `-i`・`-d`・`-X`・`-I`・`-L`・`-v` を使い分け、`-v` の `>`・`<`・`*` の行を読み分けられる
 - ☐ curl の `(7)`（たどり着けない）と、404（たどり着いたが、ページが無い）を見分けられる
 
-**UNIT 02: Topcoat 0.10 の最小のアプリ**
+**UNIT 02: Topcoat 0.11 の最小のアプリ**
 
-- ☐ `cargo add topcoat@=0.10.0` と Tokio で、ページが1つのアプリを作って起動できる。`=` で版を固定する理由を言える
+- ☐ `cargo add topcoat@=0.11.0` と Tokio で、ページが1つのアプリを作って起動できる。`=` で版を固定する理由を言える
 - ☐ `#[page("/")]`・`Router::builder().discover().build()`・`topcoat::start(router).await` の役割を説明できる
 - ☐ 404・405 と `allow`・HEAD・`Content-Length`・圧縮を、Topcoat が代わりにしてくれることを、`curl.exe` で確かめられる
 - ☐ `HOST` と `PORT` の環境変数で待ち受ける場所を変えられる。`PORT` が数でないときのエラーを読める
