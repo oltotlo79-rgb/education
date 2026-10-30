@@ -1,0 +1,36 @@
+[WebServer] マイグレーションを適用しました: 0001_users
+[WebServer] マイグレーションを適用しました: 0002_notes
+[WebServer] マイグレーションを適用しました: 0003_sessions
+[WebServer] RustNote を起動しました: http://127.0.0.1:3011
+
+Running 1 test using 1 worker
+
+[WebServer] GET /signup -> 200 OK (618µs)
+[WebServer] GET /_topcoat/assets/style-e9b983efabcfc6c3.css -> 200 OK (1.8742ms)
+[WebServer] GET /favicon.ico -> 404 Not Found (339.2µs)
+  ✘  1 tests\e05_strict.spec.ts:4:5 › パスワードを入れる (294ms)
+
+
+  1) tests\e05_strict.spec.ts:4:5 › パスワードを入れる ──────────────────────────────────────────────────────
+
+    Error: locator.fill: Error: strict mode violation: getByLabel('パスワード') resolved to 2 elements:
+        1) <input required="" id="password" name="password" type="password" autocomplete="new-password"/> aka getByRole('textbox', { name: 'パスワード（8文字以上）' })
+        2) <input required="" type="password" id="password_confirm" name="password_confirm" autocomplete="new-password"/> aka getByRole('textbox', { name: 'パスワード（確認）' })
+
+    Call log:
+      - waiting for getByLabel('パスワード')
+
+
+      4 | test("パスワードを入れる", async ({ page }) => {
+      5 |   await page.goto("/signup");
+    > 6 |   await page.getByLabel("パスワード").fill("correct horse battery");
+        |                                  ^
+      7 | });
+      8 |
+        at ...\e2e\tests\e05_strict.spec.ts:6:34
+
+    Error Context: test-results\e05_strict-パスワードを入れる\error-context.md
+
+  1 failed
+    tests\e05_strict.spec.ts:4:5 › パスワードを入れる ───────────────────────────────────────────────────────
+exit=1

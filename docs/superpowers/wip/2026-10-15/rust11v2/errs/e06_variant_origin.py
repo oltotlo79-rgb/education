@@ -1,0 +1,1 @@
+REPLACEMENTS = [('        Body, Next, Router, Slot,\n', '        Body, Next, OriginPolicy, Router, Slot,\n'), ('        .app_context(state)\n        .build()', '        .app_context(state)\n        // わざと間違えた版: SameSite=Lax があるから要らない、と考えて外した\n        .origin_policy(OriginPolicy::dangerous_disable())\n        .build()')]

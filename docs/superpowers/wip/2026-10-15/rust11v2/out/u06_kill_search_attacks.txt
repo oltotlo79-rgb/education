@@ -1,0 +1,37 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.36s
+     Running tests\u06_attacks.rs (target\debug\deps\u06_attacks-67d62daf6467518a.exe)
+
+running 6 tests
+test security_headers ... ignored, 改善点: 守りのヘッダーを、まだ返していない（UNIT 03 の問2）
+test stored_xss_is_text ... ok
+test csrf_every_post ... ok
+test session_guards ... ok
+test search_cannot_cross_owners ... FAILED
+test idor_every_entrance ... ok
+
+failures:
+
+---- search_cannot_cross_owners stdout ----
+POST /signup -> 303 See Other (518.4537ms)
+POST /signup -> 303 See Other (535.6941ms)
+POST /notes -> 303 See Other (45.3695ms)
+GET /notes -> 200 OK (5.6834ms)
+GET /notes -> 200 OK (4.2228ms)
+GET /notes -> 200 OK (4.3284ms)
+GET /notes -> 200 OK (5.7074ms)
+GET /notes -> 200 OK (5.9014ms)
+GET /notes -> 200 OK (11.7798ms)
+
+thread 'search_cannot_cross_owners' (220036) panicked at tests\u06_attacks.rs:137:9:
+検索: "金庫" で alice のノートが見えた
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    search_cannot_cross_owners
+
+test result: FAILED. 4 passed; 1 failed; 1 ignored; 0 measured; 0 filtered out; finished in 1.31s
+
+error: test failed, to rerun pass `--test u06_attacks`
+exit=101

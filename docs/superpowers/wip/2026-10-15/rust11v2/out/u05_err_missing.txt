@@ -1,0 +1,35 @@
+[WebServer] マイグレーションを適用しました: 0001_users
+[WebServer] マイグレーションを適用しました: 0002_notes
+[WebServer] マイグレーションを適用しました: 0003_sessions
+[WebServer] RustNote を起動しました: http://127.0.0.1:3011
+
+Running 1 test using 1 worker
+
+[WebServer] GET /login -> 200 OK (460.8µs)
+[WebServer] GET /_topcoat/assets/style-e9b983efabcfc6c3.css -> 200 OK (689.5µs)
+[WebServer] GET /favicon.ico -> 404 Not Found (295.6µs)
+  ✘  1 tests\e05_missing.spec.ts:4:5 › メールアドレスを入れる (5.0s)
+
+
+  1) tests\e05_missing.spec.ts:4:5 › メールアドレスを入れる ───────────────────────────────────────────────────
+
+    Test timeout of 5000ms exceeded.
+
+    Error: locator.fill: Test timeout of 5000ms exceeded.
+    Call log:
+      - waiting for getByLabel('Eメール')
+
+
+      5 |   test.setTimeout(5_000);
+      6 |   await page.goto("/login");
+    > 7 |   await page.getByLabel("Eメール").fill("alice@example.com");
+        |                                 ^
+      8 | });
+      9 |
+        at ...\e2e\tests\e05_missing.spec.ts:7:33
+
+    Error Context: test-results\e05_missing-メールアドレスを入れる\error-context.md
+
+  1 failed
+    tests\e05_missing.spec.ts:4:5 › メールアドレスを入れる ────────────────────────────────────────────────────
+exit=1

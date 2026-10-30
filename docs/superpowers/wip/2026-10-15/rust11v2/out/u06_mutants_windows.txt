@@ -1,0 +1,20 @@
+  Installing cargo-mutants v27.1.0
+   Compiling winapi v0.2.8
+...
+error[E0425]: cannot find type `ULONG_PTR` in this scope
+  --> ...\registry\winapi-0.2.8\src\basetsd.rs:86:19
+   |
+86 | pub type SIZE_T = ULONG_PTR;
+   |                   ^^^^^^^^^ not found in this scope
+   |
+note: found an item that was configured out
+  --> ...\registry\winapi-0.2.8\src\basetsd.rs:55:10
+   |
+54 | #[cfg(target_arch = "x86")]
+   |       ------------------- the item is gated behind the `x86` feature
+55 | pub type ULONG_PTR = ::c_ulong;
+   |          ^^^^^^^^^
+...
+（error[E0425] が全部で 285 個）
+error: could not compile `winapi` (lib) due to 285 previous errors
+error: failed to compile `cargo-mutants v27.1.0`, intermediate artifacts can be found at `...\cargo-install...`.

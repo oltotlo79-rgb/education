@@ -1,0 +1,7 @@
+[WebServer] Error: アセットの束（assets/）がありません。先に `topcoat asset bundle` を実行するか、`topcoat dev` で起動してください
+[WebServer] 
+[WebServer] Caused by:
+[WebServer]     no asset bundle at ...\e2e_noassets\assets[WebServer] 
+Error: Process from config.webServer was not able to start. Exit code: 1
+
+exit=1

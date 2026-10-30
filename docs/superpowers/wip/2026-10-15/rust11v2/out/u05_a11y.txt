@@ -1,0 +1,29 @@
+[WebServer] マイグレーションを適用しました: 0001_users
+[WebServer] マイグレーションを適用しました: 0002_notes
+[WebServer] マイグレーションを適用しました: 0003_sessions
+[WebServer] RustNote を起動しました: http://127.0.0.1:3011
+
+Running 1 test using 1 worker
+
+[WebServer] GET /signup -> 200 OK (529.1µs)
+[WebServer] GET /_topcoat/assets/style-e9b983efabcfc6c3.css -> 200 OK (2.803ms)
+[WebServer] GET /favicon.ico -> 404 Not Found (281µs)
+[WebServer] POST /signup -> 303 See Other (427.5145ms)
+[WebServer] GET /notes -> 200 OK (4.2984ms)
+[WebServer] POST /notes -> 303 See Other (6.9612ms)
+[WebServer] GET /notes/1 -> 200 OK (3.5709ms)
+[WebServer] GET /notes -> 200 OK (6.6711ms)
+--- /notes: 違反 1 種類・合格 28 種類
+landmark-unique（moderate）: 1 か所
+  header > nav: The landmark must have a unique aria-label, aria-labelledby, or title to make landmarks distinguishable
+[WebServer] GET /notes/1 -> 200 OK (5.1575ms)
+--- /notes/1: 違反 0 種類・合格 21 種類
+[WebServer] GET /notes/1/edit -> 200 OK (6.0194ms)
+--- /notes/1/edit: 違反 0 種類・合格 25 種類
+[WebServer] POST /logout -> 303 See Other (7.6048ms)
+[WebServer] GET /login -> 200 OK (367.6µs)
+--- /login: 違反 0 種類・合格 31 種類
+  ✓  1 tests\a11y.spec.ts:5:5 › 4つの画面を axe で調べる (2.4s)
+
+  1 passed (4.3s)
+exit=0

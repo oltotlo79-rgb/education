@@ -1,0 +1,20 @@
+[WebServer] マイグレーションを適用しました: [WebServer] 0001_users
+[WebServer] マイグレーションを適用しました: 0002_notes
+[WebServer] マイグレーションを適用しました: 0003_sessions
+[WebServer] RustNote を起動しました: http://127.0.0.1:3011
+
+Running 1 test using 1 worker
+
+[WebServer] GET /signup -> 200 OK (475.5µs)
+[WebServer] GET /_topcoat/assets/style-e9b983efabcfc6c3.css -> 200 OK (1.328ms)
+[WebServer] GET /favicon.ico -> 404 Not Found (347.4µs)
+[WebServer] POST /signup -> 303 See Other (457.7981ms)
+[WebServer] GET /notes -> 200 OK (4.7647[WebServer] ms)
+[WebServer] POST /notes -> 303 See Other (11.4356ms)
+状態コード: 303・移動先: /notes/1
+[WebServer] GET /notes/1 -> 200 OK (4.0194ms)
+詳細の題: 80 文字（UTF-16 で 160）
+  ✓  1 tests\q2_direct.spec.ts:4:5 › 絵文字 80 個の題を、直接送る (928ms)
+
+  1 passed (3.1s)
+exit=0

@@ -1,0 +1,15 @@
+   Compiling rustnote v0.1.0 (...\rustnote_u07)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 8.37s
+     Running tests\u07_logs.rs (targetb\debug\deps\u07_logs-3df7745df2ca78b2.exe)
+
+running 1 test
+{"timestamp":"2026-10-30T19:30:38.309230Z","level":"INFO","fields":{"message":"request","method":"POST","path":"/signup","status":303,"elapsed_ms":957.9676000000001},"target":"rustnote::routes"}
+{"timestamp":"2026-10-30T19:30:38.686341Z","level":"INFO","fields":{"message":"request","method":"POST","path":"/login","status":401,"elapsed_ms":376.7552},"target":"rustnote::routes"}
+{"timestamp":"2026-10-30T19:30:38.732042Z","level":"INFO","fields":{"message":"request","method":"GET","path":"/notes/99","status":404,"elapsed_ms":45.3889},"target":"rustnote::routes"}
+{"timestamp":"2026-10-30T19:30:38.739513Z","level":"ERROR","fields":{"message":"internal error","causes":"サーバーの中でエラーが起きました <- DB の操作に失敗しました <- SQLite failure: `CHECK constraint failed: length(title) BETWEEN 1 AND 80`"},"target":"rustnote::views"}
+{"timestamp":"2026-10-30T19:30:38.739745Z","level":"INFO","fields":{"message":"request","method":"POST","path":"/notes","status":500,"elapsed_ms":7.3384},"target":"rustnote::routes"}
+test structured_logs ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.21s
+
+exit=0

@@ -1,0 +1,22 @@
+    Fetching advisory database from `https://github.com/RustSec/advisory-db.git`
+      Loaded 1395 security advisories (from ...\advisory-db)
+    Updating crates.io index
+    Scanning Cargo.lock for vulnerabilities (367 crate dependencies)
+Crate:     bincode
+Version:   1.3.3
+Warning:   unmaintained
+Title:     Bincode is unmaintained
+Date:      2025-12-16
+ID:        RUSTSEC-2025-0141
+URL:       https://rustsec.org/advisories/RUSTSEC-2025-0141
+
+Crate:     rustls-pemfile
+Version:   2.2.0
+Warning:   unmaintained
+Title:     rustls-pemfile is unmaintained
+Date:      2025-11-28
+ID:        RUSTSEC-2025-0134
+URL:       https://rustsec.org/advisories/RUSTSEC-2025-0134
+
+warning: 2 allowed warnings found
+exit=0

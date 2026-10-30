@@ -1,0 +1,16 @@
+# TYPE rustnote_requests_total counter
+rustnote_requests_total{class="1xx"} 0
+rustnote_requests_total{class="2xx"} 1
+rustnote_requests_total{class="3xx"} 1
+rustnote_requests_total{class="4xx"} 1
+rustnote_requests_total{class="5xx"} 0
+# TYPE rustnote_request_duration_seconds histogram
+rustnote_request_duration_seconds_bucket{le="0.005"} 3
+rustnote_request_duration_seconds_bucket{le="0.01"} 3
+rustnote_request_duration_seconds_bucket{le="0.05"} 3
+rustnote_request_duration_seconds_bucket{le="0.1"} 3
+rustnote_request_duration_seconds_bucket{le="0.5"} 3
+rustnote_request_duration_seconds_bucket{le="1"} 3
+rustnote_request_duration_seconds_bucket{le="+Inf"} 3
+rustnote_request_duration_seconds_sum 0.001177
+rustnote_request_duration_seconds_count 3

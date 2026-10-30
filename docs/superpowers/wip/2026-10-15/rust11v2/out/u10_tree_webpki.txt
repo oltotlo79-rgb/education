@@ -1,0 +1,8 @@
+rustls-webpki v0.102.8
+└── rustls v0.22.4
+    ├── hyper-rustls v0.25.0
+    │   └── libsql v0.10.0
+    │       └── rustnote v0.1.0 (...\rustnote)
+    └── tokio-rustls v0.25.0
+        └── hyper-rustls v0.25.0 (*)
+exit=0

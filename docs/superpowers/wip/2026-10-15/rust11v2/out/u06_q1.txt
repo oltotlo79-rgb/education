@@ -1,0 +1,19 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 10.27s
+     Running tests\u06_q1.rs (target\debug\deps\u06_q1-b5e919675d174dc3.exe)
+
+running 1 test
+POST /signup -> 303 See Other (575.0079ms)
+POST /notes -> 303 See Other (8.7623ms)
+ほかのサイトから GET /notes/1/toggle → 405 Method Not Allowed（Allow: Some("POST")）
+ほかのサイトから GET /notes/1/delete → 405 Method Not Allowed（Allow: Some("POST")）
+ほかのサイトから GET /logout → 405 Method Not Allowed（Allow: Some("POST")）
+GET /notes/1 -> 200 OK (4.7858ms)
+alice のノートは残っている: true・完了になっていない: true
+GET /notes -> 200 OK (4.4626ms)
+alice はログインしたまま: 200 OK
+test state_changing_urls_by_get ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.62s
+
+exit=0

@@ -1,0 +1,1 @@
+REPLACEMENTS = [('    if let Some(token_hash) = session::stop(cx).await.map_err(AppError::internal)? {\n        app_state(cx).sessions.delete(&token_hash).await?;\n    }\n', '    // わざと間違えた版: クッキーは消すが、DB の記録は消さない\n    session::stop(cx).await.map_err(AppError::internal)?;\n')]

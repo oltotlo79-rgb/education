@@ -1,0 +1,4 @@
+src/auth.rs:91:5: replace authenticate -> Result<Option<User>, AppError> with Ok(Some(Default::default()))
+src/auth.rs:149:5: replace load_current_user -> Result<Option<User>, AppError> with Ok(Some(Default::default()))
+src/auth.rs:161:5: replace current_user -> Result<Option<&User>, AppError> with Ok(Some(Box::leak(Box::new(Default::default()))))
+src/auth.rs:171:5: replace require_user -> Result<&User> with Ok(Box::leak(Box::new(Default::default())))

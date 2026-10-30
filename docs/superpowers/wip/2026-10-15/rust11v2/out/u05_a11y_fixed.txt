@@ -1,0 +1,27 @@
+[WebServer] マイグレーションを適用しました: [WebServer] 0001_users
+[WebServer] マイグレーションを適用しました: 0002_notes
+[WebServer] マイグレーションを適用しました: 0003_sessions
+[WebServer] RustNote を起動しました: http://127.0.0.1:3011
+
+Running 1 test using 1 worker
+
+[WebServer] GET /signup -> 200 OK (580.1µs)
+[WebServer] GET /_topcoat/assets/style-e9b983efabcfc6c3.css -> 200 OK (2.341ms)
+[WebServer] GET /favicon.ico -> 404 Not Found (352.8µs)
+[WebServer] POST /signup -> 303 See Other (472.7492ms)
+[WebServer] GET /notes -> 200 OK (6.4121ms)
+[WebServer] POST /notes -> 303 See Other (11.0282ms)
+[WebServer] GET /notes/1 -> 200 OK (5.188ms)
+[WebServer] GET /notes -> 200 OK (6.5522ms)
+--- /notes: 違反 0 種類・合格 33 種類
+[WebServer] GET /notes/1 -> 200 OK (5.2739ms)
+--- /notes/1: 違反 0 種類・合格 26 種類
+[WebServer] GET /notes/1/edit -> 200 OK (7.8728ms)
+--- /notes/1/edit: 違反 0 種類・合格 30 種類
+[WebServer] POST /logout -> 303 See Other (9.1355ms[WebServer] )
+[WebServer] GET /login -> 200 OK (367.2µs)
+--- /login: 違反 0 種類・合格 36 種類
+  ✓  1 tests\a11y.spec.ts:5:5 › 4つの画面を axe で調べる (2.6s)
+
+  1 passed (4.7s)
+exit=0

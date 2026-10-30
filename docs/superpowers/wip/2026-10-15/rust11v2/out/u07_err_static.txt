@@ -1,0 +1,13 @@
+   Compiling rustnote v0.1.0 (...\rustnote_u07)
+error[E0015]: cannot call non-const associated function `HashMap::<u16, u64>::new` in statics
+ --> tests\e07_static.rs:8:54
+  |
+8 | static COUNTS: Mutex<HashMap<u16, u64>> = Mutex::new(HashMap::new());
+  |                                                      ^^^^^^^^^^^^^^
+  |
+  = note: calls in statics are limited to constant functions, tuple structs and tuple variants
+  = note: consider wrapping this expression in `std::sync::LazyLock::new(|| ...)`
+
+For more information about this error, try `rustc --explain E0015`.
+error: could not compile `rustnote` (test "e07_static") due to 1 previous error
+exit=101

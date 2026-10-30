@@ -1,0 +1,6 @@
+src/repository/notes.rs:78:9: replace <impl NoteRepository for LibsqlNoteRepository>::find -> Result<Option<Note>, RepoError> with Ok(None)
+src/repository/notes.rs:190:9: replace <impl NoteRepository for LibsqlNoteRepository>::delete -> Result<(), RepoError> with Ok(())
+src/repository/notes.rs:197:20: replace == with != in <impl NoteRepository for LibsqlNoteRepository>::delete
+src/repository/notes.rs:213:34: replace != with == in row_to_note
+src/repository/notes.rs:222:5: replace escape_like -> String with String::new()
+src/repository/notes.rs:222:5: replace escape_like -> String with "xyzzy".into()

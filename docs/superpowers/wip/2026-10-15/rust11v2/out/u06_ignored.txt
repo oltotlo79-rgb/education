@@ -1,0 +1,23 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.69s
+     Running tests\u06_attacks.rs (target\debug\deps\u06_attacks-67d62daf6467518a.exe)
+
+running 1 test
+test security_headers ... FAILED
+
+failures:
+
+---- security_headers stdout ----
+GET /login -> 200 OK (960.8µs)
+
+thread 'security_headers' (220884) panicked at tests\u06_attacks.rs:182:9:
+ヘッダー: x-content-type-options が無い
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    security_headers
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.04s
+
+error: test failed, to rerun pass `--test u06_attacks`
+exit=101

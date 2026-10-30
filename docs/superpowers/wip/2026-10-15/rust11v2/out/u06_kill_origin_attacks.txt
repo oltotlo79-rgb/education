@@ -1,0 +1,34 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.68s
+     Running tests\u06_attacks.rs (target\debug\deps\u06_attacks-67d62daf6467518a.exe)
+
+running 6 tests
+test security_headers ... ignored, 改善点: 守りのヘッダーを、まだ返していない（UNIT 03 の問2）
+test stored_xss_is_text ... ok
+test session_guards ... ok
+test search_cannot_cross_owners ... ok
+test idor_every_entrance ... ok
+test csrf_every_post ... FAILED
+
+failures:
+
+---- csrf_every_post stdout ----
+POST /signup -> 303 See Other (903.3641ms)
+POST /signup -> 303 See Other (538.2863ms)
+POST /notes -> 303 See Other (80.8538ms)
+POST /notes -> 303 See Other (49.6755ms)
+
+thread 'csrf_every_post' (221272) panicked at tests\u06_attacks.rs:86:9:
+assertion `left == right` failed: CSRF: POST /notes
+  left: 303
+ right: 403
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    csrf_every_post
+
+test result: FAILED. 4 passed; 1 failed; 1 ignored; 0 measured; 0 filtered out; finished in 1.78s
+
+error: test failed, to rerun pass `--test u06_attacks`
+exit=101

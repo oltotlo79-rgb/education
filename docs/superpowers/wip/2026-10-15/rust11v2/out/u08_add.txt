@@ -1,0 +1,50 @@
+    Updating crates.io index
+      Adding criterion =0.8.2 to dev-dependencies
+             Features:
+             + cargo_bench_support
+             + plotters
+             + rayon
+             - async
+             - async_futures
+             - async_smol
+             - async_tokio
+             - csv_output
+             - html_reports
+             - real_blackbox
+             - stable
+    Updating crates.io index
+     Locking 33 packages to highest Rust 1.99 compatible versions
+      Adding alloca v0.4.0
+      Adding anes v0.1.6
+      Adding anstyle v1.0.14
+      Adding cast v0.3.0
+      Adding ciborium v0.2.2
+      Adding ciborium-io v0.2.2
+      Adding ciborium-ll v0.2.2
+      Adding clap v4.6.7
+      Adding clap_builder v4.6.7
+      Adding clap_lex v1.1.1
+      Adding criterion v0.8.2
+      Adding criterion-plot v0.8.2
+      Adding crossbeam-deque v0.8.8
+      Adding crossbeam-epoch v0.9.21
+      Adding crossbeam-utils v0.8.23
+      Adding crunchy v0.2.4
+      Adding half v2.7.1
+      Adding itertools v0.13.0
+      Adding oorandom v11.1.5
+      Adding page_size v0.6.0
+      Adding plotters v0.3.7
+      Adding plotters-backend v0.3.7
+      Adding plotters-svg v0.3.7
+      Adding rayon v1.12.0
+      Adding rayon-core v1.13.0
+      Adding same-file v1.0.6
+      Adding tinytemplate v1.2.1
+      Adding walkdir v2.5.0
+      Adding web-sys v0.3.107
+      Adding winapi v0.3.9
+      Adding winapi-i686-pc-windows-gnu v0.4.0
+      Adding winapi-util v0.1.11
+      Adding winapi-x86_64-pc-windows-gnu v0.4.0
+exit=0

@@ -1,0 +1,12 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+warning: unused variable: `started`
+  --> src\routes\health.rs:22:9
+   |
+22 |     let started = std::time::Instant::now();
+   |         ^^^^^^^ help: if this is intentional, prefix it with an underscore: `_started`
+   |
+   = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: `rustnote` (lib) generated 1 warning (run `cargo fix --lib -p rustnote` to apply 1 suggestion)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 5.75s
+exit=0

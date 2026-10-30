@@ -1,0 +1,44 @@
+[WebServer] マイグレーションを適用しました: 0001_users
+[WebServer] マイグレーションを適用しました: 0002_notes
+[WebServer] マイグレーションを適用しました: 0003_sessions
+[WebServer] RustNote を起動しました: http://127.0.0.1:3011
+
+Running 4 tests using 1 worker
+
+[WebServer] GET /signup -> 200 OK (566.2µs)
+[WebServer] GET /_topcoat/assets/style-e9b983efabcfc6c3.css -> 200 OK (720.8µs)
+[WebServer] GET /favicon.ico -> 404 Not Found (287.[WebServer] 1µs)
+[WebServer] POST /signup -> 303 See Other (437.8988ms)
+[WebServer] GET /notes -> 200 OK (4.2699ms)
+半角の a: 入った文字数 80・UTF-16 の数 80
+[WebServer] POST /notes -> 303 See Other (11.1312ms)
+[WebServer] GET /notes/1 -> 200 OK (3.7771ms)
+半角の a: 作成した → /notes/1
+  ✓  1 tests\maxlength.spec.ts:20:7 › 半角の a を 100 個打つ (1.0s)
+[WebServer] GET /signup -> 200 OK (315.7µs)
+[WebServer] GET /_topcoat/assets/style-e9b983efabcfc6c3.css -> 200 OK (409.1µs[WebServer] )
+[WebServer] POST[WebServer]  /signup -> 303 See Other (428.4791ms)
+[WebServer] GET /notes -> 200 OK (3.6328ms)
+ひらがなの あ: 入った文字数 80・UTF-16 の数 80
+[WebServer] POST /notes -> 303 See Other (10.373ms)
+[WebServer] GET /notes/2 -> 200 OK (4.4988ms)
+ひらがなの あ: 作成した → /notes/2
+  ✓  2 tests\maxlength.spec.ts:20:7 › ひらがなの あ を 100 個打つ (987ms)
+[WebServer] GET /signup -> 200 OK (327.2µs)
+[WebServer] GET /_topcoat/assets/style-e9b983efabcfc6c3.css -> 200 OK (863.2µs)
+[WebServer] POST[WebServer]  [WebServer] /signup -> 303 See Other (471.2278ms)
+[WebServer] GET /notes -> 200 OK (4.3074ms)
+絵文字の 😀: 入った文字数 40・UTF-16 の数 80
+[WebServer] POST /notes -> 303 See Other (10.8381ms)
+[WebServer] GET /notes/3 -> 200 OK (4.3921ms)
+絵文字の 😀: 作成した → /notes/3
+  ✓  3 tests\maxlength.spec.ts:20:7 › 絵文字の 😀 を 100 個打つ (996ms)
+[WebServer] GET /signup -> 200 OK (318.[WebServer] 2µs)
+[WebServer] GET /_topcoat/assets/style-e9b983efabcfc6c3.css -> 200 OK (1.5865ms)
+[WebServer] POST /signup -> 303 See Other (443.0712ms)
+[WebServer] GET /notes -> 200 OK (4.262ms)
+fill: 入った文字数 80
+  ✓  4 tests\maxlength.spec.ts:36:5 › fill で入れると、maxlength はどうなるか (841ms)
+
+  4 passed (5.9s)
+exit=0

@@ -1,0 +1,9 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `bench` profile [optimized] target(s) in 2.86s
+     Running benches\parse_noharness.rs (target\release\deps\parse_noharness-7a6ad26694ed1cf5.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+exit=0

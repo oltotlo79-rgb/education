@@ -1,5 +1,15 @@
 # 中断時点の引き継ぎメモ
 
+## 2026-10-31（続き3）: 第11巻を完成（main: 75d1c40 UNIT 05・0b0e084 UNIT 06・78e4f5c UNIT 07・a9ad4be UNIT 08・c629320 UNIT 09・94e3efc UNIT 10）
+
+素材は `rust11v2/`（parts・out（.raw を除く）・errs・variants（metrics.rs）・staging_u07・staging_u08・e2e（Playwright。node_modules を除く）・fuzz_lab・rustnote/（tests・examples・Cargo.*）・cap11_*.sh）。練習用のコピーは3つ（`rust11/rustnote`・UNIT 07 と 10 用の `rustnote_u07`（target11b）・cargo-mutants 用の `rustnote_mut`（http・u06_attacks・repository だけ））。
+
+- **道具の版:** Playwright 1.64.1（Chrome は 155.0.8059.80 が動いた）・@axe-core/playwright 4.14.0・cargo-mutants 27.1.0（Windows ARM64 は winapi 0.2.8 で組み立て不可、WSL で動かした）・tracing 0.1.44・tracing-subscriber 0.3.23・criterion 0.8.2・oha 1.16.0・cargo-audit 0.22.2。
+- **確かめた事実（抜粋）:** E2E: maxlength=80 は Chrome でも UTF-16（絵文字 40 個）、axe は一覧の2つの nav に landmark-unique。守り: CSRF は /login・/signup も 403、検索のかっこを外した版は本文が空のテストでは u06_attacks も http.rs も見逃し、本文に秘密を入れると気づく。cargo-mutants は auth.rs 9 caught・4 unviable、notes.rs 6 caught・6 unviable、見逃し 0（SQL の文字列は壊さない）。tracing の JSON ログ・/metrics（AtomicU64 の static）・SLO（NUL の題の 500 が 3 回で予算 300%）。criterion: parse a 63.7 ns・あ 79.9 ns・😀 86.6 ns。ログインは debug で 86%、release で 58% が Argon2（386.72 → 20.27 ms）。Argon2 は1回 19.00 MiB。oha: GET /login 12,710 rps・GET /notes 914 rps、ログインは同時 12 で 61.4、48 で 46.6 rps・654 MiB、Semaphore（CPU の数）で 48 が 69.5 rps・218 MiB。全部 403 でも oha は Success 100%、接続できなくても exit=0。
+- **RustNote の重要な発見（コードは変えていない）:** ①題が NUL で始まると 500（UNIT 04）、②`cargo audit` で 8 件の弱点（libsql 0.10.0 の Turso 接続の h2 0.3.27・rustls 0.22.4・rustls-webpki 0.102.8。libsql は最新で直らない。replication・sync を外すと部品 367 → 330・テストは通るが弱点は残る）、③守りのヘッダー無し・NoteQuery の pub page・Argon2 の同時数に上限なし・nav の名前・maxlength の数え方。第13巻（完全コード）を書く前に、直すかを決める。
+- **メモリ:** WSL の vmmem が 14 GB まで増えてバックグラウンドの処理が止められた。`wsl -u root -- bash -c "sync; echo 1 > /proc/sys/vm/drop_caches"` で空く。WSL と Windows の重い組み立てを同時にしない。cargo-mutants は、比べるテストだけのコピーで動かす（全部のテストを毎回組み立てると遅い）。
+- **次:** 第13巻（UNIT 01〜02 の版合わせ → UNIT 03〜10。巻頭の「書き直し中の巻」の記述を更新）→ 第12巻（Docker）→ 第1巻。
+
 ## 2026-10-31（続き2）: 第11巻 UNIT 01〜04（main: 75ce81b 取り直し、99473a3 UNIT 03、d67b991 UNIT 04）
 
 素材は `rust11v2/`（parts・out・errs（置き換え表と、わざと間違えたテスト）・rustnote/（tests・examples・Cargo.toml・Cargo.lock）・fuzz_lab（target と corpus を除く）・cap11*.sh）。ビルド先は `target11`。練習用のコピーの `Cargo.toml` に dev-dependency の `scraper =0.29.0`・`proptest =1.12.0` を足した（教材の RustNote には足していない）。

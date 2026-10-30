@@ -1,0 +1,11 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `release` profile [optimized] target(s) in 2.01s
+     Running tests\u08_debug_vs_release.rs (target\release\deps\u08_debug_vs_release-8fc476c4a4ff0f98.exe)
+
+running 1 test
+release: 10 万回で 4.71ms（1回あたり 47 ns）
+test parse_100k_titles ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+exit=0

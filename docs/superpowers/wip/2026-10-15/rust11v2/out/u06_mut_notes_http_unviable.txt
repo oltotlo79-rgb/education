@@ -1,0 +1,6 @@
+src/repository/notes.rs:60:9: replace <impl NoteRepository for LibsqlNoteRepository>::insert -> Result<Note, RepoError> with Ok(Default::default())
+src/repository/notes.rs:78:9: replace <impl NoteRepository for LibsqlNoteRepository>::find -> Result<Option<Note>, RepoError> with Ok(Some(Default::default()))
+src/repository/notes.rs:90:9: replace <impl NoteRepository for LibsqlNoteRepository>::search -> Result<NotePage, RepoError> with Ok(Default::default())
+src/repository/notes.rs:141:9: replace <impl NoteRepository for LibsqlNoteRepository>::update -> Result<Note, RepoError> with Ok(Default::default())
+src/repository/notes.rs:172:9: replace <impl NoteRepository for LibsqlNoteRepository>::toggle_done -> Result<Note, RepoError> with Ok(Default::default())
+src/repository/notes.rs:206:5: replace row_to_note -> Result<Note, RepoError> with Ok(Default::default())

@@ -109,14 +109,12 @@
 | UNIT 02 | リポジトリの結合テスト | 本物の DB と SQL で、保存と読み出しを確かめる |
 | UNIT 03 | HTTP のテスト | 状態コード・Location・クッキー・本文を確かめる |
 | UNIT 04 | property test・fuzz・入力の読み取り | 思いつかない入力を、たくさん自動で試す |
-| UNIT 05 | E2E・ブラウザ・アクセシビリティ（準備中） | 大事な流れだけを、本物のブラウザで確かめる |
-| UNIT 06 | 守りの回帰テスト（準備中） | 攻撃が止まることを、毎回確かめる |
-| UNIT 07 | tracing・メトリクス・health・SLO（準備中） | 動いている様子を外から見えるようにする |
-| UNIT 08 | benchmark・profile・メモリの使い方（準備中） | 遅いところを、測ってから直す |
-| UNIT 09 | 負荷試験・背圧・容量（準備中） | たくさん来たときの限界と、壊れ方を決める |
-| UNIT 10 | CI・依存・供給網・事故の対応（準備中） | 毎回同じ確かめを自動で回し、部品の安全も見る |
-
-> **お知らせ:** この版には UNIT 01〜04 を収録しています。UNIT 05〜10 は準備中で、次の更新から順に追加します。
+| UNIT 05 | E2E・ブラウザ・アクセシビリティ | 大事な流れだけを、本物のブラウザで確かめる |
+| UNIT 06 | 守りの回帰テスト | 攻撃が止まることを、毎回確かめる |
+| UNIT 07 | tracing・メトリクス・health・SLO | 動いている様子を外から見えるようにする |
+| UNIT 08 | benchmark・profile・メモリの使い方 | 遅いところを、測ってから直す |
+| UNIT 09 | 負荷試験・背圧・容量 | たくさん来たときの限界と、壊れ方を決める |
+| UNIT 10 | CI・依存・供給網・事故の対応 | 毎回同じ確かめを自動で回し、部品の安全も見る |
 
 ### 前提知識（先に読んでおく巻）
 
@@ -145,6 +143,13 @@
 | scraper | 0.29.0（UNIT 03。HTML を読んで、CSS セレクターで要素を探す） |
 | proptest | 1.12.0（UNIT 04。property test） |
 | cargo-fuzz | 0.13.2（UNIT 04。WSL の Ubuntu 24.04（aarch64）で、rustc 1.101.0-nightly とともに使う） |
+| Playwright | @playwright/test 1.64.1（UNIT 05。Node.js v25.9.0。ブラウザは、パソコンに入っている Google Chrome 155.0.8059.80 を使う） |
+| axe | @axe-core/playwright 4.14.0（UNIT 05。アクセシビリティの自動の検査） |
+| cargo-mutants | 27.1.0（UNIT 06。WSL の Ubuntu で使う） |
+| tracing | tracing 0.1.44・tracing-subscriber 0.3.23（UNIT 07。練習用のコピーの dependencies に足す） |
+| criterion | 0.8.2（UNIT 08。ベンチマーク） |
+| oha | 1.16.0（UNIT 09。負荷をかける道具。このパソコンは Snapdragon X 12 コア・32 GB） |
+| cargo-audit | 0.22.2（UNIT 10。RustSec のデータベースは 2026-10-30 の時点のもの） |
 | テストの道具 | Rust の標準の `#[test]`・`assert!`・`assert_eq!`（UNIT 01 では、外のクレートを足しません） |
 
 ### 練習用のフォルダを用意する

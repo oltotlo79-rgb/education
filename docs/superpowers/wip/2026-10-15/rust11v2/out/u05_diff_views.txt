@@ -1,0 +1,20 @@
+--- a/src/views.rs
++++ b/src/views.rs
+@@ -33,7 +33,7 @@
+     Ok(view! {
+         <header class="site-header">
+             <a class="brand" href=(href!(crate::routes::home))>"RustNote"</a>
+-            <nav>
++            <nav aria-label="メニュー">
+                 if let Some(user) = user {
+                     <a href=(href!(crate::routes::notes::index))>"ノート一覧"</a>
+                     <span class="user-email">(user.email.as_str())</span>
+@@ -167,7 +167,7 @@
+     let next = page.has_next().then(|| link(page.page + 1));
+ 
+     Ok(view! {
+-        <nav class="pagination">
++        <nav class="pagination" aria-label="ページ送り">
+             if let Some(prev) = prev {
+                 <a href=(prev)>"← 前へ"</a>
+             }

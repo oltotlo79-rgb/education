@@ -1,0 +1,11 @@
+   Compiling rustnote v0.1.0 (...\rustnote_u07)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.37s
+     Running tests\e07_no_subscriber.rs (targetb\debug\deps\e07_no_subscriber-78fead97be3b55df.exe)
+
+running 1 test
+2つのリクエストを送りました
+test logs_without_subscriber ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.26s
+
+exit=0

@@ -1,0 +1,34 @@
+--- before
++++ after
+@@ -11,12 +11,13 @@
+ 
+ const PASSWORD: &str = "correct horse battery";
+ 
+-/// alice と bob を登録し、alice のノートを1つ作る
++/// alice と bob を登録し、alice のノートを1つ作る（本文にも、秘密の言葉を入れる）
+ async fn two_users() -> (TestApp, String, String) {
+     let app = test_app().await;
+     let alice = app.sign_up("alice@example.com", PASSWORD).await;
+     let bob = app.sign_up("bob@example.com", PASSWORD).await;
+-    app.create_note(&alice, "alice の秘密", "").await;
++    app.create_note(&alice, "alice の秘密", "金庫の番号は 1234")
++        .await;
+     (app, alice, bob)
+ }
+ 
+@@ -123,7 +124,14 @@
+ #[tokio::test]
+ async fn search_cannot_cross_owners() {
+     let (app, _alice, bob) = two_users().await;
+-    for keyword in ["%", "_", "' OR 1=1 --", "%' OR user_id != '", "秘密"] {
++    for keyword in [
++        "%",
++        "_",
++        "' OR 1=1 --",
++        "%' OR user_id != '",
++        "秘密",
++        "金庫",
++    ] {
+         let uri = format!("/notes?q={}", encode(keyword));
+         let html = body_text(app.get(&uri, Some(&bob)).await).await;
+         assert!(

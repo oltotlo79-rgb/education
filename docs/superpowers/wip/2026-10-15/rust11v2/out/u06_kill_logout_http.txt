@@ -1,0 +1,45 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.77s
+     Running tests\http.rs (target\debug\deps\http-e1f90d5c2a5d8ccf.exe)
+
+running 14 tests
+test notes_require_login ... ok
+test health_returns_ok_json ... ok
+test top_page_shows_links_when_logged_out ... ok
+test invalid_ids_and_unknown_urls_are_404 ... ok
+test empty_title_is_400 ... ok
+test create_note_follows_prg_and_escapes_html ... ok
+test flash_message_is_shown_once ... ok
+test cross_site_post_is_403 ... ok
+test edit_with_stale_version_is_409 ... ok
+test toggle_and_delete_redirect ... ok
+test signup_validates_input_and_rejects_duplicates ... ok
+test other_users_notes_are_404 ... ok
+test list_searches_and_paginates ... ok
+test login_and_logout ... FAILED
+
+failures:
+
+---- login_and_logout stdout ----
+POST /signup -> 303 See Other (451.0644ms)
+POST /login -> 401 Unauthorized (391.8803ms)
+POST /login -> 401 Unauthorized (756.8957ms)
+POST /login -> 303 See Other (386.085ms)
+GET /notes -> 200 OK (3.6638ms)
+POST /logout -> 303 See Other (1.3122ms)
+GET /notes -> 200 OK (2.8495ms)
+
+thread 'login_and_logout' (216460) panicked at tests\http.rs:144:5:
+assertion `left == right` failed
+  left: 200
+ right: 303
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    login_and_logout
+
+test result: FAILED. 13 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.34s
+
+error: test failed, to rerun pass `--test http`
+exit=101

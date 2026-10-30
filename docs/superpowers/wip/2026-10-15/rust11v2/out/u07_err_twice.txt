@@ -1,0 +1,25 @@
+   Compiling rustnote v0.1.0 (...\rustnote_u07)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.70s
+     Running tests\e07_init_twice.rs (targetb\debug\deps\e07_init_twice-a8a746297866e4f2.exe)
+
+running 2 tests
+test first ... FAILED
+{"timestamp":"2026-10-30T19:31:11.822487Z","level":"INFO","fields":{"message":"request","method":"GET","path":"/signup","status":200,"elapsed_ms":0.6685000000000001},"target":"rustnote::routes"}
+test second ... ok
+
+failures:
+
+---- first stdout ----
+
+thread 'first' (220928) panicked at ...\mod.rs:520:14:
+Unable to install global subscriber: SetGlobalDefaultError("a global default trace dispatcher has already been set")
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    first
+
+test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+
+error: test failed, to rerun pass `--test e07_init_twice`
+exit=101

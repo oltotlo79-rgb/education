@@ -1,0 +1,37 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 8.06s
+     Running tests\u06_attacks.rs (target\debug\deps\u06_attacks-67d62daf6467518a.exe)
+
+running 6 tests
+test security_headers ... ignored, 改善点: 守りのヘッダーを、まだ返していない（UNIT 03 の問2）
+test stored_xss_is_text ... ok
+test session_guards ... ok
+test csrf_every_post ... ok
+test idor_every_entrance ... FAILED
+test search_cannot_cross_owners ... ok
+
+failures:
+
+---- idor_every_entrance stdout ----
+POST /signup -> 303 See Other (668.1756ms)
+POST /signup -> 303 See Other (563.9484ms)
+POST /notes -> 303 See Other (23.8889ms)
+GET /notes/1 -> 404 Not Found (9.5485ms)
+GET /notes/1/edit -> 404 Not Found (8.1322ms)
+POST /notes/1/edit -> 404 Not Found (3.6809ms)
+POST /notes/1/toggle -> 303 See Other (81.8414ms)
+
+thread 'idor_every_entrance' (22452) panicked at tests\u06_attacks.rs:59:9:
+assertion `left == right` failed: IDOR: POST /notes/1/toggle
+  left: 303
+ right: 404
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    idor_every_entrance
+
+test result: FAILED. 4 passed; 1 failed; 1 ignored; 0 measured; 0 filtered out; finished in 1.56s
+
+error: test failed, to rerun pass `--test u06_attacks`
+exit=101

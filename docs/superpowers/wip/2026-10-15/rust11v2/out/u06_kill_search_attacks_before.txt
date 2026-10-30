@@ -1,0 +1,15 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.00s
+     Running tests\u06_attacks.rs (target\debug\deps\u06_attacks-67d62daf6467518a.exe)
+
+running 6 tests
+test security_headers ... ignored, 改善点: 守りのヘッダーを、まだ返していない（UNIT 03 の問2）
+test stored_xss_is_text ... ok
+test session_guards ... ok
+test search_cannot_cross_owners ... ok
+test csrf_every_post ... ok
+test idor_every_entrance ... ok
+
+test result: ok. 5 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 1.24s
+
+exit=0

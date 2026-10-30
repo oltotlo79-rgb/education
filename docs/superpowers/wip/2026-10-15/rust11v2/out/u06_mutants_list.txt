@@ -1,0 +1,16 @@
+$ cargo mutants --version
+cargo-mutants 27.1.0
+$ cargo mutants --list --file src/auth.rs
+src/auth.rs:38:5: replace hash_password -> Result<String, AppError> with Ok(String::new())
+src/auth.rs:38:5: replace hash_password -> Result<String, AppError> with Ok("xyzzy".into())
+src/auth.rs:55:5: replace verify_password -> Result<bool, AppError> with Ok(true)
+src/auth.rs:55:5: replace verify_password -> Result<bool, AppError> with Ok(false)
+src/auth.rs:91:5: replace authenticate -> Result<Option<User>, AppError> with Ok(None)
+src/auth.rs:91:5: replace authenticate -> Result<Option<User>, AppError> with Ok(Some(Default::default()))
+src/auth.rs:116:5: replace log_in -> Result<(), AppError> with Ok(())
+src/auth.rs:134:5: replace log_out -> Result<(), AppError> with Ok(())
+src/auth.rs:149:5: replace load_current_user -> Result<Option<User>, AppError> with Ok(None)
+src/auth.rs:149:5: replace load_current_user -> Result<Option<User>, AppError> with Ok(Some(Default::default()))
+src/auth.rs:161:5: replace current_user -> Result<Option<&User>, AppError> with Ok(None)
+src/auth.rs:161:5: replace current_user -> Result<Option<&User>, AppError> with Ok(Some(Box::leak(Box::new(Default::default()))))
+src/auth.rs:171:5: replace require_user -> Result<&User> with Ok(Box::leak(Box::new(Default::default())))

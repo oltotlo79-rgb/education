@@ -1,0 +1,85 @@
+   Compiling zerocopy v0.8.63
+   Compiling zerocopy-derive v0.8.63
+   Compiling num-traits v0.2.19
+   Compiling crossbeam-utils v0.8.23
+   Compiling crossbeam-epoch v0.9.21
+   Compiling crossbeam-deque v0.8.8
+   Compiling rayon-core v1.13.0
+   Compiling either v1.19.0
+   Compiling winapi v0.3.9
+   Compiling alloca v0.4.0
+   Compiling winapi-util v0.1.11
+   Compiling plotters-backend v0.3.7
+   Compiling ciborium-io v0.2.2
+   Compiling anstyle v1.0.14
+   Compiling clap_lex v1.1.1
+   Compiling same-file v1.0.6
+   Compiling plotters-svg v0.3.7
+   Compiling itertools v0.13.0
+   Compiling clap_builder v4.6.7
+   Compiling regex-automata v0.4.18
+   Compiling cast v0.3.0
+   Compiling walkdir v2.5.0
+   Compiling tinytemplate v1.2.1
+   Compiling anes v0.1.6
+   Compiling oorandom v11.1.5
+   Compiling chrono v0.4.45
+   Compiling page_size v0.6.0
+   Compiling criterion-plot v0.8.2
+   Compiling plotters v0.3.7
+   Compiling clap v4.6.7
+   Compiling proptest v1.12.0
+   Compiling rayon v1.12.0
+   Compiling regex v1.13.1
+   Compiling ppv-lite86 v0.2.21
+   Compiling ahash v0.8.12
+   Compiling half v2.7.1
+   Compiling hashbrown v0.14.5
+   Compiling rand_chacha v0.3.1
+   Compiling rand_chacha v0.9.0
+   Compiling ciborium-ll v0.2.2
+   Compiling rand v0.9.5
+   Compiling rand v0.8.8
+   Compiling ciborium v0.2.2
+   Compiling hashlink v0.8.4
+   Compiling tungstenite v0.29.0
+   Compiling criterion v0.8.2
+   Compiling libsql-rusqlite v0.10.0
+   Compiling tower v0.4.13
+   Compiling cookie v0.18.2
+   Compiling tokio-tungstenite v0.29.0
+   Compiling libsql-sys v0.10.0
+   Compiling topcoat-router v0.11.0
+   Compiling axum v0.6.20
+   Compiling tower-http v0.4.4
+   Compiling topcoat-asset v0.11.0
+   Compiling topcoat-cookie v0.11.0
+   Compiling tonic v0.11.0
+   Compiling topcoat-session v0.11.0
+   Compiling topcoat-runtime v0.11.0
+   Compiling topcoat-font v0.11.0
+   Compiling topcoat v0.11.0
+   Compiling libsql_replication v0.10.0
+   Compiling tonic-web v0.11.0
+   Compiling libsql v0.10.0
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 52.48s
+     Running tests\u08_login_parts.rs (target\debug\deps\u08_login_parts-aef90cba29d25283.exe)
+
+running 1 test
+POST /signup -> 303 See Other (463.303ms)
+POST /login -> 303 See Other (450.1086ms)
+POST /login -> 303 See Other (817.8213ms)
+POST /login -> 303 See Other (792.3475ms)
+POST /login -> 303 See Other (707.9839ms)
+POST /login -> 303 See Other (839.5064ms)
+--- debug ビルド（5回のうち、いちばん短い時間）
+DB でユーザーを探す :     1.43ms
+パスワードの照合   :   386.72ms
+POST /login 全体   :   450.69ms
+照合が全体に占める割合: 86%
+test where_does_login_spend_time ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 6.18s
+
+exit=0

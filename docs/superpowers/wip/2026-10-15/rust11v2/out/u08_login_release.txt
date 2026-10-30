@@ -1,0 +1,21 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `release` profile [optimized] target(s) in 3.34s
+     Running tests\u08_login_parts.rs (target\release\deps\u08_login_parts-eaf80a8c16589734.exe)
+
+running 1 test
+POST /signup -> 303 See Other (112.6123ms)
+POST /login -> 303 See Other (89.5227ms)
+POST /login -> 303 See Other (104.773ms)
+POST /login -> 303 See Other (50.0065ms)
+POST /login -> 303 See Other (36.0014ms)
+POST /login -> 303 See Other (35.0287ms)
+--- release ビルド（5回のうち、いちばん短い時間）
+DB でユーザーを探す :     2.20ms
+パスワードの照合   :    20.27ms
+POST /login 全体   :    35.12ms
+照合が全体に占める割合: 58%
+test where_does_login_spend_time ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.78s
+
+exit=0

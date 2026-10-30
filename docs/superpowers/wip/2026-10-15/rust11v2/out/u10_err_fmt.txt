@@ -1,0 +1,10 @@
+Diff in \\?\...\rustnote\src\routes\health.rs:20:
+ #[route(GET)]
+ pub async fn health(cx: &Cx) -> Result<(StatusCode, Json<Health>)> {
+     match app_state(cx).db.ping().await {
+-        Ok(()) => Ok((StatusCode::OK, Json(Health { status: "ok" })))   ,
++        Ok(()) => Ok((StatusCode::OK, Json(Health { status: "ok" }))),
+         Err(error) => {
+             eprintln!("[error] ヘルスチェックで DB に接続できません: {error}");
+             Ok((
+exit=1

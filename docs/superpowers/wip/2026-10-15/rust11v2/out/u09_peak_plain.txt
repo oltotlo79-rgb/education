@@ -1,0 +1,6 @@
+start: 30 MiB
+after GET: 42 MiB
+c=1: 42 MiB
+c=4: 90 MiB
+c=12: 160 MiB
+c=48: 654 MiB

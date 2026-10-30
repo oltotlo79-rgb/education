@@ -1,0 +1,35 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.75s
+     Running tests\u06_attacks.rs (target\debug\deps\u06_attacks-67d62daf6467518a.exe)
+
+running 6 tests
+test security_headers ... ignored, 改善点: 守りのヘッダーを、まだ返していない（UNIT 03 の問2）
+test stored_xss_is_text ... ok
+test session_guards ... FAILED
+test search_cannot_cross_owners ... ok
+test csrf_every_post ... ok
+test idor_every_entrance ... ok
+
+failures:
+
+---- session_guards stdout ----
+POST /signup -> 303 See Other (717.2975ms)
+POST /login -> 303 See Other (518.7407ms)
+GET /notes -> 303 See Other (13.1984ms)
+POST /logout -> 303 See Other (14.0229ms)
+GET /notes -> 200 OK (14.1315ms)
+
+thread 'session_guards' (212088) panicked at tests\u06_attacks.rs:164:5:
+assertion `left == right` failed: セッション: ログアウトしたクッキーが使える
+  left: 200
+ right: 303
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    session_guards
+
+test result: FAILED. 4 passed; 1 failed; 1 ignored; 0 measured; 0 filtered out; finished in 2.20s
+
+error: test failed, to rerun pass `--test u06_attacks`
+exit=101

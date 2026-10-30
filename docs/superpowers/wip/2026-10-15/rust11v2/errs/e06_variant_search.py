@@ -1,0 +1,1 @@
+REPLACEMENTS = [('        let condition = "user_id = ?1 AND (title LIKE ?2 ESCAPE \'\\\\\' OR body LIKE ?2 ESCAPE \'\\\\\')";', '        let condition = "user_id = ?1 AND title LIKE ?2 ESCAPE \'\\\\\' OR body LIKE ?2 ESCAPE \'\\\\\'";')]

@@ -1,0 +1,6 @@
+$ curl.exe -s -o NUL -w "%{http_code}" -c jar.txt -X POST --data "email=…&password=…&password_confirm=…" http://127.0.0.1:3013/signup
+303
+$ curl.exe -s -o NUL -w "%{http_code}" -b jar.txt http://127.0.0.1:3013/notes
+200
+$ （jar.txt の中の __Host-session の行）
+domain=#HttpOnly_127.0.0.1 secure=TRUE name=__Host-session value=KugU8H…

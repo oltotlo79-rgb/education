@@ -1,0 +1,17 @@
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -22,6 +22,14 @@
+ async fn main() -> anyhow::Result<()> {
+     // .env が無くてもエラーにしない（本番では環境変数を直接設定する）
+     dotenvy::dotenv().ok();
++    // ログを JSON の1行ずつで標準出力へ。RUST_LOG で量を変えられる（既定は info）
++    tracing_subscriber::fmt()
++        .json()
++        .with_env_filter(
++            tracing_subscriber::EnvFilter::try_from_default_env()
++                .unwrap_or_else(|_| tracing_subscriber::EnvFilter::new("info")),
++        )
++        .init();
+ 
+     let config = Config::from_env().context("設定を読み込めませんでした")?;
+ 

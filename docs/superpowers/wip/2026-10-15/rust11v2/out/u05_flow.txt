@@ -1,0 +1,23 @@
+[WebServer] マイグレーションを適用しました: 0001_users
+[WebServer] マイグレーションを適用しました: 0002_notes
+[WebServer] マイグレーションを適用しました: 0003_sessions
+[WebServer] RustNote を起動しました: http://127.0.0.1:3011
+
+Running 1 test using 1 worker
+
+[WebServer] GET /signup -> 200 OK (664.7µs)
+[WebServer] GET /_topcoat/assets/style-e9b983efabcfc6c3.css -> 200 OK (814.9µs)
+[WebServer] GET /favicon.ico -> 404 Not Found (311.7µs)
+[WebServer] POST /signup -> 303 See Other (473.9437ms)
+[WebServer] GET /notes -> 200 OK (4.9621ms)
+[WebServer] POST /notes -> 303 See Other (8.3049ms)
+[WebServer] GET /notes/1 -> 200 OK (4.6405ms)
+[WebServer] GET /notes -> 200 OK (4.0575ms)
+[WebServer] POST /logout -> 303 See Other (12.1537ms)
+[WebServer] GET /login -> 200 OK (560.[WebServer] 5µs)
+[WebServer] GET /notes -> 303 See Other ([WebServer] 456.2µs)
+[WebServer] GET /login -> 200 OK (325[WebServer] µs)
+  ✓  1 tests\flow.spec.ts:5:5 › 登録してノートを作り、ログアウトする (1.3s)
+
+  1 passed (3.1s)
+exit=0

@@ -1,0 +1,429 @@
+ Downloading crates ...
+  Downloaded alloca v0.4.0
+  Downloaded anes v0.1.6
+  Downloaded cast v0.3.0
+  Downloaded clap v4.6.7
+  Downloaded page_size v0.6.0
+  Downloaded plotters-svg v0.3.7
+  Downloaded ciborium v0.2.2
+  Downloaded plotters-backend v0.3.7
+  Downloaded clap_lex v1.1.1
+  Downloaded ciborium-io v0.2.2
+  Downloaded ciborium-ll v0.2.2
+  Downloaded criterion-plot v0.8.2
+  Downloaded crossbeam-deque v0.8.8
+  Downloaded oorandom v11.1.5
+  Downloaded crossbeam-epoch v0.9.21
+  Downloaded half v2.7.1
+  Downloaded criterion v0.8.2
+  Downloaded plotters v0.3.7
+  Downloaded clap_builder v4.6.7
+  Downloaded tinytemplate v1.2.1
+   Compiling proc-macro2 v1.0.107
+   Compiling unicode-ident v1.0.27
+   Compiling quote v1.0.47
+   Compiling cfg-if v1.0.5
+   Compiling serde_core v1.0.229
+   Compiling version_check v0.9.5
+   Compiling windows-link v0.2.1
+   Compiling serde v1.0.229
+   Compiling smallvec v1.16.4
+   Compiling pin-project-lite v0.2.17
+   Compiling itoa v1.0.18
+   Compiling siphasher v1.0.4
+   Compiling windows-sys v0.61.2
+   Compiling getrandom v0.2.17
+   Compiling parking_lot_core v0.9.12
+   Compiling scopeguard v1.2.0
+   Compiling typenum v1.20.1
+   Compiling lock_api v0.4.14
+   Compiling futures-core v0.3.34
+   Compiling memchr v2.8.3
+   Compiling rand_core v0.6.4
+   Compiling zerocopy v0.8.63
+   Compiling generic-array v0.14.7
+   Compiling futures-sink v0.3.34
+   Compiling log v0.4.34
+   Compiling parking_lot v0.12.5
+   Compiling once_cell v1.21.4
+   Compiling thiserror v2.0.21
+   Compiling zmij v1.0.23
+   Compiling slab v0.4.12
+   Compiling windows_aarch64_msvc v0.52.6
+   Compiling futures-channel v0.3.34
+   Compiling crypto-common v0.1.7
+   Compiling futures-task v0.3.34
+   Compiling syn v3.0.9
+   Compiling syn v2.0.119
+   Compiling futures-io v0.3.34
+   Compiling fnv v1.0.7
+   Compiling find-msvc-tools v0.1.15
+   Compiling winnow v1.0.4
+   Compiling shlex v2.0.1
+   Compiling tracing-core v0.1.36
+   Compiling subtle v2.6.1
+   Compiling heck v0.5.0
+   Compiling bytes v1.12.1
+   Compiling httparse v1.10.1
+   Compiling cc v1.10.0
+   Compiling toml_datetime v1.1.2+spec-1.1.0
+   Compiling hashbrown v0.17.1
+   Compiling http v1.5.0
+   Compiling equivalent v1.0.3
+   Compiling toml_parser v1.1.5+spec-1.1.0
+   Compiling indexmap v2.14.2
+   Compiling tower-service v0.3.3
+   Compiling stable_deref_trait v1.2.1
+   Compiling elsa v1.11.2
+   Compiling tokio v1.54.1
+   Compiling anymap3 v1.1.0
+   Compiling base64 v0.22.1
+   Compiling toml_edit v0.25.17+spec-1.1.0
+   Compiling cpufeatures v0.2.17
+   Compiling bitflags v2.13.2
+   Compiling httpdate v1.0.3
+   Compiling tower-layer v0.3.3
+   Compiling serde_json v1.0.154
+   Compiling autocfg v1.5.1
+   Compiling mio v1.2.4
+   Compiling socket2 v0.6.5
+   Compiling proc-macro-crate v3.5.0
+   Compiling percent-encoding v2.3.2
+   Compiling block-buffer v0.10.4
+   Compiling topcoat-core-grammar v0.11.0
+   Compiling ref-cast v1.0.27
+   Compiling rand_core v0.10.1
+   Compiling either v1.19.0
+   Compiling windows-targets v0.52.6
+   Compiling digest v0.10.7
+   Compiling crc32fast v1.5.3
+   Compiling getrandom v0.3.4
+   Compiling getrandom v0.4.3
+   Compiling windows-sys v0.52.0
+   Compiling uncased v0.9.10
+   Compiling alloc-no-stdlib v3.0.0
+   Compiling alloc-stdlib v0.3.0
+   Compiling block-padding v0.3.3
+   Compiling simd-adler32 v0.3.10
+   Compiling glob v0.3.4
+   Compiling adler2 v2.0.1
+   Compiling cmov v0.5.4
+   Compiling zerocopy-derive v0.8.63
+   Compiling tracing-attributes v0.1.31
+   Compiling hybrid-array v0.4.15
+   Compiling rustversion v1.0.23
+   Compiling ctutils v0.4.7
+   Compiling miniz_oxide v0.9.1
+   Compiling serde_derive v1.0.229
+   Compiling futures-macro v0.3.34
+   Compiling tokio-macros v2.7.2
+   Compiling thiserror-impl v2.0.21
+   Compiling ref-cast-impl v1.0.27
+   Compiling clang-sys v1.9.1
+   Compiling rand_core v0.9.5
+   Compiling inout v0.1.4
+   Compiling brotli-decompressor v6.2.0
+   Compiling futures-util v0.3.34
+   Compiling tracing v0.1.44
+   Compiling phf_shared v0.14.0
+   Compiling fastrand v2.5.0
+   Compiling prettyplease v0.2.37
+   Compiling rustix v0.38.44
+   Compiling anyhow v1.0.104
+   Compiling libc v0.2.191
+   Compiling topcoat-core v0.11.0
+   Compiling phf_generator v0.14.0
+   Compiling brotli v9.1.1
+   Compiling windows-sys v0.59.0
+   Compiling cipher v0.4.4
+   Compiling flate2 v1.1.10
+   Compiling errno v0.3.14
+   Compiling block-buffer v0.12.1
+   Compiling topcoat-view v0.11.0
+   Compiling crypto-common v0.2.2
+   Compiling const-oid v0.10.2
+   Compiling compression-core v0.4.34
+   Compiling minimal-lexical v0.2.1
+   Compiling regex-syntax v0.8.11
+   Compiling topcoat-view-grammar v0.11.0
+   Compiling zeroize v1.9.1
+   Compiling atomic-waker v1.1.2
+   Compiling nom v7.1.3
+   Compiling digest v0.11.3
+   Compiling rustls-pki-types v1.15.1
+   Compiling http v0.2.12
+   Compiling compression-codecs v0.4.46
+   Compiling regex-automata v0.4.18
+   Compiling http-body v1.1.0
+   Compiling http-body v0.4.6
+   Compiling ppv-lite86 v0.2.21
+   Compiling topcoat-view-macro v0.11.0
+   Compiling home v0.5.12
+   Compiling rand_chacha v0.3.1
+   Compiling rand_chacha v0.9.0
+   Compiling sha1 v0.10.7
+   Compiling rand v0.8.8
+   Compiling rand v0.9.5
+   Compiling libloading v0.8.9
+   Compiling indexmap v1.9.3
+   Compiling serde_spanned v1.1.2
+   Compiling try-lock v0.2.5
+   Compiling cpufeatures v0.3.1
+   Compiling bindgen v0.66.1
+   Compiling data-encoding v2.11.1
+   Compiling toml_writer v1.1.3+spec-1.1.0
+   Compiling which v4.4.2
+   Compiling tungstenite v0.29.0
+   Compiling sha2 v0.11.1
+   Compiling want v0.3.2
+   Compiling toml v1.1.8+spec-1.1.0
+   Compiling regex v1.13.1
+   Compiling cexpr v0.6.0
+   Compiling pin-project-internal v1.1.13
+   Compiling socket2 v0.5.10
+   Compiling form_urlencoded v1.2.2
+   Compiling ring v0.17.14
+   Compiling ahash v0.8.12
+   Compiling rustc-hash v1.1.0
+   Compiling tokio-util v0.7.20
+   Compiling async-compression v0.4.51
+   Compiling ryu v1.0.23
+   Compiling shlex v1.3.0
+   Compiling peeking_take_while v0.1.2
+   Compiling h2 v0.4.20
+   Compiling h2 v0.3.27
+   Compiling hashbrown v0.12.3
+   Compiling lazy_static v1.5.1
+   Compiling sync_wrapper v1.0.2
+   Compiling lazycell v1.3.0
+   Compiling tower v0.5.3
+   Compiling tower-http v0.7.1
+   Compiling serde_urlencoded v0.7.1
+   Compiling pin-project v1.1.13
+   Compiling tokio-tungstenite v0.29.0
+   Compiling topcoat-asset v0.11.0
+   Compiling http-body-util v0.1.5
+   Compiling axum-core v0.3.4
+   Compiling aes v0.8.4
+   Compiling itertools v0.12.1
+   Compiling num-traits v0.2.19
+   Compiling cmake v0.1.58
+   Compiling universal-hash v0.5.1
+   Compiling serde_path_to_error v0.1.20
+   Compiling matchit v0.9.2
+   Compiling inventory v0.3.25
+   Compiling ipnet v2.12.2
+   Compiling opaque-debug v0.3.1
+   Compiling polyval v0.6.2
+   Compiling phf_shared v0.11.3
+   Compiling prost-derive v0.12.6
+   Compiling tower v0.4.13
+   Compiling axum v0.6.20
+   Compiling async-trait v0.1.92
+   Compiling mime v0.3.17
+   Compiling hyper v0.14.32
+   Compiling num-conv v0.2.2
+   Compiling allocator-api2 v0.2.21
+   Compiling hyper v1.12.0
+   Compiling time-core v0.1.9
+   Compiling untrusted v0.9.0
+   Compiling prost v0.12.6
+   Compiling hashbrown v0.14.5
+   Compiling time-macros v0.2.32
+   Compiling hyper-util v0.1.21
+   Compiling libsql-ffi v0.10.0
+   Compiling topcoat-router v0.11.0
+   Compiling phf_generator v0.11.3
+   Compiling ghash v0.5.1
+   Compiling tokio-io-timeout v1.2.1
+   Compiling topcoat-font v0.11.0
+   Compiling ctr v0.9.2
+   Compiling phf_macros v0.14.0
+   Compiling async-stream-impl v0.3.6
+   Compiling hmac v0.12.1
+   Compiling aead v0.5.2
+   Compiling cookie v0.18.2
+   Compiling matchit v0.7.3
+   Compiling base64 v0.21.7
+   Compiling bitflags v1.3.2
+   Compiling deranged v0.5.9
+   Compiling powerfmt v0.2.1
+   Compiling crossbeam-utils v0.8.23
+   Compiling sync_wrapper v0.1.2
+   Compiling rustls v0.22.4
+   Compiling new_debug_unreachable v1.0.6
+   Compiling aes-gcm v0.10.3
+   Compiling time v0.3.55
+   Compiling async-stream v0.3.6
+   Compiling hkdf v0.12.4
+   Compiling phf v0.14.0
+   Compiling hyper-timeout v0.4.1
+   Compiling phf_codegen v0.11.3
+   Compiling hashlink v0.8.4
+   Compiling tokio-stream v0.1.19
+   Compiling string_cache_codegen v0.11.2
+   Compiling phf_codegen v0.14.0
+   Compiling zerocopy-derive v0.7.35
+   Compiling rustls-webpki v0.102.8
+   Compiling sha2 v0.10.9
+   Compiling thiserror v1.0.69
+   Compiling precomputed-hash v0.1.1
+   Compiling byteorder v1.5.0
+   Compiling fallible-iterator v0.2.0
+   Compiling crossbeam-epoch v0.9.21
+   Compiling fallible-streaming-iterator v0.1.9
+   Compiling tonic v0.11.0
+   Compiling zerocopy v0.7.35
+   Compiling web_atoms v0.3.0
+   Compiling libsql-sqlite3-parser v0.13.0
+   Compiling topcoat-runtime v0.11.0
+   Compiling topcoat-icon v0.11.0
+   Compiling webpki-roots v1.0.11
+   Compiling rustls-pemfile v2.2.0
+   Compiling thiserror-impl v1.0.69
+   Compiling schannel v0.1.30
+   Compiling base64ct v1.8.3
+   Compiling crossbeam-deque v0.8.8
+   Compiling http-range-header v0.3.1
+   Compiling tower-http v0.4.4
+   Compiling phc v0.6.1
+   Compiling rustls-native-certs v0.7.3
+   Compiling tokio-rustls v0.25.0
+   Compiling topcoat-runtime-grammar v0.11.0
+   Compiling webpki-roots v0.26.11
+   Compiling topcoat-icon-grammar v0.11.0
+   Compiling phf v0.11.3
+   Compiling topcoat-font-grammar v0.11.0
+   Compiling topcoat-cookie v0.11.0
+   Compiling string_cache v0.11.0
+   Compiling futures-executor v0.3.34
+   Compiling cbc v0.1.2
+   Compiling uuid v1.29.0
+   Compiling topcoat-router-grammar v0.11.0
+   Compiling rayon-core v1.13.0
+   Compiling fallible-iterator v0.3.0
+   Compiling winapi v0.3.9
+   Compiling web-time v1.1.0
+   Compiling dtoa v1.0.11
+   Compiling topcoat-session v0.11.0
+   Compiling dtoa-short v0.3.5
+   Compiling topcoat-font-macro v0.11.0
+   Compiling topcoat-router-macro v0.11.0
+   Compiling topcoat-runtime-macro v0.11.0
+   Compiling futures v0.3.34
+   Compiling topcoat-icon-macro v0.11.0
+   Compiling tonic-web v0.11.0
+   Compiling hyper-rustls v0.25.0
+   Compiling password-hash v0.6.1
+   Compiling tendril v0.5.1
+   Compiling libsql-hrana v0.10.0
+   Compiling chrono v0.4.45
+   Compiling blake2 v0.11.0
+   Compiling half v2.7.1
+   Compiling bincode v1.3.3
+   Compiling topcoat-core-macro v0.11.0
+   Compiling cssparser-macros v0.7.1
+   Compiling derive_more-impl v2.1.1
+   Compiling alloca v0.4.0
+   Compiling winapi-util v0.1.11
+   Compiling plotters-backend v0.3.7
+   Compiling clap_lex v1.1.1
+   Compiling anstyle v1.0.14
+   Compiling ciborium-io v0.2.2
+   Compiling tempfile v3.27.0
+   Compiling ciborium-ll v0.2.2
+   Compiling clap_builder v4.6.7
+   Compiling plotters-svg v0.3.7
+   Compiling same-file v1.0.6
+   Compiling derive_more v2.1.1
+   Compiling cssparser v0.38.0
+   Compiling topcoat v0.11.0
+   Compiling argon2 v0.6.0
+   Compiling markup5ever v0.40.0
+   Compiling libsql-rusqlite v0.10.0
+   Compiling libsql-sys v0.10.0
+   Compiling itertools v0.13.0
+   Compiling servo_arc v0.5.0
+   Compiling dotenvy v0.15.7
+   Compiling libsql_replication v0.10.0
+   Compiling rustc-hash v2.1.3
+   Compiling bit-vec v0.10.1
+   Compiling cast v0.3.0
+   Compiling wait-timeout v0.2.1
+   Compiling quick-error v1.2.3
+   Compiling unicode-width v0.2.3
+   Compiling rusty-fork v0.3.1
+   Compiling bit-set v0.11.1
+   Compiling selectors v0.41.0
+   Compiling getopts v0.2.24
+   Compiling page_size v0.6.0
+   Compiling clap v4.6.7
+   Compiling criterion-plot v0.8.2
+   Compiling rayon v1.12.0
+   Compiling html5ever v0.40.1
+   Compiling walkdir v2.5.0
+   Compiling libsql v0.10.0
+   Compiling plotters v0.3.7
+   Compiling ciborium v0.2.2
+   Compiling tinytemplate v1.2.1
+   Compiling rand v0.10.3
+   Compiling rand_xorshift v0.5.0
+   Compiling chacha20 v0.10.2
+   Compiling ego-tree v0.11.1
+   Compiling core_detect v1.0.0
+   Compiling anes v0.1.6
+   Compiling unarray v0.1.4
+   Compiling oorandom v11.1.5
+   Compiling scraper v0.29.0
+   Compiling proptest v1.12.0
+   Compiling criterion v0.8.2
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `bench` profile [optimized] target(s) in 1m 43s
+     Running benches\parse.rs (target\release\deps\parse-a176c78b2132fb91.exe)
+Gnuplot not found, using plotters backend
+Benchmarking NoteTitle::parse/ascii80
+Benchmarking NoteTitle::parse/ascii80: Warming up for 3.0000 s
+Benchmarking NoteTitle::parse/ascii80: Collecting 100 samples in estimated 5.0002 s (111M iterations)
+Benchmarking NoteTitle::parse/ascii80: Analyzing
+NoteTitle::parse/ascii80
+                        time:   [61.085 ns 63.692 ns 66.979 ns]
+Found 19 outliers among 100 measurements (19.00%)
+  3 (3.00%) low severe
+  2 (2.00%) low mild
+  6 (6.00%) high mild
+  8 (8.00%) high severe
+Benchmarking NoteTitle::parse/japanese80
+Benchmarking NoteTitle::parse/japanese80: Warming up for 3.0000 s
+Benchmarking NoteTitle::parse/japanese80: Collecting 100 samples in estimated 5.0003 s (66M iterations)
+Benchmarking NoteTitle::parse/japanese80: Analyzing
+NoteTitle::parse/japanese80
+                        time:   [76.408 ns 79.937 ns 84.106 ns]
+Found 12 outliers among 100 measurements (12.00%)
+  3 (3.00%) low severe
+  4 (4.00%) low mild
+  1 (1.00%) high mild
+  4 (4.00%) high severe
+Benchmarking NoteTitle::parse/emoji80
+Benchmarking NoteTitle::parse/emoji80: Warming up for 3.0000 s
+Benchmarking NoteTitle::parse/emoji80: Collecting 100 samples in estimated 5.0004 s (57M iterations)
+Benchmarking NoteTitle::parse/emoji80: Analyzing
+NoteTitle::parse/emoji80
+                        time:   [84.526 ns 86.609 ns 88.997 ns]
+Found 21 outliers among 100 measurements (21.00%)
+  6 (6.00%) low severe
+  4 (4.00%) low mild
+  7 (7.00%) high mild
+  4 (4.00%) high severe
+
+Benchmarking Email::parse
+Benchmarking Email::parse: Warming up for 3.0000 s
+Benchmarking Email::parse: Collecting 100 samples in estimated 5.0002 s (42M iterations)
+Benchmarking Email::parse: Analyzing
+Email::parse            time:   [107.60 ns 111.78 ns 116.52 ns]
+Found 16 outliers among 100 measurements (16.00%)
+  2 (2.00%) low severe
+  9 (9.00%) low mild
+  2 (2.00%) high mild
+  3 (3.00%) high severe
+
+exit=0

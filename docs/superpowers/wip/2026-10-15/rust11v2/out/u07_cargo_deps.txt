@@ -1,0 +1,23 @@
+[dependencies]
+# アプリの入口（main）でエラーに文脈を付けて表示する
+anyhow = "=1.0.104"
+# パスワードのハッシュ化（Argon2id）
+argon2 = "=0.6.0"
+# trait に async fn を書き、dyn（Arc<dyn NoteRepository + Send + Sync>）で使えるようにする
+async-trait = "=0.1.92"
+# .env ファイルを環境変数として読み込む（開発用）
+dotenvy = "=0.15.7"
+# Turso / libSQL のクライアント（ローカルファイルとリモートの両方）
+libsql = "=0.10.0"
+# フォームや JSON を構造体に変換する
+serde = { version = "=1.0.229", features = ["derive"] }
+# エラー型を短く書く
+thiserror = "=2.0.21"
+# 非同期ランタイム
+tokio = { version = "=1.54.1", features = ["rt-multi-thread", "macros"] }
+# Web フレームワーク
+topcoat = "=0.11.0"
+tracing = "=0.1.44"
+tracing-subscriber = { version = "=0.3.23", features = ["json", "env-filter"] }
+
+[dev-dependencies]

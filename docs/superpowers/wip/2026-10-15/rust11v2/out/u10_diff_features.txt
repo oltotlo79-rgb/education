@@ -1,0 +1,11 @@
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -20,7 +20,7 @@
+ # .env ファイルを環境変数として読み込む（開発用）
+ dotenvy = "=0.15.7"
+ # Turso / libSQL のクライアント（ローカルファイルとリモートの両方）
+-libsql = "=0.10.0"
++libsql = { version = "=0.10.0", default-features = false, features = ["core", "remote", "tls"] }
+ # フォームや JSON を構造体に変換する
+ serde = { version = "=1.0.229", features = ["derive"] }
+ # エラー型を短く書く

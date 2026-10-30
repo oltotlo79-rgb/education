@@ -1,9 +1,0 @@
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.67s
-     Running tests\u04_query_prop.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/target11\debug\deps\u04_query_prop-4e90099103100818.exe)
-
-running 2 tests
-test offset_from_fields ... ok
-test offset_from_new ... ok
-
-test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
-

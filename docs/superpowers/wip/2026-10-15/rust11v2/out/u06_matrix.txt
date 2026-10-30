@@ -1,0 +1,5 @@
+toggle | u06_attacks: idor_every_entrance | http.rs: other_users_notes_are_404 
+delete | u06_attacks: idor_every_entrance | http.rs: other_users_notes_are_404 
+search | u06_attacks: search_cannot_cross_owners | http.rs: （全部通った）
+origin | u06_attacks: csrf_every_post | http.rs: cross_site_post_is_403 
+logout | u06_attacks: session_guards | http.rs: login_and_logout 

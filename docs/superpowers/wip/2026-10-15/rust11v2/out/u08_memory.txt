@@ -1,0 +1,35 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `release` profile [optimized] target(s) in 3.09s
+     Running tests\u08_memory.rs (target\release\deps\u08_memory-5a70a26bc7f1be0b.exe)
+
+running 1 test
+test memory_of_main_operations ... POST /signup -> 303 See Other (150.7442ms)
+POST /notes -> 303 See Other (23.4703ms)
+POST /notes -> 303 See Other (22.8464ms)
+POST /notes -> 303 See Other (20.8412ms)
+POST /notes -> 303 See Other (19.1407ms)
+POST /notes -> 303 See Other (31.7289ms)
+POST /notes -> 303 See Other (38.9925ms)
+POST /notes -> 303 See Other (40.6193ms)
+POST /notes -> 303 See Other (39.7279ms)
+POST /notes -> 303 See Other (91.8734ms)
+POST /notes -> 303 See Other (28.2436ms)
+POST /notes -> 303 See Other (13.805ms)
+POST /notes -> 303 See Other (17.9732ms)
+POST /notes -> 303 See Other (24.9557ms)
+POST /notes -> 303 See Other (32.8117ms)
+POST /notes -> 303 See Other (61.0301ms)
+POST /notes -> 303 See Other (24.2207ms)
+POST /notes -> 303 See Other (20.3105ms)
+POST /notes -> 303 See Other (19.3767ms)
+POST /notes -> 303 See Other (18.0129ms)
+POST /notes -> 303 See Other (43.3011ms)
+GET /notes -> 200 OK (5.8113ms)
+GET /notes（20 件・本文 3537 バイト）: 借りた回数 529 回・ピーク +0.07 MiB
+パスワードのハッシュ（Argon2id）: 借りた回数 8 回・ピーク +19.00 MiB
+パスワードの照合（Argon2id）: 借りた回数 4 回・ピーク +19.00 MiB
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.91s
+
+exit=0

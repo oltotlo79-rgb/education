@@ -1,0 +1,2 @@
+cargo-audit-audit 0.22.2
+exit=0

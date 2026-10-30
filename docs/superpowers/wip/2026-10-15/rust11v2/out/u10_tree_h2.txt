@@ -1,0 +1,16 @@
+h2 v0.3.27
+├── hyper v0.14.32
+│   ├── axum v0.6.20
+│   │   └── tonic v0.11.0
+│   │       ├── libsql v0.10.0
+│   │       ├── libsql_replication v0.10.0
+│   │       └── tonic-web v0.11.0
+│   ├── hyper-rustls v0.25.0
+│   │   └── libsql v0.10.0 (*)
+│   ├── hyper-timeout v0.4.1
+│   │   └── tonic v0.11.0 (*)
+│   ├── libsql v0.10.0 (*)
+│   ├── tonic v0.11.0 (*)
+│   └── tonic-web v0.11.0 (*)
+└── tonic v0.11.0 (*)
+exit=0

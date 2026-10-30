@@ -1,0 +1,27 @@
+[WebServer] マイグレーションを適用しました: [WebServer] 0001_users
+[WebServer] マイグレーションを適用しました: 0002_notes
+[WebServer] マイグレーションを適用しました: 0003_sessions
+[WebServer] RustNote を起動しました: http://127.0.0.1:3011
+
+Running 1 test using 1 worker
+
+[WebServer] GET /signup -> 200 OK (578.8µs)
+[WebServer] GET /_topcoat/assets/style-e9b983efabcfc6c3.css -> 200 OK (1.1464ms)
+[WebServer] GET /favicon.ico -> 404 Not Found (319.7µs)
+[WebServer] POST[WebServer]  /signup -> 303 See Other (411.0531ms)
+[WebServer] GET /notes -> 200 OK (3.7929ms)
+[WebServer] POST /notes -> 303 See Other (10.7941ms)
+[WebServer] GET /notes/1 -> 200 OK (3.8805ms)
+[WebServer] GET /notes -> 200 OK (5.5319ms)
+Tab 1 回目: a「RustNote」
+Tab 2 回目: a「ノート一覧」
+Tab 3 回目: button「ログアウト」
+Tab 4 回目: input「キーワードで検索」
+Tab 5 回目: button「検索」
+Tab 6 回目: summary「新しいノートを書く」
+Tab 7 回目: a「牛乳を買う」
+Tab 8 回目: （ページ全体）
+  ✓  1 tests\q3_tab.spec.ts:4:5 › Tab の順番 (1.0s)
+
+  1 passed (2.7s)
+exit=0
