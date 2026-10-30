@@ -130,9 +130,7 @@
 | UNIT 07 | migration・seed・テスト用の DB | 表の作り方と見本のデータを、本番とテストで混ぜずに用意する |
 | UNIT 08 | ルートの一覧と実装の順番 | URL ごとの約束を表にし、薄く縦に切って順に作る |
 | UNIT 09 | デザインの決まり・アセット・アクセシビリティ | 少ない決まりで見た目をそろえ、誰でも使える画面にする |
-| UNIT 10 | health・初回起動・診断（準備中） | 動いているかを外から確かめ、つまずきの原因を切り分ける |
-
-> **お知らせ:** この版には UNIT 01〜09 を収録しています。UNIT 10 は準備中で、次の更新から順に追加します。本文の中の「UNIT 06（準備中）で扱います」のような予告は、これから追加する単元を指しています。
+| UNIT 10 | health・初回起動・診断 | 動いているかを外から確かめ、つまずきの原因を切り分ける |
 
 ### この巻で作る「設計の成果物」と、RustNote のファイル
 
@@ -270,7 +268,7 @@ error: failed to run custom build command for `ring v0.17.14`
 ```
 
 - `failed to find tool "clang"` は「clang という道具が見つかりません」という意味です。RustNote の `README.md` のとおり、`winget install LLVM.LLVM` で LLVM を入れ、新しく開いた PowerShell で `clang --version` が動くこと（`C:\Program Files\LLVM\bin` が PATH にあること）を確かめてから、もう一度ビルドします。
-- x64 の Windows・macOS・Linux では、この準備は要りません。くわしくは UNIT 05（準備中）で扱います。
+- x64 の Windows・macOS・Linux では、この準備は要りません。くわしくは UNIT 05 で扱います。
 
 準備ができたら、コピーしたフォルダで、テストを全部実行してみましょう。
 
@@ -1490,7 +1488,7 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 
 - 表示された見出しは「RustNote」「新規登録」「ログイン」「ノート」「牛乳を買う」「ノートを編集」「404 Not Found」でした。情報設計の表の「いちばんの目的」と見比べると、どの画面も、見出しを読めば何の画面かが分かります。
 - 詳細の画面の見出しは、固定の言葉ではなく、ノートのタイトル（「牛乳を買う」）です。詳細の目的は「1件を読む」なので、何のノートかがいちばん大事だからです。
-- 目の不自由な人が使う読み上げソフトでは、見出しを手がかりに、画面の中を移動したり、何の画面かを知ったりします。見出しを画面の目的に合わせるのは、見た目のためだけではありません（UNIT 09（準備中）でくわしく扱います）。
+- 目の不自由な人が使う読み上げソフトでは、見出しを手がかりに、画面の中を移動したり、何の画面かを知ったりします。見出しを画面の目的に合わせるのは、見た目のためだけではありません（UNIT 09 でくわしく扱います）。
 
 ##### 解説2: 失敗しても、画面は「一覧」のまま
 
@@ -2050,7 +2048,7 @@ pub async fn create(cx: &Cx, Form(input): Form<NoteForm>) -> Result<impl View> {
 - 「編集」は、編集の画面を**開くだけ**なのでリンク（GET）です。「完了にする」と「削除」は、ノートを**変える**のでフォームの POST です。エラー1の約束どおりです。
 - ボタンの文は、状態に合わせて「完了にする」と「未完了に戻す」を出し分けています。これも画面の「状態」の1つです。
 
-最後に、狭い画面（スマートフォンなど）についてです。RustNote のレイアウトは `<meta name="viewport" content="width=device-width, initial-scale=1">` を入れています。CSS（`assets/style.css`）では、本文の枠を `max-width: 760px` と左右 `16px` の余白で作り、一覧の1行は `flex-wrap: wrap`（入りきらなければ折り返す）にしています。画面の幅で見た目を切り替える `@media` の指定はありません。実際の見え方を確かめて直すのは、UNIT 09（準備中）で扱います。
+最後に、狭い画面（スマートフォンなど）についてです。RustNote のレイアウトは `<meta name="viewport" content="width=device-width, initial-scale=1">` を入れています。CSS（`assets/style.css`）では、本文の枠を `max-width: 760px` と左右 `16px` の余白で作り、一覧の1行は `flex-wrap: wrap`（入りきらなければ折り返す）にしています。画面の幅で見た目を切り替える `@media` の指定はありません。実際の見え方を確かめて直すのは、UNIT 09 で扱います。
 
 ### 練習問題
 
@@ -2165,7 +2163,7 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; fini
 </form>
 ```
 
-- これは、完成した RustNote にも残っている改善点です。完成したアプリでも、画面の設計を見直すと、こうした抜けが見つかります。見た目と使いやすさの決まりは、UNIT 09（準備中）でまとめて確かめます。
+- これは、完成した RustNote にも残っている改善点です。完成したアプリでも、画面の設計を見直すと、こうした抜けが見つかります。見た目と使いやすさの決まりは、UNIT 09 でまとめて確かめます。
 
 ### まとめ
 
@@ -3097,7 +3095,7 @@ priority = 4: NG SQLite failure: `CHECK constraint failed: priority BETWEEN 1 AN
 
 - Rust の側は `enum` にしたので、`Priority` の値は3つのどれかでしかありえません。数の 4 のような「ありえない優先度」は、`Priority` として存在できないのです（第2巻 UNIT 08）。
 - DB の側は、`CHECK (priority BETWEEN 1 AND 3)` で 0 と 4 を断りました。`DEFAULT 2` があるので、優先度を指定しない古い INSERT の書き方も、そのまま動きます。
-- 実際に RustNote へ足すときは、この `ALTER TABLE` を新しいマイグレーションのファイル（たとえば `migrations/0004_note_priority.sql`）にし、`src/db.rs` の `MIGRATIONS` に足します。マイグレーションの手順は、UNIT 07（準備中）で扱います。
+- 実際に RustNote へ足すときは、この `ALTER TABLE` を新しいマイグレーションのファイル（たとえば `migrations/0004_note_priority.sql`）にし、`src/db.rs` の `MIGRATIONS` に足します。マイグレーションの手順は、UNIT 07 で扱います。
 
 **問2の解答:**
 
@@ -3539,7 +3537,7 @@ routes ⇄ views
 ##### 解説4: 文字を数えるだけなので、見落とすものもある
 
 - このプログラムは、行に書かれた**文字**を数えているだけです。コメントの行は飛ばしていますが、行の後ろに付けたコメントや、文字列の中の名前までは見分けません。
-- また、型の名前を書かずに使う依存は見つけられません。たとえば `routes/health.rs` は、`app_state(cx).db.ping()` で DB を直接使っていますが、`crate::db` とは書いていないので、一覧の `routes` に `db` は出てきません。`AppState` の `db` は、「ヘルスチェックで DB の生死を確かめるため」とコメントに書いて、わざと持たせているものです（UNIT 10（準備中））。
+- また、型の名前を書かずに使う依存は見つけられません。たとえば `routes/health.rs` は、`app_state(cx).db.ping()` で DB を直接使っていますが、`crate::db` とは書いていないので、一覧の `routes` に `db` は出てきません。`AppState` の `db` は、「ヘルスチェックで DB の生死を確かめるため」とコメントに書いて、わざと持たせているものです（UNIT 10）。
 - だから、この一覧は「おおよその地図」です。決まりを守れているかの最後の確かめは、人のレビューです。それでも、地図があると、レビューで見るべき場所がすぐ分かります。
 
 ### もう一歩: 実務に近い形
@@ -6569,6 +6567,7 @@ for fg, bg, where in pairs:
 //! - <h1> がちょうど1つ
 //! - 入力欄（hidden 以外の input・textarea）には、<label for="id"> か aria-label がある
 //! - ボタンには、文字がある
+//!
 //! 実行: cargo test --test u09_a11y -- --nocapture
 
 mod common;
@@ -6793,9 +6792,695 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 - 文字と背景のコントラスト比は、WCAG の AA で 4.5 以上。RustNote の9つの組み合わせは、すべて満たしている（薄い文字は 4.55 でぎりぎり）。
 - `lang`・`<h1>` が1つ・入力欄のラベル・ボタンの文字は、本物の HTML をテストで確かめる。見た目では気づけないずれ（`for` と `id`）も見つかる。検索の入力欄のラベルと、ページごとの `<title>` は、RustNote に残る改善点。
 
+## UNIT 10: health・初回起動・診断
+
+### この単元のゴール
+
+- `GET /health` が何を確かめているか、200 と 503 がそれぞれ何を伝えるかを、テストと `curl.exe` で、外から確かめられる
+- Fly.io のヘルスチェックの設定（`fly.toml` の `[[http_service.checks]]`）を読み、`path` がずれると何が起きるかを説明できる
+- 起動に要るもの（設定・アセットの束・DB・マイグレーション・待ち受ける場所）を、起動の順番どおりに全部確かめる**診断のプログラム**を書き、表示から原因を切り分けられる
+- `main` の `?` は**最初の失敗で止まり**、診断は**全部の問題を並べる**、という違いを使い分けられる
+- 症状（すぐ終わる・503・404・500）から、まず見る場所を決められる
+
+### たとえ話でつかむ
+
+病院には、2種類の確かめがあります。
+
+- 入院している人の**脈**を、看護師さんが決まった間隔で測ります。短く、軽く、何度も測ります。脈が無ければ、すぐに人を呼びます。このとき、腕に触らずに「元気そうですね」と言うだけでは、測ったことになりません。
+- **健康診断**は、たまに、時間をかけて、項目を順に全部測ります。血圧が高くても、そこで帰らずに最後まで測り、結果を1枚の紙に並べます。
+- 結果の紙には、項目ごとに「基準内」「要再検査」と、**次に何をすればよいか**が書いてあります。
+
+| 病院 | RustNote |
+|---|---|
+| 看護師さんが脈を測る（決まった間隔で） | Fly.io が `GET /health` を送る（`fly.toml` の `interval = "30s"`） |
+| 腕に触って測る | `db.ping()`（`SELECT 1`）で、DB に本当に問い合わせる |
+| 脈が無い → 人を呼ぶ | 503 → Fly.io が、そのマシンにリクエストを送らなくなる |
+| 健康診断で、項目を順に全部 | `examples/u10_doctor.rs`（起動に要るものを、順に全部） |
+| 「要再検査」と、次にすること | `✗` と、直し方のヒント |
+
+> **用語:** ヘルスチェック（health check：アプリが動いているかを、外から決まった間隔で確かめること。RustNote では `GET /health` に答える）
+
+<!-- -->
+
+> **用語:** 503 Service Unavailable（「今は、仕事を受けられません」という状態コード。サーバーは返事ができるが、頼っている物（ここでは DB）が使えないときに返す）
+
+<!-- -->
+
+> **用語:** 診断（ここでは、起動に要るものを1つずつ確かめて、どこが悪いかを表示する小さなプログラム。英語の道具では doctor という名前がよく使われる）
+
+### 図で理解する
+
+`GET /health` の流れです。Fly.io（第12巻）は、決まった間隔で RustNote に `GET /health` を送り、答えの状態コードで、そのマシンにリクエストを送るかを決めます。
+
+<div style="max-width:720px;margin:18px auto;text-align:center;">
+<svg viewBox="0 0 720 290" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs><marker id="u10a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker></defs>
+<rect x="20" y="30" width="190" height="110" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="115" y="58" font-size="13" font-weight="700" fill="#1d4ed8" text-anchor="middle">Fly.io のプロキシ</text>
+<text x="115" y="82" font-size="12" fill="#0f172a" text-anchor="middle">30 秒ごとに</text>
+<text x="115" y="102" font-size="12" fill="#0f172a" text-anchor="middle">GET /health を送る</text>
+<text x="115" y="122" font-size="11" fill="#475569" text-anchor="middle">（5 秒で時間切れ）</text>
+<line x1="212" y1="85" x2="262" y2="85" stroke="#475569" stroke-width="2" marker-end="url(#u10a)"/>
+<rect x="265" y="30" width="190" height="110" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<text x="360" y="58" font-size="13" font-weight="700" fill="#c2410c" text-anchor="middle">RustNote</text>
+<text x="360" y="82" font-size="12" fill="#0f172a" text-anchor="middle">routes/health.rs</text>
+<text x="360" y="102" font-size="12" fill="#0f172a" text-anchor="middle">db.ping() を呼ぶ</text>
+<text x="360" y="122" font-size="11" fill="#475569" text-anchor="middle">アクセスログには書かない</text>
+<line x1="457" y1="85" x2="507" y2="85" stroke="#475569" stroke-width="2" marker-end="url(#u10a)"/>
+<text x="482" y="76" font-size="10" fill="#475569" text-anchor="middle">SELECT 1</text>
+<rect x="510" y="30" width="190" height="110" rx="10" fill="#f1f5f9" stroke="#64748b" stroke-width="2"/>
+<text x="605" y="58" font-size="13" font-weight="700" fill="#334155" text-anchor="middle">DB</text>
+<text x="605" y="82" font-size="12" fill="#0f172a" text-anchor="middle">手元では SQLite のファイル</text>
+<text x="605" y="102" font-size="12" fill="#0f172a" text-anchor="middle">本番では Turso</text>
+<line x1="330" y1="142" x2="200" y2="176" stroke="#475569" stroke-width="2" marker-end="url(#u10a)"/>
+<line x1="390" y1="142" x2="520" y2="176" stroke="#475569" stroke-width="2" marker-end="url(#u10a)"/>
+<rect x="20" y="180" width="330" height="92" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="185" y="206" font-size="13" font-weight="700" fill="#047857" text-anchor="middle">DB に届いた → 200 {"status":"ok"}</text>
+<text x="185" y="230" font-size="12" fill="#0f172a" text-anchor="middle">合格: このマシンにリクエストを送る</text>
+<text x="185" y="252" font-size="11" fill="#475569" text-anchor="middle">合否は状態コードで決まる（200 番台なら合格）</text>
+<rect x="370" y="180" width="330" height="92" rx="10" fill="#fef2f2" stroke="#ef4444" stroke-width="2"/>
+<text x="535" y="206" font-size="13" font-weight="700" fill="#b91c1c" text-anchor="middle">届かない → 503 {"status":"unavailable"}</text>
+<text x="535" y="230" font-size="12" fill="#0f172a" text-anchor="middle">不合格: 送らない（再起動はしない）</text>
+<text x="535" y="252" font-size="11" fill="#475569" text-anchor="middle">RustNote のログに [error] の行が出る</text>
+</svg>
+<div style="font-size:12px;color:#64748b;margin-top:6px;">図9-25: GET /health の流れ。RustNote は DB に SELECT 1 を問い合わせ、届けば 200、届かなければ 503 を返す。Fly.io は状態コードで合否を決め、不合格のマシンにはリクエストを送らない</div>
+</div>
+
+動かないときに、まず見る場所の地図です。この単元の例と、UNIT 06 で、それぞれ本物の表示を確かめます。
+
+<div style="max-width:720px;margin:18px auto;text-align:center;">
+<svg viewBox="0 0 720 340" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<rect x="20" y="16" width="680" height="34" rx="6" fill="#0f172a"/>
+<text x="130" y="38" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle">症状</text>
+<text x="410" y="38" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle">まず見る所</text>
+<text x="630" y="38" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle">確かめる所</text>
+<rect x="20" y="54" width="680" height="54" rx="6" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="34" y="86" font-size="12" fill="#0f172a">「Error:」と出て、すぐ終わる</text>
+<text x="260" y="78" font-size="11" fill="#0f172a">エラーの文と Caused by を読む。</text>
+<text x="260" y="96" font-size="11" fill="#0f172a">問題を全部並べたいときは、診断を動かす</text>
+<text x="630" y="86" font-size="11" fill="#475569" text-anchor="middle">例10-2・UNIT 06</text>
+<rect x="20" y="112" width="680" height="54" rx="6" fill="#ffffff" stroke="#e2e8f0"/>
+<text x="34" y="136" font-size="12" fill="#0f172a">「起動しました」のあとに Error</text>
+<text x="34" y="154" font-size="11" fill="#475569">（os error 10048）</text>
+<text x="260" y="136" font-size="11" fill="#0f172a">待ち受ける場所。ほかのプログラムが</text>
+<text x="260" y="154" font-size="11" fill="#0f172a">同じポートを使っていないか</text>
+<text x="630" y="144" font-size="11" fill="#475569" text-anchor="middle">UNIT 06・エラー3</text>
+<rect x="20" y="170" width="680" height="54" rx="6" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="34" y="202" font-size="12" fill="#0f172a">/health が 503</text>
+<text x="260" y="194" font-size="11" fill="#0f172a">DB（URL・トークン・届くか）。</text>
+<text x="260" y="212" font-size="11" fill="#0f172a">ログの [error] の行に、届かない理由</text>
+<text x="630" y="202" font-size="11" fill="#475569" text-anchor="middle">例10-1</text>
+<rect x="20" y="228" width="680" height="54" rx="6" fill="#ffffff" stroke="#e2e8f0"/>
+<text x="34" y="260" font-size="12" fill="#0f172a">/health が 404</text>
+<text x="260" y="252" font-size="11" fill="#0f172a">確かめる側の path（fly.toml）。</text>
+<text x="260" y="270" font-size="11" fill="#0f172a">アプリは元気なのに、不合格にされる</text>
+<text x="630" y="260" font-size="11" fill="#475569" text-anchor="middle">エラー2</text>
+<rect x="20" y="286" width="680" height="54" rx="6" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="34" y="318" font-size="12" fill="#0f172a">画面は出るのに、ボタンで 500</text>
+<text x="260" y="310" font-size="11" fill="#0f172a">まず /health。503 なら DB。200 なら、</text>
+<text x="260" y="328" font-size="11" fill="#0f172a">ログの [error] の行の「&lt;-」をたどる</text>
+<text x="630" y="318" font-size="11" fill="#475569" text-anchor="middle">問1</text>
+</svg>
+<div style="font-size:12px;color:#64748b;margin-top:6px;">図9-26: 症状から、まず見る場所を決める地図。起動の前の失敗は、エラーの文と診断で、起動のあとの失敗は、/health の状態コードとログの [error] の行で切り分ける</div>
+</div>
+
+### まず動かす最小コード
+
+#### 例10-1: /health が、DB に届くかどうかで答えを変えるか確かめる
+
+RustNote の `src/routes/health.rs` です（全部です）。
+
+```rust
+//! GET /health : 動いているかの確認（Fly.io のヘルスチェックが使う）。
+//!
+//! DB に `SELECT 1` を問い合わせ、成功なら 200 {"status":"ok"}、
+//! 失敗なら 503 {"status":"unavailable"} を返す。
+
+use serde::Serialize;
+use topcoat::{
+    Result,
+    context::Cx,
+    router::{StatusCode, content::Json, route},
+};
+
+use crate::state::app_state;
+
+#[derive(Serialize)]
+pub struct Health {
+    status: &'static str,
+}
+
+#[route(GET)]
+pub async fn health(cx: &Cx) -> Result<(StatusCode, Json<Health>)> {
+    match app_state(cx).db.ping().await {
+        Ok(()) => Ok((StatusCode::OK, Json(Health { status: "ok" }))),
+        Err(error) => {
+            eprintln!("[error] ヘルスチェックで DB に接続できません: {error}");
+            Ok((
+                StatusCode::SERVICE_UNAVAILABLE,
+                Json(Health {
+                    status: "unavailable",
+                }),
+            ))
+        }
+    }
+}
+```
+
+> **▼ このコードがやること（先に日本語で）:** テスト用の DB で RustNote のルーターを作り、`GET /health` を送って、状態コードと本文を表示します。次に、何も待ち受けていない `http://127.0.0.1:9` を DB の場所にしたルーターを作り、同じように `GET /health` を送ります。1つ目は 200、2つ目は 503 になることを、`assert_eq!` でも確かめます。
+
+```rust
+//! 第9巻 UNIT 10: GET /health が、DB に届くときは 200、届かないときは 503 を返すかを確かめる。
+//! 実行: cargo test --test u10_health -- --nocapture
+
+mod common;
+
+use common::{body_text, test_app, test_assets};
+use rustnote::{config::Config, db::Db, routes, state::AppState};
+use topcoat::router::StatusCode;
+
+#[tokio::test]
+async fn health_reports_the_database() {
+    // ふつうの DB（テスト用の一時ファイル）
+    let app = test_app().await;
+    let response = app.get("/health", None).await;
+    let status = response.status();
+    println!("ふつうの DB      → {status} {}", body_text(response).await);
+    assert_eq!(status, StatusCode::OK);
+
+    // 届かない DB（127.0.0.1 の 9 番ポートには、何も待ち受けていない）
+    let config = Config::new("http://127.0.0.1:9".to_string(), None).unwrap();
+    let db = Db::open(&config)
+        .await
+        .expect("開くだけなら、まだ接続しない");
+    let router = routes::build_router(AppState::new(db), test_assets());
+    let app = common::TestApp {
+        router,
+        db: common::test_db().await,
+    };
+    let response = app.get("/health", None).await;
+    let status = response.status();
+    println!("届かない DB      → {status} {}", body_text(response).await);
+    assert_eq!(status, StatusCode::SERVICE_UNAVAILABLE);
+}
+```
+
+```powershell
+cargo test --test u10_health -- --nocapture
+```
+
+```text
+### cargo test --test u10_health -- --nocapture
+
+running 1 test
+ふつうの DB      → 200 OK {"status":"ok"}
+[error] ヘルスチェックで DB に接続できません: Hrana: `http error: `error trying to connect: tcp connect error: 対象のコンピューターによって拒否されたため、接続できませんでした。 (os error 10061)``
+届かない DB      → 503 Service Unavailable {"status":"unavailable"}
+.
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.08s
+```
+
+本物のサーバーでも確かめます。`cargo run` で RustNote を起動し、別の窓から送ります。
+
+```text
+### curl.exe -i http://127.0.0.1:3000/health
+HTTP/1.1 200 OK
+content-type: application/json
+content-length: 15
+date: Fri, 30 Oct 2026 13:21:44 GMT
+
+{"status":"ok"}
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: DB に届けば 200、届かなければ 503
+
+- ふつうの DB では `200 OK {"status":"ok"}`、届かない DB では `503 Service Unavailable {"status":"unavailable"}` でした。`health` は、`app_state(cx).db.ping()`（`src/db.rs` の `Db::ping`。`SELECT 1` を問い合わせる）の結果で、答えを分けています。
+- 503 のとき、RustNote の窓（標準エラー出力）に `[error] ヘルスチェックで DB に接続できません: …` の行が出ました。`os error 10061` は、Windows の「接続を拒否されました」です。9 番ポートでは、何も待ち受けていないからです。**状態コードは「悪いかどうか」、ログの行は「なぜ悪いか」**を伝えます。
+- `Db::open` は、リモートの DB では、まだ接続しません（`expect` の文のとおり、開くだけなら成功します）。だから、起動のときに DB が止まっていても、気づけるのは `/health` か、最初の DB の操作のときです。
+
+##### 解説2: 届かないと分かるまでの時間
+
+- テスト全体は **2.08 秒**かかりました（あとのエラー1の、DB に問い合わせない版は 0.03 秒です）。この PC では、拒否されたと分かるまでに、約2秒かかっています。
+- `fly.toml` のヘルスチェックは `timeout = "5s"` です。ネットワークの向こうの DB が、拒否もせずに黙ってしまうと、`/health` の答えが5秒を超え、Fly.io は時間切れとして不合格にします。どちらにしても、そのマシンには、リクエストが送られなくなります。
+
+### もう一歩: 実務に近い形
+
+#### 例10-2: 起動に要るものを、順に全部確かめる診断
+
+UNIT 06 で見たとおり、`main` は、起動の順番（設定 → アセットの束 → DB → マイグレーション → 待ち受け）の途中で失敗すると、`?` で**その場で止まります**。止まるのは正しいのですが、問題が2つあるときは、1つ直して起動し、また止まって2つ目に気づく、を繰り返すことになります。そこで、**同じ順番で、全部を確かめて並べる**プログラムを作ります。
+
+> **▼ このコードがやること（先に日本語で）:** `.env` と環境変数から設定を作り、①設定 ②アセットの束 ③DB を開く ④DB に届く（`ping`）⑤マイグレーションがいくつ適用済みか ⑥待ち受ける場所（`HOST:PORT`）を押さえられるか、を順に確かめます。1つごとに `✓`（通った）か `✗`（だめ。直し方のヒント付き）を表示し、1つでも `✗` があれば、終了コード 1 で終わります。設定が作れないときだけは、そのあとを確かめられないので、そこで終わります。
+
+```rust
+//! 第9巻 UNIT 10: 起動に要るものを、起動の順番どおりに1つずつ確かめて、どこでつまずくかを表示する。
+//! 実行: cargo run --example u10_doctor
+
+use rustnote::{
+    config::{Config, listen_address},
+    db::{Db, MIGRATIONS},
+};
+use topcoat::asset::AssetBundle;
+
+/// 1つの確かめの結果を表示し、通ったかを返す
+fn report(name: &str, result: Result<String, String>) -> bool {
+    match result {
+        Ok(detail) => {
+            println!("✓ {name}: {detail}");
+            true
+        }
+        Err(hint) => {
+            println!("✗ {name}: {hint}");
+            false
+        }
+    }
+}
+
+#[tokio::main]
+async fn main() {
+    dotenvy::dotenv().ok();
+    let mut all_ok = true;
+
+    // 1. 設定
+    let config = match Config::from_env() {
+        Ok(config) => {
+            report(
+                "設定",
+                Ok(format!("DATABASE_URL = {}", config.database_url)),
+            );
+            config
+        }
+        Err(error) => {
+            report("設定", Err(format!("{error}（環境変数か .env を直す）")));
+            std::process::exit(1);
+        }
+    };
+
+    // 2. アセットの束（アプリ本体 target/debug/rustnote.exe の隣の assets を見る）
+    let bundle_dir = std::env::current_exe()
+        .ok()
+        .and_then(|exe| Some(exe.parent()?.parent()?.join("assets")));
+    let bundle = match bundle_dir {
+        Some(dir) => AssetBundle::load_dir(&dir)
+            .map(|_| "ある".to_string())
+            .map_err(|_| "無い（topcoat asset bundle を実行する）".to_string()),
+        None => Err("場所が分からない".to_string()),
+    };
+    all_ok &= report("アセットの束", bundle);
+
+    // 3〜5. DB を開く・届く・表が最新か
+    match Db::open(&config).await {
+        Ok(db) => {
+            report("DB を開く", Ok("開けた".to_string()));
+            let reached = db
+                .ping()
+                .await
+                .map(|_| "届く".to_string())
+                .map_err(|error| format!("届かない（{error}）"));
+            if report("DB に届く", reached) {
+                let applied = applied_count(&db).await;
+                let result = if applied == MIGRATIONS.len() {
+                    Ok(format!("{applied}/{} 適用済み", MIGRATIONS.len()))
+                } else {
+                    // 起動すれば migrate が流すので、失敗ではなく知らせるだけ
+                    Ok(format!(
+                        "{applied}/{} 適用済み（起動のときに残りが流れる）",
+                        MIGRATIONS.len()
+                    ))
+                };
+                report("マイグレーション", result);
+            } else {
+                all_ok = false;
+            }
+        }
+        Err(error) => {
+            all_ok &= report(
+                "DB を開く",
+                Err(format!("{error}（DATABASE_URL のフォルダを確かめる）")),
+            );
+        }
+    }
+
+    // 6. 待ち受ける場所（押さえられるかだけを試し、すぐに放す）
+    let address = listen_address();
+    let listen = tokio::net::TcpListener::bind(&address)
+        .await
+        .map(|_| format!("{address} は空いている"))
+        .map_err(|error| {
+            format!("{address} を使えない（{error}）。ほかのプログラムが使っていないか確かめる")
+        });
+    all_ok &= report("待ち受ける場所", listen);
+
+    if !all_ok {
+        std::process::exit(1);
+    }
+}
+
+/// schema_migrations に記録された版の数（表が無ければ 0）
+async fn applied_count(db: &Db) -> usize {
+    let Ok(conn) = db.connect().await else {
+        return 0;
+    };
+    let Ok(mut rows) = conn
+        .query("SELECT COUNT(*) FROM schema_migrations", ())
+        .await
+    else {
+        return 0;
+    };
+    match rows.next().await {
+        Ok(Some(row)) => row.get::<i64>(0).map(|n| n as usize).unwrap_or(0),
+        _ => 0,
+    }
+}
+```
+
+`examples/` に置いたファイルは、`cargo run --example 名前` で動かせる、アプリとは別の小さな実行ファイルになります（`rustnote` の `lib.rs` の公開された部品を、そのまま使えます）。ふだんの `dev.db` で動かします。
+
+```powershell
+$env:DATABASE_URL = "dev.db"
+cargo run --example u10_doctor
+```
+
+```text
+### $env:DATABASE_URL = "dev.db"; cargo run --example u10_doctor
+✓ 設定: DATABASE_URL = dev.db
+✓ アセットの束: ある
+✓ DB を開く: 開けた
+✓ DB に届く: 届く
+✓ マイグレーション: 3/3 適用済み
+✓ 待ち受ける場所: 127.0.0.1:3000 は空いている
+```
+
+次に、**2つ同時に壊します**。アセットの束を消し（`topcoat asset clean`）、DB の場所を、無いフォルダの中にします。まず、ふつうの `cargo run`、次に診断です。
+
+```text
+### topcoat asset clean のあとで $env:DATABASE_URL = "nofolder/dev.db"; cargo run
+Error: アセットの束（assets/）がありません。先に `topcoat asset bundle` を実行するか、`topcoat dev` で起動してください
+
+Caused by:
+    no asset bundle at target\debug\assets
+exit=1
+
+### 同じ状態で cargo run --example u10_doctor
+✓ 設定: DATABASE_URL = nofolder/dev.db
+✗ アセットの束: 無い（topcoat asset bundle を実行する）
+✗ DB を開く: Failed to connect to database: `Unable to open connection to local database nofolder/dev.db: 14`（DATABASE_URL のフォルダを確かめる）
+✓ 待ち受ける場所: 127.0.0.1:3000 は空いている
+```
+
+##### 解説1: main は1つ目で止まり、診断は2つとも見つける
+
+- `cargo run` は、アセットの束が無いことだけを伝えて止まりました。DB の場所の間違いは、束を作り直して、もう一度起動するまで分かりません。
+- 診断は、`✗ アセットの束` と `✗ DB を開く` の**2つを並べ**、それぞれに直し方を付けました。終了コードは、どちらも 1 です。
+- 診断は、問題があっても先へ進むように、1つの確かめごとに `Result` を受け取り、`report` で表示するだけにしています。`?` を使わないのが、`main` との違いです。
+
+##### 解説2: 壊し方ごとの、✗ の出る場所
+
+ほかの壊し方でも、1つずつ動かしました（表は、本物の表示の要点です）。
+
+| 壊し方 | ✗ になった行 | 表示の要点 |
+|---|---|---|
+| `DATABASE_URL` を `libsql://rustnote-example.turso.io` にして、トークンを入れない | `✗ 設定`（ここで終わる） | `DATABASE_AUTH_TOKEN が設定されていません` |
+| `topcoat asset clean` で束を消す | `✗ アセットの束` | `無い（topcoat asset bundle を実行する）` |
+| `DATABASE_URL` を `nofolder/dev.db` にする | `✗ DB を開く` | `Unable to open connection to local database nofolder/dev.db: 14` |
+| `DATABASE_URL` を `http://127.0.0.1:9` にする | `✗ DB に届く`（開くのは `✓`） | `os error 10061` |
+
+- リモートの DB は、**開くのは成功し、届くかで初めて分かる**ことが、ここでも見えます（例10-1の解説1）。だから、診断は「開く」と「届く」を別の行にしています。
+- 診断は、本物のアプリと同じ `Config::from_env`・`Db::open`・`listen_address` を呼びます。確かめ方をアプリと別に書くと、アプリだけが変わったときに、診断が古い決まりで「✓」を出してしまうからです。
+
+> **注意:** アセットの束は、アプリ（`target/debug/rustnote.exe`）の隣の `assets` を見ます。Topcoat の `AssetBundle::load()` は「今動いている実行ファイルの隣」を見るので、`target/debug/examples/` にある診断から呼ぶと、違う場所を見てしまいます。そこで、診断では `AssetBundle::load_dir` に、1つ上のフォルダの `assets` を渡しています。
+
+#### 例10-3: 初回起動を、診断から通しで行う
+
+新しい DB（`first.db`）で、初めて起動する流れです。順に実行します。
+
+1. アセットの束を作る
+
+```text
+### topcoat asset bundle
+bundled assets into target\debug\assets
+```
+
+2. 起動の前に、診断を動かす
+
+```text
+### $env:DATABASE_URL = "first.db"; cargo run --example u10_doctor
+✓ 設定: DATABASE_URL = first.db
+✓ アセットの束: ある
+✓ DB を開く: 開けた
+✓ DB に届く: 届く
+✓ マイグレーション: 0/3 適用済み（起動のときに残りが流れる）
+✓ 待ち受ける場所: 127.0.0.1:3000 は空いている
+exit=0
+### Test-Path first.db
+True
+```
+
+3. 別の窓で `cargo run` を実行して起動し、そのままにしておく（あとで止めたときまでの表示です）
+
+```text
+### （RustNote の窓に出た表示。Ctrl+C で止めるまで）
+マイグレーションを適用しました: 0001_users
+マイグレーションを適用しました: 0002_notes
+マイグレーションを適用しました: 0003_sessions
+RustNote を起動しました: http://127.0.0.1:3000
+GET /healthz -> 404 Not Found (557.8µs)
+GET /login -> 200 OK (602.9µs)
+```
+
+4. もう1つの窓から、外から確かめる（例10-1と同じ `curl.exe -i http://127.0.0.1:3000/health` で、`200 OK` と `{"status":"ok"}`）
+
+5. ブラウザで `http://127.0.0.1:3000/` を開き、新規登録から始める（第10巻）
+
+- 2の診断では、マイグレーションが `0/3` でした。まだ表が無い、新しい DB だからです。これは `✗` ではありません。3の起動で、`0001_users`・`0002_notes`・`0003_sessions` の3つが流れました（UNIT 07）。
+- 診断は、DB を開いただけで `first.db` を作りました（`Test-Path first.db` が `True`）。ローカルの SQLite は、開くときにファイルが無ければ作ります（UNIT 06）。
+- 3の表示に、`/health` の行はありません。待つため・確かめるために何度も送りましたが、アクセスログは `/health` を書きません（問3）。`GET /healthz` と `GET /login` の行は、このあとのエラー2と問3で送ったものです。
+
+### よくあるエラーと読み方
+
+#### エラー1（エラーが出ない間違い）: DB に問い合わせない /health
+
+`/health` を「サーバーが返事をすればよい」と考えて、DB に触らずに、いつも `ok` を返すように書いた場合です（作業用のコピーで、`health` の中身だけを変えています）。
+
+```rust
+#[route(GET)]
+pub async fn health(_cx: &Cx) -> Result<(StatusCode, Json<Health>)> {
+    // DB には問い合わせず、いつも ok と答える
+    Ok((StatusCode::OK, Json(Health { status: "ok" })))
+}
+```
+
+```text
+### cargo test --test u10_health -- --nocapture   # health.rs を、DB に問い合わせない版にした
+
+running 1 test
+ふつうの DB      → 200 OK {"status":"ok"}
+届かない DB      → 200 OK {"status":"ok"}
+
+thread 'health_reports_the_database' (215536) panicked at tests\u10_health.rs:32:5:
+assertion `left == right` failed
+  left: 200
+ right: 503
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+health_reports_the_database --- FAILED
+
+failures:
+
+failures:
+    health_reports_the_database
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+error: test failed, to rerun pass `--test u10_health`
+```
+
+- **何が起きたか:** コンパイルは、問題なく通ります。届かない DB でも `200 OK {"status":"ok"}` でした。気づけたのは、例10-1のテストに `assert_eq!(status, StatusCode::SERVICE_UNAVAILABLE)` があったからです（`left: 200` が実際の値、`right: 503` が期待した値）。`println!` だけのテストなら、このテストも「ok」で通ってしまいます。
+- **困ること:** Fly.io は、DB が使えないマシンにも「合格」として、リクエストを送り続けます。使う人には、ログインのボタンを押したときに 500 が返ります（問1）。脈を測るふりをして、腕に触っていない状態です。
+- **直し方:** `/health` では、アプリが仕事をするのに**欠かせない物**（RustNote では DB）に、軽く問い合わせます。重い処理（全部のノートを数えるなど）は入れません。30 秒ごとに呼ばれるからです。
+
+#### エラー2（エラーが出ない間違い）: fly.toml の path を /healthz と書いた
+
+ヘルスチェックの URL を、ほかのアプリの習慣で `/healthz` と書いてしまった場合です。Fly.io の本物のアカウントでは動かさず、Fly.io が送るのと同じリクエストを、手元で送って確かめます。
+
+```toml
+  [[http_service.checks]]
+    grace_period = "10s"
+    interval = "30s"
+    method = "GET"
+    path = "/healthz"   # 間違い。RustNote の URL は /health
+    timeout = "5s"
+```
+
+```text
+### curl.exe -s -o NUL -w "%{http_code}\n" http://127.0.0.1:3000/healthz
+404
+```
+
+- **何が起きたか:** 404 です。RustNote は元気で、DB にも届いているのに、確かめる側が、無い URL を見ています。Fly.io の説明書（docs.fly.io の health checks）では、合格は 200 番台の答えだけで、不合格のマシンには、合格するまでリクエストを送りません。つまり、**元気なアプリに、誰もたどり着けなく**なります。
+- **気づき方:** 例10-3の3の表示に、`GET /healthz -> 404 Not Found` の行がありました。アクセスログが書かないのは `/health` ちょうどだけなので、`/healthz` は書かれます。ログに、30 秒ごとに同じ 404 の行が並んでいたら、これを疑います。
+- **直し方:** `fly.toml` の `path` を、`routes` の一覧（UNIT 08）と同じ `/health` にします。手元で `curl.exe -i` を送り、200 になる URL を書きます。
+
+#### エラー3（読み違え）: 動いている RustNote の横で、診断を動かした
+
+例10-3の3で RustNote を動かしたまま、もう1つの窓で診断を動かした場合です。
+
+```text
+### $env:DATABASE_URL = "first.db"; cargo run --example u10_doctor   # RustNote を動かしたまま
+✓ 設定: DATABASE_URL = first.db
+✓ アセットの束: ある
+✓ DB を開く: 開けた
+✓ DB に届く: 届く
+✓ マイグレーション: 3/3 適用済み
+✗ 待ち受ける場所: 127.0.0.1:3000 を使えない（通常、各ソケット アドレスに対してプロトコル、ネットワーク アドレス、またはポートのどれか 1 つのみを使用できます。 (os error 10048)）。ほかのプログラムが使っていないか確かめる
+```
+
+- **何が起きたか:** `✗ 待ち受ける場所` です。`os error 10048` は、「そのアドレスは、もう使われています」です。使っているのは、隣の窓の RustNote 自身です。**これは問題ではありません。**
+- **読み方:** 診断の `✗` は「このまま、もう1つ起動すると、ここで止まる」という意味です。今動いている RustNote を止めるか、別のポートで確かめます。同じ窓のまま（`DATABASE_URL` は `first.db` のまま）、`PORT` だけを変えると、`✓` になります。
+
+```text
+### $env:PORT = "3001"; cargo run --example u10_doctor
+✓ 設定: DATABASE_URL = first.db
+✓ アセットの束: ある
+✓ DB を開く: 開けた
+✓ DB に届く: 届く
+✓ マイグレーション: 3/3 適用済み
+✓ 待ち受ける場所: 127.0.0.1:3001 は空いている
+```
+
+- UNIT 06 のエラーで見たとおり、ふつうの `cargo run` は、ここで「起動しました」と出してから止まります。診断なら、起動する前に、ポートが使えるかを確かめられます。
+
+### RustNote ではここで使う
+
+- `GET /health` は `src/routes/health.rs` です（例10-1）。`AppState` が `db` を持っているのは、このためです（`src/state.rs` のコメント「DB そのもの（GET /health の確認に使う）」）。
+- アクセスログ（`src/routes.rs` の `access_log`）は、`/health` だけを書きません。
+
+```rust
+/// アクセスログ: 「GET /notes -> 200 OK (1.2ms)」のように標準エラー出力へ書く
+#[layer]
+async fn access_log(cx: &Cx, body: Body, next: Next<'_>) -> Result<Response> {
+    let started = std::time::Instant::now();
+    let result = next.run(cx, body).await;
+    // ヘルスチェックは数十秒ごとに来るので、ログに出さない
+    if uri(cx).path() != "/health" {
+        // …（状態コードを文字にして、1行書く）
+    }
+    result
+}
+```
+
+- `fly.toml` のヘルスチェックは、次のとおりです。`grace_period = "10s"` は、マシンが起動してから最初に確かめるまで待つ時間です。マイグレーションを流している間に、不合格にされないための余裕です。
+
+```toml
+  # ヘルスチェック: GET /health が 200 を返せば正常
+  [[http_service.checks]]
+    grace_period = "10s"
+    interval = "30s"
+    method = "GET"
+    path = "/health"
+    timeout = "5s"
+```
+
+- `README.md` の URL の表にも、`GET /health` が「200 `{"status":"ok"}`（DB に届かなければ 503）」と書いてあります。本物の Fly.io での確かめは、第12巻 UNIT 06（準備中）で扱います。
+- 診断（`examples/u10_doctor.rs`）は、この本の例として、コピーした RustNote に足したものです。`Rust/rustnote` には入れていません（RustNote のコードは変えていません）。
+
+### 練習問題
+
+**問1:** DB に届かないとき、`/health` 以外の URL は何を返すでしょうか。`GET /login`・`GET /notes`（ログインしていない）・`POST /login`（メールアドレスとパスワードを送る）を予想してから、例10-1と同じ「届かない DB」のルーターで確かめてください。
+
+**問2:** `/health` は、DB に届かないとき 503 を返します。500（Internal Server Error）や、`200 {"status":"unavailable"}` にしないのは、なぜでしょうか。
+
+**問3:** Fly.io は、30 秒ごとに `/health` を送ります。アクセスログが `/health` を書かないことで、マシン1台あたり、1日に何行が減るでしょうか。また、書かないことで、困ることはないでしょうか。
+
+### 解答と解説
+
+**問1の解答:**
+
+```rust
+//! 第9巻 UNIT 10 問題: DB に届かないとき、/health 以外の URL は何を返すか。
+//! 実行: cargo test --test u10_q -- --nocapture
+
+mod common;
+
+use common::{encode, test_assets};
+use rustnote::{config::Config, db::Db, routes, state::AppState};
+
+#[tokio::test]
+async fn pages_without_the_database() {
+    let config = Config::new("http://127.0.0.1:9".to_string(), None).unwrap();
+    let db = Db::open(&config).await.unwrap();
+    let router = routes::build_router(AppState::new(db), test_assets());
+    let app = common::TestApp {
+        router,
+        db: common::test_db().await,
+    };
+    for path in ["/health", "/login", "/notes"] {
+        let status = app.get(path, None).await.status();
+        println!("GET  {path:<8} → {status}");
+    }
+    let form = format!(
+        "email={}&password={}",
+        encode("alice@example.com"),
+        encode("correct horse battery")
+    );
+    let status = app.post_form("/login", &form, None).await.status();
+    println!("POST /login    → {status}");
+}
+```
+
+```text
+### cargo test --test u10_q -- --nocapture
+
+running 1 test
+[error] ヘルスチェックで DB に接続できません: Hrana: `http error: `error trying to connect: tcp connect error: 対象のコンピューターによって拒否されたため、接続できませんでした。 (os error 10061)``
+GET  /health  → 503 Service Unavailable
+GET /login -> 200 OK (934.2µs)
+GET  /login   → 200 OK
+GET /notes -> 303 See Other (88.7µs)
+GET  /notes   → 303 See Other
+[error] サーバーの中でエラーが起きました <- DB の操作に失敗しました <- Hrana: `http error: `error trying to connect: tcp connect error: 対象のコンピューターによって拒否されたため、接続できませんでした。 (os error 10061)``
+POST /login -> 500 Internal Server Error (2.0383978s)
+POST /login    → 500 Internal Server Error
+.
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 4.12s
+```
+
+- `GET /login` は **200**、`GET /notes` は **303**（ログイン画面へ）でした。どちらも、DB に問い合わせずに答えられるからです。`src/auth.rs` の `load_current_user` は、クッキーのトークンが無ければ、DB に問い合わせずに「ログインしていない」と答えます。
+- `POST /login` は、メールアドレスで DB を探そうとして、**約2秒待ったあとに 500** になりました。ログの `<-` の鎖（第4巻 UNIT 05）を右へたどると、`DB の操作に失敗しました` の理由が `os error 10061` だと分かります。
+- つまり、**画面が出ることは、動いている証拠になりません**。使う人は、ログインの画面までは進めて、ボタンを押したところで失敗します。DB の具合を伝えているのは `/health` の 503 だけです。図9-26の「画面は出るのに、ボタンで 500」が、この状態です。
+
+**問2の解答:**
+
+- 500 は「このリクエストの処理の途中で、思っていなかった失敗が起きた」です。RustNote では、`AppError` の内側のエラーが 500 になり、ログに `<-` の鎖が出ます（問1の `POST /login`）。直すべき**不具合か、事故**の印です。
+- 503 は「サーバーは返事ができるが、今は仕事を受けられない」です。頼っている DB が戻れば、コードを直さなくても合格に戻ります。`/health` が伝えたいのは、こちらの意味です。
+- `200 {"status":"unavailable"}` は、いちばん困ります。Fly.io のヘルスチェックは、**状態コードで**合否を決めます（200 番台なら合格。設定の項目に、本文を確かめるものはありません）。本文の `unavailable` は人のための文で、機械には合格に見えます。エラー1と同じく、DB の無いマシンにリクエストが送られ続けます。
+
+**問3の解答:**
+
+- 1日は 86,400 秒なので、86,400 ÷ 30 = **2,880 行**です（マシンが動いている間。ヘルスチェック1つあたり）。台数が増えれば、その分だけ増えます。ほかのリクエストの行が、ヘルスチェックの行に埋もれてしまいます。
+- 手元でも確かめました。`/health` を5回送ってから、ログイン画面を1回開きました。
+
+```text
+### 1..5 | ForEach-Object { curl.exe -s http://127.0.0.1:3000/health }; curl.exe -s -o NUL http://127.0.0.1:3000/login
+{"status":"ok"}
+{"status":"ok"}
+{"status":"ok"}
+{"status":"ok"}
+{"status":"ok"}
+```
+
+- 例10-3の3の RustNote の表示には、`/health` の行が1つも無く、`GET /login -> 200 OK` だけが出ています。
+- 困ることは、ほとんどありません。**不合格のとき**は、`health.rs` が `[error] ヘルスチェックで DB に接続できません: …` を自分で書くからです（例10-1）。書かないのは「いつもどおり合格」の行だけで、知りたい行は残ります。ただし、`/health` に来たリクエストの速さを調べたいときには、この行が無いので、別の方法（第11巻 UNIT 07（準備中）のメトリクス）を使います。
+
+### まとめ
+
+- `GET /health` は、DB に `SELECT 1` を問い合わせ、届けば 200、届かなければ 503 を返す。Fly.io は状態コードで合否を決め、不合格のマシンにはリクエストを送らない。DB に触らない `/health` や、`path` のずれは、エラーが出ないまま事故になるので、テストの `assert_eq!` と、`curl.exe -i` で確かめる。
+- 診断（`examples/u10_doctor.rs`）は、起動と同じ順番で、設定・アセットの束・DB を開く・届く・マイグレーション・待ち受ける場所を全部確かめ、`✓`・`✗` とヒントを並べる。`main` は最初の失敗で止まり、診断は全部の問題を一度に見せる。
+- 初回起動は「束を作る → 診断 → 起動（マイグレーションが流れる）→ /health を外から確かめる → ブラウザ」の順。動かないときは、起動の前ならエラーの文と診断、起動のあとなら /health の状態コードとログの [error] の行で切り分ける。
+
 ## この巻のまとめ
 
-この版に収録した UNIT 01〜09 で、次のことができるようになったかを確かめましょう。できたものに印を付けてください。
+この巻の UNIT 01〜10 で、次のことができるようになったかを確かめましょう。できたものに印を付けてください。
 
 **UNIT 01: 要件・ユーザーストーリー・受入条件**
 
@@ -6824,7 +7509,6 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 - ☐ 型の検査と DB の制約の答えが食い違う入力（空白だけ・全角の空白）と、どちらも通してしまう入力（ゼロ幅スペース）を、実験で見つけられる
 - ☐ 中身が private な型は、検査の関数を通さないと作れない（E0423）ことと、それが不変条件を守る仕組みであることを説明できる
 - ☐ 文字数を `len()` ではなく `chars().count()` で数える理由と、`include_str!` のパスの数え方を説明できる
-
 
 **UNIT 04: プロジェクト構成と依存の向き**
 
@@ -6880,11 +7564,18 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 - ☐ `for` と `id` のずれや、薄すぎる色のような、見た目では気づけない間違いを、テストと計算で見つけられる
 - ☐ RustNote に残る改善点（検索の入力欄のラベル・ページごとの `<title>`）を説明できる
 
-> **お知らせ:** この版には UNIT 01〜09 を収録しています。UNIT 10（health・初回起動・診断）は準備中で、次の更新から順に追加します。それまでの間、完成した RustNote の起動の流れは `Rust/rustnote/src/main.rs` の先頭のコメントで、フォルダの構成と環境変数は `Rust/rustnote/README.md` で確かめられます。
+**UNIT 10: health・初回起動・診断**
+
+- ☐ `GET /health` が DB に `SELECT 1` を問い合わせ、届けば 200、届かなければ 503 を返すことを、テストと `curl.exe -i` で確かめられる
+- ☐ 503 と 500 と `200 {"status":"unavailable"}` の違いと、Fly.io が状態コードで合否を決めることを説明できる
+- ☐ `fly.toml` の `[[http_service.checks]]`（`grace_period`・`interval`・`path`・`timeout`）を読み、`path` がずれたときに何が起きるかを言える
+- ☐ 起動と同じ順番で、設定・アセットの束・DB・マイグレーション・待ち受ける場所を全部確かめる診断を書き、`✓`・`✗` から原因を切り分けられる
+- ☐ `main` の `?` は最初の失敗で止まり、診断は全部の問題を並べる、という違いを使い分けられる
+- ☐ 初回起動の流れ（束を作る → 診断 → 起動 → /health → ブラウザ）を、自分の手で通せる
 
 ## 用語ミニ辞典
 
-この巻（UNIT 01〜09）に出てきた用語です。
+この巻（UNIT 01〜10）に出てきた用語です。
 
 ### UNIT 01 の用語
 
@@ -7014,3 +7705,18 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 | `role="status"` | 読み上げソフトに「お知らせの文です」と伝える属性 |
 | フォーカスの枠 | Tab キーで選んでいる所を示す枠（`outline`）。消さない |
 | `viewport` | スマートフォンで、画面の幅に合わせて表示するための `<meta>` の設定 |
+
+### UNIT 10 の用語
+
+| 用語 | 意味 |
+|---|---|
+| ヘルスチェック | アプリが動いているかを、外から決まった間隔で確かめること。RustNote では `GET /health` |
+| 503 Service Unavailable | サーバーは返事ができるが、今は仕事を受けられない、という状態コード |
+| 500 Internal Server Error | リクエストの処理の途中で、思っていなかった失敗が起きた、という状態コード |
+| 診断（doctor） | 起動に要るものを1つずつ確かめて、どこが悪いかを表示する小さなプログラム |
+| `grace_period` | マシンが起動してから、最初のヘルスチェックまで待つ時間 |
+| `interval`・`timeout` | ヘルスチェックの間隔と、答えを待つ長さ。RustNote は 30 秒と 5 秒 |
+| `cargo run --example` | `examples/` に置いた、アプリとは別の小さな実行ファイルを動かすコマンド |
+| 終了コード | プログラムが終わるときに返す数。0 は成功、0 以外は失敗 |
+| os error 10048 | Windows の「そのアドレスは、もう使われています」 |
+| os error 10061 | Windows の「接続を拒否されました」。相手のポートで、何も待ち受けていない |
