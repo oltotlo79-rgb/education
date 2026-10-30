@@ -349,7 +349,7 @@ date: Mon, 26 Oct 2026 20:41:33 GMT
 
 #### ▼ コードを1つずつ分解して解説
 
-##### 解説1: release は target\release にできる
+##### 解説1: release は `target\release` にできる
 
 - `Finished release profile [optimized]` の `optimized` は「最適化した」という意味です。debug ビルドのときは `Finished dev profile [unoptimized + debuginfo]`（最適化なし・デバッグ用の情報付き）と表示されます。
 - debug ビルドは `target\debug\`、release ビルドは `target\release\` と、別のフォルダにできます。2つは混ざりません。この PC では、何もない状態からの release ビルドに 1 分 25 秒かかりました。debug ビルドは 1 分 2 秒でした。release は、最適化に時間を使うぶん遅くなります。
