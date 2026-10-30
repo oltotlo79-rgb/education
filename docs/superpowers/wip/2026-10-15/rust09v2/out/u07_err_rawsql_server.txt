@@ -1,0 +1,3 @@
+RustNote を起動しました: http://127.0.0.1:3000
+[error] サーバーの中でエラーが起きました <- invalid encoding
+POST /login -> 500 Internal Server Error (18.0418ms)

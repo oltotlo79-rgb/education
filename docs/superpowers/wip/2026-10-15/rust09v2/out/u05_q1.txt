@@ -1,0 +1,16 @@
+### cargo tree -d --depth 0 の結果を、版が2つ以上あるクレートだけ、クレートごとにまとめたもの
+base64: v0.21.7 / v0.22.1
+bitflags: v1.3.2 / v2.13.2
+block-buffer: v0.10.4 / v0.12.1
+cpufeatures: v0.2.17 / v0.3.1
+crypto-common: v0.1.7 / v0.2.2
+digest: v0.10.7 / v0.11.3
+fallible-iterator: v0.2.0 / v0.3.0
+getrandom: v0.2.17 / v0.3.4 / v0.4.3
+h2: v0.3.27 / v0.4.20
+hashbrown: v0.12.3 / v0.14.5 / v0.17.1
+http: v0.2.12 / v1.5.0
+http-body: v0.4.6 / v1.1.0
+hyper: v0.14.32 / v1.12.0
+indexmap: v1.9.3 / v2.14.2
+…（版が2つ以上あるのは、合わせて 30 種類）

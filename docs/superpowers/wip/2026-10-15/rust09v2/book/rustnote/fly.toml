@@ -1,0 +1,38 @@
+# Fly.io の設定ファイル
+# app の名前は世界で1つだけなので、自分用の名前に変えてから `fly launch --no-deploy` / `fly deploy` する。
+# DB（Turso）の URL とトークンは秘密の値なので、ここには書かず `fly secrets set` で渡す:
+#   fly secrets set DATABASE_URL=libsql://<DB名>-<組織名>.turso.io DATABASE_AUTH_TOKEN=<トークン>
+
+app = "rustnote-example"
+primary_region = "nrt"
+
+[build]
+  dockerfile = "Dockerfile"
+
+# アプリに渡す環境変数（秘密でないもの）
+[env]
+  HOST = "0.0.0.0"
+  PORT = "8080"
+
+[http_service]
+  # アプリが待ち受けるポート（PORT と同じ）
+  internal_port = 8080
+  # http:// で来たら https:// へ転送する（セッションのクッキーは Secure なので HTTPS が必須）
+  force_https = true
+  # アクセスが無いときはマシンを止め、来たら起動する
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+
+  # ヘルスチェック: GET /health が 200 を返せば正常
+  [[http_service.checks]]
+    grace_period = "10s"
+    interval = "30s"
+    method = "GET"
+    path = "/health"
+    timeout = "5s"
+
+[[vm]]
+  memory = "512mb"
+  cpu_kind = "shared"
+  cpus = 1

@@ -1,0 +1,6 @@
+### （表に3行を足しただけで）cargo test --test u08_routes -- --nocapture
+NG GET    /notes/1/export    alice      → 404 
+ok GET    /notes/1/export    bob        → 404 
+NG GET    /notes/1/export    未ログイン      → 404 
+assertion `left == right` failed: 表と違う行が 2 行あります
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.49s

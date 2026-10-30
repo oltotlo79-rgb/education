@@ -1,0 +1,7 @@
+### cargo tree -i generic-array --depth 1
+generic-array v0.14.7
+|-- aead v0.5.2
+|-- block-buffer v0.10.4
+|-- block-padding v0.3.3
+|-- crypto-common v0.1.7
+`-- inout v0.1.4

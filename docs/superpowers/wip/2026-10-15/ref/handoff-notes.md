@@ -1,5 +1,15 @@
 # 中断時点の引き継ぎメモ
 
+## 2026-10-30（続き2）: 第9巻を完成（main: 1cae405 以降 UNIT 05〜09、b835b77 UNIT 10）
+
+素材は `rust09v2/`（parts・out・book/rustnote のコピー（target と .db を除く）・errs10/health_naive.rs・道具）。
+
+- **第9巻:** UNIT 05〜10 を 0.11・1.99.1 で書いた（204 ページ・図 26 枚）。巻頭・巻末のお知らせを外し、旧 `Rust/09_….pdf` を削除。
+- **UNIT 10（health・初回起動・診断）で確かめた事実:** `/health` は届く DB で `200 {"status":"ok"}`、`http://127.0.0.1:9` で `503 {"status":"unavailable"}`＋`[error] … os error 10061`（`Db::open` はリモートでは接続しないので開くのは成功）。拒否と分かるまで約2秒（テスト 2.08 s、DB に触らない版は 0.03 s）。DB に触らない `/health` は届かない DB でも 200（`assert_eq!` で left 200 / right 503）。`/healthz` は 404 で、アクセスログに `GET /healthz -> 404` が出る（`/health` ちょうどだけ書かない。/health を5回送っても 0 行）。DB に届かないとき `GET /login` 200・`GET /notes` 303（クッキーが無ければ DB を見ない。偽のクッキーも DB を見ずに 303）・`POST /login` は約 2.04 s 後に 500。診断 `examples/u10_doctor.rs`（設定・束・開く・届く・マイグレーション数・TcpListener::bind）: 新しい DB で 0/3（ファイルは診断で作られる）、束なし＋無いフォルダでは main は束のエラーだけ・診断は2つとも ✗、動いている横では 10048 の ✗、PORT=3001 なら ✓。`AssetBundle::load()` は exe の隣の assets を見るので、examples からは `load_dir(<exe>/../../assets)`。`topcoat asset bundle`（--bin なし）でも RustNote の束を作れた。
+- **Fly.io（docs.fly.io で確認、アカウントは使っていない）:** http_service.checks は 2xx で合格、301/302 は追わない。不合格のマシンはプロキシが unhealthy にして、合格するまで送らない。再起動・停止はしない。`grace_period` は起動から最初の確かめまで。
+- **直したこと:** `tests/u09_a11y.rs` の doc コメントが clippy の doc_lazy_continuation に当たっていた（`//!` の空行を足した）。`clear_refs.py` が「UNIT 05（準備中）で」を「UNIT 05で」にしていたのを、かな・漢字が続くときは「UNIT 05 で」にするよう直し、既存の 22 か所を `fix_unit_space.py` でそろえた（第6・9・10・12巻の PDF も再生成）。
+- **次:** 第10巻（UNIT 01〜02 の版の表記と出力を合わせてから UNIT 03〜10）→ 第8巻 → 第11巻 → 第13巻 → 第12巻（Docker）→ 第1巻。計画は `ref/tools/PLAN_ALL.md`。
+
 ## 2026-10-30（続き）: 版を最新に上げ、第6巻を完成（main: fbe63e4 RustNote、7764a49〜4837802 第6巻）
 
 ユーザーの指示「全て完了まで進めて / バージョンはあげる / 全て最新に合わせる」。サブエージェントなし。計画は `ref/tools/PLAN_ALL.md`。

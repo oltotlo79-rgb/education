@@ -1,0 +1,7 @@
+### （RustNote の窓に出た表示。Ctrl+C で止めるまで）
+マイグレーションを適用しました: 0001_users
+マイグレーションを適用しました: 0002_notes
+マイグレーションを適用しました: 0003_sessions
+RustNote を起動しました: http://127.0.0.1:3000
+GET /healthz -> 404 Not Found (557.8µs)
+GET /login -> 200 OK (602.9µs)

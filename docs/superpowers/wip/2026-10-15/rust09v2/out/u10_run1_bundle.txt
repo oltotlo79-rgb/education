@@ -1,0 +1,3 @@
+### topcoat asset bundle
+bundled assets into target\debug\assets
+exit=0

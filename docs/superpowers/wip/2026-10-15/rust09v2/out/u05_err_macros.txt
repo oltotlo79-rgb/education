@@ -1,0 +1,19 @@
+### cargo build
+   Compiling tokio v1.54.1
+   Compiling tokio_lab v0.1.0 (...\tokio_lab)
+error[E0433]: cannot find `main` in `tokio`
+ --> src\main.rs:2:10
+  |
+2 | #[tokio::main]
+  |          ^^^^ could not find `main` in `tokio`
+
+error[E0752]: `main` function is not allowed to be `async`
+ --> src\main.rs:3:1
+  |
+3 | async fn main() {
+  | ^^^^^^^^^^^^^^^ `main` function is not allowed to be `async`
+
+Some errors have detailed explanations: E0433, E0752.
+For more information about an error, try `rustc --explain E0433`.
+error: could not compile `tokio_lab` (bin "tokio_lab") due to 2 previous errors
+exit=101

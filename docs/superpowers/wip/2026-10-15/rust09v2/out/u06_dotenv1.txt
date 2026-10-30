@@ -1,0 +1,2 @@
+### .env に PORT=3010 を書いて cargo run
+RustNote を起動しました: http://127.0.0.1:3010

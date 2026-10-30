@@ -1,0 +1,41 @@
+### cargo update --dry-run
+    Updating crates.io index
+     Locking 35 packages to highest Rust 1.99 compatible versions
+    Updating async-compression v0.4.50 -> v0.4.51
+    Updating brotli v9.0.0 -> v9.1.1
+    Updating brotli-decompressor v6.0.1 -> v6.2.0
+    Updating cc v1.8.0 -> v1.10.0
+    Updating compression-codecs v0.4.45 -> v0.4.46
+    Updating compression-core v0.4.33 -> v0.4.34
+    Updating crc32fast v1.5.2 -> v1.5.3
+    Updating ctutils v0.4.3 -> v0.4.7
+    Updating find-msvc-tools v0.1.14 -> v0.1.15
+    Updating icu_collections v2.3.0 -> v2.4.0
+    Updating icu_locale v2.3.1 -> v2.4.0
+    Updating icu_locale_core v2.3.0 -> v2.4.0
+    Updating icu_locale_data v2.3.0 -> v2.4.0
+    Updating icu_locale_fallback v2.3.0 -> v2.4.0
+    Updating icu_locale_fallback_data v2.3.0 -> v2.4.0
+    Updating icu_normalizer v2.3.0 -> v2.4.0
+    Updating icu_normalizer_data v2.3.0 -> v2.4.0
+    Updating icu_properties v2.3.0 -> v2.4.0
+    Updating icu_properties_data v2.3.0 -> v2.4.0
+    Updating icu_provider v2.3.1 -> v2.4.0
+    Updating js-sys v0.3.106 -> v0.3.107
+    Updating rustix v1.1.5 -> v1.1.6
+    Updating smallvec v1.16.3 -> v1.16.4
+    Updating tinystr v0.8.4 -> v0.8.5
+    Updating utf8_iter v1.0.4 -> v1.1.0
+      Adding utf_types v1.0.0
+    Updating uuid v1.28.0 -> v1.29.0
+    Updating wasm-bindgen v0.2.129 -> v0.2.130
+    Updating wasm-bindgen-macro v0.2.129 -> v0.2.130
+    Updating wasm-bindgen-macro-support v0.2.129 -> v0.2.130
+    Updating wasm-bindgen-shared v0.2.129 -> v0.2.130
+    Updating webpki-roots v1.0.9 -> v1.0.11
+    Updating yoke v0.8.3 -> v0.8.4
+    Updating zerovec v0.11.8 -> v0.11.9
+    Updating zerovec-derive v0.11.6 -> v0.11.7
+note: pass `--verbose` to see 1 unchanged dependencies behind latest
+warning: not updating lockfile due to dry run
+exit=0

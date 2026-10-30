@@ -1,0 +1,6 @@
+### 1..5 | ForEach-Object { curl.exe -s http://127.0.0.1:3000/health }; curl.exe -s -o NUL http://127.0.0.1:3000/login
+{"status":"ok"}
+{"status":"ok"}
+{"status":"ok"}
+{"status":"ok"}
+{"status":"ok"}

@@ -1,0 +1,10 @@
+### （"macros" を消したまま）cargo tree --charset ascii -e features -i tokio --depth 3 の一部
+|-- tokio feature "macros"
+|   `-- topcoat v0.11.0 (*)
+|   |-- tokio feature "full" (*)
+|   `-- topcoat-router feature "serve" (*)
+...
+|   |   |-- tokio feature "full"
+|   |   `-- tokio-util feature "io-util"
+|   `-- tokio feature "process"
+|       `-- tokio feature "full" (*)

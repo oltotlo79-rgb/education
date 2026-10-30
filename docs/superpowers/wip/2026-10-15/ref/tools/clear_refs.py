@@ -23,7 +23,8 @@ for md in sorted(REPO.glob("[0-9][0-9]_*.md")):
             units.add(int(m.group(1)))
     done[vol] = units
 
-REF = re.compile(r"(第(\d+)巻 )?UNIT ((?:\d\d)(?:・\d\d)*)（準備中）")
+# 4つ目の組は、すぐ後ろの文字（かな・漢字なら、外したあとに半角スペースを入れる。「UNIT 05 で」）
+REF = re.compile(r"(第(\d+)巻 )?UNIT ((?:\d\d)(?:・\d\d)*)（準備中）([ぁ-んァ-ヶ一-龠]?)")
 
 
 def fix(text, own_vol):
@@ -35,7 +36,7 @@ def fix(text, own_vol):
         units = [int(u) for u in m.group(3).split("・")]
         if all(u in done.get(vol, set()) for u in units):
             count += 1
-            return m.group(0).replace("（準備中）", "")
+            return m.group(0).replace("（準備中）", " " if m.group(4) else "")
         return m.group(0)
 
     # 表の行（巻頭の UNIT の一覧）は、その巻の進み具合そのものなので触らない

@@ -1,0 +1,8 @@
+### topcoat asset clean のあとで $env:DATABASE_URL = "nobundle.db"; cargo run
+Error: アセットの束（assets/）がありません。先に `topcoat asset bundle` を実行するか、`topcoat dev` で起動してください
+
+Caused by:
+    no asset bundle at target\debug\assets
+exit=1
+### Test-Path nobundle.db
+False

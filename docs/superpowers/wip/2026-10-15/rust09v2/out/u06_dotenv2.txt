@@ -1,0 +1,2 @@
+### .env はそのままで、$env:PORT = "3011"; cargo run
+RustNote を起動しました: http://127.0.0.1:3011

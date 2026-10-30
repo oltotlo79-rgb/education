@@ -1,0 +1,7 @@
+### $env:DATABASE_URL = "first.db"; cargo run
+マイグレーションを適用しました: 0001_users
+マイグレーションを適用しました: 0002_notes
+マイグレーションを適用しました: 0003_sessions
+RustNote を起動しました: http://127.0.0.1:3000
+### （2つ目の窓から）curl.exe -s http://127.0.0.1:3000/health
+{"status":"ok"}

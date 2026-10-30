@@ -1,0 +1,34 @@
+### cargo update -p topcoat -p tokio
+    Updating crates.io index
+     Locking 29 packages to highest Rust 1.99 compatible versions
+      Adding icu_locale v2.3.1 (available: v2.4.0)
+      Adding icu_locale_data v2.3.0 (available: v2.4.0)
+      Adding icu_locale_fallback v2.3.0 (available: v2.4.0)
+      Adding icu_locale_fallback_data v2.3.0 (available: v2.4.0)
+    Updating tokio v1.53.3 -> v1.54.1
+    Updating topcoat v0.10.0 -> v0.11.0
+    Updating topcoat-asset v0.10.0 -> v0.11.0
+    Updating topcoat-cookie v0.10.0 -> v0.11.0
+    Updating topcoat-core v0.10.0 -> v0.11.0
+    Updating topcoat-core-grammar v0.10.0 -> v0.11.0
+    Updating topcoat-core-macro v0.10.0 -> v0.11.0
+    Updating topcoat-font v0.10.0 -> v0.11.0
+    Updating topcoat-font-grammar v0.10.0 -> v0.11.0
+    Updating topcoat-font-macro v0.10.0 -> v0.11.0
+    Updating topcoat-icon v0.10.0 -> v0.11.0
+    Updating topcoat-icon-grammar v0.10.0 -> v0.11.0
+    Updating topcoat-icon-macro v0.10.0 -> v0.11.0
+      Adding topcoat-l10n v0.11.0
+    Updating topcoat-mail v0.10.0 -> v0.11.0
+    Updating topcoat-router v0.10.0 -> v0.11.0
+    Updating topcoat-router-grammar v0.10.0 -> v0.11.0
+    Updating topcoat-router-macro v0.10.0 -> v0.11.0
+    Updating topcoat-runtime v0.10.0 -> v0.11.0
+    Updating topcoat-runtime-grammar v0.10.0 -> v0.11.0
+    Updating topcoat-runtime-macro v0.10.0 -> v0.11.0
+    Updating topcoat-session v0.10.0 -> v0.11.0
+    Updating topcoat-view v0.10.0 -> v0.11.0
+    Updating topcoat-view-grammar v0.10.0 -> v0.11.0
+    Updating topcoat-view-macro v0.10.0 -> v0.11.0
+note: pass `--verbose` to see 31 unchanged dependencies behind latest
+exit=0

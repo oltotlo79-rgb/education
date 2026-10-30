@@ -1,0 +1,3 @@
+### $env:DATABASE_URL = "libsql://rustnote-example.turso.io"; $env:DATABASE_AUTH_TOKEN = "dummy"; cargo run --example u07_seed
+Error: libsql://rustnote-example.turso.io はリモートの DB です。見本のデータは、手元の DB にだけ入れます
+exit=1

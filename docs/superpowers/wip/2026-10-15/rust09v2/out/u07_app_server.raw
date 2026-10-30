@@ -1,0 +1,3 @@
+RustNote を起動しました: http://127.0.0.1:3000
+POST /login -> 303 See Other (397.7656ms)
+GET /notes -> 200 OK (5.4618ms)

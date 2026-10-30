@@ -1,0 +1,7 @@
+### $env:DATABASE_URL = "dev.db"; cargo run --example e07_rawsql
+carol@example.com を入れました
+### curl.exe -i -d "email=carol%40example.com&password=correct+horse+battery" http://127.0.0.1:3000/login
+HTTP/1.1 500 Internal Server Error
+content-length: 615
+
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>RustNote</title><link rel="stylesheet" href="/_topcoat/assets/style-e9b983efabcfc6c3.css"></head><body><header class="site-header"><a class="brand" href="/">RustNote</a><nav><a href="/login">ログイン</a><a href="/signup">新規登録</a></nav></header><main class="container"><section class="error-page"><h1>500 Internal Server Error</h1><p>時間をおいてもう一度お試しください</p><p><a href="/">トップページへ戻る</a></p></section></main></body></html>

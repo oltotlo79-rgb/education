@@ -1,0 +1,15 @@
+### cargo test --test u10_q -- --nocapture
+
+running 1 test
+[error] ヘルスチェックで DB に接続できません: Hrana: `http error: `error trying to connect: tcp connect error: 対象のコンピューターによって拒否されたため、接続できませんでした。 (os error 10061)``
+GET  /health  → 503 Service Unavailable
+GET /login -> 200 OK (934.2µs)
+GET  /login   → 200 OK
+GET /notes -> 303 See Other (88.7µs)
+GET  /notes   → 303 See Other
+[error] サーバーの中でエラーが起きました <- DB の操作に失敗しました <- Hrana: `http error: `error trying to connect: tcp connect error: 対象のコンピューターによって拒否されたため、接続できませんでした。 (os error 10061)``
+POST /login -> 500 Internal Server Error (2.0383978s)
+POST /login    → 500 Internal Server Error
+.
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 4.12s
+

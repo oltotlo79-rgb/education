@@ -1,0 +1,9 @@
+### （views.rs の <label for="title"> を <label for="note-title"> にして）cargo test --test u09_a11y -- --nocapture
+/              <title>RustNote</title>  ok
+/signup        <title>RustNote</title>  ok
+/login         <title>RustNote</title>  ok
+/notes         <title>RustNote</title>  ラベルの無い入力欄（name=q）・ラベルの無い入力欄（name=title）
+/notes/1       <title>RustNote</title>  ok
+/notes/1/edit  <title>RustNote</title>  ラベルの無い入力欄（name=title）
+見つかった問題: 3 個
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.50s

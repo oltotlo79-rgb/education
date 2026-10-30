@@ -1,0 +1,11 @@
+### python contrast.py rustnote/assets/style.css
+組み合わせ                              比     AA（4.5 以上）
+本文の文字            #0f172a / #f8fafc  17.06  ok
+日時などの薄い文字        #64748b / #f8fafc   4.55  ok
+カードの中の薄い文字       #64748b / #ffffff   4.76  ok
+リンク              #c2410c / #f8fafc   4.95  ok
+ボタンの文字           #ffffff / #c2410c   5.18  ok
+白いボタン（secondary）の文字 #c2410c / #ffffff   5.18  ok
+削除のボタン・エラーの文字    #dc2626 / #ffffff   4.83  ok
+成功のお知らせ          #047857 / #ecfdf5   5.21  ok
+注意のお知らせ          #b45309 / #fffbeb   4.84  ok

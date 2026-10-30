@@ -1,0 +1,13 @@
+### topcoat asset clean のあとで $env:DATABASE_URL = "nofolder/dev.db"; cargo run
+Error: アセットの束（assets/）がありません。先に `topcoat asset bundle` を実行するか、`topcoat dev` で起動してください
+
+Caused by:
+    no asset bundle at target\debug\assets
+exit=1
+
+### 同じ状態で cargo run --example u10_doctor
+✓ 設定: DATABASE_URL = nofolder/dev.db
+✗ アセットの束: 無い（topcoat asset bundle を実行する）
+✗ DB を開く: Failed to connect to database: `Unable to open connection to local database nofolder/dev.db: 14`（DATABASE_URL のフォルダを確かめる）
+✓ 待ち受ける場所: 127.0.0.1:3000 は空いている
+exit=1

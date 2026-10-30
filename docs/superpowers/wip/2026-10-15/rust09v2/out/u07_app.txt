@@ -1,0 +1,11 @@
+### curl.exe -i -d "email=alice%40example.com&password=correct+horse+battery" http://127.0.0.1:3000/login
+HTTP/1.1 303 See Other
+location: /notes
+set-cookie: flash=logged_in; HttpOnly; SameSite=Lax; Path=/; Max-Age=300
+content-length: 0
+（set-cookie: __Host-session=… は省いています）
+
+### curl.exe -s -H "Cookie: （ログインで受け取った __Host-session=…）" http://127.0.0.1:3000/notes の、ノートの行
+<a href="/notes/3">歯医者の予約</a>
+<a href="/notes/2">本を返す</a>
+<a href="/notes/1">牛乳を買う</a>

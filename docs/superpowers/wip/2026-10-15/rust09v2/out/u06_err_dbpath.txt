@@ -1,0 +1,6 @@
+### $env:DATABASE_URL = "no_such_dir\first.db"; cargo run
+Error: DB（no_such_dir\first.db）を開けませんでした
+
+Caused by:
+    Failed to connect to database: `Unable to open connection to local database no_such_dir\first.db: 14`
+exit=1

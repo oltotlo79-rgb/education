@@ -1,0 +1,4 @@
+### （検索の入力欄に aria-label を足して）cargo test --test u09_a11y -- --nocapture
+/notes         <title>RustNote</title>  ok
+見つかった問題: 0 個
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.48s

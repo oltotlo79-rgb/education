@@ -1,0 +1,22 @@
+### cargo test --test u10_health -- --nocapture   # health.rs を、DB に問い合わせない版にした
+
+running 1 test
+ふつうの DB      → 200 OK {"status":"ok"}
+届かない DB      → 200 OK {"status":"ok"}
+
+thread 'health_reports_the_database' (215536) panicked at tests\u10_health.rs:32:5:
+assertion `left == right` failed
+  left: 200
+ right: 503
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+health_reports_the_database --- FAILED
+
+failures:
+
+failures:
+    health_reports_the_database
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+error: test failed, to rerun pass `--test u10_health`
+exit=101

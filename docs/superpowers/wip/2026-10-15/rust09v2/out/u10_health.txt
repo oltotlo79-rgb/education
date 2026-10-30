@@ -1,0 +1,9 @@
+### cargo test --test u10_health -- --nocapture
+
+running 1 test
+ふつうの DB      → 200 OK {"status":"ok"}
+[error] ヘルスチェックで DB に接続できません: Hrana: `http error: `error trying to connect: tcp connect error: 対象のコンピューターによって拒否されたため、接続できませんでした。 (os error 10061)``
+届かない DB      → 503 Service Unavailable {"status":"unavailable"}
+.
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.08s
+

@@ -1,0 +1,4 @@
+### （もう一度）cargo run --example u07_seed
+適用したマイグレーション: []
+alice@example.com はもういるので、飛ばします
+bob@example.com はもういるので、飛ばします

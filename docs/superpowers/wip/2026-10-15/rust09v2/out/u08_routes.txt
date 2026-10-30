@@ -1,0 +1,23 @@
+### cargo test --test u08_routes -- --nocapture
+running 1 test
+ok GET    /                  alice      → 303 /notes
+ok GET    /                  未ログイン      → 200 
+ok GET    /health            未ログイン      → 200 
+ok GET    /signup            未ログイン      → 200 
+ok GET    /login             未ログイン      → 200 
+ok POST   /login             未ログイン      → 401 
+ok GET    /notes             未ログイン      → 303 /login
+ok GET    /notes             alice      → 200 
+ok POST   /notes             alice      → 400 
+ok POST   /notes             alice      → 303 /notes/2
+ok GET    /notes/1           alice      → 200 
+ok GET    /notes/1           bob        → 404 
+ok GET    /notes/abc         alice      → 404 
+ok GET    /notes/1/edit      alice      → 200 
+ok POST   /notes/1/toggle    alice      → 303 /notes/1
+ok POST   /notes/1/toggle    bob        → 404 
+ok POST   /notes/1/delete    bob        → 404 
+ok DELETE /notes/1           alice      → 405 
+ok GET    /nothing           未ログイン      → 404 
+ok POST   /logout            bob        → 303 /login
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.33s

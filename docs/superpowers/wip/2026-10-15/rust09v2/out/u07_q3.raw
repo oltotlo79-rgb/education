@@ -1,0 +1,6 @@
+﻿### (Get-FileHash dev.db).Hash（テストの前）
+F8D8455C9DD32B27E663F05DF2E7E1A8534B063458F8736B02391B1F4618C7D4
+### cargo test --test repository
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.23s
+### (Get-FileHash dev.db).Hash（テストのあと）
+F8D8455C9DD32B27E663F05DF2E7E1A8534B063458F8736B02391B1F4618C7D4

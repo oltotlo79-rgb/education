@@ -1,0 +1,28 @@
+### cargo test
+     Running unittests src\lib.rs (target\debug\deps\rustnote-3362d64f31691c01.exe)
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running unittests src\main.rs (target\debug\deps\rustnote-aab0d4cdcb7ba0dd.exe)
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running tests\acceptance.rs (target\debug\deps\acceptance-7e57b687bb4ce5c0.exe)
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.24s
+     Running tests\architecture.rs (target\debug\deps\architecture-9e2c7c88949b2897.exe)
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+     Running tests\flow.rs (target\debug\deps\flow-d30b5ca8952d0870.exe)
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.61s
+     Running tests\http.rs (target\debug\deps\http-06e4ca3bd7dea34b.exe)
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.59s
+     Running tests\mistakes.rs (target\debug\deps\mistakes-8860f64c39f307a0.exe)
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.54s
+     Running tests\repository.rs (target\debug\deps\repository-05a3851c1db08b7c.exe)
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.21s
+     Running tests\screens.rs (target\debug\deps\screens-749212b0f07f33f9.exe)
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.48s
+     Running tests\states.rs (target\debug\deps\states-71244bb1c7c290ee.exe)
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.61s
+     Running tests\swap.rs (target\debug\deps\swap-c24d138feecff64d.exe)
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.45s
+     Running tests\u04_panic.rs (target\debug\deps\u04_panic-41189d258ff744ca.exe)
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.44s
+     Running tests\u04_q3.rs (target\debug\deps\u04_q3-22c1b3db27d7a463.exe)
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.49s
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

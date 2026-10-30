@@ -1,0 +1,14 @@
+### $env:DATABASE_URL = "dev.db"; cargo run --example u07_status（まだ何もない）
+dev.db
+  0001_users  まだ
+  0002_notes  まだ
+  0003_sessions  まだ
+### cargo run --example u07_seed
+適用したマイグレーション: ["0001_users", "0002_notes", "0003_sessions"]
+alice@example.com を作り、ノートを 3 件入れました
+bob@example.com を作り、ノートを 1 件入れました
+### cargo run --example u07_status
+dev.db
+  0001_users  適用済み（2026-10-30 12:51:39）
+  0002_notes  適用済み（2026-10-30 12:51:39）
+  0003_sessions  適用済み（2026-10-30 12:51:39）

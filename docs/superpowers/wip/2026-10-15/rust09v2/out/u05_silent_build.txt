@@ -1,0 +1,3 @@
+### （tokio の features から "macros" を消して）cargo build
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.92s
+exit=0

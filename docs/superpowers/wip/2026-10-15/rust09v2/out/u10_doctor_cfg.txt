@@ -1,0 +1,3 @@
+### $env:DATABASE_URL = "libsql://rustnote-example.turso.io"; cargo run --example u10_doctor
+✗ 設定: DATABASE_URL が Turso（libsql://rustnote-example.turso.io）なのに DATABASE_AUTH_TOKEN が設定されていません（環境変数か .env を直す）
+exit=1

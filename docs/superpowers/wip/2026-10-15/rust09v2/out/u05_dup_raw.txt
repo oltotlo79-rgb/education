@@ -1,0 +1,192 @@
+base64 v0.21.7
+
+base64 v0.22.1
+
+bitflags v1.3.2
+
+bitflags v2.13.2
+
+bitflags v2.13.2
+
+block-buffer v0.10.4
+
+block-buffer v0.12.1
+
+bytes v1.12.1
+
+bytes v1.12.1
+
+cpufeatures v0.2.17
+
+cpufeatures v0.3.1
+
+crypto-common v0.1.7
+
+crypto-common v0.2.2
+
+digest v0.10.7
+
+digest v0.11.3
+
+fallible-iterator v0.2.0
+
+fallible-iterator v0.3.0
+
+futures-util v0.3.34
+
+futures-util v0.3.34
+
+getrandom v0.2.17
+
+getrandom v0.3.4
+
+getrandom v0.4.3
+
+h2 v0.3.27
+
+h2 v0.4.20
+
+hashbrown v0.12.3
+
+hashbrown v0.14.5
+
+hashbrown v0.17.1
+
+http v0.2.12
+
+http v1.5.0
+
+http-body v0.4.6
+
+http-body v1.1.0
+
+hyper v0.14.32
+
+hyper v1.12.0
+
+indexmap v1.9.3
+
+indexmap v2.14.2
+
+matchit v0.7.3
+
+matchit v0.9.2
+
+phf_shared v0.11.3
+[build-dependencies]
+
+phf_shared v0.11.3
+
+rand v0.8.8
+
+rand v0.8.8
+
+rand v0.9.5
+
+rand_chacha v0.3.1
+
+rand_chacha v0.9.0
+
+rand_core v0.6.4
+
+rand_core v0.6.4
+
+rand_core v0.9.5
+
+serde v1.0.229
+
+serde v1.0.229
+[build-dependencies]
+
+serde_core v1.0.229
+
+serde_core v1.0.229
+
+serde_json v1.0.154
+
+serde_json v1.0.154
+[build-dependencies]
+
+sha2 v0.10.9
+
+sha2 v0.11.1
+
+shlex v1.3.0
+
+shlex v2.0.1
+
+slab v0.4.12
+
+slab v0.4.12
+
+socket2 v0.5.10
+
+socket2 v0.6.5
+
+syn v2.0.119
+
+syn v3.0.9
+
+sync_wrapper v0.1.2
+
+sync_wrapper v1.0.2
+
+thiserror v1.0.69
+
+thiserror v2.0.21
+
+thiserror-impl v1.0.69 (proc-macro)
+
+thiserror-impl v2.0.21 (proc-macro)
+
+toml_datetime v1.1.2+spec-1.1.0
+
+toml_datetime v1.1.2+spec-1.1.0
+
+toml_parser v1.1.5+spec-1.1.0
+
+toml_parser v1.1.5+spec-1.1.0
+
+topcoat-asset v0.11.0
+
+topcoat-asset v0.11.0
+
+topcoat-font v0.11.0
+
+topcoat-font v0.11.0
+
+topcoat-router v0.11.0
+
+topcoat-router v0.11.0
+
+topcoat-runtime v0.11.0
+
+topcoat-runtime v0.11.0
+
+tower v0.4.13
+
+tower v0.5.3
+
+tower-http v0.4.4
+
+tower-http v0.7.1
+
+webpki-roots v0.26.11
+
+webpki-roots v1.0.11
+
+windows-sys v0.52.0
+
+windows-sys v0.59.0
+
+windows-sys v0.61.2
+
+windows-sys v0.61.2
+
+winnow v1.0.4
+
+winnow v1.0.4
+
+zerocopy v0.7.35
+
+zerocopy v0.8.63

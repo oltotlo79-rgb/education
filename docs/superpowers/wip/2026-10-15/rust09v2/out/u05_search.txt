@@ -1,0 +1,8 @@
+### cargo search topcoat --limit 1
+topcoat = "0.11.0"    # A modular, batteries-included Rust web framework for server-rendered apps.
+... and 84 crates more (use --limit N to see more)
+note: to learn more about a package, run `cargo info <name>`
+### cargo search tokio --limit 1
+tokio = "1.54.1"    # An event-driven, non-blocking I/O platform for writing asynchronous I/O backed applications. 
+... and 27402 crates more (use --limit N to see more)
+note: to learn more about a package, run `cargo info <name>`

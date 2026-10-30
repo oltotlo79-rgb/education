@@ -1,0 +1,6 @@
+### $env:DATABASE_URL = "empty.db"（新しい DB）; cargo run --example e07_nomigrate
+Error: DB の操作に失敗しました
+
+Caused by:
+    SQLite failure: `no such table: users`
+exit=1

@@ -1,0 +1,231 @@
+tokio v1.54.1
+|-- async-compression v0.4.51
+|   |-- async-compression feature "brotli"
+|   |   `-- tower-http feature "compression-br"
+|   |-- async-compression feature "default"
+|   |   `-- tower-http v0.7.1
+|   |-- async-compression feature "gzip"
+|   |   `-- tower-http feature "compression-gzip"
+|   `-- async-compression feature "tokio"
+|       `-- tower-http v0.7.1 (*)
+|-- hyper-util v0.1.21
+|   |-- hyper-util feature "default"
+|   |   `-- topcoat-router v0.11.0
+|   |-- hyper-util feature "http1"
+|   |   `-- hyper-util feature "server-auto"
+|   |-- hyper-util feature "http2"
+|   |   `-- hyper-util feature "server-auto" (*)
+|   |-- hyper-util feature "server"
+|   |   `-- hyper-util feature "server-auto" (*)
+|   |-- hyper-util feature "server-auto" (*)
+|   `-- hyper-util feature "tokio"
+|       `-- topcoat-router v0.11.0 (*)
+|       `-- hyper-util feature "tokio" (*)
+`-- tower-http v0.7.1 (*)
+|-- tokio feature "bytes"
+|   |-- tokio feature "io-util"
+|   |   |-- h2 v0.3.27
+|   |   |-- h2 v0.4.20
+|   |   `-- tokio-tungstenite v0.29.0
+|   |   |-- tokio feature "full"
+|   |   `-- tokio-util feature "io-util"
+|   `-- tokio feature "process"
+|       `-- tokio feature "full" (*)
+|-- tokio feature "default"
+|   |-- h2 v0.3.27 (*)
+|   |-- h2 v0.4.20 (*)
+|   |-- hyper v0.14.32
+|   |   |-- hyper feature "client"
+|   |   |-- hyper feature "default"
+|   |   |-- hyper feature "full"
+|   |   |-- hyper feature "h2"
+|   |   |-- hyper feature "http1"
+|   |   |-- hyper feature "http2"
+|   |   |-- hyper feature "runtime"
+|   |   |-- hyper feature "server"
+|   |   |-- hyper feature "socket2"
+|   |   |-- hyper feature "stream"
+|   |   `-- hyper feature "tcp"
+|   |-- hyper v1.12.0
+|   |   |-- hyper feature "default"
+|   |   |-- hyper feature "http1"
+|   |   |-- hyper feature "http2"
+|   |   `-- hyper feature "server"
+|   |-- hyper-rustls v0.25.0
+|   |   |-- hyper-rustls feature "acceptor"
+|   |   |-- hyper-rustls feature "default"
+|   |   |-- hyper-rustls feature "http1"
+|   |   |-- hyper-rustls feature "log"
+|   |   |-- hyper-rustls feature "logging"
+|   |   |-- hyper-rustls feature "native-tokio"
+|   |   |-- hyper-rustls feature "ring"
+|   |   |-- hyper-rustls feature "rustls-native-certs"
+|   |   |-- hyper-rustls feature "tls12"
+|   |   |-- hyper-rustls feature "tokio-runtime"
+|   |   `-- hyper-rustls feature "webpki-roots"
+|   |-- hyper-timeout v0.4.1
+|   |   `-- hyper-timeout feature "default"
+|   |-- libsql v0.10.0
+|   |   |-- libsql feature "core"
+|   |   |-- libsql feature "default"
+|   |   |-- libsql feature "hrana"
+|   |   |-- libsql feature "libsql-sys"
+|   |   |-- libsql feature "parser"
+|   |   |-- libsql feature "remote"
+|   |   |-- libsql feature "replication"
+|   |   |-- libsql feature "serde"
+|   |   |-- libsql feature "stream"
+|   |   |-- libsql feature "sync"
+|   |   |-- libsql feature "tls"
+|   |   `-- libsql feature "tokio"
+|   |-- libsql_replication v0.10.0
+|   |   `-- libsql_replication feature "default"
+|   |-- rustnote v0.1.0 (...\rustnote)
+|   |   `-- rustnote feature "default" (command-line)
+|   |-- tokio-io-timeout v1.2.1
+|   |   `-- tokio-io-timeout feature "default"
+|   |-- tokio-rustls v0.25.0
+|   |   `-- hyper-rustls v0.25.0 (*)
+|   |   |-- tokio-rustls feature "logging"
+|   |   `-- tokio-rustls feature "tls12"
+|   |-- tokio-stream v0.1.19
+|   |   |-- tokio-stream feature "default"
+|   |   `-- tokio-stream feature "time"
+|   |-- tokio-util v0.7.20
+|   |   `-- tower v0.4.13
+|   |   |-- tokio-util feature "codec"
+|   |   |-- tokio-util feature "default"
+|   |   |-- tokio-util feature "io"
+|   |   |-- tokio-util feature "io-util" (*)
+|   |   `-- tokio-util feature "libc"
+|   |-- tonic v0.11.0
+|   |   `-- tonic-web v0.11.0
+|   |   |-- tonic feature "channel"
+|   |   |-- tonic feature "codegen"
+|   |   |-- tonic feature "default"
+|   |   |-- tonic feature "prost"
+|   |   `-- tonic feature "transport"
+|   |-- topcoat v0.11.0
+|   |   |-- topcoat feature "asset"
+|   |   |-- topcoat feature "compression"
+|   |   |-- topcoat feature "cookie"
+|   |   |-- topcoat feature "default"
+|   |   |-- topcoat feature "discover"
+|   |   |-- topcoat feature "font"
+|   |   |-- topcoat feature "icon"
+|   |   |-- topcoat feature "router"
+|   |   |-- topcoat feature "runtime"
+|   |   |-- topcoat feature "serve"
+|   |   |-- topcoat feature "session"
+|   |   |-- topcoat feature "topcoat-router"
+|   |   `-- topcoat feature "view"
+|   |-- topcoat-asset v0.11.0
+|   |   |-- topcoat-asset feature "default"
+|   |   |-- topcoat-asset feature "router"
+|   |   |-- topcoat-asset feature "serve"
+|   |   `-- topcoat-asset feature "view"
+|   |-- topcoat-core v0.11.0
+|   |   `-- topcoat-core feature "default"
+|   |-- topcoat-router v0.11.0 (*)
+|   |-- topcoat-runtime v0.11.0
+|   |   |-- topcoat-runtime feature "default"
+|   |   `-- topcoat-runtime feature "router"
+|   |-- topcoat-session v0.11.0
+|   |   |-- topcoat-session feature "cookie"
+|   |   |-- topcoat-session feature "default"
+|   |   `-- topcoat-session feature "router"
+|   `-- tower v0.4.13 (*)
+|-- tokio feature "fs"
+|   `-- topcoat-asset v0.11.0 (*)
+|   |-- libsql feature "sync" (*)
+|   `-- tokio feature "full" (*)
+|-- tokio feature "full" (*)
+|-- tokio feature "io-std"
+|   |-- tokio feature "full" (*)
+|   `-- tower feature "make"
+|       `-- tonic v0.11.0 (*)
+|       `-- tower feature "balance"
+|-- tokio feature "io-util" (*)
+|-- tokio feature "libc"
+|   |-- tokio feature "net"
+|   |   `-- topcoat v0.11.0 (*)
+|   |   |-- hyper feature "tcp" (*)
+|   |   |-- tokio feature "full" (*)
+|   |   |-- tonic feature "transport" (*)
+|   |   |-- tokio-tungstenite feature "connect"
+|   |   `-- topcoat-router feature "serve"
+|   |-- tokio feature "process" (*)
+|   `-- tokio feature "signal"
+|       `-- topcoat v0.11.0 (*)
+|       `-- tokio feature "full" (*)
+|-- tokio feature "macros"
+|   `-- topcoat v0.11.0 (*)
+|   |-- tokio feature "full" (*)
+|   `-- topcoat-router feature "serve" (*)
+|-- tokio feature "mio"
+|   |-- tokio feature "net" (*)
+|   |-- tokio feature "process" (*)
+|   `-- tokio feature "signal" (*)
+|-- tokio feature "net" (*)
+|-- tokio feature "parking_lot"
+|   `-- tokio feature "full" (*)
+|-- tokio feature "process" (*)
+|-- tokio feature "rt"
+|   |-- topcoat-asset v0.11.0 (*)
+|   `-- topcoat-runtime v0.11.0 (*)
+|   |-- hyper feature "runtime" (*)
+|   |-- hyper feature "tcp" (*)
+|   |-- tokio feature "full" (*)
+|   |-- tokio feature "rt-multi-thread"
+|   |   `-- rustnote v0.1.0 (...\rustnote) (*)
+|   |   `-- tokio feature "full" (*)
+|   |-- tokio-util feature "io-util" (*)
+|   |-- tower feature "buffer"
+|   |   `-- tonic v0.11.0 (*)
+|   |-- topcoat-router feature "serve" (*)
+|   `-- hyper-util feature "tokio" (*)
+|-- tokio feature "rt-multi-thread" (*)
+|-- tokio feature "signal" (*)
+|-- tokio feature "signal-hook-registry"
+|   |-- tokio feature "process" (*)
+|   `-- tokio feature "signal" (*)
+|-- tokio feature "socket2"
+|   `-- tokio feature "net" (*)
+|-- tokio feature "sync"
+|   |-- hyper v0.14.32 (*)
+|   |-- hyper v1.12.0 (*)
+|   |-- libsql v0.10.0 (*)
+|   |-- tokio-stream v0.1.19 (*)
+|   |-- tokio-util v0.7.20 (*)
+|   |-- topcoat-core v0.11.0 (*)
+|   |-- topcoat-runtime v0.11.0 (*)
+|   |-- topcoat-session v0.11.0 (*)
+|   `-- tower v0.4.13 (*)
+|   |-- tokio feature "full" (*)
+|   |-- tower feature "buffer" (*)
+|   |-- tower feature "limit"
+|   |   `-- tonic v0.11.0 (*)
+|   |-- tower feature "ready-cache"
+|   |   `-- tower feature "balance" (*)
+|   `-- topcoat-router feature "serve" (*)
+|-- tokio feature "time"
+|   `-- tokio-io-timeout v1.2.1 (*)
+|   |-- hyper feature "runtime" (*)
+|   |-- hyper feature "tcp" (*)
+|   |-- tokio feature "full" (*)
+|   |-- tokio-stream feature "time" (*)
+|   |-- tonic feature "transport" (*)
+|   |-- tower feature "limit" (*)
+|   |-- tower feature "load"
+|   |   `-- tonic v0.11.0 (*)
+|   |   `-- tower feature "balance" (*)
+|   |-- tower feature "timeout"
+|   |   `-- tonic v0.11.0 (*)
+|   |-- topcoat-router feature "serve" (*)
+|   `-- hyper-util feature "tokio" (*)
+|-- tokio feature "tokio-macros"
+|   `-- tokio feature "macros" (*)
+`-- tokio feature "windows-sys"
+    |-- tokio feature "net" (*)
+    |-- tokio feature "process" (*)
+    `-- tokio feature "signal" (*)

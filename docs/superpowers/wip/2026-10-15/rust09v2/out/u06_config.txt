@@ -1,0 +1,12 @@
+### cargo run --example u06_config（環境変数なし）
+設定: Config { database_url: "rustnote.db", database_auth_token: None }
+リモートの DB か: false
+待ち受け: 127.0.0.1:3000
+### $env:DATABASE_URL = "libsql://rustnote-example.turso.io"; $env:DATABASE_AUTH_TOKEN = "very-secret-token"; $env:HOST = "0.0.0.0"; $env:PORT = "8080"
+設定: Config { database_url: "libsql://rustnote-example.turso.io", database_auth_token: Some(Secret(********)) }
+リモートの DB か: true
+待ち受け: 0.0.0.0:8080
+### $env:DATABASE_URL = "http://127.0.0.1:8080"（トークンなし）
+設定: Config { database_url: "http://127.0.0.1:8080", database_auth_token: None }
+リモートの DB か: true
+待ち受け: 127.0.0.1:3000

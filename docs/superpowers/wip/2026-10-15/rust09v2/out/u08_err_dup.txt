@@ -1,0 +1,5 @@
+### （id.rs に、もう1つ #[page] を書いて）cargo test --test u08_routes
+thread 'route_table' (213484) panicked at src\routes.rs:60:10:
+duplicate route registered for `GET /notes/{id}`
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+error: test failed, to rerun pass `--test u08_routes`

@@ -1,0 +1,7 @@
+### $env:DATABASE_URL = "http://127.0.0.1:9"; cargo run --example u10_doctor
+✓ 設定: DATABASE_URL = http://127.0.0.1:9
+✓ アセットの束: ある
+✓ DB を開く: 開けた
+✗ DB に届く: 届かない（Hrana: `http error: `error trying to connect: tcp connect error: 対象のコンピューターによって拒否されたため、接続できませんでした。 (os error 10061)``）
+✓ 待ち受ける場所: 127.0.0.1:3000 は空いている
+exit=1
