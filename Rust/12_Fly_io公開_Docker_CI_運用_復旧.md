@@ -128,7 +128,7 @@
 - **第9巻（RustNote 設計）:** RustNote のフォルダ構成と、設定・起動の順番。
 - **第13巻（完全コード）UNIT 01:** `Cargo.toml`・`Cargo.lock`・`rust-toolchain.toml` と `--locked`。この巻の UNIT 01 は、その続きとして読めます。
 
-> **注意:** 第11巻は、書き直しの途中です。この巻の本文は、教材のフォルダの `Rust/rustnote/` のコードと、この巻で実際に動かした結果だけをもとに書いているので、ほかの巻が未完成でも読み進められます。
+> **注意:** この巻の本文は、教材のフォルダの `Rust/rustnote/` のコードと、この巻で実際に動かした結果だけをもとに書いています。RustNote の改善点（第11巻・第13巻で見つけたもの）は、教材のコードでは直さずにそのまま使い、関係する所で、その都度ふれます。
 
 ### この巻の進め方
 
@@ -148,11 +148,11 @@
 | 項目 | 版・内容 |
 |---|---|
 | OS | Windows 11（ARM64）。コマンドは PowerShell を主に、WSL / macOS / Linux は補足で示します |
-| Rust | **1.98 以上**（本書シリーズの基準）。動作確認は rustc 1.99.0 / cargo 1.99.0（`aarch64-pc-windows-msvc`） |
+| Rust | **1.99 以上**（Topcoat 0.11 の必要条件）。動作確認は rustc 1.99.1 / cargo 1.99.1（`aarch64-pc-windows-msvc`） |
 | RustNote | 教材の `Rust/rustnote/`（`rustnote` 0.1.0）。この巻では `src/` を変えずに使う |
-| topcoat-cli | 0.10.0（`topcoat asset bundle` で CSS の束を作る。RustNote の topcoat と同じ版） |
-| Docker | 29.3.1（Docker Desktop。UNIT 02 から使います） |
-| flyctl | v0.4.57（Fly.io のコマンド。この PC では `windows/amd64` 版が動きます。UNIT 04 から使います） |
+| topcoat-cli | 0.11.0（`topcoat asset bundle` で CSS の束を作る。RustNote の topcoat と同じ版） |
+| Docker | 29.3.1（Docker Desktop。中は linux/arm64。UNIT 02 から使います。イメージは `rust:1.99.1-trixie` と `debian:trixie-slim`） |
+| flyctl | v0.5.1（Fly.io のコマンド。Windows 用の公式の配布は x86_64 版だけで、この PC（ARM64）でも `windows/amd64` 版が動きます。UNIT 04 から使います。アカウントへのログインはしません） |
 
 ### 練習用のフォルダを用意する
 
@@ -162,19 +162,19 @@
 # 教材の rustnote フォルダを、中身ごと（-Recurse）作業用のフォルダへコピーする
 Copy-Item -Recurse "教材のフォルダ\Rust\rustnote" .\rustnote
 cd rustnote
-# このフォルダで使われる Rust の版を確かめる（1.99.0 になる）
+# このフォルダで使われる Rust の版を確かめる（1.99.1 になる）
 rustup show active-toolchain
 ```
 
 topcoat CLI がまだ入っていなければ、ここで入れておきます。RustNote の `Dockerfile` と同じ版・同じ書き方です（ダウンロードとコンパイルをするので、数分かかることがあります）。
 
 ```powershell
-cargo install topcoat-cli --version 0.10.0 --locked
+cargo install topcoat-cli --version 0.11.0 --locked
 topcoat --version
 ```
 
 ```text
-topcoat 0.10.0
+topcoat 0.11.0
 ```
 
 ## UNIT 01: release ビルドと再現性
@@ -230,13 +230,13 @@ RustNote の公開の準備も、同じ形をしています。
 <text x="575" y="45" font-size="13" font-weight="700" fill="#047857" text-anchor="middle">release（cargo build --release）</text>
 <text x="30" y="96" font-size="12" font-weight="700" fill="#0f172a">実行ファイルの大きさ</text>
 <rect x="200" y="82" width="230" height="20" rx="4" fill="#fed7aa"/>
-<text x="315" y="120" font-size="12" fill="#0f172a" text-anchor="middle">21,698,048 バイト（約 21.7 MB）</text>
+<text x="315" y="120" font-size="12" fill="#0f172a" text-anchor="middle">21,751,808 バイト（約 21.8 MB）</text>
 <rect x="460" y="82" width="125" height="20" rx="4" fill="#a7f3d0"/>
-<text x="575" y="120" font-size="12" fill="#0f172a" text-anchor="middle">11,820,032 バイト（約 11.8 MB）</text>
+<text x="575" y="120" font-size="12" fill="#0f172a" text-anchor="middle">11,732,480 バイト（約 11.7 MB）</text>
 <text x="30" y="166" font-size="12" font-weight="700" fill="#0f172a">パスワードの</text>
 <text x="30" y="184" font-size="12" font-weight="700" fill="#0f172a">ハッシュ化 1回</text>
 <rect x="200" y="152" width="230" height="20" rx="4" fill="#fed7aa"/>
-<text x="315" y="190" font-size="12" fill="#0f172a" text-anchor="middle">約 380〜470 ms</text>
+<text x="315" y="190" font-size="12" fill="#0f172a" text-anchor="middle">約 400 ms</text>
 <rect x="460" y="152" width="12" height="20" rx="4" fill="#a7f3d0"/>
 <text x="575" y="190" font-size="12" fill="#0f172a" text-anchor="middle">約 20 ms（約 20 倍速い）</text>
 <text x="30" y="236" font-size="12" font-weight="700" fill="#0f172a">255u8 + 1</text>
@@ -296,7 +296,7 @@ RustNote の公開の準備も、同じ形をしています。
 </div>
 
 - **① release ビルド**で、`target\release\rustnote.exe` ができます。`--locked` で、`Cargo.lock` のとおりの版を使います（第13巻 UNIT 01）。
-- **② アセットの束**は、`topcoat asset bundle --release` で作ります。topcoat CLI は、①でできた実行ファイルの中から `asset!("assets/style.css")` の印を探し、CSS を `style-e9b983efabcfc6c3.css` のような名前（中身から計算した指紋付き）にして、実行ファイルの隣の `assets\` に置きます。だから、①が先です（くわしくは UNIT 03（準備中））。
+- **② アセットの束**は、`topcoat asset bundle --release` で作ります。topcoat CLI は、中で `cargo build --release` を動かして実行ファイルを用意し（①で作ってあれば、そのまま使います）、その中から `asset!("assets/style.css")` の印を探して、CSS を `style-e9b983efabcfc6c3.css` のような名前（中身から計算した指紋付き）にして、実行ファイルの隣の `assets\` に置きます。topcoat CLI の中の `cargo build` には `--locked` が付かないので、先に①で、`Cargo.lock` のとおりの版で作っておきます（くわしくは UNIT 03（準備中））。
 - **③** 実行ファイルは、起動するとき「**自分の隣の** `assets\`」を読みます。片方だけをコピーすると、起動しません。
 
 ### まず動かす最小コード
@@ -318,7 +318,7 @@ topcoat asset bundle --release
 
 ```text
    Compiling rustnote v0.1.0 (...\rustnote)
-    Finished `release` profile [optimized] target(s) in 1m 25s
+    Finished `release` profile [optimized] target(s) in 1m 26s
 ```
 
 ```text
@@ -342,7 +342,7 @@ curl.exe -i http://127.0.0.1:3000/health
 HTTP/1.1 200 OK
 content-type: application/json
 content-length: 15
-date: Mon, 26 Oct 2026 20:41:33 GMT
+date: Fri, 30 Oct 2026 22:19:10 GMT
 
 {"status":"ok"}
 ```
@@ -352,7 +352,7 @@ date: Mon, 26 Oct 2026 20:41:33 GMT
 ##### 解説1: release は `target\release` にできる
 
 - `Finished release profile [optimized]` の `optimized` は「最適化した」という意味です。debug ビルドのときは `Finished dev profile [unoptimized + debuginfo]`（最適化なし・デバッグ用の情報付き）と表示されます。
-- debug ビルドは `target\debug\`、release ビルドは `target\release\` と、別のフォルダにできます。2つは混ざりません。この PC では、何もない状態からの release ビルドに 1 分 25 秒かかりました。debug ビルドは 1 分 2 秒でした。release は、最適化に時間を使うぶん遅くなります。
+- debug ビルドは `target\debug\`、release ビルドは `target\release\` と、別のフォルダにできます。2つは混ざりません。この PC では、何もない状態からの release ビルドに 1 分 26 秒かかりました。debug ビルドは 1 分 6 秒でした。release は、最適化に時間を使うぶん遅くなります。
 
 ##### 解説2: bundle は「実行ファイルの隣」に作る
 
@@ -416,16 +416,16 @@ cargo run -q --release --example u01_hash_speed
 
 ```text
 ビルドの種類: debug
-1回目: ハッシュ化 473.06ms・照合 387.84ms（一致: true）
-2回目: ハッシュ化 392.99ms・照合 401.03ms（一致: true）
-3回目: ハッシュ化 380.45ms・照合 399.83ms（一致: true）
+1回目: ハッシュ化 401.18ms・照合 445.38ms（一致: true）
+2回目: ハッシュ化 409.09ms・照合 412.93ms（一致: true）
+3回目: ハッシュ化 396.51ms・照合 409.86ms（一致: true）
 ```
 
 ```text
 ビルドの種類: release
-1回目: ハッシュ化 21.19ms・照合 19.33ms（一致: true）
-2回目: ハッシュ化 20.25ms・照合 19.28ms（一致: true）
-3回目: ハッシュ化 20.03ms・照合 19.63ms（一致: true）
+1回目: ハッシュ化 19.66ms・照合 24.79ms（一致: true）
+2回目: ハッシュ化 20.01ms・照合 20.61ms（一致: true）
+3回目: ハッシュ化 21.73ms・照合 19.39ms（一致: true）
 ```
 
 #### ▼ コードを1つずつ分解して解説
@@ -436,12 +436,12 @@ cargo run -q --release --example u01_hash_speed
 
 ##### 解説2: 約 20 倍の差は、ログインの待ち時間の差
 
-- ハッシュ化は、debug で約 380〜470 ms、release で約 20 ms でした。Argon2id は、わざと計算を重くして、パスワードを総当たりで試されにくくする仕組みです（第8巻）。重い計算なので、最適化の効き目がとても大きく出ます。
+- ハッシュ化は、debug で約 400 ms、release で約 20 ms でした。Argon2id は、わざと計算を重くして、パスワードを総当たりで試されにくくする仕組みです（第8巻）。重い計算なので、最適化の効き目がとても大きく出ます。
 - debug のままの実行ファイルを公開すると、ログインと登録のたびに、利用者を 0.4 秒近く余計に待たせることになります。しかも、そのあいだ CPU を使い続けるので、同時にログインする人が増えると、もっと遅くなります。**公開するのは release ビルド**です。
 
 ##### 解説3: 1回目だけ少し遅い
 
-- debug の1回目のハッシュ化（473.06 ms）は、2回目以降より少し遅くなりました。最初の1回は、計算に使うメモリを用意したり、`spawn_blocking` 用のスレッドを作ったりする分が加わるからだと考えられます。速さを比べるときは、1回だけで決めず、何回か測ります。
+- debug の1回目の照合（445.38 ms）は、2回目以降（410 ms ほど）より少し遅くなりました。最初の1回は、計算に使うメモリを用意したり、`spawn_blocking` 用のスレッドを作ったりする分が加わることがあるからだと考えられます。ただし、ハッシュ化のほうは、1回目と2回目以降でほとんど差がありませんでした。速さを比べるときは、1回だけで決めず、何回か測ります。
 
 ### もう一歩: 実務に近い形
 
@@ -531,13 +531,13 @@ cargo run -q --example u01_exe_report -- builds/build1.exe builds/build2.exe
 
 ```text
 [builds/build1.exe]
-    大きさ: 11820032 バイト
-    リンクした時刻（UNIX 秒）: 1793046265
-    ユーザーフォルダの場所が入っている数: 1820 か所
+    大きさ: 11732480 バイト
+    リンクした時刻（UNIX 秒）: 1793398680
+    ユーザーフォルダの場所が入っている数: 1811 か所
 [builds/build2.exe]
-    大きさ: 11820032 バイト
-    リンクした時刻（UNIX 秒）: 1793046676
-    ユーザーフォルダの場所が入っている数: 1820 か所
+    大きさ: 11732480 バイト
+    リンクした時刻（UNIX 秒）: 1793398806
+    ユーザーフォルダの場所が入っている数: 1811 か所
 --- 2つを比べる
     大きさが同じ: true
     違うバイトの数: 24
@@ -548,7 +548,7 @@ cargo run -q --example u01_exe_report -- builds/build1.exe builds/build2.exe
 ##### 解説1: 同じソースなのに、24 バイト違った
 
 - 2つの実行ファイルは、大きさは同じですが、中身が 24 バイト違いました。SHA-256 の指紋（`Get-FileHash` で表示できる）も、まったく別の値になります。
-- 違いは、**リンクした時刻**でした。1793046265 と 1793046676 の差は 411 秒で、この PC で2回のビルドの間にたった時間です。Windows の実行ファイル（PE 形式）の見出しには、作った時刻が入ります。違う 24 バイトの場所を1つずつ調べると、見出しの時刻（2 バイト）、デバッグ情報の目次に入っている同じ時刻（2 バイトずつ3か所）、デバッグ情報のファイル（`rustnote.pdb`）と組み合わせるための識別番号（16 バイト）でした。プログラムの命令の部分は、1 バイトも違いませんでした。
+- 違いは、**リンクした時刻**でした。1793398680 と 1793398806 の差は 126 秒で、この PC で2回のビルドの間にたった時間です。Windows の実行ファイル（PE 形式）の見出しには、作った時刻が入ります。違う 24 バイトの場所を1つずつ調べると、見出しの時刻（2 バイト）、デバッグ情報の目次に入っている同じ時刻（2 バイトずつ3か所）、デバッグ情報のファイル（`rustnote.pdb`）と組み合わせるための識別番号（16 バイト）でした。プログラムの命令の部分は、1 バイトも違いませんでした。
 - つまり、**コードは同じでも、作るたびに指紋が変わる**ということです。これでは、「公開した実行ファイルが、本当にこのソースから作った物か」を、もう一度作って指紋を比べる方法で確かめられません。
 
 ##### 解説2: /Brepro を付けると、同じ中身になる
@@ -569,23 +569,23 @@ cargo run -q --example u01_exe_report -- builds/brepro1.exe builds/brepro2.exe
 
 ```text
 [builds/brepro1.exe]
-    大きさ: 11820032 バイト
-    リンクした時刻（UNIX 秒）: 277490482
-    ユーザーフォルダの場所が入っている数: 1820 か所
+    大きさ: 11731968 バイト
+    リンクした時刻（UNIX 秒）: 2520511643
+    ユーザーフォルダの場所が入っている数: 1811 か所
 [builds/brepro2.exe]
-    大きさ: 11820032 バイト
-    リンクした時刻（UNIX 秒）: 277490482
-    ユーザーフォルダの場所が入っている数: 1820 か所
+    大きさ: 11731968 バイト
+    リンクした時刻（UNIX 秒）: 2520511643
+    ユーザーフォルダの場所が入っている数: 1811 か所
 --- 2つを比べる
     大きさが同じ: true
     違うバイトの数: 0
 ```
 
-- 違うバイトの数が 0 になりました。「リンクした時刻」は、本当の時刻ではなく、中身から計算した値（277490482）になっています。これで、同じソースから作れば同じ指紋になりました。
+- 違うバイトの数が 0 になりました。「リンクした時刻」は、本当の時刻ではなく、中身から計算した値（2520511643。日付にすると 2049 年になる、ありえない値）になっています。これで、同じソースから作れば同じ指紋になりました。
 
 ##### 解説3: 実行ファイルに、自分のフォルダの場所が残っている
 
-- 「ユーザーフォルダの場所が入っている数」は、この PC では 1,820 か所でした。panic のメッセージに使う、ソースファイルの場所（`C:\Users\あなたの名前\.cargo\registry\...` など）が、実行ファイルの中に文字として残っているのです。この実行ファイルを人に渡すと、あなたのユーザー名も一緒に渡ることになります。
+- 「ユーザーフォルダの場所が入っている数」は、この PC では 1,811 か所でした。panic のメッセージに使う、ソースファイルの場所（`C:\Users\あなたの名前\.cargo\registry\...` など）が、実行ファイルの中に文字として残っているのです。この実行ファイルを人に渡すと、あなたのユーザー名も一緒に渡ることになります。
 - `--remap-path-prefix` を使うと、実行ファイルに入れる場所の文字を、別の文字に置き換えられます。
 
 ```powershell
@@ -598,13 +598,13 @@ cargo run -q --example u01_exe_report -- builds/remap.exe
 
 ```text
 [builds/remap.exe]
-    大きさ: 11795456 バイト
-    リンクした時刻（UNIX 秒）: 2004121190
+    大きさ: 11708416 バイト
+    リンクした時刻（UNIX 秒）: 2255404590
     ユーザーフォルダの場所が入っている数: 1 か所
 ```
 
-- 1,820 か所が 1 か所に減りました。残った1か所は、RustNote のフォルダの場所です。Topcoat の `asset!` マクロは、`assets/style.css` のような場所を、あとで topcoat CLI が見つけられるように、**クレートのフォルダの場所**（`CARGO_MANIFEST_DIR`）を実行ファイルに書き込みます（topcoat-asset 0.10.0 の `asset!` のソースで確かめました）。これは、アセットの束を作るために必要な情報です。
-- この単元の実験で分かったのは、**作る場所（フォルダの場所・ユーザー名・時刻）が、実行ファイルの中身に入り込む**ということです。そこで、本番用の実行ファイルは、自分の PC ではなく、**いつも同じ場所・同じ道具で作る**ようにします。RustNote の `Dockerfile` が、`rust:1.99.0-bookworm` のイメージの中の `/app` フォルダでビルドしているのは、このためです（UNIT 02（準備中））。
+- 1,811 か所が 1 か所に減りました。残った1か所は、RustNote のフォルダの場所です。Topcoat の `asset!` マクロは、`assets/style.css` のような場所を、あとで topcoat CLI が見つけられるように、**クレートのフォルダの場所**（`CARGO_MANIFEST_DIR`）を実行ファイルに書き込みます（topcoat-asset 0.11.0 の `asset!` のソースで確かめました）。これは、アセットの束を作るために必要な情報です。
+- この単元の実験で分かったのは、**作る場所（フォルダの場所・ユーザー名・時刻）が、実行ファイルの中身に入り込む**ということです。そこで、本番用の実行ファイルは、自分の PC ではなく、**いつも同じ場所・同じ道具で作る**ようにします。RustNote の `Dockerfile` が、`rust:1.99.1-trixie` のイメージの中の `/app` フォルダでビルドしているのは、このためです（UNIT 02（準備中））。
 
 <div style="max-width:720px;margin:18px auto;text-align:center;">
 <svg viewBox="0 0 720 230" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
@@ -616,7 +616,7 @@ cargo run -q --example u01_exe_report -- builds/remap.exe
 <text x="120" y="76" font-size="12" fill="#0f172a" text-anchor="middle">2回作ると 24 バイト違う</text>
 <text x="120" y="98" font-size="11" fill="#475569" text-anchor="middle">（リンクした時刻など）</text>
 <text x="120" y="136" font-size="12" fill="#0f172a" text-anchor="middle">ユーザーフォルダの場所</text>
-<text x="120" y="158" font-size="20" font-weight="800" fill="#c2410c" text-anchor="middle">1,820 か所</text>
+<text x="120" y="158" font-size="20" font-weight="800" fill="#c2410c" text-anchor="middle">1,811 か所</text>
 <rect x="260" y="20" width="200" height="190" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
 <text x="360" y="46" font-size="13" font-weight="700" fill="#1e40af" text-anchor="middle">/Brepro と</text>
 <text x="360" y="64" font-size="13" font-weight="700" fill="#1e40af" text-anchor="middle">--remap-path-prefix</text>
@@ -656,6 +656,8 @@ Error: アセットの束（assets/）がありません。先に `topcoat asset
 
 Caused by:
     no asset bundle at target\release\assets
+（終了コード: 1）
+（このあとのフォルダの中: ）
 ```
 
 - **何が起きたか:** `Error:` の行は、RustNote の `main.rs` が `anyhow` の `context` で付けた説明です。`Caused by:` の下の `no asset bundle at target\release\assets` が、Topcoat の `AssetBundle::load()` が返した、もとの原因です。実行ファイルの隣（`target\release\assets`）に束がありませんでした。
@@ -677,11 +679,12 @@ Error: サーバーを起動できませんでした（HOST / PORT を確認し�
 
 Caused by:
     通常、各ソケット アドレスに対してプロトコル、ネットワーク アドレス、またはポートのどれか 1 つのみを使用できます。 (os error 10048)
+（終了コード: 1）
 ```
 
 - **何が起きたか:** `通常、各ソケット アドレスに対して…1 つのみを使用できます。(os error 10048)` は、Windows の「そのアドレスとポート（127.0.0.1:3000）は、もうほかのプログラムが使っています」というエラーです。Linux では `Address already in use (os error 98)` のような文になります。
 - **直し方:** 先に動いている RustNote を Ctrl+C で止めるか、`$env:PORT = "3001"` のように、別のポートを指定してから起動します（`topcoat::start` は `HOST` と `PORT` の環境変数を読みます）。
-- **気をつけたい点:** 1行目に `RustNote を起動しました: http://127.0.0.1:3000` と出ています。ところが、このプログラムは起動できずに止まりました。RustNote の `main.rs` は、ポートを押さえる（`topcoat::start`）**前に**「起動しました」を表示しているからです。ログを見る人が「起動した」と勘違いしないよう、ポートを押さえたあとに表示するのが本来の形です。これも、RustNote に残っている改善点です（コードは変えていません）。
+- **気をつけたい点:** 1行目に `RustNote を起動しました: http://127.0.0.1:3000` と出ています。ところが、このプログラムは起動できずに止まりました。RustNote の `main.rs` は、ポートを押さえる（`topcoat::start`）**前に**「起動しました」を表示しているからです。ログを見る人が「起動した」と勘違いしないよう、ポートを押さえたあとに表示するのが本来の形です。これも、RustNote に残っている改善点です（教材のコードは変えていません。直し方は、第13巻の総合演習2で確かめています）。
 
 #### エラー3（エラーが出ない違い）: 整数のあふれが、release では折り返す
 
@@ -711,7 +714,7 @@ cargo run -q --release --example u01_overflow
 ```text
 count = 255
 
-thread 'main' (125244) panicked at examples\u01_overflow.rs:11:16:
+thread 'main' (6484) panicked at examples\u01_overflow.rs:11:16:
 attempt to add with overflow
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 ```
@@ -736,7 +739,7 @@ overflow-checks = true
 ```text
 count = 255
 
-thread 'main' (130896) panicked at examples\u01_overflow.rs:11:16:
+thread 'main' (43852) panicked at examples\u01_overflow.rs:11:16:
 attempt to add with overflow
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 ```
@@ -746,11 +749,12 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 RustNote の `Dockerfile` の「1. builder」の部分は、この単元の手順を、そのまま並べた形です（抜き出しています）。
 
 ```dockerfile
-FROM rust:1.99.0-bookworm AS builder
+# builder と実行用は、同じ Debian 13（trixie）にそろえる（実行ファイルが使う glibc の版を合わせるため）
+FROM rust:1.99.1-trixie AS builder
 WORKDIR /app
 
-# アセットの束を作る topcoat CLI（アプリの Topcoat と同じ 0.10.0）
-RUN cargo install topcoat-cli --version 0.10.0 --locked
+# アセットの束を作る topcoat CLI（アプリの Topcoat と同じ 0.11.0）
+RUN cargo install topcoat-cli --version 0.11.0 --locked
 
 # ソースをコピーしてビルドする（Cargo.lock の版をそのまま使う）
 COPY . .
@@ -760,7 +764,7 @@ RUN cargo build --release --locked
 RUN topcoat asset bundle --release
 ```
 
-- Rust の版（1.99.0）と、作るフォルダ（`/app`）が、いつも同じです。例1-3で見た「作る場所が中身に入り込む」問題が、毎回同じ形になります。
+- Rust の版（1.99.1）と、作るフォルダ（`/app`）が、いつも同じです。例1-3で見た「作る場所が中身に入り込む」問題が、毎回同じ形になります。
 - `cargo build --release --locked` → `topcoat asset bundle --release` の順番も、例1-1と同じです。
 
 整数のあふれについても、RustNote は気をつけて書いてあります。`src/domain.rs` の `NoteQuery` です（抜き出しています）。
@@ -804,6 +808,7 @@ Error: アセットの束（assets/）がありません。先に `topcoat asset
 
 Caused by:
     no asset bundle at ...\dist\assets
+（終了コード: 1）
 ```
 
 - 今いるフォルダではなく、**実行ファイルのある場所**（`dist\assets`）を探しました。`target\release\assets` があっても、使われません。
@@ -814,6 +819,8 @@ Caused by:
 マイグレーションを適用しました: 0002_notes
 マイグレーションを適用しました: 0003_sessions
 RustNote を起動しました: http://127.0.0.1:3000
+（/health: {"status":"ok"}）
+（dist の中: assets rustnote.db rustnote.exe ）
 ```
 
 <div style="max-width:720px;margin:18px auto;text-align:center;">
@@ -884,7 +891,7 @@ cargo run -q --release --example u01_q2
 u64 に広げて計算: 4294967300
 u32 のまま checked_mul: None
 
-thread 'main' (123884) panicked at examples\u01_q2.rs:25:18:
+thread 'main' (219748) panicked at examples\u01_q2.rs:25:18:
 attempt to multiply with overflow
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 ```
@@ -915,15 +922,15 @@ Get-Content release-record.txt
 ```
 
 ```text
-commit:     9df9eca
-rustc:      rustc 1.99.0 (b940084d7 2026-09-28)
-Cargo.lock: 720833E50B0032AC3F7822FBF12C1D55515AA1D54B90E31C6C32CB99F9541D2D
-rustnote:   6B6F18B361A388AF072E5195627E80B99D4FD4DB450278B5C948C5FCE2266823
-built at:   2026-10-26 20:31:16Z
+commit:     6b40498
+rustc:      rustc 1.99.1 (58cf8f9c3 2026-10-13)
+Cargo.lock: FC84B1A4DFA47B85BD2C49F52BF522EBDC3E0B948846FA2862050904E9B000E0
+rustnote:   36E406CFEF0D4AC42BB6D25F2007C6A05860BDBF875CE0E2C8C2CEB2F0CD9C1E
+built at:   2026-10-30 22:20:06Z
 ```
 
-- `git rev-parse --short HEAD` は、今のコミットの短い名前です。`rustc --version` は、このフォルダで使われる Rust の版（`rust-toolchain.toml` の 1.99.0）です。`Get-FileHash` は、ファイルの SHA-256 の指紋を計算します。
-- `built at` は、実行ファイルを最後に書き換えた時刻（UTC）です。この例では、例1-3で調べた「リンクした時刻」（1793046676 秒）と同じ、2026-10-26 20:31:16（UTC）になりました。
+- `git rev-parse --short HEAD` は、今のコミットの短い名前です。`rustc --version` は、このフォルダで使われる Rust の版（`rust-toolchain.toml` の 1.99.1）です。`Get-FileHash` は、ファイルの SHA-256 の指紋を計算します。
+- `built at` は、実行ファイルを最後に書き換えた時刻（UTC）です。この例では、例1-3で調べた2回目のビルドの「リンクした時刻」（1793398806 秒）と同じ、2026-10-30 22:20:06（UTC）になりました。
 - この記録があれば、本番で問題が起きたとき、「このコミットを、この Rust と、この `Cargo.lock` で作った物」とたどれます。`/Brepro` などで再現できるように作ってあれば、同じコミットからもう一度作って、`rustnote` の指紋が一致するかで確かめることもできます。
 - 記録のファイルは、Git に入れるより、実行ファイルと一緒に保管するほうが向いています（コミットの名前を、そのコミットの中に書くことはできないからです）。
 
