@@ -109,7 +109,7 @@
 |---|---|---|
 | UNIT 01 | 一覧・空のとき・持ち主の条件 | 自分のノートだけを、決まった順番で並べる |
 | UNIT 02 | 作成のフォーム・入力の検査・PRG | 失敗は 400 で出し直し、成功は 303 で移る |
-| UNIT 03 | 詳細・URL の ID・見つからないとき（準備中） | 無いノートも他人のノートも、同じ 404 にする |
+| UNIT 03 | 詳細・URL の ID・見つからないとき | 無いノートも他人のノートも、同じ 404 にする |
 | UNIT 04 | 編集・入力済みのフォーム・競合（準備中） | 別のタブの更新を、黙って上書きしない |
 | UNIT 05 | 完了の切り替え・1文の SQL（準備中） | 読んでから書く形にせず、DB に1回で切り替えさせる |
 | UNIT 06 | 削除・確かめ・消し方の選び方（準備中） | GET では消さない。消す前に確かめる |
@@ -118,7 +118,7 @@
 | UNIT 09 | お知らせ（フラッシュ）・エラーのまとめ（準備中） | 移った先で一度だけ出し、エラーは同じ画面で見せる |
 | UNIT 10 | 狭い画面・アクセシビリティ・総合の試験（準備中） | スマートフォンとキーボードでも使えるかを確かめる |
 
-> **お知らせ:** この版には UNIT 01〜02 を収録しています。UNIT 03〜10 は準備中で、次の更新から順に追加します。
+> **お知らせ:** この版には UNIT 01〜03 を収録しています。UNIT 04〜10 は準備中で、次の更新から順に追加します。
 
 ### 前提知識（先に読んでおく巻）
 
@@ -126,7 +126,7 @@
 - **第8巻（認証認可）UNIT 01:** 認証・セッション・認可の3つの確かめと、他人のノートを 404 にする理由。
 - **第9巻（RustNote 設計）:** 画面の一覧と状態（第9巻 UNIT 02）、ドメインの型（第9巻 UNIT 03）、モジュールの段と依存の向き（第9巻 UNIT 04）。この巻のテストも、第9巻と同じ形（`tests/` に足して `cargo test --test 名前`）で書きます。
 
-> **注意:** 第6巻（Topcoat）は、書き直しの途中です。この巻で使う Topcoat の機能（`#[page]`・`#[component]`・`view!`・`href!`）は、本文の中で、そのつど説明します。
+> **注意:** この巻で使う Topcoat の機能は、第6巻でくわしく扱っています（`#[page]`・`href!` は第6巻 UNIT 03、URL の部品は UNIT 04、`view!`・`#[component]` は UNIT 05、フォームと PRG は UNIT 06）。本文の中でも、そのつど短く説明します。
 
 ### この巻の進め方
 
@@ -144,9 +144,9 @@
 | 項目 | 版・内容 |
 |---|---|
 | OS | Windows 11（ARM64）。コマンドは PowerShell を主に、WSL / macOS / Linux は補足で示します |
-| Rust | **1.98 以上**（本書シリーズの基準）。動作確認は rustc 1.99.0 / cargo 1.99.0（`aarch64-pc-windows-msvc`） |
+| Rust | **1.99 以上**（本書シリーズの基準。Topcoat 0.11 が 1.99 以上を求めます）。動作確認は rustc 1.99.1 / cargo 1.99.1（`aarch64-pc-windows-msvc`） |
 | RustNote | 教材の `Rust/rustnote/`（`rustnote` 0.1.0）。この巻では `src/` を変えずに、`tests/` と `examples/` に確かめ用のファイルを足す |
-| topcoat | 0.10.0（`#[page]`・`#[component]`・`view!`・`href!`） |
+| topcoat | 0.11.0（`#[page]`・`#[component]`・`view!`・`href!`） |
 | libsql | 0.10.0（ローカルの DB ファイル） |
 
 ### 練習用のフォルダを用意する
@@ -157,7 +157,7 @@
 # 教材の rustnote フォルダを、中身ごと（-Recurse）作業用のフォルダへコピーする
 Copy-Item -Recurse "教材のフォルダ\Rust\rustnote" .\rustnote
 cd rustnote
-# このフォルダで使われる Rust の版を確かめる（1.99.0 になる）
+# このフォルダで使われる Rust の版を確かめる（1.99.1 になる）
 rustup show active-toolchain
 ```
 
@@ -395,39 +395,39 @@ cargo test --test u01_list -- --nocapture --test-threads=1
 **▼ 実行結果**
 
 ```text
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 19.78s
-     Running tests\u01_list.rs (target\debug\deps\u01_list-d04e2970d522cf0b.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.46s
+     Running tests\u01_list.rs (target\debug\deps\u01_list-0d57f366070afeda.exe)
 
 running 3 tests
-test empty_then_newest_first ... POST /signup -> 303 See Other (466.6657ms)
-GET /notes -> 200 OK (9.5072ms)
+test empty_then_newest_first ... POST /signup -> 303 See Other (583.2082ms)
+GET /notes -> 200 OK (5.6154ms)
 [ノートが 0 件] 空の文が出る: true
-POST /notes -> 303 See Other (9.6777ms)
-POST /notes -> 303 See Other (11.3172ms)
-POST /notes -> 303 See Other (7.7175ms)
-GET /notes -> 200 OK (5.0939ms)
+POST /notes -> 303 See Other (10.0323ms)
+POST /notes -> 303 See Other (10.109ms)
+POST /notes -> 303 See Other (9.5529ms)
+GET /notes -> 200 OK (5.5839ms)
 [3 件作った] 並び順: ["3件目", "2件目", "1件目"]
 [3 件作った] ページ送り: true
-POST /signup -> 303 See Other (396.9523ms)
-GET /notes -> 200 OK (3.432ms)
+POST /signup -> 303 See Other (574.0721ms)
+GET /notes -> 200 OK (5.5192ms)
 [bob の一覧] 空の文が出る: true / alice のノートが出る: false
 [bob の一覧] ページ送り: true
 ok
-test ordered_by_updated_at_then_id ... POST /signup -> 303 See Other (426.5175ms)
-POST /notes -> 303 See Other (6.6846ms)
-POST /notes -> 303 See Other (7.1091ms)
-POST /notes -> 303 See Other (6.2833ms)
-GET /notes -> 200 OK (8.3724ms)
+test ordered_by_updated_at_then_id ... POST /signup -> 303 See Other (532.8901ms)
+POST /notes -> 303 See Other (9.5425ms)
+POST /notes -> 303 See Other (8.5775ms)
+POST /notes -> 303 See Other (9.3065ms)
+GET /notes -> 200 OK (16.4698ms)
 [3件目を 1 日前の更新にした] 並び順: ["2件目", "1件目", "3件目"]
 ok
-test titles_are_escaped ... POST /signup -> 303 See Other (427.4357ms)
-POST /notes -> 303 See Other (5.3111ms)
-GET /notes -> 200 OK (3.8569ms)
+test titles_are_escaped ... POST /signup -> 303 See Other (591.5261ms)
+POST /notes -> 303 See Other (6.9616ms)
+GET /notes -> 200 OK (5.1461ms)
 タグのまま入っている: false
 文字に置き換わっている: true
 ok
 
-test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.87s
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.45s
 ```
 
 #### ▼ コードを1つずつ分解して解説
@@ -547,7 +547,7 @@ cargo run -q --example u01_order
 **▼ 実行結果**
 
 ```text
-updated_at: ["2026-10-27 15:12:41"]
+updated_at: ["2026-10-30 13:35:47"]
 ORDER BY updated_at DESC         → ["3件目", "2件目", "1件目"]
 ORDER BY updated_at DESC, id DESC → ["3件目", "2件目", "1件目"]
 ```
@@ -584,7 +584,7 @@ error[E0382]: use of partially moved value
     |                          ^^^^ value used here after partial move
     |
 note: the `for` loop is desugared into a call to `std::iter::IntoIterator::into_iter`, which takes ownership of the receiver `self`, which moves value
-   --> /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\iter\traits\collect.rs:312:17
+   --> /rustc/58cf8f9c35b355199727627d07ae34a4e2846d67/library\core\src\iter\traits\collect.rs:312:17
     = note: partial move occurs because value has type `std::vec::Vec<Note>`, which does not implement the `Copy` trait
 help: consider iterating over a slice of the `std::vec::Vec<Note>`'s content to avoid moving into the `for` loop
     |
@@ -769,22 +769,22 @@ cargo test --test u01_q1 -- --nocapture
 
 ```text
    Compiling rustnote v0.1.0 (...\rustnote)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 13.14s
-     Running tests\u01_q1.rs (target\debug\deps\u01_q1-81fa10c5a5eabbd3.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.26s
+     Running tests\u01_q1.rs (target\debug\deps\u01_q1-bce08f7bd283041f.exe)
 
 running 1 test
-POST /signup -> 303 See Other (415.3854ms)
-POST /notes -> 303 See Other (6.5261ms)
-POST /notes -> 303 See Other (6.1675ms)
-POST /notes -> 303 See Other (8.6278ms)
-POST /notes/1/toggle -> 303 See Other (16.379ms)
-GET /notes -> 200 OK (14.0618ms)
+POST /signup -> 303 See Other (420.6426ms)
+POST /notes -> 303 See Other (6.669ms)
+POST /notes -> 303 See Other (6.1696ms)
+POST /notes -> 303 See Other (5.6107ms)
+POST /notes/1/toggle -> 303 See Other (10.7107ms)
+GET /notes -> 200 OK (9.9974ms)
 並び順: ["1件目", "3件目", "2件目"]
 完了の印の付いた行: 1
 「完了」のバッジ: 1
 test toggled_note_moves_to_top_with_badge ... ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.50s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.49s
 ```
 
 - 1件目がいちばん上に移りました。完了の切り替え（`toggle_done`）の SQL は、`done` を反対にするのと一緒に、`updated_at = datetime('now')` で更新の時刻を今にするからです（`src/repository/notes.rs`）。残りの2件は、どちらも1時間前の同じ時刻なので、`id DESC` で 3件目、2件目の順です。
@@ -914,22 +914,22 @@ cargo test --test u01_q3 -- --nocapture
 
 ```text
    Compiling rustnote v0.1.0 (...\rustnote)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.51s
-     Running tests\u01_q3.rs (target\debug\deps\u01_q3-f9715f282720c475.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.29s
+     Running tests\u01_q3.rs (target\debug\deps\u01_q3-ead5ae5e7277cf12.exe)
 
 running 1 test
-POST /signup -> 303 See Other (439.0876ms)
-POST /notes -> 303 See Other (6.562ms)
-GET /notes -> 200 OK (4.1019ms)
+POST /signup -> 303 See Other (485.3685ms)
+POST /notes -> 303 See Other (10.3552ms)
+GET /notes -> 200 OK (7.401ms)
 /notes → （空の文は無し）
-GET /notes -> 200 OK (3.3416ms)
+GET /notes -> 200 OK (4.7077ms)
 /notes?q=宿題 → 条件に合うノートはありません。
-POST /signup -> 303 See Other (422.86ms)
-GET /notes -> 200 OK (2.7616ms)
+POST /signup -> 303 See Other (440.9546ms)
+GET /notes -> 200 OK (4.159ms)
 /notes（bob）→ まだノートがありません。最初の1件を書いてみましょう。
 test empty_messages_differ ... ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.90s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.98s
 ```
 
 - alice は「買い物」のノートを持っているので、`/notes` には空の文が出ません。「宿題」で検索すると「条件に合うノートはありません。」、ノートを1件も持っていない bob には「まだノートがありません。最初の1件を書いてみましょう。」が出ました。
@@ -1222,12 +1222,12 @@ cargo test --test u02_create -- --nocapture --test-threads=1
 **▼ 実行結果**（`POST /notes -> …` のような行は、RustNote のアクセスログです。Expires の日時は、実行した日によって変わります）
 
 ```text
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.78s
-     Running tests\u02_create.rs (target\debug\deps\u02_create-b3f494a9a5c39448.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.21s
+     Running tests\u02_create.rs (target\debug\deps\u02_create-c932d3cf649ad3d9.exe)
 
 running 2 tests
-test invalid_input_is_shown_again_with_400 ... POST /signup -> 303 See Other (399.688ms)
-POST /notes -> 400 Bad Request (3.5364ms)
+test invalid_input_is_shown_again_with_400 ... POST /signup -> 303 See Other (418.1849ms)
+POST /notes -> 400 Bad Request (4.4522ms)
 [タイトルが空] POST /notes → 400 Bad Request
    Location ヘッダー: false
 <details class="new-note" open="">
@@ -1242,30 +1242,30 @@ POST /notes -> 400 Bad Request (3.5364ms)
 </form>
 </details>
 notes 表の件数: 0
-POST /notes -> 400 Bad Request (5.9791ms)
+POST /notes -> 400 Bad Request (6.6684ms)
 [両方とも不合格] POST /notes → 400 Bad Request
    「タイトルを入力してください」: true
    「本文は10000文字以内にしてください（現在10001文字）」: true
    本文の入力欄に 10,001 文字が残っている: true
 notes 表の件数: 0
 ok
-test success_redirects_with_303 ... POST /signup -> 303 See Other (405.093ms)
-POST /notes -> 303 See Other (7.377ms)
+test success_redirects_with_303 ... POST /signup -> 303 See Other (629.3647ms)
+POST /notes -> 303 See Other (7.0825ms)
 1. POST /notes → 303 See Other
    Location: /notes/1
    Set-Cookie: flash=note_created; HttpOnly; SameSite=Lax; Path=/; Max-Age=300
-GET /notes/1 -> 200 OK (4.793ms)
+GET /notes/1 -> 200 OK (4.7185ms)
 2. GET /notes/1
    お知らせ「ノートを作成しました」: true
    タイトル「買い物メモ」: true
-   Set-Cookie: flash=; Path=/; Max-Age=0; Expires=Wed, 29 Oct 2025 15:16:39 GMT
-GET /notes/1 -> 200 OK (3.5781ms)
+   Set-Cookie: flash=; Path=/; Max-Age=0; Expires=Thu, 30 Oct 2025 13:36:19 GMT
+GET /notes/1 -> 200 OK (3.4728ms)
 3. もう一度 GET /notes/1（再読み込み）
    お知らせ「ノートを作成しました」: false
 notes 表の件数: 1
 ok
 
-test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.90s
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.12s
 ```
 
 #### ▼ コードを1つずつ分解して解説
@@ -1354,26 +1354,26 @@ cargo test --test u02_reload -- --nocapture
 **▼ 実行結果**
 
 ```text
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.75s
-     Running tests\u02_reload.rs (target\debug\deps\u02_reload-c30daf2536228748.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.15s
+     Running tests\u02_reload.rs (target\debug\deps\u02_reload-ff61c2c393f9c231.exe)
 
 running 1 test
-POST /signup -> 303 See Other (388.9575ms)
-POST /notes -> 303 See Other (6.7285ms)
+POST /signup -> 303 See Other (446.5839ms)
+POST /notes -> 303 See Other (15.8617ms)
 POST /notes → 303 See Other（Location: /notes/1）
-GET /notes/1 -> 200 OK (3.8365ms)
+GET /notes/1 -> 200 OK (12.7988ms)
 再読み込み 1 回目: GET /notes/1 → 200 OK
-GET /notes/1 -> 200 OK (2.8887ms)
+GET /notes/1 -> 200 OK (9.4475ms)
 再読み込み 2 回目: GET /notes/1 → 200 OK
-GET /notes/1 -> 200 OK (2.9527ms)
+GET /notes/1 -> 200 OK (7.83ms)
 再読み込み 3 回目: GET /notes/1 → 200 OK
 ノートの id: [1]
-POST /notes -> 303 See Other (6.5562ms)
+POST /notes -> 303 See Other (10.3436ms)
 同じ POST をもう一度送る → 303 See Other（Location: /notes/2）
 ノートの id: [1, 2]
 test reload_after_redirect_does_not_duplicate ... ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.43s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.54s
 ```
 
 - 再読み込みを3回しても、ノートの id は `[1]` のままです。くり返されたのは GET だけだからです。
@@ -1492,20 +1492,20 @@ cargo test --test u02_err_name -- --nocapture
 ```
 
 ```text
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.47s
-     Running tests\u02_err_name.rs (target\debug\deps\u02_err_name-9c4aff559b955ba0.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.25s
+     Running tests\u02_err_name.rs (target\debug\deps\u02_err_name-d48f1d2996b9f549.exe)
 
 running 1 test
-POST /signup -> 303 See Other (387.4675ms)
-POST /notes -> 400 Bad Request (2.1269ms)
+POST /signup -> 303 See Other (396.8765ms)
+POST /notes -> 400 Bad Request (2.2781ms)
 [name が subject] 400 Bad Request / 「送信された内容を読み取れませんでした」: true
-POST /notes -> 400 Bad Request (1.8745ms)
+POST /notes -> 400 Bad Request (1.4834ms)
 [本文の欄が無い] 400 Bad Request / 「送信された内容を読み取れませんでした」: true
-POST /notes -> 303 See Other (5.9389ms)
+POST /notes -> 303 See Other (5.1911ms)
 [余分な欄がある] 303 See Other / 「送信された内容を読み取れませんでした」: false
 test wrong_field_name ... ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.41s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.43s
 ```
 
 - **何が起きたか:** `name` が `subject` のときと、本文の欄そのものが無いときは、`400 Bad Request` と「送信された内容を読み取れませんでした」になりました。Topcoat の `Form<NoteForm>` が、送られてきた値を `NoteForm` に変えようとして、`title`（または `body`）が見つからなかったからです。この 400 は、`create` の中のコードが動く**前**に返るので、項目ごとのエラーも、入力の出し直しもありません。サーバーのログにも、アクセスログの1行のほかは何も残りません。
@@ -1667,22 +1667,22 @@ cargo test --test u02_q1 -- --nocapture
 ```
 
 ```text
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.73s
-     Running tests\u02_q1.rs (target\debug\deps\u02_q1-c95d3e8f58bcc743.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.18s
+     Running tests\u02_q1.rs (target\debug\deps\u02_q1-23282a983bbe2a35.exe)
 
 running 1 test
-POST /signup -> 303 See Other (386.115ms)
-POST /notes -> 303 See Other (6.0805ms)
+POST /signup -> 303 See Other (425.47ms)
+POST /notes -> 303 See Other (9.635ms)
 [前後に空白] 303 See Other
    保存されたタイトル: ["買い物"]
-POST /notes -> 400 Bad Request (4.1825ms)
+POST /notes -> 400 Bad Request (7.8748ms)
 [81 文字] 400 Bad Request
    「タイトルは80文字以内にしてください（現在81文字）」: true
    入力欄に 81 文字が残っている: true
    保存されたタイトル: ["買い物"]
 test title_is_trimmed_and_limited ... ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.42s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.47s
 ```
 
 - 前後に空白があるタイトルは、`"買い物"` として保存されました。`NoteTitle::parse` が `trim()` で前後の空白を取ってから、文字数を数えて保存するからです。
@@ -1735,18 +1735,18 @@ cargo test --test u02_q2 -- --nocapture
 ```
 
 ```text
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.84s
-     Running tests\u02_q2.rs (target\debug\deps\u02_q2-6804b1bc9d1c3136.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.15s
+     Running tests\u02_q2.rs (target\debug\deps\u02_q2-2cfd71d17b7bceae.exe)
 
 running 1 test
-POST /signup -> 303 See Other (394.3234ms)
+POST /signup -> 303 See Other (411.072ms)
 送ったフォーム: title=%E6%94%B9%E8%A1%8C&body=1%E8%A1%8C%E7%9B%AE%0D%0A2%E8%A1%8C%E7%9B%AE%0D%0A
-POST /notes -> 303 See Other (7.528ms)
+POST /notes -> 303 See Other (6.6879ms)
 送った本文: "1行目\r\n2行目\r\n"（10 文字）
 保存された本文: "1行目\n2行目\n"（SQLite の length: 8）
 test newlines_are_normalized ... ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.53s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.44s
 ```
 
 - 送った本文は 10 文字（`\r` と `\n` を1文字ずつ数える）でしたが、保存された本文は `"1行目\n2行目\n"` の 8 文字でした。`NoteBody::parse` が、`\r\n` を `\n` にそろえてから保存するからです。フォームの中の `%0D%0A` が、`\r\n` です。
@@ -1814,22 +1814,22 @@ cargo test --test u02_q3 -- --nocapture
 ```
 
 ```text
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.49s
-     Running tests\u02_q3.rs (target\debug\deps\u02_q3-91faee38663bf341.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.19s
+     Running tests\u02_q3.rs (target\debug\deps\u02_q3-6907ab08fcaab11f.exe)
 
 running 1 test
-POST /signup -> 303 See Other (417.1372ms)
-POST /notes -> 400 Bad Request (7.3145ms)
+POST /signup -> 303 See Other (434.0817ms)
+POST /notes -> 400 Bad Request (10.6401ms)
 [400 で出し直す] 400 Bad Request
    <input id="title" name="title" value="<b>&quot;大事&quot;</b>" required="" maxlength="80">
    " がそのまま入っている（value から抜け出せる）: false
-POST /notes -> 303 See Other (5.1299ms)
-GET /notes/1 -> 200 OK (5.8205ms)
+POST /notes -> 303 See Other (7.5609ms)
+GET /notes/1 -> 200 OK (4.2772ms)
 [詳細ページ] <h1>&lt;b&gt;"大事"&lt;/b&gt;</h1>
    本物の <b> タグになっている: false
 test title_is_escaped ... ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.46s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.49s
 ```
 
 - どちらも、本物の `<b>` タグにはなりませんでした。Topcoat の `view!` は、値を入れる**場所に合わせて**、危ない文字を書き換えます（エスケープ）。
@@ -1843,9 +1843,620 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 - 出し直すときは、送られてきたままの入力を残し、項目ごとのエラーを全部まとめて、その項目のすぐ下に出す。フォームは開いたまま返す。
 - PRG で、再読み込みは GET のくり返しになり、ノートは二重にできない。ただし、POST そのものの二重送信は PRG では防げない。フォームの `name` と `NoteForm` の項目名がずれると、コードが動く前に 400 になるので、本物と同じ形の POST をテストに残す。
 
+## UNIT 03: 詳細・URL の ID・見つからないとき
+
+### この単元のゴール
+
+- 詳細の画面（`GET /notes/{id}`）が、ログインの確かめ → URL の ID を `NoteId` に変える → 持ち主の条件付きの SQL で探す、の3つの関門を順に通ることを説明できる
+- 無いノート・他人のノート・おかしな ID（`abc`・`0`・大きすぎる数）が、**どれも同じ 404** になることを、テストで確かめられる
+- 他人のノートを 403 にすると、ID を順に試すだけで**ノートの数が分かってしまう**ことを、実際に確かめて説明できる
+- `module_param!` が作る `Id` 型と、`href!(edit::edit_page, Id(id))` の書き方、`NoteId` をそのまま渡したときの `E0277` を読める
+
+### たとえ話でつかむ
+
+ホテルの部屋の鍵を考えます。
+
+- フロントで「305 号室の鍵をください」と頼むと、フロントの人は、まず**泊まっている人か**を確かめます。泊まっていなければ、鍵の話の前に、受付へ案内します。
+- 次に、部屋の番号が**番号として正しいか**を見ます。「あいう号室」や「0 号室」は、探すまでもなく「その部屋はありません」です。
+- 最後に、台帳で「**この人が泊まっている** 305 号室」を探します。305 号室がほかの人の部屋なら、「その部屋はありません」と答えます。「ほかの方のお部屋です」とは言いません。言ってしまうと、305 号室に誰かが泊まっていることが、ばれるからです。
+
+| ホテルのフロント | RustNote の詳細（GET /notes/{id}） |
+|---|---|
+| 泊まっている人か | `require_user`（ログインしていなければ 303 でログイン画面へ） |
+| 部屋の番号として正しいか | `module_param!` が `{id}` を `NoteId` に変える（数字でない・0 以下なら 404） |
+| 「この人の」305 号室を台帳で探す | `WHERE id = ?1 AND user_id = ?2`（持ち主の条件付きの SQL） |
+| ほかの人の部屋でも「ありません」 | 他人のノートも 404（403 にしない） |
+
+> **用語:** パスの引数（URL の `/notes/{id}` の `{id}` のように、URL の一部を値として受け取るもの。Topcoat では `module_param!` で型を決める。第6巻 UNIT 04）
+
+<!-- -->
+
+> **用語:** 404 Not Found（「その URL のものはありません」という返事。RustNote では、無いノートと他人のノートの両方に使う）
+
+<!-- -->
+
+> **用語:** 403 Forbidden（「あるけれど、あなたには見せられません」という返事。「ある」ことは伝わってしまう）
+
+### 図で理解する
+
+`GET /notes/{id}` が、詳細の画面にたどり着くまでの3つの関門です。
+
+<div style="max-width:720px;margin:18px auto;text-align:center;">
+<svg viewBox="0 0 720 300" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs>
+<marker id="ar-10-0301" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+</defs>
+<rect x="10" y="40" width="120" height="60" rx="8" fill="#f8fafc" stroke="#64748b" stroke-width="2"/>
+<text x="70" y="66" font-size="12" font-weight="700" fill="#0f172a" text-anchor="middle">GET</text>
+<text x="70" y="86" font-size="12" font-weight="700" fill="#0f172a" text-anchor="middle">/notes/{id}</text>
+<rect x="160" y="40" width="160" height="60" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="240" y="64" font-size="12" font-weight="700" fill="#1e40af" text-anchor="middle">① require_user</text>
+<text x="240" y="84" font-size="11" fill="#475569" text-anchor="middle">ログインしているか</text>
+<rect x="350" y="40" width="160" height="60" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="430" y="64" font-size="12" font-weight="700" fill="#1e40af" text-anchor="middle">② path_param::&lt;Id&gt;</text>
+<text x="430" y="84" font-size="11" fill="#475569" text-anchor="middle">{id} を NoteId に変える</text>
+<rect x="540" y="40" width="170" height="60" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="625" y="64" font-size="12" font-weight="700" fill="#1e40af" text-anchor="middle">③ find_own_note</text>
+<text x="625" y="84" font-size="11" fill="#475569" text-anchor="middle">id と持ち主の両方で探す</text>
+<line x1="130" y1="70" x2="156" y2="70" stroke="#475569" stroke-width="2" marker-end="url(#ar-10-0301)"/>
+<line x1="320" y1="70" x2="346" y2="70" stroke="#475569" stroke-width="2" marker-end="url(#ar-10-0301)"/>
+<line x1="510" y1="70" x2="536" y2="70" stroke="#475569" stroke-width="2" marker-end="url(#ar-10-0301)"/>
+<line x1="240" y1="100" x2="240" y2="146" stroke="#f97316" stroke-width="2" marker-end="url(#ar-10-0301)"/>
+<line x1="430" y1="100" x2="430" y2="146" stroke="#f97316" stroke-width="2" marker-end="url(#ar-10-0301)"/>
+<line x1="600" y1="100" x2="600" y2="146" stroke="#f97316" stroke-width="2" marker-end="url(#ar-10-0301)"/>
+<rect x="160" y="150" width="160" height="70" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<text x="240" y="176" font-size="12" font-weight="700" fill="#c2410c" text-anchor="middle">303 → /login</text>
+<text x="240" y="198" font-size="11" fill="#475569" text-anchor="middle">ログインしていない</text>
+<rect x="350" y="150" width="160" height="70" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+<text x="430" y="176" font-size="12" font-weight="700" fill="#b91c1c" text-anchor="middle">404</text>
+<text x="430" y="196" font-size="11" fill="#475569" text-anchor="middle">abc・0・-1・大きすぎる数</text>
+<rect x="540" y="150" width="125" height="70" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+<text x="602" y="174" font-size="12" font-weight="700" fill="#b91c1c" text-anchor="middle">404</text>
+<text x="602" y="192" font-size="11" fill="#475569" text-anchor="middle">無いノート</text>
+<text x="602" y="208" font-size="11" fill="#475569" text-anchor="middle">他人のノート</text>
+<line x1="692" y1="100" x2="692" y2="236" stroke="#10b981" stroke-width="2" marker-end="url(#ar-10-0301)"/>
+<rect x="590" y="240" width="120" height="50" rx="8" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="650" y="270" font-size="12" font-weight="700" fill="#047857" text-anchor="middle">200 詳細の画面</text>
+<text x="350" y="262" font-size="11" fill="#475569" text-anchor="middle">②と③の 404 は、同じ画面（中身まで同じ）</text>
+</svg>
+<div style="font-size:12px;color:#64748b;margin-top:6px;">図10-8: 詳細の画面までの3つの関門。ログインしていなければ 303、ID の形が正しくなければ 404、自分のノートが見つからなければ 404。②と③の 404 は見分けがつかない</div>
+</div>
+
+他人のノートを 403 にしたときと、404 にしたときに、bob に伝わることの違いです。alice のノートが3件（id は 1・2・3）あるとします。
+
+<div style="max-width:720px;margin:18px auto;text-align:center;">
+<svg viewBox="0 0 720 230" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<text x="360" y="22" font-size="12" font-weight="700" fill="#0f172a" text-anchor="middle">bob が /notes/1 から /notes/5 を順に開く</text>
+<text x="40" y="70" font-size="12" font-weight="700" fill="#b91c1c">403 にした</text>
+<rect x="140" y="46" width="84" height="40" rx="6" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+<text x="182" y="72" font-size="12" fill="#b91c1c" text-anchor="middle">1: 403</text>
+<rect x="234" y="46" width="84" height="40" rx="6" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+<text x="276" y="72" font-size="12" fill="#b91c1c" text-anchor="middle">2: 403</text>
+<rect x="328" y="46" width="84" height="40" rx="6" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+<text x="370" y="72" font-size="12" fill="#b91c1c" text-anchor="middle">3: 403</text>
+<rect x="422" y="46" width="84" height="40" rx="6" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+<text x="464" y="72" font-size="12" fill="#475569" text-anchor="middle">4: 404</text>
+<rect x="516" y="46" width="84" height="40" rx="6" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+<text x="558" y="72" font-size="12" fill="#475569" text-anchor="middle">5: 404</text>
+<text x="370" y="108" font-size="11" fill="#b91c1c" text-anchor="middle">→ 「1〜3 は誰かのノートがある。4 から先は無い」と分かる</text>
+<text x="40" y="160" font-size="12" font-weight="700" fill="#047857">404 にした</text>
+<rect x="140" y="136" width="84" height="40" rx="6" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+<text x="182" y="162" font-size="12" fill="#475569" text-anchor="middle">1: 404</text>
+<rect x="234" y="136" width="84" height="40" rx="6" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+<text x="276" y="162" font-size="12" fill="#475569" text-anchor="middle">2: 404</text>
+<rect x="328" y="136" width="84" height="40" rx="6" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+<text x="370" y="162" font-size="12" fill="#475569" text-anchor="middle">3: 404</text>
+<rect x="422" y="136" width="84" height="40" rx="6" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+<text x="464" y="162" font-size="12" fill="#475569" text-anchor="middle">4: 404</text>
+<rect x="516" y="136" width="84" height="40" rx="6" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+<text x="558" y="162" font-size="12" fill="#475569" text-anchor="middle">5: 404</text>
+<text x="370" y="198" font-size="11" fill="#047857" text-anchor="middle">→ どれも同じ答え。ほかの人のノートがあるかどうかは、何も分からない</text>
+</svg>
+<div style="font-size:12px;color:#64748b;margin-top:6px;">図10-9: 403 と 404 で、bob に伝わることの違い。403 は「ある」ことを知らせてしまうので、ID を順に試すだけで、ほかの人のノートの数が分かる</div>
+</div>
+
+### まず動かす最小コード
+
+#### 例3-1: 自分・他人・無い・おかしな ID を、表にして確かめる
+
+詳細の画面は、`src/routes/notes/id.rs` です。関門の部分だけを抜き出します。
+
+```rust
+// URL の {id} を NoteId に変換する。`Id` という型ができ、path_param::<Id>(cx) で読める。
+// 変換に失敗したら NotFoundError（404）になる。
+module_param!(pub id: NoteId, error = not_found);
+
+/// 自分のノートを探す。無い・他人のノートなら AppError::NotFound（404）
+pub async fn find_own_note(cx: &Cx, owner: UserId, id: NoteId) -> Result<Note, AppError> {
+    app_state(cx)
+        .notes
+        .find(owner, id)
+        .await?
+        .ok_or(AppError::NotFound)
+}
+
+#[page]
+pub async fn show(cx: &Cx) -> Result<impl View> {
+    let user = require_user(cx).await?;
+    let id = *path_param::<Id>(cx)?;
+    let note = find_own_note(cx, user.id, id).await?;
+    // …（画面を組み立てる。例3-2）
+}
+```
+
+`notes.find` の SQL は、`src/repository/notes.rs` にあります。
+
+```rust
+let sql = format!("SELECT {NOTE_COLUMNS} FROM notes WHERE id = ?1 AND user_id = ?2");
+```
+
+> **▼ このコードがやること（先に日本語で）:** alice と bob を登録し、alice のノートを1件作ります。次に、alice・bob・ログインしていない人（guest）が、いろいろな URL を開いたときの状態コードを、表にして表示します。最後に、bob から見た「他人のノート（`/notes/1`）」と「無いノート（`/notes/999`）」の答えを、状態コード・本文の長さ・本文がまったく同じか、で比べます。
+
+```rust
+//! 第10巻 UNIT 03: 詳細の画面（GET /notes/{id}）が、自分のノートだけを 200 で見せ、
+//! 無いノート・他人のノート・おかしな ID を、どれも 404 にするかを確かめる。
+//! 実行: cargo test --test u03_detail -- --nocapture --test-threads=1
+
+mod common;
+
+use common::{body_text, test_app};
+
+const PASSWORD: &str = "correct horse battery";
+
+#[tokio::test]
+async fn detail_answers_by_owner_and_id() {
+    let app = test_app().await;
+    let alice = app.sign_up("alice@example.com", PASSWORD).await;
+    let bob = app.sign_up("bob@example.com", PASSWORD).await;
+    let url = app.create_note(&alice, "牛乳を買う", "1本\n低脂肪").await;
+    println!("alice のノート: {url}");
+
+    let cases = [
+        ("alice", Some(alice.as_str()), "/notes/1"),
+        ("bob", Some(bob.as_str()), "/notes/1"),
+        ("bob", Some(bob.as_str()), "/notes/999"),
+        ("alice", Some(alice.as_str()), "/notes/999"),
+        ("alice", Some(alice.as_str()), "/notes/abc"),
+        ("alice", Some(alice.as_str()), "/notes/0"),
+        ("alice", Some(alice.as_str()), "/notes/-1"),
+        ("alice", Some(alice.as_str()), "/notes/9223372036854775808"),
+        ("guest", None, "/notes/1"),
+    ];
+    println!("--- 表 ---");
+    for (who, cookie, path) in cases {
+        let response = app.get(path, cookie).await;
+        let status = response.status();
+        let to = response
+            .headers()
+            .get("location")
+            .map(|v| format!(" → {}", v.to_str().unwrap()))
+            .unwrap_or_default();
+        println!("{who:<10} GET {path:<28} {status}{to}");
+    }
+
+    // bob から見て、「他人のノート」と「無いノート」の答えを比べる
+    let other = app.get("/notes/1", Some(&bob)).await;
+    let missing = app.get("/notes/999", Some(&bob)).await;
+    let (s1, s2) = (other.status(), missing.status());
+    let (b1, b2) = (body_text(other).await, body_text(missing).await);
+    println!("--- bob から見た2つの 404 ---");
+    println!("状態コード: {s1} / {s2}");
+    println!("本文の長さ: {} / {} バイト", b1.len(), b2.len());
+    println!("本文がまったく同じ: {}", b1 == b2);
+}
+```
+
+```powershell
+cargo test --test u03_detail -- --nocapture --test-threads=1
+```
+
+**▼ 実行結果**（`GET /notes/1 -> …` のような行は、RustNote のアクセスログです）
+
+```text
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.69s
+     Running tests\u03_detail.rs (target\debug\deps\u03_detail-a30d15660f9271a6.exe)
+
+running 1 test
+test detail_answers_by_owner_and_id ... POST /signup -> 303 See Other (436.758ms)
+POST /signup -> 303 See Other (391.2964ms)
+POST /notes -> 303 See Other (6.3269ms)
+alice のノート: /notes/1
+--- 表 ---
+GET /notes/1 -> 200 OK (6.2485ms)
+alice      GET /notes/1                     200 OK
+GET /notes/1 -> 404 Not Found (3.3472ms)
+bob        GET /notes/1                     404 Not Found
+GET /notes/999 -> 404 Not Found (2.8712ms)
+bob        GET /notes/999                   404 Not Found
+GET /notes/999 -> 404 Not Found (2.8065ms)
+alice      GET /notes/999                   404 Not Found
+GET /notes/abc -> 404 Not Found (1.3674ms)
+alice      GET /notes/abc                   404 Not Found
+GET /notes/0 -> 404 Not Found (1.3121ms)
+alice      GET /notes/0                     404 Not Found
+GET /notes/-1 -> 404 Not Found (2.5427ms)
+alice      GET /notes/-1                    404 Not Found
+GET /notes/9223372036854775808 -> 404 Not Found (1.4297ms)
+alice      GET /notes/9223372036854775808   404 Not Found
+GET /notes/1 -> 303 See Other (45.5µs)
+guest      GET /notes/1                     303 See Other → /login
+GET /notes/1 -> 404 Not Found (2.5757ms)
+GET /notes/999 -> 404 Not Found (2.5216ms)
+--- bob から見た2つの 404 ---
+状態コード: 404 Not Found / 404 Not Found
+本文の長さ: 690 / 690 バイト
+本文がまったく同じ: true
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.88s
+```
+
+#### ▼ コードを1つずつ分解して解説
+
+##### 解説1: 200 になるのは、alice が自分のノートを開いたときだけ
+
+- 表の中で `200 OK` は1行だけです。bob の `/notes/1`（alice のノート）も、誰の `/notes/999`（無いノート）も、`404 Not Found` でした。
+- `abc`・`0`・`-1`・`9223372036854775808`（`i64` に入らない大きな数）も 404 です。`NoteId` の `FromStr`（`src/domain.rs`）が、数字でなければ `NotANumber`、0 以下なら `NotPositive` を返し、`module_param!` の `error = not_found` が、それを 404 にします。DB には問い合わせていません。
+- ログインしていない guest は、`303 See Other → /login` でした。①の `require_user` が、②や③より先に動くからです。
+
+##### 解説2: bob から見ると、2つの 404 は1バイトも違わない
+
+- 最後の比べでは、状態コードも、本文の長さ（690 バイト）も同じで、`本文がまったく同じ: true` でした。bob には、`/notes/1` に alice のノートが**ある**のか、`/notes/999` のように**無い**のか、区別がつきません。
+- 区別がつかないのは、③で「id が 1 **で、しかも持ち主が bob の**ノート」を探しているからです。SQL の答えは、どちらも「0 行」です。Rust のコードは、「無い」と「他人」を、そもそも知りません。
+- 比べるときは、どちらも bob で開いています。画面の上の部分（ヘッダー）には、ログイン中の人に合わせた表示があるので、alice と bob の画面を比べても、意味がないからです。
+
+### もう一歩: 実務に近い形
+
+#### 例3-2: 詳細の画面の中身と、次の操作への入り口
+
+> **▼ このコードがやること（先に日本語で）:** タイトルに `<b>牛乳</b>を買う`、本文に改行と `&` を入れたノートを作り、詳細の画面の HTML から、ノートの部分（`<article>`）と、次の操作への入り口（編集のリンク・完了と削除のフォーム・一覧へ戻るリンク）を抜き出して表示します。
+
+```rust
+//! 第10巻 UNIT 03: 詳細の画面の HTML から、ノートの部分（<article>）と、
+//! 次の操作への入り口（編集・完了・削除・一覧へ）を抜き出して表示する。
+//! 実行: cargo test --test u03_page -- --nocapture
+
+mod common;
+
+use common::{body_text, test_app};
+
+/// HTML から、start で始まり end で終わる最初の部分を取り出す
+fn between<'a>(html: &'a str, start: &str, end: &str) -> &'a str {
+    let from = html.find(start).expect("始まりが見つかりません");
+    let to = html[from..].find(end).expect("終わりが見つかりません") + from + end.len();
+    &html[from..to]
+}
+
+#[tokio::test]
+async fn detail_page_parts() {
+    let app = test_app().await;
+    let alice = app
+        .sign_up("alice@example.com", "correct horse battery")
+        .await;
+    let url = app
+        .create_note(&alice, "<b>牛乳</b>を買う", "1本\n低脂肪 & 冷やす")
+        .await;
+    let html = body_text(app.get(&url, Some(&alice)).await).await;
+
+    println!("--- ノートの部分 ---");
+    println!("{}", between(&html, "<article", "</article>"));
+    println!("--- 次の操作への入り口 ---");
+    let actions = between(&html, "<div class=\"note-actions\">", "</div>");
+    for part in actions.split("><") {
+        if part.starts_with("a ") || part.starts_with("form ") {
+            println!("<{part}>");
+        }
+    }
+    let back = between(&html, "<p><a href=\"/notes\"", "</p>");
+    println!("{back}");
+}
+```
+
+```powershell
+cargo test --test u03_page -- --nocapture
+```
+
+```text
+--- ノートの部分 ---
+<article class="note"><h1>&lt;b&gt;牛乳&lt;/b&gt;を買う</h1><p class="meta">作成: 2026-10-30 13:43:31 ／ 更新: 2026-10-30 13:43:31</p><div class="note-body">1本
+低脂肪 &amp; 冷やす</div></article>
+--- 次の操作への入り口 ---
+<a class="button" href="/notes/1/edit">編集</a>
+<form method="post" action="/notes/1/toggle">
+<form method="post" action="/notes/1/delete">
+<p><a href="/notes">← 一覧に戻る</a></p>
+```
+
+（cargo の行とアクセスログの行は省いています）
+
+- タイトルの `<b>` は `&lt;b&gt;` に、本文の `&` は `&amp;` に置き換わりました。`view!` の `(note.title)` は、値を**文字として**入れるので、HTML のタグとしては働きません（第6巻 UNIT 05）。
+- 本文の改行は、HTML の中でも改行のまま入っています。HTML は、ふつうは改行を空白1つとして表示しますが、`assets/style.css` の `.note-body { white-space: pre-wrap; }` が、改行をそのまま見せています。`<br>` に置き換える必要はありません。
+- 入り口の URL（`/notes/1/edit`・`/notes/1/toggle`・`/notes/1/delete`）は、どれも `href!` で作っています。手で `format!("/notes/{}/edit", id)` と書くと、URL の形を変えたときに、直し忘れが起きます。`href!` なら、行き先のページ（`edit::edit_page`）が無くなったり、引数の型が違ったりすると、コンパイルが止まります（エラー3）。
+- 完了と削除は `<form method="post">` で、リンク（GET）ではありません。GET はリンクを開いただけで動いてしまうので、DB を変える操作には使いません（UNIT 05・06（準備中））。
+
+### よくあるエラーと読み方
+
+#### エラー1（エラーが出ない間違い）: SQL から持ち主の条件を外した
+
+`notes.find` の SQL を、`WHERE id = ?1` だけにした場合です（練習用のコピーの `src/repository/notes.rs` を書き換え、確かめたら元に戻します）。
+
+```rust
+let sql = format!("SELECT {NOTE_COLUMNS} FROM notes WHERE id = ?1");
+```
+
+例3-1のテストを、そのまま動かします（表と比べの行だけを抜き出しています）。
+
+```text
+alice のノート: /notes/1
+alice      GET /notes/1                     200 OK
+bob        GET /notes/1                     200 OK
+bob        GET /notes/999                   404 Not Found
+alice      GET /notes/999                   404 Not Found
+alice      GET /notes/abc                   404 Not Found
+alice      GET /notes/0                     404 Not Found
+alice      GET /notes/-1                    404 Not Found
+alice      GET /notes/9223372036854775808   404 Not Found
+guest      GET /notes/1                     303 See Other → /login
+状態コード: 200 OK / 404 Not Found
+本文の長さ: 1066 / 690 バイト
+本文がまったく同じ: false
+```
+
+- **何が起きたか:** コンパイルも、テストの実行も、エラーなく通りました。それなのに、**bob の `/notes/1` が `200 OK`** になり、alice のノートの画面（1066 バイト）が見えています。
+- **気づきにくい理由:** SQL から `?2` を消しても、`libsql::params![id.get(), owner.get()]` は2つの値を渡したままです。libsql は、使われない値があっても、エラーにしませんでした。型の検査も通ります。だから、この間違いは、**他人として開いてみるテスト**でしか見つかりません。
+- **直し方:** 持ち主の条件は、SQL の `WHERE` に書きます。「id で探してから、Rust で `note.user_id == owner` を比べる」形にすると、比べるのを1か所でも忘れたら、同じ事故になります（第8巻 UNIT 01・07（準備中））。
+
+#### エラー2（エラーが出ない間違い）: 他人のノートを 403 にした
+
+「他人のノートなら『権限がありません』と言うほうが親切だ」と考えて、`find_own_note` を、見つからなかったときに、もう一度 id だけで探し、あれば 403 を返すようにした場合です（練習用のコピーの `src/error.rs` に `Forbidden`（403）を足し、`src/routes/notes/id.rs` を書き換えています）。
+
+```rust
+pub async fn find_own_note(cx: &Cx, owner: UserId, id: NoteId) -> Result<Note, AppError> {
+    if let Some(note) = app_state(cx).notes.find(owner, id).await? {
+        return Ok(note);
+    }
+    // わざと間違えた版: ほかの人のノートなら 403、本当に無いときだけ 404
+    let conn = app_state(cx).db.connect().await.map_err(AppError::internal)?;
+    let mut rows = conn
+        .query("SELECT 1 FROM notes WHERE id = ?1", libsql::params![id.get()])
+        .await
+        .map_err(AppError::internal)?;
+    if rows.next().await.map_err(AppError::internal)?.is_some() {
+        Err(AppError::Forbidden)
+    } else {
+        Err(AppError::NotFound)
+    }
+}
+```
+
+alice のノートを3件作り、bob が `/notes/1` から `/notes/5` を順に開くテスト（`tests/u03_count.rs`）です。
+
+```rust
+//! 第10巻 UNIT 03: bob が ID を 1 から順に試して、alice のノートの数を知ろうとする。
+//! 実行: cargo test --test u03_count -- --nocapture
+
+mod common;
+
+use common::test_app;
+
+const PASSWORD: &str = "correct horse battery";
+
+#[tokio::test]
+async fn counting_other_notes() {
+    let app = test_app().await;
+    let alice = app.sign_up("alice@example.com", PASSWORD).await;
+    let bob = app.sign_up("bob@example.com", PASSWORD).await;
+    for title in ["1件目", "2件目", "3件目"] {
+        app.create_note(&alice, title, "").await;
+    }
+    println!("alice のノートは 3 件（id は 1・2・3）");
+    for id in 1..=5 {
+        let path = format!("/notes/{id}");
+        let status = app.get(&path, Some(&bob)).await.status();
+        println!("bob GET {path} → {status}");
+    }
+}
+```
+
+まず、RustNote のコード（404 の版）です。
+
+```text
+alice のノートは 3 件（id は 1・2・3）
+bob GET /notes/1 → 404 Not Found
+bob GET /notes/2 → 404 Not Found
+bob GET /notes/3 → 404 Not Found
+bob GET /notes/4 → 404 Not Found
+bob GET /notes/5 → 404 Not Found
+```
+
+次に、403 にした版です。
+
+```text
+alice のノートは 3 件（id は 1・2・3）
+bob GET /notes/1 → 403 Forbidden
+bob GET /notes/2 → 403 Forbidden
+bob GET /notes/3 → 403 Forbidden
+bob GET /notes/4 → 404 Not Found
+bob GET /notes/5 → 404 Not Found
+```
+
+- **何が起きたか:** 403 の版では、`1`・`2`・`3` が `403 Forbidden`、`4`・`5` が `404 Not Found` でした。bob は、ノートの中身は見られませんが、「**id が 1〜3 のノートが、誰かのものとしてある**」「4 から先は、まだ無い」ことを知りました。
+- **困ること:** ID を順に試すだけで、ほかの人のノートの数や、ノートが作られる速さ（毎日どれだけ増えるか）が分かります。ノートの題が分からなくても、知られたくない情報です。RustNote の 404 の版では、5つとも同じ答えなので、何も分かりません。
+- **学べること:** 「見せない」ときは、「無い」と同じ答えにします。同じ考えで、ログイン画面も「メールアドレスまたはパスワードが違います」と、どちらが違うかを言いません（第8巻 UNIT 04（準備中））。
+
+#### エラー3: href! に NoteId をそのまま渡した（E0277）
+
+編集のリンクを `href!(edit::edit_page, id)` と書いた場合です（`Id(id)` の `Id(…)` を忘れた）。
+
+```text
+   Compiling rustnote v0.1.0 (...\rustnote)
+error[E0277]: the trait bound `NoteId: HrefParam` is not satisfied
+   --> src\routes\notes\id.rs:63:37
+    |
+ 63 |             <a class="button" href=(href!(edit::edit_page, id))>"編集"</a>
+    |                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |                                     |
+    |                                     unsatisfied trait bound
+    |                                     required by a bound introduced by this call
+    |
+help: the trait `HrefParam` is not implemented for `NoteId`
+   --> src\domain.rs:69:1
+    |
+ 69 | pub struct NoteId(i64);
+    | ^^^^^^^^^^^^^^^^^
+help: the following other types implement trait `HrefParam`
+   --> src\routes\notes\id.rs:27:1
+    |
+ 27 |   module_param!(pub id: NoteId, error = not_found);
+    |   ^^^^^^^^^^^^^^^^^^^^ `id::Id`
+...
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `rustnote` (lib) due to 2 previous errors
+```
+
+（同じ形のエラーが、`view!` の所にもう1つ出ます。間は省いています）
+
+- **何が起きたか:** 「`NoteId` は `HrefParam` を実装していません」というエラーです。`href!` に渡せる値は、`HrefParam` という印の付いた型だけです。
+- **読み方:** 2つ目の `help:` が答えです。「`HrefParam` を実装しているほかの型」として、27 行目の `module_param!(pub id: NoteId, …)` が作った **`id::Id`** を挙げています。`module_param!` は、`NoteId` を包む `Id` という型を作り、`{id}` の場所に入る値は、この `Id` で渡す決まりにしています。
+- **直し方:** `href!(edit::edit_page, Id(id))` と、`Id(…)` で包みます。こうしておくと、別の URL の部品（たとえば、将来ユーザーの ID を URL に入れる `{user_id}`）と取り違えたときにも、コンパイルが止まります。
+
+### RustNote ではここで使う
+
+- 詳細の画面は `src/routes/notes/id.rs` の `show` です。`find_own_note` は、編集の画面（`src/routes/notes/id/edit.rs`）でも、表示・保存・競合のときの読み直しの3か所で使っています（UNIT 04（準備中））。
+- 完了の切り替えと削除は、`find_own_note` を通らず、`UPDATE … WHERE id = ?1 AND user_id = ?2`・`DELETE … WHERE id = ?1 AND user_id = ?2` で、1つの SQL の中に持ち主の条件を入れています（問3・UNIT 05・06（準備中））。
+- `src/error.rs` の先頭の表に「`NotFound` … 存在しないノート、**他人のノート**（あること自体を隠す）」と書いてあります。決まりを1か所に書いておくと、新しい画面を足すときにも迷いません。
+
+### 練習問題
+
+**問1:** ログインしていない人が `/notes/abc`（おかしな ID）と `/notes/999`（無いノート）を開くと、何が返るでしょうか。404 にならないのは、なぜでしょうか。
+
+**問2:** alice が、同じノートを `/notes/1`・`/notes/01`・`/notes/+1`・`/notes/%31`・`/notes/1.0`・`/notes/%201`（`%20` は空白）で開くと、それぞれ何が返るでしょうか。予想してから、確かめてください。
+
+**問3:** 完了の切り替え（`POST /notes/1/toggle`）と削除（`POST /notes/1/delete`）は、`find_own_note` を通りません。bob がこの2つを alice のノートに送ると、どうなるでしょうか。alice のノートは無事でしょうか。
+
+### 解答と解説
+
+```rust
+//! 第10巻 UNIT 03 練習問題。
+//! 実行: cargo test --test u03_q -- --nocapture --test-threads=1
+
+mod common;
+
+use common::{body_text, test_app};
+
+const PASSWORD: &str = "correct horse battery";
+
+/// 問1: ログインしていない人が、おかしな ID を開く
+#[tokio::test]
+async fn q1_guest_with_a_bad_id() {
+    let app = test_app().await;
+    for path in ["/notes/abc", "/notes/999"] {
+        let response = app.get(path, None).await;
+        let to = response
+            .headers()
+            .get("location")
+            .unwrap()
+            .to_str()
+            .unwrap()
+            .to_string();
+        println!("問1 guest GET {path} → {} → {to}", response.status());
+    }
+}
+
+/// 問2: 同じノートを、いろいろな書き方の ID で開く
+#[tokio::test]
+async fn q2_other_spellings_of_one() {
+    let app = test_app().await;
+    let alice = app.sign_up("alice@example.com", PASSWORD).await;
+    app.create_note(&alice, "牛乳を買う", "").await;
+    for path in [
+        "/notes/1",
+        "/notes/01",
+        "/notes/+1",
+        "/notes/%31",
+        "/notes/1.0",
+        "/notes/%201",
+    ] {
+        let response = app.get(path, Some(&alice)).await;
+        let status = response.status();
+        let html = body_text(response).await;
+        let edit = html
+            .split("href=\"")
+            .find(|s| s.contains("/edit\""))
+            .map(|s| s.split('"').next().unwrap().to_string())
+            .unwrap_or_else(|| "-".to_string());
+        println!("問2 GET {path:<12} → {status}（編集の入り口: {edit}）");
+    }
+}
+
+/// 問3: find_own_note を通らない操作（完了・削除）を、bob が alice のノートに送る
+#[tokio::test]
+async fn q3_bob_posts_to_alice_note() {
+    let app = test_app().await;
+    let alice = app.sign_up("alice@example.com", PASSWORD).await;
+    let bob = app.sign_up("bob@example.com", PASSWORD).await;
+    app.create_note(&alice, "牛乳を買う", "").await;
+    for path in ["/notes/1/toggle", "/notes/1/delete"] {
+        let status = app.post_form(path, "", Some(&bob)).await.status();
+        println!("問3 bob POST {path} → {status}");
+    }
+    let response = app.get("/notes/1", Some(&alice)).await;
+    let status = response.status();
+    let html = body_text(response).await;
+    println!(
+        "問3 alice GET /notes/1 → {status}（完了の印: {}）",
+        html.contains("<span class=\"badge\">完了</span>")
+    );
+}
+```
+
+```powershell
+cargo test --test u03_q -- --nocapture --test-threads=1
+```
+
+```text
+問1 guest GET /notes/abc → 303 See Other → /login
+問1 guest GET /notes/999 → 303 See Other → /login
+問2 GET /notes/1     → 200 OK（編集の入り口: /notes/1/edit）
+問2 GET /notes/01    → 200 OK（編集の入り口: /notes/1/edit）
+問2 GET /notes/+1    → 200 OK（編集の入り口: /notes/1/edit）
+問2 GET /notes/%31   → 200 OK（編集の入り口: /notes/1/edit）
+問2 GET /notes/1.0   → 404 Not Found（編集の入り口: -）
+問2 GET /notes/%201  → 404 Not Found（編集の入り口: -）
+問3 bob POST /notes/1/toggle → 404 Not Found
+問3 bob POST /notes/1/delete → 404 Not Found
+問3 alice GET /notes/1 → 200 OK（完了の印: false）
+```
+
+（問題の答えの行だけを抜き出しています）
+
+**問1の解答:**
+
+- どちらも `303 See Other → /login` です。①の `require_user` が、②の ID の変換より先に動くので、ID がおかしいかどうかを調べる前に、ログイン画面へ送られます。
+- この順番にも意味があります。ログインしていない人には、「その ID の形が正しいか」さえ教えません。どの URL でも同じ 303 なので、外から試しても、何も分かりません。
+
+**問2の解答:**
+
+- `/notes/01`・`/notes/+1`・`/notes/%31` も、`/notes/1` と同じノートが `200 OK` で開きました。`NoteId` の `FromStr` は、Rust の `i64` の `parse` を使っていて、`parse` は先頭の `0` や `+` を受け付けるからです。`%31` は URL の中での `1` の書き方で、Topcoat が `1` に戻してから渡しています。
+- `1.0`（小数）と `%201`（先頭に空白がある `" 1"`）は 404 です。`parse` は、小数点や空白を受け付けません。
+- どの書き方で開いても、画面の中の入り口は `/notes/1/edit` でした。`href!` は `NoteId` の `Display`（`write!(f, "{}", self.0)`）で URL を作るので、いつも同じ形にそろいます。同じノートに URL が何通りもあるのは、困ることではありませんが、気になるなら、`FromStr` で「数字だけ・先頭が 0 でない」を確かめる決まりを足します。
+
+**問3の解答:**
+
+- どちらも `404 Not Found` でした。そのあと alice が開くと `200 OK` で、完了の印も付いていません（`false`）。alice のノートは、変わらずに残っています。
+- `toggle_done` と `delete` の SQL が、どちらも `WHERE id = ?1 AND user_id = ?2` になっているからです。bob の ID では、変える行も消す行も、0 行です。0 行のとき、リポジトリは `RepoError::NotFound` を返し、それが `AppError::NotFound`（404）になります。
+- 「読んで、持ち主を確かめてから、変える」形にすると、確かめと変更の間に時間ができます。1つの SQL の中に条件を入れておけば、その間がありません（UNIT 05（準備中）でくわしく扱います）。
+
+### まとめ
+
+- 詳細の画面は、①ログイン（303）→ ②ID の形（`module_param!` と `NoteId` の `FromStr`。404）→ ③持ち主の条件付きの SQL（404）の順に通る。200 になるのは、自分のノートのときだけ。
+- 無いノートと他人のノートは、同じ 404 で、本文まで1バイトも違わない。403 にすると、ID を順に試すだけで、ほかの人のノートの数が分かってしまう。持ち主の条件を SQL から外しても、コンパイルもテストも通るので、他人として開くテストで確かめる。
+- URL は `href!` で作り、`{id}` には `module_param!` が作った `Id(…)` で渡す。`NoteId` をそのまま渡すと `E0277` で止まる。
+
 ## この巻のまとめ
 
-この版に収録した UNIT 01〜02 で、次のことができるようになったかを確かめましょう。できたものに印を付けてください。
+この版に収録した UNIT 01〜03 で、次のことができるようになったかを確かめましょう。できたものに印を付けてください。
 
 **UNIT 01: 一覧・空のとき・持ち主の条件**
 
@@ -1867,11 +2478,19 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 - ☐ `String` を `&str` の場所に渡したときの `E0308` と、フォームの `name` が違うときの 400 を読める
 - ☐ 前後の空白・改行の `\r\n`・タグや引用符の入ったタイトルが、どう保存され、どう表示されるかを確かめられる
 
-> **お知らせ:** この版には UNIT 01〜02 を収録しています。UNIT 03（詳細・URL の ID・見つからないとき）・UNIT 04（編集・入力済みのフォーム・競合）・UNIT 05（完了の切り替え・1文の SQL）・UNIT 06（削除・確かめ・消し方の選び方）・UNIT 07（検索・LIKE のエスケープ）・UNIT 08（ページ送り・OFFSET と cursor）・UNIT 09（お知らせ・エラーのまとめ）・UNIT 10（狭い画面・アクセシビリティ・総合の試験）は準備中で、次の更新から順に追加します。それまでの間、それぞれの画面のコードは、`Rust/rustnote/src/routes/notes.rs` と `src/routes/notes/` の各ファイルの先頭のコメントで確かめられます。
+**UNIT 03: 詳細・URL の ID・見つからないとき**
+
+- ☐ 詳細の画面が、ログイン（303）→ ID の形（404）→ 持ち主の条件付きの SQL（404）の順に確かめることを説明できる
+- ☐ 無いノート・他人のノート・おかしな ID（`abc`・`0`・大きすぎる数）が、本文まで同じ 404 になることを、テストで確かめられる
+- ☐ 他人のノートを 403 にすると、ID を順に試すだけでノートの数が分かってしまう理由を言える
+- ☐ 持ち主の条件を SQL から外しても、コンパイルもテストも通ってしまうことと、他人として開くテストの大切さを説明できる
+- ☐ `module_param!` が作る `Id` 型で `href!(…, Id(id))` と書く理由と、`E0277`（`HrefParam`）を読める
+
+> **お知らせ:** この版には UNIT 01〜03 を収録しています。UNIT 04（編集・入力済みのフォーム・競合）・UNIT 05（完了の切り替え・1文の SQL）・UNIT 06（削除・確かめ・消し方の選び方）・UNIT 07（検索・LIKE のエスケープ）・UNIT 08（ページ送り・OFFSET と cursor）・UNIT 09（お知らせ・エラーのまとめ）・UNIT 10（狭い画面・アクセシビリティ・総合の試験）は準備中で、次の更新から順に追加します。それまでの間、それぞれの画面のコードは、`Rust/rustnote/src/routes/notes.rs` と `src/routes/notes/` の各ファイルの先頭のコメントで確かめられます。
 
 ## 用語ミニ辞典
 
-この巻（UNIT 01〜02）に出てきた用語です。
+この巻（UNIT 01〜03）に出てきた用語です。
 
 ### UNIT 01 の用語
 
@@ -1905,3 +2524,17 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 | `&quot;` | HTML の属性の値の中で、`"` を、ただの文字として書く書き方 |
 | XSS | 利用者の入力に書かれたプログラムが、ほかの人の画面で動いてしまう弱さ |
 | E0308 | 型が合わないエラー（ここでは `&str` の場所に `String` を渡した） |
+
+### UNIT 03 の用語
+
+| 用語 | 意味 |
+|---|---|
+| パスの引数 | URL の `{id}` のように、URL の一部を値として受け取るもの。`module_param!` で型を決める |
+| `module_param!` | `{id}` を `NoteId` などの型に変え、`Id` という包みの型を作るマクロ。変換に失敗したら 404 |
+| `find_own_note` | id と持ち主の両方で、自分のノートを探す関数。無い・他人なら `AppError::NotFound` |
+| 404 Not Found | その URL のものは無い、という返事。RustNote は他人のノートにも使う |
+| 403 Forbidden | あるけれど見せられない、という返事。「ある」ことが伝わってしまう |
+| ID の数え上げ | ID を 1 から順に試して、答えの違いから、ほかの人のデータの有無や数を知ること |
+| `href!` | 行き先のページと引数から URL を作るマクロ。行き先が無い・型が違うとコンパイルが止まる |
+| `white-space: pre-wrap` | 改行や空白を、書いたとおりに表示する CSS の指定 |
+| E0277 | ある型が、必要な trait（ここでは `HrefParam`）を実装していないエラー |

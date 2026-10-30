@@ -6734,7 +6734,7 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 
 ### RustNote ではここで使う
 
-- 色は `:root` の 12 個の変数だけで、ボタンは `button`（主）・`.secondary`（副）・`.danger`（危険）の3種類です。詳細ページの「編集」「完了にする」「削除」が、ちょうどこの3種類です（第10巻 UNIT 03（準備中））。
+- 色は `:root` の 12 個の変数だけで、ボタンは `button`（主）・`.secondary`（副）・`.danger`（危険）の3種類です。詳細ページの「編集」「完了にする」「削除」が、ちょうどこの3種類です（第10巻 UNIT 03）。
 - 入力のエラーは、入力欄のすぐ下の `<p class="field-error">`（`--color-danger`）に、お知らせは、ページの上の `<p class="flash …" role="status">` に出します（第10巻 UNIT 02・第6巻 UNIT 05）。`role="status"` は、読み上げソフトに「この文は、お知らせです」と伝える印です。
 - `style.css` には、フォーカスの枠（`outline`）を消す決まりがありません。ブラウザの既定の枠がそのまま出るので、Tab キーで動くと、今どこにいるかが見えます。**`outline: none` を書かない**のも、決まりの1つです。
 - ページの外枠（`routes.rs` の `root_layout`）は `<html lang="ja">` と `<meta name="viewport">` を必ず出します。`viewport` は、スマートフォンで、画面の幅に合わせて表示するための設定です。
