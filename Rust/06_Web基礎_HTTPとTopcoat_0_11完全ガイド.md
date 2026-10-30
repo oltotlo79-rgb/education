@@ -2022,7 +2022,7 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 
 - **何が起きたか:** 「`GET /about` に、ルートが二重に登録されました」という panic です。同じモジュールの `#[page]` は、どれも同じ URL（`/about`）になるので、`about_page` と `contact_page` が、同じ `GET /about` を取り合いました。30 行目の `module_router!().build()` が、名簿を作るときに見つけて止めました。
 - **直し方:** 「お問い合わせ」用に `mod contact` を作り、そこにページを移します（問1）。同じモジュールに置いてよいのは、**メソッドが違う**ページだけです（RustNote の `routes/notes.rs` の `GET /notes` と `POST /notes` のように）。
-- **学べること:** この間違いはコンパイルでは見つからず、**起動したとき**に分かります。名簿を作る `build()` は、起動の最初に1回だけ動くので、テスト（第11巻 UNIT 03（準備中））でルーターを組み立てるだけでも見つけられます。
+- **学べること:** この間違いはコンパイルでは見つからず、**起動したとき**に分かります。名簿を作る `build()` は、起動の最初に1回だけ動くので、テスト（第11巻 UNIT 03）でルーターを組み立てるだけでも見つけられます。
 
 #### エラー2: href! に、#[page] を付け忘れた関数を渡した（E0573）
 
@@ -4627,7 +4627,7 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 
 - **何が起きたか:** 「`AppConfig` 型のアプリのコンテキストを借りようとしましたが、この型は登録されていません」という panic です。`app_context::<T>` は、無い型を借りようとすると panic します。Topcoat は panic を 500 の返事に変えます。
 - **直し方:** `main` で `.app_context(AppConfig { … })` を登録します。無くてもよい値なら、`try_app_context::<T>(cx)`（無ければ `None`）で借ります（問2）。
-- **学べること:** 登録し忘れは、**そのページを開いたときに**初めて分かります。RustNote のテストは、本物と同じ `build_router` でルーターを作るので、登録し忘れがあれば、テストで見つかります（第11巻 UNIT 03（準備中））。
+- **学べること:** 登録し忘れは、**そのページを開いたときに**初めて分かります。RustNote のテストは、本物と同じ `build_router` でルーターを作るので、登録し忘れがあれば、テストで見つかります（第11巻 UNIT 03）。
 
 #### エラー2: 同じ型の値を、2つ登録しようとした
 
