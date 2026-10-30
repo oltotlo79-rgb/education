@@ -8,7 +8,8 @@
 # 実行:   docker run --rm -p 8080:8080 rustnote
 
 # ---- 1. builder ----
-FROM rust:1.99.1-bookworm AS builder
+# builder と実行用は、同じ Debian 13（trixie）にそろえる（実行ファイルが使う glibc の版を合わせるため）
+FROM rust:1.99.1-trixie AS builder
 WORKDIR /app
 
 # アセットの束を作る topcoat CLI（アプリの Topcoat と同じ 0.11.0）
@@ -22,7 +23,7 @@ RUN cargo build --release --locked
 RUN topcoat asset bundle --release
 
 # ---- 2. 実行用 ----
-FROM debian:bookworm-slim
+FROM debian:trixie-slim
 
 # Turso へ HTTPS でつなぐための証明書
 RUN apt-get update \

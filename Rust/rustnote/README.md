@@ -152,7 +152,7 @@ rustnote/
 
 ## 公開する（Fly.io + Turso）の流れ
 
-> この手順は設定ファイルとしては用意してありますが、作者の手元では Docker のビルドと Fly.io への公開は実行していません（未検証）。
+> Docker でのビルドと起動は、作者の手元で確かめました（Docker 29.3.1・linux/arm64、`rust:1.99.1-trixie` と `debian:trixie-slim`、2026-10-31）。Fly.io と Turso への公開は実行していません（未検証）。
 
 1. Turso に DB を作り、URL とトークンを手に入れる。
 
