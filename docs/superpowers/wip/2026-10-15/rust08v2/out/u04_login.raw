@@ -1,0 +1,31 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.63s
+     Running tests\u04_login.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/target08\debug\deps\u04_login-9a45ad7a505748da.exe)
+
+running 1 test
+test login_cases ... POST /signup -> 303 See Other (519.4069ms)
+POST /login -> 303 See Other (447.8571ms)
+1. email="alice@example.com" → 303 See Other
+   新しいセッションのクッキー: true
+POST /login -> 303 See Other (402.2626ms)
+2. email="ALICE@example.com" → 303 See Other
+   新しいセッションのクッキー: true
+POST /login -> 401 Unauthorized (388.3326ms)
+3. email="alice@example.com" → 401 Unauthorized
+   文: メールアドレスまたはパスワードが違います
+POST /login -> 401 Unauthorized (815.1892ms)
+4. email="dave@example.com" → 401 Unauthorized
+   文: メールアドレスまたはパスワードが違います
+POST /login -> 401 Unauthorized (410.4305ms)
+5. email="alice" → 401 Unauthorized
+   文: メールアドレスまたはパスワードが違います
+POST /login -> 401 Unauthorized (697.2669ms)
+6. email="" → 401 Unauthorized
+   文: メールアドレスまたはパスワードが違います
+--- 失敗の画面どうしを比べる（入力欄のメールは伏せた）
+3 と 4: まったく同じ = true
+3 と 5: まったく同じ = true
+3 と 6: まったく同じ = true
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.71s
+

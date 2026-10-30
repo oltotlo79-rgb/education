@@ -1,0 +1,37 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.40s
+     Running tests\u03_signup.rs (target\debug\deps\u03_signup-6525422e8736d1b3.exe)
+
+running 1 test
+test signup_cases ... POST /signup -> 303 See Other (430.7699ms)
+1. email="alice@example.com" → 303 See Other
+POST /signup -> 303 See Other (424.1514ms)
+2. email="  Alice@Example.COM  " → 303 See Other
+POST /signup -> 400 Bad Request (1.0827ms)
+3. email="alice" → 400 Bad Request
+   エラー: ["メールアドレスに @ がありません"]
+   メールの入力欄: "alice"
+POST /signup -> 400 Bad Request (188.4µs)
+4. email="alice@example" → 400 Bad Request
+   エラー: ["メールアドレスの形式が正しくありません"]
+   メールの入力欄: "alice@example"
+POST /signup -> 400 Bad Request (130.5µs)
+5. email="bob@example.com" → 400 Bad Request
+   エラー: ["パスワードは8文字以上にしてください"]
+   メールの入力欄: "bob@example.com"
+POST /signup -> 400 Bad Request (120.6µs)
+6. email="bob@example.com" → 400 Bad Request
+   エラー: ["確認用のパスワードが一致しません"]
+   メールの入力欄: "bob@example.com"
+POST /signup -> 400 Bad Request (116.1µs)
+7. email="bob" → 400 Bad Request
+   エラー: ["メールアドレスに @ がありません", "パスワードは8文字以上にしてください", "確認用のパスワードが一致しません"]
+   メールの入力欄: "bob"
+POST /signup -> 303 See Other (444.7135ms)
+8. email="Bob@Example.com" → 303 See Other
+users 表の email: ["alice@example.com", "Alice@Example.COM", "Bob@Example.com"]
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.32s
+
+exit=0

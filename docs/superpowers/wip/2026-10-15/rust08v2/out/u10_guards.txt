@@ -1,0 +1,28 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.64s
+     Running tests\u10_guards.rs (target\debug\deps\u10_guards-ceff6f46bfcca925.exe)
+
+running 1 test
+POST /signup -> 303 See Other (482.2363ms)
+POST /signup -> 303 See Other (474.2321ms)
+POST /notes -> 303 See Other (36.4292ms)
+GET /notes/1 -> 303 See Other (236.1µs)
+GET /notes/1 -> 404 Not Found (6.3756ms)
+GET /notes/1/edit -> 404 Not Found (4.3368ms)
+POST /notes/1/toggle -> 404 Not Found (6.2ms)
+POST /notes/1/delete -> 404 Not Found (3.4258ms)
+✓ 認可: ログインしていなければ 303、他人のノートはどの入口でも 404
+POST /login -> 401 Unauthorized (393.9211ms)
+POST /login -> 401 Unauthorized (789.0738ms)
+✓ ログイン: 登録の無いメールも、違うパスワードも、同じ画面
+POST /login -> 303 See Other (438.2771ms)
+GET /notes -> 303 See Other (2.1151ms)
+✓ セッション: ログインのたびに新しいトークン、前のトークンは使えない
+POST /logout -> 303 See Other (13.0876ms)
+GET /notes -> 303 See Other (2.0733ms)
+✓ ログアウト: 写し取ったクッキーも使えない
+✓ CSRF: ほかのサイトからの POST は 403
+test guards ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.70s
+
+exit=0

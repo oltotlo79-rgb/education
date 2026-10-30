@@ -1,16 +1,15 @@
-   Compiling rustnote v0.1.0 (...\rustnote)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.76s
-     Running tests\u02_stored.rs (target\debug\deps\u02_stored-64195f227e1b0a63.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.77s
+     Running tests\u02_stored.rs (target\debug\deps\u02_stored-71fa20487cab143e.exe)
 
 running 2 tests
-test broken_hash_makes_login_fail_safely ... POST /signup -> 303 See Other (418.678ms)
+test broken_hash_makes_login_fail_safely ... POST /signup -> 303 See Other (411.0144ms)
 [error] サーバーの中でエラーが起きました <- invalid encoding
-POST /login -> 500 Internal Server Error (8.9707ms)
+POST /login -> 500 Internal Server Error (10.7842ms)
 壊れたハッシュでログイン → 500 Internal Server Error
 画面に「時間をおいてもう一度お試しください」: true
 ok
-test same_password_different_hashes ... POST /signup -> 303 See Other (419.3062ms)
-POST /signup -> 303 See Other (426.7911ms)
+test same_password_different_hashes ... POST /signup -> 303 See Other (410.558ms)
+POST /signup -> 303 See Other (396.46ms)
 alice@example.com: $argon2id$v=19$m=19456,t=2,p=1$…（97 文字）
     パスワードそのものが入っている: false
 bob@example.com: $argon2id$v=19$m=19456,t=2,p=1$…（97 文字）
@@ -18,6 +17,6 @@ bob@example.com: $argon2id$v=19$m=19456,t=2,p=1$…（97 文字）
 alice と bob のハッシュは同じか: false
 ok
 
-test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.34s
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.28s
 
 exit=0

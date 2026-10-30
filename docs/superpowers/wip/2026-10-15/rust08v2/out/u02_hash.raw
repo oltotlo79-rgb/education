@@ -1,0 +1,13 @@
+1回目: $argon2id$v=19$m=19456,t=2,p=1$1dvNLHkr/dGcDbOcgy0oJQ$RnSbHHJ2okKusYBaK9CZBGi2296o4wwB7odK1L2zNN0
+2回目: $argon2id$v=19$m=19456,t=2,p=1$aeqaiiI6e/Ku/15i4hVUhA$BGPdpiam7q+bdZvGloFn/mgzzS+1CSX+aAClhoQyM5w
+2つは同じか: false
+--- 1回目を「$」で分ける
+方式: argon2id
+版: v=19
+重さの設定: m=19456,t=2,p=1
+salt（22 文字）: 1dvNLHkr/dGcDbOcgy0oJQ
+ハッシュ（43 文字）: RnSbHHJ2okKusYBaK9CZBGi2296o4wwB7odK1L2zNN0
+--- 照合
+正しいパスワード × 1回目: true
+正しいパスワード × 2回目: true
+1文字違うパスワード × 1回目: false

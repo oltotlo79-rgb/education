@@ -1,0 +1,17 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.61s
+     Running tests\u05_stolen.rs (target\debug\deps\u05_stolen-550d30a1ee883351.exe)
+
+running 1 test
+POST /signup -> 303 See Other (413.1806ms)
+GET /notes -> 200 OK (4.6046ms)
+1. 写し取ったクッキーで GET /notes → 200 OK
+POST /logout -> 303 See Other (2.5525ms)
+2. alice が POST /logout → 303 See Other
+GET /notes -> 200 OK (3.6826ms)
+3. 写し取ったクッキーで GET /notes → 200 OK
+test stolen_cookie_after_logout ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.45s
+
+exit=0

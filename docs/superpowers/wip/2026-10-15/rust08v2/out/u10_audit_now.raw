@@ -1,0 +1,22 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.62s
+     Running tests\u10_audit.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/target08\debug\deps\u10_audit-cd03eed301884ca5.exe)
+
+running 1 test
+POST /signup -> 303 See Other (491.7488ms)
+=== ここから ===
+--- 1. 攻撃する人が、alice のパスワードを 2 回まちがえる
+POST /login -> 401 Unauthorized (388.3152ms)
+POST /login -> 401 Unauthorized (400.7529ms)
+--- 2. alice が、メールの欄にパスワードを打ってしまう
+POST /login -> 401 Unauthorized (817.2831ms)
+--- 3. alice がログインする
+POST /login -> 303 See Other (438.5186ms)
+--- 4. ほかのサイトのページが、alice のブラウザに POST /notes を送らせる
+    （返事は 403 Forbidden）
+--- 5. alice がログアウトする
+POST /logout -> 303 See Other (32.9143ms)
+=== ここまで ===
+test what_is_left_in_the_log ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.62s
+

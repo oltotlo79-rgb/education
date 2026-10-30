@@ -1,0 +1,21 @@
+--- a/src/routes/logout.rs
++++ b/src/routes/logout.rs
+@@ -9,14 +9,17 @@
+     router::{error::see_other, href, page},
+ };
+ 
+-use crate::auth::log_out;
++use crate::audit::{self, Event};
++use crate::auth::{current_user, log_out};
+ use crate::flash::{self, Flash};
+ 
+ // レイアウト（エラー画面）を通すため #[page(POST)] にしている。成功すると必ず 303 なので、
+ // 画面として返す中身は無い（`()`）。
+ #[page(POST)]
+ pub async fn logout(cx: &Cx) -> Result<()> {
++    let user = current_user(cx).await?.map(|user| user.id);
+     log_out(cx).await?;
++    audit::record(cx, Event::LoggedOut(user));
+     flash::set(cx, Flash::LoggedOut);
+     Err(see_other(href!(crate::routes::login::login_page).resolve(cx)).into())
+ }

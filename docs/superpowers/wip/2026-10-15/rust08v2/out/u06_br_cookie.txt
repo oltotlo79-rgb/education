@@ -1,0 +1,6 @@
+（127.0.0.1:3000 で alice としてログインしたあと、RustNote の画面の Console で）
+> ({ "document.cookie の長さ": document.cookie.length, "空": document.cookie === "" })
+{
+  "document.cookie の長さ": 0,
+  "空": true
+}

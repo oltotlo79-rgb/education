@@ -1,0 +1,16 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.63s
+     Running tests\u01_q2.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/target08\debug\deps\u01_q2-07596b0af0a888f4.exe)
+
+running 1 test
+POST /signup -> 303 See Other (435.2218ms)
+ログイン中の sessions の行: 1 件
+POST /logout -> 303 See Other (6.6019ms)
+ログアウトの返事: 303 See Other
+消すためのクッキー: __Host-session=; HttpOnly; SameSite=Lax; Secure; Path=/; Max-Age=0; Expires=Thu, 30 Oct 2025 15:05:09 GMT
+ログアウト後の sessions の行: 0 件
+GET /notes -> 303 See Other (1.7167ms)
+古いクッキーで /notes → 303 See Other（移動先 /login）
+test logout_deletes_the_session_record ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.48s
+

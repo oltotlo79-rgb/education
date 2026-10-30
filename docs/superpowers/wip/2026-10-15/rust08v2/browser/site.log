@@ -1,0 +1,4 @@
+::1 - - [31/Oct/2026 00:31:36] "GET /csrf.html HTTP/1.1" 200 -
+::1 - - [31/Oct/2026 00:32:14] "GET /csrf.html HTTP/1.1" 200 -
+::1 - - [31/Oct/2026 00:32:14] code 404, message File not found
+::1 - - [31/Oct/2026 00:32:14] "GET /favicon.ico HTTP/1.1" 404 -

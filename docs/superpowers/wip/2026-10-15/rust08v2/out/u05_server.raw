@@ -1,0 +1,24 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.70s
+     Running tests\u05_server.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/target08\debug\deps\u05_server-0d039ba1c53ba932.exe)
+
+running 2 tests
+test expired_session ... POST /signup -> 303 See Other (423.0679ms)
+POST /signup -> 303 See Other (411.5186ms)
+1. alice のセッションの期限を、1秒前にした（sessions: alice=1 bob=1）
+GET /notes -> 303 See Other (932µs)
+2. alice のクッキーで GET /notes → 303 See Other（sessions: alice=1 bob=1）
+POST /login -> 303 See Other (434.846ms)
+3. bob がログインした（sessions: alice=0 bob=2）
+ok
+test revoke_all_devices ... POST /signup -> 303 See Other (422.6458ms)
+POST /login -> 303 See Other (402.5796ms)
+1. PC とスマートフォンでログイン（sessions: alice=2）
+2. DELETE FROM sessions WHERE user_id = 1 → 2 行
+GET /notes -> 303 See Other (12.0392ms)
+3. PC のクッキーで GET /notes → 303 See Other
+GET /notes -> 303 See Other (2.3143ms)
+3. スマートフォン のクッキーで GET /notes → 303 See Other
+ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.21s
+

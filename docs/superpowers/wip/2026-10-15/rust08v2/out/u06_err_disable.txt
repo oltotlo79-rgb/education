@@ -1,0 +1,31 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 9.12s
+     Running tests\u06_policy.rs (target\debug\deps\u06_policy-644b7c01d18d542e.exe)
+
+running 1 test
+POST /signup -> 303 See Other (443.7482ms)
+POST /notes -> 303 See Other (7.3981ms)
+ 1. POST ヘッダーが何も無い（curl など） → 303 See Other（ノート +1）
+POST /notes -> 303 See Other (5.9623ms)
+ 2. POST Origin が同じ → 303 See Other（ノート +1）
+POST /notes -> 303 See Other (5.9815ms)
+ 3. POST Origin がほかのサイト → 303 See Other（ノート +1）
+POST /notes -> 303 See Other (6.9509ms)
+ 4. POST Origin が null → 303 See Other（ノート +1）
+POST /notes -> 303 See Other (6.7864ms)
+ 5. POST Sec-Fetch-Site: same-origin → 303 See Other（ノート +1）
+POST /notes -> 303 See Other (5.7679ms)
+ 6. POST Sec-Fetch-Site: none → 303 See Other（ノート +1）
+POST /notes -> 303 See Other (6.0649ms)
+ 7. POST Sec-Fetch-Site: same-site → 303 See Other（ノート +1）
+POST /notes -> 303 See Other (5.3526ms)
+ 8. POST Sec-Fetch-Site: cross-site → 303 See Other（ノート +1）
+POST /notes -> 303 See Other (5.6884ms)
+ 9. POST same-origin と、ほかのサイトの Origin → 303 See Other（ノート +1）
+GET /notes -> 200 OK (4.2517ms)
+10. GET GET で cross-site → 200 OK（ノート +0）
+test origin_policy_table ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.57s
+
+exit=0

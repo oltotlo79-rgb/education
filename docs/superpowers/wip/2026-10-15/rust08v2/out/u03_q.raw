@@ -1,0 +1,29 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.63s
+     Running tests\u03_q.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/target08\debug\deps\u03_q-a77e3e5c319af303.exe)
+
+running 3 tests
+test q1_signup_tells_more_than_login ... POST /signup -> 303 See Other (442.039ms)
+POST /signup -> 409 Conflict (405.5027ms)
+問1 登録（alice）: 409 Conflict ["そのメールアドレスは既に登録されています"]
+POST /signup -> 303 See Other (516.3443ms)
+問1 登録（carol）: 303 See Other []
+POST /login -> 401 Unauthorized (399.3032ms)
+問1 ログイン（alice・違うパスワード）: 401 Unauthorized ["メールアドレスまたはパスワードが違います"]
+POST /login -> 401 Unauthorized (839.7943ms)
+問1 ログイン（dave・登録していない）: 401 Unauthorized ["メールアドレスまたはパスワードが違います"]
+ok
+test q2_full_width_letters ... POST /signup -> 303 See Other (463.4669ms)
+POST /signup -> 303 See Other (719.1075ms)
+問2 登録（ＡＬＩＣＥ@example.com）: 303 See Other []
+問2 users 表の email: ["alice@example.com", "ａｌｉｃｅ@example.com"]
+ok
+test q3_spaces_in_password ... POST /signup -> 303 See Other (698.0596ms)
+問3 登録（前後に空白）: 303 See Other []
+POST /login -> 401 Unauthorized (686.7722ms)
+問3 ログイン（空白なし）: 401 Unauthorized ["メールアドレスまたはパスワードが違います"]
+POST /login -> 303 See Other (770.6241ms)
+問3 ログイン（前後に空白）: 303 See Other []
+ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 6.05s
+

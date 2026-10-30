@@ -1,0 +1,19 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.73s
+     Running tests\u01_three_checks.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/target08\debug\deps\u01_three_checks-453951381b45d085.exe)
+
+running 1 test
+test three_checks ... GET /notes -> 303 See Other (1.2911ms)
+① ログインしていない人が /notes → 303 See Other（移動先 /login）
+POST /signup -> 303 See Other (431.6363ms)
+GET /notes -> 200 OK (4.3897ms)
+② alice がクッキーを付けて /notes → 200 OK
+POST /notes -> 303 See Other (6.5401ms)
+POST /signup -> 303 See Other (411.0846ms)
+GET /notes/1 -> 200 OK (4.1062ms)
+GET /notes/1 -> 404 Not Found (3.383ms)
+③ /notes/1 を alice が開く → 200 OK
+③ /notes/1 を bob が開く → 404 Not Found
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.89s
+

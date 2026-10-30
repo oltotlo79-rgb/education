@@ -1,0 +1,18 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.67s
+     Running tests\u04_renew.rs (target\debug\deps\u04_renew-befdea16a76ed7de.exe)
+
+running 1 test
+POST /signup -> 303 See Other (422.5484ms)
+1. 登録したときのトークン A: KB4ur-…（sessions: 1 行）
+POST /login -> 303 See Other (455.3087ms)
+2. ログインしたあとのトークン B: wke0MP…（sessions: 1 行）
+   A と B は同じ: false
+GET /notes -> 303 See Other (2.7032ms)
+3. トークン A で GET /notes → 303 See Other → /login
+GET /notes -> 200 OK (5.6309ms)
+3. トークン B で GET /notes → 200 OK
+test token_is_renewed ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.91s
+
+exit=0

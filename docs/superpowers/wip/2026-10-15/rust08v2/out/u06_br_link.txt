@@ -1,0 +1,9 @@
+（localhost:8000 のページで「RustNote の一覧へのリンク」を押したあと）
+{
+  "h1": "ノート",
+  "notes": [],
+  "url": "http://127.0.0.1:3000/notes",
+  "user": "alice@example.com"
+}
+（RustNote の窓のアクセスログ）
+GET /notes -> 200 OK (6.5559ms)

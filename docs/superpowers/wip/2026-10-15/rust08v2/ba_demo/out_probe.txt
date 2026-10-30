@@ -1,0 +1,28 @@
+--- 1. 登録
+alice@example.com → 200（user alice@example.com）
+Set-Cookie: better-auth.session_token=KCZUna…; Max-Age=604800; Path=/; HttpOnly; SameSite=Lax
+同じメールでもう一度 → 422（USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL）
+大文字の同じメール → 422（USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL）
+前後に空白の同じメール → 400（VALIDATION_ERROR）
+短いパスワード → 400（PASSWORD_TOO_SHORT）
+--- 2. ログインの失敗（交互に4回ずつ）
+登録していないメール: 401（63 ms） / 401（69 ms） / 401（65 ms） / 401（63 ms）
+パスワードが違う:     401（63 ms） / 401（68 ms） / 401（67 ms） / 401（69 ms）
+返事の code: INVALID_EMAIL_OR_PASSWORD
+--- 3. 1つの送り元から、続けて失敗する
+1 回目 → 401（INVALID_EMAIL_OR_PASSWORD）
+2 回目 → 401（INVALID_EMAIL_OR_PASSWORD）
+3 回目 → 401（INVALID_EMAIL_OR_PASSWORD）
+4 回目 → 429（Too many requests. Please try again later.）
+5 回目 → 429（Too many requests. Please try again later.）
+別の送り元から、正しいパスワード → 200（user alice@example.com）
+--- 4. ほかのサイトから
+Origin: https://evil.example の登録 → 403（INVALID_ORIGIN）
+--- 5. DB の中身
+session.token: KCZUna…（32 文字）
+クッキーの値の先頭は session.token と同じ: true
+クッキーの値: トークン（32 文字）＋「.」＋署名（44 文字）
+期限まで: 7 日
+account.password: 736467…:cf37d1…（salt 32 文字・ハッシュ 128 文字）
+--- 6. ログアウト
+sign-out → 200（session: 2 行 → 1 行）

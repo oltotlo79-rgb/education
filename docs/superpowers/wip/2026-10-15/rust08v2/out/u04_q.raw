@@ -1,0 +1,20 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.60s
+     Running tests\u04_q.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/target08\debug\deps\u04_q-4e9785dbf3d4f039.exe)
+
+running 1 test
+POST /signup -> 303 See Other (474.3097ms)
+POST /signup -> 303 See Other (442.5366ms)
+問1 はじめのセッション: alice@example.com=1 bob@example.com=1
+GET /login -> 303 See Other (2.1834ms)
+問1 alice のクッキーで GET /login → 303 See Other → /notes
+POST /login -> 303 See Other (433.736ms)
+問1 alice のクッキーのまま bob でログイン → 303 See Other
+問1 そのあとのセッション: alice@example.com=0 bob@example.com=2
+GET /notes -> 200 OK (9.0858ms)
+問1 新しいクッキーで一覧を開くと、右上は: bob@example.com
+GET /notes -> 303 See Other (2.9108ms)
+問1 alice の古いクッキーで GET /notes → 303 See Other
+test q1_login_while_logged_in ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.43s
+

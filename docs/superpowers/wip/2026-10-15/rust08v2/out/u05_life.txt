@@ -1,0 +1,21 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.66s
+     Running tests\u05_life.rs (target\debug\deps\u05_life-969c3af4c6b70439.exe)
+
+running 1 test
+POST /signup -> 303 See Other (442.2987ms)
+1. 登録した（ログインもした）
+   token_hash=17997F7B…（32 バイト） user_id=1 expires_at=1795965914（作ってから 2592000 秒）
+GET /notes -> 200 OK (6.8059ms)
+2. 1秒後に GET /notes → 200 OK（Set-Cookie: （なし））
+   token_hash=17997F7B…（32 バイト） user_id=1 expires_at=1795965914（作ってから 2592000 秒）
+POST /logout -> 303 See Other (7.8559ms)
+3. POST /logout → 303 See Other
+   Set-Cookie: __Host-session=; HttpOnly; SameSite=Lax; Secure; Path=/; Max-Age=0; Expires=Thu, 30 Oct 2025 15:25:15 GMT
+   sessions の行: 0
+GET /notes -> 303 See Other (2.6046ms)
+4. 前のクッキーのまま GET /notes → 303 See Other
+test session_life ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.59s
+
+exit=0

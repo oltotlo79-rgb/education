@@ -196,24 +196,24 @@ cargo test --test u01_three_checks -- --nocapture --test-threads=1
 **▼ 実行結果**（最初の1回は `Compiling` の行が続きます。ここでは省いています）
 
 ```text
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 1m 15s
-     Running tests\u01_three_checks.rs (target\debug\deps\u01_three_checks-66387e9ac1880c66.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.73s
+     Running tests\u01_three_checks.rs (target\debug\deps\u01_three_checks-453951381b45d085.exe)
 
 running 1 test
-test three_checks ... GET /notes -> 303 See Other (1.3467ms)
+test three_checks ... GET /notes -> 303 See Other (1.2911ms)
 ① ログインしていない人が /notes → 303 See Other（移動先 /login）
-POST /signup -> 303 See Other (438.8671ms)
-GET /notes -> 200 OK (4.1174ms)
+POST /signup -> 303 See Other (431.6363ms)
+GET /notes -> 200 OK (4.3897ms)
 ② alice がクッキーを付けて /notes → 200 OK
-POST /notes -> 303 See Other (4.9204ms)
-POST /signup -> 303 See Other (454.0788ms)
-GET /notes/1 -> 200 OK (4.833ms)
-GET /notes/1 -> 404 Not Found (3.6291ms)
+POST /notes -> 303 See Other (6.5401ms)
+POST /signup -> 303 See Other (411.0846ms)
+GET /notes/1 -> 200 OK (4.1062ms)
+GET /notes/1 -> 404 Not Found (3.383ms)
 ③ /notes/1 を alice が開く → 200 OK
 ③ /notes/1 を bob が開く → 404 Not Found
 ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.94s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.89s
 ```
 
 #### ▼ コードを1つずつ分解して解説
@@ -221,7 +221,7 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 ##### 解説1: ① 認証が無いと、303 でログイン画面へ
 
 - クッキーを付けずに `/notes` を開くと、`303 See Other`（移動先 `/login`）でした。RustNote のノートの画面は、どれも最初に `require_user(cx)` を呼び、ログイン中のユーザーがいなければ、ログイン画面へ移します。
-- 1行目の `test three_checks ... GET /notes -> 303 See Other (1.3467ms)` は、テストの名前の表示と、RustNote のアクセスログ（標準エラー出力）が、同じ行に並んだものです。
+- 1行目の `test three_checks ... GET /notes -> 303 See Other (1.2911ms)` は、テストの名前の表示と、RustNote のアクセスログ（標準エラー出力）が、同じ行に並んだものです。
 
 ##### 解説2: ② クッキーを見せると、本人と分かる
 
@@ -315,22 +315,21 @@ cargo test --test u01_session -- --nocapture
 **▼ 実行結果**
 
 ```text
-   Compiling rustnote v0.1.0 (...\rustnote)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.31s
-     Running tests\u01_session.rs (target\debug\deps\u01_session-7d82e6b13d3770c3.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.67s
+     Running tests\u01_session.rs (target\debug\deps\u01_session-959ad0a50e64eaa8.exe)
 
 running 1 test
-POST /signup -> 303 See Other (421.6028ms)
+POST /signup -> 303 See Other (412.1617ms)
 --- ブラウザに渡すクッキー
 名前: __Host-session
-値（トークン）: qPxZTv…（46 文字）
+値（トークン）: F94h6_…（46 文字）
 属性: HttpOnly; SameSite=Lax; Secure; Path=/; Max-Age=2592000
 --- DB の sessions 表
 token_hash: 32 バイト / user_id: 1 / 期限まで: 約 30 日
 トークンと同じ値が入っている行: 0 件
 test session_cookie_and_record ... ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.45s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.44s
 ```
 
 <div style="max-width:720px;margin:18px auto;text-align:center;">
@@ -362,7 +361,7 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 ##### 解説1: クッキーの名前と属性が、トークンを守っている
 
 - `__Host-session` の `__Host-` は、ブラウザに「`Secure` が付いていて、`Path=/` で、ほかのドメインと共有しないクッキーだけを受け付けよ」と求める、特別な名前の付け方です。名前の決まりを守らないクッキーは、ブラウザが受け付けません。
-- `HttpOnly` は「ページの JavaScript からは読めない」、`Secure` は「HTTPS のときだけ送る」、`SameSite=Lax` は「ほかのサイトからの POST には付けて送らない」という意味です。`Max-Age=2592000` は 30 日（2,592,000 秒）で消えるという意味です。属性の1つずつは、UNIT 06（準備中）でくわしく扱います。
+- `HttpOnly` は「ページの JavaScript からは読めない」、`Secure` は「HTTPS のときだけ送る」、`SameSite=Lax` は「ほかのサイトからの POST には付けて送らない」という意味です。`Max-Age=2592000` は 30 日（2,592,000 秒）で消えるという意味です。属性の1つずつは、UNIT 06 でくわしく扱います。
 - これらの属性は、Topcoat の `SessionConfig::default()` が付けています（RustNote の `routes.rs` の `.sessions(SessionConfig::default())`）。
 
 ##### 解説2: DB には、トークンではなくハッシュを保存する
@@ -457,16 +456,15 @@ cargo test --test u01_cross_site -- --nocapture
 **▼ 実行結果**
 
 ```text
-   Compiling rustnote v0.1.0 (...\rustnote)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.17s
-     Running tests\u01_cross_site.rs (target\debug\deps\u01_cross_site-1797bc835c7da007.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.68s
+     Running tests\u01_cross_site.rs (target\debug\deps\u01_cross_site-073450767187315a.exe)
 
 running 1 test
-POST /signup -> 303 See Other (443.652ms)
-POST /notes -> 303 See Other (6.1553ms)
+POST /signup -> 303 See Other (499.5162ms)
+POST /notes -> 303 See Other (7.2745ms)
 Origin も Sec-Fetch-Site も無い（curl など）
     → 303 See Other　本文: ""
-POST /notes -> 303 See Other (6.8665ms)
+POST /notes -> 303 See Other (6.2706ms)
 同じサイトのフォーム（Origin: http://127.0.0.1:3000）
     → 303 See Other　本文: ""
 ほかのサイトのフォーム（Origin: https://evil.example）
@@ -476,7 +474,7 @@ POST /notes -> 303 See Other (6.8665ms)
 保存されたノート: 2 件
 test cross_site_posts_are_rejected ... ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.48s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.58s
 ```
 
 #### ▼ コードを1つずつ分解して解説
@@ -493,7 +491,7 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 
 ##### 解説3: 403 のときは、アクセスログに行が出ない
 
-- 出力をよく見ると、303 の2回には `POST /notes -> 303 See Other (...)` のアクセスログがありますが、403 の2回にはありません。Topcoat の Origin の検査は、RustNote のアクセスログの層（`routes.rs` の `access_log`）よりも**前**で動くからです。攻撃を止めた記録を残したいときは、この点に気をつけます（UNIT 10（準備中））。
+- 出力をよく見ると、303 の2回には `POST /notes -> 303 See Other (...)` のアクセスログがありますが、403 の2回にはありません。Topcoat の Origin の検査は、RustNote のアクセスログの層（`routes.rs` の `access_log`）よりも**前**で動くからです。攻撃を止めた記録を残したいときは、この点に気をつけます（UNIT 10）。
 
 ### RustNote の脅威モデルの表
 
@@ -511,7 +509,7 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 | ログアウトした後の古いクッキーを使う | クッキー | ログアウトで `sessions` の行を消す | 問2・UNIT 05 |
 
 - 表の最後から2行目のように、**守りが無い**ことも、はっきり書きます。脅威モデルの目的は、「全部守れている」と言うことではなく、「どこが弱いかを、みんなが知っている」状態にすることです。
-- 新規登録では、すでに登録されたメールアドレスを入れると「そのメールアドレスは既に登録されています」（409）と表示されます。使いやすさのためですが、登録済みかどうかが他人に分かる、という弱さでもあります。どちらを選ぶかは、UNIT 03（準備中）で考えます。
+- 新規登録では、すでに登録されたメールアドレスを入れると「そのメールアドレスは既に登録されています」（409）と表示されます。使いやすさのためですが、登録済みかどうかが他人に分かる、という弱さでもあります。どちらを選ぶかは、UNIT 03 で考えます。
 
 ### よくあるエラーと読み方
 
@@ -687,7 +685,7 @@ pub async fn log_out(cx: &Cx) -> Result<(), AppError> {
 ```
 
 - `session::start(cx)` は、Topcoat が新しいトークンを作ってクッキーに入れ、そのハッシュ（`token_hash`）と期限（`expires_at`）を返す関数です。Topcoat は、トークンを**発行するだけ**で、保存はしません。保存するのはアプリ（RustNote の `sessions` 表）の役目です。
-- ログインのたびに**新しい**トークンを作るのは、「攻める人が先に用意したトークンを、本人にログインさせて使わせる」攻撃（セッション固定攻撃）を防ぐためです。くわしくは UNIT 05（準備中）で扱います。
+- ログインのたびに**新しい**トークンを作るのは、「攻める人が先に用意したトークンを、本人にログインさせて使わせる」攻撃（セッション固定攻撃）を防ぐためです。くわしくは UNIT 05 で扱います。
 - `log_out` は、`session::stop(cx)` でクッキーを消し、返ってきたハッシュで `sessions` の行も消します。どちらか片方だけでは足りない理由は、問2で確かめます。
 
 ログインの失敗は、`src/routes/login.rs` で、理由を区別せずに同じ文で返しています（抜き出しています）。
@@ -767,34 +765,33 @@ cargo test --test u01_q1 -- --nocapture
 ```
 
 ```text
-   Compiling rustnote v0.1.0 (...\rustnote)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.24s
-     Running tests\u01_q1.rs (target\debug\deps\u01_q1-81fa10c5a5eabbd3.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.66s
+     Running tests\u01_q1.rs (target\debug\deps\u01_q1-bce08f7bd283041f.exe)
 
 running 1 test
-POST /signup -> 303 See Other (411.0828ms)
-POST /login -> 401 Unauthorized (398.3169ms)
-POST /login -> 401 Unauthorized (390.2362ms)
-POST /login -> 401 Unauthorized (388.3874ms)
-POST /login -> 401 Unauthorized (374.6642ms)
-POST /login -> 401 Unauthorized (380.8843ms)
-POST /login -> 401 Unauthorized (385.9132ms)
-POST /login -> 401 Unauthorized (375.7783ms)
-POST /login -> 401 Unauthorized (425.9443ms)
-POST /login -> 401 Unauthorized (398.9875ms)
-POST /login -> 401 Unauthorized (399.0318ms)
+POST /signup -> 303 See Other (463.1275ms)
+POST /login -> 401 Unauthorized (430.3743ms)
+POST /login -> 401 Unauthorized (383.3649ms)
+POST /login -> 401 Unauthorized (382.3572ms)
+POST /login -> 401 Unauthorized (386.5024ms)
+POST /login -> 401 Unauthorized (401.7135ms)
+POST /login -> 401 Unauthorized (385.1639ms)
+POST /login -> 401 Unauthorized (627.995ms)
+POST /login -> 401 Unauthorized (732.2201ms)
+POST /login -> 401 Unauthorized (793.8449ms)
+POST /login -> 401 Unauthorized (689.4254ms)
 10 回まちがえた結果: [401, 401, 401, 401, 401, 401, 401, 401, 401, 401]
-10 回にかかった時間: 3.9s
-POST /login -> 303 See Other (413.2169ms)
+10 回にかかった時間: 5.2s
+POST /login -> 303 See Other (762.2065ms)
 11 回目に正しいパスワード → 303 See Other
 test many_wrong_logins_are_not_limited ... ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 4.78s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 6.47s
 ```
 
 - 10 回とも `401 Unauthorized` で、11 回目の正しいパスワードは `303 See Other`（ログイン成功）でした。RustNote は、何回まちがえても止めません。脅威モデルの表のとおり、**回数の制限が無い**ことが確かめられました。
-- 1回のまちがいに、約 0.4 秒かかっています。これは debug ビルドで Argon2id の照合をしている時間で、release ビルドでは約 20 ms です（第12巻 UNIT 01）。重い照合は総当たりを遅くしますが、止めはしません。たとえば 1 秒に 50 回なら、1 日で 400 万回以上試せてしまいます。
-- 直すには、「同じメールアドレスへの失敗が、10 分に 5 回を超えたら、しばらく断る」「同じ送り元からの回数を数える」といった**回数の制限**が必要です。どこに、どの単位で数えるかは、UNIT 04（準備中）で扱います（RustNote のコードは、この巻では変えません）。
+- 1回のまちがいに、約 0.4〜0.8 秒（10 回で 5.2 秒）かかっています。これは debug ビルドで Argon2id の照合をしている時間で、release ビルドでは約 20 ms です（第12巻 UNIT 01）。続けて計算すると、後半の回が 0.6〜0.8 秒と遅くなりましたが、これは PC の状態によるもので、RustNote が回数に応じてわざと遅くしているわけではありません。重い照合は総当たりを遅くしますが、止めはしません。たとえば 1 秒に 50 回なら、1 日で 400 万回以上試せてしまいます。
+- 直すには、「同じメールアドレスへの失敗が、10 分に 5 回を超えたら、しばらく断る」「同じ送り元からの回数を数える」といった**回数の制限**が必要です。どこに、どの単位で数えるかは、UNIT 04 で扱います（RustNote のコードは、この巻では変えません）。
 
 **問2の解答:**
 
@@ -860,18 +857,17 @@ cargo test --test u01_q2 -- --nocapture
 ```
 
 ```text
-   Compiling rustnote v0.1.0 (...\rustnote)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.46s
-     Running tests\u01_q2.rs (target\debug\deps\u01_q2-d924c1589f8ead12.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.63s
+     Running tests\u01_q2.rs (target\debug\deps\u01_q2-07596b0af0a888f4.exe)
 
 running 1 test
-POST /signup -> 303 See Other (433.8285ms)
+POST /signup -> 303 See Other (435.2218ms)
 ログイン中の sessions の行: 1 件
-POST /logout -> 303 See Other (12.6138ms)
+POST /logout -> 303 See Other (6.6019ms)
 ログアウトの返事: 303 See Other
-消すためのクッキー: __Host-session=; HttpOnly; SameSite=Lax; Secure; Path=/; Max-Age=0; Expires=Mon, 27 Oct 2025 15:04:10 GMT
+消すためのクッキー: __Host-session=; HttpOnly; SameSite=Lax; Secure; Path=/; Max-Age=0; Expires=Thu, 30 Oct 2025 15:05:09 GMT
 ログアウト後の sessions の行: 0 件
-GET /notes -> 303 See Other (2.5015ms)
+GET /notes -> 303 See Other (1.7167ms)
 古いクッキーで /notes → 303 See Other（移動先 /login）
 test logout_deletes_the_session_record ... ok
 
@@ -886,7 +882,7 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 
 - 例1-2で見たとおり、クッキーに入るのはトークンそのもの（46 文字）です。もし `sessions` 表にトークンそのものが入っていたら、DB を盗んだ人は、表から値を取り出して、自分のブラウザのクッキー `__Host-session` に入れるだけで、**期限の切れていない全員に、パスワードを知らないまま、なりすませます**。
 - 実際の RustNote は、トークンの SHA-256（`token_hash`）だけを保存しています。SHA-256 は1方向にしか計算できないので、ハッシュからトークンを作り直すことはできません。トークンは十分に長いランダムな値なので、総当たりで同じハッシュになる値を探すこともできません。
-- パスワードを Argon2id で、トークンを SHA-256 で、と使い分けているのは、パスワードは人が覚えられる短い値なので総当たりされやすく、わざと重い計算が必要だからです。トークンはもともと長いランダムな値なので、軽い SHA-256 で十分です（UNIT 02・05（準備中））。
+- パスワードを Argon2id で、トークンを SHA-256 で、と使い分けているのは、パスワードは人が覚えられる短い値なので総当たりされやすく、わざと重い計算が必要だからです。トークンはもともと長いランダムな値なので、軽い SHA-256 で十分です（UNIT 02・05）。
 
 ### まとめ
 

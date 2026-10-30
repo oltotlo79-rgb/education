@@ -1,0 +1,23 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.65s
+     Running tests\u10_incident.rs (target\debug\deps\u10_incident-ba939ce4ce45f336.exe)
+
+running 1 test
+POST /signup -> 303 See Other (519.3646ms)
+POST /signup -> 303 See Other (457.4469ms)
+1. 漏れた token_hash: 7a06ad2a…（32 バイト）
+   漏れた password_hash: $argon2id$v=19$m=19456,t=2,p=1…
+GET /notes -> 303 See Other (5.0705ms)
+   token_hash をクッキーの形にして GET /notes → 303 See Other
+   （サーバーが DB で探すのは、その SHA-256: 88ef522f…）
+POST /login -> 401 Unauthorized (424.7284ms)
+   password_hash をパスワードにしてログイン → 401 Unauthorized
+2. DELETE FROM sessions → 2 行
+GET /notes -> 303 See Other (13.6784ms)
+   alice のクッキーで GET /notes → 303 See Other
+GET /notes -> 303 See Other (2.4851ms)
+   bob のクッキーで GET /notes → 303 See Other
+test leaked_database ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.60s
+
+exit=0

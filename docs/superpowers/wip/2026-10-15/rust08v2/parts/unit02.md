@@ -168,15 +168,15 @@ cargo run -q --example u02_hash
 **▼ 実行結果**（salt とハッシュは、実行するたびに変わります）
 
 ```text
-1回目: $argon2id$v=19$m=19456,t=2,p=1$/gnrD6uzcYJQwvdc4zRYaA$q7m7sj84y3lpN7nLk5xPkVCkU9jY1wuYJQn6LWEPunw
-2回目: $argon2id$v=19$m=19456,t=2,p=1$TJWrC9mQPy8CJEmapKizxw$48kU8XwN/fntjhy815yrZtkaPfyIiigql3DzWNrIzbE
+1回目: $argon2id$v=19$m=19456,t=2,p=1$1dvNLHkr/dGcDbOcgy0oJQ$RnSbHHJ2okKusYBaK9CZBGi2296o4wwB7odK1L2zNN0
+2回目: $argon2id$v=19$m=19456,t=2,p=1$aeqaiiI6e/Ku/15i4hVUhA$BGPdpiam7q+bdZvGloFn/mgzzS+1CSX+aAClhoQyM5w
 2つは同じか: false
 --- 1回目を「$」で分ける
 方式: argon2id
 版: v=19
 重さの設定: m=19456,t=2,p=1
-salt（22 文字）: /gnrD6uzcYJQwvdc4zRYaA
-ハッシュ（43 文字）: q7m7sj84y3lpN7nLk5xPkVCkU9jY1wuYJQn6LWEPunw
+salt（22 文字）: 1dvNLHkr/dGcDbOcgy0oJQ
+ハッシュ（43 文字）: RnSbHHJ2okKusYBaK9CZBGi2296o4wwB7odK1L2zNN0
 --- 照合
 正しいパスワード × 1回目: true
 正しいパスワード × 2回目: true
@@ -260,26 +260,26 @@ cargo run -q --release --example u02_speed
 **▼ 実行結果**
 
 ```text
-DefaultHasher（速いハッシュ）: 1秒に 8721779 回
-Argon2id（わざと重いハッシュ）: 1秒に 39 回
-差: 約 223635 倍
+DefaultHasher（速いハッシュ）: 1秒に 11103251 回
+Argon2id（わざと重いハッシュ）: 1秒に 49 回
+差: 約 226596 倍
 ```
 
 <div style="max-width:720px;margin:18px auto;text-align:center;">
 <svg viewBox="0 0 720 170" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
 <text x="20" y="40" font-size="12" font-weight="700" fill="#0f172a">速いハッシュ</text>
 <rect x="160" y="24" width="540" height="26" rx="4" fill="#fed7aa"/>
-<text x="690" y="42" font-size="12" font-weight="700" fill="#c2410c" text-anchor="end">1秒に 8,721,779 回</text>
+<text x="690" y="42" font-size="12" font-weight="700" fill="#c2410c" text-anchor="end">1秒に 11,103,251 回</text>
 <text x="20" y="96" font-size="12" font-weight="700" fill="#0f172a">Argon2id</text>
 <rect x="160" y="80" width="3" height="26" rx="1" fill="#10b981"/>
-<text x="172" y="98" font-size="12" font-weight="700" fill="#047857">1秒に 39 回（本当の棒の長さは上の 22 万分の 1 で、描けないほど短い）</text>
-<text x="360" y="146" font-size="12" fill="#0f172a" text-anchor="middle">DB を盗んだ人が 1 億通りのパスワードを試すと: 速いハッシュは約 11 秒、Argon2id は約 30 日（PC 1台・この PC の速さで）</text>
+<text x="172" y="98" font-size="12" font-weight="700" fill="#047857">1秒に 49 回（本当の棒の長さは上の 23 万分の 1 で、描けないほど短い）</text>
+<text x="360" y="146" font-size="12" fill="#0f172a" text-anchor="middle">DB を盗んだ人が 1 億通りのパスワードを試すと: 速いハッシュは約 9 秒、Argon2id は約 24 日（PC 1台・この PC の速さで）</text>
 </svg>
 <div style="font-size:12px;color:#64748b;margin-top:6px;">図8-?: 1秒に計算できる回数。この PC（Windows ARM64、release ビルド、1つのスレッド）で実際に測った数。わざと重い Argon2id は、総当たりを何十万倍も遅くする</div>
 </div>
 
-- 速いハッシュは1秒に約 870 万回、Argon2id は 39 回でした。約 22 万倍の差です。
-- 1回のログインで 1 回計算するだけなら、Argon2id の 1/39 秒（約 26 ミリ秒）は、利用者が待つほどの時間ではありません。ところが、DB を盗んだ人が、よく使われるパスワードを 1 億通り試すとすると、速いハッシュなら約 11 秒、Argon2id なら約 30 日かかります（この PC 1台で、1つのスレッドで計算した場合の見積もりです）。**正しい人には気にならず、総当たりする人にはとても重い**のが、パスワード用のハッシュの役目です。
+- 速いハッシュは1秒に約 1110 万回、Argon2id は 49 回でした。約 23 万倍の差です。
+- 1回のログインで 1 回計算するだけなら、Argon2id の 1/49 秒（約 20 ミリ秒）は、利用者が待つほどの時間ではありません。ところが、DB を盗んだ人が、よく使われるパスワードを 1 億通り試すとすると、速いハッシュなら約 9 秒、Argon2id なら約 24 日かかります（この PC 1台で、1つのスレッドで計算した場合の見積もりです）。**正しい人には気にならず、総当たりする人にはとても重い**のが、パスワード用のハッシュの役目です。
 - Argon2id は、計算に毎回 19 MiB（`m=19456` KiB）のメモリを使います。メモリを多く使う計算は、たくさんの計算を同時に進める専用の機械（GPU など）でも、速くしにくいように作られています。
 - `DefaultHasher` は、`HashMap` の表を作るためのハッシュで、結果も 64 ビットと短く、パスワードのような秘密を守るためのものではありません。ここでは「速いハッシュ」の例として使っています。SHA-256 のような安全なハッシュでも、速すぎるので、パスワードの保存には向きません。
 
@@ -369,18 +369,18 @@ cargo test --test u02_stored -- --nocapture --test-threads=1
 **▼ 実行結果**
 
 ```text
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.76s
-     Running tests\u02_stored.rs (target\debug\deps\u02_stored-64195f227e1b0a63.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.77s
+     Running tests\u02_stored.rs (target\debug\deps\u02_stored-71fa20487cab143e.exe)
 
 running 2 tests
-test broken_hash_makes_login_fail_safely ... POST /signup -> 303 See Other (418.678ms)
+test broken_hash_makes_login_fail_safely ... POST /signup -> 303 See Other (411.0144ms)
 [error] サーバーの中でエラーが起きました <- invalid encoding
-POST /login -> 500 Internal Server Error (8.9707ms)
+POST /login -> 500 Internal Server Error (10.7842ms)
 壊れたハッシュでログイン → 500 Internal Server Error
 画面に「時間をおいてもう一度お試しください」: true
 ok
-test same_password_different_hashes ... POST /signup -> 303 See Other (419.3062ms)
-POST /signup -> 303 See Other (426.7911ms)
+test same_password_different_hashes ... POST /signup -> 303 See Other (410.558ms)
+POST /signup -> 303 See Other (396.46ms)
 alice@example.com: $argon2id$v=19$m=19456,t=2,p=1$…（97 文字）
     パスワードそのものが入っている: false
 bob@example.com: $argon2id$v=19$m=19456,t=2,p=1$…（97 文字）
@@ -388,7 +388,7 @@ bob@example.com: $argon2id$v=19$m=19456,t=2,p=1$…（97 文字）
 alice と bob のハッシュは同じか: false
 ok
 
-test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.34s
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.28s
 ```
 
 - 2人とも、`$argon2id$v=19$m=19456,t=2,p=1$` で始まる 97 文字の文字列で、パスワードそのものは入っていません。同じパスワードなのに、2人のハッシュは違います（salt が違うから）。DB を見ても、「alice と bob は同じパスワードだ」とは分かりません。
@@ -494,7 +494,7 @@ pub async fn hash_password(password: &Password) -> Result<String, AppError> {
 }
 ```
 
-- 例2-2で見たとおり、Argon2id は1回に約 26 ミリ秒（debug ビルドでは約 400 ミリ秒）かかる重い計算です。async の処理の中でそのまま計算すると、そのあいだ、同じスレッドのほかのリクエストが止まってしまいます。そこで `spawn_blocking` で、重い計算用の別のスレッドに任せています（第5巻 UNIT 07）。
+- 例2-2で見たとおり、Argon2id は1回に約 20 ミリ秒（debug ビルドでは約 400 ミリ秒）かかる重い計算です。async の処理の中でそのまま計算すると、そのあいだ、同じスレッドのほかのリクエストが止まってしまいます。そこで `spawn_blocking` で、重い計算用の別のスレッドに任せています（第5巻 UNIT 07）。
 - `hash_password` は、検査済みの `Password` 型しか受け取りません。8〜128 文字の決まりを通ったパスワードだけが、ハッシュになります（第11巻 UNIT 01 の問3）。
 
 登録していないメールアドレスでログインしようとしたときのために、ダミーのハッシュも用意してあります（抜き出しています）。
@@ -579,26 +579,26 @@ cargo test --test u02_q2 -- --nocapture
 ```
 
 ```text
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.65s
-     Running tests\u02_q2.rs (target\debug\deps\u02_q2-6804b1bc9d1c3136.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.63s
+     Running tests\u02_q2.rs (target\debug\deps\u02_q2-2cfd71d17b7bceae.exe)
 
 running 1 test
-POST /signup -> 303 See Other (415.0974ms)
-POST /login -> 401 Unauthorized (804.4866ms)
-POST /login -> 401 Unauthorized (380.8674ms)
-POST /login -> 401 Unauthorized (395.7334ms)
-登録していないメール: 401（804 ms） / 401（381 ms） / 401（396 ms）
-POST /login -> 401 Unauthorized (379.5492ms)
-POST /login -> 401 Unauthorized (406.2936ms)
-POST /login -> 401 Unauthorized (398.234ms)
-パスワードが違う: 401（379 ms） / 401（406 ms） / 401（398 ms）
+POST /signup -> 303 See Other (437.7957ms)
+POST /login -> 401 Unauthorized (994.1015ms)
+POST /login -> 401 Unauthorized (391.4112ms)
+POST /login -> 401 Unauthorized (377.8686ms)
+登録していないメール: 401（994 ms） / 401（391 ms） / 401（378 ms）
+POST /login -> 401 Unauthorized (380.812ms)
+POST /login -> 401 Unauthorized (449.7834ms)
+POST /login -> 401 Unauthorized (730.5059ms)
+パスワードが違う: 401（381 ms） / 401（450 ms） / 401（730 ms）
 test failed_logins_take_similar_time ... ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.21s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.81s
 ```
 
-- 「登録していないメール」の2回目・3回目と、「パスワードが違う」の3回は、どれも約 380〜410 ミリ秒（debug ビルド）で、そろっています。ダミーのハッシュのおかげで、時間から「登録されているかどうか」は分かりません。
-- ところが、**「登録していないメール」の1回目だけ、804 ミリ秒**と、約2倍かかりました。`DUMMY_HASH` は `LazyLock`（最初に使われたときに一度だけ作る）なので、最初の1回は「ダミーのハッシュを作る計算」と「照合の計算」の2回分の時間がかかるのです。サーバーを起動してから最初の1回だけですが、「登録していないメールの1回目は遅い」という差が残ります。
+- 「登録していないメール」の2回目・3回目と、「パスワードが違う」の3回は、どれも約 380〜450 ミリ秒（debug ビルド）で、同じくらいです（「パスワードが違う」の3回目の 730 ミリ秒は、続けて計算していると PC の都合で遅くなる回があるもので、UNIT 01 の問1の 10 回でも後半が遅くなりました）。ダミーのハッシュのおかげで、時間から「登録されているかどうか」は分かりません。
+- ところが、**「登録していないメール」の1回目だけ、994 ミリ秒**と、2倍以上かかりました。`DUMMY_HASH` は `LazyLock`（最初に使われたときに一度だけ作る）なので、最初の1回は「ダミーのハッシュを作る計算」と「照合の計算」の2回分の時間がかかるのです。サーバーを起動してから最初の1回だけですが、「登録していないメールの1回目は遅い」という差が残ります。
 - これは、RustNote に残っている改善点です。起動するときに、先に一度 `DUMMY_HASH` を作っておけば（`LazyLock::force(&DUMMY_HASH)` を呼ぶなど）、この差は無くなります（RustNote のコードは変えていません）。**守りの仕組みも、測って確かめる**と、こうした抜けが見つかります。
 
 **問3の解答:**
@@ -643,11 +643,11 @@ cargo test --test u02_q3 -- --nocapture
 ```
 
 ```text
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.81s
-     Running tests\u02_q3.rs (target\debug\deps\u02_q3-91faee38663bf341.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.64s
+     Running tests\u02_q3.rs (target\debug\deps\u02_q3-6907ab08fcaab11f.exe)
 
 running 1 test
-POST /signup -> 400 Bad Request (1.9691ms)
+POST /signup -> 400 Bad Request (2.7655ms)
 登録の結果: 400 Bad Request
 エラーの文: true
 メールアドレスは入力欄に残る: true

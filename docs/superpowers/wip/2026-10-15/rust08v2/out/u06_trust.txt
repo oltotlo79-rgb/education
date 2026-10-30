@@ -1,0 +1,12 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.85s
+     Running tests\u06_trust.rs (target\debug\deps\u06_trust-0bed5d9ae62bf462.exe)
+
+running 1 test
+POST /signup -> 303 See Other (426.5824ms)
+Origin: https://pay.example → 403 Forbidden
+Origin: https://evil.example → 403 Forbidden
+test post_back_from_a_partner ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.45s
+
+exit=0

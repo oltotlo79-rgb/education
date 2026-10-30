@@ -1,0 +1,10 @@
+（localhost:8000 のページの Console で）
+> const r = await fetch('http://127.0.0.1:3000/notes', { credentials: 'include', mode: 'no-cors' }); ({ type: r.type, status: r.status, page: location.href })
+{
+  "page": "http://localhost:8000/csrf.html",
+  "status": 0,
+  "type": "opaque"
+}
+（RustNote の窓のアクセスログ）
+GET /notes -> 303 See Other (292.6µs)
+GET /login -> 200 OK (338µs)

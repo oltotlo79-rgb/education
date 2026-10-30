@@ -1,5 +1,14 @@
 # 中断時点の引き継ぎメモ
 
+## 2026-10-31（続き）: 第8巻を完成（main: UNIT 03〜09 は1つずつ、UNIT 10 と巻の仕上げ）
+
+素材は `rust08v2/`（parts・out・errs（置き換え表）・variants/audit.rs・rustnote/（tests・examples・Cargo.toml・Cargo.lock・toolchain）・cap08_uNN.sh・ba_demo（node_modules と .sqlite を除く）・mfa_lab（target を除く）・browser（site と 2 つのログ））。ビルド先は `target08`、mfa_lab は自分の target。
+
+- **第8巻:** UNIT 01〜02 を 0.11・1.99.1 にそろえ、UNIT 03〜10 を書いた（178 ページ・図 24 枚）。巻頭・巻末のお知らせを外し、旧 `Rust/08_….pdf` を削除。Better Auth は 1.7.14（npm の latest、2026-10-26 公開）をローカルで動かした（アカウント不要）。OIDC・MFA は外のサービスを使わず、mfa_lab で RFC 7636・6238 の例と一致を確かめた。
+- **UNIT 10 で確かめた事実:** 守りのテスト `u10_guards`（認可・ログイン・セッション・ログアウト・CSRF を名前付きの assert で）。ログアウトで DB を消さないと「ログアウトのあと、写し取ったクッキーは使えない」で止まり（left 200 / right 303）、CSRF は確かめられないまま終わる。`sec-fetch-site` を消すと POST /notes が 303 になって止まる（ヘッダーが無いとブラウザ以外として通る）。アクセスログには誰が・どこからが無く、OriginPolicy の 403 はどの層にも残らない（OriginLayer は一番外側、topcoat-router 0.11.0 にログを書く所なし）。監査の記録の練習版 `variants/audit.rs`（client_ip・メールを `a…@example.com` に伏せる・@ が無いと何も残さない）。テストでは `RemoteAddr` を request の extension に付けると client_ip が返る。`{input:?}` は E0277（LoginForm に Debug なし）、help の通り derive(Debug) にするとパスワードとメールの欄に打ったパスワードが記録に出る。漏れた token_hash を `Token::new(..).encode()` でクッキーの形にしても 303（サーバーはもう一度 SHA-256 にかけて探す）、password_hash をパスワードにすると 401、`DELETE FROM sessions` で 2 行・2 人とも 303。
+- **RustNote の改善点（コードは変えていない）:** `tests/http.rs` に「ログインのたびにトークンが変わる」と「失敗の画面が同じ」が無い。監査の記録が無い（アクセスログだけ）。全角のメールが別のユーザーになる・連番の ID・回数の制限なし（UNIT 03・07・04）。
+- **次:** 第11巻（UNIT 01〜02 をそろえてから UNIT 03〜10。UNIT 06 は第8巻 UNIT 10 の守りのテストを広げる）→ 第13巻 → 第12巻（Docker）→ 第1巻。
+
 ## 2026-10-31: 第10巻を完成（main: 85ba9ab UNIT 01〜03 … ead9551 UNIT 10）
 
 素材は `rust10v2/`（parts・out・errs（わざと間違える置き換え表）・tests と examples・道具・ブラウザのときのサーバーのログ）。練習用コピーは今の RustNote（0.11・1.99.1）にそろえ、ビルド先は `target10`（`maskx.py` は `targetNN` を `target` に伏せる）。

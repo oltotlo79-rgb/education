@@ -1,0 +1,22 @@
+--- a/src/routes/login.rs
++++ b/src/routes/login.rs
+@@ -12,6 +12,7 @@
+     view::{View, component, view},
+ };
+ 
++use crate::audit::{self, Event};
+ use crate::auth::{authenticate, current_user, log_in};
+ use crate::flash::{self, Flash};
+ use crate::views::flash_banner;
+@@ -77,9 +78,11 @@
+ pub async fn login(cx: &Cx, Form(input): Form<LoginForm>) -> Result<impl View> {
+     if let Some(user) = authenticate(cx, &input.email, &input.password).await? {
+         log_in(cx, &user).await?;
++        audit::record(cx, Event::LoginSucceeded(user.id));
+         flash::set(cx, Flash::LoggedIn);
+         return Err(see_other(href!(crate::routes::notes::index).resolve(cx)).into());
+     }
++    audit::record(cx, Event::LoginFailed(&input.email));
+     // メールが無いのか、パスワードが違うのかは区別しない
+     let error = Some(LOGIN_FAILED.to_string());
+     Ok(view! {

@@ -1,0 +1,18 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+error[E0277]: `LoginForm` doesn't implement `Debug`
+  --> src\routes\login.rs:85:37
+   |
+85 |     eprintln!("[audit] login_failed {input:?}");
+   |                                     ^^^^^^^^^ `LoginForm` cannot be formatted using `{:?}` because it doesn't implement `Debug`
+   |
+   = help: the trait `Debug` is not implemented for `LoginForm`
+   = note: this error originates in the macro `$crate::format_args_nl` which comes from the expansion of the macro `eprintln` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: consider annotating `LoginForm` with `#[derive(Debug)]`
+   |
+25 + #[derive(Debug)]
+26 | pub struct LoginForm {
+   |
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `rustnote` (lib) due to 1 previous error
+exit=101

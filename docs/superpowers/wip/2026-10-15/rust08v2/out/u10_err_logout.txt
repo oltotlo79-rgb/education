@@ -1,0 +1,39 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 10.11s
+     Running tests\u10_guards.rs (target\debug\deps\u10_guards-ceff6f46bfcca925.exe)
+
+running 1 test
+POST /signup -> 303 See Other (433.5438ms)
+POST /signup -> 303 See Other (430.8222ms)
+POST /notes -> 303 See Other (11.257ms)
+GET /notes/1 -> 303 See Other (218.9µs)
+GET /notes/1 -> 404 Not Found (6.3458ms)
+GET /notes/1/edit -> 404 Not Found (4.8077ms)
+POST /notes/1/toggle -> 404 Not Found (4.5829ms)
+POST /notes/1/delete -> 404 Not Found (3.6182ms)
+✓ 認可: ログインしていなければ 303、他人のノートはどの入口でも 404
+POST /login -> 401 Unauthorized (409.5179ms)
+POST /login -> 401 Unauthorized (750.5646ms)
+✓ ログイン: 登録の無いメールも、違うパスワードも、同じ画面
+POST /login -> 303 See Other (469.0507ms)
+GET /notes -> 303 See Other (4.105ms)
+✓ セッション: ログインのたびに新しいトークン、前のトークンは使えない
+POST /logout -> 303 See Other (4.0882ms)
+GET /notes -> 200 OK (7.0256ms)
+
+thread 'guards' (219200) panicked at tests\u10_guards.rs:80:5:
+assertion `left == right` failed: ログアウトのあと、写し取ったクッキーは使えない
+  left: 200
+ right: 303
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test guards ... FAILED
+
+failures:
+
+failures:
+    guards
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.56s
+
+error: test failed, to rerun pass `--test u10_guards`
+exit=101

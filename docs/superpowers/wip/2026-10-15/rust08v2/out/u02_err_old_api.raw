@@ -1,0 +1,37 @@
+   Compiling rustnote v0.1.0 (C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust08\rustnote)
+error[E0432]: unresolved imports `argon2::password_hash::SaltString`, `argon2::password_hash::rand_core`
+  --> examples\e02_old_api.rs:2:29
+   |
+ 2 | use argon2::password_hash::{SaltString, rand_core::OsRng};
+   |                             ^^^^^^^^^^  ^^^^^^^^^ could not find `rand_core` in `password_hash`
+   |                             |
+   |                             no `SaltString` in the root
+   |
+note: found an item that was configured out
+  --> C:\Users\oltot\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\password-hash-0.6.1\src\lib.rs:40:9
+   |
+39 | #[cfg(feature = "rand_core")]
+   |       --------------------- the item is gated behind the `rand_core` feature
+40 | pub use rand_core;
+   |         ^^^^^^^^^
+
+error[E0061]: this method takes 1 argument but 2 arguments were supplied
+   --> examples\e02_old_api.rs:8:10
+    |
+  8 |         .hash_password(b"correct horse battery", &salt)
+    |          ^^^^^^^^^^^^^                           ----- unexpected argument #2
+    |
+note: method defined here
+   --> C:\Users\oltot\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\password-hash-0.6.1\src\lib.rs:107:8
+    |
+107 |     fn hash_password(&self, password: &[u8]) -> Result<H> {
+    |        ^^^^^^^^^^^^^
+help: remove the extra argument
+    |
+  8 -         .hash_password(b"correct horse battery", &salt)
+  8 +         .hash_password(b"correct horse battery")
+    |
+
+Some errors have detailed explanations: E0061, E0432.
+For more information about an error, try `rustc --explain E0061`.
+error: could not compile `rustnote` (example "e02_old_api") due to 2 previous errors

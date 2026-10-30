@@ -1,0 +1,37 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.64s
+     Running tests\u03_signup.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/target08\debug\deps\u03_signup-6525422e8736d1b3.exe)
+
+running 1 test
+test signup_cases ... POST /signup -> 303 See Other (427.2562ms)
+1. email="alice@example.com" → 303 See Other
+POST /signup -> 409 Conflict (405.0977ms)
+2. email="  Alice@Example.COM  " → 409 Conflict
+   エラー: ["そのメールアドレスは既に登録されています"]
+   メールの入力欄: "  Alice@Example.COM  "
+POST /signup -> 400 Bad Request (274µs)
+3. email="alice" → 400 Bad Request
+   エラー: ["メールアドレスに @ がありません"]
+   メールの入力欄: "alice"
+POST /signup -> 400 Bad Request (80.3µs)
+4. email="alice@example" → 400 Bad Request
+   エラー: ["メールアドレスの形式が正しくありません"]
+   メールの入力欄: "alice@example"
+POST /signup -> 400 Bad Request (70µs)
+5. email="bob@example.com" → 400 Bad Request
+   エラー: ["パスワードは8文字以上にしてください"]
+   メールの入力欄: "bob@example.com"
+POST /signup -> 400 Bad Request (66.8µs)
+6. email="bob@example.com" → 400 Bad Request
+   エラー: ["確認用のパスワードが一致しません"]
+   メールの入力欄: "bob@example.com"
+POST /signup -> 400 Bad Request (727µs)
+7. email="bob" → 400 Bad Request
+   エラー: ["メールアドレスに @ がありません", "パスワードは8文字以上にしてください", "確認用のパスワードが一致しません"]
+   メールの入力欄: "bob"
+POST /signup -> 303 See Other (531.5354ms)
+8. email="Bob@Example.com" → 303 See Other
+users 表の email: ["alice@example.com", "bob@example.com"]
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.45s
+

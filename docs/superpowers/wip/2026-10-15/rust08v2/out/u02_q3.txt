@@ -1,9 +1,8 @@
-   Compiling rustnote v0.1.0 (...\rustnote)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.81s
-     Running tests\u02_q3.rs (target\debug\deps\u02_q3-91faee38663bf341.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.64s
+     Running tests\u02_q3.rs (target\debug\deps\u02_q3-6907ab08fcaab11f.exe)
 
 running 1 test
-POST /signup -> 400 Bad Request (1.9691ms)
+POST /signup -> 400 Bad Request (2.7655ms)
 登録の結果: 400 Bad Request
 エラーの文: true
 メールアドレスは入力欄に残る: true

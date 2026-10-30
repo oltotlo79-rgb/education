@@ -1,0 +1,8 @@
+### cargo run -q --example callback
+--- state を確かめる版
+alice 本人のコールバック → code alice-no-code で、ログインを続ける
+攻撃する人が開かせたコールバック → 断る（このブラウザが始めたログインではない）
+ログインを始めていないブラウザ → 断る（このブラウザが始めたログインではない）
+--- state を確かめない版
+攻撃する人が開かせたコールバック → code kougeki-suru-hito-no-code で、ログインを続ける
+ログインを始めていないブラウザ → code kougeki-suru-hito-no-code で、ログインを続ける

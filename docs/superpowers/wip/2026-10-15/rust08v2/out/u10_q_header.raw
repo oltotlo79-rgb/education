@@ -1,0 +1,40 @@
+   Compiling rustnote v0.1.0 (C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust08\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.44s
+     Running tests\u10_guards.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/target08\debug\deps\u10_guards-ceff6f46bfcca925.exe)
+
+running 1 test
+POST /signup -> 303 See Other (434.669ms)
+POST /signup -> 303 See Other (430.178ms)
+POST /notes -> 303 See Other (5.8299ms)
+GET /notes/1 -> 303 See Other (266.2µs)
+GET /notes/1 -> 404 Not Found (4.2637ms)
+GET /notes/1/edit -> 404 Not Found (2.6311ms)
+POST /notes/1/toggle -> 404 Not Found (3.2782ms)
+POST /notes/1/delete -> 404 Not Found (3.3246ms)
+✓ 認可: ログインしていなければ 303、他人のノートはどの入口でも 404
+POST /login -> 401 Unauthorized (394.9984ms)
+POST /login -> 401 Unauthorized (762.2236ms)
+✓ ログイン: 登録の無いメールも、違うパスワードも、同じ画面
+POST /login -> 303 See Other (436.8119ms)
+GET /notes -> 303 See Other (3.7545ms)
+✓ セッション: ログインのたびに新しいトークン、前のトークンは使えない
+POST /logout -> 303 See Other (10.213ms)
+GET /notes -> 303 See Other (4.8005ms)
+✓ ログアウト: 写し取ったクッキーも使えない
+POST /notes -> 303 See Other (9.9293ms)
+
+thread 'guards' (211736) panicked at tests\u10_guards.rs:95:5:
+assertion `left == right` failed: ほかのサイトからの POST は 403
+  left: 303
+ right: 403
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test guards ... FAILED
+
+failures:
+
+failures:
+    guards
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.53s
+
+error: test failed, to rerun pass `--test u10_guards`

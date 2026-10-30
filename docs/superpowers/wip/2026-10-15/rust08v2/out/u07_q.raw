@@ -1,0 +1,16 @@
+   Compiling rustnote v0.1.0 (C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust08\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.23s
+     Running tests\u07_q.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/target08\debug\deps\u07_q-edb3750b0278f30c.exe)
+
+running 1 test
+POST /signup -> 303 See Other (423.1586ms)
+POST /signup -> 303 See Other (407.1932ms)
+POST /notes -> 303 See Other (6.7284ms)
+GET /notes -> 200 OK (5.3574ms)
+問1 bob GET /notes?q=牛乳 → 200 OK（「牛乳を買う」が出る: false）
+GET /notes -> 303 See Other (98.8µs)
+問1 guest GET /notes?q=牛乳 → 303 See Other（「牛乳を買う」が出る: false）
+test q1_list_for_bob_and_guest ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.88s
+

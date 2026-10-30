@@ -1,0 +1,16 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+error[E0277]: the `?` operator can only be applied to values that implement `Try`
+  --> src\auth.rs:97:16
+   |
+97 |             if verify_password(password, &record.password_hash)? {
+   |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the `?` operator cannot be applied to type `impl Future<Output = Result<bool, AppError>>`
+   |
+   = help: the nightly-only, unstable trait `Try` is not implemented for `impl Future<Output = Result<bool, AppError>>`
+help: consider `await`ing on the `Future`
+   |
+97 |             if verify_password(password, &record.password_hash).await? {
+   |                                                                ++++++
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `rustnote` (lib) due to 1 previous error
+exit=101

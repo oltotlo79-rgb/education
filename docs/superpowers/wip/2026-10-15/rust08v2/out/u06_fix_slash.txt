@@ -1,0 +1,14 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.36s
+     Running tests\u06_trust.rs (target\debug\deps\u06_trust-0bed5d9ae62bf462.exe)
+
+running 1 test
+POST /signup -> 303 See Other (395.0002ms)
+POST /notes -> 303 See Other (5.4756ms)
+Origin: https://pay.example → 303 See Other
+Origin: https://evil.example → 403 Forbidden
+test post_back_from_a_partner ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.42s
+
+exit=0

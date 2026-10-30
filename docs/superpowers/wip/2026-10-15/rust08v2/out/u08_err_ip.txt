@@ -1,0 +1,15 @@
+### node e3_no_ip.mjs
+2026-10-30T15:52:49.323Z ERROR [Better Auth]: Database schema mismatch
+
+  Missing tables
+    user, session, account, verification
+
+  help: Run `npx auth migrate` to add the missing tables and columns.
+2026-10-30T15:52:49.367Z WARN [Better Auth]: Rate limiting could not determine a client IP and is falling back to a single shared per-path bucket. Ensure your runtime forwards a trusted client IP header, then set `advanced.ipAddress.ipAddressHeaders` or `advanced.ipAddress.trustedProxies` so the address can be resolved.
+2026-10-30T15:52:49.436Z WARN [Better Auth]: User not found
+user1 → 401（INVALID_EMAIL_OR_PASSWORD）
+2026-10-30T15:52:49.504Z WARN [Better Auth]: User not found
+user2 → 401（INVALID_EMAIL_OR_PASSWORD）
+2026-10-30T15:52:49.569Z WARN [Better Auth]: User not found
+user3 → 401（INVALID_EMAIL_OR_PASSWORD）
+user4 → 429（Too many requests. Please try again later.）

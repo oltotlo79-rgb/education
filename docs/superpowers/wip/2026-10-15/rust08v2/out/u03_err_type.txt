@@ -1,0 +1,20 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+error[E0308]: mismatched types
+   --> src\routes\signup.rs:149:49
+    |
+149 |     let user = match app_state(cx).users.create(&input.email, &password_hash).await {
+    |                                          ------ ^^^^^^^^^^^^ expected `&Email`, found `&String`
+    |                                          |
+    |                                          arguments to this method are incorrect
+    |
+    = note: expected reference `&Email`
+               found reference `&std::string::String`
+note: method defined here
+   --> src\repository\users.rs:23:14
+    |
+ 23 |     async fn create(&self, email: &Email, password_hash: &str) -> Result<User, RepoError>;
+    |              ^^^^^^        -----
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `rustnote` (lib) due to 1 previous error
+exit=101

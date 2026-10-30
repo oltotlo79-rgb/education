@@ -1,0 +1,23 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.66s
+     Running tests\u01_q1.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/target08\debug\deps\u01_q1-bce08f7bd283041f.exe)
+
+running 1 test
+POST /signup -> 303 See Other (463.1275ms)
+POST /login -> 401 Unauthorized (430.3743ms)
+POST /login -> 401 Unauthorized (383.3649ms)
+POST /login -> 401 Unauthorized (382.3572ms)
+POST /login -> 401 Unauthorized (386.5024ms)
+POST /login -> 401 Unauthorized (401.7135ms)
+POST /login -> 401 Unauthorized (385.1639ms)
+POST /login -> 401 Unauthorized (627.995ms)
+POST /login -> 401 Unauthorized (732.2201ms)
+POST /login -> 401 Unauthorized (793.8449ms)
+POST /login -> 401 Unauthorized (689.4254ms)
+10 回まちがえた結果: [401, 401, 401, 401, 401, 401, 401, 401, 401, 401]
+10 回にかかった時間: 5.2s
+POST /login -> 303 See Other (762.2065ms)
+11 回目に正しいパスワード → 303 See Other
+test many_wrong_logins_are_not_limited ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 6.47s
+

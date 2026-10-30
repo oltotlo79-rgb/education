@@ -1,0 +1,17 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.63s
+     Running tests\u02_q2.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/target08\debug\deps\u02_q2-2cfd71d17b7bceae.exe)
+
+running 1 test
+POST /signup -> 303 See Other (437.7957ms)
+POST /login -> 401 Unauthorized (994.1015ms)
+POST /login -> 401 Unauthorized (391.4112ms)
+POST /login -> 401 Unauthorized (377.8686ms)
+登録していないメール: 401（994 ms） / 401（391 ms） / 401（378 ms）
+POST /login -> 401 Unauthorized (380.812ms)
+POST /login -> 401 Unauthorized (449.7834ms)
+POST /login -> 401 Unauthorized (730.5059ms)
+パスワードが違う: 401（381 ms） / 401（450 ms） / 401（730 ms）
+test failed_logins_take_similar_time ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.81s
+

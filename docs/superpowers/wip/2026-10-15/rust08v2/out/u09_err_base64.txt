@@ -1,0 +1,17 @@
+### cargo build --example e09_old_base64
+   Compiling mfa_lab v0.1.0 (...\mfa_lab)
+error[E0425]: cannot find function `encode_config` in crate `base64`
+ --> examples\e09_old_base64.rs:7:29
+  |
+7 |     let challenge = base64::encode_config(Sha256::digest(verifier.as_bytes()), base64::URL_SAFE_NO_PAD);
+  |                             ^^^^^^^^^^^^^ not found in `base64`
+
+error[E0425]: cannot find value `URL_SAFE_NO_PAD` in crate `base64`
+ --> examples\e09_old_base64.rs:7:88
+  |
+7 |     let challenge = base64::encode_config(Sha256::digest(verifier.as_bytes()), base64::URL_SAFE_NO_PAD);
+  |                                                                                        ^^^^^^^^^^^^^^^ not found in `base64`
+
+For more information about this error, try `rustc --explain E0425`.
+error: could not compile `mfa_lab` (example "e09_old_base64") due to 2 previous errors
+exit=101

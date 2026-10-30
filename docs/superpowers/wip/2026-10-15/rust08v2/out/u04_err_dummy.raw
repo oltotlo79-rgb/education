@@ -1,0 +1,21 @@
+   Compiling rustnote v0.1.0 (C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust08\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.77s
+     Running tests\u04_timing.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/target08\debug\deps\u04_timing-4d485fd80f3a1f3e.exe)
+
+running 1 test
+POST /signup -> 303 See Other (410.7722ms)
+POST /login -> 401 Unauthorized (1.8538ms)
+POST /login -> 401 Unauthorized (1.4097ms)
+POST /login -> 401 Unauthorized (403.345ms)
+POST /login -> 401 Unauthorized (2.1569ms)
+POST /login -> 401 Unauthorized (382.26ms)
+POST /login -> 401 Unauthorized (2.2571ms)
+POST /login -> 401 Unauthorized (476.3944ms)
+POST /login -> 401 Unauthorized (3.9988ms)
+POST /login -> 401 Unauthorized (395.2845ms)
+登録していないメール: 401（2 ms） / 401（2 ms） / 401（2 ms） / 401（4 ms）
+パスワードが違う:     401（403 ms） / 401（382 ms） / 401（476 ms） / 401（395 ms）
+test failure_timing ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.11s
+

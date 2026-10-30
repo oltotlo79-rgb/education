@@ -1,0 +1,20 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.17s
+     Running tests\u07_search.rs (target\debug\deps\u07_search-3ee22547c7532a34.exe)
+
+running 1 test
+POST /signup -> 303 See Other (412.1425ms)
+POST /signup -> 303 See Other (504.0448ms)
+POST /notes -> 303 See Other (6.7974ms)
+POST /notes -> 303 See Other (6.1206ms)
+GET /notes -> 200 OK (4.0744ms)
+bob が q=暗証番号 で検索 → ["銀行のメモ"]
+GET /notes -> 200 OK (2.7765ms)
+bob が q=買い物 で検索 → ["bob の買い物"]
+GET /notes -> 200 OK (3.1283ms)
+alice が q=暗証番号 で検索 → ["銀行のメモ"]
+test search_stays_inside_own_notes ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.96s
+
+exit=0

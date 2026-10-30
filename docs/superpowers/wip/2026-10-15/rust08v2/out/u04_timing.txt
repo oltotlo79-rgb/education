@@ -1,0 +1,22 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.71s
+     Running tests\u04_timing.rs (target\debug\deps\u04_timing-4d485fd80f3a1f3e.exe)
+
+running 1 test
+POST /signup -> 303 See Other (410.4857ms)
+POST /login -> 401 Unauthorized (811.6819ms)
+POST /login -> 401 Unauthorized (412.7494ms)
+POST /login -> 401 Unauthorized (389.3127ms)
+POST /login -> 401 Unauthorized (378.7718ms)
+POST /login -> 401 Unauthorized (371.3082ms)
+POST /login -> 401 Unauthorized (395.0587ms)
+POST /login -> 401 Unauthorized (393.0288ms)
+POST /login -> 401 Unauthorized (394.5455ms)
+POST /login -> 401 Unauthorized (397.3376ms)
+登録していないメール: 401（413 ms） / 401（378 ms） / 401（395 ms） / 401（394 ms）
+パスワードが違う:     401（389 ms） / 401（371 ms） / 401（393 ms） / 401（397 ms）
+test failure_timing ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 4.37s
+
+exit=0
