@@ -643,7 +643,7 @@ For more information about this error, try `rustc --explain E0384`.
 error: could not compile `basics` (bin "basics") due to 1 previous error
 ```
 
-- **読み方:** 1行目の `error[E0384]` がエラーの番号と要約です（「不変の変数 `count` に2回代入することはできません」）。`--> src\main.rs:4:5` は「src\main.rs の4行目5文字目」という場所です。`^^^^` の下線が問題の箇所、`-----` が関係する箇所（最初の代入）を指しています。
+- **読み方:** 1行目の `error[E0384]` がエラーの番号と要約です（「不変の変数 `count` に2回代入することはできません」）。`--> src\main.rs:4:5` は「`src\main.rs` の4行目5文字目」という場所です。`^^^^` の下線が問題の箇所、`-----` が関係する箇所（最初の代入）を指しています。
 - **何が起きたか:** `mut` を付けずに作った `count` に、`count = 2;` で入れ直そうとしました。
 - **直し方:** `help:` の提案どおり `let mut count = 1;` にします。または「入れ直す」のではなく「作り直す」意味でよければ `let count = 2;`（シャドーイング）にします。
 - `rustc --explain E0384` を実行すると、このエラーの詳しい説明（英語）が読めます。

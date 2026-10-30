@@ -1656,7 +1656,7 @@ fatal: unable to auto-detect email address (got '...@...(none)')
 
 > **ヒント:** `-m "…"` を付けずに `git commit` と打つと、メッセージを書くためのエディタが開きます。既定のエディタは Vim（ヴィム）で、画面の左に `~` が並んだ黒い画面になります。慣れないうちは、`Esc` キーを押してから `:q!` と打って Enter キーを押し、いったん抜けてください（コミットは中止されます）。この本では、いつも `-m` を付けてコミットします。
 
-#### エラー2: 「$'\r': command not found」（CRLF のシェルスクリプトを Linux で動かす）
+#### エラー2: 「`$'\r': command not found`」（CRLF のシェルスクリプトを Linux で動かす）
 
 Windows のエディタで作ったり、`core.autocrlf=true` の Git で取り出したりして、**CRLF になったシェルスクリプト**（bash の手順書）を、WSL の bash で動かした場合です。WSL は UNIT 07 で入れるので、今は結果を見るだけで大丈夫です。
 
