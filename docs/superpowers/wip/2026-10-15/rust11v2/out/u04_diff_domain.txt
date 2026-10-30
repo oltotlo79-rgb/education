@@ -1,0 +1,22 @@
+--- a/src/domain.rs
++++ b/src/domain.rs
+@@ -214,6 +214,8 @@
+     Empty,
+     #[error("タイトルは{max}文字以内にしてください（現在{len}文字）")]
+     TooLong { len: usize, max: usize },
++    #[error("タイトルに制御文字（NUL・タブなどの見えない文字）は使えません")]
++    Control,
+ }
+ 
+ /// 検査済みのタイトル（前後の空白を除いて 1〜80 文字）
+@@ -237,6 +239,10 @@
+                 max: Self::MAX_CHARS,
+             });
+         }
++        // SQLite の length() は NUL より前しか数えないので、NUL で始まる題は DB の CHECK で断られる
++        if trimmed.chars().any(char::is_control) {
++            return Err(TitleError::Control);
++        }
+         Ok(NoteTitle(trimmed.to_string()))
+     }
+ 

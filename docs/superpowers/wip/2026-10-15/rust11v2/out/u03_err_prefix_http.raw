@@ -1,0 +1,22 @@
+   Compiling rustnote v0.1.0 (C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust11\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.49s
+     Running tests\http.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/target11\debug\deps\http-ba2247ce37b7b691.exe)
+
+running 14 tests
+test health_returns_ok_json ... ok
+test notes_require_login ... ok
+test top_page_shows_links_when_logged_out ... ok
+test cross_site_post_is_403 ... ok
+test empty_title_is_400 ... ok
+test flash_message_is_shown_once ... ok
+test create_note_follows_prg_and_escapes_html ... ok
+test invalid_ids_and_unknown_urls_are_404 ... ok
+test toggle_and_delete_redirect ... ok
+test edit_with_stale_version_is_409 ... ok
+test list_searches_and_paginates ... ok
+test signup_validates_input_and_rejects_duplicates ... ok
+test other_users_notes_are_404 ... ok
+test login_and_logout ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.01s
+

@@ -1,0 +1,15 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.64s
+     Running tests\repository.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/target11\debug\deps\repository-74d08b56e783b6bc.exe)
+
+running 8 tests
+test migrations_are_applied_only_once ... ok
+test duplicate_email_is_a_unique_violation ... ok
+test update_uses_optimistic_locking ... ok
+test deleting_a_session_logs_out ... ok
+test sessions_expire ... ok
+test notes_are_isolated_per_owner ... ok
+test toggle_and_delete ... ok
+test search_filters_by_keyword_and_paginates ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.18s
+

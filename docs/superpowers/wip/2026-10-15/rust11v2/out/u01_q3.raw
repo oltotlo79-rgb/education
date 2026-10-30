@@ -1,0 +1,14 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.60s
+     Running tests\u01_q3.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/target11\debug\deps\u01_q3-ead5ae5e7277cf12.exe)
+
+running 1 test
+7文字（下の端 - 1） → Err(パスワードは8文字以上にしてください)
+8文字（下の端） → Ok(Password(***))
+128文字（上の端） → Ok(Password(***))
+129文字（上の端 + 1） → Err(パスワードは128文字以内にしてください)
+空白7つ + a（8文字） → Ok(Password(***))
+日本語8文字（24 バイト） → Ok(Password(***))
+test password_boundaries ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

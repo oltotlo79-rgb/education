@@ -1,6 +1,6 @@
    Compiling rustnote v0.1.0 (...\rustnote)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 8.46s
-     Running unittests src\lib.rs (target\debug\deps\rustnote-5cafc6c87c537344.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.50s
+     Running unittests src\lib.rs (target\debug\deps\rustnote-c39f4ee352b39312.exe)
 
 running 1 test
 test repository::notes::tests::like_special_characters_are_escaped ... ok

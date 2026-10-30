@@ -1,0 +1,23 @@
+   Compiling domain-lab-fuzz v0.0.0 (fuzz_lab/fuzz)
+    Finished `release` profile [optimized + debuginfo] target(s) in 0.59s
+    Finished `release` profile [optimized + debuginfo] target(s) in 0.07s
+     Running `~/rust11-fuzz-target/aarch64-unknown-linux-gnu/release/query_new -artifact_prefix=fuzz_lab/fuzz/artifacts/query_new/ -max_total_time=30 fuzz_lab/fuzz/corpus/query_new`
+INFO: Running with entropic power schedule (0xFF, 100).
+INFO: Seed: 704271340
+INFO: Loaded 1 modules   (2230 inline 8-bit counters): 2230 [0xb6a1bfa45a70, 0xb6a1bfa46326), 
+INFO: Loaded 1 PC tables (2230 PCs): 2230 [0xb6a1bfa46328,0xb6a1bfa4ee88), 
+INFO:        0 files found in fuzz_lab/fuzz/corpus/query_new
+INFO: -max_len is not provided; libFuzzer will not generate inputs larger than 4096 bytes
+INFO: A corpus is not provided, starting from an empty corpus
+#2	INITED cov: 36 ft: 37 corp: 1/1b exec/s: 0 rss: 32Mb
+#3	NEW    cov: 37 ft: 39 corp: 2/2b lim: 4 exec/s: 0 rss: 32Mb L: 1/1 MS: 1 CrossOver-
+	NEW_FUNC[1/1]: 0xb6a1bf997314  (~/rust11-fuzz-target/aarch64-unknown-linux-gnu/release/query_new+0x147314) (BuildId: 5296b431e1a882faed9722b9ab0c29c09c6145ef)
+#15	NEW    cov: 44 ft: 46 corp: 3/3b lim: 4 exec/s: 0 rss: 32Mb L: 1/1 MS: 2 ChangeBit-ChangeByte-
+#229	NEW    cov: 45 ft: 47 corp: 4/8b lim: 6 exec/s: 0 rss: 33Mb L: 5/5 MS: 4 ChangeBinInt-ChangeByte-InsertByte-InsertRepeatedBytes-
+#1048576	pulse  cov: 45 ft: 47 corp: 4/8b lim: 4096 exec/s: 349525 rss: 116Mb
+#2097152	pulse  cov: 45 ft: 47 corp: 4/8b lim: 4096 exec/s: 349525 rss: 195Mb
+#4194304	pulse  cov: 45 ft: 47 corp: 4/8b lim: 4096 exec/s: 349525 rss: 354Mb
+#8388608	pulse  cov: 45 ft: 47 corp: 4/8b lim: 4096 exec/s: 349525 rss: 605Mb
+#10639929	DONE   cov: 45 ft: 47 corp: 4/8b lim: 4096 exec/s: 343223 rss: 605Mb
+Done 10639929 runs in 31 second(s)
+exit=0

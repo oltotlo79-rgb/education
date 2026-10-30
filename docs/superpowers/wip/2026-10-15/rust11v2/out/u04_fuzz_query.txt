@@ -1,0 +1,85 @@
+   Compiling domain-lab-fuzz v0.0.0 (fuzz_lab/fuzz)
+    Finished `release` profile [optimized + debuginfo] target(s) in 0.56s
+    Finished `release` profile [optimized + debuginfo] target(s) in 0.07s
+     Running `~/rust11-fuzz-target/aarch64-unknown-linux-gnu/release/query_offset -artifact_prefix=fuzz_lab/fuzz/artifacts/query_offset/ fuzz_lab/fuzz/corpus/query_offset`
+INFO: Running with entropic power schedule (0xFF, 100).
+INFO: Seed: 3598584670
+INFO: Loaded 1 modules   (1535 inline 8-bit counters): 1535 [0xaeb148ae4a90, 0xaeb148ae508f), 
+INFO: Loaded 1 PC tables (1535 PCs): 1535 [0xaeb148ae5090,0xaeb148aeb080), 
+INFO:        0 files found in fuzz_lab/fuzz/corpus/query_offset
+INFO: -max_len is not provided; libFuzzer will not generate inputs larger than 4096 bytes
+INFO: A corpus is not provided, starting from an empty corpus
+#2	INITED exec/s: 0 rss: 31Mb
+WARNING: no interesting inputs were found so far. Is the code instrumented for coverage?
+This may also happen if the target rejected all inputs we tried so far
+	NEW_FUNC[1/9]: 0xaeb1489e864c  (~/rust11-fuzz-target/aarch64-unknown-linux-gnu/release/query_offset+0xe864c) (BuildId: 7158877d062452041bdca164ecf785efa36039ec)
+	NEW_FUNC[2/9]: 0xaeb1489ea258  (~/rust11-fuzz-target/aarch64-unknown-linux-gnu/release/query_offset+0xea258) (BuildId: 7158877d062452041bdca164ecf785efa36039ec)
+#17	NEW    cov: 32 ft: 33 corp: 2/5b lim: 4 exec/s: 0 rss: 32Mb L: 4/4 MS: 5 InsertByte-InsertByte-ShuffleBytes-ChangeBit-InsertByte-
+#23	NEW    cov: 33 ft: 35 corp: 3/9b lim: 4 exec/s: 0 rss: 32Mb L: 4/4 MS: 1 ChangeBit-
+
+thread '<unnamed>' (198) panicked at fuzz_lab/src/../../rustnote/src/domain.rs:370:19:
+attempt to subtract with overflow
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+==198== ERROR: libFuzzer: deadly signal
+    #0 0xaeb1489c149c  (~/rust11-fuzz-target/aarch64-unknown-linux-gnu/release/query_offset+0xc149c) (BuildId: 7158877d062452041bdca164ecf785efa36039ec)
+    #1 0xaeb148a03bd8  (~/rust11-fuzz-target/aarch64-unknown-linux-gnu/release/query_offset+0x103bd8) (BuildId: 7158877d062452041bdca164ecf785efa36039ec)
+    #2 0xaeb1489f1ebc  (~/rust11-fuzz-target/aarch64-unknown-linux-gnu/release/query_offset+0xf1ebc) (BuildId: 7158877d062452041bdca164ecf785efa36039ec)
+    #3 0xf15a4312a794  (linux-vdso.so.1+0x794) (BuildId: 44c714746debfb809cf625f3ddefee504d95b027)
+    #4 0xf15a42c37604  (/lib/aarch64-linux-gnu/libc.so.6+0x87604) (BuildId: d5ef86dde36cbd3289566cf5098226035d76f2e1)
+    #5 0xf15a42becb38  (/lib/aarch64-linux-gnu/libc.so.6+0x3cb38) (BuildId: d5ef86dde36cbd3289566cf5098226035d76f2e1)
+    #6 0xf15a42bd7dfc  (/lib/aarch64-linux-gnu/libc.so.6+0x27dfc) (BuildId: d5ef86dde36cbd3289566cf5098226035d76f2e1)
+    #7 0xaeb1489286f0  (~/rust11-fuzz-target/aarch64-unknown-linux-gnu/release/query_offset+0x286f0) (BuildId: 7158877d062452041bdca164ecf785efa36039ec)
+    #8 0xaeb1489286b4  (~/rust11-fuzz-target/aarch64-unknown-linux-gnu/release/query_offset+0x286b4) (BuildId: 7158877d062452041bdca164ecf785efa36039ec)
+    #9 0xaeb1489239f8  (~/rust11-fuzz-target/aarch64-unknown-linux-gnu/release/query_offset+0x239f8) (BuildId: 7158877d062452041bdca164ecf785efa36039ec)
+    #10 0xaeb148a607c4  (~/rust11-fuzz-target/aarch64-unknown-linux-gnu/release/query_offset+0x1607c4) (BuildId: 7158877d062452041bdca164ecf785efa36039ec)
+    #11 0xaeb148a52c84  (~/rust11-fuzz-target/aarch64-unknown-linux-gnu/release/query_offset+0x152c84) (BuildId: 7158877d062452041bdca164ecf785efa36039ec)
+    #12 0xaeb148a4e2c8  (~/rust11-fuzz-target/aarch64-unknown-linux-gnu/release/query_offset+0x14e2c8) (BuildId: 7158877d062452041bdca164ecf785efa36039ec)
+    #13 0xaeb148a53184  (~/rust11-fuzz-target/aarch64-unknown-linux-gnu/release/query_offset+0x153184) (BuildId: 7158877d062452041bdca164ecf785efa36039ec)
+    #14 0xaeb148928ce0  (~/rust11-fuzz-target/aarch64-unknown-linux-gnu/release/query_offset+0x28ce0) (BuildId: 7158877d062452041bdca164ecf785efa36039ec)
+    #15 0xaeb148928de8  (~/rust11-fuzz-target/aarch64-unknown-linux-gnu/release/query_offset+0x28de8) (BuildId: 7158877d062452041bdca164ecf785efa36039ec)
+    #16 0xaeb1489e86e0  (~/rust11-fuzz-target/aarch64-unknown-linux-gnu/release/query_offset+0xe86e0) (BuildId: 7158877d062452041bdca164ecf785efa36039ec)
+    #17 0xaeb1489ea6e4  (~/rust11-fuzz-target/aarch64-unknown-linux-gnu/release/query_offset+0xea6e4) (BuildId: 7158877d062452041bdca164ecf785efa36039ec)
+    #18 0xaeb1489eb3a0  (~/rust11-fuzz-target/aarch64-unknown-linux-gnu/release/query_offset+0xeb3a0) (BuildId: 7158877d062452041bdca164ecf785efa36039ec)
+    #19 0xaeb1489ec2b8  (~/rust11-fuzz-target/aarch64-unknown-linux-gnu/release/query_offset+0xec2b8) (BuildId: 7158877d062452041bdca164ecf785efa36039ec)
+    #20 0xaeb1489eac04  (~/rust11-fuzz-target/aarch64-unknown-linux-gnu/release/query_offset+0xeac04) (BuildId: 7158877d062452041bdca164ecf785efa36039ec)
+    #21 0xaeb1489f23ec  (~/rust11-fuzz-target/aarch64-unknown-linux-gnu/release/query_offset+0xf23ec) (BuildId: 7158877d062452041bdca164ecf785efa36039ec)
+    #22 0xaeb1489f81e8  (~/rust11-fuzz-target/aarch64-unknown-linux-gnu/release/query_offset+0xf81e8) (BuildId: 7158877d062452041bdca164ecf785efa36039ec)
+    #23 0xaeb1489f91d4  (~/rust11-fuzz-target/aarch64-unknown-linux-gnu/release/query_offset+0xf91d4) (BuildId: 7158877d062452041bdca164ecf785efa36039ec)
+    #24 0xaeb1489fa03c  (~/rust11-fuzz-target/aarch64-unknown-linux-gnu/release/query_offset+0xfa03c) (BuildId: 7158877d062452041bdca164ecf785efa36039ec)
+    #25 0xaeb148a130c4  (~/rust11-fuzz-target/aarch64-unknown-linux-gnu/release/query_offset+0x1130c4) (BuildId: 7158877d062452041bdca164ecf785efa36039ec)
+    #26 0xaeb148928f40  (~/rust11-fuzz-target/aarch64-unknown-linux-gnu/release/query_offset+0x28f40) (BuildId: 7158877d062452041bdca164ecf785efa36039ec)
+    #27 0xf15a42bd84c0  (/lib/aarch64-linux-gnu/libc.so.6+0x284c0) (BuildId: d5ef86dde36cbd3289566cf5098226035d76f2e1)
+    #28 0xf15a42bd8594  (/lib/aarch64-linux-gnu/libc.so.6+0x28594) (BuildId: d5ef86dde36cbd3289566cf5098226035d76f2e1)
+    #29 0xaeb1489290ec  (~/rust11-fuzz-target/aarch64-unknown-linux-gnu/release/query_offset+0x290ec) (BuildId: 7158877d062452041bdca164ecf785efa36039ec)
+
+NOTE: libFuzzer has rudimentary signal handlers.
+      Combine libFuzzer with AddressSanitizer or similar for better crash reports.
+SUMMARY: libFuzzer: deadly signal
+MS: 2 ChangeByte-CMP- DE: "\000\000\000\000"-; base unit: 30a43079862afcbbee48b9c3416157b655454a44
+0x0,0x0,0x0,0x0,0x0,0x2,0x43,0x3b,
+\000\000\000\000\000\002C;
+artifact_prefix='fuzz_lab/fuzz/artifacts/query_offset/'; Test unit written to fuzz_lab/fuzz/artifacts/query_offset/crash-87fc293da8f8dc8a90eb1c7141afe4533fc003dc
+Base64: AAAAAAACQzs=
+
+────────────────────────────────────────────────────────────────────────────────
+
+Failing input:
+
+	fuzz/artifacts/query_offset/crash-87fc293da8f8dc8a90eb1c7141afe4533fc003dc
+
+Output of `std::fmt::Debug`:
+
+	0
+
+Reproduce with:
+
+	cargo fuzz run query_offset fuzz/artifacts/query_offset/crash-87fc293da8f8dc8a90eb1c7141afe4533fc003dc
+
+Minimize test case with:
+
+	cargo fuzz tmin query_offset fuzz/artifacts/query_offset/crash-87fc293da8f8dc8a90eb1c7141afe4533fc003dc
+
+────────────────────────────────────────────────────────────────────────────────
+
+Error: Fuzz target exited with exit status: 77
+exit=1

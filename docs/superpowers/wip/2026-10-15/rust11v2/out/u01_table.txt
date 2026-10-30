@@ -1,6 +1,5 @@
-   Compiling rustnote v0.1.0 (...\rustnote)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 32.43s
-     Running tests\u01_title_table.rs (target\debug\deps\u01_title_table-6a49fd9e5e4e501b.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.87s
+     Running tests\u01_title_table.rs (target\debug\deps\u01_title_table-9a34595b02bbac44.exe)
 
 running 2 tests
 test note_title_follows_the_table ... ok  ふつうの日本語 → Ok("牛乳を買う")

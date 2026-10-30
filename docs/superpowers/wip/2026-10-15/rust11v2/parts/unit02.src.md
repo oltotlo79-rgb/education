@@ -130,7 +130,7 @@ cargo test --test u02_contract -- --nocapture
 ##### 解説2: 成功だけでなく、断られる場合を全部試す
 
 - `update` は4回呼びました。正しい version（1）なら成功して version 2 に、同じ version 1 でもう一度なら `VersionMismatch`（版の食い違い。別のタブで先に更新された）、無い id 99 なら `NotFound`、bob からなら `NotFound` です。
-- bob からの更新は、version を正しい 2 にしても `NotFound` でした。「他人のノートは、あっても無いのと同じ」という約束です（第8巻 UNIT 07（準備中））。`VersionMismatch` にすると、「そのノートはある」と bob に教えてしまいます。
+- bob からの更新は、version を正しい 2 にしても `NotFound` でした。「他人のノートは、あっても無いのと同じ」という約束です（第8巻 UNIT 07）。`VersionMismatch` にすると、「そのノートはある」と bob に教えてしまいます。
 - 削除は、bob から → `NotFound`、alice から → `Ok(())`、もう一度 → `NotFound` です。1回目と3回目の `NotFound` は、理由は違います（他人／もう無い）が、外から見ると同じです。
 
 ##### 解説3: 本物の DB でも、テストは速い
@@ -263,18 +263,18 @@ cargo test --test u02_shared
 
 - **何が起きたか:** `sign_up_alice` は通り、`alice_can_be_found` が `UniqueViolation`（同じメールアドレスが、もうある）で失敗しました。2つのテストは**同時に**動くので、先に alice を登録したほうが通り、あとのほうが失敗します。どちらが先かは、その時しだいです。
 
-同じことを、ファイルを消してから 8 回くり返すと、毎回1つは通り、もう1つの失敗の理由は、次のように変わりました。
+同じことを、ファイルを消してから 20 回くり返すと、毎回1つは通り、もう1つの失敗の理由は、次のように変わりました。
 
-| 失敗の理由 | 回数（8 回のうち） | どこで止まったか |
+| 失敗の理由 | 回数（20 回のうち） | どこで止まったか |
 |---|---|---|
-| `UniqueViolation`（alice がもういる） | 6 回 | alice を登録するところ |
-| `database is locked`（ほかの接続が書いている最中） | 1 回 | DB を開くところ |
-| `table notes already exists`（表がもうある） | 1 回 | マイグレーションのところ |
+| `UniqueViolation`（alice がもういる） | 17 回 | alice を登録するところ |
+| `database is locked`（ほかの接続が書いている最中） | 3 回 | DB を開くところ |
 
 ```text
 @@OUTGREP:u02_shared_locked:panicked|DB を開けません@@
-@@OUTGREP:u02_shared_migrate:panicked|マイグレーションに失敗@@
 ```
+
+- この 20 回では出ませんでしたが、前の版（Topcoat 0.10・Rust 1.99.0）で8回試したときには、マイグレーションのところで `table notes already exists`（表がもうある）で止まったことも1回ありました。
 
 - 2つのテストが、同じファイルを**同時に**開いて、同時にマイグレーションを当てようとするので、「表を作る」「書き込む」がぶつかります。どこでぶつかるかは、毎回違います。
 

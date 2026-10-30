@@ -1,0 +1,10 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.67s
+     Running tests\u04_query_prop.rs (target\debug\deps\u04_query_prop-4e90099103100818.exe)
+
+running 2 tests
+test offset_from_fields ... ok
+test offset_from_new ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+exit=0

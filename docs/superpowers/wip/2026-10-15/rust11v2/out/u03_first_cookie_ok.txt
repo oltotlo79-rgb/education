@@ -1,0 +1,9 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.70s
+     Running tests\e03_first_cookie.rs (target\debug\deps\e03_first_cookie-5b942404c3879fc4.exe)
+
+running 1 test
+test first_set_cookie_is_the_session ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.44s
+
+exit=0

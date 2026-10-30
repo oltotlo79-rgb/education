@@ -1,0 +1,20 @@
+run1 ok=1 reason=UniqueViolation
+run2 ok=1 reason=UniqueViolation
+run3 ok=1 reason=UniqueViolation
+run4 ok=1 reason=UniqueViolation
+run5 ok=1 reason=database is locked
+run6 ok=1 reason=database is locked
+run7 ok=1 reason=UniqueViolation
+run8 ok=1 reason=UniqueViolation
+run9 ok=1 reason=UniqueViolation
+run10 ok=1 reason=UniqueViolation
+run11 ok=1 reason=database is locked
+run12 ok=1 reason=UniqueViolation
+run13 ok=1 reason=UniqueViolation
+run14 ok=1 reason=UniqueViolation
+run15 ok=1 reason=UniqueViolation
+run16 ok=1 reason=UniqueViolation
+run17 ok=1 reason=UniqueViolation
+run18 ok=1 reason=UniqueViolation
+run19 ok=1 reason=UniqueViolation
+run20 ok=1 reason=UniqueViolation

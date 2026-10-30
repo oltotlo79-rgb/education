@@ -1,0 +1,18 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.79s
+     Running tests\u04_title_prop.rs (target\debug\deps\u04_title_prop-a7fb69f167a0c5d7.exe)
+
+running 3 tests
+test look_at_inputs ... 23 文字: "Ѩଳஆ𖢑$vvFzl=𑼨"…
+5 文字: "6🃆𑵢ᬳਫ਼"…
+69 文字: "𑴈\"\u{ccb}bjﺽz$?:፩o"…
+41 文字: "`ౡJ6´𑎂આ=🂠Ὶ¥𐀖"…
+98 文字: "/\\*=\u{748}=dக𑌹YȺ¥"…
+ok
+test parse_follows_the_rule ... proptest: FileFailurePersistence::SourceParallel set, but failed to find lib.rs or main.rs
+ok
+test parse_twice_is_the_same ... proptest: FileFailurePersistence::SourceParallel set, but failed to find lib.rs or main.rs
+ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.13s
+
+exit=0

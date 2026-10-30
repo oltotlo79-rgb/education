@@ -1,0 +1,20 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.62s
+     Running tests\u02_contract.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/target11\debug\deps\u02_contract-28783a9a9988e5a0.exe)
+
+running 1 test
+insert（alice）             → Ok（id=1 version=1 done=false title="初版"）
+   作成と更新の日時が同じ   → true
+find（alice）               → 見つかる: true
+find（bob）                 → 見つかる: false
+update（alice, version 1）  → Ok（id=1 version=2 done=false title="第2版"）
+update（alice, version 1）  → Err(VersionMismatch)
+update（alice, id 99）      → Err(NotFound)
+update（bob, version 2）    → Err(NotFound)
+toggle_done（alice）        → Ok（id=1 version=3 done=true title="第2版"）
+delete（bob）               → Err(NotFound)
+delete（alice）             → Ok(())
+delete（alice, もう一度）   → Err(NotFound)
+test note_repository_contract ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+

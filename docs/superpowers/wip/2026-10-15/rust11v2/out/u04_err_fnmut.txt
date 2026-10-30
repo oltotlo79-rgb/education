@@ -1,0 +1,26 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+error[E0596]: cannot borrow `seen` as mutable, as it is a captured variable in a `Fn` closure
+  --> tests\e04_fnmut.rs:43:26
+   |
+34 |       let mut seen = BTreeMap::new();
+   |           -------- `seen` declared here, outside the closure
+...
+42 |       let result = runner.run(&strategy, |(q, page, title, body)| {
+   |                           -              ------------------------ in this closure
+   |  _________________________|
+   | |
+43 | |         runtime.block_on(async {
+   | |                          ^^^^^ cannot borrow as mutable
+44 | |             // 一覧の検索とページ送り
+45 | |             let uri = format!("/notes?q={}&page={page}", percent_all(&q));
+46 | |             let status = app.get(&uri, Some(&alice)).await.status();
+47 | |             *seen.entry(format!("GET /notes → {status}")).or_insert(0) += 1;
+   | |              ---- mutable borrow occurs due to use of `seen` in closure
+...  |
+62 | |         })
+63 | |     });
+   | |______- expects `Fn` instead of `FnMut`
+
+For more information about this error, try `rustc --explain E0596`.
+error: could not compile `rustnote` (test "e04_fnmut") due to 1 previous error
+exit=101

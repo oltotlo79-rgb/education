@@ -1,0 +1,14 @@
+[A]
+    文字 1 ／ バイト 1 ／ UTF-16 1 ／ NoteTitle::parse は 合格
+[あ]
+    文字 1 ／ バイト 3 ／ UTF-16 1 ／ NoteTitle::parse は 合格
+[が（1文字で表した形）]
+    文字 1 ／ バイト 3 ／ UTF-16 1 ／ NoteTitle::parse は 合格
+[が（か + 濁点の2つで表した形）]
+    文字 2 ／ バイト 6 ／ UTF-16 2 ／ NoteTitle::parse は 合格
+[👍]
+    文字 1 ／ バイト 4 ／ UTF-16 2 ／ NoteTitle::parse は 合格
+[家族の絵文字]
+    文字 5 ／ バイト 18 ／ UTF-16 8 ／ NoteTitle::parse は 合格
+[ゼロ幅スペースだけ]
+    文字 1 ／ バイト 3 ／ UTF-16 1 ／ NoteTitle::parse は 合格

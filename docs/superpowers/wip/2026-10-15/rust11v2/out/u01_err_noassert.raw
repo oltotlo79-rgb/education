@@ -1,0 +1,9 @@
+   Compiling rustnote v0.1.0 (C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust11\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.00s
+     Running tests\e03_no_assert.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/target11\debug\deps\e03_no_assert-18f51359142ae564.exe)
+
+running 1 test
+test eighty_characters ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

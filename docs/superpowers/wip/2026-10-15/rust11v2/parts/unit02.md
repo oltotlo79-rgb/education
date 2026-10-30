@@ -209,8 +209,8 @@ cargo test --test u02_contract -- --nocapture
 **▼ 実行結果**
 
 ```text
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.44s
-     Running tests\u02_contract.rs (target\debug\deps\u02_contract-8e9944192195f42d.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.62s
+     Running tests\u02_contract.rs (target\debug\deps\u02_contract-28783a9a9988e5a0.exe)
 
 running 1 test
 insert（alice）             → Ok（id=1 version=1 done=false title="初版"）
@@ -227,7 +227,7 @@ delete（alice）             → Ok(())
 delete（alice, もう一度）   → Err(NotFound)
 test note_repository_contract ... ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.09s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
 ```
 
 #### ▼ コードを1つずつ分解して解説
@@ -240,7 +240,7 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 ##### 解説2: 成功だけでなく、断られる場合を全部試す
 
 - `update` は4回呼びました。正しい version（1）なら成功して version 2 に、同じ version 1 でもう一度なら `VersionMismatch`（版の食い違い。別のタブで先に更新された）、無い id 99 なら `NotFound`、bob からなら `NotFound` です。
-- bob からの更新は、version を正しい 2 にしても `NotFound` でした。「他人のノートは、あっても無いのと同じ」という約束です（第8巻 UNIT 07（準備中））。`VersionMismatch` にすると、「そのノートはある」と bob に教えてしまいます。
+- bob からの更新は、version を正しい 2 にしても `NotFound` でした。「他人のノートは、あっても無いのと同じ」という約束です（第8巻 UNIT 07）。`VersionMismatch` にすると、「そのノートはある」と bob に教えてしまいます。
 - 削除は、bob から → `NotFound`、alice から → `Ok(())`、もう一度 → `NotFound` です。1回目と3回目の `NotFound` は、理由は違います（他人／もう無い）が、外から見ると同じです。
 
 ##### 解説3: 本物の DB でも、テストは速い
@@ -286,9 +286,9 @@ cargo test --test repository
 running 8 tests
 test migrations_are_applied_only_once ... ok
 test duplicate_email_is_a_unique_violation ... ok
+test update_uses_optimistic_locking ... ok
 test deleting_a_session_logs_out ... ok
 test sessions_expire ... ok
-test update_uses_optimistic_locking ... ok
 test notes_are_isolated_per_owner ... ok
 test toggle_and_delete ... ok
 test search_filters_by_keyword_and_paginates ... FAILED
@@ -297,7 +297,7 @@ failures:
 
 ---- search_filters_by_keyword_and_paginates stdout ----
 
-thread 'search_filters_by_keyword_and_paginates' (198152) panicked at tests\repository.rs:198:5:
+thread 'search_filters_by_keyword_and_paginates' (215108) panicked at tests\repository.rs:198:5:
 assertion `left == right` failed
   left: 0
  right: 1
@@ -307,7 +307,7 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 failures:
     search_filters_by_keyword_and_paginates
 
-test result: FAILED. 7 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.25s
+test result: FAILED. 7 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.18s
 
 error: test failed, to rerun pass `--test repository`
 ```
@@ -363,8 +363,8 @@ running 8 tests
 test migrations_are_applied_only_once ... ok
 test duplicate_email_is_a_unique_violation ... ok
 test deleting_a_session_logs_out ... ok
-test sessions_expire ... ok
 test update_uses_optimistic_locking ... ok
+test sessions_expire ... ok
 test toggle_and_delete ... ok
 test notes_are_isolated_per_owner ... FAILED
 test search_filters_by_keyword_and_paginates ... ok
@@ -373,7 +373,7 @@ failures:
 
 ---- notes_are_isolated_per_owner stdout ----
 
-thread 'notes_are_isolated_per_owner' (187916) panicked at tests\repository.rs:90:5:
+thread 'notes_are_isolated_per_owner' (218972) panicked at tests\repository.rs:90:5:
 assertion failed: matches!(notes.delete(bob.id, note.id).await, Err(RepoError::NotFound))
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 
@@ -381,7 +381,7 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 failures:
     notes_are_isolated_per_owner
 
-test result: FAILED. 7 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.22s
+test result: FAILED. 7 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.19s
 
 error: test failed, to rerun pass `--test repository`
 ```
@@ -451,7 +451,7 @@ failures:
 
 ---- other_user_cannot_delete stdout ----
 
-thread 'other_user_cannot_delete' (196796) panicked at tests\u02_owner_delete.rs:35:5:
+thread 'other_user_cannot_delete' (215892) panicked at tests\u02_owner_delete.rs:35:5:
 bob の削除は NotFound のはずが、Ok(()) だった
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 
@@ -521,7 +521,7 @@ failures:
 
 ---- alice_can_be_found stdout ----
 
-thread 'alice_can_be_found' (194980) panicked at tests\u02_shared.rs:29:51:
+thread 'alice_can_be_found' (219836) panicked at tests\u02_shared.rs:29:51:
 called `Result::unwrap()` on an `Err` value: UniqueViolation("SQLite failure: `UNIQUE constraint failed: users.email`")
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 
@@ -536,20 +536,19 @@ error: test failed, to rerun pass `--test u02_shared`
 
 - **何が起きたか:** `sign_up_alice` は通り、`alice_can_be_found` が `UniqueViolation`（同じメールアドレスが、もうある）で失敗しました。2つのテストは**同時に**動くので、先に alice を登録したほうが通り、あとのほうが失敗します。どちらが先かは、その時しだいです。
 
-同じことを、ファイルを消してから 8 回くり返すと、毎回1つは通り、もう1つの失敗の理由は、次のように変わりました。
+同じことを、ファイルを消してから 20 回くり返すと、毎回1つは通り、もう1つの失敗の理由は、次のように変わりました。
 
-| 失敗の理由 | 回数（8 回のうち） | どこで止まったか |
+| 失敗の理由 | 回数（20 回のうち） | どこで止まったか |
 |---|---|---|
-| `UniqueViolation`（alice がもういる） | 6 回 | alice を登録するところ |
-| `database is locked`（ほかの接続が書いている最中） | 1 回 | DB を開くところ |
-| `table notes already exists`（表がもうある） | 1 回 | マイグレーションのところ |
+| `UniqueViolation`（alice がもういる） | 17 回 | alice を登録するところ |
+| `database is locked`（ほかの接続が書いている最中） | 3 回 | DB を開くところ |
 
 ```text
-thread 'sign_up_alice' (186904) panicked at tests\u02_shared.rs:13:41:
+thread 'alice_can_be_found' (215524) panicked at tests\u02_shared.rs:13:41:
 DB を開けません: SqliteFailure(5, "database is locked")
-thread 'alice_can_be_found' (197884) panicked at tests\u02_shared.rs:14:28:
-マイグレーションに失敗: Apply { version: "0002_notes", source: SqliteFailure(1, "table notes already exists") }
 ```
+
+- この 20 回では出ませんでしたが、前の版（Topcoat 0.10・Rust 1.99.0）で8回試したときには、マイグレーションのところで `table notes already exists`（表がもうある）で止まったことも1回ありました。
 
 - 2つのテストが、同じファイルを**同時に**開いて、同時にマイグレーションを当てようとするので、「表を作る」「書き込む」がぶつかります。どこでぶつかるかは、毎回違います。
 
@@ -565,13 +564,13 @@ failures:
 
 ---- sign_up_alice stdout ----
 
-thread 'sign_up_alice' (198816) panicked at tests\u02_shared.rs:22:51:
+thread 'sign_up_alice' (218360) panicked at tests\u02_shared.rs:22:51:
 called `Result::unwrap()` on an `Err` value: UniqueViolation("SQLite failure: `UNIQUE constraint failed: users.email`")
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 
 ---- alice_can_be_found stdout ----
 
-thread 'alice_can_be_found' (185664) panicked at tests\u02_shared.rs:29:51:
+thread 'alice_can_be_found' (218476) panicked at tests\u02_shared.rs:29:51:
 called `Result::unwrap()` on an `Err` value: UniqueViolation("SQLite failure: `UNIQUE constraint failed: users.email`")
 
 
@@ -579,7 +578,7 @@ failures:
     alice_can_be_found
     sign_up_alice
 
-test result: FAILED. 0 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+test result: FAILED. 0 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
 
 error: test failed, to rerun pass `--test u02_shared`
 ```
@@ -640,7 +639,7 @@ test notes_are_isolated_per_owner ... ok
 test toggle_and_delete ... ok
 test search_filters_by_keyword_and_paginates ... ok
 
-test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.21s
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.18s
 ```
 
 - 8つのテストは、同時に動いて、0.2 秒ほどで終わりました。どれも自分の DB を持っているので、同時に動いてもぶつかりません。
@@ -723,7 +722,7 @@ sqlite   → 1 件
 äpfel    → 0 件
 test like_and_letter_case ... ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
 ```
 
 - `Rust`・`rust`・`RUST` は、どれも 1 件でした。SQLite の `LIKE` は、**英字（ASCII）の大文字と小文字を区別しません**。本文にだけある `sqlite` も見つかりました（タイトルと本文の両方を探す SQL だからです）。
@@ -803,7 +802,7 @@ delete_expired（T - 1秒）→ 0 件消した
 delete_expired（T ちょうど）→ 1 件消した
 test session_expiry_boundary ... ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
 ```
 
 - 期限ちょうどの T では、もう見つかりませんでした。`find_user` の SQL は `s.expires_at > ?2`（期限が今より**あと**なら有効）で、`delete_expired` は `expires_at <= ?1`（期限が今か、今より**前**なら消す）です。T ちょうどは「使えない」側と「消す」側の両方に入るので、すき間も重なりもありません。
@@ -901,7 +900,7 @@ users から 1 行消した
 消した後: users=1 notes=2 sessions=1
 test deleting_a_user_cascades ... ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
 ```
 
 - `users` から alice の1行を消すと、alice のノート2件とセッション1つも、一緒に消えました。bob の分は残っています。

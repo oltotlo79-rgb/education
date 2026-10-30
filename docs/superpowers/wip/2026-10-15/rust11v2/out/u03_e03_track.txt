@@ -1,0 +1,27 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.06s
+     Running tests\e03_track.rs (target\debug\deps\e03_track-496b4330bf971384.exe)
+
+running 1 test
+test guests_are_redirected ... FAILED
+
+failures:
+
+---- guests_are_redirected stdout ----
+GET /notes -> 303 See Other (451µs)
+GET /notes/1 -> 303 See Other (41µs)
+
+thread 'guests_are_redirected' (217604) panicked at tests\e03_track.rs:20:5:
+assertion `left == right` failed: 移動先
+  left: "/login"
+ right: "/notes"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    guests_are_redirected
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+
+error: test failed, to rerun pass `--test e03_track`
+exit=101

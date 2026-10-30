@@ -1,6 +1,5 @@
-   Compiling rustnote v0.1.0 (...\rustnote)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.41s
-     Running tests\u02_shared.rs (target\debug\deps\u02_shared-de1d4dfa81ffe62c.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.47s
+     Running tests\u02_shared.rs (target\debug\deps\u02_shared-3f5017b295a13dc7.exe)
 
 running 2 tests
 test sign_up_alice ... ok
@@ -10,7 +9,7 @@ failures:
 
 ---- alice_can_be_found stdout ----
 
-thread 'alice_can_be_found' (194980) panicked at tests\u02_shared.rs:29:51:
+thread 'alice_can_be_found' (219836) panicked at tests\u02_shared.rs:29:51:
 called `Result::unwrap()` on an `Err` value: UniqueViolation("SQLite failure: `UNIQUE constraint failed: users.email`")
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 

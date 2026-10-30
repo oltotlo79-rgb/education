@@ -1,0 +1,9 @@
+   Compiling rustnote v0.1.0 (C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust11\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.47s
+     Running tests\u02_owner_delete.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/target11\debug\deps\u02_owner_delete-ecec0fbea0229325.exe)
+
+running 1 test
+test other_user_cannot_delete ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+

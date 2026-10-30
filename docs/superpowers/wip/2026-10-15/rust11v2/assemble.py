@@ -5,7 +5,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 OUT = Path("C:/Users/oltot/Documents/git-projects/def/Rust/11_品質保証_テスト_セキュリティ_可観測性_性能.md")
-ORDER = ["intro.md"] + [f"unit{n:02}.md" for n in range(1, 3)] + ["outro.md"]
+ORDER = ["intro.md"] + [f"unit{n:02}.md" for n in range(1, 5)] + ["outro.md"]
 
 texts = []
 for name in ORDER:

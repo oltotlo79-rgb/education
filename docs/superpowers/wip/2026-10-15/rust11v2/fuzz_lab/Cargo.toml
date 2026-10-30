@@ -1,0 +1,9 @@
+[package]
+name = "domain-lab"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+# RustNote の src/domain.rs だけを取り込んで fuzz するための、練習用のクレート
+[dependencies]
+thiserror = "=2.0.21"

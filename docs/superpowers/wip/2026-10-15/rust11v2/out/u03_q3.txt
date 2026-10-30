@@ -1,0 +1,16 @@
+   Compiling rustnote v0.1.0 (...\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.24s
+     Running tests\u03_q3.rs (target\debug\deps\u03_q3-dbc14a6e240b537f.exe)
+
+running 1 test
+POST /signup -> 303 See Other (428.217ms)
+POST /notes -> 303 See Other (9.2461ms)
+GET /notes -> 200 OK (7.117ms)
+本文の中の形: <li class="note-item"><a href="/notes/1">&lt;b&gt;太字&lt;/b&gt; &amp; "引用"</a>
+リンクの文字: ["<b>太字</b> & \"引用\""]
+一覧の中の b 要素: 0 個
+test titles_are_text_not_html ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.46s
+
+exit=0

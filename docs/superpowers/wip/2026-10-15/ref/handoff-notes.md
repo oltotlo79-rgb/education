@@ -1,5 +1,16 @@
 # 中断時点の引き継ぎメモ
 
+## 2026-10-31（続き2）: 第11巻 UNIT 01〜04（main: 75ce81b 取り直し、99473a3 UNIT 03、d67b991 UNIT 04）
+
+素材は `rust11v2/`（parts・out・errs（置き換え表と、わざと間違えたテスト）・rustnote/（tests・examples・Cargo.toml・Cargo.lock）・fuzz_lab（target と corpus を除く）・cap11*.sh）。ビルド先は `target11`。練習用のコピーの `Cargo.toml` に dev-dependency の `scraper =0.29.0`・`proptest =1.12.0` を足した（教材の RustNote には足していない）。
+
+- **取り直し:** UNIT 01〜02 は版の表と出力だけが変わった。同じ DB を使い回すテストは 20 回で UniqueViolation 17・locked 3（前の版で出た already exists は出ず、そう書いた）。
+- **UNIT 03（HTTP のテスト）:** Set-Cookie の順番は cookie 0.18.2 の HashSet で毎回変わる（1つ目を読むテストは 10 回中 1 回、別の 10 回では 6 回失敗）。`#[track_caller]` で失敗の行が道具の中（12 行目）から呼んだ行（20 行目）になる。守りのヘッダー（X-Frame-Options・CSP・nosniff・Referrer-Policy・HSTS・Cache-Control）は1つも無い（改善点）。検索を前に一致に壊すと contains と tests/http.rs の 14 個は通り、scraper と tests/repository.rs（203 行目）だけが気づく。
+- **UNIT 04（property test・fuzz）:** **本物のバグ:** 題が NUL で始まると 500（Rust は1文字、SQLite の length() は NUL より前だけ数えて 0 → CHECK）。でたらめな HTTP 入力 300 回を 10 回くり返して見つかったのは 3 回。直し方（parse で制御文字を断る）はコピーでだけ試した。UTF-8 として読めないバイトは U+FFFD に置き換えて受け取られる。`NoteQuery` の項目が pub なので `page: 0` で offset が引き算のあふれ（proptest の any::<u32>() 256 回は見逃し、cargo-fuzz はすぐ見つけた）。空白を除き忘れた版は `\PC{0,100}` では見つからず、空白に寄せた作り方で見つかった。手で動かす TestRunner は失敗の種を保存しない（no source file known）。
+- **WSL:** Ubuntu 24.04（aarch64）に nightly（rustc 1.101.0-nightly 2026-10-29）と cargo-fuzz 0.13.2 を入れた（rustup は 1.29.2 に自動で上がった）。Git Bash から wsl.exe に /mnt/c のパスを渡すとパス変換されるので、PowerShell から `wsl -d Ubuntu -- bash -l <パス>` で動かす。fuzz のビルド先は `~/rust11-fuzz-target`。
+- **RustNote の直す候補（バグ）:** NUL で始まる題の 500。教材のコードを直すかは、第13巻（完全コード）を書く前に決める。
+- **次:** 第11巻 UNIT 05（E2E・ブラウザ・アクセシビリティ）→ 06〜10 → 第13巻 → 第12巻 → 第1巻。
+
 ## 2026-10-31（続き）: 第8巻を完成（main: UNIT 03〜09 は1つずつ、UNIT 10 と巻の仕上げ）
 
 素材は `rust08v2/`（parts・out・errs（置き換え表）・variants/audit.rs・rustnote/（tests・examples・Cargo.toml・Cargo.lock・toolchain）・cap08_uNN.sh・ba_demo（node_modules と .sqlite を除く）・mfa_lab（target を除く）・browser（site と 2 つのログ））。ビルド先は `target08`、mfa_lab は自分の target。

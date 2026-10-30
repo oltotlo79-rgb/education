@@ -1,0 +1,7 @@
+$ cargo +nightly fuzz fmt query_offset fuzz/artifacts/query_offset/crash-87fc293da8f8dc8a90eb1c7141afe4533fc003dc
+
+Output of `std::fmt::Debug`:
+
+0
+$ xxd fuzz/artifacts/query_offset/crash-87fc293da8f8dc8a90eb1c7141afe4533fc003dc
+00000000: 0000 0000 0002 433b                      ......C;

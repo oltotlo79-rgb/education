@@ -231,8 +231,8 @@ cargo test --test u01_title_table -- --nocapture --test-threads=1
 **▼ 実行結果**（最初の1回は `Compiling` の行が続きます。ここでは省いています）
 
 ```text
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 32.43s
-     Running tests\u01_title_table.rs (target\debug\deps\u01_title_table-6a49fd9e5e4e501b.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.87s
+     Running tests\u01_title_table.rs (target\debug\deps\u01_title_table-9a34595b02bbac44.exe)
 
 running 2 tests
 test note_title_follows_the_table ... ok  ふつうの日本語 → Ok("牛乳を買う")
@@ -408,8 +408,8 @@ cargo test --test e01_wrong_row
 ```
 
 ```text
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.22s
-     Running tests\e01_wrong_row.rs (target\debug\deps\e01_wrong_row-41a050fd370554c8.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.63s
+     Running tests\e01_wrong_row.rs (target\debug\deps\e01_wrong_row-ee6ba07e72d8d14e.exe)
 
 running 1 test
 test title_length_rows ... FAILED
@@ -418,7 +418,7 @@ failures:
 
 ---- title_length_rows stdout ----
 
-thread 'title_length_rows' (151252) panicked at tests\e01_wrong_row.rs:11:9:
+thread 'title_length_rows' (218780) panicked at tests\e01_wrong_row.rs:11:9:
 assertion `left == right` failed: 81文字 の行が合いません
   left: false
  right: true
@@ -501,8 +501,8 @@ cargo test --test e03_no_assert
 ```
 
 ```text
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.16s
-     Running tests\e03_no_assert.rs (target\debug\deps\e03_no_assert-5a6ef5e20346be07.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.00s
+     Running tests\e03_no_assert.rs (target\debug\deps\e03_no_assert-18f51359142ae564.exe)
 
 running 1 test
 test eighty_characters ... ok
@@ -511,7 +511,7 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 ```
 
 - **何が起きたか:** 間違えた版（80 文字の日本語を「長すぎる」と断る）なのに、テストは `ok` でした。`let _ = ...` で結果を捨てているので、何が返ってきても失敗しません。テストは、**panic したら失敗、しなければ成功**という仕組みだからです。
-- **見つけ方:** 例1-1のように、わざと間違えた版を当てて、テストが失敗するかを確かめます。失敗しないテストは、件数を増やすだけで、何も守っていません。この「わざと間違いを入れて、テストが気づくか」を道具で自動にしたものを、ミューテーションテストと呼びます（UNIT 04（準備中））。
+- **見つけ方:** 例1-1のように、わざと間違えた版を当てて、テストが失敗するかを確かめます。失敗しないテストは、件数を増やすだけで、何も守っていません。この「わざと間違いを入れて、テストが気づくか」を道具で自動にしたものを、ミューテーションテストと呼びます（UNIT 04）。
 
 ### RustNote ではここで使う
 
@@ -649,8 +649,8 @@ cargo test --test u01_q1 -- --nocapture
 ```
 
 ```text
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.46s
-     Running tests\u01_q1.rs (target\debug\deps\u01_q1-81fa10c5a5eabbd3.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.65s
+     Running tests\u01_q1.rs (target\debug\deps\u01_q1-bce08f7bd283041f.exe)
 
 running 1 test
 ok ふつう → Ok("alice@example.com")
@@ -714,8 +714,8 @@ cargo test --test u01_q2 -- --nocapture
 ```
 
 ```text
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.65s
-     Running tests\u01_q2.rs (target\debug\deps\u01_q2-d924c1589f8ead12.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.61s
+     Running tests\u01_q2.rs (target\debug\deps\u01_q2-07596b0af0a888f4.exe)
 
 running 1 test
 "1" → Ok(1)
@@ -728,7 +728,7 @@ running 1 test
 "01" → Ok(1)
 test note_id_boundaries ... ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 ```
 
 - 下の端は、`"1"` が合格、`"0"` と `"-1"` が「ID は 1 以上の数です」でした。上の端は、`i64` の最大値 `9223372036854775807` が合格、1 つ大きい `9223372036854775808` が不合格です。
@@ -772,8 +772,8 @@ cargo test --test u01_q3 -- --nocapture
 ```
 
 ```text
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.84s
-     Running tests\u01_q3.rs (target\debug\deps\u01_q3-f9715f282720c475.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.60s
+     Running tests\u01_q3.rs (target\debug\deps\u01_q3-ead5ae5e7277cf12.exe)
 
 running 1 test
 7文字（下の端 - 1） → Err(パスワードは8文字以上にしてください)

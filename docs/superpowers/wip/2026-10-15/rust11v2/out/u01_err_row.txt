@@ -1,6 +1,6 @@
    Compiling rustnote v0.1.0 (...\rustnote)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.22s
-     Running tests\e01_wrong_row.rs (target\debug\deps\e01_wrong_row-41a050fd370554c8.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.63s
+     Running tests\e01_wrong_row.rs (target\debug\deps\e01_wrong_row-ee6ba07e72d8d14e.exe)
 
 running 1 test
 test title_length_rows ... FAILED
@@ -9,7 +9,7 @@ failures:
 
 ---- title_length_rows stdout ----
 
-thread 'title_length_rows' (151252) panicked at tests\e01_wrong_row.rs:11:9:
+thread 'title_length_rows' (218780) panicked at tests\e01_wrong_row.rs:11:9:
 assertion `left == right` failed: 81文字 の行が合いません
   left: false
  right: true

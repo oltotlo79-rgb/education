@@ -1,6 +1,6 @@
    Compiling rustnote v0.1.0 (...\rustnote)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.43s
-     Running tests\u02_owner_delete.rs (target\debug\deps\u02_owner_delete-72258de9d4b0a343.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.12s
+     Running tests\u02_owner_delete.rs (target\debug\deps\u02_owner_delete-ecec0fbea0229325.exe)
 
 running 1 test
 test other_user_cannot_delete ... FAILED
@@ -9,7 +9,7 @@ failures:
 
 ---- other_user_cannot_delete stdout ----
 
-thread 'other_user_cannot_delete' (196796) panicked at tests\u02_owner_delete.rs:35:5:
+thread 'other_user_cannot_delete' (215892) panicked at tests\u02_owner_delete.rs:35:5:
 bob の削除は NotFound のはずが、Ok(()) だった
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 

@@ -1,0 +1,29 @@
+   Compiling rustnote v0.1.0 (C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust11\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.74s
+     Running tests\repository.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/target11\debug\deps\repository-74d08b56e783b6bc.exe)
+
+running 8 tests
+test migrations_are_applied_only_once ... ok
+test duplicate_email_is_a_unique_violation ... ok
+test deleting_a_session_logs_out ... ok
+test update_uses_optimistic_locking ... ok
+test sessions_expire ... ok
+test toggle_and_delete ... ok
+test notes_are_isolated_per_owner ... FAILED
+test search_filters_by_keyword_and_paginates ... ok
+
+failures:
+
+---- notes_are_isolated_per_owner stdout ----
+
+thread 'notes_are_isolated_per_owner' (218972) panicked at tests\repository.rs:90:5:
+assertion failed: matches!(notes.delete(bob.id, note.id).await, Err(RepoError::NotFound))
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    notes_are_isolated_per_owner
+
+test result: FAILED. 7 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.19s
+
+error: test failed, to rerun pass `--test repository`

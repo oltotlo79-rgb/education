@@ -1,6 +1,5 @@
-   Compiling rustnote v0.1.0 (...\rustnote)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.06s
-     Running tests\repository.rs (target\debug\deps\repository-411ae9b50fa8c3de.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.64s
+     Running tests\repository.rs (target\debug\deps\repository-74d08b56e783b6bc.exe)
 
 running 8 tests
 test migrations_are_applied_only_once ... ok
@@ -12,6 +11,6 @@ test notes_are_isolated_per_owner ... ok
 test toggle_and_delete ... ok
 test search_filters_by_keyword_and_paginates ... ok
 
-test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.21s
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.18s
 
 exit=0

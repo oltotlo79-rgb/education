@@ -1,0 +1,30 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.83s
+     Running tests\u04_shrink.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/target11\debug\deps\u04_shrink-0cc3cd24342cab27.exe)
+
+running 2 tests
+test a_forgot_trim ... ok
+test b_counted_bytes ... FAILED
+
+failures:
+
+---- b_counted_bytes stdout ----
+proptest: FileFailurePersistence::SourceParallel set, but failed to find lib.rs or main.rs
+
+thread 'b_counted_bytes' (213620) panicked at tests\u04_shrink.rs:23:1:
+Test failed: assertion failed: `(left == right)` 
+  left: `false`,
+ right: `true` at tests\u04_shrink.rs:31.
+minimal failing input: input = "טּ A0ￊ0a  aA¡AA౦ 🀀Aa𝒞Σa𑿿a฿அ 0®ꭰA𐀼𐊠A  ០  ໆ\u{cc6}𐀿"
+	successes: 0
+	local rejects: 0
+	global rejects: 0
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    b_counted_bytes
+
+test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+
+error: test failed, to rerun pass `--test u04_shrink`

@@ -1,0 +1,19 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.65s
+     Running tests\u01_q1.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/target11\debug\deps\u01_q1-bce08f7bd283041f.exe)
+
+running 1 test
+ok ふつう → Ok("alice@example.com")
+ok 空白と大文字 → Ok("alice@example.com")
+ok @ が無い → Err(メールアドレスに @ がありません)
+ok @ の前が空 → Err(メールアドレスの形式が正しくありません)
+ok @ の後ろが空 → Err(メールアドレスの形式が正しくありません)
+ok ドメインに . が無い → Err(メールアドレスの形式が正しくありません)
+ok ドメインが . で始まる → Err(メールアドレスの形式が正しくありません)
+ok 途中に空白 → Err(メールアドレスの形式が正しくありません)
+ok @ が2つ → Err(メールアドレスの形式が正しくありません)
+ok 254 バイト（上の端） → Ok（254 バイト）
+ok 255 バイト（上の端 + 1） → Err(メールアドレスが長すぎます)
+test email_follows_the_table ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

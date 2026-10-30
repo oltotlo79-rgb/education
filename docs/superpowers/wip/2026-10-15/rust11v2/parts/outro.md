@@ -1,6 +1,6 @@
 ## この巻のまとめ
 
-この版に収録した UNIT 01〜02 で、次のことができるようになったかを確かめましょう。できたものに印を付けてください。
+この版に収録した UNIT 01〜04 で、次のことができるようになったかを確かめましょう。できたものに印を付けてください。
 
 **UNIT 01: ユニットテスト・境界値・表の形のテスト**
 
@@ -21,11 +21,27 @@
 - ☐ 1つの DB ファイルを使い回したテストが、実行のたびに違う理由（UNIQUE・locked・表がもうある）で失敗することと、`common::test_db()` で直す理由を言える
 - ☐ 検索の大文字と小文字・セッションの期限ちょうど・ユーザーを消したときの CASCADE を、本物の DB で確かめられる
 
-> **お知らせ:** この版には UNIT 01〜02 を収録しています。UNIT 03（HTTP のテスト）・UNIT 04（property test・fuzz・入力の読み取り）・UNIT 05（E2E・ブラウザ・アクセシビリティ）・UNIT 06（守りの回帰テスト）・UNIT 07（tracing・メトリクス・health・SLO）・UNIT 08（benchmark・profile・メモリの使い方）・UNIT 09（負荷試験・背圧・容量）・UNIT 10（CI・依存・供給網・事故の対応）は準備中で、次の更新から順に追加します。それまでの間、RustNote のテストは、`Rust/rustnote/tests/http.rs` と `tests/repository.rs`、`src/` の各ファイルの最後の `#[cfg(test)]` で読めます。
+**UNIT 03: HTTP のテスト**
+
+- ☐ レスポンスの4つの部分（状態コード・ヘッダー・Set-Cookie・本文）を全部表示して読み、それぞれ何を確かめればよいかを言える
+- ☐ assert_redirect や cookie_attributes のような確かめの道具を作り、#[track_caller] で、失敗の場所をテストの行にできる
+- ☐ 本文を contains ではなく、scraper の CSS セレクターで要素を決めて確かめる理由を、空の一覧でも通ってしまう例で説明できる
+- ☐ 同じ名前のヘッダーを get_all で全部読み、名前で探す理由（Set-Cookie の順番は決まっていない）を言える
+- ☐ body_text のあとでレスポンスを使えない E0382 を読み、状態コードを先に取っておく形に直せる
+
+**UNIT 04: property test・fuzz・入力の読み取り**
+
+- ☐ 「どんな入力でも成り立つ決まり」を関数で書き、proptest にでたらめな入力を作らせて確かめられる
+- ☐ 失敗した入力が縮められる（shrink）様子と、種が .proptest-regressions に保存される仕組みを説明できる
+- ☐ でたらめな入力を HTTP の入口に送り、500 にならないことを確かめ、見つかった入力（NUL で始まる題）の原因を追える
+- ☐ cargo-fuzz（WSL の nightly）で fuzz target を書いて動かし、見つかった入力を cargo fuzz fmt で読める
+- ☐ でたらめな試しは見つけない回もあることと、作り方を間違いの出やすい形に寄せる理由を言える
+
+> **お知らせ:** この版には UNIT 01〜04 を収録しています。UNIT 05（E2E・ブラウザ・アクセシビリティ）・UNIT 06（守りの回帰テスト）・UNIT 07（tracing・メトリクス・health・SLO）・UNIT 08（benchmark・profile・メモリの使い方）・UNIT 09（負荷試験・背圧・容量）・UNIT 10（CI・依存・供給網・事故の対応）は準備中で、次の更新から順に追加します。それまでの間、RustNote のテストは、`Rust/rustnote/tests/http.rs` と `tests/repository.rs`、`src/` の各ファイルの最後の `#[cfg(test)]` で読めます。
 
 ## 用語ミニ辞典
 
-この巻（UNIT 01〜02）に出てきた用語です。
+この巻（UNIT 01〜04）に出てきた用語です。
 
 ### UNIT 01 の用語
 
@@ -57,3 +73,28 @@
 | 共有しているもの | DB のファイル・ポート番号・環境変数・今の時刻など、テストどうしで同じものを使う所。ときどき失敗するテストの原因になる |
 | `database is locked` | ほかの接続が書いている最中で、DB を使えなかったときの SQLite のエラー |
 | `ON DELETE CASCADE` | 参照先の行が消えたら、参照している行も一緒に消す、という表の約束 |
+
+### UNIT 03 の用語
+
+| 用語 | 意味 |
+|---|---|
+| ヘッダー | レスポンスの本文の前に付く「名前: 値」の行。同じ名前の行が、いくつあってもよい |
+| `Set-Cookie` | クッキーを渡すヘッダー。`HttpOnly`・`Secure`・`SameSite`・`Path`・`Max-Age` などの属性が付く |
+| CSS セレクター | `ul.note-list li a` のように、HTML の要素を場所で指定する書き方 |
+| `scraper` | HTML を読み、CSS セレクターで要素を探すクレート |
+| `#[track_caller]` | 関数の中で失敗したとき、その関数を呼んだ行を、失敗の場所として表示させる印 |
+| `get_all` | 同じ名前のヘッダーを、全部取り出すメソッド（`get` は1つ目だけ） |
+| 守りのヘッダー | `X-Frame-Options`・`Content-Security-Policy` など、ブラウザに守り方を伝えるヘッダー |
+
+### UNIT 04 の用語
+
+| 用語 | 意味 |
+|---|---|
+| property test | どんな入力でも成り立つ決まりを、道具が作るたくさんの入力で確かめるテスト |
+| proptest | Rust の property test のクレート。`proptest!` と strategy で入力を作る |
+| strategy | 入力の作り方。正規表現の文字列・`any::<u32>()`・`prop_oneof!` など |
+| shrink | 失敗した入力を、失敗したまま、小さく縮めること |
+| `.proptest-regressions` | 失敗した入力の種を保存するファイル。Git に入れて共有する |
+| fuzz・fuzzer | 入力を少しずつ変えて、とても多く試し、パニックを探すこと・その道具 |
+| cargo-fuzz | libFuzzer を使う Rust の fuzz の道具。nightly で動く |
+| NUL | 番号が 0 の文字。SQLite の `length()` は NUL より前だけを数える |

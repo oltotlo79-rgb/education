@@ -1,0 +1,23 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.61s
+     Running tests\u02_shared.rs (target\debug\deps\u02_shared-3f5017b295a13dc7.exe)
+
+running 2 tests
+test alice_can_be_found ... FAILED
+test sign_up_alice ... ok
+
+failures:
+
+---- alice_can_be_found stdout ----
+
+thread 'alice_can_be_found' (219920) panicked at tests\u02_shared.rs:13:41:
+DB を開けません: SqliteFailure(5, "database is locked")
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    alice_can_be_found
+
+test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+
+error: test failed, to rerun pass `--test u02_shared`
+exit=101

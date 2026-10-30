@@ -1,0 +1,26 @@
+   Compiling rustnote v0.1.0 (C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust11\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.21s
+     Running tests\u03_q2.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/target11\debug\deps\u03_q2-1781492fb524a5d7.exe)
+
+running 1 test
+POST /signup -> 303 See Other (386.998ms)
+GET /login -> 200 OK (215.6µs)
+--- GET /login（200 OK）
+x-content-type-options     無い
+x-frame-options            無い
+content-security-policy    無い
+referrer-policy            無い
+strict-transport-security  無い
+cache-control              無い
+GET /notes -> 200 OK (3.8646ms)
+--- GET /notes（200 OK）
+x-content-type-options     無い
+x-frame-options            無い
+content-security-policy    無い
+referrer-policy            無い
+strict-transport-security  無い
+cache-control              無い
+test security_headers ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.41s
+

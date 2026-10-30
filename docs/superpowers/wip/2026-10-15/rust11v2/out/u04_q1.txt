@@ -1,0 +1,14 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.73s
+     Running tests\u04_q1.rs (target\debug\deps\u04_q1-80eb1f60808e4ad7.exe)
+
+running 3 tests
+test accepted_addresses_are_tidy ... proptest: FileFailurePersistence::SourceParallel set, but failed to find lib.rs or main.rs
+ok
+test how_many_are_accepted ... 1000 個のうち、合格は 179 個
+ok
+test parse_twice_is_the_same ... proptest: FileFailurePersistence::SourceParallel set, but failed to find lib.rs or main.rs
+ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.15s
+
+exit=0

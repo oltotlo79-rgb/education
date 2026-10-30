@@ -1,0 +1,37 @@
+[package]
+name = "rustnote"
+version = "0.1.0"
+edition = "2024"
+# Topcoat 0.11 は Rust 1.99 以上が必要（動作確認は 1.99.1）
+rust-version = "1.99"
+description = "RustNote: Topcoat + libSQL で作るログイン付きメモアプリ（教材のサンプル）"
+publish = false
+default-run = "rustnote"
+
+# 教材と同じ結果になるよう、直接使うクレートの版は `=` で固定している。
+# 間接的に使われるクレートの版は Cargo.lock で固定される。
+[dependencies]
+# アプリの入口（main）でエラーに文脈を付けて表示する
+anyhow = "=1.0.104"
+# パスワードのハッシュ化（Argon2id）
+argon2 = "=0.6.0"
+# trait に async fn を書き、dyn（Arc<dyn NoteRepository + Send + Sync>）で使えるようにする
+async-trait = "=0.1.92"
+# .env ファイルを環境変数として読み込む（開発用）
+dotenvy = "=0.15.7"
+# Turso / libSQL のクライアント（ローカルファイルとリモートの両方）
+libsql = "=0.10.0"
+# フォームや JSON を構造体に変換する
+serde = { version = "=1.0.229", features = ["derive"] }
+# エラー型を短く書く
+thiserror = "=2.0.21"
+# 非同期ランタイム
+tokio = { version = "=1.54.1", features = ["rt-multi-thread", "macros"] }
+# Web フレームワーク
+topcoat = "=0.11.0"
+
+[dev-dependencies]
+proptest = "=1.12.0"
+scraper = "=0.29.0"
+# テストごとに使い捨ての一時フォルダ（DB ファイル置き場）を作る
+tempfile = "=3.27.0"

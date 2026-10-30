@@ -1,6 +1,5 @@
-   Compiling rustnote v0.1.0 (...\rustnote)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.84s
-     Running tests\u01_q3.rs (target\debug\deps\u01_q3-f9715f282720c475.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.60s
+     Running tests\u01_q3.rs (target\debug\deps\u01_q3-ead5ae5e7277cf12.exe)
 
 running 1 test
 7文字（下の端 - 1） → Err(パスワードは8文字以上にしてください)

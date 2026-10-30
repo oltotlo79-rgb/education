@@ -1,0 +1,34 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.75s
+     Running tests\u04_spaces.rs (target\debug\deps\u04_spaces-05e23e814a890ac9.exe)
+
+running 1 test
+test forgot_trim_with_spaces ... FAILED
+
+failures:
+
+---- forgot_trim_with_spaces stdout ----
+proptest: FileFailurePersistence::SourceParallel set, but failed to find lib.rs or main.rs
+proptest: FileFailurePersistence::SourceParallel set, but failed to find lib.rs or main.rs
+proptest: Saving this and future failures in ...\rustnote\tests\u04_spaces.proptest-regressions
+proptest: If this test was run on a CI system, you may wish to add the following line to your copy of the file. (You may need to create it.)
+cc f0da69c5a27adb03a2660e3a4300f9c00e164c354df79b3786cee92ffccdc6e4
+
+thread 'forgot_trim_with_spaces' (219712) panicked at tests\u04_spaces.rs:18:1:
+Test failed: assertion failed: `(left == right)` 
+  left: `false`,
+ right: `true` at tests\u04_spaces.rs:21.
+minimal failing input: input = "a  \t\u{3000}\t\u{3000}aa\t\t\u{3000}\t\u{3000}\u{3000} \u{3000}\t\t\u{3000}a\t  a\u{3000}\u{3000}\t\t\u{3000}a\ta\u{3000}\u{3000}\u{3000}\t\u{3000}\t\u{3000}\t a \taaa\u{3000}\t a a\t\u{3000}\t\u{3000} \u{3000} a\u{3000}\u{3000}\ta\u{3000}  a  \ta \u{3000}\t a\u{3000}\t"
+	successes: 9
+	local rejects: 0
+	global rejects: 0
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    forgot_trim_with_spaces
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+error: test failed, to rerun pass `--test u04_spaces`
+exit=101

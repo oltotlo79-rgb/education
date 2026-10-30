@@ -1,0 +1,35 @@
+[package]
+name = "domain-lab-fuzz"
+version = "0.0.0"
+publish = false
+edition = "2024"
+
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies]
+libfuzzer-sys = "0.4"
+
+[dependencies.domain-lab]
+path = ".."
+
+[[bin]]
+name = "parsers"
+path = "fuzz_targets/parsers.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "query_offset"
+path = "fuzz_targets/query_offset.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "query_new"
+path = "fuzz_targets/query_new.rs"
+test = false
+doc = false
+bench = false

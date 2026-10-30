@@ -1,0 +1,22 @@
+   Compiling rustnote v0.1.0 (C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust11\rustnote)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.12s
+     Running tests\u02_owner_delete.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/target11\debug\deps\u02_owner_delete-ecec0fbea0229325.exe)
+
+running 1 test
+test other_user_cannot_delete ... FAILED
+
+failures:
+
+---- other_user_cannot_delete stdout ----
+
+thread 'other_user_cannot_delete' (215892) panicked at tests\u02_owner_delete.rs:35:5:
+bob の削除は NotFound のはずが、Ok(()) だった
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    other_user_cannot_delete
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+error: test failed, to rerun pass `--test u02_owner_delete`

@@ -1,0 +1,11 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.80s
+     Running tests\u03_helpers.rs (target\debug\deps\u03_helpers-e56ce60a9e69b8e4.exe)
+
+running 3 tests
+test html_pages_say_utf8 ... ok
+test pages_for_members_send_guests_to_login ... ok
+test signup_sets_two_cookies_and_redirects ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.49s
+
+exit=0

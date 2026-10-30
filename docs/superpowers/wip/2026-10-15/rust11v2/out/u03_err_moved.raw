@@ -1,0 +1,23 @@
+   Compiling rustnote v0.1.0 (C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust11\rustnote)
+error[E0382]: borrow of moved value: `response`
+   --> tests\e03_moved.rs:16:16
+    |
+ 12 |     let response = app.get("/login", None).await;
+    |         -------- move occurs because `response` has type `http::response::Response<Body>`, which does not implement the `Copy` trait
+ 13 |
+ 14 |     let html = body_text(response).await;
+    |                          -------- value moved here
+ 15 |     assert!(html.contains("<form"));
+ 16 |     assert_eq!(response.status(), StatusCode::OK);
+    |                ^^^^^^^^ value borrowed here after move
+    |
+note: consider changing this parameter type in function `body_text` to borrow instead if owning the value isn't necessary
+   --> tests\common\mod.rs:117:34
+    |
+117 | pub async fn body_text(response: Response) -> String {
+    |              ---------           ^^^^^^^^ this parameter takes ownership of the value
+    |              |
+    |              in this function
+
+For more information about this error, try `rustc --explain E0382`.
+error: could not compile `rustnote` (test "e03_moved") due to 1 previous error

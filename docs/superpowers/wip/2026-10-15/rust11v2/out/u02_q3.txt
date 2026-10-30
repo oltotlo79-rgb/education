@@ -1,6 +1,5 @@
-   Compiling rustnote v0.1.0 (...\rustnote)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.81s
-     Running tests\u02_q3.rs (target\debug\deps\u02_q3-91faee38663bf341.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.69s
+     Running tests\u02_q3.rs (target\debug\deps\u02_q3-6907ab08fcaab11f.exe)
 
 running 1 test
 消す前: users=2 notes=4 sessions=2
@@ -8,6 +7,6 @@ users から 1 行消した
 消した後: users=1 notes=2 sessions=1
 test deleting_a_user_cascades ... ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
 
 exit=0

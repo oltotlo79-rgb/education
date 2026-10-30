@@ -1,6 +1,6 @@
    Compiling rustnote v0.1.0 (...\rustnote)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.16s
-     Running tests\e03_no_assert.rs (target\debug\deps\e03_no_assert-5a6ef5e20346be07.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.00s
+     Running tests\e03_no_assert.rs (target\debug\deps\e03_no_assert-18f51359142ae564.exe)
 
 running 1 test
 test eighty_characters ... ok

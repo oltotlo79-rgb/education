@@ -1,0 +1,14 @@
+   Compiling rustnote v0.1.0 (C:\Users\oltot\AppData\Local\Temp\claude\C--Users-oltot-Documents-git-projects-def\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\scratchpad\rust11\rustnote)
+error: async functions cannot be used for tests
+ --> tests\e02_async.rs:5:1
+  |
+5 |   async fn title_is_checked() {
+  |   ^----
+  |   |
+  |  _`async` because of this
+  | |
+6 | |     assert!(NoteTitle::parse("買い物").is_ok());
+7 | | }
+  | |_^
+
+error: could not compile `rustnote` (test "e02_async") due to 1 previous error

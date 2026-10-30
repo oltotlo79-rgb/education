@@ -1,0 +1,39 @@
+    Updating crates.io index
+      Adding scraper =0.29.0 to dev-dependencies
+             Features:
+             + errors
+             + main
+             - atomic
+             - deterministic
+             - serde
+    Updating crates.io index
+     Locking 28 packages to highest Rust 1.99 compatible versions
+      Adding cssparser v0.38.0
+      Adding cssparser-macros v0.7.1
+      Adding derive_more v2.1.1
+      Adding derive_more-impl v2.1.1
+      Adding dtoa v1.0.11
+      Adding dtoa-short v0.3.5
+      Adding ego-tree v0.11.1
+      Adding getopts v0.2.24
+      Adding html5ever v0.40.1
+      Adding markup5ever v0.40.0
+      Adding new_debug_unreachable v1.0.6
+      Adding phf v0.14.0
+      Adding phf_codegen v0.14.0
+      Adding phf_generator v0.14.0
+      Adding phf_macros v0.14.0
+      Adding phf_shared v0.14.0
+      Adding precomputed-hash v0.1.1
+      Adding rustc-hash v2.1.3
+      Adding rustc_version v0.4.1
+      Adding scraper v0.29.0
+      Adding selectors v0.41.0
+      Adding semver v1.0.28
+      Adding servo_arc v0.5.0
+      Adding string_cache v0.11.0
+      Adding string_cache_codegen v0.11.2
+      Adding tendril v0.5.1
+      Adding unicode-width v0.2.3
+      Adding web_atoms v0.3.0
+exit=0

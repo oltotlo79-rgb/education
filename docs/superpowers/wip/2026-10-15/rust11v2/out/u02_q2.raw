@@ -1,0 +1,13 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.73s
+     Running tests\u02_q2.rs (C:/Users/oltot/AppData/Local/Temp/claude/C--Users-oltot-Documents-git-projects-def/f344debc-e3c6-4c0d-93d7-e55dbf9acedd/scratchpad/target11\debug\deps\u02_q2-2cfd71d17b7bceae.exe)
+
+running 1 test
+find_user（T - 1秒）→ 見つかる: true
+find_user（T ちょうど）→ 見つかる: false
+find_user（T + 1秒）→ 見つかる: false
+delete_expired（T - 1秒）→ 0 件消した
+delete_expired（T ちょうど）→ 1 件消した
+test session_expiry_boundary ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+

@@ -1,6 +1,5 @@
-   Compiling rustnote v0.1.0 (...\rustnote)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.46s
-     Running tests\u01_q1.rs (target\debug\deps\u01_q1-81fa10c5a5eabbd3.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.65s
+     Running tests\u01_q1.rs (target\debug\deps\u01_q1-bce08f7bd283041f.exe)
 
 running 1 test
 ok ふつう → Ok("alice@example.com")

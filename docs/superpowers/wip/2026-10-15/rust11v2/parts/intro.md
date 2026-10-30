@@ -107,8 +107,8 @@
 |---|---|---|
 | UNIT 01 | ユニットテスト・境界値・表の形のテスト | 端の値を表に並べ、関数1つを速く確かめる |
 | UNIT 02 | リポジトリの結合テスト | 本物の DB と SQL で、保存と読み出しを確かめる |
-| UNIT 03 | HTTP のテスト（準備中） | 状態コード・Location・クッキー・本文を確かめる |
-| UNIT 04 | property test・fuzz・入力の読み取り（準備中） | 思いつかない入力を、たくさん自動で試す |
+| UNIT 03 | HTTP のテスト | 状態コード・Location・クッキー・本文を確かめる |
+| UNIT 04 | property test・fuzz・入力の読み取り | 思いつかない入力を、たくさん自動で試す |
 | UNIT 05 | E2E・ブラウザ・アクセシビリティ（準備中） | 大事な流れだけを、本物のブラウザで確かめる |
 | UNIT 06 | 守りの回帰テスト（準備中） | 攻撃が止まることを、毎回確かめる |
 | UNIT 07 | tracing・メトリクス・health・SLO（準備中） | 動いている様子を外から見えるようにする |
@@ -116,7 +116,7 @@
 | UNIT 09 | 負荷試験・背圧・容量（準備中） | たくさん来たときの限界と、壊れ方を決める |
 | UNIT 10 | CI・依存・供給網・事故の対応（準備中） | 毎回同じ確かめを自動で回し、部品の安全も見る |
 
-> **お知らせ:** この版には UNIT 01〜02 を収録しています。UNIT 03〜10 は準備中で、次の更新から順に追加します。
+> **お知らせ:** この版には UNIT 01〜04 を収録しています。UNIT 05〜10 は準備中で、次の更新から順に追加します。
 
 ### 前提知識（先に読んでおく巻）
 
@@ -140,8 +140,11 @@
 | 項目 | 版・内容 |
 |---|---|
 | OS | Windows 11（ARM64）。コマンドは PowerShell を主に、WSL / macOS / Linux は補足で示します |
-| Rust | **1.98 以上**（本書シリーズの基準）。動作確認は rustc 1.99.0 / cargo 1.99.0（`aarch64-pc-windows-msvc`） |
-| RustNote | 教材の `Rust/rustnote/`（`rustnote` 0.1.0）。この巻では `src/` を変えずに、`tests/` と `examples/` に確かめ用のファイルを足す |
+| Rust | **1.99 以上**（本書シリーズの基準。Topcoat 0.11 が 1.99 以上を求めます）。動作確認は rustc 1.99.1 / cargo 1.99.1（`aarch64-pc-windows-msvc`） |
+| RustNote | 教材の `Rust/rustnote/`（`rustnote` 0.1.0）。この巻では `src/` を変えずに、`tests/` と `examples/` に確かめ用のファイルを足す（UNIT 03 からは、練習用のコピーの `Cargo.toml` の dev-dependencies にも足す） |
+| scraper | 0.29.0（UNIT 03。HTML を読んで、CSS セレクターで要素を探す） |
+| proptest | 1.12.0（UNIT 04。property test） |
+| cargo-fuzz | 0.13.2（UNIT 04。WSL の Ubuntu 24.04（aarch64）で、rustc 1.101.0-nightly とともに使う） |
 | テストの道具 | Rust の標準の `#[test]`・`assert!`・`assert_eq!`（UNIT 01 では、外のクレートを足しません） |
 
 ### 練習用のフォルダを用意する
@@ -152,6 +155,6 @@
 # 教材の rustnote フォルダを、中身ごと（-Recurse）作業用のフォルダへコピーする
 Copy-Item -Recurse "教材のフォルダ\Rust\rustnote" .\rustnote
 cd rustnote
-# このフォルダで使われる Rust の版を確かめる（1.99.0 になる）
+# このフォルダで使われる Rust の版を確かめる（1.99.1 になる）
 rustup show active-toolchain
 ```

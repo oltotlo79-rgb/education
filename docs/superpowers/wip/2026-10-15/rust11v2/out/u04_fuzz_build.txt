@@ -1,0 +1,3 @@
+   Compiling domain-lab v0.1.0 (fuzz_lab)
+   Compiling domain-lab-fuzz v0.0.0 (fuzz_lab/fuzz)
+    Finished `release` profile [optimized + debuginfo] target(s) in 2.12s
