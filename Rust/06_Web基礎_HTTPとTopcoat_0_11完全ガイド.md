@@ -2891,7 +2891,7 @@ pub async fn show(cx: &Cx) -> Result<impl View> {
 ```
 
 - 例4-2と同じく、`NoteId` の `FromStr`（`src/domain.rs`）が、数でない・1 未満の ID を断ります。`pub` が付いているのは、ほかのファイル（編集・完了・削除のページ）からも `Id` を使うからです。`/notes/{id}/edit` は `notes/id/edit.rs` で、親のモジュールの `Id` を読みます。
-- 他人のノートの ID を開いても、無い ID と同じ 404 にしています（第8巻 UNIT 01・第10巻 UNIT 03（準備中））。
+- 他人のノートの ID を開いても、無い ID と同じ 404 にしています（第8巻 UNIT 01・第10巻 UNIT 03）。
 
 ### 練習問題
 
