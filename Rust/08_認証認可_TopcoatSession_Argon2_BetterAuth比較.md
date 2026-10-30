@@ -124,7 +124,7 @@
 - **第7巻（Turso・libSQL）:** 持ち主の条件を付けた SQL（第7巻 UNIT 03）。
 - **第9巻（RustNote 設計）:** 受入条件のテスト（`tests/` に足して `cargo test --test 名前` で動かす形）と、画面の遷移（PRG・303）。この巻のテストも、同じ形で書きます。
 
-> **注意:** 第6巻（Topcoat）は、書き直しの途中です。この巻で使う Topcoat の機能（セッション・クッキー・Origin の検査）は、本文の中で、そのつど説明します。
+> **注意:** この巻で使う Topcoat の機能（セッション・クッキー・Origin の検査）は、第6巻 UNIT 10 でくわしく扱っています。本文の中でも、そのつど短く説明します。
 
 ### この巻の進め方
 
@@ -144,9 +144,9 @@
 | 項目 | 版・内容 |
 |---|---|
 | OS | Windows 11（ARM64）。コマンドは PowerShell を主に、WSL / macOS / Linux は補足で示します |
-| Rust | **1.98 以上**（本書シリーズの基準）。動作確認は rustc 1.99.0 / cargo 1.99.0（`aarch64-pc-windows-msvc`） |
+| Rust | **1.99 以上**（本書シリーズの基準。Topcoat 0.11 が 1.99 以上を求めます）。動作確認は rustc 1.99.1 / cargo 1.99.1（`aarch64-pc-windows-msvc`） |
 | RustNote | 教材の `Rust/rustnote/`（`rustnote` 0.1.0）。この巻では `src/` を変えずに、`tests/` と `examples/` に確かめ用のファイルを足す |
-| topcoat | 0.10.0（セッション・クッキー・Origin の検査） |
+| topcoat | 0.11.0（セッション・クッキー・Origin の検査） |
 | argon2 | 0.6.0（パスワードのハッシュ。UNIT 02 でくわしく扱います） |
 
 ### 練習用のフォルダを用意する
@@ -157,7 +157,7 @@
 # 教材の rustnote フォルダを、中身ごと（-Recurse）作業用のフォルダへコピーする
 Copy-Item -Recurse "教材のフォルダ\Rust\rustnote" .\rustnote
 cd rustnote
-# このフォルダで使われる Rust の版を確かめる（1.99.0 になる）
+# このフォルダで使われる Rust の版を確かめる（1.99.1 になる）
 rustup show active-toolchain
 ```
 
@@ -361,24 +361,24 @@ cargo test --test u01_three_checks -- --nocapture --test-threads=1
 **▼ 実行結果**（最初の1回は `Compiling` の行が続きます。ここでは省いています）
 
 ```text
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 1m 15s
-     Running tests\u01_three_checks.rs (target\debug\deps\u01_three_checks-66387e9ac1880c66.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.73s
+     Running tests\u01_three_checks.rs (target\debug\deps\u01_three_checks-453951381b45d085.exe)
 
 running 1 test
-test three_checks ... GET /notes -> 303 See Other (1.3467ms)
+test three_checks ... GET /notes -> 303 See Other (1.2911ms)
 ① ログインしていない人が /notes → 303 See Other（移動先 /login）
-POST /signup -> 303 See Other (438.8671ms)
-GET /notes -> 200 OK (4.1174ms)
+POST /signup -> 303 See Other (431.6363ms)
+GET /notes -> 200 OK (4.3897ms)
 ② alice がクッキーを付けて /notes → 200 OK
-POST /notes -> 303 See Other (4.9204ms)
-POST /signup -> 303 See Other (454.0788ms)
-GET /notes/1 -> 200 OK (4.833ms)
-GET /notes/1 -> 404 Not Found (3.6291ms)
+POST /notes -> 303 See Other (6.5401ms)
+POST /signup -> 303 See Other (411.0846ms)
+GET /notes/1 -> 200 OK (4.1062ms)
+GET /notes/1 -> 404 Not Found (3.383ms)
 ③ /notes/1 を alice が開く → 200 OK
 ③ /notes/1 を bob が開く → 404 Not Found
 ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.94s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.89s
 ```
 
 #### ▼ コードを1つずつ分解して解説
@@ -386,7 +386,7 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 ##### 解説1: ① 認証が無いと、303 でログイン画面へ
 
 - クッキーを付けずに `/notes` を開くと、`303 See Other`（移動先 `/login`）でした。RustNote のノートの画面は、どれも最初に `require_user(cx)` を呼び、ログイン中のユーザーがいなければ、ログイン画面へ移します。
-- 1行目の `test three_checks ... GET /notes -> 303 See Other (1.3467ms)` は、テストの名前の表示と、RustNote のアクセスログ（標準エラー出力）が、同じ行に並んだものです。
+- 1行目の `test three_checks ... GET /notes -> 303 See Other (1.2911ms)` は、テストの名前の表示と、RustNote のアクセスログ（標準エラー出力）が、同じ行に並んだものです。
 
 ##### 解説2: ② クッキーを見せると、本人と分かる
 
@@ -480,22 +480,21 @@ cargo test --test u01_session -- --nocapture
 **▼ 実行結果**
 
 ```text
-   Compiling rustnote v0.1.0 (...\rustnote)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.31s
-     Running tests\u01_session.rs (target\debug\deps\u01_session-7d82e6b13d3770c3.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.67s
+     Running tests\u01_session.rs (target\debug\deps\u01_session-959ad0a50e64eaa8.exe)
 
 running 1 test
-POST /signup -> 303 See Other (421.6028ms)
+POST /signup -> 303 See Other (412.1617ms)
 --- ブラウザに渡すクッキー
 名前: __Host-session
-値（トークン）: qPxZTv…（46 文字）
+値（トークン）: F94h6_…（46 文字）
 属性: HttpOnly; SameSite=Lax; Secure; Path=/; Max-Age=2592000
 --- DB の sessions 表
 token_hash: 32 バイト / user_id: 1 / 期限まで: 約 30 日
 トークンと同じ値が入っている行: 0 件
 test session_cookie_and_record ... ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.45s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.44s
 ```
 
 <div style="max-width:720px;margin:18px auto;text-align:center;">
@@ -622,16 +621,15 @@ cargo test --test u01_cross_site -- --nocapture
 **▼ 実行結果**
 
 ```text
-   Compiling rustnote v0.1.0 (...\rustnote)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.17s
-     Running tests\u01_cross_site.rs (target\debug\deps\u01_cross_site-1797bc835c7da007.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.68s
+     Running tests\u01_cross_site.rs (target\debug\deps\u01_cross_site-073450767187315a.exe)
 
 running 1 test
-POST /signup -> 303 See Other (443.652ms)
-POST /notes -> 303 See Other (6.1553ms)
+POST /signup -> 303 See Other (499.5162ms)
+POST /notes -> 303 See Other (7.2745ms)
 Origin も Sec-Fetch-Site も無い（curl など）
     → 303 See Other　本文: ""
-POST /notes -> 303 See Other (6.8665ms)
+POST /notes -> 303 See Other (6.2706ms)
 同じサイトのフォーム（Origin: http://127.0.0.1:3000）
     → 303 See Other　本文: ""
 ほかのサイトのフォーム（Origin: https://evil.example）
@@ -641,7 +639,7 @@ POST /notes -> 303 See Other (6.8665ms)
 保存されたノート: 2 件
 test cross_site_posts_are_rejected ... ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.48s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.58s
 ```
 
 #### ▼ コードを1つずつ分解して解説
@@ -932,33 +930,32 @@ cargo test --test u01_q1 -- --nocapture
 ```
 
 ```text
-   Compiling rustnote v0.1.0 (...\rustnote)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.24s
-     Running tests\u01_q1.rs (target\debug\deps\u01_q1-81fa10c5a5eabbd3.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.66s
+     Running tests\u01_q1.rs (target\debug\deps\u01_q1-bce08f7bd283041f.exe)
 
 running 1 test
-POST /signup -> 303 See Other (411.0828ms)
-POST /login -> 401 Unauthorized (398.3169ms)
-POST /login -> 401 Unauthorized (390.2362ms)
-POST /login -> 401 Unauthorized (388.3874ms)
-POST /login -> 401 Unauthorized (374.6642ms)
-POST /login -> 401 Unauthorized (380.8843ms)
-POST /login -> 401 Unauthorized (385.9132ms)
-POST /login -> 401 Unauthorized (375.7783ms)
-POST /login -> 401 Unauthorized (425.9443ms)
-POST /login -> 401 Unauthorized (398.9875ms)
-POST /login -> 401 Unauthorized (399.0318ms)
+POST /signup -> 303 See Other (463.1275ms)
+POST /login -> 401 Unauthorized (430.3743ms)
+POST /login -> 401 Unauthorized (383.3649ms)
+POST /login -> 401 Unauthorized (382.3572ms)
+POST /login -> 401 Unauthorized (386.5024ms)
+POST /login -> 401 Unauthorized (401.7135ms)
+POST /login -> 401 Unauthorized (385.1639ms)
+POST /login -> 401 Unauthorized (627.995ms)
+POST /login -> 401 Unauthorized (732.2201ms)
+POST /login -> 401 Unauthorized (793.8449ms)
+POST /login -> 401 Unauthorized (689.4254ms)
 10 回まちがえた結果: [401, 401, 401, 401, 401, 401, 401, 401, 401, 401]
-10 回にかかった時間: 3.9s
-POST /login -> 303 See Other (413.2169ms)
+10 回にかかった時間: 5.2s
+POST /login -> 303 See Other (762.2065ms)
 11 回目に正しいパスワード → 303 See Other
 test many_wrong_logins_are_not_limited ... ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 4.78s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 6.47s
 ```
 
 - 10 回とも `401 Unauthorized` で、11 回目の正しいパスワードは `303 See Other`（ログイン成功）でした。RustNote は、何回まちがえても止めません。脅威モデルの表のとおり、**回数の制限が無い**ことが確かめられました。
-- 1回のまちがいに、約 0.4 秒かかっています。これは debug ビルドで Argon2id の照合をしている時間で、release ビルドでは約 20 ms です（第12巻 UNIT 01）。重い照合は総当たりを遅くしますが、止めはしません。たとえば 1 秒に 50 回なら、1 日で 400 万回以上試せてしまいます。
+- 1回のまちがいに、約 0.4〜0.8 秒（10 回で 5.2 秒）かかっています。これは debug ビルドで Argon2id の照合をしている時間で、release ビルドでは約 20 ms です（第12巻 UNIT 01）。続けて計算すると、後半の回が 0.6〜0.8 秒と遅くなりましたが、これは PC の状態によるもので、RustNote が回数に応じてわざと遅くしているわけではありません。重い照合は総当たりを遅くしますが、止めはしません。たとえば 1 秒に 50 回なら、1 日で 400 万回以上試せてしまいます。
 - 直すには、「同じメールアドレスへの失敗が、10 分に 5 回を超えたら、しばらく断る」「同じ送り元からの回数を数える」といった**回数の制限**が必要です。どこに、どの単位で数えるかは、UNIT 04（準備中）で扱います（RustNote のコードは、この巻では変えません）。
 
 **問2の解答:**
@@ -1025,18 +1022,17 @@ cargo test --test u01_q2 -- --nocapture
 ```
 
 ```text
-   Compiling rustnote v0.1.0 (...\rustnote)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.46s
-     Running tests\u01_q2.rs (target\debug\deps\u01_q2-d924c1589f8ead12.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.63s
+     Running tests\u01_q2.rs (target\debug\deps\u01_q2-07596b0af0a888f4.exe)
 
 running 1 test
-POST /signup -> 303 See Other (433.8285ms)
+POST /signup -> 303 See Other (435.2218ms)
 ログイン中の sessions の行: 1 件
-POST /logout -> 303 See Other (12.6138ms)
+POST /logout -> 303 See Other (6.6019ms)
 ログアウトの返事: 303 See Other
-消すためのクッキー: __Host-session=; HttpOnly; SameSite=Lax; Secure; Path=/; Max-Age=0; Expires=Mon, 27 Oct 2025 15:04:10 GMT
+消すためのクッキー: __Host-session=; HttpOnly; SameSite=Lax; Secure; Path=/; Max-Age=0; Expires=Thu, 30 Oct 2025 15:05:09 GMT
 ログアウト後の sessions の行: 0 件
-GET /notes -> 303 See Other (2.5015ms)
+GET /notes -> 303 See Other (1.7167ms)
 古いクッキーで /notes → 303 See Other（移動先 /login）
 test logout_deletes_the_session_record ... ok
 
@@ -1229,15 +1225,15 @@ cargo run -q --example u02_hash
 **▼ 実行結果**（salt とハッシュは、実行するたびに変わります）
 
 ```text
-1回目: $argon2id$v=19$m=19456,t=2,p=1$/gnrD6uzcYJQwvdc4zRYaA$q7m7sj84y3lpN7nLk5xPkVCkU9jY1wuYJQn6LWEPunw
-2回目: $argon2id$v=19$m=19456,t=2,p=1$TJWrC9mQPy8CJEmapKizxw$48kU8XwN/fntjhy815yrZtkaPfyIiigql3DzWNrIzbE
+1回目: $argon2id$v=19$m=19456,t=2,p=1$1dvNLHkr/dGcDbOcgy0oJQ$RnSbHHJ2okKusYBaK9CZBGi2296o4wwB7odK1L2zNN0
+2回目: $argon2id$v=19$m=19456,t=2,p=1$aeqaiiI6e/Ku/15i4hVUhA$BGPdpiam7q+bdZvGloFn/mgzzS+1CSX+aAClhoQyM5w
 2つは同じか: false
 --- 1回目を「$」で分ける
 方式: argon2id
 版: v=19
 重さの設定: m=19456,t=2,p=1
-salt（22 文字）: /gnrD6uzcYJQwvdc4zRYaA
-ハッシュ（43 文字）: q7m7sj84y3lpN7nLk5xPkVCkU9jY1wuYJQn6LWEPunw
+salt（22 文字）: 1dvNLHkr/dGcDbOcgy0oJQ
+ハッシュ（43 文字）: RnSbHHJ2okKusYBaK9CZBGi2296o4wwB7odK1L2zNN0
 --- 照合
 正しいパスワード × 1回目: true
 正しいパスワード × 2回目: true
@@ -1321,26 +1317,26 @@ cargo run -q --release --example u02_speed
 **▼ 実行結果**
 
 ```text
-DefaultHasher（速いハッシュ）: 1秒に 8721779 回
-Argon2id（わざと重いハッシュ）: 1秒に 39 回
-差: 約 223635 倍
+DefaultHasher（速いハッシュ）: 1秒に 11103251 回
+Argon2id（わざと重いハッシュ）: 1秒に 49 回
+差: 約 226596 倍
 ```
 
 <div style="max-width:720px;margin:18px auto;text-align:center;">
 <svg viewBox="0 0 720 170" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
 <text x="20" y="40" font-size="12" font-weight="700" fill="#0f172a">速いハッシュ</text>
 <rect x="160" y="24" width="540" height="26" rx="4" fill="#fed7aa"/>
-<text x="690" y="42" font-size="12" font-weight="700" fill="#c2410c" text-anchor="end">1秒に 8,721,779 回</text>
+<text x="690" y="42" font-size="12" font-weight="700" fill="#c2410c" text-anchor="end">1秒に 11,103,251 回</text>
 <text x="20" y="96" font-size="12" font-weight="700" fill="#0f172a">Argon2id</text>
 <rect x="160" y="80" width="3" height="26" rx="1" fill="#10b981"/>
-<text x="172" y="98" font-size="12" font-weight="700" fill="#047857">1秒に 39 回（本当の棒の長さは上の 22 万分の 1 で、描けないほど短い）</text>
-<text x="360" y="146" font-size="12" fill="#0f172a" text-anchor="middle">DB を盗んだ人が 1 億通りのパスワードを試すと: 速いハッシュは約 11 秒、Argon2id は約 30 日（PC 1台・この PC の速さで）</text>
+<text x="172" y="98" font-size="12" font-weight="700" fill="#047857">1秒に 49 回（本当の棒の長さは上の 23 万分の 1 で、描けないほど短い）</text>
+<text x="360" y="146" font-size="12" fill="#0f172a" text-anchor="middle">DB を盗んだ人が 1 億通りのパスワードを試すと: 速いハッシュは約 9 秒、Argon2id は約 24 日（PC 1台・この PC の速さで）</text>
 </svg>
 <div style="font-size:12px;color:#64748b;margin-top:6px;">図8-7: 1秒に計算できる回数。この PC（Windows ARM64、release ビルド、1つのスレッド）で実際に測った数。わざと重い Argon2id は、総当たりを何十万倍も遅くする</div>
 </div>
 
-- 速いハッシュは1秒に約 870 万回、Argon2id は 39 回でした。約 22 万倍の差です。
-- 1回のログインで 1 回計算するだけなら、Argon2id の 1/39 秒（約 26 ミリ秒）は、利用者が待つほどの時間ではありません。ところが、DB を盗んだ人が、よく使われるパスワードを 1 億通り試すとすると、速いハッシュなら約 11 秒、Argon2id なら約 30 日かかります（この PC 1台で、1つのスレッドで計算した場合の見積もりです）。**正しい人には気にならず、総当たりする人にはとても重い**のが、パスワード用のハッシュの役目です。
+- 速いハッシュは1秒に約 1110 万回、Argon2id は 49 回でした。約 23 万倍の差です。
+- 1回のログインで 1 回計算するだけなら、Argon2id の 1/49 秒（約 20 ミリ秒）は、利用者が待つほどの時間ではありません。ところが、DB を盗んだ人が、よく使われるパスワードを 1 億通り試すとすると、速いハッシュなら約 9 秒、Argon2id なら約 24 日かかります（この PC 1台で、1つのスレッドで計算した場合の見積もりです）。**正しい人には気にならず、総当たりする人にはとても重い**のが、パスワード用のハッシュの役目です。
 - Argon2id は、計算に毎回 19 MiB（`m=19456` KiB）のメモリを使います。メモリを多く使う計算は、たくさんの計算を同時に進める専用の機械（GPU など）でも、速くしにくいように作られています。
 - `DefaultHasher` は、`HashMap` の表を作るためのハッシュで、結果も 64 ビットと短く、パスワードのような秘密を守るためのものではありません。ここでは「速いハッシュ」の例として使っています。SHA-256 のような安全なハッシュでも、速すぎるので、パスワードの保存には向きません。
 
@@ -1430,18 +1426,18 @@ cargo test --test u02_stored -- --nocapture --test-threads=1
 **▼ 実行結果**
 
 ```text
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.76s
-     Running tests\u02_stored.rs (target\debug\deps\u02_stored-64195f227e1b0a63.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.77s
+     Running tests\u02_stored.rs (target\debug\deps\u02_stored-71fa20487cab143e.exe)
 
 running 2 tests
-test broken_hash_makes_login_fail_safely ... POST /signup -> 303 See Other (418.678ms)
+test broken_hash_makes_login_fail_safely ... POST /signup -> 303 See Other (411.0144ms)
 [error] サーバーの中でエラーが起きました <- invalid encoding
-POST /login -> 500 Internal Server Error (8.9707ms)
+POST /login -> 500 Internal Server Error (10.7842ms)
 壊れたハッシュでログイン → 500 Internal Server Error
 画面に「時間をおいてもう一度お試しください」: true
 ok
-test same_password_different_hashes ... POST /signup -> 303 See Other (419.3062ms)
-POST /signup -> 303 See Other (426.7911ms)
+test same_password_different_hashes ... POST /signup -> 303 See Other (410.558ms)
+POST /signup -> 303 See Other (396.46ms)
 alice@example.com: $argon2id$v=19$m=19456,t=2,p=1$…（97 文字）
     パスワードそのものが入っている: false
 bob@example.com: $argon2id$v=19$m=19456,t=2,p=1$…（97 文字）
@@ -1449,7 +1445,7 @@ bob@example.com: $argon2id$v=19$m=19456,t=2,p=1$…（97 文字）
 alice と bob のハッシュは同じか: false
 ok
 
-test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.34s
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.28s
 ```
 
 - 2人とも、`$argon2id$v=19$m=19456,t=2,p=1$` で始まる 97 文字の文字列で、パスワードそのものは入っていません。同じパスワードなのに、2人のハッシュは違います（salt が違うから）。DB を見ても、「alice と bob は同じパスワードだ」とは分かりません。
@@ -1555,7 +1551,7 @@ pub async fn hash_password(password: &Password) -> Result<String, AppError> {
 }
 ```
 
-- 例2-2で見たとおり、Argon2id は1回に約 26 ミリ秒（debug ビルドでは約 400 ミリ秒）かかる重い計算です。async の処理の中でそのまま計算すると、そのあいだ、同じスレッドのほかのリクエストが止まってしまいます。そこで `spawn_blocking` で、重い計算用の別のスレッドに任せています（第5巻 UNIT 07）。
+- 例2-2で見たとおり、Argon2id は1回に約 20 ミリ秒（debug ビルドでは約 400 ミリ秒）かかる重い計算です。async の処理の中でそのまま計算すると、そのあいだ、同じスレッドのほかのリクエストが止まってしまいます。そこで `spawn_blocking` で、重い計算用の別のスレッドに任せています（第5巻 UNIT 07）。
 - `hash_password` は、検査済みの `Password` 型しか受け取りません。8〜128 文字の決まりを通ったパスワードだけが、ハッシュになります（第11巻 UNIT 01 の問3）。
 
 登録していないメールアドレスでログインしようとしたときのために、ダミーのハッシュも用意してあります（抜き出しています）。
@@ -1640,26 +1636,26 @@ cargo test --test u02_q2 -- --nocapture
 ```
 
 ```text
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.65s
-     Running tests\u02_q2.rs (target\debug\deps\u02_q2-6804b1bc9d1c3136.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.63s
+     Running tests\u02_q2.rs (target\debug\deps\u02_q2-2cfd71d17b7bceae.exe)
 
 running 1 test
-POST /signup -> 303 See Other (415.0974ms)
-POST /login -> 401 Unauthorized (804.4866ms)
-POST /login -> 401 Unauthorized (380.8674ms)
-POST /login -> 401 Unauthorized (395.7334ms)
-登録していないメール: 401（804 ms） / 401（381 ms） / 401（396 ms）
-POST /login -> 401 Unauthorized (379.5492ms)
-POST /login -> 401 Unauthorized (406.2936ms)
-POST /login -> 401 Unauthorized (398.234ms)
-パスワードが違う: 401（379 ms） / 401（406 ms） / 401（398 ms）
+POST /signup -> 303 See Other (437.7957ms)
+POST /login -> 401 Unauthorized (994.1015ms)
+POST /login -> 401 Unauthorized (391.4112ms)
+POST /login -> 401 Unauthorized (377.8686ms)
+登録していないメール: 401（994 ms） / 401（391 ms） / 401（378 ms）
+POST /login -> 401 Unauthorized (380.812ms)
+POST /login -> 401 Unauthorized (449.7834ms)
+POST /login -> 401 Unauthorized (730.5059ms)
+パスワードが違う: 401（381 ms） / 401（450 ms） / 401（730 ms）
 test failed_logins_take_similar_time ... ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.21s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.81s
 ```
 
-- 「登録していないメール」の2回目・3回目と、「パスワードが違う」の3回は、どれも約 380〜410 ミリ秒（debug ビルド）で、そろっています。ダミーのハッシュのおかげで、時間から「登録されているかどうか」は分かりません。
-- ところが、**「登録していないメール」の1回目だけ、804 ミリ秒**と、約2倍かかりました。`DUMMY_HASH` は `LazyLock`（最初に使われたときに一度だけ作る）なので、最初の1回は「ダミーのハッシュを作る計算」と「照合の計算」の2回分の時間がかかるのです。サーバーを起動してから最初の1回だけですが、「登録していないメールの1回目は遅い」という差が残ります。
+- 「登録していないメール」の2回目・3回目と、「パスワードが違う」の3回は、どれも約 380〜450 ミリ秒（debug ビルド）で、同じくらいです（「パスワードが違う」の3回目の 730 ミリ秒は、続けて計算していると PC の都合で遅くなる回があるもので、UNIT 01 の問1の 10 回でも後半が遅くなりました）。ダミーのハッシュのおかげで、時間から「登録されているかどうか」は分かりません。
+- ところが、**「登録していないメール」の1回目だけ、994 ミリ秒**と、2倍以上かかりました。`DUMMY_HASH` は `LazyLock`（最初に使われたときに一度だけ作る）なので、最初の1回は「ダミーのハッシュを作る計算」と「照合の計算」の2回分の時間がかかるのです。サーバーを起動してから最初の1回だけですが、「登録していないメールの1回目は遅い」という差が残ります。
 - これは、RustNote に残っている改善点です。起動するときに、先に一度 `DUMMY_HASH` を作っておけば（`LazyLock::force(&DUMMY_HASH)` を呼ぶなど）、この差は無くなります（RustNote のコードは変えていません）。**守りの仕組みも、測って確かめる**と、こうした抜けが見つかります。
 
 **問3の解答:**
@@ -1704,11 +1700,11 @@ cargo test --test u02_q3 -- --nocapture
 ```
 
 ```text
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.81s
-     Running tests\u02_q3.rs (target\debug\deps\u02_q3-91faee38663bf341.exe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.64s
+     Running tests\u02_q3.rs (target\debug\deps\u02_q3-6907ab08fcaab11f.exe)
 
 running 1 test
-POST /signup -> 400 Bad Request (1.9691ms)
+POST /signup -> 400 Bad Request (2.7655ms)
 登録の結果: 400 Bad Request
 エラーの文: true
 メールアドレスは入力欄に残る: true
@@ -1746,7 +1742,7 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 - ☐ パスワードを暗号化ではなくハッシュにして保存する理由と、salt の役目を、ミキサーと隠し味のたとえで説明できる
 - ☐ PHC 文字列 `$argon2id$v=19$m=19456,t=2,p=1$…` の5つの部分（方式・版・重さの設定・salt・ハッシュ）を読める
 - ☐ 同じパスワードでもハッシュが毎回違うのに、照合は成功する理由を言える
-- ☐ 速いハッシュと Argon2id の速さ（1秒に約 870 万回と 39 回）の違いから、わざと重いハッシュを使う理由を説明できる
+- ☐ 速いハッシュと Argon2id の速さ（1秒に約 1110 万回と 49 回）の違いから、わざと重いハッシュを使う理由を説明できる
 - ☐ argon2 0.5 の書き方を写したときの `E0432`・`E0061` を読み、版を確かめてから写すことを言える
 - ☐ 保存したハッシュが壊れているとログインが 500 になる理由と、ダミーのハッシュで失敗の時間をそろえる仕組み（と、最初の1回だけ遅い抜け）を説明できる
 
