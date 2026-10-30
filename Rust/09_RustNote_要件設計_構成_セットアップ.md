@@ -6356,7 +6356,7 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 
 **問2の解答:** 200 です。`GET` のルートには、Topcoat が `HEAD` にも自動で答えます（第6巻 UNIT 03 の問3）。Fly.io のヘルスチェックの設定によっては、HEAD で確かめることもあるので、表に入れておくと安心です。
 
-**問3の解答:** 403 です。Topcoat の OriginPolicy が、ほかのサイトからの POST を、ルーターの最初で止めます（第6巻 UNIT 10・第8巻 UNIT 01）。この行を表に入れておくと、もし誰かが OriginPolicy を外す設定を足しても、テストが気づかせてくれます（第11巻 UNIT 06（準備中））。
+**問3の解答:** 403 です。Topcoat の OriginPolicy が、ほかのサイトからの POST を、ルーターの最初で止めます（第6巻 UNIT 10・第8巻 UNIT 01）。この行を表に入れておくと、もし誰かが OriginPolicy を外す設定を足しても、テストが気づかせてくれます（第11巻 UNIT 06）。
 
 ### まとめ
 
