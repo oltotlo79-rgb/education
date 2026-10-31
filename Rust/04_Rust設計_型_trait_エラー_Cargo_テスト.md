@@ -156,14 +156,14 @@ cargo test
 | 項目 | 版・内容 |
 |---|---|
 | OS | Windows 11（ARM64）。コマンドは PowerShell を主に、WSL / macOS / Linux は補足で示します |
-| Rust | **1.98 以上**（本書シリーズの基準）。動作確認は rustc 1.99.0 / cargo 1.99.0（`aarch64-pc-windows-msvc`） |
+| Rust | **1.99 以上**（本書シリーズの基準）。実行結果は rustc 1.99.0（`aarch64-pc-windows-msvc`）で取り、2026-10-31 に 1.99.1 でも同じ表示になることを確かめた（版の番号が出る出力は 1.99.1 で取り直し、エラーの中の rustc のソースの場所の番号は 1.99.1 のものにしている） |
 | edition | 2024（`cargo new` の既定値） |
 | thiserror | 2.0.21（UNIT 05・09。エラー型を短く書く） |
 | anyhow | 1.0.104（UNIT 05。アプリの入口でエラーをまとめる） |
 | serde | 1.0.229（`derive` 機能つき。UNIT 07・08） |
 | serde_json | 1.0.154（UNIT 08。JSON の読み書き） |
 
-手元の Rust の版は `rustc --version` で確かめられます。1.98 より古ければ、`rustup update` で最新の安定版に更新してください。
+手元の Rust の版は `rustc --version` で確かめられます。1.99 より古ければ、`rustup update` で最新の安定版に更新してください。
 
 > **ヒント:** クレートの版の数字は「`cargo add` したときの最新版」です。あなたが試すときにはもっと新しい版が入るかもしれませんが、同じ大きな番号（thiserror なら `2.`、serde なら `1.`）の中では、この巻のコードはそのまま動くはずです。版の数字の読み方は UNIT 07 で学びます。
 
@@ -201,7 +201,7 @@ cargo add serde --features derive
              - raw_value
              - unbounded_depth
     Updating crates.io index
-     Locking 14 packages to highest Rust 1.99.0 compatible versions
+     Locking 14 packages to highest Rust 1.99.1 compatible versions
     Updating crates.io index
       Adding serde v1.0.229 to dependencies
              Features:
@@ -213,14 +213,14 @@ cargo add serde --features derive
              - unstable
 ```
 
-最後に、`Cargo.toml` の `[package]` の中、`edition = "2024"` の次の行に `rust-version = "1.98"` を手で1行足します（`cargo new` では入りません）。「このプロジェクトは Rust 1.98 以上でビルドしてください」という宣言で、詳しくは UNIT 07 で説明します。できあがった `Cargo.toml` は次のとおりです。
+最後に、`Cargo.toml` の `[package]` の中、`edition = "2024"` の次の行に `rust-version = "1.99"` を手で1行足します（`cargo new` では入りません）。「このプロジェクトは Rust 1.99 以上でビルドしてください」という宣言で、詳しくは UNIT 07 で説明します。できあがった `Cargo.toml` は次のとおりです。
 
 ```toml
 [package]
 name = "design_lab"
 version = "0.1.0"
 edition = "2024"
-rust-version = "1.98"
+rust-version = "1.99"
 
 [dependencies]
 anyhow = "1.0.104"
@@ -2156,7 +2156,7 @@ error[E0284]: type annotations needed
   = note: cannot satisfy `<_ as FromStr>::Err == _`
   = note: the type must also implement `FromStr`
 note: required by a bound in `core::str::<impl str>::parse`
- --> /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\str\mod.rs:2782:4
+ --> /rustc/58cf8f9c35b355199727627d07ae34a4e2846d67/library\core\src\str\mod.rs:2782:4
 help: consider giving `page` an explicit type
   |
 3 |     let page: /* Type */ = "3".parse().unwrap();
@@ -2875,7 +2875,7 @@ note: required because it's used within this closure
 20 |     let handle = thread::spawn(move || r.count());
    |                                ^^^^^^^
 note: required by a bound in `spawn`
-  --> /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\thread\functions.rs:125:0
+  --> /rustc/58cf8f9c35b355199727627d07ae34a4e2846d67/library\std\src\thread\functions.rs:125:0
 
 error[E0277]: `dyn NoteRepository` cannot be sent between threads safely
   --> src\bin\u04_err_send.rs:20:32
@@ -2893,7 +2893,7 @@ note: required because it's used within this closure
 20 |     let handle = thread::spawn(move || r.count());
    |                                ^^^^^^^
 note: required by a bound in `spawn`
-  --> /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\thread\functions.rs:125:0
+  --> /rustc/58cf8f9c35b355199727627d07ae34a4e2846d67/library\std\src\thread\functions.rs:125:0
 
 For more information about this error, try `rustc --explain E0277`.
 error: could not compile `design_lab` (bin "u04_err_send") due to 2 previous errors
@@ -4391,7 +4391,7 @@ members = ["crates/app", "crates/domain"]
 # メンバー全員で共有する package の設定
 [workspace.package]
 edition = "2024"
-rust-version = "1.98"
+rust-version = "1.99"
 
 # メンバー全員で版をそろえる依存クレート
 [workspace.dependencies]
@@ -4488,7 +4488,7 @@ cargo run -p app
 
 ```text
     Updating crates.io index
-     Locking 6 packages to highest Rust 1.98 compatible versions
+     Locking 6 packages to highest Rust 1.99 compatible versions
    Compiling proc-macro2 v1.0.107
    Compiling quote v1.0.47
    Compiling unicode-ident v1.0.27
@@ -4497,7 +4497,7 @@ cargo run -p app
    Compiling thiserror-impl v2.0.21
    Compiling domain v0.1.0 (...\domain)
    Compiling app v0.1.0 (...\app)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 7.50s
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 5.14s
      Running `target\debug\app.exe`
 OK: 牛乳を買う
 NG: タイトルを入力してください
@@ -4512,7 +4512,7 @@ members = ["crates/app", "crates/domain"]
 ```
 
 - `[workspace]` があるフォルダが workspace のいちばん上です。`members` に、まとめる package のフォルダを並べます。
-- `resolver = "3"` は「依存の版の決め方」の世代です。edition 2024 の既定は 3 で、`rust-version`（UNIT 07）を見て、その Rust で動く版を選んでくれます。実行結果の `Locking 6 packages to highest Rust 1.98 compatible versions`（Rust 1.98 で使える最新の版で固定した）がその働きです。workspace のいちばん上には edition がないので、明示的に書いておきます。
+- `resolver = "3"` は「依存の版の決め方」の世代です。edition 2024 の既定は 3 で、`rust-version`（UNIT 07）を見て、その Rust で動く版を選んでくれます。実行結果の `Locking 6 packages to highest Rust 1.99 compatible versions`（Rust 1.99 で使える最新の版で固定した）がその働きです。workspace のいちばん上には edition がないので、明示的に書いておきます。
 - `Cargo.lock` と `target` フォルダは、workspace のいちばん上に**1つだけ**できます（図4-13）。どの package からビルドしても同じ版の依存が使われ、一度ビルドした依存は使い回されます。
 
 ##### 解説9: 共有の設定を受け継ぐ `workspace = true`
@@ -4828,7 +4828,7 @@ cargo run -p seed
 
 ### この単元のゴール
 
-- `Cargo.toml` の版の書き方（`"1.0.229"`・`"=0.10.0"`・`"~1.2.3"`・`"0.10"`）が、どの範囲の版を許すのかを読める
+- `Cargo.toml` の版の書き方（`"1.0.229"`・`"=0.11.0"`・`"~1.2.3"`・`"0.10"`）が、どの範囲の版を許すのかを読める
 - `Cargo.lock` が何を記録し、なぜアプリでは保存（コミット）しておくのか、`--locked` が何を守るのかを説明できる
 - 自分の crate に features（機能の ON/OFF）を作り、`#[cfg(feature = "...")]` と `--features` / `--no-default-features` で切り替えられる
 - 依存クレートの features を必要な分だけ選び、`rust-version` で必要な Rust の版を宣言できる
@@ -4918,7 +4918,7 @@ cargo run -p seed
 |---|---|---|
 | `"1.0.229"`（`"^1.0.229"` と同じ） | 1.0.229 以上、2.0.0 未満 | ふつうはこれ。互換性のある更新は受け入れる |
 | `"0.10"`（`"^0.10"` と同じ） | 0.10.0 以上、0.11.0 未満 | 0.x の crate は「中」の数が上がると互換性が壊れる約束 |
-| `"=0.10.0"` | 0.10.0 ちょうど | 変化の激しい crate を固定したいとき（本書では Topcoat を `=0.10.0` に固定） |
+| `"=0.11.0"` | 0.11.0 ちょうど | 変化の激しい crate を固定したいとき（本書では Topcoat を `=0.11.0` に固定） |
 | `"~1.2.3"` | 1.2.3 以上、1.3.0 未満 | バグ修正（「小」）だけ受け入れたいとき |
 
 - SemVer の約束では、「大」の数が同じなら互換性があるはずです。だから cargo は、`"1.0.229"` と書かれたら「1.x.x の中でいちばん新しい版」を選びます。
@@ -4942,7 +4942,7 @@ cargo add serde_json --optional
 name = "feat_lab"
 version = "0.1.0"
 edition = "2024"
-rust-version = "1.98"
+rust-version = "1.99"
 
 [dependencies]
 serde = { version = "1.0.229", features = ["derive"], optional = true }
@@ -5184,12 +5184,12 @@ help: to generate the lock file without accessing the network, remove the --lock
 
 #### `rust-version` で必要な Rust の版を宣言する
 
-本書では `Cargo.toml` の `[package]` に `rust-version = "1.98"` を書きます。これは「この package をビルドするには Rust 1.98 以上が必要」という宣言です。
+本書では `Cargo.toml` の `[package]` に `rust-version = "1.99"` を書きます。これは「この package をビルドするには Rust 1.99 以上が必要」という宣言です。
 
 - 古い Rust でビルドしようとすると、分かりにくいコンパイルエラーが大量に出る代わりに、最初に1行で教えてくれます（よくあるエラー3）。
-- edition 2024 の依存の決め方（resolver 3）では、cargo は依存クレートの版を選ぶときにも `rust-version` を見て、**その Rust で動く版**を優先して選びます。UNIT 06 の workspace で `Locking 6 packages to highest Rust 1.98 compatible versions` と表示されたのはこのためです。
+- edition 2024 の依存の決め方（resolver 3）では、cargo は依存クレートの版を選ぶときにも `rust-version` を見て、**その Rust で動く版**を優先して選びます。UNIT 06 の workspace で `Locking 6 packages to highest Rust 1.99 compatible versions` と表示されたのはこのためです。
 
-> **注意:** 本書のシリーズは Rust 1.98 以上を基準にしています（RustNote で使う Topcoat 0.10 が Rust 1.98 以上を必要とするため）。
+> **注意:** 本書のシリーズは Rust 1.99 以上を基準にしています（RustNote で使う Topcoat 0.11 が Rust 1.99 以上を必要とするため）。
 
 #### 依存の機能を必要な分だけにする（最小構成）
 
@@ -5212,7 +5212,7 @@ cargo add serde_json --no-default-features --features alloc
              - std
              - unbounded_depth
     Updating crates.io index
-     Locking 11 packages to highest Rust 1.99.0 compatible versions
+     Locking 11 packages to highest Rust 1.99.1 compatible versions
 ```
 
 `Cargo.toml` には次のように書き込まれます。
@@ -5299,7 +5299,7 @@ error: could not compile `nodrv` (bin "nodrv") due to 1 previous error
 
 #### エラー3: rust-version より古い Rust でビルドした
 
-`rust-version = "1.98"` の package を、Rust 1.90 でビルドしようとした場合です（`cargo +1.90.0 build` は「1.90.0 の Rust を使ってビルドする」という指定です）。
+`rust-version = "1.99"` の package を、Rust 1.90 でビルドしようとした場合です（`cargo +1.90.0 build` は「1.90.0 の Rust を使ってビルドする」という指定です）。
 
 ```powershell
 cargo +1.90.0 build
@@ -5307,15 +5307,15 @@ cargo +1.90.0 build
 
 ```text
 error: rustc 1.90.0 is not supported by the following package:
-  feat_lab@0.1.0 requires rustc 1.98
+  feat_lab@0.1.0 requires rustc 1.99
 ```
 
-- **何が起きたか:** 「rustc 1.90.0 はこの package に対応していない。feat_lab 0.1.0 は rustc 1.98 が必要」。コンパイルを始める前に止めてくれます。
+- **何が起きたか:** 「rustc 1.90.0 はこの package に対応していない。feat_lab 0.1.0 は rustc 1.99 が必要」。コンパイルを始める前に止めてくれます。
 - **直し方:** `rustup update` で Rust を新しくします。`rustc --version` で、今使っている版を確かめられます。
 
 ### RustNote ではここで使う
 
-- RustNote の `Cargo.toml` には `rust-version = "1.98"` を書き、Topcoat は `=0.10.0` で版を固定します。そのほかの依存は、`cargo add` が書く `"1.0.229"` の形（互換性のある更新は受け入れる）で十分です。
+- RustNote の `Cargo.toml` には `rust-version = "1.99"` を書き、Topcoat は `=0.11.0` で版を固定します。そのほかの依存は、`cargo add` が書く `"1.0.229"` の形（互換性のある更新は受け入れる）で十分です。
 - `Cargo.lock` は Git に保存し、Docker イメージを作るときや CI では `cargo build --release --locked` のように `--locked` を付けます（第12巻）。
 - 依存の features は、必要なものだけを ON にします。たとえば serde は `derive` が必要なので `--features derive` を付けます。依存クレートの features の具体的な選び方は、RustNote の `Cargo.toml` を作る第9巻で扱います。
 
@@ -5324,7 +5324,7 @@ error: rustc 1.90.0 is not supported by the following package:
 **問題1:** 次の書き方は、それぞれどの範囲の版を許しますか。
 
 - (a) `anyhow = "1.0.104"`
-- (b) `topcoat = "=0.10.0"`
+- (b) `topcoat = "=0.11.0"`
 - (c) `foo = "0.10"`
 - (d) `bar = "~1.2.3"`
 
@@ -5339,7 +5339,7 @@ error: rustc 1.90.0 is not supported by the following package:
 | 書き方 | 許される範囲 |
 |---|---|
 | (a) `"1.0.104"` | 1.0.104 以上、2.0.0 未満 |
-| (b) `"=0.10.0"` | 0.10.0 ちょうど |
+| (b) `"=0.11.0"` | 0.11.0 ちょうど |
 | (c) `"0.10"` | 0.10.0 以上、0.11.0 未満 |
 | (d) `"~1.2.3"` | 1.2.3 以上、1.3.0 未満 |
 
@@ -5389,7 +5389,7 @@ markdown=false json=false
 
 ### まとめ
 
-- `"1.0.229"` は「1.0.229 以上 2.0.0 未満」、`"=0.10.0"` は「ちょうど」。実際に使う版は `Cargo.lock` に記録され、アプリでは Git に保存して `--locked` でビルドします。
+- `"1.0.229"` は「1.0.229 以上 2.0.0 未満」、`"=0.11.0"` は「ちょうど」。実際に使う版は `Cargo.lock` に記録され、アプリでは Git に保存して `--locked` でビルドします。
 - features は `[features]` で定義し、`#[cfg(feature = "...")]` でコードを、`dep:` で任意の依存を出し入れします。`cargo tree` で依存の増え方を確かめられます。
 - `rust-version` で必要な Rust の版を宣言し、依存の機能は必要なものだけを選びます。
 
@@ -6935,7 +6935,7 @@ error: test failed, to rerun pass `--lib`
 
 ### もう一歩: 実務に近い形
 
-ひな形のコードを消して、RustNote のドメイン型の一部（`NoteTitle` と、ノートの状態 `NoteStatus`）を、ドキュメントとテスト付きのライブラリとして作ります。thiserror を `cargo add thiserror` で入れ、`Cargo.toml` に `rust-version = "1.98"` を足しておきます。
+ひな形のコードを消して、RustNote のドメイン型の一部（`NoteTitle` と、ノートの状態 `NoteStatus`）を、ドキュメントとテスト付きのライブラリとして作ります。thiserror を `cargo add thiserror` で入れ、`Cargo.toml` に `rust-version = "1.99"` を足しておきます。
 
 ```text
 note_domain/
@@ -7678,8 +7678,8 @@ all doctests ran in 0.52s; merged doctests compilation took 0.42s
 - ☐ 種類で分岐するエラーは thiserror、人に報告するエラーは anyhow（`context`）と使い分けられる（UNIT 05）
 - ☐ `mod`・ファイル分割・`pub` / `pub(crate)` / `pub(super)`・`pub use` で公開範囲を設計できる（UNIT 06）
 - ☐ workspace で複数の package をまとめ、`[workspace.dependencies]` で版をそろえられる（UNIT 06）
-- ☐ 版の指定（`"1.0.229"`・`"=0.10.0"`）を読め、`Cargo.lock` を保存して `--locked` でビルドする理由を説明できる（UNIT 07）
-- ☐ features を定義して `#[cfg(feature = "...")]` で切り替え、依存の機能を必要な分だけ選べる。`rust-version = "1.98"` を書ける（UNIT 07）
+- ☐ 版の指定（`"1.0.229"`・`"=0.11.0"`）を読め、`Cargo.lock` を保存して `--locked` でビルドする理由を説明できる（UNIT 07）
+- ☐ features を定義して `#[cfg(feature = "...")]` で切り替え、依存の機能を必要な分だけ選べる。`rust-version = "1.99"` を書ける（UNIT 07）
 
 **外との境界と検証**
 
@@ -7742,7 +7742,7 @@ all doctests ran in 0.52s; merged doctests compilation took 0.42s
 | `--locked` | `Cargo.lock` の書き換えが必要ならエラーで止めるオプション | UNIT 07 |
 | features | クレートの機能の ON/OFF。`#[cfg(feature = "...")]` でコードを出し入れする | UNIT 07 |
 | 任意の依存 | `optional = true`。feature で ON にしたときだけ使う依存 | UNIT 07 |
-| `rust-version` | その package に必要な Rust の最小の版（本書は `"1.98"`） | UNIT 07 |
+| `rust-version` | その package に必要な Rust の最小の版（本書は `"1.99"`） | UNIT 07 |
 | Serde | サーデ。値と JSON などの形式を相互に変換する仕組み（serde 1.0.229） | UNIT 08 |
 | シリアライズ / デシリアライズ | 値 → 文字列（JSON など）／文字列 → 値 の変換 | UNIT 08 |
 | DTO | Data Transfer Object。外とのやり取りのためだけの入れ物の型 | UNIT 08 |

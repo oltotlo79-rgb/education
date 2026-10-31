@@ -218,9 +218,9 @@ cargo test
 | 項目 | 版・内容 |
 |---|---|
 | OS | Windows 11（ARM64）。コマンドは PowerShell を主に、WSL / macOS / Linux は補足で示します |
-| Rust | **1.98 以上**（本書シリーズの基準）。動作確認は rustc 1.99.0 / cargo 1.99.0（`aarch64-pc-windows-msvc`） |
+| Rust | **1.99 以上**（本書シリーズの基準）。実行結果は rustc 1.99.0・tokio 1.53.3 で取り、2026-10-31 に rustc 1.99.1・tokio 1.54.1 で全部の例を動かし直して比べた（違いが出た表示は取り直した。時間・スレッドの順番など毎回変わる物は、そのまま） |
 | edition | 2024（`cargo new` の既定値） |
-| tokio | 1.53.3（`full` の機能つき。この巻の全単元で使う） |
+| tokio | 1.54.1（`full` の機能つき。この巻の全単元で使う） |
 | tokio-util | 0.7.20（UNIT 06。取り消しの合図と、タスクの見張り） |
 | argon2 | 0.6.0（UNIT 07。パスワードのハッシュ） |
 | reqwest | 0.13.5（UNIT 08。HTTP クライアント。ARM64 版の Windows では、ビルドに clang が必要） |
@@ -238,7 +238,7 @@ UNIT 01〜05 で使うクレートは tokio だけで、UNIT 06 で tokio-util �
 cargo new async_lab
 cd async_lab
 mkdir src/bin
-cargo add tokio@=1.53.3 --features full
+cargo add tokio@=1.54.1 --features full
 ```
 
 `cargo new` と `cargo add` の実際の出力は次のとおりです。
@@ -247,7 +247,7 @@ cargo add tokio@=1.53.3 --features full
     Creating binary (application) `async_lab` package
 note: see more `Cargo.toml` keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
     Updating crates.io index
-      Adding tokio =1.53.3 to dependencies
+      Adding tokio =1.54.1 to dependencies
              Features:
              + bytes
              + fs
@@ -275,33 +275,32 @@ note: see more `Cargo.toml` keys and their definitions at https://doc.rust-lang.
              - tracing
              - windows-sys
     Updating crates.io index
-     Locking 24 packages to highest Rust 1.99.0 compatible versions
-      Adding tokio v1.53.3 (available: v1.54.0)
+     Locking 24 packages to highest Rust 1.99.1 compatible versions
 ```
 
-- `tokio@=1.53.3` の `=` は「ちょうど 1.53.3」という意味です（第4巻 UNIT 07）。最後の行の `available: v1.54.0` は「もっと新しい 1.54.0 も出ています」というお知らせです。`=` を付けずに `tokio@1.53.3` と書くと、Cargo は 1.x の中でいちばん新しい版を選ぶので、2026年10月22日の時点では 1.54.0 が入ります。この巻の出力と同じ結果になるように、版を固定しておきます。
+- `tokio@=1.54.1` の `=` は「ちょうど 1.54.1」という意味です（第4巻 UNIT 07）。`=` を付けずに `tokio@1.54.1` と書くと、Cargo は 1.x の中でいちばん新しい版を選ぶので、新しい版が出ると、それが入ります。この巻の出力と同じ結果になるように、版を固定しておきます（2026-10-31 の時点で、1.54.1 がいちばん新しい版でした）。
 - `--features full` は、Tokio の機能を**全部** ON にする指定です。`+` が付いた機能が ON になりました。`time`（待つ・時間の上限）、`sync`（channel や Mutex）、`macros`（`#[tokio::main]`）、`rt-multi-thread`（何本ものスレッドで動かす）、`signal`（Ctrl+C を受け取る）など、この巻で使う機能が全部入っています。
 - 本番のアプリでは、使う機能だけを選ぶのがふつうです。RustNote の `Cargo.toml` は `features = ["rt-multi-thread", "macros"]` の2つだけです。機能を絞ると、ビルドが速くなり、使わない部品が入りません。
 
-最後に、`Cargo.toml` の `[package]` の中、`edition = "2024"` の次の行に `rust-version = "1.98"` を手で1行足します。できあがった `Cargo.toml` は次のとおりです。
+最後に、`Cargo.toml` の `[package]` の中、`edition = "2024"` の次の行に `rust-version = "1.99"` を手で1行足します。できあがった `Cargo.toml` は次のとおりです。
 
 ```toml
 [package]
 name = "async_lab"
 version = "0.1.0"
 edition = "2024"
-rust-version = "1.98"
+rust-version = "1.99"
 
 [dependencies]
-tokio = { version = "=1.53.3", features = ["full"] }
+tokio = { version = "=1.54.1", features = ["full"] }
 ```
 
-一度 `cargo build` しておきましょう。最初のビルドでは Tokio とその部品をコンパイルするので、少し時間がかかります（この PC では約12秒でした）。
+一度 `cargo build` しておきましょう。最初のビルドでは Tokio とその部品をコンパイルするので、少し時間がかかります（この PC では約9秒でした）。
 
 ```text
-   Compiling tokio v1.53.3
+   Compiling tokio v1.54.1
    Compiling async_lab v0.1.0 (...\async_lab)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 11.89s
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 9.15s
 ```
 
 #### src/bin/ に置いたファイルは、それぞれが1つのプログラム
@@ -1863,7 +1862,7 @@ note: future is not `Send` as this value is used across an await
  10 |         tokio::time::sleep(Duration::from_millis(10)).await;
     |                                                       ^^^^^ await occurs here, with `title` maybe used later
 note: required by a bound in `tokio::spawn`
-   --> ...\tokio-1.53.3\src\task\spawn.rs:176:21
+   --> ...\tokio-1.54.1\src\task\spawn.rs:176:21
     |
 174 |     pub fn spawn<F>(future: F) -> JoinHandle<F::Output>
     |            ----- required by a bound in this function
@@ -1931,13 +1930,13 @@ async fn main() {
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.72s
      Running `target\debug\e02_block_on.exe`
 
-thread 'main' (22388) panicked at ...\tokio-1.53.3\src\runtime\scheduler\multi_thread\mod.rs:91:9:
-Cannot start a runtime from within a runtime. This happens because a function (like `block_on`) attempted to block the current thread while the thread is being used to drive asynchronous tasks.
+thread 'main' (47444) panicked at ...\tokio-1.54.1\src\runtime\scheduler\multi_thread\mod.rs:89:9:
+Cannot start a runtime from within a runtime. This happens because a function (like `block_on`) attempted to block the current thread while the thread is being used to drive asynchronous tasks. If you are in an async function, use `.await` on the future instead of blocking on it.
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 error: process didn't exit successfully: `target\debug\e02_block_on.exe` (exit code: 101)
 ```
 
-- **何が起きたか:** 「ランタイムの中で、ランタイムを始めることはできません。`block_on` のような関数が、async のタスクを動かしているスレッドを止めて待とうとしました」という panic です。
+- **何が起きたか:** 「ランタイムの中で、ランタイムを始めることはできません。`block_on` のような関数が、async のタスクを動かしているスレッドを止めて待とうとしました。async の関数の中なら、止めて待つのではなく、Future に `.await` を使ってください」という panic です（最後の一文は、tokio 1.54 で足されました）。
 - `block_on` は「終わるまでこのスレッドで待ち続ける」関数でした（例2-2）。ワーカースレッドがそこで待ち続けると、そのスレッドで動くはずのほかのタスクが全部止まってしまいます。Tokio はそれを防ぐために、わざと panic して知らせています。
 - 今動いているランタイムを借りる `tokio::runtime::Handle::current().block_on(...)` に書き換えても、同じ panic になります（`e02_block_on_handle.rs` で確かめた結果も、同じメッセージでした）。
 - **直し方:** 待つ処理を含む関数は `async fn` にして、呼ぶ側で `.await` します。async の世界の中では、`block_on` を使いません。
@@ -1965,7 +1964,7 @@ async fn main() {
 
 ### RustNote ではここで使う
 
-RustNote が使う Web フレームワーク Topcoat は、`topcoat::start(router).await` の中で、ブラウザからの**接続を1つ受け付けるたびに、タスクを1つ作って**います。Topcoat 0.10.0 のソース（`topcoat-router-0.10.0/src/service.rs` の `internal_serve`）から、その部分を抜き出すと次のとおりです（コメントは日本語に置き換え、関係の無い部分は省略しています）。
+RustNote が使う Web フレームワーク Topcoat は、`topcoat::start(router).await` の中で、ブラウザからの**接続を1つ受け付けるたびに、タスクを1つ作って**います。Topcoat 0.11.0 のソース（`topcoat-router-0.11.0/src/service.rs` の `internal_serve`）から、その部分を抜き出すと次のとおりです（コメントは日本語に置き換え、関係の無い部分は省略しています）。
 
 ```rust
 loop {
@@ -2381,7 +2380,7 @@ cargo run -q --bin u03_joinset
 - `JoinSet<String>` のように、袋には「何の型を返すタスクの袋か」が決まっています。ここでは `make_thumbnail` が `String` を返すので、`JoinSet<String>` になりました（型は Rust が推論しています）。
 - 違う型を返すタスクを入れるとコンパイルエラーになります（「よくあるエラー1」）。
 
-> **ヒント:** 全部の結果を一度にまとめて受け取ればよいときは、`set.join_all().await` も使えます。全部が終わるのを待ち、結果を `Vec` で返します（例3-4で使います）。ただし、`join_all` は子のどれかが panic すると、自分も panic します（tokio 1.53.3 のソースで、panic をそのまま投げ直す作りになっていることを確かめました）。1つずつ確かめたいときは `join_next` を使います。
+> **ヒント:** 全部の結果を一度にまとめて受け取ればよいときは、`set.join_all().await` も使えます。全部が終わるのを待ち、結果を `Vec` で返します（例3-4で使います）。ただし、`join_all` は子のどれかが panic すると、自分も panic します（tokio 1.54.1 のソースで、panic をそのまま投げ直す作りになっていることを確かめました）。1つずつ確かめたいときは `join_next` を使います。
 
 #### 例3-2: select! で、先に終わったほうを使う
 
@@ -2559,7 +2558,7 @@ main が終わります（0.3 秒）
 ##### 解説2: 親が抜けると、袋の中の子は取り消される
 
 - 0.2 秒で B の `Err` を受け取ると、2つ目の `?` で `fetch_all` から抜けます。そのとき、関数の中の変数 `set` が片付けられ、JoinSet は**中に残っていた子（C）を全部取り消します**。
-- 実行結果の `片付け: C` は、`main が終わります（0.3 秒）` より前に表示されています。C は 1.0 秒かかるはずだったのに、0.3 秒より前に片付けられました。プログラムが終わったからではなく、JoinSet が捨てられたことで取り消されたのです。tokio 1.53.3 のソースでも、JoinSet が片付けられるときに、中のタスクを1つずつ `abort` する作りになっていることを確かめました。
+- 実行結果の `片付け: C` は、`main が終わります（0.3 秒）` より前に表示されています。C は 1.0 秒かかるはずだったのに、0.3 秒より前に片付けられました。プログラムが終わったからではなく、JoinSet が捨てられたことで取り消されたのです。tokio 1.54.1 のソースでも、JoinSet が片付けられるときに、中のタスクを1つずつ `abort` する作りになっていることを確かめました。
 - `片付け: C` が結果の行より後に表示されるのは、取り消しの合図を受けた C が、ランタイムの上で少し遅れて片付けられるからです。`main` の最後で 0.05 秒待っているのは、その表示を見るためだけです。
 
 ##### 解説3: 「全部そろわないと意味がない」ときの形
@@ -2776,7 +2775,7 @@ error[E0271]: expected `{async block@e03_joinset_types.rs:8:15}` to be a future 
     |         required by a bound introduced by this call
     |
 note: required by a bound in `JoinSet::<T>::spawn`
-   --> ...\tokio-1.53.3\src\task\join_set.rs:144:19
+   --> ...\tokio-1.54.1\src\task\join_set.rs:144:19
     |
 142 |     pub fn spawn<F>(&mut self, task: F) -> AbortHandle
     |            ----- required by a bound in this associated function
@@ -3003,7 +3002,7 @@ async fn main() {
 
 ### RustNote ではここで使う
 
-RustNote のコードそのものには、`JoinSet` も `select!` も出てきません。1つのリクエストの処理は、DB に順番に問い合わせるだけで済んでいるからです。一方で、RustNote を動かしている Topcoat の中では、この単元の形がそのまま使われています。UNIT 02 で読んだ Topcoat 0.10.0 の `internal_serve`（`topcoat-router-0.10.0/src/service.rs`）を、もう少し詳しく見てみましょう（コメントは日本語に置き換え、関係の無い部分は省略しています）。
+RustNote のコードそのものには、`JoinSet` も `select!` も出てきません。1つのリクエストの処理は、DB に順番に問い合わせるだけで済んでいるからです。一方で、RustNote を動かしている Topcoat の中では、この単元の形がそのまま使われています。UNIT 02 で読んだ Topcoat 0.11.0 の `internal_serve`（`topcoat-router-0.11.0/src/service.rs`）を、もう少し詳しく見てみましょう（コメントは日本語に置き換え、関係の無い部分は省略しています）。
 
 ```rust
 // 止める合図の Future を、ループの外で1回だけ留める
@@ -3022,7 +3021,7 @@ loop {
 ```
 
 - 止める合図 `shutdown` は、ループの外で `pin!` で留め、ループの中では `&mut shutdown` で借りています。例3-5の締め切りと、まったく同じ形です。もし枝の中で毎回作り直していたら、エラー3のように、合図を見逃し続けるかもしれません。
-- 接続を受け付ける `listener.accept()` は、ループのたびに新しく作っています。これが許されるのは、tokio の `TcpListener::accept` がキャンセル安全だからです。tokio 1.53.3 のソースには「このメソッドはキャンセル安全です。select! の枝で使い、ほかの枝が先に終わったときは、新しい接続を受け付けていないことが保証されます」と書かれています。途中で捨てても、接続を取りこぼしません。
+- 接続を受け付ける `listener.accept()` は、ループのたびに新しく作っています。これが許されるのは、tokio の `TcpListener::accept` がキャンセル安全だからです。tokio 1.54.1 のソースには「このメソッドはキャンセル安全です。select! の枝で使い、ほかの枝が先に終わったときは、新しい接続を受け付けていないことが保証されます」と書かれています。途中で捨てても、接続を取りこぼしません。
 - 止める合図を受けたら、処理中の接続をしばらく待ってから終わります。その部分は、UNIT 04 の channel と UNIT 06 の graceful shutdown で読みます。
 
 > **ヒント:** 自分のアプリで「1つの画面のために、関係の無い3つの問い合わせをする」ようになったら、UNIT 01 の `try_join!` か、この単元の JoinSet を思い出しましょう。問い合わせの数が決まっているなら `try_join!`、数が実行するまで分からないなら JoinSet が向いています。
@@ -3572,7 +3571,7 @@ cargo run -q --bin u04_try_send
 - Web サーバーでは、混雑したときに利用者を何十秒も待たせるより、すぐに「503 Service Unavailable（今は混んでいます）」を返して、少し後でやり直してもらうほうが親切なことがあります。`try_send` の `Full` は、その判断のきっかけになります。
 - 一方、裏で動く集計のように、少しくらい遅れてもかまわない仕事なら、`send(...).await` で待たせて、確実に受け付けるほうが向いています。
 
-> **注意:** `select!` の枝で `tx.send(値)` を使い、ほかの枝が先に終わると、送るはずだった値は**捨てられて失われます**（tokio 1.53.3 のソースに「the message is dropped and will be lost」と書かれています）。UNIT 03 のキャンセル安全の話です。一方、`rx.recv()` はキャンセル安全で、負けても箱の中の値は失われません。
+> **注意:** `select!` の枝で `tx.send(値)` を使い、ほかの枝が先に終わると、送るはずだった値は**捨てられて失われます**（tokio 1.54.1 のソースに「the message is dropped and will be lost」と書かれています）。UNIT 03 のキャンセル安全の話です。一方、`rx.recv()` はキャンセル安全で、負けても箱の中の値は失われません。
 
 #### 例4-4: 返事は oneshot で受け取る（アクターの形）
 
@@ -3964,7 +3963,7 @@ async fn main() {
 
 RustNote のコードそのものには、channel は出てきません。1つのリクエストの中で、ほかのタスクへ仕事を渡す場面がまだ無いからです（UNIT 10 のバックグラウンドジョブで、仕事を渡すときに使います）。
 
-一方、RustNote を動かしている Topcoat の `internal_serve`（`topcoat-router-0.10.0/src/service.rs`）では、watch の channel が「止める合図」として使われています。Topcoat 0.10.0 のソースから、channel を作る部分と、合図を出す部分を抜き出します（コメントは日本語に置き換え、関係の無い部分は省略しています）。
+一方、RustNote を動かしている Topcoat の `internal_serve`（`topcoat-router-0.11.0/src/service.rs`）では、watch の channel が「止める合図」として使われています。Topcoat 0.11.0 のソースから、channel を作る部分と、合図を出す部分を抜き出します（コメントは日本語に置き換え、関係の無い部分は省略しています）。
 
 ```rust
 // どの channel も「値を送る」のではなく「閉じる」ことで合図する。
@@ -4359,7 +4358,7 @@ cargo run -q --bin u05_std_mutex
 
 ##### 解説3: async の中でも、標準の Mutex を使ってよい
 
-- 「async の中では tokio の Mutex を使わなければならない」と思われがちですが、そうではありません。tokio のドキュメントにも「よく誤解されているが、async のコードの中で標準ライブラリの Mutex を使うのは問題なく、むしろ好ましいことが多い」と書かれています（tokio 1.53.3 の `sync/mutex.rs`）。
+- 「async の中では tokio の Mutex を使わなければならない」と思われがちですが、そうではありません。tokio のドキュメントにも「よく誤解されているが、async のコードの中で標準ライブラリの Mutex を使うのは問題なく、むしろ好ましいことが多い」と書かれています（tokio 1.54.1 の `sync/mutex.rs`）。
 - 標準の Mutex のほうが軽くて速いからです。条件は1つ、**鍵を持ったまま `.await` しないこと**。数を足す・表を書き換えるのように、鍵の中の仕事が短く、`.await` を含まないなら、標準の Mutex で十分です。
 
 > **注意:** この例のように、アクセス数をメモリの中の表で数えると、サーバーを再起動したときに0に戻ります。Fly.io などで同じアプリを2台以上動かすと、台ごとに別々の表になり、合計も合いません。消えてはいけないデータや、台をまたいで共有したいデータは、DB に置きます（第7巻）。
@@ -4611,7 +4610,7 @@ cargo run -q --bin u05_rwlock
 
 ##### 解説2: 書く人が待っている間は、新しく来た読む人も待たされる
 
-- tokio の RwLock は「書く人を優先する」作りです（tokio 1.53.3 のドキュメントに「公平（書き込み優先）」とあります）。書く人が待ち始めた後に来た読む人は、書く人が終わるまで待たされます。
+- tokio の RwLock は「書く人を優先する」作りです（tokio 1.54.1 のドキュメントに「公平（書き込み優先）」とあります）。書く人が待ち始めた後に来た読む人は、書く人が終わるまで待たされます。
 - そうしないと、読む人が次々に来る間、書く人が永遠に入れない（飢える）ことがあるからです。
 
 ##### 解説3: Mutex とどちらを使うか
@@ -4683,7 +4682,7 @@ cargo run -q --bin u05_semaphore
 ##### 解説2: 同時に動いているのは、いつも2つまで
 
 - 実行結果を時刻ごとに見ると、0 秒に1・2番、0.3 秒に3・5番、0.6 秒に4番が始まっています。どの時点でも、「開始した」のに「終了していない」ものは2つまでです。5つ全部が終わるまで、約 0.9 秒でした。
-- 5番が4番より先に始まっているのは、5番のタスクのほうが先に `acquire_owned` を呼んで、列に並んだからです。tokio の Semaphore は公平で、**許可証を求めた順番**に配ります（tokio 1.53.3 のドキュメントより）。どのタスクが先に列に並ぶかは、実行するたびに変わります。
+- 5番が4番より先に始まっているのは、5番のタスクのほうが先に `acquire_owned` を呼んで、列に並んだからです。tokio の Semaphore は公平で、**許可証を求めた順番**に配ります（tokio 1.54.1 のドキュメントより）。どのタスクが先に列に並ぶかは、実行するたびに変わります。
 
 ##### 解説3: UNIT 03 の JoinSet の上限との違い
 
@@ -4778,7 +4777,7 @@ note: future is not `Send` as this value is used across an await
  11 |     tokio::time::sleep(Duration::from_millis(10)).await;
     |                                                   ^^^^^ await occurs here, with `mut map` maybe used later
 note: required by a bound in `tokio::spawn`
-   --> ...\tokio-1.53.3\src\task\spawn.rs:176:21
+   --> ...\tokio-1.54.1\src\task\spawn.rs:176:21
     |
 174 |     pub fn spawn<F>(future: F) -> JoinHandle<F::Output>
     |            ----- required by a bound in this function
@@ -4836,7 +4835,7 @@ note: future is not `Send` as this value is used across an await
  10 |     tokio::time::sleep(Duration::from_millis(10)).await;
     |                                                   ^^^^^ await occurs here, with `mut count` maybe used later
 note: required by a bound in `tokio::spawn`
-   --> ...\tokio-1.53.3\src\task\spawn.rs:176:21
+   --> ...\tokio-1.54.1\src\task\spawn.rs:176:21
     |
 174 |     pub fn spawn<F>(future: F) -> JoinHandle<F::Output>
     |            ----- required by a bound in this function
@@ -5264,7 +5263,7 @@ async fn main() {
 <text x="500" y="156" font-size="10" fill="#0f172a" text-anchor="middle">timeout(5秒, tracker.wait())</text>
 <text x="644" y="156" font-size="10" fill="#0f172a" text-anchor="middle">Ok / Err(Elapsed)</text>
 <line x1="10" y1="172" x2="710" y2="172" stroke="#cbd5e1"/>
-<text x="10" y="200" font-size="12" font-weight="700" fill="#0f172a">Topcoat 0.10 の中（RustNote）</text>
+<text x="10" y="200" font-size="12" font-weight="700" fill="#0f172a">Topcoat 0.11 の中（RustNote）</text>
 <text x="74" y="224" font-size="10" fill="#0f172a" text-anchor="middle">Ctrl+C / SIGTERM</text>
 <text x="216" y="224" font-size="10" fill="#0f172a" text-anchor="middle">drop(listener)</text>
 <text x="358" y="224" font-size="10" fill="#0f172a" text-anchor="middle">drop(drain_tx)</text>
@@ -5546,7 +5545,7 @@ cargo add tokio-util@=0.7.20 --features rt
              - time
              - tracing
     Updating crates.io index
-     Locking 7 packages to highest Rust 1.98 compatible versions
+     Locking 7 packages to highest Rust 1.99 compatible versions
       Adding futures-core v0.3.34
       Adding futures-macro v0.3.34
       Adding futures-sink v0.3.34
@@ -5557,7 +5556,7 @@ cargo add tokio-util@=0.7.20 --features rt
 ```
 
 - tokio-util は、tokio の作者たちが作っている、tokio と一緒に使う便利な道具の集まりです。`rt` の機能に、この例で使う `TaskTracker` が入っています（`CancellationToken` は機能を選ばなくても使えます）。
-- `Locking 7 packages to highest Rust 1.98 compatible versions` は、`Cargo.toml` の `rust-version = "1.98"` に合う版の中から選んだ、という意味です。
+- `Locking 7 packages to highest Rust 1.99 compatible versions` は、`Cargo.toml` の `rust-version = "1.99"` に合う版の中から選んだ、という意味です。
 
 > **▼ このコードがやること（先に日本語で）:** 0.5 秒ごとに仕事をする裏の係（worker）を2つ動かします。`main` は Ctrl+C を待ち、受け取ったら、①新しいタスクの受付を止め、②全員に停止の合図を出し、③最大 5 秒だけ全員が終わるのを待ちます。係は合図を受け取ったら、0.2 秒かけて片付けてから終わります。
 
@@ -5810,9 +5809,9 @@ async fn main() {
 
 ### RustNote ではここで使う
 
-RustNote の `main.rs` には、Ctrl+C を待つコードも、停止の合図を配るコードもありません。`topcoat::start(router).await` の中で、Topcoat が graceful shutdown をしてくれるからです。Topcoat 0.10.0 のソースで、そのことを確かめます。
+RustNote の `main.rs` には、Ctrl+C を待つコードも、停止の合図を配るコードもありません。`topcoat::start(router).await` の中で、Topcoat が graceful shutdown をしてくれるからです。Topcoat 0.11.0 のソースで、そのことを確かめます（0.10.0 から 0.11.0 で、ここに抜き出した部分のコードは変わっていないことを、2つの版のソースを比べて確かめました）。
 
-まず `topcoat-0.10.0/src/serve.rs` です。`topcoat::start` が使う `serve` 関数の説明には、「Ctrl+C か、Unix では SIGTERM を受け取ると graceful shutdown を始める。処理中のリクエストは、`RouterService::shutdown_timeout` の時間が過ぎるまでに終わればよい」と書かれています。止める合図を待つ関数は次のとおりです（コメントは日本語に置き換えています）。
+まず `topcoat-0.11.0/src/serve.rs` です。`topcoat::start` が使う `serve` 関数の説明には、「Ctrl+C か、Unix では SIGTERM を受け取ると graceful shutdown を始める。処理中のリクエストは、`RouterService::shutdown_timeout` の時間が過ぎるまでに終わればよい」と書かれています。止める合図を待つ関数は次のとおりです（コメントは日本語に置き換えています）。
 
 ```rust
 // プロセスが止める合図（Ctrl+C か、Unix では SIGTERM）を受け取ったら終わる
@@ -5843,7 +5842,7 @@ async fn shutdown_signal() {
 - 例6-4と同じ `tokio::signal::ctrl_c()` を使っています。Linux などの Unix では、それに加えて **SIGTERM**（「止まってください」という OS の合図）も待ち、`select!` でどちらか先に来たほうを受け取ります。Windows には SIGTERM が無いので、`std::future::pending()`（永遠に終わらない Future）を代わりに置いています。
 - RustNote を Fly.io で動かすとき、アプリを止めたり入れ替えたりする際に、Fly.io から合図が送られてきます。合図の種類と待ち時間の設定は、第12巻で扱います。
 
-次に、合図を受けた後の流れです（`topcoat-router-0.10.0/src/service.rs` の `internal_serve` の後半。UNIT 04 でも一部を読みました）。
+次に、合図を受けた後の流れです（`topcoat-router-0.11.0/src/service.rs` の `internal_serve` の後半。UNIT 04 でも一部を読みました）。
 
 ```rust
 // 受け付けをやめる。待ち受けのポートを空けて、入れ替わりのプロセスが使えるようにする
@@ -6137,7 +6136,7 @@ cargo add argon2@=0.6.0
              - rand_core
              - zeroize
     Updating crates.io index
-     Locking 15 packages to highest Rust 1.98 compatible versions
+     Locking 15 packages to highest Rust 1.99 compatible versions
       Adding argon2 v0.6.0
       Adding base64ct v1.8.3
       Adding blake2 v0.11.0
@@ -6145,7 +6144,7 @@ cargo add argon2@=0.6.0
       Adding cmov v0.5.4
       Adding cpufeatures v0.3.1
       Adding crypto-common v0.2.2
-      Adding ctutils v0.4.5
+      Adding ctutils v0.4.7
       Adding digest v0.11.3
       Adding getrandom v0.4.3
       Adding hybrid-array v0.4.15
@@ -6558,7 +6557,7 @@ cargo run -q --bin u07_limit
 
 ##### 解説2: なぜ blocking スレッドの数だけに任せないのか
 
-- `spawn_blocking` には、もともと上限（既定で 512 本）があります。tokio 1.53.3 のソース（`runtime/builder.rs`）でも、`max_blocking_threads` の既定は 512 です。しかし 512 は、「同時に 512 個の Argon2 を計算してよい」という意味ではありません。
+- `spawn_blocking` には、もともと上限（既定で 512 本）があります。tokio 1.54.1 のソース（`runtime/builder.rs`）でも、`max_blocking_threads` の既定は 512 です。しかし 512 は、「同時に 512 個の Argon2 を計算してよい」という意味ではありません。
 - 例7-1で見たとおり、Argon2 は1回に約 19 MiB のメモリを使います。512 個を同時に計算すると、約 9.5 GiB です。CPU のコアも足りないので、1つ1つの計算も遅くなり、全員のログインが遅くなります。
 - 上限を「CPU のコア数くらい」にしておけば、使うメモリと CPU が上限で決まり、混雑しても1人1人の待ち時間が読めるようになります。
 
@@ -6789,7 +6788,7 @@ Err("読めません: 指定されたファイルが見つかりません。 (os
 
 - 引数を `String` で受け取り、`move` でクロージャへ渡しています（「よくあるエラー1」を避ける形）。
 - 結果は `Result<io::Result<usize>, JoinError>` です。1つ目の `map_err(...)?` で外側（panic）を、2つ目の `map_err` で内側（読めなかった）を、どちらも `String` のエラーにそろえています。無いファイルのときは、Windows の日本語のメッセージ「指定されたファイルが見つかりません。 (os error 2)」が、そのまま入っています。
-- 実は、tokio にはファイル用の `tokio::fs`（`tokio::fs::read_to_string` など）があり、中では `spawn_blocking` を使っています（tokio 1.53.3 の `fs/mod.rs` の説明より）。ファイルを読むだけなら `tokio::fs::read_to_string(path).await` で十分です。読んだ後の重い処理（行を数える・解析する）までまとめて別スレッドで行いたいときは、この解答のように自分で `spawn_blocking` します。
+- 実は、tokio にはファイル用の `tokio::fs`（`tokio::fs::read_to_string` など）があり、中では `spawn_blocking` を使っています（tokio 1.54.1 の `fs/mod.rs` の説明より）。ファイルを読むだけなら `tokio::fs::read_to_string(path).await` で十分です。読んだ後の重い処理（行を数える・解析する）までまとめて別スレッドで行いたいときは、この解答のように自分で `spawn_blocking` します。
 
 **問3の解答:**
 
@@ -6957,7 +6956,7 @@ cargo add reqwest@=0.13.5 --features json
 cargo add serde@=1.0.229 --features derive
 ```
 
-`cargo add reqwest` の実際の出力の始めの部分です（`Locking 147 packages` の後ろに、`Adding …` の行が 147 行続きますが、省いています）。
+`cargo add reqwest` の実際の出力の始めの部分です（`Locking 148 packages` の後ろに、`Adding …` の行が 148 行続きますが、省いています）。
 
 ```text
     Updating crates.io index
@@ -6993,7 +6992,7 @@ cargo add serde@=1.0.229 --features derive
              - stream
              - zstd
     Updating crates.io index
-     Locking 147 packages to highest Rust 1.98 compatible versions
+     Locking 148 packages to highest Rust 1.99 compatible versions
 ```
 
 ```text
@@ -7009,7 +7008,7 @@ cargo add serde@=1.0.229 --features derive
 ```
 
 - reqwest は、HTTP クライアントとしていちばんよく使われているクレートです。`json` の機能を足すと、答えの本文を JSON として読めるようになります。
-- `+ rustls` と `+ __rustls-aws-lc-rs` は、https の暗号化に使う部品です。147 個ものクレートが入るのは、この暗号の部品と、HTTP/2 などの部品のためです。最初のビルドには時間がかかります（この PC では約 33 秒でした）。
+- `+ rustls` と `+ __rustls-aws-lc-rs` は、https の暗号化に使う部品です。148 個ものクレートが入るのは、この暗号の部品と、HTTP/2 などの部品のためです。最初のビルドには時間がかかります（この PC では約 33 秒でした）。
 - 暗号の部品（aws-lc-sys）には C 言語で書かれた部分があり、ビルドに C のコンパイラを使います。この PC（ARM64 版の Windows）では、第7巻の巻頭で入れた LLVM（clang）が入っているので、そのままビルドできました。
 
 > **注意:** ARM64 版の Windows で、clang が入っていないと、この暗号の部品のビルドで止まります。そのときは第7巻の巻頭「ARM64 版の Windows では clang が必要」の手順で LLVM を入れてから、ビルドし直してください。x64 版の Windows・macOS・Linux では、ふつうは追加の準備はいりません。
@@ -7021,7 +7020,7 @@ cargo add serde@=1.0.229 --features derive
 argon2 = "=0.6.0"
 reqwest = { version = "=0.13.5", features = ["json"] }
 serde = { version = "=1.0.229", features = ["derive"] }
-tokio = { version = "=1.53.3", features = ["full"] }
+tokio = { version = "=1.54.1", features = ["full"] }
 tokio-util = { version = "=0.7.20", features = ["rt"] }
 ```
 
@@ -8125,7 +8124,7 @@ cargo add tracing-subscriber@=0.3.23 --features env-filter,json
              - release_max_level_trace
              - release_max_level_warn
              - valuable
-     Locking 1 package to highest Rust 1.98 compatible version
+     Locking 1 package to highest Rust 1.99 compatible version
       Adding tracing-attributes v0.1.31
 ```
 
@@ -8160,7 +8159,7 @@ cargo add tracing-subscriber@=0.3.23 --features env-filter,json
              - valuable-serde
              - valuable_crate
     Updating crates.io index
-     Locking 12 packages to highest Rust 1.98 compatible versions
+     Locking 12 packages to highest Rust 1.99 compatible versions
       Adding aho-corasick v1.1.5
       Adding lazy_static v1.5.1
       Adding matchers v0.2.0
@@ -9179,7 +9178,7 @@ cargo add libsql@=0.10.0
              - encryption
              - wasm
     Updating crates.io index
-     Locking 114 packages to highest Rust 1.98 compatible versions
+     Locking 114 packages to highest Rust 1.99 compatible versions
 ```
 
 この PC では、libsql を足した後の最初のビルドに約1分かかりました。ARM64 版の Windows では、第7巻の巻頭と同じく clang が必要です。

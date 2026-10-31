@@ -215,10 +215,10 @@ cargo test
 | 項目 | 版・内容 |
 |---|---|
 | OS | Windows 11（ARM64）。コマンドは PowerShell を主に、WSL / macOS / Linux は補足で示します |
-| Rust | **1.98 以上**（本書シリーズの基準）。動作確認は rustc 1.99.0 / cargo 1.99.0（`aarch64-pc-windows-msvc`） |
+| Rust | **1.99 以上**（本書シリーズの基準）。実行結果は rustc 1.99.0・tokio 1.53.3 で取り、2026-10-31 に rustc 1.99.1・tokio 1.54.1 で全部の例を動かし直して比べた（違いが出た表示は取り直した。時間など毎回変わる物は、そのまま） |
 | edition | 2024（`cargo new` の既定値） |
 | libsql | 0.10.0（Rust から libSQL を使うクレート。中で動く SQLite エンジンは 3.47.0） |
-| tokio | 1.53.3（`rt-multi-thread` と `macros` の機能つき。`.await` を動かす土台） |
+| tokio | 1.54.1（`rt-multi-thread` と `macros` の機能つき。`.await` を動かす土台） |
 | thiserror | 2.0.21（エラー型を短く書く。第4巻 UNIT 05 と同じ） |
 | Turso CLI | この巻の練習では使いません。Windows 版は無く、使うときは WSL（Windows の中の Linux）に入れます（UNIT 08・10 の例） |
 
@@ -232,7 +232,7 @@ cd sql-lab
 mkdir src/bin
 mkdir sql
 cargo add libsql@0.10.0
-cargo add tokio@1.53.3 --features rt-multi-thread,macros
+cargo add tokio@1.54.1 --features rt-multi-thread,macros
 cargo add thiserror@2.0.21
 ```
 
@@ -258,10 +258,10 @@ note: see more `Cargo.toml` keys and their definitions at https://doc.rust-lang.
              - encryption
              - wasm
     Updating crates.io index
-     Locking 211 packages to highest Rust 1.99.0 compatible versions
+     Locking 211 packages to highest Rust 1.99.1 compatible versions
       Adding generic-array v0.14.7 (available: v0.14.9)
     Updating crates.io index
-      Adding tokio v1.53.3 to dependencies
+      Adding tokio v1.54.1 to dependencies
              Features:
              + macros
              + rt
@@ -293,7 +293,7 @@ note: see more `Cargo.toml` keys and their definitions at https://doc.rust-lang.
              Features:
              + std
     Updating crates.io index
-     Locking 2 packages to highest Rust 1.99.0 compatible versions
+     Locking 2 packages to highest Rust 1.99.1 compatible versions
       Adding thiserror v2.0.21
       Adding thiserror-impl v2.0.21
 ```
@@ -301,19 +301,19 @@ note: see more `Cargo.toml` keys and their definitions at https://doc.rust-lang.
 - `+` が付いた機能（feature）は ON、`-` は OFF です。libsql は、ローカルのファイルを扱う `core` に加えて、Turso のサーバーとやり取りする `remote`・`replication`・`sync`、暗号化した通信の `tls` が最初から ON になっています。
 - 「`Locking 211 packages`」は、libsql が使っている部品まで含めて 211 個のクレートの版を `Cargo.lock` に記録した、という意味です。最初のビルドには数分かかります。
 
-最後に、`Cargo.toml` の `[package]` の中、`edition = "2024"` の次の行に `rust-version = "1.98"` を手で1行足します（第4巻 UNIT 07 で学んだ「このプロジェクトは Rust 1.98 以上でビルドしてください」という宣言です）。できあがった `Cargo.toml` は次のとおりです。
+最後に、`Cargo.toml` の `[package]` の中、`edition = "2024"` の次の行に `rust-version = "1.99"` を手で1行足します（第4巻 UNIT 07 で学んだ「このプロジェクトは Rust 1.99 以上でビルドしてください」という宣言です）。できあがった `Cargo.toml` は次のとおりです。
 
 ```toml
 [package]
 name = "sql-lab"
 version = "0.1.0"
 edition = "2024"
-rust-version = "1.98"
+rust-version = "1.99"
 
 [dependencies]
 libsql = "0.10.0"
 thiserror = "2.0.21"
-tokio = { version = "1.53.3", features = ["rt-multi-thread", "macros"] }
+tokio = { version = "1.54.1", features = ["rt-multi-thread", "macros"] }
 ```
 
 #### ARM64 版の Windows では clang が必要
@@ -6758,9 +6758,6 @@ cargo add async-trait@0.1.92
 ```text
     Updating crates.io index
       Adding async-trait v0.1.92 to dependencies
-    Updating crates.io index
-     Locking 1 package to highest Rust 1.98 compatible version
-      Adding async-trait v0.1.92
 ```
 
 > **▼ このコードがやること（先に日本語で）:** `NoteRepository` という trait（約束）に「1件探す」と「タイトルを変える」の2つを決め、libSQL で実装します。タイトルの変更は UNIT 05 の楽観的ロック（`version` が一致したときだけ更新）で行います。SQL を知らないハンドラーのつもりの関数 `show_note`・`rename_note` から、5つの場面（自分のノート・他人のノート・正しい version・古い version・壊れた行）を試し、それぞれの結果を「ステータスコード 文章」の形で表示します。500 のときは、原因をログ（標準エラー出力）にだけ書きます。

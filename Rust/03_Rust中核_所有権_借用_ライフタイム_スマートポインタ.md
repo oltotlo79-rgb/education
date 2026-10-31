@@ -204,18 +204,18 @@ String の持ち手の大きさ: 24 バイト
 
 | 項目 | この巻で使うもの | 補足 |
 |---|---|---|
-| Rust | 1.98 以上（本書の動作確認は rustc 1.99.0 / cargo 1.99.0） | `rustc --version` で確認できます。古い場合は `rustup update` で更新します |
+| Rust | 1.99 以上（本書の実行結果は rustc 1.99.0 で取りました。1.99.1 でも同じ表示になることを確かめています。エラーの中の rustc のソースの場所の番号は、1.99.1 のものにしています） | `rustc --version` で確認できます。古い場合は `rustup update` で更新します |
 | edition | 2024 | `cargo new` で作ると自動で `edition = "2024"` になります |
 | OS | Windows 11（ARM64）+ PowerShell | WSL / macOS / Linux でも同じコードが動きます |
 | 外部クレート | 使いません | この巻のコードはすべて標準ライブラリ（`std`）だけで動きます |
 
-シリーズ全体の基準を「Rust 1.98 以上」にしているのは、第6巻以降で使う Web フレームワーク Topcoat 0.10 が 1.98 以上を必要とするためです。実行結果とエラー文は、すべて 1.99.0 で実際に動かしたものを載せています。
+シリーズ全体の基準を「Rust 1.99 以上」にしているのは、第6巻以降で使う Web フレームワーク Topcoat 0.11 が 1.99 以上を必要とするためです。実行結果とエラー文は、すべて 1.99.0 で実際に動かしたものを載せています。2026-10-31 に、この巻の標準ライブラリだけの例を 1.99.0 と 1.99.1 の両方で動かして比べ、同じ表示になることを確かめました（違ったのは、毎回変わるメモリの場所やスレッドの順番と、エラーの中の rustc のソースの場所の番号だけで、その番号は 1.99.1 のものにしています）。
 
-> **ヒント: 本書と同じ版で試したいとき** … `ownership-lab` フォルダの中に `rust-toolchain.toml` という名前のファイルを作り、下の2行を書いて保存します。すると、このフォルダの中で `cargo` を実行したときだけ、指定した版の Rust が使われます。パソコン全体の既定の版は変わりません。その版が入っていないと言われたら、`rustup toolchain install 1.99.0` で入れてください。
+> **ヒント: 本書と同じ版で試したいとき** … `ownership-lab` フォルダの中に `rust-toolchain.toml` という名前のファイルを作り、下の2行を書いて保存します。すると、このフォルダの中で `cargo` を実行したときだけ、指定した版の Rust が使われます。パソコン全体の既定の版は変わりません。その版が入っていないと言われたら、`rustup toolchain install 1.99.1` で入れてください。
 
 ```toml
 [toolchain]
-channel = "1.99.0"
+channel = "1.99.1"
 ```
 
 > **注意:** この巻に出てくる「`String` の持ち手は 24 バイト」といった大きさは、**64 ビットのパソコン**での値です。いまのパソコンはほぼすべて 64 ビットなので、そのまま同じ数字になるはずです。また、`0x23628108d90` のような**メモリの場所（アドレス）**を表示する例もありますが、この数字は実行するたびに変わります。大事なのは数字そのものではなく、「2つが同じか、違うか」です。
@@ -7567,7 +7567,7 @@ note: required because it's used within this closure
 7 |     let handle = thread::spawn(move || {
   |                                ^^^^^^^
 note: required by a bound in `spawn`
- --> /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\thread\functions.rs:125:0
+ --> /rustc/58cf8f9c35b355199727627d07ae34a4e2846d67/library\std\src\thread\functions.rs:125:0
 
 For more information about this error, try `rustc --explain E0277`.
 error: could not compile `ownership-lab` (bin "u10_err_rc_send") due to 1 previous error
