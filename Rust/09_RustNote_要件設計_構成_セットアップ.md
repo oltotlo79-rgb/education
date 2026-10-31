@@ -4909,7 +4909,7 @@ help: to generate the lock file without accessing the network, remove the --lock
 ```
 
 - **何が起きたか:** 「`--locked` が付いているので、`Cargo.lock` を書き換えられません」というエラーです。`--locked` は、「`Cargo.lock` に書いてあるとおりにだけ作る」という指定です。`Cargo.toml` と `Cargo.lock` が食い違っていると、そこで止めます。
-- **学べること:** これは**わざと止めている**エラーです。RustNote の CI（`ci.yml`）と Dockerfile は、`cargo test --locked`・`cargo build --release --locked` を使います。手元で `Cargo.toml` を直したのに、`Cargo.lock` を Git に入れ忘れると、CI がこのエラーで気づかせてくれます（第12巻 UNIT 02（準備中））。
+- **学べること:** これは**わざと止めている**エラーです。RustNote の CI（`ci.yml`）と Dockerfile は、`cargo test --locked`・`cargo build --release --locked` を使います。手元で `Cargo.toml` を直したのに、`Cargo.lock` を Git に入れ忘れると、CI がこのエラーで気づかせてくれます（第12巻 UNIT 02）。
 - **直し方:** 手元で `cargo build`（`--locked` なし）をして `Cargo.lock` を作り直し、`Cargo.toml` と一緒に Git に入れます。
 
 #### エラー4（エラーが出ない間違い）: 使っている機能を、Cargo.toml に書いていない
@@ -5281,7 +5281,7 @@ Caused by:
 ```
 
 - **何が起きたか:** 1行目の `Error: 設定を読み込めませんでした` が「何をしようとして失敗したか」、`Caused by:` の下が「なぜ」です。`main` が `.context("設定を読み込めませんでした")` で付けた文と、`ConfigError::MissingAuthToken` の文が、上から順に並んでいます（第4巻 UNIT 05 の anyhow）。
-- **直し方:** `$env:DATABASE_AUTH_TOKEN` にトークンを入れます。本番（Fly.io）では、トークンは `fly secrets set` で渡し、ファイルにも `fly.toml` にも書きません（第12巻 UNIT 05（準備中））。
+- **直し方:** `$env:DATABASE_AUTH_TOKEN` にトークンを入れます。本番（Fly.io）では、トークンは `fly secrets set` で渡し、ファイルにも `fly.toml` にも書きません（第12巻 UNIT 05）。
 - **学べること:** 設定の間違いは、**DB にも、ネットワークにも触る前に**見つけています。トークンが無いまま Turso に接続しに行って、時間がかかってから分かりにくいエラーになるより、ずっと分かりやすくなります。
 
 #### エラー2: DB のファイルを、無いフォルダの中に指定した
@@ -5295,7 +5295,7 @@ Caused by:
 ```
 
 - **何が起きたか:** 「DB（`no_such_dir\first.db`）を開けませんでした」で、その下が libSQL の文です。`Unable to open connection to local database …: 14` の 14 は、SQLite の「ファイルを開けない」（`SQLITE_CANTOPEN`）の番号です（第13巻 UNIT 02）。SQLite は、DB の**ファイル**は作ってくれますが、**フォルダ**は作りません。
-- **直し方:** フォルダを先に作る（`New-Item -ItemType Directory no_such_dir`）か、場所を直します。Fly.io では、`/data` のフォルダを Dockerfile で作り、そこに DB を置きます（第12巻 UNIT 02（準備中））。
+- **直し方:** フォルダを先に作る（`New-Item -ItemType Directory no_such_dir`）か、場所を直します。Fly.io では、`/data` のフォルダを Dockerfile で作り、そこに DB を置きます（第12巻 UNIT 02）。
 
 #### エラー3: アセットの束が無い
 
@@ -5378,7 +5378,7 @@ RustNote を起動しました: http://127.0.0.1:3011
 ```
 
 - `.env` だけのときは 3010 番、環境変数も設定したときは 3011 番でした。`dotenvy::dotenv()` は、`.env` の値のうち、**まだ環境変数に無い名前だけ**を足します。すでにある環境変数は、上書きしません。
-- だから、開発用の値は `.env` に書いておき、その場だけ変えたいときは `$env:` で上書きできます。本番では、Fly.io が環境変数を設定するので、`.env` が紛れ込んでも、本番の値が勝ちます（そもそも `.dockerignore` で `.env` をイメージに入れません。第12巻 UNIT 02（準備中））。
+- だから、開発用の値は `.env` に書いておき、その場だけ変えたいときは `$env:` で上書きできます。本番では、Fly.io が環境変数を設定するので、`.env` が紛れ込んでも、本番の値が勝ちます（そもそも `.dockerignore` で `.env` をイメージに入れません。第12巻 UNIT 02）。
 
 **問2の解答:**
 
@@ -7381,7 +7381,7 @@ async fn access_log(cx: &Cx, body: Body, next: Next<'_>) -> Result<Response> {
     timeout = "5s"
 ```
 
-- `README.md` の URL の表にも、`GET /health` が「200 `{"status":"ok"}`（DB に届かなければ 503）」と書いてあります。本物の Fly.io での確かめは、第12巻 UNIT 06（準備中）で扱います。
+- `README.md` の URL の表にも、`GET /health` が「200 `{"status":"ok"}`（DB に届かなければ 503）」と書いてあります。本物の Fly.io での確かめは、第12巻 UNIT 06 で扱います。
 - 診断（`examples/u10_doctor.rs`）は、この本の例として、コピーした RustNote に足したものです。`Rust/rustnote` には入れていません（RustNote のコードは変えていません）。
 
 ### 練習問題

@@ -119,8 +119,6 @@
 | UNIT 09 | 台数・地域・費用・Turso との距離 | 速さと費用の釣り合いを、数で決める |
 | UNIT 10 | rollback・backup・障害からの復旧・更新 | 前の版と前のデータに戻す手順を、先に試しておく |
 
-> **お知らせ:** この版には UNIT 01〜09 を収録しています。UNIT 10 は準備中で、次の更新から順に追加します。この巻では、Fly.io と Turso のアカウントを使った実際の公開はしません。アカウントが必要な操作（`fly launch`・`fly deploy`・`fly secrets`・`turso db create` など）は、コマンドと、公式のドキュメントで確かめた手順の説明だけを載せ、実行結果は載せません。実行結果を載せるのは、自分の PC で実際に動かせるもの（release ビルド、Docker でのビルドと起動、ローカルの DB ファイルなど）だけです。
-
 ### 前提知識（先に読んでおく巻）
 
 - **第1巻（環境構築）:** PowerShell・Git・Rust が使えること。この巻の後半では、Docker・flyctl（Fly.io のコマンド）・Turso CLI も使います（それぞれの単元で、入れ方から説明します）。
@@ -255,7 +253,7 @@ RustNote の公開の準備も、同じ形をしています。
 - **速さ:** パスワードのハッシュ化（Argon2id）は、release のほうが約 20 倍速くなりました。ログインのたびに行う計算なので、この差は、利用者が待つ時間にそのまま出ます。
 - **あふれ:** debug では、整数があふれると panic で止まります。release では、何も言わずに折り返して（`255 + 1` が `0` になって）動き続けます。release のほうが、間違いに気づきにくいのです（エラー3）。
 
-本番用の実行ファイルは、次の順番で作ります。RustNote の `Dockerfile` も、同じ順番で作っています（UNIT 02（準備中））。
+本番用の実行ファイルは、次の順番で作ります。RustNote の `Dockerfile` も、同じ順番で作っています（UNIT 02）。
 
 <div style="max-width:720px;margin:18px auto;text-align:center;">
 <svg viewBox="0 0 720 260" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
@@ -296,7 +294,7 @@ RustNote の公開の準備も、同じ形をしています。
 </div>
 
 - **① release ビルド**で、`target\release\rustnote.exe` ができます。`--locked` で、`Cargo.lock` のとおりの版を使います（第13巻 UNIT 01）。
-- **② アセットの束**は、`topcoat asset bundle --release` で作ります。topcoat CLI は、中で `cargo build --release` を動かして実行ファイルを用意し（①で作ってあれば、そのまま使います）、その中から `asset!("assets/style.css")` の印を探して、CSS を `style-e9b983efabcfc6c3.css` のような名前（中身から計算した指紋付き）にして、実行ファイルの隣の `assets\` に置きます。topcoat CLI の中の `cargo build` には `--locked` が付かないので、先に①で、`Cargo.lock` のとおりの版で作っておきます（くわしくは UNIT 03（準備中））。
+- **② アセットの束**は、`topcoat asset bundle --release` で作ります。topcoat CLI は、中で `cargo build --release` を動かして実行ファイルを用意し（①で作ってあれば、そのまま使います）、その中から `asset!("assets/style.css")` の印を探して、CSS を `style-e9b983efabcfc6c3.css` のような名前（中身から計算した指紋付き）にして、実行ファイルの隣の `assets\` に置きます。topcoat CLI の中の `cargo build` には `--locked` が付かないので、先に①で、`Cargo.lock` のとおりの版で作っておきます（くわしくは UNIT 03）。
 - **③** 実行ファイルは、起動するとき「**自分の隣の** `assets\`」を読みます。片方だけをコピーすると、起動しません。
 
 ### まず動かす最小コード
@@ -362,7 +360,7 @@ date: Fri, 30 Oct 2026 22:19:10 GMT
 ##### 解説3: 起動の表示とヘルスチェック
 
 - 新しい DB ファイル（`rustnote.db`）だったので、起動のときに3つのマイグレーションが適用されました。2回目からは、この3行は出ません。DB ファイルは、コマンドを実行したフォルダ（今いるフォルダ）にできます。`.env` が無いときの `DATABASE_URL` の既定値が `rustnote.db` だからです（第13巻 UNIT 01）。
-- `GET /health` は 200 で `{"status":"ok"}` を返しました。RustNote の `/health` は、DB に `SELECT 1` を送って、答えが返れば `ok` です。Fly.io も、公開したあと、この URL で「動いているか」を確かめます（UNIT 06（準備中））。
+- `GET /health` は 200 で `{"status":"ok"}` を返しました。RustNote の `/health` は、DB に `SELECT 1` を送って、答えが返れば `ok` です。Fly.io も、公開したあと、この URL で「動いているか」を確かめます（UNIT 06）。
 
 #### 例1-2: debug と release の速さを比べる
 
@@ -604,7 +602,7 @@ cargo run -q --example u01_exe_report -- builds/remap.exe
 ```
 
 - 1,811 か所が 1 か所に減りました。残った1か所は、RustNote のフォルダの場所です。Topcoat の `asset!` マクロは、`assets/style.css` のような場所を、あとで topcoat CLI が見つけられるように、**クレートのフォルダの場所**（`CARGO_MANIFEST_DIR`）を実行ファイルに書き込みます（topcoat-asset 0.11.0 の `asset!` のソースで確かめました）。これは、アセットの束を作るために必要な情報です。
-- この単元の実験で分かったのは、**作る場所（フォルダの場所・ユーザー名・時刻）が、実行ファイルの中身に入り込む**ということです。そこで、本番用の実行ファイルは、自分の PC ではなく、**いつも同じ場所・同じ道具で作る**ようにします。RustNote の `Dockerfile` が、`rust:1.99.1-trixie` のイメージの中の `/app` フォルダでビルドしているのは、このためです（UNIT 02（準備中））。
+- この単元の実験で分かったのは、**作る場所（フォルダの場所・ユーザー名・時刻）が、実行ファイルの中身に入り込む**ということです。そこで、本番用の実行ファイルは、自分の PC ではなく、**いつも同じ場所・同じ道具で作る**ようにします。RustNote の `Dockerfile` が、`rust:1.99.1-trixie` のイメージの中の `/app` フォルダでビルドしているのは、このためです（UNIT 02）。
 
 <div style="max-width:720px;margin:18px auto;text-align:center;">
 <svg viewBox="0 0 720 230" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
@@ -626,7 +624,7 @@ cargo run -q --example u01_exe_report -- builds/remap.exe
 <text x="360" y="184" font-size="11" fill="#475569" text-anchor="middle">（asset! のクレートの場所）</text>
 <rect x="500" y="20" width="200" height="190" rx="8" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
 <text x="600" y="46" font-size="13" font-weight="700" fill="#047857" text-anchor="middle">Docker の中で作る</text>
-<text x="600" y="64" font-size="11" fill="#475569" text-anchor="middle">（UNIT 02・準備中）</text>
+<text x="600" y="64" font-size="11" fill="#475569" text-anchor="middle">（UNIT 02）</text>
 <text x="600" y="100" font-size="12" fill="#0f172a" text-anchor="middle">いつも同じイメージ</text>
 <text x="600" y="122" font-size="12" fill="#0f172a" text-anchor="middle">いつも同じ /app</text>
 <text x="600" y="144" font-size="12" fill="#0f172a" text-anchor="middle">自分の名前が入らない</text>
@@ -4151,7 +4149,7 @@ Cargo.toml:          rust-version = "1.99"
 
 ## この巻のまとめ
 
-この版に収録した UNIT 01〜10 で、次のことができるようになったかを確かめましょう。できたものに印を付けてください。
+この巻の UNIT 01〜10 で、次のことができるようになったかを確かめましょう。できたものに印を付けてください。
 
 **UNIT 01: release ビルドと再現性**
 
@@ -4227,8 +4225,6 @@ Cargo.toml:          rust-version = "1.99"
 - ☐ 戻すときは rustnote.db・-wal・-shm を全部よけてから写しを置き、件数と integrity_check で確かめられる
 - ☐ 壊れた版を、前の版のイメージで戻せる。Fly.io の fly releases --image・fly deploy --image と、戻らない物（DB・secrets・fly.toml）を言える
 - ☐ 依存の更新を、dry-run → 別のフォルダで更新 → テスト → 公開の順に進め、版を書く場所を組で直せる
-
-> **お知らせ:** この版には UNIT 01〜09 を収録しています。UNIT 10（rollback・backup・障害からの復旧・更新）は準備中で、次の更新から順に追加します。それまでの間、公開の全体の流れは、RustNote の `README.md` の「公開する（Fly.io + Turso）の流れ」と、`Dockerfile`・`fly.toml` の先頭のコメントで確かめられます。
 
 ## 用語ミニ辞典
 

@@ -2161,7 +2161,7 @@ async fn access_log(cx: &Cx, body: Body, next: Next<'_>) -> Result<Response> {
     if uri(cx).path() != "/health" {
 ```
 
-- 例3-2の `timing` と同じ形です。`/health`（`routes/health.rs` の `#[route(GET)]`）だけはログに出さないように、パスで分けています。公開したあとは、Fly.io が数十秒ごとに `/health` を確かめに来るので、全部書くとログが埋まってしまうからです（第12巻 UNIT 06（準備中））。
+- 例3-2の `timing` と同じ形です。`/health`（`routes/health.rs` の `#[route(GET)]`）だけはログに出さないように、パスで分けています。公開したあとは、Fly.io が数十秒ごとに `/health` を確かめに来るので、全部書くとログが埋まってしまうからです（第12巻 UNIT 06）。
 - `root_layout` は、`<head>` に CSS へのリンクを入れ、`<body>` の中に、ヘッダー（`site_header`）と、`error_boundary`（ページで起きたエラーを、エラーの画面に変える部品。UNIT 10）で包んだ `(slot)` を置いています。
 
 ### 練習問題
@@ -4188,7 +4188,7 @@ pub async fn logout(cx: &Cx) -> Result<()> {
 pub async fn health(cx: &Cx) -> Result<(StatusCode, Json<Health>)> {
 ```
 
-- DB に問い合わせて、成功なら `(StatusCode::OK, Json(Health { status: "ok" }))`、失敗なら `(StatusCode::SERVICE_UNAVAILABLE, …)` を返します。人ではなく、Fly.io が読む窓口です（第12巻 UNIT 06（準備中））。
+- DB に問い合わせて、成功なら `(StatusCode::OK, Json(Health { status: "ok" }))`、失敗なら `(StatusCode::SERVICE_UNAVAILABLE, …)` を返します。人ではなく、Fly.io が読む窓口です（第12巻 UNIT 06）。
 
 ### 練習問題
 
@@ -5187,7 +5187,7 @@ topcoat dev --bin u08_dev
 - 色を元に戻すと、ファイル名も `site-7becc8b6682e6054.css` に戻りました。**同じ中身なら、同じハッシュ**です。
 - `topcoat::dev::script()` は、`topcoat dev` 以外で動かしたとき（`cargo run` や本番）には、何も出しません。RustNote のレイアウトにも、同じ1行があります。
 
-> **注意:** 本番用の束は、本番用のビルドで作ります。`topcoat asset bundle --release --bin u08_assets` は `target\release\assets\` に作り、`target\debug\assets\` の束とは別です（第12巻 UNIT 03（準備中））。ほかのビルドで作った束を使い回すと、宣言の番号が合わないことがあるので、**実行ファイルと束は、いつも同じビルドで作ります**。
+> **注意:** 本番用の束は、本番用のビルドで作ります。`topcoat asset bundle --release --bin u08_assets` は `target\release\assets\` に作り、`target\debug\assets\` の束とは別です（第12巻 UNIT 03）。ほかのビルドで作った束を使い回すと、宣言の番号が合わないことがあるので、**実行ファイルと束は、いつも同じビルドで作ります**。
 
 ```text
 ### topcoat asset bundle --release --bin u08_assets
@@ -5278,7 +5278,7 @@ pub const STYLESHEET: Asset = asset!("assets/style.css");
 ```
 
 - 束が無いと分かったら、DB を開く前に止まります。準備の足りない状態で、途中まで動いてしまわないようにする順番です（第9巻 UNIT 06）。
-- テストでは、束を作らずに済むように、CSS の URL だけを決めた目録（`AssetConfig::hosted_at("/test-assets", manifest)`）を渡しています（`tests/common/mod.rs` の `test_assets`）。本番の Dockerfile では、`cargo build --release` のあとに `topcoat asset bundle --release` を実行し、`assets/` を実行ファイルの隣にコピーしています（第12巻 UNIT 02・03（準備中））。
+- テストでは、束を作らずに済むように、CSS の URL だけを決めた目録（`AssetConfig::hosted_at("/test-assets", manifest)`）を渡しています（`tests/common/mod.rs` の `test_assets`）。本番の Dockerfile では、`cargo build --release` のあとに `topcoat asset bundle --release` を実行し、`assets/` を実行ファイルの隣にコピーしています（第12巻 UNIT 02・03）。
 
 ### 練習問題
 
@@ -6626,7 +6626,7 @@ set-cookie: theme=asxgipR70vCpIonhi5%2FngvMpGyTNGKrAGb77+CGeG4s%3Ddark; Path=/
 
 - 署名付きのクッキーは、`theme=` のあとに、署名（Base64 の 44 文字）と値（`dark`）が並んだ形になりました。値は読めますが、書き換えると、署名が合わなくなります。
 - 正しいクッキーを送ると dark、署名の無い `theme=dark` を送ると **light**（読まなかった）でした。`signed_cookies(cx).get(…)` は、署名が合わなければ `None` を返すからです。
-- 鍵は、起動するたびに `Key::generate()` で作っているので、再起動すると前のクッキーは読めなくなります。本物のアプリでは、鍵を秘密の値として保存し（第12巻 UNIT 05（準備中））、起動のときに読み込みます。中身を見られたくもないときは、暗号化する `private_cookies` を使います。
+- 鍵は、起動するたびに `Key::generate()` で作っているので、再起動すると前のクッキーは読めなくなります。本物のアプリでは、鍵を秘密の値として保存し（第12巻 UNIT 05）、起動のときに読み込みます。中身を見られたくもないときは、暗号化する `private_cookies` を使います。
 
 **問3の解答:**
 
