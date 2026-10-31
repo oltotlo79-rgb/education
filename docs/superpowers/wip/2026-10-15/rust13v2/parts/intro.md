@@ -118,8 +118,6 @@
 | UNIT 09 | 見た目 | `assets/style.css` |
 | UNIT 10 | テスト・Docker・Fly.io・CI | `tests/` の3つ・`Dockerfile`・`.dockerignore`・`fly.toml`・`ci.yml`・`README.md` |
 
-> **お知らせ:** この版には UNIT 01〜10 と、巻末の総合演習・解答を収録しています。全巻の用語集・索引は準備中で、次の更新で追加します。
-
 ### RustNote の全ファイル
 
 RustNote は、次の 42 個のファイルでできています（`git ls-files` で数えた、Git で管理しているファイルです）。行数は `Cargo.lock` を除くと約 4,600 行です。

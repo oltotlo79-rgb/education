@@ -210,7 +210,7 @@ cargo test --locked
 
 ##### 解説1: overridden by は「フォルダの設定で上書きした」
 
-- `rustup show active-toolchain` の `(overridden by '...\rustnote\rust-toolchain.toml')` は、「PC の既定の版ではなく、このファイルで決めた版を使っています」という意味です。この PC の既定の版は 1.97.1 ですが、RustNote のフォルダでは 1.99.1 が使われています。
+- `rustup show active-toolchain` の `(overridden by '...\rustnote\rust-toolchain.toml')` は、「PC の既定の版ではなく、このファイルで決めた版を使っています」という意味です。PC の既定の版（stable）は、`rustup update` をするたびに新しくなっていきますが、RustNote のフォルダでは、いつも 1.99.1 が使われます（第1巻 UNIT 04）。
 - だから、PC ごとに既定の版が違っても、RustNote のフォルダの中では、全員が同じ 1.99.1 でビルドします。
 
 ##### 解説2: --locked は「Cargo.lock を書き換えるな」
@@ -393,10 +393,10 @@ cargo tree --locked -i thiserror@1.0.69 --edges normal
 
 #### エラー1: Rust の版が古い（rust-version）
 
-`rust-toolchain.toml` が無いフォルダや、`cargo +stable build` のように版を指定して、Rust 1.97.1 でビルドしようとした場合です（この PC の既定の版 `stable` は 1.97.1 です）。
+`rust-toolchain.toml` が無いフォルダで、古い Rust が既定になっている PC や、`cargo +1.90.0 check` のように版を指定して、古い Rust でビルドしようとした場合です（この PC には、古い 1.90.0 も入っています）。
 
 ```powershell
-cargo +stable check --locked
+cargo +1.90.0 check --locked
 ```
 
 （`requires rustc 1.99` の行が 35 行続くので、途中を省いています）
@@ -407,9 +407,9 @@ cargo +stable check --locked
 @@OUTTAIL:u01_err_msrv:2@@
 ```
 
-- **何が起きたか:** 「rustc 1.97.1 は、次のパッケージに対応していません」というエラーです。`rustnote@0.1.0 requires rustc 1.99` は、RustNote の `Cargo.toml` の `rust-version = "1.99"`、`topcoat@0.11.0 requires rustc 1.99` は、Topcoat 側の同じ宣言です。同じ名前が何回か出ていますが、読むのは、パッケージの名前と `requires rustc 1.99` の部分だけで十分です。
+- **何が起きたか:** 「rustc 1.90.0 は、次のパッケージに対応していません」というエラーです。`rustnote@0.1.0 requires rustc 1.99` は、RustNote の `Cargo.toml` の `rust-version = "1.99"`、`topcoat@0.11.0 requires rustc 1.99` は、Topcoat 側の同じ宣言です。同じ名前が何回か出ていますが、読むのは、パッケージの名前と `requires rustc 1.99` の部分だけで十分です。
 - このエラーは、**コンパイルを始める前に**出ます。古い Rust で途中まで長いコンパイルをして、分かりにくいエラーで止まるより、ずっと親切です。`rust-version` を書いておく理由がこれです。
-- **直し方:** RustNote のフォルダでは、`+stable` を付けずに `cargo check --locked` とします。`rust-toolchain.toml` があるので 1.99.1 が使われます。1.99.1 がまだ入っていない PC では、`rustup toolchain install 1.99.1 --profile minimal --component rustfmt,clippy` で入れます（既定の版は変わりません）。
+- **直し方:** RustNote のフォルダでは、`+1.90.0` を付けずに `cargo check --locked` とします。`rust-toolchain.toml` があるので 1.99.1 が使われます。1.99.1 がまだ入っていない PC では、`rustup toolchain install 1.99.1 --profile minimal --component rustfmt,clippy` で入れます（既定の版は変わりません）。
 
 > **注意:** `cargo +1.97.1 check` のように、PC に入っていない版の名前を指定すると、この PC の rustup は、その版を**自動でダウンロードして入れました**（`warn: the missing active toolchain ... has been auto-installed` と表示されます）。版を試すときは、`rustup toolchain list` で入っている版を確かめてから指定しましょう。入れてしまった版は、`rustup toolchain uninstall 版の名前` で消せます。
 

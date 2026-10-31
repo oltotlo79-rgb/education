@@ -1,0 +1,191 @@
+    Updating crates.io index
+      Adding reqwest =0.13.5 to dependencies
+             Features:
+             + __rustls
+             + __rustls-aws-lc-rs
+             + __tls
+             + charset
+             + default-tls
+             + http2
+             + json
+             + rustls
+             + system-proxy
+             - __native-tls
+             - __native-tls-alpn
+             - blocking
+             - brotli
+             - cookies
+             - deflate
+             - form
+             - gzip
+             - hickory-dns
+             - http3
+             - multipart
+             - native-tls
+             - native-tls-no-alpn
+             - native-tls-vendored
+             - native-tls-vendored-no-alpn
+             - query
+             - rustls-no-provider
+             - socks
+             - stream
+             - zstd
+    Updating crates.io index
+     Locking 148 packages to highest Rust 1.99 compatible versions
+      Adding atomic-waker v1.1.2
+      Adding aws-lc-rs v1.19.0
+      Adding aws-lc-sys v0.47.0
+      Adding base64 v0.23.1
+      Adding bumpalo v3.20.3
+      Adding cc v1.10.0
+      Adding cfg_aliases v0.2.2
+      Adding chacha20 v0.10.2
+      Adding cmake v0.1.58
+      Adding combine v4.6.9
+      Adding core-foundation v0.9.4
+      Adding core-foundation v0.10.1
+      Adding core-foundation-sys v0.8.7
+      Adding core_detect v1.0.0
+      Adding displaydoc v0.2.7
+      Adding dunce v1.0.5
+      Adding encoding_rs v0.8.44
+      Adding equivalent v1.0.3
+      Adding find-msvc-tools v0.1.15
+      Adding fnv v1.0.7
+      Adding form_urlencoded v1.2.2
+      Adding fs_extra v1.3.0
+      Adding futures-channel v0.3.34
+      Adding getrandom v0.2.17
+      Adding h2 v0.4.20
+      Adding hashbrown v0.17.1
+      Adding http v1.5.0
+      Adding http-body v1.1.0
+      Adding http-body-util v0.1.5
+      Adding httparse v1.10.1
+      Adding hyper v1.12.0
+      Adding hyper-rustls v0.27.10
+      Adding hyper-util v0.1.21
+      Adding icu_collections v2.4.0
+      Adding icu_locale_core v2.4.0
+      Adding icu_normalizer v2.4.0
+      Adding icu_normalizer_data v2.4.0
+      Adding icu_properties v2.4.0
+      Adding icu_properties_data v2.4.0
+      Adding icu_provider v2.4.0
+      Adding idna v1.1.0
+      Adding idna_adapter v1.2.2
+      Adding indexmap v2.14.2
+      Adding ipnet v2.12.2
+      Adding itoa v1.0.18
+      Adding jni v0.22.4
+      Adding jni-macros v0.22.4
+      Adding jni-sys v0.4.1
+      Adding jni-sys-macros v0.4.1
+      Adding jobserver v0.1.35
+      Adding js-sys v0.3.107
+      Adding litemap v0.8.3
+      Adding log v0.4.35
+      Adding lru-slab v0.1.3
+      Adding memchr v2.8.3
+      Adding mime v0.3.17
+      Adding multiversion_no_op v1.0.0
+      Adding once_cell v1.21.4
+      Adding openssl-probe v0.2.2
+      Adding percent-encoding v2.3.2
+      Adding pkg-config v0.3.34
+      Adding potential_utf v0.1.6
+      Adding quinn v0.11.12
+      Adding quinn-proto v0.11.19
+      Adding quinn-udp v0.5.16
+      Adding rand v0.10.3
+      Adding rand_core v0.10.1
+      Adding rand_pcg v0.10.2
+      Adding reqwest v0.13.5
+      Adding ring v0.17.14
+      Adding rustc-hash v2.1.3
+      Adding rustc_version v0.4.1
+      Adding rustls v0.23.46
+      Adding rustls-native-certs v0.8.5
+      Adding rustls-pki-types v1.15.1
+      Adding rustls-platform-verifier v0.7.1
+      Adding rustls-platform-verifier-android v0.2.0
+      Adding rustls-webpki v0.103.16
+      Adding rustversion v1.0.23
+      Adding same-file v1.0.6
+      Adding schannel v0.1.30
+      Adding security-framework v3.7.0
+      Adding security-framework-sys v2.17.0
+      Adding semver v1.0.28
+      Adding serde v1.0.229
+      Adding serde_core v1.0.229
+      Adding serde_derive v1.0.229
+      Adding serde_json v1.0.154
+      Adding shlex v2.0.1
+      Adding simd_cesu8 v1.2.0
+      Adding simdutf8 v0.1.5
+      Adding stable_deref_trait v1.2.1
+      Adding subtle v2.6.1
+      Adding syn v2.0.119
+      Adding sync_wrapper v1.0.2
+      Adding synstructure v0.14.0
+      Adding system-configuration v0.7.0
+      Adding system-configuration-sys v0.6.0
+      Adding thiserror v2.0.21
+      Adding thiserror-impl v2.0.21
+      Adding tinystr v0.8.5
+      Adding tinyvec v1.13.3
+      Adding tokio-rustls v0.26.6
+      Adding tower v0.5.3
+      Adding tower-http v0.6.11
+      Adding tower-layer v0.3.3
+      Adding tower-service v0.3.3
+      Adding tracing v0.1.44
+      Adding tracing-core v0.1.36
+      Adding try-lock v0.2.5
+      Adding untrusted v0.9.0
+      Adding url v2.5.8
+      Adding utf8_iter v1.1.0
+      Adding utf_types v1.0.0
+      Adding walkdir v2.5.0
+      Adding want v0.3.2
+      Adding wasm-bindgen v0.2.130
+      Adding wasm-bindgen-futures v0.4.80
+      Adding wasm-bindgen-macro v0.2.130
+      Adding wasm-bindgen-macro-support v0.2.130
+      Adding wasm-bindgen-shared v0.2.130
+      Adding web-sys v0.3.107
+      Adding web-time v1.1.0
+      Adding webpki-root-certs v1.0.11
+      Adding winapi-util v0.1.11
+      Adding windows-registry v0.6.1
+      Adding windows-result v0.4.1
+      Adding windows-strings v0.5.1
+      Adding windows-sys v0.52.0
+      Adding windows-targets v0.52.6
+      Adding windows_aarch64_gnullvm v0.52.6
+      Adding windows_aarch64_msvc v0.52.6
+      Adding windows_i686_gnu v0.52.6
+      Adding windows_i686_gnullvm v0.52.6
+      Adding windows_i686_msvc v0.52.6
+      Adding windows_x86_64_gnu v0.52.6
+      Adding windows_x86_64_gnullvm v0.52.6
+      Adding windows_x86_64_msvc v0.52.6
+      Adding writeable v0.6.4
+      Adding yoke v0.8.4
+      Adding yoke-derive v0.8.4
+      Adding zerofrom v0.1.8
+      Adding zerofrom-derive v0.1.8
+      Adding zeroize v1.9.1
+      Adding zerotrie v0.2.5
+      Adding zerovec v0.11.9
+      Adding zerovec-derive v0.11.7
+      Adding zmij v1.0.23
+    Updating crates.io index
+      Adding serde =1.0.229 to dependencies
+             Features:
+             + derive
+             + serde_derive
+             + std
+             - alloc
+             - rc
+             - unstable

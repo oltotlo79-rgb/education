@@ -1,4 +1,4 @@
-error: rustc 1.97.1 is not supported by the following packages:
+error: rustc 1.90.0 is not supported by the following packages:
   rustnote@0.1.0 requires rustc 1.99
   rustnote@0.1.0 requires rustc 1.99
   topcoat@0.11.0 requires rustc 1.99

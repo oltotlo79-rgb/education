@@ -1,0 +1,14 @@
+[1.99.1+tokio=1.54.1] update tokio -> 1.54.1: 0 note: pass `--verbose` to see 13 unchanged dependencies behind latest
+s7: 44 items, different: 4
+--- run u04_timing
+  A:   → 約 209 倍速い
+  B:   → 約 253 倍速い
+--- run u05_locked
+  A: ② a が COMMIT（308 ミリ秒後）
+  B: ② a が COMMIT（307 ミリ秒後）
+--- run u08_q3
+  A: SELECT 1 + 1 = 2（2 ミリ秒）
+  B: SELECT 1 + 1 = 2（4 ミリ秒）
+--- run u08_q3_leak
+  A: SELECT 1 + 1 = 2（1 ミリ秒）
+  B: SELECT 1 + 1 = 2（2 ミリ秒）

@@ -1,0 +1,55 @@
+    Updating crates.io index
+      Adding libsql v0.10.0 to dependencies
+             Features:
+             + core
+             + hrana
+             + libsql-sys
+             + parser
+             + remote
+             + replication
+             + serde
+             + stream
+             + sync
+             + tls
+             - cloudflare
+             - encryption
+             - wasm
+    Updating crates.io index
+     Locking 211 packages to highest Rust 1.99.1 compatible versions
+      Adding generic-array v0.14.7 (available: v0.14.9)
+    Updating crates.io index
+      Adding tokio v1.54.1 to dependencies
+             Features:
+             + macros
+             + rt
+             + rt-multi-thread
+             + tokio-macros
+             - bytes
+             - fs
+             - full
+             - io-std
+             - io-uring
+             - io-util
+             - libc
+             - mio
+             - net
+             - parking_lot
+             - process
+             - schedule-latency
+             - signal
+             - signal-hook-registry
+             - socket2
+             - sync
+             - taskdump
+             - test-util
+             - time
+             - tracing
+             - windows-sys
+    Updating crates.io index
+      Adding thiserror v2.0.21 to dependencies
+             Features:
+             + std
+    Updating crates.io index
+     Locking 2 packages to highest Rust 1.99.1 compatible versions
+      Adding thiserror v2.0.21
+      Adding thiserror-impl v2.0.21

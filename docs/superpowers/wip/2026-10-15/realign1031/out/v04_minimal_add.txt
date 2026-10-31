@@ -1,0 +1,13 @@
+    Updating crates.io index
+      Adding serde_json v1.0.154 to dependencies
+             Features:
+             + alloc
+             - arbitrary_precision
+             - float_roundtrip
+             - indexmap
+             - preserve_order
+             - raw_value
+             - std
+             - unbounded_depth
+    Updating crates.io index
+     Locking 11 packages to highest Rust 1.99.1 compatible versions

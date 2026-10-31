@@ -1,0 +1,10 @@
+[package]
+name = "sql-lab"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.99"
+
+[dependencies]
+libsql = "0.10.0"
+thiserror = "2.0.21"
+tokio = { version = "1.54.1", features = ["rt-multi-thread", "macros"] }

@@ -1,0 +1,30 @@
+    Updating crates.io index
+      Adding tokio =1.54.1 to dependencies
+             Features:
+             + bytes
+             + fs
+             + full
+             + io-std
+             + io-util
+             + libc
+             + macros
+             + net
+             + parking_lot
+             + process
+             + rt
+             + rt-multi-thread
+             + signal
+             + signal-hook-registry
+             + socket2
+             + sync
+             + time
+             + tokio-macros
+             - io-uring
+             - mio
+             - schedule-latency
+             - taskdump
+             - test-util
+             - tracing
+             - windows-sys
+    Updating crates.io index
+     Locking 24 packages to highest Rust 1.99.1 compatible versions

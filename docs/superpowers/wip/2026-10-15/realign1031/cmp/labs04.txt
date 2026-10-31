@@ -1,0 +1,11 @@
+design_lab: 28 items, different: 0
+note_domain: 2 items, different: 1
+--- test
+  A: test status::tests::publish_then_archive_then_restore ... ok
+  B: test status::tests::only_draft_is_editable ... ok
+notes_app: 3 items, different: 0
+ex06_notes_app: 3 items, different: 0
+ex06_ws_lab: 4 items, different: 0
+feat_lab: 3 items, different: 0
+ex07_feat_csv: 3 items, different: 0
+skip ex10

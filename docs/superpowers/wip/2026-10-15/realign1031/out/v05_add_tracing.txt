@@ -1,0 +1,67 @@
+    Updating crates.io index
+      Adding tracing =0.1.44 to dependencies
+             Features:
+             + attributes
+             + std
+             + tracing-attributes
+             - async-await
+             - log
+             - log-always
+             - max_level_debug
+             - max_level_error
+             - max_level_info
+             - max_level_off
+             - max_level_trace
+             - max_level_warn
+             - release_max_level_debug
+             - release_max_level_error
+             - release_max_level_info
+             - release_max_level_off
+             - release_max_level_trace
+             - release_max_level_warn
+             - valuable
+     Locking 1 package to highest Rust 1.99 compatible version
+      Adding tracing-attributes v0.1.31
+    Updating crates.io index
+      Adding tracing-subscriber =0.3.23 to dependencies
+             Features:
+             + alloc
+             + ansi
+             + env-filter
+             + fmt
+             + json
+             + matchers
+             + nu-ansi-term
+             + once_cell
+             + registry
+             + serde
+             + serde_json
+             + sharded-slab
+             + smallvec
+             + std
+             + thread_local
+             + tracing
+             + tracing-log
+             + tracing-serde
+             - chrono
+             - local-time
+             - parking_lot
+             - regex
+             - time
+             - valuable
+             - valuable-serde
+             - valuable_crate
+    Updating crates.io index
+     Locking 12 packages to highest Rust 1.99 compatible versions
+      Adding aho-corasick v1.1.5
+      Adding lazy_static v1.5.1
+      Adding matchers v0.2.0
+      Adding nu-ansi-term v0.50.3
+      Adding regex-automata v0.4.18
+      Adding regex-syntax v0.8.11
+      Adding sharded-slab v0.1.7
+      Adding thread_local v1.1.10
+      Adding tracing-log v0.2.0
+      Adding tracing-serde v0.2.0
+      Adding tracing-subscriber v0.3.23
+      Adding valuable v0.1.1

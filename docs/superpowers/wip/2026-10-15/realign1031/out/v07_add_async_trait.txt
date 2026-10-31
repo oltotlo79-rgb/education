@@ -1,0 +1,2 @@
+    Updating crates.io index
+      Adding async-trait v0.1.92 to dependencies

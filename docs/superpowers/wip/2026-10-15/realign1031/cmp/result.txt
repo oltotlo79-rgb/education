@@ -1,0 +1,58 @@
+programs: 334, same: 315, different: 19
+--- vol 00 block 0
+1.99.0: 0 0 '' 'OS の種類: windows\nCPU の種類: aarch64\nプロセス ID: 128408\n1 から 100 までの合計: 5050\n'
+1.99.1: 0 0 '' 'OS の種類: windows\nCPU の種類: aarch64\nプロセス ID: 129968\n1 から 100 までの合計: 5050\n'
+--- vol 00 block 16
+1.99.0: 0 0 '' 'パス全体  : src/main.rs\nファイル名: Some("main.rs")\n拡張子    : Some("rs")\n親フォルダ: Some("src")\n\nCargo.toml             -> 存在する? false\nsrc/main.rs            -> 存在する? false\nmain.rs                -> 存在する? true\n./src/../Cargo.toml    -> 存在する? false\n\n今いるフォルダの中身:\n  [ファイル] main.rs\n  [ファイル] m_1990.exe\n  [ファイル] m_1990.'
+1.99.1: 0 0 '' 'パス全体  : src/main.rs\nファイル名: Some("main.rs")\n拡張子    : Some("rs")\n親フォルダ: Some("src")\n\nCargo.toml             -> 存在する? false\nsrc/main.rs            -> 存在する? false\nmain.rs                -> 存在する? true\n./src/../Cargo.toml    -> 存在する? false\n\n今いるフォルダの中身:\n  [ファイル] main.rs\n  [ファイル] m_1990.exe\n  [ファイル] m_1990.'
+--- vol 00 block 22
+1.99.0: 0 0 '' '引数 0: C:\\Users\\oltot\\AppData\\Local\\Temp\\claude\\C--Users-oltot-Documents-git-projects-def\\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\\scratchpad\\cmp199\\work\\v00_022\\m_1990.exe\nあいさつ: こんにちは\n'
+1.99.1: 0 0 '' '引数 0: C:\\Users\\oltot\\AppData\\Local\\Temp\\claude\\C--Users-oltot-Documents-git-projects-def\\f344debc-e3c6-4c0d-93d7-e55dbf9acedd\\scratchpad\\cmp199\\work\\v00_022\\m_1991.exe\nあいさつ: こんにちは\n'
+--- vol 00 block 27
+1.99.0: 0 0 '' '合計: 599999998\nかかった時間: 1.2087136s\n'
+1.99.1: 0 0 '' '合計: 599999998\nかかった時間: 1.1561253s\n'
+--- vol 00 block 37
+1.99.0: 0 0 '' '----- ヘッダー部分 -----\nHTTP/1.1 200 OK\nDate: Sat, 31 Oct 2026 02:16:49 GMT\nContent-Type: text/html; charset=utf-8\nTransfer-Encoding: chunked\nConnection: close\nServer: cloudflare\nLast-Modified: Thu, 29 Oct 2026 13:15:03 GMT\nAllow: GET, HEAD\nAccept-Ranges: bytes\nAge: 8059\ncf-cache-status: HIT\nCF-RAY: a52f'
+1.99.1: 0 0 '' '----- ヘッダー部分 -----\nHTTP/1.1 200 OK\nDate: Sat, 31 Oct 2026 02:16:49 GMT\nContent-Type: text/html; charset=utf-8\nTransfer-Encoding: chunked\nConnection: close\nServer: cloudflare\nLast-Modified: Thu, 29 Oct 2026 13:15:03 GMT\nAllow: GET, HEAD\nAccept-Ranges: bytes\nAge: 8059\ncf-cache-status: HIT\nCF-RAY: a52f'
+--- vol 00 block 52
+1.99.0: 0 0 '' 'メモリのカウンター  : 1\nファイルのカウンター: 1\n'
+1.99.1: 0 0 '' 'メモリのカウンター  : 1\nファイルのカウンター: 2\n'
+--- vol 00 block 59
+1.99.0: 0 0 '' 'ファイルのカウンター: 1\n'
+1.99.1: 0 0 '' 'ファイルのカウンター: 2\n'
+--- vol 02 block 38
+1.99.0: 1 None 'error[E0308]: mismatched types\n --> main.rs:4:23\n  |\n4 |     let sum = count + total;\n  |                       ^^^^^ expected `i32`, found `i64`\n\nerror[E0277]: cannot add `i64` to `i32`\n --> main.rs:4:21\n  |\n4 |     let sum = count + total;\n  |                     ^ no implementation for `i32 + i64' ''
+1.99.1: 1 None 'error[E0308]: mismatched types\n --> main.rs:4:23\n  |\n4 |     let sum = count + total;\n  |                       ^^^^^ expected `i32`, found `i64`\n\nerror[E0277]: cannot add `i64` to `i32`\n --> main.rs:4:21\n  |\n4 |     let sum = count + total;\n  |                     ^ no implementation for `i32 + i64' ''
+--- vol 02 block 103
+1.99.0: 1 None 'error[E0277]: the type `str` cannot be indexed by `{integer}`\n --> main.rs:3:19\n  |\n3 |     let first = s[0];\n  |                   ^ string indices are ranges of `usize`\n  |\n  = help: the trait `SliceIndex<str>` is not implemented for `{integer}`\n  = note: you can use `.chars().nth()` or `.bytes().' ''
+1.99.1: 1 None 'error[E0277]: the type `str` cannot be indexed by `{integer}`\n --> main.rs:3:19\n  |\n3 |     let first = s[0];\n  |                   ^ string indices are ranges of `usize`\n  |\n  = help: the trait `SliceIndex<str>` is not implemented for `{integer}`\n  = note: you can use `.chars().nth()` or `.bytes().' ''
+--- vol 02 block 129
+1.99.0: 1 None 'error[E0277]: the type `[&str]` cannot be indexed by `i32`\n --> main.rs:4:27\n  |\n4 |     println!("{}", titles[i]);\n  |                           ^ slice indices are of type `usize` or ranges of `usize`\n  |\n  = help: the trait `SliceIndex<[&str]>` is not implemented for `i32`\nhelp: `usize` implement' ''
+1.99.1: 1 None 'error[E0277]: the type `[&str]` cannot be indexed by `i32`\n --> main.rs:4:27\n  |\n4 |     println!("{}", titles[i]);\n  |                           ^ slice indices are of type `usize` or ranges of `usize`\n  |\n  = help: the trait `SliceIndex<[&str]>` is not implemented for `i32`\nhelp: `usize` implement' ''
+--- vol 02 block 176
+1.99.0: 1 None 'error[E0369]: cannot add `{integer}` to `Option<i32>`\n --> main.rs:3:22\n  |\n3 |     let next = stock + 1;\n  |                ----- ^ - {integer}\n  |                |\n  |                Option<i32>\n  |\nnote: `Option<i32>` does not implement `Add<{integer}>`\n --> /rustc/b940084d7eb6a299eb4bfeb8e34901b' ''
+1.99.1: 1 None 'error[E0369]: cannot add `{integer}` to `Option<i32>`\n --> main.rs:3:22\n  |\n3 |     let next = stock + 1;\n  |                ----- ^ - {integer}\n  |                |\n  |                Option<i32>\n  |\nnote: `Option<i32>` does not implement `Add<{integer}>`\n --> /rustc/58cf8f9c35b355199727627d07ae34a' ''
+--- vol 02 block 217
+1.99.0: 1 None 'error[E0283]: type annotations needed\n --> main.rs:3:9\n  |\n3 |     let evens = numbers.iter().filter(|n| **n % 2 == 0).collect();\n  |         ^^^^^                                           ------- type must be known at this point\n  |\n  = note: the type must implement `FromIterator<&i32>`\nnote: requ' ''
+1.99.1: 1 None 'error[E0283]: type annotations needed\n --> main.rs:3:9\n  |\n3 |     let evens = numbers.iter().filter(|n| **n % 2 == 0).collect();\n  |         ^^^^^                                           ------- type must be known at this point\n  |\n  = note: the type must implement `FromIterator<&i32>`\nnote: requ' ''
+--- vol 03 block 17
+1.99.0: 0 0 '' 's1 の本体の場所: 0x1a1eb1081b0\ns2 の本体の場所: 0x1a1eb1081b0\ns3 の本体の場所: 0x1a1eb1081d0\ns2 = hello, s3 = hello\nx = 42, y = 42\n'
+1.99.1: 0 0 '' 's1 の本体の場所: 0x2b1ce1081b0\ns2 の本体の場所: 0x2b1ce1081b0\ns3 の本体の場所: 0x2b1ce1081d0\ns2 = hello, s3 = hello\nx = 42, y = 42\n'
+--- vol 03 block 48
+1.99.0: 0 0 '' '最初    : cap =   3, 本体の場所 = 0x2ab011081b0\n引っ越し: cap =  24, 本体の場所 = 0x2ab0110acc0\n引っ越し: cap =  96, 本体の場所 = 0x2ab01111610\n'
+1.99.1: 0 0 '' '最初    : cap =   3, 本体の場所 = 0x14e021081b0\n引っ越し: cap =  24, 本体の場所 = 0x14e0210acc0\n引っ越し: cap =  96, 本体の場所 = 0x14e021111d0\n'
+--- vol 03 block 170
+1.99.0: 0 0 '' 'main: 全員の終了を待ちます\nスレッド1: 1回目\nスレッド1: 2回目\nスレッド3: 1回目\nスレッド3: 2回目\nスレッド2: 1回目\nスレッド2: 2回目\nmain: 結果 10\nmain: 結果 20\nmain: 結果 30\n'
+1.99.1: 0 0 '' 'main: 全員の終了を待ちます\nスレッド1: 1回目\nスレッド1: 2回目\nスレッド2: 1回目\nスレッド2: 2回目\nスレッド3: 1回目\nスレッド3: 2回目\nmain: 結果 10\nmain: 結果 20\nmain: 結果 30\n'
+--- vol 03 block 183
+1.99.0: 1 None 'error[E0277]: `Rc<String>` cannot be sent between threads safely\n --> main.rs:7:32\n  |\n7 |       let handle = thread::spawn(move || {\n  |                    ------------- ^------\n  |                    |             |\n  |  __________________|_____________within this `{closure@main.rs:7:32: 7:39}`\n  ' ''
+1.99.1: 1 None 'error[E0277]: `Rc<String>` cannot be sent between threads safely\n --> main.rs:7:32\n  |\n7 |       let handle = thread::spawn(move || {\n  |                    ------------- ^------\n  |                    |             |\n  |  __________________|_____________within this `{closure@main.rs:7:32: 7:39}`\n  ' ''
+--- vol 04 block 42
+1.99.0: 1 None 'error[E0284]: type annotations needed\n --> main.rs:3:9\n  |\n3 |     let page = "3".parse().unwrap();\n  |         ^^^^       ----- type must be known at this point\n  |\n  = note: cannot satisfy `<_ as FromStr>::Err == _`\n  = note: the type must also implement `FromStr`\nnote: required by a bound in `cor' ''
+1.99.1: 1 None 'error[E0284]: type annotations needed\n --> main.rs:3:9\n  |\n3 |     let page = "3".parse().unwrap();\n  |         ^^^^       ----- type must be known at this point\n  |\n  = note: cannot satisfy `<_ as FromStr>::Err == _`\n  = note: the type must also implement `FromStr`\nnote: required by a bound in `cor' ''
+--- vol 04 block 49
+1.99.0: 0 0 '' '[memory] Ok(2)\n[memory] Ok(1)\n[memory] 件数 = 2\n[read-only] Err("ただいまメンテナンス中のため保存できません")\n[read-only] Err("ただいまメンテナンス中のため保存できません")\n[read-only] 件数 = 0\n起動失敗: 知らない保存先です: postgres\n'
+1.99.1: 0 0 '' '[memory] Ok(1)\n[memory] Ok(2)\n[memory] 件数 = 2\n[read-only] Err("ただいまメンテナンス中のため保存できません")\n[read-only] Err("ただいまメンテナンス中のため保存できません")\n[read-only] 件数 = 0\n起動失敗: 知らない保存先です: postgres\n'
+--- vol 04 block 56
+1.99.0: 1 None 'error[E0277]: `dyn NoteRepository` cannot be shared between threads safely\n  --> main.rs:20:32\n   |\n20 |     let handle = thread::spawn(move || r.count());\n   |                  ------------- ^^^^^^^^^^^^^^^^^ `dyn NoteRepository` cannot be shared between threads safely\n   |                  |\n   | ' ''
+1.99.1: 1 None 'error[E0277]: `dyn NoteRepository` cannot be shared between threads safely\n  --> main.rs:20:32\n   |\n20 |     let handle = thread::spawn(move || r.count());\n   |                  ------------- ^^^^^^^^^^^^^^^^^ `dyn NoteRepository` cannot be shared between threads safely\n   |                  |\n   | ' ''
