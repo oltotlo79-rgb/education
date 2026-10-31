@@ -1,0 +1,16 @@
+     Running unittests src\lib.rs 
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running unittests src\main.rs 
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running tests\http.rs 
+test empty_title_is_400 ... FAILED
+test list_searches_and_paginates ... FAILED
+test login_and_logout ... FAILED
+test result: FAILED. 11 passed; 3 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.07s
+error: test failed, to rerun pass `--test http`
+     Running tests\repository.rs 
+test search_filters_by_keyword_and_paginates ... FAILED
+test result: FAILED. 7 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.21s
+error: test failed, to rerun pass `--test repository`
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+error: 2 targets failed:

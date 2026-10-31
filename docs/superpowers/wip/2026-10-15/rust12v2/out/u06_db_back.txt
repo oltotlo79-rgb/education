@@ -1,0 +1,8 @@
+--- sqld を動かし直したあと
+/health: 200 {"status":"ok"}
+--- RustNote のログ（最後の5行）
+[error] ヘルスチェックで DB に接続できません: Hrana: `http error: `error trying to connect: dns error: failed to lookup address information: Name or service not known``
+[error] ヘルスチェックで DB に接続できません: Hrana: `http error: `error trying to connect: dns error: failed to lookup address information: Name or service not known``
+[error] ヘルスチェックで DB に接続できません: Hrana: `http error: `error trying to connect: dns error: failed to lookup address information: Name or service not known``
+[error] ヘルスチェックで DB に接続できません: Hrana: `http error: `error trying to connect: dns error: failed to lookup address information: Name or service not known``
+GET / -> 200 OK (4.069134ms)

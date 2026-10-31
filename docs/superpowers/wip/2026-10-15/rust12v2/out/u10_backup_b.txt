@@ -1,0 +1,15 @@
+--- 場面B: ほかの接続（u10_hold）
+  notes: 5 行。接続を開いたまま 60 秒待ちます
+--- 場面B: data フォルダ（ノートをもう3件、全部で8件作ったあと）
+  rustnote.db: 49152 バイト
+  rustnote.db-shm: 32768 バイト
+  rustnote.db-wal: 37112 バイト
+--- rustnote.db だけをコピーしたもの（copyB.db）
+  users: 1 行
+  notes: 5 行
+  integrity_check: ok
+--- VACUUM INTO で写したもの（backup.db）
+  data/rustnote.db を backup.db に写しました
+  users: 1 行
+  notes: 8 行
+  integrity_check: ok

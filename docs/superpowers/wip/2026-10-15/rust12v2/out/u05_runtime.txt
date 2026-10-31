@@ -1,0 +1,16 @@
+--- イメージの環境変数（rustnote:u02）
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+HOST=0.0.0.0
+PORT=8080
+DATABASE_URL=/data/rustnote.db
+--- 動いているコンテナの環境変数（docker inspect rn-u05）
+DATABASE_AUTH_TOKEN=u05-fake-token-not-a-real-secret
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+HOST=0.0.0.0
+PORT=8080
+DATABASE_URL=/data/rustnote.db
+--- コンテナのログ
+マイグレーションを適用しました: 0001_users
+マイグレーションを適用しました: 0002_notes
+マイグレーションを適用しました: 0003_sessions
+RustNote を起動しました: http://0.0.0.0:8080

@@ -1,0 +1,21 @@
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -25,6 +25,18 @@
+ 
+     let config = Config::from_env().context("設定を読み込めませんでした")?;
+ 
++    // `rustnote --migrate-only` は、マイグレーションだけをして終わる（Fly.io の release_command 用）
++    if std::env::args().any(|arg| arg == "--migrate-only") {
++        let db = Db::open(&config)
++            .await
++            .with_context(|| format!("DB（{}）を開けませんでした", config.database_url))?;
++        let applied = db::migrate(&db)
++            .await
++            .context("マイグレーションに失敗しました")?;
++        eprintln!("マイグレーションだけを行いました（新しく適用: {applied:?}）");
++        return Ok(());
++    }
++
+     // `topcoat asset bundle`（または `topcoat dev`）が実行ファイルの隣に作る assets/ を読む。
+     // 無ければ DB に触る前に止める
+     let assets = AssetBundle::load().context(

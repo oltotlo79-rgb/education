@@ -1,0 +1,14 @@
+uid=10001(app) gid=10001(app) groups=10001(app)
+/app:
+total 16752
+drwxr-xr-x 1 root root     4096 Oct 30 21:40 .
+drwxr-xr-x 1 root root     4096 Oct 30 22:30 ..
+drwxr-xr-x 2 root root     4096 Oct 30 21:40 assets
+-rwxr-xr-x 1 root root 17140968 Oct 30 21:40 rustnote
+
+/data:
+total 8
+drwxr-xr-x 2 app  app  4096 Oct 30 21:37 .
+drwxr-xr-x 1 root root 4096 Oct 30 22:30 ..
+touch: cannot touch '/app/x': Permission denied
+/data に書けた

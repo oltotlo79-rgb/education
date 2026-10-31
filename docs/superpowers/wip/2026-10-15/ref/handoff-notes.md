@@ -1,5 +1,15 @@
 # 中断時点の引き継ぎメモ
 
+## 2026-10-31（続き5）: 第12巻を完成（main: 53f22ad U01 取り直し・014bcdb U02・43582ad U03・a7a8d19 U04・798d03d U05・7d8c8fe U06・3622ffd U07・45d4197 U08・dbd492f U09・281f044 U10）
+
+素材は `rust12v2/`（parts の src・meta・intro・outro、out の .txt、cap12_*.sh、道具の .py、smoke.ps1、count_proxy.py、rustnote/examples（u01_*・u10_*）と check_fly.py、u07src）。ビルド先は `rust12/target`（UNIT 07 は `target-u07`）。
+
+- **第12巻:** UNIT 01 を 1.99.1・trixie で取り直し、UNIT 02〜10 を書いた（117 ページ・図 17 枚）。巻頭・巻末のお知らせを外し、旧 `Rust/12_….pdf` を削除。clear_refs で第6・8・9・11・12巻の「第12巻 UNIT nn（準備中）」を外した（第11巻の「CI を置く手順は第12巻」は、実際に書いた第13巻 UNIT 10 に向け直した）。
+- **Fly.io・Turso:** アカウントは使っていない。`~/.fly/config.yml` にログイン済みのトークンがあるので、API を呼ぶ flyctl のコマンド（`fly platform regions`・`fly config validate`・`fly releases` など。`--help` も含めて）は一切動かさない。動かしてよいのは `fly version` だけ。手順は公式のドキュメント（docs.fly.io・docs.turso.tech）で確かめた物を、コマンドと説明だけ載せた。flyctl は v0.5.1（`fly version upgrade` は Start-Process で失敗し、`fly.exe.old` が残った。flyctl.exe を fly.exe にコピーして直した）。
+- **確かめた事実（UNIT 09・10）:** toxiproxy で DB までの片道の遅れを 0/10/50/100 ms にすると、GET /notes は 19/102/367/666 ms（約 6.5 往復）、POST /login は約 4.7、/health は約 2.2。数える係（count_proxy.py）で数えると、libsql 0.10.0 のリモートは、読む SQL（query）1つに describe と cursor の2回、書く SQL（execute）に batch の1回、接続を閉じる close は返事を待たない（GET /notes は8回送って6回待つ）。片道 3,000 ms で /health は 5 秒で打ち切り（curl 28）。ほかの接続が開いている間は -wal が残り、rustnote.db だけのコピーは 5 行（VACUUM INTO は 8 行）。強制終了のあとは -wal があれば 10 行全部見える。-wal を残して rustnote.db だけ上書きすると、件数は数えられるのに integrity_check とログインが `database disk image is malformed`。v2（ORDER BY の列名の誤り）は /health 200 のままスモークの一覧だけ 500、v1 のイメージに戻すと全部 OK、cargo test では4つ失敗して気づけた。`cargo update` で変わるのは log 0.4.34 → 0.4.35 だけ。cargo audit は第11巻と同じ8件（libsql 0.10.0 は今も最新）。
+- **注意（この巻で踏んだもの）:** ①動いている bash のスクリプトを編集すると、実行が壊れる（cap12_u02.sh。止めて、残りを別のスクリプトにした）。②Git Bash の `$!` は Windows の PID ではない（`taskkill //IM` を使う）。③CARGO_TARGET_DIR を共有して、ソースのコピーを何組か作ると、cargo は mtime で「新しい」と判断して作り直さない（3つの実行ファイルが同じになった）。ビルドの前に src と migrations を touch する。④PowerShell の関数の中の Write-Output は戻り値に混ざる（smoke.ps1 は Write-Host にした。5.1 は UTF-8 の BOM と `[Console]::OutputEncoding` も要る）。⑤curl の `-w` に日本語を入れると文字化けする（日本語は echo で足す）。
+- **次:** 第1巻（UNIT 01〜03 を 1.99.1・Topcoat 0.11 にそろえる → UNIT 04〜10。Turso CLI は WSL でログインせず、flyctl は `fly version` だけ）→ 第13巻の「全巻の用語集・索引」と finish_volume・旧 `Rust/13_….pdf` の削除。
+
 ## 2026-10-31（続き4）: 第13巻の UNIT 03〜10 と総合演習（main: 2f7a4a7 U03・849d9ab U04・395a338 U05・9915137 U06・0d593c2 U07・6294bf5 U08・f12e177 U09・5ecc346 U10・f9d14ba 総合演習）
 
 素材は `rust13v2/`（parts の src・meta・intro・outro、out の .txt、errs_u03〜u09、examples（u02〜u06 の練習のプログラム）、u09lab（Playwright の measure.mjs と package.json）、fixed-patches（総合演習の9つのコミット。`git am` で当たる）、cap13_*.sh と道具の .py）。ビルド先は `rust13/target`（教材のコピー）と `target_fixed`（総合演習のコピー）。

@@ -1,0 +1,13 @@
+--- 3台のうちの 1 台目（ポート 18011）:/health 200
+マイグレーションを適用しました: 0001_users
+マイグレーションを適用しました: 0002_notes
+マイグレーションを適用しました: 0003_sessions
+RustNote を起動しました: http://127.0.0.1:18011
+--- 3台のうちの 2 台目（ポート 18012）:/health 000
+Error: マイグレーションに失敗しました
+
+Caused by:
+    0: マイグレーション 0002_notes に失敗しました
+    1: Hrana: `api error: `SQLite error: table notes already exists``
+--- 3台のうちの 3 台目（ポート 18013）:/health 200
+RustNote を起動しました: http://127.0.0.1:18013

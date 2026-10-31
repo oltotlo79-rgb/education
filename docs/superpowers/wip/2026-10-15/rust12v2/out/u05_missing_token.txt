@@ -1,0 +1,5 @@
+Error: 設定を読み込めませんでした
+
+Caused by:
+    DATABASE_URL が Turso（libsql://rustnote-example.turso.io）なのに DATABASE_AUTH_TOKEN が設定されていません
+（終了コード: 1）

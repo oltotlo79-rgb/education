@@ -1,0 +1,22 @@
+HTML の <link>: /_topcoat/assets/style-e9b983efabcfc6c3.css
+--- Accept-Encoding なし
+HTTP/1.1 200 OK
+content-type: text/css
+cache-control: public, max-age=31536000, immutable
+vary: accept-encoding
+content-length: 4659
+受け取ったバイト数: 4659
+--- Accept-Encoding: gzip
+HTTP/1.1 200 OK
+content-type: text/css
+cache-control: public, max-age=31536000, immutable
+vary: accept-encoding
+content-encoding: gzip
+受け取ったバイト数: 1437
+--- Accept-Encoding: br
+HTTP/1.1 200 OK
+content-type: text/css
+cache-control: public, max-age=31536000, immutable
+vary: accept-encoding
+content-encoding: br
+受け取ったバイト数: 1433

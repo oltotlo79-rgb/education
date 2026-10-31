@@ -1,0 +1,8 @@
+--- 止まったあとの data フォルダ
+  rustnote.db: 49152 バイト
+  rustnote.db-shm: 32768 バイト
+  rustnote.db-wal: 61832 バイト
+--- 止まったあとの DB（-wal も一緒にあるもの）を数える
+  users: 1 行
+  notes: 10 行
+  integrity_check: ok

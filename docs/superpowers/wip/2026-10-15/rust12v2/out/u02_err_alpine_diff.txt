@@ -1,0 +1,21 @@
+--- a/Dockerfile
++++ b/Dockerfile
+@@ -23,15 +23,13 @@
+ RUN topcoat asset bundle --release
+ 
+ # ---- 2. 実行用 ----
+-FROM debian:trixie-slim
++FROM alpine:3.22
+ 
+ # Turso へ HTTPS でつなぐための証明書
+-RUN apt-get update \
+-    && apt-get install -y --no-install-recommends ca-certificates \
+-    && rm -rf /var/lib/apt/lists/*
++RUN apk add --no-cache ca-certificates
+ 
+ # root ではない利用者で動かす。/data はローカルの DB ファイル置き場
+-RUN useradd --create-home --uid 10001 app \
++RUN adduser -D -u 10001 app \
+     && mkdir -p /data \
+     && chown app:app /data
+ 

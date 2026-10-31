@@ -1,0 +1,6 @@
+u64 に広げて計算: 4294967300
+u32 のまま checked_mul: None
+
+thread 'main' (219748) panicked at examples\u01_q2.rs:25:18:
+attempt to multiply with overflow
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

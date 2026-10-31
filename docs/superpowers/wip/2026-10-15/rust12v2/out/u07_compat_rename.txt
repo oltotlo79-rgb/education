@@ -1,0 +1,12 @@
+--- v3（0004_rename_body を当てる）
+マイグレーションを適用しました: 0001_users
+マイグレーションを適用しました: 0002_notes
+マイグレーションを適用しました: 0003_sessions
+マイグレーションを適用しました: 0004_rename_body
+--- そのあと v1（教材のまま）を、同じ DB で動かす
+登録 303・ノートの作成 500・一覧 500
+--- v1 のログ
+[error] サーバーの中でエラーが起きました <- DB の操作に失敗しました <- Hrana: `stream error: `Error { message: "SQLite error: table notes has no column named body", code: "SQLITE_UNKNOWN" }``
+POST /notes -> 500 Internal Server Error (10.4077ms)
+[error] サーバーの中でエラーが起きました <- DB の操作に失敗しました <- Hrana: `stream error: `Error { message: "SQL input error: no such column: body (at offset 79)", code: "SQL_INPUT_ERROR" }``
+GET /notes -> 500 Internal Server Error (8.722ms)

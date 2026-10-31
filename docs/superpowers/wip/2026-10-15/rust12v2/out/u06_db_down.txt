@@ -1,0 +1,5 @@
+--- sqld を止めたあと
+/health: 503 {"status":"unavailable"}
+/health: 503 {"status":"unavailable"}
+/health: 503 {"status":"unavailable"}
+--- そのときの / （トップページ）: 200

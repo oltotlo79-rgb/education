@@ -1,0 +1,3 @@
+rustnote:u02 の大きさ: 170MB
+rust:1.99.1-trixie の大きさ: 2.22GB
+debian:trixie-slim の大きさ: 142MB

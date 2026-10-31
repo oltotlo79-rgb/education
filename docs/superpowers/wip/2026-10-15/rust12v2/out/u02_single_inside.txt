@@ -1,0 +1,14 @@
+rustnote:single の大きさ: 3.98GB
+uid=0(root) gid=0(root) groups=0(root)
+/usr/local/cargo/bin/cargo
+/usr/local/cargo/bin/rustc
+Cargo.lock
+Cargo.toml
+Dockerfile
+assets
+migrations
+rust-toolchain.toml
+rustfmt.toml
+src
+target
+tests

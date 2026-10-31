@@ -1,0 +1,6 @@
+Error: マイグレーションに失敗しました
+
+Caused by:
+    0: schema_migrations を準備できません
+    1: Hrana: `http error: `error trying to connect: dns error: failed to lookup address information: Name or service not known``
+（終了コード: 1）

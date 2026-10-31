@@ -1,0 +1,10 @@
+GET /health: 200
+OK   GET /health（200）
+OK   GET /（トップ）（200）
+OK   POST /signup（登録）（303）
+NG   GET /notes（一覧）（期待 200・実際 500）
+OK   POST /notes（作成）（303）
+OK   GET 作ったノート（200）
+OK   POST /logout（303）
+だめだった数: 1
+（終了コード: 1）

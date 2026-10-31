@@ -1,0 +1,15 @@
+マイグレーションを適用しました: 0001_users
+マイグレーションを適用しました: 0002_notes
+マイグレーションを適用しました: 0003_sessions
+RustNote を起動しました: http://127.0.0.1:3000
+POST /signup -> 303 See Other (32.3005ms)
+POST /notes -> 303 See Other (7.2532ms)
+POST /notes -> 303 See Other (8.8258ms)
+POST /notes -> 303 See Other (8.6638ms)
+POST /notes -> 303 See Other (6.7298ms)
+POST /notes -> 303 See Other (7.5678ms)
+POST /notes -> 303 See Other (14.2087ms)
+POST /notes -> 303 See Other (9.8503ms)
+POST /notes -> 303 See Other (9.9836ms)
+POST /notes -> 303 See Other (3.0153ms)
+POST /notes -> 303 See Other (7.699ms)

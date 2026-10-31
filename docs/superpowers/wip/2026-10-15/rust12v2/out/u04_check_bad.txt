@@ -1,0 +1,10 @@
+OK  [http_service] internal_port = 8080
+NG  [env] PORT = '3000' と internal_port がそろっている
+OK  Dockerfile の PORT = 8080 と internal_port がそろっている
+OK  [env] HOST = '0.0.0.0'（外から届くには 0.0.0.0）
+OK  Dockerfile の HOST = 0.0.0.0
+NG  force_https = true（__Host-session クッキーは Secure なので HTTPS が要る）
+NG  [env] に秘密の値を書いていない（見つかったもの: ['DATABASE_AUTH_TOKEN']）
+NG  ヘルスチェック GET /health → RemoteDisconnected（http://127.0.0.1:18080）
+だめだった数: 4
+（終了コード: 1）

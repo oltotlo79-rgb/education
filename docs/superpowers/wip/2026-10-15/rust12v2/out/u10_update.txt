@@ -1,0 +1,4 @@
+    Updating crates.io index
+     Locking 1 package to highest Rust 1.99 compatible version
+    Updating log v0.4.34 -> v0.4.35
+note: pass `--verbose` to see 1 unchanged dependencies behind latest

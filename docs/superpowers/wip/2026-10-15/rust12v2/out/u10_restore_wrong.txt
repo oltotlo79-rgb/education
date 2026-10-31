@@ -1,0 +1,15 @@
+--- 間違った戻し方: rustnote.db だけを backup.db で上書き（-wal・-shm は残したまま）
+  rustnote.db: 49152 バイト
+  rustnote.db-shm: 32768 バイト
+  rustnote.db-wal: 61832 バイト
+--- 数える
+  users: 1 行
+  notes: 8 行
+  Error: SQLite failure: `database disk image is malformed`
+--- そのフォルダで RustNote を起動して、ログインと一覧
+  ログイン: 500・一覧: 303 
+--- RustNote のログ
+  [error] サーバーの中でエラーが起きました <- DB の操作に失敗しました <- SQLite failure: `database disk image is malformed`
+  POST /login -> 500 Internal Server Error (29.2681ms)
+  GET /notes -> 303 See Other (2.9792ms)
+  GET /notes -> 303 See Other (1.9772ms)

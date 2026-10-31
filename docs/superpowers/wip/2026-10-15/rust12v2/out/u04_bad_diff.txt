@@ -1,0 +1,19 @@
+--- a/fly.toml
++++ b/fly.toml
+@@ -12,13 +12,14 @@
+ # アプリに渡す環境変数（秘密でないもの）
+ [env]
+   HOST = "0.0.0.0"
+-  PORT = "8080"
++  DATABASE_AUTH_TOKEN = "u04-fake-token"
++  PORT = "3000"
+ 
+ [http_service]
+   # アプリが待ち受けるポート（PORT と同じ）
+   internal_port = 8080
+   # http:// で来たら https:// へ転送する（セッションのクッキーは Secure なので HTTPS が必須）
+-  force_https = true
++  force_https = false
+   # アクセスが無いときはマシンを止め、来たら起動する
+   auto_stop_machines = "stop"
+   auto_start_machines = true

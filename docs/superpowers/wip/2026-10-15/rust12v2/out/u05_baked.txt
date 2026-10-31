@@ -1,0 +1,8 @@
+--- docker image inspect（イメージの設定の環境変数）
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+HOST=0.0.0.0
+PORT=8080
+DATABASE_URL=/data/rustnote.db
+DATABASE_AUTH_TOKEN=u05-fake-token-not-a-real-secret
+--- docker history（作った手順の記録）
+ENV DATABASE_AUTH_TOKEN=u05-fake-token-not-a-real-secret

@@ -1,0 +1,7 @@
+実行用の段: ldd (Debian GLIBC 2.36-9+deb12u14) 2.36
+/health: {"status":"ok"}
+--- ログ
+マイグレーションを適用しました: 0001_users
+マイグレーションを適用しました: 0002_notes
+マイグレーションを適用しました: 0003_sessions
+RustNote を起動しました: http://0.0.0.0:8080

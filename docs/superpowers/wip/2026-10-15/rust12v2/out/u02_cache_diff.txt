@@ -1,0 +1,33 @@
+--- a/Dockerfile
++++ b/Dockerfile
+@@ -17,10 +17,15 @@
+ 
+ # ソースをコピーしてビルドする（Cargo.lock の版をそのまま使う）
+ COPY . .
+-RUN cargo build --release --locked
+-
+-# 実行ファイルの隣（target/release/assets/）に CSS の束を作る
+-RUN topcoat asset bundle --release
++# ダウンロードしたクレートと target/ を、ビルドをまたいで取っておく（キャッシュのマウント）。
++# マウントした所はイメージに残らないので、できた物は /out にコピーしておく
++RUN --mount=type=cache,id=rustnote-registry,target=/usr/local/cargo/registry \
++    --mount=type=cache,id=rustnote-target,target=/app/target \
++    cargo build --release --locked \
++    && topcoat asset bundle --release \
++    && mkdir -p /out \
++    && cp target/release/rustnote /out/rustnote \
++    && cp -r target/release/assets /out/assets
+ 
+ # ---- 2. 実行用 ----
+ FROM debian:trixie-slim
+@@ -37,8 +42,8 @@
+ 
+ WORKDIR /app
+ # AssetBundle::load() は「実行ファイルの隣の assets/」を読むので、同じ並びでコピーする
+-COPY --from=builder /app/target/release/rustnote /app/rustnote
+-COPY --from=builder /app/target/release/assets /app/assets
++COPY --from=builder /out/rustnote /app/rustnote
++COPY --from=builder /out/assets /app/assets
+ 
+ USER app
+ 

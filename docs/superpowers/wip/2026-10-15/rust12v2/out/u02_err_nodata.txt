@@ -1,0 +1,5 @@
+Error: DB（/data/rustnote.db）を開けませんでした
+
+Caused by:
+    Failed to connect to database: `Unable to open connection to local database /data/rustnote.db: 14`
+（終了コード: 1）

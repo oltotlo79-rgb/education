@@ -1,0 +1,2 @@
+[error] サーバーの中でエラーが起きました <- DB の操作に失敗しました <- SQLite failure: `no such column: update_at`
+GET /notes -> 500 Internal Server Error (1.479014ms)

@@ -1,0 +1,14 @@
+--- target-u03/release の中（実行ファイルと assets）
+drwxr-xr-x 0 assets
+-rwxr-xr-x 11732480 rustnote.exe
+--- assets の中
+185 manifest.toml
+4659 style-e9b983efabcfc6c3.css
+--- manifest.toml
+version = 1
+
+[[assets]]
+id = 5717027304611933330
+file = "style-e9b983efabcfc6c3.css"
+hash = "e9b983efabcfc6c3bb07e46232ff126ef842195c4cb5e4796bade732afe34710"
+content_type = "text/css"

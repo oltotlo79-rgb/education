@@ -1,0 +1,11 @@
+--- a/src/repository/notes.rs
++++ b/src/repository/notes.rs
+@@ -109,7 +109,7 @@
+         // 2) このページに表示する分（新しく更新した順）
+         let list_sql = format!(
+             "SELECT {NOTE_COLUMNS} FROM notes WHERE {condition}
+-             ORDER BY updated_at DESC, id DESC
++             ORDER BY update_at DESC, id DESC
+              LIMIT ?3 OFFSET ?4"
+         );
+         let offset = i64::try_from(query.offset()).unwrap_or(i64::MAX);

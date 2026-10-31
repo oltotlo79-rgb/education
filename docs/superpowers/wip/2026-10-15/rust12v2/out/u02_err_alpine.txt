@@ -1,0 +1,2 @@
+exec /app/rustnote: no such file or directory
+（終了コード: 255）

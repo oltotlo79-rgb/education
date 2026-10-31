@@ -1,0 +1,8 @@
+NG   GET /health（期待 200・実際 000）
+NG   GET /（トップ）（期待 200・実際 000）
+NG   POST /signup（登録）（期待 303・実際 000）
+NG   GET /notes（一覧）（期待 200・実際 000）
+NG   POST /notes（作成）（期待 303・実際 000）
+NG   POST /logout（期待 303・実際 000）
+だめだった数: 6
+（終了コード: 1）

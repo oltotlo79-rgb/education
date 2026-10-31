@@ -1,0 +1,19 @@
+--- GET /health（状態 200）: sqld へのリクエスト 3 回
+ 1. POST /v3/pipeline → 200: describe「SELECT 1」
+ 2. POST /v3/cursor → 200: cursor「SELECT 1;」
+ 3. POST /v3/pipeline → 200: close
+--- GET /notes（ログイン中・25 件）（状態 200）: sqld へのリクエスト 8 回
+ 1. POST /v3/pipeline → 200: describe「SELECT u.id, u.email FROM sessio…」
+ 2. POST /v3/cursor → 200: cursor「SELECT u.id, u.email FROM sessio…」
+ 3. POST /v3/pipeline → 200: close
+ 4. POST /v3/pipeline → 200: describe「SELECT COUNT(*) FROM notes WHERE…」
+ 5. POST /v3/cursor → 200: cursor「SELECT COUNT (*) FROM notes WHER…」
+ 6. POST /v3/pipeline → 200: describe「SELECT id, user_id, title, body,…」
+ 7. POST /v3/cursor → 200: cursor「SELECT id, user_id, title, body,…」
+ 8. POST /v3/pipeline → 200: close
+--- POST /login（状態 303）: sqld へのリクエスト 5 回
+ 1. POST /v3/pipeline → 200: describe「SELECT id, email, password_hash …」
+ 2. POST /v3/cursor → 200: cursor「SELECT id, email, password_hash …」
+ 3. POST /v3/pipeline → 200: close
+ 4. POST /v3/pipeline → 200: batch「INSERT INTO sessions (token_hash…」, get_autocommit, close
+ 5. POST /v3/pipeline → 200: batch「DELETE FROM sessions WHERE expir…」, get_autocommit, close

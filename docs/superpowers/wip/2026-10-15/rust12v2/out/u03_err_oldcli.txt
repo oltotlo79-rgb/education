@@ -1,0 +1,7 @@
+warning: this project depends on topcoat 0.11.0, but the topcoat CLI is 0.10.0
+  install a matching CLI with `cargo install topcoat-cli@0.11 --locked`
+bundled assets into target\release\assets
+exit=0
+--- 古い CLI（0.10.0）で作った束で起動
+HTML の <link>: /_topcoat/assets/style-e9b983efabcfc6c3.css
+その CSS: 200

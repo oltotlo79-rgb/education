@@ -1,0 +1,1 @@
+sqld のイメージ: arm64・latest

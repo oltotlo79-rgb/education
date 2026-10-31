@@ -1,0 +1,6 @@
+--- 場面A: data フォルダ（ノートを5件作ったあと）
+  rustnote.db: 49152 バイト
+--- rustnote.db だけをコピーしたもの（copyA.db）
+  users: 1 行
+  notes: 5 行
+  integrity_check: ok

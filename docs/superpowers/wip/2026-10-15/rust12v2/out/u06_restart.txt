@@ -1,0 +1,14 @@
+/health: 200 {"status":"ok"}
+動かし直した回数: 2
+--- RustNote のログ
+Error: マイグレーションに失敗しました
+
+Caused by:
+    0: schema_migrations を準備できません
+    1: Hrana: `http error: `error trying to connect: dns error: failed to lookup address information: Name or service not known``
+Error: マイグレーションに失敗しました
+
+Caused by:
+    0: schema_migrations を準備できません
+    1: Hrana: `http error: `error trying to connect: dns error: failed to lookup address information: Name or service not known``
+RustNote を起動しました: http://0.0.0.0:8080

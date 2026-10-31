@@ -1,0 +1,2 @@
+rustnote:cache2 の大きさ: 170MB
+/health: {"status":"ok"}

@@ -1,0 +1,7 @@
+--- .dockerignore あり
+builder の段の /app/.env: 無い
+できたイメージの /app/.env: 無い
+--- .dockerignore なし
+builder の段の /app/.env: ある
+  （トークンの行: 1 行）
+できたイメージの /app/.env: 無い

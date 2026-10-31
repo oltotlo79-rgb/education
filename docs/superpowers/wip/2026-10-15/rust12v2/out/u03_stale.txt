@@ -1,0 +1,10 @@
+--- CSS を変えて、束を作り直さずに起動
+HTML の <link>: /_topcoat/assets/style-e9b983efabcfc6c3.css
+CSS の中に .hero の行があるか: 0 行
+--- topcoat asset bundle --release で作り直して起動
+HTML の <link>: /_topcoat/assets/style-de9c5d85919fa819.css
+CSS の中に .hero の行があるか: 1 行
+前の URL: 404
+--- assets の中
+manifest.toml
+style-de9c5d85919fa819.css

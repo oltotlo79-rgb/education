@@ -1,0 +1,5 @@
+遅れ（片道）| GET /health | GET /notes（ログイン中・25 件）| POST /login
+0 ms | 9 ms | 19 ms | 43 ms
+10 ms | 36 ms | 102 ms | 100 ms
+50 ms | 131 ms | 367 ms | 288 ms
+100 ms | 231 ms | 666 ms | 511 ms

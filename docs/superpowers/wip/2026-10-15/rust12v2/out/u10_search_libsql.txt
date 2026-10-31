@@ -1,0 +1,1 @@
+libsql = "0.10.0"    # The libSQL database library

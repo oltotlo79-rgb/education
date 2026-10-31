@@ -1,0 +1,21 @@
+#1 [internal] load build definition from Dockerfile
+#1 DONE 0.0s
+#2 [internal] load metadata for docker.io/library/rust:1.99.1-trixie
+#2 DONE 0.2s
+#3 [internal] load .dockerignore
+#3 transferring context: 143B done
+#3 DONE 0.0s
+#4 [1/5] FROM docker.io/library/rust:1.99.1-trixie@sha256:09027f873d45b8ecd1dc86f1fa13b7a62b875c961f017a0e331267b350430137
+#4 DONE 0.0s
+#5 [internal] load build context
+#5 transferring context: 242.68kB 0.0s done
+#5 DONE 0.1s
+#6 [2/5] WORKDIR /app
+#6 CACHED
+#7 [3/5] RUN cargo install topcoat-cli --version 0.11.0 --locked
+#7 CACHED
+#8 [4/5] COPY . .
+#8 DONE 0.0s
+#9 [5/5] RUN cargo build --release --locked && topcoat asset bundle --release
+#9 DONE 95.5s
+#10 DONE 69.4s

@@ -1,0 +1,8 @@
+--- VACUUM INTO で写す（u10_backup）
+data/rustnote.db を backup.db に写しました
+--- rustnote.db だけをコピーしたもの（naive.db）
+users: 1 行
+notes: 5 行
+--- VACUUM INTO で写したもの（backup.db）
+users: 1 行
+notes: 5 行

@@ -1,0 +1,5 @@
+rust-toolchain.toml: channel = "1.99.1"
+Dockerfile:          FROM rust:1.99.1-trixie AS builder
+Dockerfile:          RUN cargo install topcoat-cli --version 0.11.0 --locked
+Cargo.toml:          topcoat = "=0.11.0"
+Cargo.toml:          rust-version = "1.99"

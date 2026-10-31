@@ -1,0 +1,10 @@
+total 12
+-rw-r--r-- 1 root root  186 Oct 30 21:40 manifest.toml
+-rw-r--r-- 1 root root 4659 Oct 30 21:40 style-e9b983efabcfc6c3.css
+version = 1
+
+[[assets]]
+id = 12436892214887874785
+file = "style-e9b983efabcfc6c3.css"
+hash = "e9b983efabcfc6c3bb07e46232ff126ef842195c4cb5e4796bade732afe34710"
+content_type = "text/css"

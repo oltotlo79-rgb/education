@@ -1,0 +1,39 @@
+教材と同じ
+warning: in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'Cargo.lock', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'Cargo.toml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'assets/style.css', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'migrations/0001_users.sql', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'migrations/0002_notes.sql', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'migrations/0003_sessions.sql', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'rust-toolchain.toml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'rustfmt.toml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/auth.rs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/config.rs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/db.rs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/domain.rs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/error.rs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/flash.rs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/lib.rs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/main.rs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/repository.rs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/repository/notes.rs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/repository/sessions.rs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/repository/users.rs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/routes.rs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/routes/health.rs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/routes/login.rs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/routes/logout.rs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/routes/notes.rs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/routes/notes/id.rs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/routes/notes/id/delete.rs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/routes/notes/id/edit.rs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/routes/notes/id/toggle.rs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/routes/signup.rs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/state.rs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/views.rs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/common/mod.rs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/http.rs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/repository.rs', LF will be replaced by CRLF the next time Git touches it
+教材と同じ
+done
