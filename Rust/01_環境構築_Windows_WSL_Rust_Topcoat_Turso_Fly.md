@@ -35,7 +35,7 @@
 - Windows でのビルドに必要な Build Tools（リンカー）と、CPU の種類の食い違いによるエラーを切り分けられる
 - `cargo fmt`・`cargo clippy`・`cargo test` を、決まった順番で使える
 - WSL2 で Linux のコマンドを使い、Windows 側と Linux 側の違い（PATH・改行・ファイルの場所）を説明できる
-- Topcoat 0.10 の CLI、Turso CLI、flyctl を入れ、版の表示と簡単な動作確認ができる
+- Topcoat 0.11 の CLI、Turso CLI、flyctl を入れ、版の表示と簡単な動作確認ができる
 
 ### 学習地図
 
@@ -89,7 +89,7 @@
 <line x1="412" y1="185" x2="427" y2="185" stroke="#475569" stroke-width="2" marker-end="url(#ar-01-001)"/>
 <rect x="576" y="150" width="130" height="70" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-dasharray="5 4"/>
 <text x="641" y="174" font-size="12" fill="#475569" text-anchor="middle">RustNote では</text>
-<text x="641" y="194" font-size="12" fill="#475569" text-anchor="middle">Rust 1.99.0 を</text>
+<text x="641" y="194" font-size="12" fill="#475569" text-anchor="middle">Rust 1.99.1 を</text>
 <text x="641" y="212" font-size="12" fill="#475569" text-anchor="middle">フォルダで固定</text>
 <path d="M494,220 V240 H200 V256" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#ar-01-001)"/>
 <rect x="135" y="260" width="130" height="70" rx="8" fill="#ffffff" stroke="#10b981" stroke-width="2"/>
@@ -125,7 +125,7 @@
 | UNIT 05 | MSVC Build Tools と CPU の種類（準備中） | Windows でビルドするためのリンカーを入れ、ARM64 と x64 の食い違いを見分ける |
 | UNIT 06 | Cargo の品質コマンド（準備中） | `check`・`fmt`・`clippy`・`test` を目的ごとに使い分ける |
 | UNIT 07 | WSL2 と Docker（準備中） | Windows の中で Linux を動かし、アプリを箱（コンテナ）に入れる |
-| UNIT 08 | Topcoat 0.10 と CLI（準備中） | Web フレームワークの道具を版を固定して入れ、開発サーバーを動かす |
+| UNIT 08 | Topcoat 0.11 と CLI（準備中） | Web フレームワークの道具を版を固定して入れ、開発サーバーを動かす |
 | UNIT 09 | Turso CLI と libSQL の確認（準備中） | データベースの道具を WSL に入れ、Rust から libSQL につながるか確かめる |
 | UNIT 10 | flyctl と環境の診断（準備中） | 公開の道具を入れ、ログイン・版・つながりを順番に確かめる |
 
@@ -213,15 +213,19 @@
 | Windows Terminal | Windows 11 に最初から入っているもの | すべて |
 | Git for Windows | 2.53.0.windows.2（ARM64 版） | UNIT 02〜 |
 | Visual Studio Code | 1.129.1（arm64 版） | UNIT 03〜 |
-| rust-analyzer（VS Code の拡張機能） | 0.3.3081 | UNIT 03〜 |
-| Rust（rustup・rustc・cargo） | rustup 1.29.1。Rust は **1.98 以上**（本書シリーズの基準）、動作確認は 1.99.0 | UNIT 04〜 |
+| rust-analyzer（VS Code の拡張機能） | 0.3.3097 | UNIT 03〜 |
+| Rust（rustup・rustc・cargo） | rustup 1.29.2。Rust は **1.99 以上**（本書シリーズの基準）、動作確認は 1.99.1 | UNIT 04〜 |
 | Build Tools for Visual Studio | MSVC の C++ ビルドツール（ARM64 用）。版と選び方は UNIT 05 で説明します | UNIT 05〜 |
 | WSL2 | Ubuntu 24.04.1 LTS | UNIT 07・09 |
-| Topcoat / topcoat-cli | 0.10.0（`=0.10.0` で固定） | UNIT 08 |
+| Topcoat / topcoat-cli | 0.11.0（`=0.11.0` で固定） | UNIT 08 |
 | Turso CLI | v1.0.34（WSL の中で使う） | UNIT 09 |
-| flyctl | v0.4.57（Windows 用は x64 版。ARM64 の PC ではエミュレーションで動く） | UNIT 10 |
+| flyctl | v0.5.1（Windows 用は x64 版。ARM64 の PC ではエミュレーションで動く） | UNIT 10 |
 
-> **注意:** このシリーズで使う Topcoat 0.10 は、**Rust 1.98 以上**でないとビルドできません。古い記事の手順で Rust を入れると、版が足りないことがあります。Rust の版の確かめ方と、プロジェクトごとに版を固定する方法は、UNIT 04 で説明します。
+> **ヒント:** Git for Windows と VS Code は、更新の早い道具です。2026-10-31 に `winget list` で確かめると、Git for Windows は 2.56.0.4、VS Code は 1.143.1 が出ていました。この巻の実行結果は、表の版で取ったものです。新しい版では、表示の細かい所が違うことがあります。
+
+<!-- -->
+
+> **注意:** このシリーズで使う Topcoat 0.11 は、**Rust 1.99 以上**でないとビルドできません。古い記事の手順で Rust を入れると、版が足りないことがあります。Rust の版の確かめ方と、プロジェクトごとに版を固定する方法は、UNIT 04 で説明します。
 
 ## UNIT 01: 作業フォルダと PowerShell
 
@@ -875,14 +879,14 @@ error: could not compile `hello-rust` (bin "hello-rust") due to 1 previous error
 この単元で学んだ「今いるフォルダ」は、RustNote を動かすときにも、そのまま効いてきます。RustNote のフォルダ（`Rust/rustnote`）には `rust-toolchain.toml` というファイルがあり、中には次のように書かれています。
 
 ```toml
-# このフォルダの中で cargo を実行すると、Rust 1.99.0 が使われる
+# このフォルダの中で cargo を実行すると、Rust 1.99.1 が使われる
 # （既定のツールチェーンは変更しない）
 [toolchain]
-channel = "1.99.0"
+channel = "1.99.1"
 components = ["rustfmt", "clippy"]
 ```
 
-このファイルがあると、**RustNote のフォルダの中で実行したときだけ**、Rust 1.99.0 が使われます。この本の PC で、RustNote のフォルダとホームフォルダで、それぞれ「今使われる Rust の版」を表示すると、次のようになりました（Rust を入れるのは UNIT 04 です。ここでは結果だけ見てください）。
+このファイルがあると、**RustNote のフォルダの中で実行したときだけ**、Rust 1.99.1 が使われます。この本の PC で、RustNote のフォルダとホームフォルダで、それぞれ「今使われる Rust の版」を表示すると、次のようになりました（Rust を入れるのは UNIT 04 です。ここでは結果だけ見てください）。
 
 ```powershell
 # RustNote のフォルダ（Rust/rustnote）の中で、使われる Rust の版を表示する
@@ -897,14 +901,14 @@ cargo --version
 **▼ 実行結果**
 
 ```text
-1.99.0-aarch64-pc-windows-msvc (overridden by 'C:\Users\...\rustnote\rust-toolchain.toml')
-cargo 1.99.0 (5f94df478 2026-08-27)
+1.99.1-aarch64-pc-windows-msvc (overridden by 'C:\Users\...\rustnote\rust-toolchain.toml')
+cargo 1.99.1 (5f94df478 2026-08-27)
 stable-aarch64-pc-windows-msvc (default)
-cargo 1.97.1 (c980f4866 2026-06-30)
+cargo 1.99.1 (5f94df478 2026-08-27)
 ```
 
-- RustNote のフォルダでは、`rust-toolchain.toml` によって `1.99.0` が選ばれています（`overridden by` は「このファイルで上書きされています」という意味です）。
-- ホームフォルダでは、この PC の既定の版（ここでは 1.97.1）が使われました。あなたの PC では、UNIT 04 で入れた版になります。
+- RustNote のフォルダでは、`rust-toolchain.toml` によって `1.99.1` が選ばれています（`overridden by` は「このファイルで上書きされています」という意味です）。
+- ホームフォルダでは、この PC の既定の版（`stable`。`(default)` は「既定なので選ばれました」という意味）が使われました。今は stable も 1.99.1 なので、版の数字は同じですが、**選ばれた理由が違います**。stable は、新しい版が出たあとに `rustup update` をすると上がります（UNIT 04）。そのときも、RustNote のフォルダの中だけは 1.99.1 のままです。
 - **同じ `cargo` というコマンドでも、今いるフォルダによって、動く Rust の版が変わる**のです。RustNote のコマンドは、必ず RustNote のフォルダに `cd` してから打ちます。RustNote の README（説明書）にも「PowerShell で、このフォルダ（`Rust/rustnote`）に移動して実行します」と書かれています。
 
 RustNote は、待ち受けるポートなどの設定を環境変数から読みます（第0巻 UNIT 03）。PowerShell で `$env:PORT = "3001"` のように設定すると、**その窓から起動した RustNote にだけ**効きます。窓を閉じると消え、ほかの窓には影響しません。設定がうまく効かないときは、「設定した窓と、起動した窓が同じか」を確かめましょう。
@@ -1881,7 +1885,7 @@ i/lf    w/lf    attr/                 	Rust/rustnote/Cargo.toml
 |---|---|---|
 | 作業机 | VS Code の窓 | Visual Studio Code 1.129.1 |
 | 机の上の窓口 | 統合ターミナル | PowerShell 5.1 |
-| 横に座る先輩 | 拡張機能 rust-analyzer | rust-analyzer 0.3.3081 |
+| 横に座る先輩 | 拡張機能 rust-analyzer | rust-analyzer 0.3.3097 |
 | 先輩の辞書と道具箱 | Rust の本体（cargo・rustc・rustfmt・clippy） | UNIT 04 で入れる |
 | 書類の束の表紙 | `Cargo.toml` | 開いたフォルダの中にある必要がある |
 | 机に貼るルール表 | 設定ファイル `settings.json` | ユーザーの設定・ワークスペースの設定 |
@@ -2083,10 +2087,10 @@ code --install-extension rust-lang.rust-analyzer
 
 ```text
 Installing extensions...
-(node:55752) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(node:160520) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
 (Use `Code --trace-deprecation ...` to show where the warning was created)
 Installing extension 'rust-lang.rust-analyzer'...
-Extension 'rust-lang.rust-analyzer' v0.3.3081 was successfully installed.
+Extension 'rust-lang.rust-analyzer' v0.3.3097 was successfully installed.
 ```
 
 ```powershell
@@ -2097,7 +2101,7 @@ code --list-extensions --show-versions
 **▼ 実行結果**
 
 ```text
-rust-lang.rust-analyzer@0.3.3081
+rust-lang.rust-analyzer@0.3.3097
 ```
 
 ほかの拡張機能（日本語化など）を入れている人は、それも一緒に表示されます。
@@ -2112,11 +2116,11 @@ rust-lang.rust-analyzer@0.3.3081
 ##### 解説2: 途中の DeprecationWarning は気にしなくてよい
 
 - 2〜3行目の `DeprecationWarning`（非推奨の警告）は、VS Code のコマンドの**内部**で使われている部品についての、開発者向けのお知らせです。最後の行に `was successfully installed`（正しくインストールされました）と出ていれば成功です。
-- `node:55752` の数字は、実行するたびに変わります。
+- `node:160520` の数字は、実行するたびに変わります。
 
 ##### 解説3: 拡張機能も CPU の種類ごとに作られている
 
-- rust-analyzer の拡張機能には、本体のプログラム `rust-analyzer.exe` が入っているので、CPU の種類ごとに別のものが配られています。この本の PC では、入った拡張機能のフォルダの名前が `rust-lang.rust-analyzer-0.3.3081-win32-arm64` で、Windows の ARM64 用が自動で選ばれていました。
+- rust-analyzer の拡張機能には、本体のプログラム `rust-analyzer.exe` が入っているので、CPU の種類ごとに別のものが配られています。この本の PC では、入った拡張機能のフォルダの名前が `rust-lang.rust-analyzer-0.3.3097-win32-arm64` で、Windows の ARM64 用が自動で選ばれていました。
 - VS Code そのものが ARM64 用なら、拡張機能も ARM64 用が選ばれます。例3-1で `code --version` の3行目を確かめたのは、このためでもあります。
 - 拡張機能は、ふつうは `C:\Users\（あなたの名前）\.vscode\extensions` の中に、`作った人.名前-版` のフォルダとして入ります。本体のプログラムを含む拡張機能は、この本の PC では、フォルダの名前の最後に `-win32-arm64` が付いていました。拡張機能の調子がおかしいときに、どの CPU 用のものが入っているかを確かめる手がかりになります。
 
@@ -2227,7 +2231,7 @@ VS Code が開き、次の順に進みます。
 ##### 解説3: 保存のたびに clippy でチェックする
 
 - rust-analyzer は、保存するたびに、裏で `cargo check`（コンパイルできるかの確認）を実行して、エラーを赤い波線で表示します。`rust-analyzer.check.command` を `"clippy"` にすると、代わりに **`cargo clippy`**（よくある書き間違いや、もったいない書き方も指摘する道具。UNIT 06）が使われます。
-- この設定の名前と、既定の値が `"check"` であることは、rust-analyzer 0.3.3081 の拡張機能の設定の一覧（`package.json`）で確かめました。
+- この設定の名前と、既定の値が `"check"` であることは、rust-analyzer 0.3.3097 の拡張機能の設定の一覧（`package.json`）で確かめました。
 
 ##### 解説4: PowerShell のスクリプトは BOM 付きで保存する
 
@@ -2419,7 +2423,7 @@ Caused by:
 
 RustNote を VS Code で開くときは、`Cargo.toml` がある RustNote のフォルダ（`Rust/rustnote`）そのものを開きます。PowerShell で、そのフォルダへ `cd` で移動してから `code .` と打つのが確実です。
 
-- RustNote のフォルダには `rust-toolchain.toml`（UNIT 01）があるので、rust-analyzer が呼び出す `cargo` も、そのフォルダで決めた Rust 1.99.0 になります。VS Code の赤い波線と、ターミナルの `cargo build` の結果が食い違わないのは、両方が同じ版の Rust を使うからです。
+- RustNote のフォルダには `rust-toolchain.toml`（UNIT 01）があるので、rust-analyzer が呼び出す `cargo` も、そのフォルダで決めた Rust 1.99.1 になります。VS Code の赤い波線と、ターミナルの `cargo build` の結果が食い違わないのは、両方が同じ版の Rust を使うからです。
 - RustNote の自動チェック（`Rust/rustnote/ci.yml`）では、次のように clippy を「警告もエラーとして扱う」設定で実行しています。
 
 ```yaml
@@ -2495,7 +2499,7 @@ RustNote を VS Code で開くときは、`Cargo.toml` がある RustNote のフ
 - ☐ ユーザーの `settings.json` に `files.eol`・`editor.formatOnSave`・`"[rust]"` の整形の道具・`rust-analyzer.check.command`・`"[powershell]"` の `utf8bom` を書ける。既定 → ユーザー → ワークスペースの順に上書きされることを説明できる（UNIT 03）
 - ☐ `.vscode/extensions.json` と `.vscode/settings.json` でプロジェクトの決まりを共有できる。rust-analyzer の「program not found」を `Caused by:` の下から読み、Rust がまだ無いことに気づける（UNIT 03）
 
-> **お知らせ:** この版には UNIT 01〜03 を収録しています。UNIT 04（rustup・rustc・Cargo）・UNIT 05（MSVC Build Tools と CPU の種類）・UNIT 06（Cargo の品質コマンド）・UNIT 07（WSL2 と Docker）・UNIT 08（Topcoat 0.10 と CLI）・UNIT 09（Turso CLI と libSQL の確認）・UNIT 10（flyctl と環境の診断）は準備中で、次の更新から順に追加します。それまでの間、Rust のインストールは公式サイト（`https://www.rust-lang.org/`）の手順で行い、このシリーズの基準（Rust 1.98 以上、動作確認は 1.99.0）を満たしているかを `rustc --version` で確かめてください。
+> **お知らせ:** この版には UNIT 01〜03 を収録しています。UNIT 04（rustup・rustc・Cargo）・UNIT 05（MSVC Build Tools と CPU の種類）・UNIT 06（Cargo の品質コマンド）・UNIT 07（WSL2 と Docker）・UNIT 08（Topcoat 0.11 と CLI）・UNIT 09（Turso CLI と libSQL の確認）・UNIT 10（flyctl と環境の診断）は準備中で、次の更新から順に追加します。それまでの間、Rust のインストールは公式サイト（`https://www.rust-lang.org/`）の手順で行い、このシリーズの基準（Rust 1.99 以上、動作確認は 1.99.1）を満たしているかを `rustc --version` で確かめてください。
 
 次の第2巻では、この巻でそろえた道具を使って、Rust の文法の土台を学びます。
 
