@@ -1,0 +1,5 @@
+
+thread 'main' (32604) panicked at src\main.rs:6:41:
+called `Result::unwrap()` on an `Err` value: Os { code: 10048, kind: AddrInUse, message: "通常、各ソケット アドレスに対してプロトコル、ネットワーク アドレス、またはポートのどれか 1 つのみを使用できます。" }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+exit=101

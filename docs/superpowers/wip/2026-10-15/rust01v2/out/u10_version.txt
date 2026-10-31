@@ -1,0 +1,4 @@
+fly.exe v0.5.1 windows/amd64 Commit: fc5174919aea834930ca9aba72f271cc54409a06 BuildDate: 2026-10-29T17:46:27Z
+C:\Users\...\.fly\bin\fly.exe
+C:\Users\...\.fly\bin\flyctl.exe
+x64    0x8664  C:\Users\...\.fly\bin\fly.exe

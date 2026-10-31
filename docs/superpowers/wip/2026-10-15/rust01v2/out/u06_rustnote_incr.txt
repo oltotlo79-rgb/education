@@ -1,0 +1,4 @@
+--- cargo check（src\main.rs を保存し直したあと）
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.95s
+--- cargo build（src\main.rs を保存し直したあと）
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 3.40s

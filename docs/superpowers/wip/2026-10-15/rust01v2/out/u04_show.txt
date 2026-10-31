@@ -1,0 +1,13 @@
+Default host: aarch64-pc-windows-msvc
+rustup home:  C:\Users\...\rust-try\rustup
+
+installed toolchains
+--------------------
+stable-aarch64-pc-windows-msvc (active, default)
+
+active toolchain
+----------------
+name: stable-aarch64-pc-windows-msvc
+active because: it's the default toolchain
+installed targets:
+  aarch64-pc-windows-msvc

@@ -1,0 +1,6 @@
+ARM64  0xAA64  C:\Users\...\.cargo\bin\rustc.exe
+ARM64  0xAA64  C:\Users\...\AppData\Local\Programs\Microsoft VS Code\Code.exe
+ARM64  0xAA64  C:\Program Files\Git\clangarm64\bin\git.exe
+x64    0x8664  C:\Program Files\Git\usr\bin\bash.exe
+ARM64  0xAA64  C:\Program Files\Docker\Docker\resources\bin\docker.exe
+x64    0x8664  C:\Users\...\.fly\bin\fly.exe

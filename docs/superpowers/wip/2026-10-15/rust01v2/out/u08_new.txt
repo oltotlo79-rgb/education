@@ -1,0 +1,10 @@
+*  Created hello-topcoat
+|  
+o  Initialized a Git repository
+|  
++  Next steps -------+
+|                    |
+|  cd hello-topcoat  |
+|  topcoat dev       |
+—--------------------+
+exit=0

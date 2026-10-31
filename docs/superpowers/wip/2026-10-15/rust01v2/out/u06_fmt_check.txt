@@ -1,0 +1,8 @@
+Diff in \\?\C:\Users\...\rust-study\quality\src\lib.rs:1:
+ /// ノートの題の文字数を数える
+-pub fn title_length(title:&str)->usize{
++pub fn title_length(title: &str) -> usize {
+     return title.len();
+ }
+ 
+exit=1

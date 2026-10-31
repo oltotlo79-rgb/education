@@ -1,0 +1,9 @@
+Unable to find image 'debian:trixie-slim' locally
+trixie-slim: Pulling from library/debian
+6fc242d221a6: Pulling fs layer
+f74f9762bc2a: Download complete
+6fc242d221a6: Download complete
+6fc242d221a6: Pull complete
+Digest: sha256:f6b08b09a05725f9431502d3b5714f5c4576e82c1a84fa1debe0c24a7e0c3ec4
+Status: Image is up to date for debian:trixie-slim
+x86_64

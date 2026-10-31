@@ -1,0 +1,9 @@
+/// ノートの題の文字数を数える
+pub fn title_length(title: &str) -> usize {
+    return title.len();
+}
+
+/// 題が空（空白だけ）かどうか
+pub fn is_blank(title: &str) -> bool {
+    title.trim().len() == 0
+}

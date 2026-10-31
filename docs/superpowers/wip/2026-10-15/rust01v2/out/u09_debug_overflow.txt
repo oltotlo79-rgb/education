@@ -1,0 +1,6 @@
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.67s
+     Running `C:\Users\...\t06build\debug\rustnote.exe`
+
+thread 'main' (2604) has overflowed its stack
+error: process didn't exit successfully: `C:\Users\...\t06build\debug\rustnote.exe` (exit code: 0xc00000fd, STATUS_STACK_OVERFLOW)
+exit=-1073741571

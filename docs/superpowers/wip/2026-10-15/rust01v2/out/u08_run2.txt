@@ -1,0 +1,3 @@
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.30s
+     Running `target\debug\hello-topcoat.exe`
+error: process didn't exit successfully: `target\debug\hello-topcoat.exe` (exit code: 1)

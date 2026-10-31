@@ -1,0 +1,12 @@
+﻿Installing extensions...
+code : (node:160520) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that 
+have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+At line:1 char:561
++ ... | Out-Null; code --extensions-dir $X --install-extension rust-lang.ru ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ((node:160520) [...ulnerabilities.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+(Use `Code --trace-deprecation ...` to show where the warning was created)
+Installing extension 'rust-lang.rust-analyzer'...
+Extension 'rust-lang.rust-analyzer' v0.3.3097 was successfully installed.

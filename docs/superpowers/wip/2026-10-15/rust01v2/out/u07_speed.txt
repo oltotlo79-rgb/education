@@ -1,0 +1,4 @@
+/bin/bash: -c: line 1: syntax error near unexpected token `('
+/bin/bash: -c: line 1: `bash -c "rm -rf many && mkdir many && cd many && s=$(date +%s%N) && for i in $(seq 1 2000); do echo x > f$i; done && e=$(date +%s%N) && echo "/mnt/c (rust-study): $(( (e-s)/1000000 )) ms"; cd .. && rm -rf many"'
+/bin/bash: -c: line 1: syntax error near unexpected token `('
+/bin/bash: -c: line 1: `bash -c "cd ~ && rm -rf many && mkdir many && cd many && s=$(date +%s%N) && for i in $(seq 1 2000); do echo x > f$i; done && e=$(date +%s%N) && echo "Linux home (~): $(( (e-s)/1000000 )) ms"; cd ~ && rm -rf many"'

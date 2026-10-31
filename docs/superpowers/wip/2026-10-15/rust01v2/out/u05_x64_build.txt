@@ -1,0 +1,5 @@
+   Compiling hello v0.1.0 (C:\Users\...\rust-study\hello)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.60s
+ARM64  0xAA64  target\debug\hello.exe
+x64    0x8664  target\x86_64-pc-windows-msvc\debug\hello.exe
+Hello, world!

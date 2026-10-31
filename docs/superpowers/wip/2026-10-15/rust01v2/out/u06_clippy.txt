@@ -1,0 +1,27 @@
+    Checking quality v0.1.0 (C:\Users\...\rust-study\quality)
+warning: unneeded `return` statement
+ --> src\lib.rs:3:5
+  |
+3 |     return title.len();
+  |     ^^^^^^^^^^^^^^^^^^
+  |
+  = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#needless_return
+  = note: `#[warn(clippy::needless_return)]` on by default
+help: remove `return`
+  |
+3 -     return title.len();
+3 +     title.len()
+  |
+
+warning: length comparison to zero
+ --> src\lib.rs:8:5
+  |
+8 |     title.trim().len() == 0
+  |     ^^^^^^^^^^^^^^^^^^^^^^^ help: using `is_empty` is clearer and more explicit: `title.trim().is_empty()`
+  |
+  = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#len_zero
+  = note: `#[warn(clippy::len_zero)]` on by default
+
+warning: `quality` (lib) generated 2 warnings (run `cargo clippy --fix --lib -p quality -- ` to apply 2 suggestions)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.36s
+exit=0

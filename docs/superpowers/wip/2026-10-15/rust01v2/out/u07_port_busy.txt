@@ -1,0 +1,5 @@
+692e8b85753e5f7295404607e0bc8af0f2c9fbb5783cbbc5d95f43d5f9f8d074
+docker: Error response from daemon: failed to set up container networking: driver failed programming external connectivity on endpoint u07b (d7a77560b802647f9ceeba9e1efd3d3a81cd7375dc0578d387af0a1408c98e91): Bind for 0.0.0.0:18099 failed: port is already allocated
+
+Run 'docker run --help' for more information
+exit=125

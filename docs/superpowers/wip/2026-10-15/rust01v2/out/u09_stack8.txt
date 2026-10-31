@@ -1,0 +1,4 @@
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.72s
+     Running `C:\Users\...\t09stack\debug\rustnote.exe`
+RustNote を起動しました: http://127.0.0.1:3000
+error: process didn't exit successfully: `C:\Users\...\t09stack\debug\rustnote.exe` (exit code: 1)

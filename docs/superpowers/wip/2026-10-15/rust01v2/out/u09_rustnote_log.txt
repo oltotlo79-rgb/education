@@ -1,0 +1,8 @@
+    Finished `release` profile [optimized] target(s) in 0.73s
+     Running `C:\Users\...\t06build\release\rustnote.exe`
+マイグレーションを適用しました: 0001_users
+マイグレーションを適用しました: 0002_notes
+マイグレーションを適用しました: 0003_sessions
+RustNote を起動しました: http://127.0.0.1:3000
+POST /signup -> 303 See Other (45.1347ms)
+error: process didn't exit successfully: `C:\Users\...\t06build\release\rustnote.exe` (exit code: 1)

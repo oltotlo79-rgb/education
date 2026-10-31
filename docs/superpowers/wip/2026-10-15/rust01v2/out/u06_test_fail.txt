@@ -1,0 +1,26 @@
+   Compiling quality v0.1.0 (C:\Users\...\rust-study\quality)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.72s
+     Running unittests src\lib.rs (target\debug\deps\quality-c31da7b9e94c39ed.exe)
+
+running 2 tests
+test tests::blank_title ... ok
+test tests::counts_japanese_title ... FAILED
+
+failures:
+
+---- tests::counts_japanese_title stdout ----
+
+thread 'tests::counts_japanese_title' (69460) panicked at src\lib.rs:17:9:
+assertion `left == right` failed
+  left: 9
+ right: 3
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    tests::counts_japanese_title
+
+test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+error: test failed, to rerun pass `--lib`
+exit=101

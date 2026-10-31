@@ -1,0 +1,6 @@
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 59.49s
+cargo check: 61.3 s
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1m 04s
+cargo build: 64.9 s
+rustnote.exe in check target: 0
+rustnote.exe in build target: 2

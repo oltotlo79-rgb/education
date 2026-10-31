@@ -1,0 +1,5 @@
+    Finished `release` profile [optimized] target(s) in 0.71s
+     Running `C:\Users\...\t06build\release\rustnote.exe`
+RustNote を起動しました: http://127.0.0.1:3000
+error: process didn't exit successfully: `C:\Users\...\t06build\release\rustnote.exe` (exit code: 1)
+exit=1

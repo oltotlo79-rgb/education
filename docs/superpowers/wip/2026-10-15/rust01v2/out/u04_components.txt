@@ -1,0 +1,6 @@
+cargo-aarch64-pc-windows-msvc
+clippy-aarch64-pc-windows-msvc
+rust-docs-aarch64-pc-windows-msvc
+rust-std-aarch64-pc-windows-msvc
+rustc-aarch64-pc-windows-msvc
+rustfmt-aarch64-pc-windows-msvc

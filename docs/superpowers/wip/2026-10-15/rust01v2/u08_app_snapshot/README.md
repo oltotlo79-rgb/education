@@ -1,0 +1,33 @@
+# hello-topcoat
+
+A [Topcoat](https://github.com/tokio-rs/topcoat) application.
+
+## Development
+
+Install the Topcoat CLI:
+
+```sh
+cargo install topcoat-cli
+```
+
+Start the development server, which rebuilds the application when you edit its source:
+
+```sh
+topcoat dev
+```
+
+Then open <http://127.0.0.1:3000>.
+
+## Project structure
+
+| Path | Contents |
+| --- | --- |
+| `src/app.rs`, `src/app/` | The route tree: the router, layouts, pages, and routes. |
+| `src/features.rs`, `src/features/` | Everything one feature owns, such as its data and business rules. |
+
+Pages in `app` use features and components. A feature can use shared components but never imports from `app`, and shared components never import from a feature.
+
+## Learn more
+
+- [Getting started](https://github.com/tokio-rs/topcoat/blob/main/docs/getting_started.md)
+- [Guides](https://github.com/tokio-rs/topcoat/tree/main#learn-topcoat)

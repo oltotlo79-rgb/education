@@ -1,5 +1,18 @@
 # 中断時点の引き継ぎメモ
 
+## 2026-10-31（続き6）: 第1巻を完成（main: fc229d1 U01〜03 版合わせ・7f96140 U04・2d16bf5 U05・5e8d8ae U06・4f5b41c U07・6849718 U08・85de76e U09・5c6e582 U10）
+
+素材は `rust01v2/`（parts の src・meta・intro・outro、out の .txt、cap01_*.sh、mask01.py・finish01.py（用語は1つの表に足す版）・doctor.ps1・u05_machine.ps1 など、u06src、u08_app_snapshot）。
+
+- **版:** いつもの stable を 1.97.1 → 1.99.1 に上げた（`rustup update stable`。出力は UNIT 04 に使った）。rust-analyzer は別の拡張機能のフォルダ（`--extensions-dir`）で 0.3.3097 を確かめた。**Git for Windows（2.53.0 → 最新 2.56.0.4）と VS Code（1.129.1 → 1.143.1）は、作業中に使われていた（VS Code のプロセスと Git Bash）ので更新していない**（巻頭に「新しい版が出ている」と書き添えた）。
+- **試し用の Rust:** PC の Rust を変えないよう、`RUSTUP_HOME`・`CARGO_HOME` を `~\rust-try`（入れた直後の状態）と `~\rsb`（実験用）に分けた。**置き場のパスが長いと、ツールチェーンの中の rlib のパスが 260 文字を超えてリンクが LNK1104**（スクラッチの中は 267 文字）。subst のドライブはシェルをまたいで見えず、ジャンクションは rustc が元のパスに直すので効かない。`~\rust-study` も作業フォルダとして作った（どれも作業のあと消す）。
+- **踏んだもの:** ①Git Bash の cwd が RustNote のフォルダだと、そこから起動した PowerShell でも `rust-toolchain.toml`（1.99.1）が効き、rustup の操作がそちらに向く（toolchain の自動インストール・target remove の取り違え）。PowerShell は必ず `Set-Location ~` から始める。②rust-docs の入ったツールチェーンを消すと、Windows では 1.5 万ファイルの削除に十数分かかる。③PowerShell で `& {…} | Select-Object -First 1` は、ネイティブのコマンドの終了コードを狂わせる（doctor.ps1 は全部受け取ってから見る）。④`powershell -File ~\…` の `~` は直されない（`$HOME` を使う）。⑤Git Bash から開いた PowerShell は x64（AMD64）で PATH も違う。⑥topcoat dev はアプリを `<名前>.topcoat-dev.exe` で動かす（止めるときはその名前）。
+- **Turso CLI:** 公式の `curl -sSfL https://get.tur.so/install.sh | bash` の実行は、権限の自動判定で止められた（外のコードの実行）。スクリプトを取ってきて読むだけにし、UNIT 09 は入れ方の説明＋同じ sqld（Docker の libsql-server 0.24.33）での確かめにした。doctor.ps1 では Turso CLI を任意（`--`）にした。
+- **RustNote の重要な発見（コードは変えていない）:** ①**Windows の debug ビルドで、リモートの libSQL（http://）につなぐと main のスタックがあふれる**（`STATUS_STACK_OVERFLOW`。release と `RUSTFLAGS=-C link-arg=/STACK:8388608` では動く。ローカルのファイルなら debug でも動く）。②`DATABASE_URL=127.0.0.1:8080`（http:// 忘れ）はエラーにならず、`127.0.0.1` というファイルの代替データストリーム `8080` に DB を作って起動する。③RustNote は `cargo run` だけだとアセットの束が無いと起動しない（日本語のエラーで案内する）。
+- **確かめた事実（抜粋）:** rustup-init 1.29.2 の対話の画面（stable 1.99.1・6 components）。受付の rustc.exe・cargo.exe は rustup.exe と同じハッシュ。`rust-toolchain.toml` の版が無いと自動で入れるが、1.29.2 では非推奨の warn が出る（`rustup install` を使う）。Build Tools 2022 17.14・MSVC 14.44.35207・Hostarm64 に arm64/x64/x86。PE の印で rustc・VS Code・Git・docker は ARM64、Git の usr/bin/bash.exe と fly.exe は x64。無い名前のリンカーで msvc の note 3行（VS Code is a different product）。WSL 2.6.3.0、小さなファイル 2000 個で /mnt/c 約 3.6 秒・Linux 側 約 0.1 秒。Docker Desktop 4.68.0（Windows 11 Home の ARM64 でも動く。公式の Arm の条件は Pro 以上と書かれている）。cargo install topcoat-cli 0.11.0 は 243 部品・107 秒。topcoat new --minimal のアプリは cargo run だけだと no asset bundle で panic。cargo +1.90.0 check は requires rustc 1.99。
+- **後片付け（このメモを書いた時点で実行中か、まだ）:** `~\rsb`・`~\rust-try`・`~\rust-study` とスクラッチの rust01/sb を消す。
+- **次:** 第13巻の「全巻の用語集・索引」→ finish_volume → 旧 `Rust/13_….pdf` の削除。
+
 ## 2026-10-31（続き5）: 第12巻を完成（main: 53f22ad U01 取り直し・014bcdb U02・43582ad U03・a7a8d19 U04・798d03d U05・7d8c8fe U06・3622ffd U07・45d4197 U08・dbd492f U09・281f044 U10）
 
 素材は `rust12v2/`（parts の src・meta・intro・outro、out の .txt、cap12_*.sh、道具の .py、smoke.ps1、count_proxy.py、rustnote/examples（u01_*・u10_*）と check_fly.py、u07src）。ビルド先は `rust12/target`（UNIT 07 は `target-u07`）。

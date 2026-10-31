@@ -1,0 +1,2 @@
+info: downloading 2 components
+exit=0

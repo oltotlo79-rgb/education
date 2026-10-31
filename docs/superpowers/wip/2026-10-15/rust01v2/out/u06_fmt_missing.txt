@@ -1,0 +1,3 @@
+error: 'cargo-fmt.exe' is not installed for the toolchain '1.99.0-aarch64-pc-windows-msvc'.
+help: run `rustup component add --toolchain 1.99.0-aarch64-pc-windows-msvc rustfmt` to install it
+exit=1

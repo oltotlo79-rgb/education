@@ -1,0 +1,7 @@
+Visual Studio Build Tools 2022
+17.14.37502.11
+14.44.35207
+arm64
+x64
+x86
+True

@@ -1,0 +1,4 @@
+   Compiling hello v0.1.0 (C:\Users\...\rust-study\hello)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.48s
+     Running `target\debug\hello.exe`
+Hello, world!

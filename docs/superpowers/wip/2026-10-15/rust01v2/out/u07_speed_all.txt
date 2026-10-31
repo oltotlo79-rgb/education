@@ -1,0 +1,6 @@
+Windows 側（/mnt/c/Users/.../rust-study）: 3816 ms
+Linux 側（/home/...）: 139 ms
+Windows 側（/mnt/c/Users/.../rust-study）: 3638 ms
+Linux 側（/home/...）: 97 ms
+Windows 側（/mnt/c/Users/.../rust-study）: 3559 ms
+Linux 側（/home/...）: 65 ms
