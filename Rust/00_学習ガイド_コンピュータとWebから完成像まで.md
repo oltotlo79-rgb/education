@@ -166,7 +166,7 @@ RustNote は、次の3つの登場人物でできています。
 <text x="361" y="54" font-size="14" font-weight="700" fill="#c2410c" text-anchor="middle">Fly.io（クラウド上の PC）</text>
 <rect x="254" y="68" width="214" height="222" rx="10" fill="#ffffff" stroke="#c2410c" stroke-width="2"/>
 <text x="361" y="94" font-size="15" font-weight="700" fill="#0f172a" text-anchor="middle">RustNote サーバー</text>
-<text x="361" y="114" font-size="12" fill="#475569" text-anchor="middle">Rust + Topcoat 0.10</text>
+<text x="361" y="114" font-size="12" fill="#475569" text-anchor="middle">Rust + Topcoat 0.11</text>
 <text x="361" y="132" font-size="12" fill="#475569" text-anchor="middle">0.0.0.0:8080 で待ち受け</text>
 <rect x="270" y="144" width="182" height="30" rx="6" fill="#fff7ed" stroke="#fdba74"/>
 <text x="361" y="164" font-size="12" fill="#9a3412" text-anchor="middle">ルーティング（URL→処理）</text>
@@ -263,7 +263,7 @@ RustNote は、次の3つの登場人物でできています。
 <rect x="120" y="244" width="108" height="72" rx="8" fill="#ffffff" stroke="#f97316"/>
 <text x="174" y="268" font-size="12" font-weight="700" fill="#c2410c" text-anchor="middle">第6巻</text>
 <text x="174" y="288" font-size="12" fill="#0f172a" text-anchor="middle">HTTP と</text>
-<text x="174" y="306" font-size="12" fill="#0f172a" text-anchor="middle">Topcoat 0.10</text>
+<text x="174" y="306" font-size="12" fill="#0f172a" text-anchor="middle">Topcoat 0.11</text>
 <rect x="240" y="244" width="108" height="72" rx="8" fill="#ffffff" stroke="#f97316"/>
 <text x="294" y="268" font-size="12" font-weight="700" fill="#c2410c" text-anchor="middle">第7巻</text>
 <text x="294" y="288" font-size="12" fill="#0f172a" text-anchor="middle">Turso・SQL</text>
@@ -310,7 +310,7 @@ RustNote は、次の3つの登場人物でできています。
 | 第3巻 | 所有権・借用・ライフタイム | Rust 独特の「値の持ち主」のルールを理解し、コンパイラと仲良くなれる |
 | 第4巻 | 型・trait・エラー・テスト | 大きめのプログラムを、型とエラー処理とテストで安全に組み立てられる |
 | 第5巻 | async・並行処理 | たくさんのリクエストを同時にさばくための非同期処理が分かる |
-| 第6巻 | HTTP と Topcoat 0.10 | Topcoat で Web ページを返し、フォームを受け取れる |
+| 第6巻 | HTTP と Topcoat 0.11 | Topcoat で Web ページを返し、フォームを受け取れる |
 | 第7巻 | Turso・SQL | テーブルを設計し、SQL でデータを保存・検索できる |
 | 第8巻 | 認証・認可 | 安全な登録・ログイン・ログアウトと、「自分のデータだけ触れる」仕組みを作れる |
 | 第9巻 | RustNote 設計・準備 | 要件と画面を決め、プロジェクトの骨組みを作れる |
@@ -447,12 +447,12 @@ cd practice
 |---|---|---|
 | Windows 11 | ARM64 版（x64 版でも同じ手順） | すべての作業 |
 | PowerShell | 5.1（Windows に最初から入っているもの） | コマンドを打つ（UNIT 03 以降） |
-| Rust（rustc・cargo） | 1.99.0、edition 2024（1.98 以上なら同じ手順） | すべての Rust コード |
+| Rust（rustc・cargo） | 1.99.1、edition 2024（1.99 以上なら同じ手順） | すべての Rust コード |
 | curl.exe | 8.x（Windows に最初から入っているもの） | HTTP のやりとりを見る（UNIT 05・06） |
 | ブラウザ | Chrome または Edge | 作ったサーバーにアクセスする（UNIT 06） |
 | SQLite のコマンドラインツール | 3.50（参考） | SQL の例の確認だけに使用（UNIT 07。読者は見るだけでよい） |
 
-> **注意:** この巻ではまだ Topcoat・Turso・Fly.io は使いません。Rust に最初から付いてくる機能（**標準ライブラリ**）だけで、Web の仕組みを体験します。このシリーズで使う Topcoat 0.10 は **Rust 1.98 以上**が必要なので、シリーズ全体で「Rust 1.98 以上、動作確認は 1.99.0」を基準にしています。インストールと版の確かめ方は第1巻で説明します。
+> **注意:** この巻ではまだ Topcoat・Turso・Fly.io は使いません。Rust に最初から付いてくる機能（**標準ライブラリ**）だけで、Web の仕組みを体験します。このシリーズで使う Topcoat 0.11 は **Rust 1.99 以上**が必要なので、シリーズ全体で「Rust 1.99 以上、動作確認は 1.99.1」を基準にしています。インストールと版の確かめ方は第1巻で説明します。
 >
 > WSL（Windows の中で Linux を動かす仕組み）や macOS・Linux を使う人は、コマンドの違いを各単元の「補足」で示します。
 
@@ -1433,7 +1433,7 @@ memo\tomorrow.txt
 <text x="26" y="168" fill="#e2e8f0">----            -------------   ------ ----</text>
 <text x="26" y="188" fill="#e2e8f0">-a----   2026/10/17     11:30      689 main.rs</text>
 <text x="26" y="218" fill="#e2e8f0"><tspan fill="#facc15">PS C:\Users\you\rust-study\practice&gt;</tspan> cargo --version</text>
-<text x="26" y="240" fill="#e2e8f0">cargo 1.99.0 (5f94df478 2026-08-27)</text>
+<text x="26" y="240" fill="#e2e8f0">cargo 1.99.1 (5f94df478 2026-08-27)</text>
 <text x="26" y="266" fill="#e2e8f0"><tspan fill="#facc15">PS C:\Users\you\rust-study\practice&gt;</tspan> cargo run -q -- Hanako</text>
 <text x="26" y="288" fill="#e2e8f0">こんにちは、Hanako さん</text>
 <text x="26" y="310" fill="#e2e8f0"><tspan fill="#facc15">PS C:\Users\you\rust-study\practice&gt;</tspan> <tspan fill="#e2e8f0">_</tspan></text>
@@ -1562,9 +1562,9 @@ Mode                 LastWriteTime         Length Name
 PS C:\Users\you\shell-practice> Remove-Item memo-backup.txt
 PS C:\Users\you\shell-practice> cd ..
 PS C:\Users\you> cargo --version
-cargo 1.99.0 (5f94df478 2026-08-27)
+cargo 1.99.1 (5f94df478 2026-08-27)
 PS C:\Users\you> rustc --version
-rustc 1.99.0 (b940084d7 2026-09-28)
+rustc 1.99.1 (58cf8f9c3 2026-10-13)
 ```
 
 `cargo --version` と `rustc --version` は、Rust をインストールしていれば版が表示されます。まだの人は、この2行だけエラーになります（下の「よくあるエラー」を見てください）。

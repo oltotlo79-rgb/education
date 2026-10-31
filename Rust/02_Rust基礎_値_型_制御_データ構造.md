@@ -164,7 +164,7 @@ cd basics
 
 | 項目 | この巻での前提 |
 |---|---|
-| Rust | **1.98 以上**（本書の動作確認は rustc 1.99.0 / cargo 1.99.0） |
+| Rust | **1.99 以上**（本書の実行結果は rustc 1.99.0 で取りました。1.99.1 でも同じ表示になることを確かめています。エラーの中の rustc のソースの場所の番号は、1.99.1 のものにしています） |
 | エディション | 2024（`cargo new` で作ると `Cargo.toml` に `edition = "2024"` と書かれる） |
 | 外部クレート | 使わない（標準ライブラリだけ） |
 | OS・端末 | Windows 11 + PowerShell を主に説明（WSL / macOS / Linux でも同じコードが動く） |
@@ -177,11 +177,11 @@ rustc --version
 cargo --version
 ```
 
-1.98 より古いと表示されたら、`rustup update` で更新してください。本書と全く同じ版で試したいときは、プロジェクトのフォルダ（`Cargo.toml` と同じ場所）に `rust-toolchain.toml` というファイルを作り、次のように書きます。そのフォルダの中では、指定した版が自動で使われます（初回は自動でダウンロードされます）。
+1.99 より古いと表示されたら、`rustup update` で更新してください。本書と全く同じ版で試したいときは、プロジェクトのフォルダ（`Cargo.toml` と同じ場所）に `rust-toolchain.toml` というファイルを作り、次のように書きます。そのフォルダの中では、指定した版が自動で使われます（初回は自動でダウンロードされます）。
 
 ```toml
 [toolchain]
-channel = "1.99.0"
+channel = "1.99.1"
 ```
 
 > **注意:** エラーメッセージの細かい言い回しは、Rust の版によって少し変わることがあります。本書と完全に同じでなくても、`error[E0384]` のような**エラー番号**と、`^^^` が指す場所が同じなら、内容は同じです。
@@ -1381,19 +1381,19 @@ error[E0277]: cannot add `i64` to `i32`
   |
   = help: the trait `Add<i64>` is not implemented for `i32`
 help: the following other types implement trait `Add<Rhs>`
- --> /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\ops\arith.rs:98:8
+ --> /rustc/58cf8f9c35b355199727627d07ae34a4e2846d67/library\core\src\ops\arith.rs:98:8
   |
   = note: `i32` implements `Add`
- ::: /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\ops\arith.rs:113:0
+ ::: /rustc/58cf8f9c35b355199727627d07ae34a4e2846d67/library\core\src\ops\arith.rs:113:0
   |
   = note: in this macro invocation
- --> /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\internal_macros.rs:22:8
+ --> /rustc/58cf8f9c35b355199727627d07ae34a4e2846d67/library\core\src\internal_macros.rs:22:8
   |
   = note: `&i32` implements `Add<i32>`
- ::: /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\internal_macros.rs:33:8
+ ::: /rustc/58cf8f9c35b355199727627d07ae34a4e2846d67/library\core\src\internal_macros.rs:33:8
   |
   = note: `i32` implements `Add<&i32>`
- ::: /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\internal_macros.rs:44:8
+ ::: /rustc/58cf8f9c35b355199727627d07ae34a4e2846d67/library\core\src\internal_macros.rs:44:8
   |
   = note: `&i32` implements `Add`
   = note: this error originates in the macro `add_impl` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -3563,10 +3563,10 @@ error[E0277]: the type `str` cannot be indexed by `{integer}`
   = note: you can use `.chars().nth()` or `.bytes().nth()`
           for more information, see chapter 8 in The Book: <https://doc.rust-lang.org/book/ch08-02-strings.html#indexing-into-strings>
 help: `usize` implements trait `SliceIndex<T>`
- --> /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\slice\index.rs:179:0
+ --> /rustc/58cf8f9c35b355199727627d07ae34a4e2846d67/library\core\src\slice\index.rs:179:0
   |
   = note: `SliceIndex<[T]>`
- --> /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\bstr\traits.rs:197:0
+ --> /rustc/58cf8f9c35b355199727627d07ae34a4e2846d67/library\core\src\bstr\traits.rs:197:0
   |
   = note: `SliceIndex<ByteStr>`
   = note: required for `String` to implement `Index<{integer}>`
@@ -4447,10 +4447,10 @@ error[E0277]: the type `[&str]` cannot be indexed by `i32`
   |
   = help: the trait `SliceIndex<[&str]>` is not implemented for `i32`
 help: `usize` implements trait `SliceIndex<T>`
- --> /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\slice\index.rs:179:0
+ --> /rustc/58cf8f9c35b355199727627d07ae34a4e2846d67/library\core\src\slice\index.rs:179:0
   |
   = note: `SliceIndex<[T]>`
- --> /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\bstr\traits.rs:197:0
+ --> /rustc/58cf8f9c35b355199727627d07ae34a4e2846d67/library\core\src\bstr\traits.rs:197:0
   |
   = note: `SliceIndex<ByteStr>`
   = note: required for `Vec<&str>` to implement `Index<i32>`
@@ -6237,7 +6237,7 @@ error[E0369]: cannot add `{integer}` to `Option<i32>`
   |                Option<i32>
   |
 note: `Option<i32>` does not implement `Add<{integer}>`
- --> /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\option.rs:598:0
+ --> /rustc/58cf8f9c35b355199727627d07ae34a4e2846d67/library\core\src\option.rs:598:0
   |
   = note: `Option<i32>` is defined in another crate
 
@@ -7795,7 +7795,7 @@ error[E0283]: type annotations needed
   |
   = note: the type must implement `FromIterator<&i32>`
 note: required by a bound in `collect`
- --> /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\iter\traits\iterator.rs:2073:4
+ --> /rustc/58cf8f9c35b355199727627d07ae34a4e2846d67/library\core\src\iter\traits\iterator.rs:2073:4
 help: consider giving `evens` an explicit type
   |
 3 |     let evens: Vec<_> = numbers.iter().filter(|n| **n % 2 == 0).collect();
@@ -7930,7 +7930,7 @@ rustnote_mini/
 name = "rustnote_mini"
 version = "0.1.0"
 edition = "2024"
-rust-version = "1.98"
+rust-version = "1.99"
 
 [dependencies]
 ```
