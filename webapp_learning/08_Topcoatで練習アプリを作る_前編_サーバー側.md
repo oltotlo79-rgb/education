@@ -14,7 +14,7 @@
 - **後編:** 画面（`view!`）・入力フォーム・図面・添付ファイル・HTTP の決まりの確かめ・サーバーへの持ち込み。
 - **建てる先:** onprem の 04 のとおり、**実行ファイル `webapp.exe` 1 つ**（と、その隣の `assets` フォルダ）を、会社の Windows Server に WinSW で建てます。HTTP の 80 番で IIS が受け、名前で振り分けてアプリへ渡します。データベースはサーバーの中の PostgreSQL、メールは Microsoft 365 の SMTP リレー（25 番・STARTTLS）です。
 - **前の巻:** 07（Rust と Topcoat の基礎）を先に読んでおくと、楽に読めます。06 前編と章の並びをそろえたので、見比べながら読むと「同じ仕事を、別の部品でどう書くか」が分かります。
-- **試して確かめた範囲:** この巻のコード・出力・画面は、2026-11-02 に、Rust 1.99.1・Topcoat 0.11.0・sqlx 0.9.0・PostgreSQL 18.3 で**実際に動かした物**です。テストは 26 個、全部成功しています（13 章）。
+- **試して確かめた範囲:** この巻のコード・出力・画面は、2026-11-02 に、Rust 1.99.1・Topcoat 0.11.0・sqlx 0.9.0・PostgreSQL 18.3 で**実際に動かした物**です。テストは 31 個（10 の巻で足した、安全のテスト 5 個を含む）、全部成功しています（13 章）。
 
 練習のコードは `samples/08_topcoat_app/webapp/` にあります。
 
@@ -2954,43 +2954,50 @@ async fn 毎朝の通知は8時を過ぎてから1日1回だけ動く(pool: PgPo
 - `#[sqlx::test]` は、**テストごとに空のデータベースを作り**、マイグレーションを流してから、`pool` を渡してくれます。テストどうしが、データを取り合いません。
 - メールは `MemoryTransport` でメモリーにためて、宛先・件名・本文を確かめます（06 の `mail.outbox`）。
 - 06 の 11 個のテストと同じ決まりに、**同時に 2 回押す・担当と完了・添付の後片付け・毎朝の通知（2 つ）**を足しました。
-- このほかに、`src/` の中に小さなテストが 10 個あります（添付の中身・図面の JSON・CSV・ダウンロードの名前）。
+- このほかに、`src/` の中に小さなテストが 12 個（添付の中身・図面の JSON・CSV・ダウンロードの名前・入力フォーム）、`tests/security.rs` に安全のテストが 3 個あります（入力フォームと `security.rs` は 10 の巻で足した）。
 
 実際に動かした結果（`cargo test`）:
 
 ```text
      Running unittests src\lib.rs (target\debug\deps\webapp-8c86094e59d42b38.exe)
+test drawing::tests::空なら図面なし ... ok
 test drawing::tests::四角と線を読める ... ok
 test drawing::tests::知らない図形はエラー ... ok
-test drawing::tests::空なら図面なし ... ok
-test employees::tests::正しいcsvを読める ... ok
-test upload::tests::中身がpdfならpdfとして通る ... ok
-test upload::tests::場所ごとの名前は最後だけにする ... ok
-test employees::tests::間違いのあるcsvは全部の間違いを返す ... ok
 test employees::tests::shift_jisは断る ... ok
-test upload::tests::拡張子をpngに変えたexeは断る ... ok
 test files::tests::日本語の名前は_xxの形にする ... ok
-test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test upload::tests::中身がpdfならpdfとして通る ... ok
+test request_form::tests::正しい入力は通る ... ok
+test request_form::tests::件名に改行は入れられない ... ok
+test employees::tests::間違いのあるcsvは全部の間違いを返す ... ok
+test employees::tests::正しいcsvを読める ... ok
+test upload::tests::場所ごとの名前は最後だけにする ... ok
+test upload::tests::拡張子をpngに変えたexeは断る ... ok
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
      Running unittests src\main.rs (target\debug\deps\webapp-729cf1be2339cc29.exe)
 test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running tests\security.rs (target\debug\deps\security-eafc82bc57e25215.exe)
+test 図面の文字にscriptを入れても_ただの文字 ... ok
+test 件名に改行を入れても_ヘッダーは増えない ... ok
+test ファイル名で別のフォルダに書かせない ... ok
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
      Running tests\workflow.rs (target\debug\deps\workflow-e585d0fc1d21207c.exe)
-test 検証ではメールの宛先を書きかえる ... ok
-test 差し戻すとコメントが追記され依頼者にメールが届く ... ok
-test 出すと1人目にメールが届き回覧中になる ... ok
-test 担当を決めて完了にすると依頼者に知らせる ... ok
-test 同時に2回押しても1回だけ進む ... ok
-test 回覧者の決まり ... ok
-test 引き戻すと承認待ちの人のurlが使えなくなる ... ok
-test 出し直すと最初の回覧者からやり直す ... ok
-test urlは1回しか使えない ... ok
-test 期限が切れたurlは使えない ... ok
-test 全員が承認すると回覧完了になり担当者に知らせる ... ok
 test ほかの人の依頼は引き戻せない ... ok
+test urlは1回しか使えない ... ok
+test 回覧者の決まり ... ok
+test 出し直すと最初の回覧者からやり直す ... ok
+test 引き戻すと承認待ちの人のurlが使えなくなる ... ok
+test 全員が承認すると回覧完了になり担当者に知らせる ... ok
+test 出すと1人目にメールが届き回覧中になる ... ok
+test 同時に2回押しても1回だけ進む ... ok
+test 検証ではメールの宛先を書きかえる ... ok
+test 担当を決めて完了にすると依頼者に知らせる ... ok
+test 差し戻すとコメントが追記され依頼者にメールが届く ... ok
+test 期限が切れたurlは使えない ... ok
+test 添付ファイルはフォルダに置き_失敗したら消す ... ok
+test 理由の無い差し戻しは断る ... ok
 test 毎朝の通知は8時を過ぎてから1日1回だけ動く ... ok
 test 毎朝の通知は止まっている承認を送り直す ... ok
-test 理由の無い差し戻しは断る ... ok
-test 添付ファイルはフォルダに置き_失敗したら消す ... ok
-test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.72s
+test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.65s
 test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 ```
 

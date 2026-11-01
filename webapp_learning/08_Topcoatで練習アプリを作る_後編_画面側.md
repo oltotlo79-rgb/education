@@ -505,6 +505,9 @@ impl FormValues {
             errors.push("件名を入れてください。".to_string());
         } else if title.chars().count() > 100 {
             errors.push("件名は 100 文字までです。".to_string());
+        } else if title.chars().any(char::is_control) {
+            // 入力欄は 1 行だが、細工した送信なら改行を入れられる。メールの件名などに入れさせない（10 の巻）
+            errors.push("件名に、改行などは入れられません。".to_string());
         }
         if self.detail.chars().count() > 2000 {
             errors.push("内容は 2000 文字までです。".to_string());
@@ -612,6 +615,28 @@ pub async fn request_form(
         </form>
         <script src=(asset!("drawing.js"))></script>
     })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn values(title: &str) -> FormValues {
+        FormValues { title: title.into(), due_date: "2026-11-30".into(), approvers: vec!["2".into()], ..FormValues::default() }
+    }
+
+    #[test]
+    fn 正しい入力は通る() {
+        let input = values("  治具の製作  ").validate().unwrap();
+        assert_eq!(input.title, "治具の製作"); // 前後の空白は取る
+        assert_eq!(input.approver_ids, vec![2]);
+    }
+
+    #[test]
+    fn 件名に改行は入れられない() {
+        let errors = values("治具の製作\r\nBcc: evil@example.com").validate().unwrap_err();
+        assert_eq!(errors, vec!["件名に、改行などは入れられません。".to_string()]);
+    }
 }
 ```
 
