@@ -609,7 +609,7 @@ Topcoat 0.11 の既定のセッション（`SessionConfig::default()`）は、�
 //! `Secure` を必ず付ける。ブラウザは HTTP のページでは `Secure` のクッキーを
 //! 受け取らないので、HTTP ではログインが続かない。
 //! ここでは `Secure` と `__Host-` だけを外し、`HttpOnly`・`SameSite=Lax`・`Path=/` は残す。
-//! HTTPS にしたら、`SessionConfig::default()` に戻す。
+//! HTTPS にしたら、このファイルは使わず、決まりのクッキーに戻す（期限の 60 分は残す）。
 
 use std::time::Duration;
 
@@ -688,7 +688,7 @@ impl TokenStore for HttpCookieTokenStore {
 - そのクッキーを付けて、ログインが要る画面を開くと `200` になった。
 
 - `lifetime` は「使われないまま、この時間がたつと切れる」期限です。操作のたびに延びるかどうかは、アプリでセッションをどう扱うかによります。60 分で自動でログアウトされるかを、検証環境で確かめます。
-- HTTPS にしたら、このファイルは使わず、`SessionConfig::default()` に戻します（参考資料「HTTPS にする場合」）。
+- HTTPS にしたら、このファイルは使わず、`.token_store(...)` の行を消して、Topcoat の決まりのクッキーに戻します（参考資料「HTTPS にする場合」の 7 章）。**`SessionConfig::default()` にはしません。** 決まりの期限は 30 日なので、60 分で自動でログアウトしなくなります（topcoat-session 0.11.0 のソースで確かめました）。
 
 ## 7. アプリを Windows サービスにする
 
