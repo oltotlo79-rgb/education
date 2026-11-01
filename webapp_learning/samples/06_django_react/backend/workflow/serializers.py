@@ -6,12 +6,14 @@ from .validators import validate_drawing
 
 
 class StepSerializer(serializers.ModelSerializer):
+    approver_id = serializers.IntegerField(source="approver.pk")
     approver_name = serializers.CharField(source="approver.name")
+    approver_dept = serializers.CharField(source="approver.dept")
     decision_label = serializers.CharField(source="get_decision_display")
 
     class Meta:
         model = Step
-        fields = ["round", "order", "approver_name", "decision", "decision_label", "decided_at"]
+        fields = ["round", "order", "approver_id", "approver_name", "approver_dept", "decision", "decision_label", "decided_at"]
 
 
 class AttachmentSerializer(serializers.ModelSerializer):
