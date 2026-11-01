@@ -1,0 +1,35 @@
+{% load static %}
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <title>自分の依頼</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+  </head>
+  <body>
+    <header class="site-header">
+      <strong>依頼・承認アプリ</strong>
+      <nav><span>{{ user.get_full_name|default:user.username }} さん</span></nav>
+    </header>
+    <main>
+      <h1>自分の依頼</h1>
+      <table>
+        <thead>
+          <tr><th>番号</th><th>件名</th><th>希望の納期</th><th>状態</th></tr>
+        </thead>
+        <tbody>
+          {% for r in items %}
+            <tr>
+              <td>{{ r.id }}</td>
+              <td>{{ r.title }}</td>
+              <td>{{ r.due_date|date:"Y-m-d" }}</td>
+              <td><span class="badge badge-{{ r.status }}">{{ r.get_status_display }}</span></td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="4">依頼はまだありません</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </main>
+  </body>
+</html>

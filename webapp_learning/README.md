@@ -11,7 +11,7 @@
 | 02 | [TypeScript の基礎](02_TypeScriptの基礎_型で間違いを防ぐ.md) | 型・関数・状態のユニオン型・配列の道具・図面の JSON・fetch と async/await・型のエラーの読み方 | できた |
 | 03 | [React の基礎](03_Reactの基礎_画面を部品で作る.md) | 部品・props と state・描き直し・読み込み・入力フォームと確かめ・図面の画面（操作して撮った画面の写し付き） | できた |
 | 04 | [Python の基礎](04_Pythonの基礎_Djangoの前に知っておくこと.md) | 書き方・状態の Enum と dataclass・例外・CSV の取り込みと文字コード・日本時間（tzdata）・推測できない URL の文字列 | できた |
-| 05 | Django の基礎 | モデル・マイグレーション・管理画面・API | 作成中 |
+| 05 | [Django の基礎](05_Djangoの基礎_モデル・管理画面・API.md) | 仕組み・モデルとマイグレーション・管理画面・ORM・テンプレートとログイン・DRF の API・テスト（本物の画面の写し付き） | できた |
 | 06 | Django＋React で練習アプリを作る | 状態遷移・承認の URL・添付・図面・CSV・毎朝の通知 | 作成中 |
 | 07 | Rust と Topcoat の基礎 | Rust と Topcoat の要点 | 作成中 |
 | 08 | Topcoat で練習アプリを作る | 同じアプリを Rust＋Topcoat で | 作成中 |
