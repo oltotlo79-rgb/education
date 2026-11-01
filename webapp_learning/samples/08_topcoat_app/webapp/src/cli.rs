@@ -6,6 +6,7 @@
 //! webapp.exe grant-role --employee-no 090001 --role admin   役割を変える（member・worker・admin）
 //! webapp.exe set-password --employee-no 012345  パスワードを決める（標準入力から 1 行読む）
 //! webapp.exe send-daily-reminders               毎朝の通知を、今すぐ 1 回動かす
+//! webapp.exe send-test-mail --to 自分のアドレス   テストのメールを 1 通送る（メールの道を確かめる。09）
 //! webapp.exe seed-demo                          練習用の社員を作る（開発のパソコンだけ）
 //! ```
 
@@ -24,7 +25,7 @@ use crate::{
     workflow,
 };
 
-const USAGE: &str = "使い方: webapp [serve | import-employees <CSV> [--dry-run] | grant-role --employee-no <番号> --role <member|worker|admin> | set-password --employee-no <番号> | send-daily-reminders | seed-demo]";
+const USAGE: &str = "使い方: webapp [serve | import-employees <CSV> [--dry-run] | grant-role --employee-no <番号> --role <member|worker|admin> | set-password --employee-no <番号> | send-daily-reminders | send-test-mail --to <アドレス> | seed-demo]";
 
 pub async fn run(args: Vec<String>) -> anyhow::Result<()> {
     // 開発のパソコンでは、.env のファイルから環境変数を読む（サーバーには .env を置かず、サービスの XML に書く）
@@ -52,6 +53,7 @@ pub async fn run(args: Vec<String>) -> anyhow::Result<()> {
             println!("送り直した承認のお願い: {} 件 / 納期が近い依頼: {} 件", r.resent, r.due_soon);
             Ok(())
         }
+        "send-test-mail" => send_test_mail(config, rest).await,
         "seed-demo" => seed_demo(config).await,
         "help" | "--help" | "-h" => {
             println!("{USAGE}");
@@ -115,6 +117,39 @@ async fn import_employees(config: Config, args: &[String]) -> anyhow::Result<()>
     Ok(())
 }
 
+/// テストのメールを 1 通送る。データベースは使わないので、つながなくても動く
+async fn send_test_mail(config: Config, args: &[String]) -> anyhow::Result<()> {
+    let to = option(args, "--to")?;
+    let where_to = match &config.mail {
+        crate::config::MailSettings::File(dir) => format!("ファイル（{}）", dir.display()),
+        crate::config::MailSettings::Smtp { host, port, starttls } => {
+            format!("{host}:{port}（STARTTLS: {}）", if *starttls { "使う" } else { "使わない" })
+        }
+    };
+    let now = time::OffsetDateTime::now_utc().to_offset(crate::models::JST);
+    let body = format!(
+        "依頼・承認アプリからの、送信テストです。\n\n送った時刻: {}\nAPP_ENV: {:?}\n渡した先: {where_to}\n",
+        crate::models::fmt_datetime(now),
+        config.app_env
+    );
+    // connect_lazy は、本当に使うまでデータベースにつながない
+    let pool = sqlx::PgPool::connect_lazy(&config.database_url)?;
+    let state = AppState { pool, config: Arc::new(config) };
+    let cx = Cx::new(background_context(&state)?);
+    if let Err(e) = crate::mail::send_now(&cx, crate::mail::Outgoing::new(&to, "送信テスト", body)).await {
+        // 原因の連なり（「つなげない」←「証明書を確かめられない」など）を、全部書き出す
+        let mut message = e.to_string();
+        let mut source = e.source();
+        while let Some(s) = source {
+            message.push_str(&format!("\n  原因: {s}"));
+            source = s.source();
+        }
+        bail!("送れませんでした（渡した先: {where_to}）: {message}");
+    }
+    println!("渡しました（宛先: {to}・渡した先: {where_to}）。届いたかを、受け取る側で確かめてください。");
+    Ok(())
+}
+
 async fn set_password(config: Config, args: &[String]) -> anyhow::Result<()> {
     let no = option(args, "--employee-no")?;
     eprintln!("{no} の新しいパスワードを入れて、Enter を押してください（12 文字以上）:");
@@ -154,8 +189,10 @@ async fn seed_demo(config: Config) -> anyhow::Result<()> {
         bail!("APP_ENV が development のとき（開発のパソコン）だけ使えます。");
     }
     let state = open(config).await?;
-    let hash = auth::hash_password(DEMO_PASSWORD.to_string()).await;
     for (no, name, dept, title, role) in DEMO_PEOPLE {
+        // ハッシュは 1 人ずつ作る。塩（salt）が毎回違うので、同じパスワードでも、ハッシュは人ごとに違う
+        // （1 回作って使い回すと、全員のハッシュが同じになり、「同じパスワードの人」が見えてしまう）
+        let hash = auth::hash_password(DEMO_PASSWORD.to_string()).await;
         sqlx::query(
             "INSERT INTO employees (employee_no, name, dept, job_title, email, role, password_hash)
              VALUES ($1, $2, $3, $4, $5, $6, $7)

@@ -24,8 +24,13 @@ pub fn mail_config(settings: &MailSettings) -> Result<MailConfig, topcoat::mail:
     let builder = match settings {
         // 開発のパソコン: 送らずに、フォルダに .eml のファイルとして書く（メールソフトで開ける）
         MailSettings::File(dir) => builder.transport(FileTransport::new(dir)),
-        // サーバー: M365 の SMTP リレーへ。STARTTLS で暗号化してから渡す（ポートは 25）
-        MailSettings::Smtp { host, port } => builder.transport(SmtpTransport::starttls(host)?.port(*port).build()),
+        // サーバー: M365 の SMTP リレーへ。STARTTLS で暗号化してから渡す（ポートは 25）。
+        // 相手が STARTTLS を使えなければ、送らずにエラーにする（暗号化しないまま送らない）
+        MailSettings::Smtp { host, port, starttls: true } => {
+            builder.transport(SmtpTransport::starttls(host)?.port(*port).build())
+        }
+        // 開発のパソコンだけ: 練習用の SMTP サーバー（09 の smtp_sink.py）へ、暗号化せずに渡す
+        MailSettings::Smtp { host, port, starttls: false } => builder.transport(SmtpTransport::unencrypted(host).port(*port).build()),
     };
     Ok(builder.build())
 }
@@ -36,6 +41,13 @@ pub struct Outgoing {
     pub to: String,
     pub subject: String,
     pub body: String,
+}
+
+impl Outgoing {
+    /// 件名の頭に【依頼・承認】を付けて作る
+    pub fn new(to: &str, subject: &str, body: String) -> Outgoing {
+        Outgoing { to: to.to_string(), subject: format!("{SUBJECT_PREFIX}{subject}"), body }
+    }
 }
 
 /// 送る物の箱。処理の途中で入れておき、保存が確定してから、まとめて送る
@@ -50,7 +62,7 @@ impl Outbox {
     }
 
     pub fn add(&mut self, to: &str, subject: &str, body: String) {
-        self.items.push(Outgoing { to: to.to_string(), subject: format!("{SUBJECT_PREFIX}{subject}"), body });
+        self.items.push(Outgoing::new(to, subject, body));
     }
 
     pub fn items(&self) -> &[Outgoing] {
@@ -62,14 +74,20 @@ impl Outbox {
     /// 保存はもう確定しているので、ここでエラーを返して画面をエラーにはしない。
     /// 届かなかった承認のお願いは、管理者の「送り直す」か、毎朝の処理で送り直せる。
     pub async fn send_all(self, cx: &Cx) {
-        let config = &state(cx).config;
         for item in self.items {
-            let item = redirect(config, item);
-            if let Err(e) = send_one(cx, &config.mail_from, &item).await {
-                eprintln!("メールを送れませんでした（宛先: {}・件名: {}）: {e}", item.to, item.subject);
+            let (to, subject) = (item.to.clone(), item.subject.clone());
+            if let Err(e) = send_now(cx, item).await {
+                eprintln!("メールを送れませんでした（宛先: {to}・件名: {subject}）: {e}");
             }
         }
     }
+}
+
+/// 1 通を、今すぐ送る（検証のサーバーなら宛先を差し替えてから）。失敗したらエラーを返す
+pub async fn send_now(cx: &Cx, item: Outgoing) -> topcoat::Result<()> {
+    let config = &state(cx).config;
+    let item = redirect(config, item);
+    send_one(cx, &config.mail_from, &item).await
 }
 
 /// 検証のサーバーでは、宛先を差し替える。本来の宛先は本文の先頭に書く
