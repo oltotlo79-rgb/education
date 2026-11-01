@@ -49,63 +49,15 @@
 
 ### 1.1 できあがりの形
 
-<div style="max-width: 720px; margin: 18px auto; text-align: center;">
-<svg viewBox="0 0 720 470" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
-<defs>
-<marker id="ar-op-101" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
-</defs>
-<rect x="16" y="30" width="130" height="120" rx="8" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>
-<text x="81" y="56" font-size="12" font-weight="700" fill="#0f172a" text-anchor="middle">社員のパソコン</text>
-<text x="81" y="80" font-size="11" fill="#0f172a" text-anchor="middle">http://webapp.</text>
-<text x="81" y="96" font-size="11" fill="#0f172a" text-anchor="middle">example.local/</text>
-<text x="81" y="120" font-size="11" fill="#475569" text-anchor="middle">検証は</text>
-<text x="81" y="136" font-size="11" fill="#475569" text-anchor="middle">webapp-stg.…</text>
-<line x1="148" y1="90" x2="196" y2="90" stroke="#475569" stroke-width="1.8" marker-end="url(#ar-op-101)"/>
-<text x="172" y="80" font-size="11" fill="#475569" text-anchor="middle">80</text>
-<rect x="200" y="14" width="504" height="390" rx="10" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.5"/>
-<text x="452" y="36" font-size="12" font-weight="700" fill="#0f172a" text-anchor="middle">仮想マシン（Windows Server・例 10.20.30.40）</text>
-<rect x="216" y="50" width="150" height="94" rx="6" fill="#ffffff" stroke="#0284c7"/>
-<text x="291" y="72" font-size="12" font-weight="700" fill="#0f172a" text-anchor="middle">IIS（受付）</text>
-<text x="291" y="92" font-size="11" fill="#475569" text-anchor="middle">HTTP・80 番</text>
-<text x="291" y="110" font-size="11" fill="#475569" text-anchor="middle">名前（Host）で振り分け</text>
-<text x="291" y="128" font-size="11" fill="#475569" text-anchor="middle">URL Rewrite＋ARR</text>
-<rect x="400" y="50" width="140" height="62" rx="6" fill="#ffffff" stroke="#0284c7"/>
-<text x="470" y="72" font-size="12" font-weight="700" fill="#0f172a" text-anchor="middle">本番 webapp.exe</text>
-<text x="470" y="94" font-size="11" fill="#475569" text-anchor="middle">127.0.0.1:8080</text>
-<rect x="400" y="122" width="140" height="62" rx="6" fill="#ffffff" stroke="#0284c7"/>
-<text x="470" y="144" font-size="12" font-weight="700" fill="#0f172a" text-anchor="middle">検証 webapp.exe</text>
-<text x="470" y="166" font-size="11" fill="#475569" text-anchor="middle">127.0.0.1:8081</text>
-<line x1="368" y1="80" x2="396" y2="80" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-op-101)"/>
-<line x1="368" y1="120" x2="396" y2="150" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-op-101)"/>
-<text x="560" y="72" font-size="10" fill="#0369a1">Windows サービス</text>
-<text x="560" y="86" font-size="10" fill="#0369a1">（WinSW で包む）</text>
-<rect x="216" y="210" width="190" height="86" rx="6" fill="#ffffff" stroke="#0284c7"/>
-<text x="311" y="232" font-size="12" font-weight="700" fill="#0f172a" text-anchor="middle">PostgreSQL 18</text>
-<text x="311" y="252" font-size="11" fill="#475569" text-anchor="middle">127.0.0.1:5432 だけ</text>
-<text x="311" y="270" font-size="11" fill="#475569" text-anchor="middle">webapp_prod / webapp_stg</text>
-<text x="311" y="286" font-size="10" fill="#475569" text-anchor="middle">D:\pgsql\18\data</text>
-<rect x="430" y="210" width="150" height="86" rx="6" fill="#ffffff" stroke="#0284c7"/>
-<text x="505" y="232" font-size="12" font-weight="700" fill="#0f172a" text-anchor="middle">ファイル保存</text>
-<text x="505" y="252" font-size="11" fill="#475569" text-anchor="middle">D:\webapp\prod\files</text>
-<text x="505" y="270" font-size="11" fill="#475569" text-anchor="middle">D:\webapp\stg\files</text>
-<text x="505" y="286" font-size="10" fill="#475569" text-anchor="middle">JPG・PNG・PDF</text>
-<line x1="450" y1="186" x2="350" y2="208" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-op-101)"/>
-<line x1="490" y1="186" x2="500" y2="208" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-op-101)"/>
-<rect x="216" y="316" width="364" height="74" rx="6" fill="#ffffff" stroke="#0284c7"/>
-<text x="398" y="338" font-size="12" font-weight="700" fill="#0f172a" text-anchor="middle">タスク スケジューラ（毎晩 2:00）</text>
-<text x="398" y="358" font-size="11" fill="#475569" text-anchor="middle">pg_dump ＋ robocopy → D:\webapp\backup（14 日分）</text>
-<text x="398" y="376" font-size="11" fill="#475569" text-anchor="middle">→ 別の場所（会社のファイルサーバーなど）へも写す</text>
-<rect x="600" y="210" width="96" height="86" rx="6" fill="#fef3c7" stroke="#d97706"/>
-<text x="648" y="232" font-size="11" font-weight="700" fill="#0f172a" text-anchor="middle">Microsoft</text>
-<text x="648" y="248" font-size="11" font-weight="700" fill="#0f172a" text-anchor="middle">365</text>
-<text x="648" y="268" font-size="10" fill="#b45309" text-anchor="middle">SMTP リレー</text>
-<text x="648" y="284" font-size="10" fill="#b45309" text-anchor="middle">25 番（外向き）</text>
-<line x1="542" y1="100" x2="640" y2="206" stroke="#475569" stroke-width="1.5" marker-end="url(#ar-op-101)"/>
-<text x="16" y="432" font-size="11" fill="#1d4ed8">外から届くのは IIS の 80 番（と、管理者のパソコンからのリモート デスクトップ 3389 番）だけ。</text>
-<text x="16" y="452" font-size="11" fill="#1d4ed8">アプリ（8080・8081）と PostgreSQL（5432）は 127.0.0.1 で待ち受けるので、サーバーの外からはつなげない。</text>
-</svg>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="images/04-01_topology.webp" alt="社員のPCからIIS 80番、本番アプリ8080と検証アプリ8081、PostgreSQL 5432の本番DBと検証DB。添付ファイルと毎晩の控え" style="width: 100%;">
 <div style="font-size: 12px; color: #64748b; margin-top: 6px;">図1-1: この資料で建てる形。1台の仮想マシンに、本番と検証を同居させる（フォルダ・ポート・データベース・名前を分ける）</div>
 </div>
+
+- 外から届くのは、IIS の **80 番**（と、管理者のパソコンからのリモート デスクトップの **3389 番**）だけ。
+- アプリ（8080・8081）と PostgreSQL（5432）は **127.0.0.1** で待ち受けるので、サーバーの外からはつなげない。
+- 添付ファイルは `D:\webapp\prod\files`（検証は `stg`）、毎晩 2:00 の控えは `D:\webapp\backup` と、別の場所（会社のファイルサーバーなど）に置く。
+- メールは、Microsoft 365 に 25 番で渡す（10 章）。
 
 ### 1.2 本番と検証の分け方
 
@@ -143,6 +95,11 @@
 ## 2. 作業の前に決めること・頼むこと
 
 ### 2.1 情報システム部門に頼むこと
+
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="images/04-02_it_request.webp" alt="チェックリストを情報システム部門に渡す。仮想マシン・固定IPと名前・DNSの登録・関所の通り道・メールのコネクタ" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図2-1: 会社の設備にかかわる所は、早めに頼む</div>
+</div>
 
 インフラの作業のうち、**会社の設備や決まりにかかわる所**は、自分ではできません。早めに頼みます。依頼の文面の例は、**07 付録**の「依頼シート」にまとめます（作成中）。
 
@@ -261,6 +218,11 @@ Set-TimeZone -Id "Tokyo Standard Time"
 ## 4. フォルダとアカウントの準備
 
 ### 4.1 フォルダの設計
+
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="images/04-03_folders.webp" alt="D:\webappの下にprod・stg・releases・backup・tools・secrets。prodの下にapp・service・files・logs・iis。secretsは管理者だけ" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図4-1: フォルダの配置。本番と検証で同じ形にする</div>
+</div>
 
 データとアプリは、**D ドライブ**にまとめます。OS（C ドライブ）と分けておくと、ディスクの拡張や、OS の入れ直しがしやすくなります。
 
@@ -548,6 +510,11 @@ psql -h 127.0.0.1 -U webapp_stg_app  -d webapp_prod -c "SELECT 1;"
 
 ## 6. アプリを作る（開発用のパソコン）と持ち込む
 
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="images/04-04_build_bring.webp" alt="cargo buildで作り、webapp-1.0.0.zipにまとめ、指紋を控えて、サーバーに持ち込む" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図6-1: 開発用のパソコンで作り、まとめ、指紋（ハッシュ値）を控えて持ち込む</div>
+</div>
+
 ### 6.1 本番用の実行ファイルを作る
 
 開発用のパソコンの、アプリのフォルダで打ちます。
@@ -611,6 +578,11 @@ Get-FileHash "dist\webapp-$ver.zip" -Algorithm SHA256
 > **用語:** zip（ジップ：たくさんのファイルを1つにまとめて、小さくしたファイル）
 
 ### 6.4 HTTP で動かすための、アプリの設定（セッションのクッキー）
+
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="images/04-06_secure_cookie.webp" alt="Secure付きのクッキーはHTTPでは受け取られずログインが続かない。Secureなしなら受け取られる" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図6-2: HTTP では、Secure の付いたクッキーは受け取られない</div>
+</div>
 
 **これをしないと、HTTP ではログインが続きません。** アプリを作るときに、先に入れておきます。
 
@@ -721,6 +693,11 @@ impl TokenStore for HttpCookieTokenStore {
 ## 7. アプリを Windows サービスにする
 
 ### 7.1 なぜ WinSW を使うのか
+
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="images/04-05_winsw.webp" alt="WinSWがXMLの設定を読み、webapp.exeを包んで動かし、ログを書き、止まったら再起動する" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図7-1: WinSW は、ふつうの実行ファイルを包んで Windows サービスにする</div>
+</div>
 
 Windows サービスは、OS と決まった言葉でやり取りできるプログラムでないとなれません。ふつうの実行ファイルを、そのまま `sc.exe create` でサービスに登録すると、起動のときに「エラー 1053：サービスが時間内に応答しませんでした」で止まります。
 
@@ -975,6 +952,11 @@ IIS は、そのままではリバースプロキシになれません。Microso
 
 ### 8.3 ARR の取り次ぎを有効にし、Host をそのまま渡す
 
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="images/04-07_preserve_host.webp" alt="名前をそのまま渡すとアプリに届く。127.0.0.1:8080に書きかえると403で断られる" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図8-1: IIS が名前（Host）を書きかえると、アプリに断られる</div>
+</div>
+
 ARR は、入れただけでは取り次ぎをしません。サーバー全体の設定で、有効にします。あわせて、**Host ヘッダー（どの名前で来たか）をそのままアプリに渡す**設定にします。**HTTP で動かすときは、この設定が必須**です（下の説明）。
 
 ```powershell
@@ -1115,6 +1097,11 @@ Test-NetConnection webapp-stg.example.local -Port 80
 
 ## 9. ファイアウォール
 
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="images/04-09_firewall_rules.webp" alt="社内からの80番、管理者のPCからの3389番、Microsoft 365への25番だけを通し、それ以外は止める" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図9-1: サーバーの関所で通す通信は 3 つだけ</div>
+</div>
+
 社内からの HTTP（80 番）だけを受け付け、外向きは Microsoft 365 へのメール送信（25 番）だけを通すようにします。関所は2か所あります（00 基礎知識 4.3）。
 
 | 関所 | 誰が設定するか | この章ですること |
@@ -1235,6 +1222,11 @@ Send-MailMessage -SmtpServer example-com.mail.protection.outlook.com -Port 25 -U
 ## 11. 毎晩のバックアップ
 
 ### 11.1 何を、どこに、どれだけ残すか
+
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="images/04-10_backup_script.webp" alt="毎晩2:00にpg_dumpでDBの控え、robocopyでファイルの控えを取り、別の場所へ写し、古い控えは消す" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図11-1: 毎晩のバックアップの流れ</div>
+</div>
 
 | 何を | どうやって | どこに | どれだけ |
 |---|---|---|---|
@@ -1472,6 +1464,11 @@ Register-ScheduledTask -TaskPath "\webapp\" -TaskName "iis-log-cleanup" -Action 
 3. 本番の URL（`http://webapp.example.local/`）を、社員に案内します。ほかのサービスと同じパスワードを使い回さないことも、あわせて案内します（00 基礎知識 6.2）。
 
 ### 13.3 更新の手順（2 回目以降）
+
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="images/04-08_update_rollback.webp" alt="止める、入れ替える、表を直す、始める、確かめる。だめなら前の版に切り戻す" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図13-1: 更新の 4 つの手順と、切り戻し</div>
+</div>
 
 更新は、①検証で確かめる、②本番を止めてバックアップを取る、③入れ替える、④再開して確かめる、の 4 段で行います。例は、版 1.0.0 から 1.1.0 への更新です。
 
