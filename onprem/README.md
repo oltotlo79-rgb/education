@@ -10,7 +10,7 @@
 | 2 | [01 Windows Server の使い方](01_WindowsServerの使い方_ログイン・PowerShell・管理の道具.md) | リモート デスクトップでのログイン、PowerShell、アカウントと許可、サービス、イベント ビューアー、タスク スケジューラ、ファイアウォール | できた |
 | 3 | [02 SQL と PostgreSQL の使い方](02_SQLとPostgreSQLの使い方.md) | データベースへのログイン、SQL の書き方（PostgreSQL 18 で動かした結果付き）、ユーザーと権限、設定、バックアップ、トラブル | できた |
 | 4 | [03 技術スタックの比較と選定理由](03_技術スタックの比較と選定理由.md) | OS・Web サーバー・データベース・アプリの作り方などの選択肢と、長所・短所、今回の選び方 | できた |
-| 5 | [04 構築手順（Rust＋Topcoat版）](04_構築手順_Rust_Topcoat版.md) | PostgreSQL・アプリの Windows サービス化・IIS（HTTP）・ファイアウォール・メール・バックアップ・更新と切り戻し | できた（図は作成中） |
+| 5 | [04 構築手順（Rust＋Topcoat版）](04_構築手順_Rust_Topcoat版.md) | PostgreSQL・アプリの Windows サービス化・IIS（HTTP）・ファイアウォール・メール・バックアップ・更新と切り戻し | できた |
 | 6 | [05 構築手順（Django＋React版）](05_構築手順_Django_React版.md) | 同じアプリを Django と React で作った場合。React の成果物は Django のプロジェクトの中に置き、Django（WhiteNoise）が同じサーバーで配信する。Python の部品の持ち込み、waitress、HTTP の設定（動かして確認済み） | できた |
 | 7 | 06 トラブルシューティング | 困ったときの調べ方と、よく起きるトラブルの症状・原因・直し方 | 作成中 |
 | 8 | 07 付録 | 情報システム部門への依頼シート、チェック表 | 作成中 |
