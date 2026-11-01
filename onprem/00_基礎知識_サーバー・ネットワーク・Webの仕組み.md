@@ -160,6 +160,7 @@ Get-Content D:\webapp\tools\users.csv -Encoding UTF8 -TotalCount 5
 
 **確かめること:** 日本語の名前が、正しく読めること。化けていたら、ファイルが Shift_JIS で保存されています。
 
+- UTF-8 には、ファイルの先頭に「これは UTF-8 です」という印（**BOM**）を付ける形と、付けない形があります。Windows に最初から入っている PowerShell（5.1）は、**BOM の無い UTF-8 のスクリプトを Shift_JIS だと思って読む**ので、日本語を含むスクリプトは「UTF-8 (BOM 付き)」で保存します（01 Windows Server の使い方 3.7）。
 - 行の終わりの印（**改行コード**）にも、Windows 式（CRLF）と Linux 式（LF）の2つがあります。設定ファイルを Windows の「メモ帳」で書く分には、気にしなくてかまいません。
 
 > **用語:** 文字コード（文字と番号の対応の決まり。UTF-8・Shift_JIS など）

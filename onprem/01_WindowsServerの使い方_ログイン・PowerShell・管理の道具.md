@@ -369,7 +369,18 @@ Unblock-File D:\webapp\tools\some-script.ps1
 
 **確かめること:** `Get-ExecutionPolicy` が `RemoteSigned` であること。「このシステムではスクリプトの実行が無効になっているため…」と出たら、そのファイルがインターネットから取ってきた物で印が付いているか、会社の決まりで実行ポリシーが厳しくなっています。**`Set-ExecutionPolicy` で、サーバー全体の実行ポリシーを `Unrestricted` や `Bypass` に変えて逃げないで**ください。会社の決まりに反することがあります。（04 の 11 章のタスクで `-ExecutionPolicy Bypass` を付けているのは、自分で書いて中身の分かっているスクリプト1つを、そのタスクの中でだけ動かすためで、サーバー全体の決まりは変えません。）
 
+**スクリプトの文字コード（とても大事）:** Windows PowerShell 5.1 は、**BOM（ファイルの先頭の印）の無い UTF-8** のファイルを、Shift_JIS だと思って読みます。日本語のコメントや文字が入ったスクリプトをそのまま保存すると、日本語の所で行の区切りが食われ、**次の行が消えたり、構文エラーで丸ごと動かなかったり**します（試して確かめました）。日本語を含むスクリプトは、メモ帳の「名前を付けて保存」で、エンコードを「**UTF-8 (BOM 付き)**」にして保存します。
+
+```powershell
+# 先頭の 3 つの数が 239 187 191 なら BOM 付き
+(Get-Content D:\webapp\tools\backup.ps1 -Encoding Byte -TotalCount 3) -join ' '
+```
+
 > **用語:** 実行ポリシー（Execution Policy：どのスクリプトを動かしてよいかの PowerShell の決まり）
+
+<!-- -->
+
+> **用語:** BOM（ボム。Byte Order Mark：ファイルの先頭に付ける「これは UTF-8 です」という 3 バイトの印。Windows PowerShell 5.1 は、これが無いと UTF-8 と分からない）
 
 ### 3.8 よくある間違い
 
@@ -381,6 +392,7 @@ Unblock-File D:\webapp\tools\some-script.ps1
 | `sc` と打つ | サービスの道具ではなく、**ファイルに書き込むコマンド**（`Set-Content`）が動く | サービスの道具は、必ず `sc.exe` と打つ |
 | `curl` と打つ | Windows PowerShell 5.1 では、`Invoke-WebRequest` の別名として動き、使い方が違う | `Invoke-WebRequest` を使うか、`curl.exe` と打つ |
 | コマンドプロンプト（`cmd`）の書き方をそのまま使う | `%PATH%` などが効かない | PowerShell では `$env:PATH` |
+| 日本語を含む `.ps1` を、BOM 無しの UTF-8 で保存する | 行が消える・構文エラーで動かない | 「UTF-8 (BOM 付き)」で保存し直す（3.7） |
 
 > **用語:** 別名（エイリアス：コマンドの短い呼び名。`dir`・`ls` は `Get-ChildItem` の別名。`sc` は `Set-Content` の別名なので注意）
 
