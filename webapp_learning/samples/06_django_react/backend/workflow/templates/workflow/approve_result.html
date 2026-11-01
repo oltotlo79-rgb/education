@@ -1,0 +1,7 @@
+{% extends "workflow/base.html" %}
+{% block title %}お知らせ{% endblock %}
+{% block main %}
+  <h1>{% if ok %}受け付けました{% else %}お知らせ{% endif %}</h1>
+  <p class="{% if ok %}message{% else %}errors{% endif %}">{{ message }}</p>
+  <p class="hint">この画面は閉じてかまいません。</p>
+{% endblock %}

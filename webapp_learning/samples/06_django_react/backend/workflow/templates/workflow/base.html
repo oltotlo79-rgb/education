@@ -1,0 +1,14 @@
+{% load static %}
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{% endblock %} - 依頼・承認アプリ</title>
+    <link rel="stylesheet" href="{% static 'workflow/style.css' %}">
+  </head>
+  <body>
+    <header class="site-header"><strong>依頼・承認アプリ</strong></header>
+    <main>{% block main %}{% endblock %}</main>
+  </body>
+</html>

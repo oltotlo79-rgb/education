@@ -1,0 +1,13 @@
+{{ step.approver.name }} さん
+
+次の依頼の、承認をお願いします。（回覧者{{ step.order }}）
+
+件名: {{ r.title }}
+依頼者: {{ r.requester.name }}（{{ r.requester.dept }}）
+希望の納期: {{ r.due_date|date:"Y-m-d" }}
+
+下の URL を開いて、「承認」か「差し戻し」を選んでください。
+{{ url }}
+
+・この URL は、あなただけのものです。ほかの人に転送しないでください。
+・この URL は 1 回だけ使えます。{{ days }} 日で使えなくなります。

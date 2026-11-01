@@ -1,0 +1,7 @@
+新しい依頼が届きました。
+
+件名: {{ r.title }}
+依頼者: {{ r.requester.name }}（{{ r.requester.dept }}）
+希望の納期: {{ r.due_date|date:"Y-m-d" }}
+
+アプリの「依頼の一覧」から、担当を決めてください。

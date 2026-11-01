@@ -1,0 +1,29 @@
+{% extends "workflow/base.html" %}
+{% block title %}承認 - {{ r.title }}{% endblock %}
+{% block main %}
+  <h1>承認のお願い（回覧者{{ step.order }}）</h1>
+  <p class="hint">{{ step.approver.name }} さん、内容を確かめて、「承認」か「差し戻し」を選んでください。</p>
+  <table class="kv">
+    <tr><th>件名</th><td>{{ r.title }}</td></tr>
+    <tr><th>依頼者</th><td>{{ r.requester.name }}（{{ r.requester.dept }}）</td></tr>
+    <tr><th>希望の納期</th><td>{{ r.due_date|date:"Y-m-d" }}</td></tr>
+    <tr><th>内容</th><td>{{ r.detail|linebreaksbr }}</td></tr>
+    <tr><th>添付</th><td>{% for a in attachments %}{{ a.original_name }}{% if not forloop.last %}、{% endif %}{% empty %}なし{% endfor %}</td></tr>
+    {% if r.return_comments %}<tr><th>前の差し戻し</th><td>{{ r.return_comments|linebreaksbr }}</td></tr>{% endif %}
+  </table>
+  {% if r.drawing %}
+    <h2>図面</h2>
+    <svg class="pad" viewBox="0 0 {{ r.drawing.widthMm }} {{ r.drawing.heightMm }}">
+      {% for s in r.drawing.shapes %}{% if s.kind == "rect" %}<rect x="{{ s.x }}" y="{{ s.y }}" width="{{ s.width }}" height="{{ s.height }}" />{% endif %}{% endfor %}
+    </svg>
+  {% endif %}
+  <form method="post" class="decide">
+    {% csrf_token %}
+    <label for="comment">差し戻すときの理由</label>
+    <textarea id="comment" name="comment" rows="3" placeholder="例: 寸法を追記してください"></textarea>
+    <div class="actions">
+      <button type="submit" name="decision" value="return" class="btn-secondary">差し戻し</button>
+      <button type="submit" name="decision" value="approve" class="btn-primary">承認</button>
+    </div>
+  </form>
+{% endblock %}

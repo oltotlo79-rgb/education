@@ -1,0 +1,2 @@
+依頼「{{ r.title }}」の希望の納期は {{ r.due_date|date:"Y-m-d" }} です。
+今の状態: {{ r.get_status_display }}{% if r.assignee %}（担当: {{ r.assignee.name }}）{% endif %}

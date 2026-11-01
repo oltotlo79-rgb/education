@@ -1,0 +1,6 @@
+Django==5.2.18
+djangorestframework==3.18.3
+psycopg[binary]==3.3.6
+whitenoise==6.12.0
+waitress==3.0.2
+tzdata==2026.6
