@@ -713,7 +713,7 @@ SQL の書き方と、データベースへのログインの仕方は、**02 SQ
 
 | | PostgreSQL（この資料） | SQL Server |
 |---|---|---|
-| 費用 | 無料 | Express 版は無料（1つのデータベースが 10GB までなどの制限）。それ以上は有料のライセンス |
+| 費用 | 無料 | Express 版は無料（1つのデータベースが 50GB まで（2025 の版。2022 までは 10GB）、CPU は 4 コアまで、などの制限）。それ以上は有料のライセンス |
 | 管理の道具 | psql・pgAdmin | SQL Server Management Studio（SSMS） |
 | バックアップ | `pg_dump`・`pg_restore` | `BACKUP DATABASE`・`RESTORE DATABASE`（SSMS からも） |
 | アプリの部品 | Rust: sqlx・tokio-postgres など／Django: 標準で対応 | Rust: tiberius など／Django: mssql-django（Microsoft が出している部品） |
