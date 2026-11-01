@@ -180,6 +180,7 @@ bundled assets into C:\…\08_topcoat_app\webapp\target\debug\assets
 //! | `DATABASE_URL` | PostgreSQL の接続先 | （必ず要る） |
 //! | `FILE_DIR` | 添付ファイルを置くフォルダ | ./files |
 //! | `SMTP_HOST` / `SMTP_PORT` | メールの中継先（M365 の SMTP リレー）と、ポート | 無ければ ./sent_mail にファイルで書く |
+//! | `SMTP_USE_TLS` | STARTTLS で暗号化するか（false は開発のパソコンだけ。09 の練習用の SMTP サーバー向け） | true |
 //! | `MAIL_FROM` | 送り主のアドレス | noreply@example.com |
 //! | `MAIL_REDIRECT_TO` | （検証だけ）全部のメールを、この宛先に送る | 無し |
 //!
@@ -200,8 +201,8 @@ pub enum AppEnv {
 pub enum MailSettings {
     /// 開発のパソコン: 送らずに、.eml のファイルとしてフォルダに書く
     File(PathBuf),
-    /// サーバー: SMTP リレーに渡す（STARTTLS で暗号化してから渡す）
-    Smtp { host: String, port: u16 },
+    /// サーバー: SMTP リレーに渡す（starttls が true なら、STARTTLS で暗号化してから渡す）
+    Smtp { host: String, port: u16, starttls: bool },
 }
 
 #[derive(Debug, Clone)]
@@ -260,7 +261,16 @@ impl Config {
             Some(host) => {
                 let port = var("SMTP_PORT").unwrap_or_else(|| "25".into());
                 let port = port.parse().map_err(|_| ConfigError(format!("SMTP_PORT が数ではありません（今: {port}）")))?;
-                MailSettings::Smtp { host, port }
+                let starttls = match var("SMTP_USE_TLS").as_deref() {
+                    None | Some("true") => true,
+                    Some("false") => false,
+                    Some(other) => return Err(ConfigError(format!("SMTP_USE_TLS は true か false です（今: {other}）"))),
+                };
+                // 暗号化しないで送るのは、開発のパソコンの中の練習だけ（会社のネットワークに平文で流さない）
+                if !starttls && !dev {
+                    return Err(ConfigError("SMTP_USE_TLS=false は、APP_ENV=development のときだけ使えます".into()));
+                }
+                MailSettings::Smtp { host, port, starttls }
             }
             None if dev => MailSettings::File(PathBuf::from("sent_mail")),
             None => return Err(ConfigError("SMTP_HOST がありません".into())),
@@ -294,6 +304,7 @@ impl Config {
 | `DATABASE_URL` | 自分のパソコンの PostgreSQL | サーバーの中の PostgreSQL |
 | `FILE_DIR` | files | D:\webapp\prod\files など |
 | `SMTP_HOST`・`SMTP_PORT` | 書かない（ファイルに書く） | M365 の SMTP リレー・25 |
+| `SMTP_USE_TLS` | 書かない（09 の練習用の SMTP サーバーに送るときだけ false） | 書かない（true。STARTTLS で暗号化） |
 | `MAIL_FROM` | noreply@example.com | 会社で決めた送り主 |
 | `MAIL_REDIRECT_TO` | 書かない | 検証だけ書く |
 
@@ -1458,8 +1469,13 @@ pub fn mail_config(settings: &MailSettings) -> Result<MailConfig, topcoat::mail:
     let builder = match settings {
         // 開発のパソコン: 送らずに、フォルダに .eml のファイルとして書く（メールソフトで開ける）
         MailSettings::File(dir) => builder.transport(FileTransport::new(dir)),
-        // サーバー: M365 の SMTP リレーへ。STARTTLS で暗号化してから渡す（ポートは 25）
-        MailSettings::Smtp { host, port } => builder.transport(SmtpTransport::starttls(host)?.port(*port).build()),
+        // サーバー: M365 の SMTP リレーへ。STARTTLS で暗号化してから渡す（ポートは 25）。
+        // 相手が STARTTLS を使えなければ、送らずにエラーにする（暗号化しないまま送らない）
+        MailSettings::Smtp { host, port, starttls: true } => {
+            builder.transport(SmtpTransport::starttls(host)?.port(*port).build())
+        }
+        // 開発のパソコンだけ: 練習用の SMTP サーバー（09 の smtp_sink.py）へ、暗号化せずに渡す
+        MailSettings::Smtp { host, port, starttls: false } => builder.transport(SmtpTransport::unencrypted(host).port(*port).build()),
     };
     Ok(builder.build())
 }
@@ -1470,6 +1486,13 @@ pub struct Outgoing {
     pub to: String,
     pub subject: String,
     pub body: String,
+}
+
+impl Outgoing {
+    /// 件名の頭に【依頼・承認】を付けて作る
+    pub fn new(to: &str, subject: &str, body: String) -> Outgoing {
+        Outgoing { to: to.to_string(), subject: format!("{SUBJECT_PREFIX}{subject}"), body }
+    }
 }
 
 /// 送る物の箱。処理の途中で入れておき、保存が確定してから、まとめて送る
@@ -1484,7 +1507,7 @@ impl Outbox {
     }
 
     pub fn add(&mut self, to: &str, subject: &str, body: String) {
-        self.items.push(Outgoing { to: to.to_string(), subject: format!("{SUBJECT_PREFIX}{subject}"), body });
+        self.items.push(Outgoing::new(to, subject, body));
     }
 
     pub fn items(&self) -> &[Outgoing] {
@@ -1496,14 +1519,20 @@ impl Outbox {
     /// 保存はもう確定しているので、ここでエラーを返して画面をエラーにはしない。
     /// 届かなかった承認のお願いは、管理者の「送り直す」か、毎朝の処理で送り直せる。
     pub async fn send_all(self, cx: &Cx) {
-        let config = &state(cx).config;
         for item in self.items {
-            let item = redirect(config, item);
-            if let Err(e) = send_one(cx, &config.mail_from, &item).await {
-                eprintln!("メールを送れませんでした（宛先: {}・件名: {}）: {e}", item.to, item.subject);
+            let (to, subject) = (item.to.clone(), item.subject.clone());
+            if let Err(e) = send_now(cx, item).await {
+                eprintln!("メールを送れませんでした（宛先: {to}・件名: {subject}）: {e}");
             }
         }
     }
+}
+
+/// 1 通を、今すぐ送る（検証のサーバーなら宛先を差し替えてから）。失敗したらエラーを返す
+pub async fn send_now(cx: &Cx, item: Outgoing) -> topcoat::Result<()> {
+    let config = &state(cx).config;
+    let item = redirect(config, item);
+    send_one(cx, &config.mail_from, &item).await
 }
 
 /// 検証のサーバーでは、宛先を差し替える。本来の宛先は本文の先頭に書く
@@ -1787,6 +1816,7 @@ async fn approve_file(cx: &Cx) -> Result<Response> {
 //! webapp.exe grant-role --employee-no 090001 --role admin   役割を変える（member・worker・admin）
 //! webapp.exe set-password --employee-no 012345  パスワードを決める（標準入力から 1 行読む）
 //! webapp.exe send-daily-reminders               毎朝の通知を、今すぐ 1 回動かす
+//! webapp.exe send-test-mail --to 自分のアドレス   テストのメールを 1 通送る（メールの道を確かめる。09）
 //! webapp.exe seed-demo                          練習用の社員を作る（開発のパソコンだけ）
 //! ```
 
@@ -1805,7 +1835,7 @@ use crate::{
     workflow,
 };
 
-const USAGE: &str = "使い方: webapp [serve | import-employees <CSV> [--dry-run] | grant-role --employee-no <番号> --role <member|worker|admin> | set-password --employee-no <番号> | send-daily-reminders | seed-demo]";
+const USAGE: &str = "使い方: webapp [serve | import-employees <CSV> [--dry-run] | grant-role --employee-no <番号> --role <member|worker|admin> | set-password --employee-no <番号> | send-daily-reminders | send-test-mail --to <アドレス> | seed-demo]";
 
 pub async fn run(args: Vec<String>) -> anyhow::Result<()> {
     // 開発のパソコンでは、.env のファイルから環境変数を読む（サーバーには .env を置かず、サービスの XML に書く）
@@ -1833,6 +1863,7 @@ pub async fn run(args: Vec<String>) -> anyhow::Result<()> {
             println!("送り直した承認のお願い: {} 件 / 納期が近い依頼: {} 件", r.resent, r.due_soon);
             Ok(())
         }
+        "send-test-mail" => send_test_mail(config, rest).await,
         "seed-demo" => seed_demo(config).await,
         "help" | "--help" | "-h" => {
             println!("{USAGE}");
@@ -1896,6 +1927,39 @@ async fn import_employees(config: Config, args: &[String]) -> anyhow::Result<()>
     Ok(())
 }
 
+/// テストのメールを 1 通送る。データベースは使わないので、つながなくても動く
+async fn send_test_mail(config: Config, args: &[String]) -> anyhow::Result<()> {
+    let to = option(args, "--to")?;
+    let where_to = match &config.mail {
+        crate::config::MailSettings::File(dir) => format!("ファイル（{}）", dir.display()),
+        crate::config::MailSettings::Smtp { host, port, starttls } => {
+            format!("{host}:{port}（STARTTLS: {}）", if *starttls { "使う" } else { "使わない" })
+        }
+    };
+    let now = time::OffsetDateTime::now_utc().to_offset(crate::models::JST);
+    let body = format!(
+        "依頼・承認アプリからの、送信テストです。\n\n送った時刻: {}\nAPP_ENV: {:?}\n渡した先: {where_to}\n",
+        crate::models::fmt_datetime(now),
+        config.app_env
+    );
+    // connect_lazy は、本当に使うまでデータベースにつながない
+    let pool = sqlx::PgPool::connect_lazy(&config.database_url)?;
+    let state = AppState { pool, config: Arc::new(config) };
+    let cx = Cx::new(background_context(&state)?);
+    if let Err(e) = crate::mail::send_now(&cx, crate::mail::Outgoing::new(&to, "送信テスト", body)).await {
+        // 原因の連なり（「つなげない」←「証明書を確かめられない」など）を、全部書き出す
+        let mut message = e.to_string();
+        let mut source = e.source();
+        while let Some(s) = source {
+            message.push_str(&format!("\n  原因: {s}"));
+            source = s.source();
+        }
+        bail!("送れませんでした（渡した先: {where_to}）: {message}");
+    }
+    println!("渡しました（宛先: {to}・渡した先: {where_to}）。届いたかを、受け取る側で確かめてください。");
+    Ok(())
+}
+
 async fn set_password(config: Config, args: &[String]) -> anyhow::Result<()> {
     let no = option(args, "--employee-no")?;
     eprintln!("{no} の新しいパスワードを入れて、Enter を押してください（12 文字以上）:");
@@ -1935,8 +1999,10 @@ async fn seed_demo(config: Config) -> anyhow::Result<()> {
         bail!("APP_ENV が development のとき（開発のパソコン）だけ使えます。");
     }
     let state = open(config).await?;
-    let hash = auth::hash_password(DEMO_PASSWORD.to_string()).await;
     for (no, name, dept, title, role) in DEMO_PEOPLE {
+        // ハッシュは 1 人ずつ作る。塩（salt）が毎回違うので、同じパスワードでも、ハッシュは人ごとに違う
+        // （1 回作って使い回すと、全員のハッシュが同じになり、「同じパスワードの人」が見えてしまう）
+        let hash = auth::hash_password(DEMO_PASSWORD.to_string()).await;
         sqlx::query(
             "INSERT INTO employees (employee_no, name, dept, job_title, email, role, password_hash)
              VALUES ($1, $2, $3, $4, $5, $6, $7)
@@ -1962,6 +2028,7 @@ async fn seed_demo(config: Config) -> anyhow::Result<()> {
 - 06 の `manage.py import_employees` などに当たる物を、**`webapp.exe` のサブコマンド**にしました。サーバーに持ち込む物が増えません。
 - サーバーでは、onprem の 04 の 7.7 のとおり、その窓の中だけ `DATABASE_URL` などを教えてから動かします。
 - `set-password` は、パスワードを**コマンドの引数ではなく、標準入力から**読みます。引数に書くと、PowerShell の履歴に残るからです。
+- `send-test-mail --to 自分のアドレス` は、テストのメールを 1 通送ります（onprem の 04 の 10.3 の「アプリから送る」。使い方は 09 の巻）。
 
 ### 8.2 CSV を読んで確かめる（employees.rs）
 
@@ -2108,7 +2175,7 @@ mod tests {
 
 ```text
 $ webapp.exe help
-使い方: webapp [serve | import-employees <CSV> [--dry-run] | grant-role --employee-no <番号> --role <member|worker|admin> | set-password --employee-no <番号> | send-daily-reminders | seed-demo]
+使い方: webapp [serve | import-employees <CSV> [--dry-run] | grant-role --employee-no <番号> --role <member|worker|admin> | set-password --employee-no <番号> | send-daily-reminders | send-test-mail --to <アドレス> | seed-demo]
 (exit 0)
 $ webapp.exe import-employees sample_data/employees_bad.csv
 × 3 行目: 従業員番号は 6 桁の数字にしてください（"30004"）

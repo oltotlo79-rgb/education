@@ -7,6 +7,7 @@
 //! | `DATABASE_URL` | PostgreSQL の接続先 | （必ず要る） |
 //! | `FILE_DIR` | 添付ファイルを置くフォルダ | ./files |
 //! | `SMTP_HOST` / `SMTP_PORT` | メールの中継先（M365 の SMTP リレー）と、ポート | 無ければ ./sent_mail にファイルで書く |
+//! | `SMTP_USE_TLS` | STARTTLS で暗号化するか（false は開発のパソコンだけ。09 の練習用の SMTP サーバー向け） | true |
 //! | `MAIL_FROM` | 送り主のアドレス | noreply@example.com |
 //! | `MAIL_REDIRECT_TO` | （検証だけ）全部のメールを、この宛先に送る | 無し |
 //!
@@ -27,8 +28,8 @@ pub enum AppEnv {
 pub enum MailSettings {
     /// 開発のパソコン: 送らずに、.eml のファイルとしてフォルダに書く
     File(PathBuf),
-    /// サーバー: SMTP リレーに渡す（STARTTLS で暗号化してから渡す）
-    Smtp { host: String, port: u16 },
+    /// サーバー: SMTP リレーに渡す（starttls が true なら、STARTTLS で暗号化してから渡す）
+    Smtp { host: String, port: u16, starttls: bool },
 }
 
 #[derive(Debug, Clone)]
@@ -87,7 +88,16 @@ impl Config {
             Some(host) => {
                 let port = var("SMTP_PORT").unwrap_or_else(|| "25".into());
                 let port = port.parse().map_err(|_| ConfigError(format!("SMTP_PORT が数ではありません（今: {port}）")))?;
-                MailSettings::Smtp { host, port }
+                let starttls = match var("SMTP_USE_TLS").as_deref() {
+                    None | Some("true") => true,
+                    Some("false") => false,
+                    Some(other) => return Err(ConfigError(format!("SMTP_USE_TLS は true か false です（今: {other}）"))),
+                };
+                // 暗号化しないで送るのは、開発のパソコンの中の練習だけ（会社のネットワークに平文で流さない）
+                if !starttls && !dev {
+                    return Err(ConfigError("SMTP_USE_TLS=false は、APP_ENV=development のときだけ使えます".into()));
+                }
+                MailSettings::Smtp { host, port, starttls }
             }
             None if dev => MailSettings::File(PathBuf::from("sent_mail")),
             None => return Err(ConfigError("SMTP_HOST がありません".into())),
