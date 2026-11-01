@@ -1276,7 +1276,14 @@ icacls D:\webapp\secrets\pgpass.conf
 
 ### 11.3 バックアップのスクリプト
 
-`D:\webapp\tools\backup.ps1` を作ります。
+`D:\webapp\tools\backup.ps1` を、メモ帳で作ります。
+
+> **必ず「UTF-8 (BOM 付き)」で保存します。** メモ帳の「名前を付けて保存」の画面の下の「エンコード」で、「UTF-8 (BOM 付き)」を選びます。Windows PowerShell 5.1 は、BOM（ファイルの先頭の印）の無い UTF-8 のファイルを Shift_JIS として読むため、日本語のコメントの所で行の区切りが食われて、**スクリプトが丸ごと動きません**（このスクリプトを BOM 無しで保存して試すと、構文エラーが 2 つ出て、終了コード 1 で止まりました）。保存したら、次で確かめます。
+>
+> ```powershell
+> # 先頭の 3 つの数が 239 187 191 なら BOM 付き
+> (Get-Content D:\webapp\tools\backup.ps1 -Encoding Byte -TotalCount 3) -join ' '
+> ```
 
 ```powershell
 # D:\webapp\tools\backup.ps1
@@ -1583,6 +1590,7 @@ Start-Service webapp-prod
 | ログイン・保存などのボタンを押すと `403`（本文が forbidden だけ） | Host が書きかえられて、Topcoat の OriginPolicy が止めた | 8.3 の `preserveHostHeader` |
 | ログインしても、次の画面でログインしていない扱いになる | セッションのクッキーに `Secure` が付いていて、HTTP のブラウザが受け取らない | 6.4、ブラウザの開発者ツール（F12）の「アプリケーション → Cookie」 |
 | サービスが起動しない、すぐ止まる | XML の書き間違い、`assets\` が無い、許可が足りない、DB につなげない | `D:\webapp\prod\logs\` の `wrapper.log` と `err.log`、イベント ビューアーの「Windows ログ → システム」 |
+| バックアップのタスクの「前回の実行結果」が `(0x1)` で、`D:\webapp\backup\logs\` に記録も無い | `backup.ps1` を BOM 無しの UTF-8 で保存したため、PowerShell 5.1 が日本語の所で読み違えて、構文エラーで動いていない | 11.3 の「UTF-8 (BOM 付き)」で保存し直す。`powershell -File D:\webapp\tools\backup.ps1` を手で動かすと、構文エラーの文が見える |
 | 「エラー 1053」 | 実行ファイルを WinSW で包まずに、直接サービスにした | 7.1・7.4 |
 | アプリのログに、データベースにつなげないエラー | PostgreSQL が止まっている、パスワードが違う、`pg_hba.conf` | `Get-Service postgresql-x64-18`、5.6 の `psql` |
 | 添付ファイルを保存できない | `files\` に書く許可が無い、ディスクがいっぱい | 7.4 の `icacls`、`Get-Volume` |
