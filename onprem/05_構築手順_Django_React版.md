@@ -693,6 +693,8 @@ WinSW は、04 の 7.2 のとおり持ち込み、`D:\webapp\stg\service\webapp-
   <env name="SMTP_HOST" value="example-com.mail.protection.outlook.com" />
   <env name="SMTP_PORT" value="25" />
   <env name="MAIL_FROM" value="noreply@example.com" />
+  <env name="APP_BASE_URL" value="http://webapp-stg.example.local" />
+  <env name="MAIL_REDIRECT_TO" value="（検証のメールを受け取る、IT 担当者などのアドレス）" />
   <env name="PYTHONUNBUFFERED" value="1" />
 
   <startmode>Automatic</startmode>
@@ -715,6 +717,8 @@ WinSW は、04 の 7.2 のとおり持ち込み、`D:\webapp\stg\service\webapp-
 | `--threads=8` | 同時に処理する数。社内の数十〜数百人なら、8 で足りる |
 | `--trusted-proxy=127.0.0.1 --trusted-proxy-headers=x-forwarded-for` | IIS（127.0.0.1）が付けた「本当の相手の住所」（`X-Forwarded-For`）を信じる。アプリのログに、社員のパソコンの住所が残る |
 | `config.wsgi:application` | Django のアプリの入口 |
+| `APP_BASE_URL` | メールに書く URL の頭（承認の URL など）。社員が開く名前にする |
+| `MAIL_REDIRECT_TO` | **検証だけ**に書く。検証のメールを、全部この宛先に送る（社員に本物の承認のお願いが届かないように。04 の 10.4）。本番の XML には書かない |
 | `PYTHONUNBUFFERED=1` | Python の出力を、ためずにすぐログへ書く（止まる前のログが消えないように） |
 | `DJANGO_SECRET_KEY` | 次のコマンドで作った値を貼る |
 
@@ -723,7 +727,9 @@ WinSW は、04 の 7.2 のとおり持ち込み、`D:\webapp\stg\service\webapp-
 D:\webapp\stg\venv\Scripts\python.exe -c "import secrets; print(secrets.token_urlsafe(50))"
 ```
 
-本番の XML は、`id`・`name`・ポート（`8080`）・`DJANGO_ALLOWED_HOSTS`（`webapp.example.local`）・データベース・フォルダを本番のものにします。
+本番の XML は、`id`・`name`・ポート（`8080`）・`DJANGO_ALLOWED_HOSTS`（`webapp.example.local`）・`APP_BASE_URL`（`http://webapp.example.local`）・データベース・フォルダを本番のものにし、`MAIL_REDIRECT_TO` の行は消します。
+
+> **アプリの作り:** この XML の環境変数の名前は、`webapp_learning/06`（Django＋React で練習アプリを作る）の `config/settings.py` が読む名前と同じです。
 
 ### 9.3 サービスを登録し、許可を付ける
 

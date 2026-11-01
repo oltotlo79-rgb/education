@@ -12,11 +12,16 @@
 | 03 | [React の基礎](03_Reactの基礎_画面を部品で作る.md) | 部品・props と state・描き直し・読み込み・入力フォームと確かめ・図面の画面（操作して撮った画面の写し付き） | できた |
 | 04 | [Python の基礎](04_Pythonの基礎_Djangoの前に知っておくこと.md) | 書き方・状態の Enum と dataclass・例外・CSV の取り込みと文字コード・日本時間（tzdata）・推測できない URL の文字列 | できた |
 | 05 | [Django の基礎](05_Djangoの基礎_モデル・管理画面・API.md) | 仕組み・モデルとマイグレーション・管理画面・ORM・テンプレートとログイン・DRF の API・テスト（本物の画面の写し付き） | できた |
-| 06 | Django＋React で練習アプリを作る | 状態遷移・承認の URL・添付・図面・CSV・毎朝の通知 | 作成中 |
+| 06 | [Django＋React で練習アプリを作る（前編）](06_DjangoとReactで練習アプリを作る_前編_サーバー側.md) | サーバー側: 状態を変える処理・1 回限りの承認の URL・メール・添付と図面の確かめ・API・社員の CSV・毎朝の通知・テスト 17 件 | できた |
+| 06 | Django＋React で練習アプリを作る（後編） | 画面側: React の画面と API をつなぎ、Django の中に入れて配る | 作成中 |
 | 07 | Rust と Topcoat の基礎 | Rust と Topcoat の要点 | 作成中 |
 | 08 | Topcoat で練習アプリを作る | 同じアプリを Rust＋Topcoat で | 作成中 |
 | 09 | メールと SMTP リレー | SMTP の仕組み、Microsoft 365 経由の送信、試し方 | 作成中 |
 | 10 | 安全とテスト | CSRF・XSS・パスワード・権限・テスト | 作成中 |
+
+## 前提: onprem に建てる
+
+作った練習アプリは、`onprem/` の資料のとおりに、会社の Windows Server（HTTP の 80 番・IIS・仮想マシンの中の PostgreSQL・Microsoft 365 の SMTP リレー）に建てる前提で作ります。設定の名前（環境変数）も、onprem の WinSW の XML とそろえています（00 学習ガイドの 3.1）。
 
 ## フォルダ
 
