@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>依頼の入力 - 依頼・承認アプリ</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <strong>依頼・承認アプリ</strong>
+      <nav>
+        <a href="request_list.html">自分の依頼</a>
+        <a href="request_form.html">新しい依頼</a>
+        <a href="#">ログアウト</a>
+      </nav>
+    </header>
+
+    <main>
+      <h1>依頼の入力</h1>
+      <form action="/requests" method="post" enctype="multipart/form-data">
+        <div class="form-grid">
+          <label for="title" class="required">件名</label>
+          <input id="title" name="title" type="text" maxlength="100" required placeholder="例: 治具の製作">
+
+          <label for="detail" class="required">内容</label>
+          <textarea id="detail" name="detail" rows="4" required></textarea>
+
+          <label for="due" class="required">希望の納期</label>
+          <input id="due" name="due_date" type="date" required>
+
+          <label for="files">添付ファイル</label>
+          <input id="files" name="files" type="file" accept=".jpg,.jpeg,.png,.pdf" multiple>
+          <p class="hint">JPG・PNG・PDF。1 ファイル 10MB まで。</p>
+
+          <label>回覧者</label>
+          <div class="approvers">
+            <select name="approver1" required aria-label="回覧者1">
+              <option value="">回覧者1（必須）</option>
+              <option value="101">山田 太郎（設計部 課長）</option>
+              <option value="102">佐藤 花子（設計部 係長）</option>
+            </select>
+            <select name="approver2" aria-label="回覧者2">
+              <option value="">回覧者2（なし）</option>
+              <option value="101">山田 太郎（設計部 課長）</option>
+              <option value="102">佐藤 花子（設計部 係長）</option>
+            </select>
+            <select name="approver3" aria-label="回覧者3">
+              <option value="">回覧者3（なし）</option>
+              <option value="101">山田 太郎（設計部 課長）</option>
+              <option value="102">佐藤 花子（設計部 係長）</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="btn-secondary">下書きに保存</button>
+          <button type="submit" class="btn-primary">依頼を送る</button>
+        </div>
+      </form>
+    </main>
+  </body>
+</html>
