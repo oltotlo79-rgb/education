@@ -1,0 +1,148 @@
+/* ===== 1. 色と大きさの決まり（変数） ===== */
+:root {
+  --navy: #1e3a5f;      /* 文字・線 */
+  --blue: #2f80ed;      /* ボタン・リンク */
+  --green: #27ae60;     /* 完了・成功 */
+  --orange: #f2994a;    /* 注意（差し戻し中など） */
+  --red: #eb5757;       /* エラー */
+  --gray: #eef2f7;      /* 背景 */
+  --radius: 8px;        /* 角の丸み */
+}
+
+/* ===== 2. ページ全体 ===== */
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: "Yu Gothic UI", "Meiryo", sans-serif;
+  color: var(--navy);
+  background: var(--gray);
+  line-height: 1.6;
+}
+
+/* ===== 3. 上の帯（ヘッダー） ===== */
+.site-header {
+  display: flex;                 /* 横一列に並べる */
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  background: var(--navy);
+  color: #fff;
+}
+.site-header nav a {
+  color: #fff;
+  margin-left: 16px;
+  text-decoration: none;
+}
+.site-header nav a:hover { text-decoration: underline; }
+
+/* ===== 4. 中身の白い板 ===== */
+main {
+  max-width: 960px;
+  margin: 24px auto;
+  padding: 24px;
+  background: #fff;
+  border-radius: var(--radius);
+}
+
+/* ===== 5. 入力フォーム ===== */
+.form-grid {
+  display: grid;                 /* 格子に並べる */
+  grid-template-columns: 160px 1fr;
+  gap: 12px 16px;
+  align-items: center;
+}
+label { font-weight: bold; }
+.required::after { content: " *"; color: var(--red); }
+input, select, textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #b8c4d6;
+  border-radius: var(--radius);
+  font: inherit;
+}
+input:focus, select:focus, textarea:focus {
+  outline: 3px solid #bcd6fb;    /* 今どこに入力しているかを見せる */
+  border-color: var(--blue);
+}
+.hint { grid-column: 2; margin-top: -8px; font-size: 0.85em; color: #5b6b82; }
+.approvers { display: flex; gap: 8px; }
+.actions { margin-top: 24px; display: flex; gap: 12px; justify-content: flex-end; }
+button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: var(--radius);
+  font: inherit;
+  cursor: pointer;
+}
+.btn-primary { background: var(--blue); color: #fff; }
+.btn-secondary { background: #dfe6f0; color: var(--navy); }
+
+/* ===== 6. 一覧の表 ===== */
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 10px; border-bottom: 1px solid #dfe6f0; text-align: left; }
+th { background: var(--gray); }
+tbody tr:hover { background: #f7f9fc; }
+
+/* 状態の札（バッジ）。状態ごとに色を変える */
+.badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 0.85em;
+  border: 1px solid #b8c4d6;
+}
+.badge-circulating { background: #fff; }                                        /* 回覧中 */
+.badge-returned    { background: var(--orange); color: #fff; border-color: var(--orange); } /* 差し戻し中 */
+.badge-approved    { background: var(--blue); color: #fff; border-color: var(--blue); }     /* 回覧完了 */
+.badge-done        { background: #c5ccd6; border-color: #c5ccd6; }                /* 完了 */
+
+/* ===== 7. 画面がせまいとき（スマートフォンなど） ===== */
+@media (max-width: 640px) {
+  main { margin: 12px; padding: 16px; }
+  /* 1 列にする。minmax(0, 1fr) にしないと、長い選択肢に引っ張られて画面からはみ出す */
+  .form-grid { grid-template-columns: minmax(0, 1fr); }
+  .hint { grid-column: 1; }
+  .approvers { flex-direction: column; }
+  .site-header { flex-direction: column; gap: 8px; }
+}
+
+/* ===== 8. 印刷するとき ===== */
+@media print {
+  .site-header nav, .actions { display: none; }
+  body { background: #fff; }
+}
+
+/* ===== 9. React の練習で足した物 ===== */
+.search { max-width: 320px; margin-bottom: 12px; }
+.errors { background: #fdecec; border: 1px solid var(--red); border-radius: var(--radius); padding: 8px 8px 8px 28px; color: #a12b2b; }
+.message { background: #e8f5ee; border: 1px solid var(--green); border-radius: var(--radius); padding: 8px 12px; }
+.pad { width: 100%; max-width: 640px; aspect-ratio: 297 / 210; border: 1px solid #b8c4d6; background: #fff; touch-action: none; }
+.pad rect { fill: rgba(47, 128, 237, 0.12); stroke: var(--blue); stroke-width: 1; }
+.json { background: var(--navy); color: #fff; padding: 12px; border-radius: var(--radius); font-size: 0.8em; max-height: 240px; overflow: auto; }
+button:disabled { opacity: 0.6; cursor: wait; }
+
+/* ===== 10. 練習アプリ（06）で足した物 ===== */
+.site-header nav { display: flex; align-items: center; }
+.who { margin-left: 24px; opacity: 0.85; }
+button.link { background: none; border: none; padding: 0 4px; color: var(--blue); cursor: pointer; font: inherit; }
+button.link.light { color: #fff; margin-left: 12px; text-decoration: underline; }
+a.btn-primary, a.btn-secondary { display: inline-block; padding: 10px 20px; border-radius: var(--radius); text-decoration: none; }
+a.btn-primary { background: var(--blue); color: #fff; }
+.toolbar { display: flex; gap: 16px; align-items: center; margin-bottom: 12px; }
+.actions.left { justify-content: flex-start; margin: 8px 0 16px; }
+.narrow { max-width: 520px; }
+.kv th { width: 160px; background: var(--gray); }
+.pre { white-space: pre-wrap; }
+a.file { display: block; }
+.picker .chosen, .picker .found { list-style: none; padding: 0; margin: 4px 0; }
+.picker .chosen li { padding: 4px 0; }
+.steps { padding-left: 20px; }
+.steps li { padding: 4px 0; }
+.step-approved { color: var(--green); }
+.step-returned { color: #c2410c; }
+.step-cancelled { color: #8a96a8; text-decoration: line-through; }
+.chart { margin: 0 0 24px; }
+.chart figcaption { font-weight: bold; margin-bottom: 4px; }
+.chart svg { width: 100%; max-width: 640px; }
+.chart .bar { fill: var(--blue); }
+.chart .axis, .chart .value { font-size: 13px; fill: var(--navy); }
