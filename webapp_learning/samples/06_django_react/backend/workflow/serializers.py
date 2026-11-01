@@ -1,3 +1,5 @@
+import unicodedata
+
 from django.core.exceptions import ValidationError as DjangoValidationError
 from rest_framework import serializers
 
@@ -73,9 +75,13 @@ class RequestInputSerializer(serializers.Serializer):
     drawing = serializers.JSONField(required=False, allow_null=True, default=None)
 
     def validate_title(self, value: str) -> str:
-        if not value.strip():
+        value = value.strip()
+        if not value:
             raise serializers.ValidationError("件名を入れてください。")
-        return value.strip()
+        # 改行などの制御文字は断る。メールの件名に入ると、保存できてもメールを送れなくなる（10 の巻）
+        if any(unicodedata.category(c) == "Cc" for c in value):
+            raise serializers.ValidationError("件名に、改行などは入れられません。")
+        return value
 
     def validate_drawing(self, value):
         try:

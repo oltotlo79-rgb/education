@@ -143,6 +143,14 @@ class ApiTests(TestCase):
         self.login(self.suzuki, "pass-for-test-3")
         self.assertEqual(self.client.get(f"/api/requests/{pk}/").status_code, 404)
 
+    def test_件名に改行は入れられない(self):
+        # 画面の入力欄は 1 行だが、細工した送信なら改行を入れられる。メールの件名に入ると送れなくなる（10 の巻）
+        self.login(self.yamada, "pass-for-test-1")
+        res = self.client.post("/api/requests/", {"title": "治具の製作\r\nBcc: evil@example.com", "due_date": "2026-11-30",
+                                                  "approver_ids": [self.sato.pk]}, format="json")
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(res.json()["title"], ["件名に、改行などは入れられません。"])
+
     def test_図面の形が違えば断る(self):
         self.login(self.yamada, "pass-for-test-1")
         res = self.client.post("/api/requests/", {"title": "a", "due_date": "2026-11-30", "approver_ids": [self.sato.pk],
