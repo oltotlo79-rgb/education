@@ -349,14 +349,26 @@ EMAIL_BACKEND=django.core.mail.backends.filebased.EmailBackend
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>param</code></strong>（PowerShell）: スクリプトが受け取る引数を決める書き方。<code>param([string[]] $ManageArgs)</code> は、スクリプトに渡した値を <code>$ManageArgs</code> に入れます。</li>
+<li><strong><code>Join-Path</code></strong>（PowerShell）: フォルダの場所とファイル名を、<code>\</code> でつないだ場所を作るコマンド。<code>Join-Path $PSScriptRoot "dev.env"</code> は「このスクリプトのフォルダの <code>dev.env</code>」。</li>
 <li><strong><code>if</code></strong>（PowerShell）: PowerShell の条件の書き方。<code>if (-not (Test-Path $envFile)) { … }</code> は「ファイルが無ければ」。比べる時は <code>-eq</code>・<code>-ne</code>・<code>-not</code> などを使います。</li>
+<li><strong><code>-not</code></strong>（PowerShell）: 「〜でない」（<code>True</code> と <code>False</code> を逆にする）。<code>-not (Test-Path $file)</code> は「そのファイルが無いなら」。<code>!</code> と書いても同じです。</li>
 <li><strong><code>Test-Path</code></strong>（PowerShell）: ファイルやフォルダがあるかを調べるコマンド。あれば <code>True</code>、無ければ <code>False</code>。</li>
+<li><strong><code>throw</code></strong>（PowerShell）: エラーを起こして、そこで止める命令。<code>throw "dev.env がありません"</code> のように、説明の文を付けます。<code>try … catch</code> の中なら <code>catch</code> へ、無ければスクリプトがそこで止まります。</li>
 <li><strong><code>foreach</code></strong>（PowerShell）: PowerShell のくり返し。<code>foreach ($line in Get-Content $envFile) { … }</code> は、ファイルの 1 行ずつを <code>$line</code> に入れて、中を動かします。</li>
+<li><strong><code>-match</code></strong>（PowerShell）: 正規表現（文字の形の決まり）に合うかの比べ方。<code>$line -match '^\s*#'</code> は「空白のあと <code>#</code> で始まる行（コメント）か」。合った部分は <code>$Matches</code> で取り出せます。</li>
+<li><strong><code>-or</code></strong>（PowerShell）: 「または」（どちらか一方でも <code>True</code> なら <code>True</code>）。<code>$LASTEXITCODE -ne 0 -or $out.Count -eq 0</code> は「失敗したか、出力が空か」。</li>
+<li><strong><code>-notmatch</code></strong>（PowerShell）: <code>-match</code> の逆で、正規表現に合わないかの比べ方。<code>$line -notmatch '='</code> は「<code>=</code> を含まない行か」。</li>
+<li><strong><code>continue</code></strong>（PowerShell）: くり返し（<code>foreach</code> など）の中で、今の 1 回分の残りを飛ばして、次へ進む命令。<code>if (…) { continue }</code> で、合わない行を飛ばします。</li>
+<li><strong><code>-split</code></strong>（PowerShell）: 文字列を、区切り（正規表現）で分けて並びにする演算子。<code>"a=b" -split '=', 2</code> は <code>"a"</code> と <code>"b"</code>（<code>2</code> は「多くても 2 つに分ける」）。</li>
 <li><strong><code>Set-Item</code></strong>（PowerShell）: 項目の値を設定するコマンド。<code>Set-Item -Path "Env:名前" -Value 値</code> で、この PowerShell の窓の中だけの環境変数を設定します。</li>
 <li><strong><code>Set-Item -Path</code></strong>（PowerShell）: <code>-Path "Env:名前"</code> で、どの項目（ここでは環境変数）を設定するかを指定します。</li>
 <li><strong><code>Set-Item -Value</code></strong>（PowerShell）: <code>-Value 値</code> で、設定する値を指定します。</li>
 <li><strong><code>Push-Location</code></strong>（PowerShell）: 今いるフォルダを覚えてから、指定したフォルダへ移るコマンド。あとで <code>Pop-Location</code> を打つと、覚えたフォルダへ戻れます。</li>
 <li><strong><code>try</code></strong>（PowerShell）: <code>try { … } finally { … }</code> で、途中で失敗しても、<code>finally</code> の中（元のフォルダへ戻る など）を必ず動かす書き方。</li>
+<li><strong><code>finally</code></strong>（PowerShell）: <code>try { … } finally { … }</code> の <code>finally</code> の所は、<code>try</code> の中がうまくいっても、途中で失敗しても、必ず最後に動きます。元のフォルダへ戻る・記録を閉じる、などの後片づけに使います。</li>
+<li><strong><code>Remove-Item</code></strong>（PowerShell）: ファイルやフォルダを消すコマンド（短い呼び名は <code>rm</code>）。<strong>ごみ箱に入らず、すぐ消えます。</strong> フォルダを中身ごと消す時は <code>-Recurse</code> を付けます。消す前に、名前をよく確かめます。</li>
+<li><strong><code>Remove-Item -Path</code></strong>（PowerShell）: <code>Remove-Item</code> で、消す物の場所を決めるオプション。<code>Remove-Item -Path "Env:NAME"</code> は、環境変数 <code>NAME</code> を消します（<code>Env:</code> は環境変数の場所）。</li>
+<li><strong><code>Remove-Item -ErrorAction</code></strong>（PowerShell）: <code>Remove-Item</code> で、エラーが起きた時の動きを決めるオプション。<code>-ErrorAction SilentlyContinue</code> は「無くてもエラーを出さずに次へ進む」。</li>
 <li><strong><code>Pop-Location</code></strong>（PowerShell）: <code>Push-Location</code> で覚えたフォルダへ戻るコマンド。</li>
 <li><strong><code>exit</code></strong>（PowerShell）: スクリプトを、決めた終了コードで終えるコマンド。<code>exit $code</code> は、manage.py の終了コードをそのまま返します。</li>
 </ul>

@@ -159,14 +159,26 @@ exit $code
 > **▶ ここで初めて出てくるコード**
 >
 > - **`param`**（PowerShell）: スクリプトが受け取る引数を決める書き方。`param([string[]] $ManageArgs)` は、スクリプトに渡した値を `$ManageArgs` に入れます。
+> - **`Join-Path`**（PowerShell）: フォルダの場所とファイル名を、`\` でつないだ場所を作るコマンド。`Join-Path $PSScriptRoot "dev.env"` は「このスクリプトのフォルダの `dev.env`」。
 > - **`if`**（PowerShell）: PowerShell の条件の書き方。`if (-not (Test-Path $envFile)) { … }` は「ファイルが無ければ」。比べる時は `-eq`・`-ne`・`-not` などを使います。
+> - **`-not`**（PowerShell）: 「〜でない」（`True` と `False` を逆にする）。`-not (Test-Path $file)` は「そのファイルが無いなら」。`!` と書いても同じです。
 > - **`Test-Path`**（PowerShell）: ファイルやフォルダがあるかを調べるコマンド。あれば `True`、無ければ `False`。
+> - **`throw`**（PowerShell）: エラーを起こして、そこで止める命令。`throw "dev.env がありません"` のように、説明の文を付けます。`try … catch` の中なら `catch` へ、無ければスクリプトがそこで止まります。
 > - **`foreach`**（PowerShell）: PowerShell のくり返し。`foreach ($line in Get-Content $envFile) { … }` は、ファイルの 1 行ずつを `$line` に入れて、中を動かします。
+> - **`-match`**（PowerShell）: 正規表現（文字の形の決まり）に合うかの比べ方。`$line -match '^\s*#'` は「空白のあと `#` で始まる行（コメント）か」。合った部分は `$Matches` で取り出せます。
+> - **`-or`**（PowerShell）: 「または」（どちらか一方でも `True` なら `True`）。`$LASTEXITCODE -ne 0 -or $out.Count -eq 0` は「失敗したか、出力が空か」。
+> - **`-notmatch`**（PowerShell）: `-match` の逆で、正規表現に合わないかの比べ方。`$line -notmatch '='` は「`=` を含まない行か」。
+> - **`continue`**（PowerShell）: くり返し（`foreach` など）の中で、今の 1 回分の残りを飛ばして、次へ進む命令。`if (…) { continue }` で、合わない行を飛ばします。
+> - **`-split`**（PowerShell）: 文字列を、区切り（正規表現）で分けて並びにする演算子。`"a=b" -split '=', 2` は `"a"` と `"b"`（`2` は「多くても 2 つに分ける」）。
 > - **`Set-Item`**（PowerShell）: 項目の値を設定するコマンド。`Set-Item -Path "Env:名前" -Value 値` で、この PowerShell の窓の中だけの環境変数を設定します。
 > - **`Set-Item -Path`**（PowerShell）: `-Path "Env:名前"` で、どの項目（ここでは環境変数）を設定するかを指定します。
 > - **`Set-Item -Value`**（PowerShell）: `-Value 値` で、設定する値を指定します。
 > - **`Push-Location`**（PowerShell）: 今いるフォルダを覚えてから、指定したフォルダへ移るコマンド。あとで `Pop-Location` を打つと、覚えたフォルダへ戻れます。
 > - **`try`**（PowerShell）: `try { … } finally { … }` で、途中で失敗しても、`finally` の中（元のフォルダへ戻る など）を必ず動かす書き方。
+> - **`finally`**（PowerShell）: `try { … } finally { … }` の `finally` の所は、`try` の中がうまくいっても、途中で失敗しても、必ず最後に動きます。元のフォルダへ戻る・記録を閉じる、などの後片づけに使います。
+> - **`Remove-Item`**（PowerShell）: ファイルやフォルダを消すコマンド（短い呼び名は `rm`）。**ごみ箱に入らず、すぐ消えます。** フォルダを中身ごと消す時は `-Recurse` を付けます。消す前に、名前をよく確かめます。
+> - **`Remove-Item -Path`**（PowerShell）: `Remove-Item` で、消す物の場所を決めるオプション。`Remove-Item -Path "Env:NAME"` は、環境変数 `NAME` を消します（`Env:` は環境変数の場所）。
+> - **`Remove-Item -ErrorAction`**（PowerShell）: `Remove-Item` で、エラーが起きた時の動きを決めるオプション。`-ErrorAction SilentlyContinue` は「無くてもエラーを出さずに次へ進む」。
 > - **`Pop-Location`**（PowerShell）: `Push-Location` で覚えたフォルダへ戻るコマンド。
 > - **`exit`**（PowerShell）: スクリプトを、決めた終了コードで終えるコマンド。`exit $code` は、manage.py の終了コードをそのまま返します。
 
