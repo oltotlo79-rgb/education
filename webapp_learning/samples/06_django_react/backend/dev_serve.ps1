@@ -18,7 +18,9 @@ try {
     $python = "$PSScriptRoot\.venv\Scripts\python.exe"
     & $python manage.py collectstatic --noinput   # 画面の部品を staticfiles に集める
     # onprem の 05 の 9.2 の XML の arguments と同じ（ポートだけ 8000）
-    & $python -m waitress --listen=127.0.0.1:8000 --threads=8 --trusted-proxy=127.0.0.1 --trusted-proxy-headers=x-forwarded-for config.wsgi:application
+    # 行末の ` は「次の行へ続く」という印（長い 1 行を 2 行に分けて書く）
+    & $python -m waitress --listen=127.0.0.1:8000 --threads=8 `
+        --trusted-proxy=127.0.0.1 --trusted-proxy-headers=x-forwarded-for config.wsgi:application
 } finally {
     foreach ($n in $names) { Remove-Item -Path "Env:$n" -ErrorAction SilentlyContinue }
     Pop-Location

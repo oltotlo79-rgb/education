@@ -255,10 +255,30 @@ code .
           <tr><th>番号</th><th>件名</th><th>希望の納期</th><th>状態</th></tr>
         </thead>
         <tbody>
-          <tr><td>6</td><td><a href="#">型の改造</a></td><td>2026-11-03</td><td><span class="badge badge-circulating">回覧中（回覧者2の承認待ち）</span></td></tr>
-          <tr><td>5</td><td><a href="#">棚の取り付け</a></td><td>2026-11-20</td><td><span class="badge badge-returned">差し戻し中</span></td></tr>
-          <tr><td>2</td><td><a href="#">部品の追加工</a></td><td>2026-10-31</td><td><span class="badge badge-approved">回覧完了</span></td></tr>
-          <tr><td>1</td><td><a href="#">治具の製作</a></td><td>2026-10-25</td><td><span class="badge badge-done">完了</span></td></tr>
+          <tr>
+            <td>6</td>
+            <td><a href="#">型の改造</a></td>
+            <td>2026-11-03</td>
+            <td><span class="badge badge-circulating">回覧中（回覧者2の承認待ち）</span></td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td><a href="#">棚の取り付け</a></td>
+            <td>2026-11-20</td>
+            <td><span class="badge badge-returned">差し戻し中</span></td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td><a href="#">部品の追加工</a></td>
+            <td>2026-10-31</td>
+            <td><span class="badge badge-approved">回覧完了</span></td>
+          </tr>
+          <tr>
+            <td>1</td>
+            <td><a href="#">治具の製作</a></td>
+            <td>2026-10-25</td>
+            <td><span class="badge badge-done">完了</span></td>
+          </tr>
         </tbody>
       </table>
     </main>

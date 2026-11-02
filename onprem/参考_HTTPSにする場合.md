@@ -241,7 +241,8 @@ cd D:\webapp\stg\service
 `HTTP_X_FORWARDED_PROTO` を、ルールの中で使ってよい名前として、IIS に登録します（1 回だけ）。
 
 ```powershell
-& "$env:windir\system32\inetsrv\appcmd.exe" set config -section:system.webServer/rewrite/allowedServerVariables /+"[name='HTTP_X_FORWARDED_PROTO']" /commit:apphost
+& "$env:windir\system32\inetsrv\appcmd.exe" set config `
+  -section:system.webServer/rewrite/allowedServerVariables /+"[name='HTTP_X_FORWARDED_PROTO']" /commit:apphost
 ```
 
 | 部分 | 意味 |

@@ -31,11 +31,23 @@ export function DetailPage({ id, me }: { id: number; me: Me }) {
       <h1>{r.id} {r.title} <StatusBadge status={r.status} label={r.status_label} /></h1>
       {message && <p className="message">{message}</p>}
       <div className="actions left">
-        {mine && r.status === "circulating" && <button className="btn-secondary" onClick={() => run("pull-back", "引き戻しました。")}>引き戻す</button>}
+        {mine && r.status === "circulating" && (
+          <button className="btn-secondary" onClick={() => run("pull-back", "引き戻しました。")}>
+            引き戻す
+          </button>
+        )}
         {editable && <a className="btn-primary" href={`#/requests/${r.id}/edit`}>直して出し直す</a>}
         {editable && <button className="btn-secondary" onClick={() => run("withdraw", "取り下げました。")}>取り下げる</button>}
-        {me.role !== "member" && r.status === "approved" && <button className="btn-primary" onClick={() => run("assign", "担当になりました。")}>担当になる</button>}
-        {r.status === "in_progress" && r.assignee_name === me.name && <button className="btn-primary" onClick={() => run("complete", "完了にしました。")}>完了にする</button>}
+        {me.role !== "member" && r.status === "approved" && (
+          <button className="btn-primary" onClick={() => run("assign", "担当になりました。")}>
+            担当になる
+          </button>
+        )}
+        {r.status === "in_progress" && r.assignee_name === me.name && (
+          <button className="btn-primary" onClick={() => run("complete", "完了にしました。")}>
+            完了にする
+          </button>
+        )}
       </div>
       <table className="kv">
         <tbody>

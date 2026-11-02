@@ -919,7 +919,8 @@ Stop-Service webapp-stg
 Rename-Item D:\webapp\stg\app app_bad
 Rename-Item D:\webapp\stg\app_prev app
 # 部品も前の版に戻す（前の版の wheelhouse で入れ直す）
-D:\webapp\stg\venv\Scripts\python.exe -m pip install --no-index --find-links D:\webapp\releases\webapp-1.0.0\wheelhouse -r D:\webapp\stg\app\requirements.txt
+D:\webapp\stg\venv\Scripts\python.exe -m pip install --no-index `
+  --find-links D:\webapp\releases\webapp-1.0.0\wheelhouse -r D:\webapp\stg\app\requirements.txt
 Start-Service webapp-stg
 ```
 
