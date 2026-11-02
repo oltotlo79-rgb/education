@@ -1415,8 +1415,10 @@ psql -h 127.0.0.1 -U postgres -c "DROP DATABASE webapp_restore_test;"
 IIS のログを消すタスク（例）:
 
 ```powershell
-$action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument `
-  '-NoProfile -Command "Get-ChildItem C:\inetpub\logs\LogFiles -Recurse -Filter *.log | Where-Object { $_.LastWriteTime -lt (Get-Date).AddDays(-90) } | Remove-Item"'
+# 90 日より古い IIS のログを消すコマンド（長いので 2 つに分けて + でつなぐ）
+$clean = 'Get-ChildItem C:\inetpub\logs\LogFiles -Recurse -Filter *.log | ' +
+         'Where-Object { $_.LastWriteTime -lt (Get-Date).AddDays(-90) } | Remove-Item'
+$action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoProfile -Command `"$clean`""
 Register-ScheduledTask -TaskPath "\webapp\" -TaskName "iis-log-cleanup" -Action $action `
   -Trigger (New-ScheduledTaskTrigger -Daily -At "03:00") `
   -Principal (New-ScheduledTaskPrincipal -UserId "SYSTEM" -LogonType ServiceAccount -RunLevel Highest)
