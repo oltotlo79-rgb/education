@@ -89,7 +89,8 @@ pub async fn update(cx: &Cx, Form(input): Form<EditForm>) -> Result<impl View> {
                     let latest = find_own_note(cx, user.id, id).await?;
                     form.version = Some(latest.version);
                     form.notice = Some(format!(
-                        "{}。保存されている最新のタイトルは「{}」です。この内容で上書きする場合は、もう一度「保存する」を押してください。",
+                        "{}。保存されている最新のタイトルは「{}」です。\
+                         この内容で上書きする場合は、もう一度「保存する」を押してください。",
                         AppError::Conflict,
                         latest.title
                     ));

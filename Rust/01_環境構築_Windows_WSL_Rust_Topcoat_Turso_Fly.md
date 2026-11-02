@@ -2732,7 +2732,8 @@ rustup show
 # 入っている部品
 rustup component list --installed
 # 受付の3つの .exe の中身を比べる（ハッシュの先頭 16 文字）
-Get-ChildItem ~\.cargo\bin\rustup.exe, ~\.cargo\bin\rustc.exe, ~\.cargo\bin\cargo.exe | ForEach-Object { "{0,-10} {1}" -f $_.Name, (Get-FileHash $_.FullName).Hash.Substring(0, 16) }
+Get-ChildItem ~\.cargo\bin\rustup.exe, ~\.cargo\bin\rustc.exe, ~\.cargo\bin\cargo.exe |
+    ForEach-Object { "{0,-10} {1}" -f $_.Name, (Get-FileHash $_.FullName).Hash.Substring(0, 16) }
 ```
 
 **▼ 実行結果**
@@ -3315,7 +3316,10 @@ x86_64-pc-windows-msvc
 > **▼ この手順がやること（先に日本語で）:** `machine.ps1` で、この巻で使う道具の実行ファイルの印を、まとめて読みます。
 
 ```powershell
-& ~\rust-study\machine.ps1 (Get-Command rustc).Source "$env:LOCALAPPDATA\Programs\Microsoft VS Code\Code.exe" (Get-Command git).Source 'C:\Program Files\Git\usr\bin\bash.exe' (Get-Command docker).Source "$HOME\.fly\bin\fly.exe"
+# 行末の ` は「次の行へ続く」という印
+& ~\rust-study\machine.ps1 (Get-Command rustc).Source `
+    "$env:LOCALAPPDATA\Programs\Microsoft VS Code\Code.exe" (Get-Command git).Source `
+    'C:\Program Files\Git\usr\bin\bash.exe' (Get-Command docker).Source "$HOME\.fly\bin\fly.exe"
 ```
 
 **▼ 実行結果**
@@ -4837,7 +4841,9 @@ POST /signup -> 303 See Other (45.1347ms)
 ```powershell
 # 2つ目の窓
 curl.exe -s -i http://127.0.0.1:3000/health
-curl.exe -s -o NUL -w '%{http_code} %{redirect_url}' -d 'email=alice%40example.com&password=correct+horse+battery&password_confirm=correct+horse+battery' http://127.0.0.1:3000/signup
+curl.exe -s -o NUL -w '%{http_code} %{redirect_url}' `
+  -d 'email=alice%40example.com&password=correct+horse+battery&password_confirm=correct+horse+battery' `
+  http://127.0.0.1:3000/signup
 ```
 
 **▼ 実行結果**
@@ -5213,7 +5219,8 @@ function FirstLine([scriptblock]$Command) {
 
 # ---- Windows の土台（UNIT 01〜03）
 Show "PowerShell" ($PSVersionTable.PSVersion.Major -eq 5) $PSVersionTable.PSVersion.ToString()
-Show "このシェルの CPU" ($env:PROCESSOR_ARCHITECTURE -eq "ARM64" -or $env:PROCESSOR_ARCHITECTURE -eq "AMD64") $env:PROCESSOR_ARCHITECTURE
+Show "このシェルの CPU" ($env:PROCESSOR_ARCHITECTURE -eq "ARM64" -or $env:PROCESSOR_ARCHITECTURE -eq "AMD64") `
+    $env:PROCESSOR_ARCHITECTURE
 $git = FirstLine { git --version }
 Show "Git" ($null -ne $git) $(if ($git) { $git } else { "見つからない（UNIT 02）" })
 $code = @(code --version 2>$null)
@@ -5229,7 +5236,10 @@ Show "rustfmt" ($null -ne $fmt) $(if ($fmt) { $fmt } else { "入っていない�
 $clippy = FirstLine { cargo clippy --version }
 Show "clippy" ($null -ne $clippy) $(if ($clippy) { $clippy } else { "入っていない（UNIT 06）" })
 $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
-$vc = if (Test-Path $vswhere) { & $vswhere -products * -requires Microsoft.VisualStudio.Component.VC.Tools.ARM64 Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -requiresAny -property displayName } else { $null }
+$vc = if (Test-Path $vswhere) {
+    & $vswhere -products * -requires Microsoft.VisualStudio.Component.VC.Tools.ARM64 `
+        Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -requiresAny -property displayName
+} else { $null }
 Show "MSVC Build Tools" ([bool]$vc) $(if ($vc) { $vc } else { "見つからない（UNIT 05）" })
 
 # ---- Linux とコンテナ（UNIT 07）
