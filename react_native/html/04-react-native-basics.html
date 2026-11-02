@@ -1,0 +1,1736 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>04-react-native-basics</title>
+<style>
+
+@page {
+  size: A4;
+  margin: 18mm 16mm 20mm 16mm;
+  @bottom-right {
+    content: counter(page);
+    font-size: 10px;
+    color: #64748b;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  font-family: "Yu Gothic UI", "Yu Gothic", "Meiryo", "Hiragino Sans",
+               "Noto Sans JP", "Segoe UI", system-ui, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.75;
+  color: #1e293b;
+  background: #ffffff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #0f172a;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 1.4em 0 0.6em;
+  page-break-after: avoid;
+}
+h1 {
+  font-size: 22pt;
+  border-bottom: 3px solid #1e40af;
+  padding-bottom: 0.3em;
+  margin-top: 0.4em;
+  page-break-before: auto;
+}
+h2 {
+  font-size: 16pt;
+  border-bottom: 1.5px solid #cbd5e1;
+  padding-bottom: 0.25em;
+  margin-top: 1.6em;
+}
+h3 { font-size: 13pt; color: #1e40af; }
+h4 { font-size: 12pt; color: #334155; }
+
+p { margin: 0.5em 0 0.8em; }
+
+a { color: #1d4ed8; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+ul, ol { margin: 0.4em 0 0.9em; padding-left: 1.6em; }
+li { margin: 0.2em 0; }
+
+blockquote {
+  border-left: 4px solid #3b82f6;
+  background: #eff6ff;
+  margin: 0.8em 0;
+  padding: 0.6em 1em;
+  color: #1e3a8a;
+  border-radius: 0 6px 6px 0;
+  page-break-inside: avoid;
+}
+blockquote p { margin: 0.3em 0; }
+blockquote strong { color: #1e40af; }
+
+code {
+  /* DefCode (see _code_font.py) has ASCII and Japanese in ONE font, so a code
+     line is drawn as one text run and copies as one line in every PDF viewer. */
+  font-family: "Consolas", "Consolas", monospace;
+  font-size: 0.9em;
+  background: #f1f5f9;
+  color: #be123c;
+  padding: 0.12em 0.36em;
+  border-radius: 4px;
+  /* Long inline code (file paths / URLs) must break instead of overflowing. */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  /* In a PDF there is no horizontal scrolling, so long lines must wrap
+     instead of being clipped off the right edge of the page. */
+  overflow-x: hidden;
+  overflow-y: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  font-size: 9.2pt;
+  line-height: 1.5;
+  margin: 0.8em 0;
+  page-break-inside: avoid;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+  white-space: inherit;
+  word-break: inherit;
+  overflow-wrap: inherit;
+}
+
+/* The codehilite extension wraps highlighted blocks in a scrolling div; make
+   that wrap too so nothing is clipped in the PDF. */
+.codehilite {
+  overflow-x: hidden;
+  /* overflow-x: hidden alone turns overflow-y into auto, and a glyph from a
+     fallback font that is a hair too tall then shows a vertical scrollbar. */
+  overflow-y: hidden;
+}
+.codehilite pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* No per-token colours: every coloured token became its own text run (and its
+   own tag) in the PDF, and some viewers then pasted each token on its own line.
+   Only whole comment lines get a colour, so each line is still one run. */
+pre .cmt { color: #94a3b8; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.8em 0;
+  font-size: 9.6pt;
+  page-break-inside: avoid;
+}
+th, td {
+  border: 1px solid #e2e8f0;
+  padding: 6px 9px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: #f1f5f9;
+  color: #0f172a;
+  font-weight: 700;
+}
+tr:nth-child(even) td { background: #f8fafc; }
+
+img { max-width: 100%; height: auto; }
+
+hr {
+  border: none;
+  border-top: 1px dashed #cbd5e1;
+  margin: 1.6em 0;
+}
+
+/* Diagram blocks (the inline-styled <div>s in the source) */
+div[style] {
+  page-break-inside: avoid;
+}
+
+/* Tighten spacing right after headings */
+h1 + p, h2 + p, h3 + p, h4 + p { margin-top: 0.2em; }
+
+/* Avoid ugly page breaks inside list items / table rows */
+li, tr { page-break-inside: avoid; }
+
+@media screen {
+  body { max-width: 920px; margin: 0 auto; padding: 20px 20px 120px; font-size: 16px; }
+  pre { white-space: pre !important; word-break: normal !important; overflow-wrap: normal !important;
+        overflow-x: auto !important; font-size: 14px !important; }
+  img { max-width: 100%; height: auto; }
+}
+.web-bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; font-size: 14px;
+  padding: 8px 12px; margin-bottom: 16px; background: #eef2f7; border-radius: 8px; }
+.web-bar a { color: #1e3a5f; }
+.web-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 10; max-width: 90%;
+  font-size: 15px; font-weight: 700; background: #fff7ed; border: 2px solid #f2994a; border-radius: 8px;
+  padding: 10px 16px; margin: 0; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.code-wrap { position: relative; scroll-margin-top: 16px; }
+.code-wrap pre { padding-top: 40px !important; }
+.copy-btn { position: absolute; top: 8px; right: 8px; z-index: 2; font-size: 13px; font-weight: 700;
+  padding: 4px 12px; border: 0; border-radius: 6px; background: #2f80ed; color: #fff; cursor: pointer;
+  font-family: inherit; }
+.copy-btn:hover { background: #1c64c8; }
+.copy-btn.done { background: #27ae60; }
+.code-wrap:target pre { outline: 4px solid #f2994a; outline-offset: 2px; }
+.code-wrap:target .copy-btn { box-shadow: 0 0 0 4px #f2994a; }
+/* syntax colours on screen (the PDF uses one colour so that each line copies as one piece) */
+.codehilite .k, .codehilite .kd, .codehilite .kn, .codehilite .kr { color: #c084fc; }
+.codehilite .s, .codehilite .s1, .codehilite .s2, .codehilite .sb { color: #fcd34d; }
+.codehilite .c, .codehilite .c1, .codehilite .cm { color: #94a3b8; }
+.codehilite .nf, .codehilite .nx { color: #60a5fa; }
+.codehilite .nb { color: #34d399; }
+.codehilite .mi, .codehilite .mf { color: #f472b6; }
+.codehilite .nt { color: #f59e0b; }
+.codehilite .na { color: #93c5fd; }
+</style>
+</head>
+<body>
+<div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/04-react-native-basics.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、ブラウザーの「戻る」で PDF に戻れます。</p><h1 id="4-react-native-expo">第4章: React Native / Expo入門</h1>
+<blockquote>
+<p>第3章で学んだReactの考え方を、いよいよ<strong>スマホアプリの画面</strong>に応用します。この章では、React Nativeの基本部品（<code>View</code>/<code>Text</code>/<code>Image</code>など）、画面の配置を決める <strong>Flexbox</strong>、そして画面の切り替えを担う <strong>Expo Router</strong> を、完全初心者向けに解説します。</p>
+</blockquote>
+<hr>
+<h2 id="1-react-native">1. React Native のコア部品</h2>
+<p>第3章の最後で触れたとおり、スマホアプリにはブラウザが無いので、HTMLタグ（<code>&lt;div&gt;</code>, <code>&lt;p&gt;</code>）は使えません。代わりにReact Nativeが用意した<strong>専用部品（コアコンポーネント）</strong> を使います。</p>
+<h3 id="11">1.1 主要部品の対応表</h3>
+<table>
+<thead>
+<tr>
+<th>役割</th>
+<th>WebのHTML</th>
+<th>React Native</th>
+<th>ひとこと</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>まとまり・箱</td>
+<td><code>&lt;div&gt;</code></td>
+<td><strong><code>&lt;View&gt;</code></strong></td>
+<td>レイアウトの基本。すべての土台</td>
+</tr>
+<tr>
+<td>文字の表示</td>
+<td><code>&lt;p&gt;</code>, <code>&lt;span&gt;</code></td>
+<td><strong><code>&lt;Text&gt;</code></strong></td>
+<td><strong>文字は必ずこれで囲む</strong>（重要ルール）</td>
+</tr>
+<tr>
+<td>画像</td>
+<td><code>&lt;img&gt;</code></td>
+<td><strong><code>&lt;Image&gt;</code></strong></td>
+<td>画像の表示</td>
+</tr>
+<tr>
+<td>入力欄</td>
+<td><code>&lt;input&gt;</code></td>
+<td><strong><code>&lt;TextInput&gt;</code></strong></td>
+<td>キーボード入力を受け取る</td>
+</tr>
+<tr>
+<td>押せるもの</td>
+<td><code>&lt;button&gt;</code></td>
+<td><strong><code>&lt;Pressable&gt;</code></strong> / <code>&lt;Button&gt;</code></td>
+<td>タップ操作を受け取る</td>
+</tr>
+<tr>
+<td>縦スクロール</td>
+<td>（自動）</td>
+<td><strong><code>&lt;ScrollView&gt;</code></strong> / <code>&lt;FlatList&gt;</code></td>
+<td>スマホは画面が小さいので必須</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>最重要ルール — 文字は必ず <code>&lt;Text&gt;</code> で囲む:</strong> Webでは <code>&lt;div&gt;こんにちは&lt;/div&gt;</code> のように文字を直接置けますが、<strong>React Nativeでは文字（テキスト）は必ず <code>&lt;Text&gt;</code> の中に入れなければエラー</strong>になります。「<code>&lt;View&gt;</code>の中に文字を直接書いてはいけない、<code>&lt;Text&gt;</code>で包む」と覚えてください。これは初心者が最初に必ずつまずくポイントです。</p>
+</blockquote>
+<h3 id="12-view-text">1.2 <code>View</code> と <code>Text</code> — 最小のアプリ</h3>
+<p>第1章で作った <code>my-books-app</code> の <code>app/(tabs)/index.tsx</code> を、次の内容に書き換えて試してみましょう（既存の内容を消して貼り付け）。</p>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 画面の中央に「📚 書籍管理アプリ」という太字の文字を1つ表示する、いちばん小さなアプリを作ります。ポイントは2つ——①箱（まとまり）には <code>&lt;View&gt;</code> を使い、文字は必ず <code>&lt;Text&gt;</code> で囲むこと、②<code>style</code> に「中央寄せ」の指定を渡して位置を決めることです。細かな各指定の意味はコード内のコメントで説明しています。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-1"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// react-native という部品集から View と Text を借りてくる</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">View</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-native&quot;</span><span class="p">;</span>
+
+<span class="c1">// 画面のコンポーネント。export default で「この画面を公開」する</span>
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">HomeScreen</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="c1">// &lt;View&gt; : 箱。style で見た目を指定（後述のFlexbox）</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{{</span><span class="w"> </span><span class="nx">flex</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span><span class="w"> </span><span class="nx">justifyContent</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">alignItems</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="w"> </span><span class="p">}}&gt;</span>
+<span class="w">      </span><span class="p">{</span><span class="cm">/* flex:1 → 画面いっぱいに広がる / justifyContent:&quot;center&quot; → 縦方向に中央 / alignItems:&quot;center&quot; → 横方向に中央 */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{{</span><span class="w"> </span><span class="nx">fontSize</span><span class="o">:</span><span class="w"> </span><span class="kt">24</span><span class="p">,</span><span class="w"> </span><span class="nx">fontWeight</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;bold&quot;</span><span class="w"> </span><span class="p">}}&gt;</span><span class="err">📚</span><span class="w"> </span><span class="nx">書籍管理アプリ</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">{</span><span class="cm">/* fontSize:24 → 文字サイズ24 / fontWeight:&quot;bold&quot; → 太字 / 文字は必ず&lt;Text&gt;で囲む */</span><span class="p">}</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong><code>style={{ ... }}</code> の中カッコが2つあるのはなぜ？</strong> 外側の <code>{ }</code> は「JSXの中にTypeScriptを書く」ための中カッコ、内側の <code>{ }</code> は「スタイルを表すオブジェクト（第2章のオブジェクト）」です。だから <code>style={{ fontSize: 24 }}</code> は「styleにオブジェクト <code>{fontSize: 24}</code> を渡す」という意味になります。最初は2重に見えて戸惑いますが、慣れれば自然です。</p>
+<p><strong>Webのstyleとの違い:</strong> Webの <code>font-size</code> はReact Nativeでは <code>fontSize</code>（キャメルケース）、値も <code>"24px"</code> ではなく数値の <code>24</code> です。区切りのハイフンを無くして次の単語を大文字にする「キャメルケース」で書く、と覚えてください。</p>
+</blockquote>
+<h4 id="1">▼ コードを1つずつ分解して解説</h4>
+<p>上のコードを、初心者がつまずきやすい順に<strong>1つずつ</strong>ていねいに見ていきましょう。</p>
+<hr>
+<h5 id="1-viewtext-import">解説1: 部品（View・Text）を借りてくる <code>import</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-2"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">View</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-native&quot;</span><span class="p">;</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>import</code>（インポート＝取り込む）は、「<strong>別の場所で用意された部品を、このファイルに借りてくる</strong>」命令です。</li>
+<li><code>{ View, Text }</code> の <code>{ }</code> は「その中の名前のものだけを借りる」という意味で、ここでは <code>View</code>（箱）と <code>Text</code>（文字）の2つを借りています。</li>
+<li><code>from "react-native"</code> は「<strong><code>react-native</code> という部品集（ライブラリ）から借りる</strong>」という意味です。React Native本体に最初から入っている部品なので、追加インストールは不要です。</li>
+<li>HTMLの <code>&lt;div&gt;</code>/<code>&lt;p&gt;</code> と違い、React Nativeの部品は<strong>使う前に必ずこの <code>import</code> で借りてくる</strong>必要があります。借り忘れると「<code>View</code> が見つからない」というエラーになります。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>ライブラリ</strong>とは「よく使う部品や機能を、誰かがまとめて用意してくれた道具箱」のこと。<code>react-native</code> はスマホアプリ用の部品が詰まった道具箱で、そこから必要な部品名を指定して取り出すのが <code>import</code> です。</p>
+</blockquote>
+<hr>
+<h5 id="2-export-default-function">解説2: 画面を公開する <code>export default function</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-3"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">HomeScreen</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>function HomeScreen()</code> は「<code>HomeScreen</code> という名前のコンポーネント（画面の部品）を作る」という宣言です。コンポーネント名は<strong>大文字始まり</strong>にするのがReactの決まりです。</li>
+<li><code>export default</code>（エクスポート・デフォルト）は「<strong>この画面を、ファイルの外から使えるように公開する</strong>」という印です。Expo Routerは「ファイルが <code>default</code> で公開している部品」を、その画面の中身として表示します。</li>
+<li><code>return ( ... )</code> は「<strong>この画面が表示する見た目（JSX）を返す</strong>」部分です。<code>( )</code> で囲むことで、複数行のJSXを見やすく書けます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong><code>export default</code></strong> は「このファイルの代表（主役）はコレですよ」と1つだけ指定する書き方です。Expo Routerでは、各画面ファイルがこの形で1つの画面を公開する、と覚えてください。</p>
+</blockquote>
+<hr>
+<h5 id="3-view-style">解説3: 箱と中央寄せ — <code>&lt;View style={{...}}&gt;</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-4"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{{</span><span class="w"> </span><span class="nx">flex</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span><span class="w"> </span><span class="nx">justifyContent</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">alignItems</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="w"> </span><span class="p">}}&gt;</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>&lt;View&gt;</code> は、Webの <code>&lt;div&gt;</code> にあたる「<strong>まとまり（箱）</strong>」です。中に文字や他の部品を入れ、位置やサイズをここで決めます。</li>
+<li><code>style={{ ... }}</code> の<strong>外側の <code>{ }</code></strong> は「JSXの中にTypeScriptを書く印」、<strong>内側の <code>{ }</code></strong> は「スタイルを表すオブジェクト」です（中カッコが2重になる理由）。</li>
+<li><code>flex: 1</code> は「<strong>使える空間を全部もらって広がる</strong>」指定。一番外側の箱に付けると画面全体に広がります。</li>
+<li><code>justifyContent: "center"</code> と <code>alignItems: "center"</code> の2つで、中身を<strong>縦・横ともに中央</strong>に寄せています（詳しい向きの話は次の2章のFlexboxで解説）。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong><code>flex: 1</code></strong> は「余っている空間を全部使って広がれ」という命令。画面全体に広げたい一番外側のViewによく付けます。</p>
+</blockquote>
+<hr>
+<h5 id="4-text">解説4: 文字は必ず <code>&lt;Text&gt;</code> で囲む</h5>
+<div class="codehilite"><div class="code-wrap" id="code-5"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{{</span><span class="w"> </span><span class="nx">fontSize</span><span class="o">:</span><span class="w"> </span><span class="kt">24</span><span class="p">,</span><span class="w"> </span><span class="nx">fontWeight</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;bold&quot;</span><span class="w"> </span><span class="p">}}&gt;</span><span class="err">📚</span><span class="w"> </span><span class="nx">書籍管理アプリ</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+</code></pre></div></div>
+
+<ul>
+<li>React Nativeでは、<strong>文字（テキスト）は必ず <code>&lt;Text&gt;</code> の中に入れる</strong>のが絶対ルールです。<code>&lt;View&gt;</code> に文字を直接書くとエラーになります。</li>
+<li><code>fontSize: 24</code> は文字サイズを24に。Webと違い <code>"24px"</code> ではなく<strong>数値の <code>24</code></strong> で書きます。</li>
+<li><code>fontWeight: "bold"</code> は太字にする指定です。<code>bold</code>（ボールド）は「太字」を意味する英単語です。</li>
+<li><code>&lt;Text&gt;</code> と <code>&lt;/Text&gt;</code> で挟まれた <code>📚 書籍管理アプリ</code> の部分が、実際に画面に表示される文字です。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong><code>&lt;Text&gt;</code></strong> はReact Native専用の「文字を表示する部品」。Webの <code>&lt;p&gt;</code>/<code>&lt;span&gt;</code> にあたります。「文字を見たら <code>&lt;Text&gt;</code> で囲む」が初心者の鉄則です。</p>
+</blockquote>
+<hr>
+<h2 id="2-flexbox">2. Flexbox — 部品を画面に配置する仕組み</h2>
+<p>スマホ画面に部品を「中央寄せ」「横並び」「均等配置」する仕組みが <strong>Flexbox（フレックスボックス）</strong> です。React Nativeのレイアウトは基本すべてこのFlexboxで行います。</p>
+<h3 id="21">2.1 主要なプロパティ</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 「左・中・右」の3つの文字を、箱（<code>&lt;View&gt;</code>）の中に<strong>横並び</strong>で配置し、両端と中央にバランスよく散らす例です。<code>flexDirection</code> で「並べる向き」、<code>justifyContent</code> と <code>alignItems</code> で「並べたものの寄せ方」を決めます。まずは「向き」と「寄せ方」を別々に指定するのだ、という感覚をつかんでください。各値の意味はコード内のコメントにあります。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-6"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">&lt;</span><span class="nt">View</span>
+<span class="w">  </span><span class="na">style</span><span class="o">=</span><span class="p">{{</span>
+<span class="w">    </span><span class="c1">// 子要素を並べる方向。&quot;row&quot;=横並び / &quot;column&quot;=縦並び（既定）</span>
+<span class="w">    </span><span class="nx">flexDirection</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;row&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">// 「主軸方向」の配置。下の表参照</span>
+<span class="w">    </span><span class="nx">justifyContent</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;space-between&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">// 「交差軸方向」の配置。下の表参照</span>
+<span class="w">    </span><span class="nx">alignItems</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">// 子要素同士の間隔（隙間）を8に</span>
+<span class="w">    </span><span class="nx">gap</span><span class="o">:</span><span class="w"> </span><span class="kt">8</span><span class="p">,</span>
+<span class="w">  </span><span class="p">}}</span>
+<span class="p">&gt;</span>
+<span class="w">  </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="nx">左</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="nx">中</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="nx">右</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+</code></pre></div></div>
+
+<h4 id="1_1">▼ コードを1つずつ分解して解説</h4>
+<p>このViewのstyleに書いた4つの指定を、1つずつ見ていきましょう。</p>
+<hr>
+<h5 id="1-flexdirection">解説1: 並べる向きを決める <code>flexDirection</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-7"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 子要素を並べる方向。&quot;row&quot;=横並び / &quot;column&quot;=縦並び（既定）</span>
+<span class="nx">flexDirection</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;row&quot;</span><span class="p">,</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>flexDirection</code>（フレックス・ディレクション＝並べる向き）は、「<strong>箱の中の子要素を、どの向きに並べるか</strong>」を決めます。</li>
+<li><code>"row"</code>（ロウ＝行）にすると<strong>横並び</strong>になります。何も指定しないと既定は <code>"column"</code>（カラム＝列）で<strong>縦並び</strong>です。</li>
+<li>ここでは <code>"row"</code> なので「左・中・右」の3つの文字が<strong>横一列</strong>に並びます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>主軸（main axis）</strong> とは、<code>flexDirection</code> で決めた「並べている向き」のこと。<code>"row"</code> なら主軸は横方向、<code>"column"</code> なら主軸は縦方向になります。</p>
+</blockquote>
+<hr>
+<h5 id="2-justifycontent">解説2: 主軸方向の寄せ方 <code>justifyContent</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-8"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 「主軸方向」の配置。下の表参照</span>
+<span class="nx">justifyContent</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;space-between&quot;</span><span class="p">,</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>justifyContent</code>（ジャスティファイ・コンテント）は、「<strong>並べている向き（主軸）に沿って、子要素をどう寄せるか</strong>」を決めます。</li>
+<li><code>"space-between"</code>（スペース・ビトウィーン）は「<strong>両端の子を端いっぱいに置き、間に均等な隙間を空ける</strong>」配置です。ここでは「左」が左端、「右」が右端、「中」がその真ん中に来ます。</li>
+<li>他に <code>"center"</code>（中央に寄せる）や <code>"flex-start"</code>（先頭に寄せる）などがあります。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong><code>justifyContent</code></strong> は「主軸（並べている向き）の寄せ方」。<code>flexDirection: "row"</code> のときは横方向の寄せ方になります。</p>
+</blockquote>
+<hr>
+<h5 id="3-alignitems">解説3: 直角方向の寄せ方 <code>alignItems</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-9"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 「交差軸方向」の配置。下の表参照</span>
+<span class="nx">alignItems</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>alignItems</code>（アライン・アイテムズ）は、「<strong>並べている向きと直角の方向に、子要素をどう寄せるか</strong>」を決めます。</li>
+<li><code>flexDirection: "row"</code>（横並び）のときは、直角方向＝<strong>縦方向</strong>なので、<code>"center"</code> で子が<strong>縦の中央</strong>にそろいます。</li>
+<li><code>justifyContent</code> と効く向きが直角になっている点が、最初に混乱しやすいポイントです。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>交差軸（cross axis）</strong> とは、主軸に対して直角の向きのこと。<code>alignItems</code> はこの交差軸方向の寄せ方を決めます。</p>
+</blockquote>
+<hr>
+<h5 id="4-gap">解説4: 子要素同士の隙間 <code>gap</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-10"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 子要素同士の間隔（隙間）を8に</span>
+<span class="nx">gap</span><span class="o">:</span><span class="w"> </span><span class="kt">8</span><span class="p">,</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>gap</code>（ギャップ＝隙間）は、「<strong>並べた子要素と子要素の間に空ける隙間</strong>」の大きさです。</li>
+<li>ここでは <code>8</code> なので、各文字の間に8ぶんの隙間ができます。値は数値で書きます（Webのような <code>"8px"</code> ではない）。</li>
+<li>昔は隙間を作るのに <code>margin</code> を使っていましたが、<code>gap</code> を使うと「子の間だけ均等に空ける」が簡単に書けて便利です。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong><code>gap</code></strong> は「子要素どうしの間隔」専用の指定。外側の余白を作る <code>padding</code>（内側）や <code>margin</code>（外側）とは役割が違います。</p>
+</blockquote>
+<hr>
+<table>
+<thead>
+<tr>
+<th>プロパティ</th>
+<th>役割</th>
+<th>よく使う値</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>flexDirection</code></td>
+<td>子要素を並べる向き</td>
+<td><code>"row"</code>（横）/ <code>"column"</code>（縦・既定）</td>
+</tr>
+<tr>
+<td><code>justifyContent</code></td>
+<td>並べる方向の配置</td>
+<td><code>"center"</code>（中央）/ <code>"space-between"</code>（両端に寄せ間を空ける）/ <code>"flex-start"</code>（先頭寄せ）</td>
+</tr>
+<tr>
+<td><code>alignItems</code></td>
+<td>直角方向の配置</td>
+<td><code>"center"</code>（中央）/ <code>"stretch"</code>（伸ばす）/ <code>"flex-start"</code></td>
+</tr>
+<tr>
+<td><code>flex</code></td>
+<td>余白をどう分け合うか</td>
+<td><code>1</code>（利用可能なスペースいっぱいに広がる）</td>
+</tr>
+<tr>
+<td><code>gap</code></td>
+<td>子要素同士の隙間</td>
+<td><code>8</code>, <code>12</code> など数値</td>
+</tr>
+<tr>
+<td><code>padding</code></td>
+<td>自分の内側の余白</td>
+<td><code>16</code> など数値</td>
+</tr>
+<tr>
+<td><code>margin</code></td>
+<td>自分の外側の余白</td>
+<td><code>8</code> など数値</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong><code>justifyContent</code> と <code>alignItems</code> がややこしい理由:</strong> この2つは <code>flexDirection</code> の向きによって「効く方向」が入れ替わります。
+- <code>flexDirection: "column"</code>（縦並び・既定）のとき → <code>justifyContent</code>は<strong>縦</strong>方向、<code>alignItems</code>は<strong>横</strong>方向
+- <code>flexDirection: "row"</code>（横並び）のとき → <code>justifyContent</code>は<strong>横</strong>方向、<code>alignItems</code>は<strong>縦</strong>方向
+最初は混乱しますが、「<code>justifyContent</code>＝並べてる向きの配置」「<code>alignItems</code>＝それと直角の配置」と覚え、実際に値を変えて画面の変化を見ながら慣れるのが一番です。</p>
+<p><strong><code>flex: 1</code> の意味:</strong> 「使える空間を全部もらって広がる」という指定です。一番外側の <code>&lt;View&gt;</code> に <code>flex: 1</code> を付けると、その箱が画面全体に広がります。複数の子に <code>flex: 1</code> を付けると、空間を等分します。</p>
+</blockquote>
+<h3 id="22-stylesheet">2.2 StyleSheet で書く（推奨）</h3>
+<p>スタイルを <code>style={{ }}</code> の形で直接書くと、コードが読みにくくなります。React Nativeには <strong><code>StyleSheet</code></strong> という、スタイルを別にまとめて名前で呼ぶ仕組みがあります。</p>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> さきほどと同じ「中央に太字の見出し」を、今度は<strong>スタイルを別の場所にまとめて</strong>書く形に整理します。<code>StyleSheet.create({ ... })</code> でスタイルに <code>container</code> や <code>title</code> といった名前を付けておき、JSX側では <code>styles.container</code> と名前で呼び出します。「見た目の指定」と「画面の構造」を分けると読みやすくなる、という整理術がポイントです。詳細はコード内コメントを参照してください。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-11"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// StyleSheet も借りる</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">View</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="p">,</span><span class="w"> </span><span class="nx">StyleSheet</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-native&quot;</span><span class="p">;</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">HomeScreen</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">{</span><span class="cm">/* styles.container で下の定義を参照 */</span><span class="p">}</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">container</span><span class="p">}&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">title</span><span class="p">}&gt;</span><span class="err">📚</span><span class="w"> </span><span class="nx">書籍管理アプリ</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// StyleSheet.create({ ... }) : スタイルをまとめて定義する。名前を付けて再利用できる</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">styles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">StyleSheet</span><span class="p">.</span><span class="nx">create</span><span class="p">({</span>
+<span class="w">  </span><span class="c1">// container という名前のスタイル</span>
+<span class="w">  </span><span class="nx">container</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 画面いっぱい</span>
+<span class="w">    </span><span class="nx">flex</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">// 縦中央</span>
+<span class="w">    </span><span class="nx">justifyContent</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">// 横中央</span>
+<span class="w">    </span><span class="nx">alignItems</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">// 背景色を白に（#fff は白を表す色コード）</span>
+<span class="w">    </span><span class="nx">backgroundColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#fff&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="c1">// title という名前のスタイル</span>
+<span class="w">  </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">fontSize</span><span class="o">:</span><span class="w"> </span><span class="kt">24</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">fontWeight</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;bold&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">// 文字色（#1e293b は濃いグレー）</span>
+<span class="w">    </span><span class="nx">color</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#1e293b&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong><code>StyleSheet.create</code> を使うメリット:</strong> ①画面の構造（JSX）とスタイルが分離されて読みやすい ②同じスタイルを使い回せる ③タイプミスを早く発見できる。第9章では、これに加えて <strong>NativeWind</strong>（Tailwind風の書き方）も導入し、さらに楽にスタイリングします。</p>
+</blockquote>
+<h4 id="1_2">▼ コードを1つずつ分解して解説</h4>
+<p>「スタイルを別にまとめて名前で呼ぶ」という新しい書き方を、1つずつ見ていきましょう。</p>
+<hr>
+<h5 id="1-stylescontainer">解説1: 名前でスタイルを呼ぶ <code>styles.container</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-12"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">{</span><span class="cm">/* styles.container で下の定義を参照 */</span><span class="p">}</span>
+<span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">container</span><span class="p">}&gt;</span>
+<span class="w">  </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">title</span><span class="p">}&gt;</span><span class="err">📚</span><span class="w"> </span><span class="nx">書籍管理アプリ</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+</code></pre></div></div>
+
+<ul>
+<li>直接 <code>style={{ ... }}</code> と書く代わりに、<code>style={styles.container}</code> のように「<strong>スタイルの名前</strong>」を渡しています。</li>
+<li><code>styles</code> は下のほうで作る「スタイルの一覧（まとめ）」で、<code>styles.container</code> は「その中の <code>container</code> という名前のスタイル」を指します（<code>.</code> でその中の項目を取り出す書き方）。</li>
+<li>こうすると、JSX側には「どのスタイルを使うか」だけが書かれ、<strong>見た目の詳しい指定はすべて下にまとまる</strong>ので、画面の構造が読みやすくなります。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong><code>styles.container</code></strong> の <code>.</code>（ドット）は「オブジェクトの中の項目を取り出す」記号。<code>styles</code> という箱の中の <code>container</code> を取り出している、という意味です。</p>
+</blockquote>
+<hr>
+<h5 id="2-stylesheetcreate">解説2: スタイルをまとめて定義する <code>StyleSheet.create</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-13"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">styles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">StyleSheet</span><span class="p">.</span><span class="nx">create</span><span class="p">({</span>
+<span class="w">  </span><span class="c1">// container という名前のスタイル</span>
+<span class="w">  </span><span class="nx">container</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 画面いっぱい</span>
+<span class="w">    </span><span class="nx">flex</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">// 縦中央</span>
+<span class="w">    </span><span class="nx">justifyContent</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">// 横中央</span>
+<span class="w">    </span><span class="nx">alignItems</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">// 背景色を白に（#fff は白を表す色コード）</span>
+<span class="w">    </span><span class="nx">backgroundColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#fff&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="c1">// title という名前のスタイル</span>
+<span class="w">  </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">fontSize</span><span class="o">:</span><span class="w"> </span><span class="kt">24</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">fontWeight</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;bold&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">// 文字色（#1e293b は濃いグレー）</span>
+<span class="w">    </span><span class="nx">color</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#1e293b&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>StyleSheet.create({ ... })</code> は「<strong>複数のスタイルに名前を付けてまとめる</strong>」道具です。結果を <code>styles</code> という変数に入れて、JSX側から <code>styles.名前</code> で呼び出します。</li>
+<li><code>{ ... }</code> の中に <code>container:</code> と <code>title:</code> という2つの名前を作り、それぞれに <code>{ }</code> でスタイルの中身を書いています。名前は自由に付けられます。</li>
+<li><code>backgroundColor: "#fff"</code> の <code>#fff</code> は「色を表すコード（カラーコード）」で、<code>#fff</code> は白を意味します。<code>#1e293b</code> は濃いグレーです。</li>
+<li><code>const</code> で宣言しているのは「この <code>styles</code> は後で書き換えない（固定）」という意味です。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>カラーコード</strong>とは、色を <code>#</code> で始まる英数字で表す書き方。<code>#fff</code>（白）や <code>#1e293b</code>（濃いグレー）のように、Webでもアプリでも共通で使えます。</p>
+</blockquote>
+<hr>
+<h2 id="3">3. ユーザー操作を受け取る部品</h2>
+<h3 id="31-textinput">3.1 <code>TextInput</code> — 文字入力</h3>
+<p>検索ボックスや、本のタイトルを入力するフォームに使います。</p>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 文字を打ち込める入力欄を作り、<strong>打った文字をその場で画面に表示する</strong>例です。入力中の文字は <code>useState</code>（第3章で学んだ「状態」）にしまっておき、入力が変わるたびに <code>onChangeText</code> でその状態を更新します。「入力欄の中身＝状態」という結びつきを作るのがコツで、これはフォームの基本形です。各指定の意味はコード内コメントにあります。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-14"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">useState</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">View</span><span class="p">,</span><span class="w"> </span><span class="nx">TextInput</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="p">,</span><span class="w"> </span><span class="nx">StyleSheet</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-native&quot;</span><span class="p">;</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">SearchBox</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// 入力文字をstateで管理（最初は空文字&quot;&quot;）</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">keyword</span><span class="p">,</span><span class="w"> </span><span class="nx">setKeyword</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">TextInput</span>
+<span class="w">        </span><span class="err">//</span><span class="w"> </span><span class="na">見た目</span>
+<span class="w">        </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">input</span><span class="p">}</span>
+<span class="w">        </span><span class="err">//</span><span class="w"> </span><span class="na">placeholder</span><span class="w"> </span><span class="err">:</span><span class="w"> </span><span class="na">未入力時に薄く表示する案内文</span>
+<span class="w">        </span><span class="na">placeholder</span><span class="o">=</span><span class="s">&quot;タイトルや著者で検索...&quot;</span>
+<span class="w">        </span><span class="err">//</span><span class="w"> </span><span class="na">value</span><span class="w"> </span><span class="err">:</span><span class="w"> </span><span class="na">表示する値</span><span class="err">。</span><span class="na">stateと結びつける</span>
+<span class="w">        </span><span class="na">value</span><span class="o">=</span><span class="p">{</span><span class="nx">keyword</span><span class="p">}</span>
+<span class="w">        </span><span class="err">//</span><span class="w"> </span><span class="na">onChangeText</span><span class="w"> </span><span class="err">:</span><span class="w"> </span><span class="na">入力が変わるたびに呼ばれる</span><span class="err">。</span><span class="na">textは今の入力内容</span>
+<span class="w">        </span><span class="na">onChangeText</span><span class="o">=</span><span class="p">{(</span><span class="nx">text</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">setKeyword</span><span class="p">(</span><span class="nx">text</span><span class="p">)}</span>
+<span class="w">      </span><span class="p">/&gt;</span>
+<span class="w">      </span><span class="p">{</span><span class="cm">/* 入力した文字がリアルタイムで表示される */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="nx">入力中</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="nx">keyword</span><span class="p">}&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">styles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">StyleSheet</span><span class="p">.</span><span class="nx">create</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">input</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 枠線の太さ1</span>
+<span class="w">    </span><span class="nx">borderWidth</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">// 枠線の色（薄いグレー）</span>
+<span class="w">    </span><span class="nx">borderColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#e2e8f0&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">// 角の丸み8</span>
+<span class="w">    </span><span class="nx">borderRadius</span><span class="o">:</span><span class="w"> </span><span class="kt">8</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">// 内側の余白</span>
+<span class="w">    </span><span class="nx">padding</span><span class="o">:</span><span class="w"> </span><span class="kt">10</span><span class="p">,</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong><code>value</code> と <code>onChangeText</code> のセット:</strong> この2つを組み合わせると「stateが入力欄の中身を管理し、入力が変わるとstateも更新される」という双方向の結びつきができます。これを「制御コンポーネント（controlled component）」と呼びます。フォームの基本パターンなので、第7章でも使います。</p>
+</blockquote>
+<h4 id="1_3">▼ コードを1つずつ分解して解説</h4>
+<p>「入力欄の中身＝状態」という結びつきを作る部分を、1つずつ見ていきましょう。</p>
+<hr>
+<h5 id="1-usestate">解説1: 入力内容を覚えておく <code>useState</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-15"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 入力文字をstateで管理（最初は空文字&quot;&quot;）</span>
+<span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">keyword</span><span class="p">,</span><span class="w"> </span><span class="nx">setKeyword</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">);</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>useState</code>（ユーズ・ステート）は、第3章で学んだ「<strong>変化する値を持つための道具</strong>」です。<code>const [今の値, 値を変える関数] = useState(初期値)</code> の形で使います。</li>
+<li>ここでは「今の値」を <code>keyword</code>（入力されている文字）、「値を変える関数」を <code>setKeyword</code> という名前にしています。</li>
+<li><code>useState("")</code> の <code>""</code> は初期値で、<strong>最初は空っぽの文字</strong>から始まる、という意味です。</li>
+<li>入力欄に打った文字をこの <code>keyword</code> にしまっておくことで、「今なにが入力されているか」をアプリが覚えていられます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>state（ステート＝状態）</strong> とは「変化して、変わると画面も更新される値」のこと。<code>useState</code> でその状態の入れ物と、それを更新する関数をセットで作ります。</p>
+</blockquote>
+<hr>
+<h5 id="2-value-onchangetext">解説2: 入力欄を状態に結びつける <code>value</code> と <code>onChangeText</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-16"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">&lt;</span><span class="nt">TextInput</span>
+<span class="w">  </span><span class="err">//</span><span class="w"> </span><span class="na">見た目</span>
+<span class="w">  </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">input</span><span class="p">}</span>
+<span class="w">  </span><span class="err">//</span><span class="w"> </span><span class="na">placeholder</span><span class="w"> </span><span class="err">:</span><span class="w"> </span><span class="na">未入力時に薄く表示する案内文</span>
+<span class="w">  </span><span class="na">placeholder</span><span class="o">=</span><span class="s">&quot;タイトルや著者で検索...&quot;</span>
+<span class="w">  </span><span class="err">//</span><span class="w"> </span><span class="na">value</span><span class="w"> </span><span class="err">:</span><span class="w"> </span><span class="na">表示する値</span><span class="err">。</span><span class="na">stateと結びつける</span>
+<span class="w">  </span><span class="na">value</span><span class="o">=</span><span class="p">{</span><span class="nx">keyword</span><span class="p">}</span>
+<span class="w">  </span><span class="err">//</span><span class="w"> </span><span class="na">onChangeText</span><span class="w"> </span><span class="err">:</span><span class="w"> </span><span class="na">入力が変わるたびに呼ばれる</span><span class="err">。</span><span class="na">textは今の入力内容</span>
+<span class="w">  </span><span class="na">onChangeText</span><span class="o">=</span><span class="p">{(</span><span class="nx">text</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">setKeyword</span><span class="p">(</span><span class="nx">text</span><span class="p">)}</span>
+<span class="p">/&gt;</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>&lt;TextInput&gt;</code> は、Webの <code>&lt;input&gt;</code> にあたる「<strong>文字を打ち込める入力欄</strong>」の部品です。</li>
+<li><code>placeholder</code>（プレースホルダー）は「未入力のときに薄い文字で表示する案内文」。ヒントを出すだけで、実際の値ではありません。</li>
+<li><code>value={keyword}</code> は「<strong>入力欄に表示する中身を、状態 <code>keyword</code> にする</strong>」指定。状態と入力欄の表示をひもづけます。</li>
+<li><code>onChangeText={(text) =&gt; setKeyword(text)}</code> は「<strong>入力が変わるたびに呼ばれる処理</strong>」。変化後の文字が <code>text</code> に入って届くので、それを <code>setKeyword(text)</code> で状態に保存します。</li>
+<li>この2つがセットになることで「打つ→状態が変わる→その状態が入力欄に映る」という流れが完成します。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>制御コンポーネント（controlled component）</strong> とは、「入力欄の中身を state が管理している」状態のこと。<code>value</code> と <code>onChangeText</code> をセットで使うのがその基本形です。</p>
+</blockquote>
+<hr>
+<h5 id="3-keyword">解説3: 入力をリアルタイムで映す <code>{keyword}</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-17"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">{</span><span class="cm">/* 入力した文字がリアルタイムで表示される */</span><span class="p">}</span>
+<span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="nx">入力中</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="nx">keyword</span><span class="p">}&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>&lt;Text&gt;</code> の中の <code>{keyword}</code> は、「<strong>状態 <code>keyword</code> の中身を、ここに表示する</strong>」という意味です。<code>{ }</code> で囲むとTypeScriptの値を埋め込めます。</li>
+<li><code>keyword</code> は入力のたびに更新されるので、ここの表示も<strong>打つそばからリアルタイムで変わります</strong>。</li>
+<li>これは「状態が変わると画面が自動で更新される」というReactの仕組みを実感できる、わかりやすい例です。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong><code>{ }</code>（中カッコ）</strong> は、JSXの中に「TypeScriptの値（変数や計算結果）」を埋め込むための記号。<code>{keyword}</code> で状態の中身を画面に差し込んでいます。</p>
+</blockquote>
+<hr>
+<h3 id="32-pressable">3.2 <code>Pressable</code> — タップを受け取る</h3>
+<p><code>Pressable</code>（プレッサブル＝押せるもの）は、あらゆる部品を「押せるボタン」にできる万能の部品です。</p>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 「保存する」と書かれた青いボタンを作り、<strong>押されたらメッセージを記録（ログ出力）する</strong>例です。<code>&lt;Pressable&gt;</code> で中身を囲み、<code>onPress</code> に「押されたときにやってほしい処理」を渡すのが基本の形です。ボタンの中の文字もやはり <code>&lt;Text&gt;</code> で囲む点に注意してください。見た目の指定はコード内コメントで説明しています。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-18"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Pressable</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="p">,</span><span class="w"> </span><span class="nx">StyleSheet</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-native&quot;</span><span class="p">;</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">SaveButton</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="c1">// onPress : 押されたときに実行する処理を渡す</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">Pressable</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">button</span><span class="p">}</span><span class="w"> </span><span class="na">onPress</span><span class="o">=</span><span class="p">{()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;保存ボタンが押された&quot;</span><span class="p">)}&gt;</span>
+<span class="w">      </span><span class="p">{</span><span class="cm">/* ボタンの中身も&lt;Text&gt;で囲む */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">buttonText</span><span class="p">}&gt;</span><span class="nx">保存する</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">Pressable</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">styles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">StyleSheet</span><span class="p">.</span><span class="nx">create</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">button</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 背景色（青）</span>
+<span class="w">    </span><span class="nx">backgroundColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#1e40af&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">// 上下の内側余白</span>
+<span class="w">    </span><span class="nx">paddingVertical</span><span class="o">:</span><span class="w"> </span><span class="kt">13</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">// 角丸</span>
+<span class="w">    </span><span class="nx">borderRadius</span><span class="o">:</span><span class="w"> </span><span class="kt">10</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">// 中の文字を横中央に</span>
+<span class="w">    </span><span class="nx">alignItems</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">buttonText</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 文字色（白）</span>
+<span class="w">    </span><span class="nx">color</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#fff&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">fontWeight</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;bold&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">fontSize</span><span class="o">:</span><span class="w"> </span><span class="kt">15</span><span class="p">,</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong><code>Button</code> ではなく <code>Pressable</code> を使う理由:</strong> React Nativeには標準の <code>&lt;Button&gt;</code> もありますが、見た目のカスタマイズがほとんどできません。デザインを自由にしたい実際のアプリでは <code>Pressable</code> が定番です。本書も以降は <code>Pressable</code> を使います。</p>
+</blockquote>
+<h4 id="1_4">▼ コードを1つずつ分解して解説</h4>
+<p>「押せるボタンを作り、押されたら処理する」部分を、1つずつ見ていきましょう。</p>
+<hr>
+<h5 id="1-pressable">解説1: 中身を囲んで押せるようにする <code>&lt;Pressable&gt;</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-19"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">&lt;</span><span class="nt">Pressable</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">button</span><span class="p">}</span><span class="w"> </span><span class="na">onPress</span><span class="o">=</span><span class="p">{()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;保存ボタンが押された&quot;</span><span class="p">)}&gt;</span>
+<span class="w">  </span><span class="p">{</span><span class="cm">/* ボタンの中身も&lt;Text&gt;で囲む */</span><span class="p">}</span>
+<span class="w">  </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">buttonText</span><span class="p">}&gt;</span><span class="nx">保存する</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">Pressable</span><span class="p">&gt;</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>&lt;Pressable&gt;</code>（プレッサブル＝押せるもの）は、「<strong>中に入れた部品を、タップできるボタンに変える</strong>」万能の部品です。</li>
+<li><code>style={styles.button}</code> でボタン自体の見た目（背景色や角丸など）を指定しています。</li>
+<li>ボタンの<strong>中の文字も必ず <code>&lt;Text&gt;</code> で囲む</strong>点に注意してください。<code>&lt;Pressable&gt;</code> の中に文字を直接書くとエラーになります。</li>
+<li><code>&lt;Pressable&gt;</code> と <code>&lt;/Pressable&gt;</code> で囲んだ範囲全体が、押せる領域になります。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong><code>&lt;Pressable&gt;</code></strong> はWebの <code>&lt;button&gt;</code> にあたる部品ですが、「中に何を入れてもボタンにできる」点が特徴。文字でも画像でも箱でも、囲めば押せるようになります。</p>
+</blockquote>
+<hr>
+<h5 id="2-onpress">解説2: 押されたときの処理 <code>onPress</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-20"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nx">onPress</span><span class="o">=</span><span class="p">{()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;保存ボタンが押された&quot;</span><span class="p">)}</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>onPress</code>（オン・プレス＝押されたら）は、「<strong>ボタンが押された瞬間に実行してほしい処理</strong>」を渡す指定です。Webの <code>onClick</code> にあたります。</li>
+<li><code>() =&gt; console.log("...")</code> は「<strong>引数なしで、<code>console.log(...)</code> を実行するだけの関数</strong>」を表すアロー関数です。この関数そのものを <code>onPress</code> に渡しています。</li>
+<li><code>console.log(...)</code>（コンソール・ログ）は、開発者ツールの画面に文字を表示する命令で、動作確認によく使います。</li>
+<li>実際のアプリでは、この中に「データを保存する処理」などを書きます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong><code>() =&gt; { }</code>（アロー関数）</strong> は「処理をひとかたまりにして渡す」ための短い関数の書き方。<code>onPress</code> には、すぐ実行するのではなく「押されたときに実行する関数」を渡すのがポイントです。</p>
+</blockquote>
+<hr>
+<h2 id="4-scrollview-flatlist">4. リストを表示する — <code>ScrollView</code> と <code>FlatList</code></h2>
+<p>スマホは画面が小さいので、たくさんの本を表示するには<strong>スクロール</strong>が必須です。方法は2つあります。</p>
+<h3 id="41-scrollview">4.1 <code>ScrollView</code> — 少数の要素向け</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> いくつかの文字を縦に並べ、画面に収まりきらなければ<strong>指でスクロールして見られる箱</strong>を作ります。<code>&lt;ScrollView&gt;</code> で中身を囲むだけで、はみ出した分をスクロール表示できるようになります。手軽ですが「中身を全部いっぺんに表示する」ため、項目が少ないとき向けだと覚えておきましょう。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-21"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">ScrollView</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-native&quot;</span><span class="p">;</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">SimpleList</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="c1">// ScrollView : 中身が画面を超えたらスクロールできる箱</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">ScrollView</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="nx">本A</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="nx">本B</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="nx">本C</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">{</span><span class="cm">/* ...たくさん並べてもスクロールできる */</span><span class="p">}</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">ScrollView</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong><code>ScrollView</code> の注意点:</strong> <code>ScrollView</code> は中身を<strong>全部いっぺんに描画</strong>します。本が10冊程度なら問題ありませんが、何百件もあるとアプリが重くなります。大量データには次の <code>FlatList</code> を使います。</p>
+</blockquote>
+<h4 id="1_5">▼ コードを1つずつ分解して解説</h4>
+<p>「囲むだけでスクロールできる箱」を、1つずつ見ていきましょう。</p>
+<hr>
+<h5 id="1-scrollview">解説1: 中身を囲む <code>&lt;ScrollView&gt;</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-22"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">&lt;</span><span class="nt">ScrollView</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="nx">本A</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="nx">本B</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="nx">本C</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">{</span><span class="cm">/* ...たくさん並べてもスクロールできる */</span><span class="p">}</span>
+<span class="p">&lt;/</span><span class="nt">ScrollView</span><span class="p">&gt;</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>&lt;ScrollView&gt;</code>（スクロール・ビュー）は、「<strong>中身が画面に収まりきらなければ、指でスクロールして見られる箱</strong>」です。</li>
+<li><code>&lt;View&gt;</code> と同じように中に部品を並べるだけで、はみ出した分を自動でスクロール表示できるようになります。特別な設定は不要です。</li>
+<li>ここでは <code>&lt;Text&gt;</code> を3つ並べていますが、もっとたくさん並べても、画面を超えた分はスクロールで見られます。</li>
+<li>既定では<strong>縦方向</strong>のスクロールになります（横スクロールにしたいときは別途指定が必要）。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong><code>&lt;ScrollView&gt;</code></strong> は「スクロールできるView」。手軽ですが、中身を<strong>全部いっぺんに作る</strong>ため、項目が少ないとき向けです。大量データには次の <code>FlatList</code> を使います。</p>
+</blockquote>
+<hr>
+<h3 id="42-flatlist">4.2 <code>FlatList</code> — 大量データ向け（本書の主役）</h3>
+<p><code>FlatList</code>（フラットリスト）は「<strong>画面に見えている分だけ描画</strong>し、スクロールに応じて順次描画する」賢いリストです。本書の書籍一覧はこれで作ります。</p>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 3冊の本のデータ（配列）を渡して、<strong>1冊ずつカード状に並べたリスト</strong>を作ります。<code>FlatList</code> には「表示したいデータ（<code>data</code>）」「1件分をどう表示するか（<code>renderItem</code>）」「各件を区別する目印（<code>keyExtractor</code>）」の3点を教えるのが基本です。データの配列を渡せば自動で繰り返し表示してくれる、という仕組みをつかんでください。各プロパティの意味はコード内コメントにあります。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-23"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">FlatList</span><span class="p">,</span><span class="w"> </span><span class="nx">View</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="p">,</span><span class="w"> </span><span class="nx">StyleSheet</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-native&quot;</span><span class="p">;</span>
+
+<span class="c1">// 表示する本のデータ（後の章ではSupabaseから取得するが、ここでは仮データ）</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">books</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;リーダブルコード&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">author</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Dustin Boswell&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;2&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;達人プログラマー&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">author</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;David Thomas&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;3&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;TypeScript入門&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">author</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;鈴木 僚太&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="p">];</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">BookList</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">FlatList</span>
+<span class="w">      </span><span class="err">//</span><span class="w"> </span><span class="na">data</span><span class="w"> </span><span class="err">:</span><span class="w"> </span><span class="na">表示するデータの配列を渡す</span>
+<span class="w">      </span><span class="na">data</span><span class="o">=</span><span class="p">{</span><span class="nx">books</span><span class="p">}</span>
+<span class="w">      </span><span class="err">//</span><span class="w"> </span><span class="na">keyExtractor</span><span class="w"> </span><span class="err">:</span><span class="w"> </span><span class="na">各要素を区別する一意のキーを返す</span><span class="err">（</span><span class="na">idを使う</span><span class="err">）</span>
+<span class="w">      </span><span class="na">keyExtractor</span><span class="o">=</span><span class="p">{(</span><span class="nx">item</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">item</span><span class="p">.</span><span class="nx">id</span><span class="p">}</span>
+<span class="w">      </span><span class="err">//</span><span class="w"> </span><span class="na">renderItem</span><span class="w"> </span><span class="err">:</span><span class="w"> </span><span class="na">1件分の見た目を返す関数</span><span class="err">。</span><span class="na">itemに1冊分が入る</span>
+<span class="w">      </span><span class="na">renderItem</span><span class="o">=</span><span class="p">{({</span><span class="w"> </span><span class="nx">item</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">(</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">card</span><span class="p">}&gt;</span>
+<span class="w">          </span><span class="p">{</span><span class="cm">/* その本のタイトル */</span><span class="p">}</span>
+<span class="w">          </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">title</span><span class="p">}&gt;{</span><span class="nx">item</span><span class="p">.</span><span class="nx">title</span><span class="p">}&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">          </span><span class="p">{</span><span class="cm">/* その本の著者 */</span><span class="p">}</span>
+<span class="w">          </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">author</span><span class="p">}&gt;{</span><span class="nx">item</span><span class="p">.</span><span class="nx">author</span><span class="p">}&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">)}</span>
+<span class="w">    </span><span class="p">/&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">styles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">StyleSheet</span><span class="p">.</span><span class="nx">create</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">card</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">padding</span><span class="o">:</span><span class="w"> </span><span class="kt">14</span><span class="p">,</span><span class="w"> </span><span class="nx">borderBottomWidth</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span><span class="w"> </span><span class="nx">borderBottomColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#e2e8f0&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">fontSize</span><span class="o">:</span><span class="w"> </span><span class="kt">15</span><span class="p">,</span><span class="w"> </span><span class="nx">fontWeight</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;bold&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">author</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">fontSize</span><span class="o">:</span><span class="w"> </span><span class="kt">12</span><span class="p">,</span><span class="w"> </span><span class="nx">color</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#64748b&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">marginTop</span><span class="o">:</span><span class="w"> </span><span class="kt">3</span><span class="w"> </span><span class="p">},</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong><code>FlatList</code> の3つの必須プロパティ:</strong>
+- <code>data</code> … 表示したいデータの配列。
+- <code>renderItem</code> … 「1件分をどう表示するか」を返す関数。<code>{ item }</code> で1件ずつ受け取る。
+- <code>keyExtractor</code> … 各要素に固有の「目印（key）」を付ける関数。Reactが要素を効率よく管理するために必要。本のidを使うのが定番です。</p>
+<p>第3章で <code>map</code> を使ってカードを並べる話をしましたが、大量データでは <code>map</code>＋<code>ScrollView</code> より <code>FlatList</code> の方が高速で、スマホアプリの定番です。</p>
+</blockquote>
+<h4 id="1_6">▼ コードを1つずつ分解して解説</h4>
+<p><code>FlatList</code> に教える3つの基本情報を、1つずつ見ていきましょう。</p>
+<hr>
+<h5 id="1-data">解説1: 表示するデータの配列 <code>data</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-24"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">books</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;リーダブルコード&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">author</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Dustin Boswell&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;2&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;達人プログラマー&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">author</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;David Thomas&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;3&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;TypeScript入門&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">author</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;鈴木 僚太&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="p">];</span>
+</code></pre></div></div>
+
+<div class="codehilite"><div class="code-wrap" id="code-25"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// data : 表示するデータの配列を渡す</span>
+<span class="nx">data</span><span class="o">=</span><span class="p">{</span><span class="nx">books</span><span class="p">}</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>books</code> は「本のデータの配列」です。<code>[ ]</code> の中に、本1冊分を <code>{ }</code>（オブジェクト）で表したものを並べています。各本は <code>id</code>・<code>title</code>・<code>author</code> の3項目を持ちます。</li>
+<li><code>data={books}</code> は「<strong>この配列を順番に表示してね</strong>」と <code>FlatList</code> に渡す指定です。</li>
+<li><code>FlatList</code> は渡された配列を見て、<strong>1件ずつ自動で繰り返し表示</strong>してくれます。自分で <code>map</code> を書く必要はありません。</li>
+<li>ここでは仮のデータですが、後の章ではこの部分をデータベース（Supabase）から取得した配列に差し替えます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>配列（はいれつ）</strong> とは、複数のデータを順番に並べて1つにまとめたもの。<code>[ ]</code> で囲み、各要素を <code>,</code>（カンマ）で区切ります。<code>FlatList</code> はこの配列の中身を1件ずつ表示します。</p>
+</blockquote>
+<hr>
+<h5 id="2-keyextractor">解説2: 各要素を区別する目印 <code>keyExtractor</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-26"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// keyExtractor : 各要素を区別する一意のキーを返す（idを使う）</span>
+<span class="nx">keyExtractor</span><span class="o">=</span><span class="p">{(</span><span class="nx">item</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">item</span><span class="p">.</span><span class="nx">id</span><span class="p">}</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>keyExtractor</code>（キー・エクストラクター＝キーを取り出すもの）は、「<strong>各データに付ける固有の目印（key）を返す関数</strong>」です。</li>
+<li><code>(item) =&gt; item.id</code> は「1冊分（<code>item</code>）を受け取って、その <code>id</code> を目印として返す」という意味のアロー関数です。</li>
+<li>Reactはこの目印を使って「どの要素がどれか」を見分け、<strong>並び替えや追加・削除を効率よく</strong>処理します。</li>
+<li>目印は配列の中で<strong>重複しない値</strong>である必要があるため、本の <code>id</code>（一意な番号）を使うのが定番です。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>key（キー）</strong> とは、リストの各要素に付ける「見分けるための名札」。Reactが要素を効率よく管理するために必要で、重複しない値（idなど）を使います。</p>
+</blockquote>
+<hr>
+<h5 id="3-1-renderitem">解説3: 1件分の見た目を返す <code>renderItem</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-27"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// renderItem : 1件分の見た目を返す関数。itemに1冊分が入る</span>
+<span class="nx">renderItem</span><span class="o">=</span><span class="p">{({</span><span class="w"> </span><span class="nx">item</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">(</span>
+<span class="w">  </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">card</span><span class="p">}&gt;</span>
+<span class="w">    </span><span class="p">{</span><span class="cm">/* その本のタイトル */</span><span class="p">}</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">title</span><span class="p">}&gt;{</span><span class="nx">item</span><span class="p">.</span><span class="nx">title</span><span class="p">}&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">{</span><span class="cm">/* その本の著者 */</span><span class="p">}</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">author</span><span class="p">}&gt;{</span><span class="nx">item</span><span class="p">.</span><span class="nx">author</span><span class="p">}&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="p">)}</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>renderItem</code>（レンダー・アイテム＝1件を描く）は、「<strong>配列の1件を、どんな見た目で表示するか</strong>」を返す関数です。<code>FlatList</code> がデータ1件ごとにこの関数を呼びます。</li>
+<li><code>({ item }) =&gt; ( ... )</code> の <code>item</code> には<strong>1冊分のデータ</strong>が入ります（<code>{ item }</code> は分割代入で、届いた情報の中から <code>item</code> だけ取り出す書き方）。</li>
+<li><code>{item.title}</code> と <code>{item.author}</code> で、その本のタイトルと著者を取り出して表示しています。</li>
+<li>結果として、3冊それぞれがこの見た目（カード）で繰り返し表示されます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong><code>renderItem</code></strong> は「1件をどう描くか」のテンプレート（ひな型）。<code>FlatList</code> はこのひな型に、配列の各データを1つずつ当てはめて画面を作ります。</p>
+</blockquote>
+<hr>
+<h2 id="5-expo-router">5. Expo Router — 画面の切り替え（ナビゲーション）</h2>
+<p>アプリには複数の画面があり、それらを行き来します（一覧→詳細→編集など）。この「画面遷移（ナビゲーション）」を担うのが <strong>Expo Router（エクスポ・ルーター）</strong> です。</p>
+<h3 id="51">5.1 ファイルを置くだけで画面ができる</h3>
+<p>Expo Routerの最大の特徴は「<strong><code>app/</code> フォルダにファイルを置くと、それがそのまま1つの画面（ルート）になる</strong>」ことです。Web版チュートリアルのNext.jsと同じ「ファイルベースルーティング」の考え方です。</p>
+<div class="codehilite"><div class="code-wrap" id="code-28"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>app/
+├── index.tsx          → アプリ起動時の最初の画面（URLでいう「/」）
+├── about.tsx          → /about でアクセスする画面
+└── books/
+    └── [id].tsx       → /books/1, /books/2 ... のような「動的な」画面
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>「ルーティング（routing）」とは？</strong> 「どのURL（道筋）のとき、どの画面を表示するか」を決める仕組みのこと。「ルート（route）＝道筋」を割り当てるので routing です。Expo Routerでは、ファイルの場所がそのままルートになります。</p>
+<p><strong><code>[id].tsx</code> の角カッコは何？</strong> ファイル名を <code>[id].tsx</code> のように角カッコで囲むと、「<strong>どんな値でも受け取れる動的な画面</strong>」になります。<code>/books/1</code> でも <code>/books/99</code> でも、この1つのファイルが対応し、<code>id</code> の部分（1や99）を受け取れます。本の詳細・編集画面に使います（第6・8章）。</p>
+</blockquote>
+<h3 id="52-link-userouter">5.2 画面を移動する — <code>Link</code> と <code>useRouter</code></h3>
+<p>別の画面へ移動する方法は2つあります。</p>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 押すと別の画面（ここでは <code>/about</code>）へ移動する<strong>リンク部品</strong>を置く例です。<code>&lt;Link&gt;</code> で文字などを囲み、<code>href</code> に「移動先のパス（場所）」を書くだけで、タップで画面が切り替わります。Webのリンクと同じ感覚で、「画面に置いておく移動ボタン」を作りたいときに使います。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-29"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 方法1: &lt;Link&gt; — 押すと移動するリンク部品</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Link</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;expo-router&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Text</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-native&quot;</span><span class="p">;</span>
+
+<span class="kd">function</span><span class="w"> </span><span class="nx">Example1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">{</span><span class="cm">/* href : 移動先のパス。押すと/about画面へ */</span><span class="p">}</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">Link</span><span class="w"> </span><span class="na">href</span><span class="o">=</span><span class="s">&quot;/about&quot;</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="nx">Aboutページへ</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">Link</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="1_7">▼ コードを1つずつ分解して解説</h4>
+<p>「画面に置く移動リンク」を、1つずつ見ていきましょう。</p>
+<hr>
+<h5 id="1-link-import">解説1: Link部品を借りてくる <code>import</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-30"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Link</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;expo-router&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Text</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-native&quot;</span><span class="p">;</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>Link</code>（リンク）は <code>expo-router</code> から借りてきます。これが「<strong>押すと別の画面へ移動する部品</strong>」です。</li>
+<li>移動の仕組みは <code>expo-router</code>（Expo Router）が担当するので、<code>react-native</code> ではなく <code>expo-router</code> から借りる点に注意します。</li>
+<li>中に表示する文字のために <code>Text</code> も <code>react-native</code> から借りています。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>Expo Router</strong> とは、Expoアプリの「画面の切り替え（ナビゲーション）」を担う仕組み。<code>app/</code> フォルダに置いたファイルが画面になり、その間の移動を <code>Link</code> などが担当します。</p>
+</blockquote>
+<hr>
+<h5 id="2-href">解説2: 移動先を指定する <code>href</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-31"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">{</span><span class="cm">/* href : 移動先のパス。押すと/about画面へ */</span><span class="p">}</span>
+<span class="p">&lt;</span><span class="nt">Link</span><span class="w"> </span><span class="na">href</span><span class="o">=</span><span class="s">&quot;/about&quot;</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="nx">Aboutページへ</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">Link</span><span class="p">&gt;</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>&lt;Link&gt;</code> で囲んだ中身（ここでは「Aboutページへ」という文字）が、<strong>タップできるリンク</strong>になります。</li>
+<li><code>href</code>（エイチレフ＝参照先）には「<strong>移動先のパス（場所）</strong>」を書きます。<code>"/about"</code> は「<code>/about</code> という画面へ」という意味です。</li>
+<li>Webのリンク（<code>&lt;a href=".."&gt;</code>）とほぼ同じ感覚で使えます。押すとその画面に切り替わります。</li>
+<li>「画面にずっと置いておく移動ボタン」を作りたいときに向いています。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>パス（path）</strong> とは「どの画面か」を表す住所のような文字列。Expo Routerでは <code>app/about.tsx</code> というファイルが <code>/about</code> というパスに対応します。</p>
+</blockquote>
+<hr>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> ボタンを押したときに、<strong>コードの中から別の画面へ移動させる</strong>例です。<code>useRouter</code> で「移動を操作する道具」を受け取り、<code>router.push("/移動先")</code> を呼ぶとその画面へ進みます。「処理が終わってから画面を切り替えたい」ような、流れの途中で移動したい場面で使う方法です。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-32"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 方法2: useRouter — コードの中から移動する（ボタンを押した後など）</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">useRouter</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;expo-router&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Pressable</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-native&quot;</span><span class="p">;</span>
+
+<span class="kd">function</span><span class="w"> </span><span class="nx">Example2</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// useRouter : 画面移動を操作する道具を取得</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">router</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useRouter</span><span class="p">();</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">{</span><span class="cm">/* router.push(&quot;パス&quot;) でその画面へ移動 */</span><span class="p">}</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">Pressable</span><span class="w"> </span><span class="na">onPress</span><span class="o">=</span><span class="p">{()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">router</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="s2">&quot;/books/1&quot;</span><span class="p">)}&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="mf">1</span><span class="nx">冊目の詳細へ</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">Pressable</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="1_8">▼ コードを1つずつ分解して解説</h4>
+<p>「コードの中から画面を移動させる」部分を、1つずつ見ていきましょう。</p>
+<hr>
+<h5 id="1-userouter">解説1: 移動の道具を受け取る <code>useRouter</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-33"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// useRouter : 画面移動を操作する道具を取得</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">router</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useRouter</span><span class="p">();</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>useRouter</code>（ユーズ・ルーター）は、「<strong>画面移動を操作するための道具を受け取る</strong>」関数です。<code>expo-router</code> から借りて使います。</li>
+<li>受け取った道具を <code>router</code> という変数に入れておき、後でこれを使って移動させます。</li>
+<li><code>&lt;Link&gt;</code> のように画面に置くのではなく、<strong>コードの流れの中で「今移動して」と命令したいとき</strong>に使います。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong><code>use〜</code> で始まる関数（フック）</strong> は、Reactの便利機能を呼び出すための道具。<code>useState</code> が状態を、<code>useRouter</code> が画面移動の道具を用意してくれます。</p>
+</blockquote>
+<hr>
+<h5 id="2-routerpush">解説2: 指定の画面へ進む <code>router.push</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-34"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">{</span><span class="cm">/* router.push(&quot;パス&quot;) でその画面へ移動 */</span><span class="p">}</span>
+<span class="p">&lt;</span><span class="nt">Pressable</span><span class="w"> </span><span class="na">onPress</span><span class="o">=</span><span class="p">{()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">router</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="s2">&quot;/books/1&quot;</span><span class="p">)}&gt;</span>
+<span class="w">  </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="mf">1</span><span class="nx">冊目の詳細へ</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">Pressable</span><span class="p">&gt;</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>onPress={() =&gt; router.push("/books/1")}</code> は「<strong>押されたら <code>router.push("/books/1")</code> を実行する</strong>」という指定です。</li>
+<li><code>router.push("パス")</code> は「<strong>そのパスの画面へ進む（新しい画面を上に重ねる）</strong>」命令です。ここでは <code>/books/1</code>（1冊目の詳細画面）へ移動します。</li>
+<li><code>Link</code> と違い、コードの中で呼ぶので「<strong>保存処理が終わってから移動</strong>」のように、流れの途中で移動させたいときに便利です。</li>
+<li>1つ前の画面に戻りたいときは <code>router.back()</code> を使います。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong><code>router.push()</code></strong> は「画面を上に積み重ねる移動」。トランプのカードを重ねるイメージで、<code>router.back()</code> で上のカードをめくって前の画面に戻れます。</p>
+</blockquote>
+<hr>
+<blockquote>
+<p><strong><code>Link</code> と <code>router.push</code> の使い分け:</strong>
+- <strong><code>&lt;Link&gt;</code></strong> … 「押したら移動するリンク」を画面に置きたいとき。
+- <strong><code>router.push()</code></strong> … 「保存ボタンを押して、処理が終わったら一覧画面へ戻す」のように、コードの流れの中で移動したいとき。</p>
+<p><code>router.push("/path")</code> は新しい画面を上に重ねる移動、<code>router.back()</code> は1つ前の画面に戻る移動です。第6章以降で実際に使います。</p>
+</blockquote>
+<h3 id="53-_layouttsx">5.3 <code>_layout.tsx</code> — 画面全体の枠組み</h3>
+<p><code>app/</code> フォルダ内の <code>_layout.tsx</code>（アンダースコアで始まる特別なファイル）は、「全画面に共通する枠組み」を定義します。たとえば「画面上部のヘッダー」や「下部のタブバー」をここで設定します。</p>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> すべての画面に共通する「枠組み」を決める、いちばん簡単な <code>_layout.tsx</code> の例です。<code>&lt;Stack /&gt;</code> を返すことで、「画面をカードのように上へ積み重ねて切り替える」遷移方式を指定しています。今は中身が1行だけですが、ここに共通のヘッダーやタブバーを足していく土台になる、という位置づけを押さえてください。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-35"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Stack</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;expo-router&quot;</span><span class="p">;</span>
+
+<span class="c1">// _layout.tsx : このフォルダ内の画面たちを、どう積み重ねる(Stack)かを定義する</span>
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">RootLayout</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// Stack : 画面を「カードを重ねるように」遷移させるナビゲーションの形</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">Stack</span><span class="w"> </span><span class="p">/&gt;;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>「Stack（スタック）」ナビゲーションとは？</strong> 画面を「トランプのカードを上に重ねていく」ように遷移させる方式です。一覧画面の上に詳細画面を重ね、「戻る」で上のカードをめくって一覧に戻る、というイメージ。スマホアプリで最も基本的な遷移方式です。第6章でこのStackと、下タブの「Tabs」ナビゲーションを実際に組み立てます。</p>
+</blockquote>
+<h4 id="1_9">▼ コードを1つずつ分解して解説</h4>
+<p>「全画面に共通する枠組み」を決める部分を、1つずつ見ていきましょう。</p>
+<hr>
+<h5 id="1-stack-import">解説1: Stack部品を借りてくる <code>import</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-36"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Stack</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;expo-router&quot;</span><span class="p">;</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>Stack</code>（スタック＝積み重ね）は <code>expo-router</code> から借りてきます。これが「<strong>画面をカードのように上へ積み重ねて切り替える</strong>」遷移方式を表す部品です。</li>
+<li>移動の仕組みはExpo Routerが担当するので、ここでも <code>expo-router</code> から借ります。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong><code>_layout.tsx</code></strong> は、先頭にアンダースコア <code>_</code> が付いた特別なファイル名。「画面そのもの」ではなく「<strong>そのフォルダ内の画面たちに共通する枠組み</strong>」を定義する、という意味を持ちます。</p>
+</blockquote>
+<hr>
+<h5 id="2-stack">解説2: 遷移方式を指定する <code>&lt;Stack /&gt;</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-37"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">RootLayout</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// Stack : 画面を「カードを重ねるように」遷移させるナビゲーションの形</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">Stack</span><span class="w"> </span><span class="p">/&gt;;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>RootLayout</code> は「このフォルダの枠組み」を表すコンポーネントです。<code>export default</code> で公開し、Expo Routerがこれを枠組みとして使います。</li>
+<li><code>return &lt;Stack /&gt;;</code> は「<strong>この枠組みではStack（カードを重ねる）方式で画面を切り替える</strong>」という指定です。<code>&lt;Stack /&gt;</code> は中身のない自己閉じタグで書きます。</li>
+<li>いまは1行だけですが、ここに共通のヘッダーや下部のタブバーを足していく<strong>土台</strong>になります。第6章でその中身を組み立てます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>レイアウト（layout）</strong> とは「複数の画面に共通する外枠」のこと。ヘッダーやタブバーなど、どの画面でも同じように出したい部分を <code>_layout.tsx</code> にまとめます。</p>
+</blockquote>
+<hr>
+<h2 id="6-safeareaview">6. 安全な表示領域 — <code>SafeAreaView</code></h2>
+<p>最近のスマホは画面上部にノッチ（カメラ部分の切り欠き）や、下部にホームバーがあります。これらに文字が隠れないようにする部品が <strong><code>SafeAreaView</code></strong> です。</p>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 文字が、画面上部のノッチ（カメラの切り欠き）や下部のホームバーに<strong>重なって隠れないように表示する</strong>例です。中身を <code>&lt;SafeAreaView&gt;</code> で囲むだけで、機種ごとの「避けるべき危険地帯」を自動でよけてくれます。普通の <code>&lt;View&gt;</code> の代わりに一番外側の箱として使う、という使い方を覚えておきましょう。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-38"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// この部品集から借りる</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">SafeAreaView</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-native-safe-area-context&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Text</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-native&quot;</span><span class="p">;</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">Screen</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="c1">// SafeAreaView : ノッチやホームバーを避けた「安全な領域」に中身を表示する箱</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">SafeAreaView</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{{</span><span class="w"> </span><span class="nx">flex</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="w"> </span><span class="p">}}&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="nx">この文字はノッチに隠れません</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">SafeAreaView</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>なぜ必要？</strong> 普通の <code>&lt;View&gt;</code> だと、文字がカメラのノッチやステータスバーに重なって読めなくなることがあります。<code>SafeAreaView</code> で囲むと、機種ごとの「危険地帯」を自動で避けてくれます。Expoのテンプレートには最初から組み込まれていることが多いです。</p>
+</blockquote>
+<h4 id="1_10">▼ コードを1つずつ分解して解説</h4>
+<p>「安全な領域に表示する箱」を、1つずつ見ていきましょう。</p>
+<hr>
+<h5 id="1-safeareaview-import">解説1: SafeAreaView を借りてくる <code>import</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-39"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// この部品集から借りる</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">SafeAreaView</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-native-safe-area-context&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Text</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-native&quot;</span><span class="p">;</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>SafeAreaView</code>（セーフ・エリア・ビュー＝安全領域のView）は、<code>react-native-safe-area-context</code> という<strong>別の部品集</strong>から借ります。</li>
+<li><code>View</code>/<code>Text</code> のように <code>react-native</code> 本体から借りるのではない点に注意します。借りる場所（<code>from "..."</code>）を間違えるとエラーになります。</li>
+<li>このライブラリはExpoのテンプレートに最初から入っていることが多く、すぐ使えます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>ノッチ</strong> とは画面上部のカメラ部分の切り欠き、<strong>ホームバー</strong> とは画面下部の操作バーのこと。これらに文字が重なると読めなくなるため、避ける必要があります。</p>
+</blockquote>
+<hr>
+<h5 id="2-safeareaview">解説2: 中身を安全領域に表示する <code>&lt;SafeAreaView&gt;</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-40"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">&lt;</span><span class="nt">SafeAreaView</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{{</span><span class="w"> </span><span class="nx">flex</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="w"> </span><span class="p">}}&gt;</span>
+<span class="w">  </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="nx">この文字はノッチに隠れません</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">SafeAreaView</span><span class="p">&gt;</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>&lt;SafeAreaView&gt;</code> で囲むだけで、中身が<strong>ノッチやホームバーを避けた「安全な領域」に表示</strong>されます。機種ごとの避けるべき範囲は自動で計算されます。</li>
+<li>普通の <code>&lt;View&gt;</code> の代わりに、<strong>一番外側の箱</strong>として使うのが基本の使い方です。</li>
+<li><code>style={{ flex: 1 }}</code> は「画面いっぱいに広がる」指定。安全領域の中で、中身を画面全体に広げています。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong><code>SafeAreaView</code></strong> は「安全領域（safe area）の中だけに表示するView」。機種ごとに違うノッチやホームバーの位置を自動でよけてくれるので、文字が隠れる心配がなくなります。</p>
+</blockquote>
+<hr>
+<h2 id="react-native">発展: アプリでは使っていない重要なReact Native機能</h2>
+<blockquote>
+<p>ここまでで、本書のアプリを作るのに必要な部品はひととおり登場しました。このセクションでは、本書のアプリでは直接使っていないけれど、<strong>実際のスマホアプリ作りでとてもよく使う重要な機能</strong>を6つ紹介します。どれも「いつ使うか・なぜ必要か」から説明するので、必要になったときに「あ、あれが使える」と思い出せるようになっておきましょう。各トピックは独立した最小サンプルなので、気になるものから読んで構いません。</p>
+</blockquote>
+<h3 id="image">Image — 画像を表示する</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> アプリに<strong>画像を2種類の方法で表示する</strong>例です。1つはアプリに同梱した画像ファイル（ローカル画像）、もう1つはインターネット上にある画像（ネットワーク画像）です。どちらも <code>&lt;Image&gt;</code> という部品で表示しますが、画像の「指定のしかた」が少し違います。スマホでは画像の<strong>大きさを自分で指定する</strong>必要がある点も大事なポイントです。各指定の意味はコード内コメントにあります。</p>
+</blockquote>
+<p><strong>いつ使う・なぜ必要？</strong> 本の表紙、プロフィール写真、アイコンなど、アプリに画像を出したい場面はとても多いです。Webの <code>&lt;img&gt;</code> は使えないので、React Native専用の <code>&lt;Image&gt;</code> を使います。</p>
+<div class="codehilite"><div class="code-wrap" id="code-41"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">View</span><span class="p">,</span><span class="w"> </span><span class="nx">Image</span><span class="p">,</span><span class="w"> </span><span class="nx">StyleSheet</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-native&quot;</span><span class="p">;</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">ImageExample</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">{</span><span class="cm">/* 方法1: ローカル画像（アプリに同梱したファイル）は require(...) で指定 */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Image</span>
+<span class="w">        </span><span class="err">//</span><span class="w"> </span><span class="na">source</span><span class="w"> </span><span class="err">:</span><span class="w"> </span><span class="na">表示する画像</span><span class="err">。</span><span class="na">requireでファイルを読み込む</span>
+<span class="w">        </span><span class="na">source</span><span class="o">=</span><span class="p">{</span><span class="nx">require</span><span class="p">(</span><span class="s2">&quot;../assets/cover.png&quot;</span><span class="p">)}</span>
+<span class="w">        </span><span class="err">//</span><span class="w"> </span><span class="na">大きさは</span><span class="w"> </span><span class="na">style</span><span class="w"> </span><span class="na">で指定する</span>
+<span class="w">        </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">local</span><span class="p">}</span>
+<span class="w">      </span><span class="p">/&gt;</span>
+
+<span class="w">      </span><span class="p">{</span><span class="cm">/* 方法2: ネットワーク画像（インターネット上の画像）は { uri: &quot;URL&quot; } で指定 */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Image</span>
+<span class="w">        </span><span class="err">//</span><span class="w"> </span><span class="na">uri</span><span class="w"> </span><span class="err">:</span><span class="w"> </span><span class="na">画像のあるURL</span><span class="err">（</span><span class="na">住所</span><span class="err">）</span>
+<span class="w">        </span><span class="na">source</span><span class="o">=</span><span class="p">{{</span><span class="w"> </span><span class="nx">uri</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;https://example.com/book.png&quot;</span><span class="w"> </span><span class="p">}}</span>
+<span class="w">        </span><span class="err">//</span><span class="w"> </span><span class="na">ネット画像は大きさ指定が必須</span>
+<span class="w">        </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">remote</span><span class="p">}</span>
+<span class="w">      </span><span class="p">/&gt;</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">styles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">StyleSheet</span><span class="p">.</span><span class="nx">create</span><span class="p">({</span>
+<span class="w">  </span><span class="c1">// width:横幅 / height:高さ（数値で指定）</span>
+<span class="w">  </span><span class="nx">local</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">width</span><span class="o">:</span><span class="w"> </span><span class="kt">100</span><span class="p">,</span><span class="w"> </span><span class="nx">height</span><span class="o">:</span><span class="w"> </span><span class="kt">150</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">remote</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">width</span><span class="o">:</span><span class="w"> </span><span class="kt">100</span><span class="p">,</span><span class="w"> </span><span class="nx">height</span><span class="o">:</span><span class="w"> </span><span class="kt">150</span><span class="w"> </span><span class="p">},</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>画像の大きさは自分で指定する:</strong> Webと違い、React Nativeでは（特にネットワーク画像で）<code>width</code> と <code>height</code> を <code>style</code> で指定しないと画像が表示されないことがあります。「画像を出すときは大きさもセットで指定する」と覚えておきましょう。</p>
+</blockquote>
+<h4 id="1_11">▼ コードを1つずつ分解して解説</h4>
+<p>「2種類の画像指定」を、1つずつ見ていきましょう。</p>
+<hr>
+<h5 id="1-require">解説1: 同梱ファイルを表示する <code>require(...)</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-42"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">&lt;</span><span class="nt">Image</span>
+<span class="w">  </span><span class="err">//</span><span class="w"> </span><span class="na">source</span><span class="w"> </span><span class="err">:</span><span class="w"> </span><span class="na">表示する画像</span><span class="err">。</span><span class="na">requireでファイルを読み込む</span>
+<span class="w">  </span><span class="na">source</span><span class="o">=</span><span class="p">{</span><span class="nx">require</span><span class="p">(</span><span class="s2">&quot;../assets/cover.png&quot;</span><span class="p">)}</span>
+<span class="w">  </span><span class="err">//</span><span class="w"> </span><span class="na">大きさは</span><span class="w"> </span><span class="na">style</span><span class="w"> </span><span class="na">で指定する</span>
+<span class="w">  </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">local</span><span class="p">}</span>
+<span class="p">/&gt;</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>&lt;Image&gt;</code>（イメージ＝画像）は、Webの <code>&lt;img&gt;</code> にあたる「<strong>画像を表示する部品</strong>」です。<code>source</code>（ソース＝もと）に「どの画像を出すか」を渡します。</li>
+<li><code>require("../assets/cover.png")</code> は「<strong>アプリに一緒に入れておいた画像ファイルを読み込む</strong>」書き方です。<code>"../assets/cover.png"</code> はそのファイルの置き場所（パス）です。</li>
+<li>このように同梱した画像（ローカル画像）は、<code>require(...)</code> でファイルそのものを指定します。文字列のパスをそのまま渡すのではない点に注意してください。</li>
+<li><code>style</code> で <code>width</code>・<code>height</code>（大きさ）を指定します。指定しないと表示されなかったり、意図しない大きさになります。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>ローカル画像</strong> とは、アプリの中に一緒に入れて配布する画像ファイルのこと。アイコンやロゴなど「最初から決まっている画像」に使います。<code>require(...)</code> でアプリの中のファイルを読み込みます。</p>
+</blockquote>
+<hr>
+<h5 id="2-uri-url">解説2: ネット上の画像を表示する <code>{ uri: "URL" }</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-43"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">&lt;</span><span class="nt">Image</span>
+<span class="w">  </span><span class="err">//</span><span class="w"> </span><span class="na">uri</span><span class="w"> </span><span class="err">:</span><span class="w"> </span><span class="na">画像のあるURL</span><span class="err">（</span><span class="na">住所</span><span class="err">）</span>
+<span class="w">  </span><span class="na">source</span><span class="o">=</span><span class="p">{{</span><span class="w"> </span><span class="nx">uri</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;https://example.com/book.png&quot;</span><span class="w"> </span><span class="p">}}</span>
+<span class="w">  </span><span class="err">//</span><span class="w"> </span><span class="na">ネット画像は大きさ指定が必須</span>
+<span class="w">  </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">remote</span><span class="p">}</span>
+<span class="p">/&gt;</span>
+</code></pre></div></div>
+
+<ul>
+<li>ネットワーク画像（インターネット上にある画像）は、<code>source={{ uri: "URL" }}</code> の形で「<strong>画像のあるURL（住所）</strong>」を渡します。</li>
+<li>外側の <code>{ }</code> は「JSXの中にTypeScriptを書く印」、内側の <code>{ uri: "..." }</code> は「<code>uri</code> という項目を持つオブジェクト」です（<code>&lt;View style={{...}}&gt;</code> と同じ二重カッコのしくみ）。</li>
+<li>ネットワーク画像は、読み込んでみるまで大きさが分からないため、<strong><code>width</code> と <code>height</code> の指定が特に重要</strong>です。指定しないと表示されないことがあります。</li>
+<li>本の表紙をデータベースのURLから出す、といった場面ではこちらの方法を使います。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>URI（ユーアールアイ）</strong> は、ここでは画像のある場所を表す「URL（インターネット上の住所）」とほぼ同じ意味。<code>{ uri: "https://..." }</code> で「この住所の画像を取ってきて表示して」と指定します。</p>
+</blockquote>
+<hr>
+<h3 id="modal">Modal — ポップアップを表示する</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> ボタンを押すと、画面の上に<strong>小さなダイアログ（ポップアップ）が重なって出る</strong>例です。<code>&lt;Modal&gt;</code> という部品で囲んだ中身が、ふだんは隠れていて、必要なときだけ前面に出ます。出す・隠すの切り替えは <code>useState</code>（状態）で管理します。「確認メッセージを出す」「設定パネルをかぶせる」といった場面の基本形です。各指定の意味はコード内コメントにあります。</p>
+</blockquote>
+<p><strong>いつ使う・なぜ必要？</strong> 「本当に削除しますか?」の確認や、入力フォームを一時的にかぶせて表示したいときに使います。別の画面に移動せず、<strong>今の画面の上に重ねて出す</strong>のがModalの役割です。</p>
+<div class="codehilite"><div class="code-wrap" id="code-44"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">useState</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">View</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="p">,</span><span class="w"> </span><span class="nx">Pressable</span><span class="p">,</span><span class="w"> </span><span class="nx">Modal</span><span class="p">,</span><span class="w"> </span><span class="nx">StyleSheet</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-native&quot;</span><span class="p">;</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">ModalExample</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// ポップアップを出すかどうかの状態（最初は隠す=false）</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">visible</span><span class="p">,</span><span class="w"> </span><span class="nx">setVisible</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">center</span><span class="p">}&gt;</span>
+<span class="w">      </span><span class="p">{</span><span class="cm">/* このボタンでポップアップを出す（visibleをtrueに） */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Pressable</span><span class="w"> </span><span class="na">onPress</span><span class="o">=</span><span class="p">{()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">setVisible</span><span class="p">(</span><span class="kc">true</span><span class="p">)}&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="nx">ポップアップを開く</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">Pressable</span><span class="p">&gt;</span>
+
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Modal</span>
+<span class="w">        </span><span class="err">//</span><span class="w"> </span><span class="na">visible</span><span class="w"> </span><span class="err">:</span><span class="w"> </span><span class="na">trueなら表示</span><span class="err">、</span><span class="na">falseなら非表示</span>
+<span class="w">        </span><span class="na">visible</span><span class="o">=</span><span class="p">{</span><span class="nx">visible</span><span class="p">}</span>
+<span class="w">        </span><span class="err">//</span><span class="w"> </span><span class="na">transparent</span><span class="w"> </span><span class="err">:</span><span class="w"> </span><span class="na">背景を透けさせて</span><span class="err">、</span><span class="na">後ろの画面をうっすら見せる</span>
+<span class="w">        </span><span class="na">transparent</span><span class="o">=</span><span class="p">{</span><span class="kc">true</span><span class="p">}</span>
+<span class="w">        </span><span class="err">//</span><span class="w"> </span><span class="na">animationType</span><span class="w"> </span><span class="err">:</span><span class="w"> </span><span class="na">出入りの動き</span><span class="err">（</span><span class="na">fade</span><span class="o">=</span><span class="na">じわっと</span><span class="err">）</span>
+<span class="w">        </span><span class="na">animationType</span><span class="o">=</span><span class="s">&quot;fade&quot;</span>
+<span class="w">        </span><span class="err">//</span><span class="w"> </span><span class="na">Android戻るボタンで閉じたときの処理</span>
+<span class="w">        </span><span class="na">onRequestClose</span><span class="o">=</span><span class="p">{()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">setVisible</span><span class="p">(</span><span class="kc">false</span><span class="p">)}</span>
+<span class="w">      </span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">{</span><span class="cm">/* 画面全体を薄暗くする背景 */</span><span class="p">}</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">overlay</span><span class="p">}&gt;</span>
+<span class="w">          </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">box</span><span class="p">}&gt;</span>
+<span class="w">            </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">message</span><span class="p">}&gt;</span><span class="nx">これはポップアップです</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">            </span><span class="p">{</span><span class="cm">/* このボタンで閉じる（visibleをfalseに） */</span><span class="p">}</span>
+<span class="w">            </span><span class="p">&lt;</span><span class="nt">Pressable</span><span class="w"> </span><span class="na">onPress</span><span class="o">=</span><span class="p">{()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">setVisible</span><span class="p">(</span><span class="kc">false</span><span class="p">)}&gt;</span>
+<span class="w">              </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">close</span><span class="p">}&gt;</span><span class="nx">閉じる</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">            </span><span class="p">&lt;/</span><span class="nt">Pressable</span><span class="p">&gt;</span>
+<span class="w">          </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">Modal</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">styles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">StyleSheet</span><span class="p">.</span><span class="nx">create</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">center</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">flex</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span><span class="w"> </span><span class="nx">justifyContent</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">alignItems</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="c1">// 後ろを薄暗くする全画面の背景</span>
+<span class="w">  </span><span class="nx">overlay</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">flex</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">justifyContent</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">alignItems</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">// 黒の半透明（0.4=40%の濃さ）</span>
+<span class="w">    </span><span class="nx">backgroundColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;rgba(0,0,0,0.4)&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="c1">// 白いカード</span>
+<span class="w">  </span><span class="nx">box</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">backgroundColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#fff&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">padding</span><span class="o">:</span><span class="w"> </span><span class="kt">24</span><span class="p">,</span><span class="w"> </span><span class="nx">borderRadius</span><span class="o">:</span><span class="w"> </span><span class="kt">12</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">message</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">fontSize</span><span class="o">:</span><span class="w"> </span><span class="kt">16</span><span class="p">,</span><span class="w"> </span><span class="nx">marginBottom</span><span class="o">:</span><span class="w"> </span><span class="kt">16</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">close</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">color</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#1e40af&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">fontWeight</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;bold&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h4 id="1_12">▼ コードを1つずつ分解して解説</h4>
+<p>「出す・隠すを切り替えられるポップアップ」を、1つずつ見ていきましょう。</p>
+<hr>
+<h5 id="1_13">解説1: 出すか隠すかを覚えておく状態</h5>
+<div class="codehilite"><div class="code-wrap" id="code-45"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// ポップアップを出すかどうかの状態（最初は隠す=false）</span>
+<span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">visible</span><span class="p">,</span><span class="w"> </span><span class="nx">setVisible</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>useState(false)</code> で「<strong>ポップアップを今出しているか</strong>」を覚えておく状態を作ります。<code>true</code> なら出す、<code>false</code> なら隠す、という意味です。</li>
+<li>最初は <code>false</code>（隠す）にしているので、画面を開いた直後はポップアップは出ていません。</li>
+<li><code>setVisible(true)</code> で出し、<code>setVisible(false)</code> で隠します。この状態1つで、ポップアップの表示・非表示を切り替えます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>真偽値（しんぎち / boolean）</strong> とは「はい（<code>true</code>）か いいえ（<code>false</code>）」の2つだけを表す値。「出す/出さない」「オン/オフ」のような2択の状態を覚えるのにぴったりです。</p>
+</blockquote>
+<hr>
+<h5 id="2-modal">解説2: 重ねて表示する <code>&lt;Modal&gt;</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-46"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">&lt;</span><span class="nt">Modal</span>
+<span class="w">  </span><span class="err">//</span><span class="w"> </span><span class="na">visible</span><span class="w"> </span><span class="err">:</span><span class="w"> </span><span class="na">trueなら表示</span><span class="err">、</span><span class="na">falseなら非表示</span>
+<span class="w">  </span><span class="na">visible</span><span class="o">=</span><span class="p">{</span><span class="nx">visible</span><span class="p">}</span>
+<span class="w">  </span><span class="err">//</span><span class="w"> </span><span class="na">transparent</span><span class="w"> </span><span class="err">:</span><span class="w"> </span><span class="na">背景を透けさせて</span><span class="err">、</span><span class="na">後ろの画面をうっすら見せる</span>
+<span class="w">  </span><span class="na">transparent</span><span class="o">=</span><span class="p">{</span><span class="kc">true</span><span class="p">}</span>
+<span class="w">  </span><span class="err">//</span><span class="w"> </span><span class="na">animationType</span><span class="w"> </span><span class="err">:</span><span class="w"> </span><span class="na">出入りの動き</span><span class="err">（</span><span class="na">fade</span><span class="o">=</span><span class="na">じわっと</span><span class="err">）</span>
+<span class="w">  </span><span class="na">animationType</span><span class="o">=</span><span class="s">&quot;fade&quot;</span>
+<span class="w">  </span><span class="err">//</span><span class="w"> </span><span class="na">Android戻るボタンで閉じたときの処理</span>
+<span class="w">  </span><span class="na">onRequestClose</span><span class="o">=</span><span class="p">{()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">setVisible</span><span class="p">(</span><span class="kc">false</span><span class="p">)}</span>
+<span class="p">&gt;</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>&lt;Modal&gt;</code>（モーダル）は、「<strong>今の画面の上に、別の中身を重ねて表示する</strong>」部品です。</li>
+<li><code>visible={visible}</code> で「出すか隠すか」を状態とひもづけます。状態が <code>true</code> のときだけ中身が前面に出ます。</li>
+<li><code>transparent={true}</code> は「<strong>背景を透明にして、後ろの画面をうっすら見せる</strong>」指定。これと薄暗い背景（後述の <code>overlay</code>）を組み合わせると、よくある「後ろが暗くなってポップアップが浮かぶ」見た目になります。</li>
+<li><code>animationType="fade"</code> は出入りの動きで、<code>"fade"</code> はじわっと現れる動きです（他に <code>"slide"</code> などがあります）。</li>
+<li><code>onRequestClose</code> は、Androidの「戻る」ボタンで閉じようとしたときに呼ばれる処理です。ここで <code>setVisible(false)</code> して閉じます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>モーダル（modal）</strong> とは「いったんそれを操作（または閉じる）しないと先に進めない、前面に重なる表示」のこと。確認ダイアログや設定パネルなど、「今これに注目してほしい」ものに使います。</p>
+</blockquote>
+<hr>
+<h5 id="3_1">解説3: 後ろを薄暗くする背景とカード</h5>
+<div class="codehilite"><div class="code-wrap" id="code-47"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">overlay</span><span class="p">}&gt;</span>
+<span class="w">  </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">box</span><span class="p">}&gt;</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">message</span><span class="p">}&gt;</span><span class="nx">これはポップアップです</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">Pressable</span><span class="w"> </span><span class="na">onPress</span><span class="o">=</span><span class="p">{()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">setVisible</span><span class="p">(</span><span class="kc">false</span><span class="p">)}&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">close</span><span class="p">}&gt;</span><span class="nx">閉じる</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">Pressable</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>styles.overlay</code> の <code>backgroundColor: "rgba(0,0,0,0.4)"</code> は「<strong>黒の半透明</strong>」で、画面全体をうっすら暗くする背景です。これで後ろの画面が暗くなり、ポップアップが浮かんで見えます。</li>
+<li>その中の <code>styles.box</code>（白いカード）が、実際のポップアップの中身です。<code>justifyContent</code>・<code>alignItems</code> の中央寄せで、画面の真ん中に置いています。</li>
+<li>「閉じる」を押すと <code>setVisible(false)</code> が呼ばれ、状態が <code>false</code> になってポップアップが消えます。</li>
+<li>このように「薄暗い背景＋中央の白いカード」を自分で組むのが、見た目を整えたModalの定番パターンです。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong><code>rgba(0,0,0,0.4)</code></strong> は色の指定方法の1つで、<code>rgba(赤, 緑, 青, 透明度)</code> の形。最後の <code>0.4</code> が透明度で、<code>0</code>=完全に透明、<code>1</code>=完全に不透明。<code>0.4</code> は「40%の濃さの黒」を意味します。</p>
+</blockquote>
+<hr>
+<h3 id="platform-ios-android">Platform — iOS と Android で出し分ける</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> <strong>今アプリが動いているのがiPhone（iOS）かAndroidかを判定して、表示や設定を変える</strong>例です。<code>Platform.OS</code> で「今どっちの端末か」が分かり、<code>Platform.select</code> で「iOSならコレ、Androidならコレ」と値を切り替えられます。OSによって少しだけ見た目や余白を変えたいときに使います。各指定の意味はコード内コメントにあります。</p>
+</blockquote>
+<p><strong>いつ使う・なぜ必要？</strong> iOSとAndroidは、ちょうどよい余白やフォント、操作感が少しずつ違います。「iOSだけ上に余白を足す」「OSごとに違うフォントを使う」など、<strong>端末によって細かく調整したい</strong>ときに使います。1つのコードで両方のアプリを作るReact Nativeならではの機能です。</p>
+<div class="codehilite"><div class="code-wrap" id="code-48"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">View</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="p">,</span><span class="w"> </span><span class="nx">Platform</span><span class="p">,</span><span class="w"> </span><span class="nx">StyleSheet</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-native&quot;</span><span class="p">;</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">PlatformExample</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">box</span><span class="p">}&gt;</span>
+<span class="w">      </span><span class="p">{</span><span class="cm">/* Platform.OS : 今動いているOSの名前。&quot;ios&quot; か &quot;android&quot; が入る */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="nx">今のOS</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="nx">Platform</span><span class="p">.</span><span class="nx">OS</span><span class="p">}&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">styles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">StyleSheet</span><span class="p">.</span><span class="nx">create</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">box</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Platform.select : OSごとに違う値を選ぶ。iosのときは上余白を多めに、androidは少なめに</span>
+<span class="w">    </span><span class="nx">paddingTop</span><span class="o">:</span><span class="w"> </span><span class="kt">Platform.select</span><span class="p">({</span><span class="w"> </span><span class="nx">ios</span><span class="o">:</span><span class="w"> </span><span class="kt">50</span><span class="p">,</span><span class="w"> </span><span class="nx">android</span><span class="o">:</span><span class="w"> </span><span class="kt">20</span><span class="w"> </span><span class="p">}),</span>
+<span class="w">    </span><span class="nx">backgroundColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#f1f5f9&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h4 id="1_14">▼ コードを1つずつ分解して解説</h4>
+<p>「OSを見分けて出し分ける」2つの書き方を、1つずつ見ていきましょう。</p>
+<hr>
+<h5 id="1-os-platformos">解説1: 今のOSを調べる <code>Platform.OS</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-49"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="nx">今のOS</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="nx">Platform</span><span class="p">.</span><span class="nx">OS</span><span class="p">}&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>Platform</code>（プラットフォーム）は、React Native本体から借りる「<strong>今の端末の情報を教えてくれる道具</strong>」です。</li>
+<li><code>Platform.OS</code> には、今アプリが動いている端末の種類が入っています。iPhoneなら <code>"ios"</code>、Androidなら <code>"android"</code> という文字が入ります。</li>
+<li><code>{Platform.OS}</code> のように <code>{ }</code> で囲んでJSXに埋め込むと、その値（<code>"ios"</code> など）を画面に表示できます。</li>
+<li>これを <code>if</code> などと組み合わせて「iOSのときだけこうする」といった分岐に使えます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>OS（オーエス）</strong> とは、スマホを動かしている基本ソフトのこと。iPhoneは「iOS」、多くの他社スマホは「Android」というOSで動いています。React Nativeは1つのコードで両方のOS向けアプリを作れます。</p>
+</blockquote>
+<hr>
+<h5 id="2-os-platformselect">解説2: OSごとに値を選ぶ <code>Platform.select</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-50"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nx">paddingTop</span><span class="o">:</span><span class="w"> </span><span class="kt">Platform.select</span><span class="p">({</span><span class="w"> </span><span class="nx">ios</span><span class="o">:</span><span class="w"> </span><span class="kt">50</span><span class="p">,</span><span class="w"> </span><span class="nx">android</span><span class="o">:</span><span class="w"> </span><span class="kt">20</span><span class="w"> </span><span class="p">}),</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>Platform.select({ ... })</code> は「<strong>OSごとに違う値を選んで返す</strong>」道具です。<code>{ ios: ..., android: ... }</code> のように、OSごとの値を書いておきます。</li>
+<li>ここでは「iOSなら <code>paddingTop</code>（上の内側余白）を <code>50</code>、Androidなら <code>20</code>」という意味になります。実際に動いているOSに合った値が自動で選ばれます。</li>
+<li><code>Platform.OS</code> を <code>if</code> で分岐して書くこともできますが、<code>Platform.select</code> を使うと<strong>1行ですっきり</strong>書けて便利です。</li>
+<li>スタイルの中で「OSごとにこの値だけ変えたい」というときの定番の書き方です。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong><code>Platform.select</code></strong> は「OSごとに用意した値の中から、今のOSに合うものを選ぶ」しくみ。<code>{ ios: ..., android: ... }</code> という形で、それぞれのOS向けの値をまとめて渡します。</p>
+</blockquote>
+<hr>
+<h3 id="dimensions-usewindowdimensions">Dimensions と useWindowDimensions — 画面の幅・高さを知る</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> <strong>今使っている端末の画面の幅や高さ（ピクセル数）を取得して、表示に使う</strong>例です。<code>useWindowDimensions</code> という道具を使うと、画面の幅・高さが分かり、しかも<strong>画面を回転させたときなどに自動で更新</strong>されます。「画面の幅に合わせて部品の大きさを変えたい」ときに役立ちます。各指定の意味はコード内コメントにあります。</p>
+</blockquote>
+<p><strong>いつ使う・なぜ必要？</strong> スマホは機種によって画面の大きさがバラバラです。「画面の幅いっぱいの半分の大きさにしたい」「横向きにしたら並べ方を変えたい」など、<strong>画面サイズに合わせて見た目を調整したい</strong>ときに、今の画面サイズを知る必要があります。</p>
+<div class="codehilite"><div class="code-wrap" id="code-51"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">useWindowDimensions</span><span class="p">,</span><span class="w"> </span><span class="nx">View</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="p">,</span><span class="w"> </span><span class="nx">StyleSheet</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-native&quot;</span><span class="p">;</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">DimensionsExample</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// useWindowDimensions : 今の画面の幅・高さを取得する道具。回転などで変わると自動で更新される</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">width</span><span class="p">,</span><span class="w"> </span><span class="nx">height</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useWindowDimensions</span><span class="p">();</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">{</span><span class="cm">/* Math.round : 小数を四捨五入して整数に */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="nx">画面の幅</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">(</span><span class="nx">width</span><span class="p">)}&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="nx">画面の高さ</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">(</span><span class="nx">height</span><span class="p">)}&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+
+<span class="w">      </span><span class="p">{</span><span class="cm">/* 画面幅の半分の大きさの四角を表示する */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{[</span><span class="nx">styles</span><span class="p">.</span><span class="nx">box</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">width</span><span class="o">:</span><span class="w"> </span><span class="kt">width</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2</span><span class="w"> </span><span class="p">}]}</span><span class="w"> </span><span class="p">/&gt;</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">styles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">StyleSheet</span><span class="p">.</span><span class="nx">create</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">box</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">height</span><span class="o">:</span><span class="w"> </span><span class="kt">60</span><span class="p">,</span><span class="w"> </span><span class="nx">backgroundColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#1e40af&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">marginTop</span><span class="o">:</span><span class="w"> </span><span class="kt">12</span><span class="w"> </span><span class="p">},</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong><code>Dimensions</code> との違い:</strong> <code>import { Dimensions } from "react-native"</code> を使い <code>Dimensions.get("window")</code> でも画面サイズを取れますが、こちらは<strong>取得した瞬間の値</strong>なので、画面を回転させても自動では変わりません。画面の回転にも対応したいときは、自動更新される <strong><code>useWindowDimensions</code></strong>（フック）のほうが安全で、今はこちらが推奨です。</p>
+</blockquote>
+<h4 id="1_15">▼ コードを1つずつ分解して解説</h4>
+<p>「画面サイズを取得して使う」部分を、1つずつ見ていきましょう。</p>
+<hr>
+<h5 id="1-usewindowdimensions">解説1: 画面の幅・高さを受け取る <code>useWindowDimensions</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-52"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">width</span><span class="p">,</span><span class="w"> </span><span class="nx">height</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useWindowDimensions</span><span class="p">();</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>useWindowDimensions</code>（ユーズ・ウィンドウ・ディメンションズ）は、「<strong>今の画面の幅と高さを受け取る</strong>」道具（フック）です。<code>use〜</code> で始まるReactの便利機能の仲間です。</li>
+<li><code>const { width, height } = ...</code> は、受け取った情報の中から <code>width</code>（幅）と <code>height</code>（高さ）の2つを取り出す書き方（分割代入）です。</li>
+<li>このフックの便利な点は、<strong>画面を回転させたりサイズが変わったりすると、自動で新しい値に更新される</strong>ことです。そのたびに画面も作り直されます。</li>
+<li>取り出した <code>width</code>・<code>height</code> は、ピクセル数の数値なので、そのまま計算（<code>width / 2</code> など）に使えます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>ピクセル</strong> とは画面を構成する点の単位。<code>width</code> が <code>390</code> なら「画面の横幅は390ぶん」という意味で、これを基準に部品の大きさを計算できます。</p>
+</blockquote>
+<hr>
+<h5 id="2">解説2: 取得した幅を使って大きさを決める</h5>
+<div class="codehilite"><div class="code-wrap" id="code-53"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{[</span><span class="nx">styles</span><span class="p">.</span><span class="nx">box</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">width</span><span class="o">:</span><span class="w"> </span><span class="kt">width</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2</span><span class="w"> </span><span class="p">}]}</span><span class="w"> </span><span class="p">/&gt;</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>style={[ ... ]}</code> のように <code>[ ]</code>（配列）で囲むと、「<strong>複数のスタイルを重ねて適用</strong>」できます。ここでは <code>styles.box</code> と <code>{ width: width / 2 }</code> の2つを重ねています。</li>
+<li><code>{ width: width / 2 }</code> は「幅を、画面の幅の半分にする」という指定です。<code>width</code>（画面幅）を取得しているので、それを <code>2</code> で割っています。</li>
+<li>こうすると、どんな機種でも「画面のちょうど半分の幅の四角」になります。機種ごとに数値を決め打ちしなくてよいのが利点です。</li>
+<li><code>Math.round(width)</code> の <code>Math.round</code> は「小数を四捨五入して整数にする」命令で、表示を見やすくするために使っています。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>スタイルの配列 <code>[styleA, styleB]</code></strong> は「複数のスタイルを順番に重ねる」書き方。後のものが優先されるので、共通のスタイルに「その場だけの追加指定」を足したいときに便利です。</p>
+</blockquote>
+<hr>
+<h3 id="asyncstorage">AsyncStorage — 端末内にデータを保存する</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> <strong>入力した文字を端末の中に保存しておき、次にアプリを開いたときに読み出して表示する</strong>例です。<code>AsyncStorage</code>（アシンク・ストレージ）という道具を使うと、アプリを閉じても消えないデータを端末内に残せます。「名前を保存→アプリ再起動→さっきの名前が出る」という、設定や下書きの保存によくある形です。各処理の意味はコード内コメントにあります。</p>
+</blockquote>
+<p><strong>いつ使う・なぜ必要？</strong> <code>useState</code> で覚えた値は、アプリを閉じると消えてしまいます。「ダークモードのオン/オフ」「最後に入力した下書き」「ログイン状態」など、<strong>アプリを閉じても残しておきたい小さなデータ</strong>を端末内に保存するのに使います。これは追加の部品なので、<code>@react-native-async-storage/async-storage</code> をインストールして使います。</p>
+<div class="codehilite"><div class="code-wrap" id="code-54"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">useState</span><span class="p">,</span><span class="w"> </span><span class="nx">useEffect</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="nx">AsyncStorage</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@react-native-async-storage/async-storage&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">View</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="p">,</span><span class="w"> </span><span class="nx">TextInput</span><span class="p">,</span><span class="w"> </span><span class="nx">Pressable</span><span class="p">,</span><span class="w"> </span><span class="nx">StyleSheet</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-native&quot;</span><span class="p">;</span>
+
+<span class="c1">// 保存するときの「名札（キー）」。これで後から取り出す</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">STORAGE_KEY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;user_name&quot;</span><span class="p">;</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">StorageExample</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">name</span><span class="p">,</span><span class="w"> </span><span class="nx">setName</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// アプリを開いたとき、保存済みの値を読み出す</span>
+<span class="w">  </span><span class="nx">useEffect</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">load</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="c1">// getItem : キーで値を読み出す</span>
+<span class="w">      </span><span class="kd">const</span><span class="w"> </span><span class="nx">saved</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">AsyncStorage</span><span class="p">.</span><span class="nx">getItem</span><span class="p">(</span><span class="nx">STORAGE_KEY</span><span class="p">);</span>
+<span class="w">      </span><span class="c1">// 保存があれば状態に反映</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">saved</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="nx">setName</span><span class="p">(</span><span class="nx">saved</span><span class="p">);</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">    </span><span class="nx">load</span><span class="p">();</span>
+<span class="w">  </span><span class="c1">// [] : 最初の1回だけ実行</span>
+<span class="w">  </span><span class="p">},</span><span class="w"> </span><span class="p">[]);</span>
+
+<span class="w">  </span><span class="c1">// 「保存」ボタンで、今の入力を端末に書き込む</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">save</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// setItem : キーと値を渡して保存する</span>
+<span class="w">    </span><span class="k">await</span><span class="w"> </span><span class="nx">AsyncStorage</span><span class="p">.</span><span class="nx">setItem</span><span class="p">(</span><span class="nx">STORAGE_KEY</span><span class="p">,</span><span class="w"> </span><span class="nx">name</span><span class="p">);</span>
+<span class="w">  </span><span class="p">};</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">box</span><span class="p">}&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">TextInput</span>
+<span class="w">        </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">input</span><span class="p">}</span>
+<span class="w">        </span><span class="na">placeholder</span><span class="o">=</span><span class="s">&quot;名前を入力&quot;</span>
+<span class="w">        </span><span class="na">value</span><span class="o">=</span><span class="p">{</span><span class="nx">name</span><span class="p">}</span>
+<span class="w">        </span><span class="na">onChangeText</span><span class="o">=</span><span class="p">{</span><span class="nx">setName</span><span class="p">}</span>
+<span class="w">      </span><span class="p">/&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Pressable</span><span class="w"> </span><span class="na">onPress</span><span class="o">=</span><span class="p">{</span><span class="nx">save</span><span class="p">}&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">save</span><span class="p">}&gt;</span><span class="nx">保存する</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">Pressable</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">styles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">StyleSheet</span><span class="p">.</span><span class="nx">create</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">box</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">padding</span><span class="o">:</span><span class="w"> </span><span class="kt">16</span><span class="p">,</span><span class="w"> </span><span class="nx">gap</span><span class="o">:</span><span class="w"> </span><span class="kt">12</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">input</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">borderWidth</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span><span class="w"> </span><span class="nx">borderColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#e2e8f0&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">borderRadius</span><span class="o">:</span><span class="w"> </span><span class="kt">8</span><span class="p">,</span><span class="w"> </span><span class="nx">padding</span><span class="o">:</span><span class="w"> </span><span class="kt">10</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">save</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">color</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#1e40af&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">fontWeight</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;bold&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>保存できるのは「文字」だけ:</strong> AsyncStorageに保存できるのは文字列（文字）だけです。数値やオブジェクト・配列を保存したいときは、いったん <code>JSON.stringify(...)</code> で文字に変換して保存し、読み出すときに <code>JSON.parse(...)</code> で元に戻します。</p>
+</blockquote>
+<h4 id="1_16">▼ コードを1つずつ分解して解説</h4>
+<p>「保存して、次回読み出す」流れを、1つずつ見ていきましょう。</p>
+<hr>
+<h5 id="1-storage_key">解説1: 保存する場所の名札 <code>STORAGE_KEY</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-55"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 保存するときの「名札（キー）」。これで後から取り出す</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">STORAGE_KEY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;user_name&quot;</span><span class="p">;</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>AsyncStorage</code> は、データを「<strong>名札（キー）と中身（値）のセット</strong>」で保存します。<code>STORAGE_KEY</code> はその名札にあたる文字です。</li>
+<li>保存するときも読み出すときも<strong>同じ名札</strong>を使うことで、「さっき保存したあのデータ」を正しく取り出せます。名札がずれると別のデータになってしまいます。</li>
+<li>ここでは <code>"user_name"</code> という名札にしました。複数のデータを保存するときは、それぞれ別の名札を付けます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>キー（key）と値（value）</strong> とは「名札と中身」のペアのこと。ロッカーに例えると、キーが「ロッカー番号」、値が「中に入れる荷物」。番号（キー）を覚えておけば、後で荷物（値）を取り出せます。</p>
+</blockquote>
+<hr>
+<h5 id="2-getitem">解説2: 値を読み出す <code>getItem</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-56"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nx">useEffect</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">load</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// getItem : キーで値を読み出す</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">saved</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">AsyncStorage</span><span class="p">.</span><span class="nx">getItem</span><span class="p">(</span><span class="nx">STORAGE_KEY</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// 保存があれば状態に反映</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">saved</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="nx">setName</span><span class="p">(</span><span class="nx">saved</span><span class="p">);</span>
+<span class="w">  </span><span class="p">};</span>
+<span class="w">  </span><span class="nx">load</span><span class="p">();</span>
+<span class="c1">// [] : 最初の1回だけ実行</span>
+<span class="p">},</span><span class="w"> </span><span class="p">[]);</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>useEffect</code>（ユーズ・エフェクト）は「<strong>画面が表示されたタイミングで何かする</strong>」ための道具です。最後の <code>[]</code> は「最初の1回だけ実行する」という意味です。</li>
+<li><code>AsyncStorage.getItem(STORAGE_KEY)</code> は「<strong>その名札で保存された値を読み出す</strong>」命令です。読み出しには少し時間がかかるため、<code>await</code>（待つ）を付けて結果を待ちます。</li>
+<li><code>await</code> を使うには関数に <code>async</code>（非同期）を付ける必要があるため、<code>async () =&gt; { ... }</code> の形にしています。</li>
+<li>まだ何も保存されていないと <code>null</code>（からっぽ）が返るので、<code>if (saved !== null)</code> で「保存があれば」だけ状態に反映しています。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong><code>async</code> / <code>await</code></strong> は「<strong>時間のかかる処理の終わりを待つ</strong>」ための書き方。<code>await</code> を付けると「この処理が終わるまで待ってから次へ進む」という意味になり、読み込みや保存のように一瞬では終わらない処理で使います。</p>
+</blockquote>
+<hr>
+<h5 id="3-setitem">解説3: 値を保存する <code>setItem</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-57"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">save</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// setItem : キーと値を渡して保存する</span>
+<span class="w">  </span><span class="k">await</span><span class="w"> </span><span class="nx">AsyncStorage</span><span class="p">.</span><span class="nx">setItem</span><span class="p">(</span><span class="nx">STORAGE_KEY</span><span class="p">,</span><span class="w"> </span><span class="nx">name</span><span class="p">);</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>AsyncStorage.setItem(名札, 値)</code> は「<strong>名札を付けて値を端末に保存する</strong>」命令です。ここでは <code>STORAGE_KEY</code>（名札）と <code>name</code>（今の入力）を渡して保存しています。</li>
+<li>保存にも少し時間がかかるので、<code>await</code> を付けて待ちます。そのため <code>save</code> も <code>async</code> 関数にしています。</li>
+<li>このボタンを押して保存しておけば、アプリを閉じて開き直しても、解説2の <code>getItem</code> で同じ名札から読み出して、前回の入力を復元できます。</li>
+<li><code>useState</code> の値はアプリを閉じると消えますが、<code>AsyncStorage</code> に保存した値は<strong>閉じても残る</strong>——この違いが重要です。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>永続化（えいぞくか）</strong> とは「アプリを閉じても消えないように、データを残しておくこと」。<code>useState</code> は一時的な記憶、<code>AsyncStorage</code> は永続的な記憶、というイメージで使い分けます。</p>
+</blockquote>
+<hr>
+<h3 id="flatlist">FlatList の応用 — グリッド・横スクロール・空のとき</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 4.2で学んだ <code>FlatList</code> を、もっと実践的に使う3つの応用例です。①<code>numColumns</code> で<strong>何列かに並べるグリッド表示</strong>、②<code>horizontal</code> で<strong>横方向にスクロールする並び</strong>、③<code>ListEmptyComponent</code> で<strong>データが空っぽのときに案内文を出す</strong>——どれもプロパティを1つ足すだけで実現できます。よくあるアプリの見た目がこれで作れる、という引き出しを増やしておきましょう。各指定の意味はコード内コメントにあります。</p>
+</blockquote>
+<p><strong>いつ使う・なぜ必要？</strong> 写真アプリのような格子状の並び、おすすめ作品の横スクロール、検索結果ゼロ件のときの「該当なし」表示——どれも実際のアプリでよく見る形です。<code>FlatList</code> の基本（<code>data</code>/<code>renderItem</code>/<code>keyExtractor</code>）に<strong>プロパティを足すだけ</strong>で作れます。</p>
+<div class="codehilite"><div class="code-wrap" id="code-58"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">FlatList</span><span class="p">,</span><span class="w"> </span><span class="nx">View</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="p">,</span><span class="w"> </span><span class="nx">StyleSheet</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-native&quot;</span><span class="p">;</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">books</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;本A&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;2&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;本B&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;3&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;本C&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;4&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;本D&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="p">];</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">FlatListAdvanced</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">FlatList</span>
+<span class="w">      </span><span class="na">data</span><span class="o">=</span><span class="p">{</span><span class="nx">books</span><span class="p">}</span>
+<span class="w">      </span><span class="na">keyExtractor</span><span class="o">=</span><span class="p">{(</span><span class="nx">item</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">item</span><span class="p">.</span><span class="nx">id</span><span class="p">}</span>
+<span class="w">      </span><span class="err">//</span><span class="w"> </span><span class="na">numColumns</span><span class="w"> </span><span class="err">:</span><span class="w"> </span><span class="na">2列のグリッドで並べる</span>
+<span class="w">      </span><span class="na">numColumns</span><span class="o">=</span><span class="p">{</span><span class="mf">2</span><span class="p">}</span>
+<span class="w">      </span><span class="err">//</span><span class="w"> </span><span class="na">ListEmptyComponent</span><span class="w"> </span><span class="err">:</span><span class="w"> </span><span class="na">dataが空のときに表示する中身</span>
+<span class="w">      </span><span class="na">ListEmptyComponent</span><span class="o">=</span><span class="p">{</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">empty</span><span class="p">}&gt;</span><span class="nx">本がありません</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">      </span><span class="na">renderItem</span><span class="o">=</span><span class="p">{({</span><span class="w"> </span><span class="nx">item</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">(</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">cell</span><span class="p">}&gt;</span>
+<span class="w">          </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;{</span><span class="nx">item</span><span class="p">.</span><span class="nx">title</span><span class="p">}&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">)}</span>
+<span class="w">    </span><span class="p">/&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">styles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">StyleSheet</span><span class="p">.</span><span class="nx">create</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">cell</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 1列ぶんの幅を等分する</span>
+<span class="w">    </span><span class="nx">flex</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">margin</span><span class="o">:</span><span class="w"> </span><span class="kt">6</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">padding</span><span class="o">:</span><span class="w"> </span><span class="kt">20</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">backgroundColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#f1f5f9&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">borderRadius</span><span class="o">:</span><span class="w"> </span><span class="kt">8</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">alignItems</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">empty</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">textAlign</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">color</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#94a3b8&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">padding</span><span class="o">:</span><span class="w"> </span><span class="kt">24</span><span class="w"> </span><span class="p">},</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>横スクロールにしたいとき:</strong> 上の例の <code>numColumns={2}</code> を外し、代わりに <code>horizontal={true}</code> を付けると、リストが<strong>横方向にスクロール</strong>する並びになります（おすすめ作品の横並びなどに使います）。<code>numColumns</code> と <code>horizontal</code> は同時には使えないので、どちらか一方を使います。</p>
+</blockquote>
+<h4 id="1_17">▼ コードを1つずつ分解して解説</h4>
+<p>「FlatListに足す3つの便利プロパティ」を、1つずつ見ていきましょう。</p>
+<hr>
+<h5 id="1-numcolumns">解説1: 何列かに並べる <code>numColumns</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-59"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// numColumns : 2列のグリッドで並べる</span>
+<span class="nx">numColumns</span><span class="o">=</span><span class="p">{</span><span class="mf">2</span><span class="p">}</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>numColumns</code>（ナム・カラムズ＝列の数）は、「<strong>リストを何列のグリッド（格子状）で並べるか</strong>」を指定します。</li>
+<li>ここでは <code>2</code> なので、項目が<strong>2列ずつ</strong>並びます。4件あれば「2列×2行」の格子になります。</li>
+<li>グリッドにするときは、各セル（<code>styles.cell</code>）に <code>flex: 1</code> を付けて「1列ぶんの幅を等分」させるのが定番です。これで列幅がそろいます。</li>
+<li>写真の一覧や、本の表紙を格子状に並べたいときに使う、定番の指定です。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>グリッド表示</strong> とは、項目を「縦横の格子状」に並べる見せ方のこと。写真アプリのサムネイル一覧のような並びをイメージしてください。</p>
+</blockquote>
+<hr>
+<h5 id="2-horizontal">解説2: 横スクロールにする <code>horizontal</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-60"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// numColumns を外して、代わりにこれを付ける</span>
+<span class="c1">// horizontal : リストを横方向にスクロールさせる</span>
+<span class="nx">horizontal</span><span class="o">=</span><span class="p">{</span><span class="kc">true</span><span class="p">}</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>horizontal={true}</code>（ホリゾンタル＝水平）を付けると、リストが<strong>横方向に並び、横スクロール</strong>できるようになります（既定は縦スクロール）。</li>
+<li>「おすすめの本」を横に並べてスッスッと見せる、といった見た目に向いています。</li>
+<li><code>numColumns</code>（縦のグリッド）と <code>horizontal</code>（横スクロール）は<strong>同時には使えません</strong>。どちらか一方を選びます。</li>
+<li>横スクロールのときは、各項目に <code>width</code>（幅）を指定しておくと並びが安定します。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>横スクロール</strong> とは、指で左右にスワイプして続きを見る並べ方。縦に長いリストと違い、限られた高さの中で「もっとあるよ」と見せたいときに使います。</p>
+</blockquote>
+<hr>
+<h5 id="3-listemptycomponent">解説3: 空のときに案内を出す <code>ListEmptyComponent</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-61"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// ListEmptyComponent : dataが空のときに表示する中身</span>
+<span class="nx">ListEmptyComponent</span><span class="o">=</span><span class="p">{</span>
+<span class="w">  </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">empty</span><span class="p">}&gt;</span><span class="nx">本がありません</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>ListEmptyComponent</code>（リスト・エンプティ・コンポーネント＝リストが空のときの中身）は、「<strong><code>data</code> が空っぽのときに代わりに表示する中身</strong>」を指定します。</li>
+<li>データが1件もないとき、何も出ないと利用者は「壊れた?」と不安になります。<code>ListEmptyComponent</code> で「本がありません」などの案内を出すと親切です。</li>
+<li>データがあるときは普通にリストが表示され、空のときだけこの中身が出る、と自動で切り替わります。自分で「空かどうか」を判定する必要はありません。</li>
+<li>検索結果が0件のときの「該当する本はありません」表示などに、そのまま使えます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>空状態（からじょうたい / empty state）</strong> とは「表示するデータが1件もない状態」のこと。ここに分かりやすい案内を出すかどうかで、アプリの親切さが変わります。</p>
+</blockquote>
+<hr>
+<blockquote>
+<p><strong>これらの先にあるもの:</strong> ここで紹介した機能のほかにも、「画面の下からスライドして出るメニュー」や「複雑なタブ・ドロワー（横から出るメニュー）」などは、<strong>React Navigation</strong> という別のライブラリで作ります（Expo Routerもその上に作られています）。本書では深入りしませんが、「もっと凝った画面遷移がしたくなったら React Navigation を調べる」と覚えておけば十分です。</p>
+</blockquote>
+<hr>
+<h2 id="7">7. この章のまとめ</h2>
+<ul>
+<li>React Nativeでは <strong><code>View</code></strong>（箱）・<strong><code>Text</code></strong>（文字、必ずこれで囲む）・<strong><code>Image</code></strong>・<strong><code>TextInput</code></strong>・<strong><code>Pressable</code></strong> などの専用部品を使う</li>
+<li>レイアウトは <strong>Flexbox</strong>（<code>flexDirection</code>/<code>justifyContent</code>/<code>alignItems</code>/<code>flex</code>）で決める</li>
+<li>スタイルは <strong><code>StyleSheet.create</code></strong> でまとめて管理する（第9章でNativeWindも導入）</li>
+<li>大量のリストは <strong><code>FlatList</code></strong>（<code>data</code>/<code>renderItem</code>/<code>keyExtractor</code>）で表示する</li>
+<li>画面遷移は <strong>Expo Router</strong>：<code>app/</code>にファイルを置けば画面になり、<code>&lt;Link&gt;</code>や<code>router.push()</code>で移動、<code>_layout.tsx</code>で全体の枠組みを定義</li>
+<li><strong><code>SafeAreaView</code></strong> でノッチやホームバーを避ける</li>
+</ul>
+<blockquote>
+<p><strong>次の章へ:</strong> 画面の作り方が分かりました。第5章では、本のデータを保存する場所＝<strong>Supabase（データベース）</strong> をセットアップします。DBの選択肢の比較も詳しく解説します。</p>
+</blockquote>
+
+<script>
+(function () {
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy") ? resolve() : reject(); } catch (e) { reject(e); }
+      document.body.removeChild(ta);
+    });
+  }
+  document.querySelectorAll(".copy-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var pre = btn.parentElement.querySelector("pre");
+      var text = pre.textContent.replace(/\n$/, "");
+      copyText(text).then(function () {
+        btn.textContent = "コピーしました";
+        btn.classList.add("done");
+        setTimeout(function () { btn.textContent = "コピー"; btn.classList.remove("done"); }, 2000);
+      }, function () { btn.textContent = "コピーできませんでした"; });
+    });
+  });
+  if (/^#code-\d+$/.test(location.hash)) {
+    var note = document.getElementById("web-note");
+    if (note) { note.hidden = false; }
+  }
+})();
+</script>
+</body>
+</html>

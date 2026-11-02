@@ -1,0 +1,1187 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>10_用語集</title>
+<style>
+
+@page {
+  size: A4;
+  margin: 18mm 16mm 20mm 16mm;
+  @bottom-right {
+    content: counter(page);
+    font-size: 10px;
+    color: #64748b;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  font-family: "Yu Gothic UI", "Yu Gothic", "Meiryo", "Hiragino Sans",
+               "Noto Sans JP", "Segoe UI", system-ui, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.75;
+  color: #1e293b;
+  background: #ffffff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #0f172a;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 1.4em 0 0.6em;
+  page-break-after: avoid;
+}
+h1 {
+  font-size: 22pt;
+  border-bottom: 3px solid #1e40af;
+  padding-bottom: 0.3em;
+  margin-top: 0.4em;
+  page-break-before: auto;
+}
+h2 {
+  font-size: 16pt;
+  border-bottom: 1.5px solid #cbd5e1;
+  padding-bottom: 0.25em;
+  margin-top: 1.6em;
+}
+h3 { font-size: 13pt; color: #1e40af; }
+h4 { font-size: 12pt; color: #334155; }
+
+p { margin: 0.5em 0 0.8em; }
+
+a { color: #1d4ed8; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+ul, ol { margin: 0.4em 0 0.9em; padding-left: 1.6em; }
+li { margin: 0.2em 0; }
+
+blockquote {
+  border-left: 4px solid #3b82f6;
+  background: #eff6ff;
+  margin: 0.8em 0;
+  padding: 0.6em 1em;
+  color: #1e3a8a;
+  border-radius: 0 6px 6px 0;
+  page-break-inside: avoid;
+}
+blockquote p { margin: 0.3em 0; }
+blockquote strong { color: #1e40af; }
+
+code {
+  /* DefCode (see _code_font.py) has ASCII and Japanese in ONE font, so a code
+     line is drawn as one text run and copies as one line in every PDF viewer. */
+  font-family: "Consolas", "Consolas", monospace;
+  font-size: 0.9em;
+  background: #f1f5f9;
+  color: #be123c;
+  padding: 0.12em 0.36em;
+  border-radius: 4px;
+  /* Long inline code (file paths / URLs) must break instead of overflowing. */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  /* In a PDF there is no horizontal scrolling, so long lines must wrap
+     instead of being clipped off the right edge of the page. */
+  overflow-x: hidden;
+  overflow-y: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  font-size: 9.2pt;
+  line-height: 1.5;
+  margin: 0.8em 0;
+  page-break-inside: avoid;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+  white-space: inherit;
+  word-break: inherit;
+  overflow-wrap: inherit;
+}
+
+/* The codehilite extension wraps highlighted blocks in a scrolling div; make
+   that wrap too so nothing is clipped in the PDF. */
+.codehilite {
+  overflow-x: hidden;
+  /* overflow-x: hidden alone turns overflow-y into auto, and a glyph from a
+     fallback font that is a hair too tall then shows a vertical scrollbar. */
+  overflow-y: hidden;
+}
+.codehilite pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* No per-token colours: every coloured token became its own text run (and its
+   own tag) in the PDF, and some viewers then pasted each token on its own line.
+   Only whole comment lines get a colour, so each line is still one run. */
+pre .cmt { color: #94a3b8; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.8em 0;
+  font-size: 9.6pt;
+  page-break-inside: avoid;
+}
+th, td {
+  border: 1px solid #e2e8f0;
+  padding: 6px 9px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: #f1f5f9;
+  color: #0f172a;
+  font-weight: 700;
+}
+tr:nth-child(even) td { background: #f8fafc; }
+
+img { max-width: 100%; height: auto; }
+
+hr {
+  border: none;
+  border-top: 1px dashed #cbd5e1;
+  margin: 1.6em 0;
+}
+
+/* Diagram blocks (the inline-styled <div>s in the source) */
+div[style] {
+  page-break-inside: avoid;
+}
+
+/* Tighten spacing right after headings */
+h1 + p, h2 + p, h3 + p, h4 + p { margin-top: 0.2em; }
+
+/* Avoid ugly page breaks inside list items / table rows */
+li, tr { page-break-inside: avoid; }
+
+@media screen {
+  body { max-width: 920px; margin: 0 auto; padding: 20px 20px 120px; font-size: 16px; }
+  pre { white-space: pre !important; word-break: normal !important; overflow-wrap: normal !important;
+        overflow-x: auto !important; font-size: 14px !important; }
+  img { max-width: 100%; height: auto; }
+}
+.web-bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; font-size: 14px;
+  padding: 8px 12px; margin-bottom: 16px; background: #eef2f7; border-radius: 8px; }
+.web-bar a { color: #1e3a5f; }
+.web-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 10; max-width: 90%;
+  font-size: 15px; font-weight: 700; background: #fff7ed; border: 2px solid #f2994a; border-radius: 8px;
+  padding: 10px 16px; margin: 0; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.code-wrap { position: relative; scroll-margin-top: 16px; }
+.code-wrap pre { padding-top: 40px !important; }
+.copy-btn { position: absolute; top: 8px; right: 8px; z-index: 2; font-size: 13px; font-weight: 700;
+  padding: 4px 12px; border: 0; border-radius: 6px; background: #2f80ed; color: #fff; cursor: pointer;
+  font-family: inherit; }
+.copy-btn:hover { background: #1c64c8; }
+.copy-btn.done { background: #27ae60; }
+.code-wrap:target pre { outline: 4px solid #f2994a; outline-offset: 2px; }
+.code-wrap:target .copy-btn { box-shadow: 0 0 0 4px #f2994a; }
+/* syntax colours on screen (the PDF uses one colour so that each line copies as one piece) */
+.codehilite .k, .codehilite .kd, .codehilite .kn, .codehilite .kr { color: #c084fc; }
+.codehilite .s, .codehilite .s1, .codehilite .s2, .codehilite .sb { color: #fcd34d; }
+.codehilite .c, .codehilite .c1, .codehilite .cm { color: #94a3b8; }
+.codehilite .nf, .codehilite .nx { color: #60a5fa; }
+.codehilite .nb { color: #34d399; }
+.codehilite .mi, .codehilite .mf { color: #f472b6; }
+.codehilite .nt { color: #f59e0b; }
+.codehilite .na { color: #93c5fd; }
+</style>
+</head>
+<body>
+<div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/10_%E7%94%A8%E8%AA%9E%E9%9B%86.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、ブラウザーの「戻る」で PDF に戻れます。</p><h1 id="10">第10章: 用語集 ― わからない言葉が出てきたら、まずここ</h1>
+<blockquote>
+<p>この章は <strong>辞書（じしょ）</strong> です。最初から最後まで通して読む必要はありません。本資料の他の章（や実際のコード、エラーメッセージ）を読んでいて「<strong>この言葉、なんだっけ？</strong>」と思ったら、ここに戻って引いてください。</p>
+<p>各用語には <strong>読み仮名（よみがな）</strong>・<strong>やさしい意味</strong>・<strong>たとえ話</strong> を付けました。プログラミングの専門用語は、英語の略語だらけで最初はとっつきにくいものですが、ほとんどは「身近な何かにたとえる」と一気に腑に落ちます。たとえ話は厳密さより「最初のイメージのつかみやすさ」を優先しています（だから細部は実際と違う場合があります。それでよいのです。まず手がかりを得るのが目的です）。</p>
+<p>用語は <strong>分野ごと</strong> にまとめてあります。下の「目次」から、探したい分野へ飛んでください。分野をまたいで同じ言葉が複数の場所に出ることもありますが、それは「その分野ではこういう意味で使う」を示すためです。</p>
+</blockquote>
+<h3 id="_1">この章で学ぶこと</h3>
+<ul>
+<li><strong>アプリ全体に関わる言葉</strong> — フロントエンド／バックエンド／API／クライアント／サーバー／リクエストとレスポンス 等</li>
+<li><strong>開発の道具に関わる言葉</strong> — エディタ／ターミナル／npm／pip／ビルド／パッケージ 等</li>
+<li><strong>Git（バージョン管理）の言葉</strong> — コミット／ブランチ／プッシュ／プル／マージ／コンフリクト 等</li>
+<li><strong>HTML・CSS の言葉</strong> — DOM／レンダリング／ボックスモデル／Flexbox／擬似要素／CSS変数／clamp／box-sizing 等</li>
+<li><strong>JavaScript・TypeScript の言葉</strong> — 変数／関数／非同期／Promise／型／async/await 等</li>
+<li><strong>React の言葉</strong> — コンポーネント／props／state／useState／useEffect／JSX／SPA 等</li>
+<li><strong>Python・Django の言葉</strong> — モデル／QuerySet／ORM／マイグレーション／シリアライザ／セッション／CSRF／CORS／デコレータ／シグナル／ページネーション／WSGI／Gunicorn 等</li>
+<li><strong>このアプリ特有の言葉</strong> — 工数（こうすう）／直（ちょく）／288枠／休憩文字列／ショップ／工数区分定義 等</li>
+<li><strong>運用・Azure の言葉</strong> — デプロイ／フレキシブルサーバー／環境変数／staticfiles 等</li>
+<li><strong>テストの言葉</strong> — モック／アサーション／Vitest 等</li>
+<li><strong>困ったときの調べ方</strong></li>
+</ul>
+<h2 id="_2">目次</h2>
+<ol>
+<li><a href="#1-この用語集の使い方">この用語集の使い方</a></li>
+<li><a href="#2-アプリ全体に関わる言葉">アプリ全体に関わる言葉</a></li>
+<li><a href="#3-開発の道具に関わる言葉">開発の道具に関わる言葉</a></li>
+<li><a href="#4-gitバージョン管理の言葉">Git（バージョン管理）の言葉</a></li>
+<li><a href="#5-htmlcss-の言葉">HTML・CSS の言葉</a></li>
+<li><a href="#6-javascripttypescript-の言葉">JavaScript・TypeScript の言葉</a></li>
+<li><a href="#7-react-の言葉">React の言葉</a></li>
+<li><a href="#8-pythondjango-の言葉">Python・Django の言葉</a></li>
+<li><a href="#9-このアプリ特有の言葉">このアプリ特有の言葉</a></li>
+<li><a href="#10-テストに関わる言葉">テストに関わる言葉</a></li>
+<li><a href="#11-運用azure-の言葉">運用・Azure の言葉</a></li>
+<li><a href="#12-記号略語のはやわかり表">記号・略語のはやわかり表</a></li>
+<li><a href="#13-困ったときの調べ方">困ったときの調べ方</a></li>
+<li><a href="#14-この章のまとめ">この章のまとめ</a></li>
+</ol>
+<hr>
+<h2 id="1">1. この用語集の使い方</h2>
+<h3 id="11-3">1.1 読み方の3パターン</h3>
+<p>この章は、次の3通りの使い方を想定しています。</p>
+<ol>
+<li><strong>逆引き（ぎゃくびき）</strong> — 「あの言葉なんだっけ？」と思ったら、目次から分野を選んで探す。これが基本の使い方です。</li>
+<li><strong>分野まとめ読み</strong> — たとえば「Reactの章を読む前に、Reactの言葉だけ先に眺めておく」。section 7 だけ読む、という使い方。</li>
+<li><strong>ブラウザの検索</strong> — このファイルを開いて <code>Ctrl + F</code>（ブラウザやエディタの「ページ内検索」）で、探したい言葉をそのまま打ち込む。これが一番速いことも多いです。</li>
+</ol>
+<blockquote>
+<p><strong>▼ こう使えば成功:</strong> 他の章で「QuerySet」という言葉が出てきて意味がわからない →
+この章を開く → <code>Ctrl + F</code> で「QuerySet」と打つ → 説明にジャンプ → 「ああ、データベースから取り出した行の集まりのことか」と理解 → 元の章に戻る。
+この往復ができれば、難しい技術文書も少しずつ読めるようになります。</p>
+</blockquote>
+<h3 id="12">1.2 用語の書き方の約束</h3>
+<p>この章では、用語を次の形で説明します。</p>
+<blockquote>
+<p><strong>用語名（よみがな：ひとことの意味）</strong>
+やさしい説明。
+<strong>たとえ:</strong> 身近なものでのたとえ話。</p>
+</blockquote>
+<p>「よみがな」は、英語の場合はカタカナ読みを、日本語の場合はひらがな読みを書きます。たとえば「API（エーピーアイ）」「工数（こうすう）」のように。</p>
+<blockquote>
+<p>⚠️ <strong>たとえ話は「入口」です。</strong> たとえ話はあくまで最初のイメージをつかむためのもので、技術的に100%正確とは限りません。慣れてきたら、たとえ話を卒業して「本当の意味」で理解していってください。たとえ話の役目は「最初のとっつきにくさを消す」ことです。</p>
+</blockquote>
+<hr>
+<h2 id="2">2. アプリ全体に関わる言葉</h2>
+<p>このアプリ「業務工数システム」がどういう作りなのか、その全体像に関わる言葉です。まずここを押さえると、他の章が一気に読みやすくなります。</p>
+<blockquote>
+<p><strong>アプリケーション（あぷりけーしょん：目的を持ったソフトウェアのまとまり）</strong>
+略して「アプリ」。何かの仕事をするために作られたプログラムのまとまり。このアプリは「従業員の働いた時間（工数）を記録・集計する」ためのソフトウェアです。
+<strong>たとえ:</strong> 家電でいえば「電子レンジ」。温めるという目的のために、ボタン・ヒーター・タイマーが一式そろっている。</p>
+<p><strong>Webアプリ（うぇぶあぷり：ブラウザで使うアプリ）</strong>
+インストールせず、ブラウザ（Chrome、Edge など）で開いて使うアプリ。このアプリもWebアプリで、URLを開けば使えます。
+<strong>たとえ:</strong> 自宅にDVDプレイヤー（インストール型）を置くのではなく、テレビ局の放送（ブラウザで受信）を見るイメージ。手元に本体を持たなくていい。</p>
+<p><strong>フロントエンド（ふろんとえんど：画面側。利用者が直接さわる部分）</strong>
+利用者の目に見える「画面」と、その操作を担う部分。このアプリでは <strong>React（リアクト）</strong> で作られた、<code>frontend/</code> フォルダの中身がそれです。ボタン・表・入力欄など。
+<strong>たとえ:</strong> レストランの「ホール（客席・接客係）」。お客さんが直接やりとりする場所。</p>
+<p><strong>バックエンド（ばっくえんど：裏側。データを保管し計算する部分）</strong>
+画面の裏で、データを保存したり、計算したり、ルールを守らせたりする部分。このアプリでは <strong>Django（ジャンゴ）</strong> で作られた、ルート直下（<code>kosu/</code> や <code>hozen_another/</code>）の中身がそれです。
+<strong>たとえ:</strong> レストランの「厨房（ちゅうぼう）」。お客さんからは見えないが、注文を受けて料理（データ処理）をする。</p>
+<p><strong>サーバー（さーばー：要求に応えて何かを返すコンピュータ／プログラム）</strong>
+「これをくれ」という要求（リクエスト）を受け取って、結果を返すコンピュータやプログラム。このアプリのバックエンドはサーバーとして動きます。
+<strong>たとえ:</strong> 食堂の調理場。「カレーください」と言われたら、カレーを作って渡す係。</p>
+<p><strong>クライアント（くらいあんと：サーバーに要求を出す側）</strong>
+サーバーに「これがほしい」と要求する側。ブラウザ（＝フロントエンド）がクライアントです。
+<strong>たとえ:</strong> 食堂のお客さん。「カレーください」と注文する側。</p>
+<p><strong>リクエスト（りくえすと：要求。クライアント→サーバーへの「これをくれ」）</strong>
+クライアントがサーバーへ送る「お願い」。「工数データをください」「このデータを保存してください」など。
+<strong>たとえ:</strong> 注文票。「カレー1つ」と書いて厨房に渡す紙。</p>
+<p><strong>レスポンス（れすぽんす：応答。サーバー→クライアントへの「はいどうぞ」）</strong>
+サーバーがリクエストに対して返す結果。データそのものや、「成功しました」「失敗しました」という知らせ。
+<strong>たとえ:</strong> 厨房から出てきた料理、または「品切れです」という返事。</p>
+<p><strong>API（エーピーアイ：プログラム同士がやりとりするための窓口）</strong>
+Application Programming Interface（アプリケーション・プログラミング・インターフェース）の略。「こういう要求を送れば、こういう結果を返します」という <strong>決められた窓口</strong>。このアプリのフロントエンドは、バックエンドの <code>/api/</code> で始まる窓口に要求を出してデータをやりとりします。
+<strong>たとえ:</strong> 銀行のATM。「暗証番号を入れて金額を指定すれば、お金が出る」という決まった手順の窓口。中で何が起きているかは知らなくても使える。</p>
+<p><strong>エンドポイント（えんどぽいんと：APIの個々の窓口の住所）</strong>
+APIの中の「ここに要求を出すと、これが返ってくる」という個別のURL。たとえば <code>/api/kosu/</code> は工数データの窓口、というように。
+<strong>たとえ:</strong> 役所の「○番窓口」。住民票は3番窓口、印鑑証明は5番窓口、というように用途ごとに窓口が分かれている。</p>
+<p><strong>データベース（でーたべーす：データをきちんと整理して保管する倉庫）</strong>
+大量のデータを、検索・追加・更新しやすい形で保管しておく仕組み。このアプリは <strong>PostgreSQL（ポストグレスキューエル）</strong> というデータベースを使います。略して「DB（ディービー）」。
+<strong>たとえ:</strong> 巨大な図書館。本（データ）が番号で整理され、すぐ探し出せる。</p>
+<p><strong>PostgreSQL（ポストグレスキューエル：このアプリが使うデータベースソフト）</strong>
+無料で高機能なデータベースソフト。略して「Postgres（ポスグレ）」。従業員データや工数データが、ここに表（テーブル）の形で保管されます。
+<strong>たとえ:</strong> さっきの図書館の「運営会社」。実際に本を管理しているメーカー名のようなもの。</p>
+<p><strong>HTTP（エイチティーティーピー：Web上でデータをやりとりする約束ごと）</strong>
+HyperText Transfer Protocol の略。ブラウザとサーバーが会話するときの「言葉のルール」。リクエストとレスポンスはこのHTTPに従って送受信されます。<code>https</code> はそれを暗号化（盗み見されないように）した安全版。
+<strong>たとえ:</strong> 手紙のルール。「宛名はここ、本文はここ、切手はここ」と決まっているから、郵便屋さんが正しく配れる。</p>
+<p><strong>JSON（ジェイソン：データを文字で表す書き方）</strong>
+JavaScript Object Notation の略。<code>{ "name": "山田", "age": 30 }</code> のように、データを「名前: 値」の形で書き表す方式。フロントとバックは、このJSON形式でデータをやりとりします。
+<strong>たとえ:</strong> 記入済みの申込用紙。「氏名: 山田」「年齢: 30」と項目ごとに整理されているので、誰が見ても読める。</p>
+<p><strong>URL（ユーアールエル：インターネット上の住所）</strong>
+<code>https://example.com/login</code> のような、ページやデータの場所を示す文字列。「どこに要求を出すか」を表します。
+<strong>たとえ:</strong> 建物の住所。「○○県○○市○○町1-2-3」と書けば、そこに荷物を届けられる。</p>
+<p><strong>401（よんまるいち：「ログインしていない」を表すエラー番号）</strong>
+HTTPの応答に付く番号の1つで、「あなたは認証されていません（ログインが必要）」を意味します。このアプリでは、401が返ってきたらフロントが自動で <code>/login</code> 画面に飛ばす作りになっています。
+<strong>たとえ:</strong> 「会員証を見せてください」と入口で止められること。番号で「未認証」と知らせている。</p>
+</blockquote>
+<hr>
+<h2 id="3">3. 開発の道具に関わる言葉</h2>
+<p>コードを書いたり動かしたりするための「道具」に関わる言葉です。</p>
+<blockquote>
+<p><strong>エディタ（えでぃた：コードを書くためのソフト）</strong>
+プログラムの文章（コード）を書くための専用のソフト。このアプリの開発では <strong>VS Code（ブイエスコード）</strong> がよく使われます。色分け（シンタックスハイライト）や補完機能で、書きやすくしてくれます。
+<strong>たとえ:</strong> 高機能なワープロ。誤字を指摘してくれたり、言葉を予測変換してくれたりする。</p>
+<p><strong>ターミナル（たーみなる：文字でコンピュータに命令する画面）</strong>
+マウスではなく、文字（コマンド）で命令を打ち込む画面。「コマンドプロンプト」「PowerShell」「シェル」とも呼ばれます。<code>npm start</code> や <code>python manage.py runserver</code> などはここに打ち込みます。
+<strong>たとえ:</strong> 料理人への口頭指示。「ボタンを押す」のではなく「○○して」と言葉で頼む方式。</p>
+<p><strong>コマンド（こまんど：ターミナルに打ち込む1つの命令）</strong>
+ターミナルに打ち込む命令の1行。<code>npm install</code> なら「必要な部品を取ってきて」という意味の命令。
+<strong>たとえ:</strong> 「いらっしゃい」「お会計」のような、店員さんへの決まり文句。</p>
+<p><strong>シェル（しぇる：コマンドを受け取って実行する仕組み）</strong>
+ターミナルに打ったコマンドを解釈して実行するプログラム。Windowsの <strong>PowerShell（パワーシェル）</strong> や、Mac/Linuxの <strong>bash（バッシュ）</strong> など。
+<strong>たとえ:</strong> 注文を聞いて厨房に通す「ホール係」。あなたの言葉を受け取って実行係に渡す。</p>
+<p><strong>Node.js（ノードジェイエス：ブラウザの外でJavaScriptを動かす仕組み）</strong>
+本来ブラウザの中でしか動かないJavaScriptを、パソコン上で直接動かせるようにする土台。フロントエンドの開発やビルドにこれが必要です。このアプリには <code>node-v22.17.1</code> というバージョンの記録があります。
+<strong>たとえ:</strong> 水中でしか泳げない魚（JavaScript）を、陸でも生きられるようにする「水陸両用スーツ」。</p>
+<p><strong>npm（エヌピーエム：フロントエンドの部品を管理する道具）</strong>
+Node Package Manager の略。フロントエンド（React側）で使う「部品（パッケージ）」を取ってきたり、開発用の命令を実行したりする道具。<code>npm install</code>（部品取得）、<code>npm start</code>（開発サーバー起動）、<code>npm run build</code>（本番用ビルド）のように使います。
+<strong>たとえ:</strong> 通販サイト＋家電のリモコン。必要な部品を注文し、アプリの起動ボタンも兼ねている。</p>
+<p><strong>pip（ピップ：Pythonの部品を管理する道具）</strong>
+npm のPython版。バックエンド（Django側）で使うPythonの部品を取ってくる道具。<code>pip install</code> のように使います。
+<strong>たとえ:</strong> npm が「フロント用の通販」なら、pip は「バック用の通販」。</p>
+<p><strong>パッケージ（ぱっけーじ：再利用できる部品のまとまり）</strong>
+誰かが作って公開してくれた、便利な機能のまとまり。「ライブラリ」とほぼ同じ意味。自分でゼロから作らず、これを取り込んで使います。React も Django も、巨大なパッケージの一種です。
+<strong>たとえ:</strong> 料理の「市販のだしパック」。自分でかつお節から取らなくても、これを使えばすぐおいしくなる。</p>
+<p><strong>ライブラリ（らいぶらり：便利な機能の部品集）</strong>
+パッケージとほぼ同じ。「自分のコードから呼び出して使う便利機能の集まり」。Chart.js（グラフ描画）、Axios（通信）などがこのアプリのライブラリです。
+<strong>たとえ:</strong> 道具箱。必要なときに必要な道具（機能）を取り出して使う。</p>
+<p><strong>フレームワーク（ふれーむわーく：アプリの骨組みを最初から用意してくれる土台）</strong>
+ライブラリよりさらに大きく、「アプリの作り方の枠組み」ごと提供してくれるもの。React はフロントの、Django はバックのフレームワークです。「こう作りなさい」という流儀があり、それに乗ると速く正確に作れます。
+<strong>たとえ:</strong> プレハブ住宅のキット。柱・壁・配線の流儀が決まっていて、その通りに組めば家が建つ。ライブラリ（道具）より、もっと大きな「設計の型」。</p>
+<p><strong>ビルド（びるど：開発用のコードを、本番で動く形に変換すること）</strong>
+人間が書いた読みやすいコードを、ブラウザが効率よく実行できる形へまとめ・圧縮する作業。<code>npm run build</code> を実行すると <code>frontend/build/</code> の中に、本番用の小さく固めたファイルが作られます。
+<strong>たとえ:</strong> 引っ越しの荷造り。普段使いの形（散らかった部屋）を、運びやすい形（段ボールに圧縮）に変える。</p>
+<p><strong>package.json（ぱっけーじどっとジェイソン：フロントの設計図ファイル）</strong>
+フロントエンドが「どの部品を使うか」「どんな命令があるか」を書いた一覧ファイル。<code>npm start</code> などの命令の正体もここに書かれています。
+<strong>たとえ:</strong> レシピの材料表。「この料理にはこの材料がこれだけ要る」と書いてある。</p>
+<p><strong>requirements.txt（りくわいやめんつどっとてきすと：バックの部品一覧ファイル）</strong>
+バックエンドが使うPython部品の一覧。<code>pip install -r requirements.txt</code> で、ここに書かれた部品を一括で取得できます。
+<strong>たとえ:</strong> こちらもバックエンド用の「材料表」。</p>
+<p><strong>.env（どっとえんぶ：秘密の設定を書くファイル）</strong>
+パスワードや鍵など、コードに直接書きたくない秘密の設定を入れておくファイル。このアプリのバックエンドは <code>SECRET_KEY</code> <code>DB_PASSWORD</code> などをここに書きます。Gitには載せない（公開しない）のが鉄則。
+<strong>たとえ:</strong> 金庫。大事な鍵やパスワードを、人目につかない場所にしまっておく。</p>
+<p><strong>環境変数（かんきょうへんすう：プログラムの外から与える設定値）</strong>
+プログラムのコードの外側（OSや <code>.env</code>）から渡す設定値。「本番か開発か」「DBのパスワードは何か」などを、コードを書き換えずに切り替えられます。
+<strong>たとえ:</strong> エアコンの設定温度。本体（コード）はそのままで、外からダイヤル（環境変数）を変えれば動きが変わる。</p>
+<p><strong>ローカル（ろーかる：自分のパソコンの中。本番ではない練習場）</strong>
+「ローカル環境」は、自分のパソコン上で動かす開発・練習用の環境。ここなら壊しても本番に影響しません。<code>localhost</code>（ろーかるほすと）は「自分自身」を指す住所で、<code>http://localhost:3000</code> は自分のPC内のフロント、<code>8000</code> はバックを指します。
+<strong>たとえ:</strong> 自宅の練習用キッチン。失敗しても店（本番）には出さないので安心。</p>
+<p><strong>本番（ほんばん：実際に利用者が使う環境）</strong>
+「本番環境」は、本物の利用者が実際に使っている環境。このアプリでは Azure 上で動きます（section 11）。ここを壊すと利用者に迷惑がかかるので、慎重に。
+<strong>たとえ:</strong> 営業中の本物の店舗。お客さんが来ているので、失敗は許されない。</p>
+<p><strong>デバッグ（でばっぐ：バグ＝不具合を見つけて直す作業）</strong>
+プログラムの間違い（バグ）を探して直すこと。エラーメッセージを読んだり、途中の値を表示させたりして原因を突き止めます。
+<strong>たとえ:</strong> 家電が動かないとき、コンセント→ヒューズ→基板と順に調べて故障箇所を見つける作業。</p>
+<p><strong>コンソール（こんそーる：プログラムからのメッセージが出る場所）</strong>
+プログラムが「いまこうなってます」「ここでエラーです」と文字で知らせてくる場所。ブラウザではF12の「Console」タブ、バックではターミナルがこれにあたります。
+<strong>たとえ:</strong> 機械の表示ランプ＆音声案内。「正常です」「エラーです」と教えてくれる。</p>
+<p><strong>ログ（ろぐ：出来事の記録）</strong>
+プログラムが動く中で「何が起きたか」を時系列で残した記録。障害が起きたとき、まずこれを見て原因を探します。
+<strong>たとえ:</strong> 航海日誌（こうかいにっし）。「何時に何が起きた」と書いてあるので、後から追える。</p>
+</blockquote>
+<hr>
+<h2 id="4-git">4. Git（バージョン管理）の言葉</h2>
+<p><strong>Git（ギット）</strong> は、コードの変更履歴を記録・管理する道具です。「いつ・誰が・どこを・なぜ変えたか」を残し、過去にも戻れます。ここはチーム開発の要なので、用語を厚めに説明します。</p>
+<blockquote>
+<p><strong>バージョン管理（ばーじょんかんり：変更の歴史を記録して、いつでも戻れるようにする仕組み）</strong>
+ファイルの変更を1つずつ記録し、「3日前の状態に戻す」「誰がこの行を変えたか調べる」ができる仕組み。Git がその代表。
+<strong>たとえ:</strong> ゲームのセーブ機能。要所でセーブしておけば、失敗しても好きなセーブ地点に戻れる。</p>
+<p><strong>Git（ギット：いちばん使われているバージョン管理の道具）</strong>
+コードの変更履歴を管理する道具。このアプリも Git で管理されています（リポジトリのルートに <code>.git</code> フォルダがある）。
+<strong>たとえ:</strong> 精密なセーブ＆履歴管理の機械。何を変えたか全部覚えていてくれる。</p>
+<p><strong>リポジトリ（りぽじとり：Gitで管理する「プロジェクトの保管庫」）</strong>
+略して「リポ」。1つのプロジェクトのコードと、その全変更履歴をまとめて入れておく入れ物。このアプリ全体で1つのリポジトリです。
+<strong>たとえ:</strong> プロジェクト専用の「履歴つき書類棚」。中の全書類の改訂履歴も一緒に保管される。</p>
+<p><strong>コミット（こみっと：変更を1つのまとまりとして履歴に刻むこと／その記録1件）</strong>
+「ここまでの変更を、こういう意味のまとまりとして記録する」操作。1コミットごとに「メッセージ（何をしたか）」を付けます。このアプリの履歴には <code>休憩変更時の工数消去バグ修正</code> などのコミットメッセージが並んでいます。
+<strong>たとえ:</strong> ゲームのセーブ1回。「ボス撃破後」とメモを付けてセーブするイメージ。後で「あのセーブに戻ろう」ができる。</p>
+<p><strong>コミットメッセージ（こみっとめっせーじ：そのコミットで何をしたかの説明文）</strong>
+コミットに添える短い説明。「何を・なぜ変えたか」を後で読む人（未来の自分を含む）に伝えます。日本語でわかりやすく書くのが親切。
+<strong>たとえ:</strong> セーブデータに付けるメモ。「○○を直した」と書いておくと、後で見たとき思い出せる。</p>
+<p><strong>ブランチ（ぶらんち：作業を分けるための「枝分かれした作業場」）</strong>
+本流（みんなが使う安定版）とは別に、自分の作業用に枝分かれさせた作業場。ここで好きに変更し、できたら本流に合流させます。本流は <code>master</code>（ますたー）または <code>main</code>（めいん）と呼ばれます。
+<strong>たとえ:</strong> 料理の「別皿で味見」。本鍋（master）に入れる前に、小皿で試作する。失敗しても本鍋は無事。</p>
+<p><strong>master / main（ますたー／めいん：中心となる本流のブランチ）</strong>
+プロジェクトの中心・安定版のブランチ。このアプリの本流は <code>master</code> です。ここに直接変更を入れず、ブランチで作業してから合流させるのが安全。
+<strong>たとえ:</strong> 本番に出す「本鍋」。みんなが食べる本物。</p>
+<p><strong>チェックアウト／switch（ちぇっくあうと／すいっち：作業するブランチを切り替えること）</strong>
+「いま作業するブランチを、こっちに変える」操作。作業場を移動するイメージ。
+<strong>たとえ:</strong> 別の作業台に移動すること。机A（master）から机B（自分のブランチ）へ移る。</p>
+<p><strong>ステージング／add（すてーじんぐ／あど：コミットに含める変更を選んでおくこと）</strong>
+たくさん変更したうちの「今回のコミットに入れる分」を選んで準備する操作。<code>git add</code> で行います。
+<strong>たとえ:</strong> 段ボールに荷物を入れる作業。「この箱（コミット）には、この荷物（変更）を入れる」と選り分ける。</p>
+<p><strong>プッシュ（ぷっしゅ：手元のコミットを、共有サーバーへ送ること）</strong>
+自分のパソコンで作ったコミットを、みんなが見られる共有の場所（リモート）へアップロードすること。<code>git push</code>。
+<strong>たとえ:</strong> 撮った写真をクラウドにアップロード。自分のスマホ（ローカル）から共有アルバム（リモート）へ。</p>
+<p><strong>プル（ぷる：共有サーバーの最新を、手元へ取り込むこと）</strong>
+他の人がプッシュした最新の変更を、自分のパソコンへダウンロードして取り込むこと。<code>git pull</code>。
+<strong>たとえ:</strong> 共有アルバムから、他の人がアップした写真を自分のスマホへ取り込む。</p>
+<p><strong>フェッチ（ふぇっち：取り込みの前半。最新情報を見るだけ取ってくる）</strong>
+プルの「取ってくるだけ（まだ自分の作業には混ぜない）」部分。<code>git fetch</code>。
+<strong>たとえ:</strong> 共有アルバムの新着を「眺めるだけ」ダウンロード。まだ自分のアルバムには貼らない。</p>
+<p><strong>マージ（まーじ：2つのブランチの変更を合流させること）</strong>
+枝分かれしていた作業を、本流に合流させること。<code>git merge</code>。
+<strong>たとえ:</strong> 別皿で作った味付けを、本鍋に入れて混ぜる。</p>
+<p><strong>コンフリクト（こんふりくと：合流時にぶつかる「変更の衝突」）</strong>
+2人が「同じ行」を別々に変えていたとき、Gitが「どっちを採用すればいいか自動で決められない」状態。手で「こっちを残す」と解決します。怖がらず、落ち着いて両方を見比べて選べば大丈夫。
+<strong>たとえ:</strong> 2人が同じ予定欄に別の予定を書き込んだ手帳。「どっちが正しい？」と人間が判断する必要がある。</p>
+<p><strong>GitHub（ギットハブ：Gitのリポジトリを置く共有サービス）</strong>
+Git のリポジトリをインターネット上に置き、チームで共有できるサービス。プッシュ／プルの「共有の場所（リモート）」としてよく使われます。<code>gh</code> というコマンドで操作することも。
+<strong>たとえ:</strong> プロジェクト書類棚を置く「貸し倉庫サービス」。みんながアクセスできる共有の保管場所。</p>
+<p><strong>リモート（りもーと：共有サーバー上のリポジトリ）</strong>
+自分のPC（ローカル）に対して、GitHubなど「向こう側」にある共有のリポジトリ。<code>origin</code>（おりじん）という名前が付くのが普通です。
+<strong>たとえ:</strong> ローカル＝自分の机、リモート＝みんなの共有書庫。</p>
+<p><strong>プルリクエスト／PR（ぷるりくえすと：「この変更を本流に入れてください」という提案）</strong>
+自分のブランチの変更を本流へマージしてもらうための「お願い＆レビュー依頼」。略して「PR」。仲間がコードを確認（レビュー）してから合流させる、安全な合流の手続きです。
+<strong>たとえ:</strong> 「この企画書、本決定にしてOKですか？」と上司に確認を回す稟議（りんぎ）。承認されたら正式採用。</p>
+<p><strong>diff（でぃふ：変更の前後を見比べた差分）</strong>
+「どの行をどう変えたか」を、追加（緑）・削除（赤）で示したもの。コミット前やレビューで必ず見ます。
+<strong>たとえ:</strong> 間違い探し。「ここが変わった」と色で教えてくれる。</p>
+<p><strong>.gitignore（どっとぎっといぐのあ：Gitで管理しないものを指定するファイル）</strong>
+「これは履歴に入れないで」というファイルやフォルダを並べたリスト。<code>.env</code>（秘密情報）や巨大な生成物などを除外します。
+<strong>たとえ:</strong> 「これは倉庫に入れないでね」という持ち込み禁止リスト。</p>
+</blockquote>
+<hr>
+<h2 id="5-htmlcss">5. HTML・CSS の言葉</h2>
+<p>画面の「骨組み（HTML）」と「見た目（CSS）」に関わる言葉です。詳しくは第3章で扱っています。ここは引きやすいように要点だけまとめます。</p>
+<blockquote>
+<p><strong>HTML（エイチティーエムエル：画面の骨組みを作る言語）</strong>
+HyperText Markup Language の略。<code>&lt;p&gt;</code> <code>&lt;div&gt;</code> などの <strong>タグ</strong> で、文章の構造（見出し・段落・表・ボタン）を表す言語。
+<strong>たとえ:</strong> 家の「骨組み（柱・壁）」。形を決める。</p>
+<p><strong>CSS（シーエスエス：画面の見た目を整える言語）</strong>
+Cascading Style Sheets の略。色・大きさ・余白・配置など「見た目」を指定する言語。
+<strong>たとえ:</strong> 家の「内装・塗装」。骨組み（HTML）に化粧をする。</p>
+<p><strong>タグ（たぐ：HTMLの「ここからここまでは○○」という印）</strong>
+<code>&lt;p&gt;...&lt;/p&gt;</code> のように、文章に「これは段落」「これは見出し」と意味のラベルを貼る印。
+<strong>たとえ:</strong> 荷物に貼る「割れ物注意」「天地無用」のシール。中身の扱い方を示す。</p>
+<p><strong>属性（ぞくせい：タグに足す追加情報）</strong>
+<code>&lt;input type="number"&gt;</code> の <code>type="number"</code> のように、タグに「どんな種類か」「リンク先はどこか」を足す情報。
+<strong>たとえ:</strong> シールに書く補足メモ。「割れ物注意（特にガラス）」の「特にガラス」の部分。</p>
+<p><strong>要素（ようそ：開始タグ＋中身＋終了タグのひとまとまり）</strong>
+<code>&lt;p&gt;本文&lt;/p&gt;</code> 全体で1つの「要素」。HTMLは要素の入れ子で組み立てます。
+<strong>たとえ:</strong> 1つの「部品」。柱1本、壁1枚のような単位。</p>
+<p><strong>DOM（ドム：HTMLをプログラムから操作できる木構造にしたもの）</strong>
+Document Object Model の略。ブラウザがHTMLを読み込んで作る、操作可能な「木構造（ツリー）」。Reactはこれを効率よく書き換えて画面を更新します。
+<strong>たとえ:</strong> 家の「立体模型」。紙の設計図（HTML文字列）を、手で動かせる模型（DOM）にしたもの。模型の一部を動かせば、実物（画面）も変わる。</p>
+<p><strong>レンダリング（れんだりんぐ：指示を実際の見た目として画面に描くこと）</strong>
+「色は赤、ここに配置」という指示を、本物のピクセル（点の集まり）として画面に描き出すこと。「描画」とも。
+<strong>たとえ:</strong> 設計図をもとに、実際にペンキを塗り家具を置いて部屋を仕上げる作業。</p>
+<p><strong>セレクタ（せれくた：CSSで「どの要素を飾るか」を指定する部分）</strong>
+<code>.blue_button { ... }</code> の <code>.blue_button</code> のように、「この見た目を、どの要素に当てるか」を選ぶ書き方。
+<strong>たとえ:</strong> 「赤い帽子の人」と人を指定する言い方。条件に合う相手を選び出す。</p>
+<p><strong>クラス（くらす：複数の要素で見た目を共有するための名札）</strong>
+<code>class="blue_button"</code> の名札。同じ名札を付けた要素は、同じ見た目になります。CSSでは <code>.名前</code> で狙います。
+<strong>たとえ:</strong> 「制服」。同じ制服（クラス）を着た人は、同じ見た目になる。</p>
+<p><strong>ID（アイディー：1ページに1つだけの固有の名札）</strong>
+<code>id="numberInput"</code> のように、ページ内で1つだけ付ける固有名。CSSでは <code>#名前</code> で狙います。
+<strong>たとえ:</strong> 「学籍番号」。1人に1つの固有の番号。</p>
+<p><strong>ボックスモデル（ぼっくすもでる：すべての要素は四角い箱だという考え方）</strong>
+HTMLの全要素を「中身（content）＋内側余白（padding）＋枠線（border）＋外側余白（margin）」の四重の箱として扱う考え方。CSSで最重要。
+<strong>たとえ:</strong> プレゼント。中身（content）→緩衝材（padding）→箱（border）→箱と箱の間の隙間（margin）。</p>
+<p><strong>margin（まーじん：箱の「外側」の余白。他の箱との距離）</strong>
+要素と要素の「間」のすき間。<code>margin: 0 auto</code> は「左右の余白を自動均等＝横中央寄せ」の定番。
+<strong>たとえ:</strong> 家と家の間の「敷地の境界の空き地」。</p>
+<p><strong>padding（ぱでぃんぐ：箱の「内側」の余白。枠と中身の間）</strong>
+枠線と中身の「内側」のすき間。ボタンの厚み感はこれで作ります。
+<strong>たとえ:</strong> 箱の内側に詰める緩衝材。中身（文字）と箱（枠）の間のゆとり。</p>
+<p><strong>border（ぼーだー：枠線）</strong>
+要素のまわりの線。<code>border: 1px solid #ddd</code> は「1pxの実線、薄い灰色」。
+<strong>たとえ:</strong> 箱そのものの「壁」。</p>
+<p><strong>box-sizing（ぼっくすさいじんぐ：幅の計算方法の指定）</strong>
+<code>box-sizing: border-box</code> にすると、<code>width</code> が「padding と border を含めた幅」になり、計算が直感どおりになります。このアプリは全要素にこれを設定済み。
+<strong>たとえ:</strong> 「服のサイズ表記」。中身だけ測る方式か、肩パッド込みで測る方式かの違い。border-box は「全部込みのサイズ」。</p>
+<p><strong>Flexbox（ふれっくすぼっくす：要素を横並び・縦並び・中央寄せする仕組み）</strong>
+親に <code>display: flex</code> を付けると、子要素を柔軟に並べられる現代CSSの主役。<code>justify-content</code>（主軸の揃え）、<code>align-items</code>（交差軸の揃え）、<code>gap</code>（すき間）で配置を決めます。
+<strong>たとえ:</strong> 棚の整理。「左寄せ／中央／等間隔に並べる」を指示できる、賢い陳列棚。</p>
+<p><strong>flex-direction（ふれっくすだいれくしょん：並ぶ向き）</strong>
+<code>row</code>（横並び・既定）か <code>column</code>（縦並び）。このアプリのログイン入力欄は <code>column</code> で縦に並びます。
+<strong>たとえ:</strong> 商品を「横一列」に並べるか「縦一列」に並べるかの指定。</p>
+<p><strong>justify-content / align-items（じゃすてぃふぁいこんてんつ／あらいんあいてむず：Flexの揃え方）</strong>
+<code>justify-content</code> は並ぶ向き（主軸）の揃え、<code>align-items</code> は直角方向（交差軸）の揃え。<code>center</code> で中央に集められます。
+<strong>たとえ:</strong> 集合写真。横の位置（前者）と縦の位置（後者）をそれぞれ指示する。</p>
+<p><strong>擬似クラス（ぎじくらす：要素の「状態」に応じた見た目。<code>:</code>が1つ）</strong>
+<code>:hover</code>（マウスを乗せた時）、<code>:focus</code>（入力欄を選択中）など。状態でスタイルを変えます。
+<strong>たとえ:</strong> 「触れたら光るボタン」。普段と、触れた時で見た目が変わる。</p>
+<p><strong>擬似要素（ぎじようそ：要素の前後に飾りの中身を作る。<code>::</code>が2つ）</strong>
+<code>::before</code> <code>::after</code> で、要素の中身の前後に文字や飾りを足します。<code>content</code> プロパティで中身を指定。このアプリのアラートの「⚠️」やヘルプボタンの「?」はこれで作っています。
+<strong>たとえ:</strong> 名札に自動で付く「★」マーク。本体（要素）とは別に、飾りを足す。</p>
+<p><strong>CSS変数（しーえすえすへんすう：よく使う値に名前を付けて使い回す仕組み）</strong>
+「カスタムプロパティ」とも。<code>:root { --heading1: ...; }</code> で定義し、<code>var(--heading1)</code> で呼び出します。1か所直せば全体に反映。
+<strong>たとえ:</strong> 「テーマカラー」の登録。色を1か所で決めておけば、全ページに一括反映できる。</p>
+<p><strong>clamp（くらんぷ：値を最小〜最大の範囲に収める関数）</strong>
+<code>clamp(最小, 推奨, 最大)</code>。画面サイズに応じて文字を伸縮させつつ、小さすぎ・大きすぎを防ぎます。
+<strong>たとえ:</strong> 「身長に合わせて伸びるが、伸びすぎない突っ張り棒」。範囲内で自動調整。</p>
+<p><strong>calc（かるく：CSSの中で計算する関数）</strong>
+<code>calc(100% - 60px)</code> のように、CSSの値を計算式で書ける関数。「親の幅いっぱいから60px引いた幅」など。
+<strong>たとえ:</strong> その場で電卓をたたく。「全体から少し引いた長さ」を計算してくれる。</p>
+<p><strong>rem / px / vw / %（れむ／ぴくせる／ぶいだぶりゅー／ぱーせんと：大きさの単位）</strong>
+<code>px</code>は絶対的な点、<code>%</code>は親に対する割合、<code>rem</code>は基準文字サイズ基準、<code>vw</code>は画面幅の1%。用途で使い分けます。
+<strong>たとえ:</strong> 長さの単位（cm/インチ/歩幅）。測り方が違うだけで、どれも「大きさ」を表す。</p>
+<p><strong>メディアクエリ（めでぃあくえり：画面幅に応じてスタイルを切り替える仕組み）</strong>
+<code>@media (max-width: 768px) { ... }</code> で「画面幅768px以下のときだけ」効くスタイルを書けます。PC・タブレット両対応に使います。
+<strong>たとえ:</strong> 「晴れの日は半袖、雨の日は長袖」と服を切り替える条件分け。</p>
+<p><strong>レスポンシブ（れすぽんしぶ：画面サイズに応じて見やすく変わる設計）</strong>
+1つのコードで、大きい画面でも小さい画面でも見やすく表示を変える設計。メディアクエリや <code>clamp</code> で実現。
+<strong>たとえ:</strong> 「伸び縮みする服」。体型（画面）が変わってもフィットする。</p>
+<p><strong>CSS Modules（しーえすえすもじゅーるず：CSSの効く範囲を1画面に限定する仕組み）</strong>
+<code>〇〇.module.css</code> という名前にすると、そのCSSがその画面だけに効くようになり、別画面との名前衝突を防げます。<code>className={styles["名前"]}</code> の形で使います。
+<strong>たとえ:</strong> 「学校ごとの校則」。同じ「制服」という言葉でも、A校とB校で別物として扱われ、混ざらない。</p>
+<p><strong>JSX（ジェイエスエックス：JavaScriptの中にHTMLのような記述を混ぜる書き方）</strong>
+Reactで画面を書く記法。HTMLとほぼ同じだが、<code>class</code>→<code>className</code>、<code>for</code>→<code>htmlFor</code>、<code>{ }</code> で値を埋め込む、の3点が違います。詳しくはsection 7。
+<strong>たとえ:</strong> 「日本語に英単語を混ぜた文章」。基本は片方の文法だが、もう片方を埋め込める。</p>
+</blockquote>
+<hr>
+<h2 id="6-javascripttypescript">6. JavaScript・TypeScript の言葉</h2>
+<p>画面に「動き」を与える言語です。詳しくは第4章で扱います。ここは引きやすく要点を。</p>
+<blockquote>
+<p><strong>JavaScript（じゃばすくりぷと：ブラウザを動かす定番の言語）</strong>
+略して「JS」。ボタンを押したら反応する、入力を検証する、サーバーと通信する、といった「動き」を担う言語。
+<strong>たとえ:</strong> 家の「電気・設備」。スイッチを押すと電気がつく、その配線部分。</p>
+<p><strong>TypeScript（たいぷすくりぷと：JavaScriptに「型」を足した言語）</strong>
+略して「TS」。JavaScriptに「この変数は数値」「これは文字列」という <strong>型（かた）</strong> の情報を足し、間違いを書く前に気づけるようにした言語。このアプリのフロントはTSで書かれています（<code>.tsx</code> ファイル）。
+<strong>たとえ:</strong> JavaScriptに「指差し確認」を足したもの。「これは数値ですね？」と事前に念押ししてくれる。</p>
+<p><strong>型（かた：そのデータが「何の種類か」の情報）</strong>
+「数値」「文字列」「真偽（true/false）」など、データの種類。TypeScriptは型を見て、間違った使い方（数値に文字列を足すなど）を警告します。
+<strong>たとえ:</strong> コンセントの形。丸い穴には丸いプラグしか挿せない。形（型）が合わないと使えない、と事前に教えてくれる。</p>
+<p><strong>変数（へんすう：値に付けた名前の入れ物）</strong>
+<code>const name = "山田"</code> の <code>name</code> のように、値を入れて名前を付けた箱。後でその名前で値を取り出せます。<code>const</code>（変更しない）と <code>let</code>（変更する）があります。
+<strong>たとえ:</strong> ラベルを貼った保存容器。「砂糖」と書いた容器に砂糖を入れておけば、後で「砂糖」と言えば取り出せる。</p>
+<p><strong>関数（かんすう：処理に名前を付けてまとめ、何度でも呼べるようにしたもの）</strong>
+「入力を受け取り、何か処理して、結果を返す」ひとまとまりに名前を付けたもの。<code>handleSubmit</code> のように。呼べば中の処理が動きます。
+<strong>たとえ:</strong> 自動販売機。お金（入力）を入れてボタンを押すと、飲み物（結果）が出る。中の仕組みは知らなくても、入れて押せば使える。</p>
+<p><strong>引数（ひきすう：関数に渡す入力の値）</strong>
+関数を呼ぶときに渡す材料。<code>Number(employee_no)</code> の <code>employee_no</code> が引数。
+<strong>たとえ:</strong> 自動販売機に入れる「お金」と「押すボタン」。</p>
+<p><strong>戻り値／返り値（もどりち／かえりち：関数が返す結果）</strong>
+関数が処理の結果として返す値。<code>Number("5")</code> は <code>5</code>（数値）を返します。
+<strong>たとえ:</strong> 自動販売機から出てくる「飲み物」。</p>
+<p><strong>オブジェクト（おぶじぇくと：複数の値を「名前: 値」でまとめたもの）</strong>
+<code>{ name: "山田", age: 30 }</code> のように、関連する値をひとまとめにしたデータ。
+<strong>たとえ:</strong> 名刺。「氏名・会社・電話番号」を1枚にまとめてある。</p>
+<p><strong>配列（はいれつ：値を順番に並べたリスト）</strong>
+<code>[1, 2, 3]</code> や <code>["P", "R", "W1"]</code> のように、複数の値を順番に並べたもの。
+<strong>たとえ:</strong> 番号付きの下駄箱。0番、1番、2番…と順に値が入る。</p>
+<p><strong>条件分岐（じょうけんぶんき：「もし○○なら」で処理を分けること）</strong>
+<code>if (条件) { ... }</code> で「条件が成り立つときだけ」処理する仕組み。<code>07</code>章の障害対応でもよく出ます。
+<strong>たとえ:</strong> 分かれ道。「晴れなら公園へ、雨なら室内へ」と進路を分ける。</p>
+<p><strong>ループ（るーぷ：同じ処理を繰り返すこと）</strong>
+<code>for</code> などで、同じ処理を何回も繰り返す仕組み。配列の全要素を順に処理するときなどに使います。
+<strong>たとえ:</strong> ベルトコンベア。同じ作業を流れてくる品物すべてに繰り返す。</p>
+<p><strong>非同期（ひどうき：結果を待たずに次へ進み、できたら受け取る方式）</strong>
+通信のように「結果が返るまで時間がかかる処理」を、待ちっぱなしにせず、他の処理を進めつつ、できたら受け取る方式。
+<strong>たとえ:</strong> 食堂で番号札をもらって席で待つ方式。料理ができるまで突っ立って待たず、座って他のことをし、呼ばれたら取りに行く。</p>
+<p><strong>Promise（ぷろみす：「あとで結果を渡すね」という約束を表すもの）</strong>
+非同期処理の結果を表すオブジェクト。「いま結果はないけど、終わったら渡す（成功か失敗か）」という <strong>約束</strong> を持っています。
+<strong>たとえ:</strong> 食堂の番号札。「この番号で、できたら料理（結果）をお渡しします」という引換券そのもの。</p>
+<p><strong>async / await（えいしんく／あうぇいと：非同期を読みやすく書く書き方）</strong>
+<code>async</code> を付けた関数の中で <code>await</code> を使うと、「ここで結果が出るまで待ってから次へ」と、まるで順番どおりのように書けます。Promiseを読みやすくする道具。
+<strong>たとえ:</strong> 番号札（Promise）を「呼ばれるまで待つ（await）」と素直に書ける書き方。複雑な約束を、順番の物語として読める。</p>
+<p><strong>コールバック（こーるばっく：「終わったら呼んでね」と渡しておく関数）</strong>
+「この処理が終わったら、この関数を呼んで」と、あらかじめ渡しておく関数。ボタンの <code>onClick</code> に渡す処理などがこれ。
+<strong>たとえ:</strong> 「料理ができたら、この番号に電話して」と渡しておく連絡先。</p>
+<p><strong>イベント（いべんと：ユーザー操作などの「出来事」）</strong>
+クリック、入力、送信などの「出来事」。<code>onClick</code>（クリック時）、<code>onChange</code>（入力変化時）、<code>onSubmit</code>（送信時）で、その出来事に反応する処理を結びつけます。
+<strong>たとえ:</strong> 「ドアが開いたら鳴るチャイム」。出来事（ドアが開く）に反応（チャイム）を結びつける。</p>
+<p><strong>null / undefined（ぬる／あんでぃふぁいんど：「値がない」状態）</strong>
+<code>null</code> は「意図的に空」、<code>undefined</code> は「まだ値が入っていない」状態。両方とも「中身がない」を表し、これらを操作しようとするとエラーの原因になりがち。
+<strong>たとえ:</strong> 空っぽの箱。<code>null</code>＝わざと空にした箱、<code>undefined</code>＝まだ何も入れていない箱。</p>
+<p><strong>真偽値／boolean（しんぎち／ぶーりあん：trueかfalseの2択の値）</strong>
+<code>true</code>（はい・真）か <code>false</code>（いいえ・偽）のどちらか。「チェックが入っているか」などを表します。
+<strong>たとえ:</strong> スイッチのオン／オフ。2つの状態しかない。</p>
+<p><strong>文字列（もじれつ：文字を並べたデータ）</strong>
+<code>"山田太郎"</code> のような文字の並び。引用符（<code>"</code> や <code>'</code>）で囲みます。
+<strong>たとえ:</strong> 文字を書いた紙テープ。</p>
+<p><strong>数値（すうち：数のデータ）</strong>
+<code>30</code> や <code>3.14</code> のような数。計算ができます。<code>&lt;input type="number"&gt;</code> から来る値は実は文字列なので、<code>Number()</code> で数値に変換することがあります（このアプリのログイン処理がその例）。
+<strong>たとえ:</strong> 電卓に入れられる数。文字列の <code>"30"</code> は計算できないが、数値の <code>30</code> は計算できる。</p>
+</blockquote>
+<hr>
+<h2 id="7-react">7. React の言葉</h2>
+<p>フロントエンドのフレームワーク <strong>React（リアクト）</strong> に関わる言葉です。詳しくは第5章。ここは引きやすく厚めに。</p>
+<blockquote>
+<p><strong>React（りあくと：画面を「部品」の組み合わせで作るフレームワーク）</strong>
+画面を <strong>コンポーネント（部品）</strong> に分け、それらを組み合わせて作るフロントエンドのフレームワーク。データが変わると、関係する部分だけ自動で画面を更新してくれます。このアプリのフロントの本体。
+<strong>たとえ:</strong> レゴブロック。小さな部品（コンポーネント）を組み合わせて、大きな作品（画面）を作る。</p>
+<p><strong>コンポーネント（こんぽーねんと：画面を構成する再利用できる部品）</strong>
+ボタン、表、入力欄、ページ全体など、「画面の部品」。1つの関数として書かれ、<code>&lt;Login /&gt;</code> のようにタグの形で使えます。このアプリの <code>KosuList</code>、<code>MemberList</code> などがコンポーネント。
+<strong>たとえ:</strong> レゴの1ピース。組み合わせて使えるし、同じピースを何度でも使える。</p>
+<p><strong>props（ぷろっぷす：親コンポーネントから子へ渡す値）</strong>
+「プロパティ（properties）」の略。親の部品から子の部品へ渡す <strong>設定値・データ</strong>。子は受け取ったpropsを表示や処理に使います。一方通行（親→子）で、子からは変更しません。
+<strong>たとえ:</strong> 親から子へのお使いメモ。「牛乳を買ってきて」と渡す。子はメモ通りに動くが、メモ自体は書き換えない。</p>
+<p><strong>state（すてーと：コンポーネントが内部で持つ「移ろう状態」）</strong>
+「状態」。入力欄の今の値、開いている/閉じている、エラーメッセージの有無など、時間とともに変わるデータ。stateが変わると、その部品の画面が自動で更新されます。
+<strong>たとえ:</strong> 電卓の「いま表示中の数字」。ボタンを押すたびに変わり、その変化が画面に出る。</p>
+<p><strong>useState（ゆーずすてーと：stateを作るための仕組み）</strong>
+Reactでstateを用意する関数。<code>const [値, 値を変える関数] = useState(初期値)</code> の形。<code>setNumber</code> のような「set〜」がstateを更新する関数です。
+<strong>たとえ:</strong> 表示窓と、その窓を書き換えるダイヤルのセット。「窓（値）」と「ダイヤル（set関数）」が一緒に手に入る。</p>
+<p><strong>useEffect（ゆーずえふぇくと：画面の表示後などに「副作用」を実行する仕組み）</strong>
+「副作用（さよう）」＝画面表示以外の処理（サーバーからデータ取得、タイマー設定など）を、適切なタイミングで実行する仕組み。「画面が表示されたらデータを取りに行く」がこのアプリでの典型用途。
+<strong>たとえ:</strong> 「部屋に入ったら自動で電気をつける」センサー。表示（入室）をきっかけに、別の処理（点灯）を起こす。</p>
+<p><strong>フック（ふっく：Reactの機能を使うための「use〜」の関数たち）</strong>
+<code>useState</code>、<code>useEffect</code> などの「use」で始まる関数の総称。Reactの便利機能に引っかけて使うので「フック（引っかけ）」と呼ばれます。
+<strong>たとえ:</strong> 道具を引っかける「フック（壁掛けフック）」。Reactの機能を引っかけて取り出す口。</p>
+<p><strong>React（再）レンダリング（れんだりんぐ：Reactが画面を作り直すこと）</strong>
+CSSの「描画」と少し意味が違い、Reactでは「stateやpropsをもとに、表示すべき内容を計算し直すこと」を指します。stateが変わると再レンダリング（作り直し）が起きます。
+<strong>たとえ:</strong> 数字が変わるたびに表示を計算し直す電光掲示板。</p>
+<p><strong>仮想DOM（かそうどむ：Reactが裏で持つDOMの下書き）</strong>
+Reactが内部に持つ「DOMの下書き（コピー）」。変更前後の下書きを比べ、本当に変わった部分だけを実際のDOMに反映するので、速い。
+<strong>たとえ:</strong> 模様替えの「下書き図面」。実際に家具を全部動かす前に、図面上で差分を確認し、動かす必要がある家具だけ動かす。</p>
+<p><strong>SPA（エスピーエー：ページを丸ごと読み込み直さず画面を切り替えるWebアプリ）</strong>
+Single Page Application（シングル・ページ・アプリケーション）の略。最初に1回だけページを読み込み、以降は <strong>必要な部分だけJavaScriptで書き換える</strong> ことで、ページ遷移をなめらかにする作り。このアプリもSPAです。
+<strong>たとえ:</strong> 1枚の大きなホワイトボード。毎回新しいボードに貼り替えるのではなく、同じボードの一部だけ消して書き直す。だから速くてちらつかない。</p>
+<p><strong>ルーティング／React Router（るーてぃんぐ／りあくとるーたー：URLに応じて表示する画面を切り替える仕組み）</strong>
+「<code>/login</code> ならログイン画面、<code>/kosu</code> なら工数画面」のように、URLに応じて表示するコンポーネントを切り替える仕組み。このアプリは React Router DOM を使い、<code>index.tsx</code> で設定しています。
+<strong>たとえ:</strong> 受付の案内係。「○○課はこちら」とURLごとに行き先（画面）を案内する。</p>
+<p><strong>Link（りんく：SPA内でページを切り替えるためのリンク部品）</strong>
+React Routerの <code>&lt;Link to="/help"&gt;</code> のような部品。普通の <code>&lt;a&gt;</code> と違い、ページ全体を読み込み直さずに画面だけ切り替えます。
+<strong>たとえ:</strong> 同じホワイトボード内での「ページめくり」。新しい紙を持ってこず、ボード上で表示を切り替える。</p>
+<p><strong>Axios（あくしおす：サーバーと通信するためのライブラリ）</strong>
+フロントエンドからバックエンドのAPIへ、リクエストを送りレスポンスを受け取るためのライブラリ。このアプリの通信はAxiosで行われます。
+<strong>たとえ:</strong> 厨房と客席を行き来する「配膳ロボット」。注文を厨房（API）に運び、料理（データ）を席（画面）に運ぶ。</p>
+<p><strong>Material-UI / MUI（まてりある・ゆーあい：見た目の整った部品集）</strong>
+ボタン・表・ダイアログなど、デザインの整った部品をまとめて提供するライブラリ。このアプリのフロントで使われています。
+<strong>たとえ:</strong> 既製品の高級家具セット。自分で削り出さなくても、整ったパーツが手に入る。</p>
+<p><strong>Chart.js（ちゃーとじぇいえす：グラフを描くライブラリ）</strong>
+棒グラフ・円グラフなどを描くためのライブラリ。工数の集計をグラフで見せる画面で使われます。
+<strong>たとえ:</strong> グラフ専門の作画担当。数字を渡すと、見やすいグラフに描いてくれる。</p>
+<p><strong>FullCalendar（ふるかれんだー：カレンダー表示のライブラリ）</strong>
+月間カレンダーや予定表を表示するライブラリ。日付ごとの工数を見せる画面などで使われます。
+<strong>たとえ:</strong> 壁掛けカレンダー部品。日付のマス目を自動で組んでくれる。</p>
+<p><strong>ページネーション（ぺーじねーしょん：たくさんの行を「○件ずつのページ」に分けて表示する仕組み）</strong>
+一覧画面で、全件を一度に出さず「1ページ分ずつ」表示し、ページをめくって続きを見られるようにする仕組み。このアプリには共通の <code>Pagination</code> 部品があります（バックエンド側の説明はsection 8にも）。
+<strong>たとえ:</strong> 分厚い名簿の「ページ送り」。1ページ見終わったら次のページへ。</p>
+</blockquote>
+<hr>
+<h2 id="8-pythondjango">8. Python・Django の言葉</h2>
+<p>バックエンドの言語 <strong>Python（パイソン）</strong> と、そのフレームワーク <strong>Django（ジャンゴ）</strong> に関わる言葉です。詳しくは第6章。ここは特に厚く説明します。</p>
+<blockquote>
+<p><strong>Python（ぱいそん：読みやすさを重視した定番のプログラミング言語）</strong>
+バックエンドを書いている言語。英語に近い読みやすい文法が特徴。
+<strong>たとえ:</strong> きれいに整理された日本語マニュアル。読みやすさを優先して書かれている。</p>
+<p><strong>Django（じゃんご：Pythonでバックエンド（Webアプリの裏側）を作るフレームワーク）</strong>
+データベース操作・URLの割り振り・認証など、Webアプリの裏側に必要なものが一式そろったフレームワーク。このアプリのバックエンドの本体。<code>manage.py</code> というファイルから各種操作をします。
+<strong>たとえ:</strong> 「役所の業務一式キット」。受付・台帳管理・本人確認の仕組みが最初からそろっている。</p>
+<p><strong>Django REST Framework / DRF（じゃんご・れすと・ふれーむわーく：DjangoでAPIを作る拡張）</strong>
+Djangoで、JSONをやりとりするAPIを作りやすくする追加部品。このアプリの <code>/api/</code> の窓口はこれで作られています。
+<strong>たとえ:</strong> 役所キットに足す「外部問い合わせ窓口セット」。外部（フロント）とのデータ受け渡しを楽にする。</p>
+<p><strong>モデル（もでる：データベースの表を、Pythonのクラスで表したもの）</strong>
+「このデータはこういう項目を持つ」という設計図を、Pythonのクラスとして書いたもの。<code>models.py</code> に並びます。このアプリの <code>member</code>（従業員）、<code>Business_Time_graph</code>（工数記録）などがモデルです。1つのモデルが、データベースの1つの <strong>テーブル（表）</strong> に対応します。
+<strong>たとえ:</strong> 台帳の「様式（フォーマット）」。「氏名・従業員番号・ショップ…」と、どんな項目を記録するかを定めた用紙のひな形。</p>
+<p><strong>テーブル（てーぶる：データベースの中の1つの表）</strong>
+データを行と列で並べた表。列が項目（氏名・従業員番号…）、行が1件1件のデータ。1つのモデルが1つのテーブルに対応します。
+<strong>たとえ:</strong> Excelの1シート。1行＝1人分、列＝項目。</p>
+<p><strong>フィールド（ふぃーるど：モデル（テーブル）の1つの項目（列））</strong>
+<code>employee_no = models.IntegerField('従業員番号')</code> のように、モデルの中の1項目。<code>IntegerField</code>（整数）、<code>CharField</code>（文字列）、<code>DateField</code>（日付）、<code>BooleanField</code>（はい/いいえ）など、項目の種類を指定します。
+<strong>たとえ:</strong> 台帳の1つの「欄」。「氏名欄」「従業員番号欄」のそれぞれ。</p>
+<p><strong>ORM（オーアールエム：SQLを書かずにPythonでデータベースを操作する仕組み）</strong>
+Object-Relational Mapping の略。本来データベースは <strong>SQL</strong> という専用言語で操作しますが、ORMを使うとPythonのコードで操作でき、SQLを直接書かなくて済みます。Djangoの大きな魅力。
+<strong>たとえ:</strong> 自動翻訳機。あなたが日本語（Python）で頼むと、機械が外国語（SQL）に訳してデータベースに伝えてくれる。</p>
+<p><strong>SQL（エスキューエル：データベースを操作する専用言語）</strong>
+<code>SELECT * FROM member</code> のように、データベースに「取り出して」「保存して」と指示する専用言語。ORMがあるので普段は直接書きませんが、裏ではこれが動いています。
+<strong>たとえ:</strong> 図書館司書への専門用語での指示。ORM（翻訳機）があれば、普段の言葉で頼める。</p>
+<p><strong>QuerySet（くえりせっと：データベースから取り出した「行の集まり」）</strong>
+モデルを使って「条件に合うデータを取り出した結果」。複数件の行のまとまりです。<code>member.objects.filter(shop='P')</code> は「ショップがPの従業員たち」というQuerySetを返します。実際にデータベースへ問い合わせるのは「結果を使う瞬間まで遅らせる（遅延評価）」のが特徴。
+<strong>たとえ:</strong> 図書館で「ミステリー小説を全部出して」と頼んだときに出てくる「本の山」。条件に合う本のまとまり。</p>
+<p><strong>objects（おぶじぇくつ：モデルからデータを取り出すための入口）</strong>
+<code>member.objects.all()</code> の <code>objects</code>。モデルに付いている「データを取りに行く窓口」。<code>.all()</code>（全部）、<code>.filter()</code>（絞り込み）、<code>.get()</code>（1件取得）などを続けます。
+<strong>たとえ:</strong> 台帳係さん。「全部見せて（all）」「Pショップだけ（filter）」と頼む相手。</p>
+<p><strong>filter / get / all（ふぃるたー／げっと／おーる：データの取り出し方）</strong>
+<code>.all()</code> は全件、<code>.filter(条件)</code> は条件に合う複数件、<code>.get(条件)</code> は条件に合う1件。よく使う取り出し方です。
+<strong>たとえ:</strong> 「全部出して」「赤い本だけ出して」「あの1冊を出して」の頼み方の違い。</p>
+<p><strong>マイグレーション（まいぐれーしょん：モデルの変更を実際のデータベースに反映する仕組み）</strong>
+モデル（設計図）を変えたら、その変更を本物のデータベースの表に反映する必要があります。その手順がマイグレーション。<code>python manage.py makemigrations</code>（変更内容を記録）→ <code>python manage.py migrate</code>（実際に反映）の2段階。
+<strong>たとえ:</strong> 設計図を直したら、実際の建物も工事して合わせること。makemigrations＝工事計画書づくり、migrate＝実際の工事。</p>
+<p><strong>シリアライザ（しりあらいざ：モデルのデータとJSONを相互に変換する係）</strong>
+Pythonのモデルデータ（オブジェクト）を、フロントに送れるJSON（文字）に変換したり、その逆をしたりする係。DRFの中心部品。
+<strong>たとえ:</strong> 翻訳・梱包係。社内の台帳データ（モデル）を、外部に送れる荷物（JSON）に包み直す。逆に、届いた荷物を台帳の形に戻すこともする。</p>
+<p><strong>ビュー（びゅー：リクエストを受けて処理し、レスポンスを返す関数／クラス）</strong>
+「この窓口に要求が来たら、こう処理してこう返す」を書く部分。このアプリでは <code>kosu/views/</code> の中に、機能ごとに分けて書かれています（<code>kosu_views</code>、<code>member_views</code> など）。
+<strong>たとえ:</strong> 窓口の担当者。要求（リクエスト）を受け、台帳を調べ、回答（レスポンス）を返す。</p>
+<p><strong>URLルーティング／urls.py（ユーアールエルるーてぃんぐ：どのURLをどのビューにつなぐか決める設定）</strong>
+「<code>/api/kosu/</code> に来たら、この工数ビューへ渡す」という対応表。<code>kosu/urls.py</code> に書かれています。
+<strong>たとえ:</strong> 電話交換台。「営業部につないで」と言われたら、その内線（ビュー）につなぐ。</p>
+<p><strong>認証（にんしょう：「あなたは誰か」を確かめること）</strong>
+ログインで「この人は本物の従業員か」を確かめる仕組み。このアプリは <strong>セッション認証</strong> を使います。
+<strong>たとえ:</strong> 受付での本人確認。社員証を見せて「この人は社員だ」と確かめる。</p>
+<p><strong>セッション（せっしょん：ログイン状態を覚えておく仕組み）</strong>
+一度ログインすると、サーバーが「この人はログイン済み」と覚えておき、その後の要求では毎回パスワードを聞かない仕組み。ブラウザには「合言葉（セッションID）」がクッキーとして保存されます。
+<strong>たとえ:</strong> 遊園地の再入場スタンプ。最初に入場確認したら、手にスタンプ（セッション）を押し、以降はスタンプを見せれば再入場できる。</p>
+<p><strong>クッキー（くっきー：ブラウザがサーバーから預かって保存する小さなデータ）</strong>
+サーバーがブラウザに「これを持っておいて」と渡す小さなメモ。セッションIDの保存などに使われます。次の要求のとき自動でサーバーに送り返されます。
+<strong>たとえ:</strong> クロークの「引換札」。預けた荷物（ログイン状態）と引き換えるための小さな札。</p>
+<p><strong>CSRF（シーエスアールエフ：なりすまし送信を防ぐ仕組み）</strong>
+Cross-Site Request Forgery（クロスサイト・リクエスト・フォージェリ）の略。「別の悪意あるサイトが、ログイン中のあなたになりすまして勝手にデータを送信する」攻撃を防ぐ仕組み。送信時に専用の「合言葉（CSRFトークン）」を一緒に送らせて、本物かを確かめます。
+<strong>たとえ:</strong> 銀行振込の「ワンタイムパスワード」。本人しか知らない合言葉を一緒に送らせ、なりすましを防ぐ。</p>
+<p><strong>CORS（コルス：別ドメインからのアクセスを許可・制限する仕組み）</strong>
+Cross-Origin Resource Sharing（クロスオリジン・リソース・シェアリング）の略。「フロント（<code>localhost:3000</code>）から、別の住所のバック（<code>localhost:8000</code>）へアクセスしていいか」を制御する仕組み。許可していない相手はブラウザがブロックします。
+<strong>たとえ:</strong> マンションの入館許可リスト。「この人（このサイト）は入っていい」とあらかじめ登録された相手だけ通す。</p>
+<p><strong>デコレータ（でこれーた：関数の上に付けて機能を足す <code>@〇〇</code> の印）</strong>
+<code>@login_required</code> のように、関数の真上に <code>@</code> で付けて、その関数に機能（ログイン必須など）を追加する仕組み。中身を書き換えずに、機能をまとう。
+<strong>たとえ:</strong> 服の上に羽織るコート。本体（関数）はそのままで、上から機能（防寒＝認証チェック）を着せる。</p>
+<p><strong>シグナル（しぐなる：「○○が起きたら△△する」を自動で結びつける仕組み）</strong>
+「データが保存されたら、自動でこの処理を呼ぶ」のように、出来事に処理を結びつけるDjangoの仕組み。このアプリは <code>signals.py</code> でモデルの変更を追跡（履歴記録）しています。
+<strong>たとえ:</strong> 玄関の人感センサー。「人が来た（出来事）ら、自動でライトをつける（処理）」と結びつけておく。</p>
+<p><strong>ページネーション（ぺーじねーしょん：大量のデータを「○件ずつのページ」に分けて返す仕組み）</strong>
+1万件あるデータを一度に全部返すと重いので、「1ページ20件ずつ」に分けて返す仕組み。フロントはページをめくって続きを取得します。
+<strong>たとえ:</strong> 分厚い本のページ分け。一度に全ページ渡さず、見ているページだけ手渡す。</p>
+<p><strong>WSGI（ダブリュエスジーアイ：PythonのWebアプリとサーバーをつなぐ約束ごと）</strong>
+Web Server Gateway Interface の略。Djangoのアプリと、それを動かす本番用サーバー（Gunicornなど）の「つなぎ目の規格」。<code>hozen_another/wsgi.py</code> がその入口です。
+<strong>たとえ:</strong> 電源プラグの規格。アプリ（家電）とサーバー（コンセント）が、決まった形でつながるための差し込み口の標準。</p>
+<p><strong>Gunicorn（ジーユニコーン／ガニコーン：本番でDjangoを動かすサーバー）</strong>
+開発中は <code>manage.py runserver</code> で動かしますが、本番ではより頑丈な <strong>Gunicorn</strong> がDjangoを動かします。たくさんの利用者からの要求を、複数の作業員（ワーカー）でさばきます。
+<strong>たとえ:</strong> 練習用の手回し発電機（runserver）に対し、本番用の業務用発電機（Gunicorn）。たくさんの電力（アクセス）に耐えられる。</p>
+<p><strong>WhiteNoise（ほわいとのいず：静的ファイルを配信する部品）</strong>
+CSSや画像などの「変化しないファイル（静的ファイル）」を、Django自身が効率よく配る仕組み。このアプリはこれを使っています。
+<strong>たとえ:</strong> 受付脇のパンフレット置き場。毎回作らず、用意済みのもの（CSS・画像）をサッと渡す。</p>
+<p><strong>静的ファイル／staticfiles（せいてきふぁいる：変化しないファイル＝CSS・JS・画像など）</strong>
+利用者ごとに変わらない、決まったファイル（CSS、JavaScript、画像）。<code>python manage.py collectstatic</code> で <code>staticfiles/</code> フォルダに集められ、配信されます。
+<strong>たとえ:</strong> 店の固定メニュー表。お客さんごとに変わらない、用意済みの配り物。</p>
+<p><strong>Django-Q（じゃんごきゅー：時間のかかる処理を裏でこなす仕組み）</strong>
+バックアップ・復元など「時間がかかる処理」を、利用者を待たせず裏で実行する仕組み。<code>python manage.py qcluster</code> で起動する作業員が、順番にこなします。このアプリの <code>tasks.py</code> にその処理が書かれています。
+<strong>たとえ:</strong> クリーニングの預かり受付。時間がかかる作業（洗濯）はその場でやらず、預かって裏で進め、できたら返す。</p>
+<p><strong>manage.py（まねーじどっとぱい：Djangoのいろいろな操作の入口）</strong>
+<code>python manage.py runserver</code>（起動）、<code>migrate</code>（DB反映）、<code>makemigrations</code>（変更記録）など、Djangoの各種操作を実行するファイル。
+<strong>たとえ:</strong> リモコン。1つのリモコンから「起動」「設定変更」など各操作のボタンを押せる。</p>
+<p><strong>settings.py（せってぃんぐすどっとぱい：Djangoの設定をまとめたファイル）</strong>
+データベース接続先、許可するアクセス元、秘密鍵の読み込みなど、アプリ全体の設定を書くファイル。<code>hozen_another/settings.py</code> にあります。
+<strong>たとえ:</strong> アプリの「設定画面」。Wi-Fi・音量・言語などの設定を1か所にまとめた場所。</p>
+</blockquote>
+<hr>
+<h2 id="9">9. このアプリ特有の言葉</h2>
+<p>このアプリ「業務工数システム」だけで使う、業務独自の言葉です。<strong>ここが一番大事</strong>かもしれません。コードを読むとき、この意味を知らないと何のことかわからないからです。実際のモデル（<code>kosu/models.py</code>）に基づいて説明します。</p>
+<blockquote>
+<p><strong>工数（こうすう：作業にかかった時間・人手の量）</strong>
+このアプリの主役。「ある作業に、どれだけの時間・人手をかけたか」を表す量。従業員が「いつ・どの作業を・どれだけ」やったかを記録するのが、このアプリの目的です。
+<strong>たとえ:</strong> 作業の「燃費メーター」。何にどれだけのエネルギー（時間）を使ったかを測る。</p>
+<p><strong>member（めんばー：従業員1人を表すモデル）</strong>
+従業員（社員）1人分のデータを表すモデル。従業員番号・氏名・所属ショップ・権限・各種休憩時間などを持ちます（<code>models.py</code> で定義）。
+<strong>たとえ:</strong> 社員名簿の1行。1人分の基本情報がまとまっている。</p>
+<p><strong>employee_no（じゅうぎょういんばんごう：従業員を識別する番号）</strong>
+従業員1人ひとりに割り振られた番号。ログイン時にもこの番号を使います。<code>&lt;input type="number"&gt;</code> で入力するため、届く値は文字列で、<code>Number()</code> で数値に直すことがあります。
+<strong>たとえ:</strong> 社員番号。名前が同じ人がいても、番号で必ず区別できる。</p>
+<p><strong>ショップ（しょっぷ：従業員の所属区分）</strong>
+従業員がどの区分に属するかを表す分類。<code>models.py</code> の <code>shop_list</code> に <code>P</code>、<code>R</code>、<code>W1</code>、<code>W2</code>、<code>T1</code>、<code>T2</code>、<code>A1</code>、<code>A2</code>、<code>J</code>、<code>その他</code>、<code>異動・退社</code> などが定義されています。一覧画面では並び順が工夫されています（最近のコミットで「異動・退社を後ろに」変更）。
+<strong>たとえ:</strong> 部署・班の区分。「営業1課」「製造2班」のような所属の仕分け。</p>
+<p><strong>直（ちょく：勤務の時間帯の区分。シフトの種類）</strong>
+モデルの <code>tyoku2</code>（直）。1直（昼の勤務）、2直、3直、常昼（じょうひる）、連1直・連2直など、<strong>どの時間帯の勤務か</strong> を表す区分。休憩時間も直ごとに違うため、従業員モデルは直ごとの休憩時間欄をたくさん持っています（<code>break_time1</code>〜<code>break_time6</code> と、それぞれの残業休憩）。
+<strong>たとえ:</strong> 工場の交替勤務の「シフト名」。「日勤」「夜勤」「準夜勤」のような、時間帯の呼び名。</p>
+<p><strong>288枠（にひゃくはちじゅうはちわく：1日を5分刻みで区切った作業内容の枠）</strong>
+モデルの <code>time_work</code>（作業内容）は <code>max_length=288</code> の文字列です。これは <strong>1日（24時間）を5分ごとに区切ると 24×60÷5＝288 個の枠</strong> になることに対応します。つまり「1日の各5分が、どの作業だったか」を288個の枠で表す設計です。工数を細かく記録するための、このアプリの核心的な仕組み。
+<strong>たとえ:</strong> 1日を288マスに区切った塗り絵。各5分のマスを「この作業の色」で塗っていくと、1日の作業の内訳が一目でわかる。</p>
+<blockquote>
+<p><strong>なぜ288なの？</strong> 24時間 = 1440分。これを5分単位で割ると 1440 ÷ 5 = 288。だから「5分刻みで1日を表すと288枠」になります。1枠＝5分、と覚えておくと、工数データを読むときに迷いません。</p>
+</blockquote>
+<p><strong>作業内容 / time_work（さぎょうないよう：288枠に詰めた、その日の作業の記録）</strong>
+上記288枠の中身を表す文字列フィールド。1枠ずつに「どの工数区分か」を表す記号が入り、1日分でつながって1つの長い文字列になります。
+<strong>たとえ:</strong> 288マスの塗り絵を、1列の暗号文字に直したもの。1文字（または1区切り）が1つの5分マスに対応。</p>
+<p><strong>作業詳細 / detail_work（さぎょうしょうさい：作業の補足説明）</strong>
+<code>detail_work</code>（<code>max_length=32676</code>）。288枠だけでは書ききれない、作業の詳しい説明を入れる、とても長い文字列の欄。
+<strong>たとえ:</strong> 塗り絵の余白に書く「メモ欄」。色だけでは伝わらない事情を文章で補足する。</p>
+<p><strong>工数区分定義 / kosu_division（こうすうくぶんていぎ：作業の種類の一覧の定義）</strong>
+どんな作業の種類（区分）があるかを定義するモデル。「1バージョンにつき最大50区分」まで定義できます。<code>Business_Time_graph</code> の <code>def_ver2</code>（工数区分定義Ver）で、その記録がどのバージョンの定義に基づくかを示します。
+<strong>たとえ:</strong> 塗り絵の「色見本（パレット）」の定義。「赤＝組立、青＝検査…」と、どの色が何を意味するかを決めた一覧。</p>
+<p><strong>def_ver / 定義バージョン（ていぎばーじょん：使っている工数区分定義の版）</strong>
+工数区分の定義は時々見直されます。「いつの定義に基づく記録か」を区別するためのバージョン名。過去の記録は当時のバージョンの意味で読む必要があるため、記録ごとにバージョンを保存しています。
+<strong>たとえ:</strong> 「○年度版の色見本」。年度で色の意味が変わることがあるので、どの年度の見本で塗ったかを記録しておく。</p>
+<p><strong>就業日 / work_day（しゅうぎょうび：その工数記録が、どの日のものか）</strong>
+<code>work_day2</code>（就業日）。その作業記録がいつの日のものかを表す日付。検索や集計の基準になります。
+<strong>たとえ:</strong> 日記の「日付」。「いつの記録か」を示す。</p>
+<p><strong>休憩文字列（きゅうけいもじれつ：休憩時間を表す独自の文字列）</strong>
+従業員モデルの <code>break_time1</code>〜（<code>max_length=9</code>）など、<strong>休憩の時間帯を文字列で表したデータ</strong>。直ごと・残業ごとに複数持ちます。工数の集計時、この休憩文字列を解釈して「実働時間から休憩を差し引く」処理が行われます。最近のコミット <code>休憩変更時の工数消去バグ修正</code> は、この休憩文字列の扱いに関わる修正です。
+<strong>たとえ:</strong> タイムカードの「休憩の時間メモ」。「12:00-12:45」のような文字を、後で機械が読み取って実働を計算する。</p>
+<blockquote>
+<p>⚠️ <strong>休憩文字列は要注意ポイント。</strong> 工数のバグは、この休憩文字列の解釈まわりで起きやすいです（履歴のバグ修正コミットがそれを物語っています）。休憩に関わる修正をするときは、直ごと・残業ごとに欄が分かれていること、文字列の形式を壊さないことに特に注意してください。</p>
+</blockquote>
+<p><strong>残業時間 / over_time（ざんぎょうじかん：その日の残業の量）</strong>
+<code>over_time</code>（残業時間）。通常勤務を超えた分の時間。休憩文字列にも「残業休憩」が直ごとに用意されています。
+<strong>たとえ:</strong> 定時を過ぎた延長分のメーター。</p>
+<p><strong>Business_Time_graph（びじねすたいむぐらふ：1日分の工数記録を表すモデル）</strong>
+「誰が・いつ・どの直で・どの作業を（288枠）・残業や休憩はどうだったか」を1件にまとめた、工数記録の中心モデル。このアプリのデータの主役です。
+<strong>たとえ:</strong> 1人分・1日分の「作業日報」。これが何万枚も積み重なって、工数データベースになる。</p>
+<p><strong>team_member（ちーむめんばー：チーム（班）の構成を表すモデル）</strong>
+チーム（班）の編成を表すモデル。「1チーム最大15人まで」という上限があります。集計をチーム単位で行うために使われます。
+<strong>たとえ:</strong> 班のメンバー表。最大15人までの名簿。</p>
+<p><strong>権限 / authority・管理者 / administrator（けんげん・かんりしゃ：その人ができる操作の範囲）</strong>
+従業員モデルの <code>authority</code>（権限）と <code>administrator</code>（管理者）。<code>true</code>/<code>false</code> で、編集できる範囲や管理機能を使えるかどうかを分けます。
+<strong>たとえ:</strong> 鍵の種類。一般の鍵（一般従業員）と、マスターキー（管理者）で開けられる部屋が違う。</p>
+<p><strong>AsyncTask / History（えいしんくたすく／ひすとりー：非同期処理の進捗と、変更の履歴を記録するモデル）</strong>
+<code>AsyncTask</code> はバックアップ等の裏処理の進み具合を、<code>History</code> はデータの変更履歴（監査ログ）を記録するモデル。<code>signals.py</code> と連携して、いつ何が変わったかを残します。
+<strong>たとえ:</strong> AsyncTask＝宅配の「追跡番号の状況」、History＝台帳の「訂正の履歴印」。</p>
+<p><strong>ポップアップ / pop_up（ぽっぷあっぷ：従業員ごとに表示する通知メッセージ）</strong>
+従業員モデルの <code>pop_up1</code>〜<code>pop_up5</code> と <code>pop_up_id1</code>〜。特定の従業員に対して画面に出す通知メッセージの欄。最近のコミット <code>通知誤削除修正</code> はこの通知まわりの修正です。
+<strong>たとえ:</strong> 個人宛の付箋（ふせん）メモ。その人がログインしたときに「お知らせ」として画面に貼り出す。</p>
+<p><strong>break_check（ぶれいくちぇっく：休憩エラーのチェックを有効にするかどうかのフラグ）</strong>
+従業員モデルの <code>break_check</code>。休憩時間の入力に矛盾があるときにエラーを出すかどうかを、その人ごとに切り替えるためのスイッチ（<code>true</code>/<code>false</code>）。
+<strong>たとえ:</strong> 「休憩のつじつまチェックを、この人にはする／しない」を切り替える設定スイッチ。</p>
+</blockquote>
+<hr>
+<h2 id="10_1">10. テストに関わる言葉</h2>
+<p>「コードがちゃんと動くか」を自動で確かめる <strong>テスト</strong> に関わる言葉です。このアプリのフロントは <strong>Vitest（ヴィテスト）</strong> でテストします。</p>
+<blockquote>
+<p><strong>テスト（てすと：コードが正しく動くかを確かめる作業／そのためのコード）</strong>
+「この関数に5を渡したら、ちゃんと10が返るか」のように、コードの正しさを自動で確認する仕組み・コード。修正後に「壊していないか」を素早く確かめられます。このアプリのテストは <code>frontend/src/tests/</code> にあります。
+<strong>たとえ:</strong> 出荷前の検品。「ボタンを押したら本当に動くか」を1つずつ確認する検査ライン。</p>
+<p><strong>Vitest（ヴィテスト：このアプリのフロントで使うテスト道具）</strong>
+フロントエンドのテストを実行する道具。<code>npm test</code>（変更を見張りながら実行）、<code>npm run test:run</code>（1回だけ実行）、<code>npm run test:ui</code>（画面付きで実行）で動かします。
+<strong>たとえ:</strong> 検品ラインの「検査装置」。テストコードを流し込むと、合否を判定してくれる。</p>
+<p><strong>テストケース（てすとけーす：1つ1つの検査項目）</strong>
+「○○という入力のとき、△△になるはず」という、1件の検査。<code>it("...", () =&gt; { ... })</code> の形で書きます。
+<strong>たとえ:</strong> 検品リストの1項目。「赤いボタンを押す→ランプが光る」のような、確認すべき1ケース。</p>
+<p><strong>アサーション（あさーしょん：「こうなっているはず」と表明して確かめる文）</strong>
+テストの中で「結果はこうであるべき」と宣言し、その通りかを判定する文。<code>expect(結果).toBe(期待値)</code> の形がよく使われ、<code>expect(...)</code>＝「〜であることを期待する」、<code>.toBe(...)</code>＝「〜と等しい」です。
+<strong>たとえ:</strong> 検品で「重さは100gのはず」と基準を表明して、はかりに乗せて確かめる行為。</p>
+<p><strong>モック（もっく：本物の代わりに使う「偽物の部品」）</strong>
+テストのとき、本物のサーバー通信などを呼ぶと遅い・不安定なので、代わりに「決まった答えを返す偽物」に差し替えること。このアプリでは Axios（通信）や子コンポーネントをモックします。
+<strong>たとえ:</strong> 撮影用の「ダミーの料理（食品サンプル）」。本物を作る手間をかけず、見た目だけ本物そっくりの代用品で試す。</p>
+<p><strong>モックする（もっくする：本物を偽物に差し替える操作）</strong>
+「Axiosをモックする」＝「通信部分を、決まった結果を返す偽物に置き換える」。これで通信の成否に左右されず、画面側のロジックだけを確実にテストできます。
+<strong>たとえ:</strong> 火災訓練で「本物の火」ではなく「煙の出る装置（ダミー）」を使う。本物の危険なし安全に、手順だけ確かめる。</p>
+<p><strong>React Testing Library（りあくと・てすてぃんぐ・らいぶらり：Reactの画面をテストする道具）</strong>
+Vitestと一緒に使い、「この画面にこの文字が表示されているか」「ボタンを押したらどうなるか」を、利用者の目線で確認するためのライブラリ。
+<strong>たとえ:</strong> 「お客さん役」の検査員。実際に画面を見て、ボタンを押して、表示を確かめる。</p>
+</blockquote>
+<hr>
+<h2 id="11-azure">11. 運用・Azure の言葉</h2>
+<p>作ったアプリを「本番で動かし続ける」運用に関わる言葉です。このアプリは <strong>Microsoft Azure（マイクロソフト・アジュール）</strong> という、クラウド上で動いています。</p>
+<blockquote>
+<p><strong>Azure（アジュール：Microsoftのクラウドサービス）</strong>
+インターネット越しに、サーバーやデータベースを借りられるMicrosoftのサービス。このアプリの本番環境はAzure上にあります。自前で機械を買わず、必要な分だけ借りて使えます。
+<strong>たとえ:</strong> レンタルオフィス。自分で建物を建てず、必要な広さの部屋を借りて事業をする。</p>
+<p><strong>クラウド（くらうど：インターネット越しに借りるコンピュータ資源）</strong>
+自前の機械を持たず、インターネット越しに必要なだけサーバーやストレージを借りて使う方式。Azure、AWS、Google Cloudなどが代表。
+<strong>たとえ:</strong> 電気の購入。自宅に発電機を持たず、必要な分だけ電力会社から買う。</p>
+<p><strong>デプロイ（でぷろい：作ったアプリを本番環境に配置して動かすこと）</strong>
+開発したコードを本番のサーバーに送り込み、利用者が使える状態にすること。「リリース」「公開」とも近い。
+<strong>たとえ:</strong> 完成した商品を「店頭に並べる」こと。倉庫（開発）から売り場（本番）へ出す。</p>
+<p><strong>フレキシブルサーバー（ふれきしぶるさーばー：Azureの柔軟なデータベース提供形態）</strong>
+Azureが提供するデータベース（PostgreSQLなど）のサービス形態の1つ。「Azure Database for PostgreSQL フレキシブルサーバー」のように呼ばれ、性能やバックアップ設定を柔軟に調整できるのが特徴。このアプリのデータベースはこの形態で動いていることがあります。
+<strong>たとえ:</strong> 広さや設備を後から調整できる「フレキシブルな貸し倉庫」。荷物（データ）が増えたら、棚を増やしたり管理人を増やしたりできる。</p>
+<p><strong>App Service（あっぷさーびす：Azureでアプリを動かす場所）</strong>
+Azure上でWebアプリ（このアプリのDjango部分など）を動かすためのサービス。サーバーの細かい管理をAzureに任せて、アプリを動かすことに集中できます。
+<strong>たとえ:</strong> 内装・電気・水道つきの「テナント区画」。建物の管理は大家（Azure）に任せ、店（アプリ）の運営に集中できる。</p>
+<p><strong>環境変数（かんきょうへんすう：本番の設定値をコードの外から与える）</strong>
+（section 3でも触れましたが運用で特に重要）本番のデータベース接続先やパスワードなどは、コードに書かず、Azureの設定（環境変数）として与えます。<code>DEBUG</code> を本番では <code>False</code> にする、なども環境変数で切り替えます。
+<strong>たとえ:</strong> 店ごとに違う「金庫の暗証番号」。同じ店舗マニュアル（コード）でも、暗証番号（設定）は店ごとに外から与える。</p>
+<p><strong>DEBUG（でばっぐ：開発用の詳細表示モードのオン／オフ）</strong>
+Djangoの設定。<code>True</code> だとエラー時に詳しい内部情報を表示します（開発に便利）。本番では情報漏れ防止のため必ず <code>False</code> にします。
+<strong>たとえ:</strong> 機械の「整備モード」。整備中（開発）は内部を全部見せるが、営業中（本番）はカバーを閉じて隠す。</p>
+<p><strong>ALLOWED_HOSTS（あらうど・ほすつ：アクセスを許可するドメインのリスト）</strong>
+Djangoの設定で、「このアドレスから来た要求だけ受け付ける」と許可するドメイン名のリスト。本番のドメインをここに登録します。
+<strong>たとえ:</strong> 「この住所宛の郵便だけ受け取る」という受信許可リスト。</p>
+<p><strong>バックアップ（ばっくあっぷ：データの控えを取っておくこと）</strong>
+万一データが壊れたり消えたりしたときに備え、定期的にデータの控え（コピー）を保存しておくこと。このアプリは Django-Q の裏処理でバックアップ・復元を行います。
+<strong>たとえ:</strong> 大事な書類のコピーを別の場所に保管しておくこと。火事（障害）でも控えがあれば復元できる。</p>
+<p><strong>リストア／復元（りすとあ／ふくげん：バックアップから元に戻すこと）</strong>
+取っておいたバックアップを使って、データを以前の状態に戻すこと。
+<strong>たとえ:</strong> コピーを使って、失われた書類を作り直すこと。</p>
+<p><strong>ダウンタイム（だうんたいむ：サービスが使えなくなっている時間）</strong>
+アプリが止まっていて利用者が使えない時間。運用では、これをできるだけ短くすることが大切です。
+<strong>たとえ:</strong> 店の「臨時休業」の時間。短いほどお客さんに迷惑がかからない。</p>
+</blockquote>
+<hr>
+<h2 id="12_1">12. 記号・略語のはやわかり表</h2>
+<p>コードでよく見る記号や略語を、まとめて引けるようにしました。「これ何の記号？」と思ったらここを。</p>
+<table>
+<thead>
+<tr>
+<th>記号・略語</th>
+<th>読み</th>
+<th>意味・使われ方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>//</code></td>
+<td>スラッシュ2つ</td>
+<td>JS/TSの1行コメント（メモ。実行されない）</td>
+</tr>
+<tr>
+<td><code>/* */</code></td>
+<td>スラッシュアスタリスク</td>
+<td>JS/TS/CSSの複数行コメント</td>
+</tr>
+<tr>
+<td><code>#</code></td>
+<td>シャープ／ハッシュ</td>
+<td>Pythonの1行コメント／CSSではID指定</td>
+</tr>
+<tr>
+<td><code>{ }</code></td>
+<td>波かっこ／中かっこ</td>
+<td>処理のまとまり／オブジェクト／JSXでの値の埋め込み</td>
+</tr>
+<tr>
+<td><code>[ ]</code></td>
+<td>角かっこ</td>
+<td>配列／要素の番号アクセス</td>
+</tr>
+<tr>
+<td><code>( )</code></td>
+<td>丸かっこ</td>
+<td>関数の引数／計算の優先</td>
+</tr>
+<tr>
+<td><code>=&gt;</code></td>
+<td>アロー（矢印）</td>
+<td>アロー関数（関数の短い書き方）</td>
+</tr>
+<tr>
+<td><code>===</code></td>
+<td>イコール3つ</td>
+<td>厳密に等しいか（型も含めて比較。JS/TS）</td>
+</tr>
+<tr>
+<td><code>==</code></td>
+<td>イコール2つ</td>
+<td>等しいか（型を緩く見る。JSでは <code>===</code> 推奨）</td>
+</tr>
+<tr>
+<td><code>&amp;&amp;</code></td>
+<td>アンド2つ</td>
+<td>かつ／JSXでは「左がtrueなら右を表示」</td>
+</tr>
+<tr>
+<td><code>\|\|</code></td>
+<td>パイプ2つ</td>
+<td>または</td>
+</tr>
+<tr>
+<td><code>!</code></td>
+<td>エクスクラメーション</td>
+<td>否定（〜でない）</td>
+</tr>
+<tr>
+<td><code>?</code></td>
+<td>クエスチョン</td>
+<td>任意（あってもなくても）／三項演算子</td>
+</tr>
+<tr>
+<td><code>=</code></td>
+<td>イコール</td>
+<td>代入（右の値を左に入れる）</td>
+</tr>
+<tr>
+<td><code>@</code></td>
+<td>アット</td>
+<td>Pythonのデコレータ（<code>@login_required</code> など）</td>
+</tr>
+<tr>
+<td><code>.</code></td>
+<td>ドット</td>
+<td>持ち物へのアクセス（<code>member.objects</code> など）</td>
+</tr>
+<tr>
+<td><code>:</code></td>
+<td>コロン</td>
+<td>「名前: 値」／TSの型注釈／CSSのプロパティ</td>
+</tr>
+<tr>
+<td><code>;</code></td>
+<td>セミコロン</td>
+<td>文の終わり（JS/TS/CSS）</td>
+</tr>
+<tr>
+<td><code>$</code></td>
+<td>ドル</td>
+<td>テンプレート文字列の <code>${ }</code>（値の埋め込み）</td>
+</tr>
+<tr>
+<td><code>...</code></td>
+<td>ドット3つ</td>
+<td>スプレッド（中身を展開する）／残余</td>
+</tr>
+<tr>
+<td>API</td>
+<td>エーピーアイ</td>
+<td>プログラム同士の窓口（section 2）</td>
+</tr>
+<tr>
+<td>DB</td>
+<td>ディービー</td>
+<td>データベース</td>
+</tr>
+<tr>
+<td>DOM</td>
+<td>ドム</td>
+<td>HTMLの木構造（section 5）</td>
+</tr>
+<tr>
+<td>DRF</td>
+<td>ディーアールエフ</td>
+<td>Django REST Framework</td>
+</tr>
+<tr>
+<td>SPA</td>
+<td>エスピーエー</td>
+<td>シングルページアプリ（section 7）</td>
+</tr>
+<tr>
+<td>JSX</td>
+<td>ジェイエスエックス</td>
+<td>JSにHTMLを混ぜる記法（section 5・7）</td>
+</tr>
+<tr>
+<td>ORM</td>
+<td>オーアールエム</td>
+<td>SQLを書かずDB操作（section 8）</td>
+</tr>
+<tr>
+<td>CSRF</td>
+<td>シーエスアールエフ</td>
+<td>なりすまし送信防止（section 8）</td>
+</tr>
+<tr>
+<td>CORS</td>
+<td>コルス</td>
+<td>別ドメインアクセス制御（section 8）</td>
+</tr>
+<tr>
+<td>WSGI</td>
+<td>ダブリュエスジーアイ</td>
+<td>Pythonアプリとサーバーのつなぎ目（section 8）</td>
+</tr>
+<tr>
+<td>PR</td>
+<td>ピーアール</td>
+<td>プルリクエスト（section 4）</td>
+</tr>
+<tr>
+<td>TS</td>
+<td>ティーエス</td>
+<td>TypeScript</td>
+</tr>
+<tr>
+<td>JS</td>
+<td>ジェイエス</td>
+<td>JavaScript</td>
+</tr>
+<tr>
+<td>401</td>
+<td>よんまるいち</td>
+<td>「未ログイン」を表すHTTPエラー番号（section 2）</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="13">13. 困ったときの調べ方</h2>
+<p>用語集に載っていない言葉やエラーに出会ったとき、自力で調べる方法です。「自分で調べられる」ことが、引き継ぎ後にいちばん効いてきます。</p>
+<h3 id="131">13.1 エラーメッセージは「英語の手紙」だと思って読む</h3>
+<p>エラーメッセージは怖く見えますが、たいてい「どこで・何が・なぜ」を教えてくれる親切な手紙です。</p>
+<blockquote>
+<p><strong>▼ 調べ方の手順:</strong>
+1. <strong>エラーの最後の行（または最初の行）を読む。</strong> ここに要点があることが多い。
+2. <strong>ファイル名と行番号を探す。</strong> <code>Login.tsx:42</code> のような表記は「Login.tsxの42行目」。そこを開く。
+3. <strong>エラーメッセージをそのまま検索エンジンに貼る。</strong> 自分の固有名（ファイル名や変数名）は外して、共通部分だけで検索すると当たりやすい。</p>
+<p><strong>▼ こう読めれば成功:</strong> <code>Cannot read properties of undefined (reading 'name')</code> → 「undefined（中身がない）ものから <code>name</code> を読もうとして失敗した」→「nameを持っているはずの値が、実は空っぽだった」→ その値がどこで作られるかをさかのぼる。</p>
+</blockquote>
+<h3 id="132">13.2 このアプリの中を検索する</h3>
+<p>「この言葉、このアプリのどこで使われている？」を調べるには、エディタの全文検索（VS Codeなら <code>Ctrl + Shift + F</code>）が最強です。</p>
+<ul>
+<li>知らないクラス名・関数名・モデル名を検索すると、定義場所と使用場所が一覧で出ます。</li>
+<li>たとえば <code>Business_Time_graph</code> を検索すれば、それを使っている全ビューが見つかります。</li>
+</ul>
+<blockquote>
+<p><strong>保守の黄金フロー（再掲・全分野共通）:</strong> 「直したい部分を特定 → その名前で全文検索 → 定義と使用箇所を読む → 影響範囲を理解してから直す」。いきなり書き換えず、まず読む。これが壊さないコツです。</p>
+</blockquote>
+<h3 id="133">13.3 公式ドキュメントと信頼できる情報源</h3>
+<p>困ったら、まず <strong>公式の説明</strong> を見る習慣をつけましょう。検索結果の上位でも、古い情報や間違いがあります。</p>
+<table>
+<thead>
+<tr>
+<th>分野</th>
+<th>調べ先（キーワード）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>React</td>
+<td>「React 公式 ドキュメント」「useState」「useEffect」</td>
+</tr>
+<tr>
+<td>Django</td>
+<td>「Django ドキュメント」「Django QuerySet」「Django REST Framework」</td>
+</tr>
+<tr>
+<td>TypeScript</td>
+<td>「TypeScript ハンドブック」</td>
+</tr>
+<tr>
+<td>CSS</td>
+<td>「MDN CSS （調べたいプロパティ名）」</td>
+</tr>
+<tr>
+<td>Git</td>
+<td>「Git 使い方」「git コンフリクト 解決」</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>用語:</strong> <strong>MDN（エムディーエヌ）</strong> … Mozilla Developer Network。HTML・CSS・JavaScriptの、信頼できる定番の解説サイト。「困ったらMDN」が合言葉。</p>
+</blockquote>
+<h3 id="134">13.4 それでも分からないときの聞き方</h3>
+<p>人に聞くときは、次の3点を添えると、答えがもらいやすくなります。</p>
+<ol>
+<li><strong>やりたいこと</strong>（例：工数一覧で休憩を差し引いて表示したい）</li>
+<li><strong>やったこと・試したこと</strong>（例：<code>break_time1</code> を読んで差し引いてみた）</li>
+<li><strong>起きたこと</strong>（例：このエラーが出た／結果がこうなった、とエラー文や画面を添える）</li>
+</ol>
+<blockquote>
+<p>⚠️ <strong>「動きません」だけでは伝わりません。</strong> 「何を・どうしたら・どうなったか」をセットで伝えると、相手も自分も原因に早くたどり着けます。これは人に聞くときだけでなく、自分でデバッグするときの考え方そのものでもあります。</p>
+</blockquote>
+<h3 id="135">13.5 たとえ話を「自分用」に作る</h3>
+<p>新しい用語に出会ったら、この章のように <strong>自分なりのたとえ話</strong> を1つ作ってみてください。たとえ話を作れた言葉は、もう自分のものです。ノートやこのファイルの近くにメモしていくと、あなただけの用語集が育ちます。</p>
+<hr>
+<h2 id="14">14. この章のまとめ</h2>
+<ul>
+<li>この章は <strong>辞書</strong>。通読不要。困ったら目次か <code>Ctrl + F</code> で引く。たとえ話は「最初のイメージの入口」であり、慣れたら本当の意味へ進む。</li>
+<li><strong>アプリ全体</strong>：フロントエンド（画面・React）とバックエンド（裏側・Django）が、<strong>API</strong> を通じて <strong>リクエスト／レスポンス</strong>（JSON）をやりとりする。データは <strong>PostgreSQL</strong> に保管。未ログインは <strong>401</strong> で <code>/login</code> に戻る。</li>
+<li><strong>道具</strong>：エディタ・ターミナル・npm（フロント）／pip（バック）・ビルド・<code>.env</code>（秘密設定）・ローカル／本番。</li>
+<li><strong>Git</strong>：コミット（記録）→ブランチ（作業場）→プッシュ／プル（共有）→マージ（合流）。ぶつかったら <strong>コンフリクト</strong> を手で解決。提案は <strong>PR</strong>。</li>
+<li><strong>HTML/CSS</strong>：<strong>DOM</strong>（操作できる木）、<strong>ボックスモデル</strong>（margin/padding/border/content）、<strong>box-sizing</strong>、<strong>Flexbox</strong>、<strong>擬似要素</strong>、<strong>CSS変数</strong>、<strong>clamp</strong>/<strong>calc</strong>。</li>
+<li><strong>JS/TS</strong>：変数・関数・<strong>型</strong>・<strong>非同期</strong>（<strong>Promise</strong>・<strong>async/await</strong>）・イベント。</li>
+<li><strong>React</strong>：<strong>コンポーネント</strong>を<strong>props</strong>（親→子）と<strong>state</strong>（移ろう状態・<strong>useState</strong>）で組み立て、<strong>useEffect</strong> で副作用を実行。<strong>SPA</strong> はページを丸ごと読み込み直さない。</li>
+<li><strong>Python/Django</strong>：<strong>モデル</strong>（表の設計図）を <strong>ORM</strong>（<strong>QuerySet</strong>）で操作し、<strong>マイグレーション</strong>でDBに反映。<strong>シリアライザ</strong>でJSON変換、<strong>ビュー</strong>で処理。<strong>セッション</strong>で認証、<strong>CSRF</strong>/<strong>CORS</strong>で守り、<strong>デコレータ</strong>/<strong>シグナル</strong>/<strong>ページネーション</strong>を活用。本番は <strong>WSGI</strong>＋<strong>Gunicorn</strong>。</li>
+<li><strong>このアプリ特有</strong>：<strong>工数</strong>・<strong>直（ちょく）</strong>・<strong>288枠</strong>（1日を5分刻み＝1440÷5）・<strong>休憩文字列</strong>（バグの要注意点）・<strong>ショップ</strong>・<strong>工数区分定義</strong>。中心モデルは <code>member</code> と <code>Business_Time_graph</code>。</li>
+<li><strong>テスト</strong>：<strong>Vitest</strong>＋React Testing Library。<strong>アサーション</strong>（expect）で表明し、<strong>モック</strong>で本物を偽物に差し替える。</li>
+<li><strong>運用</strong>：<strong>Azure</strong> に <strong>デプロイ</strong>。データベースは <strong>フレキシブルサーバー</strong>。設定は <strong>環境変数</strong>（本番は <code>DEBUG=False</code>）。</li>
+<li><strong>困ったら</strong>：エラーは英語の手紙として要点を読む → 全文検索で定義・使用箇所をたどる → 公式ドキュメント（React/Django/MDN）→ 聞くときは「やりたいこと・試したこと・起きたこと」をセットで。</li>
+</ul>
+<p>これで本資料の用語編は終わりです。全体の地図と読み進め方は、「<a href="README.html">README.md</a>」に戻って確認してください。わからない言葉に出会ったら、いつでもこの章へ。あなたの引き継ぎが、少しでも安心して進みますように。</p>
+
+<script>
+(function () {
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy") ? resolve() : reject(); } catch (e) { reject(e); }
+      document.body.removeChild(ta);
+    });
+  }
+  document.querySelectorAll(".copy-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var pre = btn.parentElement.querySelector("pre");
+      var text = pre.textContent.replace(/\n$/, "");
+      copyText(text).then(function () {
+        btn.textContent = "コピーしました";
+        btn.classList.add("done");
+        setTimeout(function () { btn.textContent = "コピー"; btn.classList.remove("done"); }, 2000);
+      }, function () { btn.textContent = "コピーできませんでした"; });
+    });
+  });
+  if (/^#code-\d+$/.test(location.hash)) {
+    var note = document.getElementById("web-note");
+    if (note) { note.hidden = false; }
+  }
+})();
+</script>
+</body>
+</html>

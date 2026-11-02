@@ -1,0 +1,530 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>10-deployment</title>
+<style>
+
+@page {
+  size: A4;
+  margin: 18mm 16mm 20mm 16mm;
+  @bottom-right {
+    content: counter(page);
+    font-size: 10px;
+    color: #64748b;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  font-family: "Yu Gothic UI", "Yu Gothic", "Meiryo", "Hiragino Sans",
+               "Noto Sans JP", "Segoe UI", system-ui, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.75;
+  color: #1e293b;
+  background: #ffffff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #0f172a;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 1.4em 0 0.6em;
+  page-break-after: avoid;
+}
+h1 {
+  font-size: 22pt;
+  border-bottom: 3px solid #1e40af;
+  padding-bottom: 0.3em;
+  margin-top: 0.4em;
+  page-break-before: auto;
+}
+h2 {
+  font-size: 16pt;
+  border-bottom: 1.5px solid #cbd5e1;
+  padding-bottom: 0.25em;
+  margin-top: 1.6em;
+}
+h3 { font-size: 13pt; color: #1e40af; }
+h4 { font-size: 12pt; color: #334155; }
+
+p { margin: 0.5em 0 0.8em; }
+
+a { color: #1d4ed8; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+ul, ol { margin: 0.4em 0 0.9em; padding-left: 1.6em; }
+li { margin: 0.2em 0; }
+
+blockquote {
+  border-left: 4px solid #3b82f6;
+  background: #eff6ff;
+  margin: 0.8em 0;
+  padding: 0.6em 1em;
+  color: #1e3a8a;
+  border-radius: 0 6px 6px 0;
+  page-break-inside: avoid;
+}
+blockquote p { margin: 0.3em 0; }
+blockquote strong { color: #1e40af; }
+
+code {
+  /* DefCode (see _code_font.py) has ASCII and Japanese in ONE font, so a code
+     line is drawn as one text run and copies as one line in every PDF viewer. */
+  font-family: "Consolas", "Consolas", monospace;
+  font-size: 0.9em;
+  background: #f1f5f9;
+  color: #be123c;
+  padding: 0.12em 0.36em;
+  border-radius: 4px;
+  /* Long inline code (file paths / URLs) must break instead of overflowing. */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  /* In a PDF there is no horizontal scrolling, so long lines must wrap
+     instead of being clipped off the right edge of the page. */
+  overflow-x: hidden;
+  overflow-y: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  font-size: 9.2pt;
+  line-height: 1.5;
+  margin: 0.8em 0;
+  page-break-inside: avoid;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+  white-space: inherit;
+  word-break: inherit;
+  overflow-wrap: inherit;
+}
+
+/* The codehilite extension wraps highlighted blocks in a scrolling div; make
+   that wrap too so nothing is clipped in the PDF. */
+.codehilite {
+  overflow-x: hidden;
+  /* overflow-x: hidden alone turns overflow-y into auto, and a glyph from a
+     fallback font that is a hair too tall then shows a vertical scrollbar. */
+  overflow-y: hidden;
+}
+.codehilite pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* No per-token colours: every coloured token became its own text run (and its
+   own tag) in the PDF, and some viewers then pasted each token on its own line.
+   Only whole comment lines get a colour, so each line is still one run. */
+pre .cmt { color: #94a3b8; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.8em 0;
+  font-size: 9.6pt;
+  page-break-inside: avoid;
+}
+th, td {
+  border: 1px solid #e2e8f0;
+  padding: 6px 9px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: #f1f5f9;
+  color: #0f172a;
+  font-weight: 700;
+}
+tr:nth-child(even) td { background: #f8fafc; }
+
+img { max-width: 100%; height: auto; }
+
+hr {
+  border: none;
+  border-top: 1px dashed #cbd5e1;
+  margin: 1.6em 0;
+}
+
+/* Diagram blocks (the inline-styled <div>s in the source) */
+div[style] {
+  page-break-inside: avoid;
+}
+
+/* Tighten spacing right after headings */
+h1 + p, h2 + p, h3 + p, h4 + p { margin-top: 0.2em; }
+
+/* Avoid ugly page breaks inside list items / table rows */
+li, tr { page-break-inside: avoid; }
+
+@media screen {
+  body { max-width: 920px; margin: 0 auto; padding: 20px 20px 120px; font-size: 16px; }
+  pre { white-space: pre !important; word-break: normal !important; overflow-wrap: normal !important;
+        overflow-x: auto !important; font-size: 14px !important; }
+  img { max-width: 100%; height: auto; }
+}
+.web-bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; font-size: 14px;
+  padding: 8px 12px; margin-bottom: 16px; background: #eef2f7; border-radius: 8px; }
+.web-bar a { color: #1e3a5f; }
+.web-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 10; max-width: 90%;
+  font-size: 15px; font-weight: 700; background: #fff7ed; border: 2px solid #f2994a; border-radius: 8px;
+  padding: 10px 16px; margin: 0; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.code-wrap { position: relative; scroll-margin-top: 16px; }
+.code-wrap pre { padding-top: 40px !important; }
+.copy-btn { position: absolute; top: 8px; right: 8px; z-index: 2; font-size: 13px; font-weight: 700;
+  padding: 4px 12px; border: 0; border-radius: 6px; background: #2f80ed; color: #fff; cursor: pointer;
+  font-family: inherit; }
+.copy-btn:hover { background: #1c64c8; }
+.copy-btn.done { background: #27ae60; }
+.code-wrap:target pre { outline: 4px solid #f2994a; outline-offset: 2px; }
+.code-wrap:target .copy-btn { box-shadow: 0 0 0 4px #f2994a; }
+/* syntax colours on screen (the PDF uses one colour so that each line copies as one piece) */
+.codehilite .k, .codehilite .kd, .codehilite .kn, .codehilite .kr { color: #c084fc; }
+.codehilite .s, .codehilite .s1, .codehilite .s2, .codehilite .sb { color: #fcd34d; }
+.codehilite .c, .codehilite .c1, .codehilite .cm { color: #94a3b8; }
+.codehilite .nf, .codehilite .nx { color: #60a5fa; }
+.codehilite .nb { color: #34d399; }
+.codehilite .mi, .codehilite .mf { color: #f472b6; }
+.codehilite .nt { color: #f59e0b; }
+.codehilite .na { color: #93c5fd; }
+</style>
+</head>
+<body>
+<div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/10-deployment.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、ブラウザーの「戻る」で PDF に戻れます。</p><h1 id="10-app-store-google-play">第10章: アプリの公開（App Store / Google Play）</h1>
+<blockquote>
+<p>いよいよ最終章です。完成したアプリを <strong>App Store</strong>（iPhone向け）と <strong>Google Play</strong>（Android向け）に公開し、世界中の人が使えるようにします。この章では、Expoのクラウドサービス <strong>EAS</strong> を使ったビルドと、各ストアへの申請手順を、完全初心者向けに解説します。</p>
+</blockquote>
+<hr>
+<h2 id="1">1. 「公開」の全体像</h2>
+<p>スマホアプリの公開は、Webサイトの公開（第10章のNext.js版でやったVercelへのデプロイ）とは少し違い、<strong>ストアの審査</strong>を通る必要があります。流れを先に俯瞰しましょう。</p>
+<div style="max-width: 680px; margin: 20px auto; font-family: 'Segoe UI', sans-serif;">
+  <div style="display: flex; align-items: center; margin-bottom: 4px;">
+    <div style="width: 40px; text-align: center; font-size: 20px;">①</div>
+    <div style="flex: 1; background: #e3f2fd; border-left: 4px solid #2196f3; border-radius: 0 8px 8px 0; padding: 12px 16px;">
+      <div style="font-weight: 700; color: #0d47a1; font-size: 14px;">開発者アカウントを登録</div>
+      <div style="font-size: 12px; color: #1565c0;">Apple Developer（年$99）/ Google Play（初回$25）</div>
+    </div>
+  </div>
+  <div style="text-align: center; color: #94a3b8; font-size: 18px; margin: 2px 0;">↓</div>
+  <div style="display: flex; align-items: center; margin-bottom: 4px;">
+    <div style="width: 40px; text-align: center; font-size: 20px;">②</div>
+    <div style="flex: 1; background: #fff3e0; border-left: 4px solid #ff9800; border-radius: 0 8px 8px 0; padding: 12px 16px;">
+      <div style="font-weight: 700; color: #e65100; font-size: 14px;">EASでビルド（アプリの完成品を作る）</div>
+      <div style="font-size: 12px; color: #ef6c00;">クラウドで .ipa（iOS）/ .aab（Android）を生成</div>
+    </div>
+  </div>
+  <div style="text-align: center; color: #94a3b8; font-size: 18px; margin: 2px 0;">↓</div>
+  <div style="display: flex; align-items: center; margin-bottom: 4px;">
+    <div style="width: 40px; text-align: center; font-size: 20px;">③</div>
+    <div style="flex: 1; background: #fce4ec; border-left: 4px solid #e91e63; border-radius: 0 8px 8px 0; padding: 12px 16px;">
+      <div style="font-weight: 700; color: #880e4f; font-size: 14px;">ストアに提出（Submit）</div>
+      <div style="font-size: 12px; color: #ad1457;">EASが各ストアへ自動アップロード</div>
+    </div>
+  </div>
+  <div style="text-align: center; color: #94a3b8; font-size: 18px; margin: 2px 0;">↓</div>
+  <div style="display: flex; align-items: center; margin-bottom: 4px;">
+    <div style="width: 40px; text-align: center; font-size: 20px;">④</div>
+    <div style="flex: 1; background: #f3e5f5; border-left: 4px solid #9c27b0; border-radius: 0 8px 8px 0; padding: 12px 16px;">
+      <div style="font-weight: 700; color: #4a148c; font-size: 14px;">ストア情報の入力と審査</div>
+      <div style="font-size: 12px; color: #6a1b9a;">説明文・スクショ・プライバシー設定 → 審査待ち</div>
+    </div>
+  </div>
+  <div style="text-align: center; color: #94a3b8; font-size: 18px; margin: 2px 0;">↓</div>
+  <div style="display: flex; align-items: center;">
+    <div style="width: 40px; text-align: center; font-size: 20px;">🎉</div>
+    <div style="flex: 1; background: #fffde7; border-left: 4px solid #fdd835; border-radius: 0 8px 8px 0; padding: 12px 16px;">
+      <div style="font-weight: 700; color: #f57f17; font-size: 14px;">公開！</div>
+      <div style="font-size: 12px; color: #f9a825;">あなたのアプリがストアに並びます</div>
+    </div>
+  </div>
+</div>
+
+<blockquote>
+<p><strong>EAS（イーエーエス）とは？</strong> <strong>Expo Application Services</strong> の略。Expoが提供する<strong>クラウドのビルド・公開サービス</strong>です。本来 iOSアプリのビルドにはMacとXcodeが必要ですが、EASを使えば<strong>クラウド上のMacでビルド</strong>してくれるため、<strong>Windowsだけでも iOSアプリを作って公開できます</strong>。これがExpoを選ぶ大きな理由の一つです。</p>
+<p><strong>費用について（重要）:</strong>
+- <strong>Google Play</strong>: 開発者登録は <strong>初回のみ $25</strong>（一度きり）。
+- <strong>Apple Developer</strong>: <strong>年間 $99</strong>（毎年更新）。
+- <strong>EAS自体</strong>: 無料枠があり、個人開発の範囲なら基本無料で始められます（ビルド回数に制限あり）。</p>
+<p>「とりあえず公開を体験したい」なら、費用が安く審査も比較的緩やかな <strong>Google Play から始める</strong>のがおすすめです。</p>
+</blockquote>
+<hr>
+<h2 id="2">2. 事前準備</h2>
+<h3 id="21-expo">2.1 Expoアカウントの作成とログイン</h3>
+<p>EASを使うにはExpoアカウントが必要です。まだなら https://expo.dev/ で無料登録します。その後、ターミナルからログインします。</p>
+<div class="codehilite"><div class="code-wrap" id="code-1"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>npx<span class="w"> </span>expo<span class="w"> </span>login
+<span class="c1"># expo login : Expoアカウントにログインするコマンド</span>
+<span class="c1"># メールアドレス（またはユーザー名）とパスワードを聞かれるので入力する</span>
+</code></pre></div></div>
+
+<div class="codehilite"><div class="code-wrap" id="code-2"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>npx<span class="w"> </span>expo<span class="w"> </span>whoami
+<span class="c1"># whoami : 「今ログインしているのは誰か」を確認するコマンド</span>
+<span class="c1"># 自分のユーザー名が表示されればログイン成功</span>
+</code></pre></div></div>
+
+<h3 id="22-eas-cli">2.2 EAS CLI の準備</h3>
+<div class="codehilite"><div class="code-wrap" id="code-3"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>npm<span class="w"> </span>install<span class="w"> </span>-g<span class="w"> </span>eas-cli
+<span class="c1"># npm install         : パッケージをインストール</span>
+<span class="c1"># -g                  : global（グローバル）。PC全体で使えるコマンドとして入れる</span>
+<span class="c1"># eas-cli             : EASを操作するコマンドラインツール</span>
+<span class="c1"># これで eas というコマンドが使えるようになる</span>
+</code></pre></div></div>
+
+<div class="codehilite"><div class="code-wrap" id="code-4"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>eas<span class="w"> </span>--version
+<span class="c1"># eas のバージョンを表示。番号が出ればインストール成功</span>
+</code></pre></div></div>
+
+<h3 id="23-eas">2.3 プロジェクトをEASに紐付ける</h3>
+<div class="codehilite"><div class="code-wrap" id="code-5"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>eas<span class="w"> </span>init
+<span class="c1"># eas init : このプロジェクトをあなたのExpoアカウントのプロジェクトとして登録する</span>
+<span class="c1"># 実行すると app.json に projectId（プロジェクトの識別子）が自動で追記される</span>
+</code></pre></div></div>
+
+<hr>
+<h2 id="3-easjson">3. ビルド設定 — <code>eas.json</code></h2>
+<p>ビルド方法を定義する <code>eas.json</code> を作ります。次のコマンドで対話形式で生成できます。</p>
+<div class="codehilite"><div class="code-wrap" id="code-6"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>eas<span class="w"> </span>build:configure
+<span class="c1"># build:configure : ビルド設定ファイル eas.json を生成する</span>
+<span class="c1"># iOS / Android どちらをビルドするか聞かれたら「All（両方）」を選んでおくとよい</span>
+</code></pre></div></div>
+
+<p>生成された <code>eas.json</code> の例と、各設定の意味です。</p>
+<div class="codehilite"><div class="code-wrap" id="code-7"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;cli&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&gt;= 5.0.0&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;build&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;development&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="c1">// 開発用ビルド（デバッグしやすい）</span>
+<span class="w">      </span><span class="nt">&quot;developmentClient&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">      </span><span class="c1">// 内部配布用（ストアには出さない）</span>
+<span class="w">      </span><span class="nt">&quot;distribution&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;internal&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;preview&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="c1">// テスト配布用。実機に直接入れて試せる</span>
+<span class="w">      </span><span class="nt">&quot;distribution&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;internal&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="c1">// 本番用（ストア提出用）</span>
+<span class="w">    </span><span class="nt">&quot;production&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="c1">// ビルドごとにビルド番号を自動で増やす</span>
+<span class="w">      </span><span class="nt">&quot;autoIncrement&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;submit&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// ストア提出の設定（後述）</span>
+<span class="w">    </span><span class="nt">&quot;production&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>3つのビルドプロファイル（development / preview / production）:</strong>
+- <strong>development</strong> … 開発中にデバッグ機能付きで動かすビルド。
+- <strong>preview</strong> … 「ストア提出前に、実機で最終確認する」ためのテスト配布ビルド。
+- <strong>production</strong> … ストアに出す本番ビルド。</p>
+<p>初心者はまず <strong>preview</strong> で実機テストし、問題なければ <strong>production</strong> でストア提出、という流れがおすすめです。</p>
+</blockquote>
+<hr>
+<h2 id="4-android">4. Android アプリを公開する（おすすめの最初の一歩）</h2>
+<h3 id="41-preview">4.1 まず preview ビルドで実機確認</h3>
+<div class="codehilite"><div class="code-wrap" id="code-8"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>eas<span class="w"> </span>build<span class="w"> </span>--profile<span class="w"> </span>preview<span class="w"> </span>--platform<span class="w"> </span>android
+<span class="c1"># eas build           : アプリをビルドする（クラウド上で実行される）</span>
+<span class="c1"># --profile preview   : eas.jsonの「preview」設定を使う</span>
+<span class="c1"># --platform android  : Android向けにビルド</span>
+<span class="c1"># 実行するとクラウドでビルドが始まり、数分〜十数分で完了する</span>
+<span class="c1"># 完了するとダウンロードURLが表示され、.apk を実機に入れて試せる</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>ビルドはクラウドで行われる:</strong> <code>eas build</code> を実行すると、あなたのPCではなく<strong>Expoのクラウドサーバー</strong>でビルドが進みます。ターミナルにビルドの進捗URLが出るので、ブラウザで状況を見られます。完了を待つ間、PCで他の作業をしていてOKです。</p>
+</blockquote>
+<h3 id="42-production">4.2 本番ビルド（production）</h3>
+<p>実機確認で問題なければ、ストア提出用の本番ビルドを作ります。Androidのストア提出形式は <strong><code>.aab</code>（Android App Bundle）</strong> です。</p>
+<div class="codehilite"><div class="code-wrap" id="code-9"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>eas<span class="w"> </span>build<span class="w"> </span>--profile<span class="w"> </span>production<span class="w"> </span>--platform<span class="w"> </span>android
+<span class="c1"># --profile production : 本番設定でビルド。提出用の .aab ファイルが生成される</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>初回ビルド時の署名鍵:</strong> 初めてビルドすると「アプリの署名鍵（Keystore）を生成してよいか」と聞かれます。<strong>EASに管理を任せる（Yes）</strong> を選べば、Expoが安全に鍵を生成・保管してくれます。この鍵は「このアプリは確かにあなたが作った」と証明する大切なものなので、EASに任せるのが初心者には安全です。</p>
+</blockquote>
+<h3 id="43-google-play-console">4.3 Google Play Console の準備</h3>
+<ol>
+<li>https://play.google.com/console/ で <strong>Google Play デベロッパー登録</strong>（初回$25）。</li>
+<li>「アプリを作成」でアプリ名（例: 書籍管理）・言語などを登録。</li>
+<li>ストア掲載情報（説明文、スクリーンショット、アイコン、プライバシーポリシーのURLなど）を入力。</li>
+</ol>
+<blockquote>
+<p><strong>必要な掲載素材:</strong> スクリーンショット（実機やエミュレータで撮影）、アプリの説明文、512×512のアイコン、フィーチャーグラフィック（1024×500）などが求められます。第9章で整えたアイコンが活きます。</p>
+</blockquote>
+<h3 id="44-easgoogle-play">4.4 EASでGoogle Playに提出</h3>
+<div class="codehilite"><div class="code-wrap" id="code-10"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>eas<span class="w"> </span>submit<span class="w"> </span>--profile<span class="w"> </span>production<span class="w"> </span>--platform<span class="w"> </span>android
+<span class="c1"># eas submit : ビルドしたアプリをストアにアップロードするコマンド</span>
+<span class="c1"># 初回はGoogle Play APIの認証情報（サービスアカウントのJSON）を求められる</span>
+<span class="c1"># → Google Play Consoleで発行し、案内に従って設定する</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>初回の認証設定:</strong> 初めての提出時は、Google Play Consoleで「サービスアカウント」というアップロード用の認証情報（JSONファイル）を作る必要があります。手順はEASの案内とExpo公式ドキュメント（https://docs.expo.dev/submit/android/ ）に沿って進めれば完了します。一度設定すれば次回以降は自動です。</p>
+</blockquote>
+<p>提出後、Google Play Console上で「製品版」リリースとして公開を申請します。審査は通常<strong>数時間〜数日</strong>です。</p>
+<hr>
+<h2 id="5-ios">5. iOS アプリを公開する</h2>
+<h3 id="51-apple-developer-program">5.1 Apple Developer Program への登録</h3>
+<p>iOSの公開には <strong>Apple Developer Program（年$99）</strong> の登録が必須です。https://developer.apple.com/programs/ から登録します（Apple IDが必要）。</p>
+<blockquote>
+<p><strong>Macが無くても大丈夫:</strong> 前述の通り、EASがクラウドのMacでビルドするため、<strong>Windowsだけでも iOSアプリをビルド・提出できます</strong>。ただしApple Developerの登録手続き自体はブラウザで行います。</p>
+</blockquote>
+<h3 id="52">5.2 ビルドと提出</h3>
+<div class="codehilite"><div class="code-wrap" id="code-11"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># まずpreviewで確認（任意。TestFlightで実機確認する方法もある）</span>
+eas<span class="w"> </span>build<span class="w"> </span>--profile<span class="w"> </span>production<span class="w"> </span>--platform<span class="w"> </span>ios
+<span class="c1"># --platform ios : iOS向けにビルド。提出用の .ipa ファイルが生成される</span>
+<span class="c1"># 初回はApple IDでのログインや、署名証明書(Certificate)の生成をEASが案内してくれる</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>iOSの署名（証明書とプロビジョニング）:</strong> iOSは署名の仕組みが複雑ですが、EASが<strong>対話形式で自動生成</strong>してくれます。「Appleアカウントでログイン → EASに証明書管理を任せる」と進めれば、難しい設定を意識せずに済みます。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-12"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>eas<span class="w"> </span>submit<span class="w"> </span>--profile<span class="w"> </span>production<span class="w"> </span>--platform<span class="w"> </span>ios
+<span class="c1"># iOSアプリを App Store Connect にアップロードする</span>
+<span class="c1"># 初回はApp Store Connectでアプリ枠を作成しておく必要がある</span>
+</code></pre></div></div>
+
+<h3 id="53-app-store-connect">5.3 App Store Connect での申請</h3>
+<ol>
+<li>https://appstoreconnect.apple.com/ でアプリ情報（名前・説明・スクリーンショット・カテゴリ・年齢制限など）を入力。</li>
+<li>プライバシー情報（どんなデータを集めるか）を申告。</li>
+<li>「審査に提出」を押す。</li>
+</ol>
+<blockquote>
+<p><strong>iOSの審査は厳しめ:</strong> Appleの審査はGoogleより厳格で、<strong>数日</strong>かかることが多いです。リジェクト（却下）されることもありますが、理由が通知されるので、それに従って修正・再提出すれば大丈夫です。よくある却下理由は「説明不足」「クラッシュ」「プライバシー申告漏れ」などです。</p>
+</blockquote>
+<hr>
+<h2 id="6">6. 公開後のアップデート</h2>
+<h3 id="61-2">6.1 アプリを更新する2つの方法</h3>
+<p>公開後にバグ修正や機能追加をする方法は2つあります。</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>何ができるか</th>
+<th>再審査</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>EAS Update（OTA更新）</strong></td>
+<td>JS/TSのコード変更を、ストアを通さず即時配信</td>
+<td>不要（条件あり）</td>
+</tr>
+<tr>
+<td><strong>新バージョンのビルド＋提出</strong></td>
+<td>ネイティブ部分も含む全面更新</td>
+<td>必要</td>
+</tr>
+</tbody>
+</table>
+<h3 id="62-eas-updateota">6.2 EAS Update（OTA更新）</h3>
+<p><strong>EAS Update</strong> は「Over The Air（OTA、無線経由）更新」とも呼ばれ、<strong>JavaScript/TypeScriptの変更だけなら、ストア審査を経ずにユーザーへ即配信</strong>できる仕組みです。</p>
+<div class="codehilite"><div class="code-wrap" id="code-13"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>npx<span class="w"> </span>expo<span class="w"> </span>install<span class="w"> </span>expo-updates
+<span class="c1"># expo-updates : OTA更新を受け取る機能をアプリに追加する部品</span>
+
+eas<span class="w"> </span>update<span class="w"> </span>--branch<span class="w"> </span>production<span class="w"> </span>--message<span class="w"> </span><span class="s2">&quot;誤字を修正&quot;</span>
+<span class="c1"># eas update           : OTA更新を配信するコマンド</span>
+<span class="c1"># --branch production  : どの配信ラインに出すか</span>
+<span class="c1"># --message &quot;...&quot;      : 更新内容のメモ（あとで見返す用）</span>
+<span class="c1"># 実行すると、対象アプリが次回起動時に新しいコードを取得する</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>OTA更新の注意:</strong> 「文言の修正」「色の変更」「ロジックの修正」などJS/TSの範囲はOTAで即配信できますが、<strong>新しいネイティブ機能の追加（カメラ権限を増やす等）はOTAでは反映できず、再ビルド＆再提出が必要</strong>です。また、ストアの規約上「アプリの本質を変える」更新はOTAで行わずビルド提出すべきとされています。小さな修正＝OTA、大きな変更＝再ビルド、と覚えましょう。</p>
+</blockquote>
+<h3 id="63">6.3 バージョンを上げて再提出</h3>
+<p>機能追加などでは、<code>app.json</code> の <code>version</code>（例: <code>1.0.0</code> → <code>1.1.0</code>）を上げ、再度 <code>eas build</code> → <code>eas submit</code> します。<code>eas.json</code> の <code>autoIncrement: true</code> により、ビルド番号は自動で増えます。</p>
+<hr>
+<h2 id="7">7. 公開前の最終チェックリスト</h2>
+<p>公開申請の前に、以下を確認しましょう。</p>
+<ul>
+<li>[ ] アプリが実機（preview ビルド）でクラッシュせず正常に動く</li>
+<li>[ ] <strong>Supabaseの本番設定</strong>: 第5章で「全員OK」にしたRLSを、適切に制限したか（重要）</li>
+<li>[ ] <code>.env</code> の接続情報が正しく、<strong><code>service_role</code>キーを含めていない</strong></li>
+<li>[ ] アプリ名・アイコン・スプラッシュが設定済み（第9章）</li>
+<li>[ ] <code>app.json</code> の <code>android.package</code> / iOSのbundle identifierが固有の値になっている</li>
+<li>[ ] スクリーンショット・説明文・<strong>プライバシーポリシー</strong>を用意した</li>
+<li>[ ] 年齢制限・カテゴリなどストア情報を入力した</li>
+</ul>
+<blockquote>
+<p><strong>セキュリティの再確認（最重要）:</strong> 第5章でRLSを「全員が全操作OK」に設定しました。これは<strong>学習用の設定</strong>です。実際に公開するアプリでは、悪意ある人にデータを書き換えられないよう、<strong>必ず適切なポリシーに変更</strong>してください。たとえば「読み取りは全員OK、書き込みはログインユーザーのみ」など。認証機能を入れる場合はSupabase Authと組み合わせます（本書の範囲を超えるため、Expo/Supabase公式ドキュメントを参照）。</p>
+</blockquote>
+<hr>
+<h2 id="8">8. この章のまとめ</h2>
+<ul>
+<li>スマホアプリの公開は「<strong>開発者登録 → EASビルド → ストア提出 → 審査 → 公開</strong>」の流れ</li>
+<li><strong>EAS</strong> を使えば、<strong>WindowsだけでもiOS/Android両方</strong>のアプリをクラウドでビルド・提出できる</li>
+<li>費用: Google Play（初回$25）、Apple Developer（年$99）。<strong>まずはGoogle Playから</strong>がおすすめ</li>
+<li><code>eas build</code>（ビルド）→ <code>eas submit</code>（提出）。署名鍵や証明書はEASに任せられる</li>
+<li>公開後は <strong>EAS Update（OTA）</strong> で小さな修正を即配信、大きな変更は再ビルド＆再提出</li>
+<li>公開前に<strong>RLSの本番設定</strong>など、セキュリティを必ず見直す</li>
+</ul>
+<hr>
+<h2 id="9">9. おわりに — おめでとうございます！🎉</h2>
+<p>ここまで完走したあなたは、</p>
+<ul>
+<li>TypeScript / React / React Native の基礎</li>
+<li>Expo を使ったアプリ開発</li>
+<li>Supabase によるデータ管理（CRUD）</li>
+<li>NativeWind によるスタイリング</li>
+<li>EAS を使ったストアへの公開</li>
+</ul>
+<p>という、<strong>スマホアプリ開発の全工程</strong>を体験しました。これは「アイデアを形にして世界に届ける」力そのものです。</p>
+<blockquote>
+<p><strong>次のステップ:</strong>
+- <strong>認証機能</strong>: Supabase Auth でログイン機能を追加し、「自分の本棚」を実現する
+- <strong>プッシュ通知</strong>: <code>expo-notifications</code> で通知を送る
+- <strong>他の機能</strong>: カメラでバーコードを読んで本を登録、など
+- <strong>Web版との連携</strong>: 姉妹編 <code>next</code> のWebアプリと同じSupabaseを共有し、マルチプラットフォーム化</p>
+<p>そして、次の第11章では <strong>Claude Code を使った「バイブコーディング」</strong> で、AIと一緒にさらに効率よく開発を進める方法を紹介します。本当にお疲れさまでした！</p>
+</blockquote>
+
+<script>
+(function () {
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy") ? resolve() : reject(); } catch (e) { reject(e); }
+      document.body.removeChild(ta);
+    });
+  }
+  document.querySelectorAll(".copy-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var pre = btn.parentElement.querySelector("pre");
+      var text = pre.textContent.replace(/\n$/, "");
+      copyText(text).then(function () {
+        btn.textContent = "コピーしました";
+        btn.classList.add("done");
+        setTimeout(function () { btn.textContent = "コピー"; btn.classList.remove("done"); }, 2000);
+      }, function () { btn.textContent = "コピーできませんでした"; });
+    });
+  });
+  if (/^#code-\d+$/.test(location.hash)) {
+    var note = document.getElementById("web-note");
+    if (note) { note.hidden = false; }
+  }
+})();
+</script>
+</body>
+</html>

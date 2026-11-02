@@ -1,0 +1,863 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>07_付録_依頼シートとチェック表</title>
+<style>
+
+@page {
+  size: A4;
+  margin: 18mm 16mm 20mm 16mm;
+  @bottom-right {
+    content: counter(page);
+    font-size: 10px;
+    color: #64748b;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  font-family: "Yu Gothic UI", "Yu Gothic", "Meiryo", "Hiragino Sans",
+               "Noto Sans JP", "Segoe UI", system-ui, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.75;
+  color: #1e293b;
+  background: #ffffff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #0f172a;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 1.4em 0 0.6em;
+  page-break-after: avoid;
+}
+h1 {
+  font-size: 22pt;
+  border-bottom: 3px solid #1e40af;
+  padding-bottom: 0.3em;
+  margin-top: 0.4em;
+  page-break-before: auto;
+}
+h2 {
+  font-size: 16pt;
+  border-bottom: 1.5px solid #cbd5e1;
+  padding-bottom: 0.25em;
+  margin-top: 1.6em;
+}
+h3 { font-size: 13pt; color: #1e40af; }
+h4 { font-size: 12pt; color: #334155; }
+
+p { margin: 0.5em 0 0.8em; }
+
+a { color: #1d4ed8; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+ul, ol { margin: 0.4em 0 0.9em; padding-left: 1.6em; }
+li { margin: 0.2em 0; }
+
+blockquote {
+  border-left: 4px solid #3b82f6;
+  background: #eff6ff;
+  margin: 0.8em 0;
+  padding: 0.6em 1em;
+  color: #1e3a8a;
+  border-radius: 0 6px 6px 0;
+  page-break-inside: avoid;
+}
+blockquote p { margin: 0.3em 0; }
+blockquote strong { color: #1e40af; }
+
+code {
+  /* DefCode (see _code_font.py) has ASCII and Japanese in ONE font, so a code
+     line is drawn as one text run and copies as one line in every PDF viewer. */
+  font-family: "Consolas", "Consolas", monospace;
+  font-size: 0.9em;
+  background: #f1f5f9;
+  color: #be123c;
+  padding: 0.12em 0.36em;
+  border-radius: 4px;
+  /* Long inline code (file paths / URLs) must break instead of overflowing. */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  /* In a PDF there is no horizontal scrolling, so long lines must wrap
+     instead of being clipped off the right edge of the page. */
+  overflow-x: hidden;
+  overflow-y: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  font-size: 9.2pt;
+  line-height: 1.5;
+  margin: 0.8em 0;
+  page-break-inside: avoid;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+  white-space: inherit;
+  word-break: inherit;
+  overflow-wrap: inherit;
+}
+
+/* The codehilite extension wraps highlighted blocks in a scrolling div; make
+   that wrap too so nothing is clipped in the PDF. */
+.codehilite {
+  overflow-x: hidden;
+  /* overflow-x: hidden alone turns overflow-y into auto, and a glyph from a
+     fallback font that is a hair too tall then shows a vertical scrollbar. */
+  overflow-y: hidden;
+}
+.codehilite pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* No per-token colours: every coloured token became its own text run (and its
+   own tag) in the PDF, and some viewers then pasted each token on its own line.
+   Only whole comment lines get a colour, so each line is still one run. */
+pre .cmt { color: #94a3b8; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.8em 0;
+  font-size: 9.6pt;
+  page-break-inside: avoid;
+}
+th, td {
+  border: 1px solid #e2e8f0;
+  padding: 6px 9px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: #f1f5f9;
+  color: #0f172a;
+  font-weight: 700;
+}
+tr:nth-child(even) td { background: #f8fafc; }
+
+img { max-width: 100%; height: auto; }
+
+hr {
+  border: none;
+  border-top: 1px dashed #cbd5e1;
+  margin: 1.6em 0;
+}
+
+/* Diagram blocks (the inline-styled <div>s in the source) */
+div[style] {
+  page-break-inside: avoid;
+}
+
+/* Tighten spacing right after headings */
+h1 + p, h2 + p, h3 + p, h4 + p { margin-top: 0.2em; }
+
+/* Avoid ugly page breaks inside list items / table rows */
+li, tr { page-break-inside: avoid; }
+
+@media screen {
+  body { max-width: 920px; margin: 0 auto; padding: 20px 20px 120px; font-size: 16px; }
+  pre { white-space: pre !important; word-break: normal !important; overflow-wrap: normal !important;
+        overflow-x: auto !important; font-size: 14px !important; }
+  img { max-width: 100%; height: auto; }
+}
+.web-bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; font-size: 14px;
+  padding: 8px 12px; margin-bottom: 16px; background: #eef2f7; border-radius: 8px; }
+.web-bar a { color: #1e3a5f; }
+.web-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 10; max-width: 90%;
+  font-size: 15px; font-weight: 700; background: #fff7ed; border: 2px solid #f2994a; border-radius: 8px;
+  padding: 10px 16px; margin: 0; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.code-wrap { position: relative; scroll-margin-top: 16px; }
+.code-wrap pre { padding-top: 40px !important; }
+.copy-btn { position: absolute; top: 8px; right: 8px; z-index: 2; font-size: 13px; font-weight: 700;
+  padding: 4px 12px; border: 0; border-radius: 6px; background: #2f80ed; color: #fff; cursor: pointer;
+  font-family: inherit; }
+.copy-btn:hover { background: #1c64c8; }
+.copy-btn.done { background: #27ae60; }
+.code-wrap:target pre { outline: 4px solid #f2994a; outline-offset: 2px; }
+.code-wrap:target .copy-btn { box-shadow: 0 0 0 4px #f2994a; }
+/* syntax colours on screen (the PDF uses one colour so that each line copies as one piece) */
+.codehilite .k, .codehilite .kd, .codehilite .kn, .codehilite .kr { color: #c084fc; }
+.codehilite .s, .codehilite .s1, .codehilite .s2, .codehilite .sb { color: #fcd34d; }
+.codehilite .c, .codehilite .c1, .codehilite .cm { color: #94a3b8; }
+.codehilite .nf, .codehilite .nx { color: #60a5fa; }
+.codehilite .nb { color: #34d399; }
+.codehilite .mi, .codehilite .mf { color: #f472b6; }
+.codehilite .nt { color: #f59e0b; }
+.codehilite .na { color: #93c5fd; }
+</style>
+</head>
+<body>
+<div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/07_%E4%BB%98%E9%8C%B2_%E4%BE%9D%E9%A0%BC%E3%82%B7%E3%83%BC%E3%83%88%E3%81%A8%E3%83%81%E3%82%A7%E3%83%83%E3%82%AF%E8%A1%A8.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、ブラウザーの「戻る」で PDF に戻れます。</p><div style="text-align: center; padding: 28px 0 8px;">
+<div style="font-size: 14px; color: #475569;">オンプレミス構築 教育資料</div>
+<div style="font-size: 26px; font-weight: 800; color: #0f172a; margin-top: 6px; line-height: 1.35;">付録 — 依頼シートとチェック表</div>
+<div style="font-size: 13px; color: #475569; margin-top: 8px;">情報システム部門への依頼の文面と、場面ごとに使うチェック表</div>
+</div>
+
+<h1 id="_1">付録: 依頼シートとチェック表</h1>
+<h2 id="_2">この資料について</h2>
+<p>構築と運用の場面ごとに、<strong>そのまま写して使える</strong>文面と表をまとめました。<code>（ ）</code> の所は、自分の会社の値に書きかえます。</p>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/07-01_checklists.webp" alt="依頼シートから始まり、受け取り・構築・本番の前・毎日毎月・更新のときのチェック表が時間の順に並ぶ" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図1: 依頼シートと、場面ごとのチェック表</div>
+</div>
+
+<table>
+<thead>
+<tr>
+<th>章</th>
+<th>使う場面</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>情報システム部門に、サーバーなどを頼むとき</td>
+</tr>
+<tr>
+<td>2</td>
+<td>サーバーを受け取ったとき</td>
+</tr>
+<tr>
+<td>3</td>
+<td>構築が終わったとき</td>
+</tr>
+<tr>
+<td>4</td>
+<td>本番を始める前（検証での動作確認）</td>
+</tr>
+<tr>
+<td>5</td>
+<td>毎日・毎月の点検</td>
+</tr>
+<tr>
+<td>6</td>
+<td>更新（新しい版を入れる）のとき</td>
+</tr>
+<tr>
+<td>7</td>
+<td>年に 1〜2 回（戻す練習・見直し）</td>
+</tr>
+</tbody>
+</table>
+<h2 id="1">1. 情報システム部門への依頼シート</h2>
+<h3 id="11">1.1 依頼の文面（例）</h3>
+<div class="codehilite"><div class="code-wrap" id="code-1"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>件名: 社内向け業務 Web アプリ用のサーバーと設定のお願い
+
+情報システム部門 ご担当者様
+
+（部署名）の（名前）です。
+社内向けの業務 Web アプリを、会社の仮想マシンで動かしたく、
+下の「依頼の内容」の準備をお願いできますでしょうか。
+
+・使う人: 社員（社内のパソコンのブラウザから。社外からは使いません）
+・始めたい時期: （年月）
+・本番と検証を、同じサーバーに置きます
+・通信は HTTP（80 番）です（社内で HTTPS を使えないと伺ったため）
+
+ご不明な点や、会社の決まりと合わない所があれば、ご指摘ください。
+よろしくお願いいたします。
+</code></pre></div></div>
+
+<h3 id="12">1.2 依頼の内容</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>項目</th>
+<th>お願いする内容（例）</th>
+<th>決まった値（情報システム部門に書いてもらう）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>仮想マシン</td>
+<td>Windows Server 2025（デスクトップ エクスペリエンス、日本語）。vCPU 4、メモリ 16GB、C ドライブ 100GB、D ドライブ 200GB（04 の 2.2）</td>
+<td></td>
+</tr>
+<tr>
+<td>2</td>
+<td>名前と住所</td>
+<td>サーバーの名前（例：<code>WEBAPP-SV01</code>）、固定の IP アドレス、ドメインへの参加</td>
+<td>名前: ／ IP:</td>
+</tr>
+<tr>
+<td>3</td>
+<td>DNS</td>
+<td><code>webapp.example.local</code>（本番）と <code>webapp-stg.example.local</code>（検証）を、上のサーバーの IP アドレスに向ける</td>
+<td></td>
+</tr>
+<tr>
+<td>4</td>
+<td>ログイン</td>
+<td>自分のアカウント（<code>（ドメイン）\（名前）</code>）に、リモート デスクトップでのログインと、構築の間の Administrators の権限</td>
+<td></td>
+</tr>
+<tr>
+<td>5</td>
+<td>関所（受信）</td>
+<td>社内のネットワーク（<code>（社内の範囲）</code>）から、サーバーの <strong>80 番</strong>を通す。管理者のパソコン（<code>（IP）</code>）から <strong>3389 番</strong>を通す</td>
+<td></td>
+</tr>
+<tr>
+<td>6</td>
+<td>関所（送信）</td>
+<td>サーバーから、Microsoft 365 の受付（<code>（会社のドメイン）.mail.protection.outlook.com</code>）の <strong>25 番</strong>を通す。ほかの外向きは不要</td>
+<td></td>
+</tr>
+<tr>
+<td>7</td>
+<td>メール</td>
+<td>Microsoft 365 に、会社の出口の公開 IP アドレスで見分けるコネクタを作る。送り主のアドレス（例：<code>noreply@（会社のドメイン）</code>）。SPF に出口の IP を足す（04 の 10 章）</td>
+<td>送り主:</td>
+</tr>
+<tr>
+<td>8</td>
+<td>出口の IP</td>
+<td>会社のインターネットの出口の IP アドレスが固定で、ほかの会社と共有していないか</td>
+<td></td>
+</tr>
+<tr>
+<td>9</td>
+<td>控えの置き場所</td>
+<td>毎晩の控えを写す共有フォルダ（例：<code>\\（ファイルサーバー）\backup\webapp</code>）。サーバーのコンピューター アカウント（<code>（ドメイン）\WEBAPP-SV01$</code>）に書き込みの許可</td>
+<td>場所:</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Windows Update</td>
+<td>更新の配り方と、再起動してよい時間帯（毎晩 2:00 のバックアップと毎朝 8:00 の処理を避けたい）</td>
+<td>時間帯:</td>
+</tr>
+<tr>
+<td>11</td>
+<td>ウイルス対策</td>
+<td>会社の決まりのソフト。データベースのフォルダ（<code>D:\pgsql</code>）を調べる対象から外せるか</td>
+<td></td>
+</tr>
+<tr>
+<td>12</td>
+<td>時刻</td>
+<td>時刻の合わせ先（ドメインの決まりどおりでよいか）</td>
+<td></td>
+</tr>
+<tr>
+<td>13</td>
+<td>仮想マシンの控え</td>
+<td>仮想マシンごとの控え（バックアップ）の仕組みがあれば、対象に入れてほしい</td>
+<td></td>
+</tr>
+<tr>
+<td>14</td>
+<td>監視</td>
+<td>会社の監視の仕組みがあれば、<code>http://webapp.example.local/health</code> を見てほしい</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>9 の「コンピューター アカウント」について:</strong> 毎晩のバックアップは、サーバーの <code>SYSTEM</code> のアカウントで動きます。<code>SYSTEM</code> がほかのサーバーの共有フォルダに書くときは、<strong>サーバー自身の名前（<code>WEBAPP-SV01$</code>）</strong>として書きます。だから、共有フォルダの許可は、この名前に付けてもらいます。</p>
+</blockquote>
+<h2 id="2">2. サーバーを受け取ったときのチェック表</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>確かめること</th>
+<th>確かめ方</th>
+<th>結果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>リモート デスクトップで入れる</td>
+<td>01 の 1.3</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>2</td>
+<td>コンピューター名・ドメインが頼んだとおり</td>
+<td><code>hostname</code>、サーバー マネージャーの「ローカル サーバー」</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>3</td>
+<td>OS の版</td>
+<td><code>(Get-CimInstance Win32_OperatingSystem).Caption</code></td>
+<td>☐</td>
+</tr>
+<tr>
+<td>4</td>
+<td>vCPU・メモリ</td>
+<td><code>(Get-CimInstance Win32_ComputerSystem).NumberOfLogicalProcessors</code>、タスク マネージャー</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>5</td>
+<td>C・D ドライブの大きさ</td>
+<td><code>Get-Volume</code></td>
+<td>☐</td>
+</tr>
+<tr>
+<td>6</td>
+<td>固定の IP アドレス</td>
+<td><code>Get-NetIPConfiguration</code></td>
+<td>☐</td>
+</tr>
+<tr>
+<td>7</td>
+<td>名前が引ける</td>
+<td>社員のパソコンで <code>Resolve-DnsName webapp.example.local</code></td>
+<td>☐</td>
+</tr>
+<tr>
+<td>8</td>
+<td>時間帯が日本時間</td>
+<td><code>Get-TimeZone</code>（<code>Tokyo Standard Time</code>）</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>9</td>
+<td>時刻が合っている</td>
+<td><code>w32tm /query /status</code></td>
+<td>☐</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Administrators に入っている</td>
+<td><code>whoami /groups</code></td>
+<td>☐</td>
+</tr>
+<tr>
+<td>11</td>
+<td>ファイアウォールが有効・ドメインのプロファイル</td>
+<td>01 の 10.1</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>12</td>
+<td>Windows Update が当たっている</td>
+<td><code>Get-HotFix</code></td>
+<td>☐</td>
+</tr>
+</tbody>
+</table>
+<h2 id="3">3. 構築が終わったときのチェック表</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>確かめること</th>
+<th>確かめ方</th>
+<th>結果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>PostgreSQL が <code>127.0.0.1</code> と <code>::1</code> だけで待ち受け</td>
+<td><code>Get-NetTCPConnection -State Listen -LocalPort 5432</code></td>
+<td>☐</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>lc_messages = 'C'</code>・時間帯が <code>Asia/Tokyo</code></td>
+<td>psql で <code>SHOW lc_messages; SHOW timezone;</code></td>
+<td>☐</td>
+</tr>
+<tr>
+<td>3</td>
+<td>検証のユーザーで本番の DB につなげない</td>
+<td>04 の 5.6</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>4</td>
+<td>アプリのサービスが仮想アカウントで動いている</td>
+<td><code>Get-CimInstance Win32_Service -Filter "Name like 'webapp%'"</code> の <code>StartName</code></td>
+<td>☐</td>
+</tr>
+<tr>
+<td>5</td>
+<td>アプリが <code>127.0.0.1</code> だけで待ち受け</td>
+<td><code>Get-NetTCPConnection -State Listen -LocalPort 8080,8081</code></td>
+<td>☐</td>
+</tr>
+<tr>
+<td>6</td>
+<td>パスワードの書かれた XML・pgpass を、ほかの人が読めない</td>
+<td><code>icacls</code>（04 の 7.4・11.2）</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>7</td>
+<td>IIS の <code>preserveHostHeader</code> が <code>true</code></td>
+<td>04 の 8.3</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>8</td>
+<td>社員のパソコンから、本番と検証の両方が開ける</td>
+<td>ブラウザ</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>9</td>
+<td>サーバーの関所: 80 は社内から、3389 は管理者のパソコンから、だけ</td>
+<td><code>Get-NetFirewallRule -DisplayName "webapp*"</code></td>
+<td>☐</td>
+</tr>
+<tr>
+<td>10</td>
+<td>社員のパソコンから、5432・8080・8081 につながらない</td>
+<td><code>Test-NetConnection webapp.example.local -Port 5432</code> が <code>False</code></td>
+<td>☐</td>
+</tr>
+<tr>
+<td>11</td>
+<td>テストのメールが受信トレイに届く</td>
+<td>04 の 10.3</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>12</td>
+<td>毎晩のバックアップのタスクが成功する</td>
+<td><code>Start-ScheduledTask</code> の後、<code>LastTaskResult</code> が <code>0</code></td>
+<td>☐</td>
+</tr>
+<tr>
+<td>13</td>
+<td><code>.ps1</code> が全部「UTF-8 (BOM 付き)」</td>
+<td>01 の 3.7 のコマンドで <code>239 187 191</code></td>
+<td>☐</td>
+</tr>
+<tr>
+<td>14</td>
+<td>控えから、別の DB に戻せる</td>
+<td>04 の 11.5</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>15</td>
+<td><code>check.ps1</code> が全部 OK</td>
+<td>06 の 2.1</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>16</td>
+<td>（Django 版）<code>check --deploy</code> が <code>no issues (4 silenced)</code>・<code>DEBUG</code> が <code>False</code></td>
+<td>05 の 8.3・14 章</td>
+<td>☐</td>
+</tr>
+</tbody>
+</table>
+<h2 id="4">4. 本番を始める前のチェック表（検証での動作確認）</h2>
+<p>検証環境で、実際の使い方に沿って確かめます。</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>確かめること</th>
+<th>結果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>ログインできる。間違ったパスワードでは入れない</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>2</td>
+<td>60 分操作しないと、ログアウトされる</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>3</td>
+<td>依頼を登録・保存・一覧で見られる</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>4</td>
+<td>大きめの図面（5MB に近い物）を保存できる</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>5</td>
+<td>添付ファイル（JPG・PNG・PDF、10MB に近い物）を保存し、開ける</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>6</td>
+<td>承認のお願いのメールが、決まった宛先だけに届く（検証の宛先の書きかえ）</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>7</td>
+<td>メールの中の URL が、検証の名前になっている</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>8</td>
+<td>権限の無い人には、設定の画面が開けない</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>9</td>
+<td>毎朝 8:00 の処理が動き、メールが届く（時刻を待つか、手で動かす）</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>10</td>
+<td>社員データの CSV を取り込め、日本語が化けない</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>11</td>
+<td>アプリのサービスを止めると、ブラウザに 502 が出て、始めると戻る</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>12</td>
+<td>サーバーを再起動しても、全部のサービスが自動で戻る</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>13</td>
+<td>本番の名前・ポート・DB・メールの宛先が、本番の値になっている（XML を見比べる）</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>14</td>
+<td>本番の最初の管理者と、社員データの取り込みの段取り</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>15</td>
+<td>社員への案内（URL、パスワードを使い回さないこと、問い合わせ先）</td>
+<td>☐</td>
+</tr>
+</tbody>
+</table>
+<h2 id="5">5. 毎日・毎月の点検表</h2>
+<table>
+<thead>
+<tr>
+<th>頻度</th>
+<th>確かめること</th>
+<th>確かめ方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>毎日</td>
+<td>全部 OK か</td>
+<td><code>check.ps1</code>（06 の 2.1）</td>
+</tr>
+<tr>
+<td>毎日</td>
+<td>前の晩のバックアップが成功</td>
+<td><code>D:\webapp\backup\logs\</code> の最後の行に <code>OK:</code></td>
+</tr>
+<tr>
+<td>毎日</td>
+<td>アプリのログに、見慣れないエラーが増えていない</td>
+<td><code>Select-String -Path D:\webapp\prod\logs\*.log -Pattern "ERROR"</code></td>
+</tr>
+<tr>
+<td>毎週</td>
+<td>ディスクの空きの減り方</td>
+<td><code>Get-Volume</code>。先週と比べる</td>
+</tr>
+<tr>
+<td>毎月</td>
+<td>Windows Update が当たり、再起動の後に全部戻った</td>
+<td><code>Get-HotFix</code>、<code>check.ps1</code></td>
+</tr>
+<tr>
+<td>毎月</td>
+<td>PostgreSQL の新しい修正版が出ていないか</td>
+<td>PostgreSQL の公式のお知らせ</td>
+</tr>
+<tr>
+<td>毎月</td>
+<td>アプリの部品の安全の修正</td>
+<td>Rust 版: <code>cargo audit</code> など（開発用のパソコン）。Django 版: 05 の 14 章</td>
+</tr>
+<tr>
+<td>毎月</td>
+<td>Administrators・Remote Desktop Users に、知らない人がいない</td>
+<td><code>Get-LocalGroupMember</code>（01 の 4.2）</td>
+</tr>
+<tr>
+<td>毎月</td>
+<td>本番の DB の大きさ</td>
+<td>02 の 12 章</td>
+</tr>
+<tr>
+<td>毎月</td>
+<td>別の場所の控えが増えている（写せている）</td>
+<td>共有フォルダを見る</td>
+</tr>
+</tbody>
+</table>
+<h2 id="6">6. 更新のときのチェック表</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>確かめること</th>
+<th>結果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>新しい版で何が変わるか（マイグレーションがあるか）を、アプリの作者に確かめた</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>2</td>
+<td>zip のハッシュ値が、開発用のパソコンで控えた値と同じ</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>検証</strong>で更新し、4 章の主な項目を確かめた</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>4</td>
+<td>本番の更新の時間を、社員に知らせた</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>5</td>
+<td>本番の更新の<strong>直前</strong>に、データベースの控えを取った</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>6</td>
+<td>切り戻しの手順と、「何を確かめて、だめなら戻すか」を決めた</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>7</td>
+<td>本番で更新し、<code>check.ps1</code> が全部 OK</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>8</td>
+<td>社員の画面で、主な操作ができる</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>9</td>
+<td>古い版（<code>app_prev</code> など）を、次の更新まで残してある</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>10</td>
+<td>更新の記録（日時・版・した人・結果）を残した</td>
+<td>☐</td>
+</tr>
+</tbody>
+</table>
+<h2 id="7-12">7. 年に 1〜2 回すること</h2>
+<table>
+<thead>
+<tr>
+<th>すること</th>
+<th>なぜ</th>
+<th>手順</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>控えから戻す練習</td>
+<td>いざというときに戻せないと、控えの意味が無い</td>
+<td>04 の 11.5</td>
+</tr>
+<tr>
+<td>別の場所の控えから戻す練習</td>
+<td>サーバーが丸ごと壊れたときのため</td>
+<td>共有フォルダの控えを使って、04 の 11.5</td>
+</tr>
+<tr>
+<td>サポートの期限の見直し</td>
+<td>期限が切れると安全の修正が出ない</td>
+<td>03 の 3 章、Python・Django・PostgreSQL の期限</td>
+</tr>
+<tr>
+<td>ディスクの見積もりの見直し</td>
+<td>足りなくなる前に頼む</td>
+<td>00 基礎知識 0.2</td>
+</tr>
+<tr>
+<td>手順書の見直し</td>
+<td>版や画面が変わる</td>
+<td>この資料一式</td>
+</tr>
+<tr>
+<td>権限の棚卸し</td>
+<td>異動した人の権限が残らないように</td>
+<td>アプリの権限、サーバーの Administrators</td>
+</tr>
+<tr>
+<td>（HTTPS の見直し）</td>
+<td>社内で証明書を使えるようになっていないか</td>
+<td>参考資料「HTTPS にする場合」</td>
+</tr>
+</tbody>
+</table>
+
+<script>
+(function () {
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy") ? resolve() : reject(); } catch (e) { reject(e); }
+      document.body.removeChild(ta);
+    });
+  }
+  document.querySelectorAll(".copy-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var pre = btn.parentElement.querySelector("pre");
+      var text = pre.textContent.replace(/\n$/, "");
+      copyText(text).then(function () {
+        btn.textContent = "コピーしました";
+        btn.classList.add("done");
+        setTimeout(function () { btn.textContent = "コピー"; btn.classList.remove("done"); }, 2000);
+      }, function () { btn.textContent = "コピーできませんでした"; });
+    });
+  });
+  if (/^#code-\d+$/.test(location.hash)) {
+    var note = document.getElementById("web-note");
+    if (note) { note.hidden = false; }
+  }
+})();
+</script>
+</body>
+</html>

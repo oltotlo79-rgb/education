@@ -1,0 +1,1059 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>02_TypeScriptの基礎_型で間違いを防ぐ</title>
+<style>
+
+@page {
+  size: A4;
+  margin: 18mm 16mm 20mm 16mm;
+  @bottom-right {
+    content: counter(page);
+    font-size: 10px;
+    color: #64748b;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  font-family: "Yu Gothic UI", "Yu Gothic", "Meiryo", "Hiragino Sans",
+               "Noto Sans JP", "Segoe UI", system-ui, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.75;
+  color: #1e293b;
+  background: #ffffff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #0f172a;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 1.4em 0 0.6em;
+  page-break-after: avoid;
+}
+h1 {
+  font-size: 22pt;
+  border-bottom: 3px solid #1e40af;
+  padding-bottom: 0.3em;
+  margin-top: 0.4em;
+  page-break-before: auto;
+}
+h2 {
+  font-size: 16pt;
+  border-bottom: 1.5px solid #cbd5e1;
+  padding-bottom: 0.25em;
+  margin-top: 1.6em;
+}
+h3 { font-size: 13pt; color: #1e40af; }
+h4 { font-size: 12pt; color: #334155; }
+
+p { margin: 0.5em 0 0.8em; }
+
+a { color: #1d4ed8; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+ul, ol { margin: 0.4em 0 0.9em; padding-left: 1.6em; }
+li { margin: 0.2em 0; }
+
+blockquote {
+  border-left: 4px solid #3b82f6;
+  background: #eff6ff;
+  margin: 0.8em 0;
+  padding: 0.6em 1em;
+  color: #1e3a8a;
+  border-radius: 0 6px 6px 0;
+  page-break-inside: avoid;
+}
+blockquote p { margin: 0.3em 0; }
+blockquote strong { color: #1e40af; }
+
+code {
+  /* DefCode (see _code_font.py) has ASCII and Japanese in ONE font, so a code
+     line is drawn as one text run and copies as one line in every PDF viewer. */
+  font-family: "Consolas", "Consolas", monospace;
+  font-size: 0.9em;
+  background: #f1f5f9;
+  color: #be123c;
+  padding: 0.12em 0.36em;
+  border-radius: 4px;
+  /* Long inline code (file paths / URLs) must break instead of overflowing. */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  /* In a PDF there is no horizontal scrolling, so long lines must wrap
+     instead of being clipped off the right edge of the page. */
+  overflow-x: hidden;
+  overflow-y: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  font-size: 9.2pt;
+  line-height: 1.5;
+  margin: 0.8em 0;
+  page-break-inside: avoid;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+  white-space: inherit;
+  word-break: inherit;
+  overflow-wrap: inherit;
+}
+
+/* The codehilite extension wraps highlighted blocks in a scrolling div; make
+   that wrap too so nothing is clipped in the PDF. */
+.codehilite {
+  overflow-x: hidden;
+  /* overflow-x: hidden alone turns overflow-y into auto, and a glyph from a
+     fallback font that is a hair too tall then shows a vertical scrollbar. */
+  overflow-y: hidden;
+}
+.codehilite pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* No per-token colours: every coloured token became its own text run (and its
+   own tag) in the PDF, and some viewers then pasted each token on its own line.
+   Only whole comment lines get a colour, so each line is still one run. */
+pre .cmt { color: #94a3b8; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.8em 0;
+  font-size: 9.6pt;
+  page-break-inside: avoid;
+}
+th, td {
+  border: 1px solid #e2e8f0;
+  padding: 6px 9px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: #f1f5f9;
+  color: #0f172a;
+  font-weight: 700;
+}
+tr:nth-child(even) td { background: #f8fafc; }
+
+img { max-width: 100%; height: auto; }
+
+hr {
+  border: none;
+  border-top: 1px dashed #cbd5e1;
+  margin: 1.6em 0;
+}
+
+/* Diagram blocks (the inline-styled <div>s in the source) */
+div[style] {
+  page-break-inside: avoid;
+}
+
+/* Tighten spacing right after headings */
+h1 + p, h2 + p, h3 + p, h4 + p { margin-top: 0.2em; }
+
+/* Avoid ugly page breaks inside list items / table rows */
+li, tr { page-break-inside: avoid; }
+
+@media screen {
+  body { max-width: 920px; margin: 0 auto; padding: 20px 20px 120px; font-size: 16px; }
+  pre { white-space: pre !important; word-break: normal !important; overflow-wrap: normal !important;
+        overflow-x: auto !important; font-size: 14px !important; }
+  img { max-width: 100%; height: auto; }
+}
+.web-bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; font-size: 14px;
+  padding: 8px 12px; margin-bottom: 16px; background: #eef2f7; border-radius: 8px; }
+.web-bar a { color: #1e3a5f; }
+.web-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 10; max-width: 90%;
+  font-size: 15px; font-weight: 700; background: #fff7ed; border: 2px solid #f2994a; border-radius: 8px;
+  padding: 10px 16px; margin: 0; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.code-wrap { position: relative; scroll-margin-top: 16px; }
+.code-wrap pre { padding-top: 40px !important; }
+.copy-btn { position: absolute; top: 8px; right: 8px; z-index: 2; font-size: 13px; font-weight: 700;
+  padding: 4px 12px; border: 0; border-radius: 6px; background: #2f80ed; color: #fff; cursor: pointer;
+  font-family: inherit; }
+.copy-btn:hover { background: #1c64c8; }
+.copy-btn.done { background: #27ae60; }
+.code-wrap:target pre { outline: 4px solid #f2994a; outline-offset: 2px; }
+.code-wrap:target .copy-btn { box-shadow: 0 0 0 4px #f2994a; }
+/* syntax colours on screen (the PDF uses one colour so that each line copies as one piece) */
+.codehilite .k, .codehilite .kd, .codehilite .kn, .codehilite .kr { color: #c084fc; }
+.codehilite .s, .codehilite .s1, .codehilite .s2, .codehilite .sb { color: #fcd34d; }
+.codehilite .c, .codehilite .c1, .codehilite .cm { color: #94a3b8; }
+.codehilite .nf, .codehilite .nx { color: #60a5fa; }
+.codehilite .nb { color: #34d399; }
+.codehilite .mi, .codehilite .mf { color: #f472b6; }
+.codehilite .nt { color: #f59e0b; }
+.codehilite .na { color: #93c5fd; }
+</style>
+</head>
+<body>
+<div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/02_TypeScript%E3%81%AE%E5%9F%BA%E7%A4%8E_%E5%9E%8B%E3%81%A7%E9%96%93%E9%81%95%E3%81%84%E3%82%92%E9%98%B2%E3%81%90.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、ブラウザーの「戻る」で PDF に戻れます。</p><div style="text-align: center; padding: 28px 0 8px;">
+<div style="font-size: 14px; color: #475569;">Web アプリ開発 学習資料</div>
+<div style="font-size: 26px; font-weight: 800; color: #0f172a; margin-top: 6px; line-height: 1.35;">02 TypeScript の基礎 — 型で間違いを防ぐ</div>
+<div style="font-size: 13px; color: #475569; margin-top: 8px;">依頼の状態・図面の JSON・サーバーとのやり取りを、TypeScript で書く</div>
+</div>
+
+<h1 id="02-typescript">02 TypeScript の基礎: 型で間違いを防ぐ</h1>
+<h2 id="_1">この巻で学ぶこと</h2>
+<ul>
+<li>TypeScript が JavaScript に「<strong>型</strong>」を足した言葉であること、型が何を守ってくれるか</li>
+<li>変数・配列・オブジェクト・関数の書き方</li>
+<li>依頼の<strong>状態</strong>を「決まった値だけ」の型にして、状態の移り変わりを関数にする</li>
+<li>配列の道具（<code>filter</code>・<code>map</code>・<code>reduce</code>）で、一覧を絞る・変える・数える</li>
+<li>図面のデータを <strong>JSON</strong> で保存する・読み込む</li>
+<li>サーバーとのやり取り（<code>fetch</code>・<code>async</code>・<code>await</code>）</li>
+</ul>
+<p>練習のファイルは <code>samples/02_typescript/</code> にあります。この巻の結果は、Node.js（25 系）と TypeScript 7.0.2 で、実際に動かした結果です。</p>
+<blockquote>
+<p><strong>もっと詳しく:</strong> <code>docs/04_JavaScript_TypeScript.md</code>、<code>next/02-typescript-basics.md</code> にも、TypeScript の説明があります。</p>
+</blockquote>
+<h2 id="1-typescript">1. TypeScript とは</h2>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/L02-01_js_vs_ts.webp" alt="JavaScriptは動かしてから間違いに気付く。TypeScriptは型の確かめ（tsc）で動かす前に気付く" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図1-1: TypeScript は、動かす前に間違いを見つける</div>
+</div>
+
+<ul>
+<li><strong>JavaScript</strong> は、ブラウザが直接動かせる、ただ 1 つのプログラムの言葉です。画面の動き（ボタンを押したら何かする）は、JavaScript で書きます。</li>
+<li><strong>TypeScript</strong> は、JavaScript に「<strong>この変数には数しか入れない</strong>」「<strong>この項目は必ずある</strong>」という<strong>型</strong>の決まりを足した言葉です。型の決まりは、<strong>動かす前に</strong>、<code>tsc</code> という道具が確かめます。</li>
+<li>確かめが済んだら、型の書き込みを取り除いて、ふつうの JavaScript として動かします（ブラウザは TypeScript を直接は動かせない）。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> 型（かた。type：その値が「文字」か「数」か「決まった形のまとまり」か、という種類。型が合わない使い方を、動かす前に見つけられる）</p>
+</blockquote>
+<!-- -->
+
+<blockquote>
+<p><strong>用語:</strong> tsc（ティーエスシー：TypeScript の型を確かめる道具。TypeScript Compiler）</p>
+</blockquote>
+<h3 id="11">1.1 準備と動かし方</h3>
+<p><strong>▶ 準備:</strong> 00 の 6.1（資料のフォルダ）・6.2（VS Code）・6.3（Node.js）。下のコマンドは、PowerShell で<strong>資料のフォルダにいるところから</strong>打ちます（00 の 6.1）。<code>npm</code> が「スクリプトの実行が無効」で止められたら、<code>npm.cmd</code>・<code>npx.cmd</code> と打ちます（00 の 6.3）。</p>
+<p><strong>▶ 書く所と動かし方:</strong> 練習のファイルは <code>src\</code> の中にあります。<code>code .</code> で VS Code を開いて読み、書きかえたら <code>Ctrl</code> ＋ <code>S</code> で保存して、PowerShell で <code>node src\basics.ts</code> のように動かします。自分で新しいファイルを作るときも、<code>src\</code> の中に <code>.ts</code> で作ります（<code>npx tsc</code> が確かめるのは <code>src\</code> の <code>.ts</code> です）。</p>
+<div class="codehilite"><div class="code-wrap" id="code-1"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">cd </span><span class="n">webapp_learning</span><span class="p">\</span><span class="n">samples</span><span class="p">\</span><span class="n">02_typescript</span>
+<span class="n">npm</span> <span class="n">install</span>          <span class="c"># TypeScript などの部品を入れる（最初の 1 回）</span>
+<span class="n">npx</span> <span class="n">tsc</span>              <span class="c"># 型を確かめる（何も出なければ、間違い無し）</span>
+<span class="n">node</span> <span class="n">src</span><span class="p">\</span><span class="n">basics</span><span class="p">.</span><span class="n">ts</span>   <span class="c"># 動かす</span>
+</code></pre></div></div>
+
+<ul>
+<li><strong>Node.js</strong> は、ブラウザの外で JavaScript を動かす道具です。今の Node.js は、<code>.ts</code> のファイルの型の書き込みを取り除いて、そのまま動かせます。</li>
+<li>ただし、<strong>Node.js は型を確かめません</strong>。型を確かめるのは <code>npx tsc</code> です（6 章で、その違いを見ます）。</li>
+</ul>
+<p><code>package.json</code>（使う部品と版）と <code>tsconfig.json</code>（型の確かめ方の設定）:</p>
+<div class="codehilite"><div class="code-wrap" id="code-2"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;webapp-learning-typescript&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;private&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;module&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;scripts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;check&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;tsc&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;devDependencies&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;@types/node&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;24.19.2&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;typescript&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;7.0.2&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<div class="codehilite"><div class="code-wrap" id="code-3"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;compilerOptions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;strict&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;target&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;es2023&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;module&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;nodenext&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;noEmit&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;allowImportingTsExtensions&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;erasableSyntaxOnly&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;types&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;node&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;include&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;src/*.ts&quot;</span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>設定</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>"strict": true</code></td>
+<td>型の確かめを、いちばん厳しくする。<strong>初めから厳しくしておく方が、間違いが少ない</strong></td>
+</tr>
+<tr>
+<td><code>"noEmit": true</code></td>
+<td>型を確かめるだけで、JavaScript のファイルは作らない（Node.js が直接動かすため）</td>
+</tr>
+<tr>
+<td><code>"include": ["src/*.ts"]</code></td>
+<td>確かめるファイル</td>
+</tr>
+</tbody>
+</table>
+<h2 id="2">2. 変数・配列・オブジェクト・関数</h2>
+<p><code>src/basics.ts</code>:</p>
+<div class="codehilite"><div class="code-wrap" id="code-4"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 1. 変数と型</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">appName</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;依頼・承認アプリ&quot;</span><span class="p">;</span><span class="w"> </span><span class="c1">// 文字</span>
+<span class="kd">let</span><span class="w"> </span><span class="nx">count</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">3</span><span class="p">;</span><span class="w">                     </span><span class="c1">// 数</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">isOpen</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span><span class="w">              </span><span class="c1">// はい・いいえ</span>
+<span class="nx">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">count</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">1</span><span class="p">;</span><span class="w">                         </span><span class="c1">// let は、あとから変えられる</span>
+
+<span class="c1">// 2. 配列（同じ型の物の並び）</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">approvers</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;山田&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;佐藤&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;鈴木&quot;</span><span class="p">];</span>
+
+<span class="c1">// 3. オブジェクト（名前の付いた値のまとまり）</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">employeeNo</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;012345&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;山田 太郎&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">isAdmin</span><span class="o">:</span><span class="w"> </span><span class="kt">false</span><span class="w"> </span><span class="p">};</span>
+
+<span class="c1">// 4. 関数（引数と戻り値に型を付ける）</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">greet</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="sb">`</span><span class="si">${</span><span class="nx">name</span><span class="si">}</span><span class="sb"> さん、こんにちは`</span><span class="p">;</span><span class="w"> </span><span class="c1">// ` で囲むと、${ } の中に値を埋め込める</span>
+<span class="p">}</span>
+
+<span class="c1">// 5. アロー関数（短い書き方の関数）</span>
+<span class="kd">const</span><span class="w"> </span><span class="kr">double</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="nx">n</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">n</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">2</span><span class="p">;</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">appName</span><span class="p">,</span><span class="w"> </span><span class="nx">count</span><span class="p">,</span><span class="w"> </span><span class="nx">isOpen</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">approvers</span><span class="p">.</span><span class="nx">length</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;人:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">approvers</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;、&quot;</span><span class="p">));</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">user</span><span class="p">.</span><span class="nx">name</span><span class="p">,</span><span class="w"> </span><span class="nx">user</span><span class="p">.</span><span class="nx">isAdmin</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s2">&quot;管理者&quot;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;一般&quot;</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">greet</span><span class="p">(</span><span class="nx">user</span><span class="p">.</span><span class="nx">name</span><span class="p">));</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="kr">double</span><span class="p">(</span><span class="mf">21</span><span class="p">));</span>
+</code></pre></div></div>
+
+<p>動かした結果（<code>node src\basics.ts</code>）:</p>
+<div class="codehilite"><div class="code-wrap" id="code-5"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>依頼・承認アプリ 4 true
+3 人: 山田、佐藤、鈴木
+山田 太郎 一般
+山田 太郎 さん、こんにちは
+42
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>書き方</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>const 名前: 型 = 値</code></td>
+<td>変えない値（定数）。<strong>ふだんはこちらを使う</strong></td>
+</tr>
+<tr>
+<td><code>let 名前: 型 = 値</code></td>
+<td>あとから変える値</td>
+</tr>
+<tr>
+<td><code>string</code>・<code>number</code>・<code>boolean</code></td>
+<td>文字・数・はい／いいえ</td>
+</tr>
+<tr>
+<td><code>string[]</code></td>
+<td>文字の配列</td>
+</tr>
+<tr>
+<td><code>{ employeeNo: "012345", ... }</code></td>
+<td>オブジェクト。型を書かなくても、TypeScript が中身から型を決めてくれる（<strong>型推論</strong>）</td>
+</tr>
+<tr>
+<td><code>function greet(name: string): string</code></td>
+<td>引数 <code>name</code> は文字、戻り値も文字</td>
+</tr>
+<tr>
+<td><code>`${name} さん`</code></td>
+<td>文字の中に値を埋め込む（テンプレート文字列。<code>`</code> はバッククォート）</td>
+</tr>
+<tr>
+<td><code>条件 ? A : B</code></td>
+<td>条件が正しければ A、違えば B</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>用語:</strong> 型推論（かたすいろん：型を書かなくても、入れた値から TypeScript が型を決めてくれること）</p>
+</blockquote>
+<h2 id="3">3. 依頼の状態を型にする</h2>
+<h3 id="31">3.1 決まった値だけの型（ユニオン型）</h3>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/L02-02_union_type.webp" alt="RequestStatusの箱には7つの状態のカードだけが入り、承認済みのカードは弾かれる" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図3-1: ユニオン型は、決まった値だけが入る箱</div>
+</div>
+
+<p>依頼の状態は、7 つのどれかです（00 学習ガイド 1.2）。ただの <code>string</code> にすると、<code>"承認済み"</code> のような、決まっていない文字も入ってしまいます。<strong>決まった値を <code>|</code>（または）でつないだ型</strong>にすると、ほかの値を入れたときに、<code>tsc</code> が止めてくれます。</p>
+<p><code>src/status.ts</code>:</p>
+<div class="codehilite"><div class="code-wrap" id="code-6"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 依頼の状態と、状態を変える操作を「型」で決める</span>
+
+<span class="cm">/** 依頼の状態。この 7 つ以外の文字は入れられない */</span>
+<span class="k">export</span><span class="w"> </span><span class="kr">type</span><span class="w"> </span><span class="nx">RequestStatus</span><span class="w"> </span><span class="o">=</span>
+<span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="s2">&quot;回覧中&quot;</span>
+<span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="s2">&quot;差し戻し中&quot;</span>
+<span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="s2">&quot;引き戻し中&quot;</span>
+<span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="s2">&quot;回覧完了&quot;</span>
+<span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="s2">&quot;対応中&quot;</span>
+<span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="s2">&quot;完了&quot;</span>
+<span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="s2">&quot;取り下げ&quot;</span><span class="p">;</span>
+
+<span class="cm">/** 状態を変える操作 */</span>
+<span class="k">export</span><span class="w"> </span><span class="kr">type</span><span class="w"> </span><span class="nx">Action</span><span class="w"> </span><span class="o">=</span>
+<span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="s2">&quot;全員が承認&quot;</span>
+<span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="s2">&quot;差し戻し&quot;</span>
+<span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="s2">&quot;引き戻し&quot;</span>
+<span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="s2">&quot;再依頼&quot;</span>
+<span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="s2">&quot;取り下げ&quot;</span>
+<span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="s2">&quot;担当を決める&quot;</span>
+<span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="s2">&quot;引き渡し&quot;</span><span class="p">;</span>
+
+<span class="cm">/** 今の状態と操作から、次の状態を返す。できない操作なら null を返す */</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">nextStatus</span><span class="p">(</span><span class="nx">current</span><span class="o">:</span><span class="w"> </span><span class="kt">RequestStatus</span><span class="p">,</span><span class="w"> </span><span class="nx">action</span><span class="o">:</span><span class="w"> </span><span class="kt">Action</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nx">RequestStatus</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="nx">current</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="s2">&quot;回覧中&quot;</span><span class="o">:</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">action</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;全員が承認&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="s2">&quot;回覧完了&quot;</span><span class="p">;</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">action</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;差し戻し&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="s2">&quot;差し戻し中&quot;</span><span class="p">;</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">action</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;引き戻し&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="s2">&quot;引き戻し中&quot;</span><span class="p">;</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="s2">&quot;差し戻し中&quot;</span><span class="o">:</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="s2">&quot;引き戻し中&quot;</span><span class="o">:</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">action</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;再依頼&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="s2">&quot;回覧中&quot;</span><span class="p">;</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">action</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;取り下げ&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="s2">&quot;取り下げ&quot;</span><span class="p">;</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="s2">&quot;回覧完了&quot;</span><span class="o">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="nx">action</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;担当を決める&quot;</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s2">&quot;対応中&quot;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="s2">&quot;対応中&quot;</span><span class="o">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="nx">action</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;引き渡し&quot;</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s2">&quot;完了&quot;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="s2">&quot;完了&quot;</span><span class="o">:</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="s2">&quot;取り下げ&quot;</span><span class="o">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">    </span><span class="k">default</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="c1">// ここに来るのは、状態を足したのに case を書き忘れたとき。型の確かめでエラーになる</span>
+<span class="w">      </span><span class="kd">const</span><span class="w"> </span><span class="nx">unreachable</span><span class="o">:</span><span class="w"> </span><span class="kt">never</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">current</span><span class="p">;</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="nx">unreachable</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="cm">/** 一覧で使う札の色 */</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">badgeColor</span><span class="p">(</span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="kt">RequestStatus</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;白&quot;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">&quot;オレンジ&quot;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">&quot;青&quot;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">&quot;グレー&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="nx">status</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="s2">&quot;回覧中&quot;</span><span class="o">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="s2">&quot;白&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="s2">&quot;差し戻し中&quot;</span><span class="o">:</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="s2">&quot;引き戻し中&quot;</span><span class="o">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="s2">&quot;オレンジ&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="s2">&quot;回覧完了&quot;</span><span class="o">:</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="s2">&quot;対応中&quot;</span><span class="o">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="s2">&quot;青&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="s2">&quot;完了&quot;</span><span class="o">:</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="s2">&quot;取り下げ&quot;</span><span class="o">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="s2">&quot;グレー&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>書き方</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>type RequestStatus = "回覧中" \| "差し戻し中" \| ...</code></td>
+<td>型に名前を付ける。<code>\|</code> でつないだ値のどれか（<strong>ユニオン型</strong>）</td>
+</tr>
+<tr>
+<td><code>export</code></td>
+<td>ほかのファイルから使えるようにする</td>
+</tr>
+<tr>
+<td><code>RequestStatus \| null</code></td>
+<td>状態か、「無し」（<code>null</code>）</td>
+</tr>
+<tr>
+<td><code>switch (current) { case "回覧中": ... }</code></td>
+<td>値ごとに分ける</td>
+</tr>
+<tr>
+<td><code>case "差し戻し中": case "引き戻し中":</code></td>
+<td>2 つの値で、同じことをする</td>
+</tr>
+<tr>
+<td><code>const unreachable: never = current;</code></td>
+<td><strong>全部の状態を <code>case</code> に書いたか</strong>の確かめ。書き忘れると、<code>tsc</code> がここでエラーにする（6 章）</td>
+</tr>
+<tr>
+<td><code>/** ... */</code></td>
+<td>説明のコメント。エディターで、関数の名前にマウスを乗せると表示される</td>
+</tr>
+</tbody>
+</table>
+<p>この <code>nextStatus</code> は、00 学習ガイドの状態遷移図を、そのままプログラムにした物です。サーバー（06 の Django・08 の Topcoat）でも、同じ考え方で作ります。</p>
+<blockquote>
+<p><strong>用語:</strong> ユニオン型（union：「A か B か C」のように、いくつかの型や値のどれか、という型）</p>
+</blockquote>
+<h3 id="32">3.2 オブジェクトの型</h3>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/L02-03_object_type.webp" alt="型（RequestItem）は記入欄の決まった用紙。値はその用紙に記入した物。形に合っているかを確かめる" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図3-2: オブジェクトの型は、記入欄の決まった用紙</div>
+</div>
+
+<div class="codehilite"><div class="code-wrap" id="code-7"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">export</span><span class="w"> </span><span class="kr">type</span><span class="w"> </span><span class="nx">RequestItem</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="kt">RequestStatus</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">dueDate</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">approvers</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">[];</span>
+<span class="w">  </span><span class="nx">note?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span><span class="w">        </span><span class="c1">// ? が付いた項目は、無くてもよい</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>status</code> に <code>RequestStatus</code> を使うと、依頼のデータにも、決まった状態しか入らなくなります。</li>
+<li><code>note?:</code> のように <code>?</code> を付けた項目は、無くてもかまいません。その代わり、使う前に「あるか」を確かめる必要があります（4 章の最後）。</li>
+</ul>
+<h2 id="4">4. 配列の道具: 絞る・変える・まとめる</h2>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/L02-04_map_filter_reduce.webp" alt="filterは条件に合う箱だけ残す、mapはそれぞれを別の形に変える、reduceは全部を1枚の集計表にまとめる" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図4-1: filter・map・reduce</div>
+</div>
+
+<p><code>src/requests.ts</code>:</p>
+<div class="codehilite"><div class="code-wrap" id="code-8"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">badgeColor</span><span class="p">,</span><span class="w"> </span><span class="nx">nextStatus</span><span class="p">,</span><span class="w"> </span><span class="kr">type</span><span class="w"> </span><span class="nx">RequestStatus</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;./status.ts&quot;</span><span class="p">;</span>
+
+<span class="cm">/** 依頼 1 件の形 */</span>
+<span class="k">export</span><span class="w"> </span><span class="kr">type</span><span class="w"> </span><span class="nx">RequestItem</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="kt">RequestStatus</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">dueDate</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span><span class="w">      </span><span class="c1">// &quot;2026-11-10&quot; の形の日付</span>
+<span class="w">  </span><span class="nx">approvers</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">[];</span><span class="w">  </span><span class="c1">// 回覧者（1〜3 人）</span>
+<span class="w">  </span><span class="nx">note?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span><span class="w">        </span><span class="c1">// ? が付いた項目は、無くてもよい</span>
+<span class="p">};</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">requests</span><span class="o">:</span><span class="w"> </span><span class="kt">RequestItem</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;治具の製作&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;回覧中&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">dueDate</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;2026-11-10&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">approvers</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;山田&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;佐藤&quot;</span><span class="p">]</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">2</span><span class="p">,</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;部品の追加工&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;回覧完了&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">dueDate</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;2026-10-31&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">approvers</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;山田&quot;</span><span class="p">]</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">3</span><span class="p">,</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;棚の取り付け&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;差し戻し中&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">dueDate</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;2026-11-20&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">approvers</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;佐藤&quot;</span><span class="p">],</span><span class="w"> </span><span class="nx">note</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;寸法を追記&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">4</span><span class="p">,</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;型の改造&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;回覧中&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">dueDate</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;2026-11-03&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">approvers</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;鈴木&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;山田&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;佐藤&quot;</span><span class="p">]</span><span class="w"> </span><span class="p">},</span>
+<span class="p">];</span>
+
+<span class="c1">// filter: 条件に合う物だけ残す</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">circulating</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">requests</span><span class="p">.</span><span class="nx">filter</span><span class="p">((</span><span class="nx">r</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">status</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;回覧中&quot;</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;回覧中:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">circulating</span><span class="p">.</span><span class="nx">map</span><span class="p">((</span><span class="nx">r</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">title</span><span class="p">));</span>
+
+<span class="c1">// map: 1 つずつ、別の形に変える</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">rows</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">requests</span><span class="p">.</span><span class="nx">map</span><span class="p">((</span><span class="nx">r</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="sb">`</span><span class="si">${</span><span class="nx">r</span><span class="p">.</span><span class="nx">id</span><span class="si">}</span><span class="sb"> </span><span class="si">${</span><span class="nx">r</span><span class="p">.</span><span class="nx">title</span><span class="si">}</span><span class="sb">（</span><span class="si">${</span><span class="nx">r</span><span class="p">.</span><span class="nx">status</span><span class="si">}</span><span class="sb">・</span><span class="si">${</span><span class="nx">badgeColor</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">status</span><span class="p">)</span><span class="si">}</span><span class="sb">）`</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">rows</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;\n&quot;</span><span class="p">));</span>
+
+<span class="c1">// reduce: 全部をまとめて 1 つの値にする（状態ごとの件数）</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">counts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">requests</span><span class="p">.</span><span class="nx">reduce</span><span class="o">&lt;</span><span class="nx">Record</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="kt">number</span><span class="o">&gt;&gt;</span><span class="p">((</span><span class="nx">acc</span><span class="p">,</span><span class="w"> </span><span class="nx">r</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">acc</span><span class="p">[</span><span class="nx">r</span><span class="p">.</span><span class="nx">status</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="nx">acc</span><span class="p">[</span><span class="nx">r</span><span class="p">.</span><span class="nx">status</span><span class="p">]</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="mf">0</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">1</span><span class="p">;</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">acc</span><span class="p">;</span>
+<span class="p">},</span><span class="w"> </span><span class="p">{});</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;状態ごとの件数:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">counts</span><span class="p">);</span>
+
+<span class="c1">// 期限の近い順に並べる（元の配列は変えない）</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">byDue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[...</span><span class="nx">requests</span><span class="p">].</span><span class="nx">sort</span><span class="p">((</span><span class="nx">a</span><span class="p">,</span><span class="w"> </span><span class="nx">b</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">a</span><span class="p">.</span><span class="nx">dueDate</span><span class="p">.</span><span class="nx">localeCompare</span><span class="p">(</span><span class="nx">b</span><span class="p">.</span><span class="nx">dueDate</span><span class="p">));</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;期限の近い順:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">byDue</span><span class="p">.</span><span class="nx">map</span><span class="p">((</span><span class="nx">r</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">dueDate</span><span class="p">));</span>
+
+<span class="c1">// 状態を変える</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">nextStatus</span><span class="p">(</span><span class="s2">&quot;回覧中&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;差し戻し&quot;</span><span class="p">));</span><span class="w">  </span><span class="c1">// 差し戻し中</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">nextStatus</span><span class="p">(</span><span class="s2">&quot;完了&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;差し戻し&quot;</span><span class="p">));</span><span class="w">    </span><span class="c1">// null（完了した依頼は差し戻せない）</span>
+
+<span class="c1">// ? の付いた項目は、無いかもしれないので、確かめてから使う</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">const</span><span class="w"> </span><span class="nx">r</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nx">requests</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">note</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="kc">undefined</span><span class="p">)</span><span class="w"> </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`</span><span class="si">${</span><span class="nx">r</span><span class="p">.</span><span class="nx">title</span><span class="si">}</span><span class="sb"> のメモ: </span><span class="si">${</span><span class="nx">r</span><span class="p">.</span><span class="nx">note</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>動かした結果（<code>node src\requests.ts</code>）:</p>
+<div class="codehilite"><div class="code-wrap" id="code-9"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>回覧中: [ &#39;治具の製作&#39;, &#39;型の改造&#39; ]
+1 治具の製作（回覧中・白）
+2 部品の追加工（回覧完了・青）
+3 棚の取り付け（差し戻し中・オレンジ）
+4 型の改造（回覧中・白）
+状態ごとの件数: { &#39;回覧中&#39;: 2, &#39;回覧完了&#39;: 1, &#39;差し戻し中&#39;: 1 }
+期限の近い順: [ &#39;2026-10-31&#39;, &#39;2026-11-03&#39;, &#39;2026-11-10&#39;, &#39;2026-11-20&#39; ]
+差し戻し中
+null
+棚の取り付け のメモ: 寸法を追記
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>道具</th>
+<th>意味</th>
+<th>練習での使い道</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>filter((r) =&gt; 条件)</code></td>
+<td>条件に合う物だけを残した、新しい配列</td>
+<td>回覧中の依頼だけ</td>
+</tr>
+<tr>
+<td><code>map((r) =&gt; 新しい形)</code></td>
+<td>1 つずつ変えた、新しい配列（数は同じ）</td>
+<td>一覧の 1 行の文字にする</td>
+</tr>
+<tr>
+<td><code>reduce((まとめ, r) =&gt; ..., 最初の値)</code></td>
+<td>全部を 1 つの値にまとめる</td>
+<td>状態ごとの件数（グラフの元）</td>
+</tr>
+<tr>
+<td><code>[...requests].sort(...)</code></td>
+<td>写しを作ってから並べる（<code>sort</code> は元の配列を変えるため）</td>
+<td>期限の近い順</td>
+</tr>
+<tr>
+<td><code>import { ... } from "./status.ts"</code></td>
+<td>ほかのファイルの物を使う</td>
+<td>状態の型と関数</td>
+</tr>
+<tr>
+<td><code>(r) =&gt; ...</code></td>
+<td>短い関数（アロー関数）。<code>r</code> に 1 件ずつ入る</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>??</code></td>
+<td>左が無い（<code>null</code>・<code>undefined</code>）なら右を使う</td>
+<td><code>acc[r.status] ?? 0</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="5-json">5. 図面を JSON で保存する</h2>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/L02-05_json.webp" alt="ブラウザとサーバーの間を、JSONの文字が書かれた封筒が行き来する" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図5-1: JSON は、データを文字にして運ぶ書き方</div>
+</div>
+
+<p><strong>JSON</strong> は、オブジェクトや配列を、<strong>文字で書き表す</strong>決まりです。ブラウザとサーバーの間でデータを送るとき、データベースに図面を保存するときに使います。</p>
+<p><code>src/drawing.ts</code>:</p>
+<div class="codehilite"><div class="code-wrap" id="code-10"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 図面を JSON で保存する・読み込む</span>
+
+<span class="cm">/** 線・四角・文字の 3 種類の図形。kind の値で、どの種類かが決まる */</span>
+<span class="kr">type</span><span class="w"> </span><span class="nx">Line</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">kind</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;line&quot;</span><span class="p">;</span><span class="w"> </span><span class="nx">x1</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">;</span><span class="w"> </span><span class="nx">y1</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">;</span><span class="w"> </span><span class="nx">x2</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">;</span><span class="w"> </span><span class="nx">y2</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="w"> </span><span class="p">};</span>
+<span class="kr">type</span><span class="w"> </span><span class="nx">Rect</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">kind</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;rect&quot;</span><span class="p">;</span><span class="w"> </span><span class="nx">x</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">;</span><span class="w"> </span><span class="nx">y</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">;</span><span class="w"> </span><span class="nx">width</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">;</span><span class="w"> </span><span class="nx">height</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="w"> </span><span class="p">};</span>
+<span class="kr">type</span><span class="w"> </span><span class="nx">Label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">kind</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;text&quot;</span><span class="p">;</span><span class="w"> </span><span class="nx">x</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">;</span><span class="w"> </span><span class="nx">y</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">;</span><span class="w"> </span><span class="nx">text</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">};</span>
+<span class="k">export</span><span class="w"> </span><span class="kr">type</span><span class="w"> </span><span class="nx">Shape</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">Line</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nx">Rect</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nx">Label</span><span class="p">;</span>
+
+<span class="k">export</span><span class="w"> </span><span class="kr">type</span><span class="w"> </span><span class="nx">Drawing</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">version</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">;</span><span class="w"> </span><span class="nx">widthMm</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">;</span><span class="w"> </span><span class="nx">heightMm</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">;</span><span class="w"> </span><span class="nx">shapes</span><span class="o">:</span><span class="w"> </span><span class="kt">Shape</span><span class="p">[]</span><span class="w"> </span><span class="p">};</span>
+
+<span class="cm">/** 図形の説明の文を作る。kind で分けると、その種類の項目だけが使える */</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">describe</span><span class="p">(</span><span class="nx">shape</span><span class="o">:</span><span class="w"> </span><span class="kt">Shape</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="nx">shape</span><span class="p">.</span><span class="nx">kind</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="s2">&quot;line&quot;</span><span class="o">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="sb">`線 (</span><span class="si">${</span><span class="nx">shape</span><span class="p">.</span><span class="nx">x1</span><span class="si">}</span><span class="sb">,</span><span class="si">${</span><span class="nx">shape</span><span class="p">.</span><span class="nx">y1</span><span class="si">}</span><span class="sb">)→(</span><span class="si">${</span><span class="nx">shape</span><span class="p">.</span><span class="nx">x2</span><span class="si">}</span><span class="sb">,</span><span class="si">${</span><span class="nx">shape</span><span class="p">.</span><span class="nx">y2</span><span class="si">}</span><span class="sb">)`</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="s2">&quot;rect&quot;</span><span class="o">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="sb">`四角 </span><span class="si">${</span><span class="nx">shape</span><span class="p">.</span><span class="nx">width</span><span class="si">}</span><span class="sb">×</span><span class="si">${</span><span class="nx">shape</span><span class="p">.</span><span class="nx">height</span><span class="si">}</span><span class="sb">`</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="s2">&quot;text&quot;</span><span class="o">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="sb">`文字「</span><span class="si">${</span><span class="nx">shape</span><span class="p">.</span><span class="nx">text</span><span class="si">}</span><span class="sb">」`</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="cm">/** JSON から読み込んだ物が、本当に Drawing の形かを確かめる（型ガード） */</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">isDrawing</span><span class="p">(</span><span class="nx">value</span><span class="o">:</span><span class="w"> </span><span class="kt">unknown</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nx">value</span><span class="w"> </span><span class="nx">is</span><span class="w"> </span><span class="nx">Drawing</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="ow">typeof</span><span class="w"> </span><span class="nx">value</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">value</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">value</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="nx">Record</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">unknown</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">v</span><span class="p">.</span><span class="nx">version</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">1</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="ow">typeof</span><span class="w"> </span><span class="nx">v</span><span class="p">.</span><span class="nx">widthMm</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;number&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="ow">typeof</span><span class="w"> </span><span class="nx">v</span><span class="p">.</span><span class="nx">heightMm</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;number&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">Array</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span><span class="nx">v</span><span class="p">.</span><span class="nx">shapes</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">drawing</span><span class="o">:</span><span class="w"> </span><span class="kt">Drawing</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">version</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">widthMm</span><span class="o">:</span><span class="w"> </span><span class="kt">297</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">heightMm</span><span class="o">:</span><span class="w"> </span><span class="kt">210</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">shapes</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nx">kind</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;rect&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">x</span><span class="o">:</span><span class="w"> </span><span class="kt">10</span><span class="p">,</span><span class="w"> </span><span class="nx">y</span><span class="o">:</span><span class="w"> </span><span class="kt">10</span><span class="p">,</span><span class="w"> </span><span class="nx">width</span><span class="o">:</span><span class="w"> </span><span class="kt">120</span><span class="p">,</span><span class="w"> </span><span class="nx">height</span><span class="o">:</span><span class="w"> </span><span class="kt">60</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nx">kind</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;line&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">x1</span><span class="o">:</span><span class="w"> </span><span class="kt">10</span><span class="p">,</span><span class="w"> </span><span class="nx">y1</span><span class="o">:</span><span class="w"> </span><span class="kt">80</span><span class="p">,</span><span class="w"> </span><span class="nx">x2</span><span class="o">:</span><span class="w"> </span><span class="kt">130</span><span class="p">,</span><span class="w"> </span><span class="nx">y2</span><span class="o">:</span><span class="w"> </span><span class="kt">80</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nx">kind</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;text&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">x</span><span class="o">:</span><span class="w"> </span><span class="kt">12</span><span class="p">,</span><span class="w"> </span><span class="nx">y</span><span class="o">:</span><span class="w"> </span><span class="kt">95</span><span class="p">,</span><span class="w"> </span><span class="nx">text</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;穴 φ8 × 4&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="p">};</span>
+
+<span class="c1">// 保存するとき: オブジェクト → JSON の文字</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">json</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">drawing</span><span class="p">);</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">bytes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">TextEncoder</span><span class="p">().</span><span class="nx">encode</span><span class="p">(</span><span class="nx">json</span><span class="p">).</span><span class="nx">length</span><span class="p">;</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">json</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`大きさ: </span><span class="si">${</span><span class="nx">bytes</span><span class="si">}</span><span class="sb"> バイト（上限 5MB = </span><span class="si">${</span><span class="mf">5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">1024</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">1024</span><span class="si">}</span><span class="sb"> バイト）`</span><span class="p">);</span>
+
+<span class="c1">// 読み込むとき: JSON の文字 → 何が入っているか分からない物（unknown）→ 確かめてから使う</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">loaded</span><span class="o">:</span><span class="w"> </span><span class="kt">unknown</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">json</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">isDrawing</span><span class="p">(</span><span class="nx">loaded</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">loaded</span><span class="p">.</span><span class="nx">shapes</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">describe</span><span class="p">).</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot; / &quot;</span><span class="p">));</span>
+<span class="p">}</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">isDrawing</span><span class="p">(</span><span class="nb">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="s1">&#39;{&quot;version&quot;: 2}&#39;</span><span class="p">)));</span><span class="w"> </span><span class="c1">// false（形が違う）</span>
+</code></pre></div></div>
+
+<p>動かした結果（<code>node src\drawing.ts</code>）:</p>
+<div class="codehilite"><div class="code-wrap" id="code-11"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>{&quot;version&quot;:1,&quot;widthMm&quot;:297,&quot;heightMm&quot;:210,&quot;shapes&quot;:[{&quot;kind&quot;:&quot;rect&quot;,&quot;x&quot;:10,&quot;y&quot;:10,&quot;width&quot;:120,&quot;height&quot;:60},{&quot;kind&quot;:&quot;line&quot;,&quot;x1&quot;:10,&quot;y1&quot;:80,&quot;x2&quot;:130,&quot;y2&quot;:80},{&quot;kind&quot;:&quot;text&quot;,&quot;x&quot;:12,&quot;y&quot;:95,&quot;text&quot;:&quot;穴 φ8 × 4&quot;}]}
+大きさ: 208 バイト（上限 5MB = 5242880 バイト）
+四角 120×60 / 線 (10,80)→(130,80) / 文字「穴 φ8 × 4」
+false
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>書き方</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>type Shape = Line \| Rect \| Label</code></td>
+<td>3 種類の図形のどれか。<code>kind</code> の値で、どの種類かが分かる（<strong>判別できるユニオン型</strong>）</td>
+</tr>
+<tr>
+<td><code>switch (shape.kind)</code></td>
+<td><code>kind</code> で分けると、<code>case "line":</code> の中では <code>x1</code> などの線の項目だけが使える</td>
+</tr>
+<tr>
+<td><code>JSON.stringify(値)</code></td>
+<td>オブジェクト → JSON の文字（保存・送るとき）</td>
+</tr>
+<tr>
+<td><code>JSON.parse(文字)</code></td>
+<td>JSON の文字 → オブジェクト（読み込むとき）</td>
+</tr>
+<tr>
+<td><code>unknown</code></td>
+<td>「何が入っているか分からない」型。<strong>確かめるまで、中身を使えない</strong></td>
+</tr>
+<tr>
+<td><code>value is Drawing</code></td>
+<td>「この関数が true を返したら、value は Drawing の形」と TypeScript に教える（<strong>型ガード</strong>）</td>
+</tr>
+<tr>
+<td><code>new TextEncoder().encode(json).length</code></td>
+<td>文字を UTF-8 にしたときのバイト数（上限 5MB を確かめる。日本語は 1 文字 3 バイト）</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>大事:</strong> 外から来たデータ（サーバーの返事・ファイル・JSON）は、<strong>型を書いても、本当にその形とは限りません</strong>。<code>unknown</code> で受けて、確かめてから使います。サーバーの側でも、必ずもう一度確かめます（06・10）。</p>
+<p><strong>用語:</strong> JSON（ジェイソン。JavaScript Object Notation：オブジェクトと配列を、文字で書き表す決まり。<code>{"id": 1}</code> のように書く）</p>
+</blockquote>
+<h2 id="6">6. 型の確かめで見つかる間違い</h2>
+<p><code>mistakes/mistakes.ts</code> には、わざと 4 つの間違いを入れてあります。</p>
+<div class="codehilite"><div class="code-wrap" id="code-12"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="kr">type</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">RequestStatus</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;../src/status.ts&quot;</span><span class="p">;</span>
+
+<span class="c1">// 間違い 1: 決まっていない状態を入れる</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">s</span><span class="o">:</span><span class="w"> </span><span class="kt">RequestStatus</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;承認済み&quot;</span><span class="p">;</span>
+
+<span class="c1">// 間違い 2: 数を入れる所に文字を入れる</span>
+<span class="kd">let</span><span class="w"> </span><span class="nx">count</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">3</span><span class="p">;</span>
+<span class="nx">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;4&quot;</span><span class="p">;</span>
+
+<span class="c1">// 間違い 3: 無い項目を使う</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;山田&quot;</span><span class="w"> </span><span class="p">};</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">user</span><span class="p">.</span><span class="nx">mail</span><span class="p">);</span>
+
+<span class="c1">// 間違い 4: 関数に渡す数の間違い</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">greet</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="sb">`</span><span class="si">${</span><span class="nx">name</span><span class="si">}</span><span class="sb"> さん`</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nx">greet</span><span class="p">();</span>
+</code></pre></div></div>
+
+<p>型を確かめる（<code>npx tsc -p mistakes</code>）と、次のエラーが出ます（実際の出力）。</p>
+<div class="codehilite"><div class="code-wrap" id="code-13"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>mistakes/mistakes.ts(4,7): error TS2322: Type &#39;&quot;承認済み&quot;&#39; is not assignable to type &#39;RequestStatus&#39;.
+mistakes/mistakes.ts(8,1): error TS2322: Type &#39;string&#39; is not assignable to type &#39;number&#39;.
+mistakes/mistakes.ts(12,18): error TS2339: Property &#39;mail&#39; does not exist on type &#39;{ name: string; }&#39;.
+mistakes/mistakes.ts(18,1): error TS2554: Expected 1 arguments, but got 0.
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>エラー</th>
+<th>読み方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mistakes.ts(4,7)</code></td>
+<td>4 行目の 7 文字目</td>
+</tr>
+<tr>
+<td><code>TS2322: Type '"承認済み"' is not assignable to type 'RequestStatus'</code></td>
+<td>「承認済み」は、RequestStatus に入れられない（決まっていない状態）</td>
+</tr>
+<tr>
+<td><code>TS2322: Type 'string' is not assignable to type 'number'</code></td>
+<td>数の変数に、文字を入れようとした</td>
+</tr>
+<tr>
+<td><code>TS2339: Property 'mail' does not exist</code></td>
+<td><code>mail</code> という項目は無い（打ち間違いを見つけてくれる）</td>
+</tr>
+<tr>
+<td><code>TS2554: Expected 1 arguments, but got 0</code></td>
+<td>引数を 1 つ渡すはずが、0 だった</td>
+</tr>
+</tbody>
+</table>
+<p>ところが、同じファイルを <strong><code>node mistakes\mistakes.ts</code> で動かすと、エラーにならずに <code>undefined</code> と表示して終わります</strong>（実際に試した結果）。Node.js は型を確かめないからです。<strong>型の間違いは、<code>npx tsc</code> を動かさないと見つかりません。</strong> エディター（VS Code）は、打っている途中で同じ確かめをして、赤い波線で教えてくれます。</p>
+<p><strong>状態の書き忘れの確かめ（<code>never</code>）:</strong> <code>mistakes/never.ts</code> では、状態が <code>"a" | "b" | "c"</code> の 3 つなのに、<code>case</code> を 2 つしか書いていません。<code>tsc</code> は次のように知らせます（実際の出力）。</p>
+<div class="codehilite"><div class="code-wrap" id="code-14"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>mistakes/never.ts(6,22): error TS2322: Type &#39;&quot;c&quot;&#39; is not assignable to type &#39;never&#39;.
+</code></pre></div></div>
+
+<p>「<code>"c"</code> の場合が、<code>case</code> に書かれていない」という意味です。状態を足したときの<strong>書き忘れ</strong>を、動かす前に見つけられます。</p>
+<blockquote>
+<p><strong>用語:</strong> never（ネバー：「ここに来ることは無い」という型。全部の場合を書いたかの確かめに使う）</p>
+</blockquote>
+<h2 id="7-fetchasyncawait">7. サーバーとのやり取り（fetch・async・await）</h2>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/L02-06_async_await.webp" alt="カウンターで注文（fetchでお願い）、番号札（Promise）を受け取り、座って待ち（awaitで待つ）、コーヒーを受け取る（結果が届く）" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図7-1: async / await は、注文して番号札で待つのと同じ</div>
+</div>
+
+<p>サーバーへのお願いは、返事が来るまで時間がかかります。その間、画面が固まらないように、<strong>「あとで届く約束」（Promise）</strong>を受け取って、<strong><code>await</code> で待つ</strong>書き方をします。</p>
+<p><code>src/api_demo.ts</code>（練習用に、同じプログラムの中で小さなサーバーを動かしています）:</p>
+<div class="codehilite"><div class="code-wrap" id="code-15"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// サーバーから JSON を受け取る（fetch と async / await）</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">createServer</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;node:http&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="kr">type</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">AddressInfo</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;node:net&quot;</span><span class="p">;</span>
+
+<span class="kr">type</span><span class="w"> </span><span class="nx">RequestSummary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">;</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span><span class="w"> </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">};</span>
+
+<span class="c1">// 1. 練習用に、このパソコンの中で小さなサーバーを動かす（本物のアプリでは Django や Topcoat）</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">server</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">createServer</span><span class="p">((</span><span class="nx">req</span><span class="p">,</span><span class="w"> </span><span class="nx">res</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">url</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;/api/requests&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">res</span><span class="p">.</span><span class="nx">writeHead</span><span class="p">(</span><span class="mf">200</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s2">&quot;Content-Type&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;application/json; charset=utf-8&quot;</span><span class="w"> </span><span class="p">});</span>
+<span class="w">    </span><span class="nx">res</span><span class="p">.</span><span class="nx">end</span><span class="p">(</span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">([{</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;治具の製作&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;回覧中&quot;</span><span class="w"> </span><span class="p">}]));</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">res</span><span class="p">.</span><span class="nx">writeHead</span><span class="p">(</span><span class="mf">404</span><span class="p">).</span><span class="nx">end</span><span class="p">();</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">});</span>
+<span class="k">await</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="ow">void</span><span class="o">&gt;</span><span class="p">((</span><span class="nx">resolve</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">server</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">resolve</span><span class="p">));</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">base</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sb">`http://127.0.0.1:</span><span class="si">${</span><span class="p">(</span><span class="nx">server</span><span class="p">.</span><span class="nx">address</span><span class="p">()</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="nx">AddressInfo</span><span class="p">).</span><span class="nx">port</span><span class="si">}</span><span class="sb">`</span><span class="p">;</span>
+
+<span class="c1">// 2. async の関数の中では、await で「返事が来るまで待つ」と書ける</span>
+<span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">fetchRequests</span><span class="p">()</span><span class="o">:</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="nx">RequestSummary</span><span class="p">[]</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="sb">`</span><span class="si">${</span><span class="nx">base</span><span class="si">}</span><span class="sb">/api/requests`</span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">res</span><span class="p">.</span><span class="nx">ok</span><span class="p">)</span><span class="w"> </span><span class="k">throw</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="ne">Error</span><span class="p">(</span><span class="sb">`サーバーのエラー: </span><span class="si">${</span><span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="k">await</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">json</span><span class="p">())</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="nx">RequestSummary</span><span class="p">[];</span>
+<span class="p">}</span>
+
+<span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">list</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">fetchRequests</span><span class="p">();</span>
+<span class="w">  </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;受け取った:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">list</span><span class="p">);</span>
+<span class="w">  </span><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="sb">`</span><span class="si">${</span><span class="nx">base</span><span class="si">}</span><span class="sb">/api/nothing`</span><span class="p">).</span><span class="nx">then</span><span class="p">((</span><span class="nx">r</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;無い URL:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">status</span><span class="p">));</span>
+<span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="nx">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s2">&quot;失敗:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">e</span><span class="p">);</span>
+<span class="p">}</span><span class="w"> </span><span class="k">finally</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">server</span><span class="p">.</span><span class="nx">close</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>動かした結果（<code>node src\api_demo.ts</code>）:</p>
+<div class="codehilite"><div class="code-wrap" id="code-16"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>受け取った: [ { id: 1, title: &#39;治具の製作&#39;, status: &#39;回覧中&#39; } ]
+無い URL: 404
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>書き方</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>async function 名前(): Promise&lt;型&gt;</code></td>
+<td>待つことのある関数。戻り値は「あとで届く、その型の値」</td>
+</tr>
+<tr>
+<td><code>await fetch(URL)</code></td>
+<td>サーバーにお願いを出し、返事が来るまで待つ</td>
+</tr>
+<tr>
+<td><code>res.ok</code>・<code>res.status</code></td>
+<td>成功（200 番台）か・ステータスコード（onprem の 00 基礎知識 5.1）</td>
+</tr>
+<tr>
+<td><code>await res.json()</code></td>
+<td>返事の本文の JSON を、オブジェクトにする</td>
+</tr>
+<tr>
+<td><code>throw new Error(...)</code></td>
+<td>エラーを起こして、呼んだ側の <code>catch</code> に知らせる</td>
+</tr>
+<tr>
+<td><code>try { ... } catch (e) { ... } finally { ... }</code></td>
+<td>失敗したら <code>catch</code>、成功でも失敗でも最後に <code>finally</code></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong><code>as RequestSummary[]</code> について:</strong> これは「この形のはずだ」と TypeScript に<strong>言い切る</strong>書き方で、本当に確かめてはいません。本物のアプリでは、5 章の型ガードのように確かめるか、サーバーを信じてよい場面だけで使います。</p>
+</blockquote>
+<h2 id="8">8. よくある失敗</h2>
+<table>
+<thead>
+<tr>
+<th>症状</th>
+<th>原因</th>
+<th>直し方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Cannot find name 'xxx'</code></td>
+<td>名前の打ち間違い／<code>import</code> を忘れた</td>
+<td>名前を確かめる。ほかのファイルの物は <code>import</code> する</td>
+</tr>
+<tr>
+<td><code>Object is possibly 'undefined'</code></td>
+<td><code>?</code> の付いた項目や、見つからないかもしれない値を、確かめずに使った</td>
+<td><code>if (x !== undefined)</code> で確かめる。または <code>?.</code>（あれば使う）・<code>??</code>（無ければ別の値）</td>
+</tr>
+<tr>
+<td><code>is not assignable to type</code></td>
+<td>型の合わない値を入れた</td>
+<td>6 章の表</td>
+</tr>
+<tr>
+<td>ブラウザでは動くのに、<code>tsc</code> でエラー</td>
+<td>型の間違いがある（動くのは、たまたま）</td>
+<td><code>tsc</code> のエラーを直す。<strong>エラーを残したまま進めない</strong></td>
+</tr>
+<tr>
+<td><code>tsc</code> は通るのに、動かすとエラー</td>
+<td>外から来たデータが、型の形と違った（<code>as</code> で言い切った所など）</td>
+<td>5 章の型ガードで確かめる</td>
+</tr>
+<tr>
+<td><code>Cannot use import statement outside a module</code></td>
+<td><code>package.json</code> に <code>"type": "module"</code> が無い</td>
+<td>足す</td>
+</tr>
+<tr>
+<td><code>const</code> に入れ直そうとしてエラー</td>
+<td><code>const</code> は入れ直せない</td>
+<td>入れ直すなら <code>let</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="9">9. 練習問題</h2>
+<ol>
+<li><code>status.ts</code> の <code>RequestStatus</code> に <code>"保留"</code> を足して、<code>npx tsc</code> を動かしてください。どこでエラーが出るか見て、<code>nextStatus</code> と <code>badgeColor</code> に <code>"保留"</code> の <code>case</code> を足して直してください。</li>
+<li><code>requests.ts</code> に、「回覧者が 2 人以上の依頼の件名だけ」を出す 1 行を書いてください（ヒント：<code>filter</code> と <code>map</code>、<code>approvers.length</code>）。</li>
+<li><code>drawing.ts</code> の図形に、円（<code>kind: "circle"</code>、中心 <code>cx</code>・<code>cy</code>、半径 <code>r</code>）を足し、<code>describe</code> で「円 半径 10」のように出してください。</li>
+<li><code>api_demo.ts</code> で、<code>/api/requests</code> の返事に、もう 1 件の依頼を足してください。</li>
+</ol>
+<p><strong>答えの例:</strong> 1 は、<code>badgeColor</code> に <code>case "保留": return "オレンジ";</code> などを足す（<code>nextStatus</code> は、<code>never</code> の行でエラーになるので気付ける）。2 は <code>console.log(requests.filter((r) =&gt; r.approvers.length &gt;= 2).map((r) =&gt; r.title));</code>。</p>
+<h2 id="_2">用語の索引</h2>
+<table>
+<thead>
+<tr>
+<th>用語</th>
+<th>短い説明</th>
+<th>章</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TypeScript・型</td>
+<td>JavaScript に型を足した言葉／値の種類</td>
+<td>1</td>
+</tr>
+<tr>
+<td>tsc</td>
+<td>型を確かめる道具</td>
+<td>1・6</td>
+</tr>
+<tr>
+<td>Node.js</td>
+<td>ブラウザの外で JavaScript を動かす道具</td>
+<td>1.1</td>
+</tr>
+<tr>
+<td>型推論</td>
+<td>値から型を決めてくれること</td>
+<td>2</td>
+</tr>
+<tr>
+<td>ユニオン型</td>
+<td>いくつかの値や型のどれか</td>
+<td>3</td>
+</tr>
+<tr>
+<td>filter・map・reduce</td>
+<td>配列を絞る・変える・まとめる</td>
+<td>4</td>
+</tr>
+<tr>
+<td>JSON・JSON.stringify・JSON.parse</td>
+<td>文字で書くデータ／文字にする／オブジェクトにする</td>
+<td>5</td>
+</tr>
+<tr>
+<td>unknown・型ガード</td>
+<td>分からない型／確かめて型を決める関数</td>
+<td>5</td>
+</tr>
+<tr>
+<td>never</td>
+<td>ここに来ないことを表す型</td>
+<td>3・6</td>
+</tr>
+<tr>
+<td>Promise・async・await・fetch</td>
+<td>あとで届く約束／待つ関数／待つ／サーバーにお願いする</td>
+<td>7</td>
+</tr>
+</tbody>
+</table>
+
+<script>
+(function () {
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy") ? resolve() : reject(); } catch (e) { reject(e); }
+      document.body.removeChild(ta);
+    });
+  }
+  document.querySelectorAll(".copy-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var pre = btn.parentElement.querySelector("pre");
+      var text = pre.textContent.replace(/\n$/, "");
+      copyText(text).then(function () {
+        btn.textContent = "コピーしました";
+        btn.classList.add("done");
+        setTimeout(function () { btn.textContent = "コピー"; btn.classList.remove("done"); }, 2000);
+      }, function () { btn.textContent = "コピーできませんでした"; });
+    });
+  });
+  if (/^#code-\d+$/.test(location.hash)) {
+    var note = document.getElementById("web-note");
+    if (note) { note.hidden = false; }
+  }
+})();
+</script>
+</body>
+</html>

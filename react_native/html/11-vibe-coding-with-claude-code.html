@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>11-vibe-coding-with-claude-code</title>
+<style>
+
+@page {
+  size: A4;
+  margin: 18mm 16mm 20mm 16mm;
+  @bottom-right {
+    content: counter(page);
+    font-size: 10px;
+    color: #64748b;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  font-family: "Yu Gothic UI", "Yu Gothic", "Meiryo", "Hiragino Sans",
+               "Noto Sans JP", "Segoe UI", system-ui, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.75;
+  color: #1e293b;
+  background: #ffffff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #0f172a;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 1.4em 0 0.6em;
+  page-break-after: avoid;
+}
+h1 {
+  font-size: 22pt;
+  border-bottom: 3px solid #1e40af;
+  padding-bottom: 0.3em;
+  margin-top: 0.4em;
+  page-break-before: auto;
+}
+h2 {
+  font-size: 16pt;
+  border-bottom: 1.5px solid #cbd5e1;
+  padding-bottom: 0.25em;
+  margin-top: 1.6em;
+}
+h3 { font-size: 13pt; color: #1e40af; }
+h4 { font-size: 12pt; color: #334155; }
+
+p { margin: 0.5em 0 0.8em; }
+
+a { color: #1d4ed8; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+ul, ol { margin: 0.4em 0 0.9em; padding-left: 1.6em; }
+li { margin: 0.2em 0; }
+
+blockquote {
+  border-left: 4px solid #3b82f6;
+  background: #eff6ff;
+  margin: 0.8em 0;
+  padding: 0.6em 1em;
+  color: #1e3a8a;
+  border-radius: 0 6px 6px 0;
+  page-break-inside: avoid;
+}
+blockquote p { margin: 0.3em 0; }
+blockquote strong { color: #1e40af; }
+
+code {
+  /* DefCode (see _code_font.py) has ASCII and Japanese in ONE font, so a code
+     line is drawn as one text run and copies as one line in every PDF viewer. */
+  font-family: "Consolas", "Consolas", monospace;
+  font-size: 0.9em;
+  background: #f1f5f9;
+  color: #be123c;
+  padding: 0.12em 0.36em;
+  border-radius: 4px;
+  /* Long inline code (file paths / URLs) must break instead of overflowing. */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  /* In a PDF there is no horizontal scrolling, so long lines must wrap
+     instead of being clipped off the right edge of the page. */
+  overflow-x: hidden;
+  overflow-y: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  font-size: 9.2pt;
+  line-height: 1.5;
+  margin: 0.8em 0;
+  page-break-inside: avoid;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+  white-space: inherit;
+  word-break: inherit;
+  overflow-wrap: inherit;
+}
+
+/* The codehilite extension wraps highlighted blocks in a scrolling div; make
+   that wrap too so nothing is clipped in the PDF. */
+.codehilite {
+  overflow-x: hidden;
+  /* overflow-x: hidden alone turns overflow-y into auto, and a glyph from a
+     fallback font that is a hair too tall then shows a vertical scrollbar. */
+  overflow-y: hidden;
+}
+.codehilite pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* No per-token colours: every coloured token became its own text run (and its
+   own tag) in the PDF, and some viewers then pasted each token on its own line.
+   Only whole comment lines get a colour, so each line is still one run. */
+pre .cmt { color: #94a3b8; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.8em 0;
+  font-size: 9.6pt;
+  page-break-inside: avoid;
+}
+th, td {
+  border: 1px solid #e2e8f0;
+  padding: 6px 9px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: #f1f5f9;
+  color: #0f172a;
+  font-weight: 700;
+}
+tr:nth-child(even) td { background: #f8fafc; }
+
+img { max-width: 100%; height: auto; }
+
+hr {
+  border: none;
+  border-top: 1px dashed #cbd5e1;
+  margin: 1.6em 0;
+}
+
+/* Diagram blocks (the inline-styled <div>s in the source) */
+div[style] {
+  page-break-inside: avoid;
+}
+
+/* Tighten spacing right after headings */
+h1 + p, h2 + p, h3 + p, h4 + p { margin-top: 0.2em; }
+
+/* Avoid ugly page breaks inside list items / table rows */
+li, tr { page-break-inside: avoid; }
+
+@media screen {
+  body { max-width: 920px; margin: 0 auto; padding: 20px 20px 120px; font-size: 16px; }
+  pre { white-space: pre !important; word-break: normal !important; overflow-wrap: normal !important;
+        overflow-x: auto !important; font-size: 14px !important; }
+  img { max-width: 100%; height: auto; }
+}
+.web-bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; font-size: 14px;
+  padding: 8px 12px; margin-bottom: 16px; background: #eef2f7; border-radius: 8px; }
+.web-bar a { color: #1e3a5f; }
+.web-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 10; max-width: 90%;
+  font-size: 15px; font-weight: 700; background: #fff7ed; border: 2px solid #f2994a; border-radius: 8px;
+  padding: 10px 16px; margin: 0; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.code-wrap { position: relative; scroll-margin-top: 16px; }
+.code-wrap pre { padding-top: 40px !important; }
+.copy-btn { position: absolute; top: 8px; right: 8px; z-index: 2; font-size: 13px; font-weight: 700;
+  padding: 4px 12px; border: 0; border-radius: 6px; background: #2f80ed; color: #fff; cursor: pointer;
+  font-family: inherit; }
+.copy-btn:hover { background: #1c64c8; }
+.copy-btn.done { background: #27ae60; }
+.code-wrap:target pre { outline: 4px solid #f2994a; outline-offset: 2px; }
+.code-wrap:target .copy-btn { box-shadow: 0 0 0 4px #f2994a; }
+/* syntax colours on screen (the PDF uses one colour so that each line copies as one piece) */
+.codehilite .k, .codehilite .kd, .codehilite .kn, .codehilite .kr { color: #c084fc; }
+.codehilite .s, .codehilite .s1, .codehilite .s2, .codehilite .sb { color: #fcd34d; }
+.codehilite .c, .codehilite .c1, .codehilite .cm { color: #94a3b8; }
+.codehilite .nf, .codehilite .nx { color: #60a5fa; }
+.codehilite .nb { color: #34d399; }
+.codehilite .mi, .codehilite .mf { color: #f472b6; }
+.codehilite .nt { color: #f59e0b; }
+.codehilite .na { color: #93c5fd; }
+</style>
+</head>
+<body>
+<div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/11-vibe-coding-with-claude-code.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、ブラウザーの「戻る」で PDF に戻れます。</p><h1 id="11-claude-code">第11章: Claude Codeでバイブコーディング</h1>
+<blockquote>
+<p>ここまでは「自分の手でコードを1行ずつ書く」方法を学びました。この最終章では、AI（人工知能）と対話しながら開発を進める <strong>「バイブコーディング」</strong> という新しいスタイルを、<strong>Claude Code</strong> を例に紹介します。これまで学んだ基礎があるからこそ、AIを"正しく"使いこなせます。</p>
+</blockquote>
+<hr>
+<h2 id="1">1. バイブコーディングとは</h2>
+<p><strong>バイブコーディング（vibe coding）</strong> とは、おおまかに言うと「<strong>自分でコードを細かく書く代わりに、AIに『こういうものを作って』と自然言語（普通の日本語）で指示し、AIが書いたコードをレビュー・調整しながら開発を進める</strong>」スタイルのことです。「vibe（バイブ）」は「雰囲気・ノリ」という意味の英単語で、「ノリよく、対話しながら作る」イメージです。</p>
+<blockquote>
+<p><strong>大切な前提:</strong> バイブコーディングは「初心者がコードを理解しなくてよい」という意味ではありません。<strong>AIの出したコードが正しいか判断し、修正を指示する</strong>には、第1〜10章で学んだ基礎知識が不可欠です。基礎があるあなたは、AIを"優秀なアシスタント"として活用できます。逆に基礎が無いと、AIの間違いに気づけません。</p>
+</blockquote>
+<h3 id="11">1.1 なぜモバイル開発と相性が良いか</h3>
+<p>React Native開発は、覚えることが多くあります（コア部品、Flexbox、ナビゲーション、ストア提出など）。AIは「<code>FlatList</code> で本一覧を作って」「この画面をNativeWindで書き直して」といった定型的な作業を素早くこなせるため、あなたは<strong>設計や確認といった本質的な部分に集中</strong>できます。</p>
+<hr>
+<h2 id="2-claude-code">2. Claude Code とは</h2>
+<p><strong>Claude Code（クロード・コード）</strong> は、Anthropic社が提供するAIアシスタント「Claude」を、<strong>ターミナル（コマンドライン）から使える開発ツール</strong>です。プロジェクトのファイルを読み書きし、コマンドを実行し、対話しながら開発を進められます。</p>
+<table>
+<thead>
+<tr>
+<th>特徴</th>
+<th>説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ファイルを理解する</strong></td>
+<td>プロジェクト全体を読んで、文脈に合ったコードを書く</td>
+</tr>
+<tr>
+<td><strong>コードを書き換える</strong></td>
+<td>「この画面に検索を追加して」で実際にファイルを編集</td>
+</tr>
+<tr>
+<td><strong>コマンドを実行する</strong></td>
+<td><code>npx expo start</code> やビルドコマンドを代わりに実行</td>
+</tr>
+<tr>
+<td><strong>対話で進む</strong></td>
+<td>結果を見て「もう少しこうして」と調整できる</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>他のAIツールとの違い:</strong> ブラウザのチャット型AI（コードをコピペで往復するもの）と違い、Claude Codeは<strong>プロジェクトのファイルを直接読み書き</strong>します。「コピペの往復」が不要で、<code>my-books-app</code> フォルダの中で直接作業が進むのが大きな利点です。</p>
+</blockquote>
+<hr>
+<h2 id="3-claude-code">3. Claude Code のセットアップ（概要）</h2>
+<blockquote>
+<p>本書はReact Nativeの教材なので、Claude Codeの導入は概要にとどめます。詳細・最新の手順は公式ドキュメント（https://docs.claude.com/claude-code ）を参照してください。</p>
+</blockquote>
+<ol>
+<li><strong>インストール</strong>: 公式の案内に従ってインストールします（Node.jsが前提。第1章で導入済み）。</li>
+<li><strong>プロジェクトで起動</strong>: ターミナルで <code>my-books-app</code> フォルダに移動し、Claude Codeを起動します。</li>
+<li><strong>対話開始</strong>: 「このアプリに〇〇を追加して」のように、普通の日本語で指示します。</li>
+</ol>
+<div class="codehilite"><div class="code-wrap" id="code-1"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>my-books-app
+<span class="c1"># my-books-app（第1章で作ったプロジェクト）へ移動してから Claude Code を起動する</span>
+<span class="c1"># 起動後は、プロンプトに日本語で「やりたいこと」を打ち込むだけ</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>プロジェクト内で起動する意味:</strong> プロジェクトフォルダの中でClaude Codeを起動すると、AIが <code>app/</code> や <code>lib/</code> の既存コードを読んだうえで、<strong>今のアプリに合った</strong>変更を提案・実行してくれます。第6章で作った <code>lib/books.ts</code> の関数なども理解して使ってくれます。</p>
+</blockquote>
+<hr>
+<h2 id="4">4. 効果的な指示の出し方（プロンプトのコツ）</h2>
+<p>AIへの指示（プロンプト）の質で、結果は大きく変わります。これまで学んだ用語を使って具体的に指示するのがコツです。</p>
+<h3 id="41">4.1 良い指示・悪い指示の例</h3>
+<table>
+<thead>
+<tr>
+<th>❌ あいまいな指示</th>
+<th>⭕ 具体的な指示</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>「いい感じにして」</td>
+<td>「一覧画面の本カードに、登録日（created_at）を <code>YYYY/MM/DD</code> 形式で表示して」</td>
+</tr>
+<tr>
+<td>「バグ直して」</td>
+<td>「保存ボタンを連打すると本が重複登録される。<code>saving</code> stateで二重送信を防いで」</td>
+</tr>
+<tr>
+<td>「きれいにして」</td>
+<td>「<code>app/new.tsx</code> のStyleSheetをNativeWindのclassNameに書き換えて」</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>コツ: 学んだ用語で語る:</strong> 「<code>FlatList</code>」「<code>useState</code>」「<code>Pressable</code>」「NativeWind」「RLS」といった、本書で学んだ言葉で指示すると、AIは意図を正確に汲み取ります。基礎を学んだあなたの強みです。</p>
+</blockquote>
+<h3 id="42-4">4.2 指示に含めると良い4要素</h3>
+<ol>
+<li><strong>何を</strong>（対象ファイル・画面）: 「<code>app/index.tsx</code> の…」</li>
+<li><strong>どうしたい</strong>（望む結果）: 「…にステータスでの絞り込みを追加して」</li>
+<li><strong>制約・方針</strong>: 「既存の検索機能と併用できるように」「NativeWindで」</li>
+<li><strong>確認方法</strong>: 「実機で動くか <code>npx expo start</code> で確認したい」</li>
+</ol>
+<hr>
+<h2 id="5">5. このアプリで試せるバイブコーディングの例</h2>
+<p>第10章まででアプリは完成していますが、AIと一緒に機能拡張してみると、バイブコーディングの威力を体感できます。指示の例を挙げます。</p>
+<h3 id="51">5.1 機能追加の指示例</h3>
+<div class="codehilite"><div class="code-wrap" id="code-2"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>「書籍一覧に『ステータスで絞り込むタブ（すべて／未読／読書中／読了）』を追加して。
+既存のキーワード検索（useMemoでのfilter）と組み合わせて動くようにして。
+見た目はNativeWindで、選択中のタブを青く強調して。」
+</code></pre></div></div>
+
+<div class="codehilite"><div class="code-wrap" id="code-3"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>「本の詳細を見るだけの読み取り専用画面 app/books/[id]/detail.tsx を追加して。
+編集画面（[id].tsx）とは別に、一覧からまず詳細を見られるようにして。
+fetchBookById を使ってデータを取得して。」
+</code></pre></div></div>
+
+<h3 id="52">5.2 リファクタリング（整理）の指示例</h3>
+<div class="codehilite"><div class="code-wrap" id="code-4"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>「app/new.tsx と app/books/[id].tsx でフォームのコードがほぼ重複している。
+共通の BookForm コンポーネントを components/BookForm.tsx に切り出して、
+両方の画面から使うようにリファクタリングして。」
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>「リファクタリング」とは？</strong> 動作を変えずに、コードの構造を整理・改善することです。重複したコードを共通部品にまとめる、といった作業はAIが得意とするところです。第3章で学んだ「コンポーネントで再利用」の考え方が、ここで活きます。</p>
+</blockquote>
+<h3 id="53">5.3 エラー解決の指示例</h3>
+<div class="codehilite"><div class="code-wrap" id="code-5"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>「npx expo start を実行したら次のエラーが出た。原因と修正方法を教えて。
+（エラーメッセージをそのまま貼り付ける）」
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>エラーは"そのまま貼る"のが鉄則:</strong> エラーメッセージは、原因を特定する最重要の手がかりです。要約せず、ターミナルに出た文面を<strong>そのままコピーして貼る</strong>と、AIは的確に診断できます。</p>
+</blockquote>
+<hr>
+<h2 id="6-ai">6. AIを使うときの注意点</h2>
+<p>バイブコーディングは強力ですが、<strong>鵜呑みは禁物</strong>です。以下を必ず意識してください。</p>
+<h3 id="61">6.1 出力されたコードは必ず確認する</h3>
+<p>AIは時々、間違ったコードや、古い書き方、存在しない部品を提案することがあります（これを「ハルシネーション＝もっともらしい嘘」と呼びます）。<strong>生成されたコードは必ず自分の目で確認し、実機で動作確認</strong>しましょう。本書で基礎を学んだあなたなら、おかしな点に気づけます。</p>
+<h3 id="62">6.2 セキュリティ情報を渡さない</h3>
+<p><code>.env</code> の中身（Supabaseの <code>service_role</code> キーなど秘密情報）や、ユーザーの個人情報を不用意にAIに貼らないようにします。<code>anon</code> キーは公開前提なので問題ありませんが、<strong>秘密キーは扱いに注意</strong>です（第5章参照）。</p>
+<h3 id="63">6.3 大きな変更は小さく分ける</h3>
+<p>「アプリ全体を作り直して」のような巨大な指示より、「まずこの画面だけ」「次にこの機能」と<strong>小さく区切って</strong>進める方が、確認しやすく失敗が少ないです。第6章以降で1章ずつ機能を積み上げたのと同じ考え方です。</p>
+<h3 id="64-git">6.4 Gitでこまめに記録する</h3>
+<p>AIの変更を試す前に、<code>git commit</code>（第1章）で現状を記録しておくと、「AIの変更で壊れた」ときにすぐ元へ戻せます。</p>
+<div class="codehilite"><div class="code-wrap" id="code-6"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>git<span class="w"> </span>add<span class="w"> </span>.
+<span class="c1"># git add .   : 変更したファイルすべてを「記録対象」に登録（.は今のフォルダ全体）</span>
+
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;検索機能まで実装した時点&quot;</span>
+<span class="c1"># git commit  : 現在の状態をスナップショットとして記録</span>
+<span class="c1"># -m &quot;...&quot;    : コミットメッセージ（記録の説明）。後で見て分かる内容にする</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>なぜGit記録が大事？</strong> AIに大きな変更を任せた結果、うまく動かなくなることがあります。直前にコミットしておけば <code>git</code>で元の状態に戻せるので、安心して試行錯誤できます。「実験の前にセーブする」感覚です。</p>
+</blockquote>
+<hr>
+<h2 id="7">7. これからの学習の進め方</h2>
+<p>バイブコーディングを取り入れつつ、スキルを伸ばしていくための指針です。</p>
+<table>
+<thead>
+<tr>
+<th>レベル</th>
+<th>おすすめの進め方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>今（基礎習得直後）</strong></td>
+<td>AIに頼りすぎず、まず自分で書いてみる。詰まったらAIに聞く</td>
+</tr>
+<tr>
+<td><strong>慣れてきたら</strong></td>
+<td>定型作業はAIに任せ、設計・確認に集中する</td>
+</tr>
+<tr>
+<td><strong>さらに上達</strong></td>
+<td>AIの提案を批評・改善できるようになる。「なぜこの書き方か」を考える</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>AIは「先生」でもある:</strong> Claude Codeに「このコードはなぜこう書くの？」「<code>useMemo</code> と <code>useEffect</code> の使い分けは？」と質問すれば、丁寧に解説してくれます。<strong>分からないことをその場で聞ける家庭教師</strong>として使うのも、とても効果的な学び方です。</p>
+</blockquote>
+<hr>
+<h2 id="8">8. この章のまとめ</h2>
+<ul>
+<li><strong>バイブコーディング</strong>＝AIと対話しながら開発するスタイル。<strong>基礎があってこそ</strong>活用できる</li>
+<li><strong>Claude Code</strong> はターミナルからプロジェクトを直接読み書きするAI開発ツール</li>
+<li>指示は <strong>具体的に・学んだ用語で・小さく区切って</strong> 出すのがコツ</li>
+<li>生成コードは<strong>必ず確認・実機テスト</strong>。秘密情報は渡さない。Gitでこまめに記録する</li>
+<li>AIは「優秀なアシスタント」かつ「いつでも聞ける先生」として活用できる</li>
+</ul>
+<hr>
+<h2 id="9">9. 全課程の修了 — 本当におめでとうございます！🎓</h2>
+<p>この教材で、あなたは次を成し遂げました。</p>
+<ul>
+<li>📱 <strong>ゼロからスマホアプリを構築</strong>（TypeScript / React / React Native / Expo）</li>
+<li>🗄️ <strong>データベースと連携</strong>（Supabaseで CRUD）</li>
+<li>🎨 <strong>見た目を整える</strong>（NativeWind）</li>
+<li>🚀 <strong>アプリストアに公開</strong>（EAS）</li>
+<li>🤖 <strong>AIと協働する</strong>（Claude Codeでバイブコーディング）</li>
+</ul>
+<p>これは、現代のアプリ開発者が持つべきスキルの「ひと通り」です。ここからは、自分のアイデアを形にしていく番です。作りたいものを作り、世界に届けてください。あなたの開発の旅が、ここから始まります。お疲れさまでした！🎉</p>
+<blockquote>
+<p><strong>姉妹編のご案内:</strong> 同じ「書籍管理アプリ」をWeb（ブラウザ）向けに作る <code>next</code> フォルダの教材もあります。<strong>同じSupabaseバックエンドを共有</strong>できるので、「Web版とモバイル版を両方持つ」マルチプラットフォーム開発に挑戦するのも、素晴らしい次の一歩です。</p>
+</blockquote>
+
+<script>
+(function () {
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy") ? resolve() : reject(); } catch (e) { reject(e); }
+      document.body.removeChild(ta);
+    });
+  }
+  document.querySelectorAll(".copy-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var pre = btn.parentElement.querySelector("pre");
+      var text = pre.textContent.replace(/\n$/, "");
+      copyText(text).then(function () {
+        btn.textContent = "コピーしました";
+        btn.classList.add("done");
+        setTimeout(function () { btn.textContent = "コピー"; btn.classList.remove("done"); }, 2000);
+      }, function () { btn.textContent = "コピーできませんでした"; });
+    });
+  });
+  if (/^#code-\d+$/.test(location.hash)) {
+    var note = document.getElementById("web-note");
+    if (note) { note.hidden = false; }
+  }
+})();
+</script>
+</body>
+</html>

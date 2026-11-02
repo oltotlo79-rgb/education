@@ -1,0 +1,1023 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>08-crud-edit-delete</title>
+<style>
+
+@page {
+  size: A4;
+  margin: 18mm 16mm 20mm 16mm;
+  @bottom-right {
+    content: counter(page);
+    font-size: 10px;
+    color: #64748b;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  font-family: "Yu Gothic UI", "Yu Gothic", "Meiryo", "Hiragino Sans",
+               "Noto Sans JP", "Segoe UI", system-ui, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.75;
+  color: #1e293b;
+  background: #ffffff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #0f172a;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 1.4em 0 0.6em;
+  page-break-after: avoid;
+}
+h1 {
+  font-size: 22pt;
+  border-bottom: 3px solid #1e40af;
+  padding-bottom: 0.3em;
+  margin-top: 0.4em;
+  page-break-before: auto;
+}
+h2 {
+  font-size: 16pt;
+  border-bottom: 1.5px solid #cbd5e1;
+  padding-bottom: 0.25em;
+  margin-top: 1.6em;
+}
+h3 { font-size: 13pt; color: #1e40af; }
+h4 { font-size: 12pt; color: #334155; }
+
+p { margin: 0.5em 0 0.8em; }
+
+a { color: #1d4ed8; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+ul, ol { margin: 0.4em 0 0.9em; padding-left: 1.6em; }
+li { margin: 0.2em 0; }
+
+blockquote {
+  border-left: 4px solid #3b82f6;
+  background: #eff6ff;
+  margin: 0.8em 0;
+  padding: 0.6em 1em;
+  color: #1e3a8a;
+  border-radius: 0 6px 6px 0;
+  page-break-inside: avoid;
+}
+blockquote p { margin: 0.3em 0; }
+blockquote strong { color: #1e40af; }
+
+code {
+  /* DefCode (see _code_font.py) has ASCII and Japanese in ONE font, so a code
+     line is drawn as one text run and copies as one line in every PDF viewer. */
+  font-family: "Consolas", "Consolas", monospace;
+  font-size: 0.9em;
+  background: #f1f5f9;
+  color: #be123c;
+  padding: 0.12em 0.36em;
+  border-radius: 4px;
+  /* Long inline code (file paths / URLs) must break instead of overflowing. */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  /* In a PDF there is no horizontal scrolling, so long lines must wrap
+     instead of being clipped off the right edge of the page. */
+  overflow-x: hidden;
+  overflow-y: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  font-size: 9.2pt;
+  line-height: 1.5;
+  margin: 0.8em 0;
+  page-break-inside: avoid;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+  white-space: inherit;
+  word-break: inherit;
+  overflow-wrap: inherit;
+}
+
+/* The codehilite extension wraps highlighted blocks in a scrolling div; make
+   that wrap too so nothing is clipped in the PDF. */
+.codehilite {
+  overflow-x: hidden;
+  /* overflow-x: hidden alone turns overflow-y into auto, and a glyph from a
+     fallback font that is a hair too tall then shows a vertical scrollbar. */
+  overflow-y: hidden;
+}
+.codehilite pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* No per-token colours: every coloured token became its own text run (and its
+   own tag) in the PDF, and some viewers then pasted each token on its own line.
+   Only whole comment lines get a colour, so each line is still one run. */
+pre .cmt { color: #94a3b8; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.8em 0;
+  font-size: 9.6pt;
+  page-break-inside: avoid;
+}
+th, td {
+  border: 1px solid #e2e8f0;
+  padding: 6px 9px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: #f1f5f9;
+  color: #0f172a;
+  font-weight: 700;
+}
+tr:nth-child(even) td { background: #f8fafc; }
+
+img { max-width: 100%; height: auto; }
+
+hr {
+  border: none;
+  border-top: 1px dashed #cbd5e1;
+  margin: 1.6em 0;
+}
+
+/* Diagram blocks (the inline-styled <div>s in the source) */
+div[style] {
+  page-break-inside: avoid;
+}
+
+/* Tighten spacing right after headings */
+h1 + p, h2 + p, h3 + p, h4 + p { margin-top: 0.2em; }
+
+/* Avoid ugly page breaks inside list items / table rows */
+li, tr { page-break-inside: avoid; }
+
+@media screen {
+  body { max-width: 920px; margin: 0 auto; padding: 20px 20px 120px; font-size: 16px; }
+  pre { white-space: pre !important; word-break: normal !important; overflow-wrap: normal !important;
+        overflow-x: auto !important; font-size: 14px !important; }
+  img { max-width: 100%; height: auto; }
+}
+.web-bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; font-size: 14px;
+  padding: 8px 12px; margin-bottom: 16px; background: #eef2f7; border-radius: 8px; }
+.web-bar a { color: #1e3a5f; }
+.web-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 10; max-width: 90%;
+  font-size: 15px; font-weight: 700; background: #fff7ed; border: 2px solid #f2994a; border-radius: 8px;
+  padding: 10px 16px; margin: 0; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.code-wrap { position: relative; scroll-margin-top: 16px; }
+.code-wrap pre { padding-top: 40px !important; }
+.copy-btn { position: absolute; top: 8px; right: 8px; z-index: 2; font-size: 13px; font-weight: 700;
+  padding: 4px 12px; border: 0; border-radius: 6px; background: #2f80ed; color: #fff; cursor: pointer;
+  font-family: inherit; }
+.copy-btn:hover { background: #1c64c8; }
+.copy-btn.done { background: #27ae60; }
+.code-wrap:target pre { outline: 4px solid #f2994a; outline-offset: 2px; }
+.code-wrap:target .copy-btn { box-shadow: 0 0 0 4px #f2994a; }
+/* syntax colours on screen (the PDF uses one colour so that each line copies as one piece) */
+.codehilite .k, .codehilite .kd, .codehilite .kn, .codehilite .kr { color: #c084fc; }
+.codehilite .s, .codehilite .s1, .codehilite .s2, .codehilite .sb { color: #fcd34d; }
+.codehilite .c, .codehilite .c1, .codehilite .cm { color: #94a3b8; }
+.codehilite .nf, .codehilite .nx { color: #60a5fa; }
+.codehilite .nb { color: #34d399; }
+.codehilite .mi, .codehilite .mf { color: #f472b6; }
+.codehilite .nt { color: #f59e0b; }
+.codehilite .na { color: #93c5fd; }
+</style>
+</head>
+<body>
+<div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/08-crud-edit-delete.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、ブラウザーの「戻る」で PDF に戻れます。</p><h1 id="8-crud">第8章: CRUD実装（編集・削除・検索）</h1>
+<blockquote>
+<p>この章で CRUD を完成させます。残りの <strong>U（Update＝編集）</strong> と <strong>D（Delete＝削除）</strong> を実装し、さらに使い勝手を上げる <strong>検索機能</strong> も追加します。第4章で学んだ動的ルート <code>[id].tsx</code>、第6章で作った <code>fetchBookById</code> / <code>updateBook</code> / <code>deleteBook</code> 関数を使います。</p>
+</blockquote>
+<hr>
+<h2 id="1">1. この章のゴール</h2>
+<ul>
+<li>一覧のカードを<strong>タップすると編集画面へ移動</strong>する</li>
+<li>編集画面で<strong>既存データを初期表示</strong>し、変更して<strong>更新（Update）</strong> できる</li>
+<li>編集画面から<strong>削除（Delete）</strong> できる（確認ダイアログ付き）</li>
+<li>一覧画面に<strong>検索ボックス</strong>を追加し、タイトル・著者で絞り込む</li>
+</ul>
+<hr>
+<h2 id="2">2. 一覧カードをタップで編集画面へ</h2>
+<p>まず、第7章の <code>app/index.tsx</code> の一覧カードを「押せる」ようにし、押したら <code>/books/その本のid</code> へ移動するようにします。<code>renderItem</code> の <code>&lt;View style={styles.card}&gt;</code> を <code>&lt;Pressable&gt;</code> に変えます。</p>
+<div class="codehilite"><div class="code-wrap" id="code-1"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// app/index.tsx の renderItem を次のように変更する（変更点のみ抜粋）</span>
+
+<span class="nx">renderItem</span><span class="o">=</span><span class="p">{({</span><span class="w"> </span><span class="nx">item</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">(</span>
+<span class="w">  </span><span class="c1">// View → Pressable に変更。押すと編集画面へ移動する</span>
+<span class="w">  </span><span class="p">&lt;</span><span class="nt">Pressable</span>
+<span class="w">    </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">card</span><span class="p">}</span>
+<span class="w">    </span><span class="na">onPress</span><span class="o">=</span><span class="p">{()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">router</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="sb">`/books/</span><span class="si">${</span><span class="nx">item</span><span class="p">.</span><span class="nx">id</span><span class="si">}</span><span class="sb">`</span><span class="p">)}</span>
+<span class="w">    </span><span class="err">//</span><span class="w"> </span><span class="err">`/</span><span class="na">books</span><span class="err">/$</span><span class="p">{</span><span class="na">item.id</span><span class="p">}</span><span class="err">`</span><span class="w"> </span><span class="err">:</span><span class="w"> </span><span class="na">テンプレートリテラル</span><span class="err">。$</span><span class="p">{</span><span class="na">item.id</span><span class="p">}</span><span class="na">にその本のidが埋め込まれる</span>
+<span class="w">    </span><span class="err">//</span><span class="w"> </span><span class="na">例</span><span class="err">:</span><span class="w"> </span><span class="na">idが</span><span class="w"> </span><span class="err">&quot;</span><span class="na">abc</span><span class="err">&quot;</span><span class="w"> </span><span class="na">なら</span><span class="w"> </span><span class="err">&quot;/</span><span class="na">books</span><span class="err">/</span><span class="na">abc</span><span class="err">&quot;</span><span class="w"> </span><span class="na">というパスになり</span><span class="err">、</span><span class="na">books</span><span class="err">/[</span><span class="na">id</span><span class="err">]</span><span class="na">.tsx</span><span class="w"> </span><span class="na">が開く</span>
+<span class="w">  </span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">title</span><span class="p">}&gt;{</span><span class="nx">item</span><span class="p">.</span><span class="nx">title</span><span class="p">}&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">author</span><span class="p">}&gt;</span><span class="nx">著者</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="nx">item</span><span class="p">.</span><span class="nx">author</span><span class="p">}&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{[</span><span class="nx">styles</span><span class="p">.</span><span class="nx">badge</span><span class="p">,</span><span class="w"> </span><span class="nx">getStatusStyle</span><span class="p">(</span><span class="nx">item</span><span class="p">.</span><span class="nx">status</span><span class="p">)]}&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">badgeText</span><span class="p">}&gt;{</span><span class="nx">item</span><span class="p">.</span><span class="nx">status</span><span class="p">}&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">&lt;/</span><span class="nt">Pressable</span><span class="p">&gt;</span>
+<span class="p">)}</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>テンプレートリテラル <code>`...${ }...`</code>（復習）:</strong> バッククォート <code>`</code> で囲んだ文字列の中では、<code>${ }</code> を使って変数を埋め込めます。<code>`/books/${item.id}`</code> は「<code>/books/</code> に続けて、その本のidをつなげたパス」を作ります。ダブルクォートでの文字列連結（<code>"/books/" + item.id</code>）と同じ結果ですが、こちらの方が読みやすいです。</p>
+<p><strong><code>Pressable</code> を import しているか確認:</strong> 第7章で既に <code>import { ... Pressable ... } from "react-native";</code> に含まれています。もし無ければ追加してください。</p>
+</blockquote>
+<hr>
+<h2 id="3-update">3. 編集画面を作る（Update）</h2>
+<p>第6章で作った動的ルート <code>app/books/[id].tsx</code> を本実装します。この画面は「①idを受け取る → ②そのidの本をSupabaseから取得して初期表示 → ③変更して更新」という流れです。</p>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 「一覧で押した本」を編集・削除できる画面を1枚作ります。まず <code>useLocalSearchParams</code> で「どの本を開いたか（id）」を受け取り、<code>useEffect</code> で画面表示時にその本のデータを取得して入力欄に初期表示します。あとは更新ボタンで <code>updateBook</code>、削除ボタンで（確認ダイアログ付きの）<code>deleteBook</code> を呼ぶだけです。これ1枚に CRUD の U（更新）と D（削除）が詰まっています。各行の細かい意味はコード内のコメントで説明します。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-2"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// app/books/[id].tsx — 編集画面（Update &amp; Delete）</span>
+
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">useState</span><span class="p">,</span><span class="w"> </span><span class="nx">useEffect</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">View</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="p">,</span><span class="w"> </span><span class="nx">TextInput</span><span class="p">,</span><span class="w"> </span><span class="nx">Pressable</span><span class="p">,</span><span class="w"> </span><span class="nx">StyleSheet</span><span class="p">,</span><span class="w"> </span><span class="nx">ScrollView</span><span class="p">,</span><span class="w"> </span><span class="nx">Alert</span><span class="p">,</span><span class="w"> </span><span class="nx">ActivityIndicator</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-native&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">useLocalSearchParams</span><span class="p">,</span><span class="w"> </span><span class="nx">useRouter</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;expo-router&quot;</span><span class="p">;</span>
+<span class="c1">// 第6章の関数（パスは ../../）</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">fetchBookById</span><span class="p">,</span><span class="w"> </span><span class="nx">updateBook</span><span class="p">,</span><span class="w"> </span><span class="nx">deleteBook</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;../../lib/books&quot;</span><span class="p">;</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">STATUS_OPTIONS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;未読&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;読書中&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;読了&quot;</span><span class="p">];</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">EditBookScreen</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">router</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useRouter</span><span class="p">();</span>
+<span class="w">  </span><span class="c1">// useLocalSearchParams : 現在のルートのパラメータを取得するフック</span>
+<span class="w">  </span><span class="c1">// books/[id].tsx の [id] 部分を id という名前で受け取れる</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">id</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useLocalSearchParams</span><span class="o">&lt;</span><span class="p">{</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">}</span><span class="o">&gt;</span><span class="p">();</span>
+
+<span class="w">  </span><span class="c1">// 入力欄のstate（第7章の登録フォームと同じ構成）</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">title</span><span class="p">,</span><span class="w"> </span><span class="nx">setTitle</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">author</span><span class="p">,</span><span class="w"> </span><span class="nx">setAuthor</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">status</span><span class="p">,</span><span class="w"> </span><span class="nx">setStatus</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="s2">&quot;未読&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">memo</span><span class="p">,</span><span class="w"> </span><span class="nx">setMemo</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="c1">// 初期データ読込中か</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">loading</span><span class="p">,</span><span class="w"> </span><span class="nx">setLoading</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+<span class="w">  </span><span class="c1">// 更新処理中か</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">saving</span><span class="p">,</span><span class="w"> </span><span class="nx">setSaving</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// 画面表示時に、idの本を取得してフォームの初期値にセットする</span>
+<span class="w">  </span><span class="nx">useEffect</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">load</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// idで1冊取得（第6章）</span>
+<span class="w">        </span><span class="kd">const</span><span class="w"> </span><span class="nx">book</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">fetchBookById</span><span class="p">(</span><span class="nx">id</span><span class="p">);</span>
+<span class="w">        </span><span class="c1">// 取得した値を各stateにセット → フォームに初期表示される</span>
+<span class="w">        </span><span class="nx">setTitle</span><span class="p">(</span><span class="nx">book</span><span class="p">.</span><span class="nx">title</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">setAuthor</span><span class="p">(</span><span class="nx">book</span><span class="p">.</span><span class="nx">author</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">setStatus</span><span class="p">(</span><span class="nx">book</span><span class="p">.</span><span class="nx">status</span><span class="p">);</span>
+<span class="w">        </span><span class="c1">// memoがnullなら空文字に（?? で代替）</span>
+<span class="w">        </span><span class="nx">setMemo</span><span class="p">(</span><span class="nx">book</span><span class="p">.</span><span class="nx">memo</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="nx">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">Alert</span><span class="p">.</span><span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;読み込みエラー&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;本の情報を取得できませんでした&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">e</span><span class="p">);</span>
+<span class="w">      </span><span class="p">}</span><span class="w"> </span><span class="k">finally</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">setLoading</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">    </span><span class="nx">load</span><span class="p">();</span>
+<span class="w">  </span><span class="c1">// 依存配列に id。idが変わったら取得し直す</span>
+<span class="w">  </span><span class="p">},</span><span class="w"> </span><span class="p">[</span><span class="nx">id</span><span class="p">]);</span>
+
+<span class="w">  </span><span class="c1">// 更新ボタンの処理</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">handleUpdate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">title</span><span class="p">.</span><span class="nx">trim</span><span class="p">()</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">author</span><span class="p">.</span><span class="nx">trim</span><span class="p">()</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">Alert</span><span class="p">.</span><span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;入力エラー&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;タイトルと著者は必須です&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">setSaving</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+<span class="w">      </span><span class="c1">// updateBook(id, 新しい内容) : 第6章の更新関数。idの本を上書きする</span>
+<span class="w">      </span><span class="k">await</span><span class="w"> </span><span class="nx">updateBook</span><span class="p">(</span><span class="nx">id</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="kt">title.trim</span><span class="p">(),</span>
+<span class="w">        </span><span class="nx">author</span><span class="o">:</span><span class="w"> </span><span class="kt">author.trim</span><span class="p">(),</span>
+<span class="w">        </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="kt">status</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">memo</span><span class="o">:</span><span class="w"> </span><span class="kt">memo.trim</span><span class="p">()</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="nx">null</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">memo.trim</span><span class="p">(),</span>
+<span class="w">      </span><span class="p">});</span>
+<span class="w">      </span><span class="c1">// 一覧へ戻る（戻り先で再取得され反映）</span>
+<span class="w">      </span><span class="nx">router</span><span class="p">.</span><span class="nx">back</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="nx">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">Alert</span><span class="p">.</span><span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;更新に失敗しました&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;通信状況を確認してください&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">e</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">finally</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">setSaving</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">};</span>
+
+<span class="w">  </span><span class="c1">// 削除ボタンの処理（確認ダイアログを出す）</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">handleDelete</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Alert.alert(タイトル, 本文, ボタン配列) : ボタンを複数置けるダイアログ</span>
+<span class="w">    </span><span class="nx">Alert</span><span class="p">.</span><span class="nx">alert</span><span class="p">(</span>
+<span class="w">      </span><span class="s2">&quot;削除の確認&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;この本を削除しますか？この操作は取り消せません。&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="p">[</span>
+<span class="w">        </span><span class="c1">// style:&quot;cancel&quot; : キャンセル用のボタン（何もしない）</span>
+<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="nx">text</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;キャンセル&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">style</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;cancel&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nx">text</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;削除&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="c1">// style:&quot;destructive&quot; : 赤字の警告ボタン（iOS）</span>
+<span class="w">          </span><span class="nx">style</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;destructive&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="c1">// 「削除」を押したときだけ実行</span>
+<span class="w">          </span><span class="nx">onPress</span><span class="o">:</span><span class="w"> </span><span class="kt">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">              </span><span class="c1">// 第6章の削除関数</span>
+<span class="w">              </span><span class="k">await</span><span class="w"> </span><span class="nx">deleteBook</span><span class="p">(</span><span class="nx">id</span><span class="p">);</span>
+<span class="w">              </span><span class="c1">// 一覧へ戻る</span>
+<span class="w">              </span><span class="nx">router</span><span class="p">.</span><span class="nx">back</span><span class="p">();</span>
+<span class="w">            </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="nx">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">              </span><span class="nx">Alert</span><span class="p">.</span><span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;削除に失敗しました&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;通信状況を確認してください&quot;</span><span class="p">);</span>
+<span class="w">              </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">e</span><span class="p">);</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">          </span><span class="p">},</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">);</span>
+<span class="w">  </span><span class="p">};</span>
+
+<span class="w">  </span><span class="c1">// 初期データ読込中はぐるぐるを表示</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">loading</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">center</span><span class="p">}&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">ActivityIndicator</span><span class="w"> </span><span class="na">size</span><span class="o">=</span><span class="s">&quot;large&quot;</span><span class="w"> </span><span class="na">color</span><span class="o">=</span><span class="s">&quot;#1e40af&quot;</span><span class="w"> </span><span class="p">/&gt;</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">ScrollView</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">container</span><span class="p">}</span><span class="w"> </span><span class="na">contentContainerStyle</span><span class="o">=</span><span class="p">{{</span><span class="w"> </span><span class="nx">padding</span><span class="o">:</span><span class="w"> </span><span class="kt">20</span><span class="p">,</span><span class="w"> </span><span class="nx">gap</span><span class="o">:</span><span class="w"> </span><span class="kt">18</span><span class="w"> </span><span class="p">}}&gt;</span>
+<span class="w">      </span><span class="p">{</span><span class="cm">/* タイトル */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">label</span><span class="p">}&gt;</span><span class="nx">タイトル</span><span class="w"> </span><span class="o">*</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">TextInput</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">input</span><span class="p">}</span><span class="w"> </span><span class="na">value</span><span class="o">=</span><span class="p">{</span><span class="nx">title</span><span class="p">}</span><span class="w"> </span><span class="na">onChangeText</span><span class="o">=</span><span class="p">{</span><span class="nx">setTitle</span><span class="p">}</span><span class="w"> </span><span class="na">placeholder</span><span class="o">=</span><span class="s">&quot;タイトル&quot;</span><span class="w"> </span><span class="p">/&gt;</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">{</span><span class="cm">/* 著者 */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">label</span><span class="p">}&gt;</span><span class="nx">著者</span><span class="w"> </span><span class="o">*</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">TextInput</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">input</span><span class="p">}</span><span class="w"> </span><span class="na">value</span><span class="o">=</span><span class="p">{</span><span class="nx">author</span><span class="p">}</span><span class="w"> </span><span class="na">onChangeText</span><span class="o">=</span><span class="p">{</span><span class="nx">setAuthor</span><span class="p">}</span><span class="w"> </span><span class="na">placeholder</span><span class="o">=</span><span class="s">&quot;著者&quot;</span><span class="w"> </span><span class="p">/&gt;</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">{</span><span class="cm">/* ステータス */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">label</span><span class="p">}&gt;</span><span class="nx">ステータス</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">statusRow</span><span class="p">}&gt;</span>
+<span class="w">          </span><span class="p">{</span><span class="nx">STATUS_OPTIONS</span><span class="p">.</span><span class="nx">map</span><span class="p">((</span><span class="nx">option</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">(</span>
+<span class="w">            </span><span class="p">&lt;</span><span class="nt">Pressable</span>
+<span class="w">              </span><span class="na">key</span><span class="o">=</span><span class="p">{</span><span class="nx">option</span><span class="p">}</span>
+<span class="w">              </span><span class="na">style</span><span class="o">=</span><span class="p">{[</span><span class="nx">styles</span><span class="p">.</span><span class="nx">statusButton</span><span class="p">,</span><span class="w"> </span><span class="nx">status</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="nx">option</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">styles</span><span class="p">.</span><span class="nx">statusButtonActive</span><span class="p">]}</span>
+<span class="w">              </span><span class="na">onPress</span><span class="o">=</span><span class="p">{()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">setStatus</span><span class="p">(</span><span class="nx">option</span><span class="p">)}</span>
+<span class="w">            </span><span class="p">&gt;</span>
+<span class="w">              </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{[</span><span class="nx">styles</span><span class="p">.</span><span class="nx">statusText</span><span class="p">,</span><span class="w"> </span><span class="nx">status</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="nx">option</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">styles</span><span class="p">.</span><span class="nx">statusTextActive</span><span class="p">]}&gt;{</span><span class="nx">option</span><span class="p">}&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">            </span><span class="p">&lt;/</span><span class="nt">Pressable</span><span class="p">&gt;</span>
+<span class="w">          </span><span class="p">))}</span>
+<span class="w">        </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">{</span><span class="cm">/* メモ */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">label</span><span class="p">}&gt;</span><span class="nx">メモ</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">TextInput</span>
+<span class="w">          </span><span class="na">style</span><span class="o">=</span><span class="p">{[</span><span class="nx">styles</span><span class="p">.</span><span class="nx">input</span><span class="p">,</span><span class="w"> </span><span class="nx">styles</span><span class="p">.</span><span class="nx">textarea</span><span class="p">]}</span>
+<span class="w">          </span><span class="na">value</span><span class="o">=</span><span class="p">{</span><span class="nx">memo</span><span class="p">}</span><span class="w"> </span><span class="na">onChangeText</span><span class="o">=</span><span class="p">{</span><span class="nx">setMemo</span><span class="p">}</span>
+<span class="w">          </span><span class="na">placeholder</span><span class="o">=</span><span class="s">&quot;感想や覚え書き&quot;</span><span class="w"> </span><span class="na">multiline</span><span class="w"> </span><span class="na">numberOfLines</span><span class="o">=</span><span class="p">{</span><span class="mf">4</span><span class="p">}</span>
+<span class="w">        </span><span class="p">/&gt;</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+
+<span class="w">      </span><span class="p">{</span><span class="cm">/* 更新ボタン */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Pressable</span>
+<span class="w">        </span><span class="na">style</span><span class="o">=</span><span class="p">{[</span><span class="nx">styles</span><span class="p">.</span><span class="nx">saveButton</span><span class="p">,</span><span class="w"> </span><span class="nx">saving</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">styles</span><span class="p">.</span><span class="nx">saveButtonDisabled</span><span class="p">]}</span>
+<span class="w">        </span><span class="na">onPress</span><span class="o">=</span><span class="p">{</span><span class="nx">handleUpdate</span><span class="p">}</span><span class="w"> </span><span class="na">disabled</span><span class="o">=</span><span class="p">{</span><span class="nx">saving</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">saveButtonText</span><span class="p">}&gt;{</span><span class="nx">saving</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s2">&quot;更新中...&quot;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;更新する&quot;</span><span class="p">}&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">Pressable</span><span class="p">&gt;</span>
+
+<span class="w">      </span><span class="p">{</span><span class="cm">/* 削除ボタン（赤） */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Pressable</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">deleteButton</span><span class="p">}</span><span class="w"> </span><span class="na">onPress</span><span class="o">=</span><span class="p">{</span><span class="nx">handleDelete</span><span class="p">}&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">deleteButtonText</span><span class="p">}&gt;</span><span class="nx">この本を削除</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">Pressable</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">ScrollView</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">styles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">StyleSheet</span><span class="p">.</span><span class="nx">create</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">container</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">flex</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span><span class="w"> </span><span class="nx">backgroundColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#f8fafc&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">center</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">flex</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span><span class="w"> </span><span class="nx">justifyContent</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">alignItems</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">label</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">fontSize</span><span class="o">:</span><span class="w"> </span><span class="kt">13</span><span class="p">,</span><span class="w"> </span><span class="nx">fontWeight</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;600&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">color</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#334155&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">marginBottom</span><span class="o">:</span><span class="w"> </span><span class="kt">6</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">input</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">backgroundColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#fff&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">borderWidth</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span><span class="w"> </span><span class="nx">borderColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#e2e8f0&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">borderRadius</span><span class="o">:</span><span class="w"> </span><span class="kt">8</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">paddingHorizontal</span><span class="o">:</span><span class="w"> </span><span class="kt">12</span><span class="p">,</span><span class="w"> </span><span class="nx">paddingVertical</span><span class="o">:</span><span class="w"> </span><span class="kt">10</span><span class="p">,</span><span class="w"> </span><span class="nx">fontSize</span><span class="o">:</span><span class="w"> </span><span class="kt">14</span><span class="p">,</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">textarea</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">height</span><span class="o">:</span><span class="w"> </span><span class="kt">100</span><span class="p">,</span><span class="w"> </span><span class="nx">textAlignVertical</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;top&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">statusRow</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">flexDirection</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;row&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">gap</span><span class="o">:</span><span class="w"> </span><span class="kt">8</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">statusButton</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">flex</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span><span class="w"> </span><span class="nx">alignItems</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">paddingVertical</span><span class="o">:</span><span class="w"> </span><span class="kt">10</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">borderWidth</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span><span class="w"> </span><span class="nx">borderColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#e2e8f0&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">borderRadius</span><span class="o">:</span><span class="w"> </span><span class="kt">8</span><span class="p">,</span><span class="w"> </span><span class="nx">backgroundColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#fff&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">statusButtonActive</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">borderColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#1e40af&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">backgroundColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#eff6ff&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">statusText</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">fontSize</span><span class="o">:</span><span class="w"> </span><span class="kt">13</span><span class="p">,</span><span class="w"> </span><span class="nx">color</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#475569&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">statusTextActive</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">color</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#1e40af&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">fontWeight</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;700&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">saveButton</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">backgroundColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#1e40af&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">paddingVertical</span><span class="o">:</span><span class="w"> </span><span class="kt">14</span><span class="p">,</span><span class="w"> </span><span class="nx">borderRadius</span><span class="o">:</span><span class="w"> </span><span class="kt">10</span><span class="p">,</span><span class="w"> </span><span class="nx">alignItems</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">marginTop</span><span class="o">:</span><span class="w"> </span><span class="kt">8</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">saveButtonDisabled</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">backgroundColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#94a3b8&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">saveButtonText</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">color</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#fff&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">fontWeight</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;bold&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">fontSize</span><span class="o">:</span><span class="w"> </span><span class="kt">15</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">deleteButton</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">paddingVertical</span><span class="o">:</span><span class="w"> </span><span class="kt">14</span><span class="p">,</span><span class="w"> </span><span class="nx">borderRadius</span><span class="o">:</span><span class="w"> </span><span class="kt">10</span><span class="p">,</span><span class="w"> </span><span class="nx">alignItems</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">borderWidth</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span><span class="w"> </span><span class="nx">borderColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#fecaca&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">backgroundColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#fef2f2&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">deleteButtonText</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">color</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#dc2626&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">fontWeight</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;bold&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">fontSize</span><span class="o">:</span><span class="w"> </span><span class="kt">14</span><span class="w"> </span><span class="p">},</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h3 id="31">3.1 重要ポイントの解説</h3>
+<p><strong>① <code>useLocalSearchParams</code> でidを受け取る</strong>
+動的ルート <code>books/[id].tsx</code> の <code>[id]</code> 部分の値（どの本を開いたか）を、<strong><code>useLocalSearchParams</code></strong> で取得します。<code>const { id } = useLocalSearchParams&lt;{ id: string }&gt;()</code> で、<code>/books/abc</code> を開いたなら <code>id</code> に <code>"abc"</code> が入ります。</p>
+<blockquote>
+<p><strong><code>useLocalSearchParams&lt;{ id: string }&gt;()</code> の山カッコ:</strong> <code>&lt;{ id: string }&gt;</code> は「受け取るパラメータの型」をTypeScriptに教えています。<code>books/[id].tsx</code> なので <code>id</code> という文字列が来る、という宣言です。これで <code>id</code> を安全に使えます。</p>
+</blockquote>
+<p><strong>② 既存データを初期表示する流れ</strong>
+<code>useEffect</code>（画面表示時に1回）で <code>fetchBookById(id)</code> を呼び、取得した本の各値を <code>setTitle</code> などでstateに入れます。stateが入力欄の <code>value</code> に結びついているので、<strong>フォームに既存の値が最初から表示</strong>されます。これが「編集」の体験を作る肝です。</p>
+<p><strong>③ 削除の確認ダイアログ</strong>
+削除は取り消せない操作なので、いきなり消さず <strong><code>Alert.alert</code> の第3引数にボタン配列</strong>を渡して確認します。「キャンセル」と「削除」の2つを置き、「削除」を押したときだけ実際に <code>deleteBook</code> を実行します。<code>style: "destructive"</code> は赤い警告色のボタン（iOS）になります。</p>
+<blockquote>
+<p><strong>なぜ確認を挟む？</strong> 「うっかり削除」を防ぐためです。データを失う・お金が動く・外部に送信する、といった<strong>取り返しのつかない操作</strong>の前には、必ずユーザーに確認を取るのが良いアプリ設計です。</p>
+</blockquote>
+<h4 id="1_1">▼ コードを1つずつ分解して解説</h4>
+<p>上の編集画面には、初心者がつまずきやすい書き方がいくつも入っています。順番に、<strong>塊（かたまり）ごと</strong>にていねいに見ていきましょう。今すぐ全部を暗記する必要はありません。「この塊は何をしているか」が分かれば十分です。</p>
+<hr>
+<h5 id="1-import-id">解説1: 画面の準備（import と id の受け取り）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-3"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">useState</span><span class="p">,</span><span class="w"> </span><span class="nx">useEffect</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">View</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="p">,</span><span class="w"> </span><span class="nx">TextInput</span><span class="p">,</span><span class="w"> </span><span class="nx">Pressable</span><span class="p">,</span><span class="w"> </span><span class="nx">StyleSheet</span><span class="p">,</span><span class="w"> </span><span class="nx">ScrollView</span><span class="p">,</span><span class="w"> </span><span class="nx">Alert</span><span class="p">,</span><span class="w"> </span><span class="nx">ActivityIndicator</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-native&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">useLocalSearchParams</span><span class="p">,</span><span class="w"> </span><span class="nx">useRouter</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;expo-router&quot;</span><span class="p">;</span>
+<span class="c1">// 第6章の関数（パスは ../../）</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">fetchBookById</span><span class="p">,</span><span class="w"> </span><span class="nx">updateBook</span><span class="p">,</span><span class="w"> </span><span class="nx">deleteBook</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;../../lib/books&quot;</span><span class="p">;</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">STATUS_OPTIONS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;未読&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;読書中&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;読了&quot;</span><span class="p">];</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">EditBookScreen</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">router</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useRouter</span><span class="p">();</span>
+<span class="w">  </span><span class="c1">// useLocalSearchParams : 現在のルートのパラメータを取得するフック</span>
+<span class="w">  </span><span class="c1">// books/[id].tsx の [id] 部分を id という名前で受け取れる</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">id</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useLocalSearchParams</span><span class="o">&lt;</span><span class="p">{</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">}</span><span class="o">&gt;</span><span class="p">();</span>
+</code></pre></div></div>
+
+<ul>
+<li><strong><code>import { ... } from "..."</code></strong> … この画面で使う部品を読み込んでいます。<code>react-native</code> からは画面に置く部品（<code>View</code>＝箱、<code>Text</code>＝文字、<code>TextInput</code>＝入力欄、<code>Pressable</code>＝押せる領域、<code>Alert</code>＝ダイアログ、<code>ActivityIndicator</code>＝ぐるぐる）を取り込みます。</li>
+<li><strong><code>import { fetchBookById, updateBook, deleteBook } from "../../lib/books"</code></strong> … 第6章で作った「1冊取得・更新・削除」の3つの関数を読み込みます。<code>../../</code> は「2つ上のフォルダ」を意味し、<code>app/books/[id].tsx</code> から <code>lib/books</code> までさかのぼる道順です。</li>
+<li><strong><code>const STATUS_OPTIONS = [...]</code></strong> … ステータスの選択肢（未読・読書中・読了）を1か所にまとめた配列です。あとでボタンを並べるときにこの配列を使い回します。</li>
+<li><strong><code>useRouter()</code></strong> … 画面遷移（戻る・進む）を行うための道具を受け取ります。更新・削除のあと一覧へ戻るのに使います。</li>
+<li><strong><code>const { id } = useLocalSearchParams&lt;{ id: string }&gt;()</code></strong> … 「どの本を開いたか」を表す <code>id</code> を受け取ります。<code>/books/abc</code> を開いたなら <code>id</code> に <code>"abc"</code> が入ります。</li>
+</ul>
+<blockquote>
+<p><strong>用語: フック（Hook）</strong> … <code>use</code> で始まる関数の総称です（<code>useState</code>・<code>useEffect</code>・<code>useRouter</code> など）。React の機能（状態を持つ・画面表示時に処理する・画面遷移する等）をコンポーネントから使うための「専用の道具」だと考えてください。必ずコンポーネント関数の<strong>先頭</strong>で呼ぶ、というルールがあります。</p>
+</blockquote>
+<hr>
+<h5 id="2-state">解説2: 入力欄と画面状態を覚えておく state</h5>
+<div class="codehilite"><div class="code-wrap" id="code-4"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">  </span><span class="c1">// 入力欄のstate（第7章の登録フォームと同じ構成）</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">title</span><span class="p">,</span><span class="w"> </span><span class="nx">setTitle</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">author</span><span class="p">,</span><span class="w"> </span><span class="nx">setAuthor</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">status</span><span class="p">,</span><span class="w"> </span><span class="nx">setStatus</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="s2">&quot;未読&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">memo</span><span class="p">,</span><span class="w"> </span><span class="nx">setMemo</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="c1">// 初期データ読込中か</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">loading</span><span class="p">,</span><span class="w"> </span><span class="nx">setLoading</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+<span class="w">  </span><span class="c1">// 更新処理中か</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">saving</span><span class="p">,</span><span class="w"> </span><span class="nx">setSaving</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>const [今の値, 値を変える関数] = useState(初期値)</code> という形で、<strong>変化する値</strong>を1つずつ用意しています。</li>
+<li><strong><code>title / author / status / memo</code></strong> … それぞれの入力欄の中身を覚えておく箱です。あとで入力欄の <code>value</code> に結びつけるので、ここが画面の表示そのものになります。<code>status</code> だけは初期値を <code>"未読"</code> にしています。</li>
+<li><strong><code>loading</code></strong> … 「最初のデータを読み込んでいる途中か」を表す <code>true</code>/<code>false</code>。最初は <code>true</code>（読み込み中）にしておき、取得が終わったら <code>false</code> にしてフォームを表示します。</li>
+<li><strong><code>saving</code></strong> … 「更新ボタンを押して保存中か」を表します。保存中はボタンを押せないようにして、二重送信を防ぐのに使います。</li>
+</ul>
+<blockquote>
+<p><strong>用語: state（ステート＝状態）</strong> … コンポーネントが内部で覚えておく「変化する値」のことです。<code>setXxx(...)</code> で値を変えると、React がその箇所を自動で描き直してくれます。<strong>直接書き換えず必ず <code>setXxx</code> を使う</strong>のが鉄則です。</p>
+</blockquote>
+<hr>
+<h5 id="3-useeffect">解説3: 画面表示時に既存データを取りに行く <code>useEffect</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-5"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">  </span><span class="c1">// 画面表示時に、idの本を取得してフォームの初期値にセットする</span>
+<span class="w">  </span><span class="nx">useEffect</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">load</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// idで1冊取得（第6章）</span>
+<span class="w">        </span><span class="kd">const</span><span class="w"> </span><span class="nx">book</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">fetchBookById</span><span class="p">(</span><span class="nx">id</span><span class="p">);</span>
+<span class="w">        </span><span class="c1">// 取得した値を各stateにセット → フォームに初期表示される</span>
+<span class="w">        </span><span class="nx">setTitle</span><span class="p">(</span><span class="nx">book</span><span class="p">.</span><span class="nx">title</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">setAuthor</span><span class="p">(</span><span class="nx">book</span><span class="p">.</span><span class="nx">author</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">setStatus</span><span class="p">(</span><span class="nx">book</span><span class="p">.</span><span class="nx">status</span><span class="p">);</span>
+<span class="w">        </span><span class="c1">// memoがnullなら空文字に（?? で代替）</span>
+<span class="w">        </span><span class="nx">setMemo</span><span class="p">(</span><span class="nx">book</span><span class="p">.</span><span class="nx">memo</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="nx">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">Alert</span><span class="p">.</span><span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;読み込みエラー&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;本の情報を取得できませんでした&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">e</span><span class="p">);</span>
+<span class="w">      </span><span class="p">}</span><span class="w"> </span><span class="k">finally</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">setLoading</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">    </span><span class="nx">load</span><span class="p">();</span>
+<span class="w">  </span><span class="c1">// 依存配列に id。idが変わったら取得し直す</span>
+<span class="w">  </span><span class="p">},</span><span class="w"> </span><span class="p">[</span><span class="nx">id</span><span class="p">]);</span>
+</code></pre></div></div>
+
+<ul>
+<li><strong><code>useEffect(() =&gt; { ... }, [id])</code></strong> … 「画面が表示されたとき（と <code>id</code> が変わったとき）に1回だけ実行する処理」を書く場所です。データの取得など「画面描画以外の裏方の仕事」をここで行います。</li>
+<li><strong><code>const load = async () =&gt; { ... }</code></strong> … 取得処理を <code>load</code> という関数にまとめています。<code>async</code> は「中で <code>await</code>（待つ）を使う関数」という目印です。通信は時間がかかるので「待つ」必要があります。</li>
+<li><strong><code>const book = await fetchBookById(id)</code></strong> … <code>id</code> の本をSupabaseから取りに行き、返ってくるまで <code>await</code> で待ちます。取れたら <code>setTitle(book.title)</code> などで各stateに入れ、<strong>入力欄に既存の値が初期表示</strong>されます。これが「編集画面」の体験を作る肝です。</li>
+<li><strong><code>book.memo ?? ""</code></strong> … <code>??</code>（ナル合体演算子）は「左が <code>null</code>/<code>undefined</code> のときだけ右を使う」記号です。メモが未入力（<code>null</code>）なら空文字 <code>""</code> にしています。</li>
+<li><strong><code>try / catch / finally</code></strong> … 通信は失敗することがあるため、<code>try</code> で正常時、<code>catch</code> で失敗時（エラーダイアログ表示）、<code>finally</code> で「成功・失敗どちらでも最後に必ず」<code>setLoading(false)</code> を実行し、ぐるぐる表示を終えます。</li>
+</ul>
+<blockquote>
+<p><strong>用語: 依存配列（dependency array）</strong> … <code>useEffect</code> の第2引数 <code>[id]</code> のことです。「この配列の中の値が変わったら、もう一度この処理を実行する」という指定です。<code>[]</code>（空）なら最初の1回だけ、<code>[id]</code> なら <code>id</code> が変わるたびに実行されます。</p>
+</blockquote>
+<hr>
+<h5 id="4-handleupdate">解説4: 更新ボタンの処理 <code>handleUpdate</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-6"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">  </span><span class="c1">// 更新ボタンの処理</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">handleUpdate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">title</span><span class="p">.</span><span class="nx">trim</span><span class="p">()</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">author</span><span class="p">.</span><span class="nx">trim</span><span class="p">()</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">Alert</span><span class="p">.</span><span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;入力エラー&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;タイトルと著者は必須です&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">setSaving</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+<span class="w">      </span><span class="c1">// updateBook(id, 新しい内容) : 第6章の更新関数。idの本を上書きする</span>
+<span class="w">      </span><span class="k">await</span><span class="w"> </span><span class="nx">updateBook</span><span class="p">(</span><span class="nx">id</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="kt">title.trim</span><span class="p">(),</span>
+<span class="w">        </span><span class="nx">author</span><span class="o">:</span><span class="w"> </span><span class="kt">author.trim</span><span class="p">(),</span>
+<span class="w">        </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="kt">status</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">memo</span><span class="o">:</span><span class="w"> </span><span class="kt">memo.trim</span><span class="p">()</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="nx">null</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">memo.trim</span><span class="p">(),</span>
+<span class="w">      </span><span class="p">});</span>
+<span class="w">      </span><span class="c1">// 一覧へ戻る（戻り先で再取得され反映）</span>
+<span class="w">      </span><span class="nx">router</span><span class="p">.</span><span class="nx">back</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="nx">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">Alert</span><span class="p">.</span><span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;更新に失敗しました&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;通信状況を確認してください&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">e</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">finally</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">setSaving</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">};</span>
+</code></pre></div></div>
+
+<ul>
+<li><strong><code>if (title.trim() === "" || author.trim() === "")</code></strong> … 送信前の<strong>入力チェック</strong>です。<code>trim()</code> は前後の空白を取り除く処理で、空白だけの入力も「未入力」とみなします。タイトルか著者が空ならエラーを出し、<code>return</code> で処理を中断します。</li>
+<li><strong><code>setSaving(true)</code></strong> … 保存処理の開始を記録します。これでボタンが「更新中...」表示になり、押せなくなります（二重送信防止）。</li>
+<li><strong><code>await updateBook(id, { ... })</code></strong> … <code>id</code> の本を、入力された新しい内容で上書きします。<code>memo.trim() === "" ? null : memo.trim()</code> は三項演算子で、「メモが空なら <code>null</code>、入力があればその値」を渡しています。</li>
+<li><strong><code>router.back()</code></strong> … 更新が終わったら一覧画面へ戻ります。戻った先でデータが再取得され、変更が反映されます。</li>
+<li><strong><code>finally { setSaving(false) }</code></strong> … 成功・失敗どちらでも最後に保存状態を解除し、ボタンを元に戻します。</li>
+</ul>
+<blockquote>
+<p><strong>用語: 二重送信（ダブルサブミット）</strong> … 通信中にユーザーがボタンを連打して、同じ更新が何度も送られてしまう不具合です。<code>saving</code> を <code>true</code> にしてボタンを無効化することで防ぎます。</p>
+</blockquote>
+<hr>
+<h5 id="5-handledelete">解説5: 削除ボタンと確認ダイアログ <code>handleDelete</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-7"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">  </span><span class="c1">// 削除ボタンの処理（確認ダイアログを出す）</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">handleDelete</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Alert.alert(タイトル, 本文, ボタン配列) : ボタンを複数置けるダイアログ</span>
+<span class="w">    </span><span class="nx">Alert</span><span class="p">.</span><span class="nx">alert</span><span class="p">(</span>
+<span class="w">      </span><span class="s2">&quot;削除の確認&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;この本を削除しますか？この操作は取り消せません。&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="p">[</span>
+<span class="w">        </span><span class="c1">// style:&quot;cancel&quot; : キャンセル用のボタン（何もしない）</span>
+<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="nx">text</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;キャンセル&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">style</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;cancel&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nx">text</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;削除&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="c1">// style:&quot;destructive&quot; : 赤字の警告ボタン（iOS）</span>
+<span class="w">          </span><span class="nx">style</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;destructive&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="c1">// 「削除」を押したときだけ実行</span>
+<span class="w">          </span><span class="nx">onPress</span><span class="o">:</span><span class="w"> </span><span class="kt">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">              </span><span class="c1">// 第6章の削除関数</span>
+<span class="w">              </span><span class="k">await</span><span class="w"> </span><span class="nx">deleteBook</span><span class="p">(</span><span class="nx">id</span><span class="p">);</span>
+<span class="w">              </span><span class="c1">// 一覧へ戻る</span>
+<span class="w">              </span><span class="nx">router</span><span class="p">.</span><span class="nx">back</span><span class="p">();</span>
+<span class="w">            </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="nx">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">              </span><span class="nx">Alert</span><span class="p">.</span><span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;削除に失敗しました&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;通信状況を確認してください&quot;</span><span class="p">);</span>
+<span class="w">              </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">e</span><span class="p">);</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">          </span><span class="p">},</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">);</span>
+<span class="w">  </span><span class="p">};</span>
+</code></pre></div></div>
+
+<ul>
+<li><strong><code>Alert.alert(タイトル, 本文, ボタン配列)</code></strong> … 確認ダイアログを表示します。第3引数に<strong>ボタンの配列</strong>を渡すと、複数のボタンを置けます。</li>
+<li><strong><code>{ text: "キャンセル", style: "cancel" }</code></strong> … 「キャンセル」ボタンです。<code>onPress</code> を書いていないので、押しても何も起きずダイアログが閉じるだけです。</li>
+<li><strong><code>style: "destructive"</code></strong> … 「削除」ボタンを赤い警告色（iOS）にします。取り消せない危険な操作だと見た目で伝えます。</li>
+<li><strong><code>onPress: async () =&gt; { ... }</code></strong> … 「削除」を押したときだけ実行される処理です。中で <code>await deleteBook(id)</code> を呼び、消えたら <code>router.back()</code> で一覧へ戻ります。</li>
+<li>削除を「いきなり実行せず、必ず確認を1段はさむ」ことで、うっかり削除を防いでいます。</li>
+</ul>
+<blockquote>
+<p><strong>用語: 確認ダイアログ（confirmation dialog）</strong> … 重要な操作の前に「本当に実行してよいか」をユーザーに尋ねる小窓のことです。削除・送信・購入など、取り返しのつかない操作の前に置くのが良い設計です。</p>
+</blockquote>
+<hr>
+<h5 id="6-return">解説6: 読込中のぐるぐる表示（早期 return）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-8"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">  </span><span class="c1">// 初期データ読込中はぐるぐるを表示</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">loading</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">center</span><span class="p">}&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">ActivityIndicator</span><span class="w"> </span><span class="na">size</span><span class="o">=</span><span class="s">&quot;large&quot;</span><span class="w"> </span><span class="na">color</span><span class="o">=</span><span class="s">&quot;#1e40af&quot;</span><span class="w"> </span><span class="p">/&gt;</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+</code></pre></div></div>
+
+<ul>
+<li><strong><code>if (loading) { return ... }</code></strong> … <code>loading</code> が <code>true</code>（まだデータを取得中）のあいだは、フォームの代わりに<strong>ぐるぐる（読み込み中アイコン）だけ</strong>を表示して、ここで <code>return</code> します。これを「早期 return」と呼びます。</li>
+<li><strong><code>&lt;ActivityIndicator /&gt;</code></strong> … くるくる回る読み込み中アイコンです。<code>size="large"</code> で大きめ、<code>color</code> で色を指定しています。</li>
+<li>取得が終わると（解説3の <code>setLoading(false)</code> により）<code>loading</code> が <code>false</code> になり、この <code>if</code> を素通りして、下の本来のフォームが表示されます。</li>
+</ul>
+<blockquote>
+<p><strong>用語: 早期 return（early return）</strong> … 関数の途中で条件を満たしたら、その時点で <code>return</code> して残りの処理を実行しない書き方です。「読み込み中ならフォームを描かずぐるぐるだけ返す」のように、画面を切り替えるのに便利です。</p>
+</blockquote>
+<hr>
+<h5 id="7-jsx">解説7: 入力フォームの本体（JSX）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-9"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">ScrollView</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">container</span><span class="p">}</span><span class="w"> </span><span class="na">contentContainerStyle</span><span class="o">=</span><span class="p">{{</span><span class="w"> </span><span class="nx">padding</span><span class="o">:</span><span class="w"> </span><span class="kt">20</span><span class="p">,</span><span class="w"> </span><span class="nx">gap</span><span class="o">:</span><span class="w"> </span><span class="kt">18</span><span class="w"> </span><span class="p">}}&gt;</span>
+<span class="w">      </span><span class="p">{</span><span class="cm">/* タイトル */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">label</span><span class="p">}&gt;</span><span class="nx">タイトル</span><span class="w"> </span><span class="o">*</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">TextInput</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">input</span><span class="p">}</span><span class="w"> </span><span class="na">value</span><span class="o">=</span><span class="p">{</span><span class="nx">title</span><span class="p">}</span><span class="w"> </span><span class="na">onChangeText</span><span class="o">=</span><span class="p">{</span><span class="nx">setTitle</span><span class="p">}</span><span class="w"> </span><span class="na">placeholder</span><span class="o">=</span><span class="s">&quot;タイトル&quot;</span><span class="w"> </span><span class="p">/&gt;</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">{</span><span class="cm">/* 著者 */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">label</span><span class="p">}&gt;</span><span class="nx">著者</span><span class="w"> </span><span class="o">*</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">TextInput</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">input</span><span class="p">}</span><span class="w"> </span><span class="na">value</span><span class="o">=</span><span class="p">{</span><span class="nx">author</span><span class="p">}</span><span class="w"> </span><span class="na">onChangeText</span><span class="o">=</span><span class="p">{</span><span class="nx">setAuthor</span><span class="p">}</span><span class="w"> </span><span class="na">placeholder</span><span class="o">=</span><span class="s">&quot;著者&quot;</span><span class="w"> </span><span class="p">/&gt;</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">{</span><span class="cm">/* ステータス */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">label</span><span class="p">}&gt;</span><span class="nx">ステータス</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">statusRow</span><span class="p">}&gt;</span>
+<span class="w">          </span><span class="p">{</span><span class="nx">STATUS_OPTIONS</span><span class="p">.</span><span class="nx">map</span><span class="p">((</span><span class="nx">option</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">(</span>
+<span class="w">            </span><span class="p">&lt;</span><span class="nt">Pressable</span>
+<span class="w">              </span><span class="na">key</span><span class="o">=</span><span class="p">{</span><span class="nx">option</span><span class="p">}</span>
+<span class="w">              </span><span class="na">style</span><span class="o">=</span><span class="p">{[</span><span class="nx">styles</span><span class="p">.</span><span class="nx">statusButton</span><span class="p">,</span><span class="w"> </span><span class="nx">status</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="nx">option</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">styles</span><span class="p">.</span><span class="nx">statusButtonActive</span><span class="p">]}</span>
+<span class="w">              </span><span class="na">onPress</span><span class="o">=</span><span class="p">{()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">setStatus</span><span class="p">(</span><span class="nx">option</span><span class="p">)}</span>
+<span class="w">            </span><span class="p">&gt;</span>
+<span class="w">              </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{[</span><span class="nx">styles</span><span class="p">.</span><span class="nx">statusText</span><span class="p">,</span><span class="w"> </span><span class="nx">status</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="nx">option</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">styles</span><span class="p">.</span><span class="nx">statusTextActive</span><span class="p">]}&gt;{</span><span class="nx">option</span><span class="p">}&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">            </span><span class="p">&lt;/</span><span class="nt">Pressable</span><span class="p">&gt;</span>
+<span class="w">          </span><span class="p">))}</span>
+<span class="w">        </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">{</span><span class="cm">/* メモ */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">label</span><span class="p">}&gt;</span><span class="nx">メモ</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">TextInput</span>
+<span class="w">          </span><span class="na">style</span><span class="o">=</span><span class="p">{[</span><span class="nx">styles</span><span class="p">.</span><span class="nx">input</span><span class="p">,</span><span class="w"> </span><span class="nx">styles</span><span class="p">.</span><span class="nx">textarea</span><span class="p">]}</span>
+<span class="w">          </span><span class="na">value</span><span class="o">=</span><span class="p">{</span><span class="nx">memo</span><span class="p">}</span><span class="w"> </span><span class="na">onChangeText</span><span class="o">=</span><span class="p">{</span><span class="nx">setMemo</span><span class="p">}</span>
+<span class="w">          </span><span class="na">placeholder</span><span class="o">=</span><span class="s">&quot;感想や覚え書き&quot;</span><span class="w"> </span><span class="na">multiline</span><span class="w"> </span><span class="na">numberOfLines</span><span class="o">=</span><span class="p">{</span><span class="mf">4</span><span class="p">}</span>
+<span class="w">        </span><span class="p">/&gt;</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+</code></pre></div></div>
+
+<ul>
+<li><strong><code>&lt;ScrollView&gt;</code></strong> … 中身が画面より長くなってもスクロールして見られる箱です。<code>contentContainerStyle</code> の <code>gap: 18</code> で各入力欄のあいだに均等な隙間を作っています。</li>
+<li><strong><code>&lt;TextInput value={title} onChangeText={setTitle} /&gt;</code></strong> … 入力欄です。<code>value={title}</code> で「state の値を表示」し、<code>onChangeText={setTitle}</code> で「打つたびに state を更新」します。この2つがペアになって、<strong>stateと画面が常に一致</strong>します。</li>
+<li><strong><code>{STATUS_OPTIONS.map((option) =&gt; (...))}</code></strong> … ステータスの選択肢を <code>map</code> でボタンに展開しています。<code>key={option}</code> はReactがリストの各項目を見分けるための目印です。</li>
+<li><strong><code>status === option &amp;&amp; styles.statusButtonActive</code></strong> … 「いま選んでいるステータスのボタンだけ」見た目を変える書き方です。<code>A &amp;&amp; B</code> は「Aが真ならBを使う」ので、選択中のボタンにだけ強調スタイルが付きます。</li>
+<li><strong><code>onPress={() =&gt; setStatus(option)}</code></strong> … ボタンを押すと、そのステータスを <code>status</code> にセットします。<code>multiline numberOfLines={4}</code> はメモ欄を複数行入力にする指定です。</li>
+</ul>
+<blockquote>
+<p><strong>用語: 制御コンポーネント（controlled component）</strong> … <code>value</code>（表示）と <code>onChangeText</code>（更新）の両方をstateに結びつけ、「入力欄の中身を完全にstateで管理する」入力欄のことです。Reactの入力フォームの基本形です。</p>
+</blockquote>
+<hr>
+<h5 id="8-jsx">解説8: 更新ボタン・削除ボタンの JSX</h5>
+<div class="codehilite"><div class="code-wrap" id="code-10"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">      </span><span class="p">{</span><span class="cm">/* 更新ボタン */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Pressable</span>
+<span class="w">        </span><span class="na">style</span><span class="o">=</span><span class="p">{[</span><span class="nx">styles</span><span class="p">.</span><span class="nx">saveButton</span><span class="p">,</span><span class="w"> </span><span class="nx">saving</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">styles</span><span class="p">.</span><span class="nx">saveButtonDisabled</span><span class="p">]}</span>
+<span class="w">        </span><span class="na">onPress</span><span class="o">=</span><span class="p">{</span><span class="nx">handleUpdate</span><span class="p">}</span><span class="w"> </span><span class="na">disabled</span><span class="o">=</span><span class="p">{</span><span class="nx">saving</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">saveButtonText</span><span class="p">}&gt;{</span><span class="nx">saving</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s2">&quot;更新中...&quot;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;更新する&quot;</span><span class="p">}&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">Pressable</span><span class="p">&gt;</span>
+
+<span class="w">      </span><span class="p">{</span><span class="cm">/* 削除ボタン（赤） */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Pressable</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">deleteButton</span><span class="p">}</span><span class="w"> </span><span class="na">onPress</span><span class="o">=</span><span class="p">{</span><span class="nx">handleDelete</span><span class="p">}&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">deleteButtonText</span><span class="p">}&gt;</span><span class="nx">この本を削除</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">Pressable</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">ScrollView</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<ul>
+<li><strong><code>onPress={handleUpdate}</code></strong> … 更新ボタンを押すと、解説4の <code>handleUpdate</code> が呼ばれます。関数名だけを渡す（<code>()</code> を付けない）のがポイントで、<code>()</code> を付けると押す前に即実行されてしまいます。</li>
+<li><strong><code>disabled={saving}</code></strong> … 保存中（<code>saving</code> が <code>true</code>）はボタンを無効化し、連打を防ぎます。同時に <code>saving &amp;&amp; styles.saveButtonDisabled</code> でボタンの色を薄くして「今は押せない」と見た目でも伝えます。</li>
+<li><strong><code>{saving ? "更新中..." : "更新する"}</code></strong> … 三項演算子で、保存中はラベルを「更新中...」に切り替えます。</li>
+<li><strong><code>&lt;Pressable ... onPress={handleDelete}&gt;</code></strong> … 削除ボタンは解説5の <code>handleDelete</code> を呼びます。赤系のスタイル（<code>deleteButton</code>）で危険な操作だと示しています。</li>
+</ul>
+<blockquote>
+<p><strong>用語: <code>disabled</code>（無効化）</strong> … ボタンを「押せない状態」にする指定です。処理中や入力が不十分なときに <code>true</code> にして、誤操作・二重操作を防ぎます。</p>
+</blockquote>
+<hr>
+<h5 id="9-styles">解説9: 見た目を決める styles</h5>
+<div class="codehilite"><div class="code-wrap" id="code-11"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">styles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">StyleSheet</span><span class="p">.</span><span class="nx">create</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">container</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">flex</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span><span class="w"> </span><span class="nx">backgroundColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#f8fafc&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">center</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">flex</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span><span class="w"> </span><span class="nx">justifyContent</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">alignItems</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">label</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">fontSize</span><span class="o">:</span><span class="w"> </span><span class="kt">13</span><span class="p">,</span><span class="w"> </span><span class="nx">fontWeight</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;600&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">color</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#334155&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">marginBottom</span><span class="o">:</span><span class="w"> </span><span class="kt">6</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">input</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">backgroundColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#fff&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">borderWidth</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span><span class="w"> </span><span class="nx">borderColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#e2e8f0&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">borderRadius</span><span class="o">:</span><span class="w"> </span><span class="kt">8</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">paddingHorizontal</span><span class="o">:</span><span class="w"> </span><span class="kt">12</span><span class="p">,</span><span class="w"> </span><span class="nx">paddingVertical</span><span class="o">:</span><span class="w"> </span><span class="kt">10</span><span class="p">,</span><span class="w"> </span><span class="nx">fontSize</span><span class="o">:</span><span class="w"> </span><span class="kt">14</span><span class="p">,</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">textarea</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">height</span><span class="o">:</span><span class="w"> </span><span class="kt">100</span><span class="p">,</span><span class="w"> </span><span class="nx">textAlignVertical</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;top&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">statusRow</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">flexDirection</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;row&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">gap</span><span class="o">:</span><span class="w"> </span><span class="kt">8</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">statusButton</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">flex</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span><span class="w"> </span><span class="nx">alignItems</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">paddingVertical</span><span class="o">:</span><span class="w"> </span><span class="kt">10</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">borderWidth</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span><span class="w"> </span><span class="nx">borderColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#e2e8f0&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">borderRadius</span><span class="o">:</span><span class="w"> </span><span class="kt">8</span><span class="p">,</span><span class="w"> </span><span class="nx">backgroundColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#fff&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">statusButtonActive</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">borderColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#1e40af&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">backgroundColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#eff6ff&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">statusText</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">fontSize</span><span class="o">:</span><span class="w"> </span><span class="kt">13</span><span class="p">,</span><span class="w"> </span><span class="nx">color</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#475569&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">statusTextActive</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">color</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#1e40af&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">fontWeight</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;700&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">saveButton</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">backgroundColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#1e40af&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">paddingVertical</span><span class="o">:</span><span class="w"> </span><span class="kt">14</span><span class="p">,</span><span class="w"> </span><span class="nx">borderRadius</span><span class="o">:</span><span class="w"> </span><span class="kt">10</span><span class="p">,</span><span class="w"> </span><span class="nx">alignItems</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">marginTop</span><span class="o">:</span><span class="w"> </span><span class="kt">8</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">saveButtonDisabled</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">backgroundColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#94a3b8&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">saveButtonText</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">color</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#fff&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">fontWeight</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;bold&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">fontSize</span><span class="o">:</span><span class="w"> </span><span class="kt">15</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">deleteButton</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">paddingVertical</span><span class="o">:</span><span class="w"> </span><span class="kt">14</span><span class="p">,</span><span class="w"> </span><span class="nx">borderRadius</span><span class="o">:</span><span class="w"> </span><span class="kt">10</span><span class="p">,</span><span class="w"> </span><span class="nx">alignItems</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">borderWidth</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span><span class="w"> </span><span class="nx">borderColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#fecaca&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">backgroundColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#fef2f2&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">deleteButtonText</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">color</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#dc2626&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">fontWeight</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;bold&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">fontSize</span><span class="o">:</span><span class="w"> </span><span class="kt">14</span><span class="w"> </span><span class="p">},</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<ul>
+<li><strong><code>StyleSheet.create({ ... })</code></strong> … 見た目（色・余白・大きさ）のまとまりを作る関数です。ここで作った名前を、JSX側で <code>style={styles.input}</code> のように呼び出します。</li>
+<li><strong><code>flex: 1</code></strong> … 「使える空間いっぱいに広がる」指定です。<code>container</code> や <code>center</code> を画面全体に広げるのに使います。</li>
+<li><strong><code>statusButtonActive</code> / <code>saveButtonDisabled</code></strong> … 状態に応じて切り替える「追加用」のスタイルです。選択中・無効中のときだけ、基本スタイルに重ねて適用します。</li>
+<li>色は <code>#1e40af</code>（濃い青＝主役の色）、<code>#dc2626</code>（赤＝削除の警告色）のように、役割ごとに決めています。</li>
+</ul>
+<blockquote>
+<p><strong>用語: <code>StyleSheet</code></strong> … React Native でスタイルをまとめて定義する仕組みです。Webの CSS に相当しますが、キーはキャメルケース（<code>background-color</code> → <code>backgroundColor</code>）で書き、値は基本的に数値（単位なし）や文字列で指定します。</p>
+</blockquote>
+<hr>
+<h2 id="4">4. 検索機能を追加する</h2>
+<p>最後に、一覧画面に検索ボックスを付け、タイトル・著者で絞り込めるようにします。<code>app/index.tsx</code> を改良します。検索は「<strong>取得済みのデータをアプリ側で絞り込む</strong>」方式にします（シンプルで高速）。</p>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 一覧画面に検索ボックスを足し、入力した言葉でタイトル・著者を絞り込んで表示します。仕組みはシンプルで、検索キーワードを <code>keyword</code> という state に入れ、<code>useMemo</code> の中で <code>filter</code> を使って「キーワードを含む本だけ」を残した配列を作り、それを <code>FlatList</code> に渡すだけです。サーバーに問い合わせ直すのではなく、すでに取得済みの一覧をアプリ側で絞り込むのがポイントです。<code>useMemo</code> や <code>includes</code> の意味はコード内のコメントとこの後の解説で説明します。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-12"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// app/index.tsx に検索機能を追加する（主な変更点）</span>
+
+<span class="c1">// useMemo を追加</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">useState</span><span class="p">,</span><span class="w"> </span><span class="nx">useCallback</span><span class="p">,</span><span class="w"> </span><span class="nx">useMemo</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react&quot;</span><span class="p">;</span>
+<span class="c1">// TextInput を追加</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">TextInput</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-native&quot;</span><span class="p">;</span>
+<span class="c1">// （他のimportは第7章のまま）</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">HomeScreen</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">router</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useRouter</span><span class="p">();</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">books</span><span class="p">,</span><span class="w"> </span><span class="nx">setBooks</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">&lt;</span><span class="nt">Book</span><span class="err">[]</span><span class="p">&gt;([]);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">loading</span><span class="p">,</span><span class="w"> </span><span class="nx">setLoading</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+<span class="w">  </span><span class="c1">// ★追加: 検索キーワードのstate</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">keyword</span><span class="p">,</span><span class="w"> </span><span class="nx">setKeyword</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// （load関数・useFocusEffectは第7章のまま）</span>
+
+<span class="w">  </span><span class="c1">// ★追加: キーワードで絞り込んだ結果を計算する</span>
+<span class="w">  </span><span class="c1">// useMemo : 計算結果を覚えておき、必要なときだけ再計算するフック（無駄な計算を減らす）</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">filteredBooks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useMemo</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 未入力なら全件をそのまま返す</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">keyword</span><span class="p">.</span><span class="nx">trim</span><span class="p">()</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nx">books</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">// 大文字小文字を区別しないため小文字化</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">lower</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">keyword</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">();</span>
+<span class="w">    </span><span class="c1">// filter : 条件に合う本だけ残す（第2章）。タイトルか著者にキーワードを含むものを抽出</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">books</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span>
+<span class="w">      </span><span class="p">(</span><span class="nx">b</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span>
+<span class="w">        </span><span class="c1">// includes : 文字列に含まれるか判定 / || は「または」</span>
+<span class="w">        </span><span class="nx">b</span><span class="p">.</span><span class="nx">title</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">().</span><span class="nx">includes</span><span class="p">(</span><span class="nx">lower</span><span class="p">)</span><span class="w"> </span><span class="o">||</span>
+<span class="w">        </span><span class="nx">b</span><span class="p">.</span><span class="nx">author</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">().</span><span class="nx">includes</span><span class="p">(</span><span class="nx">lower</span><span class="p">)</span>
+<span class="w">    </span><span class="p">);</span>
+<span class="w">  </span><span class="c1">// booksかkeywordが変わったときだけ再計算</span>
+<span class="w">  </span><span class="p">},</span><span class="w"> </span><span class="p">[</span><span class="nx">books</span><span class="p">,</span><span class="w"> </span><span class="nx">keyword</span><span class="p">]);</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">loading</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">center</span><span class="p">}&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">ActivityIndicator</span><span class="w"> </span><span class="na">size</span><span class="o">=</span><span class="s">&quot;large&quot;</span><span class="w"> </span><span class="na">color</span><span class="o">=</span><span class="s">&quot;#1e40af&quot;</span><span class="w"> </span><span class="p">/&gt;</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">container</span><span class="p">}&gt;</span>
+<span class="w">      </span><span class="p">{</span><span class="cm">/* ★追加: 検索ボックス */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">searchWrap</span><span class="p">}&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">TextInput</span>
+<span class="w">          </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">search</span><span class="p">}</span>
+<span class="w">          </span><span class="na">placeholder</span><span class="o">=</span><span class="s">&quot;🔍 タイトルや著者で検索...&quot;</span>
+<span class="w">          </span><span class="na">value</span><span class="o">=</span><span class="p">{</span><span class="nx">keyword</span><span class="p">}</span>
+<span class="w">          </span><span class="na">onChangeText</span><span class="o">=</span><span class="p">{</span><span class="nx">setKeyword</span><span class="p">}</span>
+<span class="w">        </span><span class="p">/&gt;</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">FlatList</span>
+<span class="w">        </span><span class="err">//</span><span class="w"> </span><span class="err">★</span><span class="na">変更</span><span class="err">:</span><span class="w"> </span><span class="na">books</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="na">filteredBooks</span><span class="err">（</span><span class="na">絞り込み後を表示</span><span class="err">）</span>
+<span class="w">        </span><span class="na">data</span><span class="o">=</span><span class="p">{</span><span class="nx">filteredBooks</span><span class="p">}</span>
+<span class="w">        </span><span class="na">keyExtractor</span><span class="o">=</span><span class="p">{(</span><span class="nx">item</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">item</span><span class="p">.</span><span class="nx">id</span><span class="p">}</span>
+<span class="w">        </span><span class="na">contentContainerStyle</span><span class="o">=</span><span class="p">{{</span><span class="w"> </span><span class="nx">padding</span><span class="o">:</span><span class="w"> </span><span class="kt">16</span><span class="p">,</span><span class="w"> </span><span class="nx">gap</span><span class="o">:</span><span class="w"> </span><span class="kt">10</span><span class="w"> </span><span class="p">}}</span>
+<span class="w">        </span><span class="na">ListEmptyComponent</span><span class="o">=</span><span class="p">{</span>
+<span class="w">          </span><span class="c1">// 検索中かどうかでメッセージを出し分ける（三項演算子）</span>
+<span class="w">          </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">empty</span><span class="p">}&gt;</span>
+<span class="w">            </span><span class="p">{</span><span class="nx">keyword</span><span class="p">.</span><span class="nx">trim</span><span class="p">()</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s2">&quot;まだ本が登録されていません。&quot;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;該当する本が見つかりません。&quot;</span><span class="p">}</span>
+<span class="w">          </span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="na">renderItem</span><span class="o">=</span><span class="p">{({</span><span class="w"> </span><span class="nx">item</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">(</span>
+<span class="w">          </span><span class="p">&lt;</span><span class="nt">Pressable</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">card</span><span class="p">}</span><span class="w"> </span><span class="na">onPress</span><span class="o">=</span><span class="p">{()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">router</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="sb">`/books/</span><span class="si">${</span><span class="nx">item</span><span class="p">.</span><span class="nx">id</span><span class="si">}</span><span class="sb">`</span><span class="p">)}&gt;</span>
+<span class="w">            </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">title</span><span class="p">}&gt;{</span><span class="nx">item</span><span class="p">.</span><span class="nx">title</span><span class="p">}&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">            </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">author</span><span class="p">}&gt;</span><span class="nx">著者</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="nx">item</span><span class="p">.</span><span class="nx">author</span><span class="p">}&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">            </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{[</span><span class="nx">styles</span><span class="p">.</span><span class="nx">badge</span><span class="p">,</span><span class="w"> </span><span class="nx">getStatusStyle</span><span class="p">(</span><span class="nx">item</span><span class="p">.</span><span class="nx">status</span><span class="p">)]}&gt;</span>
+<span class="w">              </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">badgeText</span><span class="p">}&gt;{</span><span class="nx">item</span><span class="p">.</span><span class="nx">status</span><span class="p">}&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">            </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">          </span><span class="p">&lt;/</span><span class="nt">Pressable</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">)}</span>
+<span class="w">      </span><span class="p">/&gt;</span>
+
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Pressable</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">fab</span><span class="p">}</span><span class="w"> </span><span class="na">onPress</span><span class="o">=</span><span class="p">{()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">router</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="s2">&quot;/new&quot;</span><span class="p">)}&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">fabText</span><span class="p">}&gt;</span><span class="err">＋</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">Pressable</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// styles に検索ボックス用を追加</span>
+<span class="c1">// searchWrap: { padding: 16, paddingBottom: 0 },</span>
+<span class="c1">// search: { backgroundColor: &quot;#fff&quot;, borderWidth: 1, borderColor: &quot;#e2e8f0&quot;, borderRadius: 8, paddingHorizontal: 14, paddingVertical: 10, fontSize: 14 },</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong><code>useMemo</code> とは？</strong> <code>useMemo</code>（ユーズ・メモ）は「重い計算の結果を覚えておき、関係する値が変わったときだけ再計算する」フックです。ここでは「キーワードでの絞り込み」を、<code>books</code> か <code>keyword</code> が変わったときだけ実行します。本が少ないうちは無くても動きますが、データが増えても軽快に保つための良い習慣です。</p>
+<p><strong><code>includes</code> と <code>toLowerCase</code>:</strong>
+- <code>文字列.includes("探す文字")</code> … その文字が含まれていれば <code>true</code>。
+- <code>文字列.toLowerCase()</code> … すべて小文字に変換。「ABC」で検索しても「abc」がヒットするよう、両方を小文字に揃えて比較しています。</p>
+<p><strong>サーバー側で検索する方法（発展）:</strong> 本書はアプリ側で絞り込みましたが、データが非常に多い場合は Supabase 側で <code>.ilike("title", \</code>%${keyword}%`)<code>のように検索させる方法もあります（</code>ilike` は大文字小文字を無視した部分一致）。まずはアプリ側の方式で十分です。</p>
+</blockquote>
+<h4 id="1_2">▼ コードを1つずつ分解して解説</h4>
+<p>検索機能の追加分も、塊ごとに見ていきましょう。ポイントは「<strong>キーワードを覚える state</strong>」と「<strong>絞り込み結果を計算する <code>useMemo</code></strong>」の2つです。</p>
+<hr>
+<h5 id="1-state">解説1: 検索キーワードを覚える state</h5>
+<div class="codehilite"><div class="code-wrap" id="code-13"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">  </span><span class="c1">// ★追加: 検索キーワードのstate</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">keyword</span><span class="p">,</span><span class="w"> </span><span class="nx">setKeyword</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">);</span>
+</code></pre></div></div>
+
+<ul>
+<li>検索ボックスに入力された言葉を覚えておくための state です。初期値は空文字 <code>""</code>（＝何も入力されていない状態）。</li>
+<li><code>keyword</code> が「今の検索語」、<code>setKeyword</code> が「検索語を更新する関数」です。あとで検索ボックスの <code>value</code> と <code>onChangeText</code> に結びつけ、入力するたびに更新します。</li>
+<li>この値が変わるたびに、次の解説2の絞り込みが再計算され、画面の一覧が自動で変わります。</li>
+</ul>
+<blockquote>
+<p><strong>用語: 検索キーワード</strong> … ユーザーが絞り込みのために打ち込む言葉のことです。ここではこの1つの値を起点に、表示する本のリストが決まります。</p>
+</blockquote>
+<hr>
+<h5 id="2-usememo">解説2: キーワードで絞り込む <code>useMemo</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-14"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">  </span><span class="c1">// ★追加: キーワードで絞り込んだ結果を計算する</span>
+<span class="w">  </span><span class="c1">// useMemo : 計算結果を覚えておき、必要なときだけ再計算するフック（無駄な計算を減らす）</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">filteredBooks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useMemo</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 未入力なら全件をそのまま返す</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">keyword</span><span class="p">.</span><span class="nx">trim</span><span class="p">()</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nx">books</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">// 大文字小文字を区別しないため小文字化</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">lower</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">keyword</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">();</span>
+<span class="w">    </span><span class="c1">// filter : 条件に合う本だけ残す（第2章）。タイトルか著者にキーワードを含むものを抽出</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">books</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span>
+<span class="w">      </span><span class="p">(</span><span class="nx">b</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span>
+<span class="w">        </span><span class="c1">// includes : 文字列に含まれるか判定 / || は「または」</span>
+<span class="w">        </span><span class="nx">b</span><span class="p">.</span><span class="nx">title</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">().</span><span class="nx">includes</span><span class="p">(</span><span class="nx">lower</span><span class="p">)</span><span class="w"> </span><span class="o">||</span>
+<span class="w">        </span><span class="nx">b</span><span class="p">.</span><span class="nx">author</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">().</span><span class="nx">includes</span><span class="p">(</span><span class="nx">lower</span><span class="p">)</span>
+<span class="w">    </span><span class="p">);</span>
+<span class="w">  </span><span class="c1">// booksかkeywordが変わったときだけ再計算</span>
+<span class="w">  </span><span class="p">},</span><span class="w"> </span><span class="p">[</span><span class="nx">books</span><span class="p">,</span><span class="w"> </span><span class="nx">keyword</span><span class="p">]);</span>
+</code></pre></div></div>
+
+<ul>
+<li><strong><code>useMemo(() =&gt; { ... }, [books, keyword])</code></strong> … 中の計算結果（＝絞り込んだ配列）を覚えておき、<code>books</code> か <code>keyword</code> が変わったときだけ再計算するフックです。無駄な計算を減らして動作を軽快に保ちます。</li>
+<li><strong><code>if (keyword.trim() === "") return books</code></strong> … 検索語が空なら、絞り込まずに全件をそのまま返します。</li>
+<li><strong><code>const lower = keyword.toLowerCase()</code></strong> … 検索語を小文字に変換します。比較する側も小文字にそろえることで、「ABC」で検索しても「abc」がヒットするようにします（大文字小文字を区別しない）。</li>
+<li><strong><code>books.filter((b) =&gt; ...)</code></strong> … 条件に合う本だけを残した新しい配列を作ります。条件は「タイトル<strong>または</strong>著者に検索語を含む」で、<code>||</code> が「または」を表します。</li>
+<li><strong><code>.includes(lower)</code></strong> … その文字列に検索語が含まれていれば <code>true</code> を返すメソッドです。タイトル・著者それぞれで判定しています。</li>
+</ul>
+<blockquote>
+<p><strong>用語: <code>useMemo</code>（ユーズ・メモ）</strong> … 「重い計算の結果を覚えておき、関係する値（第2引数の配列）が変わったときだけ計算し直す」フックです。同じ入力なら前回の結果を使い回すことで、再描画のたびに無駄な計算をしないようにします。</p>
+</blockquote>
+<hr>
+<h5 id="3-jsx">解説3: 検索ボックスと絞り込み結果の表示（JSX）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-15"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">      </span><span class="p">{</span><span class="cm">/* ★追加: 検索ボックス */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">searchWrap</span><span class="p">}&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">TextInput</span>
+<span class="w">          </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">search</span><span class="p">}</span>
+<span class="w">          </span><span class="na">placeholder</span><span class="o">=</span><span class="s">&quot;🔍 タイトルや著者で検索...&quot;</span>
+<span class="w">          </span><span class="na">value</span><span class="o">=</span><span class="p">{</span><span class="nx">keyword</span><span class="p">}</span>
+<span class="w">          </span><span class="na">onChangeText</span><span class="o">=</span><span class="p">{</span><span class="nx">setKeyword</span><span class="p">}</span>
+<span class="w">        </span><span class="p">/&gt;</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">FlatList</span>
+<span class="w">        </span><span class="err">//</span><span class="w"> </span><span class="err">★</span><span class="na">変更</span><span class="err">:</span><span class="w"> </span><span class="na">books</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="na">filteredBooks</span><span class="err">（</span><span class="na">絞り込み後を表示</span><span class="err">）</span>
+<span class="w">        </span><span class="na">data</span><span class="o">=</span><span class="p">{</span><span class="nx">filteredBooks</span><span class="p">}</span>
+<span class="w">        </span><span class="na">keyExtractor</span><span class="o">=</span><span class="p">{(</span><span class="nx">item</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">item</span><span class="p">.</span><span class="nx">id</span><span class="p">}</span>
+<span class="w">        </span><span class="na">contentContainerStyle</span><span class="o">=</span><span class="p">{{</span><span class="w"> </span><span class="nx">padding</span><span class="o">:</span><span class="w"> </span><span class="kt">16</span><span class="p">,</span><span class="w"> </span><span class="nx">gap</span><span class="o">:</span><span class="w"> </span><span class="kt">10</span><span class="w"> </span><span class="p">}}</span>
+<span class="w">        </span><span class="na">ListEmptyComponent</span><span class="o">=</span><span class="p">{</span>
+<span class="w">          </span><span class="c1">// 検索中かどうかでメッセージを出し分ける（三項演算子）</span>
+<span class="w">          </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">empty</span><span class="p">}&gt;</span>
+<span class="w">            </span><span class="p">{</span><span class="nx">keyword</span><span class="p">.</span><span class="nx">trim</span><span class="p">()</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s2">&quot;まだ本が登録されていません。&quot;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;該当する本が見つかりません。&quot;</span><span class="p">}</span>
+<span class="w">          </span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">}</span>
+</code></pre></div></div>
+
+<ul>
+<li><strong><code>&lt;TextInput value={keyword} onChangeText={setKeyword} /&gt;</code></strong> … 検索ボックスです。<code>value={keyword}</code> で state の値を表示し、<code>onChangeText={setKeyword}</code> で打つたびに state を更新します。これで入力が即座に絞り込みに反映されます。</li>
+<li><strong><code>data={filteredBooks}</code></strong> … <code>FlatList</code>（一覧）に渡すデータを、全件の <code>books</code> ではなく<strong>絞り込み後の <code>filteredBooks</code></strong> に変えています。これが検索結果の表示そのものです。</li>
+<li><strong><code>ListEmptyComponent</code></strong> … 表示する本が0件のときに出すメッセージです。三項演算子で「まだ未登録（検索語が空）」と「該当なし（検索語あり）」のメッセージを出し分けています。</li>
+</ul>
+<blockquote>
+<p><strong>用語: <code>placeholder</code>（プレースホルダー）</strong> … 入力欄が空のときに薄く表示される案内文です。ここでは「🔍 タイトルや著者で検索...」と表示し、何を入力すればよいかをユーザーに伝えています。</p>
+</blockquote>
+<hr>
+<h2 id="5-crud">5. 動作確認 — CRUD完成！</h2>
+<p><code>npx expo start</code> で起動し、すべての機能を通しで確認しましょう。</p>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>期待する動作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>一覧のカードをタップ</td>
+<td>編集画面が開き、その本の情報が初期表示される</td>
+</tr>
+<tr>
+<td>内容を変えて「更新する」</td>
+<td>一覧に戻り、変更が反映されている</td>
+</tr>
+<tr>
+<td>「この本を削除」→「削除」</td>
+<td>確認後に削除され、一覧から消える</td>
+</tr>
+<tr>
+<td>「削除」確認で「キャンセル」</td>
+<td>何も起きない（消えない）</td>
+</tr>
+<tr>
+<td>検索ボックスに文字入力</td>
+<td>タイトル・著者で絞り込まれる</td>
+</tr>
+<tr>
+<td>該当なしの語で検索</td>
+<td>「該当する本が見つかりません」と表示</td>
+</tr>
+</tbody>
+</table>
+<p>これで <strong>CRUD（作成・読取・更新・削除）＋検索</strong> がすべて揃いました。アプリとして「使える」状態になっています！🎉</p>
+<blockquote>
+<p><strong>Supabase側でも確認:</strong> Supabaseダッシュボードの「Table Editor」で <code>books</code> テーブルを開くと、アプリでの追加・更新・削除がデータベースに反映されているのが分かります。アプリとデータベースが本当につながっている実感が得られます。</p>
+</blockquote>
+<hr>
+<h2 id="6">6. この章のまとめ</h2>
+<ul>
+<li>一覧カードを <strong><code>Pressable</code></strong> にし、<code>router.push(`/books/${item.id}`)</code> で編集画面へ遷移</li>
+<li><strong><code>useLocalSearchParams</code></strong> で動的ルートの <code>id</code> を受け取る</li>
+<li>編集画面では <strong><code>useEffect</code> + <code>fetchBookById</code></strong> で既存データを初期表示し、<strong><code>updateBook</code></strong> で更新（Update）</li>
+<li><strong><code>Alert.alert</code> の確認ダイアログ</strong>付きで <strong><code>deleteBook</code></strong> を実行（Delete）</li>
+<li><strong>検索機能</strong>を <code>useMemo</code> + <code>filter</code> + <code>includes</code> で実装</li>
+<li>これで <strong>CRUDが完成</strong>！</li>
+</ul>
+<blockquote>
+<p><strong>次の章へ:</strong> 機能は完成しました。第9章では、<strong>NativeWind</strong> を導入して見た目を効率よく整え、アプリの完成度をさらに高めます。</p>
+</blockquote>
+
+<script>
+(function () {
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy") ? resolve() : reject(); } catch (e) { reject(e); }
+      document.body.removeChild(ta);
+    });
+  }
+  document.querySelectorAll(".copy-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var pre = btn.parentElement.querySelector("pre");
+      var text = pre.textContent.replace(/\n$/, "");
+      copyText(text).then(function () {
+        btn.textContent = "コピーしました";
+        btn.classList.add("done");
+        setTimeout(function () { btn.textContent = "コピー"; btn.classList.remove("done"); }, 2000);
+      }, function () { btn.textContent = "コピーできませんでした"; });
+    });
+  });
+  if (/^#code-\d+$/.test(location.hash)) {
+    var note = document.getElementById("web-note");
+    if (note) { note.hidden = false; }
+  }
+})();
+</script>
+</body>
+</html>

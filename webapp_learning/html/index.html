@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>webapp_learning の一覧</title>
+<style>
+
+@page {
+  size: A4;
+  margin: 18mm 16mm 20mm 16mm;
+  @bottom-right {
+    content: counter(page);
+    font-size: 10px;
+    color: #64748b;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  font-family: "Yu Gothic UI", "Yu Gothic", "Meiryo", "Hiragino Sans",
+               "Noto Sans JP", "Segoe UI", system-ui, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.75;
+  color: #1e293b;
+  background: #ffffff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #0f172a;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 1.4em 0 0.6em;
+  page-break-after: avoid;
+}
+h1 {
+  font-size: 22pt;
+  border-bottom: 3px solid #1e40af;
+  padding-bottom: 0.3em;
+  margin-top: 0.4em;
+  page-break-before: auto;
+}
+h2 {
+  font-size: 16pt;
+  border-bottom: 1.5px solid #cbd5e1;
+  padding-bottom: 0.25em;
+  margin-top: 1.6em;
+}
+h3 { font-size: 13pt; color: #1e40af; }
+h4 { font-size: 12pt; color: #334155; }
+
+p { margin: 0.5em 0 0.8em; }
+
+a { color: #1d4ed8; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+ul, ol { margin: 0.4em 0 0.9em; padding-left: 1.6em; }
+li { margin: 0.2em 0; }
+
+blockquote {
+  border-left: 4px solid #3b82f6;
+  background: #eff6ff;
+  margin: 0.8em 0;
+  padding: 0.6em 1em;
+  color: #1e3a8a;
+  border-radius: 0 6px 6px 0;
+  page-break-inside: avoid;
+}
+blockquote p { margin: 0.3em 0; }
+blockquote strong { color: #1e40af; }
+
+code {
+  /* DefCode (see _code_font.py) has ASCII and Japanese in ONE font, so a code
+     line is drawn as one text run and copies as one line in every PDF viewer. */
+  font-family: "Consolas", "Consolas", monospace;
+  font-size: 0.9em;
+  background: #f1f5f9;
+  color: #be123c;
+  padding: 0.12em 0.36em;
+  border-radius: 4px;
+  /* Long inline code (file paths / URLs) must break instead of overflowing. */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  /* In a PDF there is no horizontal scrolling, so long lines must wrap
+     instead of being clipped off the right edge of the page. */
+  overflow-x: hidden;
+  overflow-y: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  font-size: 9.2pt;
+  line-height: 1.5;
+  margin: 0.8em 0;
+  page-break-inside: avoid;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+  white-space: inherit;
+  word-break: inherit;
+  overflow-wrap: inherit;
+}
+
+/* The codehilite extension wraps highlighted blocks in a scrolling div; make
+   that wrap too so nothing is clipped in the PDF. */
+.codehilite {
+  overflow-x: hidden;
+  /* overflow-x: hidden alone turns overflow-y into auto, and a glyph from a
+     fallback font that is a hair too tall then shows a vertical scrollbar. */
+  overflow-y: hidden;
+}
+.codehilite pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* No per-token colours: every coloured token became its own text run (and its
+   own tag) in the PDF, and some viewers then pasted each token on its own line.
+   Only whole comment lines get a colour, so each line is still one run. */
+pre .cmt { color: #94a3b8; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.8em 0;
+  font-size: 9.6pt;
+  page-break-inside: avoid;
+}
+th, td {
+  border: 1px solid #e2e8f0;
+  padding: 6px 9px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: #f1f5f9;
+  color: #0f172a;
+  font-weight: 700;
+}
+tr:nth-child(even) td { background: #f8fafc; }
+
+img { max-width: 100%; height: auto; }
+
+hr {
+  border: none;
+  border-top: 1px dashed #cbd5e1;
+  margin: 1.6em 0;
+}
+
+/* Diagram blocks (the inline-styled <div>s in the source) */
+div[style] {
+  page-break-inside: avoid;
+}
+
+/* Tighten spacing right after headings */
+h1 + p, h2 + p, h3 + p, h4 + p { margin-top: 0.2em; }
+
+/* Avoid ugly page breaks inside list items / table rows */
+li, tr { page-break-inside: avoid; }
+
+@media screen {
+  body { max-width: 920px; margin: 0 auto; padding: 20px 20px 120px; font-size: 16px; }
+  pre { white-space: pre !important; word-break: normal !important; overflow-wrap: normal !important;
+        overflow-x: auto !important; font-size: 14px !important; }
+  img { max-width: 100%; height: auto; }
+}
+.web-bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; font-size: 14px;
+  padding: 8px 12px; margin-bottom: 16px; background: #eef2f7; border-radius: 8px; }
+.web-bar a { color: #1e3a5f; }
+.web-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 10; max-width: 90%;
+  font-size: 15px; font-weight: 700; background: #fff7ed; border: 2px solid #f2994a; border-radius: 8px;
+  padding: 10px 16px; margin: 0; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.code-wrap { position: relative; scroll-margin-top: 16px; }
+.code-wrap pre { padding-top: 40px !important; }
+.copy-btn { position: absolute; top: 8px; right: 8px; z-index: 2; font-size: 13px; font-weight: 700;
+  padding: 4px 12px; border: 0; border-radius: 6px; background: #2f80ed; color: #fff; cursor: pointer;
+  font-family: inherit; }
+.copy-btn:hover { background: #1c64c8; }
+.copy-btn.done { background: #27ae60; }
+.code-wrap:target pre { outline: 4px solid #f2994a; outline-offset: 2px; }
+.code-wrap:target .copy-btn { box-shadow: 0 0 0 4px #f2994a; }
+/* syntax colours on screen (the PDF uses one colour so that each line copies as one piece) */
+.codehilite .k, .codehilite .kd, .codehilite .kn, .codehilite .kr { color: #c084fc; }
+.codehilite .s, .codehilite .s1, .codehilite .s2, .codehilite .sb { color: #fcd34d; }
+.codehilite .c, .codehilite .c1, .codehilite .cm { color: #94a3b8; }
+.codehilite .nf, .codehilite .nx { color: #60a5fa; }
+.codehilite .nb { color: #34d399; }
+.codehilite .mi, .codehilite .mf { color: #f472b6; }
+.codehilite .nt { color: #f59e0b; }
+.codehilite .na { color: #93c5fd; }
+</style>
+</head>
+<body>
+<h1 id="web">Web アプリ開発 学習資料</h1>
+<p>プログラミングや Web の経験がほとんど無い人が、社内向けの業務 Web アプリを作れるようになるための資料です。<strong>依頼・承認の練習アプリ</strong>を作りながら、HTML・CSS・TypeScript・React・Python・Django・Rust・Topcoat・メール送信（SMTP リレー）・安全とテストを学びます。図と、練習アプリの本物の画面の写しを多く入れています。</p>
+<h2 id="_1">読む順番</h2>
+<table>
+<thead>
+<tr>
+<th>巻</th>
+<th>資料</th>
+<th>内容</th>
+<th>状態</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>00</td>
+<td><a href="00_学習ガイド_作るアプリと学ぶ技術の地図.html">学習ガイド</a></td>
+<td>作る練習アプリ、学ぶ技術の地図、2 つの作り方、学ぶ順番</td>
+<td>できた</td>
+</tr>
+<tr>
+<td>01</td>
+<td><a href="01_HTMLとCSS_画面の中身と見た目.html">HTML と CSS</a></td>
+<td>依頼の入力画面と一覧画面を、HTML と CSS で作る</td>
+<td>できた</td>
+</tr>
+<tr>
+<td>02</td>
+<td><a href="02_TypeScriptの基礎_型で間違いを防ぐ.html">TypeScript の基礎</a></td>
+<td>型・関数・状態のユニオン型・配列の道具・図面の JSON・fetch と async/await・型のエラーの読み方</td>
+<td>できた</td>
+</tr>
+<tr>
+<td>03</td>
+<td><a href="03_Reactの基礎_画面を部品で作る.html">React の基礎</a></td>
+<td>部品・props と state・描き直し・読み込み・入力フォームと確かめ・図面の画面（操作して撮った画面の写し付き）</td>
+<td>できた</td>
+</tr>
+<tr>
+<td>04</td>
+<td><a href="04_Pythonの基礎_Djangoの前に知っておくこと.html">Python の基礎</a></td>
+<td>書き方・状態の Enum と dataclass・例外・CSV の取り込みと文字コード・日本時間（tzdata）・推測できない URL の文字列</td>
+<td>できた</td>
+</tr>
+<tr>
+<td>05</td>
+<td><a href="05_Djangoの基礎_モデル・管理画面・API.html">Django の基礎</a></td>
+<td>仕組み・モデルとマイグレーション・管理画面・ORM・テンプレートとログイン・DRF の API・テスト（本物の画面の写し付き）</td>
+<td>できた</td>
+</tr>
+<tr>
+<td>06</td>
+<td><a href="06_DjangoとReactで練習アプリを作る_前編_サーバー側.html">Django＋React で練習アプリを作る（前編）</a></td>
+<td>サーバー側: 状態を変える処理・1 回限りの承認の URL・メール・添付と図面の確かめ・API・社員の CSV・毎朝の通知・テスト 18 件</td>
+<td>できた</td>
+</tr>
+<tr>
+<td>06</td>
+<td><a href="06_DjangoとReactで練習アプリを作る_後編_画面側.html">Django＋React で練習アプリを作る（後編）</a></td>
+<td>画面側: ログイン・一覧・入力（回覧者の検索・添付・図面）・詳細と操作・グラフ。ビルドして Django に入れ、waitress で動かす（依頼から完了までを操作した画面の写し付き）</td>
+<td>できた</td>
+</tr>
+<tr>
+<td>07</td>
+<td><a href="07_RustとTopcoatの基礎_速くて間違いに強いサーバー.html">Rust と Topcoat の基礎</a></td>
+<td>状態の enum と match・Result と Option・所有権と借用（本物のコンパイルエラー付き）・最小の Topcoat アプリと PRG</td>
+<td>できた</td>
+</tr>
+<tr>
+<td>08</td>
+<td><a href="08_Topcoatで練習アプリを作る_前編_サーバー側.html">Topcoat で練習アプリを作る（前編）</a></td>
+<td>サーバー側: 設定・表（sqlx のマイグレーション）・ログインとセッション・状態を変える処理・保存が確定してから送るメール・承認の URL・CSV とコマンド・アプリの中の毎朝の通知・テスト 31 件</td>
+<td>できた</td>
+</tr>
+<tr>
+<td>08</td>
+<td><a href="08_Topcoatで練習アプリを作る_後編_画面側.html">Topcoat で練習アプリを作る（後編）</a></td>
+<td>画面側: <code>view!</code> の画面と部品・入力フォームと添付・図面（serde と小さな JavaScript）・HTTP の決まりの確かめ（403・413・404）・release ビルドとサーバーへの持ち込み（本物の画面の写し付き）</td>
+<td>できた</td>
+</tr>
+<tr>
+<td>09</td>
+<td><a href="09_メールとSMTPリレー_アプリからメールが届くまで.html">メールと SMTP リレー</a></td>
+<td>受け取るだけの練習用 SMTP サーバーで会話を見る・エンベロープとヘッダー・日本語（MIME）・STARTTLS と証明書（わざと失敗させて確かめる）・Microsoft 365 のコネクタと SPF・06/08 の「テストのメールを送る」コマンド・届かないときの切り分け</td>
+<td>できた</td>
+</tr>
+<tr>
+<td>10</td>
+<td><a href="10_安全とテスト_練習アプリをわざと攻めて確かめる.html">安全とテスト</a></td>
+<td>練習アプリをわざと攻めて確かめる: パスワードのハッシュ・セッション・権限・CSRF・XSS・改行の混入・SQL インジェクション・ファイル・承認の URL・メールのヘッダー・秘密・テストの段・出す前のチェック表（見つけて直した弱い所 2 つの記録付き）</td>
+<td>できた</td>
+</tr>
+<tr>
+<td>11</td>
+<td><a href="11_付録_よく使う機能_早見表とサンプル集.html">付録: よく使う機能の早見表とサンプル集</a></td>
+<td>npm・pip・manage.py・psql・VS Code・Git の早見表と、HTML・CSS・TypeScript・React・Python・Django ORM のよく使う書き方 18 本（動かした結果と、操作して撮った画面の写し付き）・よくある間違いの表。どの巻を読んでいる時でも引ける</td>
+<td>できた</td>
+</tr>
+</tbody>
+</table>
+<h2 id="onprem">前提: onprem に建てる</h2>
+<p>作った練習アプリは、<code>onprem/</code> の資料のとおりに、会社の Windows Server（HTTP の 80 番・IIS・仮想マシンの中の PostgreSQL・Microsoft 365 の SMTP リレー）に建てる前提で作ります。設定の名前（環境変数）も、onprem の WinSW の XML とそろえています（00 学習ガイドの 3.1）。</p>
+<h2 id="_2">フォルダ</h2>
+<table>
+<thead>
+<tr>
+<th>フォルダ</th>
+<th>中身</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>samples/</code></td>
+<td>各巻の練習のコード（動かして確かめた物）</td>
+</tr>
+<tr>
+<td><code>images/</code></td>
+<td>図（Codex で作った統一テーマの絵）と、練習アプリの画面の写し</td>
+</tr>
+<tr>
+<td><code>pdf/</code></td>
+<td>各巻を PDF にした物（印刷や、Markdown を読めない所で読むとき）</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_3">関係する資料</h2>
+<ul>
+<li><code>onprem/</code> … 作ったアプリを、会社の Windows Server に建てて運用する</li>
+<li><code>docs/</code> … Django＋React の、より詳しい説明</li>
+<li><code>Rust/</code> … Rust と Topcoat の、より詳しい説明</li>
+</ul>
+</body>
+</html>

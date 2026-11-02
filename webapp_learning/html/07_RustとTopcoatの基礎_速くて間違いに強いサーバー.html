@@ -1,0 +1,1111 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>07_RustとTopcoatの基礎_速くて間違いに強いサーバー</title>
+<style>
+
+@page {
+  size: A4;
+  margin: 18mm 16mm 20mm 16mm;
+  @bottom-right {
+    content: counter(page);
+    font-size: 10px;
+    color: #64748b;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  font-family: "Yu Gothic UI", "Yu Gothic", "Meiryo", "Hiragino Sans",
+               "Noto Sans JP", "Segoe UI", system-ui, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.75;
+  color: #1e293b;
+  background: #ffffff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #0f172a;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 1.4em 0 0.6em;
+  page-break-after: avoid;
+}
+h1 {
+  font-size: 22pt;
+  border-bottom: 3px solid #1e40af;
+  padding-bottom: 0.3em;
+  margin-top: 0.4em;
+  page-break-before: auto;
+}
+h2 {
+  font-size: 16pt;
+  border-bottom: 1.5px solid #cbd5e1;
+  padding-bottom: 0.25em;
+  margin-top: 1.6em;
+}
+h3 { font-size: 13pt; color: #1e40af; }
+h4 { font-size: 12pt; color: #334155; }
+
+p { margin: 0.5em 0 0.8em; }
+
+a { color: #1d4ed8; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+ul, ol { margin: 0.4em 0 0.9em; padding-left: 1.6em; }
+li { margin: 0.2em 0; }
+
+blockquote {
+  border-left: 4px solid #3b82f6;
+  background: #eff6ff;
+  margin: 0.8em 0;
+  padding: 0.6em 1em;
+  color: #1e3a8a;
+  border-radius: 0 6px 6px 0;
+  page-break-inside: avoid;
+}
+blockquote p { margin: 0.3em 0; }
+blockquote strong { color: #1e40af; }
+
+code {
+  /* DefCode (see _code_font.py) has ASCII and Japanese in ONE font, so a code
+     line is drawn as one text run and copies as one line in every PDF viewer. */
+  font-family: "Consolas", "Consolas", monospace;
+  font-size: 0.9em;
+  background: #f1f5f9;
+  color: #be123c;
+  padding: 0.12em 0.36em;
+  border-radius: 4px;
+  /* Long inline code (file paths / URLs) must break instead of overflowing. */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  /* In a PDF there is no horizontal scrolling, so long lines must wrap
+     instead of being clipped off the right edge of the page. */
+  overflow-x: hidden;
+  overflow-y: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  font-size: 9.2pt;
+  line-height: 1.5;
+  margin: 0.8em 0;
+  page-break-inside: avoid;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+  white-space: inherit;
+  word-break: inherit;
+  overflow-wrap: inherit;
+}
+
+/* The codehilite extension wraps highlighted blocks in a scrolling div; make
+   that wrap too so nothing is clipped in the PDF. */
+.codehilite {
+  overflow-x: hidden;
+  /* overflow-x: hidden alone turns overflow-y into auto, and a glyph from a
+     fallback font that is a hair too tall then shows a vertical scrollbar. */
+  overflow-y: hidden;
+}
+.codehilite pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* No per-token colours: every coloured token became its own text run (and its
+   own tag) in the PDF, and some viewers then pasted each token on its own line.
+   Only whole comment lines get a colour, so each line is still one run. */
+pre .cmt { color: #94a3b8; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.8em 0;
+  font-size: 9.6pt;
+  page-break-inside: avoid;
+}
+th, td {
+  border: 1px solid #e2e8f0;
+  padding: 6px 9px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: #f1f5f9;
+  color: #0f172a;
+  font-weight: 700;
+}
+tr:nth-child(even) td { background: #f8fafc; }
+
+img { max-width: 100%; height: auto; }
+
+hr {
+  border: none;
+  border-top: 1px dashed #cbd5e1;
+  margin: 1.6em 0;
+}
+
+/* Diagram blocks (the inline-styled <div>s in the source) */
+div[style] {
+  page-break-inside: avoid;
+}
+
+/* Tighten spacing right after headings */
+h1 + p, h2 + p, h3 + p, h4 + p { margin-top: 0.2em; }
+
+/* Avoid ugly page breaks inside list items / table rows */
+li, tr { page-break-inside: avoid; }
+
+@media screen {
+  body { max-width: 920px; margin: 0 auto; padding: 20px 20px 120px; font-size: 16px; }
+  pre { white-space: pre !important; word-break: normal !important; overflow-wrap: normal !important;
+        overflow-x: auto !important; font-size: 14px !important; }
+  img { max-width: 100%; height: auto; }
+}
+.web-bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; font-size: 14px;
+  padding: 8px 12px; margin-bottom: 16px; background: #eef2f7; border-radius: 8px; }
+.web-bar a { color: #1e3a5f; }
+.web-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 10; max-width: 90%;
+  font-size: 15px; font-weight: 700; background: #fff7ed; border: 2px solid #f2994a; border-radius: 8px;
+  padding: 10px 16px; margin: 0; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.code-wrap { position: relative; scroll-margin-top: 16px; }
+.code-wrap pre { padding-top: 40px !important; }
+.copy-btn { position: absolute; top: 8px; right: 8px; z-index: 2; font-size: 13px; font-weight: 700;
+  padding: 4px 12px; border: 0; border-radius: 6px; background: #2f80ed; color: #fff; cursor: pointer;
+  font-family: inherit; }
+.copy-btn:hover { background: #1c64c8; }
+.copy-btn.done { background: #27ae60; }
+.code-wrap:target pre { outline: 4px solid #f2994a; outline-offset: 2px; }
+.code-wrap:target .copy-btn { box-shadow: 0 0 0 4px #f2994a; }
+/* syntax colours on screen (the PDF uses one colour so that each line copies as one piece) */
+.codehilite .k, .codehilite .kd, .codehilite .kn, .codehilite .kr { color: #c084fc; }
+.codehilite .s, .codehilite .s1, .codehilite .s2, .codehilite .sb { color: #fcd34d; }
+.codehilite .c, .codehilite .c1, .codehilite .cm { color: #94a3b8; }
+.codehilite .nf, .codehilite .nx { color: #60a5fa; }
+.codehilite .nb { color: #34d399; }
+.codehilite .mi, .codehilite .mf { color: #f472b6; }
+.codehilite .nt { color: #f59e0b; }
+.codehilite .na { color: #93c5fd; }
+</style>
+</head>
+<body>
+<div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/07_Rust%E3%81%A8Topcoat%E3%81%AE%E5%9F%BA%E7%A4%8E_%E9%80%9F%E3%81%8F%E3%81%A6%E9%96%93%E9%81%95%E3%81%84%E3%81%AB%E5%BC%B7%E3%81%84%E3%82%B5%E3%83%BC%E3%83%90%E3%83%BC.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、ブラウザーの「戻る」で PDF に戻れます。</p><div style="text-align: center; padding: 28px 0 8px;">
+<div style="font-size: 14px; color: #475569;">Web アプリ開発 学習資料</div>
+<div style="font-size: 26px; font-weight: 800; color: #0f172a; margin-top: 6px; line-height: 1.35;">07 Rust と Topcoat の基礎 — 速くて間違いに強いサーバー</div>
+<div style="font-size: 13px; color: #475569; margin-top: 8px;">依頼の状態を Rust の enum で書き、Topcoat で依頼の一覧と入力の画面を作る</div>
+</div>
+
+<h1 id="07-rust-topcoat">07 Rust と Topcoat の基礎: 速くて間違いに強いサーバー</h1>
+<h2 id="_1">この巻について</h2>
+<p>もう 1 つの作り方、<strong>Rust＋Topcoat</strong> の入口です。Rust はとても奥が深いので、この巻では、練習アプリ（08）を読むのに要る所だけを、これまでの巻（TypeScript・Python）と比べながら説明します。</p>
+<ul>
+<li><strong>もっと詳しく:</strong> <code>Rust/</code> に、Rust と Topcoat を、ゼロから完成まで学ぶ全 14 巻があります。この巻の各章の終わりに、対応する巻を書いています。</li>
+<li><strong>建てる先:</strong> Rust＋Topcoat のアプリは、onprem の 04 のとおり、<strong>実行ファイル 1 つ</strong>にして、会社の Windows Server に WinSW で建てます。</li>
+<li>練習のコードは <code>samples/07_rust_topcoat/</code> にあります。結果とエラーの文は、<strong>Rust 1.99.1・Topcoat 0.11.0 で実際に動かした物</strong>です。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>練習のフォルダ</th>
+<th>中身</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>status/</code></td>
+<td>依頼の状態を Rust で書いた物（<code>cargo run</code>・<code>cargo test</code>）</td>
+</tr>
+<tr>
+<td><code>mistake/</code></td>
+<td>わざと間違えた例（<code>cargo build</code> で、エラーの文を見る）</td>
+</tr>
+<tr>
+<td><code>hello/</code></td>
+<td>いちばん小さな Topcoat のアプリ（依頼の一覧と入力）</td>
+</tr>
+</tbody>
+</table>
+<h2 id="1">1. 準備</h2>
+<p>開発用のパソコン（Windows）に、Rust と Topcoat の道具を入れます（この資料集では、会社のサーバーに合わせて <strong>Windows のまま</strong>作ります）。</p>
+<p><strong>▶ 準備:</strong> 00 の 6.6 のとおり、<strong>Rust/00 の「はじめに: 手を動かす準備」の P-1〜P-4</strong> で、Build Tools と Rust を入れておきます。そのあと、PowerShell（どのフォルダにいてもよい）で、下の 4 行を 1 行ずつ打ちます。<code>cargo install</code> は、Topcoat の道具をダウンロードして作るので、数分かかります。くわしい説明（版の選び方など）は Rust/01 にあります。</p>
+<div class="codehilite"><div class="code-wrap" id="code-1"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">rustc</span> <span class="p">-</span><span class="n">-version</span>          <span class="c"># rustc 1.99.1</span>
+<span class="n">cargo</span> <span class="p">-</span><span class="n">-version</span>          <span class="c"># cargo 1.99.1</span>
+<span class="n">cargo</span> <span class="n">install</span> <span class="n">topcoat-cli</span> <span class="p">-</span><span class="n">-version</span> <span class="n">0</span><span class="p">.</span><span class="n">11</span><span class="p">.</span><span class="n">0</span> <span class="p">-</span><span class="n">-locked</span>
+<span class="n">topcoat</span> <span class="p">-</span><span class="n">-version</span>        <span class="c"># topcoat 0.11.0</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>道具</th>
+<th>役目</th>
+<th>Python・Node.js では</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rustc</code></td>
+<td>Rust のコンパイラ（プログラムを実行ファイルに変える）</td>
+<td>（無い。Python はそのまま動かす）</td>
+</tr>
+<tr>
+<td><code>cargo</code></td>
+<td>部品の管理・ビルド・テスト・実行</td>
+<td><code>pip</code>・<code>npm</code> に近い</td>
+</tr>
+<tr>
+<td><code>Cargo.toml</code></td>
+<td>使う部品と版を書くファイル</td>
+<td><code>requirements.txt</code>・<code>package.json</code></td>
+</tr>
+<tr>
+<td><code>topcoat</code></td>
+<td>Topcoat の道具（新しいアプリを作る・画面の部品を束ねる・開発用のサーバー）</td>
+<td><code>django-admin</code>・<code>vite</code> に近い</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>用語:</strong> コンパイル（プログラムを、パソコンがそのまま動かせる形（実行ファイル）に変えること。Rust は、このときに多くの間違いを見つける）</p>
+</blockquote>
+<h2 id="2-enum">2. 依頼の状態を enum で書く</h2>
+<p><code>status/src/lib.rs</code>:</p>
+<div class="codehilite"><div class="code-wrap" id="code-2"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="sd">//! 依頼の状態と、状態の移り変わり（02 の status.ts・04 の status.py を Rust で書いた物）</span>
+
+<span class="k">use</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">fmt</span><span class="p">;</span>
+
+<span class="sd">/// 依頼の状態。この 7 つ以外は作れない</span>
+<span class="cp">#[derive(Debug, Clone, Copy, PartialEq, Eq)]</span>
+<span class="k">pub</span><span class="w"> </span><span class="k">enum</span><span class="w"> </span><span class="nc">Status</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">Circulating</span><span class="p">,</span>
+<span class="w">    </span><span class="n">Returned</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PulledBack</span><span class="p">,</span>
+<span class="w">    </span><span class="n">Approved</span><span class="p">,</span>
+<span class="w">    </span><span class="n">InProgress</span><span class="p">,</span>
+<span class="w">    </span><span class="n">Done</span><span class="p">,</span>
+<span class="w">    </span><span class="n">Withdrawn</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="k">impl</span><span class="w"> </span><span class="n">Status</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="sd">/// 画面に出す名前</span>
+<span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">label</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="kp">&amp;</span><span class="o">&#39;</span><span class="nb">static</span><span class="w"> </span><span class="kt">str</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">match</span><span class="w"> </span><span class="bp">self</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">Status</span><span class="p">::</span><span class="n">Circulating</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">&quot;回覧中&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">Status</span><span class="p">::</span><span class="n">Returned</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">&quot;差し戻し中&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">Status</span><span class="p">::</span><span class="n">PulledBack</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">&quot;引き戻し中&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">Status</span><span class="p">::</span><span class="n">Approved</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">&quot;回覧完了&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">Status</span><span class="p">::</span><span class="n">InProgress</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">&quot;対応中&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">Status</span><span class="p">::</span><span class="n">Done</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">&quot;完了&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">Status</span><span class="p">::</span><span class="n">Withdrawn</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">&quot;取り下げ&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="sd">/// 状態を変える操作</span>
+<span class="cp">#[derive(Debug, Clone, Copy, PartialEq, Eq)]</span>
+<span class="k">pub</span><span class="w"> </span><span class="k">enum</span><span class="w"> </span><span class="nc">Action</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ApproveAll</span><span class="p">,</span>
+<span class="w">    </span><span class="n">Return</span><span class="p">,</span>
+<span class="w">    </span><span class="n">PullBack</span><span class="p">,</span>
+<span class="w">    </span><span class="n">Resubmit</span><span class="p">,</span>
+<span class="w">    </span><span class="n">Withdraw</span><span class="p">,</span>
+<span class="w">    </span><span class="n">Assign</span><span class="p">,</span>
+<span class="w">    </span><span class="n">HandOver</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="sd">/// できない操作をしようとしたときのエラー</span>
+<span class="cp">#[derive(Debug, PartialEq, Eq)]</span>
+<span class="k">pub</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">TransitionError</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">status</span><span class="p">:</span><span class="w"> </span><span class="nc">Status</span><span class="p">,</span>
+<span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">action</span><span class="p">:</span><span class="w"> </span><span class="nc">Action</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="k">impl</span><span class="w"> </span><span class="n">fmt</span><span class="p">::</span><span class="n">Display</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">TransitionError</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">fn</span><span class="w"> </span><span class="nf">fmt</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">f</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">mut</span><span class="w"> </span><span class="n">fmt</span><span class="p">::</span><span class="n">Formatter</span><span class="o">&lt;&#39;</span><span class="nb">_</span><span class="o">&gt;</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nc">fmt</span><span class="p">::</span><span class="nb">Result</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="fm">write!</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;「{}」の依頼に {:?} はできません&quot;</span><span class="p">,</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">status</span><span class="p">.</span><span class="n">label</span><span class="p">(),</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">action</span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">impl</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">error</span><span class="p">::</span><span class="n">Error</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">TransitionError</span><span class="w"> </span><span class="p">{}</span>
+
+<span class="sd">/// 今の状態と操作から、次の状態を返す。できない操作なら Err</span>
+<span class="k">pub</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">next_status</span><span class="p">(</span><span class="n">current</span><span class="p">:</span><span class="w"> </span><span class="nc">Status</span><span class="p">,</span><span class="w"> </span><span class="n">action</span><span class="p">:</span><span class="w"> </span><span class="nc">Action</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">Result</span><span class="o">&lt;</span><span class="n">Status</span><span class="p">,</span><span class="w"> </span><span class="n">TransitionError</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">use</span><span class="w"> </span><span class="n">Action</span><span class="p">::</span><span class="o">*</span><span class="p">;</span>
+<span class="w">    </span><span class="k">use</span><span class="w"> </span><span class="n">Status</span><span class="p">::</span><span class="o">*</span><span class="p">;</span>
+<span class="w">    </span><span class="k">match</span><span class="w"> </span><span class="p">(</span><span class="n">current</span><span class="p">,</span><span class="w"> </span><span class="n">action</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="p">(</span><span class="n">Circulating</span><span class="p">,</span><span class="w"> </span><span class="n">ApproveAll</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="nb">Ok</span><span class="p">(</span><span class="n">Approved</span><span class="p">),</span>
+<span class="w">        </span><span class="p">(</span><span class="n">Circulating</span><span class="p">,</span><span class="w"> </span><span class="n">Return</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="nb">Ok</span><span class="p">(</span><span class="n">Returned</span><span class="p">),</span>
+<span class="w">        </span><span class="p">(</span><span class="n">Circulating</span><span class="p">,</span><span class="w"> </span><span class="n">PullBack</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="nb">Ok</span><span class="p">(</span><span class="n">PulledBack</span><span class="p">),</span>
+<span class="w">        </span><span class="p">(</span><span class="n">Returned</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">PulledBack</span><span class="p">,</span><span class="w"> </span><span class="n">Resubmit</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="nb">Ok</span><span class="p">(</span><span class="n">Circulating</span><span class="p">),</span>
+<span class="w">        </span><span class="p">(</span><span class="n">Returned</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">PulledBack</span><span class="p">,</span><span class="w"> </span><span class="n">Withdraw</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="nb">Ok</span><span class="p">(</span><span class="n">Withdrawn</span><span class="p">),</span>
+<span class="w">        </span><span class="p">(</span><span class="n">Approved</span><span class="p">,</span><span class="w"> </span><span class="n">Assign</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="nb">Ok</span><span class="p">(</span><span class="n">InProgress</span><span class="p">),</span>
+<span class="w">        </span><span class="p">(</span><span class="n">InProgress</span><span class="p">,</span><span class="w"> </span><span class="n">HandOver</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="nb">Ok</span><span class="p">(</span><span class="n">Done</span><span class="p">),</span>
+<span class="w">        </span><span class="n">_</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="nb">Err</span><span class="p">(</span><span class="n">TransitionError</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">status</span><span class="p">:</span><span class="w"> </span><span class="nc">current</span><span class="p">,</span><span class="w"> </span><span class="n">action</span><span class="w"> </span><span class="p">}),</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="sd">/// 依頼 1 件</span>
+<span class="cp">#[derive(Debug)]</span>
+<span class="k">pub</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">Request</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">id</span><span class="p">:</span><span class="w"> </span><span class="kt">u32</span><span class="p">,</span>
+<span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">title</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">,</span>
+<span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">status</span><span class="p">:</span><span class="w"> </span><span class="nc">Status</span><span class="p">,</span>
+<span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">comments</span><span class="p">:</span><span class="w"> </span><span class="nb">Vec</span><span class="o">&lt;</span><span class="nb">String</span><span class="o">&gt;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="k">impl</span><span class="w"> </span><span class="n">Request</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">new</span><span class="p">(</span><span class="n">id</span><span class="p">:</span><span class="w"> </span><span class="kt">u32</span><span class="p">,</span><span class="w"> </span><span class="n">title</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="kt">str</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nc">Request</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Request</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">title</span><span class="p">:</span><span class="w"> </span><span class="nc">title</span><span class="p">.</span><span class="n">to_string</span><span class="p">(),</span><span class="w"> </span><span class="n">status</span><span class="p">:</span><span class="w"> </span><span class="nc">Status</span><span class="p">::</span><span class="n">Circulating</span><span class="p">,</span><span class="w"> </span><span class="n">comments</span><span class="p">:</span><span class="w"> </span><span class="nb">Vec</span><span class="p">::</span><span class="n">new</span><span class="p">()</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="sd">/// 操作をして、状態を進める。できなければ、状態は変えずに Err を返す</span>
+<span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">apply</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">action</span><span class="p">:</span><span class="w"> </span><span class="nc">Action</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">Result</span><span class="o">&lt;</span><span class="p">(),</span><span class="w"> </span><span class="n">TransitionError</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="bp">self</span><span class="p">.</span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">next_status</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">status</span><span class="p">,</span><span class="w"> </span><span class="n">action</span><span class="p">)</span><span class="o">?</span><span class="p">;</span><span class="w"> </span><span class="c1">// ? は「Err ならここで返す」</span>
+<span class="w">        </span><span class="nb">Ok</span><span class="p">(())</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="cp">#[cfg(test)]</span>
+<span class="k">mod</span><span class="w"> </span><span class="nn">tests</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">use</span><span class="w"> </span><span class="k">super</span><span class="p">::</span><span class="o">*</span><span class="p">;</span>
+
+<span class="w">    </span><span class="cp">#[test]</span>
+<span class="w">    </span><span class="k">fn</span><span class="w"> </span><span class="err">差し戻してから出し直すと回覧中に戻る</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Request</span><span class="p">::</span><span class="n">new</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;治具の製作&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">r</span><span class="p">.</span><span class="n">apply</span><span class="p">(</span><span class="n">Action</span><span class="p">::</span><span class="n">Return</span><span class="p">).</span><span class="n">unwrap</span><span class="p">();</span>
+<span class="w">        </span><span class="fm">assert_eq!</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">status</span><span class="p">,</span><span class="w"> </span><span class="n">Status</span><span class="p">::</span><span class="n">Returned</span><span class="p">);</span>
+<span class="w">        </span><span class="n">r</span><span class="p">.</span><span class="n">apply</span><span class="p">(</span><span class="n">Action</span><span class="p">::</span><span class="n">Resubmit</span><span class="p">).</span><span class="n">unwrap</span><span class="p">();</span>
+<span class="w">        </span><span class="fm">assert_eq!</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">status</span><span class="p">,</span><span class="w"> </span><span class="n">Status</span><span class="p">::</span><span class="n">Circulating</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="cp">#[test]</span>
+<span class="w">    </span><span class="k">fn</span><span class="w"> </span><span class="err">完了した依頼は差し戻せない</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">err</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">next_status</span><span class="p">(</span><span class="n">Status</span><span class="p">::</span><span class="n">Done</span><span class="p">,</span><span class="w"> </span><span class="n">Action</span><span class="p">::</span><span class="n">Return</span><span class="p">).</span><span class="n">unwrap_err</span><span class="p">();</span>
+<span class="w">        </span><span class="fm">assert_eq!</span><span class="p">(</span><span class="n">err</span><span class="p">.</span><span class="n">to_string</span><span class="p">(),</span><span class="w"> </span><span class="s">&quot;「完了」の依頼に Return はできません&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="cp">#[test]</span>
+<span class="w">    </span><span class="k">fn</span><span class="w"> </span><span class="err">できない操作では状態が変わらない</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Request</span><span class="p">::</span><span class="n">new</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;部品の追加工&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="fm">assert!</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">apply</span><span class="p">(</span><span class="n">Action</span><span class="p">::</span><span class="n">HandOver</span><span class="p">).</span><span class="n">is_err</span><span class="p">());</span>
+<span class="w">        </span><span class="fm">assert_eq!</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">status</span><span class="p">,</span><span class="w"> </span><span class="n">Status</span><span class="p">::</span><span class="n">Circulating</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/L07-03_match.webp" alt="7枚の状態のカードがmatchの機械で出口の箱に仕分けられる。出口の無い取り下げのカードに、書き忘れ（コンパイルエラー）の札" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図2-1: match は、全部の場合を書かないとコンパイルできない</div>
+</div>
+
+<table>
+<thead>
+<tr>
+<th>書き方</th>
+<th>意味</th>
+<th>TypeScript（02）・Python（04）では</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>enum Status { Circulating, … }</code></td>
+<td>決まった値だけの型</td>
+<td>ユニオン型・<code>StrEnum</code></td>
+</tr>
+<tr>
+<td><code>match (current, action) { … }</code></td>
+<td>値の組み合わせで分ける。<strong>全部の場合を書かないと、コンパイルエラー</strong></td>
+<td><code>switch</code> と <code>never</code>・辞書の表</td>
+</tr>
+<tr>
+<td><code>(Returned \| PulledBack, Resubmit)</code></td>
+<td>2 つのどちらでも</td>
+<td><code>case</code> を並べる</td>
+</tr>
+<tr>
+<td><code>_ =&gt;</code></td>
+<td>それ以外、全部</td>
+<td><code>default</code></td>
+</tr>
+<tr>
+<td><code>Result&lt;Status, TransitionError&gt;</code></td>
+<td>成功（<code>Ok</code>）か失敗（<code>Err</code>）か</td>
+<td>例外（<code>raise</code>・<code>throw</code>）</td>
+</tr>
+<tr>
+<td><code>#[derive(Debug, Clone, Copy, PartialEq, Eq)]</code></td>
+<td>表示・複製・比べるなどの決まった機能を、自動で付ける</td>
+<td><code>@dataclass</code> に近い</td>
+</tr>
+<tr>
+<td><code>impl Status { fn label(self) … }</code></td>
+<td>その型の関数（メソッド）</td>
+<td>クラスのメソッド</td>
+</tr>
+<tr>
+<td><code>#[cfg(test)] mod tests</code></td>
+<td>テスト。<code>cargo test</code> で動く</td>
+<td><code>tests.py</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>cargo test</code> の結果（実際の出力の一部）:</p>
+<div class="codehilite"><div class="code-wrap" id="code-3"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>test tests::できない操作では状態が変わらない ... ok
+test tests::完了した依頼は差し戻せない ... ok
+test tests::差し戻してから出し直すと回覧中に戻る ... ok
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>もっと詳しく:</strong> <code>Rust/02_Rust基礎_値_型_制御_データ構造.md</code>、<code>Rust/04_Rust設計_型_trait_エラー_Cargo_テスト.md</code></p>
+</blockquote>
+<h2 id="3-result-option">3. Result と Option</h2>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/L07-04_result_option.webp" alt="ResultはOk（中身）かErr（なぜ失敗したか）。?で呼んだ側に返す。OptionはSome（中身）かNone（無い）" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図3-1: Result は成功か失敗か、Option はあるか無いか</div>
+</div>
+
+<p>Rust には、例外（<code>raise</code>・<code>throw</code>）がありません。失敗するかもしれない関数は <strong><code>Result</code></strong> を返し、無いかもしれない値は <strong><code>Option</code></strong> で表します。<strong>呼んだ側が、失敗と「無い」を必ず扱う</strong>ように、型が強制します。</p>
+<table>
+<thead>
+<tr>
+<th>書き方</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Ok(値)</code>・<code>Err(エラー)</code></td>
+<td>成功・失敗</td>
+</tr>
+<tr>
+<td><code>Some(値)</code>・<code>None</code></td>
+<td>ある・無い</td>
+</tr>
+<tr>
+<td><code>next_status(...)?</code></td>
+<td><code>Err</code> なら、ここで呼んだ側へ返す（<code>?</code> 演算子）</td>
+</tr>
+<tr>
+<td><code>match r { Ok(..) =&gt; …, Err(e) =&gt; … }</code></td>
+<td>成功と失敗で分ける</td>
+</tr>
+<tr>
+<td><code>if let Some(r) = find(...) { … }</code></td>
+<td>あるときだけ使う</td>
+</tr>
+<tr>
+<td><code>.unwrap()</code></td>
+<td>失敗なら<strong>プログラムを止める</strong>。テストや「絶対に失敗しない」所だけで使う</td>
+</tr>
+</tbody>
+</table>
+<h2 id="4">4. 所有権と借用</h2>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/L07-01_ownership.webp" alt="ムーブは本を手渡すのでAはもう使えない。借用は&で見せるだけなのでAはまだ使える" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図4-1: 値には持ち主が 1 人だけ。渡す（ムーブ）か、貸す（借用）か</div>
+</div>
+
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/L07-02_borrow_rules.webp" alt="&は何人でも見られる。&mutは1人だけが書ける。同時はだめでコンパイルで止める" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図4-2: 見るだけなら何人でも、書きかえるなら 1 人だけ</div>
+</div>
+
+<p>Rust のいちばんの特徴が、<strong>所有権</strong>です。値には、いつも持ち主（変数）が 1 つだけあります。この決まりのおかげで、<strong>メモリーの間違いや、同時に書きかえる事故を、コンパイルのときに止められます</strong>。</p>
+<p><code>status/src/main.rs</code>:</p>
+<div class="codehilite"><div class="code-wrap" id="code-4"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="sd">//! Rust の基本の練習: 所有権・借用・Option・Result・イテレーター</span>
+<span class="k">use</span><span class="w"> </span><span class="n">status</span><span class="p">::{</span><span class="n">Action</span><span class="p">,</span><span class="w"> </span><span class="n">Request</span><span class="p">,</span><span class="w"> </span><span class="n">Status</span><span class="p">};</span>
+
+<span class="sd">/// 借用（&amp;）: 中身を見るだけ。持ち主は変わらない</span>
+<span class="k">fn</span><span class="w"> </span><span class="nf">print_request</span><span class="p">(</span><span class="n">r</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">Request</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{} {}（{}）&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">title</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">status</span><span class="p">.</span><span class="n">label</span><span class="p">());</span>
+<span class="p">}</span>
+
+<span class="sd">/// 見つからないかもしれないときは Option</span>
+<span class="k">fn</span><span class="w"> </span><span class="nf">find</span><span class="p">(</span><span class="n">list</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="p">[</span><span class="n">Request</span><span class="p">],</span><span class="w"> </span><span class="n">id</span><span class="p">:</span><span class="w"> </span><span class="kt">u32</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">Option</span><span class="o">&lt;&amp;</span><span class="n">Request</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">list</span><span class="p">.</span><span class="n">iter</span><span class="p">().</span><span class="n">find</span><span class="p">(</span><span class="o">|</span><span class="n">r</span><span class="o">|</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">id</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="k">fn</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">list</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="fm">vec!</span><span class="p">[</span><span class="n">Request</span><span class="p">::</span><span class="n">new</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;治具の製作&quot;</span><span class="p">),</span><span class="w"> </span><span class="n">Request</span><span class="p">::</span><span class="n">new</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;部品の追加工&quot;</span><span class="p">),</span><span class="w"> </span><span class="n">Request</span><span class="p">::</span><span class="n">new</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;棚の取り付け&quot;</span><span class="p">)];</span>
+
+<span class="w">    </span><span class="c1">// 1. 借用して表示する（list は、このあとも使える）</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="o">&amp;</span><span class="n">list</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">print_request</span><span class="p">(</span><span class="n">r</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// 2. 書きかえるときは &amp;mut（同時に 1 か所だけ）</span>
+<span class="w">    </span><span class="n">list</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">apply</span><span class="p">(</span><span class="n">Action</span><span class="p">::</span><span class="n">Return</span><span class="p">).</span><span class="n">unwrap</span><span class="p">();</span>
+<span class="w">    </span><span class="n">list</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">comments</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="s">&quot;【11/02 09:00 回覧者1 佐藤】寸法を追記してください&quot;</span><span class="p">.</span><span class="n">to_string</span><span class="p">());</span>
+<span class="w">    </span><span class="n">list</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">apply</span><span class="p">(</span><span class="n">Action</span><span class="p">::</span><span class="n">ApproveAll</span><span class="p">).</span><span class="n">unwrap</span><span class="p">();</span>
+
+<span class="w">    </span><span class="c1">// 3. Result: できない操作は Err で返ってくるので、match で分ける</span>
+<span class="w">    </span><span class="k">match</span><span class="w"> </span><span class="n">list</span><span class="p">[</span><span class="mi">2</span><span class="p">].</span><span class="n">apply</span><span class="p">(</span><span class="n">Action</span><span class="p">::</span><span class="n">HandOver</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nb">Ok</span><span class="p">(())</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;引き渡しました&quot;</span><span class="p">),</span>
+<span class="w">        </span><span class="nb">Err</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;エラー: {e}&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// 4. Option: 見つかったときだけ使う</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="kd">let</span><span class="w"> </span><span class="nb">Some</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">find</span><span class="p">(</span><span class="o">&amp;</span><span class="n">list</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;1 番のコメント: {:?}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">comments</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;99 番はあるか: {}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">find</span><span class="p">(</span><span class="o">&amp;</span><span class="n">list</span><span class="p">,</span><span class="w"> </span><span class="mi">99</span><span class="p">).</span><span class="n">is_some</span><span class="p">());</span>
+
+<span class="w">    </span><span class="c1">// 5. イテレーター（TypeScript の filter・map と同じ考え方）</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">circulating</span><span class="p">:</span><span class="w"> </span><span class="nb">Vec</span><span class="o">&lt;&amp;</span><span class="kt">str</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span>
+<span class="w">        </span><span class="n">list</span><span class="p">.</span><span class="n">iter</span><span class="p">().</span><span class="n">filter</span><span class="p">(</span><span class="o">|</span><span class="n">r</span><span class="o">|</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">status</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">Status</span><span class="p">::</span><span class="n">Circulating</span><span class="p">).</span><span class="n">map</span><span class="p">(</span><span class="o">|</span><span class="n">r</span><span class="o">|</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">title</span><span class="p">.</span><span class="n">as_str</span><span class="p">()).</span><span class="n">collect</span><span class="p">();</span>
+<span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;回覧中: {circulating:?}&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// 6. 所有権の移動（ムーブ）: title を別の変数に渡すと、元の変数は使えなくなる</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">String</span><span class="p">::</span><span class="n">from</span><span class="p">(</span><span class="s">&quot;型の改造&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">moved</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">title</span><span class="p">;</span><span class="w"> </span><span class="c1">// ここで持ち主が moved に移る</span>
+<span class="w">    </span><span class="c1">// println!(&quot;{title}&quot;); // ← これはコンパイルエラーになる（所有権が移ったため）</span>
+<span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;移った先: {moved}&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>動かした結果（<code>cargo run</code>）:</p>
+<div class="codehilite"><div class="code-wrap" id="code-5"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>1 治具の製作（回覧中）
+2 部品の追加工（回覧中）
+3 棚の取り付け（回覧中）
+エラー: 「回覧中」の依頼に HandOver はできません
+1 番のコメント: [&quot;【11/02 09:00 回覧者1 佐藤】寸法を追記してください&quot;]
+99 番はあるか: false
+回覧中: [&quot;棚の取り付け&quot;]
+移った先: 型の改造
+</code></pre></div></div>
+
+<p><strong>わざと間違えると:</strong> <code>mistake/src/main.rs</code> には、2 つの間違いを入れてあります。</p>
+<div class="codehilite"><div class="code-wrap" id="code-6"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// わざと間違えた例（2 つ）。cargo build で、コンパイラがどう教えてくれるかを見る</span>
+
+<span class="cp">#[derive(Clone, Copy)]</span>
+<span class="k">enum</span><span class="w"> </span><span class="nc">Status</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">Circulating</span><span class="p">,</span>
+<span class="w">    </span><span class="n">Returned</span><span class="p">,</span>
+<span class="w">    </span><span class="n">Done</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="k">fn</span><span class="w"> </span><span class="nf">label</span><span class="p">(</span><span class="n">s</span><span class="p">:</span><span class="w"> </span><span class="nc">Status</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="kp">&amp;</span><span class="o">&#39;</span><span class="nb">static</span><span class="w"> </span><span class="kt">str</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">match</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Status</span><span class="p">::</span><span class="n">Circulating</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">&quot;回覧中&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">Status</span><span class="p">::</span><span class="n">Returned</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">&quot;差し戻し中&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="c1">// 間違い 1: Status::Done の場合を書き忘れた</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">fn</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">String</span><span class="p">::</span><span class="n">from</span><span class="p">(</span><span class="s">&quot;型の改造&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">moved</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">title</span><span class="p">;</span>
+<span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{title}&quot;</span><span class="p">);</span><span class="w"> </span><span class="c1">// 間違い 2: 所有権が moved に移った後で、title を使った</span>
+<span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{moved} {}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="p">(</span><span class="n">Status</span><span class="p">::</span><span class="n">Done</span><span class="p">));</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><code>cargo build</code> の結果（実際の出力）:</p>
+<div class="codehilite"><div class="code-wrap" id="code-7"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>error[E0004]: non-exhaustive patterns: `Status::Done` not covered
+  --&gt; src\main.rs:11:11
+   |
+11 |     match s {
+   |           ^ pattern `Status::Done` not covered
+   |
+note: `Status` defined here
+  --&gt; src\main.rs:4:6
+   |
+ 4 | enum Status {
+   |      ^^^^^^
+...
+ 7 |     Done,
+   |     ---- not covered
+   = note: the matched value is of type `Status`
+help: ensure that all possible cases are being handled by adding a match arm with a wildcard pattern or an explicit pattern as shown
+   |
+13 ~         Status::Returned =&gt; &quot;差し戻し中&quot;,
+14 ~         Status::Done =&gt; todo!(),
+   |
+
+error[E0382]: borrow of moved value: `title`
+  --&gt; src\main.rs:21:16
+   |
+19 |     let title = String::from(&quot;型の改造&quot;);
+   |         ----- move occurs because `title` has type `String`, which does not implement the `Copy` trait
+20 |     let moved = title;
+   |                 ----- value moved here
+21 |     println!(&quot;{title}&quot;); // 間違い 2: 所有権が moved に移った後で、title を使った
+   |                ^^^^^ value borrowed here after move
+   |
+help: consider cloning the value if the performance cost is acceptable
+   |
+20 |     let moved = title.clone();
+   |                      ++++++++
+
+Some errors have detailed explanations: E0004, E0382.
+For more information about an error, try `rustc --explain E0004`.
+error: could not compile `mistake` (bin &quot;mistake&quot;) due to 2 previous errors
+</code></pre></div></div>
+
+<ul>
+<li>1 つ目（<code>E0004</code>）は、<code>match</code> で <code>Status::Done</code> の場合を書き忘れた、という意味です。状態を足したときの書き忘れを、<strong>動かす前に</strong>見つけてくれます（02 の <code>never</code> と同じ働き）。</li>
+<li>2 つ目（<code>E0382</code>）は、<code>title</code> の持ち主が <code>moved</code> に移った（ムーブした）後で、<code>title</code> を使った、という意味です。</li>
+<li>どちらも、<code>help:</code> に<strong>直し方の案</strong>が出ています。Rust のエラーの文は長いですが、<code>error[…]:</code> の行、<code>--&gt;</code> のファイルと行、<code>help:</code> の 3 か所を読めば、たいてい分かります。</li>
+</ul>
+<blockquote>
+<p><strong>もっと詳しく:</strong> <code>Rust/03_Rust中核_所有権_借用_ライフタイム_スマートポインタ.md</code></p>
+</blockquote>
+<h2 id="5-topcoat">5. Topcoat の最小のアプリ</h2>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/L07-05_module_routing.webp" alt="app.rs・requests.rs・requests/id.rs・requests/id/edit.rs のファイルの並びが、/・/requests・/requests/5・/requests/5/edit の URL の並びになる" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図5-1: Topcoat では、ファイル（モジュール）の並びが URL の並びになる</div>
+</div>
+
+<p><strong>Topcoat</strong> は、Rust の Web フレームワークです。Django と違い、<strong>サーバーで HTML を作って返す</strong>作りが中心です（03 の 7 章の「サーバーで画面を作る」）。</p>
+<div class="codehilite"><div class="code-wrap" id="code-8"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">cd </span><span class="n">webapp_learning</span><span class="p">\</span><span class="n">samples</span><span class="p">\</span><span class="n">07_rust_topcoat</span>
+<span class="n">topcoat</span> <span class="n">new</span> <span class="n">hello</span> <span class="p">-</span><span class="n">-minimal</span>       <span class="c"># いちばん小さなアプリを作る（練習のフォルダには、作って直した物がある）</span>
+<span class="nb">cd </span><span class="n">hello</span>
+<span class="n">topcoat</span> <span class="n">dev</span>                        <span class="c"># 開発用のサーバー（直すと自動で作り直して、画面を読み直す）</span>
+</code></pre></div></div>
+
+<p><code>hello/Cargo.toml</code>:</p>
+<div class="codehilite"><div class="code-wrap" id="code-9"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">[package]</span>
+<span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;hello&quot;</span>
+<span class="n">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;0.1.0&quot;</span>
+<span class="n">edition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;2024&quot;</span>
+
+<span class="c1"># 版は = で固定する（Rust/ の巻と同じ考え方）</span>
+<span class="k">[dependencies]</span>
+<span class="n">serde</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">version</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;=1.0.229&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">features</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;derive&quot;</span><span class="p">]</span><span class="w"> </span><span class="p">}</span>
+<span class="n">tokio</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">version</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;=1.54.1&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">features</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;macros&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;rt-multi-thread&quot;</span><span class="p">]</span><span class="w"> </span><span class="p">}</span>
+<span class="n">topcoat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">version</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;=0.11.0&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">default-features</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w"> </span><span class="n">features</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;asset&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;discover&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;router&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;serve&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;view&quot;</span><span class="p">]</span><span class="w"> </span><span class="p">}</span>
+
+<span class="k">[profile.dev]</span>
+<span class="n">debug</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;line-tables-only&quot;</span>
+
+<span class="k">[profile.dev.package.</span><span class="s2">&quot;*&quot;</span><span class="k">]</span>
+<span class="n">debug</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span>
+</code></pre></div></div>
+
+<p><code>hello/src/app.rs</code>（画面）:</p>
+<div class="codehilite"><div class="code-wrap" id="code-10"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="sd">//! いちばん小さな依頼・承認アプリ（Topcoat 0.11）。データはメモリーに持つ（再起動で消える）</span>
+<span class="sd">//!</span>
+<span class="sd">//! | 関数 | URL |</span>
+<span class="sd">//! |---|---|</span>
+<span class="sd">//! | `home`   | GET /  … 依頼の一覧と、入力フォーム |</span>
+<span class="sd">//! | `create` | POST / … 依頼を足して、303 で GET / へ（PRG） |</span>
+
+<span class="k">use</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">sync</span><span class="p">::</span><span class="n">Mutex</span><span class="p">;</span>
+
+<span class="k">use</span><span class="w"> </span><span class="n">serde</span><span class="p">::</span><span class="n">Deserialize</span><span class="p">;</span>
+<span class="k">use</span><span class="w"> </span><span class="n">topcoat</span><span class="p">::{</span>
+<span class="w">    </span><span class="nb">Result</span><span class="p">,</span>
+<span class="w">    </span><span class="n">asset</span><span class="p">::{</span><span class="n">AssetBundle</span><span class="p">,</span><span class="w"> </span><span class="n">RouterBuilderAssetExt</span><span class="p">,</span><span class="w"> </span><span class="n">asset</span><span class="p">},</span>
+<span class="w">    </span><span class="n">context</span><span class="p">::{</span><span class="n">Cx</span><span class="p">,</span><span class="w"> </span><span class="n">app_context</span><span class="p">},</span>
+<span class="w">    </span><span class="n">router</span><span class="p">::{</span><span class="n">Router</span><span class="p">,</span><span class="w"> </span><span class="n">Slot</span><span class="p">,</span><span class="w"> </span><span class="n">content</span><span class="p">::</span><span class="n">Form</span><span class="p">,</span><span class="w"> </span><span class="n">error</span><span class="p">::</span><span class="n">see_other</span><span class="p">,</span><span class="w"> </span><span class="n">href</span><span class="p">,</span><span class="w"> </span><span class="n">layout</span><span class="p">,</span><span class="w"> </span><span class="n">module_router</span><span class="p">,</span><span class="w"> </span><span class="n">page</span><span class="p">},</span>
+<span class="w">    </span><span class="n">view</span><span class="p">::{</span><span class="n">View</span><span class="p">,</span><span class="w"> </span><span class="n">view</span><span class="p">},</span>
+<span class="p">};</span>
+
+<span class="k">use</span><span class="w"> </span><span class="k">crate</span><span class="p">::</span><span class="n">features</span><span class="p">::{</span><span class="n">Request</span><span class="p">,</span><span class="w"> </span><span class="n">Store</span><span class="p">};</span>
+
+<span class="sd">/// ルーターを組み立てる。モジュールの並びが、そのまま URL の並びになる</span>
+<span class="k">pub</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">router</span><span class="p">()</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nc">Router</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">module_router</span><span class="o">!</span><span class="p">()</span>
+<span class="w">        </span><span class="p">.</span><span class="n">assets</span><span class="p">(</span><span class="n">AssetBundle</span><span class="p">::</span><span class="n">load</span><span class="p">().</span><span class="n">unwrap</span><span class="p">())</span>
+<span class="w">        </span><span class="p">.</span><span class="n">app_context</span><span class="p">(</span><span class="n">Mutex</span><span class="p">::</span><span class="n">new</span><span class="p">(</span><span class="n">Store</span><span class="p">::</span><span class="n">sample</span><span class="p">()))</span><span class="w"> </span><span class="c1">// どのページからも使える、共有のデータ</span>
+<span class="w">        </span><span class="p">.</span><span class="n">build</span><span class="p">()</span>
+<span class="p">}</span>
+
+<span class="k">fn</span><span class="w"> </span><span class="nf">store</span><span class="p">(</span><span class="n">cx</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">Cx</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">Mutex</span><span class="o">&lt;</span><span class="n">Store</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">app_context</span><span class="p">::</span><span class="o">&lt;</span><span class="n">Mutex</span><span class="o">&lt;</span><span class="n">Store</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="n">cx</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="cp">#[layout]</span>
+<span class="k">async</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">root</span><span class="p">(</span><span class="n">slot</span><span class="p">:</span><span class="w"> </span><span class="nc">Slot</span><span class="o">&lt;&#39;</span><span class="nb">_</span><span class="o">&gt;</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">Result</span><span class="o">&lt;</span><span class="k">impl</span><span class="w"> </span><span class="n">View</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nb">Ok</span><span class="p">(</span><span class="n">view</span><span class="o">!</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="o">&lt;!</span><span class="n">DOCTYPE</span><span class="w"> </span><span class="n">html</span><span class="o">&gt;</span>
+<span class="w">        </span><span class="o">&lt;</span><span class="n">html</span><span class="w"> </span><span class="n">lang</span><span class="o">=</span><span class="s">&quot;ja&quot;</span><span class="o">&gt;</span>
+<span class="w">            </span><span class="o">&lt;</span><span class="n">head</span><span class="o">&gt;</span>
+<span class="w">                </span><span class="o">&lt;</span><span class="n">meta</span><span class="w"> </span><span class="n">charset</span><span class="o">=</span><span class="s">&quot;utf-8&quot;</span><span class="o">&gt;</span>
+<span class="w">                </span><span class="o">&lt;</span><span class="n">meta</span><span class="w"> </span><span class="n">name</span><span class="o">=</span><span class="s">&quot;viewport&quot;</span><span class="w"> </span><span class="n">content</span><span class="o">=</span><span class="s">&quot;width=device-width, initial-scale=1&quot;</span><span class="o">&gt;</span>
+<span class="w">                </span><span class="o">&lt;</span><span class="n">title</span><span class="o">&gt;</span><span class="s">&quot;依頼・承認アプリ（Topcoat の練習）&quot;</span><span class="o">&lt;/</span><span class="n">title</span><span class="o">&gt;</span>
+<span class="w">                </span><span class="o">&lt;</span><span class="n">link</span><span class="w"> </span><span class="n">rel</span><span class="o">=</span><span class="s">&quot;stylesheet&quot;</span><span class="w"> </span><span class="n">href</span><span class="o">=</span><span class="p">(</span><span class="n">asset</span><span class="o">!</span><span class="p">(</span><span class="s">&quot;styles.css&quot;</span><span class="p">))</span><span class="o">&gt;</span>
+<span class="w">                </span><span class="n">topcoat</span><span class="p">::</span><span class="n">dev</span><span class="p">::</span><span class="n">script</span><span class="p">()</span>
+<span class="w">            </span><span class="o">&lt;/</span><span class="n">head</span><span class="o">&gt;</span>
+<span class="w">            </span><span class="o">&lt;</span><span class="n">body</span><span class="o">&gt;</span>
+<span class="w">                </span><span class="o">&lt;</span><span class="n">header</span><span class="w"> </span><span class="n">class</span><span class="o">=</span><span class="s">&quot;site-header&quot;</span><span class="o">&gt;&lt;</span><span class="n">strong</span><span class="o">&gt;</span><span class="s">&quot;依頼・承認アプリ&quot;</span><span class="o">&lt;/</span><span class="n">strong</span><span class="o">&gt;&lt;/</span><span class="n">header</span><span class="o">&gt;</span>
+<span class="w">                </span><span class="o">&lt;</span><span class="n">main</span><span class="o">&gt;</span><span class="p">(</span><span class="n">slot</span><span class="p">)</span><span class="o">&lt;/</span><span class="n">main</span><span class="o">&gt;</span>
+<span class="w">            </span><span class="o">&lt;/</span><span class="n">body</span><span class="o">&gt;</span>
+<span class="w">        </span><span class="o">&lt;/</span><span class="n">html</span><span class="o">&gt;</span>
+<span class="w">    </span><span class="p">})</span>
+<span class="p">}</span>
+
+<span class="sd">/// フォームから送られてくる値（input の name と同じ名前）</span>
+<span class="cp">#[derive(Deserialize)]</span>
+<span class="k">pub</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">NewRequestForm</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">title</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">,</span>
+<span class="w">    </span><span class="n">due_date</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="cp">#[page]</span>
+<span class="k">async</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">home</span><span class="p">(</span><span class="n">cx</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">Cx</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">Result</span><span class="o">&lt;</span><span class="k">impl</span><span class="w"> </span><span class="n">View</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// ロックしている間に、表示に要る物だけ写し取る（ロックを長く持たない）</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">rows</span><span class="p">:</span><span class="w"> </span><span class="nb">Vec</span><span class="o">&lt;</span><span class="n">Request</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">store</span><span class="p">(</span><span class="n">cx</span><span class="p">).</span><span class="n">lock</span><span class="p">().</span><span class="n">unwrap</span><span class="p">().</span><span class="n">requests</span><span class="p">.</span><span class="n">clone</span><span class="p">();</span>
+<span class="w">    </span><span class="nb">Ok</span><span class="p">(</span><span class="n">view</span><span class="o">!</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="s">&quot;依頼の一覧&quot;</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+<span class="w">        </span><span class="o">&lt;</span><span class="n">table</span><span class="o">&gt;</span>
+<span class="w">            </span><span class="o">&lt;</span><span class="n">thead</span><span class="o">&gt;&lt;</span><span class="n">tr</span><span class="o">&gt;&lt;</span><span class="n">th</span><span class="o">&gt;</span><span class="s">&quot;番号&quot;</span><span class="o">&lt;/</span><span class="n">th</span><span class="o">&gt;&lt;</span><span class="n">th</span><span class="o">&gt;</span><span class="s">&quot;件名&quot;</span><span class="o">&lt;/</span><span class="n">th</span><span class="o">&gt;&lt;</span><span class="n">th</span><span class="o">&gt;</span><span class="s">&quot;希望の納期&quot;</span><span class="o">&lt;/</span><span class="n">th</span><span class="o">&gt;&lt;</span><span class="n">th</span><span class="o">&gt;</span><span class="s">&quot;状態&quot;</span><span class="o">&lt;/</span><span class="n">th</span><span class="o">&gt;&lt;/</span><span class="n">tr</span><span class="o">&gt;&lt;/</span><span class="n">thead</span><span class="o">&gt;</span>
+<span class="w">            </span><span class="o">&lt;</span><span class="n">tbody</span><span class="o">&gt;</span>
+<span class="w">                </span><span class="k">for</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">rows</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="o">&lt;</span><span class="n">tr</span><span class="o">&gt;</span>
+<span class="w">                        </span><span class="o">&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">id</span><span class="p">)</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;</span>
+<span class="w">                        </span><span class="o">&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">title</span><span class="p">)</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;</span>
+<span class="w">                        </span><span class="o">&lt;</span><span class="n">td</span><span class="o">&gt;</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">due_date</span><span class="p">)</span><span class="o">&lt;/</span><span class="n">td</span><span class="o">&gt;</span>
+<span class="w">                        </span><span class="o">&lt;</span><span class="n">td</span><span class="o">&gt;&lt;</span><span class="n">span</span><span class="w"> </span><span class="n">class</span><span class="o">=</span><span class="p">(</span><span class="fm">format!</span><span class="p">(</span><span class="s">&quot;badge {}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">status</span><span class="p">.</span><span class="n">css_class</span><span class="p">()))</span><span class="o">&gt;</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">status</span><span class="p">.</span><span class="n">label</span><span class="p">())</span><span class="o">&lt;/</span><span class="n">span</span><span class="o">&gt;&lt;/</span><span class="n">td</span><span class="o">&gt;</span>
+<span class="w">                    </span><span class="o">&lt;/</span><span class="n">tr</span><span class="o">&gt;</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">            </span><span class="o">&lt;/</span><span class="n">tbody</span><span class="o">&gt;</span>
+<span class="w">        </span><span class="o">&lt;/</span><span class="n">table</span><span class="o">&gt;</span>
+
+<span class="w">        </span><span class="o">&lt;</span><span class="n">h2</span><span class="o">&gt;</span><span class="s">&quot;新しい依頼&quot;</span><span class="o">&lt;/</span><span class="n">h2</span><span class="o">&gt;</span>
+<span class="w">        </span><span class="o">&lt;</span><span class="n">form</span><span class="w"> </span><span class="n">method</span><span class="o">=</span><span class="s">&quot;post&quot;</span><span class="w"> </span><span class="n">action</span><span class="o">=</span><span class="p">(</span><span class="n">href</span><span class="o">!</span><span class="p">(</span><span class="n">create</span><span class="p">))</span><span class="w"> </span><span class="n">class</span><span class="o">=</span><span class="s">&quot;form-grid&quot;</span><span class="o">&gt;</span>
+<span class="w">            </span><span class="o">&lt;</span><span class="n">label</span><span class="w"> </span><span class="k">for</span><span class="o">=</span><span class="s">&quot;title&quot;</span><span class="o">&gt;</span><span class="s">&quot;件名&quot;</span><span class="o">&lt;/</span><span class="n">label</span><span class="o">&gt;</span>
+<span class="w">            </span><span class="o">&lt;</span><span class="n">input</span><span class="w"> </span><span class="n">id</span><span class="o">=</span><span class="s">&quot;title&quot;</span><span class="w"> </span><span class="n">name</span><span class="o">=</span><span class="s">&quot;title&quot;</span><span class="w"> </span><span class="n">required</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="w"> </span><span class="n">maxlength</span><span class="o">=</span><span class="s">&quot;100&quot;</span><span class="o">&gt;</span>
+<span class="w">            </span><span class="o">&lt;</span><span class="n">label</span><span class="w"> </span><span class="k">for</span><span class="o">=</span><span class="s">&quot;due&quot;</span><span class="o">&gt;</span><span class="s">&quot;希望の納期&quot;</span><span class="o">&lt;/</span><span class="n">label</span><span class="o">&gt;</span>
+<span class="w">            </span><span class="o">&lt;</span><span class="n">input</span><span class="w"> </span><span class="n">id</span><span class="o">=</span><span class="s">&quot;due&quot;</span><span class="w"> </span><span class="n">name</span><span class="o">=</span><span class="s">&quot;due_date&quot;</span><span class="w"> </span><span class="k">type</span><span class="o">=</span><span class="s">&quot;date&quot;</span><span class="w"> </span><span class="n">required</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="o">&gt;</span>
+<span class="w">            </span><span class="o">&lt;</span><span class="n">span</span><span class="o">&gt;&lt;/</span><span class="n">span</span><span class="o">&gt;</span>
+<span class="w">            </span><span class="o">&lt;</span><span class="n">div</span><span class="o">&gt;&lt;</span><span class="n">button</span><span class="w"> </span><span class="k">type</span><span class="o">=</span><span class="s">&quot;submit&quot;</span><span class="w"> </span><span class="n">class</span><span class="o">=</span><span class="s">&quot;btn-primary&quot;</span><span class="o">&gt;</span><span class="s">&quot;依頼を足す&quot;</span><span class="o">&lt;/</span><span class="n">button</span><span class="o">&gt;&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+<span class="w">        </span><span class="o">&lt;/</span><span class="n">form</span><span class="o">&gt;</span>
+<span class="w">    </span><span class="p">})</span>
+<span class="p">}</span>
+
+<span class="cp">#[page(POST)]</span>
+<span class="k">async</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">create</span><span class="p">(</span><span class="n">cx</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">Cx</span><span class="p">,</span><span class="w"> </span><span class="n">Form</span><span class="p">(</span><span class="n">input</span><span class="p">):</span><span class="w"> </span><span class="nc">Form</span><span class="o">&lt;</span><span class="n">NewRequestForm</span><span class="o">&gt;</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">Result</span><span class="o">&lt;</span><span class="k">impl</span><span class="w"> </span><span class="n">View</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">input</span><span class="p">.</span><span class="n">title</span><span class="p">.</span><span class="n">trim</span><span class="p">();</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">!</span><span class="n">title</span><span class="p">.</span><span class="n">is_empty</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">store</span><span class="p">(</span><span class="n">cx</span><span class="p">).</span><span class="n">lock</span><span class="p">().</span><span class="n">unwrap</span><span class="p">().</span><span class="n">add</span><span class="p">(</span><span class="n">title</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">input</span><span class="p">.</span><span class="n">due_date</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="c1">// PRG: 足したら 303 で一覧（GET）へ。再読み込みで二重に足されない</span>
+<span class="w">    </span><span class="nb">Err</span><span class="p">::</span><span class="o">&lt;</span><span class="p">(),</span><span class="w"> </span><span class="n">_</span><span class="o">&gt;</span><span class="p">(</span><span class="n">see_other</span><span class="p">(</span><span class="n">href</span><span class="o">!</span><span class="p">(</span><span class="n">home</span><span class="p">).</span><span class="n">resolve</span><span class="p">(</span><span class="n">cx</span><span class="p">)).</span><span class="n">into</span><span class="p">())</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><code>hello/src/features.rs</code>（データと決まり）:</p>
+<div class="codehilite"><div class="code-wrap" id="code-11"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="sd">//! アプリの「中身」（データと決まり）。画面（app.rs）からは、ここの関数を使う</span>
+
+<span class="sd">/// 依頼の状態（status クレートと同じ考え方。ここでは使う所だけ）</span>
+<span class="cp">#[derive(Debug, Clone, Copy, PartialEq, Eq)]</span>
+<span class="k">pub</span><span class="w"> </span><span class="k">enum</span><span class="w"> </span><span class="nc">Status</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">Circulating</span><span class="p">,</span>
+<span class="w">    </span><span class="n">Returned</span><span class="p">,</span>
+<span class="w">    </span><span class="n">Approved</span><span class="p">,</span>
+<span class="w">    </span><span class="n">Done</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="k">impl</span><span class="w"> </span><span class="n">Status</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">label</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="kp">&amp;</span><span class="o">&#39;</span><span class="nb">static</span><span class="w"> </span><span class="kt">str</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">match</span><span class="w"> </span><span class="bp">self</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">Status</span><span class="p">::</span><span class="n">Circulating</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">&quot;回覧中&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">Status</span><span class="p">::</span><span class="n">Returned</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">&quot;差し戻し中&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">Status</span><span class="p">::</span><span class="n">Approved</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">&quot;回覧完了&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">Status</span><span class="p">::</span><span class="n">Done</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">&quot;完了&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="sd">/// 01 の CSS の札の class</span>
+<span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">css_class</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="kp">&amp;</span><span class="o">&#39;</span><span class="nb">static</span><span class="w"> </span><span class="kt">str</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">match</span><span class="w"> </span><span class="bp">self</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">Status</span><span class="p">::</span><span class="n">Circulating</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">&quot;badge-circulating&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">Status</span><span class="p">::</span><span class="n">Returned</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">&quot;badge-returned&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">Status</span><span class="p">::</span><span class="n">Approved</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">&quot;badge-approved&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">Status</span><span class="p">::</span><span class="n">Done</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">&quot;badge-done&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="cp">#[derive(Debug, Clone)]</span>
+<span class="k">pub</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">Request</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">id</span><span class="p">:</span><span class="w"> </span><span class="kt">u32</span><span class="p">,</span>
+<span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">title</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">,</span>
+<span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">due_date</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">,</span>
+<span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">status</span><span class="p">:</span><span class="w"> </span><span class="nc">Status</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="sd">/// 依頼の置き場（練習なのでメモリーに持つ。08 では PostgreSQL に置く）</span>
+<span class="k">pub</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">Store</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">requests</span><span class="p">:</span><span class="w"> </span><span class="nb">Vec</span><span class="o">&lt;</span><span class="n">Request</span><span class="o">&gt;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="k">impl</span><span class="w"> </span><span class="n">Store</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">sample</span><span class="p">()</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nc">Store</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">row</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">|</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">title</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="kt">str</span><span class="p">,</span><span class="w"> </span><span class="n">due</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="kt">str</span><span class="p">,</span><span class="w"> </span><span class="n">status</span><span class="o">|</span><span class="w"> </span><span class="n">Request</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">title</span><span class="p">:</span><span class="w"> </span><span class="nc">title</span><span class="p">.</span><span class="n">into</span><span class="p">(),</span><span class="w"> </span><span class="n">due_date</span><span class="p">:</span><span class="w"> </span><span class="nc">due</span><span class="p">.</span><span class="n">into</span><span class="p">(),</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="p">};</span>
+<span class="w">        </span><span class="n">Store</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">requests</span><span class="p">:</span><span class="w"> </span><span class="nc">vec</span><span class="o">!</span><span class="p">[</span>
+<span class="w">                </span><span class="n">row</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;棚の取り付け&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;2026-11-20&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">Status</span><span class="p">::</span><span class="n">Returned</span><span class="p">),</span>
+<span class="w">                </span><span class="n">row</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;部品の追加工&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;2026-10-31&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">Status</span><span class="p">::</span><span class="n">Approved</span><span class="p">),</span>
+<span class="w">                </span><span class="n">row</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;治具の製作&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;2026-10-25&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">Status</span><span class="p">::</span><span class="n">Done</span><span class="p">),</span>
+<span class="w">            </span><span class="p">],</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">title</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="kt">str</span><span class="p">,</span><span class="w"> </span><span class="n">due_date</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="kt">str</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">requests</span><span class="p">.</span><span class="n">iter</span><span class="p">().</span><span class="n">map</span><span class="p">(</span><span class="o">|</span><span class="n">r</span><span class="o">|</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">id</span><span class="p">).</span><span class="n">max</span><span class="p">().</span><span class="n">unwrap_or</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">        </span><span class="bp">self</span><span class="p">.</span><span class="n">requests</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">Request</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">title</span><span class="p">:</span><span class="w"> </span><span class="nc">title</span><span class="p">.</span><span class="n">to_string</span><span class="p">(),</span><span class="w"> </span><span class="n">due_date</span><span class="p">:</span><span class="w"> </span><span class="nc">due_date</span><span class="p">.</span><span class="n">to_string</span><span class="p">(),</span><span class="w"> </span><span class="n">status</span><span class="p">:</span><span class="w"> </span><span class="nc">Status</span><span class="p">::</span><span class="n">Circulating</span><span class="w"> </span><span class="p">});</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>書き方</th>
+<th>意味</th>
+<th>Django（05）では</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>module_router!()</code></td>
+<td>このモジュールと子のモジュールから、URL の表を自動で作る</td>
+<td><code>urls.py</code></td>
+</tr>
+<tr>
+<td><code>#[layout]</code></td>
+<td>全部のページを包む外枠（HTML の <code>&lt;html&gt;</code>・ヘッダー）</td>
+<td>テンプレートの <code>base.html</code></td>
+</tr>
+<tr>
+<td><code>#[page]</code>・<code>#[page(POST)]</code></td>
+<td>1 つの URL の GET・POST を受ける関数</td>
+<td>ビュー</td>
+</tr>
+<tr>
+<td><code>view! { &lt;h1&gt;"…"&lt;/h1&gt; }</code></td>
+<td>HTML を書く。文字は <code>"…"</code> で囲む。<strong><code>(値)</code> の中身は、自動で無害な形に変わる</strong>（XSS を防ぐ。10）</td>
+<td>テンプレートの <code>{{ }}</code></td>
+</tr>
+<tr>
+<td><code>for r in rows { … }</code></td>
+<td><code>view!</code> の中のくり返し</td>
+<td><code>{% for %}</code></td>
+</tr>
+<tr>
+<td><code>Form(input): Form&lt;NewRequestForm&gt;</code></td>
+<td>フォームの値を、構造体として受け取る（<code>#[derive(Deserialize)]</code>）</td>
+<td><code>request.POST</code></td>
+</tr>
+<tr>
+<td><code>see_other(href!(home)…)</code></td>
+<td>303 で別の URL へ（PRG）</td>
+<td><code>redirect</code></td>
+</tr>
+<tr>
+<td><code>.app_context(…)</code>・<code>app_context::&lt;T&gt;(cx)</code></td>
+<td>アプリ全体で共有する物を登録する・取り出す</td>
+<td>settings やモジュールの変数</td>
+</tr>
+<tr>
+<td><code>Mutex</code></td>
+<td>同時に書きかえないための鍵（4 章の <code>&amp;mut</code> の決まりを、実行中に守る）</td>
+<td>（Django は、データベースの鍵）</td>
+</tr>
+<tr>
+<td><code>required=""</code></td>
+<td>中身の無い属性は、<code>=""</code> を付けて書く</td>
+<td><code>required</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="51">5.1 動かす</h3>
+<div class="codehilite"><div class="code-wrap" id="code-12"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">topcoat</span> <span class="n">asset</span> <span class="n">bundle</span>               <span class="c"># CSS などを束ねて、実行ファイルの隣（target\debug\assets）に置く</span>
+<span class="n">cargo</span> <span class="n">run</span>                          <span class="c"># http://127.0.0.1:3000/ で待ち受ける</span>
+</code></pre></div></div>
+
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/L07-s1_hello.webp" alt="Topcoatで作った依頼の一覧。3件の依頼と状態の札、下に新しい依頼の入力フォーム" style="width: 100%; border: 1px solid #cbd5e1;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図5-2: Topcoat で作った一覧（CSS は 01 と同じ物を使っている）</div>
+</div>
+
+<p>件名に「型の改造」、納期に 2026-11-03 を入れて「依頼を足す」を押すと:</p>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/L07-s3_hello_added.webp" alt="一覧の先頭に4 型の改造 回覧中 が足された" style="width: 100%; border: 1px solid #cbd5e1;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図5-3: 足した依頼が、一覧の先頭に出る</div>
+</div>
+
+<h3 id="52-prg-url">5.2 PRG（送ったら、別の URL に移す）</h3>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/L07-06_prg.webp" alt="POST / で依頼を足し、303 → / で一覧へ移り、GET / で一覧を見る。再読み込みしても二重に足されない" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図5-4: POST → 303 → GET（PRG）</div>
+</div>
+
+<p>試した結果: <code>POST /</code> は <code>303</code>（行き先 <code>http://127.0.0.1:3000/</code>）を返し、ブラウザが <code>GET /</code> で一覧を読み直しました。POST の画面のまま再読み込みすると、同じ依頼がもう一度送られてしまうので、<strong>送ったら必ず別の URL（GET）に移す</strong>のが決まりです。</p>
+<blockquote>
+<p><strong>練習のアプリの限り:</strong> データはメモリーに持っているので、アプリを止めると消えます。ログインもありません。08 で、PostgreSQL・ログイン・承認の回覧を足します。</p>
+<p><strong>もっと詳しく:</strong> <code>Rust/06_Web基礎_HTTPとTopcoat_0_11完全ガイド.md</code>（UNIT 02〜06）、<code>Rust/rustnote/</code>（ログイン付きの完成したアプリ）</p>
+</blockquote>
+<h2 id="6-async">6. async と、会社のサーバーへの持ち込み</h2>
+<ul>
+<li><code>async fn</code> と <code>.await</code> は、02 の TypeScript と同じ考え方です。データベースやメールの返事を待つ間、ほかのお願いを処理できます。Rust では、<strong>tokio</strong> という部品が、その待ち合わせを受け持ちます（<code>#[tokio::main]</code>）。</li>
+<li>Topcoat のアプリは、<code>topcoat::start</code> が、環境変数 <code>HOST</code>・<code>PORT</code> の住所で待ち受けます（何も無いと <code>127.0.0.1:3000</code>）。会社のサーバーでは、WinSW の XML で <code>HOST=127.0.0.1</code>・<code>PORT=8080</code> にします（onprem の 04 の 7.3）。</li>
+</ul>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/L07-07_release_rust.webp" alt="cargo build --releaseでwebapp.exe、topcoat asset bundle --releaseでassetsを作り、zipにまとめて、onpremの04のサーバーのWinSWへ" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図6-1: 実行ファイル 1 つと assets を、会社のサーバーへ（onprem の 04 の 6・7 章）</div>
+</div>
+
+<div class="codehilite"><div class="code-wrap" id="code-13"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">build</span> <span class="p">-</span><span class="n">-release</span> <span class="p">-</span><span class="n">-locked</span>          <span class="c"># 本番用の実行ファイル（target\release\webapp.exe）</span>
+<span class="n">topcoat</span> <span class="n">asset</span> <span class="n">bundle</span> <span class="p">-</span><span class="n">-release</span>          <span class="c"># target\release\assets</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>もっと詳しく:</strong> <code>Rust/05_Rustバックエンド_async_並行処理_ジョブ_運用.md</code></p>
+</blockquote>
+<h2 id="7">7. よくある失敗</h2>
+<table>
+<thead>
+<tr>
+<th>症状</th>
+<th>原因</th>
+<th>直し方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>error[E0382]: borrow of moved value</code></td>
+<td>ムーブした後で使った</td>
+<td><code>&amp;</code> で貸す・<code>.clone()</code> で写しを作る</td>
+</tr>
+<tr>
+<td><code>error[E0004]: non-exhaustive patterns</code></td>
+<td><code>match</code> で書き忘れた場合がある</td>
+<td><code>help:</code> のとおり、足りない場合を書く</td>
+</tr>
+<tr>
+<td><code>error[E0502]: cannot borrow … as mutable because it is also borrowed as immutable</code></td>
+<td>見ている途中で、書きかえようとした</td>
+<td>見るのを終えてから書きかえる（変数のスコープを分ける）</td>
+</tr>
+<tr>
+<td><code>called Result::unwrap() on an Err value</code> で止まる</td>
+<td><code>unwrap()</code> した所が失敗した</td>
+<td><code>?</code> か <code>match</code> で扱う</td>
+</tr>
+<tr>
+<td>起動してすぐ <code>AssetBundle::load</code> で止まる</td>
+<td><code>topcoat asset bundle</code> をしていない</td>
+<td>5.1</td>
+</tr>
+<tr>
+<td><code>view!</code> で <code>expected =</code></td>
+<td>中身の無い属性（<code>required</code>）を、そのまま書いた</td>
+<td><code>required=""</code></td>
+</tr>
+<tr>
+<td>日本語が化けて保存される</td>
+<td>フォームの文字の送り方の問題ではなく、試しの道具（コマンドの <code>curl</code> など）の文字コード</td>
+<td>ブラウザから送って確かめる</td>
+</tr>
+<tr>
+<td>ビルドがとても遅い</td>
+<td>最初のビルドは、部品を全部コンパイルする</td>
+<td>2 回目からは速い。<code>topcoat dev</code> を使う</td>
+</tr>
+</tbody>
+</table>
+<h2 id="8">8. 練習問題</h2>
+<ol>
+<li><code>status/src/lib.rs</code> の <code>Status</code> に「保留」（<code>OnHold</code>）を足し、<code>cargo build</code> で、どこがエラーになるか見てください。<code>label</code> と <code>next_status</code> を直して、<code>cargo test</code> が通るようにします。</li>
+<li><code>hello</code> の一覧に、「状態」の列で <code>回覧中</code> だけを出すボタン（<code>?status=circulating</code> の URL）を足してください（ヒント：RustNote の <code>query_params</code>）。</li>
+<li><code>hello</code> の入力に、「件名は 100 文字まで」をサーバーでも確かめる行を足してください（ヒント：<code>title.chars().count()</code>）。</li>
+</ol>
+<h2 id="_2">用語の索引</h2>
+<table>
+<thead>
+<tr>
+<th>用語</th>
+<th>短い説明</th>
+<th>章</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>rustc・cargo・Cargo.toml</td>
+<td>コンパイラ／部品とビルドの道具／その設定</td>
+<td>1</td>
+</tr>
+<tr>
+<td>enum・match</td>
+<td>決まった値の型／全部の場合を分ける</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Result・Option・?</td>
+<td>成功か失敗か／あるか無いか／失敗を返す</td>
+<td>3</td>
+</tr>
+<tr>
+<td>所有権・ムーブ・借用（&amp;・&amp;mut）</td>
+<td>持ち主は 1 人／渡す／貸す（見る・書く）</td>
+<td>4</td>
+</tr>
+<tr>
+<td>Topcoat・module_router・layout・page・view!</td>
+<td>Rust の Web の土台／URL の表／外枠／1 ページ／HTML を書く</td>
+<td>5</td>
+</tr>
+<tr>
+<td>PRG・303</td>
+<td>送ったら GET に移す／その返事</td>
+<td>5.2</td>
+</tr>
+<tr>
+<td>async・tokio</td>
+<td>待つことのある処理／その待ち合わせの部品</td>
+<td>6</td>
+</tr>
+</tbody>
+</table>
+
+<script>
+(function () {
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy") ? resolve() : reject(); } catch (e) { reject(e); }
+      document.body.removeChild(ta);
+    });
+  }
+  document.querySelectorAll(".copy-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var pre = btn.parentElement.querySelector("pre");
+      var text = pre.textContent.replace(/\n$/, "");
+      copyText(text).then(function () {
+        btn.textContent = "コピーしました";
+        btn.classList.add("done");
+        setTimeout(function () { btn.textContent = "コピー"; btn.classList.remove("done"); }, 2000);
+      }, function () { btn.textContent = "コピーできませんでした"; });
+    });
+  });
+  if (/^#code-\d+$/.test(location.hash)) {
+    var note = document.getElementById("web-note");
+    if (note) { note.hidden = false; }
+  }
+})();
+</script>
+</body>
+</html>

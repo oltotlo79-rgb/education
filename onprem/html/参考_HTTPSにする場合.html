@@ -1,0 +1,693 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>参考_HTTPSにする場合</title>
+<style>
+
+@page {
+  size: A4;
+  margin: 18mm 16mm 20mm 16mm;
+  @bottom-right {
+    content: counter(page);
+    font-size: 10px;
+    color: #64748b;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  font-family: "Yu Gothic UI", "Yu Gothic", "Meiryo", "Hiragino Sans",
+               "Noto Sans JP", "Segoe UI", system-ui, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.75;
+  color: #1e293b;
+  background: #ffffff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #0f172a;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 1.4em 0 0.6em;
+  page-break-after: avoid;
+}
+h1 {
+  font-size: 22pt;
+  border-bottom: 3px solid #1e40af;
+  padding-bottom: 0.3em;
+  margin-top: 0.4em;
+  page-break-before: auto;
+}
+h2 {
+  font-size: 16pt;
+  border-bottom: 1.5px solid #cbd5e1;
+  padding-bottom: 0.25em;
+  margin-top: 1.6em;
+}
+h3 { font-size: 13pt; color: #1e40af; }
+h4 { font-size: 12pt; color: #334155; }
+
+p { margin: 0.5em 0 0.8em; }
+
+a { color: #1d4ed8; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+ul, ol { margin: 0.4em 0 0.9em; padding-left: 1.6em; }
+li { margin: 0.2em 0; }
+
+blockquote {
+  border-left: 4px solid #3b82f6;
+  background: #eff6ff;
+  margin: 0.8em 0;
+  padding: 0.6em 1em;
+  color: #1e3a8a;
+  border-radius: 0 6px 6px 0;
+  page-break-inside: avoid;
+}
+blockquote p { margin: 0.3em 0; }
+blockquote strong { color: #1e40af; }
+
+code {
+  /* DefCode (see _code_font.py) has ASCII and Japanese in ONE font, so a code
+     line is drawn as one text run and copies as one line in every PDF viewer. */
+  font-family: "Consolas", "Consolas", monospace;
+  font-size: 0.9em;
+  background: #f1f5f9;
+  color: #be123c;
+  padding: 0.12em 0.36em;
+  border-radius: 4px;
+  /* Long inline code (file paths / URLs) must break instead of overflowing. */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  /* In a PDF there is no horizontal scrolling, so long lines must wrap
+     instead of being clipped off the right edge of the page. */
+  overflow-x: hidden;
+  overflow-y: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  font-size: 9.2pt;
+  line-height: 1.5;
+  margin: 0.8em 0;
+  page-break-inside: avoid;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+  white-space: inherit;
+  word-break: inherit;
+  overflow-wrap: inherit;
+}
+
+/* The codehilite extension wraps highlighted blocks in a scrolling div; make
+   that wrap too so nothing is clipped in the PDF. */
+.codehilite {
+  overflow-x: hidden;
+  /* overflow-x: hidden alone turns overflow-y into auto, and a glyph from a
+     fallback font that is a hair too tall then shows a vertical scrollbar. */
+  overflow-y: hidden;
+}
+.codehilite pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* No per-token colours: every coloured token became its own text run (and its
+   own tag) in the PDF, and some viewers then pasted each token on its own line.
+   Only whole comment lines get a colour, so each line is still one run. */
+pre .cmt { color: #94a3b8; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.8em 0;
+  font-size: 9.6pt;
+  page-break-inside: avoid;
+}
+th, td {
+  border: 1px solid #e2e8f0;
+  padding: 6px 9px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: #f1f5f9;
+  color: #0f172a;
+  font-weight: 700;
+}
+tr:nth-child(even) td { background: #f8fafc; }
+
+img { max-width: 100%; height: auto; }
+
+hr {
+  border: none;
+  border-top: 1px dashed #cbd5e1;
+  margin: 1.6em 0;
+}
+
+/* Diagram blocks (the inline-styled <div>s in the source) */
+div[style] {
+  page-break-inside: avoid;
+}
+
+/* Tighten spacing right after headings */
+h1 + p, h2 + p, h3 + p, h4 + p { margin-top: 0.2em; }
+
+/* Avoid ugly page breaks inside list items / table rows */
+li, tr { page-break-inside: avoid; }
+
+@media screen {
+  body { max-width: 920px; margin: 0 auto; padding: 20px 20px 120px; font-size: 16px; }
+  pre { white-space: pre !important; word-break: normal !important; overflow-wrap: normal !important;
+        overflow-x: auto !important; font-size: 14px !important; }
+  img { max-width: 100%; height: auto; }
+}
+.web-bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; font-size: 14px;
+  padding: 8px 12px; margin-bottom: 16px; background: #eef2f7; border-radius: 8px; }
+.web-bar a { color: #1e3a5f; }
+.web-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 10; max-width: 90%;
+  font-size: 15px; font-weight: 700; background: #fff7ed; border: 2px solid #f2994a; border-radius: 8px;
+  padding: 10px 16px; margin: 0; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.code-wrap { position: relative; scroll-margin-top: 16px; }
+.code-wrap pre { padding-top: 40px !important; }
+.copy-btn { position: absolute; top: 8px; right: 8px; z-index: 2; font-size: 13px; font-weight: 700;
+  padding: 4px 12px; border: 0; border-radius: 6px; background: #2f80ed; color: #fff; cursor: pointer;
+  font-family: inherit; }
+.copy-btn:hover { background: #1c64c8; }
+.copy-btn.done { background: #27ae60; }
+.code-wrap:target pre { outline: 4px solid #f2994a; outline-offset: 2px; }
+.code-wrap:target .copy-btn { box-shadow: 0 0 0 4px #f2994a; }
+/* syntax colours on screen (the PDF uses one colour so that each line copies as one piece) */
+.codehilite .k, .codehilite .kd, .codehilite .kn, .codehilite .kr { color: #c084fc; }
+.codehilite .s, .codehilite .s1, .codehilite .s2, .codehilite .sb { color: #fcd34d; }
+.codehilite .c, .codehilite .c1, .codehilite .cm { color: #94a3b8; }
+.codehilite .nf, .codehilite .nx { color: #60a5fa; }
+.codehilite .nb { color: #34d399; }
+.codehilite .mi, .codehilite .mf { color: #f472b6; }
+.codehilite .nt { color: #f59e0b; }
+.codehilite .na { color: #93c5fd; }
+</style>
+</head>
+<body>
+<div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/%E5%8F%82%E8%80%83_HTTPS%E3%81%AB%E3%81%99%E3%82%8B%E5%A0%B4%E5%90%88.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、ブラウザーの「戻る」で PDF に戻れます。</p><div style="text-align: center; padding: 28px 0 8px;">
+<div style="font-size: 14px; color: #475569;">オンプレミス構築 教育資料</div>
+<div style="font-size: 26px; font-weight: 800; color: #0f172a; margin-top: 6px; line-height: 1.35;">参考 — HTTPS にする場合</div>
+<div style="font-size: 13px; color: #475569; margin-top: 8px;">今は使わない。社内で証明書を用意できるようになったときに読む</div>
+</div>
+
+<h1 id="https">参考: HTTPS にする場合</h1>
+<h2 id="_1">この資料について</h2>
+<p>今回の会社の環境では、社内で HTTPS を使えないため、本編（04・05）は <strong>HTTP（80 番）</strong>で書いています。この資料は、<strong>将来、証明書を用意できるようになったときに、HTTPS に切りかえる</strong>ための参考です。</p>
+<ul>
+<li>HTTP と HTTPS の違いは、00 基礎知識の 6 章にあります。</li>
+<li>この資料の手順は、04・05 で建てた形（IIS が 80 番で受け、名前で本番と検証に振り分ける）を前提にしています。</li>
+<li>Django 版の HTTPS の設定（11.3 の X-Forwarded-Proto）は、試して確かめました。IIS と証明書の手順は、本物の証明書が要るので、ここでは試していません。<strong>検証のサイトで先に試して</strong>から、本番にします。</li>
+</ul>
+<h2 id="1-https">1. HTTPS と証明書の考え方</h2>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/90-01_certificate.webp" alt="サーバーがwebapp.example.localと書かれた証明書（認証局のはんこ付き）を見せ、ブラウザが確かめて、本物なら暗号化する" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図1-1: 証明書は、サーバーの身分証。はんこ（認証局）を確かめてから、暗号化して話す</div>
+</div>
+
+<p>HTTPS は、2 つのことをします。</p>
+<ol>
+<li><strong>相手が本物か確かめる:</strong> サーバーが、自分の名前（<code>webapp.example.local</code>）が書かれた<strong>証明書</strong>を見せます。ブラウザは、その証明書に押された<strong>認証局のはんこ（電子署名）</strong>が、自分の信じているはんこかを確かめます。</li>
+<li><strong>暗号化する:</strong> 本物と分かったら、それから先の会話を暗号化します。途中で読まれたり、書きかえられたりしなくなります。</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>証明書に書かれていること</th>
+<th>意味</th>
+<th>合わないと</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>名前（サブジェクトの別名。SAN）</td>
+<td>この証明書が使える名前（<code>webapp.example.local</code> など）</td>
+<td>ブラウザに「名前が違う」という警告</td>
+</tr>
+<tr>
+<td>有効期限</td>
+<td>使ってよい期間（今は長くて 1 年ほど。だんだん短くなっている）</td>
+<td>ブラウザに「期限切れ」という警告。<strong>全員が使えなくなる</strong></td>
+</tr>
+<tr>
+<td>発行者（認証局）</td>
+<td>はんこを押した所</td>
+<td>ブラウザが信じていない所なら、「信頼されていない」という警告</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>用語:</strong> 証明書（サーバー証明書：サーバーの名前と、暗号に使う鍵の片方を、認証局が「本物です」とはんこを押して証明した電子の身分証）</p>
+</blockquote>
+<!-- -->
+
+<blockquote>
+<p><strong>用語:</strong> 認証局（CA。シーエー：証明書にはんこを押す所。ブラウザや Windows は、信じてよい認証局の一覧を持っている）</p>
+</blockquote>
+<!-- -->
+
+<blockquote>
+<p><strong>用語:</strong> 秘密鍵（証明書と組になる、サーバーだけが持つ鍵。これが漏れると、ほかの人がサーバーになりすませる。証明書の <code>.pfx</code> ファイルに一緒に入っていることが多く、パスワードで守る）</p>
+</blockquote>
+<h2 id="2-3">2. 社内で証明書を用意する 3 つの方法</h2>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/90-02_internal_ca.webp" alt="社内の認証局が、サーバーに証明書を出し、社員のPCに信頼の印を配るので、警告が出ない。情報システム部門が用意" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図2-1: 社内の認証局を使うと、社員のパソコンで警告が出ない</div>
+</div>
+
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>仕組み</th>
+<th>長所</th>
+<th>短所</th>
+<th>向き・不向き</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>社内の認証局</strong>（Active Directory 証明書サービスなど）</td>
+<td>情報システム部門が、会社の中の認証局で証明書を出す。社員のパソコンには、会社の認証局を信じる設定が自動で配られる</td>
+<td><code>webapp.example.local</code> のような社内だけの名前でも出せる。費用がかからない</td>
+<td>会社に認証局が無ければ、情報システム部門が作る必要がある</td>
+<td><strong>社内向けのアプリに最も向く</strong></td>
+</tr>
+<tr>
+<td>公的な認証局</td>
+<td>インターネットの認証局から証明書を取る</td>
+<td>どのパソコンでも、何もしなくても信じられる</td>
+<td><strong><code>.local</code> のような社内だけの名前には出してもらえない</strong>。会社が持っている本物のドメイン（例：<code>webapp.example.com</code>）の名前にし、DNS を社内と社外で合わせる必要がある</td>
+<td>会社の本物のドメインを社内でも使っている場合</td>
+</tr>
+<tr>
+<td>自己署名（自分ではんこを押す）</td>
+<td>サーバーが自分で証明書を作る</td>
+<td>すぐ作れる</td>
+<td>どのパソコンでも「信頼されていない」と警告が出る。社員が警告を無視する癖が付き、<strong>かえって危ない</strong></td>
+<td><strong>使わない</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>情報システム部門に頼むこと（例）:</strong></p>
+<ul>
+<li>本番と検証の名前（<code>webapp.example.local</code>・<code>webapp-stg.example.local</code>）の両方が入った証明書（または 1 つずつ）。</li>
+<li>秘密鍵ごと書き出した <code>.pfx</code> ファイルと、そのパスワード（パスワードは、ファイルとは別の方法で受け取る）。</li>
+<li>有効期限と、更新の段取り（だれが、いつ、新しい証明書を出すか）。</li>
+<li>社員のパソコンが、その認証局を信じる設定になっていること。</li>
+</ul>
+<h2 id="3">3. 切りかえの手順の全体</h2>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/90-03_https_switch.webp" alt="証明書を入れる、443番を足す、関所を開ける、アプリの設定を戻す、80番は443番へ案内、の5つの手順で鍵のマークへ" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図3-1: HTTPS への切りかえは 5 つの手順</div>
+</div>
+
+<table>
+<thead>
+<tr>
+<th>手順</th>
+<th>すること</th>
+<th>章</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>①</td>
+<td>証明書をサーバーに入れる</td>
+<td>4</td>
+</tr>
+<tr>
+<td>②</td>
+<td>IIS のサイトに、443 番のバインドを足す</td>
+<td>5</td>
+</tr>
+<tr>
+<td>③</td>
+<td>ファイアウォールで、社内からの 443 番を通す</td>
+<td>6</td>
+</tr>
+<tr>
+<td>④</td>
+<td>アプリの設定を、HTTPS 用に戻す</td>
+<td>7（Rust）・8（Django）</td>
+</tr>
+<tr>
+<td>⑤</td>
+<td>80 番で来たお願いを、443 番へ案内する</td>
+<td>9</td>
+</tr>
+</tbody>
+</table>
+<p><strong>順番が大事です。</strong> ①〜③ の間は、HTTP のまま使えます。④ と ⑤ は、<strong>同じ時間にまとめて</strong>切りかえます（④ だけ先にすると、HTTP でログインできなくなる）。必ず<strong>検証のサイトで先に</strong>行います。</p>
+<h2 id="4">4. 証明書をサーバーに入れる</h2>
+<div class="codehilite"><div class="code-wrap" id="code-1"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># .pfx のパスワードを、画面に出さずに入れる</span>
+<span class="nv">$pw</span> <span class="p">=</span> <span class="nb">Read-Host</span> <span class="s2">&quot;.pfx のパスワード&quot;</span> <span class="n">-AsSecureString</span>
+
+<span class="c"># コンピューターの「個人」の証明書の置き場に入れる</span>
+<span class="nb">Import-PfxCertificate</span> <span class="n">-FilePath</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">secrets</span><span class="p">\</span><span class="n">webapp</span><span class="p">.</span><span class="n">pfx</span> <span class="p">`</span>
+    <span class="n">-CertStoreLocation</span> <span class="n">Cert</span><span class="p">:\</span><span class="n">LocalMachine</span><span class="p">\</span><span class="n">My</span> <span class="n">-Password</span> <span class="nv">$pw</span>
+
+<span class="c"># 入った証明書の、名前・期限・指紋（Thumbprint）を見る</span>
+<span class="nb">Get-ChildItem</span> <span class="n">Cert</span><span class="p">:\</span><span class="n">LocalMachine</span><span class="p">\</span><span class="n">My</span> <span class="p">|</span>
+    <span class="nb">Select-Object</span> <span class="n">Subject</span><span class="p">,</span> <span class="p">@{</span> <span class="n">Name</span> <span class="p">=</span> <span class="s2">&quot;Names&quot;</span><span class="p">;</span> <span class="n">Expression</span> <span class="p">=</span> <span class="p">{</span> <span class="nv">$_</span><span class="p">.</span><span class="n">DnsNameList</span><span class="p">.</span><span class="n">Unicode</span> <span class="n">-join</span> <span class="s2">&quot;,&quot;</span> <span class="p">}</span> <span class="p">},</span> <span class="n">NotAfter</span><span class="p">,</span> <span class="n">Thumbprint</span>
+</code></pre></div></div>
+
+<p><strong>確かめること:</strong> <code>Names</code> に、本番と検証の名前が入っていること。<code>NotAfter</code>（期限）が先の日付であること。</p>
+<ul>
+<li>入れ終わったら、<code>.pfx</code> のファイルは、サーバーに残さず、会社の決まりに従って保管します（秘密鍵が入っているため）。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> Thumbprint（サムプリント：証明書の指紋。IIS に「どの証明書を使うか」を教えるのに使う）</p>
+</blockquote>
+<h2 id="5-iis-443">5. IIS に 443 番のバインドを足す</h2>
+<div class="codehilite"><div class="code-wrap" id="code-2"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">Import-Module</span> <span class="n">IISAdministration</span>
+
+<span class="c"># 本番の名前の証明書を探す（期限のいちばん先の物）</span>
+<span class="nv">$cert</span> <span class="p">=</span> <span class="nb">Get-ChildItem</span> <span class="n">Cert</span><span class="p">:\</span><span class="n">LocalMachine</span><span class="p">\</span><span class="n">My</span> <span class="p">|</span>
+    <span class="nb">Where-Object</span> <span class="p">{</span> <span class="nv">$_</span><span class="p">.</span><span class="n">DnsNameList</span><span class="p">.</span><span class="n">Unicode</span> <span class="o">-contains</span> <span class="s2">&quot;webapp.example.local&quot;</span> <span class="p">}</span> <span class="p">|</span>
+    <span class="nb">Sort-Object</span> <span class="n">NotAfter</span> <span class="n">-Descending</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">-First</span> <span class="n">1</span>
+
+<span class="c"># 本番のサイトに、443 番・名前つき（SNI）のバインドを足す</span>
+<span class="nb">New-IISSiteBinding</span> <span class="n">-Name</span> <span class="s2">&quot;webapp-prod&quot;</span> <span class="n">-BindingInformation</span> <span class="s2">&quot;*:443:webapp.example.local&quot;</span> <span class="p">`</span>
+    <span class="n">-Protocol</span> <span class="n">https</span> <span class="n">-CertificateThumbPrint</span> <span class="nv">$cert</span><span class="p">.</span><span class="n">Thumbprint</span> <span class="n">-CertStoreLocation</span> <span class="s2">&quot;Cert:\LocalMachine\My&quot;</span> <span class="n">-SslFlag</span> <span class="s2">&quot;Sni&quot;</span>
+
+<span class="nb">Get-IISSiteBinding</span> <span class="n">-Name</span> <span class="s2">&quot;webapp-prod&quot;</span>
+</code></pre></div></div>
+
+<p>検証も、名前とサイトを変えて同じことをします。</p>
+<p><strong>確かめること:</strong> <code>Get-IISSiteBinding</code> に、<code>http *:80:webapp.example.local</code> と <code>https *:443:webapp.example.local</code> の 2 つが出ること。</p>
+<blockquote>
+<p><strong>用語:</strong> SNI（エスエヌアイ：1 つの IP アドレスと 443 番で、名前ごとに別の証明書を使い分ける仕組み。本番と検証を同じ 443 番に置くのに使う）</p>
+</blockquote>
+<h2 id="6-443">6. ファイアウォールで 443 番を通す</h2>
+<div class="codehilite"><div class="code-wrap" id="code-3"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">New-NetFirewallRule</span> <span class="n">-DisplayName</span> <span class="s2">&quot;webapp HTTPS 443 (社内から)&quot;</span> <span class="p">`</span>
+    <span class="n">-Direction</span> <span class="n">Inbound</span> <span class="n">-Protocol</span> <span class="n">TCP</span> <span class="n">-LocalPort</span> <span class="n">443</span> <span class="p">`</span>
+    <span class="n">-RemoteAddress</span> <span class="n">10</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">/</span><span class="n">8</span> <span class="n">-Profile</span> <span class="n">Domain</span> <span class="n">-Action</span> <span class="n">Allow</span>
+</code></pre></div></div>
+
+<p><code>-RemoteAddress</code> は、04 の 9.2 で 80 番に使った社内の範囲と同じにします。<strong>ネットワークの関所（情報システム部門）でも 443 番を通してもらいます。</strong></p>
+<p>この時点で、社員のパソコンから <code>https://webapp-stg.example.local/</code> を開くと、<strong>鍵のマーク</strong>が出て画面が出ます（まだログインは HTTP 用の設定なので、④ をするまで試すのは表示だけにします）。</p>
+<h2 id="7-rusttopcoat">7. アプリの設定を戻す（Rust＋Topcoat版）</h2>
+<p>04 の 6.4 で作った「HTTP 用のクッキーの置き場」（<code>HttpCookieTokenStore</code>）をやめ、<strong>Topcoat の決まりの設定</strong>に戻します。</p>
+<div class="codehilite"><div class="code-wrap" id="code-4"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 変更前（HTTP 用。04 の 6.4）</span>
+<span class="p">.</span><span class="n">sessions</span><span class="p">(</span>
+<span class="w">    </span><span class="n">SessionConfig</span><span class="p">::</span><span class="n">builder</span><span class="p">()</span>
+<span class="w">        </span><span class="p">.</span><span class="n">token_store</span><span class="p">(</span><span class="k">crate</span><span class="p">::</span><span class="n">http_cookie</span><span class="p">::</span><span class="n">HttpCookieTokenStore</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">lifetime</span><span class="p">(</span><span class="n">std</span><span class="p">::</span><span class="n">time</span><span class="p">::</span><span class="n">Duration</span><span class="p">::</span><span class="n">from_secs</span><span class="p">(</span><span class="mi">60</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">60</span><span class="p">))</span>
+<span class="w">        </span><span class="p">.</span><span class="n">build</span><span class="p">(),</span>
+<span class="p">)</span>
+
+<span class="c1">// 変更後（HTTPS 用）: 決まりのクッキー（__Host- が付き、Secure が付く）に戻す。期限の 60 分は残す</span>
+<span class="p">.</span><span class="n">sessions</span><span class="p">(</span>
+<span class="w">    </span><span class="n">SessionConfig</span><span class="p">::</span><span class="n">builder</span><span class="p">()</span>
+<span class="w">        </span><span class="p">.</span><span class="n">lifetime</span><span class="p">(</span><span class="n">std</span><span class="p">::</span><span class="n">time</span><span class="p">::</span><span class="n">Duration</span><span class="p">::</span><span class="n">from_secs</span><span class="p">(</span><span class="mi">60</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">60</span><span class="p">))</span>
+<span class="w">        </span><span class="p">.</span><span class="n">build</span><span class="p">(),</span>
+<span class="p">)</span>
+</code></pre></div></div>
+
+<ul>
+<li>決まりのクッキーは、名前の頭に <code>__Host-</code> が付き、<code>Secure</code>（HTTPS のときだけ送る）が付きます。HTTPS なら、ブラウザが受け取ります。</li>
+<li>切りかえた後、ブラウザに残っている古い <code>session</code> のクッキーは使われなくなるので、<strong>全員が一度ログインし直し</strong>になります。社員に知らせておきます。</li>
+<li>HTTPS では、ブラウザが <code>Sec-Fetch-Site</code> を送るので、Topcoat の送り元の確かめ（04 の 8.3）が、より確かになります。<code>preserveHostHeader=true</code> は、そのままにしておきます。</li>
+</ul>
+<h2 id="8-djangoreact">8. アプリの設定を戻す（Django＋React版）</h2>
+<h3 id="81-settingspy">8.1 settings.py</h3>
+<div class="codehilite"><div class="code-wrap" id="code-5"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># HTTPS にしたら</span>
+<span class="n">SESSION_COOKIE_SECURE</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">CSRF_COOKIE_SECURE</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">CSRF_TRUSTED_ORIGINS</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;https://</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">host</span> <span class="ow">in</span> <span class="n">ALLOWED_HOSTS</span><span class="p">]</span>
+
+<span class="c1"># HTTP のときに黙らせていた注意を、また出す（SILENCED_SYSTEM_CHECKS の行を消す）</span>
+<span class="c1"># SILENCED_SYSTEM_CHECKS = [...]</span>
+</code></pre></div></div>
+
+<h3 id="82-waitress-https">8.2 waitress に「HTTPS で来た」ことを信じさせる</h3>
+<p>IIS からアプリへは、サーバーの中の HTTP（<code>127.0.0.1:8080</code>）のままです。そこで、<strong>IIS が「元は HTTPS だった」という付け札（<code>X-Forwarded-Proto: https</code>）を付け</strong>（9 章）、<strong>waitress がそれを信じる</strong>ようにします。05 の 9.2 の XML の <code>arguments</code> を、次のように変えます。</p>
+<div class="codehilite"><div class="code-wrap" id="code-6"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&lt;arguments&gt;</span>-m<span class="w"> </span>waitress<span class="w"> </span>--listen=127.0.0.1:8081<span class="w"> </span>--threads=8<span class="w"> </span>--trusted-proxy=127.0.0.1<span class="w"> </span>&quot;--trusted-proxy-headers=x-forwarded-for<span class="w"> </span>x-forwarded-proto&quot;<span class="w"> </span>config.wsgi:application<span class="nt">&lt;/arguments&gt;</span>
+</code></pre></div></div>
+
+<p><strong>試して確かめた結果</strong>（Django 5.2.18・waitress 3.0.2。<code>--trusted-proxy-headers</code> に <code>x-forwarded-proto</code> を足した状態）:</p>
+<table>
+<thead>
+<tr>
+<th>試したこと</th>
+<th>結果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Origin: https://...</code> でログインを送る。<code>X-Forwarded-Proto</code> 無し</td>
+<td><strong>403</strong>（Django は HTTP で来たと思い、送り元が食い違う）</td>
+</tr>
+<tr>
+<td>同じく、<code>X-Forwarded-Proto: https</code> を付ける</td>
+<td>200（ログインできる）</td>
+</tr>
+<tr>
+<td>ログイン後、<code>X-Forwarded-Proto: https</code> を付けて <code>request.is_secure()</code> を見る</td>
+<td><code>True</code></td>
+</tr>
+<tr>
+<td>付けないとき</td>
+<td><code>False</code></td>
+</tr>
+</tbody>
+</table>
+<p>つまり、<strong>IIS が付け札を付けること（9 章）と、waitress がそれを信じること（この章）の、両方が要ります</strong>。</p>
+<div class="codehilite"><div class="code-wrap" id="code-7"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 変えたら、注意が HTTPS 関係も含めて出ないか確かめる</span>
+<span class="nb">cd </span><span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">stg</span><span class="p">\</span><span class="n">service</span>
+<span class="p">.\</span><span class="n">manage</span><span class="p">.</span><span class="n">ps1</span> <span class="n">check</span> <span class="p">-</span><span class="n">-deploy</span>
+</code></pre></div></div>
+
+<p><strong>確かめること:</strong> <code>security.W012</code>・<code>W016</code>（クッキーの Secure）が出なくなること。<code>W004</code>（HSTS）・<code>W008</code>（HTTPS への転送）は、Django ではなく IIS で受け持つので、出たままでかまいません（10 章）。</p>
+<h2 id="9-80-443">9. 80 番で来たお願いを、443 番へ案内する</h2>
+<p><code>web.config</code>（04 の 8.5）のルールを、次のようにします。</p>
+<div class="codehilite"><div class="code-wrap" id="code-8"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="nt">&lt;configuration&gt;</span>
+<span class="w">  </span><span class="nt">&lt;system.webServer&gt;</span>
+<span class="w">    </span><span class="nt">&lt;rewrite&gt;</span>
+<span class="w">      </span><span class="nt">&lt;rules&gt;</span>
+<span class="w">        </span><span class="cm">&lt;!-- 1. HTTP で来たら、同じ名前・同じ道の HTTPS へ案内する --&gt;</span>
+<span class="w">        </span><span class="nt">&lt;rule</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;http-to-https&quot;</span><span class="w"> </span><span class="na">stopProcessing=</span><span class="s">&quot;true&quot;</span><span class="nt">&gt;</span>
+<span class="w">          </span><span class="nt">&lt;match</span><span class="w"> </span><span class="na">url=</span><span class="s">&quot;(.*)&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">          </span><span class="nt">&lt;conditions&gt;</span>
+<span class="w">            </span><span class="nt">&lt;add</span><span class="w"> </span><span class="na">input=</span><span class="s">&quot;{HTTPS}&quot;</span><span class="w"> </span><span class="na">pattern=</span><span class="s">&quot;off&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">          </span><span class="nt">&lt;/conditions&gt;</span>
+<span class="w">          </span><span class="nt">&lt;action</span><span class="w"> </span><span class="na">type=</span><span class="s">&quot;Redirect&quot;</span><span class="w"> </span><span class="na">url=</span><span class="s">&quot;https://{HTTP_HOST}/{R:1}&quot;</span><span class="w"> </span><span class="na">redirectType=</span><span class="s">&quot;Found&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">        </span><span class="nt">&lt;/rule&gt;</span>
+<span class="w">        </span><span class="cm">&lt;!-- 2. HTTPS で来たお願いを、「元は HTTPS」の付け札を付けて、アプリへ取り次ぐ --&gt;</span>
+<span class="w">        </span><span class="nt">&lt;rule</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;to-webapp-prod&quot;</span><span class="w"> </span><span class="na">stopProcessing=</span><span class="s">&quot;true&quot;</span><span class="nt">&gt;</span>
+<span class="w">          </span><span class="nt">&lt;match</span><span class="w"> </span><span class="na">url=</span><span class="s">&quot;(.*)&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">          </span><span class="nt">&lt;serverVariables&gt;</span>
+<span class="w">            </span><span class="nt">&lt;set</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;HTTP_X_FORWARDED_PROTO&quot;</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;https&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">          </span><span class="nt">&lt;/serverVariables&gt;</span>
+<span class="w">          </span><span class="nt">&lt;action</span><span class="w"> </span><span class="na">type=</span><span class="s">&quot;Rewrite&quot;</span><span class="w"> </span><span class="na">url=</span><span class="s">&quot;http://127.0.0.1:8080/{R:1}&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">        </span><span class="nt">&lt;/rule&gt;</span>
+<span class="w">      </span><span class="nt">&lt;/rules&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/rewrite&gt;</span>
+<span class="w">    </span><span class="nt">&lt;security&gt;</span>
+<span class="w">      </span><span class="nt">&lt;requestFiltering&gt;</span>
+<span class="w">        </span><span class="nt">&lt;requestLimits</span><span class="w"> </span><span class="na">maxAllowedContentLength=</span><span class="s">&quot;104857600&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">      </span><span class="nt">&lt;/requestFiltering&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/security&gt;</span>
+<span class="w">  </span><span class="nt">&lt;/system.webServer&gt;</span>
+<span class="nt">&lt;/configuration&gt;</span>
+</code></pre></div></div>
+
+<p><code>HTTP_X_FORWARDED_PROTO</code> を、ルールの中で使ってよい名前として、IIS に登録します（1 回だけ）。</p>
+<div class="codehilite"><div class="code-wrap" id="code-9"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">&amp;</span> <span class="s2">&quot;$env:windir\system32\inetsrv\appcmd.exe&quot;</span> <span class="nb">set </span><span class="n">config</span> <span class="p">`</span>
+  <span class="n">-section</span><span class="p">:</span><span class="n">system</span><span class="p">.</span><span class="n">webServer</span><span class="p">/</span><span class="n">rewrite</span><span class="p">/</span><span class="n">allowedServerVariables</span> <span class="p">/+</span><span class="s2">&quot;[name=&#39;HTTP_X_FORWARDED_PROTO&#39;]&quot;</span> <span class="p">/</span><span class="n">commit</span><span class="p">:</span><span class="n">apphost</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>部分</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>{HTTPS}</code> が <code>off</code></td>
+<td>HTTP で来たお願い</td>
+</tr>
+<tr>
+<td><code>redirectType="Found"</code></td>
+<td>「一時的に移った」（302）。<strong>最初は Found にします</strong>。<code>Permanent</code>（301）はブラウザが長く覚えるので、HTTP に戻したくなったときに戻せなくなる。HTTPS で落ち着いてから <code>Permanent</code> にする</td>
+</tr>
+<tr>
+<td><code>serverVariables</code> の <code>HTTP_X_FORWARDED_PROTO</code></td>
+<td>アプリに渡すお願いに、<code>X-Forwarded-Proto: https</code> の付け札を付ける</td>
+</tr>
+</tbody>
+</table>
+<p><strong>確かめること:</strong></p>
+<ul>
+<li>社員のパソコンで <code>http://webapp-stg.example.local/</code> を開くと、<code>https://webapp-stg.example.local/</code> に変わって、鍵のマークが出ること。</li>
+<li>ログイン・保存・ログアウトができること。開発者ツールで、セッションのクッキーに <code>Secure</code> が付いていること。</li>
+<li>メールの中の URL（04 の <code>APP_BASE_URL</code> など）を、<code>https://</code> に直したこと。</li>
+</ul>
+<h2 id="10-hstshttps">10. HSTS（HTTPS だけを使わせる仕組み）は、あわてて入れない</h2>
+<p><strong>HSTS</strong> は、ブラウザに「この名前は、これから先ずっと HTTPS だけで開いて」と覚えさせる仕組みです。安全を高めますが、<strong>一度覚えさせると、期間が過ぎるまで HTTP に戻せません</strong>。証明書の期限切れを起こすと、警告を無視して進むこともできなくなります。</p>
+<ul>
+<li>HTTPS で数か月落ち着き、証明書の更新の段取りが確かになってから考えます。</li>
+<li>入れるときも、最初は短い期間（例：1 日 ＝ <code>max-age=86400</code>）から始め、少しずつ延ばします。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> HSTS（エイチエスティーエス。HTTP Strict Transport Security：ブラウザに「この名前は HTTPS だけで開く」と覚えさせる仕組み）</p>
+</blockquote>
+<h2 id="11">11. 証明書の期限を切らさない</h2>
+<p>証明書の期限が切れると、<strong>全員の画面に警告が出て、使えなくなります</strong>。HTTPS にしたら、いちばん大事な点検になります。</p>
+<div class="codehilite"><div class="code-wrap" id="code-10"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 30 日以内に期限が切れる証明書を探す（毎月の点検に入れる。07 付録の 5 章）</span>
+<span class="nb">Get-ChildItem</span> <span class="n">Cert</span><span class="p">:\</span><span class="n">LocalMachine</span><span class="p">\</span><span class="n">My</span> <span class="p">|</span>
+    <span class="nb">Where-Object</span> <span class="p">{</span> <span class="nv">$_</span><span class="p">.</span><span class="n">NotAfter</span> <span class="o">-lt</span> <span class="p">(</span><span class="nb">Get-Date</span><span class="p">).</span><span class="n">AddDays</span><span class="p">(</span><span class="n">30</span><span class="p">)</span> <span class="p">}</span> <span class="p">|</span>
+    <span class="nb">Select-Object</span> <span class="n">Subject</span><span class="p">,</span> <span class="n">NotAfter</span><span class="p">,</span> <span class="n">Thumbprint</span>
+</code></pre></div></div>
+
+<p>新しい証明書をもらったら、4 章のとおり入れ、5 章のバインドの証明書を入れかえます（<code>Remove-IISSiteBinding</code> で外して、<code>New-IISSiteBinding</code> で付け直す）。<strong>入れかえは、社員が使わない時間に、検証から</strong>行います。</p>
+<h2 id="12">12. 困ったとき</h2>
+<table>
+<thead>
+<tr>
+<th>症状</th>
+<th>原因</th>
+<th>直し方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>「この接続ではプライバシーが保護されません」（名前が違う）</td>
+<td>証明書に、開いた名前が入っていない</td>
+<td>証明書の <code>Names</code>（4 章）を見る。入っていなければ、作り直してもらう</td>
+</tr>
+<tr>
+<td>同じく（信頼されていない）</td>
+<td>社員のパソコンが、その認証局を信じていない／自己署名</td>
+<td>情報システム部門に、認証局の信頼の配り方を確かめる</td>
+</tr>
+<tr>
+<td>同じく（期限切れ）</td>
+<td>証明書の期限が切れた</td>
+<td>11 章。新しい証明書を入れる</td>
+</tr>
+<tr>
+<td>HTTPS にしたら、ログインできない（403）</td>
+<td>Django: <code>X-Forwarded-Proto</code> が付いていない・waitress が信じていない（8.2 の表）／<code>CSRF_TRUSTED_ORIGINS</code> が <code>http://</code> のまま</td>
+<td>8・9 章</td>
+</tr>
+<tr>
+<td>ログインしても、すぐログインしていない扱い（HTTP で開いたとき）</td>
+<td>クッキーが <code>Secure</code> になったので、HTTP では送られない</td>
+<td>9 章の「HTTPS へ案内する」ルールが動いているか</td>
+</tr>
+<tr>
+<td>ページが何度も移り変わって開かない（リダイレクトが終わらない）</td>
+<td>アプリ側でも HTTP→HTTPS の転送をしていて、IIS とぶつかっている</td>
+<td>転送は IIS だけで行う。Django の <code>SECURE_SSL_REDIRECT</code> は <code>True</code> にしない</td>
+</tr>
+<tr>
+<td>一部の画像や部品が出ない</td>
+<td>画面の中に <code>http://</code> で書いた住所が残っている（混在コンテンツ）</td>
+<td>住所を <code>https://</code> か、<code>/static/...</code> のような名前なしの書き方にする</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_2">用語の索引</h2>
+<table>
+<thead>
+<tr>
+<th>用語</th>
+<th>短い説明</th>
+<th>章</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HSTS</td>
+<td>ブラウザに HTTPS だけを使わせる仕組み</td>
+<td>10</td>
+</tr>
+<tr>
+<td>SNI</td>
+<td>1 つの 443 番で、名前ごとに証明書を使い分ける仕組み</td>
+<td>5</td>
+</tr>
+<tr>
+<td>Thumbprint</td>
+<td>証明書の指紋</td>
+<td>4</td>
+</tr>
+<tr>
+<td>X-Forwarded-Proto</td>
+<td>「元は HTTPS だった」とアプリに伝える付け札</td>
+<td>8・9</td>
+</tr>
+<tr>
+<td>混在コンテンツ</td>
+<td>HTTPS の画面の中に、HTTP の部品が混ざること</td>
+<td>12</td>
+</tr>
+<tr>
+<td>自己署名証明書</td>
+<td>自分ではんこを押した証明書（使わない）</td>
+<td>2</td>
+</tr>
+<tr>
+<td>証明書・認証局・秘密鍵</td>
+<td>サーバーの身分証／はんこを押す所／組になる秘密の鍵</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+
+<script>
+(function () {
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy") ? resolve() : reject(); } catch (e) { reject(e); }
+      document.body.removeChild(ta);
+    });
+  }
+  document.querySelectorAll(".copy-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var pre = btn.parentElement.querySelector("pre");
+      var text = pre.textContent.replace(/\n$/, "");
+      copyText(text).then(function () {
+        btn.textContent = "コピーしました";
+        btn.classList.add("done");
+        setTimeout(function () { btn.textContent = "コピー"; btn.classList.remove("done"); }, 2000);
+      }, function () { btn.textContent = "コピーできませんでした"; });
+    });
+  });
+  if (/^#code-\d+$/.test(location.hash)) {
+    var note = document.getElementById("web-note");
+    if (note) { note.hidden = false; }
+  }
+})();
+</script>
+</body>
+</html>

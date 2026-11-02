@@ -1,0 +1,1499 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>05-supabase-setup</title>
+<style>
+
+@page {
+  size: A4;
+  margin: 18mm 16mm 20mm 16mm;
+  @bottom-right {
+    content: counter(page);
+    font-size: 10px;
+    color: #64748b;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  font-family: "Yu Gothic UI", "Yu Gothic", "Meiryo", "Hiragino Sans",
+               "Noto Sans JP", "Segoe UI", system-ui, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.75;
+  color: #1e293b;
+  background: #ffffff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #0f172a;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 1.4em 0 0.6em;
+  page-break-after: avoid;
+}
+h1 {
+  font-size: 22pt;
+  border-bottom: 3px solid #1e40af;
+  padding-bottom: 0.3em;
+  margin-top: 0.4em;
+  page-break-before: auto;
+}
+h2 {
+  font-size: 16pt;
+  border-bottom: 1.5px solid #cbd5e1;
+  padding-bottom: 0.25em;
+  margin-top: 1.6em;
+}
+h3 { font-size: 13pt; color: #1e40af; }
+h4 { font-size: 12pt; color: #334155; }
+
+p { margin: 0.5em 0 0.8em; }
+
+a { color: #1d4ed8; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+ul, ol { margin: 0.4em 0 0.9em; padding-left: 1.6em; }
+li { margin: 0.2em 0; }
+
+blockquote {
+  border-left: 4px solid #3b82f6;
+  background: #eff6ff;
+  margin: 0.8em 0;
+  padding: 0.6em 1em;
+  color: #1e3a8a;
+  border-radius: 0 6px 6px 0;
+  page-break-inside: avoid;
+}
+blockquote p { margin: 0.3em 0; }
+blockquote strong { color: #1e40af; }
+
+code {
+  /* DefCode (see _code_font.py) has ASCII and Japanese in ONE font, so a code
+     line is drawn as one text run and copies as one line in every PDF viewer. */
+  font-family: "Consolas", "Consolas", monospace;
+  font-size: 0.9em;
+  background: #f1f5f9;
+  color: #be123c;
+  padding: 0.12em 0.36em;
+  border-radius: 4px;
+  /* Long inline code (file paths / URLs) must break instead of overflowing. */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  /* In a PDF there is no horizontal scrolling, so long lines must wrap
+     instead of being clipped off the right edge of the page. */
+  overflow-x: hidden;
+  overflow-y: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  font-size: 9.2pt;
+  line-height: 1.5;
+  margin: 0.8em 0;
+  page-break-inside: avoid;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+  white-space: inherit;
+  word-break: inherit;
+  overflow-wrap: inherit;
+}
+
+/* The codehilite extension wraps highlighted blocks in a scrolling div; make
+   that wrap too so nothing is clipped in the PDF. */
+.codehilite {
+  overflow-x: hidden;
+  /* overflow-x: hidden alone turns overflow-y into auto, and a glyph from a
+     fallback font that is a hair too tall then shows a vertical scrollbar. */
+  overflow-y: hidden;
+}
+.codehilite pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* No per-token colours: every coloured token became its own text run (and its
+   own tag) in the PDF, and some viewers then pasted each token on its own line.
+   Only whole comment lines get a colour, so each line is still one run. */
+pre .cmt { color: #94a3b8; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.8em 0;
+  font-size: 9.6pt;
+  page-break-inside: avoid;
+}
+th, td {
+  border: 1px solid #e2e8f0;
+  padding: 6px 9px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: #f1f5f9;
+  color: #0f172a;
+  font-weight: 700;
+}
+tr:nth-child(even) td { background: #f8fafc; }
+
+img { max-width: 100%; height: auto; }
+
+hr {
+  border: none;
+  border-top: 1px dashed #cbd5e1;
+  margin: 1.6em 0;
+}
+
+/* Diagram blocks (the inline-styled <div>s in the source) */
+div[style] {
+  page-break-inside: avoid;
+}
+
+/* Tighten spacing right after headings */
+h1 + p, h2 + p, h3 + p, h4 + p { margin-top: 0.2em; }
+
+/* Avoid ugly page breaks inside list items / table rows */
+li, tr { page-break-inside: avoid; }
+
+@media screen {
+  body { max-width: 920px; margin: 0 auto; padding: 20px 20px 120px; font-size: 16px; }
+  pre { white-space: pre !important; word-break: normal !important; overflow-wrap: normal !important;
+        overflow-x: auto !important; font-size: 14px !important; }
+  img { max-width: 100%; height: auto; }
+}
+.web-bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; font-size: 14px;
+  padding: 8px 12px; margin-bottom: 16px; background: #eef2f7; border-radius: 8px; }
+.web-bar a { color: #1e3a5f; }
+.web-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 10; max-width: 90%;
+  font-size: 15px; font-weight: 700; background: #fff7ed; border: 2px solid #f2994a; border-radius: 8px;
+  padding: 10px 16px; margin: 0; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.code-wrap { position: relative; scroll-margin-top: 16px; }
+.code-wrap pre { padding-top: 40px !important; }
+.copy-btn { position: absolute; top: 8px; right: 8px; z-index: 2; font-size: 13px; font-weight: 700;
+  padding: 4px 12px; border: 0; border-radius: 6px; background: #2f80ed; color: #fff; cursor: pointer;
+  font-family: inherit; }
+.copy-btn:hover { background: #1c64c8; }
+.copy-btn.done { background: #27ae60; }
+.code-wrap:target pre { outline: 4px solid #f2994a; outline-offset: 2px; }
+.code-wrap:target .copy-btn { box-shadow: 0 0 0 4px #f2994a; }
+/* syntax colours on screen (the PDF uses one colour so that each line copies as one piece) */
+.codehilite .k, .codehilite .kd, .codehilite .kn, .codehilite .kr { color: #c084fc; }
+.codehilite .s, .codehilite .s1, .codehilite .s2, .codehilite .sb { color: #fcd34d; }
+.codehilite .c, .codehilite .c1, .codehilite .cm { color: #94a3b8; }
+.codehilite .nf, .codehilite .nx { color: #60a5fa; }
+.codehilite .nb { color: #34d399; }
+.codehilite .mi, .codehilite .mf { color: #f472b6; }
+.codehilite .nt { color: #f59e0b; }
+.codehilite .na { color: #93c5fd; }
+</style>
+</head>
+<body>
+<div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/05-supabase-setup.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、ブラウザーの「戻る」で PDF に戻れます。</p><h1 id="5-supabase">第5章: Supabaseのセットアップ</h1>
+<blockquote>
+<p>アプリで登録した本のデータは、どこかに保存しておく必要があります。この章では、データの保管庫＝<strong>バックエンド／データベース</strong> を用意します。まず「どの保存方法を選ぶべきか」を比較したうえで、本書が採用する <strong>Supabase</strong> をセットアップし、アプリから接続できるようにします。</p>
+</blockquote>
+<hr>
+<h2 id="1">1. そもそも「データを保存する」とは</h2>
+<p>第1章で作ったアプリは、一度閉じると入力した内容が消えてしまいます。本のリストを<strong>ずっと残しておく</strong>には、データを「<strong>永続化（えいぞくか）</strong>」する場所が必要です。</p>
+<blockquote>
+<p><strong>「永続化（persistence）」とは？</strong> 「アプリを閉じても、スマホを再起動しても、データが消えずに残ること」。逆に、アプリの実行中だけ覚えている（閉じると消える）状態を「一時的（揮発性）」と呼びます。state は一時的、データベースは永続的です。</p>
+</blockquote>
+<p>データの保存先には、大きく分けて2つの場所があります。</p>
+<table>
+<thead>
+<tr>
+<th>場所</th>
+<th>特徴</th>
+<th>例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>端末内（ローカル）</strong></td>
+<td>そのスマホの中だけに保存。ネット不要だが、別の端末とは共有できない</td>
+<td>SQLite、AsyncStorage</td>
+</tr>
+<tr>
+<td><strong>クラウド（サーバー）</strong></td>
+<td>インターネットの向こうのサーバーに保存。複数端末で同じデータを共有できる</td>
+<td>Supabase、Firebase</td>
+</tr>
+</tbody>
+</table>
+<p>本書では、<strong>複数端末で同じ本棚を見られる</strong>よう、クラウド型の <strong>Supabase</strong> を使います。</p>
+<hr>
+<h2 id="2">2. データ保存方法の選択肢を比較する</h2>
+<p>「どんな場合にどれを選ぶべきか」を、第0章よりさらに詳しく解説します。アプリの目的によって最適な選択は変わります。</p>
+<h3 id="21">2.1 主要な選択肢の比較表</h3>
+<table>
+<thead>
+<tr>
+<th>選択肢</th>
+<th>種類</th>
+<th>置き場所</th>
+<th>複数端末同期</th>
+<th>オフライン</th>
+<th>SQL</th>
+<th>向いているアプリ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Supabase</strong>（本書採用）</td>
+<td>RDB（PostgreSQL）</td>
+<td>クラウド</td>
+<td>◎</td>
+<td>△</td>
+<td>◯</td>
+<td>SNS、共有する本棚、複数端末で使うもの</td>
+</tr>
+<tr>
+<td><strong>Firebase</strong>（Firestore）</td>
+<td>NoSQL</td>
+<td>クラウド</td>
+<td>◎</td>
+<td>◎</td>
+<td>×</td>
+<td>チャット、リアルタイム共同編集</td>
+</tr>
+<tr>
+<td><strong>expo-sqlite</strong></td>
+<td>RDB（SQLite）</td>
+<td>端末内</td>
+<td>×</td>
+<td>◎</td>
+<td>◯</td>
+<td>完全オフラインのメモ・家計簿</td>
+</tr>
+<tr>
+<td><strong>AsyncStorage</strong></td>
+<td>キー・バリュー</td>
+<td>端末内</td>
+<td>×</td>
+<td>◎</td>
+<td>×</td>
+<td>設定値・小さなデータの保存</td>
+</tr>
+<tr>
+<td><strong>WatermelonDB</strong></td>
+<td>RDB（SQLiteベース）</td>
+<td>端末内＋同期</td>
+<td>◯</td>
+<td>◎</td>
+<td>△</td>
+<td>大量データ＋オフライン重視</td>
+</tr>
+</tbody>
+</table>
+<h3 id="22">2.2 それぞれの解説</h3>
+<h4 id="supabase">◆ Supabase（本書の採用）</h4>
+<p><strong>Supabase（スーパベース）</strong> は、<strong>PostgreSQL</strong>（ポストグレスキューエル、業界標準のRDB）をベースにした「<strong>BaaS</strong>（Backend as a Service）」です。</p>
+<blockquote>
+<p><strong>「BaaS」とは？</strong> Backend as a Service の略。「バックエンド（サーバー側の機能）を、自分で作らずサービスとして借りる」という意味。データベース・API・認証などを、設定するだけで使えます。</p>
+</blockquote>
+<ul>
+<li><strong>長所</strong>: SQL（業界標準のデータ操作言語）が使える／複数端末で同期できる／無料枠が十分／<strong>本書のWeb版（Next.js）とまったく同じバックエンドを共用できる</strong>／オープンソース</li>
+<li><strong>短所</strong>: 完全オフライン動作には工夫が必要</li>
+</ul>
+<h4 id="firebasefirestore">◆ Firebase（Firestore）</h4>
+<p>Googleが提供するBaaS。データベースは <strong>Firestore</strong> という <strong>NoSQL</strong>（表形式でない）型。</p>
+<ul>
+<li><strong>長所</strong>: リアルタイム同期やオフライン対応が得意／Googleサービスと連携しやすい</li>
+<li><strong>短所</strong>: SQLが使えず独自の操作方法を覚える必要がある／他サービスへの移行がしにくい</li>
+</ul>
+<h4 id="expo-sqlitedb">◆ expo-sqlite（端末内DB）</h4>
+<p>スマホの中に <strong>SQLite</strong>（軽量なRDB）を持つ方式。</p>
+<ul>
+<li><strong>長所</strong>: ネット完全不要／高速／サーバー費用ゼロ</li>
+<li><strong>短所</strong>: そのスマホの中だけ。機種変更やPC・別端末とは共有できない</li>
+</ul>
+<h4 id="asyncstorage">◆ AsyncStorage</h4>
+<p>「キーと値」だけの最もシンプルな端末内保存。設定値などの小さなデータ向け。</p>
+<blockquote>
+<p><strong>どんな時にどれを選ぶ？（まとめ）</strong>
+- <strong>複数端末で同期したい／Webアプリとデータを共有したい</strong> → <strong>Supabase</strong>（本書）
+- <strong>チャットなどリアルタイム性が最優先</strong> → Firebase
+- <strong>ネット不要の完全オフライン・自分専用アプリ</strong> → expo-sqlite
+- <strong>テーマ設定やログイン状態など小さな値だけ</strong> → AsyncStorage（他のDBと併用も多い）</p>
+</blockquote>
+<hr>
+<h2 id="3-supabase">3. Supabaseのアカウント作成とプロジェクト作成</h2>
+<blockquote>
+<p><strong>Web版チュートリアルを既にやった方へ:</strong> 同じSupabaseプロジェクトを使い回せます。その場合は「3.4 既存テーブルの確認」へ進み、<code>books</code>テーブルがあれば新規作成は不要です。</p>
+</blockquote>
+<h3 id="31">3.1 アカウント作成</h3>
+<ol>
+<li>ブラウザで <strong>https://supabase.com/</strong> を開きます。</li>
+<li>「Start your project」または「Sign In」をクリック。</li>
+<li><strong>GitHubアカウントでサインアップ</strong>するのが簡単です（第1章でGitHubを使う前提）。メールアドレスでの登録も可能です。</li>
+</ol>
+<h3 id="32">3.2 新しいプロジェクトを作る</h3>
+<ol>
+<li>ダッシュボード（管理画面）で「<strong>New project</strong>」をクリック。</li>
+<li>以下を入力します。</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>入力内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Name</strong></td>
+<td>プロジェクト名（例: <code>books-app</code>）。自分が分かる名前でOK</td>
+</tr>
+<tr>
+<td><strong>Database Password</strong></td>
+<td>データベースのパスワード。<strong>必ず控えておく</strong>（後で必要）</td>
+</tr>
+<tr>
+<td><strong>Region</strong></td>
+<td>サーバーの場所。日本なら「<strong>Northeast Asia (Tokyo)</strong>」が高速</td>
+</tr>
+</tbody>
+</table>
+<ol start="3">
+<li>「Create new project」を押すと、数分でデータベースが用意されます。</li>
+</ol>
+<blockquote>
+<p><strong>「Region（リージョン）」を東京にする理由:</strong> サーバーが物理的に近いほど、データのやり取りが速くなります。日本のユーザー向けアプリなら東京を選ぶと体感速度が上がります。</p>
+</blockquote>
+<h3 id="33-books">3.3 テーブルを作る — <code>books</code> テーブル</h3>
+<p>データベースの中に「本の情報を入れる表（テーブル）」を作ります。Supabaseの <strong>SQL Editor</strong>（SQLを書いて実行する画面）を使うのが確実です。</p>
+<ol>
+<li>Supabaseの左メニューから「<strong>SQL Editor</strong>」を開きます。</li>
+<li>次のSQLを貼り付けて、右下の「<strong>Run</strong>」を押します。</li>
+</ol>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> データベースの中に「本の情報を保存する表（テーブル）」を新しく作ります。SQL とは「データベースに命令を出すための言語」で、<code>create table</code> は「表を作りなさい」という命令です。表には「どんな列（タイトル・著者・状態など）を持つか」「各列はどんな種類の値か」をあらかじめ決めて書きます。まずは「表＝Excelのシートのようなもの」「列＝シートの縦の項目」とイメージできればOKです。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-1"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">-- create table : 新しいテーブル（表）を作るSQL命令</span>
+<span class="c1">-- books        : テーブル名（本のデータを入れる表）</span>
+<span class="k">create</span><span class="w"> </span><span class="k">table</span><span class="w"> </span><span class="n">books</span><span class="w"> </span><span class="p">(</span>
+<span class="w">  </span><span class="c1">-- id : 各行を区別する識別番号。uuid型で、自動生成される</span>
+<span class="w">  </span><span class="n">id</span><span class="w"> </span><span class="n">uuid</span><span class="w"> </span><span class="k">primary</span><span class="w"> </span><span class="k">key</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="n">gen_random_uuid</span><span class="p">(),</span>
+<span class="w">  </span><span class="c1">-- primary key      : 「主キー」。各行を一意に識別する特別な列</span>
+<span class="w">  </span><span class="c1">-- default gen_random_uuid() : 値を省略したら自動でランダムなIDを振る</span>
+
+<span class="w">  </span><span class="c1">-- title : 本のタイトル。text型（文字列）/ not null = 空は許さない（必須）</span>
+<span class="w">  </span><span class="n">title</span><span class="w"> </span><span class="nb">text</span><span class="w"> </span><span class="k">not</span><span class="w"> </span><span class="k">null</span><span class="p">,</span>
+<span class="w">  </span><span class="c1">-- author : 著者名。必須</span>
+<span class="w">  </span><span class="n">author</span><span class="w"> </span><span class="nb">text</span><span class="w"> </span><span class="k">not</span><span class="w"> </span><span class="k">null</span><span class="p">,</span>
+<span class="w">  </span><span class="c1">-- status : 読書状態。省略時は &#39;未読&#39; になる（default）</span>
+<span class="w">  </span><span class="n">status</span><span class="w"> </span><span class="nb">text</span><span class="w"> </span><span class="k">not</span><span class="w"> </span><span class="k">null</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="s1">&#39;未読&#39;</span><span class="p">,</span>
+<span class="w">  </span><span class="c1">-- memo : メモ。not nullが無いので空でもOK（省略可能）</span>
+<span class="w">  </span><span class="n">memo</span><span class="w"> </span><span class="nb">text</span><span class="p">,</span>
+
+<span class="w">  </span><span class="c1">-- created_at : 登録日時。timestamp型で、登録時の時刻が自動で入る</span>
+<span class="w">  </span><span class="n">created_at</span><span class="w"> </span><span class="k">timestamp</span><span class="w"> </span><span class="k">with</span><span class="w"> </span><span class="k">time</span><span class="w"> </span><span class="k">zone</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="n">now</span><span class="p">()</span>
+<span class="w">  </span><span class="c1">-- default now() : 省略時は「今の時刻」を自動で入れる</span>
+<span class="p">);</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>SQLの各行の意味:</strong>
+- <code>create table books (...)</code> … 「booksという名前の表を作る」命令。
+- 各行は「<strong>列名 + 型 + 制約</strong>」の形。<code>title text not null</code> は「titleという列、文字列型、空は不可」。
+- <code>primary key</code>（主キー）… 各行を見分けるための特別な列。本でいう「管理番号」。
+- <code>not null</code> … 「この列は必ず値を入れる」というルール（制約）。
+- <code>default 値</code> … 「省略したらこの値を入れる」初期値の指定。</p>
+</blockquote>
+<h4 id="1_1">▼ コードを1つずつ分解して解説</h4>
+<p>SQL を初めて見る方向けに、この <code>create table</code> 文を<strong>塊（かたまり）ごと</strong>にていねいに分解します。順番に見ていきましょう。</p>
+<hr>
+<h5 id="1_2">解説1: テーブルを作る宣言と全体の形</h5>
+<div class="codehilite"><div class="code-wrap" id="code-2"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">create</span><span class="w"> </span><span class="k">table</span><span class="w"> </span><span class="n">books</span><span class="w"> </span><span class="p">(</span>
+<span class="w">  </span><span class="c1">-- ...列の定義がここに並ぶ...</span>
+<span class="p">);</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>create table</code>（クリエイト・テーブル）は「<strong>新しいテーブル（表）を作りなさい</strong>」というSQLの命令です。<code>create</code>＝作る、<code>table</code>＝表。</li>
+<li>続く <code>books</code> が<strong>テーブル名（表の名前）</strong>です。ここでは「本のデータを入れる表」なので <code>books</code> としています。</li>
+<li><code>(</code> から <code>)</code> までの中に、<strong>「どんな列（縦の項目）を持つか」を1行ずつカンマ区切りで並べます</strong>。各列は基本的に「<code>列名 型 制約</code>」の順で書きます。</li>
+<li>最後の <code>;</code>（セミコロン）は「<strong>この命令はここで終わり</strong>」という区切りです。SQLでは1つの命令の終わりに付けます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>テーブル（table）</strong> とはデータを入れる「表」のこと。Excelの1枚のシートをイメージすると分かりやすいです。<strong>列（カラム/column）</strong> が縦の項目（タイトル・著者など）、<strong>行（ロウ/row）</strong> が1件分のデータ（本1冊分）にあたります。</p>
+</blockquote>
+<hr>
+<h5 id="2-idprimary-key-default">解説2: 主キーになるID列（<code>primary key</code> と <code>default</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-3"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">  </span><span class="n">id</span><span class="w"> </span><span class="n">uuid</span><span class="w"> </span><span class="k">primary</span><span class="w"> </span><span class="k">key</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="n">gen_random_uuid</span><span class="p">(),</span>
+</code></pre></div></div>
+
+<ul>
+<li>これは <code>id</code> という<strong>列を1つ定義</strong>している行です。読み方は「列名 <code>id</code> ／ 型 <code>uuid</code> ／ 制約 <code>primary key</code> と <code>default ...</code>」の順です。</li>
+<li><code>uuid</code>（ユーユーアイディー）は<strong>型</strong>で、「ランダムで重複しない長いID文字列」を入れるための型です。例: <code>3f2a...-...</code>。</li>
+<li><code>primary key</code>（プライマリ・キー＝主キー）は<strong>制約</strong>で、「<strong>この列の値で各行を1件ずつ見分ける</strong>」という宣言です。本でいう「重複しない管理番号」の役割で、空（null）も重複も許されません。</li>
+<li><code>default gen_random_uuid()</code> は「<strong>値を省略したら、自動でランダムなUUIDを振る</strong>」という初期値の指定です。<code>gen_random_uuid()</code> はその場でランダムなIDを生成するPostgreSQLの関数で、<code>()</code> は「関数を呼び出す」印です。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>主キー（primary key）</strong> とは「各行を一意（ユニーク）に識別するための列」。<strong>制約（constraint）</strong> とは「この列はこういう値しか入れてはダメ」というルールのことで、<code>not null</code> や <code>primary key</code> がその例です。</p>
+</blockquote>
+<hr>
+<h5 id="3-text-not-null">解説3: 必須の文字列列（<code>text</code> と <code>not null</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-4"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">  </span><span class="n">title</span><span class="w"> </span><span class="nb">text</span><span class="w"> </span><span class="k">not</span><span class="w"> </span><span class="k">null</span><span class="p">,</span>
+<span class="w">  </span><span class="n">author</span><span class="w"> </span><span class="nb">text</span><span class="w"> </span><span class="k">not</span><span class="w"> </span><span class="k">null</span><span class="p">,</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>title</code> と <code>author</code> という<strong>2つの列</strong>を定義しています。どちらも「列名 ／ 型 <code>text</code> ／ 制約 <code>not null</code>」の形です。</li>
+<li><code>text</code>（テキスト）は<strong>型</strong>で、「<strong>文字列（長さ制限のない文章）</strong>」を入れる列であることを表します。本のタイトルや著者名はこれで十分です。</li>
+<li><code>not null</code>（ノット・ヌル）は<strong>制約</strong>で、「<strong>この列は空にできない＝必ず値を入れる</strong>」という意味です。<code>null</code>（ヌル＝値が無い状態）を許さない、という宣言です。</li>
+<li>行末の <code>,</code>（カンマ）は「<strong>列の定義がまだ続く</strong>」という区切りです。次の列の定義へつながります。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>null（ヌル）</strong> とは「値が存在しない・未設定」を表す特別な状態のこと（空文字 <code>""</code> や 0 とは別物）。<code>not null</code> はその null を禁止する制約です。</p>
+</blockquote>
+<hr>
+<h5 id="4-default">解説4: 初期値つきの列と省略可能な列（<code>default</code> と制約なし）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-5"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">  </span><span class="n">status</span><span class="w"> </span><span class="nb">text</span><span class="w"> </span><span class="k">not</span><span class="w"> </span><span class="k">null</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="s1">&#39;未読&#39;</span><span class="p">,</span>
+<span class="w">  </span><span class="n">memo</span><span class="w"> </span><span class="nb">text</span><span class="p">,</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>status</code> 列は「<code>text</code> 型 ／ <code>not null</code>（必須）／ <code>default '未読'</code>」という組み合わせです。<code>default '未読'</code> は「<strong>値を省略したら自動で <code>'未読'</code> を入れる</strong>」という初期値指定で、SQLでは文字列を <code>'...'</code>（シングルクォート）で囲みます。</li>
+<li><code>not null</code> と <code>default</code> を<strong>両方</strong>付けると、「必ず値は入る（省略時は初期値が入るから）」という安心な列になります。</li>
+<li>一方 <code>memo</code> 列は <strong><code>text</code> だけ</strong>で <code>not null</code> がありません。これは「<strong>空（null）でもOK＝省略可能</strong>」という意味になります。メモは書かない本もあるためです。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>default（デフォルト）</strong> とは「値を指定しなかったときに自動で入る初期値」のこと。<code>default '未読'</code> なら、本を登録するときに状態を書かなければ自動的に「未読」になります。</p>
+</blockquote>
+<hr>
+<h5 id="5-timestamp-now">解説5: 登録日時を自動で入れる列（<code>timestamp</code> と <code>now()</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-6"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">  </span><span class="n">created_at</span><span class="w"> </span><span class="k">timestamp</span><span class="w"> </span><span class="k">with</span><span class="w"> </span><span class="k">time</span><span class="w"> </span><span class="k">zone</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="n">now</span><span class="p">()</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>created_at</code>（クリエイテッド・アット＝作成日時）という列を定義しています。「いつ登録されたか」を記録するための列です。</li>
+<li><code>timestamp with time zone</code>（タイムスタンプ・ウィズ・タイムゾーン）は<strong>型</strong>で、「<strong>タイムゾーン（時差）情報つきの日時</strong>」を入れる列です。世界中どこで使っても時刻がずれない、丈夫な日時型です。</li>
+<li><code>default now()</code> は「<strong>値を省略したら、その時点の現在時刻を自動で入れる</strong>」という指定です。<code>now()</code> は「今の時刻」を返すPostgreSQLの関数です。</li>
+<li>この行の<strong>末尾にカンマが無い</strong>点に注目してください。<code>( ... )</code> の中の<strong>最後の列定義</strong>なので、後ろに続く列が無く、カンマを付けません。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>timestamp（タイムスタンプ）</strong> とは「年月日と時分秒をひとまとめにした日時データ」のこと。<code>with time zone</code> を付けると時差の情報も一緒に保存され、地域をまたいでも正しい時刻として扱えます。</p>
+</blockquote>
+<hr>
+<h3 id="34">3.4 （任意）テストデータを入れる</h3>
+<p>動作確認用に、最初から数冊入れておくと便利です。同じくSQL Editorで実行します。</p>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> さっき作った <code>books</code> テーブルに、お試し用の本のデータを3冊分まとめて登録します。<code>insert into</code>（インサート）は「表に新しい行（データ）を追加しなさい」というSQL命令です。<code>(title, author, status)</code> で「どの列に入れるか」を指定し、<code>values (...)</code> の後ろに実際の値を並べます。<strong>1つのカッコ＝1冊分</strong>で、複数冊はカンマで区切る、と覚えてください。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-7"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">-- insert into : テーブルにデータ（行）を追加するSQL命令</span>
+<span class="c1">-- books (title, author, status) : どの列に値を入れるか指定</span>
+<span class="c1">-- values (...) : 入れる値。1行が1冊分。複数行はカンマで区切る</span>
+<span class="k">insert</span><span class="w"> </span><span class="k">into</span><span class="w"> </span><span class="n">books</span><span class="w"> </span><span class="p">(</span><span class="n">title</span><span class="p">,</span><span class="w"> </span><span class="n">author</span><span class="p">,</span><span class="w"> </span><span class="n">status</span><span class="p">)</span><span class="w"> </span><span class="k">values</span>
+<span class="w">  </span><span class="p">(</span><span class="s1">&#39;リーダブルコード&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Dustin Boswell&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;読了&#39;</span><span class="p">),</span>
+<span class="w">  </span><span class="p">(</span><span class="s1">&#39;達人プログラマー&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;David Thomas&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;読書中&#39;</span><span class="p">),</span>
+<span class="w">  </span><span class="p">(</span><span class="s1">&#39;プロを目指す人のためのTypeScript入門&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;鈴木 僚太&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;未読&#39;</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h4 id="1_3">▼ コードを1つずつ分解して解説</h4>
+<p>データを追加する <code>insert into</code> 文を、塊ごとに分解します。</p>
+<hr>
+<h5 id="1-insert-into">解説1: どのテーブルのどの列に入れるか（<code>insert into ... (列名)</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-8"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">insert</span><span class="w"> </span><span class="k">into</span><span class="w"> </span><span class="n">books</span><span class="w"> </span><span class="p">(</span><span class="n">title</span><span class="p">,</span><span class="w"> </span><span class="n">author</span><span class="p">,</span><span class="w"> </span><span class="n">status</span><span class="p">)</span><span class="w"> </span><span class="k">values</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>insert into</code>（インサート・イントゥ）は「<strong>テーブルに新しい行（データ）を追加しなさい</strong>」というSQLの命令です。<code>insert</code>＝挿入する。</li>
+<li>続く <code>books</code> が<strong>追加先のテーブル名</strong>です。3.3で作った <code>books</code> 表にデータを入れます。</li>
+<li><code>(title, author, status)</code> は「<strong>どの列に値を入れるか</strong>」の指定です。ここに書かなかった列（<code>id</code> や <code>created_at</code>）は、3.3で設定した <code>default</code>（自動生成・現在時刻）が働いて自動で埋まります。</li>
+<li><code>values</code>（バリューズ＝値）は「<strong>この後ろに実際の値を並べます</strong>」という合図です。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>insert（インサート）</strong> は「データを1件以上、表に新しく追加する」操作のこと。表の構造（列）を作る <code>create table</code> とは違い、<code>insert</code> は中身のデータを足す命令です。</p>
+</blockquote>
+<hr>
+<h5 id="2-values">解説2: 実際の値を並べる（<code>values (...)</code> と複数行）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-9"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">  </span><span class="p">(</span><span class="s1">&#39;リーダブルコード&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Dustin Boswell&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;読了&#39;</span><span class="p">),</span>
+<span class="w">  </span><span class="p">(</span><span class="s1">&#39;達人プログラマー&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;David Thomas&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;読書中&#39;</span><span class="p">),</span>
+<span class="w">  </span><span class="p">(</span><span class="s1">&#39;プロを目指す人のためのTypeScript入門&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;鈴木 僚太&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;未読&#39;</span><span class="p">);</span>
+</code></pre></div></div>
+
+<ul>
+<li><strong>1つのカッコ <code>( ... )</code> が「1冊分（=1行）」</strong> のデータです。中の値は、解説1で指定した <code>(title, author, status)</code> の<strong>順番どおり</strong>に並べます。1つ目が <code>title</code>、2つ目が <code>author</code>、3つ目が <code>status</code> です。</li>
+<li>値が文字列なので、それぞれ <code>'...'</code>（シングルクォート）で囲みます。SQLでは文字列はシングルクォートで囲む決まりです。</li>
+<li>各行は <code>,</code>（カンマ）で区切り、<strong>最後の行の末尾だけ <code>;</code>（セミコロン）</strong> で命令の終わりを示します。これで「3冊分をまとめて1回で追加」できます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>values（バリューズ）</strong> は「insert で実際に入れる値の並び」を指定する句のこと。<code>(値1, 値2, ...)</code> のカッコ1組が1行分にあたり、カンマで区切れば複数行を一度に追加できます。</p>
+</blockquote>
+<hr>
+<h3 id="35-rls">3.5 行レベルセキュリティ（RLS）の設定</h3>
+<p>Supabaseは安全のため、初期状態では外部からデータを読み書きできないようロックされています。学習用に、まずは「誰でも読み書きできる」設定にします。</p>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> <code>books</code> テーブルへのアクセス制限（鍵）を設定します。Supabaseは安全のため初期状態では外部からの読み書きを止めているので、まず <code>enable row level security</code> で「鍵の仕組み（誰がアクセスできるかのルール）」を有効にし、次に <code>create policy</code>（ポリシー＝許可ルール）で「学習用に全員に全操作を許可する」という規則を作ります。<code>using (true)</code> / <code>with check (true)</code> の <code>true</code> は「常に許可」という意味です。<strong>この設定は学習用で、公開アプリでは必ず制限を厳しくする</strong>点だけ押さえておきましょう。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-10"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">-- alter table ... enable row level security : このテーブルに「行レベルセキュリティ」を有効化</span>
+<span class="k">alter</span><span class="w"> </span><span class="k">table</span><span class="w"> </span><span class="n">books</span><span class="w"> </span><span class="n">enable</span><span class="w"> </span><span class="k">row</span><span class="w"> </span><span class="k">level</span><span class="w"> </span><span class="k">security</span><span class="p">;</span>
+
+<span class="c1">-- create policy : アクセスを許可する「ポリシー（規則）」を作る</span>
+<span class="c1">-- 学習用に「全員に全操作を許可」する規則を作成（本番アプリでは後で厳しくする）</span>
+<span class="c1">-- ポリシーの名前（自由）</span>
+<span class="k">create</span><span class="w"> </span><span class="n">policy</span><span class="w"> </span><span class="ss">&quot;Enable all access for books&quot;</span>
+<span class="w">  </span><span class="c1">-- 対象テーブル</span>
+<span class="w">  </span><span class="k">on</span><span class="w"> </span><span class="n">books</span>
+<span class="w">  </span><span class="c1">-- for all : 全操作（読み・書き・更新・削除）を対象に</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="k">all</span>
+<span class="w">  </span><span class="c1">-- using (true) : 読み取り条件＝常に許可</span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="p">(</span><span class="k">true</span><span class="p">)</span>
+<span class="w">  </span><span class="c1">-- with check (true) : 書き込み条件＝常に許可</span>
+<span class="w">  </span><span class="k">with</span><span class="w"> </span><span class="k">check</span><span class="w"> </span><span class="p">(</span><span class="k">true</span><span class="p">);</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>「RLS（Row Level Security）」とは？</strong> 「行（Row）ごとに、誰がアクセスできるかを制御するセキュリティ」のこと。本来は「自分のデータは自分しか見られない」のように細かく制御します。本書は学習用なので一旦「全員OK」にしますが、<strong>実際に公開するアプリでは必ず適切に制限</strong>してください（第10章で再度触れます）。</p>
+</blockquote>
+<h4 id="1_4">▼ コードを1つずつ分解して解説</h4>
+<p>このRLS設定は「<strong>鍵の仕組みを有効にする</strong>」命令と「<strong>許可ルールを作る</strong>」命令の2つに分かれます。塊ごとに見ていきましょう。</p>
+<hr>
+<h5 id="1-alter-table-enable-row-level-security">解説1: 鍵の仕組みを有効にする（<code>alter table ... enable row level security</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-11"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">alter</span><span class="w"> </span><span class="k">table</span><span class="w"> </span><span class="n">books</span><span class="w"> </span><span class="n">enable</span><span class="w"> </span><span class="k">row</span><span class="w"> </span><span class="k">level</span><span class="w"> </span><span class="k">security</span><span class="p">;</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>alter table</code>（オルター・テーブル）は「<strong>既存のテーブルの設定を変更しなさい</strong>」という命令です。<code>alter</code>＝変更する。すでにある <code>books</code> 表に対して設定を加えます。</li>
+<li>続く <code>books</code> が<strong>対象のテーブル名</strong>です。</li>
+<li><code>enable row level security</code>（イネーブル・ロウ・レベル・セキュリティ）は「<strong>行レベルセキュリティ（RLS）を有効にする</strong>」という指示です。これを有効にすると、<strong>ポリシー（許可ルール）が無い限り誰もアクセスできない</strong>状態になります。だから次の解説2でルールを作ります。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>RLS（行レベルセキュリティ）</strong> とは「行（1件のデータ）ごとにアクセスの可否を判定する仕組み」のこと。有効化しただけでは『全部禁止』なので、許可ルール（ポリシー）とセットで使います。</p>
+</blockquote>
+<hr>
+<h5 id="2-create-policy">解説2: 許可ルールを作る（<code>create policy</code> の対象指定）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-12"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">-- ポリシーの名前（自由）</span>
+<span class="k">create</span><span class="w"> </span><span class="n">policy</span><span class="w"> </span><span class="ss">&quot;Enable all access for books&quot;</span>
+<span class="w">  </span><span class="c1">-- 対象テーブル</span>
+<span class="w">  </span><span class="k">on</span><span class="w"> </span><span class="n">books</span>
+<span class="w">  </span><span class="c1">-- for all : 全操作（読み・書き・更新・削除）を対象に</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="k">all</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>create policy</code>（クリエイト・ポリシー）は「<strong>アクセスを許可するルール（ポリシー）を作りなさい</strong>」という命令です。</li>
+<li><code>"Enable all access for books"</code> は<strong>ポリシーの名前</strong>で、自由に付けられます（後で見分けるためのラベル）。</li>
+<li><code>on books</code> は「<strong>どのテーブルに対するルールか</strong>」の指定で、ここでは <code>books</code> 表が対象です。</li>
+<li><code>for all</code> は「<strong>どの操作を対象にするか</strong>」の指定で、<code>all</code>＝全操作（読み取り <code>select</code>・追加 <code>insert</code>・更新 <code>update</code>・削除 <code>delete</code>）すべてを許可対象にします。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>ポリシー（policy）</strong> とは「RLSにおける『誰が・どの操作を許されるか』の許可ルール」のこと。1つのテーブルに複数のポリシーを作ることもできます。</p>
+</blockquote>
+<hr>
+<h5 id="3-using-with-check">解説3: 許可する条件（<code>using</code> と <code>with check</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-13"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">  </span><span class="c1">-- using (true) : 読み取り条件＝常に許可</span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="p">(</span><span class="k">true</span><span class="p">)</span>
+<span class="w">  </span><span class="c1">-- with check (true) : 書き込み条件＝常に許可</span>
+<span class="w">  </span><span class="k">with</span><span class="w"> </span><span class="k">check</span><span class="w"> </span><span class="p">(</span><span class="k">true</span><span class="p">);</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>using (...)</code> は「<strong>読み取り・削除などで、どの行を対象にしてよいか</strong>」の条件です。カッコ内が <code>true</code> になる行だけが対象になります。</li>
+<li><code>with check (...)</code> は「<strong>追加・更新で、どんな値を書き込んでよいか</strong>」の条件です。こちらもカッコ内が <code>true</code> になる場合だけ書き込みを許します。</li>
+<li>両方とも中身が <code>true</code>（＝つねに成立）なので、「<strong>すべての行・すべての書き込みを無条件に許可</strong>」になります。これが「学習用に全員OK」の正体です。末尾の <code>;</code> でこの <code>create policy</code> 命令が終わります。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>using / with check</strong> はポリシーの条件式。<code>using</code> は「読める・消せる行の条件」、<code>with check</code> は「書き込める内容の条件」を表します。<code>true</code> は「常に許可」、本番では <code>auth.uid() = user_id</code> のように『本人だけ許可』といった条件に書き換えます。</p>
+</blockquote>
+<hr>
+<h2 id="4-supabase">4. アプリからSupabaseに接続する準備</h2>
+<h3 id="41-url">4.1 接続情報（URLとキー）を取得する</h3>
+<p>アプリからSupabaseにつなぐには、2つの情報が必要です。</p>
+<ol>
+<li>Supabaseダッシュボードの左メニュー「<strong>Project Settings（歯車アイコン）</strong>」→「<strong>API</strong>」を開きます。</li>
+<li>次の2つを控えます。</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>何か</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Project URL</strong></td>
+<td>あなたのデータベースの住所（<code>https://xxxx.supabase.co</code> の形）</td>
+</tr>
+<tr>
+<td><strong>anon public key</strong></td>
+<td>アプリから接続するための公開鍵（長い文字列）</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>「anon public key」は公開してOK？</strong> これは「匿名（anonymous）ユーザー用の公開鍵」で、アプリに埋め込む前提のキーです。データの保護は前述のRLS（行レベルセキュリティ）で行います。一方、<code>service_role</code> という別のキーは<strong>絶対に公開してはいけない</strong>管理者キーなので、アプリには入れないでください。</p>
+</blockquote>
+<h3 id="42">4.2 必要なライブラリをインストールする</h3>
+<p>第1章で作った <code>my-books-app</code> フォルダで、ターミナルから次を実行します。</p>
+<div class="codehilite"><div class="code-wrap" id="code-14"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>npx<span class="w"> </span>expo<span class="w"> </span>install<span class="w"> </span>@supabase/supabase-js<span class="w"> </span>@react-native-async-storage/async-storage<span class="w"> </span>react-native-url-polyfill
+<span class="c1"># npx expo install : Expo環境に合ったバージョンで部品をインストールするコマンド（npm installのExpo版）</span>
+<span class="c1"># @supabase/supabase-js : SupabaseをJS/TSから操作する公式ライブラリ</span>
+<span class="c1"># @react-native-async-storage/async-storage : ログイン状態などを端末に保存する補助（Supabaseが内部で使う）</span>
+<span class="c1"># react-native-url-polyfill : React NativeでURL機能を補う部品（Supabaseの動作に必要）</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>なぜ <code>npm install</code> ではなく <code>npx expo install</code>？</strong> <code>npx expo install</code> は「今のExpoのバージョンと相性の良い版」を自動で選んでくれます。React Native関連の部品はバージョンの相性が重要なので、Expoプロジェクトでは原則こちらを使います。</p>
+</blockquote>
+<h3 id="43">4.3 環境変数を設定する（接続情報を安全に持つ）</h3>
+<p>接続情報をコードに直接書かず、<strong>環境変数（かんきょうへんすう）</strong> という外部ファイルに置きます。プロジェクト直下に <code>.env</code> というファイルを新規作成し、次を書きます。</p>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> Supabaseへの接続情報（住所URLと公開鍵）を、コードとは別の <code>.env</code> という設定ファイルに書いて保管します。<code>名前=値</code> の形で1行ずつ書くだけで、アプリから読み取れる「環境変数（外部に置く設定値）」になります。ポイントは名前を <strong><code>EXPO_PUBLIC_</code> で始める</strong>こと——Expoではこの接頭辞が付いた変数だけがアプリから読める決まりだからです。<code>=</code> の右側には、4.1で控えた自分の値を貼り付けます（クォートで囲む必要はありません）。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-15"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># .env ファイル（プロジェクトの一番上の階層に置く）</span>
+<span class="c1"># EXPO_PUBLIC_ で始まる名前にすると、Expoアプリ内から読み取れる決まり</span>
+<span class="nv">EXPO_PUBLIC_SUPABASE_URL</span><span class="o">=</span>https://あなたのプロジェクト.supabase.co
+<span class="nv">EXPO_PUBLIC_SUPABASE_ANON_KEY</span><span class="o">=</span>あなたのanon_publicキー
+<span class="c1"># = の右側に、4.1で控えた値を貼り付ける（クォートで囲む必要はない）</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>「環境変数」と <code>.env</code> ファイルとは？</strong> 「アプリの外側に置く設定値」のことです。接続情報やパスワードをコードに直書きすると、GitHubに公開したとき他人に見られて危険です。<code>.env</code> という別ファイルに分け、これを<strong>Gitの管理から外す</strong>ことで安全を保ちます。</p>
+<p><strong><code>EXPO_PUBLIC_</code> という接頭辞の意味:</strong> Expoでは、<code>EXPO_PUBLIC_</code> で始まる環境変数だけがアプリのコードから読めます。逆にこの接頭辞が無い変数はアプリに含まれません。なお <code>PUBLIC</code>（公開）の名の通り、ここに入れた値は最終的にアプリに埋め込まれるので、<code>service_role</code> のような秘密キーは入れないこと。</p>
+</blockquote>
+<p><code>.env</code> をGit管理から外すため、<code>.gitignore</code> というファイル（無ければ作成）に次の1行を追加します。</p>
+<div class="codehilite"><div class="code-wrap" id="code-16"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># .gitignore ファイル（Gitに無視させたいファイルを列挙する）</span>
+.env
+<span class="c1"># ↑ この行で「.envファイルはGitで記録しない（＝GitHubにアップしない）」という指定になる</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong><code>.gitignore</code> とは？</strong> 「Gitに記録（追跡）させたくないファイルの一覧」を書くファイルです。<code>.env</code>（秘密情報）や <code>node_modules</code>（巨大な部品本体）などを書いておくと、GitHubにアップロードされず安全＆軽量になります。Expoのテンプレートには最初から <code>.gitignore</code> があり、<code>node_modules</code> などは既に書かれています。</p>
+</blockquote>
+<h3 id="44-supabase">4.4 Supabaseクライアントを作る</h3>
+<p>アプリ内で何度も使う「Supabaseへの接続オブジェクト」を1か所にまとめます。プロジェクト内に <code>lib</code> フォルダを作り、その中に <code>supabase.ts</code> を新規作成します。</p>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> アプリのあちこちから使う「Supabaseへの接続オブジェクト」を1か所で作り、共有できるようにします。<code>createClient(URL, キー, 設定)</code> という関数に、先ほど <code>.env</code> に書いた接続情報（<code>process.env.◯◯</code> で読み取る）を渡すと、接続オブジェクトができあがります。最後に <code>export</code> しておくことで、他のファイルから <code>import</code> して同じ接続を使い回せます。<strong>「接続の作り方を1つのファイルにまとめて、みんなで共有する」</strong>のが狙いだと押さえておきましょう。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-17"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// lib/supabase.ts — Supabaseへの接続を作る共通ファイル</span>
+
+<span class="c1">// RNでURL機能を有効化（おまじない。先頭で読み込む）</span>
+<span class="k">import</span><span class="w"> </span><span class="s2">&quot;react-native-url-polyfill/auto&quot;</span><span class="p">;</span>
+<span class="c1">// 端末保存の部品</span>
+<span class="k">import</span><span class="w"> </span><span class="nx">AsyncStorage</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@react-native-async-storage/async-storage&quot;</span><span class="p">;</span>
+<span class="c1">// Supabaseクライアントを作る関数を借りる</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">createClient</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@supabase/supabase-js&quot;</span><span class="p">;</span>
+
+<span class="c1">// process.env.XXX : .envファイルに書いた環境変数を読み取る書き方</span>
+<span class="c1">// 末尾の ! は「nullではないと保証」する印</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">supabaseUrl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">EXPO_PUBLIC_SUPABASE_URL</span><span class="o">!</span><span class="p">;</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">supabaseAnonKey</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">EXPO_PUBLIC_SUPABASE_ANON_KEY</span><span class="o">!</span><span class="p">;</span>
+
+<span class="c1">// createClient(URL, キー, 設定) : Supabaseへの接続オブジェクトを作る</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">supabase</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">createClient</span><span class="p">(</span><span class="nx">supabaseUrl</span><span class="p">,</span><span class="w"> </span><span class="nx">supabaseAnonKey</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">auth</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// ログイン状態を端末(AsyncStorage)に保存する設定</span>
+<span class="w">    </span><span class="nx">storage</span><span class="o">:</span><span class="w"> </span><span class="kt">AsyncStorage</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">// 認証トークンを自動更新する</span>
+<span class="w">    </span><span class="nx">autoRefreshToken</span><span class="o">:</span><span class="w"> </span><span class="kt">true</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">// セッション（ログイン状態）を保持する</span>
+<span class="w">    </span><span class="nx">persistSession</span><span class="o">:</span><span class="w"> </span><span class="kt">true</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">// URLからのセッション検出はモバイルでは不要なのでオフ</span>
+<span class="w">    </span><span class="nx">detectSessionInUrl</span><span class="o">:</span><span class="w"> </span><span class="kt">false</span><span class="p">,</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="p">});</span>
+<span class="c1">// export しているので、他のファイルから import { supabase } from &quot;../lib/supabase&quot; で使える</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong><code>!</code>（エクスクラメーション）の意味:</strong> <code>process.env.EXPO_PUBLIC_SUPABASE_URL!</code> の末尾の <code>!</code> は、TypeScriptに「この値はnull/undefinedではないと約束する」と伝える印です。環境変数は型の上では「無いかもしれない」扱いなので、<code>!</code> で「ちゃんと設定してあるから大丈夫」と明示しています。これを「<strong>非null表明（ひ・ヌル・ひょうめい、non-null assertion）</strong>」と呼びます。第2章で出た「型アサーション <code>as</code>」と同じく、「型の上での扱いを、開発者が責任を持って言い換える」書き方の一種です。</p>
+<p><strong>「おまじない」と書いた <code>react-native-url-polyfill/auto</code> の正体:</strong> コードの1行目で読み込んでいるこの部品には、ちゃんと役割があります。SupabaseのライブラリはWebブラウザに最初から備わっている <strong><code>URL</code> という機能</strong>（住所文字列を分解・組み立てする道具）を使います。ところが<strong>React Native（スマホアプリの実行環境）には、この <code>URL</code> 機能が標準で備わっていません</strong>。そのままだとSupabaseが内部で動けずエラーになります。<code>react-native-url-polyfill/auto</code> は、その<strong>足りない <code>URL</code> 機能を補って追加する</strong>部品です。</p>
+<p><strong>「ポリフィル（polyfill）」とは？</strong> 「ある環境に<strong>足りない機能を、後から埋めて補う</strong>部品」のこと。壁の穴を埋めるパテ（filler）が語源です。「RNに無いブラウザ機能を埋めるもの」と覚えてください。必ず<strong>他の処理より先に読み込む</strong>必要があるため、ファイルの先頭に書きます。</p>
+<p><strong><code>process.env</code> と <code>EXPO_PUBLIC_</code> のしくみ（なぜこの接頭辞が必要か）:</strong> <code>process.env.◯◯</code> は「<code>.env</code> ファイルに書いた<strong>環境変数</strong>を読み取る」書き方です（第4.3節で <code>.env</code> を作りました）。ただしExpoには大事なルールがあります——<strong><code>EXPO_PUBLIC_</code> で始まる名前の変数だけ</strong>が、アプリのコード（<code>process.env</code>）から読めます。</p>
+<p>なぜそんなルールがあるかというと、<strong>安全のため</strong>です。<code>.env</code> には秘密の値（管理者キーなど）を入れることもあります。もし全部の変数がアプリに埋め込まれてしまうと、秘密が漏れる危険があります。そこでExpoは「<code>EXPO_PUBLIC_</code>（＝"公開してよい"という意思表示）を付けた変数だけアプリに含める」という線引きをしています。逆に言うと、<strong>ここに入れた値は最終的にアプリに埋め込まれ、利用者から見られ得る</strong>ので、<code>anon</code>（公開前提）キーはOKでも、<code>service_role</code>（管理者）キーのような秘密は絶対に入れないでください（第4.1節の注意の再確認です）。</p>
+</blockquote>
+<h4 id="1_5">▼ コードを1つずつ分解して解説</h4>
+<p>このファイルを「<strong>部品を借りる</strong>」「<strong>接続情報を読む</strong>」「<strong>接続を作って配る</strong>」の3つの塊に分けて見ていきます。</p>
+<hr>
+<h5 id="1-import">解説1: 必要な部品を借りる（<code>import</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-18"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// RNでURL機能を有効化（おまじない。先頭で読み込む）</span>
+<span class="k">import</span><span class="w"> </span><span class="s2">&quot;react-native-url-polyfill/auto&quot;</span><span class="p">;</span>
+<span class="c1">// 端末保存の部品</span>
+<span class="k">import</span><span class="w"> </span><span class="nx">AsyncStorage</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@react-native-async-storage/async-storage&quot;</span><span class="p">;</span>
+<span class="c1">// Supabaseクライアントを作る関数を借りる</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">createClient</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@supabase/supabase-js&quot;</span><span class="p">;</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>import</code>（インポート）は「<strong>他のファイルやライブラリの機能を借りてくる</strong>」命令です。このファイルの先頭に並べます。</li>
+<li>1行目の <code>import "...";</code> は「<strong>名前を付けずにただ読み込むだけ</strong>」の書き方です。<code>react-native-url-polyfill/auto</code> を読み込むと、足りない <code>URL</code> 機能が自動で補われます（前述のポリフィル）。<strong>最初に読み込む必要がある</strong>ため先頭に置きます。</li>
+<li>2行目 <code>import AsyncStorage from "..."</code> は「<strong>そのライブラリの主役（デフォルトの機能）を <code>AsyncStorage</code> という名前で借りる</strong>」書き方です。</li>
+<li>3行目 <code>import { createClient } from "..."</code> は「<strong>ライブラリの中から <code>createClient</code> という関数だけを名指しで借りる</strong>」書き方です。<code>{ }</code> で囲むのがその目印です。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>import</strong> は他ファイルの機能を取り込む文。<code>from</code> の右側がどこから借りるか、左側がどの名前で受け取るか。<code>{ 名前 }</code> 付きは「名前指定の借用（named import）」、付かないものは「主役の借用（default import）」です。</p>
+</blockquote>
+<hr>
+<h5 id="2-processenv">解説2: 接続情報を読み取る（<code>process.env</code> と <code>!</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-19"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 末尾の ! は「nullではないと保証」する印</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">supabaseUrl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">EXPO_PUBLIC_SUPABASE_URL</span><span class="o">!</span><span class="p">;</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">supabaseAnonKey</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">EXPO_PUBLIC_SUPABASE_ANON_KEY</span><span class="o">!</span><span class="p">;</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>const 名前 = 値;</code> は「<strong>変えない変数を1つ作る</strong>」書き方です。ここでは接続情報を変数に入れて、後で使いやすくしています。</li>
+<li><code>process.env.◯◯</code> は「<strong><code>.env</code> ファイルに書いた環境変数を読み取る</strong>」書き方です。4.3で書いた <code>EXPO_PUBLIC_SUPABASE_URL</code> などの値がここに入ります。</li>
+<li>末尾の <code>!</code>（エクスクラメーション）は「<strong>この値はnull/undefinedではないと保証する</strong>」印（非null表明）です。環境変数は型の上では「無いかもしれない」扱いなので、<code>!</code> で「ちゃんと設定済みだから大丈夫」と明示します。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>環境変数（environment variable）</strong> は、コードの外側（<code>.env</code> ファイルなど）に置く設定値のこと。<code>process.env.名前</code> で読み出します。<strong>非null表明 <code>!</code></strong> は「nullではないと開発者が責任を持って言い切る」TypeScriptの書き方です。</p>
+</blockquote>
+<hr>
+<h5 id="3-createclient-export">解説3: 接続オブジェクトを作って共有する（<code>createClient</code> と <code>export</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-20"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">supabase</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">createClient</span><span class="p">(</span><span class="nx">supabaseUrl</span><span class="p">,</span><span class="w"> </span><span class="nx">supabaseAnonKey</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">auth</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// ログイン状態を端末(AsyncStorage)に保存する設定</span>
+<span class="w">    </span><span class="nx">storage</span><span class="o">:</span><span class="w"> </span><span class="kt">AsyncStorage</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">// 認証トークンを自動更新する</span>
+<span class="w">    </span><span class="nx">autoRefreshToken</span><span class="o">:</span><span class="w"> </span><span class="kt">true</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">// セッション（ログイン状態）を保持する</span>
+<span class="w">    </span><span class="nx">persistSession</span><span class="o">:</span><span class="w"> </span><span class="kt">true</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">// URLからのセッション検出はモバイルでは不要なのでオフ</span>
+<span class="w">    </span><span class="nx">detectSessionInUrl</span><span class="o">:</span><span class="w"> </span><span class="kt">false</span><span class="p">,</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>createClient(URL, キー, 設定)</code> は「<strong>Supabaseへの接続オブジェクトを作る</strong>」関数です。第1引数に住所(URL)、第2引数に公開鍵、第3引数に動作の設定を渡します。</li>
+<li>第3引数の <code>{ auth: { ... } }</code> は<strong>設定オブジェクト</strong>です。<code>auth</code>（認証）の中で、ログイン状態の保存先や自動更新などを細かく指定しています。各設定は「<strong>設定名: 値</strong>」の形で、<code>true</code>/<code>false</code> や保存先の部品を渡します。</li>
+<li><code>storage: AsyncStorage</code> は「ログイン状態を端末に保存する」設定で、解説1で借りた <code>AsyncStorage</code> をここで使っています。</li>
+<li>先頭の <code>export</code>（エクスポート）は「<strong>この <code>supabase</code> を他のファイルからも使えるように外へ公開する</strong>」印です。これにより他の画面から <code>import { supabase } from "../lib/supabase"</code> で同じ接続を使い回せます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>export</strong> は import の逆で、「このファイルの機能を外部に提供する」宣言。<code>export const supabase</code> とすれば、アプリ中のどのファイルからも同じ接続オブジェクトを借りて使えます。</p>
+</blockquote>
+<hr>
+<h3 id="45">4.5 接続テスト</h3>
+<p>きちんとつながるか確認しましょう。任意の画面ファイル（例: <code>app/(tabs)/index.tsx</code>）に、一時的に次を足して確認します。</p>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 作ったSupabase接続が本当に動くかを、実際にデータを取得して確かめます。画面が表示されたときに1回だけ（<code>useEffect</code>）<code>books</code> テーブルから全データを読み取り、その結果をターミナルに表示します。<code>supabase.from("books").select("*")</code> が「booksテーブルから全列を取ってきて」という命令で、<code>await</code> で結果を待ちます。成功すれば本のデータが、失敗すればエラー内容がログに出る——という<strong>動作確認専用のコード</strong>で、確認できたら消します。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-21"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">useEffect</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react&quot;</span><span class="p">;</span>
+<span class="c1">// 作った接続オブジェクトを借りる（パスは場所に応じて調整）</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">supabase</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;../../lib/supabase&quot;</span><span class="p">;</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">HomeScreen</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// useEffect : 画面表示時に1回だけ実行（第3章参照）</span>
+<span class="w">  </span><span class="nx">useEffect</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 即時実行する非同期関数（async/awaitを使うため）。第2章のasync/await参照</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">test</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="c1">// supabase.from(&quot;books&quot;).select(&quot;*&quot;) : booksテーブルから全列(*)を取得する</span>
+<span class="w">      </span><span class="c1">// await : 結果が返るまで待つ / { data, error } : 結果を分割代入で受け取る</span>
+<span class="w">      </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">data</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">supabase</span><span class="p">.</span><span class="kr">from</span><span class="p">(</span><span class="s2">&quot;books&quot;</span><span class="p">).</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// 失敗時はエラー内容を表示</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;接続エラー:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span>
+<span class="w">      </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// 成功時はデータを表示</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;取得した本:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">data</span><span class="p">);</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">    </span><span class="nx">test</span><span class="p">();</span>
+<span class="w">  </span><span class="p">},</span><span class="w"> </span><span class="p">[]);</span>
+
+<span class="w">  </span><span class="c1">// （画面の見た目は省略。ターミナルのログで結果を確認する）</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>確認方法:</strong> アプリを起動（<code>npx expo start</code>）してこの画面を開き、<strong>ターミナル</strong>を見ます。「取得した本: [...]」と3冊分のデータ（3.4でテストデータを入れた場合）が表示されれば、接続成功です！「接続エラー」が出たら、<code>.env</code> の値が正しいか、RLSのポリシー（3.5）を設定したかを確認してください。</p>
+<p><strong>確認できたら消す:</strong> このテストコードは確認用です。動作確認できたら消して、次章からの本実装に進みます。</p>
+</blockquote>
+<h4 id="1_6">▼ コードを1つずつ分解して解説</h4>
+<p>接続テストのコードを「<strong>部品を借りる</strong>」「<strong>表示時に1回だけ実行</strong>」「<strong>データを取って結果を出す</strong>」の塊に分けて見ます。</p>
+<hr>
+<h5 id="1-import_1">解説1: 必要な部品を借りる（<code>import</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-22"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">useEffect</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react&quot;</span><span class="p">;</span>
+<span class="c1">// 作った接続オブジェクトを借りる（パスは場所に応じて調整）</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">supabase</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;../../lib/supabase&quot;</span><span class="p">;</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>import { useEffect } from "react"</code> で、Reactから <code>useEffect</code>（画面表示時などに処理を動かす道具。第3章参照）を名指しで借りています。</li>
+<li><code>import { supabase } from "../../lib/supabase"</code> で、4.4で作って <code>export</code> した接続オブジェクト <code>supabase</code> を借りています。<code>../../</code> は「2つ上の階層のフォルダ」を意味し、ファイルの置き場所に応じて調整します。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>相対パス</strong>とは「今のファイルから見た位置」での指定方法。<code>./</code> が同じ階層、<code>../</code> が1つ上の階層、<code>../../</code> が2つ上の階層を表します。</p>
+</blockquote>
+<hr>
+<h5 id="2-1useeffect">解説2: 画面表示時に1回だけ実行する（<code>useEffect</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-23"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">  </span><span class="nx">useEffect</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// ...中の処理...</span>
+<span class="w">  </span><span class="p">},</span><span class="w"> </span><span class="p">[]);</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>useEffect(処理, 依存配列)</code> は「<strong>画面が表示された後などのタイミングで、指定した処理を動かす</strong>」ためのReactの道具です（詳しくは第3章）。</li>
+<li>第1引数の <code>() =&gt; { ... }</code> が「実行したい処理」です。</li>
+<li>第2引数の <code>[]</code>（<strong>空の依存配列</strong>）が重要で、「<strong>最初に画面が表示されたときに1回だけ実行する</strong>」という意味になります。空でないと毎回の更新で動いてしまいます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>依存配列（dependency array）</strong> とは <code>useEffect</code> の第2引数の <code>[ ... ]</code> のこと。中に入れた値が変わるたびに処理が再実行されます。空 <code>[]</code> なら「初回の1回だけ」になります。</p>
+</blockquote>
+<hr>
+<h5 id="3-asyncawait-supabasefrom">解説3: データを取得して結果を出す（<code>async/await</code> と <code>supabase.from</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-24"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">test</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">data</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">supabase</span><span class="p">.</span><span class="kr">from</span><span class="p">(</span><span class="s2">&quot;books&quot;</span><span class="p">).</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// 失敗時はエラー内容を表示</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;接続エラー:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span>
+<span class="w">      </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// 成功時はデータを表示</span>
+<span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;取得した本:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">data</span><span class="p">);</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">    </span><span class="nx">test</span><span class="p">();</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>const test = async () =&gt; { ... }</code> は「<strong><code>async</code>（非同期）な関数 <code>test</code> を作る</strong>」書き方です。<code>async</code> を付けると、中で <code>await</code>（結果を待つ）が使えます（第2章参照）。</li>
+<li><code>supabase.from("books").select("*")</code> が<strong>データ取得の命令</strong>です。<code>from("books")</code> で「booksテーブルから」、<code>select("*")</code> で「全列（<code>*</code>＝すべて）を取ってくる」という意味になります。</li>
+<li><code>await</code> は「<strong>結果が返ってくるまで待つ</strong>」印です。通信は時間がかかるため、待ってから結果を受け取ります。</li>
+<li><code>const { data, error } = ...</code> は<strong>分割代入</strong>で、結果から <code>data</code>（取れたデータ）と <code>error</code>（エラー情報）を同時に取り出します。<code>if (error)</code> でエラーの有無を判定し、<code>console.log(...)</code> でターミナルに結果を表示します。</li>
+<li>最後の <code>test();</code> で、作った関数を<strong>実際に呼び出して実行</strong>します（定義しただけでは動かないため）。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>async/await</strong> は「時間のかかる処理（通信など）の結果を待ってから次に進む」ための書き方。<code>console.log(...)</code> は「ターミナル（コンソール）に値を出力して確認する」ためのデバッグ用命令です。</p>
+</blockquote>
+<hr>
+<h2 id="supabase_1">発展: アプリでは使っていない重要なSupabase機能</h2>
+<blockquote>
+<p>ここまでで「全員が読み書きできる <code>books</code> テーブルにつなぐ」という最小構成は完成しました。ですが、実際に世の中へ公開するアプリには、まだ足りない機能がたくさんあります。この「発展」セクションでは、<strong>本書のアプリ本編では使わないけれど、Supabaseを本格的に使うなら必ず出会う重要機能</strong>を、初心者向けに最小サンプルで紹介します。難しければ今は読み飛ばし、必要になったとき戻ってくる、という使い方で構いません。各トピックは独立した最小サンプルなので、気になるものから読んでOKです。</p>
+</blockquote>
+<hr>
+<h3 id="auth">認証（Auth）— ユーザーのサインアップ・ログイン・ログアウト</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> アプリに「会員登録」と「ログイン」の仕組みを足します。メールアドレスとパスワードで<strong>新規登録（サインアップ）</strong>し、次回からは同じ情報で<strong>ログイン</strong>、終わったら<strong>ログアウト</strong>できるようにします。さらに「今ログインしているのは誰か」を取り出す方法も示します。Supabaseは認証（ログイン機能）を最初から持っているので、自分でパスワードを安全に保管する難しい仕組みを作らなくて済みます。</p>
+</blockquote>
+<p><strong>いつ使うか / なぜ必要か:</strong> 「自分のデータは自分だけが見られる」「ログインした人だけ投稿できる」といったアプリには、誰がアプリを使っているかを区別する<strong>ログイン機能（認証）</strong>が必須です。本書のアプリは学習用で全員共有のため使っていませんが、SNSやメモアプリなど個人ごとにデータを分けたいなら最初に必要になります。</p>
+<div class="codehilite"><div class="code-wrap" id="code-25"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// auth-example.ts — 認証(ログイン機能)の基本4操作</span>
+<span class="c1">// 4.4で作った接続オブジェクトを借りる</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">supabase</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;../lib/supabase&quot;</span><span class="p">;</span>
+
+<span class="c1">// (1) サインアップ：メールとパスワードで新しいユーザーを登録する</span>
+<span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">signUp</span><span class="p">(</span><span class="nx">email</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">password</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// signUp(...) : 新規ユーザーを作る命令。結果は { data, error } で返る</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">data</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">supabase</span><span class="p">.</span><span class="nx">auth</span><span class="p">.</span><span class="nx">signUp</span><span class="p">({</span>
+<span class="w">    </span><span class="c1">// 登録するメールアドレス</span>
+<span class="w">    </span><span class="nx">email</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">// 登録するパスワード</span>
+<span class="w">    </span><span class="nx">password</span><span class="p">,</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 失敗時はエラー内容</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;登録エラー:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 成功時は作られたユーザー情報</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;登録できたユーザー:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">data</span><span class="p">.</span><span class="nx">user</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// (2) ログイン：登録済みのメールとパスワードでログインする</span>
+<span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">signIn</span><span class="p">(</span><span class="nx">email</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">password</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// signInWithPassword(...) : メール+パスワードでログインする命令</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">data</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">supabase</span><span class="p">.</span><span class="nx">auth</span><span class="p">.</span><span class="nx">signInWithPassword</span><span class="p">({</span>
+<span class="w">    </span><span class="nx">email</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">password</span><span class="p">,</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;ログインエラー:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;ログイン中のユーザー:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">data</span><span class="p">.</span><span class="nx">user</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// (3) ログアウト：今のログイン状態を解除する</span>
+<span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">signOut</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// signOut() : ログアウトする命令。引数は不要</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">error</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">supabase</span><span class="p">.</span><span class="nx">auth</span><span class="p">.</span><span class="nx">signOut</span><span class="p">();</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span><span class="w"> </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;ログアウトエラー:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// (4) 現在のユーザー取得：今ログインしているのが誰かを調べる</span>
+<span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">getCurrentUser</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// getUser() : 今ログイン中のユーザー情報を取り出す命令</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">data</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">supabase</span><span class="p">.</span><span class="nx">auth</span><span class="p">.</span><span class="nx">getUser</span><span class="p">();</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;取得エラー:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 未ログインなら user は null</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;現在のユーザー:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">data</span><span class="p">.</span><span class="nx">user</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="1_7">▼ コードを1つずつ分解して解説</h4>
+<p>この認証コードを「<strong>登録</strong>」「<strong>ログイン</strong>」「<strong>ログアウト</strong>」「<strong>現在のユーザー取得</strong>」の4つの塊に分けて見ていきます。</p>
+<hr>
+<h5 id="1-supabaseauthsignup">解説1: サインアップ（<code>supabase.auth.signUp</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-26"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">data</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">supabase</span><span class="p">.</span><span class="nx">auth</span><span class="p">.</span><span class="nx">signUp</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">email</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">password</span><span class="p">,</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>supabase.auth</code>（オース）は「<strong>認証（ログイン関連）の操作をまとめた入口</strong>」です。<code>auth</code> の後ろにつなげる命令で、登録・ログイン・ログアウトなどを行います。</li>
+<li><code>signUp({ email, password })</code> は「<strong>メールアドレスとパスワードで新しいユーザーを登録する</strong>」命令です。<code>{ email, password }</code> の部分は「登録に使う情報をまとめて渡している」だけです。</li>
+<li><code>await</code> で結果を待ち、<code>{ data, error }</code> の分割代入で受け取ります。成功すれば <code>data.user</code> に作られたユーザーの情報が、失敗すれば <code>error</code> に理由が入ります。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>サインアップ（sign up）</strong> とは「新しく会員登録すること」。一方の<strong>ログイン（sign in）</strong> は「すでに登録済みの人がアプリに入ること」です。最初の1回だけがサインアップ、2回目以降はログイン、と覚えてください。</p>
+</blockquote>
+<hr>
+<h5 id="2-signinwithpassword">解説2: ログイン（<code>signInWithPassword</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-27"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">data</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">supabase</span><span class="p">.</span><span class="nx">auth</span><span class="p">.</span><span class="nx">signInWithPassword</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">email</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">password</span><span class="p">,</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>signInWithPassword({ email, password })</code> は「<strong>登録済みのメールとパスワードでログインする</strong>」命令です。名前のとおり「パスワードを使ったログイン」です。</li>
+<li>成功すると、Supabaseがログイン状態（セッション）を<strong>自動で端末に保存</strong>します。4.4で <code>storage: AsyncStorage</code> と設定したおかげで、アプリを閉じても次回ログイン状態が残ります。</li>
+<li>失敗（パスワード違いなど）のときは <code>error.message</code> に理由が入るので、画面に「メールかパスワードが違います」と出す、といった使い方をします。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>セッション（session）</strong> とは「ログインしている状態」を表す情報のこと。これが端末に保存されていると、毎回ログインし直さなくて済みます。</p>
+</blockquote>
+<hr>
+<h5 id="3-signout">解説3: ログアウト（<code>signOut</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-28"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">error</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">supabase</span><span class="p">.</span><span class="nx">auth</span><span class="p">.</span><span class="nx">signOut</span><span class="p">();</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>signOut()</code> は「<strong>今のログイン状態を解除する</strong>」命令で、引数は要りません。</li>
+<li>実行すると、端末に保存されていたセッション（ログイン状態）が消され、未ログインに戻ります。</li>
+<li>戻り値は <code>error</code> だけ確認すれば十分です（成功時は何も返りません）。</li>
+</ul>
+<hr>
+<h5 id="4-getuser">解説4: 現在のユーザーを取得する（<code>getUser</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-29"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">data</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">supabase</span><span class="p">.</span><span class="nx">auth</span><span class="p">.</span><span class="nx">getUser</span><span class="p">();</span>
+<span class="c1">// data.user が今のユーザー（未ログインなら null）</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>getUser()</code> は「<strong>今ログインしているのは誰か</strong>」を調べる命令です。<code>data.user</code> にユーザー情報（IDやメールなど）が入ります。</li>
+<li><strong>まだ誰もログインしていない場合は <code>data.user</code> が <code>null</code>（値なし）</strong> になります。これを使って「ログイン済みなら本棚画面、未ログインならログイン画面を出す」といった出し分けができます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>uid（ユーザーID）</strong> とは、登録した各ユーザーに自動で振られる重複しないID（<code>data.user.id</code> で取れる）。次のRLSの例で「このIDの人のデータだけ見せる」という形で使います。</p>
+</blockquote>
+<hr>
+<h3 id="rls-sql">認証後の厳密なRLS — 「自分のデータだけ」見える設定（SQL）</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 3.5では学習用に「全員が全部読み書きできる」ゆるい設定にしましたが、本来は危険です。ここでは<strong>ログインした本人のデータだけ</strong>を読み書きできる、安全な設定に書き換えます。各行に「持ち主のID（<code>user_id</code>）」を持たせ、「ログイン中の人のID（<code>auth.uid()</code>）と一致する行だけ操作してよい」というルールを作るのがポイントです。これでAさんのデータをBさんが見たり消したりできなくなります。</p>
+</blockquote>
+<p><strong>いつ使うか / なぜ必要か:</strong> 個人ごとにデータを分けるアプリ（自分用のメモ、自分の本棚など）では、「他人のデータが見えない・消せない」ことが安全のうえで絶対に必要です。前の認証（ログイン機能）とセットで使い、「ログインした本人だけが自分のデータを触れる」状態を作ります。</p>
+<div class="codehilite"><div class="code-wrap" id="code-30"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">-- (前提) books テーブルに「持ち主」を表す user_id 列を足す</span>
+<span class="c1">-- alter table ... add column : 既存テーブルに新しい列を追加する命令</span>
+<span class="c1">-- references auth.users(id)   : Supabaseのユーザー一覧テーブルのidを参照（外部キー）</span>
+<span class="k">alter</span><span class="w"> </span><span class="k">table</span><span class="w"> </span><span class="n">books</span>
+<span class="w">  </span><span class="k">add</span><span class="w"> </span><span class="k">column</span><span class="w"> </span><span class="n">user_id</span><span class="w"> </span><span class="n">uuid</span><span class="w"> </span><span class="k">references</span><span class="w"> </span><span class="n">auth</span><span class="p">.</span><span class="n">users</span><span class="p">(</span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="n">auth</span><span class="p">.</span><span class="n">uid</span><span class="p">();</span>
+
+<span class="c1">-- 学習用の「全員OK」ポリシーは消しておく（あれば）</span>
+<span class="k">drop</span><span class="w"> </span><span class="n">policy</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="k">exists</span><span class="w"> </span><span class="ss">&quot;Enable all access for books&quot;</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">books</span><span class="p">;</span>
+
+<span class="c1">-- (1) 読み取り：自分の行だけ見られる</span>
+<span class="k">create</span><span class="w"> </span><span class="n">policy</span><span class="w"> </span><span class="ss">&quot;select_own_books&quot;</span>
+<span class="w">  </span><span class="k">on</span><span class="w"> </span><span class="n">books</span>
+<span class="w">  </span><span class="c1">-- select : 読み取り操作だけが対象</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="k">select</span>
+<span class="w">  </span><span class="c1">-- ログイン中の人のIDと、行の持ち主が一致する行だけ</span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="p">(</span><span class="n">auth</span><span class="p">.</span><span class="n">uid</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">user_id</span><span class="p">);</span>
+
+<span class="c1">-- (2) 追加：自分のIDが入った行だけ作れる</span>
+<span class="k">create</span><span class="w"> </span><span class="n">policy</span><span class="w"> </span><span class="ss">&quot;insert_own_books&quot;</span>
+<span class="w">  </span><span class="k">on</span><span class="w"> </span><span class="n">books</span>
+<span class="w">  </span><span class="c1">-- insert : 追加操作が対象</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="k">insert</span>
+<span class="w">  </span><span class="c1">-- 書き込む行の user_id が自分のIDのときだけ許可</span>
+<span class="w">  </span><span class="k">with</span><span class="w"> </span><span class="k">check</span><span class="w"> </span><span class="p">(</span><span class="n">auth</span><span class="p">.</span><span class="n">uid</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">user_id</span><span class="p">);</span>
+
+<span class="c1">-- (3) 更新・削除：自分の行だけ変更・削除できる</span>
+<span class="k">create</span><span class="w"> </span><span class="n">policy</span><span class="w"> </span><span class="ss">&quot;update_own_books&quot;</span>
+<span class="w">  </span><span class="k">on</span><span class="w"> </span><span class="n">books</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="k">update</span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="p">(</span><span class="n">auth</span><span class="p">.</span><span class="n">uid</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">user_id</span><span class="p">);</span>
+
+<span class="k">create</span><span class="w"> </span><span class="n">policy</span><span class="w"> </span><span class="ss">&quot;delete_own_books&quot;</span>
+<span class="w">  </span><span class="k">on</span><span class="w"> </span><span class="n">books</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="k">delete</span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="p">(</span><span class="n">auth</span><span class="p">.</span><span class="n">uid</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">user_id</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h4 id="1_8">▼ コードを1つずつ分解して解説</h4>
+<p>「<strong>持ち主の列を足す</strong>」「<strong>読み取りルール</strong>」「<strong>書き込みルール</strong>」「<strong>更新・削除ルール</strong>」の塊に分けて見ます。</p>
+<hr>
+<h5 id="1-user_id-authuid">解説1: 持ち主を表す列を足す（<code>user_id</code> と <code>auth.uid()</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-31"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">alter</span><span class="w"> </span><span class="k">table</span><span class="w"> </span><span class="n">books</span>
+<span class="w">  </span><span class="k">add</span><span class="w"> </span><span class="k">column</span><span class="w"> </span><span class="n">user_id</span><span class="w"> </span><span class="n">uuid</span><span class="w"> </span><span class="k">references</span><span class="w"> </span><span class="n">auth</span><span class="p">.</span><span class="n">users</span><span class="p">(</span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="n">auth</span><span class="p">.</span><span class="n">uid</span><span class="p">();</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>alter table books add column user_id ...</code> は「<strong>books 表に <code>user_id</code> という新しい列を足す</strong>」命令です（<code>alter table</code>＝表の変更）。この列に「その行の持ち主が誰か」を記録します。</li>
+<li><code>references auth.users(id)</code>（リファレンス）は「<strong>この列はユーザー一覧表（<code>auth.users</code>）の <code>id</code> を指す</strong>」という宣言です。Supabaseはログインユーザーを <code>auth.users</code> という特別な表で管理しており、そこを参照します。</li>
+<li><code>default auth.uid()</code> は「<strong>値を省略したら、今ログインしている人のIDを自動で入れる</strong>」指定です。<code>auth.uid()</code>（オース・ユーアイディー）は「<strong>今ログイン中の人のID</strong>」を返す関数です。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>外部キー（references）</strong> とは「別の表の特定の行を指し示す列」のこと。ここでは <code>user_id</code> が「どのユーザーの本か」を指します。<strong><code>auth.uid()</code></strong> は「今この操作をしている本人のID」を返す、RLSの主役となる関数です。</p>
+</blockquote>
+<hr>
+<h5 id="2-for-select-using">解説2: 読み取りルール（<code>for select</code> と <code>using</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-32"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">create</span><span class="w"> </span><span class="n">policy</span><span class="w"> </span><span class="ss">&quot;select_own_books&quot;</span>
+<span class="w">  </span><span class="k">on</span><span class="w"> </span><span class="n">books</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="k">select</span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="p">(</span><span class="n">auth</span><span class="p">.</span><span class="n">uid</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">user_id</span><span class="p">);</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>create policy</code> で許可ルールを作ります。<code>for select</code> は「<strong>読み取り操作だけを対象にする</strong>」指定です。</li>
+<li><code>using (auth.uid() = user_id)</code> が肝心で、「<strong>ログイン中の人のID（<code>auth.uid()</code>）と、その行の持ち主（<code>user_id</code>）が一致する行だけ</strong>」を読み取り対象にします。</li>
+<li>これにより、他人の行は検索しても<strong>そもそも結果に出てこなくなります</strong>。Aさんが全件取得しても、返ってくるのはAさんの本だけです。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong><code>using</code> 句</strong>は「どの行を対象にしてよいか」の条件。3.5では <code>true</code>（全部OK）でしたが、ここでは <code>auth.uid() = user_id</code>（本人の行だけ）に変えています。これがRLSの本来の使い方です。</p>
+</blockquote>
+<hr>
+<h5 id="3-for-insert-with-check">解説3: 追加ルール（<code>for insert</code> と <code>with check</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-33"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">create</span><span class="w"> </span><span class="n">policy</span><span class="w"> </span><span class="ss">&quot;insert_own_books&quot;</span>
+<span class="w">  </span><span class="k">on</span><span class="w"> </span><span class="n">books</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="k">insert</span>
+<span class="w">  </span><span class="k">with</span><span class="w"> </span><span class="k">check</span><span class="w"> </span><span class="p">(</span><span class="n">auth</span><span class="p">.</span><span class="n">uid</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">user_id</span><span class="p">);</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>for insert</code> は「<strong>追加（新規作成）操作を対象にする</strong>」指定です。</li>
+<li><code>with check (auth.uid() = user_id)</code> は「<strong>書き込もうとしている行の <code>user_id</code> が、自分のIDのときだけ許可する</strong>」条件です。つまり「他人になりすまして他人名義の行を作る」ことを防ぎます。</li>
+<li>追加では <code>using</code> ではなく <code>with check</code> を使う点に注目してください。<code>using</code> は「既にある行」、<code>with check</code> は「これから書き込む内容」に対する条件です。</li>
+</ul>
+<hr>
+<h5 id="4-for-update-for-delete">解説4: 更新・削除ルール（<code>for update</code> / <code>for delete</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-34"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">create</span><span class="w"> </span><span class="n">policy</span><span class="w"> </span><span class="ss">&quot;update_own_books&quot;</span>
+<span class="w">  </span><span class="k">on</span><span class="w"> </span><span class="n">books</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="k">update</span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="p">(</span><span class="n">auth</span><span class="p">.</span><span class="n">uid</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">user_id</span><span class="p">);</span>
+
+<span class="k">create</span><span class="w"> </span><span class="n">policy</span><span class="w"> </span><span class="ss">&quot;delete_own_books&quot;</span>
+<span class="w">  </span><span class="k">on</span><span class="w"> </span><span class="n">books</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="k">delete</span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="p">(</span><span class="n">auth</span><span class="p">.</span><span class="n">uid</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">user_id</span><span class="p">);</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>for update</code>（更新）と <code>for delete</code>（削除）それぞれにポリシーを作り、どちらも <code>using (auth.uid() = user_id)</code> で「<strong>自分の行だけ</strong>」に限定します。</li>
+<li>これで「他人の本を勝手に書き換える・消す」が一切できなくなります。RLSは操作（読み・追加・更新・削除）ごとにルールを分けて作るのが基本だと覚えておきましょう。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> ここまでの4つのポリシーをまとめると「<strong>自分の行は読める・作れる・直せる・消せる／他人の行は一切触れない</strong>」という、個人別アプリの標準的な安全設定になります。</p>
+</blockquote>
+<hr>
+<h3 id="storage-url">Storage — 画像やファイルをアップロードして公開URLを得る</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 本の表紙画像のような<strong>ファイル</strong>を、Supabaseの保管庫（Storage）にアップロードします。アップロードした後、その画像をアプリの <code>&lt;Image&gt;</code> で表示するための<strong>公開URL（インターネット上の住所）</strong>を取り出します。データベースが「文字や数字の表」なのに対し、Storageは「画像・PDF・動画などのファイル置き場」だと考えてください。</p>
+</blockquote>
+<p><strong>いつ使うか / なぜ必要か:</strong> 本の表紙、プロフィール画像、添付ファイルなど、<strong>画像やファイルを保存したいとき</strong>に使います。画像のような大きなデータはテーブルに直接入れるのに向かないため、Storageに置き、テーブルにはその「URL（住所）」だけを保存するのが定石です。本書のアプリ本編では画像を扱わないので使っていません。</p>
+<div class="codehilite"><div class="code-wrap" id="code-35"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// storage-example.ts — 画像ファイルのアップロードと公開URL取得</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">supabase</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;../lib/supabase&quot;</span><span class="p">;</span>
+
+<span class="c1">// 画像ファイル(file)を Storage にアップして、表示用のURLを返す関数</span>
+<span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">uploadCover</span><span class="p">(</span><span class="nx">file</span><span class="o">:</span><span class="w"> </span><span class="kt">Blob</span><span class="p">,</span><span class="w"> </span><span class="nx">fileName</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// (1) アップロード先：storage.from(&quot;バケット名&quot;) で保管庫の場所を指定</span>
+<span class="w">  </span><span class="c1">//     &quot;covers&quot; は事前にダッシュボードで作っておく「バケット(入れ物)」の名前</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">data</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">supabase</span><span class="p">.</span><span class="nx">storage</span>
+<span class="w">    </span><span class="c1">// covers というバケット(入れ物)に</span>
+<span class="w">    </span><span class="p">.</span><span class="kr">from</span><span class="p">(</span><span class="s2">&quot;covers&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="c1">// fileName という名前で file を保存する</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">upload</span><span class="p">(</span><span class="nx">fileName</span><span class="p">,</span><span class="w"> </span><span class="nx">file</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;アップロード失敗:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// (2) 公開URLを取得：保存したファイルのインターネット上の住所を得る</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">data</span><span class="o">:</span><span class="w"> </span><span class="kt">urlData</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">supabase</span><span class="p">.</span><span class="nx">storage</span>
+<span class="w">    </span><span class="p">.</span><span class="kr">from</span><span class="p">(</span><span class="s2">&quot;covers&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="c1">// fileName のファイルの公開URLを作る</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">getPublicUrl</span><span class="p">(</span><span class="nx">fileName</span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// &lt;Image source={{ uri: ... }} で表示できる</span>
+<span class="w">  </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;画像URL:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">urlData</span><span class="p">.</span><span class="nx">publicUrl</span><span class="p">);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">urlData</span><span class="p">.</span><span class="nx">publicUrl</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="1_9">▼ コードを1つずつ分解して解説</h4>
+<p>「<strong>アップロードする</strong>」「<strong>公開URLを取り出す</strong>」の2つの塊に分けて見ます。</p>
+<hr>
+<h5 id="1-storagefromupload">解説1: ファイルをアップロードする（<code>storage.from(...).upload(...)</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-36"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">data</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">supabase</span><span class="p">.</span><span class="nx">storage</span>
+<span class="w">  </span><span class="p">.</span><span class="kr">from</span><span class="p">(</span><span class="s2">&quot;covers&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="p">.</span><span class="nx">upload</span><span class="p">(</span><span class="nx">fileName</span><span class="p">,</span><span class="w"> </span><span class="nx">file</span><span class="p">);</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>supabase.storage</code>（ストレージ）は「<strong>ファイル置き場の操作の入口</strong>」です。テーブル操作の <code>supabase.from(...)</code> とは別物です。</li>
+<li><code>.from("covers")</code> は「<strong><code>covers</code> という名前のバケット（入れ物）を使う</strong>」指定です。バケットはダッシュボードの「Storage」画面で事前に作っておきます。</li>
+<li><code>.upload(fileName, file)</code> は「<strong><code>fileName</code> という名前で、<code>file</code>（ファイルの中身）を保存する</strong>」命令です。<code>await</code> で完了を待ち、失敗すれば <code>error</code> に理由が入ります。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>バケット（bucket）</strong> とは、Storage内の「フォルダのような大きな入れ物」のこと。「公開（誰でもURLで見られる）」「非公開（ログインした人だけ）」を切り替えられます。表紙画像など公開してよいものは公開バケットに入れます。</p>
+</blockquote>
+<hr>
+<h5 id="2-urlgetpublicurl">解説2: 公開URLを取り出す（<code>getPublicUrl</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-37"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">data</span><span class="o">:</span><span class="w"> </span><span class="kt">urlData</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">supabase</span><span class="p">.</span><span class="nx">storage</span>
+<span class="w">  </span><span class="p">.</span><span class="kr">from</span><span class="p">(</span><span class="s2">&quot;covers&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="p">.</span><span class="nx">getPublicUrl</span><span class="p">(</span><span class="nx">fileName</span><span class="p">);</span>
+<span class="c1">// urlData.publicUrl が画像のURL</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>.getPublicUrl(fileName)</code> は「<strong>保存したファイルの、インターネット上の住所（公開URL）を作る</strong>」命令です。通信は不要で、すぐ結果が返るため <code>await</code> は要りません。</li>
+<li>取り出した <code>urlData.publicUrl</code>（文字列）を、React Nativeの画像表示部品に渡せば画面に出せます。例: <code>&lt;Image source={{ uri: urlData.publicUrl }} /&gt;</code>。</li>
+<li><code>const { data: urlData }</code> の <code>: urlData</code> は「<code>data</code> という名前を <code>urlData</code> に<strong>言い換えて受け取る</strong>」書き方です（解説1の <code>data</code> と名前がぶつからないように別名にしています）。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>公開URL（public URL）</strong> とは「誰でもブラウザやアプリからアクセスできる、そのファイルの住所」のこと。このURLをテーブルの <code>cover_url</code> 列などに保存しておけば、後で画像を表示できます。</p>
+</blockquote>
+<hr>
+<h3 id="_1">テーブル結合 — 関連する別テーブルのデータも一緒に取る</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 「本」と「その本を登録した人のプロフィール」のように、<strong>関連し合う2つの表のデータを1回でまとめて取得</strong>します。<code>select</code> の中に関連先の表の名前を書くだけで、Supabaseが「つながっている相手のデータ」も一緒に持ってきてくれます。表を行き来する手間が省けるのが利点です。</p>
+</blockquote>
+<p><strong>いつ使うか / なぜ必要か:</strong> 実用的なアプリでは、データを複数の表に分けて持ちます（本／ユーザー／カテゴリなど）。「本の一覧と、それぞれの著者プロフィールを同時に表示したい」ような場面で、別々に何度も取りに行かず<strong>一度の命令でまとめて取れる</strong>ので便利です。本書は単一テーブルなので使っていません。</p>
+<div class="codehilite"><div class="code-wrap" id="code-38"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// join-example.ts — books と、それに紐づく profiles を一緒に取得</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">supabase</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;../lib/supabase&quot;</span><span class="p">;</span>
+
+<span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">getBooksWithProfiles</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// .select(&quot;*, profiles(*)&quot;) :</span>
+<span class="w">  </span><span class="c1">//   &quot;*&quot;          → books の全列</span>
+<span class="w">  </span><span class="c1">//   &quot;profiles(*)&quot; → books に紐づく profiles テーブルの全列も一緒に取る</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">data</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">supabase</span>
+<span class="w">    </span><span class="p">.</span><span class="kr">from</span><span class="p">(</span><span class="s2">&quot;books&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;*, profiles(*)&quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;取得エラー:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// data の各要素は { ...本の情報, profiles: { ...登録者の情報 } } の形になる</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;本＋登録者:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">data</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="1_10">▼ コードを1つずつ分解して解説</h4>
+<hr>
+<h5 id="1-select-profiles">解説1: 関連先を一緒に指定する（<code>select("*, profiles(*)")</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-39"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">data</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">supabase</span>
+<span class="w">  </span><span class="p">.</span><span class="kr">from</span><span class="p">(</span><span class="s2">&quot;books&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;*, profiles(*)&quot;</span><span class="p">);</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>.from("books")</code> で「booksテーブルから」を指定し、<code>.select(...)</code> で「どの列を取るか」を指定するのは、これまでと同じです。</li>
+<li><code>"*, profiles(*)"</code> の中身が新しいポイントです。<code>*</code> は「booksの全列」、続く <code>profiles(*)</code> は「<strong>booksにつながっている <code>profiles</code> 表の全列も一緒に取る</strong>」という指定です。</li>
+<li>これが成り立つには、<code>books</code> 表に「<code>profiles</code> を指す外部キー（つながり）」が設定されている必要があります。つながりがあれば、Supabaseが自動でデータを結びつけてくれます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>結合（join／ジョイン）</strong> とは「関連する複数の表のデータを、つながりをたどってひとまとめにする」操作のこと。取得結果は <code>data[0].profiles</code> のように、本の中に登録者情報が入れ子で入った形になります。</p>
+</blockquote>
+<hr>
+<h3 id="or">高度なフィルタ — 複数条件・OR・複数候補・件数指定</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 「全部」ではなく「<strong>欲しい条件に合う行だけ</strong>」をいろいろな形で絞り込みます。「AまたはB」（<code>or</code>）、複数の条件を重ねる、「このリストのどれか」（<code>in</code>）、「○件目から○件目まで」（<code>range</code>、ページめくりに使う）といった、実用的な絞り込みのやり方をまとめて紹介します。</p>
+</blockquote>
+<p><strong>いつ使うか / なぜ必要か:</strong> データが増えると「全部取ってくる」では遅く、見づらくなります。検索・絞り込み・ページ送り（一度に20件ずつ表示など）といった機能はほぼ全アプリに必要で、そのための道具がこれらのフィルタです。</p>
+<div class="codehilite"><div class="code-wrap" id="code-40"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// filter-example.ts — いろいろな絞り込み方法</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">supabase</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;../lib/supabase&quot;</span><span class="p">;</span>
+
+<span class="c1">// (1) OR条件：「未読」または「読書中」の本だけ取る</span>
+<span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">getUnreadOrReading</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">data</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">supabase</span>
+<span class="w">    </span><span class="p">.</span><span class="kr">from</span><span class="p">(</span><span class="s2">&quot;books&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="c1">// status が &#39;未読&#39; か &#39;読書中&#39;</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">or</span><span class="p">(</span><span class="s2">&quot;status.eq.未読,status.eq.読書中&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">data</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// (2) 複数条件（AND）：著者が「鈴木 僚太」かつ 状態が「未読」の本</span>
+<span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">getByAuthorAndStatus</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">data</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">supabase</span>
+<span class="w">    </span><span class="p">.</span><span class="kr">from</span><span class="p">(</span><span class="s2">&quot;books&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="c1">// eq : 「等しい」条件。author が一致</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">eq</span><span class="p">(</span><span class="s2">&quot;author&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;鈴木 僚太&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="c1">// つなげると「両方を満たす(AND)」になる</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">eq</span><span class="p">(</span><span class="s2">&quot;status&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;未読&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">data</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// (3) in：状態が「読了」か「読書中」のどれかに当てはまる本</span>
+<span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">getByStatusList</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">data</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">supabase</span>
+<span class="w">    </span><span class="p">.</span><span class="kr">from</span><span class="p">(</span><span class="s2">&quot;books&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="c1">// status がリストのどれかに一致</span>
+<span class="w">    </span><span class="p">.</span><span class="ow">in</span><span class="p">(</span><span class="s2">&quot;status&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;読了&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;読書中&quot;</span><span class="p">]);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">data</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// (4) range：先頭から数えて 0番目〜9番目（最初の10件）だけ取る</span>
+<span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">getFirstPage</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">data</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">supabase</span>
+<span class="w">    </span><span class="p">.</span><span class="kr">from</span><span class="p">(</span><span class="s2">&quot;books&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="c1">// 0始まりで「0〜9」= 10件。ページ送りに使う</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">range</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">9</span><span class="p">);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">data</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="1_11">▼ コードを1つずつ分解して解説</h4>
+<p>「<strong>OR条件</strong>」「<strong>複数条件(AND)</strong>」「<strong>in（候補リスト）</strong>」「<strong>range（件数指定）</strong>」の4つを順に見ます。</p>
+<hr>
+<h5 id="1-abor">解説1: 「AまたはB」で絞る（<code>.or(...)</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-41"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">.</span><span class="nx">or</span><span class="p">(</span><span class="s2">&quot;status.eq.未読,status.eq.読書中&quot;</span><span class="p">);</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>.or(...)</code> は「<strong>どれか1つでも当てはまればOK（＝OR条件）</strong>」の絞り込みです。</li>
+<li>中の文字列は <code>列名.演算子.値</code> を<strong>カンマ区切り</strong>で並べる独特な書き方です。<code>status.eq.未読</code> は「statusが未読と等しい（<code>eq</code>＝equal）」を意味します。</li>
+<li>ここでは「statusが未読」または「statusが読書中」の本が対象になります。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>OR（オア）条件</strong>は「いずれかを満たせばよい」絞り込み。逆に「すべてを満たす」のはAND（次の解説）です。<code>eq</code> は equal（等しい）の略です。</p>
+</blockquote>
+<hr>
+<h5 id="2-eqeq">解説2: 条件を重ねて「両方満たす」（<code>.eq(...).eq(...)</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-42"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">.</span><span class="nx">eq</span><span class="p">(</span><span class="s2">&quot;author&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;鈴木 僚太&quot;</span><span class="p">)</span>
+<span class="p">.</span><span class="nx">eq</span><span class="p">(</span><span class="s2">&quot;status&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;未読&quot;</span><span class="p">);</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>.eq("列名", 値)</code> は「<strong>その列がその値と等しい行だけ</strong>」に絞る条件です。<code>eq</code>＝equal（等しい）。</li>
+<li><code>.eq(...)</code> を<strong>続けてつなげる</strong>と、「<strong>どちらも満たす（AND条件）</strong>」という意味になります。ここでは「著者が鈴木 僚太、かつ、状態が未読」の本だけが対象です。</li>
+<li>このように Supabase は <code>.メソッド()</code> をいくつもつなげて、条件を少しずつ足していけます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>AND（アンド）条件</strong>は「<strong>すべての条件を同時に満たす</strong>」絞り込み。<code>.eq()</code> を並べるほど条件が厳しく（＝結果が少なく）なります。<code>.gt()</code>（より大きい）<code>.lt()</code>（より小さい）など他の条件メソッドも同じように重ねられます。</p>
+</blockquote>
+<hr>
+<h5 id="3-in">解説3: 「このリストのどれか」（<code>.in(...)</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-43"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">.</span><span class="ow">in</span><span class="p">(</span><span class="s2">&quot;status&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;読了&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;読書中&quot;</span><span class="p">]);</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>.in("列名", [候補1, 候補2, ...])</code> は「<strong>その列の値が、リストの中のどれかに一致する行</strong>」を取る絞り込みです。</li>
+<li>ここでは「statusが『読了』または『読書中』」の本が対象です。<code>.or()</code> でも同じことは書けますが、「同じ列で複数の候補」なら <code>.in()</code> のほうが短く読みやすく書けます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong><code>in</code></strong> は「リストのいずれかに含まれるか」を判定する条件。値の候補が3つ4つと増えても、配列に足すだけで済むのが利点です。</p>
+</blockquote>
+<hr>
+<h5 id="4-range">解説4: 件数を指定して取る（<code>.range(...)</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-44"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 0番目〜9番目（最初の10件）</span>
+<span class="p">.</span><span class="nx">range</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">9</span><span class="p">);</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>.range(開始, 終了)</code> は「<strong>○番目から○番目までの行だけ取る</strong>」指定です。番号は<strong>0始まり</strong>なので、<code>range(0, 9)</code> は「0,1,2,…,9 の計10件」になります。</li>
+<li>次のページが欲しいときは <code>range(10, 19)</code>（11〜20件目）のようにずらします。これで「一度に全部ではなく、少しずつ表示する（ページ送り／無限スクロール）」が作れます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>ページネーション（pagination）</strong> とは「大量のデータを少しずつに分けて表示すること」。<code>.range()</code> はその実現に使う、開始位置と終了位置の指定方法です。</p>
+</blockquote>
+<hr>
+<h3 id="upsert-1">upsert — あれば更新・無ければ追加を1回で</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 「<strong>同じデータが既にあれば書き換え、無ければ新しく追加する</strong>」という処理を、1つの命令でまとめて行います。普通は「まず探して、あれば更新・無ければ追加」と2段階で書きますが、<code>upsert</code>（アップサート）を使えば1回で済みます。<code>update</code>（更新）と <code>insert</code>（追加）を合体させた言葉です。</p>
+</blockquote>
+<p><strong>いつ使うか / なぜ必要か:</strong> 「設定を保存する」「お気に入り登録（同じ本を2回押しても重複させたくない）」のように、<strong>重複を避けつつ最新の値にしたい</strong>場面で便利です。自分で「存在チェック→分岐」を書かずに済み、コードがシンプルになります。</p>
+<div class="codehilite"><div class="code-wrap" id="code-45"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// upsert-example.ts — あれば更新・無ければ挿入</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">supabase</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;../lib/supabase&quot;</span><span class="p">;</span>
+
+<span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">saveBook</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// upsert(...) : 渡したデータと「同じid」が既にあれば更新、無ければ新規追加</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">data</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">supabase</span>
+<span class="w">    </span><span class="p">.</span><span class="kr">from</span><span class="p">(</span><span class="s2">&quot;books&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">upsert</span><span class="p">({</span>
+<span class="w">      </span><span class="c1">// このidが既にあれば更新対象になる</span>
+<span class="w">      </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;11111111-1111-1111-1111-111111111111&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;リーダブルコード&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">author</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Dustin Boswell&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;読了&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="p">})</span>
+<span class="w">    </span><span class="c1">// .select() を付けると、追加/更新後の行を結果として受け取れる</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">select</span><span class="p">();</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;保存エラー:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;保存後の行:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">data</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="1_12">▼ コードを1つずつ分解して解説</h4>
+<hr>
+<h5 id="1-upsert">解説1: あれば更新・無ければ追加（<code>.upsert(...)</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-46"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">data</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">supabase</span>
+<span class="w">  </span><span class="p">.</span><span class="kr">from</span><span class="p">(</span><span class="s2">&quot;books&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="p">.</span><span class="nx">upsert</span><span class="p">({</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">author</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="w"> </span><span class="p">})</span>
+<span class="w">  </span><span class="p">.</span><span class="nx">select</span><span class="p">();</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>.upsert({ ... })</code> は「<strong>渡したデータを保存する。同じ主キー（<code>id</code>）の行が既にあれば上書き更新、無ければ新規追加する</strong>」命令です。</li>
+<li>判断の決め手は<strong>主キー（<code>id</code>）</strong>です。渡した <code>id</code> と同じ行が表にあれば「それを更新」、無ければ「新しく追加」と、Supabaseが自動で判断します。</li>
+<li>末尾の <code>.select()</code> は「<strong>保存した結果の行を返してもらう</strong>」指定です。付けないと保存はされますが結果データは戻りません。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>upsert</strong> は update（更新）＋ insert（追加）を合わせた言葉で、「あれば更新・無ければ追加」を1回で行う操作。「存在を確認してから分岐する」手間を省けます。</p>
+</blockquote>
+<hr>
+<h3 id="realtime">Realtime購読 — データ変更をリアルタイムで受け取る</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> テーブルのデータが<strong>変わった瞬間に、その通知をアプリへ自動で届けてもらう</strong>仕組みです。普通は「データを取り直さないと変化に気づけない」のですが、Realtime（リアルタイム）を使うと、誰かが本を追加・編集・削除した瞬間に、こちらの画面へ自動で知らせが届きます。チャットや共同編集のように「他の人の操作がすぐ反映されてほしい」アプリで活躍します。</p>
+</blockquote>
+<p><strong>いつ使うか / なぜ必要か:</strong> 複数人で同じデータを見るアプリ（チャット、共有メモ、リアルタイムの通知）で「相手の変更がすぐ画面に出てほしい」ときに使います。本書のアプリは自分で更新するだけなので使っていませんが、共有・協調するアプリでは中心的な機能になります。</p>
+<div class="codehilite"><div class="code-wrap" id="code-47"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// realtime-example.ts — books テーブルの変更をリアルタイム受信</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">useEffect</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">supabase</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;../lib/supabase&quot;</span><span class="p">;</span>
+
+<span class="kd">function</span><span class="w"> </span><span class="nx">useBooksRealtime</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">useEffect</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// channel(&quot;名前&quot;) : リアルタイム通知を受け取る「通信路」を1本作る</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">channel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">supabase</span>
+<span class="w">      </span><span class="p">.</span><span class="nx">channel</span><span class="p">(</span><span class="s2">&quot;books-changes&quot;</span><span class="p">)</span>
+<span class="w">      </span><span class="p">.</span><span class="nx">on</span><span class="p">(</span>
+<span class="w">        </span><span class="c1">// postgres_changes : DB(Postgres)の変更を監視する種類</span>
+<span class="w">        </span><span class="s2">&quot;postgres_changes&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="c1">// * : 追加(insert)・更新(update)・削除(delete)すべてを対象</span>
+<span class="w">          </span><span class="nx">event</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;*&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="c1">// 監視するスキーマ(通常 public)</span>
+<span class="w">          </span><span class="nx">schema</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;public&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="c1">// 監視するテーブル名</span>
+<span class="w">          </span><span class="nx">table</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;books&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">(</span><span class="nx">payload</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="c1">// 変更が起きるたびに、この関数が自動で呼ばれる</span>
+<span class="w">          </span><span class="c1">// payload に「何がどう変わったか」が入る</span>
+<span class="w">          </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;変更を受信:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">payload</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">)</span>
+<span class="w">      </span><span class="c1">// subscribe() : 購読(受信)を開始する</span>
+<span class="w">      </span><span class="p">.</span><span class="nx">subscribe</span><span class="p">();</span>
+
+<span class="w">    </span><span class="c1">// 画面を閉じるときに購読を解除する（後片付け）</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">supabase</span><span class="p">.</span><span class="nx">removeChannel</span><span class="p">(</span><span class="nx">channel</span><span class="p">);</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">  </span><span class="p">},</span><span class="w"> </span><span class="p">[]);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="1_13">▼ コードを1つずつ分解して解説</h4>
+<p>「<strong>通信路を作る</strong>」「<strong>変更を監視して受け取る</strong>」「<strong>購読開始と後片付け</strong>」の塊に分けて見ます。</p>
+<hr>
+<h5 id="1-channelon">解説1: 通信路を作って監視内容を決める（<code>.channel(...).on(...)</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-48"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">channel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">supabase</span>
+<span class="w">  </span><span class="p">.</span><span class="nx">channel</span><span class="p">(</span><span class="s2">&quot;books-changes&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">&quot;postgres_changes&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">event</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;*&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">schema</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;public&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">table</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;books&quot;</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="p">(</span><span class="nx">payload</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;変更を受信:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">payload</span><span class="p">);</span>
+<span class="w">  </span><span class="p">})</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>.channel("books-changes")</code> は「<strong>リアルタイム通知を受け取る通信路（チャンネル）を1本用意する</strong>」命令です。<code>"books-changes"</code> はその通信路に付ける名前（自由）です。</li>
+<li><code>.on("postgres_changes", { ... }, 関数)</code> は「<strong>何を監視するか</strong>」と「<strong>変化が起きたら何をするか</strong>」を指定します。第1引数 <code>"postgres_changes"</code> は「データベースの変更を監視する」種類の指定です。</li>
+<li>第2引数 <code>{ event: "*", schema: "public", table: "books" }</code> は監視条件で、「<code>books</code> 表の、追加・更新・削除すべて（<code>*</code>）の変化を見る」という意味です。</li>
+<li>第3引数の <code>(payload) =&gt; { ... }</code> は「<strong>変化が起きるたびに自動で呼ばれる関数</strong>」です。<code>payload</code>（ペイロード）に「何の行がどう変わったか」が入ってきます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>購読（subscribe／サブスクライブ）</strong> とは「変化があったら自動で知らせてもらう約束をすること」。新聞や雑誌の定期購読と同じイメージで、こちらから取りに行かなくても向こうから届きます。</p>
+</blockquote>
+<hr>
+<h5 id="2-subscribe">解説2: 購読を開始し、終了時に解除する（<code>.subscribe()</code> と片付け）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-49"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">    </span><span class="p">.</span><span class="nx">subscribe</span><span class="p">();</span>
+
+<span class="k">return</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">supabase</span><span class="p">.</span><span class="nx">removeChannel</span><span class="p">(</span><span class="nx">channel</span><span class="p">);</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>.subscribe()</code>（サブスクライブ）を呼ぶと、ここで初めて<strong>実際に受信が始まります</strong>。これを忘れると通知は届きません。</li>
+<li><code>useEffect</code> の中で <code>return () =&gt; { ... }</code> を返しているのは「<strong>画面が閉じられるときの後片付け</strong>」です（第3章参照）。</li>
+<li><code>supabase.removeChannel(channel)</code> で「<strong>作った通信路を閉じて購読をやめる</strong>」処理をします。これをしないと、画面を離れても通信が残り続けて無駄になるため、必ずセットで書きます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>クリーンアップ（後片付け）</strong> とは、<code>useEffect</code> で始めた処理（購読・タイマーなど）を、画面を離れるときに止めること。<code>return</code> した関数の中に書きます。開けたら閉じる、をセットにするのが安全なコードの基本です。</p>
+</blockquote>
+<hr>
+<h2 id="5">5. この章のまとめ</h2>
+<ul>
+<li>データを永続化するには<strong>端末内</strong>か<strong>クラウド</strong>の保存先が必要。本書は複数端末同期できる<strong>クラウド型のSupabase</strong>を採用</li>
+<li>保存方法の選択肢（Supabase / Firebase / SQLite / AsyncStorage）を比較し、目的別の選び方を理解した</li>
+<li>Supabaseでプロジェクトと <strong><code>books</code> テーブル</strong>をSQLで作成し、学習用にRLS（行レベルセキュリティ）を設定した</li>
+<li>接続情報を <strong><code>.env</code></strong>（環境変数）に安全に保管し、<strong><code>.gitignore</code></strong> でGit管理から除外した</li>
+<li><strong><code>lib/supabase.ts</code></strong> にSupabaseクライアントを作り、接続テストに成功した</li>
+</ul>
+<blockquote>
+<p><strong>次の章へ:</strong> データの保管庫が整いました。第6章では、アプリの画面構成（ナビゲーション）を本格的に組み立て、第7・8章でいよいよCRUD（一覧・作成・編集・削除）を実装します。</p>
+</blockquote>
+
+<script>
+(function () {
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy") ? resolve() : reject(); } catch (e) { reject(e); }
+      document.body.removeChild(ta);
+    });
+  }
+  document.querySelectorAll(".copy-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var pre = btn.parentElement.querySelector("pre");
+      var text = pre.textContent.replace(/\n$/, "");
+      copyText(text).then(function () {
+        btn.textContent = "コピーしました";
+        btn.classList.add("done");
+        setTimeout(function () { btn.textContent = "コピー"; btn.classList.remove("done"); }, 2000);
+      }, function () { btn.textContent = "コピーできませんでした"; });
+    });
+  });
+  if (/^#code-\d+$/.test(location.hash)) {
+    var note = document.getElementById("web-note");
+    if (note) { note.hidden = false; }
+  }
+})();
+</script>
+</body>
+</html>

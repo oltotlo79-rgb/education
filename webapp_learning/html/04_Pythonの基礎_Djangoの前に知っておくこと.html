@@ -1,0 +1,924 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>04_Pythonの基礎_Djangoの前に知っておくこと</title>
+<style>
+
+@page {
+  size: A4;
+  margin: 18mm 16mm 20mm 16mm;
+  @bottom-right {
+    content: counter(page);
+    font-size: 10px;
+    color: #64748b;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  font-family: "Yu Gothic UI", "Yu Gothic", "Meiryo", "Hiragino Sans",
+               "Noto Sans JP", "Segoe UI", system-ui, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.75;
+  color: #1e293b;
+  background: #ffffff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #0f172a;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 1.4em 0 0.6em;
+  page-break-after: avoid;
+}
+h1 {
+  font-size: 22pt;
+  border-bottom: 3px solid #1e40af;
+  padding-bottom: 0.3em;
+  margin-top: 0.4em;
+  page-break-before: auto;
+}
+h2 {
+  font-size: 16pt;
+  border-bottom: 1.5px solid #cbd5e1;
+  padding-bottom: 0.25em;
+  margin-top: 1.6em;
+}
+h3 { font-size: 13pt; color: #1e40af; }
+h4 { font-size: 12pt; color: #334155; }
+
+p { margin: 0.5em 0 0.8em; }
+
+a { color: #1d4ed8; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+ul, ol { margin: 0.4em 0 0.9em; padding-left: 1.6em; }
+li { margin: 0.2em 0; }
+
+blockquote {
+  border-left: 4px solid #3b82f6;
+  background: #eff6ff;
+  margin: 0.8em 0;
+  padding: 0.6em 1em;
+  color: #1e3a8a;
+  border-radius: 0 6px 6px 0;
+  page-break-inside: avoid;
+}
+blockquote p { margin: 0.3em 0; }
+blockquote strong { color: #1e40af; }
+
+code {
+  /* DefCode (see _code_font.py) has ASCII and Japanese in ONE font, so a code
+     line is drawn as one text run and copies as one line in every PDF viewer. */
+  font-family: "Consolas", "Consolas", monospace;
+  font-size: 0.9em;
+  background: #f1f5f9;
+  color: #be123c;
+  padding: 0.12em 0.36em;
+  border-radius: 4px;
+  /* Long inline code (file paths / URLs) must break instead of overflowing. */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  /* In a PDF there is no horizontal scrolling, so long lines must wrap
+     instead of being clipped off the right edge of the page. */
+  overflow-x: hidden;
+  overflow-y: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  font-size: 9.2pt;
+  line-height: 1.5;
+  margin: 0.8em 0;
+  page-break-inside: avoid;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+  white-space: inherit;
+  word-break: inherit;
+  overflow-wrap: inherit;
+}
+
+/* The codehilite extension wraps highlighted blocks in a scrolling div; make
+   that wrap too so nothing is clipped in the PDF. */
+.codehilite {
+  overflow-x: hidden;
+  /* overflow-x: hidden alone turns overflow-y into auto, and a glyph from a
+     fallback font that is a hair too tall then shows a vertical scrollbar. */
+  overflow-y: hidden;
+}
+.codehilite pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* No per-token colours: every coloured token became its own text run (and its
+   own tag) in the PDF, and some viewers then pasted each token on its own line.
+   Only whole comment lines get a colour, so each line is still one run. */
+pre .cmt { color: #94a3b8; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.8em 0;
+  font-size: 9.6pt;
+  page-break-inside: avoid;
+}
+th, td {
+  border: 1px solid #e2e8f0;
+  padding: 6px 9px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: #f1f5f9;
+  color: #0f172a;
+  font-weight: 700;
+}
+tr:nth-child(even) td { background: #f8fafc; }
+
+img { max-width: 100%; height: auto; }
+
+hr {
+  border: none;
+  border-top: 1px dashed #cbd5e1;
+  margin: 1.6em 0;
+}
+
+/* Diagram blocks (the inline-styled <div>s in the source) */
+div[style] {
+  page-break-inside: avoid;
+}
+
+/* Tighten spacing right after headings */
+h1 + p, h2 + p, h3 + p, h4 + p { margin-top: 0.2em; }
+
+/* Avoid ugly page breaks inside list items / table rows */
+li, tr { page-break-inside: avoid; }
+
+@media screen {
+  body { max-width: 920px; margin: 0 auto; padding: 20px 20px 120px; font-size: 16px; }
+  pre { white-space: pre !important; word-break: normal !important; overflow-wrap: normal !important;
+        overflow-x: auto !important; font-size: 14px !important; }
+  img { max-width: 100%; height: auto; }
+}
+.web-bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; font-size: 14px;
+  padding: 8px 12px; margin-bottom: 16px; background: #eef2f7; border-radius: 8px; }
+.web-bar a { color: #1e3a5f; }
+.web-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 10; max-width: 90%;
+  font-size: 15px; font-weight: 700; background: #fff7ed; border: 2px solid #f2994a; border-radius: 8px;
+  padding: 10px 16px; margin: 0; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.code-wrap { position: relative; scroll-margin-top: 16px; }
+.code-wrap pre { padding-top: 40px !important; }
+.copy-btn { position: absolute; top: 8px; right: 8px; z-index: 2; font-size: 13px; font-weight: 700;
+  padding: 4px 12px; border: 0; border-radius: 6px; background: #2f80ed; color: #fff; cursor: pointer;
+  font-family: inherit; }
+.copy-btn:hover { background: #1c64c8; }
+.copy-btn.done { background: #27ae60; }
+.code-wrap:target pre { outline: 4px solid #f2994a; outline-offset: 2px; }
+.code-wrap:target .copy-btn { box-shadow: 0 0 0 4px #f2994a; }
+/* syntax colours on screen (the PDF uses one colour so that each line copies as one piece) */
+.codehilite .k, .codehilite .kd, .codehilite .kn, .codehilite .kr { color: #c084fc; }
+.codehilite .s, .codehilite .s1, .codehilite .s2, .codehilite .sb { color: #fcd34d; }
+.codehilite .c, .codehilite .c1, .codehilite .cm { color: #94a3b8; }
+.codehilite .nf, .codehilite .nx { color: #60a5fa; }
+.codehilite .nb { color: #34d399; }
+.codehilite .mi, .codehilite .mf { color: #f472b6; }
+.codehilite .nt { color: #f59e0b; }
+.codehilite .na { color: #93c5fd; }
+</style>
+</head>
+<body>
+<div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/04_Python%E3%81%AE%E5%9F%BA%E7%A4%8E_Django%E3%81%AE%E5%89%8D%E3%81%AB%E7%9F%A5%E3%81%A3%E3%81%A6%E3%81%8A%E3%81%8F%E3%81%93%E3%81%A8.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、ブラウザーの「戻る」で PDF に戻れます。</p><div style="text-align: center; padding: 28px 0 8px;">
+<div style="font-size: 14px; color: #475569;">Web アプリ開発 学習資料</div>
+<div style="font-size: 26px; font-weight: 800; color: #0f172a; margin-top: 6px; line-height: 1.35;">04 Python の基礎 — Django の前に知っておくこと</div>
+<div style="font-size: 13px; color: #475569; margin-top: 8px;">依頼の状態・社員の CSV の取り込み・日本時間・承認の URL の文字列を、Python で書く</div>
+</div>
+
+<h1 id="04-python-django">04 Python の基礎: Django の前に知っておくこと</h1>
+<h2 id="_1">この巻で学ぶこと</h2>
+<ul>
+<li>Python の書き方（字下げ・変数・リスト・辞書・関数・クラス）</li>
+<li>依頼の状態を <strong>Enum</strong>、依頼を <strong>dataclass</strong> にして、状態の移り変わりを書く</li>
+<li>エラー（例外）を起こす・受け止める</li>
+<li>社員の <strong>CSV</strong> を読み込み、行ごとに確かめる（文字コードの落とし穴も）</li>
+<li><strong>日本時間</strong>の日時と、承認の URL に入れる<strong>推測できない文字列</strong></li>
+<li>仮想環境（venv）と、部品を入れる <code>pip</code></li>
+</ul>
+<p>練習のファイルは <code>samples/04_python/</code> にあります。この巻の結果は、<strong>Python 3.14 で実際に動かした結果</strong>です（打つたびに変わる所は、そう書いています）。</p>
+<blockquote>
+<p><strong>もっと詳しく:</strong> <code>docs/06_Python基礎.md</code> に、Python のより詳しい説明があります。</p>
+</blockquote>
+<h2 id="1">1. 準備: 仮想環境を作って、部品を入れる</h2>
+<p><strong>▶ 準備:</strong> 00 の 6.4（Python 3.14）。下のコマンドは、PowerShell で資料のフォルダにいるところから打ちます。練習のファイル（<code>basics.py</code> など）は VS Code で開いて読み、書きかえたら <code>Ctrl</code> ＋ <code>S</code> で保存して、もう一度 <code>.\.venv\Scripts\python.exe ファイルの名前.py</code> で動かします。</p>
+<div class="codehilite"><div class="code-wrap" id="code-1"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">cd </span><span class="n">webapp_learning</span><span class="p">\</span><span class="n">samples</span><span class="p">\</span><span class="n">04_python</span>
+
+<span class="c"># 仮想環境（この練習用の部品の箱）を作る</span>
+<span class="n">py</span> <span class="p">-</span><span class="n">3</span><span class="p">.</span><span class="n">14</span> <span class="n">-m</span> <span class="n">venv</span> <span class="p">.</span><span class="n">venv</span>
+
+<span class="c"># 部品を入れる（Windows で日本時間を扱うための tzdata）</span>
+<span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">-m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">-r</span> <span class="n">requirements</span><span class="p">.</span><span class="n">txt</span>
+
+<span class="c"># 動かす</span>
+<span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">basics</span><span class="p">.</span><span class="n">py</span>
+</code></pre></div></div>
+
+<ul>
+<li><strong>仮想環境（venv）</strong>は、Python の部品を、練習やアプリごとに分けて入れる箱です（onprem の 05 の 4.3 にも図があります）。</li>
+<li><code>.\.venv\Scripts\python.exe</code> のように、<strong>仮想環境の中の python を、場所を書いて動かす</strong>のがいちばん確かです。</li>
+<li><code>.\.venv\Scripts\Activate.ps1</code> で「仮想環境に入る」と、<code>python</code> と打つだけで済むようになります。ただし、Windows 10・11 の最初の設定では、PowerShell のスクリプトが動かない（「このシステムではスクリプトの実行が無効」）ことがあります。自分のパソコンなら <code>Set-ExecutionPolicy -Scope CurrentUser RemoteSigned</code> で動くようになりますが、会社のパソコンでは決まりがあるので、場所を書いて動かす方法をすすめます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> pip（ピップ：Python の部品を入れる道具。<code>python -m pip install 部品の名前</code>）</p>
+</blockquote>
+<!-- -->
+
+<blockquote>
+<p><strong>用語:</strong> requirements.txt（使う部品と版を並べたファイル。<code>pip install -r requirements.txt</code> で、まとめて入れられる）</p>
+</blockquote>
+<h3 id="11">1.1 試しに打てる画面（対話モード）</h3>
+<p><code>.\.venv\Scripts\python.exe</code> とだけ打つと、<code>&gt;&gt;&gt;</code> が出て、1 行ずつ試せます。</p>
+<div class="codehilite"><div class="code-wrap" id="code-2"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>&gt;&gt;&gt; 1 + 2
+3
+&gt;&gt;&gt; &quot;依頼&quot; * 3
+&#39;依頼依頼依頼&#39;
+&gt;&gt;&gt; exit()
+</code></pre></div></div>
+
+<h2 id="2-python">2. Python の書き方</h2>
+<h3 id="21">2.1 字下げで、まとまりを表す</h3>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/L04-01_indent.webp" alt="forの中、ifの中が、字下げの深さで表されている" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図2-1: Python は、字下げ（行の先頭の空白）でまとまりを表す</div>
+</div>
+
+<p>TypeScript や Java は <code>{ }</code> でまとまりを表しますが、Python は<strong>字下げ</strong>で表します。字下げは<strong>半角の空白 4 つ</strong>にそろえます（全角の空白・タブを混ぜるとエラー）。</p>
+<h3 id="22">2.2 変数・リスト・辞書・関数</h3>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/L04-02_list_dict.webp" alt="リストは番号の付いた棚に順番に並ぶ。辞書は名前の札が付いた引き出し" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図2-2: リストは「番号で取り出す」、辞書は「名前で取り出す」</div>
+</div>
+
+<p><code>basics.py</code>:</p>
+<div class="codehilite"><div class="code-wrap" id="code-3"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 1. 変数と型（型ヒントは「説明」で、Python は動かすときに確かめない）</span>
+<span class="n">app_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;依頼・承認アプリ&quot;</span>
+<span class="n">count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">price</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1234.5</span>
+<span class="n">is_open</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">count</span> <span class="o">=</span> <span class="n">count</span> <span class="o">+</span> <span class="mi">1</span>
+
+<span class="c1"># 2. リスト（順番のある並び）</span>
+<span class="n">approvers</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;山田&quot;</span><span class="p">,</span> <span class="s2">&quot;佐藤&quot;</span><span class="p">,</span> <span class="s2">&quot;鈴木&quot;</span><span class="p">]</span>
+<span class="n">approvers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;高橋&quot;</span><span class="p">)</span>              <span class="c1"># 後ろに足す</span>
+
+<span class="c1"># 3. 辞書（名前と値の組の集まり）</span>
+<span class="n">user</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;employee_no&quot;</span><span class="p">:</span> <span class="s2">&quot;012345&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;山田 太郎&quot;</span><span class="p">}</span>
+<span class="n">user</span><span class="p">[</span><span class="s2">&quot;dept&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;設計部&quot;</span>               <span class="c1"># 足す・書きかえる</span>
+
+
+<span class="c1"># 4. 関数（def で作る。中身は字下げで表す）</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">greet</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> さん、こんにちは&quot;</span>   <span class="c1"># f&quot;...&quot; の { } に値を埋め込める</span>
+
+
+<span class="c1"># 5. if と for</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">approvers</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> 番目: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">（最初）&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">approvers</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> 番目: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">（最後）&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> 番目: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">app_name</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">is_open</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">user</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span> <span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mail&quot;</span><span class="p">,</span> <span class="s2">&quot;（メール無し）&quot;</span><span class="p">))</span>  <span class="c1"># get は、無いときの値を決められる</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">greet</span><span class="p">(</span><span class="n">user</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]))</span>
+
+<span class="c1"># 6. 内包表記（リストを作る短い書き方）</span>
+<span class="n">lengths</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">approvers</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">lengths</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>動かした結果:</p>
+<div class="codehilite"><div class="code-wrap" id="code-4"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>1 番目: 山田（最初）
+2 番目: 佐藤
+3 番目: 鈴木
+4 番目: 高橋（最後）
+依頼・承認アプリ 4 1234.5 True
+山田 太郎 （メール無し）
+山田 太郎 さん、こんにちは
+[2, 2, 2, 2]
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>書き方</th>
+<th>意味</th>
+<th>TypeScript では</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>count: int = 3</code></td>
+<td>変数（型ヒントは説明。動かすときには確かめない）</td>
+<td><code>let count: number = 3</code></td>
+</tr>
+<tr>
+<td><code>list[str]</code></td>
+<td>文字のリスト</td>
+<td><code>string[]</code></td>
+</tr>
+<tr>
+<td><code>dict[str, str]</code></td>
+<td>名前と値の組の集まり（辞書）</td>
+<td>オブジェクト</td>
+</tr>
+<tr>
+<td><code>def greet(name: str) -&gt; str:</code></td>
+<td>関数を作る。最後の <code>:</code> と、次の行の字下げを忘れない</td>
+<td><code>function greet(name: string): string</code></td>
+</tr>
+<tr>
+<td><code>f"{name} さん"</code></td>
+<td>文字に値を埋め込む（f 文字列）</td>
+<td><code>`${name} さん`</code></td>
+</tr>
+<tr>
+<td><code>for i, name in enumerate(approvers, start=1):</code></td>
+<td>番号（1 から）と中身を、1 つずつ取り出す</td>
+<td><code>approvers.forEach((name, i) =&gt; ...)</code></td>
+</tr>
+<tr>
+<td><code>if</code>・<code>elif</code>・<code>else</code></td>
+<td>条件で分ける</td>
+<td><code>if</code>・<code>else if</code>・<code>else</code></td>
+</tr>
+<tr>
+<td><code>user.get("mail", "（メール無し）")</code></td>
+<td>無いときの値を決めて取り出す（<code>user["mail"]</code> は、無いとエラー）</td>
+<td><code>user.mail ?? "（メール無し）"</code></td>
+</tr>
+<tr>
+<td><code>[len(n) for n in approvers]</code></td>
+<td>新しいリストを作る短い書き方（内包表記）</td>
+<td><code>approvers.map((n) =&gt; n.length)</code></td>
+</tr>
+<tr>
+<td><code>#</code></td>
+<td>コメント</td>
+<td><code>//</code></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>型ヒントは、確かめてくれない:</strong> Python の <code>: int</code> などは、読む人と道具（エディターや mypy などの確かめの道具）のための説明です。<strong><code>count: int = "4"</code> と書いても、Python はそのまま動きます。</strong> 02 の TypeScript の <code>tsc</code> のように確かめたいときは、別の道具を使います。</p>
+</blockquote>
+<h2 id="3">3. 依頼の状態と、状態の移り変わり</h2>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/L04-03_class_instance.webp" alt="クラスRequestの設計図から、3つの依頼の書類を作る" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図3-1: クラスは設計図、インスタンスはそこから作った 1 件 1 件</div>
+</div>
+
+<p><code>status.py</code>（02 の <code>status.ts</code> と同じことを、Python で書いた物）:</p>
+<div class="codehilite"><div class="code-wrap" id="code-5"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="sd">&quot;&quot;&quot;依頼の状態と、状態の移り変わり（02 TypeScript の status.ts を Python で書いた物）&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">StrEnum</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Status</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;依頼の状態。この 7 つ以外は作れない&quot;&quot;&quot;</span>
+
+    <span class="n">CIRCULATING</span> <span class="o">=</span> <span class="s2">&quot;回覧中&quot;</span>
+    <span class="n">RETURNED</span> <span class="o">=</span> <span class="s2">&quot;差し戻し中&quot;</span>
+    <span class="n">PULLED_BACK</span> <span class="o">=</span> <span class="s2">&quot;引き戻し中&quot;</span>
+    <span class="n">APPROVED</span> <span class="o">=</span> <span class="s2">&quot;回覧完了&quot;</span>
+    <span class="n">IN_PROGRESS</span> <span class="o">=</span> <span class="s2">&quot;対応中&quot;</span>
+    <span class="n">DONE</span> <span class="o">=</span> <span class="s2">&quot;完了&quot;</span>
+    <span class="n">WITHDRAWN</span> <span class="o">=</span> <span class="s2">&quot;取り下げ&quot;</span>
+
+
+<span class="c1"># (今の状態, 操作) → 次の状態 の表。表に無い組み合わせは、できない操作</span>
+<span class="n">TRANSITIONS</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Status</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">Status</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="p">(</span><span class="n">Status</span><span class="o">.</span><span class="n">CIRCULATING</span><span class="p">,</span> <span class="s2">&quot;全員が承認&quot;</span><span class="p">):</span> <span class="n">Status</span><span class="o">.</span><span class="n">APPROVED</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">Status</span><span class="o">.</span><span class="n">CIRCULATING</span><span class="p">,</span> <span class="s2">&quot;差し戻し&quot;</span><span class="p">):</span> <span class="n">Status</span><span class="o">.</span><span class="n">RETURNED</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">Status</span><span class="o">.</span><span class="n">CIRCULATING</span><span class="p">,</span> <span class="s2">&quot;引き戻し&quot;</span><span class="p">):</span> <span class="n">Status</span><span class="o">.</span><span class="n">PULLED_BACK</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">Status</span><span class="o">.</span><span class="n">RETURNED</span><span class="p">,</span> <span class="s2">&quot;再依頼&quot;</span><span class="p">):</span> <span class="n">Status</span><span class="o">.</span><span class="n">CIRCULATING</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">Status</span><span class="o">.</span><span class="n">RETURNED</span><span class="p">,</span> <span class="s2">&quot;取り下げ&quot;</span><span class="p">):</span> <span class="n">Status</span><span class="o">.</span><span class="n">WITHDRAWN</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">Status</span><span class="o">.</span><span class="n">PULLED_BACK</span><span class="p">,</span> <span class="s2">&quot;再依頼&quot;</span><span class="p">):</span> <span class="n">Status</span><span class="o">.</span><span class="n">CIRCULATING</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">Status</span><span class="o">.</span><span class="n">PULLED_BACK</span><span class="p">,</span> <span class="s2">&quot;取り下げ&quot;</span><span class="p">):</span> <span class="n">Status</span><span class="o">.</span><span class="n">WITHDRAWN</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">Status</span><span class="o">.</span><span class="n">APPROVED</span><span class="p">,</span> <span class="s2">&quot;担当を決める&quot;</span><span class="p">):</span> <span class="n">Status</span><span class="o">.</span><span class="n">IN_PROGRESS</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">Status</span><span class="o">.</span><span class="n">IN_PROGRESS</span><span class="p">,</span> <span class="s2">&quot;引き渡し&quot;</span><span class="p">):</span> <span class="n">Status</span><span class="o">.</span><span class="n">DONE</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">TransitionError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;できない操作をしようとしたときのエラー&quot;&quot;&quot;</span>
+
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Request</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;依頼 1 件&quot;&quot;&quot;</span>
+
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">status</span><span class="p">:</span> <span class="n">Status</span> <span class="o">=</span> <span class="n">Status</span><span class="o">.</span><span class="n">CIRCULATING</span>
+    <span class="n">comments</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;操作をして、状態を進める。できない操作なら TransitionError を起こす&quot;&quot;&quot;</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">,</span> <span class="n">action</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">TRANSITIONS</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TransitionError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;「</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="si">}</span><span class="s2">」の依頼に「</span><span class="si">{</span><span class="n">action</span><span class="si">}</span><span class="s2">」はできません&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">TRANSITIONS</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>  <span class="c1"># このファイルを直接動かしたときだけ、下を動かす</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;治具の製作&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+    <span class="n">r</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="s2">&quot;差し戻し&quot;</span><span class="p">)</span>
+    <span class="n">r</span><span class="o">.</span><span class="n">comments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;【10/21 10:15 回覧者1 山田】寸法を追記してください&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">status</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">comments</span><span class="p">)</span>
+    <span class="n">r</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="s2">&quot;再依頼&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">status</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">r</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="s2">&quot;引き渡し&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">TransitionError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;エラー:&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">([</span><span class="n">s</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">Status</span><span class="p">])</span>
+</code></pre></div></div>
+
+<p>動かした結果（<code>.\.venv\Scripts\python.exe status.py</code>）:</p>
+<div class="codehilite"><div class="code-wrap" id="code-6"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Request(id=1, title=&#39;治具の製作&#39;, status=&lt;Status.CIRCULATING: &#39;回覧中&#39;&gt;, comments=[])
+差し戻し中 [&#39;【10/21 10:15 回覧者1 山田】寸法を追記してください&#39;]
+回覧中
+エラー: 「回覧中」の依頼に「引き渡し」はできません
+[&#39;回覧中&#39;, &#39;差し戻し中&#39;, &#39;引き戻し中&#39;, &#39;回覧完了&#39;, &#39;対応中&#39;, &#39;完了&#39;, &#39;取り下げ&#39;]
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>書き方</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>class Status(StrEnum):</code></td>
+<td>決まった値だけの型（<strong>Enum</strong>。列挙型）。02 のユニオン型に近い</td>
+</tr>
+<tr>
+<td><code>TRANSITIONS: dict[tuple[Status, str], Status]</code></td>
+<td>「(今の状態, 操作) → 次の状態」の表。<strong>表にすると、状態遷移図とそのまま見比べられる</strong></td>
+</tr>
+<tr>
+<td><code>class TransitionError(Exception):</code></td>
+<td>自分用のエラーの種類を作る</td>
+</tr>
+<tr>
+<td><code>@dataclass</code></td>
+<td>項目を並べるだけで、作る・表示する・比べる仕組みを自動で作ってくれる</td>
+</tr>
+<tr>
+<td><code>field(default_factory=list)</code></td>
+<td>1 件ごとに、新しい空のリストを作る（<code>= []</code> と書くと、全部の依頼で同じリストを使い回してしまう）</td>
+</tr>
+<tr>
+<td><code>def apply(self, action: str) -&gt; None:</code></td>
+<td>クラスの中の関数（メソッド）。<code>self</code> は「この依頼」</td>
+</tr>
+<tr>
+<td><code>if __name__ == "__main__":</code></td>
+<td>このファイルを直接動かしたときだけ、下を動かす（ほかのファイルから <code>import</code> したときは動かない）</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>用語:</strong> クラス・インスタンス（クラスは「依頼とは、こういう項目と操作を持つ」という設計図。インスタンスは、そこから作った 1 件 1 件の依頼）</p>
+</blockquote>
+<h2 id="4">4. エラー（例外）を起こす・受け止める</h2>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/L04-04_exception.webp" alt="raiseでエラーを起こすと、exceptで受け止める。受け止めないとプログラム全体が止まる" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図4-1: raise で起こしたエラーを、except で受け止める</div>
+</div>
+
+<div class="codehilite"><div class="code-wrap" id="code-7"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">try</span><span class="p">:</span>
+    <span class="n">r</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="s2">&quot;引き渡し&quot;</span><span class="p">)</span>                 <span class="c1"># できない操作 → TransitionError が起きる</span>
+<span class="k">except</span> <span class="n">TransitionError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>           <span class="c1"># その種類のエラーだけを受け止める</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;エラー:&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>raise</code> で起こしたエラーは、<code>try</code> の中なら <code>except</code> で受け止められます。受け止めないと、<strong>プログラムが止まり</strong>、エラーの文（トレースバック）が出ます。</li>
+<li><code>except Exception:</code> のように、何でも受け止める書き方は避けます。<strong>思っていないエラーまで隠れて</strong>、原因が分からなくなります。</li>
+</ul>
+<p><strong>エラーの文（トレースバック）の読み方:</strong> いちばん<strong>下の行</strong>が、何が起きたか（エラーの種類と文）。その上に、どのファイルの何行目を通ってきたかが並びます。自分のファイルの名前が出ている行から見ます。</p>
+<h2 id="5-csv">5. 社員の CSV を読み込む</h2>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/L04-05_csv_encoding.webp" alt="CSV UTF-8で保存すると正しく読める。CSV（Shift_JIS）で保存すると文字コードが違うと警告" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図5-1: Excel で「CSV UTF-8」を選んで保存する</div>
+</div>
+
+<p><code>csv_import.py</code>:</p>
+<div class="codehilite"><div class="code-wrap" id="code-8"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="sd">&quot;&quot;&quot;社員の CSV を読み込み、行ごとに確かめる（取り込みの練習）&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">csv</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Employee</span><span class="p">:</span>
+    <span class="n">employee_no</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">dept</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">email</span><span class="p">:</span> <span class="nb">str</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">read_employees</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">Employee</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;正しい行と、エラーの文の一覧を返す&quot;&quot;&quot;</span>
+    <span class="n">employees</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Employee</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">errors</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">seen</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="c1"># utf-8-sig: Excel の「CSV UTF-8」が先頭に付ける印（BOM）を読み飛ばす</span>
+    <span class="k">with</span> <span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8-sig&quot;</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">line_no</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">csv</span><span class="o">.</span><span class="n">DictReader</span><span class="p">(</span><span class="n">f</span><span class="p">),</span> <span class="n">start</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>  <span class="c1"># 1 行目は見出し</span>
+            <span class="n">no</span> <span class="o">=</span> <span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;従業員番号&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;氏名&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">dept</span> <span class="o">=</span> <span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;所属&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">email</span> <span class="o">=</span> <span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;メールアドレス&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\d</span><span class="si">{6}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">no</span><span class="p">):</span>
+                <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">line_no</span><span class="si">}</span><span class="s2"> 行目: 従業員番号は 6 桁の数字にしてください（</span><span class="si">{</span><span class="n">no</span><span class="si">!r}</span><span class="s2">）&quot;</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">no</span> <span class="ow">in</span> <span class="n">seen</span><span class="p">:</span>
+                <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">line_no</span><span class="si">}</span><span class="s2"> 行目: 従業員番号 </span><span class="si">{</span><span class="n">no</span><span class="si">}</span><span class="s2"> が 2 回出てきます&quot;</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="p">:</span>
+                <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">line_no</span><span class="si">}</span><span class="s2"> 行目: 氏名が空です&quot;</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="s2">&quot;@&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">email</span><span class="p">:</span>
+                <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">line_no</span><span class="si">}</span><span class="s2"> 行目: メールアドレスの形が違います（</span><span class="si">{</span><span class="n">email</span><span class="si">!r}</span><span class="s2">）&quot;</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="n">seen</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">no</span><span class="p">)</span>
+            <span class="n">employees</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Employee</span><span class="p">(</span><span class="n">no</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">dept</span><span class="p">,</span> <span class="n">email</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">employees</span><span class="p">,</span> <span class="n">errors</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">file_name</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;== </span><span class="si">{</span><span class="n">file_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">ok</span><span class="p">,</span> <span class="n">ng</span> <span class="o">=</span> <span class="n">read_employees</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">file_name</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">UnicodeDecodeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;文字コードが UTF-8 ではありません。Excel で「CSV UTF-8」として保存し直してください。&quot;</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">reason</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;取り込める行: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">ok</span><span class="p">)</span><span class="si">}</span><span class="s2"> 件&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">emp</span> <span class="ow">in</span> <span class="n">ok</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  &quot;</span><span class="p">,</span> <span class="n">emp</span><span class="o">.</span><span class="n">employee_no</span><span class="p">,</span> <span class="n">emp</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">emp</span><span class="o">.</span><span class="n">dept</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">ng</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  ×&quot;</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>練習用の CSV（<code>employees_utf8.csv</code>。中身はわざと間違いを 3 つ入れてある）:</p>
+<div class="codehilite"><div class="code-wrap" id="code-9"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>従業員番号,氏名,所属,メールアドレス
+012345,山田 太郎,設計部,taro.yamada@example.com
+012346,佐藤 花子,設計部,hanako.sato@example.com
+12347,鈴木 一郎,製造部,ichiro.suzuki@example.com
+012345,山田 二郎,製造部,jiro.yamada@example.com
+012348,高橋 三郎,品質保証部,saburo.takahashi.example.com
+</code></pre></div></div>
+
+<p>動かした結果（<code>.\.venv\Scripts\python.exe csv_import.py employees_utf8.csv employees_sjis.csv</code>）:</p>
+<div class="codehilite"><div class="code-wrap" id="code-10"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>== employees_utf8.csv
+取り込める行: 2 件
+   012345 山田 太郎 設計部
+   012346 佐藤 花子 設計部
+  × 4 行目: 従業員番号は 6 桁の数字にしてください（&#39;12347&#39;）
+  × 5 行目: 従業員番号 012345 が 2 回出てきます
+  × 6 行目: メールアドレスの形が違います（&#39;saburo.takahashi.example.com&#39;）
+== employees_sjis.csv
+文字コードが UTF-8 ではありません。Excel で「CSV UTF-8」として保存し直してください。 invalid start byte
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>書き方</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>path.open(encoding="utf-8-sig", newline="")</code></td>
+<td>UTF-8 で開く。<code>-sig</code> は、Excel が先頭に付ける印（BOM）を読み飛ばす。<code>newline=""</code> は CSV を読むときの決まり</td>
+</tr>
+<tr>
+<td><code>csv.DictReader(f)</code></td>
+<td>1 行目の見出しを名前にして、各行を辞書で取り出す</td>
+</tr>
+<tr>
+<td><code>re.fullmatch(r"\d{6}", no)</code></td>
+<td>「6 桁の数字だけ」かを確かめる（<strong>正規表現</strong>）</td>
+</tr>
+<tr>
+<td><code>seen: set[str]</code></td>
+<td>重複を見つけるための「見た物の集まり」（<strong>集合</strong>）</td>
+</tr>
+<tr>
+<td><code>continue</code></td>
+<td>その行はあきらめて、次の行へ</td>
+</tr>
+<tr>
+<td><code>except UnicodeDecodeError</code></td>
+<td>文字コードが違って読めなかったとき</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>エラーの行があっても、全部の行を最後まで調べて、まとめて知らせます。</strong> 1 つずつ直して何度も取り込み直すのは、使う人に負担です。</li>
+<li>本物の取り込み（06）では、<strong>エラーが 1 つでもあれば 1 件も取り込まない</strong>か、<strong>正しい行だけ取り込む</strong>かを、決めておきます。途中まで取り込まれた状態にしないよう、トランザクション（onprem の 02 の 7 章）を使います。</li>
+<li><code>employees_sjis.csv</code> は、同じ中身を Shift_JIS（Excel の「CSV（コンマ区切り）」）で保存した物です。<strong>UTF-8 として読むと、必ず失敗します</strong>（onprem の 00 基礎知識 0.4）。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> 正規表現（文字の形のパターンを書く決まり。<code>\d{6}</code> は「数字が 6 個」）</p>
+</blockquote>
+<h2 id="6-url">6. 日本時間と、承認の URL の文字列</h2>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/L04-06_token_hash.webp" alt="secretsで推測できない文字列を作り、URLに入れて送り、指紋だけをデータベースに保存し、戻ってきた札の指紋と照らし合わせる" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図6-1: 承認の URL の文字列は、指紋（ハッシュ値）だけを保存して照らし合わせる</div>
+</div>
+
+<p><code>dates_and_tokens.py</code>:</p>
+<div class="codehilite"><div class="code-wrap" id="code-11"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="sd">&quot;&quot;&quot;日時（日本時間）と、承認の URL に使う、推測できない文字列&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">hashlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">hmac</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">secrets</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">zoneinfo</span><span class="w"> </span><span class="kn">import</span> <span class="n">ZoneInfo</span>
+
+<span class="n">JST</span> <span class="o">=</span> <span class="n">ZoneInfo</span><span class="p">(</span><span class="s2">&quot;Asia/Tokyo&quot;</span><span class="p">)</span>  <span class="c1"># Windows では tzdata の部品が要る（requirements.txt）</span>
+
+<span class="c1"># 1. 日時: 時間帯付きで扱う</span>
+<span class="n">issued</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2026</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">JST</span><span class="p">)</span>
+<span class="n">expires</span> <span class="o">=</span> <span class="n">issued</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>            <span class="c1"># 14 日で期限切れ</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;発行:&quot;</span><span class="p">,</span> <span class="n">issued</span><span class="o">.</span><span class="n">isoformat</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;期限:&quot;</span><span class="p">,</span> <span class="n">expires</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;期限切れか（11/20 の時点）:&quot;</span><span class="p">,</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2026</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">JST</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">expires</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">next_run</span><span class="p">(</span><span class="n">now</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">hour</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">8</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">datetime</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;次の「毎朝 8:00」を返す&quot;&quot;&quot;</span>
+    <span class="n">today</span> <span class="o">=</span> <span class="n">now</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">hour</span><span class="o">=</span><span class="n">hour</span><span class="p">,</span> <span class="n">minute</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">second</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">microsecond</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">today</span> <span class="k">if</span> <span class="n">now</span> <span class="o">&lt;</span> <span class="n">today</span> <span class="k">else</span> <span class="n">today</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;次の 8:00（7:59 から）:&quot;</span><span class="p">,</span> <span class="n">next_run</span><span class="p">(</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2026</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">59</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">JST</span><span class="p">))</span><span class="o">.</span><span class="n">isoformat</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;次の 8:00（8:01 から）:&quot;</span><span class="p">,</span> <span class="n">next_run</span><span class="p">(</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2026</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">JST</span><span class="p">))</span><span class="o">.</span><span class="n">isoformat</span><span class="p">())</span>
+
+<span class="c1"># 2. 承認の URL に入れる、推測できない文字列（毎回違う）</span>
+<span class="n">token</span> <span class="o">=</span> <span class="n">secrets</span><span class="o">.</span><span class="n">token_urlsafe</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;文字列の長さ:&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">token</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;2 回作ると違うか:&quot;</span><span class="p">,</span> <span class="n">token</span> <span class="o">!=</span> <span class="n">secrets</span><span class="o">.</span><span class="n">token_urlsafe</span><span class="p">(</span><span class="mi">32</span><span class="p">))</span>
+
+<span class="c1"># 3. データベースには、文字列そのものではなく「指紋（ハッシュ値）」を保存する</span>
+<span class="n">stored</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;保存する指紋:&quot;</span><span class="p">,</span> <span class="n">stored</span><span class="p">[:</span><span class="mi">16</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;…&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">matches</span><span class="p">(</span><span class="n">presented</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">stored_hash</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;URL で届いた文字列が、保存した指紋と合うか（比べる時間で中身を推測されない比べ方）&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">hmac</span><span class="o">.</span><span class="n">compare_digest</span><span class="p">(</span><span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">presented</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">(),</span> <span class="n">stored_hash</span><span class="p">)</span>
+
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;本物の URL:&quot;</span><span class="p">,</span> <span class="n">matches</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">stored</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;にせの URL:&quot;</span><span class="p">,</span> <span class="n">matches</span><span class="p">(</span><span class="s2">&quot;aaaa&quot;</span><span class="p">,</span> <span class="n">stored</span><span class="p">))</span>
+</code></pre></div></div>
+
+<p>動かした結果:</p>
+<div class="codehilite"><div class="code-wrap" id="code-12"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>発行: 2026-11-01T09:30:00+09:00
+期限: 2026-11-15 09:30
+期限切れか（11/20 の時点）: True
+次の 8:00（7:59 から）: 2026-11-02T08:00:00+09:00
+次の 8:00（8:01 から）: 2026-11-03T08:00:00+09:00
+文字列の長さ: 43
+2 回作ると違うか: True
+保存する指紋: e42eb10f3bbe3b35…
+本物の URL: True
+にせの URL: False
+</code></pre></div></div>
+
+<p>（「保存する指紋」は、文字列が毎回でたらめに作られるので、打つたびに変わります。）</p>
+<table>
+<thead>
+<tr>
+<th>書き方</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ZoneInfo("Asia/Tokyo")</code></td>
+<td>日本時間。<strong>Windows では <code>tzdata</code> の部品が要る</strong>。入れないと <code>ZoneInfoNotFoundError: 'No time zone found with key Asia/Tokyo'</code> になる（試して確かめた）</td>
+</tr>
+<tr>
+<td><code>datetime(..., tzinfo=JST)</code></td>
+<td>時間帯の付いた日時。<strong>時間帯を付けずに扱うと、サーバーの設定で 9 時間ずれる</strong>原因になる</td>
+</tr>
+<tr>
+<td><code>timedelta(days=14)</code></td>
+<td>14 日という長さ。日時に足し引きできる</td>
+</tr>
+<tr>
+<td><code>secrets.token_urlsafe(32)</code></td>
+<td>推測できない、URL に使える文字列（43 文字）。<strong><code>random</code> は推測できるので、こういう用途に使わない</strong></td>
+</tr>
+<tr>
+<td><code>hashlib.sha256(...).hexdigest()</code></td>
+<td>指紋（ハッシュ値。onprem の 01 の 12 章）。データベースが盗まれても、URL の文字列そのものは分からない</td>
+</tr>
+<tr>
+<td><code>hmac.compare_digest(a, b)</code></td>
+<td>比べるのにかかる時間から中身を推測されない、安全な比べ方</td>
+</tr>
+</tbody>
+</table>
+<p>承認の URL の作り方の全体（1 回限り・14 日の期限・引き戻したら使えない）は、06 と 10 で組み立てます。</p>
+<h2 id="7">7. よくある失敗</h2>
+<table>
+<thead>
+<tr>
+<th>症状</th>
+<th>原因</th>
+<th>直し方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>IndentationError</code></td>
+<td>字下げがずれている・全角の空白やタブが混じる</td>
+<td>半角の空白 4 つにそろえる。エディターで「空白を表示」にする</td>
+</tr>
+<tr>
+<td><code>SyntaxError: expected ':'</code></td>
+<td><code>def</code>・<code>if</code>・<code>for</code> の行の最後の <code>:</code> を忘れた</td>
+<td><code>:</code> を付ける</td>
+</tr>
+<tr>
+<td><code>NameError: name 'xxx' is not defined</code></td>
+<td>名前の打ち間違い・<code>import</code> 忘れ</td>
+<td>名前を確かめる</td>
+</tr>
+<tr>
+<td><code>KeyError: 'mail'</code></td>
+<td>辞書に無い名前を <code>[ ]</code> で取り出した</td>
+<td><code>.get("mail")</code> を使う</td>
+</tr>
+<tr>
+<td><code>ModuleNotFoundError: No module named 'tzdata'</code> など</td>
+<td>仮想環境に部品が入っていない／別の python で動かした</td>
+<td><code>.\.venv\Scripts\python.exe -m pip install -r requirements.txt</code>。仮想環境の python で動かす</td>
+</tr>
+<tr>
+<td><code>ZoneInfoNotFoundError</code></td>
+<td>Windows で <code>tzdata</code> が無い</td>
+<td>6 章</td>
+</tr>
+<tr>
+<td><code>UnicodeDecodeError</code></td>
+<td>ファイルの文字コードが違う</td>
+<td>5 章</td>
+</tr>
+<tr>
+<td><code>'python' は、内部コマンドまたは外部コマンド…として認識されていません</code></td>
+<td>Python が入っていない・場所が通っていない</td>
+<td><code>py -3.14</code> を使う。または Python を入れ直す</td>
+</tr>
+<tr>
+<td><code>Activate.ps1</code> が動かない</td>
+<td>PowerShell の実行ポリシー</td>
+<td>1 章</td>
+</tr>
+</tbody>
+</table>
+<h2 id="8">8. 練習問題</h2>
+<ol>
+<li><code>basics.py</code> の <code>approvers</code> から、名前が「山」で始まる人だけのリストを作ってください（ヒント：<code>[n for n in approvers if n.startswith("山")]</code>）。</li>
+<li><code>status.py</code> の <code>TRANSITIONS</code> に、「対応中」から「担当を外す」で「回覧完了」に戻る操作を足して、動かしてください。</li>
+<li><code>csv_import.py</code> に、「所属が空ならエラー」を足してください。</li>
+<li><code>dates_and_tokens.py</code> の <code>next_run</code> を使って、毎朝 7:30 の次の時刻を出してください（ヒント：<code>minute</code> も引数にする）。</li>
+</ol>
+<h2 id="_2">用語の索引</h2>
+<table>
+<thead>
+<tr>
+<th>用語</th>
+<th>短い説明</th>
+<th>章</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>仮想環境（venv）・pip・requirements.txt</td>
+<td>部品の箱／部品を入れる道具／部品の一覧</td>
+<td>1</td>
+</tr>
+<tr>
+<td>字下げ</td>
+<td>行の先頭の空白で、まとまりを表す</td>
+<td>2.1</td>
+</tr>
+<tr>
+<td>リスト・辞書・集合</td>
+<td>順番の並び／名前と値の組／重複の無い集まり</td>
+<td>2.2・5</td>
+</tr>
+<tr>
+<td>f 文字列・内包表記</td>
+<td>値を埋め込む文字／リストを作る短い書き方</td>
+<td>2.2</td>
+</tr>
+<tr>
+<td>型ヒント</td>
+<td>説明のための型（動かすときは確かめない）</td>
+<td>2.2</td>
+</tr>
+<tr>
+<td>Enum・dataclass・クラス・インスタンス</td>
+<td>決まった値の型／項目を並べるだけのクラス／設計図／1 件 1 件</td>
+<td>3</td>
+</tr>
+<tr>
+<td>例外・raise・try / except・トレースバック</td>
+<td>エラー／起こす／受け止める／エラーの経路の表示</td>
+<td>4</td>
+</tr>
+<tr>
+<td>CSV・BOM・正規表現</td>
+<td>カンマ区切りの表／UTF-8 の印／文字の形のパターン</td>
+<td>5</td>
+</tr>
+<tr>
+<td>ZoneInfo・tzdata</td>
+<td>時間帯／その情報の部品</td>
+<td>6</td>
+</tr>
+<tr>
+<td>secrets・ハッシュ値</td>
+<td>推測できない値／ファイルや文字の指紋</td>
+<td>6</td>
+</tr>
+</tbody>
+</table>
+
+<script>
+(function () {
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy") ? resolve() : reject(); } catch (e) { reject(e); }
+      document.body.removeChild(ta);
+    });
+  }
+  document.querySelectorAll(".copy-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var pre = btn.parentElement.querySelector("pre");
+      var text = pre.textContent.replace(/\n$/, "");
+      copyText(text).then(function () {
+        btn.textContent = "コピーしました";
+        btn.classList.add("done");
+        setTimeout(function () { btn.textContent = "コピー"; btn.classList.remove("done"); }, 2000);
+      }, function () { btn.textContent = "コピーできませんでした"; });
+    });
+  });
+  if (/^#code-\d+$/.test(location.hash)) {
+    var note = document.getElementById("web-note");
+    if (note) { note.hidden = false; }
+  }
+})();
+</script>
+</body>
+</html>

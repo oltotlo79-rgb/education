@@ -1,0 +1,1355 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>09_メールとSMTPリレー_アプリからメールが届くまで</title>
+<style>
+
+@page {
+  size: A4;
+  margin: 18mm 16mm 20mm 16mm;
+  @bottom-right {
+    content: counter(page);
+    font-size: 10px;
+    color: #64748b;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  font-family: "Yu Gothic UI", "Yu Gothic", "Meiryo", "Hiragino Sans",
+               "Noto Sans JP", "Segoe UI", system-ui, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.75;
+  color: #1e293b;
+  background: #ffffff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #0f172a;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 1.4em 0 0.6em;
+  page-break-after: avoid;
+}
+h1 {
+  font-size: 22pt;
+  border-bottom: 3px solid #1e40af;
+  padding-bottom: 0.3em;
+  margin-top: 0.4em;
+  page-break-before: auto;
+}
+h2 {
+  font-size: 16pt;
+  border-bottom: 1.5px solid #cbd5e1;
+  padding-bottom: 0.25em;
+  margin-top: 1.6em;
+}
+h3 { font-size: 13pt; color: #1e40af; }
+h4 { font-size: 12pt; color: #334155; }
+
+p { margin: 0.5em 0 0.8em; }
+
+a { color: #1d4ed8; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+ul, ol { margin: 0.4em 0 0.9em; padding-left: 1.6em; }
+li { margin: 0.2em 0; }
+
+blockquote {
+  border-left: 4px solid #3b82f6;
+  background: #eff6ff;
+  margin: 0.8em 0;
+  padding: 0.6em 1em;
+  color: #1e3a8a;
+  border-radius: 0 6px 6px 0;
+  page-break-inside: avoid;
+}
+blockquote p { margin: 0.3em 0; }
+blockquote strong { color: #1e40af; }
+
+code {
+  /* DefCode (see _code_font.py) has ASCII and Japanese in ONE font, so a code
+     line is drawn as one text run and copies as one line in every PDF viewer. */
+  font-family: "Consolas", "Consolas", monospace;
+  font-size: 0.9em;
+  background: #f1f5f9;
+  color: #be123c;
+  padding: 0.12em 0.36em;
+  border-radius: 4px;
+  /* Long inline code (file paths / URLs) must break instead of overflowing. */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  /* In a PDF there is no horizontal scrolling, so long lines must wrap
+     instead of being clipped off the right edge of the page. */
+  overflow-x: hidden;
+  overflow-y: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  font-size: 9.2pt;
+  line-height: 1.5;
+  margin: 0.8em 0;
+  page-break-inside: avoid;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+  white-space: inherit;
+  word-break: inherit;
+  overflow-wrap: inherit;
+}
+
+/* The codehilite extension wraps highlighted blocks in a scrolling div; make
+   that wrap too so nothing is clipped in the PDF. */
+.codehilite {
+  overflow-x: hidden;
+  /* overflow-x: hidden alone turns overflow-y into auto, and a glyph from a
+     fallback font that is a hair too tall then shows a vertical scrollbar. */
+  overflow-y: hidden;
+}
+.codehilite pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* No per-token colours: every coloured token became its own text run (and its
+   own tag) in the PDF, and some viewers then pasted each token on its own line.
+   Only whole comment lines get a colour, so each line is still one run. */
+pre .cmt { color: #94a3b8; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.8em 0;
+  font-size: 9.6pt;
+  page-break-inside: avoid;
+}
+th, td {
+  border: 1px solid #e2e8f0;
+  padding: 6px 9px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: #f1f5f9;
+  color: #0f172a;
+  font-weight: 700;
+}
+tr:nth-child(even) td { background: #f8fafc; }
+
+img { max-width: 100%; height: auto; }
+
+hr {
+  border: none;
+  border-top: 1px dashed #cbd5e1;
+  margin: 1.6em 0;
+}
+
+/* Diagram blocks (the inline-styled <div>s in the source) */
+div[style] {
+  page-break-inside: avoid;
+}
+
+/* Tighten spacing right after headings */
+h1 + p, h2 + p, h3 + p, h4 + p { margin-top: 0.2em; }
+
+/* Avoid ugly page breaks inside list items / table rows */
+li, tr { page-break-inside: avoid; }
+
+@media screen {
+  body { max-width: 920px; margin: 0 auto; padding: 20px 20px 120px; font-size: 16px; }
+  pre { white-space: pre !important; word-break: normal !important; overflow-wrap: normal !important;
+        overflow-x: auto !important; font-size: 14px !important; }
+  img { max-width: 100%; height: auto; }
+}
+.web-bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; font-size: 14px;
+  padding: 8px 12px; margin-bottom: 16px; background: #eef2f7; border-radius: 8px; }
+.web-bar a { color: #1e3a5f; }
+.web-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 10; max-width: 90%;
+  font-size: 15px; font-weight: 700; background: #fff7ed; border: 2px solid #f2994a; border-radius: 8px;
+  padding: 10px 16px; margin: 0; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.code-wrap { position: relative; scroll-margin-top: 16px; }
+.code-wrap pre { padding-top: 40px !important; }
+.copy-btn { position: absolute; top: 8px; right: 8px; z-index: 2; font-size: 13px; font-weight: 700;
+  padding: 4px 12px; border: 0; border-radius: 6px; background: #2f80ed; color: #fff; cursor: pointer;
+  font-family: inherit; }
+.copy-btn:hover { background: #1c64c8; }
+.copy-btn.done { background: #27ae60; }
+.code-wrap:target pre { outline: 4px solid #f2994a; outline-offset: 2px; }
+.code-wrap:target .copy-btn { box-shadow: 0 0 0 4px #f2994a; }
+/* syntax colours on screen (the PDF uses one colour so that each line copies as one piece) */
+.codehilite .k, .codehilite .kd, .codehilite .kn, .codehilite .kr { color: #c084fc; }
+.codehilite .s, .codehilite .s1, .codehilite .s2, .codehilite .sb { color: #fcd34d; }
+.codehilite .c, .codehilite .c1, .codehilite .cm { color: #94a3b8; }
+.codehilite .nf, .codehilite .nx { color: #60a5fa; }
+.codehilite .nb { color: #34d399; }
+.codehilite .mi, .codehilite .mf { color: #f472b6; }
+.codehilite .nt { color: #f59e0b; }
+.codehilite .na { color: #93c5fd; }
+</style>
+</head>
+<body>
+<div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/09_%E3%83%A1%E3%83%BC%E3%83%AB%E3%81%A8SMTP%E3%83%AA%E3%83%AC%E3%83%BC_%E3%82%A2%E3%83%97%E3%83%AA%E3%81%8B%E3%82%89%E3%83%A1%E3%83%BC%E3%83%AB%E3%81%8C%E5%B1%8A%E3%81%8F%E3%81%BE%E3%81%A7.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、ブラウザーの「戻る」で PDF に戻れます。</p><div style="text-align: center; padding: 28px 0 8px;">
+<div style="font-size: 14px; color: #475569;">Web アプリ開発 学習資料</div>
+<div style="font-size: 26px; font-weight: 800; color: #0f172a; margin-top: 6px; line-height: 1.35;">09 メールと SMTP リレー — アプリからメールが届くまで</div>
+<div style="font-size: 13px; color: #475569; margin-top: 8px;">SMTP の会話を手元で見て、暗号化（STARTTLS）・証明書・Microsoft 365 のリレーの仕組みと、困ったときの切り分けを学ぶ</div>
+</div>
+
+<h1 id="09-smtp">09 メールと SMTP リレー: アプリからメールが届くまで</h1>
+<h2 id="_1">この巻について</h2>
+<p>06 と 08 の練習アプリは、「承認のお願い」「差し戻し」「回覧完了」などを<strong>メールで知らせます</strong>。会社のサーバーでは、onprem の 04 の 10 章のとおり、<strong>Microsoft 365 の SMTP リレー</strong>（25 番・STARTTLS）にメールを渡します。</p>
+<p>この巻では、</p>
+<ol>
+<li>メールが届くまでの道と、<strong>SMTP の会話</strong>を、手元で実際に見ます。</li>
+<li><strong>暗号化（STARTTLS）と証明書の確かめ</strong>が、なぜ要るのかを、わざと失敗させて確かめます。</li>
+<li>Microsoft 365 の SMTP リレー（コネクタ・SPF）の仕組みを知ります。</li>
+<li>06 と 08 の両方のアプリに足した「<strong>テストのメールを送る</strong>」コマンドで、手元から送ってみます。</li>
+<li>届かないときに、<strong>どこで止まっているかを分ける</strong>順番を覚えます。</li>
+</ol>
+<ul>
+<li><strong>試して確かめた範囲:</strong> 2026-11-02 に、開発のパソコンの中で、練習用の SMTP サーバー（Python 3.12）・Django 5.2.18（Python 3.14）・Topcoat 0.11.0 で<strong>実際に動かしました</strong>。会話とエラーの文は、そのときの物です（パソコンの名前だけ伏せた）。</li>
+<li><strong>本物の Microsoft 365 には送っていません</strong>（会社のアカウントと、情報システム部門の設定が要るため）。6 章の Microsoft 365 の所は、Microsoft の公式のドキュメントの説明（onprem の 04 の 10.1 と同じ）です。サーバーで確かめることは、9 章と onprem の 04 の 10 章に書きました。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>練習のファイル</th>
+<th>中身</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>samples/09_mail/smtp_sink.py</code></td>
+<td>練習用の「受け取るだけ」の SMTP サーバー（どこへも転送しない）</td>
+</tr>
+<tr>
+<td><code>samples/09_mail/send_test.py</code></td>
+<td>Python の smtplib で、テストのメールを 1 通送る</td>
+</tr>
+<tr>
+<td><code>samples/06_django_react/backend/workflow/management/commands/send_test_mail.py</code></td>
+<td>Django のアプリの「テストのメールを送る」コマンド</td>
+</tr>
+<tr>
+<td><code>samples/08_topcoat_app/webapp/src/cli.rs</code> の <code>send_test_mail</code></td>
+<td>Topcoat のアプリの「テストのメールを送る」コマンド</td>
+</tr>
+</tbody>
+</table>
+<h2 id="1">1. メールが届くまで</h2>
+<p><img src="../images/L09-01_mail_route.webp" alt="アプリから25番・STARTTLSで会社の出口を通ってMicrosoft 365へ。Microsoft 365が社員のメールボックスや社外の宛先へ届ける" style="width: 100%;"></p>
+<table>
+<thead>
+<tr>
+<th>登場するもの</th>
+<th>役目</th>
+<th>この資料では</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>アプリ（送る側）</td>
+<td>メールを作り、SMTP で渡す</td>
+<td>06 の Django・08 の Topcoat</td>
+</tr>
+<tr>
+<td>会社の出口</td>
+<td>会社のネットワークとインターネットの境目。通してよい通信を決める</td>
+<td>25 番を外へ通してもらう（onprem の 04 の 10.2）</td>
+</tr>
+<tr>
+<td>Microsoft 365（Exchange Online）</td>
+<td>受け取ったメールを、宛先まで届ける（<strong>リレー</strong>＝中継）</td>
+<td><code>example-com.mail.protection.outlook.com</code> の 25 番</td>
+</tr>
+<tr>
+<td>宛先のメールボックス</td>
+<td>社員が Outlook で読む所</td>
+<td>承認者・依頼者</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Web の画面は <strong>HTTP</strong>（ブラウザ ⇄ サーバー）でした。メールは <strong>SMTP</strong>（送る側 → 受け取る側）です。どちらも「文字の行をやり取りする」決まりです（2 章で実際に見ます）。</li>
+<li>アプリは、宛先の人のパソコンに直接は届けません。<strong>届けるのは Microsoft 365 の仕事</strong>です。アプリの仕事は「Microsoft 365 に、正しく受け取ってもらう」所までです。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> SMTP（Simple Mail Transfer Protocol。メールを渡すときの決まり）。リレー（受け取ったメールを、次の所へ中継すること）。MX（ドメインの「メールの受付」の場所。DNS に書いてある）</p>
+</blockquote>
+<h2 id="2-smtp">2. SMTP の会話を見る</h2>
+<h3 id="21-smtp">2.1 練習用の「受け取るだけ」の SMTP サーバー</h3>
+<p><strong>▶ 準備:</strong> 00 の 6.4（Python。標準の部品だけを使うので、仮想環境は要りません）。下のコマンドは、PowerShell で資料のフォルダから <code>cd webapp_learning\samples\09_mail</code> と移動してから打ちます。練習用のサーバーの窓は動かしたままにして、送る側は<strong>もう 1 つ PowerShell を開いて</strong>、同じフォルダに移動してから打ちます。</p>
+<p>本物のメールサーバーに送らずに、会話を見るため、<strong>受け取るだけ</strong>の SMTP サーバーを用意しました。届いた会話をそのまま画面に出し、メールを <code>received\</code> に保存します。どこへも転送しないので、本物の人には届きません。</p>
+<p><code>samples/09_mail/smtp_sink.py</code>:</p>
+<div class="codehilite"><div class="code-wrap" id="code-1"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="sd">&quot;&quot;&quot;練習用の「受け取るだけ」の SMTP サーバー。</span>
+
+<span class="sd">届いた SMTP の会話を、そのまま画面に出し（C: は送ってきた側、S: はこのサーバー）、</span>
+<span class="sd">メールを received/ フォルダに .eml で保存します。どこへも転送しません（本物の人には届きません）。</span>
+<span class="sd">開発のパソコンだけで使います。Python の標準の部品だけで動きます（Python 3.11 以上）。</span>
+
+<span class="sd">使い方:</span>
+<span class="sd">  python smtp_sink.py                          127.0.0.1:1025 で待つ（暗号化なし）</span>
+<span class="sd">  python smtp_sink.py --tls cert.pem key.pem   STARTTLS も使えるようにする（証明書は README の手順で作る）</span>
+<span class="sd">止めるときは Ctrl+C。</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">argparse</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pathlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ssl</span>
+
+<span class="n">HOST</span> <span class="o">=</span> <span class="s2">&quot;127.0.0.1&quot;</span>
+<span class="n">OUT</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">with_name</span><span class="p">(</span><span class="s2">&quot;received&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">show</span><span class="p">(</span><span class="n">who</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">who</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">line</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">handle</span><span class="p">(</span><span class="n">reader</span><span class="p">:</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">StreamReader</span><span class="p">,</span> <span class="n">writer</span><span class="p">:</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">StreamWriter</span><span class="p">,</span> <span class="n">tls_ctx</span><span class="p">:</span> <span class="n">ssl</span><span class="o">.</span><span class="n">SSLContext</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">peer</span> <span class="o">=</span> <span class="n">writer</span><span class="o">.</span><span class="n">get_extra_info</span><span class="p">(</span><span class="s2">&quot;peername&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;---- </span><span class="si">{</span><span class="n">peer</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">peer</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> からつながった ----&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">send</span><span class="p">(</span><span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">show</span><span class="p">(</span><span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+        <span class="n">writer</span><span class="o">.</span><span class="n">write</span><span class="p">((</span><span class="n">line</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;ascii&quot;</span><span class="p">))</span>
+        <span class="k">await</span> <span class="n">writer</span><span class="o">.</span><span class="n">drain</span><span class="p">()</span>
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">recv</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="n">reader</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span> <span class="s2">&quot;replace&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">show</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">line</span>
+
+    <span class="n">tls</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">mail_from</span><span class="p">,</span> <span class="n">rcpts</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="p">[]</span>
+    <span class="k">await</span> <span class="n">send</span><span class="p">(</span><span class="s2">&quot;220 localhost ESMTP practice-sink&quot;</span><span class="p">)</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">line</span> <span class="o">:=</span> <span class="k">await</span> <span class="n">recv</span><span class="p">())</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">cmd</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">cmd</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;EHLO&quot;</span><span class="p">,</span> <span class="s2">&quot;HELO&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">cmd</span> <span class="o">==</span> <span class="s2">&quot;HELO&quot;</span><span class="p">:</span>
+                <span class="k">await</span> <span class="n">send</span><span class="p">(</span><span class="s2">&quot;250 localhost&quot;</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;250-localhost&quot;</span><span class="p">,</span> <span class="s2">&quot;250-SIZE 36700160&quot;</span><span class="p">,</span> <span class="s2">&quot;250-8BITMIME&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">tls_ctx</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">tls</span><span class="p">:</span>
+                <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;250-STARTTLS&quot;</span><span class="p">)</span>  <span class="c1"># 「暗号化に切りかえられます」という知らせ</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;250 SMTPUTF8&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+                <span class="k">await</span> <span class="n">send</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">cmd</span> <span class="o">==</span> <span class="s2">&quot;STARTTLS&quot;</span> <span class="ow">and</span> <span class="n">tls_ctx</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">tls</span><span class="p">:</span>
+            <span class="k">await</span> <span class="n">send</span><span class="p">(</span><span class="s2">&quot;220 2.0.0 Ready to start TLS&quot;</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">await</span> <span class="n">writer</span><span class="o">.</span><span class="n">start_tls</span><span class="p">(</span><span class="n">tls_ctx</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">ssl</span><span class="o">.</span><span class="n">SSLError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="c1"># 送る側が、このサーバーの証明書を信じなかった（自分で作った証明書のときに起きる）</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;---- 暗号化に切りかえられなかった: </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">reason</span><span class="si">}</span><span class="s2"> ----&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="k">break</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;---- ここから先は暗号化されている（途中の機器からは読めない）----&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">tls</span><span class="p">,</span> <span class="n">mail_from</span><span class="p">,</span> <span class="n">rcpts</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">[]</span>  <span class="c1"># 暗号化のあとは、EHLO からやり直す決まり</span>
+        <span class="k">elif</span> <span class="n">cmd</span> <span class="o">==</span> <span class="s2">&quot;MAIL&quot;</span><span class="p">:</span>
+            <span class="n">mail_from</span><span class="p">,</span> <span class="n">rcpts</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">10</span><span class="p">:]</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="p">[]</span>
+            <span class="k">await</span> <span class="n">send</span><span class="p">(</span><span class="s2">&quot;250 2.1.0 OK&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">cmd</span> <span class="o">==</span> <span class="s2">&quot;RCPT&quot;</span><span class="p">:</span>
+            <span class="n">rcpts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">8</span><span class="p">:]</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+            <span class="k">await</span> <span class="n">send</span><span class="p">(</span><span class="s2">&quot;250 2.1.5 OK&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">cmd</span> <span class="o">==</span> <span class="s2">&quot;DATA&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">mail_from</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">rcpts</span><span class="p">:</span>
+                <span class="k">await</span> <span class="n">send</span><span class="p">(</span><span class="s2">&quot;503 5.5.1 MAIL and RCPT first&quot;</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="k">await</span> <span class="n">send</span><span class="p">(</span><span class="s2">&quot;354 End data with &lt;CR&gt;&lt;LF&gt;.&lt;CR&gt;&lt;LF&gt;&quot;</span><span class="p">)</span>
+            <span class="n">raw</span><span class="p">,</span> <span class="n">in_header</span><span class="p">,</span> <span class="n">body_lines</span> <span class="o">=</span> <span class="p">[],</span> <span class="kc">True</span><span class="p">,</span> <span class="mi">0</span>
+            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="n">reader</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">data</span> <span class="ow">in</span> <span class="p">(</span><span class="sa">b</span><span class="s2">&quot;.</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+                    <span class="k">break</span>
+                <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;..&quot;</span><span class="p">):</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>  <span class="c1"># 行の頭の「.」を 2 つにして送る決まり（ドットの詰め直し）を戻す</span>
+                <span class="n">raw</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+                <span class="n">text</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span> <span class="s2">&quot;replace&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">in_header</span><span class="p">:</span>
+                    <span class="n">show</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+                    <span class="n">in_header</span> <span class="o">=</span> <span class="n">text</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">body_lines</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">show</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;（本文 </span><span class="si">{</span><span class="n">body_lines</span><span class="si">}</span><span class="s2"> 行。表示は省く）&quot;</span><span class="p">)</span>
+            <span class="n">show</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;.&quot;</span><span class="p">)</span>
+            <span class="n">OUT</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">-%H%M%S-</span><span class="si">%f</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.eml&quot;</span>
+            <span class="p">(</span><span class="n">OUT</span> <span class="o">/</span> <span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">write_bytes</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">raw</span><span class="p">))</span>
+            <span class="k">await</span> <span class="n">send</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;250 2.0.0 OK queued as </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">mail_from</span><span class="p">,</span> <span class="n">rcpts</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="p">[]</span>
+        <span class="k">elif</span> <span class="n">cmd</span> <span class="o">==</span> <span class="s2">&quot;RSET&quot;</span><span class="p">:</span>
+            <span class="n">mail_from</span><span class="p">,</span> <span class="n">rcpts</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="p">[]</span>
+            <span class="k">await</span> <span class="n">send</span><span class="p">(</span><span class="s2">&quot;250 2.0.0 OK&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">cmd</span> <span class="o">==</span> <span class="s2">&quot;NOOP&quot;</span><span class="p">:</span>
+            <span class="k">await</span> <span class="n">send</span><span class="p">(</span><span class="s2">&quot;250 2.0.0 OK&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">cmd</span> <span class="o">==</span> <span class="s2">&quot;QUIT&quot;</span><span class="p">:</span>
+            <span class="k">await</span> <span class="n">send</span><span class="p">(</span><span class="s2">&quot;221 2.0.0 Bye&quot;</span><span class="p">)</span>
+            <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">await</span> <span class="n">send</span><span class="p">(</span><span class="s2">&quot;502 5.5.2 Command not recognized&quot;</span><span class="p">)</span>
+    <span class="n">writer</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;---- 切れた ----&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;練習用の、受け取るだけの SMTP サーバー&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--port&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1025</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--tls&quot;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;CERT&quot;</span><span class="p">,</span> <span class="s2">&quot;KEY&quot;</span><span class="p">),</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;STARTTLS に使う証明書と鍵&quot;</span><span class="p">)</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+    <span class="n">tls_ctx</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">tls</span><span class="p">:</span>
+        <span class="n">tls_ctx</span> <span class="o">=</span> <span class="n">ssl</span><span class="o">.</span><span class="n">create_default_context</span><span class="p">(</span><span class="n">ssl</span><span class="o">.</span><span class="n">Purpose</span><span class="o">.</span><span class="n">CLIENT_AUTH</span><span class="p">)</span>
+        <span class="n">tls_ctx</span><span class="o">.</span><span class="n">load_cert_chain</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="o">.</span><span class="n">tls</span><span class="p">)</span>
+    <span class="n">server</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">start_server</span><span class="p">(</span><span class="k">lambda</span> <span class="n">r</span><span class="p">,</span> <span class="n">w</span><span class="p">:</span> <span class="n">handle</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">tls_ctx</span><span class="p">),</span> <span class="n">HOST</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">HOST</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">port</span><span class="si">}</span><span class="s2"> で待っています（STARTTLS: </span><span class="si">{</span><span class="s1">&#39;あり&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">tls_ctx</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;なし&#39;</span><span class="si">}</span><span class="s2">）。Ctrl+C で止める。&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">server</span><span class="p">:</span>
+        <span class="k">await</span> <span class="n">server</span><span class="o">.</span><span class="n">serve_forever</span><span class="p">()</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+        <span class="k">pass</span>
+</code></pre></div></div>
+
+<div class="codehilite"><div class="code-wrap" id="code-2"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">cd </span><span class="n">webapp_learning</span><span class="p">\</span><span class="n">samples</span><span class="p">\</span><span class="n">09_mail</span>
+<span class="n">python</span> <span class="n">smtp_sink</span><span class="p">.</span><span class="n">py</span>      <span class="c"># 127.0.0.1:1025 で待つ。この窓は動かしたままにする</span>
+</code></pre></div></div>
+
+<h3 id="22-python-1">2.2 Python で 1 通送る</h3>
+<p><code>samples/09_mail/send_test.py</code>:</p>
+<div class="codehilite"><div class="code-wrap" id="code-3"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="sd">&quot;&quot;&quot;Python の smtplib で、テストのメールを 1 通送る（送る側から見た SMTP の会話を出す）。</span>
+
+<span class="sd">使い方:</span>
+<span class="sd">  python send_test.py                                  127.0.0.1:1025 へ、暗号化なしで</span>
+<span class="sd">  python send_test.py --starttls --cafile cert.pem     STARTTLS で暗号化してから（自分で作った証明書を信じる）</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">argparse</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">smtplib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ssl</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">email.message</span><span class="w"> </span><span class="kn">import</span> <span class="n">EmailMessage</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">()</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--host&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;127.0.0.1&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--port&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1025</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--starttls&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--cafile&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;信じる証明書（練習用に自分で作った物）&quot;</span><span class="p">)</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+
+    <span class="n">msg</span> <span class="o">=</span> <span class="n">EmailMessage</span><span class="p">()</span>
+    <span class="n">msg</span><span class="p">[</span><span class="s2">&quot;From&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;noreply@example.com&quot;</span>
+    <span class="n">msg</span><span class="p">[</span><span class="s2">&quot;To&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;sato@example.com&quot;</span>
+    <span class="n">msg</span><span class="p">[</span><span class="s2">&quot;Subject&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;【依頼・承認】送信テスト&quot;</span>
+    <span class="n">msg</span><span class="o">.</span><span class="n">set_content</span><span class="p">(</span><span class="s2">&quot;SMTP の練習のメールです。</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">smtplib</span><span class="o">.</span><span class="n">SMTP</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">port</span><span class="p">,</span> <span class="n">local_hostname</span><span class="o">=</span><span class="s2">&quot;dev-pc&quot;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span> <span class="k">as</span> <span class="n">smtp</span><span class="p">:</span>
+        <span class="n">smtp</span><span class="o">.</span><span class="n">set_debuglevel</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># やり取りを画面に出す</span>
+        <span class="n">smtp</span><span class="o">.</span><span class="n">ehlo</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">starttls</span><span class="p">:</span>
+            <span class="n">smtp</span><span class="o">.</span><span class="n">starttls</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="n">ssl</span><span class="o">.</span><span class="n">create_default_context</span><span class="p">(</span><span class="n">cafile</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">cafile</span><span class="p">))</span>
+            <span class="n">smtp</span><span class="o">.</span><span class="n">ehlo</span><span class="p">()</span>  <span class="c1"># 暗号化のあとは、もう一度あいさつする</span>
+        <span class="n">smtp</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;送りました。&quot;</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>別の窓で <code>python send_test.py</code> を動かしたときの、<strong>受け取る側（練習用のサーバー）の画面</strong>（<code>C:</code> は送ってきた側、<code>S:</code> はサーバーの返事）:</p>
+<div class="codehilite"><div class="code-wrap" id="code-4"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>127.0.0.1:1025 で待っています（STARTTLS: なし）。Ctrl+C で止める。
+---- 127.0.0.1:59901 からつながった ----
+S: 220 localhost ESMTP practice-sink
+C: ehlo dev-pc
+S: 250-localhost
+S: 250-SIZE 36700160
+S: 250-8BITMIME
+S: 250 SMTPUTF8
+C: mail FROM:&lt;noreply@example.com&gt; size=254
+S: 250 2.1.0 OK
+C: rcpt TO:&lt;sato@example.com&gt;
+S: 250 2.1.5 OK
+C: data
+S: 354 End data with &lt;CR&gt;&lt;LF&gt;.&lt;CR&gt;&lt;LF&gt;
+C: From: noreply@example.com
+C: To: sato@example.com
+C: Subject: =?utf-8?b?44CQ5L6d6aC844O75om/6KqN44CR6YCB5L+h44OG44K544OI?=
+C: Content-Type: text/plain; charset=&quot;utf-8&quot;
+C: Content-Transfer-Encoding: 8bit
+C: MIME-Version: 1.0
+C: 
+C: （本文 1 行。表示は省く）
+C: .
+S: 250 2.0.0 OK queued as 20261102-012242-260773.eml
+C: QUIT
+S: 221 2.0.0 Bye
+---- 切れた ----
+</code></pre></div></div>
+
+<p><strong>送る側（smtplib）の画面</strong>（<code>set_debuglevel(1)</code> で出した物。最初の所だけ）:</p>
+<div class="codehilite"><div class="code-wrap" id="code-5"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>send: &#39;ehlo dev-pc\r\n&#39;
+reply: b&#39;250-localhost\r\n&#39;
+reply: b&#39;250-SIZE 36700160\r\n&#39;
+reply: b&#39;250-8BITMIME\r\n&#39;
+reply: b&#39;250 SMTPUTF8\r\n&#39;
+reply: retcode (250); Msg: b&#39;localhost\nSIZE 36700160\n8BITMIME\nSMTPUTF8&#39;
+send: &#39;mail FROM:&lt;noreply@example.com&gt; size=254\r\n&#39;
+reply: b&#39;250 2.1.0 OK\r\n&#39;
+reply: retcode (250); Msg: b&#39;2.1.0 OK&#39;
+send: &#39;rcpt TO:&lt;sato@example.com&gt;\r\n&#39;
+reply: b&#39;250 2.1.5 OK\r\n&#39;
+reply: retcode (250); Msg: b&#39;2.1.5 OK&#39;
+</code></pre></div></div>
+
+<h3 id="23">2.3 会話の読み方</h3>
+<table>
+<thead>
+<tr>
+<th>行</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>S: 220 …</code></td>
+<td>「つながりました。話してください」</td>
+</tr>
+<tr>
+<td><code>C: EHLO 名前</code></td>
+<td>あいさつ（自分の名前を名乗る）。返事の <code>250-…</code> の行に、サーバーが使える機能が並ぶ</td>
+</tr>
+<tr>
+<td><code>C: MAIL FROM:&lt;…&gt;</code></td>
+<td>送り主（届かなかったときの返送先）。3 章</td>
+</tr>
+<tr>
+<td><code>C: RCPT TO:&lt;…&gt;</code></td>
+<td>届け先。宛先が 3 人なら 3 回送る</td>
+</tr>
+<tr>
+<td><code>C: DATA</code> → <code>S: 354</code></td>
+<td>「本文を送ります」→「どうぞ。最後に <code>.</code> だけの行を送って」</td>
+</tr>
+<tr>
+<td>ヘッダー・空の行・本文・<code>.</code></td>
+<td>メールそのもの（4 章）</td>
+</tr>
+<tr>
+<td><code>S: 250 2.0.0 OK queued …</code></td>
+<td>「受け取りました」。ここで、送る側の仕事は終わり</td>
+</tr>
+<tr>
+<td><code>C: QUIT</code> → <code>S: 221</code></td>
+<td>「終わります」</td>
+</tr>
+</tbody>
+</table>
+<p>返事の頭の 3 けたの数で、結果が分かります。</p>
+<table>
+<thead>
+<tr>
+<th>頭の数</th>
+<th>意味</th>
+<th>送る側がすること</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2xx</td>
+<td>うまくいった</td>
+<td>次へ進む</td>
+</tr>
+<tr>
+<td>3xx</td>
+<td>続きを待っている（<code>354</code> など）</td>
+<td>続きを送る</td>
+</tr>
+<tr>
+<td>4xx</td>
+<td><strong>一時的に</strong>だめ（混んでいる など）</td>
+<td>しばらくしてから送り直す</td>
+</tr>
+<tr>
+<td>5xx</td>
+<td><strong>ずっと</strong>だめ（宛先が無い・許されていない など）</td>
+<td>送り直さない。原因を直す</td>
+</tr>
+</tbody>
+</table>
+<p><code>2.1.0</code> のような数は、もっと細かい理由です（例: 6.1 の <code>550 5.7.64</code> の <code>5.7.64</code> は「許されていない送り主」）。</p>
+<h2 id="3">3. エンベロープとヘッダー</h2>
+<p><img src="../images/L09-02_envelope_header.webp" alt="封筒の表がエンベロープ（MAIL FROMとRCPT TO）、中の便せんがヘッダー（From・To・Subject）と本文" style="width: 100%;"></p>
+<p>メールには、<strong>宛先が 2 か所</strong>にあります。</p>
+<table>
+<thead>
+<tr>
+<th>所</th>
+<th>書く物</th>
+<th>だれのため</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>エンベロープ（封筒の表）</td>
+<td><code>MAIL FROM</code>・<code>RCPT TO</code>（SMTP の命令で渡す）</td>
+<td>配達する仕組みのため。実際の届け先は、こちらで決まる</td>
+</tr>
+<tr>
+<td>ヘッダー（便せんの頭）</td>
+<td><code>From:</code>・<code>To:</code>・<code>Subject:</code> など</td>
+<td>読む人のため。Outlook に出るのは、こちら</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>BCC</strong> は、エンベロープの <code>RCPT TO</code> にだけ書き、ヘッダーには書きません。だから、ほかの宛先の人からは見えません。</li>
+<li>届けられなかったときの「届きませんでした」のメール（エラーの返事）は、エンベロープの <code>MAIL FROM</code> へ戻ります。</li>
+</ul>
+<h2 id="4-mime-base64">4. 日本語のメール（MIME と base64）</h2>
+<p>2.2 の会話のヘッダーに、こんな行がありました。</p>
+<div class="codehilite"><div class="code-wrap" id="code-6"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Subject: =?utf-8?b?44CQ5L6d6aC844O75om/6KqN44CR6YCB5L+h44OG44K544OI?=
+</code></pre></div></div>
+
+<p>SMTP は、もとは英字だけを運ぶ決まりでした。日本語は、<strong>MIME</strong>（メールに英字以外を入れる決まり）で、英字だけの形に変えて運びます。<code>=?utf-8?b?…?=</code> は「UTF-8 の文字を、base64 という形で書いた」という印です。Python で読み解くと（実際の出力）:</p>
+<div class="codehilite"><div class="code-wrap" id="code-7"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>【依頼・承認】送信テスト
+</code></pre></div></div>
+
+<ul>
+<li>本文の運び方は、部品によって違います。08 の Topcoat（lettre）は本文も base64 に、06 の Django（Python）は <code>Content-Transfer-Encoding: 8bit</code>（UTF-8 のまま）で送りました（8.1・8.2 の会話）。どちらも決まりに合った形で、Outlook では普通に読めます。</li>
+<li>文字の形を変えるのは、メールの部品（Django・Topcoat）の仕事です。<strong>件名や本文を自分で組み立てて SMTP に流す</strong>ことはしません（文字化けや、改行を使った攻撃の元になる。10 の巻）。</li>
+</ul>
+<h2 id="5">5. ポートと暗号化</h2>
+<table>
+<thead>
+<tr>
+<th>ポート</th>
+<th>主な使い道</th>
+<th>暗号化</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>25</strong></td>
+<td>サーバーどうしの受け渡し。<strong>Microsoft 365 の SMTP リレーもこれ</strong></td>
+<td>始めは暗号化なし → <code>STARTTLS</code> で切りかえる</td>
+</tr>
+<tr>
+<td>587</td>
+<td>メールソフトから送る（ID とパスワードで入る）</td>
+<td><code>STARTTLS</code> で切りかえる</td>
+</tr>
+<tr>
+<td>465</td>
+<td>587 と同じ使い道</td>
+<td>最初から暗号化（implicit TLS）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="51-starttls">5.1 STARTTLS: 途中から暗号化に切りかえる</h3>
+<p><img src="../images/L09-03_starttls.webp" alt="あいさつまでは平文で途中の人に読めるが、STARTTLSのあとは暗号化のトンネルになり読めない" style="width: 100%;"></p>
+<p>練習用のサーバーを、自分で作った証明書で STARTTLS を使えるようにして（<code>samples/09_mail/README.md</code> の手順）、Python から送った時の、受け取る側の画面:</p>
+<div class="codehilite"><div class="code-wrap" id="code-8"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>127.0.0.1:1026 で待っています（STARTTLS: あり）。Ctrl+C で止める。
+---- 127.0.0.1:52058 からつながった ----
+S: 220 localhost ESMTP practice-sink
+C: ehlo dev-pc
+S: 250-localhost
+S: 250-SIZE 36700160
+S: 250-8BITMIME
+S: 250-STARTTLS
+S: 250 SMTPUTF8
+C: STARTTLS
+S: 220 2.0.0 Ready to start TLS
+---- ここから先は暗号化されている（途中の機器からは読めない）----
+C: ehlo dev-pc
+S: 250-localhost
+S: 250-SIZE 36700160
+S: 250-8BITMIME
+S: 250 SMTPUTF8
+C: mail FROM:&lt;noreply@example.com&gt; size=254
+S: 250 2.1.0 OK
+C: rcpt TO:&lt;sato@example.com&gt;
+S: 250 2.1.5 OK
+C: data
+S: 354 End data with &lt;CR&gt;&lt;LF&gt;.&lt;CR&gt;&lt;LF&gt;
+C: From: noreply@example.com
+C: To: sato@example.com
+C: Subject: =?utf-8?b?44CQ5L6d6aC844O75om/6KqN44CR6YCB5L+h44OG44K544OI?=
+C: Content-Type: text/plain; charset=&quot;utf-8&quot;
+C: Content-Transfer-Encoding: 8bit
+C: MIME-Version: 1.0
+C: 
+C: （本文 1 行。表示は省く）
+C: .
+S: 250 2.0.0 OK queued as 20261102-012511-944465.eml
+C: QUIT
+S: 221 2.0.0 Bye
+---- 切れた ----
+</code></pre></div></div>
+
+<ul>
+<li>1 回目の <code>EHLO</code> の返事に <code>250-STARTTLS</code>（暗号化に切りかえられます）があります。</li>
+<li><code>STARTTLS</code> → <code>220 … Ready to start TLS</code> のあと、<strong>ここから先は暗号化</strong>されます。会社のネットワークの途中の機器からは、宛先も本文も読めません（練習用のサーバーは、受け取る本人なので読めます）。</li>
+<li>暗号化のあとは、<code>EHLO</code> からやり直す決まりです。2 回目の返事には、もう <code>STARTTLS</code> はありません。</li>
+</ul>
+<h3 id="52">5.2 証明書を確かめる（相手は本物か）</h3>
+<p><img src="../images/L09-07_cert_check.webp" alt="正しい証明書のMicrosoft 365には送り、発行元が分からない証明書の相手には送らない" style="width: 100%;"></p>
+<p>暗号化は、<strong>相手が本物</strong>でなければ意味がありません。にせの相手と暗号化しても、にせの相手には全部読まれるからです。そこで、暗号化のときに相手の<strong>証明書</strong>（「このサーバーは本物です」という、信頼できる所が発行した身分証）を確かめます。</p>
+<p>練習用の証明書は自分で作った物なので、アプリは信じません。実際に 08 の Topcoat のアプリから送った結果:</p>
+<div class="codehilite"><div class="code-wrap" id="code-9"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>エラー: 送れませんでした（渡した先: localhost:1026（STARTTLS: 使う））: could not deliver the mail
+  原因: Connection error: Connection error: invalid peer certificate: UnknownIssuer
+  原因: Connection error: invalid peer certificate: UnknownIssuer
+  原因: invalid peer certificate: UnknownIssuer
+</code></pre></div></div>
+
+<p>そのときの、受け取る側の画面:</p>
+<div class="codehilite"><div class="code-wrap" id="code-10"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>---- 127.0.0.1:52060 からつながった ----
+S: 220 localhost ESMTP practice-sink
+C: EHLO （パソコンの名前）
+S: 250-localhost
+S: 250-SIZE 36700160
+S: 250-8BITMIME
+S: 250-STARTTLS
+S: 250 SMTPUTF8
+C: STARTTLS
+S: 220 2.0.0 Ready to start TLS
+---- 暗号化に切りかえられなかった: TLSV1_ALERT_UNKNOWN_CA ----
+---- 切れた ----
+</code></pre></div></div>
+
+<p>06 の Django のアプリから送った結果:</p>
+<div class="codehilite"><div class="code-wrap" id="code-11"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>CommandError: 送れませんでした（渡した先: localhost:1026（STARTTLS: 使う））: SSLCertVerificationError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1081)
+</code></pre></div></div>
+
+<ul>
+<li>どちらも、<strong>暗号化に切りかえる所で止まり、メールは送っていません</strong>（<code>MAIL FROM</code> まで進んでいない）。</li>
+<li>Microsoft 365 は、正しく発行された証明書を使っているので、この失敗は起きません。<strong>会社のネットワークに、通信をのぞいて調べる機器がある</strong>と、証明書が入れかわって、この失敗が起きることがあります。そのときは、確かめを止めるのではなく、情報システム部門に相談します（9 章）。</li>
+<li><strong>証明書の確かめを止める（無効にする）設定は、絶対にしません。</strong> 06・08 のアプリにも、その設定は作っていません。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> 証明書（サーバーの身分証。信頼できる発行元（認証局）の署名が付いている）。UnknownIssuer（発行元が分からない＝信じられる発行元の署名が無い）</p>
+</blockquote>
+<h3 id="53-starttls">5.3 STARTTLS を使えない相手には、送らない</h3>
+<p>本番と同じ設定（STARTTLS を使う）で、STARTTLS を使えない相手（2.1 の暗号化なしの練習用サーバー）に送った結果です。</p>
+<p>Topcoat:</p>
+<div class="codehilite"><div class="code-wrap" id="code-12"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>エラー: 送れませんでした（渡した先: 127.0.0.1:1025（STARTTLS: 使う））: could not deliver the mail
+  原因: internal client error: STARTTLS is not supported on this server
+  原因: STARTTLS is not supported on this server
+</code></pre></div></div>
+
+<p>Django:</p>
+<div class="codehilite"><div class="code-wrap" id="code-13"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>CommandError: 送れませんでした（渡した先: 127.0.0.1:1025（STARTTLS: 使う））: SMTPNotSupportedError: STARTTLS extension not supported by server.
+</code></pre></div></div>
+
+<p>受け取る側の画面（あいさつだけで切れた。どちらも同じ）:</p>
+<div class="codehilite"><div class="code-wrap" id="code-14"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>---- 127.0.0.1:55579 からつながった ----
+S: 220 localhost ESMTP practice-sink
+C: ehlo （パソコンの名前）
+S: 250-localhost
+S: 250-SIZE 36700160
+S: 250-8BITMIME
+S: 250 SMTPUTF8
+---- 切れた ----
+</code></pre></div></div>
+
+<ul>
+<li>「暗号化できないなら、暗号化しないで送る」ことはしません。<strong>送らずにエラーにします</strong>。宛先や本文を、平文のまま会社のネットワークに流さないためです。</li>
+<li>練習用のサーバーへ暗号化なしで送る設定（<code>SMTP_USE_TLS=false</code>）は、08 では <strong><code>APP_ENV=development</code> のときだけ</strong>使えます（サーバーで書くと、起動しない）。</li>
+</ul>
+<h2 id="6-microsoft-365-smtp">6. Microsoft 365 の SMTP リレー</h2>
+<h3 id="61-ip">6.1 コネクタ: 送り主を、会社の出口の IP アドレスで見分ける</h3>
+<p><img src="../images/L09-04_connector.webp" alt="会社の出口のIPからのメールはコネクタを通って受け付け、違うIPからは550 5.7.64で断られる" style="width: 100%;"></p>
+<ul>
+<li>SMTP リレーには、ID とパスワードがありません。代わりに Microsoft 365 は、<strong>どこ（どの公開 IP アドレス）から来たか</strong>で、「この会社のメールだ」と見分けます。その決まりが<strong>コネクタ</strong>です（情報システム部門が Exchange 管理センターで作る）。</li>
+<li>コネクタの IP アドレスと、実際の会社の出口の IP アドレスが違うと、<code>550 5.7.64 TenantAttribution; Relay Access Denied</code> で断られます（onprem の 04 の 10.3）。</li>
+<li>送り主のアドレス（<code>MAIL_FROM</code>）は、会社が Microsoft 365 で使っているドメインのアドレスにします（例: <code>noreply@example.com</code>）。メールボックスは無くてもかまいません。</li>
+<li>ID とパスワードで送る方式（SMTP 認証の基本認証）は、Microsoft が順に使えなくしていくと案内しているので、使いません（onprem の 04 の 10.1）。</li>
+</ul>
+<h3 id="62-spf">6.2 SPF: 迷惑メールと判定されないために</h3>
+<p><img src="../images/L09-05_spf.webp" alt="受け取る側がDNSにSPFのレコードを聞き、出してよいIPなら受信トレイ、そうでなければ迷惑メール" style="width: 100%;"></p>
+<p>受け取る側は、「このドメインのメールを出してよいのは、どこか」を DNS（<strong>SPF のレコード</strong>）に聞いて確かめます。会社の出口の IP アドレスが書いてないと、届いても迷惑メールのフォルダに入りやすくなります。</p>
+<p>SPF のレコードの例（<code>203.0.113.10</code> は、説明用に決められた IP アドレス。本物は会社の出口の IP アドレス）:</p>
+<div class="codehilite"><div class="code-wrap" id="code-15"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>example.com.  TXT  &quot;v=spf1 include:spf.protection.outlook.com ip4:203.0.113.10 -all&quot;
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>部分</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>include:spf.protection.outlook.com</code></td>
+<td>Microsoft 365 から出すメールは、よい</td>
+</tr>
+<tr>
+<td><code>ip4:203.0.113.10</code></td>
+<td>この IP アドレスから出すメールも、よい</td>
+</tr>
+<tr>
+<td><code>-all</code></td>
+<td>それ以外から出た物は、にせ物として扱ってよい</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>SPF を書きかえるのは、情報システム部門（ドメインの DNS を管理している所）です。頼む内容は onprem の 07 付録にまとめます。</li>
+<li>このほかに <strong>DKIM</strong>（メールに電子の署名を付ける）・<strong>DMARC</strong>（SPF と DKIM に合わないメールをどう扱うかの決まり）もあります。会社のドメイン全体の設定なので、これも情報システム部門の決まりに合わせます。</li>
+</ul>
+<h2 id="7">7. アプリの設定と、送り方のコード</h2>
+<h3 id="71-django06">7.1 Django（06）</h3>
+<p><code>config/settings.py</code> のメールの所:</p>
+<div class="codehilite"><div class="code-wrap" id="code-16"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># メール: 本番は Microsoft 365 の SMTP リレー（25 番・STARTTLS。onprem の 04 の 10 章、この資料の 09）</span>
+<span class="n">EMAIL_BACKEND</span> <span class="o">=</span> <span class="n">env</span><span class="p">(</span><span class="s2">&quot;EMAIL_BACKEND&quot;</span><span class="p">,</span> <span class="s2">&quot;django.core.mail.backends.smtp.EmailBackend&quot;</span><span class="p">)</span>
+<span class="n">EMAIL_FILE_PATH</span> <span class="o">=</span> <span class="n">BASE_DIR</span> <span class="o">/</span> <span class="s2">&quot;sent_mail&quot;</span>  <span class="c1"># 開発用（dev.ps1 は、メールをここにファイルで書く）</span>
+<span class="n">EMAIL_HOST</span> <span class="o">=</span> <span class="n">env</span><span class="p">(</span><span class="s2">&quot;SMTP_HOST&quot;</span><span class="p">,</span> <span class="s2">&quot;localhost&quot;</span><span class="p">)</span>
+<span class="n">EMAIL_PORT</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">env</span><span class="p">(</span><span class="s2">&quot;SMTP_PORT&quot;</span><span class="p">,</span> <span class="s2">&quot;25&quot;</span><span class="p">))</span>
+<span class="n">EMAIL_USE_TLS</span> <span class="o">=</span> <span class="n">env</span><span class="p">(</span><span class="s2">&quot;SMTP_USE_TLS&quot;</span><span class="p">,</span> <span class="s2">&quot;true&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;true&quot;</span>
+<span class="n">EMAIL_TIMEOUT</span> <span class="o">=</span> <span class="mi">30</span>
+<span class="n">DEFAULT_FROM_EMAIL</span> <span class="o">=</span> <span class="n">env</span><span class="p">(</span><span class="s2">&quot;MAIL_FROM&quot;</span><span class="p">,</span> <span class="s2">&quot;noreply@example.com&quot;</span><span class="p">)</span>
+<span class="c1"># 検証では、全部のメールをこの宛先に送る（社員に本物の依頼が届かないように。onprem の 04 の 10.4）</span>
+<span class="n">MAIL_REDIRECT_TO</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;MAIL_REDIRECT_TO&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>依頼の流れの中で送る所（<code>workflow/services.py</code> の <code>_mail</code>。06 前編の 5.2）:</p>
+<div class="codehilite"><div class="code-wrap" id="code-17"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">_mail</span><span class="p">(</span><span class="n">to</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">subject</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">template</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">body</span> <span class="o">=</span> <span class="n">render_to_string</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;workflow/mail/</span><span class="si">{</span><span class="n">template</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+    <span class="n">subject</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;【依頼・承認】</span><span class="si">{</span><span class="n">subject</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">if</span> <span class="n">settings</span><span class="o">.</span><span class="n">MAIL_REDIRECT_TO</span><span class="p">:</span>  <span class="c1"># 検証: 本物の宛先には送らず、決まった宛先へ</span>
+        <span class="n">body</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;（検証のメールです。本来の宛先: </span><span class="si">{</span><span class="n">to</span><span class="si">}</span><span class="s2">）</span><span class="se">\n\n</span><span class="si">{</span><span class="n">body</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">subject</span><span class="p">,</span> <span class="n">to</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;【検証】</span><span class="si">{</span><span class="n">subject</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">settings</span><span class="o">.</span><span class="n">MAIL_REDIRECT_TO</span>
+    <span class="c1"># 保存が確定してから送る。途中で取り消されたら、送らない</span>
+    <span class="n">transaction</span><span class="o">.</span><span class="n">on_commit</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">send_mail</span><span class="p">(</span><span class="n">subject</span><span class="p">,</span> <span class="n">body</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">[</span><span class="n">to</span><span class="p">]))</span>
+</code></pre></div></div>
+
+<p>足した「テストのメールを送る」コマンド <code>workflow/management/commands/send_test_mail.py</code>:</p>
+<div class="codehilite"><div class="code-wrap" id="code-18"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="sd">&quot;&quot;&quot;テストのメールを 1 通送る（メールの道を確かめる。09 の巻）。使い方: .\\dev.ps1 send_test_mail --to 自分のアドレス</span>
+
+<span class="sd">サーバーでは onprem の 05 の manage.ps1 から動かす。検証のサーバーでは、MAIL_REDIRECT_TO の宛先に届く。</span>
+<span class="sd">アプリの不具合か、メールの道（SMTP リレー・ネットワーク）の問題かを分けるために使う。</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">django.conf</span><span class="w"> </span><span class="kn">import</span> <span class="n">settings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">django.core.mail</span><span class="w"> </span><span class="kn">import</span> <span class="n">send_mail</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">django.core.management.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseCommand</span><span class="p">,</span> <span class="n">CommandError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">django.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">timezone</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Command</span><span class="p">(</span><span class="n">BaseCommand</span><span class="p">):</span>
+    <span class="n">help</span> <span class="o">=</span> <span class="s2">&quot;テストのメールを 1 通送る&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">):</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--to&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;送り先（自分のアドレス）&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">to</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">settings</span><span class="o">.</span><span class="n">EMAIL_BACKEND</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;smtp.EmailBackend&quot;</span><span class="p">):</span>
+            <span class="n">where</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">settings</span><span class="o">.</span><span class="n">EMAIL_HOST</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">settings</span><span class="o">.</span><span class="n">EMAIL_PORT</span><span class="si">}</span><span class="s2">（STARTTLS: </span><span class="si">{</span><span class="s1">&#39;使う&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">settings</span><span class="o">.</span><span class="n">EMAIL_USE_TLS</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;使わない&#39;</span><span class="si">}</span><span class="s2">）&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">where</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">EMAIL_BACKEND</span>
+        <span class="n">subject</span> <span class="o">=</span> <span class="s2">&quot;【依頼・承認】送信テスト&quot;</span>
+        <span class="n">body</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;依頼・承認アプリからの、送信テストです。</span><span class="se">\n\n</span><span class="s2">送った時刻: </span><span class="si">{</span><span class="n">timezone</span><span class="o">.</span><span class="n">localtime</span><span class="p">()</span><span class="si">:</span><span class="s2">%Y-%m-%d %H:%M</span><span class="si">}</span><span class="se">\n</span><span class="s2">渡した先: </span><span class="si">{</span><span class="n">where</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="k">if</span> <span class="n">settings</span><span class="o">.</span><span class="n">MAIL_REDIRECT_TO</span><span class="p">:</span>  <span class="c1"># 検証のサーバーでは、services._mail と同じく宛先を差し替える</span>
+            <span class="n">body</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;（検証のメールです。本来の宛先: </span><span class="si">{</span><span class="n">to</span><span class="si">}</span><span class="s2">）</span><span class="se">\n\n</span><span class="si">{</span><span class="n">body</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">subject</span><span class="p">,</span> <span class="n">to</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;【検証】</span><span class="si">{</span><span class="n">subject</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">settings</span><span class="o">.</span><span class="n">MAIL_REDIRECT_TO</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">send_mail</span><span class="p">(</span><span class="n">subject</span><span class="p">,</span> <span class="n">body</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">[</span><span class="n">to</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># 原因の種類（例外の名前）も出して、調べやすくする</span>
+            <span class="k">raise</span> <span class="n">CommandError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;送れませんでした（渡した先: </span><span class="si">{</span><span class="n">where</span><span class="si">}</span><span class="s2">）: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;渡しました（宛先: </span><span class="si">{</span><span class="n">to</span><span class="si">}</span><span class="s2">・渡した先: </span><span class="si">{</span><span class="n">where</span><span class="si">}</span><span class="s2">）。届いたかを、受け取る側で確かめてください。&quot;</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h3 id="72-topcoat08">7.2 Topcoat（08）</h3>
+<p><code>src/config.rs</code> のメールの所:</p>
+<div class="codehilite"><div class="code-wrap" id="code-19"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">mail</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">match</span><span class="w"> </span><span class="n">var</span><span class="p">(</span><span class="s">&quot;SMTP_HOST&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nb">Some</span><span class="p">(</span><span class="n">host</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="kd">let</span><span class="w"> </span><span class="n">port</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">var</span><span class="p">(</span><span class="s">&quot;SMTP_PORT&quot;</span><span class="p">).</span><span class="n">unwrap_or_else</span><span class="p">(</span><span class="o">||</span><span class="w"> </span><span class="s">&quot;25&quot;</span><span class="p">.</span><span class="n">into</span><span class="p">());</span>
+<span class="w">                </span><span class="kd">let</span><span class="w"> </span><span class="n">port</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">port</span><span class="p">.</span><span class="n">parse</span><span class="p">().</span><span class="n">map_err</span><span class="p">(</span><span class="o">|</span><span class="n">_</span><span class="o">|</span><span class="w"> </span><span class="n">ConfigError</span><span class="p">(</span><span class="fm">format!</span><span class="p">(</span><span class="s">&quot;SMTP_PORT が数ではありません（今: {port}）&quot;</span><span class="p">)))</span><span class="o">?</span><span class="p">;</span>
+<span class="w">                </span><span class="kd">let</span><span class="w"> </span><span class="n">starttls</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">match</span><span class="w"> </span><span class="n">var</span><span class="p">(</span><span class="s">&quot;SMTP_USE_TLS&quot;</span><span class="p">).</span><span class="n">as_deref</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="nb">None</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nb">Some</span><span class="p">(</span><span class="s">&quot;true&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">                    </span><span class="nb">Some</span><span class="p">(</span><span class="s">&quot;false&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">                    </span><span class="nb">Some</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">Err</span><span class="p">(</span><span class="n">ConfigError</span><span class="p">(</span><span class="fm">format!</span><span class="p">(</span><span class="s">&quot;SMTP_USE_TLS は true か false です（今: {other}）&quot;</span><span class="p">))),</span>
+<span class="w">                </span><span class="p">};</span>
+<span class="w">                </span><span class="c1">// 暗号化しないで送るのは、開発のパソコンの中の練習だけ（会社のネットワークに平文で流さない）</span>
+<span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="o">!</span><span class="n">starttls</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="n">dev</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="k">return</span><span class="w"> </span><span class="nb">Err</span><span class="p">(</span><span class="n">ConfigError</span><span class="p">(</span><span class="s">&quot;SMTP_USE_TLS=false は、APP_ENV=development のときだけ使えます&quot;</span><span class="p">.</span><span class="n">into</span><span class="p">()));</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">                </span><span class="n">MailSettings</span><span class="p">::</span><span class="n">Smtp</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">host</span><span class="p">,</span><span class="w"> </span><span class="n">port</span><span class="p">,</span><span class="w"> </span><span class="n">starttls</span><span class="w"> </span><span class="p">}</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">            </span><span class="nb">None</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">dev</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">MailSettings</span><span class="p">::</span><span class="n">File</span><span class="p">(</span><span class="n">PathBuf</span><span class="p">::</span><span class="n">from</span><span class="p">(</span><span class="s">&quot;sent_mail&quot;</span><span class="p">)),</span>
+<span class="w">            </span><span class="nb">None</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">Err</span><span class="p">(</span><span class="n">ConfigError</span><span class="p">(</span><span class="s">&quot;SMTP_HOST がありません&quot;</span><span class="p">.</span><span class="n">into</span><span class="p">())),</span>
+<span class="w">        </span><span class="p">};</span>
+</code></pre></div></div>
+
+<p><code>src/mail.rs</code> の、送り方を選ぶ所と、1 通を送る所（08 前編の 6.2）:</p>
+<div class="codehilite"><div class="code-wrap" id="code-20"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="sd">/// 設定から、Topcoat のメールの設定を作る（起動のときに 1 回）</span>
+<span class="k">pub</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">mail_config</span><span class="p">(</span><span class="n">settings</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">MailSettings</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">Result</span><span class="o">&lt;</span><span class="n">MailConfig</span><span class="p">,</span><span class="w"> </span><span class="n">topcoat</span><span class="p">::</span><span class="n">mail</span><span class="p">::</span><span class="n">SmtpError</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MailConfig</span><span class="p">::</span><span class="n">builder</span><span class="p">();</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">match</span><span class="w"> </span><span class="n">settings</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// 開発のパソコン: 送らずに、フォルダに .eml のファイルとして書く（メールソフトで開ける）</span>
+<span class="w">        </span><span class="n">MailSettings</span><span class="p">::</span><span class="n">File</span><span class="p">(</span><span class="n">dir</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">transport</span><span class="p">(</span><span class="n">FileTransport</span><span class="p">::</span><span class="n">new</span><span class="p">(</span><span class="n">dir</span><span class="p">)),</span>
+<span class="w">        </span><span class="c1">// サーバー: M365 の SMTP リレーへ。STARTTLS で暗号化してから渡す（ポートは 25）。</span>
+<span class="w">        </span><span class="c1">// 相手が STARTTLS を使えなければ、送らずにエラーにする（暗号化しないまま送らない）</span>
+<span class="w">        </span><span class="n">MailSettings</span><span class="p">::</span><span class="n">Smtp</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">host</span><span class="p">,</span><span class="w"> </span><span class="n">port</span><span class="p">,</span><span class="w"> </span><span class="n">starttls</span><span class="p">:</span><span class="w"> </span><span class="nc">true</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">builder</span><span class="p">.</span><span class="n">transport</span><span class="p">(</span><span class="n">SmtpTransport</span><span class="p">::</span><span class="n">starttls</span><span class="p">(</span><span class="n">host</span><span class="p">)</span><span class="o">?</span><span class="p">.</span><span class="n">port</span><span class="p">(</span><span class="o">*</span><span class="n">port</span><span class="p">).</span><span class="n">build</span><span class="p">())</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="c1">// 開発のパソコンだけ: 練習用の SMTP サーバー（09 の smtp_sink.py）へ、暗号化せずに渡す</span>
+<span class="w">        </span><span class="n">MailSettings</span><span class="p">::</span><span class="n">Smtp</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">host</span><span class="p">,</span><span class="w"> </span><span class="n">port</span><span class="p">,</span><span class="w"> </span><span class="n">starttls</span><span class="p">:</span><span class="w"> </span><span class="nc">false</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">transport</span><span class="p">(</span><span class="n">SmtpTransport</span><span class="p">::</span><span class="n">unencrypted</span><span class="p">(</span><span class="n">host</span><span class="p">).</span><span class="n">port</span><span class="p">(</span><span class="o">*</span><span class="n">port</span><span class="p">).</span><span class="n">build</span><span class="p">()),</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">    </span><span class="nb">Ok</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">build</span><span class="p">())</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<div class="codehilite"><div class="code-wrap" id="code-21"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="sd">/// 1 通を、今すぐ送る（検証のサーバーなら宛先を差し替えてから）。失敗したらエラーを返す</span>
+<span class="k">pub</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">send_now</span><span class="p">(</span><span class="n">cx</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">Cx</span><span class="p">,</span><span class="w"> </span><span class="n">item</span><span class="p">:</span><span class="w"> </span><span class="nc">Outgoing</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nc">topcoat</span><span class="p">::</span><span class="nb">Result</span><span class="o">&lt;</span><span class="p">()</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">state</span><span class="p">(</span><span class="n">cx</span><span class="p">).</span><span class="n">config</span><span class="p">;</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">redirect</span><span class="p">(</span><span class="n">config</span><span class="p">,</span><span class="w"> </span><span class="n">item</span><span class="p">);</span>
+<span class="w">    </span><span class="n">send_one</span><span class="p">(</span><span class="n">cx</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">config</span><span class="p">.</span><span class="n">mail_from</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">item</span><span class="p">).</span><span class="k">await</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>足した「テストのメールを送る」コマンド（<code>src/cli.rs</code>）:</p>
+<div class="codehilite"><div class="code-wrap" id="code-22"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="sd">/// テストのメールを 1 通送る。データベースは使わないので、つながなくても動く</span>
+<span class="k">async</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">send_test_mail</span><span class="p">(</span><span class="n">config</span><span class="p">:</span><span class="w"> </span><span class="nc">Config</span><span class="p">,</span><span class="w"> </span><span class="n">args</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="p">[</span><span class="nb">String</span><span class="p">])</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nc">anyhow</span><span class="p">::</span><span class="nb">Result</span><span class="o">&lt;</span><span class="p">()</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">option</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;--to&quot;</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">where_to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">match</span><span class="w"> </span><span class="o">&amp;</span><span class="n">config</span><span class="p">.</span><span class="n">mail</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">crate</span><span class="p">::</span><span class="n">config</span><span class="p">::</span><span class="n">MailSettings</span><span class="p">::</span><span class="n">File</span><span class="p">(</span><span class="n">dir</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="fm">format!</span><span class="p">(</span><span class="s">&quot;ファイル（{}）&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">dir</span><span class="p">.</span><span class="n">display</span><span class="p">()),</span>
+<span class="w">        </span><span class="k">crate</span><span class="p">::</span><span class="n">config</span><span class="p">::</span><span class="n">MailSettings</span><span class="p">::</span><span class="n">Smtp</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">host</span><span class="p">,</span><span class="w"> </span><span class="n">port</span><span class="p">,</span><span class="w"> </span><span class="n">starttls</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="fm">format!</span><span class="p">(</span><span class="s">&quot;{host}:{port}（STARTTLS: {}）&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="o">*</span><span class="n">starttls</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s">&quot;使う&quot;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s">&quot;使わない&quot;</span><span class="w"> </span><span class="p">})</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">now</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">time</span><span class="p">::</span><span class="n">OffsetDateTime</span><span class="p">::</span><span class="n">now_utc</span><span class="p">().</span><span class="n">to_offset</span><span class="p">(</span><span class="k">crate</span><span class="p">::</span><span class="n">models</span><span class="p">::</span><span class="n">JST</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">body</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="fm">format!</span><span class="p">(</span>
+<span class="w">        </span><span class="s">&quot;依頼・承認アプリからの、送信テストです。</span><span class="se">\n\n</span><span class="s">送った時刻: {}</span><span class="se">\n</span><span class="s">APP_ENV: {:?}</span><span class="se">\n</span><span class="s">渡した先: {where_to}</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="k">crate</span><span class="p">::</span><span class="n">models</span><span class="p">::</span><span class="n">fmt_datetime</span><span class="p">(</span><span class="n">now</span><span class="p">),</span>
+<span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">app_env</span>
+<span class="w">    </span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// connect_lazy は、本当に使うまでデータベースにつながない</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">pool</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sqlx</span><span class="p">::</span><span class="n">PgPool</span><span class="p">::</span><span class="n">connect_lazy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">config</span><span class="p">.</span><span class="n">database_url</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AppState</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">pool</span><span class="p">,</span><span class="w"> </span><span class="n">config</span><span class="p">:</span><span class="w"> </span><span class="nc">Arc</span><span class="p">::</span><span class="n">new</span><span class="p">(</span><span class="n">config</span><span class="p">)</span><span class="w"> </span><span class="p">};</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">cx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Cx</span><span class="p">::</span><span class="n">new</span><span class="p">(</span><span class="n">background_context</span><span class="p">(</span><span class="o">&amp;</span><span class="n">state</span><span class="p">)</span><span class="o">?</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="kd">let</span><span class="w"> </span><span class="nb">Err</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">crate</span><span class="p">::</span><span class="n">mail</span><span class="p">::</span><span class="n">send_now</span><span class="p">(</span><span class="o">&amp;</span><span class="n">cx</span><span class="p">,</span><span class="w"> </span><span class="k">crate</span><span class="p">::</span><span class="n">mail</span><span class="p">::</span><span class="n">Outgoing</span><span class="p">::</span><span class="n">new</span><span class="p">(</span><span class="o">&amp;</span><span class="n">to</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;送信テスト&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">body</span><span class="p">)).</span><span class="k">await</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// 原因の連なり（「つなげない」←「証明書を確かめられない」など）を、全部書き出す</span>
+<span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">to_string</span><span class="p">();</span>
+<span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">source</span><span class="p">();</span>
+<span class="w">        </span><span class="k">while</span><span class="w"> </span><span class="kd">let</span><span class="w"> </span><span class="nb">Some</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">message</span><span class="p">.</span><span class="n">push_str</span><span class="p">(</span><span class="o">&amp;</span><span class="fm">format!</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">  原因: {s}&quot;</span><span class="p">));</span>
+<span class="w">            </span><span class="n">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">source</span><span class="p">();</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="n">bail</span><span class="o">!</span><span class="p">(</span><span class="s">&quot;送れませんでした（渡した先: {where_to}）: {message}&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;渡しました（宛先: {to}・渡した先: {where_to}）。届いたかを、受け取る側で確かめてください。&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="nb">Ok</span><span class="p">(())</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="73-3">7.3 3 つの場所で、出し方を変える</h3>
+<p><img src="../images/L09-06_three_envs.webp" alt="開発のパソコンはファイルや練習用のSMTPへ、検証のサーバーはIT担当にだけ、本番のサーバーは本物の宛先へ" style="width: 100%;"></p>
+<table>
+<thead>
+<tr>
+<th>場所</th>
+<th>06 Django</th>
+<th>08 Topcoat</th>
+<th>届く先</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>開発のパソコン（ふだん）</td>
+<td><code>EMAIL_BACKEND=…filebased.EmailBackend</code></td>
+<td><code>SMTP_HOST</code> を書かない</td>
+<td><code>sent_mail\</code> のファイル（だれにも届かない）</td>
+</tr>
+<tr>
+<td>開発のパソコン（SMTP の練習）</td>
+<td><code>SMTP_HOST=127.0.0.1</code>・<code>SMTP_PORT=1025</code>・<code>SMTP_USE_TLS=false</code></td>
+<td>同じ</td>
+<td>練習用の SMTP サーバー（だれにも届かない）</td>
+</tr>
+<tr>
+<td>検証のサーバー</td>
+<td><code>SMTP_HOST</code>＝M365・<code>MAIL_REDIRECT_TO</code>＝IT 担当</td>
+<td>同じ（<code>APP_ENV=staging</code> なら <code>MAIL_REDIRECT_TO</code> が無いと起動しない）</td>
+<td>IT 担当にだけ。件名に【検証】</td>
+</tr>
+<tr>
+<td>本番のサーバー</td>
+<td><code>SMTP_HOST</code>＝M365</td>
+<td>同じ（<code>APP_ENV=production</code>）</td>
+<td>本物の宛先</td>
+</tr>
+</tbody>
+</table>
+<h2 id="8">8. 手元で、アプリから送ってみる</h2>
+<p>2.1 の練習用のサーバー（暗号化なし・1025 番）を動かしておきます。</p>
+<h3 id="81-topcoat08">8.1 Topcoat（08）から</h3>
+<div class="codehilite"><div class="code-wrap" id="code-23"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">cd </span><span class="n">webapp_learning</span><span class="p">\</span><span class="n">samples</span><span class="p">\</span><span class="n">08_topcoat_app</span><span class="p">\</span><span class="n">webapp</span>
+<span class="nv">$env:SMTP_HOST</span> <span class="p">=</span> <span class="s2">&quot;127.0.0.1&quot;</span><span class="p">;</span> <span class="nv">$env:SMTP_PORT</span> <span class="p">=</span> <span class="s2">&quot;1025&quot;</span><span class="p">;</span> <span class="nv">$env:SMTP_USE_TLS</span> <span class="p">=</span> <span class="s2">&quot;false&quot;</span>
+<span class="n">cargo</span> <span class="n">run</span> <span class="p">--</span> <span class="nb">send-test</span><span class="n">-mail</span> <span class="p">-</span><span class="n">-to</span> <span class="n">sato</span><span class="nv">@example</span><span class="p">.</span><span class="n">com</span>
+<span class="nb">Remove-Item</span> <span class="n">Env</span><span class="p">:</span><span class="n">SMTP_HOST</span><span class="p">,</span> <span class="n">Env</span><span class="p">:</span><span class="n">SMTP_PORT</span><span class="p">,</span> <span class="n">Env</span><span class="p">:</span><span class="n">SMTP_USE_TLS</span>   <span class="c"># 終わったら消す</span>
+</code></pre></div></div>
+
+<p>実際の出力:</p>
+<div class="codehilite"><div class="code-wrap" id="code-24"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>渡しました（宛先: sato@example.com・渡した先: 127.0.0.1:1025（STARTTLS: 使わない））。届いたかを、受け取る側で確かめてください。
+</code></pre></div></div>
+
+<p>受け取る側の画面:</p>
+<div class="codehilite"><div class="code-wrap" id="code-25"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>---- 127.0.0.1:61037 からつながった ----
+S: 220 localhost ESMTP practice-sink
+C: EHLO （パソコンの名前）
+S: 250-localhost
+S: 250-SIZE 36700160
+S: 250-8BITMIME
+S: 250 SMTPUTF8
+C: MAIL FROM:&lt;noreply@example.com&gt;
+S: 250 2.1.0 OK
+C: RCPT TO:&lt;sato@example.com&gt;
+S: 250 2.1.5 OK
+C: DATA
+S: 354 End data with &lt;CR&gt;&lt;LF&gt;.&lt;CR&gt;&lt;LF&gt;
+C: From: noreply@example.com
+C: To: sato@example.com
+C: Subject: =?utf-8?b?44CQ5L6d6aC844O75om/6KqN44CR6YCB5L+h44OG44K544OI?=
+C: Message-ID: &lt;G7i8MkjsdigIk6YUQtEXPWrXUeJ6TbK3Xcab@（パソコンの名前）&gt;
+C: MIME-Version: 1.0
+C: Date: Sun, 01 Nov 2026 16:28:47 +0000
+C: Content-Type: text/plain; charset=utf-8
+C: Content-Transfer-Encoding: base64
+C: 
+C: （本文 5 行。表示は省く）
+C: .
+S: 250 2.0.0 OK queued as 20261102-012847-259494.eml
+C: QUIT
+S: 221 2.0.0 Bye
+---- 切れた ----
+</code></pre></div></div>
+
+<p><code>received\</code> に保存されたメールを読み解いた中身:</p>
+<div class="codehilite"><div class="code-wrap" id="code-26"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>【依頼・承認】送信テスト
+依頼・承認アプリからの、送信テストです。
+
+
+
+送った時刻: 2026-11-02 01:28
+
+APP_ENV: Development
+
+渡した先: 127.0.0.1:1025（STARTTLS: 使わない）
+</code></pre></div></div>
+
+<p><strong>確かめること:</strong> <code>EHLO</code> のあとに、自分のパソコンの名前が出る（サーバーから送るときは、サーバーの名前になる）。Python の smtplib と違って、命令が大文字（<code>MAIL FROM</code>）。どちらも決まりの上では同じ意味です。</p>
+<h3 id="82-django06">8.2 Django（06）から</h3>
+<p><code>dev.env</code> の <code>EMAIL_BACKEND=…filebased…</code> の行の頭に <code>#</code> を付けて消し、次の 4 行を足してから動かします（練習が終わったら戻す）。</p>
+<div class="codehilite"><div class="code-wrap" id="code-27"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+SMTP_HOST=127.0.0.1
+SMTP_PORT=1025
+SMTP_USE_TLS=false
+</code></pre></div></div>
+
+<div class="codehilite"><div class="code-wrap" id="code-28"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">cd </span><span class="n">webapp_learning</span><span class="p">\</span><span class="n">samples</span><span class="p">\</span><span class="n">06_django_react</span><span class="p">\</span><span class="n">backend</span>
+<span class="p">.\</span><span class="n">dev</span><span class="p">.</span><span class="n">ps1</span> <span class="n">send_test_mail</span> <span class="p">-</span><span class="n">-to</span> <span class="n">sato</span><span class="nv">@example</span><span class="p">.</span><span class="n">com</span>
+</code></pre></div></div>
+
+<p>実際の出力:</p>
+<div class="codehilite"><div class="code-wrap" id="code-29"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>渡しました（宛先: sato@example.com・渡した先: 127.0.0.1:1025（STARTTLS: 使わない））。届いたかを、受け取る側で確かめてください。
+</code></pre></div></div>
+
+<p>受け取る側の画面:</p>
+<div class="codehilite"><div class="code-wrap" id="code-30"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>---- 127.0.0.1:55578 からつながった ----
+S: 220 localhost ESMTP practice-sink
+C: ehlo （パソコンの名前）
+S: 250-localhost
+S: 250-SIZE 36700160
+S: 250-8BITMIME
+S: 250 SMTPUTF8
+C: mail from:&lt;noreply@example.com&gt; size=476
+S: 250 2.1.0 OK
+C: rcpt to:&lt;sato@example.com&gt;
+S: 250 2.1.5 OK
+C: data
+S: 354 End data with &lt;CR&gt;&lt;LF&gt;.&lt;CR&gt;&lt;LF&gt;
+C: Content-Type: text/plain; charset=&quot;utf-8&quot;
+C: MIME-Version: 1.0
+C: Content-Transfer-Encoding: 8bit
+C: Subject: =?utf-8?b?44CQ5L6d6aC844O75om/6KqN44CR6YCB5L+h44OG44K544OI?=
+C: From: noreply@example.com
+C: To: sato@example.com
+C: Date: Sun, 01 Nov 2026 16:26:13 -0000
+C: Message-ID: &lt;179355037300.18408.10676062981774792886@（パソコンの名前）&gt;
+C: 
+C: （本文 4 行。表示は省く）
+C: .
+S: 250 2.0.0 OK queued as 20261102-012613-012042.eml
+C: quit
+S: 221 2.0.0 Bye
+---- 切れた ----
+</code></pre></div></div>
+
+<h3 id="83">8.3 結果のまとめ</h3>
+<table>
+<thead>
+<tr>
+<th>場面</th>
+<th>06 Django</th>
+<th>08 Topcoat</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>暗号化なしの練習用サーバー（<code>SMTP_USE_TLS=false</code>）</td>
+<td>送れた</td>
+<td>送れた</td>
+</tr>
+<tr>
+<td>STARTTLS を使えない相手（本番と同じ設定）</td>
+<td><strong>送らない</strong>: <code>SMTPNotSupportedError</code></td>
+<td><strong>送らない</strong>: <code>STARTTLS is not supported on this server</code></td>
+</tr>
+<tr>
+<td>信じられない証明書の相手（本番と同じ設定）</td>
+<td><strong>送らない</strong>: <code>CERTIFICATE_VERIFY_FAILED … self-signed certificate</code></td>
+<td><strong>送らない</strong>: <code>invalid peer certificate: UnknownIssuer</code></td>
+</tr>
+</tbody>
+</table>
+<p>作り方は違っても、<strong>守っている決まりは同じ</strong>です。</p>
+<h2 id="9">9. サーバーで確かめる順番</h2>
+<p>届かないときは、<strong>手前から 1 つずつ</strong>確かめます。いきなりアプリを疑いません。</p>
+<table>
+<thead>
+<tr>
+<th>順番</th>
+<th>確かめること</th>
+<th>やり方</th>
+<th>分かること</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>MX の名前を引けるか</td>
+<td><code>Resolve-DnsName example.com -Type MX</code>（onprem の 04 の 10.2）</td>
+<td>DNS の問題か</td>
+</tr>
+<tr>
+<td>2</td>
+<td>25 番につながるか</td>
+<td><code>Test-NetConnection （MX エンドポイント） -Port 25</code></td>
+<td>会社の出口・関所で止まっていないか</td>
+</tr>
+<tr>
+<td>3</td>
+<td>アプリを使わずに送れるか</td>
+<td><code>Send-MailMessage … -UseSsl</code>（onprem の 04 の 10.3）</td>
+<td>Microsoft 365 のコネクタ・送り主の問題か</td>
+</tr>
+<tr>
+<td>4</td>
+<td>アプリのコマンドで送れるか</td>
+<td>06: <code>manage.ps1 send_test_mail --to 自分</code>／08: <code>webapp.exe send-test-mail --to 自分</code>（サービスの XML と同じ値を、窓の中だけ教えてから）</td>
+<td>アプリの設定（環境変数）の問題か</td>
+</tr>
+<tr>
+<td>5</td>
+<td>画面の操作で届くか</td>
+<td>依頼を出して、承認のお願いが届くか</td>
+<td>アプリの流れの問題か</td>
+</tr>
+<tr>
+<td>6</td>
+<td>受信トレイに入るか</td>
+<td>迷惑メールのフォルダも見る</td>
+<td>SPF などの問題か（6.2）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>確かめること:</strong></p>
+<ul>
+<li>1 で <code>NameExchange</code> に <code>…mail.protection.outlook.com</code> が出る。2 で <code>TcpTestSucceeded : True</code>。</li>
+<li>4 で「渡しました」と出て、自分の受信トレイに【依頼・承認】送信テストが届く。検証のサーバーでは、<code>MAIL_REDIRECT_TO</code> の宛先に【検証】付きで届く。</li>
+<li>5 で届かないのに 4 で届くなら、アプリのログ（onprem の 04 の 12.2・05 の 12.2）に「メールを送れませんでした」が出ていないかを見る。</li>
+</ul>
+<h2 id="10">10. よくある失敗</h2>
+<table>
+<thead>
+<tr>
+<th>出る文・起きたこと</th>
+<th>止まっている所</th>
+<th>原因と直し方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TcpTestSucceeded : False</code>・つながらない・時間切れ</td>
+<td>会社の出口・関所</td>
+<td>25 番を外へ通してもらう（情報システム部門）</td>
+</tr>
+<tr>
+<td><code>550 5.7.64 TenantAttribution; Relay Access Denied</code></td>
+<td>Microsoft 365 のコネクタ</td>
+<td>コネクタの IP アドレスと、会社の出口の IP アドレスをそろえてもらう</td>
+</tr>
+<tr>
+<td><code>STARTTLS is not supported on this server</code>（08）・<code>SMTPNotSupportedError</code>（06）</td>
+<td>渡す先</td>
+<td><code>SMTP_HOST</code> が Microsoft 365 になっているか（違う所へ渡していないか）。途中の機器が STARTTLS を消していないか</td>
+</tr>
+<tr>
+<td><code>invalid peer certificate: UnknownIssuer</code>（08）・<code>CERTIFICATE_VERIFY_FAILED</code>（06）</td>
+<td>証明書の確かめ</td>
+<td><code>SMTP_HOST</code> の名前が正しいか。途中で通信をのぞく機器があるなら、情報システム部門に相談（確かめを止めない）</td>
+</tr>
+<tr>
+<td><code>SMTP_USE_TLS=false は、APP_ENV=development のときだけ使えます</code>（08）</td>
+<td>設定</td>
+<td>サーバーでは <code>SMTP_USE_TLS</code> を書かない</td>
+</tr>
+<tr>
+<td>届くが、迷惑メールのフォルダに入る</td>
+<td>受け取る側の判定</td>
+<td>SPF に会社の出口の IP アドレスを書いてもらう（6.2）</td>
+</tr>
+<tr>
+<td>検証のサーバーから、本物の社員に届いた</td>
+<td>設定</td>
+<td><code>MAIL_REDIRECT_TO</code> を書く（08 は <code>APP_ENV=staging</code> で、書かないと起動しない）</td>
+</tr>
+<tr>
+<td>開発のパソコンで、メールがどこにも出ない</td>
+<td>設定</td>
+<td>ふだんは <code>sent_mail\</code> のファイルを見る。練習用のサーバーなら、その窓を見る</td>
+</tr>
+<tr>
+<td>練習用のサーバーで <code>暗号化に切りかえられなかった: TLSV1_ALERT_UNKNOWN_CA</code></td>
+<td>練習用の証明書</td>
+<td>正しい動き（アプリが、自分で作った証明書を信じなかった）。5.2</td>
+</tr>
+</tbody>
+</table>
+<h2 id="11">11. 練習問題</h2>
+<ol>
+<li><code>send_test.py</code> で、宛先を 2 人にして送ってください（<code>msg["To"] = "a@example.com, b@example.com"</code>）。練習用のサーバーの画面で、<code>RCPT TO</code> は何回出ますか。</li>
+<li><code>send_test.py</code> に <code>msg["Bcc"] = "c@example.com"</code> を足して送り、<code>received\</code> の <code>.eml</code> を開いてください。<code>Bcc:</code> の行はありますか。<code>RCPT TO</code> には出ていますか（3 章）。</li>
+<li>練習用のサーバーの <code>250 2.1.5 OK</code>（<code>RCPT</code> の返事）を、<code>550 5.1.1 User unknown</code> に変えて送ってみてください。Python・Django・Topcoat は、それぞれ何と言いますか。</li>
+<li>9 章の表の 2 で <code>False</code> だったとき、アプリのログや Microsoft 365 の設定を見ても意味が無いのは、なぜでしょう。</li>
+<li>6.2 の SPF の例で、<code>-all</code> を <code>~all</code> にすると、何が変わりますか（調べてみてください）。</li>
+</ol>
+<h2 id="_2">用語の索引</h2>
+<table>
+<thead>
+<tr>
+<th>用語</th>
+<th>意味</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SMTP</td>
+<td>メールを渡すときの決まり</td>
+<td>1・2</td>
+</tr>
+<tr>
+<td>リレー</td>
+<td>受け取ったメールを、次の所へ中継すること</td>
+<td>1・6</td>
+</tr>
+<tr>
+<td>MX</td>
+<td>ドメインの「メールの受付」の場所（DNS に書いてある）</td>
+<td>1・9</td>
+</tr>
+<tr>
+<td>エンベロープ</td>
+<td>配達のための宛先（<code>MAIL FROM</code>・<code>RCPT TO</code>）</td>
+<td>3</td>
+</tr>
+<tr>
+<td>ヘッダー</td>
+<td>読む人のための宛先や件名（<code>From:</code>・<code>To:</code>・<code>Subject:</code>）</td>
+<td>3</td>
+</tr>
+<tr>
+<td>MIME・base64</td>
+<td>英字以外を、英字だけの形に変えて運ぶ決まり</td>
+<td>4</td>
+</tr>
+<tr>
+<td>STARTTLS</td>
+<td>途中から暗号化に切りかえる命令</td>
+<td>5.1</td>
+</tr>
+<tr>
+<td>証明書・認証局</td>
+<td>サーバーの身分証と、その発行元</td>
+<td>5.2</td>
+</tr>
+<tr>
+<td>コネクタ</td>
+<td>Microsoft 365 が、送り主の会社を見分ける決まり</td>
+<td>6.1</td>
+</tr>
+<tr>
+<td>SPF・DKIM・DMARC</td>
+<td>にせの送り主を見分けるための、ドメインの設定</td>
+<td>6.2</td>
+</tr>
+</tbody>
+</table>
+
+<script>
+(function () {
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy") ? resolve() : reject(); } catch (e) { reject(e); }
+      document.body.removeChild(ta);
+    });
+  }
+  document.querySelectorAll(".copy-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var pre = btn.parentElement.querySelector("pre");
+      var text = pre.textContent.replace(/\n$/, "");
+      copyText(text).then(function () {
+        btn.textContent = "コピーしました";
+        btn.classList.add("done");
+        setTimeout(function () { btn.textContent = "コピー"; btn.classList.remove("done"); }, 2000);
+      }, function () { btn.textContent = "コピーできませんでした"; });
+    });
+  });
+  if (/^#code-\d+$/.test(location.hash)) {
+    var note = document.getElementById("web-note");
+    if (note) { note.hidden = false; }
+  }
+})();
+</script>
+</body>
+</html>

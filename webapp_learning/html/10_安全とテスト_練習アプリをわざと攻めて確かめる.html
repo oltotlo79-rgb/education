@@ -1,0 +1,1195 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>10_安全とテスト_練習アプリをわざと攻めて確かめる</title>
+<style>
+
+@page {
+  size: A4;
+  margin: 18mm 16mm 20mm 16mm;
+  @bottom-right {
+    content: counter(page);
+    font-size: 10px;
+    color: #64748b;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  font-family: "Yu Gothic UI", "Yu Gothic", "Meiryo", "Hiragino Sans",
+               "Noto Sans JP", "Segoe UI", system-ui, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.75;
+  color: #1e293b;
+  background: #ffffff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #0f172a;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 1.4em 0 0.6em;
+  page-break-after: avoid;
+}
+h1 {
+  font-size: 22pt;
+  border-bottom: 3px solid #1e40af;
+  padding-bottom: 0.3em;
+  margin-top: 0.4em;
+  page-break-before: auto;
+}
+h2 {
+  font-size: 16pt;
+  border-bottom: 1.5px solid #cbd5e1;
+  padding-bottom: 0.25em;
+  margin-top: 1.6em;
+}
+h3 { font-size: 13pt; color: #1e40af; }
+h4 { font-size: 12pt; color: #334155; }
+
+p { margin: 0.5em 0 0.8em; }
+
+a { color: #1d4ed8; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+ul, ol { margin: 0.4em 0 0.9em; padding-left: 1.6em; }
+li { margin: 0.2em 0; }
+
+blockquote {
+  border-left: 4px solid #3b82f6;
+  background: #eff6ff;
+  margin: 0.8em 0;
+  padding: 0.6em 1em;
+  color: #1e3a8a;
+  border-radius: 0 6px 6px 0;
+  page-break-inside: avoid;
+}
+blockquote p { margin: 0.3em 0; }
+blockquote strong { color: #1e40af; }
+
+code {
+  /* DefCode (see _code_font.py) has ASCII and Japanese in ONE font, so a code
+     line is drawn as one text run and copies as one line in every PDF viewer. */
+  font-family: "Consolas", "Consolas", monospace;
+  font-size: 0.9em;
+  background: #f1f5f9;
+  color: #be123c;
+  padding: 0.12em 0.36em;
+  border-radius: 4px;
+  /* Long inline code (file paths / URLs) must break instead of overflowing. */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  /* In a PDF there is no horizontal scrolling, so long lines must wrap
+     instead of being clipped off the right edge of the page. */
+  overflow-x: hidden;
+  overflow-y: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  font-size: 9.2pt;
+  line-height: 1.5;
+  margin: 0.8em 0;
+  page-break-inside: avoid;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+  white-space: inherit;
+  word-break: inherit;
+  overflow-wrap: inherit;
+}
+
+/* The codehilite extension wraps highlighted blocks in a scrolling div; make
+   that wrap too so nothing is clipped in the PDF. */
+.codehilite {
+  overflow-x: hidden;
+  /* overflow-x: hidden alone turns overflow-y into auto, and a glyph from a
+     fallback font that is a hair too tall then shows a vertical scrollbar. */
+  overflow-y: hidden;
+}
+.codehilite pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* No per-token colours: every coloured token became its own text run (and its
+   own tag) in the PDF, and some viewers then pasted each token on its own line.
+   Only whole comment lines get a colour, so each line is still one run. */
+pre .cmt { color: #94a3b8; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.8em 0;
+  font-size: 9.6pt;
+  page-break-inside: avoid;
+}
+th, td {
+  border: 1px solid #e2e8f0;
+  padding: 6px 9px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: #f1f5f9;
+  color: #0f172a;
+  font-weight: 700;
+}
+tr:nth-child(even) td { background: #f8fafc; }
+
+img { max-width: 100%; height: auto; }
+
+hr {
+  border: none;
+  border-top: 1px dashed #cbd5e1;
+  margin: 1.6em 0;
+}
+
+/* Diagram blocks (the inline-styled <div>s in the source) */
+div[style] {
+  page-break-inside: avoid;
+}
+
+/* Tighten spacing right after headings */
+h1 + p, h2 + p, h3 + p, h4 + p { margin-top: 0.2em; }
+
+/* Avoid ugly page breaks inside list items / table rows */
+li, tr { page-break-inside: avoid; }
+
+@media screen {
+  body { max-width: 920px; margin: 0 auto; padding: 20px 20px 120px; font-size: 16px; }
+  pre { white-space: pre !important; word-break: normal !important; overflow-wrap: normal !important;
+        overflow-x: auto !important; font-size: 14px !important; }
+  img { max-width: 100%; height: auto; }
+}
+.web-bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; font-size: 14px;
+  padding: 8px 12px; margin-bottom: 16px; background: #eef2f7; border-radius: 8px; }
+.web-bar a { color: #1e3a5f; }
+.web-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 10; max-width: 90%;
+  font-size: 15px; font-weight: 700; background: #fff7ed; border: 2px solid #f2994a; border-radius: 8px;
+  padding: 10px 16px; margin: 0; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.code-wrap { position: relative; scroll-margin-top: 16px; }
+.code-wrap pre { padding-top: 40px !important; }
+.copy-btn { position: absolute; top: 8px; right: 8px; z-index: 2; font-size: 13px; font-weight: 700;
+  padding: 4px 12px; border: 0; border-radius: 6px; background: #2f80ed; color: #fff; cursor: pointer;
+  font-family: inherit; }
+.copy-btn:hover { background: #1c64c8; }
+.copy-btn.done { background: #27ae60; }
+.code-wrap:target pre { outline: 4px solid #f2994a; outline-offset: 2px; }
+.code-wrap:target .copy-btn { box-shadow: 0 0 0 4px #f2994a; }
+/* syntax colours on screen (the PDF uses one colour so that each line copies as one piece) */
+.codehilite .k, .codehilite .kd, .codehilite .kn, .codehilite .kr { color: #c084fc; }
+.codehilite .s, .codehilite .s1, .codehilite .s2, .codehilite .sb { color: #fcd34d; }
+.codehilite .c, .codehilite .c1, .codehilite .cm { color: #94a3b8; }
+.codehilite .nf, .codehilite .nx { color: #60a5fa; }
+.codehilite .nb { color: #34d399; }
+.codehilite .mi, .codehilite .mf { color: #f472b6; }
+.codehilite .nt { color: #f59e0b; }
+.codehilite .na { color: #93c5fd; }
+</style>
+</head>
+<body>
+<div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/10_%E5%AE%89%E5%85%A8%E3%81%A8%E3%83%86%E3%82%B9%E3%83%88_%E7%B7%B4%E7%BF%92%E3%82%A2%E3%83%97%E3%83%AA%E3%82%92%E3%82%8F%E3%81%96%E3%81%A8%E6%94%BB%E3%82%81%E3%81%A6%E7%A2%BA%E3%81%8B%E3%82%81%E3%82%8B.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、ブラウザーの「戻る」で PDF に戻れます。</p><div style="text-align: center; padding: 28px 0 8px;">
+<div style="font-size: 14px; color: #475569;">Web アプリ開発 学習資料</div>
+<div style="font-size: 26px; font-weight: 800; color: #0f172a; margin-top: 6px; line-height: 1.35;">10 安全とテスト — 練習アプリを、わざと攻めて確かめる</div>
+<div style="font-size: 13px; color: #475569; margin-top: 8px;">パスワード・ログイン・権限・CSRF・XSS・SQL インジェクション・ファイル・メールのヘッダー・秘密の扱い・テスト・出す前のチェック表</div>
+</div>
+
+<h1 id="10">10 安全とテスト: 練習アプリを、わざと攻めて確かめる</h1>
+<h2 id="_1">この巻について</h2>
+<p>06（Django＋React）と 08（Topcoat）の練習アプリに入れてきた<strong>安全の仕組み</strong>を、1 か所にまとめます。この巻の特徴は、<strong>説明するだけでなく、実際に攻めてみて、断られることを確かめる</strong>ことです。</p>
+<ul>
+<li>攻めてみる中で、<strong>本当に弱い所が 2 つ見つかりました</strong>（2.2 と 7 章）。どう見つけ、どう直し、どうテストにしたかも、そのまま載せます。</li>
+<li><strong>試して確かめた範囲:</strong> 2026-11-02 に、開発のパソコンで、06（Django 5.2.18・React 19.3.1）・08（Topcoat 0.11.0）・PostgreSQL 18.3 を動かして試しました。出力は実際の物です（トークンとパソコンの名前だけ伏せた）。</li>
+<li><strong>自分のパソコンの、自分の練習アプリだけ</strong>で試します。ほかの人のシステムに試すのは、決してしません（法律で罰せられることがあります）。</li>
+<li><strong>▶ 準備:</strong> 06 と 08 の練習アプリを、手元で動かせる状態にしておきます（06 前編の 2 章・08 前編の 2 章）。この巻の <code>curl</code> や <code>psql</code> のコマンドは、それぞれのアプリを動かした PowerShell とは<strong>別の窓</strong>で打ちます。</li>
+</ul>
+<p><img src="../images/L10-01_threat_map.webp" alt="ブラウザ・IIS・アプリ・データベース・添付ファイル・メール。アプリの中にログイン・権限・入力の確かめ・画面の置きかえの4つの守り。悪い人が間から攻める" style="width: 100%;"></p>
+<table>
+<thead>
+<tr>
+<th>章</th>
+<th>守る物</th>
+<th>主な攻め方</th>
+<th>06 Django</th>
+<th>08 Topcoat</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>通信</td>
+<td>盗み見</td>
+<td>HTTP（社内）。HTTPS は参考の資料</td>
+<td>同じ</td>
+</tr>
+<tr>
+<td>2</td>
+<td>パスワード</td>
+<td>データベースを盗まれる</td>
+<td>PBKDF2</td>
+<td>Argon2</td>
+</tr>
+<tr>
+<td>3</td>
+<td>ログイン</td>
+<td>クッキーを盗む・使い回す</td>
+<td>Django のセッション</td>
+<td>Topcoat のセッション＋自分の表</td>
+</tr>
+<tr>
+<td>4</td>
+<td>権限</td>
+<td>ボタンが無い操作を、直接送る</td>
+<td><code>_visible_requests</code>・<code>services.py</code></td>
+<td><code>load_visible</code>・<code>workflow.rs</code></td>
+</tr>
+<tr>
+<td>5</td>
+<td>フォームの送信</td>
+<td>CSRF</td>
+<td>CSRF トークン</td>
+<td><code>Origin</code> と <code>Host</code> を比べる</td>
+</tr>
+<tr>
+<td>6</td>
+<td>画面</td>
+<td>XSS</td>
+<td>React が置きかえる</td>
+<td><code>view!</code> が置きかえる</td>
+</tr>
+<tr>
+<td>7</td>
+<td>入力</td>
+<td>改行などを混ぜる</td>
+<td><code>validate_title</code></td>
+<td><code>FormValues::validate</code></td>
+</tr>
+<tr>
+<td>8</td>
+<td>データベース</td>
+<td>SQL インジェクション</td>
+<td>ORM</td>
+<td><code>$1</code> と <code>.bind()</code></td>
+</tr>
+<tr>
+<td>9</td>
+<td>ファイル</td>
+<td>にせの中身・場所の書きかえ</td>
+<td>先頭の数バイト・乱数の名前</td>
+<td>同じ</td>
+</tr>
+<tr>
+<td>10</td>
+<td>承認の URL</td>
+<td>推測・使い回し</td>
+<td>32 バイトの乱数・指紋だけ保存</td>
+<td>同じ</td>
+</tr>
+<tr>
+<td>11</td>
+<td>メール</td>
+<td>ヘッダー インジェクション</td>
+<td><code>BadHeaderError</code> で断る</td>
+<td>件名の中に閉じこめる</td>
+</tr>
+<tr>
+<td>12</td>
+<td>秘密</td>
+<td>Git や画面から漏れる</td>
+<td><code>dev.env</code> を Git に入れない</td>
+<td><code>.env</code> を Git に入れない</td>
+</tr>
+</tbody>
+</table>
+<h2 id="1-http">1. 通信: HTTP で動かすこと</h2>
+<ul>
+<li>この資料のアプリは、onprem の決まりのとおり <strong>HTTP（暗号化なし）</strong>で動かします。会社のネットワークの中だけで使う前提です。</li>
+<li>HTTP では、同じネットワークの途中の機器から、<strong>パスワードやクッキーが読める</strong>おそれがあります。会社のネットワークを信じる、という前提に立っていることを、忘れないでください。</li>
+<li>HTTPS にするときの手順と、変える所（クッキーの <code>Secure</code> を戻す など）は、<code>onprem/参考_HTTPSにする場合.md</code> にまとめてあります。</li>
+<li>メールの道（アプリ → Microsoft 365）は、<strong>STARTTLS で暗号化します</strong>（09 の巻）。</li>
+</ul>
+<h2 id="2">2. パスワード</h2>
+<p><img src="../images/L10-02_password_hash.webp" alt="同じパスワードでも、毎回ちがう塩を加えてArgon2を通すと、違うハッシュになる。元には戻せない" style="width: 100%;"></p>
+<h3 id="21">2.1 そのままは保存しない</h3>
+<p>2 つのアプリが、データベースに入れているパスワードを、実際に見ました（練習用の社員は、全員が同じパスワード <code>practice-pass-2026</code>）。</p>
+<p>08 Topcoat（<code>employees.password_hash</code>）:</p>
+<div class="codehilite"><div class="code-wrap" id="code-1"><button type="button" class="copy-btn">コピー</button><pre><span></span><code> employee_no |   name    |                                           password_hash                                           
+-------------+-----------+---------------------------------------------------------------------------------------------------
+ 012345      | 山田 太郎 | $argon2id$v=19$m=19456,t=2,p=1$6eyNlSGqndcuzM2d11Wkig$hbEDQazl7jVUSCx+CiSCMKkEOrNPaoROc5wvI+BiA8Y
+ 012346      | 佐藤 花子 | $argon2id$v=19$m=19456,t=2,p=1$toz5KcyB0B8QVQ4IgutSPQ$VHM9+aEqbFUkpCa2CKpJJmFz238MygepohBKnmo0rkM
+</code></pre></div></div>
+
+<p>06 Django（<code>accounts_user.password</code>）:</p>
+<div class="codehilite"><div class="code-wrap" id="code-2"><button type="button" class="copy-btn">コピー</button><pre><span></span><code> employee_no |   name    |                                         password                                          
+-------------+-----------+-------------------------------------------------------------------------------------------
+ 012345      | 山田 太郎 | pbkdf2_sha256$1000000$VaLA4QWiCi7y9ZejmSObzH$JAndWXp23h/K67EJk3CqZfYcafMgU0YGMVobhJfyIGY=
+ 012346      | 佐藤 花子 | pbkdf2_sha256$1000000$IqXU8Aj4U6pTNnuRek28ua$oxS79nAV3xH7ks87gJ/FMKW20KhwNkHaLTloj1FPe8Y=
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>部分</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>$argon2id$v=19$m=19456,t=2,p=1$</code></td>
+<td>Argon2id という作り方と、その重さ（使うメモリー・くり返しの数）</td>
+</tr>
+<tr>
+<td><code>pbkdf2_sha256$1000000$</code></td>
+<td>PBKDF2 という作り方で、100 万回くり返す（Django の決まり）</td>
+</tr>
+<tr>
+<td>その次の部分</td>
+<td><strong>塩（salt）</strong>。人ごと・毎回ちがう乱数</td>
+</tr>
+<tr>
+<td>最後の部分</td>
+<td>ハッシュ（元に戻せない値）</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>同じパスワードでも、塩が違うので、ハッシュは人ごとに違います。</strong> データベースを盗まれても、「だれとだれが同じパスワードか」は分かりません。</li>
+<li>ログインのときは、入れられたパスワードを<strong>同じ塩と同じ作り方</strong>でハッシュにして、比べます。パスワードそのものは、どこにも残りません。</li>
+<li><strong>わざと重い計算</strong>にしてあるので、盗んだハッシュから、パスワードを総当たりで探すのに、とても時間がかかります。</li>
+</ul>
+<h3 id="22-1">2.2 見つかった弱い所 1: 練習用のデータで、全員のハッシュが同じだった</h3>
+<p>この巻の準備で、08 のデータベースを見たところ、練習用の社員 5 人の <code>password_hash</code> が、<strong>全部同じ文字（塩も同じ）</strong>でした。原因は、<code>seed-demo</code> のコマンドが、ハッシュを <strong>1 回だけ作って、5 人に使い回していた</strong>ことです。</p>
+<div class="codehilite"><div class="code-wrap" id="code-3"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 直す前（src/cli.rs の seed_demo）</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">hash</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">auth</span><span class="p">::</span><span class="n">hash_password</span><span class="p">(</span><span class="n">DEMO_PASSWORD</span><span class="p">.</span><span class="n">to_string</span><span class="p">()).</span><span class="k">await</span><span class="p">;</span><span class="w">   </span><span class="c1">// 1 回だけ作る</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">no</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">dept</span><span class="p">,</span><span class="w"> </span><span class="n">title</span><span class="p">,</span><span class="w"> </span><span class="n">role</span><span class="p">)</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">DEMO_PEOPLE</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// … 5 人とも、同じ hash を入れていた</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>練習用のデータとはいえ、「同じパスワードの人が、ハッシュを見るだけで分かる」形です。<strong>1 人ずつ作る</strong>ように直しました（2.1 の出力は、直した後の物）。本物の社員のパスワードは <code>set-password</code> で 1 人ずつ作るので、この問題はありませんでした。</p>
+<p><strong>学ぶこと:</strong> 安全の仕組みは、正しい部品を使うだけでなく、<strong>使い方</strong>でも壊れます。データベースの中身を、実際に見て確かめることが大事です。</p>
+<h3 id="23">2.3 確かめ方の細かい所</h3>
+<p><code>src/auth.rs</code>（08）の一部:</p>
+<div class="codehilite"><div class="code-wrap" id="code-4"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="sd">/// パスワードをハッシュにする。わざと重い計算なので、別のスレッドで動かす（ほかの人の画面を止めない）</span>
+<span class="k">pub</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">hash_password</span><span class="p">(</span><span class="n">password</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">String</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">tokio</span><span class="p">::</span><span class="n">task</span><span class="p">::</span><span class="n">spawn_blocking</span><span class="p">(</span><span class="k">move</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">hash_password_blocking</span><span class="p">(</span><span class="o">&amp;</span><span class="n">password</span><span class="p">)).</span><span class="k">await</span><span class="p">.</span><span class="n">expect</span><span class="p">(</span><span class="s">&quot;ハッシュの計算が止まりました&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="k">fn</span><span class="w"> </span><span class="nf">hash_password_blocking</span><span class="p">(</span><span class="n">password</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="kt">str</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">String</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 塩（salt）は、毎回ちがう乱数を Argon2 が自分で作り、結果の文字列の中に入れる</span>
+<span class="w">    </span><span class="n">Argon2</span><span class="p">::</span><span class="n">default</span><span class="p">().</span><span class="n">hash_password</span><span class="p">(</span><span class="n">password</span><span class="p">.</span><span class="n">as_bytes</span><span class="p">()).</span><span class="n">expect</span><span class="p">(</span><span class="s">&quot;ハッシュにできません&quot;</span><span class="p">).</span><span class="n">to_string</span><span class="p">()</span>
+<span class="p">}</span>
+
+<span class="sd">/// パスワードが合っているか。合っていなければ false</span>
+<span class="k">pub</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">verify_password</span><span class="p">(</span><span class="n">password</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">,</span><span class="w"> </span><span class="n">hash</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">tokio</span><span class="p">::</span><span class="n">task</span><span class="p">::</span><span class="n">spawn_blocking</span><span class="p">(</span><span class="k">move</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="nb">Ok</span><span class="p">(</span><span class="n">parsed</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PasswordHash</span><span class="p">::</span><span class="n">new</span><span class="p">(</span><span class="o">&amp;</span><span class="n">hash</span><span class="p">)</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="kc">false</span><span class="w"> </span><span class="p">};</span>
+<span class="w">        </span><span class="n">Argon2</span><span class="p">::</span><span class="n">default</span><span class="p">().</span><span class="n">verify_password</span><span class="p">(</span><span class="n">password</span><span class="p">.</span><span class="n">as_bytes</span><span class="p">(),</span><span class="w"> </span><span class="o">&amp;</span><span class="n">parsed</span><span class="p">).</span><span class="n">is_ok</span><span class="p">()</span>
+<span class="w">    </span><span class="p">})</span>
+<span class="w">    </span><span class="p">.</span><span class="k">await</span>
+<span class="w">    </span><span class="p">.</span><span class="n">unwrap_or</span><span class="p">(</span><span class="kc">false</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="sd">/// 社員がいないときにも、同じ重さの確かめをするための、にせのハッシュ。</span>
+<span class="sd">/// 「いない社員は早く断られる」と、時間の差で社員番号を探られてしまうので、それを防ぐ</span>
+<span class="k">static</span><span class="w"> </span><span class="n">DUMMY_HASH</span><span class="p">:</span><span class="w"> </span><span class="nc">LazyLock</span><span class="o">&lt;</span><span class="nb">String</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LazyLock</span><span class="p">::</span><span class="n">new</span><span class="p">(</span><span class="o">||</span><span class="w"> </span><span class="n">hash_password_blocking</span><span class="p">(</span><span class="s">&quot;dummy-password-for-timing&quot;</span><span class="p">));</span>
+</code></pre></div></div>
+
+<ul>
+<li>社員がいないときも、にせのハッシュで<strong>同じ重さの確かめ</strong>をします。断られるまでの時間の差で、「この社員番号はある」と探られないためです。</li>
+<li>画面には「従業員番号か、パスワードが違います。」とだけ出し、どちらが違ったかは言いません（08 後編の 3 章）。</li>
+</ul>
+<h2 id="3">3. ログインとセッション</h2>
+<p>08 で、実際に試しました。</p>
+<div class="codehilite"><div class="code-wrap" id="code-5"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>### 1. ログインしたクッキーで一覧を開く
+200
+### 2. ログアウトする
+303 http://localhost:3000/login
+### 3. ログアウトの前に写しておいたクッキーで、もう一度開く
+303 http://localhost:3000/login
+### 4. 鈴木さんのセッションの期限を、データベースで過去にする
+UPDATE 2
+### 5. 鈴木さんのクッキーで開く
+303 http://localhost:3000/login
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>確かめたこと</th>
+<th>結果</th>
+<th>仕組み</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ログアウトの前に写しておいたクッキーを、あとで使う</td>
+<td>ログインの画面へ（303）</td>
+<td>ログアウトで、データベースの記録（<code>sessions</code>）を消すので、古いクッキーは使えない</td>
+</tr>
+<tr>
+<td>期限（最後に使ってから 60 分）を過ぎたクッキー</td>
+<td>ログインの画面へ（303）</td>
+<td>記録の <code>expires_at</code> を過ぎた物は、使わない</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>クッキーには <code>HttpOnly</code> を付けます。画面の JavaScript から読めないので、6 章の XSS が万一あっても、クッキーを盗まれにくくなります。</li>
+<li>ログインのたびに、<strong>新しいトークン</strong>を作ります（前から知られているトークンを使わせない）。</li>
+<li>データベースには、トークンの<strong>指紋だけ</strong>を入れます（08 前編の 5 章）。</li>
+</ul>
+<h2 id="4">4. 権限: 画面で隠すだけでは足りない</h2>
+<p><img src="../images/L10-03_authz_server.webp" alt="画面でボタンを隠しても、悪い人はボタンを使わずに直接送れる。サーバーで確かめて断る" style="width: 100%;"></p>
+<p>画面に「引き戻す」のボタンが出ない人でも、ブラウザの開発者ツールや <code>curl</code> を使えば、<strong>ボタンを押したときと同じ送信を、直接</strong>できます。08 で、実際にやってみました（ボタンの出ない人が、<code>/requests/{id}/action</code> に直接送った）。</p>
+<table>
+<thead>
+<tr>
+<th>した人</th>
+<th>したこと</th>
+<th>状態コード</th>
+<th>出た文</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>佐藤さん（依頼 7 の回覧者）</td>
+<td>山田さんの依頼 7 を引き戻す</td>
+<td>400</td>
+<td>自分の依頼ではありません。</td>
+</tr>
+<tr>
+<td>鈴木さん（依頼 7 に関係ない）</td>
+<td>山田さんの依頼 7 を引き戻す</td>
+<td>404</td>
+<td>（依頼があることも知らせない）</td>
+</tr>
+<tr>
+<td>山田さん（一般）</td>
+<td>依頼 2 の担当になる</td>
+<td>400</td>
+<td>担当者だけができます。</td>
+</tr>
+<tr>
+<td>山田さん（一般）</td>
+<td>管理者だけの「送り直す」</td>
+<td>400</td>
+<td>この操作はできません。</td>
+</tr>
+</tbody>
+</table>
+<p>実際の出力（<code>curl</code> で送り、状態コードと、画面の間違いの文を取り出した）:</p>
+<div class="codehilite"><div class="code-wrap" id="code-6"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>### 佐藤さん（回覧者）が、山田さんの依頼 7 を引き戻そうとする
+→ 400 自分の依頼ではありません。
+
+### 鈴木さん（関係ない人）が、山田さんの依頼 7 を引き戻そうとする
+→ 404 
+### 山田さん（一般）が、依頼 2 の担当になろうとする
+→ 400 担当者だけができます。
+
+### 山田さん（一般）が、管理者だけの「送り直す」をする
+→ 400 この操作はできません。
+</code></pre></div></div>
+
+<ul>
+<li><strong>決まりは、全部サーバーで確かめます</strong>（08 の <code>workflow.rs</code>、06 の <code>services.py</code>）。画面のボタンを出し分けるのは、使いやすさのためで、守りではありません。</li>
+<li>見てはいけない依頼は、「見られません」ではなく <strong>404</strong> にします。依頼があること自体を知らせないためです。</li>
+</ul>
+<p>08 の <code>src/app/requests/id.rs</code>:</p>
+<div class="codehilite"><div class="code-wrap" id="code-7"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="sd">/// 見てよい依頼を読む。無い・見てはいけないときは、どちらも 404（あるかどうかも知らせない）</span>
+<span class="k">pub</span><span class="p">(</span><span class="k">crate</span><span class="p">)</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">load_visible</span><span class="p">(</span><span class="n">cx</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">Cx</span><span class="p">,</span><span class="w"> </span><span class="n">user</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">Employee</span><span class="p">,</span><span class="w"> </span><span class="n">id</span><span class="p">:</span><span class="w"> </span><span class="kt">i64</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">Result</span><span class="o">&lt;</span><span class="n">FullRequest</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">full</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">queries</span><span class="p">::</span><span class="n">find_request</span><span class="p">(</span><span class="o">&amp;</span><span class="n">state</span><span class="p">(</span><span class="n">cx</span><span class="p">).</span><span class="n">pool</span><span class="p">,</span><span class="w"> </span><span class="n">id</span><span class="p">).</span><span class="k">await</span><span class="o">?</span><span class="p">.</span><span class="n">ok_or_not_found</span><span class="p">()</span><span class="o">?</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">!</span><span class="n">full</span><span class="p">.</span><span class="n">visible_to</span><span class="p">(</span><span class="n">user</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nb">Err</span><span class="p">(</span><span class="n">not_found</span><span class="p">().</span><span class="n">into</span><span class="p">());</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="nb">Ok</span><span class="p">(</span><span class="n">full</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>06 の <code>workflow/api.py</code>:</p>
+<div class="codehilite"><div class="code-wrap" id="code-8"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">_visible_requests</span><span class="p">(</span><span class="n">user</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;その人が見てよい依頼: 自分が出した・回覧に入っている・担当者と管理者は全部&quot;&quot;&quot;</span>
+    <span class="n">qs</span> <span class="o">=</span> <span class="n">Request</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">select_related</span><span class="p">(</span><span class="s2">&quot;requester&quot;</span><span class="p">,</span> <span class="s2">&quot;assignee&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">prefetch_related</span><span class="p">(</span><span class="s2">&quot;steps__approver&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">role</span> <span class="ow">in</span> <span class="p">(</span><span class="n">User</span><span class="o">.</span><span class="n">Role</span><span class="o">.</span><span class="n">WORKER</span><span class="p">,</span> <span class="n">User</span><span class="o">.</span><span class="n">Role</span><span class="o">.</span><span class="n">ADMIN</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">qs</span>
+    <span class="k">return</span> <span class="n">qs</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Q</span><span class="p">(</span><span class="n">requester</span><span class="o">=</span><span class="n">user</span><span class="p">)</span> <span class="o">|</span> <span class="n">Q</span><span class="p">(</span><span class="n">steps__approver</span><span class="o">=</span><span class="n">user</span><span class="p">))</span><span class="o">.</span><span class="n">distinct</span><span class="p">()</span>
+</code></pre></div></div>
+
+<h2 id="5-csrf">5. CSRF: ほかのサイトから、勝手に送らせる</h2>
+<p><img src="../images/L10-04_csrf.webp" alt="悪いサイトのページが、社員のブラウザを使って社内アプリへ勝手に送らせる。Originを比べる・トークンを確かめるで403にする" style="width: 100%;"></p>
+<p>社員がログインしたまま、悪いサイトのページを開くと、そのページが社員のブラウザを使って、社内アプリへフォームを送らせることができます（クッキーは、ブラウザが自動で付けてしまう）。これを CSRF と言います。</p>
+<p><strong>06 Django:</strong> CSRF トークン（ページを開いたときに配る、推測できない札）が付いていない送信を断ります。Django のテストの道具で、札の確かめを有効にして試した結果:</p>
+<div class="codehilite"><div class="code-wrap" id="code-9"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>CSRF トークンなしでログイン: 403
+CSRF トークンありでログイン: 200
+ログイン後、トークンなしで依頼を出す: 403 {&quot;detail&quot;:&quot;CSRF Failed: CSRF token missing.&quot;}
+</code></pre></div></div>
+
+<p><strong>08 Topcoat:</strong> ブラウザが付ける <code>Origin</code>（どのサイトのページから送ったか）と、宛先の <code>Host</code> を比べます。<code>Origin: http://evil.example</code> を付けて送った結果（08 後編の 10 章）:</p>
+<div class="codehilite"><div class="code-wrap" id="code-10"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>HTTP/1.1 403 Forbidden
+content-type: text/plain; charset=utf-8
+content-length: 9
+date: Sun, 01 Nov 2026 16:10:23 GMT
+forbidden
+</code></pre></div></div>
+
+<ul>
+<li>どちらも、<strong>状態を変える送信（POST）だけ</strong>を確かめます。だから、GET で状態を変えてはいけません（ログアウトも POST。08 後編の 3 章）。</li>
+<li>クッキーの <code>SameSite=Lax</code> も、ほかのサイトからの POST にクッキーを付けさせない、もう 1 つの守りです。</li>
+</ul>
+<h2 id="6-xss">6. XSS: 画面に、スクリプトを動かされる</h2>
+<p><img src="../images/L10-05_xss_escape.webp" alt="件名の\<script>は、HTMLの中では&amp;lt;script&amp;gt;に置きかえられ、画面には\<script>という文字として出るだけ" style="width: 100%;"></p>
+<p>依頼の件名に、HTML とスクリプトを入れて出してみました（08）。</p>
+<div class="codehilite"><div class="code-wrap" id="code-11"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>件名: &lt;b&gt;太字&lt;/b&gt;&lt;script&gt;alert(&#39;xss&#39;)&lt;/script&gt;
+</code></pre></div></div>
+
+<p>サーバーが返した HTML（詳しい画面と、一覧）:</p>
+<div class="codehilite"><div class="code-wrap" id="code-12"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">&lt;</span><span class="nt">tr</span><span class="p">&gt;&lt;</span><span class="nt">th</span><span class="p">&gt;</span>件名<span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;&lt;</span><span class="nt">td</span><span class="p">&gt;</span><span class="ni">&amp;lt;</span>b<span class="ni">&amp;gt;</span>太字<span class="ni">&amp;lt;</span>/b<span class="ni">&amp;gt;&amp;lt;</span>script<span class="ni">&amp;gt;</span>alert(&#39;xss&#39;)<span class="ni">&amp;lt;</span>/script<span class="ni">&amp;gt;</span><span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;&lt;/</span><span class="nt">tr</span><span class="p">&gt;</span>
+href=&quot;/requests/7&quot;&gt;<span class="ni">&amp;lt;</span>b<span class="ni">&amp;gt;</span>太字<span class="ni">&amp;lt;</span>/b<span class="ni">&amp;gt;&amp;lt;</span>script<span class="ni">&amp;gt;</span>alert(&#39;xss&#39;)<span class="ni">&amp;lt;</span>/script<span class="ni">&amp;gt;</span><span class="err">&lt;</span>
+</code></pre></div></div>
+
+<p>画面の見え方:</p>
+<p><img src="../images/L10-s1_xss_title.webp" alt="件名に\<b>太字\</b>\<script>alert('xss')\</script>が、そのまま文字として出ている" style="width: 100%;"></p>
+<ul>
+<li><code>view!</code> の <code>(式)</code> は、<code>&lt;</code> を <code>&amp;lt;</code> に、<code>&gt;</code> を <code>&amp;gt;</code> に置きかえて出します。ブラウザは、それを<strong>文字として</strong>出すだけで、スクリプトとしては動かしません。</li>
+<li>06 の React も同じです。React で、同じ件名を出してみた結果（<code>renderToStaticMarkup</code> で HTML にした）:</li>
+</ul>
+<div class="codehilite"><div class="code-wrap" id="code-13"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>1. {title} で出す:
+&lt;td&gt;&amp;lt;b&amp;gt;太字&amp;lt;/b&amp;gt;&amp;lt;script&amp;gt;alert(&amp;#x27;xss&amp;#x27;)&amp;lt;/script&amp;gt;&lt;/td&gt;
+2. dangerouslySetInnerHTML で出す（使ってはいけない例）:
+&lt;td&gt;&lt;b&gt;太字&lt;/b&gt;&lt;script&gt;alert(&#39;xss&#39;)&lt;/script&gt;&lt;/td&gt;
+</code></pre></div></div>
+
+<ul>
+<li>React の <code>{title}</code> は置きかえます。<code>dangerouslySetInnerHTML</code>（名前のとおり「危ない」）を使うと、置きかえずにそのまま出し、スクリプトが動く形になります。<strong>この資料のアプリでは使っていません。</strong></li>
+<li>JavaScript で文字を入れるときも、<code>innerHTML</code> ではなく <code>textContent</code> を使います（08 の <code>drawing.js</code>）。</li>
+</ul>
+<h2 id="7">7. 入力の確かめ: 改行を混ぜられる</h2>
+<h3 id="71-2-06">7.1 見つかった弱い所 2: 06 で、件名に改行を入れると、メールが送れなくなった</h3>
+<p>件名の入力欄は 1 行なので、画面からは改行を入れられません。しかし、<strong>細工した送信</strong>なら入れられます。06 で、件名に「改行＋<code>Bcc:</code>」を入れて、依頼の API に直接送ってみました。</p>
+<p>直す前:</p>
+<div class="codehilite"><div class="code-wrap" id="code-14"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>状態コード: 500
+依頼の数: 7 → 8
+</code></pre></div></div>
+
+<p>そのときのログ（最後の行）:</p>
+<div class="codehilite"><div class="code-wrap" id="code-15"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>django.core.mail.message.BadHeaderError: Header values can&#39;t contain newlines (got &#39;【依頼・承認】承認のお願い: 治具の製作\r\nBcc: evil@example.com&#39; for header &#39;Subject&#39;)
+</code></pre></div></div>
+
+<ul>
+<li>Django のメールの部品は、件名に改行があると <code>BadHeaderError</code> で<strong>送るのを断ります</strong>（メールのヘッダーを増やす攻撃を防ぐため。11 章）。そこは正しい動きです。</li>
+<li>ところが、メールは「保存が確定してから」送るので（06 前編の 5.2）、<strong>依頼は保存されたのに（7 → 8 件）、画面は 500 のエラー、承認のお願いのメールは届かない</strong>、という困った形になりました。</li>
+</ul>
+<h3 id="72">7.2 直し方: 入り口で断る</h3>
+<p>件名に<strong>改行などの制御文字</strong>が入っていたら、入力の確かめで断るようにしました。</p>
+<p>06 の <code>workflow/serializers.py</code>:</p>
+<div class="codehilite"><div class="code-wrap" id="code-16"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="k">def</span><span class="w"> </span><span class="nf">validate_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">value</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">serializers</span><span class="o">.</span><span class="n">ValidationError</span><span class="p">(</span><span class="s2">&quot;件名を入れてください。&quot;</span><span class="p">)</span>
+        <span class="c1"># 改行などの制御文字は断る。メールの件名に入ると、保存できてもメールを送れなくなる（10 の巻）</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">unicodedata</span><span class="o">.</span><span class="n">category</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;Cc&quot;</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">value</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">serializers</span><span class="o">.</span><span class="n">ValidationError</span><span class="p">(</span><span class="s2">&quot;件名に、改行などは入れられません。&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">value</span>
+</code></pre></div></div>
+
+<p>08 の <code>src/request_form.rs</code>（08 のメールの部品は、改行を件名の中に閉じこめるので、メールは壊れない（11 章）。それでも、入れる理由の無い文字は、入り口で断る）:</p>
+<div class="codehilite"><div class="code-wrap" id="code-17"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">validate</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nc">std</span><span class="p">::</span><span class="n">result</span><span class="p">::</span><span class="nb">Result</span><span class="o">&lt;</span><span class="n">RequestInput</span><span class="p">,</span><span class="w"> </span><span class="nb">Vec</span><span class="o">&lt;</span><span class="nb">String</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">errors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Vec</span><span class="p">::</span><span class="n">new</span><span class="p">();</span>
+
+<span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">title</span><span class="p">.</span><span class="n">trim</span><span class="p">().</span><span class="n">to_string</span><span class="p">();</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="n">title</span><span class="p">.</span><span class="n">is_empty</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">errors</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="s">&quot;件名を入れてください。&quot;</span><span class="p">.</span><span class="n">to_string</span><span class="p">());</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">title</span><span class="p">.</span><span class="n">chars</span><span class="p">().</span><span class="n">count</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">100</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">errors</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="s">&quot;件名は 100 文字までです。&quot;</span><span class="p">.</span><span class="n">to_string</span><span class="p">());</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">title</span><span class="p">.</span><span class="n">chars</span><span class="p">().</span><span class="n">any</span><span class="p">(</span><span class="kt">char</span><span class="p">::</span><span class="n">is_control</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="c1">// 入力欄は 1 行だが、細工した送信なら改行を入れられる。メールの件名などに入れさせない（10 の巻）</span>
+<span class="w">            </span><span class="n">errors</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="s">&quot;件名に、改行などは入れられません。&quot;</span><span class="p">.</span><span class="n">to_string</span><span class="p">());</span>
+<span class="w">        </span><span class="p">}</span>
+</code></pre></div></div>
+
+<p>直した後に、同じ送信をした結果（06）:</p>
+<div class="codehilite"><div class="code-wrap" id="code-18"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>状態コード: 400 {&quot;title&quot;:[&quot;件名に、改行などは入れられません。&quot;]}
+依頼の数: 7 → 7
+</code></pre></div></div>
+
+<p><strong>確かめること:</strong> 400 で断られ、依頼の数は増えない。06 の <code>test_件名に改行は入れられない</code>・08 の <code>件名に改行は入れられない</code> のテストを足したので、あとで誰かが確かめを消すと、テストが失敗して気付けます。</p>
+<p><strong>学ぶこと:</strong> 確かめは「画面でできること」ではなく、「<strong>送ろうと思えば送れること</strong>」に合わせます。そして、入り口（入力の確かめ）で断るのが、いちばん安全で分かりやすい直し方です。</p>
+<h2 id="8-sql">8. SQL インジェクション</h2>
+<p><img src="../images/L10-06_sqli.webp" alt="SQLの文と入力をくっつけると文の形が変わり全員見える。$1で別々に渡すと0人" style="width: 100%;"></p>
+<p>PostgreSQL の上で、同じ入力（<code>' OR '1'='1</code>）を、2 つのやり方で使ってみました。流した SQL（psql で <code>-f</code> で流した）:</p>
+<div class="codehilite"><div class="code-wrap" id="code-19"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="err">\</span><span class="n">echo</span><span class="w"> </span><span class="s1">&#39;--- 1. 社員番号を、文字としてつないだ SQL（だめな例）。入力: &#39;&#39; OR &#39;&#39;1&#39;&#39;=&#39;&#39;1&#39;</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="k">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="err">見つかった数</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">employees</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">employee_no</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="s1">&#39;1&#39;</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">;</span>
+<span class="err">\</span><span class="n">echo</span><span class="w"> </span><span class="s1">&#39;--- 2. 社員番号を、$1 で別に渡した SQL（アプリのやり方）。入力は同じ&#39;</span>
+<span class="k">PREPARE</span><span class="w"> </span><span class="n">find_employee</span><span class="p">(</span><span class="nb">text</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="k">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="err">見つかった数</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">employees</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">employee_no</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">$</span><span class="mi">1</span><span class="p">;</span>
+<span class="k">EXECUTE</span><span class="w"> </span><span class="n">find_employee</span><span class="p">(</span><span class="s1">&#39;&#39;&#39; OR &#39;&#39;1&#39;&#39;=&#39;&#39;1&#39;</span><span class="p">);</span>
+<span class="err">\</span><span class="n">echo</span><span class="w"> </span><span class="s1">&#39;--- 3. 正しい社員番号を、$1 で渡す&#39;</span>
+<span class="k">EXECUTE</span><span class="w"> </span><span class="n">find_employee</span><span class="p">(</span><span class="s1">&#39;012345&#39;</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>結果（行数の表示は省いた）:</p>
+<div class="codehilite"><div class="code-wrap" id="code-20"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>--- 1. 社員番号を、文字としてつないだ SQL（だめな例）。入力: &#39; OR &#39;1&#39;=&#39;1
+ 見つかった数 
+--------------
+            7
+
+--- 2. 社員番号を、$1 で別に渡した SQL（アプリのやり方）。入力は同じ
+ 見つかった数 
+--------------
+            0
+
+--- 3. 正しい社員番号を、$1 で渡す
+ 見つかった数 
+--------------
+            1
+</code></pre></div></div>
+
+<ul>
+<li>1 は、入力を SQL の文に<strong>くっつけた</strong>ので、<code>WHERE employee_no = '' OR '1'='1'</code> という、<strong>別の意味の文</strong>になり、7 人全員が見つかりました。ログインの確かめでこれが起きると、パスワードを知らなくても入れてしまいます。</li>
+<li>2 は、入力を <code>$1</code> で<strong>別に</strong>渡したので、「<code>' OR '1'='1</code> という社員番号の人」を探し、0 人でした。</li>
+<li>08 の sqlx は、値を必ず <code>.bind()</code> で渡し、組み立てた SQL の文字をそのまま渡すとコンパイルのエラーにします（08 前編の 6.5）。06 の Django の ORM（<code>filter(...)</code>）も、中で値を別に渡します。<strong>SQL の文を、<code>+</code> や <code>format!</code> や f 文字列で組み立てて、値を入れることはしません。</strong></li>
+</ul>
+<h2 id="9">9. ファイル</h2>
+<table>
+<thead>
+<tr>
+<th>攻め方</th>
+<th>守り</th>
+<th>確かめた所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>拡張子を <code>.png</code> に変えた、別の種類のファイル</td>
+<td>中身の先頭の数バイトでも確かめる</td>
+<td>08 後編の 5.2 の画面・06 の <code>test_拡張子と中身が違うファイルは断る</code></td>
+</tr>
+<tr>
+<td><code>..\..\Windows\evil.png</code> のような名前で、別のフォルダに書かせる</td>
+<td>フォルダに置く名前は、アプリが乱数で決める</td>
+<td>08 の <code>ファイル名で別のフォルダに書かせない</code>（12 章）</td>
+</tr>
+<tr>
+<td>大きなファイルで、サーバーのメモリーを使い切らせる</td>
+<td>大きさの上限（IIS・アプリ）</td>
+<td>08 後編の 5.3・10 章（413）</td>
+</tr>
+<tr>
+<td>ダウンロードしたファイルを、ブラウザに HTML として開かせる</td>
+<td><code>Content-Disposition: attachment</code>・<code>X-Content-Type-Options: nosniff</code></td>
+<td>08 後編の 8.2</td>
+</tr>
+<tr>
+<td>見てはいけない依頼の添付ファイルを開く</td>
+<td>その依頼を見てよいかを確かめる</td>
+<td>08 後編の 8.2</td>
+</tr>
+</tbody>
+</table>
+<h2 id="10-1-url">10. 1 回限りの承認の URL</h2>
+<table>
+<thead>
+<tr>
+<th>決まり</th>
+<th>理由</th>
+<th>確かめるテスト（08 / 06）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>32 バイト（256 ビット）の乱数</td>
+<td>推測できない</td>
+<td>—</td>
+</tr>
+<tr>
+<td>データベースには指紋（SHA-256）だけ</td>
+<td>データベースを見られても、URL を作れない</td>
+<td>—</td>
+</tr>
+<tr>
+<td>14 日で使えなくなる</td>
+<td>古いメールが、あとから使われない</td>
+<td>期限が切れたurlは使えない</td>
+</tr>
+<tr>
+<td>1 回しか使えない</td>
+<td>転送されたメールで、2 回目の承認をさせない</td>
+<td>urlは1回しか使えない</td>
+</tr>
+<tr>
+<td>引き戻し・差し戻しで、待っている人の URL を取り消す</td>
+<td>進まない依頼の URL を残さない</td>
+<td>引き戻すと承認待ちの人のurlが使えなくなる</td>
+</tr>
+<tr>
+<td>送り直すと、前の URL は使えない</td>
+<td>古い URL を無効にする</td>
+<td>毎朝の通知は止まっている承認を送り直す</td>
+</tr>
+<tr>
+<td>同時に 2 回押しても 1 回だけ</td>
+<td>二重の承認を防ぐ</td>
+<td>同時に2回押しても1回だけ進む（08）</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>URL は、IIS のログにも残ります。ログのファイルを見られる人は限られていますが、<strong>ログを社外に出さない・必要な期間だけ残す</strong>（onprem の 04 の 12 章）ことも、守りの 1 つです。</li>
+</ul>
+<h2 id="11">11. メールのヘッダー インジェクション</h2>
+<p>メールの件名に「改行＋<code>Bcc: evil@example.com</code>」を入れると、部品によっては、<strong>ヘッダーが 1 行増えて</strong>、だれかに勝手に写しを送れてしまいます。2 つの部品の振る舞いを、実際に確かめました。</p>
+<p><strong>06 Django:</strong> 送るのを断る。</p>
+<div class="codehilite"><div class="code-wrap" id="code-21"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>BadHeaderError: Header values can&#39;t contain newlines (got &#39;【依頼・承認】承認のお願い: 治具の製作\r\nBcc: evil@example.com&#39; for header &#39;Subject&#39;)
+</code></pre></div></div>
+
+<p><strong>08 Topcoat（lettre）:</strong> 送れるが、改行を<strong>件名の中に閉じこめる</strong>（<code>Bcc:</code> は件名の文字の一部として符号化され、新しいヘッダーにならない）。作られたメールのヘッダー:</p>
+<div class="codehilite"><div class="code-wrap" id="code-22"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>From: noreply@example.com
+To: sato@example.com
+Subject: =?utf-8?b?44CQ5L6d6aC844O75om/6KqN44CR5om/6KqN44Gu44GK6aGY44GE?=
+ =?utf-8?b?OiDmsrvlhbfjga7oo73kvZwNCkJjYzo=?= evil@example.com
+Message-ID: &lt;TnQXFIPdeN1NMBVzFuyaowDMSjWDjaV4a01q@（パソコンの名前）&gt;
+MIME-Version: 1.0
+Date: Sun, 01 Nov 2026 16:34:45 +0000
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: base64
+</code></pre></div></div>
+
+<ul>
+<li>2 行目の頭の空白は、「前の行（件名）の続き」という印です。<code>=?utf-8?b?…DQpCY2M6?=</code> の中に、改行と <code>Bcc:</code> が入っています。</li>
+<li>振る舞いは違っても、<strong>どちらもヘッダーは増えません</strong>。そのうえで、7 章のとおり、入り口で改行を断っています。</li>
+</ul>
+<h2 id="12">12. 秘密の扱い</h2>
+<div class="codehilite"><div class="code-wrap" id="code-23"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>$ git check-ignore -v （秘密が入るファイル）
+webapp_learning/samples/08_topcoat_app/webapp/.gitignore:2:.env webapp_learning/samples/08_topcoat_app/webapp/.env
+webapp_learning/samples/06_django_react/.gitignore:4:dev.env    webapp_learning/samples/06_django_react/backend/dev.env
+webapp_learning/samples/09_mail/.gitignore:2:*.pem  webapp_learning/samples/09_mail/key.pem
+
+$ git ls-files（Git に入っている、秘密の入りそうな名前のファイル）
+（なし）
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>秘密</th>
+<th>置く所</th>
+<th>してはいけないこと</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>データベースのパスワード（開発）</td>
+<td><code>.env</code>（08）・<code>dev.env</code>（06）。Git に入れない</td>
+<td>資料やチャットに貼る</td>
+</tr>
+<tr>
+<td>データベースのパスワード（サーバー）</td>
+<td>WinSW の XML。フォルダの権限で守る（onprem の 04 の 7 章）</td>
+<td>共有のフォルダに写しを置く</td>
+</tr>
+<tr>
+<td>社員のパスワード</td>
+<td>本人が決める。管理者は <code>set-password</code>（標準入力から読む）</td>
+<td>コマンドの引数に書く（履歴に残る）</td>
+</tr>
+<tr>
+<td>承認の URL・セッションのトークン</td>
+<td>指紋だけをデータベースへ</td>
+<td>ログに、そのまま書く</td>
+</tr>
+<tr>
+<td>練習用の証明書の鍵（09）</td>
+<td><code>*.pem</code>。Git に入れない</td>
+<td>本物のサーバーで使う</td>
+</tr>
+</tbody>
+</table>
+<h2 id="13">13. テスト</h2>
+<p><img src="../images/L10-07_test_layers.webp" alt="下から、小さなテスト・流れのテスト・画面で確かめる・サーバーで確かめるの4段。上ほど時間がかかり、下ほどたくさん書く" style="width: 100%;"></p>
+<table>
+<thead>
+<tr>
+<th>段</th>
+<th>何を確かめるか</th>
+<th>この資料では</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>小さなテスト</td>
+<td>1 つの関数（データベースを使わない）</td>
+<td>08: <code>src/</code> の中の 12 個・<code>tests/security.rs</code> の 3 個</td>
+</tr>
+<tr>
+<td>流れのテスト</td>
+<td>依頼の流れ全体（データベースを使う）</td>
+<td>06: <code>workflow/tests.py</code> の 18 個／08: <code>tests/workflow.rs</code> の 16 個</td>
+</tr>
+<tr>
+<td>画面で確かめる</td>
+<td>本物のブラウザで操作する</td>
+<td>06 後編・08 後編の画面の写し</td>
+</tr>
+<tr>
+<td>サーバーで確かめる</td>
+<td>本物の設定・ネットワーク・メール</td>
+<td>onprem のチェック表・09 の 9 章</td>
+</tr>
+</tbody>
+</table>
+<h3 id="131-testssecurityrs">13.1 安全のテストを足す（tests/security.rs）</h3>
+<p><code>samples/08_topcoat_app/webapp/tests/security.rs</code>:</p>
+<div class="codehilite"><div class="code-wrap" id="code-24"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="sd">//! 安全のためのテスト（10 の巻）。データベースは使わない</span>
+
+<span class="k">use</span><span class="w"> </span><span class="n">topcoat</span><span class="p">::{</span><span class="n">context</span><span class="p">::</span><span class="n">Cx</span><span class="p">,</span><span class="w"> </span><span class="n">mail</span><span class="p">::</span><span class="n">mail</span><span class="p">};</span>
+<span class="k">use</span><span class="w"> </span><span class="n">webapp</span><span class="p">::{</span><span class="n">drawing</span><span class="p">,</span><span class="w"> </span><span class="n">upload</span><span class="p">};</span>
+
+<span class="sd">/// 件名に改行を入れて、ヘッダーを増やそうとする（ヘッダー インジェクション）。</span>
+<span class="sd">/// メールの部品が、改行を「ヘッダーの区切り」として扱わないことを確かめる</span>
+<span class="cp">#[tokio::test]</span>
+<span class="k">async</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="err">件名に改行を入れても</span><span class="n">_ヘッダーは増えない</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 依頼の件名は社員が入れる。悪い人が、件名に「改行＋Bcc:」を入れたとする</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;治具の製作</span><span class="se">\r\n</span><span class="s">Bcc: evil@example.com&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mail</span><span class="o">!</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">from</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;noreply@example.com&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">to</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;sato@example.com&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">subject</span><span class="p">:</span><span class="w"> </span><span class="nc">format</span><span class="o">!</span><span class="p">(</span><span class="s">&quot;【依頼・承認】承認のお願い: {title}&quot;</span><span class="p">),</span>
+<span class="w">        </span><span class="n">text</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;本文&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="p">.</span><span class="n">expect</span><span class="p">(</span><span class="s">&quot;メールを作れる&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="fm">assert!</span><span class="p">(</span><span class="n">m</span><span class="p">.</span><span class="n">bcc</span><span class="p">().</span><span class="n">is_empty</span><span class="p">());</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">raw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">String</span><span class="p">::</span><span class="n">from_utf8</span><span class="p">(</span><span class="n">m</span><span class="p">.</span><span class="n">formatted</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Cx</span><span class="p">::</span><span class="n">default</span><span class="p">()).</span><span class="n">expect</span><span class="p">(</span><span class="s">&quot;形にできる&quot;</span><span class="p">)).</span><span class="n">unwrap</span><span class="p">();</span>
+<span class="w">    </span><span class="c1">// 改行のあとの「Bcc:」が、本物のヘッダーの行になっていない</span>
+<span class="w">    </span><span class="fm">assert!</span><span class="p">(</span><span class="o">!</span><span class="n">raw</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\r\n</span><span class="s">Bcc:&quot;</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;Bcc のヘッダーが足されてしまった:</span><span class="se">\n</span><span class="s">{raw}&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="sd">/// 図面の文字に、HTML や script を入れても、図面の形として読めるだけ（画面では文字として出る）</span>
+<span class="cp">#[test]</span>
+<span class="k">fn</span><span class="w"> </span><span class="err">図面の文字に</span><span class="n">scriptを入れても_ただの文字</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">drawing</span><span class="p">::</span><span class="n">parse</span><span class="p">(</span>
+<span class="w">        </span><span class="s">r#&quot;{&quot;version&quot;:1,&quot;widthMm&quot;:297,&quot;heightMm&quot;:210,&quot;shapes&quot;:[{&quot;kind&quot;:&quot;text&quot;,&quot;x&quot;:1,&quot;y&quot;:1,&quot;text&quot;:&quot;&lt;script&gt;alert(1)&lt;/script&gt;&quot;}]}&quot;#</span><span class="p">,</span>
+<span class="w">    </span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">unwrap</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">unwrap</span><span class="p">();</span>
+<span class="w">    </span><span class="fm">assert!</span><span class="p">(</span><span class="fm">matches!</span><span class="p">(</span><span class="o">&amp;</span><span class="n">d</span><span class="p">.</span><span class="n">shapes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="n">drawing</span><span class="p">::</span><span class="n">Shape</span><span class="p">::</span><span class="n">Text</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">text</span><span class="p">,</span><span class="w"> </span><span class="o">..</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">text</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;&lt;script&gt;alert(1)&lt;/script&gt;&quot;</span><span class="p">));</span>
+<span class="p">}</span>
+
+<span class="sd">/// 送られてきた名前に「..\」などが入っていても、フォルダに置く名前には使わない</span>
+<span class="cp">#[tokio::test]</span>
+<span class="k">async</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="err">ファイル名で別のフォルダに書かせない</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">random</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="k">u8</span><span class="p">;</span><span class="w"> </span><span class="mi">8</span><span class="p">];</span>
+<span class="w">    </span><span class="n">getrandom</span><span class="p">::</span><span class="n">fill</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="n">random</span><span class="p">).</span><span class="n">unwrap</span><span class="p">();</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">dir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">env</span><span class="p">::</span><span class="n">temp_dir</span><span class="p">().</span><span class="n">join</span><span class="p">(</span><span class="fm">format!</span><span class="p">(</span><span class="s">&quot;webapp-sec-{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">hex</span><span class="p">::</span><span class="n">encode</span><span class="p">(</span><span class="n">random</span><span class="p">)));</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">upload</span><span class="p">::</span><span class="n">UploadedFile</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="nc">r</span><span class="s">&quot;..\..\Windows\evil.png&quot;</span><span class="p">.</span><span class="n">into</span><span class="p">(),</span><span class="w"> </span><span class="n">bytes</span><span class="p">:</span><span class="w"> </span><span class="nc">b</span><span class="s">&quot;\x89PNG</span><span class="se">\r\n\x1a\n</span><span class="s">....&quot;</span><span class="p">.</span><span class="n">to_vec</span><span class="p">()</span><span class="w"> </span><span class="p">};</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">saved</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">upload</span><span class="p">::</span><span class="n">save</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dir</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">file</span><span class="p">).</span><span class="k">await</span><span class="p">.</span><span class="n">unwrap</span><span class="p">();</span>
+<span class="w">    </span><span class="c1">// 置いた名前は、アプリが決めた乱数の名前（32 文字の 16 進＋.png）</span>
+<span class="w">    </span><span class="fm">assert_eq!</span><span class="p">(</span><span class="n">saved</span><span class="p">.</span><span class="n">stored_name</span><span class="p">.</span><span class="n">len</span><span class="p">(),</span><span class="w"> </span><span class="mi">32</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;.png&quot;</span><span class="p">.</span><span class="n">len</span><span class="p">());</span>
+<span class="w">    </span><span class="fm">assert!</span><span class="p">(</span><span class="n">saved</span><span class="p">.</span><span class="n">stored_name</span><span class="p">.</span><span class="n">chars</span><span class="p">().</span><span class="n">all</span><span class="p">(</span><span class="o">|</span><span class="n">c</span><span class="o">|</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">is_ascii_hexdigit</span><span class="p">()</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">&#39;.&#39;</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">is_ascii_lowercase</span><span class="p">()));</span>
+<span class="w">    </span><span class="fm">assert!</span><span class="p">(</span><span class="n">dir</span><span class="p">.</span><span class="n">join</span><span class="p">(</span><span class="s">&quot;attachments&quot;</span><span class="p">).</span><span class="n">join</span><span class="p">(</span><span class="o">&amp;</span><span class="n">saved</span><span class="p">.</span><span class="n">stored_name</span><span class="p">).</span><span class="n">exists</span><span class="p">());</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">fs</span><span class="p">::</span><span class="n">remove_dir_all</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dir</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<ul>
+<li><strong>「攻めてみた」ことを、テストにして残します。</strong> 一度確かめたことは、あとで誰かがコードを変えても、テストが見張ってくれます。</li>
+<li>テストの名前は、日本語で「何を確かめているか」が分かるようにします。</li>
+</ul>
+<h3 id="132">13.2 全部のテストを動かした結果</h3>
+<p>08（<code>cargo test</code>）:</p>
+<div class="codehilite"><div class="code-wrap" id="code-25"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>     Running unittests src\lib.rs (target\debug\deps\webapp-8c86094e59d42b38.exe)
+test drawing::tests::空なら図面なし ... ok
+test drawing::tests::四角と線を読める ... ok
+test drawing::tests::知らない図形はエラー ... ok
+test employees::tests::shift_jisは断る ... ok
+test files::tests::日本語の名前は_xxの形にする ... ok
+test upload::tests::中身がpdfならpdfとして通る ... ok
+test request_form::tests::正しい入力は通る ... ok
+test request_form::tests::件名に改行は入れられない ... ok
+test employees::tests::間違いのあるcsvは全部の間違いを返す ... ok
+test employees::tests::正しいcsvを読める ... ok
+test upload::tests::場所ごとの名前は最後だけにする ... ok
+test upload::tests::拡張子をpngに変えたexeは断る ... ok
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running unittests src\main.rs (target\debug\deps\webapp-729cf1be2339cc29.exe)
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running tests\security.rs (target\debug\deps\security-eafc82bc57e25215.exe)
+test 図面の文字にscriptを入れても_ただの文字 ... ok
+test 件名に改行を入れても_ヘッダーは増えない ... ok
+test ファイル名で別のフォルダに書かせない ... ok
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+     Running tests\workflow.rs (target\debug\deps\workflow-e585d0fc1d21207c.exe)
+test ほかの人の依頼は引き戻せない ... ok
+test urlは1回しか使えない ... ok
+test 回覧者の決まり ... ok
+test 出し直すと最初の回覧者からやり直す ... ok
+test 引き戻すと承認待ちの人のurlが使えなくなる ... ok
+test 全員が承認すると回覧完了になり担当者に知らせる ... ok
+test 出すと1人目にメールが届き回覧中になる ... ok
+test 同時に2回押しても1回だけ進む ... ok
+test 検証ではメールの宛先を書きかえる ... ok
+test 担当を決めて完了にすると依頼者に知らせる ... ok
+test 差し戻すとコメントが追記され依頼者にメールが届く ... ok
+test 期限が切れたurlは使えない ... ok
+test 添付ファイルはフォルダに置き_失敗したら消す ... ok
+test 理由の無い差し戻しは断る ... ok
+test 毎朝の通知は8時を過ぎてから1日1回だけ動く ... ok
+test 毎朝の通知は止まっている承認を送り直す ... ok
+test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.65s
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+</code></pre></div></div>
+
+<p>06（<code>.\dev.ps1 test --noinput</code> の最後の所）:</p>
+<div class="codehilite"><div class="code-wrap" id="code-26"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Ran 18 tests in 55.856s
+
+OK
+</code></pre></div></div>
+
+<h2 id="14">14. 出す前のチェック表</h2>
+<p>サーバーへ出す（更新する）前に、毎回確かめます。</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>確かめること</th>
+<th>06</th>
+<th>08</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>自動のテストが全部通る</td>
+<td><code>.\dev.ps1 test</code></td>
+<td><code>cargo test</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td>コンパイルの警告・指摘が無い</td>
+<td>—</td>
+<td><code>cargo clippy --all-targets</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td>Django の安全の確かめで、問題が出ない</td>
+<td><code>check --deploy</code> が <code>System check identified no issues (4 silenced).</code>（HTTP のために止めた 4 つだけ。onprem の 05）</td>
+<td>—</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>DEBUG</code> が本番で false</td>
+<td><code>DJANGO_DEBUG=false</code></td>
+<td><code>APP_ENV=production</code></td>
+</tr>
+<tr>
+<td>5</td>
+<td>秘密が Git に入っていない</td>
+<td><code>git ls-files</code> で <code>dev.env</code> が無い</td>
+<td><code>.env</code> が無い</td>
+</tr>
+<tr>
+<td>6</td>
+<td>検証のサーバーは <code>MAIL_REDIRECT_TO</code> 付き</td>
+<td>XML を見る</td>
+<td>無いと起動しない</td>
+</tr>
+<tr>
+<td>7</td>
+<td>IIS が <code>Host</code> をそのまま渡す</td>
+<td>—</td>
+<td><code>preserveHostHeader</code>（onprem の 04 の 8.3）</td>
+</tr>
+<tr>
+<td>8</td>
+<td>部品の版を固定し、記録している</td>
+<td><code>requirements.txt</code>・wheelhouse</td>
+<td><code>Cargo.toml</code> の <code>=</code>・<code>Cargo.lock</code></td>
+</tr>
+<tr>
+<td>9</td>
+<td>部品の弱さの知らせ（セキュリティの更新）を見た</td>
+<td>Django・DRF などの更新の案内</td>
+<td>Topcoat・sqlx などの更新の案内</td>
+</tr>
+<tr>
+<td>10</td>
+<td>更新の前に、データベースのバックアップがある</td>
+<td>onprem の 04 の 11 章</td>
+<td>同じ</td>
+</tr>
+</tbody>
+</table>
+<h2 id="15">15. よくある失敗</h2>
+<table>
+<thead>
+<tr>
+<th>失敗</th>
+<th>何が起きるか</th>
+<th>正しいやり方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ボタンを隠しただけで、サーバーで確かめない</td>
+<td>直接送られて、操作されてしまう</td>
+<td>4 章</td>
+</tr>
+<tr>
+<td>GET で状態を変える</td>
+<td>リンクや画像だけで操作され、CSRF の守りも効かない</td>
+<td>状態を変えるのは POST だけ</td>
+</tr>
+<tr>
+<td><code>dangerouslySetInnerHTML</code>・<code>innerHTML</code> で出す</td>
+<td>XSS</td>
+<td>6 章</td>
+</tr>
+<tr>
+<td>SQL を文字でつなぐ</td>
+<td>SQL インジェクション</td>
+<td>8 章</td>
+</tr>
+<tr>
+<td>送られてきたファイル名で保存する</td>
+<td>別のフォルダに書かれる</td>
+<td>9 章</td>
+</tr>
+<tr>
+<td>「画面では入れられない」から確かめない</td>
+<td>細工した送信で、思わぬ所が壊れる</td>
+<td>7 章</td>
+</tr>
+<tr>
+<td>パスワードのハッシュを使い回す・自分で作る</td>
+<td>同じパスワードが分かる・弱い</td>
+<td>部品に 1 人ずつ作らせる（2 章）</td>
+</tr>
+<tr>
+<td>証明書の確かめを止める</td>
+<td>にせの相手に送ってしまう</td>
+<td>09 の 5.2</td>
+</tr>
+<tr>
+<td>秘密を Git に入れる</td>
+<td>履歴から消せない（消したつもりでも残る）</td>
+<td>12 章。入れてしまったら、パスワードを変える</td>
+</tr>
+</tbody>
+</table>
+<h2 id="16">16. 練習問題</h2>
+<ol>
+<li>08 の一覧の画面に、件名で探す欄を足すとします。SQL の <code>LIKE</code> を使うとき、入力をどう渡せば安全ですか。<code>%</code> や <code>_</code> が入力に入っていたら、どうなりますか。</li>
+<li>3 章の表に「パスワードを変えたら、ほかのパソコンのログインも切る」を足すには、どこを直せばよいですか（ヒント: <code>sessions</code> の表）。</li>
+<li>4 章の表に、「依頼者でない人が、<code>/requests/{id}/edit</code> を開く」を足して、08 で試してください。何が起きますか。</li>
+<li>7 章のように「画面では入れられないが、送れば入れられる」所を、ほかにも探してください（希望の納期・回覧者・図面）。それぞれ、サーバーで確かめていますか。</li>
+<li>13.1 の <code>security.rs</code> に、「ログアウトした後の古いクッキーは使えない」テストを足すには、何が要りますか（データベース・ルーター）。</li>
+</ol>
+<h2 id="_2">用語の索引</h2>
+<table>
+<thead>
+<tr>
+<th>用語</th>
+<th>意味</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ハッシュ・塩（salt）</td>
+<td>元に戻せない値と、それを人ごとに変える乱数</td>
+<td>2</td>
+</tr>
+<tr>
+<td>PBKDF2・Argon2</td>
+<td>パスワードのハッシュの作り方（わざと重い）</td>
+<td>2</td>
+</tr>
+<tr>
+<td>セッション・トークン</td>
+<td>ログインを続ける仕組みと、その札</td>
+<td>3</td>
+</tr>
+<tr>
+<td>権限（認可）</td>
+<td>だれが、何をしてよいか</td>
+<td>4</td>
+</tr>
+<tr>
+<td>CSRF</td>
+<td>ほかのサイトから、勝手に送らせる攻撃</td>
+<td>5</td>
+</tr>
+<tr>
+<td>XSS</td>
+<td>画面に、スクリプトを動かされる攻撃</td>
+<td>6</td>
+</tr>
+<tr>
+<td>制御文字</td>
+<td>改行・タブなど、目に見えない特別な文字</td>
+<td>7</td>
+</tr>
+<tr>
+<td>SQL インジェクション</td>
+<td>入力が、SQL の一部として動いてしまう攻撃</td>
+<td>8</td>
+</tr>
+<tr>
+<td>ヘッダー インジェクション</td>
+<td>改行を混ぜて、メールのヘッダーを増やす攻撃</td>
+<td>11</td>
+</tr>
+<tr>
+<td>テストの段</td>
+<td>小さなテストから、サーバーでの確かめまでの積み上げ</td>
+<td>13</td>
+</tr>
+</tbody>
+</table>
+
+<script>
+(function () {
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy") ? resolve() : reject(); } catch (e) { reject(e); }
+      document.body.removeChild(ta);
+    });
+  }
+  document.querySelectorAll(".copy-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var pre = btn.parentElement.querySelector("pre");
+      var text = pre.textContent.replace(/\n$/, "");
+      copyText(text).then(function () {
+        btn.textContent = "コピーしました";
+        btn.classList.add("done");
+        setTimeout(function () { btn.textContent = "コピー"; btn.classList.remove("done"); }, 2000);
+      }, function () { btn.textContent = "コピーできませんでした"; });
+    });
+  });
+  if (/^#code-\d+$/.test(location.hash)) {
+    var note = document.getElementById("web-note");
+    if (note) { note.hidden = false; }
+  }
+})();
+</script>
+</body>
+</html>

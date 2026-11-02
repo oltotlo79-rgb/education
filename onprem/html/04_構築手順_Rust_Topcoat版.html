@@ -1,0 +1,2489 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>04_構築手順_Rust_Topcoat版</title>
+<style>
+
+@page {
+  size: A4;
+  margin: 18mm 16mm 20mm 16mm;
+  @bottom-right {
+    content: counter(page);
+    font-size: 10px;
+    color: #64748b;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  font-family: "Yu Gothic UI", "Yu Gothic", "Meiryo", "Hiragino Sans",
+               "Noto Sans JP", "Segoe UI", system-ui, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.75;
+  color: #1e293b;
+  background: #ffffff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #0f172a;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 1.4em 0 0.6em;
+  page-break-after: avoid;
+}
+h1 {
+  font-size: 22pt;
+  border-bottom: 3px solid #1e40af;
+  padding-bottom: 0.3em;
+  margin-top: 0.4em;
+  page-break-before: auto;
+}
+h2 {
+  font-size: 16pt;
+  border-bottom: 1.5px solid #cbd5e1;
+  padding-bottom: 0.25em;
+  margin-top: 1.6em;
+}
+h3 { font-size: 13pt; color: #1e40af; }
+h4 { font-size: 12pt; color: #334155; }
+
+p { margin: 0.5em 0 0.8em; }
+
+a { color: #1d4ed8; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+ul, ol { margin: 0.4em 0 0.9em; padding-left: 1.6em; }
+li { margin: 0.2em 0; }
+
+blockquote {
+  border-left: 4px solid #3b82f6;
+  background: #eff6ff;
+  margin: 0.8em 0;
+  padding: 0.6em 1em;
+  color: #1e3a8a;
+  border-radius: 0 6px 6px 0;
+  page-break-inside: avoid;
+}
+blockquote p { margin: 0.3em 0; }
+blockquote strong { color: #1e40af; }
+
+code {
+  /* DefCode (see _code_font.py) has ASCII and Japanese in ONE font, so a code
+     line is drawn as one text run and copies as one line in every PDF viewer. */
+  font-family: "Consolas", "Consolas", monospace;
+  font-size: 0.9em;
+  background: #f1f5f9;
+  color: #be123c;
+  padding: 0.12em 0.36em;
+  border-radius: 4px;
+  /* Long inline code (file paths / URLs) must break instead of overflowing. */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  /* In a PDF there is no horizontal scrolling, so long lines must wrap
+     instead of being clipped off the right edge of the page. */
+  overflow-x: hidden;
+  overflow-y: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  font-size: 9.2pt;
+  line-height: 1.5;
+  margin: 0.8em 0;
+  page-break-inside: avoid;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+  white-space: inherit;
+  word-break: inherit;
+  overflow-wrap: inherit;
+}
+
+/* The codehilite extension wraps highlighted blocks in a scrolling div; make
+   that wrap too so nothing is clipped in the PDF. */
+.codehilite {
+  overflow-x: hidden;
+  /* overflow-x: hidden alone turns overflow-y into auto, and a glyph from a
+     fallback font that is a hair too tall then shows a vertical scrollbar. */
+  overflow-y: hidden;
+}
+.codehilite pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* No per-token colours: every coloured token became its own text run (and its
+   own tag) in the PDF, and some viewers then pasted each token on its own line.
+   Only whole comment lines get a colour, so each line is still one run. */
+pre .cmt { color: #94a3b8; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.8em 0;
+  font-size: 9.6pt;
+  page-break-inside: avoid;
+}
+th, td {
+  border: 1px solid #e2e8f0;
+  padding: 6px 9px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: #f1f5f9;
+  color: #0f172a;
+  font-weight: 700;
+}
+tr:nth-child(even) td { background: #f8fafc; }
+
+img { max-width: 100%; height: auto; }
+
+hr {
+  border: none;
+  border-top: 1px dashed #cbd5e1;
+  margin: 1.6em 0;
+}
+
+/* Diagram blocks (the inline-styled <div>s in the source) */
+div[style] {
+  page-break-inside: avoid;
+}
+
+/* Tighten spacing right after headings */
+h1 + p, h2 + p, h3 + p, h4 + p { margin-top: 0.2em; }
+
+/* Avoid ugly page breaks inside list items / table rows */
+li, tr { page-break-inside: avoid; }
+
+@media screen {
+  body { max-width: 920px; margin: 0 auto; padding: 20px 20px 120px; font-size: 16px; }
+  pre { white-space: pre !important; word-break: normal !important; overflow-wrap: normal !important;
+        overflow-x: auto !important; font-size: 14px !important; }
+  img { max-width: 100%; height: auto; }
+}
+.web-bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; font-size: 14px;
+  padding: 8px 12px; margin-bottom: 16px; background: #eef2f7; border-radius: 8px; }
+.web-bar a { color: #1e3a5f; }
+.web-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 10; max-width: 90%;
+  font-size: 15px; font-weight: 700; background: #fff7ed; border: 2px solid #f2994a; border-radius: 8px;
+  padding: 10px 16px; margin: 0; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.code-wrap { position: relative; scroll-margin-top: 16px; }
+.code-wrap pre { padding-top: 40px !important; }
+.copy-btn { position: absolute; top: 8px; right: 8px; z-index: 2; font-size: 13px; font-weight: 700;
+  padding: 4px 12px; border: 0; border-radius: 6px; background: #2f80ed; color: #fff; cursor: pointer;
+  font-family: inherit; }
+.copy-btn:hover { background: #1c64c8; }
+.copy-btn.done { background: #27ae60; }
+.code-wrap:target pre { outline: 4px solid #f2994a; outline-offset: 2px; }
+.code-wrap:target .copy-btn { box-shadow: 0 0 0 4px #f2994a; }
+/* syntax colours on screen (the PDF uses one colour so that each line copies as one piece) */
+.codehilite .k, .codehilite .kd, .codehilite .kn, .codehilite .kr { color: #c084fc; }
+.codehilite .s, .codehilite .s1, .codehilite .s2, .codehilite .sb { color: #fcd34d; }
+.codehilite .c, .codehilite .c1, .codehilite .cm { color: #94a3b8; }
+.codehilite .nf, .codehilite .nx { color: #60a5fa; }
+.codehilite .nb { color: #34d399; }
+.codehilite .mi, .codehilite .mf { color: #f472b6; }
+.codehilite .nt { color: #f59e0b; }
+.codehilite .na { color: #93c5fd; }
+</style>
+</head>
+<body>
+<div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/04_%E6%A7%8B%E7%AF%89%E6%89%8B%E9%A0%86_Rust_Topcoat%E7%89%88.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、ブラウザーの「戻る」で PDF に戻れます。</p><div style="text-align: center; padding: 28px 0 8px;">
+<div style="font-size: 14px; color: #475569;">オンプレミス構築 教育資料</div>
+<div style="font-size: 26px; font-weight: 800; color: #0f172a; margin-top: 6px; line-height: 1.35;">構築手順 — Rust＋Topcoat版</div>
+<div style="font-size: 13px; color: #475569; margin-top: 8px;">OS だけが入った Windows Server の仮想マシンに、社内向けの Web アプリを建てる（PostgreSQL・IIS・Windows サービス・バックアップまで）</div>
+</div>
+
+<h1 id="rusttopcoat">構築手順: Rust＋Topcoat版</h1>
+<h2 id="_1">この資料について</h2>
+<p>この資料は、社内向けの Web アプリを、OS だけが入った仮想マシンに建てて、更新し続けるまでの手順を、<strong>インフラの経験が無い人が、1つずつ手を動かして進められる</strong>ように書いたものです。</p>
+<ul>
+<li><strong>前提:</strong> 会社が仮想マシンを貸してくれて、<strong>Windows Server（OS）だけ</strong>を入れてくれる。データベースは、<strong>仮想マシンの中に PostgreSQL を入れて</strong>作る。</li>
+<li><strong>アプリ:</strong> Rust と Topcoat で作った、1つの実行ファイル（この資料では <code>webapp.exe</code> と呼ぶ）。開発用のパソコンで作り、サーバーへ持ち込む。どんなアプリかは、00 基礎知識の「例にするアプリ」の表のとおり。</li>
+<li><strong>通信:</strong> 社内では HTTPS を使えないので、<strong>HTTP（80 番）</strong>で動かす。HTTPS にするときの手順は、参考資料「HTTPS にする場合」に分けてある。</li>
+<li><strong>言葉:</strong> この資料に出てくる言葉は、出てきた所で短く説明します。考え方から知りたいときは、<strong>00 基礎知識</strong>を先に読んでください。</li>
+</ul>
+<h3 id="_2">記号と書き方の決まり</h3>
+<table>
+<thead>
+<tr>
+<th>書き方</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>webapp.example.local</code></td>
+<td>本番の名前の<strong>例</strong>。本当の名前は、情報システム部門と決める</td>
+</tr>
+<tr>
+<td><code>webapp-stg.example.local</code></td>
+<td>検証の名前の<strong>例</strong></td>
+</tr>
+<tr>
+<td><code>example.com</code></td>
+<td>会社のメールのドメインの<strong>例</strong></td>
+</tr>
+<tr>
+<td><code>10.20.30.40</code></td>
+<td>サーバーの IP アドレスの<strong>例</strong></td>
+</tr>
+<tr>
+<td><code>（パスワード）</code></td>
+<td>自分で決めて、会社のパスワード管理の決まりに従って保管する値。この資料に本物を書き込まない</td>
+</tr>
+<tr>
+<td><strong>設計例</strong></td>
+<td>アプリの作り方で決まる所。この資料では、こう作る前提で書く。アプリの作者と合わせる</td>
+</tr>
+<tr>
+<td><strong>確かめること</strong></td>
+<td>コマンドを打ったあと、画面で見る所。結果の見た目は、OS の版や言語で少し違うので、資料には結果の写しを載せず、見る所だけを書く</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>用語:</strong> 設計例（この資料で「こう作る」と決めた一つの形。会社の決まりや、アプリの作り方によって変えてよい）</p>
+</blockquote>
+<h3 id="2026-11-01">この資料で使う版（2026-11-01 時点）</h3>
+<table>
+<thead>
+<tr>
+<th>もの</th>
+<th>版</th>
+<th>どこで使う</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Windows Server</td>
+<td>2025 または 2022（会社が入れる）</td>
+<td>サーバー</td>
+</tr>
+<tr>
+<td>PostgreSQL</td>
+<td>18.6（Windows 用のインストーラー）</td>
+<td>サーバー</td>
+</tr>
+<tr>
+<td>IIS</td>
+<td>10（Windows Server に付いている）</td>
+<td>サーバー</td>
+</tr>
+<tr>
+<td>URL Rewrite</td>
+<td>2.1</td>
+<td>サーバー（IIS の追加の部品）</td>
+</tr>
+<tr>
+<td>Application Request Routing（ARR）</td>
+<td>3.0</td>
+<td>サーバー（IIS の追加の部品）</td>
+</tr>
+<tr>
+<td>WinSW</td>
+<td>2.12.0</td>
+<td>サーバー（実行ファイルを Windows サービスにする道具）</td>
+</tr>
+<tr>
+<td>Rust</td>
+<td>1.99.1</td>
+<td>開発用のパソコン</td>
+</tr>
+<tr>
+<td>Topcoat</td>
+<td>0.11.0（topcoat CLI も 0.11.0）</td>
+<td>開発用のパソコン（アプリの中）</td>
+</tr>
+<tr>
+<td>sqlx</td>
+<td>0.9.0（PostgreSQL につなぐ部品。設計例）</td>
+<td>開発用のパソコン（アプリの中）</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>用語:</strong> 版（バージョン：ソフトの何番目の出来かを表す番号。<code>18.6</code> なら「18 系の 6 番目の修正版」。同じ系の中の修正版は、安全の修正なので、上げてよいことが多い）</p>
+</blockquote>
+<h2 id="1">1. 全体像と役割分担</h2>
+<h3 id="11">1.1 できあがりの形</h3>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/04-01_topology.webp" alt="社員のPCからIIS 80番、本番アプリ8080と検証アプリ8081、PostgreSQL 5432の本番DBと検証DB。添付ファイルと毎晩の控え" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図1-1: この資料で建てる形。1台の仮想マシンに、本番と検証を同居させる（フォルダ・ポート・データベース・名前を分ける）</div>
+</div>
+
+<ul>
+<li>外から届くのは、IIS の <strong>80 番</strong>（と、管理者のパソコンからのリモート デスクトップの <strong>3389 番</strong>）だけ。</li>
+<li>アプリ（8080・8081）と PostgreSQL（5432）は <strong>127.0.0.1</strong> で待ち受けるので、サーバーの外からはつなげない。</li>
+<li>添付ファイルは <code>D:\webapp\prod\files</code>（検証は <code>stg</code>）、毎晩 2:00 の控えは <code>D:\webapp\backup</code> と、別の場所（会社のファイルサーバーなど）に置く。</li>
+<li>メールは、Microsoft 365 に 25 番で渡す（10 章）。</li>
+</ul>
+<h3 id="12">1.2 本番と検証の分け方</h3>
+<p>同じサーバーに本番と検証を置き、次のように分けます。</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>本番</th>
+<th>検証</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>社員が開く名前（例）</td>
+<td><code>http://webapp.example.local/</code></td>
+<td><code>http://webapp-stg.example.local/</code></td>
+</tr>
+<tr>
+<td>IIS のサイト</td>
+<td><code>webapp-prod</code></td>
+<td><code>webapp-stg</code></td>
+</tr>
+<tr>
+<td>アプリのポート</td>
+<td><code>127.0.0.1:8080</code></td>
+<td><code>127.0.0.1:8081</code></td>
+</tr>
+<tr>
+<td>Windows サービス</td>
+<td><code>webapp-prod</code></td>
+<td><code>webapp-stg</code></td>
+</tr>
+<tr>
+<td>データベース</td>
+<td><code>webapp_prod</code>（ユーザー <code>webapp_prod_app</code>）</td>
+<td><code>webapp_stg</code>（ユーザー <code>webapp_stg_app</code>）</td>
+</tr>
+<tr>
+<td>フォルダ</td>
+<td><code>D:\webapp\prod\</code></td>
+<td><code>D:\webapp\stg\</code></td>
+</tr>
+<tr>
+<td>メール</td>
+<td>本当の宛先へ送る</td>
+<td><strong>決まった宛先だけに送る</strong>（設計例。検証から社員に本物の承認依頼が届かないように）</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>用語:</strong> 本番環境・検証環境（社員が実際に使う環境と、新しい版や設定を先に試す環境。00 基礎知識 9.4）</p>
+</blockquote>
+<h3 id="13">1.3 作業の順番</h3>
+<p>順番には理由があります。<strong>下の物が無いと、上の物が動かない</strong>順に建てます。</p>
+<ol>
+<li>サーバーを受け取って、最初の確認をする（3 章）</li>
+<li>フォルダと、アプリを動かすアカウントの考え方を決める（4 章）</li>
+<li>データベースを入れる（5 章）。アプリは、データベースが無いと起動できないため</li>
+<li>アプリを持ち込み、Windows サービスにして、サーバーの中で動くことを確かめる（6・7 章）</li>
+<li>受付（IIS）を設定して、社員のパソコンから開けるようにする（8 章）</li>
+<li>ファイアウォールを確かめる（9 章）</li>
+<li>メールを送れるようにする（10 章）</li>
+<li>毎晩のバックアップを設定し、戻せることを確かめる（11 章）</li>
+<li>定期処理・ログ・監視を整える（12 章）</li>
+<li>検証で一通り確かめてから、本番を始める（13 章）</li>
+</ol>
+<p><strong>検証環境から先に建てて、うまくいったら同じことを本番にする</strong>と、失敗しても社員に迷惑がかかりません。この資料の例は本番で書いていますが、<code>prod</code> を <code>stg</code> に、<code>8080</code> を <code>8081</code> に読みかえれば検証になります。</p>
+<h2 id="2">2. 作業の前に決めること・頼むこと</h2>
+<h3 id="21">2.1 情報システム部門に頼むこと</h3>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/04-02_it_request.webp" alt="チェックリストを情報システム部門に渡す。仮想マシン・固定IPと名前・DNSの登録・関所の通り道・メールのコネクタ" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図2-1: 会社の設備にかかわる所は、早めに頼む</div>
+</div>
+
+<p>インフラの作業のうち、<strong>会社の設備や決まりにかかわる所</strong>は、自分ではできません。早めに頼みます。依頼の文面の例は、<strong>07 付録</strong>の「依頼シート」にまとめます。</p>
+<table>
+<thead>
+<tr>
+<th>頼むこと</th>
+<th>なぜ要るか</th>
+<th>この資料</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>仮想マシン（Windows Server・デスクトップ エクスペリエンス）と、その大きさ</td>
+<td>アプリを動かす建物</td>
+<td>2.2</td>
+</tr>
+<tr>
+<td>固定の IP アドレスと、サーバーの名前</td>
+<td>社員が毎回同じ所につなぐため</td>
+<td>00 の 4 章</td>
+</tr>
+<tr>
+<td>DNS に、本番と検証の名前を登録</td>
+<td><code>webapp.example.local</code> で開けるようにするため</td>
+<td>8 章</td>
+</tr>
+<tr>
+<td>ネットワークの関所で、社内から 80 番を通す。外向きは Microsoft 365 への 25 番だけを通す</td>
+<td>社員が開けるように。メールが出せるように</td>
+<td>9 章</td>
+</tr>
+<tr>
+<td>Microsoft 365 のコネクタ、送信元アドレス、SPF</td>
+<td>アプリのメールを受け付けてもらうため</td>
+<td>10 章</td>
+</tr>
+<tr>
+<td>会社のインターネットの出口の IP アドレスが固定か、の確認</td>
+<td>コネクタの条件</td>
+<td>10 章</td>
+</tr>
+<tr>
+<td>バックアップを写す、別の場所（ファイルサーバーの共有フォルダなど）</td>
+<td>サーバーが壊れても控えを残すため</td>
+<td>11 章</td>
+</tr>
+<tr>
+<td>サーバーの管理者の権限と、リモート デスクトップでの入り方</td>
+<td>自分で作業するため</td>
+<td>3 章</td>
+</tr>
+<tr>
+<td>Windows Update とウイルス対策の、会社の決まり</td>
+<td>再起動の時間、除外の設定などを合わせるため</td>
+<td>14 章</td>
+</tr>
+<tr>
+<td>社員一覧の CSV（人事など）</td>
+<td>初期データ（社員データ）のため</td>
+<td>7.7</td>
+</tr>
+</tbody>
+</table>
+<h3 id="22">2.2 仮想マシンの大きさの目安</h3>
+<p>大きさは、<strong>使う人数</strong>と<strong>保存するファイルの量</strong>で決まります。下は、考え方と、例の数字です。自分の会社の数字で計算し直してください。</p>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>目安（例）</th>
+<th>考え方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>vCPU</td>
+<td>4</td>
+<td>Windows Server・IIS・PostgreSQL・アプリ（本番と検証）が同時に動く。全社員の業務アプリとしては、最初は 4 で足りることが多い</td>
+</tr>
+<tr>
+<td>メモリ</td>
+<td>8GB 以上（できれば 16GB）</td>
+<td>Windows Server だけで数 GB を使う。PostgreSQL はメモリが多いほど速い</td>
+</tr>
+<tr>
+<td>C ドライブ</td>
+<td>100GB</td>
+<td>OS と、Windows Update のための空き</td>
+</tr>
+<tr>
+<td>D ドライブ</td>
+<td>200GB（下の計算で決める）</td>
+<td>データベース・添付ファイル・バックアップ・ログ</td>
+</tr>
+</tbody>
+</table>
+<p>D ドライブの計算の例（数字はすべて仮）:</p>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>例の数字</th>
+<th>5 年分</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>添付ファイル（1 件の依頼に平均 10MB、年 1,000 件）</td>
+<td>年 10GB</td>
+<td>50GB（5 年保存する場合）</td>
+</tr>
+<tr>
+<td>データベース（図面の JSON を含む）</td>
+<td>年 2GB</td>
+<td>10GB</td>
+</tr>
+<tr>
+<td>添付ファイルのバックアップ（11 章の方式では、本体と同じ量）</td>
+<td>—</td>
+<td>50GB</td>
+</tr>
+<tr>
+<td>データベースのバックアップ（14 日分）</td>
+<td>1 回 数 GB × 14</td>
+<td>数十 GB</td>
+</tr>
+<tr>
+<td>合計の目安</td>
+<td></td>
+<td>150GB 前後 → 余裕を見て 200GB</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>用語:</strong> デスクトップ エクスペリエンス（Windows Server を、画面（デスクトップ）付きで入れる形。画面の無い Server Core より、初めての人に分かりやすい。00 基礎知識 3.1）</p>
+</blockquote>
+<h2 id="3">3. サーバーに入る・最初の確認</h2>
+<h3 id="31">3.1 リモート デスクトップで入る</h3>
+<p>サーバーは、データセンターの中にあり、画面もキーボードもありません。自分のパソコンから、<strong>リモート デスクトップ</strong>でサーバーの画面を開いて操作します。</p>
+<ol>
+<li>自分のパソコンで「リモート デスクトップ接続」（<code>mstsc</code>）を開きます。</li>
+<li>「コンピューター」に、サーバーの名前か IP アドレス（例：<code>10.20.30.40</code>）を入れて「接続」を押します。</li>
+<li>情報システム部門から教わったアカウント（ふつうは会社のアカウント）でサインインします。</li>
+<li>初めてつなぐときに「証明書の警告」が出ることがあります。これはリモート デスクトップ用の証明書の話で、アプリの証明書とは別です。情報システム部門に、出てよいものかを確かめます。</li>
+</ol>
+<blockquote>
+<p><strong>用語:</strong> リモート デスクトップ（RDP：ネットワークの向こうのコンピューターの画面を、自分のパソコンに映して操作する仕組み。3389 番ポートを使う）</p>
+</blockquote>
+<p><strong>注意:</strong> リモート デスクトップの窓を「×」で閉じても、サーバーの中では、自分のサインインが続いています（切断）。作業が終わったら、スタートメニューから「サインアウト」します。</p>
+<h3 id="32-powershell">3.2 管理者の PowerShell を開く</h3>
+<p>この資料のコマンドは、<strong>管理者として実行した PowerShell</strong> で打ちます。</p>
+<ol>
+<li>スタートボタンを右クリックします。</li>
+<li>「ターミナル（管理者）」または「Windows PowerShell（管理者）」を選びます（版によって名前が違います）。</li>
+<li>窓の題名に「管理者」と出ていることを確かめます。</li>
+</ol>
+<blockquote>
+<p><strong>用語:</strong> PowerShell（Windows を文字のコマンドで操作する道具。00 基礎知識 3.5）</p>
+</blockquote>
+<h3 id="33">3.3 受け取ったサーバーを確かめる</h3>
+<p>受け取ったら、まず「頼んだとおりか」を確かめて、記録に残します（07 付録のチェック表）。</p>
+<div class="codehilite"><div class="code-wrap" id="code-1"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># OS の名前と版</span>
+<span class="nb">Get-ComputerInfo</span> <span class="n">-Property</span> <span class="n">OsName</span><span class="p">,</span> <span class="n">OsVersion</span><span class="p">,</span> <span class="n">CsName</span><span class="p">,</span> <span class="n">CsDomain</span>
+
+<span class="c"># IP アドレス・DNS サーバー・デフォルトゲートウェイ</span>
+<span class="nb">Get-NetIPConfiguration</span>
+
+<span class="c"># ディスク（C と D があるか、大きさと空き）</span>
+<span class="nb">Get-Volume</span> <span class="p">|</span> <span class="nb">Where-Object</span> <span class="n">DriveLetter</span> <span class="p">|</span> <span class="nb">Format-Table</span> <span class="n">DriveLetter</span><span class="p">,</span> <span class="n">FileSystem</span><span class="p">,</span> <span class="n">Size</span><span class="p">,</span> <span class="n">SizeRemaining</span>
+
+<span class="c"># CPU の数とメモリ</span>
+<span class="nb">Get-CimInstance</span> <span class="n">Win32_ComputerSystem</span> <span class="p">|</span> <span class="nb">Format-List</span> <span class="n">NumberOfLogicalProcessors</span><span class="p">,</span> <span class="n">TotalPhysicalMemory</span>
+
+<span class="c"># 時刻の合わせ先（会社のドメインに参加していれば、ドメインのサーバーに合わせている）</span>
+<span class="n">w32tm</span> <span class="p">/</span><span class="n">query</span> <span class="p">/</span><span class="n">status</span>
+</code></pre></div></div>
+
+<p><strong>確かめること:</strong></p>
+<ul>
+<li>OS の名前が、頼んだ版（例：Windows Server 2025 Standard）になっている。</li>
+<li><code>CsDomain</code> が、会社のドメインになっている（ドメインに参加している）。</li>
+<li>IP アドレスが、頼んだ固定の IP アドレスになっている。</li>
+<li>D ドライブがあり、<code>FileSystem</code> が <code>NTFS</code> になっている。</li>
+<li><code>w32tm</code> の「ソース」が、会社の時刻のサーバーになっている。時刻がずれていると、ログの時刻・承認 URL の有効期限・毎朝 8:00 の処理がずれる。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> NTFS（エヌティーエフエス：Windows のディスクの形式。フォルダやファイルごとに、誰が読めて誰が書けるかを決められる）</p>
+</blockquote>
+<h3 id="34">3.4 時刻のゾーンを日本時間にする</h3>
+<p>例のアプリは日本時間で動くので、サーバーの時刻のゾーンを日本にします。</p>
+<div class="codehilite"><div class="code-wrap" id="code-2"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 今の設定を見る</span>
+<span class="nb">Get-TimeZone</span>
+
+<span class="c"># 日本時間にする（すでに日本時間なら不要）</span>
+<span class="nb">Set-TimeZone</span> <span class="n">-Id</span> <span class="s2">&quot;Tokyo Standard Time&quot;</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>用語:</strong> タイムゾーン（地域ごとの時刻のずれの決まり。日本は「協定世界時（UTC）＋9 時間」。Windows では <code>Tokyo Standard Time</code> という名前）</p>
+</blockquote>
+<h3 id="35-windows-update">3.5 Windows Update</h3>
+<p>建てる前に、Windows Update を済ませて、再起動しておきます。会社によっては、Windows Update を情報システム部門がまとめて管理しています（WSUS など）。<strong>自分で更新してよいか、更新と再起動の時間の決まりを、先に確かめます。</strong></p>
+<blockquote>
+<p><strong>用語:</strong> WSUS（ダブリューサス。Windows Server Update Services：会社の中で、Windows Update の配り方をまとめて管理する仕組み）</p>
+</blockquote>
+<h2 id="4">4. フォルダとアカウントの準備</h2>
+<h3 id="41">4.1 フォルダの設計</h3>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/04-03_folders.webp" alt="D:\webappの下にprod・stg・releases・backup・tools・secrets。prodの下にapp・service・files・logs・iis。secretsは管理者だけ" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図4-1: フォルダの配置。本番と検証で同じ形にする</div>
+</div>
+
+<p>データとアプリは、<strong>D ドライブ</strong>にまとめます。OS（C ドライブ）と分けておくと、ディスクの拡張や、OS の入れ直しがしやすくなります。</p>
+<div class="codehilite"><div class="code-wrap" id="code-3"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>D:\webapp\
+├─ prod\                本番
+│  ├─ app\              アプリ（webapp.exe と assets\）。更新のときに入れ替える所
+│  ├─ service\          Windows サービスにする道具（WinSW）と、その設定ファイル
+│  ├─ files\            添付ファイルの保存フォルダ（JPG・PNG・PDF）
+│  ├─ logs\             アプリのログ
+│  └─ iis\              IIS のサイトの置き場（web.config だけを置く）
+├─ stg\                 検証（prod と同じ並び）
+├─ releases\            受け取ったアプリの版（zip）。切り戻しのために残しておく
+├─ backup\              毎晩の控え（db\・files\・logs\）
+├─ tools\               バックアップなどの道具（PowerShell のスクリプト）
+├─ secrets\             データベースのパスワードのファイル（管理者と SYSTEM だけが読める）
+└─ installers\          持ち込んだインストーラー
+D:\pgsql\18\data\       PostgreSQL のデータ（5 章で、インストールのときに指定する）
+</code></pre></div></div>
+
+<p>まとめて作ります。</p>
+<div class="codehilite"><div class="code-wrap" id="code-4"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nv">$dirs</span> <span class="p">=</span> <span class="p">@(</span>
+  <span class="s2">&quot;D:\webapp\prod\app&quot;</span><span class="p">,</span> <span class="s2">&quot;D:\webapp\prod\service&quot;</span><span class="p">,</span> <span class="s2">&quot;D:\webapp\prod\files&quot;</span><span class="p">,</span> <span class="s2">&quot;D:\webapp\prod\logs&quot;</span><span class="p">,</span> <span class="s2">&quot;D:\webapp\prod\iis&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;D:\webapp\stg\app&quot;</span><span class="p">,</span>  <span class="s2">&quot;D:\webapp\stg\service&quot;</span><span class="p">,</span>  <span class="s2">&quot;D:\webapp\stg\files&quot;</span><span class="p">,</span>  <span class="s2">&quot;D:\webapp\stg\logs&quot;</span><span class="p">,</span>  <span class="s2">&quot;D:\webapp\stg\iis&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;D:\webapp\releases&quot;</span><span class="p">,</span> <span class="s2">&quot;D:\webapp\backup\db&quot;</span><span class="p">,</span> <span class="s2">&quot;D:\webapp\backup\files&quot;</span><span class="p">,</span> <span class="s2">&quot;D:\webapp\backup\logs&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;D:\webapp\tools&quot;</span><span class="p">,</span> <span class="s2">&quot;D:\webapp\secrets&quot;</span><span class="p">,</span> <span class="s2">&quot;D:\webapp\installers&quot;</span>
+<span class="p">)</span>
+<span class="k">foreach</span> <span class="p">(</span><span class="nv">$d</span> <span class="k">in</span> <span class="nv">$dirs</span><span class="p">)</span> <span class="p">{</span> <span class="nb">New-Item</span> <span class="n">-ItemType</span> <span class="n">Directory</span> <span class="n">-Force</span> <span class="n">-Path</span> <span class="nv">$d</span> <span class="p">|</span> <span class="nb">Out-Null</span> <span class="p">}</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>用語:</strong> スクリプト（コマンドを順に並べて、ファイルにしたもの。<code>.ps1</code> は PowerShell のスクリプト）</p>
+</blockquote>
+<h3 id="42">4.2 フォルダのアクセス許可を絞る</h3>
+<p>D ドライブの一番上には、ふつう「Users（サーバーにサインインできる全員）が読める」という許可が付いています。<code>D:\webapp</code> には、パスワードを書いたファイルや、社員の添付ファイルが入るので、<strong>管理者と SYSTEM だけ</strong>にします。</p>
+<div class="codehilite"><div class="code-wrap" id="code-5"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 上（D:\）からの許可の引き継ぎを切り、管理者と SYSTEM だけにする</span>
+<span class="c">#   *S-1-5-32-544 は Administrators（管理者のグループ）、*S-1-5-18 は SYSTEM（OS 自身）</span>
+<span class="c">#   名前ではなく番号（SID）で書くと、日本語の Windows でも英語の Windows でも同じに動く</span>
+<span class="n">icacls</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span> <span class="p">/</span><span class="n">inheritance</span><span class="p">:</span><span class="nb">r </span><span class="p">/</span><span class="n">grant</span><span class="p">:</span><span class="nb">r </span><span class="s2">&quot;*S-1-5-32-544:(OI)(CI)F&quot;</span> <span class="s2">&quot;*S-1-5-18:(OI)(CI)F&quot;</span>
+
+<span class="c"># 結果を見る</span>
+<span class="n">icacls</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span>
+</code></pre></div></div>
+
+<p><strong>確かめること:</strong> 結果に、<code>BUILTIN\Administrators:(OI)(CI)(F)</code> と <code>NT AUTHORITY\SYSTEM:(OI)(CI)(F)</code> の2つだけが出ている（日本語の Windows でも、この2つの名前は英語で出ることが多い）。</p>
+<blockquote>
+<p><strong>用語:</strong> アクセス許可（ACL：フォルダやファイルごとの「誰が何をしてよいか」の一覧。<code>F</code> は何でもできる、<code>M</code> は変更できる、<code>RX</code> は読んで実行できる）</p>
+</blockquote>
+<!-- -->
+
+<blockquote>
+<p><strong>用語:</strong> 継承（引き継ぎ：上のフォルダの許可が、中のフォルダとファイルに自動で付く仕組み。<code>(OI)(CI)</code> は「中のファイルとフォルダにも引き継ぐ」の印）</p>
+</blockquote>
+<!-- -->
+
+<blockquote>
+<p><strong>用語:</strong> SID（エスアイディー：アカウントやグループに付いている、世界で1つの番号。名前が言語で変わっても、番号は変わらない）</p>
+</blockquote>
+<h3 id="43">4.3 アプリを動かすアカウント（仮想アカウント）</h3>
+<p>アプリを、管理者や自分のアカウントで動かしてはいけません。乗っ取られたときに、サーバーの全部をさわられてしまうからです（<strong>最小権限</strong>。00 基礎知識 10 章）。</p>
+<p>この資料では、Windows の<strong>仮想アカウント</strong>を使います。仮想アカウントは、サービスを登録すると自動でできる、そのサービス専用のアカウントです（名前は <code>NT SERVICE\サービスの名前</code>）。</p>
+<ul>
+<li>パスワードが無いので、パスワードの期限切れでサービスが止まることが無い。</li>
+<li>管理者の権限を持たない。許可したフォルダだけをさわれる。</li>
+<li>サービスごとに別のアカウントになるので、本番のアプリ（<code>NT SERVICE\webapp-prod</code>）は、検証のフォルダをさわれない。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>アカウント</th>
+<th>何をするか</th>
+<th>許可する所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>NT SERVICE\webapp-prod</code></td>
+<td>本番のアプリを動かす</td>
+<td><code>D:\webapp\prod</code> を読む・実行する。<code>files\</code> と <code>logs\</code> は書ける</td>
+</tr>
+<tr>
+<td><code>NT SERVICE\webapp-stg</code></td>
+<td>検証のアプリを動かす</td>
+<td><code>D:\webapp\stg</code> を同じように</td>
+</tr>
+<tr>
+<td><code>SYSTEM</code></td>
+<td>毎晩のバックアップ（タスク スケジューラ）</td>
+<td><code>D:\webapp</code> の全部（4.2 で付けた）</td>
+</tr>
+</tbody>
+</table>
+<p>仮想アカウントは、<strong>サービスを登録したあと</strong>でないと許可を付けられません。許可の付け方は、7.4 で、サービスを登録したあとに行います。</p>
+<blockquote>
+<p><strong>用語:</strong> 仮想アカウント（Virtual Account：サービス1つに1つできる、パスワードの無い専用のアカウント。<code>NT SERVICE\サービス名</code> という名前。会社の決まりで、ドメインのサービス用アカウントや gMSA を使うよう決まっている場合は、そちらに合わせる）</p>
+</blockquote>
+<!-- -->
+
+<blockquote>
+<p><strong>用語:</strong> gMSA（ジーエムエスエー。グループ管理サービス アカウント：パスワードを Active Directory が自動で管理する、サービス用のドメインのアカウント。作るのは情報システム部門）</p>
+</blockquote>
+<h2 id="5-postgresql">5. データベース（PostgreSQL）</h2>
+<blockquote>
+<p><strong>用語:</strong> PostgreSQL（無料で使えるデータベース。00 基礎知識 7 章）</p>
+</blockquote>
+<h3 id="51">5.1 インストーラーを持ち込む</h3>
+<p>サーバーはインターネットにつながらない前提なので、<strong>開発用のパソコンで</strong>インストーラーを手に入れて、サーバーへ持ち込みます。</p>
+<ol>
+<li>開発用のパソコンで、PostgreSQL の公式サイトのダウンロードのページ（<code>https://www.postgresql.org/download/windows/</code>）から、EDB 社の Windows 用インストーラーのページへ進みます。</li>
+<li>「18.6」の「Windows x86-64」をダウンロードします（<code>postgresql-18.6-1-windows-x64.exe</code> のような名前）。</li>
+<li>サーバーの <code>D:\webapp\installers\</code> へコピーします。</li>
+</ol>
+<blockquote>
+<p><strong>用語:</strong> インストーラー（ソフトをコンピューターに入れるためのプログラム）</p>
+</blockquote>
+<!-- -->
+
+<blockquote>
+<p><strong>用語:</strong> x86-64（エックスはちろく・x64：今の多くのサーバーとパソコンの CPU の種類。サーバーが x64 なら、x64 用を選ぶ）</p>
+</blockquote>
+<p><strong>持ち込むときの確かめ:</strong> 壊れずにコピーできたかを、両方のコンピューターで「ハッシュ値」を出して比べます。2つの値が同じなら、中身は同じです。</p>
+<div class="codehilite"><div class="code-wrap" id="code-6"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">Get-FileHash</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">installers</span><span class="p">\</span><span class="n">postgresql</span><span class="p">-</span><span class="n">18</span><span class="p">.</span><span class="n">6</span><span class="p">-</span><span class="n">1-windows-x64</span><span class="p">.</span><span class="n">exe</span> <span class="n">-Algorithm</span> <span class="n">SHA256</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>用語:</strong> ハッシュ値（ファイルの中身から計算した、指紋のような長い文字列。1 文字でも中身が違うと、まったく違う値になる。SHA256 はその計算のしかたの1つ）</p>
+</blockquote>
+<h3 id="52">5.2 インストールする</h3>
+<p>インストーラーをダブルクリックして、画面の質問に答えます。</p>
+<table>
+<thead>
+<tr>
+<th>画面</th>
+<th>選ぶもの</th>
+<th>理由</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Installation Directory</td>
+<td>そのまま（<code>C:\Program Files\PostgreSQL\18</code>）</td>
+<td>プログラム本体は C ドライブでよい</td>
+</tr>
+<tr>
+<td>Select Components</td>
+<td>PostgreSQL Server・pgAdmin 4・Command Line Tools に印。<strong>Stack Builder は外す</strong></td>
+<td>Stack Builder は、インターネットから追加の部品を取る道具で、今回は使わない</td>
+</tr>
+<tr>
+<td>Data Directory</td>
+<td><code>D:\pgsql\18\data</code></td>
+<td>データは D ドライブに置く（4.1）</td>
+</tr>
+<tr>
+<td>Password</td>
+<td>スーパーユーザー <code>postgres</code> のパスワード（長く、推測できないもの）</td>
+<td>データベースの何でもできるアカウント。<strong>会社のパスワード管理の決まりに従って保管する</strong></td>
+</tr>
+<tr>
+<td>Port</td>
+<td><code>5432</code>（そのまま）</td>
+<td>PostgreSQL の決まりの番号</td>
+</tr>
+<tr>
+<td>Advanced Options（Locale）</td>
+<td>そのまま（Default locale）</td>
+<td>文字の並べ方などの決まり。そのままでよい</td>
+</tr>
+<tr>
+<td>Pre Installation Summary</td>
+<td>内容を確かめて「Next」</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>インストールが終わると、PostgreSQL が <strong>Windows サービス</strong>として動き始めます。</p>
+<div class="codehilite"><div class="code-wrap" id="code-7"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">Get-Service</span> <span class="n">postgresql</span><span class="p">*</span>
+</code></pre></div></div>
+
+<p><strong>確かめること:</strong> <code>postgresql-x64-18</code> という名前のサービスが <code>Running</code>（動いている）になっている。</p>
+<blockquote>
+<p><strong>用語:</strong> スーパーユーザー（データベースの中で、何でもできるユーザー。PostgreSQL では <code>postgres</code>。アプリには使わせない）</p>
+</blockquote>
+<!-- -->
+
+<blockquote>
+<p><strong>用語:</strong> pgAdmin（ピージーアドミン：PostgreSQL を画面で操作する道具。表の中身を見るときなどに便利）</p>
+</blockquote>
+<h3 id="53">5.3 サーバーの中からだけつなげるようにする</h3>
+<p>PostgreSQL の Windows 用インストーラーは、<strong>ほかのコンピューターからもつなげる</strong>設定（<code>listen_addresses = '*'</code>）で入ることがあります。今回は、アプリと同じサーバーの中からしか使わないので、<strong>サーバーの中だけ</strong>（<code>localhost</code>）にします。</p>
+<ol>
+<li>設定ファイル <code>D:\pgsql\18\data\postgresql.conf</code> を、管理者のメモ帳で開きます。</li>
+</ol>
+<p><code>powershell
+   notepad D:\pgsql\18\data\postgresql.conf</code></p>
+<ol start="2">
+<li><code>listen_addresses</code> の行を探して、次のようにします（行の先頭に <code>#</code> があれば消します）。</li>
+</ol>
+<p><code>text
+   listen_addresses = 'localhost'</code></p>
+<ol start="3">
+<li>ついでに、次の3つを確かめます（無ければ書き足します）。</li>
+</ol>
+<p><code>text
+   timezone = 'Asia/Tokyo'
+   log_timezone = 'Asia/Tokyo'
+   lc_messages = 'C'</code></p>
+<p><code>lc_messages = 'C'</code> は、PostgreSQL のメッセージを英語にする設定です。日本語の Windows で既定のまま入れると、メッセージが日本語になりますが、<strong>ログのファイルに、UTF-8 の行と Shift_JIS の行が混ざって</strong>、どちらの文字コードで開いても一部が文字化けします（00 基礎知識 0.4。PostgreSQL 18.3 の日本語ロケールで試して確かめました）。英語にすると、ログが英数字だけになって化けず、エラーの文をそのまま検索して調べられます。</p>
+<ol start="4">
+<li>保存して、PostgreSQL を再起動します。</li>
+</ol>
+<p><code>powershell
+   Restart-Service postgresql-x64-18</code></p>
+<ol start="5">
+<li>待ち受けている住所を確かめます。</li>
+</ol>
+<p><code>powershell
+   Get-NetTCPConnection -State Listen -LocalPort 5432 | Format-Table LocalAddress, LocalPort, OwningProcess</code></p>
+<p><strong>確かめること:</strong> <code>LocalAddress</code> が <code>127.0.0.1</code> と <code>::1</code> だけになっている（<code>0.0.0.0</code> や <code>::</code> があれば、まだ外からも待ち受けている）。</p>
+<blockquote>
+<p><strong>用語:</strong> listen_addresses（PostgreSQL が、どの住所で待ち受けるかの設定。<code>localhost</code> なら、このサーバーの中からだけ）</p>
+</blockquote>
+<!-- -->
+
+<blockquote>
+<p><strong>用語:</strong> <code>::1</code>（IPv6 という新しい形の住所での、localhost。<code>127.0.0.1</code> と同じ意味）</p>
+</blockquote>
+<p>もう1つの関所の設定ファイル <code>pg_hba.conf</code> は、「どこから、どのユーザーが、どの方法でログインしてよいか」を決めます。インストーラーが作る形では、<code>127.0.0.1/32</code> と <code>::1/128</code> から、パスワード（<code>scram-sha-256</code>）でつなぐ行が入っています。中を見て、<strong><code>0.0.0.0/0</code> や <code>all</code> の住所の行が無い</strong>ことを確かめます。</p>
+<div class="codehilite"><div class="code-wrap" id="code-8"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">Get-Content</span> <span class="n">D</span><span class="p">:\</span><span class="n">pgsql</span><span class="p">\</span><span class="n">18</span><span class="p">\</span><span class="n">data</span><span class="p">\</span><span class="n">pg_hba</span><span class="p">.</span><span class="n">conf</span> <span class="p">|</span> <span class="nb">Select-String</span> <span class="n">-Pattern</span> <span class="s2">&quot;^\s*host&quot;</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>用語:</strong> pg_hba.conf（PostgreSQL の「誰がどこからつないでよいか」の決まりを書いたファイル。hba は host-based authentication）</p>
+</blockquote>
+<!-- -->
+
+<blockquote>
+<p><strong>用語:</strong> scram-sha-256（パスワードを、そのまま送らずに確かめる方式。今の PostgreSQL の決まりの方式）</p>
+</blockquote>
+<h3 id="54-psql">5.4 psql を使えるようにする</h3>
+<p><code>psql</code> は、PostgreSQL に SQL を送る、文字の道具です。インストールした場所の <code>bin</code> にありますが、そのままでは PowerShell から呼べないので、その窓の中だけ、場所を教えます。</p>
+<div class="codehilite"><div class="code-wrap" id="code-9"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nv">$env:Path</span> <span class="p">+=</span> <span class="s2">&quot;;C:\Program Files\PostgreSQL\18\bin&quot;</span>
+<span class="n">psql</span> <span class="p">-</span><span class="n">-version</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>用語:</strong> psql（ピーエスキューエル：PostgreSQL に SQL を打ち込む、文字の道具）</p>
+</blockquote>
+<!-- -->
+
+<blockquote>
+<p><strong>用語:</strong> PATH（パス：コマンドの名前だけで呼べるように、プログラムを探す場所を並べた環境変数）</p>
+</blockquote>
+<h3 id="55">5.5 本番と検証のデータベースとユーザーを作る</h3>
+<p>スーパーユーザーでつなぎます（5.2 で決めたパスワードを聞かれます）。</p>
+<div class="codehilite"><div class="code-wrap" id="code-10"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">psql</span> <span class="n">-h</span> <span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span> <span class="n">-U</span> <span class="n">postgres</span>
+</code></pre></div></div>
+
+<p><code>postgres=#</code> と出たら、PostgreSQL の中です。次の SQL を、1 行ずつ打ちます。</p>
+<div class="codehilite"><div class="code-wrap" id="code-11"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">-- 本番のアプリ用のユーザー（ログインできるロール）を作る</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">webapp_prod_app</span><span class="w"> </span><span class="n">LOGIN</span><span class="p">;</span>
+<span class="c1">-- パスワードを付ける（画面に出さずに2回聞かれる）</span>
+<span class="err">\</span><span class="n">password</span><span class="w"> </span><span class="n">webapp_prod_app</span>
+
+<span class="c1">-- 本番のデータベースを作り、持ち主をアプリ用のユーザーにする</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">webapp_prod</span><span class="w"> </span><span class="k">OWNER</span><span class="w"> </span><span class="n">webapp_prod_app</span><span class="w"> </span><span class="k">ENCODING</span><span class="w"> </span><span class="s1">&#39;UTF8&#39;</span><span class="w"> </span><span class="k">TEMPLATE</span><span class="w"> </span><span class="n">template0</span><span class="p">;</span>
+<span class="c1">-- ほかのユーザーからは、つなげないようにする</span>
+<span class="k">REVOKE</span><span class="w"> </span><span class="k">ALL</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">webapp_prod</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="k">PUBLIC</span><span class="p">;</span>
+
+<span class="c1">-- 検証も同じように作る</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">webapp_stg_app</span><span class="w"> </span><span class="n">LOGIN</span><span class="p">;</span>
+<span class="err">\</span><span class="n">password</span><span class="w"> </span><span class="n">webapp_stg_app</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">webapp_stg</span><span class="w"> </span><span class="k">OWNER</span><span class="w"> </span><span class="n">webapp_stg_app</span><span class="w"> </span><span class="k">ENCODING</span><span class="w"> </span><span class="s1">&#39;UTF8&#39;</span><span class="w"> </span><span class="k">TEMPLATE</span><span class="w"> </span><span class="n">template0</span><span class="p">;</span>
+<span class="k">REVOKE</span><span class="w"> </span><span class="k">ALL</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">webapp_stg</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="k">PUBLIC</span><span class="p">;</span>
+
+<span class="c1">-- できたものを見る</span>
+<span class="err">\</span><span class="n">l</span><span class="w"> </span><span class="n">webapp</span><span class="o">*</span>
+<span class="err">\</span><span class="n">du</span><span class="w"> </span><span class="n">webapp</span><span class="o">*</span>
+
+<span class="c1">-- psql を終わる</span>
+<span class="err">\</span><span class="n">q</span>
+</code></pre></div></div>
+
+<ul>
+<li><strong>本番と検証で、ユーザーもパスワードも分けます。</strong> 検証の設定を間違えても、本番のデータベースにつながらないようにするためです。</li>
+<li>パスワードは、<code>CREATE ROLE ... PASSWORD '...'</code> と SQL に書くこともできますが、打った文が記録に残ることがあるので、<code>\password</code> を使います。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> ロール（PostgreSQL のユーザーとグループのこと。<code>LOGIN</code> を付けたロールが、ログインできるユーザー）</p>
+</blockquote>
+<!-- -->
+
+<blockquote>
+<p><strong>用語:</strong> OWNER（持ち主：そのデータベースの中で、テーブルを作ったり消したりできるユーザー。アプリがテーブルを作る（マイグレーション。00 基礎知識 7.3）ので、アプリ用のユーザーを持ち主にする）</p>
+</blockquote>
+<!-- -->
+
+<blockquote>
+<p><strong>用語:</strong> UTF8（ユーティーエフエイト：日本語を含む、世界中の文字を表せる文字の決まり。データベースは UTF8 で作る）</p>
+</blockquote>
+<!-- -->
+
+<blockquote>
+<p><strong>用語:</strong> PUBLIC（PostgreSQL の、全部のユーザーを表す特別な名前。<code>REVOKE ... FROM PUBLIC</code> は「全員から取り上げる」）</p>
+</blockquote>
+<h3 id="56">5.6 アプリ用のユーザーでつなげるか確かめる</h3>
+<div class="codehilite"><div class="code-wrap" id="code-12"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">psql</span> <span class="n">-h</span> <span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span> <span class="n">-U</span> <span class="n">webapp_prod_app</span> <span class="n">-d</span> <span class="n">webapp_prod</span> <span class="n">-c</span> <span class="s2">&quot;SELECT current_user, current_database(), now();&quot;</span>
+<span class="n">psql</span> <span class="n">-h</span> <span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span> <span class="n">-U</span> <span class="n">webapp_stg_app</span>  <span class="n">-d</span> <span class="n">webapp_prod</span> <span class="n">-c</span> <span class="s2">&quot;SELECT 1;&quot;</span>
+</code></pre></div></div>
+
+<p><strong>確かめること:</strong></p>
+<ul>
+<li>1 つ目は、<code>webapp_prod_app</code>・<code>webapp_prod</code>・今の日本時間（<code>+09</code> が付く）が出る。</li>
+<li>2 つ目（検証のユーザーで、本番のデータベースにつなぐ）は、<strong>つなげずにエラーになる</strong>（「permission denied」や「権限がありません」）。これが正しい結果です。</li>
+</ul>
+<h3 id="57">5.7 テーブルを作る</h3>
+<p>テーブルは、手で作りません。<strong>アプリが、マイグレーション（番号付きのテーブル変更の手順）で作ります</strong>（7.6）。手で作ると、アプリの版とテーブルの形がずれるからです。</p>
+<blockquote>
+<p><strong>設計例:</strong> アプリは sqlx（0.9.0）のマイグレーションの機能を使い、起動のときに、まだ当てていない手順を当てる。</p>
+</blockquote>
+<h3 id="58-sql-server">5.8 SQL Server を使うよう言われたら</h3>
+<p>会社の決まりで SQL Server を使う場合は、この章の代わりに SQL Server を入れます。考え方は同じですが、道具と、アプリの部品が変わります（00 基礎知識 7.5 の表）。<strong>アプリを作り始める前に</strong>決めてください。</p>
+<h2 id="6">6. アプリを作る（開発用のパソコン）と持ち込む</h2>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/04-04_build_bring.webp" alt="cargo buildで作り、webapp-1.0.0.zipにまとめ、指紋を控えて、サーバーに持ち込む" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図6-1: 開発用のパソコンで作り、まとめ、指紋（ハッシュ値）を控えて持ち込む</div>
+</div>
+
+<h3 id="61">6.1 本番用の実行ファイルを作る</h3>
+<p>開発用のパソコンの、アプリのフォルダで打ちます。</p>
+<div class="codehilite"><div class="code-wrap" id="code-13"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># Cargo.lock のとおりの版で、本番用（release）に作る</span>
+<span class="n">cargo</span> <span class="n">build</span> <span class="p">-</span><span class="n">-release</span> <span class="p">-</span><span class="n">-locked</span>
+
+<span class="c"># 実行ファイルの隣に、CSS などの束（assets\）を作る</span>
+<span class="n">topcoat</span> <span class="n">asset</span> <span class="n">bundle</span> <span class="p">-</span><span class="n">-release</span>
+</code></pre></div></div>
+
+<ul>
+<li>できるのは、<code>target\release\webapp.exe</code> と、その隣の <code>target\release\assets\</code> の2つです。<strong>2つを必ず一緒に</strong>持ち込みます。Topcoat のアプリは、起動したときに「自分の隣の <code>assets\</code>」を読むので、<code>assets\</code> が無いと起動しません。</li>
+<li>画面で使う HTML や JavaScript（図面を描く道具など）を、アプリの中に入れて配信する作りなら、それも実行ファイルか <code>assets\</code> に入っています。別のフォルダにしている場合は、そのフォルダも持ち込みます（アプリの作り方で決まる）。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> release ビルド（リリースビルド：本番用に、速く動くように作ること。開発中の debug ビルドより、作るのに時間がかかるが、動きは速い）</p>
+</blockquote>
+<!-- -->
+
+<blockquote>
+<p><strong>用語:</strong> Cargo.lock（カーゴロック：アプリが使う部品の、正確な版を記録したファイル。<code>--locked</code> を付けると、このファイルのとおりの版で作る。「部品の版を固定する」は、このファイルで守る）</p>
+</blockquote>
+<h3 id="62">6.2 サーバーに無い部品に頼らないようにする</h3>
+<p>Rust で作った Windows の実行ファイルは、そのままだと、<strong>Visual C++ の再頒布可能パッケージ</strong>（<code>VCRUNTIME140.dll</code> など）がサーバーに入っていることを前提にします。入っていないサーバーでは、起動したとたんに「DLL が見つかりません」で止まります。</p>
+<p>アプリのフォルダの <code>.cargo\config.toml</code> に、次を書いておくと、その部品を実行ファイルの中に入れて作れます（静的リンク）。</p>
+<div class="codehilite"><div class="code-wrap" id="code-14"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># .cargo/config.toml（アプリのフォルダの中）</span>
+<span class="k">[target.x86_64-pc-windows-msvc]</span>
+<span class="n">rustflags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;-C&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;target-feature=+crt-static&quot;</span><span class="p">]</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>用語:</strong> DLL（ディーエルエル：ほかのプログラムが使う部品を入れたファイル。実行ファイルとは別に、OS の中に入っている必要がある）</p>
+</blockquote>
+<!-- -->
+
+<blockquote>
+<p><strong>用語:</strong> 静的リンク（部品を、実行ファイルの中に一緒に入れてしまうこと。サーバーに部品が無くても動く）</p>
+</blockquote>
+<p><strong>開発用のパソコンが ARM（Snapdragon など）の場合:</strong> サーバーは x64 なので、<code>rustup target add x86_64-pc-windows-msvc</code> をして、<code>cargo build --release --locked --target x86_64-pc-windows-msvc</code> で作ります。できる場所は <code>target\x86_64-pc-windows-msvc\release\</code> です。<code>topcoat asset bundle</code> には <code>--target</code> が無いので、<code>--out</code> で束の置き場を指定して作り、x64 の実行ファイルの隣に置きます。CSS の束は、CPU の種類によらず同じ中身です。<strong>検証環境で起動して確かめてから</strong>、本番に使います。</p>
+<h3 id="63">6.3 版の名前を付けて、まとめる</h3>
+<p>持ち込む物は、<strong>版の番号を付けた zip</strong> にまとめます。あとで「今どの版が動いているか」「1つ前の版はどれか」が分かるようにするためです。</p>
+<div class="codehilite"><div class="code-wrap" id="code-15"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 開発用のパソコンで（例：版 1.0.0）</span>
+<span class="nv">$ver</span> <span class="p">=</span> <span class="s2">&quot;1.0.0&quot;</span>
+<span class="nv">$out</span> <span class="p">=</span> <span class="s2">&quot;dist\webapp-$ver&quot;</span>
+<span class="nb">New-Item</span> <span class="n">-ItemType</span> <span class="n">Directory</span> <span class="n">-Force</span> <span class="nv">$out</span> <span class="p">|</span> <span class="nb">Out-Null</span>
+<span class="nb">Copy-Item</span> <span class="n">target</span><span class="p">\</span><span class="n">release</span><span class="p">\</span><span class="n">webapp</span><span class="p">.</span><span class="n">exe</span> <span class="nv">$out</span>
+<span class="nb">Copy-Item</span> <span class="n">target</span><span class="p">\</span><span class="n">release</span><span class="p">\</span><span class="n">assets</span> <span class="nv">$out</span> <span class="n">-Recurse</span>
+<span class="nb">Compress-Archive</span> <span class="n">-Path</span> <span class="s2">&quot;$out\*&quot;</span> <span class="n">-DestinationPath</span> <span class="s2">&quot;dist\webapp-$ver.zip&quot;</span> <span class="n">-Force</span>
+<span class="nb">Get-FileHash</span> <span class="s2">&quot;dist\webapp-$ver.zip&quot;</span> <span class="n">-Algorithm</span> <span class="n">SHA256</span>
+</code></pre></div></div>
+
+<ul>
+<li>zip は、サーバーの <code>D:\webapp\releases\</code> にコピーします。コピーの方法（会社のファイルサーバー経由、リモート デスクトップのドライブの共有など）は、会社の決まりに合わせます。</li>
+<li>サーバーでも <code>Get-FileHash</code> を打って、ハッシュ値が同じことを確かめます（5.1 と同じ）。</li>
+<li><strong>パスワードなどの秘密は、zip に入れません。</strong> 秘密は、サーバーの上で設定します（7.3）。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> zip（ジップ：たくさんのファイルを1つにまとめて、小さくしたファイル）</p>
+</blockquote>
+<h3 id="64-http">6.4 HTTP で動かすための、アプリの設定（セッションのクッキー）</h3>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/04-06_secure_cookie.webp" alt="Secure付きのクッキーはHTTPでは受け取られずログインが続かない。Secureなしなら受け取られる" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図6-2: HTTP では、Secure の付いたクッキーは受け取られない</div>
+</div>
+
+<p><strong>これをしないと、HTTP ではログインが続きません。</strong> アプリを作るときに、先に入れておきます。</p>
+<p>Topcoat 0.11 の既定のセッション（<code>SessionConfig::default()</code>）は、ログインの印を運ぶクッキーに、<strong><code>__Host-</code> の名前と <code>Secure</code> の印を必ず付けます</strong>（topcoat-session 0.11.0 のソースで確かめました）。ブラウザは、HTTP のページから届いた <code>Secure</code> のクッキーを受け取らないので、ログインしても、次の画面でログインしていない扱いになります。</p>
+<p>そこで、Topcoat が用意している「クッキーの運び方を差しかえる」入口（<code>TokenStore</code>）を使い、<code>Secure</code> と <code>__Host-</code> だけを外したクッキーにします。ほかの守り（<code>HttpOnly</code>・<code>SameSite=Lax</code>・<code>Path=/</code>）は残します。</p>
+<blockquote>
+<p><strong>用語:</strong> <code>Secure</code>（セキュア：クッキーに付ける印の1つ。「HTTPS のときだけ送る・受け取る」の意味。HTTP では、この印の付いたクッキーは使えない）</p>
+</blockquote>
+<!-- -->
+
+<blockquote>
+<p><strong>用語:</strong> <code>__Host-</code>（ホスト プレフィックス：クッキーの名前の頭に付ける決まりの文字。付けると、ブラウザは <code>Secure</code> などの条件を満たすときだけ受け取る）</p>
+</blockquote>
+<!-- -->
+
+<blockquote>
+<p><strong>用語:</strong> <code>HttpOnly</code>（JavaScript からクッキーを読めないようにする印）・<code>SameSite=Lax</code>（ほかのサイトからの POST に、クッキーを付けないようにする印）</p>
+</blockquote>
+<p>アプリのソースに、次のファイルを足します（<code>src/http_cookie.rs</code>）。</p>
+<div class="codehilite"><div class="code-wrap" id="code-16"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="sd">//! HTTP（暗号化なし）の社内環境で使う、セッションのクッキーの運び方。</span>
+<span class="sd">//!</span>
+<span class="sd">//! Topcoat 0.11 の既定（`CookieTokenStore`）は、クッキーに `__Host-` の名前と</span>
+<span class="sd">//! `Secure` を必ず付ける。ブラウザは HTTP のページでは `Secure` のクッキーを</span>
+<span class="sd">//! 受け取らないので、HTTP ではログインが続かない。</span>
+<span class="sd">//! ここでは `Secure` と `__Host-` だけを外し、`HttpOnly`・`SameSite=Lax`・`Path=/` は残す。</span>
+<span class="sd">//! HTTPS にしたら、このファイルは使わず、決まりのクッキーに戻す（期限の 60 分は残す）。</span>
+
+<span class="k">use</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">time</span><span class="p">::</span><span class="n">Duration</span><span class="p">;</span>
+
+<span class="k">use</span><span class="w"> </span><span class="n">topcoat</span><span class="p">::{</span>
+<span class="w">    </span><span class="n">context</span><span class="p">::</span><span class="n">Cx</span><span class="p">,</span>
+<span class="w">    </span><span class="n">cookie</span><span class="p">::{</span><span class="n">Cookie</span><span class="p">,</span><span class="w"> </span><span class="n">Cookies</span><span class="p">,</span><span class="w"> </span><span class="n">SameSite</span><span class="p">,</span><span class="w"> </span><span class="n">time</span><span class="p">},</span>
+<span class="w">    </span><span class="n">session</span><span class="p">::{</span><span class="n">Token</span><span class="p">,</span><span class="w"> </span><span class="n">TokenStore</span><span class="p">,</span><span class="w"> </span><span class="n">TokenStoreFuture</span><span class="p">},</span>
+<span class="p">};</span>
+
+<span class="sd">/// セッションのクッキーの名前。</span>
+<span class="k">const</span><span class="w"> </span><span class="n">NAME</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="kt">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;session&quot;</span><span class="p">;</span>
+
+<span class="sd">/// HTTP 用のセッションのクッキー（`Secure` なし）。</span>
+<span class="k">pub</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">HttpCookieTokenStore</span><span class="p">;</span>
+
+<span class="k">fn</span><span class="w"> </span><span class="nf">cookies</span><span class="p">(</span><span class="n">cx</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">Cx</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nc">impl</span><span class="w"> </span><span class="n">Cookies</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">topcoat</span><span class="p">::</span><span class="n">cookie</span><span class="p">::</span><span class="n">cookies</span><span class="p">(</span><span class="n">cx</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">override_same_site</span><span class="p">(</span><span class="n">SameSite</span><span class="p">::</span><span class="n">Lax</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">override_http_only</span><span class="p">(</span><span class="kc">true</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">override_secure</span><span class="p">(</span><span class="kc">false</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">override_path</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="k">impl</span><span class="w"> </span><span class="n">TokenStore</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">HttpCookieTokenStore</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">fn</span><span class="w"> </span><span class="nf">read</span><span class="o">&lt;&#39;</span><span class="na">a</span><span class="o">&gt;</span><span class="p">(</span><span class="o">&amp;&#39;</span><span class="na">a</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">cx</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="o">&#39;</span><span class="na">a</span><span class="w"> </span><span class="nc">Cx</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nc">TokenStoreFuture</span><span class="o">&lt;&#39;</span><span class="na">a</span><span class="p">,</span><span class="w"> </span><span class="nb">Option</span><span class="o">&lt;</span><span class="n">Token</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nb">Box</span><span class="p">::</span><span class="n">pin</span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="k">move</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="nb">Some</span><span class="p">(</span><span class="n">cookie</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cookies</span><span class="p">(</span><span class="n">cx</span><span class="p">).</span><span class="n">get</span><span class="p">(</span><span class="n">NAME</span><span class="p">)</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="nb">Ok</span><span class="p">(</span><span class="nb">None</span><span class="p">);</span>
+<span class="w">            </span><span class="p">};</span>
+<span class="w">            </span><span class="nb">Ok</span><span class="p">(</span><span class="n">Token</span><span class="p">::</span><span class="n">decode</span><span class="p">(</span><span class="n">cookie</span><span class="p">.</span><span class="n">value_trimmed</span><span class="p">()).</span><span class="n">ok</span><span class="p">())</span>
+<span class="w">        </span><span class="p">})</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">fn</span><span class="w"> </span><span class="nf">write</span><span class="o">&lt;&#39;</span><span class="na">a</span><span class="o">&gt;</span><span class="p">(</span>
+<span class="w">        </span><span class="o">&amp;&#39;</span><span class="na">a</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span>
+<span class="w">        </span><span class="n">cx</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="o">&#39;</span><span class="na">a</span><span class="w"> </span><span class="nc">Cx</span><span class="p">,</span>
+<span class="w">        </span><span class="n">token</span><span class="p">:</span><span class="w"> </span><span class="nc">Token</span><span class="p">,</span>
+<span class="w">        </span><span class="n">max_age</span><span class="p">:</span><span class="w"> </span><span class="nc">Duration</span><span class="p">,</span>
+<span class="w">    </span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nc">TokenStoreFuture</span><span class="o">&lt;&#39;</span><span class="na">a</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nb">Box</span><span class="p">::</span><span class="n">pin</span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="k">move</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="n">max_age</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">time</span><span class="p">::</span><span class="n">Duration</span><span class="p">::</span><span class="n">try_from</span><span class="p">(</span><span class="n">max_age</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
+<span class="w">            </span><span class="n">cookies</span><span class="p">(</span><span class="n">cx</span><span class="p">)</span>
+<span class="w">                </span><span class="p">.</span><span class="n">override_max_age</span><span class="p">(</span><span class="n">max_age</span><span class="p">)</span>
+<span class="w">                </span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">Cookie</span><span class="p">::</span><span class="n">new</span><span class="p">(</span><span class="n">NAME</span><span class="p">,</span><span class="w"> </span><span class="n">token</span><span class="p">.</span><span class="n">encode</span><span class="p">()));</span>
+<span class="w">            </span><span class="nb">Ok</span><span class="p">(())</span>
+<span class="w">        </span><span class="p">})</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">fn</span><span class="w"> </span><span class="nf">delete</span><span class="o">&lt;&#39;</span><span class="na">a</span><span class="o">&gt;</span><span class="p">(</span><span class="o">&amp;&#39;</span><span class="na">a</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">cx</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="o">&#39;</span><span class="na">a</span><span class="w"> </span><span class="nc">Cx</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nc">TokenStoreFuture</span><span class="o">&lt;&#39;</span><span class="na">a</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nb">Box</span><span class="p">::</span><span class="n">pin</span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="k">move</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">cookies</span><span class="p">(</span><span class="n">cx</span><span class="p">).</span><span class="n">remove</span><span class="p">(</span><span class="n">Cookie</span><span class="p">::</span><span class="n">new</span><span class="p">(</span><span class="n">NAME</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">));</span>
+<span class="w">            </span><span class="nb">Ok</span><span class="p">(())</span>
+<span class="w">        </span><span class="p">})</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>ルーターを組み立てる所で、既定の <code>SessionConfig::default()</code> の代わりに、これを使います。60 分の期限も、ここで決めます。</p>
+<div class="codehilite"><div class="code-wrap" id="code-17"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 例：ルーターを組み立てる所</span>
+<span class="p">.</span><span class="n">cookies</span><span class="p">()</span>
+<span class="p">.</span><span class="n">sessions</span><span class="p">(</span>
+<span class="w">    </span><span class="n">SessionConfig</span><span class="p">::</span><span class="n">builder</span><span class="p">()</span>
+<span class="w">        </span><span class="p">.</span><span class="n">token_store</span><span class="p">(</span><span class="k">crate</span><span class="p">::</span><span class="n">http_cookie</span><span class="p">::</span><span class="n">HttpCookieTokenStore</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">lifetime</span><span class="p">(</span><span class="n">std</span><span class="p">::</span><span class="n">time</span><span class="p">::</span><span class="n">Duration</span><span class="p">::</span><span class="n">from_secs</span><span class="p">(</span><span class="mi">60</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">60</span><span class="p">))</span>
+<span class="w">        </span><span class="p">.</span><span class="n">build</span><span class="p">(),</span>
+<span class="p">)</span>
+</code></pre></div></div>
+
+<p><code>src/lib.rs</code>（または <code>main.rs</code>）に <code>pub mod http_cookie;</code> を足すのも忘れないでください。</p>
+<p><strong>確かめたこと（2026-11-01）:</strong> Topcoat 0.11.0 のアプリ（Rust の教材の RustNote）を、この形に直して HTTP で動かしました。</p>
+<ul>
+<li>ログインの返事のクッキーが、<code>session=…; HttpOnly; SameSite=Lax; Path=/; Max-Age=3600</code> になった（<code>Secure</code> と <code>__Host-</code> が無い）。</li>
+<li>
+<p>そのクッキーを付けて、ログインが要る画面を開くと <code>200</code> になった。</p>
+</li>
+<li>
+<p><code>lifetime</code> は「使われないまま、この時間がたつと切れる」期限です。操作のたびに延びるかどうかは、アプリでセッションをどう扱うかによります。60 分で自動でログアウトされるかを、検証環境で確かめます。</p>
+</li>
+<li>HTTPS にしたら、このファイルは使わず、<code>.token_store(...)</code> の行を消して、Topcoat の決まりのクッキーに戻します（参考資料「HTTPS にする場合」の 7 章）。<strong><code>SessionConfig::default()</code> にはしません。</strong> 決まりの期限は 30 日なので、60 分で自動でログアウトしなくなります（topcoat-session 0.11.0 のソースで確かめました）。</li>
+</ul>
+<h2 id="7-windows">7. アプリを Windows サービスにする</h2>
+<h3 id="71-winsw">7.1 なぜ WinSW を使うのか</h3>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/04-05_winsw.webp" alt="WinSWがXMLの設定を読み、webapp.exeを包んで動かし、ログを書き、止まったら再起動する" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図7-1: WinSW は、ふつうの実行ファイルを包んで Windows サービスにする</div>
+</div>
+
+<p>Windows サービスは、OS と決まった言葉でやり取りできるプログラムでないとなれません。ふつうの実行ファイルを、そのまま <code>sc.exe create</code> でサービスに登録すると、起動のときに「エラー 1053：サービスが時間内に応答しませんでした」で止まります。</p>
+<p><strong>WinSW</strong> は、ふつうの実行ファイルを包んで、サービスにしてくれる道具です。WinSW がサービスとして OS とやり取りし、中で <code>webapp.exe</code> を起動し、止まったら起動し直し、画面への出力をログのファイルに書きます。</p>
+<blockquote>
+<p><strong>用語:</strong> WinSW（ウィンエスダブリュー。Windows Service Wrapper：ふつうの実行ファイルを、Windows サービスとして動かすための包み紙の道具）</p>
+</blockquote>
+<!-- -->
+
+<blockquote>
+<p><strong>用語:</strong> sc.exe（エスシー：Windows サービスを登録・設定する、Windows に付いているコマンド）</p>
+</blockquote>
+<h3 id="72-winsw">7.2 WinSW を持ち込む</h3>
+<ol>
+<li>開発用のパソコンで、WinSW の GitHub のリリースのページ（<code>https://github.com/winsw/winsw/releases</code>）から、<strong>v2.12.0</strong> の <code>WinSW-x64.exe</code> をダウンロードします。</li>
+<li>サーバーの <code>D:\webapp\installers\</code> にコピーし、ハッシュ値を確かめます。</li>
+<li>本番と検証のそれぞれに、<strong>名前を変えて</strong>コピーします。WinSW は、「自分と同じ名前の <code>.xml</code>」を設定ファイルとして読む決まりです。</li>
+</ol>
+<div class="codehilite"><div class="code-wrap" id="code-18"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">Copy-Item</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">installers</span><span class="p">\</span><span class="n">WinSW-x64</span><span class="p">.</span><span class="n">exe</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">prod</span><span class="p">\</span><span class="n">service</span><span class="p">\</span><span class="n">webapp-prod-service</span><span class="p">.</span><span class="n">exe</span>
+<span class="nb">Copy-Item</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">installers</span><span class="p">\</span><span class="n">WinSW-x64</span><span class="p">.</span><span class="n">exe</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">stg</span><span class="p">\</span><span class="n">service</span><span class="p">\</span><span class="n">webapp-stg-service</span><span class="p">.</span><span class="n">exe</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>用語:</strong> GitHub のリリース（ソフトの作者が、できた版を配っている GitHub のページ）</p>
+</blockquote>
+<h3 id="73-xml">7.3 アプリを置き、設定ファイル（XML）を書く</h3>
+<p>まず、アプリの zip を、本番の <code>app\</code> に展開します。</p>
+<div class="codehilite"><div class="code-wrap" id="code-19"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">Expand-Archive</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">releases</span><span class="p">\</span><span class="n">webapp</span><span class="p">-</span><span class="n">1</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">zip</span> <span class="n">-DestinationPath</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">prod</span><span class="p">\</span><span class="n">app</span>
+<span class="nb">Get-ChildItem</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">prod</span><span class="p">\</span><span class="n">app</span>
+</code></pre></div></div>
+
+<p><strong>確かめること:</strong> <code>webapp.exe</code> と <code>assets</code> フォルダが、<code>D:\webapp\prod\app</code> の<strong>すぐ下</strong>に並んでいる（<code>app\webapp-1.0.0\webapp.exe</code> のように1段深くなっていたら、置き直す）。</p>
+<p>次に、WinSW の設定ファイル <code>D:\webapp\prod\service\webapp-prod-service.xml</code> を、メモ帳で作ります。</p>
+<div class="codehilite"><div class="code-wrap" id="code-20"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&lt;service&gt;</span>
+<span class="w">  </span><span class="cm">&lt;!-- サービスの名前（コマンドで使う）と、画面に出る名前・説明 --&gt;</span>
+<span class="w">  </span><span class="nt">&lt;id&gt;</span>webapp-prod<span class="nt">&lt;/id&gt;</span>
+<span class="w">  </span><span class="nt">&lt;name&gt;</span>業務<span class="w"> </span>Web<span class="w"> </span>アプリ（本番）<span class="nt">&lt;/name&gt;</span>
+<span class="w">  </span><span class="nt">&lt;description&gt;</span>業務<span class="w"> </span>Web<span class="w"> </span>アプリの本番。127.0.0.1:8080<span class="w"> </span>で待ち受け、IIS<span class="w"> </span>から転送を受ける。<span class="nt">&lt;/description&gt;</span>
+
+<span class="w">  </span><span class="cm">&lt;!-- 動かす実行ファイルと、動かすときの今いるフォルダ --&gt;</span>
+<span class="w">  </span><span class="nt">&lt;executable&gt;</span>D:\webapp\prod\app\webapp.exe<span class="nt">&lt;/executable&gt;</span>
+<span class="w">  </span><span class="nt">&lt;workingdirectory&gt;</span>D:\webapp\prod\app<span class="nt">&lt;/workingdirectory&gt;</span>
+
+<span class="w">  </span><span class="cm">&lt;!-- アプリに渡す設定（環境変数）。HOST と PORT は Topcoat が読む。ほかは設計例 --&gt;</span>
+<span class="w">  </span><span class="nt">&lt;env</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;HOST&quot;</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;127.0.0.1&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;env</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;PORT&quot;</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;8080&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;env</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;APP_ENV&quot;</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;production&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;env</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;APP_BASE_URL&quot;</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;http://webapp.example.local&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;env</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;DATABASE_URL&quot;</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;postgres://webapp_prod_app:（パスワード）@127.0.0.1:5432/webapp_prod&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;env</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;FILE_DIR&quot;</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;D:\webapp\prod\files&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;env</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;SMTP_HOST&quot;</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;example-com.mail.protection.outlook.com&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;env</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;SMTP_PORT&quot;</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;25&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;env</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;MAIL_FROM&quot;</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;noreply@example.com&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;env</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;RUST_LOG&quot;</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;info&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+
+<span class="w">  </span><span class="cm">&lt;!-- Windows の起動と一緒に動かす。PostgreSQL が動いてから動かす --&gt;</span>
+<span class="w">  </span><span class="nt">&lt;startmode&gt;</span>Automatic<span class="nt">&lt;/startmode&gt;</span>
+<span class="w">  </span><span class="nt">&lt;depend&gt;</span>postgresql-x64-18<span class="nt">&lt;/depend&gt;</span>
+
+<span class="w">  </span><span class="cm">&lt;!-- 止まったら、10 秒後・30 秒後に起動し直す --&gt;</span>
+<span class="w">  </span><span class="nt">&lt;onfailure</span><span class="w"> </span><span class="na">action=</span><span class="s">&quot;restart&quot;</span><span class="w"> </span><span class="na">delay=</span><span class="s">&quot;10 sec&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;onfailure</span><span class="w"> </span><span class="na">action=</span><span class="s">&quot;restart&quot;</span><span class="w"> </span><span class="na">delay=</span><span class="s">&quot;30 sec&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+
+<span class="w">  </span><span class="cm">&lt;!-- 止めるときに待つ時間 --&gt;</span>
+<span class="w">  </span><span class="nt">&lt;stoptimeout&gt;</span>15<span class="w"> </span>sec<span class="nt">&lt;/stoptimeout&gt;</span>
+
+<span class="w">  </span><span class="cm">&lt;!-- 画面への出力を、ログのファイルに書く。10MB ごとに分け、8 個まで残す --&gt;</span>
+<span class="w">  </span><span class="nt">&lt;logpath&gt;</span>D:\webapp\prod\logs<span class="nt">&lt;/logpath&gt;</span>
+<span class="w">  </span><span class="nt">&lt;log</span><span class="w"> </span><span class="na">mode=</span><span class="s">&quot;roll-by-size&quot;</span><span class="nt">&gt;</span>
+<span class="w">    </span><span class="nt">&lt;sizeThreshold&gt;</span>10240<span class="nt">&lt;/sizeThreshold&gt;</span>
+<span class="w">    </span><span class="nt">&lt;keepFiles&gt;</span>8<span class="nt">&lt;/keepFiles&gt;</span>
+<span class="w">  </span><span class="nt">&lt;/log&gt;</span>
+<span class="nt">&lt;/service&gt;</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>設定</th>
+<th>意味</th>
+<th>本番の値（例）</th>
+<th>検証の値（例）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>HOST</code>・<code>PORT</code></td>
+<td>アプリが待ち受ける住所とポート。Topcoat の <code>topcoat::start</code> が読む</td>
+<td><code>127.0.0.1</code>・<code>8080</code></td>
+<td><code>127.0.0.1</code>・<code>8081</code></td>
+</tr>
+<tr>
+<td><code>APP_ENV</code></td>
+<td>本番か検証か（設計例）</td>
+<td><code>production</code></td>
+<td><code>staging</code></td>
+</tr>
+<tr>
+<td><code>APP_BASE_URL</code></td>
+<td>メールに書く URL の頭（設計例。承認 URL などを作るのに使う）</td>
+<td><code>http://webapp.example.local</code></td>
+<td><code>http://webapp-stg.example.local</code></td>
+</tr>
+<tr>
+<td><code>DATABASE_URL</code></td>
+<td>データベースの接続文字列（00 基礎知識 7.2）</td>
+<td><code>webapp_prod</code> へ</td>
+<td><code>webapp_stg</code> へ</td>
+</tr>
+<tr>
+<td><code>FILE_DIR</code></td>
+<td>添付ファイルの保存フォルダ（設計例）</td>
+<td><code>D:\webapp\prod\files</code></td>
+<td><code>D:\webapp\stg\files</code></td>
+</tr>
+<tr>
+<td><code>SMTP_HOST</code>・<code>SMTP_PORT</code>・<code>MAIL_FROM</code></td>
+<td>メールの渡し先と送り主（10 章。設計例）</td>
+<td>Microsoft 365 の MX エンドポイント・25・送信専用のアドレス</td>
+<td>同じ</td>
+</tr>
+<tr>
+<td><code>MAIL_REDIRECT_TO</code></td>
+<td>（検証だけ）全部のメールを、この宛先に送る（設計例）</td>
+<td>付けない</td>
+<td>IT 担当者のアドレスなど</td>
+</tr>
+<tr>
+<td><code>RUST_LOG</code></td>
+<td>ログの細かさ</td>
+<td><code>info</code></td>
+<td><code>info</code> または <code>debug</code></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Topcoat の <code>topcoat::start</code> は、<code>HOST</code> と <code>PORT</code> の環境変数を読みます（何も無いと <code>127.0.0.1:3000</code>）。<strong><code>HOST</code> は必ず <code>127.0.0.1</code></strong> にします。<code>0.0.0.0</code> にすると、IIS を通らずに、外から直接アプリにつながってしまいます。</li>
+<li><code>HOST</code>・<code>PORT</code> 以外の名前は、<strong>アプリの作り方で決まる設計例</strong>です。アプリの作者と合わせます。</li>
+<li>検証の XML は、<code>id</code>・<code>name</code>・ポート・データベース・フォルダ・<code>APP_BASE_URL</code> を検証のものに変え、<code>MAIL_REDIRECT_TO</code> を足します。</li>
+<li><strong>XML ファイルには、データベースのパスワードが書かれます。</strong> 7.4 で、読める人を絞ります。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> XML（エックスエムエル：<code>&lt;名前&gt;中身&lt;/名前&gt;</code> の形で、設定などを書くファイルの形式。<code>&lt;!-- --&gt;</code> の中はコメント）</p>
+</blockquote>
+<!-- -->
+
+<blockquote>
+<p><strong>用語:</strong> 接続文字列（アプリがデータベースにつなぐための情報を、1行にまとめたもの。<code>postgres://ユーザー:パスワード@住所:ポート/データベース名</code>。パスワードに <code>@</code> や <code>:</code> などの記号を使ったときは、<code>%40</code> のような形に書きかえる必要があるので、パスワードは英字と数字を長くした物にすると間違いが少ない）</p>
+</blockquote>
+<h3 id="74">7.4 サービスを登録し、アカウントと許可を設定する</h3>
+<div class="codehilite"><div class="code-wrap" id="code-21"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 1. サービスを登録する（XML の id の名前で登録される）</span>
+<span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">prod</span><span class="p">\</span><span class="n">service</span><span class="p">\</span><span class="n">webapp-prod-service</span><span class="p">.</span><span class="n">exe</span> <span class="n">install</span>
+
+<span class="c"># 2. 動かすアカウントを、仮想アカウント NT SERVICE\webapp-prod にする</span>
+<span class="n">sc</span><span class="p">.</span><span class="n">exe</span> <span class="n">config</span> <span class="n">webapp-prod</span> <span class="n">obj</span><span class="p">=</span> <span class="s2">&quot;NT SERVICE\webapp-prod&quot;</span>
+
+<span class="c"># 3. アカウントを確かめる</span>
+<span class="nb">Get-CimInstance</span> <span class="n">Win32_Service</span> <span class="n">-Filter</span> <span class="s2">&quot;Name=&#39;webapp-prod&#39;&quot;</span> <span class="p">|</span> <span class="nb">Format-List</span> <span class="n">Name</span><span class="p">,</span> <span class="n">StartName</span><span class="p">,</span> <span class="n">StartMode</span><span class="p">,</span> <span class="n">State</span>
+</code></pre></div></div>
+
+<p><strong>確かめること:</strong> <code>StartName</code> が <code>NT SERVICE\webapp-prod</code>、<code>StartMode</code> が <code>Auto</code> になっている。</p>
+<ul>
+<li><code>sc.exe</code> は、<code>obj=</code> のように、<strong><code>=</code> の後ろに空白を1つ</strong>入れる決まりです。空白が無いとエラーになります。</li>
+</ul>
+<p>次に、仮想アカウントに、フォルダの許可を付けます（4.3 の表のとおり）。</p>
+<div class="codehilite"><div class="code-wrap" id="code-22"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 本番のフォルダ全体：読む・実行する（中にも引き継ぐ）</span>
+<span class="n">icacls</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">prod</span> <span class="p">/</span><span class="n">grant</span> <span class="s2">&quot;NT SERVICE\webapp-prod:(OI)(CI)RX&quot;</span>
+<span class="c"># 添付ファイルとログ：書ける</span>
+<span class="n">icacls</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">prod</span><span class="p">\</span><span class="n">files</span> <span class="p">/</span><span class="n">grant</span> <span class="s2">&quot;NT SERVICE\webapp-prod:(OI)(CI)M&quot;</span>
+<span class="n">icacls</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">prod</span><span class="p">\</span><span class="n">logs</span>  <span class="p">/</span><span class="n">grant</span> <span class="s2">&quot;NT SERVICE\webapp-prod:(OI)(CI)M&quot;</span>
+
+<span class="c"># パスワードが書かれた XML：管理者・SYSTEM・本番のアプリだけが読める（ほかの引き継ぎを切る）</span>
+<span class="n">icacls</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">prod</span><span class="p">\</span><span class="n">service</span><span class="p">\</span><span class="n">webapp-prod-service</span><span class="p">.</span><span class="n">xml</span> <span class="p">/</span><span class="n">inheritance</span><span class="p">:</span><span class="nb">r </span><span class="p">/</span><span class="n">grant</span><span class="p">:</span><span class="nb">r </span><span class="s2">&quot;*S-1-5-32-544:F&quot;</span> <span class="s2">&quot;*S-1-5-18:F&quot;</span> <span class="s2">&quot;NT SERVICE\webapp-prod:R&quot;</span>
+</code></pre></div></div>
+
+<ul>
+<li>許可を <code>D:\webapp\prod</code> に付けておくと、更新のときに <code>app\</code> を入れ替えても、新しい <code>app\</code> に許可が引き継がれます。</li>
+<li>検証は、<code>prod</code> を <code>stg</code> に変えて、同じことをします。本番のアカウントには検証のフォルダの許可を付けず、検証のアカウントには本番のフォルダの許可を付けません。</li>
+</ul>
+<h3 id="75">7.5 起動して、サーバーの中で確かめる</h3>
+<div class="codehilite"><div class="code-wrap" id="code-23"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">Start-Service</span> <span class="n">webapp-prod</span>
+<span class="nb">Get-Service</span> <span class="n">webapp-prod</span>
+
+<span class="c"># アプリが 127.0.0.1:8080 で待ち受けているか</span>
+<span class="nb">Get-NetTCPConnection</span> <span class="n">-State</span> <span class="n">Listen</span> <span class="n">-LocalPort</span> <span class="n">8080</span> <span class="p">|</span> <span class="nb">Format-Table</span> <span class="n">LocalAddress</span><span class="p">,</span> <span class="n">LocalPort</span><span class="p">,</span> <span class="n">OwningProcess</span>
+
+<span class="c"># アプリの「元気ですか」の入口に聞く（設計例：GET /health）</span>
+<span class="nb">Invoke-WebRequest</span> <span class="n">http</span><span class="p">://</span><span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span><span class="p">:</span><span class="n">8080</span><span class="p">/</span><span class="n">health</span> <span class="n">-UseBasicParsing</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">StatusCode</span><span class="p">,</span> <span class="n">Content</span>
+</code></pre></div></div>
+
+<p><strong>確かめること:</strong></p>
+<ul>
+<li>サービスが <code>Running</code> になっている。</li>
+<li>8080 番の <code>LocalAddress</code> が <code>127.0.0.1</code> になっている。</li>
+<li><code>/health</code> の <code>StatusCode</code> が <code>200</code> になっている。</li>
+</ul>
+<p><strong>起動しないとき:</strong> <code>D:\webapp\prod\logs\</code> の中のログを見ます。</p>
+<table>
+<thead>
+<tr>
+<th>ファイル</th>
+<th>中身</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>webapp-prod-service.wrapper.log</code></td>
+<td>WinSW 自身の記録（起動した・止まった・起動し直した）</td>
+</tr>
+<tr>
+<td><code>webapp-prod-service.out.log</code></td>
+<td>アプリが画面に出した文（ふつうのログ）</td>
+</tr>
+<tr>
+<td><code>webapp-prod-service.err.log</code></td>
+<td>アプリが画面に出したエラーの文</td>
+</tr>
+</tbody>
+</table>
+<p>よくある原因は 15 章の表にまとめています。</p>
+<blockquote>
+<p><strong>用語:</strong> ヘルスチェック（health check：アプリに「動いていますか」と聞く、決まった入口（例：<code>/health</code>）。動いていれば 200 を返す。監視やデプロイの確かめに使う）</p>
+</blockquote>
+<h3 id="76">7.6 テーブルを作る（初回のマイグレーション）</h3>
+<blockquote>
+<p><strong>設計例:</strong> アプリは、起動したときに、まだ当てていないマイグレーションを当てる。</p>
+</blockquote>
+<p>この作りなら、7.5 で最初に起動したときに、テーブルができています。確かめます。</p>
+<div class="codehilite"><div class="code-wrap" id="code-24"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">psql</span> <span class="n">-h</span> <span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span> <span class="n">-U</span> <span class="n">webapp_prod_app</span> <span class="n">-d</span> <span class="n">webapp_prod</span> <span class="n">-c</span> <span class="s2">&quot;\dt&quot;</span>
+</code></pre></div></div>
+
+<p><strong>確かめること:</strong> テーブルの一覧（依頼書・図面・社員データ・承認の記録など。名前はアプリの作りによる）と、sqlx がマイグレーションの記録に使う <code>_sqlx_migrations</code> が出る。</p>
+<h3 id="77">7.7 初期データを登録する</h3>
+<p><strong>最初の管理者を決める（サーバー上のコマンド）</strong></p>
+<p>画面から権限を設定するには、権限を設定できる人（管理者）が要ります。最初の1人は、サーバーの上でコマンドを使って決めます。2人目からは、画面で設定します。</p>
+<blockquote>
+<p><strong>設計例:</strong> <code>webapp.exe</code> に、<code>grant-role</code> という管理用のコマンドを用意する。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-25"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># この窓の中だけ、データベースの接続先を教える（サービスの XML と同じ値）</span>
+<span class="nv">$env:DATABASE_URL</span> <span class="p">=</span> <span class="s2">&quot;postgres://webapp_prod_app:（パスワード）@127.0.0.1:5432/webapp_prod&quot;</span>
+<span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">prod</span><span class="p">\</span><span class="n">app</span><span class="p">\</span><span class="n">webapp</span><span class="p">.</span><span class="n">exe</span> <span class="nb">grant-role</span> <span class="p">-</span><span class="n">-employee-no</span> <span class="n">012345</span> <span class="p">-</span><span class="n">-role</span> <span class="n">it-admin</span>
+<span class="c"># 終わったら、窓の中の値を消す</span>
+<span class="nb">Remove-Item</span> <span class="n">Env</span><span class="p">:</span><span class="n">DATABASE_URL</span>
+</code></pre></div></div>
+
+<p>ただし、社員データ（従業員番号）が無いと、権限を付ける相手がいません。アプリの作りに合わせて、順番を決めます（例：コマンドで CSV を先に取り込む、または、コマンドで最初の管理者を社員データごと作る）。</p>
+<p><strong>社員データの CSV を取り込む（画面）</strong></p>
+<p>最初の管理者でログインし、社員データの取り込みの画面から、社員一覧の CSV を取り込みます。CSV の列の並びは、アプリの取り込みの決まりに合わせます。</p>
+<ul>
+<li><strong>先に検証環境で取り込んで、結果を確かめてから</strong>、本番に取り込みます。</li>
+<li>社員の個人情報なので、CSV のファイルは、取り込んだあとサーバーやパソコンに残さず、会社の決まりに従って扱います。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> CSV（シーエスブイ：表のデータを、カンマで区切った文字で書いたファイル。Excel で開ける）</p>
+</blockquote>
+<h2 id="8-iis">8. 受付（IIS）</h2>
+<p>社員のブラウザからのお願いを最初に受ける、受付（IIS）を用意します。今回は HTTPS を使えないので、<strong>HTTP（80 番）</strong>で受けます。HTTPS にするときの手順は、参考資料「HTTPS にする場合」にあります。</p>
+<blockquote>
+<p><strong>用語:</strong> IIS（Windows Server に付いている Web サーバー。00 基礎知識 5.2）</p>
+</blockquote>
+<!-- -->
+
+<blockquote>
+<p><strong>用語:</strong> リバースプロキシ（外からのお願いを受けて、奥のアプリに取り次ぐ係。00 基礎知識 5.2）</p>
+</blockquote>
+<h3 id="81-iis">8.1 IIS を入れる</h3>
+<div class="codehilite"><div class="code-wrap" id="code-26"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">Install-WindowsFeature</span> <span class="n">-Name</span> <span class="n">Web-Server</span> <span class="n">-IncludeManagementTools</span>
+<span class="nb">Get-WindowsFeature</span> <span class="n">Web-Server</span><span class="p">,</span> <span class="n">Web-Mgmt-Console</span> <span class="p">|</span> <span class="nb">Format-Table</span> <span class="n">Name</span><span class="p">,</span> <span class="n">InstallState</span>
+</code></pre></div></div>
+
+<p><strong>確かめること:</strong> <code>Web-Server</code> と <code>Web-Mgmt-Console</code> が <code>Installed</code> になっている。</p>
+<ul>
+<li>IIS を入れると、<code>Default Web Site</code>（見本のサイト）が 80 番で動き始めます。今回は使わないので、止めます（8.4）。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> 役割と機能（Windows Server に、あとから足せる機能のまとまり。IIS は「Web サーバー（IIS）」の役割。<code>Install-WindowsFeature</code> で足す）</p>
+</blockquote>
+<h3 id="82-url-rewrite-arr">8.2 URL Rewrite と ARR を入れる</h3>
+<p>IIS は、そのままではリバースプロキシになれません。Microsoft が配っている、2つの追加の部品を入れます。<strong>入れる順番は、URL Rewrite が先、ARR が後</strong>です。</p>
+<table>
+<thead>
+<tr>
+<th>部品</th>
+<th>役目</th>
+<th>入手先（開発用のパソコンでダウンロードして持ち込む）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>URL Rewrite 2.1</td>
+<td>来た URL を見て、「どこへ渡すか」の決まり（ルール）を当てる</td>
+<td>Microsoft の IIS のページの「URL Rewrite」から、x64 の英語版（<code>rewrite_amd64_en-US.msi</code>）</td>
+</tr>
+<tr>
+<td>Application Request Routing 3.0（ARR）</td>
+<td>ルールで決めた行き先（アプリ）へ、実際にお願いを取り次ぐ</td>
+<td>Microsoft の IIS のページの「Application Request Routing」から、x64 版（<code>requestRouter_amd64.msi</code>）</td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li>2つの <code>.msi</code> を <code>D:\webapp\installers\</code> にコピーし、ハッシュ値を確かめます。</li>
+<li><code>rewrite_amd64_en-US.msi</code> をダブルクリックして入れます。</li>
+<li><code>requestRouter_amd64.msi</code> をダブルクリックして入れます。</li>
+<li>IIS マネージャー（<code>inetmgr</code>）を開き直し、サーバーの名前を選んだ画面に「URL Rewrite」と「Application Request Routing Cache」の絵が出ていることを確かめます。</li>
+</ol>
+<blockquote>
+<p><strong>用語:</strong> URL Rewrite（ユーアールエル リライト：来た URL を、決まりに従って書きかえたり、別の所へ渡したりする IIS の部品）</p>
+</blockquote>
+<!-- -->
+
+<blockquote>
+<p><strong>用語:</strong> ARR（エーアールアール。Application Request Routing：IIS が受けたお願いを、別のサーバーやアプリに取り次ぐための IIS の部品）</p>
+</blockquote>
+<!-- -->
+
+<blockquote>
+<p><strong>用語:</strong> msi（エムエスアイ：Windows のインストーラーのファイルの形式の1つ）</p>
+</blockquote>
+<h3 id="83-arr-host">8.3 ARR の取り次ぎを有効にし、Host をそのまま渡す</h3>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/04-07_preserve_host.webp" alt="名前をそのまま渡すとアプリに届く。127.0.0.1:8080に書きかえると403で断られる" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図8-1: IIS が名前（Host）を書きかえると、アプリに断られる</div>
+</div>
+
+<p>ARR は、入れただけでは取り次ぎをしません。サーバー全体の設定で、有効にします。あわせて、<strong>Host ヘッダー（どの名前で来たか）をそのままアプリに渡す</strong>設定にします。<strong>HTTP で動かすときは、この設定が必須</strong>です（下の説明）。</p>
+<div class="codehilite"><div class="code-wrap" id="code-27"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nv">$appcmd</span> <span class="p">=</span> <span class="s2">&quot;$env:windir\System32\inetsrv\appcmd.exe&quot;</span>
+
+<span class="c"># 取り次ぎ（プロキシ）を有効にする</span>
+<span class="p">&amp;</span> <span class="nv">$appcmd</span> <span class="nb">set </span><span class="n">config</span> <span class="n">-section</span><span class="p">:</span><span class="n">system</span><span class="p">.</span><span class="n">webServer</span><span class="p">/</span><span class="n">proxy</span> <span class="p">/</span><span class="n">enabled</span><span class="p">:</span><span class="s2">&quot;True&quot;</span> <span class="p">/</span><span class="n">commit</span><span class="p">:</span><span class="n">apphost</span>
+
+<span class="c"># Host ヘッダーをそのまま渡す（既定では、取り次ぎ先の名前（127.0.0.1:8080）に書きかえられる）</span>
+<span class="p">&amp;</span> <span class="nv">$appcmd</span> <span class="nb">set </span><span class="n">config</span> <span class="n">-section</span><span class="p">:</span><span class="n">system</span><span class="p">.</span><span class="n">webServer</span><span class="p">/</span><span class="n">proxy</span> <span class="p">/</span><span class="n">preserveHostHeader</span><span class="p">:</span><span class="s2">&quot;True&quot;</span> <span class="p">/</span><span class="n">commit</span><span class="p">:</span><span class="n">apphost</span>
+
+<span class="c"># 結果を見る</span>
+<span class="p">&amp;</span> <span class="nv">$appcmd</span> <span class="n">list</span> <span class="n">config</span> <span class="n">-section</span><span class="p">:</span><span class="n">system</span><span class="p">.</span><span class="n">webServer</span><span class="p">/</span><span class="n">proxy</span>
+</code></pre></div></div>
+
+<p><strong>確かめること:</strong> 結果に <code>enabled="true"</code> と <code>preserveHostHeader="true"</code> が出ている。</p>
+<p>なぜ Host をそのまま渡すのか:</p>
+<ul>
+<li>Topcoat には、ほかのサイトのページから勝手にフォームを送らせる攻撃（CSRF）を止める仕組み（OriginPolicy）があります。Topcoat 0.11 のソースでは、まずブラウザが付ける <code>Sec-Fetch-Site</code> を見て、無いときは <code>Origin</code>（どのサイトのページから送ったか）と <code>Host</code> を比べます。</li>
+<li>ブラウザは、<code>Sec-Fetch-Site</code> を HTTPS のページ（と、自分のパソコンの中の localhost）にしか付けません。<strong>HTTP では、いつも <code>Origin</code> と <code>Host</code> の比べ合わせになります。</strong></li>
+<li>Host が <code>127.0.0.1:8080</code> に書きかえられると、<code>Origin: http://webapp.example.local</code> と合わないので、自分のサイトからの送信（ログイン・保存・承認など）が全部 <code>403 Forbidden</code> になります。</li>
+<li>実際に、Topcoat 0.11 のアプリ（Rust の教材の RustNote）で、HTTP のまま試しました（2026-11-01）。<code>Origin</code> と <code>Host</code> が違う POST は <code>403</code>、そろえた POST は通りました（<code>303</code>）。</li>
+<li>承認 URL のように、アプリが自分の URL を作るときにも、正しい名前が要ります（このアプリでは <code>APP_BASE_URL</code> を使う設計例）。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> ヘッダー（リクエストやレスポンスに付いている、追加の情報の行。<code>Host</code>（どの名前宛てか）、<code>Cookie</code>、<code>Origin</code> など）</p>
+</blockquote>
+<!-- -->
+
+<blockquote>
+<p><strong>用語:</strong> CSRF（シーサーフ：ほかのサイトのページから、ログイン中の人のブラウザに、勝手に操作を送らせる攻撃）</p>
+</blockquote>
+<!-- -->
+
+<blockquote>
+<p><strong>用語:</strong> appcmd（アップコマンド：IIS の設定を、コマンドで変える道具。<code>/commit:apphost</code> は「サーバー全体の設定ファイルに書く」の意味）</p>
+</blockquote>
+<h3 id="84">8.4 サイトを作る</h3>
+<p>本番と検証の2つのサイトを、<strong>同じ 80 番で、名前で分けて</strong>作ります（00 基礎知識 4.2 の Host ヘッダー）。</p>
+<div class="codehilite"><div class="code-wrap" id="code-28"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">Import-Module</span> <span class="n">IISAdministration</span>
+
+<span class="c"># 見本のサイトを止めて、自動で動かないようにする</span>
+<span class="nb">Stop-IISSite</span> <span class="n">-Name</span> <span class="s2">&quot;Default Web Site&quot;</span> <span class="n">-Confirm</span><span class="p">:</span><span class="nv">$false</span>
+<span class="nb">Import-Module</span> <span class="n">WebAdministration</span>
+<span class="nb">Set-ItemProperty</span> <span class="s2">&quot;IIS:\Sites\Default Web Site&quot;</span> <span class="n">-Name</span> <span class="n">serverAutoStart</span> <span class="n">-Value</span> <span class="nv">$false</span>
+
+<span class="c"># 本番のサイト（http://webapp.example.local/）</span>
+<span class="nb">New-IISSite</span> <span class="n">-Name</span> <span class="s2">&quot;webapp-prod&quot;</span> <span class="n">-PhysicalPath</span> <span class="s2">&quot;D:\webapp\prod\iis&quot;</span> <span class="n">-BindingInformation</span> <span class="s2">&quot;*:80:webapp.example.local&quot;</span>
+
+<span class="c"># 検証のサイト（http://webapp-stg.example.local/）</span>
+<span class="nb">New-IISSite</span> <span class="n">-Name</span> <span class="s2">&quot;webapp-stg&quot;</span> <span class="n">-PhysicalPath</span> <span class="s2">&quot;D:\webapp\stg\iis&quot;</span> <span class="n">-BindingInformation</span> <span class="s2">&quot;*:80:webapp-stg.example.local&quot;</span>
+
+<span class="nb">Get-IISSite</span>
+</code></pre></div></div>
+
+<p><strong>確かめること:</strong> <code>webapp-prod</code> と <code>webapp-stg</code> が <code>Started</code> で、<code>Default Web Site</code> が <code>Stopped</code> になっている。</p>
+<ul>
+<li>見本のサイトを止めておくと、IP アドレス（<code>http://10.20.30.40/</code>）や、登録していない名前で来たお願いには、何も出しません。</li>
+</ul>
+<p><strong>IIS がサイトのフォルダを読めるようにする:</strong> <code>D:\webapp</code> は 4.2 で管理者と SYSTEM だけにしたので、IIS のアプリケーション プール（IIS のサイトを動かすプロセス）が <code>web.config</code> を読めるように、<code>iis\</code> のフォルダにだけ許可を付けます。</p>
+<div class="codehilite"><div class="code-wrap" id="code-29"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># *S-1-5-32-568 は IIS_IUSRS（IIS のアプリケーション プールが入るグループ）</span>
+<span class="n">icacls</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">prod</span><span class="p">\</span><span class="n">iis</span> <span class="p">/</span><span class="n">grant</span> <span class="s2">&quot;*S-1-5-32-568:(OI)(CI)RX&quot;</span>
+<span class="n">icacls</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">stg</span><span class="p">\</span><span class="n">iis</span>  <span class="p">/</span><span class="n">grant</span> <span class="s2">&quot;*S-1-5-32-568:(OI)(CI)RX&quot;</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>用語:</strong> バインド（Binding：サイトと「どの IP・ポート・名前で受けるか」を結び付ける設定。<code>*:80:webapp.example.local</code> は「どの IP でも、80 番で、この名前で来たら、このサイト」）</p>
+</blockquote>
+<!-- -->
+
+<blockquote>
+<p><strong>用語:</strong> アプリケーション プール（IIS の中で、サイトを動かすプロセスのまとまり）</p>
+</blockquote>
+<h3 id="85-webconfig">8.5 取り次ぎのルール（web.config）を書く</h3>
+<p><code>D:\webapp\prod\iis\web.config</code> を、メモ帳で作ります。</p>
+<div class="codehilite"><div class="code-wrap" id="code-30"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="nt">&lt;configuration&gt;</span>
+<span class="w">  </span><span class="nt">&lt;system.webServer&gt;</span>
+<span class="w">    </span><span class="nt">&lt;rewrite&gt;</span>
+<span class="w">      </span><span class="nt">&lt;rules&gt;</span>
+<span class="w">        </span><span class="cm">&lt;!-- 来たお願いを全部、本番のアプリ（127.0.0.1:8080）へ取り次ぐ --&gt;</span>
+<span class="w">        </span><span class="nt">&lt;rule</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;to-webapp-prod&quot;</span><span class="w"> </span><span class="na">stopProcessing=</span><span class="s">&quot;true&quot;</span><span class="nt">&gt;</span>
+<span class="w">          </span><span class="nt">&lt;match</span><span class="w"> </span><span class="na">url=</span><span class="s">&quot;(.*)&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">          </span><span class="nt">&lt;action</span><span class="w"> </span><span class="na">type=</span><span class="s">&quot;Rewrite&quot;</span><span class="w"> </span><span class="na">url=</span><span class="s">&quot;http://127.0.0.1:8080/{R:1}&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">        </span><span class="nt">&lt;/rule&gt;</span>
+<span class="w">      </span><span class="nt">&lt;/rules&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/rewrite&gt;</span>
+<span class="w">    </span><span class="nt">&lt;security&gt;</span>
+<span class="w">      </span><span class="nt">&lt;requestFiltering&gt;</span>
+<span class="w">        </span><span class="cm">&lt;!-- 1 回に送れる大きさの上限（バイト）。100MB。理由は下の表 --&gt;</span>
+<span class="w">        </span><span class="nt">&lt;requestLimits</span><span class="w"> </span><span class="na">maxAllowedContentLength=</span><span class="s">&quot;104857600&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">      </span><span class="nt">&lt;/requestFiltering&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/security&gt;</span>
+<span class="w">  </span><span class="nt">&lt;/system.webServer&gt;</span>
+<span class="nt">&lt;/configuration&gt;</span>
+</code></pre></div></div>
+
+<p>検証の <code>D:\webapp\stg\iis\web.config</code> は、ルールの名前を <code>to-webapp-stg</code> に、行き先を <code>http://127.0.0.1:8081/{R:1}</code> にします。</p>
+<table>
+<thead>
+<tr>
+<th>部分</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;match url="(.*)" /&gt;</code></td>
+<td>どの URL でも当てはまる。<code>(.*)</code> の中身が <code>{R:1}</code> に入る</td>
+</tr>
+<tr>
+<td><code>&lt;action type="Rewrite" url="http://127.0.0.1:8080/{R:1}" /&gt;</code></td>
+<td>同じ道（パス）のまま、アプリへ取り次ぐ。<code>?</code> の後ろ（クエリ文字列）も、そのまま付く</td>
+</tr>
+<tr>
+<td><code>maxAllowedContentLength</code></td>
+<td>IIS が受け付ける、1 回の送信の大きさの上限。<strong>既定は約 28.6MB</strong>（30,000,000 バイト）</td>
+</tr>
+</tbody>
+</table>
+<p>送信の大きさの上限は、例のアプリの「添付ファイルは 1 ファイル 10MB まで、図面は 1 枚 5MB まで・1 件に 10 枚まで」から決めます。</p>
+<ul>
+<li>画面の作りによっては、1 回の送信に、何ファイルかがまとめて入ります。既定の約 28.6MB では足りないことがあるので、例では 100MB にしています。</li>
+<li><strong>1 ファイルごとの上限（10MB・5MB）は、アプリが確かめます。</strong> IIS の上限は「それより大きい物は、アプリに届く前に断る」ための、外側の柵です。</li>
+<li>上限を超えると、IIS は <code>404.13</code> を返します（アプリのログには何も出ません）。</li>
+<li><strong>アプリの側にも上限があります。</strong> Topcoat 0.11 は、決まりでは 2MB より大きい送信を <code>413</code> で断ります。添付ファイルや図面を受け取る画面だけ、<code>BodyLimit</code> で上限を上げます（webapp_learning の 08 後編の 5.3。練習アプリでは <code>/requests</code> の下だけ 60MB）。IIS の上限と、アプリの上限の、<strong>小さい方</strong>が効きます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> web.config（ウェブコンフィグ：IIS のサイトごとの設定を書く XML のファイル。サイトのフォルダに置く）</p>
+</blockquote>
+<!-- -->
+
+<blockquote>
+<p><strong>用語:</strong> パス（URL の、名前の後ろの <code>/requests/123</code> の部分）・クエリ文字列（URL の <code>?</code> の後ろの、<code>?page=2</code> のような部分）</p>
+</blockquote>
+<h3 id="86">8.6 社員のパソコンから開く</h3>
+<p>DNS に名前が登録されたら（情報システム部門の作業）、<strong>自分のパソコン</strong>で確かめます。</p>
+<div class="codehilite"><div class="code-wrap" id="code-31"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 自分のパソコンの PowerShell で</span>
+<span class="nb">Resolve-DnsName</span> <span class="n">webapp-stg</span><span class="p">.</span><span class="n">example</span><span class="p">.</span><span class="n">local</span>
+<span class="nb">Test-NetConnection</span> <span class="n">webapp-stg</span><span class="p">.</span><span class="n">example</span><span class="p">.</span><span class="n">local</span> <span class="n">-Port</span> <span class="n">80</span>
+</code></pre></div></div>
+
+<p><strong>確かめること:</strong></p>
+<ul>
+<li><code>Resolve-DnsName</code> で、サーバーの IP アドレス（例：<code>10.20.30.40</code>）が出る。</li>
+<li><code>Test-NetConnection</code> で、<code>TcpTestSucceeded : True</code> が出る。</li>
+<li>ブラウザ（Edge・Chrome）で <code>http://webapp-stg.example.local/health</code> を開くと、アプリの返事が出る。アドレス欄に「保護されていない通信」などと出るのは、HTTP なので正しい表示です。</li>
+<li>ログインして、ほかの画面へ移っても、ログインが続く（6.4 のクッキーの設定が効いている）。</li>
+</ul>
+<h2 id="9">9. ファイアウォール</h2>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/04-09_firewall_rules.webp" alt="社内からの80番、管理者のPCからの3389番、Microsoft 365への25番だけを通し、それ以外は止める" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図9-1: サーバーの関所で通す通信は 3 つだけ</div>
+</div>
+
+<p>社内からの HTTP（80 番）だけを受け付け、外向きは Microsoft 365 へのメール送信（25 番）だけを通すようにします。関所は2か所あります（00 基礎知識 4.3）。</p>
+<table>
+<thead>
+<tr>
+<th>関所</th>
+<th>誰が設定するか</th>
+<th>この章ですること</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ネットワークの途中の関所（会社の機器）</td>
+<td>情報システム部門</td>
+<td>依頼して、通ったかを確かめる</td>
+</tr>
+<tr>
+<td>サーバーの中の関所（Windows Defender ファイアウォール）</td>
+<td>自分（会社の決まりで、情報システム部門が配っていることもある）</td>
+<td>受信の 80 を社内からだけにする。ほかの入口を閉じる</td>
+</tr>
+</tbody>
+</table>
+<h3 id="91">9.1 今の状態を見る</h3>
+<div class="codehilite"><div class="code-wrap" id="code-32"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># どのプロファイル（ドメイン・プライベート・パブリック）で動いているか</span>
+<span class="nb">Get-NetConnectionProfile</span> <span class="p">|</span> <span class="nb">Format-Table</span> <span class="n">Name</span><span class="p">,</span> <span class="n">NetworkCategory</span>
+
+<span class="c"># 80 番・443 番の受信の決まりを探す（IIS を入れると、自動で作られることがある）</span>
+<span class="nb">Get-NetFirewallPortFilter</span> <span class="p">|</span> <span class="nb">Where-Object</span> <span class="p">{</span> <span class="nv">$_</span><span class="p">.</span><span class="n">LocalPort</span> <span class="n">-in</span> <span class="n">80</span><span class="p">,</span> <span class="n">443</span> <span class="p">}</span> <span class="p">|</span> <span class="nb">Get-NetFirewallRule</span> <span class="p">|</span>
+  <span class="nb">Format-Table</span> <span class="n">DisplayName</span><span class="p">,</span> <span class="n">Enabled</span><span class="p">,</span> <span class="n">Direction</span><span class="p">,</span> <span class="n">Action</span><span class="p">,</span> <span class="n">Profile</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>用語:</strong> プロファイル（Windows ファイアウォールの、場所ごとの決まりのまとまり。会社のドメインにつながっているときは「ドメイン」（DomainAuthenticated））</p>
+</blockquote>
+<h3 id="92">9.2 受信の決まりを作る</h3>
+<div class="codehilite"><div class="code-wrap" id="code-33"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 社内からの 80 番を通す（社内の IP の範囲は、情報システム部門に聞いて入れる。例：10.0.0.0/8）</span>
+<span class="nb">New-NetFirewallRule</span> <span class="n">-DisplayName</span> <span class="s2">&quot;webapp HTTP 80（社内から）&quot;</span> <span class="n">-Direction</span> <span class="n">Inbound</span> <span class="n">-Protocol</span> <span class="n">TCP</span> <span class="p">`</span>
+  <span class="n">-LocalPort</span> <span class="n">80</span> <span class="n">-RemoteAddress</span> <span class="n">10</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">/</span><span class="n">8</span> <span class="n">-Action</span> <span class="n">Allow</span> <span class="n">-Profile</span> <span class="n">Domain</span>
+
+<span class="c"># IIS が自動で作った、誰からでも 80・443 を通す決まりは、止める</span>
+<span class="nb">Get-NetFirewallPortFilter</span> <span class="p">|</span> <span class="nb">Where-Object</span> <span class="p">{</span> <span class="nv">$_</span><span class="p">.</span><span class="n">LocalPort</span> <span class="n">-in</span> <span class="n">80</span><span class="p">,</span> <span class="n">443</span> <span class="p">}</span> <span class="p">|</span> <span class="nb">Get-NetFirewallRule</span> <span class="p">|</span>
+  <span class="nb">Where-Object</span> <span class="p">{</span> <span class="nv">$_</span><span class="p">.</span><span class="n">DisplayName</span> <span class="o">-notlike</span> <span class="s2">&quot;webapp*&quot;</span> <span class="p">}</span> <span class="p">|</span> <span class="nb">Disable-NetFirewallRule</span>
+</code></pre></div></div>
+
+<ul>
+<li>リモート デスクトップ（3389 番）の決まりは、情報システム部門が決めていることが多いので、勝手に変えません。<strong>変えると、自分がサーバーに入れなくなることがあります。</strong></li>
+<li>外向き（送信）の決まりは、サーバーの中では止めません。サーバーの中で外向きを止めると、ドメインのサーバーとのやり取りや Windows Update まで止まってしまうためです。外向きの「Microsoft 365 への 25 番だけ」は、<strong>ネットワークの途中の関所</strong>で、情報システム部門が守ります。</li>
+</ul>
+<h3 id="93">9.3 外から見えてはいけない物が見えていないか</h3>
+<div class="codehilite"><div class="code-wrap" id="code-34"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># このサーバーで待ち受けているポートと住所の一覧</span>
+<span class="nb">Get-NetTCPConnection</span> <span class="n">-State</span> <span class="n">Listen</span> <span class="p">|</span> <span class="nb">Sort-Object</span> <span class="n">LocalPort</span> <span class="p">|</span>
+  <span class="nb">Format-Table</span> <span class="n">LocalAddress</span><span class="p">,</span> <span class="n">LocalPort</span><span class="p">,</span> <span class="n">OwningProcess</span> <span class="n">-AutoSize</span>
+</code></pre></div></div>
+
+<p><strong>確かめること:</strong></p>
+<ul>
+<li><code>5432</code>（PostgreSQL）・<code>8080</code>・<code>8081</code>（アプリ）の <code>LocalAddress</code> が、<code>127.0.0.1</code> か <code>::1</code> だけ。</li>
+<li><code>80</code> は <code>0.0.0.0</code> または <code>::</code>（全部の住所）で待ち受けている（IIS。これは正しい）。</li>
+<li>自分のパソコンから <code>Test-NetConnection 10.20.30.40 -Port 8080</code> を打って、<code>TcpTestSucceeded : False</code> になる（外からアプリに直接つながらない）。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> 0.0.0.0（「このコンピューターの全部の住所」を表す書き方。ここで待ち受けると、外からもつながる）</p>
+</blockquote>
+<h2 id="10-microsoft-365-smtp">10. メール（Microsoft 365 の SMTP リレー）</h2>
+<p>Microsoft 365 にコネクタと送信元アドレスを作ってもらい、アプリからテストのメールを送れるようにします。</p>
+<blockquote>
+<p><strong>用語:</strong> SMTP リレー（Microsoft 365 にメールの配達を任せる方式。00 基礎知識 8.2）</p>
+</blockquote>
+<h3 id="101">10.1 仕組みと、頼むこと</h3>
+<p>Microsoft の公式のドキュメントによると、SMTP リレーは次の条件で使えます（2026-10 時点）。</p>
+<ul>
+<li>アプリは、会社のドメインの <strong>MX エンドポイント</strong>（例：<code>example-com.mail.protection.outlook.com</code>）の <strong>25 番</strong>へ、SMTP でメールを渡す。</li>
+<li>Microsoft 365 の管理画面（Exchange 管理センター）に、<strong>コネクタ</strong>（送り元：組織のメールサーバー → 送り先：Office 365）を作る。送り主は、<strong>会社のインターネットの出口の、固定の公開 IP アドレス</strong>で見分ける（ほかの会社と共有していないもの）。</li>
+<li>送り主のアドレスは、会社が使っているドメインのアドレスなら、メールボックスが無くてもよい（例：<code>noreply@example.com</code>）。</li>
+<li>迷惑メールと判定されないように、ドメインの SPF に、出口の IP アドレスを書き足す。</li>
+</ul>
+<p>これらは全部、<strong>情報システム部門の作業</strong>です。頼む内容は、07 付録の依頼シートにまとめます。ID とパスワードで送る方式（SMTP 認証の基本認証）は、Microsoft が順に使えなくしていくと案内しているので、使いません。</p>
+<blockquote>
+<p><strong>用語:</strong> Exchange 管理センター（Microsoft 365 のメールの設定をする管理画面）</p>
+</blockquote>
+<!-- -->
+
+<blockquote>
+<p><strong>用語:</strong> 公開 IP アドレス（インターネットの上で使われる住所。会社の中の住所（10.… など）とは別。会社の出口の機器が、中の住所を公開 IP アドレスに置きかえて外に出す）</p>
+</blockquote>
+<h3 id="102">10.2 メールを渡す先へつながるか確かめる</h3>
+<div class="codehilite"><div class="code-wrap" id="code-35"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 会社のドメインの MX（メールの受付）を調べる。example.com は会社のドメインに置きかえる</span>
+<span class="nb">Resolve-DnsName</span> <span class="n">example</span><span class="p">.</span><span class="n">com</span> <span class="n">-Type</span> <span class="n">MX</span>
+
+<span class="c"># 調べた MX エンドポイントの 25 番に、サーバーからつながるか</span>
+<span class="nb">Test-NetConnection</span> <span class="n">example-com</span><span class="p">.</span><span class="n">mail</span><span class="p">.</span><span class="n">protection</span><span class="p">.</span><span class="n">outlook</span><span class="p">.</span><span class="n">com</span> <span class="n">-Port</span> <span class="n">25</span>
+</code></pre></div></div>
+
+<p><strong>確かめること:</strong></p>
+<ul>
+<li><code>Resolve-DnsName</code> の <code>NameExchange</code> に、<code>…mail.protection.outlook.com</code> が出る。</li>
+<li><code>Test-NetConnection</code> で <code>TcpTestSucceeded : True</code> が出る。<code>False</code> なら、ネットワークの途中の関所で 25 番が通っていない（情報システム部門に確かめる）。</li>
+</ul>
+<h3 id="103">10.3 テストのメールを送る</h3>
+<p><strong>まず、アプリを使わずに送ってみます。</strong> うまくいかないとき、「アプリの不具合か、メールの道の問題か」を分けられるからです。PowerShell 5.1 の <code>Send-MailMessage</code> は、古い道具として「使わないように」と案内されていますが、つながるかの試しには使えます。</p>
+<div class="codehilite"><div class="code-wrap" id="code-36"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">Send-MailMessage</span> <span class="n">-SmtpServer</span> <span class="n">example-com</span><span class="p">.</span><span class="n">mail</span><span class="p">.</span><span class="n">protection</span><span class="p">.</span><span class="n">outlook</span><span class="p">.</span><span class="n">com</span> <span class="n">-Port</span> <span class="n">25</span> <span class="n">-UseSsl</span> <span class="p">`</span>
+  <span class="n">-From</span> <span class="s2">&quot;noreply@example.com&quot;</span> <span class="n">-To</span> <span class="s2">&quot;自分の会社のアドレス&quot;</span> <span class="p">`</span>
+  <span class="n">-Subject</span> <span class="s2">&quot;業務 Web アプリ 送信テスト&quot;</span> <span class="n">-Body</span> <span class="s2">&quot;サーバーからの送信テストです。&quot;</span> <span class="n">-Encoding</span> <span class="n">UTF8</span>
+</code></pre></div></div>
+
+<p><strong>確かめること:</strong> 自分の Outlook に、迷惑メールのフォルダではなく、受信トレイに届く。</p>
+<p>うまくいったら、次に<strong>アプリから</strong>送ります（設計例：管理者の設定の画面に「テストメールを送る」ボタンを用意する。または管理用のコマンド）。</p>
+<p><strong>よくある失敗:</strong></p>
+<table>
+<thead>
+<tr>
+<th>出る文（例）</th>
+<th>考えられる原因</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TcpTestSucceeded : False</code>、または「接続できませんでした」</td>
+<td>25 番が、ネットワークの途中の関所で止められている</td>
+</tr>
+<tr>
+<td><code>550 5.7.64 TenantAttribution; Relay Access Denied</code></td>
+<td>コネクタが無い、またはコネクタの IP アドレスと、会社の出口の IP アドレスが違う</td>
+</tr>
+<tr>
+<td>届くが、迷惑メールのフォルダに入る</td>
+<td>SPF に、出口の IP アドレスが書かれていない</td>
+</tr>
+</tbody>
+</table>
+<h3 id="104">10.4 検証のメールを、社員に送らない</h3>
+<p>検証環境で、本物の社員に「承認のお願い」が届くと、混乱します。</p>
+<blockquote>
+<p><strong>設計例:</strong> <code>APP_ENV=staging</code> のときは、<code>MAIL_REDIRECT_TO</code> の宛先だけに送り、件名の頭に <code>【検証】</code> を付ける。本来の宛先は本文の先頭に書く。</p>
+</blockquote>
+<h2 id="11_1">11. 毎晩のバックアップ</h2>
+<h3 id="111">11.1 何を、どこに、どれだけ残すか</h3>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/04-10_backup_script.webp" alt="毎晩2:00にpg_dumpでDBの控え、robocopyでファイルの控えを取り、別の場所へ写し、古い控えは消す" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図11-1: 毎晩のバックアップの流れ</div>
+</div>
+
+<table>
+<thead>
+<tr>
+<th>何を</th>
+<th>どうやって</th>
+<th>どこに</th>
+<th>どれだけ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>本番のデータベース</td>
+<td><code>pg_dump</code> で 1 つのファイルに書き出す</td>
+<td><code>D:\webapp\backup\db\</code> と、別の場所</td>
+<td>14 日分</td>
+</tr>
+<tr>
+<td>本番の添付ファイル</td>
+<td><code>robocopy</code> で写す（消された物は消さずに残す）</td>
+<td><code>D:\webapp\backup\files\current\</code> と、別の場所</td>
+<td>全部（下の説明）</td>
+</tr>
+<tr>
+<td>バックアップの記録</td>
+<td>実行の記録を書く</td>
+<td><code>D:\webapp\backup\logs\</code></td>
+<td>14 日分</td>
+</tr>
+</tbody>
+</table>
+<p><strong>添付ファイルを「毎日まるごと 14 回分」写さない理由:</strong> 添付ファイルは 5 年分たまるので、毎日まるごと写すと、14 倍の場所が要ります。</p>
+<blockquote>
+<p><strong>設計例:</strong> アプリは、添付ファイルを上書きせず、いつも新しい名前で保存する。消すときも、データベースの印を変えるだけで、ファイルはすぐには消さない。</p>
+</blockquote>
+<p>この作りなら、「写し先から消さずに、新しいファイルを足していく」だけで、どの日のデータベースに戻しても、そのとき使っていた添付ファイルが全部そろいます。データベースは 14 日分の控えがあるので、「14 日のうちのどの日にも戻せる」状態になります。</p>
+<p><strong>別の場所にも写す理由:</strong> 同じサーバーの中だけに控えを置くと、サーバーやディスクが壊れたときに、本物と控えを一緒に失います。仮想マシンのスナップショットも、バックアップの代わりにはなりません（00 基礎知識 9.2）。</p>
+<blockquote>
+<p><strong>用語:</strong> pg_dump（ピージーダンプ：PostgreSQL のデータベースの中身を、1 つのファイルに書き出す道具。<code>-Fc</code> は、小さくまとめた PostgreSQL 専用の形（あとで <code>pg_restore</code> で戻す））</p>
+</blockquote>
+<!-- -->
+
+<blockquote>
+<p><strong>用語:</strong> robocopy（ロボコピー：Windows に付いている、フォルダを丸ごと、途中で切れても続けて写せる道具。終了コードが 8 より小さければ成功）</p>
+</blockquote>
+<h3 id="112">11.2 パスワードのファイルを作る</h3>
+<p>バックアップは、人がいない夜中に動くので、データベースのパスワードを打てません。PostgreSQL の決まりのパスワードのファイル（pgpass）に書いておき、そのファイルを読めるのを管理者と SYSTEM だけにします。</p>
+<p><code>D:\webapp\secrets\pgpass.conf</code> を、メモ帳で作ります（1 行。<code>住所:ポート:データベース:ユーザー:パスワード</code>）。</p>
+<div class="codehilite"><div class="code-wrap" id="code-37"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>127.0.0.1:5432:webapp_prod:webapp_prod_app:（本番のアプリ用のパスワード）
+</code></pre></div></div>
+
+<p><code>D:\webapp\secrets</code> は、4.2 で管理者と SYSTEM だけになっています。念のため確かめます。</p>
+<div class="codehilite"><div class="code-wrap" id="code-38"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">icacls</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">secrets</span><span class="p">\</span><span class="n">pgpass</span><span class="p">.</span><span class="n">conf</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>用語:</strong> pgpass（ピージーパス：PostgreSQL の道具が、パスワードを打たずにつなぐために読むファイル。環境変数 <code>PGPASSFILE</code> で場所を教える）</p>
+</blockquote>
+<h3 id="113">11.3 バックアップのスクリプト</h3>
+<p><code>D:\webapp\tools\backup.ps1</code> を、メモ帳で作ります。</p>
+<blockquote>
+<p><strong>必ず「UTF-8 (BOM 付き)」で保存します。</strong> メモ帳の「名前を付けて保存」の画面の下の「エンコード」で、「UTF-8 (BOM 付き)」を選びます。Windows PowerShell 5.1 は、BOM（ファイルの先頭の印）の無い UTF-8 のファイルを Shift_JIS として読むため、日本語のコメントの所で行の区切りが食われて、<strong>スクリプトが丸ごと動きません</strong>（このスクリプトを BOM 無しで保存して試すと、構文エラーが 2 つ出て、終了コード 1 で止まりました）。保存したら、次で確かめます。</p>
+<p>```powershell</p>
+<h1 id="3-239-187-191-bom">先頭の 3 つの数が 239 187 191 なら BOM 付き</h1>
+<p>(Get-Content D:\webapp\tools\backup.ps1 -Encoding Byte -TotalCount 3) -join ' '
+```</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-39"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># D:\webapp\tools\backup.ps1</span>
+<span class="c"># 毎晩、本番のデータベースと添付ファイルの控えを取り、別の場所へも写し、14 日より古い控えを消す。</span>
+<span class="c"># 失敗したら、終了コード 1 で終わる（タスク スケジューラの「前回の実行結果」で分かる）。</span>
+
+<span class="nv">$ErrorActionPreference</span> <span class="p">=</span> <span class="s2">&quot;Stop&quot;</span>
+<span class="nv">$stamp</span>   <span class="p">=</span> <span class="nb">Get-Date</span> <span class="n">-Format</span> <span class="s2">&quot;yyyyMMdd_HHmm&quot;</span>
+<span class="nv">$keepDay</span> <span class="p">=</span> <span class="n">14</span>
+<span class="nv">$pgBin</span>   <span class="p">=</span> <span class="s2">&quot;C:\Program Files\PostgreSQL\18\bin&quot;</span>
+<span class="nv">$root</span>    <span class="p">=</span> <span class="s2">&quot;D:\webapp\backup&quot;</span>
+<span class="nv">$share</span>   <span class="p">=</span> <span class="s2">&quot;\\fileserver\backup\webapp&quot;</span>   <span class="c"># 別の場所（例）。情報システム部門に用意してもらう</span>
+<span class="nv">$env:PGPASSFILE</span> <span class="p">=</span> <span class="s2">&quot;D:\webapp\secrets\pgpass.conf&quot;</span>
+
+<span class="nb">Start-Transcript</span> <span class="n">-Path</span> <span class="p">(</span><span class="nb">Join-Path</span> <span class="nv">$root</span> <span class="s2">&quot;logs\backup_$stamp.log&quot;</span><span class="p">)</span> <span class="p">|</span> <span class="nb">Out-Null</span>
+<span class="k">try</span> <span class="p">{</span>
+    <span class="c"># 1. データベース（本番）を 1 つのファイルに書き出す</span>
+    <span class="nv">$dump</span> <span class="p">=</span> <span class="nb">Join-Path</span> <span class="nv">$root</span> <span class="s2">&quot;db\webapp_prod_$stamp.dump&quot;</span>
+    <span class="p">&amp;</span> <span class="s2">&quot;$pgBin\pg_dump.exe&quot;</span> <span class="n">-h</span> <span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span> <span class="n">-U</span> <span class="n">webapp_prod_app</span> <span class="n">-d</span> <span class="n">webapp_prod</span> <span class="n">-Fc</span> <span class="o">-f</span> <span class="nv">$dump</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nv">$LASTEXITCODE</span> <span class="o">-ne</span> <span class="n">0</span><span class="p">)</span> <span class="p">{</span> <span class="k">throw</span> <span class="s2">&quot;pg_dump が失敗しました（終了コード $LASTEXITCODE）&quot;</span> <span class="p">}</span>
+
+    <span class="c"># 2. 添付ファイル（本番）を写す。/E は中のフォルダも全部。/MIR は使わない（消された物を消さない）</span>
+    <span class="n">robocopy</span> <span class="s2">&quot;D:\webapp\prod\files&quot;</span> <span class="p">(</span><span class="nb">Join-Path</span> <span class="nv">$root</span> <span class="s2">&quot;files\current&quot;</span><span class="p">)</span> <span class="p">/</span><span class="n">E</span> <span class="p">/</span><span class="n">R</span><span class="p">:</span><span class="n">2</span> <span class="p">/</span><span class="n">W</span><span class="p">:</span><span class="n">5</span> <span class="p">/</span><span class="n">NP</span> <span class="p">/</span><span class="n">NFL</span> <span class="p">/</span><span class="n">NDL</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nv">$LASTEXITCODE</span> <span class="o">-ge</span> <span class="n">8</span><span class="p">)</span> <span class="p">{</span> <span class="k">throw</span> <span class="s2">&quot;robocopy（添付ファイル）が失敗しました（終了コード $LASTEXITCODE）&quot;</span> <span class="p">}</span>
+
+    <span class="c"># 3. 別の場所へ写す</span>
+    <span class="n">robocopy</span> <span class="p">(</span><span class="nb">Join-Path</span> <span class="nv">$root</span> <span class="s2">&quot;db&quot;</span><span class="p">)</span> <span class="p">(</span><span class="nb">Join-Path</span> <span class="nv">$share</span> <span class="s2">&quot;db&quot;</span><span class="p">)</span> <span class="s2">&quot;webapp_prod_$stamp.dump&quot;</span> <span class="p">/</span><span class="n">R</span><span class="p">:</span><span class="n">2</span> <span class="p">/</span><span class="n">W</span><span class="p">:</span><span class="n">5</span> <span class="p">/</span><span class="n">NP</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nv">$LASTEXITCODE</span> <span class="o">-ge</span> <span class="n">8</span><span class="p">)</span> <span class="p">{</span> <span class="k">throw</span> <span class="s2">&quot;robocopy（別の場所・DB）が失敗しました（終了コード $LASTEXITCODE）&quot;</span> <span class="p">}</span>
+    <span class="n">robocopy</span> <span class="p">(</span><span class="nb">Join-Path</span> <span class="nv">$root</span> <span class="s2">&quot;files\current&quot;</span><span class="p">)</span> <span class="p">(</span><span class="nb">Join-Path</span> <span class="nv">$share</span> <span class="s2">&quot;files&quot;</span><span class="p">)</span> <span class="p">/</span><span class="n">E</span> <span class="p">/</span><span class="n">R</span><span class="p">:</span><span class="n">2</span> <span class="p">/</span><span class="n">W</span><span class="p">:</span><span class="n">5</span> <span class="p">/</span><span class="n">NP</span> <span class="p">/</span><span class="n">NFL</span> <span class="p">/</span><span class="n">NDL</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nv">$LASTEXITCODE</span> <span class="o">-ge</span> <span class="n">8</span><span class="p">)</span> <span class="p">{</span> <span class="k">throw</span> <span class="s2">&quot;robocopy（別の場所・添付）が失敗しました（終了コード $LASTEXITCODE）&quot;</span> <span class="p">}</span>
+
+    <span class="c"># 4. 14 日より古い控えを消す（このサーバーと、別の場所）</span>
+    <span class="nv">$limit</span> <span class="p">=</span> <span class="p">(</span><span class="nb">Get-Date</span><span class="p">).</span><span class="n">AddDays</span><span class="p">(-</span><span class="nv">$keepDay</span><span class="p">)</span>
+    <span class="k">foreach</span> <span class="p">(</span><span class="nv">$dir</span> <span class="k">in</span> <span class="p">@((</span><span class="nb">Join-Path</span> <span class="nv">$root</span> <span class="s2">&quot;db&quot;</span><span class="p">),</span> <span class="p">(</span><span class="nb">Join-Path</span> <span class="nv">$share</span> <span class="s2">&quot;db&quot;</span><span class="p">)))</span> <span class="p">{</span>
+        <span class="nb">Get-ChildItem</span> <span class="nv">$dir</span> <span class="n">-Filter</span> <span class="s2">&quot;webapp_prod_*.dump&quot;</span> <span class="p">|</span> <span class="nb">Where-Object</span> <span class="p">{</span> <span class="nv">$_</span><span class="p">.</span><span class="n">LastWriteTime</span> <span class="o">-lt</span> <span class="nv">$limit</span> <span class="p">}</span> <span class="p">|</span> <span class="nb">Remove-Item</span>
+    <span class="p">}</span>
+    <span class="nb">Get-ChildItem</span> <span class="p">(</span><span class="nb">Join-Path</span> <span class="nv">$root</span> <span class="s2">&quot;logs&quot;</span><span class="p">)</span> <span class="n">-Filter</span> <span class="s2">&quot;backup_*.log&quot;</span> <span class="p">|</span> <span class="nb">Where-Object</span> <span class="p">{</span> <span class="nv">$_</span><span class="p">.</span><span class="n">LastWriteTime</span> <span class="o">-lt</span> <span class="nv">$limit</span> <span class="p">}</span> <span class="p">|</span> <span class="nb">Remove-Item</span>
+
+    <span class="nb">Write-Output</span> <span class="s2">&quot;OK: $dump&quot;</span>
+    <span class="nb">Stop-Transcript</span> <span class="p">|</span> <span class="nb">Out-Null</span>
+    <span class="n">exit</span> <span class="n">0</span>
+<span class="p">}</span>
+<span class="k">catch</span> <span class="p">{</span>
+    <span class="nb">Write-Output</span> <span class="s2">&quot;NG: $_&quot;</span>
+    <span class="nb">Stop-Transcript</span> <span class="p">|</span> <span class="nb">Out-Null</span>
+    <span class="n">exit</span> <span class="n">1</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>部分</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>$ErrorActionPreference = "Stop"</code></td>
+<td>PowerShell のコマンドが失敗したら、そこで止めて <code>catch</code> へ進む</td>
+</tr>
+<tr>
+<td><code>$LASTEXITCODE</code></td>
+<td>直前に動かしたプログラム（<code>pg_dump</code>・<code>robocopy</code>）の終了コード</td>
+</tr>
+<tr>
+<td><code>Start-Transcript</code></td>
+<td>この窓に出た文を、全部ファイルに書く（あとで何が起きたかを見る）</td>
+</tr>
+<tr>
+<td><code>robocopy</code> の <code>/R:2 /W:5</code></td>
+<td>失敗したら 5 秒待って 2 回までやり直す</td>
+</tr>
+<tr>
+<td><code>robocopy</code> の <code>/NP /NFL /NDL</code></td>
+<td>進み具合・ファイル名・フォルダ名を記録に出さない（記録が大きくなりすぎないように）</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>用語:</strong> 終了コード（プログラムが終わるときに返す番号。ふつう 0 が成功。robocopy だけは 0〜7 が成功、8 以上が失敗）</p>
+</blockquote>
+<h3 id="114">11.4 タスク スケジューラに登録する</h3>
+<div class="codehilite"><div class="code-wrap" id="code-40"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nv">$action</span>    <span class="p">=</span> <span class="nb">New-ScheduledTaskAction</span> <span class="n">-Execute</span> <span class="s2">&quot;powershell.exe&quot;</span> <span class="p">`</span>
+               <span class="n">-Argument</span> <span class="s1">&#39;-NoProfile -ExecutionPolicy Bypass -File &quot;D:\webapp\tools\backup.ps1&quot;&#39;</span>
+<span class="nv">$trigger</span>   <span class="p">=</span> <span class="nb">New-ScheduledTaskTrigger</span> <span class="n">-Daily</span> <span class="n">-At</span> <span class="s2">&quot;02:00&quot;</span>
+<span class="nv">$principal</span> <span class="p">=</span> <span class="nb">New-ScheduledTaskPrincipal</span> <span class="n">-UserId</span> <span class="s2">&quot;SYSTEM&quot;</span> <span class="n">-LogonType</span> <span class="n">ServiceAccount</span> <span class="n">-RunLevel</span> <span class="n">Highest</span>
+<span class="nv">$settings</span>  <span class="p">=</span> <span class="nb">New-ScheduledTaskSettingsSet</span> <span class="n">-ExecutionTimeLimit</span> <span class="p">(</span><span class="nb">New-TimeSpan</span> <span class="n">-Hours</span> <span class="n">2</span><span class="p">)</span> <span class="n">-StartWhenAvailable</span>
+
+<span class="nb">Register-ScheduledTask</span> <span class="n">-TaskPath</span> <span class="s2">&quot;\webapp\&quot;</span> <span class="n">-TaskName</span> <span class="s2">&quot;webapp-backup&quot;</span> <span class="n">-Action</span> <span class="nv">$action</span> <span class="n">-Trigger</span> <span class="nv">$trigger</span> <span class="p">`</span>
+  <span class="n">-Principal</span> <span class="nv">$principal</span> <span class="n">-Settings</span> <span class="nv">$settings</span> <span class="n">-Description</span> <span class="s2">&quot;業務 Web アプリ 毎晩のバックアップ（本番）&quot;</span>
+
+<span class="c"># 今すぐ 1 回動かして、結果を見る</span>
+<span class="nb">Start-ScheduledTask</span> <span class="n">-TaskPath</span> <span class="s2">&quot;\webapp\&quot;</span> <span class="n">-TaskName</span> <span class="s2">&quot;webapp-backup&quot;</span>
+<span class="nb">Get-ScheduledTaskInfo</span> <span class="n">-TaskPath</span> <span class="s2">&quot;\webapp\&quot;</span> <span class="n">-TaskName</span> <span class="s2">&quot;webapp-backup&quot;</span> <span class="p">|</span> <span class="nb">Format-List</span> <span class="n">LastRunTime</span><span class="p">,</span> <span class="n">LastTaskResult</span><span class="p">,</span> <span class="n">NextRunTime</span>
+</code></pre></div></div>
+
+<p><strong>確かめること:</strong></p>
+<ul>
+<li><code>LastTaskResult</code> が <code>0</code>（成功）。動いている途中は <code>267009</code> が出るので、少し待って打ち直す。</li>
+<li><code>D:\webapp\backup\db\</code> に <code>.dump</code> のファイルができ、別の場所にも同じファイルがある。</li>
+<li>
+<p><code>D:\webapp\backup\logs\</code> の記録の最後に <code>OK:</code> が出ている。</p>
+</li>
+<li>
+<p><code>SYSTEM</code> で動かすので、<strong>別の場所（共有フォルダ）には、このサーバーのコンピューターのアカウント</strong>（<code>ドメイン名\WEBAPP-SV01$</code> のような名前）で書き込みます。共有フォルダの許可を、情報システム部門に付けてもらいます。</p>
+</li>
+<li><code>-StartWhenAvailable</code> は、2:00 にサーバーが止まっていたら、動き出したあとで実行する設定です。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> タスク スケジューラ（決まった時刻にコマンドを動かす Windows の機能。00 基礎知識 9.3）</p>
+</blockquote>
+<!-- -->
+
+<blockquote>
+<p><strong>用語:</strong> 実行ポリシー（ExecutionPolicy：PowerShell のスクリプトを動かしてよいかの決まり。<code>-ExecutionPolicy Bypass</code> は、このときだけ決まりを気にせず動かす。会社の決まりで禁止されているときは、情報システム部門と相談する）</p>
+</blockquote>
+<h3 id="115">11.5 戻せることを確かめる（リストアの練習）</h3>
+<p><strong>バックアップは、戻せることを確かめて、初めて意味があります。</strong> 最初に設定したときと、その後も定期的に（例：3 か月に 1 回）練習します。本番のデータベースは変えずに、<strong>練習用のデータベース</strong>に戻します。</p>
+<div class="codehilite"><div class="code-wrap" id="code-41"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nv">$env:Path</span> <span class="p">+=</span> <span class="s2">&quot;;C:\Program Files\PostgreSQL\18\bin&quot;</span>
+<span class="nv">$dump</span> <span class="p">=</span> <span class="p">(</span><span class="nb">Get-ChildItem</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">backup</span><span class="p">\</span><span class="n">db</span><span class="p">\</span><span class="n">webapp_prod_</span><span class="p">*.</span><span class="n">dump</span> <span class="p">|</span> <span class="nb">Sort-Object</span> <span class="n">LastWriteTime</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">-Last</span> <span class="n">1</span><span class="p">).</span><span class="n">FullName</span>
+
+<span class="c"># 練習用のデータベースを作り、控えを戻す（スーパーユーザーで）</span>
+<span class="n">psql</span> <span class="n">-h</span> <span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span> <span class="n">-U</span> <span class="n">postgres</span> <span class="n">-c</span> <span class="s2">&quot;CREATE DATABASE webapp_restore_test ENCODING &#39;UTF8&#39; TEMPLATE template0;&quot;</span>
+<span class="n">pg_restore</span> <span class="n">-h</span> <span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span> <span class="n">-U</span> <span class="n">postgres</span> <span class="n">-d</span> <span class="n">webapp_restore_test</span> <span class="p">-</span><span class="n">-no-owner</span> <span class="p">-</span><span class="n">-no-privileges</span> <span class="nv">$dump</span>
+
+<span class="c"># 中身を見る（テーブルの名前はアプリの作りによる。例：依頼書のテーブル）</span>
+<span class="n">psql</span> <span class="n">-h</span> <span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span> <span class="n">-U</span> <span class="n">postgres</span> <span class="n">-d</span> <span class="n">webapp_restore_test</span> <span class="n">-c</span> <span class="s2">&quot;\dt&quot;</span>
+
+<span class="c"># 練習が終わったら消す</span>
+<span class="n">psql</span> <span class="n">-h</span> <span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span> <span class="n">-U</span> <span class="n">postgres</span> <span class="n">-c</span> <span class="s2">&quot;DROP DATABASE webapp_restore_test;&quot;</span>
+</code></pre></div></div>
+
+<p><strong>確かめること:</strong> <code>pg_restore</code> がエラー無しで終わり、テーブルの一覧と、件数（<code>SELECT count(*) FROM テーブル名;</code>）が本番と同じくらいになっている。</p>
+<blockquote>
+<p><strong>用語:</strong> pg_restore（ピージーリストア：<code>pg_dump -Fc</code> で書き出したファイルを、データベースに戻す道具）</p>
+</blockquote>
+<h2 id="12_1">12. 定期処理・ログ・監視</h2>
+<h3 id="121-800">12.1 毎朝 8:00 の処理</h3>
+<p>例のアプリでは、毎朝 8:00 の「期限のフォロー・承認の停滞・催促」の判定とメール送信を、<strong>アプリの中の定期処理</strong>として動かします。サーバーの側でする設定はありませんが、次のことに気を付けます。</p>
+<ul>
+<li>サーバーの時刻とタイムゾーンが正しいこと（3.3・3.4）。</li>
+<li>8:00 にアプリが止まっていると、その日の処理が動かない。<strong>設計例:</strong> アプリは、起動したときに「今日の 8:00 の処理が済んでいるか」を見て、済んでいなければ実行する。</li>
+<li>Windows Update の再起動の時間を、8:00 の前後に重ねない。</li>
+<li>検証環境でも同じ処理が動く。検証のメールは決まった宛先だけに送る（10.4）。</li>
+</ul>
+<h3 id="122">12.2 ログの場所と、たまりすぎを防ぐ</h3>
+<table>
+<thead>
+<tr>
+<th>ログ</th>
+<th>場所</th>
+<th>たまりすぎを防ぐ方法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>アプリ（WinSW が受け取った出力）</td>
+<td><code>D:\webapp\prod\logs\</code></td>
+<td>WinSW の <code>roll-by-size</code>（10MB ごと・8 個まで。7.3）</td>
+</tr>
+<tr>
+<td>IIS のアクセスログ</td>
+<td><code>C:\inetpub\logs\LogFiles\W3SVC（番号）\</code></td>
+<td>自動では消えない。下のタスクで、90 日より古い物を消す（期間は会社の決まりに合わせる）</td>
+</tr>
+<tr>
+<td>PostgreSQL</td>
+<td><code>D:\pgsql\18\data\log\</code></td>
+<td>既定で日ごとに分かれる。たまり具合を月に 1 回見る</td>
+</tr>
+<tr>
+<td>バックアップ</td>
+<td><code>D:\webapp\backup\logs\</code></td>
+<td>backup.ps1 が 14 日より古い物を消す</td>
+</tr>
+<tr>
+<td>Windows</td>
+<td>イベント ビューアー（<code>eventvwr.msc</code>）</td>
+<td>Windows が大きさの上限で管理する</td>
+</tr>
+</tbody>
+</table>
+<p>IIS のログを消すタスク（例）:</p>
+<div class="codehilite"><div class="code-wrap" id="code-42"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 90 日より古い IIS のログを消すコマンド（長いので 2 つに分けて + でつなぐ）</span>
+<span class="nv">$clean</span> <span class="p">=</span> <span class="s1">&#39;Get-ChildItem C:\inetpub\logs\LogFiles -Recurse -Filter *.log | &#39;</span> <span class="p">+</span>
+         <span class="s1">&#39;Where-Object { $_.LastWriteTime -lt (Get-Date).AddDays(-90) } | Remove-Item&#39;</span>
+<span class="nv">$action</span> <span class="p">=</span> <span class="nb">New-ScheduledTaskAction</span> <span class="n">-Execute</span> <span class="s2">&quot;powershell.exe&quot;</span> <span class="n">-Argument</span> <span class="s2">&quot;-NoProfile -Command </span><span class="se">`&quot;</span><span class="s2">$clean</span><span class="se">`&quot;</span><span class="s2">&quot;</span>
+<span class="nb">Register-ScheduledTask</span> <span class="n">-TaskPath</span> <span class="s2">&quot;\webapp\&quot;</span> <span class="n">-TaskName</span> <span class="s2">&quot;iis-log-cleanup&quot;</span> <span class="n">-Action</span> <span class="nv">$action</span> <span class="p">`</span>
+  <span class="n">-Trigger</span> <span class="p">(</span><span class="nb">New-ScheduledTaskTrigger</span> <span class="n">-Daily</span> <span class="n">-At</span> <span class="s2">&quot;03:00&quot;</span><span class="p">)</span> <span class="p">`</span>
+  <span class="n">-Principal</span> <span class="p">(</span><span class="nb">New-ScheduledTaskPrincipal</span> <span class="n">-UserId</span> <span class="s2">&quot;SYSTEM&quot;</span> <span class="n">-LogonType</span> <span class="n">ServiceAccount</span> <span class="n">-RunLevel</span> <span class="n">Highest</span><span class="p">)</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>用語:</strong> アクセスログ（IIS が、来たお願いを 1 件 1 行で書く記録。いつ・どこから・どの URL に・どんな結果（ステータスコード）だったか）</p>
+</blockquote>
+<!-- -->
+
+<blockquote>
+<p><strong>用語:</strong> イベント ビューアー（Windows 自身と、サービスの記録を見る画面。サービスが起動しなかった理由などが出る）</p>
+</blockquote>
+<h3 id="123">12.3 監視</h3>
+<p>「エラーを記録し、重大なエラーのときは IT 担当者へメールで知らせる」のは、アプリの機能です（設計例）。それに加えて、<strong>アプリが止まっていることには、アプリ自身では気づけない</strong>ので、外から見張ります。</p>
+<table>
+<thead>
+<tr>
+<th>何を見るか</th>
+<th>どうやって</th>
+<th>どれくらいの間隔</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>アプリが返事をするか</td>
+<td>会社の監視の仕組み（あれば）か、タスク スケジューラで <code>http://webapp.example.local/health</code> を開く</td>
+<td>5 分ごとなど</td>
+</tr>
+<tr>
+<td>サービスが動いているか</td>
+<td><code>Get-Service webapp-prod, webapp-stg, postgresql-x64-18, W3SVC</code></td>
+<td>毎朝の点検</td>
+</tr>
+<tr>
+<td>ディスクの空き</td>
+<td><code>Get-Volume</code></td>
+<td>週に 1 回。空きが 20% を切ったら、増やす相談をする</td>
+</tr>
+<tr>
+<td>バックアップが成功したか</td>
+<td><code>Get-ScheduledTaskInfo</code> の <code>LastTaskResult</code></td>
+<td>毎朝の点検</td>
+</tr>
+</tbody>
+</table>
+<p>会社に監視の仕組み（Zabbix・System Center など）があれば、情報システム部門に、<code>/health</code> とサービスとディスクの見張りを頼むのが一番確かです。</p>
+<blockquote>
+<p><strong>用語:</strong> 監視（システムが正しく動いているかを、決まった間隔で確かめ、おかしいときに人に知らせること）</p>
+</blockquote>
+<!-- -->
+
+<blockquote>
+<p><strong>用語:</strong> W3SVC（IIS の、Web を受け付ける本体のサービスの名前。World Wide Web 発行サービス）</p>
+</blockquote>
+<h2 id="13_1">13. 動作確認・本番の開始・更新・切り戻し</h2>
+<h3 id="131">13.1 検証環境で一通り確かめる</h3>
+<p>本番を始める前に、検証環境で、ログイン・依頼・承認のメール・図面の保存・問い合わせなど、主な使い方を一通り確かめます。確かめる項目は、07 付録の「動作確認のチェック表」にまとめます。</p>
+<ul>
+<li>社員のパソコン（Edge と Chrome）から、<code>http://webapp-stg.example.local/</code> を開いて確かめます。</li>
+<li>承認メールの URL を開くところまで確かめます（メールの URL の名前が、検証の名前になっているか）。</li>
+<li>5MB に近い図面を保存できるか、10MB に近い添付ファイルを送れるかを確かめます（8.5 の上限）。</li>
+<li>サービスを止めて起動し直す、サーバーを再起動する、のあとに、自動で動き出すかを確かめます。</li>
+</ul>
+<h3 id="132">13.2 本番を始める</h3>
+<ol>
+<li>検証と同じ手順で、本番を設定します（5.5 の本番の分、7 章、8 章の本番のサイトは済んでいる前提）。</li>
+<li>本番の社員データを取り込みます（7.7）。</li>
+<li>本番の URL（<code>http://webapp.example.local/</code>）を、社員に案内します。ほかのサービスと同じパスワードを使い回さないことも、あわせて案内します（00 基礎知識 6.2）。</li>
+</ol>
+<h3 id="133-2">13.3 更新の手順（2 回目以降）</h3>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/04-08_update_rollback.webp" alt="止める、入れ替える、表を直す、始める、確かめる。だめなら前の版に切り戻す" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図13-1: 更新の 4 つの手順と、切り戻し</div>
+</div>
+
+<p>更新は、①検証で確かめる、②本番を止めてバックアップを取る、③入れ替える、④再開して確かめる、の 4 段で行います。例は、版 1.0.0 から 1.1.0 への更新です。</p>
+<p><strong>① 検証で確かめる</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-43"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 受け取った新しい版を確かめる</span>
+<span class="nb">Get-FileHash</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">releases</span><span class="p">\</span><span class="n">webapp</span><span class="p">-</span><span class="n">1</span><span class="p">.</span><span class="n">1</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">zip</span> <span class="n">-Algorithm</span> <span class="n">SHA256</span>
+
+<span class="c"># 検証のアプリを入れ替える</span>
+<span class="nb">Stop-Service</span> <span class="n">webapp-stg</span>
+<span class="nb">Rename-Item</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">stg</span><span class="p">\</span><span class="n">app</span> <span class="n">app-prev</span><span class="p">-</span><span class="n">1</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span>
+<span class="nb">Expand-Archive</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">releases</span><span class="p">\</span><span class="n">webapp</span><span class="p">-</span><span class="n">1</span><span class="p">.</span><span class="n">1</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">zip</span> <span class="n">-DestinationPath</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">stg</span><span class="p">\</span><span class="n">app</span>
+<span class="nb">Start-Service</span> <span class="n">webapp-stg</span>
+<span class="nb">Invoke-WebRequest</span> <span class="n">http</span><span class="p">://</span><span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span><span class="p">:</span><span class="n">8081</span><span class="p">/</span><span class="n">health</span> <span class="n">-UseBasicParsing</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">StatusCode</span>
+</code></pre></div></div>
+
+<p>検証で、変わった所と、主な画面（13.1 のチェック表）を確かめます。</p>
+<p><strong>② 本番を止めて、バックアップを取る</strong></p>
+<p>利用の少ない時間に、事前に社員へお知らせしてから行います。</p>
+<div class="codehilite"><div class="code-wrap" id="code-44"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">Stop-Service</span> <span class="n">webapp-prod</span>
+<span class="c"># 更新の前の控え（毎晩の控えとは別の名前で残す）</span>
+<span class="nv">$env:Path</span> <span class="p">+=</span> <span class="s2">&quot;;C:\Program Files\PostgreSQL\18\bin&quot;</span>
+<span class="nv">$env:PGPASSFILE</span> <span class="p">=</span> <span class="s2">&quot;D:\webapp\secrets\pgpass.conf&quot;</span>
+<span class="n">pg_dump</span> <span class="n">-h</span> <span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span> <span class="n">-U</span> <span class="n">webapp_prod_app</span> <span class="n">-d</span> <span class="n">webapp_prod</span> <span class="n">-Fc</span> <span class="o">-f</span> <span class="s2">&quot;D:\webapp\backup\db\before_1.1.0_</span><span class="p">$(</span><span class="nb">Get-Date</span> <span class="n">-Format</span> <span class="n">yyyyMMdd_HHmm</span><span class="p">)</span><span class="s2">.dump&quot;</span>
+</code></pre></div></div>
+
+<ul>
+<li>アプリが止まっている間、社員のブラウザには、IIS の <code>502</code> のエラーが出ます（アプリから返事が無いため）。</li>
+</ul>
+<p><strong>③ 入れ替える</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-45"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">Rename-Item</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">prod</span><span class="p">\</span><span class="n">app</span> <span class="n">app-prev</span><span class="p">-</span><span class="n">1</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span>
+<span class="nb">Expand-Archive</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">releases</span><span class="p">\</span><span class="n">webapp</span><span class="p">-</span><span class="n">1</span><span class="p">.</span><span class="n">1</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">zip</span> <span class="n">-DestinationPath</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">prod</span><span class="p">\</span><span class="n">app</span>
+</code></pre></div></div>
+
+<ul>
+<li>テーブルの変更（マイグレーション）がある版は、この資料の設計例では、次の④で起動したときに、アプリが自動で当てます。</li>
+</ul>
+<p><strong>④ 再開して確かめる</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-46"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">Start-Service</span> <span class="n">webapp-prod</span>
+<span class="nb">Get-Service</span> <span class="n">webapp-prod</span>
+<span class="nb">Invoke-WebRequest</span> <span class="n">http</span><span class="p">://</span><span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span><span class="p">:</span><span class="n">8080</span><span class="p">/</span><span class="n">health</span> <span class="n">-UseBasicParsing</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">StatusCode</span>
+</code></pre></div></div>
+
+<p>ブラウザで、ログインと主な画面を確かめます。問題が無ければ、更新の記録（いつ・どの版に・誰が）を残します。</p>
+<h3 id="134">13.4 切り戻し（前の版に戻す）</h3>
+<p>④で問題が見つかったら、<strong>原因を探す前に、まず前の版に戻して</strong>、社員が使える状態にします。</p>
+<div class="codehilite"><div class="code-wrap" id="code-47"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">Stop-Service</span> <span class="n">webapp-prod</span>
+<span class="nb">Rename-Item</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">prod</span><span class="p">\</span><span class="n">app</span> <span class="n">app-failed</span><span class="p">-</span><span class="n">1</span><span class="p">.</span><span class="n">1</span><span class="p">.</span><span class="n">0</span>
+<span class="nb">Rename-Item</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">prod</span><span class="p">\</span><span class="n">app-prev</span><span class="p">-</span><span class="n">1</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span> <span class="n">app</span>
+
+<span class="c"># テーブルの変更があった版のときは、②で取った控えに戻す</span>
+<span class="c"># （古い版のアプリは、新しい形のテーブルを読めないことがあるため）</span>
+<span class="n">pg_restore</span> <span class="n">-h</span> <span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span> <span class="n">-U</span> <span class="n">webapp_prod_app</span> <span class="n">-d</span> <span class="n">webapp_prod</span> <span class="p">-</span><span class="n">-clean</span> <span class="p">-</span><span class="n">-if-exists</span> <span class="s2">&quot;D:\webapp\backup\db\before_1.1.0_（日時）.dump&quot;</span>
+
+<span class="nb">Start-Service</span> <span class="n">webapp-prod</span>
+</code></pre></div></div>
+
+<ul>
+<li>データベースを控えに戻すと、②のあとに入った依頼や承認は消えます。②から④の間はアプリを止めているので、ふつうは消える物はありません。<strong>本番を再開したあとで、時間がたってから戻すときは、消える物が出る</strong>ので、関係者と相談してから戻します。</li>
+<li><code>app-failed-1.1.0</code> は、原因を調べるために、しばらく残します。</li>
+<li>落ち着いたら、使わなくなった古い <code>app-prev-…</code> のフォルダを消します（2〜3 版分は残しておくと安心です）。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> 切り戻し（ロールバック：新しい版に問題があったとき、前の版に戻すこと。00 基礎知識 9.5）</p>
+</blockquote>
+<h2 id="14">14. セキュリティと日々の点検</h2>
+<h3 id="141">14.1 建てたときに確かめること</h3>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>確かめ方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>アプリと DB が 127.0.0.1 だけで待ち受けている</td>
+<td>9.3</td>
+</tr>
+<tr>
+<td><code>D:\webapp</code> を、管理者・SYSTEM・アプリのアカウントだけがさわれる</td>
+<td><code>icacls D:\webapp</code>・<code>icacls D:\webapp\prod</code></td>
+</tr>
+<tr>
+<td>パスワードが書かれたファイル（WinSW の XML・pgpass）を、ほかの人が読めない</td>
+<td><code>icacls</code>（7.4・11.2）</td>
+</tr>
+<tr>
+<td>社員データの CSV が、サーバーやパソコンに残っていない</td>
+<td><code>D:\webapp\installers\</code> などを見る</td>
+</tr>
+<tr>
+<td>アプリが仮想アカウントで動いている（管理者ではない）</td>
+<td>7.4 の <code>Get-CimInstance Win32_Service</code></td>
+</tr>
+<tr>
+<td>スーパーユーザー <code>postgres</code> のパスワードを、会社の決まりに従って保管した</td>
+<td>自分で確かめる</td>
+</tr>
+<tr>
+<td>ウイルス対策ソフトの除外</td>
+<td>PostgreSQL のデータのフォルダを、ウイルス対策の検査から外すかどうかを、情報システム部門と決める（検査がデータベースのファイルを掴むと、遅くなったり壊れたりすることがあるため）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="142">14.2 日々・月々の点検（例）</h3>
+<table>
+<thead>
+<tr>
+<th>いつ</th>
+<th>何をするか</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>毎朝</td>
+<td>サービス 4 つが動いているか、夜のバックアップが成功したか（12.3）</td>
+</tr>
+<tr>
+<td>毎週</td>
+<td>ディスクの空き、アプリのログにエラーが続いていないか</td>
+</tr>
+<tr>
+<td>毎月</td>
+<td>Windows Update（会社の決まりに従う）、IIS・PostgreSQL のログのたまり具合</td>
+</tr>
+<tr>
+<td>3 か月ごと</td>
+<td>リストアの練習（11.5）</td>
+</tr>
+<tr>
+<td>PostgreSQL の修正版が出たとき</td>
+<td>18.x の修正版（例：18.6 → 18.7）を、検証環境で確かめてから入れる。修正版の入れ替えは、同じインストーラーを上から入れる方法でできる（データはそのまま）</td>
+</tr>
+<tr>
+<td>年に 1 回</td>
+<td>パスワードの見直し、この資料の手順が今のサーバーと合っているか、HTTPS にできるようになったか</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>PostgreSQL 18 のサポートは 2030 年 11 月まで、と案内されています。18 → 19 のような大きな版の上げ方は、データの移しかえ（<code>pg_upgrade</code> か、<code>pg_dump</code> と <code>pg_restore</code>）が要るので、別に計画します。</li>
+</ul>
+<h2 id="15">15. 困ったとき（トラブルシューティング）</h2>
+<p>まず、<strong>どこで止まっているか</strong>を、手前から順に切り分けます。</p>
+<ol>
+<li>社員のパソコン → サーバーの 80 番（DNS・ネットワーク・ファイアウォール）</li>
+<li>IIS → アプリの 8080 番（IIS の設定・アプリのサービス）</li>
+<li>アプリ → データベース・ファイル保存フォルダ・メール</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>見えること</th>
+<th>考えられる原因</th>
+<th>確かめること</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ブラウザで「このサイトにアクセスできません」</td>
+<td>DNS に名前が無い、80 番が通っていない、IIS が止まっている</td>
+<td><code>Resolve-DnsName</code>・<code>Test-NetConnection -Port 80</code>（8.6）、<code>Get-Service W3SVC</code></td>
+</tr>
+<tr>
+<td><code>502.3</code>（Bad Gateway）と出る</td>
+<td>アプリが止まっている、ポートが違う</td>
+<td><code>Get-Service webapp-prod</code>、<code>Invoke-WebRequest http://127.0.0.1:8080/health</code>、web.config の行き先</td>
+</tr>
+<tr>
+<td>IIS の <code>404</code> が出て、アプリの画面にならない</td>
+<td>URL Rewrite か ARR が入っていない、取り次ぎが無効、web.config の置き場所が違う</td>
+<td>8.2・8.3、<code>D:\webapp\prod\iis\web.config</code> があるか</td>
+</tr>
+<tr>
+<td>ファイルを送ると <code>404.13</code></td>
+<td>送る大きさが IIS の上限を超えた</td>
+<td>8.5 の <code>maxAllowedContentLength</code></td>
+</tr>
+<tr>
+<td>ログイン・保存などのボタンを押すと <code>403</code>（本文が forbidden だけ）</td>
+<td>Host が書きかえられて、Topcoat の OriginPolicy が止めた</td>
+<td>8.3 の <code>preserveHostHeader</code></td>
+</tr>
+<tr>
+<td>ログインしても、次の画面でログインしていない扱いになる</td>
+<td>セッションのクッキーに <code>Secure</code> が付いていて、HTTP のブラウザが受け取らない</td>
+<td>6.4、ブラウザの開発者ツール（F12）の「アプリケーション → Cookie」</td>
+</tr>
+<tr>
+<td>サービスが起動しない、すぐ止まる</td>
+<td>XML の書き間違い、<code>assets\</code> が無い、許可が足りない、DB につなげない</td>
+<td><code>D:\webapp\prod\logs\</code> の <code>wrapper.log</code> と <code>err.log</code>、イベント ビューアーの「Windows ログ → システム」</td>
+</tr>
+<tr>
+<td>バックアップのタスクの「前回の実行結果」が <code>(0x1)</code> で、<code>D:\webapp\backup\logs\</code> に記録も無い</td>
+<td><code>backup.ps1</code> を BOM 無しの UTF-8 で保存したため、PowerShell 5.1 が日本語の所で読み違えて、構文エラーで動いていない</td>
+<td>11.3 の「UTF-8 (BOM 付き)」で保存し直す。<code>powershell -File D:\webapp\tools\backup.ps1</code> を手で動かすと、構文エラーの文が見える</td>
+</tr>
+<tr>
+<td>「エラー 1053」</td>
+<td>実行ファイルを WinSW で包まずに、直接サービスにした</td>
+<td>7.1・7.4</td>
+</tr>
+<tr>
+<td>アプリのログに、データベースにつなげないエラー</td>
+<td>PostgreSQL が止まっている、パスワードが違う、<code>pg_hba.conf</code></td>
+<td><code>Get-Service postgresql-x64-18</code>、5.6 の <code>psql</code></td>
+</tr>
+<tr>
+<td>添付ファイルを保存できない</td>
+<td><code>files\</code> に書く許可が無い、ディスクがいっぱい</td>
+<td>7.4 の <code>icacls</code>、<code>Get-Volume</code></td>
+</tr>
+<tr>
+<td>メールが届かない</td>
+<td>25 番が通らない、コネクタ、SPF</td>
+<td>10.2・10.3 の表</td>
+</tr>
+<tr>
+<td>時刻が 9 時間ずれる</td>
+<td>タイムゾーンが UTC のまま</td>
+<td>3.4、5.3 の <code>timezone</code></td>
+</tr>
+<tr>
+<td>再起動のあと、アプリだけ動いていない</td>
+<td>PostgreSQL より先に起動しようとした、起動の種類が手動</td>
+<td>7.3 の <code>&lt;depend&gt;</code>、<code>Get-CimInstance Win32_Service</code> の <code>StartMode</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="16">16. 用語ミニ辞典（この資料に出た主な言葉）</h2>
+<table>
+<thead>
+<tr>
+<th>用語</th>
+<th>短い説明</th>
+<th>章</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>appcmd</td>
+<td>IIS の設定をコマンドで変える道具</td>
+<td>8.3</td>
+</tr>
+<tr>
+<td>ARR</td>
+<td>IIS が受けたお願いを、アプリに取り次ぐ部品</td>
+<td>8.2</td>
+</tr>
+<tr>
+<td>Cargo.lock</td>
+<td>アプリが使う部品の正確な版の記録</td>
+<td>6.1</td>
+</tr>
+<tr>
+<td>CSRF</td>
+<td>ほかのサイトから、勝手に操作を送らせる攻撃</td>
+<td>8.3</td>
+</tr>
+<tr>
+<td>CSV</td>
+<td>表のデータをカンマで区切った文字のファイル</td>
+<td>7.7</td>
+</tr>
+<tr>
+<td>DLL</td>
+<td>実行ファイルが使う部品のファイル</td>
+<td>6.2</td>
+</tr>
+<tr>
+<td>gMSA</td>
+<td>パスワードを AD が管理するサービス用アカウント</td>
+<td>4.3</td>
+</tr>
+<tr>
+<td>listen_addresses</td>
+<td>PostgreSQL が待ち受ける住所の設定</td>
+<td>5.3</td>
+</tr>
+<tr>
+<td>pg_dump・pg_restore</td>
+<td>PostgreSQL の控えを取る道具・戻す道具</td>
+<td>11.1・11.5</td>
+</tr>
+<tr>
+<td>pg_hba.conf</td>
+<td>PostgreSQL に誰がどこからつないでよいかの決まり</td>
+<td>5.3</td>
+</tr>
+<tr>
+<td>pgpass</td>
+<td>パスワードを打たずにつなぐためのファイル</td>
+<td>11.2</td>
+</tr>
+<tr>
+<td>psql</td>
+<td>PostgreSQL に SQL を打ち込む道具</td>
+<td>5.4</td>
+</tr>
+<tr>
+<td>release ビルド</td>
+<td>本番用に、速く動くように作ること</td>
+<td>6.1</td>
+</tr>
+<tr>
+<td>robocopy</td>
+<td>フォルダを丸ごと写す Windows の道具</td>
+<td>11.1</td>
+</tr>
+<tr>
+<td>Secure・__Host-・HttpOnly</td>
+<td>クッキーに付ける印（HTTPS だけ・名前の決まり・JavaScript から読めない）</td>
+<td>6.4</td>
+</tr>
+<tr>
+<td>SID</td>
+<td>アカウントやグループの、世界で1つの番号</td>
+<td>4.2</td>
+</tr>
+<tr>
+<td>URL Rewrite</td>
+<td>来た URL を決まりに従って渡す IIS の部品</td>
+<td>8.2</td>
+</tr>
+<tr>
+<td>web.config</td>
+<td>IIS のサイトごとの設定ファイル</td>
+<td>8.5</td>
+</tr>
+<tr>
+<td>WinSW</td>
+<td>ふつうの実行ファイルを Windows サービスにする道具</td>
+<td>7.1</td>
+</tr>
+<tr>
+<td>アクセス許可（ACL）・継承</td>
+<td>誰が何をしてよいかの一覧・上のフォルダからの引き継ぎ</td>
+<td>4.2</td>
+</tr>
+<tr>
+<td>仮想アカウント</td>
+<td>サービスごとにできる、パスワードの無い専用のアカウント</td>
+<td>4.3</td>
+</tr>
+<tr>
+<td>切り戻し</td>
+<td>前の版に戻すこと</td>
+<td>13.4</td>
+</tr>
+<tr>
+<td>終了コード</td>
+<td>プログラムが終わるときに返す番号</td>
+<td>11.3</td>
+</tr>
+<tr>
+<td>静的リンク</td>
+<td>部品を実行ファイルの中に入れてしまうこと</td>
+<td>6.2</td>
+</tr>
+<tr>
+<td>設計例</td>
+<td>この資料で「こう作る」と決めた一つの形</td>
+<td>はじめ</td>
+</tr>
+<tr>
+<td>接続文字列</td>
+<td>データベースにつなぐ情報を1行にしたもの</td>
+<td>7.3</td>
+</tr>
+<tr>
+<td>ハッシュ値</td>
+<td>ファイルの中身から計算した指紋</td>
+<td>5.1</td>
+</tr>
+<tr>
+<td>バインド</td>
+<td>サイトと IP・ポート・名前の結び付け</td>
+<td>8.4</td>
+</tr>
+<tr>
+<td>ヘルスチェック</td>
+<td>アプリに「動いていますか」と聞く入口</td>
+<td>7.5</td>
+</tr>
+<tr>
+<td>ロール・OWNER</td>
+<td>PostgreSQL のユーザー・データベースの持ち主</td>
+<td>5.5</td>
+</tr>
+</tbody>
+</table>
+
+<script>
+(function () {
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy") ? resolve() : reject(); } catch (e) { reject(e); }
+      document.body.removeChild(ta);
+    });
+  }
+  document.querySelectorAll(".copy-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var pre = btn.parentElement.querySelector("pre");
+      var text = pre.textContent.replace(/\n$/, "");
+      copyText(text).then(function () {
+        btn.textContent = "コピーしました";
+        btn.classList.add("done");
+        setTimeout(function () { btn.textContent = "コピー"; btn.classList.remove("done"); }, 2000);
+      }, function () { btn.textContent = "コピーできませんでした"; });
+    });
+  });
+  if (/^#code-\d+$/.test(location.hash)) {
+    var note = document.getElementById("web-note");
+    if (note) { note.hidden = false; }
+  }
+})();
+</script>
+</body>
+</html>

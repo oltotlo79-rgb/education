@@ -1,0 +1,1721 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>09-styling</title>
+<style>
+
+@page {
+  size: A4;
+  margin: 18mm 16mm 20mm 16mm;
+  @bottom-right {
+    content: counter(page);
+    font-size: 10px;
+    color: #64748b;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  font-family: "Yu Gothic UI", "Yu Gothic", "Meiryo", "Hiragino Sans",
+               "Noto Sans JP", "Segoe UI", system-ui, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.75;
+  color: #1e293b;
+  background: #ffffff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #0f172a;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 1.4em 0 0.6em;
+  page-break-after: avoid;
+}
+h1 {
+  font-size: 22pt;
+  border-bottom: 3px solid #1e40af;
+  padding-bottom: 0.3em;
+  margin-top: 0.4em;
+  page-break-before: auto;
+}
+h2 {
+  font-size: 16pt;
+  border-bottom: 1.5px solid #cbd5e1;
+  padding-bottom: 0.25em;
+  margin-top: 1.6em;
+}
+h3 { font-size: 13pt; color: #1e40af; }
+h4 { font-size: 12pt; color: #334155; }
+
+p { margin: 0.5em 0 0.8em; }
+
+a { color: #1d4ed8; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+ul, ol { margin: 0.4em 0 0.9em; padding-left: 1.6em; }
+li { margin: 0.2em 0; }
+
+blockquote {
+  border-left: 4px solid #3b82f6;
+  background: #eff6ff;
+  margin: 0.8em 0;
+  padding: 0.6em 1em;
+  color: #1e3a8a;
+  border-radius: 0 6px 6px 0;
+  page-break-inside: avoid;
+}
+blockquote p { margin: 0.3em 0; }
+blockquote strong { color: #1e40af; }
+
+code {
+  /* DefCode (see _code_font.py) has ASCII and Japanese in ONE font, so a code
+     line is drawn as one text run and copies as one line in every PDF viewer. */
+  font-family: "Consolas", "Consolas", monospace;
+  font-size: 0.9em;
+  background: #f1f5f9;
+  color: #be123c;
+  padding: 0.12em 0.36em;
+  border-radius: 4px;
+  /* Long inline code (file paths / URLs) must break instead of overflowing. */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  /* In a PDF there is no horizontal scrolling, so long lines must wrap
+     instead of being clipped off the right edge of the page. */
+  overflow-x: hidden;
+  overflow-y: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  font-size: 9.2pt;
+  line-height: 1.5;
+  margin: 0.8em 0;
+  page-break-inside: avoid;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+  white-space: inherit;
+  word-break: inherit;
+  overflow-wrap: inherit;
+}
+
+/* The codehilite extension wraps highlighted blocks in a scrolling div; make
+   that wrap too so nothing is clipped in the PDF. */
+.codehilite {
+  overflow-x: hidden;
+  /* overflow-x: hidden alone turns overflow-y into auto, and a glyph from a
+     fallback font that is a hair too tall then shows a vertical scrollbar. */
+  overflow-y: hidden;
+}
+.codehilite pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* No per-token colours: every coloured token became its own text run (and its
+   own tag) in the PDF, and some viewers then pasted each token on its own line.
+   Only whole comment lines get a colour, so each line is still one run. */
+pre .cmt { color: #94a3b8; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.8em 0;
+  font-size: 9.6pt;
+  page-break-inside: avoid;
+}
+th, td {
+  border: 1px solid #e2e8f0;
+  padding: 6px 9px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: #f1f5f9;
+  color: #0f172a;
+  font-weight: 700;
+}
+tr:nth-child(even) td { background: #f8fafc; }
+
+img { max-width: 100%; height: auto; }
+
+hr {
+  border: none;
+  border-top: 1px dashed #cbd5e1;
+  margin: 1.6em 0;
+}
+
+/* Diagram blocks (the inline-styled <div>s in the source) */
+div[style] {
+  page-break-inside: avoid;
+}
+
+/* Tighten spacing right after headings */
+h1 + p, h2 + p, h3 + p, h4 + p { margin-top: 0.2em; }
+
+/* Avoid ugly page breaks inside list items / table rows */
+li, tr { page-break-inside: avoid; }
+
+@media screen {
+  body { max-width: 920px; margin: 0 auto; padding: 20px 20px 120px; font-size: 16px; }
+  pre { white-space: pre !important; word-break: normal !important; overflow-wrap: normal !important;
+        overflow-x: auto !important; font-size: 14px !important; }
+  img { max-width: 100%; height: auto; }
+}
+.web-bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; font-size: 14px;
+  padding: 8px 12px; margin-bottom: 16px; background: #eef2f7; border-radius: 8px; }
+.web-bar a { color: #1e3a5f; }
+.web-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 10; max-width: 90%;
+  font-size: 15px; font-weight: 700; background: #fff7ed; border: 2px solid #f2994a; border-radius: 8px;
+  padding: 10px 16px; margin: 0; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.code-wrap { position: relative; scroll-margin-top: 16px; }
+.code-wrap pre { padding-top: 40px !important; }
+.copy-btn { position: absolute; top: 8px; right: 8px; z-index: 2; font-size: 13px; font-weight: 700;
+  padding: 4px 12px; border: 0; border-radius: 6px; background: #2f80ed; color: #fff; cursor: pointer;
+  font-family: inherit; }
+.copy-btn:hover { background: #1c64c8; }
+.copy-btn.done { background: #27ae60; }
+.code-wrap:target pre { outline: 4px solid #f2994a; outline-offset: 2px; }
+.code-wrap:target .copy-btn { box-shadow: 0 0 0 4px #f2994a; }
+/* syntax colours on screen (the PDF uses one colour so that each line copies as one piece) */
+.codehilite .k, .codehilite .kd, .codehilite .kn, .codehilite .kr { color: #c084fc; }
+.codehilite .s, .codehilite .s1, .codehilite .s2, .codehilite .sb { color: #fcd34d; }
+.codehilite .c, .codehilite .c1, .codehilite .cm { color: #94a3b8; }
+.codehilite .nf, .codehilite .nx { color: #60a5fa; }
+.codehilite .nb { color: #34d399; }
+.codehilite .mi, .codehilite .mf { color: #f472b6; }
+.codehilite .nt { color: #f59e0b; }
+.codehilite .na { color: #93c5fd; }
+</style>
+</head>
+<body>
+<div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/09-styling.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、ブラウザーの「戻る」で PDF に戻れます。</p><h1 id="9-uinativewind">第9章: スタイリングとUI（NativeWind）</h1>
+<blockquote>
+<p>アプリの機能は完成しました。この章では「見た目」をより効率よく整える方法を学びます。本書では <strong>NativeWind</strong>（Tailwind CSSの書き方をReact Nativeで使えるライブラリ）を導入します。まずスタイリング手法の選択肢を比較し、NativeWindを導入して、これまで作った画面をより少ないコードで書き直します。</p>
+</blockquote>
+<hr>
+<h2 id="1">1. スタイリング手法の選択肢を比較する</h2>
+<p>第4章では <code>StyleSheet</code> を使いました。React Nativeのスタイリングには他にも選択肢があります。「どんな場合にどれを選ぶべきか」を解説します。</p>
+<h3 id="11">1.1 比較表</h3>
+<table>
+<thead>
+<tr>
+<th>手法</th>
+<th>記述スタイル</th>
+<th>記述量</th>
+<th>学習コスト</th>
+<th>Web版との共通性</th>
+<th>向いている人</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>StyleSheet</strong>（RN標準）</td>
+<td>オブジェクトで定義</td>
+<td>多い</td>
+<td>低（追加不要）</td>
+<td>△</td>
+<td>追加ライブラリを増やしたくない人</td>
+</tr>
+<tr>
+<td><strong>NativeWind</strong>（本書採用）</td>
+<td>クラス名で指定</td>
+<td>少ない</td>
+<td>低（Tailwind経験者は即）</td>
+<td>◎</td>
+<td>Web/TailwindとUIを共通化したい人</td>
+</tr>
+<tr>
+<td><strong>Tamagui</strong></td>
+<td>専用コンポーネント</td>
+<td>中</td>
+<td>中〜高</td>
+<td>△</td>
+<td>高性能・高機能を求める人</td>
+</tr>
+<tr>
+<td><strong>UIキット</strong>（gluestack / React Native Paper等）</td>
+<td>完成部品を使う</td>
+<td>少ない</td>
+<td>中</td>
+<td>△</td>
+<td>デザインを自分で考えず素早く作りたい人</td>
+</tr>
+</tbody>
+</table>
+<h3 id="12">1.2 それぞれの解説</h3>
+<h4 id="stylesheetrn">◆ StyleSheet（RN標準）</h4>
+<p>第4章で使った方法。<code>StyleSheet.create({ ... })</code> でスタイルを定義し、名前で参照します。</p>
+<ul>
+<li><strong>長所</strong>: 追加ライブラリ不要／React Nativeの基本そのもの／どんな教材でも通用する</li>
+<li><strong>短所</strong>: 記述量が多い／小さな調整でもスタイル定義が増えていく</li>
+</ul>
+<h4 id="nativewind">◆ NativeWind（本書の採用）</h4>
+<p><strong>Tailwind CSS</strong> という「短いクラス名で見た目を指定する」仕組みを、React Nativeで使えるようにしたもの。<code>className="text-lg font-bold text-blue-600"</code> のように書きます。</p>
+<ul>
+<li><strong>長所</strong>: 記述量が少ない／Web版チュートリアル（Tailwind）と書き方が同じ／デザインの一貫性を保ちやすい</li>
+<li><strong>短所</strong>: クラス名を覚える必要がある（が、よく使うものは限られる）</li>
+</ul>
+<h4 id="tamagui">◆ Tamagui（タマグイ）</h4>
+<p>高性能を売りにした高機能スタイリング＋UIライブラリ。アニメーションやテーマ切替に強い。</p>
+<ul>
+<li><strong>長所</strong>: 高性能／機能豊富</li>
+<li><strong>短所</strong>: 学習コストが高め／初心者にはオーバースペックなことが多い</li>
+</ul>
+<h4 id="uigluestack-ui-react-native-paper">◆ UIキット（gluestack-ui / React Native Paper など）</h4>
+<p>ボタンやカードなどの「完成された部品」が最初から用意されているライブラリ。</p>
+<ul>
+<li><strong>長所</strong>: デザインを考えなくても整った見た目になる／開発が速い</li>
+<li><strong>短所</strong>: キット独自の作法を学ぶ／細かいカスタマイズに制約</li>
+</ul>
+<blockquote>
+<p><strong>どんな時にどれを選ぶ？（まとめ）</strong>
+- <strong>Web/Tailwindの経験があり、UIを共通化したい</strong> → <strong>NativeWind</strong>（本書）
+- <strong>ライブラリを増やさず基本に忠実でいたい</strong> → StyleSheet
+- <strong>凝ったアニメーションや高性能が必要</strong> → Tamagui
+- <strong>デザインを自分で作らず最速で形にしたい</strong> → UIキット</p>
+</blockquote>
+<hr>
+<h2 id="2-nativewind">2. NativeWind のセットアップ</h2>
+<h3 id="21">2.1 インストール</h3>
+<p>第1章で作った <code>my-books-app</code> フォルダで、次を順に実行します。</p>
+<div class="codehilite"><div class="code-wrap" id="code-1"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>npx<span class="w"> </span>expo<span class="w"> </span>install<span class="w"> </span>nativewind<span class="w"> </span>tailwindcss<span class="w"> </span>react-native-reanimated<span class="w"> </span>react-native-safe-area-context
+<span class="c1"># nativewind                    : 本体（TailwindをRNで使えるようにする）</span>
+<span class="c1"># tailwindcss                   : Tailwindのクラス定義の土台</span>
+<span class="c1"># react-native-reanimated       : NativeWindが内部で利用するアニメーション部品</span>
+<span class="c1"># react-native-safe-area-context: 安全領域の部品（第4章で登場。NativeWindと相性よく使う）</span>
+</code></pre></div></div>
+
+<h3 id="22-tailwind">2.2 Tailwind設定ファイルを作る</h3>
+<p>次のコマンドで、Tailwindの設定ファイルのひな形を生成します。</p>
+<div class="codehilite"><div class="code-wrap" id="code-2"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>npx<span class="w"> </span>tailwindcss<span class="w"> </span>init
+<span class="c1"># tailwindcss init : tailwind.config.js という設定ファイルを生成するコマンド</span>
+</code></pre></div></div>
+
+<p>生成された <code>tailwind.config.js</code> を次のように書き換えます。</p>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> NativeWind（Tailwind）に「<strong>クラス名をどのファイルから探すか</strong>」と「<strong>NativeWind用の設定一式を読み込む</strong>」ことを教える設定ファイルです。一番大事なのは <code>content</code>——ここに書いたファイルの中で実際に使われているクラスだけがスタイルとして取り込まれます。書き換える箇所は数行だけで、残りはほぼ決まり文句（おまじない）です。詳しい意味は各行のコメントを見てください。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-3"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// tailwind.config.js — Tailwind/NativeWindの設定</span>
+
+<span class="cm">/** @type {import(&#39;tailwindcss&#39;).Config} */</span>
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// content : Tailwindのクラスを「どのファイルから探すか」を指定する</span>
+<span class="w">  </span><span class="c1">// app配下とcomponents配下の .tsx などを対象にする</span>
+<span class="w">  </span><span class="nx">content</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;./app/**/*.{js,jsx,ts,tsx}&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;./components/**/*.{js,jsx,ts,tsx}&quot;</span><span class="p">],</span>
+<span class="w">  </span><span class="c1">// presets : NativeWind用の設定一式を読み込む（おまじない）</span>
+<span class="w">  </span><span class="nx">presets</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="nx">require</span><span class="p">(</span><span class="s2">&quot;nativewind/preset&quot;</span><span class="p">)],</span>
+<span class="w">  </span><span class="nx">theme</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// ここに独自の色やサイズを追加できる（今は空でOK）</span>
+<span class="w">    </span><span class="nx">extend</span><span class="o">:</span><span class="w"> </span><span class="p">{},</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">plugins</span><span class="o">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong><code>content</code> の指定が重要:</strong> Tailwindは「実際に使われているクラスだけ」を最終的に取り込みます。<code>content</code> で指定したファイルからクラス名を探すので、<strong>ここにファイルの場所を正しく書かないとスタイルが効きません</strong>。<code>./app/**/*.{...}</code> は「appフォルダ以下の全階層（<code>**</code>）の、指定拡張子のファイル」という意味です。</p>
+</blockquote>
+<h4 id="1_1">▼ コードを1つずつ分解して解説</h4>
+<hr>
+<h5 id="1-moduleexports">解説1: 設定全体の入れ物（<code>module.exports</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-4"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="cm">/** @type {import(&#39;tailwindcss&#39;).Config} */</span>
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// ...（中身は下で順に解説）</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>module.exports = { ... }</code> は「<strong>このファイルが外に渡す内容</strong>」を指定する書き方です。<code>tailwind.config.js</code> 全体が「1つの設定オブジェクト（<code>{ }</code>）」を外に公開しています。</li>
+<li>1行目の <code>/** @type ... */</code> は <strong>コメント</strong>で、エディタに「これはTailwindの設定オブジェクトですよ」と教える目印です。書いておくと入力補完が効きますが、消しても動作は変わりません。</li>
+<li>設定オブジェクトの中に <code>content</code> / <code>presets</code> / <code>theme</code> / <code>plugins</code> という4つの項目を並べていきます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <code>module.exports</code> … JavaScriptのファイル（モジュール）が「自分の中身を他のファイルに渡す」ための仕組み。ここに代入したものが、他の場所から読み込めるようになります。</p>
+</blockquote>
+<hr>
+<h5 id="2-content">解説2: クラスを探す場所（<code>content</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-5"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">  </span><span class="nx">content</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;./app/**/*.{js,jsx,ts,tsx}&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;./components/**/*.{js,jsx,ts,tsx}&quot;</span><span class="p">],</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>content</code> は「<strong><code>className</code> をどのファイルから探すか</strong>」のリストです。ここに書いたファイルの中で実際に使われているクラスだけが、最終的なスタイルに取り込まれます。</li>
+<li><code>./app/**/*.{js,jsx,ts,tsx}</code> は「<code>app</code> フォルダ以下の<strong>全階層</strong>（<code>**</code>）にある、拡張子が <code>js</code>/<code>jsx</code>/<code>ts</code>/<code>tsx</code> のファイル」という意味です。<code>components</code> フォルダも同様に対象にしています。</li>
+<li>ここを書き忘れたり場所を間違えると、<strong>クラスが見つからずスタイルが何も効かなくなる</strong>ので、最重要の項目です。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> グロブ（glob） … <code>**</code> や <code>*</code> を使ってファイルの場所をまとめて指定する書き方。<code>**</code> は「何階層でも下までたどる」、<code>*</code> は「任意のファイル名」を表します。</p>
+</blockquote>
+<hr>
+<h5 id="3-nativewindpresets-theme-plugins">解説3: NativeWind用設定と拡張枠（<code>presets</code> / <code>theme</code> / <code>plugins</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-6"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">  </span><span class="nx">presets</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="nx">require</span><span class="p">(</span><span class="s2">&quot;nativewind/preset&quot;</span><span class="p">)],</span>
+<span class="w">  </span><span class="nx">theme</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">extend</span><span class="o">:</span><span class="w"> </span><span class="p">{},</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">plugins</span><span class="o">:</span><span class="w"> </span><span class="p">[],</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>presets</code> は「<strong>あらかじめ用意された設定一式を読み込む</strong>」項目です。<code>require("nativewind/preset")</code> でNativeWind用の設定をまとめて取り込んでいます（ほぼ決まり文句）。</li>
+<li><code>theme.extend</code> は「<strong>独自の色やサイズを追加する</strong>」場所です。今は <code>{}</code>（空）でOK。たとえば自社カラーを足したくなったらここに書きます。</li>
+<li><code>plugins</code> は「追加機能（プラグイン）を入れる」リストで、今回は不要なので空配列 <code>[]</code> のままにしています。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <code>require(...)</code> … 他のファイルやライブラリの中身を読み込む関数。<code>module.exports</code> で公開されたものを、こちらで受け取るイメージです。</p>
+</blockquote>
+<hr>
+<h3 id="23-css">2.3 グローバルCSSを作る</h3>
+<p><code>app</code> フォルダに <code>global.css</code> を新規作成し、Tailwindの基本指定を書きます。</p>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> Tailwindの土台となるスタイルを読み込むための、<strong>3行だけのCSSファイル</strong>を作ります。<code>@tailwind base / components / utilities</code> の3行を書くことで、<code>text-lg</code> や <code>bg-white</code> といった便利クラスがアプリで使えるようになります。これはNativeWindを使うための「お決まりの3行」なので、丸ごとそのまま書けばOKです。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-7"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c">/* app/global.css — Tailwindの基本スタイルを読み込む */</span>
+<span class="c">/* Tailwindの土台スタイル */</span>
+<span class="p">@</span><span class="k">tailwind</span><span class="w"> </span><span class="nt">base</span><span class="p">;</span>
+<span class="c">/* コンポーネント系スタイル */</span>
+<span class="p">@</span><span class="k">tailwind</span><span class="w"> </span><span class="nt">components</span><span class="p">;</span>
+<span class="c">/* text-lg などの便利クラス群 */</span>
+<span class="p">@</span><span class="k">tailwind</span><span class="w"> </span><span class="nt">utilities</span><span class="p">;</span>
+</code></pre></div></div>
+
+<h4 id="1_2">▼ コードを1つずつ分解して解説</h4>
+<hr>
+<h5 id="1-3-tailwind-tailwind">解説1: 3つの <code>@tailwind</code> がそろってTailwindが使えるようになる</h5>
+<div class="codehilite"><div class="code-wrap" id="code-8"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c">/* Tailwindの土台スタイル */</span>
+<span class="p">@</span><span class="k">tailwind</span><span class="w"> </span><span class="nt">base</span><span class="p">;</span>
+<span class="c">/* コンポーネント系スタイル */</span>
+<span class="p">@</span><span class="k">tailwind</span><span class="w"> </span><span class="nt">components</span><span class="p">;</span>
+<span class="c">/* text-lg などの便利クラス群 */</span>
+<span class="p">@</span><span class="k">tailwind</span><span class="w"> </span><span class="nt">utilities</span><span class="p">;</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>@tailwind</code> は「<strong>Tailwindの該当部分のスタイルを、ここに展開してね</strong>」とCSSに指示する書き方です。3行それぞれが別の役割を持っています。</li>
+<li><code>base</code> … 文字や余白などの「<strong>土台となる初期スタイル</strong>」を読み込みます。ブラウザごとの見た目のばらつきをそろえる役目です。</li>
+<li><code>components</code> … ボタンやカードといった「<strong>部品向けのスタイル</strong>」を読み込む枠です。</li>
+<li><code>utilities</code> … <code>text-lg</code> や <code>bg-white</code> のような「<strong>短いクラス名で1つの見た目を当てる便利クラス群</strong>」を読み込みます。NativeWindで毎回使うのは主にこれです。</li>
+<li>この3行はNativeWindを使うための<strong>お決まり</strong>なので、丸ごとそのまま書けばOKです。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> ユーティリティクラス … <code>p-4</code>（余白）や <code>text-blue-600</code>（文字色）のように「1つの見た目だけを当てる小さなクラス」のこと。これらを並べて組み合わせるのがTailwind/NativeWindの基本スタイルです。</p>
+</blockquote>
+<hr>
+<h3 id="24-babel-metro">2.4 Babel と Metro の設定</h3>
+<p>NativeWindを動かすため、2つの設定ファイルを調整します。内部の仕組みなので「こう書く」と覚えれば十分ですが、<strong>それぞれが何をしているのか</strong>を知っておくと、エラー時に対処しやすくなります。</p>
+<blockquote>
+<p><strong>そもそも Babel と Metro とは？</strong> あなたが書く <code>className="text-lg"</code> のようなコードは、そのままではスマホは理解できません。アプリを動かす前に、<strong>スマホが分かる形へ変換（へんかん）</strong> する道具が必要です。
+- <strong>Babel（バベル）</strong> … 新しい書き方（TypeScript、JSX、NativeWindのclassName）を、スマホが解釈できる素のJavaScriptへ<strong>翻訳する</strong>道具。
+- <strong>Metro（メトロ）</strong> … たくさんのファイルや部品を<strong>1つにまとめて</strong>スマホへ届ける道具（「バンドラ＝束ねるもの」と呼びます。第1章で登場）。</p>
+<p>NativeWindは「<code>className</code> を本物のスタイルへ変換する」仕組みなので、この<strong>BabelとMetroの両方に「NativeWindの変換も通してね」と教える</strong>必要があります。それが下の2ファイルの役割です。</p>
+</blockquote>
+<p><code>babel.config.js</code>（無ければ作成）:</p>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> Babel（コードをスマホが分かる形へ翻訳する道具）に「<strong>classNameをスタイルに変える翻訳ルールも使ってね</strong>」と教える設定です。<code>jsxImportSource: "nativewind"</code> と <code>"nativewind/babel"</code> の2つが、その指定の中心です。仕組みは下のblockquoteで詳しく説明していますが、まずは丸ごとコピーで構いません。詳細は各行のコメントを参照してください。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-9"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// babel.config.js — コード変換の設定</span>
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="p">(</span><span class="nx">api</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// 設定をキャッシュして高速化（おまじない）</span>
+<span class="w">  </span><span class="nx">api</span><span class="p">.</span><span class="nx">cache</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// presets : 変換ルールの一式。Expo用 + NativeWind用（jsxImportSource）を指定</span>
+<span class="w">    </span><span class="nx">presets</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="p">[</span><span class="s2">&quot;babel-preset-expo&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">jsxImportSource</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;nativewind&quot;</span><span class="w"> </span><span class="p">}],</span>
+<span class="w">      </span><span class="s2">&quot;nativewind/babel&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="p">],</span>
+<span class="w">  </span><span class="p">};</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<h4 id="1_3">▼ コードを1つずつ分解して解説</h4>
+<hr>
+<h5 id="1-moduleexports-function-api">解説1: 設定を関数で返す形（<code>module.exports = function (api)</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-10"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="p">(</span><span class="nx">api</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// 設定をキャッシュして高速化（おまじない）</span>
+<span class="w">  </span><span class="nx">api</span><span class="p">.</span><span class="nx">cache</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// presets: [ ... ]（中身は次で解説）</span>
+<span class="w">  </span><span class="p">};</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>babel.config.js</code> は「<strong>設定オブジェクトを返す関数</strong>」を外に公開する形になっています。<code>function (api) { ... return { ... } }</code> の <code>return</code> した中身がBabelの設定です。</li>
+<li><code>api.cache(true)</code> は「<strong>この設定を毎回作り直さず、結果を覚えておく</strong>」ための1行です。変換を速くするための<strong>おまじない</strong>で、ほぼ必ずこの形で書きます。</li>
+<li><code>api</code> はBabelが渡してくる「設定用の道具箱」で、ここでは <code>cache</code> だけ使っています。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> キャッシュ（cache） … 一度作った結果を覚えておき、次回はそれを使い回す仕組み。毎回同じ計算をやり直さずに済むので速くなります。</p>
+</blockquote>
+<hr>
+<h5 id="2-presets">解説2: 変換ルールの一式（<code>presets</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-11"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">    </span><span class="nx">presets</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="p">[</span><span class="s2">&quot;babel-preset-expo&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">jsxImportSource</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;nativewind&quot;</span><span class="w"> </span><span class="p">}],</span>
+<span class="w">      </span><span class="s2">&quot;nativewind/babel&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="p">],</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>presets</code> は「<strong>どんな変換ルールを使うか</strong>」のリストです。上から順に2つ指定しています。</li>
+<li><code>["babel-preset-expo", { jsxImportSource: "nativewind" }]</code> … Expo標準の変換ルールに、オプション <code>{ jsxImportSource: "nativewind" }</code> を渡しています。これが「<strong><code>&lt;View className="..."&gt;</code> のようなJSXを変換するとき、NativeWindの仕組みを使ってね</strong>」という肝心の指定です。</li>
+<li><code>"nativewind/babel"</code> … <code>className</code> を解釈してスタイルに変えるための、NativeWind専用の変換ルールです。</li>
+<li>つまりこの2つで、<strong>Babel側に「classNameをスタイルへ翻訳するルール」を組み込んでいます</strong>。基本は丸ごとコピーで構いません。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> プリセット（preset） … 「よく使う変換ルールをひとまとめにしたセット」のこと。1つ指定するだけで、必要な変換がまとめて有効になります。</p>
+</blockquote>
+<hr>
+<p><code>metro.config.js</code>（無ければ作成）:</p>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> Metro（ファイルを1つにまとめてスマホへ届ける道具）に「<strong>NativeWindの機能を足し、先ほど作った <code>global.css</code> を読み込ませる</strong>」設定です。<code>withNativeWind(...)</code> は「Expoの標準設定を受け取って、NativeWind対応版にして返す」関数だと考えてください。これも基本はコピーでOK。詳しい役割は下のblockquoteと各行のコメントにあります。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-12"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// metro.config.js — バンドラ(Metro)の設定。global.cssをNativeWindに渡す</span>
+<span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">getDefaultConfig</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">require</span><span class="p">(</span><span class="s2">&quot;expo/metro-config&quot;</span><span class="p">);</span>
+<span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">withNativeWind</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">require</span><span class="p">(</span><span class="s2">&quot;nativewind/metro&quot;</span><span class="p">);</span>
+
+<span class="c1">// Expoの標準設定を取得</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">getDefaultConfig</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">);</span>
+
+<span class="c1">// withNativeWind : 標準設定にNativeWindの機能を足す。input に先ほどのCSSを指定</span>
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">withNativeWind</span><span class="p">(</span><span class="nx">config</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">input</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;./app/global.css&quot;</span><span class="w"> </span><span class="p">});</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>2つの設定ファイルが何をしているか（要点）:</strong>
+- <strong><code>babel.config.js</code></strong> … <code>babel-preset-expo</code>（Expo標準の変換ルール）に、<code>{ jsxImportSource: "nativewind" }</code> を渡しています。これは「<strong>JSX（<code>&lt;View className="..."&gt;</code> のような画面の書き方）を変換するとき、NativeWindの仕組みを使ってね</strong>」という指定です。続く <code>"nativewind/babel"</code> も、classNameを解釈するための変換ルールです。つまりBabel側に「classNameをスタイルに変える翻訳ルール」を追加しています。
+- <strong><code>metro.config.js</code></strong> … <code>getDefaultConfig</code> でExpoの標準設定を取得し、<code>withNativeWind(config, { input: "./app/global.css" })</code> で「<strong>標準設定にNativeWindの機能を足し、先ほど作った <code>global.css</code> を読み込ませる</strong>」設定にしています。<code>withNativeWind</code> は「設定を受け取って、NativeWind対応版にして返す」関数だと考えてください。</p>
+<p>難しく見えますが、やっていることは<strong>「BabelとMetroの両方に、NativeWindの変換を組み込む」</strong>だけです。丸ごとコピーで構いませんが、「className がスタイルに化けるのは、この2ファイルのおかげ」と覚えておくと、もしスタイルが効かないとき真っ先にここを見直せます。</p>
+</blockquote>
+<h4 id="1_4">▼ コードを1つずつ分解して解説</h4>
+<hr>
+<h5 id="1-2-require">解説1: 必要な道具を読み込む（2つの <code>require</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-13"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">getDefaultConfig</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">require</span><span class="p">(</span><span class="s2">&quot;expo/metro-config&quot;</span><span class="p">);</span>
+<span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">withNativeWind</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">require</span><span class="p">(</span><span class="s2">&quot;nativewind/metro&quot;</span><span class="p">);</span>
+</code></pre></div></div>
+
+<ul>
+<li>ここでは、設定を組み立てるのに必要な<strong>2つの関数を読み込んで</strong>います。</li>
+<li><code>getDefaultConfig</code> … Expoが用意している「<strong>Metroの標準設定を取得する</strong>」関数です。<code>expo/metro-config</code> から取り出しています。</li>
+<li><code>withNativeWind</code> … 標準設定を受け取って「<strong>NativeWind対応版に作り変えて返す</strong>」関数です。<code>nativewind/metro</code> から取り出しています。</li>
+<li><code>const { 名前 } = require(...)</code> は「読み込んだものの中から、必要な関数だけ名前で取り出す」書き方（分割代入）です。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> バンドラ（bundler） … たくさんのファイルや部品を1つにまとめてアプリへ届ける道具。React NativeではMetroがその役割を担います（第1章で登場）。</p>
+</blockquote>
+<hr>
+<h5 id="2-nativewind_1">解説2: 標準設定を取得してNativeWind対応にする</h5>
+<div class="codehilite"><div class="code-wrap" id="code-14"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// Expoの標準設定を取得</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">getDefaultConfig</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">);</span>
+
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">withNativeWind</span><span class="p">(</span><span class="nx">config</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">input</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;./app/global.css&quot;</span><span class="w"> </span><span class="p">});</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>getDefaultConfig(__dirname)</code> で、まず<strong>Expoの標準設定</strong>を <code>config</code> に受け取ります。<code>__dirname</code> は「この設定ファイルがある場所（フォルダのパス）」を表す決まり文句です。</li>
+<li><code>withNativeWind(config, { input: "./app/global.css" })</code> で、その標準設定に<strong>NativeWindの機能を足し</strong>、先ほど作った <code>global.css</code> を読み込ませています。<code>input</code> に渡したCSSが、アプリ全体のスタイルの土台になります。</li>
+<li>それを <code>module.exports = ...</code> で外に公開することで、Metroがこの「NativeWind対応版の設定」を使うようになります。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <code>__dirname</code> … 「今このファイルが置かれているフォルダの場所」を自動で表す特別な変数。設定ファイルでファイルの場所を伝えるときの定番です。</p>
+</blockquote>
+<hr>
+<h3 id="25-css">2.5 グローバルCSSを読み込む</h3>
+<p><code>app/_layout.tsx</code>（第6章で作成）の先頭に、CSSの読み込みを1行足します。</p>
+<div class="codehilite"><div class="code-wrap" id="code-15"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// app/_layout.tsx の一番上に追加</span>
+<span class="c1">// NativeWindのスタイルをアプリ全体で有効にする（先頭で読み込む）</span>
+<span class="k">import</span><span class="w"> </span><span class="s2">&quot;./global.css&quot;</span><span class="p">;</span>
+
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Stack</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;expo-router&quot;</span><span class="p">;</span>
+<span class="c1">// （以下は第6章のまま）</span>
+</code></pre></div></div>
+
+<h3 id="26">2.6 設定を反映させる</h3>
+<p>設定ファイルを変えたときは、開発サーバーを<strong>キャッシュを消して再起動</strong>します。</p>
+<div class="codehilite"><div class="code-wrap" id="code-16"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>npx<span class="w"> </span>expo<span class="w"> </span>start<span class="w"> </span>--clear
+<span class="c1"># --clear : 以前のキャッシュ（一時保存データ）を消して起動する。設定変更を確実に反映させる</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong><code>--clear</code> を付ける理由:</strong> Metro（変換ツール）は速度のため変換結果を一時保存します。設定を変えた直後は古い保存が残っていて反映されないことがあるため、<code>--clear</code> で消してから起動します。「設定を変えたのに反映されない」ときの定番の対処です。</p>
+</blockquote>
+<hr>
+<h2 id="3-nativewind">3. NativeWind の基本的な書き方</h2>
+<p>NativeWindでは、<code>style={...}</code> の代わりに <strong><code>className="..."</code></strong> にクラス名を並べて見た目を指定します。</p>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> NativeWindの基本である <strong><code>className="..."</code> の書き方</strong>を、画面中央に文字を表示する小さな例で体験します。ポイントは「<code>className</code> の中に、見た目を表す短いクラス名を<strong>空白で区切って並べる</strong>」こと——例えば <code>flex-1</code>（画面いっぱい）、<code>justify-center</code>（縦中央）、<code>text-2xl</code>（文字大きめ）のようにです。1つ1つのクラスが何を意味するかは、コード内のコメントで確認してください。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-17"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">View</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-native&quot;</span><span class="p">;</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">Demo</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="c1">// className に空白区切りでクラスを並べる</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;flex-1 justify-center items-center bg-white&quot;</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">{</span><span class="cm">/* flex-1 → flex:1 / justify-center → 縦中央 / items-center → 横中央 / bg-white → 背景白 */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;text-2xl font-bold text-slate-800&quot;</span><span class="p">&gt;</span><span class="err">📚</span><span class="w"> </span><span class="nx">書籍管理アプリ</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">{</span><span class="cm">/* text-2xl → 文字大きめ / font-bold → 太字 / text-slate-800 → 濃いグレー文字 */</span><span class="p">}</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="1_5">▼ コードを1つずつ分解して解説</h4>
+<hr>
+<h5 id="1-view-classname">解説1: 外側の枠を画面いっぱいに広げ、中身を中央へ（<code>&lt;View&gt;</code> のclassName）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-18"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;flex-1 justify-center items-center bg-white&quot;</span><span class="p">&gt;</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>className="..."</code> の中に、見た目を表す短いクラス名を<strong>空白で区切って並べる</strong>のがNativeWindの基本です。ここでは4つ並んでいます。</li>
+<li><code>flex-1</code> … この <code>&lt;View&gt;</code> を「<strong>使える空間いっぱいに広げる</strong>」指定です（<code>flex: 1</code> と同じ）。今回は画面全体に広がります。</li>
+<li><code>justify-center</code> … 中の要素を「<strong>縦方向の中央</strong>」にそろえます。</li>
+<li><code>items-center</code> … 中の要素を「<strong>横方向の中央</strong>」にそろえます。この2つを合わせて「画面のど真ん中」に配置されます。</li>
+<li><code>bg-white</code> … 背景を<strong>白</strong>にします（<code>bg-</code> は背景色の指定）。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> Flexbox（フレックスボックス） … 要素の並べ方や中央寄せを決める仕組み。<code>flex-1</code>（広がる量）、<code>justify-center</code>（主軸方向の中央）、<code>items-center</code>（交差軸方向の中央）はこの仕組みのクラスです。</p>
+</blockquote>
+<hr>
+<h5 id="2-text-classname">解説2: 文字の見た目を整える（<code>&lt;Text&gt;</code> のclassName）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-19"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;text-2xl font-bold text-slate-800&quot;</span><span class="p">&gt;</span><span class="err">📚</span><span class="w"> </span><span class="nx">書籍管理アプリ</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+</code></pre></div></div>
+
+<ul>
+<li>文字を表示する <code>&lt;Text&gt;</code> にも <code>className</code> で見た目を当てます。ここでは3つ並んでいます。</li>
+<li><code>text-2xl</code> … 文字を「<strong>大きめのサイズ</strong>」にします。<code>text-sm</code>（小）→ <code>text-base</code>（標準）→ <code>text-lg</code>/<code>text-xl</code>/<code>text-2xl</code>（大きく）と段階があります。</li>
+<li><code>font-bold</code> … 文字を<strong>太字</strong>にします。</li>
+<li><code>text-slate-800</code> … 文字色を「<strong>濃いグレー</strong>」にします。<code>text-色名-濃さ</code> の形で、濃さは50（薄い）〜900（濃い）で指定します。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> カラースケール … Tailwind/NativeWindの色は「色名 + 濃さの数字（50〜900）」で表します。<code>slate-800</code> なら「スレート（青みグレー）の濃いほう」という意味です。</p>
+</blockquote>
+<hr>
+<h3 id="31-4stylesheet">3.1 第4章のStyleSheetとの対応</h3>
+<p>第4章で書いたスタイルが、NativeWindのクラスにどう対応するかを表で示します。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>StyleSheet</th>
+<th>NativeWind クラス</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>画面いっぱい</td>
+<td><code>flex: 1</code></td>
+<td><code>flex-1</code></td>
+</tr>
+<tr>
+<td>縦方向中央</td>
+<td><code>justifyContent: "center"</code></td>
+<td><code>justify-center</code></td>
+</tr>
+<tr>
+<td>横方向中央</td>
+<td><code>alignItems: "center"</code></td>
+<td><code>items-center</code></td>
+</tr>
+<tr>
+<td>横並び</td>
+<td><code>flexDirection: "row"</code></td>
+<td><code>flex-row</code></td>
+</tr>
+<tr>
+<td>内側余白16</td>
+<td><code>padding: 16</code></td>
+<td><code>p-4</code>（4 = 16px）</td>
+</tr>
+<tr>
+<td>文字サイズ大</td>
+<td><code>fontSize: 24</code></td>
+<td><code>text-2xl</code></td>
+</tr>
+<tr>
+<td>太字</td>
+<td><code>fontWeight: "bold"</code></td>
+<td><code>font-bold</code></td>
+</tr>
+<tr>
+<td>背景白</td>
+<td><code>backgroundColor: "#fff"</code></td>
+<td><code>bg-white</code></td>
+</tr>
+<tr>
+<td>角丸</td>
+<td><code>borderRadius: 8</code></td>
+<td><code>rounded-lg</code></td>
+</tr>
+<tr>
+<td>文字色青</td>
+<td><code>color: "#1e40af"</code></td>
+<td><code>text-blue-800</code></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>数字の対応（重要）:</strong> Tailwindの余白やサイズの数字は「4倍するとピクセル」が基本です。<code>p-4</code> は <code>padding: 16</code>、<code>p-2</code> は <code>padding: 8</code>、<code>gap-3</code> は <code>gap: 12</code> です。慣れると暗算できます。色は <code>text-blue-600</code> のように「色名-濃さ（50〜900）」で指定します。</p>
+</blockquote>
+<hr>
+<h2 id="4-nativewind">4. 一覧画面をNativeWindで書き直す</h2>
+<p>第7・8章で <code>StyleSheet</code> で書いた一覧画面を、NativeWindで書き直してみます。<code>StyleSheet.create</code> のブロックがごっそり消えて、コードが短くなるのを体感してください。</p>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> これまで <code>StyleSheet</code> で書いていた一覧画面を、<strong>すべて <code>className</code> で書き直した完成形</strong>です。注目してほしいのは、ファイル末尾にあった <code>StyleSheet.create({ ... })</code> の長いブロックがまるごと消え、見た目の指定が各部品の <code>className</code> に移っている点です。検索ボックス・カード・追加ボタンなどの見た目が、短いクラス名だけで表現されています。各クラスの意味やテンプレートリテラルでの色切り替えは、コード内コメントと直後の補足を見てください。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-20"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// app/index.tsx — NativeWind版（主要部分のみ）</span>
+
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">useState</span><span class="p">,</span><span class="w"> </span><span class="nx">useCallback</span><span class="p">,</span><span class="w"> </span><span class="nx">useMemo</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">View</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="p">,</span><span class="w"> </span><span class="nx">FlatList</span><span class="p">,</span><span class="w"> </span><span class="nx">Pressable</span><span class="p">,</span><span class="w"> </span><span class="nx">TextInput</span><span class="p">,</span><span class="w"> </span><span class="nx">ActivityIndicator</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-native&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">useRouter</span><span class="p">,</span><span class="w"> </span><span class="nx">useFocusEffect</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;expo-router&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">fetchBooks</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;../lib/books&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Book</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;../types/book&quot;</span><span class="p">;</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">HomeScreen</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">router</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useRouter</span><span class="p">();</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">books</span><span class="p">,</span><span class="w"> </span><span class="nx">setBooks</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">&lt;</span><span class="nt">Book</span><span class="err">[]</span><span class="p">&gt;([]);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">loading</span><span class="p">,</span><span class="w"> </span><span class="nx">setLoading</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">keyword</span><span class="p">,</span><span class="w"> </span><span class="nx">setKeyword</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">load</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useCallback</span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">setLoading</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+<span class="w">      </span><span class="nx">setBooks</span><span class="p">(</span><span class="k">await</span><span class="w"> </span><span class="nx">fetchBooks</span><span class="p">());</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">finally</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">setLoading</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">},</span><span class="w"> </span><span class="p">[]);</span>
+
+<span class="w">  </span><span class="nx">useFocusEffect</span><span class="p">(</span><span class="nx">useCallback</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">load</span><span class="p">();</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="p">[</span><span class="nx">load</span><span class="p">]));</span>
+
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">filteredBooks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useMemo</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">keyword</span><span class="p">.</span><span class="nx">trim</span><span class="p">()</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nx">books</span><span class="p">;</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">lower</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">keyword</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">();</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">books</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span>
+<span class="w">      </span><span class="p">(</span><span class="nx">b</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">b</span><span class="p">.</span><span class="nx">title</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">().</span><span class="nx">includes</span><span class="p">(</span><span class="nx">lower</span><span class="p">)</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">b</span><span class="p">.</span><span class="nx">author</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">().</span><span class="nx">includes</span><span class="p">(</span><span class="nx">lower</span><span class="p">)</span>
+<span class="w">    </span><span class="p">);</span>
+<span class="w">  </span><span class="p">},</span><span class="w"> </span><span class="p">[</span><span class="nx">books</span><span class="p">,</span><span class="w"> </span><span class="nx">keyword</span><span class="p">]);</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">loading</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// className で中央寄せ。StyleSheet不要</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;flex-1 justify-center items-center&quot;</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">ActivityIndicator</span><span class="w"> </span><span class="na">size</span><span class="o">=</span><span class="s">&quot;large&quot;</span><span class="w"> </span><span class="na">color</span><span class="o">=</span><span class="s">&quot;#1e40af&quot;</span><span class="w"> </span><span class="p">/&gt;</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;flex-1 bg-slate-50&quot;</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">{</span><span class="cm">/* 検索ボックス */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;p-4 pb-0&quot;</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">TextInput</span>
+<span class="w">          </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;bg-white border border-slate-200 rounded-lg px-4 py-2.5 text-sm&quot;</span>
+<span class="w">          </span><span class="na">placeholder</span><span class="o">=</span><span class="s">&quot;🔍 タイトルや著者で検索...&quot;</span>
+<span class="w">          </span><span class="na">value</span><span class="o">=</span><span class="p">{</span><span class="nx">keyword</span><span class="p">}</span>
+<span class="w">          </span><span class="na">onChangeText</span><span class="o">=</span><span class="p">{</span><span class="nx">setKeyword</span><span class="p">}</span>
+<span class="w">        </span><span class="p">/&gt;</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">FlatList</span>
+<span class="w">        </span><span class="na">data</span><span class="o">=</span><span class="p">{</span><span class="nx">filteredBooks</span><span class="p">}</span>
+<span class="w">        </span><span class="na">keyExtractor</span><span class="o">=</span><span class="p">{(</span><span class="nx">item</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">item</span><span class="p">.</span><span class="nx">id</span><span class="p">}</span>
+<span class="w">        </span><span class="err">//</span><span class="w"> </span><span class="na">contentContainerStyleのNativeWind版</span>
+<span class="w">        </span><span class="na">contentContainerClassName</span><span class="o">=</span><span class="s">&quot;p-4 gap-2.5&quot;</span>
+<span class="w">        </span><span class="na">ListEmptyComponent</span><span class="o">=</span><span class="p">{</span>
+<span class="w">          </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;text-center text-slate-400 mt-10 px-5&quot;</span><span class="p">&gt;</span>
+<span class="w">            </span><span class="p">{</span><span class="nx">keyword</span><span class="p">.</span><span class="nx">trim</span><span class="p">()</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s2">&quot;まだ本が登録されていません。&quot;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;該当する本が見つかりません。&quot;</span><span class="p">}</span>
+<span class="w">          </span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="na">renderItem</span><span class="o">=</span><span class="p">{({</span><span class="w"> </span><span class="nx">item</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">(</span>
+<span class="w">          </span><span class="c1">// カード。borderやrounded、paddingをすべてクラスで指定</span>
+<span class="w">          </span><span class="p">&lt;</span><span class="nt">Pressable</span>
+<span class="w">            </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;bg-white rounded-xl p-3.5 border border-slate-200&quot;</span>
+<span class="w">            </span><span class="na">onPress</span><span class="o">=</span><span class="p">{()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">router</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="sb">`/books/</span><span class="si">${</span><span class="nx">item</span><span class="p">.</span><span class="nx">id</span><span class="si">}</span><span class="sb">`</span><span class="p">)}</span>
+<span class="w">          </span><span class="p">&gt;</span>
+<span class="w">            </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;text-base font-bold text-slate-800&quot;</span><span class="p">&gt;{</span><span class="nx">item</span><span class="p">.</span><span class="nx">title</span><span class="p">}&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">            </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;text-xs text-slate-500 mt-0.5&quot;</span><span class="p">&gt;</span><span class="nx">著者</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="nx">item</span><span class="p">.</span><span class="nx">author</span><span class="p">}&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">            </span><span class="p">{</span><span class="cm">/* ステータスバッジ。色はstatusに応じてクラスを切り替える */</span><span class="p">}</span>
+<span class="w">            </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="p">{</span><span class="sb">`self-start mt-2 px-2.5 py-0.5 rounded-full </span><span class="si">${</span><span class="nx">getStatusClass</span><span class="p">(</span><span class="nx">item</span><span class="p">.</span><span class="nx">status</span><span class="p">)</span><span class="si">}</span><span class="sb">`</span><span class="p">}&gt;</span>
+<span class="w">              </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;text-xs font-semibold text-slate-700&quot;</span><span class="p">&gt;{</span><span class="nx">item</span><span class="p">.</span><span class="nx">status</span><span class="p">}&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">            </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">          </span><span class="p">&lt;/</span><span class="nt">Pressable</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">)}</span>
+<span class="w">      </span><span class="p">/&gt;</span>
+
+<span class="w">      </span><span class="p">{</span><span class="cm">/* 追加ボタン（FAB） */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Pressable</span>
+<span class="w">        </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;absolute right-5 bottom-8 w-14 h-14 rounded-full bg-blue-800 justify-center items-center shadow-lg&quot;</span>
+<span class="w">        </span><span class="na">onPress</span><span class="o">=</span><span class="p">{()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">router</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="s2">&quot;/new&quot;</span><span class="p">)}</span>
+<span class="w">      </span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;text-white text-3xl leading-8&quot;</span><span class="p">&gt;</span><span class="err">＋</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">Pressable</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// ステータスごとの背景色クラスを返す（第7章のgetStatusStyleのNativeWind版）</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">getStatusClass</span><span class="p">(</span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">status</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;読了&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="s2">&quot;bg-green-100&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">status</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;読書中&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="s2">&quot;bg-blue-100&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="s2">&quot;bg-amber-100&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong><code>className</code> の中で <code>${ }</code> を使う:</strong> <code>className={`... ${getStatusClass(item.status)}`}</code> のように、テンプレートリテラルで動的にクラスを足せます。ステータスによってバッジの背景色を変える、といった「条件で見た目を変える」処理に便利です。</p>
+<p><strong><code>contentContainerClassName</code>:</strong> <code>FlatList</code> の内側のコンテナに対するクラス指定です。<code>StyleSheet</code> 版の <code>contentContainerStyle</code> に対応します。NativeWindは主要な部品でこうした <code>〜ClassName</code> を用意しています。</p>
+<p><strong>StyleSheetと混在してOK:</strong> すべてを一度に書き換える必要はありません。NativeWindと <code>StyleSheet</code> は同じプロジェクトで共存できます。新しい画面はNativeWind、既存はそのまま、でも問題ありません。少しずつ慣れていきましょう。</p>
+</blockquote>
+<h4 id="1_6">▼ コードを1つずつ分解して解説</h4>
+<p>ここでは、見た目を決めている <strong><code>className</code> の塊</strong>を中心に取り上げます。ロジック（<code>useState</code> や <code>useMemo</code> など）は第7・8章で解説済みなので、本節では「クラス名が何を意味するか」に絞って読み解きます。</p>
+<hr>
+<h5 id="1_7">解説1: 読み込み中の中央配置（ローディング画面）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-21"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;flex-1 justify-center items-center&quot;</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">&lt;</span><span class="nt">ActivityIndicator</span><span class="w"> </span><span class="na">size</span><span class="o">=</span><span class="s">&quot;large&quot;</span><span class="w"> </span><span class="na">color</span><span class="o">=</span><span class="s">&quot;#1e40af&quot;</span><span class="w"> </span><span class="p">/&gt;</span>
+<span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+</code></pre></div></div>
+
+<ul>
+<li>データ取得中（<code>loading</code> が <code>true</code>）のときに表示する、<strong>くるくる回る読み込み表示</strong>の枠です。</li>
+<li><code>flex-1</code> … この <code>&lt;View&gt;</code> を画面いっぱいに広げます。</li>
+<li><code>justify-center</code>（縦中央）と <code>items-center</code>（横中央）の組み合わせで、<code>ActivityIndicator</code>（読み込みアイコン）が<strong>画面のど真ん中</strong>に来ます。</li>
+<li>見た目の指定が <code>className</code> の3語だけで済み、<code>StyleSheet.create</code> のブロックが不要になっている点に注目してください。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <code>ActivityIndicator</code> … React Native標準の「処理中を示すくるくるアイコン」。<code>size</code> で大きさ、<code>color</code> で色を指定します。</p>
+</blockquote>
+<hr>
+<h5 id="2">解説2: 一覧画面の外枠（背景色つきの全画面コンテナ）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-22"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;flex-1 bg-slate-50&quot;</span><span class="p">&gt;</span>
+</code></pre></div></div>
+
+<ul>
+<li>一覧画面全体を包む一番外側の枠です。</li>
+<li><code>flex-1</code> … 画面いっぱいに広げます。</li>
+<li><code>bg-slate-50</code> … 背景を「<strong>ごく薄いグレー</strong>」にします。<code>50</code> は一番薄い濃さで、白に近い上品な背景色になり、上に乗る白いカードが少し浮いて見えます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <code>bg-slate-50</code> … <code>bg-</code>（背景色）+ <code>slate</code>（青みのあるグレー）+ <code>50</code>（最も薄い濃さ）。背景をほんのり色づけたいときの定番です。</p>
+</blockquote>
+<hr>
+<h5 id="3">解説3: 検索ボックス（余白つき枠と入力欄のスタイル）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-23"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;p-4 pb-0&quot;</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">&lt;</span><span class="nt">TextInput</span>
+<span class="w">    </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;bg-white border border-slate-200 rounded-lg px-4 py-2.5 text-sm&quot;</span>
+<span class="w">    </span><span class="na">placeholder</span><span class="o">=</span><span class="s">&quot;🔍 タイトルや著者で検索...&quot;</span>
+<span class="w">    </span><span class="na">value</span><span class="o">=</span><span class="p">{</span><span class="nx">keyword</span><span class="p">}</span>
+<span class="w">    </span><span class="na">onChangeText</span><span class="o">=</span><span class="p">{</span><span class="nx">setKeyword</span><span class="p">}</span>
+<span class="w">  </span><span class="p">/&gt;</span>
+<span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+</code></pre></div></div>
+
+<ul>
+<li>外側の <code>&lt;View className="p-4 pb-0"&gt;</code> … <code>p-4</code> で<strong>四方に16pxの余白</strong>を付けつつ、<code>pb-0</code> で「<strong>下の余白だけ0</strong>」にしています（下にあるリストと間隔が空きすぎないようにする調整）。</li>
+<li>入力欄 <code>&lt;TextInput&gt;</code> の <code>className</code> は5つの塊でできています。</li>
+<li><code>bg-white</code> … 背景を白に。</li>
+<li><code>border border-slate-200</code> … 「<strong>枠線あり</strong>」（<code>border</code>）かつ「<strong>枠線色は薄いグレー</strong>」（<code>border-slate-200</code>）。</li>
+<li><code>rounded-lg</code> … <strong>角をやや丸く</strong>します。</li>
+<li><code>px-4 py-2.5</code> … <strong>左右に16px・上下に10pxの内側余白</strong>。<code>px</code> は横方向、<code>py</code> は縦方向の余白です。</li>
+<li><code>text-sm</code> … 入力文字を<strong>やや小さめ</strong>に。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <code>px</code> / <code>py</code> / <code>pb</code> … <code>p</code>（padding＝内側の余白）に方向を足した書き方。<code>x</code>=左右、<code>y</code>=上下、<code>b</code>=下（<code>t</code>=上, <code>l</code>=左, <code>r</code>=右）。数字は基本「4倍するとpx」（<code>p-4</code>=16px、<code>py-2.5</code>=10px）です。</p>
+</blockquote>
+<hr>
+<h5 id="4-contentcontainerclassname">解説4: リスト全体の余白とすき間（<code>contentContainerClassName</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-24"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">&lt;</span><span class="nt">FlatList</span>
+<span class="w">  </span><span class="na">data</span><span class="o">=</span><span class="p">{</span><span class="nx">filteredBooks</span><span class="p">}</span>
+<span class="w">  </span><span class="na">keyExtractor</span><span class="o">=</span><span class="p">{(</span><span class="nx">item</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">item</span><span class="p">.</span><span class="nx">id</span><span class="p">}</span>
+<span class="w">  </span><span class="err">//</span><span class="w"> </span><span class="na">contentContainerStyleのNativeWind版</span>
+<span class="w">  </span><span class="na">contentContainerClassName</span><span class="o">=</span><span class="s">&quot;p-4 gap-2.5&quot;</span>
+<span class="w">  </span><span class="na">...</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>contentContainerClassName</code> は「<strong><code>FlatList</code> の内側（中身を並べるコンテナ）に当てるクラス</strong>」です。<code>StyleSheet</code> 版の <code>contentContainerStyle</code> に対応します。</li>
+<li><code>p-4</code> … リストの中身の<strong>四方に16pxの余白</strong>を付け、画面端に貼り付かないようにします。</li>
+<li><code>gap-2.5</code> … 並んだカード同士の<strong>すき間を10px</strong>空けます。<code>gap</code> を使うと、各カードに余白を付けなくても一定間隔で並びます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <code>gap</code> … 並んだ要素同士の「あいだのすき間」をまとめて指定する書き方。1つ1つに <code>margin</code> を付けるより簡潔に等間隔を作れます。</p>
+</blockquote>
+<hr>
+<h5 id="5">解説5: 空のときのメッセージ（中央寄せ・薄色・上余白）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-25"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;text-center text-slate-400 mt-10 px-5&quot;</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">{</span><span class="nx">keyword</span><span class="p">.</span><span class="nx">trim</span><span class="p">()</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s2">&quot;まだ本が登録されていません。&quot;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;該当する本が見つかりません。&quot;</span><span class="p">}</span>
+<span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+</code></pre></div></div>
+
+<ul>
+<li>リストが空のとき（<code>ListEmptyComponent</code>）に表示する案内文です。</li>
+<li><code>text-center</code> … 文字を<strong>中央寄せ</strong>にします。</li>
+<li><code>text-slate-400</code> … 文字色を「<strong>薄めのグレー</strong>」にして、目立ちすぎない控えめな案内にします。</li>
+<li><code>mt-10</code> … <strong>上に40pxの余白</strong>（<code>mt</code> = margin-top）を空け、画面の少し下に表示します。</li>
+<li><code>px-5</code> … 左右に20pxの余白を付け、長文でも画面端に触れないようにします。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <code>mt</code> … <code>m</code>（margin＝外側の余白）の上方向（top）。要素の「外側」に間隔を空けたいときは <code>m</code> 系、「内側」に空けたいときは <code>p</code> 系を使います。</p>
+</blockquote>
+<hr>
+<h5 id="6">解説6: 本のカード（白背景・角丸・枠線）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-26"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">&lt;</span><span class="nt">Pressable</span>
+<span class="w">  </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;bg-white rounded-xl p-3.5 border border-slate-200&quot;</span>
+<span class="w">  </span><span class="na">onPress</span><span class="o">=</span><span class="p">{()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">router</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="sb">`/books/</span><span class="si">${</span><span class="nx">item</span><span class="p">.</span><span class="nx">id</span><span class="si">}</span><span class="sb">`</span><span class="p">)}</span>
+<span class="p">&gt;</span>
+<span class="w">  </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;text-base font-bold text-slate-800&quot;</span><span class="p">&gt;{</span><span class="nx">item</span><span class="p">.</span><span class="nx">title</span><span class="p">}&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;text-xs text-slate-500 mt-0.5&quot;</span><span class="p">&gt;</span><span class="nx">著者</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="nx">item</span><span class="p">.</span><span class="nx">author</span><span class="p">}&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+</code></pre></div></div>
+
+<ul>
+<li>1冊分のカードを表す <code>&lt;Pressable&gt;</code>（押せる領域）のスタイルです。</li>
+<li><code>bg-white</code> … カード背景を白に（薄グレー背景の上で浮いて見えます）。</li>
+<li><code>rounded-xl</code> … <strong>角を大きめに丸く</strong>します（<code>lg</code> よりさらに丸い）。</li>
+<li><code>p-3.5</code> … 四方に<strong>14pxの内側余白</strong>を付けます。</li>
+<li><code>border border-slate-200</code> … 薄いグレーの<strong>枠線</strong>を付けて輪郭をはっきりさせます。</li>
+<li>カード内のテキスト。</li>
+<li>タイトルは <code>text-base</code>（標準サイズ）+ <code>font-bold</code>（太字）+ <code>text-slate-800</code>（濃いグレー）で見出しらしく。</li>
+<li>著者名は <code>text-xs</code>（小さめ）+ <code>text-slate-500</code>（中間グレー）+ <code>mt-0.5</code>（上に2pxのわずかな余白）で、タイトルの下に控えめに添えます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <code>&lt;Pressable&gt;</code> … タップに反応するReact Nativeの部品。<code>onPress</code> に押されたときの処理を渡します。ここでは押すと詳細画面へ移動します。</p>
+</blockquote>
+<hr>
+<h5 id="7">解説7: ステータスバッジ（テンプレートリテラルで色を切り替える）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-27"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="p">{</span><span class="sb">`self-start mt-2 px-2.5 py-0.5 rounded-full </span><span class="si">${</span><span class="nx">getStatusClass</span><span class="p">(</span><span class="nx">item</span><span class="p">.</span><span class="nx">status</span><span class="p">)</span><span class="si">}</span><span class="sb">`</span><span class="p">}&gt;</span>
+<span class="w">  </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;text-xs font-semibold text-slate-700&quot;</span><span class="p">&gt;{</span><span class="nx">item</span><span class="p">.</span><span class="nx">status</span><span class="p">}&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+</code></pre></div></div>
+
+<ul>
+<li>「読了／読書中／未読」などの状態を示す<strong>小さなバッジ</strong>です。<code>className</code> がテンプレートリテラル（<code>`...`</code>）になっている点が新しいところです。</li>
+<li><code>self-start</code> … バッジを「<strong>左端に合わせ、横幅を中身ぴったり</strong>」にします（横いっぱいに広がらないようにする指定）。</li>
+<li><code>mt-2</code> … 上に8pxの余白。</li>
+<li><code>px-2.5 py-0.5</code> … 左右10px・上下2pxの内側余白で、文字を小さな枠で囲みます。</li>
+<li><code>rounded-full</code> … <strong>角を完全に丸める</strong>ことで、カプセル型（ピル型）のバッジになります。</li>
+<li><code>${getStatusClass(item.status)}</code> … ここに<strong>状態ごとの背景色クラス</strong>が差し込まれます（次の解説8）。</li>
+<li>中の文字は <code>text-xs</code>（小）+ <code>font-semibold</code>（やや太字）+ <code>text-slate-700</code>（やや濃いグレー）。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> テンプレートリテラル … バッククォート <code>`</code> で囲んだ文字列。中で <code>${ }</code> を使うと、変数や関数の戻り値を埋め込めます。固定のクラスに「条件で変わるクラス」を足すときに便利です。</p>
+</blockquote>
+<hr>
+<h5 id="8-getstatusclass">解説8: 状態に応じて背景色クラスを返す関数（<code>getStatusClass</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-28"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">function</span><span class="w"> </span><span class="nx">getStatusClass</span><span class="p">(</span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">status</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;読了&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="s2">&quot;bg-green-100&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">status</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;読書中&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="s2">&quot;bg-blue-100&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="s2">&quot;bg-amber-100&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<ul>
+<li>バッジの<strong>背景色クラスだけ</strong>を、状態の文字列に応じて返す小さな関数です（第7章の <code>getStatusStyle</code> のNativeWind版）。</li>
+<li><code>status</code> が <code>"読了"</code> なら <code>bg-green-100</code>（<strong>薄い緑</strong>）、<code>"読書中"</code> なら <code>bg-blue-100</code>（<strong>薄い青</strong>）を返します。</li>
+<li>どちらにも当てはまらない場合（未読など）は、最後の <code>return "bg-amber-100"</code>（<strong>薄い黄色</strong>）が使われます。</li>
+<li>いずれも濃さ <code>100</code> の<strong>淡い背景色</strong>なので、上に乗る濃いめの文字（<code>text-slate-700</code>）が読みやすくなります。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <code>bg-green-100</code> など … 背景色を「薄い色（濃さ100）」で当てるクラス。バッジやタグのように「うっすら色を付けて種類を区別したい」場面でよく使います。</p>
+</blockquote>
+<hr>
+<h5 id="9-fab">解説9: 追加ボタン（画面右下に浮かぶ丸ボタン＝FAB）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-29"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">&lt;</span><span class="nt">Pressable</span>
+<span class="w">  </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;absolute right-5 bottom-8 w-14 h-14 rounded-full bg-blue-800 justify-center items-center shadow-lg&quot;</span>
+<span class="w">  </span><span class="na">onPress</span><span class="o">=</span><span class="p">{()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">router</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="s2">&quot;/new&quot;</span><span class="p">)}</span>
+<span class="p">&gt;</span>
+<span class="w">  </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;text-white text-3xl leading-8&quot;</span><span class="p">&gt;</span><span class="err">＋</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">Pressable</span><span class="p">&gt;</span>
+</code></pre></div></div>
+
+<ul>
+<li>画面の右下に<strong>常に浮いている丸い追加ボタン</strong>（FAB＝Floating Action Button）のスタイルです。クラスが多いので塊ごとに見ます。</li>
+<li><code>absolute right-5 bottom-8</code> … <strong>位置を固定</strong>（<code>absolute</code>）し、右から20px・下から32pxの位置に置きます。これでスクロールしても右下に浮き続けます。</li>
+<li><code>w-14 h-14</code> … <strong>幅と高さを56px</strong>にして正方形に（<code>w</code>=幅, <code>h</code>=高さ）。</li>
+<li><code>rounded-full</code> … 角を完全に丸めて<strong>真円</strong>にします。</li>
+<li><code>bg-blue-800</code> … 背景を<strong>濃い青</strong>に。</li>
+<li><code>justify-center items-center</code> … 中の「＋」を<strong>上下左右の中央</strong>に置きます。</li>
+<li><code>shadow-lg</code> … <strong>大きめの影</strong>を付けて、ボタンが浮いて見えるようにします。</li>
+<li>中の <code>&lt;Text className="text-white text-3xl leading-8"&gt;</code> … 「＋」を<strong>白</strong>（<code>text-white</code>）・<strong>大きい文字</strong>（<code>text-3xl</code>）にし、<code>leading-8</code>（行の高さ32px）で上下位置を微調整しています。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> FAB（Floating Action Button） … 画面に固定で浮かぶ丸い操作ボタン。<code>absolute</code> で位置を固定し、<code>rounded-full</code> で円形にするのが定番の作り方です。</p>
+</blockquote>
+<hr>
+<h2 id="5_1">5. アプリ全体の仕上げ</h2>
+<p>機能と見た目が整ったら、公開前に「アプリらしさ」を高める仕上げをしておくと完成度が上がります。</p>
+<h3 id="51">5.1 アプリ名・アイコン・スプラッシュ画面</h3>
+<p><code>app.json</code>（第1章で見た設定ファイル）で、アプリの基本情報を設定します。</p>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> アプリの<strong>名前・アイコン・起動画面（スプラッシュ）</strong>などの基本情報を <code>app.json</code> にまとめて設定します。<code>name</code> はホーム画面に出るアプリ名、<code>icon</code> はアイコン画像、<code>splash</code> は起動時に一瞬出る画面の指定です。公開前の「アプリらしさ」を決める大事な設定なので、どの項目が何を表すかを各行のコメントで押さえておきましょう。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-30"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;expo&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// ホーム画面に表示されるアプリ名</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;書籍管理&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">// プロジェクトの識別名（半角英数）</span>
+<span class="w">    </span><span class="nt">&quot;slug&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;my-books-app&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">// アプリのバージョン</span>
+<span class="w">    </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1.0.0&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">// アプリアイコン（1024x1024の正方形画像）</span>
+<span class="w">    </span><span class="nt">&quot;icon&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;./assets/icon.png&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">// 起動時に一瞬出るスプラッシュ画面</span>
+<span class="w">    </span><span class="nt">&quot;splash&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="c1">// スプラッシュ画像</span>
+<span class="w">      </span><span class="nt">&quot;image&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;./assets/splash.png&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="c1">// その背景色</span>
+<span class="w">      </span><span class="nt">&quot;backgroundColor&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;#1e40af&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="c1">// iPad対応</span>
+<span class="w">    </span><span class="nt">&quot;ios&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;supportsTablet&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="c1">// Androidの識別子（後で変更）</span>
+<span class="w">    </span><span class="nt">&quot;android&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;package&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;com.example.mybooksapp&quot;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>アイコンとスプラッシュ画像:</strong> <code>assets</code> フォルダにExpoのデフォルト画像が入っています。まずはそのままでも公開できます。オリジナル画像に差し替えると一気に「自分のアプリ」感が出ます。アイコンは1024×1024ピクセルの正方形PNGを用意しましょう。第10章の公開前に整えるのがおすすめです。</p>
+</blockquote>
+<h4 id="1_8">▼ コードを1つずつ分解して解説</h4>
+<hr>
+<h5 id="1-expo">解説1: 設定全体の入れ物（<code>"expo"</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-31"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;expo&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;書籍管理&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;slug&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;my-books-app&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1.0.0&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>app.json</code> はExpoアプリの設定をまとめたファイルで、全体が <code>{ "expo": { ... } }</code> という形になっています。<code>"expo"</code> の中に各設定を並べます。</li>
+<li><code>name</code> … <strong>ホーム画面に表示されるアプリ名</strong>です。日本語でもOK。</li>
+<li><code>slug</code> … プロジェクトの<strong>識別名</strong>で、半角英数で付けます（URLなどに使われる内部用の名前）。</li>
+<li><code>version</code> … アプリの<strong>バージョン番号</strong>。更新のたびに上げていきます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> JSON（ジェイソン） … <code>{ "キー": 値 }</code> の形で設定やデータを書く形式。値は文字列なら必ず <code>"..."</code> で囲み、項目はカンマ <code>,</code> で区切ります。</p>
+</blockquote>
+<hr>
+<h5 id="2-icon-splash">解説2: アイコンと起動画面（<code>icon</code> / <code>splash</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-32"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">    </span><span class="nt">&quot;icon&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;./assets/icon.png&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;splash&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;image&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;./assets/splash.png&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;backgroundColor&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;#1e40af&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>icon</code> … ホーム画面に出る<strong>アプリアイコンの画像ファイル</strong>を指定します。1024×1024の正方形PNGが基本です。</li>
+<li><code>splash</code> … アプリ起動時に<strong>一瞬出る画面（スプラッシュ）</strong>の設定をまとめたものです。</li>
+<li><code>image</code> … スプラッシュに表示する画像。</li>
+<li><code>backgroundColor</code> … その背景色。<code>#1e40af</code> は濃い青を表す<strong>カラーコード</strong>です。</li>
+<li>これらを設定すると、公開前の「自分のアプリらしさ」がぐっと高まります。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> カラーコード（<code>#1e40af</code>） … 色を6桁の英数字で表す書き方。<code>#</code> のあとに赤・緑・青の強さを並べたもので、<code>#1e40af</code> は濃い青になります。</p>
+</blockquote>
+<hr>
+<h5 id="3-iosandroidios-android">解説3: iOS・Androidごとの設定（<code>ios</code> / <code>android</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-33"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">    </span><span class="nt">&quot;ios&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;supportsTablet&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;android&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;package&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;com.example.mybooksapp&quot;</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>ios</code> と <code>android</code> は、それぞれの<strong>OS専用の設定</strong>をまとめる場所です。</li>
+<li><code>ios.supportsTablet: true</code> … iPad（タブレット）に<strong>対応する</strong>という指定です。</li>
+<li><code>android.package</code> … Androidアプリを<strong>世界で1つに識別するための文字列</strong>です。<code>com.会社名.アプリ名</code> のような形式で書き、公開前に自分用の値へ変更します。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> パッケージ名（<code>com.example.mybooksapp</code>） … Androidでアプリを一意に識別するID。他のアプリと重複しないよう、自分が持つドメインを逆順にした形などで付けるのが慣習です。</p>
+</blockquote>
+<hr>
+<h3 id="52">5.2 ダークモード対応（発展・任意）</h3>
+<p>NativeWindは <code>dark:</code> というプレフィックスでダークモード（暗い配色）対応も簡単にできます。</p>
+<div class="codehilite"><div class="code-wrap" id="code-34"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// dark: を付けると、端末がダークモードのときだけそのクラスが適用される</span>
+<span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;bg-white dark:bg-slate-900&quot;</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;text-slate-800 dark:text-slate-100&quot;</span><span class="p">&gt;</span><span class="nx">ダークモード対応のテキスト</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>任意の機能です:</strong> ダークモード対応は必須ではありません。「こんなこともできる」という紹介です。余裕があれば挑戦してみてください。</p>
+</blockquote>
+<hr>
+<h2 id="6_1">6. この章のまとめ</h2>
+<ul>
+<li>スタイリングの選択肢（StyleSheet / NativeWind / Tamagui / UIキット）を比較し、目的別の選び方を理解した</li>
+<li><strong>NativeWind</strong> を導入（インストール → <code>tailwind.config.js</code> → <code>global.css</code> → Babel/Metro設定 → <code>--clear</code>再起動）</li>
+<li><code>style={...}</code> の代わりに <strong><code>className="..."</code></strong> でクラスを並べて見た目を指定する書き方を学んだ</li>
+<li>一覧画面をNativeWindで書き直し、コードが短くなることを体感した</li>
+<li><code>app.json</code> で<strong>アプリ名・アイコン・スプラッシュ</strong>を設定し、公開の準備を整えた</li>
+</ul>
+<blockquote>
+<p><strong>次の章へ:</strong> アプリが完成しました！いよいよ第10章で、このアプリを <strong>App Store と Google Play に公開</strong>します。世界中の人があなたのアプリを使えるようになります。</p>
+</blockquote>
+<hr>
+<h2 id="_1">発展: アプリでは使っていない重要なスタイリング機能</h2>
+<p>ここまでで作った書籍管理アプリでは使いませんでしたが、<strong>実際のアプリ開発でとてもよく登場する</strong>スタイリングの機能をまとめて紹介します。どれも「いつ使うか・なぜ必要か」が分かれば、難しくありません。本書では <code>StyleSheet</code>（React Native標準）で書きますが、NativeWindでもほぼ同じ考え方が使えます。</p>
+<blockquote>
+<p><strong>大事な前提（Webとの違い）:</strong> React Nativeは<strong>スマホの画面</strong>に表示する仕組みで、ホームページ（Web）の見た目を作るCSSとは別物です。Webでよく使う <code>box-shadow: ...</code> という文字列や、マウスを乗せたときの <code>:hover</code>、ページに貼り付ける <code>position: fixed</code> などは<strong>使えません</strong>。React Nativeには専用の書き方が用意されているので、この節ではそれを学びます。</p>
+</blockquote>
+<hr>
+<h3 id="flexbox">Flexboxの詳細（折り返し・基準サイズ・個別配置・伸び縮みの比率）</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 要素を「横や縦にきれいに並べる」仕組みである <strong>Flexbox</strong> の、よく使う4つの機能を1つの画面で試します。具体的には、入りきらないときに<strong>次の行へ折り返す</strong>（<code>flexWrap</code>）、各要素の<strong>基準の幅を決める</strong>（<code>flexBasis</code>）、特定の1つだけ<strong>配置をずらす</strong>（<code>alignSelf</code>）、そして<strong>残りの空間を何対何で分け合うか</strong>（<code>flex</code> の比率）です。タグの一覧や、画面を比率で分割するレイアウトを作るときに役立ちます。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-35"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">View</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="p">,</span><span class="w"> </span><span class="nx">StyleSheet</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-native&quot;</span><span class="p">;</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">FlexboxDemo</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">screen</span><span class="p">}&gt;</span>
+<span class="w">      </span><span class="p">{</span><span class="cm">/* (1) 折り返し: 横に並べて入りきらなければ次の行へ */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">tagRow</span><span class="p">}&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">tag</span><span class="p">}&gt;</span><span class="nx">React</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">tag</span><span class="p">}&gt;</span><span class="nx">Native</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">tag</span><span class="p">}&gt;</span><span class="nx">Flexbox</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">tag</span><span class="p">}&gt;</span><span class="nx">StyleSheet</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">tag</span><span class="p">}&gt;</span><span class="nx">NativeWind</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+
+<span class="w">      </span><span class="p">{</span><span class="cm">/* (2) 伸び縮みの比率: 1 : 2 で横幅を分け合う */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">ratioRow</span><span class="p">}&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{[</span><span class="nx">styles</span><span class="p">.</span><span class="nx">box</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">flex</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span><span class="w"> </span><span class="nx">backgroundColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#93c5fd&quot;</span><span class="w"> </span><span class="p">}]}&gt;</span>
+<span class="w">          </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="nx">flex</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{[</span><span class="nx">styles</span><span class="p">.</span><span class="nx">box</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">flex</span><span class="o">:</span><span class="w"> </span><span class="kt">2</span><span class="p">,</span><span class="w"> </span><span class="nx">backgroundColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#3b82f6&quot;</span><span class="w"> </span><span class="p">}]}&gt;</span>
+<span class="w">          </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="nx">flex</span><span class="o">:</span><span class="w"> </span><span class="kt">2</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+
+<span class="w">      </span><span class="p">{</span><span class="cm">/* (3) 自分だけ右へ: alignSelf で1つだけ配置をずらす */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">selfRow</span><span class="p">}&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">selfItem</span><span class="p">}&gt;</span><span class="nx">左寄せ</span><span class="err">（</span><span class="nx">親の指定どおり</span><span class="err">）</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{[</span><span class="nx">styles</span><span class="p">.</span><span class="nx">selfItem</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">alignSelf</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;flex-end&quot;</span><span class="w"> </span><span class="p">}]}&gt;</span>
+<span class="w">          </span><span class="nx">この行だけ右寄せ</span>
+<span class="w">        </span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">styles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">StyleSheet</span><span class="p">.</span><span class="nx">create</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">screen</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">flex</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span><span class="w"> </span><span class="nx">padding</span><span class="o">:</span><span class="w"> </span><span class="kt">16</span><span class="p">,</span><span class="w"> </span><span class="nx">gap</span><span class="o">:</span><span class="w"> </span><span class="kt">16</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">tagRow</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 横並びにする</span>
+<span class="w">    </span><span class="nx">flexDirection</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;row&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">// 入りきらなければ折り返す</span>
+<span class="w">    </span><span class="nx">flexWrap</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;wrap&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">// タグ同士のすき間</span>
+<span class="w">    </span><span class="nx">gap</span><span class="o">:</span><span class="w"> </span><span class="kt">8</span><span class="p">,</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">tag</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">backgroundColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#e0e7ff&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">paddingHorizontal</span><span class="o">:</span><span class="w"> </span><span class="kt">12</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">paddingVertical</span><span class="o">:</span><span class="w"> </span><span class="kt">6</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">// 完全な丸み（カプセル型）</span>
+<span class="w">    </span><span class="nx">borderRadius</span><span class="o">:</span><span class="w"> </span><span class="kt">999</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">// 1つあたりの基準の幅を100にする</span>
+<span class="w">    </span><span class="nx">flexBasis</span><span class="o">:</span><span class="w"> </span><span class="kt">100</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">textAlign</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">ratioRow</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">flexDirection</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;row&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">gap</span><span class="o">:</span><span class="w"> </span><span class="kt">8</span><span class="p">,</span><span class="w"> </span><span class="nx">height</span><span class="o">:</span><span class="w"> </span><span class="kt">60</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">box</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">justifyContent</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">alignItems</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">borderRadius</span><span class="o">:</span><span class="w"> </span><span class="kt">8</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">selfRow</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">gap</span><span class="o">:</span><span class="w"> </span><span class="kt">8</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">selfItem</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">backgroundColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#fde68a&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">padding</span><span class="o">:</span><span class="w"> </span><span class="kt">8</span><span class="p">,</span><span class="w"> </span><span class="nx">borderRadius</span><span class="o">:</span><span class="w"> </span><span class="kt">8</span><span class="w"> </span><span class="p">},</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h4 id="1_9">▼ コードを1つずつ分解して解説</h4>
+<hr>
+<h5 id="1-flexwrap">解説1: 折り返して並べる（<code>flexWrap</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-36"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nx">tagRow</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// 横並びにする</span>
+<span class="w">  </span><span class="nx">flexDirection</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;row&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="c1">// 入りきらなければ折り返す</span>
+<span class="w">  </span><span class="nx">flexWrap</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;wrap&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">gap</span><span class="o">:</span><span class="w"> </span><span class="kt">8</span><span class="p">,</span>
+<span class="p">},</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>flexDirection: "row"</code> で、中の要素を<strong>横方向に並べます</strong>（初期値は縦並びの <code>"column"</code>）。</li>
+<li><code>flexWrap: "wrap"</code> は「<strong>横幅が足りなくなったら、はみ出さずに次の行へ折り返す</strong>」という指定です。これが無い（初期値の <code>"nowrap"</code>）と、要素が無理やり縮められたり画面からはみ出したりします。</li>
+<li><code>gap: 8</code> で、並んだ要素同士のすき間を8空けます。折り返した後の行同士のすき間にも効きます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <code>flexWrap</code>（フレックスラップ） … 並べた要素が<strong>1行に収まらないとき折り返すかどうか</strong>を決める指定。タグ一覧やボタンの集まりのように「数が変わるものを並べる」場面で必須です。</p>
+</blockquote>
+<hr>
+<h5 id="2-1flexbasis">解説2: 1つあたりの基準サイズ（<code>flexBasis</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-37"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nx">tag</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// 1つあたりの基準の幅を100にする</span>
+<span class="w">  </span><span class="nx">flexBasis</span><span class="o">:</span><span class="w"> </span><span class="kt">100</span><span class="p">,</span>
+<span class="w">  </span><span class="c1">// ...</span>
+<span class="p">},</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>flexBasis</code> は「<strong>その要素の、最初の基準となる大きさ</strong>」です。横並び（<code>row</code>）なら幅、縦並び（<code>column</code>）なら高さの基準になります。</li>
+<li>ここでは <code>100</code> を指定しているので、各タグは<strong>まず幅100を目安に置かれ</strong>、入りきらなければ前述の <code>flexWrap</code> で折り返されます。</li>
+<li><code>width</code>（固定幅）と似ていますが、<code>flexBasis</code> は「<strong>あくまで基準</strong>であり、空き具合に応じて伸び縮みできる」点が違います。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <code>flexBasis</code>（フレックスベーシス） … 伸び縮みする前の「<strong>スタートの大きさ</strong>」。<code>width</code> がガチガチの固定なのに対し、こちらは柔軟に調整される基準値です。</p>
+</blockquote>
+<hr>
+<h5 id="3-alignself">解説3: 自分だけ配置をずらす（<code>alignSelf</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-38"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{[</span><span class="nx">styles</span><span class="p">.</span><span class="nx">selfItem</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">alignSelf</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;flex-end&quot;</span><span class="w"> </span><span class="p">}]}&gt;</span>
+<span class="w">  </span><span class="nx">この行だけ右寄せ</span>
+<span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>alignSelf</code> は「<strong>親の配置ルールを無視して、自分1つだけ別の配置にする</strong>」指定です。</li>
+<li>親（<code>selfRow</code>）は縦並びなので、通常は子要素が左端からそろいます。そこに <code>alignSelf: "flex-end"</code> を付けた要素<strong>だけ</strong>が、右端（行の終わり側）に寄ります。</li>
+<li><code>"flex-start"</code>（始め側）、<code>"center"</code>（中央）、<code>"flex-end"</code>（終わり側）、<code>"stretch"</code>（いっぱいに伸ばす）などが指定できます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <code>alignSelf</code>（アラインセルフ） … 親がまとめて決めた配置を、<strong>その要素だけ上書き</strong>する指定。「基本は左寄せだけど、この1つだけ右に出したい」というときに使います。</p>
+</blockquote>
+<hr>
+<h5 id="4-flex">解説4: 残りの空間を比率で分け合う（<code>flex</code> の数字）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-39"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{[</span><span class="nx">styles</span><span class="p">.</span><span class="nx">box</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">flex</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span><span class="w"> </span><span class="nx">backgroundColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#93c5fd&quot;</span><span class="w"> </span><span class="p">}]}&gt;</span>
+<span class="w">  </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="nx">flex</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{[</span><span class="nx">styles</span><span class="p">.</span><span class="nx">box</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">flex</span><span class="o">:</span><span class="w"> </span><span class="kt">2</span><span class="p">,</span><span class="w"> </span><span class="nx">backgroundColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#3b82f6&quot;</span><span class="w"> </span><span class="p">}]}&gt;</span>
+<span class="w">  </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="nx">flex</span><span class="o">:</span><span class="w"> </span><span class="kt">2</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+</code></pre></div></div>
+
+<ul>
+<li>横並びの中に置いた2つの枠に、それぞれ <code>flex: 1</code> と <code>flex: 2</code> を付けています。</li>
+<li>このとき2つは<strong>幅を 1 : 2 の比率で分け合います</strong>。つまり右側が左側の2倍の幅になります。<code>flex</code> の数字は「使える空間を、どんな割合で取り合うか」を表す<strong>比率</strong>です。</li>
+<li>画面を「左に1・右に2」のように比率で分割したいとき、固定のピクセル数を計算しなくてもこれだけで実現できます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <code>flex</code> の比率 … 並んだ要素に付けた <code>flex</code> の数字の<strong>比</strong>で、余った空間を分け合います。<code>flex: 1</code> と <code>flex: 1</code> なら半々、<code>flex: 1</code> と <code>flex: 3</code> なら 1 : 3 になります。</p>
+</blockquote>
+<hr>
+<h3 id="dimensions-usewindowdimensions">画面サイズに合わせる（<code>Dimensions</code> と <code>useWindowDimensions</code>）</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> スマホには画面が大きい機種・小さい機種、さらに<strong>縦持ち・横持ち</strong>があります。この例では、今の<strong>画面の幅・高さを取得</strong>して、その値に応じて見た目を変えます（例: 幅が広い端末では文字を大きく）。これを使うと、どの端末でも崩れない「<strong>端末に合わせて伸び縮みするレイアウト</strong>」が作れます。<code>useWindowDimensions</code> は画面を回転したときも<strong>自動で最新の値に更新される</strong>のが便利なポイントです。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-40"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">View</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="p">,</span><span class="w"> </span><span class="nx">StyleSheet</span><span class="p">,</span><span class="w"> </span><span class="nx">useWindowDimensions</span><span class="p">,</span><span class="w"> </span><span class="nx">Dimensions</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-native&quot;</span><span class="p">;</span>
+
+<span class="c1">// 画面の今の大きさを「1回だけ」測る（更新はされない）</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">initial</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">Dimensions</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s2">&quot;window&quot;</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;起動時の幅:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">initial</span><span class="p">.</span><span class="nx">width</span><span class="p">);</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">ResponsiveDemo</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// 画面の幅・高さを取得（回転や折りたたみで自動更新される）</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">width</span><span class="p">,</span><span class="w"> </span><span class="nx">height</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useWindowDimensions</span><span class="p">();</span>
+
+<span class="w">  </span><span class="c1">// 幅が400より広ければ「大きい画面」とみなす</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">isWide</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">width</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mf">400</span><span class="p">;</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">screen</span><span class="p">}&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{{</span><span class="w"> </span><span class="nx">fontSize</span><span class="o">:</span><span class="w"> </span><span class="kt">isWide</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="nx">24</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">16</span><span class="w"> </span><span class="p">}}&gt;</span>
+<span class="w">        </span><span class="nx">画面の幅</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">(</span><span class="nx">width</span><span class="p">)}</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nx">高さ</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">(</span><span class="nx">height</span><span class="p">)}</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">{</span><span class="cm">/* 画面幅の半分の幅を持つ四角を作る */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{{</span><span class="w"> </span><span class="nx">width</span><span class="o">:</span><span class="w"> </span><span class="kt">width</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2</span><span class="p">,</span><span class="w"> </span><span class="nx">height</span><span class="o">:</span><span class="w"> </span><span class="kt">60</span><span class="p">,</span><span class="w"> </span><span class="nx">backgroundColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#3b82f6&quot;</span><span class="w"> </span><span class="p">}}</span><span class="w"> </span><span class="p">/&gt;</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">styles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">StyleSheet</span><span class="p">.</span><span class="nx">create</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">screen</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">flex</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span><span class="w"> </span><span class="nx">padding</span><span class="o">:</span><span class="w"> </span><span class="kt">16</span><span class="p">,</span><span class="w"> </span><span class="nx">gap</span><span class="o">:</span><span class="w"> </span><span class="kt">16</span><span class="p">,</span><span class="w"> </span><span class="nx">justifyContent</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h4 id="1_10">▼ コードを1つずつ分解して解説</h4>
+<hr>
+<h5 id="1-1-dimensionsget">解説1: 1回だけ測る <code>Dimensions.get</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-41"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">initial</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">Dimensions</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s2">&quot;window&quot;</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;起動時の幅:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">initial</span><span class="p">.</span><span class="nx">width</span><span class="p">);</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>Dimensions.get("window")</code> は「<strong>今の画面の大きさ（幅・高さ）を1回測って返す</strong>」関数です。返ってきたものから <code>.width</code>（幅）や <code>.height</code>（高さ）を取り出せます。</li>
+<li><code>"window"</code> は「アプリが使える画面の領域」を意味します（似たものに端末全体を表す <code>"screen"</code> もあります）。</li>
+<li>注意点は、これは<strong>測った瞬間の値で固定</strong>されることです。画面を回転しても<strong>自動では更新されません</strong>。コンポーネントの外（毎回再計算しない場所）で、起動時の値を一度だけ知りたいときに向いています。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <code>Dimensions</code>（ディメンションズ） … 画面の大きさを測るためのReact Native標準の道具。<code>get("window")</code> でその時点の幅・高さが分かります。</p>
+</blockquote>
+<hr>
+<h5 id="2-usewindowdimensions">解説2: 自動更新される <code>useWindowDimensions</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-42"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">width</span><span class="p">,</span><span class="w"> </span><span class="nx">height</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useWindowDimensions</span><span class="p">();</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">isWide</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">width</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mf">400</span><span class="p">;</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>useWindowDimensions()</code> は「<strong>今の画面の幅・高さを返し、しかも画面が回転・サイズ変更されると自動で最新の値に更新してくれる</strong>」便利な関数（フック）です。</li>
+<li>ここでは <code>{ width, height }</code> として幅と高さを取り出しています。回転して幅が変わると、この値も変わり、画面が<strong>自動で再描画</strong>されます。</li>
+<li><code>isWide = width &gt;= 400</code> のように、取得した幅をもとに「広い画面かどうか」を判定して、後の見た目を切り替えられます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> フック（hook） … <code>use〜</code> という名前で始まる、React/React Nativeの特別な関数。画面の状態や端末の情報を<strong>自動で追いかけて</strong>、変化したら画面を更新してくれます。</p>
+</blockquote>
+<hr>
+<h5 id="3_1">解説3: 取得した値で見た目を変える</h5>
+<div class="codehilite"><div class="code-wrap" id="code-43"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{{</span><span class="w"> </span><span class="nx">fontSize</span><span class="o">:</span><span class="w"> </span><span class="kt">isWide</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="nx">24</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">16</span><span class="w"> </span><span class="p">}}&gt;</span>
+<span class="w">  </span><span class="nx">画面の幅</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">(</span><span class="nx">width</span><span class="p">)}</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nx">高さ</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">(</span><span class="nx">height</span><span class="p">)}</span>
+<span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{{</span><span class="w"> </span><span class="nx">width</span><span class="o">:</span><span class="w"> </span><span class="kt">width</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2</span><span class="p">,</span><span class="w"> </span><span class="nx">height</span><span class="o">:</span><span class="w"> </span><span class="kt">60</span><span class="p">,</span><span class="w"> </span><span class="nx">backgroundColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#3b82f6&quot;</span><span class="w"> </span><span class="p">}}</span><span class="w"> </span><span class="p">/&gt;</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>fontSize: isWide ? 24 : 16</code> は「<strong>広い画面なら文字を24、そうでなければ16にする</strong>」という条件分岐です（<code>条件 ? 真のとき : 偽のとき</code>）。</li>
+<li><code>width: width / 2</code> のように、取得した画面幅を<strong>計算に使って</strong>、画面幅のちょうど半分の四角を作っています。端末が変わってもいつでも「画面の半分」になります。</li>
+<li><code>Math.round(...)</code> は小数点以下を四捨五入して、表示を見やすい整数にしています。</li>
+</ul>
+<blockquote>
+<p><strong>いつ使う？</strong> 「タブレットでは2列、スマホでは1列」「横持ちのときだけ横並び」など、<strong>端末や向きに応じてレイアウトを変えたい</strong>ときに使います。リアルなアプリでは必須級の機能です。</p>
+</blockquote>
+<hr>
+<h3 id="iosandroid">影を付ける（iOSとAndroidで指定が違う）</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> カードやボタンを「<strong>少し浮いて見える</strong>」ようにする影の付け方です。ここが少しややこしいのですが、React Nativeでは <strong>iPhone（iOS）とAndroidで影の指定方法が違います</strong>。iOSは影の色・向き・濃さ・ぼかし具合を細かく指定し、Androidは <code>elevation</code>（高さ）という1つの数字で指定します。<strong>両方を書いておけば</strong>、どちらの端末でもきれいに影が付きます。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-44"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">View</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="p">,</span><span class="w"> </span><span class="nx">StyleSheet</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-native&quot;</span><span class="p">;</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">ShadowDemo</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">screen</span><span class="p">}&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">card</span><span class="p">}&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="nx">影付きのカード</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">styles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">StyleSheet</span><span class="p">.</span><span class="nx">create</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">screen</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">flex</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span><span class="w"> </span><span class="nx">padding</span><span class="o">:</span><span class="w"> </span><span class="kt">24</span><span class="p">,</span><span class="w"> </span><span class="nx">backgroundColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#f8fafc&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">justifyContent</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">card</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">backgroundColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#ffffff&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">padding</span><span class="o">:</span><span class="w"> </span><span class="kt">24</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">borderRadius</span><span class="o">:</span><span class="w"> </span><span class="kt">12</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">// ▼ iOS用の影（4つセットで指定する）</span>
+<span class="w">    </span><span class="c1">// 影の色</span>
+<span class="w">    </span><span class="nx">shadowColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#000000&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">// 影をどれだけずらすか（右0・下4）</span>
+<span class="w">    </span><span class="nx">shadowOffset</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">width</span><span class="o">:</span><span class="w"> </span><span class="kt">0</span><span class="p">,</span><span class="w"> </span><span class="nx">height</span><span class="o">:</span><span class="w"> </span><span class="kt">4</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="c1">// 影の濃さ（0=透明〜1=真っ黒）</span>
+<span class="w">    </span><span class="nx">shadowOpacity</span><span class="o">:</span><span class="w"> </span><span class="kt">0.15</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">// 影のぼかし具合（大きいほどふんわり）</span>
+<span class="w">    </span><span class="nx">shadowRadius</span><span class="o">:</span><span class="w"> </span><span class="kt">8</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">// ▼ Android用の影（高さを表す1つの数字）</span>
+<span class="w">    </span><span class="c1">// 数字が大きいほど高く浮いて影が濃くなる</span>
+<span class="w">    </span><span class="nx">elevation</span><span class="o">:</span><span class="w"> </span><span class="kt">5</span><span class="p">,</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h4 id="1_11">▼ コードを1つずつ分解して解説</h4>
+<hr>
+<h5 id="1-ios4">解説1: iOS用の影は「4つセット」で指定する</h5>
+<div class="codehilite"><div class="code-wrap" id="code-45"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 影の色</span>
+<span class="nx">shadowColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#000000&quot;</span><span class="p">,</span>
+<span class="c1">// 影をどれだけずらすか</span>
+<span class="nx">shadowOffset</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">width</span><span class="o">:</span><span class="w"> </span><span class="kt">0</span><span class="p">,</span><span class="w"> </span><span class="nx">height</span><span class="o">:</span><span class="w"> </span><span class="kt">4</span><span class="w"> </span><span class="p">},</span>
+<span class="c1">// 影の濃さ</span>
+<span class="nx">shadowOpacity</span><span class="o">:</span><span class="w"> </span><span class="kt">0.15</span><span class="p">,</span>
+<span class="c1">// 影のぼかし具合</span>
+<span class="nx">shadowRadius</span><span class="o">:</span><span class="w"> </span><span class="kt">8</span><span class="p">,</span>
+</code></pre></div></div>
+
+<ul>
+<li>iPhone（iOS）では、影を<strong>4つのプロパティの組み合わせ</strong>で表現します。1つだけ書いても効かないので、基本は4つセットで指定します。</li>
+<li><code>shadowColor</code> … 影の<strong>色</strong>です。たいてい黒（<code>"#000000"</code>）にします。</li>
+<li><code>shadowOffset: { width: 0, height: 4 }</code> … 影を<strong>どの向きにどれだけずらすか</strong>。<code>height: 4</code> で「真下に4ずらした影」になり、要素が上に浮いて見えます。</li>
+<li><code>shadowOpacity: 0.15</code> … 影の<strong>濃さ</strong>を <code>0</code>（透明）〜<code>1</code>（真っ黒）で指定します。<code>0.15</code> くらいが自然です。</li>
+<li><code>shadowRadius: 8</code> … 影の<strong>ぼかし具合</strong>。大きいほど、ふわっと広がった柔らかい影になります。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> 影の4点セット … iOSでは <code>shadowColor</code>（色）/<code>shadowOffset</code>（ずらし）/<code>shadowOpacity</code>（濃さ）/<code>shadowRadius</code>（ぼかし）の4つで影を作ります。WebのCSSで使う <code>box-shadow</code> という1行の文字列は<strong>使えない</strong>ので注意してください。</p>
+</blockquote>
+<hr>
+<h5 id="2-android1">解説2: Android用の影は「高さ」1つで指定する</h5>
+<div class="codehilite"><div class="code-wrap" id="code-46"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 数字が大きいほど高く浮いて影が濃くなる</span>
+<span class="nx">elevation</span><span class="o">:</span><span class="w"> </span><span class="kt">5</span><span class="p">,</span>
+</code></pre></div></div>
+
+<ul>
+<li>Androidでは影を <code>elevation</code>（エレベーション＝高さ）という<strong>1つの数字</strong>だけで指定します。iOSの4点セットは効きません。</li>
+<li>数字が大きいほど「<strong>より高く浮いている</strong>」とみなされ、影が濃く大きくなります。<code>5</code> 前後がカードらしい自然な見た目です。</li>
+<li>大事なのは、<strong>iOS用の4点セットとAndroidの <code>elevation</code> の両方を書いておく</strong>ことです。React Nativeは「その端末で有効なほうだけ」を使うので、両方書いておけばどちらの機種でも影が付きます。</li>
+</ul>
+<blockquote>
+<p><strong>いつ使う？</strong> カード・ボタン・メニューなどを「<strong>背景から少し浮かせて目立たせたい</strong>」ときに使います。前の節で見たFAB（浮かぶ追加ボタン）も、影が付くことで「押せそうな浮いたボタン」に見えます。</p>
+</blockquote>
+<hr>
+<h3 id="transform">変形させる（拡大・回転・移動＝<code>transform</code>）</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 要素を<strong>大きくしたり（拡大）、傾けたり（回転）、位置をずらしたり（移動）</strong>する <code>transform</code> の使い方です。元のレイアウトを崩さずに「見た目だけ」変えられるのが特徴で、アイコンを少し傾けたり、押したとき一瞬大きくする演出などに使います。<code>transform</code> は<strong>変形の指定を配列（リスト）で複数並べる</strong>点がポイントです。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-47"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">View</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="p">,</span><span class="w"> </span><span class="nx">StyleSheet</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-native&quot;</span><span class="p">;</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">TransformDemo</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">screen</span><span class="p">}&gt;</span>
+<span class="w">      </span><span class="p">{</span><span class="cm">/* 1.3倍に拡大 */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{[</span><span class="nx">styles</span><span class="p">.</span><span class="nx">box</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">transform</span><span class="o">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nx">scale</span><span class="o">:</span><span class="w"> </span><span class="kt">1.3</span><span class="w"> </span><span class="p">}]</span><span class="w"> </span><span class="p">}]}&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="nx">拡大</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+
+<span class="w">      </span><span class="p">{</span><span class="cm">/* 15度かたむける */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{[</span><span class="nx">styles</span><span class="p">.</span><span class="nx">box</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">transform</span><span class="o">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nx">rotate</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;15deg&quot;</span><span class="w"> </span><span class="p">}]</span><span class="w"> </span><span class="p">}]}&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="nx">回転</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+
+<span class="w">      </span><span class="p">{</span><span class="cm">/* 右へ40ずらす + 少し縮小（複数を配列で並べる） */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">View</span>
+<span class="w">        </span><span class="na">style</span><span class="o">=</span><span class="p">{[</span><span class="nx">styles</span><span class="p">.</span><span class="nx">box</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">transform</span><span class="o">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nx">translateX</span><span class="o">:</span><span class="w"> </span><span class="kt">40</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">scale</span><span class="o">:</span><span class="w"> </span><span class="kt">0.8</span><span class="w"> </span><span class="p">}]</span><span class="w"> </span><span class="p">}]}</span>
+<span class="w">      </span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="nx">移動</span><span class="err">＋</span><span class="nx">縮小</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">styles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">StyleSheet</span><span class="p">.</span><span class="nx">create</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">screen</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">flex</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span><span class="w"> </span><span class="nx">padding</span><span class="o">:</span><span class="w"> </span><span class="kt">24</span><span class="p">,</span><span class="w"> </span><span class="nx">gap</span><span class="o">:</span><span class="w"> </span><span class="kt">32</span><span class="p">,</span><span class="w"> </span><span class="nx">justifyContent</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">box</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">backgroundColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#a7f3d0&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">padding</span><span class="o">:</span><span class="w"> </span><span class="kt">16</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">borderRadius</span><span class="o">:</span><span class="w"> </span><span class="kt">8</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">alignItems</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h4 id="1_12">▼ コードを1つずつ分解して解説</h4>
+<hr>
+<h5 id="1-scale">解説1: 大きさを変える（<code>scale</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-48"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nx">transform</span><span class="o">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nx">scale</span><span class="o">:</span><span class="w"> </span><span class="kt">1.3</span><span class="w"> </span><span class="p">}]</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>transform</code> には、変形の指定を <strong><code>[ { ... } ]</code> という配列（リスト）</strong>で渡します。たとえ1つだけでも配列で囲みます。</li>
+<li><code>{ scale: 1.3 }</code> は「<strong>1.3倍に拡大する</strong>」指定です。<code>1</code> が元のサイズ、<code>0.5</code> なら半分、<code>2</code> なら2倍です。</li>
+<li>拡大しても<strong>まわりのレイアウトの計算は元のサイズのまま</strong>なので、近くの要素を押しのけずに「見た目だけ」大きくなります。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <code>scale</code>（スケール） … 拡大・縮小の倍率。<code>1</code> が等倍で、数字を大きくすると拡大、小さくすると縮小します。</p>
+</blockquote>
+<hr>
+<h5 id="2-rotate">解説2: 回転させる（<code>rotate</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-49"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nx">transform</span><span class="o">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nx">rotate</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;15deg&quot;</span><span class="w"> </span><span class="p">}]</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>{ rotate: "15deg" }</code> は「<strong>15度かたむける</strong>」指定です。角度は <code>"15deg"</code> のように<strong>文字列で単位 <code>deg</code>（度）を付けて</strong>書きます。</li>
+<li>プラスの数字で時計回り、マイナス（<code>"-15deg"</code>）で反時計回りに回転します。</li>
+<li>アイコンを少し傾けたり、開閉する矢印を回したり、といった演出に使います。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <code>rotate</code>（ローテート） … 要素を回す指定。値は <code>"45deg"</code> のように<strong>度数を文字列</strong>で渡します（数字だけだとエラーになります）。</p>
+</blockquote>
+<hr>
+<h5 id="3-translatex">解説3: 位置をずらす＋複数を組み合わせる（<code>translateX</code> と配列）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-50"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nx">transform</span><span class="o">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nx">translateX</span><span class="o">:</span><span class="w"> </span><span class="kt">40</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">scale</span><span class="o">:</span><span class="w"> </span><span class="kt">0.8</span><span class="w"> </span><span class="p">}]</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>{ translateX: 40 }</code> は「<strong>横方向（X）に40ずらす</strong>」指定です（プラスで右、マイナスで左）。縦にずらす <code>translateY</code> もあります。</li>
+<li>ここでは配列の中に <strong><code>translateX</code> と <code>scale</code> の2つを並べて</strong>います。このように <code>transform</code> は<strong>複数の変形を組み合わせられる</strong>のが大きな特徴です（「右に40ずらして、かつ0.8倍に縮小」）。</li>
+<li>並べる順番にも意味があるので、思った見た目にならないときは順番を入れ替えてみてください。</li>
+</ul>
+<blockquote>
+<p><strong>いつ使う？</strong> ボタンを押した瞬間に少し縮める、お知らせバッジをちょっと傾ける、要素をスッと横移動させるなど、<strong>「見た目だけの小さな演出」</strong>に使います。レイアウト自体は変えずに動きを足せるのが利点です。</p>
+</blockquote>
+<hr>
+<h3 id="position-absolute-zindex">要素を重ねて配置する（<code>position: "absolute"</code> と <code>zIndex</code>）</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> ふだん要素は順番に並びますが、<code>position: "absolute"</code>（絶対配置）を使うと、<strong>親の中の好きな位置にピンで留めるように置ける</strong>ようになります。さらに要素同士が重なったとき、<code>zIndex</code>（重なりの順番）で<strong>どちらを前に出すか</strong>を決められます。画像の右上に「NEW」バッジを重ねる、写真の上に文字を乗せる、といった表現に使います。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-51"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">View</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="p">,</span><span class="w"> </span><span class="nx">StyleSheet</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-native&quot;</span><span class="p">;</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">AbsoluteDemo</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">screen</span><span class="p">}&gt;</span>
+<span class="w">      </span><span class="p">{</span><span class="cm">/* この枠を「基準（relative）」にして、中の絶対配置がこの枠を基準に動く */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">card</span><span class="p">}&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="nx">商品画像のかわりの枠</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+
+<span class="w">        </span><span class="p">{</span><span class="cm">/* 右上に重ねるNEWバッジ */</span><span class="p">}</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">badge</span><span class="p">}&gt;</span>
+<span class="w">          </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">badgeText</span><span class="p">}&gt;</span><span class="nx">NEW</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">styles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">StyleSheet</span><span class="p">.</span><span class="nx">create</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">screen</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">flex</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span><span class="w"> </span><span class="nx">padding</span><span class="o">:</span><span class="w"> </span><span class="kt">24</span><span class="p">,</span><span class="w"> </span><span class="nx">justifyContent</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">card</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 中の絶対配置の「基準」になる</span>
+<span class="w">    </span><span class="nx">position</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;relative&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">height</span><span class="o">:</span><span class="w"> </span><span class="kt">160</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">backgroundColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#e2e8f0&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">borderRadius</span><span class="o">:</span><span class="w"> </span><span class="kt">12</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">justifyContent</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">alignItems</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">badge</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 基準の枠の中で位置を自由に指定</span>
+<span class="w">    </span><span class="nx">position</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;absolute&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">// 上から8</span>
+<span class="w">    </span><span class="nx">top</span><span class="o">:</span><span class="w"> </span><span class="kt">8</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">// 右から8</span>
+<span class="w">    </span><span class="nx">right</span><span class="o">:</span><span class="w"> </span><span class="kt">8</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">// 重なったとき手前に出す</span>
+<span class="w">    </span><span class="nx">zIndex</span><span class="o">:</span><span class="w"> </span><span class="kt">10</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">backgroundColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#ef4444&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">paddingHorizontal</span><span class="o">:</span><span class="w"> </span><span class="kt">8</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">paddingVertical</span><span class="o">:</span><span class="w"> </span><span class="kt">2</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">borderRadius</span><span class="o">:</span><span class="w"> </span><span class="kt">999</span><span class="p">,</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">badgeText</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">color</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#ffffff&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">fontSize</span><span class="o">:</span><span class="w"> </span><span class="kt">12</span><span class="p">,</span><span class="w"> </span><span class="nx">fontWeight</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;bold&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h4 id="1_13">▼ コードを1つずつ分解して解説</h4>
+<hr>
+<h5 id="1-position-relative">解説1: 基準になる枠を作る（<code>position: "relative"</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-52"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nx">card</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// 中の絶対配置の「基準」になる</span>
+<span class="w">  </span><span class="nx">position</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;relative&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">height</span><span class="o">:</span><span class="w"> </span><span class="kt">160</span><span class="p">,</span>
+<span class="w">  </span><span class="c1">// ...</span>
+<span class="p">},</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>position: "relative"</code> を付けた枠は、<strong>中に置く絶対配置の要素の「基準」</strong>になります。</li>
+<li>絶対配置の要素（次の <code>badge</code>）は、<code>top</code> や <code>right</code> を「<strong>一番近い <code>relative</code> の親からの距離</strong>」として計算します。つまりこの枠を基準に、バッジの位置が決まります。</li>
+<li>これを付けておかないと、バッジが<strong>画面全体を基準</strong>にしてしまい、思わぬ位置に飛んでいくことがあります。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <code>position: "relative"</code> … その要素自体は普通に並ぶが、<strong>中の絶対配置の「位置の基準点」になる</strong>指定。「ここを基準にしてね」という土台の役割です。</p>
+</blockquote>
+<hr>
+<h5 id="2-position-absolute-topright">解説2: 好きな位置にピン留めする（<code>position: "absolute"</code> と <code>top</code>/<code>right</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-53"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nx">badge</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// 基準の枠の中で位置を自由に指定</span>
+<span class="w">  </span><span class="nx">position</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;absolute&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="c1">// 上から8</span>
+<span class="w">  </span><span class="nx">top</span><span class="o">:</span><span class="w"> </span><span class="kt">8</span><span class="p">,</span>
+<span class="w">  </span><span class="c1">// 右から8</span>
+<span class="w">  </span><span class="nx">right</span><span class="o">:</span><span class="w"> </span><span class="kt">8</span><span class="p">,</span>
+<span class="w">  </span><span class="c1">// ...</span>
+<span class="p">},</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>position: "absolute"</code> は「<strong>通常の並びから外れて、指定した位置にピンで留める</strong>」配置です。</li>
+<li><code>top: 8</code> / <code>right: 8</code> で「基準の枠の<strong>上から8・右から8</strong>の位置」に置いています。これでカードの右上にバッジが乗ります。<code>top</code>/<code>bottom</code>/<code>left</code>/<code>right</code> の4方向で位置を指定できます。</li>
+<li>絶対配置にした要素は「場所を取らない（まわりを押しのけない）」ので、他の要素の<strong>上に重ねて</strong>置けます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <code>position: "absolute"</code>（アブソリュート） … 要素を通常の並びから外し、<code>top</code>/<code>left</code> などで<strong>好きな位置に固定</strong>する配置。バッジ・ラベル・重ねる文字などに使います。なお、Webの「スクロールしても画面に貼り付く <code>fixed</code>」はReact Nativeには無く、固定したいときはこの <code>absolute</code> を使います。</p>
+</blockquote>
+<hr>
+<h5 id="3-zindex">解説3: 重なりの前後を決める（<code>zIndex</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-54"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 重なったとき手前に出す</span>
+<span class="nx">zIndex</span><span class="o">:</span><span class="w"> </span><span class="kt">10</span><span class="p">,</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>zIndex</code> は「<strong>要素が重なったとき、どちらを前（手前）に出すか</strong>」を決める数字です。</li>
+<li>数字が<strong>大きいほど手前</strong>に表示されます。<code>zIndex: 10</code> を付けたバッジは、<code>zIndex</code> の小さい（または無い）他の要素より前面に出ます。</li>
+<li>バッジや吹き出しが他の要素の下に隠れてしまうときは、この数字を上げると手前に出てきます。</li>
+</ul>
+<blockquote>
+<p><strong>いつ使う？</strong> 商品画像の角に「SALE」「NEW」を重ねる、アイコンに未読数の赤丸を重ねる、写真の上に説明文を乗せる、といった「<strong>要素を重ねて表現したい</strong>」場面で使います。</p>
+</blockquote>
+<hr>
+<h3 id="osplatformselect">OSごとにスタイルを変える（<code>Platform.select</code>）</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 同じアプリでも、iPhone（iOS）とAndroidでは「ちょうどいい見た目」が少し違うことがあります（影の付け方、フォント、余白など）。<code>Platform.select</code> を使うと、<strong>今動いているOSに応じて自動で別々の値を使い分け</strong>られます。ここでは、影の指定をiOSとAndroidで切り替える例を見ます。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-55"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">View</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="p">,</span><span class="w"> </span><span class="nx">StyleSheet</span><span class="p">,</span><span class="w"> </span><span class="nx">Platform</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-native&quot;</span><span class="p">;</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">PlatformDemo</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">screen</span><span class="p">}&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">card</span><span class="p">}&gt;</span>
+<span class="w">        </span><span class="p">{</span><span class="cm">/* 今動いているOSの名前を表示 */</span><span class="p">}</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="nx">このOSは</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="nx">Platform</span><span class="p">.</span><span class="nx">OS</span><span class="p">}&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">styles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">StyleSheet</span><span class="p">.</span><span class="nx">create</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">screen</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">flex</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span><span class="w"> </span><span class="nx">padding</span><span class="o">:</span><span class="w"> </span><span class="kt">24</span><span class="p">,</span><span class="w"> </span><span class="nx">justifyContent</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">card</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">backgroundColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#ffffff&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">padding</span><span class="o">:</span><span class="w"> </span><span class="kt">24</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">borderRadius</span><span class="o">:</span><span class="w"> </span><span class="kt">12</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">// OSごとに別々のスタイルを使い分ける</span>
+<span class="w">    </span><span class="p">...</span><span class="nx">Platform</span><span class="p">.</span><span class="nx">select</span><span class="p">({</span>
+<span class="w">      </span><span class="nx">ios</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// iOSのときだけ使う影の指定</span>
+<span class="w">        </span><span class="nx">shadowColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#000000&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">shadowOffset</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">width</span><span class="o">:</span><span class="w"> </span><span class="kt">0</span><span class="p">,</span><span class="w"> </span><span class="nx">height</span><span class="o">:</span><span class="w"> </span><span class="kt">4</span><span class="w"> </span><span class="p">},</span>
+<span class="w">        </span><span class="nx">shadowOpacity</span><span class="o">:</span><span class="w"> </span><span class="kt">0.15</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">shadowRadius</span><span class="o">:</span><span class="w"> </span><span class="kt">8</span><span class="p">,</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nx">android</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Androidのときだけ使う影の指定</span>
+<span class="w">        </span><span class="nx">elevation</span><span class="o">:</span><span class="w"> </span><span class="kt">5</span><span class="p">,</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">    </span><span class="p">}),</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h4 id="1_14">▼ コードを1つずつ分解して解説</h4>
+<hr>
+<h5 id="1-osplatformos">解説1: 今のOSを知る（<code>Platform.OS</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-56"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="nx">このOSは</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="nx">Platform</span><span class="p">.</span><span class="nx">OS</span><span class="p">}&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>Platform</code> はReact Native標準の「<strong>今どのOSで動いているかを教えてくれる道具</strong>」です。</li>
+<li><code>Platform.OS</code> には、iPhoneなら <code>"ios"</code>、Androidなら <code>"android"</code> という文字列が入っています。</li>
+<li>これを使えば「<code>if (Platform.OS === "ios") { ... }</code>」のように、OSによって処理を分けることもできます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <code>Platform.OS</code> … 今動いているOSの名前（<code>"ios"</code> か <code>"android"</code>）が入った値。OSごとに違う動きをさせたいときの出発点です。</p>
+</blockquote>
+<hr>
+<h5 id="2-osplatformselect">解説2: OSごとに値を選ぶ（<code>Platform.select</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-57"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">...</span><span class="nx">Platform</span><span class="p">.</span><span class="nx">select</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">ios</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* iOSのときの影 */</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">android</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">elevation</span><span class="o">:</span><span class="w"> </span><span class="kt">5</span><span class="w"> </span><span class="p">},</span>
+<span class="p">}),</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>Platform.select({ ios: ..., android: ... })</code> は「<strong>今のOSに合うほうの中身を返す</strong>」関数です。iOSで動いていれば <code>ios:</code> の中身、Androidなら <code>android:</code> の中身が選ばれます。</li>
+<li>前の冒頭の <code>...</code>（スプレッド構文）は「<strong>選ばれたオブジェクトの中身を、ここに展開して混ぜ込む</strong>」書き方です。これにより、選ばれた影の指定が <code>card</code> のスタイルに合流します。</li>
+<li>結果として、<strong>iOSでは4点セットの影、Androidでは <code>elevation</code> の影</strong>が自動で使い分けられます。前の「影」の節では両方ベタ書きしましたが、<code>Platform.select</code> を使うと「<strong>そのOSに必要な分だけ</strong>」を渡せて、すっきり書けます。</li>
+</ul>
+<blockquote>
+<p><strong>いつ使う？</strong> 「iOSとAndroidで影・フォント・余白の見た目をそろえたい」「片方のOSだけ特別な調整をしたい」ときに使います。OSごとの細かな違いを吸収する定番の道具です。</p>
+<p><strong>用語:</strong> スプレッド構文（<code>...</code>） … オブジェクトや配列の<strong>中身をその場に展開して並べる</strong>書き方。ここでは「OSに応じて選ばれた設定を、スタイルの中に溶け込ませる」役割をしています。</p>
+</blockquote>
+<hr>
+<h3 id="numberoflines-ellipsizemode">長い文字を「…」で省略する（<code>numberOfLines</code> と <code>ellipsizeMode</code>）</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 本のタイトルや説明文がとても長いと、画面からはみ出したりレイアウトが崩れたりします。<code>Text</code> に <code>numberOfLines</code>（表示する行数の上限）を付けると、<strong>指定した行数を超えた分は自動で「…」に省略</strong>されます。一覧のカードで「タイトルは1行まで」「説明は2行まで」とそろえたいときに大活躍する機能です。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-58"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">View</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="p">,</span><span class="w"> </span><span class="nx">StyleSheet</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-native&quot;</span><span class="p">;</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">EllipsisDemo</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">longTitle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;とても長い本のタイトルが入っていて画面からはみ出してしまうケース&quot;</span><span class="p">;</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">screen</span><span class="p">}&gt;</span>
+<span class="w">      </span><span class="p">{</span><span class="cm">/* 1行を超えたら末尾を「…」で省略 */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">title</span><span class="p">}</span><span class="w"> </span><span class="na">numberOfLines</span><span class="o">=</span><span class="p">{</span><span class="mf">1</span><span class="p">}</span><span class="w"> </span><span class="na">ellipsizeMode</span><span class="o">=</span><span class="s">&quot;tail&quot;</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">{</span><span class="nx">longTitle</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+
+<span class="w">      </span><span class="p">{</span><span class="cm">/* 2行までにそろえる（説明文などに) */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">body</span><span class="p">}</span><span class="w"> </span><span class="na">numberOfLines</span><span class="o">=</span><span class="p">{</span><span class="mf">2</span><span class="p">}&gt;</span>
+<span class="w">        </span><span class="p">{</span><span class="nx">longTitle</span><span class="p">}</span><span class="err">（</span><span class="nx">こちらは2行まで表示し</span><span class="err">、</span><span class="mf">3</span><span class="nx">行目以降は省略されます</span><span class="err">）</span><span class="p">{</span><span class="nx">longTitle</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">styles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">StyleSheet</span><span class="p">.</span><span class="nx">create</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">screen</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">flex</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span><span class="w"> </span><span class="nx">padding</span><span class="o">:</span><span class="w"> </span><span class="kt">24</span><span class="p">,</span><span class="w"> </span><span class="nx">gap</span><span class="o">:</span><span class="w"> </span><span class="kt">12</span><span class="p">,</span><span class="w"> </span><span class="nx">justifyContent</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">fontSize</span><span class="o">:</span><span class="w"> </span><span class="kt">18</span><span class="p">,</span><span class="w"> </span><span class="nx">fontWeight</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;bold&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">body</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">fontSize</span><span class="o">:</span><span class="w"> </span><span class="kt">14</span><span class="p">,</span><span class="w"> </span><span class="nx">color</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#475569&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h4 id="1_15">▼ コードを1つずつ分解して解説</h4>
+<hr>
+<h5 id="1-numberoflines">解説1: 表示する行数の上限を決める（<code>numberOfLines</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-59"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">title</span><span class="p">}</span><span class="w"> </span><span class="na">numberOfLines</span><span class="o">=</span><span class="p">{</span><span class="mf">1</span><span class="p">}</span><span class="w"> </span><span class="na">ellipsizeMode</span><span class="o">=</span><span class="s">&quot;tail&quot;</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">{</span><span class="nx">longTitle</span><span class="p">}</span>
+<span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>numberOfLines={1}</code> は「<strong>この文字は最大1行まで表示する</strong>」という指定です。1行に収まらない長い文字は、はみ出さずに自動で切り詰められます。</li>
+<li>切り詰められた箇所には「<strong>…</strong>（三点リーダー）」が表示され、「まだ続きがある」ことが分かります。</li>
+<li><code>numberOfLines={2}</code> のように数字を変えれば「2行まで」「3行まで」と調整できます。カード内のタイトルや説明文の高さをそろえるのに最適です。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <code>numberOfLines</code>（ナンバーオブラインズ） … <code>Text</code> に「<strong>最大で何行まで表示するか</strong>」を指定するプロパティ。あふれた分は自動で「…」に省略されます。</p>
+</blockquote>
+<hr>
+<h5 id="2-ellipsizemode">解説2: どこを省略するか決める（<code>ellipsizeMode</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-60"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nx">ellipsizeMode</span><span class="o">=</span><span class="s2">&quot;tail&quot;</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>ellipsizeMode</code> は「<strong>文字のどの部分を「…」にするか</strong>」を決める指定です。</li>
+<li><code>"tail"</code>（末尾）… いちばんよく使う指定で、<strong>後ろを省略</strong>します（<code>長いタイトル…</code>）。</li>
+<li><code>"head"</code>（先頭）… <strong>前を省略</strong>します（<code>…いタイトル</code>）。<code>"middle"</code>（中央）… <strong>真ん中を省略</strong>します（<code>長い…トル</code>）。ファイル名のように末尾も見せたいときに便利です。</li>
+<li>省略しても、<code>numberOfLines</code> を付けていれば自動で <code>"tail"</code> が初期値になるので、特にこだわりが無ければ省略してもかまいません。</li>
+</ul>
+<blockquote>
+<p><strong>いつ使う？</strong> 一覧画面で「タイトルは1行・説明は2行」のように<strong>カードの高さをそろえたい</strong>とき、長いテキストでレイアウトが崩れるのを防ぎたいときに使います。実用アプリではほぼ必ず登場する機能です。</p>
+</blockquote>
+
+<script>
+(function () {
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy") ? resolve() : reject(); } catch (e) { reject(e); }
+      document.body.removeChild(ta);
+    });
+  }
+  document.querySelectorAll(".copy-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var pre = btn.parentElement.querySelector("pre");
+      var text = pre.textContent.replace(/\n$/, "");
+      copyText(text).then(function () {
+        btn.textContent = "コピーしました";
+        btn.classList.add("done");
+        setTimeout(function () { btn.textContent = "コピー"; btn.classList.remove("done"); }, 2000);
+      }, function () { btn.textContent = "コピーできませんでした"; });
+    });
+  });
+  if (/^#code-\d+$/.test(location.hash)) {
+    var note = document.getElementById("web-note");
+    if (note) { note.hidden = false; }
+  }
+})();
+</script>
+</body>
+</html>
