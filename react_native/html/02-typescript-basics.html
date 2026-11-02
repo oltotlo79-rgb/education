@@ -1,0 +1,1655 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>02-typescript-basics</title>
+<style>
+
+@page {
+  size: A4;
+  margin: 18mm 16mm 20mm 16mm;
+  @bottom-right {
+    content: counter(page);
+    font-size: 10px;
+    color: #64748b;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  font-family: "Yu Gothic UI", "Yu Gothic", "Meiryo", "Hiragino Sans",
+               "Noto Sans JP", "Segoe UI", system-ui, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.75;
+  color: #1e293b;
+  background: #ffffff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #0f172a;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 1.4em 0 0.6em;
+  page-break-after: avoid;
+}
+h1 {
+  font-size: 22pt;
+  border-bottom: 3px solid #1e40af;
+  padding-bottom: 0.3em;
+  margin-top: 0.4em;
+  page-break-before: auto;
+}
+h2 {
+  font-size: 16pt;
+  border-bottom: 1.5px solid #cbd5e1;
+  padding-bottom: 0.25em;
+  margin-top: 1.6em;
+}
+h3 { font-size: 13pt; color: #1e40af; }
+h4 { font-size: 12pt; color: #334155; }
+
+p { margin: 0.5em 0 0.8em; }
+
+a { color: #1d4ed8; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+ul, ol { margin: 0.4em 0 0.9em; padding-left: 1.6em; }
+li { margin: 0.2em 0; }
+
+blockquote {
+  border-left: 4px solid #3b82f6;
+  background: #eff6ff;
+  margin: 0.8em 0;
+  padding: 0.6em 1em;
+  color: #1e3a8a;
+  border-radius: 0 6px 6px 0;
+  page-break-inside: avoid;
+}
+blockquote p { margin: 0.3em 0; }
+blockquote strong { color: #1e40af; }
+
+code {
+  /* DefCode (see _code_font.py) has ASCII and Japanese in ONE font, so a code
+     line is drawn as one text run and copies as one line in every PDF viewer. */
+  font-family: "Consolas", "Consolas", monospace;
+  font-size: 0.9em;
+  background: #f1f5f9;
+  color: #be123c;
+  padding: 0.12em 0.36em;
+  border-radius: 4px;
+  /* Long inline code (file paths / URLs) must break instead of overflowing. */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  /* In a PDF there is no horizontal scrolling, so long lines must wrap
+     instead of being clipped off the right edge of the page. */
+  overflow-x: hidden;
+  overflow-y: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  font-size: 9.2pt;
+  line-height: 1.5;
+  margin: 0.8em 0;
+  page-break-inside: avoid;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+  white-space: inherit;
+  word-break: inherit;
+  overflow-wrap: inherit;
+}
+
+/* The codehilite extension wraps highlighted blocks in a scrolling div; make
+   that wrap too so nothing is clipped in the PDF. */
+.codehilite {
+  overflow-x: hidden;
+  /* overflow-x: hidden alone turns overflow-y into auto, and a glyph from a
+     fallback font that is a hair too tall then shows a vertical scrollbar. */
+  overflow-y: hidden;
+}
+.codehilite pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* No per-token colours: every coloured token became its own text run (and its
+   own tag) in the PDF, and some viewers then pasted each token on its own line.
+   Only whole comment lines get a colour, so each line is still one run. */
+pre .cmt { color: #94a3b8; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.8em 0;
+  font-size: 9.6pt;
+  page-break-inside: avoid;
+}
+th, td {
+  border: 1px solid #e2e8f0;
+  padding: 6px 9px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: #f1f5f9;
+  color: #0f172a;
+  font-weight: 700;
+}
+tr:nth-child(even) td { background: #f8fafc; }
+
+img { max-width: 100%; height: auto; }
+
+hr {
+  border: none;
+  border-top: 1px dashed #cbd5e1;
+  margin: 1.6em 0;
+}
+
+/* Diagram blocks (the inline-styled <div>s in the source) */
+div[style] {
+  page-break-inside: avoid;
+}
+
+/* Tighten spacing right after headings */
+h1 + p, h2 + p, h3 + p, h4 + p { margin-top: 0.2em; }
+
+/* Avoid ugly page breaks inside list items / table rows */
+li, tr { page-break-inside: avoid; }
+
+@media screen {
+  body { max-width: 920px; margin: 0 auto; padding: 20px 20px 120px; font-size: 16px; }
+  pre { white-space: pre !important; word-break: normal !important; overflow-wrap: normal !important;
+        overflow-x: auto !important; font-size: 14px !important; }
+  img { max-width: 100%; height: auto; }
+}
+.web-bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; font-size: 14px;
+  padding: 8px 12px; margin-bottom: 16px; background: #eef2f7; border-radius: 8px; }
+.web-bar a { color: #1e3a5f; }
+.web-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 10; max-width: 90%;
+  font-size: 15px; font-weight: 700; background: #fff7ed; border: 2px solid #f2994a; border-radius: 8px;
+  padding: 10px 16px; margin: 0; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.code-wrap { position: relative; scroll-margin-top: 16px; }
+.code-wrap pre { padding-top: 40px !important; }
+.copy-btn { position: absolute; top: 8px; right: 8px; z-index: 2; font-size: 13px; font-weight: 700;
+  padding: 4px 12px; border: 0; border-radius: 6px; background: #2f80ed; color: #fff; cursor: pointer;
+  font-family: inherit; }
+.copy-btn:hover { background: #1c64c8; }
+.copy-btn.done { background: #27ae60; }
+.code-wrap:target pre { outline: 4px solid #f2994a; outline-offset: 2px; }
+.code-wrap:target .copy-btn { box-shadow: 0 0 0 4px #f2994a; }
+/* syntax colours on screen (the PDF uses one colour so that each line copies as one piece) */
+.codehilite .k, .codehilite .kd, .codehilite .kn, .codehilite .kr { color: #c084fc; }
+.codehilite .s, .codehilite .s1, .codehilite .s2, .codehilite .sb { color: #fcd34d; }
+.codehilite .c, .codehilite .c1, .codehilite .cm { color: #94a3b8; }
+.codehilite .nf, .codehilite .nx { color: #60a5fa; }
+.codehilite .nb { color: #34d399; }
+.codehilite .mi, .codehilite .mf { color: #f472b6; }
+.codehilite .nt { color: #f59e0b; }
+.codehilite .na { color: #93c5fd; }
+</style>
+</head>
+<body>
+<div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/02-typescript-basics.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、ブラウザーの「戻る」で PDF に戻れます。</p><h1 id="2-typescript">第2章: TypeScript入門</h1>
+<blockquote>
+<p>アプリの「動き（ロジック）」はすべて <strong>TypeScript</strong> という言語で書きます。この章では、後の章で出てくるコードを読み書きできるようになるための、TypeScriptの基礎を完全初心者向けに解説します。<strong>初めて出てくる文法はすべて1つずつ説明</strong>します。</p>
+</blockquote>
+<hr>
+<h2 id="1-typescript">1. TypeScript とは何か</h2>
+<h3 id="11-javascript-typescript">1.1 JavaScript と TypeScript の関係</h3>
+<p>世の中のWebやアプリの多くは <strong>JavaScript（ジャバスクリプト）</strong> という言語で動いています。<strong>TypeScript（タイプスクリプト）</strong> は、その JavaScript に <strong>「型（かた、type）」</strong> という仕組みを足した、上位互換の言語です。</p>
+<ul>
+<li><strong>JavaScript</strong> … 古くからある、型のない言語。手軽だがミスに気づきにくい。</li>
+<li><strong>TypeScript</strong> … JavaScriptに型を足した言語。Microsoft社が開発。書いた瞬間にミスを発見できる。</li>
+</ul>
+<blockquote>
+<p><strong>「上位互換」とは？</strong> TypeScriptはJavaScriptの全機能を含みつつ、さらに型を足したもの、という意味です。だからJavaScriptが書ければTypeScriptも書けますし、最終的にTypeScriptは「型を取り除いてJavaScriptに変換（コンパイル）」されてから実行されます。</p>
+</blockquote>
+<h3 id="12">1.2 「型」とは何か — みかん箱のたとえ</h3>
+<p><strong>型（type）</strong> とは「この箱（変数）には、この種類のデータしか入れてはいけない」というルールです。</p>
+<blockquote>
+<p><strong>身近な例え:</strong> 「みかん専用」と書かれた箱に、りんごを入れようとすると「それはみかんじゃないよ！」と止めてくれる。これが型の働きです。プログラムでも、文字を入れるべき場所に数値を入れようとすると、<strong>実行する前に</strong>エラーで教えてくれます。</p>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 「型なし（JavaScript）」と「型あり（TypeScript）」で、同じ足し算を書いたときの違いを見比べます。型がないと、文字列 <code>"1"</code> と数値 <code>2</code> を足しても気づかずに変な結果（<code>"12"</code>）になってしまいますが、型を付けると<strong>実行する前に</strong>「それは数値じゃない」とエラーで教えてくれます。ここで押さえるのは「型は実行前にミスを見つけてくれる仕組み」という1点だけでOKです（各行の詳しい意味はコード内のコメントにあります）。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-1"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// ============================================================================</span>
+<span class="c1">// 「型あり」と「型なし」で何が違うかの比較</span>
+<span class="c1">// ============================================================================</span>
+<span class="c1">// で始まる行は「コメント」。プログラムとしては実行されず、説明用に書ける。</span>
+<span class="c1">// 注:</span>
+
+<span class="c1">// ---------- 型なし（JavaScript）の場合 ----------</span>
+<span class="c1">// function = 関数を作るキーワード / add = 関数名 / (a, b) = 受け取る材料2つ</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">add</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span><span class="w"> </span><span class="nx">b</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// return = 結果を返す / a + b = 足し算（だが…）</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">b</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="c1">// &quot;1&quot;は文字列、2は数値。JSは文字列連結して &quot;12&quot; を返してしまう（バグ！）</span>
+<span class="nx">add</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">2</span><span class="p">);</span>
+
+<span class="c1">// ---------- 型あり（TypeScript）の場合 ----------</span>
+<span class="c1">// a: number → aは数値型のみ / : number（最後）→ 戻り値も数値</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">addTs</span><span class="p">(</span><span class="nx">a</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">,</span><span class="w"> </span><span class="nx">b</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// a も b も数値なので、必ず正しい足し算になる</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">b</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="c1">// ← &quot;1&quot;は文字列なので、ここで「型エラー」が表示され、実行前にミスに気づける</span>
+<span class="nx">addTs</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">,</span><span class="w"> </span><span class="mf">2</span><span class="p">);</span>
+<span class="c1">// VS Codeでは addTs(&quot;1&quot;, 2) の &quot;1&quot; の下に赤い波線が引かれ、次のメッセージが出る：</span>
+<span class="c1">// Argument of type &#39;string&#39; is not assignable to parameter of type &#39;number&#39;.</span>
+<span class="c1">//（&#39;string&#39;型の引数は&#39;number&#39;型のパラメータに代入できません）</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>「コンパイル」とは？</strong> 人間が書いたTypeScriptを、コンピュータが実行できるJavaScriptに<strong>変換する処理</strong>のこと。この変換のときに型チェックが行われ、間違いがあればエラーになります。「実行前のチェック」だと考えてください。</p>
+</blockquote>
+<hr>
+<h2 id="2">2. 変数 — 値に名前を付けて入れておく箱</h2>
+<h3 id="21-const-let">2.1 <code>const</code> と <code>let</code></h3>
+<p><strong>変数（へんすう、variable）</strong> とは「値に名前を付けて保存しておく箱」です。TypeScriptでは主に2つのキーワードで変数を作ります。</p>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> <code>const</code>（コンスト）という書き方で「あとから中身を変えない箱」を作り、そこに文字列を入れます。<code>=</code>（イコール）は「右の値を左の箱に入れる」という代入の記号で、数学の"等しい"ではない点に注意です。まずは「<code>const 名前 = 値;</code> で値に名前を付けて保存できる」という形だけ覚えればOKです（各記号の意味はコード内のコメントで説明しています）。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-2"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;リーダブルコード&quot;</span><span class="p">;</span>
+<span class="c1">// const  : 「後から中身を変えない箱」を作るキーワード（constant＝定数 の略）</span>
+<span class="c1">// title  : 変数名（箱の名前）。自分で好きに付けられる。半角英数字で、小文字始まりが慣習</span>
+<span class="c1">// =      : 「右の値を左の箱に入れる」という代入の記号（イコールだが&quot;等しい&quot;ではない）</span>
+<span class="c1">// &quot;リーダブルコード&quot; : 入れる値。ダブルクォートで囲むと「文字列」になる</span>
+<span class="c1">// ;      : 文の終わりを示すセミコロン</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 今度は <code>let</code>（レット）という書き方で「あとから中身を変えられる箱」を作り、中身を <code>0</code> から <code>1</code> に書き換えます。<code>const</code> との違いは「変更できるかどうか」だけで、<code>const</code> は変更しようとするとエラーになります。「変えたいときだけ <code>let</code>、それ以外は <code>const</code>」と覚えておけば十分です。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-3"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// let : 「後から中身を変えられる箱」を作るキーワード / 0 は数値</span>
+<span class="kd">let</span><span class="w"> </span><span class="nx">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span>
+<span class="c1">// 中身を 0 から 1 に変更できる（letだから可能）</span>
+<span class="nx">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1</span><span class="p">;</span>
+<span class="c1">// もし上が const count = 0; だったら、count = 1; の行でエラーになる（constは変更不可のため）</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong><code>const</code> と <code>let</code> の使い分け:</strong> 迷ったら <strong>まず <code>const</code> を使う</strong>のが鉄則です。「変更しない」とコードで宣言しておくことで、うっかり書き換えるミスを防げます。本当に後で変える必要がある場合だけ <code>let</code> にします。（昔の <code>var</code> というキーワードもありますが、現在は使いません。）</p>
+</blockquote>
+<hr>
+<h2 id="3">3. 基本の型</h2>
+<p>TypeScriptでよく使う基本的な型を紹介します。変数名の後ろに <code>: 型名</code> と書くと、その変数の型を明示できます。</p>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> よく使う3つの基本の型（文字列・数値・真偽値）を、それぞれ変数に入れて見せています。変数名の後ろに付いている <code>: string</code> や <code>: number</code> の部分が「型注釈」で、「この箱には何の種類のデータが入るか」を宣言しています。<code>boolean</code> は <code>true</code>（はい）か <code>false</code>（いいえ）の2択しか入らない型、と覚えてください（各行の意味はコード内のコメント参照）。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-4"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// string（ストリング）= 文字列の型</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">bookTitle</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;達人プログラマー&quot;</span><span class="p">;</span>
+<span class="c1">// number（ナンバー）= 数値の型（整数・小数どちらも）</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">publishYear</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1999</span><span class="p">;</span>
+<span class="c1">// boolean（ブーリアン）= 真偽値の型。true（真）か false（偽）の2択</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">isRead</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span>
+<span class="c1">// : string や : number の部分が「型注釈（type annotation）」。「この箱の中身の種類」を宣言している</span>
+</code></pre></div></div>
+
+<h4 id="1">▼ コードを1つずつ分解して解説</h4>
+<hr>
+<h5 id="1-string">解説1: 文字列の箱を作る（<code>: string</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-5"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// string（ストリング）= 文字列の型</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">bookTitle</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;達人プログラマー&quot;</span><span class="p">;</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>const bookTitle</code> は「あとから中身を変えない箱に <code>bookTitle</code> という名前を付ける」部分です。</li>
+<li><code>: string</code> が<strong>型注釈</strong>です。変数名の直後に <code>: 型名</code> と書くことで「この箱には文字列しか入れない」と宣言しています。</li>
+<li><code>= "達人プログラマー"</code> で、その箱に実際の文字列を入れています。ダブルクォート <code>"..."</code> で囲んだものが文字列です。</li>
+<li>もし後で <code>bookTitle = 123;</code> のように数値を入れようとすると、型注釈のおかげで<strong>実行前にエラー</strong>になります。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> 型注釈（type annotation）＝変数名の後ろに <code>: 型名</code> を書いて「中身の種類」を明示する書き方。</p>
+</blockquote>
+<hr>
+<h5 id="2-number">解説2: 数値の箱を作る（<code>: number</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-6"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// number（ナンバー）= 数値の型（整数・小数どちらも）</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">publishYear</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1999</span><span class="p">;</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>: number</code> は「この箱には数値しか入れない」という型注釈です。</li>
+<li><code>number</code> 型は<strong>整数も小数も同じ</strong>ように扱えます。<code>1999</code> でも <code>3.14</code> でも <code>number</code> です。</li>
+<li>数値はクォートで囲みません。<code>"1999"</code> と書くと文字列になってしまい、<code>number</code> 型の箱には入れられません。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> number（ナンバー）＝数値を表す型。整数・小数の区別はなく、どちらも number。</p>
+</blockquote>
+<hr>
+<h5 id="3-boolean">解説3: はい/いいえの箱を作る（<code>: boolean</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-7"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// boolean（ブーリアン）= 真偽値の型。true（真）か false（偽）の2択</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">isRead</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>: boolean</code> は「この箱には <code>true</code> か <code>false</code> のどちらかしか入れない」という型注釈です。</li>
+<li><code>boolean</code> 型に入る値は <strong><code>true</code>（真＝はい）と <code>false</code>（偽＝いいえ）の2つだけ</strong>です。</li>
+<li>変数名を <code>isRead</code>（読んだか？）のように <strong><code>is</code> で始める</strong>と「はい/いいえで答えられる値」だと一目で分かるため、よく使われる命名です。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> boolean（ブーリアン）＝<code>true</code> / <code>false</code> の2択しか持たない型。条件判定の結果などに使う。</p>
+</blockquote>
+<hr>
+<table>
+<thead>
+<tr>
+<th>型</th>
+<th>意味</th>
+<th>例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>string</code></td>
+<td>文字列（文字の並び）</td>
+<td><code>"こんにちは"</code>, <code>"鈴木"</code></td>
+</tr>
+<tr>
+<td><code>number</code></td>
+<td>数値（整数・小数）</td>
+<td><code>42</code>, <code>3.14</code>, <code>2024</code></td>
+</tr>
+<tr>
+<td><code>boolean</code></td>
+<td>真偽値（はい/いいえ）</td>
+<td><code>true</code>, <code>false</code></td>
+</tr>
+<tr>
+<td><code>null</code></td>
+<td>「値が無い」ことを表す特別な値</td>
+<td><code>null</code></td>
+</tr>
+<tr>
+<td><code>undefined</code></td>
+<td>「まだ値が設定されていない」状態</td>
+<td><code>undefined</code></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>型注釈は省略できる:</strong> 実は <code>const title = "本"</code> と書くだけで、TypeScriptは「右が文字列だから title は string 型だ」と<strong>自動で推測</strong>してくれます（これを「型推論」と呼びます）。なので毎回 <code>: string</code> と書く必要はありません。本書では分かりやすさのため、要所で型注釈を明示します。</p>
+</blockquote>
+<hr>
+<h2 id="4">4. 配列とオブジェクト — 複数のデータをまとめる</h2>
+<h3 id="41-array">4.1 配列（はいれつ、array）— 値の並び</h3>
+<p><strong>配列</strong> は「同じ種類の値を順番に並べたリスト」です。<code>[ ]</code>（角カッコ）で囲みます。</p>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 3つの文字列を <code>[ ]</code>（角カッコ）で並べて「配列（リスト）」を作り、その中から1つ取り出して表示します。<code>string[]</code> は「文字列がいくつか並んだリスト」という型です。<strong>最大のポイントは「数え方が0から始まる」こと</strong>——<code>titles[0]</code> が1番目、<code>titles[1]</code> が2番目になります（取り出し方の詳細はコード内コメントにあります）。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-8"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">titles</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;本A&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;本B&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;本C&quot;</span><span class="p">];</span>
+<span class="c1">// string[] : 「文字列(string)の配列([])」という型。「文字列がいくつか並んだリスト」の意味</span>
+<span class="c1">// [ ... ]  : 配列を作る記号。中身はカンマ , で区切る</span>
+<span class="c1">// 並んだ各値を「要素（element）」と呼ぶ</span>
+
+<span class="c1">// titles[0] → 配列の「0番目」の要素を取り出す。結果: &quot;本A&quot;</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">titles</span><span class="p">[</span><span class="mf">0</span><span class="p">]);</span>
+<span class="c1">// 注意: プログラミングの数え方は0から始まる！ 1番目=[0]、2番目=[1]、3番目=[2]</span>
+<span class="c1">// console.log(...) : ( )の中身をターミナルやデバッグ画面に表示する命令。動作確認によく使う</span>
+</code></pre></div></div>
+
+<h4 id="1_1">▼ コードを1つずつ分解して解説</h4>
+<hr>
+<h5 id="1-string_1">解説1: 文字列の配列を作る（<code>string[]</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-9"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">titles</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;本A&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;本B&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;本C&quot;</span><span class="p">];</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>: string[]</code> が配列の型注釈です。<code>string</code>（文字列）の後ろに <code>[]</code> を付けると「<strong>文字列がいくつも並んだリスト</strong>」という意味になります。</li>
+<li><code>[ ... ]</code>（角カッコ）が配列を作る記号です。中身の各値は<strong>カンマ <code>,</code> で区切り</strong>ます。</li>
+<li>ここでは <code>"本A"</code> <code>"本B"</code> <code>"本C"</code> の3つの文字列が、この順番で並んでいます。並んだ1つ1つの値を「要素（element）」と呼びます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> 配列（array）＝同じ種類の値を順番に並べたリスト。<code>型[]</code> でその要素の型を表す。</p>
+</blockquote>
+<hr>
+<h5 id="2-10">解説2: 配列から1つ取り出す（番号は0から）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-10"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// titles[0] → 配列の「0番目」の要素を取り出す。結果: &quot;本A&quot;</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">titles</span><span class="p">[</span><span class="mf">0</span><span class="p">]);</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>titles[0]</code> の <code>[0]</code> は「<strong>配列の何番目を取り出すか</strong>」を指定する番号（インデックス）です。</li>
+<li>プログラミングの数え方は <strong>0から始まる</strong>のが最大の注意点です。<code>[0]</code> が1番目、<code>[1]</code> が2番目、<code>[2]</code> が3番目になります。</li>
+<li>そのため <code>titles[0]</code> は先頭の <code>"本A"</code> を取り出します。<code>titles[2]</code> なら <code>"本C"</code> です。</li>
+<li><code>console.log(...)</code> は、カッコの中身を画面（ターミナルやデバッグ画面）に表示する命令で、動作確認によく使います。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> インデックス（index）＝配列の要素の位置を表す番号。0から始まる。</p>
+</blockquote>
+<hr>
+<h3 id="42-object">4.2 オブジェクト（object）— 「キーと値」の組</h3>
+<p><strong>オブジェクト</strong> は「名前（キー）と値の組」をまとめたものです。<code>{ }</code>（中カッコ）で囲みます。1冊の本の情報をまとめるのに最適です。</p>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 1冊の本の情報（タイトル・著者・出版年・読了したか）を、<code>{ }</code>（中カッコ）で1つにまとめた「オブジェクト」を作り、その中の値を1つ取り出して表示します。<code>title: "..."</code> のように「キー（項目名）: 値」の形で項目を並べるのが特徴です。値を取り出すときは <code>book.title</code> のように <strong><code>.</code>（ドット）で項目名をつなぐ</strong>、という1点を押さえてください（詳細はコード内コメント参照）。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-11"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">book</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// title というキー（項目名）に &quot;リーダブルコード&quot; という値</span>
+<span class="w">  </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;リーダブルコード&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="c1">// author というキーに著者名。各組はカンマ , で区切る</span>
+<span class="w">  </span><span class="nx">author</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Dustin Boswell&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="c1">// year というキーに数値</span>
+<span class="w">  </span><span class="nx">year</span><span class="o">:</span><span class="w"> </span><span class="kt">2012</span><span class="p">,</span>
+<span class="w">  </span><span class="c1">// isRead というキーに真偽値</span>
+<span class="w">  </span><span class="nx">isRead</span><span class="o">:</span><span class="w"> </span><span class="kt">true</span><span class="p">,</span>
+<span class="p">};</span>
+<span class="c1">// { } : オブジェクトを作る記号 / キー: 値 の形で項目を並べる</span>
+
+<span class="c1">// book.title → オブジェクトの title の値を取り出す。結果: &quot;リーダブルコード&quot;</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">book</span><span class="p">.</span><span class="nx">title</span><span class="p">);</span>
+<span class="c1">// . （ドット）: 「オブジェクトの中の、その名前の項目」にアクセスする記号</span>
+</code></pre></div></div>
+
+<h4 id="1_2">▼ コードを1つずつ分解して解説</h4>
+<hr>
+<h5 id="1_3">解説1: 「キー: 値」の組をまとめてオブジェクトを作る</h5>
+<div class="codehilite"><div class="code-wrap" id="code-12"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">book</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// title というキー（項目名）に &quot;リーダブルコード&quot; という値</span>
+<span class="w">  </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;リーダブルコード&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="c1">// author というキーに著者名。各組はカンマ , で区切る</span>
+<span class="w">  </span><span class="nx">author</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Dustin Boswell&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="c1">// year というキーに数値</span>
+<span class="w">  </span><span class="nx">year</span><span class="o">:</span><span class="w"> </span><span class="kt">2012</span><span class="p">,</span>
+<span class="w">  </span><span class="c1">// isRead というキーに真偽値</span>
+<span class="w">  </span><span class="nx">isRead</span><span class="o">:</span><span class="w"> </span><span class="kt">true</span><span class="p">,</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>{ ... }</code>（中カッコ）がオブジェクトを作る記号です。配列の <code>[ ]</code> とは別物なので混同しないよう注意します。</li>
+<li>中身は <strong><code>キー: 値</code> の形</strong>で書きます。<code>title</code> <code>author</code> <code>year</code> <code>isRead</code> が「キー（項目名）」、その右側が「値」です。</li>
+<li>各組（キーと値のセット）は<strong>カンマ <code>,</code> で区切り</strong>ます。</li>
+<li>1つのオブジェクトの中に、<strong>文字列・数値・真偽値など異なる種類の値を混ぜて</strong>持てます。配列が「同じ種類の並び」なのに対し、オブジェクトは「1つのモノの複数の属性」をまとめるのに向いています。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> オブジェクト（object）＝「キー（項目名）と値」の組を <code>{ }</code> でまとめたデータ。1冊の本など「1つのモノ」を表すのに使う。</p>
+</blockquote>
+<hr>
+<h5 id="2_1">解説2: ドット <code>.</code> で中の項目を取り出す</h5>
+<div class="codehilite"><div class="code-wrap" id="code-13"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// book.title → オブジェクトの title の値を取り出す。結果: &quot;リーダブルコード&quot;</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">book</span><span class="p">.</span><span class="nx">title</span><span class="p">);</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>book.title</code> の <code>.</code>（ドット）が「<strong>オブジェクトの中の、その名前の項目にアクセスする</strong>」記号です。</li>
+<li><code>book.title</code> は「<code>book</code> というオブジェクトの中の <code>title</code> という項目の値」を指し、結果は <code>"リーダブルコード"</code> です。</li>
+<li>同じように <code>book.year</code> なら <code>2012</code>、<code>book.isRead</code> なら <code>true</code> が取り出せます。</li>
+<li>配列が番号 <code>[0]</code> で取り出すのに対し、オブジェクトは<strong>名前（キー）</strong>で取り出すのが違いです。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> ドット記法（dot notation）＝<code>オブジェクト.キー</code> の形で、オブジェクトの中の項目にアクセスする書き方。</p>
+</blockquote>
+<hr>
+<hr>
+<h2 id="5-type-interface">5. 型に名前を付ける — <code>type</code> と <code>interface</code></h2>
+<p>同じ形のオブジェクト（例: 本の情報）を何度も扱うとき、その「形」に名前を付けておくと便利で安全です。本書では主に <code>type</code> を使います。</p>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> <code>type</code> というキーワードを使って「本1冊分の形（どんな項目を持つか）」に <strong><code>Book</code> という名前を付け</strong>、その形に従って実際の本のデータを作ります。一度形を決めておくと、項目を書き忘れたときに「<code>title</code> が足りません」とエラーで教えてくれるので安全です。「<code>type 名前 = { ... }</code> でオブジェクトの形に名前を付けられる」という1点を押さえてください（各項目の意味はコード内コメント参照）。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-14"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// type : 型に名前を付けるキーワード / Book : 付ける名前（型名は大文字始まりが慣習）</span>
+<span class="kr">type</span><span class="w"> </span><span class="nx">Book</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// id（識別番号）は文字列</span>
+<span class="w">  </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="c1">// title（タイトル）は文字列</span>
+<span class="w">  </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="c1">// author（著者）は文字列</span>
+<span class="w">  </span><span class="nx">author</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="c1">// status（読書状態）は文字列</span>
+<span class="w">  </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="c1">// isRead（読了したか）は真偽値</span>
+<span class="w">  </span><span class="nx">isRead</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span>
+<span class="p">};</span>
+<span class="c1">// ↑ これで「Book型 = id, title, author, status, isReadを持つオブジェクト」と定義できた</span>
+
+<span class="c1">// 定義したBook型を使って変数を作る</span>
+<span class="c1">// : Book → 「この変数はBook型ですよ」と宣言</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">myBook</span><span class="o">:</span><span class="w"> </span><span class="kt">Book</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;1&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;達人プログラマー&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">author</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;David Thomas&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;読書中&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">isRead</span><span class="o">:</span><span class="w"> </span><span class="kt">false</span><span class="p">,</span>
+<span class="p">};</span>
+<span class="c1">// もしここで title を書き忘れると、「title が足りません」とエラーになる（型のおかげ）</span>
+</code></pre></div></div>
+
+<h4 id="1_4">▼ コードを1つずつ分解して解説</h4>
+<hr>
+<h5 id="1-type">解説1: オブジェクトの「形」に名前を付ける（<code>type</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-15"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// type : 型に名前を付けるキーワード / Book : 付ける名前（型名は大文字始まりが慣習）</span>
+<span class="kr">type</span><span class="w"> </span><span class="nx">Book</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// id（識別番号）は文字列</span>
+<span class="w">  </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="c1">// title（タイトル）は文字列</span>
+<span class="w">  </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="c1">// author（著者）は文字列</span>
+<span class="w">  </span><span class="nx">author</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="c1">// status（読書状態）は文字列</span>
+<span class="w">  </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="c1">// isRead（読了したか）は真偽値</span>
+<span class="w">  </span><span class="nx">isRead</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>type</code> は「<strong>型に名前を付ける</strong>」キーワードです。<code>type 名前 = { ... };</code> の形で使います。</li>
+<li><code>Book</code> が付けた名前（型名）です。型名は<strong>大文字始まり</strong>にするのが慣習です（変数名は小文字始まりだったのと対照的）。</li>
+<li><code>{ ... }</code> の中は、<strong>項目名と、その項目の型</strong>の組を並べます。<code>id: string</code> なら「<code>id</code> という項目は文字列型」という意味です。</li>
+<li>これで「<code>Book</code> 型 ＝ <code>id</code>・<code>title</code>・<code>author</code>・<code>status</code>・<code>isRead</code> を持つオブジェクトの形」と定義できました。<strong>実際のデータではなく「形（設計図）」を決めているだけ</strong>です。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> type（タイプ）＝オブジェクトなどの「形」に名前を付けるキーワード。一度決めれば何度でも使い回せる。</p>
+</blockquote>
+<hr>
+<h5 id="2-book">解説2: 付けた型を使ってデータを作る（<code>: Book</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-16"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 定義したBook型を使って変数を作る</span>
+<span class="c1">// : Book → 「この変数はBook型ですよ」と宣言</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">myBook</span><span class="o">:</span><span class="w"> </span><span class="kt">Book</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;1&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;達人プログラマー&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">author</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;David Thomas&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;読書中&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">isRead</span><span class="o">:</span><span class="w"> </span><span class="kt">false</span><span class="p">,</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>: Book</code> が型注釈で、「この <code>myBook</code> という変数は <code>Book</code> 型ですよ」と宣言しています。<code>: string</code> などと同じ位置（変数名の後ろ）に書きます。</li>
+<li>中身の <code>{ ... }</code> は、<code>Book</code> 型で決めた<strong>5つの項目をすべて、正しい型で</strong>埋めています。</li>
+<li>もし <code>title</code> を書き忘れたり、<code>isRead: "yes"</code>（文字列）のように違う型を入れたりすると、<strong>実行前にエラー</strong>で教えてくれます。これが「形に名前を付けておく」最大のメリットです。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> 型を使うことで「項目の書き忘れ」「型の取り違え」を実行前に防げる。これを「型安全」と呼ぶ。</p>
+</blockquote>
+<hr>
+<blockquote>
+<p><strong><code>type</code> と <code>interface</code> の違い:</strong> 同じく型に名前を付ける <code>interface</code>（インターフェース）というキーワードもあります。オブジェクトの形を定義する用途ではほぼ同じことができます。本書では一貫して <code>type</code> を使いますが、他の教材で <code>interface Book { ... }</code> を見ても「同じようなもの」と理解してください。</p>
+</blockquote>
+<h3 id="51">5.1 「省略可能」を表す <code>?</code></h3>
+<p>「あってもなくてもよい項目」は、キー名の後ろに <code>?</code>（クエスチョンマーク）を付けます。</p>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> <code>Book</code> 型の <code>memo</code> という項目に <code>?</code> を付けて「あってもなくてもよい（省略可能な）項目」にし、<code>memo</code> を書いた場合と書かない場合の両方を作って見せます。<code>?</code> が付いている項目は、書いてもエラーにならず、書かなくてもエラーになりません。「キー名の後ろの <code>?</code> ＝ 省略してよい印」という1点だけ覚えればOKです。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-17"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kr">type</span><span class="w"> </span><span class="nx">Book</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="c1">// memo? → memoは「あってもなくてもよい」項目（省略可能、optional）</span>
+<span class="w">  </span><span class="nx">memo?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="c1">// memoあり：OK</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">book1</span><span class="o">:</span><span class="w"> </span><span class="kt">Book</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;本A&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">memo</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;面白い&quot;</span><span class="w"> </span><span class="p">};</span>
+<span class="c1">// memoなし：これもOK（?のおかげ）</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">book2</span><span class="o">:</span><span class="w"> </span><span class="kt">Book</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;2&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;本B&quot;</span><span class="w"> </span><span class="p">};</span>
+</code></pre></div></div>
+
+<hr>
+<h2 id="6">6. 関数 — 処理に名前を付けてまとめる</h2>
+<p><strong>関数（かんすう、function）</strong> は「一連の処理に名前を付けてまとめたもの」です。呼び出すと中の処理が動きます。</p>
+<h3 id="61">6.1 基本の書き方</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 名前を1つ受け取って「こんにちは、〇〇さん」という挨拶の文を作って返す、<code>greet</code> という関数を作り、実際に呼び出して結果を表示します。関数に渡す材料を「引数（ひきすう）」、関数が返す結果を「戻り値」と呼びます。「<code>function 名前(引数) { ... return 結果 }</code> で処理に名前を付けてまとめ、あとから何度でも呼び出せる」という流れを押さえてください（各部分の意味はコード内コメント参照）。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-18"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// function : 関数を作るキーワード</span>
+<span class="c1">// greet    : 関数名 / (name: string) : nameという文字列の引数を1つ受け取る / : string : 戻り値も文字列</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">greet</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// return : 結果を返す / + : 文字列をつなぐ（連結）</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="s2">&quot;こんにちは、&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot;さん&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// greet関数を呼び出し、&quot;鈴木&quot;を渡す。戻り値が message に入る</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">greet</span><span class="p">(</span><span class="s2">&quot;鈴木&quot;</span><span class="p">);</span>
+<span class="c1">// 結果: こんにちは、鈴木さん</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">message</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h4 id="1_5">▼ コードを1つずつ分解して解説</h4>
+<hr>
+<h5 id="1_6">解説1: 関数を定義する（引数と戻り値の型）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-19"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// function : 関数を作るキーワード</span>
+<span class="c1">// greet    : 関数名 / (name: string) : nameという文字列の引数を1つ受け取る / : string : 戻り値も文字列</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">greet</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// return : 結果を返す / + : 文字列をつなぐ（連結）</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="s2">&quot;こんにちは、&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot;さん&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>function</code> は「関数を作る」キーワード、<code>greet</code> はその関数の名前です。</li>
+<li><code>(name: string)</code> が<strong>引数</strong>の部分です。<code>name</code> が受け取る材料の名前、<code>: string</code> が「その材料は文字列」という型注釈です。</li>
+<li><code>(...)</code> の後ろの <code>: string</code> は<strong>戻り値の型</strong>で、「この関数は文字列を返す」という意味です。引数の型と戻り値の型は書く場所が違うので注意します。</li>
+<li><code>{ ... }</code> の中が関数の本体（処理）です。<code>return</code> は「この値を結果として返す」キーワード、<code>+</code> は文字列を<strong>つなぐ（連結する）</strong>記号です。<code>"こんにちは、" + name + "さん"</code> で1つの文章を組み立てています。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> 引数（ひきすう / argument）＝関数に渡す材料。戻り値（return value）＝<code>return</code> で返す結果。</p>
+</blockquote>
+<hr>
+<h5 id="2_2">解説2: 関数を呼び出して結果を受け取る</h5>
+<div class="codehilite"><div class="code-wrap" id="code-20"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// greet関数を呼び出し、&quot;鈴木&quot;を渡す。戻り値が message に入る</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">greet</span><span class="p">(</span><span class="s2">&quot;鈴木&quot;</span><span class="p">);</span>
+<span class="c1">// 結果: こんにちは、鈴木さん</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">message</span><span class="p">);</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>greet("鈴木")</code> が「関数を<strong>呼び出す</strong>」書き方です。関数名の後ろに <code>(...)</code> を付けて、中に渡す値を書きます。</li>
+<li>ここで渡している <code>"鈴木"</code> が、関数側の <code>name</code> に入ります。これを「引数を渡す」と言います。</li>
+<li>関数が <code>return</code> で返した値（<code>"こんにちは、鈴木さん"</code>）が、<code>= message</code> で <code>message</code> という箱に入ります。</li>
+<li>一度作った関数は、<code>greet("田中")</code> のように<strong>何度でも呼び出せる</strong>のが利点です。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> 関数呼び出し（function call）＝<code>関数名(引数)</code> の形で関数を実行し、戻り値を受け取ること。</p>
+</blockquote>
+<hr>
+<blockquote>
+<p><strong>「引数（ひきすう、argument）」と「戻り値（return value）」:</strong>
+- <strong>引数</strong>: 関数に渡す材料。<code>greet("鈴木")</code> の <code>"鈴木"</code> の部分。
+- <strong>戻り値</strong>: 関数が処理結果として返す値。<code>return</code> の後ろに書いた値。</p>
+</blockquote>
+<h3 id="62">6.2 アロー関数 — もう一つの書き方</h3>
+<p>React/React Nativeでは、<code>=&gt;</code>（矢印のような記号）を使った<strong>アロー関数</strong>という短い書き方を非常によく使います。覚えておきましょう。</p>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> さきほどと<strong>まったく同じ挨拶の関数</strong>を、<code>=&gt;</code>（アロー＝矢印）を使った別の書き方「アロー関数」で書き直しています。動作は同じで、書き方の見た目が変わるだけです。React Nativeではこの <code>(引数) =&gt; { 処理 }</code> の形が主流なので、「<code>function</code> を使わなくても関数は作れる」と知っておいてください（記号の意味はコード内コメント参照）。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-21"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// const greet : 関数を変数に入れる形 / (name: string): string : 引数と戻り値の型 / =&gt; : アロー（矢印）</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">greet</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="s2">&quot;こんにちは、&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot;さん&quot;</span><span class="p">;</span>
+<span class="p">};</span>
+<span class="c1">// 上の function版とまったく同じ動作。React Nativeではこのアロー関数の形が主流</span>
+</code></pre></div></div>
+
+<h4 id="1_7">▼ コードを1つずつ分解して解説</h4>
+<hr>
+<h5 id="1-const">解説1: 関数を変数に入れる（<code>const 名前 = ...</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-22"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// const greet : 関数を変数に入れる形 / (name: string): string : 引数と戻り値の型 / =&gt; : アロー（矢印）</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">greet</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>const greet =</code> は「<code>greet</code> という変数に、これから書く関数を<strong>入れる</strong>」という形です。<code>function greet(...)</code> のように名前を直接書くのではなく、変数に代入するのがアロー関数の書き方です。</li>
+<li><code>(name: string)</code> は引数、<code>: string</code> は戻り値の型で、ここは <code>function</code> 版とまったく同じです。</li>
+<li><code>=&gt;</code> が<strong>アロー（矢印）</strong>です。引数の <code>(...)</code> と関数本体の <code>{ }</code> の間に置いて「引数を受け取って処理する関数」を表します。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> アロー関数（arrow function）＝<code>(引数) =&gt; { 処理 }</code> の形で書く関数。<code>function</code> を使わずに関数を作れる。</p>
+</blockquote>
+<hr>
+<h5 id="2-function">解説2: 本体の処理（中身は <code>function</code> 版と同じ）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-23"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="s2">&quot;こんにちは、&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot;さん&quot;</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>=&gt;</code> の後ろの <code>{ ... }</code> が関数の本体で、<code>return</code> で結果を返すのは <code>function</code> 版と完全に同じです。</li>
+<li>つまり<strong>動作は <code>function greet</code> 版とまったく同じ</strong>で、書き方（見た目）だけが変わっています。</li>
+<li>アロー関数を変数に入れた場合、本体の <code>}</code> の後ろに<strong>セミコロン <code>;</code> を付ける</strong>点に注意します（<code>const ... = ...;</code> という代入文だからです）。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> React / React Native では、この <code>const 名前 = (引数) =&gt; { ... }</code> のアロー関数の形が主流。慣れておくと読みやすい。</p>
+</blockquote>
+<hr>
+<blockquote>
+<p><strong><code>=&gt;</code> の読み方:</strong> 「アロー（arrow＝矢印）」と読みます。<code>(引数) =&gt; { 処理 }</code> で「引数を受け取って処理する関数」を表します。一見とっつきにくいですが、慣れると簡潔で読みやすい書き方です。</p>
+</blockquote>
+<hr>
+<h2 id="7-map-filter">7. よく使う配列の操作 — <code>map</code> と <code>filter</code></h2>
+<p>アプリでは「本のリストを画面に並べる」「読了した本だけ抜き出す」といった操作を頻繁に行います。これに使うのが <code>map</code> と <code>filter</code> です。<strong>第7章以降で必ず出てくる</strong>ので、ここで基礎を押さえます。</p>
+<h3 id="71-map">7.1 <code>map</code> — 各要素を変換して新しい配列を作る</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 数値の配列 <code>[1, 2, 3]</code> の<strong>各要素を2倍した新しい配列</strong><code>[2, 4, 6]</code> を、<code>map</code>（マップ）という機能で作ります。<code>map</code> は「配列の1つ1つに同じ処理をして、その結果を集めた新しい配列を返す」働きをします。<strong>元の配列は変わらず、新しい配列ができる</strong>点を押さえてください。実際のアプリでは「本の配列」を「画面に表示する部品の配列」に変換するのに使います（処理の詳細はコード内コメント参照）。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-24"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 数値の配列</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">numbers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">1</span><span class="p">,</span><span class="w"> </span><span class="mf">2</span><span class="p">,</span><span class="w"> </span><span class="mf">3</span><span class="p">];</span>
+
+<span class="c1">// map : 各要素に処理をして新しい配列を作る</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">doubled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">numbers</span><span class="p">.</span><span class="nx">map</span><span class="p">((</span><span class="nx">n</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">n</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">2</span><span class="p">);</span>
+<span class="c1">// .map(...)      : 配列の各要素に対して、( )内の関数を順番に適用する</span>
+<span class="c1">// (n) =&gt; n * 2   : 「受け取った n を 2倍して返す」アロー関数。nには1,2,3が順に入る</span>
+<span class="c1">// 結果: doubled は [2, 4, 6] になる（元のnumbersは変わらない）</span>
+</code></pre></div></div>
+
+<h4 id="1_8">▼ コードを1つずつ分解して解説</h4>
+<hr>
+<h5 id="1_9">解説1: 元になる配列を用意する</h5>
+<div class="codehilite"><div class="code-wrap" id="code-25"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 数値の配列</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">numbers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">1</span><span class="p">,</span><span class="w"> </span><span class="mf">2</span><span class="p">,</span><span class="w"> </span><span class="mf">3</span><span class="p">];</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>[1, 2, 3]</code> は数値が3つ並んだ配列です。これが「変換のもとになるデータ」です。</li>
+<li>型注釈を書いていませんが、TypeScript が「右が数値の配列だから <code>number[]</code> 型だ」と<strong>自動で推測</strong>してくれます（型推論）。</li>
+<li>この <code>numbers</code> 自体は、このあと <code>map</code> を使っても<strong>変化しません</strong>（次の解説で重要になります）。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> 型推論（type inference）＝代入された値から、TypeScript が型を自動で判断してくれる仕組み。</p>
+</blockquote>
+<hr>
+<h5 id="2-map">解説2: <code>map</code> で各要素を変換して新しい配列を作る</h5>
+<div class="codehilite"><div class="code-wrap" id="code-26"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// map : 各要素に処理をして新しい配列を作る</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">doubled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">numbers</span><span class="p">.</span><span class="nx">map</span><span class="p">((</span><span class="nx">n</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">n</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">2</span><span class="p">);</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>numbers.map(...)</code> の <code>.map</code> は「配列の<strong>各要素1つ1つに、同じ処理をする</strong>」メソッドです。配列の後ろにドットで付けて使います。</li>
+<li><code>(n) =&gt; n * 2</code> は <code>map</code> に渡すアロー関数です。<code>n</code> には配列の要素が<strong>順番に1つずつ</strong>入ります（1回目は <code>1</code>、2回目は <code>2</code>、3回目は <code>3</code>）。</li>
+<li><code>n * 2</code> で各要素を2倍した値を返し、その結果を集めた<strong>新しい配列</strong> <code>[2, 4, 6]</code> ができて <code>doubled</code> に入ります。</li>
+<li><strong>元の <code>numbers</code> は変わりません。</strong> <code>map</code> は元の配列を壊さず、新しい配列を作って返すのが特徴です。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> map（マップ）＝配列の各要素を変換し、その結果を集めた新しい配列を返すメソッド。一覧表示でよく使う。</p>
+</blockquote>
+<hr>
+<blockquote>
+<p><strong>React Nativeでの <code>map</code> の使いどころ:</strong> 「本の配列」を「画面に表示する本カードの配列」に変換するのにこの <code>map</code> を使います。第7章で実際に登場します。</p>
+</blockquote>
+<h3 id="72-filter">7.2 <code>filter</code> — 条件に合う要素だけ残す</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 本の配列の中から「<strong>読了した本（<code>isRead</code> が <code>true</code>）だけ</strong>」を抜き出して、新しい配列を作ります。これに使うのが <code>filter</code>（フィルター）で、「条件に合う要素だけを残す（ふるいにかける）」働きをします。<code>map</code> と同じく元の配列は変えず、条件に合うものだけ集めた新しい配列ができる、という点を押さえてください（<code>===</code> などの記号の意味はコード内コメント参照）。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-27"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">books</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;本A&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">isRead</span><span class="o">:</span><span class="w"> </span><span class="kt">true</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;本B&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">isRead</span><span class="o">:</span><span class="w"> </span><span class="kt">false</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;本C&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">isRead</span><span class="o">:</span><span class="w"> </span><span class="kt">true</span><span class="w"> </span><span class="p">},</span>
+<span class="p">];</span>
+
+<span class="c1">// filter : 条件に合う要素だけ抜き出す</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">readBooks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">books</span><span class="p">.</span><span class="nx">filter</span><span class="p">((</span><span class="nx">b</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">b</span><span class="p">.</span><span class="nx">isRead</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="kc">true</span><span class="p">);</span>
+<span class="c1">// .filter(...)         : 各要素のうち、( )内の関数が true を返したものだけ残す</span>
+<span class="c1">// (b) =&gt; b.isRead === true : 「その本の isRead が true か？」を判定する関数</span>
+<span class="c1">// === : 「左右が厳密に等しいか」を判定する比較演算子（= が1つだと代入になるので注意）</span>
+<span class="c1">// 結果: readBooks は 本A と 本C の2つだけの配列になる</span>
+</code></pre></div></div>
+
+<h4 id="1_10">▼ コードを1つずつ分解して解説</h4>
+<hr>
+<h5 id="1_11">解説1: 絞り込みのもとになる配列を用意する</h5>
+<div class="codehilite"><div class="code-wrap" id="code-28"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">books</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;本A&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">isRead</span><span class="o">:</span><span class="w"> </span><span class="kt">true</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;本B&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">isRead</span><span class="o">:</span><span class="w"> </span><span class="kt">false</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;本C&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">isRead</span><span class="o">:</span><span class="w"> </span><span class="kt">true</span><span class="w"> </span><span class="p">},</span>
+<span class="p">];</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>[ ... ]</code> の中に <code>{ ... }</code> のオブジェクトが3つ並んでいます。つまり「<strong>オブジェクトの配列</strong>」（本が3冊分のリスト）です。</li>
+<li>各オブジェクトは <code>title</code>（タイトル）と <code>isRead</code>（読了したか）の2項目を持ちます。</li>
+<li>このうち <code>isRead</code> が <code>true</code> なのは「本A」と「本C」の2冊です。この2冊だけを次の <code>filter</code> で抜き出します。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> オブジェクトの配列＝<code>{ }</code> を要素に持つ配列。実際のアプリでは「本のリスト」などをこの形で扱う。</p>
+</blockquote>
+<hr>
+<h5 id="2-filter">解説2: <code>filter</code> で条件に合う要素だけ残す</h5>
+<div class="codehilite"><div class="code-wrap" id="code-29"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// filter : 条件に合う要素だけ抜き出す</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">readBooks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">books</span><span class="p">.</span><span class="nx">filter</span><span class="p">((</span><span class="nx">b</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">b</span><span class="p">.</span><span class="nx">isRead</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="kc">true</span><span class="p">);</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>books.filter(...)</code> の <code>.filter</code> は「配列の中から<strong>条件に合う要素だけを残す</strong>（ふるいにかける）」メソッドです。</li>
+<li><code>(b) =&gt; b.isRead === true</code> が判定の関数です。<code>b</code> には各本（オブジェクト）が順番に入り、<code>b.isRead === true</code> が <code>true</code> になった本<strong>だけ</strong>が残ります。</li>
+<li><code>===</code>（イコール3つ）は「<strong>左右が厳密に等しいか</strong>」を判定する比較演算子です。<code>=</code>（1つ）は代入なので、判定と取り違えないよう注意します。</li>
+<li>結果、<code>readBooks</code> には「本A」と「本C」の2つだけが入ります。<code>map</code> と同じく<strong>元の <code>books</code> は変わりません</strong>。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> filter（フィルター）＝判定関数が <code>true</code> を返した要素だけを集めた新しい配列を返すメソッド。</p>
+</blockquote>
+<hr>
+<blockquote>
+<p><strong><code>===</code>（イコール3つ）に注意:</strong> <code>=</code>（1つ）は「代入（箱に入れる）」、<code>===</code>（3つ）は「等しいか判定する」です。初心者がよく間違えるポイントなので意識しましょう。「等しいかを聞きたいときは=を3つ」と覚えてください。</p>
+</blockquote>
+<hr>
+<h2 id="8-if">8. 条件分岐 <code>if</code> と 三項演算子</h2>
+<h3 id="81-if">8.1 <code>if</code> 文 — 条件によって処理を分ける</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 「もし状態が"読了"なら…、そうでなければ…」のように、<strong>条件によって実行する処理を切り替える</strong>書き方を見せています。<code>if (条件) { ... } else { ... }</code> で、条件が成り立つ（<code>true</code>）ときは前の <code>{ }</code>、成り立たない（<code>false</code>）ときは <code>else</code> の <code>{ }</code> が動きます。「<code>if</code> で処理を枝分かれさせられる」という1点を押さえてください（<code>===</code> の意味はコード内コメント参照）。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-30"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;読了&quot;</span><span class="p">;</span>
+
+<span class="c1">// if : 「もし(条件)なら」 / ( )内が条件 / === で等しいか判定</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">status</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;読了&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// 条件が true のとき、この { } 内が実行される</span>
+<span class="w">  </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;読み終わった本です&quot;</span><span class="p">);</span>
+<span class="c1">// else : 「そうでなければ」</span>
+<span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// 条件が false のとき、こちらが実行される</span>
+<span class="w">  </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;まだ読んでいません&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="c1">// 結果: status が &quot;読了&quot; なので「読み終わった本です」が表示される</span>
+</code></pre></div></div>
+
+<h4 id="1_12">▼ コードを1つずつ分解して解説</h4>
+<hr>
+<h5 id="1-if">解説1: 判定したい値を用意し、<code>if</code> で条件を書く</h5>
+<div class="codehilite"><div class="code-wrap" id="code-31"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;読了&quot;</span><span class="p">;</span>
+
+<span class="c1">// if : 「もし(条件)なら」 / ( )内が条件 / === で等しいか判定</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">status</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;読了&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// 条件が true のとき、この { } 内が実行される</span>
+<span class="w">  </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;読み終わった本です&quot;</span><span class="p">);</span>
+</code></pre></div></div>
+
+<ul>
+<li>まず <code>status</code> という変数に <code>"読了"</code> という文字列を入れています。これが判定の対象です。</li>
+<li><code>if (...)</code> は「<strong>もし（カッコの中の条件）が成り立つなら</strong>」という意味です。カッコ <code>( )</code> の中に条件を書きます。</li>
+<li><code>status === "読了"</code> は「<code>status</code> が <code>"読了"</code> と厳密に等しいか」を判定し、<code>true</code> か <code>false</code> を返します。ここでは <code>status</code> が <code>"読了"</code> なので <code>true</code> です。</li>
+<li>条件が <code>true</code> のとき、直後の <code>{ ... }</code> の中（<code>console.log(...)</code>）が実行されます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> if 文＝条件が成り立つ（<code>true</code>）ときだけ <code>{ }</code> の中を実行する制御構文。</p>
+</blockquote>
+<hr>
+<h5 id="2-else">解説2: <code>else</code> で「そうでなければ」の処理を書く</h5>
+<div class="codehilite"><div class="code-wrap" id="code-32"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// else : 「そうでなければ」</span>
+<span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// 条件が false のとき、こちらが実行される</span>
+<span class="w">  </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;まだ読んでいません&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>else</code> は「<strong>条件が成り立たなかった（<code>false</code>の）とき</strong>」に動く部分です。<code>if</code> の <code>{ }</code> を閉じた直後に書きます。</li>
+<li><code>else</code> の <code>{ ... }</code> の中は、条件が <code>false</code> のときだけ実行されます。<code>if</code> 側と <code>else</code> 側の<strong>どちらか一方だけ</strong>が必ず動きます。</li>
+<li>今回は <code>status</code> が <code>"読了"</code> で条件が <code>true</code> なので、<code>else</code> 側の <code>"まだ読んでいません"</code> は実行されません。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> else（エルス）＝if の条件が成り立たなかったときに実行する部分。「そうでなければ」と読む。</p>
+</blockquote>
+<hr>
+<h3 id="82">8.2 三項演算子 — 短い条件分岐</h3>
+<p>React Nativeの画面コードでは、<code>if</code> 文の代わりに<strong>三項演算子</strong>という1行で書ける条件分岐をよく使います。</p>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> さきほどの <code>if</code> と似た「条件による切り替え」を、<strong>1行で書ける「三項演算子」</strong>で行います。形は <code>条件 ? Aの値 : Bの値</code> で、「条件が <code>true</code> なら A、<code>false</code> なら B」を選んで返します。後の章の画面コードでは表示の出し分けにこの形を多用するので、「<code>?</code> の前が条件、<code>?</code> と <code>:</code> の間が真のとき、<code>:</code> の後が偽のとき」と覚えてください。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-33"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">isRead</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">isRead</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s2">&quot;読了&quot;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;未読&quot;</span><span class="p">;</span>
+<span class="c1">// 条件 ? Aの値 : Bの値  という形</span>
+<span class="c1">// isRead（条件）が true なら &quot;読了&quot;、false なら &quot;未読&quot; が label に入る</span>
+<span class="c1">// ? の前が条件、? と : の間が「真のときの値」、: の後が「偽のときの値」</span>
+<span class="c1">// 結果: label は &quot;読了&quot;</span>
+</code></pre></div></div>
+
+<h4 id="1_13">▼ コードを1つずつ分解して解説</h4>
+<hr>
+<h5 id="1_14">解説1: 判定したい値を用意する</h5>
+<div class="codehilite"><div class="code-wrap" id="code-34"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">isRead</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>isRead</code> という変数に真偽値 <code>true</code> を入れています。これが三項演算子の「条件」に使う値です。</li>
+<li>変数名を <code>is</code> で始めると「はい/いいえで答えられる値」だと分かりやすく、条件判定によく使われます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> 真偽値（boolean）＝<code>true</code> / <code>false</code> のどちらか。条件判定の材料になる。</p>
+</blockquote>
+<hr>
+<h5 id="2-a-b-1">解説2: <code>条件 ? A : B</code> で1行で値を選ぶ</h5>
+<div class="codehilite"><div class="code-wrap" id="code-35"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">isRead</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s2">&quot;読了&quot;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;未読&quot;</span><span class="p">;</span>
+</code></pre></div></div>
+
+<ul>
+<li>これが<strong>三項演算子</strong>で、形は <code>条件 ? Aの値 : Bの値</code> です。<code>if</code>/<code>else</code> と似た分岐を<strong>1行</strong>で書けます。</li>
+<li>読み方は「<code>?</code> の<strong>前</strong>が条件」「<code>?</code> と <code>:</code> の<strong>間</strong>が条件が <code>true</code> のときの値」「<code>:</code> の<strong>後</strong>が条件が <code>false</code> のときの値」です。</li>
+<li>ここでは <code>isRead</code>（条件）が <code>true</code> なので <code>"読了"</code> が選ばれ、<code>label</code> に入ります。もし <code>false</code> なら <code>"未読"</code> が入ります。</li>
+<li><code>if</code> 文と違い、三項演算子は<strong>1つの値を返す式</strong>なので、<code>const label = ...</code> のように変数に直接代入できます。後の章の画面コード（JSX）で表示の出し分けに多用します。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> 三項演算子（ternary operator）＝<code>条件 ? A : B</code> の形で、条件に応じて2つの値のどちらかを選ぶ式。</p>
+</blockquote>
+<hr>
+<blockquote>
+<p><strong>なぜ三項演算子を使う？</strong> React Nativeの画面コードの中（後の章で出てくるJSX）では、<code>if</code>文がそのままでは書きにくい場面があります。そこで「条件 ? A : B」の三項演算子が画面の表示切り替えに重宝します。第4章以降で実際に使います。</p>
+</blockquote>
+<hr>
+<h2 id="9">9. ジェネリクス — 型に「中身の型」を渡すしくみ（<code>&lt;...&gt;</code>）</h2>
+<p>後の章では <code>useState&lt;Book[]&gt;(...)</code> や <code>Promise&lt;Book[]&gt;</code>、<code>useLocalSearchParams&lt;{ id: string }&gt;()</code> のように、<strong>型名のうしろに山カッコ <code>&lt;...&gt;</code> が付く書き方</strong>が頻繁に出てきます。これを <strong>ジェネリクス（generics）</strong> と呼びます。初出でいきなり出るとギョッとするので、ここで意味を押さえておきましょう。</p>
+<p>ジェネリクスは「<strong>入れ物の型に、"中に入る物の型"を渡す</strong>」しくみです。身近なたとえで言うと、「箱」という型に「何を入れる箱か（みかん用／本用）」を指定するイメージです。</p>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 配列の型 <code>string[]</code> を、<code>Array&lt;string&gt;</code> という別の書き方で表せること（どちらも「文字列の配列」で同じ意味）を見せています。<code>&lt;...&gt;</code>（山カッコ）の中に書いた型が「<strong>中に入る物の型</strong>」になります。「<code>Array&lt;本の型&gt;</code> なら本の配列」というように、<strong><code>&lt;...&gt;</code> の中は中身の型を教えているだけ</strong>と分かれば、後の章で出てくる <code>useState&lt;Book[]&gt;</code> なども読めるようになります（自分で設計する必要は当面ありません）。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-36"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 配列の型 string[] は、実は Array&lt;string&gt; とも書ける（同じ意味）</span>
+<span class="c1">// Array       : 「配列」という&quot;入れ物&quot;の型</span>
+<span class="c1">// &lt;string&gt;    : 「その配列の中身は文字列(string)ですよ」と中身の型を渡している</span>
+<span class="c1">// string[] と全く同じ意味</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">titles</span><span class="o">:</span><span class="w"> </span><span class="kt">Array</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;本A&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;本B&quot;</span><span class="p">];</span>
+
+<span class="c1">// 中身を Book にすれば「本の配列」になる</span>
+<span class="c1">// （Book型は第6章で定義します。「本1冊分の形」と思ってください）</span>
+<span class="c1">// Book[] と同じ</span>
+<span class="c1">// const books: Array&lt;Book&gt; = [...];</span>
+</code></pre></div></div>
+
+<h4 id="1_15">▼ コードを1つずつ分解して解説</h4>
+<hr>
+<h5 id="1-arraystring-string">解説1: <code>Array&lt;string&gt;</code> は <code>string[]</code> と同じ意味</h5>
+<div class="codehilite"><div class="code-wrap" id="code-37"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 配列の型 string[] は、実は Array&lt;string&gt; とも書ける（同じ意味）</span>
+<span class="c1">// Array       : 「配列」という&quot;入れ物&quot;の型</span>
+<span class="c1">// &lt;string&gt;    : 「その配列の中身は文字列(string)ですよ」と中身の型を渡している</span>
+<span class="c1">// string[] と全く同じ意味</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">titles</span><span class="o">:</span><span class="w"> </span><span class="kt">Array</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;本A&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;本B&quot;</span><span class="p">];</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>Array</code> は「<strong>配列という入れ物</strong>」を表す型です。それ自体だけでは「何を入れる配列か」が決まっていません。</li>
+<li><code>&lt;string&gt;</code>（山カッコの中の型）が、その入れ物に渡す「<strong>中に入る物の型</strong>」です。<code>Array&lt;string&gt;</code> で「中身は文字列の配列」になります。</li>
+<li>これは前に学んだ <code>string[]</code> と<strong>まったく同じ意味</strong>です。<code>型[]</code> という書き方と <code>Array&lt;型&gt;</code> という書き方の2通りがあるだけです。</li>
+<li><code>&lt;...&gt;</code>（山カッコ）で型に「中身の型」を渡すこの仕組みを<strong>ジェネリクス</strong>と呼びます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> ジェネリクス（generics）＝<code>入れ物の型&lt;中身の型&gt;</code> の形で、入れ物に「中に入る物の型」を渡す仕組み。</p>
+</blockquote>
+<hr>
+<h5 id="2_3">解説2: 中身の型を変えれば別の配列になる</h5>
+<div class="codehilite"><div class="code-wrap" id="code-38"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 中身を Book にすれば「本の配列」になる</span>
+<span class="c1">// （Book型は第6章で定義します。「本1冊分の形」と思ってください）</span>
+<span class="c1">// Book[] と同じ</span>
+<span class="c1">// const books: Array&lt;Book&gt; = [...];</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>&lt;...&gt;</code> の中を <code>Book</code> に変えて <code>Array&lt;Book&gt;</code> と書けば、「<strong>本（Book型）の配列</strong>」という意味になります。</li>
+<li>これも <code>Book[]</code> という書き方と同じです。同じ <code>Array</code> という入れ物でも、<code>&lt;string&gt;</code> か <code>&lt;Book&gt;</code> かで「中に入る物」が変わります。</li>
+<li>このように「既にある入れ物（<code>Array</code>・<code>useState</code>・<code>Promise</code> など）に、後から中身の型を渡すだけ」と考えれば、後の章の <code>useState&lt;Book[]&gt;</code> などもこわくありません。<strong>自分でジェネリクスを設計する必要は当面ありません</strong>。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <code>Array&lt;Book&gt;</code> ＝ <code>Book[]</code>。どちらも「本の配列」を表す。中身の型を変えれば別の配列の型になる。</p>
+</blockquote>
+<hr>
+<ul>
+<li><code>&lt;...&gt;</code> の中に書いた型が「<strong>中身の型</strong>」になります。<code>Array&lt;string&gt;</code> は「文字列の配列」、<code>Array&lt;Book&gt;</code> は「本の配列」です。</li>
+<li>同じ「配列」という入れ物でも、<code>&lt;string&gt;</code> か <code>&lt;Book&gt;</code> かで「中に何が入るか」が変わります。これがジェネリクス（＝汎用的に、中身の型を後から指定できる）の便利さです。</li>
+</ul>
+<blockquote>
+<p><strong>後の章での登場例（今は眺めるだけでOK）:</strong>
+- <code>useState&lt;Book[]&gt;([])</code> … 「<strong>Bookの配列</strong>を持つstate」を作る（第7章）。<code>&lt;Book[]&gt;</code> で中身の型を指定。
+- <code>Promise&lt;Book[]&gt;</code> … 「<strong>最終的にBookの配列を返す</strong>非同期処理」の型（下の第9.5節・第6章）。
+- <code>useLocalSearchParams&lt;{ id: string }&gt;()</code> … 「<code>id</code> という文字列を受け取る」と中身の型を指定（第8章）。</p>
+<p>いずれも「<code>&lt;...&gt;</code> の中は"中身の型"を教えているんだな」と分かれば読めます。<strong>自分でジェネリクスを設計する必要は当面ありません</strong>。「既にある入れ物に中身の型を渡すだけ」と考えてください。</p>
+</blockquote>
+<hr>
+<h2 id="95-async-await-promise">9.5 非同期処理 — <code>async</code> / <code>await</code> と <code>Promise</code></h2>
+<p>アプリは「サーバーからデータを取ってくる」という<strong>時間のかかる処理</strong>を行います。データが届くまで他の処理を止めずに待つ仕組みが <strong><code>async</code>（エイシンク）/ <code>await</code>（アウェイト）</strong> です。<strong>第6・7章でSupabaseからデータを取得するときに必ず使う</strong>ので、概念をしっかり掴んでおきましょう。</p>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 「サーバーから本のデータを取ってくる」ような<strong>時間のかかる処理を、結果が届くまで待ってから次に進む</strong>書き方を見せています。関数に <code>async</code>（エイシンク）という目印を付けると、その中で <code>await</code>（アウェイト）＝「終わるまでここで待つ」が使えます。<strong><code>await</code> を付け忘れると、データが届く前に先へ進んでしまいバグになる</strong>ので、「時間のかかる処理の前には <code>await</code>」とセットで覚えてください（詳細はコード内コメントと後続の解説にあります）。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-39"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// async : 「この関数の中には&quot;待つ処理&quot;が含まれる」という目印を付けるキーワード</span>
+<span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">loadBooks</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// await : 「この処理が終わるまで、ここで待つ」という指示</span>
+<span class="w">  </span><span class="c1">// fetchBooksFromServer() はサーバーからデータを取る（時間がかかる）関数だと考えてください</span>
+<span class="w">  </span><span class="c1">// データが届くまで待ってから、結果を books に入れる</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">books</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">fetchBooksFromServer</span><span class="p">();</span>
+<span class="w">  </span><span class="c1">// 届いたデータを表示</span>
+<span class="w">  </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">books</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="1_16">▼ コードを1つずつ分解して解説</h4>
+<hr>
+<h5 id="1-async">解説1: <code>async</code> を付けて「待つ処理を含む関数」にする</h5>
+<div class="codehilite"><div class="code-wrap" id="code-40"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// async : 「この関数の中には&quot;待つ処理&quot;が含まれる」という目印を付けるキーワード</span>
+<span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">loadBooks</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>async</code>（エイシンク）は関数の前に付ける<strong>目印</strong>です。「この関数の中には"終わるまで待つ処理"が含まれますよ」という宣言です。</li>
+<li><code>async</code> を付けると、その関数の中で <code>await</code>（次の解説）が使えるようになります。逆に <code>async</code> の無い関数の中では <code>await</code> は使えません。だから2つはセットで登場します。</li>
+<li><code>async</code> を付けた関数の<strong>戻り値は必ず <code>Promise&lt;...&gt;</code> 型</strong>になります（後述）。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> async（エイシンク）＝関数を「非同期関数」にする目印。中で <code>await</code> を使えるようにする。</p>
+</blockquote>
+<hr>
+<h5 id="2-await">解説2: <code>await</code> で結果が届くまで待つ</h5>
+<div class="codehilite"><div class="code-wrap" id="code-41"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">  </span><span class="c1">// await : 「この処理が終わるまで、ここで待つ」という指示</span>
+<span class="w">  </span><span class="c1">// fetchBooksFromServer() はサーバーからデータを取る（時間がかかる）関数だと考えてください</span>
+<span class="w">  </span><span class="c1">// データが届くまで待ってから、結果を books に入れる</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">books</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">fetchBooksFromServer</span><span class="p">();</span>
+<span class="w">  </span><span class="c1">// 届いたデータを表示</span>
+<span class="w">  </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">books</span><span class="p">);</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>fetchBooksFromServer()</code> は「サーバーからデータを取ってくる」<strong>時間のかかる処理</strong>だと考えてください。呼んだ瞬間には結果がまだありません。</li>
+<li>その前に付いた <code>await</code>（アウェイト）が「<strong>この処理が終わる（データが届く）まで、ここで待つ</strong>」という指示です。</li>
+<li>待った後、届いたデータが <code>= books</code> で <code>books</code> に入ります。だから次の <code>console.log(books)</code> では、ちゃんと中身が入った状態で表示できます。</li>
+<li>もし <code>await</code> を<strong>付け忘れる</strong>と、データが届く前に次の行へ進んでしまい、<code>books</code> が空っぽのまま表示されるバグになります。「<strong>時間のかかる処理の前には <code>await</code></strong>」とセットで覚えます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> await（アウェイト）＝結果が届くまでその行で待つ指示。<code>async</code> 関数の中でのみ使える。</p>
+</blockquote>
+<hr>
+<p><strong>① <code>await</code> を付けないとどうなる？</strong>
+<code>await</code> は「結果が届くまでこの行で待つ」という指示です。もし <code>await</code> を<strong>付け忘れる</strong>と、プログラムは「データが届くのを待たずに次の行へ進んで」しまいます。すると <code>books</code> にはまだデータが入っておらず、空っぽや「処理中の状態」を表示してしまう、というバグになります。<strong>「時間のかかる処理の前には <code>await</code>」</strong>とセットで覚えてください。なお <code>await</code> は <code>async</code> を付けた関数の中でしか使えません（だから2つはセットで登場します）。</p>
+<p><strong>② <code>Promise</code>（プロミス）とは？</strong>
+「時間のかかる処理」は、呼んだ瞬間には結果がまだありません。その「<strong>結果は後で渡すよ、という"引換券"</strong>」のことを <strong><code>Promise</code></strong> と呼びます。レストランで料理を注文したときの「番号札」のイメージです。</p>
+<blockquote>
+<p><strong>Promiseの3つの状態（やさしく）:</strong> Promiseは次のどれかの状態を持ちます。
+- <strong>待機中（pending）</strong> … まだ料理ができていない（処理の途中）。
+- <strong>成功（fulfilled）</strong> … 料理ができて受け取れた（データが届いた）。
+- <strong>失敗（rejected）</strong> … 料理が作れなかった（通信エラーなど）。</p>
+<p><code>await</code> は「この番号札（Promise）が"成功"か"失敗"になるまで待って、中身（料理＝データ）を受け取る」働きをします。失敗したときの受け止め方が、第7章で学ぶ <code>try / catch</code> です。</p>
+</blockquote>
+<p><strong>③ <code>Promise&lt;Book[]&gt;</code> の読み方（ジェネリクス再登場）</strong>
+第6章では <code>function fetchBooks(): Promise&lt;Book[]&gt;</code> のような書き方が出ます。これは第9節のジェネリクスです。「<code>Promise&lt;Book[]&gt;</code>」は「<strong>最終的に Book の配列（<code>Book[]</code>）を渡してくれる引換券</strong>」という意味。<code>async</code> を付けた関数の戻り値は、必ずこの <code>Promise&lt;...&gt;</code> の形になります（中身が無いなら <code>Promise&lt;void&gt;</code>。<code>void</code> は「返す値なし」の型）。</p>
+<blockquote>
+<p><strong>身近な例え（再）:</strong> カップ麺にお湯を入れて「3分待つ」のが <code>await</code>、その「3分後にできあがる」という約束が <code>Promise</code> です。<code>async</code> は「この調理には待ち時間がありますよ」という札。待っている間に他のこともできるのが非同期（asynchronous＝同時並行的）の良さです。今は「サーバー通信には async/await を使い、戻り値は Promise になる」と分かればOKです。</p>
+</blockquote>
+<hr>
+<h2 id="typescript">発展: アプリでは使っていない重要なTypeScript機能</h2>
+<p>ここまでで、後の章のコードを読むのに必要な文法は一通りそろいました。この発展セクションでは、本書のアプリ作りには直接出てこないものの、<strong>実際の現場ではよく使う重要なTypeScriptの機能</strong>を、独立した小さな例で紹介します。「今すぐ全部覚えなくてOK、こういうものがあると知っておく」くらいの気持ちで読んでください。</p>
+<h3 id="1_17">発展1: ユニオン型・リテラル型 — 「このどれか」を表す</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 変数に入れてよい値を「<strong>このいくつかの中のどれか</strong>」に限定する書き方を見せています。<code>"読了" | "読書中" | "未読"</code> のように、<code>|</code>（縦棒）で候補を並べると「この3つのうちのどれか1つしか入れられない」型になります。これを使うと、決まった値しか入らないことを実行前に保証できます。「<code>|</code> は"または"、候補を <code>|</code> で並べると限定できる」という1点を押さえてください（各部分の意味はコード内コメント参照）。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-42"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 「文字列ならなんでも」ではなく、決まった3つの言葉だけを許す型を作る</span>
+<span class="c1">// &quot;読了&quot; | &quot;読書中&quot; | &quot;未読&quot; : | (縦棒) で候補を並べる。「このどれか1つ」という意味</span>
+<span class="c1">// リテラル型をユニオンでつないだ型</span>
+<span class="kr">type</span><span class="w"> </span><span class="nx">Status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;読了&quot;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">&quot;読書中&quot;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">&quot;未読&quot;</span><span class="p">;</span>
+
+<span class="c1">// 候補の中にあるのでOK</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">s1</span><span class="o">:</span><span class="w"> </span><span class="kt">Status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;読了&quot;</span><span class="p">;</span>
+<span class="c1">// ← 候補にない言葉なので、実行前にエラーになる</span>
+<span class="c1">// const s2: Status = &quot;積読&quot;;</span>
+
+<span class="c1">// 型どうしを | でつなぐこともできる（文字列または数値、など）</span>
+<span class="c1">// id には文字列か数値のどちらかを入れてよい</span>
+<span class="kd">let</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">number</span><span class="p">;</span>
+<span class="c1">// 文字列：OK</span>
+<span class="nx">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;abc&quot;</span><span class="p">;</span>
+<span class="c1">// 数値：OK</span>
+<span class="nx">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">123</span><span class="p">;</span>
+</code></pre></div></div>
+
+<h4 id="1_18">▼ コードを1つずつ分解して解説</h4>
+<hr>
+<h5 id="1_19">解説1: 決まった言葉だけを許す（リテラル型 ＋ ユニオン）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-43"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// リテラル型をユニオンでつないだ型</span>
+<span class="kr">type</span><span class="w"> </span><span class="nx">Status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;読了&quot;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">&quot;読書中&quot;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">&quot;未読&quot;</span><span class="p">;</span>
+
+<span class="c1">// 候補の中にあるのでOK</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">s1</span><span class="o">:</span><span class="w"> </span><span class="kt">Status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;読了&quot;</span><span class="p">;</span>
+<span class="c1">// ← 候補にない言葉なので、実行前にエラーになる</span>
+<span class="c1">// const s2: Status = &quot;積読&quot;;</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>"読了"</code> のように<strong>特定の値そのもの</strong>を型にしたものを「<strong>リテラル型</strong>」と呼びます。<code>string</code>（文字列ならなんでも）よりも厳しく、「まさにこの言葉だけ」を表します。</li>
+<li>それを <code>|</code>（縦棒）でつないだ <code>"読了" | "読書中" | "未読"</code> が「<strong>このどれか1つ</strong>」という型です。この <code>|</code> でつなぐ書き方を「<strong>ユニオン型</strong>」と呼びます。</li>
+<li><code>Status</code> 型の変数には、この3つの言葉以外は入れられません。<code>"積読"</code> のように候補にない値を入れると、<strong>実行前にエラー</strong>で教えてくれます。打ち間違いを防げるのが利点です。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> リテラル型＝<code>"読了"</code> のように「特定の値そのもの」を表す型。ユニオン型＝<code>A | B</code> の形で「AまたはB（のどれか）」を表す型。</p>
+</blockquote>
+<hr>
+<h5 id="2_4">解説2: 型どうしを <code>|</code> でつなぐ（文字列または数値）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-44"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// id には文字列か数値のどちらかを入れてよい</span>
+<span class="kd">let</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">number</span><span class="p">;</span>
+<span class="c1">// 文字列：OK</span>
+<span class="nx">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;abc&quot;</span><span class="p">;</span>
+<span class="c1">// 数値：OK</span>
+<span class="nx">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">123</span><span class="p">;</span>
+</code></pre></div></div>
+
+<ul>
+<li>ユニオン型は、<code>string | number</code> のように<strong>型どうし</strong>をつなぐこともできます。「文字列<strong>または</strong>数値のどちらか」という意味です。</li>
+<li>そのため <code>id</code> には文字列 <code>"abc"</code> を入れても、数値 <code>123</code> を入れてもエラーになりません。</li>
+<li>ただし <code>true</code>（真偽値）など、候補にない型を入れようとするとエラーになります。「許す型を <code>|</code> で並べる」と覚えてください。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <code>string | number</code> ＝「文字列または数値」。<code>|</code> は型の世界では「または」の意味になる。</p>
+</blockquote>
+<hr>
+<h3 id="2-utility-types">発展2: Utility Types — 既存の型から新しい型を作る道具</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> すでにある型（ここでは本の型 <code>Book</code>）をもとに、「<strong>全項目を省略可能にした型</strong>」「<strong>一部の項目だけ取り出した型</strong>」などを、TypeScriptが用意してくれた便利な道具で<strong>自動で作って</strong>います。同じ項目を何度も手書きしなくて済むのが利点です。<code>Partial</code>・<code>Pick</code>・<code>Omit</code>・<code>Required</code>・<code>Record</code> という5つの名前と「それぞれ何をするか」をざっくり知っておけばOKです（各道具の意味はコード内コメント参照）。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-45"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// もとになる型（本1冊分の形）</span>
+<span class="kr">type</span><span class="w"> </span><span class="nx">Book</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">author</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">isRead</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="c1">// Partial&lt;T&gt; : Tの全項目を「省略可能(?)」にした型を作る</span>
+<span class="kr">type</span><span class="w"> </span><span class="nx">PartialBook</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">Partial</span><span class="o">&lt;</span><span class="nx">Book</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="c1">// → { id?: string; title?: string; author?: string; isRead?: boolean; } と同じ</span>
+<span class="c1">// 一部だけでOK</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">draft</span><span class="o">:</span><span class="w"> </span><span class="kt">PartialBook</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;下書き&quot;</span><span class="w"> </span><span class="p">};</span>
+
+<span class="c1">// Pick&lt;T, &quot;キー名&quot;&gt; : Tから指定した項目「だけ」取り出した型を作る</span>
+<span class="kr">type</span><span class="w"> </span><span class="nx">BookPreview</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">Pick</span><span class="o">&lt;</span><span class="nx">Book</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;id&quot;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">&quot;title&quot;</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="c1">// → { id: string; title: string; } と同じ</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">preview</span><span class="o">:</span><span class="w"> </span><span class="kt">BookPreview</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;本A&quot;</span><span class="w"> </span><span class="p">};</span>
+
+<span class="c1">// Omit&lt;T, &quot;キー名&quot;&gt; : Tから指定した項目「を除いた」型を作る</span>
+<span class="kr">type</span><span class="w"> </span><span class="nx">BookWithoutId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">Omit</span><span class="o">&lt;</span><span class="nx">Book</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;id&quot;</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="c1">// → { title: string; author: string; isRead: boolean; } と同じ（idが消える）</span>
+
+<span class="c1">// Required&lt;T&gt; : Tの全項目を「必須（?を外す）」にした型を作る（Partialの逆）</span>
+<span class="kr">type</span><span class="w"> </span><span class="nx">FullBook</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">Required</span><span class="o">&lt;</span><span class="nx">PartialBook</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="c1">// → 全項目が省略不可に戻る</span>
+
+<span class="c1">// Record&lt;キーの型, 値の型&gt; : 「キーと値の組」の型をまとめて作る</span>
+<span class="c1">// 「名前(文字列)→点数(数値)」の対応表</span>
+<span class="kr">type</span><span class="w"> </span><span class="nx">ScoreByName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">Record</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="kt">number</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">scores</span><span class="o">:</span><span class="w"> </span><span class="kt">ScoreByName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">鈴木</span><span class="o">:</span><span class="w"> </span><span class="kt">80</span><span class="p">,</span><span class="w"> </span><span class="nx">田中</span><span class="o">:</span><span class="w"> </span><span class="kt">95</span><span class="w"> </span><span class="p">};</span>
+</code></pre></div></div>
+
+<h4 id="1_20">▼ コードを1つずつ分解して解説</h4>
+<hr>
+<h5 id="1_21">解説1: もとになる型を用意する</h5>
+<div class="codehilite"><div class="code-wrap" id="code-46"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kr">type</span><span class="w"> </span><span class="nx">Book</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">author</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">isRead</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<ul>
+<li>まず「本1冊分の形」を <code>Book</code> 型として定義しています。これは第5節で学んだ <code>type</code> と同じ書き方です。</li>
+<li>このあと紹介する道具は、すべて<strong>この <code>Book</code> をもとに別の型を作る</strong>ものです。もとの型は1つ書いておけば、そこから何種類もの型を自動で生み出せます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> Utility Types（ユーティリティ型）＝既存の型から新しい型を作るために、TypeScriptが標準で用意してくれている便利な道具。</p>
+</blockquote>
+<hr>
+<h5 id="2-partial">解説2: <code>Partial</code> で全項目を省略可能にする</h5>
+<div class="codehilite"><div class="code-wrap" id="code-47"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kr">type</span><span class="w"> </span><span class="nx">PartialBook</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">Partial</span><span class="o">&lt;</span><span class="nx">Book</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="c1">// 一部だけでOK</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">draft</span><span class="o">:</span><span class="w"> </span><span class="kt">PartialBook</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;下書き&quot;</span><span class="w"> </span><span class="p">};</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>Partial&lt;Book&gt;</code> は「<code>Book</code> の<strong>全項目に <code>?</code> を付けた型</strong>」を作ります。第5節で学んだ <code>?</code>（省略可能）を、全項目にまとめて付けるイメージです。</li>
+<li>ジェネリクス（第9節）と同じ <code>&lt;...&gt;</code> の中に「もとの型」を渡します。<code>Partial&lt;Book&gt;</code> の <code>&lt;Book&gt;</code> がそれです。</li>
+<li>そのため <code>draft</code> は <code>title</code> だけを書いてもエラーになりません。「入力途中の下書きデータ」などを表すのに便利です。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <code>Partial&lt;T&gt;</code> ＝ 型 <code>T</code> の全項目を省略可能（<code>?</code>付き）にした型を作る道具。</p>
+</blockquote>
+<hr>
+<h5 id="3-pick">解説3: <code>Pick</code> で一部の項目だけ取り出す</h5>
+<div class="codehilite"><div class="code-wrap" id="code-48"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kr">type</span><span class="w"> </span><span class="nx">BookPreview</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">Pick</span><span class="o">&lt;</span><span class="nx">Book</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;id&quot;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">&quot;title&quot;</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">preview</span><span class="o">:</span><span class="w"> </span><span class="kt">BookPreview</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;本A&quot;</span><span class="w"> </span><span class="p">};</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>Pick&lt;Book, "id" | "title"&gt;</code> は「<code>Book</code> の中から <code>id</code> と <code>title</code> の<strong>2項目だけを取り出した型</strong>」を作ります。</li>
+<li>取り出したい項目名を、<code>"id" | "title"</code> のように<strong>ユニオン型</strong>（発展1）で並べて指定します。</li>
+<li>結果の <code>BookPreview</code> 型は <code>id</code> と <code>title</code> しか持たないので、一覧表示で「タイトルだけ見せたい」ようなときに役立ちます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <code>Pick&lt;T, K&gt;</code> ＝ 型 <code>T</code> から指定した項目 <code>K</code> だけを取り出した型を作る道具。</p>
+</blockquote>
+<hr>
+<h5 id="4-omit">解説4: <code>Omit</code> で一部の項目を除く</h5>
+<div class="codehilite"><div class="code-wrap" id="code-49"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kr">type</span><span class="w"> </span><span class="nx">BookWithoutId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">Omit</span><span class="o">&lt;</span><span class="nx">Book</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;id&quot;</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="c1">// → { title: string; author: string; isRead: boolean; } と同じ（idが消える）</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>Omit&lt;Book, "id"&gt;</code> は <code>Pick</code> の<strong>逆</strong>で、「<code>Book</code> から <code>id</code> を<strong>除いた</strong>型」を作ります。</li>
+<li>残りの <code>title</code>・<code>author</code>・<code>isRead</code> を持つ型になります。「IDはサーバーが自動で付けるので、新規作成時のデータからは除きたい」といった場面で便利です。</li>
+<li>除きたい項目が複数あるときは、<code>Omit&lt;Book, "id" | "isRead"&gt;</code> のようにユニオン型で並べます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <code>Omit&lt;T, K&gt;</code> ＝ 型 <code>T</code> から指定した項目 <code>K</code> を除いた型を作る道具（<code>Pick</code> の逆）。</p>
+</blockquote>
+<hr>
+<h5 id="5-required">解説5: <code>Required</code> で全項目を必須に戻す</h5>
+<div class="codehilite"><div class="code-wrap" id="code-50"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kr">type</span><span class="w"> </span><span class="nx">FullBook</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">Required</span><span class="o">&lt;</span><span class="nx">PartialBook</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="c1">// → 全項目が省略不可に戻る</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>Required&lt;T&gt;</code> は <code>Partial</code> の<strong>逆</strong>で、「全項目の <code>?</code> を外して<strong>必須にした型</strong>」を作ります。</li>
+<li>ここでは、さきほど全項目を省略可能にした <code>PartialBook</code> を、<code>Required</code> でもう一度すべて必須に戻しています。</li>
+<li>「下書き段階では省略可、保存時にはすべて埋まっていてほしい」というように、<code>Partial</code> と <code>Required</code> をセットで使うことがあります。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <code>Required&lt;T&gt;</code> ＝ 型 <code>T</code> の全項目を必須（<code>?</code>なし）にした型を作る道具（<code>Partial</code> の逆）。</p>
+</blockquote>
+<hr>
+<h5 id="6-record">解説6: <code>Record</code> で「キーと値の対応表」を作る</h5>
+<div class="codehilite"><div class="code-wrap" id="code-51"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 「名前(文字列)→点数(数値)」の対応表</span>
+<span class="kr">type</span><span class="w"> </span><span class="nx">ScoreByName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">Record</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="kt">number</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">scores</span><span class="o">:</span><span class="w"> </span><span class="kt">ScoreByName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">鈴木</span><span class="o">:</span><span class="w"> </span><span class="kt">80</span><span class="p">,</span><span class="w"> </span><span class="nx">田中</span><span class="o">:</span><span class="w"> </span><span class="kt">95</span><span class="w"> </span><span class="p">};</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>Record&lt;キーの型, 値の型&gt;</code> は「<strong>キーと値の組をまとめた型</strong>」を作ります。<code>&lt;...&gt;</code> に2つの型を渡すのが特徴です。</li>
+<li><code>Record&lt;string, number&gt;</code> は「<strong>キーは文字列、値は数値</strong>」という意味で、<code>{ 鈴木: 80, 田中: 95 }</code> のような「名前→点数」の対応表を表せます。</li>
+<li>項目名が事前に決まっていない「辞書のようなデータ」を扱うときに便利です。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <code>Record&lt;K, V&gt;</code> ＝ キーの型が <code>K</code>、値の型が <code>V</code> の「対応表（辞書）」の型を作る道具。</p>
+</blockquote>
+<hr>
+<h3 id="3-enum">発展3: enum（列挙型） — 名前付きの定数をまとめる</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 「読書の状態」のような<strong>決まった選択肢のグループ</strong>に、<code>enum</code>（イーナム）という仕組みで名前を付けてまとめています。<code>Status.Read</code> のように「グループ名.選択肢名」で値を取り出せて、打ち間違いを防げます。発展1のリテラル型と似た目的ですが、こちらは「定数をひとまとめにする」書き方です。「<code>enum グループ名 { 選択肢1, 選択肢2 }</code> で選択肢をまとめられる」という形を押さえてください（詳細はコード内コメント参照）。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-52"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// enum : 関連する定数（選択肢）をひとまとめにするキーワード</span>
+<span class="c1">// Status : グループ名（型名と同じく大文字始まりが慣習）</span>
+<span class="kd">enum</span><span class="w"> </span><span class="nx">Status</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// 未読  （何も指定しないと自動で 0 が割り当てられる）</span>
+<span class="w">  </span><span class="nx">Unread</span><span class="p">,</span>
+<span class="w">  </span><span class="c1">// 読書中（自動で 1）</span>
+<span class="w">  </span><span class="nx">Reading</span><span class="p">,</span>
+<span class="w">  </span><span class="c1">// 読了  （自動で 2）</span>
+<span class="w">  </span><span class="nx">Read</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="c1">// 「Statusグループの Reading」を取り出す</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">current</span><span class="o">:</span><span class="w"> </span><span class="kt">Status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">Status</span><span class="p">.</span><span class="nx">Reading</span><span class="p">;</span>
+<span class="c1">// 結果: 1（Readingに割り当てられた番号）</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">current</span><span class="p">);</span>
+
+<span class="c1">// 文字列を割り当てることもできる（こちらの方が読みやすく、よく使われる）</span>
+<span class="kd">enum</span><span class="w"> </span><span class="nx">StatusLabel</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">Unread</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;未読&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">Reading</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;読書中&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">Read</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;読了&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="c1">// 結果: &quot;読了&quot;</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">StatusLabel</span><span class="p">.</span><span class="nx">Read</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h4 id="1_22">▼ コードを1つずつ分解して解説</h4>
+<hr>
+<h5 id="1-enum">解説1: 選択肢をひとまとめにする（<code>enum</code>）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-53"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">enum</span><span class="w"> </span><span class="nx">Status</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// 未読  （何も指定しないと自動で 0 が割り当てられる）</span>
+<span class="w">  </span><span class="nx">Unread</span><span class="p">,</span>
+<span class="w">  </span><span class="c1">// 読書中（自動で 1）</span>
+<span class="w">  </span><span class="nx">Reading</span><span class="p">,</span>
+<span class="w">  </span><span class="c1">// 読了  （自動で 2）</span>
+<span class="w">  </span><span class="nx">Read</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="c1">// 「Statusグループの Reading」を取り出す</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">current</span><span class="o">:</span><span class="w"> </span><span class="kt">Status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">Status</span><span class="p">.</span><span class="nx">Reading</span><span class="p">;</span>
+<span class="c1">// 結果: 1（Readingに割り当てられた番号）</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">current</span><span class="p">);</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>enum</code> は「<strong>関連する選択肢（定数）をひとまとめにする</strong>」キーワードです。<code>enum グループ名 { 選択肢1, 選択肢2, ... }</code> の形で書きます。</li>
+<li>中の選択肢に何も指定しないと、上から順に <strong>0, 1, 2... と番号が自動で割り当てられます</strong>。だから <code>Status.Reading</code> は <code>1</code> になります。</li>
+<li>値を取り出すときは <code>Status.Reading</code> のように「<strong>グループ名.選択肢名</strong>」と書きます。<code>.</code>（ドット）はオブジェクトのときと同じ使い方です。</li>
+<li>数字を直接書く代わりに名前で扱えるので、コードが読みやすくなり、打ち間違いも防げます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> enum（イーナム / 列挙型）＝関連する定数（選択肢）に名前を付けてひとまとめにする仕組み。</p>
+</blockquote>
+<hr>
+<h5 id="2_5">解説2: 文字列を割り当てる（実用ではこちらが多い）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-54"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">enum</span><span class="w"> </span><span class="nx">StatusLabel</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">Unread</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;未読&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">Reading</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;読書中&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">Read</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;読了&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="c1">// 結果: &quot;読了&quot;</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">StatusLabel</span><span class="p">.</span><span class="nx">Read</span><span class="p">);</span>
+</code></pre></div></div>
+
+<ul>
+<li>各選択肢に <code>= "未読"</code> のように<strong>値を明示</strong>することもできます。ここでは番号ではなく文字列を割り当てています。</li>
+<li><code>StatusLabel.Read</code> を表示すると <code>"読了"</code> が出ます。番号より意味が分かりやすいので、実際の現場ではこの<strong>文字列を割り当てる書き方</strong>がよく使われます。</li>
+<li>なお、発展1のリテラル型（<code>"読了" | "読書中" | "未読"</code>）でも似たことができます。近年のReact開発ではリテラル型を好む人も多く、両方とも見かける、と知っておけば十分です。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> 文字列enum＝各選択肢に文字列を割り当てた <code>enum</code>。番号より意味が読み取りやすい。</p>
+</blockquote>
+<hr>
+<h3 id="4_1">発展4: 型ガード — 実行中に「今この値は何の型か」を見分ける</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> ユニオン型（発展1）などで「文字列か数値のどちらか」のような値を扱うとき、<strong>実行中に「今は実際どちらなのか」を調べて、安全に処理を分ける</strong>書き方を見せています。<code>typeof</code>・<code>in</code>・<code>x is T</code> という3つの調べ方を紹介します。これらを使うと、TypeScriptが「このブロックの中ではこの型だ」と分かってくれて、安全にその型として扱えます。「値の種類を確かめてから使う」という考え方を押さえてください（各記号の意味はコード内コメント参照）。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-55"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// (1) typeof : 値が「文字列か数値か」などの基本の種類を調べる</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">describe</span><span class="p">(</span><span class="nx">value</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">number</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// ← この { } の中では value は string として扱える</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="ow">typeof</span><span class="w"> </span><span class="nx">value</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 文字列だけが持つ .length を安全に使える</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="s2">&quot;文字列の長さ: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">value</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// ここでは value は number として扱える</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="s2">&quot;数値を2倍: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">value</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">2</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// (2) in : オブジェクトが「そのキーを持っているか」で見分ける</span>
+<span class="kr">type</span><span class="w"> </span><span class="nx">Dog</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">bark</span><span class="o">:</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="ow">void</span><span class="w"> </span><span class="p">};</span>
+<span class="kr">type</span><span class="w"> </span><span class="nx">Cat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">meow</span><span class="o">:</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="ow">void</span><span class="w"> </span><span class="p">};</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">speak</span><span class="p">(</span><span class="nx">animal</span><span class="o">:</span><span class="w"> </span><span class="kt">Dog</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nx">Cat</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="ow">void</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// bark というキーを持つ？ → 持つなら Dog</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="s2">&quot;bark&quot;</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nx">animal</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">animal</span><span class="p">.</span><span class="nx">bark</span><span class="p">();</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">animal</span><span class="p">.</span><span class="nx">meow</span><span class="p">();</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// (3) 型述語 x is T : 「この関数が true を返したら、x は T 型だ」と教える自作の判定関数</span>
+<span class="c1">// 戻り値の型を「x is string」と書くのがポイント</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">isString</span><span class="p">(</span><span class="nx">x</span><span class="o">:</span><span class="w"> </span><span class="kt">unknown</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nx">x</span><span class="w"> </span><span class="nx">is</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="ow">typeof</span><span class="w"> </span><span class="nx">x</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">data</span><span class="o">:</span><span class="w"> </span><span class="kt">unknown</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;こんにちは&quot;</span><span class="p">;</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">isString</span><span class="p">(</span><span class="nx">data</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// ← ここでは data は string として扱える</span>
+<span class="w">  </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">toUpperCase</span><span class="p">());</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="1_23">▼ コードを1つずつ分解して解説</h4>
+<hr>
+<h5 id="1-typeof">解説1: <code>typeof</code> で基本の種類を見分ける</h5>
+<div class="codehilite"><div class="code-wrap" id="code-56"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">function</span><span class="w"> </span><span class="nx">describe</span><span class="p">(</span><span class="nx">value</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">number</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// ← この { } の中では value は string として扱える</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="ow">typeof</span><span class="w"> </span><span class="nx">value</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 文字列だけが持つ .length を安全に使える</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="s2">&quot;文字列の長さ: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">value</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// ここでは value は number として扱える</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="s2">&quot;数値を2倍: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">value</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">2</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<ul>
+<li>引数 <code>value</code> は <code>string | number</code>（文字列または数値）です。このままでは「文字列専用の機能」も「数値専用の機能」も安全には使えません。</li>
+<li><code>typeof value === "string"</code> は「<strong><code>value</code> の種類が文字列か？</strong>」を調べる書き方です。<code>typeof</code> は値の基本の種類（<code>"string"</code>・<code>"number"</code>・<code>"boolean"</code> など）を文字列で返します。</li>
+<li>この <code>if</code> が <code>true</code> のブロックの中では、TypeScriptが「<code>value</code> は文字列だ」と理解してくれるので、文字列だけが持つ <code>.length</code>（文字数）を安全に使えます。<code>else</code> 側では数値として <code>* 2</code> できます。</li>
+<li>このように「種類を確かめてから使う」ことで、間違った操作を防ぎます。これを<strong>型ガード</strong>と呼びます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> 型ガード（type guard）＝実行中に値の型を見分けて、そのブロック内でその型として安全に扱えるようにする仕組み。<code>typeof</code> はその代表的な手段。</p>
+</blockquote>
+<hr>
+<h5 id="2-in">解説2: <code>in</code> でオブジェクトのキーの有無を見分ける</h5>
+<div class="codehilite"><div class="code-wrap" id="code-57"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">function</span><span class="w"> </span><span class="nx">speak</span><span class="p">(</span><span class="nx">animal</span><span class="o">:</span><span class="w"> </span><span class="kt">Dog</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nx">Cat</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="ow">void</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// bark というキーを持つ？ → 持つなら Dog</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="s2">&quot;bark&quot;</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nx">animal</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">animal</span><span class="p">.</span><span class="nx">bark</span><span class="p">();</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">animal</span><span class="p">.</span><span class="nx">meow</span><span class="p">();</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>animal</code> は <code>Dog | Cat</code>（犬または猫）です。犬は <code>bark</code>、猫は <code>meow</code> という別々の機能を持っています。</li>
+<li><code>"bark" in animal</code> は「<code>animal</code> が <strong><code>bark</code> というキー（項目）を持っているか</strong>」を調べる書き方です。<code>in</code> はオブジェクトにそのキーがあるかを判定します。</li>
+<li><code>bark</code> を持つのは <code>Dog</code> だけなので、<code>true</code> のブロックの中では <code>animal</code> は <code>Dog</code> だと分かり、<code>animal.bark()</code> を安全に呼べます。<code>else</code> 側では <code>Cat</code> として <code>meow()</code> を呼びます。</li>
+<li><code>typeof</code> では区別できない「オブジェクトどうしの違い」を見分けたいときに <code>in</code> が役立ちます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <code>in</code> 演算子＝<code>"キー名" in オブジェクト</code> の形で、そのオブジェクトが特定のキーを持つか判定する。型ガードに使える。</p>
+</blockquote>
+<hr>
+<h5 id="3-x-is-t">解説3: 型述語 <code>x is T</code> で自作の判定関数を作る</h5>
+<div class="codehilite"><div class="code-wrap" id="code-58"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 戻り値の型を「x is string」と書くのがポイント</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">isString</span><span class="p">(</span><span class="nx">x</span><span class="o">:</span><span class="w"> </span><span class="kt">unknown</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nx">x</span><span class="w"> </span><span class="nx">is</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="ow">typeof</span><span class="w"> </span><span class="nx">x</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">data</span><span class="o">:</span><span class="w"> </span><span class="kt">unknown</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;こんにちは&quot;</span><span class="p">;</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">isString</span><span class="p">(</span><span class="nx">data</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// ← ここでは data は string として扱える</span>
+<span class="w">  </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">toUpperCase</span><span class="p">());</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>unknown</code>（アンノウン）は「<strong>何の型か分からない値</strong>」を表す型です。安全のため、そのままでは文字列の機能などを使えません。</li>
+<li><code>isString</code> は「渡された <code>x</code> が文字列かどうか」を判定する自作の関数です。注目は戻り値の型 <code>x is string</code> で、これを「<strong>型述語（かたじゅつご）</strong>」と呼びます。「この関数が <code>true</code> を返したら、<code>x</code> は <code>string</code> 型だと思ってよい」とTypeScriptに教えています。</li>
+<li>そのため <code>if (isString(data))</code> の中では、TypeScriptが <code>data</code> を文字列だと理解し、文字列専用の <code>.toUpperCase()</code>（大文字化）を安全に使えます。</li>
+<li><code>typeof</code> や <code>in</code> だけでは表せない「複雑な判定」を自分で関数にまとめたいときに、この <code>x is T</code> を使います。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> 型述語（type predicate）＝<code>引数 is 型</code> の形の戻り値の型。<code>true</code> を返したとき「その引数はその型だ」とTypeScriptに教える。<code>unknown</code> ＝「何の型か不明」を表す型。</p>
+</blockquote>
+<hr>
+<h3 id="5-as-const">発展5: <code>as const</code> — 値を「変わらない・厳密な型」として固定する</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 値の後ろに <code>as const</code>（アズ・コンスト）を付けると、その値を「<strong>これ以上変えない、まさにこの値</strong>」としてTypeScriptに認識させられます。これを付けないと「ただの文字列」「ただの配列」と緩く扱われますが、付けると発展1のリテラル型のように<strong>厳密な型</strong>になります。「決まった選択肢の一覧を <code>as const</code> で固定する」という使い方を押さえてください（違いはコード内コメント参照）。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-59"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// as const を付けない場合：ただの string と推論される（緩い）</span>
+<span class="c1">// 型は string（後で別の文字列にも変えうる扱い）</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">status1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;読了&quot;</span><span class="p">;</span>
+
+<span class="c1">// as const を付ける場合：「まさに &quot;読了&quot; 」というリテラル型に固定される（厳密）</span>
+<span class="c1">// 型は &quot;読了&quot;（この値そのもの）</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">status2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;読了&quot;</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="kd">const</span><span class="p">;</span>
+
+<span class="c1">// 配列やオブジェクトに付けると、中身も丸ごと「変更不可・厳密」になる</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">statuses</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;未読&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;読書中&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;読了&quot;</span><span class="p">]</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="kd">const</span><span class="p">;</span>
+<span class="c1">// → 型は readonly [&quot;未読&quot;, &quot;読書中&quot;, &quot;読了&quot;]（中身を書き換えられない、厳密な並び）</span>
+
+<span class="c1">// この一覧から「どれか」を表す型を取り出せる（発展1のユニオン型になる）</span>
+<span class="c1">// &quot;未読&quot; | &quot;読書中&quot; | &quot;読了&quot;</span>
+<span class="kr">type</span><span class="w"> </span><span class="nx">Status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="ow">typeof</span><span class="w"> </span><span class="nx">statuses</span><span class="p">)[</span><span class="kt">number</span><span class="p">];</span>
+</code></pre></div></div>
+
+<h4 id="1_24">▼ コードを1つずつ分解して解説</h4>
+<hr>
+<h5 id="1-as-const">解説1: <code>as const</code> の有無で型の厳しさが変わる</h5>
+<div class="codehilite"><div class="code-wrap" id="code-60"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 型は string（後で別の文字列にも変えうる扱い）</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">status1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;読了&quot;</span><span class="p">;</span>
+<span class="c1">// 型は &quot;読了&quot;（この値そのもの）</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">status2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;読了&quot;</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="kd">const</span><span class="p">;</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>const status1 = "読了"</code> だけだと、TypeScriptは型を <code>string</code>（文字列ならなんでも）と緩く推論します。</li>
+<li>値の後ろに <code>as const</code> を付けると、「<strong>まさに <code>"読了"</code> という値</strong>」という厳密なリテラル型（発展1）に固定されます。</li>
+<li>「この値はこの先ずっとこのままで、別の文字列に変わることはない」とTypeScriptに伝えるのが <code>as const</code> です。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <code>as const</code>（アズ・コンスト）＝値を「変更しない・まさにこの値」として、厳密なリテラル型に固定する書き方。</p>
+</blockquote>
+<hr>
+<h5 id="2_6">解説2: 配列に付けて「選択肢の一覧」を固定する</h5>
+<div class="codehilite"><div class="code-wrap" id="code-61"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">statuses</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;未読&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;読書中&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;読了&quot;</span><span class="p">]</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="kd">const</span><span class="p">;</span>
+<span class="c1">// → 型は readonly [&quot;未読&quot;, &quot;読書中&quot;, &quot;読了&quot;]（中身を書き換えられない、厳密な並び）</span>
+
+<span class="c1">// &quot;未読&quot; | &quot;読書中&quot; | &quot;読了&quot;</span>
+<span class="kr">type</span><span class="w"> </span><span class="nx">Status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="ow">typeof</span><span class="w"> </span><span class="nx">statuses</span><span class="p">)[</span><span class="kt">number</span><span class="p">];</span>
+</code></pre></div></div>
+
+<ul>
+<li>配列に <code>as const</code> を付けると、<strong>中身も丸ごと「書き換え不可（readonly）」で「厳密な値」</strong>になります。<code>statuses</code> は「この3つの言葉が、この順で並んだ変えられないリスト」になります。</li>
+<li><code>(typeof statuses)[number]</code> は少し高度ですが、「この配列の<strong>どれか1つの要素の型</strong>」を取り出す書き方です。結果は <code>"未読" | "読書中" | "読了"</code> というユニオン型（発展1）になります。</li>
+<li>これにより「<strong>選択肢の一覧（配列）を1か所に書くだけで、そこから型も自動で作れる</strong>」ようになります。選択肢を1つ追加すれば型も自動で増えるので、二重管理がなくなり便利です。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <code>readonly</code>（リードオンリー）＝「読み取り専用＝中身を書き換えられない」という印。<code>as const</code> を配列に付けると自動で付く。</p>
+</blockquote>
+<hr>
+<h3 id="6-null">発展6: オプショナルチェイニング <code>?.</code> と Null合体演算子 <code>??</code></h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 「<strong>あるかもしれないし、無いかもしれない値</strong>」を、エラーで止まらずに安全に扱う2つの記号を紹介します。<code>?.</code>（オプショナルチェイニング）は「もし手前が無ければ、そこで止めて <code>undefined</code> を返す」、<code>??</code>（Null合体演算子）は「もし左が無ければ、右の値を代わりに使う」働きです。この2つはセットで「値が無いときも安全に進める」ために使います（各記号の意味はコード内コメント参照）。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-62"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kr">type</span><span class="w"> </span><span class="nx">User</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="c1">// address は省略可能（無いかもしれない）</span>
+<span class="w">  </span><span class="nx">address</span><span class="o">?:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// city も省略可能</span>
+<span class="w">    </span><span class="nx">city?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="p">};</span>
+<span class="p">};</span>
+
+<span class="c1">// address を持たないユーザー</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">user</span><span class="o">:</span><span class="w"> </span><span class="kt">User</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;鈴木&quot;</span><span class="w"> </span><span class="p">};</span>
+
+<span class="c1">// ?. : 手前が null/undefined なら、そこで止めて undefined を返す（エラーにしない）</span>
+<span class="c1">// address が無いので、city は undefined（エラーにならない）</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">city</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">user</span><span class="p">.</span><span class="nx">address</span><span class="o">?</span><span class="p">.</span><span class="nx">city</span><span class="p">;</span>
+<span class="c1">// もし普通に user.address.city と書くと、address が無いとき実行時エラーになる</span>
+
+<span class="c1">// ?? : 左が null/undefined のときだけ、右の値を使う</span>
+<span class="c1">// city が無いので &quot;未設定&quot; になる</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">displayCity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">user</span><span class="p">.</span><span class="nx">address</span><span class="o">?</span><span class="p">.</span><span class="nx">city</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="s2">&quot;未設定&quot;</span><span class="p">;</span>
+<span class="c1">// 結果: &quot;未設定&quot;</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">displayCity</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h4 id="1_25">▼ コードを1つずつ分解して解説</h4>
+<hr>
+<h5 id="1_26">解説1: <code>?.</code> で「無いかもしれない値」を安全にたどる</h5>
+<div class="codehilite"><div class="code-wrap" id="code-63"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// address を持たないユーザー</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">user</span><span class="o">:</span><span class="w"> </span><span class="kt">User</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;鈴木&quot;</span><span class="w"> </span><span class="p">};</span>
+
+<span class="c1">// address が無いので、city は undefined（エラーにならない）</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">city</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">user</span><span class="p">.</span><span class="nx">address</span><span class="o">?</span><span class="p">.</span><span class="nx">city</span><span class="p">;</span>
+<span class="c1">// もし普通に user.address.city と書くと、address が無いとき実行時エラーになる</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>user</code> は <code>address</code>（住所）を持っていません。<code>User</code> 型で <code>address?</code> と省略可能にしているからです。</li>
+<li>普通に <code>user.address.city</code> と書くと、<code>address</code> が無い（<code>undefined</code>）のにさらに <code>.city</code> をたどろうとして、<strong>実行時にエラーで止まって</strong>しまいます。</li>
+<li><code>user.address?.city</code> の <code>?.</code>（オプショナルチェイニング）は「<strong>もし手前（<code>address</code>）が <code>null</code> か <code>undefined</code> なら、そこで止めて <code>undefined</code> を返す</strong>」働きです。エラーで止まらず、安全に <code>undefined</code> を受け取れます。</li>
+<li>「無いかもしれない項目をたどるときは <code>.</code> の代わりに <code>?.</code>」と覚えてください。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> オプショナルチェイニング（<code>?.</code>）＝手前の値が <code>null</code>/<code>undefined</code> なら、その先をたどらず <code>undefined</code> を返す記号。エラーを防ぐ。</p>
+</blockquote>
+<hr>
+<h5 id="2_7">解説2: <code>??</code> で「無いとき用の代わりの値」を指定する</h5>
+<div class="codehilite"><div class="code-wrap" id="code-64"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// city が無いので &quot;未設定&quot; になる</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">displayCity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">user</span><span class="p">.</span><span class="nx">address</span><span class="o">?</span><span class="p">.</span><span class="nx">city</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="s2">&quot;未設定&quot;</span><span class="p">;</span>
+<span class="c1">// 結果: &quot;未設定&quot;</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">displayCity</span><span class="p">);</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>user.address?.city</code> は（前の解説のとおり）<code>undefined</code> になります。そのままでは画面に何も表示できません。</li>
+<li><code>?? "未設定"</code> の <code>??</code>（Null合体演算子）は「<strong>左の値が <code>null</code> か <code>undefined</code> のときだけ、右の値を代わりに使う</strong>」働きです。</li>
+<li>ここでは左が <code>undefined</code> なので、右の <code>"未設定"</code> が選ばれ、<code>displayCity</code> は <code>"未設定"</code> になります。値があればその値がそのまま使われます。</li>
+<li><code>?.</code>（安全にたどる）と <code>??</code>（無いとき用の値を用意する）はセットで使うことが多く、「値が無くても落ちない・ちゃんと表示できる」コードになります。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> Null合体演算子（<code>??</code>）＝<code>左 ?? 右</code> で、左が <code>null</code>/<code>undefined</code> のときだけ右の値を使う記号。「無いとき用の初期値」を指定するのに使う。</p>
+</blockquote>
+<hr>
+<h3 id="7">発展7: ジェネリック関数 — どんな型でも扱える「使い回せる関数」</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 第9節のジェネリクス（<code>&lt;...&gt;</code>）を、<strong>関数</strong>に応用しています。受け取った値が文字列でも数値でも本でも、その<strong>型を保ったまま</strong>処理できる「使い回せる関数」を作ります。ここでは「受け取った値を1個だけ入れた配列にして返す」関数 <code>wrap</code> を例にします。<code>&lt;T&gt;</code> の <code>T</code> は「<strong>型の入れ物（あとから決まる型の名前）</strong>」で、呼び出したときの値に合わせて中身が決まります。「<code>&lt;T&gt;</code> で型を1つ受け取り、その型を使い回す」という考え方を押さえてください（詳細はコード内コメント参照）。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-65"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// &lt;T&gt; : 「これから決まる型」に T という仮の名前を付ける（型の入れ物）</span>
+<span class="c1">// (x: T) : 受け取る値の型は T / : T[] : 戻り値は「Tの配列」</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">wrap</span><span class="o">&lt;</span><span class="nx">T</span><span class="o">&gt;</span><span class="p">(</span><span class="nx">x</span><span class="o">:</span><span class="w"> </span><span class="kt">T</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nx">T</span><span class="p">[]</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// 受け取った値を1個だけ入れた配列にして返す</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">[</span><span class="nx">x</span><span class="p">];</span>
+<span class="p">}</span>
+
+<span class="c1">// &quot;本A&quot; は文字列 → T は string と決まり、戻り値は string[]</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">wrap</span><span class="p">(</span><span class="s2">&quot;本A&quot;</span><span class="p">);</span>
+<span class="c1">// 123 は数値   → T は number と決まり、戻り値は number[]</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">wrap</span><span class="p">(</span><span class="mf">123</span><span class="p">);</span>
+<span class="c1">// a の型は string[]、b の型は number[] と、渡した値に合わせて自動で決まる</span>
+
+<span class="c1">// 結果: [&quot;本A&quot;]</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">a</span><span class="p">);</span>
+<span class="c1">// 結果: [123]</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">b</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h4 id="1_27">▼ コードを1つずつ分解して解説</h4>
+<hr>
+<h5 id="1-t">解説1: <code>&lt;T&gt;</code> で「あとから決まる型」を受け取る</h5>
+<div class="codehilite"><div class="code-wrap" id="code-66"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">function</span><span class="w"> </span><span class="nx">wrap</span><span class="o">&lt;</span><span class="nx">T</span><span class="o">&gt;</span><span class="p">(</span><span class="nx">x</span><span class="o">:</span><span class="w"> </span><span class="kt">T</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nx">T</span><span class="p">[]</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// 受け取った値を1個だけ入れた配列にして返す</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">[</span><span class="nx">x</span><span class="p">];</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<ul>
+<li>関数名の直後の <code>&lt;T&gt;</code> が、この関数で使う「<strong>型の入れ物</strong>」です。<code>T</code> は仮の名前で、「これから（呼び出すときに）決まる型」を表します（<code>T</code> は Type の頭文字。名前は自由ですが慣習でよく <code>T</code> を使います）。</li>
+<li>引数 <code>(x: T)</code> は「受け取る値の型は <code>T</code>」、戻り値 <code>: T[]</code> は「<code>T</code> の配列を返す」という意味です。<strong>同じ <code>T</code> を使い回す</strong>のがポイントで、「受け取った値と同じ型の配列を返す」と表現できています。</li>
+<li>中身は <code>return [x]</code> で、受け取った値 <code>x</code> を1個だけ入れた配列を返すだけです。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> ジェネリック関数（generic function）＝<code>&lt;T&gt;</code> のように「あとから決まる型」を受け取り、いろいろな型で使い回せる関数。</p>
+</blockquote>
+<hr>
+<h5 id="2-t">解説2: 呼び出した値に合わせて <code>T</code> が自動で決まる</h5>
+<div class="codehilite"><div class="code-wrap" id="code-67"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// &quot;本A&quot; は文字列 → T は string と決まり、戻り値は string[]</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">wrap</span><span class="p">(</span><span class="s2">&quot;本A&quot;</span><span class="p">);</span>
+<span class="c1">// 123 は数値   → T は number と決まり、戻り値は number[]</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">wrap</span><span class="p">(</span><span class="mf">123</span><span class="p">);</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>wrap("本A")</code> のように<strong>文字列</strong>を渡すと、TypeScriptが「今回の <code>T</code> は <code>string</code> だ」と自動で判断します。だから戻り値 <code>a</code> の型は <code>string[]</code>（文字列の配列）になります。</li>
+<li><code>wrap(123)</code> のように<strong>数値</strong>を渡せば、<code>T</code> は <code>number</code> と決まり、戻り値 <code>b</code> は <code>number[]</code> になります。</li>
+<li>このように、<strong>1つの関数で「渡した値の型に合わせて」正しい型を保てる</strong>のがジェネリック関数の利点です。<code>string</code> 用・<code>number</code> 用と別々に関数を作らずに済みます。</li>
+<li>第9節で学んだ <code>useState&lt;Book[]&gt;</code> なども、内部はこのようなジェネリックの仕組みで作られています。「使う側」になるだけなら、<code>&lt;...&gt;</code> に中身の型を渡すだけでOKでしたね。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <code>T</code> は呼び出し時の値に合わせて自動で決まる（型推論）。明示したいときは <code>wrap&lt;string&gt;("本A")</code> と書くこともできる。</p>
+</blockquote>
+<hr>
+<h2 id="10">10. この章のまとめ</h2>
+<p>この章では、後の章のコードを読むために必要なTypeScriptの基礎を学びました。</p>
+<ul>
+<li><strong>変数</strong>: <code>const</code>（変更しない）/ <code>let</code>（変更する）。迷ったら <code>const</code></li>
+<li><strong>基本の型</strong>: <code>string</code>（文字列）/ <code>number</code>（数値）/ <code>boolean</code>（真偽値）</li>
+<li><strong>配列</strong> <code>[ ]</code> と <strong>オブジェクト</strong> <code>{ }</code> でデータをまとめる</li>
+<li><strong><code>type</code></strong> で「本の形（Book型）」のような型に名前を付ける。<code>?</code> で省略可能</li>
+<li><strong>関数</strong> と <strong>アロー関数</strong> <code>=&gt;</code>。React Nativeではアロー関数が主流</li>
+<li><strong><code>map</code></strong>（変換）/ <strong><code>filter</code></strong>（抽出）は一覧表示で多用する</li>
+<li><strong><code>if</code></strong> と <strong>三項演算子</strong> <code>条件 ? A : B</code> で条件分岐</li>
+<li><strong>ジェネリクス</strong> <code>&lt;...&gt;</code>（例: <code>useState&lt;Book[]&gt;</code>）は「入れ物の型に"中身の型"を渡す」しくみ</li>
+<li><strong><code>async</code> / <code>await</code></strong> でサーバー通信などの「待つ処理」を書く。戻り値は <strong><code>Promise&lt;...&gt;</code></strong></li>
+</ul>
+<blockquote>
+<p><strong>全部覚えなくて大丈夫:</strong> ここで紹介した文法は、後の章で実際のコードに何度も出てきます。そのたびにこの第2章に戻って確認すれば、自然と身につきます。次の第3章では、これらを使って画面の部品を作る <strong>React</strong> を学びます。</p>
+</blockquote>
+
+<script>
+(function () {
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy") ? resolve() : reject(); } catch (e) { reject(e); }
+      document.body.removeChild(ta);
+    });
+  }
+  document.querySelectorAll(".copy-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var pre = btn.parentElement.querySelector("pre");
+      var text = pre.textContent.replace(/\n$/, "");
+      copyText(text).then(function () {
+        btn.textContent = "コピーしました";
+        btn.classList.add("done");
+        setTimeout(function () { btn.textContent = "コピー"; btn.classList.remove("done"); }, 2000);
+      }, function () { btn.textContent = "コピーできませんでした"; });
+    });
+  });
+  if (/^#code-\d+$/.test(location.hash)) {
+    var note = document.getElementById("web-note");
+    if (note) { note.hidden = false; }
+  }
+})();
+</script>
+</body>
+</html>

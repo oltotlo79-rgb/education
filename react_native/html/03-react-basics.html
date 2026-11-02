@@ -1,0 +1,1159 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>03-react-basics</title>
+<style>
+
+@page {
+  size: A4;
+  margin: 18mm 16mm 20mm 16mm;
+  @bottom-right {
+    content: counter(page);
+    font-size: 10px;
+    color: #64748b;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  font-family: "Yu Gothic UI", "Yu Gothic", "Meiryo", "Hiragino Sans",
+               "Noto Sans JP", "Segoe UI", system-ui, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.75;
+  color: #1e293b;
+  background: #ffffff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #0f172a;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 1.4em 0 0.6em;
+  page-break-after: avoid;
+}
+h1 {
+  font-size: 22pt;
+  border-bottom: 3px solid #1e40af;
+  padding-bottom: 0.3em;
+  margin-top: 0.4em;
+  page-break-before: auto;
+}
+h2 {
+  font-size: 16pt;
+  border-bottom: 1.5px solid #cbd5e1;
+  padding-bottom: 0.25em;
+  margin-top: 1.6em;
+}
+h3 { font-size: 13pt; color: #1e40af; }
+h4 { font-size: 12pt; color: #334155; }
+
+p { margin: 0.5em 0 0.8em; }
+
+a { color: #1d4ed8; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+ul, ol { margin: 0.4em 0 0.9em; padding-left: 1.6em; }
+li { margin: 0.2em 0; }
+
+blockquote {
+  border-left: 4px solid #3b82f6;
+  background: #eff6ff;
+  margin: 0.8em 0;
+  padding: 0.6em 1em;
+  color: #1e3a8a;
+  border-radius: 0 6px 6px 0;
+  page-break-inside: avoid;
+}
+blockquote p { margin: 0.3em 0; }
+blockquote strong { color: #1e40af; }
+
+code {
+  /* DefCode (see _code_font.py) has ASCII and Japanese in ONE font, so a code
+     line is drawn as one text run and copies as one line in every PDF viewer. */
+  font-family: "Consolas", "Consolas", monospace;
+  font-size: 0.9em;
+  background: #f1f5f9;
+  color: #be123c;
+  padding: 0.12em 0.36em;
+  border-radius: 4px;
+  /* Long inline code (file paths / URLs) must break instead of overflowing. */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  /* In a PDF there is no horizontal scrolling, so long lines must wrap
+     instead of being clipped off the right edge of the page. */
+  overflow-x: hidden;
+  overflow-y: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  font-size: 9.2pt;
+  line-height: 1.5;
+  margin: 0.8em 0;
+  page-break-inside: avoid;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+  white-space: inherit;
+  word-break: inherit;
+  overflow-wrap: inherit;
+}
+
+/* The codehilite extension wraps highlighted blocks in a scrolling div; make
+   that wrap too so nothing is clipped in the PDF. */
+.codehilite {
+  overflow-x: hidden;
+  /* overflow-x: hidden alone turns overflow-y into auto, and a glyph from a
+     fallback font that is a hair too tall then shows a vertical scrollbar. */
+  overflow-y: hidden;
+}
+.codehilite pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* No per-token colours: every coloured token became its own text run (and its
+   own tag) in the PDF, and some viewers then pasted each token on its own line.
+   Only whole comment lines get a colour, so each line is still one run. */
+pre .cmt { color: #94a3b8; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.8em 0;
+  font-size: 9.6pt;
+  page-break-inside: avoid;
+}
+th, td {
+  border: 1px solid #e2e8f0;
+  padding: 6px 9px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: #f1f5f9;
+  color: #0f172a;
+  font-weight: 700;
+}
+tr:nth-child(even) td { background: #f8fafc; }
+
+img { max-width: 100%; height: auto; }
+
+hr {
+  border: none;
+  border-top: 1px dashed #cbd5e1;
+  margin: 1.6em 0;
+}
+
+/* Diagram blocks (the inline-styled <div>s in the source) */
+div[style] {
+  page-break-inside: avoid;
+}
+
+/* Tighten spacing right after headings */
+h1 + p, h2 + p, h3 + p, h4 + p { margin-top: 0.2em; }
+
+/* Avoid ugly page breaks inside list items / table rows */
+li, tr { page-break-inside: avoid; }
+
+@media screen {
+  body { max-width: 920px; margin: 0 auto; padding: 20px 20px 120px; font-size: 16px; }
+  pre { white-space: pre !important; word-break: normal !important; overflow-wrap: normal !important;
+        overflow-x: auto !important; font-size: 14px !important; }
+  img { max-width: 100%; height: auto; }
+}
+.web-bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; font-size: 14px;
+  padding: 8px 12px; margin-bottom: 16px; background: #eef2f7; border-radius: 8px; }
+.web-bar a { color: #1e3a5f; }
+.web-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 10; max-width: 90%;
+  font-size: 15px; font-weight: 700; background: #fff7ed; border: 2px solid #f2994a; border-radius: 8px;
+  padding: 10px 16px; margin: 0; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.code-wrap { position: relative; scroll-margin-top: 16px; }
+.code-wrap pre { padding-top: 40px !important; }
+.copy-btn { position: absolute; top: 8px; right: 8px; z-index: 2; font-size: 13px; font-weight: 700;
+  padding: 4px 12px; border: 0; border-radius: 6px; background: #2f80ed; color: #fff; cursor: pointer;
+  font-family: inherit; }
+.copy-btn:hover { background: #1c64c8; }
+.copy-btn.done { background: #27ae60; }
+.code-wrap:target pre { outline: 4px solid #f2994a; outline-offset: 2px; }
+.code-wrap:target .copy-btn { box-shadow: 0 0 0 4px #f2994a; }
+/* syntax colours on screen (the PDF uses one colour so that each line copies as one piece) */
+.codehilite .k, .codehilite .kd, .codehilite .kn, .codehilite .kr { color: #c084fc; }
+.codehilite .s, .codehilite .s1, .codehilite .s2, .codehilite .sb { color: #fcd34d; }
+.codehilite .c, .codehilite .c1, .codehilite .cm { color: #94a3b8; }
+.codehilite .nf, .codehilite .nx { color: #60a5fa; }
+.codehilite .nb { color: #34d399; }
+.codehilite .mi, .codehilite .mf { color: #f472b6; }
+.codehilite .nt { color: #f59e0b; }
+.codehilite .na { color: #93c5fd; }
+</style>
+</head>
+<body>
+<div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/03-react-basics.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、ブラウザーの「戻る」で PDF に戻れます。</p><h1 id="3-react">第3章: React入門</h1>
+<blockquote>
+<p>React Native の土台は <strong>React（リアクト）</strong> です。Reactの「コンポーネント（部品）」「props（プロップス）」「state（ステート）」という3つの考え方を理解すれば、スマホアプリの画面づくりがぐっと楽になります。この章では完全初心者向けに、これらを順番に解説します。</p>
+<p><strong>この章のコードについて:</strong> Reactの考え方を説明するため、一部Web向けの <code>&lt;div&gt;</code> などが出てきますが、<strong>React Nativeでは <code>&lt;View&gt;</code> などに置き換わるだけで考え方は完全に同じ</strong>です（対応は第4章で表にします）。まずは"考え方"に集中してください。</p>
+</blockquote>
+<hr>
+<h2 id="1-react">1. React とは — 画面を「部品」で組み立てる</h2>
+<p><strong>React</strong> は、画面を <strong>コンポーネント（component＝部品）</strong> という小さなパーツに分けて作るための技術（ライブラリ）です。Meta社（旧Facebook）が開発しました。</p>
+<blockquote>
+<p><strong>身近な例え（レゴブロック）:</strong> 小さなブロック（コンポーネント）を組み合わせて、家や車（画面全体）を作るイメージです。一度作ったブロックは別の場所でも再利用できます。「書籍カード」というブロックを1つ作れば、一覧画面で何個でも使い回せます。</p>
+<p><strong>「ライブラリ（library）」とは？</strong> 「特定の機能を提供するプログラムの部品集」のこと。図書館（library）から本を借りるように、便利な機能を借りて使えます。Reactは「画面づくりの機能」を提供するライブラリです。</p>
+</blockquote>
+<hr>
+<h2 id="2">2. コンポーネント — 画面の部品</h2>
+<h3 id="21">2.1 一番シンプルなコンポーネント</h3>
+<p>コンポーネントは「<strong>何かの見た目を返す関数</strong>」です。第2章で学んだ関数の知識がそのまま使えます。</p>
+<div class="codehilite"><div class="code-wrap" id="code-1"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// この一行は「React Nativeから Text という部品を借りてくる」という意味（詳細は第4章）</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Text</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-native&quot;</span><span class="p">;</span>
+
+<span class="c1">// Greeting : コンポーネント名。コンポーネント名は必ず大文字始まりにする決まり</span>
+<span class="c1">// () =&gt; { ... } : 第2章で学んだアロー関数。引数なしの関数</span>
+<span class="c1">// この関数は「画面に表示する内容」を return で返す</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">Greeting</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// return の後ろが「見た目」。&lt;Text&gt;...&lt;/Text&gt; が画面に出る文字</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="nx">こんにちは</span><span class="err">！</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;;</span>
+<span class="p">}</span>
+
+<span class="c1">// export default : この部品を「外のファイルから使えるように公開する」宣言</span>
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="nx">Greeting</span><span class="p">;</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>コンポーネント名はなぜ大文字始まり？</strong> Reactは「小文字始まり＝HTMLの普通のタグ」「大文字始まり＝自作コンポーネント」と区別します。だから自作の部品は必ず <code>Greeting</code> のように大文字で始めます。これはルールなので守りましょう。</p>
+<p><strong><code>import</code> と <code>export</code> とは？</strong>
+- <code>import</code>（インポート）: 他のファイルや部品集から「機能を借りてくる」命令。
+- <code>export</code>（エクスポート）: 自分のファイルの機能を「外に公開する」命令。
+ファイル同士で部品を貸し借りするための仕組みです。</p>
+</blockquote>
+<h3 id="22-jsx-texttext">2.2 JSX — <code>&lt;Text&gt;こんにちは&lt;/Text&gt;</code> の正体</h3>
+<p><code>return</code> の後ろに書いた <code>&lt;Text&gt;こんにちは！&lt;/Text&gt;</code> のような、HTMLに似た記法を <strong>JSX（ジェイエスエックス）</strong> と呼びます。「JavaScriptの中に、画面の見た目を直接書ける特別な記法」です。</p>
+<div class="codehilite"><div class="code-wrap" id="code-2"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// JSXの基本ルール</span>
+<span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">  </span><span class="p">{</span><span class="cm">/* &lt;View&gt; は「箱」。中に複数の部品をまとめられる（第4章で詳説） */</span><span class="p">}</span>
+<span class="w">  </span><span class="p">&lt;</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">{</span><span class="cm">/* タグは &lt;開始&gt;中身&lt;/終了&gt; の形 */</span><span class="p">}</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="mf">1</span><span class="nx">冊目の本</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="mf">2</span><span class="nx">冊目の本</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="p">);</span>
+<span class="c1">// 複数行のJSXは ( ) で囲む / 一番外側は1つのタグ（ここでは&lt;View&gt;）でまとめる必要がある</span>
+<span class="c1">// {/* ... */} はJSXの中でのコメントの書き方</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>JSX内の <code>{ }</code>（中カッコ）— 変数を埋め込む:</strong> JSXの中で <code>{ }</code> を使うと、その中にTypeScriptの値や式を埋め込めます。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-3"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;鈴木&quot;</span><span class="p">;</span>
+<span class="k">return</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="nx">こんにちは</span><span class="err">、</span><span class="p">{</span><span class="nx">name</span><span class="p">}</span><span class="nx">さん</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;;</span>
+<span class="c1">// { name } : 中カッコの中はTypeScriptの世界。変数 name の中身（&quot;鈴木&quot;）が文字列に埋め込まれる</span>
+<span class="c1">// 画面表示: こんにちは、鈴木さん</span>
+</code></pre></div></div>
+
+<hr>
+<h2 id="3-props">3. props — 部品に「材料」を渡す</h2>
+<p>同じ「書籍カード」でも、表示する本のタイトルは1冊ごとに違います。このように<strong>コンポーネントの外から渡す材料</strong>を <strong>props（プロップス、propertiesの略）</strong> と呼びます。</p>
+<div class="codehilite"><div class="code-wrap" id="code-4"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">View</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-native&quot;</span><span class="p">;</span>
+
+<span class="c1">// BookCard : 書籍カードのコンポーネント</span>
+<span class="c1">// props（材料）として title と author を受け取る形を、型で定義する</span>
+<span class="kr">type</span><span class="w"> </span><span class="nx">BookCardProps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// 本のタイトル（文字列）</span>
+<span class="w">  </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="c1">// 著者名（文字列）</span>
+<span class="w">  </span><span class="nx">author</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="c1">// ({ title, author }) : 受け取ったpropsから title と author を取り出す書き方（分割代入という）</span>
+<span class="c1">// : BookCardProps : 「受け取るpropsはこの型ですよ」と宣言</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">BookCard</span><span class="p">({</span><span class="w"> </span><span class="nx">title</span><span class="p">,</span><span class="w"> </span><span class="nx">author</span><span class="w"> </span><span class="p">}</span><span class="o">:</span><span class="w"> </span><span class="nx">BookCardProps</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">{</span><span class="cm">/* 受け取った title を表示 */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;{</span><span class="nx">title</span><span class="p">}&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">{</span><span class="cm">/* 受け取った author を表示 */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;{</span><span class="nx">author</span><span class="p">}&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="nx">BookCard</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>このBookCardを使う側は、HTMLの属性のようにpropsを渡します。</p>
+<div class="codehilite"><div class="code-wrap" id="code-5"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// title= と author= に渡したい値を指定する。これがpropsとしてBookCardに届く</span>
+<span class="p">&lt;</span><span class="nt">BookCard</span><span class="w"> </span><span class="na">title</span><span class="o">=</span><span class="s">&quot;リーダブルコード&quot;</span><span class="w"> </span><span class="na">author</span><span class="o">=</span><span class="s">&quot;Dustin Boswell&quot;</span><span class="w"> </span><span class="p">/&gt;</span>
+<span class="p">&lt;</span><span class="nt">BookCard</span><span class="w"> </span><span class="na">title</span><span class="o">=</span><span class="s">&quot;達人プログラマー&quot;</span><span class="w"> </span><span class="na">author</span><span class="o">=</span><span class="s">&quot;David Thomas&quot;</span><span class="w"> </span><span class="p">/&gt;</span>
+<span class="c1">// 同じBookCard部品を、違う材料(props)で2回使い回している！ これがコンポーネントの便利さ</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>「分割代入（ぶんかつだいにゅう）」とは？</strong> <code>{ title, author }</code> のように、オブジェクトの中から必要な項目だけを取り出して変数にする書き方です。<code>props.title</code> と毎回書く代わりに、最初に <code>title</code> だけ取り出しておけば短く書けます。Reactでは非常によく使います。</p>
+<p><strong>propsは「読み取り専用」:</strong> 子コンポーネントは受け取ったpropsを<strong>書き換えてはいけません</strong>。あくまで「親から渡された材料を表示するだけ」と考えてください。値を変化させたいときは、次に学ぶ <strong>state</strong> を使います。</p>
+</blockquote>
+<hr>
+<h2 id="4-state">4. state — 部品が持つ「変化する値」</h2>
+<h3 id="41-state">4.1 state とは</h3>
+<p><strong>state（ステート＝状態）</strong> は、コンポーネントが内部に持つ「<strong>変化する値</strong>」です。たとえば「検索ボックスに入力された文字」「ボタンが押された回数」「読込中かどうか」などです。propsが「外から渡される材料」なのに対し、stateは「自分の中で変わっていく値」です。</p>
+<h3 id="42-usestate">4.2 <code>useState</code> の使い方</h3>
+<p>stateを作るには <strong><code>useState</code>（ユーズ・ステート）</strong> という機能（フック）を使います。</p>
+<div class="codehilite"><div class="code-wrap" id="code-6"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// Reactから useState を借りてくる</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">useState</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">View</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="p">,</span><span class="w"> </span><span class="nx">Button</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-native&quot;</span><span class="p">;</span>
+
+<span class="kd">function</span><span class="w"> </span><span class="nx">Counter</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// useState(0) : 初期値0のstateを作る</span>
+<span class="w">  </span><span class="c1">// 戻り値は配列で [今の値, 値を変える関数] の2つ。分割代入で受け取る</span>
+<span class="w">  </span><span class="c1">// count        : 今の値（最初は0）</span>
+<span class="w">  </span><span class="c1">// setCount     : countを変更するための専用関数（名前はset+state名が慣習）</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">count</span><span class="p">,</span><span class="w"> </span><span class="nx">setCount</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="mf">0</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">{</span><span class="cm">/* 今のcountを表示 */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="nx">押した回数</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="nx">count</span><span class="p">}&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Button</span>
+<span class="w">        </span><span class="err">//</span><span class="w"> </span><span class="na">ボタンに表示する文字</span>
+<span class="w">        </span><span class="na">title</span><span class="o">=</span><span class="s">&quot;押す&quot;</span>
+<span class="w">        </span><span class="err">//</span><span class="w"> </span><span class="na">onPress</span><span class="w"> </span><span class="err">:</span><span class="w"> </span><span class="na">押されたときの処理</span><span class="w"> </span><span class="err">/</span><span class="w"> </span><span class="na">setCountでcountを</span><span class="err">+</span><span class="na">1する</span>
+<span class="w">        </span><span class="na">onPress</span><span class="o">=</span><span class="p">{()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">setCount</span><span class="p">(</span><span class="nx">count</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">1</span><span class="p">)}</span>
+<span class="w">      </span><span class="p">/&gt;</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong><code>useState</code> の戻り値が配列なのはなぜ？</strong> <code>useState</code> は「今の値」と「値を変える関数」の2つをセットで返します。<code>const [count, setCount] = useState(0)</code> は、その2つを配列として受け取り、<code>count</code> と <code>setCount</code> という名前を付けているのです。名前は自由ですが、変更関数は <code>set + 変数名</code> にするのが慣習です。</p>
+</blockquote>
+<h3 id="43-state">4.3 stateを直接書き換えてはいけない</h3>
+<div class="codehilite"><div class="code-wrap" id="code-7"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">count</span><span class="p">,</span><span class="w"> </span><span class="nx">setCount</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="mf">0</span><span class="p">);</span>
+
+<span class="c1">// ❌ これはダメ！ 直接書き換えても画面は更新されない</span>
+<span class="nx">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">count</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">1</span><span class="p">;</span>
+<span class="c1">// ⭕ 必ず専用の関数（setCount）を使う。これで画面も自動更新される</span>
+<span class="nx">setCount</span><span class="p">(</span><span class="nx">count</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">1</span><span class="p">);</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>なぜ専用関数を使う必要があるの？</strong> Reactは「stateが変わったら画面を描き直す」という仕組みで動いています。<code>setCount</code> を呼ぶことで初めてReactが「変化した！画面を更新しよう」と気づきます。直接 <code>count = ...</code> と書くと、Reactは変化に気づけず、画面が古いままになります。これは初心者がつまずきやすい超重要ポイントです。</p>
+</blockquote>
+<hr>
+<h2 id="5-hooks-react">5. フック（Hooks）— Reactの便利機能</h2>
+<p><code>useState</code> のように <strong><code>use</code></strong> で始まる機能を <strong>フック（Hooks）</strong> と呼びます。コンポーネントに様々な能力を追加する道具です。代表的なものを紹介します（後の章で使います）。</p>
+<table>
+<thead>
+<tr>
+<th>フック</th>
+<th>役割</th>
+<th>主な登場章</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>useState</code></td>
+<td>変化する値（state）を持つ</td>
+<td>全章</td>
+</tr>
+<tr>
+<td><code>useEffect</code></td>
+<td>画面表示時などのタイミングで処理を実行する</td>
+<td>第7章</td>
+</tr>
+<tr>
+<td><code>useRef</code></td>
+<td>描き直しに関係しない値の保持・部品の操作（フォーカスなど）</td>
+<td>本章 §5.2</td>
+</tr>
+<tr>
+<td><code>useMemo</code></td>
+<td>重い計算の結果を覚えておく（メモ化）</td>
+<td>本章 §5.3</td>
+</tr>
+<tr>
+<td><code>useCallback</code></td>
+<td>関数そのものを覚えておく（再描画の抑制）</td>
+<td>本章 §5.4</td>
+</tr>
+<tr>
+<td><code>useContext</code></td>
+<td>アプリ全体で値を共有する</td>
+<td>本章 §5.5</td>
+</tr>
+<tr>
+<td><code>useReducer</code></td>
+<td>複数の関連する値をまとめて管理する</td>
+<td>本章 §5.6</td>
+</tr>
+<tr>
+<td>カスタムフック</td>
+<td>自作の <code>use〜</code> でよく使う処理を再利用</td>
+<td>本章 §5.7</td>
+</tr>
+<tr>
+<td><code>useRouter</code> / <code>useLocalSearchParams</code></td>
+<td>画面遷移やパラメータの取得（Expo Router）</td>
+<td>第6・8章</td>
+</tr>
+</tbody>
+</table>
+<h3 id="51-useeffect">5.1 <code>useEffect</code> のさわり</h3>
+<p><code>useEffect</code>（ユーズ・エフェクト）は「<strong>特定のタイミングで処理を実行する</strong>」フックです。代表的な使い方が「画面が最初に表示されたとき、サーバーからデータを取ってくる」処理です。</p>
+<div class="codehilite"><div class="code-wrap" id="code-8"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">useEffect</span><span class="p">,</span><span class="w"> </span><span class="nx">useState</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react&quot;</span><span class="p">;</span>
+
+<span class="kd">function</span><span class="w"> </span><span class="nx">BookList</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// 本のリストをstateで持つ（最初は空の配列[]）</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">books</span><span class="p">,</span><span class="w"> </span><span class="nx">setBooks</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">([]);</span>
+
+<span class="w">  </span><span class="c1">// useEffect(実行したい処理, 依存配列) の形</span>
+<span class="w">  </span><span class="nx">useEffect</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// この中に「画面表示時に1回だけやりたい処理」を書く（例: データ取得）</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;画面が表示されました&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">},</span><span class="w"> </span><span class="p">[]);</span>
+<span class="w">  </span><span class="c1">// 第2引数の [] : 「依存配列」。空の[]は「最初の1回だけ実行する」という意味になる</span>
+
+<span class="w">  </span><span class="c1">// books.length : 配列の要素数（本の冊数）</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="nx">本の数</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="nx">books</span><span class="p">.</span><span class="nx">length</span><span class="p">}&lt;/</span><span class="nt">Text</span><span class="p">&gt;;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>「依存配列（いそんはいれつ）」とは？</strong> <code>useEffect</code> の2つ目の引数 <code>[]</code> のことです。「この中の値が変わったら処理を再実行する」という指定です。空の <code>[]</code> にすると「最初の1回だけ」になります。第7章で実際にSupabaseからデータを取得する際に詳しく使います。今は「画面表示時の処理は useEffect に書く」とだけ覚えればOKです。</p>
+</blockquote>
+<hr>
+<h3 id="52-useref">5.2 <code>useRef</code> — 「描き直しに関係しない値」を覚えておく</h3>
+<p><code>useRef</code>（ユーズ・レフ）は、「<strong>画面の描き直しとは関係なく、こっそり値を覚えておきたい</strong>」ときに使うフックです。代表的な使い道は2つあります。①入力欄（<code>TextInput</code>）を<strong>プログラムからフォーカス（カーソルを当てる）</strong>したいとき、②タイマーのIDなど「<strong>画面に出さないけれど後で使う値</strong>」を保管したいときです。</p>
+<blockquote>
+<p><strong>いつ使う？ 普通のstateや変数と何が違う？</strong> <code>useState</code> は「値が変わったら画面を描き直す」のに対し、<code>useRef</code> は「<strong>値が変わっても画面を描き直さない</strong>」点が決定的に違います。「画面に出す値」は <code>useState</code>、「画面に出さず裏で持っておくだけの値」は <code>useRef</code>、と覚えてください。また、普通の変数（<code>let x = ...</code>）は描き直しのたびに作り直されて値が消えてしまいますが、<code>useRef</code> の中身は<strong>描き直しをまたいで保たれます</strong>。</p>
+</blockquote>
+<h4 id="a-textinput">例A: <code>TextInput</code> にカーソルを当てる（フォーカス制御）</h4>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 入力欄とボタンを置き、ボタンを押すと<strong>入力欄に自動でカーソルが移動して、キーボードが開く</strong>例です。「あの入力欄を操作したい」という指名のために <code>useRef</code> で入力欄への“つなぎ”を用意し、<code>ref.current?.focus()</code> でその入力欄にカーソルを当てます。問い合わせフォームなどで「最初の入力欄に自動でカーソルを合わせたい」場面で使います。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-9"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">useRef</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">View</span><span class="p">,</span><span class="w"> </span><span class="nx">TextInput</span><span class="p">,</span><span class="w"> </span><span class="nx">Pressable</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-native&quot;</span><span class="p">;</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">FocusExample</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// useRef&lt;TextInput&gt;(null) : TextInput を指すための「つなぎ」を作る。最初は何も指していないので null</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">inputRef</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useRef</span><span class="p">&lt;</span><span class="nt">TextInput</span><span class="p">&gt;(</span><span class="kc">null</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">{</span><span class="cm">/* ref={inputRef} : この入力欄を inputRef に結びつける（あとで指名できるようにする） */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">TextInput</span><span class="w"> </span><span class="na">ref</span><span class="o">=</span><span class="p">{</span><span class="nx">inputRef</span><span class="p">}</span><span class="w"> </span><span class="na">placeholder</span><span class="o">=</span><span class="s">&quot;ここに入力&quot;</span><span class="w"> </span><span class="p">/&gt;</span>
+
+<span class="w">      </span><span class="p">{</span><span class="cm">/* 押すと inputRef が指す入力欄にカーソルを当てる */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Pressable</span><span class="w"> </span><span class="na">onPress</span><span class="o">=</span><span class="p">{()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">inputRef</span><span class="p">.</span><span class="nx">current</span><span class="o">?</span><span class="p">.</span><span class="nx">focus</span><span class="p">()}&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="nx">入力欄にカーソルを当てる</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">Pressable</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="1">▼ コードを1つずつ分解して解説</h4>
+<p>「ボタンで入力欄にカーソルを当てる」部分を、1つずつ見ていきましょう。</p>
+<hr>
+<h5 id="1-useref">解説1: 入力欄への「つなぎ」を作る <code>useRef</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-10"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">inputRef</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useRef</span><span class="p">&lt;</span><span class="nt">TextInput</span><span class="p">&gt;(</span><span class="kc">null</span><span class="p">);</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>useRef</code>（ユーズ・レフ）は、「<strong>ある部品や値を指しておくための“つなぎ（参照）”を作る</strong>」道具です。</li>
+<li><code>useRef&lt;TextInput&gt;(null)</code> は「<code>TextInput</code> を指すつなぎを作る。最初は何も指していないので <code>null</code>（空っぽ）」という意味です。</li>
+<li>作ったつなぎを <code>inputRef</code> という変数に入れておきます。この <code>inputRef</code> を通して、あとで入力欄を操作します。</li>
+<li>ここで覚えた値は<strong>画面を描き直す原因になりません</strong>。あくまで「裏でこっそり持っておく」ためのものです。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>参照（reference／ref）</strong> とは「あの部品はこれだよ」と指し示す“つなぎ”のこと。<code>useRef</code> で作ったつなぎを部品に結びつけると、その部品をコードから操作できるようになります。</p>
+</blockquote>
+<hr>
+<h5 id="2-refinputref">解説2: 入力欄とつなぎを結びつける <code>ref={inputRef}</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-11"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">&lt;</span><span class="nt">TextInput</span><span class="w"> </span><span class="na">ref</span><span class="o">=</span><span class="p">{</span><span class="nx">inputRef</span><span class="p">}</span><span class="w"> </span><span class="na">placeholder</span><span class="o">=</span><span class="s">&quot;ここに入力&quot;</span><span class="w"> </span><span class="p">/&gt;</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>ref={inputRef}</code> は、「<strong>この入力欄を、さきほど作った <code>inputRef</code> に結びつける</strong>」指定です。</li>
+<li>これで <code>inputRef</code> は「画面上のこの <code>TextInput</code>」を指すようになります。以後、<code>inputRef</code> 経由でこの入力欄を操作できます。</li>
+<li><code>placeholder</code> は未入力時に薄く表示される案内文です（第4章で学んだとおり）。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong><code>ref</code>（レフ）属性</strong> は、部品に「つなぎ」を結びつけるための特別な指定。<code>ref={つなぎ}</code> と書くことで、その部品をコードから指名できるようになります。</p>
+</blockquote>
+<hr>
+<h5 id="3-inputrefcurrentfocus">解説3: カーソルを当てる <code>inputRef.current?.focus()</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-12"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">&lt;</span><span class="nt">Pressable</span><span class="w"> </span><span class="na">onPress</span><span class="o">=</span><span class="p">{()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">inputRef</span><span class="p">.</span><span class="nx">current</span><span class="o">?</span><span class="p">.</span><span class="nx">focus</span><span class="p">()}&gt;</span>
+<span class="w">  </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="nx">入力欄にカーソルを当てる</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">Pressable</span><span class="p">&gt;</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>inputRef.current</code>（カレント＝今指しているもの）は、「<strong>つなぎ <code>inputRef</code> が今実際に指している部品</strong>」を表します。ここでは結びつけた <code>TextInput</code> 本体です。</li>
+<li><code>.focus()</code>（フォーカス）は「<strong>その入力欄にカーソルを当てて、キーボードを開く</strong>」命令です。つまり <code>inputRef.current.focus()</code> で「あの入力欄にカーソルを当てる」になります。</li>
+<li>間にある <code>?.</code>（オプショナルチェーン）は「<strong>もし <code>current</code> が空っぽ（null）なら、何もしない</strong>」という安全装置です。まだ結びついていない一瞬のエラーを防ぎます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong><code>.current</code></strong> は「ref が今指している中身」を取り出す入り口。<strong><code>?.</code></strong> は「左側が空っぽなら処理を止める」安全な書き方で、<code>null</code> によるエラーを防ぎます。</p>
+</blockquote>
+<hr>
+<h4 id="b-id">例B: タイマーのIDを保管する</h4>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 「開始」ボタンで1秒ごとに数を数え始め、「停止」ボタンで止めるカウンターです。タイマーには「あとで止めるための番号（ID）」が発行されるので、それを <code>useRef</code> に保管しておき、停止時にその番号を使ってタイマーを止めます。「画面には出さないけれど後で使う値」を覚えておく、という <code>useRef</code> の使い方の例です。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-13"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">useRef</span><span class="p">,</span><span class="w"> </span><span class="nx">useState</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">View</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="p">,</span><span class="w"> </span><span class="nx">Pressable</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-native&quot;</span><span class="p">;</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">TimerExample</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// 画面に出す数 → useState</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">count</span><span class="p">,</span><span class="w"> </span><span class="nx">setCount</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="mf">0</span><span class="p">);</span>
+<span class="w">  </span><span class="c1">// タイマーのID（画面には出さない裏の値）→ useRef に保管。最初はまだ無いので null</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">timerRef</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useRef</span><span class="p">&lt;</span><span class="nt">ReturnType</span><span class="err">&lt;</span><span class="na">typeof</span><span class="w"> </span><span class="na">setInterval</span><span class="p">&gt;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="o">&gt;</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span>
+
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">start</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// すでに動いていたら二重に始めない</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">timerRef</span><span class="p">.</span><span class="nx">current</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">// setInterval : 一定間隔で処理を繰り返す。戻り値の「ID」を timerRef に保管</span>
+<span class="w">    </span><span class="nx">timerRef</span><span class="p">.</span><span class="nx">current</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">setInterval</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="c1">// 1秒ごとにカウントを1増やす</span>
+<span class="w">      </span><span class="nx">setCount</span><span class="p">((</span><span class="nx">prev</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">prev</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">1</span><span class="p">);</span>
+<span class="w">    </span><span class="p">},</span><span class="w"> </span><span class="mf">1000</span><span class="p">);</span>
+<span class="w">  </span><span class="p">};</span>
+
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">stop</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">timerRef</span><span class="p">.</span><span class="nx">current</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="c1">// 保管しておいたIDでタイマーを止める</span>
+<span class="w">      </span><span class="nx">clearInterval</span><span class="p">(</span><span class="nx">timerRef</span><span class="p">.</span><span class="nx">current</span><span class="p">);</span>
+<span class="w">      </span><span class="c1">// 止めたのでIDを空に戻す</span>
+<span class="w">      </span><span class="nx">timerRef</span><span class="p">.</span><span class="nx">current</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">};</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="nx">カウント</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="nx">count</span><span class="p">}&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Pressable</span><span class="w"> </span><span class="na">onPress</span><span class="o">=</span><span class="p">{</span><span class="nx">start</span><span class="p">}&gt;&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="nx">開始</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;&lt;/</span><span class="nt">Pressable</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Pressable</span><span class="w"> </span><span class="na">onPress</span><span class="o">=</span><span class="p">{</span><span class="nx">stop</span><span class="p">}&gt;&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="nx">停止</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;&lt;/</span><span class="nt">Pressable</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="1_1">▼ コードを1つずつ分解して解説</h4>
+<p>「タイマーIDを覚えておいて、あとで止める」部分を、1つずつ見ていきましょう。</p>
+<hr>
+<h5 id="1_2">解説1: 画面に出す値と出さない値を分ける</h5>
+<div class="codehilite"><div class="code-wrap" id="code-14"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 画面に出す数 → useState</span>
+<span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">count</span><span class="p">,</span><span class="w"> </span><span class="nx">setCount</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="mf">0</span><span class="p">);</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">timerRef</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useRef</span><span class="p">&lt;</span><span class="nt">ReturnType</span><span class="err">&lt;</span><span class="na">typeof</span><span class="w"> </span><span class="na">setInterval</span><span class="p">&gt;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="o">&gt;</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>count</code> は<strong>画面に表示する数</strong>なので <code>useState</code> で持ちます。値が変わると画面が描き直され、新しい数が表示されます。</li>
+<li><code>timerRef</code> は<strong>タイマーのID</strong>を入れるための入れ物です。これは画面に出さない裏の値なので <code>useRef</code> を使います。もし <code>useState</code> にすると、IDが変わるたびに無意味な描き直しが起きてしまいます。</li>
+<li><code>ReturnType&lt;typeof setInterval&gt;</code> は「<code>setInterval</code> が返すID（番号）の型」を表す書き方です。今は「タイマーIDの型」とだけ理解すればOKです。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong><code>setInterval</code>（セット・インターバル）</strong> は「決まった間隔で処理を繰り返す」命令で、止めるための<strong>ID（番号）</strong>を返します。このIDがないと、あとでタイマーを止められません。</p>
+</blockquote>
+<hr>
+<h5 id="2-id-timerrefcurrent">解説2: タイマーを始めてIDを保管する <code>timerRef.current = ...</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-15"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">start</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// すでに動いていたら二重に始めない</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">timerRef</span><span class="p">.</span><span class="nx">current</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">timerRef</span><span class="p">.</span><span class="nx">current</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">setInterval</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 1秒ごとにカウントを1増やす</span>
+<span class="w">    </span><span class="nx">setCount</span><span class="p">((</span><span class="nx">prev</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">prev</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">1</span><span class="p">);</span>
+<span class="w">  </span><span class="p">},</span><span class="w"> </span><span class="mf">1000</span><span class="p">);</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>setInterval(処理, 1000)</code> は「<strong>1000ミリ秒（＝1秒）ごとに、中の処理を繰り返す</strong>」命令です。</li>
+<li>その戻り値（タイマーのID）を <code>timerRef.current</code> に代入して<strong>保管</strong>します。<code>useRef</code> の中身は <code>.current</code> に出し入れします。</li>
+<li><code>if (timerRef.current) return;</code> は「すでにIDが保管されている（＝もう動いている）なら、何もせず終わる」という二重起動の防止です。</li>
+<li><code>setCount((prev) =&gt; prev + 1)</code> は「<strong>1つ前の値 <code>prev</code> に1を足す</strong>」書き方で、繰り返し処理の中で安全にカウントを増やせます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong><code>.current</code> への代入</strong> は、ref の中身を入れ替える操作。<code>timerRef.current = id</code> で「このタイマーIDを覚えておいて」という意味になります。描き直しは起きません。</p>
+</blockquote>
+<hr>
+<h5 id="3-id-clearinterval">解説3: 保管したIDでタイマーを止める <code>clearInterval</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-16"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">stop</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">timerRef</span><span class="p">.</span><span class="nx">current</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 保管しておいたIDでタイマーを止める</span>
+<span class="w">    </span><span class="nx">clearInterval</span><span class="p">(</span><span class="nx">timerRef</span><span class="p">.</span><span class="nx">current</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// 止めたのでIDを空に戻す</span>
+<span class="w">    </span><span class="nx">timerRef</span><span class="p">.</span><span class="nx">current</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>clearInterval(ID)</code>（クリア・インターバル）は「<strong>そのIDのタイマーを止める</strong>」命令です。止めるには、開始時に保管しておいたIDが必要です。</li>
+<li>だからこそ、開始時に <code>timerRef</code> へIDを保管しておいたのです。<code>useRef</code> のおかげで、描き直しをまたいでもIDが保たれています。</li>
+<li>止めたあとは <code>timerRef.current = null</code> で「もうタイマーは無い」状態に戻します。これで再び「開始」を押せるようになります。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong><code>clearInterval</code></strong> は <code>setInterval</code> で始めたタイマーを止める命令。「始めたら止める」がセットで、止めるためのIDの保管に <code>useRef</code> がぴったりです。</p>
+</blockquote>
+<hr>
+<h3 id="53-usememo">5.3 <code>useMemo</code> — 重い計算の結果を「覚えておく」</h3>
+<p><code>useMemo</code>（ユーズ・メモ）は、「<strong>時間のかかる計算の結果を覚えておき、必要なときだけ計算し直す</strong>」フックです。たとえば「たくさんの本の中から条件に合うものだけ絞り込む」「並べ替える」といった計算を、毎回やり直さずに済ませられます。</p>
+<blockquote>
+<p><strong>いつ使う？ 普通の変数と何が違う？</strong> 普通に <code>const result = 重い計算()</code> と書くと、画面が描き直されるたびに<strong>毎回計算し直され</strong>ます。<code>useMemo</code> を使うと「<strong>指定した値が変わったときだけ</strong>計算し直し、それ以外は前回の結果を使い回す」ようになります。「結果は同じなのに毎回計算するのは無駄」というときの節約の道具です。最初は無理に使わず、「動作が重いと感じたら検討する」くらいでOKです。</p>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 入力した言葉で本のリストを<strong>絞り込み（検索）</strong>ます。検索の絞り込み計算を <code>useMemo</code> で覚えておき、<strong>検索の言葉が変わったときだけ</strong>計算し直します。リストが大きいほど効いてくる「無駄な計算を減らす」工夫の例です。各部分の意味はコード内コメントにあります。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-17"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">useMemo</span><span class="p">,</span><span class="w"> </span><span class="nx">useState</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">View</span><span class="p">,</span><span class="w"> </span><span class="nx">TextInput</span><span class="p">,</span><span class="w"> </span><span class="nx">FlatList</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-native&quot;</span><span class="p">;</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">books</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;リーダブルコード&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;2&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;達人プログラマー&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;3&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;TypeScript入門&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="p">];</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">BookSearch</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// 検索の言葉（画面に出す値なので useState）</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">keyword</span><span class="p">,</span><span class="w"> </span><span class="nx">setKeyword</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// useMemo(() =&gt; 計算, [keyword]) : keyword が変わったときだけ絞り込みをやり直す</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">filtered</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useMemo</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// includes : 文字列の中にその言葉が含まれるか判定。含む本だけ残す</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">books</span><span class="p">.</span><span class="nx">filter</span><span class="p">((</span><span class="nx">book</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">book</span><span class="p">.</span><span class="nx">title</span><span class="p">.</span><span class="nx">includes</span><span class="p">(</span><span class="nx">keyword</span><span class="p">));</span>
+<span class="w">  </span><span class="p">},</span><span class="w"> </span><span class="p">[</span><span class="nx">keyword</span><span class="p">]);</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">TextInput</span>
+<span class="w">        </span><span class="na">placeholder</span><span class="o">=</span><span class="s">&quot;本を検索&quot;</span>
+<span class="w">        </span><span class="na">value</span><span class="o">=</span><span class="p">{</span><span class="nx">keyword</span><span class="p">}</span>
+<span class="w">        </span><span class="na">onChangeText</span><span class="o">=</span><span class="p">{</span><span class="nx">setKeyword</span><span class="p">}</span>
+<span class="w">      </span><span class="p">/&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">FlatList</span>
+<span class="w">        </span><span class="err">//</span><span class="w"> </span><span class="na">絞り込んだ結果を表示</span>
+<span class="w">        </span><span class="na">data</span><span class="o">=</span><span class="p">{</span><span class="nx">filtered</span><span class="p">}</span>
+<span class="w">        </span><span class="na">keyExtractor</span><span class="o">=</span><span class="p">{(</span><span class="nx">item</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">item</span><span class="p">.</span><span class="nx">id</span><span class="p">}</span>
+<span class="w">        </span><span class="na">renderItem</span><span class="o">=</span><span class="p">{({</span><span class="w"> </span><span class="nx">item</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;{</span><span class="nx">item</span><span class="p">.</span><span class="nx">title</span><span class="p">}&lt;/</span><span class="nt">Text</span><span class="p">&gt;}</span>
+<span class="w">      </span><span class="p">/&gt;</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="1_3">▼ コードを1つずつ分解して解説</h4>
+<p>「検索の言葉が変わったときだけ絞り込みをやり直す」部分を、1つずつ見ていきましょう。</p>
+<hr>
+<h5 id="1-usememo">解説1: 計算結果を覚えておく <code>useMemo</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-18"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">filtered</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useMemo</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">books</span><span class="p">.</span><span class="nx">filter</span><span class="p">((</span><span class="nx">book</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">book</span><span class="p">.</span><span class="nx">title</span><span class="p">.</span><span class="nx">includes</span><span class="p">(</span><span class="nx">keyword</span><span class="p">));</span>
+<span class="p">},</span><span class="w"> </span><span class="p">[</span><span class="nx">keyword</span><span class="p">]);</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>useMemo(() =&gt; 計算, 依存配列)</code> の形で使います。<code>() =&gt; { ... }</code> の中に「<strong>覚えておきたい計算</strong>」を書き、その結果が <code>filtered</code> に入ります。</li>
+<li><code>books.filter(...)</code> は「配列の中から条件に合うものだけ残す」計算です。ここでは「タイトルに <code>keyword</code> を含む本だけ」を残しています。</li>
+<li><code>book.title.includes(keyword)</code> の <code>includes</code>（インクルーズ＝含む）は「その文字列に <code>keyword</code> が含まれているか」を判定します。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>メモ化（memoization）</strong> とは「一度計算した結果を覚えておいて、同じ条件のときは計算し直さず再利用する」工夫のこと。<code>useMemo</code> の “Memo” はこの意味です。</p>
+</blockquote>
+<hr>
+<h5 id="2-keyword">解説2: 計算をやり直す条件 <code>[keyword]</code>（依存配列）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-19"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">},</span><span class="w"> </span><span class="p">[</span><span class="nx">keyword</span><span class="p">]);</span>
+</code></pre></div></div>
+
+<ul>
+<li>最後の <code>[keyword]</code> が<strong>依存配列</strong>です。「<strong>この中の値が変わったときだけ、上の計算をやり直す</strong>」という指定です（<code>useEffect</code> の依存配列と同じ考え方）。</li>
+<li>ここでは <code>keyword</code>（検索の言葉）が変わったときだけ絞り込みをやり直し、それ以外の描き直しでは<strong>前回の結果をそのまま使い回します</strong>。</li>
+<li>たとえば検索とは関係ない別のstateが変わって画面が描き直されても、<code>keyword</code> が同じなら絞り込み計算はスキップされます。これが「無駄な計算を減らす」効果です。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>依存配列</strong> は「ここに書いた値が変わったら計算し直す」というリスト。<code>useMemo</code> でも <code>useEffect</code> でも、この配列で「やり直すタイミング」を指定します。</p>
+</blockquote>
+<hr>
+<h3 id="54-usecallback">5.4 <code>useCallback</code> — 「関数そのもの」を覚えておく</h3>
+<p><code>useCallback</code>（ユーズ・コールバック）は、<code>useMemo</code> の「関数版」です。「<strong>毎回作り直されてしまう関数を、同じものとして覚えておく</strong>」フックです。とくに <code>FlatList</code> の <code>renderItem</code> のように「子の部品に渡す関数」を安定させたいときに役立ちます。</p>
+<blockquote>
+<p><strong>いつ使う？ 何が違う？</strong> コンポーネントの中で <code>const f = () =&gt; {...}</code> と書くと、画面が描き直されるたびに<strong>新しい関数が作り直され</strong>ます。たいていは問題ありませんが、その関数を子の部品（とくに最適化された部品）に渡していると、「中身は同じなのに別物の関数が来た」と判断されて<strong>子も無駄に描き直される</strong>ことがあります。<code>useCallback</code> で関数を覚えておくと、それを防げます。<code>useMemo</code> が「値（計算結果）」を覚えるのに対し、<code>useCallback</code> は「関数そのもの」を覚える、と整理してください。</p>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 本のリストを <code>FlatList</code> で表示し、<strong>1件をどう描くかの関数（<code>renderItem</code>）を <code>useCallback</code> で安定させる</strong>例です。こうすると、関係のない描き直しが起きても <code>renderItem</code> が作り直されず、リストの無駄な再描画を抑えられます。大きなリストでカクつきを減らしたいときの工夫です。各部分の意味はコード内コメントにあります。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-20"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">useCallback</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">FlatList</span><span class="p">,</span><span class="w"> </span><span class="nx">View</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-native&quot;</span><span class="p">;</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">books</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;リーダブルコード&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;2&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;達人プログラマー&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="p">];</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">StableList</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// useCallback(関数, 依存配列) : この関数を「同じもの」として覚えておく</span>
+<span class="w">  </span><span class="c1">// 依存配列が [] なので、最初に作った関数をずっと使い回す</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">renderItem</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useCallback</span><span class="p">(</span>
+<span class="w">    </span><span class="p">({</span><span class="w"> </span><span class="nx">item</span><span class="w"> </span><span class="p">}</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">item</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">(</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;{</span><span class="nx">item</span><span class="p">.</span><span class="nx">title</span><span class="p">}&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">),</span>
+<span class="w">    </span><span class="p">[]</span>
+<span class="w">  </span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">FlatList</span>
+<span class="w">      </span><span class="na">data</span><span class="o">=</span><span class="p">{</span><span class="nx">books</span><span class="p">}</span>
+<span class="w">      </span><span class="na">keyExtractor</span><span class="o">=</span><span class="p">{(</span><span class="nx">item</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">item</span><span class="p">.</span><span class="nx">id</span><span class="p">}</span>
+<span class="w">      </span><span class="err">//</span><span class="w"> </span><span class="na">安定した関数を渡す</span>
+<span class="w">      </span><span class="na">renderItem</span><span class="o">=</span><span class="p">{</span><span class="nx">renderItem</span><span class="p">}</span>
+<span class="w">    </span><span class="p">/&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="1_4">▼ コードを1つずつ分解して解説</h4>
+<p>「<code>renderItem</code> を作り直さないようにする」部分を、1つずつ見ていきましょう。</p>
+<hr>
+<h5 id="1-usecallback">解説1: 関数を覚えておく <code>useCallback</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-21"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">renderItem</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useCallback</span><span class="p">(</span>
+<span class="w">  </span><span class="p">({</span><span class="w"> </span><span class="nx">item</span><span class="w"> </span><span class="p">}</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">item</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;{</span><span class="nx">item</span><span class="p">.</span><span class="nx">title</span><span class="p">}&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">),</span>
+<span class="w">  </span><span class="p">[]</span>
+<span class="p">);</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>useCallback(関数, 依存配列)</code> の形で使います。第1引数に「<strong>覚えておきたい関数</strong>」を渡すと、その関数が <code>renderItem</code> に入ります。</li>
+<li>ここで渡しているのは「1件分（<code>item</code>）を受け取って、そのタイトルを表示する関数」です。<code>FlatList</code> の <code>renderItem</code> として使う形と同じです。</li>
+<li>普通に書くと描き直しのたびに新しい関数が作られますが、<code>useCallback</code> で包むことで「<strong>前と同じ関数</strong>」として扱われます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong><code>useCallback</code></strong> は「関数そのものをメモ化する」フック。<code>useMemo</code> が計算結果を覚えるのに対し、こちらは関数を覚えて、毎回の作り直しを防ぎます。</p>
+</blockquote>
+<hr>
+<h5 id="2_1">解説2: 作り直す条件 <code>[]</code>（依存配列）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-22"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">  </span><span class="p">[],</span>
+</code></pre></div></div>
+
+<ul>
+<li>最後の <code>[]</code> は<strong>依存配列</strong>です。「<strong>この中の値が変わったときだけ関数を作り直す</strong>」という指定です。</li>
+<li>ここでは空の <code>[]</code> なので「<strong>最初に作った関数をずっと使い回す</strong>」という意味になります。<code>renderItem</code> は中身が変わらないので、これでOKです。</li>
+<li>もし関数の中で <code>keyword</code> などの値を使うなら、<code>[keyword]</code> のようにその値を入れます。そうしないと「古い値を覚えたままの関数」になってしまうので注意します。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>依存配列</strong> は <code>useMemo</code>・<code>useEffect</code> と同じく「作り直すタイミング」を決めるリスト。空の <code>[]</code> は「ずっと同じものを使い回す」という意味です。</p>
+</blockquote>
+<hr>
+<h3 id="55-usecontext">5.5 <code>useContext</code> — アプリ全体で値を共有する</h3>
+<p><code>useContext</code>（ユーズ・コンテキスト）は、「<strong>アプリ全体（または広い範囲）で同じ値を共有する</strong>」ためのフックです。たとえば「ダークモードかどうか（テーマ）」「表示言語」「ログイン中のユーザー」など、たくさんの画面が共通して使う値に向いています。</p>
+<blockquote>
+<p><strong>いつ使う？ propsと何が違う？</strong> 普通は親から子へ値を渡すには <code>props</code> を使いますが、深い階層まで届けるには「親→子→孫→ひ孫…」と<strong>毎段props を手渡し</strong>しなければなりません（これを“バケツリレー”と呼びます）。<code>useContext</code> を使うと、その手渡しを飛ばして「<strong>どの階層からでも直接、共有の値を取り出せる</strong>」ようになります。「多くの場所で使う、アプリ共通の値」に向いた道具です。</p>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 「テーマ（色のモード）」をアプリ全体で共有し、<strong>離れた場所にある部品から、props を経由せずに直接そのテーマを取り出して使う</strong>例です。共有したい値の“置き場所”を作り（Context）、いちばん外側でその値を配り、使いたい部品が <code>useContext</code> で受け取ります。各ステップの意味はコード内コメントにあります。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-23"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">createContext</span><span class="p">,</span><span class="w"> </span><span class="nx">useContext</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">View</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-native&quot;</span><span class="p">;</span>
+
+<span class="c1">// 1. 共有したい値の「置き場所」を作る。初期値は &quot;light&quot;（明るいテーマ）</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">ThemeContext</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">createContext</span><span class="p">(</span><span class="s2">&quot;light&quot;</span><span class="p">);</span>
+
+<span class="c1">// 3. 共有された値を「使う」部品（離れた場所にあってもOK）</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">ThemeLabel</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// useContext : 共有されたテーマを直接受け取る</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">theme</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useContext</span><span class="p">(</span><span class="nx">ThemeContext</span><span class="p">);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="nx">今のテーマ</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="nx">theme</span><span class="p">}&lt;/</span><span class="nt">Text</span><span class="p">&gt;;</span>
+<span class="p">}</span>
+
+<span class="c1">// 2. いちばん外側で値を「配る」。value で配りたい値を指定</span>
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">App</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">ThemeContext</span><span class="p">.</span><span class="na">Provider</span><span class="w"> </span><span class="na">value</span><span class="o">=</span><span class="s">&quot;dark&quot;</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">{</span><span class="cm">/* ThemeLabel には props を渡していないのに、テーマを受け取れる */</span><span class="p">}</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">ThemeLabel</span><span class="w"> </span><span class="p">/&gt;</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">ThemeContext</span><span class="p">.</span><span class="na">Provider</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="1_5">▼ コードを1つずつ分解して解説</h4>
+<p>「props を使わずにアプリ全体で値を共有する」流れを、1つずつ見ていきましょう。</p>
+<hr>
+<h5 id="1-createcontext">解説1: 値の置き場所を作る <code>createContext</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-24"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">ThemeContext</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">createContext</span><span class="p">(</span><span class="s2">&quot;light&quot;</span><span class="p">);</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>createContext(初期値)</code>（クリエイト・コンテキスト）は、「<strong>共有したい値の“置き場所”を作る</strong>」命令です。</li>
+<li><code>"light"</code> は初期値で、「もし値が配られていなければ、とりあえずこれを使う」という保険です。</li>
+<li>作った置き場所を <code>ThemeContext</code> という名前にしました。以後、この名前を通して値を配ったり受け取ったりします。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>Context（コンテキスト＝文脈・背景）</strong> とは「アプリ全体で共有する値の置き場所」のこと。ここに値を置いておくと、どの部品からでも取り出せるようになります。</p>
+</blockquote>
+<hr>
+<h5 id="2-provider">解説2: いちばん外側で値を配る <code>Provider</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-25"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">&lt;</span><span class="nt">ThemeContext</span><span class="p">.</span><span class="na">Provider</span><span class="w"> </span><span class="na">value</span><span class="o">=</span><span class="s">&quot;dark&quot;</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">&lt;</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">ThemeLabel</span><span class="w"> </span><span class="p">/&gt;</span>
+<span class="w">  </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">ThemeContext</span><span class="p">.</span><span class="na">Provider</span><span class="p">&gt;</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>ThemeContext.Provider</code>（プロバイダー＝提供者）で囲んだ範囲に、<code>value</code> で指定した値が<strong>配られます</strong>。ここでは <code>value="dark"</code> なので、囲んだ中の部品はみな「<code>dark</code>」というテーマを受け取れます。</li>
+<li>囲まれている <code>&lt;ThemeLabel /&gt;</code> には <strong>props を1つも渡していません</strong>。それでもテーマを受け取れるのが Context の特徴です。</li>
+<li>ふつうはアプリの<strong>いちばん外側</strong>でこの <code>Provider</code> を置き、アプリ全体に値を配ります。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>Provider（プロバイダー）</strong> は「Context の値を配る役」。<code>&lt;...Provider value={値}&gt;</code> で囲んだ範囲の部品すべてに、その値が届きます。</p>
+</blockquote>
+<hr>
+<h5 id="3-usecontext">解説3: どこからでも値を受け取る <code>useContext</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-26"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">function</span><span class="w"> </span><span class="nx">ThemeLabel</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// useContext : 共有されたテーマを直接受け取る</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">theme</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useContext</span><span class="p">(</span><span class="nx">ThemeContext</span><span class="p">);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="nx">今のテーマ</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="nx">theme</span><span class="p">}&lt;/</span><span class="nt">Text</span><span class="p">&gt;;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>useContext(ThemeContext)</code> は、「<strong><code>ThemeContext</code> に配られている値を、直接受け取る</strong>」フックです。受け取った値を <code>theme</code> に入れています。</li>
+<li><code>ThemeLabel</code> は親から props をもらっていませんが、<code>useContext</code> のおかげで「<code>dark</code>」というテーマを取り出せます。</li>
+<li>これにより、親→子→孫…と props を手渡しする“バケツリレー”をしなくても、必要な部品が<strong>直接</strong>共有の値を使えます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>バケツリレー（prop drilling）</strong> とは、深い階層へ props を1段ずつ手渡しすること。<code>useContext</code> はこれを飛ばして、必要な場所で直接値を受け取れるようにします。</p>
+</blockquote>
+<hr>
+<h3 id="56-usereducer">5.6 <code>useReducer</code> — フォームの複数の値をまとめて管理する</h3>
+<p><code>useReducer</code>（ユーズ・リデューサー）は、「<strong>たくさんの関連する値を、1か所のルールでまとめて管理する</strong>」フックです。<code>useState</code> の発展形といえます。たとえば「本のタイトル・著者・メモ」をまとめて扱うフォームのように、複数の値が連動する場面で力を発揮します。</p>
+<blockquote>
+<p><strong>いつ使う？ useStateと何が違う？</strong> <code>useState</code> は値1つにつき1つ作るので、フォームの項目が増えると <code>useState</code> がいくつも並んで管理が大変になります。<code>useReducer</code> は「<strong>1つのまとまった state</strong>」と「<strong>それをどう変えるかのルール（reducer）</strong>」をセットにして、更新の処理を1か所に集約できます。項目が多いフォームや、「複数の値が一緒に変わる」ような複雑な状態では <code>useReducer</code> が見通しよくなります。少数の単純な値なら <code>useState</code> のままでOKです。</p>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 「タイトル」と「著者」の2つの入力欄を持つフォームを、<strong>1つのまとまった状態として管理する</strong>例です。「どの項目を、どんな値に変えるか」という指示を1か所のルール（reducer）に集約し、入力のたびにその指示を送って状態を更新します。項目が増えても管理しやすい形です。各部分の意味はコード内コメントにあります。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-27"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">useReducer</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">View</span><span class="p">,</span><span class="w"> </span><span class="nx">TextInput</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-native&quot;</span><span class="p">;</span>
+
+<span class="c1">// 1. 管理する状態のまとまり（最初の値）</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">initialState</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">author</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="w"> </span><span class="p">};</span>
+
+<span class="c1">// 2. reducer : 「今の状態」と「指示(action)」を受け取り、「新しい状態」を返すルール</span>
+<span class="kr">type</span><span class="w"> </span><span class="nx">Action</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">field</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;title&quot;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">&quot;author&quot;</span><span class="p">;</span><span class="w"> </span><span class="nx">value</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">};</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">reducer</span><span class="p">(</span><span class="nx">state</span><span class="o">:</span><span class="w"> </span><span class="kt">typeof</span><span class="w"> </span><span class="nx">initialState</span><span class="p">,</span><span class="w"> </span><span class="nx">action</span><span class="o">:</span><span class="w"> </span><span class="kt">Action</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// ...state : 今の状態をそのままコピーし、指定された項目だけ上書きする</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="nx">state</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="nx">action</span><span class="p">.</span><span class="nx">field</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="nx">action</span><span class="p">.</span><span class="nx">value</span><span class="w"> </span><span class="p">};</span>
+<span class="p">}</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">BookForm</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// useReducer(ルール, 最初の状態) : [今の状態, 指示を送る関数] が返る</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">state</span><span class="p">,</span><span class="w"> </span><span class="nx">dispatch</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useReducer</span><span class="p">(</span><span class="nx">reducer</span><span class="p">,</span><span class="w"> </span><span class="nx">initialState</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">TextInput</span>
+<span class="w">        </span><span class="na">placeholder</span><span class="o">=</span><span class="s">&quot;タイトル&quot;</span>
+<span class="w">        </span><span class="na">value</span><span class="o">=</span><span class="p">{</span><span class="nx">state</span><span class="p">.</span><span class="nx">title</span><span class="p">}</span>
+<span class="w">        </span><span class="err">//</span><span class="w"> </span><span class="na">dispatch</span><span class="w"> </span><span class="err">:</span><span class="w"> </span><span class="na">reducer</span><span class="w"> </span><span class="na">に</span><span class="err">「</span><span class="na">titleをこの値にして</span><span class="err">」</span><span class="na">と指示を送る</span>
+<span class="w">        </span><span class="na">onChangeText</span><span class="o">=</span><span class="p">{(</span><span class="nx">text</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">dispatch</span><span class="p">({</span><span class="w"> </span><span class="nx">field</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;title&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">value</span><span class="o">:</span><span class="w"> </span><span class="kt">text</span><span class="w"> </span><span class="p">})}</span>
+<span class="w">      </span><span class="p">/&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">TextInput</span>
+<span class="w">        </span><span class="na">placeholder</span><span class="o">=</span><span class="s">&quot;著者&quot;</span>
+<span class="w">        </span><span class="na">value</span><span class="o">=</span><span class="p">{</span><span class="nx">state</span><span class="p">.</span><span class="nx">author</span><span class="p">}</span>
+<span class="w">        </span><span class="na">onChangeText</span><span class="o">=</span><span class="p">{(</span><span class="nx">text</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">dispatch</span><span class="p">({</span><span class="w"> </span><span class="nx">field</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;author&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">value</span><span class="o">:</span><span class="w"> </span><span class="kt">text</span><span class="w"> </span><span class="p">})}</span>
+<span class="w">      </span><span class="p">/&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="nx">入力中</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="nx">state</span><span class="p">.</span><span class="nx">title</span><span class="p">}</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">{</span><span class="nx">state</span><span class="p">.</span><span class="nx">author</span><span class="p">}&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="1_6">▼ コードを1つずつ分解して解説</h4>
+<p>「複数の入力を1か所のルールでまとめて管理する」流れを、1つずつ見ていきましょう。</p>
+<hr>
+<h5 id="1-initialstate">解説1: 管理する状態のまとまり <code>initialState</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-28"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">initialState</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">author</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="w"> </span><span class="p">};</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>initialState</code>（イニシャル・ステート＝最初の状態）は、「<strong>まとめて管理したい値の初期状態</strong>」です。</li>
+<li>ここでは <code>title</code>（タイトル）と <code>author</code>（著者）の2つを1つのオブジェクトにまとめ、どちらも最初は空文字 <code>""</code> にしています。</li>
+<li><code>useState</code> のように値ごとにバラバラに持つのではなく、<strong>関連する値を1つのまとまりにする</strong>のが <code>useReducer</code> の考え方です。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>状態のまとまり</strong> とは、関連する複数の値を1つのオブジェクトにまとめたもの。フォームのように「一緒に扱いたい値」を1か所に集めると管理しやすくなります。</p>
+</blockquote>
+<hr>
+<h5 id="2-reducer">解説2: 状態の変え方を決めるルール <code>reducer</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-29"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kr">type</span><span class="w"> </span><span class="nx">Action</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">field</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;title&quot;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">&quot;author&quot;</span><span class="p">;</span><span class="w"> </span><span class="nx">value</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">};</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">reducer</span><span class="p">(</span><span class="nx">state</span><span class="o">:</span><span class="w"> </span><span class="kt">typeof</span><span class="w"> </span><span class="nx">initialState</span><span class="p">,</span><span class="w"> </span><span class="nx">action</span><span class="o">:</span><span class="w"> </span><span class="kt">Action</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="nx">state</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="nx">action</span><span class="p">.</span><span class="nx">field</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="nx">action</span><span class="p">.</span><span class="nx">value</span><span class="w"> </span><span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>reducer</code>（リデューサー）は、「<strong>今の状態（<code>state</code>）と指示（<code>action</code>）を受け取り、新しい状態を返す</strong>」ルールの関数です。状態を変える処理を、この1か所に集約します。</li>
+<li><code>action</code> は「どの項目（<code>field</code>）を、どんな値（<code>value</code>）にするか」という指示です。たとえば <code>{ field: "title", value: "本A" }</code> なら「タイトルを“本A”に」という意味です。</li>
+<li><code>{ ...state, [action.field]: action.value }</code> は「<strong>今の状態を丸ごとコピーし、指示された項目だけ上書きする</strong>」書き方です。<code>...state</code> がコピー、<code>[action.field]: action.value</code> が上書き部分です。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>reducer（リデューサー）</strong> とは「今の状態＋指示 → 新しい状態」を計算するルールの関数。状態の変え方を1か所にまとめることで、更新処理が散らからずに済みます。</p>
+</blockquote>
+<hr>
+<h5 id="3-usereducer">解説3: 状態と「指示を送る関数」を受け取る <code>useReducer</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-30"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">state</span><span class="p">,</span><span class="w"> </span><span class="nx">dispatch</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useReducer</span><span class="p">(</span><span class="nx">reducer</span><span class="p">,</span><span class="w"> </span><span class="nx">initialState</span><span class="p">);</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>useReducer(ルール, 最初の状態)</code> は、<code>[今の状態, 指示を送る関数]</code> の2つを配列で返します（<code>useState</code> が <code>[値, 変える関数]</code> を返すのと似た形です）。</li>
+<li>「今の状態」を <code>state</code>、「指示を送る関数」を <code>dispatch</code>（ディスパッチ＝送る）という名前で受け取っています。</li>
+<li>これ以降、状態を直接いじるのではなく、<strong><code>dispatch</code> で指示を送る</strong>ことで <code>reducer</code> が新しい状態を作ってくれます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong><code>dispatch</code>（ディスパッチ）</strong> は「reducer に指示を送る関数」。<code>dispatch(指示)</code> を呼ぶと、reducer がその指示にしたがって状態を更新します。</p>
+</blockquote>
+<hr>
+<h5 id="4-dispatch">解説4: 入力のたびに指示を送る <code>dispatch(...)</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-31"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">&lt;</span><span class="nt">TextInput</span>
+<span class="w">  </span><span class="na">placeholder</span><span class="o">=</span><span class="s">&quot;タイトル&quot;</span>
+<span class="w">  </span><span class="na">value</span><span class="o">=</span><span class="p">{</span><span class="nx">state</span><span class="p">.</span><span class="nx">title</span><span class="p">}</span>
+<span class="w">  </span><span class="na">onChangeText</span><span class="o">=</span><span class="p">{(</span><span class="nx">text</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">dispatch</span><span class="p">({</span><span class="w"> </span><span class="nx">field</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;title&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">value</span><span class="o">:</span><span class="w"> </span><span class="kt">text</span><span class="w"> </span><span class="p">})}</span>
+<span class="p">/&gt;</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>value={state.title}</code> で、入力欄の中身を状態の <code>title</code> に結びつけています（第4章で学んだ制御コンポーネントの形）。</li>
+<li><code>onChangeText</code> で、入力が変わるたびに <code>dispatch({ field: "title", value: text })</code> を呼びます。これは「<strong>タイトルを、いま入力された <code>text</code> に変えて</strong>」という指示です。</li>
+<li>この指示を受け取った <code>reducer</code> が新しい状態を作り、画面が更新されます。著者欄も同じ仕組みで、<code>field</code> を <code>"author"</code> にするだけです。</li>
+<li>項目が増えても「入力欄を足して、<code>field</code> を変えて <code>dispatch</code> する」だけなので、<code>useState</code> をいくつも並べるより見通しよく管理できます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>action（アクション＝指示）</strong> とは「状態をどう変えてほしいか」を表すデータ。<code>dispatch(action)</code> で送ると、reducer がそれに応じて状態を更新します。</p>
+</blockquote>
+<hr>
+<h3 id="57">5.7 カスタムフック — 自分でフックを作る</h3>
+<p>ここまで紹介したのはReactが用意したフックですが、<strong>自分で <code>use〜</code> という関数を作って、よく使う処理をまとめる</strong>こともできます。これを <strong>カスタムフック</strong> と呼びます。同じような state の操作を何度も書くなら、1つのフックにまとめて使い回せます。</p>
+<blockquote>
+<p><strong>いつ使う？ ふつうの関数と何が違う？</strong> カスタムフックは「<strong>中で <code>useState</code> などのフックを使う、再利用できる処理のかたまり</strong>」です。ふつうの関数と違い、中でフックを呼べるのが特徴です。「複数の画面で同じ state の扱い方をする」なら、その部分をカスタムフックに切り出すと、各画面はそれを1行呼ぶだけで済みます。名前は必ず <code>use</code> で始めるのが決まりです。</p>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 「オン／オフを切り替えるだけ」という、よくある処理を <code>useToggle</code> という自作のフックにまとめ、それを画面から使う例です。フックの中に「今の状態」と「切り替える処理」をまとめておけば、使う側はそれを受け取って呼ぶだけで済みます。同じ処理をいろいろな画面で使い回せるのが利点です。各部分の意味はコード内コメントにあります。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-32"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">useState</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">View</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="p">,</span><span class="w"> </span><span class="nx">Pressable</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-native&quot;</span><span class="p">;</span>
+
+<span class="c1">// カスタムフック : 名前は必ず use で始める。中で useState を使える</span>
+<span class="c1">// 「今オンかどうか」と「切り替える処理」をまとめて返す</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">useToggle</span><span class="p">(</span><span class="nx">initial</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">on</span><span class="p">,</span><span class="w"> </span><span class="nx">setOn</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="nx">initial</span><span class="p">);</span>
+<span class="w">  </span><span class="c1">// !prev : 今の逆にする（オン↔オフ）</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">toggle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">setOn</span><span class="p">((</span><span class="nx">prev</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="o">!</span><span class="nx">prev</span><span class="p">);</span>
+<span class="w">  </span><span class="c1">// 状態と切り替え処理をまとめて返す</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">on</span><span class="p">,</span><span class="w"> </span><span class="nx">toggle</span><span class="w"> </span><span class="p">};</span>
+<span class="p">}</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">ToggleExample</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// 自作フックを使う。useState のように [今の値, 操作] を受け取れる</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">on</span><span class="p">,</span><span class="w"> </span><span class="nx">toggle</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useToggle</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">{</span><span class="cm">/* on が true なら「オン」 */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="nx">状態</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="nx">on</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s2">&quot;オン&quot;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;オフ&quot;</span><span class="p">}&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Pressable</span><span class="w"> </span><span class="na">onPress</span><span class="o">=</span><span class="p">{</span><span class="nx">toggle</span><span class="p">}&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="nx">切り替える</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">Pressable</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="1_7">▼ コードを1つずつ分解して解説</h4>
+<p>「よく使う処理を自作フックにまとめて使う」流れを、1つずつ見ていきましょう。</p>
+<hr>
+<h5 id="1-function-usetoggle">解説1: 自分でフックを作る <code>function useToggle</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-33"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">function</span><span class="w"> </span><span class="nx">useToggle</span><span class="p">(</span><span class="nx">initial</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">on</span><span class="p">,</span><span class="w"> </span><span class="nx">setOn</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="nx">initial</span><span class="p">);</span>
+<span class="w">  </span><span class="c1">// !prev : 今の逆にする（オン↔オフ）</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">toggle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">setOn</span><span class="p">((</span><span class="nx">prev</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="o">!</span><span class="nx">prev</span><span class="p">);</span>
+<span class="w">  </span><span class="c1">// 状態と切り替え処理をまとめて返す</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">on</span><span class="p">,</span><span class="w"> </span><span class="nx">toggle</span><span class="w"> </span><span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>useToggle</code> は自作のフックです。<strong>名前が <code>use</code> で始まっている</strong>のがポイントで、これがフックである印です（カスタムフックは必ず <code>use</code> で始める決まり）。</li>
+<li>中で <code>useState</code> を使って「今オンかどうか（<code>on</code>）」を持っています。ふつうの関数と違い、<strong>カスタムフックの中ではフックを呼べます</strong>。</li>
+<li><code>toggle</code> は「<strong>今の値の逆にする</strong>」処理です。<code>!prev</code> の <code>!</code>（ビックリマーク）は「逆にする」記号で、<code>true</code>↔<code>false</code> を入れ替えます。</li>
+<li>最後に <code>{ on, toggle }</code>（今の状態と切り替え処理）を<strong>まとめて返し</strong>ています。使う側はこれを受け取って使います。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>カスタムフック</strong> とは「自分で作った <code>use〜</code> 関数」。中でフックを使える点がふつうの関数と違い、よく使う state の処理をまとめて使い回すために作ります。</p>
+</blockquote>
+<hr>
+<h5 id="2_2">解説2: 自作フックを使う</h5>
+<div class="codehilite"><div class="code-wrap" id="code-34"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">on</span><span class="p">,</span><span class="w"> </span><span class="nx">toggle</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useToggle</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>useToggle(false)</code> で自作フックを呼び、「最初はオフ（<code>false</code>）の切り替え状態」を用意しています。</li>
+<li>返ってきた <code>{ on, toggle }</code> を分割代入で受け取り、<code>on</code>（今の状態）と <code>toggle</code>（切り替え処理）を使えるようにしています。<code>useState</code> を使うときと似た感覚です。</li>
+<li>画面側はこの<strong>1行</strong>を書くだけで、オン／オフの状態と切り替え処理が手に入ります。同じ処理を別の画面でも使いたければ、また <code>useToggle()</code> を呼ぶだけです。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>再利用（さいりよう）</strong> とは「一度作ったものを、いろいろな場所で使い回すこと」。カスタムフックにまとめておくと、同じ state の処理を各画面で何度も書かずに済みます。</p>
+</blockquote>
+<hr>
+<h5 id="3-on">解説3: 状態に応じて表示を変える <code>on ? "オン" : "オフ"</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-35"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">{</span><span class="cm">/* on が true なら「オン」 */</span><span class="p">}</span>
+<span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="nx">状態</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="nx">on</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s2">&quot;オン&quot;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;オフ&quot;</span><span class="p">}&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">Pressable</span><span class="w"> </span><span class="na">onPress</span><span class="o">=</span><span class="p">{</span><span class="nx">toggle</span><span class="p">}&gt;</span>
+<span class="w">  </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="nx">切り替える</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">Pressable</span><span class="p">&gt;</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>{on ? "オン" : "オフ"}</code> は「<strong><code>on</code> が <code>true</code> なら『オン』、そうでなければ『オフ』を表示する</strong>」という書き方です（<code>条件 ? Aのとき : Bのとき</code> の形で、三項演算子と呼びます）。</li>
+<li>ボタンの <code>onPress={toggle}</code> は「押されたら、自作フックの <code>toggle</code>（切り替え処理）を実行する」指定です。</li>
+<li>押すたびに <code>on</code> が反転し、表示も「オン」「オフ」と切り替わります。状態の管理と切り替え処理は、すべて <code>useToggle</code> の中にまとまっています。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <strong>三項演算子（さんこうえんざんし）</strong> とは <code>条件 ? A : B</code> の形で「条件が成り立てばA、そうでなければB」を選ぶ書き方。JSXの中で表示を出し分けるときによく使います。</p>
+</blockquote>
+<hr>
+<h2 id="6">6. コンポーネントを組み合わせる</h2>
+<p>Reactの本質は「小さなコンポーネントを組み合わせて大きな画面を作る」ことです。先ほどのBookCardを使って、一覧画面を組み立ててみましょう。</p>
+<div class="codehilite"><div class="code-wrap" id="code-36"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">View</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-native&quot;</span><span class="p">;</span>
+
+<span class="c1">// 子コンポーネント：1冊分のカード（再掲）</span>
+<span class="kr">type</span><span class="w"> </span><span class="nx">BookCardProps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span><span class="w"> </span><span class="nx">author</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">};</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">BookCard</span><span class="p">({</span><span class="w"> </span><span class="nx">title</span><span class="p">,</span><span class="w"> </span><span class="nx">author</span><span class="w"> </span><span class="p">}</span><span class="o">:</span><span class="w"> </span><span class="nx">BookCardProps</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;{</span><span class="nx">title</span><span class="p">}&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;{</span><span class="nx">author</span><span class="p">}&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// 親コンポーネント：一覧画面。BookCardを並べて使う</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">BookListScreen</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Text</span><span class="p">&gt;</span><span class="nx">書籍一覧</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">{</span><span class="cm">/* 同じBookCardを、異なるpropsで何度も並べる */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">BookCard</span><span class="w"> </span><span class="na">title</span><span class="o">=</span><span class="s">&quot;リーダブルコード&quot;</span><span class="w"> </span><span class="na">author</span><span class="o">=</span><span class="s">&quot;Dustin Boswell&quot;</span><span class="w"> </span><span class="p">/&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">BookCard</span><span class="w"> </span><span class="na">title</span><span class="o">=</span><span class="s">&quot;達人プログラマー&quot;</span><span class="w"> </span><span class="na">author</span><span class="o">=</span><span class="s">&quot;David Thomas&quot;</span><span class="w"> </span><span class="p">/&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">BookCard</span><span class="w"> </span><span class="na">title</span><span class="o">=</span><span class="s">&quot;TypeScript入門&quot;</span><span class="w"> </span><span class="na">author</span><span class="o">=</span><span class="s">&quot;鈴木 僚太&quot;</span><span class="w"> </span><span class="p">/&gt;</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="nx">BookListScreen</span><span class="p">;</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>親子関係:</strong> <code>BookListScreen</code>（親）が <code>BookCard</code>（子）を使っています。親が子にpropsで材料を渡す、という関係です。実際のアプリでは、本のデータは配列で管理し、第2章で学んだ <code>map</code> を使って自動的にカードを並べます（第7章で実装します）。</p>
+</blockquote>
+<hr>
+<h2 id="7-web-react-react-native">7. Web の React と React Native の違い（予告）</h2>
+<p>この章のコードは「考え方」を説明するためのもので、実際のReact Nativeでは部品の名前が少し変わります。次章への橋渡しとして、対応表を載せておきます。</p>
+<table>
+<thead>
+<tr>
+<th>役割</th>
+<th>WebのReact（HTML）</th>
+<th>React Native</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>箱・まとまり</td>
+<td><code>&lt;div&gt;</code></td>
+<td><code>&lt;View&gt;</code></td>
+</tr>
+<tr>
+<td>文字の表示</td>
+<td><code>&lt;p&gt;</code>, <code>&lt;span&gt;</code></td>
+<td><code>&lt;Text&gt;</code></td>
+</tr>
+<tr>
+<td>ボタン</td>
+<td><code>&lt;button&gt;</code></td>
+<td><code>&lt;Button&gt;</code>, <code>&lt;Pressable&gt;</code></td>
+</tr>
+<tr>
+<td>入力欄</td>
+<td><code>&lt;input&gt;</code></td>
+<td><code>&lt;TextInput&gt;</code></td>
+</tr>
+<tr>
+<td>画像</td>
+<td><code>&lt;img&gt;</code></td>
+<td><code>&lt;Image&gt;</code></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>重要:</strong> <strong>コンポーネント・props・state・フックという「考え方」は、WebでもReact Nativeでもまったく同じ</strong>です。違うのは「使う部品の名前」と「文字は必ず <code>&lt;Text&gt;</code> で囲む」などのモバイル特有のルールだけです。次章でその違いを実際に手を動かして学びます。</p>
+</blockquote>
+<hr>
+<h2 id="8">8. この章のまとめ</h2>
+<ul>
+<li><strong>コンポーネント</strong>: 見た目を返す関数。名前は大文字始まり。これを組み合わせて画面を作る</li>
+<li><strong>JSX</strong>: <code>&lt;Text&gt;...&lt;/Text&gt;</code> のように見た目を書く記法。<code>{ }</code> で変数を埋め込める</li>
+<li><strong>props</strong>: 部品の外から渡す「材料」。読み取り専用</li>
+<li><strong>state</strong>: 部品が内部に持つ「変化する値」。<code>useState</code> で作り、変更は必ず <code>setXxx</code> 関数で</li>
+<li><strong>フック</strong>: <code>use</code> で始まる便利機能。<code>useState</code>（状態）、<code>useEffect</code>（タイミング処理）など</li>
+<li>これらの考え方は <strong>WebでもReact Nativeでも共通</strong>。違うのは部品の名前</li>
+</ul>
+<blockquote>
+<p><strong>次の章へ:</strong> いよいよReact Native本体です。第4章では、<code>View</code> / <code>Text</code> / <code>FlatList</code> などスマホ専用の部品と、画面を配置するFlexbox、そしてExpo Routerによる画面遷移を学びます。</p>
+</blockquote>
+
+<script>
+(function () {
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy") ? resolve() : reject(); } catch (e) { reject(e); }
+      document.body.removeChild(ta);
+    });
+  }
+  document.querySelectorAll(".copy-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var pre = btn.parentElement.querySelector("pre");
+      var text = pre.textContent.replace(/\n$/, "");
+      copyText(text).then(function () {
+        btn.textContent = "コピーしました";
+        btn.classList.add("done");
+        setTimeout(function () { btn.textContent = "コピー"; btn.classList.remove("done"); }, 2000);
+      }, function () { btn.textContent = "コピーできませんでした"; });
+    });
+  });
+  if (/^#code-\d+$/.test(location.hash)) {
+    var note = document.getElementById("web-note");
+    if (note) { note.hidden = false; }
+  }
+})();
+</script>
+</body>
+</html>

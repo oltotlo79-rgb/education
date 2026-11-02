@@ -1,0 +1,1776 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>01_WindowsServerの使い方_ログイン・PowerShell・管理の道具</title>
+<style>
+
+@page {
+  size: A4;
+  margin: 18mm 16mm 20mm 16mm;
+  @bottom-right {
+    content: counter(page);
+    font-size: 10px;
+    color: #64748b;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  font-family: "Yu Gothic UI", "Yu Gothic", "Meiryo", "Hiragino Sans",
+               "Noto Sans JP", "Segoe UI", system-ui, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.75;
+  color: #1e293b;
+  background: #ffffff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #0f172a;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 1.4em 0 0.6em;
+  page-break-after: avoid;
+}
+h1 {
+  font-size: 22pt;
+  border-bottom: 3px solid #1e40af;
+  padding-bottom: 0.3em;
+  margin-top: 0.4em;
+  page-break-before: auto;
+}
+h2 {
+  font-size: 16pt;
+  border-bottom: 1.5px solid #cbd5e1;
+  padding-bottom: 0.25em;
+  margin-top: 1.6em;
+}
+h3 { font-size: 13pt; color: #1e40af; }
+h4 { font-size: 12pt; color: #334155; }
+
+p { margin: 0.5em 0 0.8em; }
+
+a { color: #1d4ed8; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+ul, ol { margin: 0.4em 0 0.9em; padding-left: 1.6em; }
+li { margin: 0.2em 0; }
+
+blockquote {
+  border-left: 4px solid #3b82f6;
+  background: #eff6ff;
+  margin: 0.8em 0;
+  padding: 0.6em 1em;
+  color: #1e3a8a;
+  border-radius: 0 6px 6px 0;
+  page-break-inside: avoid;
+}
+blockquote p { margin: 0.3em 0; }
+blockquote strong { color: #1e40af; }
+
+code {
+  /* DefCode (see _code_font.py) has ASCII and Japanese in ONE font, so a code
+     line is drawn as one text run and copies as one line in every PDF viewer. */
+  font-family: "Consolas", "Consolas", monospace;
+  font-size: 0.9em;
+  background: #f1f5f9;
+  color: #be123c;
+  padding: 0.12em 0.36em;
+  border-radius: 4px;
+  /* Long inline code (file paths / URLs) must break instead of overflowing. */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  /* In a PDF there is no horizontal scrolling, so long lines must wrap
+     instead of being clipped off the right edge of the page. */
+  overflow-x: hidden;
+  overflow-y: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  font-size: 9.2pt;
+  line-height: 1.5;
+  margin: 0.8em 0;
+  page-break-inside: avoid;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+  white-space: inherit;
+  word-break: inherit;
+  overflow-wrap: inherit;
+}
+
+/* The codehilite extension wraps highlighted blocks in a scrolling div; make
+   that wrap too so nothing is clipped in the PDF. */
+.codehilite {
+  overflow-x: hidden;
+  /* overflow-x: hidden alone turns overflow-y into auto, and a glyph from a
+     fallback font that is a hair too tall then shows a vertical scrollbar. */
+  overflow-y: hidden;
+}
+.codehilite pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* No per-token colours: every coloured token became its own text run (and its
+   own tag) in the PDF, and some viewers then pasted each token on its own line.
+   Only whole comment lines get a colour, so each line is still one run. */
+pre .cmt { color: #94a3b8; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.8em 0;
+  font-size: 9.6pt;
+  page-break-inside: avoid;
+}
+th, td {
+  border: 1px solid #e2e8f0;
+  padding: 6px 9px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: #f1f5f9;
+  color: #0f172a;
+  font-weight: 700;
+}
+tr:nth-child(even) td { background: #f8fafc; }
+
+img { max-width: 100%; height: auto; }
+
+hr {
+  border: none;
+  border-top: 1px dashed #cbd5e1;
+  margin: 1.6em 0;
+}
+
+/* Diagram blocks (the inline-styled <div>s in the source) */
+div[style] {
+  page-break-inside: avoid;
+}
+
+/* Tighten spacing right after headings */
+h1 + p, h2 + p, h3 + p, h4 + p { margin-top: 0.2em; }
+
+/* Avoid ugly page breaks inside list items / table rows */
+li, tr { page-break-inside: avoid; }
+
+@media screen {
+  body { max-width: 920px; margin: 0 auto; padding: 20px 20px 120px; font-size: 16px; }
+  pre { white-space: pre !important; word-break: normal !important; overflow-wrap: normal !important;
+        overflow-x: auto !important; font-size: 14px !important; }
+  img { max-width: 100%; height: auto; }
+}
+.web-bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; font-size: 14px;
+  padding: 8px 12px; margin-bottom: 16px; background: #eef2f7; border-radius: 8px; }
+.web-bar a { color: #1e3a5f; }
+.web-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 10; max-width: 90%;
+  font-size: 15px; font-weight: 700; background: #fff7ed; border: 2px solid #f2994a; border-radius: 8px;
+  padding: 10px 16px; margin: 0; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.code-wrap { position: relative; scroll-margin-top: 16px; }
+.code-wrap pre { padding-top: 40px !important; }
+.copy-btn { position: absolute; top: 8px; right: 8px; z-index: 2; font-size: 13px; font-weight: 700;
+  padding: 4px 12px; border: 0; border-radius: 6px; background: #2f80ed; color: #fff; cursor: pointer;
+  font-family: inherit; }
+.copy-btn:hover { background: #1c64c8; }
+.copy-btn.done { background: #27ae60; }
+.code-wrap:target pre { outline: 4px solid #f2994a; outline-offset: 2px; }
+.code-wrap:target .copy-btn { box-shadow: 0 0 0 4px #f2994a; }
+/* syntax colours on screen (the PDF uses one colour so that each line copies as one piece) */
+.codehilite .k, .codehilite .kd, .codehilite .kn, .codehilite .kr { color: #c084fc; }
+.codehilite .s, .codehilite .s1, .codehilite .s2, .codehilite .sb { color: #fcd34d; }
+.codehilite .c, .codehilite .c1, .codehilite .cm { color: #94a3b8; }
+.codehilite .nf, .codehilite .nx { color: #60a5fa; }
+.codehilite .nb { color: #34d399; }
+.codehilite .mi, .codehilite .mf { color: #f472b6; }
+.codehilite .nt { color: #f59e0b; }
+.codehilite .na { color: #93c5fd; }
+</style>
+</head>
+<body>
+<div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/01_WindowsServer%E3%81%AE%E4%BD%BF%E3%81%84%E6%96%B9_%E3%83%AD%E3%82%B0%E3%82%A4%E3%83%B3%E3%83%BBPowerShell%E3%83%BB%E7%AE%A1%E7%90%86%E3%81%AE%E9%81%93%E5%85%B7.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、ブラウザーの「戻る」で PDF に戻れます。</p><div style="text-align: center; padding: 28px 0 8px;">
+<div style="font-size: 14px; color: #475569;">オンプレミス構築 教育資料</div>
+<div style="font-size: 26px; font-weight: 800; color: #0f172a; margin-top: 6px; line-height: 1.35;">Windows Server の使い方 — ログイン・PowerShell・管理の道具</div>
+<div style="font-size: 13px; color: #475569; margin-top: 8px;">サーバーに入って、見て、動かして、困ったときに調べるための道具の使い方</div>
+</div>
+
+<h1 id="windows-server-powershell">Windows Server の使い方: ログイン・PowerShell・管理の道具</h1>
+<h2 id="_1">この資料について</h2>
+<p>会社から「サーバーを用意しました。OS（Windows Server）だけ入っています」と言われた<strong>その日から使う道具</strong>の使い方を、1つずつ説明します。</p>
+<ul>
+<li><strong>前提:</strong> Windows Server 2025 または 2022 の「デスクトップ エクスペリエンス」（画面のある形）。会社のドメイン（Active Directory）に参加していて、自分の会社のアカウントでログインできる。</li>
+<li><strong>読む順番:</strong> 1 章（ログイン）と 3 章（PowerShell）は、構築を始める前に必ず読んでください。ほかの章は、手順書（04・05）で出てきたときに読み返せば十分です。</li>
+<li><strong>言葉:</strong> ネットワーク・サービス・アカウントなどの考え方は、<strong>00 基礎知識</strong>で説明しています。この資料は「実際にどう操作するか」を受け持ちます。</li>
+<li><strong>コマンドの書き方:</strong> <code>#</code> から後ろは説明です。<code>WEBAPP-SV01</code>（サーバーの名前）、<code>EXAMPLE</code>（会社のドメインの短い名前）、<code>taro.yamada</code>（自分のアカウント）は、自分の環境のものに読みかえてください。</li>
+</ul>
+<blockquote>
+<p><strong>サンプルの結果について:</strong> この資料では、コマンドの結果（画面に出る文字）は載せず、「<strong>確かめること</strong>」として、結果のどこを見て、何なら正しいかを書きます。結果の細かい見た目は、版や設定によって変わるからです。</p>
+</blockquote>
+<h2 id="1">1. サーバーに入る（リモート デスクトップ）</h2>
+<h3 id="11">1.1 リモート デスクトップとは</h3>
+<p>サーバーは、データセンターやサーバー室にあり、目の前にはありません。自分のパソコンから、<strong>サーバーの画面を自分の画面に映して操作する</strong>仕組みが、<strong>リモート デスクトップ</strong>（RDP）です。</p>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/01-01_rdp.webp" alt="自分のPCの画面にサーバーの画面が映る。間は3389番で、通信は暗号化される" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図1-1: リモート デスクトップは、サーバーの画面を自分の PC に映す</div>
+</div>
+
+<ul>
+<li>自分のパソコンで打ったキーとマウスの動きがサーバーに送られ、サーバーの画面が送り返されてきます。<strong>プログラムは、サーバーの上で動いています。</strong></li>
+<li>通信には <strong>3389 番</strong>のポートを使います。リモート デスクトップの通信は、<strong>それ自体が暗号化</strong>されています（Web アプリの HTTP とは別の話です）。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> リモート デスクトップ（Remote Desktop：離れたコンピューターの画面を、自分の画面に映して操作する Windows の機能。通信の決まりの名前は RDP）</p>
+</blockquote>
+<!-- -->
+
+<blockquote>
+<p><strong>用語:</strong> mstsc（エムエスティーエスシー：Windows に付いている「リモート デスクトップ接続」のプログラムの名前。<code>Win</code>＋<code>R</code> で <code>mstsc</code> と打つと開く）</p>
+</blockquote>
+<h3 id="12">1.2 つなぐ前にそろえる物</h3>
+<table>
+<thead>
+<tr>
+<th>そろえる物</th>
+<th>例</th>
+<th>だれに聞くか</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>サーバーの名前（または IP アドレス）</td>
+<td><code>WEBAPP-SV01.example.local</code>（または <code>10.20.30.40</code>）</td>
+<td>情報システム部門</td>
+</tr>
+<tr>
+<td>ログインに使うアカウント</td>
+<td><code>EXAMPLE\taro.yamada</code></td>
+<td>情報システム部門（<strong>サーバーへのログインの許可</strong>をもらう）</td>
+</tr>
+<tr>
+<td>自分のパソコンからサーバーの 3389 番への通り道</td>
+<td>管理者のパソコンからだけ通す</td>
+<td>情報システム部門（ネットワークの関所）</td>
+</tr>
+<tr>
+<td>サーバーの中での権限</td>
+<td>Administrators グループに入れてもらう（構築の間）</td>
+<td>情報システム部門</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>注意:</strong> サーバーへのログインの許可は、<strong>ふつうの社員の会社アカウントには、最初は付いていません</strong>。依頼の文面は、07 付録の依頼シートにあります。</p>
+</blockquote>
+<h3 id="13">1.3 つなぎ方（初めての接続）</h3>
+<ol>
+<li>自分のパソコンで <code>Win</code>＋<code>R</code> を押し、<code>mstsc</code> と打って Enter を押します。「リモート デスクトップ接続」の画面が開きます。</li>
+<li>「<strong>オプションの表示</strong>」を押して、画面を広げます。</li>
+<li>「コンピューター」に、サーバーの名前（<code>WEBAPP-SV01.example.local</code>）を入れます。</li>
+<li>「ユーザー名」に、<code>EXAMPLE\taro.yamada</code> の形で入れます（1.4 の表）。</li>
+<li>「<strong>接続</strong>」を押し、パスワードを入れます。</li>
+<li>初めてのときは、「<strong>このリモート コンピューターの ID を識別できません</strong>」という意味の確認が出ます。「証明書を表示」で、名前がつなごうとしたサーバーの名前と同じであることを確かめてから、「はい」を押します。</li>
+<li>サーバーのデスクトップが表示され、少し待つと「<strong>サーバー マネージャー</strong>」が自動で開きます（2 章）。</li>
+</ol>
+<p><strong>確かめること:</strong> 画面の右下（または「サーバー マネージャー」の「ローカル サーバー」）で、コンピューター名が、つなごうとしたサーバーの名前になっていること。<strong>別のサーバーにつないで作業してしまう事故</strong>を防ぐため、作業の前に毎回確かめます。</p>
+<blockquote>
+<p><strong>用語:</strong> 証明書（ここでは、サーバーが「自分は WEBAPP-SV01 です」と名乗るための電子の身分証。リモート デスクトップでは、サーバーが自分で作った証明書を使うことが多く、初回に「信頼してよいか」を聞かれる）</p>
+</blockquote>
+<h3 id="14">1.4 ユーザー名の書き方</h3>
+<p>同じ人でも、ログインのときのユーザー名の書き方がいくつかあります。</p>
+<table>
+<thead>
+<tr>
+<th>書き方</th>
+<th>例</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ドメイン\ユーザー名</code></td>
+<td><code>EXAMPLE\taro.yamada</code></td>
+<td>会社（ドメイン）のアカウント。いちばんよく使う</td>
+</tr>
+<tr>
+<td><code>ユーザー名@ドメイン</code></td>
+<td><code>taro.yamada@example.local</code></td>
+<td>同じく会社のアカウント（UPN という書き方）</td>
+</tr>
+<tr>
+<td><code>.\ユーザー名</code></td>
+<td><code>.\Administrator</code></td>
+<td><strong>このサーバーの中だけ</strong>のアカウント（ローカル アカウント）。<code>.</code> は「この機械」の意味</td>
+</tr>
+<tr>
+<td><code>コンピューター名\ユーザー名</code></td>
+<td><code>WEBAPP-SV01\Administrator</code></td>
+<td>上と同じ。ローカル アカウント</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>よくある失敗:</strong> <code>taro.yamada</code> とだけ打つと、自分のパソコンの名前やローカル アカウントと取り違えられ、「資格情報が機能しませんでした」になることがあります。<strong>ドメインまで付けて</strong>打ちます。</p>
+</blockquote>
+<h3 id="15">1.5 終わり方:「切断」と「サインアウト」</h3>
+<p>リモート デスクトップの画面の右上の「×」で閉じると、<strong>切断</strong>になります。切断は、部屋を出ただけで、<strong>中の作業（開いたままのプログラム）はサーバーに残ります</strong>。</p>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/01-02_disconnect_signout.webp" alt="切断は作業が残ったまま部屋を出る。サインアウトは片付けて出る。同時に入れるのは2人まで" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図1-2: 切断は「作業を残したまま出る」、サインアウトは「片付けて出る」</div>
+</div>
+
+<ul>
+<li>Windows Server は、管理のためのリモート デスクトップを、<strong>同時に 2 人まで</strong>しか受け付けません（それより多くするには、別のライセンスが要ります）。切断したままの人が 2 人いると、3 人目はログインできません。</li>
+<li>作業が終わったら、スタートボタン → 自分のアイコン →「<strong>サインアウト</strong>」で終わります。</li>
+<li>ただし、<strong>長い処理を動かしている途中なら、切断</strong>にします。サインアウトすると、自分が手で動かしたプログラムは止まります。</li>
+</ul>
+<p>だれがログインしているかを見て、残っている作業を終わらせるには、管理者の PowerShell で次のようにします。</p>
+<div class="codehilite"><div class="code-wrap" id="code-1"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># このサーバーにログインしている人の一覧を見る（ID・状態（Active／Disc）・ログインした時刻）</span>
+<span class="n">quser</span>
+
+<span class="c"># ID が 3 の作業（セッション）をサインアウトさせる。開いていたプログラムは閉じられる</span>
+<span class="n">logoff</span> <span class="n">3</span>
+</code></pre></div></div>
+
+<p><strong>確かめること:</strong> <code>quser</code> の <code>STATE</code> が <code>Disc</code>（切断）の行が、長く残っていないこと。<strong>ほかの人の作業を <code>logoff</code> で消すときは、その人に確かめてから</strong>にします（保存していない作業が消えます）。</p>
+<blockquote>
+<p><strong>用語:</strong> セッション（ここでは、1人がリモート デスクトップでログインしている間の「作業の部屋」のこと。00 基礎知識の Web のセッションとは別のもの）</p>
+</blockquote>
+<h3 id="16">1.6 接続の設定を保存する</h3>
+<p>毎回サーバーの名前とユーザー名を打つのは手間です。</p>
+<ol>
+<li>「リモート デスクトップ接続」の「オプションの表示」→「全般」タブで、コンピューター名とユーザー名を入れます。</li>
+<li>「<strong>名前を付けて保存</strong>」で、<code>WEBAPP-SV01.rdp</code> のように保存します。次からは、このファイルをダブルクリックするだけでつながります。</li>
+</ol>
+<blockquote>
+<p><strong>注意:</strong> 「資格情報を保存できるようにする」にチェックを入れて、<strong>パスワードを保存しないで</strong>ください。そのパソコンを使える人なら、だれでもサーバーに入れてしまいます。</p>
+</blockquote>
+<h3 id="17">1.7 ファイルと文字のやり取り</h3>
+<ul>
+<li><strong>コピーと貼り付け:</strong> 自分のパソコンでコピーした文字は、ふつうサーバーの中に貼り付けられます（逆も同じ）。手順書のコマンドを貼り付けるときに使います。</li>
+<li><strong>ファイル:</strong> 会社の決まりで、リモート デスクトップでのファイルのコピーが止められていることがあります。その場合は、会社の<strong>共有フォルダ</strong>（<code>\\fileserver\share\...</code>）を経由します（12 章）。</li>
+</ul>
+<h3 id="18">1.8 リモート デスクトップのトラブル</h3>
+<table>
+<thead>
+<tr>
+<th>症状</th>
+<th>考えられる原因</th>
+<th>調べ方・直し方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>「リモート コンピューターに接続できません」という意味のエラー。すぐに失敗する</td>
+<td>名前の打ち間違い／DNS に名前が無い／3389 番が関所で止まっている／サーバーが止まっている</td>
+<td>自分のパソコンで <code>Test-NetConnection WEBAPP-SV01.example.local -Port 3389</code> を打つ。<code>TcpTestSucceeded : False</code> なら、名前と関所（情報システム部門）を確かめる</td>
+</tr>
+<tr>
+<td>「資格情報が機能しませんでした」</td>
+<td>ユーザー名の書き方（1.4）／パスワードの打ち間違い／Caps Lock</td>
+<td>ユーザー名を <code>EXAMPLE\taro.yamada</code> の形で打ち直す。何度も失敗すると、アカウントが<strong>ロック</strong>されることがあるので、3 回失敗したら止めて情報システム部門に聞く</td>
+</tr>
+<tr>
+<td>「リモート デスクトップ サービスを使ったサインインの権限が必要」という意味のエラー</td>
+<td>そのアカウントに、このサーバーへのログインの許可が無い</td>
+<td>情報システム部門に、Remote Desktop Users か Administrators グループへの追加を頼む</td>
+</tr>
+<tr>
+<td>「パスワードの有効期限が切れています」という意味のメッセージ</td>
+<td>会社の決まりで、パスワードに期限がある</td>
+<td>自分のパソコンでパスワードを変えてから、つなぎ直す。サーバーの中にいるときは、<code>Ctrl</code>＋<code>Alt</code>＋<code>End</code> →「パスワードの変更」</td>
+</tr>
+<tr>
+<td>「別のユーザーがサインインしています」「接続数の上限」という意味のメッセージ</td>
+<td>同時に 2 人まで（1.5）がふさがっている</td>
+<td>切断のまま残っている人に連絡してサインアウトしてもらう。管理者なら、ほかのサーバーから <code>quser /server:WEBAPP-SV01</code> で一覧を見られる</td>
+</tr>
+<tr>
+<td>「認証エラーが発生しました」「CredSSP」という言葉が入ったエラー</td>
+<td>自分のパソコンとサーバーの、Windows Update の当て具合が食い違っている</td>
+<td>両方に Windows Update を当てる。直らなければ情報システム部門に聞く（自分で安全の設定を下げない）</td>
+</tr>
+<tr>
+<td>つながったが、画面が真っ黒のまま</td>
+<td>ログインの処理が遅れている／画面の描き直しの不調</td>
+<td>1〜2 分待つ。だめなら <code>Ctrl</code>＋<code>Alt</code>＋<code>End</code> →「タスク マネージャー」を開く。それでもだめなら切断して、つなぎ直す</td>
+</tr>
+<tr>
+<td>文字や画面がぼやける・小さすぎる</td>
+<td>画面の大きさ（解像度）の合わない設定</td>
+<td>「オプションの表示」→「画面」タブで、画面の大きさを変える</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>用語:</strong> <code>Ctrl</code>＋<code>Alt</code>＋<code>End</code>（リモート デスクトップの中で、<code>Ctrl</code>＋<code>Alt</code>＋<code>Del</code> の代わりに押すキー。<code>Ctrl</code>＋<code>Alt</code>＋<code>Del</code> は自分のパソコンの方に効いてしまうため）</p>
+</blockquote>
+<h2 id="2">2. 最初の画面と、よく使う管理の道具</h2>
+<h3 id="21">2.1 サーバー マネージャー</h3>
+<p>ログインすると自動で開くのが「<strong>サーバー マネージャー</strong>」です。サーバーの状態を見たり、機能を追加したりする、<strong>サーバーの管理の入口</strong>です。</p>
+<p>左の「<strong>ローカル サーバー</strong>」を押すと、このサーバーの基本の情報が一覧で出ます。受け取ったときに、ここで次を確かめます（04 の 3 章のチェック）。</p>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>確かめること</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>コンピューター名</td>
+<td>頼んだ名前（例：<code>WEBAPP-SV01</code>）</td>
+</tr>
+<tr>
+<td>ドメイン</td>
+<td>会社のドメイン（例：<code>example.local</code>）</td>
+</tr>
+<tr>
+<td>Microsoft Defender ファイアウォール</td>
+<td>「ドメイン: 有効」になっている（10 章）</td>
+</tr>
+<tr>
+<td>リモート デスクトップ</td>
+<td>「有効」</td>
+</tr>
+<tr>
+<td>イーサネット</td>
+<td>頼んだ固定の IP アドレス</td>
+</tr>
+<tr>
+<td>タイム ゾーン</td>
+<td><code>(UTC+09:00) 大阪、札幌、東京</code></td>
+</tr>
+<tr>
+<td>最後に更新プログラムをインストールした日時</td>
+<td>最近の日付（11 章）</td>
+</tr>
+</tbody>
+</table>
+<p>右上の「<strong>管理</strong>」→「<strong>役割と機能の追加</strong>」で、IIS などの Windows の機能を追加します（04 の 8 章では、同じことを PowerShell で行います）。</p>
+<blockquote>
+<p><strong>用語:</strong> 役割と機能（Windows Server に後から足せる機能のまとまり。「Web サーバー（IIS）」は役割の1つ）</p>
+</blockquote>
+<h3 id="22">2.2 よく使う管理の道具</h3>
+<p>Windows Server には、たくさんの管理の道具が入っています。この資料と手順書で使うのは、次の道具です。</p>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/01-03_admin_tools.webp" alt="道具箱から、サービス・イベント ビューアー・タスク マネージャー・タスク スケジューラ・ファイアウォール・IIS マネージャーが取り出される" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図2-1: この資料で使う、Windows Server の管理の道具</div>
+</div>
+
+<p><code>Win</code>＋<code>R</code> で「ファイル名を指定して実行」を開き、表の「開き方」の名前を打つと、すぐに開けます。</p>
+<table>
+<thead>
+<tr>
+<th>道具</th>
+<th>開き方</th>
+<th>何をするか</th>
+<th>説明の章</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>サーバー マネージャー</td>
+<td><code>servermanager</code></td>
+<td>サーバーの状態を見る、機能を足す</td>
+<td>2.1</td>
+</tr>
+<tr>
+<td>ターミナル／PowerShell</td>
+<td>スタートボタンを右クリック</td>
+<td>文字のコマンドで操作する</td>
+<td>3</td>
+</tr>
+<tr>
+<td>コンピューターの管理</td>
+<td><code>compmgmt.msc</code></td>
+<td>ローカルのユーザーとグループ、ディスクなどをまとめて見る</td>
+<td>4</td>
+</tr>
+<tr>
+<td>サービス</td>
+<td><code>services.msc</code></td>
+<td>サービスの起動・停止・設定</td>
+<td>6</td>
+</tr>
+<tr>
+<td>イベント ビューアー</td>
+<td><code>eventvwr.msc</code></td>
+<td>Windows とアプリの記録（ログ）を見る</td>
+<td>7</td>
+</tr>
+<tr>
+<td>タスク マネージャー</td>
+<td><code>taskmgr</code>（または <code>Ctrl</code>＋<code>Shift</code>＋<code>Esc</code>）</td>
+<td>重いプログラムを探す</td>
+<td>8</td>
+</tr>
+<tr>
+<td>リソース モニター</td>
+<td><code>resmon</code></td>
+<td>CPU・メモリ・ディスク・通信を、プログラムごとに詳しく見る</td>
+<td>8</td>
+</tr>
+<tr>
+<td>タスク スケジューラ</td>
+<td><code>taskschd.msc</code></td>
+<td>決まった時刻にコマンドを動かす</td>
+<td>9</td>
+</tr>
+<tr>
+<td>ファイアウォール</td>
+<td><code>wf.msc</code></td>
+<td>通信の関所の決まりを見る・作る</td>
+<td>10</td>
+</tr>
+<tr>
+<td>IIS マネージャー</td>
+<td><code>inetmgr</code></td>
+<td>Web サーバー（IIS）の設定（IIS を入れた後）</td>
+<td>04 の 8 章</td>
+</tr>
+<tr>
+<td>ディスクの管理</td>
+<td><code>diskmgmt.msc</code></td>
+<td>ディスクの割り当てとドライブ文字</td>
+<td>04 の 4 章</td>
+</tr>
+<tr>
+<td>ネットワーク接続</td>
+<td><code>ncpa.cpl</code></td>
+<td>IP アドレスなどの設定を見る</td>
+<td>00 の 4 章</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>触らない方がよい道具:</strong> レジストリ エディター（<code>regedit</code>）やグループ ポリシーの設定は、間違えると Windows が起動しなくなったり、会社の決まりとぶつかったりします。手順書に書いていない限り、触りません。</p>
+<p><strong>用語:</strong> <code>.msc</code>（Windows の管理の道具の画面のファイル。ダブルクリックや <code>Win</code>＋<code>R</code> で開く）</p>
+</blockquote>
+<h2 id="3-powershell">3. PowerShell の基本</h2>
+<h3 id="31">3.1 開き方と「管理者として実行」</h3>
+<ul>
+<li><strong>Windows Server 2025:</strong> スタートボタンを右クリック →「<strong>ターミナル（管理者）</strong>」。</li>
+<li><strong>Windows Server 2022:</strong> スタートボタンを右クリック →「<strong>Windows PowerShell（管理者）</strong>」。</li>
+<li>「このアプリがデバイスに変更を加えることを許可しますか?」と聞かれたら、「はい」を押します（<strong>ユーザー アカウント制御</strong>。4.3）。</li>
+</ul>
+<p>ウィンドウの題名に「<strong>管理者</strong>」と出ていれば、管理者として動いています。コマンドで確かめることもできます。</p>
+<div class="codehilite"><div class="code-wrap" id="code-2"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 管理者として動いていれば True、そうでなければ False</span>
+<span class="p">(</span><span class="no">[Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]</span><span class="p">::</span><span class="n">GetCurrent</span><span class="p">()).</span><span class="n">IsInRole</span><span class="p">(</span>
+    <span class="no">[Security.Principal.WindowsBuiltInRole]</span><span class="p">::</span><span class="n">Administrator</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p><strong>確かめること:</strong> <code>True</code> と出ること。<code>False</code> なら、一度閉じて、「管理者」の方で開き直します。インストール・サービス・ファイアウォール・アクセス許可の変更は、管理者でないと「<strong>アクセスが拒否されました</strong>」になります。</p>
+<blockquote>
+<p><strong>PowerShell の版:</strong> Windows Server に最初から入っているのは <strong>Windows PowerShell 5.1</strong> です。別に入れる「PowerShell 7」もありますが、この資料と手順書は、すべて 5.1 で動くように書いています。</p>
+</blockquote>
+<h3 id="32">3.2 コマンドの形</h3>
+<p>PowerShell のコマンド（<strong>コマンドレット</strong>）は、「<strong>動詞-名詞</strong>」の形の名前に、「<strong>-パラメーター 値</strong>」を続けて書きます。</p>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/01-04_powershell_anatomy.webp" alt="Get-Service -Name W3SVC の、Getが動詞、Serviceが名詞、-Nameがパラメーター、W3SVCが値" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図3-1: コマンドの形は「動詞-名詞 -パラメーター 値」</div>
+</div>
+
+<div class="codehilite"><div class="code-wrap" id="code-3"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 「W3SVC という名前のサービス（IIS の本体）の、状態を見せて」</span>
+<span class="nb">Get-Service</span> <span class="n">-Name</span> <span class="n">W3SVC</span>
+</code></pre></div></div>
+
+<p>よく出てくる動詞を覚えておくと、知らないコマンドでも意味の見当が付きます。</p>
+<table>
+<thead>
+<tr>
+<th>動詞</th>
+<th>意味</th>
+<th>例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Get</code></td>
+<td>見る・取り出す</td>
+<td><code>Get-Service</code>（サービスを見る）</td>
+</tr>
+<tr>
+<td><code>Set</code></td>
+<td>設定を変える</td>
+<td><code>Set-Service</code>（サービスの設定を変える）</td>
+</tr>
+<tr>
+<td><code>New</code></td>
+<td>新しく作る</td>
+<td><code>New-Item</code>（ファイルやフォルダを作る）</td>
+</tr>
+<tr>
+<td><code>Remove</code></td>
+<td>消す</td>
+<td><code>Remove-Item</code>（ファイルを消す）</td>
+</tr>
+<tr>
+<td><code>Start</code>・<code>Stop</code>・<code>Restart</code></td>
+<td>始める・止める・やり直す</td>
+<td><code>Restart-Service</code>（サービスを再起動する）</td>
+</tr>
+<tr>
+<td><code>Test</code></td>
+<td>確かめる</td>
+<td><code>Test-NetConnection</code>（つながるか確かめる）</td>
+</tr>
+<tr>
+<td><code>Copy</code>・<code>Move</code></td>
+<td>写す・動かす</td>
+<td><code>Copy-Item</code>（ファイルを写す）</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>用語:</strong> コマンドレット（cmdlet：PowerShell の中に用意されたコマンド。「動詞-名詞」の名前が付いている）</p>
+</blockquote>
+<!-- -->
+
+<blockquote>
+<p><strong>用語:</strong> パラメーター（コマンドに渡す「どれを・どうやって」の指定。<code>-</code> で始まる）</p>
+</blockquote>
+<h3 id="33">3.3 打つときの便利な操作</h3>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>キー</th>
+<th>使いどころ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>名前の残りを補う</td>
+<td><code>Tab</code></td>
+<td><code>Get-Ser</code> まで打って <code>Tab</code> で <code>Get-Service</code> になる。打ち間違いが減る</td>
+</tr>
+<tr>
+<td>前に打ったコマンドを出す</td>
+<td><code>↑</code>・<code>↓</code></td>
+<td>同じコマンドを、少し変えて打ち直す</td>
+</tr>
+<tr>
+<td>実行中のコマンドを止める</td>
+<td><code>Ctrl</code>＋<code>C</code></td>
+<td>終わらないコマンドや、間違えて始めたコマンドを止める</td>
+</tr>
+<tr>
+<td>貼り付け</td>
+<td>右クリック、または <code>Ctrl</code>＋<code>V</code></td>
+<td>手順書のコマンドを貼る</td>
+</tr>
+<tr>
+<td>画面を消す</td>
+<td><code>cls</code> と打つ</td>
+<td>画面がいっぱいになったとき</td>
+</tr>
+</tbody>
+</table>
+<p>困ったときの調べ方です。</p>
+<div class="codehilite"><div class="code-wrap" id="code-4"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># コマンドの使い方を見る（例：Get-Service）</span>
+<span class="nb">Get-Help</span> <span class="nb">Get-Service</span> <span class="n">-Examples</span>
+
+<span class="c"># 名前に Firewall を含むコマンドを探す</span>
+<span class="nb">Get-Command</span> <span class="p">*</span><span class="n">Firewall</span><span class="p">*</span>
+
+<span class="c"># 前に打ったコマンドの一覧を見る</span>
+<span class="nb">Get-History</span>
+</code></pre></div></div>
+
+<h3 id="34">3.4 パイプ: 結果を次のコマンドに渡す</h3>
+<p><code>|</code>（<strong>パイプ</strong>）を使うと、前のコマンドの結果を、次のコマンドに渡せます。「全部取り出す → しぼる → 項目を選ぶ → 表示する」のように、小さなコマンドをつないで使います。</p>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/01-05_pipeline.webp" alt="ベルトコンベアで、全部取り出す、条件でしぼる、項目を選ぶ、表示する、の順にデータが流れる。間の記号がパイプ" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図3-2: パイプは、結果を次の機械へ流すベルトコンベア</div>
+</div>
+
+<div class="codehilite"><div class="code-wrap" id="code-5"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># サービスを全部取り出し → 動いている物だけにしぼり → 名前と表示名だけを選び → 名前の順に並べる</span>
+<span class="nb">Get-Service</span> <span class="p">|</span>
+    <span class="nb">Where-Object</span> <span class="n">Status</span> <span class="o">-eq</span> <span class="s1">&#39;Running&#39;</span> <span class="p">|</span>
+    <span class="nb">Select-Object</span> <span class="n">Name</span><span class="p">,</span> <span class="n">DisplayName</span> <span class="p">|</span>
+    <span class="nb">Sort-Object</span> <span class="n">Name</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>よく使う相手</th>
+<th>役目</th>
+<th>例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Where-Object</code></td>
+<td>条件でしぼる</td>
+<td><code>Where-Object Status -eq 'Running'</code>（状態が Running の物だけ）</td>
+</tr>
+<tr>
+<td><code>Select-Object</code></td>
+<td>項目（列）を選ぶ・先頭だけにする</td>
+<td><code>Select-Object Name, Status</code>、<code>Select-Object -First 10</code></td>
+</tr>
+<tr>
+<td><code>Sort-Object</code></td>
+<td>並べかえる</td>
+<td><code>Sort-Object CPU -Descending</code>（CPU の多い順）</td>
+</tr>
+<tr>
+<td><code>Format-List</code></td>
+<td>全部の項目を縦に並べて見る</td>
+<td><code>Get-Service W3SVC \| Format-List *</code></td>
+</tr>
+<tr>
+<td><code>Out-File</code>・<code>Export-Csv</code></td>
+<td>ファイルに書き出す</td>
+<td><code>Export-Csv D:\work\services.csv -Encoding UTF8 -NoTypeInformation</code></td>
+</tr>
+</tbody>
+</table>
+<p>比べる書き方（<code>-eq</code> など）は、記号ではなく文字で書きます。</p>
+<table>
+<thead>
+<tr>
+<th>書き方</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-eq</code></td>
+<td>等しい</td>
+</tr>
+<tr>
+<td><code>-ne</code></td>
+<td>等しくない</td>
+</tr>
+<tr>
+<td><code>-gt</code>・<code>-lt</code></td>
+<td>より大きい・より小さい</td>
+</tr>
+<tr>
+<td><code>-like</code></td>
+<td><code>*</code> を使った形に合う（例：<code>-like 'webapp*'</code>）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="35">3.5 変数と文字列</h3>
+<div class="codehilite"><div class="code-wrap" id="code-6"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 変数は $ で始める。= で値を入れる</span>
+<span class="nv">$site</span> <span class="p">=</span> <span class="s2">&quot;webapp-prod&quot;</span>
+<span class="nv">$port</span> <span class="p">=</span> <span class="n">8080</span>
+
+<span class="c"># &quot; で囲んだ文字の中の変数は、中身に置きかわる</span>
+<span class="s2">&quot;サイト $site は $port 番で待ち受けます&quot;</span>   <span class="c"># → サイト webapp-prod は 8080 番で待ち受けます</span>
+
+<span class="c"># &#39; で囲むと、置きかわらない（そのままの文字）</span>
+<span class="s1">&#39;サイト $site&#39;</span>                              <span class="c"># → サイト $site</span>
+
+<span class="c"># 環境変数は $env: を付けて読む</span>
+<span class="nv">$env:COMPUTERNAME</span>
+</code></pre></div></div>
+
+<p><strong>確かめること:</strong> <code>"..."</code> と <code>'...'</code> で結果が変わること。パスワードなど <code>$</code> を含む文字を書くときは、<code>'...'</code> で囲まないと、<code>$</code> の後ろが変数として消えてしまいます。</p>
+<h3 id="36">3.6 ファイルとフォルダの操作</h3>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>コマンド</th>
+<th>昔のコマンドの書き方（同じ意味で使える）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>今いるフォルダを見る</td>
+<td><code>Get-Location</code></td>
+<td><code>pwd</code></td>
+</tr>
+<tr>
+<td>フォルダを移る</td>
+<td><code>Set-Location D:\webapp</code></td>
+<td><code>cd D:\webapp</code></td>
+</tr>
+<tr>
+<td>中身の一覧</td>
+<td><code>Get-ChildItem</code></td>
+<td><code>dir</code>、<code>ls</code></td>
+</tr>
+<tr>
+<td>フォルダを作る</td>
+<td><code>New-Item -ItemType Directory D:\work</code></td>
+<td><code>mkdir D:\work</code></td>
+</tr>
+<tr>
+<td>写す</td>
+<td><code>Copy-Item 元 先</code></td>
+<td><code>copy</code></td>
+</tr>
+<tr>
+<td>動かす・名前を変える</td>
+<td><code>Move-Item 元 先</code>、<code>Rename-Item</code></td>
+<td><code>move</code>、<code>ren</code></td>
+</tr>
+<tr>
+<td>消す</td>
+<td><code>Remove-Item パス</code></td>
+<td><code>del</code></td>
+</tr>
+<tr>
+<td>中身を見る</td>
+<td><code>Get-Content パス</code></td>
+<td><code>type</code></td>
+</tr>
+<tr>
+<td>ログの最後を見続ける</td>
+<td><code>Get-Content パス -Tail 50 -Wait</code></td>
+<td>（無い）</td>
+</tr>
+<tr>
+<td>文字を探す</td>
+<td><code>Select-String -Path *.log -Pattern "ERROR"</code></td>
+<td><code>findstr</code></td>
+</tr>
+<tr>
+<td>zip にまとめる・広げる</td>
+<td><code>Compress-Archive</code>・<code>Expand-Archive</code></td>
+<td>（無い）</td>
+</tr>
+<tr>
+<td>ファイルの指紋（ハッシュ値）を出す</td>
+<td><code>Get-FileHash パス -Algorithm SHA256</code></td>
+<td><code>certutil -hashfile</code></td>
+</tr>
+</tbody>
+</table>
+<p>使い方の例です。</p>
+<div class="codehilite"><div class="code-wrap" id="code-7"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># アプリのログの最後の 50 行を見て、そのまま新しい行を待ち続ける（止めるときは Ctrl+C）</span>
+<span class="nb">Get-Content</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">prod</span><span class="p">\</span><span class="n">logs</span><span class="p">\</span><span class="n">webapp-prod-service</span><span class="p">.</span><span class="n">out</span><span class="p">.</span><span class="n">log</span> <span class="n">-Tail</span> <span class="n">50</span> <span class="n">-Wait</span>
+
+<span class="c"># logs フォルダの中の全部のログから、ERROR を含む行を探す</span>
+<span class="nb">Select-String</span> <span class="n">-Path</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">prod</span><span class="p">\</span><span class="n">logs</span><span class="p">\*.</span><span class="n">log</span> <span class="n">-Pattern</span> <span class="s2">&quot;ERROR&quot;</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">-Last</span> <span class="n">20</span>
+
+<span class="c"># D ドライブの中の、大きいファイルを上から 20 個</span>
+<span class="nb">Get-ChildItem</span> <span class="n">D</span><span class="p">:\</span> <span class="n">-Recurse</span> <span class="o">-File</span> <span class="n">-ErrorAction</span> <span class="n">SilentlyContinue</span> <span class="p">|</span>
+    <span class="nb">Sort-Object</span> <span class="n">Length</span> <span class="n">-Descending</span> <span class="p">|</span>
+    <span class="nb">Select-Object</span> <span class="n">-First</span> <span class="n">20</span> <span class="n">FullName</span><span class="p">,</span> <span class="p">@{</span> <span class="n">Name</span> <span class="p">=</span> <span class="s1">&#39;MB&#39;</span><span class="p">;</span> <span class="n">Expression</span> <span class="p">=</span> <span class="p">{</span> <span class="no">[int]</span><span class="p">(</span><span class="nv">$_</span><span class="p">.</span><span class="n">Length</span> <span class="p">/</span> <span class="n">1MB</span><span class="p">)</span> <span class="p">}</span> <span class="p">}</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong><code>Remove-Item</code> は、ごみ箱に入りません。</strong> 消したファイルは戻せないので、消す前に <code>Get-ChildItem</code> で、消す物を確かめてから消します。<code>-Recurse</code>（中身ごと）を付けるときは特に気を付けます。</p>
+</blockquote>
+<h3 id="37">3.7 スクリプトを動かす</h3>
+<p>コマンドを <code>.ps1</code> のファイルに書いて保存したものが<strong>スクリプト</strong>です（00 基礎知識 0.5）。</p>
+<div class="codehilite"><div class="code-wrap" id="code-8"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 今いるフォルダの backup.ps1 を動かす（.\ は「今いるフォルダの」という意味。省くと動かない）</span>
+<span class="p">.\</span><span class="n">backup</span><span class="p">.</span><span class="n">ps1</span>
+
+<span class="c"># 場所を全部書いて動かす</span>
+<span class="p">&amp;</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">tools</span><span class="p">\</span><span class="n">backup</span><span class="p">.</span><span class="n">ps1</span>
+</code></pre></div></div>
+
+<p><strong>実行ポリシー</strong>: PowerShell には、知らないスクリプトを勝手に動かさないための決まりがあります。Windows Server では、最初は <code>RemoteSigned</code>（このサーバーで書いたスクリプトは動く。インターネットから取ってきたスクリプトは、署名が無いと動かない）になっています。</p>
+<div class="codehilite"><div class="code-wrap" id="code-9"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 今の実行ポリシーを見る</span>
+<span class="nb">Get-ExecutionPolicy</span>
+
+<span class="c"># インターネットから取ってきた（印の付いた）ファイルの印を外す。中身を確かめてから行う</span>
+<span class="nb">Unblock-File</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">tools</span><span class="p">\</span><span class="n">some-script</span><span class="p">.</span><span class="n">ps1</span>
+</code></pre></div></div>
+
+<p><strong>確かめること:</strong> <code>Get-ExecutionPolicy</code> が <code>RemoteSigned</code> であること。「このシステムではスクリプトの実行が無効になっているため…」と出たら、そのファイルがインターネットから取ってきた物で印が付いているか、会社の決まりで実行ポリシーが厳しくなっています。<strong><code>Set-ExecutionPolicy</code> で、サーバー全体の実行ポリシーを <code>Unrestricted</code> や <code>Bypass</code> に変えて逃げないで</strong>ください。会社の決まりに反することがあります。（04 の 11 章のタスクで <code>-ExecutionPolicy Bypass</code> を付けているのは、自分で書いて中身の分かっているスクリプト1つを、そのタスクの中でだけ動かすためで、サーバー全体の決まりは変えません。）</p>
+<p><strong>スクリプトの文字コード（とても大事）:</strong> Windows PowerShell 5.1 は、<strong>BOM（ファイルの先頭の印）の無い UTF-8</strong> のファイルを、Shift_JIS だと思って読みます。日本語のコメントや文字が入ったスクリプトをそのまま保存すると、日本語の所で行の区切りが食われ、<strong>次の行が消えたり、構文エラーで丸ごと動かなかったり</strong>します（試して確かめました）。日本語を含むスクリプトは、メモ帳の「名前を付けて保存」で、エンコードを「<strong>UTF-8 (BOM 付き)</strong>」にして保存します。</p>
+<div class="codehilite"><div class="code-wrap" id="code-10"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 先頭の 3 つの数が 239 187 191 なら BOM 付き</span>
+<span class="p">(</span><span class="nb">Get-Content</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">tools</span><span class="p">\</span><span class="n">backup</span><span class="p">.</span><span class="n">ps1</span> <span class="n">-Encoding</span> <span class="n">Byte</span> <span class="n">-TotalCount</span> <span class="n">3</span><span class="p">)</span> <span class="n">-join</span> <span class="s1">&#39; &#39;</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>用語:</strong> 実行ポリシー（Execution Policy：どのスクリプトを動かしてよいかの PowerShell の決まり）</p>
+</blockquote>
+<!-- -->
+
+<blockquote>
+<p><strong>用語:</strong> BOM（ボム。Byte Order Mark：ファイルの先頭に付ける「これは UTF-8 です」という 3 バイトの印。Windows PowerShell 5.1 は、これが無いと UTF-8 と分からない）</p>
+</blockquote>
+<h3 id="38">3.8 よくある間違い</h3>
+<table>
+<thead>
+<tr>
+<th>間違い</th>
+<th>何が起きるか</th>
+<th>直し方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>全角の空白・全角の <code>－</code>・全角の <code>"</code> が混じる</td>
+<td>「認識されません」などのエラー</td>
+<td>手順書から貼り付けるか、日本語入力を切って打つ</td>
+</tr>
+<tr>
+<td>管理者でない PowerShell で打つ</td>
+<td>「アクセスが拒否されました」</td>
+<td>「管理者」で開き直す（3.1）</td>
+</tr>
+<tr>
+<td>空白を含むパスを <code>"</code> で囲まない</td>
+<td>「パスが見つかりません」</td>
+<td><code>"C:\Program Files\..."</code> のように囲む</td>
+</tr>
+<tr>
+<td><code>sc</code> と打つ</td>
+<td>サービスの道具ではなく、<strong>ファイルに書き込むコマンド</strong>（<code>Set-Content</code>）が動く</td>
+<td>サービスの道具は、必ず <code>sc.exe</code> と打つ</td>
+</tr>
+<tr>
+<td><code>curl</code> と打つ</td>
+<td>Windows PowerShell 5.1 では、<code>Invoke-WebRequest</code> の別名として動き、使い方が違う</td>
+<td><code>Invoke-WebRequest</code> を使うか、<code>curl.exe</code> と打つ</td>
+</tr>
+<tr>
+<td>コマンドプロンプト（<code>cmd</code>）の書き方をそのまま使う</td>
+<td><code>%PATH%</code> などが効かない</td>
+<td>PowerShell では <code>$env:PATH</code></td>
+</tr>
+<tr>
+<td>日本語を含む <code>.ps1</code> を、BOM 無しの UTF-8 で保存する</td>
+<td>行が消える・構文エラーで動かない</td>
+<td>「UTF-8 (BOM 付き)」で保存し直す（3.7）</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>用語:</strong> 別名（エイリアス：コマンドの短い呼び名。<code>dir</code>・<code>ls</code> は <code>Get-ChildItem</code> の別名。<code>sc</code> は <code>Set-Content</code> の別名なので注意）</p>
+</blockquote>
+<h2 id="4">4. アカウントとグループ</h2>
+<h3 id="41">4.1 自分がだれかを見る</h3>
+<div class="codehilite"><div class="code-wrap" id="code-11"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 自分のアカウント</span>
+<span class="n">whoami</span>
+
+<span class="c"># 自分が入っているグループ（Administrators が入っているか）</span>
+<span class="n">whoami</span> <span class="p">/</span><span class="n">groups</span> <span class="p">|</span> <span class="nb">Select-String</span> <span class="s2">&quot;Administrators&quot;</span>
+</code></pre></div></div>
+
+<p><strong>確かめること:</strong> <code>whoami</code> が <code>example\taro.yamada</code> のように、会社のドメインのアカウントであること。構築の作業の間は、<code>whoami /groups</code> に <code>BUILTIN\Administrators</code> が出ること。</p>
+<h3 id="42">4.2 ローカルのユーザーとグループ</h3>
+<p>このサーバーの中だけのユーザーとグループは、「コンピューターの管理」（<code>compmgmt.msc</code>）→「ローカル ユーザーとグループ」で見られます。PowerShell では次のようにします。</p>
+<div class="codehilite"><div class="code-wrap" id="code-12"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># このサーバーの中だけのユーザー</span>
+<span class="nb">Get-LocalUser</span>
+
+<span class="c"># Administrators グループに入っている人（ドメインのアカウントも並ぶ）</span>
+<span class="nb">Get-LocalGroupMember</span> <span class="n">-Group</span> <span class="n">Administrators</span>
+
+<span class="c"># リモート デスクトップでログインしてよい人</span>
+<span class="nb">Get-LocalGroupMember</span> <span class="n">-Group</span> <span class="s2">&quot;Remote Desktop Users&quot;</span>
+</code></pre></div></div>
+
+<p><strong>確かめること:</strong> Administrators に、<strong>知らない人が入っていないこと</strong>。構築が終わったら、自分を Administrators から外してもらうかどうかを、情報システム部門と決めます（会社の決まりによります）。</p>
+<blockquote>
+<p><strong>日本語の Windows でも:</strong> <code>Administrators</code>・<code>Users</code>・<code>Remote Desktop Users</code> などの、最初からあるグループの名前は英語のままです。</p>
+</blockquote>
+<h3 id="43-uac">4.3 ユーザー アカウント制御（UAC）</h3>
+<p>管理者のグループに入っている人でも、ふだんは<strong>管理者の力を使わない</strong>状態でプログラムが動きます。管理者の力が要るときだけ、「このアプリがデバイスに変更を加えることを許可しますか?」と聞かれ、「はい」を押すと、そのプログラムだけが管理者として動きます。これを<strong>ユーザー アカウント制御</strong>（UAC）と呼びます。</p>
+<ul>
+<li>管理者のグループに入っているのに「アクセスが拒否されました」になるのは、たいてい「管理者として実行」をしていないからです。</li>
+<li>UAC を切る設定はしないでください。</li>
+</ul>
+<h3 id="44">4.4 アプリを動かすアカウント（サービス用アカウント）の種類</h3>
+<p>アプリやデータベースのサービスを、だれの名前で動かすかを選べます。</p>
+<table>
+<thead>
+<tr>
+<th>種類</th>
+<th>書き方</th>
+<th>パスワード</th>
+<th>力の強さ</th>
+<th>向いている使い方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LocalSystem</td>
+<td><code>LocalSystem</code></td>
+<td>無い</td>
+<td><strong>最も強い</strong>（サーバーの全部をさわれる）</td>
+<td>Windows 自身の大事なサービス。<strong>アプリには使わない</strong></td>
+</tr>
+<tr>
+<td>LocalService</td>
+<td><code>NT AUTHORITY\LocalService</code></td>
+<td>無い</td>
+<td>弱い。ネットワークには名無しで出る</td>
+<td>ネットワークに出ない小さなサービス</td>
+</tr>
+<tr>
+<td>NetworkService</td>
+<td><code>NT AUTHORITY\NetworkService</code></td>
+<td>無い</td>
+<td>弱い。ネットワークにはサーバーの名前で出る</td>
+<td>IIS のアプリケーション プールなど</td>
+</tr>
+<tr>
+<td><strong>仮想アカウント</strong></td>
+<td><code>NT SERVICE\サービス名</code></td>
+<td>無い（Windows が管理する）</td>
+<td>弱い。サービスごとに別のアカウントになる</td>
+<td><strong>今回のアプリ</strong>（04 の 4・7 章）。サービスごとに分かれるので、本番と検証のフォルダの許可を分けられる</td>
+</tr>
+<tr>
+<td>gMSA（グループ管理サービス アカウント）</td>
+<td><code>EXAMPLE\svc-webapp$</code></td>
+<td>無い（ドメインが自動で変える）</td>
+<td>決めた分だけ</td>
+<td>ほかのサーバーのフォルダに書き込むときなど。情報システム部門が用意する</td>
+</tr>
+<tr>
+<td>ふつうのドメイン アカウント</td>
+<td><code>EXAMPLE\svc-webapp</code></td>
+<td><strong>ある</strong></td>
+<td>決めた分だけ</td>
+<td>昔のやり方。<strong>パスワードの期限が切れるとサービスが起動しなくなる</strong>ので、避ける</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>用語:</strong> 仮想アカウント（Virtual Account：サービス1つごとに Windows が自動で作る、パスワードの無いアカウント。名前は <code>NT SERVICE\サービス名</code>）</p>
+</blockquote>
+<h2 id="5-ntfs">5. ファイルとアクセス許可（NTFS）</h2>
+<h3 id="51">5.1 アクセス許可と継承</h3>
+<p>Windows のフォルダとファイルには、「だれが、何をしてよいか」（<strong>アクセス許可</strong>）を付けられます（00 基礎知識 3.4）。</p>
+<table>
+<thead>
+<tr>
+<th>許可</th>
+<th>意味</th>
+<th>icacls での書き方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>フル コントロール</td>
+<td>何でもできる（許可の変更も）</td>
+<td><code>F</code></td>
+</tr>
+<tr>
+<td>変更</td>
+<td>読む・書く・消す</td>
+<td><code>M</code></td>
+</tr>
+<tr>
+<td>読み取りと実行</td>
+<td>読む・プログラムを動かす</td>
+<td><code>RX</code></td>
+</tr>
+<tr>
+<td>読み取り</td>
+<td>読むだけ</td>
+<td><code>R</code></td>
+</tr>
+<tr>
+<td>書き込み</td>
+<td>書くだけ</td>
+<td><code>W</code></td>
+</tr>
+</tbody>
+</table>
+<p>上のフォルダに付けた許可は、ふつう<strong>中のフォルダとファイルに引き継がれます</strong>。これを<strong>継承</strong>と呼びます。</p>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/01-06_ntfs_inheritance.webp" alt="D:\webappに付けた許可が、prod、その下のapp・logs・filesへ引き継がれる。logsには許可を足せる" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図5-1: 上のフォルダの許可が、下へ引き継がれる（継承）</div>
+</div>
+
+<h3 id="52">5.2 画面での見方</h3>
+<p>フォルダを右クリック →「プロパティ」→「<strong>セキュリティ</strong>」タブで、だれにどの許可があるかを見られます。「詳細設定」を押すと、継承されている許可かどうか（「継承元」の列）も見られます。</p>
+<h3 id="53-icacls">5.3 icacls で見る・付ける</h3>
+<p>手順書では、同じ結果を何度でも出せるように、<code>icacls</code> というコマンドで許可を付けます。</p>
+<div class="codehilite"><div class="code-wrap" id="code-13"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># D:\webapp\prod\logs の許可を見る</span>
+<span class="n">icacls</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">prod</span><span class="p">\</span><span class="n">logs</span>
+
+<span class="c"># 仮想アカウント NT SERVICE\webapp-prod に、logs フォルダの「変更」の許可を足す</span>
+<span class="c">#   (OI) … 中のファイルに引き継ぐ   (CI) … 中のフォルダに引き継ぐ   M … 変更</span>
+<span class="n">icacls</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">prod</span><span class="p">\</span><span class="n">logs</span> <span class="p">/</span><span class="n">grant</span> <span class="s2">&quot;NT SERVICE\webapp-prod:(OI)(CI)M&quot;</span>
+
+<span class="c"># 上からの継承を切り、今の許可を写し取ってから、だれかの許可を外す（秘密のフォルダなどで使う）</span>
+<span class="n">icacls</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">secrets</span> <span class="p">/</span><span class="n">inheritance</span><span class="p">:</span><span class="n">d</span>
+<span class="n">icacls</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">secrets</span> <span class="p">/</span><span class="n">remove</span> <span class="s2">&quot;BUILTIN\Users&quot;</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>結果の書き方</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>(F)</code>・<code>(M)</code>・<code>(RX)</code>・<code>(R)</code></td>
+<td>5.1 の表の許可</td>
+</tr>
+<tr>
+<td><code>(OI)</code></td>
+<td>中のファイルに引き継ぐ</td>
+</tr>
+<tr>
+<td><code>(CI)</code></td>
+<td>中のフォルダに引き継ぐ</td>
+</tr>
+<tr>
+<td><code>(IO)</code></td>
+<td>このフォルダ自身には効かず、中にだけ効く</td>
+</tr>
+<tr>
+<td><code>(I)</code></td>
+<td>上のフォルダから引き継いだ許可</td>
+</tr>
+</tbody>
+</table>
+<p><strong>確かめること:</strong> 付けたアカウントの行に、付けた許可（例：<code>NT SERVICE\webapp-prod:(OI)(CI)(M)</code>）が出ること。秘密のフォルダでは、<code>BUILTIN\Users</code> の行が無いこと。</p>
+<blockquote>
+<p><strong>注意:</strong> <code>/inheritance:r</code>（継承を外して、引き継いだ許可を消す）は、自分の許可まで消えて、だれもフォルダを開けなくなることがあります。手順書のとおりの順番で打ってください。</p>
+</blockquote>
+<h3 id="54">5.4 「アクセスが拒否されました」のとき</h3>
+<ol>
+<li>管理者として動いているか（3.1）。</li>
+<li>そのアカウントに許可があるか（<code>icacls</code> で見る）。サービスなら、<code>NT SERVICE\サービス名</code> の行があるか。</li>
+<li>ほかのプログラムがファイルを開いたままにしていないか（ログのファイルを、メモ帳などで開いたままにしていないか）。</li>
+</ol>
+<h2 id="6">6. サービス</h2>
+<h3 id="61">6.1 サービスの画面</h3>
+<p><code>services.msc</code> を開くと、サービスの一覧が出ます。</p>
+<table>
+<thead>
+<tr>
+<th>列</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>名前</td>
+<td>画面に出る名前（表示名）</td>
+</tr>
+<tr>
+<td>状態</td>
+<td>「実行中」なら動いている。空なら止まっている</td>
+</tr>
+<tr>
+<td>スタートアップの種類</td>
+<td>Windows の起動のときに、どうするか（下の表）</td>
+</tr>
+<tr>
+<td>ログオン</td>
+<td>どのアカウントで動くか（4.4）</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>スタートアップの種類</th>
+<th>意味</th>
+<th>今回の使い方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>自動</td>
+<td>Windows の起動と一緒に始まる</td>
+<td>PostgreSQL・IIS</td>
+</tr>
+<tr>
+<td>自動（遅延開始）</td>
+<td>Windows の起動が落ち着いてから始まる</td>
+<td>アプリ（データベースが先に起動してから始まるように）</td>
+</tr>
+<tr>
+<td>手動</td>
+<td>だれかが始めたときだけ動く</td>
+<td>使わない</td>
+</tr>
+<tr>
+<td>無効</td>
+<td>始められない</td>
+<td>使わないサービス</td>
+</tr>
+</tbody>
+</table>
+<p>サービスをダブルクリックすると、プロパティが開きます。「<strong>回復</strong>」タブでは、サービスが異常終了したときに「<strong>サービスを再起動する</strong>」ように決められます。</p>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/01-07_service_lifecycle.webp" alt="停止、開始中、実行中、異常終了、自動で再起動、と状態が移り変わる" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図6-1: サービスの状態の移り変わり。異常終了したら、自動で再起動させる</div>
+</div>
+
+<h3 id="62-powershell">6.2 PowerShell でのサービスの操作</h3>
+<div class="codehilite"><div class="code-wrap" id="code-14"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># アプリのサービスの状態を見る（webapp で始まる物）</span>
+<span class="nb">Get-Service</span> <span class="n">-Name</span> <span class="n">webapp</span><span class="p">*</span>
+
+<span class="c"># 止める・始める・再起動する（管理者の PowerShell）</span>
+<span class="nb">Stop-Service</span> <span class="n">-Name</span> <span class="n">webapp-stg</span>
+<span class="nb">Start-Service</span> <span class="n">-Name</span> <span class="n">webapp-stg</span>
+<span class="nb">Restart-Service</span> <span class="n">-Name</span> <span class="n">webapp-stg</span>
+
+<span class="c"># スタートアップの種類を「自動」にする</span>
+<span class="nb">Set-Service</span> <span class="n">-Name</span> <span class="n">webapp-stg</span> <span class="n">-StartupType</span> <span class="n">Automatic</span>
+
+<span class="c"># どのアカウントで動いているか・どのプログラムを動かしているかを見る</span>
+<span class="nb">Get-CimInstance</span> <span class="n">Win32_Service</span> <span class="n">-Filter</span> <span class="s2">&quot;Name=&#39;webapp-stg&#39;&quot;</span> <span class="p">|</span>
+    <span class="nb">Select-Object</span> <span class="n">Name</span><span class="p">,</span> <span class="n">State</span><span class="p">,</span> <span class="n">StartMode</span><span class="p">,</span> <span class="n">StartName</span><span class="p">,</span> <span class="n">PathName</span>
+
+<span class="c"># 異常終了したら、1 分後に再起動する（3 回まで。1 日たったら数え直す）</span>
+<span class="n">sc</span><span class="p">.</span><span class="n">exe</span> <span class="n">failure</span> <span class="n">webapp-stg</span> <span class="n">reset</span><span class="p">=</span> <span class="n">86400</span> <span class="n">actions</span><span class="p">=</span> <span class="n">restart</span><span class="p">/</span><span class="n">60000</span><span class="p">/</span><span class="n">restart</span><span class="p">/</span><span class="n">60000</span><span class="p">/</span><span class="n">restart</span><span class="p">/</span><span class="n">60000</span>
+</code></pre></div></div>
+
+<p><strong>確かめること:</strong> <code>Get-CimInstance</code> の <code>StartName</code> が <code>NT SERVICE\webapp-stg</code>、<code>State</code> が <code>Running</code> であること。<code>sc.exe</code> の <code>=</code> の後ろには、<strong>必ず空白を1つ</strong>入れます（<code>reset= 86400</code>）。空白が無いと失敗します。</p>
+<blockquote>
+<p><strong>用語:</strong> sc.exe（サービスの設定を変える、Windows の昔からのコマンド。PowerShell では必ず <code>.exe</code> まで打つ（3.8））</p>
+</blockquote>
+<h3 id="63">6.3 サービスが始まらないとき</h3>
+<table>
+<thead>
+<tr>
+<th>出るメッセージ（意味）</th>
+<th>考えられる原因</th>
+<th>調べ方・直し方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>「サービスは開始要求または制御要求に適時に応答しませんでした」（エラー 1053）</td>
+<td>プログラムが起動の途中で止まった／30 秒以内に起動を知らせなかった</td>
+<td>アプリのログ（<code>D:\webapp\stg\logs</code>）とイベント ビューアー（7 章）を見る</td>
+</tr>
+<tr>
+<td>「ログオンに失敗したため、サービスを開始できませんでした」（エラー 1069）</td>
+<td>ログオンのアカウントのパスワードが違う・期限切れ</td>
+<td>仮想アカウント（4.4）にしていれば起きない。ふつうのアカウントなら、パスワードを直す</td>
+</tr>
+<tr>
+<td>「アクセスが拒否されました」（エラー 5）</td>
+<td>管理者でない PowerShell で操作した／サービスのアカウントに、プログラムのフォルダを読む許可が無い</td>
+<td>3.1 と 5.3</td>
+</tr>
+<tr>
+<td>始まってすぐに止まる</td>
+<td>設定の間違い（データベースのパスワード、ポートの重複など）</td>
+<td>アプリのログの最後を見る。ポートの重複は <code>Get-NetTCPConnection -LocalPort 8080</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="7-windows">7. イベント ビューアー（Windows の記録）</h2>
+<h3 id="71">7.1 ログの種類とレベル</h3>
+<p><code>eventvwr.msc</code> を開き、左の「<strong>Windows ログ</strong>」の下を見ます。</p>
+<table>
+<thead>
+<tr>
+<th>ログ</th>
+<th>何が書かれるか</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>アプリケーション</td>
+<td>アプリやデータベースの出来事（PostgreSQL のエラーなど）</td>
+</tr>
+<tr>
+<td>システム</td>
+<td>Windows とサービスの出来事（サービスの起動・停止、再起動、ディスクのエラー）</td>
+</tr>
+<tr>
+<td>セキュリティ</td>
+<td>ログインの成功・失敗など</td>
+</tr>
+</tbody>
+</table>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/01-08_event_levels.webp" alt="記録のレベル。情報はふつうの出来事、警告は気を付けて、エラーは失敗した、重大はすぐ見る" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図7-1: 記録には4つの重さ（レベル）がある</div>
+</div>
+
+<p>右の「<strong>現在のログをフィルター</strong>」で、「エラー」と「重大」だけ、最近 24 時間だけ、のようにしぼって見ます。</p>
+<h3 id="72-id">7.2 覚えておくと便利なイベント ID</h3>
+<table>
+<thead>
+<tr>
+<th>ログ</th>
+<th>ID</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>システム</td>
+<td>6005・6006</td>
+<td>イベント ログの記録が始まった・終わった（＝ Windows が起動した・正しく止まった）</td>
+</tr>
+<tr>
+<td>システム</td>
+<td>6008</td>
+<td><strong>前回、正しく止まらなかった</strong>（電源断・固まって強制再起動など）</td>
+</tr>
+<tr>
+<td>システム</td>
+<td>41</td>
+<td>正しく止まらずに再起動した（Kernel-Power）</td>
+</tr>
+<tr>
+<td>システム</td>
+<td>1074</td>
+<td>だれ（どのプログラム）が、再起動・シャットダウンをしたか（Windows Update も出る）</td>
+</tr>
+<tr>
+<td>システム</td>
+<td>7036</td>
+<td>サービスが「実行中」「停止」になった</td>
+</tr>
+<tr>
+<td>システム</td>
+<td>7000・7009</td>
+<td>サービスが始まらなかった・時間内に応答しなかった</td>
+</tr>
+<tr>
+<td>システム</td>
+<td>7031・7034</td>
+<td>サービスが<strong>予期せず終了した</strong></td>
+</tr>
+<tr>
+<td>アプリケーション</td>
+<td>1000</td>
+<td>プログラムが異常終了した（Application Error）</td>
+</tr>
+<tr>
+<td>セキュリティ</td>
+<td>4624・4625</td>
+<td>ログインの成功・失敗</td>
+</tr>
+</tbody>
+</table>
+<h3 id="73-powershell">7.3 PowerShell で記録を見る</h3>
+<div class="codehilite"><div class="code-wrap" id="code-15"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># システムのログから、最近 24 時間の「重大」(1) と「エラー」(2) を新しい順に</span>
+<span class="nb">Get-WinEvent</span> <span class="n">-FilterHashtable</span> <span class="p">@{</span> <span class="n">LogName</span> <span class="p">=</span> <span class="s1">&#39;System&#39;</span><span class="p">;</span> <span class="n">Level</span> <span class="p">=</span> <span class="n">1</span><span class="p">,</span> <span class="n">2</span><span class="p">;</span> <span class="n">StartTime</span> <span class="p">=</span> <span class="p">(</span><span class="nb">Get-Date</span><span class="p">).</span><span class="n">AddDays</span><span class="p">(-</span><span class="n">1</span><span class="p">)</span> <span class="p">}</span> <span class="p">|</span>
+    <span class="nb">Select-Object</span> <span class="n">TimeCreated</span><span class="p">,</span> <span class="n">Id</span><span class="p">,</span> <span class="n">ProviderName</span><span class="p">,</span> <span class="n">Message</span> <span class="p">|</span>
+    <span class="nb">Format-List</span>
+
+<span class="c"># だれが再起動したか（ID 1074）の最近 5 件</span>
+<span class="nb">Get-WinEvent</span> <span class="n">-FilterHashtable</span> <span class="p">@{</span> <span class="n">LogName</span> <span class="p">=</span> <span class="s1">&#39;System&#39;</span><span class="p">;</span> <span class="n">Id</span> <span class="p">=</span> <span class="n">1074</span> <span class="p">}</span> <span class="n">-MaxEvents</span> <span class="n">5</span> <span class="p">|</span>
+    <span class="nb">Select-Object</span> <span class="n">TimeCreated</span><span class="p">,</span> <span class="n">Message</span> <span class="p">|</span> <span class="nb">Format-List</span>
+
+<span class="c"># サービスが予期せず終了した記録（ID 7031・7034）</span>
+<span class="nb">Get-WinEvent</span> <span class="n">-FilterHashtable</span> <span class="p">@{</span> <span class="n">LogName</span> <span class="p">=</span> <span class="s1">&#39;System&#39;</span><span class="p">;</span> <span class="n">Id</span> <span class="p">=</span> <span class="n">7031</span><span class="p">,</span> <span class="n">7034</span> <span class="p">}</span> <span class="n">-MaxEvents</span> <span class="n">10</span> <span class="n">-ErrorAction</span> <span class="n">SilentlyContinue</span>
+</code></pre></div></div>
+
+<p><strong>確かめること:</strong> 何も出ない（「指定された選択条件に一致するイベントは見つかりませんでした」という意味のエラー）なら、その期間にその記録は無かった、ということです。</p>
+<blockquote>
+<p><strong>用語:</strong> イベント ID（Windows の記録の種類ごとに付いた番号。番号で検索すると、意味を調べやすい）</p>
+</blockquote>
+<h2 id="8">8. 重い・遅いを調べる（タスク マネージャーとリソース モニター）</h2>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/01-09_resource_gauges.webp" alt="CPU・メモリ・ディスク・ネットワークの4つのメーター。メモリが赤い所で足りない" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図8-1: 4つの部品のどれが足りないかを見る</div>
+</div>
+
+<ul>
+<li><strong>タスク マネージャー</strong>（<code>Ctrl</code>＋<code>Shift</code>＋<code>Esc</code>）の「パフォーマンス」タブで、CPU・メモリ・ディスク・ネットワークの使い具合をグラフで見られます。「詳細」タブで、プログラムごとの使い具合を見られます。</li>
+<li><strong>リソース モニター</strong>（<code>resmon</code>）では、「どのプログラムが、どのファイルを読み書きしているか」「どのプログラムが、どのポートで通信しているか」まで見られます。</li>
+</ul>
+<p>PowerShell でも見られます。</p>
+<div class="codehilite"><div class="code-wrap" id="code-16"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># CPU を多く使ったプログラムの上から 10 個（CPU は、起動してから使った秒数の合計）</span>
+<span class="nb">Get-Process</span> <span class="p">|</span> <span class="nb">Sort-Object</span> <span class="n">CPU</span> <span class="n">-Descending</span> <span class="p">|</span>
+    <span class="nb">Select-Object</span> <span class="n">-First</span> <span class="n">10</span> <span class="n">Name</span><span class="p">,</span> <span class="n">Id</span><span class="p">,</span> <span class="n">CPU</span><span class="p">,</span> <span class="p">@{</span> <span class="n">Name</span> <span class="p">=</span> <span class="s1">&#39;メモリMB&#39;</span><span class="p">;</span> <span class="n">Expression</span> <span class="p">=</span> <span class="p">{</span> <span class="no">[int]</span><span class="p">(</span><span class="nv">$_</span><span class="p">.</span><span class="n">WorkingSet64</span> <span class="p">/</span> <span class="n">1MB</span><span class="p">)</span> <span class="p">}</span> <span class="p">}</span>
+
+<span class="c"># メモリの全体と空き（GB）</span>
+<span class="nv">$os</span> <span class="p">=</span> <span class="nb">Get-CimInstance</span> <span class="n">Win32_OperatingSystem</span>
+<span class="s2">&quot;全体 {0:N1} GB / 空き {1:N1} GB&quot;</span> <span class="o">-f</span> <span class="p">(</span><span class="nv">$os</span><span class="p">.</span><span class="n">TotalVisibleMemorySize</span> <span class="p">/</span> <span class="n">1MB</span><span class="p">),</span> <span class="p">(</span><span class="nv">$os</span><span class="p">.</span><span class="n">FreePhysicalMemory</span> <span class="p">/</span> <span class="n">1MB</span><span class="p">)</span>
+
+<span class="c"># ドライブの空き（GB）</span>
+<span class="nb">Get-Volume</span> <span class="p">|</span> <span class="nb">Where-Object</span> <span class="n">DriveLetter</span> <span class="p">|</span>
+    <span class="nb">Select-Object</span> <span class="n">DriveLetter</span><span class="p">,</span> <span class="p">@{</span> <span class="n">Name</span> <span class="p">=</span> <span class="s1">&#39;空きGB&#39;</span><span class="p">;</span> <span class="n">Expression</span> <span class="p">=</span> <span class="p">{</span> <span class="no">[int]</span><span class="p">(</span><span class="nv">$_</span><span class="p">.</span><span class="n">SizeRemaining</span> <span class="p">/</span> <span class="n">1GB</span><span class="p">)</span> <span class="p">}</span> <span class="p">},</span>
+                               <span class="p">@{</span> <span class="n">Name</span> <span class="p">=</span> <span class="s1">&#39;全体GB&#39;</span><span class="p">;</span> <span class="n">Expression</span> <span class="p">=</span> <span class="p">{</span> <span class="no">[int]</span><span class="p">(</span><span class="nv">$_</span><span class="p">.</span><span class="n">Size</span> <span class="p">/</span> <span class="n">1GB</span><span class="p">)</span> <span class="p">}</span> <span class="p">}</span>
+
+<span class="c"># 80 番で待ち受けているのは、どのプログラムか</span>
+<span class="nb">Get-NetTCPConnection</span> <span class="n">-LocalPort</span> <span class="n">80</span> <span class="n">-State</span> <span class="n">Listen</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">LocalAddress</span><span class="p">,</span> <span class="n">OwningProcess</span>
+</code></pre></div></div>
+
+<p><strong>確かめること:</strong></p>
+<ul>
+<li>メモリの空きが、全体の 1 割を切る状態が続いていないこと。続いているなら、メモリを増やすか、重いプログラムを探します。</li>
+<li>ドライブの空きが、全体の 2 割より多いこと。少ないなら、ログとバックアップの古い物が消えているか（04 の 11・12 章）を確かめます。</li>
+<li>80 番の <code>OwningProcess</code> が <code>4</code>（<code>System</code>）になること。IIS は、Windows の中の部品（http.sys）を通して 80 番で待ち受けるので、プログラムの名前は <code>System</code> と出ます。故障ではありません。</li>
+</ul>
+<h2 id="9">9. タスク スケジューラ（決まった時刻に動かす）</h2>
+<p><strong>タスク スケジューラ</strong>は、「いつ（<strong>トリガー</strong>）」「何を（<strong>操作</strong>）」を決めておくと、その時刻にコマンドを動かしてくれる道具です。毎晩のバックアップに使います（04 の 11 章）。</p>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/01-10_task_scheduler.webp" alt="きっかけ（毎日2:00）、操作（コマンドを動かす）、結果（0x0なら成功）。誰もログインしていなくても動く" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図9-1: タスクは「きっかけ → 操作 → 結果」</div>
+</div>
+
+<h3 id="91">9.1 画面での見方</h3>
+<ol>
+<li><code>taskschd.msc</code> を開きます。</li>
+<li>左の「タスク スケジューラ ライブラリ」を押すと、タスクの一覧が出ます。</li>
+<li>右の「<strong>すべてのタスク履歴を有効にする</strong>」を押しておきます（最初は記録しない設定です）。履歴が無いと、失敗したときに理由を追えません。</li>
+<li>タスクを選ぶと、下に「前回の実行時刻」「<strong>前回の実行結果</strong>」「次回の実行時刻」が出ます。</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>前回の実行結果</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>この操作を正しく終了しました。(0x0)</code></td>
+<td>成功</td>
+</tr>
+<tr>
+<td><code>(0x1)</code></td>
+<td>動かしたスクリプトが、失敗（終了コード 1）で終わった。スクリプトのログを見る</td>
+</tr>
+<tr>
+<td><code>(0x41301)</code></td>
+<td>今、動いている途中</td>
+</tr>
+<tr>
+<td><code>(0x41303)</code></td>
+<td>まだ一度も動いていない</td>
+</tr>
+</tbody>
+</table>
+<h3 id="92-powershell">9.2 PowerShell で見る・動かす</h3>
+<div class="codehilite"><div class="code-wrap" id="code-17"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 「\webapp\」のフォルダに入れたタスクの、前回の実行時刻・結果・次回の時刻</span>
+<span class="nb">Get-ScheduledTask</span> <span class="n">-TaskPath</span> <span class="s2">&quot;\webapp\&quot;</span> <span class="p">|</span> <span class="nb">Get-ScheduledTaskInfo</span> <span class="p">|</span>
+    <span class="nb">Select-Object</span> <span class="n">TaskName</span><span class="p">,</span> <span class="n">LastRunTime</span><span class="p">,</span> <span class="n">LastTaskResult</span><span class="p">,</span> <span class="n">NextRunTime</span>
+
+<span class="c"># 時刻を待たずに、今すぐ1回動かして試す</span>
+<span class="nb">Start-ScheduledTask</span> <span class="n">-TaskPath</span> <span class="s2">&quot;\webapp\&quot;</span> <span class="n">-TaskName</span> <span class="s2">&quot;webapp-backup&quot;</span>
+</code></pre></div></div>
+
+<p><strong>確かめること:</strong> <code>LastTaskResult</code> が <code>0</code>（成功）であること。タスクの作り方は、04 の 11 章に、コマンドで書いてあります。</p>
+<ul>
+<li>「<strong>ユーザーがログオンしているかどうかにかかわらず実行する</strong>」にしておかないと、だれもログインしていない夜中に動きません。手順書では、<code>SYSTEM</code> のアカウントで動かすので、この心配はありません。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> トリガー（タスクを動かすきっかけ。「毎日 2:00」「起動したとき」など）</p>
+</blockquote>
+<h2 id="10-windows-defender">10. Windows Defender ファイアウォール（サーバーの関所）</h2>
+<h3 id="101">10.1 プロファイル</h3>
+<p>Windows のファイアウォールには、つながっているネットワークの種類ごとに、3つの決まりの組（<strong>プロファイル</strong>）があります。</p>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/01-11_firewall_profiles.webp" alt="ドメイン（会社）、プライベート（家）、パブリック（カフェ）の3つのプロファイル。サーバーはふつうドメイン" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図10-1: 3つのプロファイル。会社のドメインに参加したサーバーは「ドメイン」</div>
+</div>
+
+<div class="codehilite"><div class="code-wrap" id="code-18"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 今つながっているネットワークが、どのプロファイルか</span>
+<span class="nb">Get-NetConnectionProfile</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">InterfaceAlias</span><span class="p">,</span> <span class="n">NetworkCategory</span>
+
+<span class="c"># 3つのプロファイルで、ファイアウォールが有効か</span>
+<span class="nb">Get-NetFirewallProfile</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">Name</span><span class="p">,</span> <span class="n">Enabled</span>
+</code></pre></div></div>
+
+<p><strong>確かめること:</strong> <code>NetworkCategory</code> が <code>DomainAuthenticated</code>（ドメイン）であること。<code>Enabled</code> が3つとも <code>True</code> であること。</p>
+<h3 id="102">10.2 決まり（ルール）を見る・作る</h3>
+<div class="codehilite"><div class="code-wrap" id="code-19"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 自分で作った決まり（名前が webapp で始まる物）を見る</span>
+<span class="nb">Get-NetFirewallRule</span> <span class="n">-DisplayName</span> <span class="s2">&quot;webapp*&quot;</span> <span class="p">|</span>
+    <span class="nb">Select-Object</span> <span class="n">DisplayName</span><span class="p">,</span> <span class="n">Enabled</span><span class="p">,</span> <span class="n">Direction</span><span class="p">,</span> <span class="n">Action</span><span class="p">,</span> <span class="n">Profile</span>
+
+<span class="c"># 例: 社内（10.0.0.0/8）からの 80 番を通す決まりを作る（04 の 9 章で実際に作る）</span>
+<span class="nb">New-NetFirewallRule</span> <span class="n">-DisplayName</span> <span class="s2">&quot;webapp HTTP 80 (社内から)&quot;</span> <span class="p">`</span>
+    <span class="n">-Direction</span> <span class="n">Inbound</span> <span class="n">-Protocol</span> <span class="n">TCP</span> <span class="n">-LocalPort</span> <span class="n">80</span> <span class="p">`</span>
+    <span class="n">-RemoteAddress</span> <span class="n">10</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">/</span><span class="n">8</span> <span class="n">-Profile</span> <span class="n">Domain</span> <span class="n">-Action</span> <span class="n">Allow</span>
+</code></pre></div></div>
+
+<ul>
+<li>行の最後の <code>`</code>（バッククォート）は、「次の行に続く」という印です。後ろに空白を入れると、続きと見なされないので注意します。</li>
+<li><strong>ファイアウォール自体を無効にしないでください。</strong> つながらないときは、決まりを足して直します。</li>
+</ul>
+<h2 id="11-windows-update">11. Windows Update と再起動</h2>
+<ul>
+<li>Windows の安全の修正（<strong>更新プログラム</strong>）は、毎月出ます。多くの会社では、<strong>情報システム部門がまとめて配る仕組み</strong>（WSUS など）と、当てる日の決まりがあります。自分で勝手に当てる前に、決まりを確かめます。</li>
+<li>更新を当てると、<strong>再起動</strong>が要ることがあります。再起動の間（数分〜十数分）は、アプリを使えません。社員が使わない時間で、<strong>毎朝 8:00 の処理や、夜 2:00 のバックアップと重ならない</strong>時間に決めます。</li>
+</ul>
+<div class="codehilite"><div class="code-wrap" id="code-20"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 当たっている更新プログラムを、新しい順に 10 個</span>
+<span class="nb">Get-HotFix</span> <span class="p">|</span> <span class="nb">Sort-Object</span> <span class="n">InstalledOn</span> <span class="n">-Descending</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">-First</span> <span class="n">10</span> <span class="n">HotFixID</span><span class="p">,</span> <span class="n">InstalledOn</span>
+
+<span class="c"># 最後に Windows が起動した時刻</span>
+<span class="p">(</span><span class="nb">Get-CimInstance</span> <span class="n">Win32_OperatingSystem</span><span class="p">).</span><span class="n">LastBootUpTime</span>
+</code></pre></div></div>
+
+<p><strong>確かめること:</strong> 再起動の後に、PostgreSQL・IIS・アプリのサービスが、すべて自動で「実行中」に戻っていること（<code>Get-Service postgresql*, W3SVC, webapp*</code>）。</p>
+<h2 id="12_1">12. ファイルを持ち込む</h2>
+<p>サーバーは、ふつうインターネットにつながりません（00 基礎知識 2.3）。インストーラーや新しい版のアプリは、<strong>インターネットにつながる開発用のパソコン</strong>で用意して、サーバーへ持ち込みます。</p>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/01-12_file_transfer.webp" alt="ネットにつながる開発用PCから共有フォルダを経由して、ネットにつながらないサーバーへ持ち込み、ハッシュ値で確かめる" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図12-1: 開発用の PC から共有フォルダを経由して持ち込み、ハッシュ値で確かめる</div>
+</div>
+
+<ol>
+<li>開発用のパソコンで、インストーラーを、<strong>作った会社の公式のページ</strong>から取ってきます。</li>
+<li>開発用のパソコンで、ファイルの<strong>ハッシュ値</strong>（指紋）を出して、控えておきます。</li>
+<li>会社の共有フォルダ（またはリモート デスクトップのコピー）で、サーバーの <code>D:\webapp\installers\</code> に写します。</li>
+<li>サーバーで、もう一度ハッシュ値を出し、2 と同じであることを確かめます。</li>
+</ol>
+<div class="codehilite"><div class="code-wrap" id="code-21"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># ハッシュ値（SHA256）を出す。開発用のパソコンとサーバーの両方で打ち、同じ文字列になることを確かめる</span>
+<span class="nb">Get-FileHash</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">installers</span><span class="p">\</span><span class="n">postgresql</span><span class="p">-</span><span class="n">18</span><span class="p">.</span><span class="n">6</span><span class="p">-</span><span class="n">1-windows-x64</span><span class="p">.</span><span class="n">exe</span> <span class="n">-Algorithm</span> <span class="n">SHA256</span>
+
+<span class="c"># 共有フォルダからまとめて写す（/R:2 /W:5 は、失敗したら 5 秒おきに 2 回までやり直す）</span>
+<span class="n">robocopy</span> <span class="p">\\</span><span class="n">fileserver</span><span class="p">\</span><span class="n">share</span><span class="p">\</span><span class="n">webapp</span><span class="p">\</span><span class="n">installers</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">installers</span> <span class="p">/</span><span class="n">R</span><span class="p">:</span><span class="n">2</span> <span class="p">/</span><span class="n">W</span><span class="p">:</span><span class="n">5</span>
+</code></pre></div></div>
+
+<p><strong>確かめること:</strong> 2 つのハッシュ値が、1 文字も違わないこと。違うなら、写している途中で壊れたか、別のファイルです。使わずに、取り直します。</p>
+<blockquote>
+<p><strong>用語:</strong> ハッシュ値（ファイルの中身から計算した、ファイルの指紋のような文字列。1 バイトでも違えば、まったく違う値になる）</p>
+</blockquote>
+<!-- -->
+
+<blockquote>
+<p><strong>用語:</strong> robocopy（ロボコピー：Windows に付いている、フォルダをまとめて写す道具。途中で失敗してもやり直してくれる）</p>
+</blockquote>
+<h2 id="13-sconfig">13. sconfig（基本の設定のメニュー）</h2>
+<p>PowerShell で <code>sconfig</code> と打つと、サーバーの基本の設定を、番号を選んで変えられるメニューが出ます。コンピューター名・ドメイン・リモート デスクトップ・ネットワーク・Windows Update・日付と時刻・再起動などを、1か所で見られます。</p>
+<ul>
+<li>画面の無い形（Server Core）では、これが主な設定の道具になります。</li>
+<li><strong>コンピューター名・ドメイン・ネットワークは、情報システム部門が設定済み</strong>のはずです。自分では変えず、見て確かめるだけにします。</li>
+</ul>
+<h2 id="14_1">14. トラブルシューティング（この資料の範囲）</h2>
+<p>困ったときは、<strong>06 トラブルシューティング</strong>の「調べ方の手順」から始めます。ここでは、Windows Server の操作で起きやすいことをまとめます。</p>
+<table>
+<thead>
+<tr>
+<th>症状</th>
+<th>考えられる原因</th>
+<th>調べ方</th>
+<th>直し方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>リモート デスクトップでつながらない</td>
+<td>1.8 の表</td>
+<td>1.8 の表</td>
+<td>1.8 の表</td>
+</tr>
+<tr>
+<td>コマンドで「アクセスが拒否されました」</td>
+<td>管理者として動いていない／許可が無い</td>
+<td>3.1 の確かめ方、<code>icacls</code></td>
+<td>管理者で開き直す。許可を足す（5.3）</td>
+</tr>
+<tr>
+<td>「〜は、コマンドレット、関数、スクリプト ファイル、または操作可能なプログラムの名前として認識されません」</td>
+<td>打ち間違い／全角の文字／そのプログラムが入っていない・場所（PATH）が通っていない</td>
+<td><code>Get-Command 名前</code></td>
+<td>打ち直す。場所を全部書いて <code>&amp; "C:\...\psql.exe"</code> で動かす</td>
+</tr>
+<tr>
+<td>「スクリプトの実行が無効になっているため」</td>
+<td>実行ポリシー（3.7）</td>
+<td><code>Get-ExecutionPolicy</code>、ファイルのプロパティの「許可する」のチェック</td>
+<td>中身を確かめてから <code>Unblock-File</code></td>
+</tr>
+<tr>
+<td>サービスが始まらない</td>
+<td>6.3 の表</td>
+<td>イベント ビューアーのシステム（7000・7009・7031・7034）とアプリのログ</td>
+<td>6.3 の表</td>
+</tr>
+<tr>
+<td>夜中のタスクが動いていない</td>
+<td>「ログオンしているときだけ実行」になっている／パスワードの期限切れ／履歴が無効</td>
+<td>9.1 の「前回の実行結果」</td>
+<td><code>SYSTEM</code> で動かす。履歴を有効にする</td>
+</tr>
+<tr>
+<td>急に遅くなった</td>
+<td>メモリ・ディスクの不足、重いプログラム</td>
+<td>8 章のコマンド</td>
+<td>原因のプログラムを確かめる。足りなければ、情報システム部門に増設を頼む</td>
+</tr>
+<tr>
+<td>ディスクがいっぱい</td>
+<td>ログやバックアップが消えていない</td>
+<td>3.6 の「大きいファイル」のコマンド</td>
+<td>古いログ・バックアップを消す仕組みを確かめる（04 の 11・12 章）</td>
+</tr>
+<tr>
+<td>時刻がずれている</td>
+<td>時刻の合わせ先の設定</td>
+<td><code>w32tm /query /status</code>（「ソース」を見る）</td>
+<td>情報システム部門に確かめる（ドメインのサーバーは、ふつう自動で合う）</td>
+</tr>
+<tr>
+<td>知らない間に再起動していた</td>
+<td>Windows Update の自動の再起動／電源の問題</td>
+<td>イベント ID 1074・6008・41（7.2）</td>
+<td>更新と再起動の決まりを、情報システム部門と決める</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_2">用語の索引</h2>
+<table>
+<thead>
+<tr>
+<th>用語</th>
+<th>短い説明</th>
+<th>章</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Ctrl</code>＋<code>Alt</code>＋<code>End</code></td>
+<td>リモート デスクトップの中での <code>Ctrl</code>＋<code>Alt</code>＋<code>Del</code></td>
+<td>1</td>
+</tr>
+<tr>
+<td>gMSA</td>
+<td>ドメインが自動でパスワードを変えるサービス用アカウント</td>
+<td>4</td>
+</tr>
+<tr>
+<td>icacls</td>
+<td>フォルダとファイルのアクセス許可を見る・付けるコマンド</td>
+<td>5</td>
+</tr>
+<tr>
+<td>mstsc</td>
+<td>リモート デスクトップ接続のプログラム</td>
+<td>1</td>
+</tr>
+<tr>
+<td>robocopy</td>
+<td>フォルダをまとめて写す道具</td>
+<td>12</td>
+</tr>
+<tr>
+<td>sc.exe</td>
+<td>サービスの設定を変えるコマンド</td>
+<td>6</td>
+</tr>
+<tr>
+<td>sconfig</td>
+<td>基本の設定のメニュー</td>
+<td>13</td>
+</tr>
+<tr>
+<td>アクセス許可・継承</td>
+<td>だれが何をしてよいか／上のフォルダから引き継ぐこと</td>
+<td>5</td>
+</tr>
+<tr>
+<td>イベント ビューアー・イベント ID</td>
+<td>Windows の記録を見る道具／記録の種類の番号</td>
+<td>7</td>
+</tr>
+<tr>
+<td>仮想アカウント</td>
+<td>サービスごとに Windows が作る、パスワードの無いアカウント</td>
+<td>4</td>
+</tr>
+<tr>
+<td>コマンドレット</td>
+<td>PowerShell の「動詞-名詞」のコマンド</td>
+<td>3</td>
+</tr>
+<tr>
+<td>サーバー マネージャー</td>
+<td>サーバーの管理の入口の画面</td>
+<td>2</td>
+</tr>
+<tr>
+<td>実行ポリシー</td>
+<td>動かしてよいスクリプトの決まり</td>
+<td>3</td>
+</tr>
+<tr>
+<td>切断・サインアウト</td>
+<td>作業を残して出る／片付けて出る</td>
+<td>1</td>
+</tr>
+<tr>
+<td>タスク スケジューラ・トリガー</td>
+<td>決まった時刻にコマンドを動かす道具／そのきっかけ</td>
+<td>9</td>
+</tr>
+<tr>
+<td>ハッシュ値</td>
+<td>ファイルの指紋</td>
+<td>12</td>
+</tr>
+<tr>
+<td>パイプ（<code>\|</code>）</td>
+<td>結果を次のコマンドに渡す記号</td>
+<td>3</td>
+</tr>
+<tr>
+<td>別名（エイリアス）</td>
+<td>コマンドの短い呼び名</td>
+<td>3</td>
+</tr>
+<tr>
+<td>プロファイル（ファイアウォール）</td>
+<td>ネットワークの種類ごとの決まりの組</td>
+<td>10</td>
+</tr>
+<tr>
+<td>ユーザー アカウント制御（UAC）</td>
+<td>管理者の力を、要るときだけ使う仕組み</td>
+<td>4</td>
+</tr>
+<tr>
+<td>リソース モニター</td>
+<td>プログラムごとの使い具合を詳しく見る道具</td>
+<td>8</td>
+</tr>
+<tr>
+<td>リモート デスクトップ（RDP）</td>
+<td>離れたサーバーの画面を映して操作する機能</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+
+<script>
+(function () {
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy") ? resolve() : reject(); } catch (e) { reject(e); }
+      document.body.removeChild(ta);
+    });
+  }
+  document.querySelectorAll(".copy-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var pre = btn.parentElement.querySelector("pre");
+      var text = pre.textContent.replace(/\n$/, "");
+      copyText(text).then(function () {
+        btn.textContent = "コピーしました";
+        btn.classList.add("done");
+        setTimeout(function () { btn.textContent = "コピー"; btn.classList.remove("done"); }, 2000);
+      }, function () { btn.textContent = "コピーできませんでした"; });
+    });
+  });
+  if (/^#code-\d+$/.test(location.hash)) {
+    var note = document.getElementById("web-note");
+    if (note) { note.hidden = false; }
+  }
+})();
+</script>
+</body>
+</html>

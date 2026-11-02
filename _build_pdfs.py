@@ -23,6 +23,7 @@ import subprocess
 import tempfile
 import time
 from pathlib import Path
+from urllib.parse import quote
 
 import markdown
 
@@ -284,18 +285,209 @@ def copy_friendly_pre(match: re.Match) -> str:
     return f'<pre{attrs} style="{style}">{inner}</pre>'
 
 
-def md_to_html(md_text: str, title: str) -> str:
-    body = markdown.markdown(
+# ---------------------- Copy buttons (HTML edition) ---------------------------
+# Chrome's PDF viewer (pdfium) always drops the indentation and the empty lines
+# of copied text, whatever the PDF contains. So every code block gets:
+#   - in the HTML edition (<folder>/html/<name>.html): a "コピー" button that
+#     copies the exact source text (one click), and an id "code-N";
+#   - in the PDF: a small "コピー" link above the block that opens the HTML
+#     edition at that block (the link is made relative after printing, so it
+#     works wherever the folder is copied to).
+
+PDF_COPY_CSS = """
+.code-head { text-align: right; margin: 0.6em 0 -0.55em; page-break-after: avoid; line-height: 1; }
+.code-head a.copy-link {
+  display: inline-block; font-size: 9pt; font-weight: 700; color: #ffffff; background: #2f80ed;
+  border-radius: 4px; padding: 3px 12px; text-decoration: none;
+}
+"""
+
+WEB_CSS = """
+@media screen {
+  body { max-width: 920px; margin: 0 auto; padding: 20px 20px 120px; font-size: 16px; }
+  pre { white-space: pre !important; word-break: normal !important; overflow-wrap: normal !important;
+        overflow-x: auto !important; font-size: 14px !important; }
+  img { max-width: 100%; height: auto; }
+}
+.web-bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; font-size: 14px;
+  padding: 8px 12px; margin-bottom: 16px; background: #eef2f7; border-radius: 8px; }
+.web-bar a { color: #1e3a5f; }
+.web-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 10; max-width: 90%;
+  font-size: 15px; font-weight: 700; background: #fff7ed; border: 2px solid #f2994a; border-radius: 8px;
+  padding: 10px 16px; margin: 0; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.code-wrap { position: relative; scroll-margin-top: 16px; }
+.code-wrap pre { padding-top: 40px !important; }
+.copy-btn { position: absolute; top: 8px; right: 8px; z-index: 2; font-size: 13px; font-weight: 700;
+  padding: 4px 12px; border: 0; border-radius: 6px; background: #2f80ed; color: #fff; cursor: pointer;
+  font-family: inherit; }
+.copy-btn:hover { background: #1c64c8; }
+.copy-btn.done { background: #27ae60; }
+.code-wrap:target pre { outline: 4px solid #f2994a; outline-offset: 2px; }
+.code-wrap:target .copy-btn { box-shadow: 0 0 0 4px #f2994a; }
+/* syntax colours on screen (the PDF uses one colour so that each line copies as one piece) */
+.codehilite .k, .codehilite .kd, .codehilite .kn, .codehilite .kr { color: #c084fc; }
+.codehilite .s, .codehilite .s1, .codehilite .s2, .codehilite .sb { color: #fcd34d; }
+.codehilite .c, .codehilite .c1, .codehilite .cm { color: #94a3b8; }
+.codehilite .nf, .codehilite .nx { color: #60a5fa; }
+.codehilite .nb { color: #34d399; }
+.codehilite .mi, .codehilite .mf { color: #f472b6; }
+.codehilite .nt { color: #f59e0b; }
+.codehilite .na { color: #93c5fd; }
+"""
+
+WEB_JS = """
+<script>
+(function () {
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy") ? resolve() : reject(); } catch (e) { reject(e); }
+      document.body.removeChild(ta);
+    });
+  }
+  document.querySelectorAll(".copy-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var pre = btn.parentElement.querySelector("pre");
+      var text = pre.textContent.replace(/\\n$/, "");
+      copyText(text).then(function () {
+        btn.textContent = "コピーしました";
+        btn.classList.add("done");
+        setTimeout(function () { btn.textContent = "コピー"; btn.classList.remove("done"); }, 2000);
+      }, function () { btn.textContent = "コピーできませんでした"; });
+    });
+  });
+  if (/^#code-\\d+$/.test(location.hash)) {
+    var note = document.getElementById("web-note");
+    if (note) { note.hidden = false; }
+  }
+})();
+</script>
+"""
+
+
+def render_body(md_text: str) -> str:
+    return markdown.markdown(
         md_text,
         extensions=EXTENSIONS,
         extension_configs=EXTENSION_CONFIGS,
         output_format="html5",
     )
-    body = PRE_RE.sub(copy_friendly_pre, body)
+
+
+def pdf_body(body: str, stem: str) -> str:
+    """PDF: one-colour code lines sized to fit, each block with a link to its copy button."""
+    n = 0
+
+    def rep(m: re.Match) -> str:
+        nonlocal n
+        n += 1
+        href = f"html/{quote(stem)}.html#code-{n}"
+        return f'<div class="code-head"><a class="copy-link" href="{href}">コピー</a></div>' + copy_friendly_pre(m)
+
+    return PRE_RE.sub(rep, body)
+
+
+def md_to_html(md_text: str, title: str, stem: str | None = None) -> str:
+    body = pdf_body(render_body(md_text), stem or title)
     code_text = "".join(html.unescape(re.sub(r"<[^>]+>", "", t)) for t in CODE_TEXT_RE.findall(body))
-    return HTML_TEMPLATE.format(
+    page = HTML_TEMPLATE.format(
         title=title, body=body, code_font=CODE_FONT, code_font_face=font_face_css(code_text)
     )
+    return page.replace("</style>", PDF_COPY_CSS + "</style>", 1)
+
+
+LINK_RE = re.compile(r'\b(src|href)="([^"#:]+?)(#[^"]*)?"')
+
+
+def web_links(body: str, md_path: Path, out_dir: Path) -> str:
+    """Make relative links work from <folder>/html/: images keep pointing at the files, .md links become .html."""
+    def rep(m: re.Match) -> str:
+        attr, target, frag = m.group(1), m.group(2), m.group(3) or ""
+        if target.startswith(("/", "data")):
+            return m.group(0)
+        src = (md_path.parent / html.unescape(target)).resolve()
+        if src.suffix == ".md":
+            src = src.parent / "html" / (src.stem + ".html")
+        rel = os.path.relpath(src, out_dir).replace(os.sep, "/")
+        return f'{attr}="{html.escape(rel)}{frag}"'
+
+    return LINK_RE.sub(rep, body)
+
+
+def web_html(md_text: str, title: str, md_path: Path, out_dir: Path) -> str:
+    body = render_body(md_text)
+    n = 0
+
+    def rep(m: re.Match) -> str:
+        nonlocal n
+        n += 1
+        return (f'<div class="code-wrap" id="code-{n}"><button type="button" class="copy-btn">コピー</button>'
+                f"{m.group(0)}</div>")
+
+    body = web_links(PRE_RE.sub(rep, body), md_path, out_dir)
+    pdf_rel = os.path.relpath(md_path.parent / "pdf" / f"{md_path.stem}.pdf", out_dir).replace(os.sep, "/")
+    bar = (f'<div class="web-bar"><a href="index.html">この資料の一覧</a>'
+           f'<a href="{quote(pdf_rel)}">PDF 版</a>'
+           f"<span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div>"
+           f'<p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。'
+           f"コピーしたら、ブラウザーの「戻る」で PDF に戻れます。</p>")
+    page = HTML_TEMPLATE.format(title=title, body=bar + body, code_font="Consolas", code_font_face="")
+    page = page.replace("</style>", WEB_CSS + "</style>", 1)
+    return page.replace("</body>", WEB_JS + "</body>", 1)
+
+
+def write_web_index(folder: Path) -> None:
+    """<folder>/html/index.html: the README (if any) or a plain list of the volumes."""
+    out_dir = folder / "html"
+    out_dir.mkdir(exist_ok=True)
+    readme = folder / "README.md"
+    if readme.exists():
+        md_text = readme.read_text(encoding="utf-8")
+    else:
+        items = "\n".join(f"- [{p.stem}]({p.name})" for p in sorted(folder.glob("*.md")) if not p.name.startswith("_"))
+        md_text = f"# {folder.name}\n\n{items}\n"
+    body = web_links(render_body(md_text), readme, out_dir)
+    page = HTML_TEMPLATE.format(title=f"{folder.name} の一覧", body=body, code_font="Consolas", code_font_face="")
+    (out_dir / "index.html").write_text(page.replace("</style>", WEB_CSS + "</style>", 1), encoding="utf-8")
+
+
+def relative_copy_links(src: Path, dest: Path) -> int:
+    """Chrome writes links as absolute file:/// URLs; make the copy links relative to the PDF.
+
+    Reads the PDF Chrome printed (src, a temporary file) and writes the result to dest.
+    """
+    try:
+        import pikepdf
+    except ImportError:
+        print("  (pikepdf is not installed: the copy links keep absolute paths)")
+        shutil.copyfile(src, dest)
+        return 0
+    changed = 0
+    with pikepdf.open(src) as pdf:
+        for page in pdf.pages:
+            for annot in page.obj.get("/Annots", []):
+                action = annot.get("/A")
+                if action is None or action.get("/S") != pikepdf.Name("/URI"):
+                    continue
+                uri = str(action.URI)
+                m = re.match(r"file:///.*/html/([^/]+\.html#code-\d+)$", uri)
+                if m:
+                    action.URI = pikepdf.String("../html/" + m.group(1))
+                    changed += 1
+        for attempt in range(10):
+            try:
+                pdf.save(dest)
+                break
+            except PermissionError:
+                time.sleep(1)   # the old PDF may be open for a moment (a viewer, antivirus)
+        else:
+            raise RuntimeError(f"could not write {dest}")
+    return changed
 
 def chrome_print_pdf(html_path: Path, pdf_path: Path) -> None:
     """Run headless Chrome to print HTML to PDF.
@@ -365,7 +557,12 @@ def chrome_print_pdf(html_path: Path, pdf_path: Path) -> None:
 def convert(md_path: Path) -> Path:
     title = md_path.stem
     md_text = md_path.read_text(encoding="utf-8")
-    html_text = md_to_html(md_text, title)
+    html_text = md_to_html(md_text, title, md_path.stem)
+
+    # The HTML edition with copy buttons (<folder>/html/<name>.html)
+    web_dir = md_path.parent / "html"
+    web_dir.mkdir(exist_ok=True)
+    (web_dir / f"{title}.html").write_text(web_html(md_text, title, md_path, web_dir), encoding="utf-8")
 
     # Write HTML to a temp file under the same parent so relative paths work
     html_path = md_path.with_suffix(".tmp.html")
@@ -377,7 +574,15 @@ def convert(md_path: Path) -> Path:
     pdf_dir.mkdir(exist_ok=True)
     pdf_path = pdf_dir / f"{title}.pdf"
     print(f"  -> {pdf_path.relative_to(ROOT)}")
-    chrome_print_pdf(html_path, pdf_path)
+    printed = Path(tempfile.mkdtemp(prefix="pdfprint_")) / "printed.pdf"
+    chrome_print_pdf(html_path, printed)
+    for attempt in range(10):   # Chrome may hold the file for a moment after printing
+        try:
+            relative_copy_links(printed, pdf_path)
+            break
+        except PermissionError:
+            time.sleep(1)
+    shutil.rmtree(printed.parent, ignore_errors=True)
 
     html_path.unlink(missing_ok=True)
     return pdf_path
@@ -386,6 +591,8 @@ def main(targets: list[Path]) -> None:
     for md in targets:
         print(f"Converting: {md.relative_to(ROOT)}")
         convert(md)
+    for folder in sorted({md.parent for md in targets}):
+        write_web_index(folder)
     print("Done.")
 
 def resolve_targets(args: list[str]) -> list[Path]:
@@ -400,7 +607,7 @@ def resolve_targets(args: list[str]) -> list[Path]:
         for a in args:
             p = (ROOT / a) if not Path(a).is_absolute() else Path(a)
             if p.is_dir():
-                files += sorted(q for q in p.glob("*.md") if not q.name.startswith("_"))
+                files += sorted(q for q in p.glob("*.md") if not q.name.startswith("_") and q.name != "README.md")
             else:
                 files.append(p)
     else:

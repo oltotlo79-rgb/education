@@ -1,0 +1,3125 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>11_使用技術ライブラリ全カタログ</title>
+<style>
+
+@page {
+  size: A4;
+  margin: 18mm 16mm 20mm 16mm;
+  @bottom-right {
+    content: counter(page);
+    font-size: 10px;
+    color: #64748b;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  font-family: "Yu Gothic UI", "Yu Gothic", "Meiryo", "Hiragino Sans",
+               "Noto Sans JP", "Segoe UI", system-ui, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.75;
+  color: #1e293b;
+  background: #ffffff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #0f172a;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 1.4em 0 0.6em;
+  page-break-after: avoid;
+}
+h1 {
+  font-size: 22pt;
+  border-bottom: 3px solid #1e40af;
+  padding-bottom: 0.3em;
+  margin-top: 0.4em;
+  page-break-before: auto;
+}
+h2 {
+  font-size: 16pt;
+  border-bottom: 1.5px solid #cbd5e1;
+  padding-bottom: 0.25em;
+  margin-top: 1.6em;
+}
+h3 { font-size: 13pt; color: #1e40af; }
+h4 { font-size: 12pt; color: #334155; }
+
+p { margin: 0.5em 0 0.8em; }
+
+a { color: #1d4ed8; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+ul, ol { margin: 0.4em 0 0.9em; padding-left: 1.6em; }
+li { margin: 0.2em 0; }
+
+blockquote {
+  border-left: 4px solid #3b82f6;
+  background: #eff6ff;
+  margin: 0.8em 0;
+  padding: 0.6em 1em;
+  color: #1e3a8a;
+  border-radius: 0 6px 6px 0;
+  page-break-inside: avoid;
+}
+blockquote p { margin: 0.3em 0; }
+blockquote strong { color: #1e40af; }
+
+code {
+  /* DefCode (see _code_font.py) has ASCII and Japanese in ONE font, so a code
+     line is drawn as one text run and copies as one line in every PDF viewer. */
+  font-family: "Consolas", "Consolas", monospace;
+  font-size: 0.9em;
+  background: #f1f5f9;
+  color: #be123c;
+  padding: 0.12em 0.36em;
+  border-radius: 4px;
+  /* Long inline code (file paths / URLs) must break instead of overflowing. */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  /* In a PDF there is no horizontal scrolling, so long lines must wrap
+     instead of being clipped off the right edge of the page. */
+  overflow-x: hidden;
+  overflow-y: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  font-size: 9.2pt;
+  line-height: 1.5;
+  margin: 0.8em 0;
+  page-break-inside: avoid;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+  white-space: inherit;
+  word-break: inherit;
+  overflow-wrap: inherit;
+}
+
+/* The codehilite extension wraps highlighted blocks in a scrolling div; make
+   that wrap too so nothing is clipped in the PDF. */
+.codehilite {
+  overflow-x: hidden;
+  /* overflow-x: hidden alone turns overflow-y into auto, and a glyph from a
+     fallback font that is a hair too tall then shows a vertical scrollbar. */
+  overflow-y: hidden;
+}
+.codehilite pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* No per-token colours: every coloured token became its own text run (and its
+   own tag) in the PDF, and some viewers then pasted each token on its own line.
+   Only whole comment lines get a colour, so each line is still one run. */
+pre .cmt { color: #94a3b8; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.8em 0;
+  font-size: 9.6pt;
+  page-break-inside: avoid;
+}
+th, td {
+  border: 1px solid #e2e8f0;
+  padding: 6px 9px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: #f1f5f9;
+  color: #0f172a;
+  font-weight: 700;
+}
+tr:nth-child(even) td { background: #f8fafc; }
+
+img { max-width: 100%; height: auto; }
+
+hr {
+  border: none;
+  border-top: 1px dashed #cbd5e1;
+  margin: 1.6em 0;
+}
+
+/* Diagram blocks (the inline-styled <div>s in the source) */
+div[style] {
+  page-break-inside: avoid;
+}
+
+/* Tighten spacing right after headings */
+h1 + p, h2 + p, h3 + p, h4 + p { margin-top: 0.2em; }
+
+/* Avoid ugly page breaks inside list items / table rows */
+li, tr { page-break-inside: avoid; }
+
+@media screen {
+  body { max-width: 920px; margin: 0 auto; padding: 20px 20px 120px; font-size: 16px; }
+  pre { white-space: pre !important; word-break: normal !important; overflow-wrap: normal !important;
+        overflow-x: auto !important; font-size: 14px !important; }
+  img { max-width: 100%; height: auto; }
+}
+.web-bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; font-size: 14px;
+  padding: 8px 12px; margin-bottom: 16px; background: #eef2f7; border-radius: 8px; }
+.web-bar a { color: #1e3a5f; }
+.web-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 10; max-width: 90%;
+  font-size: 15px; font-weight: 700; background: #fff7ed; border: 2px solid #f2994a; border-radius: 8px;
+  padding: 10px 16px; margin: 0; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.code-wrap { position: relative; scroll-margin-top: 16px; }
+.code-wrap pre { padding-top: 40px !important; }
+.copy-btn { position: absolute; top: 8px; right: 8px; z-index: 2; font-size: 13px; font-weight: 700;
+  padding: 4px 12px; border: 0; border-radius: 6px; background: #2f80ed; color: #fff; cursor: pointer;
+  font-family: inherit; }
+.copy-btn:hover { background: #1c64c8; }
+.copy-btn.done { background: #27ae60; }
+.code-wrap:target pre { outline: 4px solid #f2994a; outline-offset: 2px; }
+.code-wrap:target .copy-btn { box-shadow: 0 0 0 4px #f2994a; }
+/* syntax colours on screen (the PDF uses one colour so that each line copies as one piece) */
+.codehilite .k, .codehilite .kd, .codehilite .kn, .codehilite .kr { color: #c084fc; }
+.codehilite .s, .codehilite .s1, .codehilite .s2, .codehilite .sb { color: #fcd34d; }
+.codehilite .c, .codehilite .c1, .codehilite .cm { color: #94a3b8; }
+.codehilite .nf, .codehilite .nx { color: #60a5fa; }
+.codehilite .nb { color: #34d399; }
+.codehilite .mi, .codehilite .mf { color: #f472b6; }
+.codehilite .nt { color: #f59e0b; }
+.codehilite .na { color: #93c5fd; }
+</style>
+</head>
+<body>
+<div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/11_%E4%BD%BF%E7%94%A8%E6%8A%80%E8%A1%93%E3%83%A9%E3%82%A4%E3%83%96%E3%83%A9%E3%83%AA%E5%85%A8%E3%82%AB%E3%82%BF%E3%83%AD%E3%82%B0.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、ブラウザーの「戻る」で PDF に戻れます。</p><h1 id="11">第11章: 使用技術・ライブラリ完全カタログ ― すべての部品の正体</h1>
+<blockquote>
+<p>このアプリは、ゼロから手で書かれた部分だけでできているわけではありません。世界中の技術者が作って公開してくれた <strong>「部品（ライブラリ）」</strong> を大量に組み合わせて作られています。料理にたとえると、本アプリは「自作の料理」ですが、使っている <strong>醤油・出汁・包丁・鍋</strong> はプロのメーカー製です。</p>
+<p>この章では、本アプリが使っている <strong>すべての部品</strong> を、<code>requirements.txt</code>（バックエンドの部品リスト）と <code>package.json</code>（フロントエンドの部品リスト）の <strong>1行ずつ</strong> 取り上げ、「これは何か」「なぜ使うか」「このアプリのどこで使われているか」「バージョンはいくつか」を、初心者にもわかる言葉で解説します。</p>
+<p>さらに、この章には <strong>正直な棚卸し</strong> のセクションがあります。本アプリには「リストには書いてあるけれど、実際のコードでは一度も使われていない部品（レガシー・使い残し）」がいくつもあります。後任者が「この部品、消していいの？ 怖くて触れない」と悩まないよう、<strong>実際にコードを調べた結果</strong> をはっきり表にまとめます。これは引き継ぎ資料として最も価値のある情報のひとつです。</p>
+</blockquote>
+<h3 id="_1">この章で学ぶこと</h3>
+<ul>
+<li><strong>ライブラリ（部品）とは何か</strong> — なぜ自分で全部書かないのか</li>
+<li><strong>パッケージマネージャ</strong> — <code>pip</code>（Python）と <code>npm</code>（JavaScript）のしくみ</li>
+<li><strong>バージョン番号の読み方</strong> — <code>4.2.7</code> や <code>^11.14.0</code> の意味</li>
+<li><strong><code>requirements.txt</code> 全24行を1行ずつ解説</strong> — Django / DRF / Django-Q / CORS / environ / jsonfield / psycopg2 / Gunicorn / WhiteNoise / openpyxl / pandas ほか</li>
+<li><strong><code>package.json</code> 全項目を1つずつ解説</strong> — React / TypeScript / Router / axios / MUI+emotion / x-date-pickers+date-fns / chart.js系 / CRA(react-scripts)</li>
+<li><strong>devDependencies（開発専用の部品）</strong> — Vitest / Testing Library / ESLint / 型定義</li>
+<li><strong>WSGI / ASGI / Gunicorn の補足</strong> — 「Webサーバーとアプリの橋渡し」のしくみ</li>
+<li><strong>正直な棚卸し</strong> — コードで使われていない疑いのある部品を実調査の結果として一覧化（FullCalendar / react-calendar / dayjs / web-vitals / xlwings / beautifulsoup4 ほか）</li>
+<li><strong>カレンダーは自前実装</strong> — <code>generateCalendar</code> という関数で手作りしている事実</li>
+<li><strong>不要な依存を安全に整理する手順</strong></li>
+</ul>
+<h2 id="_2">目次</h2>
+<ol start="0">
+<li><a href="#0-前提知識ライブラリとパッケージマネージャ">前提知識：ライブラリとパッケージマネージャ</a></li>
+<li><a href="#1-バージョン番号の読み方">バージョン番号の読み方</a></li>
+<li><a href="#2-requirementstxt-全24行を1行ずつ解説">requirements.txt 全24行を1行ずつ解説</a></li>
+<li><a href="#3-packagejson-の構造">package.json の構造</a></li>
+<li><a href="#4-packagejson-の-dependencies-を1つずつ解説">package.json の dependencies を1つずつ解説</a></li>
+<li><a href="#5-packagejson-の-scripts--eslintconfig--browserslist">package.json の scripts / eslintConfig / browserslist</a></li>
+<li><a href="#6-packagejson-の-devdependencies-を1つずつ解説">package.json の devDependencies を1つずつ解説</a></li>
+<li><a href="#7-settingspy-から見るバックエンド部品の使われ方">settings.py から見るバックエンド部品の使われ方</a></li>
+<li><a href="#8-wsgi--asgi--gunicorn-の補足">WSGI / ASGI / Gunicorn の補足</a></li>
+<li><a href="#9-indextsx-から見るフロント部品の使われ方">index.tsx から見るフロント部品の使われ方</a></li>
+<li><a href="#10-正直な棚卸し使われていない疑いのある部品">正直な棚卸し：使われていない疑いのある部品</a></li>
+<li><a href="#11-カレンダーは自前実装という事実">カレンダーは自前実装という事実</a></li>
+<li><a href="#12-不要な依存を安全に整理する手順">不要な依存を安全に整理する手順</a></li>
+<li><a href="#13-トラブルシューティング">トラブルシューティング</a></li>
+<li><a href="#14-演習問題">演習問題</a></li>
+<li><a href="#15-この章のまとめ">この章のまとめ</a></li>
+</ol>
+<hr>
+<h2 id="0">0. 前提知識：ライブラリとパッケージマネージャ</h2>
+<h3 id="01-library">0.1 ライブラリ（library）とは</h3>
+<blockquote>
+<p><strong>ライブラリ（library：図書館 → 部品集）とは？</strong>
+誰かがあらかじめ作って公開してくれた、<strong>再利用できるプログラムの部品</strong> のこと。あなたのアプリに「取り込んで」使います。図書館で本を借りるように、必要な機能を「借りて」きて、自分のコードから呼び出します。</p>
+</blockquote>
+<p>なぜライブラリを使うのでしょうか。たとえば「日付を画面に表示するカレンダー」を <strong>ゼロから自分で作る</strong> と、うるう年の計算、月ごとの日数、曜日の並び……と、考えることが山ほどあります。これを毎回作るのは大変です。</p>
+<p>そこで、世界中の技術者が「カレンダー部品」「グラフ部品」「通信部品」を作って <strong>無料で公開</strong> してくれています。私たちはそれを取り込むだけで、すぐに高機能な画面が作れます。</p>
+<blockquote>
+<p><strong>たとえ話:</strong> 家を建てるとき、窓ガラスや蛇口やネジを自分で一から作る人はいません。ホームセンターで既製品を買ってきて組み立てます。ライブラリは「プログラム界のホームセンターの既製品」です。</p>
+</blockquote>
+<h3 id="02-package">0.2 パッケージ（package）とパッケージマネージャ</h3>
+<blockquote>
+<p><strong>パッケージ（package：荷物・梱包）とは？</strong> ライブラリを「配布できる形」に箱詰めしたもの。中身はプログラムのファイル一式と、「この部品はバージョン○○です」「動くにはこの別の部品も必要です」という情報（メタデータ）です。</p>
+<p><strong>パッケージマネージャ（package manager）とは？</strong> パッケージを <strong>自動でダウンロード・インストール・更新・削除</strong> してくれる管理ツール。「この部品が欲しい」と名前を伝えるだけで、必要な関連部品（依存関係）まで芋づる式に集めてくれます。</p>
+</blockquote>
+<p>本アプリでは2種類のパッケージマネージャを使います。</p>
+<table>
+<thead>
+<tr>
+<th>言語</th>
+<th>パッケージマネージャ</th>
+<th>部品リストのファイル</th>
+<th>取得元（倉庫）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Python（バックエンド）</td>
+<td><strong>pip</strong>（ピップ）</td>
+<td><code>requirements.txt</code></td>
+<td>PyPI（パイピーアイ）</td>
+</tr>
+<tr>
+<td>JavaScript（フロント）</td>
+<td><strong>npm</strong>（エヌピーエム）</td>
+<td><code>package.json</code></td>
+<td>npm registry</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>PyPI（パイピーアイ）とは？</strong> Python Package Index の略。Python のパッケージが集まっている世界最大の倉庫サイト（https://pypi.org）。<code>pip install django</code> と打つと、ここから Django を取りに行きます。</p>
+<p><strong>npm registry（エヌピーエム レジストリ）とは？</strong> JavaScript のパッケージが集まっている倉庫（https://www.npmjs.com）。<code>npm install react</code> でここから React を取りに行きます。</p>
+</blockquote>
+<h3 id="03">0.3 部品リストファイルの役割</h3>
+<p><code>requirements.txt</code> や <code>package.json</code> は、<strong>「このアプリを動かすのに必要な部品の買い物リスト」</strong> です。</p>
+<p>新しいパソコンにこのアプリを入れるとき、次のコマンドを打つだけで、リストに書かれた部品が <strong>すべて自動で揃います</strong>。</p>
+<blockquote>
+<p><strong>▼ このコマンドがやること（先に日本語で）:</strong> 「<code>requirements.txt</code> に書いてある Python 部品を、全部まとめてインストールせよ」という命令です。<code>pip install -r requirements.txt</code> でこれらが一括インストールされます。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-1"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># -r は「このファイルを読んで全部入れて」の意味</span>
+pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>▼ このコマンドがやること（先に日本語で）:</strong> 「<code>package.json</code> に書いてある JavaScript 部品を、全部まとめてインストールせよ」という命令です。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-2"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># package.json を読んで全部入れる（フロントの frontend/ で実行）</span>
+npm<span class="w"> </span>install
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>なぜ？</strong> 部品リストをファイルに記録しておくと、「私のパソコンでは動くのに、あなたのパソコンでは動かない」という事故を防げます。<strong>全員が同じ部品・同じバージョン</strong> を使えるからです。引き継ぎでも、後任者はこの2ファイルさえあれば環境を再現できます。</p>
+</blockquote>
+<hr>
+<h2 id="1">1. バージョン番号の読み方</h2>
+<p>部品には必ず <strong>バージョン番号</strong> が付いています。これは「その部品の世代・改訂番号」です。読み方を知らないと、<code>requirements.txt</code> も <code>package.json</code> も読めません。</p>
+<h3 id="11_1">1.1 セマンティックバージョニング（意味のあるバージョン番号）</h3>
+<blockquote>
+<p><strong>セマンティックバージョニング（semantic versioning：意味づけされたバージョン管理。略して SemVer〔セムバー〕）とは？</strong>
+バージョン番号を <strong><code>メジャー.マイナー.パッチ</code></strong> の3つの数字で表す世界共通のルール。たとえば <code>4.2.7</code> なら、</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-3"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>4   .   2   .   7
+↑       ↑       ↑
+メジャー マイナー パッチ
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>部分</th>
+<th>名前</th>
+<th>上がるとき</th>
+<th>たとえ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>最初の数字 <code>4</code></td>
+<td><strong>メジャー</strong></td>
+<td>大きな作り変え。<strong>昔のコードが動かなくなる</strong> こともある</td>
+<td>車のフルモデルチェンジ</td>
+</tr>
+<tr>
+<td>真ん中 <code>2</code></td>
+<td><strong>マイナー</strong></td>
+<td>新機能の追加。<strong>昔のコードはそのまま動く</strong></td>
+<td>オプション装備の追加</td>
+</tr>
+<tr>
+<td>最後 <code>7</code></td>
+<td><strong>パッチ</strong></td>
+<td>バグ修正だけ。機能は変わらない</td>
+<td>リコール修理</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>なぜ重要？</strong> メジャーが上がる更新（例：<code>4.x</code> → <code>5.x</code>）は、<strong>今まで動いていた自分のコードが急に壊れる</strong> 危険があります。だから、うかつに上げてはいけません。逆にパッチ更新（<code>4.2.7</code> → <code>4.2.8</code>）は安全なことが多いです。</p>
+</blockquote>
+<h3 id="12-requirementstxt">1.2 <code>requirements.txt</code> の <code>==</code>（完全固定）</h3>
+<p><code>requirements.txt</code> では、次のように書かれています。</p>
+<div class="codehilite"><div class="code-wrap" id="code-4"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Django==4.2.7
+</code></pre></div></div>
+
+<p><code>==</code> は <strong>「ぴったりこのバージョン」</strong> という意味です。<code>4.2.7</code> 以外は入れません。これを <strong>バージョン固定（pin：ピン留め）</strong> と呼びます。</p>
+<blockquote>
+<p><strong>なぜ固定するの？</strong> 「動作確認した、まさにそのバージョン」に釘で留めておけば、後で勝手に新しい版が入って壊れる事故を防げます。本アプリの <code>requirements.txt</code> は <strong>全部 <code>==</code></strong> で固定されています。これは「再現性を最優先」した堅実な書き方です。</p>
+</blockquote>
+<h3 id="13-packagejson">1.3 <code>package.json</code> の <code>^</code>（キャレット）</h3>
+<p><code>package.json</code> では、次のように書かれています。</p>
+<div class="codehilite"><div class="code-wrap" id="code-5"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&quot;react&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^19.1.0&quot;</span>
+</code></pre></div></div>
+
+<p>先頭の <code>^</code>（キャレット〔caret〕、山形記号）は <strong>「この版以上で、メジャーは上げない範囲なら新しくてOK」</strong> という意味です。</p>
+<div class="codehilite"><div class="code-wrap" id="code-6"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>^19.1.0  →  19.1.0 以上 20.0.0 未満（19.x.x なら何でもOK）
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>用語:</strong> <code>^19.1.0</code> は「19系の最新パッチ・最新マイナーまで自動で許可。ただし 20 には上げない」。マイナー（新機能）とパッチ（修正）は受け入れるが、メジャー（破壊的変更）は拒む、という安全寄りの指定です。</p>
+<p>⚠️ <code>^</code> は「範囲指定」なので、<code>npm install</code> するタイミング次第で実際に入る版が少しずつ変わります。これを完全に固定するために、npm は別途 <code>package-lock.json</code>（パッケージ ロックファイル）という「実際に入れた版を1つ残らず記録した台帳」を自動生成します。<strong>この <code>package-lock.json</code> も必ず Git に入れて引き継ぐ</strong> ことが、環境を完全再現するコツです。</p>
+</blockquote>
+<hr>
+<h2 id="2-requirementstxt-241">2. requirements.txt 全24行を1行ずつ解説</h2>
+<p>ここからが本番です。本アプリのバックエンド部品リスト <code>requirements.txt</code>（全24行）を、<strong>1行も飛ばさず</strong> 解説します。</p>
+<blockquote>
+<p><strong>▼ このファイルがやること（先に日本語で）:</strong> Python 側（Django バックエンド）を動かすために必要な部品を、24個ぜんぶ「名前==バージョン」の形で並べた買い物リストです。<code>pip install -r requirements.txt</code> でこれらが一括インストールされます。</p>
+</blockquote>
+<p>実物のファイル全体を、まず丸ごと載せます。</p>
+<div class="codehilite"><div class="code-wrap" id="code-7"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Django==4.2.7
+django-bootstrap-datepicker-plus==5.0.5
+django-bootstrap4==23.3
+django-crispy-forms==2.1
+django-environ==0.11.2
+django-filter==23.5
+django-widget-tweaks==1.5.0
+django-widgets-improved==1.5.0
+djangorestframework==3.14.0
+django-q==1.3.9
+gunicorn==21.2.0
+openpyxl==3.1.2
+psycopg2-binary==2.9.9
+python-dateutil==2.8.2
+python-dotenv==1.0.0
+python-json-logger==2.0.7
+xlwings==0.30.13
+whitenoise==6.6.0
+beautifulsoup4==4.12.2
+pandas==2.1.2
+python-Levenshtein==0.26.1
+setuptools==76.1.0
+django-cors-headers==4.7.0
+jsonfield==3.2.0
+</code></pre></div></div>
+
+<p>それでは1行ずつ見ていきます。各行を <strong>「何か(よみ)/なぜ使うか/このアプリのどこで使うか/バージョン/状態」</strong> の表で整理します。「状態」は、実際にコードで使われているか（◎=中核 / ○=使用 / △=設定にだけ存在 / ✕=未使用の疑い）を表します。</p>
+<h3 id="21">2.1 中核フレームワーク</h3>
+<div class="codehilite"><div class="code-wrap" id="code-8"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Django==4.2.7
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>Django（ジャンゴ）</strong> — Python製の代表的なWebアプリ・フレームワーク（土台一式）。"D" は発音せず「ジャンゴ」</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>URLの振り分け、データベース操作（ORM）、管理画面、セキュリティなど、Webアプリに必要な機能が「全部入り」で手に入るから</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td><strong>アプリ全体の土台</strong>。<code>kosu/</code> アプリ、<code>models.py</code>、<code>urls.py</code>、<code>views/</code>、管理画面すべて</td>
+</tr>
+<tr>
+<td>バージョン</td>
+<td><code>4.2.7</code>（<code>4.2</code> は LTS〔長期サポート版〕。安定運用向け）</td>
+</tr>
+<tr>
+<td>状態</td>
+<td>◎ 中核</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>用語: フレームワーク（framework：枠組み）とは？</strong> ライブラリよりさらに大きい「アプリの骨格そのもの」。ライブラリが「部品」なら、フレームワークは「家の設計済みの枠組み」。あなたはその枠の決められた場所にコードを置いていきます。</p>
+<p><strong>用語: LTS（エルティーエス：Long-Term Support、長期サポート）とは？</strong> 「長期間、バグ修正やセキュリティ修正を提供します」と約束されたバージョン。<code>Django 4.2</code> はLTSなので、長く安心して使えます。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-9"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>djangorestframework==3.14.0
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>Django REST Framework（ジャンゴ レスト フレームワーク。略してDRF〔ディーアールエフ〕）</strong> — Djangoで「API」を作るための拡張部品</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>本アプリはフロント（React）とバック（Django）が分離している。両者が <strong>JSON</strong> でやり取りするための「API」を、DRFが簡単に作れるから</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td><code>settings.py</code> の <code>REST_FRAMEWORK</code> 設定、<code>kosu/views/</code> の各APIビュー、ページネーション（<code>PAGE_SIZE: 20</code>）</td>
+</tr>
+<tr>
+<td>バージョン</td>
+<td><code>3.14.0</code></td>
+</tr>
+<tr>
+<td>状態</td>
+<td>◎ 中核</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>用語: API（エーピーアイ：Application Programming Interface）とは？</strong> プログラム同士の「窓口・受付」。Reactが「工数一覧ちょうだい」と窓口に頼むと、Djangoが「はいどうぞ」とJSONを返す。その窓口の作りをDRFが担当します。</p>
+<p><strong>用語: JSON（ジェイソン：JavaScript Object Notation）とは？</strong> データを <code>{"name": "山田", "age": 30}</code> のように「名前と値の組」で表す、軽くて読みやすいテキスト形式。プログラム同士のデータ交換の世界標準です。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-10"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>django-q==1.3.9
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>Django-Q（ジャンゴキュー）</strong> — Djangoで「時間のかかる処理を裏で動かす」ための部品（タスクキュー）</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>バックアップやリストアなど、<strong>数十秒〜数分かかる重い処理</strong> を、画面を固まらせず裏側で実行するため</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td><code>settings.py</code> の <code>Q_CLUSTER</code> 設定、<code>kosu/tasks.py</code>（バックアップ/リストアの非同期タスク）、<code>AsyncTask</code> モデル</td>
+</tr>
+<tr>
+<td>バージョン</td>
+<td><code>1.3.9</code></td>
+</tr>
+<tr>
+<td>状態</td>
+<td>◎ 中核</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>用語: タスクキュー（task queue：仕事の待ち行列）とは？</strong> 「あとでやる仕事」を行列に並べておき、専用の作業員（ワーカー）が順番に片付けるしくみ。レストランで注文票（キュー）を厨房に回し、コックが順に作るのと同じ。Django-Qの作業員は <code>python manage.py qcluster</code> で起動します。</p>
+<p><strong>なぜ裏でやるの？</strong> もしバックアップ処理を画面の中で直接やると、終わるまでユーザーの画面が固まってしまいます。「裏で動かして、終わったら教える」方式なら、ユーザーは待たずに他の操作を続けられます。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-11"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>django-cors-headers==4.7.0
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>django-cors-headers（コルス ヘッダーズ）</strong> — CORS（クロスオリジン通信）を許可するための部品</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>開発中、フロントは <code>localhost:3000</code>、バックは <code>localhost:8000</code> という <strong>別の住所</strong> で動く。ブラウザは標準で「別住所への通信」を遮断するため、それを許可する設定が要る</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td><code>settings.py</code> の <code>MIDDLEWARE</code> 先頭（<code>corsheaders.middleware.CorsMiddleware</code>）、<code>CORS_ORIGIN_ALLOW_ALL</code> などの設定</td>
+</tr>
+<tr>
+<td>バージョン</td>
+<td><code>4.7.0</code></td>
+</tr>
+<tr>
+<td>状態</td>
+<td>◎ 中核</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>用語: CORS（コルス：Cross-Origin Resource Sharing、オリジン間リソース共有）とは？</strong> 「オリジン（住所＝プロトコル＋ドメイン＋ポート）が違うサイト同士の通信を、どこまで許すか」のルール。ブラウザのセキュリティ機能で、初期状態では別オリジンへの通信を止めます。この部品が「うちのフロントからのアクセスはOK」と通行許可証を出します。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-12"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>django-environ==0.11.2
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>django-environ（ジャンゴ エンヴァイロン）</strong> — <code>.env</code> ファイルから設定値を読み込む部品</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>パスワードや秘密鍵を <strong>コードに直接書かず</strong>、<code>.env</code> という別ファイルに隔離して安全に読み込むため</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td><code>settings.py</code> 冒頭 <code>import environ</code> → <code>env = environ.Env()</code> → <code>env.read_env(...)</code> → <code>SECRET_KEY=env('SECRET_KEY')</code> など</td>
+</tr>
+<tr>
+<td>バージョン</td>
+<td><code>0.11.2</code></td>
+</tr>
+<tr>
+<td>状態</td>
+<td>◎ 中核</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>用語: 環境変数（environment variable）／.env ファイルとは？</strong> パスワードやサーバー名など「環境ごとに変わる秘密の設定」を、コードの外（<code>.env</code> ファイルや OS の環境変数）に置く考え方。Gitに上げないことで、秘密が漏れるのを防ぎます（詳しくは設定・デプロイの章）。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-13"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>jsonfield==3.2.0
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>jsonfield（ジェイソンフィールド）</strong> — DjangoモデルでJSON形式のデータを丸ごと1つの列に保存できるフィールド型</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>構造が複雑なデータ（リストや辞書）を、わざわざ別テーブルに分けず1列にJSONとして保存できて手軽だから</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td><code>kosu/models.py</code> でJSON型の項目を持つモデル（例：履歴やタスクの付随データ）</td>
+</tr>
+<tr>
+<td>バージョン</td>
+<td><code>3.2.0</code></td>
+</tr>
+<tr>
+<td>状態</td>
+<td>○ 使用</td>
+</tr>
+</tbody>
+</table>
+<div class="codehilite"><div class="code-wrap" id="code-14"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>psycopg2-binary==2.9.9
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>psycopg2（サイコピーグ・ツー）</strong> — PythonからPostgreSQLデータベースに接続するためのドライバ。<code>-binary</code> は「コンパイル済みで入れやすい版」</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>本アプリのデータベースは PostgreSQL。DjangoがそのDBと会話するには、この「通訳」が必須だから</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td><code>settings.py</code> の <code>DATABASES</code> → <code>'ENGINE': 'django.db.backends.postgresql'</code>。Djangoが裏でこのドライバを呼ぶ</td>
+</tr>
+<tr>
+<td>バージョン</td>
+<td><code>2.9.9</code></td>
+</tr>
+<tr>
+<td>状態</td>
+<td>◎ 中核</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>用語: データベースドライバ（database driver）とは？</strong> プログラムとデータベースの間に立つ「専用の通訳」。DjangoのORM（Python語）を、PostgreSQLが理解できる言葉に翻訳して橋渡しします。</p>
+<p><strong>用語: PostgreSQL（ポストグレスキューエル、通称ポスグレ）とは？</strong> 高機能で信頼性の高い、オープンソースのリレーショナルデータベース（表形式でデータを保存・検索する倉庫システム）。本アプリのデータ保管庫です。</p>
+</blockquote>
+<h3 id="22">2.2 本番運用・配信まわり</h3>
+<div class="codehilite"><div class="code-wrap" id="code-15"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>gunicorn==21.2.0
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>Gunicorn（ジーユニコーン：Green Unicorn）</strong> — Python製アプリを本番で動かすための「WSGI HTTPサーバー」</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>Django付属の <code>runserver</code> は <strong>開発専用</strong>（遅く・非力）。本番では大量のアクセスを安定してさばけるGunicornを使うため</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td>本番デプロイ時の起動（例：<code>gunicorn hozen_another.wsgi</code>）。<code>settings.py</code> の <code>WSGI_APPLICATION = 'hozen_another.wsgi.application'</code> が入口</td>
+</tr>
+<tr>
+<td>バージョン</td>
+<td><code>21.2.0</code></td>
+</tr>
+<tr>
+<td>状態</td>
+<td>◎ 中核（本番）。WSGIの詳細は§8</td>
+</tr>
+</tbody>
+</table>
+<div class="codehilite"><div class="code-wrap" id="code-16"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>whitenoise==6.6.0
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>WhiteNoise（ホワイトノイズ）</strong> — Python（Django）アプリ自身が、CSSや画像などの「静的ファイル」を効率よく配信できるようにする部品</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>本番で静的ファイルを配るのに、通常は別のWebサーバー（Nginx等）が必要。WhiteNoiseを使えば <strong>Django単体で完結</strong> でき、デプロイが簡単になる</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td><code>settings.py</code> の <code>MIDDLEWARE</code> に <code>whitenoise.middleware.WhiteNoiseMiddleware</code>、<code>STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'</code></td>
+</tr>
+<tr>
+<td>バージョン</td>
+<td><code>6.6.0</code></td>
+</tr>
+<tr>
+<td>状態</td>
+<td>◎ 中核</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>用語: 静的ファイル（static files）とは？</strong> 中身が変化しない配信物。CSS・JavaScript・画像・フォントなど。これに対し、毎回内容が変わるHTML（工数一覧など）は「動的」です。本アプリは <code>staticfiles/</code> フォルダにこれらを集めています（<code>STATIC_ROOT</code>）。</p>
+<p><strong>なぜ「圧縮」マニフェスト？</strong> <code>CompressedManifestStaticFilesStorage</code> は、ファイルを <code>.gz</code> で圧縮し、ファイル名にハッシュ（<code>base.64976e0f7339.css</code> のような英数字）を付けます。圧縮で通信が速くなり、ハッシュ名で「古いキャッシュが残る事故」を防ぎます。Gitの差分にたくさん出てくる <code>staticfiles/...</code> はこの仕組みの産物です。</p>
+</blockquote>
+<h3 id="23-excel">2.3 データ処理（Excel・表計算）</h3>
+<div class="codehilite"><div class="code-wrap" id="code-17"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>openpyxl==3.1.2
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>openpyxl（オープンパイエックスエル）</strong> — PythonでExcelファイル（.xlsx）を読み書きする部品</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>工数データなどをExcel形式で出力（ダウンロード）するため</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td><code>kosu/views/team_views.py</code>（<code>import openpyxl</code>）、<code>kosu/tasks.py</code>（<code>import openpyxl</code>）。<strong>実際にコードで使われている</strong></td>
+</tr>
+<tr>
+<td>バージョン</td>
+<td><code>3.1.2</code></td>
+</tr>
+<tr>
+<td>状態</td>
+<td>○ 使用</td>
+</tr>
+</tbody>
+</table>
+<div class="codehilite"><div class="code-wrap" id="code-18"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>pandas==2.1.2
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>pandas（パンダス）</strong> — Pythonでデータ（表）を集計・加工する強力な部品。データ分析の定番</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>大量の工数データを表として読み込み、集計・整形するため</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td><code>kosu/tasks.py</code>（<code>import pandas as pd</code>）。<strong>実際にコードで使われている</strong></td>
+</tr>
+<tr>
+<td>バージョン</td>
+<td><code>2.1.2</code></td>
+</tr>
+<tr>
+<td>状態</td>
+<td>○ 使用</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>用語: DataFrame（データフレーム）とは？</strong> pandasの中心的なデータ型で、「Excelのシートのような行と列の表」をPythonの中で扱える形にしたもの。並べ替え・集計・フィルタが数行で書けます。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-19"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>python-dateutil==2.8.2
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>python-dateutil（パイソン デートユーティル）</strong> — 日付・時刻の高度な計算（曖昧な日付文字列の解釈、月単位の加算など）を行う部品</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>標準の <code>datetime</code> では面倒な日付計算を簡単にするため。ただし pandas が内部で依存しているため、自動で入っている可能性が高い</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td><strong>本アプリのコードからは直接importされていない</strong>（調査結果）。pandas等の「依存の依存」として入っている可能性大</td>
+</tr>
+<tr>
+<td>バージョン</td>
+<td><code>2.8.2</code></td>
+</tr>
+<tr>
+<td>状態</td>
+<td>△ 直接の使用は確認できず（間接依存の可能性）</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>⚠️ この行は「正直な棚卸し」の対象です。詳しくは§10で扱います。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-20"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>python-dotenv==1.0.0
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>python-dotenv（パイソン ドットエンブ）</strong> — <code>.env</code> ファイルを読み込む部品（django-environ と役割が重なる）</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td><code>.env</code> から環境変数を読み込むため。ただし本アプリの <code>settings.py</code> は <strong>django-environ</strong> を使っており、こちらは重複の可能性</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td><code>settings.py</code> では <code>import environ</code>（django-environ）を使用。python-dotenv の直接importは確認できず</td>
+</tr>
+<tr>
+<td>バージョン</td>
+<td><code>1.0.0</code></td>
+</tr>
+<tr>
+<td>状態</td>
+<td>△ 重複の疑い（§10参照）</td>
+</tr>
+</tbody>
+</table>
+<div class="codehilite"><div class="code-wrap" id="code-21"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>python-json-logger==2.0.7
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>python-json-logger（パイソン ジェイソン ロガー）</strong> — ログをJSON形式で出力するための部品</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>ログを機械処理しやすいJSON形式にするため</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td><code>settings.py</code> の <code>LOGGING</code> 設定は <code>formatter: simple</code>（<code>'format': '{message}'</code>）であり、<strong>JSONフォーマッタは使っていない</strong>。直接importも確認できず</td>
+</tr>
+<tr>
+<td>バージョン</td>
+<td><code>2.0.7</code></td>
+</tr>
+<tr>
+<td>状態</td>
+<td>✕ 未使用の疑い（§10参照）</td>
+</tr>
+</tbody>
+</table>
+<div class="codehilite"><div class="code-wrap" id="code-22"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>xlwings==0.30.13
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>xlwings（エックスエルウイングス）</strong> — PythonからExcelアプリ本体を <strong>自動操作</strong> する部品（Excelを起動して操作する）</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>Excelの自動操作が必要なら使う。ただし本アプリのExcel処理は openpyxl で行っており、xlwings は不要の可能性</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td>コード内で <code>import xlwings</code> は <strong>見つからない</strong>（調査結果）。さらに xlwings は Windows/Mac の Excel アプリ常駐前提で、Linuxサーバー環境では動かない</td>
+</tr>
+<tr>
+<td>バージョン</td>
+<td><code>0.30.13</code></td>
+</tr>
+<tr>
+<td>状態</td>
+<td>✕ 未使用の疑い（§10参照）</td>
+</tr>
+</tbody>
+</table>
+<div class="codehilite"><div class="code-wrap" id="code-23"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>beautifulsoup4==4.12.2
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>Beautiful Soup 4（ビューティフル スープ フォー。略して bs4）</strong> — HTMLやXMLを解析（スクレイピング）する部品</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>Webページから情報を取り出す（スクレイピング）用途。本アプリにその機能は見当たらない</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td><code>import bs4</code> / <code>from bs4</code> は <strong>見つからない</strong>（調査結果）</td>
+</tr>
+<tr>
+<td>バージョン</td>
+<td><code>4.12.2</code></td>
+</tr>
+<tr>
+<td>状態</td>
+<td>✕ 未使用の疑い（§10参照）</td>
+</tr>
+</tbody>
+</table>
+<div class="codehilite"><div class="code-wrap" id="code-24"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>python-Levenshtein==0.26.1
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>python-Levenshtein（レーベンシュタイン）</strong> — 2つの文字列の「似ている度合い（編集距離）」を高速計算する部品</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>あいまい検索や類似文字列の判定に使う。本アプリにその処理は見当たらない</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td><code>import Levenshtein</code> は <strong>見つからない</strong>（調査結果）</td>
+</tr>
+<tr>
+<td>バージョン</td>
+<td><code>0.26.1</code></td>
+</tr>
+<tr>
+<td>状態</td>
+<td>✕ 未使用の疑い（§10参照）</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>用語: 編集距離（Levenshtein distance：レーベンシュタイン距離）とは？</strong> 文字列Aを文字列Bにするのに必要な「1文字の挿入・削除・置換」の最小回数。たとえば「kitten」→「sitting」は3回。検索ワードの打ち間違いを救う「もしかして検索」などに使います。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-25"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>setuptools==76.1.0
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>setuptools（セットアップツールズ）</strong> — Pythonパッケージのインストール・ビルドを支える基盤部品</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>多くのパッケージが内部でこれに依存する「縁の下の力持ち」。バージョンを固定して互換性事故を防ぐため明示している</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td>アプリコードからは直接使わない。pip/各種パッケージの土台</td>
+</tr>
+<tr>
+<td>バージョン</td>
+<td><code>76.1.0</code></td>
+</tr>
+<tr>
+<td>状態</td>
+<td>△ 基盤（直接importはしない）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="24-bootstrap">2.4 旧テンプレート時代の名残（Bootstrap/フォーム系）</h3>
+<p>ここからの6つは、<strong>Reactに移行する前、Djangoのテンプレート（HTML）で画面を作っていた時代の部品</strong> と考えられます。本アプリは今や画面をReactで作っているため、これらの多くは「過去の地層」です。ただし一部は <code>settings.py</code> に登録が残っています。</p>
+<div class="codehilite"><div class="code-wrap" id="code-26"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>django-bootstrap-datepicker-plus==5.0.5
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>django-bootstrap-datepicker-plus</strong> — Djangoのフォームに「日付選択カレンダー」ウィジェットを追加する部品</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>（旧）Djangoテンプレートの入力フォームに日付ピッカーを出すため</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td><code>settings.py</code> の <code>INSTALLED_APPS</code> に <code>'bootstrap_datepicker_plus'</code> として登録は <strong>残っている</strong>。だがReact画面では使われていない</td>
+</tr>
+<tr>
+<td>バージョン</td>
+<td><code>5.0.5</code></td>
+</tr>
+<tr>
+<td>状態</td>
+<td>△ 設定にだけ存在（実フロントは未使用）</td>
+</tr>
+</tbody>
+</table>
+<div class="codehilite"><div class="code-wrap" id="code-27"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>django-bootstrap4==23.3
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>django-bootstrap4</strong> — DjangoテンプレートでCSSフレームワーク「Bootstrap 4」を使いやすくする部品</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>（旧）Djangoテンプレートの見た目をBootstrapで整えるため</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td><code>settings.py</code> の <code>INSTALLED_APPS</code> に <code>'bootstrap4'</code>、<code>TEMPLATES</code> の <code>builtins</code> に <code>'bootstrap4.templatetags.bootstrap4'</code>、<code>BOOTSTRAP4 = {'include_jquery': True}</code> として <strong>残存</strong>。React画面の見た目はこれと無関係（独自CSS）</td>
+</tr>
+<tr>
+<td>バージョン</td>
+<td><code>23.3</code></td>
+</tr>
+<tr>
+<td>状態</td>
+<td>△ 設定にだけ存在（実フロントは未使用）</td>
+</tr>
+</tbody>
+</table>
+<div class="codehilite"><div class="code-wrap" id="code-28"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>django-crispy-forms==2.1
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>django-crispy-forms（クリスピー フォームズ）</strong> — Djangoのフォームを綺麗なHTMLに整形する部品</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>（旧）テンプレートのフォーム表示を美しくするため</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td><code>INSTALLED_APPS</code> にも登録されておらず、コードでの使用も確認できない</td>
+</tr>
+<tr>
+<td>バージョン</td>
+<td><code>2.1</code></td>
+</tr>
+<tr>
+<td>状態</td>
+<td>✕ 未使用の疑い（§10参照）</td>
+</tr>
+</tbody>
+</table>
+<div class="codehilite"><div class="code-wrap" id="code-29"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>django-filter==23.5
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>django-filter</strong> — 一覧APIに「絞り込み（フィルタ）」機能を簡単に付ける部品</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>URLのクエリで一覧を絞り込むため</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td><code>INSTALLED_APPS</code> に未登録、<code>DEFAULT_FILTER_BACKENDS</code> 設定もなし。コードでの使用も確認できない</td>
+</tr>
+<tr>
+<td>バージョン</td>
+<td><code>23.5</code></td>
+</tr>
+<tr>
+<td>状態</td>
+<td>✕ 未使用の疑い（§10参照）</td>
+</tr>
+</tbody>
+</table>
+<div class="codehilite"><div class="code-wrap" id="code-30"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>django-widget-tweaks==1.5.0
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>django-widget-tweaks</strong> — Djangoテンプレート内でフォーム部品の属性（class等）を後から微調整できる部品</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>（旧）テンプレートのフォーム見た目を細かく調整するため</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td><code>INSTALLED_APPS</code> に未登録、テンプレートでの <code>{% load widget_tweaks %}</code> も見当たらない</td>
+</tr>
+<tr>
+<td>バージョン</td>
+<td><code>1.5.0</code></td>
+</tr>
+<tr>
+<td>状態</td>
+<td>✕ 未使用の疑い（§10参照）</td>
+</tr>
+</tbody>
+</table>
+<div class="codehilite"><div class="code-wrap" id="code-31"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>django-widgets-improved==1.5.0
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>django-widgets-improved</strong> — Djangoのフォームウィジェットを改善する部品（widget-tweaks に近い）</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>（旧）テンプレートのフォーム改善のため</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td><code>INSTALLED_APPS</code> に未登録、使用も確認できない</td>
+</tr>
+<tr>
+<td>バージョン</td>
+<td><code>1.5.0</code></td>
+</tr>
+<tr>
+<td>状態</td>
+<td>✕ 未使用の疑い（§10参照）</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>▼ ここまでで分かること（先に日本語で）:</strong> <code>requirements.txt</code> の24個のうち、<strong>確実に中核・使用中</strong> なのは Django / DRF / Django-Q / cors-headers / environ / jsonfield / psycopg2 / gunicorn / whitenoise / openpyxl / pandas の約11個。残りの多くは「Reactへ移行する前の名残」や「依存の依存」で、<strong>直接は使われていない疑い</strong> があります。詳しい根拠と整理手順は §10・§12 で扱います。</p>
+</blockquote>
+<hr>
+<h2 id="3-packagejson">3. package.json の構造</h2>
+<p>次はフロントエンドです。<code>package.json</code> は、<code>requirements.txt</code> よりも構造が複雑なので、まず <strong>全体の地図</strong> を押さえます。</p>
+<blockquote>
+<p><strong>▼ このファイルがやること（先に日本語で）:</strong> フロント（React）の「名前・バージョン・必要部品・実行コマンド・対応ブラウザ」を、ひとつのJSONにまとめた設定ファイルです。npm はこれを読んでアプリを管理します。</p>
+</blockquote>
+<p><code>package.json</code> は大きく次のブロックに分かれます。</p>
+<div class="codehilite"><div class="code-wrap" id="code-32"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;frontend&quot;</span><span class="p">,</span><span class="w">          </span><span class="c1">// ← このプロジェクトの名前</span>
+<span class="w">  </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.1.0&quot;</span><span class="p">,</span><span class="w">          </span><span class="c1">// ← このプロジェクト自身のバージョン</span>
+<span class="w">  </span><span class="nt">&quot;private&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">             </span><span class="c1">// ← npmの公開倉庫に誤って公開しない安全フラグ</span>
+<span class="w">  </span><span class="nt">&quot;dependencies&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="p">},</span><span class="w">     </span><span class="c1">// ← 本番でも必要な部品（アプリの動作に必須）</span>
+<span class="w">  </span><span class="nt">&quot;scripts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="p">},</span><span class="w">          </span><span class="c1">// ← npm run ○○ で動かす定型コマンド集</span>
+<span class="w">  </span><span class="nt">&quot;eslintConfig&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="p">},</span><span class="w">     </span><span class="c1">// ← コードの書き方チェックの設定</span>
+<span class="w">  </span><span class="nt">&quot;browserslist&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="p">},</span><span class="w">     </span><span class="c1">// ← どのブラウザに対応するかの指定</span>
+<span class="w">  </span><span class="nt">&quot;devDependencies&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="p">}</span><span class="w">   </span><span class="c1">// ← 開発・テスト時だけ必要な部品</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>各行を見ていきます。</p>
+<div class="codehilite"><div class="code-wrap" id="code-33"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;frontend&quot;</span><span class="p">,</span>
+</code></pre></div></div>
+
+<p>このプロジェクトの <strong>名前</strong>。<code>frontend</code> という素っ気ない名前ですが、内部識別用なので問題ありません。</p>
+<div class="codehilite"><div class="code-wrap" id="code-34"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.1.0&quot;</span><span class="p">,</span>
+</code></pre></div></div>
+
+<p>このプロジェクト <strong>自身</strong> のバージョン。<code>0.1.0</code> は「まだ正式版1.0前の開発段階」を示す慣習的な初期値です。アプリ機能とは無関係。</p>
+<div class="codehilite"><div class="code-wrap" id="code-35"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&quot;private&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>なぜ true？</strong> これを <code>true</code> にしておくと、間違って <code>npm publish</code>（npmの公開倉庫にアップロード）を実行しても <strong>公開されません</strong>。社内アプリのコードを世界に晒さないための安全装置です。</p>
+<p><strong>dependencies と devDependencies の違い（重要）:</strong>
+- <strong>dependencies（ディペンデンシーズ：依存）</strong> … アプリが動くために本番でも必要な部品（React本体、通信ライブラリなど）。
+- <strong>devDependencies（デブ ディペンデンシーズ：開発時依存）</strong> … 開発・テスト中だけ必要で、完成品（ビルド結果）には含まれない部品（テストツール、コード検査ツールなど）。</p>
+<p>たとえるなら、dependencies は「料理の材料（皿に乗る）」、devDependencies は「調理器具（皿には乗らない）」です。</p>
+</blockquote>
+<hr>
+<h2 id="4-packagejson-dependencies-1">4. package.json の dependencies を1つずつ解説</h2>
+<p><code>dependencies</code> ブロック（本番でも必要な部品）を全部解説します。実物は次の通りです。</p>
+<div class="codehilite"><div class="code-wrap" id="code-36"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&quot;dependencies&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;@emotion/react&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^11.14.0&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;@emotion/styled&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^11.14.1&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;@fullcalendar/daygrid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^6.1.19&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;@fullcalendar/interaction&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^6.1.19&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;@fullcalendar/react&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^6.1.19&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;@fullcalendar/timegrid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^6.1.19&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;@mui/material&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^7.2.0&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;@mui/x-date-pickers&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^8.11.2&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;@testing-library/dom&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^10.4.0&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;@types/react&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^19.1.7&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;@types/react-dom&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^19.1.6&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;axios&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^1.11.0&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;chart.js&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^4.5.0&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;chartjs-plugin-datalabels&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^2.2.0&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;date-fns&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^4.1.0&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;dayjs&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^1.11.13&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;react&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^19.1.0&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;react-calendar&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^6.0.0&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;react-chartjs-2&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^5.3.0&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;react-dom&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^19.1.0&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;react-router-dom&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^7.11.0&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;react-scripts&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;5.0.1&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;typescript&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^4.9.5&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;web-vitals&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^2.1.4&quot;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>用語: スコープ付きパッケージ（scoped package）とは？</strong> <code>@emotion/react</code> のように <code>@組織名/部品名</code> の形をした名前。<code>@</code> で始まるのは「特定の組織・チームが管理する部品群」という印です。たとえば <code>@mui/...</code> はMUIチーム、<code>@fullcalendar/...</code> はFullCalendarチームの部品です。</p>
+</blockquote>
+<h3 id="41-react">4.1 React 本体まわり（◎ 中核）</h3>
+<div class="codehilite"><div class="code-wrap" id="code-37"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&quot;react&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^19.1.0&quot;</span><span class="p">,</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>React（リアクト）</strong> — Meta（Facebook）製の、画面を「部品（コンポーネント）」で組み立てるUIライブラリ</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>データが変わったら画面の必要な部分だけを自動で書き換えてくれる。本アプリの全画面がReact製</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td>全 <code>.tsx</code> ファイル。<code>index.tsx</code> 冒頭 <code>import React from 'react';</code></td>
+</tr>
+<tr>
+<td>バージョン</td>
+<td><code>^19.1.0</code>（最新世代のReact 19）</td>
+</tr>
+<tr>
+<td>状態</td>
+<td>◎ 中核</td>
+</tr>
+</tbody>
+</table>
+<div class="codehilite"><div class="code-wrap" id="code-38"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&quot;react-dom&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^19.1.0&quot;</span><span class="p">,</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>ReactDOM（リアクト ドム）</strong> — Reactで作った部品を <strong>実際のブラウザ画面（DOM）に描く</strong> 橋渡し部品</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>React本体は「画面の設計図」を作るだけ。それをブラウザの画面に反映するのがReactDOMの役目</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td><code>index.tsx</code> の <code>import ReactDOM from 'react-dom/client';</code> と <code>ReactDOM.createRoot(...)</code></td>
+</tr>
+<tr>
+<td>バージョン</td>
+<td><code>^19.1.0</code>（Reactと同世代に揃える）</td>
+</tr>
+<tr>
+<td>状態</td>
+<td>◎ 中核</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>⚠️ <strong>react と react-dom は必ず同じメジャーバージョンに揃える</strong> こと。片方だけ上げると噛み合わず壊れます。本アプリは両方 <code>^19.1.0</code> で揃っており正しい状態です。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-39"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&quot;react-router-dom&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^7.11.0&quot;</span><span class="p">,</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>React Router DOM（リアクト ルーター ドム）</strong> — URLに応じて表示する画面を切り替える「ルーティング」部品</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td><code>/login</code> ならログイン画面、<code>/kosu-list</code> なら工数一覧、と <strong>URLと画面を結びつける</strong> ため</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td><code>index.tsx</code> の <code>import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";</code> と、その下の <code>&lt;Routes&gt;&lt;Route ... /&gt;&lt;/Routes&gt;</code> 全体</td>
+</tr>
+<tr>
+<td>バージョン</td>
+<td><code>^7.11.0</code></td>
+</tr>
+<tr>
+<td>状態</td>
+<td>◎ 中核</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>用語: ルーティング（routing）とは？</strong> 「URL（住所）」と「表示する画面」を対応づけること。郵便の住所ごとに配達先を決めるのと同じ。本アプリでは約50個のURLが <code>index.tsx</code> の <code>&lt;Route&gt;</code> で定義されています（§9で実物を見ます）。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-40"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&quot;react-scripts&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;5.0.1&quot;</span><span class="p">,</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>react-scripts</strong> — Create React App（CRA）の中身。開発サーバー起動・ビルド・テスト設定を「全部入り」で提供する道具箱</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>Webpack・Babel・ESLintなどの <strong>面倒な設定を自分で書かずに済む</strong> から。<code>npm start</code> <code>npm run build</code> の正体がこれ</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td><code>scripts</code> の <code>start</code> <code>build</code> <code>eject</code> が <code>react-scripts ○○</code> を呼ぶ</td>
+</tr>
+<tr>
+<td>バージョン</td>
+<td><code>5.0.1</code>（<code>^</code> なしで完全固定。下手に上げると壊れやすいため固定が無難）</td>
+</tr>
+<tr>
+<td>状態</td>
+<td>◎ 中核（ビルド基盤）</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>用語: Create React App（クリエイト リアクト アップ。略してCRA）とは？</strong> Reactアプリの「初期セット」を一発で用意してくれる公式の足場ツール。本アプリはこれで作られています。ただしテスト実行は後述のVitestに置き換えられています（<code>scripts</code> の <code>test</code> が <code>vitest</code> なのが証拠）。</p>
+<p><strong>用語: ビルド（build）とは？</strong> 人間が書いたソースコード（TypeScript / JSX）を、ブラウザがそのまま読める形（普通のJS・CSS・HTML）に <strong>変換・圧縮してまとめる</strong> こと。結果は <code>frontend/build/</code> に出ます。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-41"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&quot;typescript&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^4.9.5&quot;</span><span class="p">,</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>TypeScript（タイプスクリプト）</strong> — JavaScriptに「型（データの種類のラベル）」を足した言語。<code>.tsx</code> <code>.ts</code> を書ける</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>「数値のはずの場所に文字を入れた」等のミスを <strong>動かす前に</strong> 発見できるから</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td>フロントの全ソース（<code>.tsx</code> <code>.ts</code>）。コンパイラ本体がこれ</td>
+</tr>
+<tr>
+<td>バージョン</td>
+<td><code>^4.9.5</code>（TypeScript 4系。React 19のおすすめは5系だが4系で運用している）</td>
+</tr>
+<tr>
+<td>状態</td>
+<td>◎ 中核</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>用語: 型（type）とは？</strong> 「この変数は数値」「これは文字列」というデータの種類のラベル。型を付けておくと、間違った使い方をエディタが赤線で警告してくれます（詳細はTypeScriptの章）。</p>
+</blockquote>
+<h3 id="42-mui-emotion">4.2 見た目の部品（MUI + emotion）</h3>
+<div class="codehilite"><div class="code-wrap" id="code-42"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&quot;@mui/material&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^7.2.0&quot;</span><span class="p">,</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>MUI（エムユーアイ：Material UI）</strong> — Google発「マテリアルデザイン」に沿った、完成度の高いReact用UI部品集（ボタン・入力欄・ダイアログなど）</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>綺麗で操作性のよい部品を一から作らず使えるから</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td>多数の画面（時刻ピッカーの土台、各種UI部品）</td>
+</tr>
+<tr>
+<td>バージョン</td>
+<td><code>^7.2.0</code>（MUI v7）</td>
+</tr>
+<tr>
+<td>状態</td>
+<td>○ 使用</td>
+</tr>
+</tbody>
+</table>
+<div class="codehilite"><div class="code-wrap" id="code-43"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&quot;@emotion/react&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^11.14.0&quot;</span><span class="p">,</span>
+<span class="nt">&quot;@emotion/styled&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^11.14.1&quot;</span><span class="p">,</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>emotion（エモーション）</strong> — JavaScriptの中にCSSを書ける「CSS-in-JS」ライブラリ。<code>react</code> 版と <code>styled</code> 版の2点セット</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td><strong>MUIが内部でemotionを必須としている</strong> ため。MUIを使うなら必ず一緒に入れる相棒</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td>MUI部品の見た目を支える土台。直接書かなくてもMUIが裏で使う</td>
+</tr>
+<tr>
+<td>バージョン</td>
+<td><code>^11.14.0</code> / <code>^11.14.1</code></td>
+</tr>
+<tr>
+<td>状態</td>
+<td>○ 使用（MUIの必須相棒）</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>なぜ2つ要るの？</strong> <code>@emotion/react</code> が基本機能、<code>@emotion/styled</code> が「<code>styled(Button)</code> のようにスタイル付き部品を作る」機能。MUIはこの両方を前提に作られているので、セットで必要です。</p>
+</blockquote>
+<h3 id="43">4.3 日付・時刻ピッカー</h3>
+<div class="codehilite"><div class="code-wrap" id="code-44"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&quot;@mui/x-date-pickers&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^8.11.2&quot;</span><span class="p">,</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>MUI X Date Pickers</strong> — MUIの「日付・時刻を選ぶ高機能部品」集</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>休憩時間や工数入力で「時刻をパッと選ぶ」UIを出すため</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td><code>KosuNew.tsx</code> / <code>KosuEdit.tsx</code> / <code>BreakTime.tsx</code> / <code>TodayBreakTime.tsx</code> の <code>MobileTimePicker</code> <code>LocalizationProvider</code> <code>AdapterDateFns</code>（実コードで確認）</td>
+</tr>
+<tr>
+<td>バージョン</td>
+<td><code>^8.11.2</code>（MUI X v8）</td>
+</tr>
+<tr>
+<td>状態</td>
+<td>○ 使用</td>
+</tr>
+</tbody>
+</table>
+<div class="codehilite"><div class="code-wrap" id="code-45"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&quot;date-fns&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^4.1.0&quot;</span><span class="p">,</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>date-fns（デートエフエヌエス）</strong> — 日付の整形・計算をする軽量ライブラリ（関数の集まり）</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>MUIの日付ピッカーが「日付の計算エンジン」を必要とし、その役を date-fns が担うため</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td>上記4ファイルの <code>import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";</code>。<code>AdapterDateFns</code> が裏で date-fns を呼ぶ（実コードで確認）</td>
+</tr>
+<tr>
+<td>バージョン</td>
+<td><code>^4.1.0</code></td>
+</tr>
+<tr>
+<td>状態</td>
+<td>○ 使用</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>用語: アダプタ（adapter：変換器）とは？</strong> MUIのピッカーは「日付ライブラリを差し替え可能」に作られていて、<code>AdapterDateFns</code> は「date-fnsをピッカーに接続する変換プラグ」です。だから <code>date-fns</code> 本体と <code>AdapterDateFns</code> がセットで必要になります。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-46"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&quot;dayjs&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^1.11.13&quot;</span><span class="p">,</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>Day.js（デイジェイエス）</strong> — date-fns と同じく日付を扱う軽量ライブラリ（別系統）</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>日付ライブラリのもう1つの選択肢。だが本アプリは date-fns を採用しており、dayjs は出番がない</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td><code>import ... from 'dayjs'</code> は <strong>src内に見つからない</strong>（調査結果）</td>
+</tr>
+<tr>
+<td>バージョン</td>
+<td><code>^1.11.13</code></td>
+</tr>
+<tr>
+<td>状態</td>
+<td>✕ 未使用の疑い（§10参照）</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>⚠️ <code>date-fns</code> と <code>dayjs</code> は <strong>同じ目的の競合ライブラリ</strong> です。両方は要りません。本アプリで実際に使われているのは date-fns 側です。</p>
+</blockquote>
+<h3 id="44-axios">4.4 通信（axios）</h3>
+<div class="codehilite"><div class="code-wrap" id="code-47"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&quot;axios&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^1.11.0&quot;</span><span class="p">,</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>axios（アクシオス）</strong> — ブラウザからサーバーへHTTP通信（データのお願い）を送る部品</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>React（フロント）がDjango（バック）のAPIに「データちょうだい」「保存して」と頼むため。本アプリ通信の主役</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td><code>frontend/src/api/axios.ts</code>（共通設定）と、ほぼ全ページが import（調査で全ページ多数の使用を確認）</td>
+</tr>
+<tr>
+<td>バージョン</td>
+<td><code>^1.11.0</code></td>
+</tr>
+<tr>
+<td>状態</td>
+<td>◎ 中核</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>用語: HTTP通信／リクエスト・レスポンスとは？</strong> ブラウザとサーバーの会話の作法。ブラウザが「○○ください」と頼むのが <strong>リクエスト</strong>、サーバーが「はいどうぞ」と返すのが <strong>レスポンス</strong>。axiosはこの会話を代行する「電話係」です。</p>
+<p><strong>なぜ専用ファイル <code>api/axios.ts</code>？</strong> 通信先のベースURLや「401（未ログイン）が返ったらログイン画面へ飛ばす」といった共通設定を1か所にまとめるためです（API通信の章で詳説）。</p>
+</blockquote>
+<h3 id="45-chartjs">4.5 グラフ（chart.js 系）</h3>
+<div class="codehilite"><div class="code-wrap" id="code-48"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&quot;chart.js&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^4.5.0&quot;</span><span class="p">,</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>Chart.js（チャートジェイエス）</strong> — 棒グラフ・円グラフなどを描く定番の描画エンジン</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>工数を集計して <strong>棒グラフで見える化</strong> するため</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td><code>KosuTotal.tsx</code> / <code>Components/KosuBarChart.tsx</code>（react-chartjs-2 経由で利用）</td>
+</tr>
+<tr>
+<td>バージョン</td>
+<td><code>^4.5.0</code></td>
+</tr>
+<tr>
+<td>状態</td>
+<td>○ 使用</td>
+</tr>
+</tbody>
+</table>
+<div class="codehilite"><div class="code-wrap" id="code-49"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&quot;react-chartjs-2&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^5.3.0&quot;</span><span class="p">,</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>react-chartjs-2</strong> — Chart.js を「Reactの部品」として使えるようにする橋渡し</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>Chart.js は単体だと素のJS向け。Reactで <code>&lt;Bar /&gt;</code> のように書くにはこのラッパーが要る</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td><code>KosuTotal.tsx</code> / <code>KosuBarChart.tsx</code> の <code>import { Bar } from "react-chartjs-2";</code>（実コードで確認）</td>
+</tr>
+<tr>
+<td>バージョン</td>
+<td><code>^5.3.0</code></td>
+</tr>
+<tr>
+<td>状態</td>
+<td>○ 使用</td>
+</tr>
+</tbody>
+</table>
+<div class="codehilite"><div class="code-wrap" id="code-50"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&quot;chartjs-plugin-datalabels&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^2.2.0&quot;</span><span class="p">,</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>chartjs-plugin-datalabels</strong> — Chart.jsの各棒・各点に「数値ラベル」を直接表示する拡張プラグイン</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>棒グラフの上に実数値を出して読みやすくするため</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td><code>KosuTotal.tsx</code> の <code>import ChartDataLabels from "chartjs-plugin-datalabels";</code>（実コードで確認）</td>
+</tr>
+<tr>
+<td>バージョン</td>
+<td><code>^2.2.0</code></td>
+</tr>
+<tr>
+<td>状態</td>
+<td>○ 使用</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>用語: ラッパー（wrapper：包むもの）とは？</strong> ある部品を「別の流儀で使えるように包んだ部品」。react-chartjs-2 は Chart.js を React 流に包んだラッパーです。</p>
+</blockquote>
+<h3 id="46-fullcalendar-react-calendar">4.6 カレンダー（FullCalendar / react-calendar）</h3>
+<div class="codehilite"><div class="code-wrap" id="code-51"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&quot;@fullcalendar/daygrid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^6.1.19&quot;</span><span class="p">,</span>
+<span class="nt">&quot;@fullcalendar/interaction&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^6.1.19&quot;</span><span class="p">,</span>
+<span class="nt">&quot;@fullcalendar/react&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^6.1.19&quot;</span><span class="p">,</span>
+<span class="nt">&quot;@fullcalendar/timegrid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^6.1.19&quot;</span><span class="p">,</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>FullCalendar（フルカレンダー）</strong> — 月表示・週表示・予定のドラッグなど高機能なカレンダー部品（4つの小部品セット）</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>本来はリッチなカレンダーUIを出すための部品</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td><code>@fullcalendar/...</code> の import は <strong>src内に1件も見つからない</strong>（調査結果）。本アプリのカレンダーは自前実装（§11）</td>
+</tr>
+<tr>
+<td>バージョン</td>
+<td>すべて <code>^6.1.19</code></td>
+</tr>
+<tr>
+<td>状態</td>
+<td>✕ 未使用の疑い（§10・§11参照）</td>
+</tr>
+</tbody>
+</table>
+<div class="codehilite"><div class="code-wrap" id="code-52"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&quot;react-calendar&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^6.0.0&quot;</span><span class="p">,</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>react-calendar</strong> — シンプルな月カレンダー部品（FullCalendarより軽量）</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>カレンダー表示の別候補</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td><code>import ... from 'react-calendar'</code> は <strong>src内に見つからない</strong>（調査結果）</td>
+</tr>
+<tr>
+<td>バージョン</td>
+<td><code>^6.0.0</code></td>
+</tr>
+<tr>
+<td>状態</td>
+<td>✕ 未使用の疑い（§10・§11参照）</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>⚠️ カレンダー部品が <strong>3系統（FullCalendar 4点 + react-calendar）も入っている</strong> のに、実際の画面は自前の <code>generateCalendar</code> 関数で作っています。これは「いろいろ試した跡」が残った状態です。§11で実物を確認します。</p>
+</blockquote>
+<h3 id="47-dependencies">4.7 型定義・テスト関連がdependenciesに混在</h3>
+<div class="codehilite"><div class="code-wrap" id="code-53"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&quot;@types/react&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^19.1.7&quot;</span><span class="p">,</span>
+<span class="nt">&quot;@types/react-dom&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^19.1.6&quot;</span><span class="p">,</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>@types/react / @types/react-dom</strong> — React と ReactDOM の <strong>TypeScript用「型情報」だけのパッケージ</strong></td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>React本体はJSで書かれ型情報を持たない。TypeScriptが型チェックするために、この別売り型定義が必要</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td>コンパイル時にTypeScriptが参照（コードに直接importはしない）</td>
+</tr>
+<tr>
+<td>バージョン</td>
+<td><code>^19.1.7</code> / <code>^19.1.6</code>（React 19に合わせる）</td>
+</tr>
+<tr>
+<td>状態</td>
+<td>○ 使用（厳密には開発時用だが、ここでは dependencies に置かれている）</td>
+</tr>
+</tbody>
+</table>
+<div class="codehilite"><div class="code-wrap" id="code-54"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&quot;@testing-library/dom&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^10.4.0&quot;</span><span class="p">,</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>@testing-library/dom</strong> — テストでDOM（画面要素）を操作・検証する土台ライブラリ</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>テスト用部品（<code>@testing-library/react</code>）が内部で必要とする土台</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td>テストコード（直接importは少なく、react版の土台として働く）</td>
+</tr>
+<tr>
+<td>バージョン</td>
+<td><code>^10.4.0</code></td>
+</tr>
+<tr>
+<td>状態</td>
+<td>○ 使用（本来は開発時依存の性質）</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>⚠️ <code>@types/...</code> や <code>@testing-library/dom</code> は本来 devDependencies に置くのが理想ですが、本アプリでは dependencies に入っています。<strong>動作には支障ありません</strong>（npm はどちらも入れる）。整理する場合の注意は§12で触れます。</p>
+</blockquote>
+<h3 id="48-web-vitals">4.8 web-vitals</h3>
+<div class="codehilite"><div class="code-wrap" id="code-55"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&quot;web-vitals&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^2.1.4&quot;</span><span class="p">,</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>web-vitals</strong> — Googleが定める「表示速度などの体験指標（LCP/FID/CLS等）」を計測する部品</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>CRAの初期テンプレートに付属。性能計測用</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td><code>frontend/src/reportWebVitals.ts</code> 内でのみ参照。だが <strong>その reportWebVitals 自体が <code>index.tsx</code> から呼ばれていない</strong>（調査結果）ため、計測は実際には作動していない</td>
+</tr>
+<tr>
+<td>バージョン</td>
+<td><code>^2.1.4</code></td>
+</tr>
+<tr>
+<td>状態</td>
+<td>✕ 未使用の疑い（§10参照）</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="5-packagejson-scripts-eslintconfig-browserslist">5. package.json の scripts / eslintConfig / browserslist</h2>
+<p>dependencies の次の3ブロックを解説します。</p>
+<h3 id="51-scripts">5.1 scripts（定型コマンド集）</h3>
+<div class="codehilite"><div class="code-wrap" id="code-56"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&quot;scripts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;start&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;react-scripts start&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;build&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;react-scripts build&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;test&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;vitest&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;test:ui&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;vitest --ui&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;test:run&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;vitest run&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;eject&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;react-scripts eject&quot;</span>
+<span class="p">},</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>▼ このブロックがやること（先に日本語で）:</strong> <code>npm run ○○</code> と打ったときに実際に走る「ショートカット定義」です。長いコマンドに短い名前を付けています。</p>
+</blockquote>
+<p>1行ずつ。</p>
+<div class="codehilite"><div class="code-wrap" id="code-57"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&quot;start&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;react-scripts start&quot;</span><span class="p">,</span>
+</code></pre></div></div>
+
+<p><code>npm start</code> で実行 → 開発サーバーが立ち上がり <code>http://localhost:3000</code> で画面が見られる。コードを保存すると自動で画面が更新（ホットリロード）。</p>
+<div class="codehilite"><div class="code-wrap" id="code-58"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&quot;build&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;react-scripts build&quot;</span><span class="p">,</span>
+</code></pre></div></div>
+
+<p><code>npm run build</code> で実行 → 本番用に最適化（圧縮・まとめ）したファイルを <code>frontend/build/</code> に出力。これを実サーバーに置く。</p>
+<div class="codehilite"><div class="code-wrap" id="code-59"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&quot;test&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;vitest&quot;</span><span class="p">,</span>
+</code></pre></div></div>
+
+<p><code>npm test</code> で実行 → テストツール <strong>Vitest</strong> を「監視モード」で起動（ファイルを保存するたびに自動でテスト）。CRA標準のJestではなく <strong>Vitestに差し替え</strong> ている点が重要。</p>
+<div class="codehilite"><div class="code-wrap" id="code-60"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&quot;test:ui&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;vitest --ui&quot;</span><span class="p">,</span>
+</code></pre></div></div>
+
+<p><code>npm run test:ui</code> で実行 → Vitestを <strong>ブラウザ上の見やすい画面</strong> で動かす。</p>
+<div class="codehilite"><div class="code-wrap" id="code-61"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&quot;test:run&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;vitest run&quot;</span><span class="p">,</span>
+</code></pre></div></div>
+
+<p><code>npm run test:run</code> で実行 → テストを <strong>1回だけ</strong> 実行して結果を出し終了（CI＝自動検査向き）。</p>
+<div class="codehilite"><div class="code-wrap" id="code-62"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&quot;eject&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;react-scripts eject&quot;</span><span class="p">,</span>
+</code></pre></div></div>
+
+<p><code>npm run eject</code> で実行 → CRAが隠している内部設定を <strong>すべて外に取り出す</strong> 一方通行の操作。</p>
+<blockquote>
+<p>⚠️ <strong><code>eject</code> は絶対に安易に実行しないこと。</strong> 一度実行すると元に戻せません。CRAの隠し設定が全部表に出てきて、以後ぜんぶ自分で面倒を見る羽目になります。引き継ぎ後、よほどの理由がない限り触らないでください。</p>
+<p><strong>用語: ホットリロード（hot reload）とは？</strong> コードを保存した瞬間、ブラウザを手動で更新しなくても画面が自動で書き換わる開発支援機能。試行錯誤が速くなります。</p>
+</blockquote>
+<h3 id="52-eslintconfig">5.2 eslintConfig（コードの書き方チェック）</h3>
+<div class="codehilite"><div class="code-wrap" id="code-63"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&quot;eslintConfig&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;extends&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">&quot;react-app&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;react-app/jest&quot;</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">},</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>▼ このブロックがやること（先に日本語で）:</strong> ESLint（コードの書き方を自動チェックする道具）の設定です。CRA公式の推奨ルールセットを「そのまま使う」と宣言しています。</p>
+</blockquote>
+<ul>
+<li><code>"react-app"</code> … CRA公式の標準ルール集（Reactで一般的な書き方の作法）。</li>
+<li><code>"react-app/jest"</code> … テストコード向けの追加ルール集。</li>
+</ul>
+<blockquote>
+<p><strong>用語: ESLint（イーエスリント）とは？</strong> コードを実行する前に「未使用の変数がある」「書き方が危ない」等を指摘してくれる <strong>静的解析ツール（リンター）</strong>。校正者が原稿の誤字を赤入れするのに似ています。<code>extends</code> は「既存のルール集を継承して使う」という意味です。</p>
+</blockquote>
+<h3 id="53-browserslist">5.3 browserslist（対応ブラウザの範囲）</h3>
+<div class="codehilite"><div class="code-wrap" id="code-64"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&quot;browserslist&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;production&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">&quot;&gt;0.2%&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;not dead&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;not op_mini all&quot;</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;development&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">&quot;last 1 chrome version&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;last 1 firefox version&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;last 1 safari version&quot;</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">},</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>▼ このブロックがやること（先に日本語で）:</strong> 「どのブラウザまで動くようにビルドするか」の指定です。ビルドツールがこれを見て、古いブラウザ向けの変換をどこまでするか決めます。</p>
+</blockquote>
+<p>本番（production）の指定の意味：</p>
+<ul>
+<li><code>"&gt;0.2%"</code> … 世界の利用シェアが <strong>0.2%超</strong> のブラウザを対象にする。</li>
+<li><code>"not dead"</code> … もう更新が止まった「死んだ」ブラウザは除外。</li>
+<li><code>"not op_mini all"</code> … Opera Mini（機能が限られる軽量ブラウザ）は除外。</li>
+</ul>
+<p>開発（development）の指定の意味：</p>
+<ul>
+<li><code>"last 1 chrome version"</code> … Chromeの <strong>最新1バージョン</strong> だけを対象（開発中は最新だけ見れば十分なので速くなる）。Firefox・Safariも同様。</li>
+</ul>
+<blockquote>
+<p><strong>用語: browserslist（ブラウザリスト）とは？</strong> 「対応ブラウザの範囲」を一元管理する共通設定。Babel（変換ツール）やCSSの自動補完ツールがこの設定を読んで、必要な互換コードだけを生成します。広く対応するほど変換が増えてファイルが大きくなるため、本番と開発で範囲を分けています。</p>
+</blockquote>
+<hr>
+<h2 id="6-packagejson-devdependencies-1">6. package.json の devDependencies を1つずつ解説</h2>
+<p>開発・テスト時だけ必要な部品です。完成品（build結果）には入りません。</p>
+<div class="codehilite"><div class="code-wrap" id="code-65"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&quot;devDependencies&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;@testing-library/jest-dom&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^6.9.1&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;@testing-library/react&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^16.3.1&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;@types/jest&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^30.0.0&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;@vitejs/plugin-react&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^5.1.2&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;@vitest/coverage-v8&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^4.1.2&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;@vitest/ui&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^4.0.16&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;eslint-config-react-app&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^7.0.1&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;jsdom&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^27.3.0&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;vitest&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^4.0.16&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;webpack-bundle-analyzer&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^4.10.2&quot;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>1つずつ。</p>
+<div class="codehilite"><div class="code-wrap" id="code-66"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&quot;@testing-library/jest-dom&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^6.9.1&quot;</span><span class="p">,</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>jest-dom</strong> — テストで「画面に○○が表示されているか」を自然な言葉で検証する追加機能（<code>toBeInTheDocument()</code> 等）</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>「この要素は画面にあるか」を読みやすく書けるから</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td>テストのセットアップ（<code>frontend/src/tests/</code> 配下）</td>
+</tr>
+<tr>
+<td>状態</td>
+<td>○ 使用（テスト用）</td>
+</tr>
+</tbody>
+</table>
+<div class="codehilite"><div class="code-wrap" id="code-67"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&quot;@testing-library/react&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^16.3.1&quot;</span><span class="p">,</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>React Testing Library（RTL）</strong> — Reactコンポーネントを「ユーザー目線」でテストする中心ライブラリ</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>「ボタンを押したらこう表示される」を、実際の使い方に近い形でテストできる</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td>各テストファイルの <code>render(...)</code> <code>screen</code> など</td>
+</tr>
+<tr>
+<td>状態</td>
+<td>◎ 中核（テスト）</td>
+</tr>
+</tbody>
+</table>
+<div class="codehilite"><div class="code-wrap" id="code-68"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&quot;@types/jest&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^30.0.0&quot;</span><span class="p">,</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>@types/jest</strong> — Jest風のテスト関数（<code>describe</code> <code>it</code> <code>expect</code> 等）のTypeScript型定義</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>テストコードで型補完・型チェックを効かせるため</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td>テストコードのコンパイル時</td>
+</tr>
+<tr>
+<td>状態</td>
+<td>○ 使用（テスト用型）</td>
+</tr>
+</tbody>
+</table>
+<div class="codehilite"><div class="code-wrap" id="code-69"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&quot;@vitejs/plugin-react&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^5.1.2&quot;</span><span class="p">,</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>@vitejs/plugin-react</strong> — Vite/Vitest が React（JSX）を理解するためのプラグイン</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>VitestがReactのテストを動かすのに必須</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td>Vitestの設定ファイル（<code>vitest.config</code> 等）</td>
+</tr>
+<tr>
+<td>状態</td>
+<td>○ 使用（テスト基盤）</td>
+</tr>
+</tbody>
+</table>
+<div class="codehilite"><div class="code-wrap" id="code-70"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&quot;@vitest/coverage-v8&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^4.1.2&quot;</span><span class="p">,</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>Vitest カバレッジ（coverage：網羅率）</strong> — 「テストがコードの何%を通ったか」を計測する部品（V8エンジン利用）</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>テストの抜け漏れを数値で把握するため</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td>カバレッジ計測実行時</td>
+</tr>
+<tr>
+<td>状態</td>
+<td>○ 使用（テスト用）</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>用語: カバレッジ（coverage：網羅率）とは？</strong> 全コードのうちテストで実際に実行された割合。「80%」なら2割は一度もテストで動いていない、という目安。高いほど安心の度合いが上がります（テストの章で詳説）。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-71"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&quot;@vitest/ui&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^4.0.16&quot;</span><span class="p">,</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>Vitest UI</strong> — テスト結果をブラウザの画面で見られる部品</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td><code>npm run test:ui</code> で結果を視覚的に確認するため</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td><code>test:ui</code> スクリプト</td>
+</tr>
+<tr>
+<td>状態</td>
+<td>○ 使用（テスト用）</td>
+</tr>
+</tbody>
+</table>
+<div class="codehilite"><div class="code-wrap" id="code-72"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&quot;eslint-config-react-app&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^7.0.1&quot;</span><span class="p">,</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>eslint-config-react-app</strong> — §5.2 の <code>eslintConfig</code> で継承していた <code>react-app</code> ルールの <strong>本体</strong></td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>コード検査ルールの実体だから</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td>ESLint実行時</td>
+</tr>
+<tr>
+<td>状態</td>
+<td>○ 使用（検査ルール）</td>
+</tr>
+</tbody>
+</table>
+<div class="codehilite"><div class="code-wrap" id="code-73"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&quot;jsdom&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^27.3.0&quot;</span><span class="p">,</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>jsdom</strong> — Node.js（ブラウザのない実行環境）の中に「仮想のブラウザ画面（DOM）」を作る部品</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>テストはブラウザなしで走るが、画面操作の検証には「画面のフリ」が要る。それを用意する</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td>Vitestのテスト環境設定（<code>environment: 'jsdom'</code>）</td>
+</tr>
+<tr>
+<td>状態</td>
+<td>◎ 中核（テスト環境）</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>用語: Node.js（ノードジェイエス）とは？</strong> ブラウザの外（パソコンやサーバー上）でJavaScriptを動かす実行環境。テストやビルドはこの上で走ります。Node.jsには画面（DOM）がないため、jsdomが「画面のダミー」を提供します。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-74"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&quot;vitest&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^4.0.16&quot;</span><span class="p">,</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>Vitest（ヴィテスト）</strong> — 高速なテスト実行ツール。Jestの後継的な存在</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>本アプリのテストの中心エンジン。<code>npm test</code> の正体</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td>全テスト実行（<code>scripts</code> の <code>test</code> <code>test:ui</code> <code>test:run</code>）</td>
+</tr>
+<tr>
+<td>状態</td>
+<td>◎ 中核（テスト）</td>
+</tr>
+</tbody>
+</table>
+<div class="codehilite"><div class="code-wrap" id="code-75"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&quot;webpack-bundle-analyzer&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^4.10.2&quot;</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>何か</td>
+<td><strong>webpack-bundle-analyzer</strong> — ビルド結果のファイルサイズを「どの部品が何KB占めるか」見える化する分析ツール</td>
+</tr>
+<tr>
+<td>なぜ使うか</td>
+<td>アプリが重いとき、どの部品が容量を食っているか調べるため</td>
+</tr>
+<tr>
+<td>どこで使う</td>
+<td>必要時に手動で実行（常用ではない）</td>
+</tr>
+<tr>
+<td>状態</td>
+<td>△ 補助ツール（必要時のみ）</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="7-settingspy">7. settings.py から見るバックエンド部品の使われ方</h2>
+<p><code>requirements.txt</code> の部品が <strong>実際にどこで効いているか</strong> を、<code>settings.py</code> の該当箇所と突き合わせます。リストとコードを結びつけて理解するのが目的です。</p>
+<h3 id="71-installed_appsdjango">7.1 INSTALLED_APPS（Djangoに登録するアプリ／部品）</h3>
+<blockquote>
+<p><strong>▼ この設定がやること（先に日本語で）:</strong> 「このDjangoプロジェクトで使う機能（アプリ）」をDjangoに登録する一覧です。ここに名前を書いて初めて、その部品が有効になります。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-76"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">INSTALLED_APPS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="c1"># Django標準：管理画面</span>
+    <span class="s1">&#39;django.contrib.admin&#39;</span><span class="p">,</span>
+    <span class="c1"># Django標準：ユーザー認証</span>
+    <span class="s1">&#39;django.contrib.auth&#39;</span><span class="p">,</span>
+    <span class="c1"># Django標準：モデルの種類管理（内部基盤）</span>
+    <span class="s1">&#39;django.contrib.contenttypes&#39;</span><span class="p">,</span>
+    <span class="c1"># Django標準：セッション（ログイン状態の保持）</span>
+    <span class="s1">&#39;django.contrib.sessions&#39;</span><span class="p">,</span>
+    <span class="c1"># Django標準：一時メッセージ表示</span>
+    <span class="s1">&#39;django.contrib.messages&#39;</span><span class="p">,</span>
+    <span class="c1"># Django標準：静的ファイル管理</span>
+    <span class="s1">&#39;django.contrib.staticfiles&#39;</span><span class="p">,</span>
+    <span class="c1"># ← django-bootstrap4（旧テンプレート時代の名残）</span>
+    <span class="s1">&#39;bootstrap4&#39;</span><span class="p">,</span>
+    <span class="c1"># ← django-bootstrap-datepicker-plus（同上・名残）</span>
+    <span class="s1">&#39;bootstrap_datepicker_plus&#39;</span><span class="p">,</span>
+    <span class="c1"># ← 本アプリ本体（自作）</span>
+    <span class="s1">&#39;kosu&#39;</span><span class="p">,</span>
+    <span class="c1"># ← Django-Q（非同期タスク：中核）</span>
+    <span class="s1">&#39;django_q&#39;</span><span class="p">,</span>
+    <span class="c1"># ← DRF（API：中核）</span>
+    <span class="s1">&#39;rest_framework&#39;</span><span class="p">,</span>
+    <span class="c1"># ← django-cors-headers（CORS許可：中核）</span>
+    <span class="s1">&#39;corsheaders&#39;</span><span class="p">,</span>
+<span class="p">]</span>
+</code></pre></div></div>
+
+<p>各行を見ると、<code>requirements.txt</code> のどの部品が「登録されているか」が分かります。</p>
+<ul>
+<li><code>'kosu'</code> … 自作アプリ本体（ライブラリではない）。</li>
+<li><code>'django_q'</code> <code>'rest_framework'</code> <code>'corsheaders'</code> … 中核部品。確かに登録されている。</li>
+<li><code>'bootstrap4'</code> <code>'bootstrap_datepicker_plus'</code> … 登録は <strong>残っている</strong> が、React画面では出番がない（§10）。</li>
+</ul>
+<blockquote>
+<p><strong>なぜ「名残」が残っているの？</strong> Reactに移行する前のテンプレート時代の登録を消し忘れているためと考えられます。<strong>登録が残っているだけなら害は小さい</strong> ですが、混乱の元なので整理候補です（§12）。</p>
+</blockquote>
+<h3 id="72-middleware">7.2 MIDDLEWARE（リクエストを順に通すフィルタ列）</h3>
+<blockquote>
+<p><strong>▼ この設定がやること（先に日本語で）:</strong> 受け取ったリクエストを「上から順に通す関所（ミドルウェア）」の並びです。CORS許可・セキュリティ・セッション・静的ファイル配信などが、ここで順番に処理されます。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-77"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">MIDDLEWARE</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="c1"># ← cors-headers：別オリジン通信を許可（一番先頭が重要）</span>
+    <span class="s1">&#39;corsheaders.middleware.CorsMiddleware&#39;</span><span class="p">,</span>
+    <span class="c1"># Django標準：セキュリティ</span>
+    <span class="s1">&#39;django.middleware.security.SecurityMiddleware&#39;</span><span class="p">,</span>
+    <span class="c1"># Django標準：セッション</span>
+    <span class="s1">&#39;django.contrib.sessions.middleware.SessionMiddleware&#39;</span><span class="p">,</span>
+    <span class="c1"># Django標準：共通処理</span>
+    <span class="s1">&#39;django.middleware.common.CommonMiddleware&#39;</span><span class="p">,</span>
+    <span class="c1"># Django標準：CSRF対策</span>
+    <span class="s1">&#39;django.middleware.csrf.CsrfViewMiddleware&#39;</span><span class="p">,</span>
+    <span class="c1"># Django標準：認証</span>
+    <span class="s1">&#39;django.contrib.auth.middleware.AuthenticationMiddleware&#39;</span><span class="p">,</span>
+    <span class="c1"># Django標準：メッセージ</span>
+    <span class="s1">&#39;django.contrib.messages.middleware.MessageMiddleware&#39;</span><span class="p">,</span>
+    <span class="c1"># Django標準：クリックジャッキング対策</span>
+    <span class="s1">&#39;django.middleware.clickjacking.XFrameOptionsMiddleware&#39;</span><span class="p">,</span>
+    <span class="c1"># ← WhiteNoise：静的ファイル配信</span>
+    <span class="s1">&#39;whitenoise.middleware.WhiteNoiseMiddleware&#39;</span><span class="p">,</span>
+    <span class="c1"># ← 自作ミドルウェア</span>
+    <span class="s1">&#39;kosu.middleware.clear_session_middleware.CurrentRequestMiddleware&#39;</span><span class="p">,</span>
+<span class="p">]</span>
+</code></pre></div></div>
+
+<p>ここで <code>requirements.txt</code> の <strong>cors-headers</strong> と <strong>whitenoise</strong> が実際に効いているのが確認できます。</p>
+<blockquote>
+<p><strong>用語: ミドルウェア（middleware：中間処理）とは？</strong> リクエストとアプリ本体の「間」に挟まる処理の層。空港でいう「保安検査 → パスポート確認 → 搭乗」のような一連の関所。<code>corsheaders</code> を一番上に置くのは「最初にCORSのヘッダを付ける」必要があるためです。</p>
+</blockquote>
+<h3 id="73-rest_frameworkdrf">7.3 REST_FRAMEWORK（DRFの設定）</h3>
+<div class="codehilite"><div class="code-wrap" id="code-78"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">REST_FRAMEWORK</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="c1"># 一覧をページ分割する方式</span>
+    <span class="s1">&#39;DEFAULT_PAGINATION_CLASS&#39;</span><span class="p">:</span> <span class="s1">&#39;rest_framework.pagination.PageNumberPagination&#39;</span><span class="p">,</span>
+    <span class="c1"># 1ページ20件</span>
+    <span class="s1">&#39;PAGE_SIZE&#39;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
+    <span class="s1">&#39;DEFAULT_PARSER_CLASSES&#39;</span><span class="p">:</span> <span class="p">(</span>
+        <span class="c1"># 受信はJSONだけ受け付ける</span>
+        <span class="s1">&#39;rest_framework.parsers.JSONParser&#39;</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="s1">&#39;DEFAULT_RENDERER_CLASSES&#39;</span><span class="p">:</span> <span class="p">(</span>
+        <span class="c1"># 送信はJSONで返す</span>
+        <span class="s1">&#39;rest_framework.renderers.JSONRenderer&#39;</span><span class="p">,</span>
+    <span class="p">),</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>これは <code>djangorestframework</code>（DRF）の設定です。「一覧は20件ずつページ分け」「やり取りはJSONのみ」と決めています。リストの DRF がここで具体的に働いています。</p>
+<h3 id="74-q_clusterdjango-q">7.4 Q_CLUSTER（Django-Qの設定）</h3>
+<div class="codehilite"><div class="code-wrap" id="code-79"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">Q_CLUSTER</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="c1"># タスクの管理にデフォルトDBを使う</span>
+    <span class="s1">&#39;orm&#39;</span><span class="p">:</span> <span class="s1">&#39;default&#39;</span><span class="p">,</span>
+    <span class="c1"># 作業員（同時処理）は4人</span>
+    <span class="s1">&#39;workers&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+    <span class="c1"># 2000タスクごとに作業員をリフレッシュ</span>
+    <span class="s1">&#39;recycle&#39;</span><span class="p">:</span> <span class="mi">2000</span><span class="p">,</span>
+    <span class="c1"># 失敗時の再試行までの秒数</span>
+    <span class="s1">&#39;retry&#39;</span><span class="p">:</span> <span class="mi">2000</span><span class="p">,</span>
+    <span class="c1"># 1タスクの上限時間（1800秒＝30分）</span>
+    <span class="s1">&#39;timeout&#39;</span><span class="p">:</span> <span class="mi">1800</span><span class="p">,</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>これは <code>django-q</code> の設定。「裏方の作業員を4人用意し、最大30分かかる重い処理まで面倒を見る」という意味です。リストの Django-Q が具体的に効いています。</p>
+<h3 id="75-loggingpython-json-logger">7.5 LOGGING（python-json-logger は使われていない証拠）</h3>
+<div class="codehilite"><div class="code-wrap" id="code-80"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">LOGGING</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;version&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s1">&#39;disable_existing_loggers&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="s1">&#39;formatters&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;simple&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="c1"># ← ただのメッセージ文字列。JSON形式ではない</span>
+            <span class="s1">&#39;format&#39;</span><span class="p">:</span> <span class="s1">&#39;</span><span class="si">{message}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;style&#39;</span><span class="p">:</span> <span class="s1">&#39;{&#39;</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">},</span>
+    <span class="c1"># …（handlers / loggers が続く）…</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>ここに注目。フォーマッタは <code>'simple'</code>（<code>'format': '{message}'</code>）であり、<strong>JSON形式ではありません</strong>。つまり <code>requirements.txt</code> の <code>python-json-logger</code>（JSONでログを出す部品）は <strong>このアプリでは使われていない</strong> ことが、設定からも裏付けられます（§10で再掲）。</p>
+<hr>
+<h2 id="8-wsgi-asgi-gunicorn">8. WSGI / ASGI / Gunicorn の補足</h2>
+<p><code>requirements.txt</code> の <strong>Gunicorn</strong>、<code>settings.py</code> の <code>WSGI_APPLICATION</code> を理解するには、「WSGI」という言葉を押さえる必要があります。</p>
+<h3 id="81-web">8.1 そもそもWebサーバーとアプリは別もの</h3>
+<p>ブラウザからのアクセスは、まず <strong>Webサーバー</strong> が受け取ります。しかしWebサーバーは「Pythonアプリを直接動かす方法」を知りません。逆にDjango（Pythonアプリ）も「生のネットワーク通信のさばき方」は専門外です。</p>
+<p>そこで、両者をつなぐ <strong>共通の約束ごと</strong> が必要になります。それが <strong>WSGI</strong> です。</p>
+<blockquote>
+<p><strong>用語: WSGI（ウィズギー：Web Server Gateway Interface）とは？</strong> 「PythonのWebアプリ」と「Webサーバー」の <strong>会話のお作法を統一した規格</strong>。コンセントの形を世界共通にするように、「この形でデータを渡せば、どのサーバーとどのPythonアプリも噛み合う」と決めたもの。</p>
+</blockquote>
+<h3 id="82-gunicorn">8.2 Gunicornの役割</h3>
+<blockquote>
+<p><strong>▼ ここでやること（先に日本語で）:</strong> Gunicornが「Webサーバーからのリクエスト」を受け取り、WSGIの作法でDjangoに渡し、Djangoの返事をWebサーバーへ返す、という橋渡しを担います。</p>
+</blockquote>
+<p>流れを図にすると次の通りです（※説明用の簡易図）。</p>
+<div class="codehilite"><div class="code-wrap" id="code-81"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>ブラウザ
+   │ HTTPリクエスト
+   ▼
+[ Webサーバー / リバースプロキシ ]   （例：Azureのフロント、Nginx 等）
+   │ WSGI
+   ▼
+[ Gunicorn ]   ← gunicorn==21.2.0（複数の作業員プロセスでさばく）
+   │ WSGIの作法でアプリを呼ぶ
+   ▼
+[ Django アプリ ]   ← settings.py の WSGI_APPLICATION が入口
+   │
+   ▼
+（DB・処理）→ レスポンスを逆ルートで返す
+</code></pre></div></div>
+
+<p><code>settings.py</code> のこの1行が「WSGIで呼ばれる入口」を指定しています。</p>
+<div class="codehilite"><div class="code-wrap" id="code-82"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># Gunicornはこの application を呼び出してDjangoを起動する</span>
+<span class="n">WSGI_APPLICATION</span> <span class="o">=</span> <span class="s1">&#39;hozen_another.wsgi.application&#39;</span>
+</code></pre></div></div>
+
+<p>これは「<code>hozen_another/wsgi.py</code> の中の <code>application</code> という変数を入口にせよ」という意味です。Gunicornはここを掴んでDjangoを動かします。</p>
+<h3 id="83-wsgiasgi">8.3 WSGIとASGIの違い（補足）</h3>
+<blockquote>
+<p><strong>用語: ASGI（アスギー：Asynchronous Server Gateway Interface）とは？</strong> WSGIの「非同期対応版」。WebSocket（双方向のリアルタイム通信）など、WSGIでは扱いにくい用途に対応した新しい規格。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>規格</th>
+<th>得意なこと</th>
+<th>本アプリ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>WSGI</strong></td>
+<td>普通のリクエスト→レスポンス型のWeb</td>
+<td><strong>これを使用</strong>（<code>WSGI_APPLICATION</code> 設定あり）</td>
+</tr>
+<tr>
+<td><strong>ASGI</strong></td>
+<td>WebSocket等のリアルタイム双方向通信</td>
+<td>使っていない（リアルタイム機能がないため不要）</td>
+</tr>
+</tbody>
+</table>
+<p>本アプリは「画面を開く → データを取る → 表示する」という素直なWebなので、<strong>WSGI（Gunicorn）で十分</strong> です。リアルタイムチャットのような機能を将来足すならASGIを検討します。</p>
+<blockquote>
+<p><strong>なぜ runserver ではダメなの？</strong> <code>python manage.py runserver</code> は開発用の簡易サーバーで、同時アクセスに弱く、本番の負荷に耐えられません。本番は <strong>Gunicorn</strong>（複数の作業員プロセスで同時にさばける）を使うのが定石です。</p>
+</blockquote>
+<hr>
+<h2 id="9-indextsx">9. index.tsx から見るフロント部品の使われ方</h2>
+<p>フロントの部品が <strong>どこで効いているか</strong> を、入口ファイル <code>frontend/src/index.tsx</code> で確認します。これは「フロントの起動スイッチ」です。</p>
+<h3 id="91-import">9.1 冒頭のimport（部品の取り込み）</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> アプリを動かすのに必要な部品（React本体・ReactDOM・ルーター・共通CSS・各画面）を、ファイルの先頭でまとめて「取り込み（import）」しています。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-83"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// React本体（画面の組み立て役）</span>
+<span class="k">import</span><span class="w"> </span><span class="nx">React</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;react&#39;</span><span class="p">;</span>
+<span class="c1">// ReactDOM（画面をブラウザに描く役）</span>
+<span class="k">import</span><span class="w"> </span><span class="nx">ReactDOM</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;react-dom/client&#39;</span><span class="p">;</span>
+<span class="c1">// ルーター（URLと画面の対応付け）</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">BrowserRouter</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="nx">Router</span><span class="p">,</span><span class="w"> </span><span class="nx">Routes</span><span class="p">,</span><span class="w"> </span><span class="nx">Route</span><span class="p">,</span><span class="w"> </span><span class="nx">useLocation</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-router-dom&quot;</span><span class="p">;</span>
+<span class="c1">// 共通CSS（全画面の見た目の土台）</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;./styles/global.css&#39;</span><span class="p">;</span>
+<span class="c1">// ↓ここから下は各画面の部品（自作）</span>
+<span class="k">import</span><span class="w"> </span><span class="nx">Login</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;./MainPage/Login&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="nx">Help</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;./MainPage/Help&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="nx">MainMenu</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;./MainPage/MainMenu&#39;</span><span class="p">;</span>
+<span class="c1">// …（中略：50近い画面を1つずつimport）…</span>
+<span class="k">import</span><span class="w"> </span><span class="nx">AdministratorHistoryDetail</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;./AdministratorPage/AdministratorHistoryDetail&#39;</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>ここで <code>package.json</code> の <strong>react / react-dom / react-router-dom</strong> が実際に使われているのが分かります。</p>
+<blockquote>
+<p><strong>用語: import（インポート：取り込み）とは？</strong> 別ファイルや部品の機能を「このファイルでも使えるように呼び込む」命令。料理でいえば「冷蔵庫（部品集）から必要な材料を作業台に出す」操作です。</p>
+<p><strong><code>BrowserRouter as Router</code> の <code>as</code> とは？</strong> 取り込んだ <code>BrowserRouter</code> を、このファイル内では短く <code>Router</code> という別名で呼ぶ、という意味です。</p>
+</blockquote>
+<h3 id="92-uselocation">9.2 ページタイトルの自動切り替え（useLocation の活用）</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 「今どのURLを開いているか」を監視し、URLごとにブラウザのタブのタイトル（例：「ログイン - 業務工数システム」）を自動で書き換えています。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-84"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// App という画面全体の親部品を定義</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">App</span><span class="o">:</span><span class="w"> </span><span class="kt">React.FC</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// react-routerの機能で「現在のURL情報」を取得</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">location</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useLocation</span><span class="p">();</span>
+
+<span class="w">  </span><span class="c1">// 「URLが変わるたびに」実行する処理を登録</span>
+<span class="w">  </span><span class="nx">React</span><span class="p">.</span><span class="nx">useEffect</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// URL → タイトル文字列 の対応表（オブジェクト）</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">routeTitles</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">[</span><span class="nx">key</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="c1">// /login を開いたらこのタイトル</span>
+<span class="w">      </span><span class="s2">&quot;/login&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;ログイン - 業務工数システム&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;/help&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;ヘルプ - 業務工数システム&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;/&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Main Menu - 業務工数システム&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="c1">// …（中略：全URLぶんの対応）…</span>
+<span class="w">      </span><span class="s2">&quot;/manager-history-detail/:id&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;データ操作履歴詳細 - 業務工数システム&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="p">};</span>
+
+<span class="w">    </span><span class="c1">// 対応表にあればそのタイトル、なければ既定値</span>
+<span class="w">    </span><span class="nb">document</span><span class="p">.</span><span class="nx">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">routeTitles</span><span class="p">[</span><span class="nx">location</span><span class="p">.</span><span class="nx">pathname</span><span class="p">]</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="s2">&quot;業務工数システム&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="c1">// [location] = 「locationが変わったら再実行」の指示</span>
+<span class="w">  </span><span class="p">},</span><span class="w"> </span><span class="p">[</span><span class="nx">location</span><span class="p">]);</span>
+</code></pre></div></div>
+
+<p>ここで <code>react-router-dom</code> の <code>useLocation</code> と、React の <code>useEffect</code>（副作用フック）が使われています。<code>package.json</code> の <strong>react</strong> と <strong>react-router-dom</strong> の具体的な活躍場面です。</p>
+<blockquote>
+<p><strong>用語: useEffect（ユーズエフェクト）とは？</strong> Reactの「ある条件のときに、画面描画とは別の処理（副作用）を走らせる」しくみ。ここでは「URLが変わったらタブのタイトルを変える」という副作用を担っています（Reactの章で詳説）。</p>
+</blockquote>
+<h3 id="93-route">9.3 ルーティング本体（Route の列）</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 「このURLなら、この画面部品を表示する」という対応を、<code>&lt;Route&gt;</code> を50個近く並べて定義しています。これが react-router-dom の本領です。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-85"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">{</span><span class="cm">/* ルート（対応）をまとめる箱 */</span><span class="p">}</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">Routes</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">{</span><span class="cm">/* /login → Login画面 */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Route</span><span class="w"> </span><span class="na">path</span><span class="o">=</span><span class="s">&quot;/login&quot;</span><span class="w"> </span><span class="na">element</span><span class="o">=</span><span class="p">{&lt;</span><span class="nt">Login</span><span class="w"> </span><span class="p">/&gt;}</span><span class="w"> </span><span class="p">/&gt;</span>
+<span class="w">      </span><span class="p">{</span><span class="cm">/* /help → Help画面 */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Route</span><span class="w"> </span><span class="na">path</span><span class="o">=</span><span class="s">&quot;/help&quot;</span><span class="w"> </span><span class="na">element</span><span class="o">=</span><span class="p">{&lt;</span><span class="nt">Help</span><span class="w"> </span><span class="p">/&gt;}</span><span class="w"> </span><span class="p">/&gt;</span>
+<span class="w">      </span><span class="p">{</span><span class="cm">/* / → メインメニュー */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Route</span><span class="w"> </span><span class="na">path</span><span class="o">=</span><span class="s">&quot;/&quot;</span><span class="w"> </span><span class="na">element</span><span class="o">=</span><span class="p">{&lt;</span><span class="nt">MainMenu</span><span class="w"> </span><span class="p">/&gt;}</span><span class="w"> </span><span class="p">/&gt;</span>
+<span class="w">      </span><span class="p">{</span><span class="cm">/* 以下、各機能の画面が続く */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Route</span><span class="w"> </span><span class="na">path</span><span class="o">=</span><span class="s">&quot;/kosu-menu&quot;</span><span class="w"> </span><span class="na">element</span><span class="o">=</span><span class="p">{&lt;</span><span class="nt">KosuMenu</span><span class="w"> </span><span class="p">/&gt;}</span><span class="w"> </span><span class="p">/&gt;</span>
+<span class="w">      </span><span class="p">{</span><span class="cm">/* …（中略：工数・定義・人員・班員・問い合わせ・管理者の各画面）… */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Route</span><span class="w"> </span><span class="na">path</span><span class="o">=</span><span class="s">&quot;/manager-history-detail/:id&quot;</span><span class="w"> </span><span class="na">element</span><span class="o">=</span><span class="p">{&lt;</span><span class="nt">AdministratorHistoryDetail</span><span class="w"> </span><span class="p">/&gt;}</span><span class="w"> </span><span class="p">/&gt;</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">Routes</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>path="..."</code> … URLのパターン。<code>:id</code> は「ここに数字やID等が入る可変部分」という印（パスパラメータ）。</li>
+<li><code>element={&lt;○○ /&gt;}</code> … そのURLで表示する画面部品。</li>
+</ul>
+<h3 id="94-createroot-render">9.4 アプリの起動（createRoot と render）</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> HTMLの中の <code>id="root"</code> の場所を見つけ、そこにReactアプリ全体を描き込みます。これが「フロントの最終的な起動スイッチ」です。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-86"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// HTMLの&lt;div id=&quot;root&quot;&gt;を画面の土台にする</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">root</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">ReactDOM</span><span class="p">.</span><span class="nx">createRoot</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;root&#39;</span><span class="p">)</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="nx">HTMLElement</span><span class="p">);</span>
+
+<span class="c1">// その土台に描く</span>
+<span class="nx">root</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span>
+<span class="w">  </span><span class="p">{</span><span class="cm">/* 開発中に潜在バグを警告してくれる「厳格モード」で包む */</span><span class="p">}</span>
+<span class="w">  </span><span class="p">&lt;</span><span class="nt">React</span><span class="p">.</span><span class="na">StrictMode</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">{</span><span class="cm">/* ルーター（URL監視）で包む */</span><span class="p">}</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">Router</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">{</span><span class="cm">/* アプリ本体を表示 */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">App</span><span class="w"> </span><span class="p">/&gt;</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">Router</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">&lt;/</span><span class="nt">React</span><span class="p">.</span><span class="na">StrictMode</span><span class="p">&gt;</span>
+<span class="p">);</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>ReactDOM.createRoot(...)</code> … <code>package.json</code> の <strong>react-dom</strong> の機能。</li>
+<li><code>&lt;Router&gt;</code> … <strong>react-router-dom</strong> の <code>BrowserRouter</code>（別名Router）。URL監視を有効化。</li>
+<li><code>&lt;React.StrictMode&gt;</code> … <strong>react</strong> の機能。開発時のみ余分なチェックを走らせ、危ない書き方を警告する「安全モード」。</li>
+</ul>
+<blockquote>
+<p><strong>用語: id="root" とは？</strong> <code>frontend/build/index.html</code> の中にある空の <code>&lt;div id="root"&gt;&lt;/div&gt;</code>。Reactはこの「空の額縁」の中に、アプリ全体を描き込みます。HTMLは入口の1枚だけで、中身はすべてReactが作るのが「SPA（シングルページアプリ）」の特徴です（Reactの章で詳説）。</p>
+<p>⚠️ <strong>注目: ここに <code>web-vitals</code>（reportWebVitals）の呼び出しがありません。</strong> CRAの標準テンプレートなら <code>reportWebVitals()</code> を呼ぶ行があるのですが、本アプリの <code>index.tsx</code> には <strong>その行が存在しません</strong>。つまり <code>reportWebVitals.ts</code> も <code>web-vitals</code> も実質的に使われていない、という§10の結論の決定的な証拠です。</p>
+</blockquote>
+<hr>
+<h2 id="10">10. 正直な棚卸し：使われていない疑いのある部品</h2>
+<p>ここが、この章で <strong>後任者にとって最も価値の高い</strong> セクションです。本アプリには「部品リストに書いてあるのに、実際のコードでは使われていない疑いのある部品」が多数あります。各部品について、実際にコード全体を検索した結果を根拠とともに表にまとめます。</p>
+<blockquote>
+<p>⚠️ <strong>重要な前置き:</strong> 「未使用の疑い」は、<strong>ソースコードを全文検索して直接importが見つからなかった</strong> という客観的事実に基づきます。ただし、(a) 設定ファイル経由で間接的に効いている、(b) 別の部品が内部で依存している、(c) 検索に引っかからない特殊な使い方をしている、という可能性はゼロではありません。<strong>いきなり消さず、§12の安全手順で確認してから</strong> 整理してください。</p>
+</blockquote>
+<h3 id="101-requirementstxt">10.1 バックエンド（requirements.txt）の棚卸し</h3>
+<table>
+<thead>
+<tr>
+<th>部品</th>
+<th>バージョン</th>
+<th>調査結果（根拠）</th>
+<th>判定</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>xlwings</code></td>
+<td>0.30.13</td>
+<td><code>import xlwings</code> がコードに見つからない。Excel処理は openpyxl が担当。さらにxlwingsはExcelアプリ常駐が前提でLinuxサーバーで動かない</td>
+<td>✕ 未使用の疑い</td>
+</tr>
+<tr>
+<td><code>beautifulsoup4</code></td>
+<td>4.12.2</td>
+<td><code>import bs4</code> / <code>from bs4</code> が見つからない。スクレイピング機能なし</td>
+<td>✕ 未使用の疑い</td>
+</tr>
+<tr>
+<td><code>python-Levenshtein</code></td>
+<td>0.26.1</td>
+<td><code>import Levenshtein</code> が見つからない。類似度計算の処理なし</td>
+<td>✕ 未使用の疑い</td>
+</tr>
+<tr>
+<td><code>python-json-logger</code></td>
+<td>2.0.7</td>
+<td><code>settings.py</code> のLOGGINGは <code>simple</code>（<code>{message}</code>）でJSONフォーマッタ未使用。直接importもなし</td>
+<td>✕ 未使用の疑い</td>
+</tr>
+<tr>
+<td><code>django-crispy-forms</code></td>
+<td>2.1</td>
+<td>INSTALLED_APPS未登録。テンプレート時代のフォーム整形用で、React化により不要</td>
+<td>✕ 未使用の疑い</td>
+</tr>
+<tr>
+<td><code>django-filter</code></td>
+<td>23.5</td>
+<td>INSTALLED_APPS未登録、DRFのフィルタ設定もなし</td>
+<td>✕ 未使用の疑い</td>
+</tr>
+<tr>
+<td><code>django-widget-tweaks</code></td>
+<td>1.5.0</td>
+<td>INSTALLED_APPS未登録、テンプレート未使用</td>
+<td>✕ 未使用の疑い</td>
+</tr>
+<tr>
+<td><code>django-widgets-improved</code></td>
+<td>1.5.0</td>
+<td>INSTALLED_APPS未登録、テンプレート未使用</td>
+<td>✕ 未使用の疑い</td>
+</tr>
+<tr>
+<td><code>django-bootstrap4</code></td>
+<td>23.3</td>
+<td>INSTALLED_APPSに登録は残るが、React画面では未使用（旧テンプレート用）</td>
+<td>△ 設定のみ残存</td>
+</tr>
+<tr>
+<td><code>django-bootstrap-datepicker-plus</code></td>
+<td>5.0.5</td>
+<td>INSTALLED_APPSに登録は残るが、React画面では未使用</td>
+<td>△ 設定のみ残存</td>
+</tr>
+<tr>
+<td><code>python-dateutil</code></td>
+<td>2.8.2</td>
+<td>直接importなし。pandas等の間接依存の可能性</td>
+<td>△ 間接依存の可能性</td>
+</tr>
+<tr>
+<td><code>python-dotenv</code></td>
+<td>1.0.0</td>
+<td>settings.pyは django-environ を使用。直接importなし（環境変数読み込みの重複）</td>
+<td>△ 重複の疑い</td>
+</tr>
+</tbody>
+</table>
+<h3 id="102-packagejson">10.2 フロントエンド（package.json）の棚卸し</h3>
+<table>
+<thead>
+<tr>
+<th>部品</th>
+<th>バージョン</th>
+<th>調査結果（根拠）</th>
+<th>判定</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>@fullcalendar/daygrid</code></td>
+<td>6.1.19</td>
+<td><code>@fullcalendar/...</code> の import が src に1件もない</td>
+<td>✕ 未使用の疑い</td>
+</tr>
+<tr>
+<td><code>@fullcalendar/interaction</code></td>
+<td>6.1.19</td>
+<td>同上</td>
+<td>✕ 未使用の疑い</td>
+</tr>
+<tr>
+<td><code>@fullcalendar/react</code></td>
+<td>6.1.19</td>
+<td>同上</td>
+<td>✕ 未使用の疑い</td>
+</tr>
+<tr>
+<td><code>@fullcalendar/timegrid</code></td>
+<td>6.1.19</td>
+<td>同上</td>
+<td>✕ 未使用の疑い</td>
+</tr>
+<tr>
+<td><code>react-calendar</code></td>
+<td>6.0.0</td>
+<td><code>from 'react-calendar'</code> の import が見つからない。カレンダーは自前実装（§11）</td>
+<td>✕ 未使用の疑い</td>
+</tr>
+<tr>
+<td><code>dayjs</code></td>
+<td>1.11.13</td>
+<td><code>from 'dayjs'</code> の import が見つからない。日付処理は date-fns を採用</td>
+<td>✕ 未使用の疑い</td>
+</tr>
+<tr>
+<td><code>web-vitals</code></td>
+<td>2.1.4</td>
+<td><code>reportWebVitals.ts</code> 内でのみ参照。だが reportWebVitals 自体が index.tsx から呼ばれていない（§9.4）</td>
+<td>✕ 未使用の疑い</td>
+</tr>
+</tbody>
+</table>
+<h3 id="103">10.3 棚卸しのまとめ（一目で）</h3>
+<blockquote>
+<p><strong>▼ ここまでで分かること（先に日本語で）:</strong> 「実際に使われている中核部品」と「未使用の疑いがある部品」をきれいに線引きできました。後任者は、まず中核部品を理解すれば十分で、未使用候補は「触らないか、後で安全に整理する」対象です。</p>
+</blockquote>
+<ul>
+<li><strong>バックエンドの中核（必ず理解すべき）:</strong> Django / DRF / Django-Q / cors-headers / environ / jsonfield / psycopg2 / gunicorn / whitenoise / openpyxl / pandas</li>
+<li><strong>フロントの中核（必ず理解すべき）:</strong> react / react-dom / react-router-dom / axios / typescript / react-scripts / MUI(+emotion) / x-date-pickers(+date-fns) / chart.js系 / （開発）vitest・RTL・jsdom</li>
+<li><strong>未使用の疑い（整理候補）:</strong> xlwings / beautifulsoup4 / python-Levenshtein / python-json-logger / crispy-forms / django-filter / widget-tweaks / widgets-improved / FullCalendar4点 / react-calendar / dayjs / web-vitals、設定だけ残るbootstrap4・datepicker-plus</li>
+</ul>
+<blockquote>
+<p><strong>なぜこんなに残っているの？</strong> このアプリは「Djangoテンプレートで作っていた旧版」→「Reactに作り替えた現行版」へと進化した歴史があります。テンプレート時代の部品（Bootstrap・crispy・widget系・datepicker）や、移行時にいろいろ試した跡（FullCalendar・react-calendar・dayjs）が <strong>掃除されずに残っている</strong> のです。これは珍しいことではなく、多くの実プロジェクトで起きる「技術的負債（ツケ）」です。</p>
+</blockquote>
+<hr>
+<h2 id="11_2">11. カレンダーは自前実装という事実</h2>
+<p>§10で「FullCalendarもreact-calendarも使われていない」と書きました。では、本アプリのカレンダー画面（勤務入力など）は何で作られているのでしょうか。答えは <strong>自作の <code>generateCalendar</code> 関数</strong> です。</p>
+<p>調査の結果、<code>generateCalendar</code> は次のファイルに存在します。</p>
+<div class="codehilite"><div class="code-wrap" id="code-87"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>frontend/src/KosuPage/KosuCalendar.tsx
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>▼ ここで分かること（先に日本語で）:</strong> 本アプリのカレンダーは、外部のカレンダー部品（FullCalendar等）に頼らず、月の日付の並びを <strong>自前のロジックで計算して</strong> 作っています。だから package.json のカレンダー部品はどれも実際には呼ばれていないのです。</p>
+<p><strong>用語: 自前実装（じまえじっそう）とは？</strong> 既製の部品を使わず、自分でコードを書いて機能を作ること。<code>generateCalendar</code> は「その月が何日まであるか」「1日が何曜日から始まるか」を計算し、日付のマス目（グリッド）を組み立てる自作関数です。</p>
+<p><strong>なぜ自前にしたのか（推測）:</strong> FullCalendar等は高機能ですが、本アプリのカレンダーは「日付を選んで勤務情報を入れる」というシンプルな用途。それなら自前で作った方が <strong>軽く・思い通りに</strong> できると判断したと考えられます。試しに部品を入れてみた（package.jsonに残った）が、最終的に自前実装を選んだ、という流れが自然です。</p>
+<p>⚠️ <strong>後任者へ:</strong> カレンダーの見た目・挙動を変えたいときは、FullCalendarの設定を探しても無駄です。<strong><code>KosuPage/KosuCalendar.tsx</code> の <code>generateCalendar</code> 関数を直接読んで</strong> ください。同様にチーム側のカレンダーは <code>TeamPage/TeamCalendar.tsx</code> を確認します（フロントの画面解説の章で詳述）。</p>
+</blockquote>
+<hr>
+<h2 id="12">12. 不要な依存を安全に整理する手順</h2>
+<p>「未使用の疑いがある部品を消したい」となったとき、<strong>いきなり消すのは危険</strong> です。間接依存や設定経由の利用を壊す恐れがあるからです。ここでは安全な手順を示します。</p>
+<blockquote>
+<p>⚠️ <strong>大原則: 整理は「専用ブランチ」で行い、消すたびに必ず動作確認する。</strong> 1つ消して動作確認、また1つ消して動作確認、と <strong>小刻みに</strong> 進めます。一度に大量に消してはいけません。</p>
+</blockquote>
+<h3 id="121">12.1 事前準備（バックアップと作業ブランチ）</h3>
+<blockquote>
+<p><strong>▼ このコマンドがやること（先に日本語で）:</strong> 整理専用の作業用ブランチ（枝）を作って、そこで作業します。失敗しても本流（master）に影響が出ないようにする安全策です。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-88"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 整理用の新しいブランチを作って移動する</span>
+git<span class="w"> </span>switch<span class="w"> </span>-c<span class="w"> </span>chore/cleanup-unused-deps
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>用語: ブランチ（branch：枝）とは？</strong> 本流のコードを傷つけずに、別の枝で実験するためのGitの機能。失敗したら枝ごと捨てれば本流は無傷です（Gitの章で詳説）。</p>
+</blockquote>
+<h3 id="122-1">12.2 バックエンド：1つずつ消して確認</h3>
+<p>手順（※説明用の安全フロー）：</p>
+<ol>
+<li><code>requirements.txt</code> から <strong>1行だけ</strong> 削除する（例：<code>xlwings==0.30.13</code> を消す）。</li>
+<li>仮想環境を作り直すか、その部品をアンインストールする。
+   <code>bash
+   # その部品だけ取り除く
+   pip uninstall xlwings</code></li>
+<li>アプリを起動して動作確認する。
+   <code>bash
+   # 設定の整合性チェック（まず軽く確認）
+   python manage.py check
+   # 実際に起動して画面を触る
+   python manage.py runserver
+   # 非同期タスク（バックアップ等）も起動して試す
+   python manage.py qcluster</code></li>
+<li>テストを流す（バックエンドにテストがあれば）。
+   <code>bash
+   # kosuアプリのテストを実行
+   python manage.py test kosu</code></li>
+<li>問題なければコミット。問題が出たら <strong>その1行を元に戻す</strong>。</li>
+</ol>
+<blockquote>
+<p><strong>▼ こう表示されれば成功:</strong> <code>python manage.py check</code> で <code>System check identified no issues (0 silenced).</code> と出れば、設定上の問題はありません。</p>
+<p>⚠️ <strong>INSTALLED_APPSに登録が残っている部品（bootstrap4・bootstrap_datepicker_plus）を消すときは、requirements.txt だけでなく <code>settings.py</code> の登録行も同時に消す</strong> 必要があります。片方だけ消すと「登録したのに部品がない（または逆）」でエラーになります。<code>builtins</code> の <code>'bootstrap4.templatetags.bootstrap4'</code> や <code>BOOTSTRAP4 = {...}</code> も合わせて確認してください。</p>
+</blockquote>
+<h3 id="123-1">12.3 フロントエンド：1つずつ消して確認</h3>
+<blockquote>
+<p><strong>▼ このコマンドがやること（先に日本語で）:</strong> フロントの未使用部品を1つだけ取り除き、ビルドとテストが通るか確認します。</p>
+</blockquote>
+<ol>
+<li>1つだけアンインストール（<code>frontend/</code> で実行）。
+   <code>bash
+   # 1部品だけ取り除く（package.jsonからも自動で消える）
+   npm uninstall @fullcalendar/daygrid</code></li>
+<li>ビルドが通るか確認。
+   <code>bash
+   # 本番ビルドが成功すればOK
+   npm run build</code></li>
+<li>テストを流す。
+   <code>bash
+   # テストが全部通ればOK
+   npm run test:run</code></li>
+<li>開発サーバーで画面を実際に触る。
+   <code>bash
+   # localhost:3000 で各画面（特にカレンダー・グラフ）を確認
+   npm start</code></li>
+<li>問題なければコミット。出たら元に戻す（<code>npm install &lt;部品名&gt;@&lt;元のバージョン&gt;</code>）。</li>
+</ol>
+<blockquote>
+<p><strong>▼ こう表示されれば成功:</strong> <code>npm run build</code> の最後に <code>Compiled successfully.</code>、<code>npm run test:run</code> で全テストが緑（pass）になれば、その部品は安全に消せたと判断できます。</p>
+</blockquote>
+<h3 id="124">12.4 未使用部品を見つける補助ツール（参考）</h3>
+<p>機械的に「使われていない依存」を洗い出す補助ツールもあります（※参考情報。導入は任意）。</p>
+<ul>
+<li>フロント：<code>depcheck</code>（未使用のnpm依存を検出）、<code>npx depcheck</code> で実行。</li>
+<li>バック：<code>pip-check</code> や <code>deptry</code> 等。</li>
+</ul>
+<blockquote>
+<p>⚠️ これらのツールも <strong>完璧ではありません</strong>（設定経由・間接依存を誤検出することがある）。あくまで「あたりを付ける道具」として使い、最終判断は §12.2 / §12.3 の「1つずつ消して動作確認」で行ってください。</p>
+</blockquote>
+<h3 id="125">12.5 整理の優先順位（おすすめ）</h3>
+<table>
+<thead>
+<tr>
+<th>優先</th>
+<th>対象</th>
+<th>理由</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>高（消しやすい）</td>
+<td>FullCalendar 4点 / react-calendar / dayjs / web-vitals</td>
+<td>フロントで import 0件。ビルド・テストで即確認できる</td>
+</tr>
+<tr>
+<td>高</td>
+<td>xlwings / beautifulsoup4 / python-Levenshtein</td>
+<td>import 0件で、機能との結びつきもない</td>
+</tr>
+<tr>
+<td>中</td>
+<td>django-filter / crispy-forms / widget-tweaks / widgets-improved</td>
+<td>INSTALLED_APPS未登録なので影響は小さいが、念のため検索を再確認</td>
+</tr>
+<tr>
+<td>中</td>
+<td>python-json-logger</td>
+<td>LOGGING設定がsimpleであることを再確認してから</td>
+</tr>
+<tr>
+<td>低（慎重に）</td>
+<td>bootstrap4 / bootstrap_datepicker_plus</td>
+<td>settings.py の登録も同時に外す必要あり。手順が増える</td>
+</tr>
+<tr>
+<td>触らない</td>
+<td>python-dateutil / setuptools / python-dotenv</td>
+<td>間接依存・基盤の可能性。消すと別部品が壊れる恐れ。最後に慎重判断</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>なぜ「触らない」列があるの？</strong> <code>python-dateutil</code> は pandas が、<code>setuptools</code> は多くの部品が、内部で必要とします。消すと一見無関係な部品が動かなくなる「巻き添え事故」が起きます。確証がない限り <strong>残しておくのが安全</strong> です。</p>
+</blockquote>
+<hr>
+<h2 id="13">13. トラブルシューティング</h2>
+<table>
+<thead>
+<tr>
+<th>症状</th>
+<th>原因</th>
+<th>対処</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pip install -r requirements.txt</code> でエラー</td>
+<td>Pythonのバージョン不一致、ネット遮断、<code>psycopg2-binary</code> のビルド失敗</td>
+<td>Pythonのバージョンを確認。社内プロキシならpipのプロキシ設定を行う</td>
+</tr>
+<tr>
+<td><code>npm install</code> が途中で止まる</td>
+<td>Node.jsのバージョン不一致、ネット遮断、<code>package-lock.json</code> との不整合</td>
+<td>Node.jsのバージョンを確認。<code>package-lock.json</code> を消さない。社内なら <code>npm config set proxy</code></td>
+</tr>
+<tr>
+<td><code>ModuleNotFoundError: No module named 'xxx'</code></td>
+<td>その部品が未インストール、または整理で消しすぎた</td>
+<td><code>pip install xxx</code>（または <code>requirements.txt</code> を元に戻す）</td>
+</tr>
+<tr>
+<td><code>Module not found: Can't resolve 'xxx'</code>（フロント）</td>
+<td>npm部品が未インストール、または消しすぎた</td>
+<td><code>npm install xxx</code>（または <code>package.json</code> を元に戻す）</td>
+</tr>
+<tr>
+<td>部品を消したらカレンダーが消えた／壊れた</td>
+<td>実は使っていた部品を消した</td>
+<td><code>git restore</code> で戻す。カレンダーは自前 <code>generateCalendar</code>（§11）なので、壊れたのは別原因かも</td>
+</tr>
+<tr>
+<td><code>npm run build</code> は通るのに本番で表示が崩れる</td>
+<td>静的ファイルの収集漏れ（WhiteNoise関連）</td>
+<td><code>python manage.py collectstatic</code> を実行し直す（デプロイの章参照）</td>
+</tr>
+<tr>
+<td>バージョンを上げたら急に動かない</td>
+<td>メジャーバージョンが上がって破壊的変更が入った（§1.1）</td>
+<td>そのバージョンを元に戻す。メジャーアップは慎重に</td>
+</tr>
+<tr>
+<td><code>eject</code> してしまった</td>
+<td>CRAの隠し設定が全部展開され、元に戻せない</td>
+<td><code>git</code> で <code>eject</code> のコミットを取り消す（事前にコミットしておくこと）</td>
+</tr>
+<tr>
+<td>「これ使ってる？」と毎回不安になる</td>
+<td>棚卸しが頭に入っていない</td>
+<td>§10の表をブックマーク。<code>Grep</code> でその部品名を src 全体検索して確かめる習慣を</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="14">14. 演習問題</h2>
+<blockquote>
+<p>答えはこの章の本文中にあります。手を動かして確認してください。</p>
+</blockquote>
+<p><strong>問1.</strong> バージョン <code>4.2.7</code> の「4」「2」「7」はそれぞれ何と呼ばれ、どんなときに数字が増えますか。</p>
+<p><strong>問2.</strong> <code>requirements.txt</code> の <code>==</code> と、<code>package.json</code> の <code>^</code> は、バージョン指定の意味がどう違いますか。</p>
+<p><strong>問3.</strong> 本アプリのデータベース（PostgreSQL）にDjangoが接続するために必須の部品は何ですか。役割を「通訳」というたとえで説明してください。</p>
+<p><strong>問4.</strong> <code>django-q</code>（Django-Q）は何のための部品ですか。「画面を固まらせない」という観点で、なぜ必要か説明してください。</p>
+<p><strong>問5.</strong> <code>date-fns</code> と <code>dayjs</code> は同じ目的の部品です。本アプリで <strong>実際に使われている</strong> のはどちらですか。そう判断できる根拠（どのファイルのどんな import）を挙げてください。</p>
+<p><strong>問6.</strong> FullCalendarやreact-calendarが <code>package.json</code> にあるのに、本アプリのカレンダー画面はそれらを使っていません。では何で作られていますか。関数名とファイル名を答えてください。</p>
+<p><strong>問7.</strong> <code>index.tsx</code> の最後で <code>web-vitals</code>（reportWebVitals）が <strong>使われていない</strong> と判断できる決定的な理由は何ですか。</p>
+<p><strong>問8.</strong> <code>bootstrap4</code> を整理（削除）するとき、<code>requirements.txt</code> 以外に手を入れる必要があるファイルと箇所を、<code>settings.py</code> の中から3つ挙げてください。</p>
+<p><strong>問9.</strong> WSGIとは何の規格ですか。Gunicornはその中でどんな役割を果たしますか。「コンセントの形」のたとえを使って説明してください。</p>
+<p><strong>問10.</strong> 未使用と疑われる部品を整理するとき、「いきなり全部消してはいけない」のはなぜですか。<code>python-dateutil</code> を例に説明してください。</p>
+<p><strong>問11（実践）.</strong> 自分のパソコンで <code>frontend/</code> に移動し、<code>Grep</code>（または <code>npx depcheck</code>）を使って <code>dayjs</code> が本当に import されていないか自分で確かめてください。確認できたら、§12.3 の手順で安全に削除を試し、<code>npm run build</code> と <code>npm run test:run</code> が通ることを確認してください（うまくいかなければ元に戻すこと）。</p>
+<hr>
+<h2 id="15">15. この章のまとめ</h2>
+<ul>
+<li><strong>ライブラリ（部品）</strong> は、誰かが作った再利用可能なプログラム。自分で全部書かずに済むよう「借りて」使う。倉庫はPyPI（Python）とnpm（JavaScript）。</li>
+<li>部品リストは <strong><code>requirements.txt</code>（pip）</strong> と <strong><code>package.json</code>（npm）</strong>。<code>pip install -r requirements.txt</code> と <code>npm install</code> で一括復元できる。</li>
+<li><strong>バージョン番号</strong> は <code>メジャー.マイナー.パッチ</code>。<code>==</code> は完全固定、<code>^</code> は「メジャーは上げない範囲で新しくてOK」。<code>package-lock.json</code> も必ず引き継ぐ。</li>
+<li><strong>バックエンドの中核</strong>：Django / DRF / Django-Q / cors-headers / django-environ / jsonfield / psycopg2 / Gunicorn / WhiteNoise。データ処理に openpyxl / pandas（実コードで使用確認）。</li>
+<li><strong>フロントの中核</strong>：React / ReactDOM / React Router DOM / axios / TypeScript / react-scripts(CRA) / MUI(+emotion) / x-date-pickers(+date-fns) / chart.js系。テストは Vitest / RTL / jsdom。</li>
+<li><strong>WSGI</strong> は「PythonアプリとWebサーバーの会話の規格」。<strong>Gunicorn</strong> が本番でその橋渡しを担う。<code>settings.py</code> の <code>WSGI_APPLICATION</code> が入口。本アプリはWSGIで十分（ASGIは未使用）。</li>
+<li><strong>正直な棚卸し</strong>：xlwings / beautifulsoup4 / python-Levenshtein / python-json-logger / crispy-forms / django-filter / widget系 / FullCalendar / react-calendar / dayjs / web-vitals は <strong>未使用の疑い</strong>。bootstrap4・datepicker-plusは <strong>設定にだけ残存</strong>。</li>
+<li><strong>カレンダーは自前実装</strong>（<code>KosuPage/KosuCalendar.tsx</code> の <code>generateCalendar</code>）。外部カレンダー部品は実際には使われていない。</li>
+<li><strong>整理は専用ブランチで、1つずつ消して動作確認</strong>。<code>python-dateutil</code>・<code>setuptools</code>・<code>python-dotenv</code> は間接依存・基盤の可能性があり、確証なしに消さない。</li>
+</ul>
+<blockquote>
+<p>次は <strong><a href="12_テストの書き方と実行.html">第12章: テストの書き方と実行</a></strong> に進みます。本章で登場した Vitest / React Testing Library / jsdom が、実際にどんなテストコードを書き、どう実行されるのかを、本アプリのテストファイルを1行ずつ読みながら学びます。</p>
+</blockquote>
+
+<script>
+(function () {
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy") ? resolve() : reject(); } catch (e) { reject(e); }
+      document.body.removeChild(ta);
+    });
+  }
+  document.querySelectorAll(".copy-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var pre = btn.parentElement.querySelector("pre");
+      var text = pre.textContent.replace(/\n$/, "");
+      copyText(text).then(function () {
+        btn.textContent = "コピーしました";
+        btn.classList.add("done");
+        setTimeout(function () { btn.textContent = "コピー"; btn.classList.remove("done"); }, 2000);
+      }, function () { btn.textContent = "コピーできませんでした"; });
+    });
+  });
+  if (/^#code-\d+$/.test(location.hash)) {
+    var note = document.getElementById("web-note");
+    if (note) { note.hidden = false; }
+  }
+})();
+</script>
+</body>
+</html>

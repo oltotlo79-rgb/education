@@ -1,0 +1,1056 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>03_技術スタックの比較と選定理由</title>
+<style>
+
+@page {
+  size: A4;
+  margin: 18mm 16mm 20mm 16mm;
+  @bottom-right {
+    content: counter(page);
+    font-size: 10px;
+    color: #64748b;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  font-family: "Yu Gothic UI", "Yu Gothic", "Meiryo", "Hiragino Sans",
+               "Noto Sans JP", "Segoe UI", system-ui, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.75;
+  color: #1e293b;
+  background: #ffffff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #0f172a;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 1.4em 0 0.6em;
+  page-break-after: avoid;
+}
+h1 {
+  font-size: 22pt;
+  border-bottom: 3px solid #1e40af;
+  padding-bottom: 0.3em;
+  margin-top: 0.4em;
+  page-break-before: auto;
+}
+h2 {
+  font-size: 16pt;
+  border-bottom: 1.5px solid #cbd5e1;
+  padding-bottom: 0.25em;
+  margin-top: 1.6em;
+}
+h3 { font-size: 13pt; color: #1e40af; }
+h4 { font-size: 12pt; color: #334155; }
+
+p { margin: 0.5em 0 0.8em; }
+
+a { color: #1d4ed8; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+ul, ol { margin: 0.4em 0 0.9em; padding-left: 1.6em; }
+li { margin: 0.2em 0; }
+
+blockquote {
+  border-left: 4px solid #3b82f6;
+  background: #eff6ff;
+  margin: 0.8em 0;
+  padding: 0.6em 1em;
+  color: #1e3a8a;
+  border-radius: 0 6px 6px 0;
+  page-break-inside: avoid;
+}
+blockquote p { margin: 0.3em 0; }
+blockquote strong { color: #1e40af; }
+
+code {
+  /* DefCode (see _code_font.py) has ASCII and Japanese in ONE font, so a code
+     line is drawn as one text run and copies as one line in every PDF viewer. */
+  font-family: "Consolas", "Consolas", monospace;
+  font-size: 0.9em;
+  background: #f1f5f9;
+  color: #be123c;
+  padding: 0.12em 0.36em;
+  border-radius: 4px;
+  /* Long inline code (file paths / URLs) must break instead of overflowing. */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  /* In a PDF there is no horizontal scrolling, so long lines must wrap
+     instead of being clipped off the right edge of the page. */
+  overflow-x: hidden;
+  overflow-y: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  font-size: 9.2pt;
+  line-height: 1.5;
+  margin: 0.8em 0;
+  page-break-inside: avoid;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+  white-space: inherit;
+  word-break: inherit;
+  overflow-wrap: inherit;
+}
+
+/* The codehilite extension wraps highlighted blocks in a scrolling div; make
+   that wrap too so nothing is clipped in the PDF. */
+.codehilite {
+  overflow-x: hidden;
+  /* overflow-x: hidden alone turns overflow-y into auto, and a glyph from a
+     fallback font that is a hair too tall then shows a vertical scrollbar. */
+  overflow-y: hidden;
+}
+.codehilite pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* No per-token colours: every coloured token became its own text run (and its
+   own tag) in the PDF, and some viewers then pasted each token on its own line.
+   Only whole comment lines get a colour, so each line is still one run. */
+pre .cmt { color: #94a3b8; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.8em 0;
+  font-size: 9.6pt;
+  page-break-inside: avoid;
+}
+th, td {
+  border: 1px solid #e2e8f0;
+  padding: 6px 9px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: #f1f5f9;
+  color: #0f172a;
+  font-weight: 700;
+}
+tr:nth-child(even) td { background: #f8fafc; }
+
+img { max-width: 100%; height: auto; }
+
+hr {
+  border: none;
+  border-top: 1px dashed #cbd5e1;
+  margin: 1.6em 0;
+}
+
+/* Diagram blocks (the inline-styled <div>s in the source) */
+div[style] {
+  page-break-inside: avoid;
+}
+
+/* Tighten spacing right after headings */
+h1 + p, h2 + p, h3 + p, h4 + p { margin-top: 0.2em; }
+
+/* Avoid ugly page breaks inside list items / table rows */
+li, tr { page-break-inside: avoid; }
+
+@media screen {
+  body { max-width: 920px; margin: 0 auto; padding: 20px 20px 120px; font-size: 16px; }
+  pre { white-space: pre !important; word-break: normal !important; overflow-wrap: normal !important;
+        overflow-x: auto !important; font-size: 14px !important; }
+  img { max-width: 100%; height: auto; }
+}
+.web-bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; font-size: 14px;
+  padding: 8px 12px; margin-bottom: 16px; background: #eef2f7; border-radius: 8px; }
+.web-bar a { color: #1e3a5f; }
+.web-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 10; max-width: 90%;
+  font-size: 15px; font-weight: 700; background: #fff7ed; border: 2px solid #f2994a; border-radius: 8px;
+  padding: 10px 16px; margin: 0; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.code-wrap { position: relative; scroll-margin-top: 16px; }
+.code-wrap pre { padding-top: 40px !important; }
+.copy-btn { position: absolute; top: 8px; right: 8px; z-index: 2; font-size: 13px; font-weight: 700;
+  padding: 4px 12px; border: 0; border-radius: 6px; background: #2f80ed; color: #fff; cursor: pointer;
+  font-family: inherit; }
+.copy-btn:hover { background: #1c64c8; }
+.copy-btn.done { background: #27ae60; }
+.code-wrap:target pre { outline: 4px solid #f2994a; outline-offset: 2px; }
+.code-wrap:target .copy-btn { box-shadow: 0 0 0 4px #f2994a; }
+/* syntax colours on screen (the PDF uses one colour so that each line copies as one piece) */
+.codehilite .k, .codehilite .kd, .codehilite .kn, .codehilite .kr { color: #c084fc; }
+.codehilite .s, .codehilite .s1, .codehilite .s2, .codehilite .sb { color: #fcd34d; }
+.codehilite .c, .codehilite .c1, .codehilite .cm { color: #94a3b8; }
+.codehilite .nf, .codehilite .nx { color: #60a5fa; }
+.codehilite .nb { color: #34d399; }
+.codehilite .mi, .codehilite .mf { color: #f472b6; }
+.codehilite .nt { color: #f59e0b; }
+.codehilite .na { color: #93c5fd; }
+</style>
+</head>
+<body>
+<div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/03_%E6%8A%80%E8%A1%93%E3%82%B9%E3%82%BF%E3%83%83%E3%82%AF%E3%81%AE%E6%AF%94%E8%BC%83%E3%81%A8%E9%81%B8%E5%AE%9A%E7%90%86%E7%94%B1.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、ブラウザーの「戻る」で PDF に戻れます。</p><div style="text-align: center; padding: 28px 0 8px;">
+<div style="font-size: 14px; color: #475569;">オンプレミス構築 教育資料</div>
+<div style="font-size: 26px; font-weight: 800; color: #0f172a; margin-top: 6px; line-height: 1.35;">技術スタックの比較と選定理由</div>
+<div style="font-size: 13px; color: #475569; margin-top: 8px;">ほかにどんな選び方があり、それぞれの長所と短所は何で、今回なぜこれを選んだのか</div>
+</div>
+
+<h1 id="_1">技術スタックの比較と選定理由</h1>
+<h2 id="_2">この資料について</h2>
+<p>手順書（04・05）は、「Windows Server ＋ IIS ＋ PostgreSQL ＋ アプリ」という組み合わせで書いています。でも、Web アプリを動かす方法は、これだけではありません。この資料では、</p>
+<ul>
+<li>層ごとに、<strong>ほかにどんな選択肢があるか</strong></li>
+<li>それぞれの<strong>長所と短所</strong></li>
+<li>今回の条件で、<strong>なぜこれを選んだか</strong></li>
+<li><strong>どんなときに見直すか</strong></li>
+</ul>
+<p>を説明します。上司や情報システム部門に「なぜこの構成なのか」を聞かれたときに、答えられるようになることが目的です。</p>
+<blockquote>
+<p><strong>情報の時点:</strong> サポートの期限や無料版の制限は、2026-11-01 時点で各社の公式の情報を確かめたものです。年に1回は、公式のページで確かめ直してください。</p>
+</blockquote>
+<h2 id="1">1. 技術スタックとは</h2>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/03-01_stack_layers.webp" alt="下から仮想マシン、OS、データベースとWebサーバー、アプリ、画面（ブラウザ）の5段の積み重ね" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図1-1: 技術スタックは、アプリを動かす技術の積み重ね</div>
+</div>
+
+<p><strong>技術スタック</strong>は、アプリを動かすために積み重ねる技術の組み合わせです。下の層が無いと、上の層は動きません。</p>
+<table>
+<thead>
+<tr>
+<th>層</th>
+<th>今回の選択</th>
+<th>ほかの選択肢</th>
+<th>説明の章</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>仮想マシン</td>
+<td>会社が用意（VMware・Hyper-V など）</td>
+<td>クラウド（Azure・AWS）</td>
+<td>00 基礎知識 2 章</td>
+</tr>
+<tr>
+<td>OS</td>
+<td><strong>Windows Server</strong></td>
+<td>Linux（Red Hat Enterprise Linux・Ubuntu Server など）</td>
+<td>3</td>
+</tr>
+<tr>
+<td>Web サーバー（受付）</td>
+<td><strong>IIS</strong></td>
+<td>nginx・Apache・Caddy・受付を置かない</td>
+<td>4</td>
+</tr>
+<tr>
+<td>データベース</td>
+<td><strong>PostgreSQL</strong></td>
+<td>SQL Server・MySQL・SQLite</td>
+<td>5</td>
+</tr>
+<tr>
+<td>アプリ</td>
+<td><strong>Rust＋Topcoat</strong> または <strong>Django＋React</strong></td>
+<td>ASP.NET Core・Node.js・Java（Spring Boot）・PHP（Laravel）</td>
+<td>6</td>
+</tr>
+<tr>
+<td>画面の作り方</td>
+<td>サーバーで作る（Rust 版）／React（Django 版）</td>
+<td>—</td>
+<td>7</td>
+</tr>
+<tr>
+<td>常駐のさせ方</td>
+<td><strong>WinSW</strong>（Rust 版）</td>
+<td>NSSM・IIS に起動させる・タスク スケジューラ</td>
+<td>8</td>
+</tr>
+<tr>
+<td>サーバーの台数</td>
+<td><strong>1 台にまとめる</strong></td>
+<td>役割ごとに分ける</td>
+<td>9</td>
+</tr>
+<tr>
+<td>置き方</td>
+<td><strong>そのまま入れる</strong></td>
+<td>コンテナ（Docker）</td>
+<td>10</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>用語:</strong> 技術スタック（technology stack：アプリを動かすために重ねて使う、OS・データベース・言語・フレームワークなどの組み合わせ）</p>
+</blockquote>
+<h2 id="2">2. 選ぶときの基準</h2>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/03-09_decision.webp" alt="天びんの左に会社の決まり・運用しやすさ・費用、右に作りやすさ・速さ。左に少し傾く" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図2-1: 何を大事にするかで、選ぶ物が変わる</div>
+</div>
+
+<p>技術に「いちばん良い物」はありません。<strong>条件によって、良い物が変わります</strong>。今回は、次の順に大事にしました。</p>
+<table>
+<thead>
+<tr>
+<th>順</th>
+<th>基準</th>
+<th>今回の条件</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>会社の決まり・サポート</strong></td>
+<td>OS は会社が Windows Server を入れる。サーバーはインターネットにつながらない。HTTPS は使えない</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>運用しやすさ</strong></td>
+<td>インフラの専任がいない。作った人が異動しても、手順書を見れば別の人が続けられること</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>費用</strong></td>
+<td>追加のライセンス費用を、なるべくかけない</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>長く使えること</strong></td>
+<td>安全の修正（サポート）が、長く続くこと</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>作りやすさ・速さ</strong></td>
+<td>社内の数十〜数百人が使う規模。とびきりの速さは要らない</td>
+</tr>
+</tbody>
+</table>
+<p>「作りやすさ」や「速さ」を上にすると、別の選び方になります。たとえば、インフラの専任がいて Linux に慣れているなら、OS は Linux を選ぶ方が自然です。</p>
+<h2 id="3-os-windows-server-linux">3. OS: Windows Server か Linux か</h2>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/03-02_os_choice.webp" alt="Windows Serverは会社の決まり・画面で操作。Linuxは無料・コマンドで操作。今回はWindows Server" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図3-1: サーバーの OS の2つの系統</div>
+</div>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Windows Server</th>
+<th>Linux（RHEL・Ubuntu Server など）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>費用</td>
+<td>ライセンスが要る（会社が払う）</td>
+<td>無料の物が多い（RHEL など、サポート付きは有料）</td>
+</tr>
+<tr>
+<td>操作</td>
+<td>画面（デスクトップ）でも、PowerShell でも</td>
+<td>主にコマンド（SSH でつなぐ）</td>
+</tr>
+<tr>
+<td>会社の管理との相性</td>
+<td><strong>Active Directory・Windows Update の配布・ウイルス対策など、会社の仕組みにそのまま乗る</strong></td>
+<td>会社によっては、管理の仕組みが無い</td>
+</tr>
+<tr>
+<td>Web の情報の多さ</td>
+<td>Web アプリの運用の情報は、Linux より少ない</td>
+<td><strong>Web アプリの運用の情報が最も多い</strong></td>
+</tr>
+<tr>
+<td>向いているアプリ</td>
+<td>ASP.NET Core、IIS で動く物</td>
+<td>ほとんどの Web の技術（Python・Node.js・Rust・Java・PHP）</td>
+</tr>
+<tr>
+<td>長所</td>
+<td>情報システム部門が慣れている／画面で確かめられる</td>
+<td>軽い・速い・コンテナと相性が良い</td>
+</tr>
+<tr>
+<td>短所</td>
+<td>Linux 向けに作られた道具の一部が、Windows では使えない・動きが違う（例：nginx・Python の gunicorn）</td>
+<td>情報システム部門が管理していないと、更新や監視を全部自分でする</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Windows Server のサポートの期限</strong>（Microsoft のライフサイクルの情報。2026-11-01 時点）:</p>
+<table>
+<thead>
+<tr>
+<th>版</th>
+<th>通常のサポート（機能の改善も）</th>
+<th>延長サポート（安全の修正だけ）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Windows Server 2022</td>
+<td>2026-10-13 に終了</td>
+<td>2031-10-14 まで</td>
+</tr>
+<tr>
+<td>Windows Server 2025</td>
+<td>2029-11-13 まで</td>
+<td>2034-11-14 まで</td>
+</tr>
+</tbody>
+</table>
+<p>どちらの版でも、安全の修正は 2031 年以降まで続きます。新しく借りるなら、<strong>2025 の方が長く使えます</strong>。</p>
+<p><strong>今回の選定: Windows Server</strong></p>
+<ul>
+<li>会社が入れてくれる OS が Windows Server だから（<strong>会社の決まり</strong>）。</li>
+<li>会社のアカウント・更新の配布・ウイルス対策などに、最初から乗っている（<strong>運用しやすさ</strong>）。</li>
+<li><strong>見直すとき:</strong> 会社が Linux の仮想マシンも貸してくれて、Linux を管理できる人がいる場合。</li>
+</ul>
+<h2 id="4-web-iisnginxapachecaddy">4. Web サーバー（受付）: IIS・nginx・Apache・Caddy</h2>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/03-03_webserver_choice.webp" alt="IIS（Windowsに付属・今回）、nginx（軽くて速い）、Apache（歴史が長い）の3つの受付" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図4-1: 受付（Web サーバー）の選択肢</div>
+</div>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th>IIS</th>
+<th>nginx</th>
+<th>Apache（httpd）</th>
+<th>Caddy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>どこの物</td>
+<td>Microsoft（Windows Server に付属）</td>
+<td>F5（無料の版あり）</td>
+<td>Apache ソフトウェア財団</td>
+<td>有志（無料）</td>
+</tr>
+<tr>
+<td>Windows での扱い</td>
+<td><strong>Windows の一部として、Microsoft がサポート</strong></td>
+<td>公式の説明で「Windows 版はベータ版と見なされる」とされ、性能にも制限がある</td>
+<td>公式は Windows 用の実行ファイルを配っておらず、別の団体の物を使う</td>
+<td>Windows 用の実行ファイルがある</td>
+</tr>
+<tr>
+<td>リバースプロキシ</td>
+<td>URL Rewrite と ARR の追加が要る</td>
+<td>標準でできる</td>
+<td>標準でできる（mod_proxy）</td>
+<td>標準でできる</td>
+</tr>
+<tr>
+<td>HTTPS</td>
+<td>Windows の証明書の仕組みで管理</td>
+<td>設定ファイルで</td>
+<td>設定ファイルで</td>
+<td><strong>自動で証明書を取る</strong>（インターネットにつながる場合）</td>
+</tr>
+<tr>
+<td>長所</td>
+<td>画面で設定できる／Windows Update で更新される／情報システム部門が慣れている</td>
+<td>軽くて速い。Linux では定番</td>
+<td>機能と情報が多い</td>
+<td>設定が短い</td>
+</tr>
+<tr>
+<td>短所</td>
+<td>ARR は長く新しい版が出ていない（3.0 のまま）</td>
+<td>Windows では本領を出せない</td>
+<td>Windows では入手と更新が手間</td>
+<td>社内（インターネットにつながらない）では、自動の証明書が使えない</td>
+</tr>
+</tbody>
+</table>
+<p><strong>受付を置かずに、アプリが直接 80 番で受ける</strong>こともできます。部品は減りますが、本番と検証を同じ 80 番で分けられない、アクセスの記録や大きさの制限をアプリで全部作る必要がある、などの短所があります。</p>
+<p><strong>今回の選定: IIS</strong></p>
+<ul>
+<li>Windows Server の一部なので、追加の費用が無く、<strong>安全の修正が Windows Update で届く</strong>。</li>
+<li>名前（Host）で本番と検証を分けられる（00 基礎知識 5.2）。</li>
+<li>将来 HTTPS にするとき、Windows の証明書の仕組みで管理できる（参考資料）。</li>
+<li><strong>見直すとき:</strong> OS を Linux にするとき（nginx が定番）。</li>
+</ul>
+<h2 id="5-postgresqlsql-servermysqlsqlite">5. データベース: PostgreSQL・SQL Server・MySQL・SQLite</h2>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/03-04_db_choice.webp" alt="PostgreSQL（無料・高機能・今回）、SQL Server（Microsoft製）、MySQL（Webで広く使う）、SQLite（1ファイルだけ）" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図5-1: データベースの選択肢</div>
+</div>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th>PostgreSQL</th>
+<th>SQL Server</th>
+<th>MySQL</th>
+<th>SQLite</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>費用</td>
+<td>無料</td>
+<td>Express は無料。Standard 以上は有料</td>
+<td>無料の版（Community）あり</td>
+<td>無料</td>
+</tr>
+<tr>
+<td>無料の版の制限</td>
+<td>無い</td>
+<td>Express は、1つのデータベースが 50GB まで（2025 の版。2022 までは 10GB）、CPU は 4 コアまで、メモリの使い道にも上限</td>
+<td>無い</td>
+<td>無い</td>
+</tr>
+<tr>
+<td>Windows での扱い</td>
+<td>公式の Windows 用インストーラーがある</td>
+<td><strong>Microsoft の製品。Windows と最も相性が良い</strong></td>
+<td>Windows 用インストーラーがある</td>
+<td>ファイル1つ。サーバーのプログラムが要らない</td>
+</tr>
+<tr>
+<td>機能</td>
+<td>豊富（JSON・全文検索・いろいろな型）</td>
+<td>豊富。管理の画面（SSMS）が強い</td>
+<td>十分</td>
+<td>少ない。<strong>同時の書き込みに弱い</strong></td>
+</tr>
+<tr>
+<td>アプリの部品</td>
+<td>Rust・Python（Django）とも、定番</td>
+<td>Django は追加の部品（mssql-django）。Rust は部品が少ない</td>
+<td>Rust・Python とも、定番</td>
+<td>Rust・Python とも、定番</td>
+</tr>
+<tr>
+<td>長所</td>
+<td>無料で制限が無い／SQL が標準にそっている／情報が多い</td>
+<td>情報システム部門が慣れていることが多い／Windows の認証でログインできる</td>
+<td>世界で広く使われている</td>
+<td>準備が要らない</td>
+</tr>
+<tr>
+<td>短所</td>
+<td>Windows での運用の情報は、Linux より少ない</td>
+<td>大きくなると有料の版が要る</td>
+<td>一部の SQL の書き方が独特</td>
+<td>複数の人が同時に書く業務アプリには向かない</td>
+</tr>
+</tbody>
+</table>
+<p><strong>今回の選定: PostgreSQL（仮想マシンの中に入れる）</strong></p>
+<ul>
+<li><strong>無料で、大きさの制限が無い</strong>。図面のデータ（1件で最大 50MB）をデータベースに入れるので、年月がたつと大きくなる。</li>
+<li>Rust（sqlx など）と Django の、どちらからも定番として使える。</li>
+<li><strong>見直すとき:</strong> 会社の決まりで SQL Server を使う場合や、情報システム部門が SQL Server の運用（バックアップ・更新）を引き受けてくれる場合（00 基礎知識 7.5、02 の 15 章）。</li>
+</ul>
+<h2 id="6">6. アプリの作り方（言語とフレームワーク）</h2>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/03-05_app_choice.webp" alt="Rust＋Topcoat（1つの実行ファイル）、Django＋React（部品が豊富）、ASP.NET Core（Windowsと相性）、Node.js（画面と同じ言葉）" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図6-1: アプリの作り方の選択肢</div>
+</div>
+
+<blockquote>
+<p><strong>用語:</strong> フレームワーク（framework：Web アプリでよく使う仕組み（ログイン・画面・データベースとのやり取りなど）を、まとめて用意してくれる土台）</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Rust＋Topcoat（04）</th>
+<th>Django＋React（05）</th>
+<th>ASP.NET Core（C#）</th>
+<th>Node.js（Express・NestJS など）</th>
+<th>Java（Spring Boot）</th>
+<th>PHP（Laravel）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>サーバーに置く物</td>
+<td><strong>実行ファイル1つ</strong>（＋画面の部品のフォルダ）</td>
+<td>Python の実行の環境＋アプリ＋画面の成果物</td>
+<td>.NET の実行の環境＋アプリ</td>
+<td>Node.js＋アプリ＋部品のフォルダ</td>
+<td>Java の実行の環境＋アプリ</td>
+<td>PHP＋アプリ</td>
+</tr>
+<tr>
+<td>Windows・IIS との相性</td>
+<td>良い（ただの実行ファイル）</td>
+<td>普通（Windows で動く Web サーバーの部品が限られる。下の注）</td>
+<td><strong>最も良い</strong>（IIS の中で直接動かせる。Microsoft の製品）</td>
+<td>普通</td>
+<td>普通</td>
+<td>普通（IIS の FastCGI で動く）</td>
+</tr>
+<tr>
+<td>速さ・メモリ</td>
+<td><strong>とても速く、メモリが少ない</strong></td>
+<td>普通</td>
+<td>速い</td>
+<td>普通</td>
+<td>速いが、メモリを多く使う</td>
+<td>普通</td>
+</tr>
+<tr>
+<td>作りやすさ</td>
+<td>覚えることが多い（所有権など）</td>
+<td><strong>管理画面・ログイン・データベースの道具が最初から付いている</strong></td>
+<td>道具（Visual Studio）が強い</td>
+<td>画面と同じ JavaScript で書ける</td>
+<td>大きなシステム向けの決まりごとが多い</td>
+<td>簡単に始められる</td>
+</tr>
+<tr>
+<td>型の安全さ</td>
+<td><strong>とても強い</strong>（間違いの多くを作る前に見つける）</td>
+<td>弱い（Python）／TypeScript で補う（React）</td>
+<td>強い</td>
+<td>TypeScript で補う</td>
+<td>強い</td>
+<td>弱い</td>
+</tr>
+<tr>
+<td>部品の多さ</td>
+<td>増えている途中。Topcoat はまだ 0.x の版</td>
+<td><strong>とても多い</strong></td>
+<td>多い</td>
+<td>とても多い</td>
+<td>とても多い</td>
+<td>多い</td>
+</tr>
+<tr>
+<td>部品の更新の手間</td>
+<td>少ない（実行ファイルに全部入る）</td>
+<td>多い（Python の部品と、npm の部品の両方）</td>
+<td>普通</td>
+<td><strong>多い</strong>（npm の部品の入れ替わりが速い）</td>
+<td>普通</td>
+<td>普通</td>
+</tr>
+<tr>
+<td>書ける人の探しやすさ</td>
+<td>少ない</td>
+<td>多い</td>
+<td>多い</td>
+<td>とても多い</td>
+<td>とても多い</td>
+<td>多い</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>注（Python の Web サーバー）:</strong> Linux で定番の gunicorn は、Windows では動きません。Windows では、すべて Python で書かれた <strong>waitress</strong> を使うのが一般的です（05 で使う）。</p>
+</blockquote>
+<p><strong>この資料で2つの作り方を用意した理由</strong></p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Rust＋Topcoat（04）</th>
+<th>Django＋React（05）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>こんなときに選ぶ</td>
+<td>運用の手間を減らしたい／サーバーの力が小さい／型で間違いを防ぎたい</td>
+<td>早く作りたい／画面を細かく動かしたい／Python と JavaScript を書ける人が多い</td>
+</tr>
+<tr>
+<td>運用の手間</td>
+<td>実行ファイルを入れ替えるだけ</td>
+<td>Python の環境と部品を、サーバーに持ち込んで管理する</td>
+</tr>
+<tr>
+<td>気を付けること</td>
+<td>Topcoat は新しく、版が上がると書き方が変わることがある</td>
+<td>Python・Django・npm の部品の、安全の修正を追い続ける</td>
+</tr>
+</tbody>
+</table>
+<p><strong>ほかの選択肢を選ぶとき:</strong> 会社に C# を書ける人が多いなら、<strong>ASP.NET Core</strong> は Windows Server・IIS との相性が最も良く、有力な選択肢です。この資料の、OS・IIS・PostgreSQL・バックアップ・ファイアウォールの部分は、そのまま使えます。</p>
+<h2 id="7">7. 画面の作り方: サーバーで作るか、ブラウザで作るか</h2>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/03-06_ssr_vs_spa.webp" alt="上はサーバーが完成したページを渡す。下はReactで、最初に部品を渡し、その後はJSONだけをやり取りしてブラウザで組み立てる" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図7-1: サーバーで画面を作る形と、ブラウザで画面を作る形</div>
+</div>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th>サーバーで画面を作る（Rust＋Topcoat 版）</th>
+<th>ブラウザで画面を作る（React。Django 版）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>仕組み</td>
+<td>ボタンを押すたびに、サーバーが完成したページ（HTML）を返す</td>
+<td>最初に画面の部品（JavaScript）を渡し、その後はデータ（JSON）だけをやり取りして、ブラウザが画面を組み立てる</td>
+</tr>
+<tr>
+<td>長所</td>
+<td>作る物が1つで済む／古いブラウザでも動きやすい／最初の表示が速い</td>
+<td>画面の動きを細かく作れる（入力しながら絞り込む、など）／画面とサーバーを別の人が作れる</td>
+</tr>
+<tr>
+<td>短所</td>
+<td>細かい画面の動きには工夫が要る</td>
+<td><strong>作る物が2つになる</strong>（画面とサーバー）／画面を作るのに Node.js などの道具が要る（開発用のパソコンだけ）</td>
+</tr>
+<tr>
+<td>サーバーで要る物</td>
+<td>アプリだけ</td>
+<td>アプリ＋画面の成果物（05 では Django のプロジェクトの中に入れて、Django が配る）</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>用語:</strong> SPA（エスピーエー。Single Page Application：最初に1枚のページを読み込み、後は JavaScript で画面を書きかえていく作り方。React で作る画面がこれ）</p>
+</blockquote>
+<h2 id="8-rust">8. アプリを常駐させる方法（Rust 版）</h2>
+<p>アプリを Windows のサービスにする方法（01 の 6 章）にも、いくつかあります。</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>長所</th>
+<th>短所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>WinSW</strong>（今回）</td>
+<td>XML の設定ファイル1つで、サービスにできる／ログの切りかえや、異常終了したときの再起動の設定がある／無料</td>
+<td>別のソフト（実行ファイル1つ）を持ち込む</td>
+</tr>
+<tr>
+<td>NSSM</td>
+<td>画面で設定できる／広く使われてきた</td>
+<td>長く新しい版が出ていない</td>
+</tr>
+<tr>
+<td>アプリ自身を Windows サービスとして作る</td>
+<td>部品が増えない</td>
+<td>アプリの中に Windows 専用の作りが要る</td>
+</tr>
+<tr>
+<td>IIS に起動させる（HttpPlatformHandler など）</td>
+<td>IIS が、アプリの起動と再起動を受け持つ</td>
+<td>IIS の設定が増える。IIS が止まるとアプリも止まる</td>
+</tr>
+<tr>
+<td>タスク スケジューラの「起動したとき」</td>
+<td>追加の部品が要らない</td>
+<td>止まったときの再起動や、状態の確かめ方が弱い</td>
+</tr>
+</tbody>
+</table>
+<p><strong>今回の選定: WinSW</strong> — 設定が1つのファイルにまとまり、手順書で再現しやすいため。Django 版（05）でも同じ WinSW を使い、覚えることを減らします。</p>
+<h2 id="9-1">9. サーバーの台数: 1 台にまとめるか、分けるか</h2>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/03-07_one_vs_split.webp" alt="左は1台に受付・アプリ・DBをまとめる（簡単・安い、今回）。右は2台に分ける（強いが手間）" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図9-1: 1 台にまとめるか、役割ごとに分けるか</div>
+</div>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th>1 台にまとめる（今回）</th>
+<th>分ける（Web・アプリのサーバーと、DB のサーバー）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>費用・手間</td>
+<td><strong>仮想マシン1台分</strong></td>
+<td>2 台分。更新・監視・バックアップも 2 台分</td>
+</tr>
+<tr>
+<td>安全</td>
+<td>DB が外に出ない（127.0.0.1 だけ）</td>
+<td>DB をネットワークに出すので、ファイアウォールと認証の設定が増える</td>
+</tr>
+<tr>
+<td>壊れたとき</td>
+<td>1 台が止まると全部止まる</td>
+<td>片方の故障の影響を分けられる（ただし、どちらが止まってもアプリは使えない）</td>
+</tr>
+<tr>
+<td>重くなったとき</td>
+<td>仮想マシンの CPU・メモリを増やす</td>
+<td>重い方だけ増やせる</td>
+</tr>
+<tr>
+<td>向いている規模</td>
+<td>社内の数十〜数百人</td>
+<td>利用者が多い・止めてはいけない時間が長い</td>
+</tr>
+</tbody>
+</table>
+<p><strong>本番と検証を同じサーバーに同居させる</strong>のも、同じ考え方です。費用は半分になりますが、検証で重い試験をすると本番が遅くなる、Windows Update の再起動で両方止まる、という短所があります。検証で重い試験をするときは、社員が使わない時間にします。<strong>見直すとき:</strong> 利用者が増えて遅くなったとき、または「止めてはいけない時間」が長くなったとき。</p>
+<h2 id="10-docker">10. コンテナ（Docker）を使わない理由</h2>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/03-08_container.webp" alt="1台のサーバーの上に、アプリ・DB・受付のコンテナの箱が載っている。必要な物を全部入れて運ぶ。今回は使わない" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図10-1: コンテナは、必要な物を全部入れて運ぶ箱</div>
+</div>
+
+<p><strong>コンテナ</strong>は、アプリと、アプリが動くのに要る物（OS の一部・部品）を、まとめて1つの箱にする技術です。「開発用のパソコンで動いた箱を、そのままサーバーで動かせる」のが長所です。</p>
+<p>ただし、今回は使いません。</p>
+<ul>
+<li>Web の世界のコンテナは、ほとんどが <strong>Linux 用</strong>です。Windows Server の上で Linux のコンテナを動かすには、さらに仮想化の仕組みを重ねる必要があり、設定と運用が複雑になります。</li>
+<li>コンテナの更新・ログ・バックアップの仕組みを、別に覚えて管理する必要があります。インフラの専任がいない今回の条件では、<strong>覚えることを増やさない方が安全</strong>です。</li>
+<li>会社の情報システム部門のサポートの範囲から外れやすくなります。</li>
+</ul>
+<p><strong>見直すとき:</strong> Linux のサーバーを使えるようになり、コンテナを管理できる人がいるとき。</p>
+<blockquote>
+<p><strong>用語:</strong> コンテナ（container：アプリと、動くのに要る物をまとめて1つの箱にし、どこでも同じように動かす技術。Docker が代表）</p>
+</blockquote>
+<h2 id="11">11. バックアップと監視の道具</h2>
+<table>
+<thead>
+<tr>
+<th>層</th>
+<th>今回の選定</th>
+<th>ほかの選択肢</th>
+<th>今回の理由</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DB のバックアップ</td>
+<td><code>pg_dump</code>＋タスク スケジューラ（毎晩）</td>
+<td>仮想マシンごとの控え（会社のバックアップの仕組み）／PostgreSQL の WAL を使った「その時刻に戻す」控え（PITR）</td>
+<td>仕組みが分かりやすく、別のデータベースに戻して確かめやすい。データの量が少ないうちは十分</td>
+</tr>
+<tr>
+<td>ファイルのバックアップ</td>
+<td>robocopy＋タスク スケジューラ</td>
+<td>会社のバックアップの仕組み</td>
+<td>追加の道具が要らない</td>
+</tr>
+<tr>
+<td>監視</td>
+<td>アプリの <code>/health</code>＋イベント ログ＋毎朝の点検</td>
+<td>会社の監視の仕組み（Zabbix など）に入れてもらう</td>
+<td>まずは追加の道具なしで始める。会社に監視の仕組みがあれば、<code>/health</code> を見てもらうよう頼む</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>会社に仮想マシンごとのバックアップの仕組みがあるなら、両方を使います。</strong> 仮想マシンごとの控えは「サーバーが丸ごと壊れた」ときに、<code>pg_dump</code> の控えは「データを間違えて消した」ときに役立ちます。</li>
+<li>「その時刻に戻す」控え（PITR）は、「1 日分のデータも失えない」ときに考えます。設定と練習の手間が増えます。</li>
+</ul>
+<h2 id="12">12. 今回の選定のまとめ</h2>
+<table>
+<thead>
+<tr>
+<th>層</th>
+<th>選んだ物</th>
+<th>いちばんの理由</th>
+<th>見直すとき</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OS</td>
+<td>Windows Server（2025 を推奨）</td>
+<td>会社の決まり・会社の管理の仕組みに乗る</td>
+<td>Linux を管理できる人がいるとき</td>
+</tr>
+<tr>
+<td>受付</td>
+<td>IIS（HTTP の 80 番）</td>
+<td>Windows の一部で、更新が Windows Update で届く</td>
+<td>OS を Linux にするとき</td>
+</tr>
+<tr>
+<td>データベース</td>
+<td>PostgreSQL 18（同じサーバーの中）</td>
+<td>無料で制限が無い。どちらのアプリからも定番</td>
+<td>会社の決まりで SQL Server のとき</td>
+</tr>
+<tr>
+<td>アプリ</td>
+<td>Rust＋Topcoat（04）／Django＋React（05）</td>
+<td>運用の手間の少なさ／作りやすさ（条件で選ぶ）</td>
+<td>C# の人が多いなら ASP.NET Core</td>
+</tr>
+<tr>
+<td>常駐</td>
+<td>WinSW</td>
+<td>設定が1ファイルで再現しやすい</td>
+<td>—</td>
+</tr>
+<tr>
+<td>台数</td>
+<td>1 台（本番と検証を同居）</td>
+<td>費用と手間が最小</td>
+<td>利用者が増えた・止められない時間が長くなった</td>
+</tr>
+<tr>
+<td>置き方</td>
+<td>そのまま入れる（コンテナなし）</td>
+<td>覚えることを増やさない</td>
+<td>Linux とコンテナの運用ができるとき</td>
+</tr>
+<tr>
+<td>通信</td>
+<td>HTTP</td>
+<td>社内で HTTPS を使えない</td>
+<td>証明書を用意できるようになったら HTTPS（参考資料）</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_3">用語の索引</h2>
+<table>
+<thead>
+<tr>
+<th>用語</th>
+<th>短い説明</th>
+<th>章</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ARR・URL Rewrite</td>
+<td>IIS をリバースプロキシにする追加の部品</td>
+<td>4</td>
+</tr>
+<tr>
+<td>ASP.NET Core</td>
+<td>Microsoft の C# の Web フレームワーク</td>
+<td>6</td>
+</tr>
+<tr>
+<td>Caddy</td>
+<td>設定が短い Web サーバー</td>
+<td>4</td>
+</tr>
+<tr>
+<td>Django</td>
+<td>Python の Web フレームワーク</td>
+<td>6</td>
+</tr>
+<tr>
+<td>gunicorn・waitress</td>
+<td>Python の Web サーバーの部品（Windows では waitress）</td>
+<td>6</td>
+</tr>
+<tr>
+<td>nginx・Apache</td>
+<td>Linux で定番の Web サーバー</td>
+<td>4</td>
+</tr>
+<tr>
+<td>NSSM・WinSW</td>
+<td>プログラムを Windows のサービスにする道具</td>
+<td>8</td>
+</tr>
+<tr>
+<td>PITR</td>
+<td>その時刻の状態に戻せる、PostgreSQL の控えの取り方</td>
+<td>11</td>
+</tr>
+<tr>
+<td>React</td>
+<td>ブラウザで画面を組み立てる JavaScript の部品</td>
+<td>7</td>
+</tr>
+<tr>
+<td>SPA</td>
+<td>ブラウザで画面を書きかえていく作り方</td>
+<td>7</td>
+</tr>
+<tr>
+<td>SQL Server Express</td>
+<td>SQL Server の無料の版（大きさなどに上限）</td>
+<td>5</td>
+</tr>
+<tr>
+<td>SQLite</td>
+<td>ファイル1つのデータベース</td>
+<td>5</td>
+</tr>
+<tr>
+<td>コンテナ・Docker</td>
+<td>アプリと必要な物を1つの箱にする技術</td>
+<td>10</td>
+</tr>
+<tr>
+<td>技術スタック</td>
+<td>アプリを動かす技術の組み合わせ</td>
+<td>1</td>
+</tr>
+<tr>
+<td>延長サポート</td>
+<td>安全の修正だけが出る期間</td>
+<td>3</td>
+</tr>
+<tr>
+<td>フレームワーク</td>
+<td>Web アプリのよく使う仕組みをまとめた土台</td>
+<td>6</td>
+</tr>
+</tbody>
+</table>
+
+<script>
+(function () {
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy") ? resolve() : reject(); } catch (e) { reject(e); }
+      document.body.removeChild(ta);
+    });
+  }
+  document.querySelectorAll(".copy-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var pre = btn.parentElement.querySelector("pre");
+      var text = pre.textContent.replace(/\n$/, "");
+      copyText(text).then(function () {
+        btn.textContent = "コピーしました";
+        btn.classList.add("done");
+        setTimeout(function () { btn.textContent = "コピー"; btn.classList.remove("done"); }, 2000);
+      }, function () { btn.textContent = "コピーできませんでした"; });
+    });
+  });
+  if (/^#code-\d+$/.test(location.hash)) {
+    var note = document.getElementById("web-note");
+    if (note) { note.hidden = false; }
+  }
+})();
+</script>
+</body>
+</html>

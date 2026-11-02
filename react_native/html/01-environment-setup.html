@@ -1,0 +1,648 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>01-environment-setup</title>
+<style>
+
+@page {
+  size: A4;
+  margin: 18mm 16mm 20mm 16mm;
+  @bottom-right {
+    content: counter(page);
+    font-size: 10px;
+    color: #64748b;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  font-family: "Yu Gothic UI", "Yu Gothic", "Meiryo", "Hiragino Sans",
+               "Noto Sans JP", "Segoe UI", system-ui, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.75;
+  color: #1e293b;
+  background: #ffffff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #0f172a;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 1.4em 0 0.6em;
+  page-break-after: avoid;
+}
+h1 {
+  font-size: 22pt;
+  border-bottom: 3px solid #1e40af;
+  padding-bottom: 0.3em;
+  margin-top: 0.4em;
+  page-break-before: auto;
+}
+h2 {
+  font-size: 16pt;
+  border-bottom: 1.5px solid #cbd5e1;
+  padding-bottom: 0.25em;
+  margin-top: 1.6em;
+}
+h3 { font-size: 13pt; color: #1e40af; }
+h4 { font-size: 12pt; color: #334155; }
+
+p { margin: 0.5em 0 0.8em; }
+
+a { color: #1d4ed8; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+ul, ol { margin: 0.4em 0 0.9em; padding-left: 1.6em; }
+li { margin: 0.2em 0; }
+
+blockquote {
+  border-left: 4px solid #3b82f6;
+  background: #eff6ff;
+  margin: 0.8em 0;
+  padding: 0.6em 1em;
+  color: #1e3a8a;
+  border-radius: 0 6px 6px 0;
+  page-break-inside: avoid;
+}
+blockquote p { margin: 0.3em 0; }
+blockquote strong { color: #1e40af; }
+
+code {
+  /* DefCode (see _code_font.py) has ASCII and Japanese in ONE font, so a code
+     line is drawn as one text run and copies as one line in every PDF viewer. */
+  font-family: "Consolas", "Consolas", monospace;
+  font-size: 0.9em;
+  background: #f1f5f9;
+  color: #be123c;
+  padding: 0.12em 0.36em;
+  border-radius: 4px;
+  /* Long inline code (file paths / URLs) must break instead of overflowing. */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  /* In a PDF there is no horizontal scrolling, so long lines must wrap
+     instead of being clipped off the right edge of the page. */
+  overflow-x: hidden;
+  overflow-y: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  font-size: 9.2pt;
+  line-height: 1.5;
+  margin: 0.8em 0;
+  page-break-inside: avoid;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+  white-space: inherit;
+  word-break: inherit;
+  overflow-wrap: inherit;
+}
+
+/* The codehilite extension wraps highlighted blocks in a scrolling div; make
+   that wrap too so nothing is clipped in the PDF. */
+.codehilite {
+  overflow-x: hidden;
+  /* overflow-x: hidden alone turns overflow-y into auto, and a glyph from a
+     fallback font that is a hair too tall then shows a vertical scrollbar. */
+  overflow-y: hidden;
+}
+.codehilite pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* No per-token colours: every coloured token became its own text run (and its
+   own tag) in the PDF, and some viewers then pasted each token on its own line.
+   Only whole comment lines get a colour, so each line is still one run. */
+pre .cmt { color: #94a3b8; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.8em 0;
+  font-size: 9.6pt;
+  page-break-inside: avoid;
+}
+th, td {
+  border: 1px solid #e2e8f0;
+  padding: 6px 9px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: #f1f5f9;
+  color: #0f172a;
+  font-weight: 700;
+}
+tr:nth-child(even) td { background: #f8fafc; }
+
+img { max-width: 100%; height: auto; }
+
+hr {
+  border: none;
+  border-top: 1px dashed #cbd5e1;
+  margin: 1.6em 0;
+}
+
+/* Diagram blocks (the inline-styled <div>s in the source) */
+div[style] {
+  page-break-inside: avoid;
+}
+
+/* Tighten spacing right after headings */
+h1 + p, h2 + p, h3 + p, h4 + p { margin-top: 0.2em; }
+
+/* Avoid ugly page breaks inside list items / table rows */
+li, tr { page-break-inside: avoid; }
+
+@media screen {
+  body { max-width: 920px; margin: 0 auto; padding: 20px 20px 120px; font-size: 16px; }
+  pre { white-space: pre !important; word-break: normal !important; overflow-wrap: normal !important;
+        overflow-x: auto !important; font-size: 14px !important; }
+  img { max-width: 100%; height: auto; }
+}
+.web-bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; font-size: 14px;
+  padding: 8px 12px; margin-bottom: 16px; background: #eef2f7; border-radius: 8px; }
+.web-bar a { color: #1e3a5f; }
+.web-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 10; max-width: 90%;
+  font-size: 15px; font-weight: 700; background: #fff7ed; border: 2px solid #f2994a; border-radius: 8px;
+  padding: 10px 16px; margin: 0; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.code-wrap { position: relative; scroll-margin-top: 16px; }
+.code-wrap pre { padding-top: 40px !important; }
+.copy-btn { position: absolute; top: 8px; right: 8px; z-index: 2; font-size: 13px; font-weight: 700;
+  padding: 4px 12px; border: 0; border-radius: 6px; background: #2f80ed; color: #fff; cursor: pointer;
+  font-family: inherit; }
+.copy-btn:hover { background: #1c64c8; }
+.copy-btn.done { background: #27ae60; }
+.code-wrap:target pre { outline: 4px solid #f2994a; outline-offset: 2px; }
+.code-wrap:target .copy-btn { box-shadow: 0 0 0 4px #f2994a; }
+/* syntax colours on screen (the PDF uses one colour so that each line copies as one piece) */
+.codehilite .k, .codehilite .kd, .codehilite .kn, .codehilite .kr { color: #c084fc; }
+.codehilite .s, .codehilite .s1, .codehilite .s2, .codehilite .sb { color: #fcd34d; }
+.codehilite .c, .codehilite .c1, .codehilite .cm { color: #94a3b8; }
+.codehilite .nf, .codehilite .nx { color: #60a5fa; }
+.codehilite .nb { color: #34d399; }
+.codehilite .mi, .codehilite .mf { color: #f472b6; }
+.codehilite .nt { color: #f59e0b; }
+.codehilite .na { color: #93c5fd; }
+</style>
+</head>
+<body>
+<div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/01-environment-setup.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、ブラウザーの「戻る」で PDF に戻れます。</p><h1 id="1">第1章: 開発環境の構築</h1>
+<blockquote>
+<p>この章では、スマホアプリを作るために必要な「道具」をあなたのPCにそろえます。料理を始める前にキッチンと調理器具を準備するのと同じです。<strong>完全初心者の方でも迷わないよう、初めて出てくるコマンドはすべて1行ずつ解説</strong>します。</p>
+</blockquote>
+<hr>
+<h2 id="1_1">1. この章でやること（全体像）</h2>
+<p>これからインストール・設定するものを先に一覧で示します。「何のために入れるのか」を意識すると理解が深まります。</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>入れるもの</th>
+<th>役割（なぜ必要か）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>Node.js</strong></td>
+<td>TypeScript/JavaScriptをPC上で動かす土台。Expoや各種ツールの動作に必須</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>VS Code</strong></td>
+<td>コードを書くためのエディタ（高機能メモ帳）</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>VS Code拡張機能</strong></td>
+<td>コードの色分けや補完を強化し、ミスを減らす</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Git</strong></td>
+<td>コードの変更履歴を記録する。後でGitHubやデプロイに使う</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>Expo関連</strong></td>
+<td>React Nativeアプリを作る本命の道具一式</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>スマホ側のExpo Goアプリ</strong></td>
+<td>作りかけアプリを自分のスマホで即確認する</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>作業の進め方:</strong> 上から順番に進めれば必ず動く状態になります。途中でエラーが出ても焦らないでください。よくあるエラーと対処法は各ステップの最後にまとめています。</p>
+</blockquote>
+<hr>
+<h2 id="2-nodejs">2. Node.js のインストール</h2>
+<h3 id="21-nodejs">2.1 Node.js とは</h3>
+<p><strong>Node.js（ノードジェイエス）</strong> は、本来ブラウザの中でしか動かない JavaScript を、<strong>あなたのPCの上で直接動かせるようにする実行環境</strong>です。Expoや開発ツールはすべてこのNode.jsの上で動くため、最初に入れる必要があります。</p>
+<blockquote>
+<p><strong>「ランタイム（runtime）」とは？</strong> 「プログラムを実行する環境」のこと。Node.jsはJavaScript/TypeScriptのランタイムです。キッチン（Node.js）が無いと料理（プログラム）が作れない、とイメージしてください。</p>
+</blockquote>
+<h3 id="22">2.2 インストール手順</h3>
+<ol>
+<li>ブラウザで公式サイト <strong>https://nodejs.org/</strong> を開きます。</li>
+<li><strong>「LTS」</strong> と書かれたボタンをクリックしてインストーラをダウンロードします。</li>
+<li>ダウンロードしたファイルを実行し、表示される画面で基本的に「Next（次へ）」を押し続けてインストールします。</li>
+</ol>
+<blockquote>
+<p><strong>「LTS」とは？</strong> Long Term Support（ロング・ターム・サポート＝長期サポート版）の略。「安定していて長く使える推奨版」という意味です。新しい機能満載の最新版より、初心者はLTSを選ぶのが安全です。本書執筆時点では Node.js 20.x 以上を推奨します。</p>
+</blockquote>
+<h3 id="23">2.3 インストールできたか確認する</h3>
+<p>インストールが終わったら、<strong>ターミナル</strong>を開いて確認します。</p>
+<blockquote>
+<p><strong>ターミナルの開き方:</strong>
+- <strong>Windows</strong>: スタートメニューで「PowerShell」と検索して起動。
+- <strong>Mac</strong>: 「Launchpad」→「その他」→「ターミナル」、または Command+Space で「ターミナル」と検索。</p>
+</blockquote>
+<p>ターミナルに次のコマンドを打って Enter キーを押します。</p>
+<div class="codehilite"><div class="code-wrap" id="code-1"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>node<span class="w"> </span>-v
+<span class="c1"># node : Node.js本体を呼び出すコマンド</span>
+<span class="c1"># -v   : version（バージョン）を表示するオプション。「今入っているNode.jsの版を教えて」という意味</span>
+<span class="c1"># 実行すると v20.x.x のようにバージョン番号が表示されれば成功</span>
+</code></pre></div></div>
+
+<div class="codehilite"><div class="code-wrap" id="code-2"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>npm<span class="w"> </span>-v
+<span class="c1"># npm  : Node.jsに付属するパッケージマネージャ（部品管理ツール）のコマンド</span>
+<span class="c1"># -v   : こちらもバージョン表示。Node.jsを入れるとnpmも自動で一緒に入る</span>
+<span class="c1"># 10.x.x のような番号が出れば成功</span>
+</code></pre></div></div>
+
+<p><strong>▼ 実行結果の例:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-3"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>v20.11.1
+10.2.4
+</code></pre></div></div>
+
+<blockquote>
+<p><strong><code>v20.11.1</code> のような番号が出れば成功です。</strong> 「'node' は認識されていません」のようなエラーが出る場合は、Node.jsのインストールに失敗しているか、ターミナルの再起動が必要です。一度ターミナルを閉じてもう一度開き直してから、再度 <code>node -v</code> を試してください。</p>
+<p><strong>「npm（エヌピーエム）」とは？</strong> Node Package Manager の略。「パッケージ（他人が作った便利なプログラム部品）」をインターネットからダウンロードして管理するツールです。アプリ作りでは大量の部品を使うので、これが活躍します。</p>
+</blockquote>
+<hr>
+<h2 id="3-vs-code">3. VS Code のインストールと設定</h2>
+<h3 id="31-vs-code">3.1 VS Code とは</h3>
+<p><strong>VS Code（ブイエス・コード、正式名称 Visual Studio Code）</strong> は、Microsoft社が無料で提供している<strong>コードエディタ</strong>（コードを書くための高機能なメモ帳）です。世界で最も使われているエディタの一つで、便利な拡張機能が豊富です。</p>
+<h3 id="32">3.2 インストール手順</h3>
+<ol>
+<li>ブラウザで <strong>https://code.visualstudio.com/</strong> を開きます。</li>
+<li>自分のOS（Windows / Mac）用のダウンロードボタンを押します。</li>
+<li>ダウンロードしたファイルを実行してインストールします。</li>
+</ol>
+<blockquote>
+<p><strong>Windowsの方へ（おすすめ設定）:</strong> インストール中に「PATH への追加」「エクスプローラーのコンテキストメニューに『Codeで開く』を追加」といったチェック項目が出たら、全部チェックを入れておくと後で便利です。</p>
+</blockquote>
+<h3 id="33">3.3 おすすめ拡張機能を入れる</h3>
+<p>VS Code の左端にある四角が並んだアイコン（<strong>拡張機能ビュー</strong>）をクリックし、検索欄に名前を入れて「Install（インストール）」を押します。</p>
+<table>
+<thead>
+<tr>
+<th>拡張機能名</th>
+<th>役割</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ESLint</strong></td>
+<td>コードの間違いやクセを自動でチェックして教えてくれる</td>
+</tr>
+<tr>
+<td><strong>Prettier - Code formatter</strong></td>
+<td>コードの見た目（インデントや改行）を自動で整える</td>
+</tr>
+<tr>
+<td><strong>ES7+ React/Redux/React-Native snippets</strong></td>
+<td>Reactのコードを短い入力で素早く書ける「定型文」集</td>
+</tr>
+<tr>
+<td><strong>Expo Tools</strong></td>
+<td>Expo関連ファイルの補完やヘルプを提供</td>
+</tr>
+<tr>
+<td><strong>Japanese Language Pack</strong>（任意）</td>
+<td>VS Codeのメニューを日本語化する</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>「拡張機能（extension）」とは？</strong> VS Codeに後から機能を追加する"アドオン"のことです。スマホアプリを追加でインストールするのと同じ感覚で、エディタを便利にできます。</p>
+</blockquote>
+<hr>
+<h2 id="4-git">4. Git のインストール</h2>
+<h3 id="41-git">4.1 Git とは</h3>
+<p><strong>Git（ギット）</strong> は、「いつ・誰が・どのファイルを・どう変更したか」を記録する<strong>バージョン管理ツール</strong>です。作業を間違えても過去の状態に戻せる「タイムマシン付きノート」のようなものです。後の章で GitHub へのアップロードやアプリの公開に使います。</p>
+<h3 id="42">4.2 インストール手順</h3>
+<ul>
+<li><strong>Windows</strong>: <strong>https://git-scm.com/</strong> から「Download for Windows」を選び、インストーラを実行。基本は「Next」を押し続けてOKです。</li>
+<li><strong>Mac</strong>: ターミナルで次を実行すると、開発ツール一式の案内が出るので従ってインストールします。</li>
+</ul>
+<div class="codehilite"><div class="code-wrap" id="code-4"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>git<span class="w"> </span>--version
+<span class="c1"># git       : Gitを呼び出すコマンド</span>
+<span class="c1"># --version : バージョンを表示するオプション（-v の長い書き方）</span>
+<span class="c1"># Macでは未インストールの場合、ここで「開発ツールをインストールしますか?」と案内が出る</span>
+<span class="c1"># git version 2.x.x のように表示されれば成功</span>
+</code></pre></div></div>
+
+<p><strong>▼ 実行結果の例:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-5"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>git version 2.43.0
+</code></pre></div></div>
+
+<h3 id="43-git">4.3 Gitの初期設定（名前とメールの登録）</h3>
+<p>Gitに「あなたが誰か」を教えます。これは変更履歴に記録される署名になります。一度だけ設定すればOKです。</p>
+<div class="codehilite"><div class="code-wrap" id="code-6"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>user.name<span class="w"> </span><span class="s2">&quot;あなたの名前&quot;</span>
+<span class="c1"># git config       : Gitの設定を読み書きするコマンド</span>
+<span class="c1"># --global         : 「このPC全体の共通設定にする」オプション（プロジェクトごとでなく全体）</span>
+<span class="c1"># user.name        : 設定する項目名。「ユーザー名（署名に使う名前）」</span>
+<span class="c1"># &quot;あなたの名前&quot;   : 設定する値。ダブルクォートで囲む。日本語でもローマ字でも可</span>
+</code></pre></div></div>
+
+<div class="codehilite"><div class="code-wrap" id="code-7"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>user.email<span class="w"> </span><span class="s2">&quot;あなたのメールアドレス&quot;</span>
+<span class="c1"># user.email : 設定項目「メールアドレス」。GitHubで使う予定のアドレスを推奨</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>設定できたか確認:</strong> <code>git config --global user.name</code> のように値を省いて実行すると、今設定されている値が表示されます。</p>
+</blockquote>
+<hr>
+<h2 id="5-expo">5. Expo のセットアップ（本書のメイン）</h2>
+<p>ここからが本命です。Expoを使って実際にアプリのひな形を作り、自分のスマホで動かすところまでやります。</p>
+<h3 id="51-expo">5.1 Expo とは（おさらい）</h3>
+<p><strong>Expo（エクスポ）</strong> は、React Native アプリ開発を劇的に簡単にする道具一式です。プロジェクト作成・実機確認・ビルド・公開までを支援します。第0章の比較表で見た通り、初心者に最適な選択肢です。</p>
+<blockquote>
+<p><strong>事前インストールは不要:</strong> Expoの便利なところは、専用ツールを事前にPCへインストールしなくても、<code>npx</code>（ご紹介済みの「その場で取ってきて実行するコマンド」）を使えばすぐ始められる点です。</p>
+</blockquote>
+<h3 id="52-expo-go">5.2 スマホに Expo Go アプリを入れる</h3>
+<p>作りかけのアプリを自分のスマホで確認するために、<strong>Expo Go（エクスポ・ゴー）</strong> という無料アプリをスマホに入れます。</p>
+<ul>
+<li><strong>iPhone</strong>: App Store で「<strong>Expo Go</strong>」を検索してインストール。</li>
+<li><strong>Android</strong>: Google Play で「<strong>Expo Go</strong>」を検索してインストール。</li>
+</ul>
+<blockquote>
+<p><strong>Expo Go の役割:</strong> あなたのPCで動かしている開発中アプリを、このExpo Goアプリが"読み込んで"スマホ画面に表示してくれます。アプリを毎回インストールし直す必要がなく、コードを保存した瞬間にスマホの画面が更新されます（これを<strong>ホットリロード</strong>と呼びます）。</p>
+</blockquote>
+<h3 id="53">5.3 最初のプロジェクトを作る</h3>
+<p>ターミナルで、プロジェクトを置きたい場所（例: デスクトップや書類フォルダ）へ移動してから、次のコマンドを実行します。</p>
+<blockquote>
+<p><strong>フォルダ移動の例（必要に応じて）:</strong>
+```bash
+cd Desktop</p>
+<h1 id="cd-change-directory">cd      : change directory（カレントディレクトリ＝今いるフォルダ を変える）コマンド</h1>
+<h1 id="desktop">Desktop : 移動先のフォルダ名。これでデスクトップの中に入る</h1>
+<p>```</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-8"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>npx<span class="w"> </span>create-expo-app@latest<span class="w"> </span>my-books-app
+<span class="c1"># npx                    : パッケージを一時的に取得して即実行するコマンド</span>
+<span class="c1"># create-expo-app        : Expoアプリのひな形（テンプレート）を生成する公式ツール</span>
+<span class="c1"># @latest                : 「最新版のツールを使う」という指定（@ の後ろにバージョンを書ける）</span>
+<span class="c1"># my-books-app           : これから作るプロジェクト（フォルダ）の名前。好きな名前でOK（半角英数とハイフン推奨）</span>
+<span class="c1"># 実行すると my-books-app という名前のフォルダが作られ、必要な部品が自動でダウンロードされる</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>実行中に時間がかかります:</strong> 大量の部品をインターネットからダウンロードするため、数分かかることがあります。「Installing dependencies...（依存パッケージをインストール中）」と表示されたら、完了まで待ちましょう。</p>
+</blockquote>
+<p>完了したら、作られたフォルダの中へ移動します。</p>
+<div class="codehilite"><div class="code-wrap" id="code-9"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>my-books-app
+<span class="c1"># cd           : フォルダを移動するコマンド</span>
+<span class="c1"># my-books-app : さっき作ったプロジェクトフォルダ名。この中で以降の作業をする</span>
+</code></pre></div></div>
+
+<h3 id="54">5.4 開発サーバーを起動して実機で確認する</h3>
+<p>いよいよアプリを起動します。</p>
+<div class="codehilite"><div class="code-wrap" id="code-10"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>npx<span class="w"> </span>expo<span class="w"> </span>start
+<span class="c1"># npx expo    : Expoのコマンドラインツールを実行</span>
+<span class="c1"># start       : 「開発サーバーを起動する」サブコマンド</span>
+<span class="c1"># 実行すると、ターミナルに大きなQRコードと操作メニューが表示される</span>
+</code></pre></div></div>
+
+<p><strong>▼ 実行結果の例（一部）:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-11"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>› Metro waiting on exp://192.168.0.5:8081
+› Scan the QR code above with Expo Go (Android) or the Camera app (iOS)
+
+› Press a │ open Android
+› Press i │ open iOS simulator
+› Press w │ open web
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>「Metro（メトロ）」とは？</strong> React Nativeのコードを、スマホが理解できる形にリアルタイムで変換する仕組み（バンドラー）の名前です。<code>npx expo start</code> を実行するとこのMetroが裏で起動し、コードを保存するたびに自動でアプリへ反映してくれます。</p>
+</blockquote>
+<p><strong>スマホで確認する方法:</strong></p>
+<ul>
+<li><strong>Android</strong>: Expo Goアプリを開き、「Scan QR code」でターミナルのQRコードを読み取る。</li>
+<li><strong>iPhone</strong>: 標準の「カメラ」アプリでQRコードを読み取り、表示される通知（バナー）をタップ。</li>
+</ul>
+<blockquote>
+<p><strong>重要な条件:</strong> PCとスマホが<strong>同じWi-Fi（ネットワーク）に接続</strong>されている必要があります。会社や学校のネットワークだと通信が遮断されてうまくいかないことがあります。その場合は <code>npx expo start --tunnel</code>（トンネルモード。インターネット経由で接続する方法）を試してください。</p>
+</blockquote>
+<p>スマホ画面に初期画面が表示されたら成功です！🎉 試しに、プロジェクト内の <code>app/(tabs)/index.tsx</code> というファイルの文字を書き換えて保存すると、スマホ画面が即座に変わるのを確認できます。</p>
+<blockquote>
+<p><strong>ターミナルを止めるには:</strong> <code>Ctrl + C</code>（WindowsもMacも同じ）を押すと開発サーバーが停止します。<code>Ctrl</code> は「コントロールキー」、<code>C</code> を同時に押します。</p>
+</blockquote>
+<h3 id="55-pc">5.5 PCのエミュレータ/シミュレータで確認したい場合（任意）</h3>
+<p>スマホを使わずPC内で確認したい場合は、以下を用意します。<strong>必須ではありません</strong>（実機があれば不要）。</p>
+<ul>
+<li><strong>Android エミュレータ（Windows/Mac両方）</strong>: <strong>Android Studio</strong> をインストールし、その中の「Device Manager」で仮想スマホを作成。<code>npx expo start</code> 後にターミナルで <code>a</code> キーを押すと起動します。</li>
+<li><strong>iOS シミュレータ（Macのみ）</strong>: App Storeから <strong>Xcode</strong> をインストール。<code>npx expo start</code> 後に <code>i</code> キーを押すと起動します。</li>
+</ul>
+<blockquote>
+<p><strong>WindowsユーザーはiOSの確認ができないの？</strong> PC内のiOSシミュレータはMac専用です。しかしWindowsでも、<strong>実機のiPhone＋Expo Go</strong>を使えばiOSでの見た目を確認できます。さらに公開用ビルド（第10章のEAS）はクラウドで行うため、<strong>Windowsだけで最後まで完走できます</strong>。</p>
+</blockquote>
+<hr>
+<h2 id="6-exporeact-native-cli">6. 【参考】Expoを使わない場合の環境構築（React Native CLI）</h2>
+<blockquote>
+<p>ここは<strong>参考セクション</strong>です。本書はExpoで進めるので、読み飛ばして第2章へ進んでも構いません。ただし「Expoを使わない方法」「Expoとの違い」「後から切り替える方法」を知っておくと、技術選択の視野が広がります。</p>
+</blockquote>
+<h3 id="61-react-native-cli">6.1 React Native CLI とは</h3>
+<p><strong>React Native CLI（リアクト・ネイティブ・シーエルアイ）</strong> は、Expoを使わずに「素のReact Native」を直接扱う公式の道具です。第0章の比較表の通り、自由度が最大の代わりに環境構築の手間が大きいのが特徴です。「<strong>bare workflow（ベア・ワークフロー＝むき出しの構成）</strong>」とも呼ばれます。</p>
+<h3 id="62">6.2 追加で必要になるもの</h3>
+<p>Expoでは不要だった、以下の本格的なネイティブ開発ツールが必要になります。</p>
+<table>
+<thead>
+<tr>
+<th>OS</th>
+<th>必要なもの</th>
+<th>役割</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>iOSアプリを作る</strong></td>
+<td><strong>Mac本体</strong> ＋ <strong>Xcode</strong></td>
+<td>AppleのiOS開発環境。<strong>Windowsでは不可</strong></td>
+</tr>
+<tr>
+<td><strong>Androidアプリを作る</strong></td>
+<td><strong>Android Studio</strong> ＋ JDK</td>
+<td>Googleの Android 開発環境。OSはWin/Mac両対応</td>
+</tr>
+<tr>
+<td><strong>共通</strong></td>
+<td><strong>Watchman</strong>（Mac推奨）</td>
+<td>ファイル変更を監視する補助ツール</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>「JDK」とは？</strong> Java Development Kit の略。Androidアプリのビルドに必要なJava言語の開発キットです。Android Studioが面倒を見てくれることが多いです。</p>
+</blockquote>
+<h3 id="63">6.3 環境構築の大まかな流れ</h3>
+<p>公式ドキュメント（https://reactnative.dev/docs/set-up-your-environment ）の手順に沿いますが、概略は次の通りです。</p>
+<div class="codehilite"><div class="code-wrap" id="code-12"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># (1) 新規プロジェクトを作成する（Expoの create-expo-app に相当）</span>
+npx<span class="w"> </span>@react-native-community/cli@latest<span class="w"> </span>init<span class="w"> </span>MyBooksApp
+<span class="c1"># npx                                  : その場でツールを取得して実行</span>
+<span class="c1"># @react-native-community/cli@latest   : React Native公式CLIの最新版</span>
+<span class="c1"># init                                 : 新規プロジェクトを初期化するサブコマンド</span>
+<span class="c1"># MyBooksApp                           : プロジェクト名（CLIではキャメルケース推奨）</span>
+</code></pre></div></div>
+
+<div class="codehilite"><div class="code-wrap" id="code-13"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># (2) iOS用の追加部品を取り込む（Macのみ。CocoaPodsという仕組みを使う）</span>
+<span class="nb">cd</span><span class="w"> </span>MyBooksApp/ios<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>pod<span class="w"> </span>install<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>..
+<span class="c1"># cd MyBooksApp/ios : iOS設定フォルダへ移動</span>
+<span class="c1"># pod install       : CocoaPods（iOSの部品管理ツール）で必要部品を取り込む</span>
+<span class="c1"># &amp;&amp; cd ..          : 成功したら一つ上のフォルダへ戻る（&amp;&amp; は「前が成功したら次を実行」）</span>
+</code></pre></div></div>
+
+<div class="codehilite"><div class="code-wrap" id="code-14"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># (3) アプリを起動する</span>
+<span class="c1"># Androidエミュレータ/実機で起動</span>
+npx<span class="w"> </span>react-native<span class="w"> </span>run-android
+<span class="c1"># iOSシミュレータで起動（Macのみ）</span>
+npx<span class="w"> </span>react-native<span class="w"> </span>run-ios
+<span class="c1"># Expoの「QRコードで即確認」とは異なり、エミュレータ/実機へ直接ビルドして転送する</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>Expoとの体験の違い:</strong> CLIでは、起動のたびにネイティブのビルド（Xcode/Android Studioによるコンパイル）が走るため<strong>時間がかかり</strong>、最初の環境構築でつまずきやすいです。一方で、特殊なネイティブ機能を自由に組み込めます。</p>
+</blockquote>
+<h3 id="64-expo-cli">6.4 Expo と CLI の切り替え方</h3>
+<p>実務でよくあるのが「<strong>最初はExpoで手軽に始め、後から自由度が必要になってCLI構成へ移行する</strong>」というパターンです。Expoはこの移行を公式にサポートしています。</p>
+<h4 id="expomanaged-clibare">◆ Expo（managed）→ CLI構成（bare）へ移行する</h4>
+<div class="codehilite"><div class="code-wrap" id="code-15"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>npx<span class="w"> </span>expo<span class="w"> </span>prebuild
+<span class="c1"># npx expo  : Expoのコマンドラインツール</span>
+<span class="c1"># prebuild  : プロジェクトに ios/ と android/ という「ネイティブのフォルダ」を生成する</span>
+<span class="c1">#             これにより、XcodeやAndroid Studioで直接開いて編集できる「bare構成」になる</span>
+</code></pre></div></div>
+
+<p>このコマンドを実行すると、それまで隠されていた <code>ios/</code> と <code>android/</code> フォルダが出現し、ネイティブコードを直接いじれるようになります。<strong>Expoの便利機能（EASビルド等）はその後も使えます</strong>。これを「<strong>Continuous Native Generation（CNG）</strong>」と呼びます。</p>
+<blockquote>
+<p><strong>「prebuild」のポイント:</strong> <code>ios/</code> <code>android/</code> フォルダは <code>app.json</code>（設定ファイル）の内容から自動生成されます。そのため、誤って消してしまっても <code>npx expo prebuild --clean</code> で作り直せます。「設定ファイルが正、ネイティブフォルダは生成物」という考え方です。</p>
+</blockquote>
+<h4 id="cliexpo">◆ CLI構成のプロジェクトでExpoの便利機能だけ使う</h4>
+<p>逆に、素のCLIで始めたプロジェクトに、後からExpoのライブラリ（<code>expo-camera</code> など）やEASビルドを部分的に導入することもできます。現在のExpoは「<strong>全部入りか、ゼロか</strong>」ではなく「<strong>必要なものだけ足す</strong>」設計になっています。</p>
+<blockquote>
+<p><strong>結論（初心者への推奨）:</strong> <strong>まずはExpoで始める</strong>のが圧倒的におすすめです。Expoで作っていて「どうしてもExpoが対応していないネイティブ機能が必要」になった、その時に初めて <code>npx expo prebuild</code> でCLI構成へ移行すれば十分です。最初からCLIで苦労する必要はありません。</p>
+</blockquote>
+<hr>
+<h2 id="7">7. プロジェクトのフォルダ構成を眺めてみる</h2>
+<p><code>create-expo-app</code> で作られたプロジェクトには、たくさんのファイル・フォルダがあります。今すべてを理解する必要はありません。「こういうものがあるんだ」と眺めるだけでOKです。VS Codeでプロジェクトフォルダを開いてみましょう。</p>
+<div class="codehilite"><div class="code-wrap" id="code-16"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>my-books-app/
+├── app/                  ← 【重要】画面ファイルを置く場所。ここにファイルを作ると画面が増える
+│   ├── (tabs)/           ← 下タブで切り替わる画面群（Expo Routerの仕組み）
+│   │   ├── index.tsx     ← 最初に表示される画面
+│   │   └── explore.tsx   ← 2つ目のタブの画面
+│   └── _layout.tsx       ← アプリ全体の画面の枠組み（レイアウト）を定義
+├── components/           ← 使い回す部品（コンポーネント）を置く場所
+├── constants/            ← 色などの定数（変わらない値）をまとめる場所
+├── assets/               ← 画像やフォントなどの素材を置く場所
+├── app.json              ← アプリの名前・アイコン・設定を書くファイル
+├── package.json          ← 使っている部品の一覧と、実行コマンドの定義
+├── tsconfig.json         ← TypeScriptの設定ファイル
+└── node_modules/         ← ダウンロードした部品の本体（自動生成。自分では触らない）
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>VS Codeでプロジェクトを開くには:</strong> VS Codeのメニュー「ファイル」→「フォルダーを開く」で <code>my-books-app</code> フォルダを選びます。または、ターミナルでプロジェクト内にいる状態で <code>code .</code> と打つと、その場でVS Codeが開きます（<code>code</code> はVS Codeを起動するコマンド、<code>.</code> は「今いるフォルダ」の意味）。</p>
+<p><strong><code>package.json</code> の <code>scripts</code> とは？</strong> <code>package.json</code> の中に <code>"scripts"</code> という欄があり、<code>npm start</code> などの短いコマンドで何が実行されるかが定義されています。例えば <code>"start": "expo start"</code> と書いてあれば、<code>npm start</code> と打つだけで <code>expo start</code> が動きます。本書では分かりやすさのため <code>npx expo start</code> と直接書きますが、<code>npm start</code> でも同じです。</p>
+</blockquote>
+<hr>
+<h2 id="8">8. この章のまとめ</h2>
+<ul>
+<li><strong>Node.js</strong>（土台）、<strong>VS Code</strong>（エディタ）、<strong>Git</strong>（履歴管理）をPCに入れた</li>
+<li><strong>Expo</strong> でプロジェクトを作り、<strong>Expo Go</strong> を使って自分のスマホで動作確認できるようになった</li>
+<li><strong>（参考）</strong> Expoを使わない <strong>React Native CLI</strong> 構成の存在と、<code>npx expo prebuild</code> による<strong>切り替え方</strong>を理解した</li>
+<li>プロジェクトのフォルダ構成をざっくり把握した</li>
+</ul>
+<blockquote>
+<p><strong>次の章へ:</strong> 環境が整いました。第2章では、アプリのロジックを書くための言語 <strong>TypeScript</strong> の基礎を学びます。ここで作った <code>my-books-app</code> は後の章でも使い続けるので、消さずに残しておいてください。</p>
+</blockquote>
+<h3 id="_1">よくあるトラブルと対処法</h3>
+<table>
+<thead>
+<tr>
+<th>症状</th>
+<th>対処法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>node</code> コマンドが認識されない</td>
+<td>ターミナルを開き直す。それでも駄目ならNode.jsを再インストール</td>
+</tr>
+<tr>
+<td>QRコードを読んでもアプリが表示されない</td>
+<td>PCとスマホが<strong>同じWi-Fi</strong>か確認。駄目なら <code>npx expo start --tunnel</code></td>
+</tr>
+<tr>
+<td><code>npx create-expo-app</code> が途中で止まる</td>
+<td>ネットワーク接続を確認し、再実行。社内ネットの場合は別回線を試す</td>
+</tr>
+<tr>
+<td>スマホで「Something went wrong」表示</td>
+<td>ターミナルのエラー文を確認。多くはコードの保存ミス。<code>Ctrl+C</code>で止めて再起動</td>
+</tr>
+</tbody>
+</table>
+
+<script>
+(function () {
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy") ? resolve() : reject(); } catch (e) { reject(e); }
+      document.body.removeChild(ta);
+    });
+  }
+  document.querySelectorAll(".copy-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var pre = btn.parentElement.querySelector("pre");
+      var text = pre.textContent.replace(/\n$/, "");
+      copyText(text).then(function () {
+        btn.textContent = "コピーしました";
+        btn.classList.add("done");
+        setTimeout(function () { btn.textContent = "コピー"; btn.classList.remove("done"); }, 2000);
+      }, function () { btn.textContent = "コピーできませんでした"; });
+    });
+  });
+  if (/^#code-\d+$/.test(location.hash)) {
+    var note = document.getElementById("web-note");
+    if (note) { note.hidden = false; }
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1648 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>05_構築手順_Django_React版</title>
+<style>
+
+@page {
+  size: A4;
+  margin: 18mm 16mm 20mm 16mm;
+  @bottom-right {
+    content: counter(page);
+    font-size: 10px;
+    color: #64748b;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  font-family: "Yu Gothic UI", "Yu Gothic", "Meiryo", "Hiragino Sans",
+               "Noto Sans JP", "Segoe UI", system-ui, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.75;
+  color: #1e293b;
+  background: #ffffff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #0f172a;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 1.4em 0 0.6em;
+  page-break-after: avoid;
+}
+h1 {
+  font-size: 22pt;
+  border-bottom: 3px solid #1e40af;
+  padding-bottom: 0.3em;
+  margin-top: 0.4em;
+  page-break-before: auto;
+}
+h2 {
+  font-size: 16pt;
+  border-bottom: 1.5px solid #cbd5e1;
+  padding-bottom: 0.25em;
+  margin-top: 1.6em;
+}
+h3 { font-size: 13pt; color: #1e40af; }
+h4 { font-size: 12pt; color: #334155; }
+
+p { margin: 0.5em 0 0.8em; }
+
+a { color: #1d4ed8; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+ul, ol { margin: 0.4em 0 0.9em; padding-left: 1.6em; }
+li { margin: 0.2em 0; }
+
+blockquote {
+  border-left: 4px solid #3b82f6;
+  background: #eff6ff;
+  margin: 0.8em 0;
+  padding: 0.6em 1em;
+  color: #1e3a8a;
+  border-radius: 0 6px 6px 0;
+  page-break-inside: avoid;
+}
+blockquote p { margin: 0.3em 0; }
+blockquote strong { color: #1e40af; }
+
+code {
+  /* DefCode (see _code_font.py) has ASCII and Japanese in ONE font, so a code
+     line is drawn as one text run and copies as one line in every PDF viewer. */
+  font-family: "Consolas", "Consolas", monospace;
+  font-size: 0.9em;
+  background: #f1f5f9;
+  color: #be123c;
+  padding: 0.12em 0.36em;
+  border-radius: 4px;
+  /* Long inline code (file paths / URLs) must break instead of overflowing. */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  /* In a PDF there is no horizontal scrolling, so long lines must wrap
+     instead of being clipped off the right edge of the page. */
+  overflow-x: hidden;
+  overflow-y: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  font-size: 9.2pt;
+  line-height: 1.5;
+  margin: 0.8em 0;
+  page-break-inside: avoid;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+  white-space: inherit;
+  word-break: inherit;
+  overflow-wrap: inherit;
+}
+
+/* The codehilite extension wraps highlighted blocks in a scrolling div; make
+   that wrap too so nothing is clipped in the PDF. */
+.codehilite {
+  overflow-x: hidden;
+  /* overflow-x: hidden alone turns overflow-y into auto, and a glyph from a
+     fallback font that is a hair too tall then shows a vertical scrollbar. */
+  overflow-y: hidden;
+}
+.codehilite pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* No per-token colours: every coloured token became its own text run (and its
+   own tag) in the PDF, and some viewers then pasted each token on its own line.
+   Only whole comment lines get a colour, so each line is still one run. */
+pre .cmt { color: #94a3b8; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.8em 0;
+  font-size: 9.6pt;
+  page-break-inside: avoid;
+}
+th, td {
+  border: 1px solid #e2e8f0;
+  padding: 6px 9px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: #f1f5f9;
+  color: #0f172a;
+  font-weight: 700;
+}
+tr:nth-child(even) td { background: #f8fafc; }
+
+img { max-width: 100%; height: auto; }
+
+hr {
+  border: none;
+  border-top: 1px dashed #cbd5e1;
+  margin: 1.6em 0;
+}
+
+/* Diagram blocks (the inline-styled <div>s in the source) */
+div[style] {
+  page-break-inside: avoid;
+}
+
+/* Tighten spacing right after headings */
+h1 + p, h2 + p, h3 + p, h4 + p { margin-top: 0.2em; }
+
+/* Avoid ugly page breaks inside list items / table rows */
+li, tr { page-break-inside: avoid; }
+
+@media screen {
+  body { max-width: 920px; margin: 0 auto; padding: 20px 20px 120px; font-size: 16px; }
+  pre { white-space: pre !important; word-break: normal !important; overflow-wrap: normal !important;
+        overflow-x: auto !important; font-size: 14px !important; }
+  img { max-width: 100%; height: auto; }
+}
+.web-bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; font-size: 14px;
+  padding: 8px 12px; margin-bottom: 16px; background: #eef2f7; border-radius: 8px; }
+.web-bar a { color: #1e3a5f; }
+.web-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 10; max-width: 90%;
+  font-size: 15px; font-weight: 700; background: #fff7ed; border: 2px solid #f2994a; border-radius: 8px;
+  padding: 10px 16px; margin: 0; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.code-wrap { position: relative; scroll-margin-top: 16px; }
+.code-wrap pre { padding-top: 40px !important; }
+.copy-btn { position: absolute; top: 8px; right: 8px; z-index: 2; font-size: 13px; font-weight: 700;
+  padding: 4px 12px; border: 0; border-radius: 6px; background: #2f80ed; color: #fff; cursor: pointer;
+  font-family: inherit; }
+.copy-btn:hover { background: #1c64c8; }
+.copy-btn.done { background: #27ae60; }
+.code-wrap:target pre { outline: 4px solid #f2994a; outline-offset: 2px; }
+.code-wrap:target .copy-btn { box-shadow: 0 0 0 4px #f2994a; }
+/* syntax colours on screen (the PDF uses one colour so that each line copies as one piece) */
+.codehilite .k, .codehilite .kd, .codehilite .kn, .codehilite .kr { color: #c084fc; }
+.codehilite .s, .codehilite .s1, .codehilite .s2, .codehilite .sb { color: #fcd34d; }
+.codehilite .c, .codehilite .c1, .codehilite .cm { color: #94a3b8; }
+.codehilite .nf, .codehilite .nx { color: #60a5fa; }
+.codehilite .nb { color: #34d399; }
+.codehilite .mi, .codehilite .mf { color: #f472b6; }
+.codehilite .nt { color: #f59e0b; }
+.codehilite .na { color: #93c5fd; }
+</style>
+</head>
+<body>
+<div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/05_%E6%A7%8B%E7%AF%89%E6%89%8B%E9%A0%86_Django_React%E7%89%88.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、ブラウザーの「戻る」で PDF に戻れます。</p><div style="text-align: center; padding: 28px 0 8px;">
+<div style="font-size: 14px; color: #475569;">オンプレミス構築 教育資料</div>
+<div style="font-size: 26px; font-weight: 800; color: #0f172a; margin-top: 6px; line-height: 1.35;">構築手順 — Django＋React版</div>
+<div style="font-size: 13px; color: #475569; margin-top: 8px;">React の画面を Django のプロジェクトに入れ、Django が同じサーバーで配る形で、Windows Server に建てる</div>
+</div>
+
+<h1 id="djangoreact">構築手順: Django＋React版</h1>
+<h2 id="_1">この資料について</h2>
+<p>04 構築手順（Rust＋Topcoat版）と<strong>同じアプリ</strong>を、<strong>Django（Python）と React（JavaScript）</strong>で作った場合の手順です。</p>
+<ul>
+<li><strong>前提:</strong> 04 と同じ。会社が Windows Server の仮想マシンを貸してくれて、データベースは仮想マシンの中の PostgreSQL。通信は HTTP（80 番）。</li>
+<li><strong>構成:</strong> React で作った画面の<strong>成果物（ビルドしたファイル）を、Django のプロジェクトの中に置き</strong>、Django が同じサーバーから配ります。React のための別のサーバーは要りません。</li>
+<li><strong>04 と同じ所は、04 を見ます。</strong> サーバーの受け取り・フォルダの考え方・PostgreSQL・IIS・ファイアウォール・バックアップは、ほとんど同じです。この資料では、<strong>違う所</strong>を詳しく書きます。</li>
+<li><strong>試して確かめた範囲:</strong> この資料の Django の設定・画面の配り方・ログイン・CSRF・大きさの上限・Python の部品の持ち込み・<code>manage.ps1</code> は、2026-11-01 に、Python 3.14・Django 5.2.18・waitress 3.0.2・PostgreSQL 18.3 で、<strong>実際に動かして確かめました</strong>（8.4 の表）。IIS とサービスへの登録は、04 と同じ手順です。</li>
+</ul>
+<h3 id="2026-11-01">この資料で使う版（2026-11-01 時点）</h3>
+<table>
+<thead>
+<tr>
+<th>もの</th>
+<th>版</th>
+<th>どこで使う</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Windows Server・PostgreSQL・IIS・URL Rewrite・ARR・WinSW</td>
+<td>04 と同じ</td>
+<td>サーバー</td>
+</tr>
+<tr>
+<td>Python</td>
+<td>3.14 系の最新（Windows 用の 64 ビットのインストーラー）</td>
+<td>サーバーと開発用のパソコン</td>
+</tr>
+<tr>
+<td>Django</td>
+<td>5.2.18（長期サポート版。2028 年 4 月まで安全の修正が出る）</td>
+<td>アプリの中</td>
+</tr>
+<tr>
+<td>Django REST framework</td>
+<td>3.18.3（API を作る部品）</td>
+<td>アプリの中</td>
+</tr>
+<tr>
+<td>psycopg</td>
+<td>3.3.6（PostgreSQL につなぐ部品）</td>
+<td>アプリの中</td>
+</tr>
+<tr>
+<td>waitress</td>
+<td>3.0.2（Windows で動く、Python の Web サーバー）</td>
+<td>アプリの中</td>
+</tr>
+<tr>
+<td>WhiteNoise</td>
+<td>6.12.0（画面の部品のファイルを、Django から配る部品）</td>
+<td>アプリの中</td>
+</tr>
+<tr>
+<td>React</td>
+<td>19.3.1</td>
+<td>画面（開発用のパソコンで作る）</td>
+</tr>
+<tr>
+<td>Vite</td>
+<td>8.3.5（React の画面をビルドする道具）</td>
+<td>開発用のパソコンだけ</td>
+</tr>
+<tr>
+<td>Node.js</td>
+<td>LTS 版（Vite を動かすため）</td>
+<td><strong>開発用のパソコンだけ</strong>。サーバーには入れない</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>用語:</strong> Django（ジャンゴ：Python で Web アプリを作るための、全部入りのフレームワーク。ログイン・管理画面・データベースの道具が最初から付いている）</p>
+</blockquote>
+<!-- -->
+
+<blockquote>
+<p><strong>用語:</strong> React（リアクト：ブラウザの中で画面を組み立てる、JavaScript の部品。03 の 7 章）</p>
+</blockquote>
+<!-- -->
+
+<blockquote>
+<p><strong>用語:</strong> ビルド（build：作った元のファイルを、ブラウザやサーバーで動かせる形にまとめて変換すること。React なら、たくさんのファイルを、少ない JavaScript のファイルにまとめる）</p>
+</blockquote>
+<h2 id="1-04">1. 全体像（04 との違い）</h2>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/05-01_topology.webp" alt="社員のPCからIIS 80番、WinSWの中のwaitressの中のDjango（APIと画面の部品）、そしてPostgreSQLへ" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図1-1: Django 版の形。IIS の奥で、waitress が Django を動かし、Django が API と画面の部品の両方を配る</div>
+</div>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th>04 Rust＋Topcoat版</th>
+<th>この資料 Django＋React版</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>アプリの中身</td>
+<td><code>webapp.exe</code> 1つ＋<code>assets\</code></td>
+<td>Python のコード＋画面の成果物（<code>frontend_dist\</code>・<code>staticfiles\</code>）</td>
+</tr>
+<tr>
+<td>サーバーに入れる物</td>
+<td>無し（実行ファイルだけ）</td>
+<td><strong>Python</strong>（3.14）と、<strong>仮想環境（venv）</strong>に入れた部品</td>
+</tr>
+<tr>
+<td>アプリを動かす物</td>
+<td><code>webapp.exe</code> 自身</td>
+<td><strong>waitress</strong>（<code>python -m waitress ...</code>）</td>
+</tr>
+<tr>
+<td>サービスにする道具</td>
+<td>WinSW</td>
+<td>WinSW（同じ）</td>
+</tr>
+<tr>
+<td>画面の部品の配り方</td>
+<td>アプリが配る</td>
+<td><strong>WhiteNoise</strong>（Django の中の部品）が <code>/static/</code> で配る</td>
+</tr>
+<tr>
+<td>テーブルを作る・直す</td>
+<td>アプリの起動のとき（設計例）</td>
+<td><code>manage.py migrate</code> を手で動かす</td>
+</tr>
+<tr>
+<td>毎朝 8:00 の処理</td>
+<td>アプリの中の定期処理（設計例）</td>
+<td>Django の管理コマンドを、<strong>タスク スケジューラ</strong>で動かす（設計例）</td>
+</tr>
+<tr>
+<td>HTTP のための設定</td>
+<td>カスタムの TokenStore（04 の 6.4）</td>
+<td><code>SESSION_COOKIE_SECURE = False</code> などの設定（8 章）</td>
+</tr>
+</tbody>
+</table>
+<p>本番と検証の分け方（名前・IIS のサイト・ポート・サービス・データベース）は、<strong>04 の 1.2 と同じ</strong>です（本番 8080・検証 8081）。</p>
+<h3 id="11">1.1 作業の順番</h3>
+<ol>
+<li>サーバーの受け取りと最初の確認（<strong>04 の 2・3 章</strong>のとおり）</li>
+<li>フォルダとアカウント（4 章。04 の 4 章に、Python 用のフォルダを足す）</li>
+<li>PostgreSQL（<strong>04 の 5 章</strong>のとおり）</li>
+<li>Python を入れる（5 章）</li>
+<li>開発用のパソコンで、アプリを作り、まとめる（6・7 章）</li>
+<li>HTTP のための設定を確かめる（8 章）</li>
+<li>サーバーに置き、Windows サービスにする（9 章）</li>
+<li>受付（IIS）（10 章。<strong>04 の 8 章</strong>とほぼ同じ）</li>
+<li>ファイアウォール・メール・バックアップ（11 章。<strong>04 の 9〜11 章</strong>）</li>
+<li>毎朝 8:00 の処理・ログ（12 章）</li>
+<li>動作確認・更新・切り戻し（13 章）</li>
+</ol>
+<h2 id="2">2. フォルダとアカウント</h2>
+<p>04 の 4 章のフォルダに、次を足します。</p>
+<div class="codehilite"><div class="code-wrap" id="code-1"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>D:\webapp\
+├─ prod\
+│  ├─ app\          アプリ（backend\ の中身）
+│  ├─ venv\         本番の Python の仮想環境（部品の置き場）  ← 足す
+│  ├─ tmp\          大きな添付ファイルを受け取る途中の一時ファイル  ← 足す
+│  ├─ service\      WinSW と設定（XML）と manage.ps1
+│  ├─ files\        添付ファイル
+│  ├─ logs\         ログ
+│  └─ iis\          IIS のサイトのフォルダ（web.config）
+├─ stg\             検証（中身は prod\ と同じ形）
+├─ releases\        持ち込んだ版の zip（webapp-1.0.0.zip など）
+├─ backup\ tools\ secrets\ installers\    04 と同じ
+</code></pre></div></div>
+
+<div class="codehilite"><div class="code-wrap" id="code-2"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 足すフォルダを作る（本番と検証）</span>
+<span class="nb">New-Item</span> <span class="n">-ItemType</span> <span class="n">Directory</span> <span class="n">-Force</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">prod</span><span class="p">\</span><span class="n">venv</span><span class="p">,</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">prod</span><span class="p">\</span><span class="n">tmp</span><span class="p">,</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">stg</span><span class="p">\</span><span class="n">venv</span><span class="p">,</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">stg</span><span class="p">\</span><span class="n">tmp</span>
+</code></pre></div></div>
+
+<p>アプリを動かすアカウントは、04 と同じ<strong>仮想アカウント</strong>（<code>NT SERVICE\webapp-prod</code>・<code>NT SERVICE\webapp-stg</code>）です。許可は 9.3 で付けます。</p>
+<h2 id="3-postgresql">3. PostgreSQL</h2>
+<p><strong>04 の 5 章のとおり</strong>に入れて、本番と検証のデータベースとユーザーを作ります（<code>lc_messages = 'C'</code> も同じ）。Django は、アプリ用のユーザーでつないで、テーブルを作ります（9.5 の <code>migrate</code>）。</p>
+<h2 id="4-python">4. Python を入れる（サーバー）</h2>
+<h3 id="41">4.1 インストーラーを持ち込む</h3>
+<ol>
+<li>開発用のパソコンで、Python の公式のページ（<code>https://www.python.org/downloads/windows/</code>）から、<strong>3.14 系の最新の「Windows installer (64-bit)」</strong>（<code>python-3.14.x-amd64.exe</code>）を取ってきます。</li>
+<li>01 の 12 章のとおり、<code>D:\webapp\installers\</code> に持ち込み、ハッシュ値を確かめます。</li>
+</ol>
+<blockquote>
+<p><strong>インストーラーの種類について:</strong> Python 3.14 からは、新しい「Python install manager」が勧められていますが、これは<strong>人ごと</strong>に Python を入れる道具です。サーバーでは、<strong>サービスのアカウントからも使えるように、全部のユーザー向けに 1 か所に入れたい</strong>ので、従来のインストーラー（<code>python-3.14.x-amd64.exe</code>）を使います。従来のインストーラーは 3.14 では使えますが、Python 3.16 からは出なくなる予定です。そのころには、入れ方を見直します。</p>
+</blockquote>
+<h3 id="42">4.2 インストールする</h3>
+<ol>
+<li><code>python-3.14.x-amd64.exe</code> を、右クリック →「管理者として実行」します。</li>
+<li>最初の画面の下の「<strong>Add python.exe to PATH</strong>」には<strong>チェックを入れません</strong>（サーバーでは、どの Python を使うかを、いつも場所を書いて決めるため）。</li>
+<li>「<strong>Customize installation</strong>」を押します。</li>
+<li>「Optional Features」はそのまま「Next」。</li>
+<li>「Advanced Options」で「<strong>Install Python 3.14 for all users</strong>」にチェックを入れます。入れる場所が <code>C:\Program Files\Python314</code> になったことを確かめて、「Install」を押します。</li>
+</ol>
+<div class="codehilite"><div class="code-wrap" id="code-3"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">&amp;</span> <span class="s2">&quot;C:\Program Files\Python314\python.exe&quot;</span> <span class="p">-</span><span class="n">-version</span>
+</code></pre></div></div>
+
+<p><strong>確かめること:</strong> <code>Python 3.14.x</code> と出ること。</p>
+<blockquote>
+<p><strong>用語:</strong> PATH に追加（コマンドの名前だけで呼べるようにすること。01 の 3.8。サーバーに Python が何個もあると、どれが動くか分からなくなるので、今回は追加しない）</p>
+</blockquote>
+<h3 id="43-venv">4.3 仮想環境（venv）を作る</h3>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/05-04_venv.webp" alt="Python本体から、本番のvenvと検証のvenvが分かれ、それぞれに部品が入っている" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図4-1: venv は、部品を環境ごとに分けて入れる箱</div>
+</div>
+
+<p><strong>仮想環境（venv）</strong>は、Python の部品（Django など）を、<strong>環境ごとに分けて入れる箱</strong>です。本番と検証で別の venv にしておくと、検証で新しい版の部品を試しても、本番に影響しません。</p>
+<div class="codehilite"><div class="code-wrap" id="code-4"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">&amp;</span> <span class="s2">&quot;C:\Program Files\Python314\python.exe&quot;</span> <span class="n">-m</span> <span class="n">venv</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">prod</span><span class="p">\</span><span class="n">venv</span>
+<span class="p">&amp;</span> <span class="s2">&quot;C:\Program Files\Python314\python.exe&quot;</span> <span class="n">-m</span> <span class="n">venv</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">stg</span><span class="p">\</span><span class="n">venv</span>
+
+<span class="c"># venv の中の python で、版を確かめる</span>
+<span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">prod</span><span class="p">\</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="p">-</span><span class="n">-version</span>
+</code></pre></div></div>
+
+<p><strong>確かめること:</strong> <code>D:\webapp\prod\venv\Scripts\python.exe</code> があり、<code>Python 3.14.x</code> と出ること。部品は、7 章で持ち込んでから入れます。</p>
+<blockquote>
+<p><strong>用語:</strong> 仮想環境（venv。ブイエンブ：Python の部品を、プロジェクトや環境ごとに分けて入れる仕組み。<code>venv\Scripts\python.exe</code> を使うと、その箱の部品が使われる）</p>
+</blockquote>
+<h2 id="5">5. 開発用のパソコンの準備</h2>
+<p>開発用のパソコン（インターネットにつながる）に、次を入れます。</p>
+<table>
+<thead>
+<tr>
+<th>道具</th>
+<th>入れ方</th>
+<th>何に使う</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Python 3.14</td>
+<td>公式のページから</td>
+<td>Django の開発と、サーバー用の部品の取り寄せ</td>
+</tr>
+<tr>
+<td>Node.js の LTS 版</td>
+<td>公式のページ（<code>https://nodejs.org/</code>）から</td>
+<td>React の画面のビルド（Vite を動かす）</td>
+</tr>
+<tr>
+<td>Git</td>
+<td>公式のページから</td>
+<td>ソースの管理</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>用語:</strong> LTS（エルティーエス。Long Term Support：長くサポートされる版。会社で使うなら、LTS を選ぶ）</p>
+</blockquote>
+<h2 id="6">6. アプリの作り（開発用のパソコン）</h2>
+<h3 id="61">6.1 フォルダの形</h3>
+<div class="codehilite"><div class="code-wrap" id="code-5"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>webapp\                     ソース一式（Git で管理する）
+├─ backend\                 Django のプロジェクト
+│  ├─ manage.py             Django の管理コマンドの入口
+│  ├─ requirements.txt      使う部品と版の一覧
+│  ├─ config\               設定（settings.py・urls.py・wsgi.py）
+│  ├─ accounts\             アプリの部品（ログインなど。例）
+│  ├─ frontend_dist\        ← React の成果物（npm run build で作られる。Git には入れない）
+│  └─ staticfiles\          ← 配る部品を集めた物（collectstatic で作られる。Git には入れない）
+└─ frontend\                React の画面の元
+   ├─ package.json
+   ├─ vite.config.js
+   ├─ index.html
+   └─ src\
+</code></pre></div></div>
+
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/05-02_react_into_django.webp" alt="frontendをnpm run buildでbackendの中のfrontend_distへ、collectstaticでstaticfilesへ集め、WhiteNoiseが配る" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図6-1: React の成果物を Django のプロジェクトに入れ、WhiteNoise が配る</div>
+</div>
+
+<table>
+<thead>
+<tr>
+<th>段階</th>
+<th>コマンド</th>
+<th>何が起きるか</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① React をビルドする</td>
+<td><code>npm run build</code>（<code>frontend\</code> で）</td>
+<td><code>frontend\</code> の元から、<code>backend\frontend_dist\</code> に <code>index.html</code> と <code>assets\index-（指紋）.js</code> ができる</td>
+</tr>
+<tr>
+<td>② 配る部品を集める</td>
+<td><code>python manage.py collectstatic</code>（<code>backend\</code> で）</td>
+<td><code>frontend_dist\</code> と、Django の管理画面の部品が、<code>backend\staticfiles\</code> に集まる。同時に、縮めた <code>.gz</code> も作られる</td>
+</tr>
+<tr>
+<td>③ 配る</td>
+<td>（サーバーで動いている間）</td>
+<td>WhiteNoise が、<code>/static/...</code> のお願いに、<code>staticfiles\</code> のファイルを返す。<code>index.html</code> は、Django が画面として返す</td>
+</tr>
+</tbody>
+</table>
+<h3 id="62-requirementstxt">6.2 requirements.txt（使う部品と版）</h3>
+<div class="codehilite"><div class="code-wrap" id="code-6"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Django==5.2.18
+djangorestframework==3.18.3
+psycopg[binary]==3.3.6
+waitress==3.0.2
+whitenoise==6.12.0
+</code></pre></div></div>
+
+<p>版を <code>==</code> で決めておくと、開発用のパソコンとサーバーで、<strong>同じ版の部品</strong>が入ります。</p>
+<h3 id="63-configsettingspy">6.3 config\settings.py（設定）</h3>
+<p>秘密の値（<code>SECRET_KEY</code>・データベースのパスワード）と、サーバーごとに違う値は、<strong>環境変数</strong>から読みます。環境変数は、9 章の WinSW の XML に書きます。</p>
+<div class="codehilite"><div class="code-wrap" id="code-7"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="sd">&quot;&quot;&quot;webapp の設定。秘密の値と、サーバーごとに違う値は、環境変数から読む。&quot;&quot;&quot;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="n">BASE_DIR</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">env</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;環境変数を読む。無くて、決まりの値も無いときは、起動を止める。&quot;&quot;&quot;</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">default</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;環境変数 </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> がありません&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">value</span>
+
+
+<span class="n">SECRET_KEY</span> <span class="o">=</span> <span class="n">env</span><span class="p">(</span><span class="s2">&quot;DJANGO_SECRET_KEY&quot;</span><span class="p">)</span>
+<span class="n">DEBUG</span> <span class="o">=</span> <span class="n">env</span><span class="p">(</span><span class="s2">&quot;DJANGO_DEBUG&quot;</span><span class="p">,</span> <span class="s2">&quot;false&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;true&quot;</span>
+
+<span class="c1"># 社員が開く名前（例: webapp-stg.example.local）。IIS が名前をそのまま渡すので、ここに書いた名前だけ受け付ける</span>
+<span class="n">ALLOWED_HOSTS</span> <span class="o">=</span> <span class="n">env</span><span class="p">(</span><span class="s2">&quot;DJANGO_ALLOWED_HOSTS&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+<span class="n">CSRF_TRUSTED_ORIGINS</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;http://</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">host</span> <span class="ow">in</span> <span class="n">ALLOWED_HOSTS</span><span class="p">]</span>
+
+<span class="n">INSTALLED_APPS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;django.contrib.admin&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;django.contrib.auth&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;django.contrib.contenttypes&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;django.contrib.sessions&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;django.contrib.messages&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;django.contrib.staticfiles&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;rest_framework&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;accounts&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="n">MIDDLEWARE</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;django.middleware.security.SecurityMiddleware&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;whitenoise.middleware.WhiteNoiseMiddleware&quot;</span><span class="p">,</span>  <span class="c1"># SecurityMiddleware のすぐ後</span>
+    <span class="s2">&quot;django.contrib.sessions.middleware.SessionMiddleware&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;django.middleware.common.CommonMiddleware&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;django.middleware.csrf.CsrfViewMiddleware&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;django.contrib.auth.middleware.AuthenticationMiddleware&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;django.contrib.messages.middleware.MessageMiddleware&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;django.middleware.clickjacking.XFrameOptionsMiddleware&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="n">ROOT_URLCONF</span> <span class="o">=</span> <span class="s2">&quot;config.urls&quot;</span>
+
+<span class="n">TEMPLATES</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;BACKEND&quot;</span><span class="p">:</span> <span class="s2">&quot;django.template.backends.django.DjangoTemplates&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;DIRS&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">BASE_DIR</span> <span class="o">/</span> <span class="s2">&quot;frontend_dist&quot;</span><span class="p">],</span>  <span class="c1"># React の成果物の index.html</span>
+        <span class="s2">&quot;APP_DIRS&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;OPTIONS&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;context_processors&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="s2">&quot;django.template.context_processors.request&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;django.contrib.auth.context_processors.auth&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;django.contrib.messages.context_processors.messages&quot;</span><span class="p">,</span>
+            <span class="p">],</span>
+        <span class="p">},</span>
+    <span class="p">},</span>
+<span class="p">]</span>
+
+<span class="n">WSGI_APPLICATION</span> <span class="o">=</span> <span class="s2">&quot;config.wsgi.application&quot;</span>
+
+<span class="n">DATABASES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;ENGINE&quot;</span><span class="p">:</span> <span class="s2">&quot;django.db.backends.postgresql&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;HOST&quot;</span><span class="p">:</span> <span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;PORT&quot;</span><span class="p">:</span> <span class="n">env</span><span class="p">(</span><span class="s2">&quot;DB_PORT&quot;</span><span class="p">,</span> <span class="s2">&quot;5432&quot;</span><span class="p">),</span>
+        <span class="s2">&quot;NAME&quot;</span><span class="p">:</span> <span class="n">env</span><span class="p">(</span><span class="s2">&quot;DB_NAME&quot;</span><span class="p">),</span>
+        <span class="s2">&quot;USER&quot;</span><span class="p">:</span> <span class="n">env</span><span class="p">(</span><span class="s2">&quot;DB_USER&quot;</span><span class="p">),</span>
+        <span class="s2">&quot;PASSWORD&quot;</span><span class="p">:</span> <span class="n">env</span><span class="p">(</span><span class="s2">&quot;DB_PASSWORD&quot;</span><span class="p">),</span>
+        <span class="s2">&quot;CONN_MAX_AGE&quot;</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">AUTH_PASSWORD_VALIDATORS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;NAME&quot;</span><span class="p">:</span> <span class="s2">&quot;django.contrib.auth.password_validation.UserAttributeSimilarityValidator&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;NAME&quot;</span><span class="p">:</span> <span class="s2">&quot;django.contrib.auth.password_validation.MinimumLengthValidator&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;NAME&quot;</span><span class="p">:</span> <span class="s2">&quot;django.contrib.auth.password_validation.CommonPasswordValidator&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;NAME&quot;</span><span class="p">:</span> <span class="s2">&quot;django.contrib.auth.password_validation.NumericPasswordValidator&quot;</span><span class="p">},</span>
+<span class="p">]</span>
+
+<span class="n">LANGUAGE_CODE</span> <span class="o">=</span> <span class="s2">&quot;ja&quot;</span>
+<span class="n">TIME_ZONE</span> <span class="o">=</span> <span class="s2">&quot;Asia/Tokyo&quot;</span>
+<span class="n">USE_I18N</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">USE_TZ</span> <span class="o">=</span> <span class="kc">True</span>
+
+<span class="c1"># 画面の部品（React の成果物）と管理画面の部品は、WhiteNoise が /static/ で配る</span>
+<span class="n">STATIC_URL</span> <span class="o">=</span> <span class="s2">&quot;/static/&quot;</span>
+<span class="n">STATIC_ROOT</span> <span class="o">=</span> <span class="n">BASE_DIR</span> <span class="o">/</span> <span class="s2">&quot;staticfiles&quot;</span>
+<span class="n">STATICFILES_DIRS</span> <span class="o">=</span> <span class="p">[</span><span class="n">BASE_DIR</span> <span class="o">/</span> <span class="s2">&quot;frontend_dist&quot;</span><span class="p">]</span>
+<span class="n">STORAGES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;BACKEND&quot;</span><span class="p">:</span> <span class="s2">&quot;django.core.files.storage.FileSystemStorage&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;staticfiles&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;BACKEND&quot;</span><span class="p">:</span> <span class="s2">&quot;whitenoise.storage.CompressedStaticFilesStorage&quot;</span><span class="p">},</span>
+<span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_vite_hashed</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Vite が名前に指紋を付けたファイル（例: index-BX3k9a2Q.js）は、ずっとキャッシュしてよい。&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^.+[.-][0-9a-zA-Z_-]{8,12}\..+$&quot;</span><span class="p">,</span> <span class="n">url</span><span class="p">)</span>
+
+
+<span class="n">WHITENOISE_IMMUTABLE_FILE_TEST</span> <span class="o">=</span> <span class="n">_vite_hashed</span>
+
+<span class="c1"># 添付ファイルの置き場所（例: D:\webapp\stg\files）</span>
+<span class="n">MEDIA_ROOT</span> <span class="o">=</span> <span class="n">env</span><span class="p">(</span><span class="s2">&quot;DJANGO_MEDIA_ROOT&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">BASE_DIR</span> <span class="o">/</span> <span class="s2">&quot;media&quot;</span><span class="p">))</span>
+
+<span class="c1"># 図面の JSON（1 枚 5MB まで）を受け取れるように、本文の上限を 10MB にする（決まりの値は 2.5MB）</span>
+<span class="n">DATA_UPLOAD_MAX_MEMORY_SIZE</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span>
+<span class="c1"># 大きな添付ファイルを受け取る途中で使う、一時ファイルの置き場所（例: D:\webapp\stg\tmp）</span>
+<span class="n">FILE_UPLOAD_TEMP_DIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;DJANGO_TMP_DIR&quot;</span><span class="p">)</span>  <span class="c1"># 無ければ Windows の一時フォルダ</span>
+
+<span class="c1"># メール（Microsoft 365 の SMTP リレー。04 の 10 章）</span>
+<span class="n">EMAIL_BACKEND</span> <span class="o">=</span> <span class="s2">&quot;django.core.mail.backends.smtp.EmailBackend&quot;</span>
+<span class="n">EMAIL_HOST</span> <span class="o">=</span> <span class="n">env</span><span class="p">(</span><span class="s2">&quot;SMTP_HOST&quot;</span><span class="p">,</span> <span class="s2">&quot;localhost&quot;</span><span class="p">)</span>
+<span class="n">EMAIL_PORT</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">env</span><span class="p">(</span><span class="s2">&quot;SMTP_PORT&quot;</span><span class="p">,</span> <span class="s2">&quot;25&quot;</span><span class="p">))</span>
+<span class="n">EMAIL_USE_TLS</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># 25 番でつないでから、STARTTLS で暗号化する</span>
+<span class="n">DEFAULT_FROM_EMAIL</span> <span class="o">=</span> <span class="n">env</span><span class="p">(</span><span class="s2">&quot;MAIL_FROM&quot;</span><span class="p">,</span> <span class="s2">&quot;noreply@example.com&quot;</span><span class="p">)</span>
+<span class="n">EMAIL_TIMEOUT</span> <span class="o">=</span> <span class="mi">30</span>
+
+<span class="c1"># HTTP で動かすため、クッキーに Secure を付けない（HTTPS にしたら True にする。参考資料）</span>
+<span class="n">SESSION_COOKIE_SECURE</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">CSRF_COOKIE_SECURE</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">SESSION_COOKIE_HTTPONLY</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">SESSION_COOKIE_SAMESITE</span> <span class="o">=</span> <span class="s2">&quot;Lax&quot;</span>
+<span class="c1"># 60 分操作が無ければログアウト（操作のたびに期限を延ばす）</span>
+<span class="n">SESSION_COOKIE_AGE</span> <span class="o">=</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span>
+<span class="n">SESSION_SAVE_EVERY_REQUEST</span> <span class="o">=</span> <span class="kc">True</span>
+
+<span class="n">REST_FRAMEWORK</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;DEFAULT_AUTHENTICATION_CLASSES&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;rest_framework.authentication.SessionAuthentication&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;DEFAULT_PERMISSION_CLASSES&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;rest_framework.permissions.IsAuthenticated&quot;</span><span class="p">],</span>
+<span class="p">}</span>
+
+<span class="c1"># ログは画面（標準出力）に出す。WinSW がファイルに書く</span>
+<span class="n">LOGGING</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;disable_existing_loggers&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="s2">&quot;formatters&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;plain&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">{asctime}</span><span class="s2"> </span><span class="si">{levelname}</span><span class="s2"> </span><span class="si">{name}</span><span class="s2"> </span><span class="si">{message}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;style&quot;</span><span class="p">:</span> <span class="s2">&quot;{&quot;</span><span class="p">}},</span>
+    <span class="s2">&quot;handlers&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;console&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;logging.StreamHandler&quot;</span><span class="p">,</span> <span class="s2">&quot;formatter&quot;</span><span class="p">:</span> <span class="s2">&quot;plain&quot;</span><span class="p">}},</span>
+    <span class="s2">&quot;root&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;handlers&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;console&quot;</span><span class="p">],</span> <span class="s2">&quot;level&quot;</span><span class="p">:</span> <span class="s2">&quot;INFO&quot;</span><span class="p">},</span>
+<span class="p">}</span>
+
+<span class="n">DEFAULT_AUTO_FIELD</span> <span class="o">=</span> <span class="s2">&quot;django.db.models.BigAutoField&quot;</span>
+
+<span class="c1"># HTTP で動かすために出る、HTTPS 関係の注意だけを黙らせる（HTTPS にしたら、この行を消す）</span>
+<span class="n">SILENCED_SYSTEM_CHECKS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;security.W004&quot;</span><span class="p">,</span> <span class="s2">&quot;security.W008&quot;</span><span class="p">,</span> <span class="s2">&quot;security.W012&quot;</span><span class="p">,</span> <span class="s2">&quot;security.W016&quot;</span><span class="p">]</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>設定</th>
+<th>意味</th>
+<th>大事な理由</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ALLOWED_HOSTS</code></td>
+<td>受け付ける名前</td>
+<td>ここに無い名前で来たお願いは、<strong>400</strong> で断られる（8.4 の表の 5）</td>
+</tr>
+<tr>
+<td><code>CSRF_TRUSTED_ORIGINS</code></td>
+<td>信頼する送り元</td>
+<td><code>http://</code> を付けて書く</td>
+</tr>
+<tr>
+<td><code>WhiteNoiseMiddleware</code></td>
+<td>画面の部品を配る</td>
+<td><code>SecurityMiddleware</code> の<strong>すぐ後</strong>に置く決まり</td>
+</tr>
+<tr>
+<td><code>TEMPLATES</code> の <code>DIRS</code></td>
+<td><code>index.html</code> を探す場所</td>
+<td>React の成果物の <code>frontend_dist</code></td>
+</tr>
+<tr>
+<td><code>STATICFILES_DIRS</code>・<code>STATIC_ROOT</code></td>
+<td>集める元と、集めた先</td>
+<td>6.1 の ①→②</td>
+</tr>
+<tr>
+<td><code>CompressedStaticFilesStorage</code></td>
+<td>縮めた <code>.gz</code> も作る</td>
+<td>Vite がすでに名前に指紋を付けているので、Django の「指紋を付ける」方式（Manifest）は使わない</td>
+</tr>
+<tr>
+<td><code>WHITENOISE_IMMUTABLE_FILE_TEST</code></td>
+<td>指紋の付いた部品を、長くキャッシュさせる</td>
+<td>2 回目からの表示が速くなる。新しい版では名前が変わるので、古い物が使われる心配が無い</td>
+</tr>
+<tr>
+<td><code>DATA_UPLOAD_MAX_MEMORY_SIZE</code></td>
+<td>受け取る本文の上限</td>
+<td>決まりの値（2.5MB）のままだと、5MB の図面の JSON を受け取れない</td>
+</tr>
+<tr>
+<td><code>SESSION_COOKIE_SECURE</code>・<code>CSRF_COOKIE_SECURE</code></td>
+<td>クッキーに <code>Secure</code> を付けるか</td>
+<td><strong>HTTP では <code>False</code> にする</strong>（8 章）</td>
+</tr>
+<tr>
+<td><code>SESSION_COOKIE_AGE</code>・<code>SESSION_SAVE_EVERY_REQUEST</code></td>
+<td>60 分・操作のたびに延ばす</td>
+<td>60 分操作が無いとログアウト</td>
+</tr>
+<tr>
+<td><code>SILENCED_SYSTEM_CHECKS</code></td>
+<td>HTTPS 関係の注意を黙らせる</td>
+<td>8.3</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>用語:</strong> SECRET_KEY（Django が、クッキーの改ざんを見抜くなどに使う秘密の値。長いでたらめな文字にし、本番と検証で別にする。漏れたら変える）</p>
+</blockquote>
+<!-- -->
+
+<blockquote>
+<p><strong>用語:</strong> ミドルウェア（middleware：すべてのお願いと返事が通る、Django の中の関所の列。上から順に通る）</p>
+</blockquote>
+<h3 id="64-urlaccountsviewspyconfigurlspy">6.4 画面を返す所と URL（accounts\views.py・config\urls.py）</h3>
+<p>ログインなどの API と、React の画面を返す所の例です。</p>
+<div class="codehilite"><div class="code-wrap" id="code-8"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">django.contrib.auth</span><span class="w"> </span><span class="kn">import</span> <span class="n">authenticate</span><span class="p">,</span> <span class="n">login</span><span class="p">,</span> <span class="n">logout</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">django.http</span><span class="w"> </span><span class="kn">import</span> <span class="n">JsonResponse</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">django.utils.decorators</span><span class="w"> </span><span class="kn">import</span> <span class="n">method_decorator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">django.views.decorators.csrf</span><span class="w"> </span><span class="kn">import</span> <span class="n">ensure_csrf_cookie</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">django.views.decorators.http</span><span class="w"> </span><span class="kn">import</span> <span class="n">require_POST</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">django.views.generic</span><span class="w"> </span><span class="kn">import</span> <span class="n">TemplateView</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rest_framework.decorators</span><span class="w"> </span><span class="kn">import</span> <span class="n">api_view</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rest_framework.response</span><span class="w"> </span><span class="kn">import</span> <span class="n">Response</span>
+
+
+<span class="nd">@method_decorator</span><span class="p">(</span><span class="n">ensure_csrf_cookie</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;dispatch&quot;</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">IndexView</span><span class="p">(</span><span class="n">TemplateView</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;React の画面（index.html）を返す。CSRF のクッキーもここで渡す。&quot;&quot;&quot;</span>
+
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s2">&quot;index.html&quot;</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">health</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">JsonResponse</span><span class="p">({</span><span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;ok&quot;</span><span class="p">})</span>
+
+
+<span class="nd">@require_POST</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">login_view</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;ログイン。CSRF の確かめは、Django の CsrfViewMiddleware が行う。&quot;&quot;&quot;</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">body</span> <span class="ow">or</span> <span class="sa">b</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">authenticate</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;username&quot;</span><span class="p">),</span> <span class="n">password</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;password&quot;</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">user</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">JsonResponse</span><span class="p">({</span><span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="s2">&quot;ID かパスワードが違います&quot;</span><span class="p">},</span> <span class="n">status</span><span class="o">=</span><span class="mi">400</span><span class="p">)</span>
+    <span class="n">login</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">user</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">JsonResponse</span><span class="p">({</span><span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">get_username</span><span class="p">()})</span>
+
+
+<span class="nd">@require_POST</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">logout_view</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="n">logout</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">JsonResponse</span><span class="p">({</span><span class="s2">&quot;ok&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+
+
+<span class="nd">@api_view</span><span class="p">([</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">me</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">Response</span><span class="p">({</span><span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">get_username</span><span class="p">(),</span> <span class="s2">&quot;remote_addr&quot;</span><span class="p">:</span> <span class="n">request</span><span class="o">.</span><span class="n">META</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;REMOTE_ADDR&quot;</span><span class="p">)})</span>
+
+
+<span class="nd">@api_view</span><span class="p">([</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">echo</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;ログイン後の保存の操作の代わり。DRF の SessionAuthentication が CSRF を確かめる。&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">Response</span><span class="p">({</span><span class="s2">&quot;received&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">body</span><span class="p">)})</span>
+</code></pre></div></div>
+
+<div class="codehilite"><div class="code-wrap" id="code-9"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">django.contrib</span><span class="w"> </span><span class="kn">import</span> <span class="n">admin</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">django.urls</span><span class="w"> </span><span class="kn">import</span> <span class="n">path</span><span class="p">,</span> <span class="n">re_path</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">accounts</span><span class="w"> </span><span class="kn">import</span> <span class="n">views</span>
+
+<span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">path</span><span class="p">(</span><span class="s2">&quot;admin/&quot;</span><span class="p">,</span> <span class="n">admin</span><span class="o">.</span><span class="n">site</span><span class="o">.</span><span class="n">urls</span><span class="p">),</span>
+    <span class="n">path</span><span class="p">(</span><span class="s2">&quot;health&quot;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">health</span><span class="p">),</span>
+    <span class="n">path</span><span class="p">(</span><span class="s2">&quot;api/login/&quot;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">login_view</span><span class="p">),</span>
+    <span class="n">path</span><span class="p">(</span><span class="s2">&quot;api/logout/&quot;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">logout_view</span><span class="p">),</span>
+    <span class="n">path</span><span class="p">(</span><span class="s2">&quot;api/me/&quot;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">me</span><span class="p">),</span>
+    <span class="n">path</span><span class="p">(</span><span class="s2">&quot;api/echo/&quot;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">echo</span><span class="p">),</span>
+    <span class="c1"># それ以外の URL は、React の画面（index.html）を返す。React が画面を切りかえる</span>
+    <span class="n">re_path</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^(?!api/|admin/|static/).*$&quot;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">IndexView</span><span class="o">.</span><span class="n">as_view</span><span class="p">()),</span>
+<span class="p">]</span>
+</code></pre></div></div>
+
+<ul>
+<li>最後の <code>re_path</code> は、「<code>api/</code>・<code>admin/</code>・<code>static/</code> で始まらない URL は、全部 React の画面を返す」という意味です。React が、URL を見て画面を切りかえます（<code>/requests/123</code> を直接開いても、画面が出る）。</li>
+<li><code>ensure_csrf_cookie</code> で、画面を開いたときに CSRF の札（<code>csrftoken</code> のクッキー）を渡します（8.2）。</li>
+</ul>
+<h3 id="65-react-frontendviteconfigjssrcapijs">6.5 React 側（frontend\vite.config.js・src\api.js）</h3>
+<div class="codehilite"><div class="code-wrap" id="code-10"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">defineConfig</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;vite&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="nx">react</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@vitejs/plugin-react&quot;</span><span class="p">;</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="nx">defineConfig</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">plugins</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="nx">react</span><span class="p">()],</span>
+<span class="w">  </span><span class="c1">// 成果物は Django の /static/ から配られるので、部品の URL の頭を /static/ にする</span>
+<span class="w">  </span><span class="nx">base</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;/static/&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">build</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 成果物を Django のプロジェクトの中（backend/frontend_dist）に書き出す</span>
+<span class="w">    </span><span class="nx">outDir</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;../backend/frontend_dist&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">emptyOutDir</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">server</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 開発のときだけ: /api/ を Django の開発用サーバーへ回す</span>
+<span class="w">    </span><span class="nx">proxy</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s2">&quot;/api&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;http://127.0.0.1:8000&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<div class="codehilite"><div class="code-wrap" id="code-11"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// Django が渡した csrftoken のクッキーを読む</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">csrfToken</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">m</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">cookie</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/(?:^|; )csrftoken=([^;]+)/</span><span class="p">);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">m</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="nb">decodeURIComponent</span><span class="p">(</span><span class="nx">m</span><span class="p">[</span><span class="mf">1</span><span class="p">])</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// Django の API を呼ぶ。POST などには、CSRF の札（X-CSRFToken）を付ける</span>
+<span class="k">export</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">api</span><span class="p">(</span><span class="nx">path</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;GET&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">body</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{})</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="nx">path</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">method</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">credentials</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;same-origin&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">headers</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="s2">&quot;Content-Type&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="p">...(</span><span class="nx">method</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="s2">&quot;GET&quot;</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s2">&quot;X-CSRFToken&quot;</span><span class="o">:</span><span class="w"> </span><span class="nx">csrfToken</span><span class="p">()</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="p">{}),</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nx">body</span><span class="o">:</span><span class="w"> </span><span class="nx">body</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">body</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kc">undefined</span><span class="p">,</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">json</span><span class="p">().</span><span class="k">catch</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">({}));</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">res</span><span class="p">.</span><span class="nx">ok</span><span class="p">)</span><span class="w"> </span><span class="k">throw</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="ne">Error</span><span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">detail</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="sb">`エラー </span><span class="si">${</span><span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">data</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<ul>
+<li><strong><code>base: "/static/"</code> が大事です。</strong> これが無いと、<code>index.html</code> の中の部品の住所が <code>/assets/...</code> になり、Django の 6.4 の <code>re_path</code> が <code>index.html</code> を返してしまうため、<strong>画面が真っ白</strong>になります（15 章）。</li>
+<li><code>api()</code> は、毎回クッキーから札を読み直します。<strong>ログインすると、Django が札を新しい物に取りかえる</strong>からです（8.4 の表の 9）。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> CSRF（シーサーフ。Cross-Site Request Forgery：別のサイトから、ログイン中の人のブラウザを使って、勝手に送信させる攻撃。Django は、札（トークン）を照らし合わせて防ぐ）</p>
+</blockquote>
+<h2 id="7">7. ビルドして、まとめる（開発用のパソコン）</h2>
+<h3 id="71">7.1 画面をビルドし、部品を集める</h3>
+<div class="codehilite"><div class="code-wrap" id="code-12"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># ① React をビルドする（frontend フォルダで）</span>
+<span class="nb">cd </span><span class="n">C</span><span class="p">:\</span><span class="n">work</span><span class="p">\</span><span class="n">webapp</span><span class="p">\</span><span class="n">frontend</span>
+<span class="n">npm</span> <span class="n">ci</span>
+<span class="n">npm</span> <span class="n">run</span> <span class="n">build</span>
+
+<span class="c"># ② 配る部品を集める（backend フォルダで）。collectstatic はデータベースにつながないので、仮の値でよい</span>
+<span class="nb">cd </span><span class="n">C</span><span class="p">:\</span><span class="n">work</span><span class="p">\</span><span class="n">webapp</span><span class="p">\</span><span class="n">backend</span>
+<span class="nv">$env:DJANGO_SECRET_KEY</span> <span class="p">=</span> <span class="s2">&quot;build-only&quot;</span><span class="p">;</span> <span class="nv">$env:DJANGO_ALLOWED_HOSTS</span> <span class="p">=</span> <span class="s2">&quot;localhost&quot;</span>
+<span class="nv">$env:DB_NAME</span> <span class="p">=</span> <span class="s2">&quot;x&quot;</span><span class="p">;</span> <span class="nv">$env:DB_USER</span> <span class="p">=</span> <span class="s2">&quot;x&quot;</span><span class="p">;</span> <span class="nv">$env:DB_PASSWORD</span> <span class="p">=</span> <span class="s2">&quot;x&quot;</span>
+<span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">manage</span><span class="p">.</span><span class="n">py</span> <span class="n">collectstatic</span> <span class="p">-</span><span class="n">-noinput</span>
+</code></pre></div></div>
+
+<p><strong>確かめること:</strong></p>
+<ul>
+<li><code>npm run build</code> の最後に、<code>../backend/frontend_dist/index.html</code> と <code>../backend/frontend_dist/assets/index-（指紋）.js</code> が出ること。</li>
+<li><code>collectstatic</code> の最後に「〜 static files copied to '…\staticfiles'」と出ること。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <code>npm ci</code>（<code>package-lock.json</code> に書かれたとおりの版の部品を、きっちり入れ直すコマンド。ビルドの前に使う）</p>
+</blockquote>
+<h3 id="72-python-wheelhouse">7.2 サーバー用の Python の部品を取り寄せる（wheelhouse）</h3>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/05-03_wheelhouse.webp" alt="開発用PCでpip downloadした部品をwheelhouseに集め、ネットにつながらないサーバーでpip install --no-indexする" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図7-1: 部品を倉庫（wheelhouse）にまとめて持ち込み、サーバーではネットを使わずに入れる</div>
+</div>
+
+<p>サーバーはインターネットにつながらないので、<code>pip install</code> で部品を取ってこられません。開発用のパソコンで、<strong>サーバー用（Windows の 64 ビット・Python 3.14）の部品のファイル</strong>を取り寄せておきます。</p>
+<div class="codehilite"><div class="code-wrap" id="code-13"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">cd </span><span class="n">C</span><span class="p">:\</span><span class="n">work</span><span class="p">\</span><span class="n">webapp</span><span class="p">\</span><span class="n">backend</span>
+<span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">-m</span> <span class="n">pip</span> <span class="n">download</span> <span class="n">-r</span> <span class="n">requirements</span><span class="p">.</span><span class="n">txt</span> <span class="n">-d</span> <span class="p">..\</span><span class="n">wheelhouse</span> <span class="p">`</span>
+    <span class="p">-</span><span class="n">-only-binary</span><span class="p">=:</span><span class="n">all</span><span class="p">:</span> <span class="p">-</span><span class="n">-platform</span> <span class="n">win_amd64</span> <span class="p">-</span><span class="n">-python-version</span> <span class="n">3</span><span class="p">.</span><span class="n">14</span> <span class="p">-</span><span class="n">-implementation</span> <span class="nb">cp</span>
+<span class="nb">Get-ChildItem</span> <span class="p">..\</span><span class="n">wheelhouse</span>
+</code></pre></div></div>
+
+<p><strong>確かめること:</strong> <code>wheelhouse</code> に、次の 9 個の <code>.whl</code> ができること（試した結果）。<code>psycopg_binary-3.3.6-cp314-cp314-win_amd64.whl</code> のように、<strong><code>cp314</code> と <code>win_amd64</code> が付いた物</strong>があること。</p>
+<div class="codehilite"><div class="code-wrap" id="code-14"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>asgiref-3.13.0-py3-none-any.whl
+django-5.2.18-py3-none-any.whl
+djangorestframework-3.18.3-py3-none-any.whl
+psycopg-3.3.6-py3-none-any.whl
+psycopg_binary-3.3.6-cp314-cp314-win_amd64.whl
+sqlparse-0.6.0-py3-none-any.whl
+tzdata-2026.6-py2.py3-none-any.whl
+waitress-3.0.2-py3-none-any.whl
+whitenoise-6.12.0-py3-none-any.whl
+</code></pre></div></div>
+
+<ul>
+<li><code>--platform win_amd64 --python-version 3.14</code> を付けるのは、<strong>開発用のパソコンが ARM（Snapdragon など）や別の版の Python でも、サーバー用の部品を取ってこられる</strong>ようにするためです。</li>
+<li><code>asgiref</code>・<code>sqlparse</code>・<code>tzdata</code> は、Django が使う部品で、自動で一緒に取り寄せられます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> wheel（ホイール。<code>.whl</code>：Python の部品を、すぐ入れられる形にまとめたファイル）</p>
+</blockquote>
+<!-- -->
+
+<blockquote>
+<p><strong>用語:</strong> wheelhouse（ホイールハウス：wheel のファイルを集めて置いたフォルダ。ネットにつながらない所で <code>pip install --no-index --find-links</code> に使う）</p>
+</blockquote>
+<h3 id="73">7.3 版の名前を付けて、まとめる</h3>
+<div class="codehilite"><div class="code-wrap" id="code-15"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">cd </span><span class="n">C</span><span class="p">:\</span><span class="n">work</span><span class="p">\</span><span class="n">webapp</span>
+<span class="nv">$ver</span> <span class="p">=</span> <span class="s2">&quot;1.0.0&quot;</span>
+<span class="nb">New-Item</span> <span class="n">-ItemType</span> <span class="n">Directory</span> <span class="n">-Force</span> <span class="s2">&quot;out\webapp-$ver&quot;</span> <span class="p">|</span> <span class="nb">Out-Null</span>
+
+<span class="c"># アプリ（backend の中身。開発用の venv と、Git の物は入れない）</span>
+<span class="n">robocopy</span> <span class="n">backend</span> <span class="s2">&quot;out\webapp-$ver\app&quot;</span> <span class="p">/</span><span class="n">E</span> <span class="p">/</span><span class="n">XD</span> <span class="p">.</span><span class="n">venv</span> <span class="n">__pycache__</span> <span class="n">media</span> <span class="p">/</span><span class="n">XF</span> <span class="p">*.</span><span class="n">pyc</span>
+<span class="c"># 部品の倉庫</span>
+<span class="n">robocopy</span> <span class="n">wheelhouse</span> <span class="s2">&quot;out\webapp-$ver\wheelhouse&quot;</span> <span class="p">/</span><span class="n">E</span>
+
+<span class="nb">Compress-Archive</span> <span class="n">-Path</span> <span class="s2">&quot;out\webapp-$ver\*&quot;</span> <span class="n">-DestinationPath</span> <span class="s2">&quot;out\webapp-$ver.zip&quot;</span> <span class="n">-Force</span>
+<span class="nb">Get-FileHash</span> <span class="s2">&quot;out\webapp-$ver.zip&quot;</span> <span class="n">-Algorithm</span> <span class="n">SHA256</span>
+</code></pre></div></div>
+
+<p><strong>確かめること:</strong> zip の中に、<code>app\manage.py</code>・<code>app\frontend_dist\index.html</code>・<code>app\staticfiles\</code>・<code>app\requirements.txt</code>・<code>wheelhouse\*.whl</code> があること。</p>
+<h2 id="8-http">8. HTTP で動かすための設定（なぜ要るか）</h2>
+<h3 id="81-secure">8.1 クッキーの Secure</h3>
+<p>Django の決まりの設定でも、<code>SESSION_COOKIE_SECURE</code>・<code>CSRF_COOKIE_SECURE</code> は <code>False</code>（付けない）です。ただし、多くの解説や <code>check --deploy</code> は「<code>True</code> にせよ」と勧めます。<strong>HTTP で <code>True</code> にすると、ブラウザがクッキーを受け取らず、ログインが続きません</strong>（04 の 6.4 と同じ理由）。設定ファイルに <code>False</code> と<strong>はっきり書き、理由のコメントを残します</strong>。</p>
+<h3 id="82-csrf">8.2 CSRF の札の流れ</h3>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/05-05_csrf.webp" alt="Djangoが画面とcsrftokenのクッキーを渡し、Reactが札を読んでX-CSRFTokenに付けて送り、Djangoが照らし合わせる。札が無いと403" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図8-1: CSRF の札は、クッキーで渡し、お願いの X-CSRFToken で返してもらう</div>
+</div>
+
+<ol>
+<li>画面（<code>index.html</code>）を開くと、Django が <code>csrftoken</code> のクッキーを渡す（<code>ensure_csrf_cookie</code>）。</li>
+<li>React の <code>api()</code> が、クッキーから札を読む。</li>
+<li>POST などのお願いに、<code>X-CSRFToken</code> という付け札で札を付けて送る。Django は、クッキーの札と付け札が合っているか、<strong>送り元（<code>Origin</code>）が自分の名前（<code>Host</code>）と同じか</strong>を確かめる。</li>
+</ol>
+<p>HTTP では、Django は <code>Origin</code> の <code>http://webapp-stg.example.local</code> と、お願いの <code>Host</code> を比べます。<strong>IIS が <code>Host</code> を <code>127.0.0.1:8081</code> に書きかえると、この比べ合いの前に、<code>ALLOWED_HOSTS</code> に無い名前として 400 で断られます</strong>。04 と同じく、IIS の <code>preserveHostHeader</code> を必ず <code>true</code> にします（10 章）。</p>
+<h3 id="83-check-deploy">8.3 <code>check --deploy</code> の注意</h3>
+<div class="codehilite"><div class="code-wrap" id="code-16"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">.\</span><span class="n">manage</span><span class="p">.</span><span class="n">ps1</span> <span class="n">check</span> <span class="p">-</span><span class="n">-deploy</span>
+</code></pre></div></div>
+
+<p><code>SILENCED_SYSTEM_CHECKS</code> を書く前は、次の 4 つの注意が出ました（試した結果）。どれも「HTTPS にせよ」という意味で、HTTP で動かす今回は当てはまりません。</p>
+<table>
+<thead>
+<tr>
+<th>番号</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>security.W004</code></td>
+<td>HSTS（HTTPS だけを使わせる仕組み）を設定していない</td>
+</tr>
+<tr>
+<td><code>security.W008</code></td>
+<td>HTTP を HTTPS に転送していない</td>
+</tr>
+<tr>
+<td><code>security.W012</code></td>
+<td><code>SESSION_COOKIE_SECURE</code> が <code>True</code> でない</td>
+</tr>
+<tr>
+<td><code>security.W016</code></td>
+<td><code>CSRF_COOKIE_SECURE</code> が <code>True</code> でない</td>
+</tr>
+</tbody>
+</table>
+<p>この 4 つだけを黙らせ、ほかの注意は出るようにしておきます。<strong>確かめること:</strong> <code>System check identified no issues (4 silenced).</code> と出ること。HTTPS にしたら、<code>SILENCED_SYSTEM_CHECKS</code> の行を消して、<code>True</code> に戻します（参考資料）。</p>
+<h3 id="84">8.4 試して確かめた結果</h3>
+<p>IIS（<code>preserveHostHeader=true</code>）から来るのと同じ形のお願いを、waitress に直接送って確かめました（2026-11-01。Django 5.2.18・waitress 3.0.2）。</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>試したこと</th>
+<th>結果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>/health</code></td>
+<td>200</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>/requests/123</code>（React の画面の URL）を開く</td>
+<td>200 で <code>index.html</code> が返る。<code>csrftoken</code> のクッキーに <code>Secure</code> が<strong>付かない</strong></td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>/static/assets/index-（指紋）.js</code></td>
+<td>200。<code>Cache-Control: max-age=315360000, public, immutable</code>（長くキャッシュ）</td>
+</tr>
+<tr>
+<td>4</td>
+<td>無い部品 <code>/static/assets/nothing.js</code></td>
+<td>404（<code>index.html</code> は返らない）</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>Host: 127.0.0.1:8081</code>（IIS が名前を書きかえたとき）</td>
+<td><strong>400</strong>（<code>ALLOWED_HOSTS</code> に無い）</td>
+</tr>
+<tr>
+<td>6</td>
+<td>ログインを、<code>X-CSRFToken</code> 無しで送る</td>
+<td><strong>403</strong></td>
+</tr>
+<tr>
+<td>7</td>
+<td>ログインを、<code>Origin</code> が違う所から送る</td>
+<td><strong>403</strong></td>
+</tr>
+<tr>
+<td>8</td>
+<td>パスワード違い</td>
+<td>400 と「ID かパスワードが違います」</td>
+</tr>
+<tr>
+<td>9</td>
+<td>正しくログイン</td>
+<td>200。<code>sessionid</code> のクッキーは <code>HttpOnly</code>・<code>Max-Age=3600</code>・<code>SameSite=Lax</code>、<code>Secure</code> 無し。<code>csrftoken</code> が新しい物に変わる</td>
+</tr>
+<tr>
+<td>10</td>
+<td>ログイン後、<code>X-Forwarded-For: 10.1.2.3</code> を付けて <code>/api/me/</code></td>
+<td>200。アプリから見た相手の住所が <code>10.1.2.3</code>（waitress の <code>--trusted-proxy</code> が効いている）</td>
+</tr>
+<tr>
+<td>11</td>
+<td>ログイン後の保存（DRF）を、<code>X-CSRFToken</code> 無しで</td>
+<td><strong>403</strong>「CSRF Failed: CSRF token missing.」</td>
+</tr>
+<tr>
+<td>12</td>
+<td>同じく、<code>X-CSRFToken</code> を付けて</td>
+<td>200</td>
+</tr>
+<tr>
+<td>13</td>
+<td>6MB の本文</td>
+<td>200（上限 10MB の内）</td>
+</tr>
+<tr>
+<td>14</td>
+<td>11MB の本文</td>
+<td>400（上限を超えた）</td>
+</tr>
+<tr>
+<td>15・16</td>
+<td>管理画面のログインのページと、その部品（CSS）</td>
+<td>200</td>
+</tr>
+</tbody>
+</table>
+<h2 id="9-windows">9. サーバーに置き、Windows サービスにする</h2>
+<h3 id="91">9.1 置く</h3>
+<div class="codehilite"><div class="code-wrap" id="code-17"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 持ち込んだ zip のハッシュ値を確かめてから、検証の app\ に広げる</span>
+<span class="nb">Get-FileHash</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">releases</span><span class="p">\</span><span class="n">webapp</span><span class="p">-</span><span class="n">1</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">zip</span> <span class="n">-Algorithm</span> <span class="n">SHA256</span>
+<span class="nb">Expand-Archive</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">releases</span><span class="p">\</span><span class="n">webapp</span><span class="p">-</span><span class="n">1</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">zip</span> <span class="n">-DestinationPath</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">releases</span><span class="p">\</span><span class="n">webapp</span><span class="p">-</span><span class="n">1</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span>
+<span class="n">robocopy</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">releases</span><span class="p">\</span><span class="n">webapp</span><span class="p">-</span><span class="n">1</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">\</span><span class="n">app</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">stg</span><span class="p">\</span><span class="n">app</span> <span class="p">/</span><span class="n">E</span>
+
+<span class="c"># 部品を、検証の venv に、インターネットを使わずに入れる</span>
+<span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">stg</span><span class="p">\</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">-m</span> <span class="n">pip</span> <span class="n">install</span> <span class="p">-</span><span class="n">-no-index</span> <span class="p">`</span>
+    <span class="p">-</span><span class="n">-find-links</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">releases</span><span class="p">\</span><span class="n">webapp</span><span class="p">-</span><span class="n">1</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">\</span><span class="n">wheelhouse</span> <span class="n">-r</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">stg</span><span class="p">\</span><span class="n">app</span><span class="p">\</span><span class="n">requirements</span><span class="p">.</span><span class="n">txt</span>
+<span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">stg</span><span class="p">\</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">-m</span> <span class="n">pip</span> <span class="n">list</span>
+</code></pre></div></div>
+
+<p><strong>確かめること:</strong> <code>pip install</code> がエラー無しで終わり、<code>pip list</code> に <code>Django 5.2.18</code>・<code>waitress 3.0.2</code> などが並ぶこと（試した環境で、<code>--no-index</code> で入ることを確かめました）。</p>
+<blockquote>
+<p><strong>用語:</strong> <code>--no-index --find-links</code>（「インターネットの部品の置き場を見ずに、このフォルダの中の部品だけで入れて」という指定）</p>
+</blockquote>
+<h3 id="92-winsw-xml">9.2 WinSW の設定（XML）</h3>
+<p>WinSW は、04 の 7.2 のとおり持ち込み、<code>D:\webapp\stg\service\webapp-stg-service.exe</code> に置きます。設定ファイル <code>D:\webapp\stg\service\webapp-stg-service.xml</code> を作ります。</p>
+<div class="codehilite"><div class="code-wrap" id="code-18"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&lt;service&gt;</span>
+<span class="w">  </span><span class="nt">&lt;id&gt;</span>webapp-stg<span class="nt">&lt;/id&gt;</span>
+<span class="w">  </span><span class="nt">&lt;name&gt;</span>業務<span class="w"> </span>Web<span class="w"> </span>アプリ（検証）<span class="nt">&lt;/name&gt;</span>
+<span class="w">  </span><span class="nt">&lt;description&gt;</span>業務<span class="w"> </span>Web<span class="w"> </span>アプリの検証（Django）。127.0.0.1:8081<span class="w"> </span>で待ち受け、IIS<span class="w"> </span>から転送を受ける。<span class="nt">&lt;/description&gt;</span>
+
+<span class="w">  </span><span class="cm">&lt;!-- venv の中の python で、waitress を動かす --&gt;</span>
+<span class="w">  </span><span class="nt">&lt;executable&gt;</span>D:\webapp\stg\venv\Scripts\python.exe<span class="nt">&lt;/executable&gt;</span>
+<span class="w">  </span><span class="nt">&lt;arguments&gt;</span>-m<span class="w"> </span>waitress<span class="w"> </span>--listen=127.0.0.1:8081<span class="w"> </span>--threads=8<span class="w"> </span>--trusted-proxy=127.0.0.1<span class="w"> </span>--trusted-proxy-headers=x-forwarded-for<span class="w"> </span>config.wsgi:application<span class="nt">&lt;/arguments&gt;</span>
+<span class="w">  </span><span class="nt">&lt;workingdirectory&gt;</span>D:\webapp\stg\app<span class="nt">&lt;/workingdirectory&gt;</span>
+
+<span class="w">  </span><span class="cm">&lt;!-- Django に渡す設定（6.3 の settings.py が読む） --&gt;</span>
+<span class="w">  </span><span class="nt">&lt;env</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;DJANGO_SECRET_KEY&quot;</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;（長いでたらめな文字。本番と検証で別）&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;env</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;DJANGO_ALLOWED_HOSTS&quot;</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;webapp-stg.example.local&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;env</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;DB_NAME&quot;</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;webapp_stg&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;env</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;DB_USER&quot;</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;webapp_stg_app&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;env</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;DB_PASSWORD&quot;</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;（パスワード）&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;env</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;DJANGO_MEDIA_ROOT&quot;</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;D:\webapp\stg\files&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;env</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;DJANGO_TMP_DIR&quot;</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;D:\webapp\stg\tmp&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;env</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;SMTP_HOST&quot;</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;example-com.mail.protection.outlook.com&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;env</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;SMTP_PORT&quot;</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;25&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;env</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;MAIL_FROM&quot;</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;noreply@example.com&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;env</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;APP_BASE_URL&quot;</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;http://webapp-stg.example.local&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;env</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;MAIL_REDIRECT_TO&quot;</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;（検証のメールを受け取る、IT 担当者などのアドレス）&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;env</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;PYTHONUNBUFFERED&quot;</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;1&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+
+<span class="w">  </span><span class="nt">&lt;startmode&gt;</span>Automatic<span class="nt">&lt;/startmode&gt;</span>
+<span class="w">  </span><span class="nt">&lt;depend&gt;</span>postgresql-x64-18<span class="nt">&lt;/depend&gt;</span>
+<span class="w">  </span><span class="nt">&lt;onfailure</span><span class="w"> </span><span class="na">action=</span><span class="s">&quot;restart&quot;</span><span class="w"> </span><span class="na">delay=</span><span class="s">&quot;10 sec&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;onfailure</span><span class="w"> </span><span class="na">action=</span><span class="s">&quot;restart&quot;</span><span class="w"> </span><span class="na">delay=</span><span class="s">&quot;30 sec&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;stoptimeout&gt;</span>15<span class="w"> </span>sec<span class="nt">&lt;/stoptimeout&gt;</span>
+
+<span class="w">  </span><span class="nt">&lt;logpath&gt;</span>D:\webapp\stg\logs<span class="nt">&lt;/logpath&gt;</span>
+<span class="w">  </span><span class="nt">&lt;log</span><span class="w"> </span><span class="na">mode=</span><span class="s">&quot;roll-by-size&quot;</span><span class="nt">&gt;</span>
+<span class="w">    </span><span class="nt">&lt;sizeThreshold&gt;</span>10240<span class="nt">&lt;/sizeThreshold&gt;</span>
+<span class="w">    </span><span class="nt">&lt;keepFiles&gt;</span>8<span class="nt">&lt;/keepFiles&gt;</span>
+<span class="w">  </span><span class="nt">&lt;/log&gt;</span>
+<span class="nt">&lt;/service&gt;</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>設定</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--listen=127.0.0.1:8081</code></td>
+<td>サーバーの中だけで待ち受ける（<strong><code>0.0.0.0</code> にしない</strong>。IIS を通らずに外からつながってしまう）</td>
+</tr>
+<tr>
+<td><code>--threads=8</code></td>
+<td>同時に処理する数。社内の数十〜数百人なら、8 で足りる</td>
+</tr>
+<tr>
+<td><code>--trusted-proxy=127.0.0.1 --trusted-proxy-headers=x-forwarded-for</code></td>
+<td>IIS（127.0.0.1）が付けた「本当の相手の住所」（<code>X-Forwarded-For</code>）を信じる。アプリのログに、社員のパソコンの住所が残る</td>
+</tr>
+<tr>
+<td><code>config.wsgi:application</code></td>
+<td>Django のアプリの入口</td>
+</tr>
+<tr>
+<td><code>APP_BASE_URL</code></td>
+<td>メールに書く URL の頭（承認の URL など）。社員が開く名前にする</td>
+</tr>
+<tr>
+<td><code>MAIL_REDIRECT_TO</code></td>
+<td><strong>検証だけ</strong>に書く。検証のメールを、全部この宛先に送る（社員に本物の承認のお願いが届かないように。04 の 10.4）。本番の XML には書かない</td>
+</tr>
+<tr>
+<td><code>PYTHONUNBUFFERED=1</code></td>
+<td>Python の出力を、ためずにすぐログへ書く（止まる前のログが消えないように）</td>
+</tr>
+<tr>
+<td><code>DJANGO_SECRET_KEY</code></td>
+<td>次のコマンドで作った値を貼る</td>
+</tr>
+</tbody>
+</table>
+<div class="codehilite"><div class="code-wrap" id="code-19"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># SECRET_KEY 用の、長いでたらめな文字を作る（本番用と検証用で、2 回動かして別の値にする）</span>
+<span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">stg</span><span class="p">\</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">-c</span> <span class="s2">&quot;import secrets; print(secrets.token_urlsafe(50))&quot;</span>
+</code></pre></div></div>
+
+<p>本番の XML は、<code>id</code>・<code>name</code>・ポート（<code>8080</code>）・<code>DJANGO_ALLOWED_HOSTS</code>（<code>webapp.example.local</code>）・<code>APP_BASE_URL</code>（<code>http://webapp.example.local</code>）・データベース・フォルダを本番のものにし、<code>MAIL_REDIRECT_TO</code> の行は消します。</p>
+<blockquote>
+<p><strong>アプリの作り:</strong> この XML の環境変数の名前は、<code>webapp_learning/06</code>（Django＋React で練習アプリを作る）の <code>config/settings.py</code> が読む名前と同じです。</p>
+</blockquote>
+<h3 id="93">9.3 サービスを登録し、許可を付ける</h3>
+<div class="codehilite"><div class="code-wrap" id="code-20"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">stg</span><span class="p">\</span><span class="n">service</span><span class="p">\</span><span class="n">webapp-stg-service</span><span class="p">.</span><span class="n">exe</span> <span class="n">install</span>
+<span class="n">sc</span><span class="p">.</span><span class="n">exe</span> <span class="n">config</span> <span class="n">webapp-stg</span> <span class="n">obj</span><span class="p">=</span> <span class="s2">&quot;NT SERVICE\webapp-stg&quot;</span>
+
+<span class="n">icacls</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">stg</span> <span class="p">/</span><span class="n">grant</span> <span class="s2">&quot;NT SERVICE\webapp-stg:(OI)(CI)RX&quot;</span>
+<span class="n">icacls</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">stg</span><span class="p">\</span><span class="n">files</span> <span class="p">/</span><span class="n">grant</span> <span class="s2">&quot;NT SERVICE\webapp-stg:(OI)(CI)M&quot;</span>
+<span class="n">icacls</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">stg</span><span class="p">\</span><span class="n">logs</span>  <span class="p">/</span><span class="n">grant</span> <span class="s2">&quot;NT SERVICE\webapp-stg:(OI)(CI)M&quot;</span>
+<span class="n">icacls</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">stg</span><span class="p">\</span><span class="n">tmp</span>   <span class="p">/</span><span class="n">grant</span> <span class="s2">&quot;NT SERVICE\webapp-stg:(OI)(CI)M&quot;</span>
+
+<span class="c"># パスワードが書かれた XML：管理者・SYSTEM・検証のアプリだけ</span>
+<span class="n">icacls</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">stg</span><span class="p">\</span><span class="n">service</span><span class="p">\</span><span class="n">webapp-stg-service</span><span class="p">.</span><span class="n">xml</span> <span class="p">/</span><span class="n">inheritance</span><span class="p">:</span><span class="nb">r </span><span class="p">/</span><span class="n">grant</span><span class="p">:</span><span class="nb">r </span><span class="s2">&quot;*S-1-5-32-544:F&quot;</span> <span class="s2">&quot;*S-1-5-18:F&quot;</span> <span class="s2">&quot;NT SERVICE\webapp-stg:R&quot;</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>D:\webapp\stg</code> に読む・実行する許可を付けると、<code>venv\</code> と <code>app\</code> にも引き継がれます。</li>
+<li>Python 本体（<code>C:\Program Files\Python314</code>）は、最初から全員が読めるので、許可を足す必要はありません。</li>
+</ul>
+<h3 id="94-manageps1">9.4 manage.ps1（管理コマンドを動かす道具）</h3>
+<p>Django の管理コマンド（<code>migrate</code> など）は、データベースのパスワードなどの環境変数が無いと動きません。毎回手で打つのは危ないので、<strong>サービスの XML に書いた値を、その窓の中だけ読み込んで <code>manage.py</code> を動かす</strong>スクリプトを置きます。</p>
+<p><code>D:\webapp\stg\service\manage.ps1</code>（本番は <code>D:\webapp\prod\service\manage.ps1</code>。中身は同じ）:</p>
+<div class="codehilite"><div class="code-wrap" id="code-21"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># サービスの XML に書いた環境変数を、この窓の中だけ読み込んでから、Django の manage.py を動かす</span>
+<span class="c"># 使い方: .\manage.ps1 migrate   .\manage.ps1 showmigrations   .\manage.ps1 createsuperuser</span>
+<span class="k">param</span><span class="p">([</span><span class="k">Parameter</span><span class="p">(</span><span class="k">ValueFromRemainingArguments</span> <span class="p">=</span> <span class="nv">$true</span><span class="p">)]</span> <span class="no">[string[]]</span> <span class="nv">$ManageArgs</span><span class="p">)</span>
+<span class="nv">$ErrorActionPreference</span> <span class="p">=</span> <span class="s2">&quot;Stop&quot;</span>
+
+<span class="nv">$xmlPath</span> <span class="p">=</span> <span class="nb">Get-ChildItem</span> <span class="n">-Path</span> <span class="nv">$PSScriptRoot</span> <span class="n">-Filter</span> <span class="s2">&quot;*-service.xml&quot;</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">-First</span> <span class="n">1</span>
+<span class="nv">$svc</span> <span class="p">=</span> <span class="p">(</span><span class="no">[xml]</span><span class="p">(</span><span class="nb">Get-Content</span> <span class="n">-LiteralPath</span> <span class="nv">$xmlPath</span><span class="p">.</span><span class="n">FullName</span> <span class="n">-Encoding</span> <span class="n">UTF8</span><span class="p">)).</span><span class="n">service</span>
+
+<span class="nb">Push-Location</span> <span class="nv">$svc</span><span class="p">.</span><span class="n">workingdirectory</span>
+<span class="k">try</span> <span class="p">{</span>
+    <span class="k">foreach</span> <span class="p">(</span><span class="nv">$e</span> <span class="k">in</span> <span class="nv">$svc</span><span class="p">.</span><span class="n">env</span><span class="p">)</span> <span class="p">{</span> <span class="nb">Set-Item</span> <span class="n">-Path</span> <span class="s2">&quot;Env:</span><span class="p">$(</span><span class="nv">$e</span><span class="p">.</span><span class="n">name</span><span class="p">)</span><span class="s2">&quot;</span> <span class="n">-Value</span> <span class="nv">$e</span><span class="p">.</span><span class="n">value</span> <span class="p">}</span>
+    <span class="p">&amp;</span> <span class="nv">$svc</span><span class="p">.</span><span class="n">executable</span> <span class="n">manage</span><span class="p">.</span><span class="n">py</span> <span class="nv">@ManageArgs</span>
+    <span class="nv">$code</span> <span class="p">=</span> <span class="nv">$LASTEXITCODE</span>
+<span class="p">}</span> <span class="k">finally</span> <span class="p">{</span>
+    <span class="c"># パスワードなどを窓に残さない</span>
+    <span class="k">foreach</span> <span class="p">(</span><span class="nv">$e</span> <span class="k">in</span> <span class="nv">$svc</span><span class="p">.</span><span class="n">env</span><span class="p">)</span> <span class="p">{</span> <span class="nb">Remove-Item</span> <span class="n">-Path</span> <span class="s2">&quot;Env:</span><span class="p">$(</span><span class="nv">$e</span><span class="p">.</span><span class="n">name</span><span class="p">)</span><span class="s2">&quot;</span> <span class="n">-ErrorAction</span> <span class="n">SilentlyContinue</span> <span class="p">}</span>
+    <span class="nb">Pop-Location</span>
+<span class="p">}</span>
+<span class="n">exit</span> <span class="nv">$code</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>必ず「UTF-8 (BOM 付き)」で保存します（01 の 3.7）。</strong> BOM 無しで保存して試すと、日本語のコメントの所で次の行（環境変数を消す行）が読み飛ばされ、<strong>パスワードが窓に残りました</strong>。BOM 付きにすると、残りませんでした。</p>
+</blockquote>
+<p>使い方:</p>
+<div class="codehilite"><div class="code-wrap" id="code-22"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">cd </span><span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">stg</span><span class="p">\</span><span class="n">service</span>
+<span class="p">.\</span><span class="n">manage</span><span class="p">.</span><span class="n">ps1</span> <span class="n">check</span> <span class="p">-</span><span class="n">-deploy</span>
+<span class="p">.\</span><span class="n">manage</span><span class="p">.</span><span class="n">ps1</span> <span class="n">showmigrations</span>
+</code></pre></div></div>
+
+<p><strong>確かめること:</strong> 終わった後に <code>$env:DB_PASSWORD</code> を打って、何も出ないこと（パスワードが窓に残っていない）。</p>
+<h3 id="95">9.5 テーブルを作り、最初の管理者を作り、起動する</h3>
+<div class="codehilite"><div class="code-wrap" id="code-23"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">cd </span><span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">stg</span><span class="p">\</span><span class="n">service</span>
+
+<span class="c"># テーブルを作る（マイグレーション）</span>
+<span class="p">.\</span><span class="n">manage</span><span class="p">.</span><span class="n">ps1</span> <span class="n">migrate</span>
+
+<span class="c"># 最初の管理者（Django の管理画面に入れる人）を作る。名前とパスワードを聞かれる</span>
+<span class="p">.\</span><span class="n">manage</span><span class="p">.</span><span class="n">ps1</span> <span class="n">createsuperuser</span>
+
+<span class="c"># 起動して確かめる</span>
+<span class="nb">Start-Service</span> <span class="n">webapp-stg</span>
+<span class="nb">Get-NetTCPConnection</span> <span class="n">-State</span> <span class="n">Listen</span> <span class="n">-LocalPort</span> <span class="n">8081</span> <span class="p">|</span> <span class="nb">Format-Table</span> <span class="n">LocalAddress</span><span class="p">,</span> <span class="n">LocalPort</span>
+<span class="nb">Invoke-WebRequest</span> <span class="n">http</span><span class="p">://</span><span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span><span class="p">:</span><span class="n">8081</span><span class="p">/</span><span class="n">health</span> <span class="n">-UseBasicParsing</span> <span class="n">-Headers</span> <span class="p">@{</span> <span class="n">Host</span> <span class="p">=</span> <span class="s2">&quot;webapp-stg.example.local&quot;</span> <span class="p">}</span> <span class="p">|</span>
+    <span class="nb">Select-Object</span> <span class="n">StatusCode</span><span class="p">,</span> <span class="n">Content</span>
+</code></pre></div></div>
+
+<p><strong>確かめること:</strong></p>
+<ul>
+<li><code>migrate</code> の最後まで、<code>Applying ... OK</code> が並ぶこと。</li>
+<li>8081 番の <code>LocalAddress</code> が <code>127.0.0.1</code> であること。</li>
+<li><code>/health</code> が <code>200</code> と <code>{"status": "ok"}</code> を返すこと。<code>-Headers @{ Host = ... }</code> を付けないと、<code>ALLOWED_HOSTS</code> に無い名前（<code>127.0.0.1:8081</code>）になり、<strong>400</strong> になります（8.4 の表の 5）。</li>
+</ul>
+<p><strong>起動しないとき:</strong> <code>D:\webapp\stg\logs\webapp-stg-service.err.log</code> を見ます（15 章）。</p>
+<h2 id="10-iis">10. 受付（IIS）</h2>
+<p><strong>04 の 8 章とほぼ同じ</strong>です。違うのは、取り次ぎ先のポートだけです（本番 8080・検証 8081。04 と同じ）。</p>
+<ul>
+<li><code>preserveHostHeader</code> を必ず <code>true</code> にします（04 の 8.3）。<code>false</code> のままだと、Django が <strong>400 Bad Request</strong> を返します（8.4 の表の 5）。</li>
+<li>IIS の <code>maxAllowedContentLength</code>（04 は 100MB）と、Django の <code>DATA_UPLOAD_MAX_MEMORY_SIZE</code>（10MB）の、<strong>小さい方が上限</strong>になります。IIS の上限を超えると IIS が <strong>404.13</strong>、Django の上限を超えると Django が <strong>400</strong> を返します。</li>
+</ul>
+<h2 id="11_1">11. ファイアウォール・メール・バックアップ</h2>
+<table>
+<thead>
+<tr>
+<th>作業</th>
+<th>手順</th>
+<th>Django 版で違う所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ファイアウォール</td>
+<td>04 の 9 章</td>
+<td>無し</td>
+</tr>
+<tr>
+<td>メール</td>
+<td>04 の 10 章</td>
+<td>アプリからの試しは、<code>.\manage.ps1 sendtestemail 自分のアドレス</code>（Django に付いている、試しのメールを送るコマンド）。届けば、settings.py の <code>EMAIL_*</code> の設定が正しい</td>
+</tr>
+<tr>
+<td>バックアップ</td>
+<td>04 の 11 章</td>
+<td>無し（データベースと添付ファイルのフォルダは同じ）</td>
+</tr>
+</tbody>
+</table>
+<p>検証から社員に本物のメールが届かないようにする工夫（04 の 10.4）は、Django では、検証のときだけ宛先を書きかえるメールの送り方（バックエンド）を作る、などで行います（設計例）。</p>
+<h2 id="12-800">12. 毎朝 8:00 の処理・ログ</h2>
+<h3 id="121-800">12.1 毎朝 8:00 の処理（設計例）</h3>
+<p>Django には、アプリの中で時刻を待って動く仕組みが、最初からはありません。そこで、<strong>Django の管理コマンド</strong>として作り、<strong>タスク スケジューラ</strong>で毎朝 8:00 に動かします。</p>
+<blockquote>
+<p><strong>設計例:</strong> アプリに <code>send_daily_reminders</code> という管理コマンドを作る（期限の近い依頼や止まっている承認を調べて、メールを送る）。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-24"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nv">$action</span>  <span class="p">=</span> <span class="nb">New-ScheduledTaskAction</span> <span class="n">-Execute</span> <span class="s2">&quot;powershell.exe&quot;</span> <span class="p">`</span>
+               <span class="n">-Argument</span> <span class="s1">&#39;-NoProfile -ExecutionPolicy Bypass -File &quot;D:\webapp\prod\service\manage.ps1&quot; send_daily_reminders&#39;</span>
+<span class="nv">$trigger</span> <span class="p">=</span> <span class="nb">New-ScheduledTaskTrigger</span> <span class="n">-Daily</span> <span class="n">-At</span> <span class="s2">&quot;08:00&quot;</span>
+<span class="nv">$princ</span>   <span class="p">=</span> <span class="nb">New-ScheduledTaskPrincipal</span> <span class="n">-UserId</span> <span class="s2">&quot;SYSTEM&quot;</span> <span class="n">-LogonType</span> <span class="n">ServiceAccount</span> <span class="n">-RunLevel</span> <span class="n">Highest</span>
+<span class="nb">Register-ScheduledTask</span> <span class="n">-TaskPath</span> <span class="s2">&quot;\webapp\&quot;</span> <span class="n">-TaskName</span> <span class="s2">&quot;webapp-daily-reminders&quot;</span> <span class="p">`</span>
+    <span class="n">-Action</span> <span class="nv">$action</span> <span class="n">-Trigger</span> <span class="nv">$trigger</span> <span class="n">-Principal</span> <span class="nv">$princ</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>SYSTEM</code> は、パスワードの書かれた XML を読めるので、<code>manage.ps1</code> が使えます。</li>
+<li><strong>確かめること:</strong> <code>Start-ScheduledTask -TaskPath "\webapp\" -TaskName "webapp-daily-reminders"</code> で一度動かし、<code>Get-ScheduledTaskInfo</code> の <code>LastTaskResult</code> が <code>0</code> であること（01 の 9 章）。</li>
+</ul>
+<h3 id="122">12.2 ログ</h3>
+<table>
+<thead>
+<tr>
+<th>ログ</th>
+<th>場所</th>
+<th>中身</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>WinSW</td>
+<td><code>D:\webapp\stg\logs\webapp-stg-service.wrapper.log</code></td>
+<td>サービスの起動・停止・再起動</td>
+</tr>
+<tr>
+<td>アプリ（Django・waitress）</td>
+<td><code>D:\webapp\stg\logs\webapp-stg-service.err.log</code></td>
+<td><strong>Python のログは、決まりで「エラーの出力」の方に書かれる</strong>ので、ふつうのログもこちらに出る</td>
+</tr>
+<tr>
+<td>アプリ（画面への出力）</td>
+<td><code>D:\webapp\stg\logs\webapp-stg-service.out.log</code></td>
+<td><code>print</code> などで出した物</td>
+</tr>
+<tr>
+<td>IIS のアクセスログ</td>
+<td>04 の 12.2</td>
+<td>同じ</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong><code>err.log</code> に、エラーでない行も出ます。</strong> 6.3 の <code>LOGGING</code> は、Python の決まりの <code>StreamHandler</code>（標準エラー出力に書く）を使うためです。<code>ERROR</code> や <code>Traceback</code> を探すときは、<code>Select-String -Path D:\webapp\stg\logs\*.err.log -Pattern "ERROR|Traceback"</code> を使います。</p>
+</blockquote>
+<h2 id="13">13. 動作確認・更新・切り戻し</h2>
+<h3 id="131">13.1 検証で一通り確かめる</h3>
+<p>04 の 13.1 と同じです。社員のパソコンから <code>http://webapp-stg.example.local/</code> を開き、ログイン・保存・ログアウト・60 分のログアウトを確かめます。ブラウザの開発者ツール（00 基礎知識 5.4）の「アプリケーション」タブで、<code>sessionid</code> と <code>csrftoken</code> のクッキーがあることも見ます。</p>
+<h3 id="132-2">13.2 更新の手順（2 回目以降）</h3>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/05-06_update_django.webp" alt="止める、入れ替える、部品を入れる、表を直す、画面の部品を集める、始める、確かめる。だめなら前の版へ" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図13-1: Django 版の更新の手順</div>
+</div>
+
+<p><strong>必ず検証で先に行い、確かめてから本番で行います。</strong> 本番の前には、<strong>データベースの控えを取ります</strong>（04 の 11 章のスクリプトを手で動かす）。</p>
+<div class="codehilite"><div class="code-wrap" id="code-25"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nv">$ver</span> <span class="p">=</span> <span class="s2">&quot;1.1.0&quot;</span>
+<span class="nv">$rel</span> <span class="p">=</span> <span class="s2">&quot;D:\webapp\releases\webapp-$ver&quot;</span>
+
+<span class="c"># 0. 持ち込んだ zip のハッシュ値を確かめ、広げる</span>
+<span class="nb">Get-FileHash</span> <span class="s2">&quot;$rel.zip&quot;</span> <span class="n">-Algorithm</span> <span class="n">SHA256</span>
+<span class="nb">Expand-Archive</span> <span class="s2">&quot;$rel.zip&quot;</span> <span class="n">-DestinationPath</span> <span class="nv">$rel</span>
+
+<span class="c"># ① 止める</span>
+<span class="nb">Stop-Service</span> <span class="n">webapp-stg</span>
+
+<span class="c"># ② 入れ替える（今の版を app_prev に取っておく）</span>
+<span class="k">if</span> <span class="p">(</span><span class="nb">Test-Path</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">stg</span><span class="p">\</span><span class="n">app_prev</span><span class="p">)</span> <span class="p">{</span> <span class="nb">Remove-Item</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">stg</span><span class="p">\</span><span class="n">app_prev</span> <span class="n">-Recurse</span> <span class="n">-Force</span> <span class="p">}</span>
+<span class="nb">Rename-Item</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">stg</span><span class="p">\</span><span class="n">app</span> <span class="n">app_prev</span>
+<span class="n">robocopy</span> <span class="s2">&quot;$rel\app&quot;</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">stg</span><span class="p">\</span><span class="n">app</span> <span class="p">/</span><span class="n">E</span>
+
+<span class="c"># ③ 部品を入れる（版が変わった物だけ入れかわる）</span>
+<span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">stg</span><span class="p">\</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">-m</span> <span class="n">pip</span> <span class="n">install</span> <span class="p">-</span><span class="n">-no-index</span> <span class="p">-</span><span class="n">-find-links</span> <span class="s2">&quot;$rel\wheelhouse&quot;</span> <span class="n">-r</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">stg</span><span class="p">\</span><span class="n">app</span><span class="p">\</span><span class="n">requirements</span><span class="p">.</span><span class="n">txt</span>
+
+<span class="c"># ④ 表を直す（マイグレーション）</span>
+<span class="nb">cd </span><span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">stg</span><span class="p">\</span><span class="n">service</span>
+<span class="p">.\</span><span class="n">manage</span><span class="p">.</span><span class="n">ps1</span> <span class="n">migrate</span>
+
+<span class="c"># ⑤ 画面の部品は、zip の中の staticfiles に集めてあるので、ここでは何もしない（7.1 の ②）</span>
+
+<span class="c"># ⑥ 始めて、確かめる</span>
+<span class="nb">Start-Service</span> <span class="n">webapp-stg</span>
+<span class="nb">Invoke-WebRequest</span> <span class="n">http</span><span class="p">://</span><span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span><span class="p">:</span><span class="n">8081</span><span class="p">/</span><span class="n">health</span> <span class="n">-UseBasicParsing</span> <span class="n">-Headers</span> <span class="p">@{</span> <span class="n">Host</span> <span class="p">=</span> <span class="s2">&quot;webapp-stg.example.local&quot;</span> <span class="p">}</span> <span class="p">|</span>
+    <span class="nb">Select-Object</span> <span class="n">StatusCode</span>
+</code></pre></div></div>
+
+<ul>
+<li>新しい版の <code>app\</code> には、許可が引き継がれます（許可は <code>D:\webapp\stg</code> に付けてあるため）。</li>
+<li><code>Rename-Item</code> で「使われています」と出たら、サービスが止まりきっていません。<code>Get-Service webapp-stg</code> が <code>Stopped</code> になるまで待ちます。</li>
+</ul>
+<h3 id="133">13.3 切り戻し</h3>
+<div class="codehilite"><div class="code-wrap" id="code-26"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">Stop-Service</span> <span class="n">webapp-stg</span>
+<span class="nb">Rename-Item</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">stg</span><span class="p">\</span><span class="n">app</span> <span class="n">app_bad</span>
+<span class="nb">Rename-Item</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">stg</span><span class="p">\</span><span class="n">app_prev</span> <span class="n">app</span>
+<span class="c"># 部品も前の版に戻す（前の版の wheelhouse で入れ直す）</span>
+<span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">stg</span><span class="p">\</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">-m</span> <span class="n">pip</span> <span class="n">install</span> <span class="p">-</span><span class="n">-no-index</span> <span class="p">`</span>
+  <span class="p">-</span><span class="n">-find-links</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">releases</span><span class="p">\</span><span class="n">webapp</span><span class="p">-</span><span class="n">1</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">\</span><span class="n">wheelhouse</span> <span class="n">-r</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">stg</span><span class="p">\</span><span class="n">app</span><span class="p">\</span><span class="n">requirements</span><span class="p">.</span><span class="n">txt</span>
+<span class="nb">Start-Service</span> <span class="n">webapp-stg</span>
+</code></pre></div></div>
+
+<ul>
+<li><strong>新しい版でマイグレーション（④）をした後は、テーブルの形も変わっています。</strong> 前の版のアプリが新しい形のテーブルで動かないときは、更新の前に取った<strong>データベースの控えから戻します</strong>（04 の 11.5）。だから、本番の更新の前の控えは欠かせません。</li>
+<li>切り戻しの判断を早くするため、「何を確かめて、だめなら戻す」を、更新の前に決めておきます（04 の 13.4）。</li>
+</ul>
+<h2 id="14-django">14. セキュリティと日々の点検（Django 版で足す物）</h2>
+<p>04 の 14 章に、次を足します。</p>
+<table>
+<thead>
+<tr>
+<th>点検</th>
+<th>頻度</th>
+<th>やり方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Django の安全の修正</td>
+<td>月 1 回</td>
+<td>Django の公式のお知らせ（security releases）を見る。5.2 の修正版（5.2.19 など）が出たら、検証で試して入れる</td>
+</tr>
+<tr>
+<td>Python の部品の古さ</td>
+<td>月 1 回</td>
+<td>開発用のパソコンで <code>python -m pip list --outdated</code></td>
+</tr>
+<tr>
+<td>npm の部品の弱点</td>
+<td>月 1 回</td>
+<td>開発用のパソコンの <code>frontend\</code> で <code>npm audit</code></td>
+</tr>
+<tr>
+<td>Python 本体</td>
+<td>半年に 1 回</td>
+<td>3.14 系の新しい修正版が出ていれば、検証で試して入れる。venv は作り直す</td>
+</tr>
+<tr>
+<td><code>DEBUG</code> が <code>false</code></td>
+<td>建てたとき・更新のたび</td>
+<td><code>.\manage.ps1 shell -c "from django.conf import settings; print(settings.DEBUG)"</code> が <code>False</code>。<strong><code>True</code> だと、エラーの画面に設定やコードが丸見えになる</strong></td>
+</tr>
+<tr>
+<td><code>SECRET_KEY</code></td>
+<td>漏れたとき</td>
+<td>新しい値に変える（全員がログアウトされる）</td>
+</tr>
+</tbody>
+</table>
+<h2 id="15">15. 困ったとき（トラブルシューティング）</h2>
+<p>困ったときの考え方は、<strong>06 トラブルシューティング</strong>にあります。ここでは、Django 版で起きやすい物をまとめます。</p>
+<table>
+<thead>
+<tr>
+<th>症状</th>
+<th>考えられる原因</th>
+<th>調べ方・直し方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>サービスがすぐ止まる。<code>err.log</code> に <code>RuntimeError: 環境変数 ... がありません</code></td>
+<td>XML の <code>env</code> の書き忘れ・名前の打ち間違い</td>
+<td>XML と 6.3 の名前を見比べる</td>
+</tr>
+<tr>
+<td><code>err.log</code> に <code>ModuleNotFoundError: No module named 'django'</code></td>
+<td>venv に部品が入っていない／XML の <code>executable</code> が venv の python でない</td>
+<td>9.1 の <code>pip list</code>。<code>executable</code> が <code>...\venv\Scripts\python.exe</code> か</td>
+</tr>
+<tr>
+<td><code>err.log</code> に <code>connection failed</code> ・<code>password authentication failed</code>（psycopg）</td>
+<td>PostgreSQL が止まっている／パスワード違い</td>
+<td>02 の 14 章</td>
+</tr>
+<tr>
+<td>ブラウザに <code>Bad Request (400)</code></td>
+<td><code>Host</code> が <code>ALLOWED_HOSTS</code> に無い。IIS の <code>preserveHostHeader</code> が <code>false</code>／名前の打ち間違い</td>
+<td>04 の 8.3。<code>DJANGO_ALLOWED_HOSTS</code></td>
+</tr>
+<tr>
+<td>ログインや保存で <code>403</code>、<code>err.log</code> に <code>Forbidden (CSRF ...)</code></td>
+<td>札（<code>X-CSRFToken</code>）が付いていない／<code>Origin</code> と <code>Host</code> が違う／クッキーが受け取られていない</td>
+<td>8.2。開発者ツールで <code>csrftoken</code> のクッキーと <code>X-CSRFToken</code> の付け札を見る</td>
+</tr>
+<tr>
+<td>ログインしても、すぐログインしていない扱い</td>
+<td><code>SESSION_COOKIE_SECURE = True</code> になっている（HTTP では受け取られない）</td>
+<td>6.3 のとおり <code>False</code></td>
+</tr>
+<tr>
+<td>画面が真っ白。開発者ツールのコンソールに、JavaScript の読み込みのエラー</td>
+<td>Vite の <code>base: "/static/"</code> が無い／<code>collectstatic</code> をしていない</td>
+<td>6.5・7.1。<code>/static/assets/...</code> を直接開いて 200 か</td>
+</tr>
+<tr>
+<td><code>/static/...</code> が 404</td>
+<td><code>collectstatic</code> をしていない／<code>staticfiles\</code> を zip に入れ忘れた</td>
+<td>7.1・7.3</td>
+</tr>
+<tr>
+<td><code>err.log</code> に <code>TemplateDoesNotExist: index.html</code></td>
+<td>React をビルドしていない（<code>frontend_dist\</code> が無い）</td>
+<td>7.1 の ①</td>
+</tr>
+<tr>
+<td>図面の保存で 400、<code>err.log</code> に <code>RequestDataTooBig</code></td>
+<td>本文が <code>DATA_UPLOAD_MAX_MEMORY_SIZE</code>（10MB）を超えた</td>
+<td>図面の大きさを確かめる。上限を変えるなら IIS の上限も見る（10 章）</td>
+</tr>
+<tr>
+<td>添付の保存で 404.13</td>
+<td>IIS の <code>maxAllowedContentLength</code> を超えた</td>
+<td>04 の 8.5</td>
+</tr>
+<tr>
+<td>添付の保存で <code>PermissionError</code></td>
+<td><code>tmp\</code>・<code>files\</code> に書く許可が無い</td>
+<td>9.3 の <code>icacls</code></td>
+</tr>
+<tr>
+<td><code>502 Bad Gateway</code>（IIS が返す）</td>
+<td>waitress が止まっている・起動中</td>
+<td><code>Get-Service webapp-stg</code>、<code>wrapper.log</code></td>
+</tr>
+<tr>
+<td><code>manage.ps1</code> の後に、パスワードが窓に残る・途中の行が動かない</td>
+<td><code>manage.ps1</code> を BOM 無しで保存した</td>
+<td>9.4。「UTF-8 (BOM 付き)」で保存し直す</td>
+</tr>
+<tr>
+<td><code>pip install</code> が <code>No matching distribution found</code></td>
+<td>wheelhouse に、サーバー用（<code>cp314</code>・<code>win_amd64</code>）の部品が無い</td>
+<td>7.2 の <code>--platform</code>・<code>--python-version</code> を付けて取り直す</td>
+</tr>
+</tbody>
+</table>
+<h2 id="16">16. 用語ミニ辞典（この資料に出た主な言葉）</h2>
+<table>
+<thead>
+<tr>
+<th>用語</th>
+<th>短い説明</th>
+<th>章</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ALLOWED_HOSTS</td>
+<td>Django が受け付ける名前の一覧</td>
+<td>6.3・8</td>
+</tr>
+<tr>
+<td>collectstatic</td>
+<td>配る部品を <code>staticfiles\</code> に集める Django のコマンド</td>
+<td>6.1・7.1</td>
+</tr>
+<tr>
+<td>CSRF・X-CSRFToken</td>
+<td>なりすまし送信を防ぐ札／それを付ける付け札</td>
+<td>6.5・8.2</td>
+</tr>
+<tr>
+<td>Django REST framework（DRF）</td>
+<td>Django で API を作る部品</td>
+<td>6.4</td>
+</tr>
+<tr>
+<td>manage.py・manage.ps1</td>
+<td>Django の管理コマンドの入口／それを環境変数付きで動かすスクリプト</td>
+<td>9.4</td>
+</tr>
+<tr>
+<td>migrate</td>
+<td>テーブルを作る・直す Django のコマンド</td>
+<td>9.5</td>
+</tr>
+<tr>
+<td>npm run build</td>
+<td>React の画面をビルドするコマンド</td>
+<td>7.1</td>
+</tr>
+<tr>
+<td>SECRET_KEY</td>
+<td>Django の秘密の値</td>
+<td>6.3</td>
+</tr>
+<tr>
+<td>venv</td>
+<td>Python の部品を環境ごとに分ける箱</td>
+<td>4.3</td>
+</tr>
+<tr>
+<td>Vite</td>
+<td>React の画面をビルドする道具</td>
+<td>6.5</td>
+</tr>
+<tr>
+<td>waitress</td>
+<td>Windows で動く Python の Web サーバー</td>
+<td>9.2</td>
+</tr>
+<tr>
+<td>wheel・wheelhouse</td>
+<td>Python の部品のファイル／それを集めたフォルダ</td>
+<td>7.2</td>
+</tr>
+<tr>
+<td>WhiteNoise</td>
+<td>Django から画面の部品を配る部品</td>
+<td>6.3</td>
+</tr>
+</tbody>
+</table>
+
+<script>
+(function () {
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy") ? resolve() : reject(); } catch (e) { reject(e); }
+      document.body.removeChild(ta);
+    });
+  }
+  document.querySelectorAll(".copy-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var pre = btn.parentElement.querySelector("pre");
+      var text = pre.textContent.replace(/\n$/, "");
+      copyText(text).then(function () {
+        btn.textContent = "コピーしました";
+        btn.classList.add("done");
+        setTimeout(function () { btn.textContent = "コピー"; btn.classList.remove("done"); }, 2000);
+      }, function () { btn.textContent = "コピーできませんでした"; });
+    });
+  });
+  if (/^#code-\d+$/.test(location.hash)) {
+    var note = document.getElementById("web-note");
+    if (note) { note.hidden = false; }
+  }
+})();
+</script>
+</body>
+</html>

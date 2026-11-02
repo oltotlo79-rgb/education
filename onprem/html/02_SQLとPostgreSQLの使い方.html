@@ -1,0 +1,1639 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>02_SQLとPostgreSQLの使い方</title>
+<style>
+
+@page {
+  size: A4;
+  margin: 18mm 16mm 20mm 16mm;
+  @bottom-right {
+    content: counter(page);
+    font-size: 10px;
+    color: #64748b;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  font-family: "Yu Gothic UI", "Yu Gothic", "Meiryo", "Hiragino Sans",
+               "Noto Sans JP", "Segoe UI", system-ui, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.75;
+  color: #1e293b;
+  background: #ffffff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #0f172a;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 1.4em 0 0.6em;
+  page-break-after: avoid;
+}
+h1 {
+  font-size: 22pt;
+  border-bottom: 3px solid #1e40af;
+  padding-bottom: 0.3em;
+  margin-top: 0.4em;
+  page-break-before: auto;
+}
+h2 {
+  font-size: 16pt;
+  border-bottom: 1.5px solid #cbd5e1;
+  padding-bottom: 0.25em;
+  margin-top: 1.6em;
+}
+h3 { font-size: 13pt; color: #1e40af; }
+h4 { font-size: 12pt; color: #334155; }
+
+p { margin: 0.5em 0 0.8em; }
+
+a { color: #1d4ed8; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+ul, ol { margin: 0.4em 0 0.9em; padding-left: 1.6em; }
+li { margin: 0.2em 0; }
+
+blockquote {
+  border-left: 4px solid #3b82f6;
+  background: #eff6ff;
+  margin: 0.8em 0;
+  padding: 0.6em 1em;
+  color: #1e3a8a;
+  border-radius: 0 6px 6px 0;
+  page-break-inside: avoid;
+}
+blockquote p { margin: 0.3em 0; }
+blockquote strong { color: #1e40af; }
+
+code {
+  /* DefCode (see _code_font.py) has ASCII and Japanese in ONE font, so a code
+     line is drawn as one text run and copies as one line in every PDF viewer. */
+  font-family: "Consolas", "Consolas", monospace;
+  font-size: 0.9em;
+  background: #f1f5f9;
+  color: #be123c;
+  padding: 0.12em 0.36em;
+  border-radius: 4px;
+  /* Long inline code (file paths / URLs) must break instead of overflowing. */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  /* In a PDF there is no horizontal scrolling, so long lines must wrap
+     instead of being clipped off the right edge of the page. */
+  overflow-x: hidden;
+  overflow-y: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  font-size: 9.2pt;
+  line-height: 1.5;
+  margin: 0.8em 0;
+  page-break-inside: avoid;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+  white-space: inherit;
+  word-break: inherit;
+  overflow-wrap: inherit;
+}
+
+/* The codehilite extension wraps highlighted blocks in a scrolling div; make
+   that wrap too so nothing is clipped in the PDF. */
+.codehilite {
+  overflow-x: hidden;
+  /* overflow-x: hidden alone turns overflow-y into auto, and a glyph from a
+     fallback font that is a hair too tall then shows a vertical scrollbar. */
+  overflow-y: hidden;
+}
+.codehilite pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* No per-token colours: every coloured token became its own text run (and its
+   own tag) in the PDF, and some viewers then pasted each token on its own line.
+   Only whole comment lines get a colour, so each line is still one run. */
+pre .cmt { color: #94a3b8; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.8em 0;
+  font-size: 9.6pt;
+  page-break-inside: avoid;
+}
+th, td {
+  border: 1px solid #e2e8f0;
+  padding: 6px 9px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: #f1f5f9;
+  color: #0f172a;
+  font-weight: 700;
+}
+tr:nth-child(even) td { background: #f8fafc; }
+
+img { max-width: 100%; height: auto; }
+
+hr {
+  border: none;
+  border-top: 1px dashed #cbd5e1;
+  margin: 1.6em 0;
+}
+
+/* Diagram blocks (the inline-styled <div>s in the source) */
+div[style] {
+  page-break-inside: avoid;
+}
+
+/* Tighten spacing right after headings */
+h1 + p, h2 + p, h3 + p, h4 + p { margin-top: 0.2em; }
+
+/* Avoid ugly page breaks inside list items / table rows */
+li, tr { page-break-inside: avoid; }
+
+@media screen {
+  body { max-width: 920px; margin: 0 auto; padding: 20px 20px 120px; font-size: 16px; }
+  pre { white-space: pre !important; word-break: normal !important; overflow-wrap: normal !important;
+        overflow-x: auto !important; font-size: 14px !important; }
+  img { max-width: 100%; height: auto; }
+}
+.web-bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; font-size: 14px;
+  padding: 8px 12px; margin-bottom: 16px; background: #eef2f7; border-radius: 8px; }
+.web-bar a { color: #1e3a5f; }
+.web-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 10; max-width: 90%;
+  font-size: 15px; font-weight: 700; background: #fff7ed; border: 2px solid #f2994a; border-radius: 8px;
+  padding: 10px 16px; margin: 0; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.code-wrap { position: relative; scroll-margin-top: 16px; }
+.code-wrap pre { padding-top: 40px !important; }
+.copy-btn { position: absolute; top: 8px; right: 8px; z-index: 2; font-size: 13px; font-weight: 700;
+  padding: 4px 12px; border: 0; border-radius: 6px; background: #2f80ed; color: #fff; cursor: pointer;
+  font-family: inherit; }
+.copy-btn:hover { background: #1c64c8; }
+.copy-btn.done { background: #27ae60; }
+.code-wrap:target pre { outline: 4px solid #f2994a; outline-offset: 2px; }
+.code-wrap:target .copy-btn { box-shadow: 0 0 0 4px #f2994a; }
+/* syntax colours on screen (the PDF uses one colour so that each line copies as one piece) */
+.codehilite .k, .codehilite .kd, .codehilite .kn, .codehilite .kr { color: #c084fc; }
+.codehilite .s, .codehilite .s1, .codehilite .s2, .codehilite .sb { color: #fcd34d; }
+.codehilite .c, .codehilite .c1, .codehilite .cm { color: #94a3b8; }
+.codehilite .nf, .codehilite .nx { color: #60a5fa; }
+.codehilite .nb { color: #34d399; }
+.codehilite .mi, .codehilite .mf { color: #f472b6; }
+.codehilite .nt { color: #f59e0b; }
+.codehilite .na { color: #93c5fd; }
+</style>
+</head>
+<body>
+<div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/02_SQL%E3%81%A8PostgreSQL%E3%81%AE%E4%BD%BF%E3%81%84%E6%96%B9.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、ブラウザーの「戻る」で PDF に戻れます。</p><div style="text-align: center; padding: 28px 0 8px;">
+<div style="font-size: 14px; color: #475569;">オンプレミス構築 教育資料</div>
+<div style="font-size: 26px; font-weight: 800; color: #0f172a; margin-top: 6px; line-height: 1.35;">SQL と PostgreSQL の使い方</div>
+<div style="font-size: 13px; color: #475569; margin-top: 8px;">データベースにログインし、SQL でデータを見て・直し、ユーザーと控えを管理する</div>
+</div>
+
+<h1 id="sql-postgresql">SQL と PostgreSQL の使い方</h1>
+<h2 id="_1">この資料について</h2>
+<p>アプリのデータは、<strong>データベース</strong>（PostgreSQL）に入っています。アプリが正しく動いているときは、データベースを直接さわる必要はありません。しかし、次のようなときには、自分でデータベースにログインして <strong>SQL</strong> を打つことになります。</p>
+<ul>
+<li>「依頼が画面に出ない」と言われて、データが本当に入っているかを確かめるとき</li>
+<li>社員データをまとめて取り込んだ後、件数を確かめるとき</li>
+<li>毎晩の控え（バックアップ）から、本当に戻せるかを練習するとき</li>
+<li>ディスクが減ってきて、どのテーブルが大きいかを調べるとき</li>
+</ul>
+<p>この資料では、<strong>練習用のデータベース</strong>を作り、サンプルの SQL を1つずつ動かしながら覚えます。</p>
+<ul>
+<li><strong>前提:</strong> 04 構築手順の 5 章のとおり、PostgreSQL 18 が入っていること。データベースの考え方は <strong>00 基礎知識の 7 章</strong>にあります。</li>
+<li><strong>サンプルの結果:</strong> この資料に載せた SQL の結果は、<strong>PostgreSQL 18.3 で実際に動かした結果</strong>です。日時が入る所など、打つたびに変わる所はそう書いています。</li>
+<li><strong>練習は検証環境か、自分のパソコンで:</strong> 本番のデータベース（<code>webapp_prod</code>）で練習してはいけません。この資料では、練習用に <code>practice</code> という別のデータベースを作り、最後に消します。</li>
+</ul>
+<h2 id="1">1. データベースの中の構造</h2>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/02-01_db_structure.webp" alt="1つのPostgreSQLの中に、webapp_prodとwebapp_stgのデータベースがあり、その中のスキーマpublicにrequestsやemployeesのテーブルがある" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図1-1: PostgreSQL → データベース → スキーマ → テーブル の入れ子</div>
+</div>
+
+<table>
+<thead>
+<tr>
+<th>入れ物</th>
+<th>説明</th>
+<th>今回の例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PostgreSQL（サーバー）</td>
+<td>1つのサービスとして動く、データベースの管理のプログラム。<strong>クラスター</strong>とも呼ぶ</td>
+<td><code>postgresql-x64-18</code> のサービス</td>
+</tr>
+<tr>
+<td>データベース</td>
+<td>データのまとまり。<strong>データベースをまたいだ SQL は書けない</strong>ので、本番と検証を分けるのに使う</td>
+<td><code>webapp_prod</code>、<code>webapp_stg</code></td>
+</tr>
+<tr>
+<td>スキーマ</td>
+<td>データベースの中の、テーブルを入れる棚。何も決めなければ <code>public</code> という棚に入る</td>
+<td><code>public</code></td>
+</tr>
+<tr>
+<td>テーブル</td>
+<td>表（00 基礎知識 7.1）</td>
+<td><code>requests</code>、<code>employees</code></td>
+</tr>
+<tr>
+<td>ロール</td>
+<td>ログインする人やアプリ（9 章）</td>
+<td><code>postgres</code>、<code>webapp_prod_app</code></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>用語:</strong> スキーマ（schema：データベースの中で、テーブルを分けて入れる棚。今回は <code>public</code> だけを使う）</p>
+</blockquote>
+<h3 id="11">1.1 列の型</h3>
+<p>テーブルの列には、入れてよいデータの<strong>型</strong>を決めます。型が違うデータは入りません（例：日付の列に <code>あした</code> は入らない）。</p>
+<table>
+<thead>
+<tr>
+<th>型</th>
+<th>入るもの</th>
+<th>例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>integer</code>・<code>bigint</code></td>
+<td>整数（<code>bigint</code> は、とても大きな数まで）</td>
+<td><code>101</code>、<code>7</code></td>
+</tr>
+<tr>
+<td><code>numeric(10,2)</code></td>
+<td>小数（お金など、誤差を出したくない数）</td>
+<td><code>1234.50</code></td>
+</tr>
+<tr>
+<td><code>text</code>・<code>varchar(100)</code></td>
+<td>文字（<code>varchar(100)</code> は 100 文字まで）</td>
+<td><code>'治具の製作'</code></td>
+</tr>
+<tr>
+<td><code>boolean</code></td>
+<td>はい・いいえ</td>
+<td><code>true</code>、<code>false</code></td>
+</tr>
+<tr>
+<td><code>date</code></td>
+<td>日付</td>
+<td><code>'2026-11-10'</code></td>
+</tr>
+<tr>
+<td><code>timestamptz</code></td>
+<td>日時（時間帯つき）</td>
+<td><code>'2026-10-20 09:15+09'</code></td>
+</tr>
+<tr>
+<td><code>bytea</code></td>
+<td>バイナリ（画像などの、文字でないデータ）</td>
+<td>図面のデータなど</td>
+</tr>
+<tr>
+<td><code>jsonb</code></td>
+<td>JSON（入れ子になったデータ）</td>
+<td><code>'{"width": 120}'</code></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>文字は <code>'</code>（シングルクォート）で囲みます。</strong> <code>"</code>（ダブルクォート）は、テーブルや列の名前を囲む記号で、意味が違います（14 章のトラブル）。</p>
+</blockquote>
+<h3 id="12">1.2 主キーと外部キー</h3>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/02-02_keys.webp" alt="employeesのidが主キー。requestsのrequester_idが外部キーでemployeesのidを指す" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図1-2: 主キーは重ならない番号、外部キーは相手の番号を指す列</div>
+</div>
+
+<ul>
+<li><strong>主キー</strong>（PRIMARY KEY）: 1 行を見分けるための、<strong>重ならず、空でない</strong>列。社員番号のようなもの。</li>
+<li><strong>外部キー</strong>（FOREIGN KEY）: ほかのテーブルの主キーを指す列。依頼の「依頼者」の列が、社員テーブルの番号を指す。<strong>存在しない社員の番号は入れられない</strong>ので、データの食い違いを防げます。</li>
+<li><strong>NULL</strong>（ヌル）: 「値が無い」という特別な印。<code>0</code> や空の文字（<code>''</code>）とは違います。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> 主キー（primary key：1 行を見分ける、重ならない列）</p>
+</blockquote>
+<!-- -->
+
+<blockquote>
+<p><strong>用語:</strong> 外部キー（foreign key：ほかのテーブルの主キーを指す列。指す先が無い値は入れられない）</p>
+</blockquote>
+<!-- -->
+
+<blockquote>
+<p><strong>用語:</strong> 制約（constraint：「空は不可」「重複は不可」「この値だけ」など、テーブルに入れてよいデータの決まり）</p>
+</blockquote>
+<h2 id="2-psql-pgadmin">2. ログインする（psql と pgAdmin）</h2>
+<h3 id="21">2.1 ログインの流れ</h3>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/02-03_login_flow.webp" alt="psqlから127.0.0.1の5432番へ。門番のpg_hba.confがどこから・だれがを確かめ、パスワードを確かめてからデータベースに入る" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図2-1: psql → 住所とポート → 門番（pg_hba.conf）→ パスワード → データベース</div>
+</div>
+
+<ol>
+<li><strong>psql</strong>（文字の道具）が、<code>127.0.0.1</code> の <strong>5432 番</strong>につなぐ。</li>
+<li>PostgreSQL の門番（<strong>pg_hba.conf</strong>。10 章）が、「どこから・だれが・どのデータベースに・どの方法で」来たかを見て、通すかを決める。</li>
+<li><strong>パスワード</strong>を確かめる。</li>
+<li>指定した<strong>データベース</strong>に入る。</li>
+</ol>
+<h3 id="22-psql">2.2 psql でつなぐ</h3>
+<p>管理者の PowerShell で、psql の場所を教えてからつなぎます（04 の 5.4）。</p>
+<div class="codehilite"><div class="code-wrap" id="code-1"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># この窓の中だけ、psql の場所を教える</span>
+<span class="nv">$env:Path</span> <span class="p">+=</span> <span class="s2">&quot;;C:\Program Files\PostgreSQL\18\bin&quot;</span>
+
+<span class="c"># スーパーユーザー postgres で、サーバーの中からつなぐ（パスワードを聞かれる）</span>
+<span class="n">psql</span> <span class="n">-h</span> <span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span> <span class="n">-p</span> <span class="n">5432</span> <span class="n">-U</span> <span class="n">postgres</span> <span class="n">-d</span> <span class="n">postgres</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>指定</th>
+<th>意味</th>
+<th>省いたとき</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-h 127.0.0.1</code></td>
+<td>どの機械の PostgreSQL か</td>
+<td>Windows では <code>localhost</code></td>
+</tr>
+<tr>
+<td><code>-p 5432</code></td>
+<td>ポート</td>
+<td><code>5432</code></td>
+</tr>
+<tr>
+<td><code>-U postgres</code></td>
+<td>だれとしてつなぐか（ロール）</td>
+<td><strong>Windows にログインしている名前</strong>（たいてい失敗する）</td>
+</tr>
+<tr>
+<td><code>-d postgres</code></td>
+<td>どのデータベースに入るか</td>
+<td><code>-U</code> と同じ名前</td>
+</tr>
+</tbody>
+</table>
+<p>つながると、次のような<strong>プロンプト</strong>（入力待ちの印）が出ます。</p>
+<div class="codehilite"><div class="code-wrap" id="code-2"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>postgres=#
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>プロンプト</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>postgres=#</code></td>
+<td><code>postgres</code> データベースに、スーパーユーザーでつないでいる（<code>#</code> は強い権限の印）</td>
+</tr>
+<tr>
+<td><code>webapp_stg=&gt;</code></td>
+<td><code>webapp_stg</code> データベースに、ふつうのユーザーでつないでいる</td>
+</tr>
+<tr>
+<td><code>postgres-#</code></td>
+<td>SQL の途中（<code>;</code> をまだ打っていない）。続きを打つか、<code>;</code> を打つ</td>
+</tr>
+<tr>
+<td><code>postgres(#</code></td>
+<td>かっこが閉じていない</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>SQL は <code>;</code>（セミコロン）で終わります。</strong> <code>;</code> を打つまで、何行でも続きを打てます。Enter を押しても何も起きないときは、<code>;</code> を忘れています。</p>
+</blockquote>
+<h3 id="23-psql">2.3 psql の便利なコマンド</h3>
+<p><code>\</code>（円記号）で始まるのは、SQL ではなく <strong>psql の道具のコマンド</strong>です。<code>;</code> は要りません。</p>
+<table>
+<thead>
+<tr>
+<th>コマンド</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>\l</code></td>
+<td>データベースの一覧</td>
+</tr>
+<tr>
+<td><code>\c webapp_stg</code></td>
+<td>別のデータベースに入り直す</td>
+</tr>
+<tr>
+<td><code>\dt</code></td>
+<td>今のデータベースのテーブルの一覧</td>
+</tr>
+<tr>
+<td><code>\d requests</code></td>
+<td>テーブル <code>requests</code> の列・型・制約・索引</td>
+</tr>
+<tr>
+<td><code>\du</code></td>
+<td>ロール（ユーザー）の一覧</td>
+</tr>
+<tr>
+<td><code>\x</code></td>
+<td>結果を縦に並べて見る（列が多いときに便利）。もう一度打つと戻る</td>
+</tr>
+<tr>
+<td><code>\timing</code></td>
+<td>SQL にかかった時間を表示する</td>
+</tr>
+<tr>
+<td><code>\i D:\work\file.sql</code></td>
+<td>ファイルに書いた SQL を実行する</td>
+</tr>
+<tr>
+<td><code>\encoding</code></td>
+<td>今の文字コードを見る（14 章）</td>
+</tr>
+<tr>
+<td><code>\?</code></td>
+<td>psql のコマンドの一覧</td>
+</tr>
+<tr>
+<td><code>\h SELECT</code></td>
+<td>SQL の書き方の説明（例：SELECT）</td>
+</tr>
+<tr>
+<td><code>\q</code></td>
+<td>psql を終わる</td>
+</tr>
+</tbody>
+</table>
+<p>結果が画面に入りきらないと、<code>--続く--</code> と出て止まります。スペースキーで次へ、<code>q</code> で終わります。</p>
+<h3 id="24-1">2.4 1行だけ実行して終わる</h3>
+<p>決まった SQL を1つだけ動かすときは、<code>-c</code> を使います。</p>
+<div class="codehilite"><div class="code-wrap" id="code-3"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># アプリ用のユーザーで、今のユーザー・データベース・時刻を見る</span>
+<span class="n">psql</span> <span class="n">-h</span> <span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span> <span class="n">-U</span> <span class="n">webapp_stg_app</span> <span class="n">-d</span> <span class="n">webapp_stg</span> <span class="n">-c</span> <span class="s2">&quot;SELECT current_user, current_database(), now();&quot;</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>日本語を含む SQL は、<code>-c</code> で渡さない方が安全です。</strong> 試した環境では、<code>-c</code> に日本語を書くと、文字コードの食い違いで <code>invalid byte sequence for encoding "UTF8"</code> というエラーになりました。日本語を含む SQL は、psql の中で打つか、<strong>UTF-8 で保存した <code>.sql</code> のファイル</strong>を <code>-f</code> で渡します（<code>psql ... -f D:\work\check.sql</code>）。</p>
+</blockquote>
+<h3 id="25-pgadmin">2.5 pgAdmin（画面の道具）</h3>
+<p>PostgreSQL のインストーラーで「pgAdmin 4」を入れていれば、画面で操作できます（スタートメニュー → pgAdmin 4）。</p>
+<ol>
+<li>左の「Servers」を右クリック →「Register」→「Server」。</li>
+<li>「General」の Name に <code>local</code>、「Connection」の Host に <code>127.0.0.1</code>、Port に <code>5432</code>、Username に <code>postgres</code> を入れて保存します。</li>
+<li>左の木を開いていくと、データベース → Schemas → public → Tables の順に、テーブルが見えます。</li>
+<li>テーブルを右クリック →「View/Edit Data」で中身を見られます。上のメニューの「Query Tool」で SQL を打てます。</li>
+</ol>
+<blockquote>
+<p><strong>注意:</strong> pgAdmin の表の画面では、セルを直接書きかえて保存できます。<strong>本番のデータを画面で直接書きかえないでください。</strong> 何を変えたかの記録が残らず、アプリの決まり（承認の順番など）を飛ばしてしまいます。直すときは、SQL を書き、検証で試してから、トランザクション（7 章）の中で行います。</p>
+</blockquote>
+<h2 id="3">3. 練習用のデータベースを作る</h2>
+<p>スーパーユーザーでつないで、練習用のデータベースを作ります。</p>
+<p><strong>▶ 打つ所:</strong> 2.2 のとおり、PowerShell で <code>psql -h 127.0.0.1 -U postgres</code> と打ってつなぎ、<code>postgres=#</code> と出ている所に、下の SQL を 1 行ずつ打ちます（<code>--</code> で始まる行は説明のメモなので、打たなくてよい）。<code>\c practice</code> のあとは、行の頭が <code>practice=#</code> に変わります。</p>
+<div class="codehilite"><div class="code-wrap" id="code-4"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">-- 練習用のデータベースを作る</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">practice</span><span class="w"> </span><span class="k">ENCODING</span><span class="w"> </span><span class="s1">&#39;UTF8&#39;</span><span class="w"> </span><span class="k">TEMPLATE</span><span class="w"> </span><span class="n">template0</span><span class="p">;</span>
+
+<span class="c1">-- 作ったデータベースに入り直す</span>
+<span class="err">\</span><span class="k">c</span><span class="w"> </span><span class="n">practice</span>
+</code></pre></div></div>
+
+<p>次の SQL を、メモ帳に貼り付けて <strong>UTF-8</strong> で <code>D:\work\practice_setup.sql</code> に保存し、psql の中で <code>\i D:/work/practice_setup.sql</code> と打って実行します（<code>\i</code> では、<code>\</code> の代わりに <code>/</code> で書くと間違いが起きにくいです）。</p>
+<div class="codehilite"><div class="code-wrap" id="code-5"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">-- 練習用のテーブルを作り、データを入れる（practice データベースの中で動かす）</span>
+
+<span class="c1">-- 部署</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">departments</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">id</span><span class="w">   </span><span class="nb">integer</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span><span class="w">                </span><span class="c1">-- 部署の番号（主キー）</span>
+<span class="w">    </span><span class="n">name</span><span class="w"> </span><span class="nb">text</span><span class="w">    </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">UNIQUE</span><span class="w">             </span><span class="c1">-- 部署の名前（空は不可・重複不可）</span>
+<span class="p">);</span>
+
+<span class="c1">-- 社員</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">employees</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">id</span><span class="w">            </span><span class="nb">integer</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span>
+<span class="w">    </span><span class="n">name</span><span class="w">          </span><span class="nb">text</span><span class="w">    </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">email</span><span class="w">         </span><span class="nb">text</span><span class="w">    </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">UNIQUE</span><span class="p">,</span>
+<span class="w">    </span><span class="n">department_id</span><span class="w"> </span><span class="nb">integer</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">departments</span><span class="w"> </span><span class="p">(</span><span class="n">id</span><span class="p">),</span><span class="w">  </span><span class="c1">-- 外部キー: departments の id</span>
+<span class="w">    </span><span class="n">is_active</span><span class="w">     </span><span class="nb">boolean</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">true</span><span class="w">                 </span><span class="c1">-- 在籍中か</span>
+<span class="p">);</span>
+
+<span class="c1">-- 依頼</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">requests</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">id</span><span class="w">           </span><span class="nb">bigint</span><span class="w"> </span><span class="k">GENERATED</span><span class="w"> </span><span class="n">ALWAYS</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">IDENTITY</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span><span class="w">  </span><span class="c1">-- 番号は自動で振る</span>
+<span class="w">    </span><span class="n">title</span><span class="w">        </span><span class="nb">text</span><span class="w">   </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">status</span><span class="w">       </span><span class="nb">text</span><span class="w">   </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="s1">&#39;下書き&#39;</span>
+<span class="w">                 </span><span class="k">CHECK</span><span class="w"> </span><span class="p">(</span><span class="n">status</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;下書き&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;回覧中&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;承認済み&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;差し戻し&#39;</span><span class="p">)),</span>
+<span class="w">    </span><span class="n">requester_id</span><span class="w"> </span><span class="nb">integer</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">employees</span><span class="w"> </span><span class="p">(</span><span class="n">id</span><span class="p">),</span>
+<span class="w">    </span><span class="n">due_date</span><span class="w">     </span><span class="nb">date</span><span class="p">,</span><span class="w">                                              </span><span class="c1">-- 期限（空でもよい）</span>
+<span class="w">    </span><span class="n">created_at</span><span class="w">   </span><span class="n">timestamptz</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="n">now</span><span class="p">()</span>
+<span class="p">);</span>
+
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">departments</span><span class="w"> </span><span class="p">(</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span>
+<span class="w">    </span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;設計部&#39;</span><span class="p">),</span>
+<span class="w">    </span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;製造部&#39;</span><span class="p">),</span>
+<span class="w">    </span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;品質保証部&#39;</span><span class="p">),</span>
+<span class="w">    </span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;総務部&#39;</span><span class="p">);</span>
+
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">employees</span><span class="w"> </span><span class="p">(</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">email</span><span class="p">,</span><span class="w"> </span><span class="n">department_id</span><span class="p">,</span><span class="w"> </span><span class="n">is_active</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span>
+<span class="w">    </span><span class="p">(</span><span class="mi">101</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;山田 太郎&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;taro.yamada@example.com&#39;</span><span class="p">,</span><span class="w">   </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="k">true</span><span class="p">),</span>
+<span class="w">    </span><span class="p">(</span><span class="mi">102</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;佐藤 花子&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;hanako.sato@example.com&#39;</span><span class="p">,</span><span class="w">   </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="k">true</span><span class="p">),</span>
+<span class="w">    </span><span class="p">(</span><span class="mi">201</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;鈴木 一郎&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;ichiro.suzuki@example.com&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="k">true</span><span class="p">),</span>
+<span class="w">    </span><span class="p">(</span><span class="mi">202</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;田中 次郎&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;jiro.tanaka@example.com&#39;</span><span class="p">,</span><span class="w">   </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="k">false</span><span class="p">),</span>
+<span class="w">    </span><span class="p">(</span><span class="mi">301</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;高橋 三郎&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;saburo.takahashi@example.com&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="k">true</span><span class="p">);</span>
+
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">requests</span><span class="w"> </span><span class="p">(</span><span class="n">title</span><span class="p">,</span><span class="w"> </span><span class="n">status</span><span class="p">,</span><span class="w"> </span><span class="n">requester_id</span><span class="p">,</span><span class="w"> </span><span class="n">due_date</span><span class="p">,</span><span class="w"> </span><span class="n">created_at</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span>
+<span class="w">    </span><span class="p">(</span><span class="s1">&#39;治具の製作&#39;</span><span class="p">,</span><span class="w">       </span><span class="s1">&#39;回覧中&#39;</span><span class="p">,</span><span class="w">   </span><span class="mi">101</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;2026-11-10&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;2026-10-20 09:15+09&#39;</span><span class="p">),</span>
+<span class="w">    </span><span class="p">(</span><span class="s1">&#39;部品の追加工&#39;</span><span class="p">,</span><span class="w">     </span><span class="s1">&#39;承認済み&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">102</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;2026-10-31&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;2026-10-15 13:40+09&#39;</span><span class="p">),</span>
+<span class="w">    </span><span class="p">(</span><span class="s1">&#39;試作品の溶接&#39;</span><span class="p">,</span><span class="w">     </span><span class="s1">&#39;下書き&#39;</span><span class="p">,</span><span class="w">   </span><span class="mi">201</span><span class="p">,</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w">         </span><span class="s1">&#39;2026-10-28 10:05+09&#39;</span><span class="p">),</span>
+<span class="w">    </span><span class="p">(</span><span class="s1">&#39;検査用の台の修理&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;回覧中&#39;</span><span class="p">,</span><span class="w">   </span><span class="mi">301</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;2026-11-05&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;2026-10-25 16:20+09&#39;</span><span class="p">),</span>
+<span class="w">    </span><span class="p">(</span><span class="s1">&#39;棚の取り付け&#39;</span><span class="p">,</span><span class="w">     </span><span class="s1">&#39;差し戻し&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">101</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;2026-11-20&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;2026-10-27 11:00+09&#39;</span><span class="p">),</span>
+<span class="w">    </span><span class="p">(</span><span class="s1">&#39;型の改造&#39;</span><span class="p">,</span><span class="w">         </span><span class="s1">&#39;回覧中&#39;</span><span class="p">,</span><span class="w">   </span><span class="mi">201</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;2026-11-03&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;2026-10-29 08:30+09&#39;</span><span class="p">);</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>書き方</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CREATE TABLE 名前 (列 型 制約, ...)</code></td>
+<td>テーブルを作る</td>
+</tr>
+<tr>
+<td><code>PRIMARY KEY</code></td>
+<td>主キー</td>
+</tr>
+<tr>
+<td><code>NOT NULL</code></td>
+<td>空（NULL）は不可</td>
+</tr>
+<tr>
+<td><code>UNIQUE</code></td>
+<td>重複は不可</td>
+</tr>
+<tr>
+<td><code>REFERENCES departments (id)</code></td>
+<td>外部キー（<code>departments</code> の <code>id</code> を指す）</td>
+</tr>
+<tr>
+<td><code>DEFAULT true</code>・<code>DEFAULT now()</code></td>
+<td>入れなかったときの値</td>
+</tr>
+<tr>
+<td><code>CHECK (status IN (...))</code></td>
+<td>この値だけ入れてよい</td>
+</tr>
+<tr>
+<td><code>GENERATED ALWAYS AS IDENTITY</code></td>
+<td>番号を自動で振る</td>
+</tr>
+<tr>
+<td><code>-- ...</code></td>
+<td>コメント（説明）。SQL としては無視される</td>
+</tr>
+</tbody>
+</table>
+<p><strong>確かめること:</strong> <code>\dt</code> で <code>departments</code>・<code>employees</code>・<code>requests</code> の3つが出ること。<code>\d requests</code> で、列と制約（Check・外部キー）が出ること。</p>
+<h2 id="4-select">4. データを見る（SELECT）</h2>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/02-04_select_anatomy.webp" alt="SELECT title, status（どの列を）、FROM requests（どの表から）、WHERE status = '回覧中'（どの行を）、ORDER BY due_date（どの順に）" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図4-1: SELECT 文は「どの列を・どの表から・どの行を・どの順に」</div>
+</div>
+
+<p><strong>▶ 打つ所:</strong> この章からの SQL は、全部 <code>practice=#</code> と出ている所（3 章で <code>\c practice</code> したあと）に打ちます。1 つの SQL の終わりには <code>;</code> を付け、Enter キーで実行します。<code>psql</code> を閉じてしまったら、<code>psql -h 127.0.0.1 -U postgres -d practice</code> で入り直します。</p>
+<h3 id="41">4.1 全部見る</h3>
+<div class="codehilite"><div class="code-wrap" id="code-6"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">departments</span><span class="p">;</span>
+</code></pre></div></div>
+
+<div class="codehilite"><div class="code-wrap" id="code-7"><button type="button" class="copy-btn">コピー</button><pre><span></span><code> id |    name
+----+------------
+  1 | 設計部
+  2 | 製造部
+  3 | 品質保証部
+  4 | 総務部
+(4 行)
+</code></pre></div></div>
+
+<p><code>*</code> は「全部の列」です。本番の大きなテーブルで <code>SELECT *</code> を打つと、何万行も流れて止まらなくなるので、<strong>ふだんは列を選び、<code>LIMIT</code> で件数をしぼります</strong>。</p>
+<h3 id="42-whereorder-by">4.2 しぼる（WHERE）・並べる（ORDER BY）</h3>
+<div class="codehilite"><div class="code-wrap" id="code-8"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">title</span><span class="p">,</span><span class="w"> </span><span class="n">status</span><span class="p">,</span><span class="w"> </span><span class="n">due_date</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">requests</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;回覧中&#39;</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">due_date</span><span class="p">;</span>
+</code></pre></div></div>
+
+<div class="codehilite"><div class="code-wrap" id="code-9"><button type="button" class="copy-btn">コピー</button><pre><span></span><code> id |      title       | status |  due_date
+----+------------------+--------+------------
+  6 | 型の改造         | 回覧中 | 2026-11-03
+  4 | 検査用の台の修理 | 回覧中 | 2026-11-05
+  1 | 治具の製作       | 回覧中 | 2026-11-10
+(3 行)
+</code></pre></div></div>
+
+<p>条件は <code>AND</code>（かつ）・<code>OR</code>（または）でつなげます。</p>
+<div class="codehilite"><div class="code-wrap" id="code-10"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">title</span><span class="p">,</span><span class="w"> </span><span class="n">due_date</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">requests</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;回覧中&#39;</span>
+<span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">due_date</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="nb">DATE</span><span class="w"> </span><span class="s1">&#39;2026-11-05&#39;</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">due_date</span><span class="p">;</span>
+</code></pre></div></div>
+
+<div class="codehilite"><div class="code-wrap" id="code-11"><button type="button" class="copy-btn">コピー</button><pre><span></span><code> id |      title       |  due_date
+----+------------------+------------
+  6 | 型の改造         | 2026-11-03
+  4 | 検査用の台の修理 | 2026-11-05
+(2 行)
+</code></pre></div></div>
+
+<h3 id="43">4.3 よく使う条件の書き方</h3>
+<table>
+<thead>
+<tr>
+<th>書き方</th>
+<th>意味</th>
+<th>例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>=</code>・<code>&lt;&gt;</code></td>
+<td>等しい・等しくない</td>
+<td><code>status = '回覧中'</code></td>
+</tr>
+<tr>
+<td><code>&lt;</code>・<code>&lt;=</code>・<code>&gt;</code>・<code>&gt;=</code></td>
+<td>より小さい・以下・より大きい・以上</td>
+<td><code>due_date &lt;= DATE '2026-11-05'</code></td>
+</tr>
+<tr>
+<td><code>IN (...)</code></td>
+<td>どれかに当てはまる</td>
+<td><code>status IN ('回覧中', '差し戻し')</code></td>
+</tr>
+<tr>
+<td><code>BETWEEN a AND b</code></td>
+<td>a 以上 b 以下</td>
+<td><code>id BETWEEN 100 AND 199</code></td>
+</tr>
+<tr>
+<td><code>LIKE '%田%'</code></td>
+<td>文字の一部が合う（<code>%</code> は何文字でも）</td>
+<td>下の例</td>
+</tr>
+<tr>
+<td><code>IS NULL</code>・<code>IS NOT NULL</code></td>
+<td>空である・空でない</td>
+<td>下の例</td>
+</tr>
+</tbody>
+</table>
+<div class="codehilite"><div class="code-wrap" id="code-12"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">email</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">employees</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">&#39;%田%&#39;</span><span class="p">;</span>
+</code></pre></div></div>
+
+<div class="codehilite"><div class="code-wrap" id="code-13"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>   name    |          email
+-----------+-------------------------
+ 山田 太郎 | taro.yamada@example.com
+ 田中 次郎 | jiro.tanaka@example.com
+(2 行)
+</code></pre></div></div>
+
+<div class="codehilite"><div class="code-wrap" id="code-14"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">title</span><span class="p">,</span><span class="w"> </span><span class="n">status</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">requests</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">due_date</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span><span class="p">;</span>
+</code></pre></div></div>
+
+<div class="codehilite"><div class="code-wrap" id="code-15"><button type="button" class="copy-btn">コピー</button><pre><span></span><code> id |    title     | status
+----+--------------+--------
+  3 | 試作品の溶接 | 下書き
+(1 行)
+</code></pre></div></div>
+
+<blockquote>
+<p><strong><code>= NULL</code> とは書きません。</strong> NULL は「値が無い」ので、<code>due_date = NULL</code> は何にも当てはまらず、0 行になります。必ず <code>IS NULL</code> と書きます。</p>
+</blockquote>
+<h3 id="44-countgroup-by">4.4 数える・まとめる（COUNT・GROUP BY）</h3>
+<div class="codehilite"><div class="code-wrap" id="code-16"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="n">status</span><span class="p">,</span><span class="w"> </span><span class="k">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="err">件数</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">requests</span>
+<span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">status</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="err">件数</span><span class="w"> </span><span class="k">DESC</span><span class="p">,</span><span class="w"> </span><span class="n">status</span><span class="p">;</span>
+</code></pre></div></div>
+
+<div class="codehilite"><div class="code-wrap" id="code-17"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  status  | 件数
+----------+------
+ 回覧中   |    3
+ 下書き   |    1
+ 差し戻し |    1
+ 承認済み |    1
+(4 行)
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>書き方</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>count(*)</code></td>
+<td>行の数</td>
+</tr>
+<tr>
+<td><code>sum(列)</code>・<code>avg(列)</code></td>
+<td>合計・平均</td>
+</tr>
+<tr>
+<td><code>min(列)</code>・<code>max(列)</code></td>
+<td>いちばん小さい・大きい値（日付なら、いちばん古い・新しい）</td>
+</tr>
+<tr>
+<td><code>GROUP BY 列</code></td>
+<td>その列の値ごとにまとめる</td>
+</tr>
+<tr>
+<td><code>HAVING 条件</code></td>
+<td>まとめた後でしぼる（例：<code>HAVING count(*) &gt;= 2</code>）</td>
+</tr>
+<tr>
+<td><code>AS 件数</code></td>
+<td>結果の列に名前を付ける</td>
+</tr>
+<tr>
+<td><code>DESC</code></td>
+<td>大きい順（新しい順）。<code>ASC</code>（小さい順）は省ける</td>
+</tr>
+</tbody>
+</table>
+<h3 id="45">4.5 速く探す（索引）</h3>
+<p>行が何万・何十万と増えると、<code>WHERE</code> で探すのに時間がかかるようになります。よく探す列に<strong>索引</strong>（インデックス）を作っておくと、本の後ろの索引のように、すぐに目当ての行へたどり着けます。</p>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/02-09_index.webp" alt="索引が無いと本を全部めくる。索引があるとすぐ見つかる" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図4-2: 索引は、本の後ろの索引と同じ</div>
+</div>
+
+<div class="codehilite"><div class="code-wrap" id="code-18"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">-- 「状態」と「期限」で探して並べることが多いので、2つの列の索引を作る</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">requests_status_due_idx</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">requests</span><span class="w"> </span><span class="p">(</span><span class="n">status</span><span class="p">,</span><span class="w"> </span><span class="n">due_date</span><span class="p">);</span>
+
+<span class="c1">-- PostgreSQL が、どうやって探すつもりか（計画）を見る</span>
+<span class="k">EXPLAIN</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">title</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">requests</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;回覧中&#39;</span><span class="w"> </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">due_date</span><span class="p">;</span>
+</code></pre></div></div>
+
+<div class="codehilite"><div class="code-wrap" id="code-19"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>                          QUERY PLAN
+---------------------------------------------------------------
+ Sort  (cost=1.08..1.09 rows=1 width=44)
+   Sort Key: due_date
+   -&gt;  Seq Scan on requests  (cost=0.00..1.07 rows=1 width=44)
+         Filter: (status = &#39;回覧中&#39;::text)
+(4 行)
+</code></pre></div></div>
+
+<ul>
+<li><code>Seq Scan</code> は「テーブルを頭から全部読む」という意味です。この練習のように<strong>行が少ないうちは、全部読む方が速い</strong>ので、PostgreSQL は索引を使いません。行が増えると、索引を使う計画（<code>Index Scan</code> など）に自動で切りかわります。</li>
+<li>主キーと <code>UNIQUE</code> の列には、索引が自動で作られます。</li>
+<li>索引は、増やすほど<strong>書き込みが少し遅くなり、ディスクも使います</strong>。「遅い」と分かった探し方にだけ作ります。どこに作るかは、アプリを作る人が決めて、マイグレーション（00 基礎知識 7.3）で入れるのがふつうです。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> 索引（インデックス。index：よく探す列について、行の場所を早く引けるようにした目録）</p>
+</blockquote>
+<!-- -->
+
+<blockquote>
+<p><strong>用語:</strong> EXPLAIN（エクスプレイン：SQL を、どうやって実行するつもりか（実行計画）を見る SQL）</p>
+</blockquote>
+<h2 id="5-join">5. テーブルをつなぐ（JOIN）</h2>
+<p>依頼のテーブルには、依頼者の<strong>番号</strong>しか入っていません。名前や部署を一緒に見るには、テーブルを<strong>番号でつなぎます</strong>。</p>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/02-05_join.webp" alt="依頼の表の依頼者の番号と、社員の表の番号を結んで、件名と名前が並んだ表を作る" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図5-1: JOIN は、同じ番号どうしを結んで1つの表にする</div>
+</div>
+
+<div class="codehilite"><div class="code-wrap" id="code-20"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">title</span><span class="p">,</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="err">依頼者</span><span class="p">,</span><span class="w"> </span><span class="n">d</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="err">部署</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">requests</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">r</span>
+<span class="k">JOIN</span><span class="w"> </span><span class="n">employees</span><span class="w">   </span><span class="k">AS</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">requester_id</span>
+<span class="k">JOIN</span><span class="w"> </span><span class="n">departments</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">d</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">department_id</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">id</span><span class="p">;</span>
+</code></pre></div></div>
+
+<div class="codehilite"><div class="code-wrap" id="code-21"><button type="button" class="copy-btn">コピー</button><pre><span></span><code> id |      title       |  依頼者   |    部署
+----+------------------+-----------+------------
+  1 | 治具の製作       | 山田 太郎 | 設計部
+  2 | 部品の追加工     | 佐藤 花子 | 設計部
+  3 | 試作品の溶接     | 鈴木 一郎 | 製造部
+  4 | 検査用の台の修理 | 高橋 三郎 | 品質保証部
+  5 | 棚の取り付け     | 山田 太郎 | 設計部
+  6 | 型の改造         | 鈴木 一郎 | 製造部
+(6 行)
+</code></pre></div></div>
+
+<ul>
+<li><code>requests AS r</code> は、「<code>requests</code> を、この SQL の中では <code>r</code> と呼ぶ」という意味です。<code>r.title</code> は「<code>r</code>（requests）の <code>title</code> 列」です。</li>
+<li><code>ON e.id = r.requester_id</code> が、「どの列とどの列が同じなら結ぶか」です。</li>
+</ul>
+<h3 id="51-left-join">5.1 相手がいない行も残す（LEFT JOIN）</h3>
+<p>ふつうの <code>JOIN</code> は、相手が見つからない行を<strong>消します</strong>。「依頼が 0 件の部署も出したい」ときは、<code>LEFT JOIN</code> を使います。</p>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/02-06_left_join.webp" alt="JOINでは相手の無い総務部が消える。LEFT JOINでは左の表が全部残り、総務部は0件と出る" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図5-2: LEFT JOIN は、左の表の行を全部残す</div>
+</div>
+
+<div class="codehilite"><div class="code-wrap" id="code-22"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="n">d</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="err">部署</span><span class="p">,</span><span class="w"> </span><span class="k">count</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="err">依頼の件数</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">departments</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">d</span>
+<span class="k">LEFT</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">employees</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">department_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">d</span><span class="p">.</span><span class="n">id</span>
+<span class="k">LEFT</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">requests</span><span class="w">  </span><span class="k">AS</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">requester_id</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">id</span>
+<span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">d</span><span class="p">.</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">d</span><span class="p">.</span><span class="n">name</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">d</span><span class="p">.</span><span class="n">id</span><span class="p">;</span>
+</code></pre></div></div>
+
+<div class="codehilite"><div class="code-wrap" id="code-23"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    部署    | 依頼の件数
+------------+------------
+ 設計部     |          3
+ 製造部     |          2
+ 品質保証部 |          1
+ 総務部     |          0
+(4 行)
+</code></pre></div></div>
+
+<p><strong>確かめること:</strong> 社員のいない「総務部」が、<code>0</code> 件として出ること。<code>LEFT JOIN</code> を <code>JOIN</code> に変えると、総務部の行が消えることも試してみてください。</p>
+<h2 id="6">6. データを入れる・直す・消す</h2>
+<h3 id="61-insert">6.1 入れる（INSERT）</h3>
+<div class="codehilite"><div class="code-wrap" id="code-24"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">requests</span><span class="w"> </span><span class="p">(</span><span class="n">title</span><span class="p">,</span><span class="w"> </span><span class="n">requester_id</span><span class="p">,</span><span class="w"> </span><span class="n">due_date</span><span class="p">)</span>
+<span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;工具箱の作成&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">102</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;2026-11-30&#39;</span><span class="p">)</span>
+<span class="n">RETURNING</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">title</span><span class="p">,</span><span class="w"> </span><span class="n">status</span><span class="p">,</span><span class="w"> </span><span class="n">created_at</span><span class="p">;</span>
+</code></pre></div></div>
+
+<div class="codehilite"><div class="code-wrap" id="code-25"><button type="button" class="copy-btn">コピー</button><pre><span></span><code> id |    title     | status |          created_at
+----+--------------+--------+-------------------------------
+  7 | 工具箱の作成 | 下書き | 2026-11-01 21:23:50.806647+09
+(1 行)
+
+INSERT 0 1
+</code></pre></div></div>
+
+<ul>
+<li>書かなかった列（<code>status</code>・<code>created_at</code>）には、<code>DEFAULT</code> の値（<code>下書き</code>・今の時刻）が入りました。<code>created_at</code> は、打った時刻になります。</li>
+<li><code>RETURNING</code> を付けると、入れた行（自動で振られた番号など）をその場で見られます。</li>
+<li>最後の <code>INSERT 0 1</code> は、「1 行入れた」という意味です。</li>
+</ul>
+<h3 id="62-update">6.2 直す（UPDATE）</h3>
+<div class="codehilite"><div class="code-wrap" id="code-26"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">UPDATE</span><span class="w"> </span><span class="n">requests</span>
+<span class="k">SET</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;承認済み&#39;</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+</code></pre></div></div>
+
+<div class="codehilite"><div class="code-wrap" id="code-27"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>UPDATE 1
+</code></pre></div></div>
+
+<p><code>UPDATE 1</code> は、「1 行を直した」という意味です。<strong>この数が、思った数と同じか</strong>を必ず見ます。</p>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/02-07_update_where.webp" alt="WHEREありなら1件だけ変わる。WHEREなしなら全部の行が変わる" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図6-1: WHERE を忘れると、全部の行が変わる</div>
+</div>
+
+<blockquote>
+<p><strong>いちばん怖い間違い:</strong> <code>UPDATE</code>・<code>DELETE</code> で <strong><code>WHERE</code> を忘れると、テーブルの全部の行</strong>が変わる・消えます。本番で打つときは、必ず次の順で行います。</p>
+<ol>
+<li>同じ <code>WHERE</code> で <code>SELECT</code> を打ち、<strong>対象の行と件数</strong>を確かめる。</li>
+<li><code>BEGIN;</code> を打ってから（7 章）、<code>UPDATE</code>・<code>DELETE</code> を打つ。</li>
+<li>出た件数が 1 と同じなら <code>COMMIT;</code>、違えば <code>ROLLBACK;</code>。</li>
+</ol>
+</blockquote>
+<h3 id="63-delete">6.3 消す（DELETE）</h3>
+<p>書き方の例です（<strong>練習では、ここではまだ打たないでください</strong>。7 章で、取り消せる形で試します）。</p>
+<div class="codehilite"><div class="code-wrap" id="code-28"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">-- 番号 7 の依頼を消す</span>
+<span class="k">DELETE</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">requests</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">7</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>消した行は、元に戻せません（7 章のトランザクションの中なら、<code>ROLLBACK</code> で戻せます）。</p>
+<h2 id="7-begincommitrollback">7. トランザクション（BEGIN・COMMIT・ROLLBACK）</h2>
+<p><strong>トランザクション</strong>は、いくつかの SQL を「全部やるか、全部やめるか」でまとめる仕組みです（00 基礎知識 7.3）。手で直すときの<strong>安全ネット</strong>にもなります。</p>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/02-08_rollback_net.webp" alt="BEGINの安全ネットの上で綱渡り。落ちてもROLLBACKで元どおり。ゴールはCOMMITで確定" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図7-1: BEGIN で安全ネットを張り、COMMIT で確定、ROLLBACK で取り消し</div>
+</div>
+
+<p>わざと <code>WHERE</code> を忘れて、全部消してみます。</p>
+<div class="codehilite"><div class="code-wrap" id="code-29"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">BEGIN</span><span class="p">;</span>
+<span class="k">DELETE</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">requests</span><span class="p">;</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="k">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">requests</span><span class="p">;</span>
+<span class="k">ROLLBACK</span><span class="p">;</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="k">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">requests</span><span class="p">;</span>
+</code></pre></div></div>
+
+<div class="codehilite"><div class="code-wrap" id="code-30"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>BEGIN
+DELETE 7
+ count
+-------
+     0
+(1 行)
+
+ROLLBACK
+ count
+-------
+     7
+(1 行)
+</code></pre></div></div>
+
+<ul>
+<li><code>DELETE 7</code> で全部の 7 行が消え、<code>count</code> は <code>0</code> になりました。</li>
+<li><code>ROLLBACK</code> で取り消したので、最後の <code>count</code> は <code>7</code> に戻りました。</li>
+<li><code>ROLLBACK</code> の代わりに <code>COMMIT</code> を打つと、確定して元に戻せなくなります。</li>
+</ul>
+<blockquote>
+<p><strong>トランザクションの途中で、長く放っておかないでください。</strong> <code>BEGIN</code> したまま止めていると、そのテーブルの行がほかの人（アプリ）から書きかえられなくなり、アプリの画面が固まることがあります。確かめたら、すぐに <code>COMMIT</code> か <code>ROLLBACK</code> を打ちます。</p>
+</blockquote>
+<h2 id="8">8. 制約に止められたとき（エラーの読み方）</h2>
+<p>テーブルの決まり（制約）に合わないデータは、エラーで止められます。<strong>エラーは、データを守ってくれた印</strong>です。英語のエラーの文の、最初の行（<code>ERROR:</code>）と次の行（<code>DETAIL:</code>）を読みます。</p>
+<blockquote>
+<p><strong>メッセージが英語なのは、</strong> 04 の 5.3 で <code>lc_messages = 'C'</code> にしたためです（ログの文字化けを防ぐため）。</p>
+</blockquote>
+<p><strong>決まっていない値を入れた（CHECK 制約）</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-31"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">requests</span><span class="w"> </span><span class="p">(</span><span class="n">title</span><span class="p">,</span><span class="w"> </span><span class="n">status</span><span class="p">,</span><span class="w"> </span><span class="n">requester_id</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;テスト&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;完了&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">101</span><span class="p">);</span>
+</code></pre></div></div>
+
+<div class="codehilite"><div class="code-wrap" id="code-32"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>ERROR:  new row for relation &quot;requests&quot; violates check constraint &quot;requests_status_check&quot;
+DETAIL:  Failing row contains (8, テスト, 完了, 101, null, 2026-11-01 21:23:51.252143+09).
+</code></pre></div></div>
+
+<p><code>status</code> に、決まっていない <code>完了</code> を入れようとしたので、止められました。</p>
+<blockquote>
+<p><strong>番号が飛ぶ:</strong> エラーで止められた行のために、自動の番号（ここでは <code>8</code>）が使われています。次に入れる行は <code>9</code> になります。番号が飛ぶのは正しい動きで、故障ではありません。</p>
+</blockquote>
+<p><strong>存在しない相手を指した（外部キー）</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-33"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">requests</span><span class="w"> </span><span class="p">(</span><span class="n">title</span><span class="p">,</span><span class="w"> </span><span class="n">requester_id</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;テスト&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">999</span><span class="p">);</span>
+</code></pre></div></div>
+
+<div class="codehilite"><div class="code-wrap" id="code-34"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>ERROR:  insert or update on table &quot;requests&quot; violates foreign key constraint &quot;requests_requester_id_fkey&quot;
+DETAIL:  Key (requester_id)=(999) is not present in table &quot;employees&quot;.
+</code></pre></div></div>
+
+<p><strong>重複した（UNIQUE）</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-35"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">employees</span><span class="w"> </span><span class="p">(</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">email</span><span class="p">,</span><span class="w"> </span><span class="n">department_id</span><span class="p">)</span>
+<span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">103</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;山田 二郎&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;taro.yamada@example.com&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+</code></pre></div></div>
+
+<div class="codehilite"><div class="code-wrap" id="code-36"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>ERROR:  duplicate key value violates unique constraint &quot;employees_email_key&quot;
+DETAIL:  Key (email)=(taro.yamada@example.com) already exists.
+</code></pre></div></div>
+
+<p><strong>ほかの行から指されている行を消そうとした（外部キー）</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-37"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">DELETE</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">departments</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+</code></pre></div></div>
+
+<div class="codehilite"><div class="code-wrap" id="code-38"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>ERROR:  update or delete on table &quot;departments&quot; violates foreign key constraint &quot;employees_department_id_fkey&quot; on table &quot;employees&quot;
+DETAIL:  Key (id)=(1) is still referenced from table &quot;employees&quot;.
+</code></pre></div></div>
+
+<p><strong>テーブルの名前の打ち間違い</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-39"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">request</span><span class="p">;</span>
+</code></pre></div></div>
+
+<div class="codehilite"><div class="code-wrap" id="code-40"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>ERROR:  relation &quot;request&quot; does not exist
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>エラーの文</th>
+<th>意味</th>
+<th>直し方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>violates check constraint</code></td>
+<td>決まっていない値</td>
+<td>入れてよい値を <code>\d テーブル</code> の Check で確かめる</td>
+</tr>
+<tr>
+<td><code>violates foreign key constraint</code> ... <code>is not present</code></td>
+<td>指す相手が無い</td>
+<td>先に相手（社員など）を入れる</td>
+</tr>
+<tr>
+<td><code>violates foreign key constraint</code> ... <code>is still referenced</code></td>
+<td>ほかから指されている</td>
+<td>指している行を先に直す。または消さずに「無効」の印にする</td>
+</tr>
+<tr>
+<td><code>duplicate key value violates unique constraint</code></td>
+<td>重複</td>
+<td>既にある行を確かめる</td>
+</tr>
+<tr>
+<td><code>relation "..." does not exist</code></td>
+<td>テーブルが無い</td>
+<td>名前・データベース（<code>\c</code>）・スキーマを確かめる</td>
+</tr>
+<tr>
+<td><code>column "..." does not exist</code></td>
+<td>列が無い</td>
+<td><code>\d テーブル</code> で列の名前を確かめる</td>
+</tr>
+<tr>
+<td><code>syntax error at or near "..."</code></td>
+<td>書き方の間違い</td>
+<td><code>"..."</code> の所の直前を見る（<code>,</code> の抜け、<code>'</code> の閉じ忘れ）</td>
+</tr>
+<tr>
+<td><code>permission denied for table ...</code></td>
+<td>権限が無い</td>
+<td>9 章</td>
+</tr>
+</tbody>
+</table>
+<h2 id="9">9. ユーザー（ロール）と権限</h2>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/02-10_roles.webp" alt="postgresは何でもできる。アプリ用は読む・書く・表を作る。調べる用は読むだけ" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図9-1: ロールごとに、できることを分ける</div>
+</div>
+
+<table>
+<thead>
+<tr>
+<th>ロール</th>
+<th>使う人</th>
+<th>できること</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>postgres</code></td>
+<td>管理者（構築・バックアップ・リストア）</td>
+<td>何でも（スーパーユーザー）。<strong>ふだんの調べ物には使わない</strong></td>
+</tr>
+<tr>
+<td><code>webapp_prod_app</code></td>
+<td>本番のアプリ</td>
+<td>自分のデータベース（<code>webapp_prod</code>）の読み書き・テーブルを作る</td>
+</tr>
+<tr>
+<td><code>webapp_readonly</code>（作る）</td>
+<td>調べ物をする人</td>
+<td>読むだけ</td>
+</tr>
+</tbody>
+</table>
+<h3 id="91">9.1 読むだけのユーザーを作る</h3>
+<p>調べ物で <code>postgres</code> や アプリ用のユーザーを使うと、うっかり <code>UPDATE</code> を打ったときに本当に変わってしまいます。<strong>読むだけのユーザー</strong>を作っておくと安全です。</p>
+<div class="codehilite"><div class="code-wrap" id="code-41"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">-- postgres でつないで打つ</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">webapp_readonly</span><span class="w"> </span><span class="n">LOGIN</span><span class="p">;</span>
+<span class="err">\</span><span class="n">password</span><span class="w"> </span><span class="n">webapp_readonly</span>
+
+<span class="c1">-- 本番のデータベースにつなぐことを許す（04 の 5.5 で、全員から取り上げてあるため）</span>
+<span class="k">GRANT</span><span class="w"> </span><span class="k">CONNECT</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">webapp_prod</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="n">webapp_readonly</span><span class="p">;</span>
+
+<span class="c1">-- 本番のデータベースに入り直して、テーブルを読む許可を出す</span>
+<span class="err">\</span><span class="k">c</span><span class="w"> </span><span class="n">webapp_prod</span>
+<span class="k">GRANT</span><span class="w"> </span><span class="k">USAGE</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">SCHEMA</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="n">webapp_readonly</span><span class="p">;</span>
+<span class="k">GRANT</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">ALL</span><span class="w"> </span><span class="n">TABLES</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="k">SCHEMA</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="n">webapp_readonly</span><span class="p">;</span>
+
+<span class="c1">-- これからアプリ（webapp_prod_app）が作るテーブルも、読めるようにしておく</span>
+<span class="k">ALTER</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">PRIVILEGES</span><span class="w"> </span><span class="k">FOR</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">webapp_prod_app</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="k">SCHEMA</span><span class="w"> </span><span class="k">public</span>
+<span class="w">    </span><span class="k">GRANT</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">TABLES</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="n">webapp_readonly</span><span class="p">;</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>書き方</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GRANT 権限 ON 物 TO ロール</code></td>
+<td>権限を渡す</td>
+</tr>
+<tr>
+<td><code>REVOKE 権限 ON 物 FROM ロール</code></td>
+<td>権限を取り上げる</td>
+</tr>
+<tr>
+<td><code>GRANT SELECT ON ALL TABLES IN SCHEMA public</code></td>
+<td>今ある全部のテーブルを読める</td>
+</tr>
+<tr>
+<td><code>ALTER DEFAULT PRIVILEGES FOR ROLE webapp_prod_app ...</code></td>
+<td><strong>これから</strong> <code>webapp_prod_app</code> が作るテーブルにも、同じ権限を付ける</td>
+</tr>
+</tbody>
+</table>
+<p><strong>確かめること:</strong> 練習用のデータベースで同じことをして、読むだけのユーザーでつなぎ、<code>SELECT</code> はでき、<code>UPDATE</code> は <code>ERROR:  permission denied for table requests</code> で止められること（試した結果、そうなりました）。</p>
+<blockquote>
+<p><strong><code>ALTER DEFAULT PRIVILEGES</code> の <code>FOR ROLE</code> を忘れると、</strong> アプリが新しい版でテーブルを足したときに、読むだけのユーザーからそのテーブルが読めなくなります。テーブルを作るのはアプリ用のユーザーなので、そのユーザーを <code>FOR ROLE</code> に書きます。</p>
+</blockquote>
+<h2 id="10">10. 設定ファイル</h2>
+<p>PostgreSQL の設定ファイルは、データの場所（04 では <code>D:\pgsql\18\data</code>）にあります。</p>
+<table>
+<thead>
+<tr>
+<th>ファイル</th>
+<th>中身</th>
+<th>変えたら</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>postgresql.conf</code></td>
+<td>待ち受ける住所・ポート・メモリ・ログ・時間帯など</td>
+<td>多くは再読み込みで効く。<code>listen_addresses</code>・<code>port</code> などは<strong>再起動</strong>が要る</td>
+</tr>
+<tr>
+<td><code>pg_hba.conf</code></td>
+<td>だれが・どこから・どの方法でつなげるか（門番）</td>
+<td>再読み込みで効く</td>
+</tr>
+</tbody>
+</table>
+<h3 id="101-pg_hbaconf">10.1 pg_hba.conf（門番のチェック表）</h3>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/02-11_pg_hba.webp" alt="門番がどこから・だれが・どのDB・どの方法の表を持ち、127.0.0.1から来た人は通し、ほかの機械から来た人は止める" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図10-1: pg_hba.conf は、門番のチェック表</div>
+</div>
+
+<p>1行が1つの決まりで、<strong>上から順に見て、最初に当てはまった行</strong>が使われます。</p>
+<div class="codehilite"><div class="code-wrap" id="code-42"><button type="button" class="copy-btn">コピー</button><pre><span></span><code># TYPE  DATABASE        USER            ADDRESS                 METHOD
+host    all             all             127.0.0.1/32            scram-sha-256
+host    all             all             ::1/128                 scram-sha-256
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>列</th>
+<th>意味</th>
+<th>この例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TYPE</td>
+<td>つなぎ方（<code>host</code> は TCP の通信）</td>
+<td><code>host</code></td>
+</tr>
+<tr>
+<td>DATABASE</td>
+<td>どのデータベースに</td>
+<td><code>all</code>（全部）</td>
+</tr>
+<tr>
+<td>USER</td>
+<td>どのロールが</td>
+<td><code>all</code>（全部）</td>
+</tr>
+<tr>
+<td>ADDRESS</td>
+<td>どこから</td>
+<td><code>127.0.0.1/32</code>（このサーバー自身だけ）</td>
+</tr>
+<tr>
+<td>METHOD</td>
+<td>どうやって確かめるか</td>
+<td><code>scram-sha-256</code>（パスワード。安全な方式）</td>
+</tr>
+</tbody>
+</table>
+<p>今回は、データベースをサーバーの中からしか使わないので、<code>127.0.0.1</code> と <code>::1</code> の行だけにします。<strong><code>0.0.0.0/0</code>（どこからでも）や <code>trust</code>（パスワード無し）の行は書きません。</strong></p>
+<h3 id="102">10.2 設定を確かめる・再読み込みする</h3>
+<div class="codehilite"><div class="code-wrap" id="code-43"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">-- 今の設定の値を見る</span>
+<span class="k">SHOW</span><span class="w"> </span><span class="n">listen_addresses</span><span class="p">;</span>
+<span class="k">SHOW</span><span class="w"> </span><span class="n">lc_messages</span><span class="p">;</span>
+<span class="k">SHOW</span><span class="w"> </span><span class="n">timezone</span><span class="p">;</span>
+
+<span class="c1">-- どの設定ファイルを読んでいるか</span>
+<span class="k">SHOW</span><span class="w"> </span><span class="n">config_file</span><span class="p">;</span>
+<span class="k">SHOW</span><span class="w"> </span><span class="n">hba_file</span><span class="p">;</span>
+
+<span class="c1">-- 設定ファイルを読み直す（再起動しなくてよい設定だけ効く）</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="n">pg_reload_conf</span><span class="p">();</span>
+</code></pre></div></div>
+
+<p>再起動が要る設定は、PowerShell で <code>Restart-Service postgresql-x64-18</code> を打ちます（アプリが一時的にエラーになるので、使われていない時間に）。</p>
+<h2 id="11_1">11. バックアップとリストア</h2>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/02-12_dump_restore.webp" alt="本番のDBからpg_dumpで控えのファイルを作り、pg_restoreで試しに戻すDBに戻す" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図11-1: pg_dump で控えを取り、pg_restore で別のデータベースに戻して確かめる</div>
+</div>
+
+<h3 id="111-pg_dump">11.1 控えを取る（pg_dump）</h3>
+<div class="codehilite"><div class="code-wrap" id="code-44"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># practice データベースを、PostgreSQL 独自の形式（-Fc）で 1 つのファイルに書き出す</span>
+<span class="n">pg_dump</span> <span class="n">-h</span> <span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span> <span class="n">-U</span> <span class="n">postgres</span> <span class="n">-Fc</span> <span class="o">-f</span> <span class="n">D</span><span class="p">:\</span><span class="n">work</span><span class="p">\</span><span class="n">practice</span><span class="p">.</span><span class="n">dump</span> <span class="n">practice</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>指定</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-Fc</code></td>
+<td>PostgreSQL 独自の形式（縮めてあり、後で一部だけ戻すこともできる）</td>
+</tr>
+<tr>
+<td><code>-f ファイル</code></td>
+<td>書き出す先</td>
+</tr>
+<tr>
+<td>最後の <code>practice</code></td>
+<td>控えを取るデータベース</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>動いている最中のデータベースでも、<strong>その瞬間の、食い違いの無い控え</strong>が取れます。アプリを止める必要はありません。</li>
+<li>ロール（ユーザー）とパスワードは、データベースの外にあるので、<code>pg_dump</code> には入りません。ロールも控えたいときは、<code>pg_dumpall -h 127.0.0.1 -U postgres --roles-only -f D:\work\roles.sql</code> を使います（パスワードの暗号の形が入るので、ファイルの置き場所に気を付けます）。</li>
+</ul>
+<h3 id="112-pg_restore">11.2 戻す（pg_restore）</h3>
+<p><strong>本番のデータベースに直接戻さず、まず別の名前のデータベースに戻して確かめます。</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-45"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 戻す先の、空のデータベースを作る</span>
+<span class="n">psql</span> <span class="n">-h</span> <span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span> <span class="n">-U</span> <span class="n">postgres</span> <span class="n">-c</span> <span class="s2">&quot;CREATE DATABASE practice_restore ENCODING &#39;UTF8&#39; TEMPLATE template0;&quot;</span>
+
+<span class="c"># 控えのファイルから戻す</span>
+<span class="n">pg_restore</span> <span class="n">-h</span> <span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span> <span class="n">-U</span> <span class="n">postgres</span> <span class="n">-d</span> <span class="n">practice_restore</span> <span class="n">D</span><span class="p">:\</span><span class="n">work</span><span class="p">\</span><span class="n">practice</span><span class="p">.</span><span class="n">dump</span>
+
+<span class="c"># 中身を確かめる（件数が、控えを取ったときと同じか）</span>
+<span class="n">psql</span> <span class="n">-h</span> <span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span> <span class="n">-U</span> <span class="n">postgres</span> <span class="n">-d</span> <span class="n">practice_restore</span> <span class="n">-c</span> <span class="s2">&quot;SELECT count(*) FROM requests;&quot;</span>
+
+<span class="c"># 控えのファイルの中身の目録を見る（テーブルのデータが入っているか）</span>
+<span class="n">pg_restore</span> <span class="p">-</span><span class="n">-list</span> <span class="n">D</span><span class="p">:\</span><span class="n">work</span><span class="p">\</span><span class="n">practice</span><span class="p">.</span><span class="n">dump</span>
+</code></pre></div></div>
+
+<p><strong>確かめること:</strong> <code>pg_restore</code> がエラー無しで終わること。<code>count</code> が、控えを取る前の件数と同じであること（練習では 7。試した結果、そうなりました）。</p>
+<p>本番の毎晩のバックアップと、戻す練習の手順は、04 の 11 章にあります。</p>
+<h2 id="12-sql">12. 運用で使う SQL</h2>
+<div class="codehilite"><div class="code-wrap" id="code-46"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">-- データベースごとの大きさ</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="n">datname</span><span class="p">,</span><span class="w"> </span><span class="n">pg_size_pretty</span><span class="p">(</span><span class="n">pg_database_size</span><span class="p">(</span><span class="n">datname</span><span class="p">))</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="err">大きさ</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">pg_database</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">pg_database_size</span><span class="p">(</span><span class="n">datname</span><span class="p">)</span><span class="w"> </span><span class="k">DESC</span><span class="p">;</span>
+
+<span class="c1">-- 大きいテーブルの上から 10 個（今のデータベースの中で。索引を含む）</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="n">relname</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="err">テーブル</span><span class="p">,</span><span class="w"> </span><span class="n">pg_size_pretty</span><span class="p">(</span><span class="n">pg_total_relation_size</span><span class="p">(</span><span class="n">relid</span><span class="p">))</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="err">大きさ</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">pg_statio_user_tables</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">pg_total_relation_size</span><span class="p">(</span><span class="n">relid</span><span class="p">)</span><span class="w"> </span><span class="k">DESC</span>
+<span class="k">LIMIT</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span>
+
+<span class="c1">-- 今つないでいる人と、している事</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="n">pid</span><span class="p">,</span><span class="w"> </span><span class="n">datname</span><span class="p">,</span><span class="w"> </span><span class="n">usename</span><span class="p">,</span><span class="w"> </span><span class="n">client_addr</span><span class="p">,</span><span class="w"> </span><span class="k">state</span><span class="p">,</span><span class="w"> </span><span class="n">now</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">query_start</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="err">経過</span><span class="p">,</span><span class="w"> </span><span class="k">left</span><span class="p">(</span><span class="n">query</span><span class="p">,</span><span class="w"> </span><span class="mi">60</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">SQL</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">pg_stat_activity</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">datname</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">query_start</span><span class="p">;</span>
+
+<span class="c1">-- 5 分以上かかっている SQL</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="n">pid</span><span class="p">,</span><span class="w"> </span><span class="n">usename</span><span class="p">,</span><span class="w"> </span><span class="n">now</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">query_start</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="err">経過</span><span class="p">,</span><span class="w"> </span><span class="k">left</span><span class="p">(</span><span class="n">query</span><span class="p">,</span><span class="w"> </span><span class="mi">80</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">SQL</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">pg_stat_activity</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="k">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;active&#39;</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">now</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">query_start</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="nb">interval</span><span class="w"> </span><span class="s1">&#39;5 minutes&#39;</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p><strong>確かめること:</strong></p>
+<ul>
+<li>データベースの大きさが、急に増えていないこと（ディスクの見積もり。00 基礎知識 0.2）。</li>
+<li><code>pg_stat_activity</code> の <code>state</code> が <code>idle in transaction</code> のまま、<code>経過</code> が長い行が無いこと（7 章の「BEGIN したまま」）。</li>
+</ul>
+<p>止まらない SQL を止めるときは、次のようにします（<code>pid</code> は上の結果の番号）。</p>
+<div class="codehilite"><div class="code-wrap" id="code-47"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">-- SQL だけを取り消す（つないだままにする）。まずこちらを試す</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="n">pg_cancel_backend</span><span class="p">(</span><span class="mi">12345</span><span class="p">);</span>
+
+<span class="c1">-- つないでいるのを切る（アプリのつなぎが切れることがあるので、最後の手段）</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="n">pg_terminate_backend</span><span class="p">(</span><span class="mi">12345</span><span class="p">);</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>用語:</strong> VACUUM（バキューム：消したり直したりした行の、使われなくなった場所を片付ける PostgreSQL の仕組み。ふつうは自動（autovacuum）で動くので、自分で打つ必要はない）</p>
+</blockquote>
+<h2 id="13">13. 練習の片付け</h2>
+<div class="codehilite"><div class="code-wrap" id="code-48"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">-- postgres データベースに移ってから消す（自分が入っているデータベースは消せない）</span>
+<span class="err">\</span><span class="k">c</span><span class="w"> </span><span class="n">postgres</span>
+<span class="k">DROP</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">practice</span><span class="p">;</span>
+<span class="k">DROP</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">practice_restore</span><span class="p">;</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong><code>DROP DATABASE</code> は、データベースを丸ごと消し、元に戻せません。</strong> 打つ前に、名前が <code>practice</code> であること（<code>webapp_prod</code> でないこと）を、声に出して確かめるくらいの気持ちで見ます。</p>
+</blockquote>
+<h2 id="14">14. トラブルシューティング</h2>
+<table>
+<thead>
+<tr>
+<th>症状（エラーの文）</th>
+<th>考えられる原因</th>
+<th>調べ方・直し方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>connection refused</code>・<code>Connection refused</code></td>
+<td>PostgreSQL が止まっている／ポートが違う</td>
+<td><code>Get-Service postgresql-x64-18</code>。止まっていれば <code>Start-Service</code>。始まらなければ、データの場所の <code>log</code> フォルダのログを見る</td>
+</tr>
+<tr>
+<td><code>password authentication failed for user "..."</code></td>
+<td>パスワードの間違い／ユーザー名の間違い</td>
+<td><code>-U</code> の名前を確かめる。パスワードを忘れたら、<code>postgres</code> でつないで <code>\password ユーザー名</code> で付け直す</td>
+</tr>
+<tr>
+<td><code>no pg_hba.conf entry for host "..."</code></td>
+<td>門番のチェック表に、その組み合わせが無い</td>
+<td><code>-h 127.0.0.1</code> でつないでいるか。<code>pg_hba.conf</code>（10.1）を確かめる</td>
+</tr>
+<tr>
+<td><code>database "..." does not exist</code></td>
+<td>データベースの名前の間違い</td>
+<td><code>\l</code> で一覧を見る</td>
+</tr>
+<tr>
+<td><code>permission denied for database ...</code></td>
+<td>そのデータベースへの CONNECT の権限が無い</td>
+<td>9.1 の <code>GRANT CONNECT</code></td>
+</tr>
+<tr>
+<td><code>permission denied for table ...</code></td>
+<td>そのテーブルを読む・書く権限が無い</td>
+<td>9.1 の <code>GRANT SELECT</code> と <code>ALTER DEFAULT PRIVILEGES</code></td>
+</tr>
+<tr>
+<td><code>relation "..." does not exist</code>、でもテーブルはある</td>
+<td>別のデータベースに入っている／名前に大文字や <code>"</code></td>
+<td><code>SELECT current_database();</code>。<code>"Requests"</code> のように <code>"</code> で作ったテーブルは、<code>"</code> で囲まないと見つからない</td>
+</tr>
+<tr>
+<td><code>too many clients already</code></td>
+<td>つなぎすぎ（決まりは 100 まで）</td>
+<td>12 章の <code>pg_stat_activity</code> で、だれが多くつないでいるか見る。アプリのつなぎ方の設定を確かめる</td>
+</tr>
+<tr>
+<td><code>could not extend file</code>・<code>No space left on device</code></td>
+<td>ディスクがいっぱい</td>
+<td>01 の 8 章のコマンドで空きを見る。古いバックアップ・ログを消す</td>
+</tr>
+<tr>
+<td>日本語が化ける（psql の画面）</td>
+<td>画面の文字コードと、psql の文字コードの食い違い</td>
+<td>PowerShell で <code>chcp</code> の番号を見て、psql の中で <code>\encoding</code> を見る。<code>932</code> なら <code>\encoding SJIS</code>、<code>65001</code> なら <code>\encoding UTF8</code> にそろえる。<code>PGCLIENTENCODING</code> は自分で決めない</td>
+</tr>
+<tr>
+<td>ログのファイルの一部が化ける</td>
+<td>日本語のメッセージで、UTF-8 と Shift_JIS が混ざっている</td>
+<td><code>postgresql.conf</code> の <code>lc_messages = 'C'</code>（04 の 5.3）</td>
+</tr>
+<tr>
+<td><code>-c</code> で日本語を渡すと <code>invalid byte sequence for encoding "UTF8"</code></td>
+<td>引数の文字コードの食い違い</td>
+<td>日本語を含む SQL は、UTF-8 のファイルにして <code>-f</code> で渡す（2.4）</td>
+</tr>
+<tr>
+<td>アプリの画面が固まる・保存が終わらない</td>
+<td>だれかが <code>BEGIN</code> したまま止まっている（ロック）</td>
+<td>12 章の <code>idle in transaction</code> を探し、本人に確かめてから <code>pg_cancel_backend</code>／<code>pg_terminate_backend</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="15-sql-server">15. SQL Server を使うときの違い</h2>
+<p>00 基礎知識 7.5 のとおり、会社の決まりで SQL Server を使うこともあります。SQL の基本（<code>SELECT</code>・<code>WHERE</code>・<code>JOIN</code>・<code>GROUP BY</code>・<code>BEGIN</code>）は同じですが、次の所が違います。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>PostgreSQL</th>
+<th>SQL Server</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>先頭の 10 件</td>
+<td><code>... LIMIT 10</code></td>
+<td><code>SELECT TOP 10 ...</code></td>
+</tr>
+<tr>
+<td>番号を自動で振る</td>
+<td><code>GENERATED ALWAYS AS IDENTITY</code></td>
+<td><code>IDENTITY(1,1)</code></td>
+</tr>
+<tr>
+<td>文字をつなぐ</td>
+<td><code>'a' \|\| 'b'</code></td>
+<td><code>'a' + 'b'</code></td>
+</tr>
+<tr>
+<td>今の日時</td>
+<td><code>now()</code></td>
+<td><code>SYSDATETIMEOFFSET()</code></td>
+</tr>
+<tr>
+<td>日本語の文字の型</td>
+<td><code>text</code></td>
+<td><code>nvarchar(...)</code>（<code>N'日本語'</code> と書く）</td>
+</tr>
+<tr>
+<td>トランザクション</td>
+<td><code>BEGIN;</code> ... <code>COMMIT;</code></td>
+<td><code>BEGIN TRANSACTION;</code> ... <code>COMMIT;</code></td>
+</tr>
+<tr>
+<td>文字の道具</td>
+<td><code>psql</code></td>
+<td><code>sqlcmd</code></td>
+</tr>
+<tr>
+<td>画面の道具</td>
+<td>pgAdmin</td>
+<td>SQL Server Management Studio（SSMS）</td>
+</tr>
+<tr>
+<td>控え</td>
+<td><code>pg_dump</code>・<code>pg_restore</code></td>
+<td><code>BACKUP DATABASE</code>・<code>RESTORE DATABASE</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="_2">用語の索引</h2>
+<table>
+<thead>
+<tr>
+<th>用語</th>
+<th>短い説明</th>
+<th>章</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BEGIN・COMMIT・ROLLBACK</td>
+<td>トランザクションの始まり・確定・取り消し</td>
+<td>7</td>
+</tr>
+<tr>
+<td>CHECK・UNIQUE・NOT NULL</td>
+<td>入れてよい値・重複不可・空は不可の制約</td>
+<td>1・3</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td>行を消す SQL</td>
+<td>6</td>
+</tr>
+<tr>
+<td>GRANT・REVOKE</td>
+<td>権限を渡す・取り上げる</td>
+<td>9</td>
+</tr>
+<tr>
+<td>GROUP BY・count</td>
+<td>値ごとにまとめる・数える</td>
+<td>4</td>
+</tr>
+<tr>
+<td>INSERT</td>
+<td>行を入れる SQL</td>
+<td>6</td>
+</tr>
+<tr>
+<td>JOIN・LEFT JOIN</td>
+<td>テーブルをつなぐ・左を全部残してつなぐ</td>
+<td>5</td>
+</tr>
+<tr>
+<td>NULL</td>
+<td>値が無いという印</td>
+<td>1・4</td>
+</tr>
+<tr>
+<td>pg_dump・pg_restore</td>
+<td>控えを取る・戻す道具</td>
+<td>11</td>
+</tr>
+<tr>
+<td>pg_hba.conf</td>
+<td>だれがどこからつなげるかの門番の表</td>
+<td>10</td>
+</tr>
+<tr>
+<td>pg_stat_activity</td>
+<td>今つないでいる人と SQL の一覧</td>
+<td>12</td>
+</tr>
+<tr>
+<td>pgAdmin</td>
+<td>PostgreSQL の画面の道具</td>
+<td>2</td>
+</tr>
+<tr>
+<td>psql</td>
+<td>PostgreSQL の文字の道具</td>
+<td>2</td>
+</tr>
+<tr>
+<td>SELECT・WHERE・ORDER BY</td>
+<td>見る・しぼる・並べる SQL</td>
+<td>4</td>
+</tr>
+<tr>
+<td>UPDATE</td>
+<td>行を直す SQL</td>
+<td>6</td>
+</tr>
+<tr>
+<td>VACUUM</td>
+<td>使われなくなった場所の片付け</td>
+<td>12</td>
+</tr>
+<tr>
+<td>外部キー・主キー</td>
+<td>相手を指す列・1 行を見分ける列</td>
+<td>1</td>
+</tr>
+<tr>
+<td>型</td>
+<td>列に入れてよいデータの種類</td>
+<td>1</td>
+</tr>
+<tr>
+<td>スキーマ</td>
+<td>データベースの中の、テーブルの棚</td>
+<td>1</td>
+</tr>
+<tr>
+<td>制約</td>
+<td>入れてよいデータの決まり</td>
+<td>1・8</td>
+</tr>
+<tr>
+<td>プロンプト</td>
+<td>psql の入力待ちの印（<code>postgres=#</code>）</td>
+<td>2</td>
+</tr>
+<tr>
+<td>ロール</td>
+<td>PostgreSQL のユーザー・グループ</td>
+<td>9</td>
+</tr>
+</tbody>
+</table>
+
+<script>
+(function () {
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy") ? resolve() : reject(); } catch (e) { reject(e); }
+      document.body.removeChild(ta);
+    });
+  }
+  document.querySelectorAll(".copy-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var pre = btn.parentElement.querySelector("pre");
+      var text = pre.textContent.replace(/\n$/, "");
+      copyText(text).then(function () {
+        btn.textContent = "コピーしました";
+        btn.classList.add("done");
+        setTimeout(function () { btn.textContent = "コピー"; btn.classList.remove("done"); }, 2000);
+      }, function () { btn.textContent = "コピーできませんでした"; });
+    });
+  });
+  if (/^#code-\d+$/.test(location.hash)) {
+    var note = document.getElementById("web-note");
+    if (note) { note.hidden = false; }
+  }
+})();
+</script>
+</body>
+</html>

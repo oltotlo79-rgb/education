@@ -1,0 +1,1284 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>06_トラブルシューティング</title>
+<style>
+
+@page {
+  size: A4;
+  margin: 18mm 16mm 20mm 16mm;
+  @bottom-right {
+    content: counter(page);
+    font-size: 10px;
+    color: #64748b;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  font-family: "Yu Gothic UI", "Yu Gothic", "Meiryo", "Hiragino Sans",
+               "Noto Sans JP", "Segoe UI", system-ui, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.75;
+  color: #1e293b;
+  background: #ffffff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #0f172a;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 1.4em 0 0.6em;
+  page-break-after: avoid;
+}
+h1 {
+  font-size: 22pt;
+  border-bottom: 3px solid #1e40af;
+  padding-bottom: 0.3em;
+  margin-top: 0.4em;
+  page-break-before: auto;
+}
+h2 {
+  font-size: 16pt;
+  border-bottom: 1.5px solid #cbd5e1;
+  padding-bottom: 0.25em;
+  margin-top: 1.6em;
+}
+h3 { font-size: 13pt; color: #1e40af; }
+h4 { font-size: 12pt; color: #334155; }
+
+p { margin: 0.5em 0 0.8em; }
+
+a { color: #1d4ed8; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+ul, ol { margin: 0.4em 0 0.9em; padding-left: 1.6em; }
+li { margin: 0.2em 0; }
+
+blockquote {
+  border-left: 4px solid #3b82f6;
+  background: #eff6ff;
+  margin: 0.8em 0;
+  padding: 0.6em 1em;
+  color: #1e3a8a;
+  border-radius: 0 6px 6px 0;
+  page-break-inside: avoid;
+}
+blockquote p { margin: 0.3em 0; }
+blockquote strong { color: #1e40af; }
+
+code {
+  /* DefCode (see _code_font.py) has ASCII and Japanese in ONE font, so a code
+     line is drawn as one text run and copies as one line in every PDF viewer. */
+  font-family: "Consolas", "Consolas", monospace;
+  font-size: 0.9em;
+  background: #f1f5f9;
+  color: #be123c;
+  padding: 0.12em 0.36em;
+  border-radius: 4px;
+  /* Long inline code (file paths / URLs) must break instead of overflowing. */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  /* In a PDF there is no horizontal scrolling, so long lines must wrap
+     instead of being clipped off the right edge of the page. */
+  overflow-x: hidden;
+  overflow-y: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  font-size: 9.2pt;
+  line-height: 1.5;
+  margin: 0.8em 0;
+  page-break-inside: avoid;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+  white-space: inherit;
+  word-break: inherit;
+  overflow-wrap: inherit;
+}
+
+/* The codehilite extension wraps highlighted blocks in a scrolling div; make
+   that wrap too so nothing is clipped in the PDF. */
+.codehilite {
+  overflow-x: hidden;
+  /* overflow-x: hidden alone turns overflow-y into auto, and a glyph from a
+     fallback font that is a hair too tall then shows a vertical scrollbar. */
+  overflow-y: hidden;
+}
+.codehilite pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* No per-token colours: every coloured token became its own text run (and its
+   own tag) in the PDF, and some viewers then pasted each token on its own line.
+   Only whole comment lines get a colour, so each line is still one run. */
+pre .cmt { color: #94a3b8; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.8em 0;
+  font-size: 9.6pt;
+  page-break-inside: avoid;
+}
+th, td {
+  border: 1px solid #e2e8f0;
+  padding: 6px 9px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: #f1f5f9;
+  color: #0f172a;
+  font-weight: 700;
+}
+tr:nth-child(even) td { background: #f8fafc; }
+
+img { max-width: 100%; height: auto; }
+
+hr {
+  border: none;
+  border-top: 1px dashed #cbd5e1;
+  margin: 1.6em 0;
+}
+
+/* Diagram blocks (the inline-styled <div>s in the source) */
+div[style] {
+  page-break-inside: avoid;
+}
+
+/* Tighten spacing right after headings */
+h1 + p, h2 + p, h3 + p, h4 + p { margin-top: 0.2em; }
+
+/* Avoid ugly page breaks inside list items / table rows */
+li, tr { page-break-inside: avoid; }
+
+@media screen {
+  body { max-width: 920px; margin: 0 auto; padding: 20px 20px 120px; font-size: 16px; }
+  pre { white-space: pre !important; word-break: normal !important; overflow-wrap: normal !important;
+        overflow-x: auto !important; font-size: 14px !important; }
+  img { max-width: 100%; height: auto; }
+}
+.web-bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; font-size: 14px;
+  padding: 8px 12px; margin-bottom: 16px; background: #eef2f7; border-radius: 8px; }
+.web-bar a { color: #1e3a5f; }
+.web-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 10; max-width: 90%;
+  font-size: 15px; font-weight: 700; background: #fff7ed; border: 2px solid #f2994a; border-radius: 8px;
+  padding: 10px 16px; margin: 0; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.code-wrap { position: relative; scroll-margin-top: 16px; }
+.code-wrap pre { padding-top: 40px !important; }
+.copy-btn { position: absolute; top: 8px; right: 8px; z-index: 2; font-size: 13px; font-weight: 700;
+  padding: 4px 12px; border: 0; border-radius: 6px; background: #2f80ed; color: #fff; cursor: pointer;
+  font-family: inherit; }
+.copy-btn:hover { background: #1c64c8; }
+.copy-btn.done { background: #27ae60; }
+.code-wrap:target pre { outline: 4px solid #f2994a; outline-offset: 2px; }
+.code-wrap:target .copy-btn { box-shadow: 0 0 0 4px #f2994a; }
+/* syntax colours on screen (the PDF uses one colour so that each line copies as one piece) */
+.codehilite .k, .codehilite .kd, .codehilite .kn, .codehilite .kr { color: #c084fc; }
+.codehilite .s, .codehilite .s1, .codehilite .s2, .codehilite .sb { color: #fcd34d; }
+.codehilite .c, .codehilite .c1, .codehilite .cm { color: #94a3b8; }
+.codehilite .nf, .codehilite .nx { color: #60a5fa; }
+.codehilite .nb { color: #34d399; }
+.codehilite .mi, .codehilite .mf { color: #f472b6; }
+.codehilite .nt { color: #f59e0b; }
+.codehilite .na { color: #93c5fd; }
+</style>
+</head>
+<body>
+<div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/06_%E3%83%88%E3%83%A9%E3%83%96%E3%83%AB%E3%82%B7%E3%83%A5%E3%83%BC%E3%83%86%E3%82%A3%E3%83%B3%E3%82%B0.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、ブラウザーの「戻る」で PDF に戻れます。</p><div style="text-align: center; padding: 28px 0 8px;">
+<div style="font-size: 14px; color: #475569;">オンプレミス構築 教育資料</div>
+<div style="font-size: 26px; font-weight: 800; color: #0f172a; margin-top: 6px; line-height: 1.35;">トラブルシューティング</div>
+<div style="font-size: 13px; color: #475569; margin-top: 8px;">困ったときの動き方・調べ方と、よく起きるトラブルの症状・原因・直し方</div>
+</div>
+
+<h1 id="_1">トラブルシューティング</h1>
+<h2 id="_2">この資料について</h2>
+<p>「画面が開かない」「遅い」「メールが届かない」と言われたときに、<strong>落ち着いて、順番に調べて、直す</strong>ための資料です。</p>
+<ul>
+<li><strong>1〜4 章</strong>は、どのトラブルでも同じ「動き方」と「調べ方」です。最初に読んでおきます。</li>
+<li><strong>5 章</strong>は、症状ごとの詳しい説明です。困ったときに、目次から症状を探して読みます。</li>
+<li>個別の手順書にも、それぞれの範囲のトラブル表があります（01 の 1.8・14 章、02 の 14 章、04 の 15 章、05 の 15 章）。この資料は、それらをつなぐ「入口」です。</li>
+</ul>
+<h2 id="1">1. トラブルのときの動き方</h2>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/06-04_incident_steps.webp" alt="落ち着く、影響を知る、記録する、元に戻す、原因を探す、二度と起きないように、の6段の階段" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図1-1: トラブルのときは、この順に上る</div>
+</div>
+
+<table>
+<thead>
+<tr>
+<th>順</th>
+<th>すること</th>
+<th>具体的には</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>①</td>
+<td><strong>落ち着く</strong></td>
+<td>慌てて設定を次々に変えると、何が効いたか分からなくなり、かえって壊す。まず 1 分、状況を見る</td>
+</tr>
+<tr>
+<td>②</td>
+<td><strong>影響を知る</strong></td>
+<td>全員か、一部の人か。本番か、検証か。いつからか。何ができないのか（全部か、一部の画面か）</td>
+</tr>
+<tr>
+<td>③</td>
+<td><strong>記録する</strong></td>
+<td>気付いた時刻、症状、エラーの文（画面の写し）、自分がしたことを、時刻付きでメモする（6 章の形）</td>
+</tr>
+<tr>
+<td>④</td>
+<td><strong>元に戻す</strong></td>
+<td>直前に更新・設定の変更をしていたら、<strong>まず元に戻す</strong>（切り戻し。04 の 13.4・05 の 13.3）。原因を探すのは、使える状態に戻してから</td>
+</tr>
+<tr>
+<td>⑤</td>
+<td><strong>原因を探す</strong></td>
+<td>2〜4 章の順で調べる</td>
+</tr>
+<tr>
+<td>⑥</td>
+<td><strong>二度と起きないように</strong></td>
+<td>手順書・点検・監視を直す。同じ失敗をしないための仕組みにする</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>大事な考え方:</strong> トラブルの多くは、<strong>直前に何かを変えた</strong>ことがきっかけです。「最後に何を変えたか」（更新・設定・Windows Update・パスワードの変更・ディスクの拡張など）を、最初に思い出します。</p>
+</blockquote>
+<p><strong>連絡の目安:</strong></p>
+<table>
+<thead>
+<tr>
+<th>こんなとき</th>
+<th>連絡する相手</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>本番が使えず、15 分で直る見込みが無い</td>
+<td>利用者（社員）に「使えない・いつ頃直るか未定」を知らせる。上司にも知らせる</td>
+</tr>
+<tr>
+<td>サーバーが落ちた・つながらない（リモート デスクトップも入れない）</td>
+<td>情報システム部門（仮想マシンの基盤の確認）</td>
+</tr>
+<tr>
+<td>ネットワーク・DNS・メールの道（コネクタ）が原因らしい</td>
+<td>情報システム部門</td>
+</tr>
+<tr>
+<td>データが消えた・おかしい</td>
+<td>上司。勝手に戻さず、どこまで戻すかを決めてもらう（5.12）</td>
+</tr>
+</tbody>
+</table>
+<h2 id="2">2. 切り分け: 手前から順に確かめる</h2>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/06-01_isolation_order.webp" alt="名前、つながる、受付、アプリ、データベースの5つを、手前から順に虫めがねで確かめる" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図2-1: 社員のパソコンからデータベースまで、手前から順に確かめる</div>
+</div>
+
+<p>お願いは、<strong>社員のパソコン → 名前（DNS）→ ネットワーク → 受付（IIS）→ アプリ → データベース</strong> の順に進みます（00 基礎知識 4.6）。どこで止まっているかを、<strong>手前から順に</strong>確かめると、早く原因にたどり着けます。</p>
+<table>
+<thead>
+<tr>
+<th>順</th>
+<th>確かめること</th>
+<th>どこで打つか</th>
+<th>コマンド</th>
+<th>正しいとき</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>①</td>
+<td>名前が引けるか</td>
+<td>社員のパソコン</td>
+<td><code>Resolve-DnsName webapp.example.local</code></td>
+<td>サーバーの IP アドレスが出る</td>
+</tr>
+<tr>
+<td>②</td>
+<td>80 番につながるか</td>
+<td>社員のパソコン</td>
+<td><code>Test-NetConnection webapp.example.local -Port 80</code></td>
+<td><code>TcpTestSucceeded : True</code></td>
+</tr>
+<tr>
+<td>③</td>
+<td>受付（IIS）が返事をするか</td>
+<td>サーバー</td>
+<td><code>Invoke-WebRequest http://127.0.0.1/health -UseBasicParsing -Headers @{ Host = "webapp.example.local" }</code></td>
+<td><code>StatusCode</code> が <code>200</code></td>
+</tr>
+<tr>
+<td>④</td>
+<td>アプリが返事をするか</td>
+<td>サーバー</td>
+<td><code>Invoke-WebRequest http://127.0.0.1:8080/health -UseBasicParsing -Headers @{ Host = "webapp.example.local" }</code></td>
+<td><code>StatusCode</code> が <code>200</code></td>
+</tr>
+<tr>
+<td>⑤</td>
+<td>データベースにつながるか</td>
+<td>サーバー</td>
+<td><code>psql -h 127.0.0.1 -U webapp_prod_app -d webapp_prod -c "SELECT 1;"</code></td>
+<td><code>1</code> が出る</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>③ が NG で ④ が OK なら、<strong>受付（IIS）</strong>の問題。④ も NG なら、<strong>アプリ</strong>の問題。</li>
+<li>① が NG なら、サーバーではなく<strong>名前（DNS）</strong>の問題。② だけ NG なら、<strong>ネットワークの関所</strong>の問題（情報システム部門）。</li>
+<li><code>-Headers @{ Host = ... }</code> を付けるのは、社員のブラウザと同じ名前でお願いするためです（Django 版は、付けないと 400 になる。05 の 8.4）。</li>
+</ul>
+<h3 id="21">2.1 まとめて確かめるスクリプト</h3>
+<p>①〜⑤ のうち、サーバーの中で確かめられる物と、ディスクとバックアップを、まとめて確かめるスクリプトです。<code>D:\webapp\tools\check.ps1</code> に置いておき、<strong>毎朝の点検と、トラブルのときの最初の一手</strong>に使います。</p>
+<div class="codehilite"><div class="code-wrap" id="code-1"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># D:\webapp\tools\check.ps1（必ず「UTF-8 (BOM 付き)」で保存する）</span>
+<span class="c"># 受付からデータベースまでを順に確かめて、OK / NG を表示する</span>
+<span class="c"># 使い方: .\check.ps1          （本番）</span>
+<span class="c">#         .\check.ps1 -Env stg （検証）</span>
+<span class="k">param</span><span class="p">(</span>
+    <span class="p">[</span><span class="k">ValidateSet</span><span class="p">(</span><span class="s2">&quot;prod&quot;</span><span class="p">,</span> <span class="s2">&quot;stg&quot;</span><span class="p">)]</span> <span class="no">[string]</span> <span class="nv">$Env</span> <span class="p">=</span> <span class="s2">&quot;prod&quot;</span>
+<span class="p">)</span>
+
+<span class="nv">$targets</span> <span class="p">=</span> <span class="p">@{</span>
+    <span class="n">prod</span> <span class="p">=</span> <span class="p">@{</span> <span class="n">Name</span> <span class="p">=</span> <span class="s2">&quot;webapp.example.local&quot;</span><span class="p">;</span>     <span class="n">Port</span> <span class="p">=</span> <span class="n">8080</span><span class="p">;</span> <span class="n">Service</span> <span class="p">=</span> <span class="s2">&quot;webapp-prod&quot;</span> <span class="p">}</span>
+    <span class="n">stg</span>  <span class="p">=</span> <span class="p">@{</span> <span class="n">Name</span> <span class="p">=</span> <span class="s2">&quot;webapp-stg.example.local&quot;</span><span class="p">;</span> <span class="n">Port</span> <span class="p">=</span> <span class="n">8081</span><span class="p">;</span> <span class="n">Service</span> <span class="p">=</span> <span class="s2">&quot;webapp-stg&quot;</span> <span class="p">}</span>
+<span class="p">}</span>
+<span class="nv">$t</span> <span class="p">=</span> <span class="nv">$targets</span><span class="p">[</span><span class="nv">$Env</span><span class="p">]</span>
+
+<span class="k">function</span> <span class="nb">Show-Result</span><span class="p">(</span><span class="nv">$label</span><span class="p">,</span> <span class="nv">$ok</span><span class="p">,</span> <span class="nv">$detail</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nv">$mark</span> <span class="p">=</span> <span class="k">if</span> <span class="p">(</span><span class="nv">$ok</span><span class="p">)</span> <span class="p">{</span> <span class="s2">&quot;OK&quot;</span> <span class="p">}</span> <span class="k">else</span> <span class="p">{</span> <span class="s2">&quot;NG&quot;</span> <span class="p">}</span>
+    <span class="s2">&quot;{0}  {1}  {2}&quot;</span> <span class="o">-f</span> <span class="nv">$mark</span><span class="p">,</span> <span class="nv">$label</span><span class="p">,</span> <span class="nv">$detail</span>
+<span class="p">}</span>
+
+<span class="c"># 1. サービスが動いているか</span>
+<span class="k">foreach</span> <span class="p">(</span><span class="nv">$svc</span> <span class="k">in</span> <span class="p">@(</span><span class="s2">&quot;postgresql-x64-18&quot;</span><span class="p">,</span> <span class="s2">&quot;W3SVC&quot;</span><span class="p">,</span> <span class="nv">$t</span><span class="p">.</span><span class="n">Service</span><span class="p">))</span> <span class="p">{</span>
+    <span class="nv">$s</span> <span class="p">=</span> <span class="nb">Get-Service</span> <span class="n">-Name</span> <span class="nv">$svc</span> <span class="n">-ErrorAction</span> <span class="n">SilentlyContinue</span>
+    <span class="nv">$detail</span> <span class="p">=</span> <span class="k">if</span> <span class="p">(</span><span class="nv">$s</span><span class="p">)</span> <span class="p">{</span> <span class="nv">$s</span><span class="p">.</span><span class="n">Status</span> <span class="p">}</span> <span class="k">else</span> <span class="p">{</span> <span class="s2">&quot;登録されていない&quot;</span> <span class="p">}</span>
+    <span class="nb">Show-Result</span> <span class="s2">&quot;サービス $svc&quot;</span> <span class="p">(</span><span class="nv">$s</span> <span class="o">-and</span> <span class="nv">$s</span><span class="p">.</span><span class="n">Status</span> <span class="o">-eq</span> <span class="s2">&quot;Running&quot;</span><span class="p">)</span> <span class="nv">$detail</span>
+<span class="p">}</span>
+
+<span class="c"># 2. ポートで待ち受けているか</span>
+<span class="k">foreach</span> <span class="p">(</span><span class="nv">$port</span> <span class="k">in</span> <span class="p">@(</span><span class="n">80</span><span class="p">,</span> <span class="nv">$t</span><span class="p">.</span><span class="n">Port</span><span class="p">,</span> <span class="n">5432</span><span class="p">))</span> <span class="p">{</span>
+    <span class="nv">$l</span> <span class="p">=</span> <span class="nb">Get-NetTCPConnection</span> <span class="n">-State</span> <span class="n">Listen</span> <span class="n">-LocalPort</span> <span class="nv">$port</span> <span class="n">-ErrorAction</span> <span class="n">SilentlyContinue</span>
+    <span class="nb">Show-Result</span> <span class="s2">&quot;待ち受け $port&quot;</span> <span class="p">(</span><span class="no">[bool]</span><span class="nv">$l</span><span class="p">)</span> <span class="p">((@(</span><span class="nv">$l</span><span class="p">.</span><span class="n">LocalAddress</span><span class="p">)</span> <span class="p">|</span> <span class="nb">Sort-Object</span> <span class="n">-Unique</span><span class="p">)</span> <span class="n">-join</span> <span class="s2">&quot;,&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="c"># 3. アプリに直接聞く（IIS を通さない）</span>
+<span class="k">try</span> <span class="p">{</span>
+    <span class="nv">$r</span> <span class="p">=</span> <span class="nb">Invoke-WebRequest</span> <span class="s2">&quot;http://127.0.0.1:</span><span class="p">$(</span><span class="nv">$t</span><span class="p">.</span><span class="n">Port</span><span class="p">)</span><span class="s2">/health&quot;</span> <span class="n">-UseBasicParsing</span> <span class="n">-TimeoutSec</span> <span class="n">10</span> <span class="n">-Headers</span> <span class="p">@{</span> <span class="n">Host</span> <span class="p">=</span> <span class="nv">$t</span><span class="p">.</span><span class="n">Name</span> <span class="p">}</span>
+    <span class="nb">Show-Result</span> <span class="s2">&quot;アプリ /health&quot;</span> <span class="p">(</span><span class="nv">$r</span><span class="p">.</span><span class="n">StatusCode</span> <span class="o">-eq</span> <span class="n">200</span><span class="p">)</span> <span class="nv">$r</span><span class="p">.</span><span class="n">StatusCode</span>
+<span class="p">}</span> <span class="k">catch</span> <span class="p">{</span>
+    <span class="nb">Show-Result</span> <span class="s2">&quot;アプリ /health&quot;</span> <span class="nv">$false</span> <span class="nv">$_</span><span class="p">.</span><span class="n">Exception</span><span class="p">.</span><span class="n">Message</span>
+<span class="p">}</span>
+
+<span class="c"># 4. IIS を通して聞く（社員と同じ道）</span>
+<span class="k">try</span> <span class="p">{</span>
+    <span class="nv">$r</span> <span class="p">=</span> <span class="nb">Invoke-WebRequest</span> <span class="s2">&quot;http://127.0.0.1/health&quot;</span> <span class="n">-UseBasicParsing</span> <span class="n">-TimeoutSec</span> <span class="n">10</span> <span class="n">-Headers</span> <span class="p">@{</span> <span class="n">Host</span> <span class="p">=</span> <span class="nv">$t</span><span class="p">.</span><span class="n">Name</span> <span class="p">}</span>
+    <span class="nb">Show-Result</span> <span class="s2">&quot;IIS 経由 /health&quot;</span> <span class="p">(</span><span class="nv">$r</span><span class="p">.</span><span class="n">StatusCode</span> <span class="o">-eq</span> <span class="n">200</span><span class="p">)</span> <span class="nv">$r</span><span class="p">.</span><span class="n">StatusCode</span>
+<span class="p">}</span> <span class="k">catch</span> <span class="p">{</span>
+    <span class="nb">Show-Result</span> <span class="s2">&quot;IIS 経由 /health&quot;</span> <span class="nv">$false</span> <span class="nv">$_</span><span class="p">.</span><span class="n">Exception</span><span class="p">.</span><span class="n">Message</span>
+<span class="p">}</span>
+
+<span class="c"># 5. ディスクの空き（2 割を切ったら NG）</span>
+<span class="k">foreach</span> <span class="p">(</span><span class="nv">$v</span> <span class="k">in</span> <span class="nb">Get-Volume</span> <span class="p">|</span> <span class="nb">Where-Object</span> <span class="p">{</span> <span class="nv">$_</span><span class="p">.</span><span class="n">DriveLetter</span> <span class="n">-in</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span> <span class="p">})</span> <span class="p">{</span>
+    <span class="nv">$free</span> <span class="p">=</span> <span class="no">[int]</span><span class="p">(</span><span class="n">100</span> <span class="p">*</span> <span class="nv">$v</span><span class="p">.</span><span class="n">SizeRemaining</span> <span class="p">/</span> <span class="nv">$v</span><span class="p">.</span><span class="n">Size</span><span class="p">)</span>
+    <span class="nb">Show-Result</span> <span class="s2">&quot;ディスク </span><span class="p">$(</span><span class="nv">$v</span><span class="p">.</span><span class="n">DriveLetter</span><span class="p">)</span><span class="s2">: の空き&quot;</span> <span class="p">(</span><span class="nv">$free</span> <span class="o">-ge</span> <span class="n">20</span><span class="p">)</span> <span class="s2">&quot;$free %&quot;</span>
+<span class="p">}</span>
+
+<span class="c"># 6. 最後のデータベースの控えが、26 時間以内か</span>
+<span class="nv">$last</span> <span class="p">=</span> <span class="nb">Get-ChildItem</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">backup</span><span class="p">\</span><span class="n">db</span> <span class="n">-Filter</span> <span class="s2">&quot;webapp_prod_*.dump&quot;</span> <span class="n">-ErrorAction</span> <span class="n">SilentlyContinue</span> <span class="p">|</span>
+    <span class="nb">Sort-Object</span> <span class="n">LastWriteTime</span> <span class="n">-Descending</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">-First</span> <span class="n">1</span>
+<span class="nv">$detail</span> <span class="p">=</span> <span class="k">if</span> <span class="p">(</span><span class="nv">$last</span><span class="p">)</span> <span class="p">{</span> <span class="nv">$last</span><span class="p">.</span><span class="n">LastWriteTime</span><span class="p">.</span><span class="n">ToString</span><span class="p">(</span><span class="s2">&quot;yyyy-MM-dd HH:mm&quot;</span><span class="p">)</span> <span class="p">}</span> <span class="k">else</span> <span class="p">{</span> <span class="s2">&quot;無い&quot;</span> <span class="p">}</span>
+<span class="nb">Show-Result</span> <span class="s2">&quot;最後の DB の控え&quot;</span> <span class="p">(</span><span class="nv">$last</span> <span class="o">-and</span> <span class="nv">$last</span><span class="p">.</span><span class="n">LastWriteTime</span> <span class="o">-gt</span> <span class="p">(</span><span class="nb">Get-Date</span><span class="p">).</span><span class="n">AddHours</span><span class="p">(-</span><span class="n">26</span><span class="p">))</span> <span class="nv">$detail</span>
+</code></pre></div></div>
+
+<div class="codehilite"><div class="code-wrap" id="code-2"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 管理者の PowerShell で</span>
+<span class="nb">cd </span><span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">tools</span>
+<span class="p">.\</span><span class="n">check</span><span class="p">.</span><span class="n">ps1</span>            <span class="c"># 本番</span>
+<span class="p">.\</span><span class="n">check</span><span class="p">.</span><span class="n">ps1</span> <span class="n">-Env</span> <span class="n">stg</span>   <span class="c"># 検証</span>
+</code></pre></div></div>
+
+<p><strong>確かめること:</strong> 全部の行の頭が <code>OK</code> であること。<code>NG</code> の行があれば、その行の項目から 5 章の症状を探します。</p>
+<table>
+<thead>
+<tr>
+<th>NG の行</th>
+<th>読み方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>サービス ...</code></td>
+<td>そのサービスが止まっている（5.2・5.9）</td>
+</tr>
+<tr>
+<td><code>待ち受け 80</code></td>
+<td>IIS が止まっている。<code>待ち受け 8080</code> ならアプリ、<code>5432</code> なら PostgreSQL</td>
+</tr>
+<tr>
+<td><code>待ち受け</code> の右に <code>0.0.0.0</code> や <code>::</code></td>
+<td>外からも待ち受けている。アプリと PostgreSQL は <code>127.0.0.1</code>（と <code>::1</code>）だけのはず（04 の 5.3・7.3）</td>
+</tr>
+<tr>
+<td><code>アプリ /health</code></td>
+<td>アプリが返事をしない（5.2）</td>
+</tr>
+<tr>
+<td><code>IIS 経由 /health</code> だけ NG</td>
+<td>受付（IIS）の設定・サイトの停止（5.2・5.3）</td>
+</tr>
+<tr>
+<td><code>ディスク ... の空き</code></td>
+<td>5.10</td>
+</tr>
+<tr>
+<td><code>最後の DB の控え</code></td>
+<td>毎晩のバックアップが動いていない（5.11）</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>このスクリプトも「UTF-8 (BOM 付き)」で保存します</strong>（01 の 3.7）。試した環境で、Windows PowerShell 5.1 で動くことを確かめました。</p>
+</blockquote>
+<h2 id="3">3. 記録（ログ）を見る</h2>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/06-02_log_map.webp" alt="サーバーの中に、IISの記録、アプリの記録、PostgreSQLの記録、Windowsの記録の4つがある" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図3-1: 記録は 4 か所にある。まず記録を見る</div>
+</div>
+
+<table>
+<thead>
+<tr>
+<th>記録</th>
+<th>場所</th>
+<th>何が分かるか</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IIS のアクセスログ</td>
+<td><code>C:\inetpub\logs\LogFiles\W3SVC（サイトの番号）\u_ex（日付）.log</code></td>
+<td>だれ（どの IP）が、いつ、どの URL を開き、何番（ステータスコード）が返ったか</td>
+</tr>
+<tr>
+<td>アプリのログ</td>
+<td><code>D:\webapp\prod\logs\webapp-prod-service.*.log</code></td>
+<td>アプリの中のエラー。起動・停止の記録（<code>wrapper.log</code>）</td>
+</tr>
+<tr>
+<td>PostgreSQL のログ</td>
+<td><code>D:\pgsql\18\data\log\</code></td>
+<td>データベースのエラー、つなげなかった記録</td>
+</tr>
+<tr>
+<td>Windows のイベント ログ</td>
+<td>イベント ビューアー（01 の 7 章）</td>
+<td>サービスの停止、再起動、Windows Update、ディスクのエラー</td>
+</tr>
+</tbody>
+</table>
+<h3 id="31-iis">3.1 IIS のアクセスログの読み方</h3>
+<p>1 行が 1 回のお願いです。先頭の <code>#Fields:</code> の行に、列の名前が書いてあります。</p>
+<table>
+<thead>
+<tr>
+<th>列</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>date</code>・<code>time</code></td>
+<td>日時。<strong>世界標準時（UTC）で書かれる</strong>ので、日本時間は <strong>9 時間足す</strong></td>
+</tr>
+<tr>
+<td><code>cs-method</code>・<code>cs-uri-stem</code></td>
+<td>お願いの種類（GET・POST）と URL</td>
+</tr>
+<tr>
+<td><code>c-ip</code></td>
+<td>社員のパソコンの IP アドレス</td>
+</tr>
+<tr>
+<td><code>sc-status</code>・<code>sc-substatus</code></td>
+<td>ステータスコードと、その細かい番号（例：<code>404</code> と <code>13</code> で 404.13）</td>
+</tr>
+<tr>
+<td><code>sc-win32-status</code></td>
+<td>Windows の中の番号（例：<code>12029</code> は「アプリにつなげなかった」）</td>
+</tr>
+<tr>
+<td><code>time-taken</code></td>
+<td>返事までにかかった時間（ミリ秒）</td>
+</tr>
+</tbody>
+</table>
+<div class="codehilite"><div class="code-wrap" id="code-3"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 今日のログで、500 番台（サーバー側のエラー）の行だけを見る</span>
+<span class="nv">$log</span> <span class="p">=</span> <span class="nb">Get-ChildItem</span> <span class="n">C</span><span class="p">:\</span><span class="n">inetpub</span><span class="p">\</span><span class="n">logs</span><span class="p">\</span><span class="n">LogFiles</span><span class="p">\</span><span class="n">W3SVC</span><span class="p">*</span> <span class="n">-Filter</span> <span class="p">*.</span><span class="n">log</span> <span class="p">|</span> <span class="nb">Sort-Object</span> <span class="n">LastWriteTime</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">-Last</span> <span class="n">1</span>
+<span class="nb">Select-String</span> <span class="n">-Path</span> <span class="nv">$log</span><span class="p">.</span><span class="n">FullName</span> <span class="n">-Pattern</span> <span class="s2">&quot; 5\d\d \d+ \d+ \d+$&quot;</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">-Last</span> <span class="n">20</span>
+
+<span class="c"># 時間がかかった（5 秒以上）お願い</span>
+<span class="nb">Get-Content</span> <span class="nv">$log</span><span class="p">.</span><span class="n">FullName</span> <span class="p">|</span> <span class="nb">Where-Object</span> <span class="p">{</span> <span class="nv">$_</span> <span class="o">-notmatch</span> <span class="s2">&quot;^#&quot;</span> <span class="p">}</span> <span class="p">|</span>
+    <span class="nb">Where-Object</span> <span class="p">{</span> <span class="no">[int]</span><span class="p">(</span><span class="nv">$_</span> <span class="n">-split</span> <span class="s2">&quot; &quot;</span><span class="p">)[-</span><span class="n">1</span><span class="p">]</span> <span class="o">-ge</span> <span class="n">5000</span> <span class="p">}</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">-Last</span> <span class="n">20</span>
+</code></pre></div></div>
+
+<h3 id="32-postgresql">3.2 アプリのログ・PostgreSQL のログ</h3>
+<div class="codehilite"><div class="code-wrap" id="code-4"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># アプリのエラーの文の最後の 50 行</span>
+<span class="nb">Get-Content</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">prod</span><span class="p">\</span><span class="n">logs</span><span class="p">\</span><span class="n">webapp-prod-service</span><span class="p">.</span><span class="n">err</span><span class="p">.</span><span class="n">log</span> <span class="n">-Tail</span> <span class="n">50</span>
+
+<span class="c"># PostgreSQL の、いちばん新しいログの中の ERROR・FATAL</span>
+<span class="nv">$pg</span> <span class="p">=</span> <span class="nb">Get-ChildItem</span> <span class="n">D</span><span class="p">:\</span><span class="n">pgsql</span><span class="p">\</span><span class="n">18</span><span class="p">\</span><span class="n">data</span><span class="p">\</span><span class="n">log</span> <span class="p">|</span> <span class="nb">Sort-Object</span> <span class="n">LastWriteTime</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">-Last</span> <span class="n">1</span>
+<span class="nb">Select-String</span> <span class="n">-Path</span> <span class="nv">$pg</span><span class="p">.</span><span class="n">FullName</span> <span class="n">-Pattern</span> <span class="s2">&quot;ERROR|FATAL|PANIC&quot;</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">-Last</span> <span class="n">20</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>PostgreSQL のログが化けて読めないときは、</strong> <code>lc_messages = 'C'</code> になっているかを確かめます（04 の 5.3）。</p>
+</blockquote>
+<h2 id="4">4. エラーの番号と、どこで出るか</h2>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/06-03_status_codes.webp" alt="受付（IIS）で404.13や502、アプリで400・403・500、データベースでつなげない、が出る" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図4-1: エラーの番号で、どこで止まったかの見当が付く</div>
+</div>
+
+<table>
+<thead>
+<tr>
+<th>番号</th>
+<th>だれが返すか</th>
+<th>よくある原因</th>
+<th>詳しく</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ブラウザに「このサイトにアクセスできません」</td>
+<td>（返事が無い）</td>
+<td>名前が引けない・80 番に届かない・IIS が止まっている</td>
+<td>5.1</td>
+</tr>
+<tr>
+<td><code>400 Bad Request</code></td>
+<td>アプリ（Django）</td>
+<td>名前（Host）が <code>ALLOWED_HOSTS</code> に無い／本文が大きすぎ</td>
+<td>5.4</td>
+</tr>
+<tr>
+<td><code>Bad Request - Invalid Hostname</code>（400）</td>
+<td>IIS（Windows の http.sys）</td>
+<td>開いた名前に合う IIS のサイトが無い（バインドの名前の打ち間違い・DNS の名前とずれている）</td>
+<td>5.3</td>
+</tr>
+<tr>
+<td><code>403 Forbidden</code></td>
+<td>アプリ</td>
+<td>CSRF の札が無い・送り元が違う（Topcoat・Django とも）／権限が無い</td>
+<td>5.5</td>
+</tr>
+<tr>
+<td><code>404 Not Found</code></td>
+<td>IIS またはアプリ</td>
+<td>URL の打ち間違い／名前に合う IIS のサイトが無い</td>
+<td>5.3</td>
+</tr>
+<tr>
+<td><code>404.13</code></td>
+<td>IIS</td>
+<td>送った物が IIS の上限（<code>maxAllowedContentLength</code>）より大きい</td>
+<td>5.4</td>
+</tr>
+<tr>
+<td><code>500 Internal Server Error</code></td>
+<td>アプリ</td>
+<td>アプリの中のエラー（データベースにつなげない、など）</td>
+<td>5.6</td>
+</tr>
+<tr>
+<td><code>502 Bad Gateway</code>（IIS のログでは <code>502</code> と <code>3</code>）</td>
+<td>IIS（ARR）</td>
+<td>アプリが止まっている・起動中・待ち時間を超えた</td>
+<td>5.2</td>
+</tr>
+<tr>
+<td><code>503 Service Unavailable</code></td>
+<td>IIS</td>
+<td>IIS のサイト・アプリケーション プールが止まっている</td>
+<td>5.3</td>
+</tr>
+</tbody>
+</table>
+<h2 id="5">5. 症状別の詳しい説明</h2>
+<h3 id="51">5.1 画面が開かない（「このサイトにアクセスできません」）</h3>
+<p><strong>よくある原因（多い順）:</strong> ① サーバーが再起動中・止まっている ② IIS（W3SVC）が止まっている ③ 名前（DNS）が引けない ④ ネットワークの関所で止められている ⑤ URL の打ち間違い（<code>https://</code> で開いている）</p>
+<p><strong>調べ方:</strong></p>
+<ol>
+<li><strong>一部の人だけか、全員か</strong>を確かめます。一部の人だけなら、その人のパソコン（プロキシの設定・打ち間違い）を疑います。</li>
+<li>その人のパソコンで、2 章の ① と ② を打ちます。</li>
+<li>② が NG なら、サーバーにリモート デスクトップで入れるか試します。入れなければ、サーバーごと止まっています（情報システム部門）。</li>
+<li>入れたら、<code>check.ps1</code> を動かします。</li>
+</ol>
+<p><strong>直し方:</strong></p>
+<table>
+<thead>
+<tr>
+<th>原因</th>
+<th>直し方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IIS が止まっている</td>
+<td><code>Start-Service W3SVC</code>。止まった理由を、イベント ログ（システム）で見る</td>
+</tr>
+<tr>
+<td><code>https://</code> で開いている</td>
+<td><code>http://webapp.example.local/</code> を案内する。ブラウザが自動で <code>https://</code> に変えるときは、ブックマークを <code>http://</code> で作り直す</td>
+</tr>
+<tr>
+<td>名前が引けない</td>
+<td>情報システム部門に、DNS の登録を確かめてもらう</td>
+</tr>
+<tr>
+<td>② だけ NG</td>
+<td>サーバーの関所（<code>Get-NetFirewallRule -DisplayName "webapp*"</code>。01 の 10 章）を確かめ、正しければネットワークの関所（情報システム部門）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="52-502-bad-gateway">5.2 502 Bad Gateway</h3>
+<p>IIS は動いていて、<strong>その奥のアプリが返事をしない</strong>ときに出ます。</p>
+<p><strong>調べ方:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-5"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">Get-Service</span> <span class="n">webapp-prod</span>
+<span class="nb">Get-Content</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">prod</span><span class="p">\</span><span class="n">logs</span><span class="p">\</span><span class="n">webapp-prod-service</span><span class="p">.</span><span class="n">wrapper</span><span class="p">.</span><span class="n">log</span> <span class="n">-Tail</span> <span class="n">20</span>
+<span class="nb">Get-Content</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">prod</span><span class="p">\</span><span class="n">logs</span><span class="p">\</span><span class="n">webapp-prod-service</span><span class="p">.</span><span class="n">err</span><span class="p">.</span><span class="n">log</span> <span class="n">-Tail</span> <span class="n">50</span>
+</code></pre></div></div>
+
+<p><strong>よくある原因と直し方:</strong></p>
+<table>
+<thead>
+<tr>
+<th>原因</th>
+<th>見分け方</th>
+<th>直し方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>アプリのサービスが止まっている</td>
+<td><code>Get-Service</code> が <code>Stopped</code></td>
+<td><code>Start-Service webapp-prod</code>。すぐ止まるなら 5.9</td>
+</tr>
+<tr>
+<td>アプリが起動しては落ちるのを繰り返している</td>
+<td><code>wrapper.log</code> に起動と終了が何度も並ぶ</td>
+<td><code>err.log</code> の最後のエラーを読む（データベースにつなげない・設定の書き間違い）</td>
+</tr>
+<tr>
+<td>アプリの中で時間がかかりすぎた</td>
+<td>IIS のログの <code>time-taken</code> が大きく、<code>sc-win32-status</code> が <code>12002</code></td>
+<td>重い処理（大きな図面・大量の検索）を調べる。5.7</td>
+</tr>
+<tr>
+<td>再起動の直後</td>
+<td>1〜2 分で直る</td>
+<td>待つ。毎回なら、<code>/health</code> が <code>200</code> になるまでの時間を測っておく</td>
+</tr>
+</tbody>
+</table>
+<h3 id="53-404503iis">5.3 404・503（IIS のサイトの問題）</h3>
+<table>
+<thead>
+<tr>
+<th>症状</th>
+<th>原因</th>
+<th>直し方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>どの URL を開いても <code>Bad Request - Invalid Hostname</code></td>
+<td>開いた名前に合うサイトが無い（バインドのホスト名の打ち間違い、または DNS の名前とバインドの名前が違う）</td>
+<td>IIS マネージャーで、サイトの「バインド」のホスト名を確かめる（04 の 8.4）</td>
+</tr>
+<tr>
+<td>503</td>
+<td>サイトのアプリケーション プールが止まっている</td>
+<td>IIS マネージャー →「アプリケーション プール」で、止まっている物を「開始」。止まった理由をイベント ログ（システム、「WAS」）で見る</td>
+</tr>
+<tr>
+<td>IIS の 500.19</td>
+<td><code>web.config</code> の書き間違い・URL Rewrite が入っていない</td>
+<td>エラーの画面の「構成ソース」の行を見て直す（04 の 8.5）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="54-400-bad-request40413">5.4 400 Bad Request・404.13（大きさと名前）</h3>
+<table>
+<thead>
+<tr>
+<th>症状</th>
+<th>原因</th>
+<th>直し方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Django 版で、どの画面も <code>Bad Request (400)</code></td>
+<td>名前（Host）が <code>ALLOWED_HOSTS</code> に無い。IIS が名前を書きかえている（<code>preserveHostHeader</code> が <code>false</code>）</td>
+<td>04 の 8.3 で <code>true</code> にする。<code>DJANGO_ALLOWED_HOSTS</code> の名前を確かめる</td>
+</tr>
+<tr>
+<td>大きな図面の保存だけ 400</td>
+<td>本文がアプリの上限を超えた（Django は <code>DATA_UPLOAD_MAX_MEMORY_SIZE</code>）</td>
+<td>上限と、実際の大きさを確かめる（05 の 6.3）</td>
+</tr>
+<tr>
+<td>大きな添付の保存で 404.13</td>
+<td>IIS の上限（<code>maxAllowedContentLength</code>）を超えた</td>
+<td>04 の 8.5 の値を確かめる</td>
+</tr>
+</tbody>
+</table>
+<h3 id="55-403-forbidden">5.5 403 Forbidden（ボタンを押すと断られる）</h3>
+<table>
+<thead>
+<tr>
+<th>症状</th>
+<th>原因</th>
+<th>直し方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ログイン・保存のボタンだけ 403。画面は開ける</td>
+<td><strong>CSRF の確かめに失敗</strong>。IIS が名前を書きかえて、送り元（<code>Origin</code>）とアプリの見た名前（<code>Host</code>）が食い違っている</td>
+<td>04 の 8.3（<code>preserveHostHeader=true</code>）。直したら IIS を再起動する（<code>iisreset</code>）</td>
+</tr>
+<tr>
+<td>Django 版で 403、ログに <code>CSRF token missing</code></td>
+<td>画面が札（<code>X-CSRFToken</code>）を付けていない／<code>csrftoken</code> のクッキーが無い</td>
+<td>05 の 8.2。開発者ツールで、クッキーと付け札を見る</td>
+</tr>
+<tr>
+<td>特定の人だけ 403</td>
+<td>その人に権限が無い（アプリの権限の設定）</td>
+<td>アプリの権限の画面で確かめる</td>
+</tr>
+</tbody>
+</table>
+<h3 id="56-500-internal-server-error">5.6 500 Internal Server Error・ログインできない</h3>
+<table>
+<thead>
+<tr>
+<th>症状</th>
+<th>原因</th>
+<th>直し方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>どの画面も 500</td>
+<td>アプリがデータベースにつなげない（PostgreSQL が止まっている・パスワードの変更）</td>
+<td><code>Get-Service postgresql-x64-18</code>。アプリのログのエラーを読む</td>
+</tr>
+<tr>
+<td>ログインしても、すぐログインしていない扱いになる</td>
+<td>セッションのクッキーに <code>Secure</code> が付いていて、HTTP では受け取られない</td>
+<td>04 の 6.4（Topcoat）・05 の 8.1（Django）。開発者ツールの「アプリケーション」→「Cookie」で、クッキーがあるか見る</td>
+</tr>
+<tr>
+<td>60 分たっていないのにログアウトされる</td>
+<td>サーバーの再起動・アプリの再起動で、セッションが消える作り（設計による）／時刻のずれ</td>
+<td>再起動の時刻と合うか見る。<code>w32tm /query /status</code></td>
+</tr>
+<tr>
+<td>パスワードを忘れた</td>
+<td>—</td>
+<td>アプリの管理者が、アプリの画面で再設定する。管理者自身なら、04 の 7.7 のコマンド（Topcoat）・<code>.\manage.ps1 changepassword 名前</code>（Django）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="57">5.7 遅い</h3>
+<p><strong>まず「何が」遅いかをはっきりさせます。</strong> 全部の画面か、特定の画面か。いつも遅いか、特定の時間だけか。</p>
+<table>
+<thead>
+<tr>
+<th>見る所</th>
+<th>コマンド・道具</th>
+<th>読み方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>サーバー全体</td>
+<td>タスク マネージャー・01 の 8 章のコマンド</td>
+<td>CPU・メモリ・ディスクのどれかが張り付いていないか</td>
+</tr>
+<tr>
+<td>遅いお願い</td>
+<td>3.1 の「時間がかかった」コマンド</td>
+<td>どの URL が遅いか</td>
+</tr>
+<tr>
+<td>データベース</td>
+<td>02 の 12 章の「5 分以上かかっている SQL」</td>
+<td>重い SQL・<code>idle in transaction</code></td>
+</tr>
+<tr>
+<td>時間帯</td>
+<td>IIS のログの時刻（<strong>UTC なので 9 時間足す</strong>）</td>
+<td>毎晩 2:00（バックアップ）や毎朝 8:00（定期処理）と重なっていないか</td>
+</tr>
+</tbody>
+</table>
+<p><strong>よくある原因と直し方:</strong></p>
+<table>
+<thead>
+<tr>
+<th>原因</th>
+<th>直し方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>メモリが足りない（空きが 1 割を切る）</td>
+<td>情報システム部門に増設を頼む（04 の 2.2 の目安を見直す）</td>
+</tr>
+<tr>
+<td>ディスクの空きが少ない・遅い</td>
+<td>5.10</td>
+</tr>
+<tr>
+<td>特定の検索だけ遅い</td>
+<td>索引（02 の 4.5）を、アプリの作者と相談する</td>
+</tr>
+<tr>
+<td>検証で重い試験をしている</td>
+<td>本番と同居しているので、本番も遅くなる（03 の 9 章）。時間をずらす</td>
+</tr>
+<tr>
+<td>ウイルス対策ソフトが、データベースやログのフォルダを毎回調べている</td>
+<td>情報システム部門に、<code>D:\pgsql\18\data</code> などを調べる対象から外せるか相談する（会社の決まりに従う）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="58">5.8 メールが届かない</h3>
+<p><strong>送ったのか、送れなかったのか、届いて迷惑メールに入ったのか</strong>を分けます。</p>
+<ol>
+<li>アプリのログに、送った記録・エラーがあるか。</li>
+<li>サーバーから、Microsoft 365 の 25 番につながるか: <code>Test-NetConnection example-com.mail.protection.outlook.com -Port 25</code>。</li>
+<li>アプリを使わずに送れるか（04 の 10.3）。</li>
+<li>受け取る人の「迷惑メール」のフォルダに入っていないか。</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>結果</th>
+<th>原因</th>
+<th>直し方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2 が <code>False</code></td>
+<td>25 番が、ネットワークの関所で止められている</td>
+<td>情報システム部門</td>
+</tr>
+<tr>
+<td>3 で <code>550 5.7.64 ... Relay Access Denied</code></td>
+<td>コネクタが無い・会社の出口の IP がコネクタと違う</td>
+<td>情報システム部門（04 の 10.1）</td>
+</tr>
+<tr>
+<td>3 は届くが、アプリからは届かない</td>
+<td>アプリのメールの設定（宛先・送り主・TLS）の誤り</td>
+<td>アプリのログのエラーを読む。Django 版は <code>.\manage.ps1 sendtestemail 自分のアドレス</code></td>
+</tr>
+<tr>
+<td>迷惑メールに入る</td>
+<td>SPF に、出口の IP が書かれていない</td>
+<td>情報システム部門</td>
+</tr>
+<tr>
+<td>検証から社員にメールが届いた</td>
+<td>検証の宛先の書きかえ（04 の 10.4）が効いていない</td>
+<td>すぐ検証のサービスを止め、社員に「検証からの誤送信」と知らせる。設定を直す</td>
+</tr>
+</tbody>
+</table>
+<h3 id="59">5.9 サービスが起動しない（再起動の後など）</h3>
+<div class="codehilite"><div class="code-wrap" id="code-6"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># どのサービスが止まっているか（自動のはずなのに止まっている物）</span>
+<span class="nb">Get-CimInstance</span> <span class="n">Win32_Service</span> <span class="p">|</span> <span class="nb">Where-Object</span> <span class="p">{</span> <span class="nv">$_</span><span class="p">.</span><span class="n">StartMode</span> <span class="o">-eq</span> <span class="s2">&quot;Auto&quot;</span> <span class="o">-and</span> <span class="nv">$_</span><span class="p">.</span><span class="n">State</span> <span class="o">-ne</span> <span class="s2">&quot;Running&quot;</span> <span class="p">}</span> <span class="p">|</span>
+    <span class="nb">Select-Object</span> <span class="n">Name</span><span class="p">,</span> <span class="n">State</span><span class="p">,</span> <span class="n">StartName</span>
+
+<span class="c"># サービスの起動の失敗の記録（01 の 7.2）</span>
+<span class="nb">Get-WinEvent</span> <span class="n">-FilterHashtable</span> <span class="p">@{</span>
+    <span class="n">LogName</span> <span class="p">=</span> <span class="s1">&#39;System&#39;</span><span class="p">;</span> <span class="n">Id</span> <span class="p">=</span> <span class="n">7000</span><span class="p">,</span> <span class="n">7009</span><span class="p">,</span> <span class="n">7031</span><span class="p">,</span> <span class="n">7034</span><span class="p">,</span> <span class="n">7038</span><span class="p">,</span> <span class="n">7041</span><span class="p">;</span> <span class="n">StartTime</span> <span class="p">=</span> <span class="p">(</span><span class="nb">Get-Date</span><span class="p">).</span><span class="n">AddDays</span><span class="p">(-</span><span class="n">1</span><span class="p">)</span>
+<span class="p">}</span> <span class="n">-ErrorAction</span> <span class="n">SilentlyContinue</span> <span class="p">|</span>
+    <span class="nb">Select-Object</span> <span class="n">TimeCreated</span><span class="p">,</span> <span class="n">Id</span><span class="p">,</span> <span class="n">Message</span> <span class="p">|</span> <span class="nb">Format-List</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>原因</th>
+<th>見分け方</th>
+<th>直し方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PostgreSQL より先にアプリが起動した</td>
+<td>アプリの <code>err.log</code> に「つなげない」、少しして直る</td>
+<td>WinSW の XML の <code>&lt;depend&gt;postgresql-x64-18&lt;/depend&gt;</code> を確かめる</td>
+</tr>
+<tr>
+<td>設定ファイル（XML）の書き間違い</td>
+<td><code>wrapper.log</code> にエラー</td>
+<td>XML を見直す（<code>&lt;</code> <code>&gt;</code> の閉じ忘れ、<code>&amp;</code> は <code>&amp;amp;</code> と書く）</td>
+</tr>
+<tr>
+<td>許可が足りない</td>
+<td><code>err.log</code> に <code>Access is denied</code>・<code>PermissionError</code></td>
+<td>04 の 7.4・05 の 9.3 の <code>icacls</code></td>
+</tr>
+<tr>
+<td>ポートが使われている</td>
+<td><code>err.log</code> に「すでに使われている」・<code>address already in use</code></td>
+<td><code>Get-NetTCPConnection -LocalPort 8080</code> で使っているプログラムを探す</td>
+</tr>
+<tr>
+<td>Windows Update で部品が変わった</td>
+<td>更新の直後から</td>
+<td>イベント ログ。どうしても直らなければ、更新を戻せるか情報システム部門に相談</td>
+</tr>
+</tbody>
+</table>
+<h3 id="510">5.10 ディスクがいっぱい</h3>
+<p><strong>放っておくと、データベースもアプリも止まります。</strong> 空きが 2 割を切ったら対応します。</p>
+<div class="codehilite"><div class="code-wrap" id="code-7"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># どのフォルダが大きいか（D ドライブの 1 段目）</span>
+<span class="nb">Get-ChildItem</span> <span class="n">D</span><span class="p">:\</span> <span class="n">-Directory</span> <span class="p">|</span> <span class="k">ForEach</span><span class="n">-Object</span> <span class="p">{</span>
+    <span class="nv">$size</span> <span class="p">=</span> <span class="p">(</span><span class="nb">Get-ChildItem</span> <span class="nv">$_</span><span class="p">.</span><span class="n">FullName</span> <span class="n">-Recurse</span> <span class="o">-File</span> <span class="n">-ErrorAction</span> <span class="n">SilentlyContinue</span> <span class="p">|</span> <span class="nb">Measure-Object</span> <span class="n">Length</span> <span class="n">-Sum</span><span class="p">).</span><span class="n">Sum</span>
+    <span class="no">[pscustomobject]</span><span class="p">@{</span> <span class="n">Folder</span> <span class="p">=</span> <span class="nv">$_</span><span class="p">.</span><span class="n">FullName</span><span class="p">;</span> <span class="n">GB</span> <span class="p">=</span> <span class="no">[math]</span><span class="p">::</span><span class="n">Round</span><span class="p">(</span><span class="nv">$size</span> <span class="p">/</span> <span class="n">1GB</span><span class="p">,</span> <span class="n">2</span><span class="p">)</span> <span class="p">}</span>
+<span class="p">}</span> <span class="p">|</span> <span class="nb">Sort-Object</span> <span class="n">GB</span> <span class="n">-Descending</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>よくある原因</th>
+<th>直し方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>バックアップの古い物が消えていない</td>
+<td><code>backup.ps1</code> の「古い控えを消す」が動いているか（記録の <code>OK:</code>）。BOM の問題（5.11）も疑う</td>
+</tr>
+<tr>
+<td>IIS のログがたまっている</td>
+<td>04 の 12.2 の「古いログを消す」タスクが動いているか</td>
+</tr>
+<tr>
+<td>PostgreSQL のログがたまっている</td>
+<td><code>D:\pgsql\18\data\log</code> の古い物を消す。<code>postgresql.conf</code> の <code>log_rotation_age</code> などを見直す</td>
+</tr>
+<tr>
+<td>データそのものが増えた</td>
+<td>00 基礎知識 0.2 の見積もりを見直し、情報システム部門にディスクの拡張を頼む</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>データベースのフォルダ（<code>D:\pgsql\18\data</code>）の中のファイルを、手で消してはいけません。</strong> データベースが壊れます。</p>
+</blockquote>
+<h3 id="511">5.11 毎晩のバックアップが失敗している</h3>
+<div class="codehilite"><div class="code-wrap" id="code-8"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">Get-ScheduledTask</span> <span class="n">-TaskPath</span> <span class="s2">&quot;\webapp\&quot;</span> <span class="p">|</span> <span class="nb">Get-ScheduledTaskInfo</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">TaskName</span><span class="p">,</span> <span class="n">LastRunTime</span><span class="p">,</span> <span class="n">LastTaskResult</span>
+<span class="nb">Get-ChildItem</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">backup</span><span class="p">\</span><span class="n">logs</span> <span class="p">|</span> <span class="nb">Sort-Object</span> <span class="n">LastWriteTime</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">-Last</span> <span class="n">3</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>結果</th>
+<th>原因</th>
+<th>直し方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>LastTaskResult</code> が <code>1</code> で、<code>backup\logs</code> に記録が無い</td>
+<td><code>backup.ps1</code> を <strong>BOM 無し</strong>で保存した（構文エラーで動かない）</td>
+<td>「UTF-8 (BOM 付き)」で保存し直す（04 の 11.3）</td>
+</tr>
+<tr>
+<td>記録に <code>NG: pg_dump が失敗しました</code></td>
+<td>パスワードのファイル（pgpass）の誤り・PostgreSQL が止まっていた</td>
+<td>04 の 11.2。手で <code>backup.ps1</code> を動かして確かめる</td>
+</tr>
+<tr>
+<td>記録に <code>robocopy（別の場所…）が失敗</code></td>
+<td>会社のファイルサーバーに書けない（<code>SYSTEM</code> の許可・ネットワーク）</td>
+<td>情報システム部門。別の場所に書けないと、サーバーが壊れたときに控えも失う</td>
+</tr>
+<tr>
+<td><code>LastRunTime</code> が古い</td>
+<td>タスクが無効・サーバーが止まっていた</td>
+<td>タスク スケジューラで「有効」か確かめる</td>
+</tr>
+</tbody>
+</table>
+<h3 id="512">5.12 データがおかしい・間違えて消した</h3>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/06-05_restore_side.webp" alt="前の晩の控えを別の名前のDBに戻し、必要な行だけを本番のDBへ戻す。丸ごと上書きしない" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図5-1: 控えは別の名前のデータベースに戻し、必要な行だけを取り出す</div>
+</div>
+
+<ol>
+<li><strong>すぐに上司に知らせ、どこまで戻すかを決めてもらいます。</strong> 本番のデータベースを控えで丸ごと上書きすると、<strong>控えを取った後に社員が入れたデータ</strong>も消えます。</li>
+<li>前の晩の控えを、<strong>別の名前のデータベース</strong>に戻します（02 の 11.2、04 の 11.5）。</li>
+<li>別のデータベースで、消えた行・正しい値を <code>SELECT</code> で確かめます。</li>
+<li>必要な行だけを、本番に戻します。SQL は<strong>検証で試してから</strong>、<code>BEGIN</code> の中で行います（02 の 7 章）。</li>
+<li>終わったら、別のデータベースを消します。</li>
+</ol>
+<h3 id="513-800">5.13 時刻がずれる・毎朝 8:00 の処理が動かない</h3>
+<table>
+<thead>
+<tr>
+<th>症状</th>
+<th>原因</th>
+<th>直し方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ログ・承認の時刻が数分ずれる</td>
+<td>時刻の合わせ先の不調</td>
+<td><code>w32tm /query /status</code> の「ソース」。情報システム部門に確かめる</td>
+</tr>
+<tr>
+<td>ログの時刻が 9 時間ずれる</td>
+<td>IIS のログは UTC（3.1）／アプリかデータベースの時間帯の設定</td>
+<td>IIS は仕様。PostgreSQL は <code>timezone</code>・<code>log_timezone</code>（04 の 5.3）</td>
+</tr>
+<tr>
+<td>8:00 の処理が動いていない</td>
+<td>その時刻にアプリ（Topcoat 版）が止まっていた・タスク（Django 版）が失敗</td>
+<td>Topcoat 版は 04 の 12.1 の設計例。Django 版は <code>Get-ScheduledTaskInfo</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="514">5.14 文字化け</h3>
+<table>
+<thead>
+<tr>
+<th>どこで</th>
+<th>原因</th>
+<th>直し方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>取り込んだ社員の名前（CSV）</td>
+<td>Excel の「CSV（コンマ区切り）」は Shift_JIS</td>
+<td>「CSV UTF-8（コンマ区切り）」で保存し直す（00 基礎知識 0.4）</td>
+</tr>
+<tr>
+<td>PostgreSQL のログ</td>
+<td>日本語のメッセージで、UTF-8 と Shift_JIS が混ざる</td>
+<td><code>lc_messages = 'C'</code>（04 の 5.3）</td>
+</tr>
+<tr>
+<td>psql の画面</td>
+<td>画面と psql の文字コードの食い違い</td>
+<td>02 の 14 章</td>
+</tr>
+<tr>
+<td>PowerShell のスクリプトが変な所でエラー</td>
+<td>BOM 無しの UTF-8</td>
+<td>「UTF-8 (BOM 付き)」で保存し直す（01 の 3.7）</td>
+</tr>
+</tbody>
+</table>
+<h2 id="6">6. 障害の記録の書き方</h2>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/06-06_report.webp" alt="障害の記録のクリップボード。いつ、何が起きた、影響、したこと、原因、次の対策" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図6-1: 障害の記録は、6 つの見出しで書く</div>
+</div>
+
+<p>トラブルが終わったら、次の形で記録を残します。<strong>同じトラブルが起きたときに、次の人が早く直せる</strong>ようにするためです。</p>
+<div class="codehilite"><div class="code-wrap" id="code-9"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>件名: 【障害】本番で 502 が出て、使えなかった（2026-11-05 09:12〜09:40）
+
+1. いつ
+   - 09:12 社員から「画面が開かない」と連絡
+   - 09:15 自分が確認を始めた
+   - 09:40 直った（使えるようになった）
+
+2. 何が起きた
+   - 本番の画面を開くと「502 Bad Gateway」
+   - check.ps1 で「サービス webapp-prod」が NG（Stopped）
+
+3. 影響
+   - 本番を使う全員が、28 分間使えなかった
+   - データの消失は無し（ログで確かめた）
+
+4. したこと（時刻つき）
+   - 09:18 webapp-prod-service.err.log に「データベースにつなげない」を見つけた
+   - 09:25 PostgreSQL のサービスが止まっていた。イベント ログで、09:05 の Windows Update の再起動の後に起動に失敗していた
+   - 09:30 Start-Service postgresql-x64-18、09:35 Start-Service webapp-prod
+   - 09:40 check.ps1 で全部 OK、社員に連絡
+
+5. 原因
+   - Windows Update の再起動の後、PostgreSQL の起動が遅れ、アプリが先に起動して止まった
+
+6. 次の対策
+   - WinSW の XML に &lt;depend&gt;postgresql-x64-18&lt;/depend&gt; があるか確かめる（無かったので足した）
+   - Windows Update の再起動の時間を、情報システム部門と決め直す
+</code></pre></div></div>
+
+<blockquote>
+<p>この例は、書き方を示すための<strong>作り話</strong>です。</p>
+</blockquote>
+<h2 id="7">7. 問い合わせる前に集める物</h2>
+<p>情報システム部門や、アプリの作者に聞く前に、次をそろえると話が早くなります。</p>
+<table>
+<thead>
+<tr>
+<th>集める物</th>
+<th>例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>いつから・どのくらいの人が</td>
+<td>「09:12 から、本番を使う全員」</td>
+</tr>
+<tr>
+<td>開いた URL と、出た画面</td>
+<td>画面の写し（エラーの番号が見えるように）</td>
+</tr>
+<tr>
+<td>2 章の ①〜⑤ の結果</td>
+<td>「① OK、② False」</td>
+</tr>
+<tr>
+<td><code>check.ps1</code> の結果</td>
+<td>全部の行</td>
+</tr>
+<tr>
+<td>関係するログの、その時刻の前後</td>
+<td>IIS のログ（UTC に注意）・アプリのログ</td>
+</tr>
+<tr>
+<td>最後に変えたこと</td>
+<td>「昨日の夜に Windows Update」「今朝 1.1.0 に更新」</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>パスワードや、社員の個人情報が写ったログを、そのままメールやチャットに貼らないでください。</strong> 必要な行だけにして、パスワードなどは消してから渡します。</p>
+</blockquote>
+<h2 id="_3">用語の索引</h2>
+<table>
+<thead>
+<tr>
+<th>用語</th>
+<th>短い説明</th>
+<th>章</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>502・<code>sc-win32-status</code> 12029</td>
+<td>IIS の奥のアプリにつなげなかった</td>
+<td>4・5.2</td>
+</tr>
+<tr>
+<td>404.13</td>
+<td>IIS の大きさの上限を超えた</td>
+<td>4・5.4</td>
+</tr>
+<tr>
+<td>check.ps1</td>
+<td>受付からデータベースまで、まとめて確かめるスクリプト</td>
+<td>2.1</td>
+</tr>
+<tr>
+<td>UTC</td>
+<td>世界標準時。日本時間は 9 時間足す</td>
+<td>3.1</td>
+</tr>
+<tr>
+<td>切り分け</td>
+<td>どこで止まっているかを、順に確かめて絞り込むこと</td>
+<td>2</td>
+</tr>
+<tr>
+<td>切り戻し</td>
+<td>前の版・前の設定に戻すこと</td>
+<td>1</td>
+</tr>
+<tr>
+<td>障害の記録</td>
+<td>トラブルの経緯と対策を残す文書</td>
+<td>6</td>
+</tr>
+</tbody>
+</table>
+
+<script>
+(function () {
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy") ? resolve() : reject(); } catch (e) { reject(e); }
+      document.body.removeChild(ta);
+    });
+  }
+  document.querySelectorAll(".copy-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var pre = btn.parentElement.querySelector("pre");
+      var text = pre.textContent.replace(/\n$/, "");
+      copyText(text).then(function () {
+        btn.textContent = "コピーしました";
+        btn.classList.add("done");
+        setTimeout(function () { btn.textContent = "コピー"; btn.classList.remove("done"); }, 2000);
+      }, function () { btn.textContent = "コピーできませんでした"; });
+    });
+  });
+  if (/^#code-\d+$/.test(location.hash)) {
+    var note = document.getElementById("web-note");
+    if (note) { note.hidden = false; }
+  }
+})();
+</script>
+</body>
+</html>

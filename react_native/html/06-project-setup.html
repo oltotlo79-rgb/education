@@ -1,0 +1,926 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>06-project-setup</title>
+<style>
+
+@page {
+  size: A4;
+  margin: 18mm 16mm 20mm 16mm;
+  @bottom-right {
+    content: counter(page);
+    font-size: 10px;
+    color: #64748b;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  font-family: "Yu Gothic UI", "Yu Gothic", "Meiryo", "Hiragino Sans",
+               "Noto Sans JP", "Segoe UI", system-ui, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.75;
+  color: #1e293b;
+  background: #ffffff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #0f172a;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 1.4em 0 0.6em;
+  page-break-after: avoid;
+}
+h1 {
+  font-size: 22pt;
+  border-bottom: 3px solid #1e40af;
+  padding-bottom: 0.3em;
+  margin-top: 0.4em;
+  page-break-before: auto;
+}
+h2 {
+  font-size: 16pt;
+  border-bottom: 1.5px solid #cbd5e1;
+  padding-bottom: 0.25em;
+  margin-top: 1.6em;
+}
+h3 { font-size: 13pt; color: #1e40af; }
+h4 { font-size: 12pt; color: #334155; }
+
+p { margin: 0.5em 0 0.8em; }
+
+a { color: #1d4ed8; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+ul, ol { margin: 0.4em 0 0.9em; padding-left: 1.6em; }
+li { margin: 0.2em 0; }
+
+blockquote {
+  border-left: 4px solid #3b82f6;
+  background: #eff6ff;
+  margin: 0.8em 0;
+  padding: 0.6em 1em;
+  color: #1e3a8a;
+  border-radius: 0 6px 6px 0;
+  page-break-inside: avoid;
+}
+blockquote p { margin: 0.3em 0; }
+blockquote strong { color: #1e40af; }
+
+code {
+  /* DefCode (see _code_font.py) has ASCII and Japanese in ONE font, so a code
+     line is drawn as one text run and copies as one line in every PDF viewer. */
+  font-family: "Consolas", "Consolas", monospace;
+  font-size: 0.9em;
+  background: #f1f5f9;
+  color: #be123c;
+  padding: 0.12em 0.36em;
+  border-radius: 4px;
+  /* Long inline code (file paths / URLs) must break instead of overflowing. */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  /* In a PDF there is no horizontal scrolling, so long lines must wrap
+     instead of being clipped off the right edge of the page. */
+  overflow-x: hidden;
+  overflow-y: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  font-size: 9.2pt;
+  line-height: 1.5;
+  margin: 0.8em 0;
+  page-break-inside: avoid;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+  white-space: inherit;
+  word-break: inherit;
+  overflow-wrap: inherit;
+}
+
+/* The codehilite extension wraps highlighted blocks in a scrolling div; make
+   that wrap too so nothing is clipped in the PDF. */
+.codehilite {
+  overflow-x: hidden;
+  /* overflow-x: hidden alone turns overflow-y into auto, and a glyph from a
+     fallback font that is a hair too tall then shows a vertical scrollbar. */
+  overflow-y: hidden;
+}
+.codehilite pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* No per-token colours: every coloured token became its own text run (and its
+   own tag) in the PDF, and some viewers then pasted each token on its own line.
+   Only whole comment lines get a colour, so each line is still one run. */
+pre .cmt { color: #94a3b8; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.8em 0;
+  font-size: 9.6pt;
+  page-break-inside: avoid;
+}
+th, td {
+  border: 1px solid #e2e8f0;
+  padding: 6px 9px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: #f1f5f9;
+  color: #0f172a;
+  font-weight: 700;
+}
+tr:nth-child(even) td { background: #f8fafc; }
+
+img { max-width: 100%; height: auto; }
+
+hr {
+  border: none;
+  border-top: 1px dashed #cbd5e1;
+  margin: 1.6em 0;
+}
+
+/* Diagram blocks (the inline-styled <div>s in the source) */
+div[style] {
+  page-break-inside: avoid;
+}
+
+/* Tighten spacing right after headings */
+h1 + p, h2 + p, h3 + p, h4 + p { margin-top: 0.2em; }
+
+/* Avoid ugly page breaks inside list items / table rows */
+li, tr { page-break-inside: avoid; }
+
+@media screen {
+  body { max-width: 920px; margin: 0 auto; padding: 20px 20px 120px; font-size: 16px; }
+  pre { white-space: pre !important; word-break: normal !important; overflow-wrap: normal !important;
+        overflow-x: auto !important; font-size: 14px !important; }
+  img { max-width: 100%; height: auto; }
+}
+.web-bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; font-size: 14px;
+  padding: 8px 12px; margin-bottom: 16px; background: #eef2f7; border-radius: 8px; }
+.web-bar a { color: #1e3a5f; }
+.web-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 10; max-width: 90%;
+  font-size: 15px; font-weight: 700; background: #fff7ed; border: 2px solid #f2994a; border-radius: 8px;
+  padding: 10px 16px; margin: 0; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.code-wrap { position: relative; scroll-margin-top: 16px; }
+.code-wrap pre { padding-top: 40px !important; }
+.copy-btn { position: absolute; top: 8px; right: 8px; z-index: 2; font-size: 13px; font-weight: 700;
+  padding: 4px 12px; border: 0; border-radius: 6px; background: #2f80ed; color: #fff; cursor: pointer;
+  font-family: inherit; }
+.copy-btn:hover { background: #1c64c8; }
+.copy-btn.done { background: #27ae60; }
+.code-wrap:target pre { outline: 4px solid #f2994a; outline-offset: 2px; }
+.code-wrap:target .copy-btn { box-shadow: 0 0 0 4px #f2994a; }
+/* syntax colours on screen (the PDF uses one colour so that each line copies as one piece) */
+.codehilite .k, .codehilite .kd, .codehilite .kn, .codehilite .kr { color: #c084fc; }
+.codehilite .s, .codehilite .s1, .codehilite .s2, .codehilite .sb { color: #fcd34d; }
+.codehilite .c, .codehilite .c1, .codehilite .cm { color: #94a3b8; }
+.codehilite .nf, .codehilite .nx { color: #60a5fa; }
+.codehilite .nb { color: #34d399; }
+.codehilite .mi, .codehilite .mf { color: #f472b6; }
+.codehilite .nt { color: #f59e0b; }
+.codehilite .na { color: #93c5fd; }
+</style>
+</head>
+<body>
+<div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/06-project-setup.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、ブラウザーの「戻る」で PDF に戻れます。</p><h1 id="6">第6章: プロジェクトのセットアップ（ナビゲーション）</h1>
+<blockquote>
+<p>ここから実際に「書籍管理アプリ」を組み立てていきます。この章では、アプリ全体の<strong>画面構成（ナビゲーション）</strong> を作り、本の「型」を定義し、Supabaseとデータをやり取りする関数をまとめます。第7・8章のCRUD実装の土台になる、大切な準備の章です。</p>
+</blockquote>
+<hr>
+<h2 id="1">1. この章で作るもの（全体像）</h2>
+<p>これから作るファイルと、その役割を先に示します。</p>
+<div class="codehilite"><div class="code-wrap" id="code-1"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>my-books-app/
+├── app/
+│   ├── _layout.tsx          ← アプリ全体の枠組み（Stackナビゲーション）
+│   ├── index.tsx            ← 書籍一覧画面（第7章で中身を作る）
+│   ├── new.tsx              ← 新規登録画面（第7章）
+│   └── books/
+│       └── [id].tsx         ← 編集画面（第8章。idで対象の本を識別）
+├── lib/
+│   ├── supabase.ts          ← Supabase接続（第5章で作成済み）
+│   └── books.ts             ← 本のCRUD関数をまとめる（この章で作る）
+└── types/
+    └── book.ts              ← 本の「型（Book型）」を定義（この章で作る）
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>本書のナビゲーション方針:</strong> 第4章で「Tabs（下タブ）」にも触れましたが、書籍管理アプリはシンプルに「一覧 → 登録／編集」と画面を重ねる <strong>Stack ナビゲーション</strong> で作ります。Expoテンプレートに最初から入っている <code>(tabs)</code> フォルダは使わない構成に整理します。</p>
+</blockquote>
+<hr>
+<h2 id="2">2. 本の「型」を定義する</h2>
+<p>第2章で学んだ <code>type</code> を使い、アプリ全体で使う「本のデータの形」を1か所に定義します。こうすると、どのファイルでも同じ型を使えて安全です。</p>
+<p>プロジェクト内に <code>types</code> フォルダを作り、<code>book.ts</code> を新規作成します。</p>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> アプリ全体で使う「本のデータの形（型）」を1か所にまとめて定義します。<code>Book</code> は「すでに保存済みの本」を表す型、<code>NewBook</code> は「これから登録する本」を表す型で、IDや登録日時の有無で2つに分けています。こうして型を1か所に置いておくと、どの画面でも同じ形を使い回せて、入力ミスをエディタが早めに教えてくれます（各項目の意味はコード内のコメントで説明します）。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-2"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// types/book.ts — アプリ全体で使う「本」の型を定義する</span>
+
+<span class="c1">// Book : 1冊の本を表す型。Supabaseのbooksテーブルの列と対応させる（第5章で作った表）</span>
+<span class="k">export</span><span class="w"> </span><span class="kr">type</span><span class="w"> </span><span class="nx">Book</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// 本のID（Supabaseが自動生成するuuid）</span>
+<span class="w">  </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="c1">// タイトル（必須）</span>
+<span class="w">  </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="c1">// 著者（必須）</span>
+<span class="w">  </span><span class="nx">author</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="c1">// 読書状態（&quot;未読&quot; / &quot;読書中&quot; / &quot;読了&quot;）</span>
+<span class="w">  </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="c1">// メモ（空のこともあるので string または null）。第2章の「| null」参照</span>
+<span class="w">  </span><span class="nx">memo</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">  </span><span class="c1">// 登録日時（Supabaseが自動で入れる）</span>
+<span class="w">  </span><span class="nx">created_at</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="c1">// NewBook : 「新規登録するときの入力データ」の型</span>
+<span class="c1">// id や created_at はSupabaseが自動で付けるので、入力時には不要。だからそれらを除いた形にする</span>
+<span class="k">export</span><span class="w"> </span><span class="kr">type</span><span class="w"> </span><span class="nx">NewBook</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">author</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">memo</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong><code>string | null</code> の意味（復習）:</strong> <code>|</code>（パイプ、縦棒）は「または」を表し、「<code>string</code>型 または <code>null</code>」という意味です。これを「ユニオン型（union type）」と呼びます。memoは入力されないこともあるので、文字列かnullのどちらかを許す型にしています。</p>
+<p><strong>なぜ <code>Book</code> と <code>NewBook</code> を分ける？</strong> 既存の本（<code>Book</code>）はIDや登録日時を持っていますが、これから<strong>新しく作る</strong>本（<code>NewBook</code>）にはまだIDがありません（Supabaseが保存時に発番するため）。入力時に余計な項目を要求しないよう、型を分けておくと安全で分かりやすくなります。</p>
+</blockquote>
+<h4 id="1_1">▼ コードを1つずつ分解して解説</h4>
+<p>上の型定義を、2つの塊に分けて、初心者向けにていねいに見ていきましょう。</p>
+<hr>
+<h5 id="1-book">解説1: 保存済みの本を表す <code>Book</code> 型</h5>
+<div class="codehilite"><div class="code-wrap" id="code-3"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">export</span><span class="w"> </span><span class="kr">type</span><span class="w"> </span><span class="nx">Book</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// 本のID（Supabaseが自動生成するuuid）</span>
+<span class="w">  </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="c1">// タイトル（必須）</span>
+<span class="w">  </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="c1">// 著者（必須）</span>
+<span class="w">  </span><span class="nx">author</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="c1">// 読書状態（&quot;未読&quot; / &quot;読書中&quot; / &quot;読了&quot;）</span>
+<span class="w">  </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="c1">// メモ（空のこともあるので string または null）。第2章の「| null」参照</span>
+<span class="w">  </span><span class="nx">memo</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">  </span><span class="c1">// 登録日時（Supabaseが自動で入れる）</span>
+<span class="w">  </span><span class="nx">created_at</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>export</code>（エクスポート）は「この型を<strong>他のファイルからも使えるように公開する</strong>」という宣言です。これを付けることで、画面側のファイルから <code>import { Book }</code> の形で借りられます。</li>
+<li><code>type Book = { ... }</code> は「<code>Book</code> という名前で、<code>{ }</code> の中の形のデータを表す型を作る」という意味です。1冊の本が持つべき項目（id・title・author・status・memo・created_at）を1か所に列挙しています。</li>
+<li>各項目の <code>: string</code> などは「その項目の値の型」です。<code>id</code> や <code>title</code> は必ず文字列が入る、という約束を表します。</li>
+<li><code>memo</code> だけ <code>string | null</code> になっているのは「メモは<strong>書かれていないこともある</strong>」ためです（後述の用語補足参照）。</li>
+<li><code>id</code> と <code>created_at</code> は<strong>Supabaseが自動で付ける</strong>項目なので、利用者が手で入れる必要はありません。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <code>export</code>（エクスポート）… ファイルの中で作った型・関数・変数を「外部に公開」する印。逆に、別ファイルでそれを受け取るのが <code>import</code>（インポート）です。この2つはセットで「ファイルをまたいで部品を共有する」仕組みになります。</p>
+</blockquote>
+<hr>
+<h5 id="2-newbook">解説2: 新規登録用の <code>NewBook</code> 型</h5>
+<div class="codehilite"><div class="code-wrap" id="code-4"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">export</span><span class="w"> </span><span class="kr">type</span><span class="w"> </span><span class="nx">NewBook</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">author</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">memo</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>NewBook</code> は「<strong>これから登録する本の入力データ</strong>」だけを表す型です。<code>Book</code> から <code>id</code> と <code>created_at</code> を取り除いた4項目だけになっています。</li>
+<li>なぜ取り除くかというと、<code>id</code>（本のID）と <code>created_at</code>（登録日時）は<strong>Supabaseが保存時に自動で発番・記録する</strong>ため、登録する人が用意する必要がないからです。</li>
+<li>入力に必要な項目だけに絞ることで、「登録フォームでは何を入力すればよいか」がこの型を見るだけで分かります。</li>
+<li><code>Book</code> と <code>NewBook</code> を分けておくと、「保存済みの本」と「これから作る本」をTypeScriptが別物として区別してくれ、取り違えのミスを防げます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> ユニオン型（union type）… <code>string | null</code> のように <code>|</code>（縦棒）で複数の型をつないで「このどれかが入る」と表す型。ここでは「文字列が入っているか、あるいは何も無い（null）か」のどちらかを許しています。</p>
+</blockquote>
+<hr>
+<h2 id="3-crud-libbooksts">3. CRUD関数をまとめる — <code>lib/books.ts</code></h2>
+<p>Supabaseとのデータのやり取り（取得・追加・更新・削除）を、各画面に散らばらせず<strong>1つのファイルにまとめます</strong>。こうすると、画面側のコードがすっきりし、後から修正も楽になります。</p>
+<p><code>lib</code> フォルダに <code>books.ts</code> を新規作成します。第7・8章で各関数を実際に使います。</p>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> Supabase（データの保管庫）と本のデータをやり取りする関数を、まとめて1つのファイルに用意します。「全件取得」「1件追加」「1件取得」「更新」「削除」という、いわゆる <strong>CRUD（作成・読取・更新・削除）</strong> の5つの関数を作ります。ポイントは、画面のコードからは <code>fetchBooks()</code> のように関数を呼ぶだけで済むようにし、データベースとのやり取りの細かい書き方をこのファイルに閉じ込めることです（各関数の中身はコード内のコメントで説明します）。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-5"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// lib/books.ts — 本のCRUD（作成・読取・更新・削除）をまとめたファイル</span>
+
+<span class="c1">// 第5章で作った接続オブジェクトを借りる</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">supabase</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;./supabase&quot;</span><span class="p">;</span>
+<span class="c1">// さっき作った型を借りる</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Book</span><span class="p">,</span><span class="w"> </span><span class="nx">NewBook</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;../types/book&quot;</span><span class="p">;</span>
+
+<span class="c1">// ============================================================</span>
+<span class="c1">// Read（読み取り）: 本を全件取得する</span>
+<span class="c1">// ============================================================</span>
+<span class="c1">// async : 中で await（待つ処理）を使うので付ける（第2章参照）</span>
+<span class="c1">// : Promise&lt;Book[]&gt; : この関数は「最終的にBookの配列を返す」という戻り値の型</span>
+<span class="k">export</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">fetchBooks</span><span class="p">()</span><span class="o">:</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="nx">Book</span><span class="p">[]</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// supabase.from(&quot;books&quot;) : booksテーブルを対象にする</span>
+<span class="w">  </span><span class="c1">// .select(&quot;*&quot;)           : 全列(*)を取得する</span>
+<span class="w">  </span><span class="c1">// .order(&quot;created_at&quot;, { ascending: false }) : created_atで並べ替え。降順（新しい順）</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">data</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">supabase</span>
+<span class="w">    </span><span class="p">.</span><span class="kr">from</span><span class="p">(</span><span class="s2">&quot;books&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">order</span><span class="p">(</span><span class="s2">&quot;created_at&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">ascending</span><span class="o">:</span><span class="w"> </span><span class="kt">false</span><span class="w"> </span><span class="p">});</span>
+
+<span class="w">  </span><span class="c1">// エラーがあれば throw で呼び出し元に知らせる（第7章で受け止める）</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span><span class="w"> </span><span class="k">throw</span><span class="w"> </span><span class="nx">error</span><span class="p">;</span>
+<span class="w">  </span><span class="c1">// データを返す。?? は「左がnull/undefinedなら右を使う」。空なら[]を返す</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">data</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="p">[];</span>
+<span class="p">}</span>
+
+<span class="c1">// ============================================================</span>
+<span class="c1">// Create（作成）: 本を1冊追加する</span>
+<span class="c1">// ============================================================</span>
+<span class="c1">// 引数 newBook : 登録する本のデータ（NewBook型）</span>
+<span class="k">export</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">createBook</span><span class="p">(</span><span class="nx">newBook</span><span class="o">:</span><span class="w"> </span><span class="kt">NewBook</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="ow">void</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// .insert(newBook) : 受け取ったデータをbooksテーブルに追加する</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">error</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">supabase</span><span class="p">.</span><span class="kr">from</span><span class="p">(</span><span class="s2">&quot;books&quot;</span><span class="p">).</span><span class="nx">insert</span><span class="p">(</span><span class="nx">newBook</span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span><span class="w"> </span><span class="k">throw</span><span class="w"> </span><span class="nx">error</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// ============================================================</span>
+<span class="c1">// Read（1件）: idを指定して1冊だけ取得する（編集画面で使う）</span>
+<span class="c1">// ============================================================</span>
+<span class="k">export</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">fetchBookById</span><span class="p">(</span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="nx">Book</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">data</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">supabase</span>
+<span class="w">    </span><span class="p">.</span><span class="kr">from</span><span class="p">(</span><span class="s2">&quot;books&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="c1">// .eq(&quot;id&quot;, id) : id列が引数idと等しい行に絞り込む（eq = equal）</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">eq</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">id</span><span class="p">)</span>
+<span class="w">    </span><span class="c1">// .single()     : 結果を「1件のオブジェクト」として受け取る（配列でなく）</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">single</span><span class="p">();</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span><span class="w"> </span><span class="k">throw</span><span class="w"> </span><span class="nx">error</span><span class="p">;</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">data</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// ============================================================</span>
+<span class="c1">// Update（更新）: idの本を新しい内容に書き換える</span>
+<span class="c1">// ============================================================</span>
+<span class="k">export</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">updateBook</span><span class="p">(</span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">updated</span><span class="o">:</span><span class="w"> </span><span class="kt">NewBook</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="ow">void</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">error</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">supabase</span>
+<span class="w">    </span><span class="p">.</span><span class="kr">from</span><span class="p">(</span><span class="s2">&quot;books&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="c1">// .update(updated) : 指定データで上書きする</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">update</span><span class="p">(</span><span class="nx">updated</span><span class="p">)</span>
+<span class="w">    </span><span class="c1">// .eq(&quot;id&quot;, id)    : id列が一致する行だけを更新（これが無いと全件更新になり危険）</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">eq</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">id</span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span><span class="w"> </span><span class="k">throw</span><span class="w"> </span><span class="nx">error</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// ============================================================</span>
+<span class="c1">// Delete（削除）: idの本を削除する</span>
+<span class="c1">// ============================================================</span>
+<span class="k">export</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">deleteBook</span><span class="p">(</span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="ow">void</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">error</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">supabase</span>
+<span class="w">    </span><span class="p">.</span><span class="kr">from</span><span class="p">(</span><span class="s2">&quot;books&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="c1">// .delete() : 行を削除する</span>
+<span class="w">    </span><span class="p">.</span><span class="ow">delete</span><span class="p">()</span>
+<span class="w">    </span><span class="c1">// .eq(&quot;id&quot;, id) : id列が一致する行だけを削除</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">eq</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">id</span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span><span class="w"> </span><span class="k">throw</span><span class="w"> </span><span class="nx">error</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>Supabaseのメソッドチェーン:</strong> <code>supabase.from("books").select("*").order(...)</code> のように、<code>.</code> でつないで条件を足していく書き方を「メソッドチェーン」と呼びます。「booksテーブルから → 全列を選んで → 並べ替える」と、左から右へ読めば処理が分かります。</p>
+<p><strong><code>throw error</code> の意味:</strong> <code>throw</code>（スロー）は「エラーを呼び出し元に投げて知らせる」命令です。ここでエラーを投げておくと、画面側で <code>try / catch</code>（第7章で説明）を使って「エラーなら画面にメッセージを出す」といった対応ができます。</p>
+<p><strong><code>?? []</code>（ヌル合体演算子）:</strong> <code>data ?? []</code> は「<code>data</code> が null か undefined なら、代わりに空配列 <code>[]</code> を使う」という意味です。「データが取れなかったときも、せめて空のリストを返す」ことで、画面側がエラーになりにくくなります。</p>
+</blockquote>
+<h4 id="1_2">▼ コードを1つずつ分解して解説</h4>
+<p>このファイルは5つの関数の集まりです。まずファイル先頭の「借り物（import）」を見たあと、関数を1つずつ分解していきます。</p>
+<hr>
+<h5 id="1-import">解説1: 他ファイルから道具を借りる（import）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-6"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 第5章で作った接続オブジェクトを借りる</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">supabase</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;./supabase&quot;</span><span class="p">;</span>
+<span class="c1">// さっき作った型を借りる</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Book</span><span class="p">,</span><span class="w"> </span><span class="nx">NewBook</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;../types/book&quot;</span><span class="p">;</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>import { 名前 } from "場所"</code> は「<strong>別のファイルで <code>export</code> した部品を、このファイルに借りてくる</strong>」書き方です。解説した <code>export</code> の受け取り側にあたります。</li>
+<li>1行目で、第5章で用意した <code>supabase</code>（データベースとの接続を担当するオブジェクト）を借りています。<code>"./supabase"</code> の <code>./</code> は「同じ <code>lib</code> フォルダの中」という意味です。</li>
+<li>2行目で、先ほど定義した <code>Book</code> 型と <code>NewBook</code> 型を借りています。<code>"../types/book"</code> の <code>../</code> は「1つ上のフォルダへ戻ってから <code>types</code> フォルダへ」という意味です。</li>
+<li>これらを借りることで、以下の各関数の中で <code>supabase.from(...)</code> を呼んだり、<code>Book</code> 型を戻り値に指定したりできます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> 相対パス（relative path）… <code>./</code> は「今のフォルダ」、<code>../</code> は「1つ上のフォルダ」を表す道案内の書き方。<code>import</code> でファイルの場所を指定するときに使います。</p>
+</blockquote>
+<hr>
+<h5 id="2-fetchbooks">解説2: 全件取得する <code>fetchBooks</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-7"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">export</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">fetchBooks</span><span class="p">()</span><span class="o">:</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="nx">Book</span><span class="p">[]</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">data</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">supabase</span>
+<span class="w">    </span><span class="p">.</span><span class="kr">from</span><span class="p">(</span><span class="s2">&quot;books&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">order</span><span class="p">(</span><span class="s2">&quot;created_at&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">ascending</span><span class="o">:</span><span class="w"> </span><span class="kt">false</span><span class="w"> </span><span class="p">});</span>
+
+<span class="w">  </span><span class="c1">// エラーがあれば throw で呼び出し元に知らせる（第7章で受け止める）</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span><span class="w"> </span><span class="k">throw</span><span class="w"> </span><span class="nx">error</span><span class="p">;</span>
+<span class="w">  </span><span class="c1">// データを返す。?? は「左がnull/undefinedなら右を使う」。空なら[]を返す</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">data</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="p">[];</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>async function fetchBooks()</code> は「<strong>非同期で動く関数</strong>」です。<code>async</code> を付けると、中で <code>await</code>（処理が終わるのを待つ）を使えます。</li>
+<li>戻り値の型 <code>Promise&lt;Book[]&gt;</code> は「最終的に <code>Book</code> の配列（複数の本）を返す」という意味です。<code>Promise</code>（プロミス）は「いま結果は無いが、あとで結果が届く」ことを表す入れ物です。</li>
+<li><code>await supabase.from("books").select("*").order(...)</code> で「booksテーブルから全列を取り、登録日時の新しい順に並べる」という問い合わせを実行し、終わるまで待ちます。</li>
+<li>結果は <code>{ data, error }</code> の形で返るので分割代入で取り出し、<code>error</code> があれば <code>throw</code> で中断、無ければ <code>data ?? []</code> を返します。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <code>async</code> / <code>await</code>（エイシンク／アウェイト）… 時間のかかる処理（DBアクセスや通信）を「終わるまで待ってから次へ進む」ように書くための書き方。<code>await</code> は <code>async</code> の付いた関数の中でしか使えません。</p>
+</blockquote>
+<hr>
+<h5 id="3-1-createbook">解説3: 1冊追加する <code>createBook</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-8"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">export</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">createBook</span><span class="p">(</span><span class="nx">newBook</span><span class="o">:</span><span class="w"> </span><span class="kt">NewBook</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="ow">void</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// .insert(newBook) : 受け取ったデータをbooksテーブルに追加する</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">error</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">supabase</span><span class="p">.</span><span class="kr">from</span><span class="p">(</span><span class="s2">&quot;books&quot;</span><span class="p">).</span><span class="nx">insert</span><span class="p">(</span><span class="nx">newBook</span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span><span class="w"> </span><span class="k">throw</span><span class="w"> </span><span class="nx">error</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<ul>
+<li>引数 <code>newBook: NewBook</code> は「これから登録する本のデータ」で、型は先ほどの <code>NewBook</code>（id・登録日時を含まない4項目）です。</li>
+<li>戻り値の型 <code>Promise&lt;void&gt;</code> の <code>void</code>（ボイド）は「<strong>返す値は特に無い</strong>」という意味です。追加するだけで、呼び出し元に渡す結果は無いためこうしています。</li>
+<li><code>.insert(newBook)</code> で「受け取った <code>newBook</code> を booksテーブルに新しい行として追加」します。<code>id</code> と <code>created_at</code> はSupabase側が自動で付けます。</li>
+<li>取得が無いので分割代入は <code>{ error }</code> だけ。失敗していれば <code>throw error</code> で呼び出し元に知らせます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <code>void</code>（ボイド）… 関数の戻り値が「無い（返さない）」ことを表す型。「処理はするが結果は受け取らなくてよい」関数に付けます。</p>
+</blockquote>
+<hr>
+<h5 id="4-id1-fetchbookbyid">解説4: idで1冊だけ取得する <code>fetchBookById</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-9"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">export</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">fetchBookById</span><span class="p">(</span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="nx">Book</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">data</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">supabase</span>
+<span class="w">    </span><span class="p">.</span><span class="kr">from</span><span class="p">(</span><span class="s2">&quot;books&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="c1">// .eq(&quot;id&quot;, id) : id列が引数idと等しい行に絞り込む（eq = equal）</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">eq</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">id</span><span class="p">)</span>
+<span class="w">    </span><span class="c1">// .single()     : 結果を「1件のオブジェクト」として受け取る（配列でなく）</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">single</span><span class="p">();</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span><span class="w"> </span><span class="k">throw</span><span class="w"> </span><span class="nx">error</span><span class="p">;</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">data</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<ul>
+<li>引数 <code>id: string</code> で「取り出したい本のID」を受け取ります。戻り値の型 <code>Promise&lt;Book&gt;</code> は「<code>Book</code> 1件を返す」という意味です（配列ではなく1冊）。</li>
+<li><code>.eq("id", id)</code> は「<strong>id列の値が、引数で渡した <code>id</code> と等しい行だけに絞り込む</strong>」条件です。<code>eq</code> は equal（等しい）の略です。</li>
+<li><code>.single()</code> を付けると、結果を「配列の中の1件」ではなく「<strong>1個のオブジェクト</strong>」として受け取れます。編集画面で「特定の1冊」を扱うのにちょうどよい形です。</li>
+<li>エラーが無ければ、取り出した1件 <code>data</code> をそのまま返します。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <code>.eq()</code>（イコール）… Supabaseで「ある列の値が指定値と等しい行だけ」に絞り込む条件メソッド。<code>.eq("列名", 値)</code> の形で使います。</p>
+</blockquote>
+<hr>
+<h5 id="5-updatebook">解説5: 内容を書き換える <code>updateBook</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-10"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">export</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">updateBook</span><span class="p">(</span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">updated</span><span class="o">:</span><span class="w"> </span><span class="kt">NewBook</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="ow">void</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">error</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">supabase</span>
+<span class="w">    </span><span class="p">.</span><span class="kr">from</span><span class="p">(</span><span class="s2">&quot;books&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="c1">// .update(updated) : 指定データで上書きする</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">update</span><span class="p">(</span><span class="nx">updated</span><span class="p">)</span>
+<span class="w">    </span><span class="c1">// .eq(&quot;id&quot;, id)    : id列が一致する行だけを更新（これが無いと全件更新になり危険）</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">eq</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">id</span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span><span class="w"> </span><span class="k">throw</span><span class="w"> </span><span class="nx">error</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<ul>
+<li>引数は2つで、<code>id</code>（どの本を直すか）と <code>updated</code>（新しい内容、<code>NewBook</code> 型）です。</li>
+<li><code>.update(updated)</code> で「指定したデータの内容に<strong>上書き</strong>する」よう指示します。</li>
+<li><code>.eq("id", id)</code> が<strong>非常に重要</strong>です。これで「id列が一致する1行だけ」を更新対象に絞ります。<strong>この <code>.eq()</code> を書き忘れると、booksテーブルの全件が同じ内容に書き換わってしまう</strong>ので、必ず付けます。</li>
+<li>戻り値は <code>Promise&lt;void&gt;</code>（返す値は無し）。失敗していれば <code>throw error</code> で知らせます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <code>.update()</code>（アップデート）… Supabaseで「既存の行の内容を新しい値で上書き」するメソッド。多くの場合 <code>.eq()</code> とセットで「どの行を更新するか」を必ず指定します。</p>
+</blockquote>
+<hr>
+<h5 id="6-deletebook">解説6: 削除する <code>deleteBook</code></h5>
+<div class="codehilite"><div class="code-wrap" id="code-11"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">export</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">deleteBook</span><span class="p">(</span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="ow">void</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">error</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">supabase</span>
+<span class="w">    </span><span class="p">.</span><span class="kr">from</span><span class="p">(</span><span class="s2">&quot;books&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="c1">// .delete() : 行を削除する</span>
+<span class="w">    </span><span class="p">.</span><span class="ow">delete</span><span class="p">()</span>
+<span class="w">    </span><span class="c1">// .eq(&quot;id&quot;, id) : id列が一致する行だけを削除</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">eq</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">id</span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span><span class="w"> </span><span class="k">throw</span><span class="w"> </span><span class="nx">error</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<ul>
+<li>引数 <code>id</code> で「削除したい本のID」を受け取ります。戻り値は <code>Promise&lt;void&gt;</code>（返す値は無し）です。</li>
+<li><code>.delete()</code> は「行を削除する」メソッドです。引数は不要で、次の <code>.eq()</code> で対象を指定します。</li>
+<li><code>updateBook</code> と同様に、<code>.eq("id", id)</code> で「id列が一致する1行だけ」に絞ります。<strong>これが無いと全件削除になってしまう</strong>ため、削除でも必ず付けます。</li>
+<li>失敗していれば <code>throw error</code> で呼び出し元に知らせ、画面側で対応できるようにします。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <code>.delete()</code>（デリート）… Supabaseで「行を削除する」メソッド。<code>.update()</code> と同じく、<code>.eq()</code> で対象行を限定しないと全件が消えてしまうため注意が必要です。</p>
+</blockquote>
+<hr>
+<h2 id="4-_layouttsx">4. ナビゲーションの枠組みを作る — <code>_layout.tsx</code></h2>
+<p>アプリ全体の画面の重ね方（Stack）と、各画面のヘッダー（上部バー）のタイトルを設定します。<code>app/_layout.tsx</code> を次の内容にします（既存内容は置き換え）。</p>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> アプリ全体の「画面の重ね方」と「上部バー（ヘッダー）の見た目」をまとめて設定します。<code>Stack</code> は画面をカードのように積み重ねて遷移させる仕組みで、共通の設定（色など）は全画面まとめて、タイトルは画面ごとに指定します。<code>_layout.tsx</code> はアプリの土台になる特別なファイルで、ここで一度決めておけば各画面に同じ枠組みが自動で適用されます（細かい指定はコード内のコメントで説明します）。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-12"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// app/_layout.tsx — アプリ全体のナビゲーションの枠組み</span>
+
+<span class="c1">// Stack（カードを重ねる遷移）を借りる</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Stack</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;expo-router&quot;</span><span class="p">;</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">RootLayout</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="c1">// Stack : 画面を積み重ねるナビゲーション。screenOptions で全画面共通の見た目を指定</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">Stack</span>
+<span class="w">      </span><span class="na">screenOptions</span><span class="o">=</span><span class="p">{{</span>
+<span class="w">        </span><span class="c1">// ヘッダー（上部バー）の背景色を青に</span>
+<span class="w">        </span><span class="nx">headerStyle</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">backgroundColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#1e40af&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">        </span><span class="c1">// ヘッダーの文字・戻る矢印の色を白に</span>
+<span class="w">        </span><span class="nx">headerTintColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#fff&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="c1">// ヘッダータイトルを太字に</span>
+<span class="w">        </span><span class="nx">headerTitleStyle</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">fontWeight</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;bold&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">      </span><span class="p">}}</span>
+<span class="w">    </span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">{</span><span class="cm">/* Stack.Screen : 各画面ごとの個別設定。name はファイル名（拡張子なし）と対応 */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Stack</span><span class="p">.</span><span class="na">Screen</span><span class="w"> </span><span class="na">name</span><span class="o">=</span><span class="s">&quot;index&quot;</span><span class="w"> </span><span class="na">options</span><span class="o">=</span><span class="p">{{</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;📚 書籍管理&quot;</span><span class="w"> </span><span class="p">}}</span><span class="w"> </span><span class="p">/&gt;</span>
+<span class="w">      </span><span class="p">{</span><span class="cm">/* index.tsx → タイトル「書籍管理」。これが最初に表示される画面 */</span><span class="p">}</span>
+
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Stack</span><span class="p">.</span><span class="na">Screen</span><span class="w"> </span><span class="na">name</span><span class="o">=</span><span class="s">&quot;new&quot;</span><span class="w"> </span><span class="na">options</span><span class="o">=</span><span class="p">{{</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;新規登録&quot;</span><span class="w"> </span><span class="p">}}</span><span class="w"> </span><span class="p">/&gt;</span>
+<span class="w">      </span><span class="p">{</span><span class="cm">/* new.tsx → タイトル「新規登録」 */</span><span class="p">}</span>
+
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Stack</span><span class="p">.</span><span class="na">Screen</span><span class="w"> </span><span class="na">name</span><span class="o">=</span><span class="s">&quot;books/[id]&quot;</span><span class="w"> </span><span class="na">options</span><span class="o">=</span><span class="p">{{</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;編集&quot;</span><span class="w"> </span><span class="p">}}</span><span class="w"> </span><span class="p">/&gt;</span>
+<span class="w">      </span><span class="p">{</span><span class="cm">/* books/[id].tsx → タイトル「編集」。[id]は動的な値（第4章参照） */</span><span class="p">}</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">Stack</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong><code>screenOptions</code> と <code>options</code> の違い:</strong>
+- <code>screenOptions</code>（Stack全体に付ける）… <strong>すべての画面に共通</strong>する設定。
+- <code>options</code>（各 <code>Stack.Screen</code> に付ける）… その<strong>画面だけ</strong>の設定（タイトルなど）。
+こうして「色は全画面共通、タイトルは画面ごと」と整理できます。</p>
+<p><strong><code>name</code> はファイル名と一致させる:</strong> <code>&lt;Stack.Screen name="books/[id]" ... /&gt;</code> の <code>name</code> は、<code>app/</code> フォルダからの<strong>ファイルのパス（拡張子なし）</strong> と一致させます。<code>app/books/[id].tsx</code> なら <code>name="books/[id]"</code> です。一致していないと設定が効きません。</p>
+</blockquote>
+<h4 id="1_3">▼ コードを1つずつ分解して解説</h4>
+<p>この土台ファイルを、3つの塊に分けて見ていきましょう。</p>
+<hr>
+<h5 id="1_4">解説1: 道具を借りて、土台コンポーネントを宣言する</h5>
+<div class="codehilite"><div class="code-wrap" id="code-13"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// Stack（カードを重ねる遷移）を借りる</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Stack</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;expo-router&quot;</span><span class="p">;</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">RootLayout</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>import { Stack } from "expo-router"</code> で、画面をカードのように積み重ねて遷移させる <code>Stack</code> という部品を、<code>expo-router</code>（ルーティング用ライブラリ）から借りています。</li>
+<li><code>export default function RootLayout()</code> は「<code>RootLayout</code> という名前の土台コンポーネントを作り、<strong>このファイルの代表として公開する</strong>」という宣言です。</li>
+<li><code>_layout.tsx</code> という名前のファイルは expo-router にとって特別で、<strong>そのフォルダ全体の枠組み</strong>を表します。ここで一度決めた設定が、配下の各画面に自動で適用されます。</li>
+<li><code>default</code>（デフォルト）が付くと「このファイルの主役は1つだけ」という公開のしかたになり、利用側は名前を自由に付けて借りられます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <code>export default</code>（エクスポート・デフォルト）… 1ファイルにつき1つだけ指定できる「主役の公開」。画面ファイルは必ずこの形で画面コンポーネントを1つ公開します。</p>
+</blockquote>
+<hr>
+<h5 id="2-screenoptions">解説2: 全画面共通の見た目を <code>screenOptions</code> で指定する</h5>
+<div class="codehilite"><div class="code-wrap" id="code-14"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">    </span><span class="p">&lt;</span><span class="nt">Stack</span>
+<span class="w">      </span><span class="na">screenOptions</span><span class="o">=</span><span class="p">{{</span>
+<span class="w">        </span><span class="c1">// ヘッダー（上部バー）の背景色を青に</span>
+<span class="w">        </span><span class="nx">headerStyle</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">backgroundColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#1e40af&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">        </span><span class="c1">// ヘッダーの文字・戻る矢印の色を白に</span>
+<span class="w">        </span><span class="nx">headerTintColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#fff&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="c1">// ヘッダータイトルを太字に</span>
+<span class="w">        </span><span class="nx">headerTitleStyle</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">fontWeight</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;bold&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">      </span><span class="p">}}</span>
+<span class="w">    </span><span class="p">&gt;</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>&lt;Stack screenOptions={{ ... }}&gt;</code> の <code>screenOptions</code> は「<strong>すべての画面に共通する見た目の設定</strong>」をまとめて渡す場所です。</li>
+<li><code>headerStyle: { backgroundColor: "#1e40af" }</code> で、上部バー（ヘッダー）の背景色を青（<code>#1e40af</code>）にしています。<code>#</code> から始まる6桁はカラーコード（色の指定）です。</li>
+<li><code>headerTintColor: "#fff"</code> は、ヘッダー上の文字や「戻る矢印」の色を白（<code>#fff</code>）にします。青い背景に白文字で見やすくする設定です。</li>
+<li><code>headerTitleStyle: { fontWeight: "bold" }</code> で、ヘッダーのタイトル文字を太字にしています。</li>
+<li>ここで一度指定すれば、後述の各画面すべてに同じヘッダーの見た目が適用されます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> カラーコード（color code）… <code>#1e40af</code> のように <code>#</code> と6桁で色を表す書き方。前2桁=赤、中2桁=緑、後2桁=青の強さを16進数で表します。<code>#fff</code> は <code>#ffffff</code>（白）の短縮形です。</p>
+</blockquote>
+<hr>
+<h5 id="3-stackscreen">解説3: 画面ごとの設定を <code>Stack.Screen</code> で並べる</h5>
+<div class="codehilite"><div class="code-wrap" id="code-15"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">      </span><span class="p">&lt;</span><span class="nt">Stack</span><span class="p">.</span><span class="na">Screen</span><span class="w"> </span><span class="na">name</span><span class="o">=</span><span class="s">&quot;index&quot;</span><span class="w"> </span><span class="na">options</span><span class="o">=</span><span class="p">{{</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;📚 書籍管理&quot;</span><span class="w"> </span><span class="p">}}</span><span class="w"> </span><span class="p">/&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Stack</span><span class="p">.</span><span class="na">Screen</span><span class="w"> </span><span class="na">name</span><span class="o">=</span><span class="s">&quot;new&quot;</span><span class="w"> </span><span class="na">options</span><span class="o">=</span><span class="p">{{</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;新規登録&quot;</span><span class="w"> </span><span class="p">}}</span><span class="w"> </span><span class="p">/&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Stack</span><span class="p">.</span><span class="na">Screen</span><span class="w"> </span><span class="na">name</span><span class="o">=</span><span class="s">&quot;books/[id]&quot;</span><span class="w"> </span><span class="na">options</span><span class="o">=</span><span class="p">{{</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;編集&quot;</span><span class="w"> </span><span class="p">}}</span><span class="w"> </span><span class="p">/&gt;</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">Stack</span><span class="p">&gt;</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>&lt;Stack.Screen ... /&gt;</code> は「<strong>1つの画面ごとの個別設定</strong>」を表します。3行あるので、3つの画面を登録しています。</li>
+<li><code>name="index"</code> などの <code>name</code> は、<code>app/</code> フォルダからの<strong>ファイルのパス（拡張子なし）</strong> と一致させます。<code>index.tsx</code> なら <code>name="index"</code> です。</li>
+<li><code>options={{ title: "..." }}</code> で、その画面だけのヘッダータイトルを指定します。<code>index</code> は最初に開く一覧画面なので「📚 書籍管理」としています。</li>
+<li><code>name="books/[id]"</code> の <code>[id]</code> は「動的な値」を表し、<code>app/books/[id].tsx</code> という編集画面に対応します（第4章参照）。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> 動的ルート（dynamic route）… <code>[id]</code> のように <code>[ ]</code> で囲んだファイル名で「その部分が可変の値（本のIDなど）」になる仕組み。<code>books/123</code> でも <code>books/456</code> でも同じ <code>[id].tsx</code> が使われます。</p>
+</blockquote>
+<hr>
+<h3 id="41">4.1 不要なテンプレートファイルの整理</h3>
+<p>Expoのテンプレートには <code>app/(tabs)/</code> フォルダなどサンプル画面が入っています。本書のStack構成に合わせ、次のように整理します。</p>
+<div class="codehilite"><div class="code-wrap" id="code-16"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ターミナルで、不要なテンプレート画面フォルダを削除する例（プロジェクト直下で実行）</span>
+<span class="c1"># 注意: 削除は慎重に。中身を確認してから実行してください</span>
+<span class="c1"># rm はファイル/フォルダを削除するコマンド / -r は「フォルダごと（再帰的に）」の意味</span>
+rm<span class="w"> </span>-r<span class="w"> </span>app/<span class="o">(</span>tabs<span class="o">)</span>
+<span class="c1"># Windowsの PowerShell では次のように書く：</span>
+<span class="c1"># Remove-Item -Recurse -Force &quot;app/(tabs)&quot;</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>削除に不安があれば:</strong> 無理に消さなくても進められます。その場合は、これから作る <code>index.tsx</code> などを <code>app/</code> 直下に置けば、そちらが優先して使われます。慣れないうちは「新しいファイルを <code>app/</code> 直下に作る」方針でも構いません。整理は後からでもできます。</p>
+</blockquote>
+<hr>
+<h2 id="5">5. プレースホルダー画面を置いて動作確認</h2>
+<p>第7・8章で中身を作る前に、まず「空っぽの画面」を置いて、ナビゲーション（画面遷移）が動くことを確認します。</p>
+<h3 id="51">5.1 一覧画面（仮）</h3>
+<p><code>app/index.tsx</code> を次の内容にします。</p>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 最初に表示される「書籍一覧画面」を、まずは中身が空の仮の状態で作ります（本格的な一覧表示は第7章で実装します）。今回の目的は、画面に置いたボタンを押すと新規登録画面へ移動できることを確かめることです。<code>useRouter</code> で画面移動の道具を取り出し、<code>router.push("/new")</code> で別の画面へ進みます（各部分の意味はコード内のコメントで説明します）。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-17"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// app/index.tsx — 書籍一覧画面（この章では仮の内容。第7章で本実装）</span>
+
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">View</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="p">,</span><span class="w"> </span><span class="nx">Pressable</span><span class="p">,</span><span class="w"> </span><span class="nx">StyleSheet</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-native&quot;</span><span class="p">;</span>
+<span class="c1">// 画面移動の道具（第4章参照）</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">useRouter</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;expo-router&quot;</span><span class="p">;</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">HomeScreen</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// 移動操作を取得</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">router</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useRouter</span><span class="p">();</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">container</span><span class="p">}&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">text</span><span class="p">}&gt;</span><span class="nx">ここに書籍一覧が表示されます</span><span class="err">（</span><span class="nx">第7章で実装</span><span class="err">）</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+
+<span class="w">      </span><span class="p">{</span><span class="cm">/* 新規登録画面へ移動するボタン */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Pressable</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">button</span><span class="p">}</span><span class="w"> </span><span class="na">onPress</span><span class="o">=</span><span class="p">{()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">router</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="s2">&quot;/new&quot;</span><span class="p">)}&gt;</span>
+<span class="w">        </span><span class="p">{</span><span class="cm">/* router.push(&quot;/new&quot;) : new.tsx（新規登録画面）へ移動 */</span><span class="p">}</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">buttonText</span><span class="p">}&gt;</span><span class="err">＋</span><span class="w"> </span><span class="nx">新規登録へ</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">Pressable</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">styles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">StyleSheet</span><span class="p">.</span><span class="nx">create</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">container</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">flex</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span><span class="w"> </span><span class="nx">justifyContent</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">alignItems</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">gap</span><span class="o">:</span><span class="w"> </span><span class="kt">16</span><span class="p">,</span><span class="w"> </span><span class="nx">padding</span><span class="o">:</span><span class="w"> </span><span class="kt">20</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">text</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">fontSize</span><span class="o">:</span><span class="w"> </span><span class="kt">14</span><span class="p">,</span><span class="w"> </span><span class="nx">color</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#475569&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">textAlign</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">button</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">backgroundColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#1e40af&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">paddingVertical</span><span class="o">:</span><span class="w"> </span><span class="kt">12</span><span class="p">,</span><span class="w"> </span><span class="nx">paddingHorizontal</span><span class="o">:</span><span class="w"> </span><span class="kt">20</span><span class="p">,</span><span class="w"> </span><span class="nx">borderRadius</span><span class="o">:</span><span class="w"> </span><span class="kt">10</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">buttonText</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">color</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#fff&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">fontWeight</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;bold&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h4 id="1_5">▼ コードを1つずつ分解して解説</h4>
+<p>この仮の一覧画面を、4つの塊に分けて見ていきましょう。</p>
+<hr>
+<h5 id="1_6">解説1: 部品を借りて、画面移動の道具を取り出す</h5>
+<div class="codehilite"><div class="code-wrap" id="code-18"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">View</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="p">,</span><span class="w"> </span><span class="nx">Pressable</span><span class="p">,</span><span class="w"> </span><span class="nx">StyleSheet</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-native&quot;</span><span class="p">;</span>
+<span class="c1">// 画面移動の道具（第4章参照）</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">useRouter</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;expo-router&quot;</span><span class="p">;</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">HomeScreen</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// 移動操作を取得</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">router</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useRouter</span><span class="p">();</span>
+</code></pre></div></div>
+
+<ul>
+<li>1行目で <code>react-native</code> から画面部品を借りています。<code>View</code>（箱）、<code>Text</code>（文字）、<code>Pressable</code>（押せる領域）、<code>StyleSheet</code>（見た目の設定をまとめる道具）の4つです。</li>
+<li>2行目の <code>useRouter</code>（ユーズ・ルーター）は「<strong>画面移動を操作するための道具</strong>」を取り出すフック（部品）です。</li>
+<li><code>export default function HomeScreen()</code> で、この画面の主役コンポーネントを公開しています。一覧画面なので <code>HomeScreen</code> という名前です。</li>
+<li><code>const router = useRouter()</code> で、移動操作をまとめた <code>router</code> を受け取ります。以降 <code>router.push(...)</code> の形で別画面へ進めます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> フック（hook）… <code>useRouter</code> のように <code>use</code> で始まる、Reactの機能を呼び出す関数。コンポーネントの中で呼んで、状態や便利な道具を取り出します。</p>
+</blockquote>
+<hr>
+<h5 id="2-view-text">解説2: 画面の中身を <code>View</code> と <code>Text</code> で組み立てる</h5>
+<div class="codehilite"><div class="code-wrap" id="code-19"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">    </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">container</span><span class="p">}&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">text</span><span class="p">}&gt;</span><span class="nx">ここに書籍一覧が表示されます</span><span class="err">（</span><span class="nx">第7章で実装</span><span class="err">）</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>&lt;View&gt;</code> はReact Nativeの「<strong>箱</strong>」で、Web の <code>&lt;div&gt;</code> にあたります。中に他の部品を入れてまとめます。</li>
+<li><code>style={styles.container}</code> で、下のほうで定義した <code>container</code> の見た目（中央寄せ・余白など）を適用しています。</li>
+<li><code>&lt;Text&gt;</code> は「文字を表示する部品」です。React Nativeでは、文字は<strong>必ず <code>&lt;Text&gt;</code> の中に書く</strong>決まりがあります（Webのように地の文を直接置けません）。</li>
+<li>ここでは「第7章で本実装する」という案内文を仮置きしています。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <code>View</code> / <code>Text</code>（ビュー／テキスト）… React Nativeの基本部品。<code>View</code> は領域をまとめる箱、<code>Text</code> は文字専用の部品。Webの <code>&lt;div&gt;</code> と「文字は必ずタグで包む」点が違います。</p>
+</blockquote>
+<hr>
+<h5 id="3">解説3: ボタンを押すと新規登録画面へ進む</h5>
+<div class="codehilite"><div class="code-wrap" id="code-20"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">      </span><span class="p">{</span><span class="cm">/* 新規登録画面へ移動するボタン */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Pressable</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">button</span><span class="p">}</span><span class="w"> </span><span class="na">onPress</span><span class="o">=</span><span class="p">{()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">router</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="s2">&quot;/new&quot;</span><span class="p">)}&gt;</span>
+<span class="w">        </span><span class="p">{</span><span class="cm">/* router.push(&quot;/new&quot;) : new.tsx（新規登録画面）へ移動 */</span><span class="p">}</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">buttonText</span><span class="p">}&gt;</span><span class="err">＋</span><span class="w"> </span><span class="nx">新規登録へ</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">Pressable</span><span class="p">&gt;</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>&lt;Pressable&gt;</code> は「<strong>押せる領域</strong>」を作る部品です。中に入れた <code>&lt;Text&gt;</code> がボタンの文字になります。</li>
+<li><code>onPress={() =&gt; router.push("/new")}</code> が押したときの動作です。<code>onPress</code> には「押されたら呼ばれる関数」を渡します。</li>
+<li><code>() =&gt; router.push("/new")</code> はアロー関数で、「押された瞬間に <code>router.push("/new")</code> を実行する」という意味です。<code>() =&gt;</code> で包むのは、<strong>今すぐ実行せず「押されたとき」に実行させる</strong>ためです。</li>
+<li><code>router.push("/new")</code> は「<code>new.tsx</code>（新規登録画面）を上に重ねて表示する」操作です。<code>push</code>（プッシュ）は「新しい画面を積む」イメージです。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <code>router.push("/パス")</code>（プッシュ）… 指定したパスの画面を、現在の画面の上に新しく重ねて表示する操作。戻ると元の画面が下から現れます。</p>
+</blockquote>
+<hr>
+<h5 id="4-stylesheetcreate">解説4: 見た目を <code>StyleSheet.create</code> でまとめる</h5>
+<div class="codehilite"><div class="code-wrap" id="code-21"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">styles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">StyleSheet</span><span class="p">.</span><span class="nx">create</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">container</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">flex</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span><span class="w"> </span><span class="nx">justifyContent</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">alignItems</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">gap</span><span class="o">:</span><span class="w"> </span><span class="kt">16</span><span class="p">,</span><span class="w"> </span><span class="nx">padding</span><span class="o">:</span><span class="w"> </span><span class="kt">20</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">text</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">fontSize</span><span class="o">:</span><span class="w"> </span><span class="kt">14</span><span class="p">,</span><span class="w"> </span><span class="nx">color</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#475569&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">textAlign</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">button</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">backgroundColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#1e40af&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">paddingVertical</span><span class="o">:</span><span class="w"> </span><span class="kt">12</span><span class="p">,</span><span class="w"> </span><span class="nx">paddingHorizontal</span><span class="o">:</span><span class="w"> </span><span class="kt">20</span><span class="p">,</span><span class="w"> </span><span class="nx">borderRadius</span><span class="o">:</span><span class="w"> </span><span class="kt">10</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">buttonText</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">color</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#fff&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">fontWeight</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;bold&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>StyleSheet.create({ ... })</code> は「<strong>見た目の設定をまとめて作る</strong>」道具です。作った設定は <code>styles.container</code> のように名前で呼び出して使います。</li>
+<li><code>container</code> は画面全体の箱の設定です。<code>flex: 1</code>（画面いっぱいに広げる）、<code>justifyContent</code> / <code>alignItems: "center"</code>（縦横の中央寄せ）、<code>gap: 16</code>（部品の間隔）、<code>padding: 20</code>（内側の余白）を指定しています。</li>
+<li><code>text</code> は案内文の設定（文字サイズ・色・中央寄せ）、<code>button</code> はボタンの設定（背景色・余白・角丸）です。</li>
+<li><code>buttonText</code> はボタン内の文字の設定で、白文字・太字にしています。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <code>StyleSheet.create</code>（スタイルシート・クリエイト）… React Nativeで見た目をまとめて定義する仕組み。WebのCSSにあたり、<code>flex</code> や <code>padding</code> など似た指定が使えます。</p>
+</blockquote>
+<hr>
+<h3 id="52">5.2 新規登録画面（仮）</h3>
+<p><code>app/new.tsx</code> を新規作成します。</p>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 「新規登録画面」を、こちらもまずは中身が空の仮の状態で作ります（登録フォームの本体は第7章で実装します）。狙いは、一覧画面から移動してきたあと、ボタンで元の画面（一覧）へ戻れることを確かめることです。<code>router.back()</code> は「1つ前の画面に戻る」操作で、これでStackナビゲーションの行き来が一通り確認できます（各部分の意味はコード内のコメントで説明します）。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-22"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// app/new.tsx — 新規登録画面（この章では仮の内容。第7章で本実装）</span>
+
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">View</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="p">,</span><span class="w"> </span><span class="nx">Pressable</span><span class="p">,</span><span class="w"> </span><span class="nx">StyleSheet</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-native&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">useRouter</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;expo-router&quot;</span><span class="p">;</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">NewBookScreen</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">router</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useRouter</span><span class="p">();</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">container</span><span class="p">}&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">text</span><span class="p">}&gt;</span><span class="nx">ここに登録フォームが表示されます</span><span class="err">（</span><span class="nx">第7章で実装</span><span class="err">）</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+
+<span class="w">      </span><span class="p">{</span><span class="cm">/* 前の画面（一覧）へ戻るボタン */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Pressable</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">button</span><span class="p">}</span><span class="w"> </span><span class="na">onPress</span><span class="o">=</span><span class="p">{()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">router</span><span class="p">.</span><span class="nx">back</span><span class="p">()}&gt;</span>
+<span class="w">        </span><span class="p">{</span><span class="cm">/* router.back() : 1つ前の画面に戻る */</span><span class="p">}</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">buttonText</span><span class="p">}&gt;</span><span class="nx">戻る</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">Pressable</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">View</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">styles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">StyleSheet</span><span class="p">.</span><span class="nx">create</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">container</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">flex</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span><span class="w"> </span><span class="nx">justifyContent</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">alignItems</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">gap</span><span class="o">:</span><span class="w"> </span><span class="kt">16</span><span class="p">,</span><span class="w"> </span><span class="nx">padding</span><span class="o">:</span><span class="w"> </span><span class="kt">20</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">text</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">fontSize</span><span class="o">:</span><span class="w"> </span><span class="kt">14</span><span class="p">,</span><span class="w"> </span><span class="nx">color</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#475569&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">textAlign</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">button</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">backgroundColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#64748b&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">paddingVertical</span><span class="o">:</span><span class="w"> </span><span class="kt">12</span><span class="p">,</span><span class="w"> </span><span class="nx">paddingHorizontal</span><span class="o">:</span><span class="w"> </span><span class="kt">20</span><span class="p">,</span><span class="w"> </span><span class="nx">borderRadius</span><span class="o">:</span><span class="w"> </span><span class="kt">10</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">buttonText</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">color</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#fff&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">fontWeight</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;bold&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h4 id="1_7">▼ コードを1つずつ分解して解説</h4>
+<p>この仮の新規登録画面は、一覧画面とよく似ています。違いが出る「戻る」部分を中心に、3つの塊で見ていきましょう。</p>
+<hr>
+<h5 id="1_8">解説1: 部品を借りて、画面を宣言する</h5>
+<div class="codehilite"><div class="code-wrap" id="code-23"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">View</span><span class="p">,</span><span class="w"> </span><span class="nx">Text</span><span class="p">,</span><span class="w"> </span><span class="nx">Pressable</span><span class="p">,</span><span class="w"> </span><span class="nx">StyleSheet</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-native&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">useRouter</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;expo-router&quot;</span><span class="p">;</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">NewBookScreen</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">router</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useRouter</span><span class="p">();</span>
+</code></pre></div></div>
+
+<ul>
+<li>借りている部品（<code>View</code> / <code>Text</code> / <code>Pressable</code> / <code>StyleSheet</code>）と <code>useRouter</code> は、一覧画面とまったく同じです。</li>
+<li><code>export default function NewBookScreen()</code> で、この画面の主役を公開しています。新規登録画面なので <code>NewBookScreen</code> という名前にしています。</li>
+<li><code>const router = useRouter()</code> で画面移動の道具 <code>router</code> を受け取ります。この画面では「戻る」操作に使います。</li>
+<li>このように、画面ファイルは「部品を借りる → 画面コンポーネントを公開する → 必要な道具を取り出す」という同じ骨組みを持ちます。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> コンポーネント名（PascalCase）… <code>NewBookScreen</code> のように、画面や部品の名前は単語の先頭を大文字にする習慣です。Reactはこの大文字始まりを「部品」と判断します。</p>
+</blockquote>
+<hr>
+<h5 id="2_1">解説2: 案内文と「戻る」ボタンを並べる</h5>
+<div class="codehilite"><div class="code-wrap" id="code-24"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">    </span><span class="p">&lt;</span><span class="nt">View</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">container</span><span class="p">}&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">text</span><span class="p">}&gt;</span><span class="nx">ここに登録フォームが表示されます</span><span class="err">（</span><span class="nx">第7章で実装</span><span class="err">）</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+
+<span class="w">      </span><span class="p">{</span><span class="cm">/* 前の画面（一覧）へ戻るボタン */</span><span class="p">}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">Pressable</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">button</span><span class="p">}</span><span class="w"> </span><span class="na">onPress</span><span class="o">=</span><span class="p">{()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">router</span><span class="p">.</span><span class="nx">back</span><span class="p">()}&gt;</span>
+<span class="w">        </span><span class="p">{</span><span class="cm">/* router.back() : 1つ前の画面に戻る */</span><span class="p">}</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">Text</span><span class="w"> </span><span class="na">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">.</span><span class="nx">buttonText</span><span class="p">}&gt;</span><span class="nx">戻る</span><span class="p">&lt;/</span><span class="nt">Text</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">Pressable</span><span class="p">&gt;</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>&lt;View&gt;</code> で全体を包み、中に案内文の <code>&lt;Text&gt;</code> と「戻る」ボタンの <code>&lt;Pressable&gt;</code> を並べています。</li>
+<li><code>onPress={() =&gt; router.back()}</code> が、一覧画面の <code>push</code> と対になる部分です。<code>router.back()</code> は「<strong>1つ前の画面に戻る</strong>」操作です。</li>
+<li>一覧画面で <code>router.push("/new")</code> でこの画面を上に積んだので、<code>router.back()</code> でその1枚を取り除き、下にあった一覧画面に戻ります。</li>
+<li><code>() =&gt;</code> で包んでいるのは一覧画面と同じく、「押された瞬間」に実行させるためです。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <code>router.back()</code>（バック）… 積み重なった画面を1枚めくって「1つ前の画面」に戻る操作。<code>push</code> で進み、<code>back</code> で戻る、という行き来でStackナビゲーションが成り立ちます。</p>
+</blockquote>
+<hr>
+<h5 id="3_1">解説3: 見た目を定義する（戻るボタンは灰色）</h5>
+<div class="codehilite"><div class="code-wrap" id="code-25"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">styles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">StyleSheet</span><span class="p">.</span><span class="nx">create</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">container</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">flex</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span><span class="w"> </span><span class="nx">justifyContent</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">alignItems</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">gap</span><span class="o">:</span><span class="w"> </span><span class="kt">16</span><span class="p">,</span><span class="w"> </span><span class="nx">padding</span><span class="o">:</span><span class="w"> </span><span class="kt">20</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">text</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">fontSize</span><span class="o">:</span><span class="w"> </span><span class="kt">14</span><span class="p">,</span><span class="w"> </span><span class="nx">color</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#475569&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">textAlign</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;center&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">button</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">backgroundColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#64748b&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">paddingVertical</span><span class="o">:</span><span class="w"> </span><span class="kt">12</span><span class="p">,</span><span class="w"> </span><span class="nx">paddingHorizontal</span><span class="o">:</span><span class="w"> </span><span class="kt">20</span><span class="p">,</span><span class="w"> </span><span class="nx">borderRadius</span><span class="o">:</span><span class="w"> </span><span class="kt">10</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">buttonText</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">color</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#fff&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">fontWeight</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;bold&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>container</code> と <code>text</code> は一覧画面と同じ設定で、中央寄せ・余白・文字の見た目を指定しています。</li>
+<li>違いは <code>button</code> の <code>backgroundColor</code> です。一覧画面は青（<code>#1e40af</code>）でしたが、こちらは灰色（<code>#64748b</code>）にしています。</li>
+<li>これは「進む（目立つ青）／戻る（控えめな灰色）」と色で役割を分け、ユーザーが直感的に区別できるようにする工夫です。</li>
+<li><code>buttonText</code> は一覧画面と同じく、白文字・太字でボタン文字を見やすくしています。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> <code>backgroundColor</code>（バックグラウンドカラー）… 部品の背景色を指定するスタイル。ここでは進むボタンと戻るボタンで色を変え、操作の意味を見た目で伝えています。</p>
+</blockquote>
+<hr>
+<h3 id="53">5.3 動作確認</h3>
+<p><code>npx expo start</code> でアプリを起動し、スマホ（Expo Go）で確認します。</p>
+<ol>
+<li>最初に「書籍管理」というタイトルの一覧画面（仮）が表示される。</li>
+<li>「＋ 新規登録へ」を押すと、「新規登録」画面に<strong>スライドして遷移</strong>する。</li>
+<li>ヘッダー左の「戻る矢印」または「戻る」ボタンで一覧に戻れる。</li>
+</ol>
+<p>これが確認できれば、ナビゲーションの土台は完成です。Stackナビゲーションが「カードを重ねて・めくる」動きをしているのが分かるはずです。</p>
+<blockquote>
+<p><strong>うまく動かないときは:</strong>
+- ヘッダーが青くならない → <code>_layout.tsx</code> の保存を確認。
+- 「Unmatched Route」と出る → ファイル名（<code>new.tsx</code> など）とパス（<code>/new</code>）が一致しているか確認。
+- 画面が真っ白 → ターミナルのエラーを確認。多くは <code>import</code> のパスミス。</p>
+</blockquote>
+<hr>
+<h2 id="6_1">6. この章のまとめ</h2>
+<ul>
+<li>アプリ全体で使う<strong><code>Book</code> / <code>NewBook</code> 型</strong>を <code>types/book.ts</code> に定義した</li>
+<li>Supabaseとのやり取り（<strong>fetchBooks / createBook / fetchBookById / updateBook / deleteBook</strong>）を <code>lib/books.ts</code> に集約した</li>
+<li><strong><code>_layout.tsx</code></strong> で Stack ナビゲーションとヘッダーの見た目を設定した</li>
+<li>仮の <strong>一覧画面・新規登録画面</strong> を置き、画面遷移（push / back）が動くことを確認した</li>
+</ul>
+<blockquote>
+<p><strong>次の章へ:</strong> 土台ができました。第7章では、この <code>lib/books.ts</code> の関数を使って、<strong>実際に本の一覧を表示し、新しい本を登録する</strong>機能（CRUDのReadとCreate）を実装します。</p>
+</blockquote>
+
+<script>
+(function () {
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy") ? resolve() : reject(); } catch (e) { reject(e); }
+      document.body.removeChild(ta);
+    });
+  }
+  document.querySelectorAll(".copy-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var pre = btn.parentElement.querySelector("pre");
+      var text = pre.textContent.replace(/\n$/, "");
+      copyText(text).then(function () {
+        btn.textContent = "コピーしました";
+        btn.classList.add("done");
+        setTimeout(function () { btn.textContent = "コピー"; btn.classList.remove("done"); }, 2000);
+      }, function () { btn.textContent = "コピーできませんでした"; });
+    });
+  });
+  if (/^#code-\d+$/.test(location.hash)) {
+    var note = document.getElementById("web-note");
+    if (note) { note.hidden = false; }
+  }
+})();
+</script>
+</body>
+</html>

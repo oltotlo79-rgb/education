@@ -1,0 +1,1173 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>05_Djangoの基礎_モデル・管理画面・API</title>
+<style>
+
+@page {
+  size: A4;
+  margin: 18mm 16mm 20mm 16mm;
+  @bottom-right {
+    content: counter(page);
+    font-size: 10px;
+    color: #64748b;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  font-family: "Yu Gothic UI", "Yu Gothic", "Meiryo", "Hiragino Sans",
+               "Noto Sans JP", "Segoe UI", system-ui, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.75;
+  color: #1e293b;
+  background: #ffffff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #0f172a;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 1.4em 0 0.6em;
+  page-break-after: avoid;
+}
+h1 {
+  font-size: 22pt;
+  border-bottom: 3px solid #1e40af;
+  padding-bottom: 0.3em;
+  margin-top: 0.4em;
+  page-break-before: auto;
+}
+h2 {
+  font-size: 16pt;
+  border-bottom: 1.5px solid #cbd5e1;
+  padding-bottom: 0.25em;
+  margin-top: 1.6em;
+}
+h3 { font-size: 13pt; color: #1e40af; }
+h4 { font-size: 12pt; color: #334155; }
+
+p { margin: 0.5em 0 0.8em; }
+
+a { color: #1d4ed8; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+ul, ol { margin: 0.4em 0 0.9em; padding-left: 1.6em; }
+li { margin: 0.2em 0; }
+
+blockquote {
+  border-left: 4px solid #3b82f6;
+  background: #eff6ff;
+  margin: 0.8em 0;
+  padding: 0.6em 1em;
+  color: #1e3a8a;
+  border-radius: 0 6px 6px 0;
+  page-break-inside: avoid;
+}
+blockquote p { margin: 0.3em 0; }
+blockquote strong { color: #1e40af; }
+
+code {
+  /* DefCode (see _code_font.py) has ASCII and Japanese in ONE font, so a code
+     line is drawn as one text run and copies as one line in every PDF viewer. */
+  font-family: "Consolas", "Consolas", monospace;
+  font-size: 0.9em;
+  background: #f1f5f9;
+  color: #be123c;
+  padding: 0.12em 0.36em;
+  border-radius: 4px;
+  /* Long inline code (file paths / URLs) must break instead of overflowing. */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  /* In a PDF there is no horizontal scrolling, so long lines must wrap
+     instead of being clipped off the right edge of the page. */
+  overflow-x: hidden;
+  overflow-y: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  font-size: 9.2pt;
+  line-height: 1.5;
+  margin: 0.8em 0;
+  page-break-inside: avoid;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+  white-space: inherit;
+  word-break: inherit;
+  overflow-wrap: inherit;
+}
+
+/* The codehilite extension wraps highlighted blocks in a scrolling div; make
+   that wrap too so nothing is clipped in the PDF. */
+.codehilite {
+  overflow-x: hidden;
+  /* overflow-x: hidden alone turns overflow-y into auto, and a glyph from a
+     fallback font that is a hair too tall then shows a vertical scrollbar. */
+  overflow-y: hidden;
+}
+.codehilite pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* No per-token colours: every coloured token became its own text run (and its
+   own tag) in the PDF, and some viewers then pasted each token on its own line.
+   Only whole comment lines get a colour, so each line is still one run. */
+pre .cmt { color: #94a3b8; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.8em 0;
+  font-size: 9.6pt;
+  page-break-inside: avoid;
+}
+th, td {
+  border: 1px solid #e2e8f0;
+  padding: 6px 9px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: #f1f5f9;
+  color: #0f172a;
+  font-weight: 700;
+}
+tr:nth-child(even) td { background: #f8fafc; }
+
+img { max-width: 100%; height: auto; }
+
+hr {
+  border: none;
+  border-top: 1px dashed #cbd5e1;
+  margin: 1.6em 0;
+}
+
+/* Diagram blocks (the inline-styled <div>s in the source) */
+div[style] {
+  page-break-inside: avoid;
+}
+
+/* Tighten spacing right after headings */
+h1 + p, h2 + p, h3 + p, h4 + p { margin-top: 0.2em; }
+
+/* Avoid ugly page breaks inside list items / table rows */
+li, tr { page-break-inside: avoid; }
+
+@media screen {
+  body { max-width: 920px; margin: 0 auto; padding: 20px 20px 120px; font-size: 16px; }
+  pre { white-space: pre !important; word-break: normal !important; overflow-wrap: normal !important;
+        overflow-x: auto !important; font-size: 14px !important; }
+  img { max-width: 100%; height: auto; }
+}
+.web-bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; font-size: 14px;
+  padding: 8px 12px; margin-bottom: 16px; background: #eef2f7; border-radius: 8px; }
+.web-bar a { color: #1e3a5f; }
+.web-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 10; max-width: 90%;
+  font-size: 15px; font-weight: 700; background: #fff7ed; border: 2px solid #f2994a; border-radius: 8px;
+  padding: 10px 16px; margin: 0; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.code-wrap { position: relative; scroll-margin-top: 16px; }
+.code-wrap pre { padding-top: 40px !important; }
+.copy-btn { position: absolute; top: 8px; right: 8px; z-index: 2; font-size: 13px; font-weight: 700;
+  padding: 4px 12px; border: 0; border-radius: 6px; background: #2f80ed; color: #fff; cursor: pointer;
+  font-family: inherit; }
+.copy-btn:hover { background: #1c64c8; }
+.copy-btn.done { background: #27ae60; }
+.code-wrap:target pre { outline: 4px solid #f2994a; outline-offset: 2px; }
+.code-wrap:target .copy-btn { box-shadow: 0 0 0 4px #f2994a; }
+/* syntax colours on screen (the PDF uses one colour so that each line copies as one piece) */
+.codehilite .k, .codehilite .kd, .codehilite .kn, .codehilite .kr { color: #c084fc; }
+.codehilite .s, .codehilite .s1, .codehilite .s2, .codehilite .sb { color: #fcd34d; }
+.codehilite .c, .codehilite .c1, .codehilite .cm { color: #94a3b8; }
+.codehilite .nf, .codehilite .nx { color: #60a5fa; }
+.codehilite .nb { color: #34d399; }
+.codehilite .mi, .codehilite .mf { color: #f472b6; }
+.codehilite .nt { color: #f59e0b; }
+.codehilite .na { color: #93c5fd; }
+</style>
+</head>
+<body>
+<div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/05_Django%E3%81%AE%E5%9F%BA%E7%A4%8E_%E3%83%A2%E3%83%87%E3%83%AB%E3%83%BB%E7%AE%A1%E7%90%86%E7%94%BB%E9%9D%A2%E3%83%BBAPI.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、ブラウザーの「戻る」で PDF に戻れます。</p><div style="text-align: center; padding: 28px 0 8px;">
+<div style="font-size: 14px; color: #475569;">Web アプリ開発 学習資料</div>
+<div style="font-size: 26px; font-weight: 800; color: #0f172a; margin-top: 6px; line-height: 1.35;">05 Django の基礎 — モデル・管理画面・API</div>
+<div style="font-size: 13px; color: #475569; margin-top: 8px;">依頼と回覧のデータを作り、管理画面・HTML の画面・JSON の API で扱う</div>
+</div>
+
+<h1 id="05-django-api">05 Django の基礎: モデル・管理画面・API</h1>
+<h2 id="_1">この巻で学ぶこと</h2>
+<ul>
+<li>Django の仕組み（URL・ビュー・モデル・テンプレート）</li>
+<li>プロジェクトとアプリを作る</li>
+<li><strong>モデル</strong>（データの設計図）を書き、<strong>マイグレーション</strong>でテーブルを作る</li>
+<li><strong>管理画面</strong>で、データを見る・直す</li>
+<li><strong>ORM</strong>（Python で書くデータベースの操作）</li>
+<li>HTML の画面（テンプレート）と、JSON の <strong>API</strong>（Django REST framework）</li>
+<li>自動のテスト</li>
+</ul>
+<p>練習のプロジェクトは <code>samples/05_django/</code> にあります。この巻では、Django に慣れるために、準備の要らない <strong>SQLite</strong>（ファイル 1 つのデータベース）を使います。会社のサーバーでは PostgreSQL を使う（onprem の 04 の 5 章）ので、06 からは PostgreSQL で作ります。この巻の結果と画面の写しは、<strong>Django 5.2.18 で実際に動かした物</strong>です。</p>
+<blockquote>
+<p><strong>もっと詳しく:</strong> <code>docs/07_Django_バックエンド.md</code>・<code>docs/08_データベースとモデル.md</code> に、Django のより詳しい説明があります。</p>
+</blockquote>
+<h2 id="1-django">1. Django の仕組み</h2>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/L05-01_mtv.webp" alt="ブラウザからURLの表、ビュー、モデルとデータベース、テンプレートかJSONのAPIを通って返事が返る" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図1-1: お願いは、URL の表 → ビュー → モデル → テンプレート（または JSON）の順に流れる</div>
+</div>
+
+<table>
+<thead>
+<tr>
+<th>部品</th>
+<th>ファイル</th>
+<th>役目</th>
+<th>たとえ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>URL の表</td>
+<td><code>urls.py</code></td>
+<td>どの URL を、どのビューに渡すか</td>
+<td>受付の案内板</td>
+</tr>
+<tr>
+<td>ビュー</td>
+<td><code>views.py</code></td>
+<td>お願いを受けて、仕事をして、返事を作る</td>
+<td>担当者</td>
+</tr>
+<tr>
+<td>モデル</td>
+<td><code>models.py</code></td>
+<td>データの形と、データベースとのやり取り</td>
+<td>帳簿の書式</td>
+</tr>
+<tr>
+<td>テンプレート</td>
+<td><code>templates/</code></td>
+<td>HTML のひな形に、データを埋め込む</td>
+<td>書類のひな形</td>
+</tr>
+<tr>
+<td>シリアライザ（DRF）</td>
+<td><code>serializers.py</code></td>
+<td>データと JSON の変換と、入力の確かめ</td>
+<td>翻訳と検査の係</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>用語:</strong> Django（ジャンゴ：Python の Web アプリのフレームワーク。ログイン・管理画面・データベースの道具・安全の仕組みが、最初から入っている）</p>
+</blockquote>
+<h2 id="2">2. プロジェクトとアプリを作る</h2>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/L05-02_project_app.webp" alt="プロジェクト（config）の中にsettings.pyとurls.py、その中にアプリrequests・accounts・noticesがあり、それぞれmodelsとviewsを持つ" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図2-1: 1 つのプロジェクトの中に、機能ごとのアプリを入れる</div>
+</div>
+
+<p><strong>▶ 準備:</strong> 00 の 6.4（Python 3.14）。04 を終えていれば、もう入っています。</p>
+<p><strong>▶ 書く所と動かし方:</strong> 完成した物は、資料のフォルダの <code>webapp_learning\samples\05_django\</code> にあります。自分で 1 から作って試すときは、<strong>自分用の新しいフォルダ</strong>で始めます（完成した物のフォルダで <code>startproject</code> をすると、すでにあるファイルとぶつかります）。下は、資料を <code>~\Documents\def</code> に置いたときの例です。</p>
+<div class="codehilite"><div class="code-wrap" id="code-1"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 自分用の練習のフォルダを作って、その中へ移動する</span>
+<span class="n">mkdir</span> <span class="p">~\</span><span class="n">Documents</span><span class="p">\</span><span class="n">my-practice</span><span class="p">\</span><span class="n">05_django</span>
+<span class="nb">cd </span><span class="p">~\</span><span class="n">Documents</span><span class="p">\</span><span class="n">my-practice</span><span class="p">\</span><span class="n">05_django</span>
+<span class="c"># 使う部品の一覧（requirements.txt）を、資料のフォルダから写してくる</span>
+<span class="nb">Copy-Item</span> <span class="p">~\</span><span class="n">Documents</span><span class="p">\</span><span class="n">def</span><span class="p">\</span><span class="n">webapp_learning</span><span class="p">\</span><span class="n">samples</span><span class="p">\</span><span class="n">05_django</span><span class="p">\</span><span class="n">requirements</span><span class="p">.</span><span class="n">txt</span> <span class="p">.</span>
+<span class="n">py</span> <span class="p">-</span><span class="n">3</span><span class="p">.</span><span class="n">14</span> <span class="n">-m</span> <span class="n">venv</span> <span class="p">.</span><span class="n">venv</span>
+<span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">-m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">-r</span> <span class="n">requirements</span><span class="p">.</span><span class="n">txt</span>
+
+<span class="c"># プロジェクト（設定の入れ物）を作る。最後の . は「このフォルダに」</span>
+<span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">django-admin</span><span class="p">.</span><span class="n">exe</span> <span class="n">startproject</span> <span class="n">config</span> <span class="p">.</span>
+<span class="c"># アプリ（機能の入れ物）を作る</span>
+<span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">manage</span><span class="p">.</span><span class="n">py</span> <span class="n">startapp</span> <span class="n">requests_app</span>
+</code></pre></div></div>
+
+<p><code>requirements.txt</code>:</p>
+<div class="codehilite"><div class="code-wrap" id="code-2"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Django==5.2.18
+djangorestframework==3.18.3
+tzdata==2026.6
+</code></pre></div></div>
+
+<p><code>config/settings.py</code> で、次の所を直します（全部は、練習のファイルを見てください）。</p>
+<div class="codehilite"><div class="code-wrap" id="code-3"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">INSTALLED_APPS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="c1"># …（最初から入っている物）…</span>
+    <span class="s1">&#39;rest_framework&#39;</span><span class="p">,</span>     <span class="c1"># API を作る部品</span>
+    <span class="s1">&#39;requests_app&#39;</span><span class="p">,</span>       <span class="c1"># 作ったアプリ</span>
+<span class="p">]</span>
+
+<span class="n">LANGUAGE_CODE</span> <span class="o">=</span> <span class="s1">&#39;ja&#39;</span>          <span class="c1"># 管理画面やエラーの文を日本語に</span>
+<span class="n">TIME_ZONE</span> <span class="o">=</span> <span class="s1">&#39;Asia/Tokyo&#39;</span>      <span class="c1"># 日本時間</span>
+
+<span class="n">LOGIN_URL</span> <span class="o">=</span> <span class="s2">&quot;/accounts/login/&quot;</span>   <span class="c1"># ログインしていないときに案内する画面</span>
+<span class="n">LOGIN_REDIRECT_URL</span> <span class="o">=</span> <span class="s2">&quot;/&quot;</span>         <span class="c1"># ログインした後に開く画面</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>ファイル</th>
+<th>役目</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>manage.py</code></td>
+<td>Django の管理コマンドの入口（<code>python manage.py コマンド</code>）</td>
+</tr>
+<tr>
+<td><code>config/settings.py</code></td>
+<td>全体の設定</td>
+</tr>
+<tr>
+<td><code>config/urls.py</code></td>
+<td>いちばん上の URL の表</td>
+</tr>
+<tr>
+<td><code>requests_app/</code></td>
+<td>依頼の機能のアプリ</td>
+</tr>
+</tbody>
+</table>
+<h2 id="3">3. モデル: データの設計図</h2>
+<p><code>requests_app/models.py</code>:</p>
+<div class="codehilite"><div class="code-wrap" id="code-4"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">django.conf</span><span class="w"> </span><span class="kn">import</span> <span class="n">settings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">django.db</span><span class="w"> </span><span class="kn">import</span> <span class="n">models</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Request</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;依頼 1 件&quot;&quot;&quot;</span>
+
+    <span class="k">class</span><span class="w"> </span><span class="nc">Status</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">TextChoices</span><span class="p">):</span>
+        <span class="c1"># データベースに入る値（英字）と、画面に出す名前（日本語）</span>
+        <span class="n">CIRCULATING</span> <span class="o">=</span> <span class="s2">&quot;circulating&quot;</span><span class="p">,</span> <span class="s2">&quot;回覧中&quot;</span>
+        <span class="n">RETURNED</span> <span class="o">=</span> <span class="s2">&quot;returned&quot;</span><span class="p">,</span> <span class="s2">&quot;差し戻し中&quot;</span>
+        <span class="n">PULLED_BACK</span> <span class="o">=</span> <span class="s2">&quot;pulled_back&quot;</span><span class="p">,</span> <span class="s2">&quot;引き戻し中&quot;</span>
+        <span class="n">APPROVED</span> <span class="o">=</span> <span class="s2">&quot;approved&quot;</span><span class="p">,</span> <span class="s2">&quot;回覧完了&quot;</span>
+        <span class="n">IN_PROGRESS</span> <span class="o">=</span> <span class="s2">&quot;in_progress&quot;</span><span class="p">,</span> <span class="s2">&quot;対応中&quot;</span>
+        <span class="n">DONE</span> <span class="o">=</span> <span class="s2">&quot;done&quot;</span><span class="p">,</span> <span class="s2">&quot;完了&quot;</span>
+        <span class="n">WITHDRAWN</span> <span class="o">=</span> <span class="s2">&quot;withdrawn&quot;</span><span class="p">,</span> <span class="s2">&quot;取り下げ&quot;</span>
+
+    <span class="n">title</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="s2">&quot;件名&quot;</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+    <span class="n">detail</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">TextField</span><span class="p">(</span><span class="s2">&quot;内容&quot;</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">due_date</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateField</span><span class="p">(</span><span class="s2">&quot;希望の納期&quot;</span><span class="p">)</span>
+    <span class="n">status</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="s2">&quot;状態&quot;</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="n">Status</span><span class="o">.</span><span class="n">choices</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">Status</span><span class="o">.</span><span class="n">CIRCULATING</span><span class="p">)</span>
+    <span class="n">requester</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span>
+        <span class="n">settings</span><span class="o">.</span><span class="n">AUTH_USER_MODEL</span><span class="p">,</span> <span class="n">verbose_name</span><span class="o">=</span><span class="s2">&quot;依頼者&quot;</span><span class="p">,</span> <span class="n">on_delete</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">PROTECT</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s2">&quot;requests&quot;</span>
+    <span class="p">)</span>
+    <span class="n">created_at</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="s2">&quot;作った日時&quot;</span><span class="p">,</span> <span class="n">auto_now_add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">class</span><span class="w"> </span><span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">verbose_name</span> <span class="o">=</span> <span class="s2">&quot;依頼&quot;</span>
+        <span class="n">verbose_name_plural</span> <span class="o">=</span> <span class="s2">&quot;依頼&quot;</span>
+        <span class="n">ordering</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;-created_at&quot;</span><span class="p">]</span>  <span class="c1"># 新しい順</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pk</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">&quot;</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Approval</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;回覧の 1 人分（だれが、何番目に、どうしたか）&quot;&quot;&quot;</span>
+
+    <span class="k">class</span><span class="w"> </span><span class="nc">Decision</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">TextChoices</span><span class="p">):</span>
+        <span class="n">WAITING</span> <span class="o">=</span> <span class="s2">&quot;waiting&quot;</span><span class="p">,</span> <span class="s2">&quot;待ち&quot;</span>
+        <span class="n">APPROVED</span> <span class="o">=</span> <span class="s2">&quot;approved&quot;</span><span class="p">,</span> <span class="s2">&quot;承認&quot;</span>
+        <span class="n">RETURNED</span> <span class="o">=</span> <span class="s2">&quot;returned&quot;</span><span class="p">,</span> <span class="s2">&quot;差し戻し&quot;</span>
+
+    <span class="n">request</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">Request</span><span class="p">,</span> <span class="n">verbose_name</span><span class="o">=</span><span class="s2">&quot;依頼&quot;</span><span class="p">,</span> <span class="n">on_delete</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">CASCADE</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s2">&quot;approvals&quot;</span><span class="p">)</span>
+    <span class="n">order</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">PositiveSmallIntegerField</span><span class="p">(</span><span class="s2">&quot;順番&quot;</span><span class="p">)</span>
+    <span class="n">approver</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">AUTH_USER_MODEL</span><span class="p">,</span> <span class="n">verbose_name</span><span class="o">=</span><span class="s2">&quot;承認者&quot;</span><span class="p">,</span> <span class="n">on_delete</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">PROTECT</span><span class="p">)</span>
+    <span class="n">decision</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="s2">&quot;結果&quot;</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="n">Decision</span><span class="o">.</span><span class="n">choices</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">Decision</span><span class="o">.</span><span class="n">WAITING</span><span class="p">)</span>
+    <span class="n">decided_at</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="s2">&quot;決めた日時&quot;</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">class</span><span class="w"> </span><span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">verbose_name</span> <span class="o">=</span> <span class="s2">&quot;回覧&quot;</span>
+        <span class="n">verbose_name_plural</span> <span class="o">=</span> <span class="s2">&quot;回覧&quot;</span>
+        <span class="n">ordering</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;request&quot;</span><span class="p">,</span> <span class="s2">&quot;order&quot;</span><span class="p">]</span>
+        <span class="n">constraints</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="c1"># 1 つの依頼の中で、順番は重ならない</span>
+            <span class="n">models</span><span class="o">.</span><span class="n">UniqueConstraint</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;request&quot;</span><span class="p">,</span> <span class="s2">&quot;order&quot;</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;unique_order_per_request&quot;</span><span class="p">),</span>
+        <span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">request_id</span><span class="si">}</span><span class="s2"> の </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="si">}</span><span class="s2"> 番目&quot;</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>書き方</th>
+<th>意味</th>
+<th>データベースでは（onprem の 02）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>class Request(models.Model):</code></td>
+<td>1 つのモデル ＝ 1 つのテーブル</td>
+<td><code>CREATE TABLE</code></td>
+</tr>
+<tr>
+<td><code>models.CharField("件名", max_length=100)</code></td>
+<td>文字（100 文字まで）。最初の文字は画面に出す名前</td>
+<td><code>varchar(100)</code></td>
+</tr>
+<tr>
+<td><code>models.TextField(blank=True)</code></td>
+<td>長い文字。<code>blank=True</code> は「空でもよい」</td>
+<td><code>text</code></td>
+</tr>
+<tr>
+<td><code>models.DateField</code>・<code>DateTimeField</code></td>
+<td>日付・日時</td>
+<td><code>date</code>・<code>timestamp</code></td>
+</tr>
+<tr>
+<td><code>models.TextChoices</code></td>
+<td>決まった値（DB に入る英字と、画面の日本語の組）</td>
+<td><code>CHECK</code> に近い（Django が確かめる）</td>
+</tr>
+<tr>
+<td><code>models.ForeignKey(..., on_delete=models.PROTECT)</code></td>
+<td>外部キー。<code>PROTECT</code> は「依頼がある社員は消せない」</td>
+<td><code>REFERENCES</code></td>
+</tr>
+<tr>
+<td><code>on_delete=models.CASCADE</code></td>
+<td>依頼を消したら、その回覧も一緒に消える</td>
+<td><code>ON DELETE CASCADE</code></td>
+</tr>
+<tr>
+<td><code>auto_now_add=True</code></td>
+<td>作ったときの日時を、自動で入れる</td>
+<td><code>DEFAULT now()</code> に近い</td>
+</tr>
+<tr>
+<td><code>class Meta: ordering = ["-created_at"]</code></td>
+<td>いつもの並べ方（新しい順）</td>
+<td><code>ORDER BY</code></td>
+</tr>
+<tr>
+<td><code>UniqueConstraint(...)</code></td>
+<td>1 つの依頼の中で、順番が重ならない</td>
+<td><code>UNIQUE</code></td>
+</tr>
+<tr>
+<td><code>settings.AUTH_USER_MODEL</code></td>
+<td>Django のユーザー（ログインする人）</td>
+<td><code>auth_user</code> テーブル</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>状態の値を英字にする理由:</strong> データベースに入る値（<code>"circulating"</code>）と、画面に出す名前（<code>"回覧中"</code>）を分けておくと、名前を変えたくなったときに、データを書きかえずに済みます。</p>
+</blockquote>
+<h2 id="4">4. マイグレーション: テーブルを作る</h2>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/L05-03_migration.webp" alt="models.pyを書き、makemigrationsで変更の手順書0001・0002を作り、migrateでテーブルができる" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図4-1: モデルを書く → 手順書を作る → データベースに当てる</div>
+</div>
+
+<div class="codehilite"><div class="code-wrap" id="code-5"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">manage</span><span class="p">.</span><span class="n">py</span> <span class="n">makemigrations</span> <span class="n">requests_app</span>
+<span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">manage</span><span class="p">.</span><span class="n">py</span> <span class="n">migrate</span>
+</code></pre></div></div>
+
+<p>実際の出力（<code>makemigrations</code>）:</p>
+<div class="codehilite"><div class="code-wrap" id="code-6"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Migrations for &#39;requests_app&#39;:
+  requests_app\migrations\0001_initial.py
+    + Create model Request
+    + Create model Approval
+</code></pre></div></div>
+
+<p>実際の出力（<code>migrate</code>。最初の 1 回は、Django が最初から持っているテーブルも作るので長い。途中を省略）:</p>
+<div class="codehilite"><div class="code-wrap" id="code-7"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Operations to perform:
+  Apply all migrations: admin, auth, contenttypes, requests_app, sessions
+Running migrations:
+  Applying contenttypes.0001_initial... OK
+  Applying auth.0001_initial... OK
+  …
+  Applying requests_app.0001_initial... OK
+  Applying sessions.0001_initial... OK
+</code></pre></div></div>
+
+<p>裏で作られる SQL は、<code>sqlmigrate</code> で見られます（実際の出力の最初の所）。</p>
+<div class="codehilite"><div class="code-wrap" id="code-8"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>CREATE TABLE &quot;requests_app_request&quot; (&quot;id&quot; integer NOT NULL PRIMARY KEY AUTOINCREMENT, &quot;title&quot; varchar(100) NOT NULL, &quot;detail&quot; text NOT NULL, &quot;due_date&quot; date NOT NULL, &quot;status&quot; varchar(20) NOT NULL, &quot;created_at&quot; datetime NOT NULL, &quot;requester_id&quot; integer NOT NULL REFERENCES &quot;auth_user&quot; (&quot;id&quot;) DEFERRABLE INITIALLY DEFERRED);
+</code></pre></div></div>
+
+<ul>
+<li><strong>モデルを直したら、必ず <code>makemigrations</code> → <code>migrate</code></strong> の順に動かします。<code>makemigrations</code> が作る <code>0001_initial.py</code> などの手順書は、<strong>Git に入れて、ほかの人やサーバーと共有します</strong>（サーバーでは <code>migrate</code> だけを動かす。onprem の 05 の 9.5）。</li>
+<li>手順書を手で書きかえたり、消したりしないでください。データベースと手順書の記録が食い違います。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> マイグレーション（モデルの変更を、番号付きの手順書にして、データベースに順に当てる仕組み）</p>
+</blockquote>
+<h2 id="5">5. 管理画面</h2>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/L05-05_admin.webp" alt="モデルをadmin.pyに登録すると、一覧と追加・編集のフォームの管理画面が自動でできる。管理者だけ" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図5-1: モデルを登録するだけで、管理画面ができる</div>
+</div>
+
+<p><code>requests_app/admin.py</code>:</p>
+<div class="codehilite"><div class="code-wrap" id="code-9"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">django.contrib</span><span class="w"> </span><span class="kn">import</span> <span class="n">admin</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Approval</span><span class="p">,</span> <span class="n">Request</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ApprovalInline</span><span class="p">(</span><span class="n">admin</span><span class="o">.</span><span class="n">TabularInline</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;依頼の画面の中に、回覧の表を並べる&quot;&quot;&quot;</span>
+
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Approval</span>
+    <span class="n">extra</span> <span class="o">=</span> <span class="mi">0</span>
+
+
+<span class="nd">@admin</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">Request</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RequestAdmin</span><span class="p">(</span><span class="n">admin</span><span class="o">.</span><span class="n">ModelAdmin</span><span class="p">):</span>
+    <span class="n">list_display</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;title&quot;</span><span class="p">,</span> <span class="s2">&quot;status&quot;</span><span class="p">,</span> <span class="s2">&quot;due_date&quot;</span><span class="p">,</span> <span class="s2">&quot;requester&quot;</span><span class="p">,</span> <span class="s2">&quot;created_at&quot;</span><span class="p">]</span>  <span class="c1"># 一覧に出す列</span>
+    <span class="n">list_filter</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]</span>                                                          <span class="c1"># 右の絞り込み</span>
+    <span class="n">search_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">,</span> <span class="s2">&quot;detail&quot;</span><span class="p">]</span>                                               <span class="c1"># 検索の対象</span>
+    <span class="n">inlines</span> <span class="o">=</span> <span class="p">[</span><span class="n">ApprovalInline</span><span class="p">]</span>
+</code></pre></div></div>
+
+<div class="codehilite"><div class="code-wrap" id="code-10"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 管理画面に入れる人（スーパーユーザー）を作る。名前とパスワードを聞かれる</span>
+<span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">manage</span><span class="p">.</span><span class="n">py</span> <span class="n">createsuperuser</span>
+
+<span class="c"># 開発用のサーバーを起動する（止めるときは Ctrl+C）</span>
+<span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">manage</span><span class="p">.</span><span class="n">py</span> <span class="n">runserver</span>
+</code></pre></div></div>
+
+<p><code>http://127.0.0.1:8000/admin/</code> を開いて、ログインします。</p>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/L05-s1_admin_list.webp" alt="Django管理サイトの依頼の一覧。件名・状態・希望の納期・依頼者・作った日時の列と、右に状態で絞り込むフィルター" style="width: 100%; border: 1px solid #cbd5e1;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図5-2: 依頼の一覧（list_display の列と、list_filter の絞り込み）</div>
+</div>
+
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/L05-s2_admin_change.webp" alt="依頼を変更する画面。件名・内容・希望の納期・状態・依頼者と、下に回覧の表（順番・承認者・結果）" style="width: 100%; border: 1px solid #cbd5e1;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図5-3: 1 件の画面。回覧（Approval）も、同じ画面の下に並ぶ（inlines）</div>
+</div>
+
+<blockquote>
+<p><strong>管理画面は、管理者のための道具です。</strong> 社員がふだん使う画面ではありません。状態を直接書きかえると、メールが送られないなど、アプリの決まりを飛ばしてしまいます（onprem の 02 の 2.5 と同じ注意）。</p>
+</blockquote>
+<h2 id="6-orm-python">6. ORM: Python でデータベースを操作する</h2>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/L05-04_orm.webp" alt="Pythonの Request.objects.filter(status='回覧中') を、ORMがSQLのSELECTに通訳してデータベースに送る" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図6-1: ORM は、Python の書き方を SQL に通訳する</div>
+</div>
+
+<p><code>orm_demo.py</code>（練習用のデータを作り直して、いろいろな操作をする）:</p>
+<div class="codehilite"><div class="code-wrap" id="code-11"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="sd">&quot;&quot;&quot;ORM の練習。使い方: .venv\\Scripts\\python.exe manage.py shell -c &quot;import orm_demo&quot;</span>
+<span class="sd">（練習用のデータを作り直すので、何度動かしても同じ結果になる）&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">date</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">django.contrib.auth</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_user_model</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">django.db.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Count</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">requests_app.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Approval</span><span class="p">,</span> <span class="n">Request</span>
+
+<span class="n">User</span> <span class="o">=</span> <span class="n">get_user_model</span><span class="p">()</span>
+
+<span class="c1"># 0. 練習用のデータを作り直す</span>
+<span class="n">Request</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+<span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">username__in</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;012345&quot;</span><span class="p">,</span> <span class="s2">&quot;012346&quot;</span><span class="p">,</span> <span class="s2">&quot;012347&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+<span class="n">yamada</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create_user</span><span class="p">(</span><span class="s2">&quot;012345&quot;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s2">&quot;practice-only-1&quot;</span><span class="p">,</span> <span class="n">first_name</span><span class="o">=</span><span class="s2">&quot;太郎&quot;</span><span class="p">,</span> <span class="n">last_name</span><span class="o">=</span><span class="s2">&quot;山田&quot;</span><span class="p">)</span>
+<span class="n">sato</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create_user</span><span class="p">(</span><span class="s2">&quot;012346&quot;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s2">&quot;practice-only-2&quot;</span><span class="p">,</span> <span class="n">first_name</span><span class="o">=</span><span class="s2">&quot;花子&quot;</span><span class="p">,</span> <span class="n">last_name</span><span class="o">=</span><span class="s2">&quot;佐藤&quot;</span><span class="p">)</span>
+<span class="n">suzuki</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create_user</span><span class="p">(</span><span class="s2">&quot;012347&quot;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s2">&quot;practice-only-3&quot;</span><span class="p">,</span> <span class="n">first_name</span><span class="o">=</span><span class="s2">&quot;一郎&quot;</span><span class="p">,</span> <span class="n">last_name</span><span class="o">=</span><span class="s2">&quot;鈴木&quot;</span><span class="p">)</span>
+
+<span class="c1"># 1. 作る（INSERT）</span>
+<span class="n">r1</span> <span class="o">=</span> <span class="n">Request</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;治具の製作&quot;</span><span class="p">,</span> <span class="n">due_date</span><span class="o">=</span><span class="n">date</span><span class="p">(</span><span class="mi">2026</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">requester</span><span class="o">=</span><span class="n">yamada</span><span class="p">)</span>
+<span class="n">r2</span> <span class="o">=</span> <span class="n">Request</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;部品の追加工&quot;</span><span class="p">,</span> <span class="n">due_date</span><span class="o">=</span><span class="n">date</span><span class="p">(</span><span class="mi">2026</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">31</span><span class="p">),</span> <span class="n">requester</span><span class="o">=</span><span class="n">yamada</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">Request</span><span class="o">.</span><span class="n">Status</span><span class="o">.</span><span class="n">APPROVED</span><span class="p">)</span>
+<span class="n">r3</span> <span class="o">=</span> <span class="n">Request</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;棚の取り付け&quot;</span><span class="p">,</span> <span class="n">due_date</span><span class="o">=</span><span class="n">date</span><span class="p">(</span><span class="mi">2026</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="n">requester</span><span class="o">=</span><span class="n">sato</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">Request</span><span class="o">.</span><span class="n">Status</span><span class="o">.</span><span class="n">RETURNED</span><span class="p">)</span>
+<span class="n">Approval</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">request</span><span class="o">=</span><span class="n">r1</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">approver</span><span class="o">=</span><span class="n">sato</span><span class="p">)</span>
+<span class="n">Approval</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">request</span><span class="o">=</span><span class="n">r1</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">approver</span><span class="o">=</span><span class="n">suzuki</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;作った件数:&quot;</span><span class="p">,</span> <span class="n">Request</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">count</span><span class="p">())</span>
+
+<span class="c1"># 2. 絞る（WHERE）・並べる（ORDER BY）</span>
+<span class="n">circulating</span> <span class="o">=</span> <span class="n">Request</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="n">Request</span><span class="o">.</span><span class="n">Status</span><span class="o">.</span><span class="n">CIRCULATING</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;回覧中:&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">title</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">circulating</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;山田さんの依頼（納期の近い順）:&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">title</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">Request</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">requester</span><span class="o">=</span><span class="n">yamada</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;due_date&quot;</span><span class="p">)])</span>
+
+<span class="c1"># 3. 裏で作られる SQL を見る</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SQL:&quot;</span><span class="p">,</span> <span class="n">circulating</span><span class="o">.</span><span class="n">query</span><span class="p">)</span>
+
+<span class="c1"># 4. 1 件を取り出して、直す（UPDATE）</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">Request</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">r1</span><span class="o">.</span><span class="n">pk</span><span class="p">)</span>
+<span class="n">r</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">Request</span><span class="o">.</span><span class="n">Status</span><span class="o">.</span><span class="n">RETURNED</span>
+<span class="n">r</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="s2">&quot;→&quot;</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">get_status_display</span><span class="p">())</span>
+
+<span class="c1"># 5. 状態ごとの件数（GROUP BY）</span>
+<span class="n">counts</span> <span class="o">=</span> <span class="n">Request</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="s2">&quot;status&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">Count</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;status&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;状態ごとの件数:&quot;</span><span class="p">,</span> <span class="p">{</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]:</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;n&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">counts</span><span class="p">})</span>
+
+<span class="c1"># 6. つながったデータ（回覧の順に、承認者の名前）</span>
+<span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">Approval</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">request</span><span class="o">=</span><span class="n">r1</span><span class="p">)</span><span class="o">.</span><span class="n">select_related</span><span class="p">(</span><span class="s2">&quot;approver&quot;</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">a</span><span class="o">.</span><span class="n">order</span><span class="si">}</span><span class="s2"> 番目: </span><span class="si">{</span><span class="n">a</span><span class="o">.</span><span class="n">approver</span><span class="o">.</span><span class="n">get_full_name</span><span class="p">()</span><span class="si">}</span><span class="s2">（</span><span class="si">{</span><span class="n">a</span><span class="o">.</span><span class="n">get_decision_display</span><span class="p">()</span><span class="si">}</span><span class="s2">）&quot;</span><span class="p">)</span>
+
+<span class="c1"># 7. 無い物を get すると、エラーになる</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">Request</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="mi">999</span><span class="p">)</span>
+<span class="k">except</span> <span class="n">Request</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;999 番の依頼は無い&quot;</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>動かした結果（<code>.\.venv\Scripts\python.exe manage.py shell -c "import orm_demo"</code>）:</p>
+<div class="codehilite"><div class="code-wrap" id="code-12"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>作った件数: 3
+回覧中: [&#39;治具の製作&#39;]
+山田さんの依頼（納期の近い順）: [&#39;部品の追加工&#39;, &#39;治具の製作&#39;]
+SQL: SELECT &quot;requests_app_request&quot;.&quot;id&quot;, &quot;requests_app_request&quot;.&quot;title&quot;, &quot;requests_app_request&quot;.&quot;detail&quot;, &quot;requests_app_request&quot;.&quot;due_date&quot;, &quot;requests_app_request&quot;.&quot;status&quot;, &quot;requests_app_request&quot;.&quot;requester_id&quot;, &quot;requests_app_request&quot;.&quot;created_at&quot; FROM &quot;requests_app_request&quot; WHERE &quot;requests_app_request&quot;.&quot;status&quot; = circulating ORDER BY &quot;requests_app_request&quot;.&quot;created_at&quot; DESC
+治具の製作 → 差し戻し中
+状態ごとの件数: {&#39;approved&#39;: 1, &#39;returned&#39;: 2}
+  1 番目: 花子 佐藤（待ち）
+  2 番目: 一郎 鈴木（待ち）
+999 番の依頼は無い
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>ORM</th>
+<th>意味</th>
+<th>SQL（onprem の 02）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Request.objects.create(...)</code></td>
+<td>作る</td>
+<td><code>INSERT</code></td>
+</tr>
+<tr>
+<td><code>.filter(status=...)</code></td>
+<td>絞る</td>
+<td><code>WHERE</code></td>
+</tr>
+<tr>
+<td><code>.order_by("due_date")</code>・<code>"-due_date"</code></td>
+<td>並べる（<code>-</code> は大きい順）</td>
+<td><code>ORDER BY</code></td>
+</tr>
+<tr>
+<td><code>.get(pk=1)</code></td>
+<td>1 件だけ取り出す。<strong>無い・2 件以上はエラー</strong></td>
+<td><code>WHERE id = 1</code></td>
+</tr>
+<tr>
+<td><code>r.save()</code></td>
+<td>直した物を保存</td>
+<td><code>UPDATE</code></td>
+</tr>
+<tr>
+<td><code>.values("status").annotate(n=Count("id"))</code></td>
+<td>状態ごとに数える</td>
+<td><code>GROUP BY</code></td>
+</tr>
+<tr>
+<td><code>.select_related("approver")</code></td>
+<td>つながった表も、1 回でまとめて読む</td>
+<td><code>JOIN</code></td>
+</tr>
+<tr>
+<td><code>.count()</code></td>
+<td>数</td>
+<td><code>COUNT(*)</code></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><code>str(qs.query)</code> で見える SQL は、<strong>読むための物</strong>です（<code>= circulating</code> のように、値の <code>'</code> が付いていない）。本当は、値は SQL と<strong>別に</strong>データベースへ渡されます。だから、入力に <code>'</code> や SQL の文字が入っていても、<strong>SQL インジェクション</strong>（10）が起きません。</li>
+<li>名前が「花子 佐藤」と、<strong>名・姓の順</strong>に出ています。Django の <code>get_full_name()</code> は「名 姓」の順で作るためです。日本の名前の順にしたいときは、06 で、氏名の項目を自分で持つ作りにします。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> ORM（オーアールエム。Object-Relational Mapping：プログラムの書き方で、データベースの読み書きをする仕組み。SQL は ORM が作る）</p>
+</blockquote>
+<!-- -->
+
+<blockquote>
+<p><strong>用語:</strong> クエリセット（QuerySet：<code>filter</code> などで作る「データベースへのお願いの下書き」。本当に読むのは、<code>for</code> で回すときなど、使うときになってから）</p>
+</blockquote>
+<h2 id="7-html">7. HTML の画面（テンプレート）とログイン</h2>
+<p><code>requests_app/views.py</code>:</p>
+<div class="codehilite"><div class="code-wrap" id="code-13"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">django.contrib.auth.decorators</span><span class="w"> </span><span class="kn">import</span> <span class="n">login_required</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">django.shortcuts</span><span class="w"> </span><span class="kn">import</span> <span class="n">render</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rest_framework</span><span class="w"> </span><span class="kn">import</span> <span class="n">permissions</span><span class="p">,</span> <span class="n">viewsets</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Request</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.serializers</span><span class="w"> </span><span class="kn">import</span> <span class="n">RequestSerializer</span>
+
+
+<span class="nd">@login_required</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">request_list</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;自分の依頼の一覧（Django のテンプレートで HTML を作る）&quot;&quot;&quot;</span>
+    <span class="n">items</span> <span class="o">=</span> <span class="n">Request</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">requester</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s2">&quot;requests_app/request_list.html&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;items&quot;</span><span class="p">:</span> <span class="n">items</span><span class="p">})</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">RequestViewSet</span><span class="p">(</span><span class="n">viewsets</span><span class="o">.</span><span class="n">ModelViewSet</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;依頼の API（JSON）。一覧・1 件・作る・直す・消すを、まとめて用意する&quot;&quot;&quot;</span>
+
+    <span class="n">serializer_class</span> <span class="o">=</span> <span class="n">RequestSerializer</span>
+    <span class="n">permission_classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">permissions</span><span class="o">.</span><span class="n">IsAuthenticated</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_queryset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># 自分の依頼だけ（ほかの人の依頼は、見えも直せもしない）</span>
+        <span class="k">return</span> <span class="n">Request</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">requester</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span><span class="o">.</span><span class="n">select_related</span><span class="p">(</span><span class="s2">&quot;requester&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">perform_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">serializer</span><span class="p">):</span>
+        <span class="c1"># 依頼者は、送られてきた値ではなく、ログインしている人にする</span>
+        <span class="n">serializer</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">requester</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p><code>requests_app/urls.py</code>（アプリの URL の表）:</p>
+<div class="codehilite"><div class="code-wrap" id="code-14"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">django.urls</span><span class="w"> </span><span class="kn">import</span> <span class="n">include</span><span class="p">,</span> <span class="n">path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rest_framework.routers</span><span class="w"> </span><span class="kn">import</span> <span class="n">DefaultRouter</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">views</span>
+
+<span class="n">router</span> <span class="o">=</span> <span class="n">DefaultRouter</span><span class="p">()</span>
+<span class="n">router</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;requests&quot;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">RequestViewSet</span><span class="p">,</span> <span class="n">basename</span><span class="o">=</span><span class="s2">&quot;request&quot;</span><span class="p">)</span>
+
+<span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">path</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">request_list</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;request_list&quot;</span><span class="p">),</span>
+    <span class="n">path</span><span class="p">(</span><span class="s2">&quot;api/&quot;</span><span class="p">,</span> <span class="n">include</span><span class="p">(</span><span class="n">router</span><span class="o">.</span><span class="n">urls</span><span class="p">)),</span>
+<span class="p">]</span>
+</code></pre></div></div>
+
+<p><code>config/urls.py</code>（いちばん上の URL の表。<code>accounts/</code> は Django に付いているログイン・ログアウトの画面）:</p>
+<div class="codehilite"><div class="code-wrap" id="code-15"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">path</span><span class="p">(</span><span class="s1">&#39;admin/&#39;</span><span class="p">,</span> <span class="n">admin</span><span class="o">.</span><span class="n">site</span><span class="o">.</span><span class="n">urls</span><span class="p">),</span>
+    <span class="n">path</span><span class="p">(</span><span class="s1">&#39;accounts/&#39;</span><span class="p">,</span> <span class="n">include</span><span class="p">(</span><span class="s1">&#39;django.contrib.auth.urls&#39;</span><span class="p">)),</span>
+    <span class="n">path</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">include</span><span class="p">(</span><span class="s1">&#39;requests_app.urls&#39;</span><span class="p">)),</span>
+<span class="p">]</span>
+</code></pre></div></div>
+
+<p><code>requests_app/templates/requests_app/request_list.html</code>:</p>
+<div class="codehilite"><div class="code-wrap" id="code-16"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>{% load static %}
+<span class="cp">&lt;!doctype html&gt;</span>
+<span class="p">&lt;</span><span class="nt">html</span> <span class="na">lang</span><span class="o">=</span><span class="s">&quot;ja&quot;</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">charset</span><span class="o">=</span><span class="s">&quot;utf-8&quot;</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>自分の依頼<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">&quot;stylesheet&quot;</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;{% static &#39;style.css&#39; %}&quot;</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">header</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;site-header&quot;</span><span class="p">&gt;</span>
+      <span class="p">&lt;</span><span class="nt">strong</span><span class="p">&gt;</span>依頼・承認アプリ<span class="p">&lt;/</span><span class="nt">strong</span><span class="p">&gt;</span>
+      <span class="p">&lt;</span><span class="nt">nav</span><span class="p">&gt;&lt;</span><span class="nt">span</span><span class="p">&gt;</span>{{ user.get_full_name|default:user.username }} さん<span class="p">&lt;/</span><span class="nt">span</span><span class="p">&gt;&lt;/</span><span class="nt">nav</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">header</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">main</span><span class="p">&gt;</span>
+      <span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;</span>自分の依頼<span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
+      <span class="p">&lt;</span><span class="nt">table</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">thead</span><span class="p">&gt;</span>
+          <span class="p">&lt;</span><span class="nt">tr</span><span class="p">&gt;&lt;</span><span class="nt">th</span><span class="p">&gt;</span>番号<span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;&lt;</span><span class="nt">th</span><span class="p">&gt;</span>件名<span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;&lt;</span><span class="nt">th</span><span class="p">&gt;</span>希望の納期<span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;&lt;</span><span class="nt">th</span><span class="p">&gt;</span>状態<span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;&lt;/</span><span class="nt">tr</span><span class="p">&gt;</span>
+        <span class="p">&lt;/</span><span class="nt">thead</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">tbody</span><span class="p">&gt;</span>
+          {% for r in items %}
+            <span class="p">&lt;</span><span class="nt">tr</span><span class="p">&gt;</span>
+              <span class="p">&lt;</span><span class="nt">td</span><span class="p">&gt;</span>{{ r.id }}<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
+              <span class="p">&lt;</span><span class="nt">td</span><span class="p">&gt;</span>{{ r.title }}<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
+              <span class="p">&lt;</span><span class="nt">td</span><span class="p">&gt;</span>{{ r.due_date|date:&quot;Y-m-d&quot; }}<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
+              <span class="p">&lt;</span><span class="nt">td</span><span class="p">&gt;&lt;</span><span class="nt">span</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;badge badge-{{ r.status }}&quot;</span><span class="p">&gt;</span>{{ r.get_status_display }}<span class="p">&lt;/</span><span class="nt">span</span><span class="p">&gt;&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
+            <span class="p">&lt;/</span><span class="nt">tr</span><span class="p">&gt;</span>
+          {% empty %}
+            <span class="p">&lt;</span><span class="nt">tr</span><span class="p">&gt;&lt;</span><span class="nt">td</span> <span class="na">colspan</span><span class="o">=</span><span class="s">&quot;4&quot;</span><span class="p">&gt;</span>依頼はまだありません<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;&lt;/</span><span class="nt">tr</span><span class="p">&gt;</span>
+          {% endfor %}
+        <span class="p">&lt;/</span><span class="nt">tbody</span><span class="p">&gt;</span>
+      <span class="p">&lt;/</span><span class="nt">table</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">main</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>テンプレートの書き方</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>{{ r.title }}</code></td>
+<td>値を埋め込む。<strong><code>&lt;</code> などの記号は、自動で無害な形に変わる</strong>（XSS を防ぐ。10）</td>
+</tr>
+<tr>
+<td><code>{% for r in items %} … {% empty %} … {% endfor %}</code></td>
+<td>くり返し。<code>empty</code> は 1 件も無いとき</td>
+</tr>
+<tr>
+<td><code>{{ r.due_date\|date:"Y-m-d" }}</code></td>
+<td>日付の書き方を決める（フィルター）</td>
+</tr>
+<tr>
+<td><code>{{ r.get_status_display }}</code></td>
+<td>状態の、画面に出す名前（回覧中）</td>
+</tr>
+<tr>
+<td><code>{% static 'style.css' %}</code></td>
+<td>CSS などの置き場所の URL</td>
+</tr>
+<tr>
+<td><code>{% csrf_token %}</code>（ログインの画面）</td>
+<td>フォームに、CSRF の札を入れる（10）</td>
+</tr>
+</tbody>
+</table>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/L05-s3_login.webp" alt="社員番号とパスワードを入れるログインの画面" style="width: 100%; border: 1px solid #cbd5e1;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図7-1: ログインの画面（Django に付いている LoginView と、自分で書いたテンプレート）</div>
+</div>
+
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/L05-s4_list.webp" alt="山田太郎さんでログインした、自分の依頼の一覧。部品の追加工（回覧完了）と治具の製作（差し戻し中）" style="width: 100%; border: 1px solid #cbd5e1;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図7-2: 社員番号 012345 でログインすると、自分の依頼だけが出る</div>
+</div>
+
+<ul>
+<li><code>@login_required</code> を付けたビューは、ログインしていないと、ログインの画面に案内されます。</li>
+<li><code>Request.objects.filter(requester=request.user)</code> で、<strong>自分の依頼だけ</strong>を出しています。ほかの人の依頼が見えないようにするのは、画面ではなく、<strong>サーバーの仕事</strong>です（10）。</li>
+</ul>
+<h2 id="8-json-apidjango-rest-framework">8. JSON の API（Django REST framework）</h2>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/L05-06_serializer.webp" alt="シリアライザが、モデルのデータをJSONにし、JSONを確かめてから保存する" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図8-1: シリアライザは、データと JSON の変換と、入力の確かめの係</div>
+</div>
+
+<p>React の画面（03・06）は、サーバーと JSON でやり取りします。JSON の API は、<strong>Django REST framework（DRF）</strong>で作ります。</p>
+<p><code>requests_app/serializers.py</code>:</p>
+<div class="codehilite"><div class="code-wrap" id="code-17"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">rest_framework</span><span class="w"> </span><span class="kn">import</span> <span class="n">serializers</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Request</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">RequestSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;依頼 ⇔ JSON の変換と、入力の確かめ&quot;&quot;&quot;</span>
+
+    <span class="n">status_label</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">source</span><span class="o">=</span><span class="s2">&quot;get_status_display&quot;</span><span class="p">,</span> <span class="n">read_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">requester_name</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">source</span><span class="o">=</span><span class="s2">&quot;requester.get_full_name&quot;</span><span class="p">,</span> <span class="n">read_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">class</span><span class="w"> </span><span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">Request</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;title&quot;</span><span class="p">,</span> <span class="s2">&quot;detail&quot;</span><span class="p">,</span> <span class="s2">&quot;due_date&quot;</span><span class="p">,</span> <span class="s2">&quot;status&quot;</span><span class="p">,</span> <span class="s2">&quot;status_label&quot;</span><span class="p">,</span> <span class="s2">&quot;requester_name&quot;</span><span class="p">,</span> <span class="s2">&quot;created_at&quot;</span><span class="p">]</span>
+        <span class="n">read_only_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">,</span> <span class="s2">&quot;created_at&quot;</span><span class="p">]</span>  <span class="c1"># 状態は、画面から直接は変えさせない</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="n">serializers</span><span class="o">.</span><span class="n">ValidationError</span><span class="p">(</span><span class="s2">&quot;件名を入れてください&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">value</span>
+</code></pre></div></div>
+
+<table>
+<thead>
+<tr>
+<th>書き方</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ModelSerializer</code></td>
+<td>モデルから、JSON の形と確かめを自動で作る</td>
+</tr>
+<tr>
+<td><code>fields = [...]</code></td>
+<td>JSON に出す項目（<strong>出さない項目は書かない</strong>。パスワードなどを漏らさない）</td>
+</tr>
+<tr>
+<td><code>read_only_fields = ["status", ...]</code></td>
+<td>送られてきても、無視する項目</td>
+</tr>
+<tr>
+<td><code>source="get_status_display"</code></td>
+<td>別の値（状態の名前）を、JSON に足す</td>
+</tr>
+<tr>
+<td><code>def validate_title(...)</code></td>
+<td>項目ごとの確かめ。<code>ValidationError</code> で断る</td>
+</tr>
+</tbody>
+</table>
+<p>ビューの <code>RequestViewSet</code>（7 章の <code>views.py</code>）は、次の URL をまとめて用意します。</p>
+<table>
+<thead>
+<tr>
+<th>URL</th>
+<th>方法</th>
+<th>何をする</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/api/requests/</code></td>
+<td>GET</td>
+<td>自分の依頼の一覧</td>
+</tr>
+<tr>
+<td><code>/api/requests/</code></td>
+<td>POST</td>
+<td>依頼を作る</td>
+</tr>
+<tr>
+<td><code>/api/requests/1/</code></td>
+<td>GET・PUT・PATCH・DELETE</td>
+<td>1 件を見る・直す・消す</td>
+</tr>
+</tbody>
+</table>
+<p>ブラウザで <code>http://127.0.0.1:8000/api/requests/</code> を開くと、DRF が、人が読める画面で見せてくれます（ログインしている人の依頼だけ）。</p>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/L05-s5_api.webp" alt="Django REST frameworkの画面。Request ListにHTTP 200 OKとJSONの依頼の一覧、下に新しい依頼を送るフォーム" style="width: 100%; border: 1px solid #cbd5e1;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図8-2: DRF の画面。JSON の中身と、試しに送るフォームが出る</div>
+</div>
+
+<ul>
+<li><code>perform_create</code> で、<strong>依頼者を「ログインしている人」にしています</strong>。送られてきた JSON に別の人の番号が入っていても、使いません。</li>
+<li><code>get_queryset</code> で、<strong>自分の依頼だけ</strong>に絞っています。<code>/api/requests/3/</code> のように、ほかの人の依頼の番号を打っても、「見つからない（404）」になります。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> API（エーピーアイ：プログラムどうしがやり取りするための入口。ここでは、JSON でデータをやり取りする URL の一式）</p>
+</blockquote>
+<!-- -->
+
+<blockquote>
+<p><strong>用語:</strong> Django REST framework（DRF：Django で JSON の API を作るための部品）</p>
+</blockquote>
+<h2 id="9">9. 自動のテスト</h2>
+<p><code>requests_app/tests.py</code>:</p>
+<div class="codehilite"><div class="code-wrap" id="code-18"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">date</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">django.contrib.auth</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_user_model</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rest_framework.test</span><span class="w"> </span><span class="kn">import</span> <span class="n">APITestCase</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Request</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">RequestApiTests</span><span class="p">(</span><span class="n">APITestCase</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">User</span> <span class="o">=</span> <span class="n">get_user_model</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">yamada</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create_user</span><span class="p">(</span><span class="s2">&quot;012345&quot;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s2">&quot;pass-for-test-1&quot;</span><span class="p">,</span> <span class="n">first_name</span><span class="o">=</span><span class="s2">&quot;太郎&quot;</span><span class="p">,</span> <span class="n">last_name</span><span class="o">=</span><span class="s2">&quot;山田&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sato</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create_user</span><span class="p">(</span><span class="s2">&quot;012346&quot;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s2">&quot;pass-for-test-2&quot;</span><span class="p">)</span>
+        <span class="n">Request</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;治具の製作&quot;</span><span class="p">,</span> <span class="n">due_date</span><span class="o">=</span><span class="n">date</span><span class="p">(</span><span class="mi">2026</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">requester</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">yamada</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_ログインしていないと見られない</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/api/requests/&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="mi">403</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_自分の依頼だけが見える</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">force_authenticate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sato</span><span class="p">)</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/api/requests/&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">json</span><span class="p">(),</span> <span class="p">[])</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_依頼を作ると回覧中になり依頼者は自分になる</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">force_authenticate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">yamada</span><span class="p">)</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/api/requests/&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;棚の取り付け&quot;</span><span class="p">,</span> <span class="s2">&quot;due_date&quot;</span><span class="p">:</span> <span class="s2">&quot;2026-11-20&quot;</span><span class="p">,</span> <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;done&quot;</span><span class="p">})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="mi">201</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;status&quot;</span><span class="p">],</span> <span class="s2">&quot;circulating&quot;</span><span class="p">)</span>  <span class="c1"># 送った &quot;done&quot; は無視される</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;requester_name&quot;</span><span class="p">],</span> <span class="s2">&quot;太郎 山田&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_件名が空なら断る</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">force_authenticate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">yamada</span><span class="p">)</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/api/requests/&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;  &quot;</span><span class="p">,</span> <span class="s2">&quot;due_date&quot;</span><span class="p">:</span> <span class="s2">&quot;2026-11-20&quot;</span><span class="p">})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="mi">400</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertIn</span><span class="p">(</span><span class="s2">&quot;title&quot;</span><span class="p">,</span> <span class="n">res</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+</code></pre></div></div>
+
+<div class="codehilite"><div class="code-wrap" id="code-19"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">manage</span><span class="p">.</span><span class="n">py</span> <span class="n">test</span> <span class="n">requests_app</span>
+</code></pre></div></div>
+
+<p>実際の出力:</p>
+<div class="codehilite"><div class="code-wrap" id="code-20"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Found 4 test(s).
+Creating test database for alias &#39;default&#39;...
+System check identified no issues (0 silenced).
+....
+----------------------------------------------------------------------
+Ran 4 tests in 7.733s
+
+OK
+Destroying test database for alias &#39;default&#39;...
+</code></pre></div></div>
+
+<ul>
+<li>テストは、<strong>テスト専用のデータベース</strong>を作って動き、終わったら消します。本物のデータは変わりません。</li>
+<li><code>.</code> 1 つが、1 つのテストの成功です。失敗すると <code>F</code>、エラーは <code>E</code> になり、どこが違ったかが表示されます。</li>
+<li>「ログインしないと見られない」「ほかの人の依頼は見えない」「状態は送っても変えられない」のような、<strong>安全の決まりをテストにしておく</strong>と、あとで直したときに壊していないかを、すぐに確かめられます（10）。</li>
+</ul>
+<blockquote>
+<p><strong>用語:</strong> 自動のテスト（プログラムが正しく動くかを確かめる、プログラム。何度でも同じ確かめをすぐにできる）</p>
+</blockquote>
+<h2 id="10">10. よくある失敗</h2>
+<table>
+<thead>
+<tr>
+<th>症状</th>
+<th>原因</th>
+<th>直し方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>no such table: requests_app_request</code></td>
+<td><code>migrate</code> をしていない</td>
+<td><code>makemigrations</code> → <code>migrate</code></td>
+</tr>
+<tr>
+<td>モデルを直したのに、反映されない</td>
+<td><code>makemigrations</code> を忘れた</td>
+<td><code>makemigrations</code> → <code>migrate</code></td>
+</tr>
+<tr>
+<td><code>TemplateDoesNotExist</code></td>
+<td>テンプレートの置き場所・名前の違い。<code>INSTALLED_APPS</code> にアプリが無い</td>
+<td><code>requests_app/templates/requests_app/…html</code> の形か確かめる</td>
+</tr>
+<tr>
+<td>CSS が当たらない（開発用のサーバー）</td>
+<td><code>static/</code> の置き場所の違い・<code>{% load static %}</code> 忘れ</td>
+<td>アプリの中の <code>static/</code> に置く</td>
+</tr>
+<tr>
+<td>管理画面にモデルが出ない</td>
+<td><code>admin.py</code> で登録していない</td>
+<td><code>@admin.register(モデル)</code></td>
+</tr>
+<tr>
+<td><code>DoesNotExist</code></td>
+<td><code>get</code> で、無い物を取り出した</td>
+<td><code>filter(...).first()</code> を使うか、<code>try</code> で受け止める</td>
+</tr>
+<tr>
+<td><code>IntegrityError</code></td>
+<td>外部キーの相手が無い・重複してはいけない値が重なった</td>
+<td>入れる値を確かめる（onprem の 02 の 8 章と同じ考え方）</td>
+</tr>
+<tr>
+<td>API が <code>403</code></td>
+<td>ログインしていない・CSRF の札が無い（ブラウザから POST するとき）</td>
+<td>06・10</td>
+</tr>
+<tr>
+<td><code>You're accessing the development server over HTTPS</code></td>
+<td><code>runserver</code> に <code>https://</code> でつないだ</td>
+<td><code>http://127.0.0.1:8000/</code> で開く</td>
+</tr>
+<tr>
+<td>本番で <code>runserver</code> を使ってしまう</td>
+<td>開発用のサーバーは、速さも安全も、本番向けではない</td>
+<td>本番は waitress（onprem の 05）</td>
+</tr>
+</tbody>
+</table>
+<h2 id="11">11. 練習問題</h2>
+<ol>
+<li><code>Request</code> に「数量」（<code>quantity</code>、1 以上の整数）の項目を足して、<code>makemigrations</code> → <code>migrate</code> を動かしてください。管理画面に出るか確かめます（ヒント：<code>models.PositiveIntegerField("数量", default=1)</code>）。</li>
+<li>管理画面の依頼の一覧に、「希望の納期」で絞り込めるようにしてください（ヒント：<code>list_filter</code> に足す）。</li>
+<li><code>orm_demo.py</code> に、「納期が 2026-11-01 より前の依頼」を出す 1 行を足してください（ヒント：<code>filter(due_date__lt=date(2026, 11, 1))</code>）。</li>
+<li><code>tests.py</code> に、「件名が 101 文字なら断る」テストを足してください。</li>
+</ol>
+<h2 id="_2">用語の索引</h2>
+<table>
+<thead>
+<tr>
+<th>用語</th>
+<th>短い説明</th>
+<th>章</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>プロジェクト・アプリ</td>
+<td>設定の入れ物／機能の入れ物</td>
+<td>2</td>
+</tr>
+<tr>
+<td>モデル・フィールド</td>
+<td>データの設計図／その項目</td>
+<td>3</td>
+</tr>
+<tr>
+<td>TextChoices</td>
+<td>決まった値の組</td>
+<td>3</td>
+</tr>
+<tr>
+<td>マイグレーション・makemigrations・migrate</td>
+<td>テーブルの変更の手順書／作る／当てる</td>
+<td>4</td>
+</tr>
+<tr>
+<td>管理画面・スーパーユーザー</td>
+<td>管理者のための画面／何でもできる人</td>
+<td>5</td>
+</tr>
+<tr>
+<td>ORM・クエリセット</td>
+<td>Python で書く DB の操作／その下書き</td>
+<td>6</td>
+</tr>
+<tr>
+<td>ビュー・URL の表・テンプレート</td>
+<td>仕事をする関数／案内板／HTML のひな形</td>
+<td>7</td>
+</tr>
+<tr>
+<td>DRF・シリアライザ・ViewSet・API</td>
+<td>API の部品／JSON と確かめの係／API をまとめて作る仕組み／入口</td>
+<td>8</td>
+</tr>
+<tr>
+<td>テスト</td>
+<td>自動の確かめ</td>
+<td>9</td>
+</tr>
+</tbody>
+</table>
+
+<script>
+(function () {
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy") ? resolve() : reject(); } catch (e) { reject(e); }
+      document.body.removeChild(ta);
+    });
+  }
+  document.querySelectorAll(".copy-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var pre = btn.parentElement.querySelector("pre");
+      var text = pre.textContent.replace(/\n$/, "");
+      copyText(text).then(function () {
+        btn.textContent = "コピーしました";
+        btn.classList.add("done");
+        setTimeout(function () { btn.textContent = "コピー"; btn.classList.remove("done"); }, 2000);
+      }, function () { btn.textContent = "コピーできませんでした"; });
+    });
+  });
+  if (/^#code-\d+$/.test(location.hash)) {
+    var note = document.getElementById("web-note");
+    if (note) { note.hidden = false; }
+  }
+})();
+</script>
+</body>
+</html>

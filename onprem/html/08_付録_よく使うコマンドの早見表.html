@@ -1,0 +1,902 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>08_付録_よく使うコマンドの早見表</title>
+<style>
+
+@page {
+  size: A4;
+  margin: 18mm 16mm 20mm 16mm;
+  @bottom-right {
+    content: counter(page);
+    font-size: 10px;
+    color: #64748b;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  font-family: "Yu Gothic UI", "Yu Gothic", "Meiryo", "Hiragino Sans",
+               "Noto Sans JP", "Segoe UI", system-ui, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.75;
+  color: #1e293b;
+  background: #ffffff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #0f172a;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 1.4em 0 0.6em;
+  page-break-after: avoid;
+}
+h1 {
+  font-size: 22pt;
+  border-bottom: 3px solid #1e40af;
+  padding-bottom: 0.3em;
+  margin-top: 0.4em;
+  page-break-before: auto;
+}
+h2 {
+  font-size: 16pt;
+  border-bottom: 1.5px solid #cbd5e1;
+  padding-bottom: 0.25em;
+  margin-top: 1.6em;
+}
+h3 { font-size: 13pt; color: #1e40af; }
+h4 { font-size: 12pt; color: #334155; }
+
+p { margin: 0.5em 0 0.8em; }
+
+a { color: #1d4ed8; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+ul, ol { margin: 0.4em 0 0.9em; padding-left: 1.6em; }
+li { margin: 0.2em 0; }
+
+blockquote {
+  border-left: 4px solid #3b82f6;
+  background: #eff6ff;
+  margin: 0.8em 0;
+  padding: 0.6em 1em;
+  color: #1e3a8a;
+  border-radius: 0 6px 6px 0;
+  page-break-inside: avoid;
+}
+blockquote p { margin: 0.3em 0; }
+blockquote strong { color: #1e40af; }
+
+code {
+  /* DefCode (see _code_font.py) has ASCII and Japanese in ONE font, so a code
+     line is drawn as one text run and copies as one line in every PDF viewer. */
+  font-family: "Consolas", "Consolas", monospace;
+  font-size: 0.9em;
+  background: #f1f5f9;
+  color: #be123c;
+  padding: 0.12em 0.36em;
+  border-radius: 4px;
+  /* Long inline code (file paths / URLs) must break instead of overflowing. */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  /* In a PDF there is no horizontal scrolling, so long lines must wrap
+     instead of being clipped off the right edge of the page. */
+  overflow-x: hidden;
+  overflow-y: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  font-size: 9.2pt;
+  line-height: 1.5;
+  margin: 0.8em 0;
+  page-break-inside: avoid;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+  white-space: inherit;
+  word-break: inherit;
+  overflow-wrap: inherit;
+}
+
+/* The codehilite extension wraps highlighted blocks in a scrolling div; make
+   that wrap too so nothing is clipped in the PDF. */
+.codehilite {
+  overflow-x: hidden;
+  /* overflow-x: hidden alone turns overflow-y into auto, and a glyph from a
+     fallback font that is a hair too tall then shows a vertical scrollbar. */
+  overflow-y: hidden;
+}
+.codehilite pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* No per-token colours: every coloured token became its own text run (and its
+   own tag) in the PDF, and some viewers then pasted each token on its own line.
+   Only whole comment lines get a colour, so each line is still one run. */
+pre .cmt { color: #94a3b8; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.8em 0;
+  font-size: 9.6pt;
+  page-break-inside: avoid;
+}
+th, td {
+  border: 1px solid #e2e8f0;
+  padding: 6px 9px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: #f1f5f9;
+  color: #0f172a;
+  font-weight: 700;
+}
+tr:nth-child(even) td { background: #f8fafc; }
+
+img { max-width: 100%; height: auto; }
+
+hr {
+  border: none;
+  border-top: 1px dashed #cbd5e1;
+  margin: 1.6em 0;
+}
+
+/* Diagram blocks (the inline-styled <div>s in the source) */
+div[style] {
+  page-break-inside: avoid;
+}
+
+/* Tighten spacing right after headings */
+h1 + p, h2 + p, h3 + p, h4 + p { margin-top: 0.2em; }
+
+/* Avoid ugly page breaks inside list items / table rows */
+li, tr { page-break-inside: avoid; }
+
+@media screen {
+  body { max-width: 920px; margin: 0 auto; padding: 20px 20px 120px; font-size: 16px; }
+  pre { white-space: pre !important; word-break: normal !important; overflow-wrap: normal !important;
+        overflow-x: auto !important; font-size: 14px !important; }
+  img { max-width: 100%; height: auto; }
+}
+.web-bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; font-size: 14px;
+  padding: 8px 12px; margin-bottom: 16px; background: #eef2f7; border-radius: 8px; }
+.web-bar a { color: #1e3a5f; }
+.web-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 10; max-width: 90%;
+  font-size: 15px; font-weight: 700; background: #fff7ed; border: 2px solid #f2994a; border-radius: 8px;
+  padding: 10px 16px; margin: 0; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.code-wrap { position: relative; scroll-margin-top: 16px; }
+.code-wrap pre { padding-top: 40px !important; }
+.copy-btn { position: absolute; top: 8px; right: 8px; z-index: 2; font-size: 13px; font-weight: 700;
+  padding: 4px 12px; border: 0; border-radius: 6px; background: #2f80ed; color: #fff; cursor: pointer;
+  font-family: inherit; }
+.copy-btn:hover { background: #1c64c8; }
+.copy-btn.done { background: #27ae60; }
+.code-wrap:target pre { outline: 4px solid #f2994a; outline-offset: 2px; }
+.code-wrap:target .copy-btn { box-shadow: 0 0 0 4px #f2994a; }
+/* syntax colours on screen (the PDF uses one colour so that each line copies as one piece) */
+.codehilite .k, .codehilite .kd, .codehilite .kn, .codehilite .kr { color: #c084fc; }
+.codehilite .s, .codehilite .s1, .codehilite .s2, .codehilite .sb { color: #fcd34d; }
+.codehilite .c, .codehilite .c1, .codehilite .cm { color: #94a3b8; }
+.codehilite .nf, .codehilite .nx { color: #60a5fa; }
+.codehilite .nb { color: #34d399; }
+.codehilite .mi, .codehilite .mf { color: #f472b6; }
+.codehilite .nt { color: #f59e0b; }
+.codehilite .na { color: #93c5fd; }
+</style>
+</head>
+<body>
+<div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/08_%E4%BB%98%E9%8C%B2_%E3%82%88%E3%81%8F%E4%BD%BF%E3%81%86%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89%E3%81%AE%E6%97%A9%E8%A6%8B%E8%A1%A8.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、ブラウザーの「戻る」で PDF に戻れます。</p><div style="text-align: center; padding: 28px 0 8px;">
+<div style="font-size: 14px; color: #475569;">オンプレミス構築 教育資料</div>
+<div style="font-size: 26px; font-weight: 800; color: #0f172a; margin-top: 6px; line-height: 1.35;">付録 — よく使うコマンドの早見表</div>
+<div style="font-size: 13px; color: #475569; margin-top: 8px;">毎日の確認・サービス・通信・ログ・ディスクとバックアップ・PostgreSQL・更新と切り戻しで打つコマンドを、やりたいこと別に</div>
+</div>
+
+<h1 id="_1">付録: よく使うコマンドの早見表（運用・確認・トラブルの最初の一手）</h1>
+<h2 id="_2">この資料について</h2>
+<p>サーバーを建てたあと、<strong>毎日の確認・困った時の切り分け・更新や片づけ</strong>で打つコマンドを、「やりたいこと」ごとに 1 か所に集めた早見表です。01〜06 の資料に散らばっているコマンドを、ここから引けるようにしました。</p>
+<ul>
+<li><strong>名前の決まり:</strong> この資料のほかの巻と同じです。本番のサービスは <code>webapp-prod</code>、検証は <code>webapp-stg</code>、PostgreSQL は <code>postgresql-x64-18</code>、IIS は <code>W3SVC</code>、フォルダは <code>D:\webapp\…</code>（04 の 4.1）。</li>
+<li><strong>▼ 実行結果:</strong> 2026-11-02 に、資料を作ったパソコン（Windows 11・PowerShell 5.1・PostgreSQL 18）で実際に打った結果です。Windows Server 2025／2022 でも、同じ形で出ます。日時・大きさ・番号は、打った時によって変わります。<strong>表示の言葉（英語か日本語か）は、Windows の言語の設定によって変わります。</strong></li>
+<li><strong>▼ 確かめること:</strong> 自分のパソコンで試せない物（サーバーの設定を変える物・本番のサービスを止める物）は、結果の代わりに「何が出れば正しいか」を書いています。</li>
+<li><strong>大事:</strong> サービスを止める・消す・設定を変えるコマンドは、<strong>本番では、決めた時間に、決めた手順で</strong>打ちます（04 の 13 章・07 のチェック表）。まず検証（<code>webapp-stg</code>）で試します。</li>
+</ul>
+<p><img src="../images/08-01_ops_cheatsheet_map.webp" alt="サーバーの毎日の確認の流れ: サービス・HTTP の返事・ディスクの空き・ゆうべのバックアップ・ログのエラーの5つを順に見る" style="width: 100%;"></p>
+<h3 id="_3">やりたいこと → 見る所</h3>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>見る所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>毎朝の確認を 3 分で済ませる</td>
+<td>1 章</td>
+</tr>
+<tr>
+<td>サービスを見る・止める・動かす・再起動する</td>
+<td>2 章</td>
+</tr>
+<tr>
+<td>画面が開かない時に、どこまで届いているか調べる</td>
+<td>3 章</td>
+</tr>
+<tr>
+<td>ログを見る・エラーを探す</td>
+<td>4 章</td>
+</tr>
+<tr>
+<td>ディスクの空き・フォルダの大きさ・古いファイルの片づけ</td>
+<td>5 章</td>
+</tr>
+<tr>
+<td>コピー・圧縮・ファイルが同じか確かめる</td>
+<td>5 章</td>
+</tr>
+<tr>
+<td>データベースの状態・大きさ・つながっている数</td>
+<td>6 章</td>
+</tr>
+<tr>
+<td>更新・切り戻し・バックアップからの戻し方</td>
+<td>7 章</td>
+</tr>
+<tr>
+<td>Windows の記録・予定の仕事・ファイアウォール</td>
+<td>8 章</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_4">練習の準備（自分のパソコンで試す時だけ）</h3>
+<p>4・5 章の例は、自分のパソコンの PowerShell で、そのまま試せます。先に、練習用のフォルダ <code>ops-practice</code> を作り、<strong>練習用のログとバックアップ（中身はダミー）</strong>を入れておきます。</p>
+<div class="codehilite"><div class="code-wrap" id="code-1"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">cd </span><span class="p">~</span>
+<span class="n">mkdir</span> <span class="n">ops-practice</span>
+<span class="nb">cd </span><span class="n">ops-practice</span>
+<span class="n">mkdir</span> <span class="n">logs</span><span class="p">,</span> <span class="n">backup</span><span class="p">\</span><span class="n">db</span><span class="p">,</span> <span class="nb">copy-from</span>
+<span class="c"># 練習用のログ（アプリのログの形をまねた物）</span>
+<span class="nb">Set-Content</span> <span class="n">logs</span><span class="p">\</span><span class="n">webapp</span><span class="p">.</span><span class="n">log</span> <span class="n">-Encoding</span> <span class="n">utf8</span> <span class="n">-Value</span> <span class="p">@(</span>
+  <span class="s2">&quot;2026-11-02 07:59:58 INFO  サーバーを起動しました port=8080&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;2026-11-02 08:00:00 INFO  毎朝の通知: 3 件送りました&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;2026-11-02 09:12:41 WARN  ログインに失敗しました user=012345&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;2026-11-02 09:15:03 ERROR データベースにつなげません: connection refused&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;2026-11-02 09:15:08 INFO  データベースにつなぎ直しました&quot;</span>
+<span class="p">)</span>
+<span class="c"># 練習用のバックアップ 4 つ（中身はダミー。作った日時だけ、昔の日付にする）</span>
+<span class="k">foreach</span> <span class="p">(</span><span class="nv">$day</span> <span class="k">in</span> <span class="s2">&quot;20261021&quot;</span><span class="p">,</span> <span class="s2">&quot;20261022&quot;</span><span class="p">,</span> <span class="s2">&quot;20261023&quot;</span><span class="p">,</span> <span class="s2">&quot;20261101&quot;</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nv">$file</span> <span class="p">=</span> <span class="s2">&quot;backup\db\webapp_$day.dump&quot;</span>
+  <span class="nb">Set-Content</span> <span class="nv">$file</span> <span class="s2">&quot;練習用のダミー $day&quot;</span>
+  <span class="p">(</span><span class="nb">Get-Item</span> <span class="nv">$file</span><span class="p">).</span><span class="n">LastWriteTime</span> <span class="p">=</span> <span class="no">[datetime]</span><span class="p">::</span><span class="n">ParseExact</span><span class="p">(</span><span class="s2">&quot;$day 0200&quot;</span><span class="p">,</span> <span class="s2">&quot;yyyyMMdd HHmm&quot;</span><span class="p">,</span> <span class="nv">$null</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="c"># 練習用のコピー元</span>
+<span class="nb">Set-Content</span> <span class="nb">copy-from</span><span class="p">\</span><span class="n">app</span><span class="p">.</span><span class="n">txt</span> <span class="s2">&quot;version 1.1.0&quot;</span>
+<span class="nb">Set-Content</span> <span class="nb">copy-from</span><span class="p">\</span><span class="n">readme</span><span class="p">.</span><span class="n">txt</span> <span class="s2">&quot;webapp&quot;</span>
+</code></pre></div></div>
+
+<p>終わったら、<code>cd ~</code> → <code>Remove-Item ops-practice -Recurse</code> で片づけます。</p>
+<h2 id="1-3">1. 毎日の確認（3 分）</h2>
+<p>毎朝、次の 5 つを上から順に見ます。どれか 1 つでもおかしければ、06 の 2 章の順に切り分けます。</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>見る物</th>
+<th>打つコマンド（管理者の PowerShell）</th>
+<th>正しい時</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>サービスが動いているか</td>
+<td><code>Get-Service webapp-prod, webapp-stg, postgresql-x64-18, W3SVC</code></td>
+<td>4 つとも <code>Running</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td>アプリが返事をするか</td>
+<td><code>curl.exe -s -o NUL -w "%{http_code}" http://127.0.0.1:8080/health</code></td>
+<td><code>200</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td>受付（IIS）を通しても返事をするか</td>
+<td><code>curl.exe -s -o NUL -w "%{http_code}" -H "Host: webapp.example.local" http://127.0.0.1/health</code></td>
+<td><code>200</code></td>
+</tr>
+<tr>
+<td>4</td>
+<td>ディスクの空き</td>
+<td><code>Get-Volume -DriveLetter C, D</code></td>
+<td>空きが 20% 以上</td>
+</tr>
+<tr>
+<td>5</td>
+<td>ゆうべのバックアップ</td>
+<td><code>Get-ChildItem D:\webapp\backup\db &#124; Sort-Object LastWriteTime -Descending &#124; Select-Object -First 1</code></td>
+<td>今日の日付の 2:00 ごろ</td>
+</tr>
+<tr>
+<td>6</td>
+<td>ログのエラー</td>
+<td><code>Select-String -Path D:\webapp\prod\logs*.log -Pattern "ERROR" &#124; Select-Object -Last 5</code></td>
+<td>何も出ない（出たら中身を読む）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>メモ:</strong> 毎日打つなら、06 の 2.1 の「まとめて確かめるスクリプト」を使うと、1 回で全部見られます。</p>
+<h2 id="2">2. サービス</h2>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>コマンド</th>
+<th>メモ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>状態を見る</td>
+<td><code>Get-Service webapp-prod</code></td>
+<td><code>Status</code> が <code>Running</code>（動いている）・<code>Stopped</code>（止まっている）</td>
+</tr>
+<tr>
+<td>名前の一部で探す</td>
+<td><code>Get-Service postgresql*</code></td>
+<td><code>*</code> は「何でもよい」</td>
+</tr>
+<tr>
+<td>動かす</td>
+<td><code>Start-Service webapp-prod</code></td>
+<td>管理者の PowerShell で</td>
+</tr>
+<tr>
+<td>止める</td>
+<td><code>Stop-Service webapp-prod</code></td>
+<td>本番は、決めた時間に</td>
+</tr>
+<tr>
+<td>再起動する</td>
+<td><code>Restart-Service webapp-prod</code></td>
+<td>設定ファイルを変えたあとなど</td>
+</tr>
+<tr>
+<td>起動の種類を見る</td>
+<td><code>Get-Service webapp-prod &#124; Select-Object Name, StartType</code></td>
+<td><code>Automatic</code> なら、Windows の起動時に自動で動く</td>
+</tr>
+<tr>
+<td>サービスを動かしているアカウント</td>
+<td><code>Get-CimInstance Win32_Service -Filter "Name='webapp-prod'" &#124; Select-Object Name, StartName</code></td>
+<td>04 の 4.3 の仮想アカウントになっているか</td>
+</tr>
+<tr>
+<td>WinSW で状態を見る</td>
+<td><code>D:\webapp\prod\service\webapp-prod-service.exe status</code></td>
+<td>WinSW を使った時（04 の 7 章）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>▼ 実行結果</strong>（<code>Get-Service postgresql*</code>）</p>
+<div class="codehilite"><div class="code-wrap" id="code-2"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Status   Name               DisplayName
+------   ----               -----------
+Running  postgresql-x64-18  postgresql-x64-18 - PostgreSQL Serv...
+</code></pre></div></div>
+
+<ul>
+<li><code>DisplayName</code> は、長いと <code>...</code> で切られます。全部見たい時は <code>Get-Service postgresql* | Format-List *</code> です。</li>
+</ul>
+<p><strong>▼ 確かめること</strong>（<code>Restart-Service webapp-prod</code> のあと）</p>
+<ul>
+<li><code>Get-Service webapp-prod</code> が <code>Running</code> に戻る（数秒かかることがある）。</li>
+<li>1 章の 2 の <code>curl.exe</code> が <code>200</code> を返す。</li>
+<li><code>Running</code> にならない時は、<code>D:\webapp\prod\logs\webapp-prod-service.err.log</code> の最後を読みます（06 の 5.9）。</li>
+</ul>
+<h2 id="3">3. 通信（どこまで届いているか）</h2>
+<p>画面が開かない時は、<strong>手前（サーバーの中）から順に</strong>確かめます（06 の 2 章）。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>コマンド</th>
+<th>正しい時</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>アプリに、サーバーの中から直接</td>
+<td><code>curl.exe -s -o NUL -w "%{http_code}" http://127.0.0.1:8080/health</code></td>
+<td><code>200</code></td>
+</tr>
+<tr>
+<td>IIS を通して、サーバーの中から</td>
+<td><code>curl.exe -s -o NUL -w "%{http_code}" -H "Host: webapp.example.local" http://127.0.0.1/health</code></td>
+<td><code>200</code></td>
+</tr>
+<tr>
+<td>返事の中身も見る</td>
+<td><code>curl.exe -s -i http://127.0.0.1:8080/health</code></td>
+<td>1 行目が <code>HTTP/1.1 200 OK</code></td>
+</tr>
+<tr>
+<td>その番号で待ち受けているか</td>
+<td><code>Get-NetTCPConnection -State Listen -LocalPort 80, 8080, 5432</code></td>
+<td>番号ごとに行が出る</td>
+</tr>
+<tr>
+<td>待ち受けているプログラム</td>
+<td><code>Get-Process -Id （OwningProcess の番号）</code></td>
+<td>アプリ・IIS・postgres</td>
+</tr>
+<tr>
+<td>ほかの PC から、その番号へつながるか</td>
+<td><code>Test-NetConnection webapp.example.local -Port 80</code></td>
+<td><code>TcpTestSucceeded : True</code></td>
+</tr>
+<tr>
+<td>名前が IP アドレスに変わるか</td>
+<td><code>Resolve-DnsName webapp.example.local</code></td>
+<td>サーバーの IP アドレス</td>
+</tr>
+<tr>
+<td>ファイアウォールの決まり</td>
+<td><code>Get-NetFirewallRule -DisplayName "webapp*" &#124; Select-Object DisplayName, Enabled, Direction, Action</code></td>
+<td>80 番の受信が <code>True</code>・<code>Allow</code>（04 の 9 章）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>▼ 実行結果</strong>（PostgreSQL の 5432 番。この PC で）</p>
+<p><code>Test-NetConnection 127.0.0.1 -Port 5432 -InformationLevel Quiet</code>（<code>Quiet</code> を付けると、<code>True</code>・<code>False</code> だけが出る）:</p>
+<div class="codehilite"><div class="code-wrap" id="code-3"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>True
+</code></pre></div></div>
+
+<p><code>Get-NetTCPConnection -State Listen -LocalPort 5432 | Select-Object LocalAddress, LocalPort, OwningProcess</code>:</p>
+<div class="codehilite"><div class="code-wrap" id="code-4"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>LocalAddress LocalPort OwningProcess
+------------ --------- -------------
+::                5432          6900
+0.0.0.0           5432          6900
+</code></pre></div></div>
+
+<ul>
+<li><strong><code>LocalAddress</code> の読み方:</strong> <code>0.0.0.0</code> と <code>::</code> は「どの宛先から来ても受ける」、<code>127.0.0.1</code> は「サーバーの中からだけ受ける」です。<strong>本番の PostgreSQL は、サーバーの中からだけ受けるように絞ります</strong>（04 の 5.3。この PC は練習用なので絞っていません）。</li>
+<li><code>OwningProcess</code> の <code>6900</code> は、プログラムの番号です。<code>Get-Process -Id 6900</code> で名前が分かります（番号は起動のたびに変わります）。</li>
+</ul>
+<p><strong>HTTP の返事の番号（よく出る物）:</strong></p>
+<table>
+<thead>
+<tr>
+<th>番号</th>
+<th>意味</th>
+<th>まず疑う所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>200</code></td>
+<td>成功</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>302</code></td>
+<td>別のページへ移る（ログインの画面へ、など）</td>
+<td>ふつうの動き</td>
+</tr>
+<tr>
+<td><code>400</code></td>
+<td>頼み方がおかしい（Host が違う、など）</td>
+<td>IIS の Host 名・アプリの許可する Host（06 の 5.4）</td>
+</tr>
+<tr>
+<td><code>403</code></td>
+<td>断られた</td>
+<td>CSRF・権限（06 の 5.5）</td>
+</tr>
+<tr>
+<td><code>404</code></td>
+<td>無い</td>
+<td>URL・IIS のサイト（06 の 5.3）</td>
+</tr>
+<tr>
+<td><code>500</code></td>
+<td>アプリの中のエラー</td>
+<td>アプリのログ（06 の 5.6）</td>
+</tr>
+<tr>
+<td><code>502</code></td>
+<td>IIS の先のアプリが返事をしない</td>
+<td>アプリのサービスが止まっている（06 の 5.2）</td>
+</tr>
+<tr>
+<td><code>503</code></td>
+<td>IIS のサイトが止まっている</td>
+<td>IIS のサイト・アプリケーション プール（06 の 5.3）</td>
+</tr>
+</tbody>
+</table>
+<h2 id="4">4. ログを見る・エラーを探す</h2>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>コマンド</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>最後の 20 行</td>
+<td><code>Get-Content D:\webapp\prod\logs\webapp-prod-service.err.log -Tail 20 -Encoding utf8</code></td>
+</tr>
+<tr>
+<td>増えるのを見続ける（<code>Ctrl</code> ＋ <code>C</code> で終わる）</td>
+<td><code>Get-Content D:\webapp\prod\logs\webapp-prod-service.out.log -Tail 5 -Wait -Encoding utf8</code></td>
+</tr>
+<tr>
+<td>言葉で探す（何行目かも出る）</td>
+<td><code>Select-String -Path D:\webapp\prod\logs*.log -Pattern "ERROR&#124;WARN" -Encoding utf8</code></td>
+</tr>
+<tr>
+<td>見つかった数</td>
+<td><code>(Select-String -Path ... -Pattern "ERROR").Count</code></td>
+</tr>
+<tr>
+<td>IIS のアクセスログ</td>
+<td><code>C:\inetpub\logs\LogFiles\W3SVC（サイトの番号）\u_ex（日付）.log</code>（読み方は 06 の 3.1）</td>
+</tr>
+<tr>
+<td>PostgreSQL のログ</td>
+<td><code>D:\pgsql\18\data\log\</code> の、いちばん新しいファイル（06 の 3.2）</td>
+</tr>
+<tr>
+<td>ログの場所と、たまりすぎを防ぐ方法</td>
+<td>04 の 12.2 の表</td>
+</tr>
+</tbody>
+</table>
+<p><strong>▼ 実行結果</strong>（練習のフォルダで <code>Get-Content logs\webapp.log -Tail 3 -Encoding utf8</code>）</p>
+<div class="codehilite"><div class="code-wrap" id="code-5"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>2026-11-02 09:12:41 WARN  ログインに失敗しました user=012345
+2026-11-02 09:15:03 ERROR データベースにつなげません: connection refused
+2026-11-02 09:15:08 INFO  データベースにつなぎ直しました
+</code></pre></div></div>
+
+<p><strong>▼ 実行結果</strong>（<code>Select-String -Path logs\webapp.log -Pattern "ERROR|WARN" -Encoding utf8</code>）</p>
+<div class="codehilite"><div class="code-wrap" id="code-6"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>logs\webapp.log:3:2026-11-02 09:12:41 WARN  ログインに失敗しました user=012345
+logs\webapp.log:4:2026-11-02 09:15:03 ERROR データベースにつなげません: connection refused
+</code></pre></div></div>
+
+<ul>
+<li><code>logs\webapp.log:4:...</code> は「<code>webapp.log</code> の <strong>4 行目</strong>」です。</li>
+<li><code>-Pattern "ERROR|WARN"</code> の <code>|</code> は「または」です（正規表現という書き方）。</li>
+<li><strong><code>-Encoding utf8</code> を付けます。</strong> 付けないと、Windows PowerShell 5.1 は UTF-8 のログを古い文字コードで読み、日本語が化けます。</li>
+</ul>
+<h2 id="5">5. ディスク・ファイル・コピー・圧縮</h2>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>コマンド</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ドライブの空き</td>
+<td><code>Get-Volume -DriveLetter C, D</code></td>
+</tr>
+<tr>
+<td>フォルダの大きさ（合計）</td>
+<td><code>(Get-ChildItem D:\webapp\prod\logs -Recurse &#124; Measure-Object Length -Sum).Sum / 1MB</code></td>
+</tr>
+<tr>
+<td>大きいファイルの上から 10 個</td>
+<td><code>Get-ChildItem D:\webapp -Recurse -File &#124; Sort-Object Length -Descending &#124; Select-Object -First 10 FullName, Length</code></td>
+</tr>
+<tr>
+<td>いちばん新しいファイル</td>
+<td><code>Get-ChildItem D:\webapp\backup\db &#124; Sort-Object LastWriteTime -Descending &#124; Select-Object -First 1</code></td>
+</tr>
+<tr>
+<td>古いファイルを消す（<strong>先に <code>-WhatIf</code> で確かめる</strong>）</td>
+<td><code>Get-ChildItem D:\webapp\backup\db*.dump &#124; Where-Object LastWriteTime -lt (Get-Date).AddDays(-14) &#124; Remove-Item -WhatIf</code></td>
+</tr>
+<tr>
+<td>フォルダを丸ごと同じにする（コピー）</td>
+<td><code>robocopy コピー元 コピー先 /MIR</code></td>
+</tr>
+<tr>
+<td>圧縮する</td>
+<td><code>Compress-Archive -Path フォルダ\* -DestinationPath 名前.zip</code></td>
+</tr>
+<tr>
+<td>展開する</td>
+<td><code>Expand-Archive 名前.zip -DestinationPath フォルダ</code></td>
+</tr>
+<tr>
+<td>2 つのファイルが同じか</td>
+<td><code>(Get-FileHash A).Hash -eq (Get-FileHash B).Hash</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>▼ 実行結果</strong>（この PC の C ドライブ。<code>Get-Volume -DriveLetter C | Select-Object DriveLetter, @{n="空き(GB)";e={[math]::Round($_.SizeRemaining/1GB,1)}}, @{n="全体(GB)";e={[math]::Round($_.Size/1GB,1)}}</code>）</p>
+<div class="codehilite"><div class="code-wrap" id="code-7"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>DriveLetter 空き(GB) 全体(GB)
+----------- ------ ------
+          C   73.4  951.6
+</code></pre></div></div>
+
+<ul>
+<li><code>@{n="名前";e={計算}}</code> は、「計算した列」を作る書き方です。バイトのままだと読みにくいので、<code>1GB</code> で割って GB にしています。</li>
+</ul>
+<p><strong>▼ 実行結果</strong>（練習のフォルダで、いちばん新しいバックアップ）</p>
+<div class="codehilite"><div class="code-wrap" id="code-8"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Name                 LastWriteTime      Length
+----                 -------------      ------
+webapp_20261101.dump 2026/11/01 2:00:00     25
+</code></pre></div></div>
+
+<p><strong>▼ 実行結果</strong>（10 月 25 日より古いバックアップを消すと、どれが消えるか。<code>-WhatIf</code> なので、本当は消さない）</p>
+<div class="codehilite"><div class="code-wrap" id="code-9"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>What if: Performing the operation &quot;Remove File&quot; on target &quot;C:\Users\you\ops-practice\backup\db\webapp_20261021.dump&quot;.
+What if: Performing the operation &quot;Remove File&quot; on target &quot;C:\Users\you\ops-practice\backup\db\webapp_20261022.dump&quot;.
+What if: Performing the operation &quot;Remove File&quot; on target &quot;C:\Users\you\ops-practice\backup\db\webapp_20261023.dump&quot;.
+</code></pre></div></div>
+
+<ul>
+<li><strong><code>-WhatIf</code> を付けると、「何をするはずか」を表示するだけで、本当には消しません。</strong> 消す対象が正しいと分かってから、<code>-WhatIf</code> を外して打ちます。本番の運用では <code>(Get-Date).AddDays(-14)</code>（今日から 14 日前）のように書きます（04 の 11.3 のスクリプトも、14 日より古いバックアップを消しています）。</li>
+<li>日本語の Windows では、<code>WhatIf: 対象 "…" に対して操作 "ファイルの削除" を実行しています。</code> のように日本語で出ることがあります。</li>
+</ul>
+<p><strong>▼ 実行結果</strong>（<code>robocopy copy-from copy-to /MIR /NP /NJH</code> → <code>$LASTEXITCODE</code>）</p>
+<div class="codehilite"><div class="code-wrap" id="code-10"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>      New Dir          2    C:\Users\you\ops-practice\copy-from\
+        New File              15    app.txt
+        New File               8    readme.txt
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         1         1         0         0         0         0
+   Files :         2         2         0         0         0         0
+   Bytes :        23        23         0         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+
+
+   Speed :              23,000 Bytes/sec.
+   Speed :               1.316 MegaBytes/min.
+   Ended : 2026年11月2日 15:26:13
+</code></pre></div></div>
+
+<div class="codehilite"><div class="code-wrap" id="code-11"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>1
+</code></pre></div></div>
+
+<ul>
+<li><code>/MIR</code> は「コピー先を、コピー元と<strong>まったく同じ</strong>にする」です。<strong>コピー元に無いファイルは、コピー先から消えます。</strong> コピー元とコピー先を逆に書かないように気を付けます。</li>
+<li><code>/NP</code> は進み具合（%）を出さない、<code>/NJH</code> は最初の見出しを出さない、という指定です。</li>
+<li><strong>robocopy の終了コードは、ふつうと違います。</strong> <code>0</code>（何もしなかった）・<code>1</code>（コピーした）〜<code>7</code> は<strong>成功</strong>、<code>8</code> 以上が<strong>失敗</strong>です。スクリプトでは <code>if ($LASTEXITCODE -ge 8) { 失敗 }</code> と書きます（04 の 11.3）。</li>
+</ul>
+<p><strong>▼ 実行結果</strong>（圧縮して、大きさを見る）</p>
+<p><code>Compress-Archive -Path copy-from\* -DestinationPath backup\app_1.1.0.zip</code> は何も表示しません。</p>
+<div class="codehilite"><div class="code-wrap" id="code-12"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Name          Length
+----          ------
+app_1.1.0.zip    235
+</code></pre></div></div>
+
+<p><strong>▼ 実行結果</strong>（コピーした 2 つのファイルが同じか）</p>
+<div class="codehilite"><div class="code-wrap" id="code-13"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>8DA215143FD2F22146BC1218B40C36574CCEDE25869B00F5CA50C0A6EABCDA66
+</code></pre></div></div>
+
+<div class="codehilite"><div class="code-wrap" id="code-14"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>True
+</code></pre></div></div>
+
+<ul>
+<li><strong>ハッシュ</strong>は、ファイルの中身から計算した「指紋」です。1 文字でも違うと、まったく違う値になります。開発用のパソコンから持ち込んだファイルが壊れていないか確かめる時に使います（04 の 6.3）。</li>
+</ul>
+<h2 id="6-postgresql">6. PostgreSQL</h2>
+<p><code>psql</code> の入り方と SQL の練習は、02 にくわしく（実際の出力つきで）あります。ここでは運用でよく使う物をまとめます。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>コマンド・SQL</th>
+<th>メモ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>受け付けているか（ログイン無しで）</td>
+<td><code>pg_isready -h 127.0.0.1 -p 5432</code></td>
+<td>下の実行結果</td>
+</tr>
+<tr>
+<td>つなぐ</td>
+<td><code>psql -h 127.0.0.1 -U webapp_prod_app -d webapp_prod</code></td>
+<td>02 の 2 章</td>
+</tr>
+<tr>
+<td>データベースの大きさ</td>
+<td><code>SELECT pg_size_pretty(pg_database_size('webapp_prod'));</code></td>
+<td>02 の 12 章</td>
+</tr>
+<tr>
+<td>今つながっている数</td>
+<td><code>SELECT state, count(*) FROM pg_stat_activity WHERE datname = 'webapp_prod' GROUP BY state;</code></td>
+<td>多すぎる時は、アプリの接続のたまりを疑う</td>
+</tr>
+<tr>
+<td>表ごとの行の数（だいたい）</td>
+<td><code>SELECT relname, n_live_tup FROM pg_stat_user_tables ORDER BY n_live_tup DESC LIMIT 10;</code></td>
+<td>増え方を月ごとに見る</td>
+</tr>
+<tr>
+<td>長く動いている問い合わせ</td>
+<td><code>SELECT pid, now() - query_start AS 時間, left(query, 60) FROM pg_stat_activity WHERE state = 'active' ORDER BY 2 DESC;</code></td>
+<td>遅い時（06 の 5.7）</td>
+</tr>
+<tr>
+<td>バックアップを取る</td>
+<td><code>pg_dump -h 127.0.0.1 -U webapp_prod_app -d webapp_prod -Fc -f D:\webapp\backup\db\手動_（日付）.dump</code></td>
+<td>更新の前に必ず（04 の 13.3）</td>
+</tr>
+<tr>
+<td>バックアップの中身の一覧</td>
+<td><code>pg_restore -l ファイル.dump</code></td>
+<td>壊れていないかの確かめ</td>
+</tr>
+<tr>
+<td>戻す</td>
+<td><code>pg_restore -h 127.0.0.1 -U … -d … --clean ファイル.dump</code></td>
+<td>手順は 02 の 11 章・04 の 11.5</td>
+</tr>
+<tr>
+<td>サービスの再起動</td>
+<td><code>Restart-Service postgresql-x64-18</code></td>
+<td>設定を変えたあと。アプリもつなぎ直す</td>
+</tr>
+</tbody>
+</table>
+<p><strong>▼ 実行結果</strong>（この PC で。受け付けている時 ／ 待っていない番号を指定した時）</p>
+<div class="codehilite"><div class="code-wrap" id="code-15"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>127.0.0.1:5432 - 接続を受け付けています
+</code></pre></div></div>
+
+<div class="codehilite"><div class="code-wrap" id="code-16"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>127.0.0.1:5999 - レスポンスがありません
+</code></pre></div></div>
+
+<ul>
+<li><code>pg_isready</code> は、パスワード無しで「受け付けているか」だけを調べます。終了コードは、受け付けていれば <code>0</code>、返事が無ければ <code>2</code> です（スクリプトで使えます）。</li>
+<li><code>pg_isready</code> が無いと言われた時は、<code>C:\Program Files\PostgreSQL\18\bin</code> を PATH に入れます（04 の 5.4）。</li>
+</ul>
+<p><strong>▼ 確かめること</strong>（<code>psql</code> でつないで、大きさとつながっている数を見た時）</p>
+<ul>
+<li>大きさが <code>12 MB</code> のように単位つきで出る。</li>
+<li><code>active</code>（今、問い合わせ中）が 1 つ（自分）、<code>idle</code>（待っている）がアプリの分だけ出る。<code>idle</code> が何百もある時は、アプリのつなぎ方を疑う。</li>
+</ul>
+<h2 id="7">7. 更新・切り戻し・戻し方の流れ</h2>
+<p>くわしい手順は 04 の 13 章（Rust 版）・05 の 13 章（Django 版）にあります。ここでは、順番を忘れないための要点だけです。</p>
+<table>
+<thead>
+<tr>
+<th>場面</th>
+<th>順番（要点）</th>
+<th>見る所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>更新（新しい版を入れる）</td>
+<td>① 検証で確かめる → ② <code>pg_dump</code> でバックアップ → ③ <code>Stop-Service webapp-prod</code> → ④ 今の版を <code>D:\webapp\releases\</code> に残す → ⑤ 新しい版を置く → ⑥ マイグレーション → ⑦ <code>Start-Service</code> → ⑧ 1 章の確認</td>
+<td>04 の 13.3</td>
+</tr>
+<tr>
+<td>切り戻し（前の版に戻す）</td>
+<td>① <code>Stop-Service</code> → ② 残しておいた前の版を置く → ③ 必要ならデータベースを ② のバックアップから戻す → ④ <code>Start-Service</code> → ⑤ 1 章の確認</td>
+<td>04 の 13.4</td>
+</tr>
+<tr>
+<td>バックアップから戻す練習</td>
+<td>検証のデータベースに <code>pg_restore</code> して、画面で中身を確かめる（年 1〜2 回）</td>
+<td>04 の 11.5・07 のチェック表</td>
+</tr>
+</tbody>
+</table>
+<h2 id="8-windows">8. Windows の記録・予定の仕事・ファイアウォール</h2>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>コマンド</th>
+<th>見る所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>システムのエラーを新しい順に 10 件</td>
+<td><code>Get-WinEvent -FilterHashtable @{LogName='System'; Level=2} -MaxEvents 10</code></td>
+<td>01 の 7.3</td>
+</tr>
+<tr>
+<td>サービスが急に止まった記録</td>
+<td><code>Get-WinEvent -FilterHashtable @{LogName='System'; Id=7031,7034} -MaxEvents 10</code></td>
+<td>01 の 7.2</td>
+</tr>
+<tr>
+<td>前回の起動の時刻</td>
+<td><code>(Get-CimInstance Win32_OperatingSystem).LastBootUpTime</code></td>
+<td>再起動されたかの確かめ</td>
+</tr>
+<tr>
+<td>予定の仕事の一覧</td>
+<td><code>Get-ScheduledTask -TaskPath \webapp\</code></td>
+<td>01 の 9.2</td>
+</tr>
+<tr>
+<td>予定の仕事の前回の結果</td>
+<td><code>Get-ScheduledTaskInfo -TaskPath \webapp\ -TaskName 名前</code></td>
+<td><code>LastTaskResult</code> が <code>0</code> なら成功</td>
+</tr>
+<tr>
+<td>予定の仕事を今すぐ動かす</td>
+<td><code>Start-ScheduledTask -TaskPath \webapp\ -TaskName 名前</code></td>
+<td>バックアップの試しなど</td>
+</tr>
+<tr>
+<td>ファイアウォールの決まりの一覧</td>
+<td><code>Get-NetFirewallRule -Enabled True -Direction Inbound &#124; Select-Object DisplayName, Action</code></td>
+<td>01 の 10.2</td>
+</tr>
+<tr>
+<td>サーバーの時刻と時間帯</td>
+<td><code>Get-Date</code>・<code>Get-TimeZone</code></td>
+<td>毎朝 8:00 の処理がずれる時（06 の 5.13）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>▼ 確かめること</strong>（<code>Get-ScheduledTaskInfo</code> でバックアップの仕事を見た時）</p>
+<ul>
+<li><code>LastRunTime</code> が今日の 2:00 ごろ、<code>LastTaskResult</code> が <code>0</code>。</li>
+<li><code>0</code> 以外の時は、<code>D:\webapp\backup\logs\</code> の、その日のログを読みます（06 の 5.11）。</li>
+</ul>
+
+<script>
+(function () {
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy") ? resolve() : reject(); } catch (e) { reject(e); }
+      document.body.removeChild(ta);
+    });
+  }
+  document.querySelectorAll(".copy-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var pre = btn.parentElement.querySelector("pre");
+      var text = pre.textContent.replace(/\n$/, "");
+      copyText(text).then(function () {
+        btn.textContent = "コピーしました";
+        btn.classList.add("done");
+        setTimeout(function () { btn.textContent = "コピー"; btn.classList.remove("done"); }, 2000);
+      }, function () { btn.textContent = "コピーできませんでした"; });
+    });
+  });
+  if (/^#code-\d+$/.test(location.hash)) {
+    var note = document.getElementById("web-note");
+    if (note) { note.hidden = false; }
+  }
+})();
+</script>
+</body>
+</html>

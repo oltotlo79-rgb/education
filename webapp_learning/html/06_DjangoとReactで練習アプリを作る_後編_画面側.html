@@ -1,0 +1,1109 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>06_DjangoとReactで練習アプリを作る_後編_画面側</title>
+<style>
+
+@page {
+  size: A4;
+  margin: 18mm 16mm 20mm 16mm;
+  @bottom-right {
+    content: counter(page);
+    font-size: 10px;
+    color: #64748b;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  font-family: "Yu Gothic UI", "Yu Gothic", "Meiryo", "Hiragino Sans",
+               "Noto Sans JP", "Segoe UI", system-ui, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.75;
+  color: #1e293b;
+  background: #ffffff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #0f172a;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 1.4em 0 0.6em;
+  page-break-after: avoid;
+}
+h1 {
+  font-size: 22pt;
+  border-bottom: 3px solid #1e40af;
+  padding-bottom: 0.3em;
+  margin-top: 0.4em;
+  page-break-before: auto;
+}
+h2 {
+  font-size: 16pt;
+  border-bottom: 1.5px solid #cbd5e1;
+  padding-bottom: 0.25em;
+  margin-top: 1.6em;
+}
+h3 { font-size: 13pt; color: #1e40af; }
+h4 { font-size: 12pt; color: #334155; }
+
+p { margin: 0.5em 0 0.8em; }
+
+a { color: #1d4ed8; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+ul, ol { margin: 0.4em 0 0.9em; padding-left: 1.6em; }
+li { margin: 0.2em 0; }
+
+blockquote {
+  border-left: 4px solid #3b82f6;
+  background: #eff6ff;
+  margin: 0.8em 0;
+  padding: 0.6em 1em;
+  color: #1e3a8a;
+  border-radius: 0 6px 6px 0;
+  page-break-inside: avoid;
+}
+blockquote p { margin: 0.3em 0; }
+blockquote strong { color: #1e40af; }
+
+code {
+  /* DefCode (see _code_font.py) has ASCII and Japanese in ONE font, so a code
+     line is drawn as one text run and copies as one line in every PDF viewer. */
+  font-family: "Consolas", "Consolas", monospace;
+  font-size: 0.9em;
+  background: #f1f5f9;
+  color: #be123c;
+  padding: 0.12em 0.36em;
+  border-radius: 4px;
+  /* Long inline code (file paths / URLs) must break instead of overflowing. */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  /* In a PDF there is no horizontal scrolling, so long lines must wrap
+     instead of being clipped off the right edge of the page. */
+  overflow-x: hidden;
+  overflow-y: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  font-size: 9.2pt;
+  line-height: 1.5;
+  margin: 0.8em 0;
+  page-break-inside: avoid;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+  white-space: inherit;
+  word-break: inherit;
+  overflow-wrap: inherit;
+}
+
+/* The codehilite extension wraps highlighted blocks in a scrolling div; make
+   that wrap too so nothing is clipped in the PDF. */
+.codehilite {
+  overflow-x: hidden;
+  /* overflow-x: hidden alone turns overflow-y into auto, and a glyph from a
+     fallback font that is a hair too tall then shows a vertical scrollbar. */
+  overflow-y: hidden;
+}
+.codehilite pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* No per-token colours: every coloured token became its own text run (and its
+   own tag) in the PDF, and some viewers then pasted each token on its own line.
+   Only whole comment lines get a colour, so each line is still one run. */
+pre .cmt { color: #94a3b8; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.8em 0;
+  font-size: 9.6pt;
+  page-break-inside: avoid;
+}
+th, td {
+  border: 1px solid #e2e8f0;
+  padding: 6px 9px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: #f1f5f9;
+  color: #0f172a;
+  font-weight: 700;
+}
+tr:nth-child(even) td { background: #f8fafc; }
+
+img { max-width: 100%; height: auto; }
+
+hr {
+  border: none;
+  border-top: 1px dashed #cbd5e1;
+  margin: 1.6em 0;
+}
+
+/* Diagram blocks (the inline-styled <div>s in the source) */
+div[style] {
+  page-break-inside: avoid;
+}
+
+/* Tighten spacing right after headings */
+h1 + p, h2 + p, h3 + p, h4 + p { margin-top: 0.2em; }
+
+/* Avoid ugly page breaks inside list items / table rows */
+li, tr { page-break-inside: avoid; }
+
+@media screen {
+  body { max-width: 920px; margin: 0 auto; padding: 20px 20px 120px; font-size: 16px; }
+  pre { white-space: pre !important; word-break: normal !important; overflow-wrap: normal !important;
+        overflow-x: auto !important; font-size: 14px !important; }
+  img { max-width: 100%; height: auto; }
+}
+.web-bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; font-size: 14px;
+  padding: 8px 12px; margin-bottom: 16px; background: #eef2f7; border-radius: 8px; }
+.web-bar a { color: #1e3a5f; }
+.web-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 10; max-width: 90%;
+  font-size: 15px; font-weight: 700; background: #fff7ed; border: 2px solid #f2994a; border-radius: 8px;
+  padding: 10px 16px; margin: 0; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.code-wrap { position: relative; scroll-margin-top: 16px; }
+.code-wrap pre { padding-top: 40px !important; }
+.copy-btn { position: absolute; top: 8px; right: 8px; z-index: 2; font-size: 13px; font-weight: 700;
+  padding: 4px 12px; border: 0; border-radius: 6px; background: #2f80ed; color: #fff; cursor: pointer;
+  font-family: inherit; }
+.copy-btn:hover { background: #1c64c8; }
+.copy-btn.done { background: #27ae60; }
+.code-wrap:target pre { outline: 4px solid #f2994a; outline-offset: 2px; }
+.code-wrap:target .copy-btn { box-shadow: 0 0 0 4px #f2994a; }
+/* syntax colours on screen (the PDF uses one colour so that each line copies as one piece) */
+.codehilite .k, .codehilite .kd, .codehilite .kn, .codehilite .kr { color: #c084fc; }
+.codehilite .s, .codehilite .s1, .codehilite .s2, .codehilite .sb { color: #fcd34d; }
+.codehilite .c, .codehilite .c1, .codehilite .cm { color: #94a3b8; }
+.codehilite .nf, .codehilite .nx { color: #60a5fa; }
+.codehilite .nb { color: #34d399; }
+.codehilite .mi, .codehilite .mf { color: #f472b6; }
+.codehilite .nt { color: #f59e0b; }
+.codehilite .na { color: #93c5fd; }
+</style>
+</head>
+<body>
+<div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/06_Django%E3%81%A8React%E3%81%A7%E7%B7%B4%E7%BF%92%E3%82%A2%E3%83%97%E3%83%AA%E3%82%92%E4%BD%9C%E3%82%8B_%E5%BE%8C%E7%B7%A8_%E7%94%BB%E9%9D%A2%E5%81%B4.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、ブラウザーの「戻る」で PDF に戻れます。</p><div style="text-align: center; padding: 28px 0 8px;">
+<div style="font-size: 14px; color: #475569;">Web アプリ開発 学習資料</div>
+<div style="font-size: 26px; font-weight: 800; color: #0f172a; margin-top: 6px; line-height: 1.35;">06 Django＋React で練習アプリを作る（後編）— 画面側</div>
+<div style="font-size: 13px; color: #475569; margin-top: 8px;">React の画面を前編の API とつなぎ、ビルドして Django の中に入れ、会社のサーバーと同じ形で動かす</div>
+</div>
+
+<h1 id="06-djangoreact">06 Django＋React で練習アプリを作る（後編）: 画面側</h1>
+<h2 id="_1">この巻について</h2>
+<p>前編で作ったサーバー（Django の API と承認の画面）に、<strong>React の画面</strong>をつなぎます。</p>
+<ul>
+<li>03 で作った画面の部品（一覧・入力・図面）を、<strong>本物の API</strong> につなぎかえます。</li>
+<li>ログイン・回覧者の検索・添付ファイル・詳細と操作のボタン・グラフの画面を足します。</li>
+<li>React をビルドして、<strong>Django のプロジェクトの中</strong>に入れ、Django（WhiteNoise）が配る形にします。onprem の 05 の形そのものです。</li>
+</ul>
+<p>練習のコードは <code>samples/06_django_react/frontend/</code> にあります。この巻の画面の写しは、ビルドした物を <strong>waitress（会社のサーバーと同じ）で動かし、Chrome で、依頼を出すところから完了までを実際に操作して撮った</strong>物です。</p>
+<h2 id="1">1. 開発中と、ビルドした後</h2>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/L06b-01_dev_vs_build.webp" alt="開発中はVite 5173番が画面を出し、/apiだけDjango 8000番へ回す。ビルドした後は、Django（WhiteNoise）が画面の部品とAPIの両方を返す" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図1-1: 開発中は 2 つのサーバー、ビルドした後は Django だけ</div>
+</div>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th>開発中</th>
+<th>ビルドした後（会社のサーバーと同じ）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>開く URL</td>
+<td><code>http://localhost:5173/</code></td>
+<td><code>http://127.0.0.1:8000/</code>（会社では <code>http://webapp.example.local/</code>）</td>
+</tr>
+<tr>
+<td>画面を出すのは</td>
+<td>Vite（直すとすぐ反映）</td>
+<td>Django の WhiteNoise（<code>/static/…</code>）</td>
+</tr>
+<tr>
+<td>API（<code>/api/…</code>）は</td>
+<td>Vite が Django へ回す（<code>vite.config.ts</code> の <code>proxy</code>）</td>
+<td>Django がそのまま答える</td>
+</tr>
+<tr>
+<td>動かし方</td>
+<td>窓を 2 つ開いて、<code>.\dev.ps1 runserver</code> と <code>npm run dev</code></td>
+<td><code>npm run build</code> の後、<code>.\dev_serve.ps1</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>frontend/vite.config.ts</code>:</p>
+<div class="codehilite"><div class="code-wrap" id="code-1"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">defineConfig</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;vite&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="nx">react</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@vitejs/plugin-react&quot;</span><span class="p">;</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="nx">defineConfig</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">plugins</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="nx">react</span><span class="p">()],</span>
+<span class="w">  </span><span class="c1">// 成果物は Django の /static/ から配られる（onprem の 05 の 6.5）</span>
+<span class="w">  </span><span class="nx">base</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;/static/&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">build</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 成果物を Django のプロジェクトの中（backend/frontend_dist）に書き出す</span>
+<span class="w">    </span><span class="nx">outDir</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;../backend/frontend_dist&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">emptyOutDir</span><span class="o">:</span><span class="w"> </span><span class="kt">true</span><span class="p">,</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">server</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 開発中だけ: API と承認の画面は、Django の開発用のサーバーへ回す</span>
+<span class="w">    </span><span class="nx">proxy</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="s2">&quot;/api&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;http://127.0.0.1:8000&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;/approve&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;http://127.0.0.1:8000&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h3 id="11">1.1 開発中の動かし方</h3>
+<p><strong>▶ 準備:</strong> 00 の 6.3（Node.js）。前編のサーバー側（Django）が動いていること。<code>npm</code> が「スクリプトの実行が無効」で止められたら、<code>npm.cmd</code> と打ちます（00 の 6.3）。</p>
+<div class="codehilite"><div class="code-wrap" id="code-2"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 窓 1: サーバー（前編）</span>
+<span class="nb">cd </span><span class="n">webapp_learning</span><span class="p">\</span><span class="n">samples</span><span class="p">\</span><span class="n">06_django_react</span><span class="p">\</span><span class="n">backend</span>
+<span class="p">.\</span><span class="n">dev</span><span class="p">.</span><span class="n">ps1</span> <span class="n">runserver</span>
+
+<span class="c"># 窓 2: 画面</span>
+<span class="nb">cd </span><span class="n">webapp_learning</span><span class="p">\</span><span class="n">samples</span><span class="p">\</span><span class="n">06_django_react</span><span class="p">\</span><span class="n">frontend</span>
+<span class="n">npm</span> <span class="n">install</span>
+<span class="n">npm</span> <span class="n">run</span> <span class="n">dev</span>        <span class="c"># http://localhost:5173/ を開く</span>
+</code></pre></div></div>
+
+<h3 id="12">1.2 ビルドして、会社のサーバーと同じ形で動かす</h3>
+<div class="codehilite"><div class="code-wrap" id="code-3"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">cd </span><span class="n">webapp_learning</span><span class="p">\</span><span class="n">samples</span><span class="p">\</span><span class="n">06_django_react</span><span class="p">\</span><span class="n">frontend</span>
+<span class="n">npm</span> <span class="n">run</span> <span class="n">build</span>      <span class="c"># 型を確かめてから、backend\frontend_dist に成果物を書き出す</span>
+
+<span class="nb">cd </span><span class="p">..\</span><span class="n">backend</span>
+<span class="p">.\</span><span class="n">dev_serve</span><span class="p">.</span><span class="n">ps1</span>    <span class="c"># 部品を集めて（collectstatic）、waitress で動かす → http://127.0.0.1:8000/</span>
+</code></pre></div></div>
+
+<p><code>backend/dev_serve.ps1</code>（<strong>「UTF-8 (BOM 付き)」で保存</strong>）:</p>
+<div class="codehilite"><div class="code-wrap" id="code-4"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 会社のサーバーと同じ形（waitress・DEBUG なし・WhiteNoise が画面の部品を配る）で、手元で動かして確かめる</span>
+<span class="c"># （必ず「UTF-8 (BOM 付き)」で保存する）</span>
+<span class="c"># 使い方: .\dev_serve.ps1   → http://127.0.0.1:8000/ を開く。止めるときは Ctrl+C</span>
+<span class="nv">$ErrorActionPreference</span> <span class="p">=</span> <span class="s2">&quot;Stop&quot;</span>
+
+<span class="nv">$names</span> <span class="p">=</span> <span class="p">@()</span>
+<span class="k">foreach</span> <span class="p">(</span><span class="nv">$line</span> <span class="k">in</span> <span class="nb">Get-Content</span> <span class="p">(</span><span class="nb">Join-Path</span> <span class="nv">$PSScriptRoot</span> <span class="s2">&quot;dev.env&quot;</span><span class="p">)</span> <span class="n">-Encoding</span> <span class="n">UTF8</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nv">$line</span> <span class="o">-match</span> <span class="s1">&#39;^\s*#&#39;</span> <span class="o">-or</span> <span class="nv">$line</span> <span class="o">-notmatch</span> <span class="s1">&#39;=&#39;</span><span class="p">)</span> <span class="p">{</span> <span class="k">continue</span> <span class="p">}</span>
+    <span class="nv">$name</span><span class="p">,</span> <span class="nv">$value</span> <span class="p">=</span> <span class="nv">$line</span> <span class="n">-split</span> <span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="n">2</span>
+    <span class="nb">Set-Item</span> <span class="n">-Path</span> <span class="s2">&quot;Env:</span><span class="p">$(</span><span class="nv">$name</span><span class="p">.</span><span class="n">Trim</span><span class="p">())</span><span class="s2">&quot;</span> <span class="n">-Value</span> <span class="nv">$value</span><span class="p">.</span><span class="n">Trim</span><span class="p">()</span>
+    <span class="nv">$names</span> <span class="p">+=</span> <span class="nv">$name</span><span class="p">.</span><span class="n">Trim</span><span class="p">()</span>
+<span class="p">}</span>
+<span class="nv">$env:DJANGO_DEBUG</span> <span class="p">=</span> <span class="s2">&quot;false&quot;</span>   <span class="c"># 本番と同じ</span>
+<span class="nv">$names</span> <span class="p">+=</span> <span class="s2">&quot;DJANGO_DEBUG&quot;</span>
+
+<span class="nb">Push-Location</span> <span class="nv">$PSScriptRoot</span>
+<span class="k">try</span> <span class="p">{</span>
+    <span class="nv">$python</span> <span class="p">=</span> <span class="s2">&quot;$PSScriptRoot\.venv\Scripts\python.exe&quot;</span>
+    <span class="p">&amp;</span> <span class="nv">$python</span> <span class="n">manage</span><span class="p">.</span><span class="n">py</span> <span class="n">collectstatic</span> <span class="p">-</span><span class="n">-noinput</span>   <span class="c"># 画面の部品を staticfiles に集める</span>
+    <span class="c"># onprem の 05 の 9.2 の XML の arguments と同じ（ポートだけ 8000）</span>
+    <span class="c"># 行末の ` は「次の行へ続く」という印（長い 1 行を 2 行に分けて書く）</span>
+    <span class="p">&amp;</span> <span class="nv">$python</span> <span class="n">-m</span> <span class="n">waitress</span> <span class="p">-</span><span class="n">-listen</span><span class="p">=</span><span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span><span class="p">:</span><span class="n">8000</span> <span class="p">-</span><span class="n">-threads</span><span class="p">=</span><span class="n">8</span> <span class="p">`</span>
+        <span class="p">-</span><span class="n">-trusted-proxy</span><span class="p">=</span><span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span> <span class="p">-</span><span class="n">-trusted-proxy-headers</span><span class="p">=</span><span class="n">x-forwarded-for</span> <span class="n">config</span><span class="p">.</span><span class="n">wsgi</span><span class="p">:</span><span class="n">application</span>
+<span class="p">}</span> <span class="k">finally</span> <span class="p">{</span>
+    <span class="k">foreach</span> <span class="p">(</span><span class="nv">$n</span> <span class="k">in</span> <span class="nv">$names</span><span class="p">)</span> <span class="p">{</span> <span class="nb">Remove-Item</span> <span class="n">-Path</span> <span class="s2">&quot;Env:$n&quot;</span> <span class="n">-ErrorAction</span> <span class="n">SilentlyContinue</span> <span class="p">}</span>
+    <span class="nb">Pop-Location</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><strong>確かめること:</strong> <code>http://127.0.0.1:8000/health</code> が <code>{"status": "ok"}</code> を返すこと。画面の部品（<code>/static/assets/index-（指紋）.js</code>）の返事に、<code>Cache-Control: max-age=315360000, public, immutable</code> が付くこと（試した結果、付いた。onprem の 05 の 8.4 と同じ）。</p>
+<h2 id="2">2. 画面の部品の組み立て</h2>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/L06b-02_component_tree.webp" alt="AppからLoginPage・ListPage・FormPage・DetailPage・StatsPageへ。FormPageの下にApproverPickerとDrawingPad、DetailPageの下にStatusBadgeとDrawingPad。api.tsがサーバーとの窓口" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図2-1: 練習アプリの画面の部品</div>
+</div>
+
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/L06b-03_screen_flow.webp" alt="ログインから依頼の一覧へ。一覧から新しい依頼、依頼の詳細、グラフへ。詳細から直して出し直す。メールから承認の画面" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図2-2: 画面のつながり（承認の画面だけは、前編の Django のテンプレート）</div>
+</div>
+
+<div class="codehilite"><div class="code-wrap" id="code-5"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>frontend\src\
+├─ main.tsx            React を HTML に入れる（03 と同じ）
+├─ App.tsx             ログインの確かめと、画面の切りかえ
+├─ api.ts              サーバーとの窓口（全部の API の呼び方）
+├─ types.ts            サーバーとやり取りする物の形
+├─ style.css           01 の CSS ＋ 足した物
+├─ components\
+│  ├─ StatusBadge.tsx    状態の札
+│  ├─ DrawingPad.tsx     図面（描く・見る）
+│  └─ ApproverPicker.tsx 回覧者を探して選ぶ
+└─ pages\
+   ├─ LoginPage.tsx  ListPage.tsx  FormPage.tsx  DetailPage.tsx  StatsPage.tsx
+</code></pre></div></div>
+
+<h2 id="3-apitscsrf">3. サーバーとの窓口（api.ts）と、CSRF の札</h2>
+<p><code>frontend/src/api.ts</code>:</p>
+<div class="codehilite"><div class="code-wrap" id="code-6"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// Django の API を呼ぶ。03 の「にせのサーバー」を、本物に置きかえた物</span>
+<span class="k">import</span><span class="w"> </span><span class="kr">type</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Employee</span><span class="p">,</span><span class="w"> </span><span class="nx">Me</span><span class="p">,</span><span class="w"> </span><span class="nx">RequestDetail</span><span class="p">,</span><span class="w"> </span><span class="nx">RequestInput</span><span class="p">,</span><span class="w"> </span><span class="nx">RequestRow</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;./types.ts&quot;</span><span class="p">;</span>
+
+<span class="cm">/** API が断ったとき。detail はそのまま画面に出せる日本語 */</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">class</span><span class="w"> </span><span class="nx">ApiError</span><span class="w"> </span><span class="k">extends</span><span class="w"> </span><span class="ne">Error</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">;</span>
+<span class="w">  </span><span class="kr">constructor</span><span class="p">(</span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">,</span><span class="w"> </span><span class="nx">message</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">super</span><span class="p">(</span><span class="nx">message</span><span class="p">);</span>
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">status</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">function</span><span class="w"> </span><span class="nx">csrfToken</span><span class="p">()</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">m</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">cookie</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/(?:^|; )csrftoken=([^;]+)/</span><span class="p">);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">m</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="nb">decodeURIComponent</span><span class="p">(</span><span class="nx">m</span><span class="p">[</span><span class="mf">1</span><span class="p">])</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cm">/** DRF のエラーの JSON（{&quot;title&quot;: [&quot;…&quot;]} や {&quot;detail&quot;: &quot;…&quot;}）を、1 つの文にする */</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">messageOf</span><span class="p">(</span><span class="nx">data</span><span class="o">:</span><span class="w"> </span><span class="kt">unknown</span><span class="p">,</span><span class="w"> </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">data</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="ow">typeof</span><span class="w"> </span><span class="nx">data</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Object</span><span class="p">.</span><span class="nx">values</span><span class="p">(</span><span class="nx">data</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="nx">Record</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">unknown</span><span class="o">&gt;</span><span class="p">).</span><span class="nx">flat</span><span class="p">();</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">values</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nx">values</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nb">String</span><span class="p">).</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="sb">`エラー </span><span class="si">${</span><span class="nx">status</span><span class="si">}</span><span class="sb">`</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">call</span><span class="o">&lt;</span><span class="nx">T</span><span class="o">&gt;</span><span class="p">(</span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">init</span><span class="o">:</span><span class="w"> </span><span class="kt">RequestInit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{})</span><span class="o">:</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="nx">T</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">init</span><span class="p">.</span><span class="nx">method</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="s2">&quot;GET&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">headers</span><span class="o">:</span><span class="w"> </span><span class="kt">Record</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">method</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;GET&quot;</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s2">&quot;X-CSRFToken&quot;</span><span class="o">:</span><span class="w"> </span><span class="nx">csrfToken</span><span class="p">()</span><span class="w"> </span><span class="p">};</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">init</span><span class="p">.</span><span class="nx">body</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="p">(</span><span class="nx">init</span><span class="p">.</span><span class="nx">body</span><span class="w"> </span><span class="ow">instanceof</span><span class="w"> </span><span class="nx">FormData</span><span class="p">))</span><span class="w"> </span><span class="nx">headers</span><span class="p">[</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;application/json&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="nx">path</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="nx">init</span><span class="p">,</span><span class="w"> </span><span class="nx">method</span><span class="p">,</span><span class="w"> </span><span class="nx">headers</span><span class="p">,</span><span class="w"> </span><span class="nx">credentials</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;same-origin&quot;</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">204</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="kc">undefined</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="nx">T</span><span class="p">;</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">json</span><span class="p">().</span><span class="k">catch</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">({}));</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">res</span><span class="p">.</span><span class="nx">ok</span><span class="p">)</span><span class="w"> </span><span class="k">throw</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">ApiError</span><span class="p">(</span><span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">,</span><span class="w"> </span><span class="nx">messageOf</span><span class="p">(</span><span class="nx">data</span><span class="p">,</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">));</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">data</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="nx">T</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">post</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&lt;</span><span class="nx">T</span><span class="o">&gt;</span><span class="p">(</span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">body?</span><span class="o">:</span><span class="w"> </span><span class="kt">unknown</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span>
+<span class="w">  </span><span class="nx">call</span><span class="o">&lt;</span><span class="nx">T</span><span class="o">&gt;</span><span class="p">(</span><span class="nx">path</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">method</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;POST&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">body</span><span class="o">:</span><span class="w"> </span><span class="kt">body</span><span class="w"> </span><span class="ow">instanceof</span><span class="w"> </span><span class="nx">FormData</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="nx">body</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">JSON.stringify</span><span class="p">(</span><span class="nx">body</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="p">{})</span><span class="w"> </span><span class="p">});</span>
+
+<span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">api</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">csrf</span><span class="o">:</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">call</span><span class="o">&lt;</span><span class="ow">void</span><span class="o">&gt;</span><span class="p">(</span><span class="s2">&quot;/api/csrf/&quot;</span><span class="p">),</span>
+<span class="w">  </span><span class="nx">me</span><span class="o">:</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">call</span><span class="o">&lt;</span><span class="nx">Me</span><span class="o">&gt;</span><span class="p">(</span><span class="s2">&quot;/api/me/&quot;</span><span class="p">),</span>
+<span class="w">  </span><span class="nx">login</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">employee_no</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">password</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">post</span><span class="o">&lt;</span><span class="p">{</span><span class="w"> </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">}</span><span class="o">&gt;</span><span class="p">(</span><span class="s2">&quot;/api/login/&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">employee_no</span><span class="p">,</span><span class="w"> </span><span class="nx">password</span><span class="w"> </span><span class="p">}),</span>
+<span class="w">  </span><span class="nx">logout</span><span class="o">:</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">post</span><span class="o">&lt;</span><span class="p">{</span><span class="w"> </span><span class="nx">ok</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="p">}</span><span class="o">&gt;</span><span class="p">(</span><span class="s2">&quot;/api/logout/&quot;</span><span class="p">),</span>
+<span class="w">  </span><span class="nx">requests</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">mine</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">call</span><span class="o">&lt;</span><span class="nx">RequestRow</span><span class="p">[]</span><span class="o">&gt;</span><span class="p">(</span><span class="sb">`/api/requests/</span><span class="si">${</span><span class="nx">mine</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s2">&quot;?mine=1&quot;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="si">}</span><span class="sb">`</span><span class="p">),</span>
+<span class="w">  </span><span class="nx">request</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">call</span><span class="o">&lt;</span><span class="nx">RequestDetail</span><span class="o">&gt;</span><span class="p">(</span><span class="sb">`/api/requests/</span><span class="si">${</span><span class="nx">id</span><span class="si">}</span><span class="sb">/`</span><span class="p">),</span>
+<span class="w">  </span><span class="nx">create</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">input</span><span class="o">:</span><span class="w"> </span><span class="kt">RequestInput</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">post</span><span class="o">&lt;</span><span class="p">{</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="w"> </span><span class="p">}</span><span class="o">&gt;</span><span class="p">(</span><span class="s2">&quot;/api/requests/&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">input</span><span class="p">),</span>
+<span class="w">  </span><span class="nx">action</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">,</span><span class="w"> </span><span class="nx">action</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">input?</span><span class="o">:</span><span class="w"> </span><span class="kt">RequestInput</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">post</span><span class="o">&lt;</span><span class="p">{</span><span class="w"> </span><span class="nx">ok</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="p">}</span><span class="o">&gt;</span><span class="p">(</span><span class="sb">`/api/requests/</span><span class="si">${</span><span class="nx">id</span><span class="si">}</span><span class="sb">/</span><span class="si">${</span><span class="nx">action</span><span class="si">}</span><span class="sb">/`</span><span class="p">,</span><span class="w"> </span><span class="nx">input</span><span class="p">),</span>
+<span class="w">  </span><span class="nx">upload</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">,</span><span class="w"> </span><span class="nx">file</span><span class="o">:</span><span class="w"> </span><span class="kt">File</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">form</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">FormData</span><span class="p">();</span>
+<span class="w">    </span><span class="nx">form</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;file&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">file</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">post</span><span class="o">&lt;</span><span class="p">{</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="w"> </span><span class="p">}</span><span class="o">&gt;</span><span class="p">(</span><span class="sb">`/api/requests/</span><span class="si">${</span><span class="nx">id</span><span class="si">}</span><span class="sb">/attachments/`</span><span class="p">,</span><span class="w"> </span><span class="nx">form</span><span class="p">);</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">employees</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">q</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">call</span><span class="o">&lt;</span><span class="nx">Employee</span><span class="p">[]</span><span class="o">&gt;</span><span class="p">(</span><span class="sb">`/api/employees/?q=</span><span class="si">${</span><span class="nb">encodeURIComponent</span><span class="p">(</span><span class="nx">q</span><span class="p">)</span><span class="si">}</span><span class="sb">`</span><span class="p">),</span>
+<span class="w">  </span><span class="nx">stats</span><span class="o">:</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span>
+<span class="w">    </span><span class="nx">call</span><span class="o">&lt;</span><span class="p">{</span><span class="w"> </span><span class="nx">by_status</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span><span class="w"> </span><span class="nx">count</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="w"> </span><span class="p">}[];</span><span class="w"> </span><span class="nx">done_by_assignee</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span><span class="w"> </span><span class="nx">count</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="w"> </span><span class="p">}[]</span><span class="w"> </span><span class="p">}</span><span class="o">&gt;</span><span class="p">(</span><span class="s2">&quot;/api/stats/&quot;</span><span class="p">),</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<ul>
+<li><strong>API の呼び方を、このファイル 1 つに集めています。</strong> 画面の部品は <code>api.requests(true)</code> のように呼ぶだけで、URL や CSRF の札のことを知らなくて済みます（前編の services と同じ考え方）。</li>
+<li><code>POST</code> には、クッキーの <code>csrftoken</code> を <code>X-CSRFToken</code> という付け札にして付けます（onprem の 05 の 8.2）。</li>
+<li>札は、画面を開いたときに <code>/api/csrf/</code> を呼んで受け取ります（ビルドした後は、<code>index.html</code> を返すときにも渡す）。</li>
+<li>サーバーが断ったときの文（<code>{"detail": "…"}</code> や <code>{"title": ["…"]}</code>）は、<code>ApiError</code> にして、そのまま画面に出します。</li>
+</ul>
+<p>サーバー側に足した物（<code>backend/workflow/pages.py</code>）:</p>
+<div class="codehilite"><div class="code-wrap" id="code-7"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="sd">&quot;&quot;&quot;React の画面（index.html）を返す所と、動いているかの確かめ（/health）&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">django.http</span><span class="w"> </span><span class="kn">import</span> <span class="n">HttpResponse</span><span class="p">,</span> <span class="n">JsonResponse</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">django.utils.decorators</span><span class="w"> </span><span class="kn">import</span> <span class="n">method_decorator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">django.views.decorators.csrf</span><span class="w"> </span><span class="kn">import</span> <span class="n">ensure_csrf_cookie</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">django.views.generic</span><span class="w"> </span><span class="kn">import</span> <span class="n">TemplateView</span>
+
+
+<span class="nd">@method_decorator</span><span class="p">(</span><span class="n">ensure_csrf_cookie</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;dispatch&quot;</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">IndexView</span><span class="p">(</span><span class="n">TemplateView</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;React の成果物の index.html を返す。CSRF の札（クッキー）もここで渡す&quot;&quot;&quot;</span>
+
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s2">&quot;index.html&quot;</span>
+
+
+<span class="nd">@ensure_csrf_cookie</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">csrf</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;開発中（Vite の画面から開いたとき）に、CSRF の札を受け取るための入口&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">HttpResponse</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="mi">204</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">health</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;動いているかの確かめ（onprem の 06 の check.ps1 が使う）&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">JsonResponse</span><span class="p">({</span><span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;ok&quot;</span><span class="p">})</span>
+</code></pre></div></div>
+
+<p><code>backend/config/urls.py</code> の最後に、「API・管理画面・部品・承認の画面以外の URL は、React の画面を返す」行を足しました。</p>
+<div class="codehilite"><div class="code-wrap" id="code-8"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">re_path</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^(?!api/|admin/|static/|approve/).*$&quot;</span><span class="p">,</span> <span class="n">pages</span><span class="o">.</span><span class="n">IndexView</span><span class="o">.</span><span class="n">as_view</span><span class="p">()),</span>
+</code></pre></div></div>
+
+<h2 id="4-apptsx">4. ログインと、画面の切りかえ（App.tsx）</h2>
+<p><code>frontend/src/App.tsx</code>:</p>
+<div class="codehilite"><div class="code-wrap" id="code-9"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">useCallback</span><span class="p">,</span><span class="w"> </span><span class="nx">useEffect</span><span class="p">,</span><span class="w"> </span><span class="nx">useState</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">api</span><span class="p">,</span><span class="w"> </span><span class="nx">ApiError</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;./api.ts&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">DetailPage</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;./pages/DetailPage.tsx&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">FormPage</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;./pages/FormPage.tsx&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">ListPage</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;./pages/ListPage.tsx&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">LoginPage</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;./pages/LoginPage.tsx&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">StatsPage</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;./pages/StatsPage.tsx&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="kr">type</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Me</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;./types.ts&quot;</span><span class="p">;</span>
+
+<span class="kr">type</span><span class="w"> </span><span class="nx">Route</span><span class="w"> </span><span class="o">=</span>
+<span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">page</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;list&quot;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">page</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;new&quot;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">page</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;detail&quot;</span><span class="p">;</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">page</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;edit&quot;</span><span class="p">;</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">page</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;stats&quot;</span><span class="w"> </span><span class="p">};</span>
+
+<span class="cm">/** URL の # の後ろ（#/requests/5 など）から、出す画面を決める */</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">parse</span><span class="p">(</span><span class="nx">hash</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nx">Route</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">m</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">hash</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/^#\/requests\/(\d+)(\/edit)?$/</span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">m</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nx">m</span><span class="p">[</span><span class="mf">2</span><span class="p">]</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">page</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;edit&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">Number</span><span class="p">(</span><span class="nx">m</span><span class="p">[</span><span class="mf">1</span><span class="p">])</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">page</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;detail&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">Number</span><span class="p">(</span><span class="nx">m</span><span class="p">[</span><span class="mf">1</span><span class="p">])</span><span class="w"> </span><span class="p">};</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">hash</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;#/new&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">page</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;new&quot;</span><span class="w"> </span><span class="p">};</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">hash</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;#/stats&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">page</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;stats&quot;</span><span class="w"> </span><span class="p">};</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">page</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;list&quot;</span><span class="w"> </span><span class="p">};</span>
+<span class="p">}</span>
+
+<span class="k">export</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">App</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">me</span><span class="p">,</span><span class="w"> </span><span class="nx">setMe</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">&lt;</span><span class="nt">Me</span><span class="w"> </span><span class="err">|</span><span class="w"> </span><span class="na">null</span><span class="w"> </span><span class="err">|</span><span class="w"> </span><span class="na">undefined</span><span class="p">&gt;(</span><span class="kc">undefined</span><span class="p">);</span><span class="w"> </span><span class="c1">// undefined = 確かめ中、null = ログインしていない</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">route</span><span class="p">,</span><span class="w"> </span><span class="nx">setRoute</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">&lt;</span><span class="nt">Route</span><span class="p">&gt;(</span><span class="nx">parse</span><span class="p">(</span><span class="nx">location</span><span class="p">.</span><span class="nx">hash</span><span class="p">));</span>
+
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">loadMe</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useCallback</span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">setMe</span><span class="p">(</span><span class="k">await</span><span class="w"> </span><span class="nx">api</span><span class="p">.</span><span class="nx">me</span><span class="p">());</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="nx">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">e</span><span class="w"> </span><span class="ow">instanceof</span><span class="w"> </span><span class="nx">ApiError</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nx">status</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">403</span><span class="p">)</span><span class="w"> </span><span class="nx">setMe</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span><span class="w"> </span><span class="c1">// ログインしていない（60 分たった、など）</span>
+<span class="w">      </span><span class="k">else</span><span class="w"> </span><span class="k">throw</span><span class="w"> </span><span class="nx">e</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">},</span><span class="w"> </span><span class="p">[]);</span>
+
+<span class="w">  </span><span class="nx">useEffect</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">api</span><span class="p">.</span><span class="nx">csrf</span><span class="p">().</span><span class="nx">then</span><span class="p">(</span><span class="nx">loadMe</span><span class="p">);</span><span class="w"> </span><span class="c1">// 先に CSRF の札（クッキー）を受け取ってから</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">onChange</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">setRoute</span><span class="p">(</span><span class="nx">parse</span><span class="p">(</span><span class="nx">location</span><span class="p">.</span><span class="nx">hash</span><span class="p">));</span>
+<span class="w">    </span><span class="nb">window</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s2">&quot;hashchange&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">onChange</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nb">window</span><span class="p">.</span><span class="nx">removeEventListener</span><span class="p">(</span><span class="s2">&quot;hashchange&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">onChange</span><span class="p">);</span>
+<span class="w">  </span><span class="p">},</span><span class="w"> </span><span class="p">[</span><span class="nx">loadMe</span><span class="p">]);</span>
+
+<span class="w">  </span><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">logout</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">await</span><span class="w"> </span><span class="nx">api</span><span class="p">.</span><span class="nx">logout</span><span class="p">();</span>
+<span class="w">    </span><span class="nx">setMe</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">&lt;&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">header</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;site-header&quot;</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">strong</span><span class="p">&gt;</span><span class="nx">依頼</span><span class="err">・</span><span class="nx">承認アプリ</span><span class="p">&lt;/</span><span class="nt">strong</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">{</span><span class="nx">me</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span>
+<span class="w">          </span><span class="p">&lt;</span><span class="nt">nav</span><span class="p">&gt;</span>
+<span class="w">            </span><span class="p">&lt;</span><span class="nt">a</span><span class="w"> </span><span class="na">href</span><span class="o">=</span><span class="s">&quot;#/&quot;</span><span class="p">&gt;</span><span class="nx">依頼の一覧</span><span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+<span class="w">            </span><span class="p">&lt;</span><span class="nt">a</span><span class="w"> </span><span class="na">href</span><span class="o">=</span><span class="s">&quot;#/new&quot;</span><span class="p">&gt;</span><span class="nx">新しい依頼</span><span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+<span class="w">            </span><span class="p">&lt;</span><span class="nt">a</span><span class="w"> </span><span class="na">href</span><span class="o">=</span><span class="s">&quot;#/stats&quot;</span><span class="p">&gt;</span><span class="nx">グラフ</span><span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+<span class="w">            </span><span class="p">&lt;</span><span class="nt">span</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;who&quot;</span><span class="p">&gt;{</span><span class="nx">me</span><span class="p">.</span><span class="nx">name</span><span class="p">}</span><span class="w"> </span><span class="nx">さん</span><span class="p">&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
+<span class="w">            </span><span class="p">&lt;</span><span class="nt">button</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;link light&quot;</span><span class="w"> </span><span class="na">onClick</span><span class="o">=</span><span class="p">{</span><span class="nx">logout</span><span class="p">}&gt;</span><span class="nx">ログアウト</span><span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="w">          </span><span class="p">&lt;/</span><span class="nt">nav</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">)}</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">header</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">main</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">{</span><span class="nx">me</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="kc">undefined</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span><span class="nx">読み込み中</span><span class="err">…</span><span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;}</span>
+<span class="w">        </span><span class="p">{</span><span class="nx">me</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">LoginPage</span><span class="w"> </span><span class="na">onLogin</span><span class="o">=</span><span class="p">{</span><span class="nx">loadMe</span><span class="p">}</span><span class="w"> </span><span class="p">/&gt;}</span>
+<span class="w">        </span><span class="p">{</span><span class="nx">me</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">route</span><span class="p">.</span><span class="nx">page</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;list&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">ListPage</span><span class="w"> </span><span class="na">me</span><span class="o">=</span><span class="p">{</span><span class="nx">me</span><span class="p">}</span><span class="w"> </span><span class="p">/&gt;}</span>
+<span class="w">        </span><span class="p">{</span><span class="nx">me</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">route</span><span class="p">.</span><span class="nx">page</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;new&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">FormPage</span><span class="w"> </span><span class="p">/&gt;}</span>
+<span class="w">        </span><span class="p">{</span><span class="nx">me</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">route</span><span class="p">.</span><span class="nx">page</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;edit&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">FormPage</span><span class="w"> </span><span class="na">editId</span><span class="o">=</span><span class="p">{</span><span class="nx">route</span><span class="p">.</span><span class="nx">id</span><span class="p">}</span><span class="w"> </span><span class="p">/&gt;}</span>
+<span class="w">        </span><span class="p">{</span><span class="nx">me</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">route</span><span class="p">.</span><span class="nx">page</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;detail&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">DetailPage</span><span class="w"> </span><span class="na">id</span><span class="o">=</span><span class="p">{</span><span class="nx">route</span><span class="p">.</span><span class="nx">id</span><span class="p">}</span><span class="w"> </span><span class="na">me</span><span class="o">=</span><span class="p">{</span><span class="nx">me</span><span class="p">}</span><span class="w"> </span><span class="p">/&gt;}</span>
+<span class="w">        </span><span class="p">{</span><span class="nx">me</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">route</span><span class="p">.</span><span class="nx">page</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;stats&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">StatsPage</span><span class="w"> </span><span class="p">/&gt;}</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">main</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">&lt;/&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<div style="max-width: 640px; margin: 18px auto; text-align: center;">
+<img src="../images/L06b-s1_login.webp" alt="ログインの画面。従業員番号とパスワード。60分操作が無いと自動でログアウトします" style="width: 100%; border: 1px solid #cbd5e1;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図4-1: ログインの画面</div>
+</div>
+
+<ul>
+<li><code>/api/me/</code> が 403 なら「ログインしていない」として、ログインの画面を出します。<strong>60 分たってセッションが切れたとき</strong>も、同じ動きになります（前編の settings.py の <code>SESSION_COOKIE_AGE</code>）。</li>
+<li><code>me</code> が <code>undefined</code>（確かめ中）・<code>null</code>（ログインしていない）・値あり（ログイン中）の 3 つを、型で区別しています。</li>
+</ul>
+<h2 id="5-formpage-approverpicker">5. 依頼を出す（FormPage と ApproverPicker）</h2>
+<p><code>frontend/src/pages/FormPage.tsx</code>:</p>
+<div class="codehilite"><div class="code-wrap" id="code-10"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">useEffect</span><span class="p">,</span><span class="w"> </span><span class="nx">useState</span><span class="p">,</span><span class="w"> </span><span class="kr">type</span><span class="w"> </span><span class="nx">FormEvent</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">api</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;../api.ts&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">ApproverPicker</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;../components/ApproverPicker.tsx&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">DrawingPad</span><span class="p">,</span><span class="w"> </span><span class="nx">emptyDrawing</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;../components/DrawingPad.tsx&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="kr">type</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Drawing</span><span class="p">,</span><span class="w"> </span><span class="nx">Employee</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;../types.ts&quot;</span><span class="p">;</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">MAX_FILE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">10</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">1024</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">1024</span><span class="p">;</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">OK_EXT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sr">/\.(jpe?g|png|pdf)$/i</span><span class="p">;</span>
+
+<span class="cm">/** 依頼の入力。editId があれば「直して出し直す」 */</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">FormPage</span><span class="p">({</span><span class="w"> </span><span class="nx">editId</span><span class="w"> </span><span class="p">}</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">editId?</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">title</span><span class="p">,</span><span class="w"> </span><span class="nx">setTitle</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">detail</span><span class="p">,</span><span class="w"> </span><span class="nx">setDetail</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">dueDate</span><span class="p">,</span><span class="w"> </span><span class="nx">setDueDate</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">approvers</span><span class="p">,</span><span class="w"> </span><span class="nx">setApprovers</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">&lt;</span><span class="nt">Employee</span><span class="err">[]</span><span class="p">&gt;([]);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">drawing</span><span class="p">,</span><span class="w"> </span><span class="nx">setDrawing</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">&lt;</span><span class="nt">Drawing</span><span class="p">&gt;(</span><span class="nx">emptyDrawing</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">files</span><span class="p">,</span><span class="w"> </span><span class="nx">setFiles</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">&lt;</span><span class="nt">File</span><span class="err">[]</span><span class="p">&gt;([]);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">errors</span><span class="p">,</span><span class="w"> </span><span class="nx">setErrors</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">&lt;</span><span class="nt">string</span><span class="err">[]</span><span class="p">&gt;([]);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">sending</span><span class="p">,</span><span class="w"> </span><span class="nx">setSending</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span>
+
+<span class="w">  </span><span class="nx">useEffect</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">editId</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="kc">undefined</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">api</span><span class="p">.</span><span class="nx">request</span><span class="p">(</span><span class="nx">editId</span><span class="p">).</span><span class="nx">then</span><span class="p">((</span><span class="nx">r</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">setTitle</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">title</span><span class="p">);</span>
+<span class="w">      </span><span class="nx">setDetail</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">detail</span><span class="p">);</span>
+<span class="w">      </span><span class="nx">setDueDate</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">due_date</span><span class="p">);</span>
+<span class="w">      </span><span class="nx">setDrawing</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">drawing</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="nx">emptyDrawing</span><span class="p">);</span>
+<span class="w">      </span><span class="nx">setApprovers</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">steps</span><span class="p">.</span><span class="nx">map</span><span class="p">((</span><span class="nx">s</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">({</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">s.approver_id</span><span class="p">,</span><span class="w"> </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="kt">s.approver_name</span><span class="p">,</span><span class="w"> </span><span class="nx">dept</span><span class="o">:</span><span class="w"> </span><span class="kt">s.approver_dept</span><span class="p">,</span><span class="w"> </span><span class="nx">job_title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="w"> </span><span class="p">})));</span>
+<span class="w">    </span><span class="p">});</span>
+<span class="w">  </span><span class="p">},</span><span class="w"> </span><span class="p">[</span><span class="nx">editId</span><span class="p">]);</span>
+
+<span class="w">  </span><span class="kd">function</span><span class="w"> </span><span class="nx">validate</span><span class="p">()</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">[]</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">list</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[];</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">title</span><span class="p">.</span><span class="nx">trim</span><span class="p">())</span><span class="w"> </span><span class="nx">list</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="s2">&quot;件名を入れてください。&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">dueDate</span><span class="p">)</span><span class="w"> </span><span class="nx">list</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="s2">&quot;希望の納期を入れてください。&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">approvers</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">0</span><span class="p">)</span><span class="w"> </span><span class="nx">list</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="s2">&quot;回覧者を 1 人以上選んでください。&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">const</span><span class="w"> </span><span class="nx">f</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nx">files</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">OK_EXT</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="nx">f</span><span class="p">.</span><span class="nx">name</span><span class="p">))</span><span class="w"> </span><span class="nx">list</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="sb">`</span><span class="si">${</span><span class="nx">f</span><span class="p">.</span><span class="nx">name</span><span class="si">}</span><span class="sb">: 添付できるのは JPG・PNG・PDF だけです。`</span><span class="p">);</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">f</span><span class="p">.</span><span class="nx">size</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="nx">MAX_FILE</span><span class="p">)</span><span class="w"> </span><span class="nx">list</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="sb">`</span><span class="si">${</span><span class="nx">f</span><span class="p">.</span><span class="nx">name</span><span class="si">}</span><span class="sb">: 1 ファイル 10MB までです。`</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">list</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">handleSubmit</span><span class="p">(</span><span class="nx">e</span><span class="o">:</span><span class="w"> </span><span class="kt">FormEvent</span><span class="p">&lt;</span><span class="nt">HTMLFormElement</span><span class="p">&gt;)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">found</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">validate</span><span class="p">();</span>
+<span class="w">    </span><span class="nx">setErrors</span><span class="p">(</span><span class="nx">found</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">found</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">setSending</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+<span class="w">    </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="kd">const</span><span class="w"> </span><span class="nx">input</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">title</span><span class="p">,</span><span class="w"> </span><span class="nx">detail</span><span class="p">,</span><span class="w"> </span><span class="nx">due_date</span><span class="o">:</span><span class="w"> </span><span class="kt">dueDate</span><span class="p">,</span><span class="w"> </span><span class="nx">approver_ids</span><span class="o">:</span><span class="w"> </span><span class="kt">approvers.map</span><span class="p">((</span><span class="nx">a</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">a</span><span class="p">.</span><span class="nx">id</span><span class="p">),</span><span class="w"> </span><span class="nx">drawing</span><span class="w"> </span><span class="p">};</span>
+<span class="w">      </span><span class="kd">let</span><span class="w"> </span><span class="nx">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">editId</span><span class="p">;</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">id</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="kc">undefined</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">await</span><span class="w"> </span><span class="nx">api</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="nx">input</span><span class="p">)).</span><span class="nx">id</span><span class="p">;</span>
+<span class="w">      </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">await</span><span class="w"> </span><span class="nx">api</span><span class="p">.</span><span class="nx">action</span><span class="p">(</span><span class="nx">id</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;resubmit&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">input</span><span class="p">);</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">      </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">const</span><span class="w"> </span><span class="nx">f</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nx">files</span><span class="p">)</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">api</span><span class="p">.</span><span class="nx">upload</span><span class="p">(</span><span class="nx">id</span><span class="p">,</span><span class="w"> </span><span class="nx">f</span><span class="p">);</span><span class="w"> </span><span class="c1">// 添付は、依頼を作ってから 1 つずつ送る</span>
+<span class="w">      </span><span class="nx">location</span><span class="p">.</span><span class="nx">hash</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sb">`#/requests/</span><span class="si">${</span><span class="nx">id</span><span class="si">}</span><span class="sb">`</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="nx">err</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">setErrors</span><span class="p">([</span><span class="nx">err</span><span class="w"> </span><span class="ow">instanceof</span><span class="w"> </span><span class="ne">Error</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="nx">err</span><span class="p">.</span><span class="nx">message</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;送れませんでした。&quot;</span><span class="p">]);</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">finally</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">setSending</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">form</span><span class="w"> </span><span class="na">onSubmit</span><span class="o">=</span><span class="p">{</span><span class="nx">handleSubmit</span><span class="p">}&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;{</span><span class="nx">editId</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="kc">undefined</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s2">&quot;依頼の入力&quot;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="sb">`依頼 </span><span class="si">${</span><span class="nx">editId</span><span class="si">}</span><span class="sb"> を直して出し直す`</span><span class="p">}&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">{</span><span class="nx">errors</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">ul</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;errors&quot;</span><span class="w"> </span><span class="na">role</span><span class="o">=</span><span class="s">&quot;alert&quot;</span><span class="p">&gt;{</span><span class="nx">errors</span><span class="p">.</span><span class="nx">map</span><span class="p">((</span><span class="nx">m</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">li</span><span class="w"> </span><span class="na">key</span><span class="o">=</span><span class="p">{</span><span class="nx">m</span><span class="p">}&gt;{</span><span class="nx">m</span><span class="p">}&lt;/</span><span class="nt">li</span><span class="p">&gt;)}&lt;/</span><span class="nt">ul</span><span class="p">&gt;}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">div</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;form-grid&quot;</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">label</span><span class="w"> </span><span class="na">htmlFor</span><span class="o">=</span><span class="s">&quot;title&quot;</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;required&quot;</span><span class="p">&gt;</span><span class="nx">件名</span><span class="p">&lt;/</span><span class="nt">label</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">input</span><span class="w"> </span><span class="na">id</span><span class="o">=</span><span class="s">&quot;title&quot;</span><span class="w"> </span><span class="na">value</span><span class="o">=</span><span class="p">{</span><span class="nx">title</span><span class="p">}</span><span class="w"> </span><span class="na">maxLength</span><span class="o">=</span><span class="p">{</span><span class="mf">100</span><span class="p">}</span><span class="w"> </span><span class="na">onChange</span><span class="o">=</span><span class="p">{(</span><span class="nx">e</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">setTitle</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">value</span><span class="p">)}</span><span class="w"> </span><span class="p">/&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">label</span><span class="w"> </span><span class="na">htmlFor</span><span class="o">=</span><span class="s">&quot;detail&quot;</span><span class="p">&gt;</span><span class="nx">内容</span><span class="p">&lt;/</span><span class="nt">label</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">textarea</span><span class="w"> </span><span class="na">id</span><span class="o">=</span><span class="s">&quot;detail&quot;</span><span class="w"> </span><span class="na">rows</span><span class="o">=</span><span class="p">{</span><span class="mf">3</span><span class="p">}</span><span class="w"> </span><span class="na">value</span><span class="o">=</span><span class="p">{</span><span class="nx">detail</span><span class="p">}</span><span class="w"> </span><span class="na">onChange</span><span class="o">=</span><span class="p">{(</span><span class="nx">e</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">setDetail</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">value</span><span class="p">)}</span><span class="w"> </span><span class="p">/&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">label</span><span class="w"> </span><span class="na">htmlFor</span><span class="o">=</span><span class="s">&quot;due&quot;</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;required&quot;</span><span class="p">&gt;</span><span class="nx">希望の納期</span><span class="p">&lt;/</span><span class="nt">label</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">input</span><span class="w"> </span><span class="na">id</span><span class="o">=</span><span class="s">&quot;due&quot;</span><span class="w"> </span><span class="na">type</span><span class="o">=</span><span class="s">&quot;date&quot;</span><span class="w"> </span><span class="na">value</span><span class="o">=</span><span class="p">{</span><span class="nx">dueDate</span><span class="p">}</span><span class="w"> </span><span class="na">onChange</span><span class="o">=</span><span class="p">{(</span><span class="nx">e</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">setDueDate</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">value</span><span class="p">)}</span><span class="w"> </span><span class="p">/&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">label</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;required&quot;</span><span class="p">&gt;</span><span class="nx">回覧者</span><span class="p">&lt;/</span><span class="nt">label</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">ApproverPicker</span><span class="w"> </span><span class="na">value</span><span class="o">=</span><span class="p">{</span><span class="nx">approvers</span><span class="p">}</span><span class="w"> </span><span class="na">onChange</span><span class="o">=</span><span class="p">{</span><span class="nx">setApprovers</span><span class="p">}</span><span class="w"> </span><span class="p">/&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">label</span><span class="w"> </span><span class="na">htmlFor</span><span class="o">=</span><span class="s">&quot;files&quot;</span><span class="p">&gt;</span><span class="nx">添付ファイル</span><span class="p">&lt;/</span><span class="nt">label</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">input</span><span class="w"> </span><span class="na">id</span><span class="o">=</span><span class="s">&quot;files&quot;</span><span class="w"> </span><span class="na">type</span><span class="o">=</span><span class="s">&quot;file&quot;</span><span class="w"> </span><span class="na">multiple</span><span class="w"> </span><span class="na">accept</span><span class="o">=</span><span class="s">&quot;.jpg,.jpeg,.png,.pdf&quot;</span><span class="w"> </span><span class="na">onChange</span><span class="o">=</span><span class="p">{(</span><span class="nx">e</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">setFiles</span><span class="p">([...(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">files</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="p">[])])}</span><span class="w"> </span><span class="p">/&gt;</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span><span class="nx">図面</span><span class="err">（</span><span class="nx">ドラッグで四角を描く</span><span class="err">）</span><span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">DrawingPad</span><span class="w"> </span><span class="na">value</span><span class="o">=</span><span class="p">{</span><span class="nx">drawing</span><span class="p">}</span><span class="w"> </span><span class="na">onChange</span><span class="o">=</span><span class="p">{</span><span class="nx">setDrawing</span><span class="p">}</span><span class="w"> </span><span class="p">/&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">div</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;actions&quot;</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">button</span><span class="w"> </span><span class="na">type</span><span class="o">=</span><span class="s">&quot;button&quot;</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;btn-secondary&quot;</span><span class="w"> </span><span class="na">onClick</span><span class="o">=</span><span class="p">{()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">setDrawing</span><span class="p">(</span><span class="nx">emptyDrawing</span><span class="p">)}&gt;</span><span class="nx">図面を消す</span><span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">button</span><span class="w"> </span><span class="na">type</span><span class="o">=</span><span class="s">&quot;submit&quot;</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;btn-primary&quot;</span><span class="w"> </span><span class="na">disabled</span><span class="o">=</span><span class="p">{</span><span class="nx">sending</span><span class="p">}&gt;{</span><span class="nx">sending</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s2">&quot;送っています…&quot;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;依頼を送る&quot;</span><span class="p">}&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><code>frontend/src/components/ApproverPicker.tsx</code>:</p>
+<div class="codehilite"><div class="code-wrap" id="code-11"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">useEffect</span><span class="p">,</span><span class="w"> </span><span class="nx">useState</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">api</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;../api.ts&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="kr">type</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Employee</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;../types.ts&quot;</span><span class="p">;</span>
+
+<span class="kr">type</span><span class="w"> </span><span class="nx">Props</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">value</span><span class="o">:</span><span class="w"> </span><span class="kt">Employee</span><span class="p">[];</span><span class="w"> </span><span class="nx">onChange</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">list</span><span class="o">:</span><span class="w"> </span><span class="kt">Employee</span><span class="p">[])</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="ow">void</span><span class="p">;</span><span class="w"> </span><span class="nx">max?</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="w"> </span><span class="p">};</span>
+
+<span class="cm">/** 回覧者を、氏名・所属・役職で探して、順番に 3 人まで選ぶ */</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">ApproverPicker</span><span class="p">({</span><span class="w"> </span><span class="nx">value</span><span class="p">,</span><span class="w"> </span><span class="nx">onChange</span><span class="p">,</span><span class="w"> </span><span class="nx">max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">3</span><span class="w"> </span><span class="p">}</span><span class="o">:</span><span class="w"> </span><span class="nx">Props</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">q</span><span class="p">,</span><span class="w"> </span><span class="nx">setQ</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">found</span><span class="p">,</span><span class="w"> </span><span class="nx">setFound</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">&lt;</span><span class="nt">Employee</span><span class="err">[]</span><span class="p">&gt;([]);</span>
+
+<span class="w">  </span><span class="nx">useEffect</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 打つたびにすぐ呼ばず、0.3 秒止まってから探す（サーバーにお願いしすぎない）</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">timer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">setTimeout</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">api</span><span class="p">.</span><span class="nx">employees</span><span class="p">(</span><span class="nx">q</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="nx">setFound</span><span class="p">).</span><span class="k">catch</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">setFound</span><span class="p">([]));</span>
+<span class="w">    </span><span class="p">},</span><span class="w"> </span><span class="mf">300</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">clearTimeout</span><span class="p">(</span><span class="nx">timer</span><span class="p">);</span>
+<span class="w">  </span><span class="p">},</span><span class="w"> </span><span class="p">[</span><span class="nx">q</span><span class="p">]);</span>
+
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">chosenIds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nb">Set</span><span class="p">(</span><span class="nx">value</span><span class="p">.</span><span class="nx">map</span><span class="p">((</span><span class="nx">e</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nx">id</span><span class="p">));</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">div</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;picker&quot;</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">ol</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;chosen&quot;</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">{</span><span class="nx">value</span><span class="p">.</span><span class="nx">map</span><span class="p">((</span><span class="nx">e</span><span class="p">,</span><span class="w"> </span><span class="nx">i</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">(</span>
+<span class="w">          </span><span class="p">&lt;</span><span class="nt">li</span><span class="w"> </span><span class="na">key</span><span class="o">=</span><span class="p">{</span><span class="nx">e</span><span class="p">.</span><span class="nx">id</span><span class="p">}&gt;</span>
+<span class="w">            </span><span class="nx">回覧者</span><span class="p">{</span><span class="nx">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">1</span><span class="p">}</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="nx">e</span><span class="p">.</span><span class="nx">name</span><span class="p">}</span><span class="err">（</span><span class="p">{</span><span class="nx">e</span><span class="p">.</span><span class="nx">dept</span><span class="p">}</span><span class="w"> </span><span class="p">{</span><span class="nx">e</span><span class="p">.</span><span class="nx">job_title</span><span class="p">}</span><span class="err">）</span>
+<span class="w">            </span><span class="p">&lt;</span><span class="nt">button</span><span class="w"> </span><span class="na">type</span><span class="o">=</span><span class="s">&quot;button&quot;</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;link&quot;</span><span class="w"> </span><span class="na">onClick</span><span class="o">=</span><span class="p">{()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">onChange</span><span class="p">(</span><span class="nx">value</span><span class="p">.</span><span class="nx">filter</span><span class="p">((</span><span class="nx">x</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">x</span><span class="p">.</span><span class="nx">id</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nx">id</span><span class="p">))}&gt;</span><span class="nx">外す</span><span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="w">          </span><span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">))}</span>
+<span class="w">        </span><span class="p">{</span><span class="nx">value</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">li</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;hint&quot;</span><span class="p">&gt;</span><span class="nx">まだ選んでいません</span><span class="err">（</span><span class="mf">1</span><span class="err">〜</span><span class="p">{</span><span class="nx">max</span><span class="p">}</span><span class="w"> </span><span class="nx">人</span><span class="err">）</span><span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;}</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">ol</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">{</span><span class="nx">value</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">max</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span>
+<span class="w">        </span><span class="p">&lt;&gt;</span>
+<span class="w">          </span><span class="p">&lt;</span><span class="nt">input</span><span class="w"> </span><span class="na">placeholder</span><span class="o">=</span><span class="s">&quot;氏名・所属・役職で探す&quot;</span><span class="w"> </span><span class="na">value</span><span class="o">=</span><span class="p">{</span><span class="nx">q</span><span class="p">}</span><span class="w"> </span><span class="na">onChange</span><span class="o">=</span><span class="p">{(</span><span class="nx">e</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">setQ</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">value</span><span class="p">)}</span><span class="w"> </span><span class="na">aria-label</span><span class="o">=</span><span class="s">&quot;回覧者を探す&quot;</span><span class="w"> </span><span class="p">/&gt;</span>
+<span class="w">          </span><span class="p">&lt;</span><span class="nt">ul</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;found&quot;</span><span class="p">&gt;</span>
+<span class="w">            </span><span class="p">{</span><span class="nx">found</span><span class="p">.</span><span class="nx">filter</span><span class="p">((</span><span class="nx">e</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="o">!</span><span class="nx">chosenIds</span><span class="p">.</span><span class="nx">has</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">id</span><span class="p">)).</span><span class="nx">slice</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">5</span><span class="p">).</span><span class="nx">map</span><span class="p">((</span><span class="nx">e</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">(</span>
+<span class="w">              </span><span class="p">&lt;</span><span class="nt">li</span><span class="w"> </span><span class="na">key</span><span class="o">=</span><span class="p">{</span><span class="nx">e</span><span class="p">.</span><span class="nx">id</span><span class="p">}&gt;</span>
+<span class="w">                </span><span class="p">&lt;</span><span class="nt">button</span><span class="w"> </span><span class="na">type</span><span class="o">=</span><span class="s">&quot;button&quot;</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;link&quot;</span><span class="w"> </span><span class="na">onClick</span><span class="o">=</span><span class="p">{()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">onChange</span><span class="p">([...</span><span class="nx">value</span><span class="p">,</span><span class="w"> </span><span class="nx">e</span><span class="p">])}&gt;</span>
+<span class="w">                  </span><span class="err">＋</span><span class="w"> </span><span class="p">{</span><span class="nx">e</span><span class="p">.</span><span class="nx">name</span><span class="p">}</span><span class="err">（</span><span class="p">{</span><span class="nx">e</span><span class="p">.</span><span class="nx">dept</span><span class="p">}</span><span class="w"> </span><span class="p">{</span><span class="nx">e</span><span class="p">.</span><span class="nx">job_title</span><span class="p">}</span><span class="err">）</span>
+<span class="w">                </span><span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="w">              </span><span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="w">            </span><span class="p">))}</span>
+<span class="w">          </span><span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">&lt;/&gt;</span>
+<span class="w">      </span><span class="p">)}</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/L06b-s2_form.webp" alt="依頼の入力。件名・内容・希望の納期、回覧者1佐藤花子と回覧者2鈴木一郎、添付ファイル、四角が2つの図面" style="width: 100%; border: 1px solid #cbd5e1;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図5-1: 回覧者を 2 人選び、写真を添付し、図面に四角を 2 つ描いたところ</div>
+</div>
+
+<p>「依頼を送る」を押すと、依頼が作られ、そのあと添付ファイルが送られて、詳細の画面に移ります。</p>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/L06b-s3_detail.webp" alt="依頼1の詳細。回覧中、引き戻すボタン、添付、回覧（1回目）の2人は待ち、図面、記録" style="width: 100%; border: 1px solid #cbd5e1;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図5-2: 出した直後の詳細。1 人目（佐藤さん）に、承認のお願いのメールが届いている</div>
+</div>
+
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/L06b-s4_list.webp" alt="自分の依頼の一覧。検査用の治具の製作が回覧中で、回覧者1 佐藤花子の承認待ち" style="width: 100%; border: 1px solid #cbd5e1;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図5-3: 一覧には、だれの承認を待っているかも出る</div>
+</div>
+
+<ul>
+<li>回覧者の検索は、<strong>打つたびにすぐ呼ばず、0.3 秒止まってから</strong>呼びます（<code>setTimeout</code> と、<code>useEffect</code> の片付けの <code>clearTimeout</code>）。1 文字打つたびにサーバーにお願いしないためです。</li>
+<li>添付ファイルの種類と大きさは、送る前に画面でも確かめますが、<strong>本当の確かめはサーバー</strong>（前編の 7 章）です。</li>
+<li>回覧者を選んだ順番が、そのまま回覧の順番になります。</li>
+</ul>
+<h2 id="6-detailpage">6. 依頼の詳細と、操作のボタン（DetailPage）</h2>
+<p><code>frontend/src/pages/DetailPage.tsx</code>:</p>
+<div class="codehilite"><div class="code-wrap" id="code-12"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">useCallback</span><span class="p">,</span><span class="w"> </span><span class="nx">useEffect</span><span class="p">,</span><span class="w"> </span><span class="nx">useState</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">api</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;../api.ts&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">DrawingPad</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;../components/DrawingPad.tsx&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">StatusBadge</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;../components/StatusBadge.tsx&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="kr">type</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Me</span><span class="p">,</span><span class="w"> </span><span class="nx">RequestDetail</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;../types.ts&quot;</span><span class="p">;</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="nx">s</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">(</span><span class="nx">s</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nb">Date</span><span class="p">(</span><span class="nx">s</span><span class="p">).</span><span class="nx">toLocaleString</span><span class="p">(</span><span class="s2">&quot;ja-JP&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">dateStyle</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;short&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">timeStyle</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;short&quot;</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">);</span>
+
+<span class="cm">/** 依頼の詳細。回覧の進み具合・差し戻しのコメント・添付・記録と、今できる操作のボタン */</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">DetailPage</span><span class="p">({</span><span class="w"> </span><span class="nx">id</span><span class="p">,</span><span class="w"> </span><span class="nx">me</span><span class="w"> </span><span class="p">}</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">;</span><span class="w"> </span><span class="nx">me</span><span class="o">:</span><span class="w"> </span><span class="kt">Me</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">r</span><span class="p">,</span><span class="w"> </span><span class="nx">setR</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">&lt;</span><span class="nt">RequestDetail</span><span class="w"> </span><span class="err">|</span><span class="w"> </span><span class="na">null</span><span class="p">&gt;(</span><span class="kc">null</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">message</span><span class="p">,</span><span class="w"> </span><span class="nx">setMessage</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">load</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useCallback</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">api</span><span class="p">.</span><span class="nx">request</span><span class="p">(</span><span class="nx">id</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="nx">setR</span><span class="p">).</span><span class="k">catch</span><span class="p">((</span><span class="nx">e</span><span class="o">:</span><span class="w"> </span><span class="kt">Error</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">setMessage</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">message</span><span class="p">)),</span><span class="w"> </span><span class="p">[</span><span class="nx">id</span><span class="p">]);</span>
+<span class="w">  </span><span class="nx">useEffect</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">load</span><span class="p">();</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="p">[</span><span class="nx">load</span><span class="p">]);</span>
+
+<span class="w">  </span><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">run</span><span class="p">(</span><span class="nx">action</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">done</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">await</span><span class="w"> </span><span class="nx">api</span><span class="p">.</span><span class="nx">action</span><span class="p">(</span><span class="nx">id</span><span class="p">,</span><span class="w"> </span><span class="nx">action</span><span class="p">);</span>
+<span class="w">      </span><span class="nx">setMessage</span><span class="p">(</span><span class="nx">done</span><span class="p">);</span>
+<span class="w">      </span><span class="k">await</span><span class="w"> </span><span class="nx">load</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="nx">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">setMessage</span><span class="p">(</span><span class="nx">e</span><span class="w"> </span><span class="ow">instanceof</span><span class="w"> </span><span class="ne">Error</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nx">message</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;できませんでした。&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;{</span><span class="nx">message</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="s2">&quot;読み込み中…&quot;</span><span class="p">}&lt;/</span><span class="nt">p</span><span class="p">&gt;;</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">mine</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">requester_name</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="nx">me</span><span class="p">.</span><span class="nx">name</span><span class="p">;</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">editable</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">mine</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">status</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;returned&quot;</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">status</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;pulled_back&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">section</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;{</span><span class="nx">r</span><span class="p">.</span><span class="nx">id</span><span class="p">}</span><span class="w"> </span><span class="p">{</span><span class="nx">r</span><span class="p">.</span><span class="nx">title</span><span class="p">}</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">StatusBadge</span><span class="w"> </span><span class="na">status</span><span class="o">=</span><span class="p">{</span><span class="nx">r</span><span class="p">.</span><span class="nx">status</span><span class="p">}</span><span class="w"> </span><span class="na">label</span><span class="o">=</span><span class="p">{</span><span class="nx">r</span><span class="p">.</span><span class="nx">status_label</span><span class="p">}</span><span class="w"> </span><span class="p">/&gt;&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">{</span><span class="nx">message</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">p</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;message&quot;</span><span class="p">&gt;{</span><span class="nx">message</span><span class="p">}&lt;/</span><span class="nt">p</span><span class="p">&gt;}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">div</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;actions left&quot;</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">{</span><span class="nx">mine</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">status</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;circulating&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span>
+<span class="w">          </span><span class="p">&lt;</span><span class="nt">button</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;btn-secondary&quot;</span><span class="w"> </span><span class="na">onClick</span><span class="o">=</span><span class="p">{()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">run</span><span class="p">(</span><span class="s2">&quot;pull-back&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;引き戻しました。&quot;</span><span class="p">)}&gt;</span>
+<span class="w">            </span><span class="nx">引き戻す</span>
+<span class="w">          </span><span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">)}</span>
+<span class="w">        </span><span class="p">{</span><span class="nx">editable</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">a</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;btn-primary&quot;</span><span class="w"> </span><span class="na">href</span><span class="o">=</span><span class="p">{</span><span class="sb">`#/requests/</span><span class="si">${</span><span class="nx">r</span><span class="p">.</span><span class="nx">id</span><span class="si">}</span><span class="sb">/edit`</span><span class="p">}&gt;</span><span class="nx">直して出し直す</span><span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;}</span>
+<span class="w">        </span><span class="p">{</span><span class="nx">editable</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">button</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;btn-secondary&quot;</span><span class="w"> </span><span class="na">onClick</span><span class="o">=</span><span class="p">{()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">run</span><span class="p">(</span><span class="s2">&quot;withdraw&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;取り下げました。&quot;</span><span class="p">)}&gt;</span><span class="nx">取り下げる</span><span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;}</span>
+<span class="w">        </span><span class="p">{</span><span class="nx">me</span><span class="p">.</span><span class="nx">role</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="s2">&quot;member&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">status</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;approved&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span>
+<span class="w">          </span><span class="p">&lt;</span><span class="nt">button</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;btn-primary&quot;</span><span class="w"> </span><span class="na">onClick</span><span class="o">=</span><span class="p">{()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">run</span><span class="p">(</span><span class="s2">&quot;assign&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;担当になりました。&quot;</span><span class="p">)}&gt;</span>
+<span class="w">            </span><span class="nx">担当になる</span>
+<span class="w">          </span><span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">)}</span>
+<span class="w">        </span><span class="p">{</span><span class="nx">r</span><span class="p">.</span><span class="nx">status</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;in_progress&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">assignee_name</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="nx">me</span><span class="p">.</span><span class="nx">name</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span>
+<span class="w">          </span><span class="p">&lt;</span><span class="nt">button</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;btn-primary&quot;</span><span class="w"> </span><span class="na">onClick</span><span class="o">=</span><span class="p">{()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">run</span><span class="p">(</span><span class="s2">&quot;complete&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;完了にしました。&quot;</span><span class="p">)}&gt;</span>
+<span class="w">            </span><span class="nx">完了にする</span>
+<span class="w">          </span><span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">)}</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">table</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;kv&quot;</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">tbody</span><span class="p">&gt;</span>
+<span class="w">          </span><span class="p">&lt;</span><span class="nt">tr</span><span class="p">&gt;&lt;</span><span class="nt">th</span><span class="p">&gt;</span><span class="nx">依頼者</span><span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;&lt;</span><span class="nt">td</span><span class="p">&gt;{</span><span class="nx">r</span><span class="p">.</span><span class="nx">requester_name</span><span class="p">}&lt;/</span><span class="nt">td</span><span class="p">&gt;&lt;/</span><span class="nt">tr</span><span class="p">&gt;</span>
+<span class="w">          </span><span class="p">&lt;</span><span class="nt">tr</span><span class="p">&gt;&lt;</span><span class="nt">th</span><span class="p">&gt;</span><span class="nx">希望の納期</span><span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;&lt;</span><span class="nt">td</span><span class="p">&gt;{</span><span class="nx">r</span><span class="p">.</span><span class="nx">due_date</span><span class="p">}&lt;/</span><span class="nt">td</span><span class="p">&gt;&lt;/</span><span class="nt">tr</span><span class="p">&gt;</span>
+<span class="w">          </span><span class="p">&lt;</span><span class="nt">tr</span><span class="p">&gt;&lt;</span><span class="nt">th</span><span class="p">&gt;</span><span class="nx">内容</span><span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;&lt;</span><span class="nt">td</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;pre&quot;</span><span class="p">&gt;{</span><span class="nx">r</span><span class="p">.</span><span class="nx">detail</span><span class="p">}&lt;/</span><span class="nt">td</span><span class="p">&gt;&lt;/</span><span class="nt">tr</span><span class="p">&gt;</span>
+<span class="w">          </span><span class="p">{</span><span class="nx">r</span><span class="p">.</span><span class="nx">assignee_name</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">tr</span><span class="p">&gt;&lt;</span><span class="nt">th</span><span class="p">&gt;</span><span class="nx">担当者</span><span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;&lt;</span><span class="nt">td</span><span class="p">&gt;{</span><span class="nx">r</span><span class="p">.</span><span class="nx">assignee_name</span><span class="p">}&lt;/</span><span class="nt">td</span><span class="p">&gt;&lt;/</span><span class="nt">tr</span><span class="p">&gt;}</span>
+<span class="w">          </span><span class="p">{</span><span class="nx">r</span><span class="p">.</span><span class="nx">return_comments</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">tr</span><span class="p">&gt;&lt;</span><span class="nt">th</span><span class="p">&gt;</span><span class="nx">差し戻しのコメント</span><span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;&lt;</span><span class="nt">td</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;pre&quot;</span><span class="p">&gt;{</span><span class="nx">r</span><span class="p">.</span><span class="nx">return_comments</span><span class="p">}&lt;/</span><span class="nt">td</span><span class="p">&gt;&lt;/</span><span class="nt">tr</span><span class="p">&gt;}</span>
+<span class="w">          </span><span class="p">&lt;</span><span class="nt">tr</span><span class="p">&gt;&lt;</span><span class="nt">th</span><span class="p">&gt;</span><span class="nx">添付</span><span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;&lt;</span><span class="nt">td</span><span class="p">&gt;{</span><span class="nx">r</span><span class="p">.</span><span class="nx">attachments</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">0</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s2">&quot;なし&quot;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">attachments</span><span class="p">.</span><span class="nx">map</span><span class="p">((</span><span class="nx">a</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">(</span>
+<span class="w">            </span><span class="p">&lt;</span><span class="nt">a</span><span class="w"> </span><span class="na">key</span><span class="o">=</span><span class="p">{</span><span class="nx">a</span><span class="p">.</span><span class="nx">id</span><span class="p">}</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;file&quot;</span><span class="w"> </span><span class="na">href</span><span class="o">=</span><span class="p">{</span><span class="sb">`/api/attachments/</span><span class="si">${</span><span class="nx">a</span><span class="p">.</span><span class="nx">id</span><span class="si">}</span><span class="sb">/`</span><span class="p">}&gt;{</span><span class="nx">a</span><span class="p">.</span><span class="nx">original_name</span><span class="p">}</span><span class="err">（</span><span class="p">{</span><span class="nb">Math</span><span class="p">.</span><span class="nx">ceil</span><span class="p">(</span><span class="nx">a</span><span class="p">.</span><span class="nx">size</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">1024</span><span class="p">)}</span><span class="w"> </span><span class="nx">KB</span><span class="err">）</span><span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+<span class="w">          </span><span class="p">))}&lt;/</span><span class="nt">td</span><span class="p">&gt;&lt;/</span><span class="nt">tr</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">&lt;/</span><span class="nt">tbody</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">table</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span><span class="nx">回覧</span><span class="err">（</span><span class="p">{</span><span class="nx">r</span><span class="p">.</span><span class="nx">round</span><span class="p">}</span><span class="w"> </span><span class="nx">回目</span><span class="err">）</span><span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">ol</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;steps&quot;</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">{</span><span class="nx">r</span><span class="p">.</span><span class="nx">steps</span><span class="p">.</span><span class="nx">map</span><span class="p">((</span><span class="nx">s</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">(</span>
+<span class="w">          </span><span class="p">&lt;</span><span class="nt">li</span><span class="w"> </span><span class="na">key</span><span class="o">=</span><span class="p">{</span><span class="nx">s</span><span class="p">.</span><span class="nx">order</span><span class="p">}</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="p">{</span><span class="sb">`step-</span><span class="si">${</span><span class="nx">s</span><span class="p">.</span><span class="nx">decision</span><span class="si">}</span><span class="sb">`</span><span class="p">}&gt;</span>
+<span class="w">            </span><span class="nx">回覧者</span><span class="p">{</span><span class="nx">s</span><span class="p">.</span><span class="nx">order</span><span class="p">}</span><span class="w"> </span><span class="p">{</span><span class="nx">s</span><span class="p">.</span><span class="nx">approver_name</span><span class="p">}</span><span class="w"> </span><span class="err">—</span><span class="w"> </span><span class="p">{</span><span class="nx">s</span><span class="p">.</span><span class="nx">decision_label</span><span class="p">}</span><span class="w"> </span><span class="p">{</span><span class="nx">time</span><span class="p">(</span><span class="nx">s</span><span class="p">.</span><span class="nx">decided_at</span><span class="p">)}</span>
+<span class="w">          </span><span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">))}</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">ol</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">{</span><span class="nx">r</span><span class="p">.</span><span class="nx">drawing</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">drawing</span><span class="p">.</span><span class="nx">shapes</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(&lt;&gt;&lt;</span><span class="nt">h2</span><span class="p">&gt;</span><span class="nx">図面</span><span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;&lt;</span><span class="nt">DrawingPad</span><span class="w"> </span><span class="na">value</span><span class="o">=</span><span class="p">{</span><span class="nx">r</span><span class="p">.</span><span class="nx">drawing</span><span class="p">}</span><span class="w"> </span><span class="p">/&gt;&lt;/&gt;)}</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span><span class="nx">記録</span><span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">table</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">tbody</span><span class="p">&gt;</span>
+<span class="w">          </span><span class="p">{</span><span class="nx">r</span><span class="p">.</span><span class="nx">histories</span><span class="p">.</span><span class="nx">map</span><span class="p">((</span><span class="nx">h</span><span class="p">,</span><span class="w"> </span><span class="nx">i</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">(</span>
+<span class="w">            </span><span class="p">&lt;</span><span class="nt">tr</span><span class="w"> </span><span class="na">key</span><span class="o">=</span><span class="p">{</span><span class="nx">i</span><span class="p">}&gt;&lt;</span><span class="nt">td</span><span class="p">&gt;{</span><span class="nx">time</span><span class="p">(</span><span class="nx">h</span><span class="p">.</span><span class="nx">at</span><span class="p">)}&lt;/</span><span class="nt">td</span><span class="p">&gt;&lt;</span><span class="nt">td</span><span class="p">&gt;{</span><span class="nx">h</span><span class="p">.</span><span class="nx">actor_name</span><span class="p">}&lt;/</span><span class="nt">td</span><span class="p">&gt;&lt;</span><span class="nt">td</span><span class="p">&gt;{</span><span class="nx">h</span><span class="p">.</span><span class="nx">action</span><span class="p">}&lt;/</span><span class="nt">td</span><span class="p">&gt;&lt;</span><span class="nt">td</span><span class="p">&gt;{</span><span class="nx">h</span><span class="p">.</span><span class="nx">note</span><span class="p">}&lt;/</span><span class="nt">td</span><span class="p">&gt;&lt;/</span><span class="nt">tr</span><span class="p">&gt;</span>
+<span class="w">          </span><span class="p">))}</span>
+<span class="w">        </span><span class="p">&lt;/</span><span class="nt">tbody</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">table</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">section</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><strong>今できる操作のボタンだけ</strong>を出します。たとえば「引き戻す」は、自分の依頼が回覧中のときだけです。ただし、ボタンを出さないのは使う人のためのお手伝いで、<strong>できるかどうかを最後に決めるのはサーバー</strong>（前編の services）です。</p>
+<h3 id="61">6.1 差し戻されたとき → 直して出し直す</h3>
+<p>2 人目の鈴木さんが、メールの URL から差し戻すと（前編の 6.2）、依頼した山田さんの画面は次のようになります。</p>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/L06b-s5_returned.webp" alt="差し戻し中。直して出し直すと取り下げるのボタン。差し戻しのコメント、回覧（1回目）は回覧者1承認、回覧者2差し戻し" style="width: 100%; border: 1px solid #cbd5e1;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図6-1: 差し戻し中。コメントと、だれが差し戻したかが出る</div>
+</div>
+
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/L06b-s6_edit.webp" alt="依頼1を直して出し直す画面。前の内容と回覧者と図面が入っていて、内容に寸法を書き足した" style="width: 100%; border: 1px solid #cbd5e1;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図6-2: 「直して出し直す」。前の内容が入った入力の画面になる</div>
+</div>
+
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/L06b-s7_resubmitted.webp" alt="出し直した後。回覧中、回覧（2回目）の2人は待ち" style="width: 100%; border: 1px solid #cbd5e1;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図6-3: 出し直すと、2 回目の回覧が、最初の人（佐藤さん）から始まる</div>
+</div>
+
+<h3 id="62">6.2 回覧完了 → 担当 → 完了</h3>
+<p>2 回目の回覧で 2 人が承認すると「回覧完了」になり、担当者（設備課の高橋さん）にメールが届きます。高橋さんがログインして「すべての依頼を見る」にすると:</p>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/L06b-s8_worker_list.webp" alt="担当者の高橋三郎さんの、すべての依頼の一覧。検査用の治具の製作が回覧完了" style="width: 100%; border: 1px solid #cbd5e1;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図6-4: 担当者は、すべての依頼を見られる</div>
+</div>
+
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/L06b-s9_assigned.webp" alt="担当になりました。対応中、担当者は高橋三郎、完了にするのボタン" style="width: 100%; border: 1px solid #cbd5e1;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図6-5: 「担当になる」を押すと、対応中になる</div>
+</div>
+
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/L06b-s10_done.webp" alt="完了にしました。状態は完了" style="width: 100%; border: 1px solid #cbd5e1;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図6-6: 引き渡したら「完了にする」。依頼者に完了のメールが届く</div>
+</div>
+
+<h2 id="7-statspage">7. グラフ（StatsPage）</h2>
+<p><code>frontend/src/pages/StatsPage.tsx</code>:</p>
+<div class="codehilite"><div class="code-wrap" id="code-13"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">useEffect</span><span class="p">,</span><span class="w"> </span><span class="nx">useState</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">api</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;../api.ts&quot;</span><span class="p">;</span>
+
+<span class="kr">type</span><span class="w"> </span><span class="nx">Bar</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">label</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span><span class="w"> </span><span class="nx">count</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="w"> </span><span class="p">};</span>
+
+<span class="cm">/** 横向きの棒グラフ（部品を使わず、SVG で描く） */</span>
+<span class="kd">function</span><span class="w"> </span><span class="nx">BarChart</span><span class="p">({</span><span class="w"> </span><span class="nx">title</span><span class="p">,</span><span class="w"> </span><span class="nx">bars</span><span class="w"> </span><span class="p">}</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span><span class="w"> </span><span class="nx">bars</span><span class="o">:</span><span class="w"> </span><span class="kt">Bar</span><span class="p">[]</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Math</span><span class="p">.</span><span class="nx">max</span><span class="p">(</span><span class="mf">1</span><span class="p">,</span><span class="w"> </span><span class="p">...</span><span class="nx">bars</span><span class="p">.</span><span class="nx">map</span><span class="p">((</span><span class="nx">b</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">b</span><span class="p">.</span><span class="nx">count</span><span class="p">));</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">rowH</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">32</span><span class="p">;</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">figure</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;chart&quot;</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">figcaption</span><span class="p">&gt;{</span><span class="nx">title</span><span class="p">}&lt;/</span><span class="nt">figcaption</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">svg</span><span class="w"> </span><span class="na">viewBox</span><span class="o">=</span><span class="p">{</span><span class="sb">`0 0 600 </span><span class="si">${</span><span class="nx">bars</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nx">rowH</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">10</span><span class="si">}</span><span class="sb">`</span><span class="p">}</span><span class="w"> </span><span class="na">role</span><span class="o">=</span><span class="s">&quot;img&quot;</span><span class="w"> </span><span class="na">aria-label</span><span class="o">=</span><span class="p">{</span><span class="nx">title</span><span class="p">}&gt;</span>
+<span class="w">        </span><span class="p">{</span><span class="nx">bars</span><span class="p">.</span><span class="nx">map</span><span class="p">((</span><span class="nx">b</span><span class="p">,</span><span class="w"> </span><span class="nx">i</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">(</span>
+<span class="w">          </span><span class="p">&lt;</span><span class="nt">g</span><span class="w"> </span><span class="na">key</span><span class="o">=</span><span class="p">{</span><span class="nx">b</span><span class="p">.</span><span class="nx">label</span><span class="p">}</span><span class="w"> </span><span class="na">transform</span><span class="o">=</span><span class="p">{</span><span class="sb">`translate(0 </span><span class="si">${</span><span class="nx">i</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nx">rowH</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">5</span><span class="si">}</span><span class="sb">)`</span><span class="p">}&gt;</span>
+<span class="w">            </span><span class="p">&lt;</span><span class="nt">text</span><span class="w"> </span><span class="na">x</span><span class="o">=</span><span class="s">&quot;110&quot;</span><span class="w"> </span><span class="na">y</span><span class="o">=</span><span class="s">&quot;18&quot;</span><span class="w"> </span><span class="na">textAnchor</span><span class="o">=</span><span class="s">&quot;end&quot;</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;axis&quot;</span><span class="p">&gt;{</span><span class="nx">b</span><span class="p">.</span><span class="nx">label</span><span class="p">}&lt;/</span><span class="nt">text</span><span class="p">&gt;</span>
+<span class="w">            </span><span class="p">&lt;</span><span class="nt">rect</span><span class="w"> </span><span class="na">x</span><span class="o">=</span><span class="s">&quot;120&quot;</span><span class="w"> </span><span class="na">y</span><span class="o">=</span><span class="s">&quot;4&quot;</span><span class="w"> </span><span class="na">height</span><span class="o">=</span><span class="s">&quot;20&quot;</span><span class="w"> </span><span class="na">rx</span><span class="o">=</span><span class="s">&quot;4&quot;</span><span class="w"> </span><span class="na">width</span><span class="o">=</span><span class="p">{(</span><span class="nx">b</span><span class="p">.</span><span class="nx">count</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nx">max</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">420</span><span class="p">}</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;bar&quot;</span><span class="w"> </span><span class="p">/&gt;</span>
+<span class="w">            </span><span class="p">&lt;</span><span class="nt">text</span><span class="w"> </span><span class="na">x</span><span class="o">=</span><span class="p">{</span><span class="mf">128</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="nx">b</span><span class="p">.</span><span class="nx">count</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nx">max</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">420</span><span class="p">}</span><span class="w"> </span><span class="na">y</span><span class="o">=</span><span class="s">&quot;19&quot;</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;value&quot;</span><span class="p">&gt;{</span><span class="nx">b</span><span class="p">.</span><span class="nx">count</span><span class="p">}</span><span class="w"> </span><span class="nx">件</span><span class="p">&lt;/</span><span class="nt">text</span><span class="p">&gt;</span>
+<span class="w">          </span><span class="p">&lt;/</span><span class="nt">g</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="p">))}</span>
+<span class="w">      </span><span class="p">&lt;/</span><span class="nt">svg</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">figure</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">export</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">StatsPage</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">data</span><span class="p">,</span><span class="w"> </span><span class="nx">setData</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="o">&lt;</span><span class="p">{</span><span class="w"> </span><span class="nx">byStatus</span><span class="o">:</span><span class="w"> </span><span class="kt">Bar</span><span class="p">[];</span><span class="w"> </span><span class="nx">byAssignee</span><span class="o">:</span><span class="w"> </span><span class="kt">Bar</span><span class="p">[]</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="o">&gt;</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span>
+
+<span class="w">  </span><span class="nx">useEffect</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">api</span><span class="p">.</span><span class="nx">stats</span><span class="p">().</span><span class="nx">then</span><span class="p">((</span><span class="nx">s</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span>
+<span class="w">      </span><span class="nx">setData</span><span class="p">({</span>
+<span class="w">        </span><span class="nx">byStatus</span><span class="o">:</span><span class="w"> </span><span class="kt">s.by_status.map</span><span class="p">((</span><span class="nx">x</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">({</span><span class="w"> </span><span class="nx">label</span><span class="o">:</span><span class="w"> </span><span class="kt">x.status</span><span class="p">,</span><span class="w"> </span><span class="nx">count</span><span class="o">:</span><span class="w"> </span><span class="kt">x.count</span><span class="w"> </span><span class="p">})),</span>
+<span class="w">        </span><span class="nx">byAssignee</span><span class="o">:</span><span class="w"> </span><span class="kt">s.done_by_assignee.map</span><span class="p">((</span><span class="nx">x</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">({</span><span class="w"> </span><span class="nx">label</span><span class="o">:</span><span class="w"> </span><span class="kt">x.name</span><span class="p">,</span><span class="w"> </span><span class="nx">count</span><span class="o">:</span><span class="w"> </span><span class="kt">x.count</span><span class="w"> </span><span class="p">})),</span>
+<span class="w">      </span><span class="p">}),</span>
+<span class="w">    </span><span class="p">);</span>
+<span class="w">  </span><span class="p">},</span><span class="w"> </span><span class="p">[]);</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">data</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span><span class="nx">読み込み中</span><span class="err">…</span><span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;;</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">section</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;</span><span class="nx">グラフ</span><span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">BarChart</span><span class="w"> </span><span class="na">title</span><span class="o">=</span><span class="s">&quot;状態ごとの依頼の件数&quot;</span><span class="w"> </span><span class="na">bars</span><span class="o">=</span><span class="p">{</span><span class="nx">data</span><span class="p">.</span><span class="nx">byStatus</span><span class="p">}</span><span class="w"> </span><span class="p">/&gt;</span>
+<span class="w">      </span><span class="p">&lt;</span><span class="nt">BarChart</span><span class="w"> </span><span class="na">title</span><span class="o">=</span><span class="s">&quot;担当者ごとの完了の件数&quot;</span><span class="w"> </span><span class="na">bars</span><span class="o">=</span><span class="p">{</span><span class="nx">data</span><span class="p">.</span><span class="nx">byAssignee</span><span class="p">}</span><span class="w"> </span><span class="p">/&gt;</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">section</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/L06b-s11_stats.webp" alt="グラフ。状態ごとの依頼の件数（完了4、回覧中1、引き戻し中1、対応中1）と、担当者ごとの完了の件数（伊藤健2、高橋三郎2）" style="width: 100%; border: 1px solid #cbd5e1;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図7-1: グラフの画面（練習のデータを足して撮った）</div>
+</div>
+
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/L06b-s12_all_list.webp" alt="管理者の、すべての依頼の一覧。7件の依頼が、回覧中・引き戻し中・対応中・完了などの札で並ぶ" style="width: 100%; border: 1px solid #cbd5e1;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図7-2: すべての依頼の一覧（状態の札の色が、01 の CSS のとおりに出ている）</div>
+</div>
+
+<ul>
+<li>グラフは、部品（ライブラリ）を使わず、<strong>SVG の四角</strong>で描いています。件数を、いちばん大きい数に対する割合で、棒の長さにしています。</li>
+<li>数え方（集計）は、サーバーの <code>/api/stats/</code> が SQL の <code>GROUP BY</code> で行います（05 の 6 章）。画面は描くだけです。</li>
+<li>練習のデータは <code>backend\demo_more.py</code>（<code>.\dev.ps1 shell -c "import demo_more"</code>）で足しました。</li>
+</ul>
+<h2 id="8">8. 会社のサーバーに持ち込む</h2>
+<div style="max-width: 760px; margin: 18px auto; text-align: center;">
+<img src="../images/L06b-04_release.webp" alt="npm run build、collectstatic、pip download、zipにまとめる、サーバーへ（onpremの05）" style="width: 100%;">
+<div style="font-size: 12px; color: #64748b; margin-top: 6px;">図8-1: 作ったアプリを、会社のサーバーに持ち込むまで</div>
+</div>
+
+<p>ここから先は、<strong>onprem の 05 のとおり</strong>です。この練習アプリのフォルダの名前に合わせると、次のようになります。</p>
+<table>
+<thead>
+<tr>
+<th>手順</th>
+<th>onprem の 05</th>
+<th>この練習アプリでは</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>React をビルドする</td>
+<td>7.1 の ①</td>
+<td><code>frontend\</code> で <code>npm run build</code></td>
+</tr>
+<tr>
+<td>部品を集める</td>
+<td>7.1 の ②</td>
+<td><code>backend\</code> で <code>.\dev.ps1 collectstatic --noinput</code></td>
+</tr>
+<tr>
+<td>Python の部品を取り寄せる</td>
+<td>7.2</td>
+<td><code>backend\requirements.txt</code> から、<code>--platform win_amd64 --python-version 3.14</code> で</td>
+</tr>
+<tr>
+<td>zip にまとめる</td>
+<td>7.3</td>
+<td><code>backend\</code> の中身（<code>.venv</code>・<code>dev.env</code>・<code>media</code>・<code>sent_mail</code> は入れない）＋ wheelhouse</td>
+</tr>
+<tr>
+<td>サーバーに置き、サービスにする</td>
+<td>9 章</td>
+<td>WinSW の XML の環境変数は、前編の 3 章の表のとおり</td>
+</tr>
+<tr>
+<td>テーブルを作る</td>
+<td>9.5</td>
+<td><code>.\manage.ps1 migrate</code></td>
+</tr>
+<tr>
+<td>社員を取り込む</td>
+<td>—</td>
+<td><code>.\manage.ps1 import_employees 社員.csv</code>（前編の 9 章）</td>
+</tr>
+<tr>
+<td>毎朝の通知</td>
+<td>12.1</td>
+<td>タスク スケジューラに <code>manage.ps1 send_daily_reminders</code></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong><code>seed_demo</code>・<code>demo_flow.py</code>・<code>demo_more.py</code> は、開発用のパソコンだけで使います。</strong> <code>seed_demo</code> は、<code>DEBUG</code> が <code>true</code> でないと動かない作りにしてあります。</p>
+</blockquote>
+<h2 id="9">9. よくある失敗</h2>
+<table>
+<thead>
+<tr>
+<th>症状</th>
+<th>原因</th>
+<th>直し方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>開発中、画面は出るが、API が 404 か HTML を返す</td>
+<td>Django の開発用のサーバーを動かしていない／<code>proxy</code> の設定が無い</td>
+<td>窓 1 で <code>.\dev.ps1 runserver</code>。<code>vite.config.ts</code> の <code>proxy</code></td>
+</tr>
+<tr>
+<td>ログインで 403</td>
+<td>CSRF の札が無い（<code>/api/csrf/</code> を呼ぶ前に送った）</td>
+<td>App の最初に <code>api.csrf()</code> を呼ぶ</td>
+</tr>
+<tr>
+<td>ビルドした後、画面が真っ白</td>
+<td><code>base: "/static/"</code> が無い／<code>collectstatic</code> をしていない</td>
+<td>1.2・onprem の 05 の 15 章</td>
+</tr>
+<tr>
+<td>ビルドした後、画面が古いまま</td>
+<td><code>npm run build</code> の後に <code>collectstatic</code> をしていない</td>
+<td><code>.\dev_serve.ps1</code>（中で <code>collectstatic</code> する）か、手で <code>collectstatic</code></td>
+</tr>
+<tr>
+<td><code>TemplateDoesNotExist: index.html</code></td>
+<td>ビルドしていない（<code>frontend_dist</code> が無い）</td>
+<td><code>npm run build</code></td>
+</tr>
+<tr>
+<td>回覧者の検索が出ない</td>
+<td>ログインしていない・検索の文字に合う人がいない</td>
+<td>空のまま待つと、全員から 5 人が出る</td>
+</tr>
+<tr>
+<td>添付で「ファイルの中身が、拡張子と合いません」</td>
+<td>名前だけ変えたファイル</td>
+<td>前編の 7 章</td>
+</tr>
+<tr>
+<td>詳細で、押したはずのボタンが「できません」</td>
+<td>ほかの人が先に状態を変えた（引き戻した、など）</td>
+<td>画面を読み直す。決めるのはサーバー</td>
+</tr>
+<tr>
+<td>60 分たっていないのにログインの画面に戻る</td>
+<td>ブラウザのクッキーを消した・<code>SECRET_KEY</code> を変えた（セッションはデータベースにあるので、サーバーの再起動だけでは切れない）</td>
+<td><code>SECRET_KEY</code> は、漏れたとき以外は変えない（変えると全員のログインが切れる）</td>
+</tr>
+</tbody>
+</table>
+<h2 id="10">10. 練習問題</h2>
+<ol>
+<li>一覧に「状態でしぼる」選ぶ欄を足してください（03 の練習問題 2 と同じ考え方。データはサーバーから来た物を使う）。</li>
+<li>詳細の画面の「記録」に、日付の新しい順・古い順を切りかえるボタンを足してください。</li>
+<li>グラフに「月ごとの依頼の件数」を足してください（ヒント：サーバーの <code>stats</code> で <code>TruncMonth("created_at")</code> を使って数える）。</li>
+<li>依頼の入力で、図面の四角を「最後の 1 つを消す」ボタンを足してください（03 の練習問題 4）。</li>
+</ol>
+<h2 id="_2">用語の索引</h2>
+<table>
+<thead>
+<tr>
+<th>用語</th>
+<th>短い説明</th>
+<th>章</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>proxy（Vite）</td>
+<td>開発中に、API のお願いを Django へ回す設定</td>
+<td>1</td>
+</tr>
+<tr>
+<td>dev_serve.ps1</td>
+<td>会社のサーバーと同じ形（waitress）で手元で動かす道具</td>
+<td>1.2</td>
+</tr>
+<tr>
+<td>api.ts</td>
+<td>サーバーとの窓口を集めたファイル</td>
+<td>3</td>
+</tr>
+<tr>
+<td>ApiError</td>
+<td>API が断ったときのエラー</td>
+<td>3</td>
+</tr>
+<tr>
+<td>ensure_csrf_cookie</td>
+<td>CSRF の札をクッキーで渡す仕組み</td>
+<td>3</td>
+</tr>
+<tr>
+<td>re_path（すべての URL）</td>
+<td>API など以外は React の画面を返す</td>
+<td>3</td>
+</tr>
+<tr>
+<td>ApproverPicker</td>
+<td>回覧者を探して選ぶ部品</td>
+<td>5</td>
+</tr>
+<tr>
+<td>SVG の棒グラフ</td>
+<td>部品を使わずに描いたグラフ</td>
+<td>7</td>
+</tr>
+</tbody>
+</table>
+
+<script>
+(function () {
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy") ? resolve() : reject(); } catch (e) { reject(e); }
+      document.body.removeChild(ta);
+    });
+  }
+  document.querySelectorAll(".copy-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var pre = btn.parentElement.querySelector("pre");
+      var text = pre.textContent.replace(/\n$/, "");
+      copyText(text).then(function () {
+        btn.textContent = "コピーしました";
+        btn.classList.add("done");
+        setTimeout(function () { btn.textContent = "コピー"; btn.classList.remove("done"); }, 2000);
+      }, function () { btn.textContent = "コピーできませんでした"; });
+    });
+  });
+  if (/^#code-\d+$/.test(location.hash)) {
+    var note = document.getElementById("web-note");
+    if (note) { note.hidden = false; }
+  }
+})();
+</script>
+</body>
+</html>
