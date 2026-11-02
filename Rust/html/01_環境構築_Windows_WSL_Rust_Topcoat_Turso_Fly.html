@@ -892,10 +892,15 @@ C:\Users\...\rust-study
 <ul>
 <li><strong><code>Set-Content -Path</code></strong>（PowerShell）: <code>-Path 名前</code> で、書き込むファイルの名前（場所）を指定します。<code>Set-Content memo.txt "…"</code> のように名前を最初に書く時は、<code>-Path</code> を省けます。</li>
 <li><strong><code>Set-Content -Value</code></strong>（PowerShell）: <code>-Value 中身</code> で、ファイルに書く中身を指定します。<code>@' … '@</code> で囲むと、何行もの文章をそのまま中身にできます（ヒア文字列）。</li>
+<li><strong><code>Get-CimInstance</code></strong>（PowerShell）: Windows の中の情報（OS・CPU・サービス・ディスクなど）を問い合わせるコマンド。<code>Get-CimInstance Win32_OperatingSystem</code> は OS の情報、<code>Get-CimInstance Win32_Service</code> はサービスの一覧（自動で始まるかどうかも分かる）です。</li>
 <li><strong><code>Select-Object -First</code></strong>（PowerShell）: <code>-First 1</code> で、結果の最初の 1 つだけを取り出します。<code>-Last 3</code> なら最後の 3 つです。</li>
+<li><strong><code>switch</code></strong>（PowerShell）: 値によって、することを分ける書き方。<code>switch ($x) { 'A' { … } 'B' { … } default { … } }</code>。合った所の <code>{ }</code> の中だけが動きます。結果を <code>$machine = switch (…) { … }</code> のように受け取ることもできます。</li>
 <li><strong><code>default</code></strong>（PowerShell）: PowerShell の <code>switch</code> の中で、「どの場合にも合わなかった時」の処理を書く所。Rust の <code>match</code> の <code>_ =&gt;</code> に当たります。</li>
 <li><strong><code>Write-Output</code></strong>（PowerShell）: 値を「出力」として次へ流す（最後なら画面に出す）コマンド。<code>Write-Output "こんにちは"</code>。文字列を 1 行に書くだけでも同じ働きをしますが、はっきり書く時に使います。</li>
 <li><strong><code>if</code></strong>（PowerShell）: PowerShell の条件の書き方。<code>if (条件) { 合う時 } else { 合わない時 }</code>。条件は <code>( )</code> で囲みます。比べる時は <code>-eq</code>（等しい）・<code>-ne</code>（違う）・<code>-gt</code>（大きい）・<code>-match</code>（パターンに合う）のような書き方をします（<code>==</code> や <code>&gt;</code> ではありません）。</li>
+<li><strong><code>-match</code></strong>（PowerShell）: 正規表現（文字の形の決まり）に合うかの比べ方。<code>$line -match '^\s*#'</code> は「空白のあと <code>#</code> で始まる行（コメント）か」。合った部分は <code>$Matches</code> で取り出せます。</li>
+<li><strong><code>else</code></strong>（PowerShell）: <code>if (条件) { … } else { … }</code> の、条件に合わなかった時の所。<code>elseif (条件)</code> で、条件をつなげられます。</li>
+<li><strong><code>-and</code></strong>（PowerShell）: 「かつ」（両方とも <code>True</code> の時だけ <code>True</code>）。<code>$a -gt 0 -and $b -gt 0</code> のように、条件をつなぎます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1040,16 +1045,6 @@ PC の CPU       : ARM64
 パスの文字      : 注意（空白や日本語が含まれています）
 OneDrive        : OK（同期フォルダの外です）
 </code></pre></div></div>
-
-<!-- first-use -->
-
-<blockquote>
-<p><strong>▶ ここで初めて出てくるコード</strong></p>
-<ul>
-<li><strong><code>..\whereami.ps1</code></strong>（PowerShell）: 1 つ上のフォルダの <code>whereami.ps1</code> を動かす書き方。<code>..</code> は「1 つ上のフォルダ」という意味です。</li>
-</ul>
-</blockquote>
-<!-- /first-use -->
 
 <p>OneDrive を使っている人は、同期フォルダへ移動して実行してみます。</p>
 <div class="codehilite"><div class="code-wrap" id="code-23"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># OneDrive の同期フォルダへ移動して、rust-study のスクリプトを実行する</span>
@@ -1776,7 +1771,8 @@ init.defaultbranch=master
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
-<li><strong><code>function</code></strong>（JavaScript・TypeScript）: 関数を作る書き方。<code>async function post(path, body) { … }</code>。</li>
+<li><strong><code>function</code></strong>（PowerShell）: PowerShell で、自分の関数を作る書き方。<code>function New-LfFile($Path, $Lines) { … }</code> と書くと、<code>New-LfFile</code> をコマンドのように呼べます。</li>
+<li><strong><code>-join</code></strong>（PowerShell）: 並びの中身を、区切り文字でつないで 1 つの文字列にする演算子。<code>$lines -join "</code>n"<code>は「改行でつなぐ」、</code>@("a","b") -join ","<code>は</code>"a,b"`。</li>
 <li><strong><code>New-Item</code></strong>（PowerShell）: 新しいファイルやフォルダを作るコマンド。<code>New-Item memo.txt</code> でファイル、<code>New-Item -ItemType Directory 名前</code> でフォルダを作ります。</li>
 <li><strong><code>New-Item -Path</code></strong>（PowerShell）: <code>-Path 場所</code> で、作るファイルやフォルダの場所（名前）を指定します。</li>
 <li><strong><code>New-Item -Value</code></strong>（PowerShell）: <code>-Value 中身</code> で、作るファイルに最初から書いておく中身を指定します。</li>
@@ -3436,7 +3432,7 @@ installed targets:
 <li><strong><code>rustup component</code></strong>（Rust の道具）: Rust の部品（<code>rustfmt</code>・<code>clippy</code> など）を見る・足すコマンド。<code>rustup component list --installed</code> で、入っている部品の一覧を出します。</li>
 <li><strong><code>Get-ChildItem</code></strong>（PowerShell）: フォルダの中の一覧を出すコマンド（短い呼び名は <code>ls</code>・<code>dir</code>）。<code>Get-ChildItem フォルダ</code> でそのフォルダの中身、<code>-Recurse</code> で中のフォルダまで全部を出します。</li>
 <li><strong><code>ForEach-Object</code></strong>（PowerShell）: <code>|</code> で流れてきた物を、1 つずつ処理するコマンド。<code>{ }</code> の中の <code>$_</code> が「今の 1 つ」を表します。<code>… | ForEach-Object { $_.Name }</code> は、1 つずつ名前を取り出します。</li>
-<li><strong><code>ForEach-Object -f</code></strong>（PowerShell）: ここでの <code>-f</code> は <code>ForEach-Object</code> の指定ではなく、PowerShell の「書式の演算子」です。<code>"{0,-10} {1}" -f 値1, 値2</code> で、<code>{0}</code> に値 1、<code>{1}</code> に値 2 を入れた文字列を作ります（<code>,-10</code> は「10 文字分の幅で左寄せ」）。</li>
+<li><strong><code>-f</code></strong>（PowerShell）: 書式（形）を決めて文字列を作る演算子。<code>"{0,-10} {1}" -f $name, $hash</code> は、<code>{0}</code> に 1 つ目、<code>{1}</code> に 2 つ目を入れます（<code>,-10</code> は「10 文字分の幅で左に寄せる」）。</li>
 <li><strong><code>Get-FileHash</code></strong>（PowerShell）: ファイルの中身から、ハッシュ（指紋のような長い英数字）を計算するコマンド。中身が 1 文字でも違えば、まったく違う値になります。ダウンロードしたファイルが壊れていないか確かめる時に使います。</li>
 </ul>
 </blockquote>
@@ -4838,7 +4834,7 @@ count<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$HOM
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>rm</code></strong>（WSL・bash）: ファイルやフォルダを消すコマンド（Linux）。<code>rm -rf フォルダ</code> は、中身ごと、確かめずに消します（<code>-r</code> は中まで、<code>-f</code> は聞かずに）。とても強いので、名前をよく確かめて使います。</li>
-<li><strong><code>return</code></strong>（WSL・bash）: bash の関数の中で、その関数を終える命令。<code>cd 場所 || return</code> は「<code>cd</code> に失敗したら、そこで関数を終える」という意味です（<code>||</code> は「左が失敗した時だけ右をする」）。</li>
+<li><strong><code>return</code></strong>（PowerShell）: 関数やスクリプトを、そこで終える命令。<code>return $null</code> のように、返す値を書けます。</li>
 <li><strong><code>s=$</code></strong>（WSL・bash）: bash で変数に値を入れる書き方。<code>s=$(date +%s%N)</code> は、<code>$( )</code> の中のコマンド（今の時刻）を動かした結果を、変数 <code>s</code> に入れます。<code>=</code> の前後に空白を入れてはいけません。</li>
 <li><strong><code>date</code></strong>（WSL・bash）: 今の日時を表示するコマンド（Linux）。<code>date +%s%N</code> は「1970 年からの秒数＋ナノ秒」の形で出します（時間を測るのに使います）。</li>
 <li><strong><code>for</code></strong>（WSL・bash）: bash のくり返し。<code>for i in $(seq 1 2000); do … ; done</code> は、1〜2000 を <code>i</code> に入れて、<code>do</code> から <code>done</code> までをくり返します。</li>
@@ -5825,7 +5821,7 @@ RustNote を起動しました: http://127.0.0.1:3000
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>Where-Object</code></strong>（PowerShell）: <code>|</code> で流れてきた物のうち、条件に合う物だけを残すコマンド。<code>{ }</code> の中の <code>$_</code> が「今の 1 つ」です。<code>Where-Object { $_.Length -gt 1000 }</code> のように使います。</li>
-<li><strong><code>Where-Object -like</code></strong>（PowerShell）: <code>-like '127*'</code> は、「<code>127</code> で始まる」のように、<code>*</code>（何文字でも）を使った形と比べる比べ方です。</li>
+<li><strong><code>-like</code></strong>（PowerShell）: <code>*</code>（何文字でも）と <code>?</code>（1 文字）を使った、ワイルドカードで合うかの比べ方。<code>$_ -like '127*'</code> は「127 で始まるか」。</li>
 <li><strong><code>Get-Item</code></strong>（PowerShell）: ファイルやフォルダ 1 つの情報（名前・大きさ・日時）を取り出すコマンド。</li>
 <li><strong><code>Get-Item -Stream</code></strong>（PowerShell）: <code>-Stream *</code> で、ファイルに付いている「隠れた別の中身」（代替データストリーム。ダウンロードした印などが入る）の一覧を出します。</li>
 <li><strong><code>Format-Table</code></strong>（PowerShell）: 結果を表の形に整えて表示するコマンド。</li>
@@ -6169,7 +6165,15 @@ x64    0x8664  C:\Users\...\.fly\bin\fly.exe
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>Write-Host</code></strong>（PowerShell）: 画面に文字を表示するコマンド。<code>Write-Output</code> と違い、次のコマンドへは流れず、画面に出すだけです。色を付ける（<code>-ForegroundColor Green</code>）こともできます。</li>
+<li><strong><code>-not</code></strong>（PowerShell）: 「〜でない」（<code>True</code> と <code>False</code> を逆にする）。<code>-not (Test-Path $file)</code> は「そのファイルが無いなら」。<code>!</code> と書いても同じです。</li>
 <li><strong><code>try</code></strong>（PowerShell）: PowerShell で、失敗するかもしれない処理を <code>try { … } catch { … }</code> で囲み、失敗した時の処理を <code>catch</code> に書く書き方。</li>
+<li><strong><code>-ne</code></strong>（PowerShell）: PowerShell の「等しくない」の比べ方（not equal）。<code>$LASTEXITCODE -ne 0</code> は「失敗した（0 でない）か」。</li>
+<li><strong><code>-or</code></strong>（PowerShell）: 「または」（どちらか一方でも <code>True</code> なら <code>True</code>）。<code>$LASTEXITCODE -ne 0 -or $out.Count -eq 0</code> は「失敗したか、出力が空か」。</li>
+<li><strong><code>-eq</code></strong>（PowerShell）: PowerShell の「等しい」の比べ方（equal）。<code>$LASTEXITCODE -eq 0</code> は「終わった時の番号が 0（成功）か」。PowerShell では <code>==</code> ではなく <code>-eq</code> と書きます。大文字・小文字は区別しません（<code>"ABC" -eq "abc"</code> も <code>True</code>）。</li>
+<li><strong><code>catch</code></strong>（PowerShell）: <code>try { … } catch { … }</code> の <code>catch</code> の所は、<code>try</code> の中でエラーが起きた時だけ動きます。起きたエラーは <code>$_</code> で受け取れます（<code>$_.Exception.Message</code> で説明の文）。</li>
+<li><strong><code>-ge</code></strong>（PowerShell）: PowerShell の「以上」の比べ方（greater or equal）。<code>$code.Count -ge 3</code> は「3 つ以上あるか」。</li>
+<li><strong><code>-split</code></strong>（PowerShell）: 文字列を、区切り（正規表現）で分けて並びにする演算子。<code>"a=b" -split '=', 2</code> は <code>"a"</code> と <code>"b"</code>（<code>2</code> は「多くても 2 つに分ける」）。</li>
+<li><strong><code>-gt</code></strong>（PowerShell）: PowerShell の「より大きい」の比べ方（greater than）。<code>$failed -gt 0</code> は「失敗が 1 つ以上あるか」。</li>
 <li><strong><code>exit</code></strong>（PowerShell）: スクリプトを終えるコマンド。<code>exit 1</code> は、終了コード 1（失敗）でスクリプトを終えます。</li>
 </ul>
 </blockquote>
