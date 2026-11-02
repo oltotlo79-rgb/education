@@ -25,7 +25,11 @@ use crate::{
     workflow,
 };
 
-const USAGE: &str = "使い方: webapp [serve | import-employees <CSV> [--dry-run] | grant-role --employee-no <番号> --role <member|worker|admin> | set-password --employee-no <番号> | send-daily-reminders | send-test-mail --to <アドレス> | seed-demo]";
+// 行末の \ は「次の行へ続く（改行と、次の行の頭の空白は入らない）」という印
+const USAGE: &str = "使い方: webapp [serve | import-employees <CSV> [--dry-run] \
+                     | grant-role --employee-no <番号> --role <member|worker|admin> \
+                     | set-password --employee-no <番号> | send-daily-reminders \
+                     | send-test-mail --to <アドレス> | seed-demo]";
 
 pub async fn run(args: Vec<String>) -> anyhow::Result<()> {
     // 開発のパソコンでは、.env のファイルから環境変数を読む（サーバーには .env を置かず、サービスの XML に書く）

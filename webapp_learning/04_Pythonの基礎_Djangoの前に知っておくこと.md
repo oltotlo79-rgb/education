@@ -21,6 +21,9 @@
 
 ## 1. 準備: 仮想環境を作って、部品を入れる
 
+**▶ 準備:** 00 の 6.4（Python 3.14）。下のコマンドは、PowerShell で資料のフォルダにいるところから打ちます。練習のファイル（`basics.py` など）は VS Code で開いて読み、書きかえたら `Ctrl` ＋ `S` で保存して、もう一度 `.\.venv\Scripts\python.exe ファイルの名前.py` で動かします。
+
+
 ```powershell
 cd webapp_learning\samples\04_python
 

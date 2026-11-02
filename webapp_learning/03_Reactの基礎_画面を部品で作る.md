@@ -21,6 +21,9 @@
 
 ## 1. 動かしてみる
 
+**▶ 準備:** 00 の 6.3（Node.js）。02 を終えていれば、もう入っています。下のコマンドは、PowerShell で資料のフォルダにいるところから打ちます。`npm` が止められたら `npm.cmd` と打ちます（00 の 6.3）。
+
+
 ```powershell
 cd webapp_learning\samples\03_react
 npm install       # 部品を入れる（最初の 1 回）

@@ -38,6 +38,11 @@
 
 ### 1.1 準備と動かし方
 
+**▶ 準備:** 00 の 6.1（資料のフォルダ）・6.2（VS Code）・6.3（Node.js）。下のコマンドは、PowerShell で**資料のフォルダにいるところから**打ちます（00 の 6.1）。`npm` が「スクリプトの実行が無効」で止められたら、`npm.cmd`・`npx.cmd` と打ちます（00 の 6.3）。
+
+**▶ 書く所と動かし方:** 練習のファイルは `src\` の中にあります。`code .` で VS Code を開いて読み、書きかえたら `Ctrl` ＋ `S` で保存して、PowerShell で `node src\basics.ts` のように動かします。自分で新しいファイルを作るときも、`src\` の中に `.ts` で作ります（`npx tsc` が確かめるのは `src\` の `.ts` です）。
+
+
 ```powershell
 cd webapp_learning\samples\02_typescript
 npm install          # TypeScript などの部品を入れる（最初の 1 回）

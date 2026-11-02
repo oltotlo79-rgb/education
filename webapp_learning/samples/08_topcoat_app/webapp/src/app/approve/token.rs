@@ -74,7 +74,9 @@ async fn approve_page(cx: &Cx) -> Result<impl View> {
                     <label for="comment">"差し戻す理由"</label>
                     <textarea id="comment" name="comment" rows="3" required=""></textarea>
                     <span></span>
-                    <div class="actions"><button type="submit" name="decision" value="return" class="btn-secondary">"差し戻す"</button></div>
+                    <div class="actions">
+                        <button type="submit" name="decision" value="return" class="btn-secondary">"差し戻す"</button>
+                    </div>
                 </form>
             },
             Err(m) => {

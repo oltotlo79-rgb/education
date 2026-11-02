@@ -171,6 +171,8 @@ PostgreSQL のインストーラーで「pgAdmin 4」を入れていれば、画
 
 スーパーユーザーでつないで、練習用のデータベースを作ります。
 
+**▶ 打つ所:** 2.2 のとおり、PowerShell で `psql -h 127.0.0.1 -U postgres` と打ってつなぎ、`postgres=#` と出ている所に、下の SQL を 1 行ずつ打ちます（`--` で始まる行は説明のメモなので、打たなくてよい）。`\c practice` のあとは、行の頭が `practice=#` に変わります。
+
 ```sql
 -- 練習用のデータベースを作る
 CREATE DATABASE practice ENCODING 'UTF8' TEMPLATE template0;
@@ -252,6 +254,8 @@ INSERT INTO requests (title, status, requester_id, due_date, created_at) VALUES
 <img src="images/02-04_select_anatomy.webp" alt="SELECT title, status（どの列を）、FROM requests（どの表から）、WHERE status = '回覧中'（どの行を）、ORDER BY due_date（どの順に）" style="width: 100%;">
 <div style="font-size: 12px; color: #64748b; margin-top: 6px;">図4-1: SELECT 文は「どの列を・どの表から・どの行を・どの順に」</div>
 </div>
+
+**▶ 打つ所:** この章からの SQL は、全部 `practice=#` と出ている所（3 章で `\c practice` したあと）に打ちます。1 つの SQL の終わりには `;` を付け、Enter キーで実行します。`psql` を閉じてしまったら、`psql -h 127.0.0.1 -U postgres -d practice` で入り直します。
 
 ### 4.1 全部見る
 

@@ -59,6 +59,26 @@
 
 ### 2.2 はじめてのページ
 
+**▶ 準備:** 00 の 6.1（資料のフォルダと PowerShell）と 6.2（VS Code）。
+
+**▶ 書く所と見方:**
+
+1. 自分用の練習のフォルダを作って、VS Code で開きます。PowerShell に 1 行ずつ打ちます。
+
+```powershell
+mkdir ~\Documents\my-practice\01
+cd ~\Documents\my-practice\01
+code .
+```
+
+2. VS Code の左の一覧（エクスプローラー）の空いている所を右クリック →「新しいファイル」→ `hello.html` と打って Enter キーを押します。
+3. 下のコードを打つ（または貼り付ける）→ `Ctrl` ＋ `S` で保存します。
+4. PowerShell で `explorer .` と打つと、このフォルダがエクスプローラーで開きます。`hello.html` をダブルクリックすると、ブラウザで開きます。
+5. コードを書きかえたら、保存してから、ブラウザで `F5` キー（読み込み直し）を押します。保存を忘れると、画面は変わりません。
+
+完成したファイルは、資料のフォルダの `webapp_learning\samples\01_html_css\hello.html` にあります。読んで開くだけなら、それをダブルクリックしてもかまいません。
+
+
 `samples/01_html_css/hello.html`:
 
 ```html
@@ -120,6 +140,9 @@
 > **意味のあるタグを使う:** 見た目が同じでも、`<div>` だらけにせず、見出しは `<h1>`、表は `<table>` のように、**意味の合ったタグ**を使います。読み上げソフトを使う人や、検索、後から読む人が、ページの構造を理解しやすくなります。
 
 ## 3. フォーム: 依頼の入力画面
+
+**▶ 書く所と見方:** 2.2 と同じフォルダに `request_form.html` を作ります。この画面は、見た目を `style.css`（5〜7 章で説明する CSS のファイル）から読み込みます。資料の `webapp_learning\samples\01_html_css\style.css` を、同じフォルダに写してから（エクスプローラーでコピーして貼り付け）、`request_form.html` をダブルクリックで開きます。`style.css` が同じフォルダに無いと、色も並べ方も無い、文字だけの画面になります。
+
 
 `samples/01_html_css/request_form.html`:
 
