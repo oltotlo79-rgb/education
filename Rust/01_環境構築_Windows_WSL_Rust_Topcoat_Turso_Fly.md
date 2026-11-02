@@ -1403,6 +1403,7 @@ function New-LfFile($Path, [string[]]$Lines) {
 
 > **▶ ここで初めて出てくるコード**
 >
+> - **`function`**（JavaScript・TypeScript）: 関数を作る書き方。`async function post(path, body) { … }`。
 > - **`New-Item`**（PowerShell）: 新しいファイルやフォルダを作るコマンド。`New-Item memo.txt` でファイル、`New-Item -ItemType Directory 名前` でフォルダを作ります。
 > - **`New-Item -Path`**（PowerShell）: `-Path 場所` で、作るファイルやフォルダの場所（名前）を指定します。
 > - **`New-Item -Value`**（PowerShell）: `-Value 中身` で、作るファイルに最初から書いておく中身を指定します。
@@ -1427,14 +1428,6 @@ New-LfFile rustnote.db 'db'
 # ビルドの成果物の代わり（空のファイル。target\debug フォルダも一緒に作られる）
 New-Item target\debug\hello-git.exe -Force | Out-Null
 ```
-
-<!-- first-use -->
-
-> **▶ ここで初めて出てくるコード**
->
-> - **`New-LfFile`**（PowerShell）: この巻のスクリプトの中で作った、自分の PowerShell の関数（改行を LF にしてファイルを書く）。`function New-LfFile { … }` で中身を決めてあり、PowerShell のコマンドと同じ形で呼べます。
-
-<!-- /first-use -->
 
 **手順3: Git から見た状態を表示する。**
 
@@ -1831,6 +1824,7 @@ pwd
 
 > **▶ ここで初めて出てくるコード**
 >
+> - **`set`**（WSL・bash）: bash の設定を変える命令。`set -e` は「途中のコマンドが失敗したら、そこでスクリプトを止める」。
 > - **`echo`**（コマンド）: 後ろに書いた文字を、そのまま画面に出すコマンド。`echo "hello"`。bash（WSL）でも PowerShell でも使えます。
 > - **`pwd`**（コマンド）: 今いるフォルダを表示するコマンド（print working directory）。bash（WSL）では `/home/you` のような Linux の形で、PowerShell では `C:\Users\you` のような形で出ます。
 
@@ -2255,6 +2249,14 @@ arm64
 C:\Users\...\AppData\Local\Programs\Microsoft VS Code\bin\code
 C:\Users\...\AppData\Local\Programs\Microsoft VS Code\bin\code.cmd
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`code`**（コマンド）: VS Code を動かすコマンド。`code .` で今のフォルダを開き、`code --version` で版を確かめます。
+
+<!-- /first-use -->
 
 #### ▼ 1つずつ分解して解説
 
@@ -4434,8 +4436,10 @@ count "$HOME" "Linux 側（$HOME）"
 > - **`return`**（WSL・bash）: bash の関数の中で、その関数を終える命令。`cd 場所 || return` は「`cd` に失敗したら、そこで関数を終える」という意味です（`||` は「左が失敗した時だけ右をする」）。
 > - **`s=$`**（WSL・bash）: bash で変数に値を入れる書き方。`s=$(date +%s%N)` は、`$( )` の中のコマンド（今の時刻）を動かした結果を、変数 `s` に入れます。`=` の前後に空白を入れてはいけません。
 > - **`date`**（WSL・bash）: 今の日時を表示するコマンド（Linux）。`date +%s%N` は「1970 年からの秒数＋ナノ秒」の形で出します（時間を測るのに使います）。
+> - **`for`**（WSL・bash）: bash のくり返し。`for i in $(seq 1 2000); do … ; done` は、1〜2000 を `i` に入れて、`do` から `done` までをくり返します。
 > - **`seq`**（WSL・bash）: 数の並びを出すコマンド（Linux）。`seq 1 2000` は 1 から 2000 まで、1 行に 1 つずつ出します。
 > - **`do`**（WSL・bash）: bash のくり返し `for 変数 in 並び; do … ; done` の一部。`do` から `done` までが、くり返す中身です。
+> - **`done`**（WSL・bash）: bash のくり返し（`for … do … done`）の終わりの印。
 > - **`e=$`**（WSL・bash）: `s=$(…)` と同じく、bash で変数に値を入れる書き方。ここでは終わりの時刻を `e` に入れ、`s` との差で、かかった時間を計算します。
 
 <!-- /first-use -->
@@ -4737,6 +4741,7 @@ topcoat --help
 > **▶ ここで初めて出てくるコード**
 >
 > - **`cargo install`**（cargo のコマンド）: Rust で作られた道具（コマンド）を、パソコンに入れるコマンド。`cargo install topcoat-cli --version 0.11.0 --locked` は、Topcoat の道具 `topcoat` を、決まった版で入れます。
+> - **`topcoat`**（Topcoat）: Topcoat の道具のコマンド（`cargo install topcoat-cli` で入る）。`topcoat dev`（コードを直すと自動で作り直して読み直す開発用の起動）・`topcoat asset bundle`（CSS などの束を作る）などがあります（第6巻）。
 
 <!-- /first-use -->
 
@@ -4907,6 +4912,7 @@ async fn home() -> Result<impl View> {
 > - **`impl`**（型とメソッド）: 2 つの使い方があります。① `impl 型 { … }` で、その型にメソッド（関数）を付ける。② `impl View` のように型の場所に書くと、「`View` の機能を持つ何かの型」という意味になります（戻り値の型を細かく書かずに済む）。
 > - **`#[layout]`**（Topcoat）: Topcoat の印（属性）。この関数を「どのページにも共通の外枠（HTML の骨組み・メニュー）」にします。外枠の中の、ページが入る場所を `slot` で受け取ります（第6巻 UNIT 03）。
 > - **`#[page]`**（Topcoat）: Topcoat の印（属性）。この関数を、1 つの URL に答える「ページ」にします。`#[page("/")]` なら `/` に、`#[page(POST)]` なら送信（POST）に答えます（第6巻 UNIT 02〜03）。
+> - **`.assets()`**（Topcoat）: ルーターに、配るアセット（CSS など）の束を登録するメソッド。`.assets(AssetBundle::load().unwrap())`（第6巻 UNIT 08）。
 > - **`.build()`**（型とメソッド）: 設定を少しずつ足していく「組み立て係」（ビルダー）の最後に呼んで、でき上がった物を作るメソッド。`Router::builder()…build()` の形で、ルーターなどを作る時に使います。
 > - **`topcoat::dev::script()`**（Topcoat）: `topcoat dev` で動かしている時だけ、「コードを直したら、ブラウザーを自動で読み直す」ための小さなスクリプトを、ページに入れる関数。`cargo run` や本番では何も出しません（第6巻 UNIT 08）。
 > - **`AssetBundle`**（Topcoat）: Topcoat の型。`topcoat asset bundle` で作った「アセットの束」（名前にハッシュが付いたファイルと目録）を、`AssetBundle::load()` で読み込んで、配れるようにします（第6巻 UNIT 08）。

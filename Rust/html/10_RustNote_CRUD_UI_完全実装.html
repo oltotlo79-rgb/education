@@ -904,16 +904,6 @@ error: could not compile `rustnote` (lib) due to 3 previous errors
 <span class="p">}</span>
 </code></pre></div></div>
 
-<!-- first-use -->
-
-<blockquote>
-<p><strong>▶ ここで初めて出てくるコード</strong></p>
-<ul>
-<li><strong><code>NoteFormState::default()</code></strong>（型とメソッド）: この巻で作る型 <code>NoteFormState</code>（入力フォームの中身と、まちがいの知らせ）を、空の状態で作る書き方。最初にフォームを表示する時に使います。</li>
-</ul>
-</blockquote>
-<!-- /first-use -->
-
 <ul>
 <li>最初の行で <code>require_user(cx)</code> を呼びます。ログインしていなければ、ここで 303 になり、下の行は動きません。</li>
 <li><code>notes_index</code> に渡すのは、<code>owner: user.id</code> です。一覧の部品は、持ち主を引数で受け取るので、「誰の一覧か」を、部品の中で勝手に決めることができません。</li>
@@ -5250,6 +5240,16 @@ bob が q=&quot;&#39; OR 1=1) OR (title LIKE &#39;&quot; で検索 → 200 OK
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>u64::from()</code></strong>（数）: 小さい整数の型などを、<code>u64</code> に変える関数（値が変わらない変換だけ）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>「前へ」「次へ」のリンクは、<code>src/views.rs</code> の <code>pagination</code> が作ります。キーワードがあれば、<code>q</code> も付けます。</p>
 <div class="codehilite"><div class="code-wrap" id="code-130"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">let</span><span class="w"> </span><span class="n">link</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">|</span><span class="n">page_number</span><span class="p">:</span><span class="w"> </span><span class="kt">u32</span><span class="o">|</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">params</span><span class="p">:</span><span class="w"> </span><span class="nb">Vec</span><span class="o">&lt;</span><span class="p">(</span><span class="o">&amp;</span><span class="kt">str</span><span class="p">,</span><span class="w"> </span><span class="nb">String</span><span class="p">)</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Vec</span><span class="p">::</span><span class="n">new</span><span class="p">();</span>
@@ -6157,16 +6157,6 @@ GET /notes?q=ノート&amp;page=2: 20 件（ノート25 〜 ノート06）
 <span class="p">}</span>
 </code></pre></div></div>
 
-<!-- first-use -->
-
-<blockquote>
-<p><strong>▶ ここで初めて出てくるコード</strong></p>
-<ul>
-<li><strong><code>Jar::default()</code></strong>（クッキー）: クッキーの瓶（クッキーをまとめて持つ入れ物）を、空の状態で作る書き方。</li>
-</ul>
-</blockquote>
-<!-- /first-use -->
-
 <div class="codehilite"><div class="code-wrap" id="code-150"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">test</span> <span class="p">-</span><span class="n">-test</span> <span class="n">u09_flash</span> <span class="p">--</span> <span class="p">-</span><span class="n">-nocapture</span>
 </code></pre></div></div>
 
@@ -6889,7 +6879,10 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 <li><strong><code>.createElement()</code></strong>（JavaScript・TypeScript）: <code>document.createElement('iframe')</code> は、新しい HTML のタグ（要素）を作る、ブラウザーの関数です。</li>
 <li><strong><code>.appendChild()</code></strong>（JavaScript・TypeScript）: 作ったタグを、ページの中の決めた所（親）の最後に入れるメソッド。</li>
 <li><strong><code>.querySelectorAll()</code></strong>（JavaScript・TypeScript）: CSS と同じ書き方（<code>.flash</code>・<code>button</code> など）で、ページの中の合うタグを全部探すメソッド。</li>
+<li><strong><code>.filter()</code></strong>（JavaScript・TypeScript）: 配列から、条件に合う物だけを集めた新しい配列を作るメソッド。</li>
+<li><strong><code>.map()</code></strong>（JavaScript・TypeScript）: 配列の中身を 1 つずつ変換した、新しい配列を作るメソッド。</li>
 <li><strong><code>.toLowerCase()</code></strong>（JavaScript・TypeScript）: 英字を小文字にした文字列を返すメソッド（Rust の <code>to_lowercase</code>）。</li>
+<li><strong><code>.pop()</code></strong>（JavaScript・TypeScript）: JavaScript・TypeScript で、配列の最後の 1 つを取り出すメソッド（元の配列から消える）。</li>
 <li><strong><code>.padEnd()</code></strong>（JavaScript・TypeScript）: 文字列の後ろを空白で埋めて、決めた長さにするメソッド。表のように並べて表示する時に使います。</li>
 </ul>
 </blockquote>
@@ -6936,6 +6929,7 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>.addEventListener()</code></strong>（JavaScript・TypeScript）: クリック・入力などの出来事（イベント）が起きた時に動く関数を登録するメソッド。<code>document.addEventListener('focusin', (e) =&gt; { … })</code>。</li>
+<li><strong><code>.trim()</code></strong>（JavaScript・TypeScript）: JavaScript・TypeScript で、文字列の前後の空白を取り除いたものを返すメソッド。</li>
 <li><strong><code>?.</code></strong>（JavaScript・TypeScript）: <code>a?.b</code> は、<code>a</code> が <code>null</code> や <code>undefined</code> なら、そこで止めて <code>undefined</code> にする書き方（オプショナルチェーン）。無いかもしれない物を、エラーにせずにたどれます。</li>
 </ul>
 </blockquote>
@@ -7051,6 +7045,7 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
+<li><strong><code>if</code></strong>（JavaScript・TypeScript）: JavaScript・TypeScript の条件。<code>if (条件) { … } else { … }</code>。条件は <code>( )</code> で囲みます。</li>
 <li><strong><code>null</code></strong>（JavaScript・TypeScript）: JavaScript で「値が無い」ことを表す値。</li>
 <li><strong><code>.getBoundingClientRect()</code></strong>（JavaScript・TypeScript）: タグが、画面のどこに、どの大きさで表示されているか（位置・幅・高さ）を返すメソッド。はみ出しや重なりを調べる時に使います。</li>
 </ul>

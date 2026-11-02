@@ -3968,7 +3968,15 @@ cargo test --test u06_policy -- --nocapture
 
 > **▶ ここで初めて出てくるコード**
 >
+> - **`<html>`**（HTML）: HTML の文書全体を包むタグ。中に `<head>`（ページの情報）と `<body>`（画面に出す中身）を入れます。
 > - **`<meta>`**（HTML）: HTML の `<head>` の中に書く、ページの情報のタグ。`<meta charset="utf-8">`（文字コード）・`<meta name="viewport" …>`（スマホでの表示の幅）などがあります。
+> - **`<title>`**（HTML）: ブラウザーのタブに出る、ページの題名のタグ。`<head>` の中に書きます。
+> - **`<h1>`**（HTML）: いちばん大きな見出しのタグ。
+> - **`<form>`**（HTML）: 入力欄とボタンをまとめて、送る（サーバーへ届ける）ためのタグ。`action` に送り先、`method="post"` に送り方を書きます。
+> - **`<input>`**（HTML）: 1 行の入力欄のタグ。`type` で種類（`text`・`email`・`password`・`hidden` など）を、`name` で送る時の名前を決めます。閉じタグはありません。
+> - **`<button>`**（HTML）: ボタンのタグ。`<form>` の中の `type="submit"` のボタンを押すと、フォームが送られます。
+> - **`<p>`**（HTML）: 段落のタグ。
+> - **`<a>`**（HTML）: リンクのタグ。`<a href="URL">文字</a>` で、押すとその URL へ移ります。
 
 <!-- /first-use -->
 
@@ -4907,14 +4915,30 @@ console.log(`sign-out → ${r.response.status}（session: ${before} 行 → ${af
 > **▶ ここで初めて出てくるコード**
 >
 > - **`import`**（JavaScript・TypeScript）: ほかのファイルや部品から、関数などを読み込む書き方。`import { rmSync } from "node:fs";` は、Node.js のファイルの道具から `rmSync` を使えるようにします。
+> - **`from`**（JavaScript・TypeScript）: `import { 名前 } from "場所";` の一部で、「どこから読み込むか」を書きます。
+> - **`const`**（JavaScript・TypeScript）: JavaScript・TypeScript で、変えない値に名前を付ける書き方。`const db = …;`。あとで別の値を入れようとするとエラーになります。
+> - **`new`**（JavaScript・TypeScript）: クラスから、新しい物を作る書き方。`new DatabaseSync("ba.sqlite")`・`new Date()`・`new Error("…")` のように使います。
+> - **`await`**（JavaScript・TypeScript）: JavaScript・TypeScript で、時間のかかる処理（`Promise`）が終わるまで待って、結果を受け取る書き方。`async` の関数の中で使います。
+> - **`let`**（JavaScript・TypeScript）: JavaScript・TypeScript で、あとで変える値に名前を付ける書き方。
+> - **`async`**（JavaScript・TypeScript）: JavaScript・TypeScript で、中で `await` を使える関数にする印。結果は `Promise`（あとで届く約束）で返ります。
+> - **`function`**（JavaScript・TypeScript）: 関数を作る書き方。`async function post(path, body) { … }`。
 > - **`try`**（JavaScript・TypeScript）: 失敗するかもしれない処理を `try { … } catch (e) { … }` で囲み、失敗した時の処理を `catch` に書く書き方。
 > - **`catch`**（JavaScript・TypeScript）: `try` の中で失敗（エラー）が起きた時に動く所。`catch (e)` の `e` に、エラーが入ります。
+> - **`return`**（JavaScript・TypeScript）: JavaScript・TypeScript で、関数の結果を返して、関数を終える命令。
+> - **`for`**（JavaScript・TypeScript）: くり返しの書き方。`for (const x of 配列) { … }` は、配列の中身を 1 つずつ `x` に入れてくり返します。
+> - **`of`**（JavaScript・TypeScript）: `for (const x of 配列)` の一部で、「配列の中身を 1 つずつ」という意味です。
 > - **`.runMigrations()`**（JavaScript・TypeScript）: Better Auth の、データベースの表を作る・変える手順（マイグレーション）を実行するメソッド（第8巻 UNIT 08 の比べ）。
+> - **`.handler()`**（JavaScript・TypeScript）: Better Auth の、HTTP のリクエストを受け取って答えを返す関数（`auth.handler(new Request(…))`）。サーバーを立てずに試す時に、直接呼んでいます。
 > - **`.stringify()`**（JavaScript・TypeScript）: `JSON.stringify(値)` は、JavaScript の値を JSON の文字列にする関数です。
 > - **`.round()`**（JavaScript・TypeScript）: `Math.round(x)` は、小数を四捨五入して整数にする関数です。
 > - **`.slice()`**（JavaScript・TypeScript）: 文字列や配列の、一部分を切り出すメソッド。`text.slice(0, 40)` は、最初の 40 文字です。
+> - **`.split()`**（JavaScript・TypeScript）: JavaScript・TypeScript で、文字列を区切りで分けて配列にするメソッド。`"a,b".split(",")` は `["a", "b"]`。正規表現（`/,/`）でも区切れます。
+> - **`.join()`**（JavaScript・TypeScript）: JavaScript・TypeScript で、配列の中身を区切り文字でつないで 1 つの文字列にするメソッド。`["a", "b"].join(";")` は `"a;b"`。
+> - **`.push()`**（JavaScript・TypeScript）: JavaScript・TypeScript で、配列の後ろに足すメソッド（元の配列が変わる）。
+> - **`.prepare()`**（JavaScript・TypeScript）: Node.js の SQLite（`node:sqlite`）で、SQL の文を用意するメソッド。`.get()`・`.all()` で結果を受け取ります。
 > - **`.startsWith()`**（JavaScript・TypeScript）: 文字列が、その文字で始まっていれば `true` を返すメソッド（Rust の `starts_with`）。
 > - **`??`**（JavaScript・TypeScript）: `a ?? b` は、`a` が `null` か `undefined`（値が無い）なら `b` を使う、という書き方です。
+> - **`=>`**（JavaScript・TypeScript）: アロー関数（短く書ける関数）の矢印。`(path) => \`…${path}\`` は「`path` を受け取って文字列を返す関数」。
 > - **`...`**（JavaScript・TypeScript）: スプレッド構文。`[...a, x]` は配列 `a` の中身を広げて新しい配列を作り、`{ ...obj, k: v }` はオブジェクトの中身を写して一部だけ変えた新しいオブジェクトを作ります。
 
 <!-- /first-use -->
@@ -4922,6 +4946,14 @@ console.log(`sign-out → ${r.response.status}（session: ${before} 行 → ${af
 ```powershell
 node probe.mjs
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`node`**（Node.js）: Node.js（パソコンの上で JavaScript を動かす道具）を動かすコマンド。`node probe.mjs` で、そのファイルを動かします。
+
+<!-- /first-use -->
 
 ```text
 ### node probe.mjs
@@ -5326,6 +5358,7 @@ fn main() {
 
 > **▶ ここで初めて出てくるコード**
 >
+> - **`.random()`**（認証）: `rand` の部品で、でたらめな値を作るメソッド（`rand::rng().random()`）。トークンなど、予想されてはいけない値に使います。
 > - **`Sha256::digest()`**（認証）: データから、SHA-256 というハッシュ（32 バイトの指紋）を計算する関数（`sha2` の部品）。
 > - **`rand::rng()`**（認証）: でたらめな数を作る係を取り出す関数（`rand` の部品）。`rand::rng().random()` で、でたらめな値を作ります。
 > - **`Engine`**（認証）: `base64` の部品の、エンコード（バイト → 英数字の文字列）の機能（トレイト）。`URL_SAFE_NO_PAD.encode(バイト)` を使うには、これを `use` します。
@@ -5491,6 +5524,7 @@ fn main() {
 > - **`.finalize()`**（認証）: ハッシュや MAC の計算を締めくくって、結果を取り出すメソッド。
 > - **`.into_bytes()`**（認証）: 計算の結果を、バイトの並びとして取り出すメソッド。
 > - **`u32::from_be_bytes()`**（数）: 4 つのバイト（大きい桁から順）から、`u32` の数を作る関数。
+> - **`HashSet::new()`**（HashMap（表））: 空の `HashSet`（重ならない値の集まり）を作る関数。
 > - **`HashSet`**（HashMap（表））: 同じ値は 1 つしか入らない集まり（値だけの `HashMap`）。重複を消す・「もう見たか」を覚える時に使います。`set.insert(x)` は、新しく入った時だけ `true` を返します。
 > - **`Hmac`**（認証）: HMAC（秘密の鍵を混ぜたハッシュ）を計算する型（`hmac` の部品）。鍵を知っている人だけが同じ値を作れるので、「改ざんされていないか」の確かめに使います。
 > - **`KeyInit`**（認証）: 鍵から計算の係を作る（`new_from_slice`）機能（トレイト）。
@@ -6511,6 +6545,7 @@ async fn leaked_database() {
 >
 > - **`.try_into()`**（型とメソッド）: 値を、別の型に変えようとして、変えられなければ `Err` を返すメソッド（`TryFrom` の逆向き）。`bytes.try_into()` で、長さの決まった配列（`[u8; 32]` など）に変えます。
 > - **`.as_slice()`**（Vec（並び））: `Vec` や配列を、「借りた一続きの並び」（スライス `&[T]`）として見るメソッド。
+> - **`Token::new()`**（Topcoat）: セッションの印（トークン）を、決めた中身から作る関数（テストで、わざとにせのトークンを作る時に使います）。
 > - **`Token`**（Topcoat）: `topcoat::session::Token` は、セッションの印（でたらめな長い文字列）の型。ブラウザーのクッキーに入れ、サーバーには、そのハッシュだけを保存します。
 
 <!-- /first-use -->

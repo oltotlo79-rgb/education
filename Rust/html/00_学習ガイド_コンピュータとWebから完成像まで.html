@@ -649,7 +649,7 @@ li, tr { page-break-inside: avoid; }
 <tr>
 <td>付録 2</td>
 <td>出てくるコードとコマンドの一覧</td>
-<td>この本のコードに出てくる 977 個の部品（キーワード・マクロ・関数・メソッド・コマンドなど）を、機能ごとの表で引ける。本文でも、初めて出てくるコードのすぐ下に、同じ説明の箱（▶ ここで初めて出てくるコード）がある</td>
+<td>この本のコードに出てくる 1,000 個あまりの部品（キーワード・マクロ・関数・メソッド・コマンドなど）を、機能ごとの表で引ける。本文でも、初めて出てくるコードのすぐ下に、同じ説明の箱（▶ ここで初めて出てくるコード）がある</td>
 </tr>
 </tbody>
 </table>
@@ -1053,6 +1053,7 @@ note: see more `Cargo.toml` keys and their definitions at https://doc.rust-lang.
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>println!</code></strong>（画面に出す）: かっこの中の文字を画面に出して、最後に改行するマクロ。<code>println!("Hello, world!");</code> は <code>Hello, world!</code> と表示します。<code>{}</code> を書くと、後ろに並べた値がそこに入ります（例: <code>println!("{}点", 80);</code> → <code>80点</code>）。名前の最後の <code>!</code> は「マクロ」（コードを作り出す特別な仕組み）の印で、ふつうの関数と見分けるために付いています。</li>
+<li><strong><code>fn</code></strong>（関数）: 関数（ひとまとまりの処理に名前を付けた物）を作る書き方。<code>fn main() { … }</code> の <code>main</code> は、プログラムを動かすと最初に動く特別な関数です。<code>fn add(a: i32, b: i32) -&gt; i32 { a + b }</code> は「整数を 2 つ受け取って、整数を返す関数 <code>add</code>」。<code>{ }</code> の中が中身で、最後の <code>;</code> の無い式が戻り値になります。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1279,6 +1280,9 @@ note: VS Code is a different product, and is not sufficient
 <ul>
 <li><strong><code>use</code></strong>（モジュール）: ほかの場所にある道具に、短い名前で呼べるようにする宣言。<code>use std::env;</code> と書くと、<code>std::env::args()</code> を <code>env::args()</code> と短く書けます。<code>std</code> は Rust に最初から付いている道具箱（標準ライブラリ）です。</li>
 <li><strong><code>let</code></strong>（変数）: 値に名前を付けて覚えておく（変数を作る）書き方。<code>let age = 20;</code> で、<code>age</code> という名前で 20 を覚えます。最初は「変えられない」変数です。あとで変えたい時は <code>let mut age = 20;</code> のように <code>mut</code> を付けます。</li>
+<li><strong><code>mut</code></strong>（変数）: 「あとで変えてよい」という印。<code>let mut total = 0;</code> と書くと、<code>total += 10;</code> のように値を変えられます。付けないと変えられません（変えようとすると、コンパイルのエラーで教えてくれます）。</li>
+<li><strong><code>for</code></strong>（くり返し）: 並びや範囲から 1 つずつ取り出して、くり返す書き方。<code>for n in 1..=100 { … }</code> は、<code>n</code> に 1, 2, …, 100 を順に入れて、中を 100 回動かします。<code>for x in &amp;v</code> で、<code>Vec</code> の中身を借りて回せます。</li>
+<li><strong><code>in</code></strong>（くり返し）: <code>for 名前 in 並び</code> の一部で、「この並びの中から」という意味です。</li>
 <li><strong><code>OS</code></strong>（標準ライブラリ）: <code>std::env::consts::OS</code> は、プログラムが動いている OS の種類を表す決まった値（定数）。Windows なら <code>"windows"</code>、Linux なら <code>"linux"</code> という文字列が入っています。</li>
 <li><strong><code>ARCH</code></strong>（標準ライブラリ）: <code>std::env::consts::ARCH</code> は、CPU の種類を表す決まった値（定数）。多くの Windows のパソコンでは <code>"x86_64"</code>、Arm の CPU なら <code>"aarch64"</code> です。</li>
 <li><strong><code>..=</code></strong>（範囲）: 「〜から〜まで（最後も含む）」の範囲。<code>1..=100</code> は 1, 2, …, 100。<code>..</code> だけだと最後を含みません（<code>1..100</code> は 1〜99）。<code>for n in 1..=100 { … }</code> のように、くり返しでよく使います。</li>
@@ -1416,7 +1420,9 @@ CPU の種類: aarch64
 <li><strong><code>eprintln!</code></strong>（画面に出す）: <code>println!</code> のエラー版。「標準エラー出力」というエラー用の出口に書きます。画面ではふつうの出力と同じに見えますが、<code>&gt; ファイル</code> で結果をファイルに書き出した時も、エラーは画面に残ります。失敗の知らせを出す時に使います。</li>
 <li><strong><code>match</code></strong>（場合分け）: 値の形に合わせて、処理を分ける書き方。<code>match 値 { 形1 =&gt; 処理1, 形2 =&gt; 処理2 }</code> と書き、上から順に合う物を探します。全部の場合を書かないとコンパイルが通らないので、書き忘れを防げます。<code>_ =&gt;</code> は「それ以外全部」です。</li>
 <li><strong><code>.nth()</code></strong>（イテレーター）: 並びの中から「n 番目」を 1 つ取り出すメソッド。番号は 0 から数えます。<code>env::args().nth(1)</code> は、コマンドの引数の 1 番目（0 番目はプログラム自身の場所）。無いかもしれないので、結果は <code>Some(値)</code> か <code>None</code>（<code>Option</code>）で返ります。</li>
+<li><strong><code>env::args()</code></strong>（プロセス）: プログラムを動かした時に渡された引数（<code>cargo run -- 花子</code> の <code>花子</code> など）を、1 つずつ取り出せる形で返す関数。0 番目はプログラム自身の場所なので、渡した値は 1 番目から。<code>env::args().nth(1)</code> で 1 つ目、<code>env::args().skip(1).collect::&lt;Vec&lt;_&gt;&gt;()</code> で全部を <code>Vec</code> にできます。</li>
 <li><strong><code>process::exit()</code></strong>（プロセス）: プログラムを、その場で終わらせる関数。<code>process::exit(2)</code> は、終了コード 2 を OS に知らせて終わります。終了コードは「0 なら成功、0 以外なら失敗」の決まりで、PowerShell では <code>$LASTEXITCODE</code> で見られます。</li>
+<li><strong><code>None</code></strong>（Option）: <code>Option</code> の「値が無い」側。<code>Some(値)</code>（値がある）か <code>None</code>（無い）のどちらかになります。Rust には「null」が無い代わりに、無いかもしれない値は必ず <code>Option</code> で表し、<code>match</code> などで両方の場合を書きます。</li>
 <li><strong><code>=&gt;</code></strong>（場合分け）: <code>match</code> の中で「この形なら、→ この処理」をつなぐ矢印。<code>Some(name) =&gt; println!("{name}"),</code> は「値があったら、その名前を表示」という意味です。</li>
 </ul>
 </blockquote>
@@ -1789,8 +1795,10 @@ error: process didn&#39;t exit successfully: `target\debug\practice.exe` (exit c
 <li><strong><code>.join()</code></strong>（ファイルとフォルダ）: 場所（パス）に、フォルダやファイルの名前をつなげた新しい場所を作るメソッド。<code>dir.join("notes.txt")</code> は、<code>dir</code> の中の <code>notes.txt</code> を表します。区切りの <code>\</code> は自動で入ります。（文字列の配列に使う <code>.join(", ")</code> は、「区切り文字でつなげて 1 つの文字列にする」別の意味です。）</li>
 <li><strong><code>env::current_dir()</code></strong>（プロセス）: プログラムを動かした時の、今いるフォルダ（カレントディレクトリ）を返す関数。PowerShell の <code>Get-Location</code> と同じ場所です。取れないこともあるので、結果は <code>Result</code> で返り、<code>?</code> や <code>unwrap()</code> で中身を取り出します。</li>
 <li><strong><code>fs::create_dir_all()</code></strong>（ファイルとフォルダ）: フォルダを作る関数。<code>fs::create_dir_all("data/notes")</code> のように、途中のフォルダもまとめて作ります。もうあってもエラーになりません。</li>
+<li><strong><code>Path::new()</code></strong>（ファイルとフォルダ）: 文字列から、ファイルやフォルダの場所（<code>Path</code>）を作る関数。<code>Path::new("memo").join("today.txt")</code> のように、場所をつなげたり、名前や拡張子を取り出したりできるようになります。</li>
 <li><strong><code>fs::write()</code></strong>（ファイルとフォルダ）: ファイルに文字を書く関数。<code>fs::write("memo.txt", "こんにちは")</code> で、ファイルが無ければ作り、あれば中身を全部置きかえます。失敗することもあるので <code>Result</code> が返ります。</li>
 <li><strong><code>fs::read_to_string()</code></strong>（ファイルとフォルダ）: ファイルの中身を全部読んで、1 つの文字列（<code>String</code>）にする関数。ファイルが無い時などは <code>Err</code>（エラー）が返ります。</li>
+<li><strong><code>Path</code></strong>（ファイルとフォルダ）: ファイルやフォルダの場所を表す型（借りている形）。<code>.join()</code>・<code>.file_name()</code>・<code>.extension()</code>・<code>.exists()</code> などで扱います。自分の物として持つ形は <code>PathBuf</code> です。</li>
 <li><strong><code>?</code></strong>（エラー処理）: <code>Result</code> や <code>Option</code> の後ろに付ける記号。「成功なら中身を取り出して先へ進む。失敗なら、その場で関数を終えて、エラーを呼び出し元へ返す」という意味です。<code>let text = fs::read_to_string("a.txt")?;</code> のように使います。<code>?</code> を使える関数は、戻り値が <code>Result</code>（または <code>Option</code>）の関数だけです。</li>
 </ul>
 </blockquote>
@@ -1934,6 +1942,7 @@ main.rs                -&gt; 存在する? false
 <li><strong><code>.file_name()</code></strong>（ファイルとフォルダ）: 場所（パス）から、最後の部分（ファイル名やフォルダ名）だけを取り出すメソッド。<code>C:\data\memo.txt</code> なら <code>memo.txt</code>。無いこともあるので <code>Option</code> で返ります。</li>
 <li><strong><code>.extension()</code></strong>（ファイルとフォルダ）: ファイル名の拡張子（<code>.txt</code> の <code>txt</code> の部分）を取り出すメソッド。拡張子が無い時は <code>None</code> が返ります。</li>
 <li><strong><code>.parent()</code></strong>（ファイルとフォルダ）: 場所（パス）の、1 つ上のフォルダを取り出すメソッド。<code>C:\data\memo.txt</code> なら <code>C:\data</code>。</li>
+<li><strong><code>.exists()</code></strong>（ファイルとフォルダ）: その場所に、ファイルかフォルダがあれば <code>true</code> を返すメソッド。<code>Path::new("memo.txt").exists()</code>。</li>
 <li><strong><code>.is_dir()</code></strong>（ファイルとフォルダ）: その場所がフォルダなら <code>true</code>、ファイルなら <code>false</code> を返すメソッド。ファイルかどうかは <code>.is_file()</code> で調べます。</li>
 <li><strong><code>fs::read_dir()</code></strong>（ファイルとフォルダ）: フォルダの中の一覧（ファイルとフォルダ）を、1 つずつ取り出せる形で返す関数。順番は決まっていないので、並べたい時は <code>Vec</code> に集めて <code>sort</code> します。</li>
 </ul>
@@ -2450,6 +2459,8 @@ rustc 1.99.1 (58cf8f9c3 2026-10-13)
 <li><strong><code>.enumerate()</code></strong>（イテレーター）: 並びを 1 つずつ取り出す時に、「何番目か」の番号を一緒に付けるメソッド。<code>for (i, x) in list.iter().enumerate()</code> で、<code>i</code> に 0, 1, 2…、<code>x</code> に中身が入ります。</li>
 <li><strong><code>.unwrap_or()</code></strong>（エラー処理）: <code>Option</code> や <code>Result</code> から中身を取り出し、無い（失敗した）時は、代わりに決めた値を使うメソッド。<code>name.unwrap_or("名無し".to_string())</code> のように使います。止まらない安全な取り出し方です。</li>
 <li><strong><code>env::var()</code></strong>（プロセス）: 環境変数（プログラムの外から渡す設定の値）を読む関数。<code>env::var("GREETING")</code>。設定されていないこともあるので、<code>Result</code> で返ります。<code>unwrap_or_else(|_| "既定値".to_string())</code> で、無い時の値を決めるのがふつうです。</li>
+<li><strong><code>String::from()</code></strong>（文字列）: <code>"…"</code>（<code>&amp;str</code>）から、自分の物の文字列（<code>String</code>）を作る関数。<code>String::from("こんにちは")</code>。<code>"こんにちは".to_string()</code> と同じです。</li>
+<li><strong><code>String</code></strong>（文字列）: 自分の物として持つ、変えられる文字列の型。後ろに足す（<code>push_str</code>）・書きかえる、ができます。<code>"…"</code> と書いた文字列は <code>&amp;str</code>（借りている読むだけの文字列）で、関数の引数は <code>&amp;str</code> にしておくと、どちらも渡せます（第2巻 UNIT 05）。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -2640,6 +2651,16 @@ Mode                 LastWriteTime         Length Name
 <span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;渡された値は {count} 個です&quot;</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.skip()</code></strong>（イテレーター）: 並びの先頭から、決めた数だけ飛ばすメソッド。<code>env::args().skip(1)</code> は、0 番目（プログラム自身）を飛ばします。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-78"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">--</span> <span class="n">a</span> <span class="s2">&quot;b c&quot;</span> <span class="n">d</span>
 </code></pre></div></div>
@@ -2891,6 +2912,7 @@ Hello, world!
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
+<li><strong><code>.elapsed()</code></strong>（時間）: <code>Instant::now()</code> で覚えた時から、どれだけたったかを <code>Duration</code> で返すメソッド。<code>start.elapsed()</code>。</li>
 <li><strong><code>Instant</code></strong>（時間）: 「ある瞬間」を表す型。<code>let start = Instant::now();</code> で今を覚えておき、<code>start.elapsed()</code> で「そこから何秒たったか」を測れます。処理の速さを測る時に使います。</li>
 </ul>
 </blockquote>
@@ -3601,7 +3623,9 @@ alt-svc: h3=&quot;:443&quot;; ma=86400
 <li><strong><code>.write_all()</code></strong>（入出力）: 用意した中身を、全部まとめて書き込むメソッド。ネットの接続（<code>TcpStream</code>）やファイルに、バイト（<code>&amp;[u8]</code>）を書きます。途中で失敗することもあるので <code>Result</code> が返ります。</li>
 <li><strong><code>.as_bytes()</code></strong>（文字列）: 文字列を、中のバイト（コンピューターが持っている 0〜255 の数の並び）として見るメソッド。ネットやファイルに書く関数がバイトを求める時に使います。</li>
 <li><strong><code>.read_to_string()</code></strong>（入出力）: 接続やファイルから、残りを全部読んで文字列に入れるメソッド。<code>stream.read_to_string(&amp;mut text)</code> の <code>&amp;mut text</code> は「この変数に書き込んでよい」と貸す書き方です。使うには <code>use std::io::Read;</code> が要ります。</li>
+<li><strong><code>.chars()</code></strong>（文字列）: 文字列を、1 文字ずつ（<code>char</code>）取り出せる形にするメソッド。<code>s.chars().count()</code> で文字の数、<code>s.chars().take(60).collect::&lt;String&gt;()</code> で先頭の 60 文字。日本語も 1 文字ずつ正しく扱えます（<code>len()</code> はバイト数）。</li>
 <li><strong><code>.collect()</code></strong>（イテレーター）: 1 つずつ取り出せる形（イテレーター）の中身を、<code>Vec</code> や <code>String</code> などの入れ物に集めるメソッド。何に集めるかを、<code>let v: Vec&lt;&amp;str&gt; = ….collect();</code> のように変数の型で教えます。</li>
+<li><strong><code>String::new()</code></strong>（文字列）: 空の <code>String</code> を作る関数。あとで中身を足していく時（<code>read_line(&amp;mut s)</code> で 1 行読み込む など）に使います。</li>
 <li><strong><code>Read</code></strong>（入出力）: 「読める物」が持っている機能（トレイト）。<code>read_to_string</code> などの読むメソッドを使うには、<code>use std::io::Read;</code> で、この機能を使えるようにしておく必要があります。</li>
 <li><strong><code>Write</code></strong>（入出力）: 「書ける物」が持っている機能（トレイト）。<code>write_all</code> や <code>writeln!</code> を使うには、<code>use std::io::Write;</code> で、この機能を使えるようにしておく必要があります。</li>
 <li><strong><code>TcpStream</code></strong>（ネットワーク）: ネットワークの 1 本の接続を表す型。<code>TcpStream::connect("127.0.0.1:8080")</code> でつなぎ、<code>write_all</code> で送り、<code>read_to_string</code> で受け取ります。HTTP などの通信は、この接続の上で文字をやり取りしています。</li>
@@ -3903,6 +3927,7 @@ cf-cache-status: HIT
 <li><strong><code>.incoming()</code></strong>（ネットワーク）: サーバーが、やって来る接続を 1 つずつ受け取れる形にするメソッド。<code>for stream in listener.incoming() { … }</code> で、接続が来るたびに中が 1 回動きます。</li>
 <li><strong><code>.read_line()</code></strong>（入出力）: 1 行だけ読んで、文字列に書き足すメソッド。読んだ行の最後には改行が付いたままなので、<code>.trim_end()</code> などで取ってから使います。</li>
 <li><strong><code>TcpListener::bind()</code></strong>（ネットワーク）: 決まったポート番号で、接続を待ち受け始める関数。<code>TcpListener::bind("127.0.0.1:8080")</code> は「このパソコンの 8080 番で待つ」。もうほかのプログラムが使っている番号だと、エラーになります。</li>
+<li><strong><code>BufReader::new()</code></strong>（入出力）: 読む物（接続やファイル）を包んで、1 行ずつ読めるようにした物を作る関数。</li>
 <li><strong><code>BufRead</code></strong>（入出力）: 「1 行ずつ読める物」が持っている機能（トレイト）。<code>read_line</code> や <code>lines</code> を使うには、<code>use std::io::BufRead;</code> が要ります。</li>
 <li><strong><code>BufReader</code></strong>（入出力）: 読む物（接続やファイル）を包んで、少しずつまとめて読む（バッファーする）ことで速くし、1 行ずつ読めるようにする型。<code>BufReader::new(&amp;stream)</code> のように使います。</li>
 <li><strong><code>TcpListener</code></strong>（ネットワーク）: 決まったポート番号で接続を待つ、サーバー側の型。<code>TcpListener::bind(…)</code> で作り、<code>.incoming()</code> で来た接続を受け取ります。</li>
@@ -4053,6 +4078,7 @@ Content-Length: 26
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>.split_whitespace()</code></strong>（文字列）: 文字列を、空白（スペース・タブ・改行）の所で分けるメソッド。空白がいくつ続いても 1 つの区切りとして扱います。<code>"GET / HTTP/1.1".split_whitespace()</code> は <code>GET</code>・<code>/</code>・<code>HTTP/1.1</code>。</li>
+<li><strong><code>.next()</code></strong>（イテレーター）: イテレーター（1 つずつ取り出せる物）から、次の 1 つを取り出すメソッド。無くなると <code>None</code> を返すので、結果は <code>Option</code> です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -4552,6 +4578,7 @@ Content-Length: 40
 <li><strong><code>self</code></strong>（型とメソッド）: メソッドの中で「このもの自身」を表す名前。<code>impl</code> の中の <code>fn label(&amp;self)</code> の <code>&amp;self</code> は「自分を借りて読むだけ」、<code>&amp;mut self</code> は「自分を書きかえる」という意味です。<code>use</code> の中の <code>self</code>（例: <code>use std::io::{self, Write};</code>）は「<code>io</code> そのもの」を表します。</li>
 <li><strong><code>.unwrap_or_default()</code></strong>（エラー処理）: <code>Option</code> や <code>Result</code> から中身を取り出し、無い（失敗した）時は、その型の「空の値」（文字列なら <code>""</code>、数なら 0）を使うメソッド。</li>
 <li><strong><code>.append()</code></strong>（ファイルとフォルダ）: <code>OpenOptions::new().append(true)</code> で、「ファイルの後ろに書き足す」ように開く設定にします（指定しないと、最初から書き直します）。</li>
+<li><strong><code>OpenOptions::new()</code></strong>（ファイルとフォルダ）: ファイルの開き方を決める係を作る関数。<code>.create(true).append(true).open("memo.txt")?</code> のように、設定をつなげて書いてから開きます。</li>
 <li><strong><code>OpenOptions</code></strong>（ファイルとフォルダ）: ファイルをどう開くか（読む・書く・書き足す・無ければ作る）を細かく決めてから開くための型。<code>OpenOptions::new().create(true).append(true).open("memo.txt")?</code> のように、設定をつなげて書きます。</li>
 <li><strong><code>Vec</code></strong>（Vec（並び））: 同じ種類の値を、順番に並べて持つ入れ物（ベクタ）。<code>Vec&lt;i32&gt;</code> は「整数の並び」、<code>Vec&lt;String&gt;</code> は「文字列の並び」です。<code>vec![…]</code> か <code>Vec::new()</code> で作り、<code>push</code> で足し、<code>len()</code> で数を数え、<code>v[0]</code> や <code>v.get(0)</code> で取り出します（第2巻 UNIT 06）。</li>
 </ul>
@@ -4669,14 +4696,18 @@ id | user_id | done  | title
 <li><strong><code>TEXT</code></strong>（SQL）: SQL の列の型の 1 つで、文字を入れる列。</li>
 <li><strong><code>NOT</code></strong>（SQL）: SQL で「〜ではない」。<code>NOT NULL</code> は「この列は空（NULL）を許さない」という決まりです。</li>
 <li><strong><code>NULL</code></strong>（SQL）: SQL で「値が無い」ことを表す特別な値。0 や空の文字列とは違います。</li>
+<li><strong><code>UNIQUE</code></strong>（SQL）: 「この列の値は、表の中で重ならない」という決まり。<code>email TEXT NOT NULL UNIQUE</code> は、同じメールアドレスを 2 回登録できなくします。</li>
 <li><strong><code>REFERENCES</code></strong>（SQL）: 「この列の値は、あの表の、あの列に必ずある値」という決まり（外部キー）。<code>user_id INTEGER REFERENCES users(id)</code> で、存在しないユーザーの番号を入れられなくなります。</li>
+<li><strong><code>CHECK</code></strong>（SQL）: 「この列に入れてよい値の条件」を決める決まり。<code>CHECK (length(title) BETWEEN 1 AND 80)</code> は、題名を 1〜80 文字に限ります。合わない値を入れようとすると、データベースが断ります。</li>
 <li><strong><code>BETWEEN</code></strong>（SQL）: 「〜から〜の間」。<code>CHECK (score BETWEEN 0 AND 100)</code> は「0 以上 100 以下だけ許す」という決まりです。</li>
 <li><strong><code>AND</code></strong>（SQL）: SQL で「かつ」。<code>WHERE a = 1 AND b = 2</code> は両方に合う行だけ。<code>BETWEEN 0 AND 100</code> の一部としても使います。</li>
 <li><strong><code>DEFAULT</code></strong>（SQL）: 列に値を入れなかった時に使う、決めておいた値（既定値）。<code>done INTEGER NOT NULL DEFAULT 0</code> は「指定が無ければ 0」。</li>
 <li><strong><code>INSERT</code></strong>（SQL）: <code>INSERT INTO 表 (列, …) VALUES (値, …)</code> で、表に新しい行を足す SQL の命令。</li>
 <li><strong><code>INTO</code></strong>（SQL）: <code>INSERT INTO 表</code> の一部で、「この表へ」入れる、という意味。</li>
+<li><strong><code>VALUES</code></strong>（SQL）: <code>INSERT INTO 表 (列, …) VALUES (値, …)</code> の、入れる値を書く所。</li>
 <li><strong><code>SELECT</code></strong>（SQL）: 表から行を取り出す SQL の命令。<code>SELECT 列, … FROM 表 WHERE 条件 ORDER BY 列</code> の形でよく使います。<code>SELECT *</code> は全部の列です。</li>
 <li><strong><code>FROM</code></strong>（SQL）: <code>SELECT … FROM 表</code> の一部で、「どの表から」取り出すかを書きます。</li>
+<li><strong><code>WHERE</code></strong>（SQL）: <code>SELECT … FROM 表 WHERE 条件</code> の、条件を書く所。<code>WHERE user_id = 1</code> は「持ち主が 1 番の行だけ」。<code>UPDATE</code>・<code>DELETE</code> で <code>WHERE</code> を忘れると、全部の行が変わる（消える）ので注意します。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -5059,6 +5090,7 @@ error: process didn&#39;t exit successfully: `target\debug\practice.exe` (exit c
 <ul>
 <li><strong><code>struct</code></strong>（型とメソッド）: いくつかの値をまとめて、新しい型を作る書き方（構造体）。<code>struct Note { id: u32, title: String }</code> で、「番号と題名を持つノート」という型ができます。<code>Note { id: 1, title: "買い物".to_string() }</code> で 1 つ作ります（第2巻）。</li>
 <li><strong><code>.iter()</code></strong>（イテレーター）: 並び（<code>Vec</code> など）の中身を、借りて 1 つずつ取り出せる形（イテレーター）にするメソッド。<code>for x in v.iter()</code> や、<code>v.iter().map(…)</code>・<code>.filter(…)</code> のように、加工してから使う時の入り口です。</li>
+<li><strong><code>Option</code></strong>（Option）: 「値があるかもしれないし、無いかもしれない」を表す型。中身は <code>Some(値)</code> か <code>None</code>。<code>Option&lt;u32&gt;</code> は「整数があるかもしれない」。取り出す時は <code>match</code>・<code>if let</code>・<code>unwrap_or</code> などを使います（第2巻 UNIT 08）。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -5159,6 +5191,7 @@ a              -&gt; 719b50b9a4f0e9f3
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
+<li><strong><code>DefaultHasher::new()</code></strong>（標準ライブラリ）: ハッシュを計算する係を新しく作る関数。<code>value.hash(&amp;mut hasher)</code> で値を入れ、<code>hasher.finish()</code> で結果の数を取り出します。</li>
 <li><strong><code>DefaultHasher</code></strong>（標準ライブラリ）: 値からハッシュ（指紋のような数）を計算する、標準の道具。同じ値からは同じ数、少し違う値からはまったく違う数ができます。ここでは仕組みを見るために使います（パスワードの保存には、専用の Argon2 などを使います。第8巻）。</li>
 <li><strong><code>Hash</code></strong>（標準ライブラリ）: 「ハッシュ（指紋のような数）を計算できる物」が持っている機能（トレイト）。<code>value.hash(&amp;mut hasher)</code> を使うには <code>use std::hash::Hash;</code> が要ります。</li>
 </ul>
@@ -5687,6 +5720,7 @@ error: could not compile `practice` (bin &quot;practice&quot;) due to 2 previous
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
+<li><strong><code>HashMap::new()</code></strong>（HashMap（表））: 空の <code>HashMap</code>（名前で引ける表）を作る関数。あとで <code>insert</code> で中身を入れるので、<code>let mut map = HashMap::new();</code> のように <code>mut</code> を付けます。</li>
 <li><strong><code>HashMap</code></strong>（HashMap（表））: 「キー → 値」の組を持つ入れ物（名前で引ける表）。<code>map.insert("りんご", 3)</code> で入れ、<code>map.get("りんご")</code> で引きます。キーが無いこともあるので、<code>get</code> は <code>Option</code> を返します。使うには <code>use std::collections::HashMap;</code> が要ります。</li>
 </ul>
 </blockquote>
@@ -5870,6 +5904,16 @@ error: could not compile `practice` (bin &quot;practice&quot;) due to 1 previous
 <div class="codehilite"><div class="code-wrap" id="code-209"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>税込み（整数で計算）: 129
 税込み（小数で計算）: 129.60000000000002
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>f64::from()</code></strong>（数）: 整数などを、小数（<code>f64</code>）に変える関数。<code>f64::from(price) * 1.08</code> のように、計算の前に型をそろえます（<code>as</code> と違い、値が変わってしまう変換はできません）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p>小数で計算すると <code>129.60000000000002</code> という半端な結果になりました。コンピュータは小数を2進数で近似して持つため、こうした小さな誤差が出ます。お金の計算は、方法1のように<strong>整数（円）で扱う</strong>のが基本です。</p>
 <p><code>= help:</code> のあとの長い一覧（<code>Mul</code> を持っている型の一覧）は、今は読み飛ばして大丈夫です。エラーメッセージは、<strong>分かる部分から読めばよい</strong>のです。</p>
@@ -6069,6 +6113,7 @@ Erroneous code examples:
 <li><strong><code>super</code></strong>（モジュール）: 「1 つ外側のモジュール」を表す名前。テストの中の <code>use super::*;</code> は、「外側（テストする本体）にある物を全部使えるようにする」という決まり文句です。</li>
 <li><strong><code>#[cfg]</code></strong>（テスト）: 「この条件の時だけ、この部分を翻訳する」という印（属性）。<code>#[cfg(test)]</code> を付けた部分は、<code>cargo test</code> の時だけ翻訳され、ふつうの実行ファイルには入りません。</li>
 <li><strong><code>#[test]</code></strong>（テスト）: 「この関数はテストです」という印（属性）。<code>cargo test</code> が、この印の付いた関数を全部探して動かします。</li>
+<li><strong><code>.contains()</code></strong>（文字列）: 含まれていれば <code>true</code> を返すメソッド。文字列なら <code>"report.csv".contains("2026")</code>、範囲なら <code>(1..=80).contains(&amp;length)</code>（1〜80 に入っているか）、<code>Vec</code> なら <code>v.contains(&amp;x)</code> です。</li>
 <li><strong><code>.repeat()</code></strong>（文字列）: 文字列をくり返してつないだ、新しい文字列を作るメソッド。<code>"あ".repeat(80)</code> は「あ」が 80 個並んだ文字列。長い入力を試すテストでよく使います。</li>
 </ul>
 </blockquote>

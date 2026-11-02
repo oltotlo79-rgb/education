@@ -1776,6 +1776,7 @@ init.defaultbranch=master
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
+<li><strong><code>function</code></strong>（JavaScript・TypeScript）: 関数を作る書き方。<code>async function post(path, body) { … }</code>。</li>
 <li><strong><code>New-Item</code></strong>（PowerShell）: 新しいファイルやフォルダを作るコマンド。<code>New-Item memo.txt</code> でファイル、<code>New-Item -ItemType Directory 名前</code> でフォルダを作ります。</li>
 <li><strong><code>New-Item -Path</code></strong>（PowerShell）: <code>-Path 場所</code> で、作るファイルやフォルダの場所（名前）を指定します。</li>
 <li><strong><code>New-Item -Value</code></strong>（PowerShell）: <code>-Value 中身</code> で、作るファイルに最初から書いておく中身を指定します。</li>
@@ -1799,16 +1800,6 @@ init.defaultbranch=master
 <span class="c"># ビルドの成果物の代わり（空のファイル。target\debug フォルダも一緒に作られる）</span>
 <span class="nb">New-Item</span> <span class="n">target</span><span class="p">\</span><span class="n">debug</span><span class="p">\</span><span class="n">hello-git</span><span class="p">.</span><span class="n">exe</span> <span class="n">-Force</span> <span class="p">|</span> <span class="nb">Out-Null</span>
 </code></pre></div></div>
-
-<!-- first-use -->
-
-<blockquote>
-<p><strong>▶ ここで初めて出てくるコード</strong></p>
-<ul>
-<li><strong><code>New-LfFile</code></strong>（PowerShell）: この巻のスクリプトの中で作った、自分の PowerShell の関数（改行を LF にしてファイルを書く）。<code>function New-LfFile { … }</code> で中身を決めてあり、PowerShell のコマンドと同じ形で呼べます。</li>
-</ul>
-</blockquote>
-<!-- /first-use -->
 
 <p><strong>手順3: Git から見た状態を表示する。</strong></p>
 <div class="codehilite"><div class="code-wrap" id="code-49"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 作業フォルダ・ステージ・リポジトリの違いを表示する</span>
@@ -2209,6 +2200,7 @@ fatal: unable to auto-detect email address (got &#39;...@...(none)&#39;)
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
+<li><strong><code>set</code></strong>（WSL・bash）: bash の設定を変える命令。<code>set -e</code> は「途中のコマンドが失敗したら、そこでスクリプトを止める」。</li>
 <li><strong><code>echo</code></strong>（コマンド）: 後ろに書いた文字を、そのまま画面に出すコマンド。<code>echo "hello"</code>。bash（WSL）でも PowerShell でも使えます。</li>
 <li><strong><code>pwd</code></strong>（コマンド）: 今いるフォルダを表示するコマンド（print working directory）。bash（WSL）では <code>/home/you</code> のような Linux の形で、PowerShell では <code>C:\Users\you</code> のような形で出ます。</li>
 </ul>
@@ -2669,6 +2661,16 @@ arm64
 C:\Users\...\AppData\Local\Programs\Microsoft VS Code\bin\code
 C:\Users\...\AppData\Local\Programs\Microsoft VS Code\bin\code.cmd
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>code</code></strong>（コマンド）: VS Code を動かすコマンド。<code>code .</code> で今のフォルダを開き、<code>code --version</code> で版を確かめます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <h4 id="1_11">▼ 1つずつ分解して解説</h4>
 <h5 id="1-code-version-3">解説1: <code>code --version</code> の3行</h5>
@@ -4839,8 +4841,10 @@ count<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$HOM
 <li><strong><code>return</code></strong>（WSL・bash）: bash の関数の中で、その関数を終える命令。<code>cd 場所 || return</code> は「<code>cd</code> に失敗したら、そこで関数を終える」という意味です（<code>||</code> は「左が失敗した時だけ右をする」）。</li>
 <li><strong><code>s=$</code></strong>（WSL・bash）: bash で変数に値を入れる書き方。<code>s=$(date +%s%N)</code> は、<code>$( )</code> の中のコマンド（今の時刻）を動かした結果を、変数 <code>s</code> に入れます。<code>=</code> の前後に空白を入れてはいけません。</li>
 <li><strong><code>date</code></strong>（WSL・bash）: 今の日時を表示するコマンド（Linux）。<code>date +%s%N</code> は「1970 年からの秒数＋ナノ秒」の形で出します（時間を測るのに使います）。</li>
+<li><strong><code>for</code></strong>（WSL・bash）: bash のくり返し。<code>for i in $(seq 1 2000); do … ; done</code> は、1〜2000 を <code>i</code> に入れて、<code>do</code> から <code>done</code> までをくり返します。</li>
 <li><strong><code>seq</code></strong>（WSL・bash）: 数の並びを出すコマンド（Linux）。<code>seq 1 2000</code> は 1 から 2000 まで、1 行に 1 つずつ出します。</li>
 <li><strong><code>do</code></strong>（WSL・bash）: bash のくり返し <code>for 変数 in 並び; do … ; done</code> の一部。<code>do</code> から <code>done</code> までが、くり返す中身です。</li>
+<li><strong><code>done</code></strong>（WSL・bash）: bash のくり返し（<code>for … do … done</code>）の終わりの印。</li>
 <li><strong><code>e=$</code></strong>（WSL・bash）: <code>s=$(…)</code> と同じく、bash で変数に値を入れる書き方。ここでは終わりの時刻を <code>e</code> に入れ、<code>s</code> との差で、かかった時間を計算します。</li>
 </ul>
 </blockquote>
@@ -5143,6 +5147,7 @@ Run &#39;docker run --help&#39; for more information
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>cargo install</code></strong>（cargo のコマンド）: Rust で作られた道具（コマンド）を、パソコンに入れるコマンド。<code>cargo install topcoat-cli --version 0.11.0 --locked</code> は、Topcoat の道具 <code>topcoat</code> を、決まった版で入れます。</li>
+<li><strong><code>topcoat</code></strong>（Topcoat）: Topcoat の道具のコマンド（<code>cargo install topcoat-cli</code> で入る）。<code>topcoat dev</code>（コードを直すと自動で作り直して読み直す開発用の起動）・<code>topcoat asset bundle</code>（CSS などの束を作る）などがあります（第6巻）。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -5301,6 +5306,7 @@ o  Initialized a Git repository
 <li><strong><code>impl</code></strong>（型とメソッド）: 2 つの使い方があります。① <code>impl 型 { … }</code> で、その型にメソッド（関数）を付ける。② <code>impl View</code> のように型の場所に書くと、「<code>View</code> の機能を持つ何かの型」という意味になります（戻り値の型を細かく書かずに済む）。</li>
 <li><strong><code>#[layout]</code></strong>（Topcoat）: Topcoat の印（属性）。この関数を「どのページにも共通の外枠（HTML の骨組み・メニュー）」にします。外枠の中の、ページが入る場所を <code>slot</code> で受け取ります（第6巻 UNIT 03）。</li>
 <li><strong><code>#[page]</code></strong>（Topcoat）: Topcoat の印（属性）。この関数を、1 つの URL に答える「ページ」にします。<code>#[page("/")]</code> なら <code>/</code> に、<code>#[page(POST)]</code> なら送信（POST）に答えます（第6巻 UNIT 02〜03）。</li>
+<li><strong><code>.assets()</code></strong>（Topcoat）: ルーターに、配るアセット（CSS など）の束を登録するメソッド。<code>.assets(AssetBundle::load().unwrap())</code>（第6巻 UNIT 08）。</li>
 <li><strong><code>.build()</code></strong>（型とメソッド）: 設定を少しずつ足していく「組み立て係」（ビルダー）の最後に呼んで、でき上がった物を作るメソッド。<code>Router::builder()…build()</code> の形で、ルーターなどを作る時に使います。</li>
 <li><strong><code>topcoat::dev::script()</code></strong>（Topcoat）: <code>topcoat dev</code> で動かしている時だけ、「コードを直したら、ブラウザーを自動で読み直す」ための小さなスクリプトを、ページに入れる関数。<code>cargo run</code> や本番では何も出しません（第6巻 UNIT 08）。</li>
 <li><strong><code>AssetBundle</code></strong>（Topcoat）: Topcoat の型。<code>topcoat asset bundle</code> で作った「アセットの束」（名前にハッシュが付いたファイルと目録）を、<code>AssetBundle::load()</code> で読み込んで、配れるようにします（第6巻 UNIT 08）。</li>

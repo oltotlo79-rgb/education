@@ -778,6 +778,7 @@ fn main() {
 > - **`Waker::noop()`**（非同期）: 「起こしても何もしない」`Waker` を作る関数。仕組みを試すための物です。
 > - **`Future`**（非同期）: 「いつか終わる仕事」を表す型（トレイト）。`async fn` を呼ぶと、すぐには動かず、この Future が返ります。`.await` するか、tokio に渡して、初めて動きます。
 > - **`Pin`**（非同期）: 中身がメモリの中で動かないことを約束する入れ物。Future の中には、自分の中の場所を指している物があるので、動かすと壊れてしまいます。それを防ぐための仕組みです。
+> - **`Poll`**（非同期）: Future に「終わった？」と聞いた答えの型。`Poll::Ready(値)`（終わった）か `Poll::Pending`（まだ）です。
 > - **`Waker`**（非同期）: 「この仕事の準備ができた」と知らせて、もう一度動かしてもらうための物。tokio が、待っている仕事を起こすのに使います。
 > - **`Ready`**（非同期）: `Poll::Ready(値)` は「仕事が終わった。結果はこれ」という答え。まだなら `Poll::Pending` です。Future の `poll` は、この 2 つのどちらかを返します。
 
@@ -1503,6 +1504,15 @@ async fn main() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`std::thread::current()`**（スレッドと共有）: 今動いているスレッドの情報（名前・番号）を返す関数。どのスレッドで動いたかを表示する時に使います。
+> - **`tokio::spawn()`**（非同期）: 非同期の仕事を、別のタスクとしてすぐ動かし始める関数。`tokio::spawn(async move { … })`。返ってくる物（`JoinHandle`）を `.await` すると、結果を受け取れます。
+
+<!-- /first-use -->
+
 `src/bin/u02_spawn.rs` として保存して実行します。
 
 ```powershell
@@ -2014,6 +2024,7 @@ async fn main() {
 
 > **▶ ここで初めて出てくるコード**
 >
+> - **`tokio::runtime::Runtime::new()`**（非同期）: tokio の、非同期の仕事を回す仕組み（ランタイム）を、おすすめの設定で作る関数。
 > - **`Runtime`**（非同期）: tokio の、非同期の仕事を回す仕組み（ランタイム）の型。`#[tokio::main]` は、中でこれを作っています。`runtime.block_on(future)` で、ふつうの関数から async の仕事を動かせます。
 
 <!-- /first-use -->
@@ -2117,14 +2128,6 @@ pub struct AppState {
         Err(error) => Err(AppError::internal(error)),
     }
 ```
-
-<!-- first-use -->
-
-> **▶ ここで初めて出てくるコード**
->
-> - **`tokio::task::spawn_blocking()`**（非同期）: 時間のかかる重い計算や、待ってしまう処理（パスワードのハッシュなど）を、非同期の仕事を回すスレッドとは別のスレッドで動かす関数。ほかの仕事を止めないために使います。
-
-<!-- /first-use -->
 
 `spawn_blocking` は UNIT 07 で学ぶ「重い計算用の spawn」です。引換券を `.await` した結果が `Result` で、その中身もまた `Result` なので、`Ok(Ok(..))`・`Ok(Err(..))`・`Err(..)` の3つに分けています。この形は、練習問題3で自分でも書きます。
 
@@ -2471,6 +2474,7 @@ async fn main() {
 > **▶ ここで初めて出てくるコード**
 >
 > - **`.join_next()`**（非同期）: `JoinSet` に入れた仕事のうち、終わった順に 1 つずつ結果を受け取るメソッド。全部受け取ると `None` を返します。
+> - **`JoinSet::new()`**（非同期）: 空の `JoinSet`（いくつもの非同期の仕事をまとめて持つ入れ物）を作る関数。
 > - **`JoinSet`**（非同期）: いくつもの非同期の仕事をまとめて持ち、終わった順に結果を受け取れる入れ物（tokio の部品）。
 
 <!-- /first-use -->
@@ -2740,6 +2744,7 @@ async fn main() {
 > **▶ ここで初めて出てくるコード**
 >
 > - **`.join_all()`**（非同期）: `JoinSet` の仕事が全部終わるのを待って、結果を `Vec` で返すメソッド。
+> - **`LIMIT`**（SQL）: `LIMIT 件数` で、取り出す行の数の上限を決める書き方。`ORDER BY … LIMIT 20` は「並べて、先頭の 20 件だけ」。
 
 <!-- /first-use -->
 
@@ -3928,6 +3933,7 @@ async fn main() {
 > **▶ ここで初めて出てくるコード**
 >
 > - **`.subscribe()`**（非同期）: `broadcast`（1 つの送り手から、全員に配る）チャンネルで、受け取る口を新しく増やすメソッド。
+> - **`.changed()`**（非同期）: `watch` チャンネルの受け取り口で、値が変わるまで待つメソッド。送り手がいなくなると `Err` です。
 > - **`watch::channel()`**（非同期）: 「いちばん新しい値だけ」を全員に見せるチャンネルを作る関数。設定の値（ログの細かさなど）を、動いている仕事に伝える時に使います。
 
 <!-- /first-use -->
@@ -4876,6 +4882,7 @@ async fn main() {
 > **▶ ここで初めて出てくるコード**
 >
 > - **`.acquire_owned()`**（非同期）: `Semaphore`（同時に使える数を決めた札の入れ物）から、札を 1 枚もらうメソッド。札が無ければ、空くまで待ちます。もらった札は、片づけられると自動で返されます。
+> - **`Semaphore::new()`**（非同期）: 同時に動いてよい数（札の数）を決めて `Semaphore` を作る関数。
 > - **`Semaphore`**（非同期）: 「同時にいくつまで動いてよいか」を、札の数で決める仕組み。同時に外へ出す要求を 3 つまでに絞る、などに使います。
 
 <!-- /first-use -->
@@ -5285,7 +5292,7 @@ static DUMMY_HASH: LazyLock<String> = LazyLock::new(|| {
 
 > **▶ ここで初めて出てくるコード**
 >
-> - **`Argon2::default()`**（認証）: パスワードを安全に保存するための計算（Argon2id）を、おすすめの設定で用意する書き方（`argon2` の部品）。この計算は、わざと重く作られていて、パスワードを総当たりで当てるのを難しくします（第8巻）。
+> - **`LazyLock::new()`**（スレッドと共有）: 初めて使われた時に 1 回だけ作る値を、作り方の関数と一緒に用意する関数。
 > - **`LazyLock`**（スレッドと共有）: 初めて使われた時に 1 回だけ作られ、その後はずっと同じ値を使う入れ物。`static DUMMY: LazyLock<String> = LazyLock::new(|| { … });` のように、作るのに手間がかかる物を、プログラム全体で共有する時に使います。
 
 <!-- /first-use -->
@@ -5869,6 +5876,11 @@ async fn main() {
 > - **`.cancelled()`**（非同期）: `CancellationToken`（止めての合図）が出されるまで待つメソッド。`select!` と組み合わせて、「合図が来たら仕事をやめる」と書きます。
 > - **`.tick()`**（非同期）: `interval`（決まった間隔で鳴る時計）の、次の「鳴る時」まで待つメソッド。`loop { ticker.tick().await; … }` で、決まった間隔で同じ仕事をくり返します。
 > - **`.child_token()`**（非同期）: `CancellationToken` から、子の合図を作るメソッド。親が止まれば子も止まりますが、子だけを止めることもできます。
+> - **`.close()`**（非同期）: `TaskTracker` に「もう新しい仕事は足さない」と知らせるメソッド。このあと `.wait().await` で、全部が終わるのを待ちます。
+> - **`.cancel()`**（非同期）: `CancellationToken` で、「止めて」の合図を出すメソッド。合図を受けた仕事は、`.cancelled()` の待ちから抜けて、片づけを始めます。
+> - **`CancellationToken::new()`**（非同期）: 「止めて」の合図を伝える `CancellationToken` を作る関数。
+> - **`TaskTracker::new()`**（非同期）: 動かした仕事を覚えて、全部終わるまで待てる `TaskTracker` を作る関数。
+> - **`tokio::signal::ctrl_c()`**（非同期）: `Ctrl` ＋ `C` が押されるまで待つ関数。サーバーを行儀よく止める合図に使います。
 > - **`CancellationToken`**（非同期）: 「止めて」の合図を、いくつもの仕事に一斉に伝えるための物（`tokio_util` の部品）。`.cancel()` で合図を出し、仕事の側は `.cancelled().await` で受け取ります。サーバーを行儀よく止める時に使います。
 > - **`TaskTracker`**（非同期）: 動かした仕事を覚えておき、「全部終わるまで待つ」ことができる入れ物（`tokio_util` の部品）。`tracker.spawn(…)` で動かし、`tracker.close()` → `tracker.wait().await` で待ちます。
 
@@ -6113,6 +6125,7 @@ async fn shutdown_signal() {
 > **▶ ここで初めて出てくるコード**
 >
 > - **`tokio::signal::unix::signal()`**（非同期）: Linux などで、OS からの合図（シグナル）を受け取る関数。`SignalKind::terminate()`（「終わって」の合図）を受け取って、サーバーを片づけてから終わる時に使います（Fly.io などで動かす時。第12巻）。
+> - **`tokio::signal::unix::SignalKind::terminate()`**（非同期）: Linux などの「終わって」（SIGTERM）の合図の種類。Fly.io などがサーバーを止める時に送ってきます。
 > - **`SignalKind`**（非同期）: 受け取る OS の合図（シグナル）の種類。`SignalKind::terminate()` は「終わって」（SIGTERM）の合図です。
 
 <!-- /first-use -->
@@ -6479,6 +6492,7 @@ fn main() {
 
 > **▶ ここで初めて出てくるコード**
 >
+> - **`PasswordHash::new()`**（認証）: 保存してあるハッシュの文字列を読み取って、確かめに使える形にする関数。形が違えばエラーです。
 > - **`PasswordHasher`**（認証）: パスワードからハッシュ（保存用の値）を作る機能（トレイト。`password_hash` の部品）。`argon2.hash_password(…)` を使うには、これを `use` します。
 > - **`PasswordVerifier`**（認証）: 入力されたパスワードが、保存してあるハッシュと合うかを確かめる機能（トレイト）。`argon2.verify_password(…)` を使うには、これを `use` します。
 > - **`PasswordHash`**（認証）: 保存してあるハッシュの文字列（`$argon2id$v=19$…`）を読み取った物の型。`PasswordHash::new(&保存した文字列)` で作り、確かめに使います。
@@ -7942,6 +7956,8 @@ async fn main() {
 > - **`.pow()`**（数）: 累乗（同じ数を何回も掛ける）を計算するメソッド。`2u32.pow(3)` は 8。待ち時間を 1・2・4・8 倍と増やしていく時に使います。
 > - **`.is_server_error()`**（HTTP クライアント）: HTTP の答えの番号が 500〜599（サーバー側の失敗）なら `true` を返すメソッド。もう一度試す価値がある失敗かを見分けるのに使います。
 > - **`.as_u16()`**（HTTP クライアント）: HTTP の答えの番号（ステータスコード）を、`200` や `429` のような数（`u16`）で返すメソッド。
+> - **`RandomState::new()`**（標準ライブラリ）: でたらめな「種」でハッシュの係を作るための物を作る関数。
+> - **`AtomicU32::new()`**（スレッドと共有）: いくつものスレッドから安全に数えられる 32 ビットの整数を、最初の値で作る関数。
 > - **`RandomState`**（標準ライブラリ）: `HashMap` が、ハッシュを計算する時に使う「種」を、でたらめに決める係。
 > - **`BuildHasher`**（標準ライブラリ）: 「ハッシュを計算する係を作れる」機能（トレイト）。`.build_hasher()` を使うには、これを `use` します。
 > - **`AtomicU32`**（スレッドと共有）: いくつものスレッドから同時に読み書きしても壊れない、32 ビットの整数の型（`AtomicU64` の小さい版）。
@@ -8102,7 +8118,7 @@ async fn main() {
 
 > **▶ ここで初めて出てくるコード**
 >
-> - **`Ledger::default()`**（型とメソッド）: この巻で作る型 `Ledger`（帳簿）を、初期値（空の状態）で作る書き方（`#[derive(Default)]` のおかげで使える）。
+> - **`.body()`**（HTTP）: リクエストやレスポンスの本文を取り出す（決める）メソッド。テストで `Request::builder()….body(Body::from("…"))` のように本文を入れます。
 
 <!-- /first-use -->
 
@@ -8209,6 +8225,14 @@ async fn main() {
     println!("{}", response.status());
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`reqwest::Client::new()`**（HTTP クライアント）: ほかのサーバーへ HTTP で頼みに行く係（クライアント）を、おすすめの設定で作る関数。1 つ作って使い回します。
+
+<!-- /first-use -->
 
 ```text
    Compiling async_lab v0.1.0 (...\async_lab)
@@ -8714,7 +8738,6 @@ async fn main() {
 > - **`#[instrument]`**（ログ）: `tracing` の印（属性）。付けた関数が呼ばれるたびに、その関数の名前と引数を「スパン」（ひとまとまりの処理の記録）として残します。ログを、どの処理の中で起きたかでまとめて見られます。
 > - **`.with_span_events()`**（ログ）: スパン（ひとまとまりの処理）の始まりや終わりにも、ログを出すように決めるメソッド。`FmtSpan::CLOSE` で、終わった時に、かかった時間も出ます。
 > - **`.with_timer()`**（ログ）: ログの行の頭に付ける時刻の形を決めるメソッド。
-> - **`tracing_subscriber::fmt::time::uptime()`**（ログ）: ログの時刻を「プログラムが動き始めてからの時間」で表す設定。
 > - **`FmtSpan`**（ログ）: スパンのどの時点でログを出すかの指定。`FmtSpan::CLOSE` は「終わった時」です。
 > - **`CLOSE`**（ログ）: `FmtSpan::CLOSE` は、「スパン（ひとまとまりの処理）が終わった時に、かかった時間と一緒にログを出す」指定です。
 
@@ -8799,6 +8822,7 @@ async fn main() {
 >
 > - **`.with_env_filter()`**（ログ）: どのログを表示するか（細かさ）を、決まりで絞るメソッド。
 > - **`EnvFilter::try_from_default_env()`**（ログ）: 環境変数 `RUST_LOG`（例: `RUST_LOG=debug`）から、表示するログの細かさを読み取る関数。設定が無ければ `Err` なので、`unwrap_or_else(|_| EnvFilter::new("info"))` で既定を決めます。
+> - **`EnvFilter::new()`**（ログ）: 表示するログの細かさの決まりを、文字（`"info"` など）から作る関数。
 > - **`EnvFilter`**（ログ）: 「どのログを表示するか」の決まり（`info` 以上だけ・この部品だけ `debug` など）の型。
 
 <!-- /first-use -->
@@ -9031,7 +9055,6 @@ async fn main() {
 > **▶ ここで初めて出てくるコード**
 >
 > - **`.is_multiple_of()`**（数）: その数が、指定した数で割り切れるなら `true` を返すメソッド。`n.is_multiple_of(5)` は「5 の倍数か」。
-> - **`Metrics::default()`**（型とメソッド）: この巻で作る型 `Metrics`（数を数える係）を、初期値（全部 0）で作る書き方（`#[derive(Default)]` のおかげで使える）。
 
 <!-- /first-use -->
 
@@ -9845,12 +9868,14 @@ pub async fn counts(conn: &Connection) -> Result<Vec<(String, i64)>, libsql::Err
 >
 > - **`.execute()`**（データベース）: 値を入れたり変えたりする SQL の文を、1 つ実行するメソッド（libsql）。`conn.execute("UPDATE … WHERE id = ?1", params![id]).await?` のように、値は `params!` で渡します。変わった行の数が返ります。
 > - **`Builder::new_local()`**（データベース）: libsql で、手元のファイル（SQLite の形）のデータベースを開く準備をする関数。`.build().await?` で開いた物ができます（第7巻）。
-> - **`IF`**（SQL）: `CREATE TABLE IF NOT EXISTS 表` の一部で、「もし〜なら」。この形は「まだ無ければ作る（もうあれば何もしない）」という意味です。
-> - **`EXISTS`**（SQL）: SQL で「ある」。`IF NOT EXISTS` は「無ければ」、`EXISTS (SELECT …)` は「条件に合う行があれば」という意味です。
-> - **`IN`**（SQL）: SQL で「このどれか」。`WHERE status IN ('queued', 'running')` は、状態がどちらかの行だけです。
-> - **`UPDATE`**（SQL）: `UPDATE 表 SET 列 = 値 WHERE 条件` で、表の行の中身を書きかえる SQL の命令。`WHERE` を忘れると、全部の行が変わってしまうので注意します。
-> - **`SET`**（SQL）: `UPDATE` の中で、「どの列を、どの値にするか」を書く所。`SET status = 'done', attempts = attempts + 1` のように、いくつも書けます。
-> - **`ORDER`**（SQL）: `ORDER BY 列` で、取り出した行を並べる SQL の書き方。`DESC` を付けると大きい順（新しい順）、付けなければ小さい順です。
+> - **`IF`**（SQL）: `CREATE TABLE IF NOT EXISTS` の一部で、「もし〜なら」。「無ければ作る、あれば何もしない」という意味になります。
+> - **`EXISTS`**（SQL）: SQL で「ある」。`IF NOT EXISTS` は「無ければ」という意味です。
+> - **`IN`**（SQL）: SQL で「このどれか」。`WHERE status IN ('queued', 'running')` は、状態がどちらかの行だけです。`CHECK (pinned IN (0, 1))` は、0 か 1 しか入れられない決まりです。
+> - **`RETURNING`**（SQL）: `INSERT … RETURNING id` で、入れた（変えた）行の値（作られた番号など）を、その場で返してもらう書き方。
+> - **`UPDATE`**（SQL）: `UPDATE 表 SET 列 = 値 WHERE 条件` で、行の中身を書きかえる SQL の命令。`WHERE` を忘れると、全部の行が変わります。
+> - **`SET`**（SQL）: `UPDATE` の中で、「どの列を、どの値にするか」を書く所。
+> - **`OR`**（SQL）: SQL で「または」。`WHERE a = 1 OR b = 2` は、どちらかに合う行です。`AND` と混ぜる時は、`( )` で囲んで順番をはっきりさせます。
+> - **`ORDER`**（SQL）: `ORDER BY 列` で、取り出した行を並べる書き方。`DESC` を付けると大きい順（新しい順）です。
 > - **`BY`**（SQL）: `ORDER BY`（並べる）・`GROUP BY`（まとめる）の一部で、「〜で」という意味です。
 > - **`CASE`**（SQL）: SQL の場合分け。`CASE WHEN 条件 THEN 値 ELSE 別の値 END` で、条件に合う時と合わない時で、違う値を使えます。
 > - **`WHEN`**（SQL）: `CASE` の中の「もし〜なら」の部分。`WHEN attempts >= max_attempts THEN 'dead'`。

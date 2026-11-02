@@ -2300,11 +2300,17 @@ HTML の &lt;link&gt;: /_topcoat/assets/style-e9b983efabcfc6c3.css
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
+<li><strong><code>from</code></strong>（Python）: <code>from パッケージ import 名前</code> の一部で、「どこから読み込むか」を書きます。<code>from pathlib import Path</code>。</li>
+<li><strong><code>None</code></strong>（Python）: Python の「値が無い」ことを表す値。調べる時は <code>x is None</code> と書きます。</li>
 <li><strong><code>global</code></strong>（Python）: 関数の中で、外（ファイル全体）の変数を書きかえる時に使う宣言。</li>
 <li><strong><code>not</code></strong>（Python）: Python で「〜ではない」。<code>if not ok:</code> は「<code>ok</code> が成り立たなければ」。</li>
+<li><strong><code>is</code></strong>（Python）: 「同じ物か」を調べる書き方。<code>x is None</code>・<code>x is not None</code> のように、<code>None</code> と比べる時に使います。</li>
 <li><strong><code>and</code></strong>（Python）: Python で「かつ」。両方が成り立つ時だけ <code>True</code> になります。</li>
 <li><strong><code>True</code></strong>（Python）: Python の「正しい（はい）」の値。反対は <code>False</code>。</li>
+<li><strong><code>or</code></strong>（Python）: 「または」。<code>a or b</code> は、<code>a</code> が空（<code>None</code>・<code>""</code>・0 など）なら <code>b</code> を使います。</li>
+<li><strong><code>try</code></strong>（Python）: Python で、失敗するかもしれない処理を <code>try:</code> の中に書き、失敗した時の処理を <code>except:</code> に書く書き方。</li>
 <li><strong><code>with</code></strong>（Python）: 使い終わったら自動で片づける（ファイルや接続を閉じる）書き方。<code>with open(…) as f:</code> の中で使った物は、抜ける時に閉じられます。</li>
+<li><strong><code>as</code></strong>（Python）: Python で、別の名前を付ける書き方。<code>except Exception as error:</code>（起きたエラーを <code>error</code> で受け取る）・<code>import numpy as np</code>・<code>with open(…) as f:</code> のように使います。</li>
 <li><strong><code>except</code></strong>（Python）: <code>try:</code> の中でエラーが起きた時に動く所。<code>except Exception as error:</code> で、起きたエラーを <code>error</code> という名前で受け取ります。</li>
 <li><strong><code>.loads()</code></strong>（Python）: 文字列から読み取るメソッド。<code>tomllib.loads(文字列)</code> は TOML、<code>json.loads(文字列)</code> は JSON を、Python の辞書にします。</li>
 <li><strong><code>.read_text()</code></strong>（Python）: <code>Path</code> のファイルの中身を、全部文字列として読むメソッド。<code>encoding="utf-8"</code> を付けて読みます。</li>
@@ -3813,17 +3819,26 @@ NG   POST /logout（期待 303・実際 000）
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>elif</code></strong>（Python）: Python の「そうでなくて、もし〜なら」（<code>else if</code> の短い形）。</li>
+<li><strong><code>class</code></strong>（Python）: クラス（データと、それを扱う関数をまとめた設計図）を作る書き方。<code>class Handler(BaseHTTPRequestHandler):</code> は、元のクラスを受け継いで作ります。</li>
 <li><strong><code>pass</code></strong>（Python）: 「何もしない」という Python の命令。中身が要らないけれど、形の上で何か書く必要がある所に置きます。</li>
+<li><strong><code>while</code></strong>（Python）: Python で、条件が <code>True</code> の間くり返す書き方。<code>while True:</code> は、<code>break</code> で抜けるまでずっとくり返します。</li>
+<li><strong><code>break</code></strong>（Python）: Python のくり返しを、途中で抜ける命令。</li>
 <li><strong><code>.Lock()</code></strong>（Python）: <code>threading.Lock()</code> は、いくつものスレッドが同時に同じ物を使わないようにする鍵を作る関数です。</li>
+<li><strong><code>.join()</code></strong>（Python）: Python で、区切り文字の方に付けて、リストの中身をつなぐメソッド。<code>" ".join(["a", "b"])</code> は <code>"a b"</code>（TypeScript とは書く順番が逆なので注意）。</li>
+<li><strong><code>.split()</code></strong>（Python）: Python で、文字列を分けてリストにするメソッド。<code>"a b  c".split()</code> のように何も渡さないと、空白（いくつ続いても）で分けます。</li>
+<li><strong><code>.append()</code></strong>（Python）: Python で、リストの後ろに 1 つ足すメソッド。</li>
 <li><strong><code>.lower()</code></strong>（Python）: 英字を小文字にした文字列を返すメソッド。</li>
 <li><strong><code>.readline()</code></strong>（Python）: 1 行だけ読むメソッド。</li>
 <li><strong><code>.strip()</code></strong>（Python）: 前後の空白や改行を取り除いたものを返すメソッド（Rust の <code>trim</code>）。</li>
 <li><strong><code>.HTTPConnection()</code></strong>（Python）: <code>http.client.HTTPConnection(ホスト, ポート)</code> は、HTTP で相手のサーバーにつなぐ物を作る関数です。</li>
+<li><strong><code>.request()</code></strong>（Python）: <code>http.client</code> の接続で、HTTP の頼み（メソッド・パス・本文・ヘッダー）を送るメソッド。</li>
 <li><strong><code>.getresponse()</code></strong>（Python）: 送った頼みに対する、相手の返事を受け取るメソッド。</li>
+<li><strong><code>.write()</code></strong>（Python）: ファイルに文字を書くメソッド。<code>f.write(line + "\n")</code>（改行は自分で付けます）。</li>
 <li><strong><code>.send_response()</code></strong>（Python）: HTTP のサーバーとして、答えの番号（200 など）を返し始めるメソッド。</li>
 <li><strong><code>.getheaders()</code></strong>（Python）: 受け取った返事のヘッダーを、<code>(名前, 値)</code> の組の並びで返すメソッド。</li>
 <li><strong><code>.send_header()</code></strong>（Python）: HTTP のサーバーとして、ヘッダーを 1 つ返すメソッド。</li>
 <li><strong><code>.end_headers()</code></strong>（Python）: ヘッダーの終わりを知らせるメソッド。このあとに本文を書きます。</li>
+<li><strong><code>.close()</code></strong>（Python）: 接続やファイルを閉じるメソッド。</li>
 <li><strong><code>.serve_forever()</code></strong>（Python）: HTTP のサーバーを、止めるまでずっと動かし続けるメソッド。</li>
 <li><strong><code>urlsplit()</code></strong>（Python）: URL を、部品（<code>scheme</code>・<code>hostname</code>・<code>port</code>・<code>path</code> など）に分ける関数。</li>
 </ul>

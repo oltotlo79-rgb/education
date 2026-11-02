@@ -4212,7 +4212,15 @@ error: could not compile `rustnote` (lib) due to 1 previous error
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
+<li><strong><code>&lt;html&gt;</code></strong>（HTML）: HTML の文書全体を包むタグ。中に <code>&lt;head&gt;</code>（ページの情報）と <code>&lt;body&gt;</code>（画面に出す中身）を入れます。</li>
 <li><strong><code>&lt;meta&gt;</code></strong>（HTML）: HTML の <code>&lt;head&gt;</code> の中に書く、ページの情報のタグ。<code>&lt;meta charset="utf-8"&gt;</code>（文字コード）・<code>&lt;meta name="viewport" …&gt;</code>（スマホでの表示の幅）などがあります。</li>
+<li><strong><code>&lt;title&gt;</code></strong>（HTML）: ブラウザーのタブに出る、ページの題名のタグ。<code>&lt;head&gt;</code> の中に書きます。</li>
+<li><strong><code>&lt;h1&gt;</code></strong>（HTML）: いちばん大きな見出しのタグ。</li>
+<li><strong><code>&lt;form&gt;</code></strong>（HTML）: 入力欄とボタンをまとめて、送る（サーバーへ届ける）ためのタグ。<code>action</code> に送り先、<code>method="post"</code> に送り方を書きます。</li>
+<li><strong><code>&lt;input&gt;</code></strong>（HTML）: 1 行の入力欄のタグ。<code>type</code> で種類（<code>text</code>・<code>email</code>・<code>password</code>・<code>hidden</code> など）を、<code>name</code> で送る時の名前を決めます。閉じタグはありません。</li>
+<li><strong><code>&lt;button&gt;</code></strong>（HTML）: ボタンのタグ。<code>&lt;form&gt;</code> の中の <code>type="submit"</code> のボタンを押すと、フォームが送られます。</li>
+<li><strong><code>&lt;p&gt;</code></strong>（HTML）: 段落のタグ。</li>
+<li><strong><code>&lt;a&gt;</code></strong>（HTML）: リンクのタグ。<code>&lt;a href="../URL"&gt;文字&lt;/a&gt;</code> で、押すとその URL へ移ります。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -5129,14 +5137,30 @@ help: provide the argument
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>import</code></strong>（JavaScript・TypeScript）: ほかのファイルや部品から、関数などを読み込む書き方。<code>import { rmSync } from "node:fs";</code> は、Node.js のファイルの道具から <code>rmSync</code> を使えるようにします。</li>
+<li><strong><code>from</code></strong>（JavaScript・TypeScript）: <code>import { 名前 } from "場所";</code> の一部で、「どこから読み込むか」を書きます。</li>
+<li><strong><code>const</code></strong>（JavaScript・TypeScript）: JavaScript・TypeScript で、変えない値に名前を付ける書き方。<code>const db = …;</code>。あとで別の値を入れようとするとエラーになります。</li>
+<li><strong><code>new</code></strong>（JavaScript・TypeScript）: クラスから、新しい物を作る書き方。<code>new DatabaseSync("ba.sqlite")</code>・<code>new Date()</code>・<code>new Error("…")</code> のように使います。</li>
+<li><strong><code>await</code></strong>（JavaScript・TypeScript）: JavaScript・TypeScript で、時間のかかる処理（<code>Promise</code>）が終わるまで待って、結果を受け取る書き方。<code>async</code> の関数の中で使います。</li>
+<li><strong><code>let</code></strong>（JavaScript・TypeScript）: JavaScript・TypeScript で、あとで変える値に名前を付ける書き方。</li>
+<li><strong><code>async</code></strong>（JavaScript・TypeScript）: JavaScript・TypeScript で、中で <code>await</code> を使える関数にする印。結果は <code>Promise</code>（あとで届く約束）で返ります。</li>
+<li><strong><code>function</code></strong>（JavaScript・TypeScript）: 関数を作る書き方。<code>async function post(path, body) { … }</code>。</li>
 <li><strong><code>try</code></strong>（JavaScript・TypeScript）: 失敗するかもしれない処理を <code>try { … } catch (e) { … }</code> で囲み、失敗した時の処理を <code>catch</code> に書く書き方。</li>
 <li><strong><code>catch</code></strong>（JavaScript・TypeScript）: <code>try</code> の中で失敗（エラー）が起きた時に動く所。<code>catch (e)</code> の <code>e</code> に、エラーが入ります。</li>
+<li><strong><code>return</code></strong>（JavaScript・TypeScript）: JavaScript・TypeScript で、関数の結果を返して、関数を終える命令。</li>
+<li><strong><code>for</code></strong>（JavaScript・TypeScript）: くり返しの書き方。<code>for (const x of 配列) { … }</code> は、配列の中身を 1 つずつ <code>x</code> に入れてくり返します。</li>
+<li><strong><code>of</code></strong>（JavaScript・TypeScript）: <code>for (const x of 配列)</code> の一部で、「配列の中身を 1 つずつ」という意味です。</li>
 <li><strong><code>.runMigrations()</code></strong>（JavaScript・TypeScript）: Better Auth の、データベースの表を作る・変える手順（マイグレーション）を実行するメソッド（第8巻 UNIT 08 の比べ）。</li>
+<li><strong><code>.handler()</code></strong>（JavaScript・TypeScript）: Better Auth の、HTTP のリクエストを受け取って答えを返す関数（<code>auth.handler(new Request(…))</code>）。サーバーを立てずに試す時に、直接呼んでいます。</li>
 <li><strong><code>.stringify()</code></strong>（JavaScript・TypeScript）: <code>JSON.stringify(値)</code> は、JavaScript の値を JSON の文字列にする関数です。</li>
 <li><strong><code>.round()</code></strong>（JavaScript・TypeScript）: <code>Math.round(x)</code> は、小数を四捨五入して整数にする関数です。</li>
 <li><strong><code>.slice()</code></strong>（JavaScript・TypeScript）: 文字列や配列の、一部分を切り出すメソッド。<code>text.slice(0, 40)</code> は、最初の 40 文字です。</li>
+<li><strong><code>.split()</code></strong>（JavaScript・TypeScript）: JavaScript・TypeScript で、文字列を区切りで分けて配列にするメソッド。<code>"a,b".split(",")</code> は <code>["a", "b"]</code>。正規表現（<code>/,/</code>）でも区切れます。</li>
+<li><strong><code>.join()</code></strong>（JavaScript・TypeScript）: JavaScript・TypeScript で、配列の中身を区切り文字でつないで 1 つの文字列にするメソッド。<code>["a", "b"].join(";")</code> は <code>"a;b"</code>。</li>
+<li><strong><code>.push()</code></strong>（JavaScript・TypeScript）: JavaScript・TypeScript で、配列の後ろに足すメソッド（元の配列が変わる）。</li>
+<li><strong><code>.prepare()</code></strong>（JavaScript・TypeScript）: Node.js の SQLite（<code>node:sqlite</code>）で、SQL の文を用意するメソッド。<code>.get()</code>・<code>.all()</code> で結果を受け取ります。</li>
 <li><strong><code>.startsWith()</code></strong>（JavaScript・TypeScript）: 文字列が、その文字で始まっていれば <code>true</code> を返すメソッド（Rust の <code>starts_with</code>）。</li>
 <li><strong><code>??</code></strong>（JavaScript・TypeScript）: <code>a ?? b</code> は、<code>a</code> が <code>null</code> か <code>undefined</code>（値が無い）なら <code>b</code> を使う、という書き方です。</li>
+<li><strong><code>=&gt;</code></strong>（JavaScript・TypeScript）: アロー関数（短く書ける関数）の矢印。<code>(path) =&gt; \</code>…${path}`<code>は「</code>path` を受け取って文字列を返す関数」。</li>
 <li><strong><code>...</code></strong>（JavaScript・TypeScript）: スプレッド構文。<code>[...a, x]</code> は配列 <code>a</code> の中身を広げて新しい配列を作り、<code>{ ...obj, k: v }</code> はオブジェクトの中身を写して一部だけ変えた新しいオブジェクトを作ります。</li>
 </ul>
 </blockquote>
@@ -5144,6 +5168,16 @@ help: provide the argument
 
 <div class="codehilite"><div class="code-wrap" id="code-128"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">node</span> <span class="n">probe</span><span class="p">.</span><span class="n">mjs</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>node</code></strong>（Node.js）: Node.js（パソコンの上で JavaScript を動かす道具）を動かすコマンド。<code>node probe.mjs</code> で、そのファイルを動かします。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-129"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>### node probe.mjs
 --- 1. 登録
@@ -5547,6 +5581,7 @@ user4 → 429（Too many requests. Please try again later.）
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
+<li><strong><code>.random()</code></strong>（認証）: <code>rand</code> の部品で、でたらめな値を作るメソッド（<code>rand::rng().random()</code>）。トークンなど、予想されてはいけない値に使います。</li>
 <li><strong><code>Sha256::digest()</code></strong>（認証）: データから、SHA-256 というハッシュ（32 バイトの指紋）を計算する関数（<code>sha2</code> の部品）。</li>
 <li><strong><code>rand::rng()</code></strong>（認証）: でたらめな数を作る係を取り出す関数（<code>rand</code> の部品）。<code>rand::rng().random()</code> で、でたらめな値を作ります。</li>
 <li><strong><code>Engine</code></strong>（認証）: <code>base64</code> の部品の、エンコード（バイト → 英数字の文字列）の機能（トレイト）。<code>URL_SAFE_NO_PAD.encode(バイト)</code> を使うには、これを <code>use</code> します。</li>
@@ -5709,6 +5744,7 @@ code_challenge: KHgXPO4I…
 <li><strong><code>.finalize()</code></strong>（認証）: ハッシュや MAC の計算を締めくくって、結果を取り出すメソッド。</li>
 <li><strong><code>.into_bytes()</code></strong>（認証）: 計算の結果を、バイトの並びとして取り出すメソッド。</li>
 <li><strong><code>u32::from_be_bytes()</code></strong>（数）: 4 つのバイト（大きい桁から順）から、<code>u32</code> の数を作る関数。</li>
+<li><strong><code>HashSet::new()</code></strong>（HashMap（表））: 空の <code>HashSet</code>（重ならない値の集まり）を作る関数。</li>
 <li><strong><code>HashSet</code></strong>（HashMap（表））: 同じ値は 1 つしか入らない集まり（値だけの <code>HashMap</code>）。重複を消す・「もう見たか」を覚える時に使います。<code>set.insert(x)</code> は、新しく入った時だけ <code>true</code> を返します。</li>
 <li><strong><code>Hmac</code></strong>（認証）: HMAC（秘密の鍵を混ぜたハッシュ）を計算する型（<code>hmac</code> の部品）。鍵を知っている人だけが同じ値を作れるので、「改ざんされていないか」の確かめに使います。</li>
 <li><strong><code>KeyInit</code></strong>（認証）: 鍵から計算の係を作る（<code>new_from_slice</code>）機能（トレイト）。</li>
@@ -6754,6 +6790,7 @@ POST /logout -&gt; 303 See Other (5.5758ms)
 <ul>
 <li><strong><code>.try_into()</code></strong>（型とメソッド）: 値を、別の型に変えようとして、変えられなければ <code>Err</code> を返すメソッド（<code>TryFrom</code> の逆向き）。<code>bytes.try_into()</code> で、長さの決まった配列（<code>[u8; 32]</code> など）に変えます。</li>
 <li><strong><code>.as_slice()</code></strong>（Vec（並び））: <code>Vec</code> や配列を、「借りた一続きの並び」（スライス <code>&amp;[T]</code>）として見るメソッド。</li>
+<li><strong><code>Token::new()</code></strong>（Topcoat）: セッションの印（トークン）を、決めた中身から作る関数（テストで、わざとにせのトークンを作る時に使います）。</li>
 <li><strong><code>Token</code></strong>（Topcoat）: <code>topcoat::session::Token</code> は、セッションの印（でたらめな長い文字列）の型。ブラウザーのクッキーに入れ、サーバーには、そのハッシュだけを保存します。</li>
 </ul>
 </blockquote>

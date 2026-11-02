@@ -4195,6 +4195,7 @@ error: could not compile `ownership-lab` (bin &quot;u05_err_dangle&quot;) due to
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>.fetch_add()</code></strong>（スレッドと共有）: 数を、ほかのスレッドとぶつからずに足すメソッド（<code>AtomicU64</code> などに使う）。<code>COUNT.fetch_add(1, Ordering::Relaxed)</code> で 1 足します。鍵（<code>Mutex</code>）を使わずに、安全に数えられます。</li>
+<li><strong><code>AtomicU64::new()</code></strong>（スレッドと共有）: いくつものスレッドから安全に数えられる整数を、最初の値で作る関数。<code>static COUNT: AtomicU64 = AtomicU64::new(0);</code>。</li>
 <li><strong><code>AtomicU64</code></strong>（スレッドと共有）: いくつものスレッドから同時に読み書きしても壊れない、整数の型。数を数える（アクセス数など）時に使います。</li>
 <li><strong><code>Ordering</code></strong>（スレッドと共有）: <code>std::sync::atomic::Ordering</code> は、<code>AtomicU64</code> などを読み書きする時の「順番の守り方」の指定。ただ数えるだけなら、いちばん軽い <code>Ordering::Relaxed</code> で足ります。（大小を比べた結果の <code>std::cmp::Ordering</code> は別の物です。）</li>
 <li><strong><code>Relaxed</code></strong>（スレッドと共有）: <code>Ordering::Relaxed</code> は、「この数の読み書きだけが壊れなければよい」という、いちばん軽い順番の守り方です。</li>
@@ -5468,6 +5469,7 @@ error: could not compile `ownership-lab` (bin &quot;u07_err_move_while_borrowed&
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
+<li><strong><code>Box::new()</code></strong>（スマートポインタ）: 値をヒープに置き、それを指す <code>Box</code> を作る関数。<code>Box::new(5)</code>。</li>
 <li><strong><code>Box</code></strong>（スマートポインタ）: 値をヒープ（大きな物を置く広い場所）に置き、その場所を指す「持ち手」を手元に置く型。<code>Box&lt;dyn Notifier&gt;</code> のように、違う型の物を同じ並びに入れる時によく使います（第3巻）。</li>
 </ul>
 </blockquote>
@@ -6266,6 +6268,7 @@ error: could not compile `ownership-lab` (bin &quot;u08_err_unsized_param&quot;)
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
+<li><strong><code>Rc::new()</code></strong>（スマートポインタ）: 値をヒープに置き、何人もで持てる <code>Rc</code> を作る関数。持ち主の数は 1 から始まります。</li>
 <li><strong><code>Rc::strong_count()</code></strong>（スマートポインタ）: <code>Rc</code> の本体を、今いくつの持ち手が指しているかを返す関数。0 になると本体が片づけられます。</li>
 <li><strong><code>Rc::clone()</code></strong>（スマートポインタ）: <code>Rc</code> の持ち手を 1 つ増やす関数。本体は複製せず、「同じ物を指す持ち手」を作って、持ち主の数を 1 増やすだけなので、軽い操作です。</li>
 <li><strong><code>Rc::ptr_eq()</code></strong>（スマートポインタ）: 2 つの <code>Rc</code> が、同じ本体を指しているかを調べる関数。</li>
@@ -6372,6 +6375,7 @@ a を drop: 持ち主 1 人
 <li><strong><code>.borrow_mut()</code></strong>（スマートポインタ）: <code>RefCell</code> の中身を、書きかえるために借りるメソッド。ほかで借りている最中に呼ぶと、その場で止まる（パニック）ので注意します。</li>
 <li><strong><code>.borrow()</code></strong>（スマートポインタ）: <code>RefCell</code> の中身を、読むために借りるメソッド。</li>
 <li><strong><code>.try_borrow_mut()</code></strong>（スマートポインタ）: <code>RefCell</code> の中身を書きかえるために借りられるかを、止まらずに確かめるメソッド。借りられなければ <code>Err</code> が返ります。</li>
+<li><strong><code>RefCell::new()</code></strong>（スマートポインタ）: 値を <code>RefCell</code>（動かしている時に借りるルールを確かめる入れ物）に入れる関数。</li>
 <li><strong><code>RefCell</code></strong>（スマートポインタ）: 「借りるルール」の確かめを、コンパイルの時ではなく、動かしている時に行う入れ物。<code>Rc&lt;RefCell&lt;T&gt;&gt;</code> の形で、「何人もで持って、しかも書きかえたい」時に使います（第3巻）。</li>
 </ul>
 </blockquote>
@@ -6708,6 +6712,7 @@ main 終了
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>.upgrade()</code></strong>（スマートポインタ）: <code>Weak</code>（弱い持ち手）から、本体を使うためのふつうの持ち手（<code>Rc</code>）を取り出すメソッド。本体がもう片づけられていれば <code>None</code> です。</li>
+<li><strong><code>Weak::new()</code></strong>（スマートポインタ）: まだ何も指していない、空の <code>Weak</code>（弱い持ち手）を作る関数。</li>
 <li><strong><code>Rc::downgrade()</code></strong>（スマートポインタ）: <code>Rc</code> から、<code>Weak</code>（弱い持ち手）を作る関数。弱い持ち手は、本体を生かし続ける数に入りません。</li>
 <li><strong><code>Rc::weak_count()</code></strong>（スマートポインタ）: 本体を指している <code>Weak</code>（弱い持ち手）の数を返す関数。</li>
 <li><strong><code>Weak</code></strong>（スマートポインタ）: 本体を指すけれど、本体を生かし続ける数には入らない「弱い持ち手」。親と子が互いを指す時に、片方を <code>Weak</code> にして、いつまでも片づけられない（メモリが漏れる）のを防ぎます。</li>
@@ -6918,6 +6923,7 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
+<li><strong><code>Cell::new()</code></strong>（スマートポインタ）: 値を <code>Cell</code>（借りずに丸ごと入れかえられる入れ物）に入れる関数。</li>
 <li><strong><code>Cell</code></strong>（スマートポインタ）: 中身を、借りずに丸ごと入れかえられる入れ物。<code>Copy</code> できる小さな値（数など）を、<code>&amp;</code> しか持っていない所から書きかえる時に使います。</li>
 </ul>
 </blockquote>
@@ -7056,6 +7062,7 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>move</code></strong>（関数）: クロージャが使う外の変数を、借りるのではなく「持っていく」印。<code>thread::spawn(move || { … })</code> のように、別のスレッドに値を渡す時に必要です。</li>
+<li><strong><code>thread::spawn()</code></strong>（スレッドと共有）: 新しいスレッド（同時に動く処理の流れ）を作って動かす関数。<code>thread::spawn(move || { … })</code>。返ってくる物の <code>.join()</code> で、終わるのを待って結果を受け取ります。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -7183,6 +7190,8 @@ main: 結果 30
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>.lock()</code></strong>（スレッドと共有）: <code>Mutex</code> の鍵を取って、中身を使えるようにするメソッド。返ってきた物（ガード）を通して中身を読み書きし、ガードが片づけられると鍵は自動で返されます。ほかのスレッドが鍵を持っている間は、返されるまで待ちます。</li>
+<li><strong><code>Arc::new()</code></strong>（スレッドと共有）: 値を、いくつものスレッドで一緒に持てる <code>Arc</code> に入れる関数。<code>Arc::new(Mutex::new(0))</code> は「鍵付きの 0 を、みんなで持つ」。</li>
+<li><strong><code>Mutex::new()</code></strong>（スレッドと共有）: 値を、鍵付きの入れ物（<code>Mutex</code>）に入れる関数。使う時は <code>.lock()</code> で鍵を取ります。</li>
 <li><strong><code>Arc::clone()</code></strong>（スレッドと共有）: <code>Arc</code> の持ち手を 1 つ増やす関数。スレッドに渡す前に増やしておき、<code>move</code> で持たせます。</li>
 <li><strong><code>Arc::strong_count()</code></strong>（スレッドと共有）: <code>Arc</code> の本体を、今いくつの持ち手が指しているかを返す関数。</li>
 <li><strong><code>Arc</code></strong>（スレッドと共有）: いくつものスレッドから、1 つの値を一緒に持てるようにする型（<code>Rc</code> のスレッド版）。書きかえもしたい時は、<code>Arc&lt;Mutex&lt;T&gt;&gt;</code> の形にします。</li>
@@ -7326,6 +7335,7 @@ main: 結果 30
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
+<li><strong><code>.spawn()</code></strong>（スレッドと共有）: <code>thread::scope</code> の中で、新しいスレッドを動かすメソッド（<code>s.spawn(|| { … })</code>）。範囲の終わりで、全部のスレッドが終わるのを待ってくれます。</li>
 <li><strong><code>thread::scope()</code></strong>（スレッドと共有）: 「この中で作ったスレッドが全部終わるまで、外に出ない」範囲を作る関数。外の変数を借りたままスレッドで使えます（<code>move</code> や <code>Arc</code> が要らない）。</li>
 </ul>
 </blockquote>
@@ -7417,6 +7427,7 @@ main: 結果 30
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>.write()</code></strong>（スレッドと共有）: <code>RwLock</code> の「書き込み用の鍵」を取るメソッド。書いている間は、ほかのスレッドは読むことも書くこともできません。（ファイルや接続に使う <code>write</code> は「書き込む」意味の別の物です。）</li>
+<li><strong><code>RwLock::new()</code></strong>（スレッドと共有）: 値を、「読むのは何人でも、書くのは 1 人」の鍵付きの入れ物（<code>RwLock</code>）に入れる関数。</li>
 <li><strong><code>RwLock</code></strong>（スレッドと共有）: 「読むだけなら何人でも同時に、書く時は 1 人だけ」にできる鍵付きの入れ物。読むことが多く、書くことが少ない物に向いています。読む時は <code>.read()</code>、書く時は <code>.write()</code> で鍵を取ります。</li>
 </ul>
 </blockquote>
