@@ -44,9 +44,16 @@
 <div style="font-size: 12px; color: #64748b; margin-top: 6px;">図2-1: 1 つのプロジェクトの中に、機能ごとのアプリを入れる</div>
 </div>
 
+**▶ 準備:** 00 の 6.4（Python 3.14）。04 を終えていれば、もう入っています。
+
+**▶ 書く所と動かし方:** 完成した物は、資料のフォルダの `webapp_learning\samples\05_django\` にあります。自分で 1 から作って試すときは、**自分用の新しいフォルダ**で始めます（完成した物のフォルダで `startproject` をすると、すでにあるファイルとぶつかります）。下は、資料を `~\Documents\def` に置いたときの例です。
+
 ```powershell
-mkdir webapp_learning\samples\05_django
-cd webapp_learning\samples\05_django
+# 自分用の練習のフォルダを作って、その中へ移動する
+mkdir ~\Documents\my-practice\05_django
+cd ~\Documents\my-practice\05_django
+# 使う部品の一覧（requirements.txt）を、資料のフォルダから写してくる
+Copy-Item ~\Documents\def\webapp_learning\samples\05_django\requirements.txt .
 py -3.14 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
 

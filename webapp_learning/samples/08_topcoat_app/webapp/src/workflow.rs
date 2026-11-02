@@ -267,7 +267,14 @@ async fn send_approval_mail(tx: &mut Tx, outbox: &mut Outbox, config: &Config, s
 }
 
 /// 回覧を始める（回覧者を並べて、1 人目に承認のお願い）
-async fn start_round(tx: &mut Tx, outbox: &mut Outbox, config: &Config, request_id: i64, round: i16, approver_ids: &[i64]) -> WfResult<()> {
+async fn start_round(
+    tx: &mut Tx,
+    outbox: &mut Outbox,
+    config: &Config,
+    request_id: i64,
+    round: i16,
+    approver_ids: &[i64],
+) -> WfResult<()> {
     let mut first = None;
     for (i, approver_id) in approver_ids.iter().enumerate() {
         let step_id: i64 = sqlx::query_scalar(
@@ -390,7 +397,11 @@ pub async fn approve(cx: &Cx, token: &str) -> WfResult<String> {
             outbox.add(
                 &email,
                 &format!("回覧完了: {}", r.title),
-                format!("{name} さん\n\n依頼「{}」は、全員の承認が終わりました（回覧完了）。\n担当の部署と、打ち合わせの日を決めてください。\n", r.title),
+                format!(
+                    "{name} さん\n\n依頼「{}」は、全員の承認が終わりました（回覧完了）。\n\
+                     担当の部署と、打ち合わせの日を決めてください。\n",
+                    r.title
+                ),
             );
             let workers: Vec<String> = sqlx::query_scalar("SELECT email FROM employees WHERE role = 'worker' AND is_active")
                 .fetch_all(&mut *tx)
@@ -452,7 +463,11 @@ pub async fn return_request(cx: &Cx, token: &str, comment: &str) -> WfResult<Str
         outbox.add(
             &email,
             &format!("差し戻し: {}", r.title),
-            format!("{name} さん\n\n依頼「{}」が、差し戻されました。\n\n{line}\n\nアプリで内容を直して、出し直してください。\n", r.title),
+            format!(
+                "{name} さん\n\n依頼「{}」が、差し戻されました。\n\n{line}\n\n\
+                 アプリで内容を直して、出し直してください。\n",
+                r.title
+            ),
         );
         Ok((r.title, tx, outbox))
     }
@@ -574,7 +589,11 @@ pub async fn complete(cx: &Cx, worker: &Employee, request_id: i64) -> WfResult<(
             .bind(r.requester_id)
             .fetch_one(&mut *tx)
             .await?;
-        outbox.add(&email, &format!("完了: {}", r.title), format!("{name} さん\n\n依頼「{}」の対応が終わりました（完了）。\n", r.title));
+        outbox.add(
+            &email,
+            &format!("完了: {}", r.title),
+            format!("{name} さん\n\n依頼「{}」の対応が終わりました（完了）。\n", r.title),
+        );
         Ok(((), tx, outbox))
     }
     .await;

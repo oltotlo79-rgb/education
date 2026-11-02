@@ -57,6 +57,8 @@ export default defineConfig({
 
 ### 1.1 開発中の動かし方
 
+**▶ 準備:** 00 の 6.3（Node.js）。前編のサーバー側（Django）が動いていること。`npm` が「スクリプトの実行が無効」で止められたら、`npm.cmd` と打ちます（00 の 6.3）。
+
 ```powershell
 # 窓 1: サーバー（前編）
 cd webapp_learning\samples\06_django_react\backend

@@ -183,6 +183,8 @@
 
 ### この巻の進め方
 
+> **ヒント:** 第0巻の「はじめに: 手を動かす準備」で、もう Build Tools と Rust を入れた人も、この巻を最初から読んでかまいません。UNIT 04（rustup・rustc・Cargo）と UNIT 05（Build Tools）では、入れ方の手順は「もう入っている」ことを確かめるだけで済み、そのかわり、どこに何が入ったか・版の決め方などの、くわしい仕組みを学べます。
+
 道具を入れる作業は、1つ間違えると、後の道具が全部動かなくなります。各単元では、次の4つの手順を1サイクルとして、**1つずつ入れて、1つずつ確かめる**ように進めてください。
 
 1. **入れる前に確かめる:** まず、版を表示するコマンド（`git --version` など）を打ってみます。「まだ入っていない」こと、または「もう入っている版」を知るためです。
@@ -235,6 +237,8 @@
 - 「x64 のエミュレーションで動いている PowerShell」に気づける。空白を含むパスと、長すぎるパスの問題を避けられる
 
 ### たとえ話でつかむ
+
+<img src="images/R01-01_analogy.webp" alt="たとえ話の絵（作業フォルダと PowerShell）: 新しく工房を借りて、ものづくりを始めるところを想像してください。道具を運び込む前に、まず建物の下見をします。" style="width: 100%;">
 
 新しく工房を借りて、ものづくりを始めるところを想像してください。道具を運び込む前に、まず建物の下見をします。
 
@@ -977,6 +981,8 @@ Get-Location
 - うっかり秘密をコミットすると履歴に残ることを確かめ、そのときに何をすべきかを説明できる
 
 ### たとえ話でつかむ
+
+<img src="images/R01-02_analogy.webp" alt="たとえ話の絵（Git・改行コード・秘密の除外）: Git（ギット）は、工房の「作業日誌つきの写真アルバム」です。" style="width: 100%;">
 
 **Git**（ギット）は、工房の「作業日誌つきの写真アルバム」です。
 
@@ -1868,6 +1874,8 @@ i/lf    w/lf    attr/                 	Rust/rustnote/Cargo.toml
 
 ### たとえ話でつかむ
 
+<img src="images/R01-03_analogy.webp" alt="たとえ話の絵（VS Code と rust-analyzer）: VS Code は、工房の作業机です。机の上には、ファイルの棚（エクスプローラー）、作業中の書類（エディタ）、受付の係員と話す窓口（ターミナ" style="width: 100%;">
+
 **VS Code** は、工房の**作業机**です。机の上には、ファイルの棚（エクスプローラー）、作業中の書類（エディタ）、受付の係員と話す窓口（ターミナル）が、1つにまとめて置かれています。
 
 その机の横に、Rust にとても詳しい**先輩**に座ってもらいます。これが **rust-analyzer**（ラスト・アナライザー）です。
@@ -2485,6 +2493,8 @@ RustNote を VS Code で開くときは、`Cargo.toml` がある RustNote のフ
 
 ### たとえ話でつかむ
 
+<img src="images/R01-04_analogy.webp" alt="たとえ話の絵（rustup・rustc・Cargo）: レストランの厨房を考えます。" style="width: 100%;">
+
 **レストランの厨房**を考えます。
 
 - **料理人**（`rustc`）は、レシピ（ソースコード）を読んで、料理（実行ファイル）を作ります。
@@ -3047,6 +3057,8 @@ At line:1 char:140
 
 ### たとえ話でつかむ
 
+<img src="images/R01-05_analogy.webp" alt="たとえ話の絵（MSVC Build Tools と CPU の種類）: 本の印刷所と製本所を考えます。" style="width: 100%;">
+
 **本の印刷所と製本所**を考えます。
 
 - `rustc` は**印刷所**です。原稿（ソースコード）を読んで、ページ（機械語の部品）を刷ります。
@@ -3415,6 +3427,8 @@ error: could not compile `hello` (bin "hello") due to 1 previous error
 - rustfmt・clippy が入っていないときのエラーを読み、`rustup component add` で足せる
 
 ### たとえ話でつかむ
+
+<img src="images/R01-06_analogy.webp" alt="たとえ話の絵（Cargo の品質コマンド）: レポートを提出する前の、4つの見直しを考えます。" style="width: 100%;">
 
 **レポートを提出する前の、4つの見直し**を考えます。
 
@@ -3889,6 +3903,8 @@ info: downloading 2 components
 
 ### たとえ話でつかむ
 
+<img src="images/R01-07_analogy.webp" alt="たとえ話の絵（WSL2 と Docker）: 一軒の家の中の、離れを考えます。" style="width: 100%;">
+
 **一軒の家の中の、離れ**を考えます。
 
 - Windows の家の庭に、**Linux の離れ**（WSL2）を建てます。離れの中では、Linux の道具が、そのまま使えます。Turso CLI のように、Windows 版が無い道具も、離れの中なら動きます（UNIT 09）。
@@ -4261,6 +4277,8 @@ Run 'docker run --help' for more information
 - 古い Rust（1.99 より前）や、使われているポートのエラーを読んで直せる
 
 ### たとえ話でつかむ
+
+<img src="images/R01-08_analogy.webp" alt="たとえ話の絵（Topcoat 0.11 と CLI）: 組み立て家具のお店を考えます。" style="width: 100%;">
 
 **組み立て家具のお店**を考えます。
 
@@ -4682,6 +4700,8 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 
 ### たとえ話でつかむ
 
+<img src="images/R01-09_analogy.webp" alt="たとえ話の絵（Turso CLI と libSQL の確認）: 本棚と司書さんを考えます。" style="width: 100%;">
+
 **本棚と司書さん**を考えます。
 
 - **libSQL** は、本の並べ方の決まり（データベースの形式）です。SQLite という、とても広く使われている決まりを、もとにしています。
@@ -5052,6 +5072,8 @@ error: process didn't exit successfully: `C:\Users\...\t06build\release\rustnote
 - この巻でそろえた道具を、1つのスクリプト（`doctor.ps1`）で順番に確かめ、NG の行から、戻る単元を見つけられる
 
 ### たとえ話でつかむ
+
+<img src="images/R01-10_analogy.webp" alt="たとえ話の絵（flyctl と環境の診断）: 旅行の前の、持ち物の点検を考えます。" style="width: 100%;">
 
 **旅行の前の、持ち物の点検**を考えます。
 

@@ -53,6 +53,8 @@
 
 ## 2. 開発の準備
 
+**▶ 準備:** 00 の 6.5（PostgreSQL）・6.6（Rust）と、07 の 1 章（`topcoat` の道具）。この巻のコマンドは、PowerShell で `webapp_learning\samples\08_topcoat_app\webapp` のフォルダにいるところから打ちます（資料のフォルダから `cd webapp_learning\samples\08_topcoat_app\webapp`）。
+
 ### 2.1 開発用のデータベース
 
 06 と同じく、自分のパソコンの PostgreSQL に、練習用のユーザーとデータベースを作ります（PostgreSQL の入れ方は onprem の 02）。
@@ -1058,7 +1060,14 @@ async fn send_approval_mail(tx: &mut Tx, outbox: &mut Outbox, config: &Config, s
 }
 
 /// 回覧を始める（回覧者を並べて、1 人目に承認のお願い）
-async fn start_round(tx: &mut Tx, outbox: &mut Outbox, config: &Config, request_id: i64, round: i16, approver_ids: &[i64]) -> WfResult<()> {
+async fn start_round(
+    tx: &mut Tx,
+    outbox: &mut Outbox,
+    config: &Config,
+    request_id: i64,
+    round: i16,
+    approver_ids: &[i64],
+) -> WfResult<()> {
     let mut first = None;
     for (i, approver_id) in approver_ids.iter().enumerate() {
         let step_id: i64 = sqlx::query_scalar(
@@ -1181,7 +1190,11 @@ pub async fn approve(cx: &Cx, token: &str) -> WfResult<String> {
             outbox.add(
                 &email,
                 &format!("回覧完了: {}", r.title),
-                format!("{name} さん\n\n依頼「{}」は、全員の承認が終わりました（回覧完了）。\n担当の部署と、打ち合わせの日を決めてください。\n", r.title),
+                format!(
+                    "{name} さん\n\n依頼「{}」は、全員の承認が終わりました（回覧完了）。\n\
+                     担当の部署と、打ち合わせの日を決めてください。\n",
+                    r.title
+                ),
             );
             let workers: Vec<String> = sqlx::query_scalar("SELECT email FROM employees WHERE role = 'worker' AND is_active")
                 .fetch_all(&mut *tx)
@@ -1243,7 +1256,11 @@ pub async fn return_request(cx: &Cx, token: &str, comment: &str) -> WfResult<Str
         outbox.add(
             &email,
             &format!("差し戻し: {}", r.title),
-            format!("{name} さん\n\n依頼「{}」が、差し戻されました。\n\n{line}\n\nアプリで内容を直して、出し直してください。\n", r.title),
+            format!(
+                "{name} さん\n\n依頼「{}」が、差し戻されました。\n\n{line}\n\n\
+                 アプリで内容を直して、出し直してください。\n",
+                r.title
+            ),
         );
         Ok((r.title, tx, outbox))
     }
@@ -1365,7 +1382,11 @@ pub async fn complete(cx: &Cx, worker: &Employee, request_id: i64) -> WfResult<(
             .bind(r.requester_id)
             .fetch_one(&mut *tx)
             .await?;
-        outbox.add(&email, &format!("完了: {}", r.title), format!("{name} さん\n\n依頼「{}」の対応が終わりました（完了）。\n", r.title));
+        outbox.add(
+            &email,
+            &format!("完了: {}", r.title),
+            format!("{name} さん\n\n依頼「{}」の対応が終わりました（完了）。\n", r.title),
+        );
         Ok(((), tx, outbox))
     }
     .await;
@@ -1725,7 +1746,9 @@ async fn approve_page(cx: &Cx) -> Result<impl View> {
                     <label for="comment">"差し戻す理由"</label>
                     <textarea id="comment" name="comment" rows="3" required=""></textarea>
                     <span></span>
-                    <div class="actions"><button type="submit" name="decision" value="return" class="btn-secondary">"差し戻す"</button></div>
+                    <div class="actions">
+                        <button type="submit" name="decision" value="return" class="btn-secondary">"差し戻す"</button>
+                    </div>
                 </form>
             },
             Err(m) => {
@@ -1835,7 +1858,11 @@ use crate::{
     workflow,
 };
 
-const USAGE: &str = "使い方: webapp [serve | import-employees <CSV> [--dry-run] | grant-role --employee-no <番号> --role <member|worker|admin> | set-password --employee-no <番号> | send-daily-reminders | send-test-mail --to <アドレス> | seed-demo]";
+// 行末の \ は「次の行へ続く（改行と、次の行の頭の空白は入らない）」という印
+const USAGE: &str = "使い方: webapp [serve | import-employees <CSV> [--dry-run] \
+                     | grant-role --employee-no <番号> --role <member|worker|admin> \
+                     | set-password --employee-no <番号> | send-daily-reminders \
+                     | send-test-mail --to <アドレス> | seed-demo]";
 
 pub async fn run(args: Vec<String>) -> anyhow::Result<()> {
     // 開発のパソコンでは、.env のファイルから環境変数を読む（サーバーには .env を置かず、サービスの XML に書く）

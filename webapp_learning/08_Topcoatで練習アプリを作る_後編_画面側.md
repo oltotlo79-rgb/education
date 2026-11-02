@@ -1047,7 +1047,8 @@ async fn detail_body(user: &Employee, full: &FullRequest, errors: &[String]) -> 
             <ul>
                 for a in &full.attachments {
                     <li>
-                        <a href=(href!(crate::app::attachments::id::download, crate::app::attachments::id::Id(a.id)))>(&a.original_name)</a>
+                        let url = href!(crate::app::attachments::id::download, crate::app::attachments::id::Id(a.id));
+                        <a href=(url)>(&a.original_name)</a>
                         " （" (fmt_size(a.size)) "）"
                     </li>
                 }
