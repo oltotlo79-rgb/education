@@ -642,14 +642,6 @@ pub async fn index(cx: &Cx) -> Result<impl View> {
 }
 ```
 
-<!-- first-use -->
-
-> **▶ ここで初めて出てくるコード**
->
-> - **`NoteFormState::default()`**（型とメソッド）: この巻で作る型 `NoteFormState`（入力フォームの中身と、まちがいの知らせ）を、空の状態で作る書き方。最初にフォームを表示する時に使います。
-
-<!-- /first-use -->
-
 - 最初の行で `require_user(cx)` を呼びます。ログインしていなければ、ここで 303 になり、下の行は動きません。
 - `notes_index` に渡すのは、`owner: user.id` です。一覧の部品は、持ち主を引数で受け取るので、「誰の一覧か」を、部品の中で勝手に決めることができません。
 
@@ -5103,6 +5095,14 @@ pub fn total_pages(&self) -> u32 {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`u64::from()`**（数）: 小さい整数の型などを、`u64` に変える関数（値が変わらない変換だけ）。
+
+<!-- /first-use -->
+
 「前へ」「次へ」のリンクは、`src/views.rs` の `pagination` が作ります。キーワードがあれば、`q` も付けます。
 
 ```rust
@@ -6029,14 +6029,6 @@ async fn eight_flashes() {
 }
 ```
 
-<!-- first-use -->
-
-> **▶ ここで初めて出てくるコード**
->
-> - **`Jar::default()`**（クッキー）: クッキーの瓶（クッキーをまとめて持つ入れ物）を、空の状態で作る書き方。
-
-<!-- /first-use -->
-
 ```powershell
 cargo test --test u09_flash -- --nocapture
 ```
@@ -6782,7 +6774,10 @@ lines.join('\n')
 > - **`.createElement()`**（JavaScript・TypeScript）: `document.createElement('iframe')` は、新しい HTML のタグ（要素）を作る、ブラウザーの関数です。
 > - **`.appendChild()`**（JavaScript・TypeScript）: 作ったタグを、ページの中の決めた所（親）の最後に入れるメソッド。
 > - **`.querySelectorAll()`**（JavaScript・TypeScript）: CSS と同じ書き方（`.flash`・`button` など）で、ページの中の合うタグを全部探すメソッド。
+> - **`.filter()`**（JavaScript・TypeScript）: 配列から、条件に合う物だけを集めた新しい配列を作るメソッド。
+> - **`.map()`**（JavaScript・TypeScript）: 配列の中身を 1 つずつ変換した、新しい配列を作るメソッド。
 > - **`.toLowerCase()`**（JavaScript・TypeScript）: 英字を小文字にした文字列を返すメソッド（Rust の `to_lowercase`）。
+> - **`.pop()`**（JavaScript・TypeScript）: JavaScript・TypeScript で、配列の最後の 1 つを取り出すメソッド（元の配列から消える）。
 > - **`.padEnd()`**（JavaScript・TypeScript）: 文字列の後ろを空白で埋めて、決めた長さにするメソッド。表のように並べて表示する時に使います。
 
 <!-- /first-use -->
@@ -6828,6 +6823,7 @@ focusLog.map((t, i) => `${i + 1}. ${t}`).join('\n')
 > **▶ ここで初めて出てくるコード**
 >
 > - **`.addEventListener()`**（JavaScript・TypeScript）: クリック・入力などの出来事（イベント）が起きた時に動く関数を登録するメソッド。`document.addEventListener('focusin', (e) => { … })`。
+> - **`.trim()`**（JavaScript・TypeScript）: JavaScript・TypeScript で、文字列の前後の空白を取り除いたものを返すメソッド。
 > - **`?.`**（JavaScript・TypeScript）: `a?.b` は、`a` が `null` や `undefined` なら、そこで止めて `undefined` にする書き方（オプショナルチェーン）。無いかもしれない物を、エラーにせずにたどれます。
 
 <!-- /first-use -->
@@ -6949,6 +6945,7 @@ lines.join('\n')
 
 > **▶ ここで初めて出てくるコード**
 >
+> - **`if`**（JavaScript・TypeScript）: JavaScript・TypeScript の条件。`if (条件) { … } else { … }`。条件は `( )` で囲みます。
 > - **`null`**（JavaScript・TypeScript）: JavaScript で「値が無い」ことを表す値。
 > - **`.getBoundingClientRect()`**（JavaScript・TypeScript）: タグが、画面のどこに、どの大きさで表示されているか（位置・幅・高さ）を返すメソッド。はみ出しや重なりを調べる時に使います。
 

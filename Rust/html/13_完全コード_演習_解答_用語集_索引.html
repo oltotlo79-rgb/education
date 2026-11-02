@@ -7247,16 +7247,6 @@ C 形式の違うメール: 状態 401・中央値 45 ミリ秒（7 回: 38〜76
 <span class="p">}</span>
 </code></pre></div></div>
 
-<!-- first-use -->
-
-<blockquote>
-<p><strong>▶ ここで初めて出てくるコード</strong></p>
-<ul>
-<li><strong><code>SignupFormState::default()</code></strong>（型とメソッド）: この巻で作る型 <code>SignupFormState</code>（登録フォームの中身とまちがいの知らせ）を、空の状態で作る書き方。</li>
-</ul>
-</blockquote>
-<!-- /first-use -->
-
 <div class="codehilite"><div class="code-wrap" id="code-180"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="sd">//! GET /login : ログインフォーム</span>
 <span class="sd">//! POST /login : メールとパスワードを確かめ、セッションを始めて 303 でノート一覧へ</span>
 <span class="sd">//!</span>
@@ -9529,11 +9519,13 @@ content-length: 4659
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
+<li><strong><code>else</code></strong>（JavaScript・TypeScript）: JavaScript・TypeScript で、<code>if</code> の条件に合わなかった時の所。<code>else if (条件)</code> で、条件をつなげられます。</li>
 <li><strong><code>.launch()</code></strong>（Playwright）: Playwright で、ブラウザーを起動するメソッド。<code>chromium.launch({ channel: 'chrome' })</code> は、入っている Chrome を使います。</li>
 <li><strong><code>.newContext()</code></strong>（Playwright）: 起動したブラウザーの中に、まっさらな「利用者ひとり分」の環境（クッキーなどが別々）を作るメソッド。画面の大きさも決められます。</li>
 <li><strong><code>.newPage()</code></strong>（Playwright）: 新しいタブ（ページ）を開くメソッド。</li>
 <li><strong><code>.getPropertyValue()</code></strong>（JavaScript・TypeScript）: <code>getComputedStyle(要素).getPropertyValue("white-space")</code> のように、CSS の項目の、実際に効いている値を取り出すメソッド。</li>
 <li><strong><code>.setViewportSize()</code></strong>（Playwright）: 画面の大きさ（幅・高さ）を変えるメソッド。スマホの幅で崩れないかを確かめる時に使います。</li>
+<li><strong><code>.close()</code></strong>（JavaScript・TypeScript）: Playwright で、ブラウザーを閉じるメソッド（<code>await browser.close()</code>）。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -9993,6 +9985,7 @@ content-length: 4659
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
+<li><strong><code>.bytes()</code></strong>（文字列）: 文字列を、1 バイトずつ取り出せる形にするメソッド。<code>s.bytes().all(|b| b.is_ascii_digit())</code> で「全部、半角の数字か」を調べます。</li>
 <li><strong><code>AssetConfig::hosted_at()</code></strong>（Topcoat）: アセット（CSS など）を、決めた URL の場所から配る設定を作る関数。テストで、束を作らずに CSS の URL だけを決める時に使います。</li>
 <li><strong><code>Manifest</code></strong>（Topcoat）: アセットの目録（元の名前と、ハッシュの付いた本当の名前の対応表）の型。</li>
 <li><strong><code>ManifestEntry</code></strong>（Topcoat）: アセットの目録の 1 行（1 つのファイルの情報）の型。</li>

@@ -2067,11 +2067,17 @@ sys.exit(1 if problems else 0)
 
 > **▶ ここで初めて出てくるコード**
 >
+> - **`from`**（Python）: `from パッケージ import 名前` の一部で、「どこから読み込むか」を書きます。`from pathlib import Path`。
+> - **`None`**（Python）: Python の「値が無い」ことを表す値。調べる時は `x is None` と書きます。
 > - **`global`**（Python）: 関数の中で、外（ファイル全体）の変数を書きかえる時に使う宣言。
 > - **`not`**（Python）: Python で「〜ではない」。`if not ok:` は「`ok` が成り立たなければ」。
+> - **`is`**（Python）: 「同じ物か」を調べる書き方。`x is None`・`x is not None` のように、`None` と比べる時に使います。
 > - **`and`**（Python）: Python で「かつ」。両方が成り立つ時だけ `True` になります。
 > - **`True`**（Python）: Python の「正しい（はい）」の値。反対は `False`。
+> - **`or`**（Python）: 「または」。`a or b` は、`a` が空（`None`・`""`・0 など）なら `b` を使います。
+> - **`try`**（Python）: Python で、失敗するかもしれない処理を `try:` の中に書き、失敗した時の処理を `except:` に書く書き方。
 > - **`with`**（Python）: 使い終わったら自動で片づける（ファイルや接続を閉じる）書き方。`with open(…) as f:` の中で使った物は、抜ける時に閉じられます。
+> - **`as`**（Python）: Python で、別の名前を付ける書き方。`except Exception as error:`（起きたエラーを `error` で受け取る）・`import numpy as np`・`with open(…) as f:` のように使います。
 > - **`except`**（Python）: `try:` の中でエラーが起きた時に動く所。`except Exception as error:` で、起きたエラーを `error` という名前で受け取ります。
 > - **`.loads()`**（Python）: 文字列から読み取るメソッド。`tomllib.loads(文字列)` は TOML、`json.loads(文字列)` は JSON を、Python の辞書にします。
 > - **`.read_text()`**（Python）: `Path` のファイルの中身を、全部文字列として読むメソッド。`encoding="utf-8"` を付けて読みます。
@@ -3554,17 +3560,26 @@ ThreadingHTTPServer(("127.0.0.1", listen_port), Handler).serve_forever()
 > **▶ ここで初めて出てくるコード**
 >
 > - **`elif`**（Python）: Python の「そうでなくて、もし〜なら」（`else if` の短い形）。
+> - **`class`**（Python）: クラス（データと、それを扱う関数をまとめた設計図）を作る書き方。`class Handler(BaseHTTPRequestHandler):` は、元のクラスを受け継いで作ります。
 > - **`pass`**（Python）: 「何もしない」という Python の命令。中身が要らないけれど、形の上で何か書く必要がある所に置きます。
+> - **`while`**（Python）: Python で、条件が `True` の間くり返す書き方。`while True:` は、`break` で抜けるまでずっとくり返します。
+> - **`break`**（Python）: Python のくり返しを、途中で抜ける命令。
 > - **`.Lock()`**（Python）: `threading.Lock()` は、いくつものスレッドが同時に同じ物を使わないようにする鍵を作る関数です。
+> - **`.join()`**（Python）: Python で、区切り文字の方に付けて、リストの中身をつなぐメソッド。`" ".join(["a", "b"])` は `"a b"`（TypeScript とは書く順番が逆なので注意）。
+> - **`.split()`**（Python）: Python で、文字列を分けてリストにするメソッド。`"a b  c".split()` のように何も渡さないと、空白（いくつ続いても）で分けます。
+> - **`.append()`**（Python）: Python で、リストの後ろに 1 つ足すメソッド。
 > - **`.lower()`**（Python）: 英字を小文字にした文字列を返すメソッド。
 > - **`.readline()`**（Python）: 1 行だけ読むメソッド。
 > - **`.strip()`**（Python）: 前後の空白や改行を取り除いたものを返すメソッド（Rust の `trim`）。
 > - **`.HTTPConnection()`**（Python）: `http.client.HTTPConnection(ホスト, ポート)` は、HTTP で相手のサーバーにつなぐ物を作る関数です。
+> - **`.request()`**（Python）: `http.client` の接続で、HTTP の頼み（メソッド・パス・本文・ヘッダー）を送るメソッド。
 > - **`.getresponse()`**（Python）: 送った頼みに対する、相手の返事を受け取るメソッド。
+> - **`.write()`**（Python）: ファイルに文字を書くメソッド。`f.write(line + "\n")`（改行は自分で付けます）。
 > - **`.send_response()`**（Python）: HTTP のサーバーとして、答えの番号（200 など）を返し始めるメソッド。
 > - **`.getheaders()`**（Python）: 受け取った返事のヘッダーを、`(名前, 値)` の組の並びで返すメソッド。
 > - **`.send_header()`**（Python）: HTTP のサーバーとして、ヘッダーを 1 つ返すメソッド。
 > - **`.end_headers()`**（Python）: ヘッダーの終わりを知らせるメソッド。このあとに本文を書きます。
+> - **`.close()`**（Python）: 接続やファイルを閉じるメソッド。
 > - **`.serve_forever()`**（Python）: HTTP のサーバーを、止めるまでずっと動かし続けるメソッド。
 > - **`urlsplit()`**（Python）: URL を、部品（`scheme`・`hostname`・`port`・`path` など）に分ける関数。
 

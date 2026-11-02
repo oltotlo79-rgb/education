@@ -1112,6 +1112,7 @@ async fn main() {
 
 > **▶ ここで初めて出てくるコード**
 >
+> - **`.discover()`**（Topcoat）: `Router::builder().discover()` で、`#[page]` などの付いた関数を全部自動で集めて、ルーターに登録するメソッド（第6巻 UNIT 02）。
 > - **`Router::builder()`**（Topcoat）: Topcoat のルーター（URL ごとの名簿）を組み立て始める関数。`Router::builder().discover().build()` は、`#[page]` を付けた関数を全部自動で集めて（`discover`）、ルーターを作ります（第6巻 UNIT 02）。
 > - **`RouterBuilderDiscoverExt`**（Topcoat）: `.discover()`（`#[page]` の付いた関数を自動で集める）を使えるようにする機能（トレイト）。`use` しておく必要があります。
 
@@ -2198,6 +2199,8 @@ pub fn build_router(state: AppState, assets: impl Into<AssetConfig>) -> Router {
 
 > **▶ ここで初めて出てくるコード**
 >
+> - **`.cookies()`**（Topcoat）: ルーターに、クッキーを使う仕組みを登録するメソッド（`module_router!().cookies()`）。セッションを使う時も、先にこれを登録します。
+> - **`.app_context()`**（Topcoat）: アプリ全体で共有する物（データベースの接続など）をルーターに登録するメソッド。ページの関数からは、`cx` を通して取り出せます（第6巻 UNIT 07）。
 > - **`SessionConfig::default()`**（Topcoat）: Topcoat のセッション（ログインの状態などを覚える仕組み）を、おすすめの設定で用意する書き方。`.sessions(SessionConfig::default())` でルーターに登録します（第6巻 UNIT 10）。
 > - **`AssetConfig`**（Topcoat）: Topcoat のアセット（CSS・画像など）の配り方の設定の型。本番は束（`AssetBundle`）から、テストは `AssetConfig::hosted_at(…)` のように、場面に合わせて渡します。
 > - **`SessionConfig`**（Topcoat）: Topcoat のセッションの設定（クッキーの名前・期限など）の型。
@@ -4974,8 +4977,9 @@ async fn main() {
 
 > **▶ ここで初めて出てくるコード**
 >
+> - **`.method()`**（HTTP）: `Request::builder().method(Method::POST)` のように、作るリクエストの HTTP のメソッドを決めるメソッド。
+> - **`.uri()`**（HTTP）: `Request::builder().uri("/notes")` のように、作るリクエストの URL を決めるメソッド。
 > - **`.into_body()`**（HTTP）: HTTP の答え（レスポンス）から、本文の部分だけを取り出すメソッド。テストで、返ってきた本文を確かめる時に使います。
-> - **`Request::builder()`**（HTTP）: HTTP の要求（リクエスト）を、組み立て始める関数。テストで、`.method("POST").uri("/notes").body(…)` のように作り、ルーターに直接渡して試します。
 > - **`String::from_utf8()`**（文字列）: バイトの並び（`Vec<u8>`）を、文字列（`String`）に変える関数。UTF-8 の文字として読めない時は `Err` を返します。
 > - **`Method`**（HTTP）: HTTP のメソッド（`GET`・`POST`・`PUT`・`DELETE` など）を表す型。
 
@@ -5690,6 +5694,7 @@ async fn main() {
 > **▶ ここで初めて出てくるコード**
 >
 > - **`#[procedure]`**（Topcoat）: Topcoat の印（属性）。ブラウザーの中のボタンなどから、サーバーの関数を呼べるようにします（中では `POST /api/…` という通信になります。第6巻 UNIT 09）。
+> - **`.runtime()`**（Topcoat）: ルーターに、ブラウザーの中で画面を変える仕組み（runtime）を登録するメソッド（第6巻 UNIT 09）。
 > - **`topcoat::runtime::script()`**（Topcoat）: ブラウザーの中で画面を変える仕組み（runtime）を使うためのスクリプトを、ページに入れる関数（第6巻 UNIT 09）。
 > - **`RouterBuilderRuntimeExt`**（Topcoat）: ルーターに `.runtime()`（ブラウザーの中で画面を変える仕組み）を登録できるようにする機能（トレイト）。
 
@@ -6599,7 +6604,6 @@ async fn main() {
 
 > **▶ ここで初めて出てくるコード**
 >
-> - **`session::token_hash()`**（Topcoat）: Topcoat の関数。今のリクエストのセッションの印（トークン）の、ハッシュを返します。データベースの `sessions` 表に、ハッシュで記録しておき、ログイン中かを調べるのに使います（第8巻 UNIT 05）。
 > - **`Cookie::build()`**（クッキー）: クッキー（ブラウザーに覚えておいてもらう小さな値）を、設定しながら作り始める関数。`Cookie::build(("theme", "dark")).path("/").build()` のように、名前と値、使う範囲などを決めます。
 > - **`Cookie`**（クッキー）: クッキー 1 つ（名前と値と、使う範囲・期限などの設定）を表す型。
 > - **`Cookies`**（クッキー）: 今のリクエストのクッキーを読み書きする入れ物（クッキーの瓶）。`jar.add(…)` で足し、`jar.get("名前")` で読みます。

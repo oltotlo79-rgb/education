@@ -1375,6 +1375,7 @@ Content-Length: 34
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
+<li><strong><code>.discover()</code></strong>（Topcoat）: <code>Router::builder().discover()</code> で、<code>#[page]</code> などの付いた関数を全部自動で集めて、ルーターに登録するメソッド（第6巻 UNIT 02）。</li>
 <li><strong><code>Router::builder()</code></strong>（Topcoat）: Topcoat のルーター（URL ごとの名簿）を組み立て始める関数。<code>Router::builder().discover().build()</code> は、<code>#[page]</code> を付けた関数を全部自動で集めて（<code>discover</code>）、ルーターを作ります（第6巻 UNIT 02）。</li>
 <li><strong><code>RouterBuilderDiscoverExt</code></strong>（Topcoat）: <code>.discover()</code>（<code>#[page]</code> の付いた関数を自動で集める）を使えるようにする機能（トレイト）。<code>use</code> しておく必要があります。</li>
 </ul>
@@ -2401,6 +2402,8 @@ content-length: 64
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
+<li><strong><code>.cookies()</code></strong>（Topcoat）: ルーターに、クッキーを使う仕組みを登録するメソッド（<code>module_router!().cookies()</code>）。セッションを使う時も、先にこれを登録します。</li>
+<li><strong><code>.app_context()</code></strong>（Topcoat）: アプリ全体で共有する物（データベースの接続など）をルーターに登録するメソッド。ページの関数からは、<code>cx</code> を通して取り出せます（第6巻 UNIT 07）。</li>
 <li><strong><code>SessionConfig::default()</code></strong>（Topcoat）: Topcoat のセッション（ログインの状態などを覚える仕組み）を、おすすめの設定で用意する書き方。<code>.sessions(SessionConfig::default())</code> でルーターに登録します（第6巻 UNIT 10）。</li>
 <li><strong><code>AssetConfig</code></strong>（Topcoat）: Topcoat のアセット（CSS・画像など）の配り方の設定の型。本番は束（<code>AssetBundle</code>）から、テストは <code>AssetConfig::hosted_at(…)</code> のように、場面に合わせて渡します。</li>
 <li><strong><code>SessionConfig</code></strong>（Topcoat）: Topcoat のセッションの設定（クッキーの名前・期限など）の型。</li>
@@ -5087,8 +5090,9 @@ error[E0277]: `Rc&lt;std::string::String&gt;` cannot be shared between threads s
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
+<li><strong><code>.method()</code></strong>（HTTP）: <code>Request::builder().method(Method::POST)</code> のように、作るリクエストの HTTP のメソッドを決めるメソッド。</li>
+<li><strong><code>.uri()</code></strong>（HTTP）: <code>Request::builder().uri("/notes")</code> のように、作るリクエストの URL を決めるメソッド。</li>
 <li><strong><code>.into_body()</code></strong>（HTTP）: HTTP の答え（レスポンス）から、本文の部分だけを取り出すメソッド。テストで、返ってきた本文を確かめる時に使います。</li>
-<li><strong><code>Request::builder()</code></strong>（HTTP）: HTTP の要求（リクエスト）を、組み立て始める関数。テストで、<code>.method("POST").uri("/notes").body(…)</code> のように作り、ルーターに直接渡して試します。</li>
 <li><strong><code>String::from_utf8()</code></strong>（文字列）: バイトの並び（<code>Vec&lt;u8&gt;</code>）を、文字列（<code>String</code>）に変える関数。UTF-8 の文字として読めない時は <code>Err</code> を返します。</li>
 <li><strong><code>Method</code></strong>（HTTP）: HTTP のメソッド（<code>GET</code>・<code>POST</code>・<code>PUT</code>・<code>DELETE</code> など）を表す型。</li>
 </ul>
@@ -5797,6 +5801,7 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>#[procedure]</code></strong>（Topcoat）: Topcoat の印（属性）。ブラウザーの中のボタンなどから、サーバーの関数を呼べるようにします（中では <code>POST /api/…</code> という通信になります。第6巻 UNIT 09）。</li>
+<li><strong><code>.runtime()</code></strong>（Topcoat）: ルーターに、ブラウザーの中で画面を変える仕組み（runtime）を登録するメソッド（第6巻 UNIT 09）。</li>
 <li><strong><code>topcoat::runtime::script()</code></strong>（Topcoat）: ブラウザーの中で画面を変える仕組み（runtime）を使うためのスクリプトを、ページに入れる関数（第6巻 UNIT 09）。</li>
 <li><strong><code>RouterBuilderRuntimeExt</code></strong>（Topcoat）: ルーターに <code>.runtime()</code>（ブラウザーの中で画面を変える仕組み）を登録できるようにする機能（トレイト）。</li>
 </ul>
@@ -6690,7 +6695,6 @@ internal server error
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
-<li><strong><code>session::token_hash()</code></strong>（Topcoat）: Topcoat の関数。今のリクエストのセッションの印（トークン）の、ハッシュを返します。データベースの <code>sessions</code> 表に、ハッシュで記録しておき、ログイン中かを調べるのに使います（第8巻 UNIT 05）。</li>
 <li><strong><code>Cookie::build()</code></strong>（クッキー）: クッキー（ブラウザーに覚えておいてもらう小さな値）を、設定しながら作り始める関数。<code>Cookie::build(("theme", "dark")).path("/").build()</code> のように、名前と値、使う範囲などを決めます。</li>
 <li><strong><code>Cookie</code></strong>（クッキー）: クッキー 1 つ（名前と値と、使う範囲・期限などの設定）を表す型。</li>
 <li><strong><code>Cookies</code></strong>（クッキー）: 今のリクエストのクッキーを読み書きする入れ物（クッキーの瓶）。<code>jar.add(…)</code> で足し、<code>jar.get("名前")</code> で読みます。</li>

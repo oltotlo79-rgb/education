@@ -2175,6 +2175,14 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; fini
 </form>
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`<label>`**（HTML）: 入力欄の名前を表すタグ。`<label for="title">件名</label>` の `for` と、入力欄の `id` を同じにすると、名前を押しても入力欄が選ばれ、読み上げソフトにも伝わります。
+
+<!-- /first-use -->
+
 - これは、完成した RustNote にも残っている改善点です。完成したアプリでも、画面の設計を見直すと、こうした抜けが見つかります。見た目と使いやすさの決まりは、UNIT 09 でまとめて確かめます。
 
 ### まとめ
@@ -3747,6 +3755,15 @@ fn r5_only_auth_hashes_passwords() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`BTreeSet::new()`**（HashMap（表））: 空の `BTreeSet`（重ならず、小さい順に並ぶ集まり）を作る関数。
+> - **`BTreeSet::from()`**（HashMap（表））: 配列などから、`BTreeSet` を作る関数。`BTreeSet::from(["a", "b"])`。
+
+<!-- /first-use -->
+
 `tests/architecture.rs` として保存して実行します。
 
 ```powershell
@@ -4518,14 +4535,6 @@ async fn creating_a_note_is_500_when_note_storage_is_broken() {
     assert_eq!(calls, ["insert"], "insert だけが呼ばれるはずです");
 }
 ```
-
-<!-- first-use -->
-
-> **▶ ここで初めて出てくるコード**
->
-> - **`RecordingBrokenNotes::default()`**（型とメソッド）: この巻のテストで作る、わざと失敗するノートの保管係（`RecordingBrokenNotes`）を、初期値で作る書き方。
-
-<!-- /first-use -->
 
 ```powershell
 cargo test --test u04_q3 -- --nocapture
@@ -6639,7 +6648,13 @@ for fg, bg, where in pairs:
 
 > **▶ ここで初めて出てくるコード**
 >
+> - **`import`**（Python）: ほかのモジュール（部品）を読み込む書き方。`import re` で正規表現の道具、`from pathlib import Path` で `Path` だけを使えるようにします。
 > - **`def`**（Python）: Python で関数を作る書き方。`def luminance(hex_color):` の次の行から、字下げした所が関数の中身です。
+> - **`for`**（Python）: Python のくり返し。`for x in 並び:` の次の行から、字下げした所が中身です。`[式 for x in 並び]` の形（内包表記）で、新しいリストを 1 行で作ることもできます。
+> - **`in`**（Python）: `for x in 並び`（並びから 1 つずつ）と、`値 in 並び`（含まれているか）の 2 つの使い方があります。
+> - **`if`**（Python）: Python の条件。`if 条件:` の次の行から、字下げした所が中身です。`a if 条件 else b` の形で、1 行の中で値を選ぶこともできます。
+> - **`else`**（Python）: `if` の条件に合わなかった時の所。`if … else …` の 1 行の形でも使います。
+> - **`return`**（Python）: Python の関数の結果を返して、関数を終える命令。
 > - **`.findall()`**（Python）: `re.findall(パターン, 文字列)` は、正規表現（文字の形の決まり）に合う所を、全部リストにして返す関数です。
 > - **`dict()`**（Python）: Python の辞書（キー → 値の表）を作る関数。`dict([("a", 1), ("b", 2)])` のように、組の並びから作れます。
 > - **`int()`**（Python）: Python で、文字列などを整数にする関数。`int("ff", 16)` は、16 進数の `ff` を 255 にします。

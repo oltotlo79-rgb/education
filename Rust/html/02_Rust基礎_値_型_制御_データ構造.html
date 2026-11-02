@@ -1479,6 +1479,7 @@ u8::try_from(100) = Ok(100)
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>as</code></strong>（数）: 型を変える書き方。<code>x as f64</code> は整数を小数に、<code>300 as u8</code> は 300 を u8 に変えます。入りきらない分は<strong>黙って切り捨てられる</strong>ので（300 → 44）、範囲が分からない時は <code>try_from</code> を使います。</li>
+<li><strong><code>u32::from()</code></strong>（数）: 小さい整数の型などを、<code>u32</code> に変える関数（値が変わらない変換だけ）。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -4511,6 +4512,7 @@ Vec の合計: 60
 <ul>
 <li><strong><code>.pop()</code></strong>（Vec（並び））: <code>Vec</code> の最後の 1 つを取り出すメソッド。空なら <code>None</code> を返すので、結果は <code>Option</code> です。<code>String</code> なら最後の 1 文字を取り出します。</li>
 <li><strong><code>.sort()</code></strong>（Vec（並び））: <code>Vec</code> の中身を、小さい順（文字なら辞書の順）に並べかえるメソッド。新しい <code>Vec</code> は作らず、その <code>Vec</code> 自身を並べかえるので、<code>mut</code> が要ります。</li>
+<li><strong><code>Vec::new()</code></strong>（Vec（並び））: 空の <code>Vec</code> を作る関数。あとで <code>push</code> で足すので、<code>let mut v = Vec::new();</code> のように <code>mut</code> を付けます。中身の型は、足す物から Rust が推し量ります。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -5265,6 +5267,17 @@ Note {
 [x] #1 牛乳を買う
 取り出したタイトル: 牛乳を買う
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Self</code></strong>（型とメソッド）: <code>impl</code> の中で、「今、関数を付けている型そのもの」を表す名前。<code>fn new(…) -&gt; Self</code> は「この型の値を返す」という意味で、型の名前を何度も書かずに済みます。</li>
+<li><strong><code>Self</code></strong>（型とメソッド）: <code>impl</code> の中で、「今、関数を付けている型そのもの」を表す名前（<code>-&gt; Self</code>・<code>Self { … }</code> など）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <h4 id="1_52">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1-new-self">解説1: 関連関数 <code>new</code> と <code>Self</code></h5>
@@ -6152,6 +6165,7 @@ Note {
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
+<li><strong><code>.map()</code></strong>（イテレーター）: 中身を 1 つずつ変換するメソッド。イテレーターなら <code>v.iter().map(|x| x * 2)</code> で全部を 2 倍に、<code>Option</code> なら <code>Some</code> の中身だけを変換します（<code>None</code> は <code>None</code> のまま）。<code>Result</code> なら <code>Ok</code> の中身だけを変換します。</li>
 <li><strong><code>.is_some()</code></strong>（Option）: <code>Option</code> が <code>Some</code>（値がある）なら <code>true</code> を返すメソッド。値そのものは要らず、あるかどうかだけ知りたい時に使います。</li>
 </ul>
 </blockquote>
@@ -7746,6 +7760,7 @@ Err(ParseIntError { kind: InvalidDigit })
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
+<li><strong><code>.entry()</code></strong>（HashMap（表））: <code>HashMap</code> の、そのキーの場所（あるか無いか）を取り出すメソッド。<code>map.entry(キー).or_insert(0)</code> のように、「無ければ入れる」と組み合わせて使います。</li>
 <li><strong><code>.or_insert()</code></strong>（HashMap（表））: <code>map.entry(キー).or_insert(0)</code> の形で、「キーが無ければ 0 を入れる。そして、その値の場所を返す」メソッド。<code>*map.entry(word).or_insert(0) += 1;</code> は「数える」時の決まり文句です。</li>
 <li><strong><code>.into_iter()</code></strong>（イテレーター）: 入れ物の中身を、借りずに「もらって」1 つずつ取り出す形にするメソッド。使ったあと、元の入れ物は使えなくなります（<code>.iter()</code> は借りるだけ）。</li>
 <li><strong><code>BTreeMap</code></strong>（HashMap（表））: キーの順（小さい順・辞書の順）に並んでいる「キー → 値」の表。使い方は <code>HashMap</code> とほぼ同じで、回すと必ずキーの順に出てきます。</li>
@@ -7875,6 +7890,8 @@ true true
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
+<li><strong><code>.copied()</code></strong>（Option）: 借りている値（<code>&amp;i32</code> など）を、写した値（<code>i32</code>）にするメソッド。<code>map.get("a").copied()</code> は <code>Option&lt;&amp;i32&gt;</code> を <code>Option&lt;i32&gt;</code> にします。</li>
+<li><strong><code>.filter()</code></strong>（イテレーター）: 条件に合う物だけを残すメソッド。<code>v.iter().filter(|n| **n % 2 == 0)</code> は偶数だけ。<code>|n|</code> の中の <code>n</code> は借りた値なので、<code>*</code> が付くことがあります。</li>
 <li><strong><code>.any()</code></strong>（イテレーター）: 並びの中に、条件に合う物が 1 つでもあれば <code>true</code> を返すメソッド。全部が合うかは <code>.all()</code> で調べます。</li>
 </ul>
 </blockquote>
@@ -8100,6 +8117,16 @@ true true
 完了率: 40%（2/5 件）
 1. 牛乳を買う / 2. 卵を買う
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>BTreeMap::new()</code></strong>（HashMap（表））: 空の <code>BTreeMap</code>（キーの順に並ぶ表）を作る関数。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <h4 id="1_76">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1-filter-map">解説1: 構造体のフィールドで filter / map する</h5>
@@ -8453,6 +8480,7 @@ error: could not compile `basics` (bin &quot;basics&quot;) due to 1 previous err
 <ul>
 <li><strong><code>crate</code></strong>（モジュール）: 「このプロジェクト（クレート）のいちばん上」を表す言葉。<code>use crate::note::Note;</code> は「このプロジェクトの <code>note</code> モジュールの <code>Note</code> を使う」という意味です。</li>
 <li><strong><code>.get_mut()</code></strong>（HashMap（表））: <code>HashMap</code> や <code>Vec</code> から、書きかえるために中身を借りるメソッド。キー（番号）が無い時は <code>None</code> です。<code>if let Some(n) = map.get_mut("a") { *n += 1; }</code> のように使います。</li>
+<li><strong><code>.values()</code></strong>（HashMap（表））: <code>HashMap</code> の値だけを、1 つずつ取り出せる形で返すメソッド（順番は決まっていない）。</li>
 <li><strong><code>.sort_by_key()</code></strong>（Vec（並び））: 「何で並べるか」を関数で決めて、<code>Vec</code> を並べかえるメソッド。<code>notes.sort_by_key(|note| note.id)</code> は、番号の小さい順にします。</li>
 <li><strong><code>Self::default()</code></strong>（型とメソッド）: その型の「初期値」（<code>Default</code> の値）を作る書き方。<code>Self</code> は「今 <code>impl</code> している型そのもの」を表します。</li>
 <li><strong><code>Default</code></strong>（型とメソッド）: 「初期値（空の値）を作れる」機能（トレイト）。<code>#[derive(Default)]</code> を付けると、数は 0、文字列は <code>""</code>、<code>bool</code> は <code>false</code> の初期値を作れます。</li>

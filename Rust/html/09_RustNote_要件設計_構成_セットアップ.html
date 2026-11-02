@@ -2675,6 +2675,16 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; fini
 <span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>&lt;label&gt;</code></strong>（HTML）: 入力欄の名前を表すタグ。<code>&lt;label for="title"&gt;件名&lt;/label&gt;</code> の <code>for</code> と、入力欄の <code>id</code> を同じにすると、名前を押しても入力欄が選ばれ、読み上げソフトにも伝わります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li>これは、完成した RustNote にも残っている改善点です。完成したアプリでも、画面の設計を見直すと、こうした抜けが見つかります。見た目と使いやすさの決まりは、UNIT 09 でまとめて確かめます。</li>
 </ul>
@@ -4459,6 +4469,17 @@ routes ⇄ views
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>BTreeSet::new()</code></strong>（HashMap（表））: 空の <code>BTreeSet</code>（重ならず、小さい順に並ぶ集まり）を作る関数。</li>
+<li><strong><code>BTreeSet::from()</code></strong>（HashMap（表））: 配列などから、<code>BTreeSet</code> を作る関数。<code>BTreeSet::from(["a", "b"])</code>。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><code>tests/architecture.rs</code> として保存して実行します。</p>
 <div class="codehilite"><div class="code-wrap" id="code-110"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">test</span> <span class="p">-</span><span class="n">-test</span> <span class="n">architecture</span>
 </code></pre></div></div>
@@ -5205,16 +5226,6 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out; fini
 <span class="w">    </span><span class="fm">assert_eq!</span><span class="p">(</span><span class="n">calls</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;insert&quot;</span><span class="p">],</span><span class="w"> </span><span class="s">&quot;insert だけが呼ばれるはずです&quot;</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div></div>
-
-<!-- first-use -->
-
-<blockquote>
-<p><strong>▶ ここで初めて出てくるコード</strong></p>
-<ul>
-<li><strong><code>RecordingBrokenNotes::default()</code></strong>（型とメソッド）: この巻のテストで作る、わざと失敗するノートの保管係（<code>RecordingBrokenNotes</code>）を、初期値で作る書き方。</li>
-</ul>
-</blockquote>
-<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-143"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">test</span> <span class="p">-</span><span class="n">-test</span> <span class="n">u04_q3</span> <span class="p">--</span> <span class="p">-</span><span class="n">-nocapture</span>
 </code></pre></div></div>
@@ -7298,7 +7309,13 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
+<li><strong><code>import</code></strong>（Python）: ほかのモジュール（部品）を読み込む書き方。<code>import re</code> で正規表現の道具、<code>from pathlib import Path</code> で <code>Path</code> だけを使えるようにします。</li>
 <li><strong><code>def</code></strong>（Python）: Python で関数を作る書き方。<code>def luminance(hex_color):</code> の次の行から、字下げした所が関数の中身です。</li>
+<li><strong><code>for</code></strong>（Python）: Python のくり返し。<code>for x in 並び:</code> の次の行から、字下げした所が中身です。<code>[式 for x in 並び]</code> の形（内包表記）で、新しいリストを 1 行で作ることもできます。</li>
+<li><strong><code>in</code></strong>（Python）: <code>for x in 並び</code>（並びから 1 つずつ）と、<code>値 in 並び</code>（含まれているか）の 2 つの使い方があります。</li>
+<li><strong><code>if</code></strong>（Python）: Python の条件。<code>if 条件:</code> の次の行から、字下げした所が中身です。<code>a if 条件 else b</code> の形で、1 行の中で値を選ぶこともできます。</li>
+<li><strong><code>else</code></strong>（Python）: <code>if</code> の条件に合わなかった時の所。<code>if … else …</code> の 1 行の形でも使います。</li>
+<li><strong><code>return</code></strong>（Python）: Python の関数の結果を返して、関数を終える命令。</li>
 <li><strong><code>.findall()</code></strong>（Python）: <code>re.findall(パターン, 文字列)</code> は、正規表現（文字の形の決まり）に合う所を、全部リストにして返す関数です。</li>
 <li><strong><code>dict()</code></strong>（Python）: Python の辞書（キー → 値の表）を作る関数。<code>dict([("a", 1), ("b", 2)])</code> のように、組の並びから作れます。</li>
 <li><strong><code>int()</code></strong>（Python）: Python で、文字列などを整数にする関数。<code>int("ff", 16)</code> は、16 進数の <code>ff</code> を 255 にします。</li>

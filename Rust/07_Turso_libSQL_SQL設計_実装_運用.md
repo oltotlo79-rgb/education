@@ -626,6 +626,7 @@ fn push_statement(statements: &mut Vec<String>, text: &str) {
 > - **`.peek()`**（イテレーター）: 次の 1 つを、取り出さずに覗くメソッド（`peekable` にしたイテレーターで使う）。
 > - **`.by_ref()`**（イテレーター）: イテレーターを借りたまま、途中まで使うメソッド。`for c in chars.by_ref()` のあとでも、残りを続けて読めます。
 > - **`ExitCode`**（プロセス）: `main` が返す、終了コードの型。`fn main() -> ExitCode` にして、`ExitCode::SUCCESS`（0）か `ExitCode::FAILURE`（1）を返します。`process::exit` と違い、片づけをしてから終われます。
+> - **`Value`**（データベース）: libsql の、型を決めずにデータベースの値を持つ型。`Null`・`Integer`・`Real`・`Text`・`Blob` のどれかです。
 > - **`SUCCESS`**（プロセス）: `ExitCode::SUCCESS` は、終了コード 0（成功）です。
 > - **`FAILURE`**（プロセス）: `ExitCode::FAILURE` は、終了コード 1（失敗）です。
 > - **`Null`**（データベース）: `Value::Null` は、データベースの値が NULL（値が無い）であることを表す種類です。
@@ -877,14 +878,6 @@ INSERT INTO notes (user_id, title, body) VALUES (2, '旅行の計画', '京都�
 SELECT id, email, password_hash FROM users;
 SELECT * FROM notes;
 ```
-
-<!-- first-use -->
-
-> **▶ ここで初めて出てくるコード**
->
-> - **`IN`**（SQL）: SQL で「このどれか」。`WHERE status IN ('queued', 'running')` は、状態がどちらかの行だけです。`CHECK (pinned IN (0, 1))` は、0 か 1 しか入れられない決まりです。
-
-<!-- /first-use -->
 
 `sql/u01_create.sql` として保存し、`sql-lab` フォルダで次のコマンドを実行します。
 
@@ -1140,6 +1133,7 @@ CREATE INDEX idx_notes_user_updated ON notes (user_id, updated_at DESC, id DESC)
 > - **`DELETE`**（SQL）: `DELETE FROM 表 WHERE 条件` で、表の行を消す SQL の命令。`WHERE` を忘れると、全部の行が消えます。`ON DELETE CASCADE` の中では「消された時」という意味です。
 > - **`CASCADE`**（SQL）: `ON DELETE CASCADE` は、「つながった元の行（ユーザー）が消されたら、こちらの行（そのユーザーのノート）も一緒に消す」という決まりです。
 > - **`INDEX`**（SQL）: `CREATE INDEX 名前 ON 表 (列)` で、表に索引（本の索引のような、速く探すための仕組み）を作る SQL の命令。よく条件や並べかえに使う列に作ります（第7巻 UNIT 04）。
+> - **`DESC`**（SQL）: `ORDER BY 列 DESC` で、大きい順（新しい順）に並べます（小さい順は `ASC`）。
 
 <!-- /first-use -->
 
@@ -1159,15 +1153,6 @@ RustNote の3つの表（`0001_users.sql`・`0002_notes.sql`・`0003_sessions.sq
 -- DB の中にある表と索引の一覧（sqlite_schema は SQLite が自動で持っている表）
 SELECT type, name, tbl_name FROM sqlite_schema ORDER BY tbl_name, type DESC, name;
 ```
-
-<!-- first-use -->
-
-> **▶ ここで初めて出てくるコード**
->
-> - **`ORDER`**（SQL）: `ORDER BY 列` で、取り出した行を並べる書き方。`DESC` を付けると大きい順（新しい順）です。
-> - **`BY`**（SQL）: `ORDER BY`（並べる）・`GROUP BY`（まとめる）の一部で、「〜で」という意味です。
-
-<!-- /first-use -->
 
 ```powershell
 cargo run -q --bin sql -- --setup migrations/0001_users.sql --setup migrations/0002_notes.sql `
@@ -1231,6 +1216,7 @@ SELECT name, seq FROM sqlite_sequence;
 > **▶ ここで初めて出てくるコード**
 >
 > - **`UNION`**（SQL）: 2 つの `SELECT` の結果を、縦につなげる書き方。`UNION ALL` は、重なりも消さずにそのままつなげます。
+> - **`ALL`**（SQL）: `UNION ALL` は、2 つの結果を、重なりも消さずにそのままつなげる書き方です。
 
 <!-- /first-use -->
 
@@ -1351,15 +1337,6 @@ CREATE TABLE memos (id INTEGER PRIMARY KEY, text TEXT NOT NULL);
 -- IF NOT EXISTS を付けると「無ければ作る。あれば何もしない」になる
 CREATE TABLE IF NOT EXISTS memos (id INTEGER PRIMARY KEY, text TEXT NOT NULL);
 ```
-
-<!-- first-use -->
-
-> **▶ ここで初めて出てくるコード**
->
-> - **`IF`**（SQL）: `CREATE TABLE IF NOT EXISTS` の一部で、「もし〜なら」。「無ければ作る、あれば何もしない」という意味になります。
-> - **`EXISTS`**（SQL）: SQL で「ある」。`IF NOT EXISTS` は「無ければ」という意味です。
-
-<!-- /first-use -->
 
 ```powershell
 cargo run -q --bin sql -- sql/u01_ifnot.sql
@@ -2411,15 +2388,6 @@ SELECT id, title, done, version FROM notes WHERE id = 9;
 DELETE FROM notes WHERE id = 9 AND user_id = 1;
 SELECT COUNT(*) AS found FROM notes WHERE id = 9;
 ```
-
-<!-- first-use -->
-
-> **▶ ここで初めて出てくるコード**
->
-> - **`UPDATE`**（SQL）: `UPDATE 表 SET 列 = 値 WHERE 条件` で、行の中身を書きかえる SQL の命令。`WHERE` を忘れると、全部の行が変わります。
-> - **`SET`**（SQL）: `UPDATE` の中で、「どの列を、どの値にするか」を書く所。
-
-<!-- /first-use -->
 
 `sql/u03_write.sql` として保存し、UNIT 02 と同じ表とデータを用意してから実行します。
 
@@ -7607,7 +7575,7 @@ async fn main() -> Result<(), libsql::Error> {
 > - **`IntoParams`**（データベース）: 「SQL に渡す値の並びにできる」機能（トレイト。libsql）。関数の引数を `impl IntoParams` にすると、`params![…]` でも `()` でも受け取れます。
 > - **`Rows`**（データベース）: `query` が返す、結果の行の並びの型（libsql）。`while let Some(row) = rows.next().await? { … }` で 1 行ずつ取り出します。
 > - **`COALESCE`**（SQL）: `COALESCE(値1, 値2)` は、最初の NULL でない値を返す SQL の関数。`COALESCE(SUM(done), 0)` は「合計が NULL（行が無い）なら 0」。
-> - **`SUM`**（SQL）: 列の値の合計を出す SQL の関数。`SUM(done)` は、`done` が 1 の行の数（完了の数）になります。
+> - **`SUM`**（SQL）: 列の値の合計を出す SQL の関数。
 
 <!-- /first-use -->
 
@@ -7752,15 +7720,6 @@ SELECT u.email, COUNT(*) AS notes, COALESCE(SUM(n.done), 0) AS done
  ORDER BY u.id;
 ```
 
-<!-- first-use -->
-
-> **▶ ここで初めて出てくるコード**
->
-> - **`COALESCE`**（SQL）: `COALESCE(値1, 値2)` は、最初の NULL でない値を返す SQL の関数。`COALESCE(SUM(done), 0)` は「合計が NULL（行が無い）なら 0」。
-> - **`SUM`**（SQL）: 列の値の合計を出す SQL の関数。
-
-<!-- /first-use -->
-
 ```powershell
 cargo run -q --bin sql -- --setup sql/schema.sql --setup sql/seed.sql sql/u09_inner_join.sql
 ```
@@ -7849,6 +7808,14 @@ for count in [32766, 32767] {
     }
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`i64::from()`**（数）: 小さい整数の型などを、`i64` に変える関数（値が変わらない変換だけ）。
+
+<!-- /first-use -->
 
 （`src/bin/u09_err_in_limit.rs`。`use libsql::{Builder, Value};` で、前半は例9-1 と同じ準備です。）
 

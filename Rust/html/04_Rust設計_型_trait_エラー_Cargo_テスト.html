@@ -1500,6 +1500,16 @@ chars().count() = 3
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.cloned()</code></strong>（Option）: 借りている値を、<code>.clone()</code> で複製した値にするメソッド。<code>Option&lt;&amp;String&gt;</code> を <code>Option&lt;String&gt;</code> に、イテレーターなら借りた物の並びを複製の並びにします。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-36"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u02_repo</span>
 </code></pre></div></div>
 
@@ -2825,7 +2835,6 @@ Box&lt;dyn Exporter&gt; の大きさ: 16 バイト
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
-<li><strong><code>InMemoryNoteRepository::default()</code></strong>（型とメソッド）: この巻で作る型 <code>InMemoryNoteRepository</code>（メモリの中にノートを持つ保管係）を、初期値（空の状態）で作る書き方。<code>#[derive(Default)]</code> を付けてあるので、<code>::default()</code> で作れます。</li>
 <li><strong><code>Send</code></strong>（スレッドと共有）: 「別のスレッドへ渡してもよい」ことを表す印（トレイト）。<code>Arc&lt;dyn NoteRepository + Send + Sync&gt;</code> の <code>+ Send</code> は「スレッドをまたいで渡せる物に限る」という条件です。多くの型は自動で持っています（<code>Rc</code> などは持っていません）。</li>
 <li><strong><code>Sync</code></strong>（スレッドと共有）: 「いくつものスレッドから同時に借りて読んでもよい」ことを表す印（トレイト）。Web サーバーのように、いくつもの処理が 1 つの物を共有する時に必要です。</li>
 </ul>
@@ -3666,6 +3675,7 @@ Box&lt;dyn Error&gt;: タイトルを入力してください
 <li><strong><code>#[error]</code></strong>（エラー処理）: <code>thiserror</code> の印（属性）。エラーの種類ごとに、表示する文を決めます。<code>#[error("タイトルが長すぎます（{0} 文字）")]</code> のように書くと、<code>Display</code> を自分で書かずに済みます。</li>
 <li><strong><code>#[source]</code></strong>（エラー処理）: <code>thiserror</code> の印（属性）。「このエラーの元になったエラー」の項目に付けます。<code>.source()</code> や <code>anyhow</code> の原因の表示で、元のエラーまでたどれるようになります。</li>
 <li><strong><code>#[from]</code></strong>（エラー処理）: <code>thiserror</code> の印（属性）。付けた項目の型のエラーから、自分のエラーへ自動で変換できるようにします（<code>From</code> の実装を作る）。これで <code>?</code> を使った時に、自動で自分のエラーに変わります。</li>
+<li><strong><code>.source()</code></strong>（エラー処理）: エラーの「元になったエラー」を返すメソッド。<code>while let Some(e) = err.source()</code> のようにたどると、原因をさかのぼれます。</li>
 <li><strong><code>From</code></strong>（型とメソッド）: 「ある型から作れる」機能（トレイト）。<code>impl From&lt;RepoError&gt; for AppError</code> を書くと、<code>RepoError</code> を <code>AppError</code> に変えられます。<code>?</code> は、エラーを返す時にこの変換を自動で使います。</li>
 <li><strong><code>ErrorKind</code></strong>（エラー処理）: 入出力のエラーの「種類」。<code>std::io::ErrorKind::NotFound</code>（無い）・<code>ConnectionRefused</code>（つなぐのを断られた）などがあり、<code>e.kind()</code> で調べて、種類ごとに処理を分けられます。</li>
 <li><strong><code>ConnectionRefused</code></strong>（エラー処理）: <code>ErrorKind::ConnectionRefused</code> は、「相手のパソコンに、その番号で待っているプログラムがいない」ために、つなぐのを断られた、というエラーの種類です。</li>
@@ -3807,6 +3817,7 @@ Box&lt;dyn Error&gt;: タイトルを入力してください
 <li><strong><code>bail!</code></strong>（エラー処理）: <code>anyhow</code> のマクロ。その場でエラーを作って、関数から返します。<code>bail!("ノートが 1 件もありません");</code> は <code>return Err(anyhow!("…"));</code> の短い書き方です。</li>
 <li><strong><code>.with_context()</code></strong>（エラー処理）: <code>anyhow</code> のメソッド。失敗した時のエラーに、「何をしていて失敗したか」の説明を書き足します。<code>.with_context(|| format!("{path} を読めませんでした"))?</code>。ログを見た人が、原因をすぐ分かるようになります。</li>
 <li><strong><code>.unwrap_or_else()</code></strong>（エラー処理）: <code>Option</code> や <code>Result</code> から中身を取り出し、無い（失敗した）時は、渡した関数を動かして代わりの値を作るメソッド。<code>unwrap_or</code> と違い、代わりの値を作る処理が、必要な時だけ動きます。</li>
+<li><strong><code>std::env::args()</code></strong>（プロセス）: プログラムに渡された引数を取り出す関数（<code>env::args()</code> と同じ）。</li>
 <li><strong><code>Context</code></strong>（エラー処理）: <code>anyhow::Context</code> は、<code>with_context</code>・<code>context</code> メソッドを使えるようにする機能（トレイト）。<code>use anyhow::Context;</code> と書いておくと、<code>Result</code> や <code>Option</code> に説明を付けられます。</li>
 </ul>
 </blockquote>
@@ -4521,6 +4532,16 @@ note: see more `Cargo.toml` keys and their definitions at https://doc.rust-lang.
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.last()</code></strong>（Vec（並び））: 並びの最後の 1 つを <code>Option</code> で返すメソッド（空なら <code>None</code>）。最初の 1 つは <code>.first()</code>。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><strong>src/main.rs</strong></p>
 <div class="codehilite"><div class="code-wrap" id="code-155"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// main.rs は、同じ package のライブラリ（notes_app）を使う「別の crate」</span>
 <span class="k">use</span><span class="w"> </span><span class="n">notes_app</span><span class="p">::</span><span class="n">domain</span><span class="p">::</span><span class="n">user</span><span class="p">::</span><span class="n">count_owned</span><span class="p">;</span>
@@ -4537,16 +4558,6 @@ note: see more `Cargo.toml` keys and their definitions at https://doc.rust-lang.
 <span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;#1 の持ち主: {}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">store</span><span class="p">.</span><span class="n">all</span><span class="p">()[</span><span class="mi">0</span><span class="p">].</span><span class="n">owner_id</span><span class="p">());</span>
 <span class="p">}</span>
 </code></pre></div></div>
-
-<!-- first-use -->
-
-<blockquote>
-<p><strong>▶ ここで初めて出てくるコード</strong></p>
-<ul>
-<li><strong><code>NoteStore::default()</code></strong>（型とメソッド）: この巻で作る型 <code>NoteStore</code> を、初期値（空の状態）で作る書き方（<code>#[derive(Default)]</code> のおかげで使える）。</li>
-</ul>
-</blockquote>
-<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-156"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span>
 </code></pre></div></div>
@@ -5232,6 +5243,7 @@ note: see more `Cargo.toml` keys and their definitions at https://doc.rust-lang.
 <li><strong><code>cfg!</code></strong>（テスト）: 条件（機能が ON か・どの OS か など）が合っているかを、<code>true</code>・<code>false</code> で返すマクロ。<code>if cfg!(feature = "json") { … }</code> のように、普通の <code>if</code> の中で使えます。</li>
 <li><strong><code>#[cfg_attr]</code></strong>（テスト）: 「条件が合う時だけ、この印（属性）を付ける」という印。<code>#[cfg_attr(feature = "json", derive(Serialize))]</code> は、<code>json</code> の機能が ON の時だけ <code>Serialize</code> を付けます。</li>
 <li><strong><code>serde_json::to_string()</code></strong>（JSON）: Rust の値を、JSON の文字列（1 行）に変える関数。値の型に <code>Serialize</code> が付いている必要があります。失敗することもあるので <code>Result</code> が返ります。</li>
+<li><strong><code>Serialize</code></strong>（JSON）: 「JSON などにできる」機能（トレイト。<code>serde</code> の部品）。<code>#[derive(Serialize)]</code> を付けた型は、<code>serde_json::to_string</code> で JSON にできます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->

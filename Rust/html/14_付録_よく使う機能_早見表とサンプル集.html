@@ -2525,7 +2525,6 @@ Dot の面積 = 0.00
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
-<li><strong><code>Note::default()</code></strong>（型とメソッド）: この付録のサンプルで作る型 <code>Note</code> を、初期値（番号 0・空のタイトル・未完了）で作る書き方（<code>#[derive(Default)]</code> のおかげで使える）。</li>
 <li><strong><code>PI</code></strong>（数）: <code>std::f64::consts::PI</code> は、円周率（3.14159…）の決まった値です。</li>
 </ul>
 </blockquote>
@@ -2975,7 +2974,9 @@ work フォルダを消しました: exists = false
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
+<li><strong><code>fs::OpenOptions::new()</code></strong>（ファイルとフォルダ）: ファイルの開き方を決める係を作る関数（<code>OpenOptions::new()</code> と同じ）。</li>
 <li><strong><code>fs::metadata()</code></strong>（ファイルとフォルダ）: ファイルの情報（大きさ・日時など）を取り出す関数。<code>fs::metadata(path)?.len()</code> で大きさが分かります。</li>
+<li><strong><code>fs::copy()</code></strong>（ファイルとフォルダ）: ファイルをコピーする関数。<code>fs::copy(元, 先)?</code>。先にファイルがあれば上書きします。</li>
 <li><strong><code>fs::remove_dir_all()</code></strong>（ファイルとフォルダ）: フォルダを、中身ごと全部消す関数。ごみ箱は通らないので、場所をよく確かめて使います。</li>
 </ul>
 </blockquote>

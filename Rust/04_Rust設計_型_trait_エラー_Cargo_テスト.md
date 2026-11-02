@@ -1271,6 +1271,14 @@ fn main() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.cloned()`**（Option）: 借りている値を、`.clone()` で複製した値にするメソッド。`Option<&String>` を `Option<String>` に、イテレーターなら借りた物の並びを複製の並びにします。
+
+<!-- /first-use -->
+
 ```powershell
 cargo run --bin u02_repo
 ```
@@ -2682,7 +2690,6 @@ fn main() {
 
 > **▶ ここで初めて出てくるコード**
 >
-> - **`InMemoryNoteRepository::default()`**（型とメソッド）: この巻で作る型 `InMemoryNoteRepository`（メモリの中にノートを持つ保管係）を、初期値（空の状態）で作る書き方。`#[derive(Default)]` を付けてあるので、`::default()` で作れます。
 > - **`Send`**（スレッドと共有）: 「別のスレッドへ渡してもよい」ことを表す印（トレイト）。`Arc<dyn NoteRepository + Send + Sync>` の `+ Send` は「スレッドをまたいで渡せる物に限る」という条件です。多くの型は自動で持っています（`Rc` などは持っていません）。
 > - **`Sync`**（スレッドと共有）: 「いくつものスレッドから同時に借りて読んでもよい」ことを表す印（トレイト）。Web サーバーのように、いくつもの処理が 1 つの物を共有する時に必要です。
 
@@ -3530,6 +3537,7 @@ fn main() {
 > - **`#[error]`**（エラー処理）: `thiserror` の印（属性）。エラーの種類ごとに、表示する文を決めます。`#[error("タイトルが長すぎます（{0} 文字）")]` のように書くと、`Display` を自分で書かずに済みます。
 > - **`#[source]`**（エラー処理）: `thiserror` の印（属性）。「このエラーの元になったエラー」の項目に付けます。`.source()` や `anyhow` の原因の表示で、元のエラーまでたどれるようになります。
 > - **`#[from]`**（エラー処理）: `thiserror` の印（属性）。付けた項目の型のエラーから、自分のエラーへ自動で変換できるようにします（`From` の実装を作る）。これで `?` を使った時に、自動で自分のエラーに変わります。
+> - **`.source()`**（エラー処理）: エラーの「元になったエラー」を返すメソッド。`while let Some(e) = err.source()` のようにたどると、原因をさかのぼれます。
 > - **`From`**（型とメソッド）: 「ある型から作れる」機能（トレイト）。`impl From<RepoError> for AppError` を書くと、`RepoError` を `AppError` に変えられます。`?` は、エラーを返す時にこの変換を自動で使います。
 > - **`ErrorKind`**（エラー処理）: 入出力のエラーの「種類」。`std::io::ErrorKind::NotFound`（無い）・`ConnectionRefused`（つなぐのを断られた）などがあり、`e.kind()` で調べて、種類ごとに処理を分けられます。
 > - **`ConnectionRefused`**（エラー処理）: `ErrorKind::ConnectionRefused` は、「相手のパソコンに、その番号で待っているプログラムがいない」ために、つなぐのを断られた、というエラーの種類です。
@@ -3680,6 +3688,7 @@ fn main() -> Result<()> {
 > - **`bail!`**（エラー処理）: `anyhow` のマクロ。その場でエラーを作って、関数から返します。`bail!("ノートが 1 件もありません");` は `return Err(anyhow!("…"));` の短い書き方です。
 > - **`.with_context()`**（エラー処理）: `anyhow` のメソッド。失敗した時のエラーに、「何をしていて失敗したか」の説明を書き足します。`.with_context(|| format!("{path} を読めませんでした"))?`。ログを見た人が、原因をすぐ分かるようになります。
 > - **`.unwrap_or_else()`**（エラー処理）: `Option` や `Result` から中身を取り出し、無い（失敗した）時は、渡した関数を動かして代わりの値を作るメソッド。`unwrap_or` と違い、代わりの値を作る処理が、必要な時だけ動きます。
+> - **`std::env::args()`**（プロセス）: プログラムに渡された引数を取り出す関数（`env::args()` と同じ）。
 > - **`Context`**（エラー処理）: `anyhow::Context` は、`with_context`・`context` メソッドを使えるようにする機能（トレイト）。`use anyhow::Context;` と書いておくと、`Result` や `Option` に説明を付けられます。
 
 <!-- /first-use -->
@@ -4412,6 +4421,14 @@ impl NoteStore {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.last()`**（Vec（並び））: 並びの最後の 1 つを `Option` で返すメソッド（空なら `None`）。最初の 1 つは `.first()`。
+
+<!-- /first-use -->
+
 **src/main.rs**
 
 ```rust
@@ -4430,14 +4447,6 @@ fn main() {
     println!("#1 の持ち主: {}", store.all()[0].owner_id());
 }
 ```
-
-<!-- first-use -->
-
-> **▶ ここで初めて出てくるコード**
->
-> - **`NoteStore::default()`**（型とメソッド）: この巻で作る型 `NoteStore` を、初期値（空の状態）で作る書き方（`#[derive(Default)]` のおかげで使える）。
-
-<!-- /first-use -->
 
 ```powershell
 cargo run
@@ -5163,6 +5172,7 @@ fn main() {
 > - **`cfg!`**（テスト）: 条件（機能が ON か・どの OS か など）が合っているかを、`true`・`false` で返すマクロ。`if cfg!(feature = "json") { … }` のように、普通の `if` の中で使えます。
 > - **`#[cfg_attr]`**（テスト）: 「条件が合う時だけ、この印（属性）を付ける」という印。`#[cfg_attr(feature = "json", derive(Serialize))]` は、`json` の機能が ON の時だけ `Serialize` を付けます。
 > - **`serde_json::to_string()`**（JSON）: Rust の値を、JSON の文字列（1 行）に変える関数。値の型に `Serialize` が付いている必要があります。失敗することもあるので `Result` が返ります。
+> - **`Serialize`**（JSON）: 「JSON などにできる」機能（トレイト。`serde` の部品）。`#[derive(Serialize)]` を付けた型は、`serde_json::to_string` で JSON にできます。
 
 <!-- /first-use -->
 
