@@ -146,6 +146,14 @@ New-Item -ItemType Directory -Force D:\webapp\prod\venv, D:\webapp\prod\tmp, D:\
 D:\webapp\prod\venv\Scripts\python.exe --version
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`D:\webapp\prod\venv\Scripts\python.exe`**（コマンド）: 本番用の仮想環境（venv）の Python を、場所を書いて直接動かす書き方。`--version` で版を確かめます。どの Python で動いているかを取り違えないように、場所まで書きます。
+
+<!-- /first-use -->
+
 **確かめること:** `D:\webapp\prod\venv\Scripts\python.exe` があり、`Python 3.14.x` と出ること。部品は、7 章で持ち込んでから入れます。
 
 > **用語:** 仮想環境（venv。ブイエンブ：Python の部品を、プロジェクトや環境ごとに分けて入れる仕組み。`venv\Scripts\python.exe` を使うと、その箱の部品が使われる）
@@ -360,6 +368,32 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 SILENCED_SYSTEM_CHECKS = ["security.W004", "security.W008", "security.W012", "security.W016"]
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`import`**（Python）: ほかのモジュール（部品）を読み込む書き方。`import re` で正規表現の道具、`from pathlib import Path` で `Path` だけを使えるようにします。
+> - **`from`**（Python）: `from パッケージ import 名前` の一部で、「どこから読み込むか」を書きます。`from pathlib import Path`。
+> - **`def`**（Python）: 関数を作る書き方。`def greet(name: str) -> str:` の次の行から、**字下げした所が関数の中身**です。Python は `{ }` の代わりに字下げで「どこまでが中身か」を表すので、字下げをそろえることがとても大事です。
+> - **`None`**（Python）: Python の「値が無い」ことを表す値。調べる時は `x is None` と書きます。
+> - **`if`**（Python）: Python の条件。`if 条件:` の次の行から、字下げした所が中身です。`a if 条件 else b` の形で、1 行の中で値を選ぶこともできます。
+> - **`is`**（Python）: 「同じ物か」を調べる書き方。`if value is None:` は「値が無ければ」。`None` と比べる時は `==` でなく `is` を使います。
+> - **`raise`**（Python）: エラー（例外）を起こして、処理を止める書き方。`raise TransitionError("…")`。呼んだ側は `try … except` で受け止められます。
+> - **`return`**（Python）: Python の関数の結果を返して、関数を終える命令。
+> - **`for`**（Python）: Python のくり返し。`for x in 並び:` の次の行から、字下げした所が中身です。`[式 for x in 並び]` の形（内包表記）で、新しいリストを 1 行で作ることもできます。
+> - **`in`**（Python）: `for x in 並び`（並びから 1 つずつ）と、`値 in 並び`（含まれているか）の 2 つの使い方があります。
+> - **`True`**（Python）: Python の「正しい（はい）」の値。反対は `False`。頭は大文字です（`true` ではありません）。
+> - **`False`**（Python）: Python の「正しくない（いいえ）」の値。
+> - **`.resolve()`**（Python）: `Path(__file__).resolve()` は、ファイルの場所を、`C:\` から始まる絶対の場所にするメソッド。`.parent` で 1 つ上のフォルダになります。
+> - **`.get()`**（Python）: 辞書（`dict`）から、キーで値を取り出すメソッド。`d.get("port", 8080)` は、キーが無ければ 2 つ目の値（無ければ `None`）を返すので、`d["port"]` と違ってエラーになりません。
+> - **`.lower()`**（Python）: 英字を小文字にした文字列を返すメソッド。`"True".lower() == "true"` のように、大文字小文字をそろえて比べます。
+> - **`.split()`**（Python）: Python で、文字列を分けてリストにするメソッド。`"a b  c".split()` のように何も渡さないと、空白（いくつ続いても）で分けます。
+> - **`.match()`**（Python）: `re.match(パターン, 文字列)` は、文字列の**先頭から**正規表現に合うかを調べる関数です。合えば、見つかった物が返ります（合わなければ `None`）。
+> - **`str()`**（Python）: 値を文字列に変える関数。`str(8080)` は `"8080"`。数と文字列は `==` で比べても等しくならないので、そろえる時に使います。
+> - **`int()`**（Python）: 文字列などを整数にする関数。`int("25")` は 25。数でない文字だと `ValueError` です。
+
+<!-- /first-use -->
+
 | 設定 | 意味 | 大事な理由 |
 |---|---|---|
 | `ALLOWED_HOSTS` | 受け付ける名前 | ここに無い名前で来たお願いは、**400** で断られる（8.4 の表の 5） |
@@ -436,6 +470,26 @@ def echo(request):
     return Response({"received": len(request.body)})
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`class`**（Python）: クラス（データと、それを扱う関数をまとめた設計図）を作る書き方。`class Request:` の次から、字下げした所が中身です。
+> - **`or`**（Python）: 「または」。`a or b` は、`a` が空（`None`・`""`・0 など）なら `b` を使います。`(row.get("番号") or "").strip()` は「無ければ空の文字列にしてから空白を取る」。
+> - **`.loads()`**（Python）: 文字列から読み取るメソッド。`tomllib.loads(文字列)` は TOML、`json.loads(文字列)` は JSON を、Python の辞書にします。
+> - **`.get_username()`**（Django）: Django の利用者から、ログインに使う名前（この資料では社員番号）を返すメソッド。
+> - **`method_decorator()`**（Django）: 関数用の印（デコレーター）を、クラスの画面（ビュー）のメソッドにも付けられるようにする物。
+> - **`authenticate()`**（Django）: 名前とパスワードが正しいかを確かめる Django の関数。正しければ利用者（`User`）を、違えば `None` を返します。
+> - **`login()`**（Django）: 確かめた利用者を、ログインした状態にする Django の関数（セッションを始める）。`login(request, user)`。
+> - **`logout()`**（Django）: ログアウトさせる Django の関数（セッションを消す）。`logout(request)`。
+> - **`api_view()`**（Django REST framework）: 関数を、DRF の API の画面にする物。`@api_view(["GET", "POST"])` のように使います。
+> - **`len()`**（Python）: 長さ（中身の数）を返す関数。`len("abc")` は 3、`len([1, 2])` は 2、`len(sys.argv)` は「渡された引数の数＋1」です。
+> - **`@method_decorator`**（Django）: `@method_decorator(ensure_csrf_cookie, name="dispatch")` をクラスの上に付けて、そのクラスの画面に印を付けます。
+> - **`@require_POST`**（Django）: 「この画面は POST だけを受け付ける」という印（デコレーター）。GET などで来たら `405` を返します。ログアウトのように、状態を変える物に付けます。
+> - **`@api_view`**（Django REST framework）: `@api_view(["GET", "POST"])` を関数の上に付けて、API にします。決めたメソッド以外は 405 で断られます。
+
+<!-- /first-use -->
+
 ```python
 from django.contrib import admin
 from django.urls import path, re_path
@@ -453,6 +507,16 @@ urlpatterns = [
     re_path(r"^(?!api/|admin/|static/).*$", views.IndexView.as_view()),
 ]
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.as_view()`**（Django）: クラスで作った画面（ビュー）を、URL の決まりに登録できる形にするメソッド。
+> - **`path()`**（Django）: URL と、それに答える画面（ビュー）を結び付ける関数。`path("requests/<int:pk>/", views.detail)` の `<int:pk>` は、URL の中の数を `pk` という名前で受け取ります。
+> - **`re_path()`**（Django）: 正規表現で URL の決まりを書く関数。`re_path(r"^(?!api/|admin/).*$", …)` は「`api/`・`admin/` で始まらない URL は全部」（React の画面を返す）。
+
+<!-- /first-use -->
 
 - 最後の `re_path` は、「`api/`・`admin/`・`static/` で始まらない URL は、全部 React の画面を返す」という意味です。React が、URL を見て画面を切りかえます（`/requests/123` を直接開いても、画面が出る）。
 - `ensure_csrf_cookie` で、画面を開いたときに CSRF の札（`csrftoken` のクッキー）を渡します（8.2）。
@@ -479,6 +543,17 @@ export default defineConfig({
 });
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`import`**（JavaScript・TypeScript）: ほかのファイルや部品から、関数などを読み込む書き方。`import { rmSync } from "node:fs";` は、Node.js のファイルの道具から `rmSync` を使えるようにします。
+> - **`from`**（JavaScript・TypeScript）: `import { 名前 } from "場所";` の一部で、「どこから読み込むか」を書きます。
+> - **`export`**（TypeScript）: 「このファイルの外から使ってよい」という印。`export type RequestStatus = …` と書くと、ほかのファイルで `import` して使えます。
+> - **`default`**（JavaScript・TypeScript）: `export default` は、そのファイルから「いちばんの物」を 1 つ外に出す書き方。読み込む側は `import 名前 from "./ファイル"` と、好きな名前で受け取れます。
+
+<!-- /first-use -->
+
 ```javascript
 // Django が渡した csrftoken のクッキーを読む
 function csrfToken() {
@@ -503,6 +578,29 @@ export async function api(path, { method = "GET", body } = {}) {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`function`**（TypeScript）: 関数（ひとまとまりの処理）を作る書き方。`function greet(name: string): string { … }` は、「文字列の `name` を受け取って、文字列を返す関数 `greet`」です。
+> - **`const`**（JavaScript・TypeScript）: JavaScript・TypeScript で、変えない値に名前を付ける書き方。`const db = …;`。あとで別の値を入れようとするとエラーになります。
+> - **`return`**（JavaScript・TypeScript）: JavaScript・TypeScript で、関数の結果を返して、関数を終える命令。
+> - **`async`**（JavaScript・TypeScript）: JavaScript・TypeScript で、中で `await` を使える関数にする印。結果は `Promise`（あとで届く約束）で返ります。
+> - **`await`**（JavaScript・TypeScript）: JavaScript・TypeScript で、時間のかかる処理（`Promise`）が終わるまで待って、結果を受け取る書き方。`async` の関数の中で使います。
+> - **`undefined`**（TypeScript）: 「まだ値が入っていない」ことを表す値。`?` の付いた無くてもよい項目が無い時や、配列の範囲の外を読んだ時に出てきます。
+> - **`catch`**（TypeScript）: `try` の中で失敗した時に動く所。`catch (e)` の `e` にエラーが入ります（何が来るか分からないので、使う前に確かめます）。
+> - **`if`**（JavaScript・TypeScript）: JavaScript・TypeScript の条件。`if (条件) { … } else { … }`。条件は `( )` で囲みます。
+> - **`throw`**（TypeScript）: エラーを起こして、処理を止める書き方。`throw new Error("サーバーのエラー")`。`try … catch` で受け止められます。
+> - **`new`**（JavaScript・TypeScript）: クラスから、新しい物を作る書き方。`new DatabaseSync("ba.sqlite")`・`new Date()`・`new Error("…")` のように使います。
+> - **`.match()`**（TypeScript）: 文字列が正規表現に合う所を探すメソッド。見つかると、その情報（かっこの中の部分など）を配列で、見つからないと `null` を返します。
+> - **`.stringify()`**（TypeScript）: `JSON.stringify(値)` は、オブジェクトや配列を、JSON の文字列にする関数です。保存したり、サーバーへ送ったりする時に使います。
+> - **`.json()`**（JavaScript・TypeScript）: `fetch` の答え（`Response`）の本文を、JSON として読んで、オブジェクトにするメソッド。`await res.json()`。
+> - **`.catch()`**（TypeScript）: `Promise` が失敗した時の代わりの処理を登録するメソッド。`res.json().catch(() => ({}))` は「JSON として読めなければ空のオブジェクト」。
+> - **`=>`**（JavaScript・TypeScript）: アロー関数（短く書ける関数）の矢印。`(path) => \`…${path}\`` は「`path` を受け取って文字列を返す関数」。
+> - **`...`**（TypeScript）: スプレッド構文。`[...requests]` は配列の中身を広げて、新しい配列（写し）を作ります。`{ ...user, isAdmin: true }` は、オブジェクトを写して一部だけ変えます。
+
+<!-- /first-use -->
+
 - **`base: "/static/"` が大事です。** これが無いと、`index.html` の中の部品の住所が `/assets/...` になり、Django の 6.4 の `re_path` が `index.html` を返してしまうため、**画面が真っ白**になります（15 章）。
 - `api()` は、毎回クッキーから札を読み直します。**ログインすると、Django が札を新しい物に取りかえる**からです（8.4 の表の 9）。
 
@@ -524,6 +622,17 @@ $env:DJANGO_SECRET_KEY = "build-only"; $env:DJANGO_ALLOWED_HOSTS = "localhost"
 $env:DB_NAME = "x"; $env:DB_USER = "x"; $env:DB_PASSWORD = "x"
 .\.venv\Scripts\python.exe manage.py collectstatic --noinput
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`cd`**（PowerShell）: 「change directory（フォルダを移る）」の略。`cd rust-study` で、今いるフォルダの中の `rust-study` へ移ります。`cd ..` は 1 つ上のフォルダへ、`cd ~` はホームフォルダ（`C:\Users\you`）へ戻ります。今いる場所は、行の頭の `PS C:\Users\you\rust-study>` の部分に表示されます。
+> - **`npm ci`**（Node.js）: `package-lock.json` に書かれたとおりの版で、部品を入れ直すコマンド（`node_modules` を一度消してから入れる）。`npm install` と違い、`package-lock.json` を書きかえないので、いつ・どこで入れても同じになります。
+> - **`npm run`**（Node.js）: `package.json` の `scripts` に書いたコマンドを動かすコマンド。`npm run dev` は開発用のサーバーを起動し、`npm run build` は本番用のファイルを作ります。止める時は `Ctrl` ＋ `C` です。
+> - **`.\.venv\Scripts\python.exe`**（Python の道具）: 仮想環境（`.venv`）の中の Python を、場所を書いて動かす書き方。`.\.venv\Scripts\python.exe ファイル.py` でプログラムを動かし、`.\.venv\Scripts\python.exe -m pip install -r requirements.txt` で、その仮想環境に部品を入れます。仮想環境を「入る」操作（Activate）をしなくても、確実にその Python が使われます。
+
+<!-- /first-use -->
 
 **確かめること:**
 
@@ -614,6 +723,14 @@ HTTP では、Django は `Origin` の `http://webapp-stg.example.local` と、�
 .\manage.ps1 check --deploy
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.\manage.ps1`**（PowerShell）: 今いるフォルダの `manage.ps1`（この資料で作る、Django の管理コマンドを、本番の設定で動かすための小さなスクリプト）を動かす書き方。`.\manage.ps1 check --deploy` は、本番に出す前の設定の確かめです。
+
+<!-- /first-use -->
+
 `SILENCED_SYSTEM_CHECKS` を書く前は、次の 4 つの注意が出ました（試した結果）。どれも「HTTPS にせよ」という意味で、HTTP で動かす今回は当てはまりません。
 
 | 番号 | 意味 |
@@ -662,6 +779,14 @@ D:\webapp\stg\venv\Scripts\python.exe -m pip install --no-index `
     --find-links D:\webapp\releases\webapp-1.0.0\wheelhouse -r D:\webapp\stg\app\requirements.txt
 D:\webapp\stg\venv\Scripts\python.exe -m pip list
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`D:\webapp\stg\venv\Scripts\python.exe`**（コマンド）: 検証用の仮想環境の Python を、場所を書いて直接動かす書き方。`-m pip install …` は、その Python の pip で部品を入れる、`-c "…"` は、その場で 1 行の Python を動かす、という意味です。
+
+<!-- /first-use -->
 
 **確かめること:** `pip install` がエラー無しで終わり、`pip list` に `Django 5.2.18`・`waitress 3.0.2` などが並ぶこと（試した環境で、`--no-index` で入ることを確かめました）。
 
@@ -746,6 +871,14 @@ icacls D:\webapp\stg\tmp   /grant "NT SERVICE\webapp-stg:(OI)(CI)M"
 icacls D:\webapp\stg\service\webapp-stg-service.xml /inheritance:r /grant:r "*S-1-5-32-544:F" "*S-1-5-18:F" "NT SERVICE\webapp-stg:R"
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`D:\webapp\stg\service\webapp-stg-service.exe`**（コマンド）: WinSW を、検証用の名前に変えて置いた物。`install` で、検証用のサービスとして登録します。
+
+<!-- /first-use -->
+
 - `D:\webapp\stg` に読む・実行する許可を付けると、`venv\` と `app\` にも引き継がれます。
 - Python 本体（`C:\Program Files\Python314`）は、最初から全員が読めるので、許可を足す必要はありません。
 
@@ -777,6 +910,24 @@ try {
 exit $code
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`param`**（PowerShell）: スクリプトが受け取る引数を決める書き方。`param([string[]] $ManageArgs)` は、スクリプトに渡した値を `$ManageArgs` に入れます。
+> - **`Get-ChildItem -Path`**（PowerShell）: `Get-ChildItem` で、中身を見る場所を決めるオプション。`-Path $PSScriptRoot` は、このスクリプトがあるフォルダ。
+> - **`Get-Content -LiteralPath`**（PowerShell）: `Get-Content` で、読むファイルの場所を、書いたとおりの文字で決めるオプション。`-Path` と違い、`[` `]` や `*` を特別な文字として扱わないので、どんな名前のファイルでも確実に読めます。
+> - **`Push-Location`**（PowerShell）: 今いるフォルダを覚えてから、指定したフォルダへ移るコマンド。あとで `Pop-Location` を打つと、覚えたフォルダへ戻れます。
+> - **`Set-Item`**（PowerShell）: 項目の値を設定するコマンド。`Set-Item -Path "Env:名前" -Value 値` で、この PowerShell の窓の中だけの環境変数を設定します。
+> - **`Set-Item -Path`**（PowerShell）: `-Path "Env:名前"` で、どの項目（ここでは環境変数）を設定するかを指定します。
+> - **`Set-Item -Value`**（PowerShell）: `-Value 値` で、設定する値を指定します。
+> - **`finally`**（PowerShell）: `try { … } finally { … }` の `finally` の所は、`try` の中がうまくいっても、途中で失敗しても、必ず最後に動きます。元のフォルダへ戻る・記録を閉じる、などの後片づけに使います。
+> - **`Remove-Item -Path`**（PowerShell）: `Remove-Item` で、消す物の場所を決めるオプション。`Remove-Item -Path "Env:NAME"` は、環境変数 `NAME` を消します（`Env:` は環境変数の場所）。
+> - **`Remove-Item -ErrorAction`**（PowerShell）: `Remove-Item` で、エラーが起きた時の動きを決めるオプション。`-ErrorAction SilentlyContinue` は「無くてもエラーを出さずに次へ進む」。
+> - **`Pop-Location`**（PowerShell）: `Push-Location` で覚えたフォルダへ戻るコマンド。
+
+<!-- /first-use -->
+
 > **必ず「UTF-8 (BOM 付き)」で保存します（01 の 3.7）。** BOM 無しで保存して試すと、日本語のコメントの所で次の行（環境変数を消す行）が読み飛ばされ、**パスワードが窓に残りました**。BOM 付きにすると、残りませんでした。
 
 使い方:
@@ -806,6 +957,14 @@ Get-NetTCPConnection -State Listen -LocalPort 8081 | Format-Table LocalAddress, 
 Invoke-WebRequest http://127.0.0.1:8081/health -UseBasicParsing -Headers @{ Host = "webapp-stg.example.local" } |
     Select-Object StatusCode, Content
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Invoke-WebRequest -Headers`**（PowerShell）: 送るリクエストに、見出し（ヘッダー）を足すオプション。`-Headers @{ Host = "webapp-stg.example.local" }` は、名前を DNS に登録する前に、IIS の振り分けを確かめる時に使います。
+
+<!-- /first-use -->
 
 **確かめること:**
 
@@ -908,6 +1067,16 @@ Start-Service webapp-stg
 Invoke-WebRequest http://127.0.0.1:8081/health -UseBasicParsing -Headers @{ Host = "webapp-stg.example.local" } |
     Select-Object StatusCode
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Test-Path`**（PowerShell）: ファイルやフォルダがあるかを調べるコマンド。あれば `True`、無ければ `False`。
+> - **`Remove-Item -Recurse`**（PowerShell）: フォルダを、中身ごと全部消すオプション。消した物は「ごみ箱」に入らず、元に戻せないので、場所をよく確かめてから使います。
+> - **`Remove-Item -Force`**（PowerShell）: 読み取り専用や隠しファイルも、確かめずに消すオプション。
+
+<!-- /first-use -->
 
 - 新しい版の `app\` には、許可が引き継がれます（許可は `D:\webapp\stg` に付けてあるため）。
 - `Rename-Item` で「使われています」と出たら、サービスが止まりきっていません。`Get-Service webapp-stg` が `Stopped` になるまで待ちます。

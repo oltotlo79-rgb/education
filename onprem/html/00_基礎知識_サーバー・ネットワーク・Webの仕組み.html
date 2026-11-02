@@ -218,6 +218,7 @@ li, tr { page-break-inside: avoid; }
 <li><strong>コマンドやコードのコピー:</strong> PDF のコードの枠の<strong>右上にある青い「コピー」</strong>を押すと、同じ内容の <strong>HTML 版</strong>（<code>onprem\html</code> フォルダ）の、そのコードの所が開きます。そこで枠の右上の<strong>「コピー」ボタン</strong>を押すと、字下げや空の行も含めて、そのまま 1 回でコピーできます。コピーしたら、ブラウザーの「戻る」（<code>Alt</code> ＋ <code>←</code>）で PDF に戻ります。最初から <code>onprem\html\index.html</code> を開いて、HTML 版で読んでもかまいません。PDF の文字をマウスでなぞってコピーすると、Chrome や Edge では行の先頭の空白と空の行が消えるので、おすすめしません（PDF を見るソフトの決まった動きで、資料の作り方では直せません）。</li>
 </ul>
 <p><img src="../images/00-copy_button.webp" alt="左: PDF のコードの枠の右上の青いコピー。右: それを押すと開く HTML 版で、枠の右上のコピーボタンを押すとコピーしましたに変わる" style="width: 100%;">
+- <strong>初めて出てくるコマンドの説明:</strong> どの資料も、初めて出てくるコマンド・オプション・SQL などのすぐ下に、「<strong>▶ ここで初めて出てくるコード</strong>」の箱で、意味と使い方を書いています。あとで「これは何だっけ？」と思ったら、<strong>09 付録「出てくるコマンドと設定の一覧」</strong>で、機能ごとの表から引けます。
 - <strong>読み方:</strong> 0 章は「コンピューターの中身」という、いちばん手前の話です。分かっている人は飛ばしてかまいません。図はたとえで描いているので、まず図を見て、それから文を読むと分かりやすいです。</p>
 <h3 id="_2">例にするアプリ</h3>
 <p>この資料と手順書では、次のような<strong>社内向けの業務 Web アプリ</strong>を建てる前提で説明します。</p>
@@ -311,6 +312,10 @@ li, tr { page-break-inside: avoid; }
 <tr>
 <td>08 付録: よく使うコマンドの早見表</td>
 <td>毎日の確認・サービス・通信・ログ・ディスク・PostgreSQL・更新と切り戻しで打つコマンドを、やりたいこと別にまとめた表（実際に打った結果付き）</td>
+</tr>
+<tr>
+<td>09 付録: 出てくるコマンドと設定の一覧</td>
+<td>資料に出てくるコマンド・オプション・SQL・コードの部品の意味を、機能ごとの表で引ける一覧</td>
 </tr>
 <tr>
 <td>参考 HTTPS にする場合</td>
@@ -541,6 +546,18 @@ li, tr { page-break-inside: avoid; }
 <span class="nb">Get-Content</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">tools</span><span class="p">\</span><span class="n">users</span><span class="p">.</span><span class="n">csv</span> <span class="n">-Encoding</span> <span class="n">UTF8</span> <span class="n">-TotalCount</span> <span class="n">5</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Get-Content</code></strong>（PowerShell）: ファイルの中身を画面に出すコマンド（短い呼び名は <code>cat</code>）。<code>Get-Content memo.txt</code> で中身を表示します。日本語のファイルは <code>-Encoding utf8</code> を付けると文字化けしません。<code>-Tail 10</code> で最後の 10 行だけを出せます。</li>
+<li><strong><code>Get-Content -Encoding</code></strong>（PowerShell）: <code>-Encoding utf8</code> で、ファイルを UTF-8 として読みます。付けないと、Windows PowerShell 5.1 では日本語が化けることがあります。</li>
+<li><strong><code>Get-Content -TotalCount</code></strong>（PowerShell）: <code>Get-Content</code> で、ファイルの先頭から決めた行数だけを読むオプション。<code>-TotalCount 5</code> は先頭の 5 行。大きなファイルの中身を、少しだけのぞく時に使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><strong>確かめること:</strong> 日本語の名前が、正しく読めること。化けていたら、ファイルが Shift_JIS で保存されています。</p>
 <ul>
 <li>UTF-8 には、ファイルの先頭に「これは UTF-8 です」という印（<strong>BOM</strong>）を付ける形と、付けない形があります。Windows に最初から入っている PowerShell（5.1）は、<strong>BOM の無い UTF-8 のスクリプトを Shift_JIS だと思って読む</strong>ので、日本語を含むスクリプトは「UTF-8 (BOM 付き)」で保存します（01 Windows Server の使い方 3.7）。</li>
@@ -570,6 +587,19 @@ li, tr { page-break-inside: avoid; }
 <span class="c"># ドライブごとの、使っている量と空いている量を表示する（Used・Free の列）</span>
 <span class="nb">Get-PSDrive</span> <span class="n">-PSProvider</span> <span class="n">FileSystem</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>hostname</code></strong>（コマンド）: このパソコン（サーバー）の名前を表示するコマンド。</li>
+<li><strong><code>whoami</code></strong>（コマンド）: 今ログインしている利用者の名前（<code>ドメイン\名前</code> の形）を表示するコマンド。<code>whoami /groups</code> で、入っているグループも分かります。</li>
+<li><strong><code>Get-PSDrive</code></strong>（PowerShell）: PowerShell で使えるドライブ（<code>C:</code>・<code>D:</code> など）の一覧と、使っている量・空いている量を表示するコマンド。</li>
+<li><strong><code>Get-PSDrive -PSProvider</code></strong>（PowerShell）: <code>Get-PSDrive</code> で、種類を決めて取り出すオプション。<code>-PSProvider FileSystem</code> は、ディスクのドライブだけ（環境変数などの、ほかの種類を除く）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><strong>確かめること:</strong> <code>hostname</code> で、頼んだサーバーの名前（例：<code>WEBAPP-SV01</code>）が出ること。<code>Get-PSDrive</code> の <code>Free</code> で、D ドライブの空きが、頼んだ量に近いこと。</p>
 <p>PowerShell の使い方は、<strong>01 Windows Server の使い方</strong>で詳しく説明します。</p>
@@ -806,6 +836,18 @@ li, tr { page-break-inside: avoid; }
 <span class="nb">Get-Service</span> <span class="n">-Name</span> <span class="p">*</span><span class="n">postgres</span><span class="p">*</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">Name</span><span class="p">,</span> <span class="n">Status</span><span class="p">,</span> <span class="n">StartType</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Get-Service</code></strong>（PowerShell）: Windows のサービス（裏で動き続けるプログラム）の一覧と、動いているか（<code>Status</code>）を表示するコマンド。</li>
+<li><strong><code>Get-Service -Name</code></strong>（PowerShell）: <code>Get-Service</code> で、名前を決めて取り出すオプション。<code>-Name *postgres*</code> のように、<code>*</code> で「この文字を含む物」を探せます。</li>
+<li><strong><code>Select-Object</code></strong>（PowerShell）: 結果のうち、見たい列だけを選ぶコマンド。<code>… | Select-Object Name, Length</code> のように、<code>|</code>（パイプ）で前のコマンドの結果を受け取って使います。<code>-First 5</code> で最初の 5 つだけにもできます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><strong>確かめること:</strong> <code>Status</code> が <code>Running</code>（動いている）、<code>StartType</code> が <code>Automatic</code>（Windows と一緒に起動）になっていること。サービスの詳しい扱い方は、01 Windows Server の使い方の「サービス」の章で説明します。</p>
 <blockquote>
 <p><strong>用語:</strong> サービス（Windows サービス：画面の前に人がいなくても、OS が裏で動かし続けるプログラム。IIS も PostgreSQL も、サービスとして動く）</p>
@@ -993,6 +1035,22 @@ li, tr { page-break-inside: avoid; }
 <span class="nb">Get-NetTCPConnection</span> <span class="n">-State</span> <span class="n">Listen</span> <span class="p">|</span> <span class="nb">Sort-Object</span> <span class="n">LocalPort</span> <span class="p">|</span>
     <span class="nb">Select-Object</span> <span class="n">LocalAddress</span><span class="p">,</span> <span class="n">LocalPort</span><span class="p">,</span> <span class="n">OwningProcess</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Get-NetIPConfiguration</code></strong>（PowerShell）: このパソコンのネットワークの設定（IP アドレス・ゲートウェイ・DNS サーバー）を表示するコマンド。</li>
+<li><strong><code>Resolve-DnsName</code></strong>（PowerShell）: 名前（<code>webapp.example.local</code> など）を DNS に問い合わせて、IP アドレスを調べるコマンド。名前で開けない時、まずこれで「名前が引けているか」を確かめます。</li>
+<li><strong><code>Test-NetConnection</code></strong>（PowerShell）: 相手のパソコンにつながるかを確かめるコマンド。名前が引けるか・届くかを順に調べて表示します。</li>
+<li><strong><code>Test-NetConnection -Port</code></strong>（PowerShell）: 決めたポート番号につながるかを確かめるオプション。<code>-Port 80</code> の結果の <code>TcpTestSucceeded : True</code> なら、その窓口は開いています（False ならファイアウォールや、サービスが止まっていることを疑う）。</li>
+<li><strong><code>Get-NetTCPConnection</code></strong>（PowerShell）: パソコンのネットワークの接続や、待ち受けているポート番号を一覧にするコマンド。「8080 番をだれが使っているか」を調べる時に使います。</li>
+<li><strong><code>Get-NetTCPConnection -State</code></strong>（PowerShell）: <code>-State Listen</code> で、「待ち受けている」状態の物だけに絞ります（ほかに <code>Established</code>＝つながっている、など）。</li>
+<li><strong><code>Sort-Object</code></strong>（PowerShell）: 受け取った物を、決めた項目で並べかえるコマンド。<code>Sort-Object LocalPort</code> は、ポート番号の小さい順。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <table>
 <thead>
@@ -1269,6 +1327,17 @@ li, tr { page-break-inside: avoid; }
 <span class="p">(</span><span class="nb">Invoke-WebRequest</span> <span class="n">http</span><span class="p">://</span><span class="n">webapp</span><span class="p">.</span><span class="n">example</span><span class="p">.</span><span class="n">local</span><span class="p">/</span><span class="n">health</span> <span class="n">-UseBasicParsing</span><span class="p">).</span><span class="n">StatusCode</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Invoke-WebRequest</code></strong>（PowerShell）: URL にリクエストを送って、答え（状態コード・本文）を受け取るコマンド。<code>(Invoke-WebRequest http://…/health -UseBasicParsing).StatusCode</code> で、状態コード（200 など）だけを取り出せます。</li>
+<li><strong><code>Invoke-WebRequest -UseBasicParsing</code></strong>（PowerShell）: 答えの HTML を、Internet Explorer の部品を使わずに読むオプション。Windows Server で、IE の初めの設定が終わっていなくても動くように付けます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><strong>確かめること:</strong> <code>200</code> が表示されること。エラーになったら、その文に出ているステータスコード（404・502 など）を、5.1 の表と照らし合わせます。</p>
 <blockquote>
 <p><strong>用語:</strong> ヘッダー（リクエストやレスポンスに付く、付け札の情報。<code>Host</code>・<code>Cookie</code>・<code>Content-Type</code> など）</p>
@@ -1367,6 +1436,22 @@ li, tr { page-break-inside: avoid; }
 <span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">created_at</span><span class="w"> </span><span class="k">DESC</span><span class="w">               </span><span class="c1">-- 並べ方（DESC は新しい順）</span>
 <span class="k">LIMIT</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span><span class="w">                              </span><span class="c1">-- 最大の件数</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>SELECT</code></strong>（SQL）: 表から行を取り出す SQL の命令。<code>SELECT 列, … FROM 表 WHERE 条件 ORDER BY 列</code> の形でよく使います。<code>SELECT *</code> は全部の列です。</li>
+<li><strong><code>FROM</code></strong>（SQL）: <code>SELECT … FROM 表</code> の一部で、「どの表から」取り出すかを書きます。</li>
+<li><strong><code>WHERE</code></strong>（SQL）: <code>SELECT … FROM 表 WHERE 条件</code> の、条件を書く所。<code>WHERE user_id = 1</code> は「持ち主が 1 番の行だけ」。<code>UPDATE</code>・<code>DELETE</code> で <code>WHERE</code> を忘れると、全部の行が変わる（消える）ので注意します。</li>
+<li><strong><code>ORDER</code></strong>（SQL）: <code>ORDER BY 列</code> で、取り出した行を並べる書き方。<code>DESC</code> を付けると大きい順（新しい順）です。</li>
+<li><strong><code>BY</code></strong>（SQL）: <code>ORDER BY</code>（並べる）・<code>GROUP BY</code>（まとめる）の一部で、「〜で」という意味です。</li>
+<li><strong><code>DESC</code></strong>（SQL）: <code>ORDER BY 列 DESC</code> で、大きい順（新しい順）に並べます（小さい順は <code>ASC</code>）。</li>
+<li><strong><code>LIMIT</code></strong>（SQL）: <code>LIMIT 件数</code> で、取り出す行の数の上限を決める書き方。<code>ORDER BY … LIMIT 20</code> は「並べて、先頭の 20 件だけ」。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p>SQL の書き方と、データベースへのログインの仕方は、<strong>02 SQL と PostgreSQL の使い方</strong>で、サンプルを動かしながら説明します。</p>
 <h3 id="72">7.2 データベースのユーザーと接続</h3>

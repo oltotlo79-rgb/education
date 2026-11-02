@@ -94,6 +94,19 @@ Get-ChildItem Cert:\LocalMachine\My |
     Select-Object Subject, @{ Name = "Names"; Expression = { $_.DnsNameList.Unicode -join "," } }, NotAfter, Thumbprint
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Read-Host`**（PowerShell）: キーボードから 1 行入力してもらうコマンド。`Read-Host "説明"` で、説明を出して待ちます。
+> - **`Read-Host -AsSecureString`**（PowerShell）: 入力した文字を画面に出さず、暗号化した形（`SecureString`）で受け取るオプション。パスワードを入れてもらう時に使い、コマンドの履歴にも残りません。
+> - **`Import-PfxCertificate`**（PowerShell）: 証明書と秘密鍵の入った `.pfx` のファイルを、Windows の証明書の置き場に入れるコマンド。
+> - **`Import-PfxCertificate -FilePath`**（PowerShell）: 入れる `.pfx` のファイルの場所を決めるオプション。
+> - **`Import-PfxCertificate -CertStoreLocation`**（PowerShell）: 入れる先の証明書の置き場を決めるオプション。`Cert:\LocalMachine\My` は、このパソコン全体の「個人」の置き場（IIS はここから使う）。
+> - **`Import-PfxCertificate -Password`**（PowerShell）: `.pfx` のパスワード（`Read-Host -AsSecureString` で受け取った物）を渡すオプション。
+
+<!-- /first-use -->
+
 **確かめること:** `Names` に、本番と検証の名前が入っていること。`NotAfter`（期限）が先の日付であること。
 
 - 入れ終わったら、`.pfx` のファイルは、サーバーに残さず、会社の決まりに従って保管します（秘密鍵が入っているため）。
@@ -116,6 +129,23 @@ New-IISSiteBinding -Name "webapp-prod" -BindingInformation "*:443:webapp.example
 
 Get-IISSiteBinding -Name "webapp-prod"
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`-contains`**（PowerShell）: 左の並びの中に、右の値があるかの比べ方（`-in` と左右が逆）。`$names -contains "webapp.example.local"` は「その名前が含まれているか」。
+> - **`New-IISSiteBinding`**（PowerShell）: IIS のサイトに、受け取る住所・ポート・名前（バインド）を足すコマンド。
+> - **`New-IISSiteBinding -Name`**（PowerShell）: バインドを足すサイトの名前を決めるオプション。
+> - **`New-IISSiteBinding -BindingInformation`**（PowerShell）: 足すバインドを決めるオプション。`"*:443:webapp.example.local"` は「どの住所でも・443 番（HTTPS）で・その名前の物」。
+> - **`New-IISSiteBinding -Protocol`**（PowerShell）: 通信の種類を決めるオプション。`https` にします。
+> - **`New-IISSiteBinding -CertificateThumbPrint`**（PowerShell）: 使う証明書を、その指紋（Thumbprint。証明書ごとに違う番号）で決めるオプション。
+> - **`New-IISSiteBinding -CertStoreLocation`**（PowerShell）: 証明書の置き場を決めるオプション。
+> - **`New-IISSiteBinding -SslFlag`**（PowerShell）: HTTPS の細かい決まりを決めるオプション。`Sni` は「名前を見て、使う証明書を選ぶ」（同じ 443 番で、いくつもの名前を受け取れる）。
+> - **`Get-IISSiteBinding`**（PowerShell）: IIS のサイトのバインド（受け取る住所・ポート・名前）の一覧を表示するコマンド。
+> - **`Get-IISSiteBinding -Name`**（PowerShell）: 調べるサイトの名前を決めるオプション。
+
+<!-- /first-use -->
 
 検証も、名前とサイトを変えて同じことをします。
 

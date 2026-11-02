@@ -370,6 +370,21 @@ li, tr { page-break-inside: avoid; }
     <span class="nb">Select-Object</span> <span class="n">Subject</span><span class="p">,</span> <span class="p">@{</span> <span class="n">Name</span> <span class="p">=</span> <span class="s2">&quot;Names&quot;</span><span class="p">;</span> <span class="n">Expression</span> <span class="p">=</span> <span class="p">{</span> <span class="nv">$_</span><span class="p">.</span><span class="n">DnsNameList</span><span class="p">.</span><span class="n">Unicode</span> <span class="n">-join</span> <span class="s2">&quot;,&quot;</span> <span class="p">}</span> <span class="p">},</span> <span class="n">NotAfter</span><span class="p">,</span> <span class="n">Thumbprint</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Read-Host</code></strong>（PowerShell）: キーボードから 1 行入力してもらうコマンド。<code>Read-Host "説明"</code> で、説明を出して待ちます。</li>
+<li><strong><code>Read-Host -AsSecureString</code></strong>（PowerShell）: 入力した文字を画面に出さず、暗号化した形（<code>SecureString</code>）で受け取るオプション。パスワードを入れてもらう時に使い、コマンドの履歴にも残りません。</li>
+<li><strong><code>Import-PfxCertificate</code></strong>（PowerShell）: 証明書と秘密鍵の入った <code>.pfx</code> のファイルを、Windows の証明書の置き場に入れるコマンド。</li>
+<li><strong><code>Import-PfxCertificate -FilePath</code></strong>（PowerShell）: 入れる <code>.pfx</code> のファイルの場所を決めるオプション。</li>
+<li><strong><code>Import-PfxCertificate -CertStoreLocation</code></strong>（PowerShell）: 入れる先の証明書の置き場を決めるオプション。<code>Cert:\LocalMachine\My</code> は、このパソコン全体の「個人」の置き場（IIS はここから使う）。</li>
+<li><strong><code>Import-PfxCertificate -Password</code></strong>（PowerShell）: <code>.pfx</code> のパスワード（<code>Read-Host -AsSecureString</code> で受け取った物）を渡すオプション。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><strong>確かめること:</strong> <code>Names</code> に、本番と検証の名前が入っていること。<code>NotAfter</code>（期限）が先の日付であること。</p>
 <ul>
 <li>入れ終わったら、<code>.pfx</code> のファイルは、サーバーに残さず、会社の決まりに従って保管します（秘密鍵が入っているため）。</li>
@@ -391,6 +406,25 @@ li, tr { page-break-inside: avoid; }
 
 <span class="nb">Get-IISSiteBinding</span> <span class="n">-Name</span> <span class="s2">&quot;webapp-prod&quot;</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>-contains</code></strong>（PowerShell）: 左の並びの中に、右の値があるかの比べ方（<code>-in</code> と左右が逆）。<code>$names -contains "webapp.example.local"</code> は「その名前が含まれているか」。</li>
+<li><strong><code>New-IISSiteBinding</code></strong>（PowerShell）: IIS のサイトに、受け取る住所・ポート・名前（バインド）を足すコマンド。</li>
+<li><strong><code>New-IISSiteBinding -Name</code></strong>（PowerShell）: バインドを足すサイトの名前を決めるオプション。</li>
+<li><strong><code>New-IISSiteBinding -BindingInformation</code></strong>（PowerShell）: 足すバインドを決めるオプション。<code>"*:443:webapp.example.local"</code> は「どの住所でも・443 番（HTTPS）で・その名前の物」。</li>
+<li><strong><code>New-IISSiteBinding -Protocol</code></strong>（PowerShell）: 通信の種類を決めるオプション。<code>https</code> にします。</li>
+<li><strong><code>New-IISSiteBinding -CertificateThumbPrint</code></strong>（PowerShell）: 使う証明書を、その指紋（Thumbprint。証明書ごとに違う番号）で決めるオプション。</li>
+<li><strong><code>New-IISSiteBinding -CertStoreLocation</code></strong>（PowerShell）: 証明書の置き場を決めるオプション。</li>
+<li><strong><code>New-IISSiteBinding -SslFlag</code></strong>（PowerShell）: HTTPS の細かい決まりを決めるオプション。<code>Sni</code> は「名前を見て、使う証明書を選ぶ」（同じ 443 番で、いくつもの名前を受け取れる）。</li>
+<li><strong><code>Get-IISSiteBinding</code></strong>（PowerShell）: IIS のサイトのバインド（受け取る住所・ポート・名前）の一覧を表示するコマンド。</li>
+<li><strong><code>Get-IISSiteBinding -Name</code></strong>（PowerShell）: 調べるサイトの名前を決めるオプション。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p>検証も、名前とサイトを変えて同じことをします。</p>
 <p><strong>確かめること:</strong> <code>Get-IISSiteBinding</code> に、<code>http *:80:webapp.example.local</code> と <code>https *:443:webapp.example.local</code> の 2 つが出ること。</p>

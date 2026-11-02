@@ -417,11 +417,38 @@ li, tr { page-break-inside: avoid; }
 <span class="nb">Show-Result</span> <span class="s2">&quot;最後の DB の控え&quot;</span> <span class="p">(</span><span class="nv">$last</span> <span class="o">-and</span> <span class="nv">$last</span><span class="p">.</span><span class="n">LastWriteTime</span> <span class="o">-gt</span> <span class="p">(</span><span class="nb">Get-Date</span><span class="p">).</span><span class="n">AddHours</span><span class="p">(-</span><span class="n">26</span><span class="p">))</span> <span class="nv">$detail</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>function</code></strong>（PowerShell）: PowerShell で、自分の関数を作る書き方。<code>function New-LfFile($Path, $Lines) { … }</code> と書くと、<code>New-LfFile</code> をコマンドのように呼べます。</li>
+<li><strong><code>else</code></strong>（PowerShell）: <code>if (条件) { … } else { … }</code> の、条件に合わなかった時の所。<code>elseif (条件)</code> で、条件をつなげられます。</li>
+<li><strong><code>Get-Service -ErrorAction</code></strong>（PowerShell）: <code>Get-Service</code> で、エラーが起きた時の動きを決めるオプション。<code>-ErrorAction SilentlyContinue</code> は「そのサービスが無くても、赤いエラーを出さずに進む」。</li>
+<li><strong><code>-and</code></strong>（PowerShell）: 「かつ」（両方とも <code>True</code> の時だけ <code>True</code>）。<code>$a -gt 0 -and $b -gt 0</code> のように、条件をつなぎます。</li>
+<li><strong><code>Get-NetTCPConnection -ErrorAction</code></strong>（PowerShell）: エラーが起きた時の動きを決めるオプション。待ち受けが無い時に出るエラーを、<code>-ErrorAction SilentlyContinue</code> で黙らせます。</li>
+<li><strong><code>Sort-Object -Unique</code></strong>（PowerShell）: 並べかえたうえで、同じ物を 1 つにまとめるオプション。</li>
+<li><strong><code>Invoke-WebRequest -TimeoutSec</code></strong>（PowerShell）: 答えを待つ時間の上限（秒）を決めるオプション。過ぎたらエラーにして、いつまでも止まらないようにします。</li>
+<li><strong><code>-gt</code></strong>（PowerShell）: PowerShell の「より大きい」の比べ方（greater than）。<code>$failed -gt 0</code> は「失敗が 1 つ以上あるか」。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-2"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 管理者の PowerShell で</span>
 <span class="nb">cd </span><span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">tools</span>
 <span class="p">.\</span><span class="n">check</span><span class="p">.</span><span class="n">ps1</span>            <span class="c"># 本番</span>
 <span class="p">.\</span><span class="n">check</span><span class="p">.</span><span class="n">ps1</span> <span class="n">-Env</span> <span class="n">stg</span>   <span class="c"># 検証</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.\check.ps1</code></strong>（PowerShell）: 今いるフォルダの <code>check.ps1</code>（この資料で作る、サービス・待ち受け・応答・控えなどを、まとめて確かめるスクリプト）を動かす書き方。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><strong>確かめること:</strong> 全部の行の頭が <code>OK</code> であること。<code>NG</code> の行があれば、その行の項目から 5 章の症状を探します。</p>
 <table>
@@ -546,6 +573,17 @@ li, tr { page-break-inside: avoid; }
 <span class="nb">Get-Content</span> <span class="nv">$log</span><span class="p">.</span><span class="n">FullName</span> <span class="p">|</span> <span class="nb">Where-Object</span> <span class="p">{</span> <span class="nv">$_</span> <span class="o">-notmatch</span> <span class="s2">&quot;^#&quot;</span> <span class="p">}</span> <span class="p">|</span>
     <span class="nb">Where-Object</span> <span class="p">{</span> <span class="no">[int]</span><span class="p">(</span><span class="nv">$_</span> <span class="n">-split</span> <span class="s2">&quot; &quot;</span><span class="p">)[-</span><span class="n">1</span><span class="p">]</span> <span class="o">-ge</span> <span class="n">5000</span> <span class="p">}</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">-Last</span> <span class="n">20</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>-notmatch</code></strong>（PowerShell）: <code>-match</code> の逆で、正規表現に合わないかの比べ方。<code>$line -notmatch '='</code> は「<code>=</code> を含まない行か」。</li>
+<li><strong><code>-split</code></strong>（PowerShell）: 文字列を、区切り（正規表現）で分けて並びにする演算子。<code>"a=b" -split '=', 2</code> は <code>"a"</code> と <code>"b"</code>（<code>2</code> は「多くても 2 つに分ける」）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <h3 id="32-postgresql">3.2 アプリのログ・PostgreSQL のログ</h3>
 <div class="codehilite"><div class="code-wrap" id="code-4"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># アプリのエラーの文の最後の 50 行</span>
@@ -985,6 +1023,19 @@ li, tr { page-break-inside: avoid; }
     <span class="no">[pscustomobject]</span><span class="p">@{</span> <span class="n">Folder</span> <span class="p">=</span> <span class="nv">$_</span><span class="p">.</span><span class="n">FullName</span><span class="p">;</span> <span class="n">GB</span> <span class="p">=</span> <span class="no">[math]</span><span class="p">::</span><span class="n">Round</span><span class="p">(</span><span class="nv">$size</span> <span class="p">/</span> <span class="n">1GB</span><span class="p">,</span> <span class="n">2</span><span class="p">)</span> <span class="p">}</span>
 <span class="p">}</span> <span class="p">|</span> <span class="nb">Sort-Object</span> <span class="n">GB</span> <span class="n">-Descending</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Get-ChildItem -Directory</code></strong>（PowerShell）: <code>-Directory</code> で、フォルダだけを一覧にします（ファイルだけなら <code>-File</code>）。</li>
+<li><strong><code>ForEach-Object</code></strong>（PowerShell）: <code>|</code> で流れてきた物を、1 つずつ処理するコマンド。<code>{ }</code> の中の <code>$_</code> が「今の 1 つ」を表します。<code>… | ForEach-Object { $_.Name }</code> は、1 つずつ名前を取り出します。</li>
+<li><strong><code>Measure-Object</code></strong>（PowerShell）: 受け取った物の数や、合計・平均などを計算するコマンド。</li>
+<li><strong><code>Measure-Object -Sum</code></strong>（PowerShell）: 決めた項目の合計を計算するオプション。<code>Measure-Object Length -Sum</code> は、ファイルの大きさの合計（<code>.Sum</code> で取り出す）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <table>
 <thead>

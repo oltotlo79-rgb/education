@@ -185,6 +185,17 @@ Get-CimInstance Win32_ComputerSystem | Format-List NumberOfLogicalProcessors, To
 w32tm /query /status
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Get-ComputerInfo`**（PowerShell）: このパソコンの情報（OS の名前と版・パソコンの名前・ドメインなど）を、まとめて表示するコマンド。
+> - **`Get-ComputerInfo -Property`**（PowerShell）: 表示する項目を決めるオプション。`-Property OsName, OsVersion, CsName, CsDomain` は、OS の名前と版、パソコンの名前、ドメインだけ（全部だと、とても長い）。
+> - **`Format-Table`**（PowerShell）: 結果を表の形に整えて表示するコマンド。
+> - **`w32tm`**（コマンド）: Windows の時刻合わせの状態を見る・変えるコマンド。`w32tm /query /status` で、どこと時刻を合わせているか（`Source`）と、最後に合わせた時刻が分かります。時刻がずれると、ログの読み合わせやログインの期限が狂います。
+
+<!-- /first-use -->
+
 **確かめること:**
 
 - OS の名前が、頼んだ版（例：Windows Server 2025 Standard）になっている。
@@ -206,6 +217,16 @@ Get-TimeZone
 # 日本時間にする（すでに日本時間なら不要）
 Set-TimeZone -Id "Tokyo Standard Time"
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Get-TimeZone`**（PowerShell）: このパソコンの時間帯（タイムゾーン）を表示するコマンド。日本なら `Tokyo Standard Time`（UTC+09:00）。
+> - **`Set-TimeZone`**（PowerShell）: このパソコンの時間帯を変えるコマンド。
+> - **`Set-TimeZone -Id`**（PowerShell）: 変える先の時間帯の名前を決めるオプション。`-Id "Tokyo Standard Time"` は日本時間。
+
+<!-- /first-use -->
 
 > **用語:** タイムゾーン（地域ごとの時刻のずれの決まり。日本は「協定世界時（UTC）＋9 時間」。Windows では `Tokyo Standard Time` という名前）
 
@@ -254,6 +275,19 @@ $dirs = @(
 )
 foreach ($d in $dirs) { New-Item -ItemType Directory -Force -Path $d | Out-Null }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`foreach`**（PowerShell）: PowerShell のくり返し。`foreach ($line in Get-Content $envFile) { … }` は、ファイルの 1 行ずつを `$line` に入れて、中を動かします。
+> - **`New-Item`**（PowerShell）: 新しいファイルやフォルダを作るコマンド。`New-Item memo.txt` でファイル、`New-Item -ItemType Directory 名前` でフォルダを作ります。
+> - **`New-Item -ItemType`**（PowerShell）: `-ItemType Directory` で、ファイルではなくフォルダを作ります（`File` ならファイル）。`New-Item -ItemType Directory src\bin` は、`src` の中に `bin` フォルダを作ります。
+> - **`New-Item -Force`**（PowerShell）: `-Force` で、同じ名前のファイルがあっても上書きして作ります（無いと、エラーで止まります）。上書きするので、使う時は名前をよく確かめます。
+> - **`New-Item -Path`**（PowerShell）: `-Path 場所` で、作るファイルやフォルダの場所（名前）を指定します。
+> - **`Out-Null`**（PowerShell）: コマンドの結果を、画面に出さずに捨てるコマンド。`… | Out-Null` のように後ろに付けると、表示が出なくなります。
+
+<!-- /first-use -->
 
 > **用語:** スクリプト（コマンドを順に並べて、ファイルにしたもの。`.ps1` は PowerShell のスクリプト）
 
@@ -371,6 +405,14 @@ PostgreSQL の Windows 用インストーラーは、**ほかのコンピュー�
    notepad D:\pgsql\18\data\postgresql.conf
    ```
 
+   <!-- first-use -->
+
+   > **▶ ここで初めて出てくるコード**
+   >
+   > - **`notepad`**（コマンド）: メモ帳を開くコマンド。`notepad D:\…\postgresql.conf` で、そのファイルをメモ帳で開きます。保存する時は、文字コードを変えないように注意します。
+
+   <!-- /first-use -->
+
 2. `listen_addresses` の行を探して、次のようにします（行の先頭に `#` があれば消します）。
 
    ```text
@@ -469,6 +511,16 @@ REVOKE ALL ON DATABASE webapp_stg FROM PUBLIC;
 \q
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`OWNER`**（SQL）: `OWNER ユーザー` で、そのデータベースの持ち主を決めます。持ち主は、中の表を自由に作れます。
+> - **`REVOKE`**（SQL）: 利用者（ロール）から、権限を取り上げる命令（`GRANT` の逆）。`REVOKE ALL ON DATABASE webapp_prod FROM PUBLIC;` は「だれでもつなげる、の決まりを取り上げる」。
+> - **`PUBLIC`**（SQL）: PostgreSQL で「すべての利用者」を表す名前。初めの状態では、だれでもデータベースにつなげるので、`REVOKE … FROM PUBLIC` で閉じます。
+
+<!-- /first-use -->
+
 - **本番と検証で、ユーザーもパスワードも分けます。** 検証の設定を間違えても、本番のデータベースにつながらないようにするためです。
 - パスワードは、`CREATE ROLE ... PASSWORD '...'` と SQL に書くこともできますが、打った文が記録に残ることがあるので、`\password` を使います。
 
@@ -527,6 +579,15 @@ cargo build --release --locked
 topcoat asset bundle --release
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`cargo build`**（cargo のコマンド）: プログラムを翻訳（コンパイル）して実行ファイルを作るだけで、動かしはしません。でき上がった物は `target\debug\` に入ります。`cargo build --release` だと、速く動く本番用の物が `target\release\` にできます。
+> - **`topcoat`**（Topcoat）: Topcoat の道具のコマンド（`cargo install topcoat-cli` で入る）。`topcoat dev`（コードを直すと自動で作り直して読み直す開発用の起動）・`topcoat asset bundle`（CSS などの束を作る）などがあります。
+
+<!-- /first-use -->
+
 - できるのは、`target\release\webapp.exe` と、その隣の `target\release\assets\` の2つです。**2つを必ず一緒に**持ち込みます。Topcoat のアプリは、起動したときに「自分の隣の `assets\`」を読むので、`assets\` が無いと起動しません。
 - 画面で使う HTML や JavaScript（図面を描く道具など）を、アプリの中に入れて配信する作りなら、それも実行ファイルか `assets\` に入っています。別のフォルダにしている場合は、そのフォルダも持ち込みます（アプリの作り方で決まる）。
 
@@ -570,6 +631,19 @@ Copy-Item target\release\assets $out -Recurse
 Compress-Archive -Path "$out\*" -DestinationPath "dist\webapp-$ver.zip" -Force
 Get-FileHash "dist\webapp-$ver.zip" -Algorithm SHA256
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Copy-Item`**（PowerShell）: ファイルやフォルダをコピーするコマンド。`Copy-Item 元 先`。最後の `.` は「今いるフォルダへ」という意味です。
+> - **`Copy-Item -Recurse`**（PowerShell）: `-Recurse` で、フォルダを中身ごと（中のフォルダも全部）コピーします。付けないと、フォルダの中身はコピーされません。
+> - **`Compress-Archive`**（PowerShell）: ファイルやフォルダを、zip の 1 つのファイルにまとめるコマンド。
+> - **`Compress-Archive -Path`**（PowerShell）: zip に入れる物を決めるオプション。`"$out\*"` は、そのフォルダの中身全部。
+> - **`Compress-Archive -DestinationPath`**（PowerShell）: 作る zip のファイルの場所と名前を決めるオプション。
+> - **`Compress-Archive -Force`**（PowerShell）: 同じ名前の zip がもうあれば、上書きするオプション。
+
+<!-- /first-use -->
 
 - zip は、サーバーの `D:\webapp\releases\` にコピーします。コピーの方法（会社のファイルサーバー経由、リモート デスクトップのドライブの共有など）は、会社の決まりに合わせます。
 - サーバーでも `Get-FileHash` を打って、ハッシュ値が同じことを確かめます（5.1 と同じ）。
@@ -667,6 +741,56 @@ impl TokenStore for HttpCookieTokenStore {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`use`**（モジュール）: ほかの場所にある道具に、短い名前で呼べるようにする宣言。`use std::env;` と書くと、`std::env::args()` を `env::args()` と短く書けます。`std` は Rust に最初から付いている道具箱（標準ライブラリ）です。
+> - **`const`**（変数）: ずっと変わらない値（定数）に名前を付ける書き方。`const MAX_TITLE_CHARS: usize = 80;`。名前は大文字と `_` で書き、型（`usize` など）を必ず書きます。プログラムのどこからでも使えます。
+> - **`pub`**（モジュール）: 「外から使ってよい」（公開）という印。`pub fn title_length(…)` は、ほかのファイル（モジュール）からも呼べる関数になります。付けないと、同じモジュールの中からしか使えません。
+> - **`struct`**（型とメソッド）: いくつかの値をまとめて、新しい型を作る書き方（構造体）。`struct Note { id: u32, title: String }` で、「番号と題名を持つノート」という型ができます。`Note { id: 1, title: "買い物".to_string() }` で 1 つ作ります。
+> - **`fn`**（関数）: 関数（ひとまとまりの処理に名前を付けた物）を作る書き方。`fn main() { … }` の `main` は、プログラムを動かすと最初に動く特別な関数です。`fn add(a: i32, b: i32) -> i32 { a + b }` は「整数を 2 つ受け取って、整数を返す関数 `add`」。`{ }` の中が中身で、最後の `;` の無い式が戻り値になります。
+> - **`impl`**（型とメソッド）: 2 つの使い方があります。① `impl 型 { … }` で、その型にメソッド（関数）を付ける。② `impl View` のように型の場所に書くと、「`View` の機能を持つ何かの型」という意味になります（戻り値の型を細かく書かずに済む）。
+> - **`for`**（くり返し）: 並びや範囲から 1 つずつ取り出して、くり返す書き方。`for n in 1..=100 { … }` は、`n` に 1, 2, …, 100 を順に入れて、中を 100 回動かします。`for x in &v` で、`Vec` の中身を借りて回せます。
+> - **`self`**（型とメソッド）: メソッドの中で「このもの自身」を表す名前。`impl` の中の `fn label(&self)` の `&self` は「自分を借りて読むだけ」、`&mut self` は「自分を書きかえる」という意味です。`use` の中の `self`（例: `use std::io::{self, Write};`）は「`io` そのもの」を表します。
+> - **`async`**（非同期）: 「待つ所で、ほかの仕事に順番をゆずれる関数」にする印。`async fn root(…)` のように付けます。呼ぶ側は `.await` で結果を待ちます。Web サーバーが、たくさんの人を同時にさばけるのは、この仕組みのおかげです。
+> - **`move`**（関数）: クロージャが使う外の変数を、借りるのではなく「持っていく」印。`thread::spawn(move || { … })` のように、別のスレッドに値を渡す時に必要です。
+> - **`let`**（変数）: 値に名前を付けて覚えておく（変数を作る）書き方。`let age = 20;` で、`age` という名前で 20 を覚えます。最初は「変えられない」変数です。あとで変えたい時は `let mut age = 20;` のように `mut` を付けます。
+> - **`else`**（条件）: `if` の条件が合わなかった時の処理を書く所。`else if 条件 { … }` で、条件をいくつも続けられます。
+> - **`return`**（関数）: 関数を、その場で終えて値を返す命令。`return Err(…);` のように、途中で抜ける時に使います。Rust では、関数の最後の `;` の無い式が自動で戻り値になるので、最後の行では `return` を書かないのがふつうです。
+> - **`.override_same_site()`**（クッキー）: 送るクッキーの `SameSite`（ほかのサイトから来たリクエストにも付けて送るか）を決めるメソッド。`SameSite::Lax` は「ほかのサイトからのリンクで開いた時は送るが、ほかのサイトのフォームからの POST には付けない」で、CSRF を防ぐ助けになります。
+> - **`.override_http_only()`**（クッキー）: `HttpOnly`（JavaScript から読めないようにする印）を付けるかを決めるメソッド。`true` にすると、XSS でクッキーを盗まれにくくなります。
+> - **`.override_secure()`**（クッキー）: `Secure`（HTTPS の時だけ送る印）を付けるかを決めるメソッド。この資料のサーバーは HTTP なので `false` にしています（付けると、ブラウザーがクッキーを送らず、ログインが続かない）。
+> - **`.override_path()`**（クッキー）: クッキーを送る URL の範囲を決めるメソッド。`"/"` は、そのサイトの全部の URL。
+> - **`.get()`**（Vec（並び））: 番号やキーで中身を取り出すメソッド。`v.get(10)` は、範囲の外なら止まらずに `None` を返します（`v[10]` はプログラムが止まる）。文字列の `s.get(0..3)` は、文字の区切りでない位置なら `None` です。`HashMap` の `map.get("キー")` も、無ければ `None` です。
+> - **`.value_trimmed()`**（クッキー）: クッキーの値を、前後の `"` を取り除いて返すメソッド。
+> - **`.ok()`**（エラー処理）: `Result` を `Option` に変えるメソッド。`Ok(値)` は `Some(値)` に、`Err(…)` は `None` になります（エラーの中身は捨てる）。`"42".parse().ok()` のように、「失敗したら無かったことにする」時に使います。
+> - **`.override_max_age()`**（クッキー）: クッキーが使える長さを決めるメソッド。セッションの長さと同じにします。
+> - **`.add()`**（クッキー）: クッキーの入れ物（`CookieJar`。この答えで送るクッキーの束）に、新しいクッキーを足すメソッド。`.add(Cookie::new(名前, 値))` で足した物が、答えの `Set-Cookie` の見出しになってブラウザーに届きます。
+> - **`.encode()`**（認証）: `base64` の部品で、バイトの並びを、URL に入れても安全な文字（Base64）に変えるメソッド。`URL_SAFE_NO_PAD.encode(バイト)`。
+> - **`.remove()`**（Vec（並び））: `Vec` から i 番目を取り除いて、その値を返すメソッド。後ろの物が前に詰められます。`HashMap` の `.remove(キー)` は、そのキーの組を取り除き、値を `Option` で返します。
+> - **`Box::pin()`**（非同期）: 値を、メモリーの決まった場所に固定して箱に入れる関数。`Box::pin(async move { … })` は、「あとで待つ仕事（Future）」を、トレイトの決まりどおりの形で返すための書き方です。
+> - **`Token::decode()`**（Topcoat）: クッキーに入っていた文字列から、セッションの札（`Token`）に戻す関数。形がおかしければ `Err` です。
+> - **`time::Duration::try_from()`**（時間）: 標準ライブラリの `Duration` を、`time` の `Duration` に変える関数。大きすぎて入らない時は `Err` を返すので、`?` で受け取ります。
+> - **`Cookie::new()`**（クッキー）: 名前と値を決めて、送るクッキーを作る関数。`Cookie::new(NAME, token.encode())`。
+> - **`Duration`**（時間）: 時間の長さを表す型。`Duration::from_secs(5)` で 5 秒。`{:?}` で表示すると `5s` や `200ms` のように単位つきで出ます。
+> - **`Cx`**（Topcoat）: Topcoat の「今のリクエストの情報（URL・クッキー・セッションなど）が入った箱」。ページの関数の引数 `cx: &Cx` で受け取り、`href!(…).resolve(cx)` などで使います。
+> - **`Cookie`**（クッキー）: クッキー 1 つ（名前と値と、使う範囲・期限などの設定）を表す型。
+> - **`Cookies`**（クッキー）: 今のリクエストのクッキーを読み書きする入れ物（クッキーの瓶）。`jar.add(…)` で足し、`jar.get("名前")` で読みます。
+> - **`SameSite`**（クッキー）: クッキーの決まりの 1 つ。ほかのサイトから来た頼みに、このクッキーを付けるかを決めます。`Lax` は、ほかのサイトからのリンクでの移動には付けるが、フォームの送信などには付けない設定です。
+> - **`Token`**（Topcoat）: `topcoat::session::Token` は、セッションの印（でたらめな長い文字列）の型。ブラウザーのクッキーに入れ、サーバーには、そのハッシュだけを保存します。
+> - **`TokenStore`**（Topcoat）: Topcoat のセッションの札（トークン）を、どこに置いて、どう読むかを決めるトレイト（決まりごと）。この資料では、HTTP でもログインが続くように、自分で `HttpCookieTokenStore` を作って、この決まりを守らせます。
+> - **`TokenStoreFuture`**（Topcoat）: `TokenStore` のメソッドが返す、「あとで答えが出る仕事（Future）」の型。
+> - **`Lax`**（クッキー）: `SameSite = Lax` は、ほかのサイトからのリンクで来た時（ふつうの移動）にはクッキーを送り、ほかのサイトからのフォームの送信には送らない設定です。
+> - **`Option`**（Option）: 「値があるかもしれないし、無いかもしれない」を表す型。中身は `Some(値)` か `None`。`Option<u32>` は「整数があるかもしれない」。取り出す時は `match`・`if let`・`unwrap_or` などを使います。
+> - **`Box`**（スマートポインタ）: 値をヒープ（大きな物を置く広い場所）に置き、その場所を指す「持ち手」を手元に置く型。`Box<dyn Notifier>` のように、違う型の物を同じ並びに入れる時によく使います。
+> - **`Some`**（Option）: `Option`（値が「ある」か「無い」か）の、「ある」の方。`Some(値)` の形で中身を包みます。`match` で `Some(name) => { … }` と書くと、中身を `name` という名前で取り出して使えます。「無い」の方は `None` です。
+> - **`Ok`**（エラー処理）: `Result` の「うまくいった」の方。`Ok(値)` の形で結果を包みます。`Ok(())` は「うまくいった。返す値は特に無い（`()` は空っぽの値）」という意味で、`Result<()>` を返す関数の最後によく書きます。
+> - **`None`**（Option）: `Option` の「値が無い」側。`Some(値)`（値がある）か `None`（無い）のどちらかになります。Rust には「null」が無い代わりに、無いかもしれない値は必ず `Option` で表し、`match` などで両方の場合を書きます。
+> - **`?`**（エラー処理）: `Result` や `Option` の後ろに付ける記号。「成功なら中身を取り出して先へ進む。失敗なら、その場で関数を終えて、エラーを呼び出し元へ返す」という意味です。`let text = fs::read_to_string("a.txt")?;` のように使います。`?` を使える関数は、戻り値が `Result`（または `Option`）の関数だけです。
+
+<!-- /first-use -->
+
 ルーターを組み立てる所で、既定の `SessionConfig::default()` の代わりに、これを使います。60 分の期限も、ここで決めます。
 
 ```rust
@@ -679,6 +803,21 @@ impl TokenStore for HttpCookieTokenStore {
         .build(),
 )
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`crate`**（モジュール）: 「このプロジェクト（クレート）のいちばん上」を表す言葉。`use crate::note::Note;` は「このプロジェクトの `note` モジュールの `Note` を使う」という意味です。
+> - **`.sessions()`**（Topcoat）: ルーターに、セッション（ログインの状態を覚える仕組み）を登録するメソッド。`.sessions(SessionConfig::default())`。先に `.cookies()` も登録します。
+> - **`.token_store()`**（Topcoat）: セッションの札（トークン）を、どこに置くかを決めるメソッド。ここでは、HTTP のページでもログインが続くように、自分で用意した `HttpCookieTokenStore`（クッキーに置く係）を渡しています。
+> - **`.lifetime()`**（Topcoat）: セッションの長さ（何も操作しないと切れるまでの時間）を決めるメソッド。`.lifetime(IDLE)`（`IDLE` は 60 分）。
+> - **`.build()`**（型とメソッド）: 設定を少しずつ足していく「組み立て係」（ビルダー）の最後に呼んで、でき上がった物を作るメソッド。`Router::builder()…build()` の形で、ルーターなどを作る時に使います。
+> - **`SessionConfig::builder()`**（Topcoat）: Topcoat のセッションの設定を、少しずつ決めて組み立て始める関数。`.token_store(…)`・`.lifetime(…)` をつなげて、最後に `.build()` で出来上がりです。
+> - **`std::time::Duration::from_secs()`**（時間）: 秒数ぶんの長さ（`Duration`）を作る関数。`Duration::from_secs(5)` は 5 秒です。
+> - **`SessionConfig`**（Topcoat）: Topcoat のセッションの設定（クッキーの名前・期限など）の型。
+
+<!-- /first-use -->
 
 `src/lib.rs`（または `main.rs`）に `pub mod http_cookie;` を足すのも忘れないでください。
 
@@ -730,6 +869,15 @@ Copy-Item D:\webapp\installers\WinSW-x64.exe D:\webapp\stg\service\webapp-stg-se
 Expand-Archive D:\webapp\releases\webapp-1.0.0.zip -DestinationPath D:\webapp\prod\app
 Get-ChildItem D:\webapp\prod\app
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Expand-Archive`**（PowerShell）: zip のファイルを、フォルダに広げる（解凍する）コマンド。
+> - **`Expand-Archive -DestinationPath`**（PowerShell）: 広げる先のフォルダを決めるオプション。
+
+<!-- /first-use -->
 
 **確かめること:** `webapp.exe` と `assets` フォルダが、`D:\webapp\prod\app` の**すぐ下**に並んでいる（`app\webapp-1.0.0\webapp.exe` のように1段深くなっていたら、置き直す）。
 
@@ -813,6 +961,14 @@ sc.exe config webapp-prod obj= "NT SERVICE\webapp-prod"
 Get-CimInstance Win32_Service -Filter "Name='webapp-prod'" | Format-List Name, StartName, StartMode, State
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`D:\webapp\prod\service\webapp-prod-service.exe`**（コマンド）: WinSW（ふつうの実行ファイルを Windows サービスにする道具）を、本番用の名前に変えて置いた物。`install` で、同じ名前の `.xml` の設定のとおりにサービスとして登録し、`uninstall` で取り外します。
+
+<!-- /first-use -->
+
 **確かめること:** `StartName` が `NT SERVICE\webapp-prod`、`StartMode` が `Auto` になっている。
 
 - `sc.exe` は、`obj=` のように、**`=` の後ろに空白を1つ**入れる決まりです。空白が無いとエラーになります。
@@ -892,6 +1048,15 @@ D:\webapp\prod\app\webapp.exe grant-role --employee-no 012345 --role it-admin
 Remove-Item Env:DATABASE_URL
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`D:\webapp\prod\app\webapp.exe`**（コマンド）: アプリの実行ファイル（Rust で作った webapp）を、場所を書いて直接動かす書き方。`grant-role --employee-no 012345 --role it-admin` のように、サーバーとして動かす以外の、管理の仕事（社員に役割を付けるなど）を頼めます。
+> - **`Remove-Item`**（PowerShell）: ファイルやフォルダを消すコマンド（短い呼び名は `rm`）。**ごみ箱に入らず、すぐ消えます。** フォルダを中身ごと消す時は `-Recurse` を付けます。消す前に、名前をよく確かめます。
+
+<!-- /first-use -->
+
 ただし、社員データ（従業員番号）が無いと、権限を付ける相手がいません。アプリの作りに合わせて、順番を決めます（例：コマンドで CSV を先に取り込む、または、コマンドで最初の管理者を社員データごと作る）。
 
 **社員データの CSV を取り込む（画面）**
@@ -919,6 +1084,17 @@ Remove-Item Env:DATABASE_URL
 Install-WindowsFeature -Name Web-Server -IncludeManagementTools
 Get-WindowsFeature Web-Server, Web-Mgmt-Console | Format-Table Name, InstallState
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Install-WindowsFeature`**（PowerShell）: Windows Server に、役割や機能（IIS など）を入れるコマンド。管理者の PowerShell で動かします。
+> - **`Install-WindowsFeature -Name`**（PowerShell）: 入れる機能の名前を決めるオプション。`Web-Server` は IIS（Web サーバー）。
+> - **`Install-WindowsFeature -IncludeManagementTools`**（PowerShell）: 機能と一緒に、それを管理する道具（IIS マネージャーなど）も入れるオプション。
+> - **`Get-WindowsFeature`**（PowerShell）: Windows Server の役割や機能が、入っているか（`InstallState` が `Installed`）を表示するコマンド。
+
+<!-- /first-use -->
 
 **確かめること:** `Web-Server` と `Web-Mgmt-Console` が `Installed` になっている。
 
@@ -1012,6 +1188,24 @@ New-IISSite -Name "webapp-stg" -PhysicalPath "D:\webapp\stg\iis" -BindingInforma
 
 Get-IISSite
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Import-Module`**（PowerShell）: PowerShell に、コマンドのまとまり（モジュール）を読み込むコマンド。`Import-Module IISAdministration` で、`New-IISSite` などの IIS のコマンドが使えるようになります。
+> - **`Stop-IISSite`**（PowerShell）: IIS のサイトを止めるコマンド。
+> - **`Stop-IISSite -Name`**（PowerShell）: 止めるサイトの名前を決めるオプション。`"Default Web Site"` は、IIS を入れた時にできる見本のサイト（使わないので止める）。
+> - **`Set-ItemProperty`**（PowerShell）: 物（ファイル・レジストリ・IIS の設定など）の項目の値を変えるコマンド。`Set-ItemProperty "IIS:\Sites\Default Web Site" -Name serverAutoStart -Value $false` は「見本のサイトを、自動で始めない」。
+> - **`Set-ItemProperty -Name`**（PowerShell）: 変える項目の名前を決めるオプション。
+> - **`Set-ItemProperty -Value`**（PowerShell）: 変える先の値を決めるオプション。
+> - **`New-IISSite`**（PowerShell）: IIS に、新しいサイトを作るコマンド。
+> - **`New-IISSite -Name`**（PowerShell）: 作るサイトの名前を決めるオプション。
+> - **`New-IISSite -PhysicalPath`**（PowerShell）: サイトの中身（設定ファイル `web.config` など）を置くフォルダを決めるオプション。
+> - **`New-IISSite -BindingInformation`**（PowerShell）: どの住所・ポート・名前で来た通信を、このサイトが受け取るかを決めるオプション。`"*:80:webapp.example.local"` は「どの住所でも・80 番で・名前が webapp.example.local の物」。同じ 80 番でも、名前で検証用と本番用を振り分けられます。
+> - **`Get-IISSite`**（PowerShell）: IIS のサイトの一覧と、動いているか・受け取る住所（バインド）を表示するコマンド。
+
+<!-- /first-use -->
 
 **確かめること:** `webapp-prod` と `webapp-stg` が `Started` で、`Default Web Site` が `Stopped` になっている。
 
@@ -1121,6 +1315,15 @@ Get-NetFirewallPortFilter | Where-Object { $_.LocalPort -in 80, 443 } | Get-NetF
   Format-Table DisplayName, Enabled, Direction, Action, Profile
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Get-NetFirewallPortFilter`**（PowerShell）: ファイアウォールの決まりの、ポート番号の条件の一覧を表示するコマンド。`| Get-NetFirewallRule` につなぐと、そのポートを使う決まりが分かります。
+> - **`-in`**（PowerShell）: 左の値が、右の並びの中にあるかの比べ方。`$_.LocalPort -in 80, 443` は「80 か 443 か」。
+
+<!-- /first-use -->
+
 > **用語:** プロファイル（Windows ファイアウォールの、場所ごとの決まりのまとまり。会社のドメインにつながっているときは「ドメイン」（DomainAuthenticated））
 
 ### 9.2 受信の決まりを作る
@@ -1135,6 +1338,15 @@ Get-NetFirewallPortFilter | Where-Object { $_.LocalPort -in 80, 443 } | Get-NetF
   Where-Object { $_.DisplayName -notlike "webapp*" } | Disable-NetFirewallRule
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`-notlike`**（PowerShell）: `-like` の逆で、ワイルドカードに合わないかの比べ方。`$_.DisplayName -notlike "webapp*"` は「webapp で始まらないか」。
+> - **`Disable-NetFirewallRule`**（PowerShell）: ファイアウォールの決まりを、消さずに使わない状態にするコマンド。あとで `Enable-NetFirewallRule` で戻せます。
+
+<!-- /first-use -->
+
 - リモート デスクトップ（3389 番）の決まりは、情報システム部門が決めていることが多いので、勝手に変えません。**変えると、自分がサーバーに入れなくなることがあります。**
 - 外向き（送信）の決まりは、サーバーの中では止めません。サーバーの中で外向きを止めると、ドメインのサーバーとのやり取りや Windows Update まで止まってしまうためです。外向きの「Microsoft 365 への 25 番だけ」は、**ネットワークの途中の関所**で、情報システム部門が守ります。
 
@@ -1145,6 +1357,14 @@ Get-NetFirewallPortFilter | Where-Object { $_.LocalPort -in 80, 443 } | Get-NetF
 Get-NetTCPConnection -State Listen | Sort-Object LocalPort |
   Format-Table LocalAddress, LocalPort, OwningProcess -AutoSize
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Format-Table -AutoSize`**（PowerShell）: `-AutoSize` で、列の幅を中身に合わせて自動で決めます（長い値が `...` で切られにくくなります）。
+
+<!-- /first-use -->
 
 **確かめること:**
 
@@ -1187,6 +1407,14 @@ Resolve-DnsName example.com -Type MX
 Test-NetConnection example-com.mail.protection.outlook.com -Port 25
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Resolve-DnsName -Type`**（PowerShell）: 問い合わせる記録の種類を決めるオプション。`-Type MX` は、そのドメインのメールを受け取るサーバーを調べます（決めないと、IP アドレスの `A` を調べる）。
+
+<!-- /first-use -->
+
 **確かめること:**
 
 - `Resolve-DnsName` の `NameExchange` に、`…mail.protection.outlook.com` が出る。
@@ -1201,6 +1429,22 @@ Send-MailMessage -SmtpServer example-com.mail.protection.outlook.com -Port 25 -U
   -From "noreply@example.com" -To "自分の会社のアドレス" `
   -Subject "業務 Web アプリ 送信テスト" -Body "サーバーからの送信テストです。" -Encoding UTF8
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Send-MailMessage`**（PowerShell）: メールを送るコマンド。ここでは、メールの中継（コネクタ）が働くかを、アプリより先に確かめるために使います（古いコマンドで、新しく作る物には使わないよう案内されています）。
+> - **`Send-MailMessage -SmtpServer`**（PowerShell）: メールを渡す先の SMTP サーバーの名前を決めるオプション。
+> - **`Send-MailMessage -Port`**（PowerShell）: SMTP サーバーのポート番号を決めるオプション（25 など）。
+> - **`Send-MailMessage -UseSsl`**（PowerShell）: STARTTLS で暗号化してから送るオプション。
+> - **`Send-MailMessage -From`**（PowerShell）: 送り主のメールアドレスを決めるオプション。
+> - **`Send-MailMessage -To`**（PowerShell）: 宛先のメールアドレスを決めるオプション。
+> - **`Send-MailMessage -Subject`**（PowerShell）: 件名を決めるオプション。
+> - **`Send-MailMessage -Body`**（PowerShell）: 本文を決めるオプション。
+> - **`Send-MailMessage -Encoding`**（PowerShell）: 本文の文字コードを決めるオプション。日本語は `UTF8` にします（決めないと、文字化けすることがある）。
+
+<!-- /first-use -->
 
 **確かめること:** 自分の Outlook に、迷惑メールのフォルダではなく、受信トレイに届く。
 
@@ -1326,6 +1570,28 @@ catch {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Get-Date -Format`**（PowerShell）: 日時を、決めた形の文字列にするオプション。`Get-Date -Format "yyyyMMdd_HHmmss"` は「20261102_030000」の形（`yyyy` 年・`MM` 月・`dd` 日・`HH` 時・`mm` 分・`ss` 秒）。ファイルの名前に日時を入れる時に使います。
+> - **`Start-Transcript`**（PowerShell）: このあと画面に出る物を、全部ファイルに書き残し始めるコマンド。予定の仕事で動かすスクリプトの記録（何が起きたか）を残すのに使います。
+> - **`Start-Transcript -Path`**（PowerShell）: 記録を書くファイルの場所を決めるオプション。
+> - **`Join-Path`**（PowerShell）: フォルダの場所とファイル名を、`\` でつないだ場所を作るコマンド。`Join-Path $PSScriptRoot "dev.env"` は「このスクリプトのフォルダの `dev.env`」。
+> - **`try`**（PowerShell）: `try { … } finally { … }` で、途中で失敗しても、`finally` の中（元のフォルダへ戻る など）を必ず動かす書き方。
+> - **`if`**（PowerShell）: PowerShell の条件の書き方。`if (-not (Test-Path $envFile)) { … }` は「ファイルが無ければ」。比べる時は `-eq`・`-ne`・`-not` などを使います。
+> - **`-ne`**（PowerShell）: PowerShell の「等しくない」の比べ方（not equal）。`$LASTEXITCODE -ne 0` は「失敗した（0 でない）か」。
+> - **`throw`**（PowerShell）: エラーを起こして、そこで止める命令。`throw "dev.env がありません"` のように、説明の文を付けます。`try … catch` の中なら `catch` へ、無ければスクリプトがそこで止まります。
+> - **`-ge`**（PowerShell）: PowerShell の「以上」の比べ方（greater or equal）。`$code.Count -ge 3` は「3 つ以上あるか」。
+> - **`Get-ChildItem -Filter`**（PowerShell）: `-Filter *.exe` で、名前が合う物（ここでは `.exe` で終わる物）だけを一覧にします。`*` は「何文字でもよい」という意味です。
+> - **`-lt`**（PowerShell）: PowerShell の「より小さい」の比べ方（less than）。`$_.LastWriteTime -lt $limit` は「決めた日時より古いか」。
+> - **`Write-Output`**（PowerShell）: 値を「出力」として次へ流す（最後なら画面に出す）コマンド。`Write-Output "こんにちは"`。文字列を 1 行に書くだけでも同じ働きをしますが、はっきり書く時に使います。
+> - **`Stop-Transcript`**（PowerShell）: `Start-Transcript` で始めた記録を終えるコマンド。
+> - **`exit`**（PowerShell）: スクリプトを、決めた終了コードで終えるコマンド。`exit $code` は、manage.py の終了コードをそのまま返します。
+> - **`catch`**（PowerShell）: `try { … } catch { … }` の `catch` の所は、`try` の中でエラーが起きた時だけ動きます。起きたエラーは `$_` で受け取れます（`$_.Exception.Message` で説明の文）。
+
+<!-- /first-use -->
+
 | 部分 | 意味 |
 |---|---|
 | `$ErrorActionPreference = "Stop"` | PowerShell のコマンドが失敗したら、そこで止めて `catch` へ進む |
@@ -1352,6 +1618,38 @@ Register-ScheduledTask -TaskPath "\webapp\" -TaskName "webapp-backup" -Action $a
 Start-ScheduledTask -TaskPath "\webapp\" -TaskName "webapp-backup"
 Get-ScheduledTaskInfo -TaskPath "\webapp\" -TaskName "webapp-backup" | Format-List LastRunTime, LastTaskResult, NextRunTime
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`New-ScheduledTaskAction`**（PowerShell）: 予定の仕事で「何を動かすか」を作るコマンド。
+> - **`New-ScheduledTaskAction -Execute`**（PowerShell）: 動かすプログラムを決めるオプション。`powershell.exe` は、PowerShell のスクリプトを動かす時。
+> - **`New-ScheduledTaskAction -Argument`**（PowerShell）: 動かすプログラムに渡す引数を決めるオプション。`-NoProfile -ExecutionPolicy Bypass -File "D:\…\backup.ps1"` のように、動かすスクリプトを渡します。
+> - **`New-ScheduledTaskTrigger`**（PowerShell）: 予定の仕事で「いつ動かすか」を作るコマンド。
+> - **`New-ScheduledTaskTrigger -Daily`**（PowerShell）: 毎日動かすオプション。
+> - **`New-ScheduledTaskTrigger -At`**（PowerShell）: 動かす時刻を決めるオプション。`-At "03:00"` は夜中の 3 時（使う人がいない時間）。
+> - **`New-ScheduledTaskPrincipal`**（PowerShell）: 予定の仕事を「だれとして動かすか」を作るコマンド。
+> - **`New-ScheduledTaskPrincipal -UserId`**（PowerShell）: 動かす利用者を決めるオプション。`"SYSTEM"` は、Windows そのものの利用者（だれもログインしていなくても動く）。
+> - **`New-ScheduledTaskPrincipal -LogonType`**（PowerShell）: ログインのしかたを決めるオプション。`ServiceAccount` は、サービス用の利用者として動かす（パスワードを保存しなくてよい）。
+> - **`New-ScheduledTaskPrincipal -RunLevel`**（PowerShell）: 権限の強さを決めるオプション。`Highest` は、管理者の権限で動かす。
+> - **`New-ScheduledTaskSettingsSet`**（PowerShell）: 予定の仕事の細かい決まり（時間の上限など）を作るコマンド。
+> - **`New-ScheduledTaskSettingsSet -ExecutionTimeLimit`**（PowerShell）: 仕事が動いてよい時間の上限を決めるオプション。過ぎたら止めて、止まったままの仕事が残らないようにします。
+> - **`New-TimeSpan`**（PowerShell）: 時間の長さを作るコマンド。
+> - **`New-TimeSpan -Hours`**（PowerShell）: 時間の長さを、時間（h）で決めるオプション。`New-TimeSpan -Hours 2` は 2 時間。
+> - **`New-ScheduledTaskSettingsSet -StartWhenAvailable`**（PowerShell）: 決めた時刻にサーバーが止まっていた時、動けるようになったらすぐに動かすオプション。
+> - **`Register-ScheduledTask`**（PowerShell）: 作った「何を・いつ・だれとして」を、タスクスケジューラーに登録するコマンド。
+> - **`Register-ScheduledTask -TaskPath`**（PowerShell）: 登録する先のフォルダを決めるオプション。`"\webapp\"` にまとめておくと、あとで探しやすくなります。
+> - **`Register-ScheduledTask -TaskName`**（PowerShell）: 予定の仕事の名前を決めるオプション。
+> - **`Register-ScheduledTask -Action`**（PowerShell）: `New-ScheduledTaskAction` で作った「何を動かすか」を渡すオプション。
+> - **`Register-ScheduledTask -Trigger`**（PowerShell）: `New-ScheduledTaskTrigger` で作った「いつ動かすか」を渡すオプション。
+> - **`Register-ScheduledTask -Principal`**（PowerShell）: `New-ScheduledTaskPrincipal` で作った「だれとして動かすか」を渡すオプション。
+> - **`Register-ScheduledTask -Settings`**（PowerShell）: `New-ScheduledTaskSettingsSet` で作った細かい決まりを渡すオプション。
+> - **`Register-ScheduledTask -Description`**（PowerShell）: 予定の仕事の説明を書くオプション。あとで見た人が、何の仕事か分かるように書きます。
+> - **`Get-ScheduledTaskInfo -TaskPath`**（PowerShell）: 調べる予定の仕事のフォルダを決めるオプション。
+> - **`Get-ScheduledTaskInfo -TaskName`**（PowerShell）: 調べる予定の仕事の名前を決めるオプション。
+
+<!-- /first-use -->
 
 **確かめること:**
 
@@ -1488,6 +1786,14 @@ Expand-Archive D:\webapp\releases\webapp-1.1.0.zip -DestinationPath D:\webapp\st
 Start-Service webapp-stg
 Invoke-WebRequest http://127.0.0.1:8081/health -UseBasicParsing | Select-Object StatusCode
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Rename-Item`**（PowerShell）: ファイルやフォルダの名前を変えるコマンド。`Rename-Item 今の名前 新しい名前`。
+
+<!-- /first-use -->
 
 検証で、変わった所と、主な画面（13.1 のチェック表）を確かめます。
 
