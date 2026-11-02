@@ -4914,10 +4914,12 @@ async fn home() -> Result<impl View> {
 > - **`#[page]`**（Topcoat）: Topcoat の印（属性）。この関数を、1 つの URL に答える「ページ」にします。`#[page("/")]` なら `/` に、`#[page(POST)]` なら送信（POST）に答えます（第6巻 UNIT 02〜03）。
 > - **`.assets()`**（Topcoat）: ルーターに、配るアセット（CSS など）の束を登録するメソッド。`.assets(AssetBundle::load().unwrap())`（第6巻 UNIT 08）。
 > - **`.build()`**（型とメソッド）: 設定を少しずつ足していく「組み立て係」（ビルダー）の最後に呼んで、でき上がった物を作るメソッド。`Router::builder()…build()` の形で、ルーターなどを作る時に使います。
+> - **`AssetBundle::load()`**（Topcoat）: `topcoat asset bundle` で作った CSS などの束（アセット）を読み込む関数。`.assets(AssetBundle::load().unwrap())` のように、ルーターに渡して配れるようにします（第6巻 UNIT 08）。
 > - **`topcoat::dev::script()`**（Topcoat）: `topcoat dev` で動かしている時だけ、「コードを直したら、ブラウザーを自動で読み直す」ための小さなスクリプトを、ページに入れる関数。`cargo run` や本番では何も出しません（第6巻 UNIT 08）。
 > - **`AssetBundle`**（Topcoat）: Topcoat の型。`topcoat asset bundle` で作った「アセットの束」（名前にハッシュが付いたファイルと目録）を、`AssetBundle::load()` で読み込んで、配れるようにします（第6巻 UNIT 08）。
 > - **`RouterBuilderAssetExt`**（Topcoat）: Topcoat のトレイト（機能のまとまり）。`use` しておくと、ルーターを組み立てる時に、アセット（CSS など）を配る設定のメソッドが使えるようになります。
 > - **`Router`**（Topcoat）: URL とメソッド（GET・POST）ごとに、どの関数に答えさせるかを決めた名簿（ルーター）。Topcoat のサーバーは、来た頼み（リクエスト）をこの名簿で振り分けます（第6巻 UNIT 03）。
+> - **`Slot`**（Topcoat）: 外枠（`#[layout]`）の関数が受け取る、「中に入るページの場所」を表す型。外枠の `view!` の中で `(slot)` と書いた所に、各ページの中身が入ります（第6巻）。
 > - **`View`**（Topcoat）: Topcoat の「画面（HTML になる物）」の型（トレイト）。ページの関数は `Result<impl View>`（HTML になる何かを返す。失敗することもある）を返します。
 > - **`DOCTYPE`**（HTML）: `<!DOCTYPE html>` は、「この文書は HTML5 です」とブラウザーに伝える、HTML の先頭の決まった 1 行です。
 

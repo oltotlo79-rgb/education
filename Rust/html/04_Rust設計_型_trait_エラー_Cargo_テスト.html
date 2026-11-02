@@ -2110,6 +2110,7 @@ None
 <ul>
 <li><strong><code>where</code></strong>（型とメソッド）: ジェネリクス（型を後から決める書き方）の条件を、関数の後ろにまとめて書く所。<code>where T: Display, I: IntoIterator&lt;Item = T&gt;</code> のように、条件が長い時に読みやすくなります。</li>
 <li><strong><code>IntoIterator</code></strong>（イテレーター）: 「<code>for</code> で回せる物」の機能（トレイト）。<code>Vec</code>・配列・<code>HashMap</code> などが持っています。<code>I: IntoIterator&lt;Item = T&gt;</code> は「<code>T</code> が 1 つずつ出てくる、回せる物なら何でも」という条件です。</li>
+<li><strong><code>Item</code></strong>（イテレーター）: イテレーターが 1 つずつ取り出す物の型（関連型）。<code>IntoIterator&lt;Item = T&gt;</code> は「<code>T</code> を 1 つずつ取り出せる物なら何でもよい」という意味です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -3456,6 +3457,16 @@ CSV
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Error</code></strong>（エラー処理）: エラーを表す型が守る決まりごと（トレイト）。<code>use std::error::Error;</code> と書くと、<code>.source()</code>（元になったエラー）などを使えます。<code>Box&lt;dyn Error&gt;</code> は「どんなエラーでも入る箱」です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-108"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u05_manual</span>
 </code></pre></div></div>
 
@@ -3676,6 +3687,8 @@ Box&lt;dyn Error&gt;: タイトルを入力してください
 <li><strong><code>#[source]</code></strong>（エラー処理）: <code>thiserror</code> の印（属性）。「このエラーの元になったエラー」の項目に付けます。<code>.source()</code> や <code>anyhow</code> の原因の表示で、元のエラーまでたどれるようになります。</li>
 <li><strong><code>#[from]</code></strong>（エラー処理）: <code>thiserror</code> の印（属性）。付けた項目の型のエラーから、自分のエラーへ自動で変換できるようにします（<code>From</code> の実装を作る）。これで <code>?</code> を使った時に、自動で自分のエラーに変わります。</li>
 <li><strong><code>.source()</code></strong>（エラー処理）: エラーの「元になったエラー」を返すメソッド。<code>while let Some(e) = err.source()</code> のようにたどると、原因をさかのぼれます。</li>
+<li><strong><code>std::error::Error::source()</code></strong>（エラー処理）: エラーの「元になったエラー」を返す関数（<code>.source()</code> と同じ）。<code>Option</code> で返るので、<code>while let Some(e) = cause</code> のようにたどって、原因をさかのぼれます。</li>
+<li><strong><code>std::io::Error::new()</code></strong>（エラー処理）: 入出力のエラー（<code>std::io::Error</code>）を自分で作る関数。<code>std::io::Error::new(ErrorKind::Other, "説明")</code> のように、エラーの種類と説明を渡します。</li>
 <li><strong><code>From</code></strong>（型とメソッド）: 「ある型から作れる」機能（トレイト）。<code>impl From&lt;RepoError&gt; for AppError</code> を書くと、<code>RepoError</code> を <code>AppError</code> に変えられます。<code>?</code> は、エラーを返す時にこの変換を自動で使います。</li>
 <li><strong><code>ErrorKind</code></strong>（エラー処理）: 入出力のエラーの「種類」。<code>std::io::ErrorKind::NotFound</code>（無い）・<code>ConnectionRefused</code>（つなぐのを断られた）などがあり、<code>e.kind()</code> で調べて、種類ごとに処理を分けられます。</li>
 <li><strong><code>ConnectionRefused</code></strong>（エラー処理）: <code>ErrorKind::ConnectionRefused</code> は、「相手のパソコンに、その番号で待っているプログラムがいない」ために、つなぐのを断られた、というエラーの種類です。</li>
@@ -3817,6 +3830,7 @@ Box&lt;dyn Error&gt;: タイトルを入力してください
 <li><strong><code>bail!</code></strong>（エラー処理）: <code>anyhow</code> のマクロ。その場でエラーを作って、関数から返します。<code>bail!("ノートが 1 件もありません");</code> は <code>return Err(anyhow!("…"));</code> の短い書き方です。</li>
 <li><strong><code>.with_context()</code></strong>（エラー処理）: <code>anyhow</code> のメソッド。失敗した時のエラーに、「何をしていて失敗したか」の説明を書き足します。<code>.with_context(|| format!("{path} を読めませんでした"))?</code>。ログを見た人が、原因をすぐ分かるようになります。</li>
 <li><strong><code>.unwrap_or_else()</code></strong>（エラー処理）: <code>Option</code> や <code>Result</code> から中身を取り出し、無い（失敗した）時は、渡した関数を動かして代わりの値を作るメソッド。<code>unwrap_or</code> と違い、代わりの値を作る処理が、必要な時だけ動きます。</li>
+<li><strong><code>.context()</code></strong>（エラー処理）: <code>anyhow</code> の部品で、エラーに「何をしていた時のエラーか」の説明を足すメソッド。<code>fs::read_to_string(path).context("設定ファイルを読めません")?</code>。説明を <code>format!</code> で作る時は、必要な時だけ作る <code>.with_context(|| …)</code> を使います。</li>
 <li><strong><code>std::env::args()</code></strong>（プロセス）: プログラムに渡された引数を取り出す関数（<code>env::args()</code> と同じ）。</li>
 <li><strong><code>Context</code></strong>（エラー処理）: <code>anyhow::Context</code> は、<code>with_context</code>・<code>context</code> メソッドを使えるようにする機能（トレイト）。<code>use anyhow::Context;</code> と書いておくと、<code>Result</code> や <code>Option</code> に説明を付けられます。</li>
 </ul>
@@ -6454,6 +6468,7 @@ NG タイトルを入力してください at line 1 column 15
 <li><strong><code>std::process::exit()</code></strong>（プロセス）: プログラムを、その場で終わらせる関数（<code>process::exit</code> と同じ）。<code>std::process::exit(1)</code> は、終了コード 1（失敗）で終わります。</li>
 <li><strong><code>VarError</code></strong>（プロセス）: 環境変数を読む <code>env::var</code> が失敗した時のエラーの型。<code>VarError::NotPresent</code>（設定されていない）と <code>VarError::NotUnicode</code>（文字として読めない）の 2 種類があります。</li>
 <li><strong><code>NotPresent</code></strong>（プロセス）: <code>VarError::NotPresent</code> は、「その名前の環境変数が設定されていない」というエラーの種類です。</li>
+<li><strong><code>NotUnicode</code></strong>（プロセス）: <code>env::var</code> が返すエラーの 1 つ（<code>env::VarError::NotUnicode</code>）。環境変数はあったが、中身が正しい文字（UTF-8）でなかった時です。もう 1 つは「無かった」の <code>NotPresent</code> です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -7185,6 +7200,18 @@ error: test failed, to rerun pass `--lib`
 <span class="k">pub</span><span class="w"> </span><span class="k">use</span><span class="w"> </span><span class="n">title</span><span class="p">::{</span><span class="n">MAX_TITLE_CHARS</span><span class="p">,</span><span class="w"> </span><span class="n">NoteTitle</span><span class="p">,</span><span class="w"> </span><span class="n">TitleError</span><span class="p">};</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Action</code></strong>（RustNote で作る物）: RustNote のノートに対する操作（公開する・アーカイブするなど）を表す enum。この巻の後の方（「もう一歩」の所）で作ります。</li>
+<li><strong><code>NoteStatus</code></strong>（RustNote で作る物）: RustNote のノートの状態（下書き・公開・アーカイブ）を表す enum。この巻の後の方（「もう一歩」の所）で作ります。</li>
+<li><strong><code>TransitionError</code></strong>（RustNote で作る物）: RustNote で、ノートの状態を、決まりにない形で変えようとした時のエラーを表す型。この巻の後の方で作ります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><strong>src/title.rs</strong></p>
 <div class="codehilite"><div class="code-wrap" id="code-279"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">use</span><span class="w"> </span><span class="n">thiserror</span><span class="p">::</span><span class="n">Error</span><span class="p">;</span>
 
@@ -7693,6 +7720,16 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; fini
 <span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{progress:?}&quot;</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Progress</code></strong>（RustNote で作る物）: 練習問題で作る、進み具合を表す enum。この巻の解答と解説で作ります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-295"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>   Compiling toggle v0.1.0 (...\mustuse)
 warning: unused return value of `Progress::toggle` that must be used

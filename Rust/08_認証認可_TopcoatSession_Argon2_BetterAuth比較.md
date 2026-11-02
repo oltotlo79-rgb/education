@@ -360,6 +360,14 @@ async fn three_checks() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.sign_up()`**（RustNote で作る物）: テスト用の `TestApp` のメソッドで、利用者を登録して、ログイン済みのクッキーを返します。全体のコードは第13巻に載っています。
+
+<!-- /first-use -->
+
 コピーした `rustnote` フォルダの `tests/u01_three_checks.rs` として保存して実行します。`--nocapture` で `println!` を表示し、`--test-threads=1` で、表示が混ざらないようにします。
 
 ```powershell
@@ -485,6 +493,8 @@ async fn session_cookie_and_record() {
 
 > **▶ ここで初めて出てくるコード**
 >
+> - **`.post_form()`**（RustNote で作る物）: テスト用の `TestApp` のメソッドで、フォームの値を POST で送って、答えを受け取ります。
+> - **`.headers()`**（HTTP）: 答え（レスポンス）の見出し（ヘッダー）の一覧を返すメソッド。`.headers().get("set-cookie")` のように、名前で 1 つ取り出せます。
 > - **`.get_all()`**（HTTP）: HTTP のヘッダーで、同じ名前の物（`Set-Cookie` など）を全部取り出すメソッド。`get` だと最初の 1 つだけです。
 > - **`.trim_start_matches()`**（文字列）: 文字列の先頭から、決めた文字（文字列）をくり返し取り除いたものを返すメソッド。`pair.trim_start_matches("__Host-session=")` は、クッキーの名前の部分を取って値だけにします。
 
@@ -637,6 +647,8 @@ async fn cross_site_posts_are_rejected() {
 
 > **▶ ここで初めて出てくるコード**
 >
+> - **`Body::from()`**（HTTP）: 文字列やバイトの並びから、本文（`Body`）を作る関数。`Body::from("title=memo&body=")` は、フォームの値を本文にしたものです。
+> - **`TestApp`**（RustNote で作る物）: テストのたびに、空のデータベースとルーターを用意してくれる、テスト用の struct。`tests/common/mod.rs` に置きます。全体のコードは第13巻に載っています。
 > - **`HOST`**（HTTP）: `header::HOST` は、HTTP の `Host` ヘッダー（どのサイト宛ての頼みか）の名前。
 > - **`COOKIE`**（HTTP）: `header::COOKIE` は、HTTP の `Cookie` ヘッダー（ブラウザーが覚えているクッキーを送る所）の名前。
 > - **`Origin`**（HTTP）: `Origin` ヘッダーは、フォームなどを送ったページが、どのサイトの物かを表します。ほかのサイトから勝手に送らせる攻撃（CSRF）を見分けるのに使います（第8巻 UNIT 06）。
@@ -885,6 +897,14 @@ pub async fn log_out(cx: &Cx) -> Result<(), AppError> {
     Ok(())
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.delete()`**（RustNote で作る物）: `SessionRepository`（セッションの出し入れ）のメソッドで、決めたセッションを消します。
+
+<!-- /first-use -->
 
 - `session::start(cx)` は、Topcoat が新しいトークンを作ってクッキーに入れ、そのハッシュ（`token_hash`）と期限（`expires_at`）を返す関数です。Topcoat は、トークンを**発行するだけ**で、保存はしません。保存するのはアプリ（RustNote の `sessions` 表）の役目です。
 - ログインのたびに**新しい**トークンを作るのは、「攻める人が先に用意したトークンを、本人にログインさせて使わせる」攻撃（セッション固定攻撃）を防ぐためです。くわしくは UNIT 05 で扱います。
@@ -1944,6 +1964,8 @@ let user = match app_state(cx).users.create(&email, &password_hash).await {
 
 > **▶ ここで初めて出てくるコード**
 >
+> - **`SignupOutcome`**（RustNote で作る物）: 登録の結果（できた・断った）を表す enum。`SignupOutcome::Rejected(状態コード, フォーム)` は、入力をやり直してもらう時の値です。全体のコードは第13巻に載っています。
+> - **`Rejected`**（RustNote で作る物）: `SignupOutcome` の値の 1 つで、「登録を断った（入力をやり直してもらう）」を表します。
 > - **`CONFLICT`**（HTTP）: `StatusCode::CONFLICT` は、HTTP の答えの番号 409（「ぶつかった」）。同じメールアドレスで登録しようとした時などに返します。
 
 <!-- /first-use -->
@@ -2167,6 +2189,14 @@ if app_state(cx).users.find_by_email(&email).await?.is_some() {
     return Ok(SignupOutcome::Rejected(StatusCode::CONFLICT, form));
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.find_by_email()`**（RustNote で作る物）: `UserRepository` のメソッドで、メールアドレスから利用者を探します。見つからなければ `None` です。
+
+<!-- /first-use -->
 
 例3-2のテストを動かします。
 
@@ -2519,6 +2549,14 @@ pub async fn login(cx: &Cx, Form(input): Form<LoginForm>) -> Result<impl View> {
     })
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`LoggedIn`**（RustNote で作る物）: `Flash` の値の 1 つで、「ログインしました」のお知らせ。
+
+<!-- /first-use -->
 
 照合は `src/auth.rs` の `authenticate` です。登録が無いときも、形が違うときも、ダミーのハッシュで照合してから `None` を返します（抜き出しています）。
 
@@ -4308,6 +4346,14 @@ pub trait NoteRepository {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`NotePage`**（RustNote で作る物）: ノートの一覧の 1 ページ分（ノートの並びと、全部の数・ページ番号）をまとめた struct。全体のコードは第13巻に載っています。
+
+<!-- /first-use -->
+
 > **▼ このコードがやること（先に日本語で）:** alice と bob を登録し、alice のノートを1件作って、その中身（タイトル・完了・version）を表示します。次に、ノートの5つの入口（詳細・編集の画面・編集の保存・完了・削除）に、bob のクッキーと、クッキー無し（guest）で、リクエストを送り、状態コードを表にします。そのあとで、alice のノートが変わっていないかを表示し、最後に alice 本人なら詳細と編集の画面が開けることを確かめます。
 
 **▶ 書く所と動かし方:** コピーした `rustnote` フォルダの `tests` フォルダに、`u07_matrix.rs` という名前の**新しいファイル**を作り、下のコードを貼り付けて保存します。`rustnote` のフォルダで `cargo test --test u07_matrix -- --nocapture` を実行します。
@@ -4928,13 +4974,18 @@ console.log(`sign-out → ${r.response.status}（session: ${before} 行 → ${af
 > - **`for`**（JavaScript・TypeScript）: くり返しの書き方。`for (const x of 配列) { … }` は、配列の中身を 1 つずつ `x` に入れてくり返します。
 > - **`of`**（JavaScript・TypeScript）: `for (const x of 配列)` の一部で、「配列の中身を 1 つずつ」という意味です。
 > - **`.runMigrations()`**（JavaScript・TypeScript）: Better Auth の、データベースの表を作る・変える手順（マイグレーション）を実行するメソッド（第8巻 UNIT 08 の比べ）。
+> - **`.now()`**（JavaScript・TypeScript）: `performance.now()` は、ページ（プログラム）が始まってからの時間をミリ秒で返します。`Date.now()` は、1970 年 1 月 1 日からのミリ秒です。どちらも、かかった時間を計るのに使えます。
 > - **`.handler()`**（JavaScript・TypeScript）: Better Auth の、HTTP のリクエストを受け取って答えを返す関数（`auth.handler(new Request(…))`）。サーバーを立てずに試す時に、直接呼んでいます。
 > - **`.stringify()`**（JavaScript・TypeScript）: `JSON.stringify(値)` は、JavaScript の値を JSON の文字列にする関数です。
 > - **`.round()`**（JavaScript・TypeScript）: `Math.round(x)` は、小数を四捨五入して整数にする関数です。
+> - **`.parse()`**（JavaScript・TypeScript）: `JSON.parse(文字列)` は、JSON の文字列を、JavaScript のオブジェクトや配列に変えます。逆は `JSON.stringify(値)` です。
 > - **`.slice()`**（JavaScript・TypeScript）: 文字列や配列の、一部分を切り出すメソッド。`text.slice(0, 40)` は、最初の 40 文字です。
+> - **`.get()`**（JavaScript・TypeScript）: 名前（キー）で 1 つ取り出すメソッド。`response.headers.get("set-cookie")`（見出しを 1 つ）・`map.get(キー)`（`Map` から）・`stmt.get()`（SQLite の結果の 1 行）のように使います。無ければ `undefined` や `null` です。
 > - **`.split()`**（JavaScript・TypeScript）: JavaScript・TypeScript で、文字列を区切りで分けて配列にするメソッド。`"a,b".split(",")` は `["a", "b"]`。正規表現（`/,/`）でも区切れます。
 > - **`.join()`**（JavaScript・TypeScript）: JavaScript・TypeScript で、配列の中身を区切り文字でつないで 1 つの文字列にするメソッド。`["a", "b"].join(";")` は `"a;b"`。
+> - **`.log()`**（JavaScript・TypeScript）: `console.log(…)` は、渡した値を画面（ターミナルやブラウザーの開発者ツール）に表示します。
 > - **`.push()`**（JavaScript・TypeScript）: JavaScript・TypeScript で、配列の後ろに足すメソッド（元の配列が変わる）。
+> - **`.add()`**（JavaScript・TypeScript）: `Set`（同じ物を 2 回入れない入れ物）に 1 つ足すメソッド。すでにあれば何もしません。
 > - **`.prepare()`**（JavaScript・TypeScript）: Node.js の SQLite（`node:sqlite`）で、SQL の文を用意するメソッド。`.get()`・`.all()` で結果を受け取ります。
 > - **`.startsWith()`**（JavaScript・TypeScript）: 文字列が、その文字で始まっていれば `true` を返すメソッド（Rust の `starts_with`）。
 > - **`??`**（JavaScript・TypeScript）: `a ?? b` は、`a` が `null` か `undefined`（値が無い）なら `b` を使う、という書き方です。
@@ -5358,6 +5409,7 @@ fn main() {
 
 > **▶ ここで初めて出てくるコード**
 >
+> - **`.encode()`**（認証）: `base64` の部品で、バイトの並びを、URL に入れても安全な文字（Base64）に変えるメソッド。`URL_SAFE_NO_PAD.encode(バイト)`。
 > - **`.random()`**（認証）: `rand` の部品で、でたらめな値を作るメソッド（`rand::rng().random()`）。トークンなど、予想されてはいけない値に使います。
 > - **`Sha256::digest()`**（認証）: データから、SHA-256 というハッシュ（32 バイトの指紋）を計算する関数（`sha2` の部品）。
 > - **`rand::rng()`**（認証）: でたらめな数を作る係を取り出す関数（`rand` の部品）。`rand::rng().random()` で、でたらめな値を作ります。

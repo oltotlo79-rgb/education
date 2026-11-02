@@ -1480,6 +1480,7 @@ u8::try_from(100) = Ok(100)
 <ul>
 <li><strong><code>as</code></strong>（数）: 型を変える書き方。<code>x as f64</code> は整数を小数に、<code>300 as u8</code> は 300 を u8 に変えます。入りきらない分は<strong>黙って切り捨てられる</strong>ので（300 → 44）、範囲が分からない時は <code>try_from</code> を使います。</li>
 <li><strong><code>u32::from()</code></strong>（数）: 小さい整数の型などを、<code>u32</code> に変える関数（値が変わらない変換だけ）。</li>
+<li><strong><code>u8::try_from()</code></strong>（数）: 別の型の数を <code>u8</code>（0〜255）に変える関数。入りきらない数（300 など）だと <code>Err</code> を返すので、<code>as u8</code>（はみ出た分を黙って切り捨てる）より安全です。結果は <code>Result</code> です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1674,6 +1675,7 @@ ID -7 は使えません: number too small to fit in target type
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>.checked_mul()</code></strong>（数）: 掛け算をして、型に入りきらない時は <code>None</code> を返すメソッド（<code>checked_add</code> の掛け算版）。</li>
+<li><strong><code>u64::try_from()</code></strong>（数）: 別の型の数を <code>u64</code>（0 以上の大きな整数）に変える関数。マイナスの数などは入らないので <code>Err</code> を返します。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1890,6 +1892,16 @@ error: could not compile `basics` (bin &quot;basics&quot;) due to 1 previous err
 ?page=abc → 1 ページ目, 0 件飛ばす
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.max()</code></strong>（数）: 2 つの数のうち、大きい方を返すメソッド。<code>page.max(1)</code> は「<code>page</code> と 1 の大きい方」なので、0 やマイナスが来ても 1 になります（下限を決める時の書き方）。イテレーターに使うと、いちばん大きい物を <code>Option</code> で返します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li><code>u32</code> で受け取ると、<code>-2</code> は<strong>数への変換の時点で失敗する</strong>ので、マイナスのページが紛れ込みません。型を選ぶことが、そのまま入力チェックになっています。</li>
 <li><code>page.max(1)</code> は「page と 1 の大きい方」です。これで 0 を 1 にそろえ、<code>page - 1</code> がマイナス（u32 のはみ出し）になるのを防いでいます。</li>
@@ -1934,6 +1946,16 @@ error: could not compile `basics` (bin &quot;basics&quot;) due to 1 previous err
 70000: 使えません（number too large to fit in target type）
 -1: 使えません（number too small to fit in target type）
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>u16::try_from()</code></strong>（数）: 別の型の数を <code>u16</code>（0〜65535。ポート番号などに使う）に変える関数。入りきらないと <code>Err</code> を返します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li><code>u16</code> は 0〜65535 なので、70000 も -1 も入りません。<code>as u16</code> を使っていたら 70000 は 4464 に化けて、別のポートで起動してしまうところでした。</li>
@@ -3674,6 +3696,7 @@ Some(&quot;日&quot;)
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>.is_char_boundary()</code></strong>（文字列）: そのバイトの位置が、文字の切れ目かどうかを調べるメソッド。日本語は 1 文字が 3 バイトなので、文字の途中で切ると止まってしまいます。切る前の確かめに使います。</li>
+<li><strong><code>.get()</code></strong>（Vec（並び））: 番号やキーで中身を取り出すメソッド。<code>v.get(10)</code> は、範囲の外なら止まらずに <code>None</code> を返します（<code>v[10]</code> はプログラムが止まる）。文字列の <code>s.get(0..3)</code> は、文字の区切りでない位置なら <code>None</code> です。<code>HashMap</code> の <code>map.get("キー")</code> も、無ければ <code>None</code> です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -4512,6 +4535,7 @@ Vec の合計: 60
 <ul>
 <li><strong><code>.pop()</code></strong>（Vec（並び））: <code>Vec</code> の最後の 1 つを取り出すメソッド。空なら <code>None</code> を返すので、結果は <code>Option</code> です。<code>String</code> なら最後の 1 文字を取り出します。</li>
 <li><strong><code>.sort()</code></strong>（Vec（並び））: <code>Vec</code> の中身を、小さい順（文字なら辞書の順）に並べかえるメソッド。新しい <code>Vec</code> は作らず、その <code>Vec</code> 自身を並べかえるので、<code>mut</code> が要ります。</li>
+<li><strong><code>.remove()</code></strong>（Vec（並び））: <code>Vec</code> から i 番目を取り除いて、その値を返すメソッド。後ろの物が前に詰められます。<code>HashMap</code> の <code>.remove(キー)</code> は、そのキーの組を取り除き、値を <code>Option</code> で返します。</li>
 <li><strong><code>Vec::new()</code></strong>（Vec（並び））: 空の <code>Vec</code> を作る関数。あとで <code>push</code> で足すので、<code>let mut v = Vec::new();</code> のように <code>mut</code> を付けます。中身の型は、足す物から Rust が推し量ります。</li>
 </ul>
 </blockquote>
@@ -6648,6 +6672,16 @@ Some(&quot;   &quot;) → 検索なし: 3 件すべて表示
 Some(&quot; Rust &quot;) → 「Rust」で検索: 2 件
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.as_str()</code></strong>（文字列）: <code>String</code>（持ち主のいる文字列）を、借りた <code>&amp;str</code> として見せるメソッド。<code>&amp;str</code> を受け取る関数に渡す時などに使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li>入口で「検索あり（<code>Some(検索語)</code>）」か「検索なし（<code>None</code>）」に整えておけば、その後は <code>match</code> で2通りを書くだけです。空白だけの検索語がデータベースまで届いて、全件に合ってしまう、といった事故を防げます。</li>
 <li>本物の RustNote では、一覧の絞り込み（すべて・未完了・完了済み）にも enum を使えます。候補が増えたときに、表示や検索条件の <code>match</code> の直し漏れをコンパイラが教えてくれます。</li>
@@ -7892,7 +7926,9 @@ true true
 <ul>
 <li><strong><code>.copied()</code></strong>（Option）: 借りている値（<code>&amp;i32</code> など）を、写した値（<code>i32</code>）にするメソッド。<code>map.get("a").copied()</code> は <code>Option&lt;&amp;i32&gt;</code> を <code>Option&lt;i32&gt;</code> にします。</li>
 <li><strong><code>.filter()</code></strong>（イテレーター）: 条件に合う物だけを残すメソッド。<code>v.iter().filter(|n| **n % 2 == 0)</code> は偶数だけ。<code>|n|</code> の中の <code>n</code> は借りた値なので、<code>*</code> が付くことがあります。</li>
+<li><strong><code>.sum()</code></strong>（イテレーター）: イテレーターの中身を全部足した合計を返すメソッド。<code>let sum: i32 = numbers.iter().sum();</code> のように、結果の型を書いておきます。</li>
 <li><strong><code>.any()</code></strong>（イテレーター）: 並びの中に、条件に合う物が 1 つでもあれば <code>true</code> を返すメソッド。全部が合うかは <code>.all()</code> で調べます。</li>
+<li><strong><code>.all()</code></strong>（イテレーター）: イテレーターの中身が、全部条件に合うかを <code>true</code>/<code>false</code> で返すメソッド。<code>v.iter().all(|n| *n &gt; 0)</code> は「全部 0 より大きいか」。1 つでも合うかは <code>.any()</code> です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -8603,6 +8639,7 @@ error: could not compile `basics` (bin &quot;basics&quot;) due to 1 previous err
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
+<li><strong><code>.ok()</code></strong>（エラー処理）: <code>Result</code> を <code>Option</code> に変えるメソッド。<code>Ok(値)</code> は <code>Some(値)</code> に、<code>Err(…)</code> は <code>None</code> になります（エラーの中身は捨てる）。<code>"42".parse().ok()</code> のように、「失敗したら無かったことにする」時に使います。</li>
 <li><strong><code>.flush()</code></strong>（入出力）: ためておいた出力を、すぐに画面やファイルへ書き出すメソッド。<code>print!</code> は改行しないので、すぐ表示されないことがあり、<code>io::stdout().flush()</code> で確実に出します。使うには <code>use std::io::Write;</code> が要ります。</li>
 <li><strong><code>io::stdout()</code></strong>（入出力）: 標準出力（ふつうの画面への出口）を表す物を返す関数。<code>println!</code> も、ここへ書いています。</li>
 <li><strong><code>io::stdin()</code></strong>（入出力）: 標準入力（キーボードからの入口）を表す物を返す関数。<code>io::stdin().read_line(&amp;mut s)</code> で 1 行読み、<code>io::stdin().lines()</code> で 1 行ずつくり返し読めます。</li>

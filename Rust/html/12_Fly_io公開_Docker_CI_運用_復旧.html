@@ -2314,9 +2314,13 @@ HTML の &lt;link&gt;: /_topcoat/assets/style-e9b983efabcfc6c3.css
 <li><strong><code>except</code></strong>（Python）: <code>try:</code> の中でエラーが起きた時に動く所。<code>except Exception as error:</code> で、起きたエラーを <code>error</code> という名前で受け取ります。</li>
 <li><strong><code>.loads()</code></strong>（Python）: 文字列から読み取るメソッド。<code>tomllib.loads(文字列)</code> は TOML、<code>json.loads(文字列)</code> は JSON を、Python の辞書にします。</li>
 <li><strong><code>.read_text()</code></strong>（Python）: <code>Path</code> のファイルの中身を、全部文字列として読むメソッド。<code>encoding="utf-8"</code> を付けて読みます。</li>
+<li><strong><code>.get()</code></strong>（Python）: 辞書（<code>dict</code>）から、キーで値を取り出すメソッド。<code>d.get("port", 8080)</code> は、キーが無ければ 2 つ目の値（無ければ <code>None</code>）を返すので、<code>d["port"]</code> と違ってエラーになりません。</li>
+<li><strong><code>.search()</code></strong>（Python）: <code>re.search(パターン, 文字列)</code> は、文字列の中から正規表現に合う所を探し、見つかれば「合った物」（<code>Match</code>）を、無ければ <code>None</code> を返します。<code>m.group(1)</code> で、かっこで囲んだ部分を取り出せます。</li>
 <li><strong><code>.group()</code></strong>（Python）: 正規表現で見つかった所から、かっこ <code>( )</code> の中の部分を取り出すメソッド。<code>m.group(1)</code> は 1 つ目のかっこの中です。</li>
 <li><strong><code>.urlopen()</code></strong>（Python）: <code>urllib.request.urlopen(URL)</code> は、URL にアクセスして、返事を受け取る関数です。</li>
 <li><strong><code>.exit()</code></strong>（Python）: <code>sys.exit(番号)</code> は、Python のプログラムを、その終了コードで終える関数です。</li>
+<li><strong><code>len()</code></strong>（Python）: 長さ（中身の数）を返す関数。<code>len("abc")</code> は 3、<code>len([1, 2])</code> は 2、<code>len(sys.argv)</code> は「渡された引数の数＋1」です。</li>
+<li><strong><code>str()</code></strong>（Python）: 値を文字列に変える関数。<code>str(8080)</code> は <code>"8080"</code>。数と文字列は <code>==</code> で比べても等しくならないので、そろえる時に使います。</li>
 <li><strong><code>getattr()</code></strong>（Python）: 物から、名前で属性（中の値）を取り出す関数。<code>getattr(error, "code", 既定値)</code> は、<code>code</code> が無ければ既定値を返します。</li>
 <li><strong><code>type()</code></strong>（Python）: 値の型を返す関数。<code>type(error).__name__</code> は、エラーの種類の名前です。</li>
 <li><strong><code>bool()</code></strong>（Python）: 値を <code>True</code>・<code>False</code> にする関数。空の文字列や <code>None</code> は <code>False</code>、中身があれば <code>True</code> です。</li>
@@ -3831,6 +3835,7 @@ NG   POST /logout（期待 303・実際 000）
 <li><strong><code>.readline()</code></strong>（Python）: 1 行だけ読むメソッド。</li>
 <li><strong><code>.strip()</code></strong>（Python）: 前後の空白や改行を取り除いたものを返すメソッド（Rust の <code>trim</code>）。</li>
 <li><strong><code>.HTTPConnection()</code></strong>（Python）: <code>http.client.HTTPConnection(ホスト, ポート)</code> は、HTTP で相手のサーバーにつなぐ物を作る関数です。</li>
+<li><strong><code>.items()</code></strong>（Python）: 辞書の「キーと値」の組を 1 つずつ取り出せる形にするメソッド。<code>for k, v in d.items():</code> で、両方を同時に使えます。</li>
 <li><strong><code>.request()</code></strong>（Python）: <code>http.client</code> の接続で、HTTP の頼み（メソッド・パス・本文・ヘッダー）を送るメソッド。</li>
 <li><strong><code>.getresponse()</code></strong>（Python）: 送った頼みに対する、相手の返事を受け取るメソッド。</li>
 <li><strong><code>.write()</code></strong>（Python）: ファイルに文字を書くメソッド。<code>f.write(line + "\n")</code>（改行は自分で付けます）。</li>

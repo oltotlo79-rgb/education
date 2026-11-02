@@ -6959,6 +6959,16 @@ note: if you&#39;re trying to build a new `libsql::Builder&lt;_&gt;`, consider u
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Db::open_local()</code></strong>（RustNote で作る物）: RustNote の <code>Db</code> を、手元のファイル（<code>data/rustnote.db</code> など）で開く関数。全体のコードは第13巻に載っています。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li>トークンの中身を取り出す <code>expose()</code> は、DB を開くこの1か所でだけ呼びます。わざと目立つ名前にしてあるので、「どこで秘密を使っているか」を検索ですぐに見つけられます。</li>
 <li>ローカルのときだけ、<code>PRAGMA journal_mode = WAL</code>（UNIT 05）や、接続ごとの <code>PRAGMA foreign_keys = ON; PRAGMA busy_timeout = 5000;</code> を実行します（<code>is_local</code> で見分けています）。</li>
@@ -7274,6 +7284,16 @@ SELECT 1 + 1 = 2（1 ミリ秒）
 <span class="w">    </span><span class="nb">Ok</span><span class="p">(())</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Row</code></strong>（データベース）: libSQL で、SQL の結果の 1 行を表す型。<code>row.get::&lt;i64&gt;(0)</code> のように、列の番号で値を取り出します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><code>src/bin/u09_repo.rs</code> として保存して実行します。</p>
 <div class="codehilite"><div class="code-wrap" id="code-239"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u09_repo</span>
@@ -9105,6 +9125,16 @@ POST /notes/1/edit -&gt; 409 Conflict (7.9545ms)
 <span class="w">    </span><span class="n">max</span><span class="p">:</span><span class="w"> </span><span class="kt">u64</span><span class="p">,</span>
 <span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">Result</span><span class="o">&lt;</span><span class="kt">u64</span><span class="p">,</span><span class="w"> </span><span class="n">GuardError</span><span class="o">&gt;</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>GuardError</code></strong>（RustNote で作る物）: 練習で作る、データベースの見張り（決まりに合わない変更を止める）のエラーの enum。この巻の解答と解説で作ります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p>上限 1 件で、「WHERE の書き忘れ」「<code>id</code> のつもりが <code>user_id</code>」「正しい1件」の3つを試し、<code>notes</code> の件数がどう変わるかを表示してください。</p>
 <p><strong>問題3:</strong> 開発中に、本番のトークンを書いた <code>.env</code> ファイルを、うっかり公開の Git リポジトリにプッシュしてしまいました。気づいてすぐ、「そのコミットを消して、強制プッシュすれば大丈夫」と考えた人がいます。何が足りないでしょうか。やることを、順番に挙げてください。</p>

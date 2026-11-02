@@ -2032,6 +2032,16 @@ pub async fn create(cx: &Cx, Form(input): Form<NoteForm>) -> Result<impl View> {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.with_errors()`**（RustNote で作る物）: `NoteFormState`（フォームの状態）に、項目ごとのエラーの文を足して返すメソッド。第10巻で作ります。
+> - **`NoteFormState::from_input()`**（RustNote で作る物）: 入力された題名と本文から、`NoteFormState` を作る関数。第10巻で作ります。
+> - **`NoteFormState`**（RustNote で作る物）: フォームに出す値とエラーの文をまとめた struct。入力にまちがいがあった時、入れた値を残したまま、エラーを出し直すのに使います。第10巻で作ります。
+
+<!-- /first-use -->
+
 - 最初の `require_user(cx)` が、ログインしていなければ 303 でログイン画面へ送ります（UNIT 01 の AC-02）。
 - 検査に合格したら保存し、`flash::set` でお知らせを予約して、`see_other(...)` で 303 を返します。移動先の URL は、`href!(id::show, id::Id(note.id))` のように、**詳細の画面の処理（`show`）の名前**から作っています。URL を文字列で手書きしないので、エラー2のような書き間違いが起きにくく、URL を変えたときもリンクがずれません。
 - 検査に失敗したら、`NoteFormState::from_input` で入力した内容を残し、`(StatusCode::BAD_REQUEST)` を付けて、一覧の画面を出し直しています。
@@ -2942,6 +2952,14 @@ pub struct NewNote {
     pub body: NoteBody,
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`NoteBody`**（RustNote で作る物）: ノートの本文を入れる専用の型（`struct NoteBody(String)`）。長さなどの決まりを確かめてからでないと作れないので、まちがった本文が入り込みません。全体のコードは第13巻に載っています。
+
+<!-- /first-use -->
 
 - **書くとき**の `NewNote` は、`title: NoteTitle` と `body: NoteBody` を持ちます。リポジトリの `insert` と `update` は `NewNote` しか受け取らないので、検査していないタイトルを保存する道は、コードの上に存在しません。
 - **読むとき**の `Note` は、`title: String` です。DB に入っている値は、書くときに検査済みで、さらに DB の制約も通っているので、読むたびに検査し直すことはしていません。ここは「検査を何回するか」と「速さ・書きやすさ」の釣り合いで決めたところです。
@@ -5725,6 +5743,15 @@ async fn main() -> anyhow::Result<()> {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`LibsqlUserRepository::new()`**（RustNote で作る物）: `LibsqlUserRepository` を、データベース（`Db`）を受け取って作る関数。
+> - **`LibsqlUserRepository`**（RustNote で作る物）: `UserRepository` の決まりを、libSQL のデータベースで守る（実装する）struct。全体のコードは第13巻に載っています。
+
+<!-- /first-use -->
+
 ```text
 ### $env:DATABASE_URL = "dev.db"; cargo run --example u07_status（まだ何もない）
 dev.db
@@ -6655,10 +6682,14 @@ for fg, bg, where in pairs:
 > - **`if`**（Python）: Python の条件。`if 条件:` の次の行から、字下げした所が中身です。`a if 条件 else b` の形で、1 行の中で値を選ぶこともできます。
 > - **`else`**（Python）: `if` の条件に合わなかった時の所。`if … else …` の 1 行の形でも使います。
 > - **`return`**（Python）: Python の関数の結果を返して、関数を終える命令。
+> - **`.read()`**（Python）: ファイルの中身を全部読んで、文字列で返すメソッド。`open(パス, encoding="utf-8").read()`。
 > - **`.findall()`**（Python）: `re.findall(パターン, 文字列)` は、正規表現（文字の形の決まり）に合う所を、全部リストにして返す関数です。
+> - **`open()`**（Python）: ファイルを開く関数。`open(パス, encoding="utf-8")` で読む、`open(パス, "w", encoding="utf-8")` で書く形で開きます。`with open(…) as f:` と書くと、使い終わったら自動で閉じます。
 > - **`dict()`**（Python）: Python の辞書（キー → 値の表）を作る関数。`dict([("a", 1), ("b", 2)])` のように、組の並びから作れます。
 > - **`int()`**（Python）: Python で、文字列などを整数にする関数。`int("ff", 16)` は、16 進数の `ff` を 255 にします。
+> - **`max()`**（Python）: いちばん大きい物を返す関数。`max(3, 9, 4)` は 9、`max([5, 1, 8])` は 8。いちばん小さい物は `min()` です。
 > - **`min()`**（Python）: Python で、いちばん小さい値を返す関数。`min(1, 5, 3)` は 1。
+> - **`print()`**（Python）: 渡した値を画面に表示する関数。`print("a", 1)` のように、いくつも渡すと空白でつないで表示し、最後に改行します。
 
 <!-- /first-use -->
 

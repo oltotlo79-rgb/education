@@ -1661,6 +1661,17 @@ available binaries: u02_serve, web_lab
 <span class="w">        </span><span class="p">.</span><span class="n">context</span><span class="p">(</span><span class="s">&quot;サーバーを起動できませんでした（HOST / PORT を確認してください）&quot;</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>routes::build_router()</code></strong>（RustNote で作る物）: RustNote の画面（ページ）を全部登録したルーターを組み立てる関数。第6巻の後の方と第10巻で作ります。</li>
+<li><strong><code>config::listen_address()</code></strong>（RustNote で作る物）: RustNote の、待ち受ける場所（<code>127.0.0.1:3000</code> など）を、環境変数から決める関数。全体のコードは第13巻に載っています。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li>例2-2と同じく、<code>topcoat::start(router).await</code> で待ち受けています。<code>HOST</code> と <code>PORT</code> を読むのも同じです。公開するとき（Fly.io）は <code>HOST=0.0.0.0</code>・<code>PORT=8080</code> にします（第12巻）。</li>
 <li>例2-3で見たとおり、<code>eprintln!</code> で「起動しました」を、<code>start</code> の<strong>前</strong>に表示しています。ポートが使われていると、この表示のあとにエラーで止まります。例2-3の形（<code>TcpListener::bind</code> で押さえてから表示し、<code>topcoat::serve</code> に渡す）にすれば直せます（RustNote のコードは変えていません）。</li>
@@ -2403,6 +2414,7 @@ content-length: 64
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>.cookies()</code></strong>（Topcoat）: ルーターに、クッキーを使う仕組みを登録するメソッド（<code>module_router!().cookies()</code>）。セッションを使う時も、先にこれを登録します。</li>
+<li><strong><code>.sessions()</code></strong>（Topcoat）: ルーターに、セッション（ログインの状態を覚える仕組み）を登録するメソッド。<code>.sessions(SessionConfig::default())</code>。先に <code>.cookies()</code> も登録します（第8巻）。</li>
 <li><strong><code>.app_context()</code></strong>（Topcoat）: アプリ全体で共有する物（データベースの接続など）をルーターに登録するメソッド。ページの関数からは、<code>cx</code> を通して取り出せます（第6巻 UNIT 07）。</li>
 <li><strong><code>SessionConfig::default()</code></strong>（Topcoat）: Topcoat のセッション（ログインの状態などを覚える仕組み）を、おすすめの設定で用意する書き方。<code>.sessions(SessionConfig::default())</code> でルーターに登録します（第6巻 UNIT 10）。</li>
 <li><strong><code>AssetConfig</code></strong>（Topcoat）: Topcoat のアセット（CSS・画像など）の配り方の設定の型。本番は束（<code>AssetBundle</code>）から、テストは <code>AssetConfig::hosted_at(…)</code> のように、場面に合わせて渡します。</li>
@@ -3136,6 +3148,17 @@ error[E0277]: the trait bound `&amp;NoteId: topcoat::view::internal::NodeClassif
 <span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">params</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">query_params</span><span class="p">::</span><span class="o">&lt;</span><span class="n">NotesParams</span><span class="o">&gt;</span><span class="p">(</span><span class="n">cx</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
 <span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">NoteQuery</span><span class="p">::</span><span class="n">new</span><span class="p">(</span><span class="n">params</span><span class="p">.</span><span class="n">q</span><span class="p">.</span><span class="n">as_deref</span><span class="p">(),</span><span class="w"> </span><span class="n">params</span><span class="p">.</span><span class="n">page</span><span class="p">);</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>NoteQuery::new()</code></strong>（RustNote で作る物）: <code>NoteQuery</code> を作る関数。ページ番号が無い・0 の時は 1 にするなど、値を整えてから作ります。</li>
+<li><strong><code>NoteQuery</code></strong>（RustNote で作る物）: ノートの一覧の、検索の言葉とページ番号をまとめた struct。<code>NoteQuery::new(検索語, ページ)</code> で作ります。全体のコードは第13巻に載っています。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li>例4-1の <code>NotesQuery</code> と同じ形です。読んだ値を、そのまま SQL に使うのではなく、<code>NoteQuery::new</code> で、「前後の空白を取る」「空白だけなら検索しない」「ページは 1 以上」と整えてから使います（第10巻 UNIT 01）。</li>
@@ -4198,6 +4221,7 @@ content-length: 208
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
+<li><strong><code>Json</code></strong>（Topcoat）: 本文を JSON で返すための型（<code>topcoat::router::content::Json</code>）。<code>Json(Health { … })</code> のように包んで返すと、JSON の文字に変えて送ってくれます。</li>
 <li><strong><code>CREATED</code></strong>（HTTP）: <code>StatusCode::CREATED</code> は、HTTP の答えの番号 201（「作りました」）。新しいデータを作った時に返します。</li>
 </ul>
 </blockquote>
@@ -4443,6 +4467,16 @@ error: could not compile `web_lab` (bin &quot;e06_okredirect&quot;) due to 1 pre
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>LoggedOut</code></strong>（RustNote で作る物）: <code>Flash</code> の値の 1 つで、「ログアウトしました」のお知らせ。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li>状態を変える操作（ログアウト）なので、GET ではなく POST にしています。戻り値は <code>Result&lt;()&gt;</code> で、成功しても <code>Ok</code> は返さず、いつも 303 です。</li>
 <li>失敗したとき（DB に接続できないなど）に、RustNote のエラー画面（レイアウトの <code>error_boundary</code>）を通したいので、<code>#[route]</code> ではなく <code>#[page(POST)]</code> にしています。</li>
@@ -4451,6 +4485,16 @@ error: could not compile `web_lab` (bin &quot;e06_okredirect&quot;) due to 1 pre
 <div class="codehilite"><div class="code-wrap" id="code-145"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="cp">#[route(GET)]</span>
 <span class="k">pub</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">health</span><span class="p">(</span><span class="n">cx</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">Cx</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">Result</span><span class="o">&lt;</span><span class="p">(</span><span class="n">StatusCode</span><span class="p">,</span><span class="w"> </span><span class="n">Json</span><span class="o">&lt;</span><span class="n">Health</span><span class="o">&gt;</span><span class="p">)</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Health</code></strong>（RustNote で作る物）: RustNote の <code>/health</code>（動いているかを確かめる URL）が返す中身の struct。第9巻で作ります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li>DB に問い合わせて、成功なら <code>(StatusCode::OK, Json(Health { status: "ok" }))</code>、失敗なら <code>(StatusCode::SERVICE_UNAVAILABLE, …)</code> を返します。人ではなく、Fly.io が読む窓口です（第12巻 UNIT 06）。</li>
@@ -5093,6 +5137,7 @@ error[E0277]: `Rc&lt;std::string::String&gt;` cannot be shared between threads s
 <li><strong><code>.method()</code></strong>（HTTP）: <code>Request::builder().method(Method::POST)</code> のように、作るリクエストの HTTP のメソッドを決めるメソッド。</li>
 <li><strong><code>.uri()</code></strong>（HTTP）: <code>Request::builder().uri("/notes")</code> のように、作るリクエストの URL を決めるメソッド。</li>
 <li><strong><code>.into_body()</code></strong>（HTTP）: HTTP の答え（レスポンス）から、本文の部分だけを取り出すメソッド。テストで、返ってきた本文を確かめる時に使います。</li>
+<li><strong><code>Body::empty()</code></strong>（HTTP）: 中身が空っぽの本文を作る関数。本文の要らないリクエスト（GET など）をテストで作る時に、<code>.body(Body::empty())</code> と書きます。</li>
 <li><strong><code>String::from_utf8()</code></strong>（文字列）: バイトの並び（<code>Vec&lt;u8&gt;</code>）を、文字列（<code>String</code>）に変える関数。UTF-8 の文字として読めない時は <code>Err</code> を返します。</li>
 <li><strong><code>Method</code></strong>（HTTP）: HTTP のメソッド（<code>GET</code>・<code>POST</code>・<code>PUT</code>・<code>DELETE</code> など）を表す型。</li>
 </ul>
@@ -6695,7 +6740,10 @@ internal server error
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
+<li><strong><code>.value()</code></strong>（クッキー）: クッキーから、値の部分（<code>名前=値</code> の <code>値</code>）を取り出すメソッド。<code>cookie.value().to_string()</code>。</li>
+<li><strong><code>session::token_hash()</code></strong>（Topcoat）: Topcoat の関数。今のリクエストのセッションの印（トークン）の、ハッシュを返します。データベースの <code>sessions</code> 表に、ハッシュで記録しておき、ログイン中かを調べるのに使います（第8巻 UNIT 05）。</li>
 <li><strong><code>Cookie::build()</code></strong>（クッキー）: クッキー（ブラウザーに覚えておいてもらう小さな値）を、設定しながら作り始める関数。<code>Cookie::build(("theme", "dark")).path("/").build()</code> のように、名前と値、使う範囲などを決めます。</li>
+<li><strong><code>session::stop()</code></strong>（Topcoat）: Topcoat のセッションを終わらせる（ログアウトする）関数。消したセッションの番号を返すので、データベースからも消せます（第8巻）。</li>
 <li><strong><code>Cookie</code></strong>（クッキー）: クッキー 1 つ（名前と値と、使う範囲・期限などの設定）を表す型。</li>
 <li><strong><code>Cookies</code></strong>（クッキー）: 今のリクエストのクッキーを読み書きする入れ物（クッキーの瓶）。<code>jar.add(…)</code> で足し、<code>jar.get("名前")</code> で読みます。</li>
 <li><strong><code>RouterBuilderCookieExt</code></strong>（Topcoat）: ルーターに <code>.cookies()</code>（クッキーを使う仕組み）を登録できるようにする機能（トレイト）。</li>

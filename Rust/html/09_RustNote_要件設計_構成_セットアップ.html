@@ -2544,6 +2544,18 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; fini
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.with_errors()</code></strong>（RustNote で作る物）: <code>NoteFormState</code>（フォームの状態）に、項目ごとのエラーの文を足して返すメソッド。第10巻で作ります。</li>
+<li><strong><code>NoteFormState::from_input()</code></strong>（RustNote で作る物）: 入力された題名と本文から、<code>NoteFormState</code> を作る関数。第10巻で作ります。</li>
+<li><strong><code>NoteFormState</code></strong>（RustNote で作る物）: フォームに出す値とエラーの文をまとめた struct。入力にまちがいがあった時、入れた値を残したまま、エラーを出し直すのに使います。第10巻で作ります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li>最初の <code>require_user(cx)</code> が、ログインしていなければ 303 でログイン画面へ送ります（UNIT 01 の AC-02）。</li>
 <li>検査に合格したら保存し、<code>flash::set</code> でお知らせを予約して、<code>see_other(...)</code> で 303 を返します。移動先の URL は、<code>href!(id::show, id::Id(note.id))</code> のように、<strong>詳細の画面の処理（<code>show</code>）の名前</strong>から作っています。URL を文字列で手書きしないので、エラー2のような書き間違いが起きにくく、URL を変えたときもリンクがずれません。</li>
@@ -3572,6 +3584,16 @@ help: there is a file with the same name in a different directory
 <span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">body</span><span class="p">:</span><span class="w"> </span><span class="nc">NoteBody</span><span class="p">,</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>NoteBody</code></strong>（RustNote で作る物）: ノートの本文を入れる専用の型（<code>struct NoteBody(String)</code>）。長さなどの決まりを確かめてからでないと作れないので、まちがった本文が入り込みません。全体のコードは第13巻に載っています。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li><strong>書くとき</strong>の <code>NewNote</code> は、<code>title: NoteTitle</code> と <code>body: NoteBody</code> を持ちます。リポジトリの <code>insert</code> と <code>update</code> は <code>NewNote</code> しか受け取らないので、検査していないタイトルを保存する道は、コードの上に存在しません。</li>
@@ -6404,6 +6426,17 @@ error: could not compile `rustnote` (example &quot;e06_display&quot;) due to 1 p
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>LibsqlUserRepository::new()</code></strong>（RustNote で作る物）: <code>LibsqlUserRepository</code> を、データベース（<code>Db</code>）を受け取って作る関数。</li>
+<li><strong><code>LibsqlUserRepository</code></strong>（RustNote で作る物）: <code>UserRepository</code> の決まりを、libSQL のデータベースで守る（実装する）struct。全体のコードは第13巻に載っています。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-186"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>### $env:DATABASE_URL = &quot;dev.db&quot;; cargo run --example u07_status（まだ何もない）
 dev.db
   0001_users  まだ
@@ -7316,10 +7349,14 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 <li><strong><code>if</code></strong>（Python）: Python の条件。<code>if 条件:</code> の次の行から、字下げした所が中身です。<code>a if 条件 else b</code> の形で、1 行の中で値を選ぶこともできます。</li>
 <li><strong><code>else</code></strong>（Python）: <code>if</code> の条件に合わなかった時の所。<code>if … else …</code> の 1 行の形でも使います。</li>
 <li><strong><code>return</code></strong>（Python）: Python の関数の結果を返して、関数を終える命令。</li>
+<li><strong><code>.read()</code></strong>（Python）: ファイルの中身を全部読んで、文字列で返すメソッド。<code>open(パス, encoding="utf-8").read()</code>。</li>
 <li><strong><code>.findall()</code></strong>（Python）: <code>re.findall(パターン, 文字列)</code> は、正規表現（文字の形の決まり）に合う所を、全部リストにして返す関数です。</li>
+<li><strong><code>open()</code></strong>（Python）: ファイルを開く関数。<code>open(パス, encoding="utf-8")</code> で読む、<code>open(パス, "w", encoding="utf-8")</code> で書く形で開きます。<code>with open(…) as f:</code> と書くと、使い終わったら自動で閉じます。</li>
 <li><strong><code>dict()</code></strong>（Python）: Python の辞書（キー → 値の表）を作る関数。<code>dict([("a", 1), ("b", 2)])</code> のように、組の並びから作れます。</li>
 <li><strong><code>int()</code></strong>（Python）: Python で、文字列などを整数にする関数。<code>int("ff", 16)</code> は、16 進数の <code>ff</code> を 255 にします。</li>
+<li><strong><code>max()</code></strong>（Python）: いちばん大きい物を返す関数。<code>max(3, 9, 4)</code> は 9、<code>max([5, 1, 8])</code> は 8。いちばん小さい物は <code>min()</code> です。</li>
 <li><strong><code>min()</code></strong>（Python）: Python で、いちばん小さい値を返す関数。<code>min(1, 5, 3)</code> は 1。</li>
+<li><strong><code>print()</code></strong>（Python）: 渡した値を画面に表示する関数。<code>print("a", 1)</code> のように、いくつも渡すと空白でつないで表示し、最後に改行します。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->

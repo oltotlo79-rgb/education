@@ -2037,7 +2037,9 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
+<li><strong><code>LibsqlSessionRepository::new()</code></strong>（RustNote で作る物）: <code>LibsqlSessionRepository</code> を、データベース（<code>Db</code>）を受け取って作る関数。</li>
 <li><strong><code>TokenHash::new()</code></strong>（Topcoat）: セッションの印のハッシュを、決めた中身から作る関数（テスト用）。</li>
+<li><strong><code>LibsqlSessionRepository</code></strong>（RustNote で作る物）: <code>SessionRepository</code>（セッションの出し入れ）の決まりを、libSQL のデータベースで守る（実装する）struct。全体のコードは第13巻に載っています。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -4248,6 +4250,7 @@ Version 1.64.1
 <li><strong><code>.getByLabel()</code></strong>（Playwright）: ラベル（<code>&lt;label&gt;</code>）の文字で、入力欄を探すメソッド。利用者が見るのと同じ文字で探すので、テストが読みやすく、壊れにくくなります。</li>
 <li><strong><code>.fill()</code></strong>（Playwright）: 入力欄に文字を入れるメソッド。<code>await page.getByLabel("メールアドレス").fill("alice@example.com")</code>。</li>
 <li><strong><code>.getByRole()</code></strong>（Playwright）: 役割（ボタン・見出し・リンクなど）と名前で、画面の部品を探すメソッド。<code>page.getByRole("button", { name: "登録する" })</code>。</li>
+<li><strong><code>.click()</code></strong>（Playwright）: Playwright で、見つけたボタンやリンクをクリックするメソッド。<code>await page.getByRole("button", { name: "登録する" }).click()</code>。</li>
 <li><strong><code>.toHaveURL()</code></strong>（Playwright）: 「今のページの URL が、これになっているか」を確かめるメソッド（<code>expect(page).toHaveURL("/notes")</code>）。少し待ってくれます。</li>
 <li><strong><code>.getByText()</code></strong>（Playwright）: 表示されている文字で、部品を探すメソッド。</li>
 <li><strong><code>.toBeVisible()</code></strong>（Playwright）: 「その部品が画面に見えているか」を確かめるメソッド。</li>
@@ -4593,6 +4596,7 @@ Error: Process from config.webServer was not able to start. Exit code: 1
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
+<li><strong><code>.status()</code></strong>（Playwright）: Playwright の答え（レスポンス）から、HTTP の状態コード（200・303 など）を返すメソッド。</li>
 <li><strong><code>.textContent()</code></strong>（Playwright）: 部品の中の文字を取り出すメソッド。</li>
 <li><strong><code>.toBe()</code></strong>（Playwright）: <code>expect(値).toBe(期待する値)</code> で、「同じか」を確かめるメソッド。</li>
 </ul>
