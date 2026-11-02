@@ -26,6 +26,8 @@ from pathlib import Path
 
 import markdown
 
+from _code_font import FAMILY as CODE_FONT, font_face_css
+
 ROOT = Path(__file__).resolve().parent
 
 # --------------------------- Browser detection -------------------------------
@@ -50,6 +52,7 @@ HTML_TEMPLATE = r"""<!doctype html>
 <meta charset="utf-8">
 <title>{title}</title>
 <style>
+{code_font_face}
 @page {{
   size: A4;
   margin: 18mm 16mm 20mm 16mm;
@@ -117,10 +120,9 @@ blockquote p {{ margin: 0.3em 0; }}
 blockquote strong {{ color: #1e40af; }}
 
 code {{
-  /* Consolas first: Chrome's PDF output drops the space glyphs of the
-     variable "Cascadia Mono" font, so copied code lost its spaces and
-     indentation. Consolas keeps them. */
-  font-family: "Consolas", "Source Code Pro", "Courier New", monospace;
+  /* DefCode (see _code_font.py) has ASCII and Japanese in ONE font, so a code
+     line is drawn as one text run and copies as one line in every PDF viewer. */
+  font-family: "{code_font}", "Consolas", monospace;
   font-size: 0.9em;
   background: #f1f5f9;
   color: #be123c;
@@ -172,16 +174,10 @@ pre code {{
   overflow-wrap: anywhere;
 }}
 
-/* Pygments tokens (a single dark theme) */
-.codehilite .k, .codehilite .kd, .codehilite .kn, .codehilite .kr {{ color: #c084fc; }}
-.codehilite .s, .codehilite .s1, .codehilite .s2, .codehilite .sb {{ color: #fcd34d; }}
-.codehilite .c, .codehilite .c1, .codehilite .cm {{ color: #94a3b8; font-style: italic; }}
-.codehilite .nf, .codehilite .nx {{ color: #60a5fa; }}
-.codehilite .nb {{ color: #34d399; }}
-.codehilite .mi, .codehilite .mf {{ color: #f472b6; }}
-.codehilite .o, .codehilite .p {{ color: #cbd5e1; }}
-.codehilite .nt {{ color: #f59e0b; }}
-.codehilite .na {{ color: #93c5fd; }}
+/* No per-token colours: every coloured token became its own text run (and its
+   own tag) in the PDF, and some viewers then pasted each token on its own line.
+   Only whole comment lines get a colour, so each line is still one run. */
+pre .cmt {{ color: #94a3b8; }}
 
 table {{
   border-collapse: collapse;
@@ -245,12 +241,29 @@ EXTENSION_CONFIGS = {
 # shrunk until its longest line fits on one line (down to a readable minimum)
 # and printed without wrapping. Only blocks that still do not fit wrap.
 CODE_WIDTH_PT = 450.0      # usable text width inside a <pre> (A4, with margins/padding/list indent)
-CODE_CHAR_EM = 0.55        # Consolas advance width; a wide (Japanese) char counts as 2
+CODE_CHAR_EM = 0.586       # DefCode advance width (1200/2048 em); a wide (Japanese) char counts as 2
 CODE_MAX_PT = 9.2
-CODE_MIN_PT = 6.0
+CODE_MIN_PT = 5.6        # DefCode at 5.6pt is as narrow as Consolas was at 6pt
 CODE_WRAP_PT = 7.5         # size for blocks that must wrap anyway (long logs)
 
 PRE_RE = re.compile(r"<pre([^>]*)>(.*?)</pre>", re.S)
+CODE_TEXT_RE = re.compile(r"<code[^>]*>(.*?)</code>", re.S)
+# a line that is only a comment: "# ...", "// ...", "-- ...", "<!-- ...", "REM ..." (not "#[derive]" or "#!")
+COMMENT_LINE_RE = re.compile(r"^(\s*)((?:#(?=\s|$)|//|-- |<!--|REM\s|::\s).*)$")
+
+
+def plain_code(inner: str) -> str:
+    """Remove the per-token highlight spans and colour whole comment lines only."""
+    inner = re.sub(r"<span[^>]*>|</span>", "", inner)
+    m = re.fullmatch(r"(\s*<code[^>]*>)(.*?)(</code>\s*)", inner, re.S)
+    head, code, tail = (m.group(1), m.group(2), m.group(3)) if m else ("", inner, "")
+    out = []
+    for line in code.split("\n"):
+        if "<" not in line and COMMENT_LINE_RE.match(html.unescape(line)):
+            indent = line[: len(line) - len(line.lstrip())]
+            line = f'{indent}<span class="cmt">{line.lstrip()}</span>'
+        out.append(line)
+    return head + "\n".join(out) + tail
 
 
 def display_width(line: str) -> int:
@@ -258,7 +271,7 @@ def display_width(line: str) -> int:
 
 
 def copy_friendly_pre(match: re.Match) -> str:
-    attrs, inner = match.group(1), match.group(2)
+    attrs, inner = match.group(1), plain_code(match.group(2))
     # An empty line has no glyph, so it vanished when copied. A single space keeps it.
     inner = re.sub(r"\n(?=\n)", "\n ", inner)
     text = html.unescape(re.sub(r"<[^>]+>", "", inner))
@@ -279,7 +292,10 @@ def md_to_html(md_text: str, title: str) -> str:
         output_format="html5",
     )
     body = PRE_RE.sub(copy_friendly_pre, body)
-    return HTML_TEMPLATE.format(title=title, body=body)
+    code_text = "".join(html.unescape(re.sub(r"<[^>]+>", "", t)) for t in CODE_TEXT_RE.findall(body))
+    return HTML_TEMPLATE.format(
+        title=title, body=body, code_font=CODE_FONT, code_font_face=font_face_css(code_text)
+    )
 
 def chrome_print_pdf(html_path: Path, pdf_path: Path) -> None:
     """Run headless Chrome to print HTML to PDF.
