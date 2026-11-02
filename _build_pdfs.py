@@ -370,9 +370,73 @@ WEB_JS = """
 """
 
 
+def dedent_fences(md_text: str) -> str:
+    """A code fence written inside a numbered step (indented by spaces) is shown fine on GitHub, but
+    Python-Markdown's fenced_code only reads fences at the start of the line: an indented one became a
+    single line of inline code (newlines and indentation lost, no copy button). Move such blocks to the
+    start of the line, keeping the indentation of the code itself. Fences shown *inside* another code
+    block (a README.md printed as an example) are code, and are left alone."""
+    lines = md_text.split("\n")
+    out: list[str] = []
+    outer = None          # the fence of a block that starts at the start of the line
+    i = 0
+    while i < len(lines):
+        line = lines[i]
+        if outer:
+            out.append(line)
+            if re.match(re.escape(outer[0]) + "{" + str(len(outer)) + r",}[ \t]*$", line):
+                outer = None
+            i += 1
+            continue
+        m = re.match(r"(```+|~~~+)", line)
+        if m:
+            outer = m.group(1)
+            out.append(line)
+            i += 1
+            continue
+        m = re.match(r"([ \t]*>[ \t]?)([ \t]*)(```+|~~~+)[ \t]*([\w+-]*)[ \t]*$", line)
+        if m:
+            # a fence inside a quote (> ```bash): fenced_code cannot see it, so the code became one line of
+            # inline code. Write it as an indented code block inside the quote (":::lang" keeps the colours).
+            quote, indent, fence, lang = m.groups()
+            close = re.compile(r"[ \t]*>[ \t]?" + re.escape(indent) + re.escape(fence) + r"[ \t]*$")
+            j = i + 1
+            while j < len(lines) and not close.match(lines[j]) and re.match(r"[ \t]*>", lines[j]):
+                j += 1
+            if j < len(lines) and close.match(lines[j]):
+                body = []
+                for l in lines[i + 1:j]:
+                    l = re.sub(r"^[ \t]*>[ \t]?", "", l)
+                    body.append(l[len(indent):] if l.startswith(indent) else l.lstrip(" \t"))
+                q = quote.rstrip()
+                out.append(q)
+                if lang and lang.lower() not in ("text", "txt", "plain"):
+                    out.append(f"{q}     :::{lang}")
+                out += [f"{q}     {l}" if l.strip() else q for l in body]
+                out.append(q)
+                i = j + 1
+                continue
+        m = re.match(r"([ \t]+)(```+|~~~+)(.*)$", line)
+        if m:
+            indent, fence, info = m.groups()
+            close = re.compile(re.escape(indent) + re.escape(fence) + r"[ \t]*$")
+            j = i + 1
+            while j < len(lines) and not close.match(lines[j]):
+                j += 1
+            if j < len(lines):
+                out += ["", fence + info]
+                out += [l[len(indent):] if l.startswith(indent) else l.lstrip(" \t") for l in lines[i + 1:j]]
+                out.append(fence)
+                i = j + 1
+                continue
+        out.append(line)
+        i += 1
+    return "\n".join(out)
+
+
 def render_body(md_text: str) -> str:
     return markdown.markdown(
-        md_text,
+        dedent_fences(md_text),
         extensions=EXTENSIONS,
         extension_configs=EXTENSION_CONFIGS,
         output_format="html5",

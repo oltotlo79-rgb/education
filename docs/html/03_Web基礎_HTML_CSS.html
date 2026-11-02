@@ -888,15 +888,16 @@ CSSの「C」。複数のルールが同じ要素に同時に当たったとき�
 <h3 id="62-clamp-calc-min">6.2 便利な関数 ― clamp / calc / min</h3>
 <p>本アプリは画面サイズへの対応のため、CSSの関数を多用します。</p>
 <blockquote>
-<p><strong><code>clamp(最小, 推奨, 最大)</code></strong> … 「推奨値を使うが、最小〜最大の範囲に収める」関数。画面サイズに応じて文字を伸縮させつつ、小さすぎ・大きすぎを防ぎます。本アプリは見出しサイズに使っています（§11.5）：
-<code>css
---heading1: clamp(1.5rem, 1.5rem + 3vw, 4rem);
-/* 最小1.5rem、画面幅に応じて1.5rem+3vw、最大4rem */</code></p>
+<p><strong><code>clamp(最小, 推奨, 最大)</code></strong> … 「推奨値を使うが、最小〜最大の範囲に収める」関数。画面サイズに応じて文字を伸縮させつつ、小さすぎ・大きすぎを防ぎます。本アプリは見出しサイズに使っています（§11.5）：</p>
+<div class="codehilite"><div class="code-wrap" id="code-18"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">--heading1</span><span class="o">:</span><span class="w"> </span><span class="nt">clamp</span><span class="o">(</span><span class="nt">1</span><span class="p">.</span><span class="nc">5rem</span><span class="o">,</span><span class="w"> </span><span class="nt">1</span><span class="p">.</span><span class="nc">5rem</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nt">3vw</span><span class="o">,</span><span class="w"> </span><span class="nt">4rem</span><span class="o">);</span>
+<span class="c">/* 最小1.5rem、画面幅に応じて1.5rem+3vw、最大4rem */</span>
+</code></pre></div></div>
+
 <p><strong><code>calc(式)</code></strong> … CSSの中で計算ができる関数。<code>calc(100% - 60px)</code> なら「親の幅いっぱいから60px引いた値」。本アプリのログイン入力欄の幅に使っています（§12.4）。</p>
 <p><strong><code>min(値A, 値B)</code></strong> … 「2つのうち小さい方」を採る関数。<code>min(400px, 90%)</code> なら「大画面では400px、小画面では画面の90%」。ロゴのはみ出し防止に使っています（§12.3）。</p>
 </blockquote>
 <h3 id="63">6.3 色の指定</h3>
-<div class="codehilite"><div class="code-wrap" id="code-18"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c">/* 色名（限られた数） */</span>
+<div class="codehilite"><div class="code-wrap" id="code-19"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c">/* 色名（限られた数） */</span>
 <span class="nt">color</span><span class="o">:</span><span class="w"> </span><span class="nt">red</span><span class="o">;</span>
 <span class="c">/* 16進数 #RRGGBB（R赤 G緑 B青 を00〜ffで） */</span>
 <span class="nt">color</span><span class="o">:</span><span class="w"> </span><span class="p">#</span><span class="nn">007bff</span><span class="o">;</span>
@@ -920,7 +921,7 @@ CSSの「C」。複数のルールが同じ要素に同時に当たったとき�
 </blockquote>
 <h3 id="71">7.1 基本</h3>
 <p>親要素に <code>display: flex</code> を付けると、その <strong>直接の子要素</strong> が「フレックスアイテム」として並びます。</p>
-<div class="codehilite"><div class="code-wrap" id="code-19"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">.</span><span class="nc">container</span><span class="w"> </span><span class="p">{</span>
+<div class="codehilite"><div class="code-wrap" id="code-20"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">.</span><span class="nc">container</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="c">/* フレックス開始（この箱の子を整列させる） */</span>
 <span class="w">  </span><span class="k">display</span><span class="p">:</span><span class="w"> </span><span class="kc">flex</span><span class="p">;</span>
 <span class="w">  </span><span class="c">/* 並ぶ向き：row=横（既定）, column=縦 */</span>
@@ -949,7 +950,7 @@ CSSの「C」。複数のルールが同じ要素に同時に当たったとき�
 <h2 id="8">8. 擬似クラスと擬似要素</h2>
 <h3 id="81">8.1 擬似クラス（状態に応じたスタイル）</h3>
 <p>要素の「状態」に応じてスタイルを変えます。<code>:</code>（コロン）を <strong>1つ</strong> 付けます。</p>
-<div class="codehilite"><div class="code-wrap" id="code-20"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c">/* マウスを乗せている時 */</span>
+<div class="codehilite"><div class="code-wrap" id="code-21"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c">/* マウスを乗せている時 */</span>
 <span class="nt">a</span><span class="p">:</span><span class="nd">hover</span><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
 <span class="c">/* 入力欄が選択（カーソルが入っている）時 */</span>
 <span class="nt">input</span><span class="p">:</span><span class="nd">focus</span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
@@ -967,7 +968,7 @@ CSSの「C」。複数のルールが同じ要素に同時に当たったとき�
 <p>本アプリは <code>:hover</code>（ボタンの色変化）と <code>:focus</code>（入力欄の枠を青く光らせる）を多用します（§11・§12・§13）。<code>:disabled</code> はページ送りの「これ以上戻れない」ボタンに使われています（§13のPagination）。</p>
 <h3 id="82">8.2 擬似要素（要素の一部を作る）</h3>
 <p>要素の前後に「飾りの中身」を追加します。<code>::</code>（コロン）を <strong>2つ</strong> 付けます。</p>
-<div class="codehilite"><div class="code-wrap" id="code-21"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c">/* 要素の中身の「前」に文字を足す */</span>
+<div class="codehilite"><div class="code-wrap" id="code-22"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c">/* 要素の中身の「前」に文字を足す */</span>
 <span class="p">.</span><span class="nc">icon</span><span class="p">::</span><span class="nd">before</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">content</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;⚠️ &quot;</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
 <span class="c">/* 要素の中身の「後」に文字を足す */</span>
 <span class="p">.</span><span class="nc">icon</span><span class="p">::</span><span class="nd">after</span><span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="k">content</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;?&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
@@ -981,7 +982,7 @@ CSSの「C」。複数のルールが同じ要素に同時に当たったとき�
 <h2 id="9">9. トランジションとアニメーション</h2>
 <h3 id="91">9.1 トランジション（なめらかな変化）</h3>
 <p>状態が変わるとき、見た目を <strong>じわっと</strong> 変化させます。</p>
-<div class="codehilite"><div class="code-wrap" id="code-22"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">.</span><span class="nc">blue_button</span><span class="w"> </span><span class="p">{</span>
+<div class="codehilite"><div class="code-wrap" id="code-23"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">.</span><span class="nc">blue_button</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="k">background-color</span><span class="p">:</span><span class="w"> </span><span class="mh">#007bff</span><span class="p">;</span>
 <span class="w">  </span><span class="c">/* 背景色を0.3秒かけて変化 */</span>
 <span class="w">  </span><span class="k">transition</span><span class="p">:</span><span class="w"> </span><span class="k">background-color</span><span class="w"> </span><span class="mf">0.3</span><span class="kt">s</span><span class="w"> </span><span class="kc">ease</span><span class="p">;</span>
@@ -999,7 +1000,7 @@ CSSの「C」。複数のルールが同じ要素に同時に当たったとき�
 </ul>
 <h3 id="92">9.2 キーフレームアニメーション（自動で動く）</h3>
 <p><code>@keyframes</code>（キーフレーム）で「開始→終了」の変化を定義し、<code>animation</code> で再生します。</p>
-<div class="codehilite"><div class="code-wrap" id="code-23"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c">/* fadeInUp という名前のアニメを定義 */</span>
+<div class="codehilite"><div class="code-wrap" id="code-24"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c">/* fadeInUp という名前のアニメを定義 */</span>
 <span class="p">@</span><span class="k">keyframes</span><span class="w"> </span><span class="nt">fadeInUp</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="c">/* 開始：透明＆50px下 */</span>
 <span class="w">  </span><span class="nt">from</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">opacity</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="k">transform</span><span class="p">:</span><span class="w"> </span><span class="nb">translateY</span><span class="p">(</span><span class="mi">50</span><span class="kt">px</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
@@ -1021,7 +1022,7 @@ CSSの「C」。複数のルールが同じ要素に同時に当たったとき�
 <hr>
 <h2 id="10">10. メディアクエリ（レスポンシブ）</h2>
 <p>画面の幅に応じてスタイルを切り替え、PC・タブレット・スマホのいずれでも見やすくします。</p>
-<div class="codehilite"><div class="code-wrap" id="code-24"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c">/* 画面幅が768px以下のときだけ適用 */</span>
+<div class="codehilite"><div class="code-wrap" id="code-25"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c">/* 画面幅が768px以下のときだけ適用 */</span>
 <span class="p">@</span><span class="k">media</span><span class="w"> </span><span class="o">(</span><span class="nt">max-width</span><span class="o">:</span><span class="w"> </span><span class="nt">768px</span><span class="o">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="nt">form</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="k">width</span><span class="p">:</span><span class="w"> </span><span class="kc">auto</span><span class="p">;</span>
@@ -1048,7 +1049,7 @@ CSSの「C」。複数のルールが同じ要素に同時に当たったとき�
 <blockquote>
 <p><strong>▼ このブロックがやること:</strong> すべての要素の初期の余白を消し、ボックスモデルを扱いやすい方式に統一します。「ブラウザごとの初期スタイルの違い」をならす、いわゆる <strong>CSSリセット</strong> です。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-25"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c">/* * は「すべての要素」を意味する全称セレクタ */</span>
+<div class="codehilite"><div class="code-wrap" id="code-26"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c">/* * は「すべての要素」を意味する全称セレクタ */</span>
 <span class="o">*</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="c">/* 全要素の外側余白を0に（ブラウザ既定の余白を消す） */</span>
 <span class="w">  </span><span class="k">margin</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
@@ -1063,7 +1064,7 @@ CSSの「C」。複数のルールが同じ要素に同時に当たったとき�
 <p><strong>なぜリセットするの？</strong> ブラウザは <code>&lt;h1&gt;</code> や <code>&lt;p&gt;</code> や <code>&lt;body&gt;</code> に、何も指定しなくても勝手に余白を付けます。しかもブラウザごとに微妙に違うため、まず全部0にしてから <strong>自分で一から余白を設計</strong> します。これがプロの定番手法です。<code>box-sizing: border-box</code> を全要素に効かせているので、本アプリは「padding を足したら幅がはみ出した」事故が起きにくくなっています。</p>
 </blockquote>
 <h3 id="112-html-body-710">11.2 html / body の基本（7〜10行目）</h3>
-<div class="codehilite"><div class="code-wrap" id="code-26"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">html</span><span class="o">,</span><span class="w"> </span><span class="nt">body</span><span class="w"> </span><span class="p">{</span>
+<div class="codehilite"><div class="code-wrap" id="code-27"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">html</span><span class="o">,</span><span class="w"> </span><span class="nt">body</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="c">/* 画面の高さいっぱいを使えるように */</span>
 <span class="w">  </span><span class="k">height</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="kt">%</span><span class="p">;</span>
 <span class="w">  </span><span class="c">/* 既定フォント。Arialが無ければゴシック系 */</span>
@@ -1080,7 +1081,7 @@ CSSの「C」。複数のルールが同じ要素に同時に当たったとき�
 <blockquote>
 <p><strong>▼ このブロックがやること:</strong> ボタン・入力欄・選択欄・複数行入力が持つ、ブラウザ既定の見た目（枠・背景・フォント）を消し、フォントを親から継承させて統一します。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-27"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">button</span><span class="o">,</span>
+<div class="codehilite"><div class="code-wrap" id="code-28"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">button</span><span class="o">,</span>
 <span class="nt">input</span><span class="o">,</span>
 <span class="nt">select</span><span class="o">,</span>
 <span class="nt">textarea</span><span class="w"> </span><span class="p">{</span>
@@ -1104,7 +1105,7 @@ CSSの「C」。複数のルールが同じ要素に同時に当たったとき�
 <p>⚠️ <code>outline: none</code> で、入力欄をクリックしたときの「青い枠」を消しています。ただし消しっぱなしだと「今どこを選択中か」が分からなくなるので、本アプリは <code>:focus</code> で自前の枠を付け直しています（§12.4）。これは見た目とアクセシビリティのバランスをとった設計です。</p>
 </blockquote>
 <h3 id="114-2541">11.4 リスト・リンク・画像のリセット（25〜41行目）</h3>
-<div class="codehilite"><div class="code-wrap" id="code-28"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">ul</span><span class="o">,</span>
+<div class="codehilite"><div class="code-wrap" id="code-29"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">ul</span><span class="o">,</span>
 <span class="nt">ol</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="c">/* 箇条書きの「・」や番号を消す */</span>
 <span class="w">  </span><span class="k">list-style</span><span class="p">:</span><span class="w"> </span><span class="kc">none</span><span class="p">;</span>
@@ -1138,7 +1139,7 @@ CSSの「C」。複数のルールが同じ要素に同時に当たったとき�
 <blockquote>
 <p><strong>▼ このブロックがやること:</strong> よく使う値（見出しサイズ）に名前を付けて、後でまとめて使い回せるようにします。これを <strong>CSS変数（カスタムプロパティ）</strong> と呼びます。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-29"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c">/* :root は html要素＝最上位。ここで定義すると全体で使える */</span>
+<div class="codehilite"><div class="code-wrap" id="code-30"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c">/* :root は html要素＝最上位。ここで定義すると全体で使える */</span>
 <span class="p">:</span><span class="nd">root</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="c">/* 見出し1のサイズ（画面幅で伸縮、§6.2のclamp） */</span>
 <span class="w">  </span><span class="nv">--heading1</span><span class="p">:</span><span class="w"> </span><span class="nf">clamp</span><span class="p">(</span><span class="mf">1.5</span><span class="kt">rem</span><span class="p">,</span><span class="w"> </span><span class="mf">1.5</span><span class="kt">rem</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">3</span><span class="kt">vw</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="kt">rem</span><span class="p">);</span>
@@ -1161,7 +1162,7 @@ CSSの「C」。複数のルールが同じ要素に同時に当たったとき�
 <blockquote>
 <p><strong>▼ このブロックがやること:</strong> 本アプリ全画面の「土台レイアウト」をここで決めています。背景色・中央寄せ・最低の高さ・横スクロール、そして見出し/段落のサイズ（§11.5の変数を使用）。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-30"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">body</span><span class="w"> </span><span class="p">{</span>
+<div class="codehilite"><div class="code-wrap" id="code-31"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">body</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="k">font-family</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;Arial&#39;</span><span class="p">,</span><span class="w"> </span><span class="kc">sans-serif</span><span class="p">;</span>
 <span class="w">  </span><span class="k">margin</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
 <span class="w">  </span><span class="c">/* 画面の縁に10pxの余白 */</span>
@@ -1208,7 +1209,7 @@ CSSの「C」。複数のルールが同じ要素に同時に当たったとき�
 <p><code>min-height: 100vh</code> で「中身が少なくても画面の高さいっぱいは確保」、<code>overflow-x: auto</code> で「表などが横にはみ出たら横スクロールバーを出す」。<code>white-space: nowrap</code> は「文字を勝手に折り返さない」——表のセルが改行で崩れるのを防ぐ狙いです（§3⑩のログインボタンが折り返さないのもこの仲間の指定）。</p>
 </blockquote>
 <h3 id="117-8389">11.7 リンクのホバー（83〜89行目）</h3>
-<div class="codehilite"><div class="code-wrap" id="code-31"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">a</span><span class="w"> </span><span class="p">{</span>
+<div class="codehilite"><div class="code-wrap" id="code-32"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">a</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="c">/* リンクの下線を消す（§11.4で消したものの再指定） */</span>
 <span class="w">  </span><span class="k">text-decoration</span><span class="p">:</span><span class="w"> </span><span class="kc">none</span><span class="p">;</span>
 <span class="p">}</span>
@@ -1226,7 +1227,7 @@ CSSの「C」。複数のルールが同じ要素に同時に当たったとき�
 <blockquote>
 <p><strong>▼ このブロックがやること:</strong> すべてのフォームを「白背景・角丸・影付き・中央寄せのカード」に見せます。さらに、狭い画面では幅の制約を緩めます。§3③の <code>&lt;form&gt;</code> がこのスタイルになります。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-32"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">form</span><span class="w"> </span><span class="p">{</span>
+<div class="codehilite"><div class="code-wrap" id="code-33"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">form</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="c">/* 白背景 */</span>
 <span class="w">  </span><span class="k">background-color</span><span class="p">:</span><span class="w"> </span><span class="mh">#fff</span><span class="p">;</span>
 <span class="w">  </span><span class="k">padding</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
@@ -1267,7 +1268,7 @@ CSSの「C」。複数のルールが同じ要素に同時に当たったとき�
 <blockquote>
 <p><strong>▼ このブロックがやること:</strong> 表（一覧画面で多用）の罫線を1本にまとめ、セルに余白と中央寄せを付け、見出しセル（th）の白文字に黒い縁取りを付けて読みやすくします。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-33"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">table</span><span class="w"> </span><span class="p">{</span>
+<div class="codehilite"><div class="code-wrap" id="code-34"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">table</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="k">width</span><span class="p">:</span><span class="w"> </span><span class="kc">auto</span><span class="p">;</span>
 <span class="w">  </span><span class="c">/* セルの境界線を重ねて1本に（二重線を防ぐ） */</span>
 <span class="w">  </span><span class="k">border-collapse</span><span class="p">:</span><span class="w"> </span><span class="kc">collapse</span><span class="p">;</span>
@@ -1309,7 +1310,7 @@ CSSの「C」。複数のルールが同じ要素に同時に当たったとき�
 <blockquote>
 <p><strong>▼ このブロックがやること:</strong> <code>class="blue_button"</code> を付けた要素を、青背景・白文字（縁取り付き）・角丸・指カーソル・ホバーで濃い青になるボタンにします。§3⑩のログインボタンがこれです。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-34"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">.</span><span class="nc">blue_button</span><span class="w"> </span><span class="p">{</span>
+<div class="codehilite"><div class="code-wrap" id="code-35"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">.</span><span class="nc">blue_button</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="c">/* 青背景 */</span>
 <span class="w">  </span><span class="k">background-color</span><span class="p">:</span><span class="w"> </span><span class="mh">#007bff</span><span class="p">;</span>
 <span class="w">  </span><span class="c">/* 白文字 */</span>
@@ -1410,7 +1411,7 @@ CSSの「C」。複数のルールが同じ要素に同時に当たったとき�
 <blockquote>
 <p><strong>▼ このブロックがやること:</strong> <code>role="alert"</code> を持つ <code>&lt;div&gt;</code>（エラーメッセージ）を、赤系の警告ボックスにし、先頭に⚠️を自動で付けます。<code>Login.tsx</code> のエラー表示（§3⑨）がこれです。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-35"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c">/* role属性が alert の div を狙う（属性セレクタ） */</span>
+<div class="codehilite"><div class="code-wrap" id="code-36"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c">/* role属性が alert の div を狙う（属性セレクタ） */</span>
 <span class="nt">div</span><span class="o">[</span><span class="nt">role</span><span class="o">=</span><span class="s2">&quot;alert&quot;</span><span class="o">]</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="c">/* 薄い赤背景 */</span>
 <span class="w">  </span><span class="k">background-color</span><span class="p">:</span><span class="w"> </span><span class="mh">#f8d7da</span><span class="p">;</span>
@@ -1449,13 +1450,13 @@ CSSの「C」。複数のルールが同じ要素に同時に当たったとき�
 <li><code>::before</code> で中身の <strong>前</strong> に「⚠️ 」を自動で足す。HTMLには書かないのに警告マークが出るのは、この擬似要素のおかげです。</li>
 </ul>
 <p><strong>表示例（ログインで未登録の従業員番号を入れた場合のイメージ）:</strong></p>
-<div class="codehilite"><div class="code-wrap" id="code-36"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>┌────────────────────────────────┐
+<div class="codehilite"><div class="code-wrap" id="code-37"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>┌────────────────────────────────┐
 │ ⚠️ 登録されていない従業員番号です。  │  ← 薄い赤背景・赤文字
 └────────────────────────────────┘
 </code></pre></div></div>
 
 <h3 id="1112-297311">11.12 ナビゲーション（297〜311行目）</h3>
-<div class="codehilite"><div class="code-wrap" id="code-37"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">nav</span><span class="w"> </span><span class="p">{</span>
+<div class="codehilite"><div class="code-wrap" id="code-38"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">nav</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="k">display</span><span class="p">:</span><span class="w"> </span><span class="kc">flex</span><span class="p">;</span>
 <span class="w">  </span><span class="c">/* メニューリンクを中央に */</span>
 <span class="w">  </span><span class="k">justify-content</span><span class="p">:</span><span class="w"> </span><span class="kc">center</span><span class="p">;</span>
@@ -1483,7 +1484,7 @@ CSSの「C」。複数のルールが同じ要素に同時に当たったとき�
 <blockquote>
 <p><strong>▼ このブロックがやること:</strong> <code>&lt;input type="date"&gt;</code>（日付入力欄）のブラウザ既定のごちゃごちゃしたUI（カレンダーアイコン・上下ボタン・クリアボタン）を整理し、「入力欄のどこをクリックしてもカレンダーが開く」使い勝手にします。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-38"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">input</span><span class="o">[</span><span class="nt">type</span><span class="o">=</span><span class="nt">date</span><span class="o">]</span><span class="p">::</span><span class="nd">-webkit-calendar-picker-indicator</span><span class="w"> </span><span class="p">{</span>
+<div class="codehilite"><div class="code-wrap" id="code-39"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">input</span><span class="o">[</span><span class="nt">type</span><span class="o">=</span><span class="nt">date</span><span class="o">]</span><span class="p">::</span><span class="nd">-webkit-calendar-picker-indicator</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="c">/* カレンダーアイコンを重ねて配置 */</span>
 <span class="w">  </span><span class="k">position</span><span class="p">:</span><span class="w"> </span><span class="kc">absolute</span><span class="p">;</span>
 <span class="w">  </span><span class="c">/* 入力欄全体に広げ */</span>
@@ -1538,7 +1539,7 @@ CSSの「C」。複数のルールが同じ要素に同時に当たったとき�
 <blockquote>
 <p><strong>▼ このブロックがやること:</strong> 「下からふわっと現れる」アニメーション（fadeInUp）を定義し、ログイン画面全体を囲む箱（login-wrapper）に適用します。§3①の一番外側の <code>&lt;div&gt;</code> がこれです。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-39"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c">/* 「下からふわっと」アニメの定義（§9.2） */</span>
+<div class="codehilite"><div class="code-wrap" id="code-40"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c">/* 「下からふわっと」アニメの定義（§9.2） */</span>
 <span class="p">@</span><span class="k">keyframes</span><span class="w"> </span><span class="nt">fadeInUp</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="nt">from</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="c">/* 開始：透明 */</span>
@@ -1580,7 +1581,7 @@ CSSの「C」。複数のルールが同じ要素に同時に当たったとき�
 <blockquote>
 <p><strong>▼ このブロックがやること:</strong> ラベル・入力欄・ボタンを「縦並び・中央寄せ・隙間15px」で配置します。§3⑤の <code>&lt;div className={styles["search-bar"]}&gt;</code> がこれです。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-40"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">.</span><span class="nc">search-bar</span><span class="w"> </span><span class="p">{</span>
+<div class="codehilite"><div class="code-wrap" id="code-41"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">.</span><span class="nc">search-bar</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="k">display</span><span class="p">:</span><span class="w"> </span><span class="kc">flex</span><span class="p">;</span>
 <span class="w">  </span><span class="c">/* 縦並び（ラベル→入力→ボタンを縦に） */</span>
 <span class="w">  </span><span class="k">flex-direction</span><span class="p">:</span><span class="w"> </span><span class="kc">column</span><span class="p">;</span>
@@ -1598,7 +1599,7 @@ CSSの「C」。複数のルールが同じ要素に同時に当たったとき�
 <p>⚠️ <strong>同名クラスの方向違いに注意:</strong> ここ（ログイン）の <code>search-bar</code> は <code>flex-direction: column</code>（縦並び）ですが、一覧画面 <code>KosuList</code> の <code>search-bar</code> は <code>row</code>（横並び）です（§13）。CSS Modules（§14）のおかげで名前が衝突せず、画面ごとに別の意味を持てます。</p>
 </blockquote>
 <h3 id="123-login-logo3340">12.3 ロゴ login-logo（33〜40行目）</h3>
-<div class="codehilite"><div class="code-wrap" id="code-41"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">.</span><span class="nc">login-logo</span><span class="w"> </span><span class="p">{</span>
+<div class="codehilite"><div class="code-wrap" id="code-42"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">.</span><span class="nc">login-logo</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="c">/* 最大400px だが画面が狭ければ90%まで（min関数） */</span>
 <span class="w">  </span><span class="k">max-width</span><span class="p">:</span><span class="w"> </span><span class="nf">min</span><span class="p">(</span><span class="mi">400</span><span class="kt">px</span><span class="p">,</span><span class="w"> </span><span class="mi">90</span><span class="kt">%</span><span class="p">);</span>
 <span class="w">  </span><span class="k">width</span><span class="p">:</span><span class="w"> </span><span class="kc">auto</span><span class="p">;</span>
@@ -1621,7 +1622,7 @@ CSSの「C」。複数のルールが同じ要素に同時に当たったとき�
 <blockquote>
 <p><strong>▼ このブロックがやること:</strong> ログインの入力欄に余白・枠・角丸を付け、選択時（focus）に枠を青く光らせます。§11.3で <code>outline: none</code> した代わりの「選択中の合図」をここで作っています。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-42"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">.</span><span class="nc">search-bar</span><span class="w"> </span><span class="nt">input</span><span class="w"> </span><span class="p">{</span>
+<div class="codehilite"><div class="code-wrap" id="code-43"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">.</span><span class="nc">search-bar</span><span class="w"> </span><span class="nt">input</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="c">/* 入力欄の内側余白（縦8px・横10px） */</span>
 <span class="w">  </span><span class="k">padding</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="kt">px</span><span class="w"> </span><span class="mi">10</span><span class="kt">px</span><span class="p">;</span>
 <span class="w">  </span><span class="c">/* 灰色の枠 */</span>
@@ -1651,7 +1652,7 @@ CSSの「C」。複数のルールが同じ要素に同時に当たったとき�
 <blockquote>
 <p><strong>▼ このブロックがやること:</strong> 白い小さな四角を45度回して菱形にし、画面の右下に固定。<strong>30秒後にふわっと出現</strong> させる。中の「?」は文字だけ正位置に戻す。ホバーで青背景＋白文字に。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-43"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">.</span><span class="nc">help-button</span><span class="w"> </span><span class="p">{</span>
+<div class="codehilite"><div class="code-wrap" id="code-44"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">.</span><span class="nc">help-button</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="k">display</span><span class="p">:</span><span class="w"> </span><span class="kc">flex</span><span class="p">;</span>
 <span class="w">  </span><span class="k">align-items</span><span class="p">:</span><span class="w"> </span><span class="kc">center</span><span class="p">;</span>
 <span class="w">  </span><span class="c">/* 中身（?）を中央に */</span>
@@ -1730,7 +1731,7 @@ CSSの「C」。複数のルールが同じ要素に同時に当たったとき�
 <blockquote>
 <p><strong>▼ このブロックがやること:</strong> 一覧画面全体を縦並び中央寄せにし、見出しやナビ・表ヘッダを「水色（#0ff）」のテーマカラーで統一します。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-44"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">.</span><span class="nc">kosu-list-wrapper</span><span class="w"> </span><span class="p">{</span>
+<div class="codehilite"><div class="code-wrap" id="code-45"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">.</span><span class="nc">kosu-list-wrapper</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="c">/* Loginと同じ出現アニメ（各ファイルにコピーされている） */</span>
 <span class="w">  </span><span class="k">animation</span><span class="p">:</span><span class="w"> </span><span class="n">fadeInUp</span><span class="w"> </span><span class="mi">1</span><span class="kt">s</span><span class="w"> </span><span class="kc">ease-out</span><span class="p">;</span>
 <span class="w">  </span><span class="k">display</span><span class="p">:</span><span class="w"> </span><span class="kc">flex</span><span class="p">;</span>
@@ -1770,7 +1771,7 @@ CSSの「C」。複数のルールが同じ要素に同時に当たったとき�
 <li><code>status-ok</code> / <code>status-ng</code> は、工数の入力状況を「青＝OK・赤＝NG」で色分け。一覧の表で「未入力の人」をひと目で分かるようにする工夫です。</li>
 </ul>
 <p>横並びの検索バーとレスポンシブ分岐：</p>
-<div class="codehilite"><div class="code-wrap" id="code-45"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">.</span><span class="nc">search-bar</span><span class="w"> </span><span class="p">{</span>
+<div class="codehilite"><div class="code-wrap" id="code-46"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">.</span><span class="nc">search-bar</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="k">display</span><span class="p">:</span><span class="w"> </span><span class="kc">flex</span><span class="p">;</span>
 <span class="w">  </span><span class="c">/* 横並び（Loginのsearch-barはcolumn＝縦だった） */</span>
 <span class="w">  </span><span class="k">flex-direction</span><span class="p">:</span><span class="w"> </span><span class="kc">row</span><span class="p">;</span>
@@ -1800,7 +1801,7 @@ CSSの「C」。複数のルールが同じ要素に同時に当たったとき�
 </blockquote>
 <h3 id="132-mainmenumodulecss">13.2 MainMenu.module.css（メニュー画面）― リンクをボタンに見せる</h3>
 <p>メニュー画面 <code>frontend/src/MainPage/MainMenu.tsx</code> は、<code>&lt;Link&gt;</code>（本来はただのリンク）を <strong>巨大なカラーボタン</strong> に見せています。JSX側はこうです（§3で学んだ知識で読めます）：</p>
-<div class="codehilite"><div class="code-wrap" id="code-46"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">{</span><span class="cm">/* リンクだが見た目はボタン */</span><span class="p">}</span>
+<div class="codehilite"><div class="code-wrap" id="code-47"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">{</span><span class="cm">/* リンクだが見た目はボタン */</span><span class="p">}</span>
 <span class="p">&lt;</span><span class="nt">Link</span><span class="w"> </span><span class="na">to</span><span class="o">=</span><span class="s">&quot;/kosu-menu&quot;</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">[</span><span class="s2">&quot;kosu-menu-button&quot;</span><span class="p">]}&gt;</span>
 <span class="w">  </span><span class="p">{</span><span class="cm">/* 左にアイコン */</span><span class="p">}</span>
 <span class="w">  </span><span class="p">&lt;</span><span class="nt">img</span><span class="w"> </span><span class="na">src</span><span class="o">=</span><span class="p">{</span><span class="nx">Note</span><span class="p">}</span><span class="w"> </span><span class="na">alt</span><span class="o">=</span><span class="s">&quot;工数アイコン&quot;</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">[</span><span class="s2">&quot;icon&quot;</span><span class="p">]}</span><span class="w"> </span><span class="p">/&gt;</span>
@@ -1813,7 +1814,7 @@ CSSの「C」。複数のルールが同じ要素に同時に当たったとき�
 <blockquote>
 <p><strong>▼ このブロックがやること:</strong> <code>&lt;Link&gt;</code> を、横幅最大400px・水色背景・アイコンとラベルを両端に配置した大きなボタンに見せます。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-47"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">.</span><span class="nc">kosu-menu-button</span><span class="w"> </span><span class="p">{</span>
+<div class="codehilite"><div class="code-wrap" id="code-48"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">.</span><span class="nc">kosu-menu-button</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="k">width</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="kt">%</span><span class="p">;</span>
 <span class="w">  </span><span class="k">max-width</span><span class="p">:</span><span class="w"> </span><span class="mi">400</span><span class="kt">px</span><span class="p">;</span>
 <span class="w">  </span><span class="c">/* 水色 */</span>
@@ -1841,7 +1842,7 @@ CSSの「C」。複数のルールが同じ要素に同時に当たったとき�
 
 <p><code>MainMenu</code> には同じ構造で色違いのボタンが6つ（工数=水色・定義区分=緑・人員=黄・班員=橙・問い合わせ=桃・管理者=灰）並びます。<code>global.css</code> のボタン群（§11.10）と発想は同じ「色違いの量産」です。</p>
 <p>擬似要素を使った「左右対称」の工夫と、スマホでの非表示：</p>
-<div class="codehilite"><div class="code-wrap" id="code-48"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">.</span><span class="nc">kosu-menu-button</span><span class="p">::</span><span class="nd">after</span><span class="o">,</span>
+<div class="codehilite"><div class="code-wrap" id="code-49"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">.</span><span class="nc">kosu-menu-button</span><span class="p">::</span><span class="nd">after</span><span class="o">,</span>
 <span class="p">.</span><span class="nc">def-menu-button</span><span class="p">::</span><span class="nd">after</span><span class="o">,</span>
 <span class="c">/* ...他のボタンも... */</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="c">/* 空の飾りを右端に置く */</span>
@@ -1869,7 +1870,7 @@ CSSの「C」。複数のルールが同じ要素に同時に当たったとき�
 <blockquote>
 <p><strong>▼ このブロックがやること:</strong> 「次へ」ボタンを、右向きの三角形（▶）に切り抜きます。<code>clip-path</code> は要素を任意の多角形に切り抜くプロパティです。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-49"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">.</span><span class="nc">pagination</span><span class="w"> </span><span class="p">{</span>
+<div class="codehilite"><div class="code-wrap" id="code-50"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">.</span><span class="nc">pagination</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="k">display</span><span class="p">:</span><span class="w"> </span><span class="kc">flex</span><span class="p">;</span>
 <span class="w">  </span><span class="k">justify-content</span><span class="p">:</span><span class="w"> </span><span class="kc">center</span><span class="p">;</span>
 <span class="w">  </span><span class="k">align-items</span><span class="p">:</span><span class="w"> </span><span class="kc">center</span><span class="p">;</span>
@@ -1926,7 +1927,7 @@ CSSの「C」。複数のルールが同じ要素に同時に当たったとき�
 <p>ふつうのCSS（<code>global.css</code> のような）は <strong>全画面で共有</strong> されます。すると、別々の画面で偶然同じクラス名（例 <code>.search-bar</code>）を使うと <strong>衝突</strong> して、片方の見た目が壊れます。実際、本アプリには <code>Login</code> と <code>KosuList</code> の両方に <code>.search-bar</code> があり、しかも <strong>片や縦並び・片や横並び</strong> です（§12.2・§13.1）。これがもしふつうのCSSなら、後から読み込まれた方に上書きされて事故ります。</p>
 <p>CSS Modules は、各クラス名をビルド（変換）時に <strong>一意（重複しない）な名前へ自動改名</strong> することで、これを防ぎます。</p>
 <h3 id="142">14.2 動作</h3>
-<div class="codehilite"><div class="code-wrap" id="code-50"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// styles というオブジェクトに各クラスが入る</span>
+<div class="codehilite"><div class="code-wrap" id="code-51"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// styles というオブジェクトに各クラスが入る</span>
 <span class="k">import</span><span class="w"> </span><span class="nx">styles</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;../styles/MainPage/Login.module.css&quot;</span><span class="p">;</span>
 <span class="c1">// ...</span>
 <span class="c1">// styles[&quot;login-wrapper&quot;] を適用</span>
@@ -1936,7 +1937,7 @@ CSSの「C」。複数のルールが同じ要素に同時に当たったとき�
 <p>ビルド後、<code>login-wrapper</code> は例えば <code>Login_login-wrapper__a1B2c</code> のような <strong>重複しない名前</strong> に自動変換されます。<code>KosuList</code> の <code>search-bar</code> は <code>KosuList_search-bar__x9Y8z</code> に、<code>Login</code> の <code>search-bar</code> は <code>Login_search-bar__p3Q4r</code> に——別名になるので、絶対に衝突しません。</p>
 <h3 id="143-global">14.3 global との併用</h3>
 <p>1つの要素に、module クラスと global クラスを <strong>両方</strong> 付けられます。<code>Login.tsx</code> がまさにそうです。</p>
-<div class="codehilite"><div class="code-wrap" id="code-51"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// global（文字列で直接）</span>
+<div class="codehilite"><div class="code-wrap" id="code-52"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// global（文字列で直接）</span>
 <span class="p">&lt;</span><span class="nt">button</span><span class="w"> </span><span class="na">type</span><span class="o">=</span><span class="s">&quot;submit&quot;</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="s">&quot;blue_button&quot;</span><span class="p">&gt;</span><span class="nx">ログイン</span><span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
 <span class="c1">// module（styles経由）</span>
 <span class="p">&lt;</span><span class="nt">div</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">[</span><span class="s2">&quot;search-bar&quot;</span><span class="p">]}&gt;</span>

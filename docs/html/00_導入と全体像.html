@@ -414,10 +414,11 @@ li, tr { page-break-inside: avoid; }
 
 <blockquote>
 <p><strong>用語: JSON（ジェイソン）とは？</strong>
-JavaScript Object Notation の略。データを「名前: 値」のペアの集まりで表す、文字列の書き方。人間にも読みやすく、機械も解釈しやすいので、フロントとバックの間でデータをやり取りする「共通語」として使われます。たとえばログイン成功時、サーバーは次のようなJSONを返します（§7で実物を見ます）。
-<code>json
-{"status": "success"}</code>
-「status（状態）という名前の値が success（成功）だ」という意味です。</p>
+JavaScript Object Notation の略。データを「名前: 値」のペアの集まりで表す、文字列の書き方。人間にも読みやすく、機械も解釈しやすいので、フロントとバックの間でデータをやり取りする「共通語」として使われます。たとえばログイン成功時、サーバーは次のようなJSONを返します（§7で実物を見ます）。</p>
+<div class="codehilite"><div class="code-wrap" id="code-3"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">{</span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;success&quot;</span><span class="p">}</span>
+</code></pre></div></div>
+
+<p>「status（状態）という名前の値が success（成功）だ」という意味です。</p>
 </blockquote>
 <h3 id="32">3.2 分離のメリット（後任者にとっての利点）</h3>
 <table>
@@ -455,7 +456,7 @@ JavaScript Object Notation の略。データを「名前: 値」のペアの集
 Application Programming Interface の略。難しそうですが、ここでは <strong>「フロントとバックがデータをやり取りするための窓口（URL）」</strong> くらいに考えてください。本アプリでは、<code>/api/login/</code> <code>/api/main_menu/</code> のように、<code>/api/</code> で始まるURLが「バックエンドへの注文窓口」です。フロントは、この窓口にリクエストを送り、JSONで返事を受け取ります。</p>
 </blockquote>
 <p>つまり本アプリの構図は、こうです。</p>
-<div class="codehilite"><div class="code-wrap" id="code-3"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>React（frontend/） ──/api/○○/へリクエスト──&gt; Django（kosu/） ──&gt; PostgreSQL
+<div class="codehilite"><div class="code-wrap" id="code-4"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>React（frontend/） ──/api/○○/へリクエスト──&gt; Django（kosu/） ──&gt; PostgreSQL
 （見た目・操作）         （JSONでやり取り）        （処理・判断）      （保存）
 </code></pre></div></div>
 
@@ -473,7 +474,7 @@ Application Programming Interface の略。難しそうですが、ここでは 
 → ⑥ あれば「成功」、なければ「エラー」のJSONを返す（<code>main_views.py</code>）
 → ⑦ Reactが返事を見て、成功ならメインメニューへ画面遷移、失敗ならエラー表示（<code>Login.tsx</code> → <code>index.tsx</code>）</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-4"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>[ブラウザ] Login.tsx
+<div class="codehilite"><div class="code-wrap" id="code-5"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>[ブラウザ] Login.tsx
    │  ① 従業員番号 12345 を入力 → ログインボタン押下
    │  ② api.post(&quot;/api/login/&quot;, { employee_no: 12345 })
    ▼
@@ -504,7 +505,7 @@ Application Programming Interface の略。難しそうですが、ここでは 
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> このファイルが使う「道具（部品やライブラリ）」を、他のファイルから取り寄せます。料理でいう「材料と調理器具を、棚から作業台に出す」工程です。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-5"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// ① React本体と、状態管理の道具useStateを取り寄せ</span>
+<div class="codehilite"><div class="code-wrap" id="code-6"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// ① React本体と、状態管理の道具useStateを取り寄せ</span>
 <span class="k">import</span><span class="w"> </span><span class="nx">React</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">useState</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react&quot;</span><span class="p">;</span>
 <span class="c1">// ② 画面リンクと、画面移動の道具を取り寄せ</span>
 <span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Link</span><span class="p">,</span><span class="w"> </span><span class="nx">useNavigate</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-router-dom&quot;</span><span class="p">;</span>
@@ -534,7 +535,7 @@ Application Programming Interface の略。難しそうですが、ここでは 
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> ログイン画面という「部品（コンポーネント）」を定義し、その中で「入力された従業員番号」と「エラーメッセージ」を覚えておくための変数（状態）を用意します。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-6"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// ① Loginという画面部品を定義(関数コンポーネント)</span>
+<div class="codehilite"><div class="code-wrap" id="code-7"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// ① Loginという画面部品を定義(関数コンポーネント)</span>
 <span class="kd">const</span><span class="w"> </span><span class="nx">Login</span><span class="o">:</span><span class="w"> </span><span class="kt">React.FC</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="c1">// ② 入力された従業員番号を覚える箱(初期値は空文字)</span>
 <span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">employee_no</span><span class="p">,</span><span class="w"> </span><span class="nx">setNumber</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">&lt;</span><span class="nt">string</span><span class="p">&gt;(</span><span class="s2">&quot;&quot;</span><span class="p">);</span>
@@ -564,7 +565,7 @@ Application Programming Interface の略。難しそうですが、ここでは 
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> 「ログイン」ボタンが押されたら、(1) 画面の標準動作を止め、(2) 古いエラー表示を消し、(3) 入力された番号をサーバーの <code>/api/login/</code> へ送り、(4) 返事が「成功」ならメインメニューへ移動、(5) 失敗ならエラーメッセージを表示する ―― という一連の流れを行います。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-7"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">  </span><span class="c1">// ① 送信時に呼ばれる関数(asyncは「待つ処理」を含む印)</span>
+<div class="codehilite"><div class="code-wrap" id="code-8"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">  </span><span class="c1">// ① 送信時に呼ばれる関数(asyncは「待つ処理」を含む印)</span>
 <span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">handleSubmit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="nx">event</span><span class="o">:</span><span class="w"> </span><span class="kt">React.FormEvent</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="c1">// ② ブラウザ標準の「ページ再読み込み」を止める</span>
 <span class="w">    </span><span class="nx">event</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
@@ -647,7 +648,7 @@ Application Programming Interface の略。難しそうですが、ここでは 
 </blockquote>
 <h3 id="54-jsx-3369">5.4 画面部分（JSX）の処理に関わる箇所 ― 33〜69行目</h3>
 <p>画面の見た目は <code>03</code> 章で詳しく扱うので、ここでは <strong>「処理とどうつながっているか」</strong> だけを拾います。</p>
-<div class="codehilite"><div class="code-wrap" id="code-8"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">  </span><span class="c1">// ① ここから画面の中身を返す</span>
+<div class="codehilite"><div class="code-wrap" id="code-9"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">  </span><span class="c1">// ① ここから画面の中身を返す</span>
 <span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="c1">// ② 画面全体を囲む箱</span>
 <span class="w">    </span><span class="p">&lt;</span><span class="nt">div</span><span class="w"> </span><span class="na">className</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">[</span><span class="s2">&quot;login-wrapper&quot;</span><span class="p">]}&gt;</span>
@@ -733,7 +734,7 @@ Application Programming Interface の略。難しそうですが、ここでは 
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> URL対応表を書くのに必要な道具と、各機能の処理が書かれたファイル群（views）を取り寄せます。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-9"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ① URL定義の道具 path を取り寄せ</span>
+<div class="codehilite"><div class="code-wrap" id="code-10"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ① URL定義の道具 path を取り寄せ</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">django.urls</span><span class="w"> </span><span class="kn">import</span> <span class="n">path</span>
 <span class="c1"># ② ログイン等の処理が入ったファイル</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.views</span><span class="w"> </span><span class="kn">import</span> <span class="n">main_views</span>
@@ -768,7 +769,7 @@ Djangoで「リクエストを受け取って、処理して、レスポンス�
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> 「このURLが来たら、この処理クラスを呼ぶ」という対応を、機能の数だけ並べた一覧です。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-10"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ① URL対応表(リスト)のはじまり</span>
+<div class="codehilite"><div class="code-wrap" id="code-11"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ① URL対応表(リスト)のはじまり</span>
 <span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
   <span class="c1"># ② /login/ → main_views の Login が担当</span>
   <span class="n">path</span><span class="p">(</span><span class="s1">&#39;login/&#39;</span><span class="p">,</span> <span class="n">main_views</span><span class="o">.</span><span class="n">Login</span><span class="o">.</span><span class="n">as_view</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;login&#39;</span><span class="p">),</span>
@@ -805,7 +806,7 @@ Djangoで「リクエストを受け取って、処理して、レスポンス�
 Primary Key の略。データベースの各行に自動で付く「重複しない背番号（ID）」。<code>/kosu_update/42/</code> は「ID番号42の工数データを編集する」という意味です。§8の <code>models.py</code> で、各表に自動でこのID（背番号）が振られる仕組みを見ます。</p>
 </blockquote>
 <h3 id="63-url-7997">6.3 同じ処理を共有する非同期URL群 ― 79〜97行目</h3>
-<div class="codehilite"><div class="code-wrap" id="code-11"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># 工数のバックアップ</span>
+<div class="codehilite"><div class="code-wrap" id="code-12"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># 工数のバックアップ</span>
   <span class="n">path</span><span class="p">(</span><span class="s1">&#39;kosu_backup/&#39;</span><span class="p">,</span> <span class="n">asynchronous_views</span><span class="o">.</span><span class="n">backup</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;kosu_backup&#39;</span><span class="p">),</span>
   <span class="c1"># 工数の読み込み(復元)</span>
   <span class="n">path</span><span class="p">(</span><span class="s1">&#39;kosu_load/&#39;</span><span class="p">,</span> <span class="n">asynchronous_views</span><span class="o">.</span><span class="n">backup</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;kosu_load&#39;</span><span class="p">),</span>
@@ -816,7 +817,7 @@ Primary Key の略。データベースの各行に自動で付く「重複し�
 
 <p>ここは「いろいろなバックアップ・復元URL」が、<strong>すべて同じ <code>asynchronous_views.backup</code> という処理を共有</strong> しているのが特徴です。どのデータを扱うかは、URL名やリクエストの中身で見分けます（詳細は別章のバックアップ機能で扱います）。<code>.as_view()</code> が付いていないのは、これがクラスではなく <strong>関数</strong> だからです（関数ビューはそのまま渡せます）。</p>
 <h3 id="64-105">6.4 末尾：メディアファイル配信 ― 105行目</h3>
-<div class="codehilite"><div class="code-wrap" id="code-12"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># メディアファイル用URLを追加</span>
+<div class="codehilite"><div class="code-wrap" id="code-13"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># メディアファイル用URLを追加</span>
 <span class="n">urlpatterns</span> <span class="o">+=</span> <span class="n">static</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">MEDIA_URL</span><span class="p">,</span> <span class="n">document_root</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">MEDIA_ROOT</span><span class="p">)</span>
 </code></pre></div></div>
 
@@ -831,7 +832,7 @@ Primary Key の略。データベースの各行に自動で付く「重複し�
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> サーバー処理に必要な道具（日付・JSON・Djangoの部品・データベースのモデル・データ変換の道具）を取り寄せます。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-13"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ① 日付・時刻を扱う道具</span>
+<div class="codehilite"><div class="code-wrap" id="code-14"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ① 日付・時刻を扱う道具</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
 <span class="c1"># ② OS(ファイルパス等)を扱う道具</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
@@ -884,7 +885,7 @@ Djangoで「データベースの表（テーブル）」をPythonのクラス�
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> フロントから送られてきた従業員番号を取り出し、(1) JSONとしてきちんと読めるか確認し、(2) その番号が人員データ（<code>member</code>表）に登録されているか調べ、(3) 登録があれば「ログイン状態」を覚え（セッション保存）、使用する工数区分定義の最新版も覚えて「成功」を返し、(4) 登録がなければ「エラー」を返します。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-14"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ログイン</span>
+<div class="codehilite"><div class="code-wrap" id="code-15"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ログイン</span>
 <span class="c1"># ① ログイン処理(APIView を土台に)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">Login</span><span class="p">(</span><span class="n">APIView</span><span class="p">):</span>
   <span class="c1"># POST処理</span>
@@ -973,7 +974,7 @@ Djangoで「データベースの表（テーブル）」をPythonのクラス�
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> ヘルプ画面から「人員データを初期化」「定義を初期化」「設定を初期化」のいずれかが要求されたら、その表を全削除して、最低限のデフォルトデータ（管理者1名・定義1つ・設定1つ）を作り直します。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-15"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Help</span><span class="p">(</span><span class="n">APIView</span><span class="p">):</span>
+<div class="codehilite"><div class="code-wrap" id="code-16"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Help</span><span class="p">(</span><span class="n">APIView</span><span class="p">):</span>
   <span class="k">def</span><span class="w"> </span><span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
     <span class="c1"># ① 送られてきたデータ</span>
     <span class="n">post_data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">data</span>
@@ -1024,7 +1025,7 @@ Djangoで「データベースの表（テーブル）」をPythonのクラス�
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> メインメニュー画面を開くとき、(1) セッションに「ログイン中の番号」があるか確認し、(2) 無ければ401エラー（ログインへ戻れ）を返し、(3) あればその人員データと設定データを取り出してフロントへ返します。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-16"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Menu</span><span class="p">(</span><span class="n">APIView</span><span class="p">):</span>
+<div class="codehilite"><div class="code-wrap" id="code-17"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Menu</span><span class="p">(</span><span class="n">APIView</span><span class="p">):</span>
   <span class="c1"># ① GET(画面表示)のとき</span>
   <span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
     <span class="c1"># ② セッションからログイン番号を取り出す</span>
@@ -1065,7 +1066,7 @@ Djangoで「データベースの表（テーブル）」をPythonのクラス�
 Djangoでは、<strong>1つのモデル（クラス）＝1つのテーブル</strong>、<strong>モデルの中の1つの変数＝1つのカラム</strong> に対応します。</p>
 </blockquote>
 <h3 id="81-12">8.1 ファイル冒頭 ― 1〜2行目</h3>
-<div class="codehilite"><div class="code-wrap" id="code-17"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ① Djangoのモデル機能を取り寄せ</span>
+<div class="codehilite"><div class="code-wrap" id="code-18"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ① Djangoのモデル機能を取り寄せ</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">django.db</span><span class="w"> </span><span class="kn">import</span> <span class="n">models</span>
 <span class="c1"># ② JSON型のカラムを使う道具(Historyで使用)</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">jsonfield</span>
@@ -1076,7 +1077,7 @@ Djangoでは、<strong>1つのモデル（クラス）＝1つのテーブル</st
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> 従業員1人ぶんの情報（従業員番号・氏名・所属ショップ・権限・管理者フラグ・各勤務形態ごとの休憩時間など）を保存する「人員表」の設計図です。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-18"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ① member表の設計図(models.Model を継承)</span>
+<div class="codehilite"><div class="code-wrap" id="code-19"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ① member表の設計図(models.Model を継承)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">member</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
   <span class="c1"># ② 所属ショップの選択肢一覧</span>
   <span class="n">shop_list</span> <span class="o">=</span> <span class="p">[</span>
@@ -1139,7 +1140,7 @@ Djangoでは、<strong>1つのモデル（クラス）＝1つのテーブル</st
 </blockquote>
 <h3 id="83-business_time_graph-6987">8.3 Business_Time_graph モデル（工数記録の表）― 69〜87行目</h3>
 <p>工数入力の本体データです。「誰が・いつ・何の作業を・何時間したか」を1件ずつ記録します。</p>
-<div class="codehilite"><div class="code-wrap" id="code-19"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ① 工数記録の表</span>
+<div class="codehilite"><div class="code-wrap" id="code-20"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ① 工数記録の表</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">Business_Time_graph</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
   <span class="c1"># ② 記録した人の従業員番号</span>
   <span class="n">employee_no3</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">(</span><span class="s1">&#39;従業員番号&#39;</span><span class="p">)</span>
@@ -1180,7 +1181,7 @@ Djangoでは、<strong>1つのモデル（クラス）＝1つのテーブル</st
 </ul>
 <h3 id="84-kosu_division-115319">8.4 kosu_division モデル（工数区分定義）― 115〜319行目</h3>
 <p>§7.2⑩で「最新版を取得」していた、作業区分の定義表です。このモデルは <strong>非常に長い</strong> ので、構造だけ理解します。</p>
-<div class="codehilite"><div class="code-wrap" id="code-20"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ① 工数区分定義の表</span>
+<div class="codehilite"><div class="code-wrap" id="code-21"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ① 工数区分定義の表</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">kosu_division</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
   <span class="c1"># ② 定義のバージョン名</span>
   <span class="n">kosu_name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="s1">&#39;工数区分定義Ver名&#39;</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
@@ -1256,7 +1257,7 @@ Djangoでは、<strong>1つのモデル（クラス）＝1つのテーブル</st
 </tbody>
 </table>
 <p><code>AsyncTask</code> と <code>History</code> には <code>save()</code> メソッドが上書きされており、「レコードが上限（<code>MAX_RECORDS</code>）を超えたら、古いものから自動削除する」仕組みが入っています。これにより、ログが無限に溜まってデータベースが膨張するのを防いでいます。</p>
-<div class="codehilite"><div class="code-wrap" id="code-21"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">AsyncTask</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="codehilite"><div class="code-wrap" id="code-22"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">AsyncTask</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
   <span class="c1"># 保持する最大件数</span>
   <span class="n">MAX_RECORDS</span> <span class="o">=</span> <span class="mi">1000</span>
 
@@ -1297,7 +1298,7 @@ Djangoでは、<strong>1つのモデル（クラス）＝1つのテーブル</st
 Djangoでは、<strong>プロジェクト（project）</strong> が「サイト全体」、<strong>アプリ（app）</strong> が「その中の機能のまとまり」です。本アプリでは <code>hozen_another/</code> がプロジェクト（設定・最上位URL）、<code>kosu/</code> がアプリ（工数管理の実体）。<code>hozen_another/urls.py</code> が「玄関の交通整理」、<code>kosu/urls.py</code> が「各部屋の中の案内図」という階層関係です。</p>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> ブラウザから来たURLを、その先頭部分で大きく振り分けます。<code>/admin/</code> はDjango管理画面へ、<code>/api/</code> で始まるものは <code>kosu</code> アプリのURL表（§6）へ、それ以外は全部Reactの画面へ、という3つの大きな分岐です。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-22"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ① Django標準の管理画面</span>
+<div class="codehilite"><div class="code-wrap" id="code-23"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ① Django標準の管理画面</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">django.contrib</span><span class="w"> </span><span class="kn">import</span> <span class="n">admin</span>
 <span class="c1"># ② URL定義の道具(include=他のurls.pyを取り込む)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">django.urls</span><span class="w"> </span><span class="kn">import</span> <span class="n">path</span><span class="p">,</span> <span class="n">include</span><span class="p">,</span> <span class="n">re_path</span>
@@ -1363,7 +1364,7 @@ Djangoでは、<strong>プロジェクト（project）</strong> が「サイト�
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> Reactとルーターの道具、共通CSS、そしてアプリの全画面部品（ログイン・各種メニュー・一覧・編集など約50個）を取り寄せます。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-23"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// ① React本体</span>
+<div class="codehilite"><div class="code-wrap" id="code-24"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// ① React本体</span>
 <span class="k">import</span><span class="w"> </span><span class="nx">React</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;react&#39;</span><span class="p">;</span>
 <span class="c1">// ② Reactを画面に描く道具</span>
 <span class="k">import</span><span class="w"> </span><span class="nx">ReactDOM</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;react-dom/client&#39;</span><span class="p">;</span>
@@ -1395,7 +1396,7 @@ Djangoでは、<strong>プロジェクト（project）</strong> が「サイト�
 <li><strong>⑤以降</strong> 約50個の画面部品をすべて取り寄せます。フォルダ名（<code>MainPage</code>・<code>KosuPage</code>・<code>MemberPage</code> …）が、§1.2の機能グループと対応しているのに注目してください。</li>
 </ul>
 <h3 id="102-app-57170">10.2 App コンポーネント：タイトル設定とルート定義 ― 57〜170行目</h3>
-<div class="codehilite"><div class="code-wrap" id="code-24"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// ① アプリ全体を表す部品</span>
+<div class="codehilite"><div class="code-wrap" id="code-25"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// ① アプリ全体を表す部品</span>
 <span class="kd">const</span><span class="w"> </span><span class="nx">App</span><span class="o">:</span><span class="w"> </span><span class="kt">React.FC</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="c1">// ② 今いるURLの情報を取得</span>
 <span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">location</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useLocation</span><span class="p">();</span>
@@ -1430,7 +1431,7 @@ Djangoでは、<strong>プロジェクト（project）</strong> が「サイト�
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> 「このURLパスのときは、この画面部品を表示する」という対応を、全画面ぶん並べます。§9⑪でサーバーから渡されたReactが、ここを見て実際の画面を決めます。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-25"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<div class="codehilite"><div class="code-wrap" id="code-26"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="c1">// ① ルート対応のまとまり</span>
 <span class="w">    </span><span class="p">&lt;</span><span class="nt">Routes</span><span class="p">&gt;</span>
 <span class="w">      </span><span class="c1">// ② /login → Login画面(§5)を表示</span>
@@ -1464,7 +1465,7 @@ Djangoでは、<strong>プロジェクト（project）</strong> が「サイト�
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> 作った <code>App</code> 部品を、<code>index.html</code> の中の <code>root</code> という場所に実際に描き込みます。これがアプリ起動の最後の一歩です。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-26"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// ① index.html内の#rootを取得</span>
+<div class="codehilite"><div class="code-wrap" id="code-27"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// ① index.html内の#rootを取得</span>
 <span class="kd">const</span><span class="w"> </span><span class="nx">root</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">ReactDOM</span><span class="p">.</span><span class="nx">createRoot</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;root&#39;</span><span class="p">)</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="nx">HTMLElement</span><span class="p">);</span>
 
 <span class="c1">// ② そこにReactアプリを描く</span>
@@ -1795,7 +1796,7 @@ Object-Relational Mapping の略。「データベースの操作を、Pythonの
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> アプリの基準フォルダを決め、秘密情報（鍵）を外部ファイル（.env）から読み込み、開発モードかどうか、どのホスト名からのアクセスを許すかを設定します。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-27"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ① ファイルパスを扱う道具</span>
+<div class="codehilite"><div class="code-wrap" id="code-28"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ① ファイルパスを扱う道具</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="c1"># ② OS機能(環境変数等)</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
@@ -1849,7 +1850,7 @@ Object-Relational Mapping の略。「データベースの操作を、Pythonの
 <li><strong>⑪</strong> <code>ALLOWED_HOSTS</code> … 「このホスト名（住所）宛のアクセスだけ受け付ける」一覧。本番のAzureアドレスと、開発用の <code>localhost</code>・<code>127.0.0.1</code> が登録されています。ここに無いホスト名でアクセスすると拒否されます（なりすまし対策）。</li>
 </ul>
 <h3 id="122-2538">12.2 インストール済みアプリ ― 25〜38行目</h3>
-<div class="codehilite"><div class="code-wrap" id="code-28"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ① 有効にする機能(アプリ)の一覧</span>
+<div class="codehilite"><div class="code-wrap" id="code-29"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ① 有効にする機能(アプリ)の一覧</span>
 <span class="n">INSTALLED_APPS</span> <span class="o">=</span> <span class="p">[</span>
     <span class="c1">#    管理画面(§9⑦)</span>
     <span class="s1">&#39;django.contrib.admin&#39;</span><span class="p">,</span>
@@ -1884,7 +1885,7 @@ Object-Relational Mapping の略。「データベースの操作を、Pythonの
 <li><strong><code>'corsheaders'</code></strong> … 次の §12.3 のCORS対応。フロント（3000番）とバック（8000番）が <strong>別ポート＝別オリジン</strong> で通信できるようにします。</li>
 </ul>
 <h3 id="123-cors-4059">12.3 ミドルウェアとCORS ― 40〜59行目</h3>
-<div class="codehilite"><div class="code-wrap" id="code-29"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ① リクエストが通る「関所」の一覧(上から順に通過)</span>
+<div class="codehilite"><div class="code-wrap" id="code-30"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ① リクエストが通る「関所」の一覧(上から順に通過)</span>
 <span class="n">MIDDLEWARE</span> <span class="o">=</span> <span class="p">[</span>
     <span class="c1">#    CORS処理(最初に置くのが定石)</span>
     <span class="s1">&#39;corsheaders.middleware.CorsMiddleware&#39;</span><span class="p">,</span>
@@ -1929,7 +1930,7 @@ Object-Relational Mapping の略。「データベースの操作を、Pythonの
 </li>
 </ul>
 <h3 id="124-rest-framework-6180">12.4 REST Framework・セッション ― 61〜80行目</h3>
-<div class="codehilite"><div class="code-wrap" id="code-30"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ① REST Frameworkの設定</span>
+<div class="codehilite"><div class="code-wrap" id="code-31"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ① REST Frameworkの設定</span>
 <span class="n">REST_FRAMEWORK</span> <span class="o">=</span> <span class="p">{</span>
     <span class="c1"># ページ分割方式</span>
     <span class="s1">&#39;DEFAULT_PAGINATION_CLASS&#39;</span><span class="p">:</span> <span class="s1">&#39;rest_framework.pagination.PageNumberPagination&#39;</span><span class="p">,</span>
@@ -1964,7 +1965,7 @@ Object-Relational Mapping の略。「データベースの操作を、Pythonの
 <li><strong>⑥ <code>ROOT_URLCONF = 'hozen_another.urls'</code></strong> … <strong>「最初に見るURL表は §9 のファイル」と指定</strong>。すべてのリクエストは、まずここから振り分けが始まります。</li>
 </ul>
 <h3 id="125-101106-157173">12.5 テンプレートと静的ファイル ― 101〜106行目, 157〜173行目</h3>
-<div class="codehilite"><div class="code-wrap" id="code-31"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">STATICFILES_DIRS</span> <span class="o">=</span> <span class="p">[</span>
+<div class="codehilite"><div class="code-wrap" id="code-32"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">STATICFILES_DIRS</span> <span class="o">=</span> <span class="p">[</span>
     <span class="c1"># ① Reactのビルド成果物(JS/CSS)の場所</span>
     <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">BASE_DIR</span><span class="p">,</span> <span class="s1">&#39;frontend/build/static&#39;</span><span class="p">),</span>
 <span class="p">]</span>
@@ -1973,7 +1974,7 @@ Object-Relational Mapping の略。「データベースの操作を、Pythonの
 <span class="n">TEMPLATES</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;DIRS&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">BASE_DIR</span><span class="p">,</span> <span class="s1">&#39;frontend/build&#39;</span><span class="p">)]</span>
 </code></pre></div></div>
 
-<div class="codehilite"><div class="code-wrap" id="code-32"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ③ 静的ファイルのURL接頭辞</span>
+<div class="codehilite"><div class="code-wrap" id="code-33"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ③ 静的ファイルのURL接頭辞</span>
 <span class="n">STATIC_URL</span> <span class="o">=</span> <span class="s1">&#39;/static/&#39;</span>
 <span class="c1"># ④ 集約先フォルダ(本番配信用)</span>
 <span class="n">STATIC_ROOT</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">BASE_DIR</span><span class="p">,</span> <span class="s1">&#39;staticfiles&#39;</span><span class="p">)</span>
@@ -1990,7 +1991,7 @@ Object-Relational Mapping の略。「データベースの操作を、Pythonの
 <li><strong>⑤ WhiteNoise</strong> … §11.1の「静的配信」。本番でCSS・JS・画像を効率よく（圧縮して）配る仕組みです。</li>
 </ul>
 <h3 id="126-114202">12.6 データベース・非同期・ログ ― 114〜202行目</h3>
-<div class="codehilite"><div class="code-wrap" id="code-33"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ① データベース接続設定</span>
+<div class="codehilite"><div class="code-wrap" id="code-34"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ① データベース接続設定</span>
 <span class="n">DATABASES</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;default&#39;</span><span class="p">:</span> <span class="p">{</span>
         <span class="c1">#    PostgreSQLを使う</span>
@@ -2026,7 +2027,7 @@ Object-Relational Mapping の略。「データベースの操作を、Pythonの
 <li><strong>①</strong> データベース接続情報。<strong>接続情報（DB名・ユーザー・パスワード・住所）はすべて <code>.env</code> から読む</strong>（§12.1で説明した秘密情報の分離）。<code>postgresql</code> を使い、標準ポート <code>5432</code> で接続します。§8で設計したモデルは、ここで指定したPostgreSQLに保存されます。</li>
 <li><strong>②</strong> <code>Q_CLUSTER</code> … バックアップなど時間のかかる処理を <strong>裏で（ユーザーを待たせず）実行</strong> するDjango-Qの設定。<code>workers: 4</code> で4つ同時処理、1タスク最大30分。</li>
 </ul>
-<div class="codehilite"><div class="code-wrap" id="code-34"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ③ 言語は日本語</span>
+<div class="codehilite"><div class="code-wrap" id="code-35"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ③ 言語は日本語</span>
 <span class="n">LANGUAGE_CODE</span> <span class="o">=</span> <span class="s1">&#39;ja&#39;</span>
 <span class="c1"># ④ タイムゾーンは東京</span>
 <span class="n">TIME_ZONE</span> <span class="o">=</span> <span class="s1">&#39;Asia/Tokyo&#39;</span>
@@ -2041,7 +2042,7 @@ Object-Relational Mapping の略。「データベースの操作を、Pythonの
 <li><strong>⑥</strong> <code>DEFAULT_AUTO_FIELD</code> … §8.2で触れた「各モデルに自動で付く <code>id</code>（pk）」の型を、大きな整数（<code>BigAutoField</code>）に指定。データが大量に増えてもID番号が枯渇しません。</li>
 </ul>
 <p>最後の <code>LOGGING</code>（175〜202行目）は、サーバーの動作記録を <code>web_console.log</code> というファイルに残す設定です。<code>RotatingFileHandler</code> で「ログが1MBを超えたら古いものを捨てる」回転方式（<code>maxBytes: 1024 * 1024 * 1</code>）にし、ログが無限に膨らむのを防いでいます。</p>
-<div class="codehilite"><div class="code-wrap" id="code-35"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">LOGGING</span> <span class="o">=</span> <span class="p">{</span>
+<div class="codehilite"><div class="code-wrap" id="code-36"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">LOGGING</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;version&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
     <span class="s1">&#39;disable_existing_loggers&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
     <span class="c1"># ログの書式</span>
@@ -2071,7 +2072,7 @@ Object-Relational Mapping の略。「データベースの操作を、Pythonの
 <hr>
 <h2 id="13_1">13. フォルダ構成の地図</h2>
 <p>最後に、プロジェクト全体の「どこに何があるか」の地図を示します。迷ったらここに戻ってください。</p>
-<div class="codehilite"><div class="code-wrap" id="code-36"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>hozen-kosu-React/                       ← プロジェクト全体のフォルダ
+<div class="codehilite"><div class="code-wrap" id="code-37"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>hozen-kosu-React/                       ← プロジェクト全体のフォルダ
 │
 ├── manage.py                           ← Djangoの操作コマンド入口(runserver等。01章で使う)
 ├── .env                                ← 秘密情報(鍵・DBパスワード)。Gitに含めない(§12.1)

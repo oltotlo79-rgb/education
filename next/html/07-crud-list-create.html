@@ -5531,10 +5531,11 @@ Server Action を使う場合は、<code>router.refresh()</code> の代わりに
 <li><strong>Supabase の接続情報が正しくない</strong></li>
 </ol>
 <p><code>.env.local</code> ファイルの内容を確認してください。</p>
-<p><code>bash
-   # .env.local
-   NEXT_PUBLIC_SUPABASE_URL=https://xxxxx.supabase.co
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbG...</code></p>
+<div class="codehilite"><div class="code-wrap" id="code-139"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># .env.local</span>
+<span class="nv">NEXT_PUBLIC_SUPABASE_URL</span><span class="o">=</span>https://xxxxx.supabase.co
+<span class="nv">NEXT_PUBLIC_SUPABASE_ANON_KEY</span><span class="o">=</span>eyJhbG...
+</code></pre></div></div>
+
 <ul>
 <li>URL の末尾にスラッシュ <code>/</code> が余計についていないか確認してください。</li>
 <li><code>.env.local</code> を変更した場合は、開発サーバー（<code>npm run dev</code>）を <strong>再起動</strong> する必要があります（Ctrl+C で停止し、再度 <code>npm run dev</code>）。</li>
@@ -5557,11 +5558,11 @@ Server Action を使う場合は、<code>router.refresh()</code> の代わりに
 <p>F12 → Console タブを開き、エラーメッセージがないか確認してください。また、Network タブで Supabase への API リクエストが成功しているか（ステータスコード 200）を確認してください。</p>
 <p><strong>5. <code>permission denied for table books</code>（code: <code>42501</code>）と出る（2026年の Supabase の仕様変更）</strong></p>
 <p>Supabase は 2026年に、「新しく作ったテーブルを、自動では Data API（supabase-js から使う窓口）に公開しない」という仕様に変わりました。2026年5月30日以降に作ったプロジェクトでは最初から、それより前のプロジェクトでも 2026年10月30日以降に作るテーブルから、この動きになります（すでにあるテーブルの許可はそのまま残ります）。この場合、第5章の RLS ポリシーを正しく作っていても、テーブルそのものを使う<strong>許可（GRANT／グラント）</strong>が無いため、一覧が空になり、サーバーのターミナルに次のエラーが出ます。</p>
-<div class="codehilite"><div class="code-wrap" id="code-139"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>書籍の取得に失敗しました: permission denied for table books
+<div class="codehilite"><div class="code-wrap" id="code-140"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>書籍の取得に失敗しました: permission denied for table books
 </code></pre></div></div>
 
 <p>1e のつまずきポイントの OK 版のように <code>error</code> を丸ごとログに出していれば、<code>hint</code>（直し方）まで表示されます。</p>
-<div class="codehilite"><div class="code-wrap" id="code-140"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>書籍の取得に失敗しました: {
+<div class="codehilite"><div class="code-wrap" id="code-141"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>書籍の取得に失敗しました: {
   code: &#39;42501&#39;,
   details: null,
   hint: &#39;Grant the required privileges to the current role with: GRANT SELECT ON public.books TO anon;&#39;,
@@ -5570,7 +5571,7 @@ Server Action を使う場合は、<code>router.refresh()</code> の代わりに
 </code></pre></div></div>
 
 <p><code>hint</code> に書かれているとおり、Supabase ダッシュボードの <strong>SQL Editor</strong> で許可を与えます。</p>
-<div class="codehilite"><div class="code-wrap" id="code-141"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">-- books テーブルを、ログインしていない利用者（anon ロール）からも読み書きできるようにする</span>
+<div class="codehilite"><div class="code-wrap" id="code-142"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">-- books テーブルを、ログインしていない利用者（anon ロール）からも読み書きできるようにする</span>
 <span class="c1">-- この教材にはまだログイン機能が無いので、第5章の「全員に全操作を許可（開発用）」ポリシーと組み合わせて使う</span>
 <span class="k">grant</span><span class="w"> </span><span class="k">select</span><span class="p">,</span><span class="w"> </span><span class="k">insert</span><span class="p">,</span><span class="w"> </span><span class="k">update</span><span class="p">,</span><span class="w"> </span><span class="k">delete</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="k">public</span><span class="p">.</span><span class="n">books</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">anon</span><span class="p">;</span>
 <span class="c1">-- ログイン済みの利用者（authenticated ロール）にも同じ許可を出しておく</span>
@@ -5591,11 +5592,13 @@ Server Action を使う場合は、<code>router.refresh()</code> の代わりに
 <li><strong>テーブルのカラム名が一致していない</strong></li>
 </ol>
 <p><code>insert</code> に渡すオブジェクトのキー名が、データベースのカラム名と一致していない可能性があります。ブラウザの Console にエラー詳細が表示されているはずなので確認してください。</p>
-<p><code>// よくある間違い
-   // NG: キャメルケース
-   publishedDate: "2024-01-01"
-   // OK: スネークケース（DB のカラム名に合わせる）
-   published_date: "2024-01-01"</code></p>
+<div class="codehilite"><div class="code-wrap" id="code-143"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>// よくある間違い
+// NG: キャメルケース
+publishedDate: &quot;2024-01-01&quot;
+// OK: スネークケース（DB のカラム名に合わせる）
+published_date: &quot;2024-01-01&quot;
+</code></pre></div></div>
+
 <ol start="2">
 <li><strong>NOT NULL 制約違反</strong></li>
 </ol>
@@ -5610,7 +5613,7 @@ Server Action を使う場合は、<code>router.refresh()</code> の代わりに
 <p><code>app/books/new/page.tsx</code> は Client Component なので、<code>@/lib/supabase/client</code> を使います。<code>@/lib/supabase/server</code> を使うと <code>cookies()</code> などのサーバー専用APIにアクセスしようとしてエラーになります。</p>
 <p><strong>5. メモの列名がテーブルと違う（<code>memo</code> と <code>notes</code>）</strong></p>
 <p>この章のコードは <code>memo</code> という列名で INSERT します。第5章の SQL のとおりに作ったテーブルなら列名は <code>memo</code> ですが、この教材の古い版や自分で作ったテーブルで列名が <code>notes</code> などになっていると、<code>Could not find the 'memo' column of 'books' in the schema cache</code>（code: <code>PGRST204</code>）というエラーになります。Supabase ダッシュボードの Table Editor で列名を確かめ、どちらかにそろえてください。テーブル側を <code>memo</code> に合わせる場合は、SQL Editor で次の1行を実行します。</p>
-<div class="codehilite"><div class="code-wrap" id="code-142"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">-- books テーブルの notes 列の名前を memo に変える（中のデータはそのまま残る）</span>
+<div class="codehilite"><div class="code-wrap" id="code-144"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">-- books テーブルの notes 列の名前を memo に変える（中のデータはそのまま残る）</span>
 <span class="k">alter</span><span class="w"> </span><span class="k">table</span><span class="w"> </span><span class="n">books</span><span class="w"> </span><span class="k">rename</span><span class="w"> </span><span class="k">column</span><span class="w"> </span><span class="n">notes</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">memo</span><span class="p">;</span>
 </code></pre></div></div>
 
@@ -5681,7 +5684,7 @@ Server Action を使う場合は、<code>router.refresh()</code> の代わりに
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> Supabase が返す <code>error</code> の <code>code</code> を見て、画面に出す日本語の文を選ぶ関数 <code>toUserMessage</code> を作ります。実際に Supabase が返すのと同じ形のエラーを5つ用意して、それぞれどの文になるかを表示します。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-143"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// supabase-js が返す error（PostgrestError）の4つの項目</span>
+<div class="codehilite"><div class="code-wrap" id="code-145"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// supabase-js が返す error（PostgrestError）の4つの項目</span>
 <span class="kr">type</span><span class="w"> </span><span class="nx">SupabaseError</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="nx">code</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
 <span class="w">  </span><span class="nx">message</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
@@ -5754,7 +5757,7 @@ Server Action を使う場合は、<code>router.refresh()</code> の代わりに
 </code></pre></div></div>
 
 <p><strong>▼ 実行結果</strong>（<code>node error-message-demo.ts</code>）</p>
-<div class="codehilite"><div class="code-wrap" id="code-144"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>[23502] null value in column &quot;title&quot; of relation &quot;books&quot; violates not-null constraint
+<div class="codehilite"><div class="code-wrap" id="code-146"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>[23502] null value in column &quot;title&quot; of relation &quot;books&quot; violates not-null constraint
   → 画面に出す文: 必須項目（タイトル・著者）が空です。
 [23514] new row for relation &quot;books&quot; violates check constraint &quot;books_rating_check&quot;
   → 画面に出す文: 評価やステータスの値が、許可された範囲の外です。
@@ -5768,7 +5771,7 @@ Server Action を使う場合は、<code>router.refresh()</code> の代わりに
 
 <h4 id="1_22">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1-error-4">解説1: error の4つの項目</h5>
-<div class="codehilite"><div class="code-wrap" id="code-145"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kr">type</span><span class="w"> </span><span class="nx">SupabaseError</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<div class="codehilite"><div class="code-wrap" id="code-147"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kr">type</span><span class="w"> </span><span class="nx">SupabaseError</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="nx">code</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
 <span class="w">  </span><span class="nx">message</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
 <span class="w">  </span><span class="nx">details</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
@@ -5781,7 +5784,7 @@ Server Action を使う場合は、<code>router.refresh()</code> の代わりに
 <li>原因を調べるときは「<code>hint</code> → <code>code</code> → <code>details</code> → <code>message</code>」の順に見ると近道です。<code>hint</code> に直し方そのもの（GRANT の SQL や、正しいテーブル名の候補）が書いてあることがよくあります。</li>
 </ul>
 <h5 id="2-switch-code">解説2: switch で code ごとに文を選ぶ</h5>
-<div class="codehilite"><div class="code-wrap" id="code-146"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">  </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">.</span><span class="nx">code</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<div class="codehilite"><div class="code-wrap" id="code-148"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">  </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">.</span><span class="nx">code</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="s2">&quot;22P02&quot;</span><span class="o">:</span>
 <span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="s2">&quot;22007&quot;</span><span class="o">:</span>
 <span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="s2">&quot;数値や日付の形式が正しくありません。&quot;</span><span class="p">;</span>
@@ -5802,18 +5805,24 @@ Server Action を使う場合は、<code>router.refresh()</code> の代わりに
 <ol>
 <li><strong><code>Book</code> 型のインポート漏れ</strong></li>
 </ol>
-<p><code>Cannot find name 'Book'.</code></p>
+<div class="codehilite"><div class="code-wrap" id="code-149"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Cannot find name &#39;Book&#39;.
+</code></pre></div></div>
+
 <p><code>Book</code> 型を使うファイルで、正しくインポートしているか確認してください。</p>
-<p><code>tsx
-   import { type Book } from "@/components/BookCard";</code></p>
+<div class="codehilite"><div class="code-wrap" id="code-150"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="kr">type</span><span class="w"> </span><span class="nx">Book</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@/components/BookCard&quot;</span><span class="p">;</span>
+</code></pre></div></div>
+
 <p><code>type</code> キーワードを使っているのは「型だけをインポートする」という意味です。TypeScript 専用の構文で、コンパイル後の JavaScript からは削除されます。なくても動きますが、付けておくとインポートの意図が明確になります。</p>
 <ol start="2">
 <li><strong><code>BookStatus</code> 型のインポート漏れ</strong></li>
 </ol>
-<p><code>Cannot find name 'BookStatus'.</code></p>
+<div class="codehilite"><div class="code-wrap" id="code-151"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Cannot find name &#39;BookStatus&#39;.
+</code></pre></div></div>
+
 <p><code>StatusBadge.tsx</code> からエクスポートしている型なので:</p>
-<p><code>tsx
-   import { type BookStatus } from "@/components/StatusBadge";</code></p>
+<div class="codehilite"><div class="code-wrap" id="code-152"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="kr">type</span><span class="w"> </span><span class="nx">BookStatus</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@/components/StatusBadge&quot;</span><span class="p">;</span>
+</code></pre></div></div>
+
 <ol start="3">
 <li><strong>Supabase の型定義との不一致</strong></li>
 </ol>
@@ -5821,15 +5830,18 @@ Server Action を使う場合は、<code>router.refresh()</code> の代わりに
 <ol start="4">
 <li><strong><code>null</code> と <code>undefined</code> の混在</strong></li>
 </ol>
-<p><code>Type 'undefined' is not assignable to type 'string | null'.</code></p>
+<div class="codehilite"><div class="code-wrap" id="code-153"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Type &#39;undefined&#39; is not assignable to type &#39;string | null&#39;.
+</code></pre></div></div>
+
 <p>Supabase から返るデータは <code>null</code>（<code>undefined</code> ではない）です。型定義で <code>string | undefined</code> ではなく <code>string | null</code> を使ってください。</p>
 <ol start="5">
 <li><strong><code>createClient</code> の名前衝突</strong></li>
 </ol>
 <p>サーバー用とクライアント用で同じ名前 <code>createClient</code> をインポートしていますが、ファイルが異なるので衝突しません。ただし、1つのファイルで両方使おうとすると衝突します。そのような場合はエイリアスを使います:</p>
-<p><code>tsx
-   import { createClient as createServerClient } from "@/lib/supabase/server";
-   import { createClient as createBrowserClient } from "@/lib/supabase/client";</code></p>
+<div class="codehilite"><div class="code-wrap" id="code-154"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">createClient</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="nx">createServerClient</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@/lib/supabase/server&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">createClient</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="nx">createBrowserClient</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@/lib/supabase/client&quot;</span><span class="p">;</span>
+</code></pre></div></div>
+
 <hr>
 <h2 id="8">8. 練習問題（解答・解説つき）</h2>
 <p>この章の内容が身に付いたかを確かめましょう。まず自分で考えてから、後ろの「解答と解説」を読んでください。コードを書く問題は、実際に VS Code や Node.js で試すとより理解が深まります。</p>
@@ -5842,7 +5854,7 @@ Server Action を使う場合は、<code>router.refresh()</code> の代わりに
 </ul>
 <h3 id="2-0await">問題2: 一覧がいつも0冊になる（await）</h3>
 <p>次のトップページは、本を何冊登録しても「全 0 冊」と表示されます。原因を答え、正しく直してください。</p>
-<div class="codehilite"><div class="code-wrap" id="code-147"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">HomePage</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<div class="codehilite"><div class="code-wrap" id="code-155"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">HomePage</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">supabase</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">createClient</span><span class="p">();</span>
 <span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">data</span><span class="o">:</span><span class="w"> </span><span class="kt">books</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">supabase</span><span class="p">.</span><span class="kr">from</span><span class="p">(</span><span class="s2">&quot;books&quot;</span><span class="p">).</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">);</span>
 <span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">BookList</span><span class="w"> </span><span class="na">books</span><span class="o">=</span><span class="p">{</span><span class="nx">books</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="p">[]}</span><span class="w"> </span><span class="p">/&gt;;</span>
@@ -5851,14 +5863,14 @@ Server Action を使う場合は、<code>router.refresh()</code> の代わりに
 
 <h3 id="3-1map">問題3: カードが1枚も出ない（map）</h3>
 <p>Supabase からデータは取れている（<code>console.log(books)</code> で配列が表示される）のに、一覧にカードが1枚も表示されません。どこを直せばよいですか？</p>
-<div class="codehilite"><div class="code-wrap" id="code-148"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">{</span><span class="nx">books</span><span class="p">.</span><span class="nx">map</span><span class="p">((</span><span class="nx">book</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<div class="codehilite"><div class="code-wrap" id="code-156"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">{</span><span class="nx">books</span><span class="p">.</span><span class="nx">map</span><span class="p">((</span><span class="nx">book</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="p">&lt;</span><span class="nt">BookCard</span><span class="w"> </span><span class="na">key</span><span class="o">=</span><span class="p">{</span><span class="nx">book</span><span class="p">.</span><span class="nx">id</span><span class="p">}</span><span class="w"> </span><span class="na">book</span><span class="o">=</span><span class="p">{</span><span class="nx">book</span><span class="p">}</span><span class="w"> </span><span class="p">/&gt;;</span>
 <span class="p">})}</span>
 </code></pre></div></div>
 
 <h3 id="4_6">問題4: 評価を選ばずに登録すると失敗する（型変換）</h3>
 <p>ある人が <code>BookForm</code> の <code>handleRatingChange</code> を次のように書きました。評価を「選択してください」のまま登録すると、登録に失敗します。なぜ失敗するのか、どう直せばよいかを答えてください。</p>
-<div class="codehilite"><div class="code-wrap" id="code-149"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">handleRatingChange</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="nx">e</span><span class="o">:</span><span class="w"> </span><span class="kt">React.ChangeEvent</span><span class="p">&lt;</span><span class="nt">HTMLSelectElement</span><span class="p">&gt;)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<div class="codehilite"><div class="code-wrap" id="code-157"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">handleRatingChange</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="nx">e</span><span class="o">:</span><span class="w"> </span><span class="kt">React.ChangeEvent</span><span class="p">&lt;</span><span class="nt">HTMLSelectElement</span><span class="p">&gt;)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="nx">setFormData</span><span class="p">((</span><span class="nx">prev</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">({</span>
 <span class="w">    </span><span class="p">...</span><span class="nx">prev</span><span class="p">,</span>
 <span class="w">    </span><span class="nx">rating</span><span class="o">:</span><span class="w"> </span><span class="kt">Number</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">value</span><span class="p">),</span>
@@ -5868,7 +5880,7 @@ Server Action を使う場合は、<code>router.refresh()</code> の代わりに
 
 <h3 id="5_6">問題5: バリデーションの結果を予想する</h3>
 <p>4a の「動かして確かめる」で作った <code>validateBookForm</code> に、次の値を渡したときの戻り値を予想してください（<code>empty</code> は同じサンプルの初期値です）。</p>
-<div class="codehilite"><div class="code-wrap" id="code-150"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nx">validateBookForm</span><span class="p">({</span>
+<div class="codehilite"><div class="code-wrap" id="code-158"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nx">validateBookForm</span><span class="p">({</span>
 <span class="w">  </span><span class="p">...</span><span class="nx">empty</span><span class="p">,</span>
 <span class="w">  </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;　　&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nx">author</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;A&quot;</span><span class="p">.</span><span class="nx">repeat</span><span class="p">(</span><span class="mf">51</span><span class="p">),</span>
@@ -5916,7 +5928,7 @@ Server Action を使う場合は、<code>router.refresh()</code> の代わりに
 <p><strong>解説:</strong> 「表示する＝R」「新しく作る＝C」「直す＝U」「消す＝D」です。(a) の「新しい順」は <code>order</code> で <code>ascending: false</code>（降順）を指定します。(c) の <code>update</code> は第8章で詳しく扱いますが、「どの行を直すか」を <code>.eq("id", ...)</code> で必ず絞り込む点を覚えておきましょう。絞り込みを忘れると、全部の本の評価が書き換わってしまいます。</p>
 <h4 id="2_7">問題2の解答</h4>
 <p><code>supabase.from("books").select("*")</code> の前に <strong><code>await</code> が無い</strong>のが原因です。正しくは次のとおりです。</p>
-<div class="codehilite"><div class="code-wrap" id="code-151"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">HomePage</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<div class="codehilite"><div class="code-wrap" id="code-159"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">HomePage</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">supabase</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">createClient</span><span class="p">();</span>
 <span class="w">  </span><span class="c1">// await を付けて、結果（data と error）が届くまで待つ</span>
 <span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">data</span><span class="o">:</span><span class="w"> </span><span class="kt">books</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">supabase</span><span class="p">.</span><span class="kr">from</span><span class="p">(</span><span class="s2">&quot;books&quot;</span><span class="p">).</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">);</span>
@@ -5930,7 +5942,7 @@ Server Action を使う場合は、<code>router.refresh()</code> の代わりに
 <p><strong>解説:</strong> <code>await</code> が無いと、右辺は結果ではなく「あとで結果が入る入れ物（Promise のなかま）」のままです。その入れ物には <code>data</code> というプロパティが無いので <code>books</code> は <code>undefined</code> になり、<code>books ?? []</code> で空配列になって「0冊」と表示されます。しかも supabase-js は <code>await</code> されるまで通信を始めないので、Supabase への問い合わせ自体が行われていません（0.3節の補足）。VS Code では「<code>data</code> というプロパティは存在しません」という赤線が出るはずなので、赤線は必ず確認しましょう。あわせて <code>error</code> も受け取っておくと、失敗にも気づけます。</p>
 <h4 id="3_11">問題3の解答</h4>
 <p><code>=&gt;</code> の右側を <code>{ }</code> で囲んでいるのに <code>return</code> が無いため、<code>map</code> の結果が <code>[undefined, undefined, ...]</code> になっています。<code>( )</code> で囲んで JSX をそのまま返します。</p>
-<div class="codehilite"><div class="code-wrap" id="code-152"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">{</span><span class="nx">books</span><span class="p">.</span><span class="nx">map</span><span class="p">((</span><span class="nx">book</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">(</span>
+<div class="codehilite"><div class="code-wrap" id="code-160"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">{</span><span class="nx">books</span><span class="p">.</span><span class="nx">map</span><span class="p">((</span><span class="nx">book</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">(</span>
 <span class="w">  </span><span class="p">&lt;</span><span class="nt">BookCard</span><span class="w"> </span><span class="na">key</span><span class="o">=</span><span class="p">{</span><span class="nx">book</span><span class="p">.</span><span class="nx">id</span><span class="p">}</span><span class="w"> </span><span class="na">book</span><span class="o">=</span><span class="p">{</span><span class="nx">book</span><span class="p">}</span><span class="w"> </span><span class="p">/&gt;</span>
 <span class="p">))}</span>
 </code></pre></div></div>
@@ -5938,7 +5950,7 @@ Server Action を使う場合は、<code>router.refresh()</code> の代わりに
 <p><strong>解説:</strong> 1d の「動かして確かめる」で見たとおり、<code>=&gt; { }</code> はブロックなので <code>return</code> が必要、<code>=&gt; ( )</code> は式なので自動で返ります。<code>undefined</code> は画面に何も描かず、エラーも出ないので気づきにくいバグです。「<code>=&gt;</code> のすぐ右が <code>{</code> なら <code>return</code> を探す」と覚えましょう。</p>
 <h4 id="4_7">問題4の解答</h4>
 <p>「選択してください」の値は空文字 <code>""</code> で、<code>Number("")</code> は <code>0</code> になります。books テーブルには「評価は1〜5」という CHECK 制約があるため、評価 0 の行は拒否され、<code>23514</code>（CHECK 制約違反）のエラーで登録に失敗します。空文字を先に <code>null</code> へ変換します。</p>
-<div class="codehilite"><div class="code-wrap" id="code-153"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">handleRatingChange</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="nx">e</span><span class="o">:</span><span class="w"> </span><span class="kt">React.ChangeEvent</span><span class="p">&lt;</span><span class="nt">HTMLSelectElement</span><span class="p">&gt;)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<div class="codehilite"><div class="code-wrap" id="code-161"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">handleRatingChange</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="nx">e</span><span class="o">:</span><span class="w"> </span><span class="kt">React.ChangeEvent</span><span class="p">&lt;</span><span class="nt">HTMLSelectElement</span><span class="p">&gt;)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">value</span><span class="p">;</span>
 <span class="w">  </span><span class="nx">setFormData</span><span class="p">((</span><span class="nx">prev</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">({</span>
 <span class="w">    </span><span class="p">...</span><span class="nx">prev</span><span class="p">,</span>
@@ -5950,7 +5962,7 @@ Server Action を使う場合は、<code>router.refresh()</code> の代わりに
 
 <p><strong>解説:</strong> 4a の「動かして確かめる」の実行結果のとおり、<code>Number("")</code> は <code>NaN</code> ではなく <code>0</code> です。<code>&lt;select&gt;</code> や <code>&lt;input&gt;</code> の値はいつも文字列なので、数値の列に保存する前には「空かどうか」→「数値に変換」の順で処理します。</p>
 <h4 id="5_7">問題5の解答</h4>
-<div class="codehilite"><div class="code-wrap" id="code-154"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>{ title: &#39;タイトルは必須です&#39;, author: &#39;著者は50文字以内で入力してください&#39; }
+<div class="codehilite"><div class="code-wrap" id="code-162"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>{ title: &#39;タイトルは必須です&#39;, author: &#39;著者は50文字以内で入力してください&#39; }
 </code></pre></div></div>
 
 <p><strong>解説:</strong> タイトルの <code>"　　"</code>（全角スペース2つ）は <code>trim()</code> で空文字になるので「必須です」です。著者の <code>"A".repeat(51)</code> は51文字なので上限（50文字）を1文字超えています。メモの <code>"   "</code> は <code>trim()</code> すると0文字で、メモは任意項目なのでエラーになりません。実際に Node.js で実行すると、この結果が表示されます。</p>
