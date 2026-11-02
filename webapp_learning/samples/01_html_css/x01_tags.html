@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>よく使うタグ - 付録</title>
+    <style>
+      /* 見やすくするための少しの CSS（タグの働きは B-02 で） */
+      body { font-family: "Yu Gothic UI", "Meiryo", sans-serif; margin: 16px 24px; color: #1e3a5f; }
+      table { border-collapse: collapse; }
+      th, td { border: 1px solid #94a3b8; padding: 4px 10px; }
+      th { background: #eef2f7; }
+      label { display: block; margin-top: 8px; }
+      label.inline { display: inline; }
+    </style>
+  </head>
+  <body>
+    <!-- 1. 見出し（h1 が一番大きい。1 ページに h1 は 1 つ） -->
+    <h1>見出し h1</h1>
+    <h2>見出し h2</h2>
+
+    <!-- 2. 段落・強調・改行・リンク -->
+    <p>これは段落です。<strong>大事な所</strong>と<em>強めたい所</em>。<br>br で改行します。</p>
+    <p><a href="request_list.html">自分の依頼の一覧へ</a>（同じフォルダの別のページへのリンク）</p>
+
+    <!-- 3. 並び: ul は順番の無い並び、ol は番号つきの並び -->
+    <ul>
+      <li>治具の製作</li>
+      <li>部品の追加工</li>
+    </ul>
+    <ol>
+      <li>依頼を入力する</li>
+      <li>承認者が順に確かめる</li>
+    </ol>
+
+    <!-- 4. 表: thead（見出しの行）と tbody（中身の行）。th は見出しのます、td は中身のます -->
+    <table>
+      <thead>
+        <tr><th>番号</th><th>件名</th><th>状態</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>治具の製作</td><td>回覧中</td></tr>
+        <tr><td>2</td><td>部品の追加工</td><td>回覧完了</td></tr>
+      </tbody>
+    </table>
+
+    <!-- 5. フォーム: label の for と、入力欄の id を同じにすると、ラベルを押しても入力欄が選ばれる -->
+    <form action="#" method="post">
+      <label for="title">件名（必須）</label>
+      <input id="title" name="title" type="text" required maxlength="100" placeholder="例: 治具の製作">
+
+      <label for="due">希望の納期</label>
+      <input id="due" name="due_date" type="date" value="2026-11-10">
+
+      <label for="qty">個数</label>
+      <input id="qty" name="qty" type="number" min="1" max="99" value="1">
+
+      <label for="kind">種類</label>
+      <select id="kind" name="kind">
+        <option value="new">新しく作る</option>
+        <option value="fix" selected>直す</option>
+      </select>
+
+      <label for="detail">内容</label>
+      <textarea id="detail" name="detail" rows="2" cols="40">寸法は図面のとおり</textarea>
+
+      <p>
+        <input id="urgent" name="urgent" type="checkbox" checked>
+        <label for="urgent" class="inline">至急</label>
+        <input id="mail-yes" name="mail" type="radio" value="yes" checked>
+        <label for="mail-yes" class="inline">メールで知らせる</label>
+        <input id="mail-no" name="mail" type="radio" value="no">
+        <label for="mail-no" class="inline">知らせない</label>
+      </p>
+      <button type="submit">送る</button>
+    </form>
+  </body>
+</html>
