@@ -298,6 +298,16 @@ li, tr { page-break-inside: avoid; }
 <span class="p">.\</span><span class="n">dev_serve</span><span class="p">.</span><span class="n">ps1</span>    <span class="c"># 部品を集めて（collectstatic）、waitress で動かす → http://127.0.0.1:8000/</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.\dev_serve.ps1</code></strong>（PowerShell）: 今いるフォルダの <code>dev_serve.ps1</code>（静的ファイルを集めてから、waitress でアプリを動かすスクリプト）を動かす書き方。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><code>backend/dev_serve.ps1</code>（<strong>「UTF-8 (BOM 付き)」で保存</strong>）:</p>
 <div class="codehilite"><div class="code-wrap" id="code-4"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 会社のサーバーと同じ形（waitress・DEBUG なし・WhiteNoise が画面の部品を配る）で、手元で動かして確かめる</span>
 <span class="c"># （必ず「UTF-8 (BOM 付き)」で保存する）</span>
@@ -327,6 +337,16 @@ li, tr { page-break-inside: avoid; }
     <span class="nb">Pop-Location</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Join-Path</code></strong>（PowerShell）: フォルダの場所とファイル名を、<code>\</code> でつないだ場所を作るコマンド。<code>Join-Path $PSScriptRoot "dev.env"</code> は「このスクリプトのフォルダの <code>dev.env</code>」。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><strong>確かめること:</strong> <code>http://127.0.0.1:8000/health</code> が <code>{"status": "ok"}</code> を返すこと。画面の部品（<code>/static/assets/index-（指紋）.js</code>）の返事に、<code>Cache-Control: max-age=315360000, public, immutable</code> が付くこと（試した結果、付いた。onprem の 05 の 8.4 と同じ）。</p>
 <h2 id="2">2. 画面の部品の組み立て</h2>
@@ -416,6 +436,23 @@ li, tr { page-break-inside: avoid; }
 <span class="p">};</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>class</code></strong>（TypeScript）: クラス（データと、それを扱うメソッドをまとめた設計図）を作る書き方。<code>class ApiError extends Error { … }</code>。<code>new ApiError(…)</code> で作ります。</li>
+<li><strong><code>extends</code></strong>（TypeScript）: クラスを、ほかのクラスを元にして作る書き方。<code>class ApiError extends Error</code> は、標準の <code>Error</code> に、<code>status</code> などを足したエラーです。</li>
+<li><strong><code>this</code></strong>（TypeScript）: クラスの中で「この物自身」を表す言葉。<code>this.status = status;</code> は、自分の <code>status</code> に値を入れます。</li>
+<li><strong><code>instanceof</code></strong>（TypeScript）: 値が、そのクラスから作られた物かを調べる書き方。<code>body instanceof FormData</code> は「ファイル付きのフォームの中身か」。</li>
+<li><strong><code>.match()</code></strong>（TypeScript）: 文字列が正規表現に合う所を探すメソッド。見つかると、その情報（かっこの中の部分など）を配列で、見つからないと <code>null</code> を返します。</li>
+<li><strong><code>.flat()</code></strong>（TypeScript）: 配列の中の配列を、1 つの配列に平らにするメソッド。</li>
+<li><strong><code>.catch()</code></strong>（TypeScript）: <code>Promise</code> が失敗した時の代わりの処理を登録するメソッド。<code>res.json().catch(() =&gt; ({}))</code> は「JSON として読めなければ空のオブジェクト」。</li>
+<li><strong><code>.append()</code></strong>（TypeScript）: <code>FormData</code> に項目を足すメソッド。<code>form.append("file", file)</code> で、ファイル付きのフォームを組み立てます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li><strong>API の呼び方を、このファイル 1 つに集めています。</strong> 画面の部品は <code>api.requests(true)</code> のように呼ぶだけで、URL や CSRF の札のことを知らなくて済みます（前編の services と同じ考え方）。</li>
 <li><code>POST</code> には、クッキーの <code>csrftoken</code> を <code>X-CSRFToken</code> という付け札にして付けます（onprem の 05 の 8.2）。</li>
@@ -449,9 +486,32 @@ li, tr { page-break-inside: avoid; }
     <span class="k">return</span> <span class="n">JsonResponse</span><span class="p">({</span><span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;ok&quot;</span><span class="p">})</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>method_decorator()</code></strong>（Django）: 関数用の印（デコレーター）を、クラスの画面（ビュー）のメソッドにも付けられるようにする物。</li>
+<li><strong><code>@method_decorator</code></strong>（Django）: <code>@method_decorator(ensure_csrf_cookie, name="dispatch")</code> をクラスの上に付けて、そのクラスの画面に印を付けます。</li>
+<li><strong><code>@ensure_csrf_cookie</code></strong>（Django）: その画面を返す時に、CSRF の札（クッキー）を必ず付ける印。React の画面が、あとで送るフォームに札を付けられるようにします（10 巻の 5 章）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><code>backend/config/urls.py</code> の最後に、「API・管理画面・部品・承認の画面以外の URL は、React の画面を返す」行を足しました。</p>
 <div class="codehilite"><div class="code-wrap" id="code-8"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">re_path</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^(?!api/|admin/|static/|approve/).*$&quot;</span><span class="p">,</span> <span class="n">pages</span><span class="o">.</span><span class="n">IndexView</span><span class="o">.</span><span class="n">as_view</span><span class="p">()),</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.as_view()</code></strong>（Django）: クラスで作った画面（ビュー）を、URL の決まりに登録できる形にするメソッド。</li>
+<li><strong><code>re_path()</code></strong>（Django）: 正規表現で URL の決まりを書く関数。<code>re_path(r"^(?!api/|admin/).*$", …)</code> は「<code>api/</code>・<code>admin/</code> で始まらない URL は全部」（React の画面を返す）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <h2 id="4-apptsx">4. ログインと、画面の切りかえ（App.tsx）</h2>
 <p><code>frontend/src/App.tsx</code>:</p>
@@ -532,6 +592,21 @@ li, tr { page-break-inside: avoid; }
 <span class="w">  </span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.me()</code></strong>（練習アプリで作る物（TypeScript））: <code>api.ts</code> で作る関数の 1 つで、<code>/api/me/</code>（今ログインしている人）を問い合わせます。この巻の後の方で作ります。</li>
+<li><strong><code>.csrf()</code></strong>（練習アプリで作る物（TypeScript））: <code>api.ts</code> で作る関数の 1 つで、<code>/api/csrf/</code> を呼んで、CSRF の札（クッキー）を先に受け取ります。</li>
+<li><strong><code>useCallback()</code></strong>（React）: 関数を覚えておき、描き直しのたびに作り直さないようにするフック。<code>useEffect</code> の見張る値に関数を入れる時などに使います。</li>
+<li><strong><code>&lt;FormPage&gt;</code></strong>（練習アプリで作る物（TypeScript））: 依頼の作成・編集の画面の部品（コンポーネント）。この巻の後の方で作ります。</li>
+<li><strong><code>&lt;DetailPage&gt;</code></strong>（練習アプリで作る物（TypeScript））: 依頼 1 件のくわしい画面の部品。この巻の後の方で作ります。</li>
+<li><strong><code>&lt;StatsPage&gt;</code></strong>（練習アプリで作る物（TypeScript））: 集計の画面の部品（グラフを SVG で描く）。この巻の後の方で作ります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div style="max-width: 640px; margin: 18px auto; text-align: center;">
 <img src="../images/L06b-s1_login.webp" alt="ログインの画面。従業員番号とパスワード。60分操作が無いと自動でログアウトします" style="width: 100%; border: 1px solid #cbd5e1;">
@@ -637,6 +712,21 @@ li, tr { page-break-inside: avoid; }
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.request()</code></strong>（練習アプリで作る物（TypeScript））: <code>api.ts</code> で作る関数の 1 つで、依頼 1 件のくわしい中身を問い合わせます。</li>
+<li><strong><code>.test()</code></strong>（TypeScript）: 正規表現が、文字列に合うかを <code>true</code>・<code>false</code> で返すメソッド。<code>/\.(jpe?g|png|pdf)$/i.test(名前)</code> は「拡張子が JPG・PNG・PDF か」。</li>
+<li><strong><code>.create()</code></strong>（練習アプリで作る物（TypeScript））: <code>api.ts</code> で作る関数の 1 つで、新しい依頼を送って作ります。作った依頼の番号（<code>id</code>）が返ります。</li>
+<li><strong><code>.action()</code></strong>（練習アプリで作る物（TypeScript））: <code>api.ts</code> で作る関数の 1 つで、依頼に操作（出し直し・取り下げなど）を送ります。</li>
+<li><strong><code>.upload()</code></strong>（練習アプリで作る物（TypeScript））: <code>api.ts</code> で作る関数の 1 つで、添付ファイルを 1 つ送ります。</li>
+<li><strong><code>&lt;ApproverPicker&gt;</code></strong>（練習アプリで作る物（TypeScript））: 承認する人を探して、順番に選ぶ部品。この巻の後の方で作ります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><code>frontend/src/components/ApproverPicker.tsx</code>:</p>
 <div class="codehilite"><div class="code-wrap" id="code-11"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">useEffect</span><span class="p">,</span><span class="w"> </span><span class="nx">useState</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react&quot;</span><span class="p">;</span>
 <span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">api</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;../api.ts&quot;</span><span class="p">;</span>
@@ -687,6 +777,19 @@ li, tr { page-break-inside: avoid; }
 <span class="w">  </span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.employees()</code></strong>（練習アプリで作る物（TypeScript））: <code>api.ts</code> で作る関数の 1 つで、名前などで社員を探します。</li>
+<li><strong><code>.has()</code></strong>（TypeScript）: <code>Set</code> や <code>Map</code> に、その値（キー）があれば <code>true</code> を返すメソッド。</li>
+<li><strong><code>.slice()</code></strong>（TypeScript）: 配列や文字列の一部分を切り出した、新しい物を返すメソッド。<code>list.slice(0, 5)</code> は最初の 5 つ。</li>
+<li><strong><code>&lt;ol&gt;</code></strong>（React）: 番号の付いた並びのタグ。中に <code>&lt;li&gt;</code> を並べます（回覧の順番など）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div style="max-width: 760px; margin: 18px auto; text-align: center;">
 <img src="../images/L06b-s2_form.webp" alt="依頼の入力。件名・内容・希望の納期、回覧者1佐藤花子と回覧者2鈴木一郎、添付ファイル、四角が2つの図面" style="width: 100%; border: 1px solid #cbd5e1;">
@@ -796,6 +899,18 @@ li, tr { page-break-inside: avoid; }
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.toLocaleString()</code></strong>（TypeScript）: 日時や数を、その国の書き方の文字列にするメソッド。<code>new Date(s).toLocaleString("ja-JP", { dateStyle: "short", timeStyle: "short" })</code> は <code>2026/11/02 8:00</code> の形です。</li>
+<li><strong><code>.ceil()</code></strong>（TypeScript）: <code>Math.ceil(x)</code> は、小数を切り上げて整数にする関数です（大きさを KB で見せる時など）。</li>
+<li><strong><code>&lt;RequestDetail&gt;</code></strong>（TypeScript）: <code>call&lt;RequestDetail&gt;(…)</code> の <code>&lt;RequestDetail&gt;</code> は、画面のタグではなく、型引数（この関数が返す物の型を伝える書き方）です。<code>RequestDetail</code> は <code>types.ts</code> で決める、依頼 1 件のくわしい中身の型です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><strong>今できる操作のボタンだけ</strong>を出します。たとえば「引き戻す」は、自分の依頼が回覧中のときだけです。ただし、ボタンを出さないのは使う人のためのお手伝いで、<strong>できるかどうかを最後に決めるのはサーバー</strong>（前編の services）です。</p>
 <h3 id="61">6.1 差し戻されたとき → 直して出し直す</h3>
 <p>2 人目の鈴木さんが、メールの URL から差し戻すと（前編の 6.2）、依頼した山田さんの画面は次のようになります。</p>
@@ -880,6 +995,20 @@ li, tr { page-break-inside: avoid; }
 <span class="w">  </span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.stats()</code></strong>（練習アプリで作る物（TypeScript））: <code>api.ts</code> で作る関数の 1 つで、集計（状態ごとの数など）を問い合わせます。</li>
+<li><strong><code>&lt;figure&gt;</code></strong>（React）: 図と、その説明をひとまとめにするタグ。</li>
+<li><strong><code>&lt;figcaption&gt;</code></strong>（React）: <code>&lt;figure&gt;</code> の中の、図の説明のタグ。</li>
+<li><strong><code>&lt;g&gt;</code></strong>（React）: SVG の中で、図の部品をまとめるタグ（group）。まとめて動かしたり、色を付けたりできます。</li>
+<li><strong><code>&lt;text&gt;</code></strong>（HTML）: SVG（線や図形で描く絵）の中に、文字を書くタグ。<code>&lt;text x="110" y="18" textAnchor="end"&gt;ラベル&lt;/text&gt;</code> は、決めた位置に、右そろえで文字を書きます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div style="max-width: 760px; margin: 18px auto; text-align: center;">
 <img src="../images/L06b-s11_stats.webp" alt="グラフ。状態ごとの依頼の件数（完了4、回覧中1、引き戻し中1、対応中1）と、担当者ごとの完了の件数（伊藤健2、高橋三郎2）" style="width: 100%; border: 1px solid #cbd5e1;">

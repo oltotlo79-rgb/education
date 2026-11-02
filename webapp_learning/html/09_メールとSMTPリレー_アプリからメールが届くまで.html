@@ -431,9 +431,53 @@ li, tr { page-break-inside: avoid; }
         <span class="k">pass</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>async</code></strong>（Python）: Python で、中で <code>await</code> を使える関数にする印（<code>async def handle(…):</code>）。<code>asyncio</code> の仕組みの上で、たくさんの接続を同時にさばけます。</li>
+<li><strong><code>await</code></strong>（Python）: Python の <code>async</code> の関数の中で、時間のかかる処理が終わるまで待つ書き方。<code>await writer.drain()</code>。</li>
+<li><strong><code>while</code></strong>（Python）: Python で、条件が <code>True</code> の間くり返す書き方。<code>while True:</code> は、<code>break</code> で抜けるまでずっとくり返します。</li>
+<li><strong><code>break</code></strong>（Python）: Python のくり返しを、途中で抜ける命令。</li>
+<li><strong><code>pass</code></strong>（Python）: 「何もしない」という Python の命令。中身が要らないけれど、形の上で何か書く必要がある所に置きます。</li>
+<li><strong><code>.Path()</code></strong>（Python）: <code>pathlib.Path(場所)</code> は、ファイルやフォルダの場所を表す物を作る関数です。<code>/</code> でつなげられます。</li>
+<li><strong><code>.with_name()</code></strong>（Python）: <code>Path</code> の、最後の名前だけを取りかえた場所を返すメソッド。<code>Path(__file__).with_name("received")</code> は「このファイルと同じフォルダの received」。</li>
+<li><strong><code>.get_extra_info()</code></strong>（Python）: <code>asyncio</code> の接続から、相手の住所などの情報を取り出すメソッド。</li>
+<li><strong><code>.drain()</code></strong>（Python）: <code>asyncio</code> の接続で、書いた物を送り終わるまで待つメソッド（<code>await writer.drain()</code>）。</li>
+<li><strong><code>.readline()</code></strong>（Python）: 1 行だけ読むメソッド。</li>
+<li><strong><code>.decode()</code></strong>（Python）: バイトの並びを、文字列に直すメソッド。<code>data.decode("utf-8", "replace")</code> は、読めない所を <code>�</code> にして直します。</li>
+<li><strong><code>.rstrip()</code></strong>（Python）: 文字列の後ろ（右側）から、空白や指定した文字を取り除くメソッド。<code>.rstrip("\r\n")</code> は行の終わりの改行を取ります。</li>
+<li><strong><code>.upper()</code></strong>（Python）: 英字を大文字にした文字列を返すメソッド。</li>
+<li><strong><code>.start_tls()</code></strong>（Python）: <code>asyncio</code> の接続を、途中から暗号化（TLS）に切りかえるメソッド（STARTTLS。09 巻）。</li>
+<li><strong><code>.mkdir()</code></strong>（Python）: <code>Path</code> のフォルダを作るメソッド。<code>exist_ok=True</code> で「もうあってもよい」、<code>parents=True</code> で途中のフォルダもまとめて作ります。</li>
+<li><strong><code>.write_bytes()</code></strong>（Python）: <code>Path</code> のファイルに、バイトの並びをそのまま書くメソッド。</li>
+<li><strong><code>.join()</code></strong>（Python）: Python で、区切り文字の方に付けて、リストの中身をつなぐメソッド。<code>" ".join(["a", "b"])</code> は <code>"a b"</code>（TypeScript とは書く順番が逆なので注意）。</li>
+<li><strong><code>.close()</code></strong>（Python）: 接続やファイルを閉じるメソッド。</li>
+<li><strong><code>.ArgumentParser()</code></strong>（Python）: <code>argparse.ArgumentParser()</code> は、コマンドの引数（<code>--port 2525</code> など）を読み取る係を作る関数です。</li>
+<li><strong><code>.parse_args()</code></strong>（Python）: 決めておいた引数の形で、実際に渡された引数を読み取るメソッド。</li>
+<li><strong><code>.create_default_context()</code></strong>（Python）: <code>ssl.create_default_context()</code> は、暗号化（TLS）の設定を、おすすめの値で作る関数です。</li>
+<li><strong><code>.load_cert_chain()</code></strong>（Python）: TLS の設定に、サーバーの証明書と秘密鍵のファイルを読み込むメソッド。</li>
+<li><strong><code>.start_server()</code></strong>（Python）: <code>asyncio.start_server(関数, ホスト, ポート)</code> は、接続を待ち受けるサーバーを始める関数です。接続が来るたびに、渡した関数が動きます。</li>
+<li><strong><code>.serve_forever()</code></strong>（Python）: HTTP のサーバーを、止めるまでずっと動かし続けるメソッド。</li>
+<li><strong><code>.run()</code></strong>（Python）: <code>asyncio.run(main())</code> は、非同期の関数（<code>async def</code>）を動かして、終わるまで待ちます。非同期のプログラムは、ここから始まります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-2"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">cd </span><span class="n">webapp_learning</span><span class="p">\</span><span class="n">samples</span><span class="p">\</span><span class="n">09_mail</span>
 <span class="n">python</span> <span class="n">smtp_sink</span><span class="p">.</span><span class="n">py</span>      <span class="c"># 127.0.0.1:1025 で待つ。この窓は動かしたままにする</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>python</code></strong>（Python）: Python を動かすコマンド。<code>python -c "…"</code> は、<code>"…"</code> の中の Python のコードを 1 回だけ動かします。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <h3 id="22-python-1">2.2 Python で 1 通送る</h3>
 <p><code>samples/09_mail/send_test.py</code>:</p>
@@ -477,6 +521,21 @@ li, tr { page-break-inside: avoid; }
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">main</span><span class="p">()</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.set_content()</code></strong>（Python）: メール（<code>EmailMessage</code>）の本文を決めるメソッド。</li>
+<li><strong><code>.SMTP()</code></strong>（Python）: <code>smtplib.SMTP(ホスト, ポート)</code> は、メールを送るためにメールのサーバー（SMTP）へつなぐ関数です。</li>
+<li><strong><code>.set_debuglevel()</code></strong>（Python）: <code>smtp.set_debuglevel(1)</code> で、SMTP のやり取りを画面に表示します（練習や、届かない時の調べ）。</li>
+<li><strong><code>.ehlo()</code></strong>（Python）: SMTP のサーバーに、最初のあいさつ（EHLO）を送るメソッド。</li>
+<li><strong><code>.starttls()</code></strong>（Python）: <code>smtplib</code> で、メールサーバーとの接続を、途中から暗号化（TLS）に切りかえるメソッド。<code>smtp.starttls()</code> のあとに送る中身は、暗号化されます。</li>
+<li><strong><code>.send_message()</code></strong>（Python）: 用意したメールを、SMTP のサーバーへ渡して送るメソッド。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p>別の窓で <code>python send_test.py</code> を動かしたときの、<strong>受け取る側（練習用のサーバー）の画面</strong>（<code>C:</code> は送ってきた側、<code>S:</code> はサーバーの返事）:</p>
 <div class="codehilite"><div class="code-wrap" id="code-4"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>127.0.0.1:1025 で待っています（STARTTLS: なし）。Ctrl+C で止める。
@@ -881,6 +940,16 @@ S: 250 SMTPUTF8
         <span class="bp">self</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;渡しました（宛先: </span><span class="si">{</span><span class="n">to</span><span class="si">}</span><span class="s2">・渡した先: </span><span class="si">{</span><span class="n">where</span><span class="si">}</span><span class="s2">）。届いたかを、受け取る側で確かめてください。&quot;</span><span class="p">)</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.endswith()</code></strong>（Python）: 文字列が、その文字で終わっていれば <code>True</code> を返すメソッド。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <h3 id="72-topcoat08">7.2 Topcoat（08）</h3>
 <p><code>src/config.rs</code> のメールの所:</p>
 <div class="codehilite"><div class="code-wrap" id="code-19"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">mail</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">match</span><span class="w"> </span><span class="n">var</span><span class="p">(</span><span class="s">&quot;SMTP_HOST&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
@@ -1011,6 +1080,16 @@ S: 250 SMTPUTF8
 <span class="n">cargo</span> <span class="n">run</span> <span class="p">--</span> <span class="nb">send-test</span><span class="n">-mail</span> <span class="p">-</span><span class="n">-to</span> <span class="n">sato</span><span class="nv">@example</span><span class="p">.</span><span class="n">com</span>
 <span class="nb">Remove-Item</span> <span class="n">Env</span><span class="p">:</span><span class="n">SMTP_HOST</span><span class="p">,</span> <span class="n">Env</span><span class="p">:</span><span class="n">SMTP_PORT</span><span class="p">,</span> <span class="n">Env</span><span class="p">:</span><span class="n">SMTP_USE_TLS</span>   <span class="c"># 終わったら消す</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Remove-Item</code></strong>（PowerShell）: ファイルやフォルダを消すコマンド（短い呼び名は <code>rm</code>）。<strong>ごみ箱に入らず、すぐ消えます。</strong> フォルダを中身ごと消す時は <code>-Recurse</code> を付けます。消す前に、名前をよく確かめます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p>実際の出力:</p>
 <div class="codehilite"><div class="code-wrap" id="code-24"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>渡しました（宛先: sato@example.com・渡した先: 127.0.0.1:1025（STARTTLS: 使わない））。届いたかを、受け取る側で確かめてください。

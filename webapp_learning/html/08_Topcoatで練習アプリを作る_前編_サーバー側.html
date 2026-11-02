@@ -341,6 +341,16 @@ li, tr { page-break-inside: avoid; }
 <span class="k">CREATE</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">webapp_topcoat_dev</span><span class="w"> </span><span class="k">OWNER</span><span class="w"> </span><span class="n">webapp_topcoat_app</span><span class="w"> </span><span class="k">ENCODING</span><span class="w"> </span><span class="s1">&#39;UTF8&#39;</span><span class="w"> </span><span class="k">TEMPLATE</span><span class="w"> </span><span class="n">template0</span><span class="p">;</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>PASSWORD</code></strong>（SQL）: <code>CREATE ROLE 名前 LOGIN CREATEDB PASSWORD '…'</code> の <code>PASSWORD</code> は、そのロール（データベースの利用者）がログインする時のパスワードを決める部分です。<code>LOGIN</code> はログインしてよい、<code>CREATEDB</code> はデータベースを作ってよい（テストで使う）という意味です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li><code>CREATEDB</code>（データベースを作る権限）は、<strong>開発のパソコンのテストのためだけ</strong>に付けます。13 章のテストは、テストごとに空のデータベースを作るからです。</li>
 <li>サーバーのユーザー（<code>webapp_prod_app</code> など）には付けません（onprem の 04 の 5 章）。</li>
@@ -605,6 +615,27 @@ MAIL_FROM=noreply@example.com
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>return</code></strong>（関数）: 関数を、その場で終えて値を返す命令。<code>return Err(…);</code> のように、途中で抜ける時に使います。Rust では、関数の最後の <code>;</code> の無い式が自動で戻り値になるので、最後の行では <code>return</code> を書かないのがふつうです。</li>
+<li><strong><code>.ok()</code></strong>（エラー処理）: <code>Result</code> を <code>Option</code> に変えるメソッド。<code>Ok(値)</code> は <code>Some(値)</code> に、<code>Err(…)</code> は <code>None</code> になります（エラーの中身は捨てる）。<code>"42".parse().ok()</code> のように、「失敗したら無かったことにする」時に使います。</li>
+<li><strong><code>.as_deref()</code></strong>（文字列）: <code>Option&lt;String&gt;</code> を、中身を借りて <code>Option&lt;&amp;str&gt;</code> に変えるメソッド。<code>env::args().nth(1).as_deref() == Some("reset")</code> のように、「引数が <code>reset</code> かどうか」を文字列と比べる時に使います。</li>
+<li><strong><code>.ok_or_else()</code></strong>（エラー処理）: <code>Option</code> を <code>Result</code> に変えるメソッド。<code>None</code> の時に、渡した関数でエラーを作ります（必要な時だけ作る <code>ok_or</code> の版）。</li>
+<li><strong><code>.unwrap_or_else()</code></strong>（エラー処理）: <code>Option</code> や <code>Result</code> から中身を取り出し、無い（失敗した）時は、渡した関数を動かして代わりの値を作るメソッド。<code>unwrap_or</code> と違い、代わりの値を作る処理が、必要な時だけ動きます。</li>
+<li><strong><code>.parse()</code></strong>（文字列）: 文字列を、数などの別の型に変えるメソッド。<code>"42".parse::&lt;i32&gt;()</code> や、<code>let n: i32 = "42".parse().unwrap();</code> のように、何に変えるかを型で伝えます。変えられない文字（<code>"abc"</code> など）もあるので、結果は <code>Result</code> です。</li>
+<li><strong><code>.map_err()</code></strong>（エラー処理）: <code>Result</code> のエラーの方だけを、別の物に変えるメソッド。<code>.map_err(|_| ConfigError::BadPort)</code> で、元のエラーを自分のエラーの型に変えます。成功の値はそのままです。</li>
+<li><strong><code>.is_none()</code></strong>（Option）: <code>Option</code> が <code>None</code>（値が無い）なら <code>true</code> を返すメソッド。</li>
+<li><strong><code>env::var()</code></strong>（プロセス）: 環境変数（プログラムの外から渡す設定の値）を読む関数。<code>env::var("GREETING")</code>。設定されていないこともあるので、<code>Result</code> で返ります。<code>unwrap_or_else(|_| "既定値".to_string())</code> で、無い時の値を決めるのがふつうです。</li>
+<li><strong><code>PathBuf::from()</code></strong>（ファイルとフォルダ）: 文字列から、ファイルやフォルダの場所（<code>PathBuf</code>）を作る関数。<code>PathBuf::from("files")</code>。あとで <code>.join("名前")</code> で、下の場所をつなげられます。</li>
+<li><strong><code>PathBuf</code></strong>（ファイルとフォルダ）: ファイルやフォルダの場所（パス）を、自分の物として持つ型（<code>String</code> のパス版）。<code>path.join("a")</code> で場所をつなげ、<code>.push("b")</code> で足せます。借りるだけの形は <code>&amp;Path</code> です。</li>
+<li><strong><code>None</code></strong>（Option）: <code>Option</code> の「値が無い」側。<code>Some(値)</code>（値がある）か <code>None</code>（無い）のどちらかになります。Rust には「null」が無い代わりに、無いかもしれない値は必ず <code>Option</code> で表し、<code>match</code> などで両方の場合を書きます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li><strong>サーバーでは、決まりの値に頼りません。</strong> <code>APP_ENV</code> が <code>development</code> のときだけ、書いていない値に開発用の値を入れます。サーバーで書き忘れたら、起動のときにすぐ止まって知らせます。</li>
 <li><strong>検証のサーバーで、本物の宛先にメールが届く事故を防ぎます。</strong> <code>APP_ENV=staging</code> なのに <code>MAIL_REDIRECT_TO</code> が無ければ、起動しません。</li>
@@ -762,6 +793,42 @@ MAIL_FROM=noreply@example.com
 <span class="w">    </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">job</span><span class="p">,</span><span class="w"> </span><span class="n">run_date</span><span class="p">)</span>
 <span class="p">);</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>TABLE</code></strong>（SQL）: SQL で「表」を表す言葉。<code>CREATE TABLE</code>（表を作る）・<code>DROP TABLE</code>（表を消す）のように使います。</li>
+<li><strong><code>BIGSERIAL</code></strong>（SQL）: PostgreSQL の、行を足すたびに 1, 2, 3… と自動で番号を振る列の型（大きな整数）。<code>id BIGSERIAL PRIMARY KEY</code> のように、行の番号に使います。</li>
+<li><strong><code>PRIMARY</code></strong>（SQL）: <code>PRIMARY KEY</code>（主キー）の一部。主キーは、表の中で 1 行を必ず見分けられる列で、同じ値が 2 回入りません。ふつうは <code>id</code> 列にします。</li>
+<li><strong><code>KEY</code></strong>（SQL）: <code>PRIMARY KEY</code>（主キー）・<code>FOREIGN KEY</code>（よその表とつなぐ列）などの「キー」。</li>
+<li><strong><code>TEXT</code></strong>（SQL）: SQL の列の型の 1 つで、文字を入れる列。</li>
+<li><strong><code>NOT</code></strong>（SQL）: SQL で「〜ではない」。<code>NOT NULL</code> は「この列は空（NULL）を許さない」という決まりです。</li>
+<li><strong><code>NULL</code></strong>（SQL）: SQL で「値が無い」ことを表す特別な値。0 や空の文字列とは違います。</li>
+<li><strong><code>UNIQUE</code></strong>（SQL）: 「この列の値は、表の中で重ならない」という決まり。<code>email TEXT NOT NULL UNIQUE</code> は、同じメールアドレスを 2 回登録できなくします。</li>
+<li><strong><code>DEFAULT</code></strong>（SQL）: 列に値を入れなかった時に使う、決めておいた値（既定値）。<code>done INTEGER NOT NULL DEFAULT 0</code> は「指定が無ければ 0」。</li>
+<li><strong><code>CHECK</code></strong>（SQL）: 「この列に入れてよい値の条件」を決める決まり。<code>CHECK (length(title) BETWEEN 1 AND 80)</code> は、題名を 1〜80 文字に限ります。合わない値を入れようとすると、データベースが断ります。</li>
+<li><strong><code>IN</code></strong>（SQL）: SQL で「このどれか」。<code>WHERE status IN ('queued', 'running')</code> は、状態がどちらかの行だけです。<code>CHECK (pinned IN (0, 1))</code> は、0 か 1 しか入れられない決まりです。</li>
+<li><strong><code>BOOLEAN</code></strong>（SQL）: <code>TRUE</code>（はい）か <code>FALSE</code>（いいえ）を入れる列の型。<code>is_active BOOLEAN NOT NULL DEFAULT TRUE</code> は「使えるか。決まりは はい」。</li>
+<li><strong><code>TRUE</code></strong>（SQL）: SQL の「はい」（真）の値。逆は <code>FALSE</code> です。</li>
+<li><strong><code>BYTEA</code></strong>（SQL）: PostgreSQL の、バイトの並び（文字でないデータ）を入れる列の型。ここでは、承認の URL の文字列のハッシュ（SHA-256 の 32 バイト）を入れています。</li>
+<li><strong><code>BIGINT</code></strong>（SQL）: 大きな整数（約 ±900 京まで）を入れる列の型。<code>BIGSERIAL</code> の番号を指す列（<code>REFERENCES employees (id)</code>）は、同じ大きさの <code>BIGINT</code> にします。Rust では <code>i64</code> で受け取ります。</li>
+<li><strong><code>REFERENCES</code></strong>（SQL）: 「この列の値は、あの表の、あの列に必ずある値」という決まり（外部キー）。<code>user_id INTEGER REFERENCES users(id)</code> で、存在しないユーザーの番号を入れられなくなります。</li>
+<li><strong><code>ON</code></strong>（SQL）: SQL の「〜の時」「〜で」。<code>ON DELETE CASCADE</code> は「消された時は」、<code>JOIN … ON a.id = b.user_id</code> は「この条件で横につなぐ」、<code>CREATE INDEX … ON 表 (列)</code> は「この表の、この列に」という意味です。</li>
+<li><strong><code>DELETE</code></strong>（SQL）: <code>DELETE FROM 表 WHERE 条件</code> で、表の行を消す SQL の命令。<code>WHERE</code> を忘れると、全部の行が消えます。<code>ON DELETE CASCADE</code> の中では「消された時」という意味です。</li>
+<li><strong><code>CASCADE</code></strong>（SQL）: <code>ON DELETE CASCADE</code> は、「つながった元の行（ユーザー）が消されたら、こちらの行（そのユーザーのノート）も一緒に消す」という決まりです。</li>
+<li><strong><code>TIMESTAMPTZ</code></strong>（SQL）: PostgreSQL の、時差（タイムゾーン）付きの日時の型。中では世界標準時（UTC）で持ち、表示する時に日本時間などに変えます。Rust では <code>time::OffsetDateTime</code> で受け取ります。</li>
+<li><strong><code>BETWEEN</code></strong>（SQL）: 「〜から〜の間」。<code>CHECK (score BETWEEN 0 AND 100)</code> は「0 以上 100 以下だけ許す」という決まりです。</li>
+<li><strong><code>AND</code></strong>（SQL）: SQL で「かつ」。<code>WHERE a = 1 AND b = 2</code> は両方に合う行だけ。<code>BETWEEN 0 AND 100</code> の一部としても使います。</li>
+<li><strong><code>DATE</code></strong>（SQL）: 日付（年・月・日。時刻は無し）を入れる列の型。期限（<code>due_date</code>）などに使います。Rust では <code>time::Date</code> で受け取ります。</li>
+<li><strong><code>JSONB</code></strong>（SQL）: PostgreSQL の、JSON を入れる列の型。中で扱いやすい形に変えて持つので、速く探せます。ここでは図面（四角や線の並び）を入れています。Rust では <code>sqlx::types::Json&lt;型&gt;</code> で受け取ります。</li>
+<li><strong><code>SMALLINT</code></strong>（SQL）: 小さな整数（−32768〜32767）を入れる列の型。何回目か（<code>round</code>）・何番目か（<code>step_order</code>）などに使います。Rust では <code>i16</code> で受け取ります。</li>
+<li><strong><code>INDEX</code></strong>（SQL）: <code>CREATE INDEX 名前 ON 表 (列)</code> で、表に索引（本の索引のような、速く探すための仕組み）を作る SQL の命令。よく条件や並べかえに使う列に作ります。</li>
+<li><strong><code>INTEGER</code></strong>（SQL）: SQL の列の型の 1 つで、整数を入れる列。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li><strong>1 度流したファイルは、あとから書きかえません。</strong> sqlx は、流したファイルの指紋を <code>_sqlx_migrations</code> の表に記録し、書きかえられていると起動を止めます。表を直すときは <code>0002_….sql</code> を足します。</li>
@@ -963,6 +1030,47 @@ MAIL_FROM=noreply@example.com
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>offset!</code></strong>（時間）: <code>time</code> の部品で、時差（<code>UtcOffset</code>）を書くマクロ。<code>offset!(+9)</code> は「世界標準時より 9 時間進んでいる」＝日本時間です。プログラムを作る時に確かめられるので、まちがった書き方はエラーになります。</li>
+<li><strong><code>format_description!</code></strong>（時間）: <code>time</code> の部品で、日時を文字にする形（書式）を書くマクロ。<code>format_description!("[year]-[month]-[day] [hour]:[minute]")</code> は「2026-11-02 08:00」の形です。<code>.format(…)</code> に渡して使います。</li>
+<li><strong><code>macro_rules!</code></strong>（型とメソッド）: 自分でマクロ（同じ形のコードを、まとめて作り出す仕組み）を作る書き方。<code>macro_rules! 名前 { (受け取る形) =&gt; { 作るコード } }</code>。ここでは、似た enum とその変換を、まとめて作る <code>text_enum!</code> を作っています。<code>$name:ident</code> は「名前を 1 つ受け取る」、<code>$( … ),*</code> は「くり返し受け取る」という印です。</li>
+<li><strong><code>stringify!</code></strong>（型とメソッド）: 渡したコードを、そのまま文字列にするマクロ。<code>stringify!(Status)</code> は <code>"Status"</code>。エラーの文に、型の名前を入れる時に使っています。</li>
+<li><strong><code>text_enum!</code></strong>（練習アプリで作る物（Rust））: この巻で <code>macro_rules!</code> を使って作るマクロ。<code>text_enum!(Status { Circulating =&gt; ("circulating", "回覧中"), … })</code> と書くと、enum と、データベースの文字との行き来（<code>as_str</code>）、画面に出す日本語（<code>label</code>）、文字から enum に戻す変換（<code>TryFrom&lt;String&gt;</code>）を、まとめて作ります。</li>
+<li><strong><code>matches!</code></strong>（場合分け）: 値が、ある形（パターン）に合うかを <code>true</code>・<code>false</code> で返すマクロ。<code>matches!(filter, Filter::Active | Filter::Done)</code> のように、<code>match</code> を 1 行で書けます。</li>
+<li><strong><code>const</code></strong>（変数）: ずっと変わらない値（定数）に名前を付ける書き方。<code>const MAX_TITLE_CHARS: usize = 80;</code>。名前は大文字と <code>_</code> で書き、型（<code>usize</code> など）を必ず書きます。プログラムのどこからでも使えます。</li>
+<li><strong><code>else</code></strong>（条件）: <code>if</code> の条件が合わなかった時の処理を書く所。<code>else if 条件 { … }</code> で、条件をいくつも続けられます。</li>
+<li><strong><code>Self</code></strong>（型とメソッド）: <code>impl</code> の中で、「今、関数を付けている型そのもの」を表す名前。<code>fn new(…) -&gt; Self</code> は「この型の値を返す」という意味で、型の名前を何度も書かずに済みます。</li>
+<li><strong><code>#[sqlx]</code></strong>（データベース）: <code>sqlx</code> に、列の読み方を伝える印。<code>#[sqlx(try_from = "String")]</code> は「この列は、まず文字として読み、<code>TryFrom</code> で（ここでは enum に）変える」という意味です。</li>
+<li><strong><code>.to_offset()</code></strong>（時間）: 日時（<code>OffsetDateTime</code>）を、決めた時差の日時に変えるメソッド。<code>t.to_offset(JST)</code> は日本時間にします。指す瞬間は同じで、表し方だけが変わります。</li>
+<li><strong><code>.format()</code></strong>（時間）: 日時を、決めた形（<code>format_description!</code>）の文字列にするメソッド。結果は <code>Result</code> なので、<code>.unwrap_or_default()</code>（失敗したら空の文字）などで受け取ります。</li>
+<li><strong><code>.unwrap_or_default()</code></strong>（エラー処理）: <code>Option</code> や <code>Result</code> から中身を取り出し、無い（失敗した）時は、その型の「空の値」（文字列なら <code>""</code>、数なら 0）を使うメソッド。</li>
+<li><strong><code>.date()</code></strong>（時間）: 日時（<code>OffsetDateTime</code>）から、日付（<code>Date</code>。年・月・日）だけを取り出すメソッド。</li>
+<li><strong><code>.replace()</code></strong>（文字列）: 文字列の中の、ある部分を全部置きかえた、新しい文字列を返すメソッド。<code>"a-b".replace('-', "/")</code> は <code>"a/b"</code>。元の文字列は変わりません。</li>
+<li><strong><code>OffsetDateTime::now_utc()</code></strong>（時間）: 今の日時を、世界標準時（UTC）で返す関数。日本時間にする時は <code>.to_offset(JST)</code> をつなげます。</li>
+<li><strong><code>Date</code></strong>（時間）: <code>time</code> の、日付（年・月・日）を表す型。データベースの <code>DATE</code> の列と行き来できます。</li>
+<li><strong><code>OffsetDateTime</code></strong>（時間）: <code>time</code> の、時差付きの日時を表す型。データベースの <code>TIMESTAMPTZ</code> の列と行き来できます。</li>
+<li><strong><code>UtcOffset</code></strong>（時間）: <code>time</code> の、時差（世界標準時から何時間ずれているか）を表す型。<code>offset!(+9)</code> で日本の時差を作れます。</li>
+<li><strong><code>TryFrom</code></strong>（型とメソッド）: 「ある型から作れるが、失敗することもある」変換の機能（トレイト）。<code>impl TryFrom&lt;CreateNoteInput&gt; for NewNote</code> を書くと、<code>NewNote::try_from(input)</code> で、入力を確かめながら変換でき、だめなら <code>Err</code> を返します。</li>
+<li><strong><code>Self</code></strong>（型とメソッド）: <code>impl</code> の中で、「今、関数を付けている型そのもの」を表す名前（<code>-&gt; Self</code>・<code>Self { … }</code> など）。</li>
+<li><strong><code>ALL</code></strong>（SQL）: <code>UNION ALL</code> は、2 つの結果を、重なりも消さずにそのままつなげる書き方です。</li>
+<li><strong><code>Decision</code></strong>（練習アプリで作る物（Rust））: 承認する人 1 人ごとの答え（待ち・承認・差し戻し・取り消し）を表す enum。<code>text_enum!</code> で作ります。</li>
+<li><strong><code>Waiting</code></strong>（練習アプリで作る物（Rust））: <code>Decision</code> の値の 1 つで、「まだ答えていない（待ち）」。</li>
+<li><strong><code>Cancelled</code></strong>（練習アプリで作る物（Rust））: <code>Decision</code> の値の 1 つで、「依頼が取り下げられたので、答えなくてよくなった（取り消し）」。</li>
+<li><strong><code>Role</code></strong>（練習アプリで作る物（Rust））: 社員の役割（一般・担当者・管理者）を表す enum。<code>text_enum!</code> で作ります。担当者と管理者は、全部の依頼を見たり、担当を決めたりできます。</li>
+<li><strong><code>Member</code></strong>（練習アプリで作る物（Rust））: <code>Role</code> の値の 1 つで、ふつうの社員（一般）。自分の依頼を出し、頼まれた承認をします。</li>
+<li><strong><code>Worker</code></strong>（練習アプリで作る物（Rust））: <code>Role</code> の値の 1 つで、依頼を受けて作業する担当者。</li>
+<li><strong><code>Admin</code></strong>（練習アプリで作る物（Rust））: <code>Role</code> の値の 1 つで、管理者。全部の依頼を見て、担当を決められます。</li>
+<li><strong><code>FromRow</code></strong>（データベース）: <code>sqlx</code> の部品で、SQL の結果の 1 行を、struct に読み込めるようにする印。<code>#[derive(sqlx::FromRow)]</code> を付けると、列の名前と同じ名前の項目に、自動で入れてくれます。</li>
+<li><strong><code>Json</code></strong>（データベース）: <code>sqlx</code> の <code>Json&lt;型&gt;</code>（<code>sqlx::types::Json</code>）は、<code>JSONB</code> の列を、Rust の struct として読み書きするための包みです。<code>Option&lt;Json&lt;Drawing&gt;&gt;</code> は「図面が無ければ <code>None</code>」。（Topcoat にも、答えを JSON で返すための <code>Json</code> があり、名前は同じでも別の物です。）</li>
+<li><strong><code>Drawing</code></strong>（練習アプリで作る物（Rust））: 依頼に付ける図面（四角や線の並び）を表す struct。後編で作り、<code>JSONB</code> の列に入れます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li>データベースには状態を文字（<code>'circulating'</code> など）で入れ、Rust の中では <strong>enum</strong> で扱います。<code>text_enum!</code> は、その行き来（<code>as_str</code>・<code>label</code>・<code>TryFrom&lt;String&gt;</code>）を 3 つの enum に同じように付けるための、小さなマクロです。</li>
 <li><code>#[sqlx(try_from = "String")]</code> は、「この列は文字として読み、<code>TryFrom</code> で enum に変える」という印です。データベースに知らない文字が入っていたら、読み込みがエラーになります。</li>
@@ -1107,6 +1215,51 @@ MAIL_FROM=noreply@example.com
 <span class="w">    </span><span class="nb">Ok</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>move</code></strong>（関数）: クロージャが使う外の変数を、借りるのではなく「持っていく」印。<code>thread::spawn(move || { … })</code> のように、別のスレッドに値を渡す時に必要です。</li>
+<li><strong><code>await</code></strong>（非同期）: <code>async</code> の関数（Future）が終わるのを待って、結果を受け取る書き方。<code>sleep(…).await</code> のように、後ろに <code>.await</code> を付けます。待っている間は、ほかの仕事に順番をゆずります。<code>.await</code> を付けないと、その仕事は始まりません。</li>
+<li><strong><code>#[memoize]</code></strong>（Topcoat）: Topcoat の印（属性）。付けた関数の結果を、<strong>1 つの要求（リクエスト）の間だけ</strong>覚えておきます。レイアウト・ページ・部品のどこから呼んでも、データベースを 1 回しか読まずに済みます。</li>
+<li><strong><code>.token_store()</code></strong>（Topcoat）: セッションの札（トークン）を、どこに置くかを決めるメソッド。ここでは、HTTP のページでもログインが続くように、自分で用意した <code>HttpCookieTokenStore</code>（クッキーに置く係）を渡しています。</li>
+<li><strong><code>.lifetime()</code></strong>（Topcoat）: セッションの長さ（何も操作しないと切れるまでの時間）を決めるメソッド。<code>.lifetime(IDLE)</code>（<code>IDLE</code> は 60 分）。</li>
+<li><strong><code>.expect()</code></strong>（エラー処理）: <code>Option</code> や <code>Result</code> から中身を取り出すメソッド。中身が無い（失敗した）時は、かっこの中の文を表示して、その場でプログラムが止まります（パニック）。<code>unwrap()</code> と同じですが、止まった理由が分かる文を付けられるので、<code>unwrap()</code> よりこちらがおすすめです。</li>
+<li><strong><code>.as_bytes()</code></strong>（文字列）: 文字列を、中のバイト（コンピューターが持っている 0〜255 の数の並び）として見るメソッド。ネットやファイルに書く関数がバイトを求める時に使います。</li>
+<li><strong><code>.is_ok()</code></strong>（エラー処理）: <code>Result</code> が <code>Ok</code>（成功）なら <code>true</code> を返すメソッド。中身は要らず、成功したかだけ知りたい時に使います。</li>
+<li><strong><code>.bind()</code></strong>（データベース）: SQL の <code>$1</code>・<code>$2</code>… に入れる値を、順に渡すメソッド。値は SQL の文とは別に送られるので、どんな文字が入っていても SQL として読まれません（SQL インジェクションを防ぐ）。</li>
+<li><strong><code>.fetch_optional()</code></strong>（データベース）: SQL を送って、結果を 0 行か 1 行で受け取るメソッド。行が無ければ <code>None</code> です（<code>Option</code> で返る）。</li>
+<li><strong><code>.execute()</code></strong>（データベース）: 値を入れたり変えたりする SQL の文を、1 つ実行するメソッド（libsql）。<code>conn.execute("UPDATE … WHERE id = ?1", params![id]).await?</code> のように、値は <code>params!</code> で渡します。変わった行の数が返ります。</li>
+<li><strong><code>Duration::from_secs()</code></strong>（時間）: 秒から、時間の長さ（<code>Duration</code>）を作る関数。<code>Duration::from_secs(10)</code> は 10 秒。</li>
+<li><strong><code>SessionConfig::builder()</code></strong>（Topcoat）: Topcoat のセッションの設定を、少しずつ決めて組み立て始める関数。<code>.token_store(…)</code>・<code>.lifetime(…)</code> をつなげて、最後に <code>.build()</code> で出来上がりです。</li>
+<li><strong><code>tokio::task::spawn_blocking()</code></strong>（非同期）: 時間のかかる重い計算や、待ってしまう処理（パスワードのハッシュなど）を、非同期の仕事を回すスレッドとは別のスレッドで動かす関数。ほかの仕事を止めないために使います。</li>
+<li><strong><code>Argon2::default()</code></strong>（認証）: パスワードを安全に保存するための計算（Argon2id）を、おすすめの設定で用意する書き方（<code>argon2</code> の部品）。この計算は、わざと重く作られていて、パスワードを総当たりで当てるのを難しくします。</li>
+<li><strong><code>PasswordHash::new()</code></strong>（認証）: 保存してあるハッシュの文字列を読み取って、確かめに使える形にする関数。形が違えばエラーです。</li>
+<li><strong><code>LazyLock::new()</code></strong>（スレッドと共有）: 初めて使われた時に 1 回だけ作る値を、作り方の関数と一緒に用意する関数。</li>
+<li><strong><code>sqlx::query_as()</code></strong>（データベース）: <code>sqlx</code> で、結果の行を、決めた型（<code>FromRow</code> の struct や、<code>(i64, String)</code> のような組）で受け取る SQL を用意する関数。</li>
+<li><strong><code>session::start()</code></strong>（Topcoat）: Topcoat のセッションを新しく始める（ログインする）関数。ログインのたびに新しい札を作るので、前から知られている札を使わせない（セッション固定の攻撃を防ぐ）ことができます。</li>
+<li><strong><code>sqlx::query()</code></strong>（データベース）: <code>sqlx</code> で、SQL の文を用意する関数。<code>sqlx::query("UPDATE … WHERE id = $1").bind(id).execute(pool).await?</code> のように、<code>$1</code>・<code>$2</code> に入れる値を <code>.bind()</code> で渡して、<code>.execute()</code>・<code>.fetch_…()</code> で送ります。</li>
+<li><strong><code>OffsetDateTime::from()</code></strong>（時間）: ほかの形の日時（<code>SystemTime</code> など）から、<code>OffsetDateTime</code> を作る関数。Topcoat のセッションの期限（<code>SystemTime</code>）を、データベースに入れる形に変えています。</li>
+<li><strong><code>session::stop()</code></strong>（Topcoat）: Topcoat のセッションを終わらせる（ログアウトする）関数。消した札のハッシュを返すので、データベースの記録も消せます。</li>
+<li><strong><code>session::token_hash()</code></strong>（Topcoat）: Topcoat の関数。今のリクエストのセッションの印（トークン）の、ハッシュを返します。データベースの <code>sessions</code> 表に、ハッシュで記録しておき、ログイン中かを調べるのに使います。</li>
+<li><strong><code>session::refresh()</code></strong>（Topcoat）: 今のセッションの期限を、先へ延ばす関数。使うたびに呼ぶと、「何も操作しないと 60 分で切れる」動きになります。セッションが無ければ <code>None</code> です。</li>
+<li><strong><code>LazyLock</code></strong>（スレッドと共有）: 初めて使われた時に 1 回だけ作られ、その後はずっと同じ値を使う入れ物。<code>static DUMMY: LazyLock&lt;String&gt; = LazyLock::new(|| { … });</code> のように、作るのに手間がかかる物を、プログラム全体で共有する時に使います。</li>
+<li><strong><code>Duration</code></strong>（時間）: 時間の長さを表す型。<code>Duration::from_secs(5)</code> で 5 秒。<code>{:?}</code> で表示すると <code>5s</code> や <code>200ms</code> のように単位つきで出ます。</li>
+<li><strong><code>Argon2</code></strong>（認証）: パスワードをハッシュにする方法の 1 つ（Argon2）を使うための型。<code>Argon2::default()</code> で、おすすめの設定のものを作ります。わざと時間とメモリを使うので、総当たりで破られにくくなります。</li>
+<li><strong><code>PasswordHasher</code></strong>（認証）: パスワードからハッシュ（保存用の値）を作る機能（トレイト。<code>password_hash</code> の部品）。<code>argon2.hash_password(…)</code> を使うには、これを <code>use</code> します。</li>
+<li><strong><code>PasswordVerifier</code></strong>（認証）: 入力されたパスワードが、保存してあるハッシュと合うかを確かめる機能（トレイト）。<code>argon2.verify_password(…)</code> を使うには、これを <code>use</code> します。</li>
+<li><strong><code>PasswordHash</code></strong>（認証）: 保存してあるハッシュの文字列（<code>$argon2id$v=19$…</code>）を読み取った物の型。<code>PasswordHash::new(&amp;保存した文字列)</code> で作り、確かめに使います。</li>
+<li><strong><code>SessionConfig</code></strong>（Topcoat）: Topcoat のセッションの設定（クッキーの名前・期限など）の型。</li>
+<li><strong><code>HttpCookieTokenStore</code></strong>（練習アプリで作る物（Rust））: セッションの札を、<code>Secure</code> の付かないクッキーに置く係（<code>src/http_cookie.rs</code>）。Topcoat の決まりのクッキーは HTTPS のページでしか送られないので、社内の HTTP のページでもログインが続くように、onprem の 04 で確かめた物をそのまま使います。</li>
+<li><strong><code>SELECT</code></strong>（SQL）: 表から行を取り出す SQL の命令。<code>SELECT 列, … FROM 表 WHERE 条件 ORDER BY 列</code> の形でよく使います。<code>SELECT *</code> は全部の列です。</li>
+<li><strong><code>FROM</code></strong>（SQL）: <code>SELECT … FROM 表</code> の一部で、「どの表から」取り出すかを書きます。</li>
+<li><strong><code>JOIN</code></strong>（SQL）: 2 つの表を、条件で横につないで取り出す書き方。<code>FROM notes JOIN users ON users.id = notes.user_id</code> は、ノートと、その持ち主を 1 行に並べます。</li>
+<li><strong><code>WHERE</code></strong>（SQL）: <code>SELECT … FROM 表 WHERE 条件</code> の、条件を書く所。<code>WHERE user_id = 1</code> は「持ち主が 1 番の行だけ」。<code>UPDATE</code>・<code>DELETE</code> で <code>WHERE</code> を忘れると、全部の行が変わる（消える）ので注意します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <table>
 <thead>
@@ -1825,6 +1978,60 @@ set-cookie: session=（トークン）; HttpOnly; SameSite=Lax; Path=/; Max-Age=
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>as</code></strong>（数）: 型を変える書き方。<code>x as f64</code> は整数を小数に、<code>300 as u8</code> は 300 を u8 に変えます。入りきらない分は<strong>黙って切り捨てられる</strong>ので（300 → 44）、範囲が分からない時は <code>try_from</code> を使います。</li>
+<li><strong><code>.is_some_and()</code></strong>（Option）: <code>Option</code> に値があり、しかもその値が条件に合う時だけ <code>true</code> を返すメソッド。<code>cookie.is_some_and(|c| c == "admin=yes")</code>。</li>
+<li><strong><code>.len()</code></strong>（Vec（並び））: 中身の数（長さ）を返すメソッド。<code>Vec</code> なら入っている個数、<code>String</code>・<code>&amp;str</code> ならバイト数です。日本語は 1 文字が 3 バイトなので、文字の数を数える時は <code>.chars().count()</code> を使います。</li>
+<li><strong><code>.to_vec()</code></strong>（Vec（並び））: 並び（スライス）の中身を写して、新しい <code>Vec</code> を作るメソッド。</li>
+<li><strong><code>.sort()</code></strong>（Vec（並び））: <code>Vec</code> の中身を、小さい順（文字なら辞書の順）に並べかえるメソッド。新しい <code>Vec</code> は作らず、その <code>Vec</code> 自身を並べかえるので、<code>mut</code> が要ります。</li>
+<li><strong><code>.dedup()</code></strong>（Vec（並び））: <code>Vec</code> の中で、隣どうしで同じ値が続く所を 1 つにまとめるメソッド。先に <code>sort</code> しておくと、全部の重複が消えます。</li>
+<li><strong><code>.contains()</code></strong>（文字列）: 含まれていれば <code>true</code> を返すメソッド。文字列なら <code>"report.csv".contains("2026")</code>、範囲なら <code>(1..=80).contains(&amp;length)</code>（1〜80 に入っているか）、<code>Vec</code> なら <code>v.contains(&amp;x)</code> です。</li>
+<li><strong><code>.fetch_one()</code></strong>（データベース）: SQL を送って、結果を 1 行受け取るメソッド。行が無いとエラーになるので、必ず 1 行ある時（<code>INSERT … RETURNING id</code> など）に使います。</li>
+<li><strong><code>.enumerate()</code></strong>（イテレーター）: 並びを 1 つずつ取り出す時に、「何番目か」の番号を一緒に付けるメソッド。<code>for (i, x) in list.iter().enumerate()</code> で、<code>i</code> に 0, 1, 2…、<code>x</code> に中身が入ります。</li>
+<li><strong><code>.get_or_insert()</code></strong>（Option）: <code>Option</code> が <code>None</code> の時だけ、渡した値を入れるメソッド（もう <code>Some</code> なら何もしない）。<code>first.get_or_insert(step_id)</code> は「最初の 1 つだけを覚えておく」書き方です。</li>
+<li><strong><code>.commit()</code></strong>（データベース）: トランザクションの中の変更を、まとめて確定するメソッド。<code>tx.commit().await?</code>。<code>commit</code> しないまま <code>tx</code> が無くなると、変更は全部取り消されます（ロールバック）。</li>
+<li><strong><code>.send_all()</code></strong>（練習アプリで作る物（Rust））: <code>Outbox</code> にためたメールを、まとめて送るメソッド。トランザクションを <code>commit</code> したあとに呼びます。</li>
+<li><strong><code>.begin()</code></strong>（データベース）: トランザクション（いくつもの SQL を、全部するか全部しないかの 1 まとまりにする仕組み）を始めるメソッド。<code>let mut tx = pool.begin().await?;</code>。</li>
+<li><strong><code>.as_ref()</code></strong>（所有権と借用）: 中身を借りた形に変えるメソッド。<code>Option&lt;String&gt;</code> を <code>Option&lt;&amp;String&gt;</code> にするなど、中身を移さずに覗きたい時に使います。</li>
+<li><strong><code>.fetch_all()</code></strong>（データベース）: SQL を送って、結果の行を全部 <code>Vec</code> で受け取るメソッド。</li>
+<li><strong><code>.month()</code></strong>（時間）: 日時から「月」を取り出すメソッド。<code>Month::November</code> のような enum で返るので、数にする時は <code>u8::from(now.month())</code> とします。</li>
+<li><strong><code>.day()</code></strong>（時間）: 日時から「日」（1〜31）を取り出すメソッド。</li>
+<li><strong><code>.hour()</code></strong>（時間）: 日時から「時」（0〜23）を取り出すメソッド。</li>
+<li><strong><code>.minute()</code></strong>（時間）: 日時から「分」（0〜59）を取り出すメソッド。</li>
+<li><strong><code>.rows_affected()</code></strong>（データベース）: <code>.execute()</code> の結果から、変わった行の数を返すメソッド。0 なら「条件に合う行が無かった（もう誰かが変えた）」と分かります。</li>
+<li><strong><code>getrandom::fill()</code></strong>（認証）: OS が用意する、予想できない乱数で、バイトの並びを埋める関数。<code>getrandom::fill(&amp;mut bytes)</code>。承認の URL の文字列（トークン）のように、当てられてはいけない値を作るのに使います。</li>
+<li><strong><code>hex::encode()</code></strong>（文字列）: バイトの並びを、<code>0</code>〜<code>9</code>・<code>a</code>〜<code>f</code> の文字（16 進数）に変える関数。1 バイトが 2 文字になります。</li>
+<li><strong><code>Sha256::digest()</code></strong>（認証）: データから、SHA-256 というハッシュ（32 バイトの指紋）を計算する関数（<code>sha2</code> の部品）。</li>
+<li><strong><code>sqlx::query_scalar()</code></strong>（データベース）: <code>sqlx</code> で、結果が 1 つの値だけ（<code>count(*)</code> など）の SQL を用意する関数。<code>let found: i64 = sqlx::query_scalar("SELECT count(*) …")…</code> のように、値をそのまま受け取れます。</li>
+<li><strong><code>upload::save()</code></strong>（練習アプリで作る物（Rust））: 送られてきた添付ファイルを、ファイルを置くフォルダに保存する関数。後編で作ります。</li>
+<li><strong><code>upload::remove()</code></strong>（練習アプリで作る物（Rust））: 保存した添付ファイルを消す関数。データベースへの記録に失敗した時に、保存したファイルを片づけるのに使います。後編で作ります。</li>
+<li><strong><code>Outbox::new()</code></strong>（練習アプリで作る物（Rust））: 空の <code>Outbox</code>（送るメールの箱）を作る関数。</li>
+<li><strong><code>u8::from()</code></strong>（数）: ほかの型の値を <code>u8</code>（0〜255 の数）に変える関数。<code>u8::from(now.month())</code> は、<code>Month::November</code> を 11 にします（必ず入りきる変換なので、<code>try_from</code> ではなく <code>from</code>）。</li>
+<li><strong><code>Digest</code></strong>（認証）: ハッシュの計算（<code>digest</code>・<code>update</code>・<code>finalize</code>）を使えるようにする機能（トレイト。<code>sha2</code> などの部品）。</li>
+<li><strong><code>Sha256</code></strong>（認証）: SHA-256 というハッシュの計算をする型。データの「指紋」を作るのに使います（パスワードの保存には、わざと重い Argon2 を使います）。</li>
+<li><strong><code>PgConnection</code></strong>（データベース）: <code>sqlx</code> の、PostgreSQL への接続 1 本の型。トランザクション（<code>Transaction</code>）の中の接続も、<code>&amp;mut *tx</code> でこの型として渡せます。</li>
+<li><strong><code>Postgres</code></strong>（データベース）: <code>sqlx</code> で、「相手のデータベースは PostgreSQL」を表す型。<code>Transaction&lt;'_, Postgres&gt;</code> のように、型の中で使います。</li>
+<li><strong><code>Transaction</code></strong>（データベース）: <code>sqlx</code> の、トランザクションの型。<code>pool.begin()</code> で始まり、<code>.commit()</code> で確定します。</li>
+<li><strong><code>Outbox</code></strong>（練習アプリで作る物（Rust））: 送るメールを、すぐには送らずに、ためておく箱（<code>src/mail.rs</code>）。データベースの変更を <code>commit</code> で確定してから、<code>.send_all()</code> でまとめて送ります。確定に失敗したのにメールだけ届く、ということを防げます。</li>
+<li><strong><code>SavedFile</code></strong>（練習アプリで作る物（Rust））: 保存した添付ファイルの情報（保存した名前・元の名前・大きさなど）をまとめた struct。後編で作ります。</li>
+<li><strong><code>UploadedFile</code></strong>（練習アプリで作る物（Rust））: フォームから送られてきた添付ファイル（名前・種類・中身のバイト）をまとめた struct。後編で作ります。</li>
+<li><strong><code>From</code></strong>（型とメソッド）: 「ある型から作れる」機能（トレイト）。<code>impl From&lt;RepoError&gt; for AppError</code> を書くと、<code>RepoError</code> を <code>AppError</code> に変えられます。<code>?</code> は、エラーを返す時にこの変換を自動で使います。</li>
+<li><strong><code>Into</code></strong>（型とメソッド）: 「ある型に変えられる」機能（トレイト。<code>From</code> の逆向き）。<code>body: impl Into&lt;String&gt;</code> は「<code>String</code> に変えられる物なら何でも（<code>&amp;str</code> でも <code>String</code> でも）受け取る」という引数で、中で <code>.into()</code> を呼んで変えます。</li>
+<li><strong><code>AS</code></strong>（SQL）: SQL で、列や表に別の名前を付ける書き方。<code>SELECT COUNT(*) AS notes</code> は、結果の列の名前を <code>notes</code> にします。<code>FROM users AS u</code> は、表を <code>u</code> と短く呼べるようにします。</li>
+<li><strong><code>AssertSqlSafe</code></strong>（データベース）: <code>sqlx</code> に「この組み立てた SQL の文は、決まった文字だけでできていると確かめた」と伝える包み。<code>sqlx::query(sqlx::AssertSqlSafe(sql))</code>。外から来た値は、必ず <code>$1</code> と <code>.bind()</code> で別に渡します（そうしないと SQL インジェクションの穴になる）。</li>
+<li><strong><code>FOR</code></strong>（SQL）: <code>SELECT … FOR UPDATE</code> は、読んだ行に鍵をかける書き方です。同じ行を、別の人が同時に変えようとしても、こちらのトランザクションが終わるまで待たせるので、「2 人が同時に承認して 2 回進む」ことを防げます。</li>
+<li><strong><code>UPDATE</code></strong>（SQL）: <code>UPDATE 表 SET 列 = 値 WHERE 条件</code> で、行の中身を書きかえる SQL の命令。<code>WHERE</code> を忘れると、全部の行が変わります。</li>
+<li><strong><code>SET</code></strong>（SQL）: <code>UPDATE</code> の中で、「どの列を、どの値にするか」を書く所。</li>
+<li><strong><code>OF</code></strong>（SQL）: <code>FOR UPDATE OF s, r</code> は、つないだ表（<code>JOIN</code>）のうち、鍵をかける表を名前（ここでは <code>s</code> と <code>r</code>）で選ぶ書き方です。</li>
+<li><strong><code>PgPool</code></strong>（データベース）: <code>sqlx</code> の、PostgreSQL への接続の集まり（プール）の型。何本かの接続を用意しておき、頼まれるたびに貸し出します。複製（<code>.clone()</code>）しても、同じ集まりを指します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <h3 id="61">6.1 全部やるか、全部やめるか（トランザクション）</h3>
 <div class="codehilite"><div class="code-wrap" id="code-13"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">tx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">st</span><span class="p">.</span><span class="n">pool</span><span class="p">.</span><span class="n">begin</span><span class="p">().</span><span class="k">await</span><span class="o">?</span><span class="p">;</span><span class="w">   </span><span class="c1">// ここから</span>
 <span class="c1">// …… 何回か書きかえる。途中の ? でエラーになったら、tx は捨てられる</span>
@@ -1953,6 +2160,28 @@ set-cookie: session=（トークン）; HttpOnly; SameSite=Lax; Path=/; Max-Age=
 <span class="w">    </span><span class="nb">Ok</span><span class="p">(())</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>eprintln!</code></strong>（画面に出す）: <code>println!</code> のエラー版。「標準エラー出力」というエラー用の出口に書きます。画面ではふつうの出力と同じに見えますが、<code>&gt; ファイル</code> で結果をファイルに書き出した時も、エラーは画面に残ります。失敗の知らせを出す時に使います。</li>
+<li><strong><code>mail!</code></strong>（メール）: Topcoat の部品で、送るメールを組み立てるマクロ。<code>mail! { from: …, to: …, subject: …, text: … }</code>。宛先の形がまちがっているとエラーを返すので、<code>?</code> を付けます。</li>
+<li><strong><code>.transport()</code></strong>（メール）: メールを実際に送る係（トランスポート）を決めるメソッド。ファイルに書き出す <code>FileTransport</code>・SMTP で送る <code>SmtpTransport</code>・メモリーにためる <code>MemoryTransport</code> などを渡します。</li>
+<li><strong><code>.port()</code></strong>（メール）: つなぐ先のポート番号（SMTP なら 25・587 など）を決めるメソッド。</li>
+<li><strong><code>MailConfig::builder()</code></strong>（メール）: <code>MailConfig</code> を組み立て始める関数。<code>.transport(送る係)</code> をつなげて、<code>.build()</code> で出来上がりです。</li>
+<li><strong><code>FileTransport::new()</code></strong>（メール）: <code>FileTransport</code> を、書き出すフォルダを渡して作る関数。</li>
+<li><strong><code>SmtpTransport::starttls()</code></strong>（メール）: STARTTLS（つないでから暗号化に切りかえる方法）で送る <code>SmtpTransport</code> を作り始める関数。<code>.port(587)</code> などをつなげて、<code>.build()</code> で出来上がりです。</li>
+<li><strong><code>SmtpTransport::unencrypted()</code></strong>（メール）: 暗号化しないで送る <code>SmtpTransport</code> を作り始める関数。社内の、外へ出ない中継サーバー（リレー）に渡す時などに使います。</li>
+<li><strong><code>FileTransport</code></strong>（メール）: メールを送らずに、フォルダの中のファイルに書き出す係。開発中に、送られたはずのメールの中身を確かめるのに使います。</li>
+<li><strong><code>MailConfig</code></strong>（メール）: Topcoat の、メールの送り方（どこへ・どうやって送るか）の設定の型。</li>
+<li><strong><code>SmtpTransport</code></strong>（メール）: SMTP（メールを送る決まり）で、メールサーバーに渡して送る係。</li>
+<li><strong><code>SmtpError</code></strong>（メール）: Topcoat の、SMTP の設定や送信で起きたエラーの型。</li>
+<li><strong><code>Default</code></strong>（型とメソッド）: 「初期値（空の値）を作れる」機能（トレイト）。<code>#[derive(Default)]</code> を付けると、数は 0、文字列は <code>""</code>、<code>bool</code> は <code>false</code> の初期値を作れます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li>処理の途中では、メールを<strong>箱（<code>Outbox</code>）に入れるだけ</strong>です。<code>finish</code> が <code>commit</code> に成功してから、<code>send_all</code> で送ります。</li>
@@ -2177,6 +2406,31 @@ http://localhost:3000/approve/fe90f09a983f61d2fc0b2b806da0af1444421e2931f4fede8e
 <span class="w">    </span><span class="n">files</span><span class="p">::</span><span class="n">download</span><span class="p">(</span><span class="o">&amp;</span><span class="n">st</span><span class="p">.</span><span class="n">config</span><span class="p">.</span><span class="n">file_dir</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">a</span><span class="p">).</span><span class="k">await</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>module_param!</code></strong>（Topcoat）: Topcoat のマクロ。モジュールの区切りを「URL の変わる部品」にします。<code>mod id</code> の中に <code>module_param!(id: u64, error = not_found);</code> と書くと、URL が <code>/notes/{id}</code> になり、数として読めない時は 404 になります。</li>
+<li><strong><code>path_param!</code></strong>（Topcoat）: URL の中の値（<code>/attachments/{file_id}</code> の <code>file_id</code> など）を受け取る型を作るマクロ。<code>path_param!(pub file_id: i64, error = not_found);</code> は、<code>FileId</code> という型を作り、数でない時は「見つかりません」にします。<code>href!(…, FileId(5))</code> で URL を作る時にも使います。</li>
+<li><strong><code>#[route]</code></strong>（Topcoat）: Topcoat の印（属性）。画面（HTML）ではなく、JSON やただの文字などを返す「ルート」にします。<code>#[route(GET)]</code> のように、メソッドを必ず書きます。人が見る画面は <code>#[page]</code>、プログラムが読む答えは <code>#[route]</code> と使い分けます。</li>
+<li><strong><code>.acquire()</code></strong>（データベース）: 接続の集まり（プール）から、接続を 1 本借りるメソッド。トランザクションを使わずに、同じ接続で続けて SQL を送りたい時に使います。</li>
+<li><strong><code>.ok_or_not_found()</code></strong>（Topcoat）: Topcoat のメソッド。<code>Option</code> が <code>None</code>（無い）の時に、404 Not Found のエラーにします。<code>… .ok_or_not_found()?</code> と書くと、無い時はそこで 404 を返します（<code>RouterErrorExt</code> を <code>use</code> して使う）。</li>
+<li><strong><code>queries::find_request()</code></strong>（練習アプリで作る物（Rust））: 依頼を 1 件、承認の流れや添付も含めて読む関数。無ければ <code>None</code> です。</li>
+<li><strong><code>queries::find_attachment()</code></strong>（練習アプリで作る物（Rust））: 添付ファイルの記録を、番号で 1 件読む関数。無ければ <code>None</code> です。</li>
+<li><strong><code>files::download()</code></strong>（練習アプリで作る物（Rust））: 添付ファイルを読んで、ダウンロードさせる答え（レスポンス）を作る関数。後編で作ります。</li>
+<li><strong><code>StatusCode</code></strong>（HTTP）: HTTP の状態コード（<code>200 OK</code>・<code>404 Not Found</code> など）を表す型。<code>StatusCode::OK</code>・<code>StatusCode::NOT_FOUND</code> のように、名前で書けます。</li>
+<li><strong><code>RouterErrorExt</code></strong>（Topcoat）: <code>.ok_or_not_found()</code> などを使えるようにする機能（トレイト）。</li>
+<li><strong><code>Response</code></strong>（HTTP）: 答え（レスポンス）の型。Topcoat では <code>topcoat::router::response::Response</code>。ふつうのページは <code>view!</code> で作りますが、ファイルのダウンロードのように、見出しや本文を自分で決めたい時に直接作ります。</li>
+<li><strong><code>FullRequest</code></strong>（練習アプリで作る物（Rust））: 依頼 1 件の全部（依頼そのもの・承認の流れ・添付）をまとめた struct。</li>
+<li><strong><code>Token</code></strong>（Topcoat）: <code>topcoat::session::Token</code> は、セッションの印（でたらめな長い文字列）の型。ブラウザーのクッキーに入れ、サーバーには、そのハッシュだけを保存します。</li>
+<li><strong><code>OK</code></strong>（HTTP）: <code>StatusCode::OK</code> は、HTTP の答えの番号 200（成功）です。</li>
+<li><strong><code>GONE</code></strong>（HTTP）: 状態コード 410（Gone: もう無い）。<code>StatusCode::GONE</code>。ここでは、承認の URL の期限が切れた・もう使えない時に返しています（404 の「初めから無い」と区別する）。</li>
+<li><strong><code>FileId</code></strong>（Topcoat）: <code>path_param!(pub file_id: i64 …)</code> が作る型。URL の中の、添付ファイルの番号を表します。<code>FileId(a.id)</code> で URL を作り、<code>*path_param::&lt;FileId&gt;(cx)?</code> で受け取ります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li>ログインは要りません。URL の中の文字列が「この回覧者本人だ」という印になります。</li>
@@ -2416,6 +2670,57 @@ http://localhost:3000/approve/fe90f09a983f61d2fc0b2b806da0af1444421e2931f4fede8e
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>bail!</code></strong>（エラー処理）: <code>anyhow</code> のマクロ。その場でエラーを作って、関数から返します。<code>bail!("ノートが 1 件もありません");</code> は <code>return Err(anyhow!("…"));</code> の短い書き方です。</li>
+<li><strong><code>while</code></strong>（くり返し）: 条件が <code>true</code> の間、くり返す書き方。<code>while 条件 { … }</code>。条件が最初から <code>false</code> なら、1 回も動きません。</li>
+<li><strong><code>.first()</code></strong>（Vec（並び））: 並びの最初の 1 つを <code>Option</code> で返すメソッド（空なら <code>None</code>）。最後の 1 つは <code>.last()</code> です。</li>
+<li><strong><code>.get()</code></strong>（Vec（並び））: 番号やキーで中身を取り出すメソッド。<code>v.get(10)</code> は、範囲の外なら止まらずに <code>None</code> を返します（<code>v[10]</code> はプログラムが止まる）。文字列の <code>s.get(0..3)</code> は、文字の区切りでない位置なら <code>None</code> です。<code>HashMap</code> の <code>map.get("キー")</code> も、無ければ <code>None</code> です。</li>
+<li><strong><code>.position()</code></strong>（イテレーター）: 並びの中で、条件に合う最初の物が「何番目か」を <code>Option</code> で返すメソッド。<code>notes.iter().position(|n| n.id == id)</code>。無ければ <code>None</code> です。</li>
+<li><strong><code>.with_context()</code></strong>（エラー処理）: <code>anyhow</code> のメソッド。失敗した時のエラーに、「何をしていて失敗したか」の説明を書き足します。<code>.with_context(|| format!("{path} を読めませんでした"))?</code>。ログを見た人が、原因をすぐ分かるようになります。</li>
+<li><strong><code>.cloned()</code></strong>（Option）: 借りている値を、<code>.clone()</code> で複製した値にするメソッド。<code>Option&lt;&amp;String&gt;</code> を <code>Option&lt;String&gt;</code> に、イテレーターなら借りた物の並びを複製の並びにします。</li>
+<li><strong><code>.context()</code></strong>（エラー処理）: <code>anyhow</code> の部品で、エラーに「何をしていた時のエラーか」の説明を足すメソッド。<code>fs::read_to_string(path).context("設定ファイルを読めません")?</code>。説明を <code>format!</code> で作る時は、必要な時だけ作る <code>.with_context(|| …)</code> を使います。</li>
+<li><strong><code>.starts_with()</code></strong>（文字列）: その文字（文字列）で始まっていれば <code>true</code> を返すメソッド。<code>"report.csv".starts_with("report")</code> は <code>true</code>。終わりを調べるのは <code>.ends_with()</code>、含むかは <code>.contains()</code> です。</li>
+<li><strong><code>.any()</code></strong>（イテレーター）: 並びの中に、条件に合う物が 1 つでもあれば <code>true</code> を返すメソッド。全部が合うかは <code>.all()</code> で調べます。</li>
+<li><strong><code>.display()</code></strong>（ファイルとフォルダ）: ファイルやフォルダの場所（<code>Path</code>・<code>PathBuf</code>）を、<code>println!</code> で表示できる形にするメソッド。場所は、そのままでは <code>{}</code> で出せないので、<code>path.display()</code> を通して出します。</li>
+<li><strong><code>.source()</code></strong>（エラー処理）: エラーの「元になったエラー」を返すメソッド。<code>while let Some(e) = err.source()</code> のようにたどると、原因をさかのぼれます。</li>
+<li><strong><code>.push_str()</code></strong>（文字列）: <code>String</code> の後ろに文字列を足すメソッド。<code>s.push_str("さん");</code>。<code>s</code> は書きかえるので、<code>let mut s</code> のように <code>mut</code> が要ります。</li>
+<li><strong><code>.read_line()</code></strong>（入出力）: 1 行だけ読んで、文字列に書き足すメソッド。読んだ行の最後には改行が付いたままなので、<code>.trim_end()</code> などで取ってから使います。</li>
+<li><strong><code>.trim_end_matches()</code></strong>（文字列）: 文字列の後ろから、決めた文字（文字列）をくり返し取り除いたものを返すメソッド。<code>name.trim_end_matches(".rs")</code> は、<code>.rs</code> を取ります。</li>
+<li><strong><code>.chars()</code></strong>（文字列）: 文字列を、1 文字ずつ（<code>char</code>）取り出せる形にするメソッド。<code>s.chars().count()</code> で文字の数、<code>s.chars().take(60).collect::&lt;String&gt;()</code> で先頭の 60 文字。日本語も 1 文字ずつ正しく扱えます（<code>len()</code> はバイト数）。</li>
+<li><strong><code>.count()</code></strong>（イテレーター）: イテレーター（1 つずつ取り出せる物）の中身を最後まで数えて、その数を返すメソッド。<code>env::args().skip(1).count()</code> は「渡された引数の数」、<code>s.chars().count()</code> は「文字の数」です。</li>
+<li><strong><code>dotenvy::dotenv()</code></strong>（設定）: <code>.env</code> ファイルに書いた「名前=値」を、環境変数として読み込む関数（<code>dotenvy</code> の部品）。開発のパソコンで、設定をファイルにまとめておく時に使います。<code>.env</code> は Git に入れません。</li>
+<li><strong><code>Cx::new()</code></strong>（Topcoat）: <code>Cx</code>（Topcoat の、共有の物を取り出す入れ物）を、画面のリクエストの外で作る関数。毎朝の処理やコマンドで、メールの設定などを使うために作ります。</li>
+<li><strong><code>jobs::daily_reminders()</code></strong>（練習アプリで作る物（Rust））: 毎朝の処理（期限の近い依頼や、止まっている承認の知らせ）を 1 回する関数。</li>
+<li><strong><code>Arc::new()</code></strong>（スレッドと共有）: 値を、いくつものスレッドで一緒に持てる <code>Arc</code> に入れる関数。<code>Arc::new(Mutex::new(0))</code> は「鍵付きの 0 を、みんなで持つ」。</li>
+<li><strong><code>AppContext::new()</code></strong>（Topcoat）: 空の <code>AppContext</code> を作る関数。<code>.insert(物)</code> で入れていきます。</li>
+<li><strong><code>jobs::spawn_daily()</code></strong>（練習アプリで作る物（Rust））: 毎朝の処理を、サーバーの裏で動かし続ける関数。</li>
+<li><strong><code>topcoat::start()</code></strong>（Topcoat）: 組み立てたルーターを受け取って、Web サーバーを動かし始める関数。<code>topcoat::start(router).await</code> は、止めるまでリクエストを待ち続けます。</li>
+<li><strong><code>std::fs::read()</code></strong>（ファイルとフォルダ）: ファイルの中身を全部、バイトの並び（<code>Vec&lt;u8&gt;</code>）として読む関数。文字として読む時は <code>fs::read_to_string</code> です。</li>
+<li><strong><code>employees::read_csv()</code></strong>（練習アプリで作る物（Rust））: 社員の CSV を読んで、1 行ずつ確かめる関数。まちがいがあれば、何行目の何がおかしいかを返します。</li>
+<li><strong><code>employees::import()</code></strong>（練習アプリで作る物（Rust））: 読んだ社員を、データベースに入れる（あれば変える）関数。作った数と変えた数を返します。</li>
+<li><strong><code>time::OffsetDateTime::now_utc()</code></strong>（時間）: 今の日時を、世界標準時（UTC）で返す関数（<code>OffsetDateTime::now_utc()</code> と同じ）。</li>
+<li><strong><code>sqlx::PgPool::connect_lazy()</code></strong>（データベース）: PostgreSQL へのプールを、まだつながずに作る関数。最初に使う時に、はじめてつなぎます。</li>
+<li><strong><code>String::new()</code></strong>（文字列）: 空の <code>String</code> を作る関数。あとで中身を足していく時（<code>read_line(&amp;mut s)</code> で 1 行読み込む など）に使います。</li>
+<li><strong><code>std::io::stdin()</code></strong>（入出力）: キーボードからの入力（標準入力）を表す物を返す関数。<code>std::io::stdin().lock().read_line(&amp;mut line)?</code> で、1 行読めます。</li>
+<li><strong><code>BufRead</code></strong>（入出力）: 「1 行ずつ読める物」が持っている機能（トレイト）。<code>read_line</code> や <code>lines</code> を使うには、<code>use std::io::BufRead;</code> が要ります。</li>
+<li><strong><code>Arc</code></strong>（スレッドと共有）: いくつものスレッドから、1 つの値を一緒に持てるようにする型（<code>Rc</code> のスレッド版）。書きかえもしたい時は、<code>Arc&lt;Mutex&lt;T&gt;&gt;</code> の形にします。</li>
+<li><strong><code>Context</code></strong>（エラー処理）: <code>anyhow::Context</code> は、<code>with_context</code>・<code>context</code> メソッドを使えるようにする機能（トレイト）。<code>use anyhow::Context;</code> と書いておくと、<code>Result</code> や <code>Option</code> に説明を付けられます。</li>
+<li><strong><code>AppContext</code></strong>（Topcoat）: アプリで共有する物（データベースや設定など）を、型ごとに入れておく入れ物。</li>
+<li><strong><code>AppState</code></strong>（練習アプリで作る物（Rust））: アプリ全体で共有する物（データベースのプールと設定）をまとめた struct。<code>.app_context(…)</code> でルーターに渡し、どのページからも <code>state(cx)</code> で使えるようにします。</li>
+<li><strong><code>INSERT</code></strong>（SQL）: <code>INSERT INTO 表 (列, …) VALUES (値, …)</code> で、表に新しい行を足す SQL の命令。</li>
+<li><strong><code>INTO</code></strong>（SQL）: <code>INSERT INTO 表</code> の一部で、「この表へ」入れる、という意味。</li>
+<li><strong><code>VALUES</code></strong>（SQL）: <code>INSERT INTO 表 (列, …) VALUES (値, …)</code> の、入れる値を書く所。</li>
+<li><strong><code>CONFLICT</code></strong>（HTTP）: <code>StatusCode::CONFLICT</code> は、HTTP の答えの番号 409（「ぶつかった」）。同じメールアドレスで登録しようとした時などに返します。</li>
+<li><strong><code>DO</code></strong>（SQL）: <code>INSERT … ON CONFLICT (列) DO UPDATE SET …</code> は、「同じ値の行がもうあれば、足す代わりに、その行を変える」という書き方です（アップサート）。何もしない時は <code>DO NOTHING</code> です。</li>
+<li><strong><code>EXCLUDED</code></strong>（SQL）: <code>ON CONFLICT … DO UPDATE</code> の中で、「足そうとした（はじかれた）方の行」を指す名前。<code>SET name = EXCLUDED.name</code> は「今の行の名前を、新しく入れようとした名前に変える」です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li>06 の <code>manage.py import_employees</code> などに当たる物を、<strong><code>webapp.exe</code> のサブコマンド</strong>にしました。サーバーに持ち込む物が増えません。</li>
 <li>サーバーでは、onprem の 04 の 7.7 のとおり、その窓の中だけ <code>DATABASE_URL</code> などを教えてから動かします。</li>
@@ -2555,6 +2860,33 @@ http://localhost:3000/approve/fe90f09a983f61d2fc0b2b806da0af1444421e2931f4fede8e
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>include_bytes!</code></strong>（ファイルとフォルダ）: ファイルの中身を、プログラムを作る時に、バイトの並びとして中に埋め込むマクロ。<code>include_bytes!("../sample_data/employees.csv")</code>。テストで、決まったファイルを使う時に便利です。</li>
+<li><strong><code>continue</code></strong>（くり返し）: くり返しの「今回の残り」を飛ばして、次の回へ進む命令。<code>for</code> や <code>while</code> の中で、条件に合わない物を飛ばす時に使います。</li>
+<li><strong><code>.strip_prefix()</code></strong>（文字列）: 文字列が、決めた文字で始まっていれば、それを取り除いた残りを <code>Some(残り)</code> で返すメソッド。始まっていなければ <code>None</code> です。</li>
+<li><strong><code>.has_headers()</code></strong>（ファイルとフォルダ）: CSV の 1 行目が見出し（列の名前）かどうかを決めるメソッド。<code>true</code> なら、1 行目は中身として数えません。</li>
+<li><strong><code>.from_reader()</code></strong>（ファイルとフォルダ）: 決めた読み方で、渡したデータ（バイトの並びやファイル）から CSV を読む係を作るメソッド。</li>
+<li><strong><code>.headers()</code></strong>（HTTP）: 答え（レスポンス）の見出し（ヘッダー）の一覧を返すメソッド。<code>.headers().get("set-cookie")</code> のように、名前で 1 つ取り出せます。</li>
+<li><strong><code>.join()</code></strong>（ファイルとフォルダ）: 場所（パス）に、フォルダやファイルの名前をつなげた新しい場所を作るメソッド。<code>dir.join("notes.txt")</code> は、<code>dir</code> の中の <code>notes.txt</code> を表します。区切りの <code>\</code> は自動で入ります。（文字列の配列に使う <code>.join(", ")</code> は、「区切り文字でつなげて 1 つの文字列にする」別の意味です。）</li>
+<li><strong><code>.records()</code></strong>（ファイルとフォルダ）: CSV の行を、1 行ずつ取り出せる形にするメソッド。<code>for (i, record) in reader.records().enumerate()</code> で、何行目かと中身を同時に使えます。</li>
+<li><strong><code>.bytes()</code></strong>（文字列）: 文字列を、1 バイトずつ取り出せる形にするメソッド。<code>s.bytes().all(|b| b.is_ascii_digit())</code> で「全部、半角の数字か」を調べます。</li>
+<li><strong><code>.all()</code></strong>（イテレーター）: イテレーターの中身が、全部条件に合うかを <code>true</code>/<code>false</code> で返すメソッド。<code>v.iter().all(|n| *n &gt; 0)</code> は「全部 0 より大きいか」。1 つでも合うかは <code>.any()</code> です。</li>
+<li><strong><code>.is_ascii_digit()</code></strong>（文字）: その文字（バイト）が、半角の数字（<code>0</code>〜<code>9</code>）かを <code>true</code>/<code>false</code> で返すメソッド。</li>
+<li><strong><code>.split_once()</code></strong>（文字列）: 文字列を、最初に見つかった区切りの所で 2 つに分けるメソッド。<code>"title=買い物".split_once('=')</code> は <code>Some(("title", "買い物"))</code>。区切りが無い時は <code>None</code> です。</li>
+<li><strong><code>.ends_with()</code></strong>（文字列）: その文字（文字列）で終わっていれば <code>true</code> を返すメソッド。<code>name.ends_with(".db")</code>。</li>
+<li><strong><code>csv::ReaderBuilder::new()</code></strong>（ファイルとフォルダ）: <code>csv</code> の部品で、CSV の読み方を組み立て始める関数。<code>.has_headers(true)</code>（1 行目は見出し）などを決めて、<code>.from_reader(バイト)</code> で読む係を作ります。</li>
+<li><strong><code>std::collections::HashSet::new()</code></strong>（HashMap（表））: 空の <code>HashSet</code>（同じ物を 2 回入れない入れ物）を作る関数。<code>.insert(値)</code> は、初めてなら <code>true</code>、もうあれば <code>false</code> を返すので、「同じ社員番号が 2 回出てきた」ことを見つけられます。</li>
+<li><strong><code>ReaderBuilder</code></strong>（ファイルとフォルダ）: <code>csv</code> の、CSV の読み方を組み立てる型。</li>
+<li><strong><code>HashSet</code></strong>（HashMap（表））: 同じ値は 1 つしか入らない集まり（値だけの <code>HashMap</code>）。重複を消す・「もう見たか」を覚える時に使います。<code>set.insert(x)</code> は、新しく入った時だけ <code>true</code> を返します。</li>
+<li><strong><code>RETURNING</code></strong>（SQL）: <code>INSERT … RETURNING id</code> で、入れた（変えた）行の値（作られた番号など）を、その場で返してもらう書き方。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li>06 と同じく「1 行でも間違いがあれば、1 件も取り込まない」です。読む・確かめる（<code>read_csv</code>）と、取り込む（<code>import</code>）を分け、取り込みは 1 つのトランザクションで行います。</li>
@@ -2739,6 +3071,25 @@ $ webapp.exe（APP_ENV=staging で MAIL_REDIRECT_TO なし）
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>time!</code></strong>（時間）: <code>time</code> の部品で、時刻（<code>Time</code>）を書くマクロ。<code>time!(8:00)</code> は 8 時 0 分。まちがった時刻（<code>25:00</code> など）は、プログラムを作る時にエラーになります。</li>
+<li><strong><code>loop</code></strong>（くり返し）: 終わりのないくり返し。<code>loop { … }</code> の中で <code>break</code> を書いた所で抜けます。サーバーが「次の接続を待つ」のをずっと続ける時などに使います。</li>
+<li><strong><code>.time()</code></strong>（時間）: 日時（<code>OffsetDateTime</code>）から、時刻（<code>Time</code>。時・分・秒）だけを取り出すメソッド。<code>now.time() &lt; RUN_AT</code> は「今の時刻が、決めた時刻（8:00）より前か」です。</li>
+<li><strong><code>time::Duration::days()</code></strong>（時間）: <code>time</code> の、日数ぶんの長さ（<code>Duration</code>）を作る関数。<code>今日 + time::Duration::days(3)</code> は「3 日後」です。</li>
+<li><strong><code>tokio::spawn()</code></strong>（非同期）: 非同期の仕事を、別のタスクとしてすぐ動かし始める関数。<code>tokio::spawn(async move { … })</code>。返ってくる物（<code>JoinHandle</code>）を <code>.await</code> すると、結果を受け取れます。</li>
+<li><strong><code>tokio::time::sleep()</code></strong>（非同期）: 決めた時間だけ待つ、非同期の関数。<code>tokio::time::sleep(Duration::from_millis(300)).await</code>。待っている間、ほかの仕事は止まりません（<code>std::thread::sleep</code> はスレッドごと止めてしまうので、<code>async</code> の中では使いません）。</li>
+<li><strong><code>Time</code></strong>（時間）: <code>time</code> の、時刻（時・分・秒）を表す型。<code>time!(8:00)</code> で「8 時 0 分」を作れます。</li>
+<li><strong><code>ORDER</code></strong>（SQL）: <code>ORDER BY 列</code> で、取り出した行を並べる書き方。<code>DESC</code> を付けると大きい順（新しい順）です。</li>
+<li><strong><code>BY</code></strong>（SQL）: <code>ORDER BY</code>（並べる）・<code>GROUP BY</code>（まとめる）の一部で、「〜で」という意味です。</li>
+<li><strong><code>LEFT</code></strong>（SQL）: <code>LEFT JOIN</code> は、左の表の行は、相手が無くても全部残す JOIN。「ノートが 0 件の人も一覧に出す」時に使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li>06 は、タスク スケジューラが毎朝 <code>manage.ps1</code> を動かしました。08 は onprem の 04 の 12.1 のとおり、<strong>アプリの中で動かします</strong>。</li>
 <li>「8:00 ちょうど」を待つのではなく、<strong>1 分ごとに「8:00 を過ぎたか・今日の分は済んだか」を見ます</strong>。こうすると、8:00 にアプリが止まっていても、起動したあとの最初の確かめで、今日の分が動きます。</li>
@@ -2888,6 +3239,22 @@ $ webapp.exe（APP_ENV=staging で MAIL_REDIRECT_TO なし）
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>LIMIT</code></strong>（SQL）: <code>LIMIT 件数</code> で、取り出す行の数の上限を決める書き方。<code>ORDER BY … LIMIT 20</code> は「並べて、先頭の 20 件だけ」。</li>
+<li><strong><code>OR</code></strong>（SQL）: SQL で「または」。<code>WHERE a = 1 OR b = 2</code> は、どちらかに合う行です。<code>AND</code> と混ぜる時は、<code>( )</code> で囲んで順番をはっきりさせます。</li>
+<li><strong><code>EXISTS</code></strong>（SQL）: SQL で「ある」。<code>IF NOT EXISTS</code> は「無ければ」という意味です。</li>
+<li><strong><code>DESC</code></strong>（SQL）: <code>ORDER BY 列 DESC</code> で、大きい順（新しい順）に並べます（小さい順は <code>ASC</code>）。</li>
+<li><strong><code>Iterator</code></strong>（イテレーター）: 「1 つずつ取り出せる物」（イテレーター）の機能（トレイト）。<code>map</code>・<code>filter</code>・<code>sum</code> などのメソッドは、全部この機能に付いています。<code>impl Iterator&lt;Item = &amp;Note&gt;</code> は「<code>&amp;Note</code> を 1 つずつ出す何か」を返す、という戻り値の書き方です。</li>
+<li><strong><code>Item</code></strong>（イテレーター）: イテレーターが 1 つずつ取り出す物の型（関連型）。<code>IntoIterator&lt;Item = T&gt;</code> は「<code>T</code> を 1 つずつ取り出せる物なら何でもよい」という意味です。</li>
+<li><strong><code>GROUP</code></strong>（SQL）: <code>GROUP BY 列</code> で、同じ値の行をまとめて、まとめごとに数える・足す時の書き方。<code>SELECT user_id, COUNT(*) FROM notes GROUP BY user_id</code> は、人ごとのノートの数です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li><strong>値は必ず <code>$1</code>・<code>$2</code> と <code>.bind()</code> で渡します。</strong> SQL の文と値が別々にデータベースへ届くので、値に <code>'</code> や <code>;</code> が入っていても、SQL として動くことはありません（SQL インジェクションを防ぐ）。</li>
 <li>「だれが、どの依頼を見られるか」の決まりも、ここに置きました（担当者・管理者は全部。一般の人は、自分が出した依頼と、自分が回覧者に入っている依頼だけ）。06 の <code>_visible_requests</code> と同じです。</li>
@@ -2951,6 +3318,21 @@ $ webapp.exe（APP_ENV=staging で MAIL_REDIRECT_TO なし）
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>#[tokio]</code></strong>（非同期）: <code>#[tokio::main]</code> は、<code>main</code> を <code>async</code> にして、tokio（非同期の仕事を回す仕組み）の上で動かす印（属性）。<code>#[tokio::test]</code> は、テストを <code>async</code> で書けるようにする印です。</li>
+<li><strong><code>.skip()</code></strong>（イテレーター）: 並びの先頭から、決めた数だけ飛ばすメソッド。<code>env::args().skip(1)</code> は、0 番目（プログラム自身）を飛ばします。</li>
+<li><strong><code>std::env::args()</code></strong>（プロセス）: プログラムに渡された引数を取り出す関数（<code>env::args()</code> と同じ）。</li>
+<li><strong><code>ExitCode</code></strong>（プロセス）: <code>main</code> が返す、終了コードの型。<code>fn main() -&gt; ExitCode</code> にして、<code>ExitCode::SUCCESS</code>（0）か <code>ExitCode::FAILURE</code>（1）を返します。<code>process::exit</code> と違い、片づけをしてから終われます。</li>
+<li><strong><code>SUCCESS</code></strong>（プロセス）: <code>ExitCode::SUCCESS</code> は、終了コード 0（成功）です。</li>
+<li><strong><code>FAILURE</code></strong>（プロセス）: <code>ExitCode::FAILURE</code> は、終了コード 1（失敗）です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><code>src/state.rs</code>:</p>
 <div class="codehilite"><div class="code-wrap" id="code-27"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="sd">//! アプリ全体で 1 つだけ持つ物（データベースの接続のたまり場と、設定）</span>
 <span class="sd">//!</span>
@@ -2989,6 +3371,22 @@ $ webapp.exe（APP_ENV=staging で MAIL_REDIRECT_TO なし）
 <span class="w">    </span><span class="n">sqlx</span><span class="p">::</span><span class="n">migrate</span><span class="o">!</span><span class="p">(</span><span class="s">&quot;./migrations&quot;</span><span class="p">).</span><span class="n">run</span><span class="p">(</span><span class="n">pool</span><span class="p">).</span><span class="k">await</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>migrate!</code></strong>（データベース）: <code>sqlx</code> の部品で、<code>migrations</code> フォルダの SQL のファイル（テーブルを作る・変える手順）を、プログラムの中に取り込むマクロ。<code>sqlx::migrate!("./migrations").run(pool).await</code> で、まだ流していない物を順に流します。</li>
+<li><strong><code>.max_connections()</code></strong>（データベース）: プールに用意する接続の、いちばん多い数を決めるメソッド。</li>
+<li><strong><code>.acquire_timeout()</code></strong>（データベース）: 接続を借りる時に、空くのを待つ長さの上限を決めるメソッド。これを過ぎるとエラーにします（ずっと待ち続けない）。</li>
+<li><strong><code>PgPoolOptions::new()</code></strong>（データベース）: <code>PgPoolOptions</code> を、決まりの設定で作る関数。<code>.max_connections(10)</code>・<code>.acquire_timeout(…)</code> をつなげて決め、最後に <code>.connect(URL)</code> でプールを作ります。</li>
+<li><strong><code>std::time::Duration::from_secs()</code></strong>（時間）: 秒数ぶんの長さ（<code>Duration</code>）を作る関数。<code>Duration::from_secs(5)</code> は 5 秒です。</li>
+<li><strong><code>PgPoolOptions</code></strong>（データベース）: <code>sqlx</code> の、PostgreSQL の接続の集まり（プール）の設定を組み立てる型。</li>
+<li><strong><code>MigrateError</code></strong>（データベース）: <code>sqlx</code> の、マイグレーションに失敗した時のエラーの型。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li>中身を <code>lib.rs</code> の側に置き、<code>main.rs</code> は入り口だけにしました。こうすると、<code>tests/</code> のテストから、中の関数を直接呼べます。</li>
@@ -3363,6 +3761,39 @@ $ webapp.exe（APP_ENV=staging で MAIL_REDIRECT_TO なし）
 <span class="w">    </span><span class="fm">assert!</span><span class="p">(</span><span class="n">jobs</span><span class="p">::</span><span class="n">run_daily_if_due</span><span class="p">(</span><span class="o">&amp;</span><span class="n">w</span><span class="p">.</span><span class="n">cx</span><span class="p">,</span><span class="w"> </span><span class="n">datetime</span><span class="o">!</span><span class="p">(</span><span class="mi">2026</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">03</span><span class="w"> </span><span class="mi">08</span><span class="p">:</span><span class="mi">01</span><span class="w"> </span><span class="o">+</span><span class="mi">9</span><span class="p">)).</span><span class="k">await</span><span class="p">.</span><span class="n">unwrap</span><span class="p">().</span><span class="n">is_some</span><span class="p">());</span><span class="w"> </span><span class="c1">// 次の日</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>date!</code></strong>（時間）: <code>time</code> の部品で、日付（<code>Date</code>）を書くマクロ。<code>date!(2026 - 11 - 30)</code> は 2026 年 11 月 30 日。テストで、決まった日付を作る時に使います。</li>
+<li><strong><code>panic!</code></strong>（エラー処理）: その場でプログラム（今のスレッド）を止めるマクロ。<code>panic!("起きるはずのないことが起きました")</code>。直しようのない、プログラムのまちがいを知らせる時に使います。ふつうの失敗には <code>Result</code> を使います。</li>
+<li><strong><code>join!</code></strong>（非同期）: <code>tokio::join!(a, b)</code> は、いくつかの非同期の仕事を同時に進めて、全部が終わるのを待つマクロ。かかる時間は、いちばん長い物の分だけです。</li>
+<li><strong><code>datetime!</code></strong>（時間）: <code>time</code> の部品で、時差付きの日時を書くマクロ。<code>datetime!(2026-11-02 07:59 +9)</code> は「日本時間の 2026 年 11 月 2 日 7 時 59 分」。テストで「8 時より前」などの時刻を作るのに使います。</li>
+<li><strong><code>.sent()</code></strong>（メール）: <code>MemoryTransport</code> にたまった、送ったメールの一覧を返すメソッド。</li>
+<li><strong><code>.text()</code></strong>（メール）: メールの本文（文字の方）を返すメソッド（<code>TextBody</code> で返る）。後編のアップロードでは、フォームの項目（<code>field.text()</code>）の中身を文字列で読むのにも使います。</li>
+<li><strong><code>.to()</code></strong>（メール）: メールの宛先の一覧を返すメソッド。<code>m.to()[0].address()</code> で、1 人目の宛先のメールアドレスを取り出せます。</li>
+<li><strong><code>.address()</code></strong>（メール）: 宛先から、メールアドレスの部分を取り出すメソッド。</li>
+<li><strong><code>.subject()</code></strong>（メール）: メールの件名を返すメソッド。</li>
+<li><strong><code>.split()</code></strong>（文字列）: 文字列を、区切り文字のたびに分けるメソッド。<code>"a,b,c".split(',')</code> は <code>a</code>・<code>b</code>・<code>c</code> の 3 つ。結果は 1 つずつ取り出せる形（イテレーター）なので、<code>Vec</code> にしたい時は <code>.collect()</code> を付けます。</li>
+<li><strong><code>.nth()</code></strong>（イテレーター）: 並びの中から「n 番目」を 1 つ取り出すメソッド。番号は 0 から数えます。<code>env::args().nth(1)</code> は、コマンドの引数の 1 番目（0 番目はプログラム自身の場所）。無いかもしれないので、結果は <code>Some(値)</code> か <code>None</code>（<code>Option</code>）で返ります。</li>
+<li><strong><code>.lines()</code></strong>（文字列）: 文字列を、1 行ずつに分けて取り出せる形にするメソッド。行の終わりの改行（<code>\n</code> や <code>\r\n</code>）は含みません。<code>text.lines().count()</code> で行の数が分かります。</li>
+<li><strong><code>.next()</code></strong>（イテレーター）: イテレーター（1 つずつ取り出せる物）から、次の 1 つを取り出すメソッド。無くなると <code>None</code> を返すので、結果は <code>Option</code> です。</li>
+<li><strong><code>.last()</code></strong>（Vec（並び））: 並びの最後の 1 つを <code>Option</code> で返すメソッド（空なら <code>None</code>）。最初の 1 つは <code>.first()</code>。</li>
+<li><strong><code>.exists()</code></strong>（ファイルとフォルダ）: その場所に、ファイルかフォルダがあれば <code>true</code> を返すメソッド。<code>Path::new("memo.txt").exists()</code>。</li>
+<li><strong><code>std::env::temp_dir()</code></strong>（ファイルとフォルダ）: OS の、一時的なファイルを置くフォルダの場所を返す関数（Windows なら <code>C:\Users\you\AppData\Local\Temp</code>）。</li>
+<li><strong><code>MemoryTransport::new()</code></strong>（メール）: 空の <code>MemoryTransport</code> を作る関数。複製（<code>.clone()</code>）しても同じ入れ物を指すので、片方をアプリに渡し、もう片方で中身を見られます。</li>
+<li><strong><code>CxTestBuilder::new()</code></strong>（Topcoat）: <code>CxTestBuilder</code> を作る関数。<code>.app_context(物)</code> で入れたい物を足し、<code>.build()</code> で <code>Cx</code> にします。サーバーを動かさずに、アプリの関数を直接試せます。</li>
+<li><strong><code>std::fs::read_dir()</code></strong>（ファイルとフォルダ）: フォルダの中の一覧を返す関数（<code>fs::read_dir</code> と同じ）。</li>
+<li><strong><code>std::fs::remove_dir_all()</code></strong>（ファイルとフォルダ）: フォルダを、中身ごと全部消す関数。ごみ箱を通さずに消えるので、場所をよく確かめて使います。</li>
+<li><strong><code>CxTestBuilder</code></strong>（Topcoat）: テストで、<code>Cx</code>（共有の物の入れ物）を組み立てる型。</li>
+<li><strong><code>MemoryTransport</code></strong>（メール）: メールを送らずに、メモリーの中にためておく係。テストで、送ったはずのメールの宛先や本文を確かめるのに使います。</li>
+<li><strong><code>TextBody</code></strong>（メール）: メールの文字の本文を表す型。<code>TextBody::Text(文字列)</code> で中身を取り出せます。</li>
+<li><strong><code>Text</code></strong>（データベース）: <code>Value::Text(s)</code> は、データベースの値が文字列であることを表す種類です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li><code>#[sqlx::test]</code> は、<strong>テストごとに空のデータベースを作り</strong>、マイグレーションを流してから、<code>pool</code> を渡してくれます。テストどうしが、データを取り合いません。</li>

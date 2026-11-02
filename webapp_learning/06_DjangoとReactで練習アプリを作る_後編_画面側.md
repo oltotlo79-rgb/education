@@ -80,6 +80,14 @@ cd ..\backend
 .\dev_serve.ps1    # 部品を集めて（collectstatic）、waitress で動かす → http://127.0.0.1:8000/
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.\dev_serve.ps1`**（PowerShell）: 今いるフォルダの `dev_serve.ps1`（静的ファイルを集めてから、waitress でアプリを動かすスクリプト）を動かす書き方。
+
+<!-- /first-use -->
+
 `backend/dev_serve.ps1`（**「UTF-8 (BOM 付き)」で保存**）:
 
 ```powershell
@@ -111,6 +119,14 @@ try {
     Pop-Location
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Join-Path`**（PowerShell）: フォルダの場所とファイル名を、`\` でつないだ場所を作るコマンド。`Join-Path $PSScriptRoot "dev.env"` は「このスクリプトのフォルダの `dev.env`」。
+
+<!-- /first-use -->
 
 **確かめること:** `http://127.0.0.1:8000/health` が `{"status": "ok"}` を返すこと。画面の部品（`/static/assets/index-（指紋）.js`）の返事に、`Cache-Control: max-age=315360000, public, immutable` が付くこと（試した結果、付いた。onprem の 05 の 8.4 と同じ）。
 
@@ -206,6 +222,21 @@ export const api = {
 };
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`class`**（TypeScript）: クラス（データと、それを扱うメソッドをまとめた設計図）を作る書き方。`class ApiError extends Error { … }`。`new ApiError(…)` で作ります。
+> - **`extends`**（TypeScript）: クラスを、ほかのクラスを元にして作る書き方。`class ApiError extends Error` は、標準の `Error` に、`status` などを足したエラーです。
+> - **`this`**（TypeScript）: クラスの中で「この物自身」を表す言葉。`this.status = status;` は、自分の `status` に値を入れます。
+> - **`instanceof`**（TypeScript）: 値が、そのクラスから作られた物かを調べる書き方。`body instanceof FormData` は「ファイル付きのフォームの中身か」。
+> - **`.match()`**（TypeScript）: 文字列が正規表現に合う所を探すメソッド。見つかると、その情報（かっこの中の部分など）を配列で、見つからないと `null` を返します。
+> - **`.flat()`**（TypeScript）: 配列の中の配列を、1 つの配列に平らにするメソッド。
+> - **`.catch()`**（TypeScript）: `Promise` が失敗した時の代わりの処理を登録するメソッド。`res.json().catch(() => ({}))` は「JSON として読めなければ空のオブジェクト」。
+> - **`.append()`**（TypeScript）: `FormData` に項目を足すメソッド。`form.append("file", file)` で、ファイル付きのフォームを組み立てます。
+
+<!-- /first-use -->
+
 - **API の呼び方を、このファイル 1 つに集めています。** 画面の部品は `api.requests(true)` のように呼ぶだけで、URL や CSRF の札のことを知らなくて済みます（前編の services と同じ考え方）。
 - `POST` には、クッキーの `csrftoken` を `X-CSRFToken` という付け札にして付けます（onprem の 05 の 8.2）。
 - 札は、画面を開いたときに `/api/csrf/` を呼んで受け取ります（ビルドした後は、`index.html` を返すときにも渡す）。
@@ -240,11 +271,30 @@ def health(request):
     return JsonResponse({"status": "ok"})
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`method_decorator()`**（Django）: 関数用の印（デコレーター）を、クラスの画面（ビュー）のメソッドにも付けられるようにする物。
+> - **`@method_decorator`**（Django）: `@method_decorator(ensure_csrf_cookie, name="dispatch")` をクラスの上に付けて、そのクラスの画面に印を付けます。
+> - **`@ensure_csrf_cookie`**（Django）: その画面を返す時に、CSRF の札（クッキー）を必ず付ける印。React の画面が、あとで送るフォームに札を付けられるようにします（10 巻の 5 章）。
+
+<!-- /first-use -->
+
 `backend/config/urls.py` の最後に、「API・管理画面・部品・承認の画面以外の URL は、React の画面を返す」行を足しました。
 
 ```python
 re_path(r"^(?!api/|admin/|static/|approve/).*$", pages.IndexView.as_view()),
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.as_view()`**（Django）: クラスで作った画面（ビュー）を、URL の決まりに登録できる形にするメソッド。
+> - **`re_path()`**（Django）: 正規表現で URL の決まりを書く関数。`re_path(r"^(?!api/|admin/).*$", …)` は「`api/`・`admin/` で始まらない URL は全部」（React の画面を返す）。
+
+<!-- /first-use -->
 
 ## 4. ログインと、画面の切りかえ（App.tsx）
 
@@ -328,6 +378,19 @@ export function App() {
   );
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.me()`**（練習アプリで作る物（TypeScript））: `api.ts` で作る関数の 1 つで、`/api/me/`（今ログインしている人）を問い合わせます。この巻の後の方で作ります。
+> - **`.csrf()`**（練習アプリで作る物（TypeScript））: `api.ts` で作る関数の 1 つで、`/api/csrf/` を呼んで、CSRF の札（クッキー）を先に受け取ります。
+> - **`useCallback()`**（React）: 関数を覚えておき、描き直しのたびに作り直さないようにするフック。`useEffect` の見張る値に関数を入れる時などに使います。
+> - **`<FormPage>`**（練習アプリで作る物（TypeScript））: 依頼の作成・編集の画面の部品（コンポーネント）。この巻の後の方で作ります。
+> - **`<DetailPage>`**（練習アプリで作る物（TypeScript））: 依頼 1 件のくわしい画面の部品。この巻の後の方で作ります。
+> - **`<StatsPage>`**（練習アプリで作る物（TypeScript））: 集計の画面の部品（グラフを SVG で描く）。この巻の後の方で作ります。
+
+<!-- /first-use -->
 
 <div style="max-width: 640px; margin: 18px auto; text-align: center;">
 <img src="images/L06b-s1_login.webp" alt="ログインの画面。従業員番号とパスワード。60分操作が無いと自動でログアウトします" style="width: 100%; border: 1px solid #cbd5e1;">
@@ -435,6 +498,19 @@ export function FormPage({ editId }: { editId?: number }) {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.request()`**（練習アプリで作る物（TypeScript））: `api.ts` で作る関数の 1 つで、依頼 1 件のくわしい中身を問い合わせます。
+> - **`.test()`**（TypeScript）: 正規表現が、文字列に合うかを `true`・`false` で返すメソッド。`/\.(jpe?g|png|pdf)$/i.test(名前)` は「拡張子が JPG・PNG・PDF か」。
+> - **`.create()`**（練習アプリで作る物（TypeScript））: `api.ts` で作る関数の 1 つで、新しい依頼を送って作ります。作った依頼の番号（`id`）が返ります。
+> - **`.action()`**（練習アプリで作る物（TypeScript））: `api.ts` で作る関数の 1 つで、依頼に操作（出し直し・取り下げなど）を送ります。
+> - **`.upload()`**（練習アプリで作る物（TypeScript））: `api.ts` で作る関数の 1 つで、添付ファイルを 1 つ送ります。
+> - **`<ApproverPicker>`**（練習アプリで作る物（TypeScript））: 承認する人を探して、順番に選ぶ部品。この巻の後の方で作ります。
+
+<!-- /first-use -->
+
 `frontend/src/components/ApproverPicker.tsx`:
 
 ```tsx
@@ -487,6 +563,17 @@ export function ApproverPicker({ value, onChange, max = 3 }: Props) {
   );
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.employees()`**（練習アプリで作る物（TypeScript））: `api.ts` で作る関数の 1 つで、名前などで社員を探します。
+> - **`.has()`**（TypeScript）: `Set` や `Map` に、その値（キー）があれば `true` を返すメソッド。
+> - **`.slice()`**（TypeScript）: 配列や文字列の一部分を切り出した、新しい物を返すメソッド。`list.slice(0, 5)` は最初の 5 つ。
+> - **`<ol>`**（React）: 番号の付いた並びのタグ。中に `<li>` を並べます（回覧の順番など）。
+
+<!-- /first-use -->
 
 <div style="max-width: 760px; margin: 18px auto; text-align: center;">
 <img src="images/L06b-s2_form.webp" alt="依頼の入力。件名・内容・希望の納期、回覧者1佐藤花子と回覧者2鈴木一郎、添付ファイル、四角が2つの図面" style="width: 100%; border: 1px solid #cbd5e1;">
@@ -599,6 +686,16 @@ export function DetailPage({ id, me }: { id: number; me: Me }) {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.toLocaleString()`**（TypeScript）: 日時や数を、その国の書き方の文字列にするメソッド。`new Date(s).toLocaleString("ja-JP", { dateStyle: "short", timeStyle: "short" })` は `2026/11/02 8:00` の形です。
+> - **`.ceil()`**（TypeScript）: `Math.ceil(x)` は、小数を切り上げて整数にする関数です（大きさを KB で見せる時など）。
+> - **`<RequestDetail>`**（TypeScript）: `call<RequestDetail>(…)` の `<RequestDetail>` は、画面のタグではなく、型引数（この関数が返す物の型を伝える書き方）です。`RequestDetail` は `types.ts` で決める、依頼 1 件のくわしい中身の型です。
+
+<!-- /first-use -->
+
 **今できる操作のボタンだけ**を出します。たとえば「引き戻す」は、自分の依頼が回覧中のときだけです。ただし、ボタンを出さないのは使う人のためのお手伝いで、**できるかどうかを最後に決めるのはサーバー**（前編の services）です。
 
 ### 6.1 差し戻されたとき → 直して出し直す
@@ -691,6 +788,18 @@ export function StatsPage() {
   );
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.stats()`**（練習アプリで作る物（TypeScript））: `api.ts` で作る関数の 1 つで、集計（状態ごとの数など）を問い合わせます。
+> - **`<figure>`**（React）: 図と、その説明をひとまとめにするタグ。
+> - **`<figcaption>`**（React）: `<figure>` の中の、図の説明のタグ。
+> - **`<g>`**（React）: SVG の中で、図の部品をまとめるタグ（group）。まとめて動かしたり、色を付けたりできます。
+> - **`<text>`**（HTML）: SVG（線や図形で描く絵）の中に、文字を書くタグ。`<text x="110" y="18" textAnchor="end">ラベル</text>` は、決めた位置に、右そろえで文字を書きます。
+
+<!-- /first-use -->
 
 <div style="max-width: 760px; margin: 18px auto; text-align: center;">
 <img src="images/L06b-s11_stats.webp" alt="グラフ。状態ごとの依頼の件数（完了4、回覧中1、引き戻し中1、対応中1）と、担当者ごとの完了の件数（伊藤健2、高橋三郎2）" style="width: 100%; border: 1px solid #cbd5e1;">

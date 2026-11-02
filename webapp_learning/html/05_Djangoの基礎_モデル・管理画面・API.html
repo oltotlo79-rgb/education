@@ -297,6 +297,17 @@ li, tr { page-break-inside: avoid; }
 <span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">manage</span><span class="p">.</span><span class="n">py</span> <span class="n">startapp</span> <span class="n">requests_app</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Copy-Item</code></strong>（PowerShell）: ファイルやフォルダをコピーするコマンド。<code>Copy-Item 元 先</code>。最後の <code>.</code> は「今いるフォルダへ」という意味です。</li>
+<li><strong><code>.\.venv\Scripts\django-admin.exe</code></strong>（Django の道具）: 仮想環境に入った Django の道具を動かす書き方。<code>django-admin.exe startproject config .</code> で、今いるフォルダに Django のプロジェクト（<code>manage.py</code> と <code>config</code> フォルダ）を作ります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><code>requirements.txt</code>:</p>
 <div class="codehilite"><div class="code-wrap" id="code-2"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Django==5.2.18
 djangorestframework==3.18.3
@@ -406,6 +417,22 @@ tzdata==2026.6
     <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">request_id</span><span class="si">}</span><span class="s2"> の </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="si">}</span><span class="s2"> 番目&quot;</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.CharField()</code></strong>（Django）: <code>models.CharField("件名", max_length=100)</code> は、短い文字列の列（最大の長さを必ず決める）を表すモデルの項目です。最初の <code>"件名"</code> は、管理画面などに出る名前です。</li>
+<li><strong><code>.TextField()</code></strong>（Django）: 長い文字列（何行もの文）の列を表すモデルの項目。<code>blank=True</code> を付けると、入力が空でもよくなります。</li>
+<li><strong><code>.DateField()</code></strong>（Django）: 日付の列を表すモデルの項目。</li>
+<li><strong><code>.ForeignKey()</code></strong>（Django）: ほかの表の 1 行を指す列（外部キー）を表すモデルの項目。<code>models.ForeignKey(User, on_delete=models.PROTECT, related_name="requests")</code> は「ユーザーを指す。指されているユーザーは消せない（PROTECT）。ユーザーの側からは <code>user.requests</code> で依頼をたどれる」。</li>
+<li><strong><code>.DateTimeField()</code></strong>（Django）: 日時の列を表すモデルの項目。<code>auto_now_add=True</code> で、作った時の日時を自動で入れます。</li>
+<li><strong><code>.PositiveSmallIntegerField()</code></strong>（Django）: 0 以上の小さな整数の列を表すモデルの項目（順番などに使う）。</li>
+<li><strong><code>.UniqueConstraint()</code></strong>（Django）: 「この組み合わせの値は、表の中で重ならない」という決まりを表す物。<code>fields=["request", "order"]</code> は「同じ依頼の中で、同じ順番は 2 つ作れない」。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <table>
 <thead>
@@ -542,6 +569,17 @@ Running migrations:
     <span class="n">inlines</span> <span class="o">=</span> <span class="p">[</span><span class="n">ApprovalInline</span><span class="p">]</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.register()</code></strong>（Django）: <code>@admin.register(Request)</code> は、モデルを管理画面に登録して、画面から見たり直したりできるようにする書き方です。</li>
+<li><strong><code>@admin</code></strong>（Django）: <code>@admin.register(モデル)</code> を、管理画面の設定のクラスの上に付けて、そのモデルを管理画面に出します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-10"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 管理画面に入れる人（スーパーユーザー）を作る。名前とパスワードを聞かれる</span>
 <span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">manage</span><span class="p">.</span><span class="n">py</span> <span class="n">createsuperuser</span>
 
@@ -625,6 +663,29 @@ Running migrations:
 <span class="k">except</span> <span class="n">Request</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;999 番の依頼は無い&quot;</span><span class="p">)</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.all()</code></strong>（Django）: <code>Request.objects.all()</code> は、表の全部の行を取り出す（まだ読みに行かない「問い合わせ」を作る）メソッドです。</li>
+<li><strong><code>.delete()</code></strong>（Django）: 問い合わせに合う行（または 1 つの物）を、データベースから消すメソッド。消した件数が返ります。</li>
+<li><strong><code>.filter()</code></strong>（Django）: Django の問い合わせで、条件に合う行だけに絞るメソッド。<code>Request.objects.filter(status="approved")</code>。<code>項目名__条件</code>（<code>title__icontains="治具"</code> など）で、いろいろな条件を書けます（11 巻の B-18）。</li>
+<li><strong><code>.create_user()</code></strong>（Django）: Django の利用者（<code>User</code>）を作るメソッド。<code>User.objects.create_user("012345", password="…")</code>。パスワードは、そのまま保存せずに、ハッシュにしてから保存してくれます（<code>create()</code> で作ると、ハッシュにならないので使わない）。</li>
+<li><strong><code>.create()</code></strong>（Django）: Django で、新しい行を作ってデータベースに保存するメソッド。<code>Request.objects.create(title="…", …)</code> は、作ると同時に保存します（<code>.save()</code> は要らない）。</li>
+<li><strong><code>.count()</code></strong>（Django）: Django で、条件に合う行の数を数えるメソッド。<code>Request.objects.count()</code> は、全部の依頼の数。データベースに <code>SELECT count(*)</code> を送るので、全部を読み込むより速いです。</li>
+<li><strong><code>.order_by()</code></strong>（Django）: 問い合わせの結果を並べかえるメソッド。<code>order_by("due_date")</code> は納期の近い順、<code>order_by("-due_date")</code> は遠い順（<code>-</code> で逆）。</li>
+<li><strong><code>.save()</code></strong>（Django）: Django のモデル（1 行分の値）を、データベースに保存するメソッド。新しい物なら行を足し、もうある物なら行を変えます。</li>
+<li><strong><code>.get_status_display()</code></strong>（Django）: <code>choices</code> を決めた項目の、画面に出す名前（<code>"approved"</code> → <code>"回覧完了"</code>）を返すメソッド。Django が <code>get_項目名_display()</code> を自動で作ります。</li>
+<li><strong><code>.values()</code></strong>（Django）: Django で、行をモデルではなく、決めた列だけの辞書で受け取るメソッド。<code>Request.objects.values("status").annotate(n=Count("id"))</code> は「状態ごとの数」を数える時の書き方です。</li>
+<li><strong><code>.annotate()</code></strong>（Django）: 問い合わせの 1 行ごとに、計算した値（数など）を付け足すメソッド。<code>values("status").annotate(n=Count("id"))</code> は「状態ごとの件数」（SQL の GROUP BY）。</li>
+<li><strong><code>.select_related()</code></strong>（Django）: つながった表（外部キーの先）を、1 回の問い合わせでまとめて読むメソッド。<code>select_related("approver")</code> で、ループの中で承認者を 1 人ずつ読みに行く無駄（N+1）を防げます。</li>
+<li><strong><code>get_user_model()</code></strong>（Django）: 今のプロジェクトで使っている「ユーザー」のモデルを返す関数。自分でユーザーのモデルを作った時も、これで正しく取れます。</li>
+<li><strong><code>date()</code></strong>（Python）: 日付を表す型。<code>date(2026, 11, 10)</code> のように作ります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p>動かした結果（<code>.\.venv\Scripts\python.exe manage.py shell -c "import orm_demo"</code>）:</p>
 <div class="codehilite"><div class="code-wrap" id="code-12"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>作った件数: 3
@@ -733,6 +794,17 @@ SQL: SELECT &quot;requests_app_request&quot;.&quot;id&quot;, &quot;requests_app_
         <span class="n">serializer</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">requester</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>render()</code></strong>（Django）: Django で、テンプレート（HTML のひな形）に値を入れて、答え（HTML）を作る関数。<code>render(request, "テンプレート名", {"名前": 値})</code>。</li>
+<li><strong><code>@login_required</code></strong>（Django）: 関数の画面（ビュー）の上に付けると、ログインしていない人をログインの画面へ移す印（デコレーター）です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><code>requests_app/urls.py</code>（アプリの URL の表）:</p>
 <div class="codehilite"><div class="code-wrap" id="code-14"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">django.urls</span><span class="w"> </span><span class="kn">import</span> <span class="n">include</span><span class="p">,</span> <span class="n">path</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">rest_framework.routers</span><span class="w"> </span><span class="kn">import</span> <span class="n">DefaultRouter</span>
@@ -747,6 +819,17 @@ SQL: SELECT &quot;requests_app_request&quot;.&quot;id&quot;, &quot;requests_app_
     <span class="n">path</span><span class="p">(</span><span class="s2">&quot;api/&quot;</span><span class="p">,</span> <span class="n">include</span><span class="p">(</span><span class="n">router</span><span class="o">.</span><span class="n">urls</span><span class="p">)),</span>
 <span class="p">]</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>path()</code></strong>（Django）: URL と、それに答える画面（ビュー）を結び付ける関数。<code>path("requests/&lt;int:pk&gt;/", views.detail)</code> の <code>&lt;int:pk&gt;</code> は、URL の中の数を <code>pk</code> という名前で受け取ります。</li>
+<li><strong><code>include()</code></strong>（Django）: URL の決まりの中で、ほかのファイル（アプリ）の URL の決まりを、まとめて取り込む関数。<code>path("api/", include("requests_app.urls"))</code> のように使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><code>config/urls.py</code>（いちばん上の URL の表。<code>accounts/</code> は Django に付いているログイン・ログアウトの画面）:</p>
 <div class="codehilite"><div class="code-wrap" id="code-15"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
@@ -872,6 +955,16 @@ SQL: SELECT &quot;requests_app_request&quot;.&quot;id&quot;, &quot;requests_app_
         <span class="k">return</span> <span class="n">value</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.ValidationError()</code></strong>（Django REST framework）: Django REST framework で、入力のまちがいを知らせるエラー。<code>raise serializers.ValidationError("件名を入れてください")</code> と書くと、その文が <code>400</code> の答えに入って返ります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <table>
 <thead>
 <tr>
@@ -987,6 +1080,20 @@ SQL: SELECT &quot;requests_app_request&quot;.&quot;id&quot;, &quot;requests_app_
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="mi">400</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertIn</span><span class="p">(</span><span class="s2">&quot;title&quot;</span><span class="p">,</span> <span class="n">res</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.assertEqual()</code></strong>（Django）: テストで、2 つの値が同じかを確かめるメソッド。<code>self.assertEqual(res.status_code, 403)</code>。</li>
+<li><strong><code>.force_authenticate()</code></strong>（Django REST framework）: テストで、決めたユーザーとしてログインしたことにして API を呼ぶためのメソッド（DRF のテスト用のクライアント）。</li>
+<li><strong><code>.json()</code></strong>（Django）: テストで受け取った答え（レスポンス）の本文を、JSON として読んで、Python のリストや辞書にするメソッド。<code>self.assertEqual(res.json(), [])</code>。</li>
+<li><strong><code>.post()</code></strong>（Django）: テストの係（<code>self.client</code>）で、POST のリクエストを送るメソッド。<code>self.client.post("/api/requests/", {…})</code> で、サーバーを動かさずに、API を試せます。</li>
+<li><strong><code>.assertIn()</code></strong>（Django）: テストで、値が入れ物の中にあるかを確かめるメソッド。<code>self.assertIn("title", res.json())</code>。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-19"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">manage</span><span class="p">.</span><span class="n">py</span> <span class="n">test</span> <span class="n">requests_app</span>
 </code></pre></div></div>

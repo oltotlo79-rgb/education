@@ -607,6 +607,16 @@ href=&quot;/requests/7&quot;&gt;<span class="ni">&amp;lt;</span>b<span class="ni
         <span class="k">return</span> <span class="n">value</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.category()</code></strong>（Python）: <code>unicodedata.category(c)</code> は、文字の種類を 2 文字で返す関数です。<code>"Cc"</code> は制御文字（改行・タブなどの、目に見えない特別な文字）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>08 の <code>src/request_form.rs</code>（08 のメールの部品は、改行を件名の中に閉じこめるので、メールは壊れない（11 章）。それでも、入れる理由の無い文字は、入り口で断る）:</p>
 <div class="codehilite"><div class="code-wrap" id="code-17"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">validate</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nc">std</span><span class="p">::</span><span class="n">result</span><span class="p">::</span><span class="nb">Result</span><span class="o">&lt;</span><span class="n">RequestInput</span><span class="p">,</span><span class="w"> </span><span class="nb">Vec</span><span class="o">&lt;</span><span class="nb">String</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">errors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Vec</span><span class="p">::</span><span class="n">new</span><span class="p">();</span>
@@ -640,6 +650,17 @@ href=&quot;/requests/7&quot;&gt;<span class="ni">&amp;lt;</span>b<span class="ni
 <span class="err">\</span><span class="n">echo</span><span class="w"> </span><span class="s1">&#39;--- 3. 正しい社員番号を、$1 で渡す&#39;</span>
 <span class="k">EXECUTE</span><span class="w"> </span><span class="n">find_employee</span><span class="p">(</span><span class="s1">&#39;012345&#39;</span><span class="p">);</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>PREPARE</code></strong>（SQL）: PostgreSQL で、値を入れる場所（<code>$1</code>）付きの SQL を、名前を付けて用意する命令。値は文と別に渡るので、SQL インジェクションが起きません。</li>
+<li><strong><code>EXECUTE</code></strong>（SQL）: <code>PREPARE</code> で用意した SQL に、値を渡して実行する命令。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p>結果（行数の表示は省いた）:</p>
 <div class="codehilite"><div class="code-wrap" id="code-20"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>--- 1. 社員番号を、文字としてつないだ SQL（だめな例）。入力: &#39; OR &#39;1&#39;=&#39;1
@@ -903,6 +924,21 @@ $ git ls-files（Git に入っている、秘密の入りそうな名前のフ�
 <span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">fs</span><span class="p">::</span><span class="n">remove_dir_all</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dir</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.bcc()</code></strong>（Topcoat）: メールの BCC（ほかの受け取り手には見えない宛先）を取り出すメソッド（テストで確かめる）。</li>
+<li><strong><code>.formatted()</code></strong>（Topcoat）: メールを、実際に送る形（ヘッダーと本文の文字の並び）にするメソッド。</li>
+<li><strong><code>.is_ascii_hexdigit()</code></strong>（文字）: その文字が 16 進数の数字（<code>0</code>〜<code>9</code>・<code>a</code>〜<code>f</code>・<code>A</code>〜<code>F</code>）なら <code>true</code> を返すメソッド。</li>
+<li><strong><code>.is_ascii_lowercase()</code></strong>（文字）: その文字が、半角の英小文字なら <code>true</code> を返すメソッド。</li>
+<li><strong><code>String::from_utf8()</code></strong>（文字列）: バイトの並び（<code>Vec&lt;u8&gt;</code>）を、文字列（<code>String</code>）に変える関数。UTF-8 の文字として読めない時は <code>Err</code> を返します。</li>
+<li><strong><code>Cx::default()</code></strong>（Topcoat）: テストなどで、空のリクエストの情報の箱（<code>Cx</code>）を作る書き方。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li><strong>「攻めてみた」ことを、テストにして残します。</strong> 一度確かめたことは、あとで誰かがコードを変えても、テストが見張ってくれます。</li>

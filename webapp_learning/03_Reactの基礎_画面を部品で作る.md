@@ -30,6 +30,14 @@ npm install       # 部品を入れる（最初の 1 回）
 npm run dev       # 開発用のサーバーを起動する
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`npm run`**（Node.js）: `package.json` の `scripts` に書いたコマンドを動かすコマンド。`npm run dev` は開発用のサーバーを起動し、`npm run build` は本番用のファイルを作ります。止める時は `Ctrl` ＋ `C` です。
+
+<!-- /first-use -->
+
 表示された `http://localhost:5173/` をブラウザで開きます。ファイルを直して保存すると、**すぐに画面に反映されます**。止めるときは `Ctrl`＋`C` です。
 
 | コマンド | 意味 |
@@ -76,6 +84,14 @@ export function StatusBadge({ status }: { status: RequestStatus }) {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`<span>`**（React）: 文の一部分を囲む、特別な意味の無いタグ（JSX の中でも HTML と同じ）。状態の札など、一部だけ見た目を変える時に使います。
+
+<!-- /first-use -->
+
 | 書き方 | 意味 |
 |---|---|
 | `export function StatusBadge(...)` | 部品は関数。**名前は大文字で始める**（小文字だと HTML のタグと見なされる） |
@@ -111,6 +127,14 @@ state は、`useState` で作ります。
 const [keyword, setKeyword] = useState("");   // 最初の値は空の文字
 // keyword … 今の値      setKeyword("部品") … 値を変えて、描き直してもらう
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`useState()`**（React）: React の部品に「覚えておく値」（state）を作る関数（フック）。`const [keyword, setKeyword] = useState("");` で、今の値 `keyword` と、値を変える関数 `setKeyword` ができます。`setKeyword(新しい値)` を呼ぶと、画面が描き直されます。
+
+<!-- /first-use -->
 
 ### 3.1 描き直しの流れ
 
@@ -182,6 +206,25 @@ export function RequestList() {
   );
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.includes()`**（TypeScript）: 文字列（配列）に、その文字（値）が含まれていれば `true` を返すメソッド。`r.title.includes(keyword)` は「件名に検索の言葉が入っているか」。
+> - **`useEffect()`**（React）: 「画面を描いたあとに、することがある」時に使う関数（フック）。`useEffect(() => { … }, [見張る値])` で、データを取ってくる・イベントを登録する、などをします。`[ ]` の中の値が変わった時だけ、もう一度動きます。
+> - **`<p>`**（React）: 段落のタグ（JSX の中でも HTML と同じ）。`return <p>読み込み中…</p>;` のように、部品が返す画面に使います。
+> - **`<section>`**（React）: ひとまとまりの部分（章）を表すタグ。
+> - **`<h1>`**（React）: いちばん大きな見出しのタグ（JSX の中でも HTML と同じ）。
+> - **`<input>`**（HTML）: 1 行の入力欄のタグ。`type` で種類（`text`・`email`・`password`・`hidden` など）を、`name` で送る時の名前を決めます。閉じタグはありません。
+> - **`<table>`**（React）: 表のタグ（JSX の中でも HTML と同じ）。
+> - **`<thead>`**（React）: 表の見出しの行をまとめるタグ。
+> - **`<tr>`**（React）: 表の 1 行のタグ。
+> - **`<th>`**（React）: 表の見出しのますのタグ。
+> - **`<tbody>`**（React）: 表の中身の行をまとめるタグ。
+> - **`<td>`**（React）: 表の中身のますのタグ。`<td>{r.id}</td>` のように、`{ }` の中に値を書けます。
+
+<!-- /first-use -->
 
 <div style="max-width: 760px; margin: 18px auto; text-align: center;">
 <img src="images/L03-s1_list.webp" alt="自分の依頼の一覧。件名でしぼる入力欄と、4件の依頼の表。状態の札の色が違う" style="width: 100%; border: 1px solid #cbd5e1;">
@@ -296,6 +339,26 @@ export function RequestForm({ onCreated }: Props) {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.trim()`**（JavaScript・TypeScript）: JavaScript・TypeScript で、文字列の前後の空白を取り除いたものを返すメソッド。
+> - **`.push()`**（JavaScript・TypeScript）: JavaScript・TypeScript で、配列の後ろに足すメソッド（元の配列が変わる）。
+> - **`.preventDefault()`**（React）: ブラウザーがふつうにする動き（フォームを送るとページを移動する など）を止めるメソッド。React でフォームを扱う時は、`onSubmit` の最初で `e.preventDefault()` を呼びます。
+> - **`<HTMLFormElement>`**（TypeScript）: `FormEvent<HTMLFormElement>` は、「`<form>` で起きた送信の出来事」の型。`< >` の中は、どのタグで起きたかを表します。
+> - **`<form>`**（HTML）: 入力欄とボタンをまとめて、送る（サーバーへ届ける）ためのタグ。`action` に送り先、`method="post"` に送り方を書きます。
+> - **`<ul>`**（React）: 順番の無い並び（点の付いた並び）のタグ。中に `<li>` を並べます。
+> - **`<li>`**（React）: 並びの 1 つ（list item）のタグ。配列を `map` で `<li>` にする時は、`key` を付けます。
+> - **`<div>`**（React）: 特別な意味の無い箱のタグ（JSX の中でも HTML と同じ）。JSX では `class` ではなく `className` で CSS の class を付けます。
+> - **`<label>`**（HTML）: 入力欄の名前を表すタグ。`<label for="title">件名</label>` の `for` と、入力欄の `id` を同じにすると、名前を押しても入力欄が選ばれ、読み上げソフトにも伝わります。
+> - **`<textarea>`**（React）: 何行も書ける入力欄のタグ。React では `value` と `onChange` で中身を state と結び付けます。
+> - **`<select>`**（React）: 選ぶ欄のタグ。React では `value` と `onChange` で、選んだ値を state と結び付けます。
+> - **`<option>`**（React）: `<select>` の中の選べる 1 つ（JSX でも HTML と同じ）。React では、選ばれている物を `<select value={…}>` の方で決めます。
+> - **`<button>`**（React）: ボタンのタグ。`onClick={() => …}` で、押した時にすることを決めます。
+
+<!-- /first-use -->
+
 **何も入れずに「依頼を送る」を押したとき:**
 
 <div style="max-width: 760px; margin: 18px auto; text-align: center;">
@@ -404,6 +467,21 @@ export function DrawingPad() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.getBoundingClientRect()`**（TypeScript）: タグが、画面のどこに、どの大きさで表示されているかを返すメソッド。マウスの位置を、図の中の位置に直す時に使います。
+> - **`.round()`**（JavaScript・TypeScript）: `Math.round(x)` は、小数を四捨五入して整数にする関数です。
+> - **`.min()`**（TypeScript）: `Math.min(a, b)` は、小さい方を返す関数です（大きい方は `Math.max`）。
+> - **`.abs()`**（TypeScript）: `Math.abs(x)` は、絶対値（マイナスを取った値）を返す関数です。
+> - **`<SVGSVGElement>`**（TypeScript）: `<svg>` のタグを表す型。`PointerEvent<SVGSVGElement>` は「`<svg>` の上で起きたマウスやペンの出来事」です。
+> - **`<svg>`**（React）: 図（線や四角）を描くタグ。中に `<rect>`（四角）・`<line>`（線）などを並べます。拡大しても線がぼやけません。
+> - **`<h2>`**（React）: 2 番目の大きさの見出しのタグ。
+> - **`<pre>`**（React）: 中の文字を、空白や改行もそのまま表示するタグ。JSON を見やすく表示する時に使います。
+
+<!-- /first-use -->
+
 <div style="max-width: 760px; margin: 18px auto; text-align: center;">
 <img src="images/L03-s7_drawing_added.webp" alt="図面の画面。四角が3つ描かれ、下に保存するJSON（217バイト）が表示されている" style="width: 100%; border: 1px solid #cbd5e1;">
 <div style="font-size: 12px; color: #64748b; margin-top: 6px;">図6-1: ドラッグで四角を 1 つ足したところ（2 個 → 3 個。JSON は 162 → 217 バイトになった）</div>
@@ -477,6 +555,20 @@ export function App() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.addEventListener()`**（TypeScript）: 出来事（クリック・URL の `#` の変化など）が起きた時に動く関数を登録するメソッド。`window.addEventListener("hashchange", onChange)`。
+> - **`.removeEventListener()`**（TypeScript）: `addEventListener` で登録した関数を、外すメソッド。`useEffect` の片づけで呼んで、同じ関数が何度も登録されるのを防ぎます。
+> - **`<header>`**（React）: ページの上の帯を表すタグ（JSX の中でも HTML と同じ）。
+> - **`<strong>`**（React）: 「大事」という意味のタグ（太字）。
+> - **`<nav>`**（React）: メニューを表すタグ。
+> - **`<a>`**（HTML）: リンクのタグ。`<a href="URL">文字</a>` で、押すとその URL へ移ります。
+> - **`<main>`**（HTML）: ページの「いちばん大事な中身」を表すタグ。ヘッダーやメニューを除いた本体を囲みます。
+
+<!-- /first-use -->
+
 `src/main.tsx`（React を HTML の `<div id="root">` に入れる、いちばん最初の所）:
 
 ```tsx
@@ -491,6 +583,16 @@ createRoot(document.getElementById("root")!).render(
   </StrictMode>,
 );
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.getElementById()`**（TypeScript）: `document.getElementById("root")` は、`id="root"` のタグを探して返す関数。React は、ここに画面を描きます。最後の `!` は「必ずある」と TypeScript に伝える印です。
+> - **`.render()`**（React）: `createRoot(要素).render(<App />)` は、React の部品（ここでは `<App />`）を、その要素の中に表示します。React の画面は、ここから始まります。
+> - **`<StrictMode>`**（React）: 開発の時だけ、まちがいを見つけやすくするために、部品をわざと 2 回描いてみるなどの確かめをする、React の部品。本番の動きには影響しません。
+
+<!-- /first-use -->
 
 - URL の `#/new` などで、どの画面を出すかを決めています。本物のアプリでは、**React Router** のような部品を使うと、`/requests/5` のような URL も扱えます（06）。
 - `useEffect` が返す関数（`return () => ...`）は、部品が画面から消えるときの**片付け**です。

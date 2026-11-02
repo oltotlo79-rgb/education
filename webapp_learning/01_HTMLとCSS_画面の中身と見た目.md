@@ -71,6 +71,14 @@ cd ~\Documents\my-practice\01
 code .
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`mkdir`**（PowerShell）: 「make directory（フォルダを作る）」の略。`mkdir ~\Documents\my-practice\01` のように、途中のフォルダもまとめて作れます（`~` はホームフォルダ `C:\Users\you`）。もう同じ名前のフォルダがあると、エラーで知らせます。
+
+<!-- /first-use -->
+
 2. VS Code の左の一覧（エクスプローラー）の空いている所を右クリック →「新しいファイル」→ `hello.html` と打って Enter キーを押します。
 3. 下のコードを打つ（または貼り付ける）→ `Ctrl` ＋ `S` で保存します。
 4. PowerShell で `explorer .` と打つと、このフォルダがエクスプローラーで開きます。`hello.html` をダブルクリックすると、ブラウザで開きます。
@@ -95,6 +103,20 @@ code .
   </body>
 </html>
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`<html>`**（HTML）: HTML の文書全体を包むタグ。`<html lang="ja">` の `lang="ja"` は「日本語の文書」という印で、読み上げソフトや翻訳に使われます。中に `<head>`（ページの情報）と `<body>`（画面に出す中身）を入れます。
+> - **`<head>`**（HTML）: ページの「情報」を書く所。題名（`<title>`）・文字コード（`<meta charset="utf-8">`）・CSS の読み込み（`<link>`）などを書きます。ここに書いた物は、画面の本文には出ません。
+> - **`<meta>`**（HTML）: ページの情報を書くタグ。`<meta charset="utf-8">` は文字コード（日本語が化けないように必ず書く）、`<meta name="viewport" content="width=device-width, initial-scale=1">` はスマホでも画面の幅に合わせて表示させる決まり文句です。閉じタグはありません。
+> - **`<title>`**（HTML）: ブラウザーのタブに出る、ページの題名のタグ。`<head>` の中に書きます。
+> - **`<body>`**（HTML）: 画面に出す中身を全部入れるタグ。見出し・段落・フォームなどは、全部この中に書きます。
+> - **`<h1>`**（HTML）: いちばん大きな見出し（heading 1）のタグ。数が大きいほど小さな見出しになります（`<h2>`〜`<h6>`）。`<h1>` は、1 ページに 1 つにします。
+> - **`<p>`**（HTML）: 段落（paragraph）のタグ。ひとまとまりの文を囲みます。段落と段落の間には、自動で少し間が空きます。
+
+<!-- /first-use -->
 
 <div style="max-width: 640px; margin: 18px auto; text-align: center;">
 <img src="images/L01-s1_hello.webp" alt="ブラウザに、依頼・承認アプリという大きな見出しと、2つの段落が表示されている" style="width: 100%; border: 1px solid #cbd5e1;">
@@ -212,6 +234,27 @@ code .
 </html>
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`<link>`**（HTML）: ほかのファイルとのつながりを書くタグ。`<link rel="stylesheet" href="style.css">` で、CSS のファイルを読み込みます。`<head>` の中に書き、閉じタグはありません。
+> - **`<header>`**（HTML）: ページの上の帯（アプリの名前・メニューなど）を表すタグ。見た目は CSS で決めます。意味の付いたタグを使うと、読み上げソフトなどにも構造が伝わります。
+> - **`<strong>`**（HTML）: 「大事」という意味を付けるタグ。ふつうは太字で表示されます。
+> - **`<nav>`**（HTML）: メニュー（ほかのページへのリンクのまとまり）を表すタグ。
+> - **`<a>`**（HTML）: リンクのタグ。`<a href="URL">文字</a>` で、押すとその URL へ移ります。
+> - **`<main>`**（HTML）: ページの「いちばん大事な中身」を表すタグ。ヘッダーやメニューを除いた本体を囲みます。
+> - **`<form>`**（HTML）: 入力欄とボタンをまとめて、送る（サーバーへ届ける）ためのタグ。`action` に送り先、`method="post"` に送り方を書きます。
+> - **`<div>`**（HTML）: 特別な意味を持たない「箱」のタグ。CSS で見た目や並べ方を決めるために、ほかのタグをまとめる時に使います。
+> - **`<label>`**（HTML）: 入力欄の名前を表すタグ。`<label for="title">件名</label>` の `for` と、入力欄の `id` を同じにすると、名前を押しても入力欄が選ばれ、読み上げソフトにも伝わります。
+> - **`<input>`**（HTML）: 1 行の入力欄のタグ。`type` で種類（`text`・`email`・`password`・`hidden` など）を、`name` で送る時の名前を決めます。閉じタグはありません。
+> - **`<textarea>`**（HTML）: 何行も書ける入力欄のタグ。`<textarea name="detail" rows="4"></textarea>` の `rows` は、見えている行の数です。最初から入れておく文字は、タグの間に書きます。
+> - **`<select>`**（HTML）: 選ぶ欄（プルダウン）のタグ。中に `<option value="値">表示する文字</option>` を並べます。`selected` を付けた物が、最初に選ばれます。
+> - **`<option>`**（HTML）: `<select>`（選ぶ欄）の中の、選べる 1 つ。`<option value="new">新しく作る</option>` の `value` が送られる値、間の文字が画面に出る文字です。`selected` で最初に選ばれます。
+> - **`<button>`**（HTML）: ボタンのタグ。フォームの中の `<button type="submit">送る</button>` は、押すとフォームを送ります。`type="button"` にすると、送らない、ふつうのボタンになります。
+
+<!-- /first-use -->
+
 | 部分 | 意味 |
 |---|---|
 | `<form action="/requests" method="post">` | 「送る」を押すと、入力した物を `/requests` へ、`POST`（処理をお願いする送り方。onprem の 00 基礎知識 5.4）で送る |
@@ -286,6 +329,20 @@ code .
 </html>
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`<table>`**（HTML）: 表のタグ。中に `<thead>`（見出しの行）と `<tbody>`（中身の行）を入れ、行は `<tr>`、ますは `<th>`（見出し）か `<td>`（中身）で作ります。
+> - **`<thead>`**（HTML）: 表の見出しの行をまとめるタグ。
+> - **`<tr>`**（HTML）: 表の 1 行（table row）のタグ。中に `<th>` や `<td>` を並べます。
+> - **`<th>`**（HTML）: 表の見出しのます（table header）のタグ。ふつうは太字で表示されます。
+> - **`<tbody>`**（HTML）: 表の中身の行をまとめるタグ。
+> - **`<td>`**（HTML）: 表の中身のます（table data）のタグ。
+> - **`<span>`**（HTML）: 文の一部分を囲む、特別な意味の無いタグ。CSS で、その部分だけ色を変える時などに使います（`<div>` と違い、改行しません）。
+
+<!-- /first-use -->
+
 <div style="max-width: 760px; margin: 18px auto; text-align: center;">
 <img src="images/L01-s3_list.webp" alt="自分の依頼の一覧の表。状態の列に、回覧中（白）、差し戻し中（オレンジ）、回覧完了（青）、完了（グレー）の札" style="width: 100%; border: 1px solid #cbd5e1;">
 <div style="font-size: 12px; color: #64748b; margin-top: 6px;">図4-1: 依頼の一覧。状態ごとに札の色を変えている</div>
@@ -332,6 +389,16 @@ HTML から CSS を読み込むには、`<head>` に `<link rel="stylesheet" hre
 body { color: var(--navy); }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`navy:`**（CSS）: この資料の CSS で決めた色の変数（`--navy`：濃紺。文字や線の色）。`:root { --navy: #1e3a5f; }` のように、名前の頭を `--` にして決め、`color: var(--navy);` のように使います。色を 1 か所で決めておくと、あとで変える時に 1 か所直すだけで済みます。
+> - **`blue:`**（CSS）: この資料の CSS で決めた色の変数（`--blue`：青。ボタンやリンクの色）。`var(--blue)` で使います。
+> - **`color:`**（CSS）: 文字の色を決める項目。`color: var(--navy);` や `color: #eb5757;` のように書きます。
+
+<!-- /first-use -->
+
 色を変えたくなったら、ここを 1 か所直すだけで、全部の画面の色が変わります。この資料の図の色も、同じ 6 色にそろえています。
 
 > **用語:** カスタム プロパティ（CSS の変数。`--名前: 値;` で決め、`var(--名前)` で使う）
@@ -368,6 +435,16 @@ body { color: var(--navy); }
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`display:`**（CSS）: 箱の並べ方を決める項目。`display: flex;` は「中身を横一列に並べる」、`display: grid;` は「ます目に並べる」、`display: none;` は「表示しない」です。
+> - **`align-items:`**（CSS）: `display: flex` の中身を、上下（横に並べた時の縦）のどこにそろえるかを決める項目。`center` で真ん中にそろえます。
+> - **`justify-content:`**（CSS）: `display: flex` の中身を、並ぶ向きにどう配るかを決める項目。`space-between` は「両端に寄せて、間を均等に空ける」。
+
+<!-- /first-use -->
+
 **grid（格子に並べる）:** 入力フォームで、左にラベル（160px）、右に入力欄（残りの全部）の 2 列にしています。
 
 ```css
@@ -377,6 +454,15 @@ body { color: var(--navy); }
   gap: 12px 16px;                    /* 行の間 12px、列の間 16px */
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`grid-template-columns:`**（CSS）: `display: grid` の、列の幅を決める項目。`160px 1fr` は「1 列目は 160px、2 列目は残り全部」。`fr` は「残りを分ける割合」です。
+> - **`gap:`**（CSS）: `flex` や `grid` の中身どうしの間の幅を決める項目。`gap: 12px 16px;` は「行の間 12px、列の間 16px」。
+
+<!-- /first-use -->
 
 > **用語:** `fr`（フラクション：grid で「残りの幅を分ける割合」。`1fr` は残り全部）
 
@@ -391,6 +477,17 @@ body { color: var(--navy); }
   .approvers { flex-direction: column; }                 /* 回覧者を縦に並べる */
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`max-width:`**（CSS）: `@media (max-width: 640px) { … }` は、「画面の幅が 640px 以下の時だけ、中の決まりを使う」という書き方（スマホ向けの見た目）。箱に書く `max-width: 760px;` は、「幅の上限」です。
+> - **`margin:`**（CSS）: 箱の外側の余白を決める項目。`margin: 12px;` は上下左右に 12px。2 つ書くと「上下 左右」、4 つ書くと「上 右 下 左」の順です。
+> - **`padding:`**（CSS）: 箱の内側の余白（枠と中身の間）を決める項目。書き方は `margin` と同じです。
+> - **`flex-direction:`**（CSS）: `display: flex` の中身を並べる向きを決める項目。`row` は横（最初の値）、`column` は縦に並べます。
+
+<!-- /first-use -->
 
 <div style="max-width: 420px; margin: 18px auto; text-align: center;">
 <img src="images/L01-s4_form_mobile.webp" alt="幅のせまい画面では、ラベルの下に入力欄、回覧者の選ぶ欄も縦に並ぶ" style="width: 100%; border: 1px solid #cbd5e1;">

@@ -257,6 +257,23 @@ li, tr { page-break-inside: avoid; }
 <span class="k">CREATE</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">webapp_dev</span><span class="w"> </span><span class="k">OWNER</span><span class="w"> </span><span class="n">webapp_dev_app</span><span class="w"> </span><span class="k">ENCODING</span><span class="w"> </span><span class="s1">&#39;UTF8&#39;</span><span class="w"> </span><span class="k">TEMPLATE</span><span class="w"> </span><span class="n">template0</span><span class="p">;</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>CREATE</code></strong>（SQL）: <code>CREATE ROLE</code>（ユーザーを作る）・<code>CREATE DATABASE</code>（データベースを作る）・<code>CREATE TABLE</code>（表を作る）のように、何かを新しく作る SQL の命令です。</li>
+<li><strong><code>ROLE</code></strong>（SQL）: PostgreSQL のユーザー（ログインする名前と、持つ権限のまとまり）。<code>CREATE ROLE webapp_dev_app LOGIN CREATEDB;</code> は「ログインでき、データベースを作れるユーザー」を作ります。</li>
+<li><strong><code>LOGIN</code></strong>（SQL）: <code>CREATE ROLE … LOGIN</code> で、そのユーザーがログインできるようにします。</li>
+<li><strong><code>CREATEDB</code></strong>（SQL）: <code>CREATE ROLE … CREATEDB</code> で、そのユーザーがデータベースを作れるようにします（Django のテストが、テスト用のデータベースを作るのに要ります）。</li>
+<li><strong><code>DATABASE</code></strong>（SQL）: <code>CREATE DATABASE 名前</code> で、データベースを作ります。</li>
+<li><strong><code>OWNER</code></strong>（SQL）: <code>OWNER ユーザー</code> で、そのデータベースの持ち主を決めます。持ち主は、中の表を自由に作れます。</li>
+<li><strong><code>ENCODING</code></strong>（SQL）: <code>ENCODING 'UTF8'</code> で、データベースの文字コードを UTF-8 にします（日本語を正しく入れるため）。</li>
+<li><strong><code>TEMPLATE</code></strong>（SQL）: <code>TEMPLATE template0</code> で、何も手を加えていない元の形から、データベースを作ります（文字コードを指定する時に必要）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li><code>CREATEDB</code> は、<strong>自動のテストのため</strong>です。Django のテストは、テスト専用のデータベース（<code>test_webapp_dev</code>）を作ってから動き、終わったら消します。この権限が無いと、テストが「permission denied to create database」で止まります。<strong>会社のサーバーのユーザーには付けません。</strong></li>
 </ul>
@@ -326,12 +343,42 @@ EMAIL_BACKEND=django.core.mail.backends.filebased.EmailBackend
 <span class="n">exit</span> <span class="nv">$code</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>param</code></strong>（PowerShell）: スクリプトが受け取る引数を決める書き方。<code>param([string[]] $ManageArgs)</code> は、スクリプトに渡した値を <code>$ManageArgs</code> に入れます。</li>
+<li><strong><code>if</code></strong>（PowerShell）: PowerShell の条件の書き方。<code>if (-not (Test-Path $envFile)) { … }</code> は「ファイルが無ければ」。比べる時は <code>-eq</code>・<code>-ne</code>・<code>-not</code> などを使います。</li>
+<li><strong><code>Test-Path</code></strong>（PowerShell）: ファイルやフォルダがあるかを調べるコマンド。あれば <code>True</code>、無ければ <code>False</code>。</li>
+<li><strong><code>foreach</code></strong>（PowerShell）: PowerShell のくり返し。<code>foreach ($line in Get-Content $envFile) { … }</code> は、ファイルの 1 行ずつを <code>$line</code> に入れて、中を動かします。</li>
+<li><strong><code>Set-Item</code></strong>（PowerShell）: 項目の値を設定するコマンド。<code>Set-Item -Path "Env:名前" -Value 値</code> で、この PowerShell の窓の中だけの環境変数を設定します。</li>
+<li><strong><code>Set-Item -Path</code></strong>（PowerShell）: <code>-Path "Env:名前"</code> で、どの項目（ここでは環境変数）を設定するかを指定します。</li>
+<li><strong><code>Set-Item -Value</code></strong>（PowerShell）: <code>-Value 値</code> で、設定する値を指定します。</li>
+<li><strong><code>Push-Location</code></strong>（PowerShell）: 今いるフォルダを覚えてから、指定したフォルダへ移るコマンド。あとで <code>Pop-Location</code> を打つと、覚えたフォルダへ戻れます。</li>
+<li><strong><code>try</code></strong>（PowerShell）: <code>try { … } finally { … }</code> で、途中で失敗しても、<code>finally</code> の中（元のフォルダへ戻る など）を必ず動かす書き方。</li>
+<li><strong><code>Pop-Location</code></strong>（PowerShell）: <code>Push-Location</code> で覚えたフォルダへ戻るコマンド。</li>
+<li><strong><code>exit</code></strong>（PowerShell）: スクリプトを、決めた終了コードで終えるコマンド。<code>exit $code</code> は、manage.py の終了コードをそのまま返します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>会社のサーバーでは、これと同じ働きをする <code>manage.ps1</code>（WinSW の XML を読む。onprem の 05 の 9.4）を使います。<strong>どちらも、終わったらパスワードを窓に残しません。</strong></p>
 <div class="codehilite"><div class="code-wrap" id="code-7"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">.\</span><span class="n">dev</span><span class="p">.</span><span class="n">ps1</span> <span class="n">migrate</span>          <span class="c"># テーブルを作る</span>
 <span class="p">.\</span><span class="n">dev</span><span class="p">.</span><span class="n">ps1</span> <span class="n">seed_demo</span>        <span class="c"># 練習用の社員を 5 人作る（開発用のパソコンだけ）</span>
 <span class="p">.\</span><span class="n">dev</span><span class="p">.</span><span class="n">ps1</span> <span class="n">runserver</span>        <span class="c"># 開発用のサーバー（http://127.0.0.1:8000/）</span>
 <span class="p">.\</span><span class="n">dev</span><span class="p">.</span><span class="n">ps1</span> <span class="n">test</span>             <span class="c"># 自動のテスト</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.\dev.ps1</code></strong>（PowerShell）: 今いるフォルダの <code>dev.ps1</code>（この資料で作った、設定を読んでから manage.py を動かすスクリプト）を動かす書き方。<code>.\dev.ps1 migrate</code> のように、後ろに manage.py の命令を書きます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <blockquote>
 <p><strong>PowerShell の落とし穴:</strong> <code>.\dev.ps1 test -v 2</code> のように <strong><code>-v</code> を付けると、PowerShell が自分のための指定（<code>-Verbose</code>）として受け取ってしまい</strong>、Django に届きません（試して確かめた）。<code>--verbosity 2</code> のように、長い書き方を使います。</p>
@@ -496,6 +543,24 @@ EMAIL_BACKEND=django.core.mail.backends.filebased.EmailBackend
 <span class="n">DEFAULT_AUTO_FIELD</span> <span class="o">=</span> <span class="s2">&quot;django.db.models.BigAutoField&quot;</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>is</code></strong>（Python）: 「同じ物か」を調べる書き方。<code>if value is None:</code> は「値が無ければ」。<code>None</code> と比べる時は <code>==</code> でなく <code>is</code> を使います。</li>
+<li><strong><code>False</code></strong>（Python）: Python の「正しくない（いいえ）」の値。</li>
+<li><strong><code>.resolve()</code></strong>（Python）: <code>Path(__file__).resolve()</code> は、ファイルの場所を、<code>C:\</code> から始まる絶対の場所にするメソッド。<code>.parent</code> で 1 つ上のフォルダになります。</li>
+<li><strong><code>.lower()</code></strong>（Python）: 英字を小文字にした文字列を返すメソッド。<code>"True".lower() == "true"</code> のように、大文字小文字をそろえて比べます。</li>
+<li><strong><code>.split()</code></strong>（Python）: Python で、文字列を分けてリストにするメソッド。<code>"a b  c".split()</code> のように何も渡さないと、空白（いくつ続いても）で分けます。</li>
+<li><strong><code>.exists()</code></strong>（Python）: <code>Path</code> のファイルやフォルダがあれば <code>True</code> を返すメソッド。</li>
+<li><strong><code>.match()</code></strong>（Python）: <code>re.match(パターン, 文字列)</code> は、文字列の<strong>先頭から</strong>正規表現に合うかを調べる関数です。合えば、見つかった物が返ります（合わなければ <code>None</code>）。</li>
+<li><strong><code>str()</code></strong>（Python）: 値を文字列に変える関数。<code>str(8080)</code> は <code>"8080"</code>。数と文字列は <code>==</code> で比べても等しくならないので、そろえる時に使います。</li>
+<li><strong><code>int()</code></strong>（Python）: 文字列などを整数にする関数。<code>int("25")</code> は 25。数でない文字だと <code>ValueError</code> です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>onprem の 05 の WinSW の XML と、<strong>同じ名前の環境変数</strong>を読みます。</p>
 <table>
 <thead>
@@ -619,6 +684,20 @@ EMAIL_BACKEND=django.core.mail.backends.filebased.EmailBackend
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">（</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">employee_no</span><span class="si">}</span><span class="s2">）&quot;</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.set_password()</code></strong>（Django）: ユーザーのパスワードを、元に戻せない形（ハッシュ）にしてから設定するメソッド。パスワードをそのまま保存しないために、必ずこれを使います。</li>
+<li><strong><code>.set_unusable_password()</code></strong>（Django）: そのユーザーを、パスワードではログインできないようにするメソッド（別の方法でログインする人や、作ったばかりの人に使う）。</li>
+<li><strong><code>.update()</code></strong>（Python）: 辞書に、別の辞書の中身をまとめて入れる（上書きする）メソッド。Django の問い合わせの <code>.update(項目=値)</code> は、合う行をまとめて書きかえる、別の意味です。</li>
+<li><strong><code>.EmailField()</code></strong>（Django）: メールアドレスの列を表すモデルの項目。入力がメールアドレスの形かを確かめてくれます。</li>
+<li><strong><code>.BooleanField()</code></strong>（Django）: はい・いいえ（<code>True</code>・<code>False</code>）の列を表すモデルの項目。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li><strong>従業員番号でログイン</strong>するように、Django の <code>User</code> を自分で作り直しています（<code>USERNAME_FIELD = "employee_no"</code>）。氏名は「山田 太郎」の順で 1 つの項目に持ちます（05 で、名・姓の順に出た問題を直した）。</li>
 <li>権限（<code>role</code>）は「一般」「担当者」「管理者」の 3 つです。</li>
@@ -724,6 +803,18 @@ EMAIL_BACKEND=django.core.mail.backends.filebased.EmailBackend
     <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">action</span><span class="si">}</span><span class="s2">&quot;</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.JSONField()</code></strong>（Django）: JSON（図面のデータなど）をそのまま入れる列を表すモデルの項目。PostgreSQL では、中を検索することもできます。</li>
+<li><strong><code>.FileField()</code></strong>（Django）: 上げられたファイルの置き場所を入れる列を表すモデルの項目。<code>upload_to="attachments/%Y/%m/"</code> で、年・月ごとのフォルダに保存します。</li>
+<li><strong><code>.PositiveIntegerField()</code></strong>（Django）: 0 以上の整数の列を表すモデルの項目。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <table>
 <thead>
@@ -1036,6 +1127,25 @@ EMAIL_BACKEND=django.core.mail.backends.filebased.EmailBackend
         <span class="n">_mail</span><span class="p">(</span><span class="n">to</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;納期が近づいています: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;due_soon.txt&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;r&quot;</span><span class="p">:</span> <span class="n">r</span><span class="p">})</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>and</code></strong>（Python）: 「かつ」。両方が成り立つ時だけ <code>True</code>。左が成り立たない時は、右を調べません。</li>
+<li><strong><code>lambda</code></strong>（Python）: その場で作る小さな関数。<code>lambda: send_mail(…)</code> は「呼ばれたらメールを送る関数」。名前を付けるほどでもない、短い処理を渡す時に使います。</li>
+<li><strong><code>.now()</code></strong>（Django）: <code>timezone.now()</code> は、今の日時を、時差付きで返します（Django の設定に合わせた形）。Python の <code>datetime.now()</code> は時差が付かないので、Django ではこちらを使います。</li>
+<li><strong><code>.select_for_update()</code></strong>（Django）: 問い合わせで読んだ行に、ほかの人が同時に書きかえられないよう鍵をかけるメソッド（<code>transaction.atomic()</code> の中で使う）。2 人が同時に承認しても、順番に処理されます。</li>
+<li><strong><code>.first()</code></strong>（Django）: 問い合わせの結果の最初の 1 件を返すメソッド。無ければ <code>None</code> です（<code>get()</code> と違い、エラーになりません）。</li>
+<li><strong><code>.on_commit()</code></strong>（Django）: <code>transaction.on_commit(関数)</code> は、データベースへの保存が確定（コミット）してから関数を動かす書き方。保存が取り消されたのにメールだけ送られる、という事故を防ぎます。</li>
+<li><strong><code>.localtime()</code></strong>（Django）: <code>timezone.localtime()</code> は、今の時刻を、設定した時間帯（日本時間）で返す関数です。</li>
+<li><strong><code>render_to_string()</code></strong>（Django）: テンプレート（文の型）に値を入れて、文字列（メールの本文など）を作る関数。</li>
+<li><strong><code>send_mail()</code></strong>（Django）: メールを送る関数。<code>send_mail(件名, 本文, 差出人, [宛先])</code>。送り先のサーバー（SMTP）は設定で決めます（09 巻）。</li>
+<li><strong><code>@transaction</code></strong>（Django）: <code>@transaction.atomic</code> を関数の上に付けると、その関数の中のデータベースの変更が「全部成功か、全部取り消し」になります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <table>
 <thead>
 <tr>
@@ -1224,6 +1334,17 @@ http://127.0.0.1:8000/approve/eMFDHNzld3lgRKV02_4w1oXTHWig1BabLZGNHXwjOBI/
     <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s2">&quot;workflow/approve.html&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;step&quot;</span><span class="p">:</span> <span class="n">check</span><span class="o">.</span><span class="n">step</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">:</span> <span class="n">r</span><span class="p">,</span> <span class="s2">&quot;attachments&quot;</span><span class="p">:</span> <span class="n">r</span><span class="o">.</span><span class="n">attachments</span><span class="o">.</span><span class="n">all</span><span class="p">()})</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>require_http_methods()</code></strong>（Django）: 画面（ビュー）が受け付ける HTTP のメソッドを決める物。<code>@require_http_methods(["GET", "POST"])</code> 以外で来たら、405 で断ります。</li>
+<li><strong><code>@require_http_methods</code></strong>（Django）: <code>@require_http_methods(["GET", "POST"])</code> を画面の関数の上に付けて、使えるメソッドを絞ります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><code>templates/workflow/approve.html</code>:</p>
 <div class="codehilite"><div class="code-wrap" id="code-15"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>{% extends &quot;workflow/base.html&quot; %}
 {% block title %}承認 - {{ r.title }}{% endblock %}
@@ -1264,6 +1385,18 @@ http://127.0.0.1:8000/approve/eMFDHNzld3lgRKV02_4w1oXTHWig1BabLZGNHXwjOBI/
   <span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
 {% endblock %}
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>&lt;h2&gt;</code></strong>（HTML）: 2 番目の大きさの見出しのタグ。</li>
+<li><strong><code>&lt;svg&gt;</code></strong>（HTML）: 図（線や四角）を描くタグ。中に <code>&lt;rect&gt;</code>（四角）・<code>&lt;line&gt;</code>（線）などを並べます。</li>
+<li><strong><code>&lt;rect&gt;</code></strong>（HTML）: SVG の中で、四角を描くタグ。<code>x</code>・<code>y</code>（左上の位置）・<code>width</code>・<code>height</code>（大きさ）で決めます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div style="max-width: 760px; margin: 18px auto; text-align: center;">
 <img src="../images/L06-s1_approve_page.webp" alt="承認のお願い（回覧者1）の画面。件名・依頼者・希望の納期・内容・添付・図面と、差し戻すときの理由の入力欄、差し戻しと承認のボタン" style="width: 100%; border: 1px solid #cbd5e1;">
@@ -1359,6 +1492,20 @@ http://127.0.0.1:8000/approve/eMFDHNzld3lgRKV02_4w1oXTHWig1BabLZGNHXwjOBI/
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">head</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">sig</span><span class="p">)</span> <span class="k">for</span> <span class="n">sig</span> <span class="ow">in</span> <span class="n">SIGNATURES</span><span class="p">[</span><span class="n">ext</span><span class="p">]):</span>
         <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s2">&quot;ファイルの中身が、拡張子と合いません。&quot;</span><span class="p">)</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.dumps()</code></strong>（Python）: <code>json.dumps(値, ensure_ascii=False)</code> は、Python の値を JSON の文字列にする関数です（<code>ensure_ascii=False</code> で日本語をそのまま）。</li>
+<li><strong><code>.rsplit()</code></strong>（Python）: 文字列を、後ろから区切るメソッド。<code>name.rsplit(".", 1)[-1]</code> は、ファイル名の最後の <code>.</code> の後ろ（拡張子）です。</li>
+<li><strong><code>.startswith()</code></strong>（Python）: 文字列（バイト）が、その中身で始まっていれば <code>True</code> を返すメソッド。ファイルの先頭の数バイトで、本当の種類を確かめる時に使います。</li>
+<li><strong><code>isinstance()</code></strong>（Python）: 値が、その型かどうかを調べる関数。<code>isinstance(value, dict)</code> は「辞書か」。</li>
+<li><strong><code>any()</code></strong>（Python）: 並びの中に、1 つでも <code>True</code> があれば <code>True</code> を返す関数。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li>ファイルの名前（拡張子）は、だれでも自由に変えられます。プログラムの実行ファイルに <code>.pdf</code> と名前を付けて送ることもできるので、<strong>中身の先頭の数バイト</strong>（ファイルの種類ごとに決まった印）も確かめます。</li>
@@ -1508,6 +1655,27 @@ http://127.0.0.1:8000/approve/eMFDHNzld3lgRKV02_4w1oXTHWig1BabLZGNHXwjOBI/
     <span class="n">u</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
     <span class="k">return</span> <span class="n">Response</span><span class="p">({</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">pk</span><span class="p">,</span> <span class="s2">&quot;employee_no&quot;</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">employee_no</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">role</span><span class="p">})</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.prefetch_related()</code></strong>（Django）: 「たくさん」の側のつながり（1 つの依頼の、何人もの承認者など）を、まとめて読んでおくメソッド。N+1 の問い合わせを防ぎます。</li>
+<li><strong><code>.distinct()</code></strong>（Django）: 問い合わせの結果から、重なった行を消すメソッド。JOIN で同じ依頼が何度も出る時に使います。</li>
+<li><strong><code>.is_valid()</code></strong>（Django REST framework）: 送られてきたデータが、シリアライザー（入力の確かめ係）の決まりに合うかを調べるメソッド。<code>raise_exception=True</code> で、合わない時は 400 の答えにします。</li>
+<li><strong><code>.read()</code></strong>（Python）: ファイルの中身を全部読んで、文字列で返すメソッド。<code>open(パス, encoding="utf-8").read()</code>。</li>
+<li><strong><code>.seek()</code></strong>（Python）: ファイルの読む位置を動かすメソッド。<code>f.seek(0)</code> で先頭に戻ります（先頭の数バイトを読んで確かめたあと、保存のために戻す）。</li>
+<li><strong><code>.exclude()</code></strong>（Django）: 問い合わせから、条件に合う行を除くメソッド（<code>filter</code> の逆）。</li>
+<li><strong><code>api_view()</code></strong>（Django REST framework）: 関数を、DRF の API の画面にする物。<code>@api_view(["GET", "POST"])</code> のように使います。</li>
+<li><strong><code>get_object_or_404()</code></strong>（Django）: 1 件を取り出し、無ければ 404（見つかりません）の答えにする関数。</li>
+<li><strong><code>parser_classes()</code></strong>（Django REST framework）: API が受け付ける送り方（JSON・ファイル付きのフォームなど）を決める物。</li>
+<li><strong><code>dict()</code></strong>（Python）: 辞書を作る関数。<code>dict(Request.Status.choices)</code> は、「値 → 画面の名前」の辞書になります。</li>
+<li><strong><code>@api_view</code></strong>（Django REST framework）: <code>@api_view(["GET", "POST"])</code> を関数の上に付けて、API にします。決めたメソッド以外は 405 で断られます。</li>
+<li><strong><code>@parser_classes</code></strong>（Django REST framework）: <code>@parser_classes([MultiPartParser])</code> を付けて、ファイル付きのフォーム（multipart）を受け付けるようにします。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><code>config/urls.py</code>:</p>
 <div class="codehilite"><div class="code-wrap" id="code-19"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">django.contrib</span><span class="w"> </span><span class="kn">import</span> <span class="n">admin</span>
@@ -1692,6 +1860,21 @@ http://127.0.0.1:8000/approve/eMFDHNzld3lgRKV02_4w1oXTHWig1BabLZGNHXwjOBI/
         <span class="k">return</span> <span class="n">rows</span><span class="p">,</span> <span class="n">errors</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.add_argument()</code></strong>（Django の道具）: manage.py の自分のコマンドで、受け取る引数を決めるメソッド（<code>argparse</code> の仕組み）。</li>
+<li><strong><code>.write()</code></strong>（Python）: ファイルに文字を書くメソッド。<code>f.write(line + "\n")</code>（改行は自分で付けます）。</li>
+<li><strong><code>.atomic()</code></strong>（Django）: <code>with transaction.atomic():</code> の中のデータベースの変更を、「全部成功か、全部取り消し」にする書き方。</li>
+<li><strong><code>.update_or_create()</code></strong>（Django）: 条件に合う行があれば書きかえ、無ければ作るメソッド。<code>(物, 新しく作ったか)</code> の組が返ります。</li>
+<li><strong><code>.SUCCESS()</code></strong>（Django の道具）: <code>self.style.SUCCESS(文)</code> は、manage.py のコマンドの出力を、成功の色（緑）にする関数です。</li>
+<li><strong><code>validate_email()</code></strong>（Django）: メールアドレスの形として正しいかを調べ、正しくなければ <code>ValidationError</code> を起こす関数。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>間違いのある CSV（<code>sample_data\employees_bad.csv</code>）と、正しい CSV（<code>sample_data\employees.csv</code>）で動かした結果:</p>
 <div class="codehilite"><div class="code-wrap" id="code-21"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>PS&gt; .\dev.ps1 import_employees sample_data\employees_bad.csv
 × 3 行目: 従業員番号は 6 桁の数字にしてください（&#39;30004&#39;）
@@ -1759,6 +1942,16 @@ PS&gt; .\dev.ps1 import_employees sample_data\employees.csv
             <span class="n">services</span><span class="o">.</span><span class="n">notify_due_soon</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;送り直した承認のお願い: </span><span class="si">{</span><span class="n">resent</span><span class="si">}</span><span class="s2"> 件 / 納期が近い依頼: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">due_soon</span><span class="p">)</span><span class="si">}</span><span class="s2"> 件&quot;</span><span class="p">)</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.localdate()</code></strong>（Django）: <code>timezone.localdate()</code> は、今日の日付を、設定した時間帯（日本時間）で返す関数です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p>動かした結果（練習のデータでは、まだ対象が無い）:</p>
 <div class="codehilite"><div class="code-wrap" id="code-23"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>PS&gt; .\dev.ps1 send_daily_reminders
@@ -1834,6 +2027,17 @@ PS&gt; .\dev.ps1 import_employees sample_data\employees.csv
     <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaisesMessage</span><span class="p">(</span><span class="n">services</span><span class="o">.</span><span class="n">WorkflowError</span><span class="p">,</span> <span class="s2">&quot;承認済みです&quot;</span><span class="p">):</span>
         <span class="n">services</span><span class="o">.</span><span class="n">approve</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>                  <span class="c1"># 2 回目は断られる</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.assertRaisesMessage()</code></strong>（Django）: テストで、「この処理は、このエラー（文）を起こすはず」を確かめるメソッド。<code>with self.assertRaisesMessage(エラーの型, "文"):</code> の中で処理を呼びます。</li>
+<li><strong><code>token_in()</code></strong>（練習アプリで作る物（Python））: テストの中で作る小さな関数。送られたメールの本文から、承認の URL の文字列（トークン）を取り出します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li>テストの中では、メールは本当には送られず、<code>mail.outbox</code> という箱にたまります。送られたはずのメールの宛先や本文を確かめられます。</li>

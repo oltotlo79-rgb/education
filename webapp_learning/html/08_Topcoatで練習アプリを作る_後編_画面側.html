@@ -440,6 +440,30 @@ li, tr { page-break-inside: avoid; }
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>#[query_params]</code></strong>（Topcoat）: Topcoat の印（属性）。<code>?q=rust&amp;page=2</code> のようなクエリ（URL の <code>?</code> の後ろ）を読むための構造体に付けます。項目は <code>Option&lt;T&gt;</code> にしておき、無い・空の時は <code>None</code> になります。</li>
+<li><strong><code>.cookies()</code></strong>（Topcoat）: ルーターに、クッキーを使う仕組みを登録するメソッド（<code>module_router!().cookies()</code>）。セッションを使う時も、先にこれを登録します。</li>
+<li><strong><code>.sessions()</code></strong>（Topcoat）: ルーターに、セッション（ログインの状態を覚える仕組み）を登録するメソッド。<code>.sessions(SessionConfig::default())</code>。先に <code>.cookies()</code> も登録します。</li>
+<li><strong><code>.layer()</code></strong>（Topcoat）: ルーターに、すべてのリクエストの前後で動く仕組み（レイヤー。受け取る大きさの上限など）を足すメソッド。</li>
+<li><strong><code>.at()</code></strong>（Topcoat）: <code>BodyLimit</code> などのレイヤーを、決めた URL の下だけで効かせるメソッド。<code>.at("/requests")</code> は <code>/requests</code> から始まる URL だけ。</li>
+<li><strong><code>.downcast_ref()</code></strong>（エラー処理）: いろいろな種類が入るエラー（<code>anyhow::Error</code> など）の中身が、指定した型なら、それを借りて <code>Some</code> で返すメソッド。「このエラーは〇〇の種類か」を調べる時に使います。</li>
+<li><strong><code>.query()</code></strong>（Topcoat）: <code>href!(…)</code> で作った URL に、<code>?mine=1</code> のような問い合わせの部分を足すメソッド。<code>href!(home).query(MineOnly { mine: "1" })</code>。</li>
+<li><strong><code>BodyLimit::max()</code></strong>（Topcoat）: 上限の大きさ（バイト）を決めて <code>BodyLimit</code> を作る関数。<code>BodyLimit::max(60 * 1024 * 1024)</code> は 60MB です。</li>
+<li><strong><code>RouterBuilderCookieExt</code></strong>（Topcoat）: ルーターに <code>.cookies()</code>（クッキーを使う仕組み）を登録できるようにする機能（トレイト）。</li>
+<li><strong><code>RouterBuilderMailExt</code></strong>（Topcoat）: ルーターに <code>.mail(…)</code>（メールの設定を登録する）を足すための、Topcoat のトレイト。<code>use</code> しておくと <code>.mail(mail)</code> を呼べます。</li>
+<li><strong><code>BodyLimit</code></strong>（Topcoat）: 受け取るリクエストの本文の大きさに、上限を決めるレイヤー。上限を超えると <code>413</code>（大きすぎる）を返します。</li>
+<li><strong><code>NotFoundError</code></strong>（Topcoat）: Topcoat の「404 Not Found（見つかりません）」のエラーの型。</li>
+<li><strong><code>RouterBuilderSessionExt</code></strong>（Topcoat）: ルーターに <code>.sessions(…)</code>（セッションの仕組み）を登録できるようにする機能（トレイト）。セッションはクッキーを使うので、先に <code>.cookies()</code> も登録します。</li>
+<li><strong><code>Serialize</code></strong>（JSON）: 「JSON などにできる」機能（トレイト。<code>serde</code> の部品）。<code>#[derive(Serialize)]</code> を付けた型は、<code>serde_json::to_string</code> で JSON にできます。</li>
+<li><strong><code>Id</code></strong>（Topcoat）: URL の一部（<code>/requests/3</code> の <code>3</code> など）を、型として受け取るための入れ物。練習アプリでは <code>Id(番号)</code> の形で、URL の中の依頼の番号を表します。<code>href!(detail, Id(5))</code> で URL を作り、ページの関数で受け取ります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <table>
 <thead>
 <tr>
@@ -570,6 +594,20 @@ li, tr { page-break-inside: avoid; }
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>#[component]</code></strong>（Topcoat）: Topcoat の印（属性）。画面の一部を作る、何度も使える部品（コンポーネント）にします。<code>view!</code> の中で <code>panel(title: "一覧", …)</code> のように、名前付きの引数で呼べます。</li>
+<li><strong><code>.fract()</code></strong>（数）: 小数の、小数点より下の部分を返すメソッド。<code>2.5_f64.fract()</code> は <code>0.5</code>。<code>v.fract() == 0.0</code> で「整数ちょうどか」を確かめています。</li>
+<li><strong><code>Shape</code></strong>（練習アプリで作る物（Rust））: 図面の部品（四角 <code>Rect</code>・線 <code>Line</code> など）を表す enum。後編で作ります。</li>
+<li><strong><code>Rect</code></strong>（練習アプリで作る物（Rust））: <code>Shape</code> の値の 1 つで、四角（左上の位置 <code>x</code>・<code>y</code> と、幅 <code>width</code>・高さ <code>height</code>）。</li>
+<li><strong><code>Line</code></strong>（練習アプリで作る物（Rust））: <code>Shape</code> の値の 1 つで、線（始まり <code>x1</code>・<code>y1</code> と、終わり <code>x2</code>・<code>y2</code>）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li><code>#[component]</code> を付けた関数は、<code>view!</code> の中で <code>status_badge(status: r.status)</code> のように呼べます（React の部品と同じ考え方）。</li>
 <li><strong><code>view!</code> の中の <code>(式)</code> は、HTML として危ない文字（<code>&lt;</code> <code>&gt;</code> <code>&amp;</code> <code>"</code> など）を自動で置きかえます。</strong> 件名に <code>&lt;script&gt;</code> と書かれても、画面には文字として出るだけで、動きません（XSS を防ぐ。10 の巻で詳しく）。</li>
@@ -638,6 +676,16 @@ li, tr { page-break-inside: avoid; }
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>UNAUTHORIZED</code></strong>（HTTP）: <code>StatusCode::UNAUTHORIZED</code> は、HTTP の答えの番号 401（「ログインしていない」）です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><code>src/app/logout.rs</code>:</p>
 <div class="codehilite"><div class="code-wrap" id="code-4"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="sd">//! /logout … ログアウト（POST だけ。GET で消えると、リンクを踏ませるだけでログアウトさせられるため）</span>
 
@@ -658,6 +706,16 @@ li, tr { page-break-inside: avoid; }
 <span class="w">    </span><span class="nb">Ok</span><span class="p">(</span><span class="n">see_other</span><span class="p">(</span><span class="n">href</span><span class="o">!</span><span class="p">(</span><span class="k">crate</span><span class="p">::</span><span class="n">app</span><span class="p">::</span><span class="n">login</span><span class="p">::</span><span class="n">login_page</span><span class="p">).</span><span class="n">resolve</span><span class="p">(</span><span class="n">cx</span><span class="p">)))</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>SeeOther</code></strong>（Topcoat）: 「303 See Other」（別のページへ移って）という答えを表す型。フォームを送ったあと、一覧や詳細のページへ移す時（PRG）に使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><img src="../images/L08-s1_login.webp" alt="ログインの画面。従業員番号とパスワードの欄" style="width: 100%;"></p>
 <p>パスワードを間違えた所（状態コードは 401。入れた従業員番号は残し、パスワードは消す）:</p>
@@ -898,6 +956,23 @@ li, tr { page-break-inside: avoid; }
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.next_field()</code></strong>（Topcoat）: <code>Multipart</code> から、次のフォームの項目を 1 つ受け取るメソッド。無くなると <code>None</code> です。</li>
+<li><strong><code>.name()</code></strong>（Topcoat）: フォームの項目の名前（<code>&lt;input name="…"&gt;</code> の <code>name</code>）を返すメソッド。</li>
+<li><strong><code>.file_name()</code></strong>（ファイルとフォルダ）: 場所（パス）から、最後の部分（ファイル名やフォルダ名）だけを取り出すメソッド。<code>C:\data\memo.txt</code> なら <code>memo.txt</code>。無いこともあるので <code>Option</code> で返ります。</li>
+<li><strong><code>.extend()</code></strong>（Vec（並び））: <code>Vec</code> の後ろに、別の並びの中身をまとめて足すメソッド。<code>v.extend(extra);</code>。</li>
+<li><strong><code>.then_some()</code></strong>（Option）: <code>bool</code> が <code>true</code> なら <code>Some(値)</code>、<code>false</code> なら <code>None</code> を返すメソッド。<code>on_about.then_some("page")</code>。Topcoat の <code>view!</code> では、属性に <code>None</code> を入れると、その属性ごと書かれません。</li>
+<li><strong><code>serde_json::to_string()</code></strong>（JSON）: Rust の値を、JSON の文字列（1 行）に変える関数。値の型に <code>Serialize</code> が付いている必要があります。失敗することもあるので <code>Result</code> が返ります。</li>
+<li><strong><code>Date::parse()</code></strong>（時間）: 文字列を、決めた形（<code>format_description!</code>）で読んで、<code>Date</code> にする関数。形に合わない文字（<code>2026/13/40</code> など）だと <code>Err</code> を返します。</li>
+<li><strong><code>Multipart</code></strong>（Topcoat）: ファイル付きのフォーム（<code>multipart/form-data</code>）を、1 項目ずつ読むための型。<code>while let Some(field) = multipart.next_field().await?</code> で、項目を順に受け取ります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li><strong>ファイルを送るフォームは <code>enctype="multipart/form-data"</code></strong> で送られてくるので、<code>Form&lt;T&gt;</code> ではなく <code>Multipart</code> で、1 項目ずつ読みます（<code>FormValues::read</code>）。</li>
 <li>読む（<code>read</code>）と、確かめる（<code>validate</code>）を分けました。確かめで間違いがあれば、<strong>入れた値のまま</strong>画面に戻します。間違いは、見つかった物を全部、一度に出します。</li>
@@ -959,6 +1034,16 @@ li, tr { page-break-inside: avoid; }
 <span class="w">    </span><span class="p">})</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Msg</code></strong>（練習アプリで作る物（Rust））: 画面に 1 回だけ出すお知らせ（「出しました」など）を、URL の <code>?msg=…</code> で受け渡すための struct。後編で作ります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p>入力した所（図面は、ドラッグで四角を 2 つ描いた。添付ファイルを 1 つ選んだ）:</p>
 <p><img src="../images/L08-s3_new_form.webp" alt="新しい依頼の入力画面。件名・内容・希望の納期・回覧者3つ・図面のパッド・添付ファイル" style="width: 100%;"></p>
@@ -1056,6 +1141,17 @@ li, tr { page-break-inside: avoid; }
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>#[serde]</code></strong>（JSON）: <code>serde</code> の印（属性）。JSON にする時の細かい決まりを付けます。<code>#[serde(rename_all = "camelCase")]</code>（名前の書き方を変える）・<code>#[serde(default)]</code>（無い時は初期値）・<code>#[serde(skip_serializing_if = "Option::is_none")]</code>（空なら書かない）などがあります。</li>
+<li><strong><code>serde_json::from_str()</code></strong>（JSON）: JSON の文字列を読んで、決めた型（struct など）に変える関数。形が合わないと <code>Err</code> を返します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li>06 の Python では、届いた JSON の形を <code>if</code> で 1 つずつ確かめました。Rust では、<strong>形を struct と enum で書いておき、serde に読ませます</strong>。<code>kind</code> が <code>"circle"</code> のような知らない値なら、読み込みがエラーになります。</li>
 <li><code>deny_unknown_fields</code> で、知らない項目が付いていても断ります。</li>
@@ -1135,6 +1231,22 @@ li, tr { page-break-inside: avoid; }
 <span class="w">  </span><span class="nx">render</span><span class="p">();</span>
 <span class="p">})();</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.createElementNS()</code></strong>（JavaScript・TypeScript）: 名前空間（ここでは SVG）を決めて、新しい要素を作るメソッド。SVG の図形（<code>rect</code>・<code>line</code>）は、ふつうの <code>createElement</code> ではなく、これで作らないと表示されません。</li>
+<li><strong><code>.entries()</code></strong>（JavaScript・TypeScript）: <code>Object.entries(オブジェクト)</code> は、オブジェクトの「名前と値」の組を、<code>[名前, 値]</code> の配列の並びにします。<code>for (const [k, v] of Object.entries(attrs))</code> で、両方を同時に使えます。</li>
+<li><strong><code>.setAttribute()</code></strong>（JavaScript・TypeScript）: 要素に、属性（<code>x="10"</code> など）を付けるメソッド。<code>node.setAttribute("x", "10")</code>。</li>
+<li><strong><code>.replaceChildren()</code></strong>（JavaScript・TypeScript）: 要素の中身（子の要素）を、全部入れかえるメソッド。何も渡さないと、中身を空にします。</li>
+<li><strong><code>.setPointerCapture()</code></strong>（JavaScript・TypeScript）: 押したポインター（マウスや指）の動きを、要素の外に出ても、この要素で受け取り続けるメソッド。図を描いている途中で、枠の外に出ても線が切れません。</li>
+<li><strong><code>.pop()</code></strong>（JavaScript・TypeScript）: JavaScript・TypeScript で、配列の最後の 1 つを取り出すメソッド（元の配列から消える）。</li>
+<li><strong><code>?.</code></strong>（JavaScript・TypeScript）: <code>a?.b</code> は、<code>a</code> が <code>null</code> や <code>undefined</code> なら、そこで止めて <code>undefined</code> にする書き方（オプショナルチェーン）。無いかもしれない物を、エラーにせずにたどれます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li>図面を<strong>描く</strong>所だけは、ブラウザで動く JavaScript が要ります。Topcoat の <code>asset!("drawing.js")</code> で、CSS と同じように束ねて配ります。</li>
@@ -1348,6 +1460,16 @@ li, tr { page-break-inside: avoid; }
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.and_then()</code></strong>（エラー処理）: <code>Option</code> や <code>Result</code> に中身があれば、それを使って、次の <code>Option</code>・<code>Result</code> を作るメソッド（無ければ、そのまま <code>None</code>・<code>Err</code>）。失敗するかもしれない処理を、続けてつなぐ時に使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <table>
 <thead>
@@ -1581,6 +1703,26 @@ li, tr { page-break-inside: avoid; }
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.rsplit()</code></strong>（文字列）: 文字列を、後ろから順に区切り文字で分けるメソッド。<code>line.rsplit(' ').next()</code> は、最後の単語です。</li>
+<li><strong><code>.is_control()</code></strong>（文字）: その文字が、制御文字（改行・タブなど、目に見えない特別な文字）かを返すメソッド。ファイルの名前から取り除くのに使っています。</li>
+<li><strong><code>.take()</code></strong>（イテレーター）: イテレーターの先頭から、決めた数だけを取り出すメソッド。<code>body.chars().take(60)</code> は先頭の 60 文字。<code>.collect::&lt;String&gt;()</code> で文字列に戻せます。</li>
+<li><strong><code>.rsplit_once()</code></strong>（文字列）: 文字列を、後ろから探して最初に見つかった区切りで、2 つに分けるメソッド。<code>"a.b.pdf".rsplit_once('.')</code> は <code>Some(("a.b", "pdf"))</code>。拡張子を取り出すのに使います。</li>
+<li><strong><code>.to_ascii_lowercase()</code></strong>（文字列）: 半角の英字を、全部小文字にした文字列を返すメソッド。<code>"PDF"</code> は <code>"pdf"</code>。</li>
+<li><strong><code>.filter_map()</code></strong>（イテレーター）: 1 つずつ変換して、<code>None</code> になった物は捨て、<code>Some</code> の中身だけを残すメソッド。<code>.filter_map(|line| line.split_once('='))</code> は、<code>=</code> を含む行だけを「名前と値の組」にします。</li>
+<li><strong><code>.err()</code></strong>（エラー処理）: <code>Result</code> から、エラーの方だけを <code>Option</code> で取り出すメソッド。<code>Err(e)</code> は <code>Some(e)</code> に、<code>Ok(…)</code> は <code>None</code> になります（<code>.ok()</code> の逆）。</li>
+<li><strong><code>tokio::fs::create_dir_all()</code></strong>（ファイルとフォルダ）: フォルダを、途中のフォルダもまとめて作る関数（非同期。<code>.await</code> で待つ）。もうあればそのままです。</li>
+<li><strong><code>tokio::fs::write()</code></strong>（ファイルとフォルダ）: ファイルに中身を書く関数（非同期）。ファイルが無ければ作り、あれば上書きします。</li>
+<li><strong><code>tokio::fs::remove_file()</code></strong>（ファイルとフォルダ）: ファイルを消す関数（非同期）。</li>
+<li><strong><code>Path</code></strong>（ファイルとフォルダ）: ファイルやフォルダの場所を表す型（借りている形）。<code>.join()</code>・<code>.file_name()</code>・<code>.extension()</code>・<code>.exists()</code> などで扱います。自分の物として持つ形は <code>PathBuf</code> です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li>06 と同じく、<strong>名前の拡張子と、中身の先頭の数バイト（マジックナンバー）の両方</strong>で確かめます。</li>
 <li>フォルダに置くときの名前は、アプリが乱数で決めます。送られてきた名前（<code>../../a.exe</code> のような物も来うる）は、表示とダウンロードにだけ使います。</li>
@@ -1632,6 +1774,21 @@ li, tr { page-break-inside: avoid; }
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.header()</code></strong>（HTTP）: 答えやリクエストに、見出し（ヘッダー）を 1 つ足すメソッド。<code>.header("Content-Type", "application/pdf")</code> は「中身は PDF」。</li>
+<li><strong><code>.body()</code></strong>（HTTP）: リクエストやレスポンスの本文を取り出す（決める）メソッド。テストで <code>Request::builder()….body(Body::from("…"))</code> のように本文を入れます。</li>
+<li><strong><code>.is_ascii_alphanumeric()</code></strong>（文字）: その文字が、ASCII（半角）の英字か数字（<code>A</code>〜<code>Z</code>・<code>a</code>〜<code>z</code>・<code>0</code>〜<code>9</code>）なら <code>true</code> を返すメソッド。<code>'あ'</code> は <code>false</code> です。</li>
+<li><strong><code>Response::builder()</code></strong>（HTTP）: 答え（レスポンス）を、少しずつ決めて組み立て始める関数。<code>.header(名前, 値)</code> で見出しを足し、<code>.body(…)</code> で本文を入れて出来上がりです。</li>
+<li><strong><code>Body::from()</code></strong>（HTTP）: 文字列やバイトの並びから、本文（<code>Body</code>）を作る関数。</li>
+<li><strong><code>Body</code></strong>（HTTP）: リクエストや答えの本文を表す型（<code>topcoat::router::Body</code>）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><code>src/app/attachments/id.rs</code>:</p>
 <div class="codehilite"><div class="code-wrap" id="code-13"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="sd">//! /attachments/{id} … 添付ファイルのダウンロード（その依頼を見てよい人だけ）</span>
@@ -1723,6 +1880,17 @@ x-content-type-options: nosniff
 <span class="w">    </span><span class="p">})</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.into_iter()</code></strong>（イテレーター）: 入れ物の中身を、借りずに「もらって」1 つずつ取り出す形にするメソッド。使ったあと、元の入れ物は使えなくなります（<code>.iter()</code> は借りるだけ）。</li>
+<li><strong><code>.sort_by_key()</code></strong>（Vec（並び））: 「何で並べるか」を関数で決めて、<code>Vec</code> を並べかえるメソッド。<code>notes.sort_by_key(|note| note.id)</code> は、番号の小さい順にします。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><img src="../images/L08-s14_stats.webp" alt="集計の画面。状態ごとの件数と棒グラフ、担当者ごとの完了の件数" style="width: 100%;"></p>
 <p><code>src/app/health.rs</code>:</p>

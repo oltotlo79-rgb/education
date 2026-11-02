@@ -291,6 +291,16 @@ li, tr { page-break-inside: avoid; }
 <span class="n">code</span> <span class="p">.</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>mkdir</code></strong>（PowerShell）: 「make directory（フォルダを作る）」の略。<code>mkdir ~\Documents\my-practice\01</code> のように、途中のフォルダもまとめて作れます（<code>~</code> はホームフォルダ <code>C:\Users\you</code>）。もう同じ名前のフォルダがあると、エラーで知らせます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ol start="2">
 <li>VS Code の左の一覧（エクスプローラー）の空いている所を右クリック →「新しいファイル」→ <code>hello.html</code> と打って Enter キーを押します。</li>
 <li>下のコードを打つ（または貼り付ける）→ <code>Ctrl</code> ＋ <code>S</code> で保存します。</li>
@@ -312,6 +322,22 @@ li, tr { page-break-inside: avoid; }
   <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
 <span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>&lt;html&gt;</code></strong>（HTML）: HTML の文書全体を包むタグ。<code>&lt;html lang="ja"&gt;</code> の <code>lang="ja"</code> は「日本語の文書」という印で、読み上げソフトや翻訳に使われます。中に <code>&lt;head&gt;</code>（ページの情報）と <code>&lt;body&gt;</code>（画面に出す中身）を入れます。</li>
+<li><strong><code>&lt;head&gt;</code></strong>（HTML）: ページの「情報」を書く所。題名（<code>&lt;title&gt;</code>）・文字コード（<code>&lt;meta charset="utf-8"&gt;</code>）・CSS の読み込み（<code>&lt;link&gt;</code>）などを書きます。ここに書いた物は、画面の本文には出ません。</li>
+<li><strong><code>&lt;meta&gt;</code></strong>（HTML）: ページの情報を書くタグ。<code>&lt;meta charset="utf-8"&gt;</code> は文字コード（日本語が化けないように必ず書く）、<code>&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;</code> はスマホでも画面の幅に合わせて表示させる決まり文句です。閉じタグはありません。</li>
+<li><strong><code>&lt;title&gt;</code></strong>（HTML）: ブラウザーのタブに出る、ページの題名のタグ。<code>&lt;head&gt;</code> の中に書きます。</li>
+<li><strong><code>&lt;body&gt;</code></strong>（HTML）: 画面に出す中身を全部入れるタグ。見出し・段落・フォームなどは、全部この中に書きます。</li>
+<li><strong><code>&lt;h1&gt;</code></strong>（HTML）: いちばん大きな見出し（heading 1）のタグ。数が大きいほど小さな見出しになります（<code>&lt;h2&gt;</code>〜<code>&lt;h6&gt;</code>）。<code>&lt;h1&gt;</code> は、1 ページに 1 つにします。</li>
+<li><strong><code>&lt;p&gt;</code></strong>（HTML）: 段落（paragraph）のタグ。ひとまとまりの文を囲みます。段落と段落の間には、自動で少し間が空きます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div style="max-width: 640px; margin: 18px auto; text-align: center;">
 <img src="../images/L01-s1_hello.webp" alt="ブラウザに、依頼・承認アプリという大きな見出しと、2つの段落が表示されている" style="width: 100%; border: 1px solid #cbd5e1;">
@@ -499,6 +525,29 @@ li, tr { page-break-inside: avoid; }
 <span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>&lt;link&gt;</code></strong>（HTML）: ほかのファイルとのつながりを書くタグ。<code>&lt;link rel="stylesheet" href="../style.css"&gt;</code> で、CSS のファイルを読み込みます。<code>&lt;head&gt;</code> の中に書き、閉じタグはありません。</li>
+<li><strong><code>&lt;header&gt;</code></strong>（HTML）: ページの上の帯（アプリの名前・メニューなど）を表すタグ。見た目は CSS で決めます。意味の付いたタグを使うと、読み上げソフトなどにも構造が伝わります。</li>
+<li><strong><code>&lt;strong&gt;</code></strong>（HTML）: 「大事」という意味を付けるタグ。ふつうは太字で表示されます。</li>
+<li><strong><code>&lt;nav&gt;</code></strong>（HTML）: メニュー（ほかのページへのリンクのまとまり）を表すタグ。</li>
+<li><strong><code>&lt;a&gt;</code></strong>（HTML）: リンクのタグ。<code>&lt;a href="../URL"&gt;文字&lt;/a&gt;</code> で、押すとその URL へ移ります。</li>
+<li><strong><code>&lt;main&gt;</code></strong>（HTML）: ページの「いちばん大事な中身」を表すタグ。ヘッダーやメニューを除いた本体を囲みます。</li>
+<li><strong><code>&lt;form&gt;</code></strong>（HTML）: 入力欄とボタンをまとめて、送る（サーバーへ届ける）ためのタグ。<code>action</code> に送り先、<code>method="post"</code> に送り方を書きます。</li>
+<li><strong><code>&lt;div&gt;</code></strong>（HTML）: 特別な意味を持たない「箱」のタグ。CSS で見た目や並べ方を決めるために、ほかのタグをまとめる時に使います。</li>
+<li><strong><code>&lt;label&gt;</code></strong>（HTML）: 入力欄の名前を表すタグ。<code>&lt;label for="title"&gt;件名&lt;/label&gt;</code> の <code>for</code> と、入力欄の <code>id</code> を同じにすると、名前を押しても入力欄が選ばれ、読み上げソフトにも伝わります。</li>
+<li><strong><code>&lt;input&gt;</code></strong>（HTML）: 1 行の入力欄のタグ。<code>type</code> で種類（<code>text</code>・<code>email</code>・<code>password</code>・<code>hidden</code> など）を、<code>name</code> で送る時の名前を決めます。閉じタグはありません。</li>
+<li><strong><code>&lt;textarea&gt;</code></strong>（HTML）: 何行も書ける入力欄のタグ。<code>&lt;textarea name="detail" rows="4"&gt;&lt;/textarea&gt;</code> の <code>rows</code> は、見えている行の数です。最初から入れておく文字は、タグの間に書きます。</li>
+<li><strong><code>&lt;select&gt;</code></strong>（HTML）: 選ぶ欄（プルダウン）のタグ。中に <code>&lt;option value="値"&gt;表示する文字&lt;/option&gt;</code> を並べます。<code>selected</code> を付けた物が、最初に選ばれます。</li>
+<li><strong><code>&lt;option&gt;</code></strong>（HTML）: <code>&lt;select&gt;</code>（選ぶ欄）の中の、選べる 1 つ。<code>&lt;option value="new"&gt;新しく作る&lt;/option&gt;</code> の <code>value</code> が送られる値、間の文字が画面に出る文字です。<code>selected</code> で最初に選ばれます。</li>
+<li><strong><code>&lt;button&gt;</code></strong>（HTML）: ボタンのタグ。フォームの中の <code>&lt;button type="submit"&gt;送る&lt;/button&gt;</code> は、押すとフォームを送ります。<code>type="button"</code> にすると、送らない、ふつうのボタンになります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <table>
 <thead>
 <tr>
@@ -602,6 +651,22 @@ li, tr { page-break-inside: avoid; }
 <span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>&lt;table&gt;</code></strong>（HTML）: 表のタグ。中に <code>&lt;thead&gt;</code>（見出しの行）と <code>&lt;tbody&gt;</code>（中身の行）を入れ、行は <code>&lt;tr&gt;</code>、ますは <code>&lt;th&gt;</code>（見出し）か <code>&lt;td&gt;</code>（中身）で作ります。</li>
+<li><strong><code>&lt;thead&gt;</code></strong>（HTML）: 表の見出しの行をまとめるタグ。</li>
+<li><strong><code>&lt;tr&gt;</code></strong>（HTML）: 表の 1 行（table row）のタグ。中に <code>&lt;th&gt;</code> や <code>&lt;td&gt;</code> を並べます。</li>
+<li><strong><code>&lt;th&gt;</code></strong>（HTML）: 表の見出しのます（table header）のタグ。ふつうは太字で表示されます。</li>
+<li><strong><code>&lt;tbody&gt;</code></strong>（HTML）: 表の中身の行をまとめるタグ。</li>
+<li><strong><code>&lt;td&gt;</code></strong>（HTML）: 表の中身のます（table data）のタグ。</li>
+<li><strong><code>&lt;span&gt;</code></strong>（HTML）: 文の一部分を囲む、特別な意味の無いタグ。CSS で、その部分だけ色を変える時などに使います（<code>&lt;div&gt;</code> と違い、改行しません）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div style="max-width: 760px; margin: 18px auto; text-align: center;">
 <img src="../images/L01-s3_list.webp" alt="自分の依頼の一覧の表。状態の列に、回覧中（白）、差し戻し中（オレンジ）、回覧完了（青）、完了（グレー）の札" style="width: 100%; border: 1px solid #cbd5e1;">
 <div style="font-size: 12px; color: #64748b; margin-top: 6px;">図4-1: 依頼の一覧。状態ごとに札の色を変えている</div>
@@ -679,6 +744,18 @@ li, tr { page-break-inside: avoid; }
 <span class="nt">body</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">color</span><span class="p">:</span><span class="w"> </span><span class="nf">var</span><span class="p">(</span><span class="nv">--navy</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>navy:</code></strong>（CSS）: この資料の CSS で決めた色の変数（<code>--navy</code>：濃紺。文字や線の色）。<code>:root { --navy: #1e3a5f; }</code> のように、名前の頭を <code>--</code> にして決め、<code>color: var(--navy);</code> のように使います。色を 1 か所で決めておくと、あとで変える時に 1 か所直すだけで済みます。</li>
+<li><strong><code>blue:</code></strong>（CSS）: この資料の CSS で決めた色の変数（<code>--blue</code>：青。ボタンやリンクの色）。<code>var(--blue)</code> で使います。</li>
+<li><strong><code>color:</code></strong>（CSS）: 文字の色を決める項目。<code>color: var(--navy);</code> や <code>color: #eb5757;</code> のように書きます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>色を変えたくなったら、ここを 1 か所直すだけで、全部の画面の色が変わります。この資料の図の色も、同じ 6 色にそろえています。</p>
 <blockquote>
 <p><strong>用語:</strong> カスタム プロパティ（CSS の変数。<code>--名前: 値;</code> で決め、<code>var(--名前)</code> で使う）</p>
@@ -739,6 +816,18 @@ li, tr { page-break-inside: avoid; }
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>display:</code></strong>（CSS）: 箱の並べ方を決める項目。<code>display: flex;</code> は「中身を横一列に並べる」、<code>display: grid;</code> は「ます目に並べる」、<code>display: none;</code> は「表示しない」です。</li>
+<li><strong><code>align-items:</code></strong>（CSS）: <code>display: flex</code> の中身を、上下（横に並べた時の縦）のどこにそろえるかを決める項目。<code>center</code> で真ん中にそろえます。</li>
+<li><strong><code>justify-content:</code></strong>（CSS）: <code>display: flex</code> の中身を、並ぶ向きにどう配るかを決める項目。<code>space-between</code> は「両端に寄せて、間を均等に空ける」。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><strong>grid（格子に並べる）:</strong> 入力フォームで、左にラベル（160px）、右に入力欄（残りの全部）の 2 列にしています。</p>
 <div class="codehilite"><div class="code-wrap" id="code-7"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">.</span><span class="nc">form-grid</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="k">display</span><span class="p">:</span><span class="w"> </span><span class="k">grid</span><span class="p">;</span>
@@ -746,6 +835,17 @@ li, tr { page-break-inside: avoid; }
 <span class="w">  </span><span class="k">gap</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="kt">px</span><span class="w"> </span><span class="mi">16</span><span class="kt">px</span><span class="p">;</span><span class="w">                    </span><span class="c">/* 行の間 12px、列の間 16px */</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>grid-template-columns:</code></strong>（CSS）: <code>display: grid</code> の、列の幅を決める項目。<code>160px 1fr</code> は「1 列目は 160px、2 列目は残り全部」。<code>fr</code> は「残りを分ける割合」です。</li>
+<li><strong><code>gap:</code></strong>（CSS）: <code>flex</code> や <code>grid</code> の中身どうしの間の幅を決める項目。<code>gap: 12px 16px;</code> は「行の間 12px、列の間 16px」。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <blockquote>
 <p><strong>用語:</strong> <code>fr</code>（フラクション：grid で「残りの幅を分ける割合」。<code>1fr</code> は残り全部）</p>
@@ -758,6 +858,19 @@ li, tr { page-break-inside: avoid; }
 <span class="w">  </span><span class="p">.</span><span class="nc">approvers</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">flex-direction</span><span class="p">:</span><span class="w"> </span><span class="kc">column</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w">                 </span><span class="c">/* 回覧者を縦に並べる */</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>max-width:</code></strong>（CSS）: <code>@media (max-width: 640px) { … }</code> は、「画面の幅が 640px 以下の時だけ、中の決まりを使う」という書き方（スマホ向けの見た目）。箱に書く <code>max-width: 760px;</code> は、「幅の上限」です。</li>
+<li><strong><code>margin:</code></strong>（CSS）: 箱の外側の余白を決める項目。<code>margin: 12px;</code> は上下左右に 12px。2 つ書くと「上下 左右」、4 つ書くと「上 右 下 左」の順です。</li>
+<li><strong><code>padding:</code></strong>（CSS）: 箱の内側の余白（枠と中身の間）を決める項目。書き方は <code>margin</code> と同じです。</li>
+<li><strong><code>flex-direction:</code></strong>（CSS）: <code>display: flex</code> の中身を並べる向きを決める項目。<code>row</code> は横（最初の値）、<code>column</code> は縦に並べます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div style="max-width: 420px; margin: 18px auto; text-align: center;">
 <img src="../images/L01-s4_form_mobile.webp" alt="幅のせまい画面では、ラベルの下に入力欄、回覧者の選ぶ欄も縦に並ぶ" style="width: 100%; border: 1px solid #cbd5e1;">

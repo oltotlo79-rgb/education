@@ -62,6 +62,21 @@ CREATE ROLE webapp_dev_app LOGIN CREATEDB;
 CREATE DATABASE webapp_dev OWNER webapp_dev_app ENCODING 'UTF8' TEMPLATE template0;
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`CREATE`**（SQL）: `CREATE ROLE`（ユーザーを作る）・`CREATE DATABASE`（データベースを作る）・`CREATE TABLE`（表を作る）のように、何かを新しく作る SQL の命令です。
+> - **`ROLE`**（SQL）: PostgreSQL のユーザー（ログインする名前と、持つ権限のまとまり）。`CREATE ROLE webapp_dev_app LOGIN CREATEDB;` は「ログインでき、データベースを作れるユーザー」を作ります。
+> - **`LOGIN`**（SQL）: `CREATE ROLE … LOGIN` で、そのユーザーがログインできるようにします。
+> - **`CREATEDB`**（SQL）: `CREATE ROLE … CREATEDB` で、そのユーザーがデータベースを作れるようにします（Django のテストが、テスト用のデータベースを作るのに要ります）。
+> - **`DATABASE`**（SQL）: `CREATE DATABASE 名前` で、データベースを作ります。
+> - **`OWNER`**（SQL）: `OWNER ユーザー` で、そのデータベースの持ち主を決めます。持ち主は、中の表を自由に作れます。
+> - **`ENCODING`**（SQL）: `ENCODING 'UTF8'` で、データベースの文字コードを UTF-8 にします（日本語を正しく入れるため）。
+> - **`TEMPLATE`**（SQL）: `TEMPLATE template0` で、何も手を加えていない元の形から、データベースを作ります（文字コードを指定する時に必要）。
+
+<!-- /first-use -->
+
 - `CREATEDB` は、**自動のテストのため**です。Django のテストは、テスト専用のデータベース（`test_webapp_dev`）を作ってから動き、終わったら消します。この権限が無いと、テストが「permission denied to create database」で止まります。**会社のサーバーのユーザーには付けません。**
 
 ### 2.2 部品と設定
@@ -139,6 +154,24 @@ try {
 exit $code
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`param`**（PowerShell）: スクリプトが受け取る引数を決める書き方。`param([string[]] $ManageArgs)` は、スクリプトに渡した値を `$ManageArgs` に入れます。
+> - **`if`**（PowerShell）: PowerShell の条件の書き方。`if (-not (Test-Path $envFile)) { … }` は「ファイルが無ければ」。比べる時は `-eq`・`-ne`・`-not` などを使います。
+> - **`Test-Path`**（PowerShell）: ファイルやフォルダがあるかを調べるコマンド。あれば `True`、無ければ `False`。
+> - **`foreach`**（PowerShell）: PowerShell のくり返し。`foreach ($line in Get-Content $envFile) { … }` は、ファイルの 1 行ずつを `$line` に入れて、中を動かします。
+> - **`Set-Item`**（PowerShell）: 項目の値を設定するコマンド。`Set-Item -Path "Env:名前" -Value 値` で、この PowerShell の窓の中だけの環境変数を設定します。
+> - **`Set-Item -Path`**（PowerShell）: `-Path "Env:名前"` で、どの項目（ここでは環境変数）を設定するかを指定します。
+> - **`Set-Item -Value`**（PowerShell）: `-Value 値` で、設定する値を指定します。
+> - **`Push-Location`**（PowerShell）: 今いるフォルダを覚えてから、指定したフォルダへ移るコマンド。あとで `Pop-Location` を打つと、覚えたフォルダへ戻れます。
+> - **`try`**（PowerShell）: `try { … } finally { … }` で、途中で失敗しても、`finally` の中（元のフォルダへ戻る など）を必ず動かす書き方。
+> - **`Pop-Location`**（PowerShell）: `Push-Location` で覚えたフォルダへ戻るコマンド。
+> - **`exit`**（PowerShell）: スクリプトを、決めた終了コードで終えるコマンド。`exit $code` は、manage.py の終了コードをそのまま返します。
+
+<!-- /first-use -->
+
 会社のサーバーでは、これと同じ働きをする `manage.ps1`（WinSW の XML を読む。onprem の 05 の 9.4）を使います。**どちらも、終わったらパスワードを窓に残しません。**
 
 ```powershell
@@ -147,6 +180,14 @@ exit $code
 .\dev.ps1 runserver        # 開発用のサーバー（http://127.0.0.1:8000/）
 .\dev.ps1 test             # 自動のテスト
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.\dev.ps1`**（PowerShell）: 今いるフォルダの `dev.ps1`（この資料で作った、設定を読んでから manage.py を動かすスクリプト）を動かす書き方。`.\dev.ps1 migrate` のように、後ろに manage.py の命令を書きます。
+
+<!-- /first-use -->
 
 > **PowerShell の落とし穴:** `.\dev.ps1 test -v 2` のように **`-v` を付けると、PowerShell が自分のための指定（`-Verbose`）として受け取ってしまい**、Django に届きません（試して確かめた）。`--verbosity 2` のように、長い書き方を使います。
 
@@ -313,6 +354,22 @@ LOGGING = {
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`is`**（Python）: 「同じ物か」を調べる書き方。`if value is None:` は「値が無ければ」。`None` と比べる時は `==` でなく `is` を使います。
+> - **`False`**（Python）: Python の「正しくない（いいえ）」の値。
+> - **`.resolve()`**（Python）: `Path(__file__).resolve()` は、ファイルの場所を、`C:\` から始まる絶対の場所にするメソッド。`.parent` で 1 つ上のフォルダになります。
+> - **`.lower()`**（Python）: 英字を小文字にした文字列を返すメソッド。`"True".lower() == "true"` のように、大文字小文字をそろえて比べます。
+> - **`.split()`**（Python）: Python で、文字列を分けてリストにするメソッド。`"a b  c".split()` のように何も渡さないと、空白（いくつ続いても）で分けます。
+> - **`.exists()`**（Python）: `Path` のファイルやフォルダがあれば `True` を返すメソッド。
+> - **`.match()`**（Python）: `re.match(パターン, 文字列)` は、文字列の**先頭から**正規表現に合うかを調べる関数です。合えば、見つかった物が返ります（合わなければ `None`）。
+> - **`str()`**（Python）: 値を文字列に変える関数。`str(8080)` は `"8080"`。数と文字列は `==` で比べても等しくならないので、そろえる時に使います。
+> - **`int()`**（Python）: 文字列などを整数にする関数。`int("25")` は 25。数でない文字だと `ValueError` です。
+
+<!-- /first-use -->
+
 onprem の 05 の WinSW の XML と、**同じ名前の環境変数**を読みます。
 
 | 環境変数 | 意味 | 開発用のパソコン（dev.env） | 会社のサーバー（XML。onprem の 05 の 9.2） |
@@ -384,6 +441,18 @@ class User(AbstractBaseUser, PermissionsMixin):
     def __str__(self) -> str:
         return f"{self.name}（{self.employee_no}）"
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.set_password()`**（Django）: ユーザーのパスワードを、元に戻せない形（ハッシュ）にしてから設定するメソッド。パスワードをそのまま保存しないために、必ずこれを使います。
+> - **`.set_unusable_password()`**（Django）: そのユーザーを、パスワードではログインできないようにするメソッド（別の方法でログインする人や、作ったばかりの人に使う）。
+> - **`.update()`**（Python）: 辞書に、別の辞書の中身をまとめて入れる（上書きする）メソッド。Django の問い合わせの `.update(項目=値)` は、合う行をまとめて書きかえる、別の意味です。
+> - **`.EmailField()`**（Django）: メールアドレスの列を表すモデルの項目。入力がメールアドレスの形かを確かめてくれます。
+> - **`.BooleanField()`**（Django）: はい・いいえ（`True`・`False`）の列を表すモデルの項目。
+
+<!-- /first-use -->
 
 - **従業員番号でログイン**するように、Django の `User` を自分で作り直しています（`USERNAME_FIELD = "employee_no"`）。氏名は「山田 太郎」の順で 1 つの項目に持ちます（05 で、名・姓の順に出た問題を直した）。
 - 権限（`role`）は「一般」「担当者」「管理者」の 3 つです。
@@ -491,6 +560,16 @@ class History(models.Model):
     def __str__(self) -> str:
         return f"{self.action}"
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.JSONField()`**（Django）: JSON（図面のデータなど）をそのまま入れる列を表すモデルの項目。PostgreSQL では、中を検索することもできます。
+> - **`.FileField()`**（Django）: 上げられたファイルの置き場所を入れる列を表すモデルの項目。`upload_to="attachments/%Y/%m/"` で、年・月ごとのフォルダに保存します。
+> - **`.PositiveIntegerField()`**（Django）: 0 以上の整数の列を表すモデルの項目。
+
+<!-- /first-use -->
 
 | モデル | 1 件は | 大事な項目 |
 |---|---|---|
@@ -782,6 +861,23 @@ def notify_due_soon(r: Request) -> None:
         _mail(to, f"納期が近づいています: {r.title}", "due_soon.txt", {"r": r})
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`and`**（Python）: 「かつ」。両方が成り立つ時だけ `True`。左が成り立たない時は、右を調べません。
+> - **`lambda`**（Python）: その場で作る小さな関数。`lambda: send_mail(…)` は「呼ばれたらメールを送る関数」。名前を付けるほどでもない、短い処理を渡す時に使います。
+> - **`.now()`**（Django）: `timezone.now()` は、今の日時を、時差付きで返します（Django の設定に合わせた形）。Python の `datetime.now()` は時差が付かないので、Django ではこちらを使います。
+> - **`.select_for_update()`**（Django）: 問い合わせで読んだ行に、ほかの人が同時に書きかえられないよう鍵をかけるメソッド（`transaction.atomic()` の中で使う）。2 人が同時に承認しても、順番に処理されます。
+> - **`.first()`**（Django）: 問い合わせの結果の最初の 1 件を返すメソッド。無ければ `None` です（`get()` と違い、エラーになりません）。
+> - **`.on_commit()`**（Django）: `transaction.on_commit(関数)` は、データベースへの保存が確定（コミット）してから関数を動かす書き方。保存が取り消されたのにメールだけ送られる、という事故を防ぎます。
+> - **`.localtime()`**（Django）: `timezone.localtime()` は、今の時刻を、設定した時間帯（日本時間）で返す関数です。
+> - **`render_to_string()`**（Django）: テンプレート（文の型）に値を入れて、文字列（メールの本文など）を作る関数。
+> - **`send_mail()`**（Django）: メールを送る関数。`send_mail(件名, 本文, 差出人, [宛先])`。送り先のサーバー（SMTP）は設定で決めます（09 巻）。
+> - **`@transaction`**（Django）: `@transaction.atomic` を関数の上に付けると、その関数の中のデータベースの変更が「全部成功か、全部取り消し」になります。
+
+<!-- /first-use -->
+
 | 関数 | 操作 | 状態の移り変わり（00 学習ガイド 1.2） |
 |---|---|---|
 | `submit` | 依頼を出す | （新しく）→ 回覧中 |
@@ -924,6 +1020,15 @@ def approve_page(request, token: str):
     return render(request, "workflow/approve.html", {"step": check.step, "r": r, "attachments": r.attachments.all()})
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`require_http_methods()`**（Django）: 画面（ビュー）が受け付ける HTTP のメソッドを決める物。`@require_http_methods(["GET", "POST"])` 以外で来たら、405 で断ります。
+> - **`@require_http_methods`**（Django）: `@require_http_methods(["GET", "POST"])` を画面の関数の上に付けて、使えるメソッドを絞ります。
+
+<!-- /first-use -->
+
 `templates/workflow/approve.html`:
 
 ```html
@@ -966,6 +1071,16 @@ def approve_page(request, token: str):
   </form>
 {% endblock %}
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`<h2>`**（HTML）: 2 番目の大きさの見出しのタグ。
+> - **`<svg>`**（HTML）: 図（線や四角）を描くタグ。中に `<rect>`（四角）・`<line>`（線）などを並べます。
+> - **`<rect>`**（HTML）: SVG の中で、四角を描くタグ。`x`・`y`（左上の位置）・`width`・`height`（大きさ）で決めます。
+
+<!-- /first-use -->
 
 <div style="max-width: 760px; margin: 18px auto; text-align: center;">
 <img src="images/L06-s1_approve_page.webp" alt="承認のお願い（回覧者1）の画面。件名・依頼者・希望の納期・内容・添付・図面と、差し戻すときの理由の入力欄、差し戻しと承認のボタン" style="width: 100%; border: 1px solid #cbd5e1;">
@@ -1068,6 +1183,18 @@ def validate_upload(name: str, head: bytes, size: int) -> None:
     if not any(head.startswith(sig) for sig in SIGNATURES[ext]):
         raise ValidationError("ファイルの中身が、拡張子と合いません。")
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.dumps()`**（Python）: `json.dumps(値, ensure_ascii=False)` は、Python の値を JSON の文字列にする関数です（`ensure_ascii=False` で日本語をそのまま）。
+> - **`.rsplit()`**（Python）: 文字列を、後ろから区切るメソッド。`name.rsplit(".", 1)[-1]` は、ファイル名の最後の `.` の後ろ（拡張子）です。
+> - **`.startswith()`**（Python）: 文字列（バイト）が、その中身で始まっていれば `True` を返すメソッド。ファイルの先頭の数バイトで、本当の種類を確かめる時に使います。
+> - **`isinstance()`**（Python）: 値が、その型かどうかを調べる関数。`isinstance(value, dict)` は「辞書か」。
+> - **`any()`**（Python）: 並びの中に、1 つでも `True` があれば `True` を返す関数。
+
+<!-- /first-use -->
 
 - ファイルの名前（拡張子）は、だれでも自由に変えられます。プログラムの実行ファイルに `.pdf` と名前を付けて送ることもできるので、**中身の先頭の数バイト**（ファイルの種類ごとに決まった印）も確かめます。
 - 図面の JSON も、**5MB までか、決まった形か**を、サーバーで確かめます（02 の 5 章と同じ考え方を、Python で）。
@@ -1220,6 +1347,25 @@ def me(request):
     return Response({"id": u.pk, "employee_no": u.employee_no, "name": u.name, "role": u.role})
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.prefetch_related()`**（Django）: 「たくさん」の側のつながり（1 つの依頼の、何人もの承認者など）を、まとめて読んでおくメソッド。N+1 の問い合わせを防ぎます。
+> - **`.distinct()`**（Django）: 問い合わせの結果から、重なった行を消すメソッド。JOIN で同じ依頼が何度も出る時に使います。
+> - **`.is_valid()`**（Django REST framework）: 送られてきたデータが、シリアライザー（入力の確かめ係）の決まりに合うかを調べるメソッド。`raise_exception=True` で、合わない時は 400 の答えにします。
+> - **`.read()`**（Python）: ファイルの中身を全部読んで、文字列で返すメソッド。`open(パス, encoding="utf-8").read()`。
+> - **`.seek()`**（Python）: ファイルの読む位置を動かすメソッド。`f.seek(0)` で先頭に戻ります（先頭の数バイトを読んで確かめたあと、保存のために戻す）。
+> - **`.exclude()`**（Django）: 問い合わせから、条件に合う行を除くメソッド（`filter` の逆）。
+> - **`api_view()`**（Django REST framework）: 関数を、DRF の API の画面にする物。`@api_view(["GET", "POST"])` のように使います。
+> - **`get_object_or_404()`**（Django）: 1 件を取り出し、無ければ 404（見つかりません）の答えにする関数。
+> - **`parser_classes()`**（Django REST framework）: API が受け付ける送り方（JSON・ファイル付きのフォームなど）を決める物。
+> - **`dict()`**（Python）: 辞書を作る関数。`dict(Request.Status.choices)` は、「値 → 画面の名前」の辞書になります。
+> - **`@api_view`**（Django REST framework）: `@api_view(["GET", "POST"])` を関数の上に付けて、API にします。決めたメソッド以外は 405 で断られます。
+> - **`@parser_classes`**（Django REST framework）: `@parser_classes([MultiPartParser])` を付けて、ファイル付きのフォーム（multipart）を受け付けるようにします。
+
+<!-- /first-use -->
+
 `config/urls.py`:
 
 ```python
@@ -1348,6 +1494,19 @@ class Command(BaseCommand):
         return rows, errors
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.add_argument()`**（Django の道具）: manage.py の自分のコマンドで、受け取る引数を決めるメソッド（`argparse` の仕組み）。
+> - **`.write()`**（Python）: ファイルに文字を書くメソッド。`f.write(line + "\n")`（改行は自分で付けます）。
+> - **`.atomic()`**（Django）: `with transaction.atomic():` の中のデータベースの変更を、「全部成功か、全部取り消し」にする書き方。
+> - **`.update_or_create()`**（Django）: 条件に合う行があれば書きかえ、無ければ作るメソッド。`(物, 新しく作ったか)` の組が返ります。
+> - **`.SUCCESS()`**（Django の道具）: `self.style.SUCCESS(文)` は、manage.py のコマンドの出力を、成功の色（緑）にする関数です。
+> - **`validate_email()`**（Django）: メールアドレスの形として正しいかを調べ、正しくなければ `ValidationError` を起こす関数。
+
+<!-- /first-use -->
+
 間違いのある CSV（`sample_data\employees_bad.csv`）と、正しい CSV（`sample_data\employees.csv`）で動かした結果:
 
 ```text
@@ -1420,6 +1579,14 @@ class Command(BaseCommand):
         self.stdout.write(f"送り直した承認のお願い: {resent} 件 / 納期が近い依頼: {len(due_soon)} 件")
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.localdate()`**（Django）: `timezone.localdate()` は、今日の日付を、設定した時間帯（日本時間）で返す関数です。
+
+<!-- /first-use -->
+
 動かした結果（練習のデータでは、まだ対象が無い）:
 
 ```text
@@ -1458,6 +1625,15 @@ def test_URLは1回しか使えない(self):
     with self.assertRaisesMessage(services.WorkflowError, "承認済みです"):
         services.approve(token)                  # 2 回目は断られる
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.assertRaisesMessage()`**（Django）: テストで、「この処理は、このエラー（文）を起こすはず」を確かめるメソッド。`with self.assertRaisesMessage(エラーの型, "文"):` の中で処理を呼びます。
+> - **`token_in()`**（練習アプリで作る物（Python））: テストの中で作る小さな関数。送られたメールの本文から、承認の URL の文字列（トークン）を取り出します。
+
+<!-- /first-use -->
 
 - テストの中では、メールは本当には送られず、`mail.outbox` という箱にたまります。送られたはずのメールの宛先や本文を確かめられます。
 - `captureOnCommitCallbacks(execute=True)` は、「保存が確定した後に送るメール」（5.2）を、テストの中でも送らせるための書き方です。

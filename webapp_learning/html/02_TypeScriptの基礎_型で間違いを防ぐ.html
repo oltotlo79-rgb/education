@@ -251,6 +251,17 @@ li, tr { page-break-inside: avoid; }
 <span class="n">node</span> <span class="n">src</span><span class="p">\</span><span class="n">basics</span><span class="p">.</span><span class="n">ts</span>   <span class="c"># 動かす</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>npm install</code></strong>（Node.js）: <code>package.json</code> に書いてある部品（TypeScript など）を、まとめて入れるコマンド。入った部品は <code>node_modules</code> フォルダに入ります（Git には入れません）。最初の 1 回だけ打ちます。<code>npm install 部品の名前</code> なら、その部品を足します。</li>
+<li><strong><code>npx tsc</code></strong>（Node.js）: TypeScript の型の確かめ（<code>tsc</code>）を動かすコマンド。何も出なければ、型のまちがいはありません。まちがいがあると、ファイル名・行・何がおかしいかを表示します。<code>npx</code> は、入れた部品のコマンドを動かす道具です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li><strong>Node.js</strong> は、ブラウザの外で JavaScript を動かす道具です。今の Node.js は、<code>.ts</code> のファイルの型の書き込みを取り除いて、そのまま動かせます。</li>
 <li>ただし、<strong>Node.js は型を確かめません</strong>。型を確かめるのは <code>npx tsc</code> です（6 章で、その違いを見ます）。</li>
@@ -334,6 +345,22 @@ li, tr { page-break-inside: avoid; }
 <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">greet</span><span class="p">(</span><span class="nx">user</span><span class="p">.</span><span class="nx">name</span><span class="p">));</span>
 <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="kr">double</span><span class="p">(</span><span class="mf">21</span><span class="p">));</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>const</code></strong>（JavaScript・TypeScript）: JavaScript・TypeScript で、変えない値に名前を付ける書き方。<code>const db = …;</code>。あとで別の値を入れようとするとエラーになります。</li>
+<li><strong><code>let</code></strong>（JavaScript・TypeScript）: JavaScript・TypeScript で、あとで変える値に名前を付ける書き方。</li>
+<li><strong><code>function</code></strong>（TypeScript）: 関数（ひとまとまりの処理）を作る書き方。<code>function greet(name: string): string { … }</code> は、「文字列の <code>name</code> を受け取って、文字列を返す関数 <code>greet</code>」です。</li>
+<li><strong><code>return</code></strong>（JavaScript・TypeScript）: JavaScript・TypeScript で、関数の結果を返して、関数を終える命令。</li>
+<li><strong><code>.log()</code></strong>（JavaScript・TypeScript）: <code>console.log(…)</code> は、渡した値を画面（ターミナルやブラウザーの開発者ツール）に表示します。</li>
+<li><strong><code>.join()</code></strong>（JavaScript・TypeScript）: JavaScript・TypeScript で、配列の中身を区切り文字でつないで 1 つの文字列にするメソッド。<code>["a", "b"].join(";")</code> は <code>"a;b"</code>。</li>
+<li><strong><code>=&gt;</code></strong>（JavaScript・TypeScript）: アロー関数（短く書ける関数）の矢印。<code>(path) =&gt; \</code>…${path}`<code>は「</code>path` を受け取って文字列を返す関数」。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p>動かした結果（<code>node src\basics.ts</code>）:</p>
 <div class="codehilite"><div class="code-wrap" id="code-5"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>依頼・承認アプリ 4 true
@@ -465,6 +492,24 @@ li, tr { page-break-inside: avoid; }
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>export</code></strong>（TypeScript）: 「このファイルの外から使ってよい」という印。<code>export type RequestStatus = …</code> と書くと、ほかのファイルで <code>import</code> して使えます。</li>
+<li><strong><code>type</code></strong>（TypeScript）: 型に名前を付ける書き方。<code>type RequestStatus = "回覧中" | "回覧完了";</code> のように、決まった値だけを許す型や、オブジェクトの形を決められます。</li>
+<li><strong><code>null</code></strong>（TypeScript）: 「値が無い」ことを、わざと表す値。「できない操作なら <code>null</code> を返す」のように使います。</li>
+<li><strong><code>switch</code></strong>（TypeScript）: 値によって処理を分ける書き方。<code>switch (current) { case "回覧中": … }</code>。合う <code>case</code> から下を動かすので、それぞれの終わりに <code>return</code> や <code>break</code> を書きます。</li>
+<li><strong><code>case</code></strong>（TypeScript）: <code>switch</code> の中の「この値の時は」の部分。</li>
+<li><strong><code>if</code></strong>（JavaScript・TypeScript）: JavaScript・TypeScript の条件。<code>if (条件) { … } else { … }</code>。条件は <code>( )</code> で囲みます。</li>
+<li><strong><code>default</code></strong>（JavaScript・TypeScript）: <code>export default</code> は、そのファイルから「いちばんの物」を 1 つ外に出す書き方。読み込む側は <code>import 名前 from "./ファイル"</code> と、好きな名前で受け取れます。</li>
+<li><strong><code>never</code></strong>（TypeScript）: 「ここには絶対に来ない」ことを表す型。<code>switch</code> の最後に <code>const unreachable: never = current;</code> と書いておくと、状態を足したのに <code>case</code> を書き忘れた時、<code>npx tsc</code> がエラーで教えてくれます。</li>
+<li><strong><code>===</code></strong>（TypeScript）: 「型も値も同じか」を比べる書き方。<code>==</code> は型を勝手にそろえてから比べて思わぬ結果になるので、ふつうは <code>===</code> を使います（違うかは <code>!==</code>）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <table>
 <thead>
 <tr>
@@ -581,6 +626,26 @@ li, tr { page-break-inside: avoid; }
 <span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">note</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="kc">undefined</span><span class="p">)</span><span class="w"> </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`</span><span class="si">${</span><span class="nx">r</span><span class="p">.</span><span class="nx">title</span><span class="si">}</span><span class="sb"> のメモ: </span><span class="si">${</span><span class="nx">r</span><span class="p">.</span><span class="nx">note</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>import</code></strong>（JavaScript・TypeScript）: ほかのファイルや部品から、関数などを読み込む書き方。<code>import { rmSync } from "node:fs";</code> は、Node.js のファイルの道具から <code>rmSync</code> を使えるようにします。</li>
+<li><strong><code>from</code></strong>（JavaScript・TypeScript）: <code>import { 名前 } from "場所";</code> の一部で、「どこから読み込むか」を書きます。</li>
+<li><strong><code>for</code></strong>（JavaScript・TypeScript）: くり返しの書き方。<code>for (const x of 配列) { … }</code> は、配列の中身を 1 つずつ <code>x</code> に入れてくり返します。</li>
+<li><strong><code>of</code></strong>（TypeScript）: <code>for (const 名前 of 配列)</code> の一部で、「配列の中身を 1 つずつ」という意味です（<code>in</code> を使うと、中身ではなく番号が出てくるので注意）。</li>
+<li><strong><code>undefined</code></strong>（TypeScript）: 「まだ値が入っていない」ことを表す値。<code>?</code> の付いた無くてもよい項目が無い時や、配列の範囲の外を読んだ時に出てきます。</li>
+<li><strong><code>.filter()</code></strong>（JavaScript・TypeScript）: 配列から、条件に合う物だけを集めた新しい配列を作るメソッド。</li>
+<li><strong><code>.map()</code></strong>（JavaScript・TypeScript）: 配列の中身を 1 つずつ変換した、新しい配列を作るメソッド。</li>
+<li><strong><code>.sort()</code></strong>（TypeScript）: 配列を並べかえるメソッド。<code>(a, b) =&gt; …</code> の比べる関数を渡し、マイナスなら <code>a</code> が先、プラスなら <code>b</code> が先になります。<strong>元の配列を書きかえる</strong>ので、<code>[...requests].sort(…)</code> のように写してから並べかえることがよくあります（新しい配列を作る <code>toSorted</code> もあります）。</li>
+<li><strong><code>.localeCompare()</code></strong>（TypeScript）: 2 つの文字列を、辞書の順で比べるメソッド。<code>a.localeCompare(b)</code> は、<code>a</code> が先ならマイナス、同じなら 0、後ならプラス。<code>sort</code> の中で、文字（日付の文字など）で並べる時に使います。</li>
+<li><strong><code>??</code></strong>（TypeScript）: <code>a ?? b</code> は、<code>a</code> が <code>null</code> か <code>undefined</code> なら <code>b</code> を使う書き方。<code>(acc[key] ?? 0) + 1</code> は「まだ無ければ 0 から数える」。</li>
+<li><strong><code>...</code></strong>（TypeScript）: スプレッド構文。<code>[...requests]</code> は配列の中身を広げて、新しい配列（写し）を作ります。<code>{ ...user, isAdmin: true }</code> は、オブジェクトを写して一部だけ変えます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p>動かした結果（<code>node src\requests.ts</code>）:</p>
 <div class="codehilite"><div class="code-wrap" id="code-9"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>回覧中: [ &#39;治具の製作&#39;, &#39;型の改造&#39; ]
@@ -702,6 +767,23 @@ null
 <span class="p">}</span>
 <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">isDrawing</span><span class="p">(</span><span class="nb">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="s1">&#39;{&quot;version&quot;: 2}&#39;</span><span class="p">)));</span><span class="w"> </span><span class="c1">// false（形が違う）</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>unknown</code></strong>（TypeScript）: 「何が入っているか分からない」ことを表す型。そのままでは使えず、<code>typeof</code> などで確かめてから使います。外から来た JSON を受け取る時に使うと安全です。</li>
+<li><strong><code>typeof</code></strong>（TypeScript）: 値の種類を文字で返す書き方。<code>typeof value === "number"</code> は「数か」を調べます。調べたあとの <code>if</code> の中では、TypeScript がその型として扱ってくれます。</li>
+<li><strong><code>as</code></strong>（JavaScript・TypeScript）: TypeScript で「この値は、この型として扱う」と伝える書き方（<code>値 as 型</code>）。</li>
+<li><strong><code>new</code></strong>（JavaScript・TypeScript）: クラスから、新しい物を作る書き方。<code>new DatabaseSync("ba.sqlite")</code>・<code>new Date()</code>・<code>new Error("…")</code> のように使います。</li>
+<li><strong><code>.isArray()</code></strong>（TypeScript）: <code>Array.isArray(値)</code> は、値が配列かどうかを調べる関数です。</li>
+<li><strong><code>.stringify()</code></strong>（TypeScript）: <code>JSON.stringify(値)</code> は、オブジェクトや配列を、JSON の文字列にする関数です。保存したり、サーバーへ送ったりする時に使います。</li>
+<li><strong><code>.encode()</code></strong>（TypeScript）: <code>new TextEncoder().encode(文字列)</code> は、文字列を UTF-8 のバイトの並びにするメソッド。<code>.length</code> で、何バイトになるかが分かります（日本語は 1 文字 3 バイト）。</li>
+<li><strong><code>.parse()</code></strong>（JavaScript・TypeScript）: <code>JSON.parse(文字列)</code> は、JSON の文字列を、JavaScript のオブジェクトや配列に変えます。逆は <code>JSON.stringify(値)</code> です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p>動かした結果（<code>node src\drawing.ts</code>）:</p>
 <div class="codehilite"><div class="code-wrap" id="code-11"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>{&quot;version&quot;:1,&quot;widthMm&quot;:297,&quot;heightMm&quot;:210,&quot;shapes&quot;:[{&quot;kind&quot;:&quot;rect&quot;,&quot;x&quot;:10,&quot;y&quot;:10,&quot;width&quot;:120,&quot;height&quot;:60},{&quot;kind&quot;:&quot;line&quot;,&quot;x1&quot;:10,&quot;y1&quot;:80,&quot;x2&quot;:130,&quot;y2&quot;:80},{&quot;kind&quot;:&quot;text&quot;,&quot;x&quot;:12,&quot;y&quot;:95,&quot;text&quot;:&quot;穴 φ8 × 4&quot;}]}
@@ -863,6 +945,29 @@ mistakes/mistakes.ts(18,1): error TS2554: Expected 1 arguments, but got 0.
 <span class="w">  </span><span class="nx">server</span><span class="p">.</span><span class="nx">close</span><span class="p">();</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>else</code></strong>（JavaScript・TypeScript）: JavaScript・TypeScript で、<code>if</code> の条件に合わなかった時の所。<code>else if (条件)</code> で、条件をつなげられます。</li>
+<li><strong><code>await</code></strong>（JavaScript・TypeScript）: JavaScript・TypeScript で、時間のかかる処理（<code>Promise</code>）が終わるまで待って、結果を受け取る書き方。<code>async</code> の関数の中で使います。</li>
+<li><strong><code>void</code></strong>（TypeScript）: 「何も返さない」ことを表す型。<code>Promise&lt;void&gt;</code> は「終わったことだけを知らせる約束」です。</li>
+<li><strong><code>async</code></strong>（JavaScript・TypeScript）: JavaScript・TypeScript で、中で <code>await</code> を使える関数にする印。結果は <code>Promise</code>（あとで届く約束）で返ります。</li>
+<li><strong><code>throw</code></strong>（TypeScript）: エラーを起こして、処理を止める書き方。<code>throw new Error("サーバーのエラー")</code>。<code>try … catch</code> で受け止められます。</li>
+<li><strong><code>try</code></strong>（TypeScript）: 失敗するかもしれない処理を <code>try { … }</code> で囲み、失敗した時の処理を <code>catch</code> に書く書き方。</li>
+<li><strong><code>catch</code></strong>（TypeScript）: <code>try</code> の中で失敗した時に動く所。<code>catch (e)</code> の <code>e</code> にエラーが入ります（何が来るか分からないので、使う前に確かめます）。</li>
+<li><strong><code>finally</code></strong>（TypeScript）: <code>try … catch</code> のあと、成功しても失敗しても最後に必ず動く所。片づけ（サーバーを閉じる など）を書きます。</li>
+<li><strong><code>.writeHead()</code></strong>（Node.js）: Node.js の練習用サーバーで、答えの番号（200 など）とヘッダーを書き始めるメソッド。</li>
+<li><strong><code>.end()</code></strong>（Node.js）: Node.js のサーバーで、答え（レスポンス）の本文を送って、答えを終えるメソッド。<code>res.end(JSON.stringify(データ))</code>。これを呼ばないと、ブラウザーはずっと待ち続けます。</li>
+<li><strong><code>.listen()</code></strong>（Node.js）: Node.js のサーバーを、決めた番号で待ち受け始めるメソッド。番号を 0 にすると、空いている番号を自動で選びます。</li>
+<li><strong><code>.then()</code></strong>（TypeScript）: <code>Promise</code>（あとで届く約束）の結果が届いた時に動く関数を登録するメソッド。<code>await</code> を使えば、多くの場合は書かずに済みます。</li>
+<li><strong><code>.error()</code></strong>（TypeScript）: <code>console.error(…)</code> は、エラーの知らせを出す関数です（<code>console.log</code> のエラー版）。</li>
+<li><strong><code>.close()</code></strong>（JavaScript・TypeScript）: Playwright で、ブラウザーを閉じるメソッド（<code>await browser.close()</code>）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p>動かした結果（<code>node src\api_demo.ts</code>）:</p>
 <div class="codehilite"><div class="code-wrap" id="code-16"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>受け取った: [ { id: 1, title: &#39;治具の製作&#39;, status: &#39;回覧中&#39; } ]
