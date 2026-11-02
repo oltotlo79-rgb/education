@@ -15,6 +15,7 @@
 - **コマンドやコードのコピー:** PDF のコードの枠の**右上にある青い「コピー」**を押すと、同じ内容の **HTML 版**（`onprem\html` フォルダ）の、そのコードの所が開きます。そこで枠の右上の**「コピー」ボタン**を押すと、字下げや空の行も含めて、そのまま 1 回でコピーできます。コピーしたら、ブラウザーの「戻る」（`Alt` ＋ `←`）で PDF に戻ります。最初から `onprem\html\index.html` を開いて、HTML 版で読んでもかまいません。PDF の文字をマウスでなぞってコピーすると、Chrome や Edge では行の先頭の空白と空の行が消えるので、おすすめしません（PDF を見るソフトの決まった動きで、資料の作り方では直せません）。
 
 <img src="images/00-copy_button.webp" alt="左: PDF のコードの枠の右上の青いコピー。右: それを押すと開く HTML 版で、枠の右上のコピーボタンを押すとコピーしましたに変わる" style="width: 100%;">
+- **初めて出てくるコマンドの説明:** どの資料も、初めて出てくるコマンド・オプション・SQL などのすぐ下に、「**▶ ここで初めて出てくるコード**」の箱で、意味と使い方を書いています。あとで「これは何だっけ？」と思ったら、**09 付録「出てくるコマンドと設定の一覧」**で、機能ごとの表から引けます。
 - **読み方:** 0 章は「コンピューターの中身」という、いちばん手前の話です。分かっている人は飛ばしてかまいません。図はたとえで描いているので、まず図を見て、それから文を読むと分かりやすいです。
 
 ### 例にするアプリ
@@ -46,6 +47,7 @@
 | 06 トラブルシューティング | 困ったときの調べ方と、よく起きるトラブルの症状・原因・直し方 |
 | 07 付録 | 情報システム部門への依頼シート、作業と点検のチェック表 |
 | 08 付録: よく使うコマンドの早見表 | 毎日の確認・サービス・通信・ログ・ディスク・PostgreSQL・更新と切り戻しで打つコマンドを、やりたいこと別にまとめた表（実際に打った結果付き） |
+| 09 付録: 出てくるコマンドと設定の一覧 | 資料に出てくるコマンド・オプション・SQL・コードの部品の意味を、機能ごとの表で引ける一覧 |
 | 参考 HTTPS にする場合 | HTTPS と証明書の考え方と、あとから HTTPS にするときの手順（今回は使わない） |
 
 まだできていない資料は、README の一覧に「作成中」と書いてあります。
@@ -162,6 +164,16 @@ D:\webapp\prod\logs\webapp.out.log
 Get-Content D:\webapp\tools\users.csv -Encoding UTF8 -TotalCount 5
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Get-Content`**（PowerShell）: ファイルの中身を画面に出すコマンド（短い呼び名は `cat`）。`Get-Content memo.txt` で中身を表示します。日本語のファイルは `-Encoding utf8` を付けると文字化けしません。`-Tail 10` で最後の 10 行だけを出せます。
+> - **`Get-Content -Encoding`**（PowerShell）: `-Encoding utf8` で、ファイルを UTF-8 として読みます。付けないと、Windows PowerShell 5.1 では日本語が化けることがあります。
+> - **`Get-Content -TotalCount`**（PowerShell）: `Get-Content` で、ファイルの先頭から決めた行数だけを読むオプション。`-TotalCount 5` は先頭の 5 行。大きなファイルの中身を、少しだけのぞく時に使います。
+
+<!-- /first-use -->
+
 **確かめること:** 日本語の名前が、正しく読めること。化けていたら、ファイルが Shift_JIS で保存されています。
 
 - UTF-8 には、ファイルの先頭に「これは UTF-8 です」という印（**BOM**）を付ける形と、付けない形があります。Windows に最初から入っている PowerShell（5.1）は、**BOM の無い UTF-8 のスクリプトを Shift_JIS だと思って読む**ので、日本語を含むスクリプトは「UTF-8 (BOM 付き)」で保存します（01 Windows Server の使い方 3.7）。
@@ -191,6 +203,17 @@ whoami
 # ドライブごとの、使っている量と空いている量を表示する（Used・Free の列）
 Get-PSDrive -PSProvider FileSystem
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`hostname`**（コマンド）: このパソコン（サーバー）の名前を表示するコマンド。
+> - **`whoami`**（コマンド）: 今ログインしている利用者の名前（`ドメイン\名前` の形）を表示するコマンド。`whoami /groups` で、入っているグループも分かります。
+> - **`Get-PSDrive`**（PowerShell）: PowerShell で使えるドライブ（`C:`・`D:` など）の一覧と、使っている量・空いている量を表示するコマンド。
+> - **`Get-PSDrive -PSProvider`**（PowerShell）: `Get-PSDrive` で、種類を決めて取り出すオプション。`-PSProvider FileSystem` は、ディスクのドライブだけ（環境変数などの、ほかの種類を除く）。
+
+<!-- /first-use -->
 
 **確かめること:** `hostname` で、頼んだサーバーの名前（例：`WEBAPP-SV01`）が出ること。`Get-PSDrive` の `Free` で、D ドライブの空きが、頼んだ量に近いこと。
 
@@ -333,6 +356,16 @@ Web アプリを社内に建てるのは、**社内に1軒のお店を開く**�
 Get-Service -Name *postgres* | Select-Object Name, Status, StartType
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Get-Service`**（PowerShell）: Windows のサービス（裏で動き続けるプログラム）の一覧と、動いているか（`Status`）を表示するコマンド。
+> - **`Get-Service -Name`**（PowerShell）: `Get-Service` で、名前を決めて取り出すオプション。`-Name *postgres*` のように、`*` で「この文字を含む物」を探せます。
+> - **`Select-Object`**（PowerShell）: 結果のうち、見たい列だけを選ぶコマンド。`… | Select-Object Name, Length` のように、`|`（パイプ）で前のコマンドの結果を受け取って使います。`-First 5` で最初の 5 つだけにもできます。
+
+<!-- /first-use -->
+
 **確かめること:** `Status` が `Running`（動いている）、`StartType` が `Automatic`（Windows と一緒に起動）になっていること。サービスの詳しい扱い方は、01 Windows Server の使い方の「サービス」の章で説明します。
 > **用語:** サービス（Windows サービス：画面の前に人がいなくても、OS が裏で動かし続けるプログラム。IIS も PostgreSQL も、サービスとして動く）
 
@@ -460,6 +493,20 @@ Test-NetConnection webapp.example.local -Port 80
 Get-NetTCPConnection -State Listen | Sort-Object LocalPort |
     Select-Object LocalAddress, LocalPort, OwningProcess
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Get-NetIPConfiguration`**（PowerShell）: このパソコンのネットワークの設定（IP アドレス・ゲートウェイ・DNS サーバー）を表示するコマンド。
+> - **`Resolve-DnsName`**（PowerShell）: 名前（`webapp.example.local` など）を DNS に問い合わせて、IP アドレスを調べるコマンド。名前で開けない時、まずこれで「名前が引けているか」を確かめます。
+> - **`Test-NetConnection`**（PowerShell）: 相手のパソコンにつながるかを確かめるコマンド。名前が引けるか・届くかを順に調べて表示します。
+> - **`Test-NetConnection -Port`**（PowerShell）: 決めたポート番号につながるかを確かめるオプション。`-Port 80` の結果の `TcpTestSucceeded : True` なら、その窓口は開いています（False ならファイアウォールや、サービスが止まっていることを疑う）。
+> - **`Get-NetTCPConnection`**（PowerShell）: パソコンのネットワークの接続や、待ち受けているポート番号を一覧にするコマンド。「8080 番をだれが使っているか」を調べる時に使います。
+> - **`Get-NetTCPConnection -State`**（PowerShell）: `-State Listen` で、「待ち受けている」状態の物だけに絞ります（ほかに `Established`＝つながっている、など）。
+> - **`Sort-Object`**（PowerShell）: 受け取った物を、決めた項目で並べかえるコマンド。`Sort-Object LocalPort` は、ポート番号の小さい順。
+
+<!-- /first-use -->
 
 | コマンド | 確かめること |
 |---|---|
@@ -621,6 +668,15 @@ PowerShell からも、HTTP のお願いを出せます。
 (Invoke-WebRequest http://webapp.example.local/health -UseBasicParsing).StatusCode
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Invoke-WebRequest`**（PowerShell）: URL にリクエストを送って、答え（状態コード・本文）を受け取るコマンド。`(Invoke-WebRequest http://…/health -UseBasicParsing).StatusCode` で、状態コード（200 など）だけを取り出せます。
+> - **`Invoke-WebRequest -UseBasicParsing`**（PowerShell）: 答えの HTML を、Internet Explorer の部品を使わずに読むオプション。Windows Server で、IE の初めの設定が終わっていなくても動くように付けます。
+
+<!-- /first-use -->
+
 **確かめること:** `200` が表示されること。エラーになったら、その文に出ているステータスコード（404・502 など）を、5.1 の表と照らし合わせます。
 
 > **用語:** ヘッダー（リクエストやレスポンスに付く、付け札の情報。`Host`・`Cookie`・`Content-Type` など）
@@ -691,6 +747,20 @@ WHERE status = '回覧中'                 -- どの行を（条件）
 ORDER BY created_at DESC               -- 並べ方（DESC は新しい順）
 LIMIT 10;                              -- 最大の件数
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`SELECT`**（SQL）: 表から行を取り出す SQL の命令。`SELECT 列, … FROM 表 WHERE 条件 ORDER BY 列` の形でよく使います。`SELECT *` は全部の列です。
+> - **`FROM`**（SQL）: `SELECT … FROM 表` の一部で、「どの表から」取り出すかを書きます。
+> - **`WHERE`**（SQL）: `SELECT … FROM 表 WHERE 条件` の、条件を書く所。`WHERE user_id = 1` は「持ち主が 1 番の行だけ」。`UPDATE`・`DELETE` で `WHERE` を忘れると、全部の行が変わる（消える）ので注意します。
+> - **`ORDER`**（SQL）: `ORDER BY 列` で、取り出した行を並べる書き方。`DESC` を付けると大きい順（新しい順）です。
+> - **`BY`**（SQL）: `ORDER BY`（並べる）・`GROUP BY`（まとめる）の一部で、「〜で」という意味です。
+> - **`DESC`**（SQL）: `ORDER BY 列 DESC` で、大きい順（新しい順）に並べます（小さい順は `ASC`）。
+> - **`LIMIT`**（SQL）: `LIMIT 件数` で、取り出す行の数の上限を決める書き方。`ORDER BY … LIMIT 20` は「並べて、先頭の 20 件だけ」。
+
+<!-- /first-use -->
 
 SQL の書き方と、データベースへのログインの仕方は、**02 SQL と PostgreSQL の使い方**で、サンプルを動かしながら説明します。
 ### 7.2 データベースのユーザーと接続

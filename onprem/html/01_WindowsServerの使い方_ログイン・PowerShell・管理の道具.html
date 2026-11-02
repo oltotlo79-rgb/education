@@ -346,6 +346,17 @@ li, tr { page-break-inside: avoid; }
 <span class="n">logoff</span> <span class="n">3</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>quser</code></strong>（コマンド）: このサーバーにログインしている人の一覧（名前・番号・状態・ログインした時刻）を表示するコマンド。</li>
+<li><strong><code>logoff</code></strong>（コマンド）: 決めた番号の人を、ログオフさせるコマンド。<code>logoff 3</code> は、<code>quser</code> で見た番号 3 の人。保存していない作業は消えるので、必ず本人に確かめてから使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><strong>確かめること:</strong> <code>quser</code> の <code>STATE</code> が <code>Disc</code>（切断）の行が、長く残っていないこと。<strong>ほかの人の作業を <code>logoff</code> で消すときは、その人に確かめてから</strong>にします（保存していない作業が消えます）。</p>
 <blockquote>
 <p><strong>用語:</strong> セッション（ここでは、1人がリモート デスクトップでログインしている間の「作業の部屋」のこと。00 基礎知識の Web のセッションとは別のもの）</p>
@@ -692,6 +703,19 @@ li, tr { page-break-inside: avoid; }
 <span class="nb">Get-History</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Get-Help</code></strong>（PowerShell）: コマンドの説明を表示するコマンド。<code>Get-Help Get-Service</code> で使い方、<code>-Examples</code> で例が見られます。</li>
+<li><strong><code>Get-Help -Examples</code></strong>（PowerShell）: <code>Get-Help</code> で、使い方の例だけを表示するオプション。初めてのコマンドは、まずこれで例を見ると早いです。</li>
+<li><strong><code>Get-Command</code></strong>（PowerShell）: コマンドがどこにあるか・何なのかを調べるコマンド。<code>(Get-Command rustc).Source</code> は、<code>rustc.exe</code> の場所を返します。入っているかを確かめる時に使います。</li>
+<li><strong><code>Get-History</code></strong>（PowerShell）: この窓で、これまでに打ったコマンドの一覧を表示するコマンド。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <h3 id="34">3.4 パイプ: 結果を次のコマンドに渡す</h3>
 <p><code>|</code>（<strong>パイプ</strong>）を使うと、前のコマンドの結果を、次のコマンドに渡せます。「全部取り出す → しぼる → 項目を選ぶ → 表示する」のように、小さなコマンドをつないで使います。</p>
 <div style="max-width: 760px; margin: 18px auto; text-align: center;">
@@ -705,6 +729,17 @@ li, tr { page-break-inside: avoid; }
     <span class="nb">Select-Object</span> <span class="n">Name</span><span class="p">,</span> <span class="n">DisplayName</span> <span class="p">|</span>
     <span class="nb">Sort-Object</span> <span class="n">Name</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>-eq</code></strong>（PowerShell）: PowerShell の「等しい」の比べ方（equal）。<code>$LASTEXITCODE -eq 0</code> は「終わった時の番号が 0（成功）か」。PowerShell では <code>==</code> ではなく <code>-eq</code> と書きます。大文字・小文字は区別しません（<code>"ABC" -eq "abc"</code> も <code>True</code>）。</li>
+<li><strong><code>Where-Object</code></strong>（PowerShell）: <code>|</code> で流れてきた物のうち、条件に合う物だけを残すコマンド。<code>{ }</code> の中の <code>$_</code> が「今の 1 つ」です。<code>Where-Object { $_.Length -gt 1000 }</code> のように使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <table>
 <thead>
@@ -870,6 +905,27 @@ li, tr { page-break-inside: avoid; }
     <span class="nb">Select-Object</span> <span class="n">-First</span> <span class="n">20</span> <span class="n">FullName</span><span class="p">,</span> <span class="p">@{</span> <span class="n">Name</span> <span class="p">=</span> <span class="s1">&#39;MB&#39;</span><span class="p">;</span> <span class="n">Expression</span> <span class="p">=</span> <span class="p">{</span> <span class="no">[int]</span><span class="p">(</span><span class="nv">$_</span><span class="p">.</span><span class="n">Length</span> <span class="p">/</span> <span class="n">1MB</span><span class="p">)</span> <span class="p">}</span> <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Get-Content -Tail</code></strong>（PowerShell）: <code>Get-Content</code> で、ファイルの最後から決めた行数だけを読むオプション。<code>-Tail 50</code> は最後の 50 行。ログの新しい所を見る時に使います。</li>
+<li><strong><code>Get-Content -Wait</code></strong>（PowerShell）: ファイルの最後まで読んだあとも閉じずに待ち、新しく書き足された行を、その都度表示し続けるオプション。ログを見張る時に <code>-Tail 50 -Wait</code> と組み合わせます。止める時は <code>Ctrl</code> ＋ <code>C</code> です。</li>
+<li><strong><code>Select-String</code></strong>（PowerShell）: ファイルの中から、文字を含む行を探すコマンド。何行目に見つかったかも表示します。</li>
+<li><strong><code>Select-String -Path</code></strong>（PowerShell）: <code>-Path ファイル</code> で、探すファイルを指定します。<code>*.log</code> のように、いくつものファイルも指定できます。</li>
+<li><strong><code>Select-String -Pattern</code></strong>（PowerShell）: <code>-Pattern "文字"</code> で、探す文字を指定します。<code>"ERROR|WARN"</code> のように、<code>|</code> で「または」にもできます（正規表現）。</li>
+<li><strong><code>Select-Object -Last</code></strong>（PowerShell）: 受け取った物の、最後から決めた数だけを取り出すオプション。<code>Select-Object -Last 20</code> は最後の 20 個。</li>
+<li><strong><code>Get-ChildItem</code></strong>（PowerShell）: フォルダの中の一覧を出すコマンド（短い呼び名は <code>ls</code>・<code>dir</code>）。<code>Get-ChildItem フォルダ</code> でそのフォルダの中身、<code>-Recurse</code> で中のフォルダまで全部を出します。</li>
+<li><strong><code>Get-ChildItem -Recurse</code></strong>（PowerShell）: <code>-Recurse</code> で、中のフォルダの中まで全部を一覧にします。</li>
+<li><strong><code>Get-ChildItem -File</code></strong>（PowerShell）: <code>Get-ChildItem</code> で、ファイルだけを取り出す（フォルダを除く）オプション。</li>
+<li><strong><code>Get-ChildItem -ErrorAction</code></strong>（PowerShell）: エラーが起きた時の動きを決めるオプション。<code>-ErrorAction SilentlyContinue</code> は、読めないフォルダ（権限が無い所）があっても、エラーを出さずに続けます。</li>
+<li><strong><code>Sort-Object -Descending</code></strong>（PowerShell）: 大きい順（新しい順）に並べるオプション。<code>Sort-Object Length -Descending</code> は、大きいファイルから順に並べます。</li>
+<li><strong><code>Select-Object -First</code></strong>（PowerShell）: <code>-First 1</code> で、結果の最初の 1 つだけを取り出します。<code>-Last 3</code> なら最後の 3 つです。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <blockquote>
 <p><strong><code>Remove-Item</code> は、ごみ箱に入りません。</strong> 消したファイルは戻せないので、消す前に <code>Get-ChildItem</code> で、消す物を確かめてから消します。<code>-Recurse</code>（中身ごと）を付けるときは特に気を付けます。</p>
 </blockquote>
@@ -882,6 +938,16 @@ li, tr { page-break-inside: avoid; }
 <span class="p">&amp;</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">tools</span><span class="p">\</span><span class="n">backup</span><span class="p">.</span><span class="n">ps1</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.\backup.ps1</code></strong>（PowerShell）: 今いるフォルダの <code>backup.ps1</code>（この資料で作る、データベースとファイルの控えを取るスクリプト）を動かす書き方。PowerShell では、今いるフォルダのスクリプトも <code>.\</code> を付けないと動きません（うっかり同じ名前の物を動かさないための決まり）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><strong>実行ポリシー</strong>: PowerShell には、知らないスクリプトを勝手に動かさないための決まりがあります。Windows Server では、最初は <code>RemoteSigned</code>（このサーバーで書いたスクリプトは動く。インターネットから取ってきたスクリプトは、署名が無いと動かない）になっています。</p>
 <div class="codehilite"><div class="code-wrap" id="code-9"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 今の実行ポリシーを見る</span>
 <span class="nb">Get-ExecutionPolicy</span>
@@ -890,11 +956,32 @@ li, tr { page-break-inside: avoid; }
 <span class="nb">Unblock-File</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">tools</span><span class="p">\</span><span class="n">some-script</span><span class="p">.</span><span class="n">ps1</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Get-ExecutionPolicy</code></strong>（PowerShell）: 今の実行ポリシー（スクリプトを動かしてよいかの決まり）を見るコマンド。<code>Restricted</code> はスクリプトを動かせない、<code>RemoteSigned</code> は自分で作った物は動かせる、という意味です。</li>
+<li><strong><code>Unblock-File</code></strong>（PowerShell）: インターネットやほかのパソコンから持ってきたファイルに付く「よそから来た」印を外すコマンド。印が付いたスクリプトは、決まりによって動かないことがあります。中身を確かめてから外します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><strong>確かめること:</strong> <code>Get-ExecutionPolicy</code> が <code>RemoteSigned</code> であること。「このシステムではスクリプトの実行が無効になっているため…」と出たら、そのファイルがインターネットから取ってきた物で印が付いているか、会社の決まりで実行ポリシーが厳しくなっています。<strong><code>Set-ExecutionPolicy</code> で、サーバー全体の実行ポリシーを <code>Unrestricted</code> や <code>Bypass</code> に変えて逃げないで</strong>ください。会社の決まりに反することがあります。（04 の 11 章のタスクで <code>-ExecutionPolicy Bypass</code> を付けているのは、自分で書いて中身の分かっているスクリプト1つを、そのタスクの中でだけ動かすためで、サーバー全体の決まりは変えません。）</p>
 <p><strong>スクリプトの文字コード（とても大事）:</strong> Windows PowerShell 5.1 は、<strong>BOM（ファイルの先頭の印）の無い UTF-8</strong> のファイルを、Shift_JIS だと思って読みます。日本語のコメントや文字が入ったスクリプトをそのまま保存すると、日本語の所で行の区切りが食われ、<strong>次の行が消えたり、構文エラーで丸ごと動かなかったり</strong>します（試して確かめました）。日本語を含むスクリプトは、メモ帳の「名前を付けて保存」で、エンコードを「<strong>UTF-8 (BOM 付き)</strong>」にして保存します。</p>
 <div class="codehilite"><div class="code-wrap" id="code-10"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 先頭の 3 つの数が 239 187 191 なら BOM 付き</span>
 <span class="p">(</span><span class="nb">Get-Content</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">tools</span><span class="p">\</span><span class="n">backup</span><span class="p">.</span><span class="n">ps1</span> <span class="n">-Encoding</span> <span class="n">Byte</span> <span class="n">-TotalCount</span> <span class="n">3</span><span class="p">)</span> <span class="n">-join</span> <span class="s1">&#39; &#39;</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>-join</code></strong>（PowerShell）: 並びの中身を、区切り文字でつないで 1 つの文字列にする演算子。<code>$lines -join "</code>n"<code>は「改行でつなぐ」、</code>@("a","b") -join ","<code>は</code>"a,b"`。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <blockquote>
 <p><strong>用語:</strong> 実行ポリシー（Execution Policy：どのスクリプトを動かしてよいかの PowerShell の決まり）</p>
@@ -975,6 +1062,18 @@ li, tr { page-break-inside: avoid; }
 <span class="c"># リモート デスクトップでログインしてよい人</span>
 <span class="nb">Get-LocalGroupMember</span> <span class="n">-Group</span> <span class="s2">&quot;Remote Desktop Users&quot;</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Get-LocalUser</code></strong>（PowerShell）: このサーバーの中の利用者（ローカルユーザー）の一覧と、使えるか（<code>Enabled</code>）を表示するコマンド。</li>
+<li><strong><code>Get-LocalGroupMember</code></strong>（PowerShell）: このサーバーの中のグループに、だれが入っているかを表示するコマンド。</li>
+<li><strong><code>Get-LocalGroupMember -Group</code></strong>（PowerShell）: 調べるグループの名前を決めるオプション。<code>-Group Administrators</code> は、管理者のグループ（入っている人は何でもできるので、少なくしておく）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><strong>確かめること:</strong> Administrators に、<strong>知らない人が入っていないこと</strong>。構築が終わったら、自分を Administrators から外してもらうかどうかを、情報システム部門と決めます（会社の決まりによります）。</p>
 <blockquote>
@@ -1107,6 +1206,16 @@ li, tr { page-break-inside: avoid; }
 <span class="n">icacls</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">secrets</span> <span class="p">/</span><span class="n">remove</span> <span class="s2">&quot;BUILTIN\Users&quot;</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>icacls</code></strong>（コマンド）: ファイルやフォルダの権限（だれが読める・書けるか）を表示する・変えるコマンド。<code>(R)</code> は読む、<code>(M)</code> は変える、<code>(F)</code> は全部できる、<code>(OI)(CI)</code> は中のファイルとフォルダにも引き継ぐ、という意味です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <table>
 <thead>
 <tr>
@@ -1232,6 +1341,27 @@ li, tr { page-break-inside: avoid; }
 <span class="c"># 異常終了したら、1 分後に再起動する（3 回まで。1 日たったら数え直す）</span>
 <span class="n">sc</span><span class="p">.</span><span class="n">exe</span> <span class="n">failure</span> <span class="n">webapp-stg</span> <span class="n">reset</span><span class="p">=</span> <span class="n">86400</span> <span class="n">actions</span><span class="p">=</span> <span class="n">restart</span><span class="p">/</span><span class="n">60000</span><span class="p">/</span><span class="n">restart</span><span class="p">/</span><span class="n">60000</span><span class="p">/</span><span class="n">restart</span><span class="p">/</span><span class="n">60000</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Stop-Service</code></strong>（PowerShell）: Windows のサービスを止めるコマンド。管理者の PowerShell で動かします。</li>
+<li><strong><code>Stop-Service -Name</code></strong>（PowerShell）: 止めるサービスの名前を決めるオプション。<code>Stop-Service -Name webapp-stg</code>。</li>
+<li><strong><code>Start-Service</code></strong>（PowerShell）: 止まっている Windows のサービスを始めるコマンド。</li>
+<li><strong><code>Start-Service -Name</code></strong>（PowerShell）: 始めるサービスの名前を決めるオプション。</li>
+<li><strong><code>Restart-Service</code></strong>（PowerShell）: Windows のサービスを、止めてから始め直すコマンド。設定ファイルを変えたあとに、読み直させる時に使います。</li>
+<li><strong><code>Restart-Service -Name</code></strong>（PowerShell）: 始め直すサービスの名前を決めるオプション。</li>
+<li><strong><code>Set-Service</code></strong>（PowerShell）: Windows のサービスの設定（始まり方など）を変えるコマンド。</li>
+<li><strong><code>Set-Service -Name</code></strong>（PowerShell）: 設定を変えるサービスの名前を決めるオプション。</li>
+<li><strong><code>Set-Service -StartupType</code></strong>（PowerShell）: サービスの始まり方を決めるオプション。<code>Automatic</code>（サーバーが起動したら自動で始まる）・<code>Manual</code>（手で始める）・<code>Disabled</code>（使えなくする）。</li>
+<li><strong><code>Get-CimInstance</code></strong>（PowerShell）: Windows の中の情報（OS・CPU・サービス・ディスクなど）を問い合わせるコマンド。<code>Get-CimInstance Win32_OperatingSystem</code> は OS の情報、<code>Get-CimInstance Win32_Service</code> はサービスの一覧（自動で始まるかどうかも分かる）です。</li>
+<li><strong><code>Get-CimInstance -Filter</code></strong>（PowerShell）: <code>Get-CimInstance</code> で、条件に合う物だけを取り出すオプション。<code>-Filter "Name='webapp-stg'"</code> は、名前が webapp-stg のサービスだけ。</li>
+<li><strong><code>sc.exe</code></strong>（コマンド）: Windows のサービスの細かい設定をするコマンド。<code>sc.exe failure 名前 reset= 86400 actions= restart/60000/…</code> は「止まったら 60 秒後に始め直す。数えるのは 1 日ごとにやり直す」。PowerShell では <code>sc</code> だけだと別のコマンドになるので、必ず <code>.exe</code> まで書きます（<code>=</code> の後ろの空白も必要）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><strong>確かめること:</strong> <code>Get-CimInstance</code> の <code>StartName</code> が <code>NT SERVICE\webapp-stg</code>、<code>State</code> が <code>Running</code> であること。<code>sc.exe</code> の <code>=</code> の後ろには、<strong>必ず空白を1つ</strong>入れます（<code>reset= 86400</code>）。空白が無いと失敗します。</p>
 <blockquote>
@@ -1371,6 +1501,21 @@ li, tr { page-break-inside: avoid; }
 <span class="nb">Get-WinEvent</span> <span class="n">-FilterHashtable</span> <span class="p">@{</span> <span class="n">LogName</span> <span class="p">=</span> <span class="s1">&#39;System&#39;</span><span class="p">;</span> <span class="n">Id</span> <span class="p">=</span> <span class="n">7031</span><span class="p">,</span> <span class="n">7034</span> <span class="p">}</span> <span class="n">-MaxEvents</span> <span class="n">10</span> <span class="n">-ErrorAction</span> <span class="n">SilentlyContinue</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Get-WinEvent</code></strong>（PowerShell）: Windows のイベントログ（Windows やサービスが残す記録）を読むコマンド。</li>
+<li><strong><code>Get-WinEvent -FilterHashtable</code></strong>（PowerShell）: 読むイベントの条件を、表（<code>@{ }</code>）で決めるオプション。<code>@{ LogName = 'System'; Level = 1, 2; StartTime = (Get-Date).AddDays(-1) }</code> は「System のログの、重大（1）とエラー（2）の、この 1 日の物」。<code>Id = 7031</code> のように、イベントの番号でも選べます。</li>
+<li><strong><code>Get-Date</code></strong>（PowerShell）: 今の日時を返すコマンド。<code>(Get-Date).AddDays(-1)</code> は「今から 1 日前」、<code>(Get-Date).AddHours(-26)</code> は「26 時間前」です（<code>( )</code> で囲んでから、<code>.AddDays()</code> などのメソッドを呼びます）。</li>
+<li><strong><code>Format-List</code></strong>（PowerShell）: 受け取った物の項目を、1 行に 1 つずつ縦に並べて表示するコマンド。項目が多くて表（<code>Format-Table</code>）では切れてしまう時に使います。</li>
+<li><strong><code>Get-WinEvent -MaxEvents</code></strong>（PowerShell）: 読むイベントの数の上限を決めるオプション（新しい物から）。<code>-MaxEvents 5</code> は最新の 5 件。</li>
+<li><strong><code>Get-WinEvent -ErrorAction</code></strong>（PowerShell）: エラーが起きた時の動きを決めるオプション。条件に合うイベントが 1 件も無いと、<code>Get-WinEvent</code> はエラーを出すので、<code>-ErrorAction SilentlyContinue</code> で黙らせます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><strong>確かめること:</strong> 何も出ない（「指定された選択条件に一致するイベントは見つかりませんでした」という意味のエラー）なら、その期間にその記録は無かった、ということです。</p>
 <blockquote>
 <p><strong>用語:</strong> イベント ID（Windows の記録の種類ごとに付いた番号。番号で検索すると、意味を調べやすい）</p>
@@ -1402,6 +1547,19 @@ li, tr { page-break-inside: avoid; }
 <span class="c"># 80 番で待ち受けているのは、どのプログラムか</span>
 <span class="nb">Get-NetTCPConnection</span> <span class="n">-LocalPort</span> <span class="n">80</span> <span class="n">-State</span> <span class="n">Listen</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">LocalAddress</span><span class="p">,</span> <span class="n">OwningProcess</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Get-Process</code></strong>（PowerShell）: 動いているプログラム（プロセス）の一覧を出すコマンド。<code>Get-Process -Id 1234</code> で、番号 1234 のプロセスの名前などが分かります。</li>
+<li><strong><code>-f</code></strong>（PowerShell）: 書式（形）を決めて文字列を作る演算子。<code>"{0,-10} {1}" -f $name, $hash</code> は、<code>{0}</code> に 1 つ目、<code>{1}</code> に 2 つ目を入れます（<code>,-10</code> は「10 文字分の幅で左に寄せる」）。</li>
+<li><strong><code>Get-Volume</code></strong>（PowerShell）: ディスク（ボリューム）の一覧と、大きさ・空いている量を表示するコマンド。</li>
+<li><strong><code>Get-NetTCPConnection -LocalPort</code></strong>（PowerShell）: <code>-LocalPort 8080</code> で、このパソコン側のポート番号が 8080 の物だけに絞ります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><strong>確かめること:</strong></p>
 <ul>
@@ -1458,6 +1616,21 @@ li, tr { page-break-inside: avoid; }
 <span class="nb">Start-ScheduledTask</span> <span class="n">-TaskPath</span> <span class="s2">&quot;\webapp\&quot;</span> <span class="n">-TaskName</span> <span class="s2">&quot;webapp-backup&quot;</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Get-ScheduledTask</code></strong>（PowerShell）: タスクスケジューラーに登録した「予定の仕事」の一覧を表示するコマンド。</li>
+<li><strong><code>Get-ScheduledTask -TaskPath</code></strong>（PowerShell）: 予定の仕事を入れたフォルダを決めるオプション。<code>-TaskPath "\webapp\"</code> は、この資料で作る仕事をまとめた <code>\webapp\</code> フォルダだけ。</li>
+<li><strong><code>Get-ScheduledTaskInfo</code></strong>（PowerShell）: 予定の仕事の、前に動いた時刻（<code>LastRunTime</code>）・結果（<code>LastTaskResult</code>。<code>0</code> なら成功）・次に動く時刻（<code>NextRunTime</code>）を表示するコマンド。</li>
+<li><strong><code>Start-ScheduledTask</code></strong>（PowerShell）: 予定の仕事を、時刻を待たずに今すぐ動かすコマンド。登録したあと、正しく動くかを確かめる時に使います。</li>
+<li><strong><code>Start-ScheduledTask -TaskPath</code></strong>（PowerShell）: 動かす予定の仕事のフォルダを決めるオプション。</li>
+<li><strong><code>Start-ScheduledTask -TaskName</code></strong>（PowerShell）: 動かす予定の仕事の名前を決めるオプション。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><strong>確かめること:</strong> <code>LastTaskResult</code> が <code>0</code>（成功）であること。タスクの作り方は、04 の 11 章に、コマンドで書いてあります。</p>
 <ul>
 <li>「<strong>ユーザーがログオンしているかどうかにかかわらず実行する</strong>」にしておかないと、だれもログインしていない夜中に動きません。手順書では、<code>SYSTEM</code> のアカウントで動かすので、この心配はありません。</li>
@@ -1480,6 +1653,17 @@ li, tr { page-break-inside: avoid; }
 <span class="nb">Get-NetFirewallProfile</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">Name</span><span class="p">,</span> <span class="n">Enabled</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Get-NetConnectionProfile</code></strong>（PowerShell）: ネットワークの種類（<code>DomainAuthenticated</code>＝会社のドメイン・<code>Private</code>・<code>Public</code>）を表示するコマンド。ファイアウォールの決まりは、この種類ごとに効きます。</li>
+<li><strong><code>Get-NetFirewallProfile</code></strong>（PowerShell）: ファイアウォールの、種類（Domain・Private・Public）ごとの設定と、有効か（<code>Enabled</code>）を表示するコマンド。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><strong>確かめること:</strong> <code>NetworkCategory</code> が <code>DomainAuthenticated</code>（ドメイン）であること。<code>Enabled</code> が3つとも <code>True</code> であること。</p>
 <h3 id="102">10.2 決まり（ルール）を見る・作る</h3>
 <div class="codehilite"><div class="code-wrap" id="code-19"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 自分で作った決まり（名前が webapp で始まる物）を見る</span>
@@ -1491,6 +1675,25 @@ li, tr { page-break-inside: avoid; }
     <span class="n">-Direction</span> <span class="n">Inbound</span> <span class="n">-Protocol</span> <span class="n">TCP</span> <span class="n">-LocalPort</span> <span class="n">80</span> <span class="p">`</span>
     <span class="n">-RemoteAddress</span> <span class="n">10</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">/</span><span class="n">8</span> <span class="n">-Profile</span> <span class="n">Domain</span> <span class="n">-Action</span> <span class="n">Allow</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Get-NetFirewallRule</code></strong>（PowerShell）: ファイアウォールの決まり（どの通信を通す・止めるか）の一覧を表示するコマンド。</li>
+<li><strong><code>Get-NetFirewallRule -DisplayName</code></strong>（PowerShell）: 表示名で決まりを探すオプション。<code>-DisplayName "webapp*"</code> は、名前が webapp で始まる決まりだけ。</li>
+<li><strong><code>New-NetFirewallRule</code></strong>（PowerShell）: ファイアウォールに、新しい決まり（この通信を通す、など）を足すコマンド。管理者の PowerShell で動かします。</li>
+<li><strong><code>New-NetFirewallRule -DisplayName</code></strong>（PowerShell）: 決まりの表示名を決めるオプション。あとで <code>Get-NetFirewallRule -DisplayName</code> で探せるように、分かりやすい名前を付けます。</li>
+<li><strong><code>New-NetFirewallRule -Direction</code></strong>（PowerShell）: 通信の向きを決めるオプション。<code>Inbound</code> は「外からこのサーバーへ入ってくる通信」、<code>Outbound</code> は「このサーバーから出ていく通信」。</li>
+<li><strong><code>New-NetFirewallRule -Protocol</code></strong>（PowerShell）: 通信の種類を決めるオプション。Web やデータベースは <code>TCP</code> です。</li>
+<li><strong><code>New-NetFirewallRule -LocalPort</code></strong>（PowerShell）: このサーバーの、どのポート（窓口の番号）への通信かを決めるオプション。<code>-LocalPort 80</code> は Web（HTTP）の窓口。</li>
+<li><strong><code>New-NetFirewallRule -RemoteAddress</code></strong>（PowerShell）: どこから来た通信を通すかを決めるオプション。<code>-RemoteAddress 10.0.0.0/8</code> のように、社内の住所の範囲だけに絞ります。</li>
+<li><strong><code>New-NetFirewallRule -Profile</code></strong>（PowerShell）: 決まりを効かせるネットワークの種類を決めるオプション。<code>-Profile Domain</code> は、会社のドメインのネットワークの時だけ。</li>
+<li><strong><code>New-NetFirewallRule -Action</code></strong>（PowerShell）: 合った通信をどうするかを決めるオプション。<code>Allow</code> は通す、<code>Block</code> は止める。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li>行の最後の <code>`</code>（バッククォート）は、「次の行に続く」という印です。後ろに空白を入れると、続きと見なされないので注意します。</li>
@@ -1507,6 +1710,16 @@ li, tr { page-break-inside: avoid; }
 <span class="c"># 最後に Windows が起動した時刻</span>
 <span class="p">(</span><span class="nb">Get-CimInstance</span> <span class="n">Win32_OperatingSystem</span><span class="p">).</span><span class="n">LastBootUpTime</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Get-HotFix</code></strong>（PowerShell）: 入っている Windows の更新プログラム（番号 <code>HotFixID</code> と、入れた日 <code>InstalledOn</code>）の一覧を表示するコマンド。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><strong>確かめること:</strong> 再起動の後に、PostgreSQL・IIS・アプリのサービスが、すべて自動で「実行中」に戻っていること（<code>Get-Service postgresql*, W3SVC, webapp*</code>）。</p>
 <h2 id="12_1">12. ファイルを持ち込む</h2>
@@ -1528,6 +1741,18 @@ li, tr { page-break-inside: avoid; }
 <span class="c"># 共有フォルダからまとめて写す（/R:2 /W:5 は、失敗したら 5 秒おきに 2 回までやり直す）</span>
 <span class="n">robocopy</span> <span class="p">\\</span><span class="n">fileserver</span><span class="p">\</span><span class="n">share</span><span class="p">\</span><span class="n">webapp</span><span class="p">\</span><span class="n">installers</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">installers</span> <span class="p">/</span><span class="n">R</span><span class="p">:</span><span class="n">2</span> <span class="p">/</span><span class="n">W</span><span class="p">:</span><span class="n">5</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Get-FileHash</code></strong>（PowerShell）: ファイルの中身から、ハッシュ（指紋のような長い英数字）を計算するコマンド。中身が 1 文字でも違えば、まったく違う値になります。ダウンロードしたファイルが壊れていないか確かめる時に使います。</li>
+<li><strong><code>Get-FileHash -Algorithm</code></strong>（PowerShell）: ハッシュの計算のしかたを決めるオプション。<code>-Algorithm SHA256</code> は、配っている所が公開している SHA256 の値と比べて、ファイルが壊れていない・すりかえられていないかを確かめる時に使います。</li>
+<li><strong><code>robocopy</code></strong>（コマンド）: フォルダを丸ごとコピーする、Windows のコマンド（途中で切れても続きからやり直せる）。<code>/E</code> は中のフォルダも全部（空のフォルダも）、<code>/R:2</code> はしくじった時に 2 回までやり直す、<code>/W:5</code> はやり直す前に 5 秒待つ、<code>/NP</code> <code>/NFL</code> <code>/NDL</code> は、進み具合やファイルの名前を 1 つずつ表示しない、という意味です。終わった時の番号は、<code>0</code>〜<code>7</code> なら成功（<code>8</code> 以上が失敗）です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><strong>確かめること:</strong> 2 つのハッシュ値が、1 文字も違わないこと。違うなら、写している途中で壊れたか、別のファイルです。使わずに、取り直します。</p>
 <blockquote>

@@ -98,6 +98,15 @@ quser
 logoff 3
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`quser`**（コマンド）: このサーバーにログインしている人の一覧（名前・番号・状態・ログインした時刻）を表示するコマンド。
+> - **`logoff`**（コマンド）: 決めた番号の人を、ログオフさせるコマンド。`logoff 3` は、`quser` で見た番号 3 の人。保存していない作業は消えるので、必ず本人に確かめてから使います。
+
+<!-- /first-use -->
+
 **確かめること:** `quser` の `STATE` が `Disc`（切断）の行が、長く残っていないこと。**ほかの人の作業を `logoff` で消すときは、その人に確かめてから**にします（保存していない作業が消えます）。
 
 > **用語:** セッション（ここでは、1人がリモート デスクトップでログインしている間の「作業の部屋」のこと。00 基礎知識の Web のセッションとは別のもの）
@@ -258,6 +267,17 @@ Get-Command *Firewall*
 Get-History
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Get-Help`**（PowerShell）: コマンドの説明を表示するコマンド。`Get-Help Get-Service` で使い方、`-Examples` で例が見られます。
+> - **`Get-Help -Examples`**（PowerShell）: `Get-Help` で、使い方の例だけを表示するオプション。初めてのコマンドは、まずこれで例を見ると早いです。
+> - **`Get-Command`**（PowerShell）: コマンドがどこにあるか・何なのかを調べるコマンド。`(Get-Command rustc).Source` は、`rustc.exe` の場所を返します。入っているかを確かめる時に使います。
+> - **`Get-History`**（PowerShell）: この窓で、これまでに打ったコマンドの一覧を表示するコマンド。
+
+<!-- /first-use -->
+
 ### 3.4 パイプ: 結果を次のコマンドに渡す
 
 `|`（**パイプ**）を使うと、前のコマンドの結果を、次のコマンドに渡せます。「全部取り出す → しぼる → 項目を選ぶ → 表示する」のように、小さなコマンドをつないで使います。
@@ -274,6 +294,15 @@ Get-Service |
     Select-Object Name, DisplayName |
     Sort-Object Name
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`-eq`**（PowerShell）: PowerShell の「等しい」の比べ方（equal）。`$LASTEXITCODE -eq 0` は「終わった時の番号が 0（成功）か」。PowerShell では `==` ではなく `-eq` と書きます。大文字・小文字は区別しません（`"ABC" -eq "abc"` も `True`）。
+> - **`Where-Object`**（PowerShell）: `|` で流れてきた物のうち、条件に合う物だけを残すコマンド。`{ }` の中の `$_` が「今の 1 つ」です。`Where-Object { $_.Length -gt 1000 }` のように使います。
+
+<!-- /first-use -->
 
 | よく使う相手 | 役目 | 例 |
 |---|---|---|
@@ -343,6 +372,25 @@ Get-ChildItem D:\ -Recurse -File -ErrorAction SilentlyContinue |
     Select-Object -First 20 FullName, @{ Name = 'MB'; Expression = { [int]($_.Length / 1MB) } }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Get-Content -Tail`**（PowerShell）: `Get-Content` で、ファイルの最後から決めた行数だけを読むオプション。`-Tail 50` は最後の 50 行。ログの新しい所を見る時に使います。
+> - **`Get-Content -Wait`**（PowerShell）: ファイルの最後まで読んだあとも閉じずに待ち、新しく書き足された行を、その都度表示し続けるオプション。ログを見張る時に `-Tail 50 -Wait` と組み合わせます。止める時は `Ctrl` ＋ `C` です。
+> - **`Select-String`**（PowerShell）: ファイルの中から、文字を含む行を探すコマンド。何行目に見つかったかも表示します。
+> - **`Select-String -Path`**（PowerShell）: `-Path ファイル` で、探すファイルを指定します。`*.log` のように、いくつものファイルも指定できます。
+> - **`Select-String -Pattern`**（PowerShell）: `-Pattern "文字"` で、探す文字を指定します。`"ERROR|WARN"` のように、`|` で「または」にもできます（正規表現）。
+> - **`Select-Object -Last`**（PowerShell）: 受け取った物の、最後から決めた数だけを取り出すオプション。`Select-Object -Last 20` は最後の 20 個。
+> - **`Get-ChildItem`**（PowerShell）: フォルダの中の一覧を出すコマンド（短い呼び名は `ls`・`dir`）。`Get-ChildItem フォルダ` でそのフォルダの中身、`-Recurse` で中のフォルダまで全部を出します。
+> - **`Get-ChildItem -Recurse`**（PowerShell）: `-Recurse` で、中のフォルダの中まで全部を一覧にします。
+> - **`Get-ChildItem -File`**（PowerShell）: `Get-ChildItem` で、ファイルだけを取り出す（フォルダを除く）オプション。
+> - **`Get-ChildItem -ErrorAction`**（PowerShell）: エラーが起きた時の動きを決めるオプション。`-ErrorAction SilentlyContinue` は、読めないフォルダ（権限が無い所）があっても、エラーを出さずに続けます。
+> - **`Sort-Object -Descending`**（PowerShell）: 大きい順（新しい順）に並べるオプション。`Sort-Object Length -Descending` は、大きいファイルから順に並べます。
+> - **`Select-Object -First`**（PowerShell）: `-First 1` で、結果の最初の 1 つだけを取り出します。`-Last 3` なら最後の 3 つです。
+
+<!-- /first-use -->
+
 > **`Remove-Item` は、ごみ箱に入りません。** 消したファイルは戻せないので、消す前に `Get-ChildItem` で、消す物を確かめてから消します。`-Recurse`（中身ごと）を付けるときは特に気を付けます。
 
 ### 3.7 スクリプトを動かす
@@ -357,6 +405,14 @@ Get-ChildItem D:\ -Recurse -File -ErrorAction SilentlyContinue |
 & D:\webapp\tools\backup.ps1
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.\backup.ps1`**（PowerShell）: 今いるフォルダの `backup.ps1`（この資料で作る、データベースとファイルの控えを取るスクリプト）を動かす書き方。PowerShell では、今いるフォルダのスクリプトも `.\` を付けないと動きません（うっかり同じ名前の物を動かさないための決まり）。
+
+<!-- /first-use -->
+
 **実行ポリシー**: PowerShell には、知らないスクリプトを勝手に動かさないための決まりがあります。Windows Server では、最初は `RemoteSigned`（このサーバーで書いたスクリプトは動く。インターネットから取ってきたスクリプトは、署名が無いと動かない）になっています。
 
 ```powershell
@@ -367,6 +423,15 @@ Get-ExecutionPolicy
 Unblock-File D:\webapp\tools\some-script.ps1
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Get-ExecutionPolicy`**（PowerShell）: 今の実行ポリシー（スクリプトを動かしてよいかの決まり）を見るコマンド。`Restricted` はスクリプトを動かせない、`RemoteSigned` は自分で作った物は動かせる、という意味です。
+> - **`Unblock-File`**（PowerShell）: インターネットやほかのパソコンから持ってきたファイルに付く「よそから来た」印を外すコマンド。印が付いたスクリプトは、決まりによって動かないことがあります。中身を確かめてから外します。
+
+<!-- /first-use -->
+
 **確かめること:** `Get-ExecutionPolicy` が `RemoteSigned` であること。「このシステムではスクリプトの実行が無効になっているため…」と出たら、そのファイルがインターネットから取ってきた物で印が付いているか、会社の決まりで実行ポリシーが厳しくなっています。**`Set-ExecutionPolicy` で、サーバー全体の実行ポリシーを `Unrestricted` や `Bypass` に変えて逃げないで**ください。会社の決まりに反することがあります。（04 の 11 章のタスクで `-ExecutionPolicy Bypass` を付けているのは、自分で書いて中身の分かっているスクリプト1つを、そのタスクの中でだけ動かすためで、サーバー全体の決まりは変えません。）
 
 **スクリプトの文字コード（とても大事）:** Windows PowerShell 5.1 は、**BOM（ファイルの先頭の印）の無い UTF-8** のファイルを、Shift_JIS だと思って読みます。日本語のコメントや文字が入ったスクリプトをそのまま保存すると、日本語の所で行の区切りが食われ、**次の行が消えたり、構文エラーで丸ごと動かなかったり**します（試して確かめました）。日本語を含むスクリプトは、メモ帳の「名前を付けて保存」で、エンコードを「**UTF-8 (BOM 付き)**」にして保存します。
@@ -375,6 +440,14 @@ Unblock-File D:\webapp\tools\some-script.ps1
 # 先頭の 3 つの数が 239 187 191 なら BOM 付き
 (Get-Content D:\webapp\tools\backup.ps1 -Encoding Byte -TotalCount 3) -join ' '
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`-join`**（PowerShell）: 並びの中身を、区切り文字でつないで 1 つの文字列にする演算子。`$lines -join "`n"` は「改行でつなぐ」、`@("a","b") -join ","` は `"a,b"`。
+
+<!-- /first-use -->
 
 > **用語:** 実行ポリシー（Execution Policy：どのスクリプトを動かしてよいかの PowerShell の決まり）
 
@@ -424,6 +497,16 @@ Get-LocalGroupMember -Group Administrators
 # リモート デスクトップでログインしてよい人
 Get-LocalGroupMember -Group "Remote Desktop Users"
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Get-LocalUser`**（PowerShell）: このサーバーの中の利用者（ローカルユーザー）の一覧と、使えるか（`Enabled`）を表示するコマンド。
+> - **`Get-LocalGroupMember`**（PowerShell）: このサーバーの中のグループに、だれが入っているかを表示するコマンド。
+> - **`Get-LocalGroupMember -Group`**（PowerShell）: 調べるグループの名前を決めるオプション。`-Group Administrators` は、管理者のグループ（入っている人は何でもできるので、少なくしておく）。
+
+<!-- /first-use -->
 
 **確かめること:** Administrators に、**知らない人が入っていないこと**。構築が終わったら、自分を Administrators から外してもらうかどうかを、情報システム部門と決めます（会社の決まりによります）。
 
@@ -493,6 +576,14 @@ icacls D:\webapp\secrets /inheritance:d
 icacls D:\webapp\secrets /remove "BUILTIN\Users"
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`icacls`**（コマンド）: ファイルやフォルダの権限（だれが読める・書けるか）を表示する・変えるコマンド。`(R)` は読む、`(M)` は変える、`(F)` は全部できる、`(OI)(CI)` は中のファイルとフォルダにも引き継ぐ、という意味です。
+
+<!-- /first-use -->
+
 | 結果の書き方 | 意味 |
 |---|---|
 | `(F)`・`(M)`・`(RX)`・`(R)` | 5.1 の表の許可 |
@@ -560,6 +651,25 @@ Get-CimInstance Win32_Service -Filter "Name='webapp-stg'" |
 sc.exe failure webapp-stg reset= 86400 actions= restart/60000/restart/60000/restart/60000
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Stop-Service`**（PowerShell）: Windows のサービスを止めるコマンド。管理者の PowerShell で動かします。
+> - **`Stop-Service -Name`**（PowerShell）: 止めるサービスの名前を決めるオプション。`Stop-Service -Name webapp-stg`。
+> - **`Start-Service`**（PowerShell）: 止まっている Windows のサービスを始めるコマンド。
+> - **`Start-Service -Name`**（PowerShell）: 始めるサービスの名前を決めるオプション。
+> - **`Restart-Service`**（PowerShell）: Windows のサービスを、止めてから始め直すコマンド。設定ファイルを変えたあとに、読み直させる時に使います。
+> - **`Restart-Service -Name`**（PowerShell）: 始め直すサービスの名前を決めるオプション。
+> - **`Set-Service`**（PowerShell）: Windows のサービスの設定（始まり方など）を変えるコマンド。
+> - **`Set-Service -Name`**（PowerShell）: 設定を変えるサービスの名前を決めるオプション。
+> - **`Set-Service -StartupType`**（PowerShell）: サービスの始まり方を決めるオプション。`Automatic`（サーバーが起動したら自動で始まる）・`Manual`（手で始める）・`Disabled`（使えなくする）。
+> - **`Get-CimInstance`**（PowerShell）: Windows の中の情報（OS・CPU・サービス・ディスクなど）を問い合わせるコマンド。`Get-CimInstance Win32_OperatingSystem` は OS の情報、`Get-CimInstance Win32_Service` はサービスの一覧（自動で始まるかどうかも分かる）です。
+> - **`Get-CimInstance -Filter`**（PowerShell）: `Get-CimInstance` で、条件に合う物だけを取り出すオプション。`-Filter "Name='webapp-stg'"` は、名前が webapp-stg のサービスだけ。
+> - **`sc.exe`**（コマンド）: Windows のサービスの細かい設定をするコマンド。`sc.exe failure 名前 reset= 86400 actions= restart/60000/…` は「止まったら 60 秒後に始め直す。数えるのは 1 日ごとにやり直す」。PowerShell では `sc` だけだと別のコマンドになるので、必ず `.exe` まで書きます（`=` の後ろの空白も必要）。
+
+<!-- /first-use -->
+
 **確かめること:** `Get-CimInstance` の `StartName` が `NT SERVICE\webapp-stg`、`State` が `Running` であること。`sc.exe` の `=` の後ろには、**必ず空白を1つ**入れます（`reset= 86400`）。空白が無いと失敗します。
 
 > **用語:** sc.exe（サービスの設定を変える、Windows の昔からのコマンド。PowerShell では必ず `.exe` まで打つ（3.8））
@@ -622,6 +732,19 @@ Get-WinEvent -FilterHashtable @{ LogName = 'System'; Id = 1074 } -MaxEvents 5 |
 Get-WinEvent -FilterHashtable @{ LogName = 'System'; Id = 7031, 7034 } -MaxEvents 10 -ErrorAction SilentlyContinue
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Get-WinEvent`**（PowerShell）: Windows のイベントログ（Windows やサービスが残す記録）を読むコマンド。
+> - **`Get-WinEvent -FilterHashtable`**（PowerShell）: 読むイベントの条件を、表（`@{ }`）で決めるオプション。`@{ LogName = 'System'; Level = 1, 2; StartTime = (Get-Date).AddDays(-1) }` は「System のログの、重大（1）とエラー（2）の、この 1 日の物」。`Id = 7031` のように、イベントの番号でも選べます。
+> - **`Get-Date`**（PowerShell）: 今の日時を返すコマンド。`(Get-Date).AddDays(-1)` は「今から 1 日前」、`(Get-Date).AddHours(-26)` は「26 時間前」です（`( )` で囲んでから、`.AddDays()` などのメソッドを呼びます）。
+> - **`Format-List`**（PowerShell）: 受け取った物の項目を、1 行に 1 つずつ縦に並べて表示するコマンド。項目が多くて表（`Format-Table`）では切れてしまう時に使います。
+> - **`Get-WinEvent -MaxEvents`**（PowerShell）: 読むイベントの数の上限を決めるオプション（新しい物から）。`-MaxEvents 5` は最新の 5 件。
+> - **`Get-WinEvent -ErrorAction`**（PowerShell）: エラーが起きた時の動きを決めるオプション。条件に合うイベントが 1 件も無いと、`Get-WinEvent` はエラーを出すので、`-ErrorAction SilentlyContinue` で黙らせます。
+
+<!-- /first-use -->
+
 **確かめること:** 何も出ない（「指定された選択条件に一致するイベントは見つかりませんでした」という意味のエラー）なら、その期間にその記録は無かった、ということです。
 
 > **用語:** イベント ID（Windows の記録の種類ごとに付いた番号。番号で検索すると、意味を調べやすい）
@@ -655,6 +778,17 @@ Get-Volume | Where-Object DriveLetter |
 # 80 番で待ち受けているのは、どのプログラムか
 Get-NetTCPConnection -LocalPort 80 -State Listen | Select-Object LocalAddress, OwningProcess
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Get-Process`**（PowerShell）: 動いているプログラム（プロセス）の一覧を出すコマンド。`Get-Process -Id 1234` で、番号 1234 のプロセスの名前などが分かります。
+> - **`-f`**（PowerShell）: 書式（形）を決めて文字列を作る演算子。`"{0,-10} {1}" -f $name, $hash` は、`{0}` に 1 つ目、`{1}` に 2 つ目を入れます（`,-10` は「10 文字分の幅で左に寄せる」）。
+> - **`Get-Volume`**（PowerShell）: ディスク（ボリューム）の一覧と、大きさ・空いている量を表示するコマンド。
+> - **`Get-NetTCPConnection -LocalPort`**（PowerShell）: `-LocalPort 8080` で、このパソコン側のポート番号が 8080 の物だけに絞ります。
+
+<!-- /first-use -->
 
 **確かめること:**
 
@@ -696,6 +830,19 @@ Get-ScheduledTask -TaskPath "\webapp\" | Get-ScheduledTaskInfo |
 Start-ScheduledTask -TaskPath "\webapp\" -TaskName "webapp-backup"
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Get-ScheduledTask`**（PowerShell）: タスクスケジューラーに登録した「予定の仕事」の一覧を表示するコマンド。
+> - **`Get-ScheduledTask -TaskPath`**（PowerShell）: 予定の仕事を入れたフォルダを決めるオプション。`-TaskPath "\webapp\"` は、この資料で作る仕事をまとめた `\webapp\` フォルダだけ。
+> - **`Get-ScheduledTaskInfo`**（PowerShell）: 予定の仕事の、前に動いた時刻（`LastRunTime`）・結果（`LastTaskResult`。`0` なら成功）・次に動く時刻（`NextRunTime`）を表示するコマンド。
+> - **`Start-ScheduledTask`**（PowerShell）: 予定の仕事を、時刻を待たずに今すぐ動かすコマンド。登録したあと、正しく動くかを確かめる時に使います。
+> - **`Start-ScheduledTask -TaskPath`**（PowerShell）: 動かす予定の仕事のフォルダを決めるオプション。
+> - **`Start-ScheduledTask -TaskName`**（PowerShell）: 動かす予定の仕事の名前を決めるオプション。
+
+<!-- /first-use -->
+
 **確かめること:** `LastTaskResult` が `0`（成功）であること。タスクの作り方は、04 の 11 章に、コマンドで書いてあります。
 
 - 「**ユーザーがログオンしているかどうかにかかわらず実行する**」にしておかないと、だれもログインしていない夜中に動きません。手順書では、`SYSTEM` のアカウントで動かすので、この心配はありません。
@@ -721,6 +868,15 @@ Get-NetConnectionProfile | Select-Object InterfaceAlias, NetworkCategory
 Get-NetFirewallProfile | Select-Object Name, Enabled
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Get-NetConnectionProfile`**（PowerShell）: ネットワークの種類（`DomainAuthenticated`＝会社のドメイン・`Private`・`Public`）を表示するコマンド。ファイアウォールの決まりは、この種類ごとに効きます。
+> - **`Get-NetFirewallProfile`**（PowerShell）: ファイアウォールの、種類（Domain・Private・Public）ごとの設定と、有効か（`Enabled`）を表示するコマンド。
+
+<!-- /first-use -->
+
 **確かめること:** `NetworkCategory` が `DomainAuthenticated`（ドメイン）であること。`Enabled` が3つとも `True` であること。
 
 ### 10.2 決まり（ルール）を見る・作る
@@ -735,6 +891,23 @@ New-NetFirewallRule -DisplayName "webapp HTTP 80 (社内から)" `
     -Direction Inbound -Protocol TCP -LocalPort 80 `
     -RemoteAddress 10.0.0.0/8 -Profile Domain -Action Allow
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Get-NetFirewallRule`**（PowerShell）: ファイアウォールの決まり（どの通信を通す・止めるか）の一覧を表示するコマンド。
+> - **`Get-NetFirewallRule -DisplayName`**（PowerShell）: 表示名で決まりを探すオプション。`-DisplayName "webapp*"` は、名前が webapp で始まる決まりだけ。
+> - **`New-NetFirewallRule`**（PowerShell）: ファイアウォールに、新しい決まり（この通信を通す、など）を足すコマンド。管理者の PowerShell で動かします。
+> - **`New-NetFirewallRule -DisplayName`**（PowerShell）: 決まりの表示名を決めるオプション。あとで `Get-NetFirewallRule -DisplayName` で探せるように、分かりやすい名前を付けます。
+> - **`New-NetFirewallRule -Direction`**（PowerShell）: 通信の向きを決めるオプション。`Inbound` は「外からこのサーバーへ入ってくる通信」、`Outbound` は「このサーバーから出ていく通信」。
+> - **`New-NetFirewallRule -Protocol`**（PowerShell）: 通信の種類を決めるオプション。Web やデータベースは `TCP` です。
+> - **`New-NetFirewallRule -LocalPort`**（PowerShell）: このサーバーの、どのポート（窓口の番号）への通信かを決めるオプション。`-LocalPort 80` は Web（HTTP）の窓口。
+> - **`New-NetFirewallRule -RemoteAddress`**（PowerShell）: どこから来た通信を通すかを決めるオプション。`-RemoteAddress 10.0.0.0/8` のように、社内の住所の範囲だけに絞ります。
+> - **`New-NetFirewallRule -Profile`**（PowerShell）: 決まりを効かせるネットワークの種類を決めるオプション。`-Profile Domain` は、会社のドメインのネットワークの時だけ。
+> - **`New-NetFirewallRule -Action`**（PowerShell）: 合った通信をどうするかを決めるオプション。`Allow` は通す、`Block` は止める。
+
+<!-- /first-use -->
 
 - 行の最後の `` ` ``（バッククォート）は、「次の行に続く」という印です。後ろに空白を入れると、続きと見なされないので注意します。
 - **ファイアウォール自体を無効にしないでください。** つながらないときは、決まりを足して直します。
@@ -751,6 +924,14 @@ Get-HotFix | Sort-Object InstalledOn -Descending | Select-Object -First 10 HotFi
 # 最後に Windows が起動した時刻
 (Get-CimInstance Win32_OperatingSystem).LastBootUpTime
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Get-HotFix`**（PowerShell）: 入っている Windows の更新プログラム（番号 `HotFixID` と、入れた日 `InstalledOn`）の一覧を表示するコマンド。
+
+<!-- /first-use -->
 
 **確かめること:** 再起動の後に、PostgreSQL・IIS・アプリのサービスが、すべて自動で「実行中」に戻っていること（`Get-Service postgresql*, W3SVC, webapp*`）。
 
@@ -775,6 +956,16 @@ Get-FileHash D:\webapp\installers\postgresql-18.6-1-windows-x64.exe -Algorithm S
 # 共有フォルダからまとめて写す（/R:2 /W:5 は、失敗したら 5 秒おきに 2 回までやり直す）
 robocopy \\fileserver\share\webapp\installers D:\webapp\installers /R:2 /W:5
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Get-FileHash`**（PowerShell）: ファイルの中身から、ハッシュ（指紋のような長い英数字）を計算するコマンド。中身が 1 文字でも違えば、まったく違う値になります。ダウンロードしたファイルが壊れていないか確かめる時に使います。
+> - **`Get-FileHash -Algorithm`**（PowerShell）: ハッシュの計算のしかたを決めるオプション。`-Algorithm SHA256` は、配っている所が公開している SHA256 の値と比べて、ファイルが壊れていない・すりかえられていないかを確かめる時に使います。
+> - **`robocopy`**（コマンド）: フォルダを丸ごとコピーする、Windows のコマンド（途中で切れても続きからやり直せる）。`/E` は中のフォルダも全部（空のフォルダも）、`/R:2` はしくじった時に 2 回までやり直す、`/W:5` はやり直す前に 5 秒待つ、`/NP` `/NFL` `/NDL` は、進み具合やファイルの名前を 1 つずつ表示しない、という意味です。終わった時の番号は、`0`〜`7` なら成功（`8` 以上が失敗）です。
+
+<!-- /first-use -->
 
 **確かめること:** 2 つのハッシュ値が、1 文字も違わないこと。違うなら、写している途中で壊れたか、別のファイルです。使わずに、取り直します。
 

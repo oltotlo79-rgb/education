@@ -426,6 +426,16 @@ li, tr { page-break-inside: avoid; }
 <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">prod</span><span class="p">\</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="p">-</span><span class="n">-version</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>D:\webapp\prod\venv\Scripts\python.exe</code></strong>（コマンド）: 本番用の仮想環境（venv）の Python を、場所を書いて直接動かす書き方。<code>--version</code> で版を確かめます。どの Python で動いているかを取り違えないように、場所まで書きます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><strong>確かめること:</strong> <code>D:\webapp\prod\venv\Scripts\python.exe</code> があり、<code>Python 3.14.x</code> と出ること。部品は、7 章で持ち込んでから入れます。</p>
 <blockquote>
 <p><strong>用語:</strong> 仮想環境（venv。ブイエンブ：Python の部品を、プロジェクトや環境ごとに分けて入れる仕組み。<code>venv\Scripts\python.exe</code> を使うと、その箱の部品が使われる）</p>
@@ -670,6 +680,34 @@ whitenoise==6.12.0
 <span class="n">SILENCED_SYSTEM_CHECKS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;security.W004&quot;</span><span class="p">,</span> <span class="s2">&quot;security.W008&quot;</span><span class="p">,</span> <span class="s2">&quot;security.W012&quot;</span><span class="p">,</span> <span class="s2">&quot;security.W016&quot;</span><span class="p">]</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>import</code></strong>（Python）: ほかのモジュール（部品）を読み込む書き方。<code>import re</code> で正規表現の道具、<code>from pathlib import Path</code> で <code>Path</code> だけを使えるようにします。</li>
+<li><strong><code>from</code></strong>（Python）: <code>from パッケージ import 名前</code> の一部で、「どこから読み込むか」を書きます。<code>from pathlib import Path</code>。</li>
+<li><strong><code>def</code></strong>（Python）: 関数を作る書き方。<code>def greet(name: str) -&gt; str:</code> の次の行から、<strong>字下げした所が関数の中身</strong>です。Python は <code>{ }</code> の代わりに字下げで「どこまでが中身か」を表すので、字下げをそろえることがとても大事です。</li>
+<li><strong><code>None</code></strong>（Python）: Python の「値が無い」ことを表す値。調べる時は <code>x is None</code> と書きます。</li>
+<li><strong><code>if</code></strong>（Python）: Python の条件。<code>if 条件:</code> の次の行から、字下げした所が中身です。<code>a if 条件 else b</code> の形で、1 行の中で値を選ぶこともできます。</li>
+<li><strong><code>is</code></strong>（Python）: 「同じ物か」を調べる書き方。<code>if value is None:</code> は「値が無ければ」。<code>None</code> と比べる時は <code>==</code> でなく <code>is</code> を使います。</li>
+<li><strong><code>raise</code></strong>（Python）: エラー（例外）を起こして、処理を止める書き方。<code>raise TransitionError("…")</code>。呼んだ側は <code>try … except</code> で受け止められます。</li>
+<li><strong><code>return</code></strong>（Python）: Python の関数の結果を返して、関数を終える命令。</li>
+<li><strong><code>for</code></strong>（Python）: Python のくり返し。<code>for x in 並び:</code> の次の行から、字下げした所が中身です。<code>[式 for x in 並び]</code> の形（内包表記）で、新しいリストを 1 行で作ることもできます。</li>
+<li><strong><code>in</code></strong>（Python）: <code>for x in 並び</code>（並びから 1 つずつ）と、<code>値 in 並び</code>（含まれているか）の 2 つの使い方があります。</li>
+<li><strong><code>True</code></strong>（Python）: Python の「正しい（はい）」の値。反対は <code>False</code>。頭は大文字です（<code>true</code> ではありません）。</li>
+<li><strong><code>False</code></strong>（Python）: Python の「正しくない（いいえ）」の値。</li>
+<li><strong><code>.resolve()</code></strong>（Python）: <code>Path(__file__).resolve()</code> は、ファイルの場所を、<code>C:\</code> から始まる絶対の場所にするメソッド。<code>.parent</code> で 1 つ上のフォルダになります。</li>
+<li><strong><code>.get()</code></strong>（Python）: 辞書（<code>dict</code>）から、キーで値を取り出すメソッド。<code>d.get("port", 8080)</code> は、キーが無ければ 2 つ目の値（無ければ <code>None</code>）を返すので、<code>d["port"]</code> と違ってエラーになりません。</li>
+<li><strong><code>.lower()</code></strong>（Python）: 英字を小文字にした文字列を返すメソッド。<code>"True".lower() == "true"</code> のように、大文字小文字をそろえて比べます。</li>
+<li><strong><code>.split()</code></strong>（Python）: Python で、文字列を分けてリストにするメソッド。<code>"a b  c".split()</code> のように何も渡さないと、空白（いくつ続いても）で分けます。</li>
+<li><strong><code>.match()</code></strong>（Python）: <code>re.match(パターン, 文字列)</code> は、文字列の<strong>先頭から</strong>正規表現に合うかを調べる関数です。合えば、見つかった物が返ります（合わなければ <code>None</code>）。</li>
+<li><strong><code>str()</code></strong>（Python）: 値を文字列に変える関数。<code>str(8080)</code> は <code>"8080"</code>。数と文字列は <code>==</code> で比べても等しくならないので、そろえる時に使います。</li>
+<li><strong><code>int()</code></strong>（Python）: 文字列などを整数にする関数。<code>int("25")</code> は 25。数でない文字だと <code>ValueError</code> です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <table>
 <thead>
 <tr>
@@ -797,6 +835,28 @@ whitenoise==6.12.0
     <span class="k">return</span> <span class="n">Response</span><span class="p">({</span><span class="s2">&quot;received&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">body</span><span class="p">)})</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>class</code></strong>（Python）: クラス（データと、それを扱う関数をまとめた設計図）を作る書き方。<code>class Request:</code> の次から、字下げした所が中身です。</li>
+<li><strong><code>or</code></strong>（Python）: 「または」。<code>a or b</code> は、<code>a</code> が空（<code>None</code>・<code>""</code>・0 など）なら <code>b</code> を使います。<code>(row.get("番号") or "").strip()</code> は「無ければ空の文字列にしてから空白を取る」。</li>
+<li><strong><code>.loads()</code></strong>（Python）: 文字列から読み取るメソッド。<code>tomllib.loads(文字列)</code> は TOML、<code>json.loads(文字列)</code> は JSON を、Python の辞書にします。</li>
+<li><strong><code>.get_username()</code></strong>（Django）: Django の利用者から、ログインに使う名前（この資料では社員番号）を返すメソッド。</li>
+<li><strong><code>method_decorator()</code></strong>（Django）: 関数用の印（デコレーター）を、クラスの画面（ビュー）のメソッドにも付けられるようにする物。</li>
+<li><strong><code>authenticate()</code></strong>（Django）: 名前とパスワードが正しいかを確かめる Django の関数。正しければ利用者（<code>User</code>）を、違えば <code>None</code> を返します。</li>
+<li><strong><code>login()</code></strong>（Django）: 確かめた利用者を、ログインした状態にする Django の関数（セッションを始める）。<code>login(request, user)</code>。</li>
+<li><strong><code>logout()</code></strong>（Django）: ログアウトさせる Django の関数（セッションを消す）。<code>logout(request)</code>。</li>
+<li><strong><code>api_view()</code></strong>（Django REST framework）: 関数を、DRF の API の画面にする物。<code>@api_view(["GET", "POST"])</code> のように使います。</li>
+<li><strong><code>len()</code></strong>（Python）: 長さ（中身の数）を返す関数。<code>len("abc")</code> は 3、<code>len([1, 2])</code> は 2、<code>len(sys.argv)</code> は「渡された引数の数＋1」です。</li>
+<li><strong><code>@method_decorator</code></strong>（Django）: <code>@method_decorator(ensure_csrf_cookie, name="dispatch")</code> をクラスの上に付けて、そのクラスの画面に印を付けます。</li>
+<li><strong><code>@require_POST</code></strong>（Django）: 「この画面は POST だけを受け付ける」という印（デコレーター）。GET などで来たら <code>405</code> を返します。ログアウトのように、状態を変える物に付けます。</li>
+<li><strong><code>@api_view</code></strong>（Django REST framework）: <code>@api_view(["GET", "POST"])</code> を関数の上に付けて、API にします。決めたメソッド以外は 405 で断られます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-9"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">django.contrib</span><span class="w"> </span><span class="kn">import</span> <span class="n">admin</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">django.urls</span><span class="w"> </span><span class="kn">import</span> <span class="n">path</span><span class="p">,</span> <span class="n">re_path</span>
 
@@ -813,6 +873,18 @@ whitenoise==6.12.0
     <span class="n">re_path</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^(?!api/|admin/|static/).*$&quot;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">IndexView</span><span class="o">.</span><span class="n">as_view</span><span class="p">()),</span>
 <span class="p">]</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.as_view()</code></strong>（Django）: クラスで作った画面（ビュー）を、URL の決まりに登録できる形にするメソッド。</li>
+<li><strong><code>path()</code></strong>（Django）: URL と、それに答える画面（ビュー）を結び付ける関数。<code>path("requests/&lt;int:pk&gt;/", views.detail)</code> の <code>&lt;int:pk&gt;</code> は、URL の中の数を <code>pk</code> という名前で受け取ります。</li>
+<li><strong><code>re_path()</code></strong>（Django）: 正規表現で URL の決まりを書く関数。<code>re_path(r"^(?!api/|admin/).*$", …)</code> は「<code>api/</code>・<code>admin/</code> で始まらない URL は全部」（React の画面を返す）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li>最後の <code>re_path</code> は、「<code>api/</code>・<code>admin/</code>・<code>static/</code> で始まらない URL は、全部 React の画面を返す」という意味です。React が、URL を見て画面を切りかえます（<code>/requests/123</code> を直接開いても、画面が出る）。</li>
@@ -838,6 +910,19 @@ whitenoise==6.12.0
 <span class="p">});</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>import</code></strong>（JavaScript・TypeScript）: ほかのファイルや部品から、関数などを読み込む書き方。<code>import { rmSync } from "node:fs";</code> は、Node.js のファイルの道具から <code>rmSync</code> を使えるようにします。</li>
+<li><strong><code>from</code></strong>（JavaScript・TypeScript）: <code>import { 名前 } from "場所";</code> の一部で、「どこから読み込むか」を書きます。</li>
+<li><strong><code>export</code></strong>（TypeScript）: 「このファイルの外から使ってよい」という印。<code>export type RequestStatus = …</code> と書くと、ほかのファイルで <code>import</code> して使えます。</li>
+<li><strong><code>default</code></strong>（JavaScript・TypeScript）: <code>export default</code> は、そのファイルから「いちばんの物」を 1 つ外に出す書き方。読み込む側は <code>import 名前 from "./ファイル"</code> と、好きな名前で受け取れます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-11"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// Django が渡した csrftoken のクッキーを読む</span>
 <span class="kd">function</span><span class="w"> </span><span class="nx">csrfToken</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">m</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">cookie</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/(?:^|; )csrftoken=([^;]+)/</span><span class="p">);</span>
@@ -861,6 +946,31 @@ whitenoise==6.12.0
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>function</code></strong>（TypeScript）: 関数（ひとまとまりの処理）を作る書き方。<code>function greet(name: string): string { … }</code> は、「文字列の <code>name</code> を受け取って、文字列を返す関数 <code>greet</code>」です。</li>
+<li><strong><code>const</code></strong>（JavaScript・TypeScript）: JavaScript・TypeScript で、変えない値に名前を付ける書き方。<code>const db = …;</code>。あとで別の値を入れようとするとエラーになります。</li>
+<li><strong><code>return</code></strong>（JavaScript・TypeScript）: JavaScript・TypeScript で、関数の結果を返して、関数を終える命令。</li>
+<li><strong><code>async</code></strong>（JavaScript・TypeScript）: JavaScript・TypeScript で、中で <code>await</code> を使える関数にする印。結果は <code>Promise</code>（あとで届く約束）で返ります。</li>
+<li><strong><code>await</code></strong>（JavaScript・TypeScript）: JavaScript・TypeScript で、時間のかかる処理（<code>Promise</code>）が終わるまで待って、結果を受け取る書き方。<code>async</code> の関数の中で使います。</li>
+<li><strong><code>undefined</code></strong>（TypeScript）: 「まだ値が入っていない」ことを表す値。<code>?</code> の付いた無くてもよい項目が無い時や、配列の範囲の外を読んだ時に出てきます。</li>
+<li><strong><code>catch</code></strong>（TypeScript）: <code>try</code> の中で失敗した時に動く所。<code>catch (e)</code> の <code>e</code> にエラーが入ります（何が来るか分からないので、使う前に確かめます）。</li>
+<li><strong><code>if</code></strong>（JavaScript・TypeScript）: JavaScript・TypeScript の条件。<code>if (条件) { … } else { … }</code>。条件は <code>( )</code> で囲みます。</li>
+<li><strong><code>throw</code></strong>（TypeScript）: エラーを起こして、処理を止める書き方。<code>throw new Error("サーバーのエラー")</code>。<code>try … catch</code> で受け止められます。</li>
+<li><strong><code>new</code></strong>（JavaScript・TypeScript）: クラスから、新しい物を作る書き方。<code>new DatabaseSync("ba.sqlite")</code>・<code>new Date()</code>・<code>new Error("…")</code> のように使います。</li>
+<li><strong><code>.match()</code></strong>（TypeScript）: 文字列が正規表現に合う所を探すメソッド。見つかると、その情報（かっこの中の部分など）を配列で、見つからないと <code>null</code> を返します。</li>
+<li><strong><code>.stringify()</code></strong>（TypeScript）: <code>JSON.stringify(値)</code> は、オブジェクトや配列を、JSON の文字列にする関数です。保存したり、サーバーへ送ったりする時に使います。</li>
+<li><strong><code>.json()</code></strong>（JavaScript・TypeScript）: <code>fetch</code> の答え（<code>Response</code>）の本文を、JSON として読んで、オブジェクトにするメソッド。<code>await res.json()</code>。</li>
+<li><strong><code>.catch()</code></strong>（TypeScript）: <code>Promise</code> が失敗した時の代わりの処理を登録するメソッド。<code>res.json().catch(() =&gt; ({}))</code> は「JSON として読めなければ空のオブジェクト」。</li>
+<li><strong><code>=&gt;</code></strong>（JavaScript・TypeScript）: アロー関数（短く書ける関数）の矢印。<code>(path) =&gt; \</code>…${path}`<code>は「</code>path` を受け取って文字列を返す関数」。</li>
+<li><strong><code>...</code></strong>（TypeScript）: スプレッド構文。<code>[...requests]</code> は配列の中身を広げて、新しい配列（写し）を作ります。<code>{ ...user, isAdmin: true }</code> は、オブジェクトを写して一部だけ変えます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li><strong><code>base: "/static/"</code> が大事です。</strong> これが無いと、<code>index.html</code> の中の部品の住所が <code>/assets/...</code> になり、Django の 6.4 の <code>re_path</code> が <code>index.html</code> を返してしまうため、<strong>画面が真っ白</strong>になります（15 章）。</li>
 <li><code>api()</code> は、毎回クッキーから札を読み直します。<strong>ログインすると、Django が札を新しい物に取りかえる</strong>からです（8.4 の表の 9）。</li>
@@ -881,6 +991,19 @@ whitenoise==6.12.0
 <span class="nv">$env:DB_NAME</span> <span class="p">=</span> <span class="s2">&quot;x&quot;</span><span class="p">;</span> <span class="nv">$env:DB_USER</span> <span class="p">=</span> <span class="s2">&quot;x&quot;</span><span class="p">;</span> <span class="nv">$env:DB_PASSWORD</span> <span class="p">=</span> <span class="s2">&quot;x&quot;</span>
 <span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">manage</span><span class="p">.</span><span class="n">py</span> <span class="n">collectstatic</span> <span class="p">-</span><span class="n">-noinput</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cd</code></strong>（PowerShell）: 「change directory（フォルダを移る）」の略。<code>cd rust-study</code> で、今いるフォルダの中の <code>rust-study</code> へ移ります。<code>cd ..</code> は 1 つ上のフォルダへ、<code>cd ~</code> はホームフォルダ（<code>C:\Users\you</code>）へ戻ります。今いる場所は、行の頭の <code>PS C:\Users\you\rust-study&gt;</code> の部分に表示されます。</li>
+<li><strong><code>npm ci</code></strong>（Node.js）: <code>package-lock.json</code> に書かれたとおりの版で、部品を入れ直すコマンド（<code>node_modules</code> を一度消してから入れる）。<code>npm install</code> と違い、<code>package-lock.json</code> を書きかえないので、いつ・どこで入れても同じになります。</li>
+<li><strong><code>npm run</code></strong>（Node.js）: <code>package.json</code> の <code>scripts</code> に書いたコマンドを動かすコマンド。<code>npm run dev</code> は開発用のサーバーを起動し、<code>npm run build</code> は本番用のファイルを作ります。止める時は <code>Ctrl</code> ＋ <code>C</code> です。</li>
+<li><strong><code>.\.venv\Scripts\python.exe</code></strong>（Python の道具）: 仮想環境（<code>.venv</code>）の中の Python を、場所を書いて動かす書き方。<code>.\.venv\Scripts\python.exe ファイル.py</code> でプログラムを動かし、<code>.\.venv\Scripts\python.exe -m pip install -r requirements.txt</code> で、その仮想環境に部品を入れます。仮想環境を「入る」操作（Activate）をしなくても、確実にその Python が使われます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><strong>確かめること:</strong></p>
 <ul>
@@ -960,6 +1083,16 @@ whitenoise-6.12.0-py3-none-any.whl
 <h3 id="83-check-deploy">8.3 <code>check --deploy</code> の注意</h3>
 <div class="codehilite"><div class="code-wrap" id="code-16"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">.\</span><span class="n">manage</span><span class="p">.</span><span class="n">ps1</span> <span class="n">check</span> <span class="p">-</span><span class="n">-deploy</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.\manage.ps1</code></strong>（PowerShell）: 今いるフォルダの <code>manage.ps1</code>（この資料で作る、Django の管理コマンドを、本番の設定で動かすための小さなスクリプト）を動かす書き方。<code>.\manage.ps1 check --deploy</code> は、本番に出す前の設定の確かめです。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><code>SILENCED_SYSTEM_CHECKS</code> を書く前は、次の 4 つの注意が出ました（試した結果）。どれも「HTTPS にせよ」という意味で、HTTP で動かす今回は当てはまりません。</p>
 <table>
@@ -1090,6 +1223,16 @@ whitenoise-6.12.0-py3-none-any.whl
 <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">stg</span><span class="p">\</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">-m</span> <span class="n">pip</span> <span class="n">list</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>D:\webapp\stg\venv\Scripts\python.exe</code></strong>（コマンド）: 検証用の仮想環境の Python を、場所を書いて直接動かす書き方。<code>-m pip install …</code> は、その Python の pip で部品を入れる、<code>-c "…"</code> は、その場で 1 行の Python を動かす、という意味です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><strong>確かめること:</strong> <code>pip install</code> がエラー無しで終わり、<code>pip list</code> に <code>Django 5.2.18</code>・<code>waitress 3.0.2</code> などが並ぶこと（試した環境で、<code>--no-index</code> で入ることを確かめました）。</p>
 <blockquote>
 <p><strong>用語:</strong> <code>--no-index --find-links</code>（「インターネットの部品の置き場を見ずに、このフォルダの中の部品だけで入れて」という指定）</p>
@@ -1198,6 +1341,16 @@ whitenoise-6.12.0-py3-none-any.whl
 <span class="n">icacls</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">stg</span><span class="p">\</span><span class="n">service</span><span class="p">\</span><span class="n">webapp-stg-service</span><span class="p">.</span><span class="n">xml</span> <span class="p">/</span><span class="n">inheritance</span><span class="p">:</span><span class="nb">r </span><span class="p">/</span><span class="n">grant</span><span class="p">:</span><span class="nb">r </span><span class="s2">&quot;*S-1-5-32-544:F&quot;</span> <span class="s2">&quot;*S-1-5-18:F&quot;</span> <span class="s2">&quot;NT SERVICE\webapp-stg:R&quot;</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>D:\webapp\stg\service\webapp-stg-service.exe</code></strong>（コマンド）: WinSW を、検証用の名前に変えて置いた物。<code>install</code> で、検証用のサービスとして登録します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li><code>D:\webapp\stg</code> に読む・実行する許可を付けると、<code>venv\</code> と <code>app\</code> にも引き継がれます。</li>
 <li>Python 本体（<code>C:\Program Files\Python314</code>）は、最初から全員が読めるので、許可を足す必要はありません。</li>
@@ -1226,6 +1379,26 @@ whitenoise-6.12.0-py3-none-any.whl
 <span class="n">exit</span> <span class="nv">$code</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>param</code></strong>（PowerShell）: スクリプトが受け取る引数を決める書き方。<code>param([string[]] $ManageArgs)</code> は、スクリプトに渡した値を <code>$ManageArgs</code> に入れます。</li>
+<li><strong><code>Get-ChildItem -Path</code></strong>（PowerShell）: <code>Get-ChildItem</code> で、中身を見る場所を決めるオプション。<code>-Path $PSScriptRoot</code> は、このスクリプトがあるフォルダ。</li>
+<li><strong><code>Get-Content -LiteralPath</code></strong>（PowerShell）: <code>Get-Content</code> で、読むファイルの場所を、書いたとおりの文字で決めるオプション。<code>-Path</code> と違い、<code>[</code> <code>]</code> や <code>*</code> を特別な文字として扱わないので、どんな名前のファイルでも確実に読めます。</li>
+<li><strong><code>Push-Location</code></strong>（PowerShell）: 今いるフォルダを覚えてから、指定したフォルダへ移るコマンド。あとで <code>Pop-Location</code> を打つと、覚えたフォルダへ戻れます。</li>
+<li><strong><code>Set-Item</code></strong>（PowerShell）: 項目の値を設定するコマンド。<code>Set-Item -Path "Env:名前" -Value 値</code> で、この PowerShell の窓の中だけの環境変数を設定します。</li>
+<li><strong><code>Set-Item -Path</code></strong>（PowerShell）: <code>-Path "Env:名前"</code> で、どの項目（ここでは環境変数）を設定するかを指定します。</li>
+<li><strong><code>Set-Item -Value</code></strong>（PowerShell）: <code>-Value 値</code> で、設定する値を指定します。</li>
+<li><strong><code>finally</code></strong>（PowerShell）: <code>try { … } finally { … }</code> の <code>finally</code> の所は、<code>try</code> の中がうまくいっても、途中で失敗しても、必ず最後に動きます。元のフォルダへ戻る・記録を閉じる、などの後片づけに使います。</li>
+<li><strong><code>Remove-Item -Path</code></strong>（PowerShell）: <code>Remove-Item</code> で、消す物の場所を決めるオプション。<code>Remove-Item -Path "Env:NAME"</code> は、環境変数 <code>NAME</code> を消します（<code>Env:</code> は環境変数の場所）。</li>
+<li><strong><code>Remove-Item -ErrorAction</code></strong>（PowerShell）: <code>Remove-Item</code> で、エラーが起きた時の動きを決めるオプション。<code>-ErrorAction SilentlyContinue</code> は「無くてもエラーを出さずに次へ進む」。</li>
+<li><strong><code>Pop-Location</code></strong>（PowerShell）: <code>Push-Location</code> で覚えたフォルダへ戻るコマンド。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <blockquote>
 <p><strong>必ず「UTF-8 (BOM 付き)」で保存します（01 の 3.7）。</strong> BOM 無しで保存して試すと、日本語のコメントの所で次の行（環境変数を消す行）が読み飛ばされ、<strong>パスワードが窓に残りました</strong>。BOM 付きにすると、残りませんでした。</p>
 </blockquote>
@@ -1251,6 +1424,16 @@ whitenoise-6.12.0-py3-none-any.whl
 <span class="nb">Invoke-WebRequest</span> <span class="n">http</span><span class="p">://</span><span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span><span class="p">:</span><span class="n">8081</span><span class="p">/</span><span class="n">health</span> <span class="n">-UseBasicParsing</span> <span class="n">-Headers</span> <span class="p">@{</span> <span class="n">Host</span> <span class="p">=</span> <span class="s2">&quot;webapp-stg.example.local&quot;</span> <span class="p">}</span> <span class="p">|</span>
     <span class="nb">Select-Object</span> <span class="n">StatusCode</span><span class="p">,</span> <span class="n">Content</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Invoke-WebRequest -Headers</code></strong>（PowerShell）: 送るリクエストに、見出し（ヘッダー）を足すオプション。<code>-Headers @{ Host = "webapp-stg.example.local" }</code> は、名前を DNS に登録する前に、IIS の振り分けを確かめる時に使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><strong>確かめること:</strong></p>
 <ul>
@@ -1385,6 +1568,18 @@ whitenoise-6.12.0-py3-none-any.whl
 <span class="nb">Invoke-WebRequest</span> <span class="n">http</span><span class="p">://</span><span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span><span class="p">:</span><span class="n">8081</span><span class="p">/</span><span class="n">health</span> <span class="n">-UseBasicParsing</span> <span class="n">-Headers</span> <span class="p">@{</span> <span class="n">Host</span> <span class="p">=</span> <span class="s2">&quot;webapp-stg.example.local&quot;</span> <span class="p">}</span> <span class="p">|</span>
     <span class="nb">Select-Object</span> <span class="n">StatusCode</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Test-Path</code></strong>（PowerShell）: ファイルやフォルダがあるかを調べるコマンド。あれば <code>True</code>、無ければ <code>False</code>。</li>
+<li><strong><code>Remove-Item -Recurse</code></strong>（PowerShell）: フォルダを、中身ごと全部消すオプション。消した物は「ごみ箱」に入らず、元に戻せないので、場所をよく確かめてから使います。</li>
+<li><strong><code>Remove-Item -Force</code></strong>（PowerShell）: 読み取り専用や隠しファイルも、確かめずに消すオプション。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li>新しい版の <code>app\</code> には、許可が引き継がれます（許可は <code>D:\webapp\stg</code> に付けてあるため）。</li>

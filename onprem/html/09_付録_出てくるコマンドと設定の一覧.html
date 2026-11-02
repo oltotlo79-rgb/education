@@ -1,0 +1,2776 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>09_付録_出てくるコマンドと設定の一覧</title>
+<style>
+
+@page {
+  size: A4;
+  margin: 18mm 16mm 20mm 16mm;
+  @bottom-right {
+    content: counter(page);
+    font-size: 10px;
+    color: #64748b;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  font-family: "Yu Gothic UI", "Yu Gothic", "Meiryo", "Hiragino Sans",
+               "Noto Sans JP", "Segoe UI", system-ui, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.75;
+  color: #1e293b;
+  background: #ffffff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #0f172a;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 1.4em 0 0.6em;
+  page-break-after: avoid;
+}
+h1 {
+  font-size: 22pt;
+  border-bottom: 3px solid #1e40af;
+  padding-bottom: 0.3em;
+  margin-top: 0.4em;
+  page-break-before: auto;
+}
+h2 {
+  font-size: 16pt;
+  border-bottom: 1.5px solid #cbd5e1;
+  padding-bottom: 0.25em;
+  margin-top: 1.6em;
+}
+h3 { font-size: 13pt; color: #1e40af; }
+h4 { font-size: 12pt; color: #334155; }
+
+p { margin: 0.5em 0 0.8em; }
+
+a { color: #1d4ed8; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+ul, ol { margin: 0.4em 0 0.9em; padding-left: 1.6em; }
+li { margin: 0.2em 0; }
+
+blockquote {
+  border-left: 4px solid #3b82f6;
+  background: #eff6ff;
+  margin: 0.8em 0;
+  padding: 0.6em 1em;
+  color: #1e3a8a;
+  border-radius: 0 6px 6px 0;
+  page-break-inside: avoid;
+}
+blockquote p { margin: 0.3em 0; }
+blockquote strong { color: #1e40af; }
+
+code {
+  /* DefCode (see _code_font.py) has ASCII and Japanese in ONE font, so a code
+     line is drawn as one text run and copies as one line in every PDF viewer. */
+  font-family: "Consolas", "Consolas", monospace;
+  font-size: 0.9em;
+  background: #f1f5f9;
+  color: #be123c;
+  padding: 0.12em 0.36em;
+  border-radius: 4px;
+  /* Long inline code (file paths / URLs) must break instead of overflowing. */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  /* In a PDF there is no horizontal scrolling, so long lines must wrap
+     instead of being clipped off the right edge of the page. */
+  overflow-x: hidden;
+  overflow-y: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  font-size: 9.2pt;
+  line-height: 1.5;
+  margin: 0.8em 0;
+  page-break-inside: avoid;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+  white-space: inherit;
+  word-break: inherit;
+  overflow-wrap: inherit;
+}
+
+/* The codehilite extension wraps highlighted blocks in a scrolling div; make
+   that wrap too so nothing is clipped in the PDF. */
+.codehilite {
+  overflow-x: hidden;
+  /* overflow-x: hidden alone turns overflow-y into auto, and a glyph from a
+     fallback font that is a hair too tall then shows a vertical scrollbar. */
+  overflow-y: hidden;
+}
+.codehilite pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* No per-token colours: every coloured token became its own text run (and its
+   own tag) in the PDF, and some viewers then pasted each token on its own line.
+   Only whole comment lines get a colour, so each line is still one run. */
+pre .cmt { color: #94a3b8; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.8em 0;
+  font-size: 9.6pt;
+  page-break-inside: avoid;
+}
+th, td {
+  border: 1px solid #e2e8f0;
+  padding: 6px 9px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: #f1f5f9;
+  color: #0f172a;
+  font-weight: 700;
+}
+tr:nth-child(even) td { background: #f8fafc; }
+
+img { max-width: 100%; height: auto; }
+
+hr {
+  border: none;
+  border-top: 1px dashed #cbd5e1;
+  margin: 1.6em 0;
+}
+
+/* Diagram blocks (the inline-styled <div>s in the source) */
+div[style] {
+  page-break-inside: avoid;
+}
+
+/* Tighten spacing right after headings */
+h1 + p, h2 + p, h3 + p, h4 + p { margin-top: 0.2em; }
+
+/* Avoid ugly page breaks inside list items / table rows */
+li, tr { page-break-inside: avoid; }
+
+@media screen {
+  body { max-width: 920px; margin: 0 auto; padding: 20px 20px 120px; font-size: 16px; }
+  pre { white-space: pre !important; word-break: normal !important; overflow-wrap: normal !important;
+        overflow-x: auto !important; font-size: 14px !important; }
+  img { max-width: 100%; height: auto; }
+}
+.web-bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; font-size: 14px;
+  padding: 8px 12px; margin-bottom: 16px; background: #eef2f7; border-radius: 8px; }
+.web-bar a { color: #1e3a5f; }
+.web-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 10; max-width: 90%;
+  font-size: 15px; font-weight: 700; background: #fff7ed; border: 2px solid #f2994a; border-radius: 8px;
+  padding: 10px 16px; margin: 0; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.code-wrap { position: relative; scroll-margin-top: 16px; }
+.code-wrap pre { padding-top: 40px !important; }
+.copy-btn { position: absolute; top: 8px; right: 8px; z-index: 2; font-size: 13px; font-weight: 700;
+  padding: 4px 12px; border: 0; border-radius: 6px; background: #2f80ed; color: #fff; cursor: pointer;
+  font-family: inherit; }
+.copy-btn:hover { background: #1c64c8; }
+.copy-btn.done { background: #27ae60; }
+.code-wrap:target pre { outline: 4px solid #f2994a; outline-offset: 2px; }
+.code-wrap:target .copy-btn { box-shadow: 0 0 0 4px #f2994a; }
+/* syntax colours on screen (the PDF uses one colour so that each line copies as one piece) */
+.codehilite .k, .codehilite .kd, .codehilite .kn, .codehilite .kr { color: #c084fc; }
+.codehilite .s, .codehilite .s1, .codehilite .s2, .codehilite .sb { color: #fcd34d; }
+.codehilite .c, .codehilite .c1, .codehilite .cm { color: #94a3b8; }
+.codehilite .nf, .codehilite .nx { color: #60a5fa; }
+.codehilite .nb { color: #34d399; }
+.codehilite .mi, .codehilite .mf { color: #f472b6; }
+.codehilite .nt { color: #f59e0b; }
+.codehilite .na { color: #93c5fd; }
+</style>
+</head>
+<body>
+<div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/09_%E4%BB%98%E9%8C%B2_%E5%87%BA%E3%81%A6%E3%81%8F%E3%82%8B%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89%E3%81%A8%E8%A8%AD%E5%AE%9A%E3%81%AE%E4%B8%80%E8%A6%A7.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、ブラウザーの「戻る」で PDF に戻れます。</p><div style="text-align: center; padding: 28px 0 8px;">
+<div style="font-size: 14px; color: #475569;">オンプレミス構築 教育資料</div>
+<div style="font-size: 26px; font-weight: 800; color: #0f172a; margin-top: 6px; line-height: 1.35;">付録 — 出てくるコマンドと設定の一覧</div>
+<div style="font-size: 13px; color: #475569; margin-top: 8px;">00〜08 と「参考 HTTPS にする場合」に出てくる 418 個のコマンド・オプション・SQL・コードの部品を、機能ごとに、意味と初めて出てくる所つきで引く</div>
+</div>
+
+<style>
+/* 一覧の表: コードの列と「初めて出てくる所」の列を広めにして、短いコードが途中で折れないようにする */
+table th:first-child, table td:first-child { width: 28%; }
+table td:first-child code { word-break: normal; overflow-wrap: anywhere; }
+table th:last-child, table td:last-child { width: 17%; }
+</style>
+
+<h1 id="_1">付録: 出てくるコマンドと設定の一覧（機能ごと）</h1>
+<h2 id="_2">この資料について</h2>
+<p>00〜08 と「参考 HTTPS にする場合」のコードの枠に出てくる、<strong>PowerShell のコマンドとオプション・Windows のコマンド・SQL・psql・Python と Django・Rust と Topcoat の部品など 418 個</strong>を、<strong>27 の分類</strong>に分けて、1 つずつ説明した一覧です。</p>
+<ul>
+<li><strong>本文との関係:</strong> どのコマンドや部品も、本文の中で<strong>初めて出てくるコードのすぐ下</strong>に、「<strong>▶ ここで初めて出てくるコード</strong>」の箱で同じ説明を載せています。この一覧は、それを機能ごとに並べ直した物です。</li>
+<li><strong>使い方:</strong> 「この <code>-StartupType</code> は何だっけ？」「<code>robocopy</code> の <code>/E</code> は？」と思ったら、下の「分類の一覧」から分類を選んで探してください。HTML 版（<code>onprem\html</code>）なら、<code>Ctrl</code> ＋ <code>F</code> で、コマンドの名前で探すのがいちばん速いです。</li>
+<li><strong>オプションの書き方:</strong> PowerShell のオプションは、<code>Get-Content -Tail</code> のように、<strong>コマンドの名前と組にして</strong>載せています。同じ <code>-Name</code> でも、コマンドによって意味が少しずつ違うからです。<code>-eq</code>・<code>-like</code>・<code>-join</code> などは、どのコマンドでも同じ意味の<strong>演算子</strong>なので、それだけで載せています。</li>
+<li><strong>「初めて出てくる所」の列:</strong> そのコマンドや部品が最初に出てくる資料と章です（<code>04 7. アプリを Windows サービスにする</code> は、04 の 7 章）。そこで、実際にどう使われているかを見られます。</li>
+<li><strong>名前の決まり:</strong> 本番のサービスは <code>webapp-prod</code>、検証は <code>webapp-stg</code>、フォルダは <code>D:\webapp\…</code> です（04 の 4.1）。説明の中の名前も、これに合わせています。</li>
+</ul>
+<blockquote>
+<p><strong>ヒント:</strong> 1 つのコマンドを覚えたら、その分類の表の、近くにある物も読んでみてください。例えば <code>PowerShell</code> の表には、サービスを見る（<code>Get-Service</code>）・止める（<code>Stop-Service</code>）・始める（<code>Start-Service</code>）・始め直す（<code>Restart-Service</code>）が並んでいます。一緒に覚えると、困った時に打てるコマンドがぐっと増えます。</p>
+</blockquote>
+<h2 id="_3">分類の一覧</h2>
+<table>
+<thead>
+<tr>
+<th>分類</th>
+<th>数</th>
+<th>分類</th>
+<th>数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#cat-1">PowerShell</a></td>
+<td>229</td>
+<td><a href="#cat-15">型とメソッド</a></td>
+<td>4</td>
+</tr>
+<tr>
+<td><a href="#cat-2">コマンド</a></td>
+<td>14</td>
+<td><a href="#cat-16">モジュール</a></td>
+<td>3</td>
+</tr>
+<tr>
+<td><a href="#cat-3">psql</a></td>
+<td>3</td>
+<td><a href="#cat-17">スマートポインタ</a></td>
+<td>1</td>
+</tr>
+<tr>
+<td><a href="#cat-4">SQL</a></td>
+<td>61</td>
+<td><a href="#cat-18">時間</a></td>
+<td>3</td>
+</tr>
+<tr>
+<td><a href="#cat-5">Python の道具</a></td>
+<td>1</td>
+<td><a href="#cat-19">非同期</a></td>
+<td>2</td>
+</tr>
+<tr>
+<td><a href="#cat-6">Node.js</a></td>
+<td>2</td>
+<td><a href="#cat-20">クッキー</a></td>
+<td>12</td>
+</tr>
+<tr>
+<td><a href="#cat-7">cargo のコマンド</a></td>
+<td>1</td>
+<td><a href="#cat-21">認証</a></td>
+<td>1</td>
+</tr>
+<tr>
+<td><a href="#cat-8">変数</a></td>
+<td>2</td>
+<td><a href="#cat-22">Topcoat</a></td>
+<td>11</td>
+</tr>
+<tr>
+<td><a href="#cat-9">Vec（並び）</a></td>
+<td>2</td>
+<td><a href="#cat-23">JavaScript・TypeScript</a></td>
+<td>11</td>
+</tr>
+<tr>
+<td><a href="#cat-10">条件</a></td>
+<td>1</td>
+<td><a href="#cat-24">TypeScript</a></td>
+<td>9</td>
+</tr>
+<tr>
+<td><a href="#cat-11">くり返し</a></td>
+<td>1</td>
+<td><a href="#cat-25">Python</a></td>
+<td>23</td>
+</tr>
+<tr>
+<td><a href="#cat-12">Option</a></td>
+<td>3</td>
+<td><a href="#cat-26">Django</a></td>
+<td>10</td>
+</tr>
+<tr>
+<td><a href="#cat-13">エラー処理</a></td>
+<td>3</td>
+<td><a href="#cat-27">Django REST framework</a></td>
+<td>2</td>
+</tr>
+<tr>
+<td><a href="#cat-14">関数</a></td>
+<td>3</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-1">PowerShell</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Get-Content</code></td>
+<td>ファイルの中身を画面に出すコマンド（短い呼び名は <code>cat</code>）。<code>Get-Content memo.txt</code> で中身を表示します。日本語のファイルは <code>-Encoding utf8</code> を付けると文字化けしません。<code>-Tail 10</code> で最後の 10 行だけを出せます。</td>
+<td>00 0. はじめの一歩: コンピューターの中身</td>
+</tr>
+<tr>
+<td><code>Get-Content -Encoding</code></td>
+<td><code>-Encoding utf8</code> で、ファイルを UTF-8 として読みます。付けないと、Windows PowerShell 5.1 では日本語が化けることがあります。</td>
+<td>00 0. はじめの一歩: コンピューターの中身</td>
+</tr>
+<tr>
+<td><code>Get-Content -TotalCount</code></td>
+<td><code>Get-Content</code> で、ファイルの先頭から決めた行数だけを読むオプション。<code>-TotalCount 5</code> は先頭の 5 行。大きなファイルの中身を、少しだけのぞく時に使います。</td>
+<td>00 0. はじめの一歩: コンピューターの中身</td>
+</tr>
+<tr>
+<td><code>Get-PSDrive</code></td>
+<td>PowerShell で使えるドライブ（<code>C:</code>・<code>D:</code> など）の一覧と、使っている量・空いている量を表示するコマンド。</td>
+<td>00 0. はじめの一歩: コンピューターの中身</td>
+</tr>
+<tr>
+<td><code>Get-PSDrive -PSProvider</code></td>
+<td><code>Get-PSDrive</code> で、種類を決めて取り出すオプション。<code>-PSProvider FileSystem</code> は、ディスクのドライブだけ（環境変数などの、ほかの種類を除く）。</td>
+<td>00 0. はじめの一歩: コンピューターの中身</td>
+</tr>
+<tr>
+<td><code>Get-Service</code></td>
+<td>Windows のサービス（裏で動き続けるプログラム）の一覧と、動いているか（<code>Status</code>）を表示するコマンド。</td>
+<td>00 3. OS</td>
+</tr>
+<tr>
+<td><code>Get-Service -Name</code></td>
+<td><code>Get-Service</code> で、名前を決めて取り出すオプション。<code>-Name *postgres*</code> のように、<code>*</code> で「この文字を含む物」を探せます。</td>
+<td>00 3. OS</td>
+</tr>
+<tr>
+<td><code>Select-Object</code></td>
+<td>結果のうち、見たい列だけを選ぶコマンド。<code>… &#124; Select-Object Name, Length</code> のように、<code>&#124;</code>（パイプ）で前のコマンドの結果を受け取って使います。<code>-First 5</code> で最初の 5 つだけにもできます。</td>
+<td>00 3. OS</td>
+</tr>
+<tr>
+<td><code>Get-NetIPConfiguration</code></td>
+<td>このパソコンのネットワークの設定（IP アドレス・ゲートウェイ・DNS サーバー）を表示するコマンド。</td>
+<td>00 4. ネットワークの基礎</td>
+</tr>
+<tr>
+<td><code>Resolve-DnsName</code></td>
+<td>名前（<code>webapp.example.local</code> など）を DNS に問い合わせて、IP アドレスを調べるコマンド。名前で開けない時、まずこれで「名前が引けているか」を確かめます。</td>
+<td>00 4. ネットワークの基礎</td>
+</tr>
+<tr>
+<td><code>Test-NetConnection</code></td>
+<td>相手のパソコンにつながるかを確かめるコマンド。名前が引けるか・届くかを順に調べて表示します。</td>
+<td>00 4. ネットワークの基礎</td>
+</tr>
+<tr>
+<td><code>Test-NetConnection -Port</code></td>
+<td>決めたポート番号につながるかを確かめるオプション。<code>-Port 80</code> の結果の <code>TcpTestSucceeded : True</code> なら、その窓口は開いています（False ならファイアウォールや、サービスが止まっていることを疑う）。</td>
+<td>00 4. ネットワークの基礎</td>
+</tr>
+<tr>
+<td><code>Get-NetTCPConnection</code></td>
+<td>パソコンのネットワークの接続や、待ち受けているポート番号を一覧にするコマンド。「8080 番をだれが使っているか」を調べる時に使います。</td>
+<td>00 4. ネットワークの基礎</td>
+</tr>
+<tr>
+<td><code>Get-NetTCPConnection -State</code></td>
+<td><code>-State Listen</code> で、「待ち受けている」状態の物だけに絞ります（ほかに <code>Established</code>＝つながっている、など）。</td>
+<td>00 4. ネットワークの基礎</td>
+</tr>
+<tr>
+<td><code>Sort-Object</code></td>
+<td>受け取った物を、決めた項目で並べかえるコマンド。<code>Sort-Object LocalPort</code> は、ポート番号の小さい順。</td>
+<td>00 4. ネットワークの基礎</td>
+</tr>
+<tr>
+<td><code>Invoke-WebRequest</code></td>
+<td>URL にリクエストを送って、答え（状態コード・本文）を受け取るコマンド。<code>(Invoke-WebRequest http://…/health -UseBasicParsing).StatusCode</code> で、状態コード（200 など）だけを取り出せます。</td>
+<td>00 5. Web アプリの仕組み</td>
+</tr>
+<tr>
+<td><code>Invoke-WebRequest -UseBasicParsing</code></td>
+<td>答えの HTML を、Internet Explorer の部品を使わずに読むオプション。Windows Server で、IE の初めの設定が終わっていなくても動くように付けます。</td>
+<td>00 5. Web アプリの仕組み</td>
+</tr>
+<tr>
+<td><code>Get-Help</code></td>
+<td>コマンドの説明を表示するコマンド。<code>Get-Help Get-Service</code> で使い方、<code>-Examples</code> で例が見られます。</td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td><code>Get-Help -Examples</code></td>
+<td><code>Get-Help</code> で、使い方の例だけを表示するオプション。初めてのコマンドは、まずこれで例を見ると早いです。</td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td><code>Get-Command</code></td>
+<td>コマンドがどこにあるか・何なのかを調べるコマンド。<code>(Get-Command rustc).Source</code> は、<code>rustc.exe</code> の場所を返します。入っているかを確かめる時に使います。</td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td><code>Get-History</code></td>
+<td>この窓で、これまでに打ったコマンドの一覧を表示するコマンド。</td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td><code>-eq</code></td>
+<td>PowerShell の「等しい」の比べ方（equal）。<code>$LASTEXITCODE -eq 0</code> は「終わった時の番号が 0（成功）か」。PowerShell では <code>==</code> ではなく <code>-eq</code> と書きます。大文字・小文字は区別しません（<code>"ABC" -eq "abc"</code> も <code>True</code>）。</td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td><code>Where-Object</code></td>
+<td><code>&#124;</code> で流れてきた物のうち、条件に合う物だけを残すコマンド。<code>{ }</code> の中の <code>$_</code> が「今の 1 つ」です。<code>Where-Object { $_.Length -gt 1000 }</code> のように使います。</td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td><code>Get-Content -Tail</code></td>
+<td><code>Get-Content</code> で、ファイルの最後から決めた行数だけを読むオプション。<code>-Tail 50</code> は最後の 50 行。ログの新しい所を見る時に使います。</td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td><code>Get-Content -Wait</code></td>
+<td>ファイルの最後まで読んだあとも閉じずに待ち、新しく書き足された行を、その都度表示し続けるオプション。ログを見張る時に <code>-Tail 50 -Wait</code> と組み合わせます。止める時は <code>Ctrl</code> ＋ <code>C</code> です。</td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td><code>Select-String</code></td>
+<td>ファイルの中から、文字を含む行を探すコマンド。何行目に見つかったかも表示します。</td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td><code>Select-String -Path</code></td>
+<td><code>-Path ファイル</code> で、探すファイルを指定します。<code>*.log</code> のように、いくつものファイルも指定できます。</td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td><code>Select-String -Pattern</code></td>
+<td><code>-Pattern "文字"</code> で、探す文字を指定します。<code>"ERROR&#124;WARN"</code> のように、<code>&#124;</code> で「または」にもできます（正規表現）。</td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td><code>Select-Object -Last</code></td>
+<td>受け取った物の、最後から決めた数だけを取り出すオプション。<code>Select-Object -Last 20</code> は最後の 20 個。</td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td><code>Get-ChildItem</code></td>
+<td>フォルダの中の一覧を出すコマンド（短い呼び名は <code>ls</code>・<code>dir</code>）。<code>Get-ChildItem フォルダ</code> でそのフォルダの中身、<code>-Recurse</code> で中のフォルダまで全部を出します。</td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td><code>Get-ChildItem -Recurse</code></td>
+<td><code>-Recurse</code> で、中のフォルダの中まで全部を一覧にします。</td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td><code>Get-ChildItem -File</code></td>
+<td><code>Get-ChildItem</code> で、ファイルだけを取り出す（フォルダを除く）オプション。</td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td><code>Get-ChildItem -ErrorAction</code></td>
+<td>エラーが起きた時の動きを決めるオプション。<code>-ErrorAction SilentlyContinue</code> は、読めないフォルダ（権限が無い所）があっても、エラーを出さずに続けます。</td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td><code>Sort-Object -Descending</code></td>
+<td>大きい順（新しい順）に並べるオプション。<code>Sort-Object Length -Descending</code> は、大きいファイルから順に並べます。</td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td><code>Select-Object -First</code></td>
+<td><code>-First 1</code> で、結果の最初の 1 つだけを取り出します。<code>-Last 3</code> なら最後の 3 つです。</td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td><code>.\backup.ps1</code></td>
+<td>今いるフォルダの <code>backup.ps1</code>（この資料で作る、データベースとファイルの控えを取るスクリプト）を動かす書き方。PowerShell では、今いるフォルダのスクリプトも <code>.\</code> を付けないと動きません（うっかり同じ名前の物を動かさないための決まり）。</td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td><code>Get-ExecutionPolicy</code></td>
+<td>今の実行ポリシー（スクリプトを動かしてよいかの決まり）を見るコマンド。<code>Restricted</code> はスクリプトを動かせない、<code>RemoteSigned</code> は自分で作った物は動かせる、という意味です。</td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td><code>Unblock-File</code></td>
+<td>インターネットやほかのパソコンから持ってきたファイルに付く「よそから来た」印を外すコマンド。印が付いたスクリプトは、決まりによって動かないことがあります。中身を確かめてから外します。</td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td><code>-join</code></td>
+<td>並びの中身を、区切り文字でつないで 1 つの文字列にする演算子。<code>$lines -join "</code>n"<code>は「改行でつなぐ」、</code>@("a","b") -join ","<code>は</code>"a,b"`。</td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td><code>Get-LocalUser</code></td>
+<td>このサーバーの中の利用者（ローカルユーザー）の一覧と、使えるか（<code>Enabled</code>）を表示するコマンド。</td>
+<td>01 4. アカウントとグループ</td>
+</tr>
+<tr>
+<td><code>Get-LocalGroupMember</code></td>
+<td>このサーバーの中のグループに、だれが入っているかを表示するコマンド。</td>
+<td>01 4. アカウントとグループ</td>
+</tr>
+<tr>
+<td><code>Get-LocalGroupMember -Group</code></td>
+<td>調べるグループの名前を決めるオプション。<code>-Group Administrators</code> は、管理者のグループ（入っている人は何でもできるので、少なくしておく）。</td>
+<td>01 4. アカウントとグループ</td>
+</tr>
+<tr>
+<td><code>Stop-Service</code></td>
+<td>Windows のサービスを止めるコマンド。管理者の PowerShell で動かします。</td>
+<td>01 6. サービス</td>
+</tr>
+<tr>
+<td><code>Stop-Service -Name</code></td>
+<td>止めるサービスの名前を決めるオプション。<code>Stop-Service -Name webapp-stg</code>。</td>
+<td>01 6. サービス</td>
+</tr>
+<tr>
+<td><code>Start-Service</code></td>
+<td>止まっている Windows のサービスを始めるコマンド。</td>
+<td>01 6. サービス</td>
+</tr>
+<tr>
+<td><code>Start-Service -Name</code></td>
+<td>始めるサービスの名前を決めるオプション。</td>
+<td>01 6. サービス</td>
+</tr>
+<tr>
+<td><code>Restart-Service</code></td>
+<td>Windows のサービスを、止めてから始め直すコマンド。設定ファイルを変えたあとに、読み直させる時に使います。</td>
+<td>01 6. サービス</td>
+</tr>
+<tr>
+<td><code>Restart-Service -Name</code></td>
+<td>始め直すサービスの名前を決めるオプション。</td>
+<td>01 6. サービス</td>
+</tr>
+<tr>
+<td><code>Set-Service</code></td>
+<td>Windows のサービスの設定（始まり方など）を変えるコマンド。</td>
+<td>01 6. サービス</td>
+</tr>
+<tr>
+<td><code>Set-Service -Name</code></td>
+<td>設定を変えるサービスの名前を決めるオプション。</td>
+<td>01 6. サービス</td>
+</tr>
+<tr>
+<td><code>Set-Service -StartupType</code></td>
+<td>サービスの始まり方を決めるオプション。<code>Automatic</code>（サーバーが起動したら自動で始まる）・<code>Manual</code>（手で始める）・<code>Disabled</code>（使えなくする）。</td>
+<td>01 6. サービス</td>
+</tr>
+<tr>
+<td><code>Get-CimInstance</code></td>
+<td>Windows の中の情報（OS・CPU・サービス・ディスクなど）を問い合わせるコマンド。<code>Get-CimInstance Win32_OperatingSystem</code> は OS の情報、<code>Get-CimInstance Win32_Service</code> はサービスの一覧（自動で始まるかどうかも分かる）です。</td>
+<td>01 6. サービス</td>
+</tr>
+<tr>
+<td><code>Get-CimInstance -Filter</code></td>
+<td><code>Get-CimInstance</code> で、条件に合う物だけを取り出すオプション。<code>-Filter "Name='webapp-stg'"</code> は、名前が webapp-stg のサービスだけ。</td>
+<td>01 6. サービス</td>
+</tr>
+<tr>
+<td><code>Get-WinEvent</code></td>
+<td>Windows のイベントログ（Windows やサービスが残す記録）を読むコマンド。</td>
+<td>01 7. イベント ビューアー</td>
+</tr>
+<tr>
+<td><code>Get-WinEvent -FilterHashtable</code></td>
+<td>読むイベントの条件を、表（<code>@{ }</code>）で決めるオプション。<code>@{ LogName = 'System'; Level = 1, 2; StartTime = (Get-Date).AddDays(-1) }</code> は「System のログの、重大（1）とエラー（2）の、この 1 日の物」。<code>Id = 7031</code> のように、イベントの番号でも選べます。</td>
+<td>01 7. イベント ビューアー</td>
+</tr>
+<tr>
+<td><code>Get-Date</code></td>
+<td>今の日時を返すコマンド。<code>(Get-Date).AddDays(-1)</code> は「今から 1 日前」、<code>(Get-Date).AddHours(-26)</code> は「26 時間前」です（<code>( )</code> で囲んでから、<code>.AddDays()</code> などのメソッドを呼びます）。</td>
+<td>01 7. イベント ビューアー</td>
+</tr>
+<tr>
+<td><code>Format-List</code></td>
+<td>受け取った物の項目を、1 行に 1 つずつ縦に並べて表示するコマンド。項目が多くて表（<code>Format-Table</code>）では切れてしまう時に使います。</td>
+<td>01 7. イベント ビューアー</td>
+</tr>
+<tr>
+<td><code>Get-WinEvent -MaxEvents</code></td>
+<td>読むイベントの数の上限を決めるオプション（新しい物から）。<code>-MaxEvents 5</code> は最新の 5 件。</td>
+<td>01 7. イベント ビューアー</td>
+</tr>
+<tr>
+<td><code>Get-WinEvent -ErrorAction</code></td>
+<td>エラーが起きた時の動きを決めるオプション。条件に合うイベントが 1 件も無いと、<code>Get-WinEvent</code> はエラーを出すので、<code>-ErrorAction SilentlyContinue</code> で黙らせます。</td>
+<td>01 7. イベント ビューアー</td>
+</tr>
+<tr>
+<td><code>Get-Process</code></td>
+<td>動いているプログラム（プロセス）の一覧を出すコマンド。<code>Get-Process -Id 1234</code> で、番号 1234 のプロセスの名前などが分かります。</td>
+<td>01 8. 重い・遅いを調べる</td>
+</tr>
+<tr>
+<td><code>-f</code></td>
+<td>書式（形）を決めて文字列を作る演算子。<code>"{0,-10} {1}" -f $name, $hash</code> は、<code>{0}</code> に 1 つ目、<code>{1}</code> に 2 つ目を入れます（<code>,-10</code> は「10 文字分の幅で左に寄せる」）。</td>
+<td>01 8. 重い・遅いを調べる</td>
+</tr>
+<tr>
+<td><code>Get-Volume</code></td>
+<td>ディスク（ボリューム）の一覧と、大きさ・空いている量を表示するコマンド。</td>
+<td>01 8. 重い・遅いを調べる</td>
+</tr>
+<tr>
+<td><code>Get-NetTCPConnection -LocalPort</code></td>
+<td><code>-LocalPort 8080</code> で、このパソコン側のポート番号が 8080 の物だけに絞ります。</td>
+<td>01 8. 重い・遅いを調べる</td>
+</tr>
+<tr>
+<td><code>Get-ScheduledTask</code></td>
+<td>タスクスケジューラーに登録した「予定の仕事」の一覧を表示するコマンド。</td>
+<td>01 9. タスク スケジューラ</td>
+</tr>
+<tr>
+<td><code>Get-ScheduledTask -TaskPath</code></td>
+<td>予定の仕事を入れたフォルダを決めるオプション。<code>-TaskPath "\webapp\"</code> は、この資料で作る仕事をまとめた <code>\webapp\</code> フォルダだけ。</td>
+<td>01 9. タスク スケジューラ</td>
+</tr>
+<tr>
+<td><code>Get-ScheduledTaskInfo</code></td>
+<td>予定の仕事の、前に動いた時刻（<code>LastRunTime</code>）・結果（<code>LastTaskResult</code>。<code>0</code> なら成功）・次に動く時刻（<code>NextRunTime</code>）を表示するコマンド。</td>
+<td>01 9. タスク スケジューラ</td>
+</tr>
+<tr>
+<td><code>Start-ScheduledTask</code></td>
+<td>予定の仕事を、時刻を待たずに今すぐ動かすコマンド。登録したあと、正しく動くかを確かめる時に使います。</td>
+<td>01 9. タスク スケジューラ</td>
+</tr>
+<tr>
+<td><code>Start-ScheduledTask -TaskPath</code></td>
+<td>動かす予定の仕事のフォルダを決めるオプション。</td>
+<td>01 9. タスク スケジューラ</td>
+</tr>
+<tr>
+<td><code>Start-ScheduledTask -TaskName</code></td>
+<td>動かす予定の仕事の名前を決めるオプション。</td>
+<td>01 9. タスク スケジューラ</td>
+</tr>
+<tr>
+<td><code>Get-NetConnectionProfile</code></td>
+<td>ネットワークの種類（<code>DomainAuthenticated</code>＝会社のドメイン・<code>Private</code>・<code>Public</code>）を表示するコマンド。ファイアウォールの決まりは、この種類ごとに効きます。</td>
+<td>01 10. Windows Defender ファイアウォール</td>
+</tr>
+<tr>
+<td><code>Get-NetFirewallProfile</code></td>
+<td>ファイアウォールの、種類（Domain・Private・Public）ごとの設定と、有効か（<code>Enabled</code>）を表示するコマンド。</td>
+<td>01 10. Windows Defender ファイアウォール</td>
+</tr>
+<tr>
+<td><code>Get-NetFirewallRule</code></td>
+<td>ファイアウォールの決まり（どの通信を通す・止めるか）の一覧を表示するコマンド。</td>
+<td>01 10. Windows Defender ファイアウォール</td>
+</tr>
+<tr>
+<td><code>Get-NetFirewallRule -DisplayName</code></td>
+<td>表示名で決まりを探すオプション。<code>-DisplayName "webapp*"</code> は、名前が webapp で始まる決まりだけ。</td>
+<td>01 10. Windows Defender ファイアウォール</td>
+</tr>
+<tr>
+<td><code>New-NetFirewallRule</code></td>
+<td>ファイアウォールに、新しい決まり（この通信を通す、など）を足すコマンド。管理者の PowerShell で動かします。</td>
+<td>01 10. Windows Defender ファイアウォール</td>
+</tr>
+<tr>
+<td><code>New-NetFirewallRule -DisplayName</code></td>
+<td>決まりの表示名を決めるオプション。あとで <code>Get-NetFirewallRule -DisplayName</code> で探せるように、分かりやすい名前を付けます。</td>
+<td>01 10. Windows Defender ファイアウォール</td>
+</tr>
+<tr>
+<td><code>New-NetFirewallRule -Direction</code></td>
+<td>通信の向きを決めるオプション。<code>Inbound</code> は「外からこのサーバーへ入ってくる通信」、<code>Outbound</code> は「このサーバーから出ていく通信」。</td>
+<td>01 10. Windows Defender ファイアウォール</td>
+</tr>
+<tr>
+<td><code>New-NetFirewallRule -Protocol</code></td>
+<td>通信の種類を決めるオプション。Web やデータベースは <code>TCP</code> です。</td>
+<td>01 10. Windows Defender ファイアウォール</td>
+</tr>
+<tr>
+<td><code>New-NetFirewallRule -LocalPort</code></td>
+<td>このサーバーの、どのポート（窓口の番号）への通信かを決めるオプション。<code>-LocalPort 80</code> は Web（HTTP）の窓口。</td>
+<td>01 10. Windows Defender ファイアウォール</td>
+</tr>
+<tr>
+<td><code>New-NetFirewallRule -RemoteAddress</code></td>
+<td>どこから来た通信を通すかを決めるオプション。<code>-RemoteAddress 10.0.0.0/8</code> のように、社内の住所の範囲だけに絞ります。</td>
+<td>01 10. Windows Defender ファイアウォール</td>
+</tr>
+<tr>
+<td><code>New-NetFirewallRule -Profile</code></td>
+<td>決まりを効かせるネットワークの種類を決めるオプション。<code>-Profile Domain</code> は、会社のドメインのネットワークの時だけ。</td>
+<td>01 10. Windows Defender ファイアウォール</td>
+</tr>
+<tr>
+<td><code>New-NetFirewallRule -Action</code></td>
+<td>合った通信をどうするかを決めるオプション。<code>Allow</code> は通す、<code>Block</code> は止める。</td>
+<td>01 10. Windows Defender ファイアウォール</td>
+</tr>
+<tr>
+<td><code>Get-HotFix</code></td>
+<td>入っている Windows の更新プログラム（番号 <code>HotFixID</code> と、入れた日 <code>InstalledOn</code>）の一覧を表示するコマンド。</td>
+<td>01 11. Windows Update と再起動</td>
+</tr>
+<tr>
+<td><code>Get-FileHash</code></td>
+<td>ファイルの中身から、ハッシュ（指紋のような長い英数字）を計算するコマンド。中身が 1 文字でも違えば、まったく違う値になります。ダウンロードしたファイルが壊れていないか確かめる時に使います。</td>
+<td>01 12. ファイルを持ち込む</td>
+</tr>
+<tr>
+<td><code>Get-FileHash -Algorithm</code></td>
+<td>ハッシュの計算のしかたを決めるオプション。<code>-Algorithm SHA256</code> は、配っている所が公開している SHA256 の値と比べて、ファイルが壊れていない・すりかえられていないかを確かめる時に使います。</td>
+<td>01 12. ファイルを持ち込む</td>
+</tr>
+<tr>
+<td><code>Get-ComputerInfo</code></td>
+<td>このパソコンの情報（OS の名前と版・パソコンの名前・ドメインなど）を、まとめて表示するコマンド。</td>
+<td>04 3. サーバーに入る・最初の確認</td>
+</tr>
+<tr>
+<td><code>Get-ComputerInfo -Property</code></td>
+<td>表示する項目を決めるオプション。<code>-Property OsName, OsVersion, CsName, CsDomain</code> は、OS の名前と版、パソコンの名前、ドメインだけ（全部だと、とても長い）。</td>
+<td>04 3. サーバーに入る・最初の確認</td>
+</tr>
+<tr>
+<td><code>Format-Table</code></td>
+<td>結果を表の形に整えて表示するコマンド。</td>
+<td>04 3. サーバーに入る・最初の確認</td>
+</tr>
+<tr>
+<td><code>Get-TimeZone</code></td>
+<td>このパソコンの時間帯（タイムゾーン）を表示するコマンド。日本なら <code>Tokyo Standard Time</code>（UTC+09:00）。</td>
+<td>04 3. サーバーに入る・最初の確認</td>
+</tr>
+<tr>
+<td><code>Set-TimeZone</code></td>
+<td>このパソコンの時間帯を変えるコマンド。</td>
+<td>04 3. サーバーに入る・最初の確認</td>
+</tr>
+<tr>
+<td><code>Set-TimeZone -Id</code></td>
+<td>変える先の時間帯の名前を決めるオプション。<code>-Id "Tokyo Standard Time"</code> は日本時間。</td>
+<td>04 3. サーバーに入る・最初の確認</td>
+</tr>
+<tr>
+<td><code>foreach</code></td>
+<td>PowerShell のくり返し。<code>foreach ($line in Get-Content $envFile) { … }</code> は、ファイルの 1 行ずつを <code>$line</code> に入れて、中を動かします。</td>
+<td>04 4. フォルダとアカウントの準備</td>
+</tr>
+<tr>
+<td><code>New-Item</code></td>
+<td>新しいファイルやフォルダを作るコマンド。<code>New-Item memo.txt</code> でファイル、<code>New-Item -ItemType Directory 名前</code> でフォルダを作ります。</td>
+<td>04 4. フォルダとアカウントの準備</td>
+</tr>
+<tr>
+<td><code>New-Item -ItemType</code></td>
+<td><code>-ItemType Directory</code> で、ファイルではなくフォルダを作ります（<code>File</code> ならファイル）。<code>New-Item -ItemType Directory src\bin</code> は、<code>src</code> の中に <code>bin</code> フォルダを作ります。</td>
+<td>04 4. フォルダとアカウントの準備</td>
+</tr>
+<tr>
+<td><code>New-Item -Force</code></td>
+<td><code>-Force</code> で、同じ名前のファイルがあっても上書きして作ります（無いと、エラーで止まります）。上書きするので、使う時は名前をよく確かめます。</td>
+<td>04 4. フォルダとアカウントの準備</td>
+</tr>
+<tr>
+<td><code>New-Item -Path</code></td>
+<td><code>-Path 場所</code> で、作るファイルやフォルダの場所（名前）を指定します。</td>
+<td>04 4. フォルダとアカウントの準備</td>
+</tr>
+<tr>
+<td><code>Out-Null</code></td>
+<td>コマンドの結果を、画面に出さずに捨てるコマンド。<code>… &#124; Out-Null</code> のように後ろに付けると、表示が出なくなります。</td>
+<td>04 4. フォルダとアカウントの準備</td>
+</tr>
+<tr>
+<td><code>Copy-Item</code></td>
+<td>ファイルやフォルダをコピーするコマンド。<code>Copy-Item 元 先</code>。最後の <code>.</code> は「今いるフォルダへ」という意味です。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>Copy-Item -Recurse</code></td>
+<td><code>-Recurse</code> で、フォルダを中身ごと（中のフォルダも全部）コピーします。付けないと、フォルダの中身はコピーされません。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>Compress-Archive</code></td>
+<td>ファイルやフォルダを、zip の 1 つのファイルにまとめるコマンド。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>Compress-Archive -Path</code></td>
+<td>zip に入れる物を決めるオプション。<code>"$out\*"</code> は、そのフォルダの中身全部。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>Compress-Archive -DestinationPath</code></td>
+<td>作る zip のファイルの場所と名前を決めるオプション。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>Compress-Archive -Force</code></td>
+<td>同じ名前の zip がもうあれば、上書きするオプション。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>Expand-Archive</code></td>
+<td>zip のファイルを、フォルダに広げる（解凍する）コマンド。</td>
+<td>04 7. アプリを Windows サービスにする</td>
+</tr>
+<tr>
+<td><code>Expand-Archive -DestinationPath</code></td>
+<td>広げる先のフォルダを決めるオプション。</td>
+<td>04 7. アプリを Windows サービスにする</td>
+</tr>
+<tr>
+<td><code>Remove-Item</code></td>
+<td>ファイルやフォルダを消すコマンド（短い呼び名は <code>rm</code>）。<strong>ごみ箱に入らず、すぐ消えます。</strong> フォルダを中身ごと消す時は <code>-Recurse</code> を付けます。消す前に、名前をよく確かめます。</td>
+<td>04 7. アプリを Windows サービスにする</td>
+</tr>
+<tr>
+<td><code>Install-WindowsFeature</code></td>
+<td>Windows Server に、役割や機能（IIS など）を入れるコマンド。管理者の PowerShell で動かします。</td>
+<td>04 8. 受付</td>
+</tr>
+<tr>
+<td><code>Install-WindowsFeature -Name</code></td>
+<td>入れる機能の名前を決めるオプション。<code>Web-Server</code> は IIS（Web サーバー）。</td>
+<td>04 8. 受付</td>
+</tr>
+<tr>
+<td><code>Install-WindowsFeature -IncludeManagementTools</code></td>
+<td>機能と一緒に、それを管理する道具（IIS マネージャーなど）も入れるオプション。</td>
+<td>04 8. 受付</td>
+</tr>
+<tr>
+<td><code>Get-WindowsFeature</code></td>
+<td>Windows Server の役割や機能が、入っているか（<code>InstallState</code> が <code>Installed</code>）を表示するコマンド。</td>
+<td>04 8. 受付</td>
+</tr>
+<tr>
+<td><code>Import-Module</code></td>
+<td>PowerShell に、コマンドのまとまり（モジュール）を読み込むコマンド。<code>Import-Module IISAdministration</code> で、<code>New-IISSite</code> などの IIS のコマンドが使えるようになります。</td>
+<td>04 8. 受付</td>
+</tr>
+<tr>
+<td><code>Stop-IISSite</code></td>
+<td>IIS のサイトを止めるコマンド。</td>
+<td>04 8. 受付</td>
+</tr>
+<tr>
+<td><code>Stop-IISSite -Name</code></td>
+<td>止めるサイトの名前を決めるオプション。<code>"Default Web Site"</code> は、IIS を入れた時にできる見本のサイト（使わないので止める）。</td>
+<td>04 8. 受付</td>
+</tr>
+<tr>
+<td><code>Set-ItemProperty</code></td>
+<td>物（ファイル・レジストリ・IIS の設定など）の項目の値を変えるコマンド。<code>Set-ItemProperty "IIS:\Sites\Default Web Site" -Name serverAutoStart -Value $false</code> は「見本のサイトを、自動で始めない」。</td>
+<td>04 8. 受付</td>
+</tr>
+<tr>
+<td><code>Set-ItemProperty -Name</code></td>
+<td>変える項目の名前を決めるオプション。</td>
+<td>04 8. 受付</td>
+</tr>
+<tr>
+<td><code>Set-ItemProperty -Value</code></td>
+<td>変える先の値を決めるオプション。</td>
+<td>04 8. 受付</td>
+</tr>
+<tr>
+<td><code>New-IISSite</code></td>
+<td>IIS に、新しいサイトを作るコマンド。</td>
+<td>04 8. 受付</td>
+</tr>
+<tr>
+<td><code>New-IISSite -Name</code></td>
+<td>作るサイトの名前を決めるオプション。</td>
+<td>04 8. 受付</td>
+</tr>
+<tr>
+<td><code>New-IISSite -PhysicalPath</code></td>
+<td>サイトの中身（設定ファイル <code>web.config</code> など）を置くフォルダを決めるオプション。</td>
+<td>04 8. 受付</td>
+</tr>
+<tr>
+<td><code>New-IISSite -BindingInformation</code></td>
+<td>どの住所・ポート・名前で来た通信を、このサイトが受け取るかを決めるオプション。<code>"*:80:webapp.example.local"</code> は「どの住所でも・80 番で・名前が webapp.example.local の物」。同じ 80 番でも、名前で検証用と本番用を振り分けられます。</td>
+<td>04 8. 受付</td>
+</tr>
+<tr>
+<td><code>Get-IISSite</code></td>
+<td>IIS のサイトの一覧と、動いているか・受け取る住所（バインド）を表示するコマンド。</td>
+<td>04 8. 受付</td>
+</tr>
+<tr>
+<td><code>Get-NetFirewallPortFilter</code></td>
+<td>ファイアウォールの決まりの、ポート番号の条件の一覧を表示するコマンド。<code>&#124; Get-NetFirewallRule</code> につなぐと、そのポートを使う決まりが分かります。</td>
+<td>04 9. ファイアウォール</td>
+</tr>
+<tr>
+<td><code>-in</code></td>
+<td>左の値が、右の並びの中にあるかの比べ方。<code>$_.LocalPort -in 80, 443</code> は「80 か 443 か」。</td>
+<td>04 9. ファイアウォール</td>
+</tr>
+<tr>
+<td><code>-notlike</code></td>
+<td><code>-like</code> の逆で、ワイルドカードに合わないかの比べ方。<code>$_.DisplayName -notlike "webapp*"</code> は「webapp で始まらないか」。</td>
+<td>04 9. ファイアウォール</td>
+</tr>
+<tr>
+<td><code>Disable-NetFirewallRule</code></td>
+<td>ファイアウォールの決まりを、消さずに使わない状態にするコマンド。あとで <code>Enable-NetFirewallRule</code> で戻せます。</td>
+<td>04 9. ファイアウォール</td>
+</tr>
+<tr>
+<td><code>Format-Table -AutoSize</code></td>
+<td><code>-AutoSize</code> で、列の幅を中身に合わせて自動で決めます（長い値が <code>...</code> で切られにくくなります）。</td>
+<td>04 9. ファイアウォール</td>
+</tr>
+<tr>
+<td><code>Resolve-DnsName -Type</code></td>
+<td>問い合わせる記録の種類を決めるオプション。<code>-Type MX</code> は、そのドメインのメールを受け取るサーバーを調べます（決めないと、IP アドレスの <code>A</code> を調べる）。</td>
+<td>04 10. メール</td>
+</tr>
+<tr>
+<td><code>Send-MailMessage</code></td>
+<td>メールを送るコマンド。ここでは、メールの中継（コネクタ）が働くかを、アプリより先に確かめるために使います（古いコマンドで、新しく作る物には使わないよう案内されています）。</td>
+<td>04 10. メール</td>
+</tr>
+<tr>
+<td><code>Send-MailMessage -SmtpServer</code></td>
+<td>メールを渡す先の SMTP サーバーの名前を決めるオプション。</td>
+<td>04 10. メール</td>
+</tr>
+<tr>
+<td><code>Send-MailMessage -Port</code></td>
+<td>SMTP サーバーのポート番号を決めるオプション（25 など）。</td>
+<td>04 10. メール</td>
+</tr>
+<tr>
+<td><code>Send-MailMessage -UseSsl</code></td>
+<td>STARTTLS で暗号化してから送るオプション。</td>
+<td>04 10. メール</td>
+</tr>
+<tr>
+<td><code>Send-MailMessage -From</code></td>
+<td>送り主のメールアドレスを決めるオプション。</td>
+<td>04 10. メール</td>
+</tr>
+<tr>
+<td><code>Send-MailMessage -To</code></td>
+<td>宛先のメールアドレスを決めるオプション。</td>
+<td>04 10. メール</td>
+</tr>
+<tr>
+<td><code>Send-MailMessage -Subject</code></td>
+<td>件名を決めるオプション。</td>
+<td>04 10. メール</td>
+</tr>
+<tr>
+<td><code>Send-MailMessage -Body</code></td>
+<td>本文を決めるオプション。</td>
+<td>04 10. メール</td>
+</tr>
+<tr>
+<td><code>Send-MailMessage -Encoding</code></td>
+<td>本文の文字コードを決めるオプション。日本語は <code>UTF8</code> にします（決めないと、文字化けすることがある）。</td>
+<td>04 10. メール</td>
+</tr>
+<tr>
+<td><code>Get-Date -Format</code></td>
+<td>日時を、決めた形の文字列にするオプション。<code>Get-Date -Format "yyyyMMdd_HHmmss"</code> は「20261102_030000」の形（<code>yyyy</code> 年・<code>MM</code> 月・<code>dd</code> 日・<code>HH</code> 時・<code>mm</code> 分・<code>ss</code> 秒）。ファイルの名前に日時を入れる時に使います。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>Start-Transcript</code></td>
+<td>このあと画面に出る物を、全部ファイルに書き残し始めるコマンド。予定の仕事で動かすスクリプトの記録（何が起きたか）を残すのに使います。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>Start-Transcript -Path</code></td>
+<td>記録を書くファイルの場所を決めるオプション。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>Join-Path</code></td>
+<td>フォルダの場所とファイル名を、<code>\</code> でつないだ場所を作るコマンド。<code>Join-Path $PSScriptRoot "dev.env"</code> は「このスクリプトのフォルダの <code>dev.env</code>」。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>try</code></td>
+<td><code>try { … } finally { … }</code> で、途中で失敗しても、<code>finally</code> の中（元のフォルダへ戻る など）を必ず動かす書き方。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>if</code></td>
+<td>PowerShell の条件の書き方。<code>if (-not (Test-Path $envFile)) { … }</code> は「ファイルが無ければ」。比べる時は <code>-eq</code>・<code>-ne</code>・<code>-not</code> などを使います。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>-ne</code></td>
+<td>PowerShell の「等しくない」の比べ方（not equal）。<code>$LASTEXITCODE -ne 0</code> は「失敗した（0 でない）か」。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>throw</code></td>
+<td>エラーを起こして、そこで止める命令。<code>throw "dev.env がありません"</code> のように、説明の文を付けます。<code>try … catch</code> の中なら <code>catch</code> へ、無ければスクリプトがそこで止まります。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>-ge</code></td>
+<td>PowerShell の「以上」の比べ方（greater or equal）。<code>$code.Count -ge 3</code> は「3 つ以上あるか」。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>Get-ChildItem -Filter</code></td>
+<td><code>-Filter *.exe</code> で、名前が合う物（ここでは <code>.exe</code> で終わる物）だけを一覧にします。<code>*</code> は「何文字でもよい」という意味です。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>-lt</code></td>
+<td>PowerShell の「より小さい」の比べ方（less than）。<code>$_.LastWriteTime -lt $limit</code> は「決めた日時より古いか」。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>Write-Output</code></td>
+<td>値を「出力」として次へ流す（最後なら画面に出す）コマンド。<code>Write-Output "こんにちは"</code>。文字列を 1 行に書くだけでも同じ働きをしますが、はっきり書く時に使います。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>Stop-Transcript</code></td>
+<td><code>Start-Transcript</code> で始めた記録を終えるコマンド。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>exit</code></td>
+<td>スクリプトを、決めた終了コードで終えるコマンド。<code>exit $code</code> は、manage.py の終了コードをそのまま返します。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>catch</code></td>
+<td><code>try { … } catch { … }</code> の <code>catch</code> の所は、<code>try</code> の中でエラーが起きた時だけ動きます。起きたエラーは <code>$_</code> で受け取れます（<code>$_.Exception.Message</code> で説明の文）。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>New-ScheduledTaskAction</code></td>
+<td>予定の仕事で「何を動かすか」を作るコマンド。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>New-ScheduledTaskAction -Execute</code></td>
+<td>動かすプログラムを決めるオプション。<code>powershell.exe</code> は、PowerShell のスクリプトを動かす時。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>New-ScheduledTaskAction -Argument</code></td>
+<td>動かすプログラムに渡す引数を決めるオプション。<code>-NoProfile -ExecutionPolicy Bypass -File "D:\…\backup.ps1"</code> のように、動かすスクリプトを渡します。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>New-ScheduledTaskTrigger</code></td>
+<td>予定の仕事で「いつ動かすか」を作るコマンド。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>New-ScheduledTaskTrigger -Daily</code></td>
+<td>毎日動かすオプション。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>New-ScheduledTaskTrigger -At</code></td>
+<td>動かす時刻を決めるオプション。<code>-At "03:00"</code> は夜中の 3 時（使う人がいない時間）。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>New-ScheduledTaskPrincipal</code></td>
+<td>予定の仕事を「だれとして動かすか」を作るコマンド。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>New-ScheduledTaskPrincipal -UserId</code></td>
+<td>動かす利用者を決めるオプション。<code>"SYSTEM"</code> は、Windows そのものの利用者（だれもログインしていなくても動く）。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>New-ScheduledTaskPrincipal -LogonType</code></td>
+<td>ログインのしかたを決めるオプション。<code>ServiceAccount</code> は、サービス用の利用者として動かす（パスワードを保存しなくてよい）。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>New-ScheduledTaskPrincipal -RunLevel</code></td>
+<td>権限の強さを決めるオプション。<code>Highest</code> は、管理者の権限で動かす。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>New-ScheduledTaskSettingsSet</code></td>
+<td>予定の仕事の細かい決まり（時間の上限など）を作るコマンド。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>New-ScheduledTaskSettingsSet -ExecutionTimeLimit</code></td>
+<td>仕事が動いてよい時間の上限を決めるオプション。過ぎたら止めて、止まったままの仕事が残らないようにします。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>New-TimeSpan</code></td>
+<td>時間の長さを作るコマンド。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>New-TimeSpan -Hours</code></td>
+<td>時間の長さを、時間（h）で決めるオプション。<code>New-TimeSpan -Hours 2</code> は 2 時間。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>New-ScheduledTaskSettingsSet -StartWhenAvailable</code></td>
+<td>決めた時刻にサーバーが止まっていた時、動けるようになったらすぐに動かすオプション。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>Register-ScheduledTask</code></td>
+<td>作った「何を・いつ・だれとして」を、タスクスケジューラーに登録するコマンド。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>Register-ScheduledTask -TaskPath</code></td>
+<td>登録する先のフォルダを決めるオプション。<code>"\webapp\"</code> にまとめておくと、あとで探しやすくなります。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>Register-ScheduledTask -TaskName</code></td>
+<td>予定の仕事の名前を決めるオプション。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>Register-ScheduledTask -Action</code></td>
+<td><code>New-ScheduledTaskAction</code> で作った「何を動かすか」を渡すオプション。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>Register-ScheduledTask -Trigger</code></td>
+<td><code>New-ScheduledTaskTrigger</code> で作った「いつ動かすか」を渡すオプション。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>Register-ScheduledTask -Principal</code></td>
+<td><code>New-ScheduledTaskPrincipal</code> で作った「だれとして動かすか」を渡すオプション。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>Register-ScheduledTask -Settings</code></td>
+<td><code>New-ScheduledTaskSettingsSet</code> で作った細かい決まりを渡すオプション。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>Register-ScheduledTask -Description</code></td>
+<td>予定の仕事の説明を書くオプション。あとで見た人が、何の仕事か分かるように書きます。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>Get-ScheduledTaskInfo -TaskPath</code></td>
+<td>調べる予定の仕事のフォルダを決めるオプション。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>Get-ScheduledTaskInfo -TaskName</code></td>
+<td>調べる予定の仕事の名前を決めるオプション。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>Rename-Item</code></td>
+<td>ファイルやフォルダの名前を変えるコマンド。<code>Rename-Item 今の名前 新しい名前</code>。</td>
+<td>04 13. 動作確認・本番の開始・更新・切り戻し</td>
+</tr>
+<tr>
+<td><code>cd</code></td>
+<td>「change directory（フォルダを移る）」の略。<code>cd rust-study</code> で、今いるフォルダの中の <code>rust-study</code> へ移ります。<code>cd ..</code> は 1 つ上のフォルダへ、<code>cd ~</code> はホームフォルダ（<code>C:\Users\you</code>）へ戻ります。今いる場所は、行の頭の <code>PS C:\Users\you\rust-study&gt;</code> の部分に表示されます。</td>
+<td>05 7. ビルドして、まとめる</td>
+</tr>
+<tr>
+<td><code>.\manage.ps1</code></td>
+<td>今いるフォルダの <code>manage.ps1</code>（この資料で作る、Django の管理コマンドを、本番の設定で動かすための小さなスクリプト）を動かす書き方。<code>.\manage.ps1 check --deploy</code> は、本番に出す前の設定の確かめです。</td>
+<td>05 8. HTTP で動かすための設定</td>
+</tr>
+<tr>
+<td><code>param</code></td>
+<td>スクリプトが受け取る引数を決める書き方。<code>param([string[]] $ManageArgs)</code> は、スクリプトに渡した値を <code>$ManageArgs</code> に入れます。</td>
+<td>05 9. サーバーに置き、Windows サービスにする</td>
+</tr>
+<tr>
+<td><code>Get-ChildItem -Path</code></td>
+<td><code>Get-ChildItem</code> で、中身を見る場所を決めるオプション。<code>-Path $PSScriptRoot</code> は、このスクリプトがあるフォルダ。</td>
+<td>05 9. サーバーに置き、Windows サービスにする</td>
+</tr>
+<tr>
+<td><code>Get-Content -LiteralPath</code></td>
+<td><code>Get-Content</code> で、読むファイルの場所を、書いたとおりの文字で決めるオプション。<code>-Path</code> と違い、<code>[</code> <code>]</code> や <code>*</code> を特別な文字として扱わないので、どんな名前のファイルでも確実に読めます。</td>
+<td>05 9. サーバーに置き、Windows サービスにする</td>
+</tr>
+<tr>
+<td><code>Push-Location</code></td>
+<td>今いるフォルダを覚えてから、指定したフォルダへ移るコマンド。あとで <code>Pop-Location</code> を打つと、覚えたフォルダへ戻れます。</td>
+<td>05 9. サーバーに置き、Windows サービスにする</td>
+</tr>
+<tr>
+<td><code>Set-Item</code></td>
+<td>項目の値を設定するコマンド。<code>Set-Item -Path "Env:名前" -Value 値</code> で、この PowerShell の窓の中だけの環境変数を設定します。</td>
+<td>05 9. サーバーに置き、Windows サービスにする</td>
+</tr>
+<tr>
+<td><code>Set-Item -Path</code></td>
+<td><code>-Path "Env:名前"</code> で、どの項目（ここでは環境変数）を設定するかを指定します。</td>
+<td>05 9. サーバーに置き、Windows サービスにする</td>
+</tr>
+<tr>
+<td><code>Set-Item -Value</code></td>
+<td><code>-Value 値</code> で、設定する値を指定します。</td>
+<td>05 9. サーバーに置き、Windows サービスにする</td>
+</tr>
+<tr>
+<td><code>finally</code></td>
+<td><code>try { … } finally { … }</code> の <code>finally</code> の所は、<code>try</code> の中がうまくいっても、途中で失敗しても、必ず最後に動きます。元のフォルダへ戻る・記録を閉じる、などの後片づけに使います。</td>
+<td>05 9. サーバーに置き、Windows サービスにする</td>
+</tr>
+<tr>
+<td><code>Remove-Item -Path</code></td>
+<td><code>Remove-Item</code> で、消す物の場所を決めるオプション。<code>Remove-Item -Path "Env:NAME"</code> は、環境変数 <code>NAME</code> を消します（<code>Env:</code> は環境変数の場所）。</td>
+<td>05 9. サーバーに置き、Windows サービスにする</td>
+</tr>
+<tr>
+<td><code>Remove-Item -ErrorAction</code></td>
+<td><code>Remove-Item</code> で、エラーが起きた時の動きを決めるオプション。<code>-ErrorAction SilentlyContinue</code> は「無くてもエラーを出さずに次へ進む」。</td>
+<td>05 9. サーバーに置き、Windows サービスにする</td>
+</tr>
+<tr>
+<td><code>Pop-Location</code></td>
+<td><code>Push-Location</code> で覚えたフォルダへ戻るコマンド。</td>
+<td>05 9. サーバーに置き、Windows サービスにする</td>
+</tr>
+<tr>
+<td><code>Invoke-WebRequest -Headers</code></td>
+<td>送るリクエストに、見出し（ヘッダー）を足すオプション。<code>-Headers @{ Host = "webapp-stg.example.local" }</code> は、名前を DNS に登録する前に、IIS の振り分けを確かめる時に使います。</td>
+<td>05 9. サーバーに置き、Windows サービスにする</td>
+</tr>
+<tr>
+<td><code>Test-Path</code></td>
+<td>ファイルやフォルダがあるかを調べるコマンド。あれば <code>True</code>、無ければ <code>False</code>。</td>
+<td>05 13. 動作確認・更新・切り戻し</td>
+</tr>
+<tr>
+<td><code>Remove-Item -Recurse</code></td>
+<td>フォルダを、中身ごと全部消すオプション。消した物は「ごみ箱」に入らず、元に戻せないので、場所をよく確かめてから使います。</td>
+<td>05 13. 動作確認・更新・切り戻し</td>
+</tr>
+<tr>
+<td><code>Remove-Item -Force</code></td>
+<td>読み取り専用や隠しファイルも、確かめずに消すオプション。</td>
+<td>05 13. 動作確認・更新・切り戻し</td>
+</tr>
+<tr>
+<td><code>function</code></td>
+<td>PowerShell で、自分の関数を作る書き方。<code>function New-LfFile($Path, $Lines) { … }</code> と書くと、<code>New-LfFile</code> をコマンドのように呼べます。</td>
+<td>06 2. 切り分け: 手前から順に確かめる</td>
+</tr>
+<tr>
+<td><code>else</code></td>
+<td><code>if (条件) { … } else { … }</code> の、条件に合わなかった時の所。<code>elseif (条件)</code> で、条件をつなげられます。</td>
+<td>06 2. 切り分け: 手前から順に確かめる</td>
+</tr>
+<tr>
+<td><code>Get-Service -ErrorAction</code></td>
+<td><code>Get-Service</code> で、エラーが起きた時の動きを決めるオプション。<code>-ErrorAction SilentlyContinue</code> は「そのサービスが無くても、赤いエラーを出さずに進む」。</td>
+<td>06 2. 切り分け: 手前から順に確かめる</td>
+</tr>
+<tr>
+<td><code>-and</code></td>
+<td>「かつ」（両方とも <code>True</code> の時だけ <code>True</code>）。<code>$a -gt 0 -and $b -gt 0</code> のように、条件をつなぎます。</td>
+<td>06 2. 切り分け: 手前から順に確かめる</td>
+</tr>
+<tr>
+<td><code>Get-NetTCPConnection -ErrorAction</code></td>
+<td>エラーが起きた時の動きを決めるオプション。待ち受けが無い時に出るエラーを、<code>-ErrorAction SilentlyContinue</code> で黙らせます。</td>
+<td>06 2. 切り分け: 手前から順に確かめる</td>
+</tr>
+<tr>
+<td><code>Sort-Object -Unique</code></td>
+<td>並べかえたうえで、同じ物を 1 つにまとめるオプション。</td>
+<td>06 2. 切り分け: 手前から順に確かめる</td>
+</tr>
+<tr>
+<td><code>Invoke-WebRequest -TimeoutSec</code></td>
+<td>答えを待つ時間の上限（秒）を決めるオプション。過ぎたらエラーにして、いつまでも止まらないようにします。</td>
+<td>06 2. 切り分け: 手前から順に確かめる</td>
+</tr>
+<tr>
+<td><code>-gt</code></td>
+<td>PowerShell の「より大きい」の比べ方（greater than）。<code>$failed -gt 0</code> は「失敗が 1 つ以上あるか」。</td>
+<td>06 2. 切り分け: 手前から順に確かめる</td>
+</tr>
+<tr>
+<td><code>.\check.ps1</code></td>
+<td>今いるフォルダの <code>check.ps1</code>（この資料で作る、サービス・待ち受け・応答・控えなどを、まとめて確かめるスクリプト）を動かす書き方。</td>
+<td>06 2. 切り分け: 手前から順に確かめる</td>
+</tr>
+<tr>
+<td><code>-notmatch</code></td>
+<td><code>-match</code> の逆で、正規表現に合わないかの比べ方。<code>$line -notmatch '='</code> は「<code>=</code> を含まない行か」。</td>
+<td>06 3. 記録</td>
+</tr>
+<tr>
+<td><code>-split</code></td>
+<td>文字列を、区切り（正規表現）で分けて並びにする演算子。<code>"a=b" -split '=', 2</code> は <code>"a"</code> と <code>"b"</code>（<code>2</code> は「多くても 2 つに分ける」）。</td>
+<td>06 3. 記録</td>
+</tr>
+<tr>
+<td><code>Get-ChildItem -Directory</code></td>
+<td><code>-Directory</code> で、フォルダだけを一覧にします（ファイルだけなら <code>-File</code>）。</td>
+<td>06 5. 症状別の詳しい説明</td>
+</tr>
+<tr>
+<td><code>ForEach-Object</code></td>
+<td><code>&#124;</code> で流れてきた物を、1 つずつ処理するコマンド。<code>{ }</code> の中の <code>$_</code> が「今の 1 つ」を表します。<code>… &#124; ForEach-Object { $_.Name }</code> は、1 つずつ名前を取り出します。</td>
+<td>06 5. 症状別の詳しい説明</td>
+</tr>
+<tr>
+<td><code>Measure-Object</code></td>
+<td>受け取った物の数や、合計・平均などを計算するコマンド。</td>
+<td>06 5. 症状別の詳しい説明</td>
+</tr>
+<tr>
+<td><code>Measure-Object -Sum</code></td>
+<td>決めた項目の合計を計算するオプション。<code>Measure-Object Length -Sum</code> は、ファイルの大きさの合計（<code>.Sum</code> で取り出す）。</td>
+<td>06 5. 症状別の詳しい説明</td>
+</tr>
+<tr>
+<td><code>mkdir</code></td>
+<td>「make directory（フォルダを作る）」の略。<code>mkdir ~\Documents\my-practice\01</code> のように、途中のフォルダもまとめて作れます（<code>~</code> はホームフォルダ <code>C:\Users\you</code>）。もう同じ名前のフォルダがあると、エラーで知らせます。</td>
+<td>08 この資料について</td>
+</tr>
+<tr>
+<td><code>Set-Content</code></td>
+<td>ファイルに文字を書くコマンド。<code>Set-Content memo.txt "1 行目"</code> で、ファイルを作るか、中身を置きかえます。後ろに書き足す時は <code>Add-Content</code> を使います。</td>
+<td>08 この資料について</td>
+</tr>
+<tr>
+<td><code>Set-Content -Encoding</code></td>
+<td><code>-Encoding utf8</code> で、ファイルを UTF-8 という文字コードで書きます。Windows PowerShell 5.1 は、指定しないと古い文字コード（Shift_JIS）で書くので、日本語を書く時は付けておくと安心です。</td>
+<td>08 この資料について</td>
+</tr>
+<tr>
+<td><code>Set-Content -Value</code></td>
+<td><code>-Value 中身</code> で、ファイルに書く中身を指定します。<code>@' … '@</code> で囲むと、何行もの文章をそのまま中身にできます（ヒア文字列）。</td>
+<td>08 この資料について</td>
+</tr>
+<tr>
+<td><code>Get-Item</code></td>
+<td>ファイルやフォルダ 1 つの情報（名前・大きさ・日時）を取り出すコマンド。</td>
+<td>08 この資料について</td>
+</tr>
+<tr>
+<td><code>Read-Host</code></td>
+<td>キーボードから 1 行入力してもらうコマンド。<code>Read-Host "説明"</code> で、説明を出して待ちます。</td>
+<td>参考 4. 証明書をサーバーに入れる</td>
+</tr>
+<tr>
+<td><code>Read-Host -AsSecureString</code></td>
+<td>入力した文字を画面に出さず、暗号化した形（<code>SecureString</code>）で受け取るオプション。パスワードを入れてもらう時に使い、コマンドの履歴にも残りません。</td>
+<td>参考 4. 証明書をサーバーに入れる</td>
+</tr>
+<tr>
+<td><code>Import-PfxCertificate</code></td>
+<td>証明書と秘密鍵の入った <code>.pfx</code> のファイルを、Windows の証明書の置き場に入れるコマンド。</td>
+<td>参考 4. 証明書をサーバーに入れる</td>
+</tr>
+<tr>
+<td><code>Import-PfxCertificate -FilePath</code></td>
+<td>入れる <code>.pfx</code> のファイルの場所を決めるオプション。</td>
+<td>参考 4. 証明書をサーバーに入れる</td>
+</tr>
+<tr>
+<td><code>Import-PfxCertificate -CertStoreLocation</code></td>
+<td>入れる先の証明書の置き場を決めるオプション。<code>Cert:\LocalMachine\My</code> は、このパソコン全体の「個人」の置き場（IIS はここから使う）。</td>
+<td>参考 4. 証明書をサーバーに入れる</td>
+</tr>
+<tr>
+<td><code>Import-PfxCertificate -Password</code></td>
+<td><code>.pfx</code> のパスワード（<code>Read-Host -AsSecureString</code> で受け取った物）を渡すオプション。</td>
+<td>参考 4. 証明書をサーバーに入れる</td>
+</tr>
+<tr>
+<td><code>-contains</code></td>
+<td>左の並びの中に、右の値があるかの比べ方（<code>-in</code> と左右が逆）。<code>$names -contains "webapp.example.local"</code> は「その名前が含まれているか」。</td>
+<td>参考 5. IIS に 443 番のバインドを足す</td>
+</tr>
+<tr>
+<td><code>New-IISSiteBinding</code></td>
+<td>IIS のサイトに、受け取る住所・ポート・名前（バインド）を足すコマンド。</td>
+<td>参考 5. IIS に 443 番のバインドを足す</td>
+</tr>
+<tr>
+<td><code>New-IISSiteBinding -Name</code></td>
+<td>バインドを足すサイトの名前を決めるオプション。</td>
+<td>参考 5. IIS に 443 番のバインドを足す</td>
+</tr>
+<tr>
+<td><code>New-IISSiteBinding -BindingInformation</code></td>
+<td>足すバインドを決めるオプション。<code>"*:443:webapp.example.local"</code> は「どの住所でも・443 番（HTTPS）で・その名前の物」。</td>
+<td>参考 5. IIS に 443 番のバインドを足す</td>
+</tr>
+<tr>
+<td><code>New-IISSiteBinding -Protocol</code></td>
+<td>通信の種類を決めるオプション。<code>https</code> にします。</td>
+<td>参考 5. IIS に 443 番のバインドを足す</td>
+</tr>
+<tr>
+<td><code>New-IISSiteBinding -CertificateThumbPrint</code></td>
+<td>使う証明書を、その指紋（Thumbprint。証明書ごとに違う番号）で決めるオプション。</td>
+<td>参考 5. IIS に 443 番のバインドを足す</td>
+</tr>
+<tr>
+<td><code>New-IISSiteBinding -CertStoreLocation</code></td>
+<td>証明書の置き場を決めるオプション。</td>
+<td>参考 5. IIS に 443 番のバインドを足す</td>
+</tr>
+<tr>
+<td><code>New-IISSiteBinding -SslFlag</code></td>
+<td>HTTPS の細かい決まりを決めるオプション。<code>Sni</code> は「名前を見て、使う証明書を選ぶ」（同じ 443 番で、いくつもの名前を受け取れる）。</td>
+<td>参考 5. IIS に 443 番のバインドを足す</td>
+</tr>
+<tr>
+<td><code>Get-IISSiteBinding</code></td>
+<td>IIS のサイトのバインド（受け取る住所・ポート・名前）の一覧を表示するコマンド。</td>
+<td>参考 5. IIS に 443 番のバインドを足す</td>
+</tr>
+<tr>
+<td><code>Get-IISSiteBinding -Name</code></td>
+<td>調べるサイトの名前を決めるオプション。</td>
+<td>参考 5. IIS に 443 番のバインドを足す</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-2">コマンド</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>hostname</code></td>
+<td>このパソコン（サーバー）の名前を表示するコマンド。</td>
+<td>00 0. はじめの一歩: コンピューターの中身</td>
+</tr>
+<tr>
+<td><code>whoami</code></td>
+<td>今ログインしている利用者の名前（<code>ドメイン\名前</code> の形）を表示するコマンド。<code>whoami /groups</code> で、入っているグループも分かります。</td>
+<td>00 0. はじめの一歩: コンピューターの中身</td>
+</tr>
+<tr>
+<td><code>quser</code></td>
+<td>このサーバーにログインしている人の一覧（名前・番号・状態・ログインした時刻）を表示するコマンド。</td>
+<td>01 1. サーバーに入る</td>
+</tr>
+<tr>
+<td><code>logoff</code></td>
+<td>決めた番号の人を、ログオフさせるコマンド。<code>logoff 3</code> は、<code>quser</code> で見た番号 3 の人。保存していない作業は消えるので、必ず本人に確かめてから使います。</td>
+<td>01 1. サーバーに入る</td>
+</tr>
+<tr>
+<td><code>icacls</code></td>
+<td>ファイルやフォルダの権限（だれが読める・書けるか）を表示する・変えるコマンド。<code>(R)</code> は読む、<code>(M)</code> は変える、<code>(F)</code> は全部できる、<code>(OI)(CI)</code> は中のファイルとフォルダにも引き継ぐ、という意味です。</td>
+<td>01 5. ファイルとアクセス許可</td>
+</tr>
+<tr>
+<td><code>sc.exe</code></td>
+<td>Windows のサービスの細かい設定をするコマンド。<code>sc.exe failure 名前 reset= 86400 actions= restart/60000/…</code> は「止まったら 60 秒後に始め直す。数えるのは 1 日ごとにやり直す」。PowerShell では <code>sc</code> だけだと別のコマンドになるので、必ず <code>.exe</code> まで書きます（<code>=</code> の後ろの空白も必要）。</td>
+<td>01 6. サービス</td>
+</tr>
+<tr>
+<td><code>robocopy</code></td>
+<td>フォルダを丸ごとコピーする、Windows のコマンド（途中で切れても続きからやり直せる）。<code>/E</code> は中のフォルダも全部（空のフォルダも）、<code>/R:2</code> はしくじった時に 2 回までやり直す、<code>/W:5</code> はやり直す前に 5 秒待つ、<code>/NP</code> <code>/NFL</code> <code>/NDL</code> は、進み具合やファイルの名前を 1 つずつ表示しない、という意味です。終わった時の番号は、<code>0</code>〜<code>7</code> なら成功（<code>8</code> 以上が失敗）です。</td>
+<td>01 12. ファイルを持ち込む</td>
+</tr>
+<tr>
+<td><code>w32tm</code></td>
+<td>Windows の時刻合わせの状態を見る・変えるコマンド。<code>w32tm /query /status</code> で、どこと時刻を合わせているか（<code>Source</code>）と、最後に合わせた時刻が分かります。時刻がずれると、ログの読み合わせやログインの期限が狂います。</td>
+<td>04 3. サーバーに入る・最初の確認</td>
+</tr>
+<tr>
+<td><code>notepad</code></td>
+<td>メモ帳を開くコマンド。<code>notepad D:\…\postgresql.conf</code> で、そのファイルをメモ帳で開きます。保存する時は、文字コードを変えないように注意します。</td>
+<td>04 5. データベース</td>
+</tr>
+<tr>
+<td><code>D:\webapp\prod\service\webapp-prod-service.exe</code></td>
+<td>WinSW（ふつうの実行ファイルを Windows サービスにする道具）を、本番用の名前に変えて置いた物。<code>install</code> で、同じ名前の <code>.xml</code> の設定のとおりにサービスとして登録し、<code>uninstall</code> で取り外します。</td>
+<td>04 7. アプリを Windows サービスにする</td>
+</tr>
+<tr>
+<td><code>D:\webapp\prod\app\webapp.exe</code></td>
+<td>アプリの実行ファイル（Rust で作った webapp）を、場所を書いて直接動かす書き方。<code>grant-role --employee-no 012345 --role it-admin</code> のように、サーバーとして動かす以外の、管理の仕事（社員に役割を付けるなど）を頼めます。</td>
+<td>04 7. アプリを Windows サービスにする</td>
+</tr>
+<tr>
+<td><code>D:\webapp\prod\venv\Scripts\python.exe</code></td>
+<td>本番用の仮想環境（venv）の Python を、場所を書いて直接動かす書き方。<code>--version</code> で版を確かめます。どの Python で動いているかを取り違えないように、場所まで書きます。</td>
+<td>05 4. Python を入れる</td>
+</tr>
+<tr>
+<td><code>D:\webapp\stg\venv\Scripts\python.exe</code></td>
+<td>検証用の仮想環境の Python を、場所を書いて直接動かす書き方。<code>-m pip install …</code> は、その Python の pip で部品を入れる、<code>-c "…"</code> は、その場で 1 行の Python を動かす、という意味です。</td>
+<td>05 9. サーバーに置き、Windows サービスにする</td>
+</tr>
+<tr>
+<td><code>D:\webapp\stg\service\webapp-stg-service.exe</code></td>
+<td>WinSW を、検証用の名前に変えて置いた物。<code>install</code> で、検証用のサービスとして登録します。</td>
+<td>05 9. サーバーに置き、Windows サービスにする</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-3">psql</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>psql</code></td>
+<td>PostgreSQL に、コマンドでつないで SQL を打つ道具。<code>psql -h 127.0.0.1 -U postgres -d データベース名</code> でつなぎます（<code>-h</code> は相手の住所、<code>-U</code> は利用者の名前、<code>-d</code> はデータベース）。<code>\q</code> で抜けます。</td>
+<td>02 2. ログインする</td>
+</tr>
+<tr>
+<td><code>pg_dump</code></td>
+<td>PostgreSQL のデータベースの中身を、まるごと 1 つのファイルに書き出す（控えを取る）コマンド。<code>-Fc</code> はあとで <code>pg_restore</code> で戻せる形、<code>-f</code> は書き出すファイルの場所。動かしている途中でも、ある瞬間の中身がそろった形で取れます。</td>
+<td>02 11. バックアップとリストア</td>
+</tr>
+<tr>
+<td><code>pg_restore</code></td>
+<td><code>pg_dump -Fc</code> で取った控えを、データベースに戻すコマンド。<code>-d</code> で戻す先のデータベースを決めます。戻す練習は、本物とは別の、空のデータベースに対してします。</td>
+<td>02 11. バックアップとリストア</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-4">SQL</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SELECT</code></td>
+<td>表から行を取り出す SQL の命令。<code>SELECT 列, … FROM 表 WHERE 条件 ORDER BY 列</code> の形でよく使います。<code>SELECT *</code> は全部の列です。</td>
+<td>00 7. データベースの基礎</td>
+</tr>
+<tr>
+<td><code>FROM</code></td>
+<td><code>SELECT … FROM 表</code> の一部で、「どの表から」取り出すかを書きます。</td>
+<td>00 7. データベースの基礎</td>
+</tr>
+<tr>
+<td><code>WHERE</code></td>
+<td><code>SELECT … FROM 表 WHERE 条件</code> の、条件を書く所。<code>WHERE user_id = 1</code> は「持ち主が 1 番の行だけ」。<code>UPDATE</code>・<code>DELETE</code> で <code>WHERE</code> を忘れると、全部の行が変わる（消える）ので注意します。</td>
+<td>00 7. データベースの基礎</td>
+</tr>
+<tr>
+<td><code>ORDER</code></td>
+<td><code>ORDER BY 列</code> で、取り出した行を並べる書き方。<code>DESC</code> を付けると大きい順（新しい順）です。</td>
+<td>00 7. データベースの基礎</td>
+</tr>
+<tr>
+<td><code>BY</code></td>
+<td><code>ORDER BY</code>（並べる）・<code>GROUP BY</code>（まとめる）の一部で、「〜で」という意味です。</td>
+<td>00 7. データベースの基礎</td>
+</tr>
+<tr>
+<td><code>DESC</code></td>
+<td><code>ORDER BY 列 DESC</code> で、大きい順（新しい順）に並べます（小さい順は <code>ASC</code>）。</td>
+<td>00 7. データベースの基礎</td>
+</tr>
+<tr>
+<td><code>LIMIT</code></td>
+<td><code>LIMIT 件数</code> で、取り出す行の数の上限を決める書き方。<code>ORDER BY … LIMIT 20</code> は「並べて、先頭の 20 件だけ」。</td>
+<td>00 7. データベースの基礎</td>
+</tr>
+<tr>
+<td><code>CREATE</code></td>
+<td><code>CREATE ROLE</code>（ユーザーを作る）・<code>CREATE DATABASE</code>（データベースを作る）・<code>CREATE TABLE</code>（表を作る）のように、何かを新しく作る SQL の命令です。</td>
+<td>02 3. 練習用のデータベースを作る</td>
+</tr>
+<tr>
+<td><code>DATABASE</code></td>
+<td><code>CREATE DATABASE 名前</code> で、データベースを作ります。</td>
+<td>02 3. 練習用のデータベースを作る</td>
+</tr>
+<tr>
+<td><code>ENCODING</code></td>
+<td><code>ENCODING 'UTF8'</code> で、データベースの文字コードを UTF-8 にします（日本語を正しく入れるため）。</td>
+<td>02 3. 練習用のデータベースを作る</td>
+</tr>
+<tr>
+<td><code>TEMPLATE</code></td>
+<td><code>TEMPLATE template0</code> で、何も手を加えていない元の形から、データベースを作ります（文字コードを指定する時に必要）。</td>
+<td>02 3. 練習用のデータベースを作る</td>
+</tr>
+<tr>
+<td><code>TABLE</code></td>
+<td>SQL で「表」を表す言葉。<code>CREATE TABLE</code>（表を作る）・<code>DROP TABLE</code>（表を消す）のように使います。</td>
+<td>02 3. 練習用のデータベースを作る</td>
+</tr>
+<tr>
+<td><code>PRIMARY</code></td>
+<td><code>PRIMARY KEY</code>（主キー）の一部。主キーは、表の中で 1 行を必ず見分けられる列で、同じ値が 2 回入りません。ふつうは <code>id</code> 列にします。</td>
+<td>02 3. 練習用のデータベースを作る</td>
+</tr>
+<tr>
+<td><code>KEY</code></td>
+<td><code>PRIMARY KEY</code>（主キー）・<code>FOREIGN KEY</code>（よその表とつなぐ列）などの「キー」。</td>
+<td>02 3. 練習用のデータベースを作る</td>
+</tr>
+<tr>
+<td><code>NOT</code></td>
+<td>SQL で「〜ではない」。<code>NOT NULL</code> は「この列は空（NULL）を許さない」という決まりです。</td>
+<td>02 3. 練習用のデータベースを作る</td>
+</tr>
+<tr>
+<td><code>NULL</code></td>
+<td>SQL で「値が無い」ことを表す特別な値。0 や空の文字列とは違います。</td>
+<td>02 3. 練習用のデータベースを作る</td>
+</tr>
+<tr>
+<td><code>UNIQUE</code></td>
+<td>「この列の値は、表の中で重ならない」という決まり。<code>email TEXT NOT NULL UNIQUE</code> は、同じメールアドレスを 2 回登録できなくします。</td>
+<td>02 3. 練習用のデータベースを作る</td>
+</tr>
+<tr>
+<td><code>REFERENCES</code></td>
+<td>「この列の値は、あの表の、あの列に必ずある値」という決まり（外部キー）。<code>user_id INTEGER REFERENCES users(id)</code> で、存在しないユーザーの番号を入れられなくなります。</td>
+<td>02 3. 練習用のデータベースを作る</td>
+</tr>
+<tr>
+<td><code>DEFAULT</code></td>
+<td>列に値を入れなかった時に使う、決めておいた値（既定値）。<code>done INTEGER NOT NULL DEFAULT 0</code> は「指定が無ければ 0」。</td>
+<td>02 3. 練習用のデータベースを作る</td>
+</tr>
+<tr>
+<td><code>GENERATED</code></td>
+<td><code>GENERATED ALWAYS AS IDENTITY</code> は、行を足すたびに、番号を自動で振る列にする書き方です（PostgreSQL の新しい書き方。<code>ALWAYS</code> は「自分で番号を入れさせない」）。</td>
+<td>02 3. 練習用のデータベースを作る</td>
+</tr>
+<tr>
+<td><code>ALWAYS</code></td>
+<td><code>GENERATED ALWAYS AS IDENTITY</code> の一部で、「番号は必ずデータベースが振る（自分で入れようとするとエラー）」という意味です。</td>
+<td>02 3. 練習用のデータベースを作る</td>
+</tr>
+<tr>
+<td><code>AS</code></td>
+<td>SQL で、列や表に別の名前を付ける書き方。<code>SELECT COUNT(*) AS notes</code> は、結果の列の名前を <code>notes</code> にします。<code>FROM users AS u</code> は、表を <code>u</code> と短く呼べるようにします。</td>
+<td>02 3. 練習用のデータベースを作る</td>
+</tr>
+<tr>
+<td><code>IDENTITY</code></td>
+<td><code>GENERATED ALWAYS AS IDENTITY</code> の一部で、「1, 2, 3… と自動で振る番号の列」という意味です。</td>
+<td>02 3. 練習用のデータベースを作る</td>
+</tr>
+<tr>
+<td><code>CHECK</code></td>
+<td>「この列に入れてよい値の条件」を決める決まり。<code>CHECK (length(title) BETWEEN 1 AND 80)</code> は、題名を 1〜80 文字に限ります。合わない値を入れようとすると、データベースが断ります。</td>
+<td>02 3. 練習用のデータベースを作る</td>
+</tr>
+<tr>
+<td><code>IN</code></td>
+<td>SQL で「このどれか」。<code>WHERE status IN ('queued', 'running')</code> は、状態がどちらかの行だけです。<code>CHECK (pinned IN (0, 1))</code> は、0 か 1 しか入れられない決まりです。</td>
+<td>02 3. 練習用のデータベースを作る</td>
+</tr>
+<tr>
+<td><code>INSERT</code></td>
+<td><code>INSERT INTO 表 (列, …) VALUES (値, …)</code> で、表に新しい行を足す SQL の命令。</td>
+<td>02 3. 練習用のデータベースを作る</td>
+</tr>
+<tr>
+<td><code>INTO</code></td>
+<td><code>INSERT INTO 表</code> の一部で、「この表へ」入れる、という意味。</td>
+<td>02 3. 練習用のデータベースを作る</td>
+</tr>
+<tr>
+<td><code>VALUES</code></td>
+<td><code>INSERT INTO 表 (列, …) VALUES (値, …)</code> の、入れる値を書く所。</td>
+<td>02 3. 練習用のデータベースを作る</td>
+</tr>
+<tr>
+<td><code>AND</code></td>
+<td>SQL で「かつ」。<code>WHERE a = 1 AND b = 2</code> は両方に合う行だけ。<code>BETWEEN 0 AND 100</code> の一部としても使います。</td>
+<td>02 4. データを見る</td>
+</tr>
+<tr>
+<td><code>DATE</code></td>
+<td>日付（年・月・日。時刻は無し）を入れる列の型。期限（<code>due_date</code>）などに使います。Rust では <code>time::Date</code> で受け取ります。</td>
+<td>02 4. データを見る</td>
+</tr>
+<tr>
+<td><code>LIKE</code></td>
+<td>SQL のあいまい検索。<code>WHERE title LIKE '%買い物%'</code> は、<code>買い物</code> を含む行です（<code>%</code> は「何文字でも」、<code>_</code> は「どれか 1 文字」）。</td>
+<td>02 4. データを見る</td>
+</tr>
+<tr>
+<td><code>IS</code></td>
+<td>SQL で NULL かどうかを調べる時の書き方。<code>WHERE x IS NULL</code>（無い）・<code>WHERE x IS NOT NULL</code>（ある）。NULL は <code>= NULL</code> では比べられません。</td>
+<td>02 4. データを見る</td>
+</tr>
+<tr>
+<td><code>GROUP</code></td>
+<td><code>GROUP BY 列</code> で、同じ値の行をまとめて、まとめごとに数える・足す時の書き方。<code>SELECT user_id, COUNT(*) FROM notes GROUP BY user_id</code> は、人ごとのノートの数です。</td>
+<td>02 4. データを見る</td>
+</tr>
+<tr>
+<td><code>INDEX</code></td>
+<td><code>CREATE INDEX 名前 ON 表 (列)</code> で、表に索引（本の索引のような、速く探すための仕組み）を作る SQL の命令。よく条件や並べかえに使う列に作ります。</td>
+<td>02 4. データを見る</td>
+</tr>
+<tr>
+<td><code>ON</code></td>
+<td>SQL の「〜の時」「〜で」。<code>ON DELETE CASCADE</code> は「消された時は」、<code>JOIN … ON a.id = b.user_id</code> は「この条件で横につなぐ」、<code>CREATE INDEX … ON 表 (列)</code> は「この表の、この列に」という意味です。</td>
+<td>02 4. データを見る</td>
+</tr>
+<tr>
+<td><code>EXPLAIN</code></td>
+<td><code>EXPLAIN QUERY PLAN SELECT …</code> で、データベースがその SQL をどう実行するつもりか（索引を使うか、全部の行を見るか）を表示します。</td>
+<td>02 4. データを見る</td>
+</tr>
+<tr>
+<td><code>JOIN</code></td>
+<td>2 つの表を、条件で横につないで取り出す書き方。<code>FROM notes JOIN users ON users.id = notes.user_id</code> は、ノートと、その持ち主を 1 行に並べます。</td>
+<td>02 5. テーブルをつなぐ</td>
+</tr>
+<tr>
+<td><code>LEFT</code></td>
+<td><code>LEFT JOIN</code> は、左の表の行は、相手が無くても全部残す JOIN。「ノートが 0 件の人も一覧に出す」時に使います。</td>
+<td>02 5. テーブルをつなぐ</td>
+</tr>
+<tr>
+<td><code>RETURNING</code></td>
+<td><code>INSERT … RETURNING id</code> で、入れた（変えた）行の値（作られた番号など）を、その場で返してもらう書き方。</td>
+<td>02 6. データを入れる・直す・消す</td>
+</tr>
+<tr>
+<td><code>UPDATE</code></td>
+<td><code>UPDATE 表 SET 列 = 値 WHERE 条件</code> で、行の中身を書きかえる SQL の命令。<code>WHERE</code> を忘れると、全部の行が変わります。</td>
+<td>02 6. データを入れる・直す・消す</td>
+</tr>
+<tr>
+<td><code>SET</code></td>
+<td><code>UPDATE</code> の中で、「どの列を、どの値にするか」を書く所。</td>
+<td>02 6. データを入れる・直す・消す</td>
+</tr>
+<tr>
+<td><code>DELETE</code></td>
+<td><code>DELETE FROM 表 WHERE 条件</code> で、表の行を消す SQL の命令。<code>WHERE</code> を忘れると、全部の行が消えます。<code>ON DELETE CASCADE</code> の中では「消された時」という意味です。</td>
+<td>02 6. データを入れる・直す・消す</td>
+</tr>
+<tr>
+<td><code>BEGIN</code></td>
+<td>トランザクションを始める SQL の命令。ここから <code>COMMIT</code>（確定）か <code>ROLLBACK</code>（取り消し）までが、1 つのまとまりになります。</td>
+<td>02 7. トランザクション</td>
+</tr>
+<tr>
+<td><code>ROLLBACK</code></td>
+<td>トランザクションの中でした変更を、全部取り消す SQL の命令。</td>
+<td>02 7. トランザクション</td>
+</tr>
+<tr>
+<td><code>ROLE</code></td>
+<td>PostgreSQL のユーザー（ログインする名前と、持つ権限のまとまり）。<code>CREATE ROLE webapp_dev_app LOGIN CREATEDB;</code> は「ログインでき、データベースを作れるユーザー」を作ります。</td>
+<td>02 9. ユーザー</td>
+</tr>
+<tr>
+<td><code>LOGIN</code></td>
+<td><code>CREATE ROLE … LOGIN</code> で、そのユーザーがログインできるようにします。</td>
+<td>02 9. ユーザー</td>
+</tr>
+<tr>
+<td><code>GRANT</code></td>
+<td>利用者（ロール）に、権限を与える命令。<code>GRANT CONNECT ON DATABASE webapp_prod TO webapp_readonly;</code> は「webapp_readonly に、webapp_prod へつなぐことを許す」。</td>
+<td>02 9. ユーザー</td>
+</tr>
+<tr>
+<td><code>CONNECT</code></td>
+<td><code>GRANT CONNECT ON DATABASE …</code> の <code>CONNECT</code> は、「そのデータベースにつなぐ」権限です。</td>
+<td>02 9. ユーザー</td>
+</tr>
+<tr>
+<td><code>TO</code></td>
+<td><code>RENAME TO 新しい名前</code> の「〜へ」の部分です。</td>
+<td>02 9. ユーザー</td>
+</tr>
+<tr>
+<td><code>SCHEMA</code></td>
+<td>スキーマは、データベースの中の、表をまとめる入れ物（ふだんは <code>public</code>）。<code>GRANT USAGE ON SCHEMA public TO …</code> は「public の中の物を使ってよい」。</td>
+<td>02 9. ユーザー</td>
+</tr>
+<tr>
+<td><code>ALL</code></td>
+<td><code>UNION ALL</code> は、2 つの結果を、重なりも消さずにそのままつなげる書き方です。</td>
+<td>02 9. ユーザー</td>
+</tr>
+<tr>
+<td><code>TABLES</code></td>
+<td><code>ON ALL TABLES IN SCHEMA public</code> は「public の中の、今ある表すべて」。<code>GRANT SELECT ON ALL TABLES …</code> で、全部の表を読めるようにします。</td>
+<td>02 9. ユーザー</td>
+</tr>
+<tr>
+<td><code>ALTER</code></td>
+<td><code>ALTER TABLE 表 …</code> で、もうある表の形を変える SQL の命令（列を足す・名前を変える など）。</td>
+<td>02 9. ユーザー</td>
+</tr>
+<tr>
+<td><code>PRIVILEGES</code></td>
+<td><code>ALTER DEFAULT PRIVILEGES … GRANT SELECT ON TABLES TO …</code> は、「これから作られる表にも、自動で同じ権限を付ける」という決まりを作る命令です。これが無いと、あとで足した表は読めません。</td>
+<td>02 9. ユーザー</td>
+</tr>
+<tr>
+<td><code>FOR</code></td>
+<td><code>SELECT … FOR UPDATE</code> は、読んだ行に鍵をかける書き方です。同じ行を、別の人が同時に変えようとしても、こちらのトランザクションが終わるまで待たせるので、「2 人が同時に承認して 2 回進む」ことを防げます。</td>
+<td>02 9. ユーザー</td>
+</tr>
+<tr>
+<td><code>SHOW</code></td>
+<td>PostgreSQL の設定の、今の値を表示する命令。<code>SHOW listen_addresses;</code> は、どの住所で待ち受けているか。</td>
+<td>02 10. 設定ファイル</td>
+</tr>
+<tr>
+<td><code>SQL</code></td>
+<td>ここでは SQL の命令ではなく、<code>AS SQL</code> で列に付けた名前（見出し）です。<code>left(query, 60) AS SQL</code> は「動いている SQL の先頭 60 文字を、SQL という見出しで出す」。</td>
+<td>02 12. 運用で使う SQL</td>
+</tr>
+<tr>
+<td><code>DROP</code></td>
+<td><code>DROP TABLE 表</code>・<code>DROP INDEX 索引</code> で、表や索引を消す SQL の命令。中のデータも消えるので注意します。</td>
+<td>02 13. 練習の片付け</td>
+</tr>
+<tr>
+<td><code>OWNER</code></td>
+<td><code>OWNER ユーザー</code> で、そのデータベースの持ち主を決めます。持ち主は、中の表を自由に作れます。</td>
+<td>04 5. データベース</td>
+</tr>
+<tr>
+<td><code>REVOKE</code></td>
+<td>利用者（ロール）から、権限を取り上げる命令（<code>GRANT</code> の逆）。<code>REVOKE ALL ON DATABASE webapp_prod FROM PUBLIC;</code> は「だれでもつなげる、の決まりを取り上げる」。</td>
+<td>04 5. データベース</td>
+</tr>
+<tr>
+<td><code>PUBLIC</code></td>
+<td>PostgreSQL で「すべての利用者」を表す名前。初めの状態では、だれでもデータベースにつなげるので、<code>REVOKE … FROM PUBLIC</code> で閉じます。</td>
+<td>04 5. データベース</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-5">Python の道具</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.\.venv\Scripts\python.exe</code></td>
+<td>仮想環境（<code>.venv</code>）の中の Python を、場所を書いて動かす書き方。<code>.\.venv\Scripts\python.exe ファイル.py</code> でプログラムを動かし、<code>.\.venv\Scripts\python.exe -m pip install -r requirements.txt</code> で、その仮想環境に部品を入れます。仮想環境を「入る」操作（Activate）をしなくても、確実にその Python が使われます。</td>
+<td>05 7. ビルドして、まとめる</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-6">Node.js</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>npm ci</code></td>
+<td><code>package-lock.json</code> に書かれたとおりの版で、部品を入れ直すコマンド（<code>node_modules</code> を一度消してから入れる）。<code>npm install</code> と違い、<code>package-lock.json</code> を書きかえないので、いつ・どこで入れても同じになります。</td>
+<td>05 7. ビルドして、まとめる</td>
+</tr>
+<tr>
+<td><code>npm run</code></td>
+<td><code>package.json</code> の <code>scripts</code> に書いたコマンドを動かすコマンド。<code>npm run dev</code> は開発用のサーバーを起動し、<code>npm run build</code> は本番用のファイルを作ります。止める時は <code>Ctrl</code> ＋ <code>C</code> です。</td>
+<td>05 7. ビルドして、まとめる</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-7">cargo のコマンド</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>cargo build</code></td>
+<td>プログラムを翻訳（コンパイル）して実行ファイルを作るだけで、動かしはしません。でき上がった物は <code>target\debug\</code> に入ります。<code>cargo build --release</code> だと、速く動く本番用の物が <code>target\release\</code> にできます。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-8">変数</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>const</code></td>
+<td>ずっと変わらない値（定数）に名前を付ける書き方。<code>const MAX_TITLE_CHARS: usize = 80;</code>。名前は大文字と <code>_</code> で書き、型（<code>usize</code> など）を必ず書きます。プログラムのどこからでも使えます。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>let</code></td>
+<td>値に名前を付けて覚えておく（変数を作る）書き方。<code>let age = 20;</code> で、<code>age</code> という名前で 20 を覚えます。最初は「変えられない」変数です。あとで変えたい時は <code>let mut age = 20;</code> のように <code>mut</code> を付けます。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-9">Vec（並び）</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.get()</code></td>
+<td>番号やキーで中身を取り出すメソッド。<code>v.get(10)</code> は、範囲の外なら止まらずに <code>None</code> を返します（<code>v[10]</code> はプログラムが止まる）。文字列の <code>s.get(0..3)</code> は、文字の区切りでない位置なら <code>None</code> です。<code>HashMap</code> の <code>map.get("キー")</code> も、無ければ <code>None</code> です。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>.remove()</code></td>
+<td><code>Vec</code> から i 番目を取り除いて、その値を返すメソッド。後ろの物が前に詰められます。<code>HashMap</code> の <code>.remove(キー)</code> は、そのキーの組を取り除き、値を <code>Option</code> で返します。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-10">条件</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>else</code></td>
+<td><code>if</code> の条件が合わなかった時の処理を書く所。<code>else if 条件 { … }</code> で、条件をいくつも続けられます。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-11">くり返し</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>for</code></td>
+<td>並びや範囲から 1 つずつ取り出して、くり返す書き方。<code>for n in 1..=100 { … }</code> は、<code>n</code> に 1, 2, …, 100 を順に入れて、中を 100 回動かします。<code>for x in &amp;v</code> で、<code>Vec</code> の中身を借りて回せます。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-12">Option</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Option</code></td>
+<td>「値があるかもしれないし、無いかもしれない」を表す型。中身は <code>Some(値)</code> か <code>None</code>。<code>Option&lt;u32&gt;</code> は「整数があるかもしれない」。取り出す時は <code>match</code>・<code>if let</code>・<code>unwrap_or</code> などを使います。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>Some</code></td>
+<td><code>Option</code>（値が「ある」か「無い」か）の、「ある」の方。<code>Some(値)</code> の形で中身を包みます。<code>match</code> で <code>Some(name) =&gt; { … }</code> と書くと、中身を <code>name</code> という名前で取り出して使えます。「無い」の方は <code>None</code> です。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>None</code></td>
+<td><code>Option</code> の「値が無い」側。<code>Some(値)</code>（値がある）か <code>None</code>（無い）のどちらかになります。Rust には「null」が無い代わりに、無いかもしれない値は必ず <code>Option</code> で表し、<code>match</code> などで両方の場合を書きます。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-13">エラー処理</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.ok()</code></td>
+<td><code>Result</code> を <code>Option</code> に変えるメソッド。<code>Ok(値)</code> は <code>Some(値)</code> に、<code>Err(…)</code> は <code>None</code> になります（エラーの中身は捨てる）。<code>"42".parse().ok()</code> のように、「失敗したら無かったことにする」時に使います。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>Ok</code></td>
+<td><code>Result</code> の「うまくいった」の方。<code>Ok(値)</code> の形で結果を包みます。<code>Ok(())</code> は「うまくいった。返す値は特に無い（<code>()</code> は空っぽの値）」という意味で、<code>Result&lt;()&gt;</code> を返す関数の最後によく書きます。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>?</code></td>
+<td><code>Result</code> や <code>Option</code> の後ろに付ける記号。「成功なら中身を取り出して先へ進む。失敗なら、その場で関数を終えて、エラーを呼び出し元へ返す」という意味です。<code>let text = fs::read_to_string("a.txt")?;</code> のように使います。<code>?</code> を使える関数は、戻り値が <code>Result</code>（または <code>Option</code>）の関数だけです。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-14">関数</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>fn</code></td>
+<td>関数（ひとまとまりの処理に名前を付けた物）を作る書き方。<code>fn main() { … }</code> の <code>main</code> は、プログラムを動かすと最初に動く特別な関数です。<code>fn add(a: i32, b: i32) -&gt; i32 { a + b }</code> は「整数を 2 つ受け取って、整数を返す関数 <code>add</code>」。<code>{ }</code> の中が中身で、最後の <code>;</code> の無い式が戻り値になります。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>move</code></td>
+<td>クロージャが使う外の変数を、借りるのではなく「持っていく」印。<code>thread::spawn(move &#124;&#124; { … })</code> のように、別のスレッドに値を渡す時に必要です。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>return</code></td>
+<td>関数を、その場で終えて値を返す命令。<code>return Err(…);</code> のように、途中で抜ける時に使います。Rust では、関数の最後の <code>;</code> の無い式が自動で戻り値になるので、最後の行では <code>return</code> を書かないのがふつうです。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-15">型とメソッド</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>struct</code></td>
+<td>いくつかの値をまとめて、新しい型を作る書き方（構造体）。<code>struct Note { id: u32, title: String }</code> で、「番号と題名を持つノート」という型ができます。<code>Note { id: 1, title: "買い物".to_string() }</code> で 1 つ作ります。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>impl</code></td>
+<td>2 つの使い方があります。① <code>impl 型 { … }</code> で、その型にメソッド（関数）を付ける。② <code>impl View</code> のように型の場所に書くと、「<code>View</code> の機能を持つ何かの型」という意味になります（戻り値の型を細かく書かずに済む）。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>self</code></td>
+<td>メソッドの中で「このもの自身」を表す名前。<code>impl</code> の中の <code>fn label(&amp;self)</code> の <code>&amp;self</code> は「自分を借りて読むだけ」、<code>&amp;mut self</code> は「自分を書きかえる」という意味です。<code>use</code> の中の <code>self</code>（例: <code>use std::io::{self, Write};</code>）は「<code>io</code> そのもの」を表します。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>.build()</code></td>
+<td>設定を少しずつ足していく「組み立て係」（ビルダー）の最後に呼んで、でき上がった物を作るメソッド。<code>Router::builder()…build()</code> の形で、ルーターなどを作る時に使います。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-16">モジュール</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>use</code></td>
+<td>ほかの場所にある道具に、短い名前で呼べるようにする宣言。<code>use std::env;</code> と書くと、<code>std::env::args()</code> を <code>env::args()</code> と短く書けます。<code>std</code> は Rust に最初から付いている道具箱（標準ライブラリ）です。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>pub</code></td>
+<td>「外から使ってよい」（公開）という印。<code>pub fn title_length(…)</code> は、ほかのファイル（モジュール）からも呼べる関数になります。付けないと、同じモジュールの中からしか使えません。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>crate</code></td>
+<td>「このプロジェクト（クレート）のいちばん上」を表す言葉。<code>use crate::note::Note;</code> は「このプロジェクトの <code>note</code> モジュールの <code>Note</code> を使う」という意味です。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-17">スマートポインタ</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Box</code></td>
+<td>値をヒープ（大きな物を置く広い場所）に置き、その場所を指す「持ち手」を手元に置く型。<code>Box&lt;dyn Notifier&gt;</code> のように、違う型の物を同じ並びに入れる時によく使います。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-18">時間</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>time::Duration::try_from()</code></td>
+<td>標準ライブラリの <code>Duration</code> を、<code>time</code> の <code>Duration</code> に変える関数。大きすぎて入らない時は <code>Err</code> を返すので、<code>?</code> で受け取ります。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>Duration</code></td>
+<td>時間の長さを表す型。<code>Duration::from_secs(5)</code> で 5 秒。<code>{:?}</code> で表示すると <code>5s</code> や <code>200ms</code> のように単位つきで出ます。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>std::time::Duration::from_secs()</code></td>
+<td>秒数ぶんの長さ（<code>Duration</code>）を作る関数。<code>Duration::from_secs(5)</code> は 5 秒です。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-19">非同期</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>async</code></td>
+<td>「待つ所で、ほかの仕事に順番をゆずれる関数」にする印。<code>async fn root(…)</code> のように付けます。呼ぶ側は <code>.await</code> で結果を待ちます。Web サーバーが、たくさんの人を同時にさばけるのは、この仕組みのおかげです。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>Box::pin()</code></td>
+<td>値を、メモリーの決まった場所に固定して箱に入れる関数。<code>Box::pin(async move { … })</code> は、「あとで待つ仕事（Future）」を、トレイトの決まりどおりの形で返すための書き方です。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-20">クッキー</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.override_same_site()</code></td>
+<td>送るクッキーの <code>SameSite</code>（ほかのサイトから来たリクエストにも付けて送るか）を決めるメソッド。<code>SameSite::Lax</code> は「ほかのサイトからのリンクで開いた時は送るが、ほかのサイトのフォームからの POST には付けない」で、CSRF を防ぐ助けになります。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>.override_http_only()</code></td>
+<td><code>HttpOnly</code>（JavaScript から読めないようにする印）を付けるかを決めるメソッド。<code>true</code> にすると、XSS でクッキーを盗まれにくくなります。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>.override_secure()</code></td>
+<td><code>Secure</code>（HTTPS の時だけ送る印）を付けるかを決めるメソッド。この資料のサーバーは HTTP なので <code>false</code> にしています（付けると、ブラウザーがクッキーを送らず、ログインが続かない）。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>.override_path()</code></td>
+<td>クッキーを送る URL の範囲を決めるメソッド。<code>"/"</code> は、そのサイトの全部の URL。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>.value_trimmed()</code></td>
+<td>クッキーの値を、前後の <code>"</code> を取り除いて返すメソッド。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>.override_max_age()</code></td>
+<td>クッキーが使える長さを決めるメソッド。セッションの長さと同じにします。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>.add()</code></td>
+<td>クッキーの入れ物（<code>CookieJar</code>。この答えで送るクッキーの束）に、新しいクッキーを足すメソッド。<code>.add(Cookie::new(名前, 値))</code> で足した物が、答えの <code>Set-Cookie</code> の見出しになってブラウザーに届きます。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>Cookie::new()</code></td>
+<td>名前と値を決めて、送るクッキーを作る関数。<code>Cookie::new(NAME, token.encode())</code>。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>Cookie</code></td>
+<td>クッキー 1 つ（名前と値と、使う範囲・期限などの設定）を表す型。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>Cookies</code></td>
+<td>今のリクエストのクッキーを読み書きする入れ物（クッキーの瓶）。<code>jar.add(…)</code> で足し、<code>jar.get("名前")</code> で読みます。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>SameSite</code></td>
+<td>クッキーの決まりの 1 つ。ほかのサイトから来た頼みに、このクッキーを付けるかを決めます。<code>Lax</code> は、ほかのサイトからのリンクでの移動には付けるが、フォームの送信などには付けない設定です。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>Lax</code></td>
+<td><code>SameSite = Lax</code> は、ほかのサイトからのリンクで来た時（ふつうの移動）にはクッキーを送り、ほかのサイトからのフォームの送信には送らない設定です。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-21">認証</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.encode()</code></td>
+<td><code>base64</code> の部品で、バイトの並びを、URL に入れても安全な文字（Base64）に変えるメソッド。<code>URL_SAFE_NO_PAD.encode(バイト)</code>。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-22">Topcoat</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>topcoat</code></td>
+<td>Topcoat の道具のコマンド（<code>cargo install topcoat-cli</code> で入る）。<code>topcoat dev</code>（コードを直すと自動で作り直して読み直す開発用の起動）・<code>topcoat asset bundle</code>（CSS などの束を作る）などがあります。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>Token::decode()</code></td>
+<td>クッキーに入っていた文字列から、セッションの札（<code>Token</code>）に戻す関数。形がおかしければ <code>Err</code> です。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>Cx</code></td>
+<td>Topcoat の「今のリクエストの情報（URL・クッキー・セッションなど）が入った箱」。ページの関数の引数 <code>cx: &amp;Cx</code> で受け取り、<code>href!(…).resolve(cx)</code> などで使います。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>Token</code></td>
+<td><code>topcoat::session::Token</code> は、セッションの印（でたらめな長い文字列）の型。ブラウザーのクッキーに入れ、サーバーには、そのハッシュだけを保存します。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>TokenStore</code></td>
+<td>Topcoat のセッションの札（トークン）を、どこに置いて、どう読むかを決めるトレイト（決まりごと）。この資料では、HTTP でもログインが続くように、自分で <code>HttpCookieTokenStore</code> を作って、この決まりを守らせます。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>TokenStoreFuture</code></td>
+<td><code>TokenStore</code> のメソッドが返す、「あとで答えが出る仕事（Future）」の型。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>.sessions()</code></td>
+<td>ルーターに、セッション（ログインの状態を覚える仕組み）を登録するメソッド。<code>.sessions(SessionConfig::default())</code>。先に <code>.cookies()</code> も登録します。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>.token_store()</code></td>
+<td>セッションの札（トークン）を、どこに置くかを決めるメソッド。ここでは、HTTP のページでもログインが続くように、自分で用意した <code>HttpCookieTokenStore</code>（クッキーに置く係）を渡しています。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>.lifetime()</code></td>
+<td>セッションの長さ（何も操作しないと切れるまでの時間）を決めるメソッド。<code>.lifetime(IDLE)</code>（<code>IDLE</code> は 60 分）。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>SessionConfig::builder()</code></td>
+<td>Topcoat のセッションの設定を、少しずつ決めて組み立て始める関数。<code>.token_store(…)</code>・<code>.lifetime(…)</code> をつなげて、最後に <code>.build()</code> で出来上がりです。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>SessionConfig</code></td>
+<td>Topcoat のセッションの設定（クッキーの名前・期限など）の型。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-23">JavaScript・TypeScript</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>import</code></td>
+<td>ほかのファイルや部品から、関数などを読み込む書き方。<code>import { rmSync } from "node:fs";</code> は、Node.js のファイルの道具から <code>rmSync</code> を使えるようにします。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>from</code></td>
+<td><code>import { 名前 } from "場所";</code> の一部で、「どこから読み込むか」を書きます。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>default</code></td>
+<td><code>export default</code> は、そのファイルから「いちばんの物」を 1 つ外に出す書き方。読み込む側は <code>import 名前 from "./ファイル"</code> と、好きな名前で受け取れます。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>const</code></td>
+<td>JavaScript・TypeScript で、変えない値に名前を付ける書き方。<code>const db = …;</code>。あとで別の値を入れようとするとエラーになります。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>return</code></td>
+<td>JavaScript・TypeScript で、関数の結果を返して、関数を終える命令。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>async</code></td>
+<td>JavaScript・TypeScript で、中で <code>await</code> を使える関数にする印。結果は <code>Promise</code>（あとで届く約束）で返ります。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>await</code></td>
+<td>JavaScript・TypeScript で、時間のかかる処理（<code>Promise</code>）が終わるまで待って、結果を受け取る書き方。<code>async</code> の関数の中で使います。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>if</code></td>
+<td>JavaScript・TypeScript の条件。<code>if (条件) { … } else { … }</code>。条件は <code>( )</code> で囲みます。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>new</code></td>
+<td>クラスから、新しい物を作る書き方。<code>new DatabaseSync("ba.sqlite")</code>・<code>new Date()</code>・<code>new Error("…")</code> のように使います。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>.json()</code></td>
+<td><code>fetch</code> の答え（<code>Response</code>）の本文を、JSON として読んで、オブジェクトにするメソッド。<code>await res.json()</code>。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>=&gt;</code></td>
+<td>アロー関数（短く書ける関数）の矢印。<code>(path) =&gt; \</code>…${path}`<code>は「</code>path` を受け取って文字列を返す関数」。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-24">TypeScript</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>export</code></td>
+<td>「このファイルの外から使ってよい」という印。<code>export type RequestStatus = …</code> と書くと、ほかのファイルで <code>import</code> して使えます。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>function</code></td>
+<td>関数（ひとまとまりの処理）を作る書き方。<code>function greet(name: string): string { … }</code> は、「文字列の <code>name</code> を受け取って、文字列を返す関数 <code>greet</code>」です。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>undefined</code></td>
+<td>「まだ値が入っていない」ことを表す値。<code>?</code> の付いた無くてもよい項目が無い時や、配列の範囲の外を読んだ時に出てきます。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>catch</code></td>
+<td><code>try</code> の中で失敗した時に動く所。<code>catch (e)</code> の <code>e</code> にエラーが入ります（何が来るか分からないので、使う前に確かめます）。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>throw</code></td>
+<td>エラーを起こして、処理を止める書き方。<code>throw new Error("サーバーのエラー")</code>。<code>try … catch</code> で受け止められます。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>.match()</code></td>
+<td>文字列が正規表現に合う所を探すメソッド。見つかると、その情報（かっこの中の部分など）を配列で、見つからないと <code>null</code> を返します。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>.stringify()</code></td>
+<td><code>JSON.stringify(値)</code> は、オブジェクトや配列を、JSON の文字列にする関数です。保存したり、サーバーへ送ったりする時に使います。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>.catch()</code></td>
+<td><code>Promise</code> が失敗した時の代わりの処理を登録するメソッド。<code>res.json().catch(() =&gt; ({}))</code> は「JSON として読めなければ空のオブジェクト」。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>...</code></td>
+<td>スプレッド構文。<code>[...requests]</code> は配列の中身を広げて、新しい配列（写し）を作ります。<code>{ ...user, isAdmin: true }</code> は、オブジェクトを写して一部だけ変えます。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-25">Python</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>import</code></td>
+<td>ほかのモジュール（部品）を読み込む書き方。<code>import re</code> で正規表現の道具、<code>from pathlib import Path</code> で <code>Path</code> だけを使えるようにします。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>from</code></td>
+<td><code>from パッケージ import 名前</code> の一部で、「どこから読み込むか」を書きます。<code>from pathlib import Path</code>。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>def</code></td>
+<td>関数を作る書き方。<code>def greet(name: str) -&gt; str:</code> の次の行から、<strong>字下げした所が関数の中身</strong>です。Python は <code>{ }</code> の代わりに字下げで「どこまでが中身か」を表すので、字下げをそろえることがとても大事です。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>None</code></td>
+<td>Python の「値が無い」ことを表す値。調べる時は <code>x is None</code> と書きます。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>if</code></td>
+<td>Python の条件。<code>if 条件:</code> の次の行から、字下げした所が中身です。<code>a if 条件 else b</code> の形で、1 行の中で値を選ぶこともできます。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>is</code></td>
+<td>「同じ物か」を調べる書き方。<code>if value is None:</code> は「値が無ければ」。<code>None</code> と比べる時は <code>==</code> でなく <code>is</code> を使います。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>raise</code></td>
+<td>エラー（例外）を起こして、処理を止める書き方。<code>raise TransitionError("…")</code>。呼んだ側は <code>try … except</code> で受け止められます。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>return</code></td>
+<td>Python の関数の結果を返して、関数を終える命令。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>for</code></td>
+<td>Python のくり返し。<code>for x in 並び:</code> の次の行から、字下げした所が中身です。<code>[式 for x in 並び]</code> の形（内包表記）で、新しいリストを 1 行で作ることもできます。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>in</code></td>
+<td><code>for x in 並び</code>（並びから 1 つずつ）と、<code>値 in 並び</code>（含まれているか）の 2 つの使い方があります。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>True</code></td>
+<td>Python の「正しい（はい）」の値。反対は <code>False</code>。頭は大文字です（<code>true</code> ではありません）。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>False</code></td>
+<td>Python の「正しくない（いいえ）」の値。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>.resolve()</code></td>
+<td><code>Path(__file__).resolve()</code> は、ファイルの場所を、<code>C:\</code> から始まる絶対の場所にするメソッド。<code>.parent</code> で 1 つ上のフォルダになります。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>.get()</code></td>
+<td>辞書（<code>dict</code>）から、キーで値を取り出すメソッド。<code>d.get("port", 8080)</code> は、キーが無ければ 2 つ目の値（無ければ <code>None</code>）を返すので、<code>d["port"]</code> と違ってエラーになりません。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>.lower()</code></td>
+<td>英字を小文字にした文字列を返すメソッド。<code>"True".lower() == "true"</code> のように、大文字小文字をそろえて比べます。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>.split()</code></td>
+<td>Python で、文字列を分けてリストにするメソッド。<code>"a b  c".split()</code> のように何も渡さないと、空白（いくつ続いても）で分けます。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>.match()</code></td>
+<td><code>re.match(パターン, 文字列)</code> は、文字列の<strong>先頭から</strong>正規表現に合うかを調べる関数です。合えば、見つかった物が返ります（合わなければ <code>None</code>）。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>str()</code></td>
+<td>値を文字列に変える関数。<code>str(8080)</code> は <code>"8080"</code>。数と文字列は <code>==</code> で比べても等しくならないので、そろえる時に使います。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>int()</code></td>
+<td>文字列などを整数にする関数。<code>int("25")</code> は 25。数でない文字だと <code>ValueError</code> です。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>class</code></td>
+<td>クラス（データと、それを扱う関数をまとめた設計図）を作る書き方。<code>class Request:</code> の次から、字下げした所が中身です。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>or</code></td>
+<td>「または」。<code>a or b</code> は、<code>a</code> が空（<code>None</code>・<code>""</code>・0 など）なら <code>b</code> を使います。<code>(row.get("番号") or "").strip()</code> は「無ければ空の文字列にしてから空白を取る」。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>.loads()</code></td>
+<td>文字列から読み取るメソッド。<code>tomllib.loads(文字列)</code> は TOML、<code>json.loads(文字列)</code> は JSON を、Python の辞書にします。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>len()</code></td>
+<td>長さ（中身の数）を返す関数。<code>len("abc")</code> は 3、<code>len([1, 2])</code> は 2、<code>len(sys.argv)</code> は「渡された引数の数＋1」です。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-26">Django</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.get_username()</code></td>
+<td>Django の利用者から、ログインに使う名前（この資料では社員番号）を返すメソッド。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>method_decorator()</code></td>
+<td>関数用の印（デコレーター）を、クラスの画面（ビュー）のメソッドにも付けられるようにする物。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>authenticate()</code></td>
+<td>名前とパスワードが正しいかを確かめる Django の関数。正しければ利用者（<code>User</code>）を、違えば <code>None</code> を返します。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>login()</code></td>
+<td>確かめた利用者を、ログインした状態にする Django の関数（セッションを始める）。<code>login(request, user)</code>。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>logout()</code></td>
+<td>ログアウトさせる Django の関数（セッションを消す）。<code>logout(request)</code>。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>@method_decorator</code></td>
+<td><code>@method_decorator(ensure_csrf_cookie, name="dispatch")</code> をクラスの上に付けて、そのクラスの画面に印を付けます。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>@require_POST</code></td>
+<td>「この画面は POST だけを受け付ける」という印（デコレーター）。GET などで来たら <code>405</code> を返します。ログアウトのように、状態を変える物に付けます。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>.as_view()</code></td>
+<td>クラスで作った画面（ビュー）を、URL の決まりに登録できる形にするメソッド。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>path()</code></td>
+<td>URL と、それに答える画面（ビュー）を結び付ける関数。<code>path("requests/&lt;int:pk&gt;/", views.detail)</code> の <code>&lt;int:pk&gt;</code> は、URL の中の数を <code>pk</code> という名前で受け取ります。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>re_path()</code></td>
+<td>正規表現で URL の決まりを書く関数。<code>re_path(r"^(?!api/&#124;admin/).*$", …)</code> は「<code>api/</code>・<code>admin/</code> で始まらない URL は全部」（React の画面を返す）。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-27">Django REST framework</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>api_view()</code></td>
+<td>関数を、DRF の API の画面にする物。<code>@api_view(["GET", "POST"])</code> のように使います。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>@api_view</code></td>
+<td><code>@api_view(["GET", "POST"])</code> を関数の上に付けて、API にします。決めたメソッド以外は 405 で断られます。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+</tbody>
+</table>
+
+<script>
+(function () {
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy") ? resolve() : reject(); } catch (e) { reject(e); }
+      document.body.removeChild(ta);
+    });
+  }
+  document.querySelectorAll(".copy-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var pre = btn.parentElement.querySelector("pre");
+      var text = pre.textContent.replace(/\n$/, "");
+      copyText(text).then(function () {
+        btn.textContent = "コピーしました";
+        btn.classList.add("done");
+        setTimeout(function () { btn.textContent = "コピー"; btn.classList.remove("done"); }, 2000);
+      }, function () { btn.textContent = "コピーできませんでした"; });
+    });
+  });
+  if (/^#code-\d+$/.test(location.hash)) {
+    var note = document.getElementById("web-note");
+    if (note) { note.hidden = false; }
+  }
+})();
+</script>
+</body>
+</html>

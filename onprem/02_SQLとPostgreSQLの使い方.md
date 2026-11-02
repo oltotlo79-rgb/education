@@ -102,6 +102,14 @@ $env:Path += ";C:\Program Files\PostgreSQL\18\bin"
 psql -h 127.0.0.1 -p 5432 -U postgres -d postgres
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`psql`**（psql）: PostgreSQL に、コマンドでつないで SQL を打つ道具。`psql -h 127.0.0.1 -U postgres -d データベース名` でつなぎます（`-h` は相手の住所、`-U` は利用者の名前、`-d` はデータベース）。`\q` で抜けます。
+
+<!-- /first-use -->
+
 | 指定 | 意味 | 省いたとき |
 |---|---|---|
 | `-h 127.0.0.1` | どの機械の PostgreSQL か | Windows では `localhost` |
@@ -181,6 +189,17 @@ CREATE DATABASE practice ENCODING 'UTF8' TEMPLATE template0;
 \c practice
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`CREATE`**（SQL）: `CREATE ROLE`（ユーザーを作る）・`CREATE DATABASE`（データベースを作る）・`CREATE TABLE`（表を作る）のように、何かを新しく作る SQL の命令です。
+> - **`DATABASE`**（SQL）: `CREATE DATABASE 名前` で、データベースを作ります。
+> - **`ENCODING`**（SQL）: `ENCODING 'UTF8'` で、データベースの文字コードを UTF-8 にします（日本語を正しく入れるため）。
+> - **`TEMPLATE`**（SQL）: `TEMPLATE template0` で、何も手を加えていない元の形から、データベースを作ります（文字コードを指定する時に必要）。
+
+<!-- /first-use -->
+
 次の SQL を、メモ帳に貼り付けて **UTF-8** で `D:\work\practice_setup.sql` に保存し、psql の中で `\i D:/work/practice_setup.sql` と打って実行します（`\i` では、`\` の代わりに `/` で書くと間違いが起きにくいです）。
 
 ```sql
@@ -233,6 +252,30 @@ INSERT INTO requests (title, status, requester_id, due_date, created_at) VALUES
     ('棚の取り付け',     '差し戻し', 101, '2026-11-20', '2026-10-27 11:00+09'),
     ('型の改造',         '回覧中',   201, '2026-11-03', '2026-10-29 08:30+09');
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`TABLE`**（SQL）: SQL で「表」を表す言葉。`CREATE TABLE`（表を作る）・`DROP TABLE`（表を消す）のように使います。
+> - **`PRIMARY`**（SQL）: `PRIMARY KEY`（主キー）の一部。主キーは、表の中で 1 行を必ず見分けられる列で、同じ値が 2 回入りません。ふつうは `id` 列にします。
+> - **`KEY`**（SQL）: `PRIMARY KEY`（主キー）・`FOREIGN KEY`（よその表とつなぐ列）などの「キー」。
+> - **`NOT`**（SQL）: SQL で「〜ではない」。`NOT NULL` は「この列は空（NULL）を許さない」という決まりです。
+> - **`NULL`**（SQL）: SQL で「値が無い」ことを表す特別な値。0 や空の文字列とは違います。
+> - **`UNIQUE`**（SQL）: 「この列の値は、表の中で重ならない」という決まり。`email TEXT NOT NULL UNIQUE` は、同じメールアドレスを 2 回登録できなくします。
+> - **`REFERENCES`**（SQL）: 「この列の値は、あの表の、あの列に必ずある値」という決まり（外部キー）。`user_id INTEGER REFERENCES users(id)` で、存在しないユーザーの番号を入れられなくなります。
+> - **`DEFAULT`**（SQL）: 列に値を入れなかった時に使う、決めておいた値（既定値）。`done INTEGER NOT NULL DEFAULT 0` は「指定が無ければ 0」。
+> - **`GENERATED`**（SQL）: `GENERATED ALWAYS AS IDENTITY` は、行を足すたびに、番号を自動で振る列にする書き方です（PostgreSQL の新しい書き方。`ALWAYS` は「自分で番号を入れさせない」）。
+> - **`ALWAYS`**（SQL）: `GENERATED ALWAYS AS IDENTITY` の一部で、「番号は必ずデータベースが振る（自分で入れようとするとエラー）」という意味です。
+> - **`AS`**（SQL）: SQL で、列や表に別の名前を付ける書き方。`SELECT COUNT(*) AS notes` は、結果の列の名前を `notes` にします。`FROM users AS u` は、表を `u` と短く呼べるようにします。
+> - **`IDENTITY`**（SQL）: `GENERATED ALWAYS AS IDENTITY` の一部で、「1, 2, 3… と自動で振る番号の列」という意味です。
+> - **`CHECK`**（SQL）: 「この列に入れてよい値の条件」を決める決まり。`CHECK (length(title) BETWEEN 1 AND 80)` は、題名を 1〜80 文字に限ります。合わない値を入れようとすると、データベースが断ります。
+> - **`IN`**（SQL）: SQL で「このどれか」。`WHERE status IN ('queued', 'running')` は、状態がどちらかの行だけです。`CHECK (pinned IN (0, 1))` は、0 か 1 しか入れられない決まりです。
+> - **`INSERT`**（SQL）: `INSERT INTO 表 (列, …) VALUES (値, …)` で、表に新しい行を足す SQL の命令。
+> - **`INTO`**（SQL）: `INSERT INTO 表` の一部で、「この表へ」入れる、という意味。
+> - **`VALUES`**（SQL）: `INSERT INTO 表 (列, …) VALUES (値, …)` の、入れる値を書く所。
+
+<!-- /first-use -->
 
 | 書き方 | 意味 |
 |---|---|
@@ -303,6 +346,15 @@ WHERE status = '回覧中'
 ORDER BY due_date;
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`AND`**（SQL）: SQL で「かつ」。`WHERE a = 1 AND b = 2` は両方に合う行だけ。`BETWEEN 0 AND 100` の一部としても使います。
+> - **`DATE`**（SQL）: 日付（年・月・日。時刻は無し）を入れる列の型。期限（`due_date`）などに使います。Rust では `time::Date` で受け取ります。
+
+<!-- /first-use -->
+
 ```text
  id |      title       |  due_date
 ----+------------------+------------
@@ -328,6 +380,14 @@ FROM employees
 WHERE name LIKE '%田%';
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`LIKE`**（SQL）: SQL のあいまい検索。`WHERE title LIKE '%買い物%'` は、`買い物` を含む行です（`%` は「何文字でも」、`_` は「どれか 1 文字」）。
+
+<!-- /first-use -->
+
 ```text
    name    |          email
 -----------+-------------------------
@@ -341,6 +401,14 @@ SELECT id, title, status
 FROM requests
 WHERE due_date IS NULL;
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`IS`**（SQL）: SQL で NULL かどうかを調べる時の書き方。`WHERE x IS NULL`（無い）・`WHERE x IS NOT NULL`（ある）。NULL は `= NULL` では比べられません。
+
+<!-- /first-use -->
 
 ```text
  id |    title     | status
@@ -359,6 +427,14 @@ FROM requests
 GROUP BY status
 ORDER BY 件数 DESC, status;
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`GROUP`**（SQL）: `GROUP BY 列` で、同じ値の行をまとめて、まとめごとに数える・足す時の書き方。`SELECT user_id, COUNT(*) FROM notes GROUP BY user_id` は、人ごとのノートの数です。
+
+<!-- /first-use -->
 
 ```text
   status  | 件数
@@ -397,6 +473,16 @@ CREATE INDEX requests_status_due_idx ON requests (status, due_date);
 EXPLAIN SELECT id, title FROM requests WHERE status = '回覧中' ORDER BY due_date;
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`INDEX`**（SQL）: `CREATE INDEX 名前 ON 表 (列)` で、表に索引（本の索引のような、速く探すための仕組み）を作る SQL の命令。よく条件や並べかえに使う列に作ります。
+> - **`ON`**（SQL）: SQL の「〜の時」「〜で」。`ON DELETE CASCADE` は「消された時は」、`JOIN … ON a.id = b.user_id` は「この条件で横につなぐ」、`CREATE INDEX … ON 表 (列)` は「この表の、この列に」という意味です。
+> - **`EXPLAIN`**（SQL）: `EXPLAIN QUERY PLAN SELECT …` で、データベースがその SQL をどう実行するつもりか（索引を使うか、全部の行を見るか）を表示します。
+
+<!-- /first-use -->
+
 ```text
                           QUERY PLAN
 ---------------------------------------------------------------
@@ -434,6 +520,14 @@ JOIN departments AS d ON d.id = e.department_id
 ORDER BY r.id;
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`JOIN`**（SQL）: 2 つの表を、条件で横につないで取り出す書き方。`FROM notes JOIN users ON users.id = notes.user_id` は、ノートと、その持ち主を 1 行に並べます。
+
+<!-- /first-use -->
+
 ```text
  id |      title       |  依頼者   |    部署
 ----+------------------+-----------+------------
@@ -467,6 +561,14 @@ GROUP BY d.id, d.name
 ORDER BY d.id;
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`LEFT`**（SQL）: `LEFT JOIN` は、左の表の行は、相手が無くても全部残す JOIN。「ノートが 0 件の人も一覧に出す」時に使います。
+
+<!-- /first-use -->
+
 ```text
     部署    | 依頼の件数
 ------------+------------
@@ -489,6 +591,14 @@ VALUES ('工具箱の作成', 102, '2026-11-30')
 RETURNING id, title, status, created_at;
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`RETURNING`**（SQL）: `INSERT … RETURNING id` で、入れた（変えた）行の値（作られた番号など）を、その場で返してもらう書き方。
+
+<!-- /first-use -->
+
 ```text
  id |    title     | status |          created_at
 ----+--------------+--------+-------------------------------
@@ -509,6 +619,15 @@ UPDATE requests
 SET status = '承認済み'
 WHERE id = 1;
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`UPDATE`**（SQL）: `UPDATE 表 SET 列 = 値 WHERE 条件` で、行の中身を書きかえる SQL の命令。`WHERE` を忘れると、全部の行が変わります。
+> - **`SET`**（SQL）: `UPDATE` の中で、「どの列を、どの値にするか」を書く所。
+
+<!-- /first-use -->
 
 ```text
 UPDATE 1
@@ -536,6 +655,14 @@ UPDATE 1
 DELETE FROM requests WHERE id = 7;
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`DELETE`**（SQL）: `DELETE FROM 表 WHERE 条件` で、表の行を消す SQL の命令。`WHERE` を忘れると、全部の行が消えます。`ON DELETE CASCADE` の中では「消された時」という意味です。
+
+<!-- /first-use -->
+
 消した行は、元に戻せません（7 章のトランザクションの中なら、`ROLLBACK` で戻せます）。
 
 ## 7. トランザクション（BEGIN・COMMIT・ROLLBACK）
@@ -556,6 +683,15 @@ SELECT count(*) FROM requests;
 ROLLBACK;
 SELECT count(*) FROM requests;
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`BEGIN`**（SQL）: トランザクションを始める SQL の命令。ここから `COMMIT`（確定）か `ROLLBACK`（取り消し）までが、1 つのまとまりになります。
+> - **`ROLLBACK`**（SQL）: トランザクションの中でした変更を、全部取り消す SQL の命令。
+
+<!-- /first-use -->
 
 ```text
 BEGIN
@@ -689,6 +825,24 @@ ALTER DEFAULT PRIVILEGES FOR ROLE webapp_prod_app IN SCHEMA public
     GRANT SELECT ON TABLES TO webapp_readonly;
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`ROLE`**（SQL）: PostgreSQL のユーザー（ログインする名前と、持つ権限のまとまり）。`CREATE ROLE webapp_dev_app LOGIN CREATEDB;` は「ログインでき、データベースを作れるユーザー」を作ります。
+> - **`LOGIN`**（SQL）: `CREATE ROLE … LOGIN` で、そのユーザーがログインできるようにします。
+> - **`GRANT`**（SQL）: 利用者（ロール）に、権限を与える命令。`GRANT CONNECT ON DATABASE webapp_prod TO webapp_readonly;` は「webapp_readonly に、webapp_prod へつなぐことを許す」。
+> - **`CONNECT`**（SQL）: `GRANT CONNECT ON DATABASE …` の `CONNECT` は、「そのデータベースにつなぐ」権限です。
+> - **`TO`**（SQL）: `RENAME TO 新しい名前` の「〜へ」の部分です。
+> - **`SCHEMA`**（SQL）: スキーマは、データベースの中の、表をまとめる入れ物（ふだんは `public`）。`GRANT USAGE ON SCHEMA public TO …` は「public の中の物を使ってよい」。
+> - **`ALL`**（SQL）: `UNION ALL` は、2 つの結果を、重なりも消さずにそのままつなげる書き方です。
+> - **`TABLES`**（SQL）: `ON ALL TABLES IN SCHEMA public` は「public の中の、今ある表すべて」。`GRANT SELECT ON ALL TABLES …` で、全部の表を読めるようにします。
+> - **`ALTER`**（SQL）: `ALTER TABLE 表 …` で、もうある表の形を変える SQL の命令（列を足す・名前を変える など）。
+> - **`PRIVILEGES`**（SQL）: `ALTER DEFAULT PRIVILEGES … GRANT SELECT ON TABLES TO …` は、「これから作られる表にも、自動で同じ権限を付ける」という決まりを作る命令です。これが無いと、あとで足した表は読めません。
+> - **`FOR`**（SQL）: `SELECT … FOR UPDATE` は、読んだ行に鍵をかける書き方です。同じ行を、別の人が同時に変えようとしても、こちらのトランザクションが終わるまで待たせるので、「2 人が同時に承認して 2 回進む」ことを防げます。
+
+<!-- /first-use -->
+
 | 書き方 | 意味 |
 |---|---|
 | `GRANT 権限 ON 物 TO ロール` | 権限を渡す |
@@ -750,6 +904,14 @@ SHOW hba_file;
 SELECT pg_reload_conf();
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`SHOW`**（SQL）: PostgreSQL の設定の、今の値を表示する命令。`SHOW listen_addresses;` は、どの住所で待ち受けているか。
+
+<!-- /first-use -->
+
 再起動が要る設定は、PowerShell で `Restart-Service postgresql-x64-18` を打ちます（アプリが一時的にエラーになるので、使われていない時間に）。
 
 ## 11. バックアップとリストア
@@ -765,6 +927,14 @@ SELECT pg_reload_conf();
 # practice データベースを、PostgreSQL 独自の形式（-Fc）で 1 つのファイルに書き出す
 pg_dump -h 127.0.0.1 -U postgres -Fc -f D:\work\practice.dump practice
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`pg_dump`**（psql）: PostgreSQL のデータベースの中身を、まるごと 1 つのファイルに書き出す（控えを取る）コマンド。`-Fc` はあとで `pg_restore` で戻せる形、`-f` は書き出すファイルの場所。動かしている途中でも、ある瞬間の中身がそろった形で取れます。
+
+<!-- /first-use -->
 
 | 指定 | 意味 |
 |---|---|
@@ -792,6 +962,14 @@ psql -h 127.0.0.1 -U postgres -d practice_restore -c "SELECT count(*) FROM reque
 # 控えのファイルの中身の目録を見る（テーブルのデータが入っているか）
 pg_restore --list D:\work\practice.dump
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`pg_restore`**（psql）: `pg_dump -Fc` で取った控えを、データベースに戻すコマンド。`-d` で戻す先のデータベースを決めます。戻す練習は、本物とは別の、空のデータベースに対してします。
+
+<!-- /first-use -->
 
 **確かめること:** `pg_restore` がエラー無しで終わること。`count` が、控えを取る前の件数と同じであること（練習では 7。試した結果、そうなりました）。
 
@@ -823,6 +1001,14 @@ FROM pg_stat_activity
 WHERE state = 'active' AND now() - query_start > interval '5 minutes';
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`SQL`**（SQL）: ここでは SQL の命令ではなく、`AS SQL` で列に付けた名前（見出し）です。`left(query, 60) AS SQL` は「動いている SQL の先頭 60 文字を、SQL という見出しで出す」。
+
+<!-- /first-use -->
+
 **確かめること:**
 
 - データベースの大きさが、急に増えていないこと（ディスクの見積もり。00 基礎知識 0.2）。
@@ -848,6 +1034,14 @@ SELECT pg_terminate_backend(12345);
 DROP DATABASE practice;
 DROP DATABASE practice_restore;
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`DROP`**（SQL）: `DROP TABLE 表`・`DROP INDEX 索引` で、表や索引を消す SQL の命令。中のデータも消えるので注意します。
+
+<!-- /first-use -->
 
 > **`DROP DATABASE` は、データベースを丸ごと消し、元に戻せません。** 打つ前に、名前が `practice` であること（`webapp_prod` でないこと）を、声に出して確かめるくらいの気持ちで見ます。
 

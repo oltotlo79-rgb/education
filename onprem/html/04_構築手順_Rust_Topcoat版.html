@@ -582,6 +582,19 @@ li, tr { page-break-inside: avoid; }
 <span class="n">w32tm</span> <span class="p">/</span><span class="n">query</span> <span class="p">/</span><span class="n">status</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Get-ComputerInfo</code></strong>（PowerShell）: このパソコンの情報（OS の名前と版・パソコンの名前・ドメインなど）を、まとめて表示するコマンド。</li>
+<li><strong><code>Get-ComputerInfo -Property</code></strong>（PowerShell）: 表示する項目を決めるオプション。<code>-Property OsName, OsVersion, CsName, CsDomain</code> は、OS の名前と版、パソコンの名前、ドメインだけ（全部だと、とても長い）。</li>
+<li><strong><code>Format-Table</code></strong>（PowerShell）: 結果を表の形に整えて表示するコマンド。</li>
+<li><strong><code>w32tm</code></strong>（コマンド）: Windows の時刻合わせの状態を見る・変えるコマンド。<code>w32tm /query /status</code> で、どこと時刻を合わせているか（<code>Source</code>）と、最後に合わせた時刻が分かります。時刻がずれると、ログの読み合わせやログインの期限が狂います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><strong>確かめること:</strong></p>
 <ul>
 <li>OS の名前が、頼んだ版（例：Windows Server 2025 Standard）になっている。</li>
@@ -601,6 +614,18 @@ li, tr { page-break-inside: avoid; }
 <span class="c"># 日本時間にする（すでに日本時間なら不要）</span>
 <span class="nb">Set-TimeZone</span> <span class="n">-Id</span> <span class="s2">&quot;Tokyo Standard Time&quot;</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Get-TimeZone</code></strong>（PowerShell）: このパソコンの時間帯（タイムゾーン）を表示するコマンド。日本なら <code>Tokyo Standard Time</code>（UTC+09:00）。</li>
+<li><strong><code>Set-TimeZone</code></strong>（PowerShell）: このパソコンの時間帯を変えるコマンド。</li>
+<li><strong><code>Set-TimeZone -Id</code></strong>（PowerShell）: 変える先の時間帯の名前を決めるオプション。<code>-Id "Tokyo Standard Time"</code> は日本時間。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <blockquote>
 <p><strong>用語:</strong> タイムゾーン（地域ごとの時刻のずれの決まり。日本は「協定世界時（UTC）＋9 時間」。Windows では <code>Tokyo Standard Time</code> という名前）</p>
@@ -643,6 +668,21 @@ D:\pgsql\18\data\       PostgreSQL のデータ（5 章で、インストール�
 <span class="p">)</span>
 <span class="k">foreach</span> <span class="p">(</span><span class="nv">$d</span> <span class="k">in</span> <span class="nv">$dirs</span><span class="p">)</span> <span class="p">{</span> <span class="nb">New-Item</span> <span class="n">-ItemType</span> <span class="n">Directory</span> <span class="n">-Force</span> <span class="n">-Path</span> <span class="nv">$d</span> <span class="p">|</span> <span class="nb">Out-Null</span> <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>foreach</code></strong>（PowerShell）: PowerShell のくり返し。<code>foreach ($line in Get-Content $envFile) { … }</code> は、ファイルの 1 行ずつを <code>$line</code> に入れて、中を動かします。</li>
+<li><strong><code>New-Item</code></strong>（PowerShell）: 新しいファイルやフォルダを作るコマンド。<code>New-Item memo.txt</code> でファイル、<code>New-Item -ItemType Directory 名前</code> でフォルダを作ります。</li>
+<li><strong><code>New-Item -ItemType</code></strong>（PowerShell）: <code>-ItemType Directory</code> で、ファイルではなくフォルダを作ります（<code>File</code> ならファイル）。<code>New-Item -ItemType Directory src\bin</code> は、<code>src</code> の中に <code>bin</code> フォルダを作ります。</li>
+<li><strong><code>New-Item -Force</code></strong>（PowerShell）: <code>-Force</code> で、同じ名前のファイルがあっても上書きして作ります（無いと、エラーで止まります）。上書きするので、使う時は名前をよく確かめます。</li>
+<li><strong><code>New-Item -Path</code></strong>（PowerShell）: <code>-Path 場所</code> で、作るファイルやフォルダの場所（名前）を指定します。</li>
+<li><strong><code>Out-Null</code></strong>（PowerShell）: コマンドの結果を、画面に出さずに捨てるコマンド。<code>… | Out-Null</code> のように後ろに付けると、表示が出なくなります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <blockquote>
 <p><strong>用語:</strong> スクリプト（コマンドを順に並べて、ファイルにしたもの。<code>.ps1</code> は PowerShell のスクリプト）</p>
@@ -807,31 +847,46 @@ D:\pgsql\18\data\       PostgreSQL のデータ（5 章で、インストール�
 <ol>
 <li>設定ファイル <code>D:\pgsql\18\data\postgresql.conf</code> を、管理者のメモ帳で開きます。</li>
 </ol>
-<p><code>powershell
-   notepad D:\pgsql\18\data\postgresql.conf</code></p>
+<div class="codehilite"><div class="code-wrap" id="code-8"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">notepad</span> <span class="n">D</span><span class="p">:\</span><span class="n">pgsql</span><span class="p">\</span><span class="n">18</span><span class="p">\</span><span class="n">data</span><span class="p">\</span><span class="n">postgresql</span><span class="p">.</span><span class="n">conf</span>
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>notepad</code></strong>（コマンド）: メモ帳を開くコマンド。<code>notepad D:\…\postgresql.conf</code> で、そのファイルをメモ帳で開きます。保存する時は、文字コードを変えないように注意します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ol start="2">
 <li><code>listen_addresses</code> の行を探して、次のようにします（行の先頭に <code>#</code> があれば消します）。</li>
 </ol>
-<p><code>text
-   listen_addresses = 'localhost'</code></p>
+<div class="codehilite"><div class="code-wrap" id="code-9"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>listen_addresses = &#39;localhost&#39;
+</code></pre></div></div>
+
 <ol start="3">
 <li>ついでに、次の3つを確かめます（無ければ書き足します）。</li>
 </ol>
-<p><code>text
-   timezone = 'Asia/Tokyo'
-   log_timezone = 'Asia/Tokyo'
-   lc_messages = 'C'</code></p>
+<div class="codehilite"><div class="code-wrap" id="code-10"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>timezone = &#39;Asia/Tokyo&#39;
+log_timezone = &#39;Asia/Tokyo&#39;
+lc_messages = &#39;C&#39;
+</code></pre></div></div>
+
 <p><code>lc_messages = 'C'</code> は、PostgreSQL のメッセージを英語にする設定です。日本語の Windows で既定のまま入れると、メッセージが日本語になりますが、<strong>ログのファイルに、UTF-8 の行と Shift_JIS の行が混ざって</strong>、どちらの文字コードで開いても一部が文字化けします（00 基礎知識 0.4。PostgreSQL 18.3 の日本語ロケールで試して確かめました）。英語にすると、ログが英数字だけになって化けず、エラーの文をそのまま検索して調べられます。</p>
 <ol start="4">
 <li>保存して、PostgreSQL を再起動します。</li>
 </ol>
-<p><code>powershell
-   Restart-Service postgresql-x64-18</code></p>
+<div class="codehilite"><div class="code-wrap" id="code-11"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">Restart-Service</span> <span class="n">postgresql-x64</span><span class="p">-</span><span class="n">18</span>
+</code></pre></div></div>
+
 <ol start="5">
 <li>待ち受けている住所を確かめます。</li>
 </ol>
-<p><code>powershell
-   Get-NetTCPConnection -State Listen -LocalPort 5432 | Format-Table LocalAddress, LocalPort, OwningProcess</code></p>
+<div class="codehilite"><div class="code-wrap" id="code-12"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">Get-NetTCPConnection</span> <span class="n">-State</span> <span class="n">Listen</span> <span class="n">-LocalPort</span> <span class="n">5432</span> <span class="p">|</span> <span class="nb">Format-Table</span> <span class="n">LocalAddress</span><span class="p">,</span> <span class="n">LocalPort</span><span class="p">,</span> <span class="n">OwningProcess</span>
+</code></pre></div></div>
+
 <p><strong>確かめること:</strong> <code>LocalAddress</code> が <code>127.0.0.1</code> と <code>::1</code> だけになっている（<code>0.0.0.0</code> や <code>::</code> があれば、まだ外からも待ち受けている）。</p>
 <blockquote>
 <p><strong>用語:</strong> listen_addresses（PostgreSQL が、どの住所で待ち受けるかの設定。<code>localhost</code> なら、このサーバーの中からだけ）</p>
@@ -842,7 +897,7 @@ D:\pgsql\18\data\       PostgreSQL のデータ（5 章で、インストール�
 <p><strong>用語:</strong> <code>::1</code>（IPv6 という新しい形の住所での、localhost。<code>127.0.0.1</code> と同じ意味）</p>
 </blockquote>
 <p>もう1つの関所の設定ファイル <code>pg_hba.conf</code> は、「どこから、どのユーザーが、どの方法でログインしてよいか」を決めます。インストーラーが作る形では、<code>127.0.0.1/32</code> と <code>::1/128</code> から、パスワード（<code>scram-sha-256</code>）でつなぐ行が入っています。中を見て、<strong><code>0.0.0.0/0</code> や <code>all</code> の住所の行が無い</strong>ことを確かめます。</p>
-<div class="codehilite"><div class="code-wrap" id="code-8"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">Get-Content</span> <span class="n">D</span><span class="p">:\</span><span class="n">pgsql</span><span class="p">\</span><span class="n">18</span><span class="p">\</span><span class="n">data</span><span class="p">\</span><span class="n">pg_hba</span><span class="p">.</span><span class="n">conf</span> <span class="p">|</span> <span class="nb">Select-String</span> <span class="n">-Pattern</span> <span class="s2">&quot;^\s*host&quot;</span>
+<div class="codehilite"><div class="code-wrap" id="code-13"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">Get-Content</span> <span class="n">D</span><span class="p">:\</span><span class="n">pgsql</span><span class="p">\</span><span class="n">18</span><span class="p">\</span><span class="n">data</span><span class="p">\</span><span class="n">pg_hba</span><span class="p">.</span><span class="n">conf</span> <span class="p">|</span> <span class="nb">Select-String</span> <span class="n">-Pattern</span> <span class="s2">&quot;^\s*host&quot;</span>
 </code></pre></div></div>
 
 <blockquote>
@@ -855,7 +910,7 @@ D:\pgsql\18\data\       PostgreSQL のデータ（5 章で、インストール�
 </blockquote>
 <h3 id="54-psql">5.4 psql を使えるようにする</h3>
 <p><code>psql</code> は、PostgreSQL に SQL を送る、文字の道具です。インストールした場所の <code>bin</code> にありますが、そのままでは PowerShell から呼べないので、その窓の中だけ、場所を教えます。</p>
-<div class="codehilite"><div class="code-wrap" id="code-9"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nv">$env:Path</span> <span class="p">+=</span> <span class="s2">&quot;;C:\Program Files\PostgreSQL\18\bin&quot;</span>
+<div class="codehilite"><div class="code-wrap" id="code-14"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nv">$env:Path</span> <span class="p">+=</span> <span class="s2">&quot;;C:\Program Files\PostgreSQL\18\bin&quot;</span>
 <span class="n">psql</span> <span class="p">-</span><span class="n">-version</span>
 </code></pre></div></div>
 
@@ -869,11 +924,11 @@ D:\pgsql\18\data\       PostgreSQL のデータ（5 章で、インストール�
 </blockquote>
 <h3 id="55">5.5 本番と検証のデータベースとユーザーを作る</h3>
 <p>スーパーユーザーでつなぎます（5.2 で決めたパスワードを聞かれます）。</p>
-<div class="codehilite"><div class="code-wrap" id="code-10"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">psql</span> <span class="n">-h</span> <span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span> <span class="n">-U</span> <span class="n">postgres</span>
+<div class="codehilite"><div class="code-wrap" id="code-15"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">psql</span> <span class="n">-h</span> <span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span> <span class="n">-U</span> <span class="n">postgres</span>
 </code></pre></div></div>
 
 <p><code>postgres=#</code> と出たら、PostgreSQL の中です。次の SQL を、1 行ずつ打ちます。</p>
-<div class="codehilite"><div class="code-wrap" id="code-11"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">-- 本番のアプリ用のユーザー（ログインできるロール）を作る</span>
+<div class="codehilite"><div class="code-wrap" id="code-16"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">-- 本番のアプリ用のユーザー（ログインできるロール）を作る</span>
 <span class="k">CREATE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">webapp_prod_app</span><span class="w"> </span><span class="n">LOGIN</span><span class="p">;</span>
 <span class="c1">-- パスワードを付ける（画面に出さずに2回聞かれる）</span>
 <span class="err">\</span><span class="n">password</span><span class="w"> </span><span class="n">webapp_prod_app</span>
@@ -896,6 +951,18 @@ D:\pgsql\18\data\       PostgreSQL のデータ（5 章で、インストール�
 <span class="c1">-- psql を終わる</span>
 <span class="err">\</span><span class="n">q</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>OWNER</code></strong>（SQL）: <code>OWNER ユーザー</code> で、そのデータベースの持ち主を決めます。持ち主は、中の表を自由に作れます。</li>
+<li><strong><code>REVOKE</code></strong>（SQL）: 利用者（ロール）から、権限を取り上げる命令（<code>GRANT</code> の逆）。<code>REVOKE ALL ON DATABASE webapp_prod FROM PUBLIC;</code> は「だれでもつなげる、の決まりを取り上げる」。</li>
+<li><strong><code>PUBLIC</code></strong>（SQL）: PostgreSQL で「すべての利用者」を表す名前。初めの状態では、だれでもデータベースにつなげるので、<code>REVOKE … FROM PUBLIC</code> で閉じます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li><strong>本番と検証で、ユーザーもパスワードも分けます。</strong> 検証の設定を間違えても、本番のデータベースにつながらないようにするためです。</li>
@@ -920,7 +987,7 @@ D:\pgsql\18\data\       PostgreSQL のデータ（5 章で、インストール�
 <p><strong>用語:</strong> PUBLIC（PostgreSQL の、全部のユーザーを表す特別な名前。<code>REVOKE ... FROM PUBLIC</code> は「全員から取り上げる」）</p>
 </blockquote>
 <h3 id="56">5.6 アプリ用のユーザーでつなげるか確かめる</h3>
-<div class="codehilite"><div class="code-wrap" id="code-12"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">psql</span> <span class="n">-h</span> <span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span> <span class="n">-U</span> <span class="n">webapp_prod_app</span> <span class="n">-d</span> <span class="n">webapp_prod</span> <span class="n">-c</span> <span class="s2">&quot;SELECT current_user, current_database(), now();&quot;</span>
+<div class="codehilite"><div class="code-wrap" id="code-17"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">psql</span> <span class="n">-h</span> <span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span> <span class="n">-U</span> <span class="n">webapp_prod_app</span> <span class="n">-d</span> <span class="n">webapp_prod</span> <span class="n">-c</span> <span class="s2">&quot;SELECT current_user, current_database(), now();&quot;</span>
 <span class="n">psql</span> <span class="n">-h</span> <span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span> <span class="n">-U</span> <span class="n">webapp_stg_app</span>  <span class="n">-d</span> <span class="n">webapp_prod</span> <span class="n">-c</span> <span class="s2">&quot;SELECT 1;&quot;</span>
 </code></pre></div></div>
 
@@ -944,12 +1011,23 @@ D:\pgsql\18\data\       PostgreSQL のデータ（5 章で、インストール�
 
 <h3 id="61">6.1 本番用の実行ファイルを作る</h3>
 <p>開発用のパソコンの、アプリのフォルダで打ちます。</p>
-<div class="codehilite"><div class="code-wrap" id="code-13"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># Cargo.lock のとおりの版で、本番用（release）に作る</span>
+<div class="codehilite"><div class="code-wrap" id="code-18"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># Cargo.lock のとおりの版で、本番用（release）に作る</span>
 <span class="n">cargo</span> <span class="n">build</span> <span class="p">-</span><span class="n">-release</span> <span class="p">-</span><span class="n">-locked</span>
 
 <span class="c"># 実行ファイルの隣に、CSS などの束（assets\）を作る</span>
 <span class="n">topcoat</span> <span class="n">asset</span> <span class="n">bundle</span> <span class="p">-</span><span class="n">-release</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo build</code></strong>（cargo のコマンド）: プログラムを翻訳（コンパイル）して実行ファイルを作るだけで、動かしはしません。でき上がった物は <code>target\debug\</code> に入ります。<code>cargo build --release</code> だと、速く動く本番用の物が <code>target\release\</code> にできます。</li>
+<li><strong><code>topcoat</code></strong>（Topcoat）: Topcoat の道具のコマンド（<code>cargo install topcoat-cli</code> で入る）。<code>topcoat dev</code>（コードを直すと自動で作り直して読み直す開発用の起動）・<code>topcoat asset bundle</code>（CSS などの束を作る）などがあります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li>できるのは、<code>target\release\webapp.exe</code> と、その隣の <code>target\release\assets\</code> の2つです。<strong>2つを必ず一緒に</strong>持ち込みます。Topcoat のアプリは、起動したときに「自分の隣の <code>assets\</code>」を読むので、<code>assets\</code> が無いと起動しません。</li>
@@ -966,7 +1044,7 @@ D:\pgsql\18\data\       PostgreSQL のデータ（5 章で、インストール�
 <h3 id="62">6.2 サーバーに無い部品に頼らないようにする</h3>
 <p>Rust で作った Windows の実行ファイルは、そのままだと、<strong>Visual C++ の再頒布可能パッケージ</strong>（<code>VCRUNTIME140.dll</code> など）がサーバーに入っていることを前提にします。入っていないサーバーでは、起動したとたんに「DLL が見つかりません」で止まります。</p>
 <p>アプリのフォルダの <code>.cargo\config.toml</code> に、次を書いておくと、その部品を実行ファイルの中に入れて作れます（静的リンク）。</p>
-<div class="codehilite"><div class="code-wrap" id="code-14"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># .cargo/config.toml（アプリのフォルダの中）</span>
+<div class="codehilite"><div class="code-wrap" id="code-19"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># .cargo/config.toml（アプリのフォルダの中）</span>
 <span class="k">[target.x86_64-pc-windows-msvc]</span>
 <span class="n">rustflags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;-C&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;target-feature=+crt-static&quot;</span><span class="p">]</span>
 </code></pre></div></div>
@@ -982,7 +1060,7 @@ D:\pgsql\18\data\       PostgreSQL のデータ（5 章で、インストール�
 <p><strong>開発用のパソコンが ARM（Snapdragon など）の場合:</strong> サーバーは x64 なので、<code>rustup target add x86_64-pc-windows-msvc</code> をして、<code>cargo build --release --locked --target x86_64-pc-windows-msvc</code> で作ります。できる場所は <code>target\x86_64-pc-windows-msvc\release\</code> です。<code>topcoat asset bundle</code> には <code>--target</code> が無いので、<code>--out</code> で束の置き場を指定して作り、x64 の実行ファイルの隣に置きます。CSS の束は、CPU の種類によらず同じ中身です。<strong>検証環境で起動して確かめてから</strong>、本番に使います。</p>
 <h3 id="63">6.3 版の名前を付けて、まとめる</h3>
 <p>持ち込む物は、<strong>版の番号を付けた zip</strong> にまとめます。あとで「今どの版が動いているか」「1つ前の版はどれか」が分かるようにするためです。</p>
-<div class="codehilite"><div class="code-wrap" id="code-15"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 開発用のパソコンで（例：版 1.0.0）</span>
+<div class="codehilite"><div class="code-wrap" id="code-20"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 開発用のパソコンで（例：版 1.0.0）</span>
 <span class="nv">$ver</span> <span class="p">=</span> <span class="s2">&quot;1.0.0&quot;</span>
 <span class="nv">$out</span> <span class="p">=</span> <span class="s2">&quot;dist\webapp-$ver&quot;</span>
 <span class="nb">New-Item</span> <span class="n">-ItemType</span> <span class="n">Directory</span> <span class="n">-Force</span> <span class="nv">$out</span> <span class="p">|</span> <span class="nb">Out-Null</span>
@@ -991,6 +1069,21 @@ D:\pgsql\18\data\       PostgreSQL のデータ（5 章で、インストール�
 <span class="nb">Compress-Archive</span> <span class="n">-Path</span> <span class="s2">&quot;$out\*&quot;</span> <span class="n">-DestinationPath</span> <span class="s2">&quot;dist\webapp-$ver.zip&quot;</span> <span class="n">-Force</span>
 <span class="nb">Get-FileHash</span> <span class="s2">&quot;dist\webapp-$ver.zip&quot;</span> <span class="n">-Algorithm</span> <span class="n">SHA256</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Copy-Item</code></strong>（PowerShell）: ファイルやフォルダをコピーするコマンド。<code>Copy-Item 元 先</code>。最後の <code>.</code> は「今いるフォルダへ」という意味です。</li>
+<li><strong><code>Copy-Item -Recurse</code></strong>（PowerShell）: <code>-Recurse</code> で、フォルダを中身ごと（中のフォルダも全部）コピーします。付けないと、フォルダの中身はコピーされません。</li>
+<li><strong><code>Compress-Archive</code></strong>（PowerShell）: ファイルやフォルダを、zip の 1 つのファイルにまとめるコマンド。</li>
+<li><strong><code>Compress-Archive -Path</code></strong>（PowerShell）: zip に入れる物を決めるオプション。<code>"$out\*"</code> は、そのフォルダの中身全部。</li>
+<li><strong><code>Compress-Archive -DestinationPath</code></strong>（PowerShell）: 作る zip のファイルの場所と名前を決めるオプション。</li>
+<li><strong><code>Compress-Archive -Force</code></strong>（PowerShell）: 同じ名前の zip がもうあれば、上書きするオプション。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li>zip は、サーバーの <code>D:\webapp\releases\</code> にコピーします。コピーの方法（会社のファイルサーバー経由、リモート デスクトップのドライブの共有など）は、会社の決まりに合わせます。</li>
@@ -1023,7 +1116,7 @@ D:\pgsql\18\data\       PostgreSQL のデータ（5 章で、インストール�
 <p><strong>用語:</strong> <code>HttpOnly</code>（JavaScript からクッキーを読めないようにする印）・<code>SameSite=Lax</code>（ほかのサイトからの POST に、クッキーを付けないようにする印）</p>
 </blockquote>
 <p>アプリのソースに、次のファイルを足します（<code>src/http_cookie.rs</code>）。</p>
-<div class="codehilite"><div class="code-wrap" id="code-16"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="sd">//! HTTP（暗号化なし）の社内環境で使う、セッションのクッキーの運び方。</span>
+<div class="codehilite"><div class="code-wrap" id="code-21"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="sd">//! HTTP（暗号化なし）の社内環境で使う、セッションのクッキーの運び方。</span>
 <span class="sd">//!</span>
 <span class="sd">//! Topcoat 0.11 の既定（`CookieTokenStore`）は、クッキーに `__Host-` の名前と</span>
 <span class="sd">//! `Secure` を必ず付ける。ブラウザは HTTP のページでは `Secure` のクッキーを</span>
@@ -1087,8 +1180,60 @@ D:\pgsql\18\data\       PostgreSQL のデータ（5 章で、インストール�
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>use</code></strong>（モジュール）: ほかの場所にある道具に、短い名前で呼べるようにする宣言。<code>use std::env;</code> と書くと、<code>std::env::args()</code> を <code>env::args()</code> と短く書けます。<code>std</code> は Rust に最初から付いている道具箱（標準ライブラリ）です。</li>
+<li><strong><code>const</code></strong>（変数）: ずっと変わらない値（定数）に名前を付ける書き方。<code>const MAX_TITLE_CHARS: usize = 80;</code>。名前は大文字と <code>_</code> で書き、型（<code>usize</code> など）を必ず書きます。プログラムのどこからでも使えます。</li>
+<li><strong><code>pub</code></strong>（モジュール）: 「外から使ってよい」（公開）という印。<code>pub fn title_length(…)</code> は、ほかのファイル（モジュール）からも呼べる関数になります。付けないと、同じモジュールの中からしか使えません。</li>
+<li><strong><code>struct</code></strong>（型とメソッド）: いくつかの値をまとめて、新しい型を作る書き方（構造体）。<code>struct Note { id: u32, title: String }</code> で、「番号と題名を持つノート」という型ができます。<code>Note { id: 1, title: "買い物".to_string() }</code> で 1 つ作ります。</li>
+<li><strong><code>fn</code></strong>（関数）: 関数（ひとまとまりの処理に名前を付けた物）を作る書き方。<code>fn main() { … }</code> の <code>main</code> は、プログラムを動かすと最初に動く特別な関数です。<code>fn add(a: i32, b: i32) -&gt; i32 { a + b }</code> は「整数を 2 つ受け取って、整数を返す関数 <code>add</code>」。<code>{ }</code> の中が中身で、最後の <code>;</code> の無い式が戻り値になります。</li>
+<li><strong><code>impl</code></strong>（型とメソッド）: 2 つの使い方があります。① <code>impl 型 { … }</code> で、その型にメソッド（関数）を付ける。② <code>impl View</code> のように型の場所に書くと、「<code>View</code> の機能を持つ何かの型」という意味になります（戻り値の型を細かく書かずに済む）。</li>
+<li><strong><code>for</code></strong>（くり返し）: 並びや範囲から 1 つずつ取り出して、くり返す書き方。<code>for n in 1..=100 { … }</code> は、<code>n</code> に 1, 2, …, 100 を順に入れて、中を 100 回動かします。<code>for x in &amp;v</code> で、<code>Vec</code> の中身を借りて回せます。</li>
+<li><strong><code>self</code></strong>（型とメソッド）: メソッドの中で「このもの自身」を表す名前。<code>impl</code> の中の <code>fn label(&amp;self)</code> の <code>&amp;self</code> は「自分を借りて読むだけ」、<code>&amp;mut self</code> は「自分を書きかえる」という意味です。<code>use</code> の中の <code>self</code>（例: <code>use std::io::{self, Write};</code>）は「<code>io</code> そのもの」を表します。</li>
+<li><strong><code>async</code></strong>（非同期）: 「待つ所で、ほかの仕事に順番をゆずれる関数」にする印。<code>async fn root(…)</code> のように付けます。呼ぶ側は <code>.await</code> で結果を待ちます。Web サーバーが、たくさんの人を同時にさばけるのは、この仕組みのおかげです。</li>
+<li><strong><code>move</code></strong>（関数）: クロージャが使う外の変数を、借りるのではなく「持っていく」印。<code>thread::spawn(move || { … })</code> のように、別のスレッドに値を渡す時に必要です。</li>
+<li><strong><code>let</code></strong>（変数）: 値に名前を付けて覚えておく（変数を作る）書き方。<code>let age = 20;</code> で、<code>age</code> という名前で 20 を覚えます。最初は「変えられない」変数です。あとで変えたい時は <code>let mut age = 20;</code> のように <code>mut</code> を付けます。</li>
+<li><strong><code>else</code></strong>（条件）: <code>if</code> の条件が合わなかった時の処理を書く所。<code>else if 条件 { … }</code> で、条件をいくつも続けられます。</li>
+<li><strong><code>return</code></strong>（関数）: 関数を、その場で終えて値を返す命令。<code>return Err(…);</code> のように、途中で抜ける時に使います。Rust では、関数の最後の <code>;</code> の無い式が自動で戻り値になるので、最後の行では <code>return</code> を書かないのがふつうです。</li>
+<li><strong><code>.override_same_site()</code></strong>（クッキー）: 送るクッキーの <code>SameSite</code>（ほかのサイトから来たリクエストにも付けて送るか）を決めるメソッド。<code>SameSite::Lax</code> は「ほかのサイトからのリンクで開いた時は送るが、ほかのサイトのフォームからの POST には付けない」で、CSRF を防ぐ助けになります。</li>
+<li><strong><code>.override_http_only()</code></strong>（クッキー）: <code>HttpOnly</code>（JavaScript から読めないようにする印）を付けるかを決めるメソッド。<code>true</code> にすると、XSS でクッキーを盗まれにくくなります。</li>
+<li><strong><code>.override_secure()</code></strong>（クッキー）: <code>Secure</code>（HTTPS の時だけ送る印）を付けるかを決めるメソッド。この資料のサーバーは HTTP なので <code>false</code> にしています（付けると、ブラウザーがクッキーを送らず、ログインが続かない）。</li>
+<li><strong><code>.override_path()</code></strong>（クッキー）: クッキーを送る URL の範囲を決めるメソッド。<code>"/"</code> は、そのサイトの全部の URL。</li>
+<li><strong><code>.get()</code></strong>（Vec（並び））: 番号やキーで中身を取り出すメソッド。<code>v.get(10)</code> は、範囲の外なら止まらずに <code>None</code> を返します（<code>v[10]</code> はプログラムが止まる）。文字列の <code>s.get(0..3)</code> は、文字の区切りでない位置なら <code>None</code> です。<code>HashMap</code> の <code>map.get("キー")</code> も、無ければ <code>None</code> です。</li>
+<li><strong><code>.value_trimmed()</code></strong>（クッキー）: クッキーの値を、前後の <code>"</code> を取り除いて返すメソッド。</li>
+<li><strong><code>.ok()</code></strong>（エラー処理）: <code>Result</code> を <code>Option</code> に変えるメソッド。<code>Ok(値)</code> は <code>Some(値)</code> に、<code>Err(…)</code> は <code>None</code> になります（エラーの中身は捨てる）。<code>"42".parse().ok()</code> のように、「失敗したら無かったことにする」時に使います。</li>
+<li><strong><code>.override_max_age()</code></strong>（クッキー）: クッキーが使える長さを決めるメソッド。セッションの長さと同じにします。</li>
+<li><strong><code>.add()</code></strong>（クッキー）: クッキーの入れ物（<code>CookieJar</code>。この答えで送るクッキーの束）に、新しいクッキーを足すメソッド。<code>.add(Cookie::new(名前, 値))</code> で足した物が、答えの <code>Set-Cookie</code> の見出しになってブラウザーに届きます。</li>
+<li><strong><code>.encode()</code></strong>（認証）: <code>base64</code> の部品で、バイトの並びを、URL に入れても安全な文字（Base64）に変えるメソッド。<code>URL_SAFE_NO_PAD.encode(バイト)</code>。</li>
+<li><strong><code>.remove()</code></strong>（Vec（並び））: <code>Vec</code> から i 番目を取り除いて、その値を返すメソッド。後ろの物が前に詰められます。<code>HashMap</code> の <code>.remove(キー)</code> は、そのキーの組を取り除き、値を <code>Option</code> で返します。</li>
+<li><strong><code>Box::pin()</code></strong>（非同期）: 値を、メモリーの決まった場所に固定して箱に入れる関数。<code>Box::pin(async move { … })</code> は、「あとで待つ仕事（Future）」を、トレイトの決まりどおりの形で返すための書き方です。</li>
+<li><strong><code>Token::decode()</code></strong>（Topcoat）: クッキーに入っていた文字列から、セッションの札（<code>Token</code>）に戻す関数。形がおかしければ <code>Err</code> です。</li>
+<li><strong><code>time::Duration::try_from()</code></strong>（時間）: 標準ライブラリの <code>Duration</code> を、<code>time</code> の <code>Duration</code> に変える関数。大きすぎて入らない時は <code>Err</code> を返すので、<code>?</code> で受け取ります。</li>
+<li><strong><code>Cookie::new()</code></strong>（クッキー）: 名前と値を決めて、送るクッキーを作る関数。<code>Cookie::new(NAME, token.encode())</code>。</li>
+<li><strong><code>Duration</code></strong>（時間）: 時間の長さを表す型。<code>Duration::from_secs(5)</code> で 5 秒。<code>{:?}</code> で表示すると <code>5s</code> や <code>200ms</code> のように単位つきで出ます。</li>
+<li><strong><code>Cx</code></strong>（Topcoat）: Topcoat の「今のリクエストの情報（URL・クッキー・セッションなど）が入った箱」。ページの関数の引数 <code>cx: &amp;Cx</code> で受け取り、<code>href!(…).resolve(cx)</code> などで使います。</li>
+<li><strong><code>Cookie</code></strong>（クッキー）: クッキー 1 つ（名前と値と、使う範囲・期限などの設定）を表す型。</li>
+<li><strong><code>Cookies</code></strong>（クッキー）: 今のリクエストのクッキーを読み書きする入れ物（クッキーの瓶）。<code>jar.add(…)</code> で足し、<code>jar.get("名前")</code> で読みます。</li>
+<li><strong><code>SameSite</code></strong>（クッキー）: クッキーの決まりの 1 つ。ほかのサイトから来た頼みに、このクッキーを付けるかを決めます。<code>Lax</code> は、ほかのサイトからのリンクでの移動には付けるが、フォームの送信などには付けない設定です。</li>
+<li><strong><code>Token</code></strong>（Topcoat）: <code>topcoat::session::Token</code> は、セッションの印（でたらめな長い文字列）の型。ブラウザーのクッキーに入れ、サーバーには、そのハッシュだけを保存します。</li>
+<li><strong><code>TokenStore</code></strong>（Topcoat）: Topcoat のセッションの札（トークン）を、どこに置いて、どう読むかを決めるトレイト（決まりごと）。この資料では、HTTP でもログインが続くように、自分で <code>HttpCookieTokenStore</code> を作って、この決まりを守らせます。</li>
+<li><strong><code>TokenStoreFuture</code></strong>（Topcoat）: <code>TokenStore</code> のメソッドが返す、「あとで答えが出る仕事（Future）」の型。</li>
+<li><strong><code>Lax</code></strong>（クッキー）: <code>SameSite = Lax</code> は、ほかのサイトからのリンクで来た時（ふつうの移動）にはクッキーを送り、ほかのサイトからのフォームの送信には送らない設定です。</li>
+<li><strong><code>Option</code></strong>（Option）: 「値があるかもしれないし、無いかもしれない」を表す型。中身は <code>Some(値)</code> か <code>None</code>。<code>Option&lt;u32&gt;</code> は「整数があるかもしれない」。取り出す時は <code>match</code>・<code>if let</code>・<code>unwrap_or</code> などを使います。</li>
+<li><strong><code>Box</code></strong>（スマートポインタ）: 値をヒープ（大きな物を置く広い場所）に置き、その場所を指す「持ち手」を手元に置く型。<code>Box&lt;dyn Notifier&gt;</code> のように、違う型の物を同じ並びに入れる時によく使います。</li>
+<li><strong><code>Some</code></strong>（Option）: <code>Option</code>（値が「ある」か「無い」か）の、「ある」の方。<code>Some(値)</code> の形で中身を包みます。<code>match</code> で <code>Some(name) =&gt; { … }</code> と書くと、中身を <code>name</code> という名前で取り出して使えます。「無い」の方は <code>None</code> です。</li>
+<li><strong><code>Ok</code></strong>（エラー処理）: <code>Result</code> の「うまくいった」の方。<code>Ok(値)</code> の形で結果を包みます。<code>Ok(())</code> は「うまくいった。返す値は特に無い（<code>()</code> は空っぽの値）」という意味で、<code>Result&lt;()&gt;</code> を返す関数の最後によく書きます。</li>
+<li><strong><code>None</code></strong>（Option）: <code>Option</code> の「値が無い」側。<code>Some(値)</code>（値がある）か <code>None</code>（無い）のどちらかになります。Rust には「null」が無い代わりに、無いかもしれない値は必ず <code>Option</code> で表し、<code>match</code> などで両方の場合を書きます。</li>
+<li><strong><code>?</code></strong>（エラー処理）: <code>Result</code> や <code>Option</code> の後ろに付ける記号。「成功なら中身を取り出して先へ進む。失敗なら、その場で関数を終えて、エラーを呼び出し元へ返す」という意味です。<code>let text = fs::read_to_string("a.txt")?;</code> のように使います。<code>?</code> を使える関数は、戻り値が <code>Result</code>（または <code>Option</code>）の関数だけです。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>ルーターを組み立てる所で、既定の <code>SessionConfig::default()</code> の代わりに、これを使います。60 分の期限も、ここで決めます。</p>
-<div class="codehilite"><div class="code-wrap" id="code-17"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 例：ルーターを組み立てる所</span>
+<div class="codehilite"><div class="code-wrap" id="code-22"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 例：ルーターを組み立てる所</span>
 <span class="p">.</span><span class="n">cookies</span><span class="p">()</span>
 <span class="p">.</span><span class="n">sessions</span><span class="p">(</span>
 <span class="w">    </span><span class="n">SessionConfig</span><span class="p">::</span><span class="n">builder</span><span class="p">()</span>
@@ -1097,6 +1242,23 @@ D:\pgsql\18\data\       PostgreSQL のデータ（5 章で、インストール�
 <span class="w">        </span><span class="p">.</span><span class="n">build</span><span class="p">(),</span>
 <span class="p">)</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>crate</code></strong>（モジュール）: 「このプロジェクト（クレート）のいちばん上」を表す言葉。<code>use crate::note::Note;</code> は「このプロジェクトの <code>note</code> モジュールの <code>Note</code> を使う」という意味です。</li>
+<li><strong><code>.sessions()</code></strong>（Topcoat）: ルーターに、セッション（ログインの状態を覚える仕組み）を登録するメソッド。<code>.sessions(SessionConfig::default())</code>。先に <code>.cookies()</code> も登録します。</li>
+<li><strong><code>.token_store()</code></strong>（Topcoat）: セッションの札（トークン）を、どこに置くかを決めるメソッド。ここでは、HTTP のページでもログインが続くように、自分で用意した <code>HttpCookieTokenStore</code>（クッキーに置く係）を渡しています。</li>
+<li><strong><code>.lifetime()</code></strong>（Topcoat）: セッションの長さ（何も操作しないと切れるまでの時間）を決めるメソッド。<code>.lifetime(IDLE)</code>（<code>IDLE</code> は 60 分）。</li>
+<li><strong><code>.build()</code></strong>（型とメソッド）: 設定を少しずつ足していく「組み立て係」（ビルダー）の最後に呼んで、でき上がった物を作るメソッド。<code>Router::builder()…build()</code> の形で、ルーターなどを作る時に使います。</li>
+<li><strong><code>SessionConfig::builder()</code></strong>（Topcoat）: Topcoat のセッションの設定を、少しずつ決めて組み立て始める関数。<code>.token_store(…)</code>・<code>.lifetime(…)</code> をつなげて、最後に <code>.build()</code> で出来上がりです。</li>
+<li><strong><code>std::time::Duration::from_secs()</code></strong>（時間）: 秒数ぶんの長さ（<code>Duration</code>）を作る関数。<code>Duration::from_secs(5)</code> は 5 秒です。</li>
+<li><strong><code>SessionConfig</code></strong>（Topcoat）: Topcoat のセッションの設定（クッキーの名前・期限など）の型。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><code>src/lib.rs</code>（または <code>main.rs</code>）に <code>pub mod http_cookie;</code> を足すのも忘れないでください。</p>
 <p><strong>確かめたこと（2026-11-01）:</strong> Topcoat 0.11.0 のアプリ（Rust の教材の RustNote）を、この形に直して HTTP で動かしました。</p>
@@ -1133,7 +1295,7 @@ D:\pgsql\18\data\       PostgreSQL のデータ（5 章で、インストール�
 <li>サーバーの <code>D:\webapp\installers\</code> にコピーし、ハッシュ値を確かめます。</li>
 <li>本番と検証のそれぞれに、<strong>名前を変えて</strong>コピーします。WinSW は、「自分と同じ名前の <code>.xml</code>」を設定ファイルとして読む決まりです。</li>
 </ol>
-<div class="codehilite"><div class="code-wrap" id="code-18"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">Copy-Item</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">installers</span><span class="p">\</span><span class="n">WinSW-x64</span><span class="p">.</span><span class="n">exe</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">prod</span><span class="p">\</span><span class="n">service</span><span class="p">\</span><span class="n">webapp-prod-service</span><span class="p">.</span><span class="n">exe</span>
+<div class="codehilite"><div class="code-wrap" id="code-23"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">Copy-Item</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">installers</span><span class="p">\</span><span class="n">WinSW-x64</span><span class="p">.</span><span class="n">exe</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">prod</span><span class="p">\</span><span class="n">service</span><span class="p">\</span><span class="n">webapp-prod-service</span><span class="p">.</span><span class="n">exe</span>
 <span class="nb">Copy-Item</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">installers</span><span class="p">\</span><span class="n">WinSW-x64</span><span class="p">.</span><span class="n">exe</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">stg</span><span class="p">\</span><span class="n">service</span><span class="p">\</span><span class="n">webapp-stg-service</span><span class="p">.</span><span class="n">exe</span>
 </code></pre></div></div>
 
@@ -1142,13 +1304,24 @@ D:\pgsql\18\data\       PostgreSQL のデータ（5 章で、インストール�
 </blockquote>
 <h3 id="73-xml">7.3 アプリを置き、設定ファイル（XML）を書く</h3>
 <p>まず、アプリの zip を、本番の <code>app\</code> に展開します。</p>
-<div class="codehilite"><div class="code-wrap" id="code-19"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">Expand-Archive</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">releases</span><span class="p">\</span><span class="n">webapp</span><span class="p">-</span><span class="n">1</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">zip</span> <span class="n">-DestinationPath</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">prod</span><span class="p">\</span><span class="n">app</span>
+<div class="codehilite"><div class="code-wrap" id="code-24"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">Expand-Archive</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">releases</span><span class="p">\</span><span class="n">webapp</span><span class="p">-</span><span class="n">1</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">zip</span> <span class="n">-DestinationPath</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">prod</span><span class="p">\</span><span class="n">app</span>
 <span class="nb">Get-ChildItem</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">prod</span><span class="p">\</span><span class="n">app</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Expand-Archive</code></strong>（PowerShell）: zip のファイルを、フォルダに広げる（解凍する）コマンド。</li>
+<li><strong><code>Expand-Archive -DestinationPath</code></strong>（PowerShell）: 広げる先のフォルダを決めるオプション。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><strong>確かめること:</strong> <code>webapp.exe</code> と <code>assets</code> フォルダが、<code>D:\webapp\prod\app</code> の<strong>すぐ下</strong>に並んでいる（<code>app\webapp-1.0.0\webapp.exe</code> のように1段深くなっていたら、置き直す）。</p>
 <p>次に、WinSW の設定ファイル <code>D:\webapp\prod\service\webapp-prod-service.xml</code> を、メモ帳で作ります。</p>
-<div class="codehilite"><div class="code-wrap" id="code-20"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&lt;service&gt;</span>
+<div class="codehilite"><div class="code-wrap" id="code-25"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nt">&lt;service&gt;</span>
 <span class="w">  </span><span class="cm">&lt;!-- サービスの名前（コマンドで使う）と、画面に出る名前・説明 --&gt;</span>
 <span class="w">  </span><span class="nt">&lt;id&gt;</span>webapp-prod<span class="nt">&lt;/id&gt;</span>
 <span class="w">  </span><span class="nt">&lt;name&gt;</span>業務<span class="w"> </span>Web<span class="w"> </span>アプリ（本番）<span class="nt">&lt;/name&gt;</span>
@@ -1265,7 +1438,7 @@ D:\pgsql\18\data\       PostgreSQL のデータ（5 章で、インストール�
 <p><strong>用語:</strong> 接続文字列（アプリがデータベースにつなぐための情報を、1行にまとめたもの。<code>postgres://ユーザー:パスワード@住所:ポート/データベース名</code>。パスワードに <code>@</code> や <code>:</code> などの記号を使ったときは、<code>%40</code> のような形に書きかえる必要があるので、パスワードは英字と数字を長くした物にすると間違いが少ない）</p>
 </blockquote>
 <h3 id="74">7.4 サービスを登録し、アカウントと許可を設定する</h3>
-<div class="codehilite"><div class="code-wrap" id="code-21"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 1. サービスを登録する（XML の id の名前で登録される）</span>
+<div class="codehilite"><div class="code-wrap" id="code-26"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 1. サービスを登録する（XML の id の名前で登録される）</span>
 <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">prod</span><span class="p">\</span><span class="n">service</span><span class="p">\</span><span class="n">webapp-prod-service</span><span class="p">.</span><span class="n">exe</span> <span class="n">install</span>
 
 <span class="c"># 2. 動かすアカウントを、仮想アカウント NT SERVICE\webapp-prod にする</span>
@@ -1275,12 +1448,22 @@ D:\pgsql\18\data\       PostgreSQL のデータ（5 章で、インストール�
 <span class="nb">Get-CimInstance</span> <span class="n">Win32_Service</span> <span class="n">-Filter</span> <span class="s2">&quot;Name=&#39;webapp-prod&#39;&quot;</span> <span class="p">|</span> <span class="nb">Format-List</span> <span class="n">Name</span><span class="p">,</span> <span class="n">StartName</span><span class="p">,</span> <span class="n">StartMode</span><span class="p">,</span> <span class="n">State</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>D:\webapp\prod\service\webapp-prod-service.exe</code></strong>（コマンド）: WinSW（ふつうの実行ファイルを Windows サービスにする道具）を、本番用の名前に変えて置いた物。<code>install</code> で、同じ名前の <code>.xml</code> の設定のとおりにサービスとして登録し、<code>uninstall</code> で取り外します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><strong>確かめること:</strong> <code>StartName</code> が <code>NT SERVICE\webapp-prod</code>、<code>StartMode</code> が <code>Auto</code> になっている。</p>
 <ul>
 <li><code>sc.exe</code> は、<code>obj=</code> のように、<strong><code>=</code> の後ろに空白を1つ</strong>入れる決まりです。空白が無いとエラーになります。</li>
 </ul>
 <p>次に、仮想アカウントに、フォルダの許可を付けます（4.3 の表のとおり）。</p>
-<div class="codehilite"><div class="code-wrap" id="code-22"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 本番のフォルダ全体：読む・実行する（中にも引き継ぐ）</span>
+<div class="codehilite"><div class="code-wrap" id="code-27"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 本番のフォルダ全体：読む・実行する（中にも引き継ぐ）</span>
 <span class="n">icacls</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">prod</span> <span class="p">/</span><span class="n">grant</span> <span class="s2">&quot;NT SERVICE\webapp-prod:(OI)(CI)RX&quot;</span>
 <span class="c"># 添付ファイルとログ：書ける</span>
 <span class="n">icacls</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">prod</span><span class="p">\</span><span class="n">files</span> <span class="p">/</span><span class="n">grant</span> <span class="s2">&quot;NT SERVICE\webapp-prod:(OI)(CI)M&quot;</span>
@@ -1295,7 +1478,7 @@ D:\pgsql\18\data\       PostgreSQL のデータ（5 章で、インストール�
 <li>検証は、<code>prod</code> を <code>stg</code> に変えて、同じことをします。本番のアカウントには検証のフォルダの許可を付けず、検証のアカウントには本番のフォルダの許可を付けません。</li>
 </ul>
 <h3 id="75">7.5 起動して、サーバーの中で確かめる</h3>
-<div class="codehilite"><div class="code-wrap" id="code-23"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">Start-Service</span> <span class="n">webapp-prod</span>
+<div class="codehilite"><div class="code-wrap" id="code-28"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">Start-Service</span> <span class="n">webapp-prod</span>
 <span class="nb">Get-Service</span> <span class="n">webapp-prod</span>
 
 <span class="c"># アプリが 127.0.0.1:8080 で待ち受けているか</span>
@@ -1343,7 +1526,7 @@ D:\pgsql\18\data\       PostgreSQL のデータ（5 章で、インストール�
 <p><strong>設計例:</strong> アプリは、起動したときに、まだ当てていないマイグレーションを当てる。</p>
 </blockquote>
 <p>この作りなら、7.5 で最初に起動したときに、テーブルができています。確かめます。</p>
-<div class="codehilite"><div class="code-wrap" id="code-24"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">psql</span> <span class="n">-h</span> <span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span> <span class="n">-U</span> <span class="n">webapp_prod_app</span> <span class="n">-d</span> <span class="n">webapp_prod</span> <span class="n">-c</span> <span class="s2">&quot;\dt&quot;</span>
+<div class="codehilite"><div class="code-wrap" id="code-29"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">psql</span> <span class="n">-h</span> <span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span> <span class="n">-U</span> <span class="n">webapp_prod_app</span> <span class="n">-d</span> <span class="n">webapp_prod</span> <span class="n">-c</span> <span class="s2">&quot;\dt&quot;</span>
 </code></pre></div></div>
 
 <p><strong>確かめること:</strong> テーブルの一覧（依頼書・図面・社員データ・承認の記録など。名前はアプリの作りによる）と、sqlx がマイグレーションの記録に使う <code>_sqlx_migrations</code> が出る。</p>
@@ -1353,12 +1536,23 @@ D:\pgsql\18\data\       PostgreSQL のデータ（5 章で、インストール�
 <blockquote>
 <p><strong>設計例:</strong> <code>webapp.exe</code> に、<code>grant-role</code> という管理用のコマンドを用意する。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-25"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># この窓の中だけ、データベースの接続先を教える（サービスの XML と同じ値）</span>
+<div class="codehilite"><div class="code-wrap" id="code-30"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># この窓の中だけ、データベースの接続先を教える（サービスの XML と同じ値）</span>
 <span class="nv">$env:DATABASE_URL</span> <span class="p">=</span> <span class="s2">&quot;postgres://webapp_prod_app:（パスワード）@127.0.0.1:5432/webapp_prod&quot;</span>
 <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">prod</span><span class="p">\</span><span class="n">app</span><span class="p">\</span><span class="n">webapp</span><span class="p">.</span><span class="n">exe</span> <span class="nb">grant-role</span> <span class="p">-</span><span class="n">-employee-no</span> <span class="n">012345</span> <span class="p">-</span><span class="n">-role</span> <span class="n">it-admin</span>
 <span class="c"># 終わったら、窓の中の値を消す</span>
 <span class="nb">Remove-Item</span> <span class="n">Env</span><span class="p">:</span><span class="n">DATABASE_URL</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>D:\webapp\prod\app\webapp.exe</code></strong>（コマンド）: アプリの実行ファイル（Rust で作った webapp）を、場所を書いて直接動かす書き方。<code>grant-role --employee-no 012345 --role it-admin</code> のように、サーバーとして動かす以外の、管理の仕事（社員に役割を付けるなど）を頼めます。</li>
+<li><strong><code>Remove-Item</code></strong>（PowerShell）: ファイルやフォルダを消すコマンド（短い呼び名は <code>rm</code>）。<strong>ごみ箱に入らず、すぐ消えます。</strong> フォルダを中身ごと消す時は <code>-Recurse</code> を付けます。消す前に、名前をよく確かめます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p>ただし、社員データ（従業員番号）が無いと、権限を付ける相手がいません。アプリの作りに合わせて、順番を決めます（例：コマンドで CSV を先に取り込む、または、コマンドで最初の管理者を社員データごと作る）。</p>
 <p><strong>社員データの CSV を取り込む（画面）</strong></p>
@@ -1381,9 +1575,22 @@ D:\pgsql\18\data\       PostgreSQL のデータ（5 章で、インストール�
 <p><strong>用語:</strong> リバースプロキシ（外からのお願いを受けて、奥のアプリに取り次ぐ係。00 基礎知識 5.2）</p>
 </blockquote>
 <h3 id="81-iis">8.1 IIS を入れる</h3>
-<div class="codehilite"><div class="code-wrap" id="code-26"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">Install-WindowsFeature</span> <span class="n">-Name</span> <span class="n">Web-Server</span> <span class="n">-IncludeManagementTools</span>
+<div class="codehilite"><div class="code-wrap" id="code-31"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">Install-WindowsFeature</span> <span class="n">-Name</span> <span class="n">Web-Server</span> <span class="n">-IncludeManagementTools</span>
 <span class="nb">Get-WindowsFeature</span> <span class="n">Web-Server</span><span class="p">,</span> <span class="n">Web-Mgmt-Console</span> <span class="p">|</span> <span class="nb">Format-Table</span> <span class="n">Name</span><span class="p">,</span> <span class="n">InstallState</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Install-WindowsFeature</code></strong>（PowerShell）: Windows Server に、役割や機能（IIS など）を入れるコマンド。管理者の PowerShell で動かします。</li>
+<li><strong><code>Install-WindowsFeature -Name</code></strong>（PowerShell）: 入れる機能の名前を決めるオプション。<code>Web-Server</code> は IIS（Web サーバー）。</li>
+<li><strong><code>Install-WindowsFeature -IncludeManagementTools</code></strong>（PowerShell）: 機能と一緒に、それを管理する道具（IIS マネージャーなど）も入れるオプション。</li>
+<li><strong><code>Get-WindowsFeature</code></strong>（PowerShell）: Windows Server の役割や機能が、入っているか（<code>InstallState</code> が <code>Installed</code>）を表示するコマンド。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><strong>確かめること:</strong> <code>Web-Server</code> と <code>Web-Mgmt-Console</code> が <code>Installed</code> になっている。</p>
 <ul>
@@ -1441,7 +1648,7 @@ D:\pgsql\18\data\       PostgreSQL のデータ（5 章で、インストール�
 </div>
 
 <p>ARR は、入れただけでは取り次ぎをしません。サーバー全体の設定で、有効にします。あわせて、<strong>Host ヘッダー（どの名前で来たか）をそのままアプリに渡す</strong>設定にします。<strong>HTTP で動かすときは、この設定が必須</strong>です（下の説明）。</p>
-<div class="codehilite"><div class="code-wrap" id="code-27"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nv">$appcmd</span> <span class="p">=</span> <span class="s2">&quot;$env:windir\System32\inetsrv\appcmd.exe&quot;</span>
+<div class="codehilite"><div class="code-wrap" id="code-32"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nv">$appcmd</span> <span class="p">=</span> <span class="s2">&quot;$env:windir\System32\inetsrv\appcmd.exe&quot;</span>
 
 <span class="c"># 取り次ぎ（プロキシ）を有効にする</span>
 <span class="p">&amp;</span> <span class="nv">$appcmd</span> <span class="nb">set </span><span class="n">config</span> <span class="n">-section</span><span class="p">:</span><span class="n">system</span><span class="p">.</span><span class="n">webServer</span><span class="p">/</span><span class="n">proxy</span> <span class="p">/</span><span class="n">enabled</span><span class="p">:</span><span class="s2">&quot;True&quot;</span> <span class="p">/</span><span class="n">commit</span><span class="p">:</span><span class="n">apphost</span>
@@ -1477,7 +1684,7 @@ D:\pgsql\18\data\       PostgreSQL のデータ（5 章で、インストール�
 </blockquote>
 <h3 id="84">8.4 サイトを作る</h3>
 <p>本番と検証の2つのサイトを、<strong>同じ 80 番で、名前で分けて</strong>作ります（00 基礎知識 4.2 の Host ヘッダー）。</p>
-<div class="codehilite"><div class="code-wrap" id="code-28"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">Import-Module</span> <span class="n">IISAdministration</span>
+<div class="codehilite"><div class="code-wrap" id="code-33"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">Import-Module</span> <span class="n">IISAdministration</span>
 
 <span class="c"># 見本のサイトを止めて、自動で動かないようにする</span>
 <span class="nb">Stop-IISSite</span> <span class="n">-Name</span> <span class="s2">&quot;Default Web Site&quot;</span> <span class="n">-Confirm</span><span class="p">:</span><span class="nv">$false</span>
@@ -1493,12 +1700,32 @@ D:\pgsql\18\data\       PostgreSQL のデータ（5 章で、インストール�
 <span class="nb">Get-IISSite</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Import-Module</code></strong>（PowerShell）: PowerShell に、コマンドのまとまり（モジュール）を読み込むコマンド。<code>Import-Module IISAdministration</code> で、<code>New-IISSite</code> などの IIS のコマンドが使えるようになります。</li>
+<li><strong><code>Stop-IISSite</code></strong>（PowerShell）: IIS のサイトを止めるコマンド。</li>
+<li><strong><code>Stop-IISSite -Name</code></strong>（PowerShell）: 止めるサイトの名前を決めるオプション。<code>"Default Web Site"</code> は、IIS を入れた時にできる見本のサイト（使わないので止める）。</li>
+<li><strong><code>Set-ItemProperty</code></strong>（PowerShell）: 物（ファイル・レジストリ・IIS の設定など）の項目の値を変えるコマンド。<code>Set-ItemProperty "IIS:\Sites\Default Web Site" -Name serverAutoStart -Value $false</code> は「見本のサイトを、自動で始めない」。</li>
+<li><strong><code>Set-ItemProperty -Name</code></strong>（PowerShell）: 変える項目の名前を決めるオプション。</li>
+<li><strong><code>Set-ItemProperty -Value</code></strong>（PowerShell）: 変える先の値を決めるオプション。</li>
+<li><strong><code>New-IISSite</code></strong>（PowerShell）: IIS に、新しいサイトを作るコマンド。</li>
+<li><strong><code>New-IISSite -Name</code></strong>（PowerShell）: 作るサイトの名前を決めるオプション。</li>
+<li><strong><code>New-IISSite -PhysicalPath</code></strong>（PowerShell）: サイトの中身（設定ファイル <code>web.config</code> など）を置くフォルダを決めるオプション。</li>
+<li><strong><code>New-IISSite -BindingInformation</code></strong>（PowerShell）: どの住所・ポート・名前で来た通信を、このサイトが受け取るかを決めるオプション。<code>"*:80:webapp.example.local"</code> は「どの住所でも・80 番で・名前が webapp.example.local の物」。同じ 80 番でも、名前で検証用と本番用を振り分けられます。</li>
+<li><strong><code>Get-IISSite</code></strong>（PowerShell）: IIS のサイトの一覧と、動いているか・受け取る住所（バインド）を表示するコマンド。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><strong>確かめること:</strong> <code>webapp-prod</code> と <code>webapp-stg</code> が <code>Started</code> で、<code>Default Web Site</code> が <code>Stopped</code> になっている。</p>
 <ul>
 <li>見本のサイトを止めておくと、IP アドレス（<code>http://10.20.30.40/</code>）や、登録していない名前で来たお願いには、何も出しません。</li>
 </ul>
 <p><strong>IIS がサイトのフォルダを読めるようにする:</strong> <code>D:\webapp</code> は 4.2 で管理者と SYSTEM だけにしたので、IIS のアプリケーション プール（IIS のサイトを動かすプロセス）が <code>web.config</code> を読めるように、<code>iis\</code> のフォルダにだけ許可を付けます。</p>
-<div class="codehilite"><div class="code-wrap" id="code-29"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># *S-1-5-32-568 は IIS_IUSRS（IIS のアプリケーション プールが入るグループ）</span>
+<div class="codehilite"><div class="code-wrap" id="code-34"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># *S-1-5-32-568 は IIS_IUSRS（IIS のアプリケーション プールが入るグループ）</span>
 <span class="n">icacls</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">prod</span><span class="p">\</span><span class="n">iis</span> <span class="p">/</span><span class="n">grant</span> <span class="s2">&quot;*S-1-5-32-568:(OI)(CI)RX&quot;</span>
 <span class="n">icacls</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">stg</span><span class="p">\</span><span class="n">iis</span>  <span class="p">/</span><span class="n">grant</span> <span class="s2">&quot;*S-1-5-32-568:(OI)(CI)RX&quot;</span>
 </code></pre></div></div>
@@ -1513,7 +1740,7 @@ D:\pgsql\18\data\       PostgreSQL のデータ（5 章で、インストール�
 </blockquote>
 <h3 id="85-webconfig">8.5 取り次ぎのルール（web.config）を書く</h3>
 <p><code>D:\webapp\prod\iis\web.config</code> を、メモ帳で作ります。</p>
-<div class="codehilite"><div class="code-wrap" id="code-30"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<div class="codehilite"><div class="code-wrap" id="code-35"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
 <span class="nt">&lt;configuration&gt;</span>
 <span class="w">  </span><span class="nt">&lt;system.webServer&gt;</span>
 <span class="w">    </span><span class="nt">&lt;rewrite&gt;</span>
@@ -1575,7 +1802,7 @@ D:\pgsql\18\data\       PostgreSQL のデータ（5 章で、インストール�
 </blockquote>
 <h3 id="86">8.6 社員のパソコンから開く</h3>
 <p>DNS に名前が登録されたら（情報システム部門の作業）、<strong>自分のパソコン</strong>で確かめます。</p>
-<div class="codehilite"><div class="code-wrap" id="code-31"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 自分のパソコンの PowerShell で</span>
+<div class="codehilite"><div class="code-wrap" id="code-36"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 自分のパソコンの PowerShell で</span>
 <span class="nb">Resolve-DnsName</span> <span class="n">webapp-stg</span><span class="p">.</span><span class="n">example</span><span class="p">.</span><span class="n">local</span>
 <span class="nb">Test-NetConnection</span> <span class="n">webapp-stg</span><span class="p">.</span><span class="n">example</span><span class="p">.</span><span class="n">local</span> <span class="n">-Port</span> <span class="n">80</span>
 </code></pre></div></div>
@@ -1616,7 +1843,7 @@ D:\pgsql\18\data\       PostgreSQL のデータ（5 章で、インストール�
 </tbody>
 </table>
 <h3 id="91">9.1 今の状態を見る</h3>
-<div class="codehilite"><div class="code-wrap" id="code-32"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># どのプロファイル（ドメイン・プライベート・パブリック）で動いているか</span>
+<div class="codehilite"><div class="code-wrap" id="code-37"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># どのプロファイル（ドメイン・プライベート・パブリック）で動いているか</span>
 <span class="nb">Get-NetConnectionProfile</span> <span class="p">|</span> <span class="nb">Format-Table</span> <span class="n">Name</span><span class="p">,</span> <span class="n">NetworkCategory</span>
 
 <span class="c"># 80 番・443 番の受信の決まりを探す（IIS を入れると、自動で作られることがある）</span>
@@ -1624,11 +1851,22 @@ D:\pgsql\18\data\       PostgreSQL のデータ（5 章で、インストール�
   <span class="nb">Format-Table</span> <span class="n">DisplayName</span><span class="p">,</span> <span class="n">Enabled</span><span class="p">,</span> <span class="n">Direction</span><span class="p">,</span> <span class="n">Action</span><span class="p">,</span> <span class="n">Profile</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Get-NetFirewallPortFilter</code></strong>（PowerShell）: ファイアウォールの決まりの、ポート番号の条件の一覧を表示するコマンド。<code>| Get-NetFirewallRule</code> につなぐと、そのポートを使う決まりが分かります。</li>
+<li><strong><code>-in</code></strong>（PowerShell）: 左の値が、右の並びの中にあるかの比べ方。<code>$_.LocalPort -in 80, 443</code> は「80 か 443 か」。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <blockquote>
 <p><strong>用語:</strong> プロファイル（Windows ファイアウォールの、場所ごとの決まりのまとまり。会社のドメインにつながっているときは「ドメイン」（DomainAuthenticated））</p>
 </blockquote>
 <h3 id="92">9.2 受信の決まりを作る</h3>
-<div class="codehilite"><div class="code-wrap" id="code-33"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 社内からの 80 番を通す（社内の IP の範囲は、情報システム部門に聞いて入れる。例：10.0.0.0/8）</span>
+<div class="codehilite"><div class="code-wrap" id="code-38"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 社内からの 80 番を通す（社内の IP の範囲は、情報システム部門に聞いて入れる。例：10.0.0.0/8）</span>
 <span class="nb">New-NetFirewallRule</span> <span class="n">-DisplayName</span> <span class="s2">&quot;webapp HTTP 80（社内から）&quot;</span> <span class="n">-Direction</span> <span class="n">Inbound</span> <span class="n">-Protocol</span> <span class="n">TCP</span> <span class="p">`</span>
   <span class="n">-LocalPort</span> <span class="n">80</span> <span class="n">-RemoteAddress</span> <span class="n">10</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">/</span><span class="n">8</span> <span class="n">-Action</span> <span class="n">Allow</span> <span class="n">-Profile</span> <span class="n">Domain</span>
 
@@ -1637,15 +1875,36 @@ D:\pgsql\18\data\       PostgreSQL のデータ（5 章で、インストール�
   <span class="nb">Where-Object</span> <span class="p">{</span> <span class="nv">$_</span><span class="p">.</span><span class="n">DisplayName</span> <span class="o">-notlike</span> <span class="s2">&quot;webapp*&quot;</span> <span class="p">}</span> <span class="p">|</span> <span class="nb">Disable-NetFirewallRule</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>-notlike</code></strong>（PowerShell）: <code>-like</code> の逆で、ワイルドカードに合わないかの比べ方。<code>$_.DisplayName -notlike "webapp*"</code> は「webapp で始まらないか」。</li>
+<li><strong><code>Disable-NetFirewallRule</code></strong>（PowerShell）: ファイアウォールの決まりを、消さずに使わない状態にするコマンド。あとで <code>Enable-NetFirewallRule</code> で戻せます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li>リモート デスクトップ（3389 番）の決まりは、情報システム部門が決めていることが多いので、勝手に変えません。<strong>変えると、自分がサーバーに入れなくなることがあります。</strong></li>
 <li>外向き（送信）の決まりは、サーバーの中では止めません。サーバーの中で外向きを止めると、ドメインのサーバーとのやり取りや Windows Update まで止まってしまうためです。外向きの「Microsoft 365 への 25 番だけ」は、<strong>ネットワークの途中の関所</strong>で、情報システム部門が守ります。</li>
 </ul>
 <h3 id="93">9.3 外から見えてはいけない物が見えていないか</h3>
-<div class="codehilite"><div class="code-wrap" id="code-34"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># このサーバーで待ち受けているポートと住所の一覧</span>
+<div class="codehilite"><div class="code-wrap" id="code-39"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># このサーバーで待ち受けているポートと住所の一覧</span>
 <span class="nb">Get-NetTCPConnection</span> <span class="n">-State</span> <span class="n">Listen</span> <span class="p">|</span> <span class="nb">Sort-Object</span> <span class="n">LocalPort</span> <span class="p">|</span>
   <span class="nb">Format-Table</span> <span class="n">LocalAddress</span><span class="p">,</span> <span class="n">LocalPort</span><span class="p">,</span> <span class="n">OwningProcess</span> <span class="n">-AutoSize</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Format-Table -AutoSize</code></strong>（PowerShell）: <code>-AutoSize</code> で、列の幅を中身に合わせて自動で決めます（長い値が <code>...</code> で切られにくくなります）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><strong>確かめること:</strong></p>
 <ul>
@@ -1679,12 +1938,22 @@ D:\pgsql\18\data\       PostgreSQL のデータ（5 章で、インストール�
 <p><strong>用語:</strong> 公開 IP アドレス（インターネットの上で使われる住所。会社の中の住所（10.… など）とは別。会社の出口の機器が、中の住所を公開 IP アドレスに置きかえて外に出す）</p>
 </blockquote>
 <h3 id="102">10.2 メールを渡す先へつながるか確かめる</h3>
-<div class="codehilite"><div class="code-wrap" id="code-35"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 会社のドメインの MX（メールの受付）を調べる。example.com は会社のドメインに置きかえる</span>
+<div class="codehilite"><div class="code-wrap" id="code-40"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 会社のドメインの MX（メールの受付）を調べる。example.com は会社のドメインに置きかえる</span>
 <span class="nb">Resolve-DnsName</span> <span class="n">example</span><span class="p">.</span><span class="n">com</span> <span class="n">-Type</span> <span class="n">MX</span>
 
 <span class="c"># 調べた MX エンドポイントの 25 番に、サーバーからつながるか</span>
 <span class="nb">Test-NetConnection</span> <span class="n">example-com</span><span class="p">.</span><span class="n">mail</span><span class="p">.</span><span class="n">protection</span><span class="p">.</span><span class="n">outlook</span><span class="p">.</span><span class="n">com</span> <span class="n">-Port</span> <span class="n">25</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Resolve-DnsName -Type</code></strong>（PowerShell）: 問い合わせる記録の種類を決めるオプション。<code>-Type MX</code> は、そのドメインのメールを受け取るサーバーを調べます（決めないと、IP アドレスの <code>A</code> を調べる）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><strong>確かめること:</strong></p>
 <ul>
@@ -1693,10 +1962,28 @@ D:\pgsql\18\data\       PostgreSQL のデータ（5 章で、インストール�
 </ul>
 <h3 id="103">10.3 テストのメールを送る</h3>
 <p><strong>まず、アプリを使わずに送ってみます。</strong> うまくいかないとき、「アプリの不具合か、メールの道の問題か」を分けられるからです。PowerShell 5.1 の <code>Send-MailMessage</code> は、古い道具として「使わないように」と案内されていますが、つながるかの試しには使えます。</p>
-<div class="codehilite"><div class="code-wrap" id="code-36"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">Send-MailMessage</span> <span class="n">-SmtpServer</span> <span class="n">example-com</span><span class="p">.</span><span class="n">mail</span><span class="p">.</span><span class="n">protection</span><span class="p">.</span><span class="n">outlook</span><span class="p">.</span><span class="n">com</span> <span class="n">-Port</span> <span class="n">25</span> <span class="n">-UseSsl</span> <span class="p">`</span>
+<div class="codehilite"><div class="code-wrap" id="code-41"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">Send-MailMessage</span> <span class="n">-SmtpServer</span> <span class="n">example-com</span><span class="p">.</span><span class="n">mail</span><span class="p">.</span><span class="n">protection</span><span class="p">.</span><span class="n">outlook</span><span class="p">.</span><span class="n">com</span> <span class="n">-Port</span> <span class="n">25</span> <span class="n">-UseSsl</span> <span class="p">`</span>
   <span class="n">-From</span> <span class="s2">&quot;noreply@example.com&quot;</span> <span class="n">-To</span> <span class="s2">&quot;自分の会社のアドレス&quot;</span> <span class="p">`</span>
   <span class="n">-Subject</span> <span class="s2">&quot;業務 Web アプリ 送信テスト&quot;</span> <span class="n">-Body</span> <span class="s2">&quot;サーバーからの送信テストです。&quot;</span> <span class="n">-Encoding</span> <span class="n">UTF8</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Send-MailMessage</code></strong>（PowerShell）: メールを送るコマンド。ここでは、メールの中継（コネクタ）が働くかを、アプリより先に確かめるために使います（古いコマンドで、新しく作る物には使わないよう案内されています）。</li>
+<li><strong><code>Send-MailMessage -SmtpServer</code></strong>（PowerShell）: メールを渡す先の SMTP サーバーの名前を決めるオプション。</li>
+<li><strong><code>Send-MailMessage -Port</code></strong>（PowerShell）: SMTP サーバーのポート番号を決めるオプション（25 など）。</li>
+<li><strong><code>Send-MailMessage -UseSsl</code></strong>（PowerShell）: STARTTLS で暗号化してから送るオプション。</li>
+<li><strong><code>Send-MailMessage -From</code></strong>（PowerShell）: 送り主のメールアドレスを決めるオプション。</li>
+<li><strong><code>Send-MailMessage -To</code></strong>（PowerShell）: 宛先のメールアドレスを決めるオプション。</li>
+<li><strong><code>Send-MailMessage -Subject</code></strong>（PowerShell）: 件名を決めるオプション。</li>
+<li><strong><code>Send-MailMessage -Body</code></strong>（PowerShell）: 本文を決めるオプション。</li>
+<li><strong><code>Send-MailMessage -Encoding</code></strong>（PowerShell）: 本文の文字コードを決めるオプション。日本語は <code>UTF8</code> にします（決めないと、文字化けすることがある）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><strong>確かめること:</strong> 自分の Outlook に、迷惑メールのフォルダではなく、受信トレイに届く。</p>
 <p>うまくいったら、次に<strong>アプリから</strong>送ります（設計例：管理者の設定の画面に「テストメールを送る」ボタンを用意する。または管理用のコマンド）。</p>
@@ -1782,11 +2069,11 @@ D:\pgsql\18\data\       PostgreSQL のデータ（5 章で、インストール�
 <h3 id="112">11.2 パスワードのファイルを作る</h3>
 <p>バックアップは、人がいない夜中に動くので、データベースのパスワードを打てません。PostgreSQL の決まりのパスワードのファイル（pgpass）に書いておき、そのファイルを読めるのを管理者と SYSTEM だけにします。</p>
 <p><code>D:\webapp\secrets\pgpass.conf</code> を、メモ帳で作ります（1 行。<code>住所:ポート:データベース:ユーザー:パスワード</code>）。</p>
-<div class="codehilite"><div class="code-wrap" id="code-37"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>127.0.0.1:5432:webapp_prod:webapp_prod_app:（本番のアプリ用のパスワード）
+<div class="codehilite"><div class="code-wrap" id="code-42"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>127.0.0.1:5432:webapp_prod:webapp_prod_app:（本番のアプリ用のパスワード）
 </code></pre></div></div>
 
 <p><code>D:\webapp\secrets</code> は、4.2 で管理者と SYSTEM だけになっています。念のため確かめます。</p>
-<div class="codehilite"><div class="code-wrap" id="code-38"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">icacls</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">secrets</span><span class="p">\</span><span class="n">pgpass</span><span class="p">.</span><span class="n">conf</span>
+<div class="codehilite"><div class="code-wrap" id="code-43"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">icacls</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">secrets</span><span class="p">\</span><span class="n">pgpass</span><span class="p">.</span><span class="n">conf</span>
 </code></pre></div></div>
 
 <blockquote>
@@ -1796,12 +2083,12 @@ D:\pgsql\18\data\       PostgreSQL のデータ（5 章で、インストール�
 <p><code>D:\webapp\tools\backup.ps1</code> を、メモ帳で作ります。</p>
 <blockquote>
 <p><strong>必ず「UTF-8 (BOM 付き)」で保存します。</strong> メモ帳の「名前を付けて保存」の画面の下の「エンコード」で、「UTF-8 (BOM 付き)」を選びます。Windows PowerShell 5.1 は、BOM（ファイルの先頭の印）の無い UTF-8 のファイルを Shift_JIS として読むため、日本語のコメントの所で行の区切りが食われて、<strong>スクリプトが丸ごと動きません</strong>（このスクリプトを BOM 無しで保存して試すと、構文エラーが 2 つ出て、終了コード 1 で止まりました）。保存したら、次で確かめます。</p>
-<p>```powershell</p>
-<h1 id="3-239-187-191-bom">先頭の 3 つの数が 239 187 191 なら BOM 付き</h1>
-<p>(Get-Content D:\webapp\tools\backup.ps1 -Encoding Byte -TotalCount 3) -join ' '
-```</p>
+<div class="codehilite"><div class="code-wrap" id="code-44"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 先頭の 3 つの数が 239 187 191 なら BOM 付き</span>
+<span class="p">(</span><span class="nb">Get-Content</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">tools</span><span class="p">\</span><span class="n">backup</span><span class="p">.</span><span class="n">ps1</span> <span class="n">-Encoding</span> <span class="n">Byte</span> <span class="n">-TotalCount</span> <span class="n">3</span><span class="p">)</span> <span class="n">-join</span> <span class="s1">&#39; &#39;</span>
+</code></pre></div></div>
+
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-39"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># D:\webapp\tools\backup.ps1</span>
+<div class="codehilite"><div class="code-wrap" id="code-45"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># D:\webapp\tools\backup.ps1</span>
 <span class="c"># 毎晩、本番のデータベースと添付ファイルの控えを取り、別の場所へも写し、14 日より古い控えを消す。</span>
 <span class="c"># 失敗したら、終了コード 1 で終わる（タスク スケジューラの「前回の実行結果」で分かる）。</span>
 
@@ -1848,6 +2135,30 @@ D:\pgsql\18\data\       PostgreSQL のデータ（5 章で、インストール�
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Get-Date -Format</code></strong>（PowerShell）: 日時を、決めた形の文字列にするオプション。<code>Get-Date -Format "yyyyMMdd_HHmmss"</code> は「20261102_030000」の形（<code>yyyy</code> 年・<code>MM</code> 月・<code>dd</code> 日・<code>HH</code> 時・<code>mm</code> 分・<code>ss</code> 秒）。ファイルの名前に日時を入れる時に使います。</li>
+<li><strong><code>Start-Transcript</code></strong>（PowerShell）: このあと画面に出る物を、全部ファイルに書き残し始めるコマンド。予定の仕事で動かすスクリプトの記録（何が起きたか）を残すのに使います。</li>
+<li><strong><code>Start-Transcript -Path</code></strong>（PowerShell）: 記録を書くファイルの場所を決めるオプション。</li>
+<li><strong><code>Join-Path</code></strong>（PowerShell）: フォルダの場所とファイル名を、<code>\</code> でつないだ場所を作るコマンド。<code>Join-Path $PSScriptRoot "dev.env"</code> は「このスクリプトのフォルダの <code>dev.env</code>」。</li>
+<li><strong><code>try</code></strong>（PowerShell）: <code>try { … } finally { … }</code> で、途中で失敗しても、<code>finally</code> の中（元のフォルダへ戻る など）を必ず動かす書き方。</li>
+<li><strong><code>if</code></strong>（PowerShell）: PowerShell の条件の書き方。<code>if (-not (Test-Path $envFile)) { … }</code> は「ファイルが無ければ」。比べる時は <code>-eq</code>・<code>-ne</code>・<code>-not</code> などを使います。</li>
+<li><strong><code>-ne</code></strong>（PowerShell）: PowerShell の「等しくない」の比べ方（not equal）。<code>$LASTEXITCODE -ne 0</code> は「失敗した（0 でない）か」。</li>
+<li><strong><code>throw</code></strong>（PowerShell）: エラーを起こして、そこで止める命令。<code>throw "dev.env がありません"</code> のように、説明の文を付けます。<code>try … catch</code> の中なら <code>catch</code> へ、無ければスクリプトがそこで止まります。</li>
+<li><strong><code>-ge</code></strong>（PowerShell）: PowerShell の「以上」の比べ方（greater or equal）。<code>$code.Count -ge 3</code> は「3 つ以上あるか」。</li>
+<li><strong><code>Get-ChildItem -Filter</code></strong>（PowerShell）: <code>-Filter *.exe</code> で、名前が合う物（ここでは <code>.exe</code> で終わる物）だけを一覧にします。<code>*</code> は「何文字でもよい」という意味です。</li>
+<li><strong><code>-lt</code></strong>（PowerShell）: PowerShell の「より小さい」の比べ方（less than）。<code>$_.LastWriteTime -lt $limit</code> は「決めた日時より古いか」。</li>
+<li><strong><code>Write-Output</code></strong>（PowerShell）: 値を「出力」として次へ流す（最後なら画面に出す）コマンド。<code>Write-Output "こんにちは"</code>。文字列を 1 行に書くだけでも同じ働きをしますが、はっきり書く時に使います。</li>
+<li><strong><code>Stop-Transcript</code></strong>（PowerShell）: <code>Start-Transcript</code> で始めた記録を終えるコマンド。</li>
+<li><strong><code>exit</code></strong>（PowerShell）: スクリプトを、決めた終了コードで終えるコマンド。<code>exit $code</code> は、manage.py の終了コードをそのまま返します。</li>
+<li><strong><code>catch</code></strong>（PowerShell）: <code>try { … } catch { … }</code> の <code>catch</code> の所は、<code>try</code> の中でエラーが起きた時だけ動きます。起きたエラーは <code>$_</code> で受け取れます（<code>$_.Exception.Message</code> で説明の文）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <table>
 <thead>
 <tr>
@@ -1882,7 +2193,7 @@ D:\pgsql\18\data\       PostgreSQL のデータ（5 章で、インストール�
 <p><strong>用語:</strong> 終了コード（プログラムが終わるときに返す番号。ふつう 0 が成功。robocopy だけは 0〜7 が成功、8 以上が失敗）</p>
 </blockquote>
 <h3 id="114">11.4 タスク スケジューラに登録する</h3>
-<div class="codehilite"><div class="code-wrap" id="code-40"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nv">$action</span>    <span class="p">=</span> <span class="nb">New-ScheduledTaskAction</span> <span class="n">-Execute</span> <span class="s2">&quot;powershell.exe&quot;</span> <span class="p">`</span>
+<div class="codehilite"><div class="code-wrap" id="code-46"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nv">$action</span>    <span class="p">=</span> <span class="nb">New-ScheduledTaskAction</span> <span class="n">-Execute</span> <span class="s2">&quot;powershell.exe&quot;</span> <span class="p">`</span>
                <span class="n">-Argument</span> <span class="s1">&#39;-NoProfile -ExecutionPolicy Bypass -File &quot;D:\webapp\tools\backup.ps1&quot;&#39;</span>
 <span class="nv">$trigger</span>   <span class="p">=</span> <span class="nb">New-ScheduledTaskTrigger</span> <span class="n">-Daily</span> <span class="n">-At</span> <span class="s2">&quot;02:00&quot;</span>
 <span class="nv">$principal</span> <span class="p">=</span> <span class="nb">New-ScheduledTaskPrincipal</span> <span class="n">-UserId</span> <span class="s2">&quot;SYSTEM&quot;</span> <span class="n">-LogonType</span> <span class="n">ServiceAccount</span> <span class="n">-RunLevel</span> <span class="n">Highest</span>
@@ -1895,6 +2206,40 @@ D:\pgsql\18\data\       PostgreSQL のデータ（5 章で、インストール�
 <span class="nb">Start-ScheduledTask</span> <span class="n">-TaskPath</span> <span class="s2">&quot;\webapp\&quot;</span> <span class="n">-TaskName</span> <span class="s2">&quot;webapp-backup&quot;</span>
 <span class="nb">Get-ScheduledTaskInfo</span> <span class="n">-TaskPath</span> <span class="s2">&quot;\webapp\&quot;</span> <span class="n">-TaskName</span> <span class="s2">&quot;webapp-backup&quot;</span> <span class="p">|</span> <span class="nb">Format-List</span> <span class="n">LastRunTime</span><span class="p">,</span> <span class="n">LastTaskResult</span><span class="p">,</span> <span class="n">NextRunTime</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>New-ScheduledTaskAction</code></strong>（PowerShell）: 予定の仕事で「何を動かすか」を作るコマンド。</li>
+<li><strong><code>New-ScheduledTaskAction -Execute</code></strong>（PowerShell）: 動かすプログラムを決めるオプション。<code>powershell.exe</code> は、PowerShell のスクリプトを動かす時。</li>
+<li><strong><code>New-ScheduledTaskAction -Argument</code></strong>（PowerShell）: 動かすプログラムに渡す引数を決めるオプション。<code>-NoProfile -ExecutionPolicy Bypass -File "D:\…\backup.ps1"</code> のように、動かすスクリプトを渡します。</li>
+<li><strong><code>New-ScheduledTaskTrigger</code></strong>（PowerShell）: 予定の仕事で「いつ動かすか」を作るコマンド。</li>
+<li><strong><code>New-ScheduledTaskTrigger -Daily</code></strong>（PowerShell）: 毎日動かすオプション。</li>
+<li><strong><code>New-ScheduledTaskTrigger -At</code></strong>（PowerShell）: 動かす時刻を決めるオプション。<code>-At "03:00"</code> は夜中の 3 時（使う人がいない時間）。</li>
+<li><strong><code>New-ScheduledTaskPrincipal</code></strong>（PowerShell）: 予定の仕事を「だれとして動かすか」を作るコマンド。</li>
+<li><strong><code>New-ScheduledTaskPrincipal -UserId</code></strong>（PowerShell）: 動かす利用者を決めるオプション。<code>"SYSTEM"</code> は、Windows そのものの利用者（だれもログインしていなくても動く）。</li>
+<li><strong><code>New-ScheduledTaskPrincipal -LogonType</code></strong>（PowerShell）: ログインのしかたを決めるオプション。<code>ServiceAccount</code> は、サービス用の利用者として動かす（パスワードを保存しなくてよい）。</li>
+<li><strong><code>New-ScheduledTaskPrincipal -RunLevel</code></strong>（PowerShell）: 権限の強さを決めるオプション。<code>Highest</code> は、管理者の権限で動かす。</li>
+<li><strong><code>New-ScheduledTaskSettingsSet</code></strong>（PowerShell）: 予定の仕事の細かい決まり（時間の上限など）を作るコマンド。</li>
+<li><strong><code>New-ScheduledTaskSettingsSet -ExecutionTimeLimit</code></strong>（PowerShell）: 仕事が動いてよい時間の上限を決めるオプション。過ぎたら止めて、止まったままの仕事が残らないようにします。</li>
+<li><strong><code>New-TimeSpan</code></strong>（PowerShell）: 時間の長さを作るコマンド。</li>
+<li><strong><code>New-TimeSpan -Hours</code></strong>（PowerShell）: 時間の長さを、時間（h）で決めるオプション。<code>New-TimeSpan -Hours 2</code> は 2 時間。</li>
+<li><strong><code>New-ScheduledTaskSettingsSet -StartWhenAvailable</code></strong>（PowerShell）: 決めた時刻にサーバーが止まっていた時、動けるようになったらすぐに動かすオプション。</li>
+<li><strong><code>Register-ScheduledTask</code></strong>（PowerShell）: 作った「何を・いつ・だれとして」を、タスクスケジューラーに登録するコマンド。</li>
+<li><strong><code>Register-ScheduledTask -TaskPath</code></strong>（PowerShell）: 登録する先のフォルダを決めるオプション。<code>"\webapp\"</code> にまとめておくと、あとで探しやすくなります。</li>
+<li><strong><code>Register-ScheduledTask -TaskName</code></strong>（PowerShell）: 予定の仕事の名前を決めるオプション。</li>
+<li><strong><code>Register-ScheduledTask -Action</code></strong>（PowerShell）: <code>New-ScheduledTaskAction</code> で作った「何を動かすか」を渡すオプション。</li>
+<li><strong><code>Register-ScheduledTask -Trigger</code></strong>（PowerShell）: <code>New-ScheduledTaskTrigger</code> で作った「いつ動かすか」を渡すオプション。</li>
+<li><strong><code>Register-ScheduledTask -Principal</code></strong>（PowerShell）: <code>New-ScheduledTaskPrincipal</code> で作った「だれとして動かすか」を渡すオプション。</li>
+<li><strong><code>Register-ScheduledTask -Settings</code></strong>（PowerShell）: <code>New-ScheduledTaskSettingsSet</code> で作った細かい決まりを渡すオプション。</li>
+<li><strong><code>Register-ScheduledTask -Description</code></strong>（PowerShell）: 予定の仕事の説明を書くオプション。あとで見た人が、何の仕事か分かるように書きます。</li>
+<li><strong><code>Get-ScheduledTaskInfo -TaskPath</code></strong>（PowerShell）: 調べる予定の仕事のフォルダを決めるオプション。</li>
+<li><strong><code>Get-ScheduledTaskInfo -TaskName</code></strong>（PowerShell）: 調べる予定の仕事の名前を決めるオプション。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><strong>確かめること:</strong></p>
 <ul>
@@ -1918,7 +2263,7 @@ D:\pgsql\18\data\       PostgreSQL のデータ（5 章で、インストール�
 </blockquote>
 <h3 id="115">11.5 戻せることを確かめる（リストアの練習）</h3>
 <p><strong>バックアップは、戻せることを確かめて、初めて意味があります。</strong> 最初に設定したときと、その後も定期的に（例：3 か月に 1 回）練習します。本番のデータベースは変えずに、<strong>練習用のデータベース</strong>に戻します。</p>
-<div class="codehilite"><div class="code-wrap" id="code-41"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nv">$env:Path</span> <span class="p">+=</span> <span class="s2">&quot;;C:\Program Files\PostgreSQL\18\bin&quot;</span>
+<div class="codehilite"><div class="code-wrap" id="code-47"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nv">$env:Path</span> <span class="p">+=</span> <span class="s2">&quot;;C:\Program Files\PostgreSQL\18\bin&quot;</span>
 <span class="nv">$dump</span> <span class="p">=</span> <span class="p">(</span><span class="nb">Get-ChildItem</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">backup</span><span class="p">\</span><span class="n">db</span><span class="p">\</span><span class="n">webapp_prod_</span><span class="p">*.</span><span class="n">dump</span> <span class="p">|</span> <span class="nb">Sort-Object</span> <span class="n">LastWriteTime</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">-Last</span> <span class="n">1</span><span class="p">).</span><span class="n">FullName</span>
 
 <span class="c"># 練習用のデータベースを作り、控えを戻す（スーパーユーザーで）</span>
@@ -1983,7 +2328,7 @@ D:\pgsql\18\data\       PostgreSQL のデータ（5 章で、インストール�
 </tbody>
 </table>
 <p>IIS のログを消すタスク（例）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-42"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 90 日より古い IIS のログを消すコマンド（長いので 2 つに分けて + でつなぐ）</span>
+<div class="codehilite"><div class="code-wrap" id="code-48"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 90 日より古い IIS のログを消すコマンド（長いので 2 つに分けて + でつなぐ）</span>
 <span class="nv">$clean</span> <span class="p">=</span> <span class="s1">&#39;Get-ChildItem C:\inetpub\logs\LogFiles -Recurse -Filter *.log | &#39;</span> <span class="p">+</span>
          <span class="s1">&#39;Where-Object { $_.LastWriteTime -lt (Get-Date).AddDays(-90) } | Remove-Item&#39;</span>
 <span class="nv">$action</span> <span class="p">=</span> <span class="nb">New-ScheduledTaskAction</span> <span class="n">-Execute</span> <span class="s2">&quot;powershell.exe&quot;</span> <span class="n">-Argument</span> <span class="s2">&quot;-NoProfile -Command </span><span class="se">`&quot;</span><span class="s2">$clean</span><span class="se">`&quot;</span><span class="s2">&quot;</span>
@@ -2065,7 +2410,7 @@ D:\pgsql\18\data\       PostgreSQL のデータ（5 章で、インストール�
 
 <p>更新は、①検証で確かめる、②本番を止めてバックアップを取る、③入れ替える、④再開して確かめる、の 4 段で行います。例は、版 1.0.0 から 1.1.0 への更新です。</p>
 <p><strong>① 検証で確かめる</strong></p>
-<div class="codehilite"><div class="code-wrap" id="code-43"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 受け取った新しい版を確かめる</span>
+<div class="codehilite"><div class="code-wrap" id="code-49"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 受け取った新しい版を確かめる</span>
 <span class="nb">Get-FileHash</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">releases</span><span class="p">\</span><span class="n">webapp</span><span class="p">-</span><span class="n">1</span><span class="p">.</span><span class="n">1</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">zip</span> <span class="n">-Algorithm</span> <span class="n">SHA256</span>
 
 <span class="c"># 検証のアプリを入れ替える</span>
@@ -2076,10 +2421,20 @@ D:\pgsql\18\data\       PostgreSQL のデータ（5 章で、インストール�
 <span class="nb">Invoke-WebRequest</span> <span class="n">http</span><span class="p">://</span><span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span><span class="p">:</span><span class="n">8081</span><span class="p">/</span><span class="n">health</span> <span class="n">-UseBasicParsing</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">StatusCode</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Rename-Item</code></strong>（PowerShell）: ファイルやフォルダの名前を変えるコマンド。<code>Rename-Item 今の名前 新しい名前</code>。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>検証で、変わった所と、主な画面（13.1 のチェック表）を確かめます。</p>
 <p><strong>② 本番を止めて、バックアップを取る</strong></p>
 <p>利用の少ない時間に、事前に社員へお知らせしてから行います。</p>
-<div class="codehilite"><div class="code-wrap" id="code-44"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">Stop-Service</span> <span class="n">webapp-prod</span>
+<div class="codehilite"><div class="code-wrap" id="code-50"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">Stop-Service</span> <span class="n">webapp-prod</span>
 <span class="c"># 更新の前の控え（毎晩の控えとは別の名前で残す）</span>
 <span class="nv">$env:Path</span> <span class="p">+=</span> <span class="s2">&quot;;C:\Program Files\PostgreSQL\18\bin&quot;</span>
 <span class="nv">$env:PGPASSFILE</span> <span class="p">=</span> <span class="s2">&quot;D:\webapp\secrets\pgpass.conf&quot;</span>
@@ -2090,7 +2445,7 @@ D:\pgsql\18\data\       PostgreSQL のデータ（5 章で、インストール�
 <li>アプリが止まっている間、社員のブラウザには、IIS の <code>502</code> のエラーが出ます（アプリから返事が無いため）。</li>
 </ul>
 <p><strong>③ 入れ替える</strong></p>
-<div class="codehilite"><div class="code-wrap" id="code-45"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">Rename-Item</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">prod</span><span class="p">\</span><span class="n">app</span> <span class="n">app-prev</span><span class="p">-</span><span class="n">1</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span>
+<div class="codehilite"><div class="code-wrap" id="code-51"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">Rename-Item</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">prod</span><span class="p">\</span><span class="n">app</span> <span class="n">app-prev</span><span class="p">-</span><span class="n">1</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span>
 <span class="nb">Expand-Archive</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">releases</span><span class="p">\</span><span class="n">webapp</span><span class="p">-</span><span class="n">1</span><span class="p">.</span><span class="n">1</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">zip</span> <span class="n">-DestinationPath</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">prod</span><span class="p">\</span><span class="n">app</span>
 </code></pre></div></div>
 
@@ -2098,7 +2453,7 @@ D:\pgsql\18\data\       PostgreSQL のデータ（5 章で、インストール�
 <li>テーブルの変更（マイグレーション）がある版は、この資料の設計例では、次の④で起動したときに、アプリが自動で当てます。</li>
 </ul>
 <p><strong>④ 再開して確かめる</strong></p>
-<div class="codehilite"><div class="code-wrap" id="code-46"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">Start-Service</span> <span class="n">webapp-prod</span>
+<div class="codehilite"><div class="code-wrap" id="code-52"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">Start-Service</span> <span class="n">webapp-prod</span>
 <span class="nb">Get-Service</span> <span class="n">webapp-prod</span>
 <span class="nb">Invoke-WebRequest</span> <span class="n">http</span><span class="p">://</span><span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span><span class="p">:</span><span class="n">8080</span><span class="p">/</span><span class="n">health</span> <span class="n">-UseBasicParsing</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">StatusCode</span>
 </code></pre></div></div>
@@ -2106,7 +2461,7 @@ D:\pgsql\18\data\       PostgreSQL のデータ（5 章で、インストール�
 <p>ブラウザで、ログインと主な画面を確かめます。問題が無ければ、更新の記録（いつ・どの版に・誰が）を残します。</p>
 <h3 id="134">13.4 切り戻し（前の版に戻す）</h3>
 <p>④で問題が見つかったら、<strong>原因を探す前に、まず前の版に戻して</strong>、社員が使える状態にします。</p>
-<div class="codehilite"><div class="code-wrap" id="code-47"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">Stop-Service</span> <span class="n">webapp-prod</span>
+<div class="codehilite"><div class="code-wrap" id="code-53"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">Stop-Service</span> <span class="n">webapp-prod</span>
 <span class="nb">Rename-Item</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">prod</span><span class="p">\</span><span class="n">app</span> <span class="n">app-failed</span><span class="p">-</span><span class="n">1</span><span class="p">.</span><span class="n">1</span><span class="p">.</span><span class="n">0</span>
 <span class="nb">Rename-Item</span> <span class="n">D</span><span class="p">:\</span><span class="n">webapp</span><span class="p">\</span><span class="n">prod</span><span class="p">\</span><span class="n">app-prev</span><span class="p">-</span><span class="n">1</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span> <span class="n">app</span>
 
