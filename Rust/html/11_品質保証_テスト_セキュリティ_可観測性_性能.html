@@ -798,6 +798,16 @@ test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.encode_utf16()</code></strong>（文字列）: 文字列を、UTF-16（ブラウザーの JavaScript が使う文字の数え方）の単位で並べるメソッド。<code>.count()</code> と合わせて、ブラウザーの <code>maxlength</code> と同じ数え方で長さを数えます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-6"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">-</span><span class="n">-example</span> <span class="n">u01_counts</span>
 </code></pre></div></div>
 
@@ -1725,6 +1735,16 @@ error: test failed, to rerun pass `--test u02_owner_delete`
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>std::env::temp_dir()</code></strong>（ファイルとフォルダ）: OS の、一時的なファイルを置くフォルダの場所を返す関数（Windows なら <code>C:\Users\you\AppData\Local\Temp</code>）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>ファイルが無い状態から、1回目を動かします。</p>
 <div class="codehilite"><div class="code-wrap" id="code-43"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">test</span> <span class="p">-</span><span class="n">-test</span> <span class="n">u02_shared</span>
 </code></pre></div></div>
@@ -1838,6 +1858,16 @@ error: test failed, to rerun pass `--test u02_shared`
 <span class="w">    </span><span class="n">TestDb</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">db</span><span class="p">,</span><span class="w"> </span><span class="n">_dir</span><span class="p">:</span><span class="w"> </span><span class="nc">dir</span><span class="w"> </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>TempDir</code></strong>（ファイルとフォルダ）: <code>tempfile</code> の部品の、一時的なフォルダの型。この値が片づけられると、フォルダも中身ごと自動で消えます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li><code>tempfile::tempdir()</code> は、ほかと重ならない名前の一時フォルダを作ります。テストが同時にいくつ動いても、それぞれ別のフォルダです。</li>
@@ -2452,6 +2482,16 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>#[track_caller]</code></strong>（テスト）: 付けた関数の中で止まった（パニックした）時に、その関数の中ではなく「呼んだ所」の行の番号を表示する印（属性）。テスト用の手伝いの関数に付けると、失敗の場所が分かりやすくなります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-64"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">test</span> <span class="p">-</span><span class="n">-test</span> <span class="n">u03_helpers</span>
 </code></pre></div></div>
 
@@ -2584,6 +2624,18 @@ assertion `left == right` failed: 移動先
 <span class="w">    </span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.select()</code></strong>（テスト）: <code>scraper</code> の部品で、HTML の中から、CSS と同じ書き方（<code>Selector</code>）に合うタグを探すメソッド。テストで、返ってきた HTML の中身を確かめる時に使います。</li>
+<li><strong><code>Html::parse_document()</code></strong>（テスト）: HTML の文字列を読み取って、中を探せる形にする関数（<code>scraper</code> の部品）。</li>
+<li><strong><code>Selector</code></strong>（テスト）: <code>scraper</code> の部品の、「どのタグを探すか」（CSS と同じ書き方）を表す型。<code>Selector::parse("a.nav")</code> で作ります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-72"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">test</span> <span class="p">-</span><span class="n">-test</span> <span class="n">u03_body</span> <span class="p">--</span> <span class="p">-</span><span class="n">-nocapture</span> <span class="p">-</span><span class="n">-test-threads</span><span class="p">=</span><span class="n">1</span>
 </code></pre></div></div>
@@ -3181,6 +3233,21 @@ cache-control              無い
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>proptest!</code></strong>（テスト）: <code>proptest</code> の部品のマクロ。決まった値ではなく、たくさんのでたらめな入力を自動で作って、「どんな入力でも、この性質が成り立つか」を確かめるテスト（プロパティテスト）を書きます（第11巻）。</li>
+<li><strong><code>prop_assert_eq!</code></strong>（テスト）: <code>proptest!</code> の中で使う <code>assert_eq!</code>。違った時に、失敗する入力を小さく絞り込んで教えてくれます。</li>
+<li><strong><code>.new_tree()</code></strong>（テスト）: <code>proptest</code> の作り方（<code>Strategy</code>）から、でたらめな値を 1 つ作るメソッド（仕組みを確かめる用）。</li>
+<li><strong><code>TestRunner::deterministic()</code></strong>（テスト）: 毎回同じでたらめな値の並びになる <code>proptest</code> の実行係を作る関数。結果を見比べたい時に使います。</li>
+<li><strong><code>ValueTree</code></strong>（テスト）: <code>proptest</code> が作った値と、その値を小さくしていく道筋を持つ物の型。<code>.current()</code> で今の値を取り出します。</li>
+<li><strong><code>TestRunner</code></strong>（テスト）: <code>proptest</code> の、テストを何回も動かす係の型。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-94"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">test</span> <span class="p">-</span><span class="n">-test</span> <span class="n">u04_title_prop</span> <span class="p">--</span> <span class="p">-</span><span class="n">-nocapture</span> <span class="p">-</span><span class="n">-test-threads</span><span class="p">=</span><span class="n">1</span>
 </code></pre></div></div>
 
@@ -3384,6 +3451,20 @@ test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; 
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>prop_oneof!</code></strong>（テスト）: いくつかの作り方のうち、どれか 1 つをでたらめに選んで値を作るマクロ（<code>proptest</code>）。</li>
+<li><strong><code>prop_assert!</code></strong>（テスト）: <code>proptest!</code> の中で使う <code>assert!</code>。</li>
+<li><strong><code>.prop_map()</code></strong>（テスト）: <code>proptest</code> で作った値を、関数で変換して、別の形の値にするメソッド（<code>any::&lt;u64&gt;().prop_map(|n| n.to_string())</code> で「数字だけの文字列」）。</li>
+<li><strong><code>Config::with_cases()</code></strong>（テスト）: <code>proptest</code> で、何回分の入力を試すかを決める関数。</li>
+<li><strong><code>Strategy</code></strong>（テスト）: <code>proptest</code> の「でたらめな値の作り方」を表す型（トレイト）。<code>impl Strategy&lt;Value = String&gt;</code> は「文字列を作る作り方」。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-102"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">test</span> <span class="p">-</span><span class="n">-test</span> <span class="n">u04_http_prop</span> <span class="p">--</span> <span class="p">-</span><span class="n">-nocapture</span>
 </code></pre></div></div>
 
@@ -3557,10 +3638,30 @@ aarch64
 <span class="k">pub</span><span class="w"> </span><span class="k">mod</span><span class="w"> </span><span class="nn">domain</span><span class="p">;</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>#[path]</code></strong>（モジュール）: <code>mod</code> で読み込むファイルの場所を、自分で指定する印（属性）。<code>#[path = "../src/note.rs"] mod note;</code> のように使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-113"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>fuzz_lab
 cargo<span class="w"> </span>+nightly<span class="w"> </span>fuzz<span class="w"> </span>init<span class="w"> </span>--target<span class="w"> </span>parsers
 cargo<span class="w"> </span>+nightly<span class="w"> </span>fuzz<span class="w"> </span>add<span class="w"> </span>query_offset
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo +nightly</code></strong>（cargo のコマンド）: <code>+nightly</code> で、毎日作られている試し版（nightly）の Rust で cargo を動かします。ファズテスト（<code>cargo fuzz</code>）など、まだ安定版に無い機能を使う時に要ります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><code>fuzz/fuzz_targets/</code> に、fuzz の対象（fuzz target）を2つ書きます。</p>
 <blockquote>
@@ -3587,6 +3688,16 @@ cargo<span class="w"> </span>+nightly<span class="w"> </span>fuzz<span class="w"
 <span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">query</span><span class="p">.</span><span class="n">offset</span><span class="p">();</span>
 <span class="p">});</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>fuzz_target!</code></strong>（テスト）: ファズテスト（でたらめな入力を大量に与えて、止まらないかを確かめる）の中身を書くマクロ（<code>libfuzzer-sys</code> の部品）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-115"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="sd">//! 第11巻 UNIT 04: NoteQuery を、項目を直接書いて作り（page は pub）、offset がパニックしないかを試す。</span>
 <span class="sd">//! proptest の any::&lt;u32&gt;() 256 回では、見つからなかった入力を、fuzzer は見つけられるか。</span>
@@ -4012,6 +4123,18 @@ Done 10639929 runs in 31 second(s)
 <span class="n">npx</span> <span class="n">playwright</span> <span class="p">-</span><span class="n">-version</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>npm init</code></strong>（Node.js）: Node.js のプロジェクトを始めるコマンド。<code>package.json</code>（使う部品やコマンドを書くファイル）を作ります。<code>-y</code> を付けると、質問に全部「既定のまま」と答えます。</li>
+<li><strong><code>npm install</code></strong>（Node.js）: Node.js の部品を入れるコマンド。<code>--save-dev</code> は「作る時・試す時だけ使う部品」として、<code>--save-exact</code> は版を固定して、<code>package.json</code> に書きます。</li>
+<li><strong><code>npx playwright</code></strong>（Node.js）: <code>npx</code> は、入れた部品のコマンドを動かす道具。<code>npx playwright install chromium</code> で、Playwright（ブラウザーを自動で操作してテストする道具）が使うブラウザーを入れ、<code>npx playwright test</code> でテストを動かします。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-132"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>added 5 packages, and audited 6 packages in 4s
 found 0 vulnerabilities
 Version 1.64.1
@@ -4059,6 +4182,16 @@ Version 1.64.1
 <span class="p">});</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>default</code></strong>（JavaScript・TypeScript）: <code>export default</code> は、そのファイルから「いちばんの物」を 1 つ外に出す書き方。読み込む側は <code>import 名前 from "./ファイル"</code> と、好きな名前で受け取れます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-136"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 第11巻 UNIT 05 例5-1: いちばん大事な流れを、本物のブラウザで1本だけ確かめる。</span>
 <span class="c1">// 登録 → ノートを作る → 一覧に出る → ログアウト → 一覧はログインを求める</span>
 <span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">expect</span><span class="p">,</span><span class="w"> </span><span class="nx">test</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@playwright/test&quot;</span><span class="p">;</span>
@@ -4093,6 +4226,23 @@ Version 1.64.1
 <span class="w">  </span><span class="k">await</span><span class="w"> </span><span class="nx">expect</span><span class="p">(</span><span class="nx">page</span><span class="p">.</span><span class="nx">getByText</span><span class="p">(</span><span class="s2">&quot;ログインしてください&quot;</span><span class="p">)).</span><span class="nx">toBeVisible</span><span class="p">();</span>
 <span class="p">});</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.goto()</code></strong>（Playwright）: Playwright で、ブラウザーを指定した URL へ移動させるメソッド。<code>await page.goto("/signup")</code>。</li>
+<li><strong><code>.getByLabel()</code></strong>（Playwright）: ラベル（<code>&lt;label&gt;</code>）の文字で、入力欄を探すメソッド。利用者が見るのと同じ文字で探すので、テストが読みやすく、壊れにくくなります。</li>
+<li><strong><code>.fill()</code></strong>（Playwright）: 入力欄に文字を入れるメソッド。<code>await page.getByLabel("メールアドレス").fill("alice@example.com")</code>。</li>
+<li><strong><code>.getByRole()</code></strong>（Playwright）: 役割（ボタン・見出し・リンクなど）と名前で、画面の部品を探すメソッド。<code>page.getByRole("button", { name: "登録する" })</code>。</li>
+<li><strong><code>.toHaveURL()</code></strong>（Playwright）: 「今のページの URL が、これになっているか」を確かめるメソッド（<code>expect(page).toHaveURL("/notes")</code>）。少し待ってくれます。</li>
+<li><strong><code>.getByText()</code></strong>（Playwright）: 表示されている文字で、部品を探すメソッド。</li>
+<li><strong><code>.toBeVisible()</code></strong>（Playwright）: 「その部品が画面に見えているか」を確かめるメソッド。</li>
+<li><strong><code>.toHaveText()</code></strong>（Playwright）: 「その部品の文字が、これと同じか」を確かめるメソッド。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-137"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nv">$env:RUSTNOTE_EXE</span> <span class="p">=</span> <span class="s2">&quot;…\target\debug\rustnote.exe&quot;</span>
 <span class="n">npx</span> <span class="n">playwright</span> <span class="n">test</span> <span class="n">tests</span><span class="p">/</span><span class="n">flow</span><span class="p">.</span><span class="n">spec</span><span class="p">.</span><span class="n">ts</span>
@@ -4197,6 +4347,18 @@ fill: 入った文字数 80
   4 passed (5.9s)
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.beforeEach()</code></strong>（Playwright）: <code>test.beforeEach(async ({ page }) =&gt; { … })</code> は、それぞれのテストの前に、毎回動かす準備（ログインなど）を書く所です。</li>
+<li><strong><code>.pressSequentially()</code></strong>（Playwright）: キーボードで 1 文字ずつ打つように、入力欄に文字を入れるメソッド。<code>maxlength</code> などで止まるかを確かめる時に使います。</li>
+<li><strong><code>.inputValue()</code></strong>（Playwright）: 入力欄に今入っている文字を取り出すメソッド。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li><code>a</code> と <code>あ</code> は 80 個まで入りました。<code>😀</code> は、<strong>40 個</strong>で止まりました。<code>😀</code> は、UTF-16 では2つ分（サロゲートペア）なので、40 個で 80 になるからです。本物の Chrome でも、HTML の決まりのとおりでした。</li>
 <li>サーバーの <code>NoteTitle::parse</code> は、<code>chars().count()</code> で数えるので、絵文字も 80 個まで受け付けます（問2）。ブラウザのほうが、<strong>厳しい</strong>ことになります。絵文字だけの題を書く人は、40 個で打てなくなります。</li>
@@ -4256,6 +4418,16 @@ landmark-unique（moderate）: 1 か所
   1 passed (4.3s)
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.analyze()</code></strong>（Playwright）: <code>@axe-core/playwright</code> の部品で、ページのアクセシビリティ（目の見えにくい人なども使えるか）の問題を調べるメソッド。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li>違反は、一覧の画面（<code>/notes</code>）の <code>landmark-unique</code>（ランドマークが見分けられない）の1つだけでした。一覧の画面には、上の帯のメニューと、下のページ送りの、<strong>2つの <code>nav</code></strong> があります。どちらにも名前が無いので、画面の読み上げのランドマークの一覧では、「ナビゲーション」「ナビゲーション」と、同じ名前が2つ並びます。</li>
 <li>直し方は、<code>nav</code> に <code>aria-label</code> で名前を付けることです（問1）。詳細・編集・ログインの画面には、<code>nav</code> が1つしかないので、違反になりませんでした。</li>
@@ -4296,6 +4468,16 @@ landmark-unique（moderate）: 1 か所
 <span class="w">  </span><span class="k">await</span><span class="w"> </span><span class="nx">page</span><span class="p">.</span><span class="nx">getByLabel</span><span class="p">(</span><span class="s2">&quot;Eメール&quot;</span><span class="p">).</span><span class="nx">fill</span><span class="p">(</span><span class="s2">&quot;alice@example.com&quot;</span><span class="p">);</span>
 <span class="p">});</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.setTimeout()</code></strong>（Playwright）: <code>test.setTimeout(5_000)</code> は、そのテストの制限時間（ミリ秒）を決める関数です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-147"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  ✘  1 tests\e05_missing.spec.ts:4:5 › メールアドレスを入れる (5.0s)
     Test timeout of 5000ms exceeded.
@@ -4392,6 +4574,17 @@ Error: Process from config.webServer was not able to start. Exit code: 1
 <span class="p">});</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.textContent()</code></strong>（Playwright）: 部品の中の文字を取り出すメソッド。</li>
+<li><strong><code>.toBe()</code></strong>（Playwright）: <code>expect(値).toBe(期待する値)</code> で、「同じか」を確かめるメソッド。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-152"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>状態コード: 303・移動先: /notes/1
 詳細の題: 80 文字（UTF-16 で 160）
   ✓  1 tests\q2_direct.spec.ts:4:5 › 絵文字 80 個の題を、直接送る (928ms)
@@ -4429,6 +4622,19 @@ Error: Process from config.webServer was not able to start. Exit code: 1
 <span class="w">  </span><span class="p">}</span>
 <span class="p">});</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.press()</code></strong>（Playwright）: キーを 1 つ押すメソッド。<code>await page.keyboard.press("Tab")</code> は Tab キー（次の部品へ移る）。</li>
+<li><strong><code>.evaluate()</code></strong>（Playwright）: ブラウザーの中で、JavaScript を動かして結果を受け取るメソッド。</li>
+<li><strong><code>.getAttribute()</code></strong>（JavaScript・TypeScript）: タグの属性（<code>placeholder</code>・<code>name</code> など）の値を取り出すメソッド。無ければ <code>null</code> です。</li>
+<li><strong><code>===</code></strong>（JavaScript・TypeScript）: JavaScript で「型も値も同じか」を比べる書き方。<code>==</code> は型を勝手にそろえて比べるので、ふつうは <code>===</code> を使います（違うかは <code>!==</code>）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-154"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Tab 1 回目: a「RustNote」
 Tab 2 回目: a「ノート一覧」
@@ -4764,6 +4970,16 @@ Tab 8 回目: （ページ全体）
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>#[ignore]</code></strong>（テスト）: 「ふだんは動かさないテスト」にする印（属性）。時間がかかるテストに付けておき、<code>cargo test -- --ignored</code> の時だけ動かします。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-156"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">test</span> <span class="p">-</span><span class="n">-test</span> <span class="n">u06_attacks</span>
 </code></pre></div></div>
 
@@ -4836,6 +5052,16 @@ assertion `left == right` failed
 cargo<span class="w"> </span>install<span class="w"> </span>cargo-mutants<span class="w"> </span>--version<span class="w"> </span><span class="m">27</span>.1.0<span class="w"> </span>--locked
 cargo<span class="w"> </span>mutants<span class="w"> </span>--list<span class="w"> </span>--file<span class="w"> </span>src/auth.rs
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo mutants</code></strong>（cargo のコマンド）: コードをわざと少しだけ変えて（<code>&gt;</code> を <code>&gt;=</code> にする など）、テストがそれに気付くかを確かめる道具（ミューテーションテスト）。気付かなければ、テストが足りない所です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-162"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>$ cargo mutants --version
 cargo-mutants 27.1.0
@@ -5345,6 +5571,16 @@ test result: FAILED. 5 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; 
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.with_writer()</code></strong>（ログ）: ログを書く先（標準出力・ファイルなど）を決めるメソッド。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-186"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">test</span> <span class="p">-</span><span class="n">-test</span> <span class="n">u07_logs</span> <span class="p">--</span> <span class="p">-</span><span class="n">-nocapture</span>
 </code></pre></div></div>
 
@@ -5442,6 +5678,16 @@ test result: FAILED. 5 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; 
 <span class="w">    </span><span class="nb">Ok</span><span class="p">(</span><span class="n">METRICS</span><span class="p">.</span><span class="n">render</span><span class="p">())</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.clamp()</code></strong>（数）: 値を、決めた範囲（最小〜最大）に収めるメソッド。<code>x.clamp(1, 5)</code> は、1 より小さければ 1、5 より大きければ 5。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p>本物のサーバーでも確かめます。<code>main.rs</code> で、起動のときに subscriber を入れます（<code>RUST_LOG</code> で量を変えられるようにします）。</p>
 <div class="codehilite"><div class="code-wrap" id="code-189"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="gd">--- a/src/main.rs</span>
@@ -5585,6 +5831,16 @@ RustNote を起動しました: http://127.0.0.1:3012
 <span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;エラーの予算: {budget:.0} 回まで → 使った回数 {errors} 回（{:.0}%）&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">errors</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">budget</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">100.0</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.rsplit()</code></strong>（文字列）: 文字列を、後ろから順に区切り文字で分けるメソッド。<code>line.rsplit(' ').next()</code> は、最後の単語です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-194"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">test</span> <span class="p">-</span><span class="n">-test</span> <span class="n">u07_slo</span> <span class="p">--</span> <span class="p">-</span><span class="n">-nocapture</span>
 </code></pre></div></div>
@@ -5735,6 +5991,16 @@ error: could not compile `rustnote` (test &quot;e07_static&quot;) due to 1 previ
 <div class="codehilite"><div class="code-wrap" id="code-203"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nv">$env:RUST_LOG</span> <span class="p">=</span> <span class="s2">&quot;warn&quot;</span>
 <span class="p">.\</span><span class="n">target</span><span class="p">\</span><span class="n">debug</span><span class="p">\</span><span class="n">rustnote</span><span class="p">.</span><span class="n">exe</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.\target\debug\rustnote.exe</code></strong>（PowerShell）: <code>cargo build</code> で作った RustNote の実行ファイルを、直接動かす書き方。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p>標準出力（<code>GET /login</code> と <code>GET /nothing-here</code> を送ったあと）:</p>
 <div class="codehilite"><div class="code-wrap" id="code-204"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>
@@ -5908,6 +6174,20 @@ RustNote を起動しました: http://127.0.0.1:3012
 <span class="n">criterion_main</span><span class="o">!</span><span class="p">(</span><span class="n">benches</span><span class="p">);</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>criterion_group!</code></strong>（性能）: <code>criterion</code>（速さを正確に測る部品）で、測る関数をまとめるマクロ。</li>
+<li><strong><code>criterion_main!</code></strong>（性能）: <code>criterion</code> の測る仕組みの入り口（<code>main</code>）を作るマクロ。</li>
+<li><strong><code>.benchmark_group()</code></strong>（性能）: <code>criterion</code> で、関係する測り方をまとめるグループを作るメソッド。</li>
+<li><strong><code>.bench_function()</code></strong>（性能）: <code>criterion</code> で、1 つの処理の速さを何回も測るメソッド。</li>
+<li><strong><code>Criterion</code></strong>（性能）: <code>criterion</code> の、速さを測る係の型。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-210"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">bench</span> <span class="p">-</span><span class="n">-bench</span> <span class="n">parse</span>
 </code></pre></div></div>
 
@@ -5930,6 +6210,16 @@ Found 21 outliers among 100 measurements (21.00%)
 Email::parse            time:   [107.60 ns 111.78 ns 116.52 ns]
 Found 16 outliers among 100 measurements (16.00%)
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo bench</code></strong>（cargo のコマンド）: 速さを測るコード（ベンチマーク）を動かすコマンド。最適化した版（release）で動きます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <h4 id="1_8">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1_9">解説1: 結果の読み方</h5>
@@ -6119,6 +6409,23 @@ POST /login 全体   :    35.12ms
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>unsafe</code></strong>（型とメソッド）: 「ここはコンパイラーが安全を確かめきれないので、書いた人が責任を持つ」という印。メモリを直接扱う所などで使います。ふつうのアプリのコードでは、ほとんど使いません。</li>
+<li><strong><code>#[global_allocator]</code></strong>（性能）: プログラム全体のメモリの貸し出し係（アロケーター）を、自分の物に置きかえる印。使ったメモリの量を数える時などに使います。</li>
+<li><strong><code>.fetch_max()</code></strong>（スレッドと共有）: 今の値と比べて大きい方を、ぶつからずに入れるメソッド（<code>AtomicUsize</code> など）。最大の値を覚えておく時に使います。</li>
+<li><strong><code>.fetch_sub()</code></strong>（スレッドと共有）: 数を、ほかのスレッドとぶつからずに引くメソッド。</li>
+<li><strong><code>GlobalAlloc</code></strong>（性能）: メモリの貸し出し係が持つ機能（トレイト）。</li>
+<li><strong><code>Layout</code></strong>（性能）: 貸し出すメモリの大きさと並びの決まりを表す型。</li>
+<li><strong><code>System</code></strong>（性能）: OS のふつうのメモリの貸し出し係。自分の係から、本当の貸し出しをこれに任せます。</li>
+<li><strong><code>AtomicUsize</code></strong>（スレッドと共有）: いくつものスレッドから同時に読み書きしても壊れない、<code>usize</code> の数の型。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-217"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">test</span> <span class="p">-</span><span class="n">-release</span> <span class="p">-</span><span class="n">-test</span> <span class="n">u08_memory</span> <span class="p">--</span> <span class="p">-</span><span class="n">-nocapture</span> <span class="p">-</span><span class="n">-test-threads</span><span class="p">=</span><span class="n">1</span>
 </code></pre></div></div>
 
@@ -6162,6 +6469,16 @@ POST /login 全体   :    35.12ms
 <span class="w">    </span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.as_nanos()</code></strong>（時間）: 時間の長さを、ナノ秒（10 億分の 1 秒）の整数で返すメソッド。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-220"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>debug: 10 万回で 39.34ms（1回あたり 393 ns）
 release: 10 万回で 4.71ms（1回あたり 47 ns）
@@ -6384,6 +6701,16 @@ oha 1.16.0
 <span class="p">.\</span><span class="n">target</span><span class="p">\</span><span class="n">release</span><span class="p">\</span><span class="n">rustnote</span><span class="p">.</span><span class="n">exe</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.\target\release\rustnote.exe</code></strong>（PowerShell）: <code>cargo build --release</code> で作った、最適化した（速い）RustNote の実行ファイルを、直接動かす書き方。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <blockquote>
 <p><strong>▼ このコマンドがやること（先に日本語で）:</strong> 別の画面から、<code>GET /login</code> を 5000 回、同時に 10 本ずつ送ります。<code>--no-tui</code> は、動いている間のグラフの画面を出さずに、終わってから結果だけを表示する指定です。</p>
 </blockquote>
@@ -6411,6 +6738,16 @@ Response time distribution:
 Status code distribution:
   [200] 5000 responses
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>oha</code></strong>（性能）: Web サーバーに、たくさんの頼みを一度に送って、速さを測る道具。<code>oha -n 5000 -c 10 URL</code> は、5000 回を、同時に 10 本ずつ送ります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <h4 id="1_10">▼ 結果を1つずつ分解して解説</h4>
 <h5 id="1-summary">解説1: Summary（まとめ）</h5>
@@ -6981,6 +7318,16 @@ ID:        RUSTSEC-2025-0134
 error: 8 vulnerabilities found!
 warning: 2 allowed warnings found
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo audit</code></strong>（cargo のコマンド）: 使っている部品に、知られている弱点（セキュリティの問題）がないかを調べる道具。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li><code>Scanning Cargo.lock for vulnerabilities (367 crate dependencies)</code> のとおり、RustNote は、自分で書いた部品のほかに、367 個の部品を使っています。</li>

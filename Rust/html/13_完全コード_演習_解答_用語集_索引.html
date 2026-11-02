@@ -1813,6 +1813,16 @@ error: could not compile `rustnote` (lib) due to 2 previous errors
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>AsRef</code></strong>（型とメソッド）: 「借りた形（<code>&amp;Path</code> など）に変えられる」機能（トレイト）。引数を <code>path: impl AsRef&lt;Path&gt;</code> にすると、<code>&amp;str</code> でも <code>String</code> でも <code>PathBuf</code> でも受け取れます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <h4 id="1_2">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1-sql">解説1: SQL のファイルは、実行ファイルの中に入る</h5>
 <ul>
@@ -2283,6 +2293,16 @@ notes の列: [&quot;id&quot;, &quot;user_id&quot;, &quot;title&quot;, &quot;bod
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>std::fs::create_dir()</code></strong>（ファイルとフォルダ）: フォルダを 1 つ作る関数。途中のフォルダが無い・もうある時はエラーです（まとめて作るのは <code>create_dir_all</code>）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-84"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">-</span><span class="n">-example</span> <span class="n">u02_q3</span>
 </code></pre></div></div>
@@ -2771,6 +2791,16 @@ notes の列: [&quot;id&quot;, &quot;user_id&quot;, &quot;title&quot;, &quot;bod
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>env::remove_var()</code></strong>（プロセス）: このプログラムの中の環境変数を消す関数（テストで使う）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-90"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">-</span><span class="n">-example</span> <span class="n">u03_config</span>
 </code></pre></div></div>
 
@@ -2889,6 +2919,16 @@ error: could not compile `rustnote` (lib) due to 11 previous errors
 <span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{:?}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">Config</span><span class="p">::</span><span class="n">from_env</span><span class="p">());</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>std::env::set_var()</code></strong>（プロセス）: このプログラムの中の環境変数を設定する関数（<code>env::set_var</code> と同じ）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-100"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>error[E0133]: call to unsafe function `set_var` is unsafe and requires unsafe block
   |
@@ -6723,6 +6763,16 @@ C 形式の違うメール: 状態 401・中央値 45 ミリ秒（7 回: 38〜76
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.flatten()</code></strong>（Option）: 入れ子になった物を、1 段平らにするメソッド。<code>Option&lt;Option&lt;T&gt;&gt;</code> を <code>Option&lt;T&gt;</code> にし、イテレーターなら「並びの並び」を 1 つの並びにします。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <h4 id="1_8">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1-url">解説1: ファイルの並びが、URL の並び</h5>
 <ul>
@@ -6999,6 +7049,16 @@ C 形式の違うメール: 状態 401・中央値 45 ミリ秒（7 回: 38〜76
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.canonical_reason()</code></strong>（HTTP）: HTTP の答えの番号の、決まった説明の言葉を返すメソッド（<code>404</code> なら <code>"Not Found"</code>）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <h5 id="4-view">解説4: view! の書き方と、自動のエスケープ</h5>
 <ul>
 <li><code>view!</code> の中では、HTML のタグをそのまま書き、文字は <code>"…"</code> で囲みます。囲まずに書くと、マクロが読めずにコンパイルエラーになります（エラー1）。</li>
@@ -7186,6 +7246,16 @@ C 形式の違うメール: 状態 401・中央値 45 ミリ秒（7 回: 38〜76
 <span class="w">    </span><span class="nb">Ok</span><span class="p">(</span><span class="n">SignupOutcome</span><span class="p">::</span><span class="n">Registered</span><span class="p">)</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>SignupFormState::default()</code></strong>（型とメソッド）: この巻で作る型 <code>SignupFormState</code>（登録フォームの中身とまちがいの知らせ）を、空の状態で作る書き方。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-180"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="sd">//! GET /login : ログインフォーム</span>
 <span class="sd">//! POST /login : メールとパスワードを確かめ、セッションを始めて 303 でノート一覧へ</span>
@@ -9284,6 +9354,44 @@ test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fin
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>box-sizing:</code></strong>（CSS）: CSS で、箱の幅に枠線と内側の余白を含めるかを決める項目。<code>box-sizing: border-box;</code> にすると、<code>width</code> の中に <code>padding</code> と <code>border</code> が含まれ、大きさの計算が分かりやすくなります。</li>
+<li><strong><code>background:</code></strong>（CSS）: CSS で、背景（色や画像）を決める項目。<code>background: var(--color-bg);</code> は、色の変数の色にします。</li>
+<li><strong><code>line-height:</code></strong>（CSS）: CSS で、行の高さ（行と行の間隔）を決める項目。<code>1.7</code> は「文字の大きさの 1.7 倍」。</li>
+<li><strong><code>display:</code></strong>（CSS）: CSS で、箱の並べ方を決める項目。<code>display: flex;</code> は「中身を横一列に並べる」、<code>display: grid;</code> は「ます目に並べる」、<code>display: none;</code> は「表示しない」。</li>
+<li><strong><code>align-items:</code></strong>（CSS）: <code>display: flex</code> の中身を、上下（交わる向き）のどこにそろえるかを決める項目。<code>center</code> で真ん中にそろえます。</li>
+<li><strong><code>justify-content:</code></strong>（CSS）: <code>display: flex</code> の中身を、並ぶ向きにどう配るかを決める項目。<code>space-between</code> は「両端に寄せて、間を均等に空ける」。</li>
+<li><strong><code>gap:</code></strong>（CSS）: <code>flex</code> や <code>grid</code> の中身どうしの間の幅を決める項目。</li>
+<li><strong><code>padding:</code></strong>（CSS）: CSS で、箱の内側の余白を決める項目。<code>padding: 12px 24px;</code> は、上下 12px・左右 24px。</li>
+<li><strong><code>border-bottom:</code></strong>（CSS）: CSS で、箱の下の枠線を決める項目。<code>1px solid 色</code> は「太さ 1px の実線」。</li>
+<li><strong><code>font-weight:</code></strong>（CSS）: CSS で、文字の太さを決める項目。<code>700</code> や <code>bold</code> で太字、<code>800</code> はもっと太い字です。</li>
+<li><strong><code>font-size:</code></strong>（CSS）: CSS で、文字の大きさを決める項目。</li>
+<li><strong><code>text-decoration:</code></strong>（CSS）: CSS で、文字の下線などを決める項目。<code>none</code> で、リンクの下線を消せます。</li>
+<li><strong><code>max-width:</code></strong>（CSS）: CSS で、箱の幅の上限を決める項目。広い画面でも、読みやすい幅で止められます。</li>
+<li><strong><code>border:</code></strong>（CSS）: CSS で、箱の枠線（太さ・線の種類・色）をまとめて決める項目。<code>border: 1px solid #e2e8f0;</code>。</li>
+<li><strong><code>border-radius:</code></strong>（CSS）: CSS で、箱の角の丸みを決める項目。</li>
+<li><strong><code>cursor:</code></strong>（CSS）: CSS で、マウスを乗せた時の矢印の形を決める項目。<code>pointer</code> は、押せる物の「指の形」です。</li>
+<li><strong><code>button:</code></strong>（CSS）: <code>button:hover</code> は、「マウスを乗せている時のボタン」を指す CSS の書き方（<code>:hover</code> は乗せている時の状態）。</li>
+<li><strong><code>border-color:</code></strong>（CSS）: CSS で、枠線の色だけを決める項目。</li>
+<li><strong><code>link-button:</code></strong>（CSS）: <code>.link-button:hover</code> は、この本の CSS で決めた「リンクのように見えるボタン」（<code>link-button</code> という class）の、マウスを乗せた時の見た目です。</li>
+<li><strong><code>margin-top:</code></strong>（CSS）: CSS で、箱の上の外側の余白を決める項目。</li>
+<li><strong><code>width:</code></strong>（CSS）: CSS で、箱の幅を決める項目。</li>
+<li><strong><code>font:</code></strong>（CSS）: CSS で、文字の大きさ・書体などをまとめて決める項目。<code>font: inherit;</code> は「親と同じにする」（ボタンや入力欄の文字を、ページの文字とそろえる）。</li>
+<li><strong><code>margin-bottom:</code></strong>（CSS）: CSS で、箱の下の外側の余白を決める項目。</li>
+<li><strong><code>list-style:</code></strong>（CSS）: CSS で、並び（<code>ul</code>・<code>ol</code>）の点や番号の形を決める項目。<code>none</code> で消せます。</li>
+<li><strong><code>flex-wrap:</code></strong>（CSS）: <code>display: flex</code> の中身が入りきらない時に、次の行へ折り返すかを決める項目。<code>wrap</code> で折り返します。</li>
+<li><strong><code>margin-left:</code></strong>（CSS）: CSS で、箱の左の外側の余白を決める項目。<code>auto</code> にすると、その箱を右へ寄せられます。</li>
+<li><strong><code>white-space:</code></strong>（CSS）: CSS で、空白や改行をどう表示するかを決める項目。<code>pre-wrap</code> は「改行と空白はそのまま、はみ出す所は折り返す」。</li>
+<li><strong><code>overflow-wrap:</code></strong>（CSS）: CSS で、長い単語（URL など）が箱からはみ出す時に、途中で折り返すかを決める項目。<code>anywhere</code> で、どこでも折り返せます。</li>
+<li><strong><code>text-align:</code></strong>（CSS）: CSS で、文字の左右のそろえ方を決める項目。<code>center</code> で中央。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <h4 id="1_10">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1_11">解説1: 色は変数にまとめる</h5>
 <ul>
@@ -9415,6 +9523,20 @@ content-length: 4659
 <span class="p">}</span>
 <span class="k">await</span><span class="w"> </span><span class="nx">browser</span><span class="p">.</span><span class="nx">close</span><span class="p">();</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.launch()</code></strong>（Playwright）: Playwright で、ブラウザーを起動するメソッド。<code>chromium.launch({ channel: 'chrome' })</code> は、入っている Chrome を使います。</li>
+<li><strong><code>.newContext()</code></strong>（Playwright）: 起動したブラウザーの中に、まっさらな「利用者ひとり分」の環境（クッキーなどが別々）を作るメソッド。画面の大きさも決められます。</li>
+<li><strong><code>.newPage()</code></strong>（Playwright）: 新しいタブ（ページ）を開くメソッド。</li>
+<li><strong><code>.getPropertyValue()</code></strong>（JavaScript・TypeScript）: <code>getComputedStyle(要素).getPropertyValue("white-space")</code> のように、CSS の項目の、実際に効いている値を取り出すメソッド。</li>
+<li><strong><code>.setViewportSize()</code></strong>（Playwright）: 画面の大きさ（幅・高さ）を変えるメソッド。スマホの幅で崩れないかを確かめる時に使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-250"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">node</span> <span class="n">measure</span><span class="p">.</span><span class="n">mjs</span> <span class="n">all</span>
 </code></pre></div></div>
@@ -9865,6 +9987,18 @@ content-length: 4659
 <span class="w">    </span><span class="n">encoded</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>AssetConfig::hosted_at()</code></strong>（Topcoat）: アセット（CSS など）を、決めた URL の場所から配る設定を作る関数。テストで、束を作らずに CSS の URL だけを決める時に使います。</li>
+<li><strong><code>Manifest</code></strong>（Topcoat）: アセットの目録（元の名前と、ハッシュの付いた本当の名前の対応表）の型。</li>
+<li><strong><code>ManifestEntry</code></strong>（Topcoat）: アセットの目録の 1 行（1 つのファイルの情報）の型。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <h4 id="1_12">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1-db">解説1: テストごとに、新しい DB</h5>
@@ -10753,6 +10887,14 @@ Rust の Web フレームワーク <span class="gs">**Topcoat 0.11**</span> と 
    <span class="n">winget</span> <span class="n">install</span> <span class="n">LLVM</span><span class="p">.</span><span class="n">LLVM</span>
 <span class="sb">   ```</span>
 
+   &lt;!-- first-use --&gt;
+
+<span class="k">   &gt; </span><span class="ge">**▶ ここで初めて出てくるコード**</span>
+<span class="k">   &gt;</span>
+<span class="ge">   &gt; - **`winget install`**（Windows）: Windows の公式の道具 `winget` で、アプリを入れるコマンド。`winget install LLVM.LLVM` は、LLVM（clang などの翻訳の道具）を入れます。</span>
+
+   &lt;!-- /first-use --&gt;
+
    インストール後、`clang --version` が動くこと（`C:\Program Files\LLVM\bin` が PATH にあること）を確かめてください。x64 の Windows・macOS・Linux では追加の準備は要りません。
 
 <span class="gu">## 起動する（開発）</span>
@@ -10876,6 +11018,14 @@ rustnote/
    <span class="n">turso</span> <span class="n">db</span> <span class="n">show</span> <span class="n">rustnote</span> <span class="p">-</span><span class="n">-url</span>
    <span class="n">turso</span> <span class="n">db</span> <span class="n">tokens</span> <span class="n">create</span> <span class="n">rustnote</span>
 <span class="sb">   ```</span>
+
+   &lt;!-- first-use --&gt;
+
+<span class="k">   &gt; </span><span class="ge">**▶ ここで初めて出てくるコード**</span>
+<span class="k">   &gt;</span>
+<span class="ge">   &gt; - **`turso db`**（Turso）: Turso（インターネット上のデータベースのサービス）の道具で、データベースを作る・見るコマンド。`turso db create 名前`（第7巻・第12巻）。</span>
+
+   &lt;!-- /first-use --&gt;
 
 <span class="k">2.</span> <span class="sb">`fly.toml`</span> の <span class="sb">`app`</span> を自分用の名前に変え、アプリを作る（デプロイはまだしない）。
 
@@ -11160,6 +11310,16 @@ RustNote を起動しました: http://0.0.0.0:8080
 <span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;drop のあと、フォルダがある: {}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">dir</span><span class="p">.</span><span class="n">exists</span><span class="p">());</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.db_dir()</code></strong>（型とメソッド）: この本のテストの手伝いの係が持つ、テスト用のデータベースを置く一時フォルダの場所を返すメソッド。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-284"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>running 1 test
 一時フォルダの名前: .tmp

@@ -779,6 +779,16 @@ date: Fri, 30 Oct 2026 22:19:10 GMT
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>u32::from_le_bytes()</code></strong>（数）: 4 つのバイト（小さい桁から順）から、<code>u32</code> の数を作る関数。実行ファイルの中の決まった場所の数を読む時に使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>同じソースから、release ビルドを2回作って比べます。2回目は、RustNote の部分だけを消してから作り直します（依存クレートは作り直さないので、1回目より速く終わります）。</p>
 <div class="codehilite"><div class="code-wrap" id="code-15"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 1回目の実行ファイルを、builds フォルダに取っておく</span>
 <span class="nb">New-Item</span> <span class="n">-ItemType</span> <span class="n">Directory</span> <span class="n">builds</span>
@@ -804,6 +814,16 @@ date: Fri, 30 Oct 2026 22:19:10 GMT
     大きさが同じ: true
     違うバイトの数: 24
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo clean</code></strong>（cargo のコマンド）: 翻訳でできたファイル（<code>target</code> フォルダの中）を消すコマンド。<code>--release -p rustnote</code> で、release の RustNote の分だけを消します。次の翻訳は時間がかかります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <h4 id="1_2">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1-24">解説1: 同じソースなのに、24 バイト違った</h5>
@@ -1033,6 +1053,16 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 <span class="nb">cd </span><span class="n">dist</span>
 <span class="p">.\</span><span class="n">rustnote</span><span class="p">.</span><span class="n">exe</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.\rustnote.exe</code></strong>（PowerShell）: 今いるフォルダの <code>rustnote.exe</code> を動かす書き方。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-36"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Error: アセットの束（assets/）がありません。先に `topcoat asset bundle` を実行するか、`topcoat dev` で起動してください
 
@@ -1358,6 +1388,16 @@ built at:   2026-10-30 22:20:06Z
 <div class="codehilite"><div class="code-wrap" id="code-45"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">docker</span> <span class="n">build</span> <span class="p">-</span><span class="n">-progress</span><span class="p">=</span><span class="n">plain</span> <span class="n">-t</span> <span class="n">rustnote</span><span class="p">:</span><span class="n">u02</span> <span class="p">.</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>docker build</code></strong>（Docker）: <code>Dockerfile</code>（箱の作り方を書いたファイル）から、イメージ（箱の設計図）を作るコマンド。<code>-t 名前:タグ</code> で名前を付けます。最後の <code>.</code> は「今のフォルダの中身を使う」という意味です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-46"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Docker 29.3.1（linux/arm64）
 </code></pre></div></div>
 
@@ -1415,6 +1455,16 @@ built at:   2026-10-30 22:20:06Z
 <p><code>docker history</code> で、できたイメージのレイヤーと大きさを、上（新しい）から並べました。</p>
 <div class="codehilite"><div class="code-wrap" id="code-49"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">docker</span> <span class="nb">history </span><span class="n">rustnote</span><span class="p">:</span><span class="n">u02</span> <span class="p">-</span><span class="n">-format</span> <span class="s2">&quot;{{.Size}}</span><span class="se">`t</span><span class="s2">{{.CreatedBy}}&quot;</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>docker history</code></strong>（Docker）: イメージが、どの手順で、どれだけの大きさを使って作られたかを表示するコマンド。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-50"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>0B  CMD [&quot;/app/rustnote&quot;]
 0B  EXPOSE [8080/tcp]
@@ -2094,6 +2144,16 @@ HTML の &lt;link&gt;: /_topcoat/assets/style-e9b983efabcfc6c3.css
 <div class="codehilite"><div class="code-wrap" id="code-81"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">python</span> <span class="n">-c</span> <span class="s2">&quot;import tomllib, json, sys; print(json.dumps(tomllib.load(open(sys.argv[1], &#39;rb&#39;)), ensure_ascii=False, indent=2))&quot;</span> <span class="n">fly</span><span class="p">.</span><span class="n">toml</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>python</code></strong>（Python）: Python を動かすコマンド。<code>python -c "…"</code> は、<code>"…"</code> の中の Python のコードを 1 回だけ動かします。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-82"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>{
   &quot;app&quot;: &quot;rustnote-example&quot;,
   &quot;primary_region&quot;: &quot;nrt&quot;,
@@ -2161,6 +2221,16 @@ HTML の &lt;link&gt;: /_topcoat/assets/style-e9b983efabcfc6c3.css
 <span class="n">fly</span> <span class="n">launch</span> <span class="p">-</span><span class="n">-no-deploy</span> <span class="p">-</span><span class="n">-name</span> <span class="n">自分用のアプリ名</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>fly launch</code></strong>（Fly.io）: Fly.io に、新しいアプリを作る準備をするコマンド。<code>fly.toml</code>（設定のファイル）を作ります。<code>--no-deploy</code> で、まだ公開はしません（第12巻）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li>RustNote には、<code>Dockerfile</code> と <code>fly.toml</code> がもう用意してあるので、<code>fly launch</code> は、アプリを Fly.io に登録して、<code>fly.toml</code> の <code>app</code> を新しい名前にするところまでで済みます。DB の URL とトークンを <code>fly secrets set</code> で渡してから（UNIT 05）、<code>fly deploy</code> で公開します（UNIT 08）。</li>
 </ul>
@@ -2224,6 +2294,29 @@ HTML の &lt;link&gt;: /_topcoat/assets/style-e9b983efabcfc6c3.css
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;だめだった数: </span><span class="si">{</span><span class="n">problems</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span> <span class="k">if</span> <span class="n">problems</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>global</code></strong>（Python）: 関数の中で、外（ファイル全体）の変数を書きかえる時に使う宣言。</li>
+<li><strong><code>not</code></strong>（Python）: Python で「〜ではない」。<code>if not ok:</code> は「<code>ok</code> が成り立たなければ」。</li>
+<li><strong><code>and</code></strong>（Python）: Python で「かつ」。両方が成り立つ時だけ <code>True</code> になります。</li>
+<li><strong><code>True</code></strong>（Python）: Python の「正しい（はい）」の値。反対は <code>False</code>。</li>
+<li><strong><code>with</code></strong>（Python）: 使い終わったら自動で片づける（ファイルや接続を閉じる）書き方。<code>with open(…) as f:</code> の中で使った物は、抜ける時に閉じられます。</li>
+<li><strong><code>except</code></strong>（Python）: <code>try:</code> の中でエラーが起きた時に動く所。<code>except Exception as error:</code> で、起きたエラーを <code>error</code> という名前で受け取ります。</li>
+<li><strong><code>.loads()</code></strong>（Python）: 文字列から読み取るメソッド。<code>tomllib.loads(文字列)</code> は TOML、<code>json.loads(文字列)</code> は JSON を、Python の辞書にします。</li>
+<li><strong><code>.read_text()</code></strong>（Python）: <code>Path</code> のファイルの中身を、全部文字列として読むメソッド。<code>encoding="utf-8"</code> を付けて読みます。</li>
+<li><strong><code>.group()</code></strong>（Python）: 正規表現で見つかった所から、かっこ <code>( )</code> の中の部分を取り出すメソッド。<code>m.group(1)</code> は 1 つ目のかっこの中です。</li>
+<li><strong><code>.urlopen()</code></strong>（Python）: <code>urllib.request.urlopen(URL)</code> は、URL にアクセスして、返事を受け取る関数です。</li>
+<li><strong><code>.exit()</code></strong>（Python）: <code>sys.exit(番号)</code> は、Python のプログラムを、その終了コードで終える関数です。</li>
+<li><strong><code>getattr()</code></strong>（Python）: 物から、名前で属性（中の値）を取り出す関数。<code>getattr(error, "code", 既定値)</code> は、<code>code</code> が無ければ既定値を返します。</li>
+<li><strong><code>type()</code></strong>（Python）: 値の型を返す関数。<code>type(error).__name__</code> は、エラーの種類の名前です。</li>
+<li><strong><code>bool()</code></strong>（Python）: 値を <code>True</code>・<code>False</code> にする関数。空の文字列や <code>None</code> は <code>False</code>、中身があれば <code>True</code> です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p>UNIT 02 のイメージを <code>-p 18080:8080</code>（外の 18080 を、コンテナの 8080 へ）で動かして、教材の <code>fly.toml</code> と <code>Dockerfile</code> を確かめました。</p>
 <div class="codehilite"><div class="code-wrap" id="code-85"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">docker</span> <span class="n">run</span> <span class="n">-d</span> <span class="p">-</span><span class="n">-name</span> <span class="n">rn-u04</span> <span class="n">-p</span> <span class="n">18080</span><span class="p">:</span><span class="n">8080</span> <span class="n">rustnote</span><span class="p">:</span><span class="n">u02</span>
@@ -2557,6 +2650,16 @@ builder の段の /app/.env: ある
 <span class="n">fly</span> <span class="n">secrets</span> <span class="n">unset</span> <span class="n">DATABASE_AUTH_TOKEN</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>fly secrets</code></strong>（Fly.io）: Fly.io のアプリに、秘密の設定（データベースの合言葉など）を渡すコマンド。<code>fly secrets set 名前=値</code>。アプリには環境変数として届き、<code>fly.toml</code> や Git には書きません（第12巻）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li><code>fly secrets set</code> は、値を Fly.io の金庫に暗号にして保管し、そのアプリのマシンを全部入れ替えます（入れ替えのとき、マシンの一時的なディスクは消えます）。値は、マシンの起動のときに環境変数として渡され、イメージには入りません。</li>
 <li>入れ替えずに登録だけしたいとき（ほかの変更と一緒に出したいとき）は <code>--stage</code> を付け、あとで <code>fly secrets deploy</code>（イメージを作り直さずに出し直す）か <code>fly deploy</code> をします。</li>
@@ -2717,6 +2820,16 @@ builder の段の /app/.env: ある
 <span class="n">docker</span> <span class="n">run</span> <span class="n">-d</span> <span class="p">-</span><span class="n">-name</span> <span class="n">rn-app</span> <span class="p">-</span><span class="n">-network</span> <span class="n">rn-net</span> <span class="n">-p</span> <span class="n">18080</span><span class="p">:</span><span class="n">8080</span> <span class="n">-e</span> <span class="n">DATABASE_URL</span><span class="p">=</span><span class="n">http</span><span class="p">://</span><span class="n">sqld</span><span class="p">:</span><span class="n">8080</span> <span class="n">rustnote</span><span class="p">:</span><span class="n">u02</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>docker network</code></strong>（Docker）: コンテナ（箱）どうしをつなぐネットワークを作る・見るコマンド。<code>docker network create rn-net</code> で作り、同じネットワークの箱どうしは名前で呼び合えます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-101"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>sqld のイメージ: arm64・latest
 </code></pre></div></div>
 
@@ -2789,6 +2902,16 @@ Caused by:
 <span class="c"># 4 秒後に</span>
 <span class="n">docker</span> <span class="nb">start </span><span class="n">sqld</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>docker start</code></strong>（Docker）: 止まっているコンテナを動かすコマンド。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-107"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>/health: 200 {&quot;status&quot;:&quot;ok&quot;}
 動かし直した回数: 2
@@ -3230,6 +3353,18 @@ GET /notes -&gt; 500 Internal Server Error (8.722ms)
 <span class="n">fly</span> <span class="n">logs</span>                  <span class="c"># マシンのログ（RustNote のアクセスログなど）を見る</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>fly deploy</code></strong>（Fly.io）: アプリを作って（Docker のイメージ）、Fly.io に公開するコマンド。新しい版に、少しずつ入れかえます（第12巻）。</li>
+<li><strong><code>fly status</code></strong>（Fly.io）: Fly.io のアプリのマシンの状態と、ヘルスチェック（元気か）の結果を見るコマンド。</li>
+<li><strong><code>fly logs</code></strong>（Fly.io）: Fly.io で動いているアプリのログ（動作の記録）を見るコマンド。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <h4 id="8-1">例8-1: スモークテストを作る</h4>
 <p>公開したあとに動かす、スモークテストの PowerShell のスクリプトです。Fly.io の代わりに、手元のコンテナ（UNIT 02 のイメージ）に試しました。</p>
 <blockquote>
@@ -3277,6 +3412,16 @@ GET /notes -&gt; 500 Internal Server Error (8.722ms)
 <span class="p">}</span>
 <span class="nb">Write-Output</span> <span class="s2">&quot;全部 OK&quot;</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>param</code></strong>（PowerShell）: PowerShell のスクリプトが受け取る引数を決める書き方。<code>param([string]$Base = "http://…")</code> は、<code>-Base</code> で渡せる文字列の引数で、渡さなければ既定値になります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-119"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">docker</span> <span class="n">run</span> <span class="n">-d</span> <span class="p">-</span><span class="n">-name</span> <span class="n">rn-u08</span> <span class="n">-p</span> <span class="n">18080</span><span class="p">:</span><span class="n">8080</span> <span class="n">rustnote</span><span class="p">:</span><span class="n">u02</span>
 <span class="n">powershell</span> <span class="n">-NoProfile</span> <span class="n">-ExecutionPolicy</span> <span class="n">Bypass</span> <span class="o">-File</span> <span class="n">smoke</span><span class="p">.</span><span class="n">ps1</span> <span class="n">-Base</span> <span class="n">http</span><span class="p">://</span><span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span><span class="p">:</span><span class="n">18080</span>
@@ -3365,6 +3510,16 @@ NG   POST /logout（期待 303・実際 000）
 <span class="c"># 3. 確かめる（DNS が届いたら、Let&#39;s Encrypt の証明書が自動で発行される）</span>
 <span class="n">fly</span> <span class="n">certs</span> <span class="n">check</span> <span class="n">notes</span><span class="p">.</span><span class="n">example</span><span class="p">.</span><span class="n">com</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>fly certs</code></strong>（Fly.io）: Fly.io のアプリに、自分の名前（ドメイン）の HTTPS の証明書を付けるコマンド。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li>証明書は、DNS が正しく向いたあとに、Fly.io が Let's Encrypt で自動で発行します。発行には回数の制限があるので、DNS の間違いを直してから、確かめ直します。</li>
@@ -3651,6 +3806,29 @@ NG   POST /logout（期待 303・実際 000）
 
 <span class="n">ThreadingHTTPServer</span><span class="p">((</span><span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span> <span class="n">listen_port</span><span class="p">),</span> <span class="n">Handler</span><span class="p">)</span><span class="o">.</span><span class="n">serve_forever</span><span class="p">()</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>elif</code></strong>（Python）: Python の「そうでなくて、もし〜なら」（<code>else if</code> の短い形）。</li>
+<li><strong><code>pass</code></strong>（Python）: 「何もしない」という Python の命令。中身が要らないけれど、形の上で何か書く必要がある所に置きます。</li>
+<li><strong><code>.Lock()</code></strong>（Python）: <code>threading.Lock()</code> は、いくつものスレッドが同時に同じ物を使わないようにする鍵を作る関数です。</li>
+<li><strong><code>.lower()</code></strong>（Python）: 英字を小文字にした文字列を返すメソッド。</li>
+<li><strong><code>.readline()</code></strong>（Python）: 1 行だけ読むメソッド。</li>
+<li><strong><code>.strip()</code></strong>（Python）: 前後の空白や改行を取り除いたものを返すメソッド（Rust の <code>trim</code>）。</li>
+<li><strong><code>.HTTPConnection()</code></strong>（Python）: <code>http.client.HTTPConnection(ホスト, ポート)</code> は、HTTP で相手のサーバーにつなぐ物を作る関数です。</li>
+<li><strong><code>.getresponse()</code></strong>（Python）: 送った頼みに対する、相手の返事を受け取るメソッド。</li>
+<li><strong><code>.send_response()</code></strong>（Python）: HTTP のサーバーとして、答えの番号（200 など）を返し始めるメソッド。</li>
+<li><strong><code>.getheaders()</code></strong>（Python）: 受け取った返事のヘッダーを、<code>(名前, 値)</code> の組の並びで返すメソッド。</li>
+<li><strong><code>.send_header()</code></strong>（Python）: HTTP のサーバーとして、ヘッダーを 1 つ返すメソッド。</li>
+<li><strong><code>.end_headers()</code></strong>（Python）: ヘッダーの終わりを知らせるメソッド。このあとに本文を書きます。</li>
+<li><strong><code>.serve_forever()</code></strong>（Python）: HTTP のサーバーを、止めるまでずっと動かし続けるメソッド。</li>
+<li><strong><code>urlsplit()</code></strong>（Python）: URL を、部品（<code>scheme</code>・<code>hostname</code>・<code>port</code>・<code>path</code> など）に分ける関数。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-131"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 1つ目の PowerShell: sqld を動かし、その手前で「数える係」を待ち受けさせる</span>
 <span class="n">docker</span> <span class="n">run</span> <span class="n">-d</span> <span class="p">-</span><span class="n">-name</span> <span class="n">sqld</span> <span class="n">-p</span> <span class="n">18081</span><span class="p">:</span><span class="n">8080</span> <span class="n">ghcr</span><span class="p">.</span><span class="n">io</span><span class="p">/</span><span class="n">tursodatabase</span><span class="p">/</span><span class="n">libsql-server</span><span class="p">:</span><span class="n">latest</span>
@@ -4169,6 +4347,17 @@ rustnote:v1  b8305d2bc79f  170MB
 <span class="n">powershell</span> <span class="o">-File</span> <span class="n">smoke</span><span class="p">.</span><span class="n">ps1</span> <span class="n">-Base</span> <span class="n">http</span><span class="p">://</span><span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span><span class="p">:</span><span class="n">18080</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>docker tag</code></strong>（Docker）: イメージに、別の名前（タグ）を付けるコマンド。<code>docker tag rustnote:u02 rustnote:v1</code>。</li>
+<li><strong><code>docker rm</code></strong>（Docker）: コンテナ（箱）を消すコマンド。<code>-f</code> で、動いていても止めて消します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>v1 のとき:</p>
 <div class="codehilite"><div class="code-wrap" id="code-147"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>OK   GET /health（200）
 OK   GET /（トップ）（200）
@@ -4241,6 +4430,16 @@ error: 2 targets failed:
 <span class="c"># 2. 問題が起きる前のイメージを、もう一度公開する（作り直しはしない）</span>
 <span class="n">fly</span> <span class="n">deploy</span> <span class="p">-</span><span class="n">-image</span> <span class="n">registry</span><span class="p">.</span><span class="n">fly</span><span class="p">.</span><span class="n">io</span><span class="p">/</span><span class="n">rustnote-example</span><span class="p">:</span><span class="n">deployment-XXXXXXXX</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>fly releases</code></strong>（Fly.io）: Fly.io のアプリの、公開した版の歴史を見るコマンド。<code>--image</code> で、どのイメージだったかも表示し、前の版に戻す時に使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li><code>fly releases</code> の <code>--image</code> は、それぞれの公開のイメージの名前を表示します。<code>fly deploy --image</code> は、ビルドをせず、指定したイメージでマシンを入れ替えます。</li>

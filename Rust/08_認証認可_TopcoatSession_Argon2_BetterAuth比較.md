@@ -159,6 +159,14 @@ cd rustnote
 rustup show active-toolchain
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Copy-Item -Recurse`**（PowerShell）: `-Recurse` で、フォルダを中身ごと（中のフォルダも全部）コピーします。付けないと、フォルダの中身はコピーされません。
+
+<!-- /first-use -->
+
 この巻のテストは、RustNote の `tests/common/mod.rs` にある道具（`test_app`・`sign_up`・`create_note` など）を使います。テストごとに一時フォルダに新しい DB を作り、ポートを開かずに、ルーターへ直接リクエストを渡して動かします（第9巻 UNIT 01）。
 
 ## UNIT 01: 認証・セッション・認可と脅威モデル
@@ -473,6 +481,15 @@ async fn session_cookie_and_record() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.get_all()`**（HTTP）: HTTP のヘッダーで、同じ名前の物（`Set-Cookie` など）を全部取り出すメソッド。`get` だと最初の 1 つだけです。
+> - **`.trim_start_matches()`**（文字列）: 文字列の先頭から、決めた文字（文字列）をくり返し取り除いたものを返すメソッド。`pair.trim_start_matches("__Host-session=")` は、クッキーの名前の部分を取って値だけにします。
+
+<!-- /first-use -->
+
 ```powershell
 cargo test --test u01_session -- --nocapture
 ```
@@ -616,6 +633,16 @@ async fn cross_site_posts_are_rejected() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`HOST`**（HTTP）: `header::HOST` は、HTTP の `Host` ヘッダー（どのサイト宛ての頼みか）の名前。
+> - **`COOKIE`**（HTTP）: `header::COOKIE` は、HTTP の `Cookie` ヘッダー（ブラウザーが覚えているクッキーを送る所）の名前。
+> - **`Origin`**（HTTP）: `Origin` ヘッダーは、フォームなどを送ったページが、どのサイトの物かを表します。ほかのサイトから勝手に送らせる攻撃（CSRF）を見分けるのに使います（第8巻 UNIT 06）。
+
+<!-- /first-use -->
+
 ```powershell
 cargo test --test u01_cross_site -- --nocapture
 ```
@@ -713,6 +740,14 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`tempfile::tempdir()`**（ファイルとフォルダ）: 使い終わると自動で消える、一時的なフォルダを作る関数（`tempfile` の部品）。テストで、ファイルやデータベースを置く場所に使います。
+
+<!-- /first-use -->
 
 ```powershell
 cargo build --example e01_find_without_owner
@@ -869,6 +904,14 @@ const LOGIN_FAILED: &str = "メールアドレスまたはパスワードが違�
         login_form(email: input.email, error: error)
     })
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`UNAUTHORIZED`**（HTTP）: `StatusCode::UNAUTHORIZED` は、HTTP の答えの番号 401（「ログインしていない」）です。
+
+<!-- /first-use -->
 
 ### 練習問題
 
@@ -1316,6 +1359,14 @@ fn main() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`FnMut`**（関数）: 「呼ぶたびに中の値を変えてよい関数（クロージャ）」を表す型の書き方。外の変数を書きかえるクロージャは、この形になります。
+
+<!-- /first-use -->
+
 ```powershell
 cargo run -q --release --example u02_speed
 ```
@@ -1478,6 +1529,16 @@ fn main() {
     println!("{hash}");
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`SaltString::generate()`**（認証）: パスワードのハッシュに混ぜる「塩」（ソルト：毎回でたらめに作る値）を作る関数。同じパスワードでも、人ごとに違うハッシュになり、まとめて解かれにくくなります。
+> - **`SaltString`**（認証）: ソルト（塩）を文字列の形で持つ型。
+> - **`OsRng`**（認証）: OS が用意する、予想できないでたらめな数を作る係。パスワードやトークンなど、安全のための値は、必ずこのような係で作ります。
+
+<!-- /first-use -->
 
 ```powershell
 cargo build --example e02_old_api
@@ -1879,6 +1940,14 @@ let user = match app_state(cx).users.create(&email, &password_hash).await {
 };
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`CONFLICT`**（HTTP）: `StatusCode::CONFLICT` は、HTTP の答えの番号 409（「ぶつかった」）。同じメールアドレスで登録しようとした時などに返します。
+
+<!-- /first-use -->
+
 > **▼ このコードがやること（先に日本語で）:** 8通りの入力（正しい登録・大文字と空白の混ざった同じメール・@ の無いメール・ドメインに . の無いメール・短いパスワード・確認の欄と違うパスワード・3つとも間違い・大文字の混ざった別のメール）で `POST /signup` を送ります。返事の状態コードと、400 や 409 のときは入力欄の下のエラーと、メールの入力欄に残った値を表示します。最後に、`users` 表の `email` を表示します。
 
 **▶ 書く所と動かし方:** コピーした `rustnote` フォルダの `tests` フォルダに、`u03_signup.rs` という名前の**新しいファイル**を作り、下のコードを貼り付けて保存します。`rustnote` のフォルダで `cargo test --test u03_signup -- --nocapture --test-threads=1` を実行します。
@@ -1955,6 +2024,14 @@ async fn signup_cases() {
     println!("users 表の email: {:?}", emails(&app).await);
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.is_redirection()`**（HTTP）: HTTP の答えの番号が 300〜399（別のページへ移って）なら `true` を返すメソッド。
+
+<!-- /first-use -->
 
 ```powershell
 cargo test --test u03_signup -- --nocapture --test-threads=1
@@ -3887,6 +3964,14 @@ cargo test --test u06_policy -- --nocapture
 <p><a id="link" href="http://127.0.0.1:3000/notes">RustNote の一覧へのリンク</a></p>
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`<meta>`**（HTML）: HTML の `<head>` の中に書く、ページの情報のタグ。`<meta charset="utf-8">`（文字コード）・`<meta name="viewport" …>`（スマホでの表示の幅）などがあります。
+
+<!-- /first-use -->
+
 **1. HttpOnly:** RustNote の画面（ログイン中）の Console で、`document.cookie` を読みました。
 
 ```text
@@ -4817,6 +4902,23 @@ const after = db.prepare("SELECT COUNT(*) AS n FROM session").get().n;
 console.log(`sign-out → ${r.response.status}（session: ${before} 行 → ${after} 行）`);
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`import`**（JavaScript・TypeScript）: ほかのファイルや部品から、関数などを読み込む書き方。`import { rmSync } from "node:fs";` は、Node.js のファイルの道具から `rmSync` を使えるようにします。
+> - **`try`**（JavaScript・TypeScript）: 失敗するかもしれない処理を `try { … } catch (e) { … }` で囲み、失敗した時の処理を `catch` に書く書き方。
+> - **`catch`**（JavaScript・TypeScript）: `try` の中で失敗（エラー）が起きた時に動く所。`catch (e)` の `e` に、エラーが入ります。
+> - **`.runMigrations()`**（JavaScript・TypeScript）: Better Auth の、データベースの表を作る・変える手順（マイグレーション）を実行するメソッド（第8巻 UNIT 08 の比べ）。
+> - **`.stringify()`**（JavaScript・TypeScript）: `JSON.stringify(値)` は、JavaScript の値を JSON の文字列にする関数です。
+> - **`.round()`**（JavaScript・TypeScript）: `Math.round(x)` は、小数を四捨五入して整数にする関数です。
+> - **`.slice()`**（JavaScript・TypeScript）: 文字列や配列の、一部分を切り出すメソッド。`text.slice(0, 40)` は、最初の 40 文字です。
+> - **`.startsWith()`**（JavaScript・TypeScript）: 文字列が、その文字で始まっていれば `true` を返すメソッド（Rust の `starts_with`）。
+> - **`??`**（JavaScript・TypeScript）: `a ?? b` は、`a` が `null` か `undefined`（値が無い）なら `b` を使う、という書き方です。
+> - **`...`**（JavaScript・TypeScript）: スプレッド構文。`[...a, x]` は配列 `a` の中身を広げて新しい配列を作り、`{ ...obj, k: v }` はオブジェクトの中身を写して一部だけ変えた新しいオブジェクトを作ります。
+
+<!-- /first-use -->
+
 ```powershell
 node probe.mjs
 ```
@@ -5220,6 +5322,19 @@ fn main() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Sha256::digest()`**（認証）: データから、SHA-256 というハッシュ（32 バイトの指紋）を計算する関数（`sha2` の部品）。
+> - **`rand::rng()`**（認証）: でたらめな数を作る係を取り出す関数（`rand` の部品）。`rand::rng().random()` で、でたらめな値を作ります。
+> - **`Engine`**（認証）: `base64` の部品の、エンコード（バイト → 英数字の文字列）の機能（トレイト）。`URL_SAFE_NO_PAD.encode(バイト)` を使うには、これを `use` します。
+> - **`RngExt`**（認証）: `rand` の部品の、`.random()` などのメソッドを使えるようにする機能（トレイト）。
+> - **`Digest`**（認証）: ハッシュの計算（`digest`・`update`・`finalize`）を使えるようにする機能（トレイト。`sha2` などの部品）。
+> - **`Sha256`**（認証）: SHA-256 というハッシュの計算をする型。データの「指紋」を作るのに使います（パスワードの保存には、わざと重い Argon2 を使います）。
+
+<!-- /first-use -->
+
 ```powershell
 cargo run -q --example pkce
 ```
@@ -5368,6 +5483,22 @@ fn main() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.to_be_bytes()`**（数）: 数を、大きい桁から順に並べたバイトの並び（ビッグエンディアン）にするメソッド。
+> - **`.finalize()`**（認証）: ハッシュや MAC の計算を締めくくって、結果を取り出すメソッド。
+> - **`.into_bytes()`**（認証）: 計算の結果を、バイトの並びとして取り出すメソッド。
+> - **`u32::from_be_bytes()`**（数）: 4 つのバイト（大きい桁から順）から、`u32` の数を作る関数。
+> - **`HashSet`**（HashMap（表））: 同じ値は 1 つしか入らない集まり（値だけの `HashMap`）。重複を消す・「もう見たか」を覚える時に使います。`set.insert(x)` は、新しく入った時だけ `true` を返します。
+> - **`Hmac`**（認証）: HMAC（秘密の鍵を混ぜたハッシュ）を計算する型（`hmac` の部品）。鍵を知っている人だけが同じ値を作れるので、「改ざんされていないか」の確かめに使います。
+> - **`KeyInit`**（認証）: 鍵から計算の係を作る（`new_from_slice`）機能（トレイト）。
+> - **`Mac`**（認証）: HMAC の計算（`update`・`finalize`・`verify_slice`）を使えるようにする機能（トレイト）。
+> - **`Sha1`**（認証）: SHA-1 というハッシュの型。古い方法ですが、2 段階認証（TOTP）の決まりで今も使われています。
+
+<!-- /first-use -->
+
 ```powershell
 cargo run -q --example totp
 ```
@@ -5492,6 +5623,14 @@ fn main() {
     );
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.replace_range()`**（文字列）: `String` の、決めた範囲を、別の文字列に置きかえるメソッド。
+
+<!-- /first-use -->
 
 ```powershell
 cargo run -q --example reset
@@ -5931,6 +6070,15 @@ async fn guards() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`assert_ne!`**（テスト）: 「2 つの値が違うか」を確かめるマクロ。同じだとテストが失敗します。
+> - **`FORBIDDEN`**（HTTP）: `StatusCode::FORBIDDEN` は、HTTP の答えの番号 403（「その操作は許されていない」）です。
+
+<!-- /first-use -->
+
 ```powershell
 cargo test --test u10_guards -- --nocapture
 ```
@@ -6094,6 +6242,14 @@ async fn what_is_left_in_the_log() {
     eprintln!("=== ここまで ===");
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`RemoteAddr`**（Topcoat）: 相手（ブラウザー側）の IP アドレスを表す型。ログインの回数の制限などで、どこからの頼みかを見分けるのに使います。
+
+<!-- /first-use -->
 
 ```powershell
 cargo test --test u10_audit -- --nocapture
@@ -6348,6 +6504,16 @@ async fn leaked_database() {
     }
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.try_into()`**（型とメソッド）: 値を、別の型に変えようとして、変えられなければ `Err` を返すメソッド（`TryFrom` の逆向き）。`bytes.try_into()` で、長さの決まった配列（`[u8; 32]` など）に変えます。
+> - **`.as_slice()`**（Vec（並び））: `Vec` や配列を、「借りた一続きの並び」（スライス `&[T]`）として見るメソッド。
+> - **`Token`**（Topcoat）: `topcoat::session::Token` は、セッションの印（でたらめな長い文字列）の型。ブラウザーのクッキーに入れ、サーバーには、そのハッシュだけを保存します。
+
+<!-- /first-use -->
 
 ```powershell
 cargo test --test u10_incident -- --nocapture

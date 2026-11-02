@@ -798,6 +798,16 @@ String の持ち手の大きさ: 24 バイト
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Drop</code></strong>（所有権と借用）: 値が片づけられる（持ち主がいなくなって消える）時に、自動で動く処理を書くための機能（トレイト）。<code>impl Drop for 型 { fn drop(&amp;mut self) { … } }</code> と書くと、片づけの時にその処理が動きます。ファイルを閉じる・鍵を返す、などに使われています。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-13"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u01_drop_order</span>
 </code></pre></div></div>
 
@@ -1384,6 +1394,16 @@ Err(&quot;負の数は保存できません&quot;)
 <span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;x = {x}, y = {y}&quot;</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.as_ptr()</code></strong>（所有権と借用）: 値の本体がメモリのどこにあるか（アドレス）を返すメソッド。「同じ場所を指しているか」を見るための、仕組みの確かめ用です。ふだんのプログラムではあまり使いません。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-33"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u02_move_clone_copy</span>
 </code></pre></div></div>
@@ -2548,6 +2568,16 @@ abcd
 <div class="codehilite"><div class="code-wrap" id="code-90"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>[2, 4, 6] 合計 = 12
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.iter_mut()</code></strong>（イテレーター）: 並びの中身を、書きかえられるように借りて、1 つずつ取り出すメソッド。<code>for v in values.iter_mut() { *v *= 2; }</code> のように、<code>*</code> を付けて中身を書きかえます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li><code>values.iter_mut()</code> は、要素を1つずつ<strong>可変参照</strong>（<code>&amp;mut i32</code>）で取り出します。<code>*v *= 2</code> の <code>*</code> は、参照の先の整数を書き換えるための参照外しです。</li>
 <li><code>sum</code> の <code>for v in values</code> では、<code>values</code> が <code>&amp;Vec&lt;i32&gt;</code> なので、要素は共有参照 <code>&amp;i32</code> で取り出されます。<code>total += v</code> は、<code>i32</code> に <code>&amp;i32</code> を足す書き方が標準ライブラリで用意されているので、そのまま書けます。</li>
@@ -2943,6 +2973,16 @@ NG: タイトルは1〜80文字です（今は0文字）
 先頭2件のうち完了 1 件
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.char_indices()</code></strong>（文字列）: 文字列を、「何バイト目か」と「その文字」の組で、1 文字ずつ取り出すメソッド。日本語を、文字の切れ目で安全に切る時に使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <h4 id="1_13">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1-str-string">解説1: <code>&amp;str</code> を受けて <code>String</code> を返す</h5>
 <div class="codehilite"><div class="code-wrap" id="code-100"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">fn</span><span class="w"> </span><span class="nf">normalize_email</span><span class="p">(</span><span class="n">input</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="kt">str</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">String</span><span class="w"> </span><span class="p">{</span>
@@ -3071,6 +3111,16 @@ NG: タイトルは1〜80文字です（今は0文字）
 <span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;word = {word}&quot;</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.clear()</code></strong>（Vec（並び））: 中身を全部消して、空にするメソッド。<code>String</code> にも <code>Vec</code> にも使えます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-107"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>error[E0502]: cannot borrow `s` as mutable because it is also borrowed as immutable
   --&gt; src\bin\u04_err_clear.rs:11:5
@@ -3211,6 +3261,16 @@ error: could not compile `ownership-lab` (bin &quot;u04_err_mismatch&quot;) due 
 <div class="codehilite"><div class="code-wrap" id="code-115"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>world
 single
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.rfind()</code></strong>（文字列）: 文字列の後ろから探して、最初に見つかった位置（バイトの番号）を <code>Option</code> で返すメソッド。前から探すのは <code>.find()</code> です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li><code>rfind(' ')</code> は最後の空白のバイト位置を返します。空白そのものは含めたくないので、<code>pos + 1</code> から最後まで（<code>[pos + 1..]</code>）を借ります。空白は1バイトなので、<code>pos + 1</code> は必ず文字の境目です。</li>
@@ -3585,6 +3645,16 @@ alice@example.com
 alice@example.com
 id 部分 = 42
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.strip_prefix()</code></strong>（文字列）: 文字列が、決めた文字で始まっていれば、それを取り除いた残りを <code>Some(残り)</code> で返すメソッド。始まっていなければ <code>None</code> です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <h4 id="1_16">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1-optiona-str-a">解説1: <code>Option&lt;&amp;'a str&gt;</code> にも <code>'a</code> を付けられる</h5>
@@ -4118,6 +4188,19 @@ error: could not compile `ownership-lab` (bin &quot;u05_err_dangle&quot;) due to
 リテラルはプログラム全体で有効
 処理したリクエスト: 2
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.fetch_add()</code></strong>（スレッドと共有）: 数を、ほかのスレッドとぶつからずに足すメソッド（<code>AtomicU64</code> などに使う）。<code>COUNT.fetch_add(1, Ordering::Relaxed)</code> で 1 足します。鍵（<code>Mutex</code>）を使わずに、安全に数えられます。</li>
+<li><strong><code>AtomicU64</code></strong>（スレッドと共有）: いくつものスレッドから同時に読み書きしても壊れない、整数の型。数を数える（アクセス数など）時に使います。</li>
+<li><strong><code>Ordering</code></strong>（スレッドと共有）: <code>std::sync::atomic::Ordering</code> は、<code>AtomicU64</code> などを読み書きする時の「順番の守り方」の指定。ただ数えるだけなら、いちばん軽い <code>Ordering::Relaxed</code> で足ります。（大小を比べた結果の <code>std::cmp::Ordering</code> は別の物です。）</li>
+<li><strong><code>Relaxed</code></strong>（スレッドと共有）: <code>Ordering::Relaxed</code> は、「この数の読み書きだけが壊れなければよい」という、いちばん軽い順番の守り方です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p>文字列リテラルや <code>static</code> は、スタックでもヒープでもない、<strong>プログラムそのものに埋め込まれた領域</strong>に置かれます。</p>
 <div style="max-width: 720px; margin: 18px auto; text-align: center;">
@@ -4954,6 +5037,16 @@ rust = 2, is = 2, fun = 1
 draft = 下書き2, history = [&quot;下書き1&quot;]
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.position()</code></strong>（イテレーター）: 並びの中で、条件に合う最初の物が「何番目か」を <code>Option</code> で返すメソッド。<code>notes.iter().position(|n| n.id == id)</code>。無ければ <code>None</code> です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <h4 id="1_25">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1-1">解説1: 位置を先に求める（方法1）</h5>
 <div class="codehilite"><div class="code-wrap" id="code-190"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nb">Some</span><span class="p">(</span><span class="n">index</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">notes</span><span class="p">.</span><span class="n">iter</span><span class="p">().</span><span class="n">position</span><span class="p">(</span><span class="o">|</span><span class="n">n</span><span class="o">|</span><span class="w"> </span><span class="n">n</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
@@ -5205,6 +5298,16 @@ error: could not compile `ownership-lab` (bin &quot;u07_err_move_while_borrowed&
 [1, 2, 3, 20]
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.extend()</code></strong>（Vec（並び））: <code>Vec</code> の後ろに、別の並びの中身をまとめて足すメソッド。<code>v.extend(extra);</code>。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li>(a) ループ中は <code>v</code> を読むだけにして、追加したい値は <code>extra</code> に貯めます。ループが終われば <code>v</code> の共有借用も終わるので、<code>extend</code> で <code>extra</code> の中身をまとめて追加できます。</li>
 <li>(b) <code>for i in 0..len</code> は数を数えるだけなので、<code>w</code> を借り続けません。<code>w[i]</code> で読むときの借用はその式だけで終わり、<code>push</code> とぶつかりません。ループの回数は最初の長さ <code>len</code> に固定しているので、追加した要素まで調べ続けることもありません。</li>
@@ -5246,6 +5349,16 @@ error: could not compile `ownership-lab` (bin &quot;u07_err_move_while_borrowed&
 <p><strong>▼ 実行結果</strong></p>
 <div class="codehilite"><div class="code-wrap" id="code-209"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>[80, 65, 90]
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.retain()</code></strong>（Vec（並び））: <code>Vec</code> の中から、条件に合う物だけを残すメソッド（合わない物は消える）。<code>scores.retain(|&amp;s| s &gt;= 60);</code> は 60 点以上だけを残します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li><code>retain</code> は「条件が <code>true</code> の要素だけを残す」メソッドです。<code>Vec</code> の中で読む処理と消す処理を安全に組み合わせてくれるので、自分でループと <code>remove</code> を書くより安全で速く書けます。<code>|&amp;s|</code> は、渡される <code>&amp;i32</code> から値を取り出して <code>s</code> に入れる書き方です。</li>
@@ -5349,6 +5462,16 @@ error: could not compile `ownership-lab` (bin &quot;u07_err_move_while_borrowed&
 <span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;moved.len() = {}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">moved</span><span class="p">.</span><span class="n">len</span><span class="p">());</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Box</code></strong>（スマートポインタ）: 値をヒープ（大きな物を置く広い場所）に置き、その場所を指す「持ち手」を手元に置く型。<code>Box&lt;dyn Notifier&gt;</code> のように、違う型の物を同じ並びに入れる時によく使います（第3巻）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-211"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u08_box_basic</span>
 </code></pre></div></div>
@@ -5588,6 +5711,17 @@ Slack投稿 → #dev: @here ノートが作成されました
 Box&lt;Email&gt; の大きさ: 8 バイト
 Box&lt;dyn Notifier&gt; の大きさ: 16 バイト
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>trait</code></strong>（型とメソッド）: 「この型は、この関数を持っています」という約束（トレイト）を決める書き方。<code>trait Notifier { fn send(&amp;self, msg: &amp;str); }</code> と決めて、<code>impl Notifier for 型 { … }</code> で、それぞれの型が約束を守ります。</li>
+<li><strong><code>dyn</code></strong>（型とメソッド）: 「このトレイトを持つ、何かの型」を表す印。<code>Box&lt;dyn Notifier&gt;</code> は「<code>Notifier</code> を持つ何か（中身の型は動かしてみるまで分からない）を指す箱」です。違う型を 1 つの <code>Vec</code> に入れる時に使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><code>Box&lt;dyn Notifier&gt;</code> が 16 バイトなのは、UNIT 04 のスライスと同じく<strong>ファットポインタ</strong>だからです。ただし2つ目に持っているのは「長さ」ではなく、「<strong>その型用の操作表（vtable）の場所</strong>」です。</p>
 <div style="max-width: 720px; margin: 18px auto; text-align: center;">
@@ -6127,6 +6261,19 @@ error: could not compile `ownership-lab` (bin &quot;u08_err_unsized_param&quot;)
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Rc::strong_count()</code></strong>（スマートポインタ）: <code>Rc</code> の本体を、今いくつの持ち手が指しているかを返す関数。0 になると本体が片づけられます。</li>
+<li><strong><code>Rc::clone()</code></strong>（スマートポインタ）: <code>Rc</code> の持ち手を 1 つ増やす関数。本体は複製せず、「同じ物を指す持ち手」を作って、持ち主の数を 1 増やすだけなので、軽い操作です。</li>
+<li><strong><code>Rc::ptr_eq()</code></strong>（スマートポインタ）: 2 つの <code>Rc</code> が、同じ本体を指しているかを調べる関数。</li>
+<li><strong><code>Rc</code></strong>（スマートポインタ）: 1 つの値を、何人もで持てるようにする型（参照カウント）。持ち手を <code>Rc::clone</code> で増やし、全員がいなくなった時に本体が片づけられます。1 つのスレッドの中だけで使います（スレッドをまたぐ時は <code>Arc</code>）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-241"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u09_rc</span>
 </code></pre></div></div>
 
@@ -6216,6 +6363,19 @@ a を drop: 持ち主 1 人
 読み終えた後:   書ける
 [&quot;起動&quot;, &quot;ログイン&quot;]
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.borrow_mut()</code></strong>（スマートポインタ）: <code>RefCell</code> の中身を、書きかえるために借りるメソッド。ほかで借りている最中に呼ぶと、その場で止まる（パニック）ので注意します。</li>
+<li><strong><code>.borrow()</code></strong>（スマートポインタ）: <code>RefCell</code> の中身を、読むために借りるメソッド。</li>
+<li><strong><code>.try_borrow_mut()</code></strong>（スマートポインタ）: <code>RefCell</code> の中身を書きかえるために借りられるかを、止まらずに確かめるメソッド。借りられなければ <code>Err</code> が返ります。</li>
+<li><strong><code>RefCell</code></strong>（スマートポインタ）: 「借りるルール」の確かめを、コンパイルの時ではなく、動かしている時に行う入れ物。<code>Rc&lt;RefCell&lt;T&gt;&gt;</code> の形で、「何人もで持って、しかも書きかえたい」時に使います（第3巻）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><code>RefCell</code> は、中身と一緒に「今、誰が借りているか」を記録する<strong>借用の状態</strong>を持っていて、<code>borrow()</code> / <code>borrow_mut()</code> のたびにそれを調べます。</p>
 <div style="max-width: 720px; margin: 18px auto; text-align: center;">
@@ -6542,6 +6702,19 @@ main 終了
 片付け: メモ
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.upgrade()</code></strong>（スマートポインタ）: <code>Weak</code>（弱い持ち手）から、本体を使うためのふつうの持ち手（<code>Rc</code>）を取り出すメソッド。本体がもう片づけられていれば <code>None</code> です。</li>
+<li><strong><code>Rc::downgrade()</code></strong>（スマートポインタ）: <code>Rc</code> から、<code>Weak</code>（弱い持ち手）を作る関数。弱い持ち手は、本体を生かし続ける数に入りません。</li>
+<li><strong><code>Rc::weak_count()</code></strong>（スマートポインタ）: 本体を指している <code>Weak</code>（弱い持ち手）の数を返す関数。</li>
+<li><strong><code>Weak</code></strong>（スマートポインタ）: 本体を指すけれど、本体を生かし続ける数には入らない「弱い持ち手」。親と子が互いを指す時に、片方を <code>Weak</code> にして、いつまでも片づけられない（メモリが漏れる）のを防ぎます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div style="max-width: 720px; margin: 18px auto; text-align: center;">
 <svg viewBox="0 0 720 230" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
 <defs>
@@ -6740,6 +6913,16 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 <div class="codehilite"><div class="code-wrap" id="code-273"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>hits = 3
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Cell</code></strong>（スマートポインタ）: 中身を、借りずに丸ごと入れかえられる入れ物。<code>Copy</code> できる小さな値（数など）を、<code>&amp;</code> しか持っていない所から書きかえる時に使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li><code>get()</code> で今の値をコピーして取り出し、1 足して <code>set()</code> で入れ直します。中身への参照を貸さないので、「読み中に書き込み」という状態が起こりえず、panic の心配もありません。</li>
 </ul>
@@ -6867,6 +7050,16 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>move</code></strong>（関数）: クロージャが使う外の変数を、借りるのではなく「持っていく」印。<code>thread::spawn(move || { … })</code> のように、別のスレッドに値を渡す時に必要です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-275"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u10_spawn</span>
 </code></pre></div></div>
 
@@ -6983,6 +7176,20 @@ main: 結果 30
 <div class="codehilite"><div class="code-wrap" id="code-282"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>合計 = 4000
 持ち主の数 = 1
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.lock()</code></strong>（スレッドと共有）: <code>Mutex</code> の鍵を取って、中身を使えるようにするメソッド。返ってきた物（ガード）を通して中身を読み書きし、ガードが片づけられると鍵は自動で返されます。ほかのスレッドが鍵を持っている間は、返されるまで待ちます。</li>
+<li><strong><code>Arc::clone()</code></strong>（スレッドと共有）: <code>Arc</code> の持ち手を 1 つ増やす関数。スレッドに渡す前に増やしておき、<code>move</code> で持たせます。</li>
+<li><strong><code>Arc::strong_count()</code></strong>（スレッドと共有）: <code>Arc</code> の本体を、今いくつの持ち手が指しているかを返す関数。</li>
+<li><strong><code>Arc</code></strong>（スレッドと共有）: いくつものスレッドから、1 つの値を一緒に持てるようにする型（<code>Rc</code> のスレッド版）。書きかえもしたい時は、<code>Arc&lt;Mutex&lt;T&gt;&gt;</code> の形にします。</li>
+<li><strong><code>Mutex</code></strong>（スレッドと共有）: 中身を、1 度に 1 つのスレッドだけが使えるようにする鍵付きの入れ物。<code>.lock()</code> で鍵を取ってから使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <h4 id="1_35">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1-arcclone-move">解説1: <code>Arc::clone</code> してから <code>move</code> する</h5>
@@ -7114,6 +7321,16 @@ main: 結果 30
 文字数の合計: 7
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>thread::scope()</code></strong>（スレッドと共有）: 「この中で作ったスレッドが全部終わるまで、外に出ない」範囲を作る関数。外の変数を借りたままスレッドで使えます（<code>move</code> や <code>Arc</code> が要らない）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li><code>thread::spawn</code> のクロージャは、<code>main</code> より長生きするかもしれないので、借用を持てませんでした（<code>'static</code> が必要）。<code>thread::scope</code> の中の <code>s.spawn</code> は、「<code>scope</code> の <code>}</code> を抜ける前に全スレッドを自動で <code>join</code> する」ことが保証されているので、外の <code>notes</code> や <code>total_chars</code> を借りても安全です。</li>
 <li>2つのスレッドが <code>notes</code> を共有で借り、1つのスレッドだけが <code>total_chars</code> を可変で借りています。UNIT 03 のルール（読む人は何人でも、書く人は1人だけ）が、スレッドをまたいでもそのまま守られています。もし2つのスレッドが両方 <code>total_chars</code> に書き込もうとしたら、E0499 でコンパイルが止まります。</li>
@@ -7193,6 +7410,17 @@ main: 結果 30
 リクエスト数: 6
 ノート件数: 3
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.write()</code></strong>（スレッドと共有）: <code>RwLock</code> の「書き込み用の鍵」を取るメソッド。書いている間は、ほかのスレッドは読むことも書くこともできません。（ファイルや接続に使う <code>write</code> は「書き込む」意味の別の物です。）</li>
+<li><strong><code>RwLock</code></strong>（スレッドと共有）: 「読むだけなら何人でも同時に、書く時は 1 人だけ」にできる鍵付きの入れ物。読むことが多く、書くことが少ない物に向いています。読む時は <code>.read()</code>、書く時は <code>.write()</code> で鍵を取ります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div style="max-width: 720px; margin: 18px auto; text-align: center;">
 <svg viewBox="0 0 720 250" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
@@ -7329,6 +7557,19 @@ main: 結果 30
 <div class="codehilite"><div class="code-wrap" id="code-293"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>鍵を持ったまま: 約 0.6 秒
 鍵の外で処理:   約 0.2 秒
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.as_secs_f64()</code></strong>（時間）: 時間の長さ（<code>Duration</code>）を、秒を単位にした小数で返すメソッド。<code>0.25</code> なら 0.25 秒です。</li>
+<li><strong><code>thread::sleep()</code></strong>（時間）: 今のスレッドを、決めた時間だけ止めて待つ関数。<code>thread::sleep(Duration::from_millis(200))</code> は 0.2 秒待ちます。非同期（<code>async</code>）の中では、代わりに <code>tokio::time::sleep(…).await</code> を使います。</li>
+<li><strong><code>Duration::from_millis()</code></strong>（時間）: ミリ秒（1000 分の 1 秒）から、時間の長さ（<code>Duration</code>）を作る関数。秒からなら <code>Duration::from_secs()</code> です。</li>
+<li><strong><code>Duration</code></strong>（時間）: 時間の長さを表す型。<code>Duration::from_secs(5)</code> で 5 秒。<code>{:?}</code> で表示すると <code>5s</code> や <code>200ms</code> のように単位つきで出ます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div style="max-width: 720px; margin: 18px auto; text-align: center;">
 <svg viewBox="0 0 720 230" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">

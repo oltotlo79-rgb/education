@@ -1887,6 +1887,14 @@ async fn unreadable_input() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`ALLOW`**（HTTP）: `header::ALLOW` は、HTTP の `Allow` ヘッダー（「この URL で使えるメソッドはこれ」）の名前。405（使えないメソッド）の答えに付きます。
+
+<!-- /first-use -->
+
 #### エラー1: 状態を変える操作を、リンク（GET）にした（405 Method Not Allowed）
 
 詳細の画面の「完了にする」を、フォームのボタンではなく `<a href="/notes/1/toggle">完了にする</a>` のようなリンクにしてしまった場合です。リンクをクリックすると、ブラウザは GET を送ります。
@@ -3487,6 +3495,22 @@ fn main() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`env!`**（設定）: 翻訳（コンパイル）の時の環境変数の値を、文字列として埋め込むマクロ。`env!("CARGO_MANIFEST_DIR")` は、`Cargo.toml` があるフォルダの場所です。
+> - **`.trim_end_matches()`**（文字列）: 文字列の後ろから、決めた文字（文字列）をくり返し取り除いたものを返すメソッド。`name.trim_end_matches(".rs")` は、`.rs` を取ります。
+> - **`.match_indices()`**（文字列）: 文字列の中で、探す文字が見つかった所の「位置と、見つかった文字」を、全部順に返すメソッド。
+> - **`.is_alphanumeric()`**（文字）: その文字が、文字（英字・かな・漢字など）か数字なら `true` を返すメソッド。
+> - **`.next_back()`**（イテレーター）: 並びを後ろから 1 つ取り出すメソッド。`line[..at].chars().next_back()` は、その位置の 1 つ前の文字です。
+> - **`.or_default()`**（HashMap（表））: `map.entry(キー).or_default()` は、キーが無ければ、その型の初期値（空の `Vec` など）を入れて、その場所を返すメソッド。
+> - **`.trim_start()`**（文字列）: 文字列の前（左側）の空白を取り除いたものを返すメソッド。
+> - **`BTreeSet`**（HashMap（表））: 同じ値は 1 つしか入らず、しかも小さい順に並んでいる集まり（`HashSet` の並ぶ版）。
+> - **`PathBuf`**（ファイルとフォルダ）: ファイルやフォルダの場所（パス）を、自分の物として持つ型（`String` のパス版）。`path.join("a")` で場所をつなげ、`.push("b")` で足せます。借りるだけの形は `&Path` です。
+
+<!-- /first-use -->
+
 コピーした `rustnote` フォルダの `examples/u04_deps.rs` として保存して実行します。
 
 ```powershell
@@ -4495,6 +4519,14 @@ async fn creating_a_note_is_500_when_note_storage_is_broken() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`RecordingBrokenNotes::default()`**（型とメソッド）: この巻のテストで作る、わざと失敗するノートの保管係（`RecordingBrokenNotes`）を、初期値で作る書き方。
+
+<!-- /first-use -->
+
 ```powershell
 cargo test --test u04_q3 -- --nocapture
 ```
@@ -4749,6 +4781,14 @@ cargo search topcoat --limit 1
 cargo search tokio --limit 1
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`cargo search`**（cargo のコマンド）: 公開されている部品（クレート）を、名前で探すコマンド。`cargo search topcoat --limit 1` で、`topcoat` のいちばん新しい版が分かります。
+
+<!-- /first-use -->
+
 ```text
 ### cargo search topcoat --limit 1
 topcoat = "0.11.0"    # A modular, batteries-included Rust web framework for server-rendered apps.
@@ -4767,6 +4807,14 @@ note: to learn more about a package, run `cargo info <name>`
 ```powershell
 cargo update -p topcoat -p tokio
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`cargo update`**（cargo のコマンド）: 使っている部品を、`Cargo.toml` で許す範囲の新しい版にして、`Cargo.lock` を書きかえるコマンド。`-p 名前` で、その部品だけにできます。
+
+<!-- /first-use -->
 
 ```text
 ### cargo update -p topcoat -p tokio
@@ -6117,6 +6165,14 @@ async fn route_table() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`LOCATION`**（HTTP）: `header::LOCATION` は、HTTP の `Location` ヘッダー（「ここへ移って」という行き先）の名前。303 などの答えに付きます。
+
+<!-- /first-use -->
+
 ```powershell
 cargo test --test u08_routes -- --nocapture
 ```
@@ -6366,6 +6422,15 @@ async fn more_rows() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`HEAD`**（HTTP）: `Method::HEAD` は、本文を受け取らずに、見出し（ヘッダー）だけをもらう HTTP のメソッド。サーバーが動いているかを軽く確かめる時に使います。
+> - **`ORIGIN`**（HTTP）: `header::ORIGIN` は、HTTP の `Origin` ヘッダー（送ってきたページのサイト）の名前。
+
+<!-- /first-use -->
+
 ```text
 ### cargo test --test u08_q -- --nocapture
 問1 GET  /notes?page=abc（alice）        → 400 Bad Request
@@ -6505,6 +6570,25 @@ RustNote の色は、`assets/style.css` の最初に、変数としてまとめ�
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`color-text:`**（CSS）: この本の CSS で決めた色の変数（`--color-text`：ふつうの文字の色）。`var(--color-text)` で使います。CSS の変数は、名前の頭を `--` にして `:root { … }` の中で決めると、どこからでも使えます。
+> - **`color-muted:`**（CSS）: この本の CSS の色の変数（`--color-muted`：控えめな文字の色）。
+> - **`color-border:`**（CSS）: この本の CSS の色の変数（`--color-border`：枠線の色）。
+> - **`color-bg:`**（CSS）: この本の CSS の色の変数（`--color-bg`：ページの背景の色）。
+> - **`color-card:`**（CSS）: この本の CSS の色の変数（`--color-card`：カードの背景の色）。
+> - **`color-primary:`**（CSS）: この本の CSS の色の変数（`--color-primary`：ボタンなどの主な色）。
+> - **`color-primary-dark:`**（CSS）: この本の CSS の色の変数（`--color-primary-dark`：主な色の濃い版。マウスを乗せた時など）。
+> - **`color-success-bg:`**（CSS）: この本の CSS の色の変数（`--color-success-bg`：成功のお知らせの背景）。
+> - **`color-success-text:`**（CSS）: この本の CSS の色の変数（`--color-success-text`：成功のお知らせの文字）。
+> - **`color-warning-bg:`**（CSS）: この本の CSS の色の変数（`--color-warning-bg`：注意のお知らせの背景）。
+> - **`color-warning-text:`**（CSS）: この本の CSS の色の変数（`--color-warning-text`：注意のお知らせの文字）。
+> - **`color-danger:`**（CSS）: この本の CSS の色の変数（`--color-danger`：消すボタン・エラーの色）。
+
+<!-- /first-use -->
+
 > **▼ このコードがやること（先に日本語で）:** `style.css` から `--color-…` の変数を読み出し、WCAG の計算式で、色ごとの相対輝度（明るさ）を出します。RustNote で実際に使っている、文字と背景の9つの組み合わせについて、コントラスト比を計算し、4.5 以上なら `ok` と表示します。
 
 ```python
@@ -6550,6 +6634,18 @@ for fg, bg, where in pairs:
     mark = "ok" if r >= 4.5 else "NG"
     print(f"{where:<16} {colors[fg]} / {colors[bg]}  {r:5.2f}  {mark}")
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`def`**（Python）: Python で関数を作る書き方。`def luminance(hex_color):` の次の行から、字下げした所が関数の中身です。
+> - **`.findall()`**（Python）: `re.findall(パターン, 文字列)` は、正規表現（文字の形の決まり）に合う所を、全部リストにして返す関数です。
+> - **`dict()`**（Python）: Python の辞書（キー → 値の表）を作る関数。`dict([("a", 1), ("b", 2)])` のように、組の並びから作れます。
+> - **`int()`**（Python）: Python で、文字列などを整数にする関数。`int("ff", 16)` は、16 進数の `ff` を 255 にします。
+> - **`min()`**（Python）: Python で、いちばん小さい値を返す関数。`min(1, 5, 3)` は 1。
+
+<!-- /first-use -->
 
 コピーした `rustnote` の1つ上のフォルダで、Python で動かします（Python が無ければ、表示の結果だけを読んでもかまいません）。
 
@@ -7184,6 +7280,16 @@ async fn applied_count(db: &Db) -> usize {
     }
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`std::env::current_exe()`**（プロセス）: 今動いている実行ファイル（`.exe`）の場所を返す関数。実行ファイルの隣に置いたフォルダを探す時に使います。
+> - **`AssetBundle::load_dir()`**（Topcoat）: 指定したフォルダから、アセットの束（`topcoat asset bundle` で作った物）を読み込む関数（第12巻）。
+> - **`tokio::net::TcpListener::bind()`**（ネットワーク）: 非同期で接続を待ち受け始める関数（tokio 版）。`.await` で待ちます。Web サーバーは、これで決めた番号を待ち受けます。
+
+<!-- /first-use -->
 
 `examples/` に置いたファイルは、`cargo run --example 名前` で動かせる、アプリとは別の小さな実行ファイルになります（`rustnote` の `lib.rs` の公開された部品を、そのまま使えます）。ふだんの `dev.db` で動かします。
 

@@ -446,6 +446,16 @@ li, tr { page-break-inside: avoid; }
 <span class="n">cargo</span> <span class="n">add</span> <span class="n">serde</span> <span class="p">-</span><span class="n">-features</span> <span class="n">derive</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo add</code></strong>（cargo のコマンド）: 部品（クレート）を、プロジェクトに足すコマンド。<code>cargo add thiserror anyhow serde_json</code> で、3 つの部品を <code>Cargo.toml</code> の <code>[dependencies]</code> に書き足します。<code>--features 機能</code> で、部品の追加の機能も選べます。部品は、世界中の人が公開している場所（crates.io）から自動で取ってきます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><code>cargo add</code> の実際の出力は次のとおりです（<code>cargo new</code> の出力は省略）。</p>
 <div class="codehilite"><div class="code-wrap" id="code-3"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    Updating crates.io index
       Adding thiserror v2.0.21 to dependencies
@@ -740,6 +750,16 @@ UserId(7) / NoteId(42)
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.write_str()</code></strong>（文字列）: <code>Display</code> などの実装の中で、書き込み先（<code>Formatter</code>）に文字列をそのまま書くメソッド。<code>f.write_str(&amp;self.0)</code> は「自分の中の文字列を、そのまま表示する」。値を埋め込む時は <code>write!</code> を使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-13"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u01_title</span>
 </code></pre></div></div>
 
@@ -896,6 +916,17 @@ NG: TooLong { len: 81 }
 <span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;DB に渡す値: {}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">id</span><span class="p">.</span><span class="n">get</span><span class="p">());</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>type</code></strong>（型とメソッド）: 型に別の名前を付ける書き方（型の別名）。<code>type DynRepo = Arc&lt;dyn NoteRepository + Send + Sync&gt;;</code> のように、長い型を短く呼べます。トレイトの中の <code>type Err = IdError;</code> は「このトレイトで使うエラーの型は <code>IdError</code>」と決める書き方です。</li>
+<li><strong><code>FromStr</code></strong>（型とメソッド）: 「文字列から作れる」機能（トレイト）。<code>impl FromStr for 型 { … }</code> を書くと、<code>"42".parse::&lt;型&gt;()</code> で、文字列から自分の型を作れるようになります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-18"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u01_domain</span>
 </code></pre></div></div>
@@ -1768,6 +1799,18 @@ error: could not compile `design_lab` (bin &quot;u02_err_e0117&quot;) due to 1 p
 本物の時計: true
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.duration_since()</code></strong>（時間）: 「ある時刻から、どれだけたったか」を <code>Duration</code> で返すメソッド。<code>SystemTime::now().duration_since(UNIX_EPOCH)</code> は、1970 年 1 月 1 日から今までの時間です。</li>
+<li><strong><code>.as_secs()</code></strong>（時間）: 時間の長さ（<code>Duration</code>）を、秒の整数で返すメソッド（小数点以下は切り捨て）。</li>
+<li><strong><code>SystemTime</code></strong>（時間）: カレンダーの時刻（今が何時か）を表す型。<code>SystemTime::now()</code> で今の時刻を取ります。記録に日時を残す時に使います（処理の時間を測るのは <code>Instant</code>）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li>時刻のように「実行するたびに変わるもの」に直接頼ると、テストの結果が実行のタイミングで変わってしまいます。trait で差し替え可能にしておけば、テストでは <code>FixedClock</code> を渡して「期限ちょうど」のような境目を、何度でも同じ結果で確かめられます。</li>
 <li><code>use std::time::{...}</code> を関数の中に書いているのは、その関数でしか使わないものを近くに置くためです。ファイルの先頭に書いてもかまいません。</li>
@@ -2050,6 +2093,17 @@ None
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>where</code></strong>（型とメソッド）: ジェネリクス（型を後から決める書き方）の条件を、関数の後ろにまとめて書く所。<code>where T: Display, I: IntoIterator&lt;Item = T&gt;</code> のように、条件が長い時に読みやすくなります。</li>
+<li><strong><code>IntoIterator</code></strong>（イテレーター）: 「<code>for</code> で回せる物」の機能（トレイト）。<code>Vec</code>・配列・<code>HashMap</code> などが持っています。<code>I: IntoIterator&lt;Item = T&gt;</code> は「<code>T</code> が 1 つずつ出てくる、回せる物なら何でも」という条件です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-60"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u03_page</span>
 </code></pre></div></div>
 
@@ -2166,6 +2220,16 @@ Page { items: [4, 5, 6], page: 2, per_page: 3, total: 7 }
 <span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">service</span><span class="p">.</span><span class="n">debug_repo</span><span class="p">());</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Iterator</code></strong>（イテレーター）: 「1 つずつ取り出せる物」（イテレーター）の機能（トレイト）。<code>map</code>・<code>filter</code>・<code>sum</code> などのメソッドは、全部この機能に付いています。<code>impl Iterator&lt;Item = &amp;Note&gt;</code> は「<code>&amp;Note</code> を 1 つずつ出す何か」を返す、という戻り値の書き方です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-67"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u03_service</span>
 </code></pre></div></div>
@@ -2756,6 +2820,18 @@ Box&lt;dyn Exporter&gt; の大きさ: 16 バイト
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>InMemoryNoteRepository::default()</code></strong>（型とメソッド）: この巻で作る型 <code>InMemoryNoteRepository</code>（メモリの中にノートを持つ保管係）を、初期値（空の状態）で作る書き方。<code>#[derive(Default)]</code> を付けてあるので、<code>::default()</code> で作れます。</li>
+<li><strong><code>Send</code></strong>（スレッドと共有）: 「別のスレッドへ渡してもよい」ことを表す印（トレイト）。<code>Arc&lt;dyn NoteRepository + Send + Sync&gt;</code> の <code>+ Send</code> は「スレッドをまたいで渡せる物に限る」という条件です。多くの型は自動で持っています（<code>Rc</code> などは持っていません）。</li>
+<li><strong><code>Sync</code></strong>（スレッドと共有）: 「いくつものスレッドから同時に借りて読んでもよい」ことを表す印（トレイト）。Web サーバーのように、いくつもの処理が 1 つの物を共有する時に必要です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-90"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u04_state</span>
 </code></pre></div></div>
 
@@ -3183,6 +3259,16 @@ error: could not compile `design_lab` (bin &quot;u04_err_send&quot;) due to 2 pr
 CSV
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Sized</code></strong>（型とメソッド）: 「大きさ（メモリで使う量）が、翻訳の時に決まっている」ことを表す印（トレイト）。<code>where Self: Sized</code> は「<code>dyn</code> 越しには呼べない」メソッドにする時の書き方です。ふだんは気にしなくて大丈夫です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li><code>where Self: Sized</code> は「<code>Self</code> の大きさがコンパイル時に分かるときだけ」という条件です。<code>dyn Exporter</code> は大きさが分からない型なので、このメソッドは vtable に載らず、dyn 越しには呼べません。その代わり、trait 全体は dyn で使えるようになります。</li>
 </ul>
@@ -3572,6 +3658,21 @@ Box&lt;dyn Error&gt;: タイトルを入力してください
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>#[error]</code></strong>（エラー処理）: <code>thiserror</code> の印（属性）。エラーの種類ごとに、表示する文を決めます。<code>#[error("タイトルが長すぎます（{0} 文字）")]</code> のように書くと、<code>Display</code> を自分で書かずに済みます。</li>
+<li><strong><code>#[source]</code></strong>（エラー処理）: <code>thiserror</code> の印（属性）。「このエラーの元になったエラー」の項目に付けます。<code>.source()</code> や <code>anyhow</code> の原因の表示で、元のエラーまでたどれるようになります。</li>
+<li><strong><code>#[from]</code></strong>（エラー処理）: <code>thiserror</code> の印（属性）。付けた項目の型のエラーから、自分のエラーへ自動で変換できるようにします（<code>From</code> の実装を作る）。これで <code>?</code> を使った時に、自動で自分のエラーに変わります。</li>
+<li><strong><code>From</code></strong>（型とメソッド）: 「ある型から作れる」機能（トレイト）。<code>impl From&lt;RepoError&gt; for AppError</code> を書くと、<code>RepoError</code> を <code>AppError</code> に変えられます。<code>?</code> は、エラーを返す時にこの変換を自動で使います。</li>
+<li><strong><code>ErrorKind</code></strong>（エラー処理）: 入出力のエラーの「種類」。<code>std::io::ErrorKind::NotFound</code>（無い）・<code>ConnectionRefused</code>（つなぐのを断られた）などがあり、<code>e.kind()</code> で調べて、種類ごとに処理を分けられます。</li>
+<li><strong><code>ConnectionRefused</code></strong>（エラー処理）: <code>ErrorKind::ConnectionRefused</code> は、「相手のパソコンに、その番号で待っているプログラムがいない」ために、つなぐのを断られた、というエラーの種類です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-113"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u05_app_error</span>
 </code></pre></div></div>
 
@@ -3697,6 +3798,19 @@ Box&lt;dyn Error&gt;: タイトルを入力してください
 <span class="w">    </span><span class="nb">Ok</span><span class="p">(())</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>bail!</code></strong>（エラー処理）: <code>anyhow</code> のマクロ。その場でエラーを作って、関数から返します。<code>bail!("ノートが 1 件もありません");</code> は <code>return Err(anyhow!("…"));</code> の短い書き方です。</li>
+<li><strong><code>.with_context()</code></strong>（エラー処理）: <code>anyhow</code> のメソッド。失敗した時のエラーに、「何をしていて失敗したか」の説明を書き足します。<code>.with_context(|| format!("{path} を読めませんでした"))?</code>。ログを見た人が、原因をすぐ分かるようになります。</li>
+<li><strong><code>.unwrap_or_else()</code></strong>（エラー処理）: <code>Option</code> や <code>Result</code> から中身を取り出し、無い（失敗した）時は、渡した関数を動かして代わりの値を作るメソッド。<code>unwrap_or</code> と違い、代わりの値を作る処理が、必要な時だけ動きます。</li>
+<li><strong><code>Context</code></strong>（エラー処理）: <code>anyhow::Context</code> は、<code>with_context</code>・<code>context</code> メソッドを使えるようにする機能（トレイト）。<code>use anyhow::Context;</code> と書いておくと、<code>Result</code> や <code>Option</code> に説明を付けられます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><code>design_lab</code> フォルダに <code>seed.txt</code>（1行目「牛乳を買う」、2行目は空行、3行目「本を返す」）を作ってから実行します。<code>--</code> の後ろは、プログラムに渡す引数です。</p>
 <div class="codehilite"><div class="code-wrap" id="code-122"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u05_anyhow</span> <span class="p">--</span> <span class="n">seed</span><span class="p">.</span><span class="n">txt</span>
@@ -4424,6 +4538,16 @@ note: see more `Cargo.toml` keys and their definitions at https://doc.rust-lang.
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>NoteStore::default()</code></strong>（型とメソッド）: この巻で作る型 <code>NoteStore</code> を、初期値（空の状態）で作る書き方（<code>#[derive(Default)]</code> のおかげで使える）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-156"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span>
 </code></pre></div></div>
 
@@ -4866,6 +4990,16 @@ note: see more `Cargo.toml` keys and their definitions at https://doc.rust-lang.
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.is_ok()</code></strong>（エラー処理）: <code>Result</code> が <code>Ok</code>（成功）なら <code>true</code> を返すメソッド。中身は要らず、成功したかだけ知りたい時に使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-188"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-p</span> <span class="n">seed</span>
 </code></pre></div></div>
 
@@ -5090,6 +5224,18 @@ note: see more `Cargo.toml` keys and their definitions at https://doc.rust-lang.
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cfg!</code></strong>（テスト）: 条件（機能が ON か・どの OS か など）が合っているかを、<code>true</code>・<code>false</code> で返すマクロ。<code>if cfg!(feature = "json") { … }</code> のように、普通の <code>if</code> の中で使えます。</li>
+<li><strong><code>#[cfg_attr]</code></strong>（テスト）: 「条件が合う時だけ、この印（属性）を付ける」という印。<code>#[cfg_attr(feature = "json", derive(Serialize))]</code> は、<code>json</code> の機能が ON の時だけ <code>Serialize</code> を付けます。</li>
+<li><strong><code>serde_json::to_string()</code></strong>（JSON）: Rust の値を、JSON の文字列（1 行）に変える関数。値の型に <code>Serialize</code> が付いている必要があります。失敗することもあるので <code>Result</code> が返ります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>3通りに実行してみます。まずは何も指定しない場合です。</p>
 <div class="codehilite"><div class="code-wrap" id="code-193"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span>
 </code></pre></div></div>
@@ -5173,6 +5319,16 @@ markdown=false json=false
 <p><code>cargo tree</code> は、依存クレートを木の形で表示するコマンドです。features によって依存が変わる様子を確かめます。</p>
 <div class="codehilite"><div class="code-wrap" id="code-201"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">tree</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo tree</code></strong>（cargo のコマンド）: プロジェクトが使っている部品（クレート）と、その部品がさらに使っている部品を、木の形で表示するコマンド。<code>--depth 1</code> で、直接使っている物だけにできます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-202"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>feat_lab v0.1.0 (...\feat_lab)
 </code></pre></div></div>
@@ -5577,6 +5733,17 @@ markdown=false json=false
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>serde_json::to_string_pretty()</code></strong>（JSON）: Rust の値を、人が読みやすい字下げ付きの JSON の文字列に変える関数。</li>
+<li><strong><code>Deserialize</code></strong>（JSON）: 「JSON などから作れる」機能（トレイト。<code>serde</code> の部品）。<code>#[derive(Deserialize)]</code> を付けた型は、<code>serde_json::from_str</code> で JSON から作れます。逆向き（値 → JSON）は <code>Serialize</code> です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-222"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u08_serde</span>
 </code></pre></div></div>
 
@@ -5778,6 +5945,17 @@ markdown=false json=false
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>#[serde]</code></strong>（JSON）: <code>serde</code> の印（属性）。JSON にする時の細かい決まりを付けます。<code>#[serde(rename_all = "camelCase")]</code>（名前の書き方を変える）・<code>#[serde(default)]</code>（無い時は初期値）・<code>#[serde(skip_serializing_if = "Option::is_none")]</code>（空なら書かない）などがあります。</li>
+<li><strong><code>TryFrom</code></strong>（型とメソッド）: 「ある型から作れるが、失敗することもある」変換の機能（トレイト）。<code>impl TryFrom&lt;CreateNoteInput&gt; for NewNote</code> を書くと、<code>NewNote::try_from(input)</code> で、入力を確かめながら変換でき、だめなら <code>Err</code> を返します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-229"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u08_dto</span>
 </code></pre></div></div>
 
@@ -5889,6 +6067,16 @@ markdown=false json=false
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>#[allow]</code></strong>（テスト）: 「この警告は出さなくてよい」と伝える印（属性）。<code>#[allow(dead_code)]</code> は、使っていない関数への警告を止めます。本当に要らない警告だけに使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-235"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>   Compiling design_lab v0.1.0 (...\design_lab)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.38s
@@ -6246,6 +6434,18 @@ NG タイトルを入力してください at line 1 column 15
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>std::process::exit()</code></strong>（プロセス）: プログラムを、その場で終わらせる関数（<code>process::exit</code> と同じ）。<code>std::process::exit(1)</code> は、終了コード 1（失敗）で終わります。</li>
+<li><strong><code>VarError</code></strong>（プロセス）: 環境変数を読む <code>env::var</code> が失敗した時のエラーの型。<code>VarError::NotPresent</code>（設定されていない）と <code>VarError::NotUnicode</code>（文字として読めない）の 2 種類があります。</li>
+<li><strong><code>NotPresent</code></strong>（プロセス）: <code>VarError::NotPresent</code> は、「その名前の環境変数が設定されていない」というエラーの種類です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>何も設定せずに実行します。</p>
 <div class="codehilite"><div class="code-wrap" id="code-243"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u09_env</span>
 </code></pre></div></div>
@@ -6492,6 +6692,20 @@ http://127.0.0.1:3000 で待ち受けます（のつもり）
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.filter_map()</code></strong>（イテレーター）: 1 つずつ変換して、<code>None</code> になった物は捨て、<code>Some</code> の中身だけを残すメソッド。<code>.filter_map(|line| line.split_once('='))</code> は、<code>=</code> を含む行だけを「名前と値の組」にします。</li>
+<li><strong><code>.or_else()</code></strong>（エラー処理）: <code>Option</code> や <code>Result</code> が空（失敗）の時だけ、渡した関数で「別の <code>Option</code>・<code>Result</code>」を作って返すメソッド。「無ければ、別の所から探す」に使います。</li>
+<li><strong><code>.as_ref()</code></strong>（所有権と借用）: 中身を借りた形に変えるメソッド。<code>Option&lt;String&gt;</code> を <code>Option&lt;&amp;String&gt;</code> にするなど、中身を移さずに覗きたい時に使います。</li>
+<li><strong><code>.into()</code></strong>（型とメソッド）: 値を、受け取る側が求める型に変えるメソッド（<code>From</code> の実装を使う）。<code>let s: String = "abc".into();</code> のように、変換先の型が分かる所で使います。</li>
+<li><strong><code>std::env::var()</code></strong>（プロセス）: 環境変数を読む関数（<code>env::var</code> と同じ）。<code>std::env::var("PORT")</code> は <code>Result</code> を返し、設定されていなければ <code>Err</code> です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-254"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u09_config</span>
 </code></pre></div></div>
 
@@ -6570,6 +6784,16 @@ env: 起動できません: DATABASE_URL が設定されていません
 <span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{:?}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">env</span><span class="p">::</span><span class="n">var</span><span class="p">(</span><span class="s">&quot;PORT&quot;</span><span class="p">));</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>env::set_var()</code></strong>（プロセス）: このプログラムの中の環境変数を設定する関数。テストで設定を試す時などに使います（Rust 2024 では、ほかのスレッドとの関係で <code>unsafe</code> の中で使う決まりです）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-261"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>   Compiling design_lab v0.1.0 (...\design_lab)
 error[E0133]: call to unsafe function `set_var` is unsafe and requires unsafe block
@@ -7054,6 +7278,17 @@ error: test failed, to rerun pass `--lib`
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>#[must_use]</code></strong>（型とメソッド）: 「この戻り値を使わずに捨てたら、警告を出して」という印（属性）。結果の確かめ忘れを防ぎます。</li>
+<li><strong><code>#[should_panic]</code></strong>（テスト）: 「このテストは、パニック（止まる）するのが正しい」という印（属性）。<code>#[should_panic(expected = "文の一部")]</code> で、止まる時のメッセージも確かめられます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><strong>src/status.rs</strong></p>
 <div class="codehilite"><div class="code-wrap" id="code-280"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">use</span><span class="w"> </span><span class="n">thiserror</span><span class="p">::</span><span class="n">Error</span><span class="p">;</span>
 
@@ -7196,6 +7431,16 @@ error: test failed, to rerun pass `--lib`
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.unwrap_err()</code></strong>（テスト）: <code>Result</code> が <code>Err</code> の時に、そのエラーを取り出すメソッド。<code>Ok</code> だった時は止まります。テストで「ちゃんと失敗するか」を確かめる時に使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-282"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">test</span>
 </code></pre></div></div>
 
@@ -7253,6 +7498,16 @@ all doctests ran in 0.57s; merged doctests compilation took 0.39s
 </ul>
 <div class="codehilite"><div class="code-wrap" id="code-285"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">doc</span> <span class="p">-</span><span class="n">-no-deps</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo doc</code></strong>（cargo のコマンド）: コードに書いた説明（<code>///</code> のコメント）から、説明書（ドキュメント）の Web ページを作るコマンド。<code>--no-deps</code> で自分のコードだけ、<code>--open</code> でできたページをブラウザーで開きます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-286"><button type="button" class="copy-btn">コピー</button><pre><span></span><code> Documenting note_domain v0.1.0 (...\note_domain)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.23s

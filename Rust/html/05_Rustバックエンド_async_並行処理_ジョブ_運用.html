@@ -769,6 +769,18 @@ note: see more `Cargo.toml` keys and their definitions at https://doc.rust-lang.
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>await</code></strong>（非同期）: <code>async</code> の関数（Future）が終わるのを待って、結果を受け取る書き方。<code>sleep(…).await</code> のように、後ろに <code>.await</code> を付けます。待っている間は、ほかの仕事に順番をゆずります。<code>.await</code> を付けないと、その仕事は始まりません。</li>
+<li><strong><code>#[tokio]</code></strong>（非同期）: <code>#[tokio::main]</code> は、<code>main</code> を <code>async</code> にして、tokio（非同期の仕事を回す仕組み）の上で動かす印（属性）。<code>#[tokio::test]</code> は、テストを <code>async</code> で書けるようにする印です。</li>
+<li><strong><code>tokio::time::sleep()</code></strong>（非同期）: 決めた時間だけ待つ、非同期の関数。<code>tokio::time::sleep(Duration::from_millis(300)).await</code>。待っている間、ほかの仕事は止まりません（<code>std::thread::sleep</code> はスレッドごと止めてしまうので、<code>async</code> の中では使いません）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><code>src/bin/u01_lazy.rs</code> として保存して実行します。</p>
 <div class="codehilite"><div class="code-wrap" id="code-8"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u01_lazy</span>
 </code></pre></div></div>
@@ -842,6 +854,16 @@ note: see more `Cargo.toml` keys and their definitions at https://doc.rust-lang.
 <span class="w">    </span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>join!</code></strong>（非同期）: <code>tokio::join!(a, b)</code> は、いくつかの非同期の仕事を同時に進めて、全部が終わるのを待つマクロ。かかる時間は、いちばん長い物の分だけです。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><code>src/bin/u01_join.rs</code> として保存して実行します。</p>
 <div class="codehilite"><div class="code-wrap" id="code-11"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u01_join</span>
@@ -920,6 +942,16 @@ note: see more `Cargo.toml` keys and their definitions at https://doc.rust-lang.
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>try_join!</code></strong>（非同期）: <code>tokio::try_join!(a, b)</code> は、<code>join!</code> と同じく同時に進めますが、どれか 1 つでも <code>Err</code> になったら、すぐに止めてそのエラーを返すマクロ。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><code>src/bin/u01_try_join.rs</code> として保存して実行します。</p>
 <div class="codehilite"><div class="code-wrap" id="code-14"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u01_try_join</span>
@@ -1016,6 +1048,25 @@ Err(&quot;ユーザー 2 はいません&quot;) / 0.3 秒
 <span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;結果: {result}&quot;</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>pin!</code></strong>（非同期）: Future を、メモリの中で動かないように「ピン留め」するマクロ。<code>poll</code> を自分で呼ぶ時などに必要です（ふつうは <code>.await</code> が自動でしてくれます）。</li>
+<li><strong><code>.waker()</code></strong>（非同期）: <code>Context</code> から、「準備ができたら起こしてね」と頼むための物（<code>Waker</code>）を取り出すメソッド。非同期の仕組みの中身を見る時の物で、ふだんは使いません。</li>
+<li><strong><code>.wake_by_ref()</code></strong>（非同期）: <code>Waker</code> を使って、「もう一度 <code>poll</code> してほしい」と知らせるメソッド。</li>
+<li><strong><code>.as_mut()</code></strong>（所有権と借用）: 中身を、書きかえられる形で借りるメソッド。<code>Pin</code> に使うと、ピン留めしたまま <code>poll</code> を呼べる形にします。</li>
+<li><strong><code>Context::from_waker()</code></strong>（非同期）: <code>Waker</code> から、<code>poll</code> に渡す <code>Context</code> を作る関数。非同期の仕組みの中身を確かめる時に使います。</li>
+<li><strong><code>Waker::noop()</code></strong>（非同期）: 「起こしても何もしない」<code>Waker</code> を作る関数。仕組みを試すための物です。</li>
+<li><strong><code>Future</code></strong>（非同期）: 「いつか終わる仕事」を表す型（トレイト）。<code>async fn</code> を呼ぶと、すぐには動かず、この Future が返ります。<code>.await</code> するか、tokio に渡して、初めて動きます。</li>
+<li><strong><code>Pin</code></strong>（非同期）: 中身がメモリの中で動かないことを約束する入れ物。Future の中には、自分の中の場所を指している物があるので、動かすと壊れてしまいます。それを防ぐための仕組みです。</li>
+<li><strong><code>Waker</code></strong>（非同期）: 「この仕事の準備ができた」と知らせて、もう一度動かしてもらうための物。tokio が、待っている仕事を起こすのに使います。</li>
+<li><strong><code>Ready</code></strong>（非同期）: <code>Poll::Ready(値)</code> は「仕事が終わった。結果はこれ」という答え。まだなら <code>Poll::Pending</code> です。Future の <code>poll</code> は、この 2 つのどちらかを返します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><code>src/bin/u01_mini_executor.rs</code> として保存して実行します。このプログラムは Tokio を使っていません（<code>#[tokio::main]</code> もありません）。</p>
 <div class="codehilite"><div class="code-wrap" id="code-17"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u01_mini_executor</span>
@@ -1350,6 +1401,16 @@ error: could not compile `async_lab` (bin &quot;e01_unused_future&quot;) due to 
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>dotenvy::dotenv()</code></strong>（設定）: <code>.env</code> ファイルに書いた「名前=値」を、環境変数として読み込む関数（<code>dotenvy</code> の部品）。開発のパソコンで、設定をファイルにまとめておく時に使います。<code>.env</code> は Git に入れません。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li><code>#[tokio::main]</code> の <code>async fn main</code> で、Tokio のランタイムの上でアプリ全体を動かしています。</li>
 <li><code>Db::open(&amp;config).await</code> は「DB を開き終わるまで待つ」、<code>db::migrate(&amp;db).await</code> は「表の準備が終わるまで待つ」です。どちらも前の結果を次で使うので、<strong>順番に</strong> <code>.await</code> しています（例1-2の解説4）。</li>
@@ -1369,6 +1430,16 @@ error: could not compile `async_lab` (bin &quot;e01_unused_future&quot;) due to 
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>params!</code></strong>（データベース）: <code>libsql::params![a, b]</code> は、SQL の <code>?1</code>・<code>?2</code> の場所に入れる値を並べるマクロ。値は SQL の文字列につながず、必ずこの形で渡します（SQL インジェクションを防ぐ。第7巻）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p>DB につなぐ・SQL を送る・1行目を受け取る、の3か所で <code>.await</code> しています。DB の返事を待っている間、同じサーバーの中では、ほかの人のリクエストが進んでいます。これが、RustNote が1つのプログラムで大勢の利用者をさばける理由です。</p>
 <h3 id="_15">練習問題</h3>
@@ -1784,6 +1855,19 @@ error: could not compile `async_lab` (bin &quot;e01_unused_future&quot;) due to 
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.worker_threads()</code></strong>（非同期）: tokio の組み立て係で、仕事を回すスレッドの数を決めるメソッド。</li>
+<li><strong><code>.enable_all()</code></strong>（非同期）: tokio の組み立て係で、時間（タイマー）やネットワークなど、全部の機能を使えるようにするメソッド。</li>
+<li><strong><code>tokio::runtime::Builder::new_multi_thread()</code></strong>（非同期）: いくつものスレッドで仕事を回す tokio の仕組み（ランタイム）を、組み立て始める関数。<code>.worker_threads(2).enable_all().build()</code> のように設定してから作ります。</li>
+<li><strong><code>Builder</code></strong>（型とメソッド）: 「組み立て係」（ビルダー）の型。設定をメソッドでつなげて決め、最後の <code>.build()</code> ででき上がりを作ります。tokio のランタイム・HTTP のクライアント・データベースの接続などで使われます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><code>src/bin/u02_runtime.rs</code> として保存して実行します。</p>
 <div class="codehilite"><div class="code-wrap" id="code-46"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u02_runtime</span>
 </code></pre></div></div>
@@ -1861,6 +1945,19 @@ error: could not compile `async_lab` (bin &quot;e01_unused_future&quot;) due to 
 <span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;main は最後まで動きました&quot;</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.is_panic()</code></strong>（非同期）: <code>tokio::spawn</code> した仕事の失敗（<code>JoinError</code>）が、パニック（止まった）のせいなら <code>true</code> を返すメソッド。</li>
+<li><strong><code>.abort()</code></strong>（非同期）: <code>tokio::spawn</code> した仕事を、途中で取り消すメソッド。</li>
+<li><strong><code>.is_cancelled()</code></strong>（非同期）: <code>tokio::spawn</code> した仕事の失敗が、取り消し（<code>abort</code>）のせいなら <code>true</code> を返すメソッド。</li>
+<li><strong><code>Duration::from_secs()</code></strong>（時間）: 秒から、時間の長さ（<code>Duration</code>）を作る関数。<code>Duration::from_secs(10)</code> は 10 秒。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><code>src/bin/u02_join_error.rs</code> として保存して実行します。</p>
 <div class="codehilite"><div class="code-wrap" id="code-50"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u02_join_error</span>
@@ -2150,6 +2247,16 @@ error: could not compile `async_lab` (bin &quot;e02_spawn_rc&quot;) due to 1 pre
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Runtime</code></strong>（非同期）: tokio の、非同期の仕事を回す仕組み（ランタイム）の型。<code>#[tokio::main]</code> は、中でこれを作っています。<code>runtime.block_on(future)</code> で、ふつうの関数から async の仕事を動かせます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-67"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>   Compiling async_lab v0.1.0 (...\async_lab)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.72s
      Running `target\debug\e02_block_on.exe`
@@ -2203,6 +2310,17 @@ error: process didn&#39;t exit successfully: `target\debug\e02_block_on.exe` (ex
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>select!</code></strong>（非同期）: <code>tokio::select!</code> は、いくつかの非同期の仕事のうち、<strong>先に終わった 1 つ</strong>だけを使い、残りは取り消すマクロ。「時間切れ」や「止めての合図」と組み合わせて使います。</li>
+<li><strong><code>.accept()</code></strong>（ネットワーク）: サーバーが待ち受けている所に来た接続を、1 つ受け取るメソッド（<code>listener.accept().await</code>）。来るまで待ちます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li>接続ごとに <code>tokio::spawn</code> するので、Aさんのリクエストが DB の返事を待っている間も、Bさん・Cさんのリクエストは別のタスクとして進みます。どれかのタスクで panic が起きても、ほかの接続は影響を受けません（例2-3）。</li>
 <li><code>tokio::select!</code> は「どちらか先に起きたほうを選ぶ」書き方で、UNIT 03 で学びます。止める合図を受けたときに、処理中の接続を待ってから終わる部分は、UNIT 06 で読みます。</li>
@@ -2233,6 +2351,16 @@ error: process didn&#39;t exit successfully: `target\debug\e02_block_on.exe` (ex
 <span class="w">        </span><span class="nb">Err</span><span class="p">(</span><span class="n">error</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="nb">Err</span><span class="p">(</span><span class="n">AppError</span><span class="p">::</span><span class="n">internal</span><span class="p">(</span><span class="n">error</span><span class="p">)),</span>
 <span class="w">    </span><span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>tokio::task::spawn_blocking()</code></strong>（非同期）: 時間のかかる重い計算や、待ってしまう処理（パスワードのハッシュなど）を、非同期の仕事を回すスレッドとは別のスレッドで動かす関数。ほかの仕事を止めないために使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><code>spawn_blocking</code> は UNIT 07 で学ぶ「重い計算用の spawn」です。引換券を <code>.await</code> した結果が <code>Result</code> で、その中身もまた <code>Result</code> なので、<code>Ok(Ok(..))</code>・<code>Ok(Err(..))</code>・<code>Err(..)</code> の3つに分けています。この形は、練習問題3で自分でも書きます。</p>
 <h3 id="_24">練習問題</h3>
@@ -2269,6 +2397,16 @@ error: process didn&#39;t exit successfully: `target\debug\e02_block_on.exe` (ex
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>panic!</code></strong>（エラー処理）: その場でプログラム（今のスレッド）を止めるマクロ。<code>panic!("起きるはずのないことが起きました")</code>。直しようのない、プログラムのまちがいを知らせる時に使います。ふつうの失敗には <code>Result</code> を使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <h3 id="_25">解答と解説</h3>
 <p><strong>問1の解答:</strong></p>
@@ -2550,6 +2688,17 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.join_next()</code></strong>（非同期）: <code>JoinSet</code> に入れた仕事のうち、終わった順に 1 つずつ結果を受け取るメソッド。全部受け取ると <code>None</code> を返します。</li>
+<li><strong><code>JoinSet</code></strong>（非同期）: いくつもの非同期の仕事をまとめて持ち、終わった順に結果を受け取れる入れ物（tokio の部品）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><code>src/bin/u03_joinset.rs</code> として保存して実行します。</p>
 <div class="codehilite"><div class="code-wrap" id="code-83"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u03_joinset</span>
 </code></pre></div></div>
@@ -2792,6 +2941,16 @@ main が終わります（0.3 秒）
 <span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{done:?}（{:.2} 秒）&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">start</span><span class="p">.</span><span class="n">elapsed</span><span class="p">().</span><span class="n">as_secs_f64</span><span class="p">());</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.join_all()</code></strong>（非同期）: <code>JoinSet</code> の仕事が全部終わるのを待って、結果を <code>Vec</code> で返すメソッド。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><code>src/bin/u03_limited.rs</code> として保存して実行します。</p>
 <div class="codehilite"><div class="code-wrap" id="code-92"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u03_limited</span>
@@ -3244,6 +3403,16 @@ error[E0277]: `PhantomPinned` cannot be unpinned
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.as_millis()</code></strong>（時間）: 時間の長さ（<code>Duration</code>）を、ミリ秒の整数で返すメソッド。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-109"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Err(&quot;300 ミリ秒で時間切れ&quot;)（0.3 秒）
 Ok(&quot;問い合わせの結果&quot;)（0.8 秒）
 </code></pre></div></div>
@@ -3539,6 +3708,16 @@ Ok(&quot;C の結果&quot;)
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.recv()</code></strong>（非同期）: チャンネル（仕事どうしで値を渡す管）から、次の 1 つを受け取るメソッド。届くまで待ちます。送る口が全部無くなると <code>None</code> を返します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><code>src/bin/u04_mpsc.rs</code> として保存して実行します。</p>
 <div class="codehilite"><div class="code-wrap" id="code-113"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u04_mpsc</span>
 </code></pre></div></div>
@@ -3679,6 +3858,19 @@ Ok(&quot;C の結果&quot;)
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.try_send()</code></strong>（非同期）: チャンネルに値を送るメソッド。待たずにすぐ試し、箱がいっぱいなら <code>Full</code>、受け取る側がいなければ <code>Closed</code> のエラーを返します。</li>
+<li><strong><code>TrySendError</code></strong>（非同期）: <code>try_send</code> が失敗した時のエラーの型。<code>Full</code>（いっぱい）と <code>Closed</code>（受け取り係がいない）の 2 種類があります。</li>
+<li><strong><code>Full</code></strong>（非同期）: <code>TrySendError::Full</code> は、「チャンネルの箱がいっぱいで、今は送れない」というエラーの種類です。</li>
+<li><strong><code>Closed</code></strong>（非同期）: <code>TrySendError::Closed</code> は、「受け取り係がもういないので、送れない」というエラーの種類です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><code>src/bin/u04_try_send.rs</code> として保存して実行します。</p>
 <div class="codehilite"><div class="code-wrap" id="code-119"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u04_try_send</span>
 </code></pre></div></div>
@@ -3764,6 +3956,19 @@ Ok(&quot;C の結果&quot;)
 <span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;最終的な合計: {}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">reply_rx</span><span class="p">.</span><span class="k">await</span><span class="p">.</span><span class="n">unwrap</span><span class="p">());</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>mpsc::channel()</code></strong>（非同期）: 「送る口がいくつあってもよく、受ける口は 1 つ」のチャンネル（仕事どうしで値を渡す管）を作る関数。<code>mpsc::channel(16)</code> の 16 は、ためておける数です。<code>(送る口, 受ける口)</code> の組が返ります。</li>
+<li><strong><code>oneshot::channel()</code></strong>（非同期）: 1 回だけ値を送れるチャンネルを作る関数。「頼んだ仕事の答えを 1 つだけ返してもらう」時に使います。</li>
+<li><strong><code>Sender</code></strong>（非同期）: チャンネルの「送る口」の型。<code>.send(値).await</code> で送ります。<code>.clone()</code> で送る口を増やせます（<code>mpsc</code> の場合）。</li>
+<li><strong><code>Receiver</code></strong>（非同期）: チャンネルの「受ける口」の型。<code>.recv().await</code> で受け取ります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><code>src/bin/u04_oneshot.rs</code> として保存して実行します。</p>
 <div class="codehilite"><div class="code-wrap" id="code-122"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u04_oneshot</span>
@@ -3873,6 +4078,17 @@ Ok(&quot;C の結果&quot;)
 <span class="w">    </span><span class="n">watcher</span><span class="p">.</span><span class="k">await</span><span class="p">.</span><span class="n">unwrap</span><span class="p">();</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.subscribe()</code></strong>（非同期）: <code>broadcast</code>（1 つの送り手から、全員に配る）チャンネルで、受け取る口を新しく増やすメソッド。</li>
+<li><strong><code>watch::channel()</code></strong>（非同期）: 「いちばん新しい値だけ」を全員に見せるチャンネルを作る関数。設定の値（ログの細かさなど）を、動いている仕事に伝える時に使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><code>src/bin/u04_broadcast_watch.rs</code> として保存して実行します。</p>
 <div class="codehilite"><div class="code-wrap" id="code-125"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u04_broadcast_watch</span>
@@ -4009,6 +4225,17 @@ error: process didn&#39;t exit successfully: `target\debug\e04_send_closed.exe` 
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>RecvError</code></strong>（非同期）: チャンネルから受け取る時のエラーの型。<code>broadcast</code> では、受け取るのが遅すぎて取りこぼした時の <code>Lagged</code> などがあります。</li>
+<li><strong><code>Lagged</code></strong>（非同期）: <code>RecvError::Lagged(数)</code> は、「受け取るのが遅れて、その数だけ値を取りこぼした」というエラーの種類です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-132"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>追いつけず 3 件を読み飛ばしました
 受け取り: 4
 受け取り: 5
@@ -4098,6 +4325,16 @@ error: process didn&#39;t exit successfully: `target\debug\e04_send_closed.exe` 
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.closed()</code></strong>（非同期）: チャンネルの受ける口が全部無くなるまで待つメソッド（送る口に使う）。「全員の片づけが終わった」ことを知る時に使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li><strong>送り口を片付けることが合図になっています。</strong> 例4-1で、送る口が全部片付くと <code>recv</code> が <code>None</code> を返したのと同じく、watch でも送り口が片付くと、受け取り口の <code>changed()</code> が <code>Err</code> を返して終わります。値（ここでは中身の無い <code>()</code>）を送る必要さえありません。</li>
 <li><strong>受け取り口の数で、生きているタスクを数えています。</strong> 接続のタスクは <code>done_rx</code> の写しを1つずつ持ち、タスクが終わると写しが片付きます。最後の1つが片付くと、<code>done_tx.closed()</code> が終わります。「全部の接続が終わるまで待つ」が、channel の受け取り口の数だけで書けています。</li>
@@ -4183,6 +4420,16 @@ error: process didn&#39;t exit successfully: `target\debug\e04_send_closed.exe` 
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>FnOnce</code></strong>（関数）: 「1 回だけ呼べる関数（クロージャ）」を表す型の書き方。中で値を使い切る（<code>move</code> した値を渡してしまう）クロージャは、この形になります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-138"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>10 を足した → 合計 10
 20 を足した → 合計 30
 リセットした（それまでの合計 30）
@@ -4238,6 +4485,16 @@ error: process didn&#39;t exit successfully: `target\debug\e04_send_closed.exe` 
 <span class="w">    </span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.is_err()</code></strong>（エラー処理）: <code>Result</code> が <code>Err</code>（失敗）なら <code>true</code> を返すメソッド。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-140"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>0.1 秒: 仕事 1 回目
 0.2 秒: 仕事 2 回目
@@ -4724,6 +4981,17 @@ error: process didn&#39;t exit successfully: `target\debug\e04_send_closed.exe` 
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.acquire_owned()</code></strong>（非同期）: <code>Semaphore</code>（同時に使える数を決めた札の入れ物）から、札を 1 枚もらうメソッド。札が無ければ、空くまで待ちます。もらった札は、片づけられると自動で返されます。</li>
+<li><strong><code>Semaphore</code></strong>（非同期）: 「同時にいくつまで動いてよいか」を、札の数で決める仕組み。同時に外へ出す要求を 3 つまでに絞る、などに使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><code>src/bin/u05_semaphore.rs</code> として保存して実行します。</p>
 <div class="codehilite"><div class="code-wrap" id="code-154"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u05_semaphore</span>
 </code></pre></div></div>
@@ -5054,6 +5322,16 @@ B: 終わりました（2）
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>tokio::time::timeout()</code></strong>（非同期）: 非同期の仕事に時間の制限を付ける関数。<code>timeout(Duration::from_secs(1), 仕事).await</code> は、1 秒で終わらなければ <code>Err</code> を返します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-168"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>1回目の lock: 取れた（1 件）
 2回目の lock: 1 秒待っても取れない（自分が持っている鍵を待っている）
 </code></pre></div></div>
@@ -5081,6 +5359,17 @@ B: 終わりました（2）
 <span class="w">        </span><span class="p">.</span><span class="n">to_string</span><span class="p">()</span>
 <span class="p">});</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Argon2::default()</code></strong>（認証）: パスワードを安全に保存するための計算（Argon2id）を、おすすめの設定で用意する書き方（<code>argon2</code> の部品）。この計算は、わざと重く作られていて、パスワードを総当たりで当てるのを難しくします（第8巻）。</li>
+<li><strong><code>LazyLock</code></strong>（スレッドと共有）: 初めて使われた時に 1 回だけ作られ、その後はずっと同じ値を使う入れ物。<code>static DUMMY: LazyLock&lt;String&gt; = LazyLock::new(|| { … });</code> のように、作るのに手間がかかる物を、プログラム全体で共有する時に使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li><code>std::sync::LazyLock</code> は、<strong>最初に使われたときに1回だけ</strong>中のクロージャを実行して値を作り、それ以降は作った値を何人にでも読ませる道具です。2つのリクエストが同時に初めて使っても、作られるのは1回だけです。中では鍵のようなしくみで「1回だけ」を守っていますが、作り終わった後は、読むだけなので待ち合いません。</li>
@@ -5624,6 +5913,20 @@ Ok(&quot;応答&quot;)
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.cancelled()</code></strong>（非同期）: <code>CancellationToken</code>（止めての合図）が出されるまで待つメソッド。<code>select!</code> と組み合わせて、「合図が来たら仕事をやめる」と書きます。</li>
+<li><strong><code>.tick()</code></strong>（非同期）: <code>interval</code>（決まった間隔で鳴る時計）の、次の「鳴る時」まで待つメソッド。<code>loop { ticker.tick().await; … }</code> で、決まった間隔で同じ仕事をくり返します。</li>
+<li><strong><code>.child_token()</code></strong>（非同期）: <code>CancellationToken</code> から、子の合図を作るメソッド。親が止まれば子も止まりますが、子だけを止めることもできます。</li>
+<li><strong><code>CancellationToken</code></strong>（非同期）: 「止めて」の合図を、いくつもの仕事に一斉に伝えるための物（<code>tokio_util</code> の部品）。<code>.cancel()</code> で合図を出し、仕事の側は <code>.cancelled().await</code> で受け取ります。サーバーを行儀よく止める時に使います。</li>
+<li><strong><code>TaskTracker</code></strong>（非同期）: 動かした仕事を覚えておき、「全部終わるまで待つ」ことができる入れ物（<code>tokio_util</code> の部品）。<code>tracker.spawn(…)</code> で動かし、<code>tracker.close()</code> → <code>tracker.wait().await</code> で待ちます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><code>src/bin/u06_shutdown.rs</code> として保存して実行し、1秒ほどたったら、ターミナルで Ctrl+C を押します。</p>
 <div class="codehilite"><div class="code-wrap" id="code-186"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u06_shutdown</span>
 </code></pre></div></div>
@@ -5758,6 +6061,16 @@ error: could not compile `async_lab` (bin &quot;e06_elapsed_question&quot;) due 
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>std::thread::sleep()</code></strong>（時間）: 今のスレッドを、決めた時間だけ止める関数（<code>thread::sleep</code> と同じ）。async の中では使わず、<code>tokio::time::sleep</code> を使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><code>src/bin/u06_blocking_timeout.rs</code> として実行した結果です。</p>
 <div class="codehilite"><div class="code-wrap" id="code-191"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Ok(&quot;1 秒の処理が終わった&quot;)（1.0 秒）
 </code></pre></div></div>
@@ -5832,6 +6145,17 @@ error: could not compile `async_lab` (bin &quot;e06_elapsed_question&quot;) due 
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>tokio::signal::unix::signal()</code></strong>（非同期）: Linux などで、OS からの合図（シグナル）を受け取る関数。<code>SignalKind::terminate()</code>（「終わって」の合図）を受け取って、サーバーを片づけてから終わる時に使います（Fly.io などで動かす時。第12巻）。</li>
+<li><strong><code>SignalKind</code></strong>（非同期）: 受け取る OS の合図（シグナル）の種類。<code>SignalKind::terminate()</code> は「終わって」（SIGTERM）の合図です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li>例6-4と同じ <code>tokio::signal::ctrl_c()</code> を使っています。Linux などの Unix では、それに加えて <strong>SIGTERM</strong>（「止まってください」という OS の合図）も待ち、<code>select!</code> でどちらか先に来たほうを受け取ります。Windows には SIGTERM が無いので、<code>std::future::pending()</code>（永遠に終わらない Future）を代わりに置いています。</li>
 <li>RustNote を Fly.io で動かすとき、アプリを止めたり入れ替えたりする際に、Fly.io から合図が送られてきます。合図の種類と待ち時間の設定は、第12巻で扱います。</li>
@@ -5865,6 +6189,16 @@ error: could not compile `async_lab` (bin &quot;e06_elapsed_question&quot;) due 
 <span class="n">conn</span><span class="p">.</span><span class="n">execute_batch</span><span class="p">(</span><span class="s">&quot;PRAGMA foreign_keys = ON; PRAGMA busy_timeout = 5000;&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="k">await</span><span class="o">?</span><span class="p">;</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.execute_batch()</code></strong>（データベース）: <code>;</code> で区切った、いくつもの SQL の文を、まとめて実行するメソッド（libsql）。表を作る時などに使います。値を入れる文には使わず、<code>execute</code> と <code>params!</code> を使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><code>busy_timeout</code> は、tokio の <code>timeout</code> ではなく、SQLite の中の「ほかの接続が書き込みの鍵を持っているとき、最大何ミリ秒待つか」の設定です（第7巻 UNIT 05 の <code>database is locked</code>）。RustNote のコードには、tokio の <code>timeout</code> は出てきません。Turso（リモート）への問い合わせに上限を付けたくなったら、Repository の関数の中で、この単元の <code>timeout</code> と <code>map_err</code> の形で包むことになります。</p>
 <h3 id="_60">練習問題</h3>
@@ -6183,6 +6517,18 @@ Ctrl+C を受け取りました。停止を始めます
 <span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;照合: {ok}（{:.2} 秒）&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">start</span><span class="p">.</span><span class="n">elapsed</span><span class="p">().</span><span class="n">as_secs_f64</span><span class="p">());</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>PasswordHasher</code></strong>（認証）: パスワードからハッシュ（保存用の値）を作る機能（トレイト。<code>password_hash</code> の部品）。<code>argon2.hash_password(…)</code> を使うには、これを <code>use</code> します。</li>
+<li><strong><code>PasswordVerifier</code></strong>（認証）: 入力されたパスワードが、保存してあるハッシュと合うかを確かめる機能（トレイト）。<code>argon2.verify_password(…)</code> を使うには、これを <code>use</code> します。</li>
+<li><strong><code>PasswordHash</code></strong>（認証）: 保存してあるハッシュの文字列（<code>$argon2id$v=19$…</code>）を読み取った物の型。<code>PasswordHash::new(&amp;保存した文字列)</code> で作り、確かめに使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><code>src/bin/u07_hash_time.rs</code> として保存して実行します。</p>
 <div class="codehilite"><div class="code-wrap" id="code-205"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u07_hash_time</span>
@@ -6735,6 +7081,17 @@ $argon2id$v=19$m=19456,t=2,p=1$x65/wsS7qC1329gDz82ZxQ$jvh1sOrv/5FqKUyXC3KppT5Gg2
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>std::fs::read_to_string()</code></strong>（ファイルとフォルダ）: ファイルの中身を全部読んで文字列にする関数（<code>fs::read_to_string</code> と同じ）。</li>
+<li><strong><code>std::fs::write()</code></strong>（ファイルとフォルダ）: ファイルに書く関数（<code>fs::write</code> と同じ）。無ければ作り、あれば中身を置きかえます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-225"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Ok(100000)（0.08 秒）
 Err(&quot;読めません: 指定されたファイルが見つかりません。 (os error 2)&quot;)
 </code></pre></div></div>
@@ -7128,6 +7485,27 @@ Err(&quot;読めません: 指定されたファイルが見つかりません�
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.eq_ignore_ascii_case()</code></strong>（文字列）: 英字の大文字と小文字を区別せずに、同じかどうかを比べるメソッド。HTTP のヘッダーの名前（<code>Content-Type</code> と <code>content-type</code>）を比べる時などに使います。</li>
+<li><strong><code>.local_addr()</code></strong>（ネットワーク）: 待ち受けている（つないでいる）自分の側の住所（IP アドレスとポート番号）を返すメソッド。番号 <code>0</code> で待ち受けると、OS が空いている番号を選ぶので、それを知るのに使います。</li>
+<li><strong><code>.extend_from_slice()</code></strong>（Vec（並び））: <code>Vec</code> の後ろに、別の並び（スライス）の中身を写して足すメソッド。受け取ったバイトを、ためておく時などに使います。</li>
+<li><strong><code>.windows()</code></strong>（Vec（並び））: 並びから、「隣どうし n 個ずつ」を、1 つずつずらしながら取り出すメソッド。<code>buffer.windows(4)</code> は、4 バイトずつの組を順に見ます（区切りの <code>\r\n\r\n</code> を探すのに使う）。</li>
+<li><strong><code>.and_then()</code></strong>（エラー処理）: <code>Option</code> や <code>Result</code> に中身があれば、それを使って、次の <code>Option</code>・<code>Result</code> を作るメソッド（無ければ、そのまま <code>None</code>・<code>Err</code>）。失敗するかもしれない処理を、続けてつなぐ時に使います。</li>
+<li><strong><code>.to_vec()</code></strong>（Vec（並び））: 並び（スライス）の中身を写して、新しい <code>Vec</code> を作るメソッド。</li>
+<li><strong><code>String::from_utf8_lossy()</code></strong>（文字列）: バイトの並びを、文字列として読む関数。文字として読めない所があっても止まらず、<code>�</code> に置きかえて読みます。</li>
+<li><strong><code>SocketAddr</code></strong>（ネットワーク）: IP アドレスとポート番号の組（例: <code>127.0.0.1:8080</code>）を表す型。</li>
+<li><strong><code>AsyncReadExt</code></strong>（非同期）: tokio で、接続やファイルから非同期に読むメソッド（<code>read</code>・<code>read_to_end</code> など）を使えるようにする機能（トレイト）。<code>use tokio::io::AsyncReadExt;</code> が要ります。</li>
+<li><strong><code>AsyncWriteExt</code></strong>（非同期）: tokio で、非同期に書くメソッド（<code>write_all</code> など）を使えるようにする機能（トレイト）。<code>use tokio::io::AsyncWriteExt;</code> が要ります。</li>
+<li><strong><code>Into</code></strong>（型とメソッド）: 「ある型に変えられる」機能（トレイト。<code>From</code> の逆向き）。<code>body: impl Into&lt;String&gt;</code> は「<code>String</code> に変えられる物なら何でも（<code>&amp;str</code> でも <code>String</code> でも）受け取る」という引数で、中で <code>.into()</code> を呼んで変えます。</li>
+<li><strong><code>Fut</code></strong>（型とメソッド）: ジェネリクス（型を後から決める書き方）で使う、型の名前の代わりの記号。<code>F: Fn() -&gt; Fut, Fut: Future&lt;Output = T&gt;</code> は、「<code>F</code> は呼ぶと <code>Fut</code> を返す関数で、<code>Fut</code> は終わると <code>T</code> を返す Future」という意味です。名前は自由に付けられます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>このサーバーで、この巻のこれまでの道具が使われていることに気づいたでしょうか。<code>start</code> は、接続を受け付けるたびに <code>tokio::spawn</code> でタスクを作ります（UNIT 02 で読んだ Topcoat と同じ形）。<code>handler</code> を <code>Arc</code> に入れて、どのタスクからも使えるようにしています（UNIT 05）。<code>F: Fn(Request) -&gt; Fut + Send + Sync + 'static</code> は、「リクエストを受け取って Future を返す関数で、スレッドをまたいで共有できるもの」という条件です（UNIT 02 の <code>Send + 'static</code>）。</p>
 <blockquote>
 <p><strong>ヒント:</strong> この先の実行結果では、サーバーのポート番号（<code>127.0.0.1:</code> の後ろの数字）を <code>PORT</code> に置き換えて載せています。ポート 0 を指定して OS に空いている番号を選んでもらっているので、実行するたびに番号が変わるからです。</p>
@@ -7190,6 +7568,21 @@ Err(&quot;読めません: 指定されたファイルが見つかりません�
 <span class="w">    </span><span class="nb">Ok</span><span class="p">(())</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.connect_timeout()</code></strong>（HTTP クライアント）: <code>reqwest</code> の組み立て係で、「相手につなぐまで」の時間の制限を決めるメソッド。</li>
+<li><strong><code>.timeout()</code></strong>（HTTP クライアント）: <code>reqwest</code> の組み立て係で、「頼んでから答えが全部届くまで」の時間の制限を決めるメソッド。</li>
+<li><strong><code>.is_success()</code></strong>（HTTP クライアント）: HTTP の答えの番号（ステータスコード）が 200〜299（成功）なら <code>true</code> を返すメソッド。</li>
+<li><strong><code>.error_for_status()</code></strong>（HTTP クライアント）: <code>reqwest</code> の答えのうち、番号が 400〜599（失敗）の物を <code>Err</code> に変えるメソッド。<code>?</code> と組み合わせると、失敗の答えを見逃さずに済みます。</li>
+<li><strong><code>reqwest::Client::builder()</code></strong>（HTTP クライアント）: ほかのサーバーへ HTTP で頼みに行くための「クライアント」（<code>reqwest</code> の部品）を、設定しながら作り始める関数。<code>.timeout(…).build()</code> のようにつなげます。</li>
+<li><strong><code>Client</code></strong>（HTTP クライアント）: <code>reqwest::Client</code> は、HTTP で頼みに行く係。中で接続をためて使い回すので、1 つ作ってアプリ全体で共有するのがよい使い方です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><code>src/bin/u08_get.rs</code> として保存して実行します。</p>
 <div class="codehilite"><div class="code-wrap" id="code-234"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u08_get</span>
@@ -7368,6 +7761,18 @@ Err(&quot;読めません: 指定されたファイルが見つかりません�
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.is_connect()</code></strong>（HTTP クライアント）: <code>reqwest</code> のエラーが「つなぐこと自体に失敗した」ものなら <code>true</code> を返すメソッド。</li>
+<li><strong><code>.is_timeout()</code></strong>（HTTP クライアント）: <code>reqwest</code> のエラーが「時間切れ」なら <code>true</code> を返すメソッド。</li>
+<li><strong><code>std::net::TcpListener::bind()</code></strong>（ネットワーク）: 決めた番号で、接続を待ち受け始める関数（<code>TcpListener::bind</code> と同じ）。番号を <code>0</code> にすると、OS が空いている番号を選びます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><code>src/bin/u08_errors.rs</code> として保存して実行します。</p>
 <div class="codehilite"><div class="code-wrap" id="code-240"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u08_errors</span>
 </code></pre></div></div>
@@ -7504,6 +7909,23 @@ Err(&quot;読めません: 指定されたファイルが見つかりません�
 <span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;結果: {result:?}&quot;</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.build_hasher()</code></strong>（標準ライブラリ）: <code>RandomState</code> などから、ハッシュを計算する係（<code>Hasher</code>）を作るメソッド。ここでは、毎回違う値（でたらめな数）を作るのに使っています。</li>
+<li><strong><code>.pow()</code></strong>（数）: 累乗（同じ数を何回も掛ける）を計算するメソッド。<code>2u32.pow(3)</code> は 8。待ち時間を 1・2・4・8 倍と増やしていく時に使います。</li>
+<li><strong><code>.is_server_error()</code></strong>（HTTP クライアント）: HTTP の答えの番号が 500〜599（サーバー側の失敗）なら <code>true</code> を返すメソッド。もう一度試す価値がある失敗かを見分けるのに使います。</li>
+<li><strong><code>.as_u16()</code></strong>（HTTP クライアント）: HTTP の答えの番号（ステータスコード）を、<code>200</code> や <code>429</code> のような数（<code>u16</code>）で返すメソッド。</li>
+<li><strong><code>RandomState</code></strong>（標準ライブラリ）: <code>HashMap</code> が、ハッシュを計算する時に使う「種」を、でたらめに決める係。</li>
+<li><strong><code>BuildHasher</code></strong>（標準ライブラリ）: 「ハッシュを計算する係を作れる」機能（トレイト）。<code>.build_hasher()</code> を使うには、これを <code>use</code> します。</li>
+<li><strong><code>AtomicU32</code></strong>（スレッドと共有）: いくつものスレッドから同時に読み書きしても壊れない、32 ビットの整数の型（<code>AtomicU64</code> の小さい版）。</li>
+<li><strong><code>SeqCst</code></strong>（スレッドと共有）: <code>Ordering::SeqCst</code> は、いちばん厳しい順番の守り方。どのスレッドからも、同じ順番で変わったように見えます。迷ったらこれを選べば安全です（少し遅くなります）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><code>src/bin/u08_retry.rs</code> として保存して実行します。</p>
 <div class="codehilite"><div class="code-wrap" id="code-243"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u08_retry</span>
@@ -7647,6 +8069,16 @@ Err(&quot;読めません: 指定されたファイルが見つかりません�
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Ledger::default()</code></strong>（型とメソッド）: この巻で作る型 <code>Ledger</code>（帳簿）を、初期値（空の状態）で作る書き方（<code>#[derive(Default)]</code> のおかげで使える）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><code>src/bin/u08_idempotency.rs</code> として保存して実行します。</p>
 <div class="codehilite"><div class="code-wrap" id="code-246"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u08_idempotency</span>
@@ -7805,6 +8237,21 @@ error: could not compile `async_lab` (bin &quot;e08_forgot_await&quot;) due to 1
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>href!</code></strong>（Topcoat）: Topcoat のマクロ。ページの関数から、その URL を作ります。<code>href!(id::show, id::Id(note.id))</code> は「このノートの詳細ページの URL」。URL を文字で書かないので、打ちまちがいがコンパイルの時に見つかります（第6巻 UNIT 04）。</li>
+<li><strong><code>.resolve()</code></strong>（Topcoat）: <code>href!</code> で作った URL の部品を、今のリクエスト（<code>cx</code>）に合わせて、本物の URL の文字列にするメソッド。</li>
+<li><strong><code>POST</code></strong>（Topcoat）: <code>#[page(POST)]</code> の <code>POST</code> は、「フォームの送信（POST）に答えるページ」にする指定。何も書かなければ、ふつうの表示（GET）に答えます（第6巻 UNIT 06）。</li>
+<li><strong><code>Cx</code></strong>（Topcoat）: Topcoat の「今のリクエストの情報（URL・クッキー・セッションなど）が入った箱」。ページの関数の引数 <code>cx: &amp;Cx</code> で受け取り、<code>href!(…).resolve(cx)</code> などで使います（第6巻 UNIT 04）。</li>
+<li><strong><code>Form</code></strong>（Topcoat）: Topcoat の、送られてきたフォームの中身を受け取る型。<code>Form(input): Form&lt;NoteForm&gt;</code> と書くと、フォームの項目が <code>NoteForm</code> の形に読み取られて <code>input</code> に入ります（第6巻 UNIT 06）。</li>
+<li><strong><code>Id</code></strong>（Topcoat）: URL の一部（<code>/notes/3</code> の <code>3</code> など）を、型として受け取るための入れ物。この本の RustNote では、<code>id::Id(番号)</code> の形で、URL の中のノートの番号を表します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li><code>POST /notes</code> は、送られてくるたびに <code>insert</code> で新しいノートを作ります。<strong>冪等ではない操作</strong>です。RustNote には冪等キーの仕組みは入っていないので、同じフォームが2回送られれば、ノートは2つできます。</li>
 <li>そこで RustNote は、作成に成功したら <strong>303 See Other</strong> で詳細ページ（GET）へ移動させています。この形を <strong>PRG</strong>（Post/Redirect/Get）と呼びます。もし POST の答えとしてページをそのまま返していたら、利用者がブラウザの「再読み込み」を押したときに、ブラウザが同じ POST をもう一度送ろうとして、ノートが2つできてしまいます。303 で GET のページへ移っておけば、再読み込みは冪等な GET になります。</li>
@@ -7864,6 +8311,16 @@ error: could not compile `async_lab` (bin &quot;e08_forgot_await&quot;) due to 1
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>ZERO</code></strong>（時間）: <code>Duration::ZERO</code> は、長さ 0 の時間。合計を数え始める時の最初の値に使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-254"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>1 回目の失敗のあと: 100ms 待つ（待った合計 100ms）
 2 回目の失敗のあと: 200ms 待つ（待った合計 300ms）
@@ -8100,6 +8557,21 @@ error: could not compile `async_lab` (bin &quot;e08_forgot_await&quot;) due to 1
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>info!</code></strong>（ログ）: ログ（動作の記録）を「お知らせ」の重さで書くマクロ（<code>tracing</code> の部品）。<code>info!("起動しました");</code>。ほかに <code>debug!</code>（細かい調査用）・<code>warn!</code>（注意）・<code>error!</code>（エラー）があります。</li>
+<li><strong><code>warn!</code></strong>（ログ）: ログを「注意」の重さで書くマクロ。<code>warn!(%path, ?elapsed, "応答が遅めです")</code> の <code>%</code> は <code>Display</code> で、<code>?</code> は <code>Debug</code> で、その値を記録に付けます。</li>
+<li><strong><code>error!</code></strong>（ログ）: ログを「エラー」の重さで書くマクロ。失敗した時に、原因を追うための情報を残します。</li>
+<li><strong><code>debug!</code></strong>（ログ）: ログを「細かい調査用」の重さで書くマクロ。ふだんは表示されず、ログの細かさを <code>debug</code> にした時だけ出ます。</li>
+<li><strong><code>.init()</code></strong>（ログ）: ログの設定を、プログラム全体で使えるように登録するメソッド。<code>tracing_subscriber::fmt().init();</code> を <code>main</code> の最初に 1 回だけ呼びます。</li>
+<li><strong><code>std::time::Duration::from_millis()</code></strong>（時間）: ミリ秒から、時間の長さを作る関数（<code>Duration::from_millis</code> と同じ）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><code>src/bin/u09_fmt.rs</code> として保存して実行します。</p>
 <div class="codehilite"><div class="code-wrap" id="code-259"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u09_fmt</span>
 </code></pre></div></div>
@@ -8184,6 +8656,21 @@ error: could not compile `async_lab` (bin &quot;e08_forgot_await&quot;) due to 1
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>#[instrument]</code></strong>（ログ）: <code>tracing</code> の印（属性）。付けた関数が呼ばれるたびに、その関数の名前と引数を「スパン」（ひとまとまりの処理の記録）として残します。ログを、どの処理の中で起きたかでまとめて見られます。</li>
+<li><strong><code>.with_span_events()</code></strong>（ログ）: スパン（ひとまとまりの処理）の始まりや終わりにも、ログを出すように決めるメソッド。<code>FmtSpan::CLOSE</code> で、終わった時に、かかった時間も出ます。</li>
+<li><strong><code>.with_timer()</code></strong>（ログ）: ログの行の頭に付ける時刻の形を決めるメソッド。</li>
+<li><strong><code>tracing_subscriber::fmt::time::uptime()</code></strong>（ログ）: ログの時刻を「プログラムが動き始めてからの時間」で表す設定。</li>
+<li><strong><code>FmtSpan</code></strong>（ログ）: スパンのどの時点でログを出すかの指定。<code>FmtSpan::CLOSE</code> は「終わった時」です。</li>
+<li><strong><code>CLOSE</code></strong>（ログ）: <code>FmtSpan::CLOSE</code> は、「スパン（ひとまとまりの処理）が終わった時に、かかった時間と一緒にログを出す」指定です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><code>src/bin/u09_spans.rs</code> として保存して実行します。</p>
 <div class="codehilite"><div class="code-wrap" id="code-262"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u09_spans</span>
 </code></pre></div></div>
@@ -8250,6 +8737,18 @@ error: could not compile `async_lab` (bin &quot;e08_forgot_await&quot;) due to 1
 <span class="w">    </span><span class="n">delete_note</span><span class="p">(</span><span class="mi">42</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">).</span><span class="k">await</span><span class="p">;</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.with_env_filter()</code></strong>（ログ）: どのログを表示するか（細かさ）を、決まりで絞るメソッド。</li>
+<li><strong><code>EnvFilter::try_from_default_env()</code></strong>（ログ）: 環境変数 <code>RUST_LOG</code>（例: <code>RUST_LOG=debug</code>）から、表示するログの細かさを読み取る関数。設定が無ければ <code>Err</code> なので、<code>unwrap_or_else(|_| EnvFilter::new("info"))</code> で既定を決めます。</li>
+<li><strong><code>EnvFilter</code></strong>（ログ）: 「どのログを表示するか」の決まり（<code>info</code> 以上だけ・この部品だけ <code>debug</code> など）の型。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><code>src/bin/u09_json.rs</code> として保存して実行します。</p>
 <div class="codehilite"><div class="code-wrap" id="code-265"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u09_json</span>
@@ -8342,6 +8841,19 @@ error: could not compile `async_lab` (bin &quot;e08_forgot_await&quot;) due to 1
 <span class="w">    </span><span class="n">tokio</span><span class="p">::</span><span class="n">join</span><span class="o">!</span><span class="p">(</span><span class="n">serve</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;GET&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;/notes&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">42</span><span class="p">),</span><span class="w"> </span><span class="n">serve</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;GET&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;/slow&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">));</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>info_span!</code></strong>（ログ）: 「ここからここまでが 1 つの処理」というスパンを作るマクロ。<code>info_span!("request", request_id, path)</code> のように、処理の目印になる値を付けておくと、その中のログに自動で付きます。</li>
+<li><strong><code>.instrument()</code></strong>（ログ）: async の仕事に、スパンを付けるメソッド。その仕事の中で書いたログが、このスパンの中の物として記録されます。</li>
+<li><strong><code>.without_time()</code></strong>（ログ）: ログの行に時刻を付けないようにするメソッド（結果を見比べやすくするため）。</li>
+<li><strong><code>Instrument</code></strong>（ログ）: <code>.instrument()</code> を使えるようにする機能（トレイト）。<code>use tracing::Instrument;</code> が要ります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><code>src/bin/u09_access_log.rs</code> として保存して実行します。</p>
 <div class="codehilite"><div class="code-wrap" id="code-270"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u09_access_log</span>
@@ -8447,6 +8959,17 @@ error: could not compile `async_lab` (bin &quot;e08_forgot_await&quot;) due to 1
 <span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">metrics</span><span class="p">.</span><span class="n">render</span><span class="p">());</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.is_multiple_of()</code></strong>（数）: その数が、指定した数で割り切れるなら <code>true</code> を返すメソッド。<code>n.is_multiple_of(5)</code> は「5 の倍数か」。</li>
+<li><strong><code>Metrics::default()</code></strong>（型とメソッド）: この巻で作る型 <code>Metrics</code>（数を数える係）を、初期値（全部 0）で作る書き方（<code>#[derive(Default)]</code> のおかげで使える）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><code>src/bin/u09_metrics.rs</code> として保存して実行します。</p>
 <div class="codehilite"><div class="code-wrap" id="code-273"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u09_metrics</span>
@@ -8639,6 +9162,16 @@ help: consider annotating `Password` with `#[derive(Debug)]`
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.in_current_span()</code></strong>（ログ）: async の仕事に、「今のスパン」を付けるメソッド。<code>tokio::spawn</code> で別の仕事にした時も、ログがどの処理の物か分かるようになります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-282"><button type="button" class="copy-btn">コピー</button><pre><span></span><code> INFO request{request_id=7}: e09_lost_span: リクエストの処理を始めます
  INFO e09_lost_span: ① 裏でメールを送りました
  INFO request{request_id=7}: e09_lost_span: ② 裏でメールを送りました
@@ -8676,6 +9209,19 @@ help: consider annotating `Password` with `#[derive(Debug)]`
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>#[layer]</code></strong>（Topcoat）: Topcoat の印（属性）。全部（またはある範囲）のページの前後に、決まった処理（アクセスのログ・ログインの確かめなど）をはさむ「層」を作ります（第6巻 UNIT 03・第5巻）。</li>
+<li><strong><code>.downcast_ref()</code></strong>（エラー処理）: いろいろな種類が入るエラー（<code>anyhow::Error</code> など）の中身が、指定した型なら、それを借りて <code>Some</code> で返すメソッド。「このエラーは〇〇の種類か」を調べる時に使います。</li>
+<li><strong><code>Next</code></strong>（Topcoat）: <code>#[layer]</code> の関数で受け取る「次の処理」。<code>next.run(…)</code> を呼ぶと、その先（ページ）が動いて、答えが返ってきます。前後に自分の処理をはさめます。</li>
+<li><strong><code>SeeOther</code></strong>（Topcoat）: 「303 See Other」（別のページへ移って）という答えを表す型。フォームを送ったあと、一覧や詳細のページへ移す時（PRG）に使います（第6巻 UNIT 06）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>500 のエラーの原因は、<code>src/views.rs</code> の <code>log_if_internal</code> で、原因の連なり（例8-3と同じ考え方）を <code>&lt;-</code> でつないで書いています。</p>
 <div class="codehilite"><div class="code-wrap" id="code-284"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="sd">/// 500 のときだけ、原因をサーバーのログ（標準エラー出力）に書く</span>
 <span class="k">fn</span><span class="w"> </span><span class="nf">log_if_internal</span><span class="p">(</span><span class="n">status</span><span class="p">:</span><span class="w"> </span><span class="nc">StatusCode</span><span class="p">,</span><span class="w"> </span><span class="n">error</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">Error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
@@ -8685,6 +9231,16 @@ help: consider annotating `Password` with `#[derive(Debug)]`
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.chain()</code></strong>（エラー処理）: <code>anyhow</code> のエラーの、原因を外側から順にたどれる形で返すメソッド。<code>error.chain()</code> で、説明を足した順に、元のエラーまで 1 つずつ見られます。（イテレーターの <code>.chain()</code> は「2 つの並びをつなぐ」別の意味です。）</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li>「1リクエスト1行のアクセスログ」「<code>/health</code> は出さない」「500 のときは原因の連なりを残す」という<strong>何を残すか</strong>の考え方は、この単元の例9-4と同じです。小さなアプリなら、これで十分に役に立ちます。</li>
@@ -9174,6 +9730,29 @@ help: consider annotating `Password` with `#[derive(Debug)]`
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.execute()</code></strong>（データベース）: 値を入れたり変えたりする SQL の文を、1 つ実行するメソッド（libsql）。<code>conn.execute("UPDATE … WHERE id = ?1", params![id]).await?</code> のように、値は <code>params!</code> で渡します。変わった行の数が返ります。</li>
+<li><strong><code>Builder::new_local()</code></strong>（データベース）: libsql で、手元のファイル（SQLite の形）のデータベースを開く準備をする関数。<code>.build().await?</code> で開いた物ができます（第7巻）。</li>
+<li><strong><code>IF</code></strong>（SQL）: <code>CREATE TABLE IF NOT EXISTS 表</code> の一部で、「もし〜なら」。この形は「まだ無ければ作る（もうあれば何もしない）」という意味です。</li>
+<li><strong><code>EXISTS</code></strong>（SQL）: SQL で「ある」。<code>IF NOT EXISTS</code> は「無ければ」、<code>EXISTS (SELECT …)</code> は「条件に合う行があれば」という意味です。</li>
+<li><strong><code>IN</code></strong>（SQL）: SQL で「このどれか」。<code>WHERE status IN ('queued', 'running')</code> は、状態がどちらかの行だけです。</li>
+<li><strong><code>UPDATE</code></strong>（SQL）: <code>UPDATE 表 SET 列 = 値 WHERE 条件</code> で、表の行の中身を書きかえる SQL の命令。<code>WHERE</code> を忘れると、全部の行が変わってしまうので注意します。</li>
+<li><strong><code>SET</code></strong>（SQL）: <code>UPDATE</code> の中で、「どの列を、どの値にするか」を書く所。<code>SET status = 'done', attempts = attempts + 1</code> のように、いくつも書けます。</li>
+<li><strong><code>ORDER</code></strong>（SQL）: <code>ORDER BY 列</code> で、取り出した行を並べる SQL の書き方。<code>DESC</code> を付けると大きい順（新しい順）、付けなければ小さい順です。</li>
+<li><strong><code>BY</code></strong>（SQL）: <code>ORDER BY</code>（並べる）・<code>GROUP BY</code>（まとめる）の一部で、「〜で」という意味です。</li>
+<li><strong><code>CASE</code></strong>（SQL）: SQL の場合分け。<code>CASE WHEN 条件 THEN 値 ELSE 別の値 END</code> で、条件に合う時と合わない時で、違う値を使えます。</li>
+<li><strong><code>WHEN</code></strong>（SQL）: <code>CASE</code> の中の「もし〜なら」の部分。<code>WHEN attempts &gt;= max_attempts THEN 'dead'</code>。</li>
+<li><strong><code>THEN</code></strong>（SQL）: <code>CASE WHEN 条件 THEN 値</code> の「その時は、この値」の部分。</li>
+<li><strong><code>ELSE</code></strong>（SQL）: <code>CASE</code> の中の「どの条件にも合わなかった時は、この値」の部分。</li>
+<li><strong><code>END</code></strong>（SQL）: <code>CASE … END</code> の終わりの印。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><code>jobs</code> 表の列の意味は次のとおりです。</p>
 <table>
 <thead>
@@ -9282,6 +9861,17 @@ help: consider annotating `Password` with `#[derive(Debug)]`
 <span class="w">    </span><span class="nb">Ok</span><span class="p">(())</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>std::fs::remove_dir_all()</code></strong>（ファイルとフォルダ）: フォルダを、中身ごと全部消す関数。ごみ箱を通さずに消えるので、場所をよく確かめて使います。</li>
+<li><strong><code>std::fs::create_dir_all()</code></strong>（ファイルとフォルダ）: フォルダを、途中のフォルダもまとめて作る関数（<code>fs::create_dir_all</code> と同じ）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><code>src/bin/u10_db_queue.rs</code> として保存して実行します。<code>async_lab</code> フォルダの中に <code>u10jobs</code> フォルダができます。</p>
 <div class="codehilite"><div class="code-wrap" id="code-298"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u10_db_queue</span>
@@ -9515,6 +10105,16 @@ dead: #3 broken@example.com（3 回）最後のエラー: 宛先のサーバー�
 <span class="w">    </span><span class="nb">Ok</span><span class="p">(())</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.dedup()</code></strong>（Vec（並び））: <code>Vec</code> の中で、隣どうしで同じ値が続く所を 1 つにまとめるメソッド。先に <code>sort</code> しておくと、全部の重複が消えます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><code>src/bin/u10_two_workers.rs</code> として保存して実行します。</p>
 <div class="codehilite"><div class="code-wrap" id="code-304"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u10_two_workers</span>
