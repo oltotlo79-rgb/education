@@ -13,8 +13,11 @@ render as real visual diagrams in the PDF. We add:
 """
 from __future__ import annotations
 
+import html
 import os
+import re
 import sys
+import unicodedata
 import shutil
 import subprocess
 import tempfile
@@ -114,7 +117,10 @@ blockquote p {{ margin: 0.3em 0; }}
 blockquote strong {{ color: #1e40af; }}
 
 code {{
-  font-family: "Cascadia Mono", "Consolas", "Source Code Pro", "Courier New", monospace;
+  /* Consolas first: Chrome's PDF output drops the space glyphs of the
+     variable "Cascadia Mono" font, so copied code lost its spaces and
+     indentation. Consolas keeps them. */
+  font-family: "Consolas", "Source Code Pro", "Courier New", monospace;
   font-size: 0.9em;
   background: #f1f5f9;
   color: #be123c;
@@ -233,6 +239,38 @@ EXTENSION_CONFIGS = {
     "codehilite": {"guess_lang": False, "noclasses": False},
 }
 
+# ---------------------- Copy-friendly code blocks ----------------------------
+# Text copied from a PDF keeps every visual line break, so a code line that
+# wraps at the page edge becomes two lines when pasted. Each block is therefore
+# shrunk until its longest line fits on one line (down to a readable minimum)
+# and printed without wrapping. Only blocks that still do not fit wrap.
+CODE_WIDTH_PT = 450.0      # usable text width inside a <pre> (A4, with margins/padding/list indent)
+CODE_CHAR_EM = 0.55        # Consolas advance width; a wide (Japanese) char counts as 2
+CODE_MAX_PT = 9.2
+CODE_MIN_PT = 6.0
+CODE_WRAP_PT = 7.5         # size for blocks that must wrap anyway (long logs)
+
+PRE_RE = re.compile(r"<pre([^>]*)>(.*?)</pre>", re.S)
+
+
+def display_width(line: str) -> int:
+    return sum(2 if unicodedata.east_asian_width(c) in "WF" else 1 for c in line.replace("\t", "    "))
+
+
+def copy_friendly_pre(match: re.Match) -> str:
+    attrs, inner = match.group(1), match.group(2)
+    # An empty line has no glyph, so it vanished when copied. A single space keeps it.
+    inner = re.sub(r"\n(?=\n)", "\n ", inner)
+    text = html.unescape(re.sub(r"<[^>]+>", "", inner))
+    cols = max((display_width(l) for l in text.split("\n")), default=0)
+    size = CODE_MAX_PT if cols == 0 else min(CODE_MAX_PT, CODE_WIDTH_PT / (CODE_CHAR_EM * cols))
+    if size >= CODE_MIN_PT:
+        style = f"font-size:{size:.2f}pt;white-space:pre;word-break:normal;overflow-wrap:normal"
+    else:
+        style = f"font-size:{CODE_WRAP_PT}pt"
+    return f'<pre{attrs} style="{style}">{inner}</pre>'
+
+
 def md_to_html(md_text: str, title: str) -> str:
     body = markdown.markdown(
         md_text,
@@ -240,6 +278,7 @@ def md_to_html(md_text: str, title: str) -> str:
         extension_configs=EXTENSION_CONFIGS,
         output_format="html5",
     )
+    body = PRE_RE.sub(copy_friendly_pre, body)
     return HTML_TEMPLATE.format(title=title, body=body)
 
 def chrome_print_pdf(html_path: Path, pdf_path: Path) -> None:
