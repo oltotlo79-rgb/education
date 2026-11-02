@@ -1800,11 +1800,12 @@ Django REST Framework が用意する <strong>にせのブラウザ</strong>。<
 </tbody>
 </table>
 <blockquote>
-<p><strong><code>assertRaises</code> の使い方（1219行目あたりの例）</strong>
-<code>python
-with self.assertRaises(ValueError):          # この中で ValueError が起きることを期待
-    parse_break_time(None, '...', jst)        # None を渡すとエラーになるはず</code>
-「<strong>わざと不正な入力を与え、ちゃんとエラーになるか</strong>」を確認するテスト。<code>with</code> ブロックの中で指定の例外が起きれば成功、起きなければ「エラーになるべきなのにならなかった」で失敗します。<strong>異常系（エラーになるべき場合）のテスト</strong> に使います。</p>
+<p><strong><code>assertRaises</code> の使い方（1219行目あたりの例）</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-36"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>          <span class="c1"># この中で ValueError が起きることを期待</span>
+    <span class="n">parse_break_time</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;...&#39;</span><span class="p">,</span> <span class="n">jst</span><span class="p">)</span>        <span class="c1"># None を渡すとエラーになるはず</span>
+</code></pre></div></div>
+
+<p>「<strong>わざと不正な入力を与え、ちゃんとエラーになるか</strong>」を確認するテスト。<code>with</code> ブロックの中で指定の例外が起きれば成功、起きなければ「エラーになるべきなのにならなかった」で失敗します。<strong>異常系（エラーになるべき場合）のテスト</strong> に使います。</p>
 </blockquote>
 <h3 id="111-expect">11.1 フロントの expect 系との対応</h3>
 <table>
@@ -1857,7 +1858,7 @@ with self.assertRaises(ValueError):          # この中で ValueError が起き
 <blockquote>
 <p><strong>▼ このコードがやること:</strong> テスト専用の設定です。本番設定を引き継ぎつつ、(1) DBをメモリ上の使い捨てSQLiteに、(2) 非同期処理を即時実行に、(3) マイグレーションを省略、に切り替えます。テストを速く・安全に・独立して動かすための工夫です。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-36"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ① 本番設定をすべて引き継ぐ</span>
+<div class="codehilite"><div class="code-wrap" id="code-37"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ① 本番設定をすべて引き継ぐ</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.settings</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
 
 <span class="c1"># ② DBの設定を上書き</span>
@@ -1937,7 +1938,7 @@ with self.assertRaises(ValueError):          # この中で ValueError が起き
 <p>道具と中身が分かったので、実際に <strong>流す</strong> 方法です。</p>
 <h3 id="131">13.1 フロントのテストを流す</h3>
 <p><code>frontend/</code> ディレクトリで実行します。</p>
-<div class="codehilite"><div class="code-wrap" id="code-37"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># テストを1回流して終了（提出前の確認はこれ）</span>
+<div class="codehilite"><div class="code-wrap" id="code-38"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># テストを1回流して終了（提出前の確認はこれ）</span>
 npm<span class="w"> </span>run<span class="w"> </span>test:run
 <span class="c1"># 見張りモード（保存のたび自動再実行。開発中はこれ）</span>
 npm<span class="w"> </span><span class="nb">test</span>
@@ -1946,22 +1947,23 @@ npm<span class="w"> </span>run<span class="w"> </span>test:ui
 </code></pre></div></div>
 
 <blockquote>
-<p><strong>▼ こう表示されれば成功（<code>npm run test:run</code>）:</strong>
-```
- ✓ src/tests/MainPage/Login.test.tsx (5 tests) 123ms
+<p><strong>▼ こう表示されれば成功（<code>npm run test:run</code>）:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-39"><button type="button" class="copy-btn">コピー</button><pre><span></span><code> ✓ src/tests/MainPage/Login.test.tsx (5 tests) 123ms
    ✓ Login Component &gt; ログイン見出しと従業員番号入力欄が表示されること
    ✓ Login Component &gt; ログイン成功時に / へ遷移すること
    ✓ Login Component &gt; ログイン失敗時にエラーメッセージが表示されること
    ✓ Login Component &gt; 401エラー時に /login へ遷移すること
-   ✓ Login Component &gt; 401以外のAPIエラー時にレスポンスのエラーメッセージが表示されること</p>
-<p>Test Files  1 passed (1)
+   ✓ Login Component &gt; 401以外のAPIエラー時にレスポンスのエラーメッセージが表示されること
+
+ Test Files  1 passed (1)
       Tests  5 passed (5)
-<code>``
-緑色の</code>✓<code>（チェックマーク）と</code>passed<code>（合格）が並べば成功です。</code>describe<code>の名前（Login Component）と</code>it` の名前（各テスト）が、そのまま見出しになっているのが分かります。</p>
+</code></pre></div></div>
+
+<p>緑色の <code>✓</code>（チェックマーク）と <code>passed</code>（合格）が並べば成功です。<code>describe</code> の名前（Login Component）と <code>it</code> の名前（各テスト）が、そのまま見出しになっているのが分かります。</p>
 </blockquote>
 <h3 id="132">13.2 バックのテストを流す</h3>
 <p><strong>プロジェクトのルートディレクトリ</strong>（<code>manage.py</code> のある場所）で実行します。</p>
-<div class="codehilite"><div class="code-wrap" id="code-38"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>python<span class="w"> </span>manage.py<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--settings<span class="o">=</span>hozen_another.test_settings
+<div class="codehilite"><div class="code-wrap" id="code-40"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>python<span class="w"> </span>manage.py<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--settings<span class="o">=</span>hozen_another.test_settings
 </code></pre></div></div>
 
 <ul>
@@ -1969,7 +1971,7 @@ npm<span class="w"> </span>run<span class="w"> </span>test:ui
 <li><code>--settings=hozen_another.test_settings</code> … <strong>§12 のテスト専用設定を使う</strong> 指定。これを忘れると本番DB設定で動こうとして失敗します。<strong>この指定は必須</strong> と覚えてください。</li>
 </ul>
 <p>特定のクラスやテストだけ流すこともできます（速くて便利）。</p>
-<div class="codehilite"><div class="code-wrap" id="code-39"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># TestModels クラスだけ流す</span>
+<div class="codehilite"><div class="code-wrap" id="code-41"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># TestModels クラスだけ流す</span>
 python<span class="w"> </span>manage.py<span class="w"> </span><span class="nb">test</span><span class="w"> </span>kosu.tests.test_backend.TestModels<span class="w"> </span>--settings<span class="o">=</span>hozen_another.test_settings
 
 <span class="c1"># 1つのテストメソッドだけ流す</span>
@@ -1977,19 +1979,22 @@ python<span class="w"> </span>manage.py<span class="w"> </span><span class="nb">
 </code></pre></div></div>
 
 <blockquote>
-<p><strong>▼ こう表示されれば成功:</strong>
-```
-Creating test database for alias 'default'...
+<p><strong>▼ こう表示されれば成功:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-42"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Creating test database for alias &#39;default&#39;...
 System check identified no issues (0 silenced).
-........................................................</p>
-<hr>
-<p>Ran 120 tests in 4.231s</p>
-<p>OK
-Destroying test database for alias 'default'...
-<code>``
--</code>.<code>（ドット）1つが **テスト1件の成功**。
-- 最後の</code>OK<code>が「**全部合格**」の合図。
--</code>Creating test database<code>/</code>Destroying test database` … §12で見たとおり、テスト用DBを作って・壊しています。</p>
+........................................................
+----------------------------------------------------------------------
+Ran 120 tests in 4.231s
+
+OK
+Destroying test database for alias &#39;default&#39;...
+</code></pre></div></div>
+
+<ul>
+<li><code>.</code>（ドット）1つが <strong>テスト1件の成功</strong>。</li>
+<li>最後の <code>OK</code> が「<strong>全部合格</strong>」の合図。</li>
+<li><code>Creating test database</code> / <code>Destroying test database</code> … §12で見たとおり、テスト用DBを作って・壊しています。</li>
+</ul>
 <p><strong>⚠️ 失敗があると、<code>OK</code> の代わりに <code>FAILED (failures=1)</code> のように出て、<code>.</code> の代わりに <code>F</code>（失敗）や <code>E</code>（エラー）が表示されます。</strong> その読み方は次の §14。</p>
 </blockquote>
 <hr>
@@ -1999,7 +2004,7 @@ Destroying test database for alias 'default'...
 <blockquote>
 <p>※説明用の簡易例（実際の失敗出力の典型）</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-40"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>======================================================================
+<div class="codehilite"><div class="code-wrap" id="code-43"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>======================================================================
 FAIL: test_member_creation_and_str (kosu.tests.test_backend.TestModels)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
@@ -2021,7 +2026,7 @@ AssertionError: &#39;member object (1)&#39; != &#39;山田太郎&#39;
 <blockquote>
 <p>※説明用の簡易例</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-41"><button type="button" class="copy-btn">コピー</button><pre><span></span><code> FAIL  src/tests/MainPage/Login.test.tsx &gt; Login Component &gt; ログイン成功時に / へ遷移すること
+<div class="codehilite"><div class="code-wrap" id="code-44"><button type="button" class="copy-btn">コピー</button><pre><span></span><code> FAIL  src/tests/MainPage/Login.test.tsx &gt; Login Component &gt; ログイン成功時に / へ遷移すること
 AssertionError: expected &quot;mockedNavigate&quot; to be called with arguments: [ &#39;/&#39; ]
 
 Number of calls: 0
@@ -2034,7 +2039,7 @@ Number of calls: 0
 </ul>
 <p>→「クリックしても遷移していない」。原因候補は「モックの仕込み忘れ」「<code>waitFor</code> で待たずに即検証して早すぎた」「本体の成功判定の条件が変わった」など。</p>
 <h3 id="143">14.3 失敗時の対応フロー</h3>
-<div class="codehilite"><div class="code-wrap" id="code-42"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>1. メッセージを読む       … どのテスト・どの行・期待と実際の差は？
+<div class="codehilite"><div class="code-wrap" id="code-45"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>1. メッセージを読む       … どのテスト・どの行・期待と実際の差は？
 2. 「テストが正しい」か    … 仕様変更でテストの方を直すべき場合もある
    「本体が壊れた」か を判断
 3a. 本体が壊れた          → 本体コードを直す（テストは正しい仕様の証）
@@ -2054,7 +2059,7 @@ Number of calls: 0
 <blockquote>
 <p>※説明用の簡易例（足し方のイメージ）</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-43"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// ① 新しい仕様を名前に</span>
+<div class="codehilite"><div class="code-wrap" id="code-46"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// ① 新しい仕様を名前に</span>
 <span class="nx">it</span><span class="p">(</span><span class="s2">&quot;従業員番号が空ならログインAPIを呼ばないこと&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="c1">// ② 準備：描く</span>
 <span class="w">  </span><span class="nx">render</span><span class="p">(</span>
@@ -2081,7 +2086,7 @@ Number of calls: 0
 <blockquote>
 <p>※説明用の簡易例</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-44"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ① 新APIの未ログインテスト</span>
+<div class="codehilite"><div class="code-wrap" id="code-47"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ① 新APIの未ログインテスト</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">test_new_api_without_login</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     <span class="c1"># ② ログインせずGET</span>
     <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/api/new_endpoint/&#39;</span><span class="p">)</span>
@@ -2094,7 +2099,7 @@ Number of calls: 0
 <li><code>BaseTestCase</code> を継承したクラスに置けば、<code>self.client</code> や <code>self.login_as_admin()</code> がそのまま使えます。</li>
 </ul>
 <h3 id="153">15.3 テストを足す手順まとめ</h3>
-<div class="codehilite"><div class="code-wrap" id="code-45"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>1. 似た既存テストを見つける          … 同じ種類（表示/成功/権限…）を探す
+<div class="codehilite"><div class="code-wrap" id="code-48"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>1. 似た既存テストを見つける          … 同じ種類（表示/成功/権限…）を探す
 2. それをコピーして名前を変える       … it(&quot;...&quot;) / def test_xxx の名前
 3. 準備（仕込み）を目的に合わせる     … mock... / data = {...}
 4. 実行を目的に合わせる              … 操作する要素・叩くURL

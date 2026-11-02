@@ -3621,21 +3621,22 @@ JavaScript/TypeScript には3種類のインポート方法があります。</p
 <blockquote>
 <p><strong>Supabase の自動生成型（Database 型）について:</strong>
 大規模プロジェクトでは Supabase CLI で <code>npx supabase gen types typescript</code> を実行し、データベースの定義からTypeScriptの型を自動生成することがあります（第5章でも紹介しました）。生成された型は次のような形をしています（抜粋）。</p>
-<p><code>typescript
-export type Database = {
-  public: {
-    Tables: {
-      books: {
-        // SELECTで返ってくる行の型
-        Row: { id: string; title: string; author: string };
-        // INSERT時に渡す型
-        Insert: { title: string; author: string };
-        // UPDATE時に渡す型
-        Update: { title?: string; author?: string };
-      };
-    };
-  };
-};</code></p>
+<div class="codehilite"><div class="code-wrap" id="code-87"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">export</span><span class="w"> </span><span class="kr">type</span><span class="w"> </span><span class="nx">Database</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">public</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">Tables</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">books</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// SELECTで返ってくる行の型</span>
+<span class="w">        </span><span class="nx">Row</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span><span class="w"> </span><span class="nx">author</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">};</span>
+<span class="w">        </span><span class="c1">// INSERT時に渡す型</span>
+<span class="w">        </span><span class="nx">Insert</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span><span class="w"> </span><span class="nx">author</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">};</span>
+<span class="w">        </span><span class="c1">// UPDATE時に渡す型</span>
+<span class="w">        </span><span class="nx">Update</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">title?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span><span class="w"> </span><span class="nx">author?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">};</span>
+<span class="w">      </span><span class="p">};</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">  </span><span class="p">};</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
 <p>本チュートリアルでは学習のしやすさのため、手書きで <code>Book</code>, <code>BookInsert</code>, <code>BookUpdate</code> を定義しています。仕組みは同じです。第5章で自動生成版の <code>types/book.ts</code> を作った場合は、この章のコードで上書きして構いません（型の名前は同じです）。</p>
 </blockquote>
 <!-- -->
@@ -3748,7 +3749,7 @@ export type Database = {
 <p>上の型定義を、初心者がつまずきやすい部分ごとに<strong>1つずつ</strong>ていねいに見ていきましょう。</p>
 <hr>
 <h5 id="1-3">解説1: 決まった3つの文字列しか入らない「ユニオン型」</h5>
-<div class="codehilite"><div class="code-wrap" id="code-87"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">export</span><span class="w"> </span><span class="kr">type</span><span class="w"> </span><span class="nx">BookStatus</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;reading&quot;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">&quot;completed&quot;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">&quot;want_to_read&quot;</span><span class="p">;</span>
+<div class="codehilite"><div class="code-wrap" id="code-88"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">export</span><span class="w"> </span><span class="kr">type</span><span class="w"> </span><span class="nx">BookStatus</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;reading&quot;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">&quot;completed&quot;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">&quot;want_to_read&quot;</span><span class="p">;</span>
 </code></pre></div></div>
 
 <ul>
@@ -3762,7 +3763,7 @@ export type Database = {
 </blockquote>
 <hr>
 <h5 id="2-book">解説2: 取得用の完全なデータ型 <code>Book</code></h5>
-<div class="codehilite"><div class="code-wrap" id="code-88"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">export</span><span class="w"> </span><span class="kr">type</span><span class="w"> </span><span class="nx">Book</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<div class="codehilite"><div class="code-wrap" id="code-89"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">export</span><span class="w"> </span><span class="kr">type</span><span class="w"> </span><span class="nx">Book</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
 <span class="w">  </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
 <span class="w">  </span><span class="nx">author</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
@@ -3789,7 +3790,7 @@ export type Database = {
 </blockquote>
 <hr>
 <h5 id="3-insert-update">解説3: 場面で型を分ける（Insert と Update）</h5>
-<div class="codehilite"><div class="code-wrap" id="code-89"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">export</span><span class="w"> </span><span class="kr">type</span><span class="w"> </span><span class="nx">BookInsert</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<div class="codehilite"><div class="code-wrap" id="code-90"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">export</span><span class="w"> </span><span class="kr">type</span><span class="w"> </span><span class="nx">BookInsert</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
 <span class="w">  </span><span class="nx">author</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
 <span class="w">  </span><span class="nx">publisher?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
@@ -3813,7 +3814,7 @@ export type Database = {
 </blockquote>
 <hr>
 <h5 id="4-record">解説4: ステータスごとの値をまとめる <code>Record</code> 型</h5>
-<div class="codehilite"><div class="code-wrap" id="code-90"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">statusLabels</span><span class="o">:</span><span class="w"> </span><span class="kt">Record</span><span class="o">&lt;</span><span class="nx">BookStatus</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<div class="codehilite"><div class="code-wrap" id="code-91"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">statusLabels</span><span class="o">:</span><span class="w"> </span><span class="kt">Record</span><span class="o">&lt;</span><span class="nx">BookStatus</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="nx">reading</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;読書中&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nx">completed</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;読了&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nx">want_to_read</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;読みたい&quot;</span><span class="p">,</span>
@@ -3835,7 +3836,7 @@ export type Database = {
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> 6.1 の <code>BookStatus</code> 型と <code>statusLabels</code> の対応表だけを取り出した小さなプログラムです。3つのステータスを順番に取り出し、それぞれの日本語ラベルを表示します。Next.js を起動しなくても、Node.js だけで動きを確かめられます。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-91"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// scripts/status-demo.ts</span>
+<div class="codehilite"><div class="code-wrap" id="code-92"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// scripts/status-demo.ts</span>
 <span class="c1">// 読書ステータスの型と、日本語ラベルの対応表を小さく試すスクリプト</span>
 
 <span class="c1">// 読書ステータスとして使ってよい3つの文字列だけを並べた型</span>
@@ -3855,19 +3856,19 @@ export type Database = {
 <span class="p">}</span>
 </code></pre></div></div>
 
-<div class="codehilite"><div class="code-wrap" id="code-92"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># scripts フォルダに保存して、Node.js でそのまま実行する</span>
+<div class="codehilite"><div class="code-wrap" id="code-93"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># scripts フォルダに保存して、Node.js でそのまま実行する</span>
 node<span class="w"> </span>scripts/status-demo.ts
 </code></pre></div></div>
 
 <p><strong>▼ 実行結果</strong></p>
-<div class="codehilite"><div class="code-wrap" id="code-93"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>reading → 読書中
+<div class="codehilite"><div class="code-wrap" id="code-94"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>reading → 読書中
 completed → 読了
 want_to_read → 読みたい
 </code></pre></div></div>
 
 <h4 id="1_10">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1-bookstatus-bookstatus">解説1: <code>BookStatus[]</code> は「BookStatus が並んだ配列」</h5>
-<div class="codehilite"><div class="code-wrap" id="code-94"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">all</span><span class="o">:</span><span class="w"> </span><span class="kt">BookStatus</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;reading&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;completed&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;want_to_read&quot;</span><span class="p">];</span>
+<div class="codehilite"><div class="code-wrap" id="code-95"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">all</span><span class="o">:</span><span class="w"> </span><span class="kt">BookStatus</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;reading&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;completed&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;want_to_read&quot;</span><span class="p">];</span>
 </code></pre></div></div>
 
 <ul>
@@ -3875,7 +3876,7 @@ want_to_read → 読みたい
 <li>配列の中にも型のチェックが働くので、ここに <code>"finished"</code> を入れると型エラーになります。</li>
 </ul>
 <h5 id="2-statuslabelsstatus">解説2: <code>statusLabels[status]</code> で対応表を引く</h5>
-<div class="codehilite"><div class="code-wrap" id="code-95"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">const</span><span class="w"> </span><span class="nx">status</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nx">all</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<div class="codehilite"><div class="code-wrap" id="code-96"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">const</span><span class="w"> </span><span class="nx">status</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nx">all</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`</span><span class="si">${</span><span class="nx">status</span><span class="si">}</span><span class="sb"> → </span><span class="si">${</span><span class="nx">statusLabels</span><span class="p">[</span><span class="nx">status</span><span class="p">]</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div></div>
@@ -3894,7 +3895,7 @@ want_to_read → 読みたい
 <p>古い記事やメモを見て、存在しないステータス（たとえば <code>"finished"</code>）を書いてしまうことがあります。第2章で学んだとおり、<code>node ファイル名.ts</code> は<strong>型を消して動かすだけ</strong>なので、型の間違いがあってもエラーにならず、おかしな結果のまま動いてしまいます。型の間違いを見つけるのは <code>tsc</code>（TypeScript のチェック役）や VS Code の赤線です。</p>
 </blockquote>
 <p>NG（候補に無い <code>"finished"</code> を入れている）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-96"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// scripts/typo-demo.ts</span>
+<div class="codehilite"><div class="code-wrap" id="code-97"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// scripts/typo-demo.ts</span>
 <span class="c1">// わざと型に合わない値を入れて、node と tsc の反応の違いを見るスクリプト</span>
 
 <span class="c1">// 読書ステータスとして使ってよい3つの文字列</span>
@@ -3912,20 +3913,20 @@ want_to_read → 読みたい
 <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;ラベル:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">statusLabels</span><span class="p">[</span><span class="nx">myStatus</span><span class="p">]);</span>
 </code></pre></div></div>
 
-<div class="codehilite"><div class="code-wrap" id="code-97"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># まず node で実行する（型は見ない）</span>
+<div class="codehilite"><div class="code-wrap" id="code-98"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># まず node で実行する（型は見ない）</span>
 node<span class="w"> </span>scripts/typo-demo.ts
 <span class="c1"># 次に tsc で型だけをチェックする（--noEmit: JavaScript のファイルは作らない）</span>
 npx<span class="w"> </span>tsc<span class="w"> </span>--noEmit<span class="w"> </span>scripts/typo-demo.ts
 </code></pre></div></div>
 
 <p><strong>▼ 実行結果</strong></p>
-<div class="codehilite"><div class="code-wrap" id="code-98"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>ラベル: undefined
+<div class="codehilite"><div class="code-wrap" id="code-99"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>ラベル: undefined
 scripts/typo-demo.ts(15,7): error TS2322: Type &#39;&quot;finished&quot;&#39; is not assignable to type &#39;BookStatus&#39;.
 </code></pre></div></div>
 
 <p>1行目は <code>node</code> の結果です。エラーにはならず、ラベルが <code>undefined</code>（値なし）になっています。画面に「undefined」と出てしまう、気づきにくいバグです。2行目は <code>tsc</code> の結果で、「15行目7文字目: <code>"finished"</code> という型は <code>BookStatus</code> に入れられません」と、原因の場所まで教えてくれています。</p>
 <p>OK（候補にある値を使う）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-99"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 読了は &quot;completed&quot;</span>
+<div class="codehilite"><div class="code-wrap" id="code-100"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 読了は &quot;completed&quot;</span>
 <span class="kd">const</span><span class="w"> </span><span class="nx">myStatus</span><span class="o">:</span><span class="w"> </span><span class="kt">BookStatus</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;completed&quot;</span><span class="p">;</span>
 </code></pre></div></div>
 
@@ -3940,7 +3941,7 @@ scripts/typo-demo.ts(15,7): error TS2322: Type &#39;&quot;finished&quot;&#39; is
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> すべてのページを包む「共通の外枠」を作ります。<code>&lt;html&gt;</code> や <code>&lt;body&gt;</code> タグ、日本語フォント、ブラウザのタブに出るタイトル、そして全ページ上部のヘッダーをここでまとめて設定します。各ページの中身は <code>{children}</code>（チルドレン：差し込み口）の場所にはめ込まれる、という仕組みがポイントです。フォントやレイアウトの細かい指定はコメントと解説表で1つずつ確認できます。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-100"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// app/layout.tsx</span>
+<div class="codehilite"><div class="code-wrap" id="code-101"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// app/layout.tsx</span>
 <span class="c1">// 全ページに適用される「ルートレイアウト」。&lt;html&gt; と &lt;body&gt; はここでしか書かない</span>
 
 <span class="c1">// type import: Metadata 型だけをインポート（実体はビルド後のコードに残らない）</span>
@@ -4110,7 +4111,7 @@ scripts/typo-demo.ts(15,7): error TS2322: Type &#39;&quot;finished&quot;&#39; is
 <p>上のレイアウトを、初心者がつまずきやすい部分ごとに<strong>1つずつ</strong>ていねいに見ていきましょう。</p>
 <hr>
 <h5 id="1-3_1">解説1: 3種類のインポートを使い分ける</h5>
-<div class="codehilite"><div class="code-wrap" id="code-101"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="kr">type</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Metadata</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;next&quot;</span><span class="p">;</span>
+<div class="codehilite"><div class="code-wrap" id="code-102"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="kr">type</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Metadata</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;next&quot;</span><span class="p">;</span>
 <span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Noto_Sans_JP</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;next/font/google&quot;</span><span class="p">;</span>
 <span class="k">import</span><span class="w"> </span><span class="s2">&quot;./globals.css&quot;</span><span class="p">;</span>
 <span class="k">import</span><span class="w"> </span><span class="nx">Header</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@/components/Header&quot;</span><span class="p">;</span>
@@ -4127,7 +4128,7 @@ scripts/typo-demo.ts(15,7): error TS2322: Type &#39;&quot;finished&quot;&#39; is
 </blockquote>
 <hr>
 <h5 id="2_1">解説2: フォントを最適化して読み込む</h5>
-<div class="codehilite"><div class="code-wrap" id="code-102"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">notoSansJP</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">Noto_Sans_JP</span><span class="p">({</span>
+<div class="codehilite"><div class="code-wrap" id="code-103"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">notoSansJP</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">Noto_Sans_JP</span><span class="p">({</span>
 <span class="w">  </span><span class="nx">subsets</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;latin&quot;</span><span class="p">],</span>
 <span class="w">  </span><span class="nx">weight</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;400&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;500&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;700&quot;</span><span class="p">],</span>
 <span class="w">  </span><span class="nx">display</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;swap&quot;</span><span class="p">,</span>
@@ -4146,7 +4147,7 @@ scripts/typo-demo.ts(15,7): error TS2322: Type &#39;&quot;finished&quot;&#39; is
 </blockquote>
 <hr>
 <h5 id="3_4">解説3: メタデータでタブのタイトルなどを設定</h5>
-<div class="codehilite"><div class="code-wrap" id="code-103"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">metadata</span><span class="o">:</span><span class="w"> </span><span class="kt">Metadata</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<div class="codehilite"><div class="code-wrap" id="code-104"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">metadata</span><span class="o">:</span><span class="w"> </span><span class="kt">Metadata</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;書籍管理アプリ&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nx">description</span><span class="o">:</span>
 <span class="w">    </span><span class="s2">&quot;読んだ本、読んでいる本、これから読む本を管理するWebアプリケーション&quot;</span><span class="p">,</span>
@@ -4163,7 +4164,7 @@ scripts/typo-demo.ts(15,7): error TS2322: Type &#39;&quot;finished&quot;&#39; is
 </blockquote>
 <hr>
 <h5 id="4-children">解説4: children に各ページが差し込まれる仕組み</h5>
-<div class="codehilite"><div class="code-wrap" id="code-104"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">RootLayout</span><span class="p">({</span>
+<div class="codehilite"><div class="code-wrap" id="code-105"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">RootLayout</span><span class="p">({</span>
 <span class="w">  </span><span class="nx">children</span><span class="p">,</span>
 <span class="p">}</span><span class="o">:</span><span class="w"> </span><span class="nx">Readonly</span><span class="o">&lt;</span><span class="p">{</span>
 <span class="w">  </span><span class="nx">children</span><span class="o">:</span><span class="w"> </span><span class="kt">React.ReactNode</span><span class="p">;</span>
@@ -4224,7 +4225,7 @@ scripts/typo-demo.ts(15,7): error TS2322: Type &#39;&quot;finished&quot;&#39; is
 <hr>
 <h3 id="72-globalscss">7.2 globals.css の確認</h3>
 <p><code>app/globals.css</code> を開くと、<code>create-next-app</code> が作った次のような内容が入っています。</p>
-<div class="codehilite"><div class="code-wrap" id="code-105"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">@</span><span class="k">import</span><span class="w"> </span><span class="s2">&quot;tailwindcss&quot;</span><span class="p">;</span>
+<div class="codehilite"><div class="code-wrap" id="code-106"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">@</span><span class="k">import</span><span class="w"> </span><span class="s2">&quot;tailwindcss&quot;</span><span class="p">;</span>
 
 <span class="p">:</span><span class="nd">root</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="nv">--background</span><span class="p">:</span><span class="w"> </span><span class="mh">#ffffff</span><span class="p">;</span>
@@ -4253,7 +4254,7 @@ scripts/typo-demo.ts(15,7): error TS2322: Type &#39;&quot;finished&quot;&#39; is
 </code></pre></div></div>
 
 <p>先頭の <code>@import "tailwindcss";</code> 以外は、最初のサンプルページ用の設定（パソコンがダークモードのときに背景を黒くする、など）です。本書のアプリでは色やフォントを Tailwind のクラスと <code>layout.tsx</code> で指定するので、<strong>ファイルの中身を次の1行（とコメント）だけに書き換えてください</strong>。</p>
-<div class="codehilite"><div class="code-wrap" id="code-106"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c">/* app/globals.css */</span>
+<div class="codehilite"><div class="code-wrap" id="code-107"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c">/* app/globals.css */</span>
 
 <span class="c">/* Tailwind CSS v4 を読み込む。この1行で、flex や bg-white などのクラスがすべて使えるようになる */</span>
 <span class="p">@</span><span class="k">import</span><span class="w"> </span><span class="s2">&quot;tailwindcss&quot;</span><span class="p">;</span>
@@ -4273,14 +4274,14 @@ scripts/typo-demo.ts(15,7): error TS2322: Type &#39;&quot;finished&quot;&#39; is
 <p>古い記事では、<code>globals.css</code> に <code>@tailwind base;</code>、<code>@tailwind components;</code>、<code>@tailwind utilities;</code> の3行を書くよう説明されています。これは <strong>Tailwind CSS v3</strong> の書き方です。現在の create-next-app が入れる <strong>v4</strong> でこの3行を書くと、エラーは出ないのに<strong>色や文字の大きさのクラスが効かなくなります</strong>。</p>
 </blockquote>
 <p>NG（v3 の書き方）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-107"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c">/* app/globals.css（v4 では NG） */</span>
+<div class="codehilite"><div class="code-wrap" id="code-108"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c">/* app/globals.css（v4 では NG） */</span>
 <span class="p">@</span><span class="k">tailwind</span><span class="w"> </span><span class="nt">base</span><span class="p">;</span>
 <span class="p">@</span><span class="k">tailwind</span><span class="w"> </span><span class="nt">components</span><span class="p">;</span>
 <span class="p">@</span><span class="k">tailwind</span><span class="w"> </span><span class="nt">utilities</span><span class="p">;</span>
 </code></pre></div></div>
 
 <p>OK（v4 の書き方）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-108"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c">/* app/globals.css */</span>
+<div class="codehilite"><div class="code-wrap" id="code-109"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c">/* app/globals.css */</span>
 <span class="p">@</span><span class="k">import</span><span class="w"> </span><span class="s2">&quot;tailwindcss&quot;</span><span class="p">;</span>
 </code></pre></div></div>
 
@@ -4321,7 +4322,7 @@ v3 では、<code>@tailwind base;</code>（リセット CSS と基本スタイ�
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> 全ページの上部に出る「ナビゲーションバー（共通ヘッダー）」を作ります。アプリ名のロゴと、「書籍一覧」「書籍を登録する」へのリンクを並べ、いま開いているページのリンクだけ色を変えて目立たせます。<code>usePathname()</code> という機能で現在のURLを取得するため、先頭に <code>"use client"</code> と書いてブラウザ側で動くコンポーネントにしている点がポイントです。スタイル（色や余白）の意味は各行のコメントを参照してください。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-109"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// components/Header.tsx</span>
+<div class="codehilite"><div class="code-wrap" id="code-110"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// components/Header.tsx</span>
 <span class="c1">// 全ページ上部に表示する共通ヘッダー（ナビゲーションバー）</span>
 
 <span class="c1">// &quot;use client&quot;: このファイルを Client Component として宣言する特別な文字列</span>
@@ -4471,7 +4472,7 @@ v3 では、<code>@tailwind base;</code>（リセット CSS と基本スタイ�
 <p>上のヘッダーを、初心者がつまずきやすい部分ごとに<strong>1つずつ</strong>ていねいに見ていきましょう。</p>
 <hr>
 <h5 id="1-use-client">解説1: なぜ先頭に "use client" が必要か</h5>
-<div class="codehilite"><div class="code-wrap" id="code-110"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="s2">&quot;use client&quot;</span><span class="p">;</span>
+<div class="codehilite"><div class="code-wrap" id="code-111"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="s2">&quot;use client&quot;</span><span class="p">;</span>
 </code></pre></div></div>
 
 <ul>
@@ -4484,7 +4485,7 @@ v3 では、<code>@tailwind base;</code>（リセット CSS と基本スタイ�
 </blockquote>
 <hr>
 <h5 id="2-link-usepathname">解説2: Link と usePathname を取り込む</h5>
-<div class="codehilite"><div class="code-wrap" id="code-111"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="nx">Link</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;next/link&quot;</span><span class="p">;</span>
+<div class="codehilite"><div class="code-wrap" id="code-112"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="nx">Link</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;next/link&quot;</span><span class="p">;</span>
 <span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">usePathname</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;next/navigation&quot;</span><span class="p">;</span>
 </code></pre></div></div>
 
@@ -4498,7 +4499,7 @@ v3 では、<code>@tailwind base;</code>（リセット CSS と基本スタイ�
 </blockquote>
 <hr>
 <h5 id="3_5">解説3: 現在のパスを取得する</h5>
-<div class="codehilite"><div class="code-wrap" id="code-112"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">pathname</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">usePathname</span><span class="p">();</span>
+<div class="codehilite"><div class="code-wrap" id="code-113"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">pathname</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">usePathname</span><span class="p">();</span>
 </code></pre></div></div>
 
 <ul>
@@ -4511,7 +4512,7 @@ v3 では、<code>@tailwind base;</code>（リセット CSS と基本スタイ�
 </blockquote>
 <hr>
 <h5 id="4_1">解説4: 現在地によってクラスを切り替える</h5>
-<div class="codehilite"><div class="code-wrap" id="code-113"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="o">&lt;</span><span class="nx">Link</span>
+<div class="codehilite"><div class="code-wrap" id="code-114"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="o">&lt;</span><span class="nx">Link</span>
 <span class="w">  </span><span class="nx">href</span><span class="o">=</span><span class="s2">&quot;/&quot;</span>
 <span class="w">  </span><span class="nx">className</span><span class="o">=</span><span class="p">{</span><span class="sb">`px-3 py-2 rounded-md text-sm font-medium transition duration-200 </span><span class="si">${</span>
 <span class="w">    </span><span class="nx">pathname</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;/&quot;</span>
@@ -4538,7 +4539,7 @@ v3 では、<code>@tailwind base;</code>（リセット CSS と基本スタイ�
 <p><code>"use client"</code> は1行だけの地味な文字列なので、書き忘れたり、コピーのときに抜けたりしがちです。また、<code>import</code> 文より下に書いてしまうと、宣言として認められません。</p>
 </blockquote>
 <p>NG（<code>"use client"</code> が無い）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-114"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// components/Header.tsx（先頭部分）</span>
+<div class="codehilite"><div class="code-wrap" id="code-115"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// components/Header.tsx（先頭部分）</span>
 <span class="c1">// &quot;use client&quot; が無いので、このファイルは Server Component として扱われる</span>
 <span class="k">import</span><span class="w"> </span><span class="nx">Link</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;next/link&quot;</span><span class="p">;</span>
 <span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">usePathname</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;next/navigation&quot;</span><span class="p">;</span>
@@ -4546,7 +4547,7 @@ v3 では、<code>@tailwind base;</code>（リセット CSS と基本スタイ�
 
 <p>この状態で <code>npm run build</code> すると、次のエラーで止まります（開発サーバーでも、ブラウザに同じ内容のエラー画面が出ます）。</p>
 <p><strong>▼ 実行結果</strong>（<code>npm run build</code> の出力から抜粋）</p>
-<div class="codehilite"><div class="code-wrap" id="code-115"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>&gt; Build error occurred
+<div class="codehilite"><div class="code-wrap" id="code-116"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>&gt; Build error occurred
 Error: Turbopack build failed with 1 error:
 ./components/Header.tsx:15:10
 Error: You&#39;re importing a module that depends on `usePathname` into a React Server Component module. This API is only available in Client Components. To fix, mark the file (or its parent) with the `&quot;use client&quot;` directive.
@@ -4569,7 +4570,7 @@ Import trace:
 
 <p>英文は「<code>usePathname</code> に頼るモジュールを、React Server Component に import しています。この機能は Client Component でしか使えません。直すには、ファイル（またはその親）に <code>"use client"</code> を付けてください」という意味です。最後の <code>Import trace</code>（読み込みの道すじ）からは、<code>layout.tsx</code>（Server Component）が <code>Header.tsx</code> を読み込み、その <code>Header.tsx</code> も Server Component のまま <code>usePathname</code> を使っている、という流れが読み取れます。</p>
 <p>OK（ファイルの一番上、import より前に書く）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-116"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// components/Header.tsx（先頭部分）</span>
+<div class="codehilite"><div class="code-wrap" id="code-117"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// components/Header.tsx（先頭部分）</span>
 <span class="c1">// &quot;use client&quot; は必ずファイルの一番上（import より前）に書く</span>
 <span class="s2">&quot;use client&quot;</span><span class="p">;</span>
 
@@ -4587,7 +4588,7 @@ Import trace:
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> トップページ（URL が <code>/</code> のページ）に、動作確認用の仮の画面を表示します。見出しと説明文、白いカード、3色のステータスバッジを並べて、Tailwind CSS のスタイルがちゃんと効いているかを目で確かめられるようにしています。中身はまだ仮で、本物の書籍一覧は次の章で作る、という位置づけです。クラス名（<code>bg-white</code> など）の意味は各行のコメントにあります。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-117"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// app/page.tsx</span>
+<div class="codehilite"><div class="code-wrap" id="code-118"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// app/page.tsx</span>
 <span class="c1">// URL &quot;/&quot; にアクセスしたときに表示されるトップページ</span>
 
 <span class="c1">// export default function: ファイルのメインコンポーネントとしてエクスポート</span>
@@ -4647,7 +4648,7 @@ Import trace:
 <p>上の仮トップページを、初心者がつまずきやすい部分ごとに<strong>1つずつ</strong>ていねいに見ていきましょう。</p>
 <hr>
 <h5 id="1-default-export">解説1: ページは default export の関数で作る</h5>
-<div class="codehilite"><div class="code-wrap" id="code-118"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">HomePage</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<div class="codehilite"><div class="code-wrap" id="code-119"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">HomePage</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="o">&lt;</span><span class="nx">div</span><span class="o">&gt;</span>
 <span class="w">      </span><span class="p">...</span>
@@ -4666,7 +4667,7 @@ Import trace:
 </blockquote>
 <hr>
 <h5 id="2-tailwind">解説2: Tailwind のクラスで見出しと説明を装飾</h5>
-<div class="codehilite"><div class="code-wrap" id="code-119"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="o">&lt;</span><span class="nx">h1</span><span class="w"> </span><span class="nx">className</span><span class="o">=</span><span class="s2">&quot;text-3xl font-bold text-gray-900 mb-4&quot;</span><span class="o">&gt;</span>
+<div class="codehilite"><div class="code-wrap" id="code-120"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="o">&lt;</span><span class="nx">h1</span><span class="w"> </span><span class="nx">className</span><span class="o">=</span><span class="s2">&quot;text-3xl font-bold text-gray-900 mb-4&quot;</span><span class="o">&gt;</span>
 <span class="w">  </span><span class="nx">書籍一覧</span>
 <span class="o">&lt;</span><span class="err">/h1&gt;</span>
 <span class="o">&lt;</span><span class="nx">p</span><span class="w"> </span><span class="nx">className</span><span class="o">=</span><span class="s2">&quot;text-gray-600 mb-8&quot;</span><span class="o">&gt;</span>
@@ -4684,7 +4685,7 @@ Import trace:
 </blockquote>
 <hr>
 <h5 id="3_6">解説3: カードとステータスバッジを並べる</h5>
-<div class="codehilite"><div class="code-wrap" id="code-120"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="o">&lt;</span><span class="nx">div</span><span class="w"> </span><span class="nx">className</span><span class="o">=</span><span class="s2">&quot;bg-white rounded-lg shadow-sm border border-gray-200 p-6&quot;</span><span class="o">&gt;</span>
+<div class="codehilite"><div class="code-wrap" id="code-121"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="o">&lt;</span><span class="nx">div</span><span class="w"> </span><span class="nx">className</span><span class="o">=</span><span class="s2">&quot;bg-white rounded-lg shadow-sm border border-gray-200 p-6&quot;</span><span class="o">&gt;</span>
 <span class="w">  </span><span class="o">&lt;</span><span class="nx">h2</span><span class="w"> </span><span class="nx">className</span><span class="o">=</span><span class="s2">&quot;text-lg font-semibold text-gray-800 mb-2&quot;</span><span class="o">&gt;</span>
 <span class="w">    </span><span class="nx">セットアップ完了</span>
 <span class="w">  </span><span class="o">&lt;</span><span class="err">/h2&gt;</span>
@@ -4710,7 +4711,7 @@ Import trace:
 <hr>
 <h3 id="92">9.2 開発サーバーの起動</h3>
 <p>ターミナルで、<strong><code>book-management</code> フォルダの中にいることを確かめてから</strong>以下のコマンドを実行します。</p>
-<div class="codehilite"><div class="code-wrap" id="code-121"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># npm run dev: package.json の &quot;scripts&quot; にある &quot;dev&quot; を実行</span>
+<div class="codehilite"><div class="code-wrap" id="code-122"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># npm run dev: package.json の &quot;scripts&quot; にある &quot;dev&quot; を実行</span>
 <span class="c1"># 中身は「next dev」で、Next.js の開発サーバーが起動する（Turbopack が標準で使われる）</span>
 <span class="c1"># ファイルを保存するたびに自動でブラウザが更新される（ホットリロード）</span>
 <span class="c1"># 停止するには Ctrl+C を押す</span>
@@ -4718,7 +4719,7 @@ npm<span class="w"> </span>run<span class="w"> </span>dev
 </code></pre></div></div>
 
 <p>以下のような出力が表示されます（2026年10月に実際に実行したときの表示。<code>Network</code> の行の数字はパソコンごとに違います）。</p>
-<div class="codehilite"><div class="code-wrap" id="code-122"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>&gt; book-management@0.1.0 dev
+<div class="codehilite"><div class="code-wrap" id="code-123"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>&gt; book-management@0.1.0 dev
 &gt; next dev
 
 ▲ Next.js 16.4.1 (Turbopack)
@@ -4909,12 +4910,12 @@ npm<span class="w"> </span>run<span class="w"> </span>dev
 <p>開発サーバーは、起動したターミナルの中でずっと動き続けます。別のターミナルを開いて、同じフォルダでもう一度 <code>npm run dev</code> を実行すると、Next.js 16 はそれを見つけて止まります。</p>
 </blockquote>
 <p>NG（同じフォルダで2つ目を起動する）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-123"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 1つ目がまだ動いているのに、別のターミナルでもう一度起動する</span>
+<div class="codehilite"><div class="code-wrap" id="code-124"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 1つ目がまだ動いているのに、別のターミナルでもう一度起動する</span>
 npm<span class="w"> </span>run<span class="w"> </span>dev
 </code></pre></div></div>
 
 <p><strong>▼ 実行結果</strong>（パスとプロセス番号は例）</p>
-<div class="codehilite"><div class="code-wrap" id="code-124"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>&gt; book-management@0.1.0 dev
+<div class="codehilite"><div class="code-wrap" id="code-125"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>&gt; book-management@0.1.0 dev
 &gt; next dev
 
 ⚠ Port 3000 is in use by process 9076, using available port 3001 instead.
@@ -4937,7 +4938,7 @@ or run taskkill /PID 9076 /F to stop it and start a new one.
 
 <p>まず「3000 番は使われているので 3001 番にします」と言いかけますが、すぐに「<strong>同じフォルダの開発サーバーがもう動いています</strong>（Another next dev server is already running）」と気づいて止まります。最後の2行は「すでに動いているサーバーに <code>http://localhost:3000</code> でアクセスできます。止めて新しく起動したいなら <code>taskkill /PID 9076 /F</code> を実行してください」という意味です（<code>taskkill</code> は Windows でプログラムを止めるコマンド、PID はプログラムの番号です）。</p>
 <p>OK（すでに動いている方を使う）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-125"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>1. VS Code のターミナルの一覧から、npm run dev が動いているターミナルを探す
+<div class="codehilite"><div class="code-wrap" id="code-126"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>1. VS Code のターミナルの一覧から、npm run dev が動いているターミナルを探す
 2. ブラウザで http://localhost:3000 を開く（新しく起動しなくてよい）
 3. 起動し直したいときは、そのターミナルで Ctrl+C を押してから npm run dev
 </code></pre></div></div>
@@ -4951,12 +4952,12 @@ or run taskkill /PID 9076 /F to stop it and start a new one.
 <p>VS Code で親のフォルダ（<code>projects</code> など）を開いていると、ターミナルも親のフォルダから始まります。そのまま <code>npm run dev</code> すると、npm は <code>package.json</code> を見つけられません。</p>
 </blockquote>
 <p>NG（<code>book-management</code> の1つ外で実行する）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-126"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># いま C:\Users\you\projects にいる（book-management の外）</span>
+<div class="codehilite"><div class="code-wrap" id="code-127"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># いま C:\Users\you\projects にいる（book-management の外）</span>
 npm<span class="w"> </span>run<span class="w"> </span>dev
 </code></pre></div></div>
 
 <p><strong>▼ 実行結果</strong>（パスは例）</p>
-<div class="codehilite"><div class="code-wrap" id="code-127"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>npm error code ENOENT
+<div class="codehilite"><div class="code-wrap" id="code-128"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>npm error code ENOENT
 npm error syscall open
 npm error path C:\Users\you\projects\package.json
 npm error errno -4058
@@ -4968,7 +4969,7 @@ npm error A complete log of this run can be found in: C:\Users\you\AppData\Local
 
 <p><code>ENOENT</code> は「Error NO ENTry（そんなファイルはありません）」の略です。<code>path</code> の行を見ると、<code>projects\package.json</code> を探しに行って見つからなかったことが分かります。</p>
 <p>OK（プロジェクトのフォルダに入ってから実行する）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-128"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># book-management フォルダに入る</span>
+<div class="codehilite"><div class="code-wrap" id="code-129"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># book-management フォルダに入る</span>
 <span class="nb">cd</span><span class="w"> </span>book-management
 <span class="c1"># package.json がある場所で実行する</span>
 npm<span class="w"> </span>run<span class="w"> </span>dev
@@ -5091,7 +5092,7 @@ npm<span class="w"> </span>run<span class="w"> </span>dev
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> データベースから書籍の一覧を取り出す処理を、具体的なコードで追いかけます。さきほど作ったサーバー用の Supabase クライアントを使い、「books テーブルから全件を、新しい順に取得する」という指示を出しています。<code>await</code>（待つ）は通信が終わるまで結果を待つための合図で、戻り値を <code>data</code>（成功データ）と <code>error</code>（エラー）に分けて受け取り、必ずエラーの有無を確認するのが安全な書き方です。この1つの呼び出しの裏で、前の図の通信ステップが自動で実行されています。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-129"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 書籍一覧を取得する関数（第7章のトップページで使う処理の骨組み）</span>
+<div class="codehilite"><div class="code-wrap" id="code-130"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 書籍一覧を取得する関数（第7章のトップページで使う処理の骨組み）</span>
 
 <span class="c1">// 1. サーバー用の Supabase クライアントを作る関数をインポート</span>
 <span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">createClient</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@/lib/supabase/server&quot;</span><span class="p">;</span>
@@ -5134,7 +5135,7 @@ npm<span class="w"> </span>run<span class="w"> </span>dev
 <p>この取得処理を、初心者がつまずきやすい部分ごとに<strong>1つずつ</strong>ていねいに見ていきましょう。</p>
 <hr>
 <h5 id="1_15">解説1: サーバー用クライアントと型をインポートする</h5>
-<div class="codehilite"><div class="code-wrap" id="code-130"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">createClient</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@/lib/supabase/server&quot;</span><span class="p">;</span>
+<div class="codehilite"><div class="code-wrap" id="code-131"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">createClient</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@/lib/supabase/server&quot;</span><span class="p">;</span>
 <span class="k">import</span><span class="w"> </span><span class="kr">type</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Book</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@/types/book&quot;</span><span class="p">;</span>
 </code></pre></div></div>
 
@@ -5148,7 +5149,7 @@ npm<span class="w"> </span>run<span class="w"> </span>dev
 </blockquote>
 <hr>
 <h5 id="2-await">解説2: 窓口を作り、await で取得結果を待つ</h5>
-<div class="codehilite"><div class="code-wrap" id="code-131"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">supabase</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">createClient</span><span class="p">();</span>
+<div class="codehilite"><div class="code-wrap" id="code-132"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">supabase</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">createClient</span><span class="p">();</span>
 
 <span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">data</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">supabase</span>
 <span class="w">  </span><span class="p">.</span><span class="kr">from</span><span class="p">(</span><span class="s2">&quot;books&quot;</span><span class="p">)</span>
@@ -5167,7 +5168,7 @@ npm<span class="w"> </span>run<span class="w"> </span>dev
 </blockquote>
 <hr>
 <h5 id="3_7">解説3: エラーを必ず確認してから先へ進む</h5>
-<div class="codehilite"><div class="code-wrap" id="code-132"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<div class="codehilite"><div class="code-wrap" id="code-133"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s2">&quot;書籍の取得に失敗しました:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span>
 <span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">[];</span>
 <span class="p">}</span>
@@ -5234,7 +5235,7 @@ npm<span class="w"> </span>run<span class="w"> </span>dev
 </tbody>
 </table>
 <p><strong>作成したファイル一覧:</strong></p>
-<div class="codehilite"><div class="code-wrap" id="code-133"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>book-management/
+<div class="codehilite"><div class="code-wrap" id="code-134"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>book-management/
 ├── .env.local            ✅ 作成済み（Git には入らない）
 ├── app/
 │   ├── layout.tsx        ✅ 作成済み
@@ -5266,12 +5267,12 @@ npm<span class="w"> </span>run<span class="w"> </span>dev
 <p><code>npx create-next-app@latest book-management</code> を実行したら、最初に「Would you like to use the recommended Next.js defaults?」と聞かれました。本書の手順では何を選び、その後の質問のうち<strong>既定値から変える必要がある</strong>のはどれでしょうか。また、その理由を1つ答えてください。</p>
 <h3 id="2_2">問題2: <code>@/</code> の行き先</h3>
 <p><code>tsconfig.json</code> の <code>"paths"</code> が <code>"@/*": ["./*"]</code> のとき、<code>app/books/[id]/edit/page.tsx</code> の中で次のように書きました。この import は、どのファイルを読み込もうとしますか。また、同じファイルを相対パスで書くとどうなりますか。</p>
-<div class="codehilite"><div class="code-wrap" id="code-134"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="nx">Header</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@/components/Header&quot;</span><span class="p">;</span>
+<div class="codehilite"><div class="code-wrap" id="code-135"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="nx">Header</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@/components/Header&quot;</span><span class="p">;</span>
 </code></pre></div></div>
 
 <h3 id="3_8">問題3: エラーメッセージを読む</h3>
 <p><code>npm run build</code> をしたら、次のエラーが出ました。どこをどう直せばよいでしょうか。</p>
-<div class="codehilite"><div class="code-wrap" id="code-135"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>./app/layout.tsx:17:1
+<div class="codehilite"><div class="code-wrap" id="code-136"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>./app/layout.tsx:17:1
 Error: Module not found: Can&#39;t resolve &#39;@/src/components/Header&#39;
 </code></pre></div></div>
 
@@ -5283,7 +5284,7 @@ Error: Module not found: Can&#39;t resolve &#39;@/src/components/Header&#39;
 </ul>
 <h3 id="5">問題5: 環境変数のトラブル</h3>
 <p><code>.env.local</code> に次のように書いて <code>npm run dev</code> したところ、Supabase を使うページで「環境変数 NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY が設定されていません」と表示されました。原因と直し方を答えてください。</p>
-<div class="codehilite"><div class="code-wrap" id="code-136"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nv">NEXT_PUBLIC_SUPABASE_URL</span><span class="o">=</span>https://xxxxxxxxxxxxxxxx.supabase.co
+<div class="codehilite"><div class="code-wrap" id="code-137"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nv">NEXT_PUBLIC_SUPABASE_URL</span><span class="o">=</span>https://xxxxxxxxxxxxxxxx.supabase.co
 <span class="nv">NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY</span><span class="o">=</span>sb_publishable_xxxxxxxxxxxxxxxxxxxxxxxx
 </code></pre></div></div>
 
@@ -5291,7 +5292,7 @@ Error: Module not found: Can&#39;t resolve &#39;@/src/components/Header&#39;
 <p><code>.env.local</code> に <code>SECRET_TOKEN=abc123</code>（<code>NEXT_PUBLIC_</code> なし）と書きました。この値を、(a) Server Component、(b) Client Component の中で <code>process.env.SECRET_TOKEN</code> として読むと、それぞれどうなりますか。</p>
 <h3 id="7-tailwind-css">問題7: Tailwind CSS が効かない</h3>
 <p>画面の横並び（<code>flex</code>）は効いているのに、文字の色や大きさ（<code>text-gray-600</code>、<code>text-3xl</code>）が全く付きません。<code>app/globals.css</code> は次のようになっていました。原因と直し方を答えてください。</p>
-<div class="codehilite"><div class="code-wrap" id="code-137"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">@</span><span class="k">tailwind</span><span class="w"> </span><span class="nt">base</span><span class="p">;</span>
+<div class="codehilite"><div class="code-wrap" id="code-138"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">@</span><span class="k">tailwind</span><span class="w"> </span><span class="nt">base</span><span class="p">;</span>
 <span class="p">@</span><span class="k">tailwind</span><span class="w"> </span><span class="nt">components</span><span class="p">;</span>
 <span class="p">@</span><span class="k">tailwind</span><span class="w"> </span><span class="nt">utilities</span><span class="p">;</span>
 </code></pre></div></div>

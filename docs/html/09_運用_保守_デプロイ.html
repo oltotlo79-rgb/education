@@ -385,17 +385,19 @@ python<span class="w"> </span>manage.py<span class="w"> </span>runserver
 <li><code>runserver</code> … 「開発用サーバーを起動せよ」という指示（run＝走らせる、server＝サーバー）。</li>
 </ul>
 <blockquote>
-<p><strong>▼ こう表示されれば成功:</strong>
-<code>Starting development server at http://127.0.0.1:8000/
-Quit the server with CTRL-BREAK.</code>
-この状態でブラウザから <code>http://localhost:8000</code> を開くとアプリが表示されます。止めるときは画面で <code>Ctrl + C</code> を押します。</p>
+<p><strong>▼ こう表示されれば成功:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-3"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Starting development server at http://127.0.0.1:8000/
+Quit the server with CTRL-BREAK.
+</code></pre></div></div>
+
+<p>この状態でブラウザから <code>http://localhost:8000</code> を開くとアプリが表示されます。止めるときは画面で <code>Ctrl + C</code> を押します。</p>
 <p>⚠️ <strong><code>runserver</code> は開発専用です。</strong> 本番では使いません（性能が低く、安全でないため）。本番では Gunicorn（§13）を使います。「開発サーバーを本番で動かす」は禁止です。</p>
 </blockquote>
 <h3 id="32-react">3.2 フロントエンド（React）の起動・ビルド</h3>
 <blockquote>
 <p><strong>▼ このコマンドがやること（先に日本語で）:</strong> Reactの開発サーバーを <code>localhost:3000</code> で起動します。画面を編集すると即座にブラウザへ反映されます（ホットリロード）。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-3"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># Reactの開発サーバーを localhost:3000 で起動（ファイル保存で自動反映）</span>
+<div class="codehilite"><div class="code-wrap" id="code-4"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># Reactの開発サーバーを localhost:3000 で起動（ファイル保存で自動反映）</span>
 npm<span class="w"> </span>start
 <span class="c1"># 本番用に最適化したファイル一式を frontend/build/ へ書き出す</span>
 npm<span class="w"> </span>run<span class="w"> </span>build
@@ -416,7 +418,7 @@ npm<span class="w"> </span>run<span class="w"> </span>build
 データベースの「表の形（テーブル定義）」を変更する手続き。<code>models.py</code> に新しい列を足したり、表を作ったりしたとき、その変更を実際のデータベースへ反映する作業です。引っ越し（移住）で家具の配置図を実際の部屋に当てはめるイメージ。</p>
 <p><strong>▼ このコマンドがやること（先に日本語で）:</strong> <code>models.py</code> の変更内容から「設計図（マイグレーションファイル）」を作り、それをデータベースに適用します。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-4"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># models.pyの変更から「変更の設計図」を作る</span>
+<div class="codehilite"><div class="code-wrap" id="code-5"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># models.pyの変更から「変更の設計図」を作る</span>
 python<span class="w"> </span>manage.py<span class="w"> </span>makemigrations
 <span class="c1"># その設計図をデータベースに実際に適用する</span>
 python<span class="w"> </span>manage.py<span class="w"> </span>migrate
@@ -435,7 +437,7 @@ python<span class="w"> </span>manage.py<span class="w"> </span>migrate
 <blockquote>
 <p><strong>▼ このコマンドがやること（先に日本語で）:</strong> 裏で重い仕事を順番に処理する「ワーカー（働き手）」を起動します。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-5"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># django-qのワーカー（裏方の処理係）を起動する</span>
+<div class="codehilite"><div class="code-wrap" id="code-6"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># django-qのワーカー（裏方の処理係）を起動する</span>
 python<span class="w"> </span>manage.py<span class="w"> </span>qcluster
 </code></pre></div></div>
 
@@ -452,7 +454,7 @@ python<span class="w"> </span>manage.py<span class="w"> </span>qcluster
 <blockquote>
 <p><strong>▼ このコマンドがやること（先に日本語で）:</strong> 各所に散らばっている静的ファイル（CSS・JS・画像）を、本番配信用の1か所（<code>staticfiles/</code>）に集めます。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-6"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 静的ファイルを STATIC_ROOT（staticfiles/）へ集約する</span>
+<div class="codehilite"><div class="code-wrap" id="code-7"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 静的ファイルを STATIC_ROOT（staticfiles/）へ集約する</span>
 python<span class="w"> </span>manage.py<span class="w"> </span>collectstatic
 </code></pre></div></div>
 
@@ -460,8 +462,10 @@ python<span class="w"> </span>manage.py<span class="w"> </span>collectstatic
 <li><code>collectstatic</code>（コレクトスタティック）… Djangoの管理画面用CSSや、Reactのビルド成果物などを、<code>settings.py</code> の <code>STATIC_ROOT</code>（§11）が指す <code>staticfiles/</code> フォルダへコピーします。WhiteNoise（§11）がここから配信します。</li>
 </ul>
 <blockquote>
-<p><strong>▼ こう表示されれば成功:</strong>
-<code>XXX static files copied to '.../staticfiles'.</code></p>
+<p><strong>▼ こう表示されれば成功:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-8"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>XXX static files copied to &#39;.../staticfiles&#39;.
+</code></pre></div></div>
+
 <p>⚠️ 本番デプロイの前には、<code>npm run build</code>（フロント）→ <code>collectstatic</code>（バック）の順で実行するのが定石です（§14）。</p>
 </blockquote>
 <h3 id="36">3.6 コマンド早見表（保存版）</h3>
@@ -536,7 +540,7 @@ python<span class="w"> </span>manage.py<span class="w"> </span>collectstatic
 <blockquote>
 <p><strong>▼ このコマンドがやること（先に日本語で）:</strong> <code>frontend/src/tests/</code> にあるテストを実行し、すべて合格か（緑）・失敗があるか（赤）を表示します。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-7"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 監視モードでテスト（ファイル変更のたびに再実行）</span>
+<div class="codehilite"><div class="code-wrap" id="code-9"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 監視モードでテスト（ファイル変更のたびに再実行）</span>
 npm<span class="w"> </span><span class="nb">test</span>
 <span class="c1"># テストを1回だけ実行して終了（CI・コミット前向き）</span>
 npm<span class="w"> </span>run<span class="w"> </span>test:run
@@ -550,11 +554,13 @@ npm<span class="w"> </span>run<span class="w"> </span>test:ui
 <li><code>npm run test:ui</code> … テスト結果をブラウザの見やすい画面で確認できます。</li>
 </ul>
 <blockquote>
-<p><strong>▼ こう表示されれば成功:</strong>
-<code>✓ src/tests/Login.test.tsx (3)
+<p><strong>▼ こう表示されれば成功:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-10"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>✓ src/tests/Login.test.tsx (3)
 Test Files  1 passed (1)
-     Tests  3 passed (3)</code>
-<code>passed</code>（合格）が並べばOK。<code>failed</code>（失敗）が出たら、その下にどのテストがなぜ落ちたかが表示されます。</p>
+     Tests  3 passed (3)
+</code></pre></div></div>
+
+<p><code>passed</code>（合格）が並べばOK。<code>failed</code>（失敗）が出たら、その下にどのテストがなぜ落ちたかが表示されます。</p>
 </blockquote>
 <h3 id="42">4.2 テストはいつ実行するか</h3>
 <table>
@@ -593,7 +599,7 @@ Test Files  1 passed (1)
 <blockquote>
 <p><strong>▼ この図がやること（先に日本語で）:</strong> ユーザーがボタンを押してから、Excelをダウンロードするまでの一連の流れを示します。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-8"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>【バックアップ（ダウンロード）の流れ】
+<div class="codehilite"><div class="code-wrap" id="code-11"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>【バックアップ（ダウンロード）の流れ】
 
 ① ユーザーが「工数バックアップ」ボタンを押す
         │
@@ -657,7 +663,7 @@ Test Files  1 passed (1)
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> このファイルで使う道具（部品）を、あちこちから持ってきます。Excel操作・表計算・タイムゾーン・日付・データベースのモデルなどです。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-9"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ファイル・フォルダ操作（パス結合・存在確認・削除）</span>
+<div class="codehilite"><div class="code-wrap" id="code-12"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ファイル・フォルダ操作（パス結合・存在確認・削除）</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="c1"># settings.py の値（MEDIA_ROOT等）を読むため</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">django.conf</span><span class="w"> </span><span class="kn">import</span> <span class="n">settings</span>
@@ -711,7 +717,7 @@ Djangoで「データベースの1つの表」を表すPythonのクラス。例�
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> 指定された開始日〜終了日の工数データをDBから全部取り出し、新しいExcelファイルを作って、見出し行とデータ行を書き込み、<code>media/</code> フォルダに保存して、そのファイルの場所（パス）を返します。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-10"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 工数データバックアップ非同期処理</span>
+<div class="codehilite"><div class="code-wrap" id="code-13"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 工数データバックアップ非同期処理</span>
 <span class="c1"># 開始日と終了日を受け取る関数</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">generate_kosu_backup</span><span class="p">(</span><span class="n">start_day</span><span class="p">,</span> <span class="n">end_day</span><span class="p">):</span>
   <span class="c1"># 新しいExcelブック作成</span>
@@ -731,7 +737,7 @@ Djangoで「データベースの1つの表」を表すPythonのクラス。例�
 Excelは「ブック（ファイル）→ ワークシート（タブ）→ セル（マス目）」の3階層です。<code>Workbook()</code> でブックを作り、<code>wb.active</code> でシートを取り、<code>ws.append([...])</code> で行を追加し、<code>ws.cell(行, 列)</code> でマス目1つを読みます。この3つを覚えれば openpyxl の8割は使えます。</p>
 </blockquote>
 <p>次に、Excelの1行目（見出し）を用意します。</p>
-<div class="codehilite"><div class="code-wrap" id="code-11"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># ヘッダー作成</span>
+<div class="codehilite"><div class="code-wrap" id="code-14"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># ヘッダー作成</span>
   <span class="n">headers</span> <span class="o">=</span> <span class="p">[</span>
     <span class="c1"># 1〜5列目の見出し</span>
     <span class="s1">&#39;従業員番号&#39;</span><span class="p">,</span> <span class="s1">&#39;氏名&#39;</span><span class="p">,</span> <span class="s1">&#39;工数区分定義Ver&#39;</span><span class="p">,</span> <span class="s1">&#39;就業日&#39;</span><span class="p">,</span> <span class="s1">&#39;直&#39;</span><span class="p">,</span>
@@ -754,7 +760,7 @@ Excelは「ブック（ファイル）→ ワークシート（タブ）→ セ�
 <p>⚠️ <strong>見出しの順番と数は「ロード」と完全に一致させる必要があります。</strong> バックアップで書き出した順番と、ロード（§8）で読み込む順番がズレると、データが別の列に入ってしまいます。<code>load_kosu_file</code> の <code>expected_headers</code>（§8）と見比べると、まったく同じ並びになっています。これは偶然ではなく、<strong>バックアップで出したものをそのままロードで戻せるようにする</strong> ための設計です。</p>
 </blockquote>
 <p>次に、データベースから対象データを取り出します。</p>
-<div class="codehilite"><div class="code-wrap" id="code-12"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># 工数データ取得</span>
+<div class="codehilite"><div class="code-wrap" id="code-15"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># 工数データ取得</span>
   <span class="c1"># 工数テーブルから条件で絞り込み</span>
   <span class="n">kosu_data</span> <span class="o">=</span> <span class="n">Business_Time_graph</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
     <span class="c1"># 就業日が start_day 以上 かつ end_day 以下</span>
@@ -773,7 +779,7 @@ Excelは「ブック（ファイル）→ ワークシート（タブ）→ セ�
 <code>.filter()</code> が返す「絞り込み結果の集まり」。この時点ではまだDBに問い合わせていません（遅延評価）。<code>for</code> で回したり <code>.exists()</code> で確認したりして <strong>実際に値が必要になった瞬間</strong> にDBへ問い合わせます。料理の「注文票」のようなもので、注文を書いた時点ではまだ料理は作られず、必要になって初めて厨房が動きます。</p>
 </blockquote>
 <p>取り出したデータを1行ずつExcelへ書き込みます。</p>
-<div class="codehilite"><div class="code-wrap" id="code-13"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># データ書き込み</span>
+<div class="codehilite"><div class="code-wrap" id="code-16"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># データ書き込み</span>
   <span class="c1"># 取得した工数データを1件ずつ取り出す</span>
   <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">kosu_data</span><span class="p">:</span>
     <span class="c1"># Excel1行ぶんのデータをリストにまとめる</span>
@@ -803,7 +809,7 @@ Excelは「ブック（ファイル）→ ワークシート（タブ）→ セ�
 <p><strong>なぜ <code>name</code> だけ <code>str()</code> するのか？</strong> <code>employee_no3</code> などは数値や文字列ですが、<code>name</code> は「人員テーブルへのリンク（外部キー）」です。Pythonのオブジェクトのままでは人間が読めないので、<code>str()</code> を通して <code>__str__</code> メソッド（モデルで定義された「氏名を返す」表示用関数）を呼び、氏名の文字列にしているのです。</p>
 </blockquote>
 <p>書き込みが終わったら、保存先フォルダを準備して保存します。</p>
-<div class="codehilite"><div class="code-wrap" id="code-14"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># 保存先のディレクトリ確認・作成</span>
+<div class="codehilite"><div class="code-wrap" id="code-17"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># 保存先のディレクトリ確認・作成</span>
   <span class="c1"># settings.pyのMEDIA_ROOT（media/フォルダのパス）を取得</span>
   <span class="n">media_dir</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">MEDIA_ROOT</span>
   <span class="c1"># もしそのフォルダが存在しなければ</span>
@@ -817,7 +823,7 @@ Excelは「ブック（ファイル）→ ワークシート（タブ）→ セ�
 <li><code>if not os.path.exists(media_dir):</code> … <code>os.path.exists</code> は「そのパスが存在するか」を <code>True/False</code> で返します。先頭の <code>not</code> で「存在しないなら」という条件になります。</li>
 <li><code>os.makedirs(media_dir)</code> … フォルダを新規作成します。<code>makedirs</code> は途中のフォルダもまとめて作れる関数。<strong>初回バックアップ時に <code>media/</code> フォルダがまだ無くてもエラーにならない</strong> ための保険です。</li>
 </ul>
-<div class="codehilite"><div class="code-wrap" id="code-15"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># ファイル名作成と保存</span>
+<div class="codehilite"><div class="code-wrap" id="code-18"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># ファイル名作成と保存</span>
   <span class="c1"># ファイル名を組み立て</span>
   <span class="n">filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;工数データバックアップ_</span><span class="si">{</span><span class="n">start_day</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">end_day</span><span class="si">}</span><span class="s1">.xlsx&#39;</span>
   <span class="c1"># フォルダパスとファイル名を結合して完全なパスに</span>
@@ -847,7 +853,7 @@ Excelは「ブック（ファイル）→ ワークシート（タブ）→ セ�
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> 指定期間の工数データを取り出し、各レコードの「作業内容（記号の並び）」と「作業詳細（$区切りの文字）」を1つずつ対応させて、読みやすい区分名に変換しながらリスト化し、pandasの表（DataFrame）にして、空欄や重複を取り除いてExcelに出力します。</p>
 </blockquote>
 <h3 id="71">7.1 データ取得と準備</h3>
-<div class="codehilite"><div class="code-wrap" id="code-16"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 工数区分定義予測データ出力非同期処理</span>
+<div class="codehilite"><div class="code-wrap" id="code-19"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 工数区分定義予測データ出力非同期処理</span>
 <span class="c1"># 開始日・終了日を受け取る</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">generate_prediction</span><span class="p">(</span><span class="n">data_day</span><span class="p">,</span> <span class="n">data_day2</span><span class="p">):</span>
   <span class="c1"># 期間内の工数データ取得</span>
@@ -868,7 +874,7 @@ Excelは「ブック（ファイル）→ ワークシート（タブ）→ セ�
 <li><code>data = []</code> … 空のリスト。ここに「区分名・作業詳細」のペアを溜めていきます。</li>
 </ul>
 <h3 id="72-1">7.2 1レコードを記号ごとに分解する</h3>
-<div class="codehilite"><div class="code-wrap" id="code-17"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># 取得した工数データを処理</span>
+<div class="codehilite"><div class="code-wrap" id="code-20"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># 取得した工数データを処理</span>
   <span class="c1"># 工数レコードを1件ずつ</span>
   <span class="k">for</span> <span class="n">kosu</span> <span class="ow">in</span> <span class="n">kosu_filter</span><span class="p">:</span>
     <span class="c1"># 作業内容をリストに解凍</span>
@@ -893,7 +899,7 @@ Excelは「ブック（ファイル）→ ワークシート（タブ）→ セ�
 文字列を、指定した区切り文字（ここでは <code>$</code>）でちぎってリストにするメソッド。逆に、リストを区切り文字でつなぐのは <code>'$'.join(リスト)</code> です。本アプリは「複数の値を1つの列に詰める」ために <code>$</code> 区切りを多用しています。</p>
 </blockquote>
 <h3 id="73">7.3 記号を読みやすい名前に変換する</h3>
-<div class="codehilite"><div class="code-wrap" id="code-18"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1"># リストの長さ取得</span>
+<div class="codehilite"><div class="code-wrap" id="code-21"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1"># リストの長さ取得</span>
     <span class="c1"># 2つのリストのうち長い方の長さ</span>
     <span class="n">max_length</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">kosu_list</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">detail_list</span><span class="p">))</span>
     <span class="c1"># 1要素ごとにExcelに書き込み</span>
@@ -913,7 +919,7 @@ Excelは「ブック（ファイル）→ ワークシート（タブ）→ セ�
 <li><code>if def_filter.exists():</code> … <code>.exists()</code> は「絞り込み結果が1件でもあるか」を <code>True/False</code> で返す軽い確認。定義が存在するときだけ中の処理をします。</li>
 <li><code>choices_list, def_n = kosu_division_dictionary(kosu.def_ver2)</code> … 自作関数で「記号 → 読みやすい名前」の対応表（<code>choices_list</code>）を作ります。<code>def_n</code> は使う定義数。<code>choices_list</code> の各要素は <code>(記号, 名前)</code> のペアになっています。</li>
 </ul>
-<div class="codehilite"><div class="code-wrap" id="code-19"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>        <span class="c1"># 作業内容を工数区分定義に変換</span>
+<div class="codehilite"><div class="code-wrap" id="code-22"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>        <span class="c1"># 作業内容を工数区分定義に変換</span>
         <span class="c1"># 対応表を1ペアずつ</span>
         <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">choices_list</span><span class="p">:</span>
           <span class="c1"># 工数区分定義の記号と作業内容が同じ場合の処理</span>
@@ -951,7 +957,7 @@ Excelは「ブック（ファイル）→ ワークシート（タブ）→ セ�
 </blockquote>
 <h3 id="74-pandas">7.4 pandasで表にして重複・空欄を消す</h3>
 <p>ここで pandas の出番です。</p>
-<div class="codehilite"><div class="code-wrap" id="code-20"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># DataFrameに変換</span>
+<div class="codehilite"><div class="code-wrap" id="code-23"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># DataFrameに変換</span>
   <span class="c1"># リストを表(DataFrame)に変換</span>
   <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;工数定義区分&#39;</span><span class="p">,</span> <span class="s1">&#39;作業詳細&#39;</span><span class="p">])</span>
 
@@ -977,7 +983,7 @@ Excelは「ブック（ファイル）→ ワークシート（タブ）→ セ�
 pandasの中心となる「表」のデータ構造。Excelのシートのように「行（レコード）」と「列（フィールド）」を持ち、<code>df[条件]</code> で行を絞ったり、<code>df.drop_duplicates()</code> で重複を消したりが一瞬でできます。手で <code>for</code> を回すより速く・短く書けるのが利点です。</p>
 </blockquote>
 <h3 id="75-pandas">7.5 保存（pandas経由）</h3>
-<div class="codehilite"><div class="code-wrap" id="code-21"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># 保存先のディレクトリ確認・作成</span>
+<div class="codehilite"><div class="code-wrap" id="code-24"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># 保存先のディレクトリ確認・作成</span>
   <span class="c1"># 保存先フォルダ</span>
   <span class="n">media_dir</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">MEDIA_ROOT</span>
   <span class="c1"># 無ければ</span>
@@ -1018,7 +1024,7 @@ pandasの中心となる「表」のデータ構造。Excelのシートのよう
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> 指定期間の工数データをDBから取り出して、まとめて削除します。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-22"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 工数データ削除非同期処理</span>
+<div class="codehilite"><div class="code-wrap" id="code-25"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 工数データ削除非同期処理</span>
 <span class="c1"># 開始日・終了日を受け取る</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">delete_kosu_data</span><span class="p">(</span><span class="n">start_day</span><span class="p">,</span> <span class="n">end_day</span><span class="p">):</span>
   <span class="c1"># 工数データ取得</span>
@@ -1045,7 +1051,7 @@ pandasの中心となる「表」のデータ構造。Excelのシートのよう
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> 受け取ったExcelファイルを開き、見出しが正しいか確認し、2行目以降のデータを1行ずつ読み、対応する人員が存在すれば、同じ日の既存データを消してから新しいデータを登録します。最後に一時ファイルを削除します。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-23"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 工数データロード非同期処理</span>
+<div class="codehilite"><div class="code-wrap" id="code-26"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 工数データロード非同期処理</span>
 <span class="c1"># アップロードされた一時ファイルのパスを受け取る</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">load_kosu_file</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
   <span class="c1"># 以下の処理でエラーが出ても落ちないように包む</span>
@@ -1064,7 +1070,7 @@ pandasの中心となる「表」のデータ構造。Excelのシートのよう
 <li><code>wb = openpyxl.load_workbook(temp_file_path)</code> … <code>load_workbook</code> は「既存のExcelファイルを読み込む」関数（作成の <code>Workbook()</code> と対）。</li>
 <li><code>ws = wb.worksheets[0]</code> … <code>worksheets[0]</code> は「0番目（最初）のシート」。<code>wb.active</code> と同様に最初のシートを取ります。</li>
 </ul>
-<div class="codehilite"><div class="code-wrap" id="code-24"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1"># ヘッダー定義</span>
+<div class="codehilite"><div class="code-wrap" id="code-27"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1"># ヘッダー定義</span>
     <span class="n">expected_headers</span> <span class="o">=</span> <span class="p">[</span>
       <span class="s1">&#39;従業員番号&#39;</span><span class="p">,</span> <span class="s1">&#39;氏名&#39;</span><span class="p">,</span> <span class="s1">&#39;工数区分定義Ver&#39;</span><span class="p">,</span> <span class="s1">&#39;就業日&#39;</span><span class="p">,</span> <span class="s1">&#39;直&#39;</span><span class="p">,</span>
       <span class="s1">&#39;作業内容&#39;</span><span class="p">,</span> <span class="s1">&#39;作業詳細&#39;</span><span class="p">,</span> <span class="s1">&#39;残業時間&#39;</span><span class="p">,</span> <span class="s1">&#39;昼休憩時間&#39;</span><span class="p">,</span>
@@ -1098,7 +1104,7 @@ pandasの中心となる「表」のデータ構造。Excelのシートのよう
 openpyxlでセル1つを指す書き方。<strong>行も列も1から始まる</strong>（Excelと同じ）ことに注意。<code>ws.cell(1, 1)</code> はA1セル、<code>ws.cell(2, 3)</code> はC2セルです。<code>.value</code> でその中身を取り出します。</p>
 </blockquote>
 <p>データの読み込みとDB保存に進みます。</p>
-<div class="codehilite"><div class="code-wrap" id="code-25"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1"># 4. データ読み込みとDB保存</span>
+<div class="codehilite"><div class="code-wrap" id="code-28"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1"># 4. データ読み込みとDB保存</span>
     <span class="c1"># 2行目から最終行まで（1行目は見出しなので飛ばす）</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">ws</span><span class="o">.</span><span class="n">max_row</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
       <span class="c1"># 1列目＝従業員番号</span>
@@ -1129,7 +1135,7 @@ openpyxlでセル1つを指す書き方。<strong>行も列も1から始まる</
 <p><strong>用語：<code>.get()</code> と <code>.filter()</code> の違い</strong>
 <code>.filter()</code> は条件に合う行の <strong>集まり（0件でもOK）</strong> を返します。<code>.get()</code> は <strong>ちょうど1件</strong> を返し、0件だと <code>DoesNotExist</code> 例外、2件以上だと <code>MultipleObjectsReturned</code> 例外を投げます。「1件だけ確実に欲しい」ときは <code>.get()</code>、「複数あるかも／0件かも」なら <code>.filter()</code> を使います。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-26"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>      <span class="c1"># もし既に同一データが存在するなら削除</span>
+<div class="codehilite"><div class="code-wrap" id="code-29"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>      <span class="c1"># もし既に同一データが存在するなら削除</span>
       <span class="n">existing_data</span> <span class="o">=</span> <span class="n">Business_Time_graph</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
         <span class="c1"># 同じ人・同じ日の既存データ</span>
         <span class="n">employee_no3</span><span class="o">=</span><span class="n">employee_no</span><span class="p">,</span> <span class="n">work_day2</span><span class="o">=</span><span class="n">work_day2</span>
@@ -1145,7 +1151,7 @@ openpyxlでセル1つを指す書き方。<strong>行も列も1から始まる</
 <li><code>if existing_data.exists():</code> … 既存があるなら、</li>
 <li><code>existing_data.delete()</code> … 消します。これは <strong>「ロードは上書き」</strong> という仕様です。同じ人の同じ日のデータが二重に登録されるのを防ぎ、Excelの内容で置き換えます。</li>
 </ul>
-<div class="codehilite"><div class="code-wrap" id="code-27"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>      <span class="c1"># 新データをインスタンスとして作成してDBに保存</span>
+<div class="codehilite"><div class="code-wrap" id="code-30"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>      <span class="c1"># 新データをインスタンスとして作成してDBに保存</span>
       <span class="k">try</span><span class="p">:</span>
         <span class="c1"># 工数テーブルに新しい行を作成・保存</span>
         <span class="n">Business_Time_graph</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
@@ -1194,7 +1200,7 @@ openpyxlでセル1つを指す書き方。<strong>行も列も1から始まる</
 <li><code>except IntegrityError as create_err:</code> … 重複登録などDB制約に違反したら、ここで捕まえます。</li>
 <li><code>continue</code> … その行だけ飛ばして次へ。1行の失敗で全体が止まらない設計です。</li>
 </ul>
-<div class="codehilite"><div class="code-wrap" id="code-28"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1"># 5. 処理が成功したら一時ファイルを削除</span>
+<div class="codehilite"><div class="code-wrap" id="code-31"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1"># 5. 処理が成功したら一時ファイルを削除</span>
     <span class="c1"># 役目を終えた一時ファイルを削除</span>
     <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">temp_file_path</span><span class="p">)</span>
     <span class="c1"># 成功を返す</span>
@@ -1227,7 +1233,7 @@ openpyxlでセル1つを指す書き方。<strong>行も列も1から始まる</
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> 全人員のデータ（休憩時間設定やポップアップ設定を含む40列）をExcelに書き出します。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-29"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 引数なし（全件対象だから）</span>
+<div class="codehilite"><div class="code-wrap" id="code-32"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 引数なし（全件対象だから）</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">generate_member_backup</span><span class="p">():</span>
   <span class="c1"># 今日の日付を「20260602」形式の文字列に</span>
   <span class="n">today</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -1248,7 +1254,7 @@ openpyxlでセル1つを指す書き方。<strong>行も列も1から始まる</
 </blockquote>
 <h3 id="92-load_member_file">9.2 人員データロード <code>load_member_file</code></h3>
 <p>工数ロード（§8）と骨組みは同じですが、1点だけ重要な違いがあります。</p>
-<div class="codehilite"><div class="code-wrap" id="code-30"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">ws</span><span class="o">.</span><span class="n">max_row</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+<div class="codehilite"><div class="code-wrap" id="code-33"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">ws</span><span class="o">.</span><span class="n">max_row</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
       <span class="n">employee_no_value</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
 
       <span class="c1"># 既に同じ番号の人員がいたら</span>
@@ -1270,7 +1276,7 @@ openpyxlでセル1つを指す書き方。<strong>行も列も1から始まる</
 </ul>
 <h3 id="94-generate_def_backup-load_def_file">9.4 工数区分定義 <code>generate_def_backup</code> / <code>load_def_file</code></h3>
 <p>ここはヘッダーの作り方が独特なので注目します。</p>
-<div class="codehilite"><div class="code-wrap" id="code-31"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># ヘッダー作成</span>
+<div class="codehilite"><div class="code-wrap" id="code-34"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># ヘッダー作成</span>
   <span class="n">headers</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;工数区分定義Ver名&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">item</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">51</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;工数区分名</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;定義</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;作業内容</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;変動/固定</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]]</span>
 </code></pre></div></div>
 
@@ -1320,7 +1326,7 @@ openpyxlでセル1つを指す書き方。<strong>行も列も1から始まる</
 </blockquote>
 <h3 id="96">9.6 タスク履歴・操作履歴のバックアップ（タイムゾーン変換つき）</h3>
 <p><code>generate_AsyncTask_backup</code> と <code>generate_History_backup</code> は、<strong>時刻を日本時間に直して</strong> から書き出すのが特徴です。</p>
-<div class="codehilite"><div class="code-wrap" id="code-32"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># 文字列を日付に変換</span>
+<div class="codehilite"><div class="code-wrap" id="code-35"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># 文字列を日付に変換</span>
   <span class="n">start_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">start_day</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">()</span>
   <span class="n">end_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">end_day</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">()</span>
 </code></pre></div></div>
@@ -1328,7 +1334,7 @@ openpyxlでセル1つを指す書き方。<strong>行も列も1から始まる</
 <ul>
 <li><code>strptime(start_day, '%Y-%m-%d')</code> … <code>strftime</code>（§9.1）の逆。<code>'2026-05-01'</code> のような <strong>文字列を日付オブジェクトに変換</strong> します。<code>.date()</code> で時刻部分を落として日付だけにします。</li>
 </ul>
-<div class="codehilite"><div class="code-wrap" id="code-33"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">AsyncTask_data</span><span class="p">:</span>
+<div class="codehilite"><div class="code-wrap" id="code-36"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">AsyncTask_data</span><span class="p">:</span>
     <span class="k">try</span><span class="p">:</span>
       <span class="c1"># settings.TIME_ZONE（Asia/Tokyo）のタイムゾーン</span>
       <span class="n">target_tz</span> <span class="o">=</span> <span class="n">pytz</span><span class="o">.</span><span class="n">timezone</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">TIME_ZONE</span><span class="p">)</span>
@@ -1355,7 +1361,7 @@ openpyxlでセル1つを指す書き方。<strong>行も列も1から始まる</
 <h2 id="10-asynchronous_viewspy">10. asynchronous_views.py 全解説：非同期フローとポーリング</h2>
 <p>ここまでは「作業の中身（tasks.py）」でした。次は、その作業を <strong>いつ・どう起動するか</strong> を司る <code>asynchronous_views.py</code> を読みます。これが §5 の流れ図の「③受付・スレッド起動」「⑤状態確認」「⑥配信」を担います。</p>
 <h3 id="101">10.1 冒頭インポート</h3>
-<div class="codehilite"><div class="code-wrap" id="code-34"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ファイル操作</span>
+<div class="codehilite"><div class="code-wrap" id="code-37"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ファイル操作</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="c1"># 別スレッドを起動する道具（非同期の要）</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">threading</span>
@@ -1402,7 +1408,7 @@ openpyxlでセル1つを指す書き方。<strong>行も列も1から始まる</
 関数の直前に <code>@名前</code> の形で付け、その関数に機能を「追加」するしくみ。<code>@api_view(['POST'])</code> は「この関数はPOSTリクエストを受けるAPIです」という意味を関数に着せます。プレゼントの包装紙のように、中身（関数）はそのままに外側を飾るイメージ。</p>
 </blockquote>
 <h3 id="102-backupid">10.2 受付関数 <code>backup</code>：タスクID発行とスレッド起動</h3>
-<div class="codehilite"><div class="code-wrap" id="code-35"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># POSTリクエストのみ受け付けるAPI</span>
+<div class="codehilite"><div class="code-wrap" id="code-38"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># POSTリクエストのみ受け付けるAPI</span>
 <span class="nd">@api_view</span><span class="p">([</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
 <span class="c1"># ファイルもJSONもフォームも解析できる</span>
 <span class="nd">@parser_classes</span><span class="p">([</span><span class="n">MultiPartParser</span><span class="p">,</span> <span class="n">JSONParser</span><span class="p">,</span> <span class="n">FormParser</span><span class="p">])</span>
@@ -1427,7 +1433,7 @@ openpyxlでセル1つを指す書き方。<strong>行も列も1から始まる</
 <li><code>AsyncTask.objects.create(task_id=task_id, status='pending')</code> … その受付番号を <code>status='pending'</code>（処理中）でDBに登録します。これが後でポーリングの参照先になります。</li>
 <li><code>start_day = request.data.get('start_day')</code> … リクエストの中身から開始日を取り出します。<code>.get(...)</code> は「無ければ <code>None</code>」を返す安全な取り方。</li>
 </ul>
-<div class="codehilite"><div class="code-wrap" id="code-36"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># url_name属性取得</span>
+<div class="codehilite"><div class="code-wrap" id="code-39"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># url_name属性取得</span>
   <span class="c1"># 今アクセスされたURLのパス</span>
   <span class="n">current_path</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">path</span>
   <span class="c1"># そのパスを解析</span>
@@ -1441,7 +1447,7 @@ openpyxlでセル1つを指す書き方。<strong>行も列も1から始まる</
 <li><code>resolve(current_path)</code> … そのパスが、urls.py のどのルートに対応するかを解析します。</li>
 <li><code>match.url_name</code> … urls.py で <code>name='kosu_backup'</code> のように付けた名前を取得。<strong>この名前で「どの処理をすべきか」を分岐</strong> します。1つの <code>backup</code> 関数が、URL名によって工数・人員・班員…と振る舞いを変えるのです。</li>
 </ul>
-<div class="codehilite"><div class="code-wrap" id="code-37"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># 工数バックアップなら</span>
+<div class="codehilite"><div class="code-wrap" id="code-40"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># 工数バックアップなら</span>
   <span class="k">if</span> <span class="n">url_name</span> <span class="o">==</span> <span class="s1">&#39;kosu_backup&#39;</span><span class="p">:</span>
     <span class="c1"># 日付を検証</span>
     <span class="n">error_response</span> <span class="o">=</span> <span class="n">validate_dates</span><span class="p">(</span><span class="n">start_day</span><span class="p">,</span> <span class="n">end_day</span><span class="p">)</span>
@@ -1475,7 +1481,7 @@ openpyxlでセル1つを指す書き方。<strong>行も列も1から始まる</
 Pythonでは関数も「値」として変数に代入できます。<code>f = generate_kosu_backup</code> とすると、<code>f(...)</code> で同じ関数を呼べます。本コードは「URL名に応じて、実行する関数を変数 <code>task_function</code> に選び、最後にまとめて起動する」設計で、これにより分岐ごとに同じ起動コードを書かずに済んでいます。</p>
 </blockquote>
 <p>ファイルロード系の分岐は、アップロードファイルを一時保存します。</p>
-<div class="codehilite"><div class="code-wrap" id="code-38"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># 工数ロードなら</span>
+<div class="codehilite"><div class="code-wrap" id="code-41"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># 工数ロードなら</span>
   <span class="k">elif</span> <span class="n">url_name</span> <span class="o">==</span> <span class="s1">&#39;kosu_load&#39;</span><span class="p">:</span>
     <span class="c1"># アップロードされたファイルを取得</span>
     <span class="n">kosu_file</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">FILES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;file&#39;</span><span class="p">)</span>
@@ -1512,7 +1518,7 @@ Pythonでは関数も「値」として変数に代入できます。<code>f = g
 </ul>
 <p>この <code>elif</code> が <code>def_load</code>・<code>member_load</code>・<code>team_load</code>・<code>choice_load</code>・<code>inquiry_load</code>・<code>setting_load</code> と続きますが、<strong>すべて同じ構造</strong>（ファイル取得→一時保存→対応する <code>load_*</code> 関数を選択）です。引数のファイル変数名と呼ぶ関数が違うだけです。</p>
 <p><code>AsyncTask_backup</code> などの履歴系は、再び <code>validate_dates</code> を通してから対応関数を選びます。最後に、選んだ関数を <strong>別スレッドで起動</strong> します。</p>
-<div class="codehilite"><div class="code-wrap" id="code-39"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="k">else</span><span class="p">:</span>
+<div class="codehilite"><div class="code-wrap" id="code-42"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="k">else</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">JsonResponse</span><span class="p">({</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;無効なタスクタイプです。&#39;</span><span class="p">},</span> <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_400_BAD_REQUEST</span><span class="p">)</span>
 
   <span class="c1"># 別スレッドを用意</span>
@@ -1536,7 +1542,7 @@ Pythonでは関数も「値」として変数に代入できます。<code>f = g
 §3.4 で触れたとおり、本アプリは設定上 <code>Q_CLUSTER</code> を持ちますが、バックアップは <code>threading.Thread</code> で動かしています。<code>threading</code> は「同じプロセス内で別の流れを作る」軽い方法で、<code>qcluster</code> ワーカーを別途起動しなくても動く利点があります。一方、サーバー再起動でスレッドが消える・複数台構成で扱いにくい等の弱点もあり、本格運用では django-q への移行が検討対象になります。<strong>「今は threading で動いている」</strong> という事実を運用者として押さえておきましょう。</p>
 </blockquote>
 <h3 id="103-validate_dates">10.3 日付バリデーション <code>validate_dates</code></h3>
-<div class="codehilite"><div class="code-wrap" id="code-40"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 日付バリデーション関数</span>
+<div class="codehilite"><div class="code-wrap" id="code-43"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 日付バリデーション関数</span>
 <span class="c1"># 開始日・終了日を検証</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">validate_dates</span><span class="p">(</span><span class="n">start_day</span><span class="p">,</span> <span class="n">end_day</span><span class="p">):</span>
   <span class="c1"># 今日を文字列で</span>
@@ -1574,7 +1580,7 @@ Pythonでは関数も「値」として変数に代入できます。<code>f = g
 <p><strong>なぜ「昨日まで」なのか？</strong> 当日のデータはまだ入力途中（更新され続けている）可能性が高いためです。確定していないデータをバックアップ・削除すると、入力途中の工数を巻き込む恐れがあります。「確定済み（昨日以前）」だけを対象にする安全策です。</p>
 </blockquote>
 <h3 id="104-check_task_status">10.4 状態確認 <code>check_task_status</code>（ポーリングの相手）</h3>
-<div class="codehilite"><div class="code-wrap" id="code-41"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># GETで呼ぶAPI</span>
+<div class="codehilite"><div class="code-wrap" id="code-44"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># GETで呼ぶAPI</span>
 <span class="nd">@api_view</span><span class="p">([</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">check_task_status</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
   <span class="c1"># クエリ文字列からタスクIDを取得</span>
@@ -1617,16 +1623,18 @@ Pythonでは関数も「値」として変数に代入できます。<code>f = g
 <blockquote>
 <p><strong>用語：202 Accepted（受理）</strong>
 「リクエストは受け付けたが、処理はまだ完了していない」を表すHTTPステータスコード（§15）。非同期処理の「進行中」を伝えるのにぴったりのコードです。フロントは200（完了）でなく202を見て、ポーリングを続けます。</p>
-<p><strong>▼ ポーリングの実際の動き:</strong>
-<code>フロント: GET check_task_status?task_id=abc  → 202 pending   （まだ）
+<p><strong>▼ ポーリングの実際の動き:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-45"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>フロント: GET check_task_status?task_id=abc  → 202 pending   （まだ）
   （2秒待つ）
 フロント: GET check_task_status?task_id=abc  → 202 pending   （まだ）
   （2秒待つ）
 フロント: GET check_task_status?task_id=abc  → 200 success + file_path  （完了！）
-  → ダウンロードへ</code></p>
+  → ダウンロードへ
+</code></pre></div></div>
+
 </blockquote>
 <h3 id="105-download_file">10.5 ファイル配信 <code>download_file</code>（後始末つき）</h3>
-<div class="codehilite"><div class="code-wrap" id="code-42"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nd">@api_view</span><span class="p">([</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<div class="codehilite"><div class="code-wrap" id="code-46"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nd">@api_view</span><span class="p">([</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">download_file</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
   <span class="c1"># 渡されたファイルパス</span>
   <span class="n">file_path</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;file_path&#39;</span><span class="p">)</span>
@@ -1641,7 +1649,7 @@ Pythonでは関数も「値」として変数に代入できます。<code>f = g
 <li><code>file_handle = open(file_path, 'rb')</code> … ファイルを <code>'rb'</code>（read binary：バイナリ読み込み）で開きます。Excelは文字でなくバイナリなので <code>b</code> を付けます。</li>
 <li><code>FileResponse(file_handle, as_attachment=True, filename=...)</code> … ファイルをそのまま返す応答。<code>as_attachment=True</code> で「ブラウザ内で開かず、ダウンロード（保存）させる」。<code>filename=os.path.basename(file_path)</code> で、保存時のファイル名をパスの末尾（ファイル名部分）にします。</li>
 </ul>
-<div class="codehilite"><div class="code-wrap" id="code-43"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># 遅延削除を行う内部関数</span>
+<div class="codehilite"><div class="code-wrap" id="code-47"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># 遅延削除を行う内部関数</span>
   <span class="k">def</span><span class="w"> </span><span class="nf">delayed_file_cleanup</span><span class="p">():</span>
       <span class="c1"># 3秒待つ（ダウンロード完了を待つ）</span>
       <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
@@ -1679,7 +1687,7 @@ Pythonでは関数も「値」として変数に代入できます。<code>f = g
 </blockquote>
 <h3 id="106-handle_task">10.6 汎用タスク処理 <code>handle_task</code>（スレッドの中身）</h3>
 <p><code>backup</code> がスレッドで起動するのがこの関数です。タスク関数を実行し、結果をDBに書き戻します。</p>
-<div class="codehilite"><div class="code-wrap" id="code-44"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 非同期タスク処理 (汎用版)</span>
+<div class="codehilite"><div class="code-wrap" id="code-48"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 非同期タスク処理 (汎用版)</span>
 <span class="c1"># 受付番号・実行関数・引数を受け取る</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">handle_task</span><span class="p">(</span><span class="n">task_id</span><span class="p">,</span> <span class="n">task_function</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
   <span class="k">try</span><span class="p">:</span>
@@ -1751,7 +1759,7 @@ Pythonでは関数も「値」として変数に代入できます。<code>f = g
 <h2 id="11-settingspy">11. settings.py 全解説：本番設定の心臓部</h2>
 <p><code>settings.py</code> は、アプリ全体の振る舞いを決める <strong>設定の中枢</strong> です。運用で触る機会が最も多いファイルの1つなので、1行ずつ読みます。</p>
 <h3 id="111">11.1 冒頭：パスと環境変数</h3>
-<div class="codehilite"><div class="code-wrap" id="code-45"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ファイルパスを扱う近代的な道具</span>
+<div class="codehilite"><div class="code-wrap" id="code-49"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ファイルパスを扱う近代的な道具</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="c1"># OS機能（環境変数等）</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
@@ -1791,7 +1799,7 @@ Pythonでは関数も「値」として変数に代入できます。<code>f = g
 <p>⚠️ <strong>本番で <code>DEBUG=True</code> は厳禁。</strong> デバッグモードでは、エラーが起きたときにソースコードや設定値（時にDB接続情報まで）がブラウザに表示されます。攻撃者にヒントを与える重大なセキュリティ事故です。本番の <code>.env</code> は必ず <code>DEBUG=False</code> にします。</p>
 </blockquote>
 <h3 id="112-allowed_hosts">11.2 ALLOWED_HOSTS（アクセス許可ドメイン）</h3>
-<div class="codehilite"><div class="code-wrap" id="code-46"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">ALLOWED_HOSTS</span> <span class="o">=</span> <span class="p">[</span>
+<div class="codehilite"><div class="code-wrap" id="code-50"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">ALLOWED_HOSTS</span> <span class="o">=</span> <span class="p">[</span>
     <span class="c1"># 本番Azureのドメイン</span>
     <span class="s1">&#39;hozen-kosu-react-cwaqashkafgbg5e5.japaneast-01.azurewebsites.net&#39;</span><span class="p">,</span>
     <span class="c1"># ローカル開発用</span>
@@ -1810,7 +1818,7 @@ Pythonでは関数も「値」として変数に代入できます。<code>f = g
 <p><strong>なぜ必要？</strong> これは「<strong>Hostヘッダ攻撃</strong>」を防ぐ仕組みです。攻撃者が偽のドメイン名でリクエストを送る攻撃を防ぐため、「正規のドメインのリストにあるものだけ受け付ける」のです。新しいドメインで公開するときは、ここに追加し忘れると「400 Bad Request」で全アクセスが弾かれます。<strong>本番URLが変わったらここを更新</strong> することを覚えておきましょう。</p>
 </blockquote>
 <h3 id="113-installed_apps-middleware">11.3 INSTALLED_APPS / MIDDLEWARE</h3>
-<div class="codehilite"><div class="code-wrap" id="code-47"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">INSTALLED_APPS</span> <span class="o">=</span> <span class="p">[</span>
+<div class="codehilite"><div class="code-wrap" id="code-51"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">INSTALLED_APPS</span> <span class="o">=</span> <span class="p">[</span>
     <span class="c1"># 管理画面</span>
     <span class="s1">&#39;django.contrib.admin&#39;</span><span class="p">,</span>
     <span class="c1"># 認証</span>
@@ -1845,7 +1853,7 @@ Pythonでは関数も「値」として変数に代入できます。<code>f = g
 <li><code>'rest_framework'</code> … API を作るためのDRF。</li>
 <li><code>'corsheaders'</code> … 異なるドメイン間の通信（CORS）を許可する設定。</li>
 </ul>
-<div class="codehilite"><div class="code-wrap" id="code-48"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">MIDDLEWARE</span> <span class="o">=</span> <span class="p">[</span>
+<div class="codehilite"><div class="code-wrap" id="code-52"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">MIDDLEWARE</span> <span class="o">=</span> <span class="p">[</span>
     <span class="c1"># CORS処理（先頭に近い位置が必要）</span>
     <span class="s1">&#39;corsheaders.middleware.CorsMiddleware&#39;</span><span class="p">,</span>
     <span class="c1"># セキュリティ</span>
@@ -1881,7 +1889,7 @@ Pythonでは関数も「値」として変数に代入できます。<code>f = g
 Djangoアプリが、CSS・JavaScript・画像といった「静的ファイル」を <strong>自分で効率よく配信</strong> できるようにするライブラリ。本来こうしたファイルはNginx等の専用サーバーが配るものですが、WhiteNoiseを使えばDjango単体（＋Gunicorn）で完結します。Azure App ServiceのようなPaaS環境では、これがあるおかげで構成がシンプルになります。</p>
 </blockquote>
 <h3 id="114-cors">11.4 CORS設定</h3>
-<div class="codehilite"><div class="code-wrap" id="code-49"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># すべてのオリジンを許可（開発向け）</span>
+<div class="codehilite"><div class="code-wrap" id="code-53"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># すべてのオリジンを許可（開発向け）</span>
 <span class="n">CORS_ORIGIN_ALLOW_ALL</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="c1"># Cookie等の資格情報を許可</span>
 <span class="n">CORS_ALLOW_CREDENTIALS</span> <span class="o">=</span> <span class="kc">True</span>
@@ -1903,7 +1911,7 @@ Djangoアプリが、CSS・JavaScript・画像といった「静的ファイル�
 ブラウザの安全機能で、「あるドメインのページが、別のドメインのAPIを呼んでよいか」を制御する仕組み。本アプリは開発時、フロント（<code>localhost:3000</code>）とバック（<code>localhost:8000</code>）が別オリジンなので、CORSの許可設定が必要になります。</p>
 </blockquote>
 <h3 id="115-rest_framework">11.5 REST_FRAMEWORK / セッション設定</h3>
-<div class="codehilite"><div class="code-wrap" id="code-50"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">REST_FRAMEWORK</span> <span class="o">=</span> <span class="p">{</span>
+<div class="codehilite"><div class="code-wrap" id="code-54"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">REST_FRAMEWORK</span> <span class="o">=</span> <span class="p">{</span>
     <span class="c1"># ページ番号方式</span>
     <span class="s1">&#39;DEFAULT_PAGINATION_CLASS&#39;</span><span class="p">:</span> <span class="s1">&#39;rest_framework.pagination.PageNumberPagination&#39;</span><span class="p">,</span>
     <span class="c1"># 1ページ20件</span>
@@ -1941,7 +1949,7 @@ Djangoアプリが、CSS・JavaScript・画像といった「静的ファイル�
 <p>⚠️ <strong>本番をHTTPSで運用する場合</strong>、<code>SESSION_COOKIE_SECURE = True</code>（HTTPSでのみCookie送信）にするのがセキュリティ上望ましい設定です。ファイル内にコメントアウトで残っているのは、その切り替え候補です。</p>
 </blockquote>
 <h3 id="116-databases">11.6 DATABASES（データベース接続）</h3>
-<div class="codehilite"><div class="code-wrap" id="code-51"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">DATABASES</span> <span class="o">=</span> <span class="p">{</span>
+<div class="codehilite"><div class="code-wrap" id="code-55"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">DATABASES</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;default&#39;</span><span class="p">:</span> <span class="p">{</span>
         <span class="c1"># PostgreSQLを使う</span>
         <span class="s1">&#39;ENGINE&#39;</span><span class="p">:</span> <span class="s1">&#39;django.db.backends.postgresql&#39;</span><span class="p">,</span>
@@ -1969,7 +1977,7 @@ Djangoアプリが、CSS・JavaScript・画像といった「静的ファイル�
 <p>⚠️ 本番の <code>DB_HOST</code> は Azure Database for PostgreSQL のサーバー名（例：<code>xxx.postgres.database.azure.com</code>）になります（§13）。ローカルでは <code>localhost</code>。<strong>この1つの環境変数で、つなぐDBが本番かローカルか決まる</strong> ので扱いに注意します。</p>
 </blockquote>
 <h3 id="117-q_cluster">11.7 Q_CLUSTER（非同期タスク設定）</h3>
-<div class="codehilite"><div class="code-wrap" id="code-52"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># Django Q の設定</span>
+<div class="codehilite"><div class="code-wrap" id="code-56"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># Django Q の設定</span>
 <span class="n">Q_CLUSTER</span> <span class="o">=</span> <span class="p">{</span>
     <span class="c1"># タスク保存にdefaultのDBを使う</span>
     <span class="s1">&#39;orm&#39;</span><span class="p">:</span> <span class="s1">&#39;default&#39;</span><span class="p">,</span>
@@ -1992,7 +2000,7 @@ Djangoアプリが、CSS・JavaScript・画像といった「静的ファイル�
 <li><code>'recycle': 2000</code> … メモリリーク対策で、2000タスクごとにワーカーを作り直す。</li>
 </ul>
 <h3 id="118">11.8 認証バリデータ・国際化</h3>
-<div class="codehilite"><div class="code-wrap" id="code-53"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">AUTH_PASSWORD_VALIDATORS</span> <span class="o">=</span> <span class="p">[</span>
+<div class="codehilite"><div class="code-wrap" id="code-57"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">AUTH_PASSWORD_VALIDATORS</span> <span class="o">=</span> <span class="p">[</span>
     <span class="c1"># ユーザー情報と似たPW禁止</span>
     <span class="p">{</span><span class="s1">&#39;NAME&#39;</span><span class="p">:</span> <span class="s1">&#39;django.contrib.auth.password_validation.UserAttributeSimilarityValidator&#39;</span><span class="p">},</span>
     <span class="c1"># 最低長</span>
@@ -2020,7 +2028,7 @@ Djangoアプリが、CSS・JavaScript・画像といった「静的ファイル�
 <li><code>USE_TZ = True</code> … <strong>DBにはUTCで保存</strong>し、表示時に日本時間へ直す方式（§9.6）。この設定があるから時刻処理が一貫します。</li>
 </ul>
 <h3 id="119-whitenoisecsrf">11.9 静的ファイル・WhiteNoise・CSRF</h3>
-<div class="codehilite"><div class="code-wrap" id="code-54"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">STATICFILES_DIRS</span> <span class="o">=</span> <span class="p">[</span>
+<div class="codehilite"><div class="code-wrap" id="code-58"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">STATICFILES_DIRS</span> <span class="o">=</span> <span class="p">[</span>
     <span class="c1"># Reactビルドの静的ファイル置き場</span>
     <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">BASE_DIR</span><span class="p">,</span> <span class="s1">&#39;frontend/build/static&#39;</span><span class="p">),</span>
 <span class="p">]</span>
@@ -2034,7 +2042,7 @@ Djangoアプリが、CSS・JavaScript・画像といった「静的ファイル�
 <li><code>STATICFILES_DIRS</code> … Djangoが静的ファイルを探す追加フォルダ。Reactのビルド成果物（<code>frontend/build/static</code>）を指定しています。</li>
 <li><code>TEMPLATES[0]['DIRS'] = [...]</code> … Reactのビルドした <code>index.html</code> を、Djangoのテンプレートとして使う設定。<strong>1つのDjangoが、APIもReactの画面も両方配信する</strong> ための要です。</li>
 </ul>
-<div class="codehilite"><div class="code-wrap" id="code-55"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 静的ファイルのURL接頭辞</span>
+<div class="codehilite"><div class="code-wrap" id="code-59"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 静的ファイルのURL接頭辞</span>
 <span class="n">STATIC_URL</span> <span class="o">=</span> <span class="s1">&#39;/static/&#39;</span>
 <span class="c1"># 主キーの既定型</span>
 <span class="n">DEFAULT_AUTO_FIELD</span> <span class="o">=</span> <span class="s1">&#39;django.db.models.BigAutoField&#39;</span>
@@ -2073,7 +2081,7 @@ Djangoアプリが、CSS・JavaScript・画像といった「静的ファイル�
 </blockquote>
 <h3 id="1110-loggingrotatingfilehandler">11.10 LOGGING（ログ設定／RotatingFileHandler）</h3>
 <p>運用で最重要の1つ、<strong>ログ設定</strong> です。障害調査はログから始まります。</p>
-<div class="codehilite"><div class="code-wrap" id="code-56"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">LOGGING</span> <span class="o">=</span> <span class="p">{</span>
+<div class="codehilite"><div class="code-wrap" id="code-60"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">LOGGING</span> <span class="o">=</span> <span class="p">{</span>
     <span class="c1"># 設定スキーマのバージョン（必ず1）</span>
     <span class="s1">&#39;version&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
     <span class="c1"># 既存ロガーを無効化しない</span>
@@ -2137,9 +2145,11 @@ Djangoアプリが、CSS・JavaScript・画像といった「静的ファイル�
 <p><strong>用語：RotatingFileHandler（ローテーティング・ファイル・ハンドラ）</strong>
 ログファイルを「一定サイズに達したら新しいファイルに切り替え、古いものは決められた世代数だけ残して捨てる」仕組み。日記帳が1冊埋まったら新しい1冊に移り、古い1冊だけ取っておくイメージ。<strong>ログでディスクが満杯になる事故</strong> を防ぎます。本アプリは「1MB×2世代（現行＋1）」なので、ログは最大でも約2MBに収まります。</p>
 <p>⚠️ <strong>ログのサイズ制限はトレードオフ。</strong> 1MB×2世代だと、アクセスが多い日には「古いログがすぐ消えて、障害発生時のログが残っていない」ことがあります。重要な障害を追うときは、ログが上書きされる前に <code>web_console.log</code> を退避（コピー）しておくのが運用のコツです。</p>
-<p><strong>ログレベル（重要度）の階段:</strong>
-<code>DEBUG &lt; INFO &lt; WARNING &lt; ERROR &lt; CRITICAL</code>
-本アプリは <code>INFO</code> 以上を記録します。つまり <code>DEBUG</code>（詳細すぎる開発用）は記録せず、<code>INFO</code>（通常の動作記録）・<code>WARNING</code>（警告）・<code>ERROR</code>（エラー）・<code>CRITICAL</code>（致命的）を残します。</p>
+<p><strong>ログレベル（重要度）の階段:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-61"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>DEBUG &lt; INFO &lt; WARNING &lt; ERROR &lt; CRITICAL
+</code></pre></div></div>
+
+<p>本アプリは <code>INFO</code> 以上を記録します。つまり <code>DEBUG</code>（詳細すぎる開発用）は記録せず、<code>INFO</code>（通常の動作記録）・<code>WARNING</code>（警告）・<code>ERROR</code>（エラー）・<code>CRITICAL</code>（致命的）を残します。</p>
 </blockquote>
 <hr>
 <h2 id="12-wsgipy-web">12. wsgi.py 全解説：Webサーバーとの玄関</h2>
@@ -2149,7 +2159,7 @@ Djangoアプリが、CSS・JavaScript・画像といった「静的ファイル�
 「WebサーバーとPythonアプリの間の、標準的な会話の作法（約束事）」。これがあるおかげで、Gunicorn（§13）のようなWebサーバーは、Djangoでもその他のPythonフレームワークでも、同じ作法で呼び出せます。電源コンセントの規格（差し込み口の形）が統一されているから、どのメーカーの家電も挿せるのと同じイメージ。</p>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> 「DjangoのどのプロジェクトのWebアプリを動かすか」を指定し、Webサーバー（Gunicorn）が呼び出す <code>application</code> という名前の入口を用意します。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-57"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="sd">&quot;&quot;&quot;</span>
+<div class="codehilite"><div class="code-wrap" id="code-62"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">WSGI config for hozen project.</span>
 
 <span class="sd">It exposes the WSGI callable as a module-level variable named ``application``.</span>
@@ -2190,7 +2200,7 @@ Djangoアプリが、CSS・JavaScript・画像といった「静的ファイル�
 自社でサーバー機械を買って置く代わりに、インターネット越しに他社（ここではMicrosoft）のコンピュータを借りて使う方式。電気や水道のように「使った分だけ払う」イメージ。Azureはその大手の1つです。</p>
 </blockquote>
 <h3 id="131">13.1 構成図（本番の全体像）</h3>
-<div class="codehilite"><div class="code-wrap" id="code-58"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>                    ユーザーのブラウザ
+<div class="codehilite"><div class="code-wrap" id="code-63"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>                    ユーザーのブラウザ
                           │ HTTPS（暗号化通信）
                           ▼
    ┌──────────────────────────────────────────────────────┐
@@ -2333,7 +2343,7 @@ Azureが提供するPostgreSQLの運用形態の1つ。柔軟な設定（停止/
 <blockquote>
 <p><strong>▼ この手順がやること（先に日本語で）:</strong> ローカルで動作確認したコードを、ビルド・静的ファイル収集・コミット・本番反映・マイグレーションの順で本番に出します。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-59"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>① ローカルでテストを通す
+<div class="codehilite"><div class="code-wrap" id="code-64"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>① ローカルでテストを通す
    npm run test:run            # フロントのテストが全部緑か確認
    （バックエンドの動作も手元で確認）
 
@@ -2383,7 +2393,7 @@ Azureが提供するPostgreSQLの運用形態の1つ。柔軟な設定（停止/
 </blockquote>
 <h3 id="143">14.3 デプロイ後の確認</h3>
 <p>デプロイしたら、必ず本番で動作確認します。</p>
-<div class="codehilite"><div class="code-wrap" id="code-60"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>□ トップページが表示されるか（500/502エラーが出ないか）
+<div class="codehilite"><div class="code-wrap" id="code-65"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>□ トップページが表示されるか（500/502エラーが出ないか）
 □ ログインできるか
 □ 主要機能（工数入力・一覧表示）が動くか
 □ 今回変更した機能が意図どおり動くか
@@ -2525,7 +2535,7 @@ Azureが提供するPostgreSQLの運用形態の1つ。柔軟な設定（停止/
 <blockquote>
 <p><strong>▼ この手順がやること（先に日本語で）:</strong> あわてず、症状を確認し、範囲を切り分け、ログを見て、原因を特定し、対処し、記録する、という順で進めます。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-61"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>① 症状を正確に把握する
+<div class="codehilite"><div class="code-wrap" id="code-66"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>① 症状を正確に把握する
    ・誰が、いつ、何をしたら、どうなったか
    ・エラーメッセージ・ステータスコード（§15）を聞く／見る
    ・スクリーンショットをもらう
@@ -2612,7 +2622,7 @@ Azureが提供するPostgreSQLの運用形態の1つ。柔軟な設定（停止/
 </blockquote>
 <h3 id="163">16.3 ロールバック（前の版に戻す）</h3>
 <p>深刻な障害で原因がすぐ分からないときは、<strong>まず正常だった版に戻して</strong> 被害を止め、それから落ち着いて原因を調べます。</p>
-<div class="codehilite"><div class="code-wrap" id="code-62"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>・コードの問題 → 直前の正常なコミットへ戻して再デプロイ
+<div class="codehilite"><div class="code-wrap" id="code-67"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>・コードの問題 → 直前の正常なコミットへ戻して再デプロイ
 ・DBの問題     → Azure PITR（§13.3）で正常な時点へ復元
 </code></pre></div></div>
 
@@ -2666,7 +2676,7 @@ Azureが提供するPostgreSQLの運用形態の1つ。柔軟な設定（停止/
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> <code>docs/</code> 直下のすべての <code>.md</code> ファイルを読み、共通のスタイル（<code>pdf.css</code>）を当てて、A4サイズのPDFとして <code>docs/pdf/</code> に書き出します。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-63"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// docs配下の全 .md ファイルを docs/pdf/ にPDF変換するスクリプト</span>
+<div class="codehilite"><div class="code-wrap" id="code-68"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// docs配下の全 .md ファイルを docs/pdf/ にPDF変換するスクリプト</span>
 <span class="c1">// 使い方:  node docs/tools/build-pdf.js</span>
 <span class="c1">// ファイル操作モジュール</span>
 <span class="kd">const</span><span class="w"> </span><span class="nx">fs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">require</span><span class="p">(</span><span class="s2">&quot;fs&quot;</span><span class="p">);</span>
@@ -2704,7 +2714,7 @@ Azureが提供するPostgreSQLの運用形態の1つ。柔軟な設定（停止/
 <li><code>if (!fs.existsSync(outDir)) fs.mkdirSync(...)</code> … 出力フォルダが無ければ作成（<code>recursive: true</code> で途中フォルダも作る）。</li>
 <li><code>fs.readdirSync(docsDir).filter(...).sort()</code> … <code>docs/</code> 直下のファイルを一覧し、<code>.md</code> で終わるものだけ残し、名前順に並べます。</li>
 </ul>
-<div class="codehilite"><div class="code-wrap" id="code-64"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 即時実行の非同期関数</span>
+<div class="codehilite"><div class="code-wrap" id="code-69"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 即時実行の非同期関数</span>
 <span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="c1">// 各 .md ファイルについて</span>
 <span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">const</span><span class="w"> </span><span class="nx">file</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nx">mdFiles</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
@@ -2770,15 +2780,17 @@ Azureが提供するPostgreSQLの運用形態の1つ。柔軟な設定（停止/
 <blockquote>
 <p><strong>▼ このコマンドがやること（先に日本語で）:</strong> スクリプトを実行し、<code>docs/</code> の全Markdownを <code>docs/pdf/</code> にPDF化します。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-65"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># docs配下の全.mdをPDFに変換する</span>
+<div class="codehilite"><div class="code-wrap" id="code-70"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># docs配下の全.mdをPDFに変換する</span>
 node<span class="w"> </span>docs/tools/build-pdf.js
 </code></pre></div></div>
 
 <blockquote>
-<p><strong>▼ こう表示されれば成功:</strong>
-<code>変換中: 01_はじめに.md ... OK -&gt; pdf/01_はじめに.pdf
+<p><strong>▼ こう表示されれば成功:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-71"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>変換中: 01_はじめに.md ... OK -&gt; pdf/01_はじめに.pdf
 変換中: 09_運用_保守_デプロイ.md ... OK -&gt; pdf/09_運用_保守_デプロイ.pdf
-完了しました。出力先: .../docs/pdf</code></p>
+完了しました。出力先: .../docs/pdf
+</code></pre></div></div>
+
 <p>⚠️ <strong>初回は <code>md-to-pdf</code> のインストールが必要。</strong> <code>npm install md-to-pdf</code> をしていないと「モジュールが見つからない」エラーになります。また内部でヘッドレスブラウザ（Chromium）をダウンロードするため、初回は時間がかかることがあります。</p>
 </blockquote>
 <hr>

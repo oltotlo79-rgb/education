@@ -1160,12 +1160,13 @@ Pythonの字下げは <strong>半角スペース</strong> で行います。本�
 </code></pre></div></div>
 
 <blockquote>
-<p><strong>継承で出てくる <code>super()</code>:</strong> 子クラスから「親の同名メソッド」を呼ぶときに使います。本物のコード（<code>models.py</code> の AsyncTask）：
-<code>python
-def save(self, *args, **kwargs):
-  super().save(*args, **kwargs)     # まず親（Model）の保存処理を実行
-  ...                               # その後、自分の追加処理（古いレコード削除）</code>
-「親の保存をやってから、自分独自の後始末を足す」という流れです。<code>*args, **kwargs</code> は「親が必要とする引数を、そのまま全部受け取って渡す」ためのおまじない（可変長引数）です。</p>
+<p><strong>継承で出てくる <code>super()</code>:</strong> 子クラスから「親の同名メソッド」を呼ぶときに使います。本物のコード（<code>models.py</code> の AsyncTask）：</p>
+<div class="codehilite"><div class="code-wrap" id="code-54"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+  <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>     <span class="c1"># まず親（Model）の保存処理を実行</span>
+  <span class="o">...</span>                               <span class="c1"># その後、自分の追加処理（古いレコード削除）</span>
+</code></pre></div></div>
+
+<p>「親の保存をやってから、自分独自の後始末を足す」という流れです。<code>*args, **kwargs</code> は「親が必要とする引数を、そのまま全部受け取って渡す」ためのおまじない（可変長引数）です。</p>
 </blockquote>
 <hr>
 <h2 id="10-try-except">10. 例外処理 try-except</h2>
@@ -1178,7 +1179,7 @@ def save(self, *args, **kwargs):
 <p><strong>try-except とは？</strong> 「<strong>試して（try）</strong>、もしエラーが起きたら（<strong>except</strong>）こう対処する」という書き方。エラーで止まらず、優雅に対処できます。</p>
 <p><strong>▼ このコードがやること:</strong> 文字を数値に変換しようとし、できなければエラーメッセージを出す。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-54"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ※説明用の簡易例</span>
+<div class="codehilite"><div class="code-wrap" id="code-55"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ※説明用の簡易例</span>
 <span class="k">try</span><span class="p">:</span>
     <span class="c1"># &quot;abc&quot; を数値に変換しようとする（失敗する）</span>
     <span class="n">value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="s2">&quot;abc&quot;</span><span class="p">)</span>
@@ -1195,7 +1196,7 @@ def save(self, *args, **kwargs):
 </ul>
 <h3 id="103-try-except">10.3 本物のコードで見る try-except</h3>
 <p>本物のコード（<code>main_utils.py</code> の validate_employee_no_logic）：</p>
-<div class="codehilite"><div class="code-wrap" id="code-55"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">try</span><span class="p">:</span>
+<div class="codehilite"><div class="code-wrap" id="code-56"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">try</span><span class="p">:</span>
   <span class="c1"># 数値に変換を試みる</span>
   <span class="n">value_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 <span class="c1"># 変換できなければ（例: &#39;abc&#39;）</span>
@@ -1208,7 +1209,7 @@ def save(self, *args, **kwargs):
 <li>それを <code>except</code> で受け止め、エラーで落ちる代わりに「自然数で入力して下さい」というメッセージを返します。<strong>入力ミスでサーバーが止まらない</strong> ための守りです。</li>
 </ul>
 <p>本物のコード（<code>main_views.py</code> の Login）― JSON解析の失敗を捕まえる：</p>
-<div class="codehilite"><div class="code-wrap" id="code-56"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">try</span><span class="p">:</span>
+<div class="codehilite"><div class="code-wrap" id="code-57"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">try</span><span class="p">:</span>
   <span class="c1"># 送られたデータをPythonの辞書に変換</span>
   <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">body</span><span class="p">)</span>
   <span class="n">input_number</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;employee_no&#39;</span><span class="p">)</span>
@@ -1220,7 +1221,7 @@ def save(self, *args, **kwargs):
 <h3 id="104-django">10.4 Djangoでよく見る「データが無い」例外</h3>
 <p>本アプリで最頻出なのが、<code>.get()</code> でデータを探したが見つからなかった場合の例外です。</p>
 <p>本物のコード（<code>main_views.py</code> のあちこち）：</p>
-<div class="codehilite"><div class="code-wrap" id="code-57"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">try</span><span class="p">:</span>
+<div class="codehilite"><div class="code-wrap" id="code-58"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">try</span><span class="p">:</span>
   <span class="c1"># 該当する人を1人取得</span>
   <span class="n">member_data</span> <span class="o">=</span> <span class="n">member</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">employee_no</span><span class="o">=</span><span class="n">login_no</span><span class="p">)</span>
 <span class="c1"># その人がいなければ</span>
@@ -1235,7 +1236,7 @@ def save(self, *args, **kwargs):
 </ul>
 <h3 id="105-except-exception">10.5 何でも捕まえる except Exception</h3>
 <p>本物のコード（<code>asynchronous_views.py</code> の handle_task）：</p>
-<div class="codehilite"><div class="code-wrap" id="code-58"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># どんなエラーでも捕まえる</span>
+<div class="codehilite"><div class="code-wrap" id="code-59"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># どんなエラーでも捕まえる</span>
 <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
   <span class="o">...</span>
   <span class="c1"># エラー内容を文字にして記録</span>
@@ -1259,7 +1260,7 @@ def save(self, *args, **kwargs):
 <p>ファイルは、開いたら <strong>必ず閉じる</strong> 必要があります（閉じ忘れるとデータが壊れたり、他の処理が読めなくなる）。<code>with</code> を使うと、ブロックを抜けるとき <strong>自動で閉じて</strong> くれます。</p>
 <h3 id="112-with">11.2 本物のコードで見る with</h3>
 <p>本物のコード（<code>main_views.py</code> の get_logs）：</p>
-<div class="codehilite"><div class="code-wrap" id="code-59"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ログファイルを開く</span>
+<div class="codehilite"><div class="code-wrap" id="code-60"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ログファイルを開く</span>
 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;web_console.log&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">log_file</span><span class="p">:</span>
   <span class="c1"># 全行をリストで読み込む</span>
   <span class="n">logs</span> <span class="o">=</span> <span class="n">log_file</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
@@ -1277,7 +1278,7 @@ def save(self, *args, **kwargs):
 </blockquote>
 <h3 id="113-with">11.3 別の with（一時ファイルの作成）</h3>
 <p>本物のコード（<code>asynchronous_views.py</code> の backup）：</p>
-<div class="codehilite"><div class="code-wrap" id="code-60"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;.xlsx&quot;</span><span class="p">,</span> <span class="n">delete</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="k">as</span> <span class="n">temp_file</span><span class="p">:</span>
+<div class="codehilite"><div class="code-wrap" id="code-61"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;.xlsx&quot;</span><span class="p">,</span> <span class="n">delete</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="k">as</span> <span class="n">temp_file</span><span class="p">:</span>
   <span class="c1"># アップロードされたファイルを小分けに</span>
   <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">kosu_file</span><span class="o">.</span><span class="n">chunks</span><span class="p">():</span>
     <span class="c1"># 一時ファイルに書き込む</span>
@@ -1301,7 +1302,7 @@ def save(self, *args, **kwargs):
 <p><strong><code>import</code>（インポート）とは？</strong> 他のファイルやライブラリ（部品集）の機能を、自分のファイルで <strong>使えるように読み込む</strong> こと。「道具箱から必要な道具を取り出す」イメージ。</p>
 </blockquote>
 <p>本物のコード（<code>main_views.py</code> の冒頭）：</p>
-<div class="codehilite"><div class="code-wrap" id="code-61"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 日付・時刻を扱う道具箱</span>
+<div class="codehilite"><div class="code-wrap" id="code-62"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 日付・時刻を扱う道具箱</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
 <span class="c1"># OS（ファイル・パス）を扱う道具箱</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
@@ -1335,7 +1336,7 @@ def save(self, *args, **kwargs):
 </tr>
 </tbody>
 </table>
-<div class="codehilite"><div class="code-wrap" id="code-62"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># import datetime した場合 → 箱名を付けて使う</span>
+<div class="codehilite"><div class="code-wrap" id="code-63"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># import datetime した場合 → 箱名を付けて使う</span>
 <span class="n">today</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span>
 
 <span class="c1"># from datetime import date した場合 → 直接使える</span>
@@ -1348,7 +1349,7 @@ def save(self, *args, **kwargs):
 <li><strong>外部ライブラリ</strong> … 追加でインストールする道具箱（<code>django</code>, <code>rest_framework</code>, <code>environ</code> など）。<code>pip install</code> で入れます（<code>01</code>章）。</li>
 </ul>
 <p>本物のコード（<code>main_utils.py</code>）：</p>
-<div class="codehilite"><div class="code-wrap" id="code-63"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 標準：オブジェクトを調べる道具</span>
+<div class="codehilite"><div class="code-wrap" id="code-64"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 標準：オブジェクトを調べる道具</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
 <span class="c1"># 外部：DRFのページ送り</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">rest_framework.pagination</span><span class="w"> </span><span class="kn">import</span> <span class="n">PageNumberPagination</span>
@@ -1379,7 +1380,7 @@ def save(self, *args, **kwargs):
 </tbody>
 </table>
 <p>本物のコード（<code>main_views.py</code>）：</p>
-<div class="codehilite"><div class="code-wrap" id="code-64"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">..models</span><span class="w"> </span><span class="kn">import</span> <span class="n">member</span><span class="p">,</span> <span class="n">Business_Time_graph</span><span class="p">,</span> <span class="n">kosu_division</span><span class="p">,</span> <span class="o">...</span>
+<div class="codehilite"><div class="code-wrap" id="code-65"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">..models</span><span class="w"> </span><span class="kn">import</span> <span class="n">member</span><span class="p">,</span> <span class="n">Business_Time_graph</span><span class="p">,</span> <span class="n">kosu_division</span><span class="p">,</span> <span class="o">...</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.serializers</span><span class="w"> </span><span class="kn">import</span> <span class="n">MemberSerializer</span><span class="p">,</span> <span class="o">...</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..utils.main_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">CustomPagination</span><span class="p">,</span> <span class="n">get_all_model_names_in_myapp</span>
 </code></pre></div></div>
@@ -1394,7 +1395,7 @@ def save(self, *args, **kwargs):
 <p><strong>なぜ相対import？</strong> フォルダ構成が深いとき、毎回 <code>from kosu.views.serializers import ...</code> とフルパスで書くのは長くて壊れやすい。<code>.</code> <code>..</code> で「今から見た位置」で書けば短く、フォルダを移動しても直しやすい、という利点があります。</p>
 </blockquote>
 <p>本物のコード（<code>asynchronous_views.py</code>）― 長い相対import：</p>
-<div class="codehilite"><div class="code-wrap" id="code-65"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">..tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_kosu_backup</span><span class="p">,</span> <span class="n">delete_kosu_data</span><span class="p">,</span> <span class="n">load_kosu_file</span><span class="p">,</span> \
+<div class="codehilite"><div class="code-wrap" id="code-66"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">..tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_kosu_backup</span><span class="p">,</span> <span class="n">delete_kosu_data</span><span class="p">,</span> <span class="n">load_kosu_file</span><span class="p">,</span> \
                     <span class="n">generate_member_backup</span><span class="p">,</span> <span class="n">load_member_file</span><span class="p">,</span> <span class="o">...</span>
 </code></pre></div></div>
 
@@ -1410,7 +1411,7 @@ def save(self, *args, **kwargs):
 <p>イメージは「<strong>ラッピング</strong>」。中身（関数）は同じでも、<code>@</code> で包むと「特別な扱い」が追加されます。</p>
 <h3 id="132">13.2 本物のコードで見るデコレータ</h3>
 <p>本物のコード（<code>asynchronous_views.py</code>）：</p>
-<div class="codehilite"><div class="code-wrap" id="code-66"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ← デコレータ</span>
+<div class="codehilite"><div class="code-wrap" id="code-67"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ← デコレータ</span>
 <span class="nd">@api_view</span><span class="p">([</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
 <span class="c1"># ← デコレータ</span>
 <span class="nd">@parser_classes</span><span class="p">([</span><span class="n">MultiPartParser</span><span class="p">,</span> <span class="n">JSONParser</span><span class="p">,</span> <span class="n">FormParser</span><span class="p">])</span>
@@ -1426,7 +1427,7 @@ def save(self, *args, **kwargs):
 </ul>
 <h3 id="133-signalspy-receiver">13.3 signals.py の @receiver（最重要デコレータ）</h3>
 <p>本物のコード（<code>signals.py</code>）― 本アプリの「自動記録」を支えるデコレータ：</p>
-<div class="codehilite"><div class="code-wrap" id="code-67"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ← デコレータ</span>
+<div class="codehilite"><div class="code-wrap" id="code-68"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ← デコレータ</span>
 <span class="nd">@receiver</span><span class="p">(</span><span class="n">post_save</span><span class="p">,</span> <span class="n">sender</span><span class="o">=</span><span class="n">member</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">log_create_update_member_history</span><span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">created</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
   <span class="o">...</span>
@@ -1451,7 +1452,7 @@ def save(self, *args, **kwargs):
 <blockquote>
 <p><strong>▼ このブロックがやること:</strong> このファイルで使う道具（日付・OS・JSON・Django・自作モデルなど）を全部読み込みます。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-68"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 日付・時刻を扱う標準ライブラリ</span>
+<div class="codehilite"><div class="code-wrap" id="code-69"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 日付・時刻を扱う標準ライブラリ</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
 <span class="c1"># ファイルパスなどOS機能の標準ライブラリ</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
@@ -1496,7 +1497,7 @@ def save(self, *args, **kwargs):
 <strong>用語：シリアライザ（serializer）</strong> Pythonのデータ（モデル）を、ブラウザに送れるJSON形式に <strong>変換する係</strong>（<code>07</code>章で詳説）。</p>
 </blockquote>
 <h3 id="142-2223">14.2 ロガーの取得（22〜23行目）</h3>
-<div class="codehilite"><div class="code-wrap" id="code-69"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 専用ロガー取得(&#39;views_logger&#39;という名前のカスタムロガーを使用しログメッセージ記録)</span>
+<div class="codehilite"><div class="code-wrap" id="code-70"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 専用ロガー取得(&#39;views_logger&#39;という名前のカスタムロガーを使用しログメッセージ記録)</span>
 <span class="n">views_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;views_logger&#39;</span><span class="p">)</span>
 </code></pre></div></div>
 
@@ -1508,7 +1509,7 @@ def save(self, *args, **kwargs):
 <blockquote>
 <p><strong>▼ このブロックがやること:</strong> Pythonの <code>print()</code> で出力した内容を、画面に消えてしまわないよう <strong>ログに記録</strong> するための仕掛けです。<code>print</code> の行き先（標準出力）を、このクラスにすり替えます。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-70"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># クラス定義（§9）</span>
+<div class="codehilite"><div class="code-wrap" id="code-71"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># クラス定義（§9）</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">PrintToLogger</span><span class="p">:</span>
   <span class="c1"># write メソッド（self は自分自身）</span>
   <span class="k">def</span><span class="w"> </span><span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
@@ -1536,7 +1537,7 @@ def save(self, *args, **kwargs):
 <p><strong>用語：<code>pass</code></strong> 「ここは意図的に何もしない」という意味のプレースホルダ。文法上、中身が必要だが書くことがないときに使います。</p>
 </blockquote>
 <h3 id="144-3738">14.4 標準出力の差し替え（37〜38行目）</h3>
-<div class="codehilite"><div class="code-wrap" id="code-71"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 標準出力をロガーへリダイレクト(sys.stdoutをPrintToLoggerのインスタンスに設定)</span>
+<div class="codehilite"><div class="code-wrap" id="code-72"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 標準出力をロガーへリダイレクト(sys.stdoutをPrintToLoggerのインスタンスに設定)</span>
 <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span> <span class="o">=</span> <span class="n">PrintToLogger</span><span class="p">()</span>
 </code></pre></div></div>
 
@@ -1549,7 +1550,7 @@ def save(self, *args, **kwargs):
 <blockquote>
 <p><strong>▼ このブロックがやること:</strong> 記録されたログファイルを読み込み、その全行をJSONで返す関数です。管理画面でログを表示するのに使います。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-72"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># request を受け取る関数（§7）</span>
+<div class="codehilite"><div class="code-wrap" id="code-73"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># request を受け取る関数（§7）</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_logs</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
   <span class="c1"># &#39;web_console.log&#39; ファイルを読み込み専用モードで開く</span>
   <span class="c1"># ファイルを開く（with §11）</span>
@@ -1568,15 +1569,16 @@ def save(self, *args, **kwargs):
 - <code>logs = log_file.readlines()</code> … ファイルの全行をリスト（1行＝1要素）にして <code>logs</code> に入れる。
 - <code>return JsonResponse({'logs': logs})</code> … <code>{'logs': logs}</code> という <strong>辞書</strong>（§3.2）を作り、それをJSON形式の応答にして返す。キー <code>'logs'</code>、値がログのリスト。</p>
 <blockquote>
-<p><strong>▼ こう返れば成功:</strong> ブラウザ側にこんなJSONが届きます。
-<code>json
-{"logs": ["1行目のログ\n", "2行目のログ\n", "..."]}</code></p>
+<p><strong>▼ こう返れば成功:</strong> ブラウザ側にこんなJSONが届きます。</p>
+<div class="codehilite"><div class="code-wrap" id="code-74"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">{</span><span class="nt">&quot;logs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;1行目のログ\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;2行目のログ\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">]}</span>
+</code></pre></div></div>
+
 </blockquote>
 <h3 id="146-login-79102">14.6 Login クラス（79〜102行目）― 本章の主役</h3>
 <blockquote>
 <p><strong>▼ このブロックがやること:</strong> ログイン処理です。送られた従業員番号が人員データに存在するか調べ、あればログイン成功（セッションに記録）、なければエラーを返します。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-73"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ログイン</span>
+<div class="codehilite"><div class="code-wrap" id="code-75"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ログイン</span>
 <span class="c1"># APIView を継承（§9.5）</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">Login</span><span class="p">(</span><span class="n">APIView</span><span class="p">):</span>
   <span class="c1"># POST処理</span>
@@ -1647,7 +1649,7 @@ def save(self, *args, **kwargs):
 <blockquote>
 <p><strong>▼ このブロックがやること:</strong> 班のメンバーそれぞれについて、過去7日間に工数の未入力がないかを調べ、未入力があれば「○○氏の工数未入力があります。」というメッセージを作ります。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-74"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 班員フォローメッセージ作成</span>
+<div class="codehilite"><div class="code-wrap" id="code-76"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 班員フォローメッセージ作成</span>
 <span class="c1"># 空のリスト（§3.1）</span>
 <span class="n">follow_message_list</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="c1"># 班員データあるか確認</span>
@@ -1718,7 +1720,7 @@ def save(self, *args, **kwargs):
 <h2 id="15-2main_utilspy">15. 実コード全解説②：main_utils.py の検証関数</h2>
 <p><code>kosu/utils/main_utils.py</code> 全体を読みます。短いファイルですが、関数・クラス・例外・継承の良い見本です。</p>
 <h3 id="151-import16">15.1 import（1〜6行目）</h3>
-<div class="codehilite"><div class="code-wrap" id="code-75"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># オブジェクトの中身を調べる標準ライブラリ</span>
+<div class="codehilite"><div class="code-wrap" id="code-77"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># オブジェクトの中身を調べる標準ライブラリ</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
 <span class="c1"># DRFのページ送り機能</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">rest_framework.pagination</span><span class="w"> </span><span class="kn">import</span> <span class="n">PageNumberPagination</span>
@@ -1739,7 +1741,7 @@ def save(self, *args, **kwargs):
 <blockquote>
 <p><strong>▼ このブロックがやること:</strong> 一覧表示の「ページ送り（1ページ20件など）」の部品です。1ページの件数を、管理者設定から動的に読み込みます。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-76"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ページネーションクラス</span>
+<div class="codehilite"><div class="code-wrap" id="code-78"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ページネーションクラス</span>
 <span class="c1"># 既製のページ送りを継承（§9.5）</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">CustomPagination</span><span class="p">(</span><span class="n">PageNumberPagination</span><span class="p">):</span>
   <span class="c1"># デフォルトの設定値             # クラス変数（初期値20件）</span>
@@ -1784,7 +1786,7 @@ def save(self, *args, **kwargs):
 <blockquote>
 <p><strong>▼ このブロックがやること:</strong> 入力された従業員番号が正しいか（自然数か・実在するか）を検証する関数です。「OKか（True/False）」と「理由メッセージ」をペアで返します。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-77"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 2つの引数（§7）</span>
+<div class="codehilite"><div class="code-wrap" id="code-79"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 2つの引数（§7）</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">validate_employee_no_logic</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">member_model</span><span class="p">):</span>
   <span class="c1"># 1. 空欄チェック: 値が存在しない、または空文字列の場合は空欄を許可する</span>
   <span class="c1"># 値が空なら（§4.3 falsy）</span>
@@ -1837,7 +1839,7 @@ def save(self, *args, **kwargs):
 <blockquote>
 <p><strong>▼ このブロックがやること:</strong> 本アプリの全モデル（データベースのテーブル）の名前を、自動で一覧にして返す関数です。手で書かずプログラムが見つけ出します。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-78"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 引数なしの関数（§7.3）</span>
+<div class="codehilite"><div class="code-wrap" id="code-80"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 引数なしの関数（§7.3）</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_all_model_names_in_myapp</span><span class="p">():</span>
   <span class="c1"># 空のリスト（§3.1）</span>
   <span class="n">model_names</span> <span class="o">=</span> <span class="p">[]</span>
@@ -1885,7 +1887,7 @@ def save(self, *args, **kwargs):
 <blockquote>
 <p><strong>▼ このブロックがやること:</strong> バックアップや削除で指定された「開始日・終了日」が正しいかを検証します。空でないか・正しい日付の形か・昨日以前か・開始が終了より前か、を順にチェックします。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-79"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 日付バリデーション関数</span>
+<div class="codehilite"><div class="code-wrap" id="code-81"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 日付バリデーション関数</span>
 <span class="c1"># 2つの日付を受け取る</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">validate_dates</span><span class="p">(</span><span class="n">start_day</span><span class="p">,</span> <span class="n">end_day</span><span class="p">):</span>
   <span class="c1"># 今日を &#39;YYYY-MM-DD&#39; の文字に</span>
@@ -1925,17 +1927,18 @@ def save(self, *args, **kwargs):
 - <code>if start_date_obj &gt; end_date_obj:</code> … 開始日が終了日より後ならエラー（期間が逆転している）。
 - <code>return None</code> … すべての検査を通過したら <code>None</code> を返す。</p>
 <blockquote>
-<p><strong>この関数の <code>None</code> の意味:</strong> この関数は「<strong>問題があればエラー応答を、問題なければ None を返す</strong>」という設計です。呼び出す側（backup 関数）は：
-<code>python
-error_response = validate_dates(start_day, end_day)
-if error_response:                  # None でなければ（＝エラーがあれば）
-  return error_response             # そのエラーをそのまま返す</code>
-<code>if error_response:</code> は「error_response が None（falsy）でなければ」という意味（§4.3）。None なら次へ進み、エラー応答なら即座にそれを返す——「問題なければ None」という慣習をうまく使っています。</p>
+<p><strong>この関数の <code>None</code> の意味:</strong> この関数は「<strong>問題があればエラー応答を、問題なければ None を返す</strong>」という設計です。呼び出す側（backup 関数）は：</p>
+<div class="codehilite"><div class="code-wrap" id="code-82"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">error_response</span> <span class="o">=</span> <span class="n">validate_dates</span><span class="p">(</span><span class="n">start_day</span><span class="p">,</span> <span class="n">end_day</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">error_response</span><span class="p">:</span>                  <span class="c1"># None でなければ（＝エラーがあれば）</span>
+  <span class="k">return</span> <span class="n">error_response</span>             <span class="c1"># そのエラーをそのまま返す</span>
+</code></pre></div></div>
+
+<p><code>if error_response:</code> は「error_response が None（falsy）でなければ」という意味（§4.3）。None なら次へ進み、エラー応答なら即座にそれを返す——「問題なければ None」という慣習をうまく使っています。</p>
 <p><strong>用語：日付オブジェクト</strong> <code>datetime.date</code> 型の値。ただの文字「2026-06-01」と違い、引き算（§6.3 の timedelta）や大小比較ができます。文字のままでは正しく比較できないので、<code>fromisoformat</code> で日付オブジェクトに変換してから比較しています。</p>
 </blockquote>
 <h3 id="162-backup-2127">16.2 デコレータ付きの backup 関数の頭（21〜27行目）</h3>
 <p>§13で見たデコレータと、§3.3のタプル、§10の例外、§11のwithが backup 関数に集約されています。冒頭だけ再確認します。</p>
-<div class="codehilite"><div class="code-wrap" id="code-80"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># API化デコレータ（§13.2）</span>
+<div class="codehilite"><div class="code-wrap" id="code-83"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># API化デコレータ（§13.2）</span>
 <span class="nd">@api_view</span><span class="p">([</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
 <span class="c1"># データ形式指定デコレータ</span>
 <span class="nd">@parser_classes</span><span class="p">([</span><span class="n">MultiPartParser</span><span class="p">,</span> <span class="n">JSONParser</span><span class="p">,</span> <span class="n">FormParser</span><span class="p">])</span>
@@ -1968,7 +1971,7 @@ if error_response:                  # None でなければ（＝エラーがあ�
 <blockquote>
 <p><strong>▼ このブロックがやること:</strong> 「人員（社員）」を表すテーブルの設計図です。冒頭で「ショップ」欄の選択肢候補をタプルのリストで定義します。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-81"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># models.Model を継承（§9.5）</span>
+<div class="codehilite"><div class="code-wrap" id="code-84"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># models.Model を継承（§9.5）</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">member</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
   <span class="c1"># ショップの選択肢（タプルのリスト §3.3）</span>
   <span class="n">shop_list</span> <span class="o">=</span> <span class="p">[</span>
@@ -1997,7 +2000,7 @@ if error_response:                  # None でなければ（＝エラーがあ�
 <blockquote>
 <p><strong>▼ このブロックがやること:</strong> この人員テーブルが持つ「列（カラム）」を1つずつ定義します。従業員番号・氏名・ショップ・権限・各種休憩時間など。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-82"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># 整数の列</span>
+<div class="codehilite"><div class="code-wrap" id="code-85"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># 整数の列</span>
   <span class="n">employee_no</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">(</span><span class="s1">&#39;従業員番号&#39;</span><span class="p">)</span>
   <span class="c1"># 短い文字の列（最大100字）</span>
   <span class="n">name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="s1">&#39;氏名&#39;</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
@@ -2031,7 +2034,7 @@ if error_response:                  # None でなければ（＝エラーがあ�
 <p><strong>なぜ <code>null=True</code> と <code>blank=True</code> の両方？</strong> <code>null</code> は <strong>データベース</strong> のレベル、<code>blank</code> は <strong>入力フォーム</strong> のレベルの「空を許す」設定です。両方付けると「画面で空欄でOK、かつデータベースにも空（None）で保存できる」状態になります。ポップアップ欄など「任意入力」の項目に付いています。</p>
 </blockquote>
 <h3 id="173-__str__-6465">17.3 <code>__str__</code> メソッド（64〜65行目）</h3>
-<div class="codehilite"><div class="code-wrap" id="code-83"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># 文字列表現メソッド（§9.4）</span>
+<div class="codehilite"><div class="code-wrap" id="code-86"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># 文字列表現メソッド（§9.4）</span>
   <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     <span class="c1"># この人を表示するときは氏名を出す</span>
     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
@@ -2044,7 +2047,7 @@ if error_response:                  # None でなければ（＝エラーがあ�
 </ul>
 <h3 id="174-__str__">17.4 他モデルの <code>__str__</code> も見ておく</h3>
 <p><code>models.py</code> の他のモデルの <code>__str__</code> には、§8.2のf文字列や§9.4の文字列連結が使われています。</p>
-<div class="codehilite"><div class="code-wrap" id="code-84"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># Business_Time_graph （文字列連結 §9.4）</span>
+<div class="codehilite"><div class="code-wrap" id="code-87"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># Business_Time_graph （文字列連結 §9.4）</span>
 <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
   <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;__&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">work_day2</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;:&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">employee_no3</span><span class="p">)</span>
 
@@ -2065,7 +2068,7 @@ if error_response:                  # None でなければ（＝エラーがあ�
 <blockquote>
 <p><strong>▼ このブロックがやること:</strong> 履歴を保存するたびに、保存後の総件数を数え、上限（50万件）を超えていたら古いものから削除します。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-85"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">History</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="codehilite"><div class="code-wrap" id="code-88"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">History</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
   <span class="c1"># 上限件数（クラス変数）</span>
   <span class="n">MAX_RECORDS</span> <span class="o">=</span> <span class="mi">500000</span>
   <span class="o">...</span>
@@ -2106,7 +2109,7 @@ if error_response:                  # None でなければ（＝エラーがあ�
 <h2 id="18-5signalspy">18. 実コード全解説⑤：signals.py の差分計算</h2>
 <p>最後に <code>kosu/signals.py</code> を読みます。<code>@receiver</code>（§13.3）で「データが変わったら自動で履歴を取る」仕掛けの中核です。少し難しいですが、これまでの文法の集大成です。</p>
 <h3 id="181-import-111">18.1 import と初期化（1〜11行目）</h3>
-<div class="codehilite"><div class="code-wrap" id="code-86"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># スレッドごとの保管庫</span>
+<div class="codehilite"><div class="code-wrap" id="code-89"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># スレッドごとの保管庫</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">threading</span><span class="w"> </span><span class="kn">import</span> <span class="n">local</span>
 <span class="c1"># 保存・削除の合図</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">django.db.models.signals</span><span class="w"> </span><span class="kn">import</span> <span class="n">pre_save</span><span class="p">,</span> <span class="n">post_save</span><span class="p">,</span> <span class="n">post_delete</span>
@@ -2136,7 +2139,7 @@ if error_response:                  # None でなければ（＝エラーがあ�
 <blockquote>
 <p><strong>▼ このブロックがやること:</strong> データを更新する直前に「更新前の値」を一時保管し、後で「変更前と後」を比べられるようにします。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-87"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 更新前の値をスレッドローカルキャッシュに保存</span>
+<div class="codehilite"><div class="code-wrap" id="code-90"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 更新前の値をスレッドローカルキャッシュに保存</span>
 <span class="c1"># instance（保存される対象）を受け取る</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">set_instance_cache</span><span class="p">(</span><span class="n">instance</span><span class="p">):</span>
   <span class="c1"># そのオブジェクトのクラス（種類）を取得</span>
@@ -2174,7 +2177,7 @@ if error_response:                  # None でなければ（＝エラーがあ�
 <p><strong>▼ このブロックがやること:</strong> 「更新前」と「更新後」を全フィールドで比べ、変わった項目だけを <code>{項目名: {old: 前, new: 後}}</code> という辞書にまとめます。これが履歴の中身になります。</p>
 </blockquote>
 <p>長いので、前半（変更を検出する部分）から読みます。</p>
-<div class="codehilite"><div class="code-wrap" id="code-88"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 保存対象と「新規か(created)」を受け取る</span>
+<div class="codehilite"><div class="code-wrap" id="code-91"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 保存対象と「新規か(created)」を受け取る</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_changes</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">created</span><span class="p">):</span>
   <span class="c1"># 変更点を入れる空の辞書（§3.2）</span>
   <span class="n">changes</span> <span class="o">=</span> <span class="p">{}</span>
@@ -2238,7 +2241,7 @@ if error_response:                  # None でなければ（＝エラーがあ�
 - <code>else:</code> 以降 … 更新なら、古い値と新しい値を <code>!=</code>（等しくない §4.2）で比べ、違えば <code>is_changed = True</code>。
 - <code>continue</code> … 「この項目は飛ばして次のループへ」（後述§18.4）。</p>
 <p>続く後半（変更があった項目の値を、JSONで保存できる形に整える部分）：</p>
-<div class="codehilite"><div class="code-wrap" id="code-89"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1"># 変更or新規作成</span>
+<div class="codehilite"><div class="code-wrap" id="code-92"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1"># 変更or新規作成</span>
     <span class="k">if</span> <span class="n">is_changed</span><span class="p">:</span>
 
       <span class="c1"># JSON化できないリレーションフィールド処理</span>
@@ -2296,14 +2299,15 @@ if error_response:                  # None でなければ（＝エラーがあ�
 - <code>changes[field_name] = {'old': ..., 'new': ...}</code> … 更新時は「old（前）」「new（後）」を入れ子の辞書で記録。
 - <code>return changes</code> … 完成した変更辞書を返す。</p>
 <blockquote>
-<p><strong>この関数が作るもの（イメージ）:</strong> member の氏名を「admin」→「管理者」に変えると、<code>get_changes</code> は次のような辞書を返します。
-<code>python
-{'name': {'old': 'admin', 'new': '管理者'}}</code>
-「どの項目が、何から何に変わったか」が一目で分かる形です。これが履歴（History）の <code>changes</code> 欄に保存されます。</p>
+<p><strong>この関数が作るもの（イメージ）:</strong> member の氏名を「admin」→「管理者」に変えると、<code>get_changes</code> は次のような辞書を返します。</p>
+<div class="codehilite"><div class="code-wrap" id="code-93"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;old&#39;</span><span class="p">:</span> <span class="s1">&#39;admin&#39;</span><span class="p">,</span> <span class="s1">&#39;new&#39;</span><span class="p">:</span> <span class="s1">&#39;管理者&#39;</span><span class="p">}}</span>
+</code></pre></div></div>
+
+<p>「どの項目が、何から何に変わったか」が一目で分かる形です。これが履歴（History）の <code>changes</code> 欄に保存されます。</p>
 </blockquote>
 <h3 id="184-continue">18.4 continue（ループの残りを飛ばす）</h3>
 <p>§18.3に出てきた <code>continue</code> を補足します。</p>
-<div class="codehilite"><div class="code-wrap" id="code-90"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">except</span> <span class="nb">type</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
+<div class="codehilite"><div class="code-wrap" id="code-94"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">except</span> <span class="nb">type</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
   <span class="c1"># この項目は処理せず、次の項目へ</span>
   <span class="k">continue</span>
 </code></pre></div></div>
@@ -2315,7 +2319,7 @@ if error_response:                  # None でなければ（＝エラーがあ�
 <blockquote>
 <p><strong>▼ このブロックがやること:</strong> 「member が保存されたら、自動で差分を計算して履歴を残す」関数を登録します。<code>@receiver</code> がその自動化の鍵です（§13.3）。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-91"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 保存前に更新前の値をキャッシュ</span>
+<div class="codehilite"><div class="code-wrap" id="code-95"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 保存前に更新前の値をキャッシュ</span>
 <span class="c1"># member保存の「直前」に呼ぶ登録（§13.3）</span>
 <span class="nd">@receiver</span><span class="p">(</span><span class="n">pre_save</span><span class="p">,</span> <span class="n">sender</span><span class="o">=</span><span class="n">member</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">cache_old_member_instance</span><span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -2368,7 +2372,7 @@ if error_response:                  # None でなければ（＝エラーがあ�
 </blockquote>
 <h3 id="186-147159">18.6 削除時の履歴（147〜159行目）</h3>
 <p>保存（post_save）だけでなく、削除（post_delete）にも <code>@receiver</code> が付いています。</p>
-<div class="codehilite"><div class="code-wrap" id="code-92"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 履歴を記録　削除 (member)</span>
+<div class="codehilite"><div class="code-wrap" id="code-96"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 履歴を記録　削除 (member)</span>
 <span class="c1"># member削除の「直後」に呼ぶ登録</span>
 <span class="nd">@receiver</span><span class="p">(</span><span class="n">post_delete</span><span class="p">,</span> <span class="n">sender</span><span class="o">=</span><span class="n">member</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">log_delete_member_history</span><span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>

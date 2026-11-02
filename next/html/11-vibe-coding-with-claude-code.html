@@ -3941,17 +3941,18 @@ tools: Read, Bash, Grep, Glob
 <li>ファイル: path/to/file.ts:行番号</li>
 <li>問題: 具体的に何が問題か</li>
 <li>理由: なぜこれが問題か</li>
-<li>修正案:
-  <code>typescript
-  // 修正後のコード</code></li>
+<li>修正案:</li>
 </ul>
-<div class="codehilite"><div class="code-wrap" id="code-109"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>
+<div class="codehilite"><div class="code-wrap" id="code-109"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 修正後のコード</span>
+</code></pre></div></div>
+
+<div class="codehilite"><div class="code-wrap" id="code-110"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>
 </code></pre></div></div>
 
 <hr>
 <h2 id="9-phase-7">9. Phase 7：開発フェーズ — 機能実装の進め方</h2>
 <h3 id="9-1">9-1. 実装順序（推奨）</h3>
-<div class="codehilite"><div class="code-wrap" id="code-110"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Phase 7-1: 基盤構築
+<div class="codehilite"><div class="code-wrap" id="code-111"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Phase 7-1: 基盤構築
 ├── 共通レイアウト
 ├── DB接続
 ├── 共通UIコンポーネント
@@ -4032,7 +4033,7 @@ Phase 7-7: デプロイ・最終調整
 
 <p><code>/commit</code> を AI に任せきりにせず、必ず <code>git diff</code> で内容を確認してから走らせるのがおすすめです。push は人間が手動で行うのが基本。</p>
 <h3 id="9-3">9-3. 精度を最大化するプロンプトテンプレート</h3>
-<div class="codehilite"><div class="code-wrap" id="code-111"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>## 実装する機能
+<div class="codehilite"><div class="code-wrap" id="code-112"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>## 実装する機能
 [機能名を1行で明確に]
 
 ## この機能の目的
@@ -4086,7 +4087,7 @@ Phase 7-7: デプロイ・最終調整
 <p>このテンプレを埋めていくだけで、AIの出力品質が劇的に上がります。</p>
 <h3 id="9-4">9-4. 実装例：基盤構築</h3>
 <p><strong>Claude Codeへのプロンプト：</strong></p>
-<div class="codehilite"><div class="code-wrap" id="code-112"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Phase 7-1: 基盤構築を開始します。以下を順番に実装してください。
+<div class="codehilite"><div class="code-wrap" id="code-113"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Phase 7-1: 基盤構築を開始します。以下を順番に実装してください。
 
 ### 1. 共通レイアウト（まずこれだけ）
 
@@ -4111,7 +4112,7 @@ shadcn/ui から必要なコンポーネントをインストールしてくだ�
 <p><strong>「完了したら一度止まってください」が重要。</strong> これにより段階的にレビューでき、問題の早期発見が可能です。</p>
 </blockquote>
 <h3 id="9-5">9-5. 効果的な修正指示の出し方</h3>
-<div class="codehilite"><div class="code-wrap" id="code-113"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>[悪い例]
+<div class="codehilite"><div class="code-wrap" id="code-114"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>[悪い例]
 「動かないので直してください」
 「エラーが出ます」
 「なんか変です」
@@ -4140,7 +4141,7 @@ task.assignee が null の場合の条件分岐が漏れている
 
 <p>エラーメッセージ全文・ファイル名・行番号・再現手順・期待動作の5点セットを揃えると、AI のデバッグ精度が一段上がります。</p>
 <h3 id="9-6">9-6. 大きすぎる変更を制御する方法</h3>
-<div class="codehilite"><div class="code-wrap" id="code-114"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>ストップ。変更範囲が大きすぎます。
+<div class="codehilite"><div class="code-wrap" id="code-115"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>ストップ。変更範囲が大きすぎます。
 以下のように分割して、1つずつ実装してください：
 
 1. まずTaskCardコンポーネントのUI部分だけ
@@ -4156,11 +4157,11 @@ task.assignee が null の場合の条件分岐が漏れている
 <h3 id="9-7">9-7. 実践ウォークスルー：「確かめ方」つきで並べ替え関数を作る</h3>
 <p>ここまでの道具（4要素の指示・プランモード・Git・テスト）を全部使って、書籍管理アプリに並べ替え関数を足す流れを通しでやってみます。4-1 で計画した「手順1（sortBooks とテスト）」の部分です。</p>
 <h4 id="1_9">手順1: ブランチを切り、確かめ方つきで依頼する</h4>
-<div class="codehilite"><div class="code-wrap" id="code-115"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 作業用ブランチを作って移動する（0.4.1）</span>
+<div class="codehilite"><div class="code-wrap" id="code-116"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 作業用ブランチを作って移動する（0.4.1）</span>
 git<span class="w"> </span>switch<span class="w"> </span>-c<span class="w"> </span>feature/sort-books
 </code></pre></div></div>
 
-<div class="codehilite"><div class="code-wrap" id="code-116"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>lib/sortBooks.ts に、書籍の配列を並べ替える関数 sortBooks を作ってください。
+<div class="codehilite"><div class="code-wrap" id="code-117"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>lib/sortBooks.ts に、書籍の配列を並べ替える関数 sortBooks を作ってください。
 
 目的:
 トップページ（/）の書籍一覧を、利用者が好きな順番で見られるようにする準備です。
@@ -4183,7 +4184,7 @@ git<span class="w"> </span>switch<span class="w"> </span>-c<span class="w"> </sp
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> <code>sortBooks</code> は、書籍の配列と並べ方（3種類のどれか）を受け取り、並べ替えた<strong>新しい配列</strong>を返す関数です。テストのほうは、3冊ぶんの見本データを使って「タイトル順・評価順・新しい順に正しく並ぶか」「元の配列が書き換わっていないか」を自動で確かめます。</p>
 </blockquote>
 <p><strong><code>lib/sortBooks.ts</code></strong></p>
-<div class="codehilite"><div class="code-wrap" id="code-117"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 並べ替えに使う項目だけを持つ「書籍の形」</span>
+<div class="codehilite"><div class="code-wrap" id="code-118"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 並べ替えに使う項目だけを持つ「書籍の形」</span>
 <span class="k">export</span><span class="w"> </span><span class="kd">interface</span><span class="w"> </span><span class="nx">SortableBook</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
 <span class="w">  </span><span class="nx">rating</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
@@ -4216,7 +4217,7 @@ git<span class="w"> </span>switch<span class="w"> </span>-c<span class="w"> </sp
 </code></pre></div></div>
 
 <p><strong><code>lib/sortBooks.test.ts</code></strong></p>
-<div class="codehilite"><div class="code-wrap" id="code-118"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// Vitest のテスト用の関数を読み込む</span>
+<div class="codehilite"><div class="code-wrap" id="code-119"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// Vitest のテスト用の関数を読み込む</span>
 <span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">describe</span><span class="p">,</span><span class="w"> </span><span class="nx">expect</span><span class="p">,</span><span class="w"> </span><span class="nx">it</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;vitest&quot;</span><span class="p">;</span>
 <span class="c1">// テストしたい関数を読み込む</span>
 <span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">sortBooks</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;./sortBooks&quot;</span><span class="p">;</span>
@@ -4252,7 +4253,7 @@ git<span class="w"> </span>switch<span class="w"> </span>-c<span class="w"> </sp
 </code></pre></div></div>
 
 <p><strong>▼ 実行結果（<code>npx vitest run</code>。Vitest 3.2.7、パスの一部は伏せています）</strong></p>
-<div class="codehilite"><div class="code-wrap" id="code-119"><button type="button" class="copy-btn">コピー</button><pre><span></span><code> RUN  v3.2.7 C:/…/my-books-app
+<div class="codehilite"><div class="code-wrap" id="code-120"><button type="button" class="copy-btn">コピー</button><pre><span></span><code> RUN  v3.2.7 C:/…/my-books-app
 
  ✓ lib/sortBooks.test.ts (4 tests) 13ms
 
@@ -4265,7 +4266,7 @@ git<span class="w"> </span>switch<span class="w"> </span>-c<span class="w"> </sp
 <p><code>✓</code> が付いて「4 passed（4つ成功）」と出れば、Claude Code の報告どおりに動いていることを<strong>あなた自身が</strong>確かめられたことになります。テストを動かす準備（Vitest のインストールと設定）は 10-1 を参照してください。</p>
 <h4 id="1_10">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1_11">解説1: 型で「受け取れる値」をしぼる</h5>
-<div class="codehilite"><div class="code-wrap" id="code-120"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">export</span><span class="w"> </span><span class="kr">type</span><span class="w"> </span><span class="nx">SortKey</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;title&quot;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">&quot;rating&quot;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">&quot;newest&quot;</span><span class="p">;</span>
+<div class="codehilite"><div class="code-wrap" id="code-121"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">export</span><span class="w"> </span><span class="kr">type</span><span class="w"> </span><span class="nx">SortKey</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;title&quot;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">&quot;rating&quot;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">&quot;newest&quot;</span><span class="p">;</span>
 </code></pre></div></div>
 
 <ul>
@@ -4273,7 +4274,7 @@ git<span class="w"> </span>switch<span class="w"> </span>-c<span class="w"> </sp
 <li><code>&lt;T extends SortableBook&gt;</code> は「<code>title</code>・<code>rating</code>・<code>created_at</code> を持っていれば、ほかの項目（<code>author</code> や <code>memo</code> など）があってもよい」という意味です。書籍アプリの <code>Book</code> 型をそのまま渡せます。</li>
 </ul>
 <h5 id="2-books">解説2: <code>[...books]</code> で配列をコピーしてから並べ替える</h5>
-<div class="codehilite"><div class="code-wrap" id="code-121"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">copied</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[...</span><span class="nx">books</span><span class="p">];</span>
+<div class="codehilite"><div class="code-wrap" id="code-122"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">copied</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[...</span><span class="nx">books</span><span class="p">];</span>
 </code></pre></div></div>
 
 <ul>
@@ -4281,7 +4282,7 @@ git<span class="w"> </span>switch<span class="w"> </span>-c<span class="w"> </sp
 <li>JavaScript の <code>sort</code> は<strong>元の配列そのものを並べ替えてしまう</strong>ので、コピーしないと、呼び出した側のデータまで順番が変わってしまいます（下の「よくある展開」を参照）。</li>
 </ul>
 <h5 id="3-3">解説3: 3種類の並べ方</h5>
-<div class="codehilite"><div class="code-wrap" id="code-122"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">return</span><span class="w"> </span><span class="nx">copied</span><span class="p">.</span><span class="nx">sort</span><span class="p">((</span><span class="nx">a</span><span class="p">,</span><span class="w"> </span><span class="nx">b</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">a</span><span class="p">.</span><span class="nx">title</span><span class="p">.</span><span class="nx">localeCompare</span><span class="p">(</span><span class="nx">b</span><span class="p">.</span><span class="nx">title</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;ja&quot;</span><span class="p">));</span>
+<div class="codehilite"><div class="code-wrap" id="code-123"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">return</span><span class="w"> </span><span class="nx">copied</span><span class="p">.</span><span class="nx">sort</span><span class="p">((</span><span class="nx">a</span><span class="p">,</span><span class="w"> </span><span class="nx">b</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">a</span><span class="p">.</span><span class="nx">title</span><span class="p">.</span><span class="nx">localeCompare</span><span class="p">(</span><span class="nx">b</span><span class="p">.</span><span class="nx">title</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;ja&quot;</span><span class="p">));</span>
 </code></pre></div></div>
 
 <ul>
@@ -4289,7 +4290,7 @@ git<span class="w"> </span>switch<span class="w"> </span>-c<span class="w"> </sp
 <li>評価順では <code>b.rating ?? 0</code> のように、評価なし（<code>null</code>）を 0 とみなして最後に回しています。<code>??</code> は「左が <code>null</code> か <code>undefined</code> なら右を使う」という演算子です。</li>
 </ul>
 <h5 id="4_1">解説4: テストは「見本データ」と「期待する結果」のペア</h5>
-<div class="codehilite"><div class="code-wrap" id="code-123"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nx">it</span><span class="p">(</span><span class="s2">&quot;元の配列は書き換えない&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<div class="codehilite"><div class="code-wrap" id="code-124"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nx">it</span><span class="p">(</span><span class="s2">&quot;元の配列は書き換えない&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="nx">sortBooks</span><span class="p">(</span><span class="nx">books</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;title&quot;</span><span class="p">);</span>
 <span class="w">  </span><span class="nx">expect</span><span class="p">(</span><span class="nx">books</span><span class="p">[</span><span class="mf">0</span><span class="p">].</span><span class="nx">title</span><span class="p">).</span><span class="nx">toBe</span><span class="p">(</span><span class="s2">&quot;すいみん学&quot;</span><span class="p">);</span>
 <span class="p">});</span>
@@ -4302,12 +4303,12 @@ git<span class="w"> </span>switch<span class="w"> </span>-c<span class="w"> </sp
 <h4 id="3_4">手順3（よくある展開）: 最初の版でテストが落ちたら</h4>
 <p>実際の作業では、Claude Code の最初の版がテストに落ちることもよくあります。たとえば、コピーを忘れて次のように書いてしまった場合です。</p>
 <p><strong>NG（最初の版。<code>sortBooks.ts</code> の抜粋）:</strong> 配列をコピーせずに並べ替えている</p>
-<div class="codehilite"><div class="code-wrap" id="code-124"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// （最初の版）配列をそのまま並べ替えている</span>
+<div class="codehilite"><div class="code-wrap" id="code-125"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// （最初の版）配列をそのまま並べ替えている</span>
 <span class="kd">const</span><span class="w"> </span><span class="nx">copied</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">books</span><span class="p">;</span>
 </code></pre></div></div>
 
 <p><strong>▼ 実行結果（<code>npx vitest run</code>。パスの一部は伏せています）</strong></p>
-<div class="codehilite"><div class="code-wrap" id="code-125"><button type="button" class="copy-btn">コピー</button><pre><span></span><code> RUN  v3.2.7 C:/…/my-books-app
+<div class="codehilite"><div class="code-wrap" id="code-126"><button type="button" class="copy-btn">コピー</button><pre><span></span><code> RUN  v3.2.7 C:/…/my-books-app
 
  ❯ lib/sortBooks.test.ts (4 tests | 1 failed) 18ms
    ✓ sortBooks &gt; タイトルのあいうえお順に並ぶ 10ms
@@ -4342,7 +4343,7 @@ Received: &quot;あめの本&quot;
 </code></pre></div></div>
 
 <p><strong>OK（直した版）:</strong> コピーしてから並べ替える</p>
-<div class="codehilite"><div class="code-wrap" id="code-126"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 元の配列を書き換えないよう、コピーしてから並べ替える</span>
+<div class="codehilite"><div class="code-wrap" id="code-127"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 元の配列を書き換えないよう、コピーしてから並べ替える</span>
 <span class="kd">const</span><span class="w"> </span><span class="nx">copied</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[...</span><span class="nx">books</span><span class="p">];</span>
 </code></pre></div></div>
 
@@ -4427,7 +4428,7 @@ Received: &quot;あめの本&quot;
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> 書籍をタイトル順に取り出す関数です。NG 版は、AI が別のライブラリ（Prisma など）の書き方と混同して、Supabase には<strong>存在しない</strong> <code>findMany</code> というメソッドを使っています。OK 版は Supabase の正しい書き方（<code>select</code> で取り出し、<code>order</code> で並べ替え）です。型チェックの結果を比べると、ハルシネーションが機械的に見つかることが分かります。</p>
 </blockquote>
 <p><strong>NG（<code>lib/getBooks.ts</code>。AI が提案した版）</strong></p>
-<div class="codehilite"><div class="code-wrap" id="code-127"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// サーバー用の Supabase クライアントを作る関数を読み込む</span>
+<div class="codehilite"><div class="code-wrap" id="code-128"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// サーバー用の Supabase クライアントを作る関数を読み込む</span>
 <span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">createClient</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@/lib/supabase/server&quot;</span><span class="p">;</span>
 
 <span class="c1">// 書籍をタイトル順に取得する</span>
@@ -4443,11 +4444,11 @@ Received: &quot;あめの本&quot;
 </code></pre></div></div>
 
 <p><strong>▼ 実行結果（<code>npx tsc --noEmit</code>。supabase-js 2.117.3 / TypeScript 7.0.2）</strong></p>
-<div class="codehilite"><div class="code-wrap" id="code-128"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>lib/getBooks.ts(10,6): error TS2339: Property &#39;findMany&#39; does not exist on type &#39;PostgrestQueryBuilder&lt;any, any, any, &quot;books&quot;, unknown&gt;&#39;.
+<div class="codehilite"><div class="code-wrap" id="code-129"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>lib/getBooks.ts(10,6): error TS2339: Property &#39;findMany&#39; does not exist on type &#39;PostgrestQueryBuilder&lt;any, any, any, &quot;books&quot;, unknown&gt;&#39;.
 </code></pre></div></div>
 
 <p><strong>OK（直した版）</strong></p>
-<div class="codehilite"><div class="code-wrap" id="code-129"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// サーバー用の Supabase クライアントを作る関数を読み込む</span>
+<div class="codehilite"><div class="code-wrap" id="code-130"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// サーバー用の Supabase クライアントを作る関数を読み込む</span>
 <span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">createClient</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@/lib/supabase/server&quot;</span><span class="p">;</span>
 
 <span class="c1">// 書籍をタイトル順に取得する</span>
@@ -4464,13 +4465,13 @@ Received: &quot;あめの本&quot;
 </code></pre></div></div>
 
 <p><strong>▼ 実行結果（<code>npx tsc --noEmit</code>）</strong></p>
-<div class="codehilite"><div class="code-wrap" id="code-130"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>（何も表示されずに終了）
+<div class="codehilite"><div class="code-wrap" id="code-131"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>（何も表示されずに終了）
 </code></pre></div></div>
 
 <p>（型チェックのためだけに、<code>@/lib/supabase/server</code> を supabase-js で作った簡易版に置き換えた練習用フォルダで実行した結果です。第7章の本物の <code>createClient</code> でも、<code>findMany</code> については同じ TS2339 のエラーになります。）</p>
 <h4 id="1_12">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1_13">解説1: エラーメッセージの読み方</h5>
-<div class="codehilite"><div class="code-wrap" id="code-131"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>lib/getBooks.ts(10,6): error TS2339: Property &#39;findMany&#39; does not exist on type &#39;PostgrestQueryBuilder&lt;…&gt;&#39;.
+<div class="codehilite"><div class="code-wrap" id="code-132"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>lib/getBooks.ts(10,6): error TS2339: Property &#39;findMany&#39; does not exist on type &#39;PostgrestQueryBuilder&lt;…&gt;&#39;.
 </code></pre></div></div>
 
 <ul>
@@ -4478,7 +4479,7 @@ Received: &quot;あめの本&quot;
 <li>「<code>findMany</code> というプロパティ（メソッド）は、<code>PostgrestQueryBuilder</code>（Supabase のクエリを組み立てる部品）には存在しない」という意味です。つまり <strong>AI が存在しない書き方をした</strong>ことが、型チェックだけで分かります。</li>
 </ul>
 <h5 id="2_3">解説2: 正しい書き方は公式ドキュメントで確かめる</h5>
-<div class="codehilite"><div class="code-wrap" id="code-132"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">)</span>
+<div class="codehilite"><div class="code-wrap" id="code-133"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">)</span>
 <span class="p">.</span><span class="nx">order</span><span class="p">(</span><span class="s2">&quot;title&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">ascending</span><span class="o">:</span><span class="w"> </span><span class="kt">true</span><span class="w"> </span><span class="p">});</span>
 </code></pre></div></div>
 
@@ -4491,14 +4492,14 @@ Received: &quot;あめの本&quot;
 <p>AI は、似たライブラリ（Prisma、Drizzle など）の書き方を混ぜてしまうことがあります。見た目は自然なので、読んだだけでは気づきにくいのが厄介な点です。「型チェック（<code>npx tsc --noEmit</code>）を通す」を確かめ方に入れておけば、存在しないメソッドは上のように機械的に見つかります。</p>
 </blockquote>
 <p><strong>NG（存在しないメソッドを信じる）:</strong></p>
-<div class="codehilite"><div class="code-wrap" id="code-133"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// Prisma 風の書き方が混ざっている</span>
+<div class="codehilite"><div class="code-wrap" id="code-134"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// Prisma 風の書き方が混ざっている</span>
 <span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">data</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">supabase</span>
 <span class="w">  </span><span class="p">.</span><span class="kr">from</span><span class="p">(</span><span class="s2">&quot;books&quot;</span><span class="p">)</span>
 <span class="w">  </span><span class="p">.</span><span class="nx">findMany</span><span class="p">({</span><span class="w"> </span><span class="nx">orderBy</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;asc&quot;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">});</span>
 </code></pre></div></div>
 
 <p><strong>OK（supabase-js の書き方）:</strong></p>
-<div class="codehilite"><div class="code-wrap" id="code-134"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// select で取得し、order で並べ替える</span>
+<div class="codehilite"><div class="code-wrap" id="code-135"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// select で取得し、order で並べ替える</span>
 <span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">data</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">supabase</span>
 <span class="w">  </span><span class="p">.</span><span class="kr">from</span><span class="p">(</span><span class="s2">&quot;books&quot;</span><span class="p">)</span>
 <span class="w">  </span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">)</span>
@@ -4510,7 +4511,7 @@ Received: &quot;あめの本&quot;
 <p>テストが失敗したときに「テストが通るようにして」とだけ頼むと、AI がコードではなく<strong>テストの期待値</strong>を書き換えて、無理やり成功させることがあります。こうなるとテストは何も守ってくれません。9-7 の指示のように「テストの期待値は変えない」と書き、テストファイルの差分も必ず読みましょう。</p>
 </blockquote>
 <p><strong>NG（テストを書き換えて通した差分）:</strong> 9-7 の「最初の版」のバグが残ったまま、テストが「成功」してしまいます。</p>
-<div class="codehilite"><div class="code-wrap" id="code-135"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="gh">diff --git a/lib/sortBooks.test.ts b/lib/sortBooks.test.ts</span>
+<div class="codehilite"><div class="code-wrap" id="code-136"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="gh">diff --git a/lib/sortBooks.test.ts b/lib/sortBooks.test.ts</span>
 <span class="gh">index ae01d85..6283a3c 100644</span>
 <span class="gd">--- a/lib/sortBooks.test.ts</span>
 <span class="gi">+++ b/lib/sortBooks.test.ts</span>
@@ -4528,7 +4529,7 @@ Received: &quot;あめの本&quot;
 </code></pre></div></div>
 
 <p><strong>OK（期待値を守らせる指示）:</strong></p>
-<div class="codehilite"><div class="code-wrap" id="code-136"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>npx vitest run で「元の配列は書き換えない」のテストが失敗しています。
+<div class="codehilite"><div class="code-wrap" id="code-137"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>npx vitest run で「元の配列は書き換えない」のテストが失敗しています。
 テストファイル（sortBooks.test.ts）は変更せず、sortBooks.ts のほうを直してください。
 テストの期待値が間違っていると思う場合は、直す前に理由を説明して止まってください。
 </code></pre></div></div>
@@ -4537,7 +4538,7 @@ Received: &quot;あめの本&quot;
 <h2 id="10-phase-8">10. Phase 8：テスト・品質管理</h2>
 <h3 id="10-1">10-1. テスト環境のセットアップ</h3>
 <p><strong>Claude Codeへのプロンプト：</strong></p>
-<div class="codehilite"><div class="code-wrap" id="code-137"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>テスト環境をセットアップしてください。
+<div class="codehilite"><div class="code-wrap" id="code-138"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>テスト環境をセットアップしてください。
 
 ## パッケージ
 - vitest
@@ -4577,7 +4578,7 @@ npm test が通ることを確認してください。
 
 <h3 id="10-2">10-2. テスト作成の依頼</h3>
 <p><strong>Claude Codeへのプロンプト（または <code>/review</code> Skill を使用）：</strong></p>
-<div class="codehilite"><div class="code-wrap" id="code-138"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>タスクCRUD機能のテストを作成してください。
+<div class="codehilite"><div class="code-wrap" id="code-139"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>タスクCRUD機能のテストを作成してください。
 
 ## テスト対象と種別
 
@@ -4621,7 +4622,7 @@ npm test が通ることを確認してください。
 <h2 id="11-phase-9">11. Phase 9：デプロイと最終調整</h2>
 <h3 id="11-1">11-1. デプロイ前チェック</h3>
 <p><strong>Claude Codeへのプロンプト：</strong></p>
-<div class="codehilite"><div class="code-wrap" id="code-139"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>デプロイ前の最終チェックを実行してください。
+<div class="codehilite"><div class="code-wrap" id="code-140"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>デプロイ前の最終チェックを実行してください。
 
 1. ビルド確認
    npm run build を実行してエラーがないか確認
@@ -4728,7 +4729,7 @@ npm test が通ることを確認してください。
 </tbody>
 </table>
 <h3 id="12-3-compact">12-3. /compact の使いどころ</h3>
-<div class="codehilite"><div class="code-wrap" id="code-140"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>以下のタイミングで /compact を実行する：
+<div class="codehilite"><div class="code-wrap" id="code-141"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>以下のタイミングで /compact を実行する：
 - 1つの機能の実装が完了し、次の機能に移る時
 - 長い議論が終わって結論が出た時
 - エラーの修正が完了した時
@@ -4744,16 +4745,16 @@ npm test が通ることを確認してください。
 <p>うまくいかない修正を同じ会話で何度も重ねると、机の上が「失敗した案」で埋まり、Claude がかえって混乱していきます。公式ドキュメントでも、同じ問題で2回以上修正してもうまくいかないときは、<code>/clear</code> して、学んだことを反映した良い指示で最初からやり直すよう勧めています。</p>
 </blockquote>
 <p><strong>NG（泥沼の追加修正）:</strong></p>
-<div class="codehilite"><div class="code-wrap" id="code-141"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>違う、そうじゃない
+<div class="codehilite"><div class="code-wrap" id="code-142"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>違う、そうじゃない
 まだ動かない。もう一回直して
 さっきの方法に戻して、でも別のやり方で
 </code></pre></div></div>
 
 <p><strong>OK（<code>/clear</code> して、分かったことを入れて指示し直す）:</strong></p>
-<div class="codehilite"><div class="code-wrap" id="code-142"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>/clear
+<div class="codehilite"><div class="code-wrap" id="code-143"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>/clear
 </code></pre></div></div>
 
-<div class="codehilite"><div class="code-wrap" id="code-143"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>lib/sortBooks.ts の sortBooks で、評価順（&quot;rating&quot;）の並びが正しくありません。
+<div class="codehilite"><div class="code-wrap" id="code-144"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>lib/sortBooks.ts の sortBooks で、評価順（&quot;rating&quot;）の並びが正しくありません。
 分かっていること:
 - 評価なし（null）の本が先頭に来てしまう。期待は「評価なしは最後」
 - npx vitest run の「評価の高い順に並び、評価なしは最後になる」が失敗する
@@ -4763,7 +4764,7 @@ sortBooks.ts だけを直し、npx vitest run が通ったら報告してくだ�
 <h3 id="12-4-memory">12-4. Memory システム</h3>
 <p>Claude Codeは会話を跨いで記憶を保持するMemoryシステムを持っています。コンテキストとは別の場所に保管され、セッションをまたいで読み込まれます。</p>
 <p><strong>保存場所：</strong> <code>~/.claude/projects/&lt;project&gt;/memory/</code></p>
-<div class="codehilite"><div class="code-wrap" id="code-144"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>memory/
+<div class="codehilite"><div class="code-wrap" id="code-145"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>memory/
 ├── MEMORY.md          ← インデックス（セッション開始時に読み込み）
 ├── user_preferences.md ← ユーザーの好み
 ├── project_decisions.md ← 技術的な意思決定
@@ -4780,7 +4781,7 @@ sortBooks.ts だけを直し、npx vitest run が通ったら報告してくだ�
 - Git履歴（git logで確認できる）
 - CLAUDE.mdに書いてあること</p>
 <p><strong>Memoryの操作プロンプト：</strong></p>
-<div class="codehilite"><div class="code-wrap" id="code-145"><button type="button" class="copy-btn">コピー</button><pre><span></span><code># 記憶させる
+<div class="codehilite"><div class="code-wrap" id="code-146"><button type="button" class="copy-btn">コピー</button><pre><span></span><code># 記憶させる
 「覚えておいて：このプロジェクトではServer Actionsは使わず、
 Route Handlersで統一する決定をした。理由はテストの書きやすさ。」
 
@@ -4792,7 +4793,7 @@ Route Handlersで統一する決定をした。理由はテストの書きやす
 </code></pre></div></div>
 
 <p><strong>Memory の有効/無効設定：</strong></p>
-<div class="codehilite"><div class="code-wrap" id="code-146"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">{</span>
+<div class="codehilite"><div class="code-wrap" id="code-147"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;autoMemoryEnabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="p">}</span>
 </code></pre></div></div>
@@ -4872,7 +4873,7 @@ Route Handlersで統一する決定をした。理由はテストの書きやす
 </tbody>
 </table>
 <h3 id="13-3">13-3. カスタマイズ例</h3>
-<div class="codehilite"><div class="code-wrap" id="code-147"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">{</span>
+<div class="codehilite"><div class="code-wrap" id="code-148"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;$schema&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://www.schemastore.org/claude-code-keybindings.json&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;bindings&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
@@ -4941,7 +4942,7 @@ Route Handlersで統一する決定をした。理由はテストの書きやす
 </tbody>
 </table>
 <h3 id="13-5">13-5. コード記法</h3>
-<div class="codehilite"><div class="code-wrap" id="code-148"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>ctrl+k          # Control + K
+<div class="codehilite"><div class="code-wrap" id="code-149"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>ctrl+k          # Control + K
 shift+tab       # Shift + Tab
 ctrl+shift+c    # 複数修飾キー
 ctrl+x ctrl+e   # コード入力（Ctrl+X → Ctrl+E）
@@ -4955,7 +4956,7 @@ escape, enter   # 特殊キー名
 <h3 id="14-1-worktrees">14-1. Worktrees とは</h3>
 <p>Git worktreeを使って、<strong>メインの作業を中断せずに別ブランチで並列作業</strong>できます。1つのリポジトリから複数の作業ディレクトリを派生させ、それぞれで別ブランチを進められる仕組みです。</p>
 <h3 id="14-2">14-2. 使い方</h3>
-<div class="codehilite"><div class="code-wrap" id="code-149"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 名前を指定してworktreeを作成</span>
+<div class="codehilite"><div class="code-wrap" id="code-150"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 名前を指定してworktreeを作成</span>
 <span class="c1"># --worktree オプションで feature-auth という新しい worktree を作る</span>
 claude<span class="w"> </span>--worktree<span class="w"> </span>feature-auth
 
@@ -4973,7 +4974,7 @@ claude<span class="w"> </span>-w<span class="w"> </span>feature-auth<span class=
 <h3 id="14-3-worktreeinclude">14-3. .worktreeinclude ファイル</h3>
 <p>gitignoreされたファイルをworktreeにコピーするための設定：</p>
 <p><strong>プロジェクトルートに <code>.worktreeinclude</code> を作成：</strong></p>
-<div class="codehilite"><div class="code-wrap" id="code-150"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>.env
+<div class="codehilite"><div class="code-wrap" id="code-151"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>.env
 .env.local
 .claude/settings.local.json
 CLAUDE.local.md
@@ -4987,7 +4988,7 @@ CLAUDE.local.md
 <p>gitignoreされた <strong>かつ</strong> .worktreeincludeにマッチするファイルのみコピーされます。</p>
 </blockquote>
 <h3 id="14-4">14-4. 活用シーン</h3>
-<div class="codehilite"><div class="code-wrap" id="code-151"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>シーン1: メイン機能の開発中にバグ修正が必要
+<div class="codehilite"><div class="code-wrap" id="code-152"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>シーン1: メイン機能の開発中にバグ修正が必要
 → claude -w hotfix-auth で別worktreeを作成し、バグ修正
 
 シーン2: 2つの機能を同時に進めたい
@@ -5002,7 +5003,7 @@ CLAUDE.local.md
 <hr>
 <h2 id="15-cli">15. CLIフラグとオプション一覧</h2>
 <h3 id="15-1">15-1. セッション管理</h3>
-<div class="codehilite"><div class="code-wrap" id="code-152"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 新しいセッション開始（最も普通の起動方法）</span>
+<div class="codehilite"><div class="code-wrap" id="code-153"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 新しいセッション開始（最も普通の起動方法）</span>
 claude
 <span class="c1"># 前回のセッションを再開（-c は continue の意味）</span>
 claude<span class="w"> </span>-c
@@ -5015,7 +5016,7 @@ claude<span class="w"> </span>--from-pr<span class="w"> </span><span class="m">1
 </code></pre></div></div>
 
 <h3 id="15-2">15-2. モードとモデル</h3>
-<div class="codehilite"><div class="code-wrap" id="code-153"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># Plan Mode で起動（読み取り専用）</span>
+<div class="codehilite"><div class="code-wrap" id="code-154"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># Plan Mode で起動（読み取り専用）</span>
 claude<span class="w"> </span>--permission-mode<span class="w"> </span>plan
 <span class="c1"># 編集は確認なしで自動承認（信頼できるタスク向け）</span>
 claude<span class="w"> </span>--permission-mode<span class="w"> </span>acceptEdits
@@ -5030,7 +5031,7 @@ claude<span class="w"> </span>--effort<span class="w"> </span>high
 </code></pre></div></div>
 
 <h3 id="15-3">15-3. 非対話モード（スクリプト連携）</h3>
-<div class="codehilite"><div class="code-wrap" id="code-154"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># -p は print mode。質問を投げて回答だけ受け取る（対話なし）</span>
+<div class="codehilite"><div class="code-wrap" id="code-155"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># -p は print mode。質問を投げて回答だけ受け取る（対話なし）</span>
 claude<span class="w"> </span>-p<span class="w"> </span><span class="s2">&quot;このプロジェクトの構成を教えて&quot;</span>
 
 <span class="c1"># JSON 出力に切り替え。スクリプトでパースしやすい</span>
@@ -5044,7 +5045,7 @@ claude<span class="w"> </span>-p<span class="w"> </span><span class="s2">&quot;�
 </code></pre></div></div>
 
 <h3 id="15-4">15-4. コンテキストとツール</h3>
-<div class="codehilite"><div class="code-wrap" id="code-155"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 別ディレクトリ（共有ライブラリ等）もコンテキストに含める</span>
+<div class="codehilite"><div class="code-wrap" id="code-156"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 別ディレクトリ（共有ライブラリ等）もコンテキストに含める</span>
 claude<span class="w"> </span>--add-dir<span class="w"> </span>../shared-lib
 
 <span class="c1"># 使用ツール制限（カンマ区切り）</span>
@@ -5062,7 +5063,7 @@ claude<span class="w"> </span>--mcp-config<span class="w"> </span>./custom-mcp.j
 </code></pre></div></div>
 
 <h3 id="15-5">15-5. デバッグ</h3>
-<div class="codehilite"><div class="code-wrap" id="code-156"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># デバッグモード（内部の挙動を詳細出力）</span>
+<div class="codehilite"><div class="code-wrap" id="code-157"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># デバッグモード（内部の挙動を詳細出力）</span>
 claude<span class="w"> </span>--debug
 <span class="c1"># デバッグログをファイルに記録</span>
 claude<span class="w"> </span>--debug-file<span class="w"> </span>/tmp/claude.log
@@ -5120,7 +5121,7 @@ claude<span class="w"> </span>--verbose
 </tbody>
 </table>
 <h3 id="16-2">16-2. コード品質が低い場合の改善指示</h3>
-<div class="codehilite"><div class="code-wrap" id="code-157"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>生成されたコードに以下の問題があります。修正してください：
+<div class="codehilite"><div class="code-wrap" id="code-158"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>生成されたコードに以下の問題があります。修正してください：
 
 1. コンポーネントが大きすぎる（300行超）
    → 責務ごとに分割してください
@@ -5142,7 +5143,7 @@ CLAUDE.mdの規約に準拠しているか再確認してから修正してく�
 </code></pre></div></div>
 
 <h3 id="16-3-claude">16-3. Claude が暴走した場合</h3>
-<div class="codehilite"><div class="code-wrap" id="code-158"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>ストップ。
+<div class="codehilite"><div class="code-wrap" id="code-159"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>ストップ。
 
 今行った変更を全て説明してください。
 どのファイルを、どのように変更しましたか？
@@ -5484,7 +5485,7 @@ CLAUDE.mdの規約に準拠しているか再確認してから修正してく�
 </table>
 <hr>
 <h2 id="_11">付録：開発開始から完了までのチェックリスト</h2>
-<div class="codehilite"><div class="code-wrap" id="code-159"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>=== Phase 0: 環境構築 ===
+<div class="codehilite"><div class="code-wrap" id="code-160"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>=== Phase 0: 環境構築 ===
 □ Claude Code インストール済み
 □ settings.json で危険コマンドをブロック済み
 □ Permissions の allow/deny リスト設定済み
@@ -5542,12 +5543,12 @@ CLAUDE.mdの規約に準拠しているか再確認してから修正してく�
 <p>この章の内容が身に付いたかを確かめましょう。まず自分で考えてから、後ろの「解答と解説」を読んでください。Claude Code が手元にある人は、実際に書籍管理アプリで試すとより理解が深まります。</p>
 <h3 id="1-012">問題1: あいまいな指示を書き直す（0.1.2）</h3>
 <p>次の指示は、Claude Code に意図が伝わりにくい例です。「トップページ（<code>/</code>）の書籍一覧の上に、登録されている本の冊数を『全 3 冊』のように表示したい」という意図が伝わるよう、図11-3 の4要素（目的・場所と範囲・完成条件・確かめ方）を入れて書き直してください。</p>
-<div class="codehilite"><div class="code-wrap" id="code-160"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>一覧ページをいい感じにして
+<div class="codehilite"><div class="code-wrap" id="code-161"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>一覧ページをいい感じにして
 </code></pre></div></div>
 
 <h3 id="2-2-22-3">問題2: 権限ルールの判定を予想する（2-2・2-3）</h3>
 <p><code>.claude/settings.json</code> が次のとき、Manual（<code>default</code>）モードで Claude Code が (a)〜(d) のコマンドを実行しようとしたら、それぞれどうなりますか？ 「確認なしで実行」「確認が出る」「ブロック」のどれかで答えてください。</p>
-<div class="codehilite"><div class="code-wrap" id="code-161"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">{</span>
+<div class="codehilite"><div class="code-wrap" id="code-162"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;permissions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;allow&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;Bash(npm run *)&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Bash(git commit *)&quot;</span><span class="p">],</span>
 <span class="w">    </span><span class="nt">&quot;ask&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;Bash(git commit *)&quot;</span><span class="p">],</span>
@@ -5564,7 +5565,7 @@ CLAUDE.mdの規約に準拠しているか再確認してから修正してく�
 </ul>
 <h3 id="3-0419-8">問題3: 報告と差分が合わない（0.4.1・9-8）</h3>
 <p><code>sortBooks.ts</code> とそのテストだけを作るよう頼んだところ、Claude Code から「並べ替え機能を実装し、テストも通りました」と報告がありました。<code>git status --short</code> の結果は次のとおりです。あなたは次に何を確かめ、どう対処しますか？</p>
-<div class="codehilite"><div class="code-wrap" id="code-162"><button type="button" class="copy-btn">コピー</button><pre><span></span><code> M lib/sortBooks.test.ts
+<div class="codehilite"><div class="code-wrap" id="code-163"><button type="button" class="copy-btn">コピー</button><pre><span></span><code> M lib/sortBooks.test.ts
  M lib/supabase/server.ts
 ?? components/SortSelect.tsx
 ?? lib/sortBooks.ts
@@ -5582,7 +5583,7 @@ CLAUDE.mdの規約に準拠しているか再確認してから修正してく�
 </ul>
 <h3 id="5-4-1">問題5: 計画に頼んでいない変更が入っている（4-1）</h3>
 <p>プランモードで「<code>sortBooks</code> 関数とテストを作る」計画を頼んだところ、計画の「変更するファイル」に次の行が含まれていました。承認画面ではどの選択肢を選び、何と伝えますか？</p>
-<div class="codehilite"><div class="code-wrap" id="code-163"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>3. app/layout.tsx（変更）: ヘッダーのデザインを新しくする
+<div class="codehilite"><div class="code-wrap" id="code-164"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>3. app/layout.tsx（変更）: ヘッダーのデザインを新しくする
 </code></pre></div></div>
 
 <h3 id="6-042">問題6: どこまで戻す？（0.4.2）</h3>
@@ -5596,7 +5597,7 @@ CLAUDE.mdの規約に準拠しているか再確認してから修正してく�
 <p><code>sortBooks</code> の評価順のバグを直そうと、同じ会話で3回修正を頼みましたが、まだ直りません。このあと別の機能（書籍の削除）にも取りかかる予定です。どうするのがよいですか？</p>
 <h3 id="8-ai-9-8">問題8: AI のコードの問題を見つける（9-8）</h3>
 <p>Claude Code が次のコードを提案しました。問題点と、それを機械的に見つける方法、正しい書き方を答えてください。</p>
-<div class="codehilite"><div class="code-wrap" id="code-164"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// サーバー用の Supabase クライアントを作る関数を読み込む</span>
+<div class="codehilite"><div class="code-wrap" id="code-165"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// サーバー用の Supabase クライアントを作る関数を読み込む</span>
 <span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">createClient</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@/lib/supabase/server&quot;</span><span class="p">;</span>
 
 <span class="c1">// 書籍をタイトル順に取得する</span>
@@ -5609,7 +5610,7 @@ CLAUDE.mdの規約に準拠しているか再確認してから修正してく�
 
 <h3 id="_13">解答と解説</h3>
 <h4 id="1_14">問題1の解答</h4>
-<div class="codehilite"><div class="code-wrap" id="code-165"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>app/page.tsx だけを変更してください。
+<div class="codehilite"><div class="code-wrap" id="code-166"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>app/page.tsx だけを変更してください。
 
 目的:
 登録した本が何冊あるかを、一覧を見た瞬間に分かるようにしたい。
@@ -5680,7 +5681,7 @@ CLAUDE.mdの規約に準拠しているか再確認してから修正してく�
 <p><strong>解説:</strong> (b) と (c) は「AI の判断に関係なく必ず効いてほしい」ことなので、お願いである CLAUDE.md ではなく、仕組みで強制する Hooks・Permissions を使います（1-4 の図11-8）。(a) と (e) の違いは、全体に効かせるか、特定の場所だけに効かせるかです。</p>
 <h4 id="5">問題5の解答</h4>
 <p><code>No, keep planning</code> を選び、次のように伝えます。</p>
-<div class="codehilite"><div class="code-wrap" id="code-166"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>計画から「3. app/layout.tsx の変更」を外してください。
+<div class="codehilite"><div class="code-wrap" id="code-167"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>計画から「3. app/layout.tsx の変更」を外してください。
 今回は sortBooks.ts と sortBooks.test.ts の2ファイルだけを作ります。
 ヘッダーのデザインは変更しないでください。
 </code></pre></div></div>
@@ -5699,11 +5700,11 @@ CLAUDE.mdの規約に準拠しているか再確認してから修正してく�
 <h4 id="8">問題8の解答</h4>
 <p><strong>問題点:</strong> <code>sortBy</code> というメソッドは supabase-js に存在しません（AI のハルシネーション）。</p>
 <p><strong>見つけ方:</strong> <code>npx tsc --noEmit</code> で型チェックをすると、次のエラーが出ます（supabase-js 2.117.3 / TypeScript 7.0.2 で確認）。</p>
-<div class="codehilite"><div class="code-wrap" id="code-167"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>lib/getBooks.ts(7,61): error TS2339: Property &#39;sortBy&#39; does not exist on type &#39;PostgrestFilterBuilder&lt;any, any, any, any[], &quot;books&quot;, unknown, &quot;GET&quot;, false&gt;&#39;.
+<div class="codehilite"><div class="code-wrap" id="code-168"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>lib/getBooks.ts(7,61): error TS2339: Property &#39;sortBy&#39; does not exist on type &#39;PostgrestFilterBuilder&lt;any, any, any, any[], &quot;books&quot;, unknown, &quot;GET&quot;, false&gt;&#39;.
 </code></pre></div></div>
 
 <p><strong>正しい書き方:</strong></p>
-<div class="codehilite"><div class="code-wrap" id="code-168"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// サーバー用の Supabase クライアントを作る関数を読み込む</span>
+<div class="codehilite"><div class="code-wrap" id="code-169"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// サーバー用の Supabase クライアントを作る関数を読み込む</span>
 <span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">createClient</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@/lib/supabase/server&quot;</span><span class="p">;</span>
 
 <span class="c1">// 書籍をタイトル順に取得する</span>

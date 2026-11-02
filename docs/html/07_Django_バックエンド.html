@@ -934,23 +934,24 @@ Djangoでは、フィールド名のうしろに <code>__</code> を付けて条
 <li><code>get_paginated_response</code> が、それに「全部で何件か（count）」「1ページ何件か（page_size）」などを足して、最終的な応答を組み立てます（中身は§8）。</li>
 </ul>
 <blockquote>
-<p><strong>▼ こう表示されれば成功:</strong> React側がこのAPIを呼ぶと、次のようなJSONが返ってきます（※説明用の簡易例）。
-<code>json
-{
-  "count": 53,
-  "page_size": 20,
-  "results": [
-    {"employee_no": 101, "name": "山田太郎", "shop": "W1", ...},
-    {"employee_no": 102, "name": "佐藤花子", "shop": "W1", ...}
-  ]
-}</code>
-<code>count</code> が全件数、<code>results</code> が今のページ分。Reactはこれを表に並べ、ページ番号を作ります。</p>
+<p><strong>▼ こう表示されれば成功:</strong> React側がこのAPIを呼ぶと、次のようなJSONが返ってきます（※説明用の簡易例）。</p>
+<div class="codehilite"><div class="code-wrap" id="code-11"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">53</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;page_size&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;results&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span><span class="nt">&quot;employee_no&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">101</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;山田太郎&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;shop&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;W1&quot;</span><span class="p">,</span><span class="w"> </span><span class="err">...</span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="nt">&quot;employee_no&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">102</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;佐藤花子&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;shop&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;W1&quot;</span><span class="p">,</span><span class="w"> </span><span class="err">...</span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><code>count</code> が全件数、<code>results</code> が今のページ分。Reactはこれを表に並べ、ページ番号を作ります。</p>
 </blockquote>
 <h3 id="58-membernew-get-6582">5.8 MemberNew クラス（新規登録）の get ― 65〜82行目</h3>
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> 「新規登録」ページを開いたとき、登録フォームの初期表示用にログイン者自身のデータを返します。ここでも先に権限チェックを行い、権限が無ければ弾きます。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-11"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 人員データ新規登録</span>
+<div class="codehilite"><div class="code-wrap" id="code-12"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 人員データ新規登録</span>
 <span class="c1"># 新規登録API</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">MemberNew</span><span class="p">(</span><span class="n">APIView</span><span class="p">):</span>
   <span class="c1"># 登録画面を開いたときのGET</span>
@@ -997,7 +998,7 @@ Djangoでは、フィールド名のうしろに <code>__</code> を付けて条
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> Reactから送られてきた登録データを受け取り、まず「その従業員番号がすでに登録済みでないか」を確認します。すでにあれば、エラー（400）を返して登録を止めます。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-12"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># 登録ボタンが押されたときのPOST</span>
+<div class="codehilite"><div class="code-wrap" id="code-13"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># 登録ボタンが押されたときのPOST</span>
   <span class="k">def</span><span class="w"> </span><span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
     <span class="c1"># 送られてきた登録データを取り出す</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">data</span>
@@ -1041,7 +1042,7 @@ Djangoでは、フィールド名のうしろに <code>__</code> を付けて条
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> 新しい人員には、所属に応じた「標準の休憩時間」をあらかじめセットします。所属が「現場系（W1, W2, A1, A2, J, 組長以上）」なら現場用の時間割を、それ以外（事務系など）なら別の時間割を、24個の休憩欄に一括で書き込みます。これにより、登録者が毎回休憩を手入力しなくて済みます。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-13"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1"># 所属が現場系グループに含まれるか判定</span>
+<div class="codehilite"><div class="code-wrap" id="code-14"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1"># 所属が現場系グループに含まれるか判定</span>
     <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;shop&#39;</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;W1&#39;</span><span class="p">,</span> <span class="s1">&#39;W2&#39;</span><span class="p">,</span> <span class="s1">&#39;A1&#39;</span><span class="p">,</span> <span class="s1">&#39;A2&#39;</span><span class="p">,</span> <span class="s1">&#39;J&#39;</span><span class="p">,</span> <span class="s1">&#39;組長以上(W,A)&#39;</span><span class="p">]:</span>
       <span class="c1"># dataに休憩時間の初期値を一括で上書き追加</span>
       <span class="n">data</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
@@ -1103,7 +1104,7 @@ Djangoでは、フィールド名のうしろに <code>__</code> を付けて条
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> 完成したデータをシリアライザに渡して「中身が正しいか」を検査します。検査に合格すればデータベースに保存し、201（作成成功）を返します。不合格なら400（入力エラー）を返します。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-14"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1"># 送信データを翻訳・検査の準備</span>
+<div class="codehilite"><div class="code-wrap" id="code-15"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1"># 送信データを翻訳・検査の準備</span>
     <span class="n">serializer</span> <span class="o">=</span> <span class="n">MemberSerializer</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
     <span class="c1"># 検査に合格したら</span>
     <span class="k">if</span> <span class="n">serializer</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
@@ -1155,7 +1156,7 @@ Djangoでは、フィールド名のうしろに <code>__</code> を付けて条
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> 「指定された従業員番号の人員を1件取ってくる」共通処理を、小さな部品（メソッド）として切り出しています。見つからなければ <code>None</code> を返します。更新と削除で何度も使うので、まとめておくと便利です。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-15"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 人員データ編集動作</span>
+<div class="codehilite"><div class="code-wrap" id="code-16"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 人員データ編集動作</span>
 <span class="c1"># 更新API</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">MemberUpdate</span><span class="p">(</span><span class="n">APIView</span><span class="p">):</span>
   <span class="c1"># 主キー(pk)で1件取ってくる共通メソッド</span>
@@ -1185,7 +1186,7 @@ Djangoでは、フィールド名のうしろに <code>__</code> を付けて条
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> 編集画面を開いたとき、編集対象の人員データを返します。ここでも「ログイン確認→権限確認→対象が存在するか確認」の順で門番チェックを行います。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-16"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># 編集画面を開いたときのGET（pk付き）</span>
+<div class="codehilite"><div class="code-wrap" id="code-17"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># 編集画面を開いたときのGET（pk付き）</span>
   <span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">pk</span><span class="p">):</span>
     <span class="c1"># セッションからログイン情報を取得</span>
     <span class="c1"># ログイン番号取得</span>
@@ -1253,7 +1254,7 @@ Djangoでは、フィールド名のうしろに <code>__</code> を付けて条
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> 編集内容を受け取り、対象が存在するか確認し、検査に合格したら保存します。さらに「従業員番号を別の既存番号に変えようとしていないか」も二重チェックして、番号の重複を防ぎます。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-17"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># 更新ボタンが押されたときのPUT</span>
+<div class="codehilite"><div class="code-wrap" id="code-18"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># 更新ボタンが押されたときのPUT</span>
   <span class="k">def</span><span class="w"> </span><span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">pk</span><span class="p">):</span>
     <span class="c1"># 特定の従業員データを取得</span>
     <span class="c1"># 更新対象を取得</span>
@@ -1326,7 +1327,7 @@ Djangoでは、フィールド名のうしろに <code>__</code> を付けて条
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> 削除対象の人員を取得し、存在すれば削除します。存在しなければ404を返します。削除成功時は「中身のない成功（204）」を返します。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-18"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 人員データ削除動作</span>
+<div class="codehilite"><div class="code-wrap" id="code-19"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 人員データ削除動作</span>
 <span class="c1"># 削除API</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">MemberDelete</span><span class="p">(</span><span class="n">APIView</span><span class="p">):</span>
   <span class="c1"># 1件取得の共通メソッド（更新と同じ形）</span>
@@ -1388,7 +1389,7 @@ Djangoでは、フィールド名のうしろに <code>__</code> を付けて条
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> DRFのシリアライザ部品と、本アプリの全モデルを読み込みます。各シリアライザが「どのモデルを翻訳するか」を指定するために、モデルが必要なのです。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-19"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># DRFのシリアライザ部品を読み込む</span>
+<div class="codehilite"><div class="code-wrap" id="code-20"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># DRFのシリアライザ部品を読み込む</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">rest_framework</span><span class="w"> </span><span class="kn">import</span> <span class="n">serializers</span>
 <span class="c1"># アプリの各モデルを読み込む（行末の\は行継続）</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..models</span><span class="w"> </span><span class="kn">import</span> <span class="n">member</span><span class="p">,</span> <span class="n">Business_Time_graph</span><span class="p">,</span> <span class="n">kosu_division</span><span class="p">,</span> <span class="n">def_choice</span><span class="p">,</span> \
@@ -1404,7 +1405,7 @@ Djangoでは、フィールド名のうしろに <code>__</code> を付けて条
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> memberモデルを、JSONに翻訳する係を定義します。たった4行ですが、これだけで「member の全項目をJSONにする・JSONをmemberに戻す・検査する」を全部こなします。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-20"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ModelSerializerを継承した翻訳係</span>
+<div class="codehilite"><div class="code-wrap" id="code-21"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ModelSerializerを継承した翻訳係</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">MemberSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
   <span class="c1"># 設定をまとめる入れ子クラス</span>
   <span class="k">class</span><span class="w"> </span><span class="nc">Meta</span><span class="p">:</span>
@@ -1438,7 +1439,7 @@ Djangoでは、フィールド名のうしろに <code>__</code> を付けて条
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> 他のモデル（工数区分・工数データ・チーム・問い合わせ・管理者設定・タスク・履歴）についても、まったく同じ形で翻訳係を定義しています。中身はモデル名が違うだけです。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-21"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 工数区分定義(kosu_division)の翻訳係</span>
+<div class="codehilite"><div class="code-wrap" id="code-22"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 工数区分定義(kosu_division)の翻訳係</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">DefSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
   <span class="k">class</span><span class="w"> </span><span class="nc">Meta</span><span class="p">:</span>
     <span class="n">model</span> <span class="o">=</span> <span class="n">kosu_division</span>
@@ -1512,7 +1513,7 @@ Djangoでは、フィールド名のうしろに <code>__</code> を付けて条
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> URL定義に必要な <code>path</code> 関数と、振り分け先となる各ビューモジュール、そして本番でメディアファイルを配信するための部品を読み込みます。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-22"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># URLを定義するpath関数を読み込む</span>
+<div class="codehilite"><div class="code-wrap" id="code-23"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># URLを定義するpath関数を読み込む</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">django.urls</span><span class="w"> </span><span class="kn">import</span> <span class="n">path</span>
 <span class="c1"># メイン系ビューを読み込む</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.views</span><span class="w"> </span><span class="kn">import</span> <span class="n">main_views</span>
@@ -1543,7 +1544,7 @@ Djangoでは、フィールド名のうしろに <code>__</code> を付けて条
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> <code>urlpatterns</code> というリストに、URLとビューの対応を1行ずつ並べます。リストの上から順に照合され、最初に一致したものが採用されます。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-23"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># URL対応表の始まり（リスト）</span>
+<div class="codehilite"><div class="code-wrap" id="code-24"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># URL対応表の始まり（リスト）</span>
 <span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
   <span class="c1"># /login/ → Loginビュー</span>
   <span class="n">path</span><span class="p">(</span><span class="s1">&#39;login/&#39;</span><span class="p">,</span> <span class="n">main_views</span><span class="o">.</span><span class="n">Login</span><span class="o">.</span><span class="n">as_view</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;login&#39;</span><span class="p">),</span>
@@ -1610,7 +1611,7 @@ URLで <code>&lt;int:pk&gt;</code> と書いたら、ビューのメソッドも
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> バックアップ・復元系のURLが大量に並んでいますが、<strong>すべて同じ <code>asynchronous_views.backup</code> 関数に繋がっています</strong>。代わりに <code>name=</code>（あだ名）を1本ずつ変えてあり、ビュー側はこの名前を見て「今どの処理か」を判断します（§11で詳説）。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-24"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># 工数バックアップ</span>
+<div class="codehilite"><div class="code-wrap" id="code-25"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># 工数バックアップ</span>
   <span class="n">path</span><span class="p">(</span><span class="s1">&#39;kosu_backup/&#39;</span><span class="p">,</span> <span class="n">asynchronous_views</span><span class="o">.</span><span class="n">backup</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;kosu_backup&#39;</span><span class="p">),</span>
   <span class="c1"># 工数削除（同じbackup関数）</span>
   <span class="n">path</span><span class="p">(</span><span class="s1">&#39;kosu_delet/&#39;</span><span class="p">,</span> <span class="n">asynchronous_views</span><span class="o">.</span><span class="n">backup</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;kosu_delet&#39;</span><span class="p">),</span>
@@ -1631,7 +1632,7 @@ URLで <code>&lt;int:pk&gt;</code> と書いたら、ビューのメソッドも
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> バックアップで作ったファイル（メディアファイル）を、ブラウザからダウンロードできるようにURLを追加します。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-25"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># メディア配信用URLを末尾に追加</span>
+<div class="codehilite"><div class="code-wrap" id="code-26"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># メディア配信用URLを末尾に追加</span>
 <span class="n">urlpatterns</span> <span class="o">+=</span> <span class="n">static</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">MEDIA_URL</span><span class="p">,</span> <span class="n">document_root</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">MEDIA_ROOT</span><span class="p">)</span>
 </code></pre></div></div>
 
@@ -1651,7 +1652,7 @@ URLで <code>&lt;int:pk&gt;</code> と書いたら、ビューのメソッドも
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> ページネーションの土台クラスや、応答を作る部品、そして「1ページの件数」を読み取るための管理者設定モデルを読み込みます。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-26"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># クラスを調べる標準ツール（後半の別関数で使用）</span>
+<div class="codehilite"><div class="code-wrap" id="code-27"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># クラスを調べる標準ツール（後半の別関数で使用）</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
 <span class="c1"># ページ番号方式の土台クラス</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">rest_framework.pagination</span><span class="w"> </span><span class="kn">import</span> <span class="n">PageNumberPagination</span>
@@ -1673,7 +1674,7 @@ URLで <code>&lt;int:pk&gt;</code> と書いたら、ビューのメソッドも
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> ページ送りの設定を、固定値ではなく <strong>管理者の設定値から動的に</strong> 決めるクラスです。作られた瞬間に管理者設定の最新レコードを見て「1ページ何件か」を取り込み、応答には「全件数・1ページ件数・データ本体」を含めます。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-27"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ページネーションクラス</span>
+<div class="codehilite"><div class="code-wrap" id="code-28"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ページネーションクラス</span>
 <span class="c1"># PageNumberPaginationを継承</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">CustomPagination</span><span class="p">(</span><span class="n">PageNumberPagination</span><span class="p">):</span>
   <span class="c1"># デフォルトの設定値                          # 既定は1ページ20件</span>
@@ -1736,10 +1737,11 @@ URLで <code>&lt;int:pk&gt;</code> と書いたら、ビューのメソッドも
 <li><strong>24行目</strong> <code>'results': data</code> … 今のページのデータ本体（シリアライズ済みのJSON）。</li>
 </ul>
 <blockquote>
-<p><strong>▼ §5.7の応答例（再掲）と対応:</strong>
-<code>json
-{ "count": 53, "page_size": 20, "results": [ ... ] }</code>
-この <code>count</code>・<code>page_size</code>・<code>results</code> は、まさにこの <code>get_paginated_response</code> が組み立てたものです。</p>
+<p><strong>▼ §5.7の応答例（再掲）と対応:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-29"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">{</span><span class="w"> </span><span class="nt">&quot;count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">53</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;page_size&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;results&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="p">]</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div></div>
+
+<p>この <code>count</code>・<code>page_size</code>・<code>results</code> は、まさにこの <code>get_paginated_response</code> が組み立てたものです。</p>
 <p><strong>補足:</strong> <code>main_utils.py</code> には他に <code>validate_employee_no_logic</code>（従業員番号の検証）や <code>get_all_model_names_in_myapp</code>（全モデル名取得）という関数もありますが、これらはバックアップ系やチーム系の別機能で使われるユーティリティです。本章の主題（人員ビューとページネーション）の本筋ではないので、ここでは深入りしません。</p>
 </blockquote>
 <hr>
@@ -1753,7 +1755,7 @@ URLで <code>&lt;int:pk&gt;</code> と書いたら、ビューのメソッドも
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> シグナルに必要な部品（pre_save等）と、履歴を残す対象モデル、現在のリクエストを取り出す関数を読み込みます。さらに「更新前の値を一時的に覚えておく入れ物」を用意します。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-28"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># スレッドごとの保管庫を作る部品</span>
+<div class="codehilite"><div class="code-wrap" id="code-30"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># スレッドごとの保管庫を作る部品</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">threading</span><span class="w"> </span><span class="kn">import</span> <span class="n">local</span>
 <span class="c1"># 3つのシグナル（保存前・保存後・削除後）</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">django.db.models.signals</span><span class="w"> </span><span class="kn">import</span> <span class="n">pre_save</span><span class="p">,</span> <span class="n">post_save</span><span class="p">,</span> <span class="n">post_delete</span>
@@ -1788,7 +1790,7 @@ URLで <code>&lt;int:pk&gt;</code> と書いたら、ビューのメソッドも
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> 「保存する直前に、変更前の値をデータベースから取って一時保管しておく」関数と、「その保管した値を後で取り出す」関数のペアです。更新後に「どこがどう変わったか（差分）」を計算するために、変わる前の姿を覚えておく必要があるのです。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-29"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 更新前の値をスレッドローカルキャッシュに保存</span>
+<div class="codehilite"><div class="code-wrap" id="code-31"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 更新前の値をスレッドローカルキャッシュに保存</span>
 <span class="c1"># 更新前の値を保管する関数</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">set_instance_cache</span><span class="p">(</span><span class="n">instance</span><span class="p">):</span>
   <span class="c1"># そのデータが何のモデルか調べる</span>
@@ -1829,7 +1831,7 @@ URLで <code>&lt;int:pk&gt;</code> と書いたら、ビューのメソッドも
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> 差分を入れる空の入れ物を用意し、§9.2でしまった「更新前の値」を取り出します。さらに、取り出した古い値が「本当に今のデータと同じ種類・同じ1件のものか」を確認し、もし食い違っていたら誤比較を避けるため捨てます（None扱い）。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-30"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 値の差分取得</span>
+<div class="codehilite"><div class="code-wrap" id="code-32"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 値の差分取得</span>
 <span class="c1"># 差分を計算する関数（created=新規かどうか）</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_changes</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">created</span><span class="p">):</span>
   <span class="c1"># 変更点を入れる空の辞書</span>
@@ -1857,7 +1859,7 @@ URLで <code>&lt;int:pk&gt;</code> と書いたら、ビューのメソッドも
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> モデルの全項目を1つずつ回り、「新しい値」と「古い値」を取り出します。新規なら古い値はNone・全部変更扱い。更新なら、キャッシュがあればそれと比較、無ければ念のためDBから直接古い値を取り直して比較します。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-31"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># モデルの全フィールド処理</span>
+<div class="codehilite"><div class="code-wrap" id="code-33"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># モデルの全フィールド処理</span>
   <span class="c1"># モデルの全項目を1つずつ回す</span>
   <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">instance</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
     <span class="c1"># 項目名を取り出す</span>
@@ -1921,7 +1923,7 @@ URLで <code>&lt;int:pk&gt;</code> と書いたら、ビューのメソッドも
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> 変更があった項目について、その値を「JSONとして安全に保存できる形」に整えます。他テーブルへのつながり（リレーション）や日付などはそのままだとJSONにできないので、ID・文字列・isoformat文字列などに変換します。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-32"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1"># 変更or新規作成</span>
+<div class="codehilite"><div class="code-wrap" id="code-34"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1"># 変更or新規作成</span>
     <span class="c1"># 変更があった項目だけ処理</span>
     <span class="k">if</span> <span class="n">is_changed</span><span class="p">:</span>
 
@@ -1993,7 +1995,7 @@ URLで <code>&lt;int:pk&gt;</code> と書いたら、ビューのメソッドも
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> 変換した値を、変更点をためる辞書に書き込みます。新規作成のときは「新しい値」だけ、更新のときは「古い値と新しい値のペア」を記録します。最後にこの辞書を返します。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-33"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>      <span class="c1"># 6. changes辞書に記録</span>
+<div class="codehilite"><div class="code-wrap" id="code-35"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>      <span class="c1"># 6. changes辞書に記録</span>
       <span class="c1"># 新規作成なら</span>
       <span class="k">if</span> <span class="n">created</span><span class="p">:</span>
         <span class="c1"># 新規作成時は新しい値のみ記録</span>
@@ -2016,16 +2018,17 @@ URLで <code>&lt;int:pk&gt;</code> と書いたら、ビューのメソッドも
 </ul>
 <blockquote>
 <p><strong>▼ こんな差分が記録される（※説明用の簡易例）:</strong>
-「山田さんの所属を W1 → A1 に変更」した場合、changes はこうなります。
-<code>json
-{ "shop": {"old": "W1", "new": "A1"} }</code>
-変わった <code>shop</code> だけが、変更前後つきで記録されます。これが <code>History</code> テーブルに残り、管理画面で監査できます。</p>
+「山田さんの所属を W1 → A1 に変更」した場合、changes はこうなります。</p>
+<div class="codehilite"><div class="code-wrap" id="code-36"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">{</span><span class="w"> </span><span class="nt">&quot;shop&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;old&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;W1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;new&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;A1&quot;</span><span class="p">}</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div></div>
+
+<p>変わった <code>shop</code> だけが、変更前後つきで記録されます。これが <code>History</code> テーブルに残り、管理画面で監査できます。</p>
 </blockquote>
 <h3 id="94-receiver-111159">9.4 シグナルの登録（receiver デコレータ）― 111〜159行目</h3>
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> ここまで作った部品を、実際に「保存の前後・削除の後」というタイミングに結びつけます。member モデルを例に、保存前のキャッシュ・保存後の履歴記録・削除後の履歴記録の3つを登録します。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-34"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 保存前に更新前の値をキャッシュ</span>
+<div class="codehilite"><div class="code-wrap" id="code-37"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 保存前に更新前の値をキャッシュ</span>
 <span class="c1"># 「memberの保存直前」にこの関数を結びつける</span>
 <span class="nd">@receiver</span><span class="p">(</span><span class="n">pre_save</span><span class="p">,</span> <span class="n">sender</span><span class="o">=</span><span class="n">member</span><span class="p">)</span>
 <span class="c1"># 保存前に呼ばれる</span>
@@ -2052,7 +2055,7 @@ URLで <code>&lt;int:pk&gt;</code> と書いたら、ビューのメソッドも
 <p><strong>用語: <code>**kwargs</code>（クワーグズ）</strong>
 「キーワード引数を何個でもまとめて受け取る」書き方。シグナルは色々な付帯情報を渡してきますが、使わないものは <code>**kwargs</code> でまとめて受け流せます。「その他もろもろ」の受け皿。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-35"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 履歴を記録　新規作成、更新 (member)</span>
+<div class="codehilite"><div class="code-wrap" id="code-38"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 履歴を記録　新規作成、更新 (member)</span>
 <span class="c1"># 「memberの保存直後」に結びつける</span>
 <span class="nd">@receiver</span><span class="p">(</span><span class="n">post_save</span><span class="p">,</span> <span class="n">sender</span><span class="o">=</span><span class="n">member</span><span class="p">)</span>
 <span class="c1"># 保存後に呼ばれる（createdで新規か判定）</span>
@@ -2098,7 +2101,7 @@ URLで <code>&lt;int:pk&gt;</code> と書いたら、ビューのメソッドも
 <li><strong>136〜142行目</strong> <code>History.objects.create(...)</code></li>
 <li><code>History</code> テーブルに新しい履歴を1件作ります。操作種別・テーブル名・対象ID・操作者・変更内容をまとめて記録。<strong>この1回の create で履歴が永久に残ります。</strong></li>
 </ul>
-<div class="codehilite"><div class="code-wrap" id="code-36"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 履歴を記録　削除 (member)</span>
+<div class="codehilite"><div class="code-wrap" id="code-39"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 履歴を記録　削除 (member)</span>
 <span class="c1"># 「memberの削除直後」に結びつける</span>
 <span class="nd">@receiver</span><span class="p">(</span><span class="n">post_delete</span><span class="p">,</span> <span class="n">sender</span><span class="o">=</span><span class="n">member</span><span class="p">)</span>
 <span class="c1"># 削除後に呼ばれる</span>
@@ -2204,7 +2207,7 @@ URLで <code>&lt;int:pk&gt;</code> と書いたら、ビューのメソッドも
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> リクエストが来るたびに、その「今のリクエスト」をスレッド専用の保管庫にしまい、処理が終わったら片付けます。これにより、§9のシグナルのような「リクエストを直接受け取れない場所」でも「今誰が操作しているか」を知ることができます。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-37"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># スレッド機能を読み込む</span>
+<div class="codehilite"><div class="code-wrap" id="code-40"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># スレッド機能を読み込む</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">threading</span>
 
 <span class="c1"># スレッドローカルオブジェクト作成</span>
@@ -2279,7 +2282,7 @@ URLで <code>&lt;int:pk&gt;</code> と書いたら、ビューのメソッドも
 </blockquote>
 <h3 id="103-settingspy-middleware">10.3 settings.py での登録 ― MIDDLEWARE の最後</h3>
 <p>このミドルウェアは、<code>settings.py</code> の <code>MIDDLEWARE</code> リストの <strong>最後</strong> に登録されています（§12で全体を見ます）。</p>
-<div class="codehilite"><div class="code-wrap" id="code-38"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1"># 独自ミドルウェアを最後に登録</span>
+<div class="codehilite"><div class="code-wrap" id="code-41"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1"># 独自ミドルウェアを最後に登録</span>
     <span class="s1">&#39;kosu.middleware.clear_session_middleware.CurrentRequestMiddleware&#39;</span><span class="p">,</span>
 </code></pre></div></div>
 
@@ -2288,7 +2291,7 @@ URLで <code>&lt;int:pk&gt;</code> と書いたら、ビューのメソッドも
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> アプリが起動して準備が整った瞬間に、<code>signals.py</code> を読み込みます。これをしないと、§9で書いたシグナル登録（@receiver）が実行されず、履歴が一切残りません。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-39"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># アプリ設定の土台クラスを読み込む</span>
+<div class="codehilite"><div class="code-wrap" id="code-42"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># アプリ設定の土台クラスを読み込む</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">django.apps</span><span class="w"> </span><span class="kn">import</span> <span class="n">AppConfig</span>
 
 <span class="c1"># kosuアプリの設定クラス</span>
@@ -2328,7 +2331,7 @@ URLで <code>&lt;int:pk&gt;</code> と書いたら、ビューのメソッドも
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> 非同期処理に必要な標準ツール（スレッド・一意IDの生成・一時ファイル等）、実際の処理本体（tasks.py の各関数）、タスク状態を保存するモデル、DRFの部品を読み込みます。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-40"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ファイルパス操作</span>
+<div class="codehilite"><div class="code-wrap" id="code-43"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ファイルパス操作</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="c1"># 別スレッドで処理を走らせる</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">threading</span>
@@ -2375,7 +2378,7 @@ URLで <code>&lt;int:pk&gt;</code> と書いたら、ビューのメソッドも
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> 全バックアップ/復元/削除URLの共通入口です。まず一意なタスクIDを発行して台帳に「処理中(pending)」で記録し、ブラウザに即座に番号札を返す準備をします。そして「今どのURL名で呼ばれたか」を逆引きして、実行すべき処理を判断します。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-41"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># POSTのみ受け付ける関数ビュー</span>
+<div class="codehilite"><div class="code-wrap" id="code-44"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># POSTのみ受け付ける関数ビュー</span>
 <span class="nd">@api_view</span><span class="p">([</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
 <span class="c1"># ファイル・JSON・フォーム形式を解析できる</span>
 <span class="nd">@parser_classes</span><span class="p">([</span><span class="n">MultiPartParser</span><span class="p">,</span> <span class="n">JSONParser</span><span class="p">,</span> <span class="n">FormParser</span><span class="p">])</span>
@@ -2423,7 +2426,7 @@ URLで <code>&lt;int:pk&gt;</code> と書いたら、ビューのメソッドも
 </blockquote>
 <p>代表的な3パターンだけを抜粋して読みます（残りも同じ形の繰り返しです）。</p>
 <p><strong>パターンA：期間指定のバックアップ（kosu_backup）― 36〜41行目</strong></p>
-<div class="codehilite"><div class="code-wrap" id="code-42"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># 工数バックアップなら</span>
+<div class="codehilite"><div class="code-wrap" id="code-45"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># 工数バックアップなら</span>
   <span class="k">if</span> <span class="n">url_name</span> <span class="o">==</span> <span class="s1">&#39;kosu_backup&#39;</span><span class="p">:</span>
     <span class="c1"># 日付の妥当性を検査</span>
     <span class="n">error_response</span> <span class="o">=</span> <span class="n">validate_dates</span><span class="p">(</span><span class="n">start_day</span><span class="p">,</span> <span class="n">end_day</span><span class="p">)</span>
@@ -2444,7 +2447,7 @@ URLで <code>&lt;int:pk&gt;</code> と書いたら、ビューのメソッドも
 <li><strong>41行目</strong> <code>args = (start_day, end_day)</code> … その関数に渡す引数を用意。</li>
 </ul>
 <p><strong>パターンB：ファイルアップロードを伴う復元（kosu_load）― 48〜61行目</strong></p>
-<div class="codehilite"><div class="code-wrap" id="code-43"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># 工数復元なら</span>
+<div class="codehilite"><div class="code-wrap" id="code-46"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># 工数復元なら</span>
   <span class="k">elif</span> <span class="n">url_name</span> <span class="o">==</span> <span class="s1">&#39;kosu_load&#39;</span><span class="p">:</span>
     <span class="c1"># アップロードされたファイルを取り出す</span>
     <span class="n">kosu_file</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">FILES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;file&#39;</span><span class="p">)</span>
@@ -2486,7 +2489,7 @@ URLで <code>&lt;int:pk&gt;</code> と書いたら、ビューのメソッドも
 一時ファイルは「作業用の使い捨てファイル」。チャンクは「大きなデータを小分けにした塊」。大きなExcelを一気に読むとメモリを食うので、小分け（チャンク）で少しずつ処理します。引っ越しで大きな荷物を一度に運ばず、何回かに分けて運ぶイメージ。</p>
 </blockquote>
 <p><strong>パターンC：引数なしのバックアップ（member_backup など）― 96〜98行目</strong></p>
-<div class="codehilite"><div class="code-wrap" id="code-44"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># 人員バックアップなら</span>
+<div class="codehilite"><div class="code-wrap" id="code-47"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># 人員バックアップなら</span>
   <span class="k">elif</span> <span class="n">url_name</span> <span class="o">==</span> <span class="s1">&#39;member_backup&#39;</span><span class="p">:</span>
     <span class="c1"># 実行関数を決める</span>
     <span class="n">task_function</span> <span class="o">=</span> <span class="n">generate_member_backup</span>
@@ -2498,7 +2501,7 @@ URLで <code>&lt;int:pk&gt;</code> と書いたら、ビューのメソッドも
 <li>人員・チーム・区分などの「全件バックアップ」は期間指定が不要なので、<code>args = ()</code>（引数なし）でシンプルです。</li>
 </ul>
 <p><strong>最後の else（不明なURL）― 188〜189行目</strong></p>
-<div class="codehilite"><div class="code-wrap" id="code-45"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># どのURL名にも当てはまらなければ</span>
+<div class="codehilite"><div class="code-wrap" id="code-48"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># どのURL名にも当てはまらなければ</span>
   <span class="k">else</span><span class="p">:</span>
     <span class="c1"># 400で返す</span>
     <span class="k">return</span> <span class="n">JsonResponse</span><span class="p">({</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;無効なタスクタイプです。&#39;</span><span class="p">},</span> <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_400_BAD_REQUEST</span><span class="p">)</span>
@@ -2511,7 +2514,7 @@ URLで <code>&lt;int:pk&gt;</code> と書いたら、ビューのメソッドも
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> §11.3で決めた「実行する関数」を、<strong>別スレッド（裏方の作業員）</strong> に渡して走らせます。本体はその完了を待たず、すぐにブラウザへ「番号札（タスクID）」を返します。これでユーザーは待たされません。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-46"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># 裏で走らせるスレッドを用意</span>
+<div class="codehilite"><div class="code-wrap" id="code-49"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  <span class="c1"># 裏で走らせるスレッドを用意</span>
   <span class="n">thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">handle_task</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">task_id</span><span class="p">,</span> <span class="n">task_function</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">))</span>
   <span class="c1"># スレッド開始（裏で処理が走り出す）</span>
   <span class="n">thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
@@ -2540,7 +2543,7 @@ URLで <code>&lt;int:pk&gt;</code> と書いたら、ビューのメソッドも
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> 期間指定の処理で、開始日・終了日が正しいかを検査します。空でないか・日付の形式が正しいか・終了日が昨日以前か・開始日が終了日を超えていないかを順にチェックし、問題があればエラー応答を、問題なければ None を返します。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-47"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 日付バリデーション関数</span>
+<div class="codehilite"><div class="code-wrap" id="code-50"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 日付バリデーション関数</span>
 <span class="c1"># 日付を検査する関数</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">validate_dates</span><span class="p">(</span><span class="n">start_day</span><span class="p">,</span> <span class="n">end_day</span><span class="p">):</span>
   <span class="c1"># 今日の日付を文字列で取得</span>
@@ -2585,7 +2588,7 @@ URLで <code>&lt;int:pk&gt;</code> と書いたら、ビューのメソッドも
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> ブラウザが番号札（タスクID）を持って「私の処理どうなった？」と聞いてくる窓口です。台帳を見て、成功なら結果ファイルの場所を、エラーなら理由を、まだなら「処理中(202)」を返します。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-48"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># GETで状態を問い合わせる</span>
+<div class="codehilite"><div class="code-wrap" id="code-51"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># GETで状態を問い合わせる</span>
 <span class="nd">@api_view</span><span class="p">([</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
 <span class="c1"># タスク状態確認の窓口</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">check_task_status</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
@@ -2636,7 +2639,7 @@ URLで <code>&lt;int:pk&gt;</code> と書いたら、ビューのメソッドも
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> §11.4で別スレッドに渡された「実際の作業」です。指定された関数を実行し、結果を見て、台帳のステータスを成功(success)かエラー(error)に更新します。途中で予期せぬエラーが起きても、台帳にエラーとして記録します。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-49"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 非同期タスク処理 (汎用版)</span>
+<div class="codehilite"><div class="code-wrap" id="code-52"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 非同期タスク処理 (汎用版)</span>
 <span class="c1"># 裏で走る処理本体</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">handle_task</span><span class="p">(</span><span class="n">task_id</span><span class="p">,</span> <span class="n">task_function</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
   <span class="k">try</span><span class="p">:</span>
@@ -2710,7 +2713,7 @@ URLで <code>&lt;int:pk&gt;</code> と書いたら、ビューのメソッドも
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> 完成したバックアップファイルを、ブラウザにダウンロードさせる窓口です。ファイルを返し終わった後（接続が閉じた後）に、3秒待ってから一時ファイルを自動削除する後始末も仕込んでいます。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-50"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># GETでダウンロード</span>
+<div class="codehilite"><div class="code-wrap" id="code-53"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># GETでダウンロード</span>
 <span class="nd">@api_view</span><span class="p">([</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
 <span class="c1"># ファイルダウンロードの窓口</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">download_file</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
@@ -2772,7 +2775,7 @@ URLで <code>&lt;int:pk&gt;</code> と書いたら、ビューのメソッドも
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> プロジェクトの土台となる場所・秘密鍵・デバッグモード・接続を許可するホスト名を設定します。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-51"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># プロジェクトの根っこフォルダの場所</span>
+<div class="codehilite"><div class="code-wrap" id="code-54"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># プロジェクトの根っこフォルダの場所</span>
 <span class="n">BASE_DIR</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span>
 
 <span class="c1"># 環境変数を読む道具を用意</span>
@@ -2817,7 +2820,7 @@ SECRET_KEY は、セッションの署名などに使う「アプリの実印」
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> このプロジェクトで使う「機能パック（アプリ）」の一覧です。Django標準の機能に加え、本アプリ独自の <code>kosu</code>、API用の <code>rest_framework</code>、非同期用の <code>django_q</code>、CORS用の <code>corsheaders</code> などを有効にします。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-52"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 使う機能パックの一覧</span>
+<div class="codehilite"><div class="code-wrap" id="code-55"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 使う機能パックの一覧</span>
 <span class="n">INSTALLED_APPS</span> <span class="o">=</span> <span class="p">[</span>
     <span class="c1"># 管理画面</span>
     <span class="s1">&#39;django.contrib.admin&#39;</span><span class="p">,</span>
@@ -2856,7 +2859,7 @@ SECRET_KEY は、セッションの署名などに使う「アプリの実印」
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> §10で学んだ「関所の列」をここで定義します。リクエストは上から順に、応答は下から逆順に、各関所を通ります。本アプリ独自の CurrentRequestMiddleware は最後に置かれています。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-53"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 関所の列（上から順に通る）</span>
+<div class="codehilite"><div class="code-wrap" id="code-56"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 関所の列（上から順に通る）</span>
 <span class="n">MIDDLEWARE</span> <span class="o">=</span> <span class="p">[</span>
     <span class="c1"># ①CORSチェック（最初）</span>
     <span class="s1">&#39;corsheaders.middleware.CorsMiddleware&#39;</span><span class="p">,</span>
@@ -2895,7 +2898,7 @@ SECRET_KEY は、セッションの署名などに使う「アプリの実印」
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> フロント（localhost:3000）とバック（localhost:8000）が別のアドレスでも、ブラウザの安全装置に弾かれず通信できるようにする設定です。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-54"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># すべての発信元を許可</span>
+<div class="codehilite"><div class="code-wrap" id="code-57"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># すべての発信元を許可</span>
 <span class="n">CORS_ORIGIN_ALLOW_ALL</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="c1"># クッキー(セッション)の送受信を許可</span>
 <span class="n">CORS_ALLOW_CREDENTIALS</span> <span class="o">=</span> <span class="kc">True</span>
@@ -2923,7 +2926,7 @@ Cross-Origin Resource Sharing（クロスオリジン・リソース・シェア
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> DRF全体の既定動作を設定します。ページ送りの方式・1ページ件数・受信形式・応答形式を決めます。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-55"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># DRFの全体設定</span>
+<div class="codehilite"><div class="code-wrap" id="code-58"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># DRFの全体設定</span>
 <span class="n">REST_FRAMEWORK</span> <span class="o">=</span> <span class="p">{</span>
     <span class="c1"># 既定のページ送り方式</span>
     <span class="s1">&#39;DEFAULT_PAGINATION_CLASS&#39;</span><span class="p">:</span> <span class="s1">&#39;rest_framework.pagination.PageNumberPagination&#39;</span><span class="p">,</span>
@@ -2952,7 +2955,7 @@ Cross-Origin Resource Sharing（クロスオリジン・リソース・シェア
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> ログイン状態を覚えておくセッションの保管先や有効期限、クッキーの安全設定を決めます。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-56"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># セッションをデータベースに保存</span>
+<div class="codehilite"><div class="code-wrap" id="code-59"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># セッションをデータベースに保存</span>
 <span class="n">SESSION_ENGINE</span> <span class="o">=</span> <span class="s1">&#39;django.contrib.sessions.backends.db&#39;</span>
 <span class="c1"># セッションの有効期限（秒）≒10年</span>
 <span class="n">SESSION_COOKIE_AGE</span> <span class="o">=</span> <span class="mi">315360000</span>
@@ -2973,7 +2976,7 @@ Cross-Origin Resource Sharing（クロスオリジン・リソース・シェア
 実ファイルの76〜77行目には <code>#SESSION_COOKIE_SAMESITE = 'None'</code> などコメントアウトされた行があります。これは本番（HTTPS・クロスサイト）用の代替設定で、開発中は無効にしてあります。環境を切り替えるときに使う「予備の設定」です。</p>
 </blockquote>
 <h3 id="127">12.7 その他の重要設定 ― 抜粋</h3>
-<div class="codehilite"><div class="code-wrap" id="code-57"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># データベース接続設定</span>
+<div class="codehilite"><div class="code-wrap" id="code-60"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># データベース接続設定</span>
 <span class="n">DATABASES</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;default&#39;</span><span class="p">:</span> <span class="p">{</span>
         <span class="c1"># PostgreSQLを使う</span>
@@ -3017,7 +3020,7 @@ Cross-Origin Resource Sharing（クロスオリジン・リソース・シェア
 <p>最後に、本章で何度も出てきた「セッション認証」と「CSRF」を整理します。</p>
 <h3 id="131">13.1 セッション認証の流れ</h3>
 <p>本アプリは <strong>セッションベース認証</strong> を使っています。流れは次のとおり。</p>
-<div class="codehilite"><div class="code-wrap" id="code-58"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>① ログイン：従業員番号を送る
+<div class="codehilite"><div class="code-wrap" id="code-61"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>① ログイン：従業員番号を送る
         ↓
 ② サーバー：本人確認OK → セッションに「login_No=123」を保存（DBに）
         ↓

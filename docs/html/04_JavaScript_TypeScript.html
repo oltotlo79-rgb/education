@@ -891,18 +891,19 @@ JavaScriptには「等しい」の比較が2種類あります。
 <blockquote>
 <p><strong>たとえ話:</strong> 「ベルトコンベヤー」。配列の要素が1つずつコンベヤーを流れてきて、<code>map</code> の関数（加工機）を通り、加工された状態で新しい箱に入っていく。元の箱（配列）はそのまま残ります。</p>
 <p><strong>★Reactでの map は最重要★</strong>
-Reactでは「データの配列を、画面の表示（行・カードなど）の配列に変換する」のに <code>map</code> を使います。本アプリの <code>KosuList.tsx</code> では、サーバーから来た工数データの配列 <code>data</code> を、表の行 <code>&lt;tr&gt;</code> の配列に変換しています（§19）：
-<code>jsx
-{data.map((item) =&gt; (
-  &lt;tr key={item.id}&gt; ... &lt;/tr&gt;   // 各データ item を、1つの表の行 &lt;tr&gt; に変換
-))}</code>
-「100件データがあれば、100個の <code>&lt;tr&gt;</code> ができて、表に100行表示される」という仕組みです。</p>
+Reactでは「データの配列を、画面の表示（行・カードなど）の配列に変換する」のに <code>map</code> を使います。本アプリの <code>KosuList.tsx</code> では、サーバーから来た工数データの配列 <code>data</code> を、表の行 <code>&lt;tr&gt;</code> の配列に変換しています（§19）：</p>
+<div class="codehilite"><div class="code-wrap" id="code-25"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">{</span><span class="nx">data</span><span class="p">.</span><span class="nx">map</span><span class="p">((</span><span class="nx">item</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">(</span>
+<span class="w">  </span><span class="p">&lt;</span><span class="nt">tr</span><span class="w"> </span><span class="na">key</span><span class="o">=</span><span class="p">{</span><span class="nx">item</span><span class="p">.</span><span class="nx">id</span><span class="p">}&gt;</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">&lt;/</span><span class="nt">tr</span><span class="p">&gt;</span><span class="w">   </span><span class="c1">// 各データ item を、1つの表の行 &lt;tr&gt; に変換</span>
+<span class="p">))}</span>
+</code></pre></div></div>
+
+<p>「100件データがあれば、100個の <code>&lt;tr&gt;</code> ができて、表に100行表示される」という仕組みです。</p>
 </blockquote>
 <h3 id="112-filter">11.2 filter ― 条件に合う要素だけ残す</h3>
 <blockquote>
 <p><strong>▼ このコードがやること:</strong> 数値の配列から、偶数だけを取り出した新しい配列を作ります。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-25"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// （※説明用の簡易例）</span>
+<div class="codehilite"><div class="code-wrap" id="code-26"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// （※説明用の簡易例）</span>
 <span class="kd">const</span><span class="w"> </span><span class="nx">numbers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">1</span><span class="p">,</span><span class="w"> </span><span class="mf">2</span><span class="p">,</span><span class="w"> </span><span class="mf">3</span><span class="p">,</span><span class="w"> </span><span class="mf">4</span><span class="p">,</span><span class="w"> </span><span class="mf">5</span><span class="p">,</span><span class="w"> </span><span class="mf">6</span><span class="p">];</span>
 <span class="c1">// 「2で割った余りが0」＝偶数だけ残す</span>
 <span class="kd">const</span><span class="w"> </span><span class="nx">evens</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">numbers</span><span class="p">.</span><span class="nx">filter</span><span class="p">((</span><span class="nx">n</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">n</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="mf">2</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">0</span><span class="p">);</span>
@@ -921,7 +922,7 @@ Reactでは「データの配列を、画面の表示（行・カードなど）
 <p>本アプリでは、データ取得後に <code>|| []</code>（§4.4）で「結果がなければ空配列」を保証してから <code>map</code> で表示に変換する、という流れが基本です。明示的な <code>filter</code> は本ファイルでは使っていませんが、APIへの検索条件（<code>filter: "true"</code> パラメータ、§19）として「絞り込み」の概念が登場します。</p>
 </blockquote>
 <h3 id="113-map-filter">11.3 map と filter はつなげられる</h3>
-<div class="codehilite"><div class="code-wrap" id="code-26"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// （※説明用の簡易例）</span>
+<div class="codehilite"><div class="code-wrap" id="code-27"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// （※説明用の簡易例）</span>
 <span class="kd">const</span><span class="w"> </span><span class="nx">numbers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">1</span><span class="p">,</span><span class="w"> </span><span class="mf">2</span><span class="p">,</span><span class="w"> </span><span class="mf">3</span><span class="p">,</span><span class="w"> </span><span class="mf">4</span><span class="p">,</span><span class="w"> </span><span class="mf">5</span><span class="p">,</span><span class="w"> </span><span class="mf">6</span><span class="p">];</span>
 <span class="kd">const</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">numbers</span>
 <span class="w">  </span><span class="c1">// まず偶数だけ残す → [2,4,6]</span>
@@ -941,7 +942,7 @@ Reactでは「データの配列を、画面の表示（行・カードなど）
 <blockquote>
 <p><strong>▼ このコードがやること:</strong> 1人の従業員の情報（番号・名前・管理者かどうか）を、1つのオブジェクトにまとめます。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-27"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// { } でオブジェクトを作る（※説明用の簡易例）</span>
+<div class="codehilite"><div class="code-wrap" id="code-28"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// { } でオブジェクトを作る（※説明用の簡易例）</span>
 <span class="kd">const</span><span class="w"> </span><span class="nx">employee</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="c1">// キー: 値 のペア（カンマ区切り）</span>
 <span class="w">  </span><span class="nx">employeeNo</span><span class="o">:</span><span class="w"> </span><span class="mf">123</span><span class="p">,</span>
@@ -969,7 +970,7 @@ Reactでは「データの配列を、画面の表示（行・カードなど）
 </blockquote>
 <h3 id="122">12.2 ネスト（入れ子）したオブジェクト</h3>
 <p>オブジェクトの値が、さらにオブジェクトになっていることもあります。</p>
-<div class="codehilite"><div class="code-wrap" id="code-28"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// （※説明用の簡易例）</span>
+<div class="codehilite"><div class="code-wrap" id="code-29"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// （※説明用の簡易例）</span>
 <span class="kd">const</span><span class="w"> </span><span class="nx">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="mf">200</span><span class="p">,</span>
 <span class="w">  </span><span class="c1">// data の値が、また別のオブジェクト</span>
@@ -996,7 +997,7 @@ Reactでは「データの配列を、画面の表示（行・カードなど）
 <blockquote>
 <p><strong>▼ このコードがやること:</strong> オブジェクトから <code>name</code> と <code>age</code> を、それぞれ同名の変数に一気に取り出します。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-29"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// （※説明用の簡易例）</span>
+<div class="codehilite"><div class="code-wrap" id="code-30"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// （※説明用の簡易例）</span>
 <span class="kd">const</span><span class="w"> </span><span class="nx">employee</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;山田&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">age</span><span class="o">:</span><span class="w"> </span><span class="mf">42</span><span class="p">,</span><span class="w"> </span><span class="nx">isAdmin</span><span class="o">:</span><span class="w"> </span><span class="kc">false</span><span class="w"> </span><span class="p">};</span>
 
 <span class="c1">// 従来の書き方</span>
@@ -1016,7 +1017,7 @@ Reactでは「データの配列を、画面の表示（行・カードなど）
 <li><code>const { キー名, キー名 } = オブジェクト;</code> … 同じ名前の変数に、対応する値が入る。</li>
 </ul>
 <p>配列でも使えます（こちらは順番で取り出す）：</p>
-<div class="codehilite"><div class="code-wrap" id="code-30"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// first=&quot;a&quot;, second=&quot;b&quot;（※説明用の簡易例）</span>
+<div class="codehilite"><div class="code-wrap" id="code-31"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// first=&quot;a&quot;, second=&quot;b&quot;（※説明用の簡易例）</span>
 <span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">first</span><span class="p">,</span><span class="w"> </span><span class="nx">second</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;b&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;c&quot;</span><span class="p">];</span>
 </code></pre></div></div>
 
@@ -1028,7 +1029,7 @@ Reactでは「データの配列を、画面の表示（行・カードなど）
 <blockquote>
 <p><strong>▼ このコードがやること:</strong> 既存のオブジェクトの中身を新しいオブジェクトにコピーしつつ、項目を足します。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-31"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// （※説明用の簡易例）</span>
+<div class="codehilite"><div class="code-wrap" id="code-32"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// （※説明用の簡易例）</span>
 <span class="kd">const</span><span class="w"> </span><span class="nx">base</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">page</span><span class="o">:</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span><span class="w"> </span><span class="nx">size</span><span class="o">:</span><span class="w"> </span><span class="mf">20</span><span class="w"> </span><span class="p">};</span>
 <span class="c1">// base の中身を展開し、filter を追加</span>
 <span class="kd">const</span><span class="w"> </span><span class="nx">extended</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="nx">base</span><span class="p">,</span><span class="w"> </span><span class="nx">filter</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="p">};</span>
@@ -1044,24 +1045,25 @@ Reactでは「データの配列を、画面の表示（行・カードなど）
 <li>元を壊さず「コピー＋追加」できるので、Reactの状態更新で重宝します（<code>05</code>章）。</li>
 </ul>
 <blockquote>
-<p><strong>本アプリでの実例:</strong> <code>KosuList.tsx</code> の <code>fetchData</code> の中：
-<code>javascript
-params: {
-  page: page,
-  ...(day &amp;&amp; {           // day に値があるときだけ、この中身を展開して足す
-    day: day,
-    mode: mode ? "month" : "day",
-    filter: "true",
-  })
-}</code>
-これは「<code>page</code> は必ず送る。さらに <code>day</code>（日付）が入力されていれば、<code>day</code>・<code>mode</code>・<code>filter</code> も足して送る」という、<strong>スプレッドと <code>&amp;&amp;</code> を組み合わせた条件付きの組み立て</strong> です（§19で詳説）。</p>
+<p><strong>本アプリでの実例:</strong> <code>KosuList.tsx</code> の <code>fetchData</code> の中：</p>
+<div class="codehilite"><div class="code-wrap" id="code-33"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nx">params</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">page</span><span class="o">:</span><span class="w"> </span><span class="nx">page</span><span class="p">,</span>
+<span class="w">  </span><span class="p">...(</span><span class="nx">day</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">{</span><span class="w">           </span><span class="c1">// day に値があるときだけ、この中身を展開して足す</span>
+<span class="w">    </span><span class="nx">day</span><span class="o">:</span><span class="w"> </span><span class="nx">day</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">mode</span><span class="o">:</span><span class="w"> </span><span class="nx">mode</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s2">&quot;month&quot;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;day&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">filter</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;true&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="p">})</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>これは「<code>page</code> は必ず送る。さらに <code>day</code>（日付）が入力されていれば、<code>day</code>・<code>mode</code>・<code>filter</code> も足して送る」という、<strong>スプレッドと <code>&amp;&amp;</code> を組み合わせた条件付きの組み立て</strong> です（§19で詳説）。</p>
 </blockquote>
 <h3 id="133">13.3 オプショナルチェイニング（安全にネストを辿る <code>?.</code>）</h3>
 <p><code>?.</code>（クエスチョン＋ドット）は、「途中が <code>null</code>/<code>undefined</code> でもエラーにならずに、安全にネストを辿る」記号です。</p>
 <blockquote>
 <p><strong>▼ このコードがやること:</strong> 深いオブジェクトの値を辿るとき、途中が空っぽでもプログラムが落ちないようにします。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-32"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// （※説明用の簡易例）</span>
+<div class="codehilite"><div class="code-wrap" id="code-34"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// （※説明用の簡易例）</span>
 <span class="kd">const</span><span class="w"> </span><span class="nx">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">data</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">message</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;ok&quot;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">};</span>
 
 <span class="c1">// 普通のドット → 途中が undefined だとエラーで落ちる</span>
@@ -1088,7 +1090,7 @@ params: {
 <blockquote>
 <p><strong>たとえ話:</strong> ラベルのない箱だらけの倉庫を想像してください。「砂糖」と思って取り出したら塩だった——こういう事故が起きます。<strong>型</strong> は、箱に「これは数値専用」「これは文字列専用」とラベルを貼ること。間違ったものを入れようとすると、<strong>コンピュータがその場で警告</strong> してくれます。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-33"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// JavaScript（型なし）の悲劇（※説明用の簡易例）</span>
+<div class="codehilite"><div class="code-wrap" id="code-35"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// JavaScript（型なし）の悲劇（※説明用の簡易例）</span>
 <span class="kd">let</span><span class="w"> </span><span class="nx">age</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">42</span><span class="p">;</span>
 <span class="c1">// エラーにならない（実行するまで気づかない）</span>
 <span class="nx">age</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;四十二&quot;</span><span class="p">;</span>
@@ -1096,7 +1098,7 @@ params: {
 <span class="kd">const</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">age</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">2</span><span class="p">;</span>
 </code></pre></div></div>
 
-<div class="codehilite"><div class="code-wrap" id="code-34"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// TypeScript（型あり）なら（※説明用の簡易例）</span>
+<div class="codehilite"><div class="code-wrap" id="code-36"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// TypeScript（型あり）なら（※説明用の簡易例）</span>
 <span class="c1">// age は数値専用、と宣言</span>
 <span class="kd">let</span><span class="w"> </span><span class="nx">age</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">42</span><span class="p">;</span>
 <span class="c1">// ❌ 書いた瞬間にエディタが赤線で警告！</span>
@@ -1111,7 +1113,7 @@ params: {
 <blockquote>
 <p><strong>▼ このコードがやること:</strong> それぞれの変数に「この型しか入れられない」とラベルを貼ります。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-35"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// string（文字列）専用（※説明用の簡易例）</span>
+<div class="codehilite"><div class="code-wrap" id="code-37"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// string（文字列）専用（※説明用の簡易例）</span>
 <span class="kd">const</span><span class="w"> </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;山田&quot;</span><span class="p">;</span>
 <span class="c1">// number（数値）専用</span>
 <span class="kd">const</span><span class="w"> </span><span class="nx">age</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">42</span><span class="p">;</span>
@@ -1125,7 +1127,7 @@ params: {
 </ul>
 <h3 id="143">14.3 型推論（書かなくても分かってくれる）</h3>
 <p>実は、初期値があれば <strong>型注釈を省略</strong> できます。TypeScriptが値から型を <strong>推測（推論）</strong> してくれるからです。</p>
-<div class="codehilite"><div class="code-wrap" id="code-36"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 型注釈なしでも、TypeScriptが「これは string」と推論（※説明用の簡易例）</span>
+<div class="codehilite"><div class="code-wrap" id="code-38"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 型注釈なしでも、TypeScriptが「これは string」と推論（※説明用の簡易例）</span>
 <span class="kd">const</span><span class="w"> </span><span class="nx">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;山田&quot;</span><span class="p">;</span>
 <span class="c1">// ❌ それでもエラー！ stringと推論されているので数値は入れられない</span>
 <span class="nx">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">42</span><span class="p">;</span>
@@ -1139,7 +1141,7 @@ params: {
 <blockquote>
 <p><strong>▼ このコードがやること:</strong> 「数値を2つ受け取り、数値を返す」関数だと明示します。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-37"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 引数a,bはnumber、戻り値もnumber（※説明用の簡易例）</span>
+<div class="codehilite"><div class="code-wrap" id="code-39"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 引数a,bはnumber、戻り値もnumber（※説明用の簡易例）</span>
 <span class="kd">const</span><span class="w"> </span><span class="nx">add</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="nx">a</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">,</span><span class="w"> </span><span class="nx">b</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">b</span><span class="p">;</span>
 <span class="p">};</span>
@@ -1154,7 +1156,7 @@ params: {
 </blockquote>
 <h3 id="145-union">14.5 union型（複数の型のどれか）</h3>
 <p><code>|</code>（縦棒）で「AまたはB」という型を作れます。</p>
-<div class="codehilite"><div class="code-wrap" id="code-38"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 文字列 または 数値（※説明用の簡易例）</span>
+<div class="codehilite"><div class="code-wrap" id="code-40"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 文字列 または 数値（※説明用の簡易例）</span>
 <span class="kd">let</span><span class="w"> </span><span class="nx">value</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">number</span><span class="p">;</span>
 <span class="c1">// ✅ OK</span>
 <span class="nx">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;abc&quot;</span><span class="p">;</span>
@@ -1175,7 +1177,7 @@ params: {
 <blockquote>
 <p><strong>▼ このコードがやること:</strong> 「従業員オブジェクトは、番号(数値)・名前(文字列)・管理者か(真偽値)を持つ」という設計図を定義し、それに沿ったオブジェクトを作ります。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-39"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// Employee という設計図を定義（※説明用の簡易例）</span>
+<div class="codehilite"><div class="code-wrap" id="code-41"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// Employee という設計図を定義（※説明用の簡易例）</span>
 <span class="kd">interface</span><span class="w"> </span><span class="nx">Employee</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="c1">// 番号は数値</span>
 <span class="w">  </span><span class="nx">employeeNo</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">;</span>
@@ -1209,7 +1211,7 @@ params: {
 </blockquote>
 <h3 id="147-type">14.7 型エイリアス（type）</h3>
 <p><code>type</code> でも型に名前を付けられます。<code>interface</code> と似ていますが、union型などにも名前を付けられる点が違います。</p>
-<div class="codehilite"><div class="code-wrap" id="code-40"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 「文字列か数値」に ID という別名を付ける（※説明用の簡易例）</span>
+<div class="codehilite"><div class="code-wrap" id="code-42"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 「文字列か数値」に ID という別名を付ける（※説明用の簡易例）</span>
 <span class="kr">type</span><span class="w"> </span><span class="nx">ID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">number</span><span class="p">;</span>
 <span class="c1">// 決まった文字列だけを許す型</span>
 <span class="kr">type</span><span class="w"> </span><span class="nx">Status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;success&quot;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">&quot;error&quot;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">&quot;loading&quot;</span><span class="p">;</span>
@@ -1246,7 +1248,7 @@ params: {
 <blockquote>
 <p><strong>▼ このコードがやること:</strong> サーバーにログイン情報を送り、その「返事が来るまで待ってから」次の処理に進みます。これは <code>Login.tsx</code> の処理の骨格そのものです。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-41"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// ① async：この関数は非同期処理を含む（※説明用の簡易例）</span>
+<div class="codehilite"><div class="code-wrap" id="code-43"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// ① async：この関数は非同期処理を含む（※説明用の簡易例）</span>
 <span class="kd">const</span><span class="w"> </span><span class="nx">handleSubmit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="nx">event</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="c1">// ② await：返事が来るまで待つ</span>
 <span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">api</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s2">&quot;/api/login/&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">});</span>
@@ -1269,7 +1271,7 @@ params: {
 <blockquote>
 <p><strong>▼ このコードがやること:</strong> 通信を試み（try）、もし失敗したら（catch）エラー処理をします。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-42"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// try：この中の処理を「試す」（※説明用の簡易例）</span>
+<div class="codehilite"><div class="code-wrap" id="code-44"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// try：この中の処理を「試す」（※説明用の簡易例）</span>
 <span class="k">try</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="c1">//   成功すればそのまま下へ</span>
 <span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">api</span><span class="p">.</span><span class="nx">post</span><span class="p">(...);</span>
@@ -1302,12 +1304,12 @@ params: {
 <blockquote>
 <p><strong>▼ このコードがやること:</strong> 1つのファイルで作った関数を「外に公開」し、別のファイルで「受け取って使う」流れを示します。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-43"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// ファイルA：math.ts（※説明用の簡易例）</span>
+<div class="codehilite"><div class="code-wrap" id="code-45"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// ファイルA：math.ts（※説明用の簡易例）</span>
 <span class="c1">// export：この add を外のファイルから使えるようにする</span>
 <span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">add</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="nx">a</span><span class="p">,</span><span class="w"> </span><span class="nx">b</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">b</span><span class="p">;</span>
 </code></pre></div></div>
 
-<div class="codehilite"><div class="code-wrap" id="code-44"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// ファイルB：別のファイル（※説明用の簡易例）</span>
+<div class="codehilite"><div class="code-wrap" id="code-46"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// ファイルB：別のファイル（※説明用の簡易例）</span>
 <span class="c1">// math.ts から add を取り込む</span>
 <span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">add</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;./math&quot;</span><span class="p">;</span>
 <span class="c1">// 5</span>
@@ -1361,7 +1363,7 @@ params: {
 <p><strong>用語: axios（アクシオス：ブラウザからサーバーへ通信するための人気ライブラリ）</strong> <code>api.get(...)</code>（取得）や <code>api.post(...)</code>（送信）で、サーバーとデータをやり取りします。§15で学んだ通り、これらはPromiseを返す <strong>非同期</strong> 処理です。</p>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> 「サーバーのアドレス」「ログイン情報（クッキー）を一緒に送る設定」「セキュリティ対策（CSRFトークン）の設定」をあらかじめ仕込んだ <strong>専用の通信オブジェクト <code>api</code></strong> を1つ作り、アプリ全体で使い回せるように外へ公開します。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-45"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// ① axiosライブラリを取り込む</span>
+<div class="codehilite"><div class="code-wrap" id="code-47"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// ① axiosライブラリを取り込む</span>
 <span class="k">import</span><span class="w"> </span><span class="nx">axios</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;axios&quot;</span><span class="p">;</span>
 <span class="c1">// ② 設定済みの通信オブジェクトを作る</span>
 <span class="kd">const</span><span class="w"> </span><span class="nx">api</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">axios</span><span class="p">.</span><span class="nx">create</span><span class="p">({</span>
@@ -1422,7 +1424,7 @@ params: {
 <blockquote>
 <p><strong>▼ このコードがやること:</strong> 必要な部品を取り込み、「入力された従業員番号」「エラーメッセージ」という2つの状態の箱と、ページ移動の道具を用意します。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-46"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// ① React本体と useState を取り込む</span>
+<div class="codehilite"><div class="code-wrap" id="code-48"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// ① React本体と useState を取り込む</span>
 <span class="k">import</span><span class="w"> </span><span class="nx">React</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">useState</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react&quot;</span><span class="p">;</span>
 <span class="c1">// ② リンクとページ移動の道具</span>
 <span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Link</span><span class="p">,</span><span class="w"> </span><span class="nx">useNavigate</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-router-dom&quot;</span><span class="p">;</span>
@@ -1462,7 +1464,7 @@ params: {
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> ①フォーム送信の既定動作を止め、②前のエラー表示を消し、③サーバーに従業員番号を送ってログインを試み、④成功ならトップページへ移動、⑤失敗理由を画面に表示します。通信は非同期なので <code>async/await</code>、失敗に備えて <code>try/catch</code> を使います。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-47"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// ① 非同期関数として定義</span>
+<div class="codehilite"><div class="code-wrap" id="code-49"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// ① 非同期関数として定義</span>
 <span class="kd">const</span><span class="w"> </span><span class="nx">handleSubmit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="nx">event</span><span class="o">:</span><span class="w"> </span><span class="kt">React.FormEvent</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="c1">// ② フォームの既定送信を止める</span>
 <span class="w">  </span><span class="nx">event</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
@@ -1568,7 +1570,7 @@ params: {
 <blockquote>
 <p><strong>▼ このコードがやること:</strong> サーバーから来る「工数1件」のデータが、どんなキーとどんな型を持つかを定義する設計図です（§14.6）。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-48"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 「工数1件」の形を定義する設計図</span>
+<div class="codehilite"><div class="code-wrap" id="code-50"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 「工数1件」の形を定義する設計図</span>
 <span class="kd">interface</span><span class="w"> </span><span class="nx">Kosu</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="c1">// 一意の番号（数値）。各行を区別する</span>
 <span class="w">  </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">;</span>
@@ -1602,7 +1604,7 @@ params: {
 <blockquote>
 <p><strong>▼ このコードがやること:</strong> 直の番号（1〜6、文字列でも数値でも可）を受け取り、「1直」「常昼」などの <strong>人間が読める文字列</strong> に変換して返します。§6.3の switch、§14.4の関数型注釈の実例です。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-49"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 引数はstring|number、戻り値はstring</span>
+<div class="codehilite"><div class="code-wrap" id="code-51"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 引数はstring|number、戻り値はstring</span>
 <span class="kd">const</span><span class="w"> </span><span class="nx">formatTyoku</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="nx">value</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">number</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="c1">// value を数値化して分岐</span>
 <span class="w">  </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="nb">Number</span><span class="p">(</span><span class="nx">value</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
@@ -1641,7 +1643,7 @@ params: {
 <blockquote>
 <p><strong>▼ このコードがやること:</strong> <code>"2026-06-01"</code> のような日付文字列を受け取り、「日」「月」…などの <strong>曜日の漢字1文字</strong> を返します。配列（§10）と <code>Date</code> オブジェクトの実例です。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-50"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 日付文字列を受け取り、曜日文字列を返す</span>
+<div class="codehilite"><div class="code-wrap" id="code-52"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 日付文字列を受け取り、曜日文字列を返す</span>
 <span class="kd">const</span><span class="w"> </span><span class="nx">getDayOfWeek</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="nx">dateStr</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="c1">// 曜日の配列（番号0〜6に対応）</span>
 <span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">days</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;日&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;月&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;火&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;水&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;木&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;金&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;土&quot;</span><span class="p">];</span>
@@ -1672,7 +1674,7 @@ params: {
 <blockquote>
 <p><strong>▼ このコードがやること:</strong> サーバーに「工数一覧をください。ページ番号はこれ、（日付指定があれば）この日で絞り込んで」と非同期で問い合わせ、結果を画面の状態にセットします。エラーは種類別に対処し、最後に必ずローディング表示を消します。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-51"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">fetchData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useCallback</span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="p">(</span>
+<div class="codehilite"><div class="code-wrap" id="code-53"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">fetchData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useCallback</span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="p">(</span>
 <span class="w">  </span><span class="c1">// 引数：ページ番号</span>
 <span class="w">  </span><span class="nx">page</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">,</span>
 <span class="w">  </span><span class="c1">// 引数：検索する日付（空なら絞り込みなし）</span>
@@ -1764,7 +1766,7 @@ params: {
 <blockquote>
 <p><strong>▼ このコードがやること:</strong> データが0件なら「No data found.」を出し、あれば各データを表の1行（<code>&lt;tr&gt;</code>）に変換して並べます。各行では日付に曜日を添え、直を名称化し、整合性をOK/NGで色分け表示します。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-52"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// ① データ件数が0なら…</span>
+<div class="codehilite"><div class="code-wrap" id="code-54"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// ① データ件数が0なら…</span>
 <span class="p">{</span><span class="nx">data</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">0</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="p">(</span>
 <span class="w">  </span><span class="c1">//    「データなし」を表示</span>
 <span class="w">  </span><span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span><span class="nx">No</span><span class="w"> </span><span class="nx">data</span><span class="w"> </span><span class="nx">found</span><span class="p">.&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>

@@ -403,14 +403,14 @@ li, tr { page-break-inside: avoid; }
 <h3 id="53">5.3 最初のプロジェクトを作る</h3>
 <p>ターミナルで、プロジェクトを置きたい場所（例: デスクトップや書類フォルダ）へ移動してから、次のコマンドを実行します。</p>
 <blockquote>
-<p><strong>フォルダ移動の例（必要に応じて）:</strong>
-```bash
-cd Desktop</p>
-<h1 id="cd-change-directory">cd      : change directory（カレントディレクトリ＝今いるフォルダ を変える）コマンド</h1>
-<h1 id="desktop">Desktop : 移動先のフォルダ名。これでデスクトップの中に入る</h1>
-<p>```</p>
+<p><strong>フォルダ移動の例（必要に応じて）:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-8"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>Desktop
+<span class="c1"># cd      : change directory（カレントディレクトリ＝今いるフォルダ を変える）コマンド</span>
+<span class="c1"># Desktop : 移動先のフォルダ名。これでデスクトップの中に入る</span>
+</code></pre></div></div>
+
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-8"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>npx<span class="w"> </span>create-expo-app@latest<span class="w"> </span>my-books-app
+<div class="codehilite"><div class="code-wrap" id="code-9"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>npx<span class="w"> </span>create-expo-app@latest<span class="w"> </span>my-books-app
 <span class="c1"># npx                    : パッケージを一時的に取得して即実行するコマンド</span>
 <span class="c1"># create-expo-app        : Expoアプリのひな形（テンプレート）を生成する公式ツール</span>
 <span class="c1"># @latest                : 「最新版のツールを使う」という指定（@ の後ろにバージョンを書ける）</span>
@@ -422,21 +422,21 @@ cd Desktop</p>
 <p><strong>実行中に時間がかかります:</strong> 大量の部品をインターネットからダウンロードするため、数分かかることがあります。「Installing dependencies...（依存パッケージをインストール中）」と表示されたら、完了まで待ちましょう。</p>
 </blockquote>
 <p>完了したら、作られたフォルダの中へ移動します。</p>
-<div class="codehilite"><div class="code-wrap" id="code-9"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>my-books-app
+<div class="codehilite"><div class="code-wrap" id="code-10"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>my-books-app
 <span class="c1"># cd           : フォルダを移動するコマンド</span>
 <span class="c1"># my-books-app : さっき作ったプロジェクトフォルダ名。この中で以降の作業をする</span>
 </code></pre></div></div>
 
 <h3 id="54">5.4 開発サーバーを起動して実機で確認する</h3>
 <p>いよいよアプリを起動します。</p>
-<div class="codehilite"><div class="code-wrap" id="code-10"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>npx<span class="w"> </span>expo<span class="w"> </span>start
+<div class="codehilite"><div class="code-wrap" id="code-11"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>npx<span class="w"> </span>expo<span class="w"> </span>start
 <span class="c1"># npx expo    : Expoのコマンドラインツールを実行</span>
 <span class="c1"># start       : 「開発サーバーを起動する」サブコマンド</span>
 <span class="c1"># 実行すると、ターミナルに大きなQRコードと操作メニューが表示される</span>
 </code></pre></div></div>
 
 <p><strong>▼ 実行結果の例（一部）:</strong></p>
-<div class="codehilite"><div class="code-wrap" id="code-11"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>› Metro waiting on exp://192.168.0.5:8081
+<div class="codehilite"><div class="code-wrap" id="code-12"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>› Metro waiting on exp://192.168.0.5:8081
 › Scan the QR code above with Expo Go (Android) or the Camera app (iOS)
 
 › Press a │ open Android
@@ -508,7 +508,7 @@ cd Desktop</p>
 </blockquote>
 <h3 id="63">6.3 環境構築の大まかな流れ</h3>
 <p>公式ドキュメント（https://reactnative.dev/docs/set-up-your-environment ）の手順に沿いますが、概略は次の通りです。</p>
-<div class="codehilite"><div class="code-wrap" id="code-12"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># (1) 新規プロジェクトを作成する（Expoの create-expo-app に相当）</span>
+<div class="codehilite"><div class="code-wrap" id="code-13"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># (1) 新規プロジェクトを作成する（Expoの create-expo-app に相当）</span>
 npx<span class="w"> </span>@react-native-community/cli@latest<span class="w"> </span>init<span class="w"> </span>MyBooksApp
 <span class="c1"># npx                                  : その場でツールを取得して実行</span>
 <span class="c1"># @react-native-community/cli@latest   : React Native公式CLIの最新版</span>
@@ -516,14 +516,14 @@ npx<span class="w"> </span>@react-native-community/cli@latest<span class="w"> </
 <span class="c1"># MyBooksApp                           : プロジェクト名（CLIではキャメルケース推奨）</span>
 </code></pre></div></div>
 
-<div class="codehilite"><div class="code-wrap" id="code-13"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># (2) iOS用の追加部品を取り込む（Macのみ。CocoaPodsという仕組みを使う）</span>
+<div class="codehilite"><div class="code-wrap" id="code-14"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># (2) iOS用の追加部品を取り込む（Macのみ。CocoaPodsという仕組みを使う）</span>
 <span class="nb">cd</span><span class="w"> </span>MyBooksApp/ios<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>pod<span class="w"> </span>install<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>..
 <span class="c1"># cd MyBooksApp/ios : iOS設定フォルダへ移動</span>
 <span class="c1"># pod install       : CocoaPods（iOSの部品管理ツール）で必要部品を取り込む</span>
 <span class="c1"># &amp;&amp; cd ..          : 成功したら一つ上のフォルダへ戻る（&amp;&amp; は「前が成功したら次を実行」）</span>
 </code></pre></div></div>
 
-<div class="codehilite"><div class="code-wrap" id="code-14"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># (3) アプリを起動する</span>
+<div class="codehilite"><div class="code-wrap" id="code-15"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># (3) アプリを起動する</span>
 <span class="c1"># Androidエミュレータ/実機で起動</span>
 npx<span class="w"> </span>react-native<span class="w"> </span>run-android
 <span class="c1"># iOSシミュレータで起動（Macのみ）</span>
@@ -537,7 +537,7 @@ npx<span class="w"> </span>react-native<span class="w"> </span>run-ios
 <h3 id="64-expo-cli">6.4 Expo と CLI の切り替え方</h3>
 <p>実務でよくあるのが「<strong>最初はExpoで手軽に始め、後から自由度が必要になってCLI構成へ移行する</strong>」というパターンです。Expoはこの移行を公式にサポートしています。</p>
 <h4 id="expomanaged-clibare">◆ Expo（managed）→ CLI構成（bare）へ移行する</h4>
-<div class="codehilite"><div class="code-wrap" id="code-15"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>npx<span class="w"> </span>expo<span class="w"> </span>prebuild
+<div class="codehilite"><div class="code-wrap" id="code-16"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>npx<span class="w"> </span>expo<span class="w"> </span>prebuild
 <span class="c1"># npx expo  : Expoのコマンドラインツール</span>
 <span class="c1"># prebuild  : プロジェクトに ios/ と android/ という「ネイティブのフォルダ」を生成する</span>
 <span class="c1">#             これにより、XcodeやAndroid Studioで直接開いて編集できる「bare構成」になる</span>
@@ -555,7 +555,7 @@ npx<span class="w"> </span>react-native<span class="w"> </span>run-ios
 <hr>
 <h2 id="7">7. プロジェクトのフォルダ構成を眺めてみる</h2>
 <p><code>create-expo-app</code> で作られたプロジェクトには、たくさんのファイル・フォルダがあります。今すべてを理解する必要はありません。「こういうものがあるんだ」と眺めるだけでOKです。VS Codeでプロジェクトフォルダを開いてみましょう。</p>
-<div class="codehilite"><div class="code-wrap" id="code-16"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>my-books-app/
+<div class="codehilite"><div class="code-wrap" id="code-17"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>my-books-app/
 ├── app/                  ← 【重要】画面ファイルを置く場所。ここにファイルを作ると画面が増える
 │   ├── (tabs)/           ← 下タブで切り替わる画面群（Expo Routerの仕組み）
 │   │   ├── index.tsx     ← 最初に表示される画面
