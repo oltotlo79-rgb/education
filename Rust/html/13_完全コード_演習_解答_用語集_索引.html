@@ -10900,14 +10900,6 @@ Rust の Web フレームワーク <span class="gs">**Topcoat 0.11**</span> と 
    <span class="n">winget</span> <span class="n">install</span> <span class="n">LLVM</span><span class="p">.</span><span class="n">LLVM</span>
 <span class="sb">   ```</span>
 
-   &lt;!-- first-use --&gt;
-
-<span class="k">   &gt; </span><span class="ge">**▶ ここで初めて出てくるコード**</span>
-<span class="k">   &gt;</span>
-<span class="ge">   &gt; - **`winget install`**（Windows）: Windows の公式の道具 `winget` で、アプリを入れるコマンド。`winget install LLVM.LLVM` は、LLVM（clang などの翻訳の道具）を入れます。</span>
-
-   &lt;!-- /first-use --&gt;
-
    インストール後、`clang --version` が動くこと（`C:\Program Files\LLVM\bin` が PATH にあること）を確かめてください。x64 の Windows・macOS・Linux では追加の準備は要りません。
 
 <span class="gu">## 起動する（開発）</span>
@@ -11031,14 +11023,6 @@ rustnote/
    <span class="n">turso</span> <span class="n">db</span> <span class="n">show</span> <span class="n">rustnote</span> <span class="p">-</span><span class="n">-url</span>
    <span class="n">turso</span> <span class="n">db</span> <span class="n">tokens</span> <span class="n">create</span> <span class="n">rustnote</span>
 <span class="sb">   ```</span>
-
-   &lt;!-- first-use --&gt;
-
-<span class="k">   &gt; </span><span class="ge">**▶ ここで初めて出てくるコード**</span>
-<span class="k">   &gt;</span>
-<span class="ge">   &gt; - **`turso db`**（Turso）: Turso（インターネット上のデータベースのサービス）の道具で、データベースを作る・見るコマンド。`turso db create 名前`（第7巻・第12巻）。</span>
-
-   &lt;!-- /first-use --&gt;
 
 <span class="k">2.</span> <span class="sb">`fly.toml`</span> の <span class="sb">`app`</span> を自分用の名前に変え、アプリを作る（デプロイはまだしない）。
 

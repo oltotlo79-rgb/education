@@ -574,10 +574,15 @@ if ($env:OneDrive -and $here.StartsWith($env:OneDrive)) {
 >
 > - **`Set-Content -Path`**（PowerShell）: `-Path 名前` で、書き込むファイルの名前（場所）を指定します。`Set-Content memo.txt "…"` のように名前を最初に書く時は、`-Path` を省けます。
 > - **`Set-Content -Value`**（PowerShell）: `-Value 中身` で、ファイルに書く中身を指定します。`@' … '@` で囲むと、何行もの文章をそのまま中身にできます（ヒア文字列）。
+> - **`Get-CimInstance`**（PowerShell）: Windows の中の情報（OS・CPU・サービス・ディスクなど）を問い合わせるコマンド。`Get-CimInstance Win32_OperatingSystem` は OS の情報、`Get-CimInstance Win32_Service` はサービスの一覧（自動で始まるかどうかも分かる）です。
 > - **`Select-Object -First`**（PowerShell）: `-First 1` で、結果の最初の 1 つだけを取り出します。`-Last 3` なら最後の 3 つです。
+> - **`switch`**（PowerShell）: 値によって、することを分ける書き方。`switch ($x) { 'A' { … } 'B' { … } default { … } }`。合った所の `{ }` の中だけが動きます。結果を `$machine = switch (…) { … }` のように受け取ることもできます。
 > - **`default`**（PowerShell）: PowerShell の `switch` の中で、「どの場合にも合わなかった時」の処理を書く所。Rust の `match` の `_ =>` に当たります。
 > - **`Write-Output`**（PowerShell）: 値を「出力」として次へ流す（最後なら画面に出す）コマンド。`Write-Output "こんにちは"`。文字列を 1 行に書くだけでも同じ働きをしますが、はっきり書く時に使います。
 > - **`if`**（PowerShell）: PowerShell の条件の書き方。`if (条件) { 合う時 } else { 合わない時 }`。条件は `( )` で囲みます。比べる時は `-eq`（等しい）・`-ne`（違う）・`-gt`（大きい）・`-match`（パターンに合う）のような書き方をします（`==` や `>` ではありません）。
+> - **`-match`**（PowerShell）: 正規表現（文字の形の決まり）に合うかの比べ方。`$line -match '^\s*#'` は「空白のあと `#` で始まる行（コメント）か」。合った部分は `$Matches` で取り出せます。
+> - **`else`**（PowerShell）: `if (条件) { … } else { … }` の、条件に合わなかった時の所。`elseif (条件)` で、条件をつなげられます。
+> - **`-and`**（PowerShell）: 「かつ」（両方とも `True` の時だけ `True`）。`$a -gt 0 -and $b -gt 0` のように、条件をつなぎます。
 
 <!-- /first-use -->
 
@@ -737,14 +742,6 @@ PC の CPU       : ARM64
 パスの文字      : 注意（空白や日本語が含まれています）
 OneDrive        : OK（同期フォルダの外です）
 ```
-
-<!-- first-use -->
-
-> **▶ ここで初めて出てくるコード**
->
-> - **`..\whereami.ps1`**（PowerShell）: 1 つ上のフォルダの `whereami.ps1` を動かす書き方。`..` は「1 つ上のフォルダ」という意味です。
-
-<!-- /first-use -->
 
 OneDrive を使っている人は、同期フォルダへ移動して実行してみます。
 
@@ -1403,7 +1400,8 @@ function New-LfFile($Path, [string[]]$Lines) {
 
 > **▶ ここで初めて出てくるコード**
 >
-> - **`function`**（JavaScript・TypeScript）: 関数を作る書き方。`async function post(path, body) { … }`。
+> - **`function`**（PowerShell）: PowerShell で、自分の関数を作る書き方。`function New-LfFile($Path, $Lines) { … }` と書くと、`New-LfFile` をコマンドのように呼べます。
+> - **`-join`**（PowerShell）: 並びの中身を、区切り文字でつないで 1 つの文字列にする演算子。`$lines -join "`n"` は「改行でつなぐ」、`@("a","b") -join ","` は `"a,b"`。
 > - **`New-Item`**（PowerShell）: 新しいファイルやフォルダを作るコマンド。`New-Item memo.txt` でファイル、`New-Item -ItemType Directory 名前` でフォルダを作ります。
 > - **`New-Item -Path`**（PowerShell）: `-Path 場所` で、作るファイルやフォルダの場所（名前）を指定します。
 > - **`New-Item -Value`**（PowerShell）: `-Value 中身` で、作るファイルに最初から書いておく中身を指定します。
@@ -2985,7 +2983,7 @@ installed targets:
 > - **`rustup component`**（Rust の道具）: Rust の部品（`rustfmt`・`clippy` など）を見る・足すコマンド。`rustup component list --installed` で、入っている部品の一覧を出します。
 > - **`Get-ChildItem`**（PowerShell）: フォルダの中の一覧を出すコマンド（短い呼び名は `ls`・`dir`）。`Get-ChildItem フォルダ` でそのフォルダの中身、`-Recurse` で中のフォルダまで全部を出します。
 > - **`ForEach-Object`**（PowerShell）: `|` で流れてきた物を、1 つずつ処理するコマンド。`{ }` の中の `$_` が「今の 1 つ」を表します。`… | ForEach-Object { $_.Name }` は、1 つずつ名前を取り出します。
-> - **`ForEach-Object -f`**（PowerShell）: ここでの `-f` は `ForEach-Object` の指定ではなく、PowerShell の「書式の演算子」です。`"{0,-10} {1}" -f 値1, 値2` で、`{0}` に値 1、`{1}` に値 2 を入れた文字列を作ります（`,-10` は「10 文字分の幅で左寄せ」）。
+> - **`-f`**（PowerShell）: 書式（形）を決めて文字列を作る演算子。`"{0,-10} {1}" -f $name, $hash` は、`{0}` に 1 つ目、`{1}` に 2 つ目を入れます（`,-10` は「10 文字分の幅で左に寄せる」）。
 > - **`Get-FileHash`**（PowerShell）: ファイルの中身から、ハッシュ（指紋のような長い英数字）を計算するコマンド。中身が 1 文字でも違えば、まったく違う値になります。ダウンロードしたファイルが壊れていないか確かめる時に使います。
 
 <!-- /first-use -->
@@ -4433,7 +4431,7 @@ count "$HOME" "Linux 側（$HOME）"
 > **▶ ここで初めて出てくるコード**
 >
 > - **`rm`**（WSL・bash）: ファイルやフォルダを消すコマンド（Linux）。`rm -rf フォルダ` は、中身ごと、確かめずに消します（`-r` は中まで、`-f` は聞かずに）。とても強いので、名前をよく確かめて使います。
-> - **`return`**（WSL・bash）: bash の関数の中で、その関数を終える命令。`cd 場所 || return` は「`cd` に失敗したら、そこで関数を終える」という意味です（`||` は「左が失敗した時だけ右をする」）。
+> - **`return`**（PowerShell）: 関数やスクリプトを、そこで終える命令。`return $null` のように、返す値を書けます。
 > - **`s=$`**（WSL・bash）: bash で変数に値を入れる書き方。`s=$(date +%s%N)` は、`$( )` の中のコマンド（今の時刻）を動かした結果を、変数 `s` に入れます。`=` の前後に空白を入れてはいけません。
 > - **`date`**（WSL・bash）: 今の日時を表示するコマンド（Linux）。`date +%s%N` は「1970 年からの秒数＋ナノ秒」の形で出します（時間を測るのに使います）。
 > - **`for`**（WSL・bash）: bash のくり返し。`for i in $(seq 1 2000); do … ; done` は、1〜2000 を `i` に入れて、`do` から `done` までをくり返します。
@@ -5459,7 +5457,7 @@ Get-Item .\127.0.0.1 -Stream * | Select-Object Stream, Length | Format-Table -Au
 > **▶ ここで初めて出てくるコード**
 >
 > - **`Where-Object`**（PowerShell）: `|` で流れてきた物のうち、条件に合う物だけを残すコマンド。`{ }` の中の `$_` が「今の 1 つ」です。`Where-Object { $_.Length -gt 1000 }` のように使います。
-> - **`Where-Object -like`**（PowerShell）: `-like '127*'` は、「`127` で始まる」のように、`*`（何文字でも）を使った形と比べる比べ方です。
+> - **`-like`**（PowerShell）: `*`（何文字でも）と `?`（1 文字）を使った、ワイルドカードで合うかの比べ方。`$_ -like '127*'` は「127 で始まるか」。
 > - **`Get-Item`**（PowerShell）: ファイルやフォルダ 1 つの情報（名前・大きさ・日時）を取り出すコマンド。
 > - **`Get-Item -Stream`**（PowerShell）: `-Stream *` で、ファイルに付いている「隠れた別の中身」（代替データストリーム。ダウンロードした印などが入る）の一覧を出します。
 > - **`Format-Table`**（PowerShell）: 結果を表の形に整えて表示するコマンド。
@@ -5768,7 +5766,15 @@ Write-Host "全部 OK"
 > **▶ ここで初めて出てくるコード**
 >
 > - **`Write-Host`**（PowerShell）: 画面に文字を表示するコマンド。`Write-Output` と違い、次のコマンドへは流れず、画面に出すだけです。色を付ける（`-ForegroundColor Green`）こともできます。
+> - **`-not`**（PowerShell）: 「〜でない」（`True` と `False` を逆にする）。`-not (Test-Path $file)` は「そのファイルが無いなら」。`!` と書いても同じです。
 > - **`try`**（PowerShell）: PowerShell で、失敗するかもしれない処理を `try { … } catch { … }` で囲み、失敗した時の処理を `catch` に書く書き方。
+> - **`-ne`**（PowerShell）: PowerShell の「等しくない」の比べ方（not equal）。`$LASTEXITCODE -ne 0` は「失敗した（0 でない）か」。
+> - **`-or`**（PowerShell）: 「または」（どちらか一方でも `True` なら `True`）。`$LASTEXITCODE -ne 0 -or $out.Count -eq 0` は「失敗したか、出力が空か」。
+> - **`-eq`**（PowerShell）: PowerShell の「等しい」の比べ方（equal）。`$LASTEXITCODE -eq 0` は「終わった時の番号が 0（成功）か」。PowerShell では `==` ではなく `-eq` と書きます。大文字・小文字は区別しません（`"ABC" -eq "abc"` も `True`）。
+> - **`catch`**（PowerShell）: `try { … } catch { … }` の `catch` の所は、`try` の中でエラーが起きた時だけ動きます。起きたエラーは `$_` で受け取れます（`$_.Exception.Message` で説明の文）。
+> - **`-ge`**（PowerShell）: PowerShell の「以上」の比べ方（greater or equal）。`$code.Count -ge 3` は「3 つ以上あるか」。
+> - **`-split`**（PowerShell）: 文字列を、区切り（正規表現）で分けて並びにする演算子。`"a=b" -split '=', 2` は `"a"` と `"b"`（`2` は「多くても 2 つに分ける」）。
+> - **`-gt`**（PowerShell）: PowerShell の「より大きい」の比べ方（greater than）。`$failed -gt 0` は「失敗が 1 つ以上あるか」。
 > - **`exit`**（PowerShell）: スクリプトを終えるコマンド。`exit 1` は、終了コード 1（失敗）でスクリプトを終えます。
 
 <!-- /first-use -->

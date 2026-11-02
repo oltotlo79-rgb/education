@@ -1914,7 +1914,7 @@ python -c "import tomllib, json, sys; print(json.dumps(tomllib.load(open(sys.arg
 
 > **▶ ここで初めて出てくるコード**
 >
-> - **`python`**（Python）: Python を動かすコマンド。`python -c "…"` は、`"…"` の中の Python のコードを 1 回だけ動かします。
+> - **`python`**（Python の道具）: Python を動かすコマンド。`python -c "…"` は、`"…"` の中の Python のコードを 1 回だけ動かします。
 
 <!-- /first-use -->
 
@@ -3163,6 +3163,7 @@ Write-Output "全部 OK"
 > **▶ ここで初めて出てくるコード**
 >
 > - **`param`**（PowerShell）: PowerShell のスクリプトが受け取る引数を決める書き方。`param([string]$Base = "http://…")` は、`-Base` で渡せる文字列の引数で、渡さなければ既定値になります。
+> - **`New-TemporaryFile`**（PowerShell）: 一時的に使う、空のファイルを作るコマンド（作ったファイルの情報を返す）。テストでクッキーをためておく場所などに使い、使い終わったら `Remove-Item` で消します。
 
 <!-- /first-use -->
 
