@@ -172,6 +172,8 @@ rustup show active-toolchain
 
 ### たとえ話でつかむ
 
+<img src="images/R10-01_analogy.webp" alt="たとえ話の絵（一覧・空のとき・持ち主の条件）: マンションの、共同の宅配ボックスを考えます。ボックスには、住んでいる人全員の荷物が入っています。" style="width: 100%;">
+
 マンションの、共同の宅配ボックスを考えます。ボックスには、住んでいる人全員の荷物が入っています。
 
 - 管理人さんに「私の荷物を見せてください」と頼むと、管理人さんは、まず**部屋の鍵**を見て、本当にその部屋の人かを確かめます。
@@ -483,6 +485,8 @@ test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 `ORDER BY updated_at DESC` だけでは、同じ時刻のノートの順番は決まりません。本当にそうなるのか、DB に直接 SQL を送って確かめます。
 
 > **▼ このコードがやること（先に日本語で）:** 一時フォルダの DB に、同じ秒のうちに3件のノートを入れます。`updated_at` の値を表示してから、`ORDER BY updated_at DESC` だけの SQL と、`, id DESC` を足した SQL で、タイトルを並べて表示します。
+
+**▶ 書く所と動かし方:** コピーした `rustnote` フォルダの `examples` フォルダに、`u01_order.rs` という名前の**新しいファイル**を作り、下のコードを貼り付けて保存します。`rustnote` のフォルダで `cargo run -q --example u01_order` を実行します。
 
 ```rust
 //! 並び替えに updated_at だけを使うと、同じ秒に更新したノートの順番が決まらないことを確かめる。
@@ -950,6 +954,8 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 
 ### たとえ話でつかむ
 
+<img src="images/R10-02_analogy.webp" alt="たとえ話の絵（作成のフォーム・入力の検査・PRG）: 役所の窓口に、申請書を出す場面を考えます。" style="width: 100%;">
+
 役所の窓口に、申請書を出す場面を考えます。
 
 - 申請書に**書き漏れ**があると、窓口の人は受け付けません。申請書を**そのまま返して**、直す所に付箋を貼ります。書いてあった所は消しません。付箋は、気づいた所に**全部**貼ります（1つ直して出し直したら、また別の所を言われる、とならないように）。
@@ -1294,6 +1300,8 @@ test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 PRG で防げることと、防げないことを確かめます。
 
 > **▼ このコードがやること（先に日本語で）:** ノートを1件作ってから、移動先の `/notes/1` を3回 GET し（再読み込みを3回）、`notes` 表の id を表示します。次に、同じフォームの POST をもう一度送り、もう一度 id を表示します。
+
+**▶ 書く所と動かし方:** コピーした `rustnote` フォルダの `tests` フォルダに、`u02_reload.rs` という名前の**新しいファイル**を作り、下のコードを貼り付けて保存します。`rustnote` のフォルダで `cargo test --test u02_reload -- --nocapture` を実行します。
 
 ```rust
 //! 第10巻 UNIT 02: 「移った先を読み直す」と「POST をもう一度送る」で、ノートが何件になるかを比べる。
@@ -1852,6 +1860,8 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 
 ### たとえ話でつかむ
 
+<img src="images/R10-03_analogy.webp" alt="たとえ話の絵（詳細・URL の ID・見つからないとき）: ホテルの部屋の鍵を考えます。" style="width: 100%;">
+
 ホテルの部屋の鍵を考えます。
 
 - フロントで「305 号室の鍵をください」と頼むと、フロントの人は、まず**泊まっている人か**を確かめます。泊まっていなければ、鍵の話の前に、受付へ案内します。
@@ -1990,6 +2000,8 @@ let sql = format!("SELECT {NOTE_COLUMNS} FROM notes WHERE id = ?1 AND user_id = 
 
 > **▼ このコードがやること（先に日本語で）:** alice と bob を登録し、alice のノートを1件作ります。次に、alice・bob・ログインしていない人（guest）が、いろいろな URL を開いたときの状態コードを、表にして表示します。最後に、bob から見た「他人のノート（`/notes/1`）」と「無いノート（`/notes/999`）」の答えを、状態コード・本文の長さ・本文がまったく同じか、で比べます。
 
+**▶ 書く所と動かし方:** コピーした `rustnote` フォルダの `tests` フォルダに、`u03_detail.rs` という名前の**新しいファイル**を作り、下のコードを貼り付けて保存します。`rustnote` のフォルダで `cargo test --test u03_detail -- --nocapture --test-threads=1` を実行します。
+
 ```rust
 //! 第10巻 UNIT 03: 詳細の画面（GET /notes/{id}）が、自分のノートだけを 200 で見せ、
 //! 無いノート・他人のノート・おかしな ID を、どれも 404 にするかを確かめる。
@@ -2108,6 +2120,8 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 #### 例3-2: 詳細の画面の中身と、次の操作への入り口
 
 > **▼ このコードがやること（先に日本語で）:** タイトルに `<b>牛乳</b>を買う`、本文に改行と `&` を入れたノートを作り、詳細の画面の HTML から、ノートの部分（`<article>`）と、次の操作への入り口（編集のリンク・完了と削除のフォーム・一覧へ戻るリンク）を抜き出して表示します。
+
+**▶ 書く所と動かし方:** コピーした `rustnote` フォルダの `tests` フォルダに、`u03_page.rs` という名前の**新しいファイル**を作り、下のコードを貼り付けて保存します。`rustnote` のフォルダで `cargo test --test u03_page -- --nocapture` を実行します。
 
 ```rust
 //! 第10巻 UNIT 03: 詳細の画面の HTML から、ノートの部分（<article>）と、
@@ -2463,6 +2477,8 @@ cargo test --test u03_q -- --nocapture --test-threads=1
 
 ### たとえ話でつかむ
 
+<img src="images/R10-04_analogy.webp" alt="たとえ話の絵（編集・入力済みのフォーム・競合）: みんなで使う、ホワイトボードの予定表を考えます。" style="width: 100%;">
+
 みんなで使う、ホワイトボードの予定表を考えます。
 
 - 書き直したい人は、まず予定表の**写真**を撮り、自分の席で直す内容を考えます。写真の隅には、ボードの**版の番号**（たとえば「1版」）が写っています。
@@ -2585,6 +2601,8 @@ pub struct EditForm {
 ```
 
 > **▼ このコードがやること（先に日本語で）:** alice がノートを1件作り、DB の行を表示します。次に、編集のフォームの HTML から、ブラウザが送り返す値（hidden の `version`・タイトル・本文）を読み取って表示します。1秒待ってから、タイトルだけを変えて、読み取った `version` ごと保存（POST）し、返事と、保存したあとの DB の行を表示します。
+
+**▶ 書く所と動かし方:** コピーした `rustnote` フォルダの `tests` フォルダに、`u04_edit.rs` という名前の**新しいファイル**を作り、下のコードを貼り付けて保存します。`rustnote` のフォルダで `cargo test --test u04_edit -- --nocapture` を実行します。
 
 ```rust
 //! 第10巻 UNIT 04: 編集のフォームを開き、ブラウザと同じように、hidden の version ごと送り返して保存する。
@@ -2732,6 +2750,8 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 #### 例4-2: 2つのタブで、同じノートを直す
 
 > **▼ このコードがやること（先に日本語で）:** 同じノートの編集のフォームを、2回開きます（タブ A とタブ B）。タブ A が先にタイトルを `牛乳を2本買う` にして保存し、次にタブ B が、古い `version` のまま `牛乳と卵を買う` にして保存します。タブ B の返事の、状態コード・お知らせの文・出し直したフォームの `version` とタイトルを表示します。最後に、タブ B が出し直したフォームで、もう一度保存します。それぞれのあとで、DB の行を表示します。
+
+**▶ 書く所と動かし方:** コピーした `rustnote` フォルダの `tests` フォルダに、`u04_conflict.rs` という名前の**新しいファイル**を作り、下のコードを貼り付けて保存します。`rustnote` のフォルダで `cargo test --test u04_conflict -- --nocapture` を実行します。
 
 ```rust
 //! 第10巻 UNIT 04: 2つのタブで同じノートの編集フォームを開き、順に保存する（楽観的ロック）。
@@ -3209,6 +3229,8 @@ cargo test --test u04_q -- --nocapture --test-threads=1
 
 ### たとえ話でつかむ
 
+<img src="images/R10-05_analogy.webp" alt="たとえ話の絵（完了の切り替え・1文の SQL）: 体育館の照明を、2人の係が同時に操作する場面を考えます。" style="width: 100%;">
+
 体育館の照明を、2人の係が同時に操作する場面を考えます。
 
 - **見てから決める係:** 2人とも照明を見て「消えている」と思い、「つけよう」と決めて、それぞれスイッチを「入」にします。照明は「入」。2人が操作したのに、1回分の操作しか起きていません。見てから操作するまでの間に、相手が動いたことに気づけないからです。
@@ -3319,6 +3341,8 @@ pub async fn toggle(cx: &Cx) -> Result<()> {
 ```
 
 > **▼ このコードがやること（先に日本語で）:** alice がノートを1件作り、`done` と `version` を表示します。切り替えの POST を2回送り、それぞれの返事（状態コード・移動先・お知らせのクッキー）を表示します。ブラウザと同じように、お知らせのクッキーも付けて移動先（詳細）を開き、完了の印・ボタンの文字・お知らせがあるかと、DB の `done` と `version` を表示します。
+
+**▶ 書く所と動かし方:** コピーした `rustnote` フォルダの `tests` フォルダに、`u05_toggle.rs` という名前の**新しいファイル**を作り、下のコードを貼り付けて保存します。`rustnote` のフォルダで `cargo test --test u05_toggle -- --nocapture` を実行します。
 
 ```rust
 //! 第10巻 UNIT 05: 完了の切り替え（POST /notes/{id}/toggle）を2回送り、画面と DB を確かめる。
@@ -3438,6 +3462,8 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 ボタンを素早く2回押した（ダブルクリックした）ときや、2つのタブで同時に押したときを、`tokio::join!`（2つの処理を同時に進める。第5巻 UNIT 01）で再現します。
 
 > **▼ このコードがやること（先に日本語で）:** 未完了のノートを1件作り、そのノートへの切り替えの POST を、`tokio::join!` で2つ同時に送ります。両方の返事が来たら、DB の `done` と `version` を読みます。これを、毎回新しいノートで 20 回くり返し、最後が `done=0`（2回切り替わって元に戻った）だった回数と、`done=1`（1回分が消えた）だった回数を数えます。最初の3回は、返事と DB の値も表示します。
+
+**▶ 書く所と動かし方:** コピーした `rustnote` フォルダの `tests` フォルダに、`u05_race.rs` という名前の**新しいファイル**を作り、下のコードを貼り付けて保存します。`rustnote` のフォルダで `cargo test --test u05_race -- --nocapture` を実行します。
 
 ```rust
 //! 第10巻 UNIT 05: 同じノートへ「完了の切り替え」を2つ同時に送る、を 20 回くり返し、最後の done を数える。
@@ -3754,6 +3780,8 @@ cargo test --test u05_q -- --nocapture --test-threads=1
 
 ### たとえ話でつかむ
 
+<img src="images/R10-06_analogy.webp" alt="たとえ話の絵（削除・確かめ・消し方の選び方）: 会社の書類の捨て方を考えます。" style="width: 100%;">
+
 会社の書類の捨て方を考えます。
 
 - **シュレッダー:** 入れたら、すぐに細かくなります。元には戻せません。だから、シュレッダーは、通りがかった人がうっかり触れる廊下（**誰でも開けるリンク**）には置きません。使う人が、自分の机で、ボタンを押して使います。
@@ -3910,6 +3938,8 @@ Ok(())
 
 > **▼ このコードがやること（先に日本語で）:** alice がノートを2件作り、`notes` 表の id を表示します。1件目を削除の POST で消し、返事（状態コード・移動先・お知らせのクッキー）と、消したあとの id を表示します。移動先の一覧を開いて、お知らせと、2つのタイトルがあるかを表示し、最後に、消したノートの詳細を開くのと、もう一度消すのを試します。
 
+**▶ 書く所と動かし方:** コピーした `rustnote` フォルダの `tests` フォルダに、`u06_delete.rs` という名前の**新しいファイル**を作り、下のコードを貼り付けて保存します。`rustnote` のフォルダで `cargo test --test u06_delete -- --nocapture` を実行します。
+
 ```rust
 //! 第10巻 UNIT 06: ノートを削除し、一覧・詳細・もう一度の削除が、どうなるかを確かめる。
 //! 実行: cargo test --test u06_delete -- --nocapture
@@ -4028,6 +4058,8 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 「削除」は取り返しのつかない操作なので、利用者が自分のボタンを押したとき**以外**には、動いてはいけません。6つのやり方で試します。ほかのサイトから来たリクエストは、ブラウザが付ける `Origin` や `Sec-Fetch-Site` のヘッダーを、テストで付けて再現します（第8巻 UNIT 01）。
 
 > **▼ このコードがやること（先に日本語で）:** alice と bob を登録します。6つのやり方（RustNote の中のリンク・ほかのサイトのリンク・`Origin` がほかのサイトのフォーム・`Sec-Fetch-Site: cross-site` のフォーム・bob のボタン・alice のボタン）ごとに、alice のノートを1件作り、そのノートの削除の URL へリクエストを送ります。返事の状態コード（405 なら `allow` ヘッダーも）と、ノートが残っているかを表示します。
+
+**▶ 書く所と動かし方:** コピーした `rustnote` フォルダの `tests` フォルダに、`u06_guard.rs` という名前の**新しいファイル**を作り、下のコードを貼り付けて保存します。`rustnote` のフォルダで `cargo test --test u06_guard -- --nocapture` を実行します。
 
 ```rust
 //! 第10巻 UNIT 06: 「削除」を、ボタン以外のやり方で引き起こせないかを確かめる。
@@ -4310,6 +4342,8 @@ src\repository\notes.rs:193:                "DELETE FROM notes WHERE id = ?1 AND
 
 ### たとえ話でつかむ
 
+<img src="images/R10-07_analogy.webp" alt="たとえ話の絵（検索・LIKE のエスケープ）: 図書館の、本の題名の検索を考えます。" style="width: 100%;">
+
 図書館の、本の題名の検索を考えます。
 
 - 検索の機械には、**特別な記号**があります。「＊」は「何文字でも」、「？」は「どれか1文字」です。「ハリー＊」と入れれば、「ハリー」で始まる本が全部出ます。
@@ -4438,6 +4472,8 @@ fn escape_like(keyword: &str) -> String {
 ```
 
 > **▼ このコードがやること（先に日本語で）:** alice が、`%`・`_`・`\` を含むタイトルや、本文に「牛乳」があるノートなど、6件を作ります。8つのキーワード（`100%`・`file_name`・`\`・`牛乳`・`%`・`_`・前後に空白のある `牛乳`・空白だけ）で一覧を検索し、見つかったタイトル・検索の入力欄に残った値・ページの行（全何件か）を表示します。
+
+**▶ 書く所と動かし方:** コピーした `rustnote` フォルダの `tests` フォルダに、`u07_search.rs` という名前の**新しいファイル**を作り、下のコードを貼り付けて保存します。`rustnote` のフォルダで `cargo test --test u07_search -- --nocapture` を実行します。
 
 ```rust
 //! 第10巻 UNIT 07: 一覧の検索（GET /notes?q=…）で、% や _ や \ を、ただの文字として探せるかを確かめる。
@@ -4569,6 +4605,8 @@ q="   "
 `escape_like` と `ESCAPE '\'` が、それぞれ何をしているのかを、SQL を直接動かして確かめます。
 
 > **▼ このコードがやること（先に日本語で）:** 5件のノートを作り、`notes` 表に、7つの「形」と「ESCAPE があるか・無いか」の組み合わせで `SELECT title … WHERE title LIKE ?1` を動かして、合ったタイトルを表示します。
+
+**▶ 書く所と動かし方:** コピーした `rustnote` フォルダの `tests` フォルダに、`u07_like.rs` という名前の**新しいファイル**を作り、下のコードを貼り付けて保存します。`rustnote` のフォルダで `cargo test --test u07_like -- --nocapture` を実行します。
 
 ```rust
 //! 第10巻 UNIT 07: SQLite の LIKE が、% と _ と ESCAPE をどう扱うかを、SQL を直接動かして確かめる。
@@ -4950,6 +4988,8 @@ cargo test --test u07_q -- --nocapture --test-threads=1
 
 ### たとえ話でつかむ
 
+<img src="images/R10-08_analogy.webp" alt="たとえ話の絵（ページ送り・OFFSET と cursor）: レストランの順番待ちの名簿を考えます。名簿には、新しく来た人がいちばん上に書き足されます。" style="width: 100%;">
+
 レストランの順番待ちの名簿を考えます。名簿には、新しく来た人が**いちばん上**に書き足されます。
 
 - 店員さんが「上から 20 人目まで」を呼び終えて、次に「**21 人目から** 20 人」を呼ぼうとします。ところが、その間に1人来て、いちばん上に書き足されました。上から 21 人目は、さっき 20 人目として呼んだ人です。**同じ人を2回呼んで**しまいます。逆に、1人が帰って名前が消えると、上から数えた位置が1つずつずれて、**1人を呼び飛ばし**ます。
@@ -5061,6 +5101,8 @@ let link = |page_number: u32| {
 ```
 
 > **▼ このコードがやること（先に日本語で）:** alice が、先に「メモ01〜10」の 10 件、あとから「ノート01〜45」の 45 件を作ります。1・2・3ページ目と、キーワード「ノート」で絞った2ページ目を開き、ページごとの件数と最初・最後のタイトル、ページの行と「前へ」「次へ」のリンク先を表示します。最後に、絞った2ページ目の「次へ」のリンクを、そのままたどります。
+
+**▶ 書く所と動かし方:** コピーした `rustnote` フォルダの `tests` フォルダに、`u08_pages.rs` という名前の**新しいファイル**を作り、下のコードを貼り付けて保存します。`rustnote` のフォルダで `cargo test --test u08_pages -- --nocapture` を実行します。
 
 ```rust
 //! 第10巻 UNIT 08: 55 件のノート（メモ 10 件と、あとから作ったノート 45 件）を、1ページ 20 件で送り、
@@ -5187,6 +5229,8 @@ GET /notes?q=ノート&page=2: 20 件（ノート25 〜 ノート06）
 #### 例8-2: 見ている間に増えた・減ったときと、cursor
 
 > **▼ このコードがやること（先に日本語で）:** 25 件のノートを作って、3つのテストをします。1つ目は、1ページ目を読んだあとで新しいノートを1件作り、2ページ目を読みます。2つ目は、1ページ目を読んだあとで、1ページ目に出ていた「ノート20」を削除し、2ページ目を読みます。どちらも、1ページ目と2ページ目に2回出たノートと、どちらにも出なかったノートを表示します。3つ目は、RustNote の一覧ではなく、SQL を直接動かし、1ページ目の最後の行の `updated_at` と `id` を続きの印にして、新しいノートを作ったあとで、その印の後ろを読みます。
+
+**▶ 書く所と動かし方:** コピーした `rustnote` フォルダの `tests` フォルダに、`u08_shift.rs` という名前の**新しいファイル**を作り、下のコードを貼り付けて保存します。`rustnote` のフォルダで `cargo test --test u08_shift -- --nocapture --test-threads=1` を実行します。
 
 ```rust
 //! 第10巻 UNIT 08: 1ページ目を見ている間にノートが増えたり減ったりすると、
@@ -5334,6 +5378,8 @@ cargo test --test u08_shift -- --nocapture --test-threads=1
 もう1つの違いは、深いページ（たとえば 1 万ページ目）の速さです。20 万件のノートで、最後のページを読む時間を比べます。
 
 > **▼ このコードがやること（先に日本語で）:** SQL で 20 万件のノートを一度に作ります（1秒ずつ違う `updated_at`）。最後のページ（下から 20 件）を、`OFFSET 199980` で読む SQL と、「ノート21」を続きの印にする cursor の SQL で読み、まず `EXPLAIN QUERY PLAN`（DB がどう読むつもりか。第7巻 UNIT 04）を表示します。次に、それぞれを3回ずつ動かして、かかった時間と、読めたタイトルを表示します。
+
+**▶ 書く所と動かし方:** コピーした `rustnote` フォルダの `tests` フォルダに、`u08_deep.rs` という名前の**新しいファイル**を作り、下のコードを貼り付けて保存します。`rustnote` のフォルダで `cargo test --test u08_deep -- --nocapture` を実行します。
 
 ```rust
 //! 第10巻 UNIT 08: ノートが 20 万件あるときに、最後のページを OFFSET で読むのと、
@@ -5701,6 +5747,8 @@ cargo test --test u08_q -- --nocapture --test-threads=1
 
 ### たとえ話でつかむ
 
+<img src="images/R10-09_analogy.webp" alt="たとえ話の絵（お知らせ（フラッシュ）・エラーのまとめ）: ホテルのフロントの、伝言を考えます。" style="width: 100%;">
+
 ホテルのフロントの、伝言を考えます。
 
 - お客さんが出かけている間に電話があると、フロントの人は**伝言のメモ**を、お客さんの部屋の番号の箱に入れます。メモには、「お母様から電話」のような、**決まった言い方**のどれかだけを書きます。
@@ -5830,6 +5878,8 @@ pub async fn flash_banner(flash: Option<Flash>) -> Result<impl View> {
 ```
 
 > **▼ このコードがやること（先に日本語で）:** ブラウザの代わりに、セッションと `flash` のクッキーを覚える小さな入れ物（`Jar`）を作ります。新規登録・作成・保存・完了の切り替え・削除・ログアウト・ログインせずに一覧・ログインの8つの操作を順に行い、それぞれで、返事と予約されたクッキー、移動先を開いたときのお知らせと消すクッキー、もう一度開いたときのお知らせを表示します。
+
+**▶ 書く所と動かし方:** コピーした `rustnote` フォルダの `tests` フォルダに、`u09_flash.rs` という名前の**新しいファイル**を作り、下のコードを貼り付けて保存します。`rustnote` のフォルダで `cargo test --test u09_flash -- --nocapture` を実行します。
 
 ```rust
 //! 第10巻 UNIT 09: 8種類のお知らせ（フラッシュ）を、予約する操作から、表示する画面まで、順にたどる。
@@ -6017,6 +6067,8 @@ cargo test --test u09_flash -- --nocapture
 #### 例9-2: 失敗の返事を、状態コードごとに並べる
 
 > **▼ このコードがやること（先に日本語で）:** alice がノートを1件作り、7つの失敗（空のタイトル・フォームの形の間違い・無いノート・古い version・GET での削除・ほかのサイトからの POST・DB に届かないときのログイン）を1つずつ起こします。返事の状態コードと、文が「同じ画面の入力欄の下」「同じ画面のフォームの上」「エラーの画面」「Topcoat の短い返事」のどこに出たか、その文を表示します。
+
+**▶ 書く所と動かし方:** コピーした `rustnote` フォルダの `tests` フォルダに、`u09_errors.rs` という名前の**新しいファイル**を作り、下のコードを貼り付けて保存します。`rustnote` のフォルダで `cargo test --test u09_errors -- --nocapture` を実行します。
 
 ```rust
 //! 第10巻 UNIT 09: RustNote の失敗の返事を、状態コードごとに1つずつ起こし、どこに・何が出るかを並べる。
@@ -6394,6 +6446,8 @@ cargo test --test u09_q -- --nocapture --test-threads=1
 
 ### たとえ話でつかむ
 
+<img src="images/R10-10_analogy.webp" alt="たとえ話の絵（狭い画面・アクセシビリティ・総合の試験）: 家が建ったときの、完成の検査を考えます。" style="width: 100%;">
+
 家が建ったときの、完成の検査を考えます。
 
 - 職人さんは、工事のたびに、**部屋ごとの点検**をしています。水道は水が出るか、窓は閉まるか。これが、UNIT 01〜09 で書いてきた、画面ごとのテストです。
@@ -6484,6 +6538,8 @@ cargo test --test u09_q -- --nocapture --test-threads=1
 #### 例10-1: 総合の試験 — 登録から退出まで1本でたどる
 
 > **▼ このコードがやること（先に日本語で）:** alice の登録から、空の一覧・作成・空のタイトルの 400・エスケープされた詳細・`%` の検索・編集・古い version の 409・完了の切り替え・bob から見えないこと・削除・ログアウトまで、12 の段を順にたどります。段ごとに `assert` で「こうなるはず」を確かめ、通ったら `✓` と段の名前を表示します。約束が破れた段があれば、その段の名前を付けて止まります。
+
+**▶ 書く所と動かし方:** コピーした `rustnote` フォルダの `tests` フォルダに、`u10_journey.rs` という名前の**新しいファイル**を作り、下のコードを貼り付けて保存します。`rustnote` のフォルダで `cargo test --test u10_journey -- --nocapture` を実行します。
 
 ```rust
 //! 第10巻 UNIT 10: 総合の試験。この巻の画面を、利用者が使う順番に1本の流れでたどり、
@@ -6756,7 +6812,13 @@ Tab で「完了にする」へ移って Enter を、続けて「未完了に戻
 
 ```javascript
 // 1回目（Enter のあと）は active も読んだ。2回目（Space のあと）は active を外した
-({url: location.href, flash: document.querySelector('.flash')?.textContent, badge: !!document.querySelector('.badge'), buttons: [...document.querySelectorAll('.note-actions button')].map(b => b.textContent.trim()), active: document.activeElement.tagName})
+({
+  url: location.href,
+  flash: document.querySelector('.flash')?.textContent,
+  badge: !!document.querySelector('.badge'),
+  buttons: [...document.querySelectorAll('.note-actions button')].map(b => b.textContent.trim()),
+  active: document.activeElement.tagName,
+})
 ```
 
 ```text
@@ -6803,7 +6865,9 @@ const probe = async (path, width, css) => {
   if (css) { const s = d.createElement('style'); s.textContent = css; d.head.appendChild(s); }
   const page = d.documentElement.scrollWidth;
   const h1 = d.querySelector('h1');
-  const res = `${path.padEnd(9)} ${width}px: 横幅 ${page}px ${page > width ? '× はみ出す' : '○'}（h1 の高さ ${Math.round(h1.getBoundingClientRect().height)}px）`;
+    const res =
+      `${path.padEnd(9)} ${width}px: 横幅 ${page}px ${page > width ? '× はみ出す' : '○'}` +
+      `（h1 の高さ ${Math.round(h1.getBoundingClientRect().height)}px）`;
   f.remove();
   return res;
 };

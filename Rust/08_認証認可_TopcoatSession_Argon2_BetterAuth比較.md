@@ -172,6 +172,8 @@ rustup show active-toolchain
 
 ### たとえ話でつかむ
 
+<img src="images/R08-01_analogy.webp" alt="たとえ話の絵（認証・セッション・認可と脅威モデル）: 会員制のコンサート会場を考えます。" style="width: 100%;">
+
 会員制のコンサート会場を考えます。
 
 - **入口の受付**で、会員証と顔写真を見て「この人は本人だ」と確かめます。これが**認証**です。
@@ -538,6 +540,8 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 ログイン中の人のブラウザには、RustNote のクッキーが入っています。悪いサイトが、そのブラウザに「RustNote の `/notes` へ POST するフォーム」を自動で送らせたら、どうなるでしょう。これが **CSRF**（クロスサイト・リクエスト・フォージェリ）という攻撃です。
 
 > **▼ このコードがやること（先に日本語で）:** alice のクッキーを付けて、ノートを作る POST を4通り送ります。ヘッダーが何も無い場合、同じサイトのフォームから送った場合（`Origin: http://127.0.0.1:3000`）、ほかのサイトのフォームから送った場合（`Origin: https://evil.example`）、ブラウザが「ほかのサイトから」と印を付けた場合（`Sec-Fetch-Site: cross-site`）です。それぞれの返事と、最後に保存されたノートの数を表示します。
+
+**▶ 書く所と動かし方:** コピーした `rustnote` フォルダの `tests` フォルダに、`u01_cross_site.rs` という名前の**新しいファイル**を作り、下のコードを貼り付けて保存します。`rustnote` のフォルダで `cargo test --test u01_cross_site -- --nocapture` を実行します。
 
 ```rust
 //! 第8巻 UNIT 01: ほかのサイトから送られてきたフォーム（CSRF）を、Topcoat が止めるかを確かめる。
@@ -1064,6 +1068,8 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 
 ### たとえ話でつかむ
 
+<img src="images/R08-02_analogy.webp" alt="たとえ話の絵（パスワード・Argon2id・salt）: 図書館の会員カードの、暗証番号を預かる場面を考えます。" style="width: 100%;">
+
 図書館の会員カードの、暗証番号を預かる場面を考えます。
 
 - 暗証番号を紙に**そのまま**書いて金庫にしまうと、金庫を開けられた日に、全員の暗証番号が読まれてしまいます。
@@ -1262,6 +1268,8 @@ salt（22 文字）: 1dvNLHkr/dGcDbOcgy0oJQ
 
 > **▼ このコードがやること（先に日本語で）:** 1秒のあいだに、パスワードの候補（`password0`・`password1`・…）を作ってはハッシュにする、をくり返し、何回できたかを数えます。標準ライブラリの速いハッシュ（`DefaultHasher`）と、RustNote と同じ `Argon2::default()` で比べます。速さを測るので、release ビルドで動かします（第12巻 UNIT 01）。
 
+**▶ 書く所と動かし方:** コピーした `rustnote` フォルダの `examples` フォルダに、`u02_speed.rs` という名前の**新しいファイル**を作り、下のコードを貼り付けて保存します。`rustnote` のフォルダで `cargo run -q --release --example u02_speed` を実行します。
+
 ```rust
 //! 1秒のあいだに、何回ハッシュを計算できるかを比べる。
 //! 速いハッシュ（標準ライブラリの DefaultHasher）と、Argon2id（RustNote と同じ既定の設定）。
@@ -1343,6 +1351,8 @@ Argon2id（わざと重いハッシュ）: 1秒に 49 回
 #### 例2-3: DB には、何が保存されているか
 
 > **▼ このコードがやること（先に日本語で）:** 1つ目のテストでは、alice と bob を**同じパスワード**で登録し、`users` 表の `password_hash` の先頭と長さ、パスワードそのものが入っていないか、2人のハッシュが同じかを表示します。2つ目のテストでは、alice のハッシュを、読めない文字列（`broken`）に壊してから、正しいパスワードでログインし、どうなるかを表示します。
+
+**▶ 書く所と動かし方:** コピーした `rustnote` フォルダの `tests` フォルダに、`u02_stored.rs` という名前の**新しいファイル**を作り、下のコードを貼り付けて保存します。`rustnote` のフォルダで `cargo test --test u02_stored -- --nocapture --test-threads=1` を実行します。
 
 ```rust
 //! 第8巻 UNIT 02: DB の users 表に、パスワードがどんな形で保存されるかを確かめる。
@@ -1732,6 +1742,8 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 
 ### たとえ話でつかむ
 
+<img src="images/R08-03_analogy.webp" alt="たとえ話の絵（登録・メールのそろえ方・重複）: 図書館の、利用者カードの受付を考えます。" style="width: 100%;">
+
 図書館の、利用者カードの受付を考えます。
 
 - 申込書の名前は、人によって「Alice」「alice」「 ALICE 」と書き方がばらばらです。受付の人は、名簿に書く前に、**書き方をそろえて**（空白を取り、小文字にして）から書きます。そろえないと、同じ人のカードが2枚できます。
@@ -1868,6 +1880,8 @@ let user = match app_state(cx).users.create(&email, &password_hash).await {
 ```
 
 > **▼ このコードがやること（先に日本語で）:** 8通りの入力（正しい登録・大文字と空白の混ざった同じメール・@ の無いメール・ドメインに . の無いメール・短いパスワード・確認の欄と違うパスワード・3つとも間違い・大文字の混ざった別のメール）で `POST /signup` を送ります。返事の状態コードと、400 や 409 のときは入力欄の下のエラーと、メールの入力欄に残った値を表示します。最後に、`users` 表の `email` を表示します。
+
+**▶ 書く所と動かし方:** コピーした `rustnote` フォルダの `tests` フォルダに、`u03_signup.rs` という名前の**新しいファイル**を作り、下のコードを貼り付けて保存します。`rustnote` のフォルダで `cargo test --test u03_signup -- --nocapture --test-threads=1` を実行します。
 
 ```rust
 //! 第8巻 UNIT 03: いろいろな入力で新規登録して、返事と、画面のエラーと、users 表に入った値を確かめる。
@@ -2007,6 +2021,8 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 登録のボタンをダブルクリックしたときや、2つのタブで同時に送ったときを、`tokio::join!` で再現します。
 
 > **▼ このコードがやること（先に日本語で）:** 同じメールアドレス・同じパスワードの登録の POST を、`tokio::join!` で2つ同時に送ります。それぞれの返事の状態コードと、そのあとの `users` 表の `email` を表示します。
+
+**▶ 書く所と動かし方:** コピーした `rustnote` フォルダの `tests` フォルダに、`u03_race.rs` という名前の**新しいファイル**を作り、下のコードを貼り付けて保存します。`rustnote` のフォルダで `cargo test --test u03_race -- --nocapture` を実行します。
 
 ```rust
 //! 第8巻 UNIT 03: 同じメールアドレスの新規登録を、2つ同時に送る（ダブルクリックや、2つのタブ）。
@@ -2307,6 +2323,8 @@ cargo test --test u03_q -- --nocapture --test-threads=1
 
 ### たとえ話でつかむ
 
+<img src="images/R08-04_analogy.webp" alt="たとえ話の絵（ログイン・同じ文で断る・回数の制限）: マンションの、暗証番号で開く入口を考えます。" style="width: 100%;">
+
 マンションの、暗証番号で開く入口を考えます。
 
 - 間違った番号を押したとき、機械が「その部屋番号の人は住んでいません」「部屋番号は合っていますが、番号が違います」と**言い分ける**と、泥棒は、どの部屋に人が住んでいるかを知ることができます。だから、どちらでも「開きません」とだけ言います。
@@ -2450,6 +2468,8 @@ match app_state(cx).users.find_by_email(&email).await? {
 
 > **▼ このコードがやること（先に日本語で）:** alice を登録してから、6通り（正しい・大文字のメール・違うパスワード・登録していないメール・形の違うメール・空）でログインの POST を送ります。返事の状態コードと、成功なら新しいセッションのクッキーがあるか、失敗なら画面の文を表示します。最後に、失敗の画面どうしを、入力欄に残った自分のメールだけを伏せて、1文字残らず同じかで比べます。
 
+**▶ 書く所と動かし方:** コピーした `rustnote` フォルダの `tests` フォルダに、`u04_login.rs` という名前の**新しいファイル**を作り、下のコードを貼り付けて保存します。`rustnote` のフォルダで `cargo test --test u04_login -- --nocapture --test-threads=1` を実行します。
+
 ```rust
 //! 第8巻 UNIT 04: いろいろな入力でログインして、返事と、画面の文と、2つの失敗の画面の違いを確かめる。
 //! 実行: cargo test --test u04_login -- --nocapture --test-threads=1
@@ -2544,6 +2564,8 @@ cargo test --test u04_login -- --nocapture --test-threads=1
 
 > **▼ このコードがやること（先に日本語で）:** 先に1回ログインに失敗させて、ダミーのハッシュを作っておきます（UNIT 02 の問2のとおり、最初の1回だけ遅いため）。そのあと、「登録していないメール」と「パスワードが違う」の失敗を、交互に4回ずつ送り、それぞれにかかった時間を表示します。
 
+**▶ 書く所と動かし方:** コピーした `rustnote` フォルダの `tests` フォルダに、`u04_timing.rs` という名前の**新しいファイル**を作り、下のコードを貼り付けて保存します。`rustnote` のフォルダで `cargo test --test u04_timing -- --nocapture` を実行します。
+
 ```rust
 //! 第8巻 UNIT 04: 「登録していないメール」と「パスワードが違う」で、ログインの失敗にかかる時間を比べる。
 //! 実行: cargo test --test u04_timing -- --nocapture
@@ -2606,6 +2628,8 @@ cargo test --test u04_timing -- --nocapture
 #### 例4-2: ログインのたびに、トークンが新しくなる
 
 > **▼ このコードがやること（先に日本語で）:** alice を登録して、そのときのトークン A を持ったまま、もう一度ログインして、トークン B を受け取ります。A と B の先頭6文字と、`sessions` 表の行の数、A と B が同じかを表示します。最後に、A と B のそれぞれで一覧を開きます。
+
+**▶ 書く所と動かし方:** コピーした `rustnote` フォルダの `tests` フォルダに、`u04_renew.rs` という名前の**新しいファイル**を作り、下のコードを貼り付けて保存します。`rustnote` のフォルダで `cargo test --test u04_renew -- --nocapture` を実行します。
 
 ```rust
 //! 第8巻 UNIT 04: ログインのたびに、セッションのトークンが新しくなり、前のトークンが使えなくなるかを確かめる。
@@ -2693,6 +2717,8 @@ cargo test --test u04_renew -- --nocapture
 RustNote には、ログインの回数の制限がありません（UNIT 01 の問1で、10 回まちがえても止まらないことを確かめました）。ここでは、RustNote に足すときの**考え方**を、小さな例で確かめます（RustNote のコードは変えていません）。
 
 > **▼ このコードがやること（先に日本語で）:** 「10 分の窓の中で、同じ鍵の失敗が 5 回を超えたら断る」制限を、鍵ごとに覚える `HashMap` で作ります。時計は、始めの時刻に分を足して、自分で進めます。前半は、alice のメールに1分ごとに7回失敗し、8分目と12分目に本人が試します。後半は、1つのパスワードを7人のメールで1回ずつ試し、「メールごと」と「送り元（`203.0.113.7`）ごと」の2つの制限が、それぞれ許すかを表示します。
+
+**▶ 書く所と動かし方:** コピーした `rustnote` フォルダの `examples` フォルダに、`u04_limiter.rs` という名前の**新しいファイル**を作り、下のコードを貼り付けて保存します。`rustnote` のフォルダで `cargo run -q --example u04_limiter` を実行します。
 
 ```rust
 //! 第8巻 UNIT 04: ログインの回数の制限の、いちばん小さな形（RustNote には入っていない）。
@@ -3022,6 +3048,8 @@ cargo test --test u04_q -- --nocapture
 
 ### たとえ話でつかむ
 
+<img src="images/R08-05_analogy.webp" alt="たとえ話の絵（Topcoat のセッションの一生）: 劇場の、途中で出入りできる公演を考えます。" style="width: 100%;">
+
 劇場の、途中で出入りできる公演を考えます。
 
 - 入口で、係の人が**半券**を渡します。半券には、でたらめな番号が印刷されています。係の人は、その番号を、そのまま台帳に書かずに、**番号から作った印**（ハッシュ）と、「誰の席か」「いつまで有効か」を台帳に書きます。
@@ -3157,6 +3185,8 @@ SELECT u.id, u.email
 
 > **▼ このコードがやること（先に日本語で）:** alice を登録して（このときログインもします）、`sessions` 表の行（ハッシュの先頭8文字・長さ・ユーザー・期限・作ってから期限までの秒）を表示します。1秒待ってから一覧を開き、返事の `Set-Cookie` と、行が変わったかを表示します。最後に、ログアウトしたときの `Set-Cookie` と行の数、前のクッキーのまま一覧を開いたときの返事を表示します。
 
+**▶ 書く所と動かし方:** コピーした `rustnote` フォルダの `tests` フォルダに、`u05_life.rs` という名前の**新しいファイル**を作り、下のコードを貼り付けて保存します。`rustnote` のフォルダで `cargo test --test u05_life -- --nocapture` を実行します。
+
 ```rust
 //! 第8巻 UNIT 05: セッションの一生（発行・使う・ログアウト）を、クッキーと sessions 表の両方で見る。
 //! 実行: cargo test --test u05_life -- --nocapture
@@ -3281,6 +3311,8 @@ cargo test --test u05_life -- --nocapture
 セッションの記録が DB にあるので、利用者のブラウザに何もしなくても、サーバーの側でセッションを終わらせられます。2つの場合を試します。
 
 > **▼ このコードがやること（先に日本語で）:** 1つ目のテストでは、alice と bob を登録してから、alice のセッションの `expires_at` を 1 秒前にします。alice のクッキーで一覧を開き、そのあと bob がログインします。それぞれのあとで、ユーザーごとの `sessions` の行の数を表示します。2つ目のテストでは、alice が PC（登録）とスマートフォン（ログイン）の2つでログインしたあと、`DELETE FROM sessions WHERE user_id = 1` で alice の行を全部消し、2つのクッキーで一覧を開きます。
+
+**▶ 書く所と動かし方:** コピーした `rustnote` フォルダの `tests` フォルダに、`u05_server.rs` という名前の**新しいファイル**を作り、下のコードを貼り付けて保存します。`rustnote` のフォルダで `cargo test --test u05_server -- --nocapture --test-threads=1` を実行します。
 
 ```rust
 //! 第8巻 UNIT 05: サーバーの側（sessions 表）だけを変えて、クッキーの持ち主に何が起きるかを確かめる。
@@ -3588,6 +3620,8 @@ cargo test --test u05_q -- --nocapture
 
 ### たとえ話でつかむ
 
+<img src="images/R08-06_analogy.webp" alt="たとえ話の絵（クッキー・CSRF・Origin・SameSite）: 会社の、社内の書類の受付を考えます。" style="width: 100%;">
+
 会社の、社内の書類の受付を考えます。
 
 - 書類の封筒には、**どこから来たか**の印（差出人の部署）が押してあります。受付の人は、「経理部への支払いの依頼」が、社内の部署からではなく**外の会社の封筒**で来たら、受け取りません。中に社員の名前が書いてあっても、外から来た支払いの依頼は、だまされている心配があるからです。
@@ -3692,6 +3726,8 @@ CSRF の守りの、2つの層です（例6-2で、本物のブラウザで確�
 RustNote は、OriginPolicy の設定を何も書いていません。`build_router` の `module_router!()…build()` が、Topcoat の決まりの `OriginPolicy::new()`（信じる送り元なし・外す道なし）を使います。
 
 > **▼ このコードがやること（先に日本語で）:** alice を登録してから、ノートを作る `/notes` に、10 通りのリクエストを送ります。どれも alice のクッキーと `Host: 127.0.0.1:3000` を付け、`Origin` と `Sec-Fetch-Site` の付け方だけを変えます（9つは POST、最後の1つは GET）。返事の状態コードと、ノートが増えたかを表示します。
+
+**▶ 書く所と動かし方:** コピーした `rustnote` フォルダの `tests` フォルダに、`u06_policy.rs` という名前の**新しいファイル**を作り、下のコードを貼り付けて保存します。`rustnote` のフォルダで `cargo test --test u06_policy -- --nocapture` を実行します。
 
 ```rust
 //! 第8巻 UNIT 06: Topcoat の OriginPolicy が、どのリクエストを通し、どれを 403 で止めるかを、表にして確かめる。
@@ -4064,6 +4100,8 @@ error[E0425]: cannot find value `Loose` in this scope
 
 ### たとえ話でつかむ
 
+<img src="images/R08-07_analogy.webp" alt="たとえ話の絵（認可・IDOR・持ち主の境目）: マンションの、宅配の受け取りの棚を考えます。" style="width: 100%;">
+
 マンションの、宅配の受け取りの棚を考えます。
 
 - 棚には、部屋の番号の札が付いた箱が並んでいます。住人は、管理人さんに部屋の番号を言って、荷物を受け取ります。
@@ -4179,6 +4217,8 @@ pub trait NoteRepository {
 
 > **▼ このコードがやること（先に日本語で）:** alice と bob を登録し、alice のノートを1件作って、その中身（タイトル・完了・version）を表示します。次に、ノートの5つの入口（詳細・編集の画面・編集の保存・完了・削除）に、bob のクッキーと、クッキー無し（guest）で、リクエストを送り、状態コードを表にします。そのあとで、alice のノートが変わっていないかを表示し、最後に alice 本人なら詳細と編集の画面が開けることを確かめます。
 
+**▶ 書く所と動かし方:** コピーした `rustnote` フォルダの `tests` フォルダに、`u07_matrix.rs` という名前の**新しいファイル**を作り、下のコードを貼り付けて保存します。`rustnote` のフォルダで `cargo test --test u07_matrix -- --nocapture` を実行します。
+
 ```rust
 //! 第8巻 UNIT 07: alice のノート1件に、ノートの5つの入口から、alice・bob・ログインしていない人（guest）が
 //! 近づいたときの返事を、表にして確かめる。最後に、alice のノートが変わっていないかを見る。
@@ -4284,6 +4324,8 @@ alice GET /notes/1/edit → 200
 #### 例7-2: ノートの ID の連番から、分かること
 
 > **▼ このコードがやること（先に日本語で）:** alice と bob を登録し、bob がノートを1件作ります。そのあとで alice が5件作り、bob がもう1件作ります。bob の2件のノートの URL（ID）を表示し、bob が、自分のではない ID を開いてみます。
+
+**▶ 書く所と動かし方:** コピーした `rustnote` フォルダの `tests` フォルダに、`u07_ids.rs` という名前の**新しいファイル**を作り、下のコードを貼り付けて保存します。`rustnote` のフォルダで `cargo test --test u07_ids -- --nocapture` を実行します。
 
 ```rust
 //! 第8巻 UNIT 07: ノートの ID は、全員で1つの連番。bob が自分のノートを作ったときの ID から、何が分かるか。
@@ -4539,6 +4581,8 @@ cargo test --test u07_q -- --nocapture
 
 ### たとえ話でつかむ
 
+<img src="images/R08-08_analogy.webp" alt="たとえ話の絵（Better Auth との比較と、おすすめの構成）: 家の玄関の鍵を考えます。" style="width: 100%;">
+
 家の玄関の鍵を考えます。
 
 - **自分で作る鍵:** 錠前の中の仕組みを、全部自分で知っています。どこが弱いかも、自分で確かめられます。その代わり、足りない機能（指紋で開ける、外出先から鍵の具合を見る）は、自分で作り足すことになります。
@@ -4756,7 +4800,10 @@ const session = db.prepare("SELECT token, expiresAt, createdAt FROM session ORDE
 console.log(`session.token: ${session.token.slice(0, 6)}…（${session.token.length} 文字）`);
 const cookieValue = decodeURIComponent(alice.value);
 console.log(`クッキーの値の先頭は session.token と同じ: ${cookieValue.startsWith(session.token)}`);
-console.log(`クッキーの値: トークン（${session.token.length} 文字）＋「${cookieValue[session.token.length]}」＋署名（${cookieValue.length - session.token.length - 1} 文字）`);
+console.log(
+  `クッキーの値: トークン（${session.token.length} 文字）＋「${cookieValue[session.token.length]}」` +
+    `＋署名（${cookieValue.length - session.token.length - 1} 文字）`,
+);
 const days = (new Date(session.expiresAt) - new Date(session.createdAt)) / 86400000;
 console.log(`期限まで: ${days} 日`);
 const account = db.prepare("SELECT password FROM account LIMIT 1").get();
@@ -4886,7 +4933,12 @@ import { make, post } from "./lab.mjs";
 const auth = await make({ secret: "demo-secret-demo-secret-demo-secret-0123" });
 await post(auth, "/sign-up/email", { email: "alice@example.com", password: "correct horse battery", name: "alice" });
 for (let n = 1; n <= 6; n++) {
-  const result = await post(auth, "/sign-in/email", { email: "alice@example.com", password: "wrong password" }, { "x-forwarded-for": "198.51.100.7" });
+  const result = await post(
+    auth,
+    "/sign-in/email",
+    { email: "alice@example.com", password: "wrong password" },
+    { "x-forwarded-for": "198.51.100.7" },
+  );
   console.log(`${n} 回目 → ${result}`);
 }
 ```
@@ -4984,6 +5036,8 @@ user4 → 429（Too many requests. Please try again later.）
 - `state` を確かめないと、攻撃する人のアカウントに、利用者がログインさせられてしまうことを説明できる
 
 ### たとえ話でつかむ
+
+<img src="images/R08-09_analogy.webp" alt="たとえ話の絵（OIDC・外の認証サービス・MFA・回復）: 大きな会社の、入館の受付を考えます。" style="width: 100%;">
 
 大きな会社の、入館の受付を考えます。
 
@@ -5105,6 +5159,8 @@ sha2 = "0.11.1"
 
 > **▼ このコードがやること（先に日本語で）:** `code_challenge` を「`code_verifier` の SHA-256 を、URL に入れられる base64 にしたもの」（S256 の方法）として作る関数を書き、RFC 7636（PKCE の決まり）の付録 B の例と同じ値になるかを確かめます。次に、ログインのたびに作る `code_verifier`・`state`・`nonce`（どれも、でたらめな 32 バイト）を作り、認証サービスへ移る URL を組み立てて、項目ごとに表示します（URL は送りません）。
 
+**▶ 書く所と動かし方:** コピーした `rustnote` フォルダの `examples` フォルダに、`pkce.rs` という名前の**新しいファイル**を作り、下のコードを貼り付けて保存します。`rustnote` のフォルダで `cargo run -q --example pkce` を実行します。
+
 ```rust
 //! 第8巻 UNIT 09: OIDC の Authorization Code フローで使う PKCE・state・nonce を作る。
 //! 1. RFC 7636 の付録 B の例で、code_challenge の作り方が正しいかを確かめる
@@ -5204,6 +5260,8 @@ code_challenge: KHgXPO4I…
 #### 例9-2: TOTP の数字を、自分で計算する
 
 > **▼ このコードがやること（先に日本語で）:** TOTP の計算（時刻を 30 秒ごとに数え、その数を HMAC-SHA1 にかけ、決まった場所から 4 バイトを取り出して、けた数で割った余りにする）を書き、RFC 6238 の付録 B の6つの例（8 けた）と同じになるかを確かめます。次に、6 けたで、今の数字・同じ数字の2回目・30 秒前の数字・90 秒前の数字を確かめ、最後に、時計が 40 秒遅れたスマートフォンの数字を、今の 30 秒だけで比べる場合と、前後 1 つ分まで比べる場合で確かめます。
+
+**▶ 書く所と動かし方:** コピーした `rustnote` フォルダの `examples` フォルダに、`totp.rs` という名前の**新しいファイル**を作り、下のコードを貼り付けて保存します。`rustnote` のフォルダで `cargo run -q --example totp` を実行します。
 
 ```rust
 //! 第8巻 UNIT 09: 二段階認証の TOTP（30 秒ごとに変わる数字）を、自分で計算する。
@@ -5339,6 +5397,8 @@ cargo run -q --example totp
 #### 例9-3: パスワードの再設定のトークン
 
 > **▼ このコードがやること（先に日本語で）:** パスワードの再設定のトークン（でたらめな 32 バイト）を作り、その SHA-256・メールアドレス・期限（1 時間後）・使ったかどうかを記録します。1文字違うトークン・正しいトークン（1 分後）・同じトークンの2回目・2 時間後の新しいトークン、の4つを確かめます。
+
+**▶ 書く所と動かし方:** コピーした `rustnote` フォルダの `examples` フォルダに、`reset.rs` という名前の**新しいファイル**を作り、下のコードを貼り付けて保存します。`rustnote` のフォルダで `cargo run -q --example reset` を実行します。
 
 ```rust
 //! 第8巻 UNIT 09: パスワードの再設定（アカウントの回復）のための、使い捨てのトークンの作り方を試す。
@@ -5647,6 +5707,8 @@ error: could not compile `mfa_lab` (example "e09_old_base64") due to 2 previous 
 
 ### たとえ話でつかむ
 
+<img src="images/R08-10_analogy.webp" alt="たとえ話の絵（守りのテスト・監査・事故の対応）: お店の防犯を考えます。" style="width: 100%;">
+
 お店の防犯を考えます。
 
 - **毎晩の戸締まりの点検表:** 「裏口の鍵・金庫・窓」のように、守る所を1枚に並べ、毎晩同じ順に確かめます。どれかが開いていたら、**どの行で止まったか**で、すぐ分かります。これが**守りのテスト**です。
@@ -5761,6 +5823,8 @@ error: could not compile `mfa_lab` (example "e09_old_base64") due to 2 previous 
 #### 例10-1: この巻の守りを、1本のテストにまとめる
 
 > **▼ このコードがやること（先に日本語で）:** alice と bob を登録し、alice のノートを1つ作ります。そのあと、この巻で確かめた5つの守りを、順に確かめます。1つ確かめ終わるたびに `✓ 守りの名前` を表示します。どれかが外れていたら、`assert_eq!` の3つ目に書いた**守りの名前**を出して止まります。
+
+**▶ 書く所と動かし方:** コピーした `rustnote` フォルダの `tests` フォルダに、`u10_guards.rs` という名前の**新しいファイル**を作り、下のコードを貼り付けて保存します。`rustnote` のフォルダで `cargo test --test u10_guards -- --nocapture` を実行します。
 
 ```rust
 //! 第8巻 UNIT 10: この巻で確かめた守りを、1本の「守りのテスト」にまとめる。
@@ -6199,6 +6263,8 @@ POST /logout -> 303 See Other (5.5758ms)
 #### 例10-4: 事故の練習（DB が漏れたかもしれない）
 
 > **▼ このコードがやること（先に日本語で）:** alice と bob を登録してから、2つのことを確かめます。1つ目は、漏れた DB から読める値（セッションの `token_hash` と、パスワードの `password_hash`）を、攻撃する人がそのまま使ったらどうなるかです。`token_hash` は、Topcoat の `Token::new(…).encode()` で、本物のクッキーと同じ形（32 バイトを base64 にした文字列）にしてから送ります。2つ目は、`DELETE FROM sessions` で全員のセッションを一度に消したら、2人のクッキーがどうなるかです。
+
+**▶ 書く所と動かし方:** コピーした `rustnote` フォルダの `tests` フォルダに、`u10_incident.rs` という名前の**新しいファイル**を作り、下のコードを貼り付けて保存します。`rustnote` のフォルダで `cargo test --test u10_incident -- --nocapture` を実行します。
 
 ```rust
 //! 第8巻 UNIT 10: 事故の練習。「DB の中身が漏れたかもしれない」とわかったときに、
