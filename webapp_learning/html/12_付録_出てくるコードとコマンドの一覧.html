@@ -206,7 +206,7 @@ li, tr { page-break-inside: avoid; }
 <div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/12_%E4%BB%98%E9%8C%B2_%E5%87%BA%E3%81%A6%E3%81%8F%E3%82%8B%E3%82%B3%E3%83%BC%E3%83%89%E3%81%A8%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89%E3%81%AE%E4%B8%80%E8%A6%A7.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、ブラウザーの「戻る」で PDF に戻れます。</p><div style="text-align: center; padding: 28px 0 8px;">
 <div style="font-size: 14px; color: #475569;">Web アプリ開発 学習資料</div>
 <div style="font-size: 26px; font-weight: 800; color: #0f172a; margin-top: 6px; line-height: 1.35;">12 付録 — 出てくるコードとコマンドの一覧</div>
-<div style="font-size: 13px; color: #475569; margin-top: 8px;">00〜11 に出てくる 929 個のコードの部品とコマンドを、機能ごとに、意味と初めて出てくる所つきで引く</div>
+<div style="font-size: 13px; color: #475569; margin-top: 8px;">00〜11 に出てくる 939 個のコードの部品とコマンドを、機能ごとに、意味と初めて出てくる所つきで引く</div>
 </div>
 
 <style>
@@ -218,7 +218,7 @@ table th:last-child, table td:last-child { width: 17%; }
 
 <h1 id="12">12 付録: 出てくるコードとコマンドの一覧（機能ごと）</h1>
 <h2 id="_1">この一覧について</h2>
-<p>00〜11 の巻のコードに出てくる、<strong>HTML のタグ・CSS の項目・TypeScript と React・Python と Django・Rust と Topcoat・SQL・コマンドなど 929 個</strong>を、<strong>50 の分類</strong>に分けて、1 つずつ説明した一覧です。</p>
+<p>00〜11 の巻のコードに出てくる、<strong>HTML のタグ・CSS の項目・TypeScript と React・Python と Django・Rust と Topcoat・SQL・コマンドなど 939 個</strong>を、<strong>50 の分類</strong>に分けて、1 つずつ説明した一覧です。</p>
 <ul>
 <li><strong>本文との関係:</strong> どの部品も、本文の中で<strong>初めて出てくるコードのすぐ下</strong>に、「<strong>▶ ここで初めて出てくるコード</strong>」の箱で同じ説明を載せています。この一覧は、それを機能ごとに並べ直した物です。</li>
 <li><strong>使い方:</strong> 「この <code>useEffect</code> は何だっけ？」「<code>.filter()</code> は Django と TypeScript で何が違う？」と思ったら、下の「分類の一覧」から分類を選んで探してください。HTML 版（<code>webapp_learning\html</code>）なら、<code>Ctrl</code> ＋ <code>F</code> で、コードの名前で探すのがいちばん速いです。</li>
@@ -243,7 +243,7 @@ table th:last-child, table td:last-child { width: 17%; }
 <tbody>
 <tr>
 <td><a href="#cat-1">PowerShell</a></td>
-<td>18</td>
+<td>25</td>
 <td><a href="#cat-26">くり返し</a></td>
 <td>5</td>
 </tr>
@@ -303,7 +303,7 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 <tr>
 <td><a href="#cat-11">TypeScript</a></td>
-<td>74</td>
+<td>76</td>
 <td><a href="#cat-36">入出力</a></td>
 <td>3</td>
 </tr>
@@ -321,7 +321,7 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 <tr>
 <td><a href="#cat-14">Python</a></td>
-<td>131</td>
+<td>132</td>
 <td><a href="#cat-39">時間</a></td>
 <td>25</td>
 </tr>
@@ -424,8 +424,18 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>06 前編 2. 開発の準備</td>
 </tr>
 <tr>
+<td><code>Join-Path</code></td>
+<td>フォルダの場所とファイル名を、<code>\</code> でつないだ場所を作るコマンド。<code>Join-Path $PSScriptRoot "dev.env"</code> は「このスクリプトのフォルダの <code>dev.env</code>」。</td>
+<td>06 前編 2. 開発の準備</td>
+</tr>
+<tr>
 <td><code>if</code></td>
 <td>PowerShell の条件の書き方。<code>if (-not (Test-Path $envFile)) { … }</code> は「ファイルが無ければ」。比べる時は <code>-eq</code>・<code>-ne</code>・<code>-not</code> などを使います。</td>
+<td>06 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td><code>-not</code></td>
+<td>「〜でない」（<code>True</code> と <code>False</code> を逆にする）。<code>-not (Test-Path $file)</code> は「そのファイルが無いなら」。<code>!</code> と書いても同じです。</td>
 <td>06 前編 2. 開発の準備</td>
 </tr>
 <tr>
@@ -436,6 +446,26 @@ table th:last-child, table td:last-child { width: 17%; }
 <tr>
 <td><code>foreach</code></td>
 <td>PowerShell のくり返し。<code>foreach ($line in Get-Content $envFile) { … }</code> は、ファイルの 1 行ずつを <code>$line</code> に入れて、中を動かします。</td>
+<td>06 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td><code>-match</code></td>
+<td>正規表現（文字の形の決まり）に合うかの比べ方。<code>$line -match '^\s*#'</code> は「空白のあと <code>#</code> で始まる行（コメント）か」。合った部分は <code>$Matches</code> で取り出せます。</td>
+<td>06 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td><code>-or</code></td>
+<td>「または」（どちらか一方でも <code>True</code> なら <code>True</code>）。<code>$LASTEXITCODE -ne 0 -or $out.Count -eq 0</code> は「失敗したか、出力が空か」。</td>
+<td>06 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td><code>-notmatch</code></td>
+<td><code>-match</code> の逆で、正規表現に合わないかの比べ方。<code>$line -notmatch '='</code> は「<code>=</code> を含まない行か」。</td>
+<td>06 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td><code>-split</code></td>
+<td>文字列を、区切り（正規表現）で分けて並びにする演算子。<code>"a=b" -split '=', 2</code> は <code>"a"</code> と <code>"b"</code>（<code>2</code> は「多くても 2 つに分ける」）。</td>
 <td>06 前編 2. 開発の準備</td>
 </tr>
 <tr>
@@ -464,6 +494,21 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>06 前編 2. 開発の準備</td>
 </tr>
 <tr>
+<td><code>Remove-Item</code></td>
+<td>ファイルやフォルダを消すコマンド（短い呼び名は <code>rm</code>）。<strong>ごみ箱に入らず、すぐ消えます。</strong> フォルダを中身ごと消す時は <code>-Recurse</code> を付けます。消す前に、名前をよく確かめます。</td>
+<td>06 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td><code>Remove-Item -Path</code></td>
+<td><code>Remove-Item</code> で、消す物の場所を決めるオプション。<code>Remove-Item -Path "Env:NAME"</code> は、環境変数 <code>NAME</code> を消します（<code>Env:</code> は環境変数の場所）。</td>
+<td>06 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td><code>Remove-Item -ErrorAction</code></td>
+<td><code>Remove-Item</code> で、エラーが起きた時の動きを決めるオプション。<code>-ErrorAction SilentlyContinue</code> は「無くてもエラーを出さずに次へ進む」。</td>
+<td>06 前編 2. 開発の準備</td>
+</tr>
+<tr>
 <td><code>Pop-Location</code></td>
 <td><code>Push-Location</code> で覚えたフォルダへ戻るコマンド。</td>
 <td>06 前編 2. 開発の準備</td>
@@ -482,16 +527,6 @@ table th:last-child, table td:last-child { width: 17%; }
 <td><code>.\dev_serve.ps1</code></td>
 <td>今いるフォルダの <code>dev_serve.ps1</code>（静的ファイルを集めてから、waitress でアプリを動かすスクリプト）を動かす書き方。</td>
 <td>06 後編 1. 開発中と、ビルドした後</td>
-</tr>
-<tr>
-<td><code>Join-Path</code></td>
-<td>フォルダの場所とファイル名を、<code>\</code> でつないだ場所を作るコマンド。<code>Join-Path $PSScriptRoot "dev.env"</code> は「このスクリプトのフォルダの <code>dev.env</code>」。</td>
-<td>06 後編 1. 開発中と、ビルドした後</td>
-</tr>
-<tr>
-<td><code>Remove-Item</code></td>
-<td>ファイルやフォルダを消すコマンド（短い呼び名は <code>rm</code>）。<strong>ごみ箱に入らず、すぐ消えます。</strong> フォルダを中身ごと消す時は <code>-Recurse</code> を付けます。消す前に、名前をよく確かめます。</td>
-<td>09 8. 手元で、アプリから送ってみる</td>
 </tr>
 </tbody>
 </table>
@@ -658,7 +693,7 @@ table th:last-child, table td:last-child { width: 17%; }
 <tr>
 <td><code>cargo build</code></td>
 <td>プログラムを翻訳（コンパイル）して実行ファイルを作るだけで、動かしはしません。でき上がった物は <code>target\debug\</code> に入ります。<code>cargo build --release</code> だと、速く動く本番用の物が <code>target\release\</code> にできます。</td>
-<td>07 6. async と、会社のサーバーへの持ち</td>
+<td>07 6. async と、会社のサーバーへの持ち込み</td>
 </tr>
 </tbody>
 </table>
@@ -1404,6 +1439,16 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>03 7. 画面の切りかえと、部品の組み立て</td>
 </tr>
 <tr>
+<td><code>throw</code></td>
+<td>エラーを起こして、処理を止める書き方。<code>throw new Error("サーバーのエラー")</code>。<code>try … catch</code> で受け止められます。</td>
+<td>06 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td><code>finally</code></td>
+<td><code>try … catch</code> のあと、成功しても失敗しても最後に必ず動く所。片づけ（サーバーを閉じる など）を書きます。</td>
+<td>06 前編 2. 開発の準備</td>
+</tr>
+<tr>
 <td><code>class</code></td>
 <td>クラス（データと、それを扱うメソッドをまとめた設計図）を作る書き方。<code>class ApiError extends Error { … }</code>。<code>new ApiError(…)</code> で作ります。</td>
 <td>06 後編 3. サーバーとの窓口</td>
@@ -2097,7 +2142,12 @@ table th:last-child, table td:last-child { width: 17%; }
 <tr>
 <td><code>date()</code></td>
 <td>日付を表す型。<code>date(2026, 11, 10)</code> のように作ります。</td>
-<td>05 6. ORM: Python でデータベース</td>
+<td>05 6. ORM: Python でデータベースを操作する</td>
+</tr>
+<tr>
+<td><code>continue</code></td>
+<td>くり返しの「今回の残り」を飛ばして、次へ進む命令。</td>
+<td>06 前編 2. 開発の準備</td>
 </tr>
 <tr>
 <td><code>is</code></td>
@@ -2594,67 +2644,67 @@ table th:last-child, table td:last-child { width: 17%; }
 <tr>
 <td><code>.all()</code></td>
 <td><code>Request.objects.all()</code> は、表の全部の行を取り出す（まだ読みに行かない「問い合わせ」を作る）メソッドです。</td>
-<td>05 6. ORM: Python でデータベース</td>
+<td>05 6. ORM: Python でデータベースを操作する</td>
 </tr>
 <tr>
 <td><code>.delete()</code></td>
 <td>問い合わせに合う行（または 1 つの物）を、データベースから消すメソッド。消した件数が返ります。</td>
-<td>05 6. ORM: Python でデータベース</td>
+<td>05 6. ORM: Python でデータベースを操作する</td>
 </tr>
 <tr>
 <td><code>.filter()</code></td>
 <td>Django の問い合わせで、条件に合う行だけに絞るメソッド。<code>Request.objects.filter(status="approved")</code>。<code>項目名__条件</code>（<code>title__icontains="治具"</code> など）で、いろいろな条件を書けます（11 巻の B-18）。</td>
-<td>05 6. ORM: Python でデータベース</td>
+<td>05 6. ORM: Python でデータベースを操作する</td>
 </tr>
 <tr>
 <td><code>.create_user()</code></td>
 <td>Django の利用者（<code>User</code>）を作るメソッド。<code>User.objects.create_user("012345", password="…")</code>。パスワードは、そのまま保存せずに、ハッシュにしてから保存してくれます（<code>create()</code> で作ると、ハッシュにならないので使わない）。</td>
-<td>05 6. ORM: Python でデータベース</td>
+<td>05 6. ORM: Python でデータベースを操作する</td>
 </tr>
 <tr>
 <td><code>.create()</code></td>
 <td>Django で、新しい行を作ってデータベースに保存するメソッド。<code>Request.objects.create(title="…", …)</code> は、作ると同時に保存します（<code>.save()</code> は要らない）。</td>
-<td>05 6. ORM: Python でデータベース</td>
+<td>05 6. ORM: Python でデータベースを操作する</td>
 </tr>
 <tr>
 <td><code>.count()</code></td>
 <td>Django で、条件に合う行の数を数えるメソッド。<code>Request.objects.count()</code> は、全部の依頼の数。データベースに <code>SELECT count(*)</code> を送るので、全部を読み込むより速いです。</td>
-<td>05 6. ORM: Python でデータベース</td>
+<td>05 6. ORM: Python でデータベースを操作する</td>
 </tr>
 <tr>
 <td><code>.order_by()</code></td>
 <td>問い合わせの結果を並べかえるメソッド。<code>order_by("due_date")</code> は納期の近い順、<code>order_by("-due_date")</code> は遠い順（<code>-</code> で逆）。</td>
-<td>05 6. ORM: Python でデータベース</td>
+<td>05 6. ORM: Python でデータベースを操作する</td>
 </tr>
 <tr>
 <td><code>.save()</code></td>
 <td>Django のモデル（1 行分の値）を、データベースに保存するメソッド。新しい物なら行を足し、もうある物なら行を変えます。</td>
-<td>05 6. ORM: Python でデータベース</td>
+<td>05 6. ORM: Python でデータベースを操作する</td>
 </tr>
 <tr>
 <td><code>.get_status_display()</code></td>
 <td><code>choices</code> を決めた項目の、画面に出す名前（<code>"approved"</code> → <code>"回覧完了"</code>）を返すメソッド。Django が <code>get_項目名_display()</code> を自動で作ります。</td>
-<td>05 6. ORM: Python でデータベース</td>
+<td>05 6. ORM: Python でデータベースを操作する</td>
 </tr>
 <tr>
 <td><code>.values()</code></td>
 <td>Django で、行をモデルではなく、決めた列だけの辞書で受け取るメソッド。<code>Request.objects.values("status").annotate(n=Count("id"))</code> は「状態ごとの数」を数える時の書き方です。</td>
-<td>05 6. ORM: Python でデータベース</td>
+<td>05 6. ORM: Python でデータベースを操作する</td>
 </tr>
 <tr>
 <td><code>.annotate()</code></td>
 <td>問い合わせの 1 行ごとに、計算した値（数など）を付け足すメソッド。<code>values("status").annotate(n=Count("id"))</code> は「状態ごとの件数」（SQL の GROUP BY）。</td>
-<td>05 6. ORM: Python でデータベース</td>
+<td>05 6. ORM: Python でデータベースを操作する</td>
 </tr>
 <tr>
 <td><code>.select_related()</code></td>
 <td>つながった表（外部キーの先）を、1 回の問い合わせでまとめて読むメソッド。<code>select_related("approver")</code> で、ループの中で承認者を 1 人ずつ読みに行く無駄（N+1）を防げます。</td>
-<td>05 6. ORM: Python でデータベース</td>
+<td>05 6. ORM: Python でデータベースを操作する</td>
 </tr>
 <tr>
 <td><code>get_user_model()</code></td>
 <td>今のプロジェクトで使っている「ユーザー」のモデルを返す関数。自分でユーザーのモデルを作った時も、これで正しく取れます。</td>
-<td>05 6. ORM: Python でデータベース</td>
+<td>05 6. ORM: Python でデータベースを操作する</td>
 </tr>
 <tr>
 <td><code>render()</code></td>

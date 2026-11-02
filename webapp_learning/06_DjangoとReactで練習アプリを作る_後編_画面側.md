@@ -120,14 +120,6 @@ try {
 }
 ```
 
-<!-- first-use -->
-
-> **▶ ここで初めて出てくるコード**
->
-> - **`Join-Path`**（PowerShell）: フォルダの場所とファイル名を、`\` でつないだ場所を作るコマンド。`Join-Path $PSScriptRoot "dev.env"` は「このスクリプトのフォルダの `dev.env`」。
-
-<!-- /first-use -->
-
 **確かめること:** `http://127.0.0.1:8000/health` が `{"status": "ok"}` を返すこと。画面の部品（`/static/assets/index-（指紋）.js`）の返事に、`Cache-Control: max-age=315360000, public, immutable` が付くこと（試した結果、付いた。onprem の 05 の 8.4 と同じ）。
 
 ## 2. 画面の部品の組み立て

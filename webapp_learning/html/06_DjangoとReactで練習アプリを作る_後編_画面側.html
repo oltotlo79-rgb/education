@@ -338,16 +338,6 @@ li, tr { page-break-inside: avoid; }
 <span class="p">}</span>
 </code></pre></div></div>
 
-<!-- first-use -->
-
-<blockquote>
-<p><strong>▶ ここで初めて出てくるコード</strong></p>
-<ul>
-<li><strong><code>Join-Path</code></strong>（PowerShell）: フォルダの場所とファイル名を、<code>\</code> でつないだ場所を作るコマンド。<code>Join-Path $PSScriptRoot "dev.env"</code> は「このスクリプトのフォルダの <code>dev.env</code>」。</li>
-</ul>
-</blockquote>
-<!-- /first-use -->
-
 <p><strong>確かめること:</strong> <code>http://127.0.0.1:8000/health</code> が <code>{"status": "ok"}</code> を返すこと。画面の部品（<code>/static/assets/index-（指紋）.js</code>）の返事に、<code>Cache-Control: max-age=315360000, public, immutable</code> が付くこと（試した結果、付いた。onprem の 05 の 8.4 と同じ）。</p>
 <h2 id="2">2. 画面の部品の組み立て</h2>
 <div style="max-width: 760px; margin: 18px auto; text-align: center;">

@@ -232,7 +232,7 @@ python smtp_sink.py      # 127.0.0.1:1025 で待つ。この窓は動かした�
 
 > **▶ ここで初めて出てくるコード**
 >
-> - **`python`**（Python）: Python を動かすコマンド。`python -c "…"` は、`"…"` の中の Python のコードを 1 回だけ動かします。
+> - **`python`**（Python の道具）: Python を動かすコマンド。`python -c "…"` は、`"…"` の中の Python のコードを 1 回だけ動かします。
 
 <!-- /first-use -->
 
@@ -759,14 +759,6 @@ $env:SMTP_HOST = "127.0.0.1"; $env:SMTP_PORT = "1025"; $env:SMTP_USE_TLS = "fals
 cargo run -- send-test-mail --to sato@example.com
 Remove-Item Env:SMTP_HOST, Env:SMTP_PORT, Env:SMTP_USE_TLS   # 終わったら消す
 ```
-
-<!-- first-use -->
-
-> **▶ ここで初めて出てくるコード**
->
-> - **`Remove-Item`**（PowerShell）: ファイルやフォルダを消すコマンド（短い呼び名は `rm`）。**ごみ箱に入らず、すぐ消えます。** フォルダを中身ごと消す時は `-Recurse` を付けます。消す前に、名前をよく確かめます。
-
-<!-- /first-use -->
 
 実際の出力:
 
