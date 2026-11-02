@@ -186,6 +186,8 @@ topcoat 0.11.0
 
 ### たとえ話でつかむ
 
+<img src="images/R12-01_analogy.webp" alt="たとえ話の絵（release ビルドと再現性）: パン屋さんが、新しいパンを売り出すまでを考えます。" style="width: 100%;">
+
 パン屋さんが、新しいパンを売り出すまでを考えます。
 
 - **試作**では、生地をこねるたびに手を止めて、温度や重さを確かめます。焼き上がるまで時間がかかりますが、何かおかしければ、すぐにその場で気づけます。
@@ -448,6 +450,8 @@ cargo run -q --release --example u01_hash_speed
 #### 例1-3: 実行ファイルを調べる道具を作る
 
 > **▼ このコードがやること（先に日本語で）:** 渡された実行ファイル（.exe）を読み、大きさ、リンクした時刻（実行ファイルの見出しに書かれている）、ユーザーフォルダの場所（`C:\Users\あなたの名前` の部分）が中に何か所入っているかを表示します。2つ渡すと、中身が何バイト違うかも数えます。外のクレートは使わず、標準ライブラリだけで書きます。
+
+**▶ 書く所と動かし方:** コピーした `rustnote` フォルダの `examples` フォルダに、`u01_exe_report.rs` という名前の**新しいファイル**を作り、下のコードを貼り付けて保存します。`rustnote` のフォルダで `cargo run -q --example u01_exe_report -- 1つ目.exe [2つ目.exe]` を実行します。
 
 ```rust
 //! Windows の実行ファイル（.exe）を調べて、大きさ・リンクした時刻・ユーザーフォルダの
@@ -948,6 +952,8 @@ built at:   2026-10-30 22:20:06Z
 - 実行用の段の決まり（同じ Debian にそろえる・`COPY --from` の場所・`/data` の持ち主）を守らないと何が起きるかを、エラーで確かめられる
 
 ### たとえ話でつかむ
+
+<img src="images/R12-02_analogy.webp" alt="たとえ話の絵（multi-stage の Dockerfile）: パン屋さんの、工房とお店の棚を考えます。" style="width: 100%;">
 
 パン屋さんの、**工房**と**お店の棚**を考えます。
 
@@ -1488,6 +1494,8 @@ rustnote:cache2 の大きさ: 170MB
 
 ### たとえ話でつかむ
 
+<img src="images/R12-03_analogy.webp" alt="たとえ話の絵（アセットの束を本番用に作る）: お店の値札とチラシを考えます。" style="width: 100%;">
+
 お店の**値札とチラシ**を考えます。
 
 - 値札（CSS）は、**本部の印刷所**（`topcoat asset bundle`）で刷ります。印刷所は、まずお店の商品の一覧（実行ファイルの中の `asset!` の印）を見て、要る値札を全部刷ります。
@@ -1746,6 +1754,8 @@ UNIT 01 のエラー1と問1で見たとおり、実行ファイルは「自分�
 - `fly.toml` と `Dockerfile` を読んで食い違いを見つける小さな道具で、手元のコンテナと合わせて確かめられる
 
 ### たとえ話でつかむ
+
+<img src="images/R12-04_analogy.webp" alt="たとえ話の絵（fly launch・fly.toml・ポート）: 大きなマンションの宅配の受付を考えます。" style="width: 100%;">
 
 大きな**マンションの宅配の受付**を考えます。
 
@@ -2124,6 +2134,8 @@ RustNote を起動しました: http://0.0.0.0:3000
 
 ### たとえ話でつかむ
 
+<img src="images/R12-05_analogy.webp" alt="たとえ話の絵（secrets・設定・入れ替え）: 会社の金庫の暗証番号を考えます。" style="width: 100%;">
+
 会社の**金庫の暗証番号**を考えます。
 
 - 暗証番号を、社員みんなが見る**業務マニュアル**（イメージ）に書き込んではいけません。マニュアルは何冊も印刷して配られ（イメージは何度もコピーされ）、後から消すことができません。
@@ -2376,6 +2388,8 @@ Turso の `turso db tokens invalidate DB名` は、トークンを1つずつで�
 
 ### たとえ話でつかむ
 
+<img src="images/R12-06_analogy.webp" alt="たとえ話の絵（health check と起動の順番）: お店の開店と、見回りの係を考えます。" style="width: 100%;">
+
 **お店の開店と、見回りの係**を考えます。
 
 - 開店の前に、店長は、決まりの確認 → 看板 → 倉庫を開ける → 棚を整える、の順に準備します。倉庫の鍵が開かなければ、店は開けず、その日はいったん帰ります（プロセスが終わる）。本部は「店が閉まっていたら、少し待って、もう一度開けに行かせる」と決めています（restart policy）。
@@ -2612,6 +2626,8 @@ RustNote を起動しました: http://0.0.0.0:8080
 - 新しい列や表を、古い版を壊さずに出す順番（広げてから、縮める）を説明できる
 
 ### たとえ話でつかむ
+
+<img src="images/R12-07_analogy.webp" alt="たとえ話の絵（migration を出す順番と release command）: 新しいお店の、棚の入れ替えを考えます。" style="width: 100%;">
 
 **新しいお店の、棚の入れ替え**を考えます。
 
@@ -2886,6 +2902,8 @@ GET /notes -> 500 Internal Server Error (8.722ms)
 - 独自ドメインを使う手順（`fly certs add`・DNS のレコード・証明書）を説明できる
 
 ### たとえ話でつかむ
+
+<img src="images/R12-08_analogy.webp" alt="たとえ話の絵（deploy・ログ・動作の確かめ・独自ドメイン）: 新しい自動販売機を、駅に置くところを考えます。" style="width: 100%;">
 
 **新しい自動販売機を、駅に置く**ところを考えます。
 
@@ -3175,6 +3193,8 @@ fly certs check notes.example.com
 
 ### たとえ話でつかむ
 
+<img src="images/R12-09_analogy.webp" alt="たとえ話の絵（台数・地域・費用・Turso との距離）: 図書館のカウンターと、離れた書庫を考えます。" style="width: 100%;">
+
 **図書館のカウンターと、離れた書庫**を考えます。
 
 - 利用者が「この本の一覧を見せて」と頼むと、カウンターの人は書庫まで何度か往復します。会員証を確かめに1回、本が何冊あるかを数えに1回、20 冊分を取りに1回……。
@@ -3277,7 +3297,8 @@ curl.exe -X POST http://127.0.0.1:18474/proxies -d '{\"name\":\"sqld\",\"listen\
 # RustNote は、toxiproxy をはさんで sqld につなぐ
 docker run -d --name rn-app --network rn-net -p 18080:8080 -e DATABASE_URL=http://toxiproxy:28080 rustnote:u02
 # 片道 50 ms の遅れを入れる（ほかの値も同じように）
-curl.exe -X POST http://127.0.0.1:18474/proxies/sqld/toxics -d '{\"name\":\"lag\",\"type\":\"latency\",\"stream\":\"downstream\",\"attributes\":{\"latency\":50,\"jitter\":0}}'
+curl.exe -X POST http://127.0.0.1:18474/proxies/sqld/toxics `
+  -d '{\"name\":\"lag\",\"type\":\"latency\",\"stream\":\"downstream\",\"attributes\":{\"latency\":50,\"jitter\":0}}'
 ```
 
 ```text
@@ -3372,7 +3393,11 @@ class Handler(BaseHTTPRequestHandler):
     def forward(self):
         body = self.read_body()
         conn = http.client.HTTPConnection(upstream.hostname, upstream.port, timeout=30)
-        headers = {k: v for k, v in self.headers.items() if k.lower() not in ("host", "transfer-encoding", "content-length", "connection")}
+        headers = {
+            k: v
+            for k, v in self.headers.items()
+            if k.lower() not in ("host", "transfer-encoding", "content-length", "connection")
+        }
         conn.request(self.command, self.path, body=body if body else None, headers=headers)
         resp = conn.getresponse()
         data = resp.read()
@@ -3553,6 +3578,8 @@ $env:DATABASE_URL = "http://127.0.0.1:28181"
 - 依存の更新を、「別のフォルダで更新 → テスト → 公開 → 確かめる」の順で、安全に進められる
 
 ### たとえ話でつかむ
+
+<img src="images/R12-10_analogy.webp" alt="たとえ話の絵（rollback・backup・障害からの復旧・更新）: 手帳と付箋を考えます。" style="width: 100%;">
 
 **手帳と付箋**を考えます。
 

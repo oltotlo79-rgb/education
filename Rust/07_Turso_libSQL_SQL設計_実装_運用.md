@@ -682,6 +682,8 @@ sql> SELECT sqlite_version() AS version
 
 ### たとえ話でつかむ
 
+<img src="images/R07-01_analogy.webp" alt="たとえ話の絵（関係モデルと CREATE TABLE）: スポーツクラブの受付を思い浮かべてください。受付には2冊の帳面があります。" style="width: 100%;">
+
 スポーツクラブの受付を思い浮かべてください。受付には2冊の帳面があります。
 
 - **会員名簿:** 1行に1人ずつ、「会員番号・メールアドレス・入会日」を書きます。会員番号は1人に1つだけで、ほかの人と重なりません。
@@ -1096,7 +1098,8 @@ SELECT type, name, tbl_name FROM sqlite_schema ORDER BY tbl_name, type DESC, nam
 ```
 
 ```powershell
-cargo run -q --bin sql -- --setup migrations/0001_users.sql --setup migrations/0002_notes.sql --setup migrations/0003_sessions.sql sql/u01_schema_list.sql
+cargo run -q --bin sql -- --setup migrations/0001_users.sql --setup migrations/0002_notes.sql `
+  --setup migrations/0003_sessions.sql sql/u01_schema_list.sql
 ```
 
 **▼ 実行結果**
@@ -1502,6 +1505,8 @@ sql> SELECT id, user_id, '[' || title || ']' AS title, done FROM notes
 - `no such column`・`ambiguous column name` などのエラーを読んで直せる
 
 ### たとえ話でつかむ
+
+<img src="images/R07-02_analogy.webp" alt="たとえ話の絵（SELECT・WHERE・ORDER BY・LIMIT）: 図書館の司書さんに、本を探してもらう場面を考えます。あなたは注文書に次のように書いて渡します。" style="width: 100%;">
 
 図書館の司書さんに、本を探してもらう場面を考えます。あなたは注文書に次のように書いて渡します。
 
@@ -2179,6 +2184,8 @@ sql> SELECT id, title FROM notes WHERE user_id = 1 ORDER BY updated_at DESC, id 
 
 ### たとえ話でつかむ
 
+<img src="images/R07-03_analogy.webp" alt="たとえ話の絵（INSERT・UPDATE・DELETE と持ち主の条件）: 銀行の貸金庫を思い浮かべてください。金庫には番号が付いていますが、番号を言っただけでは開けてもらえません。窓口の人は「その金庫の持ち主が、あ" style="width: 100%;">
+
 銀行の貸金庫を思い浮かべてください。金庫には番号が付いていますが、**番号を言っただけでは開けてもらえません**。窓口の人は「その金庫の持ち主が、あなた本人か」を必ず確かめます。番号と本人確認の**両方**がそろって、初めて金庫が開きます。
 
 Web アプリのノートも同じです。RustNote の編集画面の URL は `/notes/3/edit` のように、ノートの番号が丸見えです。いたずら好きの人が URL の 3 を 4 や 5 に書き換えて送ってくることは、**必ず起こる**と考えてください。そのとき SQL が「番号 3 のノートを書き換える」だけだと、他人のノートが書き換わってしまいます。「番号 3 で、**しかも持ち主がログイン中の人**のノートを書き換える」と書けば、他人のノートは対象になりません。
@@ -2713,6 +2720,8 @@ sql> UPDATE notes SET body = '牛乳、卵、パン、バター', version = vers
 - 索引には、書き込みが遅くなる・DB が大きくなるという費用があることを、実測した数字で説明できる
 
 ### たとえ話でつかむ
+
+<img src="images/R07-04_analogy.webp" alt="たとえ話の絵（index と EXPLAIN QUERY PLAN）: 分厚い料理の本で「肉じゃが」の作り方を探すとき、2つの探し方があります。" style="width: 100%;">
 
 分厚い料理の本で「肉じゃが」の作り方を探すとき、2つの探し方があります。
 
@@ -3271,6 +3280,8 @@ QUERY PLAN
 
 ### たとえ話でつかむ
 
+<img src="images/R07-05_analogy.webp" alt="たとえ話の絵（transaction・ACID・競合）: スーパーで買い物をするときのことを考えます。" style="width: 100%;">
+
 スーパーで買い物をするときのことを考えます。
 
 1. 買い物かごを持つ（**BEGIN**）
@@ -3584,6 +3595,8 @@ SQLite（libSQL）では、**同じ DB に同時に書き込めるのは1つの�
 
 > **▼ このコードがやること（先に日本語で）:** 接続 `a` が書き込み用の鍵を先に取ります（`BEGIN IMMEDIATE`）。その間に、待たない設定の `b` が書き込もうとして失敗することを確かめます。次に `b` に「最大 5 秒待つ」と設定して書き込ませ、`a` が 300 ミリ秒後に確定したら `b` の書き込みが通ることを確かめます。
 
+**▶ 書く所と動かし方:** 練習用のプロジェクト `sql-lab`の `src\bin` フォルダに、`u05_locked.rs` という名前の**新しいファイル**を作り、下のコードを貼り付けて保存します。`sql-lab` のフォルダで `cargo run -q --bin u05_locked` を実行します。
+
 ```rust
 use std::time::{Duration, Instant};
 
@@ -3695,6 +3708,8 @@ Alice が、ノート 1 の編集画面をタブ A とタブ B の2つで開い�
 3. 変更が 0 行なら、「開いた後に、ほかの画面で先に保存された」と分かる → 409（Conflict、競合）を返す
 
 > **▼ このコードがやること（先に日本語で）:** タブ A とタブ B が、同じノート 1（`version` 1）を開いた場面を再現します。タブ A の保存は成功して `version` が 2 になり、古い `version` 1 のままのタブ B の保存は `VersionMismatch` になって 409 に変換されることを確かめます。比べるために、他人のノートを保存しようとした場合が 404 になることも確かめます。
+
+**▶ 書く所と動かし方:** 練習用のプロジェクト `sql-lab`の `src\bin` フォルダに、`u05_conflict.rs` という名前の**新しいファイル**を作り、下のコードを貼り付けて保存します。`sql-lab` のフォルダで `cargo run -q --bin u05_conflict` を実行します。
 
 ```rust
 use libsql::{Builder, Connection};
@@ -4097,6 +4112,8 @@ sql> SELECT id, title, version FROM notes WHERE id = 1
 - `ALTER TABLE` でできない変更を、「表の作り直し」で行う手順を説明できる
 
 ### たとえ話でつかむ
+
+<img src="images/R07-06_analogy.webp" alt="たとえ話の絵（migration と schema version）: 家の増築や改装をするとき、工務店は工事台帳を付けます。" style="width: 100%;">
 
 家の増築や改装をするとき、工務店は**工事台帳**を付けます。
 
@@ -4550,7 +4567,9 @@ UPDATE notes SET body = printf('%10001s', '') WHERE id = 1;
 `sql/u06_rebuild.sql` として保存し、0001〜0004 の migration と練習用データを用意してから実行します。
 
 ```powershell
-cargo run -q --bin sql -- --setup migrations/0001_users.sql --setup migrations/0002_notes.sql --setup migrations/0003_sessions.sql --setup migrations/0004_notes_pinned.sql --setup sql/seed.sql sql/u06_rebuild.sql
+cargo run -q --bin sql -- --setup migrations/0001_users.sql --setup migrations/0002_notes.sql `
+  --setup migrations/0003_sessions.sql --setup migrations/0004_notes_pinned.sql `
+  --setup sql/seed.sql sql/u06_rebuild.sql
 ```
 
 **▼ 実行結果**（準備の5行は省略）
@@ -4613,7 +4632,9 @@ SELECT id, title, pinned, color FROM notes WHERE user_id = 2;
 ```
 
 ```powershell
-cargo run -q --bin sql -- --setup migrations/0001_users.sql --setup migrations/0002_notes.sql --setup migrations/0003_sessions.sql --setup migrations/0004_notes_pinned.sql --setup sql/seed.sql sql/u06_errors.sql
+cargo run -q --bin sql -- --setup migrations/0001_users.sql --setup migrations/0002_notes.sql `
+  --setup migrations/0003_sessions.sql --setup migrations/0004_notes_pinned.sql `
+  --setup sql/seed.sql sql/u06_errors.sql
 ```
 
 ```text
@@ -4755,6 +4776,8 @@ sql> SELECT id, title, pinned, color FROM notes
 - `libsql::Error` の種類（`SqliteFailure`・`NullValue`・`InvalidColumnType` など）と、エラー番号の読み分けができる
 
 ### たとえ話でつかむ
+
+<img src="images/R07-07_analogy.webp" alt="たとえ話の絵（libsql Rust SDK の接続とパラメーターの bind）: 役所の窓口で手続きをする場面を考えます。" style="width: 100%;">
 
 役所の窓口で手続きをする場面を考えます。
 
@@ -4915,6 +4938,8 @@ cargo run -q --bin u07_first
 
 > **▼ このコードがやること（先に日本語で）:** 練習用データを入れたメモリの DB で、値の渡し方を4通り（`params!` マクロ・タプル・配列・名前付き）試します。続けて、型の分からない値を `Value` として受け取って種類を見分ける方法と、`NULL` を `Option` で受け取る方法を確かめます。
 
+**▶ 書く所と動かし方:** 練習用のプロジェクト `sql-lab`の `src\bin` フォルダに、`u07_params.rs` という名前の**新しいファイル**を作り、下のコードを貼り付けて保存します。`sql-lab` のフォルダで `cargo run -q --bin u07_params` を実行します。
+
 ```rust
 use libsql::{Builder, Value};
 
@@ -5023,6 +5048,8 @@ cargo run -q --bin u07_params
 #### 例7-3: SQL インジェクションを再現し、bind で防ぐ
 
 > **▼ このコードがやること（先に日本語で）:** 入力をそのまま SQL の文字列に混ぜる危険な関数と、`?1` に bind する安全な関数を用意します。攻撃者が入力欄に打ち込みそうな文字列で、会員を探す・ノートを消す、の2つを試し、危険な版では全員分が見えたり全部のノートが消えたりすること、安全な版では何も起きないことを確かめます。
+
+**▶ 書く所と動かし方:** 練習用のプロジェクト `sql-lab`の `src\bin` フォルダに、`u07_injection.rs` という名前の**新しいファイル**を作り、下のコードを貼り付けて保存します。`sql-lab` のフォルダで `cargo run -q --bin u07_injection` を実行します。
 
 ```rust
 use libsql::{Builder, Connection};
@@ -5616,6 +5643,8 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 
 ### たとえ話でつかむ
 
+<img src="images/R07-08_analogy.webp" alt="たとえ話の絵（local・remote・embedded replica）: お店の「お客さま台帳」で考えます。" style="width: 100%;">
+
 お店の「お客さま台帳」で考えます。
 
 - **ローカル（自分の手帳）:** 台帳を、自分の机の手帳に書きます。見るのも書くのも一瞬で、電話もいりません。ただし、ほかのお店（別のサーバー）からは見えません。
@@ -6173,6 +6202,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 > **▼ このコードがやること（先に日本語で）:** 何も動いていないポート 9 をリモートの DB として開き、`CREATE TABLE` を `execute` で送って、結果を表示します。
 
+**▶ 書く所と動かし方:** 練習用のプロジェクト `sql-lab`の `src\bin` フォルダに、`u08_err_stack.rs` という名前の**新しいファイル**を作り、下のコードを貼り付けて保存します。`sql-lab` のフォルダで `cargo run -q --bin u08_err_stack` を実行します。
+
 ```rust
 use libsql::Builder;
 
@@ -6498,6 +6529,8 @@ impl fmt::Debug for Secret {
 - **N+1 問題**を SQL の回数で見つけ、`JOIN`・`GROUP BY`・`IN` で1回にまとめられる
 
 ### たとえ話でつかむ
+
+<img src="images/R07-09_analogy.webp" alt="たとえ話の絵（Repository・行の変換・N+1）: 図書館のカウンターを思い浮かべてください。" style="width: 100%;">
 
 図書館のカウンターを思い浮かべてください。
 
@@ -7693,6 +7726,8 @@ JOIN 版: SQL 1 回
 - 障害が起きたときに「気づく → 止める → 調べる → 戻す → 確かめる → 振り返る」の順で動ける
 
 ### たとえ話でつかむ
+
+<img src="images/R07-10_analogy.webp" alt="たとえ話の絵（backup・token・監視・障害対応）: 家の暮らしにたとえます。" style="width: 100%;">
 
 家の暮らしにたとえます。
 
