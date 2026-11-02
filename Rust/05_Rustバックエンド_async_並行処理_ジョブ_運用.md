@@ -781,6 +781,7 @@ fn main() {
 > - **`Poll`**（非同期）: Future に「終わった？」と聞いた答えの型。`Poll::Ready(値)`（終わった）か `Poll::Pending`（まだ）です。
 > - **`Waker`**（非同期）: 「この仕事の準備ができた」と知らせて、もう一度動かしてもらうための物。tokio が、待っている仕事を起こすのに使います。
 > - **`Ready`**（非同期）: `Poll::Ready(値)` は「仕事が終わった。結果はこれ」という答え。まだなら `Poll::Pending` です。Future の `poll` は、この 2 つのどちらかを返します。
+> - **`Pending`**（非同期）: `Poll::Pending`（Future が「まだです」と答える時の値）のこと。終わった時は `Poll::Ready(値)` です。
 
 <!-- /first-use -->
 
@@ -1147,6 +1148,10 @@ async fn main() -> anyhow::Result<()> {
 > **▶ ここで初めて出てくるコード**
 >
 > - **`dotenvy::dotenv()`**（設定）: `.env` ファイルに書いた「名前=値」を、環境変数として読み込む関数（`dotenvy` の部品）。開発のパソコンで、設定をファイルにまとめておく時に使います。`.env` は Git に入れません。
+> - **`Db::open()`**（RustNote で作る物）: RustNote の `Db` を、設定（`config`）に書かれた場所で開く関数。全体のコードは第13巻に載っています。
+> - **`db::migrate()`**（RustNote で作る物）: RustNote の、テーブルを作る・変える SQL（マイグレーション）を順に流す関数。くわしくは第7巻、全体のコードは第13巻に載っています。
+> - **`topcoat::start()`**（Topcoat）: 組み立てたルーターを受け取って、Web サーバーを動かし始める関数。`topcoat::start(router).await` は、止めるまでリクエストを待ち続けます。
+> - **`Db`**（RustNote で作る物）: RustNote の、データベース（libSQL）の入れ物の型。`Db::open(…)` で開き、`db.connect()` で接続を取ります。全体のコードは第13巻（完全コード）に載っています。
 
 <!-- /first-use -->
 
@@ -1176,6 +1181,7 @@ async fn find(&self, owner: UserId, id: NoteId) -> Result<Option<Note>, RepoErro
 > **▶ ここで初めて出てくるコード**
 >
 > - **`params!`**（データベース）: `libsql::params![a, b]` は、SQL の `?1`・`?2` の場所に入れる値を並べるマクロ。値は SQL の文字列につながず、必ずこの形で渡します（SQL インジェクションを防ぐ。第7巻）。
+> - **`.connect()`**（データベース）: libSQL の `Database` から、SQL を送るための接続（`Connection`）を取るメソッド。`let conn = db.connect()?;`。
 
 <!-- /first-use -->
 
@@ -1508,6 +1514,7 @@ async fn main() {
 
 > **▶ ここで初めて出てくるコード**
 >
+> - **`.id()`**（スレッドと共有）: スレッドの番号（`ThreadId`）を返すメソッド。`thread::current().id()` で、今どのスレッドで動いているかを表示できます。
 > - **`std::thread::current()`**（スレッドと共有）: 今動いているスレッドの情報（名前・番号）を返す関数。どのスレッドで動いたかを表示する時に使います。
 > - **`tokio::spawn()`**（非同期）: 非同期の仕事を、別のタスクとしてすぐ動かし始める関数。`tokio::spawn(async move { … })`。返ってくる物（`JoinHandle`）を `.await` すると、結果を受け取れます。
 
@@ -2112,6 +2119,15 @@ pub struct AppState {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`UserRepository`**（RustNote で作る物）: RustNote で、利用者（ユーザー）をデータベースに入れる・探す仕事をまとめたトレイト（決まりごと）。`Arc<dyn UserRepository + Send + Sync>` は「この決まりを守る物なら何でも入る、スレッドをまたいで共有できる箱」です。全体のコードは第13巻に載っています。
+> - **`SessionRepository`**（RustNote で作る物）: RustNote で、ログインの記録（セッション）を入れる・探す・消す仕事をまとめたトレイト。全体のコードは第13巻に載っています。
+
+<!-- /first-use -->
+
 - `Arc` は、たくさんのタスクで同じものを共有するための入れ物です（第3巻 UNIT 10）。`Rc` では、エラー2と同じエラーになります。
 - `dyn NoteRepository + Send + Sync` は、「中身は `NoteRepository` を実装した何かで、別のスレッドへ渡してよく（`Send`）、何本ものスレッドから同時に使ってよい（`Sync`）もの」という意味です（第4巻 UNIT 04 の `dyn`）。
 
@@ -2128,6 +2144,14 @@ pub struct AppState {
         Err(error) => Err(AppError::internal(error)),
     }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`tokio::task::spawn_blocking()`**（非同期）: 時間のかかる重い計算や、待ってしまう処理（パスワードのハッシュなど）を、非同期の仕事を回すスレッドとは別のスレッドで動かす関数。ほかの仕事を止めないために使います。
+
+<!-- /first-use -->
 
 `spawn_blocking` は UNIT 07 で学ぶ「重い計算用の spawn」です。引換券を `.await` した結果が `Result` で、その中身もまた `Result` なので、`Ok(Ok(..))`・`Ok(Err(..))`・`Err(..)` の3つに分けています。この形は、練習問題3で自分でも書きます。
 
@@ -5292,8 +5316,11 @@ static DUMMY_HASH: LazyLock<String> = LazyLock::new(|| {
 
 > **▶ ここで初めて出てくるコード**
 >
+> - **`.hash_password()`**（認証）: `argon2` の部品で、パスワードからハッシュ（元に戻せない、ソルト付きの文字列）を作るメソッド。`Argon2::default().hash_password(パスワードのバイト, &salt)`。データベースには、パスワードではなくこのハッシュを保存します。
 > - **`LazyLock::new()`**（スレッドと共有）: 初めて使われた時に 1 回だけ作る値を、作り方の関数と一緒に用意する関数。
+> - **`Argon2::default()`**（認証）: パスワードを安全に保存するための計算（Argon2id）を、おすすめの設定で用意する書き方（`argon2` の部品）。この計算は、わざと重く作られていて、パスワードを総当たりで当てるのを難しくします（第8巻）。
 > - **`LazyLock`**（スレッドと共有）: 初めて使われた時に 1 回だけ作られ、その後はずっと同じ値を使う入れ物。`static DUMMY: LazyLock<String> = LazyLock::new(|| { … });` のように、作るのに手間がかかる物を、プログラム全体で共有する時に使います。
+> - **`Argon2`**（認証）: パスワードをハッシュにする方法の 1 つ（Argon2）を使うための型。`Argon2::default()` で、おすすめの設定のものを作ります。わざと時間とメモリを使うので、総当たりで破られにくくなります。
 
 <!-- /first-use -->
 
@@ -6492,6 +6519,7 @@ fn main() {
 
 > **▶ ここで初めて出てくるコード**
 >
+> - **`.verify_password()`**（認証）: `argon2` の部品で、入力されたパスワードが、保存してあるハッシュと合うかを確かめるメソッド。合えば `Ok(())`、合わなければ `Err` です。
 > - **`PasswordHash::new()`**（認証）: 保存してあるハッシュの文字列を読み取って、確かめに使える形にする関数。形が違えばエラーです。
 > - **`PasswordHasher`**（認証）: パスワードからハッシュ（保存用の値）を作る機能（トレイト。`password_hash` の部品）。`argon2.hash_password(…)` を使うには、これを `use` します。
 > - **`PasswordVerifier`**（認証）: 入力されたパスワードが、保存してあるハッシュと合うかを確かめる機能（トレイト）。`argon2.verify_password(…)` を使うには、これを `use` します。
@@ -7027,6 +7055,14 @@ pub async fn hash_password(password: &Password) -> Result<String, AppError> {
     }
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Password`**（RustNote で作る物）: パスワードを入れる専用の型（`struct Password(String)`）。ふつうの `String` と区別することで、うっかりログに出すなどの間違いを防ぎます。この巻の後の方で作ります。
+
+<!-- /first-use -->
 
 - `password.clone()` で持ち主のいる写しを作り、`move` で blocking スレッドへ渡しています（「よくあるエラー1」を避ける形）。`Password` は、RustNote の `src/domain.rs` で定義している、パスワード用の newtype です。
 - 失敗は、どちらも `AppError::internal`（サーバーの中の問題、500）にしています。利用者には「エラーが起きました」とだけ見せ、くわしい理由はログに残す、という RustNote の方針です（第7巻 UNIT 10 でも見ました）。
@@ -7701,6 +7737,14 @@ async fn main() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.json()`**（HTTP クライアント）: `reqwest` の答え（レスポンス）の本文を、JSON として読んで、決めた型に変えるメソッド。`response.json::<Weather>().await`。
+
+<!-- /first-use -->
+
 `src/bin/u08_json.rs` として保存して実行します。
 
 ```powershell
@@ -8118,6 +8162,7 @@ async fn main() {
 
 > **▶ ここで初めて出てくるコード**
 >
+> - **`.post()`**（HTTP クライアント）: `reqwest` の `Client` で、POST（データを送る）のリクエストを作り始めるメソッド。`client.post(url).body("…").send().await` のようにつなげて送ります。
 > - **`.body()`**（HTTP）: リクエストやレスポンスの本文を取り出す（決める）メソッド。テストで `Request::builder()….body(Body::from("…"))` のように本文を入れます。
 
 <!-- /first-use -->
@@ -8306,9 +8351,13 @@ pub async fn create(cx: &Cx, Form(input): Form<NoteForm>) -> Result<impl View> {
 >
 > - **`href!`**（Topcoat）: Topcoat のマクロ。ページの関数から、その URL を作ります。`href!(id::show, id::Id(note.id))` は「このノートの詳細ページの URL」。URL を文字で書かないので、打ちまちがいがコンパイルの時に見つかります（第6巻 UNIT 04）。
 > - **`.resolve()`**（Topcoat）: `href!` で作った URL の部品を、今のリクエスト（`cx`）に合わせて、本物の URL の文字列にするメソッド。
+> - **`flash::set()`**（RustNote で作る物）: RustNote で、次の画面に 1 回だけ出すお知らせ（フラッシュ。「ノートを作りました」など）を決める関数。第10巻で作ります。
 > - **`POST`**（Topcoat）: `#[page(POST)]` の `POST` は、「フォームの送信（POST）に答えるページ」にする指定。何も書かなければ、ふつうの表示（GET）に答えます（第6巻 UNIT 06）。
 > - **`Cx`**（Topcoat）: Topcoat の「今のリクエストの情報（URL・クッキー・セッションなど）が入った箱」。ページの関数の引数 `cx: &Cx` で受け取り、`href!(…).resolve(cx)` などで使います（第6巻 UNIT 04）。
 > - **`Form`**（Topcoat）: Topcoat の、送られてきたフォームの中身を受け取る型。`Form(input): Form<NoteForm>` と書くと、フォームの項目が `NoteForm` の形に読み取られて `input` に入ります（第6巻 UNIT 06）。
+> - **`NoteForm`**（RustNote で作る物）: ノートの作成・編集のフォームから送られてくる値（題名と本文）を受け取る struct。`Form(input): Form<NoteForm>` で受け取ります。第10巻で作ります。
+> - **`Flash`**（RustNote で作る物）: RustNote の、画面に 1 回だけ出すお知らせの種類を表す enum。`Flash::NoteCreated`（作りました）・`Flash::LoggedOut`（ログアウトしました）などがあります。全体のコードは第13巻に載っています。
+> - **`NoteCreated`**（RustNote で作る物）: `Flash` の値の 1 つで、「ノートを作りました」のお知らせ。
 > - **`Id`**（Topcoat）: URL の一部（`/notes/3` の `3` など）を、型として受け取るための入れ物。この本の RustNote では、`id::Id(番号)` の形で、URL の中のノートの番号を表します。
 
 <!-- /first-use -->
@@ -9318,6 +9367,7 @@ async fn access_log(cx: &Cx, body: Body, next: Next<'_>) -> Result<Response> {
 >
 > - **`#[layer]`**（Topcoat）: Topcoat の印（属性）。全部（またはある範囲）のページの前後に、決まった処理（アクセスのログ・ログインの確かめなど）をはさむ「層」を作ります（第6巻 UNIT 03・第5巻）。
 > - **`.downcast_ref()`**（エラー処理）: いろいろな種類が入るエラー（`anyhow::Error` など）の中身が、指定した型なら、それを借りて `Some` で返すメソッド。「このエラーは〇〇の種類か」を調べる時に使います。
+> - **`Body`**（HTTP）: リクエストやレスポンスの本文を表す型。Topcoat では `topcoat::router::Body` として使い、ミドルウェア（`layer`）で本文を受け取って次へ渡す時などに出てきます。
 > - **`Next`**（Topcoat）: `#[layer]` の関数で受け取る「次の処理」。`next.run(…)` を呼ぶと、その先（ページ）が動いて、答えが返ってきます。前後に自分の処理をはさめます。
 > - **`SeeOther`**（Topcoat）: 「303 See Other」（別のページへ移って）という答えを表す型。フォームを送ったあと、一覧や詳細のページへ移す時（PRG）に使います（第6巻 UNIT 06）。
 
@@ -9340,6 +9390,7 @@ fn log_if_internal(status: StatusCode, error: &Error) {
 > **▶ ここで初めて出てくるコード**
 >
 > - **`.chain()`**（エラー処理）: `anyhow` のエラーの、原因を外側から順にたどれる形で返すメソッド。`error.chain()` で、説明を足した順に、元のエラーまで 1 つずつ見られます。（イテレーターの `.chain()` は「2 つの並びをつなぐ」別の意味です。）
+> - **`StatusCode`**（HTTP）: HTTP の状態コード（`200 OK`・`404 Not Found` など）を表す型。`StatusCode::OK`・`StatusCode::NOT_FOUND` のように、名前で書けます。
 
 <!-- /first-use -->
 
@@ -9868,6 +9919,7 @@ pub async fn counts(conn: &Connection) -> Result<Vec<(String, i64)>, libsql::Err
 >
 > - **`.execute()`**（データベース）: 値を入れたり変えたりする SQL の文を、1 つ実行するメソッド（libsql）。`conn.execute("UPDATE … WHERE id = ?1", params![id]).await?` のように、値は `params!` で渡します。変わった行の数が返ります。
 > - **`Builder::new_local()`**（データベース）: libsql で、手元のファイル（SQLite の形）のデータベースを開く準備をする関数。`.build().await?` で開いた物ができます（第7巻）。
+> - **`Database`**（データベース）: libSQL の、データベース（ファイルやサーバー）を表す型。`Builder::new_local("data.db").build().await?` で作り、`.connect()` で接続を取ります。
 > - **`IF`**（SQL）: `CREATE TABLE IF NOT EXISTS` の一部で、「もし〜なら」。「無ければ作る、あれば何もしない」という意味になります。
 > - **`EXISTS`**（SQL）: SQL で「ある」。`IF NOT EXISTS` は「無ければ」という意味です。
 > - **`IN`**（SQL）: SQL で「このどれか」。`WHERE status IN ('queued', 'running')` は、状態がどちらかの行だけです。`CHECK (pinned IN (0, 1))` は、0 か 1 しか入れられない決まりです。
@@ -10537,6 +10589,14 @@ RustNote には、バックグラウンドジョブはありません。メー�
     state.sessions.delete_expired(SystemTime::now()).await?;
     Ok(())
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.delete_expired()`**（RustNote で作る物）: `SessionRepository` のメソッドで、期限が切れたセッションをまとめて消します。全体のコードは第13巻に載っています。
+
+<!-- /first-use -->
 
 - ログインのリクエストの**中で、ついでに**掃除しています。掃除は短い `DELETE` 1回なので、利用者を待たせる時間はわずかです。このくらいの仕事なら、ジョブの仕組みを作るより、この形のほうが簡単で十分です。
 - もし RustNote に「登録したら確認のメールを送る」機能を足すなら、この単元の形の出番です。登録のリクエストでは、ユーザーを保存するのと同じ transaction の中で `jobs` 表に「メールを送る」仕事を入れ、すぐに 303 で答えます（UNIT 08 の PRG）。メールは worker が送り、相手のサーバーが遅くても、失敗しても、登録の画面には影響しません。

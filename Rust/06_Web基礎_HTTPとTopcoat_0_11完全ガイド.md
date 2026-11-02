@@ -1439,6 +1439,15 @@ RustNote の `src/main.rs` の最後の部分です（抜き出しています�
         .context("サーバーを起動できませんでした（HOST / PORT を確認してください）")?;
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`routes::build_router()`**（RustNote で作る物）: RustNote の画面（ページ）を全部登録したルーターを組み立てる関数。第6巻の後の方と第10巻で作ります。
+> - **`config::listen_address()`**（RustNote で作る物）: RustNote の、待ち受ける場所（`127.0.0.1:3000` など）を、環境変数から決める関数。全体のコードは第13巻に載っています。
+
+<!-- /first-use -->
+
 - 例2-2と同じく、`topcoat::start(router).await` で待ち受けています。`HOST` と `PORT` を読むのも同じです。公開するとき（Fly.io）は `HOST=0.0.0.0`・`PORT=8080` にします（第12巻）。
 - 例2-3で見たとおり、`eprintln!` で「起動しました」を、`start` の**前**に表示しています。ポートが使われていると、この表示のあとにエラーで止まります。例2-3の形（`TcpListener::bind` で押さえてから表示し、`topcoat::serve` に渡す）にすれば直せます（RustNote のコードは変えていません）。
 - RustNote のルーターは、`discover()` ではなく、`module_router!()` で作っています（`src/routes.rs` の `build_router`）。ファイルの並びをそのまま URL の並びにする書き方で、UNIT 03 で扱います。
@@ -2200,6 +2209,7 @@ pub fn build_router(state: AppState, assets: impl Into<AssetConfig>) -> Router {
 > **▶ ここで初めて出てくるコード**
 >
 > - **`.cookies()`**（Topcoat）: ルーターに、クッキーを使う仕組みを登録するメソッド（`module_router!().cookies()`）。セッションを使う時も、先にこれを登録します。
+> - **`.sessions()`**（Topcoat）: ルーターに、セッション（ログインの状態を覚える仕組み）を登録するメソッド。`.sessions(SessionConfig::default())`。先に `.cookies()` も登録します（第8巻）。
 > - **`.app_context()`**（Topcoat）: アプリ全体で共有する物（データベースの接続など）をルーターに登録するメソッド。ページの関数からは、`cx` を通して取り出せます（第6巻 UNIT 07）。
 > - **`SessionConfig::default()`**（Topcoat）: Topcoat のセッション（ログインの状態などを覚える仕組み）を、おすすめの設定で用意する書き方。`.sessions(SessionConfig::default())` でルーターに登録します（第6巻 UNIT 10）。
 > - **`AssetConfig`**（Topcoat）: Topcoat のアセット（CSS・画像など）の配り方の設定の型。本番は束（`AssetBundle`）から、テストは `AssetConfig::hosted_at(…)` のように、場面に合わせて渡します。
@@ -2951,6 +2961,15 @@ pub async fn index(cx: &Cx) -> Result<impl View> {
     let params = query_params::<NotesParams>(cx)?;
     let query = NoteQuery::new(params.q.as_deref(), params.page);
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`NoteQuery::new()`**（RustNote で作る物）: `NoteQuery` を作る関数。ページ番号が無い・0 の時は 1 にするなど、値を整えてから作ります。
+> - **`NoteQuery`**（RustNote で作る物）: ノートの一覧の、検索の言葉とページ番号をまとめた struct。`NoteQuery::new(検索語, ページ)` で作ります。全体のコードは第13巻に載っています。
+
+<!-- /first-use -->
 
 - 例4-1の `NotesQuery` と同じ形です。読んだ値を、そのまま SQL に使うのではなく、`NoteQuery::new` で、「前後の空白を取る」「空白だけなら検索しない」「ページは 1 以上」と整えてから使います（第10巻 UNIT 01）。
 - 最初に `require_user(cx)` でログインを確かめてから、クエリを読んでいます。どちらも `cx` から読むので、順番は自分で決められます。
@@ -4034,6 +4053,7 @@ async fn main() {
 
 > **▶ ここで初めて出てくるコード**
 >
+> - **`Json`**（Topcoat）: 本文を JSON で返すための型（`topcoat::router::content::Json`）。`Json(Health { … })` のように包んで返すと、JSON の文字に変えて送ってくれます。
 > - **`CREATED`**（HTTP）: `StatusCode::CREATED` は、HTTP の答えの番号 201（「作りました」）。新しいデータを作った時に返します。
 
 <!-- /first-use -->
@@ -4297,6 +4317,14 @@ pub async fn logout(cx: &Cx) -> Result<()> {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`LoggedOut`**（RustNote で作る物）: `Flash` の値の 1 つで、「ログアウトしました」のお知らせ。
+
+<!-- /first-use -->
+
 - 状態を変える操作（ログアウト）なので、GET ではなく POST にしています。戻り値は `Result<()>` で、成功しても `Ok` は返さず、いつも 303 です。
 - 失敗したとき（DB に接続できないなど）に、RustNote のエラー画面（レイアウトの `error_boundary`）を通したいので、`#[route]` ではなく `#[page(POST)]` にしています。
 
@@ -4306,6 +4334,14 @@ pub async fn logout(cx: &Cx) -> Result<()> {
 #[route(GET)]
 pub async fn health(cx: &Cx) -> Result<(StatusCode, Json<Health>)> {
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Health`**（RustNote で作る物）: RustNote の `/health`（動いているかを確かめる URL）が返す中身の struct。第9巻で作ります。
+
+<!-- /first-use -->
 
 - DB に問い合わせて、成功なら `(StatusCode::OK, Json(Health { status: "ok" }))`、失敗なら `(StatusCode::SERVICE_UNAVAILABLE, …)` を返します。人ではなく、Fly.io が読む窓口です（第12巻 UNIT 06）。
 
@@ -4980,6 +5016,7 @@ async fn main() {
 > - **`.method()`**（HTTP）: `Request::builder().method(Method::POST)` のように、作るリクエストの HTTP のメソッドを決めるメソッド。
 > - **`.uri()`**（HTTP）: `Request::builder().uri("/notes")` のように、作るリクエストの URL を決めるメソッド。
 > - **`.into_body()`**（HTTP）: HTTP の答え（レスポンス）から、本文の部分だけを取り出すメソッド。テストで、返ってきた本文を確かめる時に使います。
+> - **`Body::empty()`**（HTTP）: 中身が空っぽの本文を作る関数。本文の要らないリクエスト（GET など）をテストで作る時に、`.body(Body::empty())` と書きます。
 > - **`String::from_utf8()`**（文字列）: バイトの並び（`Vec<u8>`）を、文字列（`String`）に変える関数。UTF-8 の文字として読めない時は `Err` を返します。
 > - **`Method`**（HTTP）: HTTP のメソッド（`GET`・`POST`・`PUT`・`DELETE` など）を表す型。
 
@@ -6604,7 +6641,10 @@ async fn main() {
 
 > **▶ ここで初めて出てくるコード**
 >
+> - **`.value()`**（クッキー）: クッキーから、値の部分（`名前=値` の `値`）を取り出すメソッド。`cookie.value().to_string()`。
+> - **`session::token_hash()`**（Topcoat）: Topcoat の関数。今のリクエストのセッションの印（トークン）の、ハッシュを返します。データベースの `sessions` 表に、ハッシュで記録しておき、ログイン中かを調べるのに使います（第8巻 UNIT 05）。
 > - **`Cookie::build()`**（クッキー）: クッキー（ブラウザーに覚えておいてもらう小さな値）を、設定しながら作り始める関数。`Cookie::build(("theme", "dark")).path("/").build()` のように、名前と値、使う範囲などを決めます。
+> - **`session::stop()`**（Topcoat）: Topcoat のセッションを終わらせる（ログアウトする）関数。消したセッションの番号を返すので、データベースからも消せます（第8巻）。
 > - **`Cookie`**（クッキー）: クッキー 1 つ（名前と値と、使う範囲・期限などの設定）を表す型。
 > - **`Cookies`**（クッキー）: 今のリクエストのクッキーを読み書きする入れ物（クッキーの瓶）。`jar.add(…)` で足し、`jar.get("名前")` で読みます。
 > - **`RouterBuilderCookieExt`**（Topcoat）: ルーターに `.cookies()`（クッキーを使う仕組み）を登録できるようにする機能（トレイト）。

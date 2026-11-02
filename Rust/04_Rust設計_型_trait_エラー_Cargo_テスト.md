@@ -1917,6 +1917,7 @@ fn main() {
 >
 > - **`where`**（型とメソッド）: ジェネリクス（型を後から決める書き方）の条件を、関数の後ろにまとめて書く所。`where T: Display, I: IntoIterator<Item = T>` のように、条件が長い時に読みやすくなります。
 > - **`IntoIterator`**（イテレーター）: 「`for` で回せる物」の機能（トレイト）。`Vec`・配列・`HashMap` などが持っています。`I: IntoIterator<Item = T>` は「`T` が 1 つずつ出てくる、回せる物なら何でも」という条件です。
+> - **`Item`**（イテレーター）: イテレーターが 1 つずつ取り出す物の型（関連型）。`IntoIterator<Item = T>` は「`T` を 1 つずつ取り出せる物なら何でもよい」という意味です。
 
 <!-- /first-use -->
 
@@ -3309,6 +3310,14 @@ fn main() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Error`**（エラー処理）: エラーを表す型が守る決まりごと（トレイト）。`use std::error::Error;` と書くと、`.source()`（元になったエラー）などを使えます。`Box<dyn Error>` は「どんなエラーでも入る箱」です。
+
+<!-- /first-use -->
+
 ```powershell
 cargo run --bin u05_manual
 ```
@@ -3538,6 +3547,8 @@ fn main() {
 > - **`#[source]`**（エラー処理）: `thiserror` の印（属性）。「このエラーの元になったエラー」の項目に付けます。`.source()` や `anyhow` の原因の表示で、元のエラーまでたどれるようになります。
 > - **`#[from]`**（エラー処理）: `thiserror` の印（属性）。付けた項目の型のエラーから、自分のエラーへ自動で変換できるようにします（`From` の実装を作る）。これで `?` を使った時に、自動で自分のエラーに変わります。
 > - **`.source()`**（エラー処理）: エラーの「元になったエラー」を返すメソッド。`while let Some(e) = err.source()` のようにたどると、原因をさかのぼれます。
+> - **`std::error::Error::source()`**（エラー処理）: エラーの「元になったエラー」を返す関数（`.source()` と同じ）。`Option` で返るので、`while let Some(e) = cause` のようにたどって、原因をさかのぼれます。
+> - **`std::io::Error::new()`**（エラー処理）: 入出力のエラー（`std::io::Error`）を自分で作る関数。`std::io::Error::new(ErrorKind::Other, "説明")` のように、エラーの種類と説明を渡します。
 > - **`From`**（型とメソッド）: 「ある型から作れる」機能（トレイト）。`impl From<RepoError> for AppError` を書くと、`RepoError` を `AppError` に変えられます。`?` は、エラーを返す時にこの変換を自動で使います。
 > - **`ErrorKind`**（エラー処理）: 入出力のエラーの「種類」。`std::io::ErrorKind::NotFound`（無い）・`ConnectionRefused`（つなぐのを断られた）などがあり、`e.kind()` で調べて、種類ごとに処理を分けられます。
 > - **`ConnectionRefused`**（エラー処理）: `ErrorKind::ConnectionRefused` は、「相手のパソコンに、その番号で待っているプログラムがいない」ために、つなぐのを断られた、というエラーの種類です。
@@ -3688,6 +3699,7 @@ fn main() -> Result<()> {
 > - **`bail!`**（エラー処理）: `anyhow` のマクロ。その場でエラーを作って、関数から返します。`bail!("ノートが 1 件もありません");` は `return Err(anyhow!("…"));` の短い書き方です。
 > - **`.with_context()`**（エラー処理）: `anyhow` のメソッド。失敗した時のエラーに、「何をしていて失敗したか」の説明を書き足します。`.with_context(|| format!("{path} を読めませんでした"))?`。ログを見た人が、原因をすぐ分かるようになります。
 > - **`.unwrap_or_else()`**（エラー処理）: `Option` や `Result` から中身を取り出し、無い（失敗した）時は、渡した関数を動かして代わりの値を作るメソッド。`unwrap_or` と違い、代わりの値を作る処理が、必要な時だけ動きます。
+> - **`.context()`**（エラー処理）: `anyhow` の部品で、エラーに「何をしていた時のエラーか」の説明を足すメソッド。`fs::read_to_string(path).context("設定ファイルを読めません")?`。説明を `format!` で作る時は、必要な時だけ作る `.with_context(|| …)` を使います。
 > - **`std::env::args()`**（プロセス）: プログラムに渡された引数を取り出す関数（`env::args()` と同じ）。
 > - **`Context`**（エラー処理）: `anyhow::Context` は、`with_context`・`context` メソッドを使えるようにする機能（トレイト）。`use anyhow::Context;` と書いておくと、`Result` や `Option` に説明を付けられます。
 
@@ -6423,6 +6435,7 @@ fn main() {
 > - **`std::process::exit()`**（プロセス）: プログラムを、その場で終わらせる関数（`process::exit` と同じ）。`std::process::exit(1)` は、終了コード 1（失敗）で終わります。
 > - **`VarError`**（プロセス）: 環境変数を読む `env::var` が失敗した時のエラーの型。`VarError::NotPresent`（設定されていない）と `VarError::NotUnicode`（文字として読めない）の 2 種類があります。
 > - **`NotPresent`**（プロセス）: `VarError::NotPresent` は、「その名前の環境変数が設定されていない」というエラーの種類です。
+> - **`NotUnicode`**（プロセス）: `env::var` が返すエラーの 1 つ（`env::VarError::NotUnicode`）。環境変数はあったが、中身が正しい文字（UTF-8）でなかった時です。もう 1 つは「無かった」の `NotPresent` です。
 
 <!-- /first-use -->
 
@@ -7215,6 +7228,16 @@ pub use status::{Action, NoteStatus, TransitionError};
 pub use title::{MAX_TITLE_CHARS, NoteTitle, TitleError};
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Action`**（RustNote で作る物）: RustNote のノートに対する操作（公開する・アーカイブするなど）を表す enum。この巻の後の方（「もう一歩」の所）で作ります。
+> - **`NoteStatus`**（RustNote で作る物）: RustNote のノートの状態（下書き・公開・アーカイブ）を表す enum。この巻の後の方（「もう一歩」の所）で作ります。
+> - **`TransitionError`**（RustNote で作る物）: RustNote で、ノートの状態を、決まりにない形で変えようとした時のエラーを表す型。この巻の後の方で作ります。
+
+<!-- /first-use -->
+
 **src/title.rs**
 
 ```rust
@@ -7701,6 +7724,14 @@ fn main() {
     println!("{progress:?}");
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Progress`**（RustNote で作る物）: 練習問題で作る、進み具合を表す enum。この巻の解答と解説で作ります。
+
+<!-- /first-use -->
 
 ```text
    Compiling toggle v0.1.0 (...\mustuse)

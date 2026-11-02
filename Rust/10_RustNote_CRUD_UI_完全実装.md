@@ -642,6 +642,15 @@ pub async fn index(cx: &Cx) -> Result<impl View> {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`flash::take()`**（RustNote で作る物）: RustNote で、決めておいたお知らせ（フラッシュ）を取り出す関数。取り出すと消えるので、1 回だけ表示されます。第10巻で作ります。
+> - **`NoteFormState::default()`**（型とメソッド）: この巻で作る型 `NoteFormState`（入力フォームの中身と、まちがいの知らせ）を、空の状態で作る書き方。最初にフォームを表示する時に使います。
+
+<!-- /first-use -->
+
 - 最初の行で `require_user(cx)` を呼びます。ログインしていなければ、ここで 303 になり、下の行は動きません。
 - `notes_index` に渡すのは、`owner: user.id` です。一覧の部品は、持ち主を引数で受け取るので、「誰の一覧か」を、部品の中で勝手に決めることができません。
 
@@ -1572,6 +1581,15 @@ impl NewNote {
     }
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.err()`**（エラー処理）: `Result` から、エラーの方だけを `Option` で取り出すメソッド。`Err(e)` は `Some(e)` に、`Ok(…)` は `None` になります（`.ok()` の逆）。
+> - **`NoteInputErrors`**（RustNote で作る物）: ノートの入力のエラー（題名・本文それぞれの、まちがいの文）をまとめた struct。全体のコードは第13巻に載っています。
+
+<!-- /first-use -->
 
 - 2つの検査を**両方とも先に**行い、結果の組 `(title, body)` で場合を分けます。4つの結果の図のうち、両方 `Ok` のときだけ `NewNote` を作ります。
 - それ以外は、`title.err()`（`Err` なら `Some(エラー)`、`Ok` なら `None`）で、見つかった問題だけを `NoteInputErrors` に入れます。`?` で最初のエラーで止めてしまうと、タイトルを直して出し直したあとで、初めて本文のエラーを言われることになります。
@@ -3348,6 +3366,14 @@ pub async fn toggle(cx: &Cx) -> Result<()> {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`NoteToggled`**（RustNote で作る物）: `Flash` の値の 1 つで、「完了・未完了を切りかえました」のお知らせ。
+
+<!-- /first-use -->
+
 > **▼ このコードがやること（先に日本語で）:** alice がノートを1件作り、`done` と `version` を表示します。切り替えの POST を2回送り、それぞれの返事（状態コード・移動先・お知らせのクッキー）を表示します。ブラウザと同じように、お知らせのクッキーも付けて移動先（詳細）を開き、完了の印・ボタンの文字・お知らせがあるかと、DB の `done` と `version` を表示します。
 
 **▶ 書く所と動かし方:** コピーした `rustnote` フォルダの `tests` フォルダに、`u05_toggle.rs` という名前の**新しいファイル**を作り、下のコードを貼り付けて保存します。`rustnote` のフォルダで `cargo test --test u05_toggle -- --nocapture` を実行します。
@@ -3928,6 +3954,14 @@ pub async fn delete(cx: &Cx) -> Result<()> {
     Err(see_other(href!(crate::routes::notes::index).resolve(cx)).into())
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`NoteDeleted`**（RustNote で作る物）: `Flash` の値の 1 つで、「ノートを消しました」のお知らせ。
+
+<!-- /first-use -->
 
 リポジトリの `delete`（`src/repository/notes.rs`）は、`execute` が返す「変わった行の数」を見ます。
 
@@ -5209,6 +5243,14 @@ async fn forty_five_notes() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.first()`**（Vec（並び））: 並びの最初の 1 つを `Option` で返すメソッド（空なら `None`）。最後の 1 つは `.last()` です。
+
+<!-- /first-use -->
+
 ```powershell
 cargo test --test u08_pages -- --nocapture
 ```
@@ -5885,7 +5927,9 @@ pub fn take(cx: &Cx) -> Option<Flash> {
 > **▶ ここで初めて出てくるコード**
 >
 > - **`cookie!`**（クッキー）: Topcoat のマクロ。クッキーを、名前・値・決まり（`HttpOnly`・`SameSite`・`MaxAge` など）を並べて作ります（第10巻 UNIT 09）。
+> - **`.code()`**（RustNote で作る物）: `Flash` の値を、クッキーに入れる短い文字に変えるメソッド。全体のコードは第13巻に載っています。
 > - **`Duration::minutes()`**（時間）: 分から、時間の長さを作る関数（`time` の部品の `Duration`）。`Duration::minutes(5)` は 5 分。
+> - **`Flash::from_code()`**（RustNote で作る物）: クッキーに入れておいた短い文字（コード）から、`Flash` の値を作り直す関数。全体のコードは第13巻に載っています。
 > - **`HttpOnly`**（クッキー）: クッキーの決まりの 1 つ。付けると、ページの JavaScript からそのクッキーを読めなくなり、盗まれにくくなります。
 > - **`SameSite`**（クッキー）: クッキーの決まりの 1 つ。ほかのサイトから来た頼みに、このクッキーを付けるかを決めます。`Lax` は、ほかのサイトからのリンクでの移動には付けるが、フォームの送信などには付けない設定です。
 > - **`Lax`**（クッキー）: `SameSite = Lax` は、ほかのサイトからのリンクで来た時（ふつうの移動）にはクッキーを送り、ほかのサイトからのフォームの送信には送らない設定です。
@@ -5905,6 +5949,14 @@ pub async fn flash_banner(flash: Option<Flash>) -> Result<impl View> {
     })
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.message()`**（RustNote で作る物）: `Flash` の値から、画面に出す文（「ノートを作りました」など）を返すメソッド。全体のコードは第13巻に載っています。
+
+<!-- /first-use -->
 
 > **▼ このコードがやること（先に日本語で）:** ブラウザの代わりに、セッションと `flash` のクッキーを覚える小さな入れ物（`Jar`）を作ります。新規登録・作成・保存・完了の切り替え・削除・ログアウト・ログインせずに一覧・ログインの8つの操作を順に行い、それぞれで、返事と予約されたクッキー、移動先を開いたときのお知らせと消すクッキー、もう一度開いたときのお知らせを表示します。
 
@@ -6778,6 +6830,7 @@ lines.join('\n')
 > - **`.map()`**（JavaScript・TypeScript）: 配列の中身を 1 つずつ変換した、新しい配列を作るメソッド。
 > - **`.toLowerCase()`**（JavaScript・TypeScript）: 英字を小文字にした文字列を返すメソッド（Rust の `to_lowercase`）。
 > - **`.pop()`**（JavaScript・TypeScript）: JavaScript・TypeScript で、配列の最後の 1 つを取り出すメソッド（元の配列から消える）。
+> - **`.remove()`**（JavaScript・TypeScript）: 画面の要素（タグ）を、ページから取り除くメソッド。`f.remove()`。
 > - **`.padEnd()`**（JavaScript・TypeScript）: 文字列の後ろを空白で埋めて、決めた長さにするメソッド。表のように並べて表示する時に使います。
 
 <!-- /first-use -->

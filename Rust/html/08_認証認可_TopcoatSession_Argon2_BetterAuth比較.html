@@ -649,6 +649,16 @@ li, tr { page-break-inside: avoid; }
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.sign_up()</code></strong>（RustNote で作る物）: テスト用の <code>TestApp</code> のメソッドで、利用者を登録して、ログイン済みのクッキーを返します。全体のコードは第13巻に載っています。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>コピーした <code>rustnote</code> フォルダの <code>tests/u01_three_checks.rs</code> として保存して実行します。<code>--nocapture</code> で <code>println!</code> を表示し、<code>--test-threads=1</code> で、表示が混ざらないようにします。</p>
 <div class="codehilite"><div class="code-wrap" id="code-3"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">test</span> <span class="p">-</span><span class="n">-test</span> <span class="n">u01_three_checks</span> <span class="p">--</span> <span class="p">-</span><span class="n">-nocapture</span> <span class="p">-</span><span class="n">-test-threads</span><span class="p">=</span><span class="n">1</span>
 </code></pre></div></div>
@@ -768,6 +778,8 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
+<li><strong><code>.post_form()</code></strong>（RustNote で作る物）: テスト用の <code>TestApp</code> のメソッドで、フォームの値を POST で送って、答えを受け取ります。</li>
+<li><strong><code>.headers()</code></strong>（HTTP）: 答え（レスポンス）の見出し（ヘッダー）の一覧を返すメソッド。<code>.headers().get("set-cookie")</code> のように、名前で 1 つ取り出せます。</li>
 <li><strong><code>.get_all()</code></strong>（HTTP）: HTTP のヘッダーで、同じ名前の物（<code>Set-Cookie</code> など）を全部取り出すメソッド。<code>get</code> だと最初の 1 つだけです。</li>
 <li><strong><code>.trim_start_matches()</code></strong>（文字列）: 文字列の先頭から、決めた文字（文字列）をくり返し取り除いたものを返すメソッド。<code>pair.trim_start_matches("__Host-session=")</code> は、クッキーの名前の部分を取って値だけにします。</li>
 </ul>
@@ -915,6 +927,8 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
+<li><strong><code>Body::from()</code></strong>（HTTP）: 文字列やバイトの並びから、本文（<code>Body</code>）を作る関数。<code>Body::from("title=memo&amp;body=")</code> は、フォームの値を本文にしたものです。</li>
+<li><strong><code>TestApp</code></strong>（RustNote で作る物）: テストのたびに、空のデータベースとルーターを用意してくれる、テスト用の struct。<code>tests/common/mod.rs</code> に置きます。全体のコードは第13巻に載っています。</li>
 <li><strong><code>HOST</code></strong>（HTTP）: <code>header::HOST</code> は、HTTP の <code>Host</code> ヘッダー（どのサイト宛ての頼みか）の名前。</li>
 <li><strong><code>COOKIE</code></strong>（HTTP）: <code>header::COOKIE</code> は、HTTP の <code>Cookie</code> ヘッダー（ブラウザーが覚えているクッキーを送る所）の名前。</li>
 <li><strong><code>Origin</code></strong>（HTTP）: <code>Origin</code> ヘッダーは、フォームなどを送ったページが、どのサイトの物かを表します。ほかのサイトから勝手に送らせる攻撃（CSRF）を見分けるのに使います（第8巻 UNIT 06）。</li>
@@ -1196,6 +1210,16 @@ error: could not compile `rustnote` (example &quot;e01_find_without_owner&quot;)
 <span class="w">    </span><span class="nb">Ok</span><span class="p">(())</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.delete()</code></strong>（RustNote で作る物）: <code>SessionRepository</code>（セッションの出し入れ）のメソッドで、決めたセッションを消します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li><code>session::start(cx)</code> は、Topcoat が新しいトークンを作ってクッキーに入れ、そのハッシュ（<code>token_hash</code>）と期限（<code>expires_at</code>）を返す関数です。Topcoat は、トークンを<strong>発行するだけ</strong>で、保存はしません。保存するのはアプリ（RustNote の <code>sessions</code> 表）の役目です。</li>
@@ -2242,6 +2266,8 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
+<li><strong><code>SignupOutcome</code></strong>（RustNote で作る物）: 登録の結果（できた・断った）を表す enum。<code>SignupOutcome::Rejected(状態コード, フォーム)</code> は、入力をやり直してもらう時の値です。全体のコードは第13巻に載っています。</li>
+<li><strong><code>Rejected</code></strong>（RustNote で作る物）: <code>SignupOutcome</code> の値の 1 つで、「登録を断った（入力をやり直してもらう）」を表します。</li>
 <li><strong><code>CONFLICT</code></strong>（HTTP）: <code>StatusCode::CONFLICT</code> は、HTTP の答えの番号 409（「ぶつかった」）。同じメールアドレスで登録しようとした時などに返します。</li>
 </ul>
 </blockquote>
@@ -2454,6 +2480,16 @@ users 表の email: [&quot;alice@example.com&quot;]
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">Ok</span><span class="p">(</span><span class="n">SignupOutcome</span><span class="p">::</span><span class="n">Rejected</span><span class="p">(</span><span class="n">StatusCode</span><span class="p">::</span><span class="n">CONFLICT</span><span class="p">,</span><span class="w"> </span><span class="n">form</span><span class="p">));</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.find_by_email()</code></strong>（RustNote で作る物）: <code>UserRepository</code> のメソッドで、メールアドレスから利用者を探します。見つからなければ <code>None</code> です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p>例3-2のテストを動かします。</p>
 <div class="codehilite"><div class="code-wrap" id="code-56"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>1つ目: 303 See Other
@@ -2804,6 +2840,16 @@ note: method defined here
 <span class="w">    </span><span class="p">})</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>LoggedIn</code></strong>（RustNote で作る物）: <code>Flash</code> の値の 1 つで、「ログインしました」のお知らせ。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p>照合は <code>src/auth.rs</code> の <code>authenticate</code> です。登録が無いときも、形が違うときも、ダミーのハッシュで照合してから <code>None</code> を返します（抜き出しています）。</p>
 <div class="codehilite"><div class="code-wrap" id="code-63"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// 形式の違うメールは「見つからない」と同じ扱いにする</span>
@@ -4542,6 +4588,16 @@ error[E0425]: cannot find value `Loose` in this scope
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>NotePage</code></strong>（RustNote で作る物）: ノートの一覧の 1 ページ分（ノートの並びと、全部の数・ページ番号）をまとめた struct。全体のコードは第13巻に載っています。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> alice と bob を登録し、alice のノートを1件作って、その中身（タイトル・完了・version）を表示します。次に、ノートの5つの入口（詳細・編集の画面・編集の保存・完了・削除）に、bob のクッキーと、クッキー無し（guest）で、リクエストを送り、状態コードを表にします。そのあとで、alice のノートが変わっていないかを表示し、最後に alice 本人なら詳細と編集の画面が開けることを確かめます。</p>
 </blockquote>
@@ -5150,13 +5206,18 @@ help: provide the argument
 <li><strong><code>for</code></strong>（JavaScript・TypeScript）: くり返しの書き方。<code>for (const x of 配列) { … }</code> は、配列の中身を 1 つずつ <code>x</code> に入れてくり返します。</li>
 <li><strong><code>of</code></strong>（JavaScript・TypeScript）: <code>for (const x of 配列)</code> の一部で、「配列の中身を 1 つずつ」という意味です。</li>
 <li><strong><code>.runMigrations()</code></strong>（JavaScript・TypeScript）: Better Auth の、データベースの表を作る・変える手順（マイグレーション）を実行するメソッド（第8巻 UNIT 08 の比べ）。</li>
+<li><strong><code>.now()</code></strong>（JavaScript・TypeScript）: <code>performance.now()</code> は、ページ（プログラム）が始まってからの時間をミリ秒で返します。<code>Date.now()</code> は、1970 年 1 月 1 日からのミリ秒です。どちらも、かかった時間を計るのに使えます。</li>
 <li><strong><code>.handler()</code></strong>（JavaScript・TypeScript）: Better Auth の、HTTP のリクエストを受け取って答えを返す関数（<code>auth.handler(new Request(…))</code>）。サーバーを立てずに試す時に、直接呼んでいます。</li>
 <li><strong><code>.stringify()</code></strong>（JavaScript・TypeScript）: <code>JSON.stringify(値)</code> は、JavaScript の値を JSON の文字列にする関数です。</li>
 <li><strong><code>.round()</code></strong>（JavaScript・TypeScript）: <code>Math.round(x)</code> は、小数を四捨五入して整数にする関数です。</li>
+<li><strong><code>.parse()</code></strong>（JavaScript・TypeScript）: <code>JSON.parse(文字列)</code> は、JSON の文字列を、JavaScript のオブジェクトや配列に変えます。逆は <code>JSON.stringify(値)</code> です。</li>
 <li><strong><code>.slice()</code></strong>（JavaScript・TypeScript）: 文字列や配列の、一部分を切り出すメソッド。<code>text.slice(0, 40)</code> は、最初の 40 文字です。</li>
+<li><strong><code>.get()</code></strong>（JavaScript・TypeScript）: 名前（キー）で 1 つ取り出すメソッド。<code>response.headers.get("set-cookie")</code>（見出しを 1 つ）・<code>map.get(キー)</code>（<code>Map</code> から）・<code>stmt.get()</code>（SQLite の結果の 1 行）のように使います。無ければ <code>undefined</code> や <code>null</code> です。</li>
 <li><strong><code>.split()</code></strong>（JavaScript・TypeScript）: JavaScript・TypeScript で、文字列を区切りで分けて配列にするメソッド。<code>"a,b".split(",")</code> は <code>["a", "b"]</code>。正規表現（<code>/,/</code>）でも区切れます。</li>
 <li><strong><code>.join()</code></strong>（JavaScript・TypeScript）: JavaScript・TypeScript で、配列の中身を区切り文字でつないで 1 つの文字列にするメソッド。<code>["a", "b"].join(";")</code> は <code>"a;b"</code>。</li>
+<li><strong><code>.log()</code></strong>（JavaScript・TypeScript）: <code>console.log(…)</code> は、渡した値を画面（ターミナルやブラウザーの開発者ツール）に表示します。</li>
 <li><strong><code>.push()</code></strong>（JavaScript・TypeScript）: JavaScript・TypeScript で、配列の後ろに足すメソッド（元の配列が変わる）。</li>
+<li><strong><code>.add()</code></strong>（JavaScript・TypeScript）: <code>Set</code>（同じ物を 2 回入れない入れ物）に 1 つ足すメソッド。すでにあれば何もしません。</li>
 <li><strong><code>.prepare()</code></strong>（JavaScript・TypeScript）: Node.js の SQLite（<code>node:sqlite</code>）で、SQL の文を用意するメソッド。<code>.get()</code>・<code>.all()</code> で結果を受け取ります。</li>
 <li><strong><code>.startsWith()</code></strong>（JavaScript・TypeScript）: 文字列が、その文字で始まっていれば <code>true</code> を返すメソッド（Rust の <code>starts_with</code>）。</li>
 <li><strong><code>??</code></strong>（JavaScript・TypeScript）: <code>a ?? b</code> は、<code>a</code> が <code>null</code> か <code>undefined</code>（値が無い）なら <code>b</code> を使う、という書き方です。</li>
@@ -5581,6 +5642,7 @@ user4 → 429（Too many requests. Please try again later.）
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
+<li><strong><code>.encode()</code></strong>（認証）: <code>base64</code> の部品で、バイトの並びを、URL に入れても安全な文字（Base64）に変えるメソッド。<code>URL_SAFE_NO_PAD.encode(バイト)</code>。</li>
 <li><strong><code>.random()</code></strong>（認証）: <code>rand</code> の部品で、でたらめな値を作るメソッド（<code>rand::rng().random()</code>）。トークンなど、予想されてはいけない値に使います。</li>
 <li><strong><code>Sha256::digest()</code></strong>（認証）: データから、SHA-256 というハッシュ（32 バイトの指紋）を計算する関数（<code>sha2</code> の部品）。</li>
 <li><strong><code>rand::rng()</code></strong>（認証）: でたらめな数を作る係を取り出す関数（<code>rand</code> の部品）。<code>rand::rng().random()</code> で、でたらめな値を作ります。</li>

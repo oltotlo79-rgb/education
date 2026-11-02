@@ -904,6 +904,17 @@ error: could not compile `rustnote` (lib) due to 3 previous errors
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>flash::take()</code></strong>（RustNote で作る物）: RustNote で、決めておいたお知らせ（フラッシュ）を取り出す関数。取り出すと消えるので、1 回だけ表示されます。第10巻で作ります。</li>
+<li><strong><code>NoteFormState::default()</code></strong>（型とメソッド）: この巻で作る型 <code>NoteFormState</code>（入力フォームの中身と、まちがいの知らせ）を、空の状態で作る書き方。最初にフォームを表示する時に使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li>最初の行で <code>require_user(cx)</code> を呼びます。ログインしていなければ、ここで 303 になり、下の行は動きません。</li>
 <li><code>notes_index</code> に渡すのは、<code>owner: user.id</code> です。一覧の部品は、持ち主を引数で受け取るので、「誰の一覧か」を、部品の中で勝手に決めることができません。</li>
@@ -1815,6 +1826,17 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.err()</code></strong>（エラー処理）: <code>Result</code> から、エラーの方だけを <code>Option</code> で取り出すメソッド。<code>Err(e)</code> は <code>Some(e)</code> に、<code>Ok(…)</code> は <code>None</code> になります（<code>.ok()</code> の逆）。</li>
+<li><strong><code>NoteInputErrors</code></strong>（RustNote で作る物）: ノートの入力のエラー（題名・本文それぞれの、まちがいの文）をまとめた struct。全体のコードは第13巻に載っています。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li>2つの検査を<strong>両方とも先に</strong>行い、結果の組 <code>(title, body)</code> で場合を分けます。4つの結果の図のうち、両方 <code>Ok</code> のときだけ <code>NewNote</code> を作ります。</li>
@@ -3545,6 +3567,16 @@ help: try wrapping the expression in `Some`
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>NoteToggled</code></strong>（RustNote で作る物）: <code>Flash</code> の値の 1 つで、「完了・未完了を切りかえました」のお知らせ。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> alice がノートを1件作り、<code>done</code> と <code>version</code> を表示します。切り替えの POST を2回送り、それぞれの返事（状態コード・移動先・お知らせのクッキー）を表示します。ブラウザと同じように、お知らせのクッキーも付けて移動先（詳細）を開き、完了の印・ボタンの文字・お知らせがあるかと、DB の <code>done</code> と <code>version</code> を表示します。</p>
 </blockquote>
@@ -4111,6 +4143,16 @@ POST /notes/1/toggle -&gt; 500 Internal Server Error (1.584ms)
 <span class="w">    </span><span class="nb">Err</span><span class="p">(</span><span class="n">see_other</span><span class="p">(</span><span class="n">href</span><span class="o">!</span><span class="p">(</span><span class="k">crate</span><span class="p">::</span><span class="n">routes</span><span class="p">::</span><span class="n">notes</span><span class="p">::</span><span class="n">index</span><span class="p">).</span><span class="n">resolve</span><span class="p">(</span><span class="n">cx</span><span class="p">)).</span><span class="n">into</span><span class="p">())</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>NoteDeleted</code></strong>（RustNote で作る物）: <code>Flash</code> の値の 1 つで、「ノートを消しました」のお知らせ。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p>リポジトリの <code>delete</code>（<code>src/repository/notes.rs</code>）は、<code>execute</code> が返す「変わった行の数」を見ます。</p>
 <div class="codehilite"><div class="code-wrap" id="code-97"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">let</span><span class="w"> </span><span class="n">deleted</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">conn</span>
@@ -5353,6 +5395,16 @@ bob が q=&quot;&#39; OR 1=1) OR (title LIKE &#39;&quot; で検索 → 200 OK
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.first()</code></strong>（Vec（並び））: 並びの最初の 1 つを <code>Option</code> で返すメソッド（空なら <code>None</code>）。最後の 1 つは <code>.last()</code> です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-132"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">test</span> <span class="p">-</span><span class="n">-test</span> <span class="n">u08_pages</span> <span class="p">--</span> <span class="p">-</span><span class="n">-nocapture</span>
 </code></pre></div></div>
 
@@ -6015,7 +6067,9 @@ GET /notes?q=ノート&amp;page=2: 20 件（ノート25 〜 ノート06）
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>cookie!</code></strong>（クッキー）: Topcoat のマクロ。クッキーを、名前・値・決まり（<code>HttpOnly</code>・<code>SameSite</code>・<code>MaxAge</code> など）を並べて作ります（第10巻 UNIT 09）。</li>
+<li><strong><code>.code()</code></strong>（RustNote で作る物）: <code>Flash</code> の値を、クッキーに入れる短い文字に変えるメソッド。全体のコードは第13巻に載っています。</li>
 <li><strong><code>Duration::minutes()</code></strong>（時間）: 分から、時間の長さを作る関数（<code>time</code> の部品の <code>Duration</code>）。<code>Duration::minutes(5)</code> は 5 分。</li>
+<li><strong><code>Flash::from_code()</code></strong>（RustNote で作る物）: クッキーに入れておいた短い文字（コード）から、<code>Flash</code> の値を作り直す関数。全体のコードは第13巻に載っています。</li>
 <li><strong><code>HttpOnly</code></strong>（クッキー）: クッキーの決まりの 1 つ。付けると、ページの JavaScript からそのクッキーを読めなくなり、盗まれにくくなります。</li>
 <li><strong><code>SameSite</code></strong>（クッキー）: クッキーの決まりの 1 つ。ほかのサイトから来た頼みに、このクッキーを付けるかを決めます。<code>Lax</code> は、ほかのサイトからのリンクでの移動には付けるが、フォームの送信などには付けない設定です。</li>
 <li><strong><code>Lax</code></strong>（クッキー）: <code>SameSite = Lax</code> は、ほかのサイトからのリンクで来た時（ふつうの移動）にはクッキーを送り、ほかのサイトからのフォームの送信には送らない設定です。</li>
@@ -6034,6 +6088,16 @@ GET /notes?q=ノート&amp;page=2: 20 件（ノート25 〜 ノート06）
 <span class="w">    </span><span class="p">})</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.message()</code></strong>（RustNote で作る物）: <code>Flash</code> の値から、画面に出す文（「ノートを作りました」など）を返すメソッド。全体のコードは第13巻に載っています。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> ブラウザの代わりに、セッションと <code>flash</code> のクッキーを覚える小さな入れ物（<code>Jar</code>）を作ります。新規登録・作成・保存・完了の切り替え・削除・ログアウト・ログインせずに一覧・ログインの8つの操作を順に行い、それぞれで、返事と予約されたクッキー、移動先を開いたときのお知らせと消すクッキー、もう一度開いたときのお知らせを表示します。</p>
@@ -6883,6 +6947,7 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 <li><strong><code>.map()</code></strong>（JavaScript・TypeScript）: 配列の中身を 1 つずつ変換した、新しい配列を作るメソッド。</li>
 <li><strong><code>.toLowerCase()</code></strong>（JavaScript・TypeScript）: 英字を小文字にした文字列を返すメソッド（Rust の <code>to_lowercase</code>）。</li>
 <li><strong><code>.pop()</code></strong>（JavaScript・TypeScript）: JavaScript・TypeScript で、配列の最後の 1 つを取り出すメソッド（元の配列から消える）。</li>
+<li><strong><code>.remove()</code></strong>（JavaScript・TypeScript）: 画面の要素（タグ）を、ページから取り除くメソッド。<code>f.remove()</code>。</li>
 <li><strong><code>.padEnd()</code></strong>（JavaScript・TypeScript）: 文字列の後ろを空白で埋めて、決めた長さにするメソッド。表のように並べて表示する時に使います。</li>
 </ul>
 </blockquote>

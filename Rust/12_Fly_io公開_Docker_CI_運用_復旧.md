@@ -2081,9 +2081,13 @@ sys.exit(1 if problems else 0)
 > - **`except`**（Python）: `try:` の中でエラーが起きた時に動く所。`except Exception as error:` で、起きたエラーを `error` という名前で受け取ります。
 > - **`.loads()`**（Python）: 文字列から読み取るメソッド。`tomllib.loads(文字列)` は TOML、`json.loads(文字列)` は JSON を、Python の辞書にします。
 > - **`.read_text()`**（Python）: `Path` のファイルの中身を、全部文字列として読むメソッド。`encoding="utf-8"` を付けて読みます。
+> - **`.get()`**（Python）: 辞書（`dict`）から、キーで値を取り出すメソッド。`d.get("port", 8080)` は、キーが無ければ 2 つ目の値（無ければ `None`）を返すので、`d["port"]` と違ってエラーになりません。
+> - **`.search()`**（Python）: `re.search(パターン, 文字列)` は、文字列の中から正規表現に合う所を探し、見つかれば「合った物」（`Match`）を、無ければ `None` を返します。`m.group(1)` で、かっこで囲んだ部分を取り出せます。
 > - **`.group()`**（Python）: 正規表現で見つかった所から、かっこ `( )` の中の部分を取り出すメソッド。`m.group(1)` は 1 つ目のかっこの中です。
 > - **`.urlopen()`**（Python）: `urllib.request.urlopen(URL)` は、URL にアクセスして、返事を受け取る関数です。
 > - **`.exit()`**（Python）: `sys.exit(番号)` は、Python のプログラムを、その終了コードで終える関数です。
+> - **`len()`**（Python）: 長さ（中身の数）を返す関数。`len("abc")` は 3、`len([1, 2])` は 2、`len(sys.argv)` は「渡された引数の数＋1」です。
+> - **`str()`**（Python）: 値を文字列に変える関数。`str(8080)` は `"8080"`。数と文字列は `==` で比べても等しくならないので、そろえる時に使います。
 > - **`getattr()`**（Python）: 物から、名前で属性（中の値）を取り出す関数。`getattr(error, "code", 既定値)` は、`code` が無ければ既定値を返します。
 > - **`type()`**（Python）: 値の型を返す関数。`type(error).__name__` は、エラーの種類の名前です。
 > - **`bool()`**（Python）: 値を `True`・`False` にする関数。空の文字列や `None` は `False`、中身があれば `True` です。
@@ -3572,6 +3576,7 @@ ThreadingHTTPServer(("127.0.0.1", listen_port), Handler).serve_forever()
 > - **`.readline()`**（Python）: 1 行だけ読むメソッド。
 > - **`.strip()`**（Python）: 前後の空白や改行を取り除いたものを返すメソッド（Rust の `trim`）。
 > - **`.HTTPConnection()`**（Python）: `http.client.HTTPConnection(ホスト, ポート)` は、HTTP で相手のサーバーにつなぐ物を作る関数です。
+> - **`.items()`**（Python）: 辞書の「キーと値」の組を 1 つずつ取り出せる形にするメソッド。`for k, v in d.items():` で、両方を同時に使えます。
 > - **`.request()`**（Python）: `http.client` の接続で、HTTP の頼み（メソッド・パス・本文・ヘッダー）を送るメソッド。
 > - **`.getresponse()`**（Python）: 送った頼みに対する、相手の返事を受け取るメソッド。
 > - **`.write()`**（Python）: ファイルに文字を書くメソッド。`f.write(line + "\n")`（改行は自分で付けます）。

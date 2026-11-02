@@ -6667,6 +6667,14 @@ pub async fn open(config: &Config) -> Result<Db, libsql::Error> {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Db::open_local()`**（RustNote で作る物）: RustNote の `Db` を、手元のファイル（`data/rustnote.db` など）で開く関数。全体のコードは第13巻に載っています。
+
+<!-- /first-use -->
+
 - トークンの中身を取り出す `expose()` は、DB を開くこの1か所でだけ呼びます。わざと目立つ名前にしてあるので、「どこで秘密を使っているか」を検索ですぐに見つけられます。
 - ローカルのときだけ、`PRAGMA journal_mode = WAL`（UNIT 05）や、接続ごとの `PRAGMA foreign_keys = ON; PRAGMA busy_timeout = 5000;` を実行します（`is_local` で見分けています）。
 - 開いた後のリポジトリ（`src/repository/`）は、ローカルかリモートかを一切気にせず、`connect`・`query`・`execute` を使います。図の「どの形を選んでも同じ書き方」を、そのまま生かした作りです。
@@ -7003,6 +7011,14 @@ async fn main() -> Result<(), RepoError> {
     Ok(())
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Row`**（データベース）: libSQL で、SQL の結果の 1 行を表す型。`row.get::<i64>(0)` のように、列の番号で値を取り出します。
+
+<!-- /first-use -->
 
 `src/bin/u09_repo.rs` として保存して実行します。
 
@@ -8846,6 +8862,14 @@ async fn delete_at_most(
     max: u64,
 ) -> Result<u64, GuardError>
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`GuardError`**（RustNote で作る物）: 練習で作る、データベースの見張り（決まりに合わない変更を止める）のエラーの enum。この巻の解答と解説で作ります。
+
+<!-- /first-use -->
 
 上限 1 件で、「WHERE の書き忘れ」「`id` のつもりが `user_id`」「正しい1件」の3つを試し、`notes` の件数がどう変わるかを表示してください。
 

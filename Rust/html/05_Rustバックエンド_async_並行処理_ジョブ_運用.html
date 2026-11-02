@@ -1065,6 +1065,7 @@ Err(&quot;ユーザー 2 はいません&quot;) / 0.3 秒
 <li><strong><code>Poll</code></strong>（非同期）: Future に「終わった？」と聞いた答えの型。<code>Poll::Ready(値)</code>（終わった）か <code>Poll::Pending</code>（まだ）です。</li>
 <li><strong><code>Waker</code></strong>（非同期）: 「この仕事の準備ができた」と知らせて、もう一度動かしてもらうための物。tokio が、待っている仕事を起こすのに使います。</li>
 <li><strong><code>Ready</code></strong>（非同期）: <code>Poll::Ready(値)</code> は「仕事が終わった。結果はこれ」という答え。まだなら <code>Poll::Pending</code> です。Future の <code>poll</code> は、この 2 つのどちらかを返します。</li>
+<li><strong><code>Pending</code></strong>（非同期）: <code>Poll::Pending</code>（Future が「まだです」と答える時の値）のこと。終わった時は <code>Poll::Ready(値)</code> です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1408,6 +1409,10 @@ error: could not compile `async_lab` (bin &quot;e01_unused_future&quot;) due to 
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>dotenvy::dotenv()</code></strong>（設定）: <code>.env</code> ファイルに書いた「名前=値」を、環境変数として読み込む関数（<code>dotenvy</code> の部品）。開発のパソコンで、設定をファイルにまとめておく時に使います。<code>.env</code> は Git に入れません。</li>
+<li><strong><code>Db::open()</code></strong>（RustNote で作る物）: RustNote の <code>Db</code> を、設定（<code>config</code>）に書かれた場所で開く関数。全体のコードは第13巻に載っています。</li>
+<li><strong><code>db::migrate()</code></strong>（RustNote で作る物）: RustNote の、テーブルを作る・変える SQL（マイグレーション）を順に流す関数。くわしくは第7巻、全体のコードは第13巻に載っています。</li>
+<li><strong><code>topcoat::start()</code></strong>（Topcoat）: 組み立てたルーターを受け取って、Web サーバーを動かし始める関数。<code>topcoat::start(router).await</code> は、止めるまでリクエストを待ち続けます。</li>
+<li><strong><code>Db</code></strong>（RustNote で作る物）: RustNote の、データベース（libSQL）の入れ物の型。<code>Db::open(…)</code> で開き、<code>db.connect()</code> で接続を取ります。全体のコードは第13巻（完全コード）に載っています。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1438,6 +1443,7 @@ error: could not compile `async_lab` (bin &quot;e01_unused_future&quot;) due to 
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>params!</code></strong>（データベース）: <code>libsql::params![a, b]</code> は、SQL の <code>?1</code>・<code>?2</code> の場所に入れる値を並べるマクロ。値は SQL の文字列につながず、必ずこの形で渡します（SQL インジェクションを防ぐ。第7巻）。</li>
+<li><strong><code>.connect()</code></strong>（データベース）: libSQL の <code>Database</code> から、SQL を送るための接続（<code>Connection</code>）を取るメソッド。<code>let conn = db.connect()?;</code>。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1784,6 +1790,7 @@ error: could not compile `async_lab` (bin &quot;e01_unused_future&quot;) due to 
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
+<li><strong><code>.id()</code></strong>（スレッドと共有）: スレッドの番号（<code>ThreadId</code>）を返すメソッド。<code>thread::current().id()</code> で、今どのスレッドで動いているかを表示できます。</li>
 <li><strong><code>std::thread::current()</code></strong>（スレッドと共有）: 今動いているスレッドの情報（名前・番号）を返す関数。どのスレッドで動いたかを表示する時に使います。</li>
 <li><strong><code>tokio::spawn()</code></strong>（非同期）: 非同期の仕事を、別のタスクとしてすぐ動かし始める関数。<code>tokio::spawn(async move { … })</code>。返ってくる物（<code>JoinHandle</code>）を <code>.await</code> すると、結果を受け取れます。</li>
 </ul>
@@ -2349,6 +2356,17 @@ error: process didn&#39;t exit successfully: `target\debug\e02_block_on.exe` (ex
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>UserRepository</code></strong>（RustNote で作る物）: RustNote で、利用者（ユーザー）をデータベースに入れる・探す仕事をまとめたトレイト（決まりごと）。<code>Arc&lt;dyn UserRepository + Send + Sync&gt;</code> は「この決まりを守る物なら何でも入る、スレッドをまたいで共有できる箱」です。全体のコードは第13巻に載っています。</li>
+<li><strong><code>SessionRepository</code></strong>（RustNote で作る物）: RustNote で、ログインの記録（セッション）を入れる・探す・消す仕事をまとめたトレイト。全体のコードは第13巻に載っています。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li><code>Arc</code> は、たくさんのタスクで同じものを共有するための入れ物です（第3巻 UNIT 10）。<code>Rc</code> では、エラー2と同じエラーになります。</li>
 <li><code>dyn NoteRepository + Send + Sync</code> は、「中身は <code>NoteRepository</code> を実装した何かで、別のスレッドへ渡してよく（<code>Send</code>）、何本ものスレッドから同時に使ってよい（<code>Sync</code>）もの」という意味です（第4巻 UNIT 04 の <code>dyn</code>）。</li>
@@ -2364,6 +2382,16 @@ error: process didn&#39;t exit successfully: `target\debug\e02_block_on.exe` (ex
 <span class="w">        </span><span class="nb">Err</span><span class="p">(</span><span class="n">error</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="nb">Err</span><span class="p">(</span><span class="n">AppError</span><span class="p">::</span><span class="n">internal</span><span class="p">(</span><span class="n">error</span><span class="p">)),</span>
 <span class="w">    </span><span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>tokio::task::spawn_blocking()</code></strong>（非同期）: 時間のかかる重い計算や、待ってしまう処理（パスワードのハッシュなど）を、非同期の仕事を回すスレッドとは別のスレッドで動かす関数。ほかの仕事を止めないために使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><code>spawn_blocking</code> は UNIT 07 で学ぶ「重い計算用の spawn」です。引換券を <code>.await</code> した結果が <code>Result</code> で、その中身もまた <code>Result</code> なので、<code>Ok(Ok(..))</code>・<code>Ok(Err(..))</code>・<code>Err(..)</code> の3つに分けています。この形は、練習問題3で自分でも書きます。</p>
 <h3 id="_24">練習問題</h3>
@@ -5372,8 +5400,11 @@ B: 終わりました（2）
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
+<li><strong><code>.hash_password()</code></strong>（認証）: <code>argon2</code> の部品で、パスワードからハッシュ（元に戻せない、ソルト付きの文字列）を作るメソッド。<code>Argon2::default().hash_password(パスワードのバイト, &amp;salt)</code>。データベースには、パスワードではなくこのハッシュを保存します。</li>
 <li><strong><code>LazyLock::new()</code></strong>（スレッドと共有）: 初めて使われた時に 1 回だけ作る値を、作り方の関数と一緒に用意する関数。</li>
+<li><strong><code>Argon2::default()</code></strong>（認証）: パスワードを安全に保存するための計算（Argon2id）を、おすすめの設定で用意する書き方（<code>argon2</code> の部品）。この計算は、わざと重く作られていて、パスワードを総当たりで当てるのを難しくします（第8巻）。</li>
 <li><strong><code>LazyLock</code></strong>（スレッドと共有）: 初めて使われた時に 1 回だけ作られ、その後はずっと同じ値を使う入れ物。<code>static DUMMY: LazyLock&lt;String&gt; = LazyLock::new(|| { … });</code> のように、作るのに手間がかかる物を、プログラム全体で共有する時に使います。</li>
+<li><strong><code>Argon2</code></strong>（認証）: パスワードをハッシュにする方法の 1 つ（Argon2）を使うための型。<code>Argon2::default()</code> で、おすすめの設定のものを作ります。わざと時間とメモリを使うので、総当たりで破られにくくなります。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -6536,6 +6567,7 @@ Ctrl+C を受け取りました。停止を始めます
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
+<li><strong><code>.verify_password()</code></strong>（認証）: <code>argon2</code> の部品で、入力されたパスワードが、保存してあるハッシュと合うかを確かめるメソッド。合えば <code>Ok(())</code>、合わなければ <code>Err</code> です。</li>
 <li><strong><code>PasswordHash::new()</code></strong>（認証）: 保存してあるハッシュの文字列を読み取って、確かめに使える形にする関数。形が違えばエラーです。</li>
 <li><strong><code>PasswordHasher</code></strong>（認証）: パスワードからハッシュ（保存用の値）を作る機能（トレイト。<code>password_hash</code> の部品）。<code>argon2.hash_password(…)</code> を使うには、これを <code>use</code> します。</li>
 <li><strong><code>PasswordVerifier</code></strong>（認証）: 入力されたパスワードが、保存してあるハッシュと合うかを確かめる機能（トレイト）。<code>argon2.verify_password(…)</code> を使うには、これを <code>use</code> します。</li>
@@ -7035,6 +7067,16 @@ Err(JoinError::Panic(Id(13), &quot;called `Option::unwrap()` on a `None` value&q
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Password</code></strong>（RustNote で作る物）: パスワードを入れる専用の型（<code>struct Password(String)</code>）。ふつうの <code>String</code> と区別することで、うっかりログに出すなどの間違いを防ぎます。この巻の後の方で作ります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li><code>password.clone()</code> で持ち主のいる写しを作り、<code>move</code> で blocking スレッドへ渡しています（「よくあるエラー1」を避ける形）。<code>Password</code> は、RustNote の <code>src/domain.rs</code> で定義している、パスワード用の newtype です。</li>
@@ -7687,6 +7729,16 @@ Err(&quot;読めません: 指定されたファイルが見つかりません�
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.json()</code></strong>（HTTP クライアント）: <code>reqwest</code> の答え（レスポンス）の本文を、JSON として読んで、決めた型に変えるメソッド。<code>response.json::&lt;Weather&gt;().await</code>。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><code>src/bin/u08_json.rs</code> として保存して実行します。</p>
 <div class="codehilite"><div class="code-wrap" id="code-237"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u08_json</span>
 </code></pre></div></div>
@@ -8091,6 +8143,7 @@ Err(&quot;読めません: 指定されたファイルが見つかりません�
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
+<li><strong><code>.post()</code></strong>（HTTP クライアント）: <code>reqwest</code> の <code>Client</code> で、POST（データを送る）のリクエストを作り始めるメソッド。<code>client.post(url).body("…").send().await</code> のようにつなげて送ります。</li>
 <li><strong><code>.body()</code></strong>（HTTP）: リクエストやレスポンスの本文を取り出す（決める）メソッド。テストで <code>Request::builder()….body(Body::from("…"))</code> のように本文を入れます。</li>
 </ul>
 </blockquote>
@@ -8270,9 +8323,13 @@ error: could not compile `async_lab` (bin &quot;e08_forgot_await&quot;) due to 1
 <ul>
 <li><strong><code>href!</code></strong>（Topcoat）: Topcoat のマクロ。ページの関数から、その URL を作ります。<code>href!(id::show, id::Id(note.id))</code> は「このノートの詳細ページの URL」。URL を文字で書かないので、打ちまちがいがコンパイルの時に見つかります（第6巻 UNIT 04）。</li>
 <li><strong><code>.resolve()</code></strong>（Topcoat）: <code>href!</code> で作った URL の部品を、今のリクエスト（<code>cx</code>）に合わせて、本物の URL の文字列にするメソッド。</li>
+<li><strong><code>flash::set()</code></strong>（RustNote で作る物）: RustNote で、次の画面に 1 回だけ出すお知らせ（フラッシュ。「ノートを作りました」など）を決める関数。第10巻で作ります。</li>
 <li><strong><code>POST</code></strong>（Topcoat）: <code>#[page(POST)]</code> の <code>POST</code> は、「フォームの送信（POST）に答えるページ」にする指定。何も書かなければ、ふつうの表示（GET）に答えます（第6巻 UNIT 06）。</li>
 <li><strong><code>Cx</code></strong>（Topcoat）: Topcoat の「今のリクエストの情報（URL・クッキー・セッションなど）が入った箱」。ページの関数の引数 <code>cx: &amp;Cx</code> で受け取り、<code>href!(…).resolve(cx)</code> などで使います（第6巻 UNIT 04）。</li>
 <li><strong><code>Form</code></strong>（Topcoat）: Topcoat の、送られてきたフォームの中身を受け取る型。<code>Form(input): Form&lt;NoteForm&gt;</code> と書くと、フォームの項目が <code>NoteForm</code> の形に読み取られて <code>input</code> に入ります（第6巻 UNIT 06）。</li>
+<li><strong><code>NoteForm</code></strong>（RustNote で作る物）: ノートの作成・編集のフォームから送られてくる値（題名と本文）を受け取る struct。<code>Form(input): Form&lt;NoteForm&gt;</code> で受け取ります。第10巻で作ります。</li>
+<li><strong><code>Flash</code></strong>（RustNote で作る物）: RustNote の、画面に 1 回だけ出すお知らせの種類を表す enum。<code>Flash::NoteCreated</code>（作りました）・<code>Flash::LoggedOut</code>（ログアウトしました）などがあります。全体のコードは第13巻に載っています。</li>
+<li><strong><code>NoteCreated</code></strong>（RustNote で作る物）: <code>Flash</code> の値の 1 つで、「ノートを作りました」のお知らせ。</li>
 <li><strong><code>Id</code></strong>（Topcoat）: URL の一部（<code>/notes/3</code> の <code>3</code> など）を、型として受け取るための入れ物。この本の RustNote では、<code>id::Id(番号)</code> の形で、URL の中のノートの番号を表します。</li>
 </ul>
 </blockquote>
@@ -9241,6 +9298,7 @@ help: consider annotating `Password` with `#[derive(Debug)]`
 <ul>
 <li><strong><code>#[layer]</code></strong>（Topcoat）: Topcoat の印（属性）。全部（またはある範囲）のページの前後に、決まった処理（アクセスのログ・ログインの確かめなど）をはさむ「層」を作ります（第6巻 UNIT 03・第5巻）。</li>
 <li><strong><code>.downcast_ref()</code></strong>（エラー処理）: いろいろな種類が入るエラー（<code>anyhow::Error</code> など）の中身が、指定した型なら、それを借りて <code>Some</code> で返すメソッド。「このエラーは〇〇の種類か」を調べる時に使います。</li>
+<li><strong><code>Body</code></strong>（HTTP）: リクエストやレスポンスの本文を表す型。Topcoat では <code>topcoat::router::Body</code> として使い、ミドルウェア（<code>layer</code>）で本文を受け取って次へ渡す時などに出てきます。</li>
 <li><strong><code>Next</code></strong>（Topcoat）: <code>#[layer]</code> の関数で受け取る「次の処理」。<code>next.run(…)</code> を呼ぶと、その先（ページ）が動いて、答えが返ってきます。前後に自分の処理をはさめます。</li>
 <li><strong><code>SeeOther</code></strong>（Topcoat）: 「303 See Other」（別のページへ移って）という答えを表す型。フォームを送ったあと、一覧や詳細のページへ移す時（PRG）に使います（第6巻 UNIT 06）。</li>
 </ul>
@@ -9263,6 +9321,7 @@ help: consider annotating `Password` with `#[derive(Debug)]`
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>.chain()</code></strong>（エラー処理）: <code>anyhow</code> のエラーの、原因を外側から順にたどれる形で返すメソッド。<code>error.chain()</code> で、説明を足した順に、元のエラーまで 1 つずつ見られます。（イテレーターの <code>.chain()</code> は「2 つの並びをつなぐ」別の意味です。）</li>
+<li><strong><code>StatusCode</code></strong>（HTTP）: HTTP の状態コード（<code>200 OK</code>・<code>404 Not Found</code> など）を表す型。<code>StatusCode::OK</code>・<code>StatusCode::NOT_FOUND</code> のように、名前で書けます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -9762,6 +9821,7 @@ help: consider annotating `Password` with `#[derive(Debug)]`
 <ul>
 <li><strong><code>.execute()</code></strong>（データベース）: 値を入れたり変えたりする SQL の文を、1 つ実行するメソッド（libsql）。<code>conn.execute("UPDATE … WHERE id = ?1", params![id]).await?</code> のように、値は <code>params!</code> で渡します。変わった行の数が返ります。</li>
 <li><strong><code>Builder::new_local()</code></strong>（データベース）: libsql で、手元のファイル（SQLite の形）のデータベースを開く準備をする関数。<code>.build().await?</code> で開いた物ができます（第7巻）。</li>
+<li><strong><code>Database</code></strong>（データベース）: libSQL の、データベース（ファイルやサーバー）を表す型。<code>Builder::new_local("data.db").build().await?</code> で作り、<code>.connect()</code> で接続を取ります。</li>
 <li><strong><code>IF</code></strong>（SQL）: <code>CREATE TABLE IF NOT EXISTS</code> の一部で、「もし〜なら」。「無ければ作る、あれば何もしない」という意味になります。</li>
 <li><strong><code>EXISTS</code></strong>（SQL）: SQL で「ある」。<code>IF NOT EXISTS</code> は「無ければ」という意味です。</li>
 <li><strong><code>IN</code></strong>（SQL）: SQL で「このどれか」。<code>WHERE status IN ('queued', 'running')</code> は、状態がどちらかの行だけです。<code>CHECK (pinned IN (0, 1))</code> は、0 か 1 しか入れられない決まりです。</li>
@@ -10435,6 +10495,16 @@ error: process didn&#39;t exit successfully: `target\debug\e10_bad_status.exe` (
 <span class="w">    </span><span class="n">state</span><span class="p">.</span><span class="n">sessions</span><span class="p">.</span><span class="n">delete_expired</span><span class="p">(</span><span class="n">SystemTime</span><span class="p">::</span><span class="n">now</span><span class="p">()).</span><span class="k">await</span><span class="o">?</span><span class="p">;</span>
 <span class="w">    </span><span class="nb">Ok</span><span class="p">(())</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.delete_expired()</code></strong>（RustNote で作る物）: <code>SessionRepository</code> のメソッドで、期限が切れたセッションをまとめて消します。全体のコードは第13巻に載っています。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li>ログインのリクエストの<strong>中で、ついでに</strong>掃除しています。掃除は短い <code>DELETE</code> 1回なので、利用者を待たせる時間はわずかです。このくらいの仕事なら、ジョブの仕組みを作るより、この形のほうが簡単で十分です。</li>
