@@ -37,6 +37,14 @@ py -3.14 -m venv .venv
 .\.venv\Scripts\python.exe basics.py
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.\.venv\Scripts\python.exe`**（Python の道具）: 仮想環境（`.venv`）の中の Python を、場所を書いて動かす書き方。`.\.venv\Scripts\python.exe ファイル.py` でプログラムを動かし、`.\.venv\Scripts\python.exe -m pip install -r requirements.txt` で、その仮想環境に部品を入れます。仮想環境を「入る」操作（Activate）をしなくても、確実にその Python が使われます。
+
+<!-- /first-use -->
+
 - **仮想環境（venv）**は、Python の部品を、練習やアプリごとに分けて入れる箱です（onprem の 05 の 4.3 にも図があります）。
 - `.\.venv\Scripts\python.exe` のように、**仮想環境の中の python を、場所を書いて動かす**のがいちばん確かです。
 - `.\.venv\Scripts\Activate.ps1` で「仮想環境に入る」と、`python` と打つだけで済むようになります。ただし、Windows 10・11 の最初の設定では、PowerShell のスクリプトが動かない（「このシステムではスクリプトの実行が無効」）ことがあります。自分のパソコンなら `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` で動くようになりますが、会社のパソコンでは決まりがあるので、場所を書いて動かす方法をすすめます。
@@ -118,6 +126,26 @@ print(greet(user["name"]))
 lengths = [len(n) for n in approvers]
 print(lengths)
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`True`**（Python）: Python の「正しい（はい）」の値。反対は `False`。頭は大文字です（`true` ではありません）。
+> - **`def`**（Python）: 関数を作る書き方。`def greet(name: str) -> str:` の次の行から、**字下げした所が関数の中身**です。Python は `{ }` の代わりに字下げで「どこまでが中身か」を表すので、字下げをそろえることがとても大事です。
+> - **`return`**（Python）: Python の関数の結果を返して、関数を終える命令。
+> - **`for`**（Python）: Python のくり返し。`for x in 並び:` の次の行から、字下げした所が中身です。`[式 for x in 並び]` の形（内包表記）で、新しいリストを 1 行で作ることもできます。
+> - **`in`**（Python）: `for x in 並び`（並びから 1 つずつ）と、`値 in 並び`（含まれているか）の 2 つの使い方があります。
+> - **`if`**（Python）: Python の条件。`if 条件:` の次の行から、字下げした所が中身です。`a if 条件 else b` の形で、1 行の中で値を選ぶこともできます。
+> - **`elif`**（Python）: 「そうでなくて、もし〜なら」（`else if` の短い形）。`if … elif … else` で、いくつもの場合に分けます。
+> - **`else`**（Python）: `if` の条件に合わなかった時の所。`if … else …` の 1 行の形でも使います。
+> - **`.append()`**（Python）: Python で、リストの後ろに 1 つ足すメソッド。
+> - **`.get()`**（Python）: 辞書（`dict`）から、キーで値を取り出すメソッド。`d.get("port", 8080)` は、キーが無ければ 2 つ目の値（無ければ `None`）を返すので、`d["port"]` と違ってエラーになりません。
+> - **`enumerate()`**（Python）: 並びを、番号つきで 1 つずつ取り出す関数。`for i, name in enumerate(approvers, start=1):` は、`i` に 1, 2, 3…、`name` に中身が入ります。
+> - **`print()`**（Python）: 渡した値を画面に表示する関数。`print("a", 1)` のように、いくつも渡すと空白でつないで表示し、最後に改行します。
+> - **`len()`**（Python）: 長さ（中身の数）を返す関数。`len("abc")` は 3、`len([1, 2])` は 2、`len(sys.argv)` は「渡された引数の数＋1」です。
+
+<!-- /first-use -->
 
 動かした結果:
 
@@ -224,6 +252,24 @@ if __name__ == "__main__":  # このファイルを直接動かしたときだ�
         print("エラー:", e)
     print([s.value for s in Status])
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`from`**（Python）: `from パッケージ import 名前` の一部で、「どこから読み込むか」を書きます。`from pathlib import Path`。
+> - **`import`**（Python）: ほかのモジュール（部品）を読み込む書き方。`import re` で正規表現の道具、`from pathlib import Path` で `Path` だけを使えるようにします。
+> - **`class`**（Python）: クラス（データと、それを扱う関数をまとめた設計図）を作る書き方。`class Request:` の次から、字下げした所が中身です。
+> - **`None`**（Python）: Python の「値が無い」ことを表す値。調べる時は `x is None` と書きます。
+> - **`not`**（Python）: 「〜ではない」。`if key not in TRANSITIONS:` は「辞書に無ければ」。
+> - **`raise`**（Python）: エラー（例外）を起こして、処理を止める書き方。`raise TransitionError("…")`。呼んだ側は `try … except` で受け止められます。
+> - **`try`**（Python）: Python で、失敗するかもしれない処理を `try:` の中に書き、失敗した時の処理を `except:` に書く書き方。
+> - **`except`**（Python）: `try:` の中でエラーが起きた時に動く所。`except TransitionError as e:` は、その種類のエラーを `e` という名前で受け取ります。
+> - **`as`**（Python）: Python で、別の名前を付ける書き方。`except Exception as error:`（起きたエラーを `error` で受け取る）・`import numpy as np`・`with open(…) as f:` のように使います。
+> - **`field()`**（Python）: `dataclasses` の部品で、dataclass の項目に、細かい決まりを付ける関数。`tags: list[str] = field(default_factory=list)` は「作るたびに、新しい空のリストを入れる」。`= []` と書くと、全部で同じリストを共有してしまうので、こう書きます。
+> - **`@dataclass`**（Python）: クラスの上に付ける印（デコレーター）。項目（`title: str` など）を並べるだけで、作る時の処理（`__init__`）・表示の形・`==` の比べ方を自動で作ってくれます。
+
+<!-- /first-use -->
 
 動かした結果（`.\.venv\Scripts\python.exe status.py`）:
 
@@ -337,6 +383,22 @@ if __name__ == "__main__":
             print("  ×", message)
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`with`**（Python）: 使い終わったら自動で片づける書き方。`with path.open(encoding="utf-8") as f:` の中で使ったファイルは、抜ける時に自動で閉じられます。
+> - **`or`**（Python）: 「または」。`a or b` は、`a` が空（`None`・`""`・0 など）なら `b` を使います。`(row.get("番号") or "").strip()` は「無ければ空の文字列にしてから空白を取る」。
+> - **`continue`**（Python）: くり返しの「今回の残り」を飛ばして、次へ進む命令。
+> - **`.open()`**（Python）: `Path` のファイルを開くメソッド。`with path.open(encoding="utf-8") as f:` のように、`with` と一緒に使うと、使い終わった時に自動で閉じます。
+> - **`.DictReader()`**（Python）: `csv.DictReader(ファイル)` は、CSV を 1 行ずつ、「見出し → 値」の辞書として読む関数です。`row["従業員番号"]` のように、見出しの名前で値を取り出せます。
+> - **`.strip()`**（Python）: 文字列の前後の空白や改行を取り除いたものを返すメソッド。
+> - **`.fullmatch()`**（Python）: `re.fullmatch(パターン, 文字列)` は、文字列の**全体**が正規表現（文字の形の決まり）に合うかを調べる関数です。`r"\d{6}"` は「数字がちょうど 6 つ」。合わなければ `None` です。
+> - **`.add()`**（Python）: `set`（同じ物を 2 回入れない入れ物）に 1 つ足すメソッド。すでにあれば何もしません。`no in seen` で「もう出てきたか」を確かめられます。
+> - **`set()`**（Python）: 集合（同じ値は 1 つしか入らない入れ物）を作る関数。`seen = set()` で空の集合を作り、`seen.add(x)`・`x in seen` で使います。重複を見つける時に便利です。
+
+<!-- /first-use -->
+
 練習用の CSV（`employees_utf8.csv`。中身はわざと間違いを 3 つ入れてある）:
 
 ```text
@@ -432,6 +494,23 @@ def matches(presented: str, stored_hash: str) -> bool:
 print("本物の URL:", matches(token, stored))
 print("にせの URL:", matches("aaaa", stored))
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.isoformat()`**（Python）: 日時を `2026-11-02T08:00:00+09:00` のような、決まった形（ISO 8601）の文字列にするメソッド。
+> - **`.strftime()`**（Python）: 日時を、自分で決めた形の文字列にするメソッド。`%Y` は年・`%m` は月・`%d` は日・`%H` は時・`%M` は分。
+> - **`.replace()`**（Python）: `datetime` の `.replace(hour=8, minute=0)` は、一部だけ変えた新しい日時を返すメソッドです（文字列の `.replace("前", "後")` は、置きかえた新しい文字列を返す、別の意味です）。
+> - **`.token_urlsafe()`**（Python）: `secrets.token_urlsafe(32)` は、予想できないでたらめな文字列（URL に使える文字だけ）を作る関数です。1 回限りの承認の URL などに使います。
+> - **`.sha256()`**（Python）: `hashlib.sha256(バイト)` は、データの SHA-256 のハッシュ（指紋）を計算する関数です。
+> - **`.encode()`**（Python）: 文字列を、バイトの並びにするメソッド（UTF-8）。`token.encode()` のように、ハッシュの計算など、バイトを求める関数に渡す前に使います。
+> - **`.hexdigest()`**（Python）: ハッシュの結果を、16 進数（0〜9 と a〜f）の文字列で返すメソッド。
+> - **`.compare_digest()`**（Python）: `hmac.compare_digest(a, b)` は、2 つの値が同じかを、かかる時間から中身を推測されない方法で比べる関数です。合言葉やハッシュを比べる時に使います。
+> - **`datetime()`**（Python）: 日付と時刻を表す型（`datetime(2026, 11, 2, 8, 0)` のように作る）。`datetime.now(ZoneInfo("Asia/Tokyo"))` で、日本時間の今が取れます。
+> - **`timedelta()`**（Python）: 時間の長さを表す型。`timedelta(minutes=60)` は 60 分。日時に足したり引いたりできます。
+
+<!-- /first-use -->
 
 動かした結果:
 

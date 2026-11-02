@@ -50,6 +50,15 @@ npx tsc              # 型を確かめる（何も出なければ、間違い無
 node src\basics.ts   # 動かす
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`npm install`**（Node.js）: `package.json` に書いてある部品（TypeScript など）を、まとめて入れるコマンド。入った部品は `node_modules` フォルダに入ります（Git には入れません）。最初の 1 回だけ打ちます。`npm install 部品の名前` なら、その部品を足します。
+> - **`npx tsc`**（Node.js）: TypeScript の型の確かめ（`tsc`）を動かすコマンド。何も出なければ、型のまちがいはありません。まちがいがあると、ファイル名・行・何がおかしいかを表示します。`npx` は、入れた部品のコマンドを動かす道具です。
+
+<!-- /first-use -->
+
 - **Node.js** は、ブラウザの外で JavaScript を動かす道具です。今の Node.js は、`.ts` のファイルの型の書き込みを取り除いて、そのまま動かせます。
 - ただし、**Node.js は型を確かめません**。型を確かめるのは `npx tsc` です（6 章で、その違いを見ます）。
 
@@ -122,6 +131,20 @@ console.log(user.name, user.isAdmin ? "管理者" : "一般");
 console.log(greet(user.name));
 console.log(double(21));
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`const`**（JavaScript・TypeScript）: JavaScript・TypeScript で、変えない値に名前を付ける書き方。`const db = …;`。あとで別の値を入れようとするとエラーになります。
+> - **`let`**（JavaScript・TypeScript）: JavaScript・TypeScript で、あとで変える値に名前を付ける書き方。
+> - **`function`**（TypeScript）: 関数（ひとまとまりの処理）を作る書き方。`function greet(name: string): string { … }` は、「文字列の `name` を受け取って、文字列を返す関数 `greet`」です。
+> - **`return`**（JavaScript・TypeScript）: JavaScript・TypeScript で、関数の結果を返して、関数を終える命令。
+> - **`.log()`**（JavaScript・TypeScript）: `console.log(…)` は、渡した値を画面（ターミナルやブラウザーの開発者ツール）に表示します。
+> - **`.join()`**（JavaScript・TypeScript）: JavaScript・TypeScript で、配列の中身を区切り文字でつないで 1 つの文字列にするメソッド。`["a", "b"].join(";")` は `"a;b"`。
+> - **`=>`**（JavaScript・TypeScript）: アロー関数（短く書ける関数）の矢印。`(path) => \`…${path}\`` は「`path` を受け取って文字列を返す関数」。
+
+<!-- /first-use -->
 
 動かした結果（`node src\basics.ts`）:
 
@@ -228,6 +251,22 @@ export function badgeColor(status: RequestStatus): "白" | "オレンジ" | "青
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`export`**（TypeScript）: 「このファイルの外から使ってよい」という印。`export type RequestStatus = …` と書くと、ほかのファイルで `import` して使えます。
+> - **`type`**（TypeScript）: 型に名前を付ける書き方。`type RequestStatus = "回覧中" | "回覧完了";` のように、決まった値だけを許す型や、オブジェクトの形を決められます。
+> - **`null`**（TypeScript）: 「値が無い」ことを、わざと表す値。「できない操作なら `null` を返す」のように使います。
+> - **`switch`**（TypeScript）: 値によって処理を分ける書き方。`switch (current) { case "回覧中": … }`。合う `case` から下を動かすので、それぞれの終わりに `return` や `break` を書きます。
+> - **`case`**（TypeScript）: `switch` の中の「この値の時は」の部分。
+> - **`if`**（JavaScript・TypeScript）: JavaScript・TypeScript の条件。`if (条件) { … } else { … }`。条件は `( )` で囲みます。
+> - **`default`**（JavaScript・TypeScript）: `export default` は、そのファイルから「いちばんの物」を 1 つ外に出す書き方。読み込む側は `import 名前 from "./ファイル"` と、好きな名前で受け取れます。
+> - **`never`**（TypeScript）: 「ここには絶対に来ない」ことを表す型。`switch` の最後に `const unreachable: never = current;` と書いておくと、状態を足したのに `case` を書き忘れた時、`npx tsc` がエラーで教えてくれます。
+> - **`===`**（TypeScript）: 「型も値も同じか」を比べる書き方。`==` は型を勝手にそろえてから比べて思わぬ結果になるので、ふつうは `===` を使います（違うかは `!==`）。
+
+<!-- /first-use -->
+
 | 書き方 | 意味 |
 |---|---|
 | `type RequestStatus = "回覧中" \| "差し戻し中" \| ...` | 型に名前を付ける。`\|` でつないだ値のどれか（**ユニオン型**） |
@@ -321,6 +360,24 @@ for (const r of requests) {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`import`**（JavaScript・TypeScript）: ほかのファイルや部品から、関数などを読み込む書き方。`import { rmSync } from "node:fs";` は、Node.js のファイルの道具から `rmSync` を使えるようにします。
+> - **`from`**（JavaScript・TypeScript）: `import { 名前 } from "場所";` の一部で、「どこから読み込むか」を書きます。
+> - **`for`**（JavaScript・TypeScript）: くり返しの書き方。`for (const x of 配列) { … }` は、配列の中身を 1 つずつ `x` に入れてくり返します。
+> - **`of`**（TypeScript）: `for (const 名前 of 配列)` の一部で、「配列の中身を 1 つずつ」という意味です（`in` を使うと、中身ではなく番号が出てくるので注意）。
+> - **`undefined`**（TypeScript）: 「まだ値が入っていない」ことを表す値。`?` の付いた無くてもよい項目が無い時や、配列の範囲の外を読んだ時に出てきます。
+> - **`.filter()`**（JavaScript・TypeScript）: 配列から、条件に合う物だけを集めた新しい配列を作るメソッド。
+> - **`.map()`**（JavaScript・TypeScript）: 配列の中身を 1 つずつ変換した、新しい配列を作るメソッド。
+> - **`.sort()`**（TypeScript）: 配列を並べかえるメソッド。`(a, b) => …` の比べる関数を渡し、マイナスなら `a` が先、プラスなら `b` が先になります。**元の配列を書きかえる**ので、`[...requests].sort(…)` のように写してから並べかえることがよくあります（新しい配列を作る `toSorted` もあります）。
+> - **`.localeCompare()`**（TypeScript）: 2 つの文字列を、辞書の順で比べるメソッド。`a.localeCompare(b)` は、`a` が先ならマイナス、同じなら 0、後ならプラス。`sort` の中で、文字（日付の文字など）で並べる時に使います。
+> - **`??`**（TypeScript）: `a ?? b` は、`a` が `null` か `undefined` なら `b` を使う書き方。`(acc[key] ?? 0) + 1` は「まだ無ければ 0 から数える」。
+> - **`...`**（TypeScript）: スプレッド構文。`[...requests]` は配列の中身を広げて、新しい配列（写し）を作ります。`{ ...user, isAdmin: true }` は、オブジェクトを写して一部だけ変えます。
+
+<!-- /first-use -->
+
 動かした結果（`node src\requests.ts`）:
 
 ```text
@@ -411,6 +468,21 @@ if (isDrawing(loaded)) {
 }
 console.log(isDrawing(JSON.parse('{"version": 2}'))); // false（形が違う）
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`unknown`**（TypeScript）: 「何が入っているか分からない」ことを表す型。そのままでは使えず、`typeof` などで確かめてから使います。外から来た JSON を受け取る時に使うと安全です。
+> - **`typeof`**（TypeScript）: 値の種類を文字で返す書き方。`typeof value === "number"` は「数か」を調べます。調べたあとの `if` の中では、TypeScript がその型として扱ってくれます。
+> - **`as`**（JavaScript・TypeScript）: TypeScript で「この値は、この型として扱う」と伝える書き方（`値 as 型`）。
+> - **`new`**（JavaScript・TypeScript）: クラスから、新しい物を作る書き方。`new DatabaseSync("ba.sqlite")`・`new Date()`・`new Error("…")` のように使います。
+> - **`.isArray()`**（TypeScript）: `Array.isArray(値)` は、値が配列かどうかを調べる関数です。
+> - **`.stringify()`**（TypeScript）: `JSON.stringify(値)` は、オブジェクトや配列を、JSON の文字列にする関数です。保存したり、サーバーへ送ったりする時に使います。
+> - **`.encode()`**（TypeScript）: `new TextEncoder().encode(文字列)` は、文字列を UTF-8 のバイトの並びにするメソッド。`.length` で、何バイトになるかが分かります（日本語は 1 文字 3 バイト）。
+> - **`.parse()`**（JavaScript・TypeScript）: `JSON.parse(文字列)` は、JSON の文字列を、JavaScript のオブジェクトや配列に変えます。逆は `JSON.stringify(値)` です。
+
+<!-- /first-use -->
 
 動かした結果（`node src\drawing.ts`）:
 
@@ -536,6 +608,27 @@ try {
   server.close();
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`else`**（JavaScript・TypeScript）: JavaScript・TypeScript で、`if` の条件に合わなかった時の所。`else if (条件)` で、条件をつなげられます。
+> - **`await`**（JavaScript・TypeScript）: JavaScript・TypeScript で、時間のかかる処理（`Promise`）が終わるまで待って、結果を受け取る書き方。`async` の関数の中で使います。
+> - **`void`**（TypeScript）: 「何も返さない」ことを表す型。`Promise<void>` は「終わったことだけを知らせる約束」です。
+> - **`async`**（JavaScript・TypeScript）: JavaScript・TypeScript で、中で `await` を使える関数にする印。結果は `Promise`（あとで届く約束）で返ります。
+> - **`throw`**（TypeScript）: エラーを起こして、処理を止める書き方。`throw new Error("サーバーのエラー")`。`try … catch` で受け止められます。
+> - **`try`**（TypeScript）: 失敗するかもしれない処理を `try { … }` で囲み、失敗した時の処理を `catch` に書く書き方。
+> - **`catch`**（TypeScript）: `try` の中で失敗した時に動く所。`catch (e)` の `e` にエラーが入ります（何が来るか分からないので、使う前に確かめます）。
+> - **`finally`**（TypeScript）: `try … catch` のあと、成功しても失敗しても最後に必ず動く所。片づけ（サーバーを閉じる など）を書きます。
+> - **`.writeHead()`**（Node.js）: Node.js の練習用サーバーで、答えの番号（200 など）とヘッダーを書き始めるメソッド。
+> - **`.end()`**（Node.js）: Node.js のサーバーで、答え（レスポンス）の本文を送って、答えを終えるメソッド。`res.end(JSON.stringify(データ))`。これを呼ばないと、ブラウザーはずっと待ち続けます。
+> - **`.listen()`**（Node.js）: Node.js のサーバーを、決めた番号で待ち受け始めるメソッド。番号を 0 にすると、空いている番号を自動で選びます。
+> - **`.then()`**（TypeScript）: `Promise`（あとで届く約束）の結果が届いた時に動く関数を登録するメソッド。`await` を使えば、多くの場合は書かずに済みます。
+> - **`.error()`**（TypeScript）: `console.error(…)` は、エラーの知らせを出す関数です（`console.log` のエラー版）。
+> - **`.close()`**（JavaScript・TypeScript）: Playwright で、ブラウザーを閉じるメソッド（`await browser.close()`）。
+
+<!-- /first-use -->
 
 動かした結果（`node src\api_demo.ts`）:
 

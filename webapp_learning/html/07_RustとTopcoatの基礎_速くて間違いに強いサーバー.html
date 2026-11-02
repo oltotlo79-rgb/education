@@ -248,6 +248,19 @@ li, tr { page-break-inside: avoid; }
 <span class="n">topcoat</span> <span class="p">-</span><span class="n">-version</span>        <span class="c"># topcoat 0.11.0</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>rustc</code></strong>（Rust の道具）: Rust のコンパイラー（翻訳する係）。人が書いた <code>.rs</code> のファイルを、パソコンが直接動かせる実行ファイル（<code>.exe</code>）に翻訳します。ふだんは直接打たず、<code>cargo</code> が中で呼んでくれます。<code>rustc --version</code> で版を確かめられます。</li>
+<li><strong><code>cargo</code></strong>（Rust の道具）: Rust のプロジェクトをまとめて世話する道具。<code>cargo new</code>（作る）・<code>cargo run</code>（翻訳して動かす）・<code>cargo build</code>（翻訳だけ）・<code>cargo test</code>（テスト）・<code>cargo add</code>（部品を足す）のように、後ろに「何をするか」を付けて使います。<code>cargo --version</code> で版を確かめられます。</li>
+<li><strong><code>cargo install</code></strong>（cargo のコマンド）: Rust で作られた道具（コマンド）を、パソコンに入れるコマンド。<code>cargo install topcoat-cli --version 0.11.0 --locked</code> は、Topcoat の道具 <code>topcoat</code> を、決まった版で入れます。</li>
+<li><strong><code>topcoat</code></strong>（Topcoat）: Topcoat の道具のコマンド（<code>cargo install topcoat-cli</code> で入る）。<code>topcoat dev</code>（コードを直すと自動で作り直して読み直す開発用の起動）・<code>topcoat asset bundle</code>（CSS などの束を作る）などがあります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <table>
 <thead>
 <tr>
@@ -406,6 +419,56 @@ li, tr { page-break-inside: avoid; }
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>write!</code></strong>（文字列）: <code>println!</code> と同じ書き方で、画面ではなく、決めた書き込み先に書くマクロ。<code>Display</code> を実装する時の <code>write!(f, "…")</code> は、「表示する文を <code>f</code> に書く」という意味です。</li>
+<li><strong><code>assert_eq!</code></strong>（テスト）: 「2 つの値が同じか」を確かめるマクロ。<code>assert_eq!(実際の値, 期待する値);</code>。違う時はテストが失敗し、<code>left</code>（実際）と <code>right</code>（期待）の値を表示します。</li>
+<li><strong><code>assert!</code></strong>（テスト）: 「条件が <code>true</code> か」を確かめるマクロ。<code>assert!(is_valid(&amp;title));</code>。<code>false</code> ならテストが失敗します。</li>
+<li><strong><code>use</code></strong>（モジュール）: ほかの場所にある道具に、短い名前で呼べるようにする宣言。<code>use std::env;</code> と書くと、<code>std::env::args()</code> を <code>env::args()</code> と短く書けます。<code>std</code> は Rust に最初から付いている道具箱（標準ライブラリ）です。</li>
+<li><strong><code>pub</code></strong>（モジュール）: 「外から使ってよい」（公開）という印。<code>pub fn title_length(…)</code> は、ほかのファイル（モジュール）からも呼べる関数になります。付けないと、同じモジュールの中からしか使えません。</li>
+<li><strong><code>enum</code></strong>（型とメソッド）: 「いくつかの種類のうち、どれか 1 つ」を表す型（列挙型）。<code>enum Filter { All, Active, Done }</code> のように種類を並べ、<code>match</code> で種類ごとに処理を分けます。種類ごとに違うデータを持たせることもできます。</li>
+<li><strong><code>impl</code></strong>（型とメソッド）: 2 つの使い方があります。① <code>impl 型 { … }</code> で、その型にメソッド（関数）を付ける。② <code>impl View</code> のように型の場所に書くと、「<code>View</code> の機能を持つ何かの型」という意味になります（戻り値の型を細かく書かずに済む）。</li>
+<li><strong><code>fn</code></strong>（関数）: 関数（ひとまとまりの処理に名前を付けた物）を作る書き方。<code>fn main() { … }</code> の <code>main</code> は、プログラムを動かすと最初に動く特別な関数です。<code>fn add(a: i32, b: i32) -&gt; i32 { a + b }</code> は「整数を 2 つ受け取って、整数を返す関数 <code>add</code>」。<code>{ }</code> の中が中身で、最後の <code>;</code> の無い式が戻り値になります。</li>
+<li><strong><code>self</code></strong>（型とメソッド）: メソッドの中で「このもの自身」を表す名前。<code>impl</code> の中の <code>fn label(&amp;self)</code> の <code>&amp;self</code> は「自分を借りて読むだけ」、<code>&amp;mut self</code> は「自分を書きかえる」という意味です。<code>use</code> の中の <code>self</code>（例: <code>use std::io::{self, Write};</code>）は「<code>io</code> そのもの」を表します。</li>
+<li><strong><code>static</code></strong>（変数）: プログラムが動いている間、ずっとある値。<code>&amp;'static str</code> は「プログラムの中に書いた、ずっと消えない文字列」を借りている型です（<code>"回覧中"</code> のような文字列はこの型）。</li>
+<li><strong><code>match</code></strong>（場合分け）: 値の形に合わせて、処理を分ける書き方。<code>match 値 { 形1 =&gt; 処理1, 形2 =&gt; 処理2 }</code> と書き、上から順に合う物を探します。全部の場合を書かないとコンパイルが通らないので、書き忘れを防げます。<code>_ =&gt;</code> は「それ以外全部」です。</li>
+<li><strong><code>struct</code></strong>（型とメソッド）: いくつかの値をまとめて、新しい型を作る書き方（構造体）。<code>struct Note { id: u32, title: String }</code> で、「番号と題名を持つノート」という型ができます。<code>Note { id: 1, title: "買い物".to_string() }</code> で 1 つ作ります。</li>
+<li><strong><code>for</code></strong>（くり返し）: 並びや範囲から 1 つずつ取り出して、くり返す書き方。<code>for n in 1..=100 { … }</code> は、<code>n</code> に 1, 2, …, 100 を順に入れて、中を 100 回動かします。<code>for x in &amp;v</code> で、<code>Vec</code> の中身を借りて回せます。</li>
+<li><strong><code>mut</code></strong>（変数）: 「あとで変えてよい」という印。<code>let mut total = 0;</code> と書くと、<code>total += 10;</code> のように値を変えられます。付けないと変えられません（変えようとすると、コンパイルのエラーで教えてくれます）。</li>
+<li><strong><code>mod</code></strong>（モジュール）: コードをまとめる箱（モジュール）を作る書き方。<code>mod tests { … }</code> のように、関係する関数をまとめます。<code>mod 名前;</code> と書くと、別のファイル（<code>名前.rs</code>）の中身を読み込みます。</li>
+<li><strong><code>super</code></strong>（モジュール）: 「1 つ外側のモジュール」を表す名前。テストの中の <code>use super::*;</code> は、「外側（テストする本体）にある物を全部使えるようにする」という決まり文句です。</li>
+<li><strong><code>let</code></strong>（変数）: 値に名前を付けて覚えておく（変数を作る）書き方。<code>let age = 20;</code> で、<code>age</code> という名前で 20 を覚えます。最初は「変えられない」変数です。あとで変えたい時は <code>let mut age = 20;</code> のように <code>mut</code> を付けます。</li>
+<li><strong><code>#[derive]</code></strong>（型とメソッド）: 型に、よく使う機能を自動で付ける印（属性）。<code>#[derive(Debug, Clone, PartialEq)]</code> のように、付けたい機能の名前を並べます（例: <code>Debug</code> → <code>{:?}</code> で表示できる、<code>Clone</code> → <code>.clone()</code> できる）。</li>
+<li><strong><code>#[cfg]</code></strong>（テスト）: 「この条件の時だけ、この部分を翻訳する」という印（属性）。<code>#[cfg(test)]</code> を付けた部分は、<code>cargo test</code> の時だけ翻訳され、ふつうの実行ファイルには入りません。</li>
+<li><strong><code>#[test]</code></strong>（テスト）: 「この関数はテストです」という印（属性）。<code>cargo test</code> が、この印の付いた関数を全部探して動かします。</li>
+<li><strong><code>.to_string()</code></strong>（文字列）: 値を、自分の物の文字列（<code>String</code>）に変えるメソッド。<code>"abc".to_string()</code> や <code>42.to_string()</code> のように使います。</li>
+<li><strong><code>.unwrap()</code></strong>（エラー処理）: <code>Option</code> や <code>Result</code> から中身を取り出すメソッド。中身が無い（失敗した）時は、その場でプログラムが止まります（パニック）。練習や「絶対に失敗しない」と分かっている所だけで使い、本番のコードでは <code>?</code> や <code>unwrap_or</code> を使います。</li>
+<li><strong><code>.unwrap_err()</code></strong>（テスト）: <code>Result</code> が <code>Err</code> の時に、そのエラーを取り出すメソッド。<code>Ok</code> だった時は止まります。テストで「ちゃんと失敗するか」を確かめる時に使います。</li>
+<li><strong><code>.is_err()</code></strong>（エラー処理）: <code>Result</code> が <code>Err</code>（失敗）なら <code>true</code> を返すメソッド。</li>
+<li><strong><code>Vec::new()</code></strong>（Vec（並び））: 空の <code>Vec</code> を作る関数。あとで <code>push</code> で足すので、<code>let mut v = Vec::new();</code> のように <code>mut</code> を付けます。中身の型は、足す物から Rust が推し量ります。</li>
+<li><strong><code>Debug</code></strong>（型とメソッド）: <code>{:?}</code> で中身を表示できる機能（トレイト）。<code>#[derive(Debug)]</code> を付けた型は、<code>println!("{:?}", 値)</code> で中身を確かめられます。</li>
+<li><strong><code>Clone</code></strong>（型とメソッド）: <code>.clone()</code> で値を丸ごと複製できる機能（トレイト）。<code>#[derive(Clone)]</code> で付けます。</li>
+<li><strong><code>Copy</code></strong>（型とメソッド）: 代入や関数に渡した時に、移る（ムーブ）のではなく、自動で写される機能（トレイト）。数や <code>bool</code> のような小さな値が持っています。<code>#[derive(Clone, Copy)]</code> で自分の型にも付けられます（中身が全部 <code>Copy</code> の時だけ）。</li>
+<li><strong><code>PartialEq</code></strong>（型とメソッド）: <code>==</code> と <code>!=</code> で比べられる機能（トレイト）。<code>#[derive(PartialEq)]</code> で付けます。</li>
+<li><strong><code>Eq</code></strong>（型とメソッド）: <code>==</code> の比べ方が、いつも筋が通っている（自分と比べると必ず等しい）ことを表す印（トレイト）。<code>HashMap</code> のキーにする型などに要ります。<code>PartialEq</code> と一緒に <code>#[derive]</code> で付けます。</li>
+<li><strong><code>Display</code></strong>（型とメソッド）: <code>{}</code> で表示できる機能（トレイト）。利用者に見せる形を自分で決めたい時に、<code>impl fmt::Display for 型 { fn fmt(…) { … } }</code> と書いて実装します（<code>Debug</code> は開発者向けの表示）。</li>
+<li><strong><code>Formatter</code></strong>（型とメソッド）: <code>Display</code> や <code>Debug</code> の実装の中で受け取る「書き込み先」。<code>write!(f, "…")</code> で、そこに表示する文を書きます。</li>
+<li><strong><code>Result</code></strong>（エラー処理）: 「うまくいった（<code>Ok(値)</code>）」か「失敗した（<code>Err(エラー)</code>）」かのどちらかを入れる型。失敗するかもしれない関数は、<code>Result</code> を返します。受け取った側は、<code>match</code> で両方の場合を書くか、<code>?</code>（失敗ならその場で呼び出し元へ返す）で受け取ります。<code>Result&lt;Request, String&gt;</code> は「うまくいけば <code>Request</code>、失敗なら説明の文字列」です。</li>
+<li><strong><code>Error</code></strong>（エラー処理）: エラーを表す型が守る決まりごと（トレイト）。<code>use std::error::Error;</code> と書くと、<code>.source()</code>（元になったエラー）などを使えます。<code>Box&lt;dyn Error&gt;</code> は「どんなエラーでも入る箱」です。</li>
+<li><strong><code>Ok</code></strong>（エラー処理）: <code>Result</code> の「うまくいった」の方。<code>Ok(値)</code> の形で結果を包みます。<code>Ok(())</code> は「うまくいった。返す値は特に無い（<code>()</code> は空っぽの値）」という意味で、<code>Result&lt;()&gt;</code> を返す関数の最後によく書きます。</li>
+<li><strong><code>Err</code></strong>（エラー処理）: <code>Result</code> の「失敗した」の方。<code>Err(エラー)</code> の形で、何が起きたかを包みます。<code>match</code> で <code>Err(e) =&gt; …</code> と書くと、エラーを <code>e</code> で受け取れます。<code>?</code> を付けると、<code>Err</code> の時はその場で呼び出し元へ返します。</li>
+<li><strong><code>String</code></strong>（文字列）: 自分の物として持つ、変えられる文字列の型。後ろに足す（<code>push_str</code>）・書きかえる、ができます。<code>"…"</code> と書いた文字列は <code>&amp;str</code>（借りている読むだけの文字列）で、関数の引数は <code>&amp;str</code> にしておくと、どちらも渡せます。</li>
+<li><strong><code>Vec</code></strong>（Vec（並び））: 同じ種類の値を、順番に並べて持つ入れ物（ベクタ）。<code>Vec&lt;i32&gt;</code> は「整数の並び」、<code>Vec&lt;String&gt;</code> は「文字列の並び」です。<code>vec![…]</code> か <code>Vec::new()</code> で作り、<code>push</code> で足し、<code>len()</code> で数を数え、<code>v[0]</code> や <code>v.get(0)</code> で取り出します。</li>
+<li><strong><code>?</code></strong>（エラー処理）: <code>Result</code> や <code>Option</code> の後ろに付ける記号。「成功なら中身を取り出して先へ進む。失敗なら、その場で関数を終えて、エラーを呼び出し元へ返す」という意味です。<code>let text = fs::read_to_string("a.txt")?;</code> のように使います。<code>?</code> を使える関数は、戻り値が <code>Result</code>（または <code>Option</code>）の関数だけです。</li>
+<li><strong><code>&amp;mut</code></strong>（所有権と借用）: 「書きかえてよい」という約束で値を貸す書き方。<code>read_to_string(&amp;mut text)</code> は、関数に <code>text</code> を貸して、中身を書き込んでもらいます。貸す元の変数は <code>let mut text</code> のように <code>mut</code> が付いている必要があります。</li>
+<li><strong><code>=&gt;</code></strong>（場合分け）: <code>match</code> の中で「この形なら、→ この処理」をつなぐ矢印。<code>Some(name) =&gt; println!("{name}"),</code> は「値があったら、その名前を表示」という意味です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div style="max-width: 760px; margin: 18px auto; text-align: center;">
 <img src="../images/L07-03_match.webp" alt="7枚の状態のカードがmatchの機械で出口の箱に仕分けられる。出口の無い取り下げのカードに、書き忘れ（コンパイルエラー）の札" style="width: 100%;">
@@ -577,6 +640,30 @@ test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 <span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;移った先: {moved}&quot;</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>println!</code></strong>（画面に出す）: かっこの中の文字を画面に出して、最後に改行するマクロ。<code>println!("Hello, world!");</code> は <code>Hello, world!</code> と表示します。<code>{}</code> を書くと、後ろに並べた値がそこに入ります（例: <code>println!("{}点", 80);</code> → <code>80点</code>）。名前の最後の <code>!</code> は「マクロ」（コードを作り出す特別な仕組み）の印で、ふつうの関数と見分けるために付いています。</li>
+<li><strong><code>vec!</code></strong>（Vec（並び））: <code>Vec</code>（ベクタ：同じ種類の値を、順番に並べて持つ入れ物）を、中身を書いて作るマクロ。<code>vec![80, 95, 70]</code> は、80・95・70 の 3 つが入った並びです。<code>scores[0]</code> で最初の 80 を取り出せます（番号は 0 から数えるので、3 つなら使える番号は 0・1・2）。範囲の外の番号（<code>scores[10]</code> など）を使うと、プログラムは止まります（パニック）。あとから <code>push</code> で足したり、<code>len()</code> で数を数えたりできます。</li>
+<li><strong><code>in</code></strong>（くり返し）: <code>for 名前 in 並び</code> の一部で、「この並びの中から」という意味です。</li>
+<li><strong><code>if</code></strong>（条件）: 条件によって処理を分ける書き方。<code>if 条件 { 合う時 } else { 合わない時 }</code>。条件は <code>true</code>・<code>false</code> になる式（<code>age &gt;= 20</code> など）で、<code>( )</code> で囲む必要はありませんが、<code>{ }</code> は必ず要ります。</li>
+<li><strong><code>.iter()</code></strong>（イテレーター）: 並び（<code>Vec</code> など）の中身を、借りて 1 つずつ取り出せる形（イテレーター）にするメソッド。<code>for x in v.iter()</code> や、<code>v.iter().map(…)</code>・<code>.filter(…)</code> のように、加工してから使う時の入り口です。</li>
+<li><strong><code>.push()</code></strong>（Vec（並び））: 後ろに 1 つ足すメソッド。<code>Vec</code> なら <code>v.push(10);</code> で 10 を足し、<code>String</code> なら <code>s.push('!');</code> で 1 文字足します。<code>mut</code> の付いた変数に使います。</li>
+<li><strong><code>.is_some()</code></strong>（Option）: <code>Option</code> が <code>Some</code>（値がある）なら <code>true</code> を返すメソッド。値そのものは要らず、あるかどうかだけ知りたい時に使います。</li>
+<li><strong><code>.filter()</code></strong>（イテレーター）: 条件に合う物だけを残すメソッド。<code>v.iter().filter(|n| **n % 2 == 0)</code> は偶数だけ。<code>|n|</code> の中の <code>n</code> は借りた値なので、<code>*</code> が付くことがあります。</li>
+<li><strong><code>.map()</code></strong>（イテレーター）: 中身を 1 つずつ変換するメソッド。イテレーターなら <code>v.iter().map(|x| x * 2)</code> で全部を 2 倍に、<code>Option</code> なら <code>Some</code> の中身だけを変換します（<code>None</code> は <code>None</code> のまま）。<code>Result</code> なら <code>Ok</code> の中身だけを変換します。</li>
+<li><strong><code>.as_str()</code></strong>（文字列）: <code>String</code>（持ち主のいる文字列）を、借りた <code>&amp;str</code> として見せるメソッド。<code>&amp;str</code> を受け取る関数に渡す時などに使います。</li>
+<li><strong><code>.collect()</code></strong>（イテレーター）: 1 つずつ取り出せる形（イテレーター）の中身を、<code>Vec</code> や <code>String</code> などの入れ物に集めるメソッド。何に集めるかを、<code>let v: Vec&lt;&amp;str&gt; = ….collect();</code> のように変数の型で教えます。</li>
+<li><strong><code>String::from()</code></strong>（文字列）: <code>"…"</code>（<code>&amp;str</code>）から、自分の物の文字列（<code>String</code>）を作る関数。<code>String::from("こんにちは")</code>。<code>"こんにちは".to_string()</code> と同じです。</li>
+<li><strong><code>Option</code></strong>（Option）: 「値があるかもしれないし、無いかもしれない」を表す型。中身は <code>Some(値)</code> か <code>None</code>。<code>Option&lt;u32&gt;</code> は「整数があるかもしれない」。取り出す時は <code>match</code>・<code>if let</code>・<code>unwrap_or</code> などを使います。</li>
+<li><strong><code>Some</code></strong>（Option）: <code>Option</code>（値が「ある」か「無い」か）の、「ある」の方。<code>Some(値)</code> の形で中身を包みます。<code>match</code> で <code>Some(name) =&gt; { … }</code> と書くと、中身を <code>name</code> という名前で取り出して使えます。「無い」の方は <code>None</code> です。</li>
+<li><strong><code>|x|</code>（クロージャ）</strong>（関数）: その場で作る小さな関数（クロージャ）。<code>|x| x * 2</code> は「<code>x</code> を受け取って 2 倍を返す関数」です。<code>| |</code> の間が引数です。並べかえの基準やエラーの時の処理などを、ほかの関数に渡す時によく使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p>動かした結果（<code>cargo run</code>）:</p>
 <div class="codehilite"><div class="code-wrap" id="code-5"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>1 治具の製作（回覧中）
@@ -800,6 +887,52 @@ error: could not compile `mistake` (bin &quot;mistake&quot;) due to 2 previous e
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>module_router!</code></strong>（Topcoat）: Topcoat のマクロ。Rust のモジュール（ファイル）の並びを、そのまま URL の並びにしたルーター（URL ごとに、どの関数に答えさせるかの名簿）を作ります。</li>
+<li><strong><code>view!</code></strong>（Topcoat）: Topcoat のマクロ。中に HTML をほぼそのままの形で書いて、画面（<code>View</code>）を作ります。文字は <code>"…"</code> で囲み、Rust の値は <code>(値)</code> で埋め込みます。埋め込んだ文字の <code>&lt;</code> などは、自動で安全な形に置きかえられます。</li>
+<li><strong><code>asset!</code></strong>（Topcoat）: Topcoat のマクロ。CSS や画像などのファイル（アセット）を「このファイルを配る」と宣言し、ブラウザーから読める URL を作ります。<code>asset!("styles.css")</code> を、<code>&lt;link&gt;</code> の <code>href</code> などに入れて使います。</li>
+<li><strong><code>format!</code></strong>（文字列）: <code>println!</code> と同じ書き方で、画面に出さずに文字列（<code>String</code>）を作るマクロ。<code>let msg = format!("{}さん", name);</code> のように、値を埋め込んだ文を作る時に使います。</li>
+<li><strong><code>href!</code></strong>（Topcoat）: Topcoat のマクロ。ページの関数から、その URL を作ります。<code>href!(id::show, id::Id(note.id))</code> は「このノートの詳細ページの URL」。URL を文字で書かないので、打ちまちがいがコンパイルの時に見つかります。</li>
+<li><strong><code>crate</code></strong>（モジュール）: 「このプロジェクト（クレート）のいちばん上」を表す言葉。<code>use crate::note::Note;</code> は「このプロジェクトの <code>note</code> モジュールの <code>Note</code> を使う」という意味です。</li>
+<li><strong><code>async</code></strong>（非同期）: 「待つ所で、ほかの仕事に順番をゆずれる関数」にする印。<code>async fn root(…)</code> のように付けます。呼ぶ側は <code>.await</code> で結果を待ちます。Web サーバーが、たくさんの人を同時にさばけるのは、この仕組みのおかげです。</li>
+<li><strong><code>type</code></strong>（型とメソッド）: 型に別の名前を付ける書き方（型の別名）。<code>type DynRepo = Arc&lt;dyn NoteRepository + Send + Sync&gt;;</code> のように、長い型を短く呼べます。トレイトの中の <code>type Err = IdError;</code> は「このトレイトで使うエラーの型は <code>IdError</code>」と決める書き方です。</li>
+<li><strong><code>#[layout]</code></strong>（Topcoat）: Topcoat の印（属性）。この関数を「どのページにも共通の外枠（HTML の骨組み・メニュー）」にします。外枠の中の、ページが入る場所を <code>slot</code> で受け取ります。</li>
+<li><strong><code>#[page]</code></strong>（Topcoat）: Topcoat の印（属性）。この関数を、1 つの URL に答える「ページ」にします。<code>#[page("/")]</code> なら <code>/</code> に、<code>#[page(POST)]</code> なら送信（POST）に答えます。</li>
+<li><strong><code>.assets()</code></strong>（Topcoat）: ルーターに、配るアセット（CSS など）の束を登録するメソッド。<code>.assets(AssetBundle::load().unwrap())</code>。</li>
+<li><strong><code>.app_context()</code></strong>（Topcoat）: アプリ全体で共有する物（データベースの接続など）をルーターに登録するメソッド。ページの関数からは、<code>cx</code> を通して取り出せます。</li>
+<li><strong><code>.build()</code></strong>（型とメソッド）: 設定を少しずつ足していく「組み立て係」（ビルダー）の最後に呼んで、でき上がった物を作るメソッド。<code>Router::builder()…build()</code> の形で、ルーターなどを作る時に使います。</li>
+<li><strong><code>.lock()</code></strong>（スレッドと共有）: <code>Mutex</code> の鍵を取って、中身を使えるようにするメソッド。返ってきた物（ガード）を通して中身を読み書きし、ガードが片づけられると鍵は自動で返されます。ほかのスレッドが鍵を持っている間は、返されるまで待ちます。</li>
+<li><strong><code>.clone()</code></strong>（所有権と借用）: 値を丸ごと複製するメソッド。<code>let b = a.clone();</code> で、<code>a</code> と <code>b</code> の両方を使えるようになります。<code>clone</code> しないで <code>let b = a;</code> と書くと、中身が <code>b</code> に移り（所有権の移動）、<code>a</code> はもう使えません。</li>
+<li><strong><code>.css_class()</code></strong>（練習アプリで作る物（Rust））: 状態（<code>Status</code>）から、画面の札の CSS の class（<code>badge-circulating</code> など）を返すメソッド。</li>
+<li><strong><code>.trim()</code></strong>（文字列）: 文字列の前後の空白や改行を取り除いたものを返すメソッド。入力された文字の、うっかり入った空白を取る時によく使います。</li>
+<li><strong><code>.is_empty()</code></strong>（文字列）: 空（長さが 0）なら <code>true</code> を返すメソッド。文字列にも <code>Vec</code> にも使えます。<code>title.trim().is_empty()</code> は「空白を取ったら何も残らないか」を調べます。</li>
+<li><strong><code>.add()</code></strong>（練習アプリで作る物（Rust））: <code>Store</code> に、新しい依頼を 1 件足すメソッド。</li>
+<li><strong><code>.resolve()</code></strong>（Topcoat）: <code>href!</code> で作った URL の部品を、今のリクエスト（<code>cx</code>）に合わせて、本物の URL の文字列にするメソッド。</li>
+<li><strong><code>.into()</code></strong>（型とメソッド）: 値を、受け取る側が求める型に変えるメソッド（<code>From</code> の実装を使う）。<code>let s: String = "abc".into();</code> のように、変換先の型が分かる所で使います。</li>
+<li><strong><code>AssetBundle::load()</code></strong>（Topcoat）: <code>topcoat asset bundle</code> で作った CSS などの束（アセット）を読み込む関数。<code>.assets(AssetBundle::load().unwrap())</code> のように、ルーターに渡して配れるようにします。</li>
+<li><strong><code>Mutex::new()</code></strong>（スレッドと共有）: 値を、鍵付きの入れ物（<code>Mutex</code>）に入れる関数。使う時は <code>.lock()</code> で鍵を取ります。</li>
+<li><strong><code>Store::sample()</code></strong>（練習アプリで作る物（Rust））: 見本の依頼をいくつか入れた <code>Store</code> を作る関数。</li>
+<li><strong><code>topcoat::dev::script()</code></strong>（Topcoat）: <code>topcoat dev</code> で動かしている時だけ、「コードを直したら、ブラウザーを自動で読み直す」ための小さなスクリプトを、ページに入れる関数。<code>cargo run</code> や本番では何も出しません。</li>
+<li><strong><code>Mutex</code></strong>（スレッドと共有）: 中身を、1 度に 1 つのスレッドだけが使えるようにする鍵付きの入れ物。<code>.lock()</code> で鍵を取ってから使います。</li>
+<li><strong><code>Deserialize</code></strong>（JSON）: 「JSON などから作れる」機能（トレイト。<code>serde</code> の部品）。<code>#[derive(Deserialize)]</code> を付けた型は、<code>serde_json::from_str</code> で JSON から作れます。逆向き（値 → JSON）は <code>Serialize</code> です。</li>
+<li><strong><code>AssetBundle</code></strong>（Topcoat）: Topcoat の型。<code>topcoat asset bundle</code> で作った「アセットの束」（名前にハッシュが付いたファイルと目録）を、<code>AssetBundle::load()</code> で読み込んで、配れるようにします。</li>
+<li><strong><code>RouterBuilderAssetExt</code></strong>（Topcoat）: Topcoat のトレイト（機能のまとまり）。<code>use</code> しておくと、ルーターを組み立てる時に、アセット（CSS など）を配る設定のメソッドが使えるようになります。</li>
+<li><strong><code>Cx</code></strong>（Topcoat）: Topcoat の「今のリクエストの情報（URL・クッキー・セッションなど）が入った箱」。ページの関数の引数 <code>cx: &amp;Cx</code> で受け取り、<code>href!(…).resolve(cx)</code> などで使います。</li>
+<li><strong><code>Router</code></strong>（Topcoat）: URL とメソッド（GET・POST）ごとに、どの関数に答えさせるかを決めた名簿（ルーター）。Topcoat のサーバーは、来た頼み（リクエスト）をこの名簿で振り分けます。</li>
+<li><strong><code>Slot</code></strong>（Topcoat）: <code>#[layout]</code> の関数で受け取る「ページが入る場所」。レイアウトの HTML の中で <code>(slot)</code> と書いた所に、各ページの中身が入ります。</li>
+<li><strong><code>Form</code></strong>（Topcoat）: Topcoat の、送られてきたフォームの中身を受け取る型。<code>Form(input): Form&lt;NoteForm&gt;</code> と書くと、フォームの項目が <code>NoteForm</code> の形に読み取られて <code>input</code> に入ります。</li>
+<li><strong><code>View</code></strong>（Topcoat）: Topcoat の「画面（HTML になる物）」の型（トレイト）。ページの関数は <code>Result&lt;impl View&gt;</code>（HTML になる何かを返す。失敗することもある）を返します。</li>
+<li><strong><code>Store</code></strong>（練習アプリで作る物（Rust））: 依頼の一覧を、メモリーの中に持っておく struct。少し後の所で作ります。</li>
+<li><strong><code>DOCTYPE</code></strong>（HTML）: <code>&lt;!DOCTYPE html&gt;</code> は、「この文書は HTML5 です」とブラウザーに伝える、HTML の先頭の決まった 1 行です。</li>
+<li><strong><code>POST</code></strong>（Topcoat）: <code>#[page(POST)]</code> の <code>POST</code> は、「フォームの送信（POST）に答えるページ」にする指定。何も書かなければ、ふつうの表示（GET）に答えます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><code>hello/src/features.rs</code>（データと決まり）:</p>
 <div class="codehilite"><div class="code-wrap" id="code-11"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="sd">//! アプリの「中身」（データと決まり）。画面（app.rs）からは、ここの関数を使う</span>
 
@@ -864,6 +997,18 @@ error: could not compile `mistake` (bin &quot;mistake&quot;) due to 2 previous e
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.max()</code></strong>（数）: 2 つの数のうち、大きい方を返すメソッド。<code>page.max(1)</code> は「<code>page</code> と 1 の大きい方」なので、0 やマイナスが来ても 1 になります（下限を決める時の書き方）。イテレーターに使うと、いちばん大きい物を <code>Option</code> で返します。</li>
+<li><strong><code>.unwrap_or()</code></strong>（エラー処理）: <code>Option</code> や <code>Result</code> から中身を取り出し、無い（失敗した）時は、代わりに決めた値を使うメソッド。<code>name.unwrap_or("名無し".to_string())</code> のように使います。止まらない安全な取り出し方です。</li>
+<li><strong><code>.insert()</code></strong>（Vec（並び））: <code>Vec</code> の、決めた位置に入れるメソッド。<code>v.insert(0, x)</code> は先頭に入れます（後ろの物は 1 つずつずれる）。<code>HashMap</code> の <code>.insert(キー, 値)</code> は「入れる（上書き）」です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <table>
 <thead>
@@ -931,6 +1076,16 @@ error: could not compile `mistake` (bin &quot;mistake&quot;) due to 2 previous e
 <span class="n">cargo</span> <span class="n">run</span>                          <span class="c"># http://127.0.0.1:3000/ で待ち受ける</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo run</code></strong>（cargo のコマンド）: プログラムを翻訳（コンパイル）して、すぐ動かします。<code>Cargo.toml</code> があるフォルダで打ちます。プログラムが変わっていなければ翻訳を省くので、2 回目からは速くなります。<code>cargo run -- 値</code> のように <code>--</code> の後ろに書いた値は、プログラムへの引数（外から渡す値）になります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div style="max-width: 760px; margin: 18px auto; text-align: center;">
 <img src="../images/L07-s1_hello.webp" alt="Topcoatで作った依頼の一覧。3件の依頼と状態の札、下に新しい依頼の入力フォーム" style="width: 100%; border: 1px solid #cbd5e1;">
 <div style="font-size: 12px; color: #64748b; margin-top: 6px;">図5-2: Topcoat で作った一覧（CSS は 01 と同じ物を使っている）</div>
@@ -966,6 +1121,16 @@ error: could not compile `mistake` (bin &quot;mistake&quot;) due to 2 previous e
 <div class="codehilite"><div class="code-wrap" id="code-13"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">build</span> <span class="p">-</span><span class="n">-release</span> <span class="p">-</span><span class="n">-locked</span>          <span class="c"># 本番用の実行ファイル（target\release\webapp.exe）</span>
 <span class="n">topcoat</span> <span class="n">asset</span> <span class="n">bundle</span> <span class="p">-</span><span class="n">-release</span>          <span class="c"># target\release\assets</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo build</code></strong>（cargo のコマンド）: プログラムを翻訳（コンパイル）して実行ファイルを作るだけで、動かしはしません。でき上がった物は <code>target\debug\</code> に入ります。<code>cargo build --release</code> だと、速く動く本番用の物が <code>target\release\</code> にできます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <blockquote>
 <p><strong>もっと詳しく:</strong> <code>Rust/05_Rustバックエンド_async_並行処理_ジョブ_運用.md</code></p>

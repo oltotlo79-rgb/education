@@ -237,6 +237,16 @@ li, tr { page-break-inside: avoid; }
 <span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">basics</span><span class="p">.</span><span class="n">py</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.\.venv\Scripts\python.exe</code></strong>（Python の道具）: 仮想環境（<code>.venv</code>）の中の Python を、場所を書いて動かす書き方。<code>.\.venv\Scripts\python.exe ファイル.py</code> でプログラムを動かし、<code>.\.venv\Scripts\python.exe -m pip install -r requirements.txt</code> で、その仮想環境に部品を入れます。仮想環境を「入る」操作（Activate）をしなくても、確実にその Python が使われます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li><strong>仮想環境（venv）</strong>は、Python の部品を、練習やアプリごとに分けて入れる箱です（onprem の 05 の 4.3 にも図があります）。</li>
 <li><code>.\.venv\Scripts\python.exe</code> のように、<strong>仮想環境の中の python を、場所を書いて動かす</strong>のがいちばん確かです。</li>
@@ -312,6 +322,28 @@ li, tr { page-break-inside: avoid; }
 <span class="n">lengths</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">approvers</span><span class="p">]</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">lengths</span><span class="p">)</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>True</code></strong>（Python）: Python の「正しい（はい）」の値。反対は <code>False</code>。頭は大文字です（<code>true</code> ではありません）。</li>
+<li><strong><code>def</code></strong>（Python）: 関数を作る書き方。<code>def greet(name: str) -&gt; str:</code> の次の行から、<strong>字下げした所が関数の中身</strong>です。Python は <code>{ }</code> の代わりに字下げで「どこまでが中身か」を表すので、字下げをそろえることがとても大事です。</li>
+<li><strong><code>return</code></strong>（Python）: Python の関数の結果を返して、関数を終える命令。</li>
+<li><strong><code>for</code></strong>（Python）: Python のくり返し。<code>for x in 並び:</code> の次の行から、字下げした所が中身です。<code>[式 for x in 並び]</code> の形（内包表記）で、新しいリストを 1 行で作ることもできます。</li>
+<li><strong><code>in</code></strong>（Python）: <code>for x in 並び</code>（並びから 1 つずつ）と、<code>値 in 並び</code>（含まれているか）の 2 つの使い方があります。</li>
+<li><strong><code>if</code></strong>（Python）: Python の条件。<code>if 条件:</code> の次の行から、字下げした所が中身です。<code>a if 条件 else b</code> の形で、1 行の中で値を選ぶこともできます。</li>
+<li><strong><code>elif</code></strong>（Python）: 「そうでなくて、もし〜なら」（<code>else if</code> の短い形）。<code>if … elif … else</code> で、いくつもの場合に分けます。</li>
+<li><strong><code>else</code></strong>（Python）: <code>if</code> の条件に合わなかった時の所。<code>if … else …</code> の 1 行の形でも使います。</li>
+<li><strong><code>.append()</code></strong>（Python）: Python で、リストの後ろに 1 つ足すメソッド。</li>
+<li><strong><code>.get()</code></strong>（Python）: 辞書（<code>dict</code>）から、キーで値を取り出すメソッド。<code>d.get("port", 8080)</code> は、キーが無ければ 2 つ目の値（無ければ <code>None</code>）を返すので、<code>d["port"]</code> と違ってエラーになりません。</li>
+<li><strong><code>enumerate()</code></strong>（Python）: 並びを、番号つきで 1 つずつ取り出す関数。<code>for i, name in enumerate(approvers, start=1):</code> は、<code>i</code> に 1, 2, 3…、<code>name</code> に中身が入ります。</li>
+<li><strong><code>print()</code></strong>（Python）: 渡した値を画面に表示する関数。<code>print("a", 1)</code> のように、いくつも渡すと空白でつないで表示し、最後に改行します。</li>
+<li><strong><code>len()</code></strong>（Python）: 長さ（中身の数）を返す関数。<code>len("abc")</code> は 3、<code>len([1, 2])</code> は 2、<code>len(sys.argv)</code> は「渡された引数の数＋1」です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p>動かした結果:</p>
 <div class="codehilite"><div class="code-wrap" id="code-4"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>1 番目: 山田（最初）
@@ -463,6 +495,26 @@ li, tr { page-break-inside: avoid; }
     <span class="nb">print</span><span class="p">([</span><span class="n">s</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">Status</span><span class="p">])</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>from</code></strong>（Python）: <code>from パッケージ import 名前</code> の一部で、「どこから読み込むか」を書きます。<code>from pathlib import Path</code>。</li>
+<li><strong><code>import</code></strong>（Python）: ほかのモジュール（部品）を読み込む書き方。<code>import re</code> で正規表現の道具、<code>from pathlib import Path</code> で <code>Path</code> だけを使えるようにします。</li>
+<li><strong><code>class</code></strong>（Python）: クラス（データと、それを扱う関数をまとめた設計図）を作る書き方。<code>class Request:</code> の次から、字下げした所が中身です。</li>
+<li><strong><code>None</code></strong>（Python）: Python の「値が無い」ことを表す値。調べる時は <code>x is None</code> と書きます。</li>
+<li><strong><code>not</code></strong>（Python）: 「〜ではない」。<code>if key not in TRANSITIONS:</code> は「辞書に無ければ」。</li>
+<li><strong><code>raise</code></strong>（Python）: エラー（例外）を起こして、処理を止める書き方。<code>raise TransitionError("…")</code>。呼んだ側は <code>try … except</code> で受け止められます。</li>
+<li><strong><code>try</code></strong>（Python）: Python で、失敗するかもしれない処理を <code>try:</code> の中に書き、失敗した時の処理を <code>except:</code> に書く書き方。</li>
+<li><strong><code>except</code></strong>（Python）: <code>try:</code> の中でエラーが起きた時に動く所。<code>except TransitionError as e:</code> は、その種類のエラーを <code>e</code> という名前で受け取ります。</li>
+<li><strong><code>as</code></strong>（Python）: Python で、別の名前を付ける書き方。<code>except Exception as error:</code>（起きたエラーを <code>error</code> で受け取る）・<code>import numpy as np</code>・<code>with open(…) as f:</code> のように使います。</li>
+<li><strong><code>field()</code></strong>（Python）: <code>dataclasses</code> の部品で、dataclass の項目に、細かい決まりを付ける関数。<code>tags: list[str] = field(default_factory=list)</code> は「作るたびに、新しい空のリストを入れる」。<code>= []</code> と書くと、全部で同じリストを共有してしまうので、こう書きます。</li>
+<li><strong><code>@dataclass</code></strong>（Python）: クラスの上に付ける印（デコレーター）。項目（<code>title: str</code> など）を並べるだけで、作る時の処理（<code>__init__</code>）・表示の形・<code>==</code> の比べ方を自動で作ってくれます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>動かした結果（<code>.\.venv\Scripts\python.exe status.py</code>）:</p>
 <div class="codehilite"><div class="code-wrap" id="code-6"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Request(id=1, title=&#39;治具の製作&#39;, status=&lt;Status.CIRCULATING: &#39;回覧中&#39;&gt;, comments=[])
 差し戻し中 [&#39;【10/21 10:15 回覧者1 山田】寸法を追記してください&#39;]
@@ -597,6 +649,24 @@ li, tr { page-break-inside: avoid; }
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  ×&quot;</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>with</code></strong>（Python）: 使い終わったら自動で片づける書き方。<code>with path.open(encoding="utf-8") as f:</code> の中で使ったファイルは、抜ける時に自動で閉じられます。</li>
+<li><strong><code>or</code></strong>（Python）: 「または」。<code>a or b</code> は、<code>a</code> が空（<code>None</code>・<code>""</code>・0 など）なら <code>b</code> を使います。<code>(row.get("番号") or "").strip()</code> は「無ければ空の文字列にしてから空白を取る」。</li>
+<li><strong><code>continue</code></strong>（Python）: くり返しの「今回の残り」を飛ばして、次へ進む命令。</li>
+<li><strong><code>.open()</code></strong>（Python）: <code>Path</code> のファイルを開くメソッド。<code>with path.open(encoding="utf-8") as f:</code> のように、<code>with</code> と一緒に使うと、使い終わった時に自動で閉じます。</li>
+<li><strong><code>.DictReader()</code></strong>（Python）: <code>csv.DictReader(ファイル)</code> は、CSV を 1 行ずつ、「見出し → 値」の辞書として読む関数です。<code>row["従業員番号"]</code> のように、見出しの名前で値を取り出せます。</li>
+<li><strong><code>.strip()</code></strong>（Python）: 文字列の前後の空白や改行を取り除いたものを返すメソッド。</li>
+<li><strong><code>.fullmatch()</code></strong>（Python）: <code>re.fullmatch(パターン, 文字列)</code> は、文字列の<strong>全体</strong>が正規表現（文字の形の決まり）に合うかを調べる関数です。<code>r"\d{6}"</code> は「数字がちょうど 6 つ」。合わなければ <code>None</code> です。</li>
+<li><strong><code>.add()</code></strong>（Python）: <code>set</code>（同じ物を 2 回入れない入れ物）に 1 つ足すメソッド。すでにあれば何もしません。<code>no in seen</code> で「もう出てきたか」を確かめられます。</li>
+<li><strong><code>set()</code></strong>（Python）: 集合（同じ値は 1 つしか入らない入れ物）を作る関数。<code>seen = set()</code> で空の集合を作り、<code>seen.add(x)</code>・<code>x in seen</code> で使います。重複を見つける時に便利です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>練習用の CSV（<code>employees_utf8.csv</code>。中身はわざと間違いを 3 つ入れてある）:</p>
 <div class="codehilite"><div class="code-wrap" id="code-9"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>従業員番号,氏名,所属,メールアドレス
 012345,山田 太郎,設計部,taro.yamada@example.com
@@ -712,6 +782,25 @@ li, tr { page-break-inside: avoid; }
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;本物の URL:&quot;</span><span class="p">,</span> <span class="n">matches</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">stored</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;にせの URL:&quot;</span><span class="p">,</span> <span class="n">matches</span><span class="p">(</span><span class="s2">&quot;aaaa&quot;</span><span class="p">,</span> <span class="n">stored</span><span class="p">))</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.isoformat()</code></strong>（Python）: 日時を <code>2026-11-02T08:00:00+09:00</code> のような、決まった形（ISO 8601）の文字列にするメソッド。</li>
+<li><strong><code>.strftime()</code></strong>（Python）: 日時を、自分で決めた形の文字列にするメソッド。<code>%Y</code> は年・<code>%m</code> は月・<code>%d</code> は日・<code>%H</code> は時・<code>%M</code> は分。</li>
+<li><strong><code>.replace()</code></strong>（Python）: <code>datetime</code> の <code>.replace(hour=8, minute=0)</code> は、一部だけ変えた新しい日時を返すメソッドです（文字列の <code>.replace("前", "後")</code> は、置きかえた新しい文字列を返す、別の意味です）。</li>
+<li><strong><code>.token_urlsafe()</code></strong>（Python）: <code>secrets.token_urlsafe(32)</code> は、予想できないでたらめな文字列（URL に使える文字だけ）を作る関数です。1 回限りの承認の URL などに使います。</li>
+<li><strong><code>.sha256()</code></strong>（Python）: <code>hashlib.sha256(バイト)</code> は、データの SHA-256 のハッシュ（指紋）を計算する関数です。</li>
+<li><strong><code>.encode()</code></strong>（Python）: 文字列を、バイトの並びにするメソッド（UTF-8）。<code>token.encode()</code> のように、ハッシュの計算など、バイトを求める関数に渡す前に使います。</li>
+<li><strong><code>.hexdigest()</code></strong>（Python）: ハッシュの結果を、16 進数（0〜9 と a〜f）の文字列で返すメソッド。</li>
+<li><strong><code>.compare_digest()</code></strong>（Python）: <code>hmac.compare_digest(a, b)</code> は、2 つの値が同じかを、かかる時間から中身を推測されない方法で比べる関数です。合言葉やハッシュを比べる時に使います。</li>
+<li><strong><code>datetime()</code></strong>（Python）: 日付と時刻を表す型（<code>datetime(2026, 11, 2, 8, 0)</code> のように作る）。<code>datetime.now(ZoneInfo("Asia/Tokyo"))</code> で、日本時間の今が取れます。</li>
+<li><strong><code>timedelta()</code></strong>（Python）: 時間の長さを表す型。<code>timedelta(minutes=60)</code> は 60 分。日時に足したり引いたりできます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p>動かした結果:</p>
 <div class="codehilite"><div class="code-wrap" id="code-12"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>発行: 2026-11-01T09:30:00+09:00

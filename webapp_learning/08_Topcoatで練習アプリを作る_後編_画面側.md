@@ -193,6 +193,28 @@ async fn home(cx: &Cx) -> Result<impl View> {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`#[query_params]`**（Topcoat）: Topcoat の印（属性）。`?q=rust&page=2` のようなクエリ（URL の `?` の後ろ）を読むための構造体に付けます。項目は `Option<T>` にしておき、無い・空の時は `None` になります。
+> - **`.cookies()`**（Topcoat）: ルーターに、クッキーを使う仕組みを登録するメソッド（`module_router!().cookies()`）。セッションを使う時も、先にこれを登録します。
+> - **`.sessions()`**（Topcoat）: ルーターに、セッション（ログインの状態を覚える仕組み）を登録するメソッド。`.sessions(SessionConfig::default())`。先に `.cookies()` も登録します。
+> - **`.layer()`**（Topcoat）: ルーターに、すべてのリクエストの前後で動く仕組み（レイヤー。受け取る大きさの上限など）を足すメソッド。
+> - **`.at()`**（Topcoat）: `BodyLimit` などのレイヤーを、決めた URL の下だけで効かせるメソッド。`.at("/requests")` は `/requests` から始まる URL だけ。
+> - **`.downcast_ref()`**（エラー処理）: いろいろな種類が入るエラー（`anyhow::Error` など）の中身が、指定した型なら、それを借りて `Some` で返すメソッド。「このエラーは〇〇の種類か」を調べる時に使います。
+> - **`.query()`**（Topcoat）: `href!(…)` で作った URL に、`?mine=1` のような問い合わせの部分を足すメソッド。`href!(home).query(MineOnly { mine: "1" })`。
+> - **`BodyLimit::max()`**（Topcoat）: 上限の大きさ（バイト）を決めて `BodyLimit` を作る関数。`BodyLimit::max(60 * 1024 * 1024)` は 60MB です。
+> - **`RouterBuilderCookieExt`**（Topcoat）: ルーターに `.cookies()`（クッキーを使う仕組み）を登録できるようにする機能（トレイト）。
+> - **`RouterBuilderMailExt`**（Topcoat）: ルーターに `.mail(…)`（メールの設定を登録する）を足すための、Topcoat のトレイト。`use` しておくと `.mail(mail)` を呼べます。
+> - **`BodyLimit`**（Topcoat）: 受け取るリクエストの本文の大きさに、上限を決めるレイヤー。上限を超えると `413`（大きすぎる）を返します。
+> - **`NotFoundError`**（Topcoat）: Topcoat の「404 Not Found（見つかりません）」のエラーの型。
+> - **`RouterBuilderSessionExt`**（Topcoat）: ルーターに `.sessions(…)`（セッションの仕組み）を登録できるようにする機能（トレイト）。セッションはクッキーを使うので、先に `.cookies()` も登録します。
+> - **`Serialize`**（JSON）: 「JSON などにできる」機能（トレイト。`serde` の部品）。`#[derive(Serialize)]` を付けた型は、`serde_json::to_string` で JSON にできます。
+> - **`Id`**（Topcoat）: URL の一部（`/requests/3` の `3` など）を、型として受け取るための入れ物。練習アプリでは `Id(番号)` の形で、URL の中の依頼の番号を表します。`href!(detail, Id(5))` で URL を作り、ページの関数で受け取ります。
+
+<!-- /first-use -->
+
 | 書き方 | 意味 |
 |---|---|
 | `.app_context(app_state)` | どのページからも `state(cx)` で使える物を渡す |
@@ -297,6 +319,18 @@ pub async fn request_table(r: &RequestDetail) -> Result<impl View> {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`#[component]`**（Topcoat）: Topcoat の印（属性）。画面の一部を作る、何度も使える部品（コンポーネント）にします。`view!` の中で `panel(title: "一覧", …)` のように、名前付きの引数で呼べます。
+> - **`.fract()`**（数）: 小数の、小数点より下の部分を返すメソッド。`2.5_f64.fract()` は `0.5`。`v.fract() == 0.0` で「整数ちょうどか」を確かめています。
+> - **`Shape`**（練習アプリで作る物（Rust））: 図面の部品（四角 `Rect`・線 `Line` など）を表す enum。後編で作ります。
+> - **`Rect`**（練習アプリで作る物（Rust））: `Shape` の値の 1 つで、四角（左上の位置 `x`・`y` と、幅 `width`・高さ `height`）。
+> - **`Line`**（練習アプリで作る物（Rust））: `Shape` の値の 1 つで、線（始まり `x1`・`y1` と、終わり `x2`・`y2`）。
+
+<!-- /first-use -->
+
 - `#[component]` を付けた関数は、`view!` の中で `status_badge(status: r.status)` のように呼べます（React の部品と同じ考え方）。
 - **`view!` の中の `(式)` は、HTML として危ない文字（`<` `>` `&` `"` など）を自動で置きかえます。** 件名に `<script>` と書かれても、画面には文字として出るだけで、動きません（XSS を防ぐ。10 の巻で詳しく）。
 - 図面は、サーバーで SVG にして返します。見るだけの画面には、JavaScript が要りません。
@@ -367,6 +401,14 @@ async fn login_submit(cx: &Cx, Form(input): Form<LoginForm>) -> Result<impl View
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`UNAUTHORIZED`**（HTTP）: `StatusCode::UNAUTHORIZED` は、HTTP の答えの番号 401（「ログインしていない」）です。
+
+<!-- /first-use -->
+
 `src/app/logout.rs`:
 
 ```rust
@@ -389,6 +431,14 @@ pub async fn logout(cx: &Cx) -> Result<SeeOther> {
     Ok(see_other(href!(crate::app::login::login_page).resolve(cx)))
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`SeeOther`**（Topcoat）: 「303 See Other」（別のページへ移って）という答えを表す型。フォームを送ったあと、一覧や詳細のページへ移す時（PRG）に使います。
+
+<!-- /first-use -->
 
 <img src="images/L08-s1_login.webp" alt="ログインの画面。従業員番号とパスワードの欄" style="width: 100%;">
 
@@ -640,6 +690,21 @@ mod tests {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.next_field()`**（Topcoat）: `Multipart` から、次のフォームの項目を 1 つ受け取るメソッド。無くなると `None` です。
+> - **`.name()`**（Topcoat）: フォームの項目の名前（`<input name="…">` の `name`）を返すメソッド。
+> - **`.file_name()`**（ファイルとフォルダ）: 場所（パス）から、最後の部分（ファイル名やフォルダ名）だけを取り出すメソッド。`C:\data\memo.txt` なら `memo.txt`。無いこともあるので `Option` で返ります。
+> - **`.extend()`**（Vec（並び））: `Vec` の後ろに、別の並びの中身をまとめて足すメソッド。`v.extend(extra);`。
+> - **`.then_some()`**（Option）: `bool` が `true` なら `Some(値)`、`false` なら `None` を返すメソッド。`on_about.then_some("page")`。Topcoat の `view!` では、属性に `None` を入れると、その属性ごと書かれません。
+> - **`serde_json::to_string()`**（JSON）: Rust の値を、JSON の文字列（1 行）に変える関数。値の型に `Serialize` が付いている必要があります。失敗することもあるので `Result` が返ります。
+> - **`Date::parse()`**（時間）: 文字列を、決めた形（`format_description!`）で読んで、`Date` にする関数。形に合わない文字（`2026/13/40` など）だと `Err` を返します。
+> - **`Multipart`**（Topcoat）: ファイル付きのフォーム（`multipart/form-data`）を、1 項目ずつ読むための型。`while let Some(field) = multipart.next_field().await?` で、項目を順に受け取ります。
+
+<!-- /first-use -->
+
 - **ファイルを送るフォームは `enctype="multipart/form-data"`** で送られてくるので、`Form<T>` ではなく `Multipart` で、1 項目ずつ読みます（`FormValues::read`）。
 - 読む（`read`）と、確かめる（`validate`）を分けました。確かめで間違いがあれば、**入れた値のまま**画面に戻します。間違いは、見つかった物を全部、一度に出します。
 - 回覧者は、`<select>` を 3 つ並べました（同じ `name="approver"` なので、送られた順に `Vec` に入る）。06 では、名前で探して選ぶ部品（300ms 待ってから探す）を作りました。社員が数百人までなら `<select>` で足ります。もっと多いなら、06 のような探す部品にします。
@@ -703,6 +768,14 @@ async fn new_submit(cx: &Cx, multipart: Multipart) -> Result<impl View> {
     })
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Msg`**（練習アプリで作る物（Rust））: 画面に 1 回だけ出すお知らせ（「出しました」など）を、URL の `?msg=…` で受け渡すための struct。後編で作ります。
+
+<!-- /first-use -->
 
 入力した所（図面は、ドラッグで四角を 2 つ描いた。添付ファイルを 1 つ選んだ）:
 
@@ -812,6 +885,15 @@ mod tests {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`#[serde]`**（JSON）: `serde` の印（属性）。JSON にする時の細かい決まりを付けます。`#[serde(rename_all = "camelCase")]`（名前の書き方を変える）・`#[serde(default)]`（無い時は初期値）・`#[serde(skip_serializing_if = "Option::is_none")]`（空なら書かない）などがあります。
+> - **`serde_json::from_str()`**（JSON）: JSON の文字列を読んで、決めた型（struct など）に変える関数。形が合わないと `Err` を返します。
+
+<!-- /first-use -->
+
 - 06 の Python では、届いた JSON の形を `if` で 1 つずつ確かめました。Rust では、**形を struct と enum で書いておき、serde に読ませます**。`kind` が `"circle"` のような知らない値なら、読み込みがエラーになります。
 - `deny_unknown_fields` で、知らない項目が付いていても断ります。
 - JSON の形は、06 の React 版と同じです。同じデータベースに入れ替えても読めます。
@@ -893,6 +975,20 @@ mod tests {
   render();
 })();
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.createElementNS()`**（JavaScript・TypeScript）: 名前空間（ここでは SVG）を決めて、新しい要素を作るメソッド。SVG の図形（`rect`・`line`）は、ふつうの `createElement` ではなく、これで作らないと表示されません。
+> - **`.entries()`**（JavaScript・TypeScript）: `Object.entries(オブジェクト)` は、オブジェクトの「名前と値」の組を、`[名前, 値]` の配列の並びにします。`for (const [k, v] of Object.entries(attrs))` で、両方を同時に使えます。
+> - **`.setAttribute()`**（JavaScript・TypeScript）: 要素に、属性（`x="10"` など）を付けるメソッド。`node.setAttribute("x", "10")`。
+> - **`.replaceChildren()`**（JavaScript・TypeScript）: 要素の中身（子の要素）を、全部入れかえるメソッド。何も渡さないと、中身を空にします。
+> - **`.setPointerCapture()`**（JavaScript・TypeScript）: 押したポインター（マウスや指）の動きを、要素の外に出ても、この要素で受け取り続けるメソッド。図を描いている途中で、枠の外に出ても線が切れません。
+> - **`.pop()`**（JavaScript・TypeScript）: JavaScript・TypeScript で、配列の最後の 1 つを取り出すメソッド（元の配列から消える）。
+> - **`?.`**（JavaScript・TypeScript）: `a?.b` は、`a` が `null` や `undefined` なら、そこで止めて `undefined` にする書き方（オプショナルチェーン）。無いかもしれない物を、エラーにせずにたどれます。
+
+<!-- /first-use -->
 
 - 図面を**描く**所だけは、ブラウザで動く JavaScript が要ります。Topcoat の `asset!("drawing.js")` で、CSS と同じように束ねて配ります。
 - JavaScript は、描いた図面を JSON にして、隠し項目（`<input type="hidden" name="drawing">`）に入れるだけです。**確かめは、サーバー（`drawing::parse`）でもう一度します**（ブラウザから来る物は、いくらでも書きかえられるため）。
@@ -1109,6 +1205,14 @@ async fn action(cx: &Cx, Form(input): Form<ActionForm>) -> Result<impl View> {
     }
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.and_then()`**（エラー処理）: `Option` や `Result` に中身があれば、それを使って、次の `Option`・`Result` を作るメソッド（無ければ、そのまま `None`・`Err`）。失敗するかもしれない処理を、続けてつなぐ時に使います。
+
+<!-- /first-use -->
 
 | 書き方 | 意味 |
 |---|---|
@@ -1336,6 +1440,24 @@ mod tests {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.rsplit()`**（文字列）: 文字列を、後ろから順に区切り文字で分けるメソッド。`line.rsplit(' ').next()` は、最後の単語です。
+> - **`.is_control()`**（文字）: その文字が、制御文字（改行・タブなど、目に見えない特別な文字）かを返すメソッド。ファイルの名前から取り除くのに使っています。
+> - **`.take()`**（イテレーター）: イテレーターの先頭から、決めた数だけを取り出すメソッド。`body.chars().take(60)` は先頭の 60 文字。`.collect::<String>()` で文字列に戻せます。
+> - **`.rsplit_once()`**（文字列）: 文字列を、後ろから探して最初に見つかった区切りで、2 つに分けるメソッド。`"a.b.pdf".rsplit_once('.')` は `Some(("a.b", "pdf"))`。拡張子を取り出すのに使います。
+> - **`.to_ascii_lowercase()`**（文字列）: 半角の英字を、全部小文字にした文字列を返すメソッド。`"PDF"` は `"pdf"`。
+> - **`.filter_map()`**（イテレーター）: 1 つずつ変換して、`None` になった物は捨て、`Some` の中身だけを残すメソッド。`.filter_map(|line| line.split_once('='))` は、`=` を含む行だけを「名前と値の組」にします。
+> - **`.err()`**（エラー処理）: `Result` から、エラーの方だけを `Option` で取り出すメソッド。`Err(e)` は `Some(e)` に、`Ok(…)` は `None` になります（`.ok()` の逆）。
+> - **`tokio::fs::create_dir_all()`**（ファイルとフォルダ）: フォルダを、途中のフォルダもまとめて作る関数（非同期。`.await` で待つ）。もうあればそのままです。
+> - **`tokio::fs::write()`**（ファイルとフォルダ）: ファイルに中身を書く関数（非同期）。ファイルが無ければ作り、あれば上書きします。
+> - **`tokio::fs::remove_file()`**（ファイルとフォルダ）: ファイルを消す関数（非同期）。
+> - **`Path`**（ファイルとフォルダ）: ファイルやフォルダの場所を表す型（借りている形）。`.join()`・`.file_name()`・`.extension()`・`.exists()` などで扱います。自分の物として持つ形は `PathBuf` です。
+
+<!-- /first-use -->
+
 - 06 と同じく、**名前の拡張子と、中身の先頭の数バイト（マジックナンバー）の両方**で確かめます。
 - フォルダに置くときの名前は、アプリが乱数で決めます。送られてきた名前（`../../a.exe` のような物も来うる）は、表示とダウンロードにだけ使います。
 - 保存に失敗したら、書いたファイルを消します（前編の `finish`。テスト「添付ファイルはフォルダに置き_失敗したら消す」）。
@@ -1389,6 +1511,19 @@ mod tests {
     }
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.header()`**（HTTP）: 答えやリクエストに、見出し（ヘッダー）を 1 つ足すメソッド。`.header("Content-Type", "application/pdf")` は「中身は PDF」。
+> - **`.body()`**（HTTP）: リクエストやレスポンスの本文を取り出す（決める）メソッド。テストで `Request::builder()….body(Body::from("…"))` のように本文を入れます。
+> - **`.is_ascii_alphanumeric()`**（文字）: その文字が、ASCII（半角）の英字か数字（`A`〜`Z`・`a`〜`z`・`0`〜`9`）なら `true` を返すメソッド。`'あ'` は `false` です。
+> - **`Response::builder()`**（HTTP）: 答え（レスポンス）を、少しずつ決めて組み立て始める関数。`.header(名前, 値)` で見出しを足し、`.body(…)` で本文を入れて出来上がりです。
+> - **`Body::from()`**（HTTP）: 文字列やバイトの並びから、本文（`Body`）を作る関数。
+> - **`Body`**（HTTP）: リクエストや答えの本文を表す型（`topcoat::router::Body`）。
+
+<!-- /first-use -->
 
 `src/app/attachments/id.rs`:
 
@@ -1486,6 +1621,15 @@ pub async fn stats_page(cx: &Cx) -> Result<impl View> {
     })
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.into_iter()`**（イテレーター）: 入れ物の中身を、借りずに「もらって」1 つずつ取り出す形にするメソッド。使ったあと、元の入れ物は使えなくなります（`.iter()` は借りるだけ）。
+> - **`.sort_by_key()`**（Vec（並び））: 「何で並べるか」を関数で決めて、`Vec` を並べかえるメソッド。`notes.sort_by_key(|note| note.id)` は、番号の小さい順にします。
+
+<!-- /first-use -->
 
 <img src="images/L08-s14_stats.webp" alt="集計の画面。状態ごとの件数と棒グラフ、担当者ごとの完了の件数" style="width: 100%;">
 

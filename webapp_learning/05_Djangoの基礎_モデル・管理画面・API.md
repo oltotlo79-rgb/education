@@ -63,6 +63,15 @@ py -3.14 -m venv .venv
 .\.venv\Scripts\python.exe manage.py startapp requests_app
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Copy-Item`**（PowerShell）: ファイルやフォルダをコピーするコマンド。`Copy-Item 元 先`。最後の `.` は「今いるフォルダへ」という意味です。
+> - **`.\.venv\Scripts\django-admin.exe`**（Django の道具）: 仮想環境に入った Django の道具を動かす書き方。`django-admin.exe startproject config .` で、今いるフォルダに Django のプロジェクト（`manage.py` と `config` フォルダ）を作ります。
+
+<!-- /first-use -->
+
 `requirements.txt`:
 
 ```text
@@ -161,6 +170,20 @@ class Approval(models.Model):
         return f"{self.request_id} の {self.order} 番目"
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.CharField()`**（Django）: `models.CharField("件名", max_length=100)` は、短い文字列の列（最大の長さを必ず決める）を表すモデルの項目です。最初の `"件名"` は、管理画面などに出る名前です。
+> - **`.TextField()`**（Django）: 長い文字列（何行もの文）の列を表すモデルの項目。`blank=True` を付けると、入力が空でもよくなります。
+> - **`.DateField()`**（Django）: 日付の列を表すモデルの項目。
+> - **`.ForeignKey()`**（Django）: ほかの表の 1 行を指す列（外部キー）を表すモデルの項目。`models.ForeignKey(User, on_delete=models.PROTECT, related_name="requests")` は「ユーザーを指す。指されているユーザーは消せない（PROTECT）。ユーザーの側からは `user.requests` で依頼をたどれる」。
+> - **`.DateTimeField()`**（Django）: 日時の列を表すモデルの項目。`auto_now_add=True` で、作った時の日時を自動で入れます。
+> - **`.PositiveSmallIntegerField()`**（Django）: 0 以上の小さな整数の列を表すモデルの項目（順番などに使う）。
+> - **`.UniqueConstraint()`**（Django）: 「この組み合わせの値は、表の中で重ならない」という決まりを表す物。`fields=["request", "order"]` は「同じ依頼の中で、同じ順番は 2 つ作れない」。
+
+<!-- /first-use -->
+
 | 書き方 | 意味 | データベースでは（onprem の 02） |
 |---|---|---|
 | `class Request(models.Model):` | 1 つのモデル ＝ 1 つのテーブル | `CREATE TABLE` |
@@ -252,6 +275,15 @@ class RequestAdmin(admin.ModelAdmin):
     inlines = [ApprovalInline]
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.register()`**（Django）: `@admin.register(Request)` は、モデルを管理画面に登録して、画面から見たり直したりできるようにする書き方です。
+> - **`@admin`**（Django）: `@admin.register(モデル)` を、管理画面の設定のクラスの上に付けて、そのモデルを管理画面に出します。
+
+<!-- /first-use -->
+
 ```powershell
 # 管理画面に入れる人（スーパーユーザー）を作る。名前とパスワードを聞かれる
 .\.venv\Scripts\python.exe manage.py createsuperuser
@@ -340,6 +372,27 @@ except Request.DoesNotExist:
     print("999 番の依頼は無い")
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.all()`**（Django）: `Request.objects.all()` は、表の全部の行を取り出す（まだ読みに行かない「問い合わせ」を作る）メソッドです。
+> - **`.delete()`**（Django）: 問い合わせに合う行（または 1 つの物）を、データベースから消すメソッド。消した件数が返ります。
+> - **`.filter()`**（Django）: Django の問い合わせで、条件に合う行だけに絞るメソッド。`Request.objects.filter(status="approved")`。`項目名__条件`（`title__icontains="治具"` など）で、いろいろな条件を書けます（11 巻の B-18）。
+> - **`.create_user()`**（Django）: Django の利用者（`User`）を作るメソッド。`User.objects.create_user("012345", password="…")`。パスワードは、そのまま保存せずに、ハッシュにしてから保存してくれます（`create()` で作ると、ハッシュにならないので使わない）。
+> - **`.create()`**（Django）: Django で、新しい行を作ってデータベースに保存するメソッド。`Request.objects.create(title="…", …)` は、作ると同時に保存します（`.save()` は要らない）。
+> - **`.count()`**（Django）: Django で、条件に合う行の数を数えるメソッド。`Request.objects.count()` は、全部の依頼の数。データベースに `SELECT count(*)` を送るので、全部を読み込むより速いです。
+> - **`.order_by()`**（Django）: 問い合わせの結果を並べかえるメソッド。`order_by("due_date")` は納期の近い順、`order_by("-due_date")` は遠い順（`-` で逆）。
+> - **`.save()`**（Django）: Django のモデル（1 行分の値）を、データベースに保存するメソッド。新しい物なら行を足し、もうある物なら行を変えます。
+> - **`.get_status_display()`**（Django）: `choices` を決めた項目の、画面に出す名前（`"approved"` → `"回覧完了"`）を返すメソッド。Django が `get_項目名_display()` を自動で作ります。
+> - **`.values()`**（Django）: Django で、行をモデルではなく、決めた列だけの辞書で受け取るメソッド。`Request.objects.values("status").annotate(n=Count("id"))` は「状態ごとの数」を数える時の書き方です。
+> - **`.annotate()`**（Django）: 問い合わせの 1 行ごとに、計算した値（数など）を付け足すメソッド。`values("status").annotate(n=Count("id"))` は「状態ごとの件数」（SQL の GROUP BY）。
+> - **`.select_related()`**（Django）: つながった表（外部キーの先）を、1 回の問い合わせでまとめて読むメソッド。`select_related("approver")` で、ループの中で承認者を 1 人ずつ読みに行く無駄（N+1）を防げます。
+> - **`get_user_model()`**（Django）: 今のプロジェクトで使っている「ユーザー」のモデルを返す関数。自分でユーザーのモデルを作った時も、これで正しく取れます。
+> - **`date()`**（Python）: 日付を表す型。`date(2026, 11, 10)` のように作ります。
+
+<!-- /first-use -->
+
 動かした結果（`.\.venv\Scripts\python.exe manage.py shell -c "import orm_demo"`）:
 
 ```text
@@ -409,6 +462,15 @@ class RequestViewSet(viewsets.ModelViewSet):
         serializer.save(requester=self.request.user)
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`render()`**（Django）: Django で、テンプレート（HTML のひな形）に値を入れて、答え（HTML）を作る関数。`render(request, "テンプレート名", {"名前": 値})`。
+> - **`@login_required`**（Django）: 関数の画面（ビュー）の上に付けると、ログインしていない人をログインの画面へ移す印（デコレーター）です。
+
+<!-- /first-use -->
+
 `requests_app/urls.py`（アプリの URL の表）:
 
 ```python
@@ -425,6 +487,15 @@ urlpatterns = [
     path("api/", include(router.urls)),
 ]
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`path()`**（Django）: URL と、それに答える画面（ビュー）を結び付ける関数。`path("requests/<int:pk>/", views.detail)` の `<int:pk>` は、URL の中の数を `pk` という名前で受け取ります。
+> - **`include()`**（Django）: URL の決まりの中で、ほかのファイル（アプリ）の URL の決まりを、まとめて取り込む関数。`path("api/", include("requests_app.urls"))` のように使います。
+
+<!-- /first-use -->
 
 `config/urls.py`（いちばん上の URL の表。`accounts/` は Django に付いているログイン・ログアウトの画面）:
 
@@ -532,6 +603,14 @@ class RequestSerializer(serializers.ModelSerializer):
         return value
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.ValidationError()`**（Django REST framework）: Django REST framework で、入力のまちがいを知らせるエラー。`raise serializers.ValidationError("件名を入れてください")` と書くと、その文が `400` の答えに入って返ります。
+
+<!-- /first-use -->
+
 | 書き方 | 意味 |
 |---|---|
 | `ModelSerializer` | モデルから、JSON の形と確かめを自動で作る |
@@ -607,6 +686,18 @@ class RequestApiTests(APITestCase):
         self.assertEqual(res.status_code, 400)
         self.assertIn("title", res.json())
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.assertEqual()`**（Django）: テストで、2 つの値が同じかを確かめるメソッド。`self.assertEqual(res.status_code, 403)`。
+> - **`.force_authenticate()`**（Django REST framework）: テストで、決めたユーザーとしてログインしたことにして API を呼ぶためのメソッド（DRF のテスト用のクライアント）。
+> - **`.json()`**（Django）: テストで受け取った答え（レスポンス）の本文を、JSON として読んで、Python のリストや辞書にするメソッド。`self.assertEqual(res.json(), [])`。
+> - **`.post()`**（Django）: テストの係（`self.client`）で、POST のリクエストを送るメソッド。`self.client.post("/api/requests/", {…})` で、サーバーを動かさずに、API を試せます。
+> - **`.assertIn()`**（Django）: テストで、値が入れ物の中にあるかを確かめるメソッド。`self.assertIn("title", res.json())`。
+
+<!-- /first-use -->
 
 ```powershell
 .\.venv\Scripts\python.exe manage.py test requests_app

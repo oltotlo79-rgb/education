@@ -191,10 +191,50 @@ if __name__ == "__main__":
         pass
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`async`**（Python）: Python で、中で `await` を使える関数にする印（`async def handle(…):`）。`asyncio` の仕組みの上で、たくさんの接続を同時にさばけます。
+> - **`await`**（Python）: Python の `async` の関数の中で、時間のかかる処理が終わるまで待つ書き方。`await writer.drain()`。
+> - **`while`**（Python）: Python で、条件が `True` の間くり返す書き方。`while True:` は、`break` で抜けるまでずっとくり返します。
+> - **`break`**（Python）: Python のくり返しを、途中で抜ける命令。
+> - **`pass`**（Python）: 「何もしない」という Python の命令。中身が要らないけれど、形の上で何か書く必要がある所に置きます。
+> - **`.Path()`**（Python）: `pathlib.Path(場所)` は、ファイルやフォルダの場所を表す物を作る関数です。`/` でつなげられます。
+> - **`.with_name()`**（Python）: `Path` の、最後の名前だけを取りかえた場所を返すメソッド。`Path(__file__).with_name("received")` は「このファイルと同じフォルダの received」。
+> - **`.get_extra_info()`**（Python）: `asyncio` の接続から、相手の住所などの情報を取り出すメソッド。
+> - **`.drain()`**（Python）: `asyncio` の接続で、書いた物を送り終わるまで待つメソッド（`await writer.drain()`）。
+> - **`.readline()`**（Python）: 1 行だけ読むメソッド。
+> - **`.decode()`**（Python）: バイトの並びを、文字列に直すメソッド。`data.decode("utf-8", "replace")` は、読めない所を `�` にして直します。
+> - **`.rstrip()`**（Python）: 文字列の後ろ（右側）から、空白や指定した文字を取り除くメソッド。`.rstrip("\r\n")` は行の終わりの改行を取ります。
+> - **`.upper()`**（Python）: 英字を大文字にした文字列を返すメソッド。
+> - **`.start_tls()`**（Python）: `asyncio` の接続を、途中から暗号化（TLS）に切りかえるメソッド（STARTTLS。09 巻）。
+> - **`.mkdir()`**（Python）: `Path` のフォルダを作るメソッド。`exist_ok=True` で「もうあってもよい」、`parents=True` で途中のフォルダもまとめて作ります。
+> - **`.write_bytes()`**（Python）: `Path` のファイルに、バイトの並びをそのまま書くメソッド。
+> - **`.join()`**（Python）: Python で、区切り文字の方に付けて、リストの中身をつなぐメソッド。`" ".join(["a", "b"])` は `"a b"`（TypeScript とは書く順番が逆なので注意）。
+> - **`.close()`**（Python）: 接続やファイルを閉じるメソッド。
+> - **`.ArgumentParser()`**（Python）: `argparse.ArgumentParser()` は、コマンドの引数（`--port 2525` など）を読み取る係を作る関数です。
+> - **`.parse_args()`**（Python）: 決めておいた引数の形で、実際に渡された引数を読み取るメソッド。
+> - **`.create_default_context()`**（Python）: `ssl.create_default_context()` は、暗号化（TLS）の設定を、おすすめの値で作る関数です。
+> - **`.load_cert_chain()`**（Python）: TLS の設定に、サーバーの証明書と秘密鍵のファイルを読み込むメソッド。
+> - **`.start_server()`**（Python）: `asyncio.start_server(関数, ホスト, ポート)` は、接続を待ち受けるサーバーを始める関数です。接続が来るたびに、渡した関数が動きます。
+> - **`.serve_forever()`**（Python）: HTTP のサーバーを、止めるまでずっと動かし続けるメソッド。
+> - **`.run()`**（Python）: `asyncio.run(main())` は、非同期の関数（`async def`）を動かして、終わるまで待ちます。非同期のプログラムは、ここから始まります。
+
+<!-- /first-use -->
+
 ```powershell
 cd webapp_learning\samples\09_mail
 python smtp_sink.py      # 127.0.0.1:1025 で待つ。この窓は動かしたままにする
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`python`**（Python）: Python を動かすコマンド。`python -c "…"` は、`"…"` の中の Python のコードを 1 回だけ動かします。
+
+<!-- /first-use -->
 
 ### 2.2 Python で 1 通送る
 
@@ -241,6 +281,19 @@ def main() -> None:
 if __name__ == "__main__":
     main()
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.set_content()`**（Python）: メール（`EmailMessage`）の本文を決めるメソッド。
+> - **`.SMTP()`**（Python）: `smtplib.SMTP(ホスト, ポート)` は、メールを送るためにメールのサーバー（SMTP）へつなぐ関数です。
+> - **`.set_debuglevel()`**（Python）: `smtp.set_debuglevel(1)` で、SMTP のやり取りを画面に表示します（練習や、届かない時の調べ）。
+> - **`.ehlo()`**（Python）: SMTP のサーバーに、最初のあいさつ（EHLO）を送るメソッド。
+> - **`.starttls()`**（Python）: `smtplib` で、メールサーバーとの接続を、途中から暗号化（TLS）に切りかえるメソッド。`smtp.starttls()` のあとに送る中身は、暗号化されます。
+> - **`.send_message()`**（Python）: 用意したメールを、SMTP のサーバーへ渡して送るメソッド。
+
+<!-- /first-use -->
 
 別の窓で `python send_test.py` を動かしたときの、**受け取る側（練習用のサーバー）の画面**（`C:` は送ってきた側、`S:` はサーバーの返事）:
 
@@ -583,6 +636,14 @@ class Command(BaseCommand):
         self.stdout.write(f"渡しました（宛先: {to}・渡した先: {where}）。届いたかを、受け取る側で確かめてください。")
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.endswith()`**（Python）: 文字列が、その文字で終わっていれば `True` を返すメソッド。
+
+<!-- /first-use -->
+
 ### 7.2 Topcoat（08）
 
 `src/config.rs` のメールの所:
@@ -698,6 +759,14 @@ $env:SMTP_HOST = "127.0.0.1"; $env:SMTP_PORT = "1025"; $env:SMTP_USE_TLS = "fals
 cargo run -- send-test-mail --to sato@example.com
 Remove-Item Env:SMTP_HOST, Env:SMTP_PORT, Env:SMTP_USE_TLS   # 終わったら消す
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Remove-Item`**（PowerShell）: ファイルやフォルダを消すコマンド（短い呼び名は `rm`）。**ごみ箱に入らず、すぐ消えます。** フォルダを中身ごと消す時は `-Recurse` を付けます。消す前に、名前をよく確かめます。
+
+<!-- /first-use -->
 
 実際の出力:
 

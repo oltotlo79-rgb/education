@@ -842,6 +842,21 @@ tzdata==2026.6
 <span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>&lt;style&gt;</code></strong>（HTML）: HTML の中に、直接 CSS を書くタグ。ふつうは <code>&lt;head&gt;</code> の中に書きます（大きくなったら、別の CSS のファイルに分けます）。</li>
+<li><strong><code>&lt;em&gt;</code></strong>（HTML）: 「強めたい」という意味のタグ。ふつうは斜めの字で表示されます。</li>
+<li><strong><code>&lt;br&gt;</code></strong>（HTML）: 改行のタグ。閉じタグはありません。段落を分けたい時は、<code>&lt;br&gt;</code> を並べるより <code>&lt;p&gt;</code> を分けます。</li>
+<li><strong><code>&lt;ul&gt;</code></strong>（HTML）: 順番の無い並び（点の付いた並び）のタグ。中に <code>&lt;li&gt;</code> を並べます。</li>
+<li><strong><code>&lt;li&gt;</code></strong>（HTML）: 並び（<code>&lt;ul&gt;</code>・<code>&lt;ol&gt;</code>）の 1 つのタグ。</li>
+<li><strong><code>&lt;ol&gt;</code></strong>（React）: 番号の付いた並びのタグ。中に <code>&lt;li&gt;</code> を並べます（回覧の順番など）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><strong>▼ 画面</strong>（Chrome で開いて撮った物）</p>
 <p><img src="../images/L11-s1_tags.webp" alt="見出し、段落、リンク、点の並びと番号の並び、3列の表、件名・納期・個数・種類・内容の入力欄、至急のチェックとメールのラジオボタン、送るボタン" style="width: 70%; border: 1px solid #cbd5e1;"></p>
 <p><strong>ここがポイント:</strong></p>
@@ -968,6 +983,17 @@ tzdata==2026.6
 <span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>&lt;section&gt;</code></strong>（React）: ひとまとまりの部分（章）を表すタグ。</li>
+<li><strong><code>&lt;b&gt;</code></strong>（HTML）: 文字を太くするタグ（特別な意味は無く、見た目だけ）。「大事」という意味を付ける時は <code>&lt;strong&gt;</code> を使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><code>x02_layout.css</code>:</p>
 <div class="codehilite"><div class="code-wrap" id="code-14"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c">/* 付録 B-02: よく使う CSS */</span>
 
@@ -1061,6 +1087,29 @@ tzdata==2026.6
 <span class="w">  </span><span class="p">.</span><span class="nc">bar</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">flex-direction</span><span class="p">:</span><span class="w"> </span><span class="kc">column</span><span class="p">;</span><span class="w"> </span><span class="k">gap</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="kt">px</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>green:</code></strong>（CSS）: この資料の CSS で決めた色の変数（<code>--green</code>：緑。完了・成功の色）。</li>
+<li><strong><code>orange:</code></strong>（CSS）: この資料の CSS で決めた色の変数（<code>--orange</code>：オレンジ。差し戻しなどの注意の色）。</li>
+<li><strong><code>red:</code></strong>（CSS）: この資料の CSS で決めた色の変数（<code>--red</code>：赤。エラーや、消すボタンの色）。</li>
+<li><strong><code>gray:</code></strong>（CSS）: この資料の CSS で決めた色の変数（<code>--gray</code>：薄い灰色。背景の色）。</li>
+<li><strong><code>box-sizing:</code></strong>（CSS）: CSS で、箱の幅に枠線と内側の余白を含めるかを決める項目。<code>box-sizing: border-box;</code> にすると、<code>width</code> の中に <code>padding</code> と <code>border</code> が含まれ、大きさの計算が分かりやすくなります。</li>
+<li><strong><code>font-family:</code></strong>（CSS）: CSS で、文字の書体（フォント）を決める項目。<code>font-family: sans-serif;</code> は「飾りの無い書体」。</li>
+<li><strong><code>background:</code></strong>（CSS）: CSS で、背景（色や画像）を決める項目。<code>background: var(--color-bg);</code> は、色の変数の色にします。</li>
+<li><strong><code>border-radius:</code></strong>（CSS）: CSS で、箱の角の丸みを決める項目。</li>
+<li><strong><code>text-align:</code></strong>（CSS）: CSS で、文字の左右のそろえ方を決める項目。<code>center</code> で中央。</li>
+<li><strong><code>font-size:</code></strong>（CSS）: CSS で、文字の大きさを決める項目。</li>
+<li><strong><code>border:</code></strong>（CSS）: CSS で、箱の枠線（太さ・線の種類・色）をまとめて決める項目。<code>border: 1px solid #e2e8f0;</code>。</li>
+<li><strong><code>cursor:</code></strong>（CSS）: CSS で、マウスを乗せた時の矢印の形を決める項目。<code>pointer</code> は、押せる物の「指の形」です。</li>
+<li><strong><code>btn:</code></strong>（CSS）: <code>.btn:hover</code> は、この資料で決めたボタンの class（<code>btn</code>）の、マウスを乗せている時の見た目です（<code>:hover</code> は乗せている時の状態）。</li>
+<li><strong><code>opacity:</code></strong>（CSS）: 透明さを決める項目。<code>1</code> で不透明、<code>0</code> で見えない。<code>0.85</code> は少しだけ透ける（ボタンにマウスを乗せた時の合図など）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><strong>▼ 画面</strong>（窓の幅 820px）</p>
 <p><img src="../images/L11-s2_layout_wide.webp" alt="濃紺のヘッダーの左にアプリの名前、右にリンク2つ。白いカードが3つ横に並び、青い枠の箱、青・オレンジ・緑の札、青と赤のボタン" style="width: 100%; border: 1px solid #cbd5e1;"></p>
@@ -1169,6 +1218,24 @@ true true
 0.30000000000000004 false
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.padStart()</code></strong>（TypeScript）: 文字列の前を、決めた文字で埋めて、決めた長さにするメソッド。<code>"7".padStart(3, "0")</code> は <code>"007"</code>。</li>
+<li><strong><code>.split()</code></strong>（JavaScript・TypeScript）: JavaScript・TypeScript で、文字列を区切りで分けて配列にするメソッド。<code>"a,b".split(",")</code> は <code>["a", "b"]</code>。正規表現（<code>/,/</code>）でも区切れます。</li>
+<li><strong><code>.replaceAll()</code></strong>（TypeScript）: 文字列の中の、合う所を全部置きかえた新しい文字列を返すメソッド（<code>replace</code> は最初の 1 つだけ）。</li>
+<li><strong><code>.toUpperCase()</code></strong>（TypeScript）: 英字を大文字にした文字列を返すメソッド。</li>
+<li><strong><code>.endsWith()</code></strong>（TypeScript）: 文字列が、その文字で終わっていれば <code>true</code> を返すメソッド。</li>
+<li><strong><code>.isNaN()</code></strong>（TypeScript）: <code>Number.isNaN(値)</code> は、値が <code>NaN</code>（数ではない）かを調べる関数です。<code>Number("42円")</code> のように数にできなかった時に <code>NaN</code> になります。</li>
+<li><strong><code>.parseInt()</code></strong>（TypeScript）: <code>Number.parseInt("42円", 10)</code> は、文字列の先頭の数の部分だけを整数として読む関数です（10 は 10 進数）。</li>
+<li><strong><code>.toFixed()</code></strong>（TypeScript）: 数を、小数点以下の桁を決めた文字列にするメソッド。<code>(1234.5678).toFixed(2)</code> は <code>"1234.57"</code>。</li>
+<li><strong><code>.floor()</code></strong>（TypeScript）: <code>Math.floor(x)</code> は、小数を切り捨てて整数にする関数です（切り上げは <code>Math.ceil</code>、四捨五入は <code>Math.round</code>）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><strong>ここがポイント:</strong></p>
 <ul>
 <li><strong>テンプレート文字列</strong>（<code>`</code> で囲む）の <code>${ }</code> に、変数や式を書けます。<code>+</code> でつなぐより読みやすく、まちがいにくいです。</li>
@@ -1257,6 +1324,22 @@ true
 2件目: 部品の追加工
 { &#39;回覧中&#39;: 2, &#39;承認済み&#39;: 1, &#39;差し戻し&#39;: 1 }
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.find()</code></strong>（JavaScript・TypeScript）: 配列から、条件に合う最初の 1 つを返すメソッド。無ければ <code>undefined</code> です。その位置（番号）が欲しい時は <code>.findIndex()</code> を使います。</li>
+<li><strong><code>.findIndex()</code></strong>（TypeScript）: 配列の中で、条件に合う最初の物の位置（番号）を返すメソッド。無ければ <code>-1</code> です。</li>
+<li><strong><code>.some()</code></strong>（TypeScript）: 配列の中に、条件に合う物が 1 つでもあれば <code>true</code> を返すメソッド。</li>
+<li><strong><code>.every()</code></strong>（TypeScript）: 配列の中身が、全部条件に合えば <code>true</code> を返すメソッド。</li>
+<li><strong><code>.reduce()</code></strong>（TypeScript）: 配列を 1 つずつ見ながら、1 つの値（合計など）にまとめるメソッド。<code>a.reduce((合計, x) =&gt; 合計 + x.amount, 0)</code> の最後の <code>0</code> が、最初の値です。</li>
+<li><strong><code>.toSorted()</code></strong>（TypeScript）: 並べかえた<strong>新しい</strong>配列を返すメソッド（元の配列は変わらない）。React の state を並べかえる時に便利です。</li>
+<li><strong><code>.forEach()</code></strong>（TypeScript）: 配列の中身を 1 つずつ処理するメソッド（新しい配列は作らない）。<code>(x, i) =&gt; …</code> で、番号 <code>i</code> も受け取れます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><strong>ここがポイント:</strong></p>
 <table>
@@ -1406,6 +1489,17 @@ isAdmin = false
 1. 佐藤 → 2. 鈴木
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>interface</code></strong>（TypeScript）: オブジェクトの形に名前を付ける書き方（<code>type</code> とほぼ同じ）。<code>interface Approval { order: number; approver: string; }</code>。</li>
+<li><strong><code>.keys()</code></strong>（TypeScript）: <code>Object.keys(オブジェクト)</code> は、オブジェクトの項目の名前を、配列で返す関数です（<code>Object.entries</code> は名前と値の組）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><strong>ここがポイント:</strong></p>
 <ul>
 <li><strong><code>?</code>（<code>mail?: string</code>）は「無くてもよい項目」</strong>です。無い時の値は <code>undefined</code> です。</li>
@@ -1506,6 +1600,17 @@ isAdmin = false
 5: 壊れた JSON: true
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.now()</code></strong>（JavaScript・TypeScript）: <code>performance.now()</code> は、ページ（プログラム）が始まってからの時間をミリ秒で返します。<code>Date.now()</code> は、1970 年 1 月 1 日からのミリ秒です。どちらも、かかった時間を計るのに使えます。</li>
+<li><strong><code>.all()</code></strong>（TypeScript）: <code>Promise.all([…])</code> は、いくつかの <code>Promise</code>（時間のかかる処理）を同時に待って、全部の結果を配列で返す関数です。1 つでも失敗すると、全体が失敗します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><strong>ここがポイント:</strong></p>
 <ul>
 <li><strong><code>async</code> を付けた関数の中で <code>await</code> を書くと、「終わるまで待って、結果を受け取る」</strong>になります。待っている間も、画面などのほかの仕事は止まりません。</li>
@@ -1586,6 +1691,24 @@ isAdmin = false
 ￥30,000
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.set()</code></strong>（TypeScript）: <code>Map</code> に「キー → 値」を入れる（上書きする）メソッド。</li>
+<li><strong><code>.get()</code></strong>（TypeScript）: <code>Map</code> から、キーで値を取り出すメソッド。無ければ <code>undefined</code> です。</li>
+<li><strong><code>.add()</code></strong>（JavaScript・TypeScript）: <code>Set</code>（同じ物を 2 回入れない入れ物）に 1 つ足すメソッド。すでにあれば何もしません。</li>
+<li><strong><code>.UTC()</code></strong>（TypeScript）: <code>Date.UTC(年, 月, 日, …)</code> は、世界標準時の日時を、1970 年からのミリ秒の数で返す関数です（月は 0 から数える）。<code>new Date(Date.UTC(…))</code> で日時を作ります。</li>
+<li><strong><code>.toISOString()</code></strong>（TypeScript）: 日時を、<code>2026-11-10T00:00:00.000Z</code> の形（世界標準時）の文字列にするメソッド。サーバーとのやり取りに使います。</li>
+<li><strong><code>.toLocaleDateString()</code></strong>（TypeScript）: 日付を、その国の書き方の文字列にするメソッド。<code>{ timeZone: "Asia/Tokyo" }</code> を付けて、日本時間で表示します。</li>
+<li><strong><code>.getTime()</code></strong>（TypeScript）: 日時を、1970 年からのミリ秒の数にするメソッド。2 つの日時の差を計算する時に使います。</li>
+<li><strong><code>.NumberFormat()</code></strong>（TypeScript）: <code>new Intl.NumberFormat("ja-JP", { style: "currency", currency: "JPY" })</code> は、数を「￥30,000」のような形にする係を作ります。</li>
+<li><strong><code>.format()</code></strong>（TypeScript）: <code>Intl.NumberFormat</code> などの係で、数や日時を決めた形の文字列にするメソッド。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><strong>ここがポイント:</strong></p>
 <ul>
 <li><strong><code>#</code> で始まる項目（<code>#counts</code>）は、クラスの外から見えません。</strong> 外からは <code>add</code>・<code>total</code>・<code>summary</code> だけを使ってもらいます。</li>
@@ -1623,6 +1746,16 @@ isAdmin = false
 <span class="w">  </span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>&lt;b&gt;</code></strong>（React）: 文字を太くするタグ（JSX の中でも HTML と同じ）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><strong>▼ 画面</strong>（「＋1」を 3 回押して、「説明を開く」を押したところ）</p>
 <p><img src="../images/L11-s4_counter.webp" alt="承認した数: 3件、＋1と0に戻すのボタン、たくさん承認しましたの文、説明を閉じるボタンと緑の説明文" style="width: 70%; border: 1px solid #cbd5e1;"></p>
@@ -1855,6 +1988,16 @@ isAdmin = false
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>&lt;h3&gt;</code></strong>（React）: 3 番目の大きさの見出しのタグ。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><strong>▼ 画面</strong>（「佐藤 さんとして承認」→「鈴木 さんとして承認」の順に押したところ）</p>
 <p><img src="../images/L11-s11_props.webp" alt="回覧の枠に、佐藤さんとして承認・鈴木さんとして承認のボタン。下に1. 佐藤さんが承認しました、2. 鈴木さんが承認しました" style="width: 70%; border: 1px solid #cbd5e1;"></p>
 <p><strong>ここがポイント:</strong></p>
@@ -1926,6 +2069,22 @@ True True
 9 1 6 5
 0.30000000000000004 False
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.zfill()</code></strong>（Python）: 文字列の前を 0 で埋めて、決めた桁にするメソッド。<code>"7".zfill(4)</code> は <code>"0007"</code>。</li>
+<li><strong><code>float()</code></strong>（Python）: 文字列などを小数にする関数。<code>float("3.5")</code> は 3.5。数でない時は <code>ValueError</code>。</li>
+<li><strong><code>round()</code></strong>（Python）: 数を丸める関数。<code>round(2.675, 2)</code> は小数第 2 位まで。ちょうど真ん中（<code>2.5</code>）は、偶数の方へ丸める（<code>round(2.5)</code> は 2、<code>round(3.5)</code> は 4）ので注意します。</li>
+<li><strong><code>max()</code></strong>（Python）: いちばん大きい物を返す関数。<code>max(3, 9, 4)</code> は 9、<code>max([5, 1, 8])</code> は 8。いちばん小さい物は <code>min()</code> です。</li>
+<li><strong><code>min()</code></strong>（Python）: Python で、いちばん小さい値を返す関数。<code>min(1, 5, 3)</code> は 1。</li>
+<li><strong><code>sum()</code></strong>（Python）: リストなどの中身を全部足した合計を返す関数。<code>sum([1, 2, 3])</code> は 6。</li>
+<li><strong><code>abs()</code></strong>（Python）: 絶対値（マイナスを取った値）を返す関数。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><strong>ここがポイント:</strong></p>
 <table>
@@ -2075,6 +2234,24 @@ Counter({&#39;回覧中&#39;: 2, &#39;承認済み&#39;: 1, &#39;差し戻し&#3
 30
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.insert()</code></strong>（Python）: リストの、決めた位置に入れるメソッド。<code>names.insert(0, "鈴木")</code> は先頭に入れます。</li>
+<li><strong><code>.pop()</code></strong>（Python）: リストの最後（または決めた位置）の 1 つを取り出すメソッド（リストから消える）。</li>
+<li><strong><code>.items()</code></strong>（Python）: 辞書の「キーと値」の組を 1 つずつ取り出せる形にするメソッド。<code>for k, v in d.items():</code> で、両方を同時に使えます。</li>
+<li><strong><code>.keys()</code></strong>（Python）: 辞書のキーだけを、1 つずつ取り出せる形で返すメソッド。<code>list(d.keys())</code> でリストにできます。</li>
+<li><strong><code>.most_common()</code></strong>（Python）: <code>Counter</code> の、多い順に「(値, 数)」の組を並べたリストを返すメソッド。<code>most_common(1)</code> で、いちばん多い物だけ。</li>
+<li><strong><code>sorted()</code></strong>（Python）: 並べかえた<strong>新しい</strong>リストを返す関数。<code>sorted(並び, key=lambda r: r["amount"], reverse=True)</code> の <code>key</code> で「何で並べるか」、<code>reverse=True</code> で大きい順。</li>
+<li><strong><code>zip()</code></strong>（Python）: 2 つ以上の並びを、同じ番号どうしの組にして取り出す関数。<code>for a, b in zip(順番, 名前):</code>。</li>
+<li><strong><code>list()</code></strong>（Python）: 並び（<code>keys()</code> の結果や文字列など）から、新しいリストを作る関数。<code>list("abc")</code> は <code>["a", "b", "c"]</code>。</li>
+<li><strong><code>defaultdict()</code></strong>（Python）: 無いキーを初めて使った時に、自動で初期値（<code>list</code> なら空のリスト）を作る辞書。グループ分けに便利です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><strong>ここがポイント:</strong></p>
 <p><img src="../images/L11-02_ts_python_pair.webp" alt="TypeScript と Python で、同じ考え方の書き方を左右に並べた表" style="width: 80%;"></p>
 <ul>
@@ -2182,6 +2359,16 @@ Approval(order=1, approver=&#39;佐藤&#39;, comments=[&#39;確認しました&#
 False Approval(order=2, approver=&#39;鈴木&#39;, comments=[], done=True)
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>@property</code></strong>（Python）: クラスのメソッドの上に付けると、<code>()</code> 無しで値のように読めるようにする印。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><strong>ここがポイント:</strong></p>
 <ul>
 <li><strong>既定値つきの引数</strong>（<code>kind: str = "依頼"</code>）は、渡さなければ既定値になります。<strong>名前を付けて渡す</strong>（<code>urgent=True</code>）と、順番を気にしなくてよく、読む人にも意味が分かります。</li>
@@ -2282,6 +2469,26 @@ True memo.txt .txt 48 バイト
 work は残っている？ False
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>finally</code></strong>（Python）: <code>try … except</code> のあと、成功しても失敗しても最後に必ず動く所。</li>
+<li><strong><code>.write_text()</code></strong>（Python）: <code>Path</code> のファイルに、文字列を書くメソッド。<code>encoding="utf-8"</code> を付けます。</li>
+<li><strong><code>.read_text()</code></strong>（Python）: <code>Path</code> のファイルの中身を、全部文字列として読むメソッド。<code>encoding="utf-8"</code> を付けて読みます。</li>
+<li><strong><code>.splitlines()</code></strong>（Python）: 文字列を、行ごとに分けてリストにするメソッド（改行の文字は付かない）。</li>
+<li><strong><code>.stat()</code></strong>（Python）: ファイルの情報（大きさ <code>st_size</code>・日時など）を取り出すメソッド。</li>
+<li><strong><code>.loads()</code></strong>（Python）: 文字列から読み取るメソッド。<code>tomllib.loads(文字列)</code> は TOML、<code>json.loads(文字列)</code> は JSON を、Python の辞書にします。</li>
+<li><strong><code>.DictWriter()</code></strong>（Python）: <code>csv.DictWriter(ファイル, fieldnames=[…])</code> は、辞書を 1 行ずつ CSV に書く係を作る関数です。</li>
+<li><strong><code>.writeheader()</code></strong>（Python）: CSV の 1 行目（見出し）を書くメソッド。</li>
+<li><strong><code>.writerows()</code></strong>（Python）: 辞書のリストを、まとめて CSV の行として書くメソッド。</li>
+<li><strong><code>.iterdir()</code></strong>（Python）: <code>Path</code> のフォルダの中身を、1 つずつ取り出すメソッド（順番は決まっていないので、<code>sorted</code> で並べる）。</li>
+<li><strong><code>.rmtree()</code></strong>（Python）: <code>shutil.rmtree(フォルダ)</code> は、フォルダを中身ごと消す関数です。ごみ箱には入らないので、よく確かめて使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><strong>ここがポイント:</strong></p>
 <ul>
 <li><strong><code>try</code> → <code>except</code>（失敗した時）→ <code>else</code>（失敗しなかった時だけ）→ <code>finally</code>（どちらでも最後に）</strong> の順に動きます。</li>
@@ -2342,6 +2549,19 @@ True 火
 2026-11-01T23:00:00+00:00 → 2026-11-02T08:00:00+09:00
 Asia/Tokyo True
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.strptime()</code></strong>（Python）: <code>datetime.strptime("2026/11/02 08:00", "%Y/%m/%d %H:%M")</code> は、決めた形の文字列から日時を読む関数です。</li>
+<li><strong><code>.fromisoformat()</code></strong>（Python）: <code>date.fromisoformat("2026-12-01")</code> は、<code>2026-12-01</code> の形の文字列から日付を作る関数です。</li>
+<li><strong><code>.weekday()</code></strong>（Python）: 曜日を数で返すメソッド（月曜が 0、日曜が 6）。</li>
+<li><strong><code>.astimezone()</code></strong>（Python）: 日時を、別の時間帯（世界標準時・日本時間など）で表したものに変えるメソッド。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><strong>ここがポイント:</strong></p>
 <table>
@@ -2529,6 +2749,19 @@ Asia/Tokyo True
 11. 失敗したので元のまま: 回覧中
 12. delete: (3, {&#39;requests_app.Approval&#39;: 2, &#39;requests_app.Request&#39;: 1})
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.bulk_create()</code></strong>（Django）: いくつもの行を、1 回の SQL でまとめて作るメソッド。</li>
+<li><strong><code>.values_list()</code></strong>（Django）: 問い合わせの結果を、タプル（値の組）の並びで返すメソッド。<code>flat=True</code> を付けると、1 つの列の値だけの並びになります。</li>
+<li><strong><code>.aggregate()</code></strong>（Django）: 問い合わせの全体を、1 つの値（最小・最大・合計など）にまとめるメソッド。<code>aggregate(last=Max("due_date"))</code>。</li>
+<li><strong><code>.get_or_create()</code></strong>（Django）: 条件に合う行があれば取り出し、無ければ作るメソッド。<code>(物, 作ったか)</code> の組が返ります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><strong>ここがポイント:</strong></p>
 <table>
