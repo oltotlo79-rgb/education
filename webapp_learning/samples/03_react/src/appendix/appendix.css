@@ -1,0 +1,21 @@
+/* 付録のサンプル用の、少しの見た目 */
+body {
+  margin: 0;
+  padding: 12px 20px;
+  font-family: "Yu Gothic UI", "Meiryo", sans-serif;
+  color: #1e3a5f;
+  background: #eef2f7;
+  font-size: 16px;
+}
+.x-demo h2 { font-size: 16px; margin: 4px 0 8px; }
+.x-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 0 0 16px;
+}
+.x-card h3 { margin: 0 0 8px; font-size: 16px; }
+.x-note { color: #27ae60; }
+.x-error { color: #eb5757; }
+button { font-size: 15px; padding: 4px 12px; }
+input, select { font-size: 15px; padding: 2px 6px; }

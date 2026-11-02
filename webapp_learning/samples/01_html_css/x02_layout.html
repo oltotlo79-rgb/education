@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>よく使うレイアウト - 付録</title>
+    <link rel="stylesheet" href="x02_layout.css">
+  </head>
+  <body>
+    <!-- 1. flex: 横一列に並べる（左右に分ける） -->
+    <header class="bar">
+      <strong>依頼・承認アプリ</strong>
+      <nav class="menu">
+        <a href="#">自分の依頼</a>
+        <a href="#">新しい依頼</a>
+      </nav>
+    </header>
+
+    <main>
+      <!-- 2. grid: 何列かのます目に並べる（画面が狭いと 1 列になる） -->
+      <section class="cards">
+        <div class="card">回覧中 <b>2</b> 件</div>
+        <div class="card">差し戻し中 <b>1</b> 件</div>
+        <div class="card">完了 <b>5</b> 件</div>
+      </section>
+
+      <!-- 3. 箱の中の余白（padding）・外の余白（margin）・枠線（border） -->
+      <div class="box">padding 16px ／ border 4px ／ margin 24px の箱</div>
+
+      <!-- 4. 状態で色を変える（class を 2 つ付ける） -->
+      <p>
+        <span class="badge">回覧中</span>
+        <span class="badge badge-warn">差し戻し中</span>
+        <span class="badge badge-ok">完了</span>
+      </p>
+
+      <!-- 5. ボタン（:hover はマウスを乗せた時の見た目） -->
+      <button class="btn">承認する</button>
+      <button class="btn btn-danger">差し戻す</button>
+    </main>
+  </body>
+</html>
