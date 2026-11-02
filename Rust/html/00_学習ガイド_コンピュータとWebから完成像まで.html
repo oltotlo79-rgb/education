@@ -646,6 +646,11 @@ li, tr { page-break-inside: avoid; }
 <td>よく使う機能の早見表とサンプル集</td>
 <td>PowerShell・cargo・Git の操作と、文字列・Vec・Option・Result・イテレーター・ファイル・JSON・非同期などのよく使う書き方を、動くサンプルで引ける（どの巻を読んでいる時でも使える）</td>
 </tr>
+<tr>
+<td>付録 2</td>
+<td>出てくるコードとコマンドの一覧</td>
+<td>この本のコードに出てくる 977 個の部品（キーワード・マクロ・関数・メソッド・コマンドなど）を、機能ごとの表で引ける。本文でも、初めて出てくるコードのすぐ下に、同じ説明の箱（▶ ここで初めて出てくるコード）がある</td>
+</tr>
 </tbody>
 </table>
 <h3 id="_5">この巻の学習地図</h3>
@@ -788,6 +793,7 @@ li, tr { page-break-inside: avoid; }
 <li>次の「<strong>はじめに: 手を動かす準備</strong>」で、Rust を入れて、練習用のプロジェクト <code>practice</code> を作ります（最初に 1 回だけ）。</li>
 <li>UNIT 01 から順に読みます。例のコードが出てきたら、コードの前の「<strong>▶ 書く所と動かし方</strong>」のとおりに、<code>practice</code> の <code>src\main.rs</code> を書きかえて <code>cargo run</code> で動かします。</li>
 <li>「▼ 実行結果」と見比べ、「▼ コードを1つずつ分解して解説」で、なぜそうなったかを確かめます。</li>
+<li>コードの中に、<strong>初めて見るキーワード・マクロ・関数・コマンド</strong>があったら、そのコードのすぐ下の「<strong>▶ ここで初めて出てくるコード</strong>」の箱を読みます。その場で、意味と使い方を説明しています。あとで「何だっけ？」と思ったら、付録 2「出てくるコードとコマンドの一覧」で、機能ごとに引けます。</li>
 </ol>
 <blockquote>
 <p><strong>ヒント:</strong> <code>cargo run</code> は、プログラム自身が表示する文字より先に、次のような3行を表示します。</p>
@@ -975,6 +981,17 @@ Rust is installed now. Great!
 cargo 1.99.1 (5f94df478 2026-08-27)
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>rustc</code></strong>（Rust の道具）: Rust のコンパイラー（翻訳する係）。人が書いた <code>.rs</code> のファイルを、パソコンが直接動かせる実行ファイル（<code>.exe</code>）に翻訳します。ふだんは直接打たず、<code>cargo</code> が中で呼んでくれます。<code>rustc --version</code> で版を確かめられます。</li>
+<li><strong><code>cargo</code></strong>（Rust の道具）: Rust のプロジェクトをまとめて世話する道具。<code>cargo new</code>（作る）・<code>cargo run</code>（翻訳して動かす）・<code>cargo build</code>（翻訳だけ）・<code>cargo test</code>（テスト）・<code>cargo add</code>（部品を足す）のように、後ろに「何をするか」を付けて使います。<code>cargo --version</code> で版を確かめられます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><strong>確かめること:</strong> 2 行とも、<code>1.99</code> 以上の版が出る。<code>rustc</code> は Rust の<strong>翻訳係</strong>（コンパイラ）、<code>cargo</code> は<strong>段取り係</strong>（プロジェクトを作る・翻訳を頼む・動かす）です。この巻では、ほとんど <code>cargo</code> だけを使います。</p>
 <h3 id="p-5-practice">P-5: 練習用のプロジェクト <code>practice</code> を作る</h3>
 <p>この巻のコードは、全部 <code>practice</code> という 1 つのプロジェクト（プログラムをまとめておくフォルダ）で動かします。PowerShell に、次の 5 行を 1 行ずつ打ちます。</p>
@@ -992,6 +1009,18 @@ cargo 1.99.1 (5f94df478 2026-08-27)
 <div class="codehilite"><div class="code-wrap" id="code-6"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    Creating binary (application) `practice` package
 note: see more `Cargo.toml` keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cd</code></strong>（PowerShell）: 「change directory（フォルダを移る）」の略。<code>cd rust-study</code> で、今いるフォルダの中の <code>rust-study</code> へ移ります。<code>cd ..</code> は 1 つ上のフォルダへ、<code>cd ~</code> はホームフォルダ（<code>C:\Users\you</code>）へ戻ります。今いる場所は、行の頭の <code>PS C:\Users\you\rust-study&gt;</code> の部分に表示されます。</li>
+<li><strong><code>mkdir</code></strong>（PowerShell）: 「make directory（フォルダを作る）」の略。<code>mkdir rust-study</code> で、今いるフォルダの中に <code>rust-study</code> という新しいフォルダを作ります。もう同じ名前のフォルダがあると、エラーになります。</li>
+<li><strong><code>cargo new</code></strong>（cargo のコマンド）: 新しい Rust のプロジェクト（プログラムをまとめるフォルダ）を作ります。<code>cargo new practice</code> で、<code>practice</code> フォルダの中に <code>Cargo.toml</code>（設定）と <code>src\main.rs</code>（プログラムを書くファイル）ができます。名前には英小文字・数字・<code>-</code>・<code>_</code> を使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><code>#</code> で始まる行は<strong>説明のメモ</strong>（コメント）なので、打たなくてもかまいません。<code>cargo new</code> が、次のフォルダとファイルを作りました。</p>
 <div class="codehilite"><div class="code-wrap" id="code-7"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>C:\Users\you\rust-study\practice\
@@ -1017,6 +1046,16 @@ note: see more `Cargo.toml` keys and their definitions at https://doc.rust-lang.
 <span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;Hello, world!&quot;</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>println!</code></strong>（画面に出す）: かっこの中の文字を画面に出して、最後に改行するマクロ。<code>println!("Hello, world!");</code> は <code>Hello, world!</code> と表示します。<code>{}</code> を書くと、後ろに並べた値がそこに入ります（例: <code>println!("{}点", 80);</code> → <code>80点</code>）。名前の最後の <code>!</code> は「マクロ」（コードを作り出す特別な仕組み）の印で、ふつうの関数と見分けるために付いています。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <h3 id="p-6">P-6: ファイルを書きかえて、動かす（この巻の例は、全部この手順）</h3>
 <p>この巻の例には、どれもコードの前に「<strong>▶ 書く所と動かし方</strong>」があります。そこに書いてあるとおり、次の 4 つの手順で動かします。</p>
@@ -1045,6 +1084,16 @@ note: see more `Cargo.toml` keys and their definitions at https://doc.rust-lang.
      Running `target\debug\practice.exe`
 Hello, world!
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo run</code></strong>（cargo のコマンド）: プログラムを翻訳（コンパイル）して、すぐ動かします。<code>Cargo.toml</code> があるフォルダで打ちます。プログラムが変わっていなければ翻訳を省くので、2 回目からは速くなります。<code>cargo run -- 値</code> のように <code>--</code> の後ろに書いた値は、プログラムへの引数（外から渡す値）になります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><strong>▼ 実行結果</strong>（すぐにもう一度 <code>cargo run</code> した 2 回目）</p>
 <div class="codehilite"><div class="code-wrap" id="code-12"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.01s
@@ -1223,6 +1272,20 @@ note: VS Code is a different product, and is not sufficient
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>use</code></strong>（モジュール）: ほかの場所にある道具に、短い名前で呼べるようにする宣言。<code>use std::env;</code> と書くと、<code>std::env::args()</code> を <code>env::args()</code> と短く書けます。<code>std</code> は Rust に最初から付いている道具箱（標準ライブラリ）です。</li>
+<li><strong><code>let</code></strong>（変数）: 値に名前を付けて覚えておく（変数を作る）書き方。<code>let age = 20;</code> で、<code>age</code> という名前で 20 を覚えます。最初は「変えられない」変数です。あとで変えたい時は <code>let mut age = 20;</code> のように <code>mut</code> を付けます。</li>
+<li><strong><code>OS</code></strong>（標準ライブラリ）: <code>std::env::consts::OS</code> は、プログラムが動いている OS の種類を表す決まった値（定数）。Windows なら <code>"windows"</code>、Linux なら <code>"linux"</code> という文字列が入っています。</li>
+<li><strong><code>ARCH</code></strong>（標準ライブラリ）: <code>std::env::consts::ARCH</code> は、CPU の種類を表す決まった値（定数）。多くの Windows のパソコンでは <code>"x86_64"</code>、Arm の CPU なら <code>"aarch64"</code> です。</li>
+<li><strong><code>..=</code></strong>（範囲）: 「〜から〜まで（最後も含む）」の範囲。<code>1..=100</code> は 1, 2, …, 100。<code>..</code> だけだと最後を含みません（<code>1..100</code> は 1〜99）。<code>for n in 1..=100 { … }</code> のように、くり返しでよく使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>練習用プロジェクトの <code>src\main.rs</code> をこの内容に置き換えて保存し、実行します。</p>
 <div class="codehilite"><div class="code-wrap" id="code-17"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span>
 </code></pre></div></div>
@@ -1345,6 +1408,20 @@ CPU の種類: aarch64
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>eprintln!</code></strong>（画面に出す）: <code>println!</code> のエラー版。「標準エラー出力」というエラー用の出口に書きます。画面ではふつうの出力と同じに見えますが、<code>&gt; ファイル</code> で結果をファイルに書き出した時も、エラーは画面に残ります。失敗の知らせを出す時に使います。</li>
+<li><strong><code>match</code></strong>（場合分け）: 値の形に合わせて、処理を分ける書き方。<code>match 値 { 形1 =&gt; 処理1, 形2 =&gt; 処理2 }</code> と書き、上から順に合う物を探します。全部の場合を書かないとコンパイルが通らないので、書き忘れを防げます。<code>_ =&gt;</code> は「それ以外全部」です。</li>
+<li><strong><code>.nth()</code></strong>（イテレーター）: 並びの中から「n 番目」を 1 つ取り出すメソッド。番号は 0 から数えます。<code>env::args().nth(1)</code> は、コマンドの引数の 1 番目（0 番目はプログラム自身の場所）。無いかもしれないので、結果は <code>Some(値)</code> か <code>None</code>（<code>Option</code>）で返ります。</li>
+<li><strong><code>process::exit()</code></strong>（プロセス）: プログラムを、その場で終わらせる関数。<code>process::exit(2)</code> は、終了コード 2 を OS に知らせて終わります。終了コードは「0 なら成功、0 以外なら失敗」の決まりで、PowerShell では <code>$LASTEXITCODE</code> で見られます。</li>
+<li><strong><code>=&gt;</code></strong>（場合分け）: <code>match</code> の中で「この形なら、→ この処理」をつなぐ矢印。<code>Some(name) =&gt; println!("{name}"),</code> は「値があったら、その名前を表示」という意味です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><code>cargo build</code> でコンパイルだけ行い、できあがった実行ファイル <code>practice.exe</code> を PowerShell から直接動かします。<code>$LASTEXITCODE</code> は「直前に動かしたプログラムの終了コード」を表示する PowerShell の変数です。</p>
 <div class="codehilite"><div class="code-wrap" id="code-25"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">build</span>
 <span class="p">.\</span><span class="n">target</span><span class="p">\</span><span class="n">debug</span><span class="p">\</span><span class="n">practice</span><span class="p">.</span><span class="n">exe</span> <span class="n">Hanako</span>
@@ -1360,6 +1437,17 @@ CPU の種類: aarch64
 2
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo build</code></strong>（cargo のコマンド）: プログラムを翻訳（コンパイル）して実行ファイルを作るだけで、動かしはしません。でき上がった物は <code>target\debug\</code> に入ります。<code>cargo build --release</code> だと、速く動く本番用の物が <code>target\release\</code> にできます。</li>
+<li><strong><code>.\target\debug\practice.exe</code></strong>（PowerShell）: <code>cargo build</code> が作った実行ファイルを、直接動かす書き方。PowerShell では、今いるフォルダのプログラムを動かす時、頭に <code>.\</code>（「ここの」という意味）を付ける決まりです。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>さらに、<code>&gt;</code> を使って「標準出力だけをファイルへ送る」と、2つの出口が別物であることがはっきり分かります。</p>
 <div class="codehilite"><div class="code-wrap" id="code-27"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">.\</span><span class="n">target</span><span class="p">\</span><span class="n">debug</span><span class="p">\</span><span class="n">practice</span><span class="p">.</span><span class="n">exe</span> <span class="p">&gt;</span> <span class="n">out</span><span class="p">.</span><span class="n">txt</span>
 <span class="nb">Get-Content</span> <span class="n">out</span><span class="p">.</span><span class="n">txt</span>
@@ -1368,6 +1456,16 @@ CPU の種類: aarch64
 <p><strong>▼ 実行結果</strong></p>
 <div class="codehilite"><div class="code-wrap" id="code-28"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>エラー: 名前を 1 つ渡してください（例: cargo run -- Hanako）
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Get-Content</code></strong>（PowerShell）: ファイルの中身を画面に出すコマンド（短い呼び名は <code>cat</code>）。<code>Get-Content memo.txt</code> で中身を表示します。日本語のファイルは <code>-Encoding utf8</code> を付けると文字化けしません。<code>-Tail 10</code> で最後の 10 行だけを出せます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p>エラーのメッセージは画面に出ますが、<code>out.txt</code> の中身は空っぽです（<code>Get-Content</code> は何も表示しません）。<code>&gt;</code> が横取りしたのは①の標準出力だけで、②の標準エラー出力はそのまま画面に流れたからです。</p>
 <h4 id="1_1">▼ コードを1つずつ分解して解説</h4>
@@ -1453,6 +1551,16 @@ index out of bounds: the len is 3 but the index is 10
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 error: process didn&#39;t exit successfully: `target\debug\practice.exe` (exit code: 101)
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>vec!</code></strong>（Vec（並び））: <code>Vec</code>（ベクタ：同じ種類の値を、順番に並べて持つ入れ物）を、中身を書いて作るマクロ。<code>vec![80, 95, 70]</code> は、80・95・70 の 3 つが入った並びです。<code>scores[0]</code> で最初の 80 を取り出せます（番号は 0 から数えるので、3 つなら使える番号は 0・1・2）。範囲の外の番号（<code>scores[10]</code> など）を使うと、プログラムは止まります（パニック）。あとから <code>push</code> で足したり、<code>len()</code> で数を数えたりできます（第2巻 UNIT 06）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><strong>何が起きたか:</strong> 1行ずつ読むと、次のことが書いてあります。</p>
 <table>
@@ -1671,6 +1779,23 @@ error: process didn&#39;t exit successfully: `target\debug\practice.exe` (exit c
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>print!</code></strong>（画面に出す）: <code>println!</code> と同じく画面に出すマクロですが、最後に改行しません。続けて出したい時（例: <code>print!("入力してください: ");</code> のあとに入力を待つ）に使います。</li>
+<li><strong><code>.display()</code></strong>（ファイルとフォルダ）: ファイルやフォルダの場所（<code>Path</code>・<code>PathBuf</code>）を、<code>println!</code> で表示できる形にするメソッド。場所は、そのままでは <code>{}</code> で出せないので、<code>path.display()</code> を通して出します。</li>
+<li><strong><code>.join()</code></strong>（ファイルとフォルダ）: 場所（パス）に、フォルダやファイルの名前をつなげた新しい場所を作るメソッド。<code>dir.join("notes.txt")</code> は、<code>dir</code> の中の <code>notes.txt</code> を表します。区切りの <code>\</code> は自動で入ります。（文字列の配列に使う <code>.join(", ")</code> は、「区切り文字でつなげて 1 つの文字列にする」別の意味です。）</li>
+<li><strong><code>env::current_dir()</code></strong>（プロセス）: プログラムを動かした時の、今いるフォルダ（カレントディレクトリ）を返す関数。PowerShell の <code>Get-Location</code> と同じ場所です。取れないこともあるので、結果は <code>Result</code> で返り、<code>?</code> や <code>unwrap()</code> で中身を取り出します。</li>
+<li><strong><code>fs::create_dir_all()</code></strong>（ファイルとフォルダ）: フォルダを作る関数。<code>fs::create_dir_all("data/notes")</code> のように、途中のフォルダもまとめて作ります。もうあってもエラーになりません。</li>
+<li><strong><code>fs::write()</code></strong>（ファイルとフォルダ）: ファイルに文字を書く関数。<code>fs::write("memo.txt", "こんにちは")</code> で、ファイルが無ければ作り、あれば中身を全部置きかえます。失敗することもあるので <code>Result</code> が返ります。</li>
+<li><strong><code>fs::read_to_string()</code></strong>（ファイルとフォルダ）: ファイルの中身を全部読んで、1 つの文字列（<code>String</code>）にする関数。ファイルが無い時などは <code>Err</code>（エラー）が返ります。</li>
+<li><strong><code>?</code></strong>（エラー処理）: <code>Result</code> や <code>Option</code> の後ろに付ける記号。「成功なら中身を取り出して先へ進む。失敗なら、その場で関数を終えて、エラーを呼び出し元へ返す」という意味です。<code>let text = fs::read_to_string("a.txt")?;</code> のように使います。<code>?</code> を使える関数は、戻り値が <code>Result</code>（または <code>Option</code>）の関数だけです。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-39"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span>
 </code></pre></div></div>
 
@@ -1799,6 +1924,22 @@ main.rs                -&gt; 存在する? false
   [フォルダ] target
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>if</code></strong>（条件）: 条件によって処理を分ける書き方。<code>if 条件 { 合う時 } else { 合わない時 }</code>。条件は <code>true</code>・<code>false</code> になる式（<code>age &gt;= 20</code> など）で、<code>( )</code> で囲む必要はありませんが、<code>{ }</code> は必ず要ります。</li>
+<li><strong><code>else</code></strong>（条件）: <code>if</code> の条件が合わなかった時の処理を書く所。<code>else if 条件 { … }</code> で、条件をいくつも続けられます。</li>
+<li><strong><code>.file_name()</code></strong>（ファイルとフォルダ）: 場所（パス）から、最後の部分（ファイル名やフォルダ名）だけを取り出すメソッド。<code>C:\data\memo.txt</code> なら <code>memo.txt</code>。無いこともあるので <code>Option</code> で返ります。</li>
+<li><strong><code>.extension()</code></strong>（ファイルとフォルダ）: ファイル名の拡張子（<code>.txt</code> の <code>txt</code> の部分）を取り出すメソッド。拡張子が無い時は <code>None</code> が返ります。</li>
+<li><strong><code>.parent()</code></strong>（ファイルとフォルダ）: 場所（パス）の、1 つ上のフォルダを取り出すメソッド。<code>C:\data\memo.txt</code> なら <code>C:\data</code>。</li>
+<li><strong><code>.is_dir()</code></strong>（ファイルとフォルダ）: その場所がフォルダなら <code>true</code>、ファイルなら <code>false</code> を返すメソッド。ファイルかどうかは <code>.is_file()</code> で調べます。</li>
+<li><strong><code>fs::read_dir()</code></strong>（ファイルとフォルダ）: フォルダの中の一覧（ファイルとフォルダ）を、1 つずつ取り出せる形で返す関数。順番は決まっていないので、並べたい時は <code>Vec</code> に集めて <code>sort</code> します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <h4 id="1_5">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1_6">解説1: パスの部品</h5>
 <div class="codehilite"><div class="code-wrap" id="code-47"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;ファイル名: {:?}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">path</span><span class="p">.</span><span class="n">file_name</span><span class="p">());</span>
@@ -1874,6 +2015,16 @@ error: process didn&#39;t exit successfully: `target\debug\practice.exe` (exit c
 絶対パス: C:\Users\you\rust-study\practice\target\debug\memo\today.txt
 中身: Rust の勉強を始めた
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.\practice.exe</code></strong>（PowerShell）: 今いるフォルダにある <code>practice.exe</code> を動かす書き方。PowerShell では、安全のため、今いるフォルダのプログラムにも <code>.\</code>（「ここの」という意味）を付けて呼ぶ決まりです。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p>エラーにはなりませんが、<code>memo</code> フォルダが<strong>予想と違う場所</strong>（<code>target\debug</code> の中）にできてしまいました。プログラムは同じでも、カレントディレクトリが変わると相対パスの行き先が変わるからです。</p>
 <blockquote>
@@ -2141,6 +2292,22 @@ PS C:\Users\you&gt; rustc --version
 rustc 1.99.1 (58cf8f9c3 2026-10-13)
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Get-Location</code></strong>（PowerShell）: 今いるフォルダ（カレントディレクトリ）を表示するコマンド。短い呼び名は <code>pwd</code> です。</li>
+<li><strong><code>Set-Content</code></strong>（PowerShell）: ファイルに文字を書くコマンド。<code>Set-Content memo.txt "1 行目"</code> で、ファイルを作るか、中身を置きかえます。後ろに書き足す時は <code>Add-Content</code> を使います。</li>
+<li><strong><code>Set-Content -Encoding</code></strong>（PowerShell）: <code>-Encoding utf8</code> で、ファイルを UTF-8 という文字コードで書きます。Windows PowerShell 5.1 は、指定しないと古い文字コード（Shift_JIS）で書くので、日本語を書く時は付けておくと安心です。</li>
+<li><strong><code>ls</code></strong>（PowerShell）: フォルダの中の一覧を見るコマンド（正式な名前は <code>Get-ChildItem</code>）。<code>Mode</code> の列の <code>d</code> はフォルダ、<code>a</code> はファイルです。</li>
+<li><strong><code>cat</code></strong>（PowerShell）: ファイルの中身を表示するコマンド（正式な名前は <code>Get-Content</code>）。</li>
+<li><strong><code>Copy-Item</code></strong>（PowerShell）: ファイルやフォルダをコピーするコマンド（短い呼び名は <code>cp</code>）。<code>Copy-Item 元 先</code>。フォルダを中身ごとコピーする時は <code>-Recurse</code> を付けます。</li>
+<li><strong><code>Remove-Item</code></strong>（PowerShell）: ファイルやフォルダを消すコマンド（短い呼び名は <code>rm</code>）。<strong>ごみ箱に入らず、すぐ消えます。</strong> フォルダを中身ごと消す時は <code>-Recurse</code> を付けます。消す前に、名前をよく確かめます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><code>cargo --version</code> と <code>rustc --version</code> は、Rust をインストールしていれば版が表示されます。まだの人は、この2行だけエラーになります（下の「よくあるエラー」を見てください）。</p>
 <h4 id="1_7">▼ コマンドを1つずつ分解して解説</h4>
 <h5 id="1_8">解説1: 今いる場所を知る・移動する</h5>
@@ -2275,6 +2442,18 @@ rustc 1.99.1 (58cf8f9c3 2026-10-13)
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.enumerate()</code></strong>（イテレーター）: 並びを 1 つずつ取り出す時に、「何番目か」の番号を一緒に付けるメソッド。<code>for (i, x) in list.iter().enumerate()</code> で、<code>i</code> に 0, 1, 2…、<code>x</code> に中身が入ります。</li>
+<li><strong><code>.unwrap_or()</code></strong>（エラー処理）: <code>Option</code> や <code>Result</code> から中身を取り出し、無い（失敗した）時は、代わりに決めた値を使うメソッド。<code>name.unwrap_or("名無し".to_string())</code> のように使います。止まらない安全な取り出し方です。</li>
+<li><strong><code>env::var()</code></strong>（プロセス）: 環境変数（プログラムの外から渡す設定の値）を読む関数。<code>env::var("GREETING")</code>。設定されていないこともあるので、<code>Result</code> で返ります。<code>unwrap_or_else(|_| "既定値".to_string())</code> で、無い時の値を決めるのがふつうです。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>PowerShell で、次の順に実行します。</p>
 <div class="codehilite"><div class="code-wrap" id="code-63"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">--</span> <span class="n">Rust</span> <span class="s2">&quot;Web アプリ&quot;</span>
 <span class="nv">$env:GREETING</span> <span class="p">=</span> <span class="s2">&quot;おはよう&quot;</span>
@@ -2388,6 +2567,16 @@ Application     curl.exe                                           8.21.0.0   C:
 <span class="w">    </span><span class="nb">Ok</span><span class="p">(())</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.trim_end()</code></strong>（文字列）: 文字列の後ろ（右側）の空白や改行を取り除くメソッド。キーボードから読んだ 1 行の最後に付いている改行を取る時によく使います。前後両方を取る時は <code>.trim()</code> です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-71"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">Set-Content</span> <span class="n">memo</span><span class="p">.</span><span class="n">txt</span> <span class="s2">&quot;はじめての PowerShell&quot;</span>
 <span class="n">cargo</span> <span class="n">run</span>
@@ -2697,6 +2886,16 @@ Hello, world!
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Instant</code></strong>（時間）: 「ある瞬間」を表す型。<code>let start = Instant::now();</code> で今を覚えておき、<code>start.elapsed()</code> で「そこから何秒たったか」を測れます。処理の速さを測る時に使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-87"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span>
 <span class="n">cargo</span> <span class="n">run</span> <span class="p">-</span><span class="n">-release</span>
 </code></pre></div></div>
@@ -2803,6 +3002,16 @@ PS C:\Users\you\rust-study\rustc-only&gt; .\main.exe
 rustc だけでコンパイルしました
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.\main.exe</code></strong>（PowerShell）: 今いるフォルダの <code>main.exe</code> を動かす書き方。<code>rustc main.rs</code> で翻訳すると、同じフォルダに <code>main.exe</code> ができます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><code>rustc</code> は<strong>何も表示せずに</strong>終わり、<code>main.exe</code> ができました。成功したときに黙っているのは、多くのコマンドに共通する習慣です。<code>main.pdb</code> は、問題を調べるときに使う補助のファイルです。実際の開発では、クレートの取り寄せや設定の管理をしてくれる Cargo を使います。</p>
 <h4 id="cargo">よく使う Cargo のコマンド</h4>
 <table>
@@ -2883,6 +3092,16 @@ called `Result::unwrap()` on an `Err` value: ParseIntError { kind: InvalidDigit 
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 error: process didn&#39;t exit successfully: `target\debug\practice.exe` (exit code: 101)
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.unwrap()</code></strong>（エラー処理）: <code>Option</code> や <code>Result</code> から中身を取り出すメソッド。中身が無い（失敗した）時は、その場でプログラムが止まります（パニック）。練習や「絶対に失敗しない」と分かっている所だけで使い、本番のコードでは <code>?</code> や <code>unwrap_or</code> を使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><strong>何が起きたか:</strong></p>
 <ul>
@@ -3165,6 +3384,16 @@ error: process didn&#39;t exit successfully: `target\debug\practice.exe` (exit c
 * Connection #0 to host example.com:80 left intact
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>curl.exe</code></strong>（コマンド）: URL にアクセスして、返ってきた中身を表示するコマンド（Windows に最初から入っています）。<code>curl.exe http://127.0.0.1:8080/</code> のように使います。PowerShell では <code>curl</code> だけだと別の命令（<code>Invoke-WebRequest</code>）になるので、<code>.exe</code> まで付けて打ちます。<code>-i</code> で返事の見出し（ヘッダー）も表示します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <h4 id="1_14">▼ 出力を1つずつ分解して解説</h4>
 <h5 id="1_15">解説1: コマンドのオプション</h5>
 <div class="codehilite"><div class="code-wrap" id="code-101"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">curl</span><span class="p">.</span><span class="n">exe</span> <span class="p">-</span><span class="n">4</span> <span class="n">-sv</span> <span class="n">http</span><span class="p">://</span><span class="n">example</span><span class="p">.</span><span class="n">com</span><span class="p">/</span> <span class="n">-o</span> <span class="n">NUL</span>
@@ -3259,6 +3488,17 @@ error: process didn&#39;t exit successfully: `target\debug\practice.exe` (exit c
 クエリ  : page = 2
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.split_once()</code></strong>（文字列）: 文字列を、最初に見つかった区切りの所で 2 つに分けるメソッド。<code>"title=買い物".split_once('=')</code> は <code>Some(("title", "買い物"))</code>。区切りが無い時は <code>None</code> です。</li>
+<li><strong><code>.split()</code></strong>（文字列）: 文字列を、区切り文字のたびに分けるメソッド。<code>"a,b,c".split(',')</code> は <code>a</code>・<code>b</code>・<code>c</code> の 3 つ。結果は 1 つずつ取り出せる形（イテレーター）なので、<code>Vec</code> にしたい時は <code>.collect()</code> を付けます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <h4 id="1_16">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1-2-split_once">解説1: 区切りで2つに分ける <code>split_once</code></h5>
 <div class="codehilite"><div class="code-wrap" id="code-107"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">let</span><span class="w"> </span><span class="p">(</span><span class="n">scheme</span><span class="p">,</span><span class="w"> </span><span class="n">rest</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">url</span><span class="p">.</span><span class="n">split_once</span><span class="p">(</span><span class="s">&quot;://&quot;</span><span class="p">).</span><span class="n">unwrap</span><span class="p">();</span>
@@ -3352,6 +3592,23 @@ alt-svc: h3=&quot;:443&quot;; ma=86400
 241
 &lt;!doctype html&gt;&lt;html lang=en&gt;&lt;head&gt;&lt;meta charset=utf-8&gt;
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.write_all()</code></strong>（入出力）: 用意した中身を、全部まとめて書き込むメソッド。ネットの接続（<code>TcpStream</code>）やファイルに、バイト（<code>&amp;[u8]</code>）を書きます。途中で失敗することもあるので <code>Result</code> が返ります。</li>
+<li><strong><code>.as_bytes()</code></strong>（文字列）: 文字列を、中のバイト（コンピューターが持っている 0〜255 の数の並び）として見るメソッド。ネットやファイルに書く関数がバイトを求める時に使います。</li>
+<li><strong><code>.read_to_string()</code></strong>（入出力）: 接続やファイルから、残りを全部読んで文字列に入れるメソッド。<code>stream.read_to_string(&amp;mut text)</code> の <code>&amp;mut text</code> は「この変数に書き込んでよい」と貸す書き方です。使うには <code>use std::io::Read;</code> が要ります。</li>
+<li><strong><code>.collect()</code></strong>（イテレーター）: 1 つずつ取り出せる形（イテレーター）の中身を、<code>Vec</code> や <code>String</code> などの入れ物に集めるメソッド。何に集めるかを、<code>let v: Vec&lt;&amp;str&gt; = ….collect();</code> のように変数の型で教えます。</li>
+<li><strong><code>Read</code></strong>（入出力）: 「読める物」が持っている機能（トレイト）。<code>read_to_string</code> などの読むメソッドを使うには、<code>use std::io::Read;</code> で、この機能を使えるようにしておく必要があります。</li>
+<li><strong><code>Write</code></strong>（入出力）: 「書ける物」が持っている機能（トレイト）。<code>write_all</code> や <code>writeln!</code> を使うには、<code>use std::io::Write;</code> で、この機能を使えるようにしておく必要があります。</li>
+<li><strong><code>TcpStream</code></strong>（ネットワーク）: ネットワークの 1 本の接続を表す型。<code>TcpStream::connect("127.0.0.1:8080")</code> でつなぎ、<code>write_all</code> で送り、<code>read_to_string</code> で受け取ります。HTTP などの通信は、この接続の上で文字をやり取りしています。</li>
+<li><strong><code>&amp;mut</code></strong>（所有権と借用）: 「書きかえてよい」という約束で値を貸す書き方。<code>read_to_string(&amp;mut text)</code> は、関数に <code>text</code> を貸して、中身を書き込んでもらいます。貸す元の変数は <code>let mut text</code> のように <code>mut</code> が付いている必要があります（第3巻）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <h4 id="1_17">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1-tcpstreamconnect">解説1: 接続する <code>TcpStream::connect</code></h5>
@@ -3635,6 +3892,25 @@ cf-cache-status: HIT
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>format!</code></strong>（文字列）: <code>println!</code> と同じ書き方で、画面に出さずに文字列（<code>String</code>）を作るマクロ。<code>let msg = format!("{}さん", name);</code> のように、値を埋め込んだ文を作る時に使います。</li>
+<li><strong><code>loop</code></strong>（くり返し）: 終わりのないくり返し。<code>loop { … }</code> の中で <code>break</code> を書いた所で抜けます。サーバーが「次の接続を待つ」のをずっと続ける時などに使います。</li>
+<li><strong><code>break</code></strong>（くり返し）: <code>loop</code>・<code>while</code>・<code>for</code> のくり返しを、途中で抜ける命令。</li>
+<li><strong><code>.incoming()</code></strong>（ネットワーク）: サーバーが、やって来る接続を 1 つずつ受け取れる形にするメソッド。<code>for stream in listener.incoming() { … }</code> で、接続が来るたびに中が 1 回動きます。</li>
+<li><strong><code>.read_line()</code></strong>（入出力）: 1 行だけ読んで、文字列に書き足すメソッド。読んだ行の最後には改行が付いたままなので、<code>.trim_end()</code> などで取ってから使います。</li>
+<li><strong><code>TcpListener::bind()</code></strong>（ネットワーク）: 決まったポート番号で、接続を待ち受け始める関数。<code>TcpListener::bind("127.0.0.1:8080")</code> は「このパソコンの 8080 番で待つ」。もうほかのプログラムが使っている番号だと、エラーになります。</li>
+<li><strong><code>BufRead</code></strong>（入出力）: 「1 行ずつ読める物」が持っている機能（トレイト）。<code>read_line</code> や <code>lines</code> を使うには、<code>use std::io::BufRead;</code> が要ります。</li>
+<li><strong><code>BufReader</code></strong>（入出力）: 読む物（接続やファイル）を包んで、少しずつまとめて読む（バッファーする）ことで速くし、1 行ずつ読めるようにする型。<code>BufReader::new(&amp;stream)</code> のように使います。</li>
+<li><strong><code>TcpListener</code></strong>（ネットワーク）: 決まったポート番号で接続を待つ、サーバー側の型。<code>TcpListener::bind(…)</code> で作り、<code>.incoming()</code> で来た接続を受け取ります。</li>
+<li><strong><code>|x|</code>（クロージャ）</strong>（関数）: その場で作る小さな関数（クロージャ）。<code>|x| x * 2</code> は「<code>x</code> を受け取って 2 倍を返す関数」です。<code>| |</code> の間が引数です。並べかえの基準やエラーの時の処理などを、ほかの関数に渡す時によく使います（第2巻）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>PowerShell の窓を<strong>2つ</strong>開きます。1つ目の窓でサーバーを起動します。</p>
 <div class="codehilite"><div class="code-wrap" id="code-122"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span>
 </code></pre></div></div>
@@ -3771,6 +4047,16 @@ Content-Length: 26
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.split_whitespace()</code></strong>（文字列）: 文字列を、空白（スペース・タブ・改行）の所で分けるメソッド。空白がいくつ続いても 1 つの区切りとして扱います。<code>"GET / HTTP/1.1".split_whitespace()</code> は <code>GET</code>・<code>/</code>・<code>HTTP/1.1</code>。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>サーバーを起動したまま、別の窓から curl で3回アクセスし、最後にブラウザで <code>http://127.0.0.1:8080/</code> を開きます。</p>
 <div class="codehilite"><div class="code-wrap" id="code-131"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">curl</span><span class="p">.</span><span class="n">exe</span> <span class="n">-s</span> <span class="n">http</span><span class="p">://</span><span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span><span class="p">:</span><span class="n">8080</span><span class="p">/</span><span class="n">health</span>
 <span class="n">curl</span><span class="p">.</span><span class="n">exe</span> <span class="n">-s</span> <span class="n">-i</span> <span class="n">http</span><span class="p">://</span><span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span><span class="p">:</span><span class="n">8080</span><span class="p">/</span><span class="n">notes</span>
@@ -3897,6 +4183,23 @@ Handles  NPM(K)    PM(K)      WS(K)     CPU(s)     Id  SI ProcessName
 
   TCP    127.0.0.1:8080         0.0.0.0:0              LISTENING       54588
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Get-NetTCPConnection</code></strong>（PowerShell）: パソコンのネットワークの接続や、待ち受けているポート番号を一覧にするコマンド。「8080 番をだれが使っているか」を調べる時に使います。</li>
+<li><strong><code>Get-NetTCPConnection -LocalPort</code></strong>（PowerShell）: <code>-LocalPort 8080</code> で、このパソコン側のポート番号が 8080 の物だけに絞ります。</li>
+<li><strong><code>Get-NetTCPConnection -State</code></strong>（PowerShell）: <code>-State Listen</code> で、「待ち受けている」状態の物だけに絞ります（ほかに <code>Established</code>＝つながっている、など）。</li>
+<li><strong><code>Select-Object</code></strong>（PowerShell）: 結果のうち、見たい列だけを選ぶコマンド。<code>… | Select-Object Name, Length</code> のように、<code>|</code>（パイプ）で前のコマンドの結果を受け取って使います。<code>-First 5</code> で最初の 5 つだけにもできます。</li>
+<li><strong><code>Get-Process</code></strong>（PowerShell）: 動いているプログラム（プロセス）の一覧を出すコマンド。<code>Get-Process -Id 1234</code> で、番号 1234 のプロセスの名前などが分かります。</li>
+<li><strong><code>Get-Process -Id</code></strong>（PowerShell）: <code>-Id 番号</code> で、プロセスの番号（PID）を指定して 1 つだけ見ます。</li>
+<li><strong><code>netstat</code></strong>（コマンド）: ネットワークの接続の一覧を出す、昔からあるコマンド。<code>netstat -ano</code> で、ポート番号と、使っているプロセスの番号（PID）が分かります。</li>
+<li><strong><code>findstr</code></strong>（コマンド）: 文字を含む行だけを取り出すコマンド（Windows に最初から入っています）。<code>netstat -ano | findstr :8080</code> は、<code>:8080</code> を含む行だけを表示します。PowerShell の <code>Select-String</code> に近い働きです。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li>1つ目のコマンドは「8080 番で待ち受けている（<code>Listen</code>）接続」を探し、持ち主のプロセス番号（<code>OwningProcess</code>）を表示します。</li>
@@ -4144,6 +4447,17 @@ Content-Length: 40
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.trim()</code></strong>（文字列）: 文字列の前後の空白や改行を取り除いたものを返すメソッド。入力された文字の、うっかり入った空白を取る時によく使います。</li>
+<li><strong><code>.to_string()</code></strong>（文字列）: 値を、自分の物の文字列（<code>String</code>）に変えるメソッド。<code>"abc".to_string()</code> や <code>42.to_string()</code> のように使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-145"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span>
 <span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span>
 <span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span>
@@ -4228,6 +4542,21 @@ Content-Length: 40
 <span class="w">    </span><span class="nb">Ok</span><span class="p">(())</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>writeln!</code></strong>（入出力）: <code>println!</code> と同じ書き方で、画面ではなく、ファイルや接続に 1 行書くマクロ。<code>writeln!(file, "{}", text)?;</code> のように、最初に書き込み先を渡します。使うには <code>use std::io::Write;</code> が要ります。</li>
+<li><strong><code>self</code></strong>（型とメソッド）: メソッドの中で「このもの自身」を表す名前。<code>impl</code> の中の <code>fn label(&amp;self)</code> の <code>&amp;self</code> は「自分を借りて読むだけ」、<code>&amp;mut self</code> は「自分を書きかえる」という意味です。<code>use</code> の中の <code>self</code>（例: <code>use std::io::{self, Write};</code>）は「<code>io</code> そのもの」を表します。</li>
+<li><strong><code>.unwrap_or_default()</code></strong>（エラー処理）: <code>Option</code> や <code>Result</code> から中身を取り出し、無い（失敗した）時は、その型の「空の値」（文字列なら <code>""</code>、数なら 0）を使うメソッド。</li>
+<li><strong><code>.append()</code></strong>（ファイルとフォルダ）: <code>OpenOptions::new().append(true)</code> で、「ファイルの後ろに書き足す」ように開く設定にします（指定しないと、最初から書き直します）。</li>
+<li><strong><code>OpenOptions</code></strong>（ファイルとフォルダ）: ファイルをどう開くか（読む・書く・書き足す・無ければ作る）を細かく決めてから開くための型。<code>OpenOptions::new().create(true).append(true).open("memo.txt")?</code> のように、設定をつなげて書きます。</li>
+<li><strong><code>Vec</code></strong>（Vec（並び））: 同じ種類の値を、順番に並べて持つ入れ物（ベクタ）。<code>Vec&lt;i32&gt;</code> は「整数の並び」、<code>Vec&lt;String&gt;</code> は「文字列の並び」です。<code>vec![…]</code> か <code>Vec::new()</code> で作り、<code>push</code> で足し、<code>len()</code> で数を数え、<code>v[0]</code> や <code>v.get(0)</code> で取り出します（第2巻 UNIT 06）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-151"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">--</span> <span class="n">牛乳を買う</span>
 <span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">--</span> <span class="s2">&quot;Rust の本を読む&quot;</span>
@@ -4326,6 +4655,31 @@ id | user_id | done  | title
 1 | 牛乳を買う | 0
 2 | Rust の本を読む | 0
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>CREATE</code></strong>（SQL）: <code>CREATE TABLE 表の名前 ( … )</code> で、データベースに新しい表を作る SQL の命令。かっこの中に、列の名前と型を並べます。</li>
+<li><strong><code>TABLE</code></strong>（SQL）: SQL で「表」を表す言葉。<code>CREATE TABLE</code>（表を作る）・<code>DROP TABLE</code>（表を消す）のように使います。</li>
+<li><strong><code>INTEGER</code></strong>（SQL）: SQL の列の型の 1 つで、整数を入れる列。</li>
+<li><strong><code>PRIMARY</code></strong>（SQL）: <code>PRIMARY KEY</code>（主キー）の一部。主キーは、表の中で 1 行を必ず見分けられる列で、同じ値が 2 回入りません。ふつうは <code>id</code> 列にします。</li>
+<li><strong><code>KEY</code></strong>（SQL）: <code>PRIMARY KEY</code>（主キー）・<code>FOREIGN KEY</code>（よその表とつなぐ列）などの「キー」。</li>
+<li><strong><code>TEXT</code></strong>（SQL）: SQL の列の型の 1 つで、文字を入れる列。</li>
+<li><strong><code>NOT</code></strong>（SQL）: SQL で「〜ではない」。<code>NOT NULL</code> は「この列は空（NULL）を許さない」という決まりです。</li>
+<li><strong><code>NULL</code></strong>（SQL）: SQL で「値が無い」ことを表す特別な値。0 や空の文字列とは違います。</li>
+<li><strong><code>REFERENCES</code></strong>（SQL）: 「この列の値は、あの表の、あの列に必ずある値」という決まり（外部キー）。<code>user_id INTEGER REFERENCES users(id)</code> で、存在しないユーザーの番号を入れられなくなります。</li>
+<li><strong><code>BETWEEN</code></strong>（SQL）: 「〜から〜の間」。<code>CHECK (score BETWEEN 0 AND 100)</code> は「0 以上 100 以下だけ許す」という決まりです。</li>
+<li><strong><code>AND</code></strong>（SQL）: SQL で「かつ」。<code>WHERE a = 1 AND b = 2</code> は両方に合う行だけ。<code>BETWEEN 0 AND 100</code> の一部としても使います。</li>
+<li><strong><code>DEFAULT</code></strong>（SQL）: 列に値を入れなかった時に使う、決めておいた値（既定値）。<code>done INTEGER NOT NULL DEFAULT 0</code> は「指定が無ければ 0」。</li>
+<li><strong><code>INSERT</code></strong>（SQL）: <code>INSERT INTO 表 (列, …) VALUES (値, …)</code> で、表に新しい行を足す SQL の命令。</li>
+<li><strong><code>INTO</code></strong>（SQL）: <code>INSERT INTO 表</code> の一部で、「この表へ」入れる、という意味。</li>
+<li><strong><code>SELECT</code></strong>（SQL）: 表から行を取り出す SQL の命令。<code>SELECT 列, … FROM 表 WHERE 条件 ORDER BY 列</code> の形でよく使います。<code>SELECT *</code> は全部の列です。</li>
+<li><strong><code>FROM</code></strong>（SQL）: <code>SELECT … FROM 表</code> の一部で、「どの表から」取り出すかを書きます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li><code>CREATE TABLE</code> は表を作る文です。列の名前・型（<code>INTEGER</code> は整数、<code>TEXT</code> は文字）・ルールを書きます。</li>
@@ -4445,6 +4799,18 @@ error: process didn&#39;t exit successfully: `target\debug\practice.exe` (exit c
 <span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;ファイルのカウンター: {on_disk}&quot;</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>return</code></strong>（関数）: 関数を、その場で終えて値を返す命令。<code>return Err(…);</code> のように、途中で抜ける時に使います。Rust では、関数の最後の <code>;</code> の無い式が自動で戻り値になるので、最後の行では <code>return</code> を書かないのがふつうです。</li>
+<li><strong><code>.as_deref()</code></strong>（文字列）: <code>Option&lt;String&gt;</code> を、中身を借りて <code>Option&lt;&amp;str&gt;</code> に変えるメソッド。<code>env::args().nth(1).as_deref() == Some("reset")</code> のように、「引数が <code>reset</code> かどうか」を文字列と比べる時に使います。</li>
+<li><strong><code>fs::remove_file()</code></strong>（ファイルとフォルダ）: ファイルを消す関数。ごみ箱には入りません。ファイルが無い時はエラー（<code>Err</code>）が返ります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-165"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span>
 <span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span>
@@ -4686,6 +5052,17 @@ error: process didn&#39;t exit successfully: `target\debug\practice.exe` (exit c
 [認可] ノート 11 -&gt; 404 Not Found
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>struct</code></strong>（型とメソッド）: いくつかの値をまとめて、新しい型を作る書き方（構造体）。<code>struct Note { id: u32, title: String }</code> で、「番号と題名を持つノート」という型ができます。<code>Note { id: 1, title: "買い物".to_string() }</code> で 1 つ作ります（第2巻）。</li>
+<li><strong><code>.iter()</code></strong>（イテレーター）: 並び（<code>Vec</code> など）の中身を、借りて 1 つずつ取り出せる形（イテレーター）にするメソッド。<code>for x in v.iter()</code> や、<code>v.iter().map(…)</code>・<code>.filter(…)</code> のように、加工してから使う時の入り口です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>ログインに成功した Hanako でも、Taro のノート 11 は「見つからない（404）」になりました。</p>
 <h4 id="1_25">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1-struct">解説1: データの形を決める <code>struct</code></h5>
@@ -4776,6 +5153,17 @@ correct-horse  -&gt; f96723216a3e141a
 correct-horsf  -&gt; db8dd628cfe17851
 a              -&gt; 719b50b9a4f0e9f3
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>DefaultHasher</code></strong>（標準ライブラリ）: 値からハッシュ（指紋のような数）を計算する、標準の道具。同じ値からは同じ数、少し違う値からはまったく違う数ができます。ここでは仕組みを見るために使います（パスワードの保存には、専用の Argon2 などを使います。第8巻）。</li>
+<li><strong><code>Hash</code></strong>（標準ライブラリ）: 「ハッシュ（指紋のような数）を計算できる物」が持っている機能（トレイト）。<code>value.hash(&amp;mut hasher)</code> を使うには <code>use std::hash::Hash;</code> が要ります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p>（数値そのものは、Rust の版によって変わることがあります。）</p>
 <h4 id="1_26">▼ コードを1つずつ分解して解説</h4>
@@ -5294,6 +5682,16 @@ For more information about this error, try `rustc --explain E0433`.
 error: could not compile `practice` (bin &quot;practice&quot;) due to 2 previous errors
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>HashMap</code></strong>（HashMap（表））: 「キー → 値」の組を持つ入れ物（名前で引ける表）。<code>map.insert("りんご", 3)</code> で入れ、<code>map.get("りんご")</code> で引きます。キーが無いこともあるので、<code>get</code> は <code>Option</code> を返します。使うには <code>use std::collections::HashMap;</code> が要ります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li>エラーは2つですが、原因は「<code>HashMap</code> を <code>use</code> していない」の1つだけです。</li>
 <li><code>help:</code> の <code>1 + use std::collections::HashMap;</code> は、「1行目にこの行を<strong>追加</strong>して」という意味です（<code>+</code> は追加の印）。1行足せば、<strong>2つのエラーが同時に消えます</strong>。</li>
@@ -5345,6 +5743,16 @@ fn main() {
   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#assign_op_pattern
   = note: `#[warn(clippy::assign_op_pattern)]` on by default
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo clippy</code></strong>（cargo のコマンド）: 動くけれど直した方がよい書き方を、理由と直し方の例つきで教えてくれる道具。<code>cargo clippy</code> と打つと、<code>warning:</code> の形で知らせてくれます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><strong>Clippy（クリッピー）</strong> は、コンパイラより一歩踏み込んで「動くけれど、こう書くほうが Rust らしい」という助言をくれる道具です。ここでは「<code>count = count + 1</code> は <code>count += 1</code> と書けます」と教えてくれています。エラーと同じ読み方で読めます。</p>
 <h3 id="_105">よくあるエラーと読み方</h3>
@@ -5479,6 +5887,16 @@ error: could not compile `practice` (bin &quot;practice&quot;) due to 1 previous
 <div class="codehilite"><div class="code-wrap" id="code-211"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>保存したタイトル: 牛乳を買う
 元のタイトル: 牛乳を買う
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.clone()</code></strong>（所有権と借用）: 値を丸ごと複製するメソッド。<code>let b = a.clone();</code> で、<code>a</code> と <code>b</code> の両方を使えるようになります（<code>clone</code> しないと、<code>let b = a;</code> で中身が <code>b</code> に移り、<code>a</code> は使えなくなります。第3巻）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><strong>問題3の解答:</strong> 最初の行は <code>An unresolved name was used.</code> で、「解決できない（見つからない）名前が使われた」という意味です。例2の <code>mesage</code> がまさにこれでした。</p>
 <div class="codehilite"><div class="code-wrap" id="code-212"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>An unresolved name was used.
@@ -5640,6 +6058,22 @@ Erroneous code examples:
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>assert_eq!</code></strong>（テスト）: 「2 つの値が同じか」を確かめるマクロ。<code>assert_eq!(実際の値, 期待する値);</code>。違う時はテストが失敗し、<code>left</code>（実際）と <code>right</code>（期待）の値を表示します。</li>
+<li><strong><code>assert!</code></strong>（テスト）: 「条件が <code>true</code> か」を確かめるマクロ。<code>assert!(is_valid(&amp;title));</code>。<code>false</code> ならテストが失敗します。</li>
+<li><strong><code>mod</code></strong>（モジュール）: コードをまとめる箱（モジュール）を作る書き方。<code>mod tests { … }</code> のように、関係する関数をまとめます。<code>mod 名前;</code> と書くと、別のファイル（<code>名前.rs</code>）の中身を読み込みます。</li>
+<li><strong><code>super</code></strong>（モジュール）: 「1 つ外側のモジュール」を表す名前。テストの中の <code>use super::*;</code> は、「外側（テストする本体）にある物を全部使えるようにする」という決まり文句です。</li>
+<li><strong><code>#[cfg]</code></strong>（テスト）: 「この条件の時だけ、この部分を翻訳する」という印（属性）。<code>#[cfg(test)]</code> を付けた部分は、<code>cargo test</code> の時だけ翻訳され、ふつうの実行ファイルには入りません。</li>
+<li><strong><code>#[test]</code></strong>（テスト）: 「この関数はテストです」という印（属性）。<code>cargo test</code> が、この印の付いた関数を全部探して動かします。</li>
+<li><strong><code>.repeat()</code></strong>（文字列）: 文字列をくり返してつないだ、新しい文字列を作るメソッド。<code>"あ".repeat(80)</code> は「あ」が 80 個並んだ文字列。長い入力を試すテストでよく使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><strong>① 予想:</strong> <code>cargo run</code> すると、3行それぞれに何と表示されるでしょうか。特に <code>"牛乳を買う"</code> の文字数を予想してから、次に進んでください。</p>
 <p><strong>② 実行:</strong></p>
 <div class="codehilite"><div class="code-wrap" id="code-214"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span>
@@ -5690,6 +6124,16 @@ test result: FAILED. 2 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; 
 
 error: test failed, to rerun pass `--bin practice`
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo test</code></strong>（cargo のコマンド）: <code>#[test]</code> の付いた関数（テスト）を全部見つけて動かし、結果（<code>ok</code>・<code>FAILED</code>）を表示します。<code>cargo test 名前の一部</code> で、名前に合うテストだけを動かせます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <h4 id="1_31">▼ コードと出力を1つずつ分解して解説</h4>
 <h5 id="1-len">解説1: バグの正体は <code>len()</code></h5>

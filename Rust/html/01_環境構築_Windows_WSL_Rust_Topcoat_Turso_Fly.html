@@ -885,11 +885,37 @@ C:\Users\...\rust-study
 <span class="sh">&#39;@</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Set-Content -Path</code></strong>（PowerShell）: <code>-Path 名前</code> で、書き込むファイルの名前（場所）を指定します。<code>Set-Content memo.txt "…"</code> のように名前を最初に書く時は、<code>-Path</code> を省けます。</li>
+<li><strong><code>Set-Content -Value</code></strong>（PowerShell）: <code>-Value 中身</code> で、ファイルに書く中身を指定します。<code>@' … '@</code> で囲むと、何行もの文章をそのまま中身にできます（ヒア文字列）。</li>
+<li><strong><code>Select-Object -First</code></strong>（PowerShell）: <code>-First 1</code> で、結果の最初の 1 つだけを取り出します。<code>-Last 3</code> なら最後の 3 つです。</li>
+<li><strong><code>default</code></strong>（PowerShell）: PowerShell の <code>switch</code> の中で、「どの場合にも合わなかった時」の処理を書く所。Rust の <code>match</code> の <code>_ =&gt;</code> に当たります。</li>
+<li><strong><code>Write-Output</code></strong>（PowerShell）: 値を「出力」として次へ流す（最後なら画面に出す）コマンド。<code>Write-Output "こんにちは"</code>。文字列を 1 行に書くだけでも同じ働きをしますが、はっきり書く時に使います。</li>
+<li><strong><code>if</code></strong>（PowerShell）: PowerShell の条件の書き方。<code>if (条件) { 合う時 } else { 合わない時 }</code>。条件は <code>( )</code> で囲みます。比べる時は <code>-eq</code>（等しい）・<code>-ne</code>（違う）・<code>-gt</code>（大きい）・<code>-match</code>（パターンに合う）のような書き方をします（<code>==</code> や <code>&gt;</code> ではありません）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>貼り付けている間、行の先頭に <code>&gt;&gt;</code> が表示されます。これは「まだ続きがありますね」という PowerShell の合図です。最後の <code>'@</code> の行で Enter キーを押すと、ファイルが作られます（成功しても何も表示されません）。</p>
 <p><strong>手順2: 自分で作ったスクリプトを実行できるようにする。</strong> 何も設定していない Windows では、安全のためにスクリプトの実行が止められています。次のコマンドで、「自分の PC で作ったスクリプトは実行してよい」という設定に変えます。</p>
 <div class="codehilite"><div class="code-wrap" id="code-11"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 自分のユーザーだけ、実行ポリシーを RemoteSigned にする</span>
 <span class="nb">Set-ExecutionPolicy</span> <span class="n">-Scope</span> <span class="n">CurrentUser</span> <span class="n">RemoteSigned</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Set-ExecutionPolicy</code></strong>（PowerShell）: PowerShell のスクリプト（<code>.ps1</code> のファイル）を動かしてよいかの決まり（実行ポリシー）を変えるコマンド。<code>Set-ExecutionPolicy -Scope CurrentUser RemoteSigned</code> は、「自分のアカウントだけ、自分のパソコンで作ったスクリプトは動かしてよい」にします。会社のパソコンでは、決まりがある時は勝手に変えません。</li>
+<li><strong><code>Set-ExecutionPolicy -Scope</code></strong>（PowerShell）: <code>-Scope CurrentUser</code> で、決まりを「今のユーザーだけ」に当てます（管理者の権限が要りません）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p>確認の質問が表示されたら、<code>Y</code> を打って Enter キーを押します。設定できたかは、次のコマンドで確かめます。</p>
 <div class="codehilite"><div class="code-wrap" id="code-12"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 範囲（Scope）ごとの実行ポリシーを一覧で表示する</span>
@@ -906,6 +932,17 @@ MachinePolicy       Undefined
  LocalMachine       Undefined
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Get-ExecutionPolicy</code></strong>（PowerShell）: 今の実行ポリシー（スクリプトを動かしてよいかの決まり）を見るコマンド。<code>Restricted</code> はスクリプトを動かせない、<code>RemoteSigned</code> は自分で作った物は動かせる、という意味です。</li>
+<li><strong><code>Get-ExecutionPolicy -List</code></strong>（PowerShell）: <code>-List</code> で、決まりを「どの範囲（全員・自分・この窓など）に、何が決まっているか」の一覧で表示します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><code>CurrentUser</code> の行が <code>RemoteSigned</code> になっていれば成功です。</p>
 <p><strong>手順3: スクリプトを実行する。</strong></p>
 <div class="codehilite"><div class="code-wrap" id="code-14"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 今いるフォルダ（.）の whereami.ps1 を実行する</span>
@@ -921,6 +958,16 @@ PC の CPU       : ARM64
 パスの文字      : OK（半角英数字と記号だけ）
 OneDrive        : OK（同期フォルダの外です）
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.\whereami.ps1</code></strong>（PowerShell）: 今いるフォルダの <code>whereami.ps1</code>（PowerShell のスクリプト）を動かす書き方。今いるフォルダのファイルを動かす時は、頭に <code>.\</code>（「ここの」）を付ける決まりです。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p>「PC の CPU」と「このシェルの種類」が同じで、下の2行が両方 OK なら、作業を始める準備ができています。</p>
 <h4 id="1_2">▼ 1つずつ分解して解説</h4>
@@ -994,6 +1041,16 @@ PC の CPU       : ARM64
 OneDrive        : OK（同期フォルダの外です）
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>..\whereami.ps1</code></strong>（PowerShell）: 1 つ上のフォルダの <code>whereami.ps1</code> を動かす書き方。<code>..</code> は「1 つ上のフォルダ」という意味です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>OneDrive を使っている人は、同期フォルダへ移動して実行してみます。</p>
 <div class="codehilite"><div class="code-wrap" id="code-23"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># OneDrive の同期フォルダへ移動して、rust-study のスクリプトを実行する</span>
 <span class="nb">cd </span><span class="nv">$env:OneDrive</span>
@@ -1009,6 +1066,16 @@ PC の CPU       : ARM64
 パスの文字      : OK（半角英数字と記号だけ）
 OneDrive        : 注意（同期フォルダの中です）
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>~\rust-study\whereami.ps1</code></strong>（PowerShell）: ホームフォルダ（<code>~</code> ＝ <code>C:\Users\you</code>）から数えた場所で、スクリプトを動かす書き方。どこにいても同じ書き方で動かせます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p>確かめたら、作業フォルダに戻って、練習用に作ったフォルダを消しておきます。</p>
 <div class="codehilite"><div class="code-wrap" id="code-25"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 作業フォルダへ戻り、練習用のフォルダを消す</span>
@@ -1199,6 +1266,16 @@ cargo 1.99.1 (5f94df478 2026-08-27)
 stable-aarch64-pc-windows-msvc (default)
 cargo 1.99.1 (5f94df478 2026-08-27)
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>rustup show</code></strong>（Rust の道具）: 入っている Rust の版と、今使っている版を表示します。<code>rustup show active-toolchain</code> は、今このフォルダで使われる版だけを表示します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li>RustNote のフォルダでは、<code>rust-toolchain.toml</code> によって <code>1.99.1</code> が選ばれています（<code>overridden by</code> は「このファイルで上書きされています」という意味です）。</li>
@@ -1533,6 +1610,18 @@ credential.https://dev.azure.com.usehttppath=true
 init.defaultbranch=master
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>git</code></strong>（Git）: ファイルの変更の記録を残す道具（Git）の本体のコマンド。<code>git --version</code> で版を確かめられます。<code>git status</code>・<code>git add</code>・<code>git commit</code> のように、後ろに「何をするか」を付けて使います（この巻の UNIT 04）。</li>
+<li><strong><code>where.exe</code></strong>（コマンド）: コマンドの本体（<code>.exe</code>）が、パソコンのどこにあるかを探すコマンド。<code>where.exe git</code> で、<code>git.exe</code> の場所が分かります。PowerShell では <code>where</code> だけだと別の命令になるので、<code>.exe</code> まで付けて打ちます。</li>
+<li><strong><code>git config</code></strong>（Git）: Git の設定を見る・変えるコマンド。<code>git config --global user.name "名前"</code> で、記録に残す名前を決めます。<code>--list</code> で、今の設定を一覧で見られます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <h4 id="1_6">▼ 1つずつ分解して解説</h4>
 <h5 id="1-git-version-windows2">解説1: <code>git --version</code> の <code>windows.2</code></h5>
 <ul>
@@ -1664,6 +1753,16 @@ init.defaultbranch=master
 <div class="codehilite"><div class="code-wrap" id="code-46"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Initialized empty Git repository in C:/Users/.../rust-study/hello-git/.git/
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>git init</code></strong>（Git）: 今いるフォルダで、Git の記録を始めるコマンド。フォルダの中に、記録を入れる <code>.git</code> という隠しフォルダができます（<code>cargo new</code> は、これを自動でしてくれます）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><strong>手順2: 練習用のファイルを作る。</strong> Rust のプロジェクトは UNIT 04 で <code>cargo new</code> を使って作りますが、ここでは同じ形のファイルを手で作ります。まず、ファイルを作るための小さな<strong>関数</strong>（いくつかのコマンドをまとめて名前を付けたもの）を、PowerShell に覚えさせます。</p>
 <div class="codehilite"><div class="code-wrap" id="code-47"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 1行ずつの文字列を LF（`n）でつないで、最後にも LF を付け、UTF-8（BOM なし）で書き出す関数</span>
 <span class="k">function</span> <span class="nb">New-LfFile</span><span class="p">(</span><span class="nv">$Path</span><span class="p">,</span> <span class="no">[string[]]</span><span class="nv">$Lines</span><span class="p">)</span> <span class="p">{</span>
@@ -1671,6 +1770,20 @@ init.defaultbranch=master
     <span class="nb">New-Item</span> <span class="n">-Path</span> <span class="nv">$Path</span> <span class="n">-Value</span> <span class="nv">$text</span> <span class="n">-Force</span> <span class="p">|</span> <span class="nb">Out-Null</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>New-Item</code></strong>（PowerShell）: 新しいファイルやフォルダを作るコマンド。<code>New-Item memo.txt</code> でファイル、<code>New-Item -ItemType Directory 名前</code> でフォルダを作ります。</li>
+<li><strong><code>New-Item -Path</code></strong>（PowerShell）: <code>-Path 場所</code> で、作るファイルやフォルダの場所（名前）を指定します。</li>
+<li><strong><code>New-Item -Value</code></strong>（PowerShell）: <code>-Value 中身</code> で、作るファイルに最初から書いておく中身を指定します。</li>
+<li><strong><code>New-Item -Force</code></strong>（PowerShell）: <code>-Force</code> で、同じ名前のファイルがあっても上書きして作ります（無いと、エラーで止まります）。上書きするので、使う時は名前をよく確かめます。</li>
+<li><strong><code>Out-Null</code></strong>（PowerShell）: コマンドの結果を、画面に出さずに捨てるコマンド。<code>… | Out-Null</code> のように後ろに付けると、表示が出なくなります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p>続けて、この関数でファイルを作ります。<code>'…'</code> で囲んだ1つずつが、ファイルの1行になります。</p>
 <div class="codehilite"><div class="code-wrap" id="code-48"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># Rust のプロジェクトの設定ファイルの代わり</span>
@@ -1686,6 +1799,16 @@ init.defaultbranch=master
 <span class="c"># ビルドの成果物の代わり（空のファイル。target\debug フォルダも一緒に作られる）</span>
 <span class="nb">New-Item</span> <span class="n">target</span><span class="p">\</span><span class="n">debug</span><span class="p">\</span><span class="n">hello-git</span><span class="p">.</span><span class="n">exe</span> <span class="n">-Force</span> <span class="p">|</span> <span class="nb">Out-Null</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>New-LfFile</code></strong>（PowerShell）: この巻のスクリプトの中で作った、自分の PowerShell の関数（改行を LF にしてファイルを書く）。<code>function New-LfFile { … }</code> で中身を決めてあり、PowerShell のコマンドと同じ形で呼べます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><strong>手順3: Git から見た状態を表示する。</strong></p>
 <div class="codehilite"><div class="code-wrap" id="code-49"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 作業フォルダ・ステージ・リポジトリの違いを表示する</span>
@@ -1708,6 +1831,16 @@ Untracked files:
 
 nothing added to commit but untracked files present (use &quot;git add&quot; to track)
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>git status</code></strong>（Git）: 今の状態（変わったファイル・記録に入れる予定のファイル・Git がまだ知らないファイル）を表示します。迷ったら、まずこれを打ちます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <h4 id="1_8">▼ 1つずつ分解して解説</h4>
 <h5 id="1-git-init">解説1: <code>git init</code> で、フォルダがリポジトリになる</h5>
@@ -1789,6 +1922,16 @@ nothing added to commit but untracked files present (use &quot;git add&quot; to 
 .gitignore:2:/target/   target/debug/hello-git.exe
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>git check-ignore</code></strong>（Git）: そのファイルが <code>.gitignore</code>（記録しないファイルの一覧）で外されているかを調べるコマンド。<code>-v</code> を付けると、<code>.gitignore</code> の何行目の決まりで外されたかも表示します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>最後に、<code>.env</code> を名指しで追加しようとしてみます。</p>
 <div class="codehilite"><div class="code-wrap" id="code-56"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 無視しているファイルを、名指しで追加しようとする</span>
 <span class="n">git</span> <span class="n">add</span> <span class="p">.</span><span class="n">env</span>
@@ -1800,6 +1943,16 @@ nothing added to commit but untracked files present (use &quot;git add&quot; to 
 hint: Use -f if you really want to add them.
 hint: Disable this message with &quot;git config set advice.addIgnoredFile false&quot;
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>git add</code></strong>（Git）: 次の記録（コミット）に入れるファイルを選ぶコマンド。<code>git add ファイル名</code>、全部なら <code>git add .</code> です。選んだだけで、まだ記録はされていません。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <h4 id="1_9">▼ 1つずつ分解して解説</h4>
 <h5 id="1-gitignore">解説1: <code>.gitignore</code> の書き方</h5>
@@ -1876,6 +2029,16 @@ i/lf    w/lf    attr/                   Cargo.toml
 i/lf    w/lf    attr/                   src/main.rs
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>git ls-files</code></strong>（Git）: Git が記録しているファイルの一覧を出すコマンド。<code>--eol</code> を付けると、各ファイルの改行の形（LF か CRLF か）も表示します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><strong>手順2: 改行コードの決まりを作る。</strong></p>
 <div class="codehilite"><div class="code-wrap" id="code-62"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 改行コードの決まりを作る</span>
 <span class="nb">New-LfFile</span> <span class="p">.</span><span class="n">gitattributes</span> <span class="p">@(</span>
@@ -1929,6 +2092,16 @@ i/lf    w/lf    attr/text=auto eol=lf   src/main.rs
  create mode 100644 check.ps1
  create mode 100644 src/main.rs
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>git commit</code></strong>（Git）: 選んだ変更を、1 つの記録（コミット）として残すコマンド。<code>git commit -m "何をしたか"</code> の <code>-m</code> の後ろに、変更の説明を書きます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <h4 id="1_10">▼ 1つずつ分解して解説</h4>
 <h5 id="1-lf-will-be-replaced-by-crlf">解説1: 「LF will be replaced by CRLF」は何の警告か</h5>
@@ -1985,6 +2158,16 @@ i/lf    w/lf    attr/text=auto eol=lf   src/main.rs
 <div class="codehilite"><div class="code-wrap" id="code-69"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>d779d78 Taro Yamada &lt;taro@example.com&gt; 最初のコミット
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>git log</code></strong>（Git）: これまでの記録（コミット）の一覧を、新しい順に出すコマンド。<code>--oneline</code> で 1 行ずつ短く、<code>--format="…"</code> で表示の形を自分で決められます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>例2-2で設定した名前とメールアドレスが、コミットと一緒に記録されています。</p>
 <h3 id="_23">よくあるエラーと読み方</h3>
 <h4 id="1-author-identity-unknown">エラー1: 「Author identity unknown」（名前とメールアドレスの未設定）</h4>
@@ -2021,6 +2204,17 @@ fatal: unable to auto-detect email address (got &#39;...@...(none)&#39;)
 <span class="nb">pwd</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>echo</code></strong>（コマンド）: 後ろに書いた文字を、そのまま画面に出すコマンド。<code>echo "hello"</code>。bash（WSL）でも PowerShell でも使えます。</li>
+<li><strong><code>pwd</code></strong>（コマンド）: 今いるフォルダを表示するコマンド（print working directory）。bash（WSL）では <code>/home/you</code> のような Linux の形で、PowerShell では <code>C:\Users\you</code> のような形で出ます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>WSL の bash で、見えない文字も表示するように（<code>cat -v</code>）して実行した結果です。</p>
 <div class="codehilite"><div class="code-wrap" id="code-72"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># エラーも一緒に流して（2&gt;&amp;1）、見えない文字を ^M のように表示する（cat -v）</span>
 bash<span class="w"> </span>crlf.sh<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>cat<span class="w"> </span>-v
@@ -2034,6 +2228,16 @@ crlf.sh: line 4: cd: $&#39;/tmp\r&#39;: No such file or directory
 crlf.sh: line 5: $&#39;pwd\r&#39;: command not found
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>bash</code></strong>（WSL・bash）: Linux でよく使われるシェル（文字で命令する画面）。<code>bash ファイル.sh</code> で、bash のスクリプトを動かします。WSL の中や、Git for Windows に付いています。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li><strong>何が起きたか:</strong> <code>^M</code> と <code>\r</code> は、どちらも CR（<code>0D</code>）のことです。bash は行の終わりを LF だけで判断するので、行の最後の CR を、<strong>コマンドの一部</strong>として読みました。</li>
 <li>2行目: <code>set -e</code> が <code>set -e\r</code> になり、「<code>-\r</code> という知らないオプションです」と断られました。</li>
@@ -2045,6 +2249,16 @@ crlf.sh: line 5: $&#39;pwd\r&#39;: command not found
 <div class="codehilite"><div class="code-wrap" id="code-74"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 各行の最後の \r（CR）を取り除いて、ファイルを上書きする</span>
 sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">&#39;s/\r$//&#39;</span><span class="w"> </span>crlf.sh
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>sed</code></strong>（WSL・bash）: 文字を置きかえるコマンド（Linux）。<code>sed -i 's/\r$//' ファイル</code> は、各行の最後の <code>\r</code>（Windows の改行の印）を消して、ファイルを書きかえます（<code>-i</code> は「そのファイルを直接書きかえる」）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li>そもそも CRLF にしないためには、この単元の <code>.gitattributes</code>（<code>* text=auto eol=lf</code>）をリポジトリに入れておき、UNIT 03 で VS Code を LF で保存する設定にします。</li>
@@ -2066,6 +2280,16 @@ sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">&#39;s/\r$
 <div class="codehilite"><div class="code-wrap" id="code-77"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>rm &#39;.env&#39;
 D  .env
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>git rm</code></strong>（Git）: ファイルを、Git の記録から外すコマンド。<code>git rm --cached .env</code> は、ファイルそのものは残したまま、記録からだけ外します（間違えて記録した秘密のファイルを外す時に使います）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><code>D</code> は「次のコミットで、このファイルを消します（Delete）」という印です。このままコミットします。</p>
 <div class="codehilite"><div class="code-wrap" id="code-78"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">git</span> <span class="n">commit</span> <span class="n">-m</span> <span class="s2">&quot;.env を Git の管理から外す&quot;</span>
@@ -2091,6 +2315,16 @@ PORT=3000
 DATABASE_URL=libsql://rustnote-taro.turso.io
 DATABASE_AUTH_TOKEN=eyJhbGciOi...secret
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>git show</code></strong>（Git）: 記録の中身を見るコマンド。<code>git show HEAD~1:.env</code> は「1 つ前の記録の時の <code>.env</code> の中身」を表示します。一度記録した物は、こうして後からでも見えてしまう、という例です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li><strong>何が起きたか:</strong> <code>git rm --cached</code> で外したのは、「これからのコミット」からだけです。<code>45dbcd4</code> のコミットには、<code>.env</code> の中身がそのまま残っていて、<code>git show コミット:ファイル名</code> で誰でも読めます。図で見た「前のページに残った鍵の写真」です。</li>
@@ -2729,10 +2963,30 @@ index e7a11a9..66449d7 100644
  }
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>git diff</code></strong>（Git）: まだ記録していない変更の中身を見るコマンド。<code>-</code> で始まる行が前の内容、<code>+</code> で始まる行が新しい内容です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>確かめたら、変更を元に戻しておきます。</p>
 <div class="codehilite"><div class="code-wrap" id="code-101"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># src/main.rs を、最後のコミットの状態に戻す（成功しても何も表示されない）</span>
 <span class="n">git</span> <span class="n">restore</span> <span class="n">src</span><span class="p">/</span><span class="n">main</span><span class="p">.</span><span class="n">rs</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>git restore</code></strong>（Git）: 保存したけれど記録していない変更を捨てて、最後の記録の状態に戻すコマンド。<code>git restore src/main.rs</code>。捨てた変更は戻せないので、確かめてから使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <h4 id="1_17">▼ 1つずつ分解して解説</h4>
 <h5 id="1-git-status-short">解説1: <code>git status --short</code> の印</h5>
@@ -3028,6 +3282,16 @@ Caused by:
 <span class="p">.\</span><span class="n">rustup-init</span><span class="p">.</span><span class="n">exe</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.\rustup-init.exe</code></strong>（PowerShell）: ダウンロードした Rust のインストーラー（<code>rustup-init.exe</code>）を、今いるフォルダから動かす書き方。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>この本では、PC にもともと入っている Rust を変えないように、Rust の置き場を別のフォルダ（<code>rust-try</code>）にして試しました（<code>RUSTUP_HOME</code> と <code>CARGO_HOME</code> で場所を変え、<code>--no-modify-path</code> で PATH を変えないようにしています）。ふつうに入れると、置き場は <code>C:\Users\（あなたの名前）\.rustup</code> と <code>.cargo</code> になり、<code>modify PATH variable</code> は <code>yes</code> になります。途中で聞かれたら、<code>1</code>（標準のインストール）を選んで Enter キーを押します。</p>
 <p><strong>▼ 実行結果</strong></p>
 <div class="codehilite"><div class="code-wrap" id="code-106"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Welcome to Rust!
@@ -3127,6 +3391,16 @@ C:\Users\...\rust-try\cargo\bin\cargo.exe
 C:\Users\...\rust-try\cargo\bin\rustup.exe
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>rustup</code></strong>（Rust の道具）: Rust そのもの（<code>rustc</code>・<code>cargo</code>）を入れる・新しくする・版を切りかえる道具。<code>rustup --version</code> で版を確かめられます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-109"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 入っているツールチェーンと、今どれが選ばれているか</span>
 <span class="n">rustup</span> <span class="n">show</span>
 <span class="c"># 入っている部品</span>
@@ -3151,6 +3425,20 @@ active because: it&#39;s the default toolchain
 installed targets:
   aarch64-pc-windows-msvc
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>rustup component</code></strong>（Rust の道具）: Rust の部品（<code>rustfmt</code>・<code>clippy</code> など）を見る・足すコマンド。<code>rustup component list --installed</code> で、入っている部品の一覧を出します。</li>
+<li><strong><code>Get-ChildItem</code></strong>（PowerShell）: フォルダの中の一覧を出すコマンド（短い呼び名は <code>ls</code>・<code>dir</code>）。<code>Get-ChildItem フォルダ</code> でそのフォルダの中身、<code>-Recurse</code> で中のフォルダまで全部を出します。</li>
+<li><strong><code>ForEach-Object</code></strong>（PowerShell）: <code>|</code> で流れてきた物を、1 つずつ処理するコマンド。<code>{ }</code> の中の <code>$_</code> が「今の 1 つ」を表します。<code>… | ForEach-Object { $_.Name }</code> は、1 つずつ名前を取り出します。</li>
+<li><strong><code>ForEach-Object -f</code></strong>（PowerShell）: ここでの <code>-f</code> は <code>ForEach-Object</code> の指定ではなく、PowerShell の「書式の演算子」です。<code>"{0,-10} {1}" -f 値1, 値2</code> で、<code>{0}</code> に値 1、<code>{1}</code> に値 2 を入れた文字列を作ります（<code>,-10</code> は「10 文字分の幅で左寄せ」）。</li>
+<li><strong><code>Get-FileHash</code></strong>（PowerShell）: ファイルの中身から、ハッシュ（指紋のような長い英数字）を計算するコマンド。中身が 1 文字でも違えば、まったく違う値になります。ダウンロードしたファイルが壊れていないか確かめる時に使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-111"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>cargo-aarch64-pc-windows-msvc
 clippy-aarch64-pc-windows-msvc
@@ -3243,6 +3531,17 @@ hello.exe 131584
 Hello, world!
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Get-ChildItem -Filter</code></strong>（PowerShell）: <code>-Filter *.exe</code> で、名前が合う物（ここでは <code>.exe</code> で終わる物）だけを一覧にします。<code>*</code> は「何文字でもよい」という意味です。</li>
+<li><strong><code>.\target\debug\hello.exe</code></strong>（PowerShell）: <code>cargo build</code> が作った実行ファイルを、直接動かす書き方。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <h4 id="1_20">▼ 1つずつ分解して解説</h4>
 <h5 id="1-cargo-new">解説1: <code>cargo new</code> が作るもの</h5>
 <ul>
@@ -3328,6 +3627,16 @@ info: downloading 8 components
 info: checking for self-update (current version: 1.29.2)
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>rustup update</code></strong>（Rust の道具）: 入っている Rust を、新しい版にするコマンド。<code>rustup update stable</code> で、安定版を最新にします。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-127"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">rustup</span> <span class="n">toolchain</span> <span class="n">list</span>
 </code></pre></div></div>
 
@@ -3337,6 +3646,16 @@ info: checking for self-update (current version: 1.29.2)
 1.99.0-aarch64-pc-windows-msvc
 1.99.1-aarch64-pc-windows-msvc
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>rustup toolchain</code></strong>（Rust の道具）: 入っている Rust の版（ツールチェーン）を見る・足す・消すコマンド。<code>rustup toolchain list</code> で一覧を出します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li>stable が 1.97.1 から <strong>1.99.1</strong> になりました。前の版の部品を消してから、新しい部品を入れています。この PC の stable には、x64 用（<code>x86_64-pc-windows-msvc</code>）と WebAssembly 用（<code>wasm32-unknown-unknown</code>）の部品も入っていたので、それも一緒に新しくなりました。</li>
@@ -3559,6 +3878,17 @@ x86
 True
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Get-ChildItem -Name</code></strong>（PowerShell）: <code>-Name</code> で、日付や大きさを出さずに、名前だけを一覧にします。</li>
+<li><strong><code>Test-Path</code></strong>（PowerShell）: ファイルやフォルダがあるかを調べるコマンド。あれば <code>True</code>、無ければ <code>False</code> を返します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <h4 id="1_23">▼ 1つずつ分解して解説</h4>
 <h5 id="1-msvc">解説1: 名前・版・MSVC の版</h5>
 <ul>
@@ -3594,6 +3924,17 @@ True
     <span class="s2">&quot;{0,-6} 0x{1:X4}  {2}&quot;</span> <span class="o">-f</span> <span class="nv">$name</span><span class="p">,</span> <span class="nv">$machine</span><span class="p">,</span> <span class="nv">$path</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>foreach</code></strong>（PowerShell）: PowerShell のくり返し。<code>foreach ($path in $args) { … }</code> は、<code>$args</code>（スクリプトに渡された値の並び）から 1 つずつ <code>$path</code> に入れて、中を動かします。</li>
+<li><strong><code>Resolve-Path</code></strong>（PowerShell）: 相対の場所（<code>..\a.txt</code> など）を、<code>C:\</code> から始まる絶対の場所に変えるコマンド。<code>(Resolve-Path 場所).Path</code> で文字列として取り出せます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-134"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">rustc</span> <span class="n">-vV</span>
 <span class="nb">cd </span><span class="p">~\</span><span class="n">rust-study</span><span class="p">\</span><span class="n">hello</span>
@@ -3642,6 +3983,17 @@ ARM64  0xAA64  target\debug\hello.exe
 <div class="codehilite"><div class="code-wrap" id="code-138"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>info: downloading component rust-std
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>rustup target</code></strong>（Rust の道具）: ほかの種類のパソコン（CPU・OS）向けに翻訳するための部品を足すコマンド。<code>rustup target add x86_64-pc-windows-msvc</code> で、x64 の Windows 用の実行ファイルを作れるようになります。</li>
+<li><strong><code>.\target\x86_64-pc-windows-msvc\debug\hello.exe</code></strong>（PowerShell）: <code>--target x86_64-pc-windows-msvc</code> を付けて翻訳した時の実行ファイルを、直接動かす書き方。ほかの種類向けに翻訳した物は、<code>target\（種類の名前）\</code> の下にできます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-139"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>   Compiling hello v0.1.0 (C:\Users\...\rust-study\hello)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.60s
 ARM64  0xAA64  target\debug\hello.exe
@@ -3657,6 +4009,16 @@ Hello, world!
 <div class="codehilite"><div class="code-wrap" id="code-141"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>debug
 x86_64-pc-windows-msvc
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Get-ChildItem -Directory</code></strong>（PowerShell）: <code>-Directory</code> で、フォルダだけを一覧にします（ファイルだけなら <code>-File</code>）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-142"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>aarch64-pc-windows-msvc
 x86_64-pc-windows-msvc
@@ -3685,6 +4047,16 @@ x64    0x8664  C:\Program Files\Git\usr\bin\bash.exe
 ARM64  0xAA64  C:\Program Files\Docker\Docker\resources\bin\docker.exe
 x64    0x8664  C:\Users\...\.fly\bin\fly.exe
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Get-Command</code></strong>（PowerShell）: コマンドがどこにあるか・何なのかを調べるコマンド。<code>(Get-Command rustc).Source</code> は、<code>rustc.exe</code> の場所を返します。入っているかを確かめる時に使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li>rustc・VS Code・Git・Docker のコマンドは ARM64 用でした。</li>
@@ -3900,6 +4272,16 @@ note: see more `Cargo.toml` keys and their definitions at https://doc.rust-lang.
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>pub</code></strong>（モジュール）: 「外から使ってよい」（公開）という印。<code>pub fn title_length(…)</code> は、ほかのファイル（モジュール）からも呼べる関数になります。付けないと、同じモジュールの中からしか使えません。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-151"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">check</span>
 </code></pre></div></div>
 
@@ -3907,6 +4289,16 @@ note: see more `Cargo.toml` keys and their definitions at https://doc.rust-lang.
 <div class="codehilite"><div class="code-wrap" id="code-152"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    Checking quality v0.1.0 (C:\Users\...\rust-study\quality)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.37s
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo check</code></strong>（cargo のコマンド）: コードに間違いがないかだけを調べて、実行ファイルは作らないコマンド。<code>cargo build</code> より速いので、書きながら何度も打ちます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li><code>Checking quality</code> と出て、0.37 秒ほどで終わりました。<code>exit=0</code>（終了コード 0）は成功です。この本では、終了コードを <code>'exit=' + $LASTEXITCODE</code> で表示しています。</li>
@@ -3928,6 +4320,16 @@ note: see more `Cargo.toml` keys and their definitions at https://doc.rust-lang.
      return title.len();
  }
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo fmt</code></strong>（cargo のコマンド）: コードの書き方（字下げ・空白・改行）を、決まった形に自動で整えるコマンド。<code>cargo fmt --check</code> は、整っているかを調べるだけで、ファイルは書きかえません。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><strong>▼ 実行結果</strong>（<code>cargo fmt</code> のあとの <code>cargo fmt --check</code>）</p>
 <div class="codehilite"><div class="code-wrap" id="code-155"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>
@@ -4092,6 +4494,16 @@ error: test failed, to rerun pass `--lib`
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.is_empty()</code></strong>（文字列）: 空（長さが 0）なら <code>true</code> を返すメソッド。文字列にも <code>Vec</code> にも使えます。<code>title.trim().is_empty()</code> は「空白を取ったら何も残らないか」を調べます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-163"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">fmt</span> <span class="p">-</span><span class="n">-check</span><span class="p">;</span> <span class="s1">&#39;fmt: &#39;</span> <span class="p">+</span> <span class="nv">$LASTEXITCODE</span>
 <span class="n">cargo</span> <span class="n">clippy</span> <span class="n">-q</span> <span class="p">--</span> <span class="n">-D</span> <span class="n">warnings</span><span class="p">;</span> <span class="s1">&#39;clippy: &#39;</span> <span class="p">+</span> <span class="nv">$LASTEXITCODE</span>
 <span class="n">cargo</span> <span class="n">test</span> <span class="n">-q</span><span class="p">;</span> <span class="s1">&#39;test: &#39;</span> <span class="p">+</span> <span class="nv">$LASTEXITCODE</span>
@@ -4155,6 +4567,16 @@ info: downloading 3 components
 
 info: checking for self-update (current version: 1.29.2)
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo +1.99.0</code></strong>（cargo のコマンド）: <code>+版</code> を付けると、その版の Rust で cargo を動かします。<code>cargo +1.99.0 fmt --check</code> は、Rust 1.99.0 の <code>rustfmt</code> で調べます（その版が <code>rustup</code> で入っている必要があります）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-169"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>error: &#39;cargo-fmt.exe&#39; is not installed for the toolchain &#39;1.99.0-aarch64-pc-windows-msvc&#39;.
 help: run `rustup component add --toolchain 1.99.0-aarch64-pc-windows-msvc rustfmt` to install it
@@ -4308,6 +4730,16 @@ help: run `rustup component add --toolchain 1.99.0-aarch64-pc-windows-msvc clipp
 <div class="codehilite"><div class="code-wrap" id="code-174"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">wsl</span> <span class="p">-</span><span class="n">-install</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>wsl</code></strong>（WSL・bash）: WSL（Windows の中で Linux を動かす仕組み）を操作するコマンド。<code>wsl --install</code> で入れ、<code>wsl</code> だけで Linux の画面（bash）に入ります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>この本の PC には、WSL2 と Ubuntu 24.04 が入っていました。</p>
 <div class="codehilite"><div class="code-wrap" id="code-175"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># wsl の表示が文字化けしないようにする</span>
 <span class="nv">$env:WSL_UTF8</span> <span class="p">=</span> <span class="s2">&quot;1&quot;</span>
@@ -4398,6 +4830,22 @@ count<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$PWD
 count<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;Linux 側（</span><span class="nv">$HOME</span><span class="s2">）&quot;</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>rm</code></strong>（WSL・bash）: ファイルやフォルダを消すコマンド（Linux）。<code>rm -rf フォルダ</code> は、中身ごと、確かめずに消します（<code>-r</code> は中まで、<code>-f</code> は聞かずに）。とても強いので、名前をよく確かめて使います。</li>
+<li><strong><code>return</code></strong>（WSL・bash）: bash の関数の中で、その関数を終える命令。<code>cd 場所 || return</code> は「<code>cd</code> に失敗したら、そこで関数を終える」という意味です（<code>||</code> は「左が失敗した時だけ右をする」）。</li>
+<li><strong><code>s=$</code></strong>（WSL・bash）: bash で変数に値を入れる書き方。<code>s=$(date +%s%N)</code> は、<code>$( )</code> の中のコマンド（今の時刻）を動かした結果を、変数 <code>s</code> に入れます。<code>=</code> の前後に空白を入れてはいけません。</li>
+<li><strong><code>date</code></strong>（WSL・bash）: 今の日時を表示するコマンド（Linux）。<code>date +%s%N</code> は「1970 年からの秒数＋ナノ秒」の形で出します（時間を測るのに使います）。</li>
+<li><strong><code>seq</code></strong>（WSL・bash）: 数の並びを出すコマンド（Linux）。<code>seq 1 2000</code> は 1 から 2000 まで、1 行に 1 つずつ出します。</li>
+<li><strong><code>do</code></strong>（WSL・bash）: bash のくり返し <code>for 変数 in 並び; do … ; done</code> の一部。<code>do</code> から <code>done</code> までが、くり返す中身です。</li>
+<li><strong><code>e=$</code></strong>（WSL・bash）: <code>s=$(…)</code> と同じく、bash で変数に値を入れる書き方。ここでは終わりの時刻を <code>e</code> に入れ、<code>s</code> との差で、かかった時間を計算します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-182"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">cd </span><span class="p">~\</span><span class="n">rust-study</span>
 <span class="n">wsl</span> <span class="n">-d</span> <span class="n">Ubuntu</span> <span class="p">--</span> <span class="n">bash</span> <span class="n">speed</span><span class="p">.</span><span class="n">sh</span>
 <span class="n">wsl</span> <span class="n">-d</span> <span class="n">Ubuntu</span> <span class="p">--</span> <span class="n">bash</span> <span class="n">speed</span><span class="p">.</span><span class="n">sh</span>
@@ -4431,6 +4879,17 @@ Linux 側（/home/...）: 65 ms
 <div class="codehilite"><div class="code-wrap" id="code-185"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Client: 29.3.1 windows/arm64
 Server: 29.3.1 linux/arm64
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>docker version</code></strong>（Docker）: Docker（アプリを、決まった環境ごと箱に入れて動かす道具）の版を表示します。表示されれば、Docker が動いています。</li>
+<li><strong><code>docker run</code></strong>（Docker）: イメージ（箱の設計図）から、コンテナ（動いている箱）を作って動かすコマンド。<code>docker run --rm hello-world</code> は、試しの箱を動かして、終わったら消します（<code>--rm</code>）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-186"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Unable to find image &#39;hello-world:latest&#39; locally
 latest: Pulling from library/hello-world
@@ -4471,6 +4930,16 @@ For more examples and ideas, visit:
 <p><strong>▼ 実行結果</strong></p>
 <div class="codehilite"><div class="code-wrap" id="code-188"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>aarch64
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>docker image</code></strong>（Docker）: 手元にあるイメージ（箱の設計図）を見る・消すコマンド。<code>docker image ls</code> で一覧を出します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-189"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Unable to find image &#39;debian:trixie-slim&#39; locally
 trixie-slim: Pulling from library/debian
@@ -4668,6 +5137,16 @@ Run &#39;docker run --help&#39; for more information
 <span class="n">topcoat</span> <span class="p">-</span><span class="n">-help</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo install</code></strong>（cargo のコマンド）: Rust で作られた道具（コマンド）を、パソコンに入れるコマンド。<code>cargo install topcoat-cli --version 0.11.0 --locked</code> は、Topcoat の道具 <code>topcoat</code> を、決まった版で入れます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>この本では、PC のいつもの Rust とは別の置き場（<code>rsb</code>）の Rust で試しました（UNIT 04 の <code>rust-try</code> と同じ考え方です）。</p>
 <p><strong>▼ 実行結果</strong>（<code>cargo install</code>。最初と最後の行だけ）</p>
 <div class="codehilite"><div class="code-wrap" id="code-198"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    Updating crates.io index
@@ -4810,6 +5289,29 @@ o  Initialized a Git repository
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>module_router!</code></strong>（Topcoat）: Topcoat のマクロ。Rust のモジュール（ファイル）の並びを、そのまま URL の並びにしたルーター（URL ごとに、どの関数に答えさせるかの名簿）を作ります（第6巻 UNIT 03）。</li>
+<li><strong><code>view!</code></strong>（Topcoat）: Topcoat のマクロ。中に HTML をほぼそのままの形で書いて、画面（<code>View</code>）を作ります。文字は <code>"…"</code> で囲み、Rust の値は <code>(値)</code> で埋め込みます。埋め込んだ文字の <code>&lt;</code> などは、自動で安全な形に置きかえられます（第6巻 UNIT 05）。</li>
+<li><strong><code>asset!</code></strong>（Topcoat）: Topcoat のマクロ。CSS や画像などのファイル（アセット）を「このファイルを配る」と宣言し、ブラウザーから読める URL を作ります。<code>asset!("styles.css")</code> を、<code>&lt;link&gt;</code> の <code>href</code> などに入れて使います（第6巻 UNIT 08）。</li>
+<li><strong><code>async</code></strong>（非同期）: 「待つ所で、ほかの仕事に順番をゆずれる関数」にする印。<code>async fn root(…)</code> のように付けます。呼ぶ側は <code>.await</code> で結果を待ちます。Web サーバーが、たくさんの人を同時にさばけるのは、この仕組みのおかげです（第5巻）。</li>
+<li><strong><code>impl</code></strong>（型とメソッド）: 2 つの使い方があります。① <code>impl 型 { … }</code> で、その型にメソッド（関数）を付ける。② <code>impl View</code> のように型の場所に書くと、「<code>View</code> の機能を持つ何かの型」という意味になります（戻り値の型を細かく書かずに済む）。</li>
+<li><strong><code>#[layout]</code></strong>（Topcoat）: Topcoat の印（属性）。この関数を「どのページにも共通の外枠（HTML の骨組み・メニュー）」にします。外枠の中の、ページが入る場所を <code>slot</code> で受け取ります（第6巻 UNIT 03）。</li>
+<li><strong><code>#[page]</code></strong>（Topcoat）: Topcoat の印（属性）。この関数を、1 つの URL に答える「ページ」にします。<code>#[page("/")]</code> なら <code>/</code> に、<code>#[page(POST)]</code> なら送信（POST）に答えます（第6巻 UNIT 02〜03）。</li>
+<li><strong><code>.build()</code></strong>（型とメソッド）: 設定を少しずつ足していく「組み立て係」（ビルダー）の最後に呼んで、でき上がった物を作るメソッド。<code>Router::builder()…build()</code> の形で、ルーターなどを作る時に使います。</li>
+<li><strong><code>topcoat::dev::script()</code></strong>（Topcoat）: <code>topcoat dev</code> で動かしている時だけ、「コードを直したら、ブラウザーを自動で読み直す」ための小さなスクリプトを、ページに入れる関数。<code>cargo run</code> や本番では何も出しません（第6巻 UNIT 08）。</li>
+<li><strong><code>AssetBundle</code></strong>（Topcoat）: Topcoat の型。<code>topcoat asset bundle</code> で作った「アセットの束」（名前にハッシュが付いたファイルと目録）を、<code>AssetBundle::load()</code> で読み込んで、配れるようにします（第6巻 UNIT 08）。</li>
+<li><strong><code>RouterBuilderAssetExt</code></strong>（Topcoat）: Topcoat のトレイト（機能のまとまり）。<code>use</code> しておくと、ルーターを組み立てる時に、アセット（CSS など）を配る設定のメソッドが使えるようになります。</li>
+<li><strong><code>Router</code></strong>（Topcoat）: URL とメソッド（GET・POST）ごとに、どの関数に答えさせるかを決めた名簿（ルーター）。Topcoat のサーバーは、来た頼み（リクエスト）をこの名簿で振り分けます（第6巻 UNIT 03）。</li>
+<li><strong><code>View</code></strong>（Topcoat）: Topcoat の「画面（HTML になる物）」の型（トレイト）。ページの関数は <code>Result&lt;impl View&gt;</code>（HTML になる何かを返す。失敗することもある）を返します。</li>
+<li><strong><code>DOCTYPE</code></strong>（HTML）: <code>&lt;!DOCTYPE html&gt;</code> は、「この文書は HTML5 です」とブラウザーに伝える、HTML の先頭の決まった 1 行です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li><code>Cargo.toml</code> には <code>topcoat = { version = "0.11.0", … }</code> と、非同期の部品の <code>tokio</code> が書かれています。</li>
 <li><code>src\app.rs</code> の <code>#[page] async fn home()</code> が、トップページ（<code>/</code>）です。<code>view! { … }</code> の中に、HTML の形でページを書きます（第6巻）。<code>asset!("styles.css")</code> は、<code>styles.css</code> を束に入れて、その URL を書き込む、という意味です。</li>
@@ -4907,6 +5409,16 @@ vary: Accept
 <div class="codehilite"><div class="code-wrap" id="code-218"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="p">+</span><span class="n">1</span><span class="p">.</span><span class="n">90</span><span class="p">.</span><span class="n">0</span> <span class="n">check</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo +1.90.0</code></strong>（cargo のコマンド）: <code>+1.90.0</code> で、Rust 1.90.0 を使って cargo を動かします。古い版で動くかを確かめる時に使います（その版が入っていないと、エラーになります）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-219"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>error: rustc 1.90.0 is not supported by the following packages:
   rustnote@0.1.0 requires rustc 1.99
   rustnote@0.1.0 requires rustc 1.99
@@ -4924,6 +5436,16 @@ vary: Accept
 <p>1つ目の <code>hello-topcoat</code> が動いている間に、2つ目を動かしました。</p>
 <div class="codehilite"><div class="code-wrap" id="code-220"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">.\</span><span class="n">target</span><span class="p">\</span><span class="n">debug</span><span class="p">\</span><span class="n">hello-topcoat</span><span class="p">.</span><span class="n">exe</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.\target\debug\hello-topcoat.exe</code></strong>（PowerShell）: <code>cargo build</code> で作った Topcoat のアプリの実行ファイルを、直接動かす書き方。サーバーなので、止めるまで動き続けます（止める時は <code>Ctrl</code> ＋ <code>C</code>）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-221"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>thread &#39;main&#39; (32604) panicked at src\main.rs:6:41:
 called `Result::unwrap()` on an `Err` value: Os { code: 10048, kind: AddrInUse, message: &quot;通常、各ソケット アドレスに対してプロトコル、ネットワーク アドレス、またはポートのどれか 1 つのみを使用できます。&quot; }
@@ -5070,6 +5592,16 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 curl<span class="w"> </span>-sSfL<span class="w"> </span>https://get.tur.so/install.sh<span class="w"> </span><span class="p">|</span><span class="w"> </span>bash
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>curl</code></strong>（WSL・bash）: URL にアクセスするコマンド（Linux・WSL 版）。<code>curl -sSfL URL | bash</code> は、URL から取ってきたスクリプトを、そのまま bash で動かします（<code>-s</code> 静かに・<code>-S</code> エラーは出す・<code>-f</code> 失敗を見逃さない・<code>-L</code> 移動先を追う）。中身を確かめずに動かすことになるので、信頼できる所の物だけに使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><code>curl … | bash</code> は、「インターネットから取ってきたスクリプトを、そのまま動かす」という意味です。動かす前に、中身を読んでおくのが安全です。この本で、スクリプト（191 行）を取ってきて読むと、次のことをしていました。</p>
 <ul>
 <li><code>uname -m</code> と <code>uname -s</code> で、CPU（<code>aarch64</code> なら arm64）と OS（Linux）を調べる</li>
@@ -5094,6 +5626,16 @@ curl<span class="w"> </span>-sSfL<span class="w"> </span>https://get.tur.so/inst
 <p><strong>▼ 実行結果</strong></p>
 <div class="codehilite"><div class="code-wrap" id="code-225"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>6c6d2042c2bbde64b90c7b5e0725ccd27e4c8a6de90d6b2eefada6b37816df7c
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>docker ps</code></strong>（Docker）: 動いているコンテナ（箱）の一覧を出すコマンド。<code>--filter name=…</code> で名前で絞り、<code>--format</code> で表示する項目を選べます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-226"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>ghcr.io/tursodatabase/libsql-server:latest  Up 1 second  0.0.0.0:8080-&gt;8080/tcp, [::]:8080-&gt;8080/tcp
 200
@@ -5189,6 +5731,22 @@ date: Sat, 31 Oct 2026 02:03:54 GMT
 }
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Invoke-RestMethod</code></strong>（PowerShell）: URL にアクセスして、返ってきた JSON などを PowerShell で扱える形にして受け取るコマンド。API を試す時に使います（短い呼び名は <code>irm</code>）。</li>
+<li><strong><code>Invoke-RestMethod -Method</code></strong>（PowerShell）: <code>-Method Post</code> で、送る方法（GET・POST など）を指定します。指定しないと GET です。</li>
+<li><strong><code>Invoke-RestMethod -Uri</code></strong>（PowerShell）: <code>-Uri URL</code> で、アクセスする先の URL を指定します。</li>
+<li><strong><code>Invoke-RestMethod -Body</code></strong>（PowerShell）: <code>-Body 中身</code> で、送る中身（JSON の文字列など）を指定します。</li>
+<li><strong><code>Invoke-RestMethod -ContentType</code></strong>（PowerShell）: <code>-ContentType application/json</code> で、送る中身の種類（ここでは JSON）をサーバーに伝えます。</li>
+<li><strong><code>ConvertTo-Json</code></strong>（PowerShell）: PowerShell の値（オブジェクト）を、JSON の文字列に変えるコマンド。受け取った結果を JSON の形で見たい時にも使います。</li>
+<li><strong><code>ConvertTo-Json -Depth</code></strong>（PowerShell）: <code>-Depth 5</code> で、中に入れ子になった物を何段目まで JSON にするかを決めます（既定は 2 段で、それより深い所は省かれます）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <h4 id="1_31">▼ 1つずつ分解して解説</h4>
 <h5 id="1_32">解説1: 起動のときのマイグレーション</h5>
 <ul>
@@ -5252,6 +5810,21 @@ RustNote を起動しました: http://127.0.0.1:3000
 <div class="codehilite"><div class="code-wrap" id="code-241"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">Get-ChildItem</span> <span class="n">-Name</span> <span class="p">|</span> <span class="nb">Where-Object</span> <span class="p">{</span> <span class="nv">$_</span> <span class="o">-like</span> <span class="s1">&#39;127*&#39;</span> <span class="p">}</span>
 <span class="nb">Get-Item</span> <span class="p">.\</span><span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span> <span class="n">-Stream</span> <span class="p">*</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">Stream</span><span class="p">,</span> <span class="n">Length</span> <span class="p">|</span> <span class="nb">Format-Table</span> <span class="n">-AutoSize</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Where-Object</code></strong>（PowerShell）: <code>|</code> で流れてきた物のうち、条件に合う物だけを残すコマンド。<code>{ }</code> の中の <code>$_</code> が「今の 1 つ」です。<code>Where-Object { $_.Length -gt 1000 }</code> のように使います。</li>
+<li><strong><code>Where-Object -like</code></strong>（PowerShell）: <code>-like '127*'</code> は、「<code>127</code> で始まる」のように、<code>*</code>（何文字でも）を使った形と比べる比べ方です。</li>
+<li><strong><code>Get-Item</code></strong>（PowerShell）: ファイルやフォルダ 1 つの情報（名前・大きさ・日時）を取り出すコマンド。</li>
+<li><strong><code>Get-Item -Stream</code></strong>（PowerShell）: <code>-Stream *</code> で、ファイルに付いている「隠れた別の中身」（代替データストリーム。ダウンロードした印などが入る）の一覧を出します。</li>
+<li><strong><code>Format-Table</code></strong>（PowerShell）: 結果を表の形に整えて表示するコマンド。</li>
+<li><strong><code>Format-Table -AutoSize</code></strong>（PowerShell）: <code>-AutoSize</code> で、列の幅を中身に合わせて自動で決めます（長い値が <code>...</code> で切られにくくなります）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-242"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>127.0.0.1
 Stream Length
@@ -5414,6 +5987,16 @@ error: process didn&#39;t exit successfully: `C:\Users\...\t06build\release\rust
 <div class="codehilite"><div class="code-wrap" id="code-246"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">pwsh</span> <span class="n">-Command</span> <span class="s2">&quot;iwr https://fly.io/install.ps1 -useb | iex&quot;</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>pwsh</code></strong>（PowerShell）: PowerShell 7（新しい PowerShell）を動かすコマンド。Windows に最初から入っているのは Windows PowerShell 5.1（<code>powershell</code>）です。<code>pwsh -Command "…"</code> で、1 つの命令を PowerShell 7 で動かします。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>この本の PC には、すでに flyctl v0.5.1 が入っていたので、版を確かめた結果だけを載せます。</p>
 <div class="codehilite"><div class="code-wrap" id="code-247"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">fly</span> <span class="n">version</span>
 <span class="n">where</span><span class="p">.</span><span class="n">exe</span> <span class="n">fly</span> <span class="n">flyctl</span>
@@ -5426,6 +6009,16 @@ C:\Users\...\.fly\bin\fly.exe
 C:\Users\...\.fly\bin\flyctl.exe
 x64    0x8664  C:\Users\...\.fly\bin\fly.exe
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>fly version</code></strong>（Fly.io）: Fly.io（アプリをインターネットに公開するサービス）の道具 <code>fly</code> の版を表示します（第12巻）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <h4 id="1_33">▼ 1つずつ分解して解説</h4>
 <h5 id="1-cpu">解説1: 版と CPU の種類</h5>
@@ -5562,6 +6155,18 @@ x64    0x8664  C:\Users\...\.fly\bin\fly.exe
 <span class="nb">Write-Host</span> <span class="s2">&quot;全部 OK&quot;</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Write-Host</code></strong>（PowerShell）: 画面に文字を表示するコマンド。<code>Write-Output</code> と違い、次のコマンドへは流れず、画面に出すだけです。色を付ける（<code>-ForegroundColor Green</code>）こともできます。</li>
+<li><strong><code>try</code></strong>（PowerShell）: PowerShell で、失敗するかもしれない処理を <code>try { … } catch { … }</code> で囲み、失敗した時の処理を <code>catch</code> に書く書き方。</li>
+<li><strong><code>exit</code></strong>（PowerShell）: スクリプトを終えるコマンド。<code>exit 1</code> は、終了コード 1（失敗）でスクリプトを終えます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-250"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">cd </span><span class="err">（</span><span class="n">RustNote</span> <span class="n">のフォルダ</span><span class="err">）</span>
 <span class="n">powershell</span> <span class="n">-ExecutionPolicy</span> <span class="n">Bypass</span> <span class="o">-File</span> <span class="nv">$HOME</span><span class="p">\</span><span class="n">rust-study</span><span class="p">\</span><span class="n">doctor</span><span class="p">.</span><span class="n">ps1</span>
 <span class="s2">&quot;終了コード: $LASTEXITCODE&quot;</span>
@@ -5586,6 +6191,16 @@ OK  flyctl                 fly.exe v0.5.1 windows/amd64
 全部 OK
 終了コード: 0
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>powershell</code></strong>（PowerShell）: Windows PowerShell 5.1 を動かすコマンド。<code>powershell -ExecutionPolicy Bypass -File スクリプト.ps1</code> は、実行ポリシーをその 1 回だけ気にせずに、スクリプトを動かします。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <h4 id="1_34">▼ 1つずつ分解して解説</h4>
 <h5 id="1_35">解説1: 何を確かめているか</h5>

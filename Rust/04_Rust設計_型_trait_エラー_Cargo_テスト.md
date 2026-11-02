@@ -179,6 +179,14 @@ cargo add thiserror anyhow serde_json
 cargo add serde --features derive
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`cargo add`**（cargo のコマンド）: 部品（クレート）を、プロジェクトに足すコマンド。`cargo add thiserror anyhow serde_json` で、3 つの部品を `Cargo.toml` の `[dependencies]` に書き足します。`--features 機能` で、部品の追加の機能も選べます。部品は、世界中の人が公開している場所（crates.io）から自動で取ってきます。
+
+<!-- /first-use -->
+
 `cargo add` の実際の出力は次のとおりです（`cargo new` の出力は省略）。
 
 ```text
@@ -498,6 +506,14 @@ fn main() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.write_str()`**（文字列）: `Display` などの実装の中で、書き込み先（`Formatter`）に文字列をそのまま書くメソッド。`f.write_str(&self.0)` は「自分の中の文字列を、そのまま表示する」。値を埋め込む時は `write!` を使います。
+
+<!-- /first-use -->
+
 ```powershell
 cargo run --bin u01_title
 ```
@@ -660,6 +676,15 @@ fn main() {
     println!("DB に渡す値: {}", id.get());
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`type`**（型とメソッド）: 型に別の名前を付ける書き方（型の別名）。`type DynRepo = Arc<dyn NoteRepository + Send + Sync>;` のように、長い型を短く呼べます。トレイトの中の `type Err = IdError;` は「このトレイトで使うエラーの型は `IdError`」と決める書き方です。
+> - **`FromStr`**（型とメソッド）: 「文字列から作れる」機能（トレイト）。`impl FromStr for 型 { … }` を書くと、`"42".parse::<型>()` で、文字列から自分の型を作れるようになります。
+
+<!-- /first-use -->
 
 ```powershell
 cargo run --bin u01_domain
@@ -1568,6 +1593,16 @@ fn main() {
 本物の時計: true
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.duration_since()`**（時間）: 「ある時刻から、どれだけたったか」を `Duration` で返すメソッド。`SystemTime::now().duration_since(UNIX_EPOCH)` は、1970 年 1 月 1 日から今までの時間です。
+> - **`.as_secs()`**（時間）: 時間の長さ（`Duration`）を、秒の整数で返すメソッド（小数点以下は切り捨て）。
+> - **`SystemTime`**（時間）: カレンダーの時刻（今が何時か）を表す型。`SystemTime::now()` で今の時刻を取ります。記録に日時を残す時に使います（処理の時間を測るのは `Instant`）。
+
+<!-- /first-use -->
+
 - 時刻のように「実行するたびに変わるもの」に直接頼ると、テストの結果が実行のタイミングで変わってしまいます。trait で差し替え可能にしておけば、テストでは `FixedClock` を渡して「期限ちょうど」のような境目を、何度でも同じ結果で確かめられます。
 - `use std::time::{...}` を関数の中に書いているのは、その関数でしか使わないものを近くに置くためです。ファイルの先頭に書いてもかまいません。
 
@@ -1868,6 +1903,15 @@ fn main() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`where`**（型とメソッド）: ジェネリクス（型を後から決める書き方）の条件を、関数の後ろにまとめて書く所。`where T: Display, I: IntoIterator<Item = T>` のように、条件が長い時に読みやすくなります。
+> - **`IntoIterator`**（イテレーター）: 「`for` で回せる物」の機能（トレイト）。`Vec`・配列・`HashMap` などが持っています。`I: IntoIterator<Item = T>` は「`T` が 1 つずつ出てくる、回せる物なら何でも」という条件です。
+
+<!-- /first-use -->
+
 ```powershell
 cargo run --bin u03_page
 ```
@@ -1993,6 +2037,14 @@ fn main() {
     println!("{}", service.debug_repo());
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Iterator`**（イテレーター）: 「1 つずつ取り出せる物」（イテレーター）の機能（トレイト）。`map`・`filter`・`sum` などのメソッドは、全部この機能に付いています。`impl Iterator<Item = &Note>` は「`&Note` を 1 つずつ出す何か」を返す、という戻り値の書き方です。
+
+<!-- /first-use -->
 
 ```powershell
 cargo run --bin u03_service
@@ -2626,6 +2678,16 @@ fn main() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`InMemoryNoteRepository::default()`**（型とメソッド）: この巻で作る型 `InMemoryNoteRepository`（メモリの中にノートを持つ保管係）を、初期値（空の状態）で作る書き方。`#[derive(Default)]` を付けてあるので、`::default()` で作れます。
+> - **`Send`**（スレッドと共有）: 「別のスレッドへ渡してもよい」ことを表す印（トレイト）。`Arc<dyn NoteRepository + Send + Sync>` の `+ Send` は「スレッドをまたいで渡せる物に限る」という条件です。多くの型は自動で持っています（`Rc` などは持っていません）。
+> - **`Sync`**（スレッドと共有）: 「いくつものスレッドから同時に借りて読んでもよい」ことを表す印（トレイト）。Web サーバーのように、いくつもの処理が 1 つの物を共有する時に必要です。
+
+<!-- /first-use -->
+
 ```powershell
 cargo run --bin u04_state
 ```
@@ -3047,6 +3109,14 @@ CSV
 CSV
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Sized`**（型とメソッド）: 「大きさ（メモリで使う量）が、翻訳の時に決まっている」ことを表す印（トレイト）。`where Self: Sized` は「`dyn` 越しには呼べない」メソッドにする時の書き方です。ふだんは気にしなくて大丈夫です。
+
+<!-- /first-use -->
+
 - `where Self: Sized` は「`Self` の大きさがコンパイル時に分かるときだけ」という条件です。`dyn Exporter` は大きさが分からない型なので、このメソッドは vtable に載らず、dyn 越しには呼べません。その代わり、trait 全体は dyn で使えるようになります。
 
 **解答3:**
@@ -3453,6 +3523,19 @@ fn main() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`#[error]`**（エラー処理）: `thiserror` の印（属性）。エラーの種類ごとに、表示する文を決めます。`#[error("タイトルが長すぎます（{0} 文字）")]` のように書くと、`Display` を自分で書かずに済みます。
+> - **`#[source]`**（エラー処理）: `thiserror` の印（属性）。「このエラーの元になったエラー」の項目に付けます。`.source()` や `anyhow` の原因の表示で、元のエラーまでたどれるようになります。
+> - **`#[from]`**（エラー処理）: `thiserror` の印（属性）。付けた項目の型のエラーから、自分のエラーへ自動で変換できるようにします（`From` の実装を作る）。これで `?` を使った時に、自動で自分のエラーに変わります。
+> - **`From`**（型とメソッド）: 「ある型から作れる」機能（トレイト）。`impl From<RepoError> for AppError` を書くと、`RepoError` を `AppError` に変えられます。`?` は、エラーを返す時にこの変換を自動で使います。
+> - **`ErrorKind`**（エラー処理）: 入出力のエラーの「種類」。`std::io::ErrorKind::NotFound`（無い）・`ConnectionRefused`（つなぐのを断られた）などがあり、`e.kind()` で調べて、種類ごとに処理を分けられます。
+> - **`ConnectionRefused`**（エラー処理）: `ErrorKind::ConnectionRefused` は、「相手のパソコンに、その番号で待っているプログラムがいない」ために、つなぐのを断られた、というエラーの種類です。
+
+<!-- /first-use -->
+
 ```powershell
 cargo run --bin u05_app_error
 ```
@@ -3589,6 +3672,17 @@ fn main() -> Result<()> {
     Ok(())
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`bail!`**（エラー処理）: `anyhow` のマクロ。その場でエラーを作って、関数から返します。`bail!("ノートが 1 件もありません");` は `return Err(anyhow!("…"));` の短い書き方です。
+> - **`.with_context()`**（エラー処理）: `anyhow` のメソッド。失敗した時のエラーに、「何をしていて失敗したか」の説明を書き足します。`.with_context(|| format!("{path} を読めませんでした"))?`。ログを見た人が、原因をすぐ分かるようになります。
+> - **`.unwrap_or_else()`**（エラー処理）: `Option` や `Result` から中身を取り出し、無い（失敗した）時は、渡した関数を動かして代わりの値を作るメソッド。`unwrap_or` と違い、代わりの値を作る処理が、必要な時だけ動きます。
+> - **`Context`**（エラー処理）: `anyhow::Context` は、`with_context`・`context` メソッドを使えるようにする機能（トレイト）。`use anyhow::Context;` と書いておくと、`Result` や `Option` に説明を付けられます。
+
+<!-- /first-use -->
 
 `design_lab` フォルダに `seed.txt`（1行目「牛乳を買う」、2行目は空行、3行目「本を返す」）を作ってから実行します。`--` の後ろは、プログラムに渡す引数です。
 
@@ -4337,6 +4431,14 @@ fn main() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`NoteStore::default()`**（型とメソッド）: この巻で作る型 `NoteStore` を、初期値（空の状態）で作る書き方（`#[derive(Default)]` のおかげで使える）。
+
+<!-- /first-use -->
+
 ```powershell
 cargo run
 ```
@@ -4835,6 +4937,14 @@ fn main() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.is_ok()`**（エラー処理）: `Result` が `Ok`（成功）なら `true` を返すメソッド。中身は要らず、成功したかだけ知りたい時に使います。
+
+<!-- /first-use -->
+
 ```powershell
 cargo run -p seed
 ```
@@ -5046,6 +5156,16 @@ fn main() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`cfg!`**（テスト）: 条件（機能が ON か・どの OS か など）が合っているかを、`true`・`false` で返すマクロ。`if cfg!(feature = "json") { … }` のように、普通の `if` の中で使えます。
+> - **`#[cfg_attr]`**（テスト）: 「条件が合う時だけ、この印（属性）を付ける」という印。`#[cfg_attr(feature = "json", derive(Serialize))]` は、`json` の機能が ON の時だけ `Serialize` を付けます。
+> - **`serde_json::to_string()`**（JSON）: Rust の値を、JSON の文字列（1 行）に変える関数。値の型に `Serialize` が付いている必要があります。失敗することもあるので `Result` が返ります。
+
+<!-- /first-use -->
+
 3通りに実行してみます。まずは何も指定しない場合です。
 
 ```powershell
@@ -5144,6 +5264,14 @@ fn export_json(note: &Note) -> String {
 ```powershell
 cargo tree
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`cargo tree`**（cargo のコマンド）: プロジェクトが使っている部品（クレート）と、その部品がさらに使っている部品を、木の形で表示するコマンド。`--depth 1` で、直接使っている物だけにできます。
+
+<!-- /first-use -->
 
 ```text
 feat_lab v0.1.0 (...\feat_lab)
@@ -5570,6 +5698,15 @@ fn main() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`serde_json::to_string_pretty()`**（JSON）: Rust の値を、人が読みやすい字下げ付きの JSON の文字列に変える関数。
+> - **`Deserialize`**（JSON）: 「JSON などから作れる」機能（トレイト。`serde` の部品）。`#[derive(Deserialize)]` を付けた型は、`serde_json::from_str` で JSON から作れます。逆向き（値 → JSON）は `Serialize` です。
+
+<!-- /first-use -->
+
 ```powershell
 cargo run --bin u08_serde
 ```
@@ -5782,6 +5919,15 @@ fn main() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`#[serde]`**（JSON）: `serde` の印（属性）。JSON にする時の細かい決まりを付けます。`#[serde(rename_all = "camelCase")]`（名前の書き方を変える）・`#[serde(default)]`（無い時は初期値）・`#[serde(skip_serializing_if = "Option::is_none")]`（空なら書かない）などがあります。
+> - **`TryFrom`**（型とメソッド）: 「ある型から作れるが、失敗することもある」変換の機能（トレイト）。`impl TryFrom<CreateNoteInput> for NewNote` を書くと、`NewNote::try_from(input)` で、入力を確かめながら変換でき、だめなら `Err` を返します。
+
+<!-- /first-use -->
+
 ```powershell
 cargo run --bin u08_dto
 ```
@@ -5902,6 +6048,14 @@ fn main() {
     }
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`#[allow]`**（テスト）: 「この警告は出さなくてよい」と伝える印（属性）。`#[allow(dead_code)]` は、使っていない関数への警告を止めます。本当に要らない警告だけに使います。
+
+<!-- /first-use -->
 
 ```text
    Compiling design_lab v0.1.0 (...\design_lab)
@@ -6252,6 +6406,16 @@ fn main() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`std::process::exit()`**（プロセス）: プログラムを、その場で終わらせる関数（`process::exit` と同じ）。`std::process::exit(1)` は、終了コード 1（失敗）で終わります。
+> - **`VarError`**（プロセス）: 環境変数を読む `env::var` が失敗した時のエラーの型。`VarError::NotPresent`（設定されていない）と `VarError::NotUnicode`（文字として読めない）の 2 種類があります。
+> - **`NotPresent`**（プロセス）: `VarError::NotPresent` は、「その名前の環境変数が設定されていない」というエラーの種類です。
+
+<!-- /first-use -->
+
 何も設定せずに実行します。
 
 ```powershell
@@ -6520,6 +6684,18 @@ fn main() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.filter_map()`**（イテレーター）: 1 つずつ変換して、`None` になった物は捨て、`Some` の中身だけを残すメソッド。`.filter_map(|line| line.split_once('='))` は、`=` を含む行だけを「名前と値の組」にします。
+> - **`.or_else()`**（エラー処理）: `Option` や `Result` が空（失敗）の時だけ、渡した関数で「別の `Option`・`Result`」を作って返すメソッド。「無ければ、別の所から探す」に使います。
+> - **`.as_ref()`**（所有権と借用）: 中身を借りた形に変えるメソッド。`Option<String>` を `Option<&String>` にするなど、中身を移さずに覗きたい時に使います。
+> - **`.into()`**（型とメソッド）: 値を、受け取る側が求める型に変えるメソッド（`From` の実装を使う）。`let s: String = "abc".into();` のように、変換先の型が分かる所で使います。
+> - **`std::env::var()`**（プロセス）: 環境変数を読む関数（`env::var` と同じ）。`std::env::var("PORT")` は `Result` を返し、設定されていなければ `Err` です。
+
+<!-- /first-use -->
+
 ```powershell
 cargo run --bin u09_config
 ```
@@ -6607,6 +6783,14 @@ fn main() {
     println!("{:?}", env::var("PORT"));
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`env::set_var()`**（プロセス）: このプログラムの中の環境変数を設定する関数。テストで設定を試す時などに使います（Rust 2024 では、ほかのスレッドとの関係で `unsafe` の中で使う決まりです）。
+
+<!-- /first-use -->
 
 ```text
    Compiling design_lab v0.1.0 (...\design_lab)
@@ -7128,6 +7312,15 @@ mod tests {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`#[must_use]`**（型とメソッド）: 「この戻り値を使わずに捨てたら、警告を出して」という印（属性）。結果の確かめ忘れを防ぎます。
+> - **`#[should_panic]`**（テスト）: 「このテストは、パニック（止まる）するのが正しい」という印（属性）。`#[should_panic(expected = "文の一部")]` で、止まる時のメッセージも確かめられます。
+
+<!-- /first-use -->
+
 **src/status.rs**
 
 ```rust
@@ -7274,6 +7467,14 @@ fn error_message_for_too_long_title() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.unwrap_err()`**（テスト）: `Result` が `Err` の時に、そのエラーを取り出すメソッド。`Ok` だった時は止まります。テストで「ちゃんと失敗するか」を確かめる時に使います。
+
+<!-- /first-use -->
+
 ```powershell
 cargo test
 ```
@@ -7335,6 +7536,14 @@ pub struct NoteTitle(String);
 ```powershell
 cargo doc --no-deps
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`cargo doc`**（cargo のコマンド）: コードに書いた説明（`///` のコメント）から、説明書（ドキュメント）の Web ページを作るコマンド。`--no-deps` で自分のコードだけ、`--open` でできたページをブラウザーで開きます。
+
+<!-- /first-use -->
 
 ```text
  Documenting note_domain v0.1.0 (...\note_domain)

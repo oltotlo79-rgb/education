@@ -515,6 +515,14 @@ fn main() -> std::io::Result<()> {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`u32::from_le_bytes()`**（数）: 4 つのバイト（小さい桁から順）から、`u32` の数を作る関数。実行ファイルの中の決まった場所の数を読む時に使います。
+
+<!-- /first-use -->
+
 同じソースから、release ビルドを2回作って比べます。2回目は、RustNote の部分だけを消してから作り直します（依存クレートは作り直さないので、1回目より速く終わります）。
 
 ```powershell
@@ -544,6 +552,14 @@ cargo run -q --example u01_exe_report -- builds/build1.exe builds/build2.exe
     大きさが同じ: true
     違うバイトの数: 24
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`cargo clean`**（cargo のコマンド）: 翻訳でできたファイル（`target` フォルダの中）を消すコマンド。`--release -p rustnote` で、release の RustNote の分だけを消します。次の翻訳は時間がかかります。
+
+<!-- /first-use -->
 
 #### ▼ コードを1つずつ分解して解説
 
@@ -804,6 +820,14 @@ Copy-Item target\release\rustnote.exe dist\
 cd dist
 .\rustnote.exe
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.\rustnote.exe`**（PowerShell）: 今いるフォルダの `rustnote.exe` を動かす書き方。
+
+<!-- /first-use -->
 
 ```text
 Error: アセットの束（assets/）がありません。先に `topcoat asset bundle` を実行するか、`topcoat dev` で起動してください
@@ -1115,6 +1139,14 @@ CMD ["/app/rustnote"]
 docker build --progress=plain -t rustnote:u02 .
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`docker build`**（Docker）: `Dockerfile`（箱の作り方を書いたファイル）から、イメージ（箱の設計図）を作るコマンド。`-t 名前:タグ` で名前を付けます。最後の `.` は「今のフォルダの中身を使う」という意味です。
+
+<!-- /first-use -->
+
 ```text
 Docker 29.3.1（linux/arm64）
 ```
@@ -1179,6 +1211,14 @@ Docker 29.3.1（linux/arm64）
 ```powershell
 docker history rustnote:u02 --format "{{.Size}}`t{{.CreatedBy}}"
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`docker history`**（Docker）: イメージが、どの手順で、どれだけの大きさを使って作られたかを表示するコマンド。
+
+<!-- /first-use -->
 
 ```text
 0B	CMD ["/app/rustnote"]
@@ -1870,6 +1910,14 @@ TOML として正しく読めるかを、Python の標準の `tomllib` で読ん
 python -c "import tomllib, json, sys; print(json.dumps(tomllib.load(open(sys.argv[1], 'rb')), ensure_ascii=False, indent=2))" fly.toml
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`python`**（Python）: Python を動かすコマンド。`python -c "…"` は、`"…"` の中の Python のコードを 1 回だけ動かします。
+
+<!-- /first-use -->
+
 ```text
 {
   "app": "rustnote-example",
@@ -1941,6 +1989,14 @@ python -c "import tomllib, json, sys; print(json.dumps(tomllib.load(open(sys.arg
 fly launch --no-deploy --name 自分用のアプリ名
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`fly launch`**（Fly.io）: Fly.io に、新しいアプリを作る準備をするコマンド。`fly.toml`（設定のファイル）を作ります。`--no-deploy` で、まだ公開はしません（第12巻）。
+
+<!-- /first-use -->
+
 - RustNote には、`Dockerfile` と `fly.toml` がもう用意してあるので、`fly launch` は、アプリを Fly.io に登録して、`fly.toml` の `app` を新しい名前にするところまでで済みます。DB の URL とトークンを `fly secrets set` で渡してから（UNIT 05）、`fly deploy` で公開します（UNIT 08）。
 
 ### もう一歩: 実務に近い形
@@ -2006,6 +2062,27 @@ for c in checks:
 print(f"だめだった数: {problems}")
 sys.exit(1 if problems else 0)
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`global`**（Python）: 関数の中で、外（ファイル全体）の変数を書きかえる時に使う宣言。
+> - **`not`**（Python）: Python で「〜ではない」。`if not ok:` は「`ok` が成り立たなければ」。
+> - **`and`**（Python）: Python で「かつ」。両方が成り立つ時だけ `True` になります。
+> - **`True`**（Python）: Python の「正しい（はい）」の値。反対は `False`。
+> - **`with`**（Python）: 使い終わったら自動で片づける（ファイルや接続を閉じる）書き方。`with open(…) as f:` の中で使った物は、抜ける時に閉じられます。
+> - **`except`**（Python）: `try:` の中でエラーが起きた時に動く所。`except Exception as error:` で、起きたエラーを `error` という名前で受け取ります。
+> - **`.loads()`**（Python）: 文字列から読み取るメソッド。`tomllib.loads(文字列)` は TOML、`json.loads(文字列)` は JSON を、Python の辞書にします。
+> - **`.read_text()`**（Python）: `Path` のファイルの中身を、全部文字列として読むメソッド。`encoding="utf-8"` を付けて読みます。
+> - **`.group()`**（Python）: 正規表現で見つかった所から、かっこ `( )` の中の部分を取り出すメソッド。`m.group(1)` は 1 つ目のかっこの中です。
+> - **`.urlopen()`**（Python）: `urllib.request.urlopen(URL)` は、URL にアクセスして、返事を受け取る関数です。
+> - **`.exit()`**（Python）: `sys.exit(番号)` は、Python のプログラムを、その終了コードで終える関数です。
+> - **`getattr()`**（Python）: 物から、名前で属性（中の値）を取り出す関数。`getattr(error, "code", 既定値)` は、`code` が無ければ既定値を返します。
+> - **`type()`**（Python）: 値の型を返す関数。`type(error).__name__` は、エラーの種類の名前です。
+> - **`bool()`**（Python）: 値を `True`・`False` にする関数。空の文字列や `None` は `False`、中身があれば `True` です。
+
+<!-- /first-use -->
 
 UNIT 02 のイメージを `-p 18080:8080`（外の 18080 を、コンテナの 8080 へ）で動かして、教材の `fly.toml` と `Dockerfile` を確かめました。
 
@@ -2330,6 +2407,14 @@ fly secrets list
 fly secrets unset DATABASE_AUTH_TOKEN
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`fly secrets`**（Fly.io）: Fly.io のアプリに、秘密の設定（データベースの合言葉など）を渡すコマンド。`fly secrets set 名前=値`。アプリには環境変数として届き、`fly.toml` や Git には書きません（第12巻）。
+
+<!-- /first-use -->
+
 - `fly secrets set` は、値を Fly.io の金庫に暗号にして保管し、そのアプリのマシンを全部入れ替えます（入れ替えのとき、マシンの一時的なディスクは消えます）。値は、マシンの起動のときに環境変数として渡され、イメージには入りません。
 - 入れ替えずに登録だけしたいとき（ほかの変更と一緒に出したいとき）は `--stage` を付け、あとで `fly secrets deploy`（イメージを作り直さずに出し直す）か `fly deploy` をします。
 - PowerShell の画面に打ったトークンは、コマンドの履歴に残ります。共有の PC では、履歴を消すか、ファイルから読む方法を使います。
@@ -2473,6 +2558,14 @@ docker run -d --name sqld --network rn-net ghcr.io/tursodatabase/libsql-server:l
 docker run -d --name rn-app --network rn-net -p 18080:8080 -e DATABASE_URL=http://sqld:8080 rustnote:u02
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`docker network`**（Docker）: コンテナ（箱）どうしをつなぐネットワークを作る・見るコマンド。`docker network create rn-net` で作り、同じネットワークの箱どうしは名前で呼び合えます。
+
+<!-- /first-use -->
+
 ```text
 sqld のイメージ: arm64・latest
 ```
@@ -2558,6 +2651,14 @@ docker run -d --name rn-app --network rn-net -p 18080:8080 --restart on-failure:
 # 4 秒後に
 docker start sqld
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`docker start`**（Docker）: 止まっているコンテナを動かすコマンド。
+
+<!-- /first-use -->
 
 ```text
 /health: 200 {"status":"ok"}
@@ -2987,6 +3088,16 @@ fly status                # マシンと、ヘルスチェックの状態を見�
 fly logs                  # マシンのログ（RustNote のアクセスログなど）を見る
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`fly deploy`**（Fly.io）: アプリを作って（Docker のイメージ）、Fly.io に公開するコマンド。新しい版に、少しずつ入れかえます（第12巻）。
+> - **`fly status`**（Fly.io）: Fly.io のアプリのマシンの状態と、ヘルスチェック（元気か）の結果を見るコマンド。
+> - **`fly logs`**（Fly.io）: Fly.io で動いているアプリのログ（動作の記録）を見るコマンド。
+
+<!-- /first-use -->
+
 #### 例8-1: スモークテストを作る
 
 公開したあとに動かす、スモークテストの PowerShell のスクリプトです。Fly.io の代わりに、手元のコンテナ（UNIT 02 のイメージ）に試しました。
@@ -3036,6 +3147,14 @@ if ($failed -gt 0) {
 }
 Write-Output "全部 OK"
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`param`**（PowerShell）: PowerShell のスクリプトが受け取る引数を決める書き方。`param([string]$Base = "http://…")` は、`-Base` で渡せる文字列の引数で、渡さなければ既定値になります。
+
+<!-- /first-use -->
 
 ```powershell
 docker run -d --name rn-u08 -p 18080:8080 rustnote:u02
@@ -3140,6 +3259,14 @@ fly certs add notes.example.com
 # 3. 確かめる（DNS が届いたら、Let's Encrypt の証明書が自動で発行される）
 fly certs check notes.example.com
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`fly certs`**（Fly.io）: Fly.io のアプリに、自分の名前（ドメイン）の HTTPS の証明書を付けるコマンド。
+
+<!-- /first-use -->
 
 - 証明書は、DNS が正しく向いたあとに、Fly.io が Let's Encrypt で自動で発行します。発行には回数の制限があるので、DNS の間違いを直してから、確かめ直します。
 - RustNote の `__Host-session` クッキーは、ドメインを指定しない（`__Host-` の決まり）ので、`アプリ名.fly.dev` と独自ドメインでは、別々のログインになります。利用者には、どちらか1つの URL を案内します。
@@ -3421,6 +3548,27 @@ class Handler(BaseHTTPRequestHandler):
 
 ThreadingHTTPServer(("127.0.0.1", listen_port), Handler).serve_forever()
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`elif`**（Python）: Python の「そうでなくて、もし〜なら」（`else if` の短い形）。
+> - **`pass`**（Python）: 「何もしない」という Python の命令。中身が要らないけれど、形の上で何か書く必要がある所に置きます。
+> - **`.Lock()`**（Python）: `threading.Lock()` は、いくつものスレッドが同時に同じ物を使わないようにする鍵を作る関数です。
+> - **`.lower()`**（Python）: 英字を小文字にした文字列を返すメソッド。
+> - **`.readline()`**（Python）: 1 行だけ読むメソッド。
+> - **`.strip()`**（Python）: 前後の空白や改行を取り除いたものを返すメソッド（Rust の `trim`）。
+> - **`.HTTPConnection()`**（Python）: `http.client.HTTPConnection(ホスト, ポート)` は、HTTP で相手のサーバーにつなぐ物を作る関数です。
+> - **`.getresponse()`**（Python）: 送った頼みに対する、相手の返事を受け取るメソッド。
+> - **`.send_response()`**（Python）: HTTP のサーバーとして、答えの番号（200 など）を返し始めるメソッド。
+> - **`.getheaders()`**（Python）: 受け取った返事のヘッダーを、`(名前, 値)` の組の並びで返すメソッド。
+> - **`.send_header()`**（Python）: HTTP のサーバーとして、ヘッダーを 1 つ返すメソッド。
+> - **`.end_headers()`**（Python）: ヘッダーの終わりを知らせるメソッド。このあとに本文を書きます。
+> - **`.serve_forever()`**（Python）: HTTP のサーバーを、止めるまでずっと動かし続けるメソッド。
+> - **`urlsplit()`**（Python）: URL を、部品（`scheme`・`hostname`・`port`・`path` など）に分ける関数。
+
+<!-- /first-use -->
 
 ```powershell
 # 1つ目の PowerShell: sqld を動かし、その手前で「数える係」を待ち受けさせる
@@ -3924,6 +4072,15 @@ docker run -d --name rn-u10 -p 18080:8080 -v rn-u10data:/data rustnote:v1
 powershell -File smoke.ps1 -Base http://127.0.0.1:18080
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`docker tag`**（Docker）: イメージに、別の名前（タグ）を付けるコマンド。`docker tag rustnote:u02 rustnote:v1`。
+> - **`docker rm`**（Docker）: コンテナ（箱）を消すコマンド。`-f` で、動いていても止めて消します。
+
+<!-- /first-use -->
+
 v1 のとき:
 
 ```text
@@ -4007,6 +4164,14 @@ fly releases --image
 # 2. 問題が起きる前のイメージを、もう一度公開する（作り直しはしない）
 fly deploy --image registry.fly.io/rustnote-example:deployment-XXXXXXXX
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`fly releases`**（Fly.io）: Fly.io のアプリの、公開した版の歴史を見るコマンド。`--image` で、どのイメージだったかも表示し、前の版に戻す時に使います。
+
+<!-- /first-use -->
 
 - `fly releases` の `--image` は、それぞれの公開のイメージの名前を表示します。`fly deploy --image` は、ビルドをせず、指定したイメージでマシンを入れ替えます。
 - 公式のドキュメント（rollback の手引き）によると、戻るのは**イメージだけ**です。DB（マイグレーション）・secrets・`fly.toml` の設定は戻りません。古いイメージは、今の `fly.toml` と secrets で動きます。

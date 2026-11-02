@@ -422,6 +422,16 @@ li, tr { page-break-inside: avoid; }
 <span class="nb">New-Item</span> <span class="n">-ItemType</span> <span class="n">Directory</span> <span class="n">src</span><span class="p">\</span><span class="n">bin</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>New-Item -ItemType</code></strong>（PowerShell）: <code>-ItemType Directory</code> で、ファイルではなくフォルダを作ります（<code>File</code> ならファイル）。<code>New-Item -ItemType Directory src\bin</code> は、<code>src</code> の中に <code>bin</code> フォルダを作ります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><code>src/bin/u01_raw.rs</code> のように置いたファイルは、<code>cargo run --bin u01_raw</code> で、それぞれ別のプログラムとして動かせます。</p>
 <h2 id="unit-01-http">UNIT 01: HTTP の要求・応答・状態コード</h2>
 <h3 id="_8">この単元のゴール</h3>
@@ -634,6 +644,16 @@ li, tr { page-break-inside: avoid; }
 <span class="w">    </span><span class="nb">Ok</span><span class="p">(())</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.read_exact()</code></strong>（入出力）: 決めた数のバイトを、ちょうどその数だけ読むメソッド。途中で終わってしまったら、エラーになります。HTTP の本文を、<code>Content-Length</code> の長さだけ読む時に使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p>練習用のプロジェクトの <code>src/bin/u01_raw.rs</code> として保存し、1つ目の PowerShell の窓で起動します。</p>
 <div class="codehilite"><div class="code-wrap" id="code-3"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u01_raw</span>
@@ -1350,6 +1370,17 @@ Content-Length: 34
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Router::builder()</code></strong>（Topcoat）: Topcoat のルーター（URL ごとの名簿）を組み立て始める関数。<code>Router::builder().discover().build()</code> は、<code>#[page]</code> を付けた関数を全部自動で集めて（<code>discover</code>）、ルーターを作ります（第6巻 UNIT 02）。</li>
+<li><strong><code>RouterBuilderDiscoverExt</code></strong>（Topcoat）: <code>.discover()</code>（<code>#[page]</code> の付いた関数を自動で集める）を使えるようにする機能（トレイト）。<code>use</code> しておく必要があります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-28"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">web_lab</span>
 </code></pre></div></div>
 
@@ -1975,6 +2006,19 @@ date: Fri, 30 Oct 2026 11:31:29 GMT
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>class!</code></strong>（Topcoat）: Topcoat のマクロ。HTML の <code>class</code> の値を、条件つきで組み立てます。<code>class!("nav", "active" if on_about)</code> は、<code>on_about</code> が <code>true</code> の時だけ <code>active</code> を足して <code>"nav active"</code> にします。</li>
+<li><strong><code>#[route]</code></strong>（Topcoat）: Topcoat の印（属性）。画面（HTML）ではなく、JSON やただの文字などを返す「ルート」にします。<code>#[route(GET)]</code> のように、メソッドを必ず書きます。人が見る画面は <code>#[page]</code>、プログラムが読む答えは <code>#[route]</code> と使い分けます。</li>
+<li><strong><code>.is_current()</code></strong>（Topcoat）: <code>href!(…)</code> で作ったリンク先が、「今開いているページ」なら <code>true</code> を返すメソッド。メニューの今のページに印（<code>aria-current</code>）を付ける時に使います。</li>
+<li><strong><code>.then_some()</code></strong>（Option）: <code>bool</code> が <code>true</code> なら <code>Some(値)</code>、<code>false</code> なら <code>None</code> を返すメソッド。<code>on_about.then_some("page")</code>。Topcoat の <code>view!</code> では、属性に <code>None</code> を入れると、その属性ごと書かれません。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>UNIT 02 の <code>web_lab</code> の <code>src/bin/u03_site.rs</code> として保存し、起動します。</p>
 <div class="codehilite"><div class="code-wrap" id="code-57"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u03_site</span>
 </code></pre></div></div>
@@ -2352,6 +2396,18 @@ content-length: 64
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>SessionConfig::default()</code></strong>（Topcoat）: Topcoat のセッション（ログインの状態などを覚える仕組み）を、おすすめの設定で用意する書き方。<code>.sessions(SessionConfig::default())</code> でルーターに登録します（第6巻 UNIT 10）。</li>
+<li><strong><code>AssetConfig</code></strong>（Topcoat）: Topcoat のアセット（CSS・画像など）の配り方の設定の型。本番は束（<code>AssetBundle</code>）から、テストは <code>AssetConfig::hosted_at(…)</code> のように、場面に合わせて渡します。</li>
+<li><strong><code>SessionConfig</code></strong>（Topcoat）: Topcoat のセッションの設定（クッキーの名前・期限など）の型。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li>例3-1と同じく、<code>module_router!()</code> で名簿を作っています。<code>.cookies()</code>・<code>.sessions(…)</code>・<code>.assets(…)</code>・<code>.app_context(…)</code> は、ページから使う道具を、ルーターに登録しています（UNIT 07・08・10）。</li>
 <li><code>routes.rs</code> の先頭のコメントには、ファイルと URL の対応の表があります。<code>routes/notes/id/edit.rs</code> が <code>/notes/{id}/edit</code> になる、のように、<strong>ファイルの並びが、そのまま URL の並び</strong>です。<code>{id}</code> の部分は、UNIT 04 で扱います。</li>
@@ -2697,6 +2753,19 @@ date: Fri, 30 Oct 2026 11:37:49 GMT
 <span class="w">        </span><span class="p">.</span><span class="n">expect</span><span class="p">(</span><span class="s">&quot;サーバーを起動できませんでした&quot;</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>module_param!</code></strong>（Topcoat）: Topcoat のマクロ。モジュールの区切りを「URL の変わる部品」にします。<code>mod id</code> の中に <code>module_param!(id: u64, error = not_found);</code> と書くと、URL が <code>/notes/{id}</code> になり、数として読めない時は 404 になります（第6巻 UNIT 04）。</li>
+<li><strong><code>#[query_params]</code></strong>（Topcoat）: Topcoat の印（属性）。<code>?q=rust&amp;page=2</code> のようなクエリ（URL の <code>?</code> の後ろ）を読むための構造体に付けます。項目は <code>Option&lt;T&gt;</code> にしておき、無い・空の時は <code>None</code> になります（第6巻 UNIT 04）。</li>
+<li><strong><code>.to_str()</code></strong>（文字列）: 値（HTTP のヘッダーの値・パスなど）を、<code>&amp;str</code>（文字列）として読むメソッド。文字として読めないこともあるので、<code>Result</code> や <code>Option</code> で返ります。</li>
+<li><strong><code>Name</code></strong>（Topcoat）: <code>module_param!(name: String)</code> で作られる、URL の部品の型（名前の頭を大文字にした形）。<code>path_param::&lt;Name&gt;(cx)</code> で、その部品の値を読みます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-81"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u04_params</span>
 </code></pre></div></div>
@@ -3384,6 +3453,19 @@ bad request: invalid value for path parameter &quot;id&quot;
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>#[component]</code></strong>（Topcoat）: Topcoat の印（属性）。画面の一部を作る、何度も使える部品（コンポーネント）にします。<code>view!</code> の中で <code>panel(title: "一覧", …)</code> のように、名前付きの引数で呼べます（第6巻 UNIT 05）。</li>
+<li><strong><code>#[default]</code></strong>（Topcoat）: コンポーネントの引数に付ける印。<code>#[default] child: Child&lt;'_&gt;</code> は、「名前を付けずにタグの間に書いた中身が、この引数に入る」という意味です。（<code>#[derive(Default)]</code> の中で、どの種類を初期値にするかの印にも使われます。）</li>
+<li><strong><code>#[key]</code></strong>（Topcoat）: <code>view!</code> の中の <code>for</code> に付ける印。くり返しの 1 つずつを、何で見分けるか（ノートの番号など）を決めます。画面を部分的に描き直す時に、正しく対応させるために使います。</li>
+<li><strong><code>Child</code></strong>（Topcoat）: コンポーネントの「中身」（タグの間に書いた物）を受け取る型。部品の中で <code>(child)</code> と書いた所に置かれます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-103"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u05_view</span>
 <span class="n">curl</span><span class="p">.</span><span class="n">exe</span> <span class="n">-s</span> <span class="n">http</span><span class="p">://</span><span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span><span class="p">:</span><span class="n">3000</span><span class="p">/</span>
 </code></pre></div></div>
@@ -3762,6 +3844,18 @@ error: could not compile `web_lab` (bin &quot;e05_moved&quot;) due to 1 previous
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.push_string()</code></strong>（Topcoat）: Topcoat の画面を作る時に、文字を書き足すメソッド。入れた文字は、置く場所に合わせて自動でエスケープ（<code>&lt;</code> などを安全な形に置きかえ）されます。</li>
+<li><strong><code>NodeViewParts</code></strong>（Topcoat）: <code>view!</code> の <code>( )</code> に入れられる物が持っている機能（トレイト）。文字・数・<code>bool</code> などは最初から持っています。自分の型（<code>NoteId</code> など）を入れたい時は、これを実装します。</li>
+<li><strong><code>PartsWriter</code></strong>（Topcoat）: <code>NodeViewParts</code> を実装する時に受け取る「書き込み先」。<code>push_string</code> などで、画面の中身を書きます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-125"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>### curl.exe -s &quot;http://127.0.0.1:3000/&quot;
 &lt;h1&gt;ノート No.7&lt;/h1&gt;
 </code></pre></div></div>
@@ -4095,6 +4189,16 @@ content-length: 208
 <span class="w">        </span><span class="p">.</span><span class="n">expect</span><span class="p">(</span><span class="s">&quot;サーバーを起動できませんでした&quot;</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>CREATED</code></strong>（HTTP）: <code>StatusCode::CREATED</code> は、HTTP の答えの番号 201（「作りました」）。新しいデータを作った時に返します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p>PowerShell 5.1 では、<code>"</code> を含む JSON をコマンドに直接書くと、うまく渡らないことがあります。JSON はファイルに書いて、<code>--data-binary "@ファイル名"</code> で送ります（英数字だけにして <code>-Encoding ascii</code> で書くと、文字化けもしません）。</p>
 <div class="codehilite"><div class="code-wrap" id="code-133"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u06_api</span>
@@ -4708,6 +4812,17 @@ content too large
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>#[memoize]</code></strong>（Topcoat）: Topcoat の印（属性）。付けた関数の結果を、<strong>1 つの要求（リクエスト）の間だけ</strong>覚えておきます。レイアウト・ページ・部品のどこから呼んでも、データベースを 1 回しか読まずに済みます（第6巻 UNIT 07）。</li>
+<li><strong><code>.then()</code></strong>（Option）: <code>bool</code> が <code>true</code> の時だけ、渡した関数を動かして <code>Some(結果)</code> を返すメソッド（<code>false</code> なら <code>None</code>）。<code>then_some</code> と違い、値を作る処理が、必要な時だけ動きます。（Future の <code>.then</code> は別の物です。）</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-154"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u07_memo</span>
 </code></pre></div></div>
 
@@ -4967,6 +5082,19 @@ error[E0277]: `Rc&lt;std::string::String&gt;` cannot be shared between threads s
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.into_body()</code></strong>（HTTP）: HTTP の答え（レスポンス）から、本文の部分だけを取り出すメソッド。テストで、返ってきた本文を確かめる時に使います。</li>
+<li><strong><code>Request::builder()</code></strong>（HTTP）: HTTP の要求（リクエスト）を、組み立て始める関数。テストで、<code>.method("POST").uri("/notes").body(…)</code> のように作り、ルーターに直接渡して試します。</li>
+<li><strong><code>String::from_utf8()</code></strong>（文字列）: バイトの並び（<code>Vec&lt;u8&gt;</code>）を、文字列（<code>String</code>）に変える関数。UTF-8 の文字として読めない時は <code>Err</code> を返します。</li>
+<li><strong><code>Method</code></strong>（HTTP）: HTTP のメソッド（<code>GET</code>・<code>POST</code>・<code>PUT</code>・<code>DELETE</code> など）を表す型。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-169"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u07_q2</span>
 </code></pre></div></div>
 
@@ -5127,6 +5255,18 @@ content-length: 0
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>font-family:</code></strong>（CSS）: CSS で、文字の書体（フォント）を決める項目。<code>font-family: sans-serif;</code> は「飾りの無い書体」。</li>
+<li><strong><code>margin:</code></strong>（CSS）: CSS で、箱の外側の余白を決める項目。<code>margin: 2rem;</code> は、上下左右に文字 2 つ分くらいの余白です。</li>
+<li><strong><code>color:</code></strong>（CSS）: CSS で、文字の色を決める項目。<code>color: #1e40af;</code> のように、色の番号（16 進数）や名前で書きます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> <code>asset!("assets/site.css")</code> で CSS を宣言し、ページの <code>&lt;link rel="stylesheet"&gt;</code> の <code>href</code> に入れます。<code>main</code> では、<code>AssetBundle::load()</code> で、実行ファイルの隣の束を読み込み、<code>.assets(…)</code> でルーターに渡します。</p>
 </blockquote>
@@ -5172,6 +5312,16 @@ content-length: 0
 <span class="w">        </span><span class="p">.</span><span class="n">expect</span><span class="p">(</span><span class="s">&quot;サーバーを起動できませんでした&quot;</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Asset</code></strong>（Topcoat）: <code>asset!</code> で宣言した、配るファイル（CSS・画像など）1 つを表す型。ページの中で URL として使えます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p>起動する前に、束を作ります。実行ファイルがいくつもある <code>web_lab</code> では、<code>--bin</code> で、どの実行ファイルの束かを選びます。</p>
 <div class="codehilite"><div class="code-wrap" id="code-175"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">topcoat</span> <span class="n">asset</span> <span class="n">bundle</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u08_assets</span>
@@ -5641,6 +5791,18 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>#[procedure]</code></strong>（Topcoat）: Topcoat の印（属性）。ブラウザーの中のボタンなどから、サーバーの関数を呼べるようにします（中では <code>POST /api/…</code> という通信になります。第6巻 UNIT 09）。</li>
+<li><strong><code>topcoat::runtime::script()</code></strong>（Topcoat）: ブラウザーの中で画面を変える仕組み（runtime）を使うためのスクリプトを、ページに入れる関数（第6巻 UNIT 09）。</li>
+<li><strong><code>RouterBuilderRuntimeExt</code></strong>（Topcoat）: ルーターに <code>.runtime()</code>（ブラウザーの中で画面を変える仕組み）を登録できるようにする機能（トレイト）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>runtime のスクリプトは、アセットの束から配るので、起動の前に束を作ります（UNIT 08）。</p>
 <div class="codehilite"><div class="code-wrap" id="code-199"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">topcoat</span> <span class="n">asset</span> <span class="n">bundle</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u09_runtime</span>
 <span class="n">cargo</span> <span class="n">run</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u09_runtime</span>
@@ -5795,6 +5957,16 @@ content-length: 32
 <span class="w">        </span><span class="p">.</span><span class="n">expect</span><span class="p">(</span><span class="s">&quot;サーバーを起動できませんでした&quot;</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.is_some_and()</code></strong>（Option）: <code>Option</code> に値があり、しかもその値が条件に合う時だけ <code>true</code> を返すメソッド。<code>cookie.is_some_and(|c| c == "admin=yes")</code>。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-206"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">topcoat</span> <span class="n">asset</span> <span class="n">bundle</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u09_guard</span>
 <span class="n">cargo</span> <span class="n">run</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u09_guard</span>
@@ -5973,6 +6145,16 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 <span class="w">        </span><span class="p">.</span><span class="n">ok_or_else</span><span class="p">(</span><span class="o">||</span><span class="w"> </span><span class="n">bad_request</span><span class="p">(</span><span class="s">&quot;2倍にすると大きすぎます&quot;</span><span class="p">).</span><span class="n">into</span><span class="p">())</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.ok_or_else()</code></strong>（エラー処理）: <code>Option</code> を <code>Result</code> に変えるメソッド。<code>None</code> の時に、渡した関数でエラーを作ります（必要な時だけ作る <code>ok_or</code> の版）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-215"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>### curl.exe -i -H &quot;Content-Type: application/json&quot; --data-binary &quot;@args21.json&quot; http://127.0.0.1:3000/api/double
 HTTP/1.1 200 OK
@@ -6289,6 +6471,22 @@ forbidden
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>not_found!</code></strong>（Topcoat）: Topcoat のマクロ。その場で「404 Not Found（見つかりません）」の答えにします。</li>
+<li><strong><code>.description()</code></strong>（Topcoat）: <code>BadRequestError</code> などに入れた、利用者向けの説明の文を取り出すメソッド。</li>
+<li><strong><code>.wrapping_sub()</code></strong>（数）: 引き算をして、型に入りきらない時（0 より小さくなる時）は、いちばん大きい値の方へ一周するメソッド。<code>0u64.wrapping_sub(1)</code> は大きな数になるので、<code>get</code> で「無い」と判断させるのに使えます。</li>
+<li><strong><code>.ok_or_not_found()</code></strong>（Topcoat）: Topcoat のメソッド。<code>Option</code> が <code>None</code>（無い）の時に、404 Not Found のエラーにします。<code>… .ok_or_not_found()?</code> と書くと、無い時はそこで 404 を返します（<code>RouterErrorExt</code> を <code>use</code> して使う）。</li>
+<li><strong><code>BadRequestError</code></strong>（Topcoat）: Topcoat の「400 Bad Request（頼み方がおかしい）」のエラーの型。<code>bad_request("検索の言葉を入れてください")</code> で作ります。文は利用者に見えるので、直し方が分かる短い文にします。</li>
+<li><strong><code>NotFoundError</code></strong>（Topcoat）: Topcoat の「404 Not Found（見つかりません）」のエラーの型。</li>
+<li><strong><code>RouterErrorExt</code></strong>（Topcoat）: <code>.ok_or_not_found()</code> などを使えるようにする機能（トレイト）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-218"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u10_errors</span>
 </code></pre></div></div>
 
@@ -6486,6 +6684,22 @@ internal server error
 <span class="w">        </span><span class="p">.</span><span class="n">expect</span><span class="p">(</span><span class="s">&quot;サーバーを起動できませんでした&quot;</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>session::token_hash()</code></strong>（Topcoat）: Topcoat の関数。今のリクエストのセッションの印（トークン）の、ハッシュを返します。データベースの <code>sessions</code> 表に、ハッシュで記録しておき、ログイン中かを調べるのに使います（第8巻 UNIT 05）。</li>
+<li><strong><code>Cookie::build()</code></strong>（クッキー）: クッキー（ブラウザーに覚えておいてもらう小さな値）を、設定しながら作り始める関数。<code>Cookie::build(("theme", "dark")).path("/").build()</code> のように、名前と値、使う範囲などを決めます。</li>
+<li><strong><code>Cookie</code></strong>（クッキー）: クッキー 1 つ（名前と値と、使う範囲・期限などの設定）を表す型。</li>
+<li><strong><code>Cookies</code></strong>（クッキー）: 今のリクエストのクッキーを読み書きする入れ物（クッキーの瓶）。<code>jar.add(…)</code> で足し、<code>jar.get("名前")</code> で読みます。</li>
+<li><strong><code>RouterBuilderCookieExt</code></strong>（Topcoat）: ルーターに <code>.cookies()</code>（クッキーを使う仕組み）を登録できるようにする機能（トレイト）。</li>
+<li><strong><code>RouterBuilderSessionExt</code></strong>（Topcoat）: ルーターに <code>.sessions(…)</code>（セッションの仕組み）を登録できるようにする機能（トレイト）。セッションはクッキーを使うので、先に <code>.cookies()</code> も登録します。</li>
+<li><strong><code>TokenHash</code></strong>（Topcoat）: セッションの印（トークン）のハッシュの型。トークンそのものではなくハッシュを保存しておくと、データベースが盗まれても、そのままではログインに使えません。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-223"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u10_session</span>
 </code></pre></div></div>

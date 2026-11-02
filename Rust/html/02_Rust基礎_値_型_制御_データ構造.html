@@ -700,6 +700,16 @@ li, tr { page-break-inside: avoid; }
 43
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.expect()</code></strong>（エラー処理）: <code>Option</code> や <code>Result</code> から中身を取り出すメソッド。中身が無い（失敗した）時は、かっこの中の文を表示して、その場でプログラムが止まります（パニック）。<code>unwrap()</code> と同じですが、止まった理由が分かる文を付けられるので、<code>unwrap()</code> よりこちらがおすすめです。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <h4 id="1_2">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1-let_1">解説1: もう一度 <code>let</code> を書くと「新しい変数」になる</h5>
 <div class="codehilite"><div class="code-wrap" id="code-18"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">let</span><span class="w"> </span><span class="n">input</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;  42  &quot;</span><span class="p">;</span>
@@ -779,6 +789,16 @@ li, tr { page-break-inside: avoid; }
 百万: 1000000
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>const</code></strong>（変数）: ずっと変わらない値（定数）に名前を付ける書き方。<code>const MAX_TITLE_CHARS: usize = 80;</code>。名前は大文字と <code>_</code> で書き、型（<code>usize</code> など）を必ず書きます。プログラムのどこからでも使えます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <h4 id="1_5">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1-const">解説1: <code>const</code> の決まりごと</h5>
 <div class="codehilite"><div class="code-wrap" id="code-24"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">const</span><span class="w"> </span><span class="n">MAX_TITLE_CHARS</span><span class="p">:</span><span class="w"> </span><span class="kt">usize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">80</span><span class="p">;</span>
@@ -841,6 +861,16 @@ li, tr { page-break-inside: avoid; }
 3 回目の接続を試みます
 上限の 3 回に達しました
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>while</code></strong>（くり返し）: 条件が <code>true</code> の間、くり返す書き方。<code>while 条件 { … }</code>。条件が最初から <code>false</code> なら、1 回も動きません。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <h4 id="1_6">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1-unwrap_or">解説1: <code>unwrap_or(既定値)</code></h5>
@@ -1203,6 +1233,17 @@ warning: `basics` (bin &quot;basics&quot;) generated 1 warning (run `cargo fix -
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>MIN</code></strong>（数）: 数の型が持っている「いちばん小さい値」。<code>i32::MIN</code> は -2147483648。<code>u8::MIN</code> は 0 です。</li>
+<li><strong><code>MAX</code></strong>（数）: 数の型が持っている「いちばん大きい値」。<code>i32::MAX</code> は 2147483647、<code>u8::MAX</code> は 255 です。これより大きくなる計算は「あふれ（オーバーフロー）」になります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-48"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span>
 </code></pre></div></div>
 
@@ -1340,6 +1381,19 @@ saturating_add:  255
 overflowing_add: (4, true)
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.wrapping_add()</code></strong>（数）: 足し算をして、型に入りきらない時は、0（いちばん小さい値）に戻って数え直すメソッド。時計の針が 12 を過ぎて 1 に戻るのと同じです（<code>255u8.wrapping_add(1)</code> は 0）。</li>
+<li><strong><code>.checked_add()</code></strong>（数）: 足し算をして、型に入りきらない時は <code>None</code>（計算できなかった）を返すメソッド。入りきれば <code>Some(結果)</code>。お金の合計など、あふれると困る所で使います。</li>
+<li><strong><code>.saturating_add()</code></strong>（数）: 足し算をして、型に入りきらない時は、いちばん大きい値で止めるメソッド（<code>250u8.saturating_add(10)</code> は 255）。</li>
+<li><strong><code>.overflowing_add()</code></strong>（数）: 足し算の結果（あふれたら一周した値）と、「あふれたかどうか」の両方を、組 <code>(値, true/false)</code> で返すメソッド。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <h4 id="1_11">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1-4">解説1: 4つのメソッドの違い</h5>
 <table>
@@ -1419,6 +1473,16 @@ u8::try_from(300) = Err(TryFromIntError(PosOverflow))
 u8::try_from(100) = Ok(100)
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>as</code></strong>（数）: 型を変える書き方。<code>x as f64</code> は整数を小数に、<code>300 as u8</code> は 300 を u8 に変えます。入りきらない分は<strong>黙って切り捨てられる</strong>ので（300 → 44）、範囲が分からない時は <code>try_from</code> を使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <h4 id="1_12">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1-as">解説1: <code>as</code> は黙って数を変えてしまう</h5>
 <ul>
@@ -1473,6 +1537,16 @@ u8::try_from(100) = Ok(100)
 1.0 / 0.0 = inf
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.abs()</code></strong>（数）: 絶対値（マイナスを取った値）を返すメソッド。<code>(-5).abs()</code> は 5。小数に使う時は、値の型が <code>f64</code> などと決まっている必要があります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <h4 id="1_13">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1-030000000000000004">解説1: なぜ 0.30000000000000004 になるのか</h5>
 <ul>
@@ -1522,6 +1596,19 @@ u8::try_from(100) = Ok(100)
 &#39;A&#39; は英字? true
 &#39;あ&#39; は ASCII の英数字? false
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.to_digit()</code></strong>（文字）: 1 文字（<code>char</code>）を、その文字が表す数に変えるメソッド。<code>'7'.to_digit(10)</code> は <code>Some(7)</code>（10 は「10 進数で」という意味）。数字でない文字なら <code>None</code> です。</li>
+<li><strong><code>.is_alphabetic()</code></strong>（文字）: その文字が「文字（英字・かな・漢字など）」なら <code>true</code> を返すメソッド。</li>
+<li><strong><code>.is_ascii_alphanumeric()</code></strong>（文字）: その文字が、ASCII（半角）の英字か数字（<code>A</code>〜<code>Z</code>・<code>a</code>〜<code>z</code>・<code>0</code>〜<code>9</code>）なら <code>true</code> を返すメソッド。<code>'あ'</code> は <code>false</code> です。</li>
+<li><strong><code>char::from_u32()</code></strong>（文字）: 番号（文字コード）から 1 文字を作る関数。<code>char::from_u32(0x41)</code> は <code>Some('A')</code>。文字に無い番号なら <code>None</code> です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <h4 id="1_14">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1_15">解説1: 真偽値の組み合わせ</h5>
@@ -1579,6 +1666,16 @@ u8::try_from(100) = Ok(100)
 ID 42 を使います
 ID -7 は使えません: number too small to fit in target type
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.checked_mul()</code></strong>（数）: 掛け算をして、型に入りきらない時は <code>None</code> を返すメソッド（<code>checked_add</code> の掛け算版）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <h4 id="1_16">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1-match">解説1: <code>match</code> で「成功」と「失敗」に分ける</h5>
@@ -2753,6 +2850,17 @@ i = 2
 ぶどう
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.rev()</code></strong>（イテレーター）: 並びを逆の順番で取り出すメソッド。<code>(1..=3).rev()</code> は 3, 2, 1 の順です。</li>
+<li><strong><code>.step_by()</code></strong>（イテレーター）: 並びから、決めた数おきに取り出すメソッド。<code>(0..10).step_by(3)</code> は 0, 3, 6, 9。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <h4 id="1_27">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1-03-13">解説1: 範囲 <code>0..3</code> と <code>1..=3</code></h5>
 <ul>
@@ -2934,6 +3042,16 @@ i = 2
 3 回目で成功（200）
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>continue</code></strong>（くり返し）: くり返しの「今回の残り」を飛ばして、次の回へ進む命令。<code>for</code> や <code>while</code> の中で、条件に合わない物を飛ばす時に使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <h4 id="1_31">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1-match-break-continue">解説1: match の腕から break / continue する</h5>
 <div class="codehilite"><div class="code-wrap" id="code-142"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="mi">200</span><span class="o">..=</span><span class="mi">299</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">break</span><span class="w"> </span><span class="fm">format!</span><span class="p">(</span><span class="s">&quot;{attempt} 回目で成功（{status}）&quot;</span><span class="p">),</span>
@@ -3102,6 +3220,16 @@ error: could not compile `basics` (bin &quot;basics&quot;) due to 1 previous err
 2/3 ページ: ← 前へ | 次へ →
 3/3 ページ: ← 前へ
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.div_ceil()</code></strong>（数）: 割り算をして、余りがあれば切り上げるメソッド。<code>23.div_ceil(10)</code> は 3（23 件を 10 件ずつ分けると 3 ページ）。ページ数の計算によく使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li><code>total_notes.div_ceil(PER_PAGE)</code> は「割り算して、端数を切り上げる」メソッドです。45 ÷ 20 = 2.25 → 3 ページです。</li>
@@ -3355,6 +3483,17 @@ error: could not compile `basics` (bin &quot;basics&quot;) due to 1 previous err
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.push_str()</code></strong>（文字列）: <code>String</code> の後ろに文字列を足すメソッド。<code>s.push_str("さん");</code>。<code>s</code> は書きかえるので、<code>let mut s</code> のように <code>mut</code> が要ります。</li>
+<li><strong><code>.push()</code></strong>（Vec（並び））: 後ろに 1 つ足すメソッド。<code>Vec</code> なら <code>v.push(10);</code> で 10 を足し、<code>String</code> なら <code>s.push('!');</code> で 1 文字足します。<code>mut</code> の付いた変数に使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-160"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span>
 </code></pre></div></div>
 
@@ -3422,6 +3561,16 @@ chars().count(): 3
 bytes: [61, E3, 81, 82, F0, 9F, A6, 80]
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.len_utf8()</code></strong>（文字）: その 1 文字が、UTF-8 で何バイトかを返すメソッド。英数字は 1、日本語の多くは 3 です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <h4 id="1_33">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1-len">解説1: <code>len()</code> はバイト数</h5>
 <ul>
@@ -3462,6 +3611,16 @@ bytes: [61, E3, 81, 82, F0, 9F, A6, 80]
 HELLO！
 owned はまだ使える: rust
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.to_uppercase()</code></strong>（文字列）: 英字を大文字にした、新しい文字列を返すメソッド。<code>"abc".to_uppercase()</code> は <code>"ABC"</code>。日本語は変わりません。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <h4 id="1_34">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1-str">解説1: <code>&amp;str</code> で受け取ると、どちらからも呼べる</h5>
@@ -3507,6 +3666,16 @@ owned はまだ使える: rust
 None
 Some(&quot;日&quot;)
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.is_char_boundary()</code></strong>（文字列）: そのバイトの位置が、文字の切れ目かどうかを調べるメソッド。日本語は 1 文字が 3 バイトなので、文字の途中で切ると止まってしまいます。切る前の確かめに使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <h4 id="1_35">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1-s">解説1: <code>&amp;s[開始..終了]</code> の数字はバイト</h5>
@@ -3564,6 +3733,18 @@ Rust / Web /  DB
 - [DB]
 行数: 3
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.to_lowercase()</code></strong>（文字列）: 英字を小文字にした、新しい文字列を返すメソッド。メールアドレスをそろえる時などに使います。</li>
+<li><strong><code>.starts_with()</code></strong>（文字列）: その文字（文字列）で始まっていれば <code>true</code> を返すメソッド。<code>"report.csv".starts_with("report")</code> は <code>true</code>。終わりを調べるのは <code>.ends_with()</code>、含むかは <code>.contains()</code> です。</li>
+<li><strong><code>.replace()</code></strong>（文字列）: 文字列の中の、ある部分を全部置きかえた、新しい文字列を返すメソッド。<code>"a-b".replace('-', "/")</code> は <code>"a/b"</code>。元の文字列は変わりません。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <h4 id="1_36">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1_37">解説1: 元の文字列は変わらない</h5>
@@ -4323,6 +4504,17 @@ Vec の合計: 60
 先頭を削除: [3, 5, 8]
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.pop()</code></strong>（Vec（並び））: <code>Vec</code> の最後の 1 つを取り出すメソッド。空なら <code>None</code> を返すので、結果は <code>Option</code> です。<code>String</code> なら最後の 1 文字を取り出します。</li>
+<li><strong><code>.sort()</code></strong>（Vec（並び））: <code>Vec</code> の中身を、小さい順（文字なら辞書の順）に並べかえるメソッド。新しい <code>Vec</code> は作らず、その <code>Vec</code> 自身を並べかえるので、<code>mut</code> が要ります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <h4 id="1_46">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1-vecstring-push">解説1: <code>Vec&lt;String&gt;</code> と <code>push</code></h5>
 <div class="codehilite"><div class="code-wrap" id="code-211"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">titles</span><span class="p">:</span><span class="w"> </span><span class="nb">Vec</span><span class="o">&lt;</span><span class="nb">String</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Vec</span><span class="p">::</span><span class="n">new</span><span class="p">();</span>
@@ -4414,6 +4606,17 @@ push(9) 後: len = 9, capacity = 16
 with_capacity(100): len = 0, capacity = 100
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.capacity()</code></strong>（Vec（並び））: <code>Vec</code> が、今の場所のまま入れられる数（容量）を返すメソッド。<code>len()</code>（今入っている数）とは別で、足りなくなると自動で広げられます。</li>
+<li><strong><code>Vec::with_capacity()</code></strong>（Vec（並び））: 「これくらい入れる予定」と容量を決めて、空の <code>Vec</code> を作る関数。たくさん足すと分かっている時に、広げ直す手間を減らせます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li><code>len</code> は入っている数、<code>capacity</code> は<strong>引っ越さずに入る数</strong>です。足りなくなると、Vec はより広い場所を確保して中身をコピーします（図6-2）。この広げ方は標準ライブラリの内部の決め方で、型や版によって変わることがあります。</li>
 <li>引っ越し（コピー）は手間がかかるので、入る数が分かっているなら <code>Vec::with_capacity(100)</code> で最初に広さを確保しておくと効率的です。<code>len</code> は 0 のままである点に注意しましょう。</li>
@@ -4486,6 +4689,16 @@ with_capacity(100): len = 0, capacity = 100
 3ページ目: [&quot;ノート7&quot;]
 4ページ目: []
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.min()</code></strong>（数）: 2 つのうち小さい方を返すメソッド。<code>(start + per_page).min(items.len())</code> は「どちらか小さい方」。イテレーターに使うと、並びの中でいちばん小さい物を <code>Option</code> で返します（大きい方は <code>.max()</code>）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <h4 id="1_47">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1_48">解説1: 範囲が件数を超えないようにする</h5>
@@ -4864,6 +5077,17 @@ error: could not compile `basics` (bin &quot;basics&quot;) due to 1 previous err
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>#[derive]</code></strong>（型とメソッド）: 型に、よく使う機能を自動で付ける印（属性）。<code>#[derive(Debug, Clone, PartialEq)]</code> のように、付けたい機能の名前を並べます（例: <code>Debug</code> → <code>{:?}</code> で表示できる、<code>Clone</code> → <code>.clone()</code> できる）。</li>
+<li><strong><code>Debug</code></strong>（型とメソッド）: <code>{:?}</code> で中身を表示できる機能（トレイト）。<code>#[derive(Debug)]</code> を付けた型は、<code>println!("{:?}", 値)</code> で中身を確かめられます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-236"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span>
 </code></pre></div></div>
 
@@ -5112,6 +5336,18 @@ Note {
 NoteId(7) と UserId(7)
 同じ? true
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Clone</code></strong>（型とメソッド）: <code>.clone()</code> で値を丸ごと複製できる機能（トレイト）。<code>#[derive(Clone)]</code> で付けます。</li>
+<li><strong><code>Copy</code></strong>（型とメソッド）: 代入や関数に渡した時に、移る（ムーブ）のではなく、自動で写される機能（トレイト）。数や <code>bool</code> のような小さな値が持っています。<code>#[derive(Clone, Copy)]</code> で自分の型にも付けられます（中身が全部 <code>Copy</code> の時だけ）。</li>
+<li><strong><code>PartialEq</code></strong>（型とメソッド）: <code>==</code> と <code>!=</code> で比べられる機能（トレイト）。<code>#[derive(PartialEq)]</code> で付けます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <h4 id="1_53">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1_54">解説1: タプル構造体</h5>
@@ -5731,6 +5967,17 @@ Note {
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>enum</code></strong>（型とメソッド）: 「いくつかの種類のうち、どれか 1 つ」を表す型（列挙型）。<code>enum Filter { All, Active, Done }</code> のように種類を並べ、<code>match</code> で種類ごとに処理を分けます。種類ごとに違うデータを持たせることもできます（第2巻）。</li>
+<li><strong><code>static</code></strong>（変数）: プログラムが動いている間、ずっとある値。<code>&amp;'static str</code> は「プログラムの中に書いた、ずっと消えない文字列」を借りている型です（<code>"回覧中"</code> のような文字列はこの型）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-275"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span>
 </code></pre></div></div>
 
@@ -5900,6 +6147,16 @@ Note {
 旅行はある? false
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.is_some()</code></strong>（Option）: <code>Option</code> が <code>Some</code>（値がある）なら <code>true</code> を返すメソッド。値そのものは要らず、あるかどうかだけ知りたい時に使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <h4 id="1_59">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1-option">解説1: Option を返す関数</h5>
 <div class="codehilite"><div class="code-wrap" id="code-285"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">fn</span><span class="w"> </span><span class="nf">find_title</span><span class="p">(</span><span class="n">titles</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="p">[</span><span class="o">&amp;</span><span class="kt">str</span><span class="p">],</span><span class="w"> </span><span class="n">keyword</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="kt">str</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">Option</span><span class="o">&lt;</span><span class="kt">usize</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
@@ -6056,6 +6313,16 @@ x 軸より下
 17 歳は未成年
 ひらがな? true
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>matches!</code></strong>（場合分け）: 値が、ある形（パターン）に合うかを <code>true</code>・<code>false</code> で返すマクロ。<code>matches!(filter, Filter::Active | Filter::Done)</code> のように、<code>match</code> を 1 行で書けます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <h4 id="1_60">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1_61">解説1: 構造体のパターン</h5>
@@ -6570,6 +6837,16 @@ everything → None
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>ParseIntError</code></strong>（エラー処理）: 文字列を整数に直す（<code>parse</code>）のに失敗した時のエラーの型。<code>"12a".parse::&lt;i32&gt;()</code> は、この型の <code>Err</code> を返します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-314"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span>
 </code></pre></div></div>
 
@@ -6733,6 +7010,18 @@ NG: タイトルは80文字以内にしてください（現在81文字）  /  T
 true
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>write!</code></strong>（文字列）: <code>println!</code> と同じ書き方で、画面ではなく、決めた書き込み先に書くマクロ。<code>Display</code> を実装する時の <code>write!(f, "…")</code> は、「表示する文を <code>f</code> に書く」という意味です。</li>
+<li><strong><code>Display</code></strong>（型とメソッド）: <code>{}</code> で表示できる機能（トレイト）。利用者に見せる形を自分で決めたい時に、<code>impl fmt::Display for 型 { fn fmt(…) { … } }</code> と書いて実装します（<code>Debug</code> は開発者向けの表示）。</li>
+<li><strong><code>Formatter</code></strong>（型とメソッド）: <code>Display</code> や <code>Debug</code> の実装の中で受け取る「書き込み先」。<code>write!(f, "…")</code> で、そこに表示する文を書きます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <h4 id="1_67">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1-enum_1">解説1: 失敗の種類を enum で列挙する</h5>
 <div class="codehilite"><div class="code-wrap" id="code-324"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">enum</span><span class="w"> </span><span class="nc">TitleError</span><span class="w"> </span><span class="p">{</span>
@@ -6842,6 +7131,17 @@ None → 設定がありません
 Some(&quot;abc&quot;) → 「abc」は数ではありません
 Some(&quot;70000&quot;) → 70000 はポート番号の範囲外です
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.ok_or()</code></strong>（エラー処理）: <code>Option</code> を <code>Result</code> に変えるメソッド。<code>Some(値)</code> は <code>Ok(値)</code> に、<code>None</code> は <code>Err(指定したエラー)</code> になります。<code>?</code> と組み合わせて「無ければエラーで返す」と書けます。</li>
+<li><strong><code>.map_err()</code></strong>（エラー処理）: <code>Result</code> のエラーの方だけを、別の物に変えるメソッド。<code>.map_err(|_| ConfigError::BadPort)</code> で、元のエラーを自分のエラーの型に変えます。成功の値はそのままです。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <h4 id="1_69">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1-ok_or-option-result">解説1: <code>ok_or</code> で Option を Result にする</h5>
@@ -7333,6 +7633,17 @@ Err(ParseIntError { kind: InvalidDigit })
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.contains_key()</code></strong>（HashMap（表））: <code>HashMap</code> に、そのキーがあれば <code>true</code> を返すメソッド。</li>
+<li><strong><code>.keys()</code></strong>（HashMap（表））: <code>HashMap</code> のキーだけを、1 つずつ取り出せる形で返すメソッド。順番は決まっていないので、並べたい時は <code>Vec</code> に集めて <code>sort</code> します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-350"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span>
 </code></pre></div></div>
 
@@ -7430,6 +7741,18 @@ Err(ParseIntError { kind: InvalidDigit })
 {&quot;db&quot;: 1, &quot;rust&quot;: 3, &quot;web&quot;: 2}
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.or_insert()</code></strong>（HashMap（表））: <code>map.entry(キー).or_insert(0)</code> の形で、「キーが無ければ 0 を入れる。そして、その値の場所を返す」メソッド。<code>*map.entry(word).or_insert(0) += 1;</code> は「数える」時の決まり文句です。</li>
+<li><strong><code>.into_iter()</code></strong>（イテレーター）: 入れ物の中身を、借りずに「もらって」1 つずつ取り出す形にするメソッド。使ったあと、元の入れ物は使えなくなります（<code>.iter()</code> は借りるだけ）。</li>
+<li><strong><code>BTreeMap</code></strong>（HashMap（表））: キーの順（小さい順・辞書の順）に並んでいる「キー → 値」の表。使い方は <code>HashMap</code> とほぼ同じで、回すと必ずキーの順に出てきます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li><code>counts.entry(tag).or_insert(0)</code> は「<code>tag</code> の欄がなければ 0 を入れて、その欄（値の場所）を返す」です。先頭の <code>*</code> で欄の中身そのものに <code>+= 1</code> しています。「あれば足す、なければ作る」が1行で書けます。</li>
 <li><code>counts.into_iter().collect()</code> で、HashMap の中身を <code>BTreeMap</code> に移し替えています。<code>collect</code> は「何に集めるか」を左辺の型から読み取ります。</li>
@@ -7466,6 +7789,16 @@ Err(ParseIntError { kind: InvalidDigit })
 20
 205
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Fn</code></strong>（関数）: 「呼び出せる物（関数やクロージャ）」を表す型の書き方。<code>f: impl Fn(i32) -&gt; i32</code> は「<code>i32</code> を受け取って <code>i32</code> を返す関数なら何でもよい」という引数です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <h4 id="1_71">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1_72">解説1: クロージャの書き方</h5>
@@ -7536,6 +7869,16 @@ Some(5)
 true true
 [1, 2, 3, 4, 5, 6]
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.any()</code></strong>（イテレーター）: 並びの中に、条件に合う物が 1 つでもあれば <code>true</code> を返すメソッド。全部が合うかは <code>.all()</code> で調べます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <h4 id="1_73">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1_74">解説1: つなげて書く（パイプライン）</h5>
@@ -7657,6 +8000,16 @@ true true
 <div class="codehilite"><div class="code-wrap" id="code-365"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>OK: 牛乳を買う
 空のタイトルは作れない: true
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.is_none()</code></strong>（Option）: <code>Option</code> が <code>None</code>（値が無い）なら <code>true</code> を返すメソッド。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <h4 id="1_75">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1-mod-pub">解説1: <code>mod</code> と <code>pub</code></h5>
@@ -8017,6 +8370,18 @@ error: could not compile `basics` (bin &quot;basics&quot;) due to 1 previous err
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Eq</code></strong>（型とメソッド）: <code>==</code> の比べ方が、いつも筋が通っている（自分と比べると必ず等しい）ことを表す印（トレイト）。<code>HashMap</code> のキーにする型などに要ります。<code>PartialEq</code> と一緒に <code>#[derive]</code> で付けます。</li>
+<li><strong><code>PartialOrd</code></strong>（型とメソッド）: <code>&lt;</code>・<code>&gt;</code> などで大小を比べられる機能（トレイト）。<code>#[derive(PartialOrd)]</code> で付けます。</li>
+<li><strong><code>Ord</code></strong>（型とメソッド）: いつでも大小がはっきり決まる比べ方を持つ機能（トレイト）。<code>sort</code> や <code>BTreeMap</code> のキーに使う型に要ります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> <code>src/store.rs</code> は、ノートを ID をキーにした <code>HashMap</code> に入れて管理するモジュールです。ID の採番と、追加・切り替え・削除・一覧・検索を担当します。</p>
 </blockquote>
@@ -8080,6 +8445,20 @@ error: could not compile `basics` (bin &quot;basics&quot;) due to 1 previous err
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>crate</code></strong>（モジュール）: 「このプロジェクト（クレート）のいちばん上」を表す言葉。<code>use crate::note::Note;</code> は「このプロジェクトの <code>note</code> モジュールの <code>Note</code> を使う」という意味です。</li>
+<li><strong><code>.get_mut()</code></strong>（HashMap（表））: <code>HashMap</code> や <code>Vec</code> から、書きかえるために中身を借りるメソッド。キー（番号）が無い時は <code>None</code> です。<code>if let Some(n) = map.get_mut("a") { *n += 1; }</code> のように使います。</li>
+<li><strong><code>.sort_by_key()</code></strong>（Vec（並び））: 「何で並べるか」を関数で決めて、<code>Vec</code> を並べかえるメソッド。<code>notes.sort_by_key(|note| note.id)</code> は、番号の小さい順にします。</li>
+<li><strong><code>Self::default()</code></strong>（型とメソッド）: その型の「初期値」（<code>Default</code> の値）を作る書き方。<code>Self</code> は「今 <code>impl</code> している型そのもの」を表します。</li>
+<li><strong><code>Default</code></strong>（型とメソッド）: 「初期値（空の値）を作れる」機能（トレイト）。<code>#[derive(Default)]</code> を付けると、数は 0、文字列は <code>""</code>、<code>bool</code> は <code>false</code> の初期値を作れます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> <code>src/main.rs</code> は、キーボードから1行ずつ命令を読み、enum に変換して、<code>NoteStore</code> の操作を呼び出します。<code>quit</code> か入力の終わりで終了します。</p>
@@ -8190,6 +8569,18 @@ error: could not compile `basics` (bin &quot;basics&quot;) due to 1 previous err
 <span class="w">    </span><span class="nb">Ok</span><span class="p">(())</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.flush()</code></strong>（入出力）: ためておいた出力を、すぐに画面やファイルへ書き出すメソッド。<code>print!</code> は改行しないので、すぐ表示されないことがあり、<code>io::stdout().flush()</code> で確実に出します。使うには <code>use std::io::Write;</code> が要ります。</li>
+<li><strong><code>io::stdout()</code></strong>（入出力）: 標準出力（ふつうの画面への出口）を表す物を返す関数。<code>println!</code> も、ここへ書いています。</li>
+<li><strong><code>io::stdin()</code></strong>（入出力）: 標準入力（キーボードからの入口）を表す物を返す関数。<code>io::stdin().read_line(&amp;mut s)</code> で 1 行読み、<code>io::stdin().lines()</code> で 1 行ずつくり返し読めます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-384"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">cd </span><span class="n">rustnote_mini</span>
 <span class="n">cargo</span> <span class="n">run</span>

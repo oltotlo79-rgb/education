@@ -1,0 +1,5992 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>15_付録_出てくるコードとコマンドの一覧</title>
+<style>
+
+@page {
+  size: A4;
+  margin: 18mm 16mm 20mm 16mm;
+  @bottom-right {
+    content: counter(page);
+    font-size: 10px;
+    color: #64748b;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  font-family: "Yu Gothic UI", "Yu Gothic", "Meiryo", "Hiragino Sans",
+               "Noto Sans JP", "Segoe UI", system-ui, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.75;
+  color: #1e293b;
+  background: #ffffff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #0f172a;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 1.4em 0 0.6em;
+  page-break-after: avoid;
+}
+h1 {
+  font-size: 22pt;
+  border-bottom: 3px solid #1e40af;
+  padding-bottom: 0.3em;
+  margin-top: 0.4em;
+  page-break-before: auto;
+}
+h2 {
+  font-size: 16pt;
+  border-bottom: 1.5px solid #cbd5e1;
+  padding-bottom: 0.25em;
+  margin-top: 1.6em;
+}
+h3 { font-size: 13pt; color: #1e40af; }
+h4 { font-size: 12pt; color: #334155; }
+
+p { margin: 0.5em 0 0.8em; }
+
+a { color: #1d4ed8; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+ul, ol { margin: 0.4em 0 0.9em; padding-left: 1.6em; }
+li { margin: 0.2em 0; }
+
+blockquote {
+  border-left: 4px solid #3b82f6;
+  background: #eff6ff;
+  margin: 0.8em 0;
+  padding: 0.6em 1em;
+  color: #1e3a8a;
+  border-radius: 0 6px 6px 0;
+  page-break-inside: avoid;
+}
+blockquote p { margin: 0.3em 0; }
+blockquote strong { color: #1e40af; }
+
+code {
+  /* DefCode (see _code_font.py) has ASCII and Japanese in ONE font, so a code
+     line is drawn as one text run and copies as one line in every PDF viewer. */
+  font-family: "Consolas", "Consolas", monospace;
+  font-size: 0.9em;
+  background: #f1f5f9;
+  color: #be123c;
+  padding: 0.12em 0.36em;
+  border-radius: 4px;
+  /* Long inline code (file paths / URLs) must break instead of overflowing. */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  /* In a PDF there is no horizontal scrolling, so long lines must wrap
+     instead of being clipped off the right edge of the page. */
+  overflow-x: hidden;
+  overflow-y: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  font-size: 9.2pt;
+  line-height: 1.5;
+  margin: 0.8em 0;
+  page-break-inside: avoid;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+  white-space: inherit;
+  word-break: inherit;
+  overflow-wrap: inherit;
+}
+
+/* The codehilite extension wraps highlighted blocks in a scrolling div; make
+   that wrap too so nothing is clipped in the PDF. */
+.codehilite {
+  overflow-x: hidden;
+  /* overflow-x: hidden alone turns overflow-y into auto, and a glyph from a
+     fallback font that is a hair too tall then shows a vertical scrollbar. */
+  overflow-y: hidden;
+}
+.codehilite pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* No per-token colours: every coloured token became its own text run (and its
+   own tag) in the PDF, and some viewers then pasted each token on its own line.
+   Only whole comment lines get a colour, so each line is still one run. */
+pre .cmt { color: #94a3b8; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.8em 0;
+  font-size: 9.6pt;
+  page-break-inside: avoid;
+}
+th, td {
+  border: 1px solid #e2e8f0;
+  padding: 6px 9px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: #f1f5f9;
+  color: #0f172a;
+  font-weight: 700;
+}
+tr:nth-child(even) td { background: #f8fafc; }
+
+img { max-width: 100%; height: auto; }
+
+hr {
+  border: none;
+  border-top: 1px dashed #cbd5e1;
+  margin: 1.6em 0;
+}
+
+/* Diagram blocks (the inline-styled <div>s in the source) */
+div[style] {
+  page-break-inside: avoid;
+}
+
+/* Tighten spacing right after headings */
+h1 + p, h2 + p, h3 + p, h4 + p { margin-top: 0.2em; }
+
+/* Avoid ugly page breaks inside list items / table rows */
+li, tr { page-break-inside: avoid; }
+
+@media screen {
+  body { max-width: 920px; margin: 0 auto; padding: 20px 20px 120px; font-size: 16px; }
+  pre { white-space: pre !important; word-break: normal !important; overflow-wrap: normal !important;
+        overflow-x: auto !important; font-size: 14px !important; }
+  img { max-width: 100%; height: auto; }
+}
+.web-bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; font-size: 14px;
+  padding: 8px 12px; margin-bottom: 16px; background: #eef2f7; border-radius: 8px; }
+.web-bar a { color: #1e3a5f; }
+.web-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 10; max-width: 90%;
+  font-size: 15px; font-weight: 700; background: #fff7ed; border: 2px solid #f2994a; border-radius: 8px;
+  padding: 10px 16px; margin: 0; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.code-wrap { position: relative; scroll-margin-top: 16px; }
+.code-wrap pre { padding-top: 40px !important; }
+.copy-btn { position: absolute; top: 8px; right: 8px; z-index: 2; font-size: 13px; font-weight: 700;
+  padding: 4px 12px; border: 0; border-radius: 6px; background: #2f80ed; color: #fff; cursor: pointer;
+  font-family: inherit; }
+.copy-btn:hover { background: #1c64c8; }
+.copy-btn.done { background: #27ae60; }
+.code-wrap:target pre { outline: 4px solid #f2994a; outline-offset: 2px; }
+.code-wrap:target .copy-btn { box-shadow: 0 0 0 4px #f2994a; }
+/* syntax colours on screen (the PDF uses one colour so that each line copies as one piece) */
+.codehilite .k, .codehilite .kd, .codehilite .kn, .codehilite .kr { color: #c084fc; }
+.codehilite .s, .codehilite .s1, .codehilite .s2, .codehilite .sb { color: #fcd34d; }
+.codehilite .c, .codehilite .c1, .codehilite .cm { color: #94a3b8; }
+.codehilite .nf, .codehilite .nx { color: #60a5fa; }
+.codehilite .nb { color: #34d399; }
+.codehilite .mi, .codehilite .mf { color: #f472b6; }
+.codehilite .nt { color: #f59e0b; }
+.codehilite .na { color: #93c5fd; }
+</style>
+</head>
+<body>
+<div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/15_%E4%BB%98%E9%8C%B2_%E5%87%BA%E3%81%A6%E3%81%8F%E3%82%8B%E3%82%B3%E3%83%BC%E3%83%89%E3%81%A8%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89%E3%81%AE%E4%B8%80%E8%A6%A7.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、ブラウザーの「戻る」で PDF に戻れます。</p><div style="page-break-after: always; text-align: center; margin: 0; padding: 0;">
+<img src="../assets/cover.jpg" alt="表紙" style="width: 100%; max-height: 175mm; object-fit: cover; border-radius: 10px;">
+<div style="margin-top: 14px; font-size: 11px; letter-spacing: 0.18em; color: #c2410c; font-weight: 700;">APPENDIX 2 / RUST BACKEND MASTERY</div>
+<div style="font-size: 26px; font-weight: 800; color: #0f172a; margin-top: 6px; line-height: 1.35;">付録 — 出てくるコードとコマンドの一覧</div>
+<div style="font-size: 13px; color: #475569; margin-top: 8px;">第0巻〜付録に出てくる 977 個のコードの部品とコマンドを、機能ごとに、意味と初めて出てくる所つきで</div>
+</div>
+
+<style>
+/* 一覧の表: コードの列と「初めて出てくる所」の列を広めにして、短いコードが途中で折れないようにする */
+table th:first-child, table td:first-child { width: 25%; }
+table td:first-child code { word-break: normal; overflow-wrap: anywhere; }
+table th:last-child, table td:last-child { width: 15%; }
+</style>
+
+<h1 id="_1">付録: 出てくるコードとコマンドの一覧（機能ごと）</h1>
+<h2 id="_2">この一覧について</h2>
+<p>この本（第0巻〜第14巻）のコードに出てくる、<strong>キーワード・マクロ・関数・メソッド・型・コマンド・オプション・SQL・CSS など 977 個</strong>を、<strong>55 の分類</strong>に分けて、1 つずつ説明した一覧です。</p>
+<ul>
+<li><strong>本文との関係:</strong> どの部品も、本文の中で<strong>初めて出てくるコードのすぐ下</strong>に、「<strong>▶ ここで初めて出てくるコード</strong>」の箱で同じ説明を載せています。この一覧は、それを機能ごとに並べ直した物です。</li>
+<li><strong>使い方:</strong> 「この <code>.collect()</code> は何だっけ？」と思ったら、下の「分類の一覧」から分類を選んで探してください。HTML 版（<code>Rust\html</code>）なら、<code>Ctrl</code> ＋ <code>F</code> で、コードの名前で探すのがいちばん速いです。</li>
+<li><strong>「初めて出てくる所」の列:</strong> その部品が最初に出てくる巻と UNIT です。そこで、実際にどう使われているかを見られます。</li>
+<li><strong>読者が自分で書く名前</strong>（<code>Note</code>・<code>load_user</code> など、この本のコードで自分で作る型や関数の名前）は、本文で説明しているので、この一覧には入れていません。</li>
+<li>同じ名前でも、使う所で意味が違う物（<code>.join()</code> が、場所をつなぐ意味と、文字列をつなぐ意味など）は、説明の中で両方を書いています。</li>
+</ul>
+<blockquote>
+<p><strong>ヒント:</strong> 1 つの部品を覚えたら、その分類の表の、近くにある物も読んでみてください。例えば <code>Vec（並び）</code> の表には、作る（<code>vec!</code>）・足す（<code>.push()</code>）・取り出す（<code>.pop()</code>）・並べかえる（<code>.sort()</code>）が並んでいます。一緒に覚えると、使える場面がぐっと増えます。</p>
+</blockquote>
+<h2 id="_3">分類の一覧</h2>
+<table>
+<thead>
+<tr>
+<th>分類</th>
+<th>数</th>
+<th>分類</th>
+<th>数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#cat-1">Rust の道具</a></td>
+<td>8</td>
+<td><a href="#cat-29">スマートポインタ</a></td>
+<td>14</td>
+</tr>
+<tr>
+<td><a href="#cat-2">cargo のコマンド</a></td>
+<td>21</td>
+<td><a href="#cat-30">イテレーター</a></td>
+<td>21</td>
+</tr>
+<tr>
+<td><a href="#cat-3">PowerShell</a></td>
+<td>88</td>
+<td><a href="#cat-31">ファイルとフォルダ</a></td>
+<td>27</td>
+</tr>
+<tr>
+<td><a href="#cat-4">コマンド</a></td>
+<td>6</td>
+<td><a href="#cat-32">入出力</a></td>
+<td>12</td>
+</tr>
+<tr>
+<td><a href="#cat-5">Windows</a></td>
+<td>1</td>
+<td><a href="#cat-33">プロセス</a></td>
+<td>14</td>
+</tr>
+<tr>
+<td><a href="#cat-6">WSL・bash</a></td>
+<td>11</td>
+<td><a href="#cat-34">設定</a></td>
+<td>2</td>
+</tr>
+<tr>
+<td><a href="#cat-7">Git</a></td>
+<td>13</td>
+<td><a href="#cat-35">時間</a></td>
+<td>16</td>
+</tr>
+<tr>
+<td><a href="#cat-8">Docker</a></td>
+<td>10</td>
+<td><a href="#cat-36">標準ライブラリ</a></td>
+<td>7</td>
+</tr>
+<tr>
+<td><a href="#cat-9">Fly.io</a></td>
+<td>8</td>
+<td><a href="#cat-37">スレッドと共有</a></td>
+<td>20</td>
+</tr>
+<tr>
+<td><a href="#cat-10">Turso</a></td>
+<td>1</td>
+<td><a href="#cat-38">非同期</a></td>
+<td>54</td>
+</tr>
+<tr>
+<td><a href="#cat-11">Node.js</a></td>
+<td>3</td>
+<td><a href="#cat-39">ネットワーク</a></td>
+<td>9</td>
+</tr>
+<tr>
+<td><a href="#cat-12">画面に出す</a></td>
+<td>3</td>
+<td><a href="#cat-40">HTTP</a></td>
+<td>18</td>
+</tr>
+<tr>
+<td><a href="#cat-13">変数</a></td>
+<td>3</td>
+<td><a href="#cat-41">HTTP クライアント</a></td>
+<td>10</td>
+</tr>
+<tr>
+<td><a href="#cat-14">数</a></td>
+<td>21</td>
+<td><a href="#cat-42">クッキー</a></td>
+<td>9</td>
+</tr>
+<tr>
+<td><a href="#cat-15">文字</a></td>
+<td>6</td>
+<td><a href="#cat-43">認証</a></td>
+<td>19</td>
+</tr>
+<tr>
+<td><a href="#cat-16">文字列</a></td>
+<td>38</td>
+<td><a href="#cat-44">ログ</a></td>
+<td>20</td>
+</tr>
+<tr>
+<td><a href="#cat-17">Vec（並び）</a></td>
+<td>21</td>
+<td><a href="#cat-45">テスト</a></td>
+<td>27</td>
+</tr>
+<tr>
+<td><a href="#cat-18">HashMap（表）</a></td>
+<td>9</td>
+<td><a href="#cat-46">性能</a></td>
+<td>10</td>
+</tr>
+<tr>
+<td><a href="#cat-19">範囲</a></td>
+<td>1</td>
+<td><a href="#cat-47">データベース</a></td>
+<td>31</td>
+</tr>
+<tr>
+<td><a href="#cat-20">条件</a></td>
+<td>2</td>
+<td><a href="#cat-48">SQL</a></td>
+<td>74</td>
+</tr>
+<tr>
+<td><a href="#cat-21">くり返し</a></td>
+<td>4</td>
+<td><a href="#cat-49">JSON</a></td>
+<td>5</td>
+</tr>
+<tr>
+<td><a href="#cat-22">場合分け</a></td>
+<td>3</td>
+<td><a href="#cat-50">Topcoat</a></td>
+<td>58</td>
+</tr>
+<tr>
+<td><a href="#cat-23">Option</a></td>
+<td>7</td>
+<td><a href="#cat-51">HTML</a></td>
+<td>2</td>
+</tr>
+<tr>
+<td><a href="#cat-24">エラー処理</a></td>
+<td>27</td>
+<td><a href="#cat-52">CSS</a></td>
+<td>44</td>
+</tr>
+<tr>
+<td><a href="#cat-25">関数</a></td>
+<td>6</td>
+<td><a href="#cat-53">JavaScript・TypeScript</a></td>
+<td>24</td>
+</tr>
+<tr>
+<td><a href="#cat-26">型とメソッド</a></td>
+<td>42</td>
+<td><a href="#cat-54">Playwright</a></td>
+<td>21</td>
+</tr>
+<tr>
+<td><a href="#cat-27">モジュール</a></td>
+<td>6</td>
+<td><a href="#cat-55">Python</a></td>
+<td>34</td>
+</tr>
+<tr>
+<td><a href="#cat-28">所有権と借用</a></td>
+<td>6</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-1">Rust の道具</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rustc</code></td>
+<td>Rust のコンパイラー（翻訳する係）。人が書いた <code>.rs</code> のファイルを、パソコンが直接動かせる実行ファイル（<code>.exe</code>）に翻訳します。ふだんは直接打たず、<code>cargo</code> が中で呼んでくれます。<code>rustc --version</code> で版を確かめられます。</td>
+<td>第0巻 はじめに: 手を動かす準備</td>
+</tr>
+<tr>
+<td><code>cargo</code></td>
+<td>Rust のプロジェクトをまとめて世話する道具。<code>cargo new</code>（作る）・<code>cargo run</code>（翻訳して動かす）・<code>cargo build</code>（翻訳だけ）・<code>cargo test</code>（テスト）・<code>cargo add</code>（部品を足す）のように、後ろに「何をするか」を付けて使います。<code>cargo --version</code> で版を確かめられます。</td>
+<td>第0巻 はじめに: 手を動かす準備</td>
+</tr>
+<tr>
+<td><code>rustup show</code></td>
+<td>入っている Rust の版と、今使っている版を表示します。<code>rustup show active-toolchain</code> は、今このフォルダで使われる版だけを表示します。</td>
+<td>第1巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>rustup</code></td>
+<td>Rust そのもの（<code>rustc</code>・<code>cargo</code>）を入れる・新しくする・版を切りかえる道具。<code>rustup --version</code> で版を確かめられます。</td>
+<td>第1巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>rustup component</code></td>
+<td>Rust の部品（<code>rustfmt</code>・<code>clippy</code> など）を見る・足すコマンド。<code>rustup component list --installed</code> で、入っている部品の一覧を出します。</td>
+<td>第1巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>rustup update</code></td>
+<td>入っている Rust を、新しい版にするコマンド。<code>rustup update stable</code> で、安定版を最新にします。</td>
+<td>第1巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>rustup toolchain</code></td>
+<td>入っている Rust の版（ツールチェーン）を見る・足す・消すコマンド。<code>rustup toolchain list</code> で一覧を出します。</td>
+<td>第1巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>rustup target</code></td>
+<td>ほかの種類のパソコン（CPU・OS）向けに翻訳するための部品を足すコマンド。<code>rustup target add x86_64-pc-windows-msvc</code> で、x64 の Windows 用の実行ファイルを作れるようになります。</td>
+<td>第1巻 UNIT 05</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-2">cargo のコマンド</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>cargo new</code></td>
+<td>新しい Rust のプロジェクト（プログラムをまとめるフォルダ）を作ります。<code>cargo new practice</code> で、<code>practice</code> フォルダの中に <code>Cargo.toml</code>（設定）と <code>src\main.rs</code>（プログラムを書くファイル）ができます。名前には英小文字・数字・<code>-</code>・<code>_</code> を使います。</td>
+<td>第0巻 はじめに: 手を動かす準備</td>
+</tr>
+<tr>
+<td><code>cargo run</code></td>
+<td>プログラムを翻訳（コンパイル）して、すぐ動かします。<code>Cargo.toml</code> があるフォルダで打ちます。プログラムが変わっていなければ翻訳を省くので、2 回目からは速くなります。<code>cargo run -- 値</code> のように <code>--</code> の後ろに書いた値は、プログラムへの引数（外から渡す値）になります。</td>
+<td>第0巻 はじめに: 手を動かす準備</td>
+</tr>
+<tr>
+<td><code>cargo build</code></td>
+<td>プログラムを翻訳（コンパイル）して実行ファイルを作るだけで、動かしはしません。でき上がった物は <code>target\debug\</code> に入ります。<code>cargo build --release</code> だと、速く動く本番用の物が <code>target\release\</code> にできます。</td>
+<td>第0巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>cargo clippy</code></td>
+<td>動くけれど直した方がよい書き方を、理由と直し方の例つきで教えてくれる道具。<code>cargo clippy</code> と打つと、<code>warning:</code> の形で知らせてくれます。</td>
+<td>第0巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>cargo test</code></td>
+<td><code>#[test]</code> の付いた関数（テスト）を全部見つけて動かし、結果（<code>ok</code>・<code>FAILED</code>）を表示します。<code>cargo test 名前の一部</code> で、名前に合うテストだけを動かせます。</td>
+<td>第0巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>cargo check</code></td>
+<td>コードに間違いがないかだけを調べて、実行ファイルは作らないコマンド。<code>cargo build</code> より速いので、書きながら何度も打ちます。</td>
+<td>第1巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>cargo fmt</code></td>
+<td>コードの書き方（字下げ・空白・改行）を、決まった形に自動で整えるコマンド。<code>cargo fmt --check</code> は、整っているかを調べるだけで、ファイルは書きかえません。</td>
+<td>第1巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>cargo +1.99.0</code></td>
+<td><code>+版</code> を付けると、その版の Rust で cargo を動かします。<code>cargo +1.99.0 fmt --check</code> は、Rust 1.99.0 の <code>rustfmt</code> で調べます（その版が <code>rustup</code> で入っている必要があります）。</td>
+<td>第1巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>cargo install</code></td>
+<td>Rust で作られた道具（コマンド）を、パソコンに入れるコマンド。<code>cargo install topcoat-cli --version 0.11.0 --locked</code> は、Topcoat の道具 <code>topcoat</code> を、決まった版で入れます。</td>
+<td>第1巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>cargo +1.90.0</code></td>
+<td><code>+1.90.0</code> で、Rust 1.90.0 を使って cargo を動かします。古い版で動くかを確かめる時に使います（その版が入っていないと、エラーになります）。</td>
+<td>第1巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>cargo add</code></td>
+<td>部品（クレート）を、プロジェクトに足すコマンド。<code>cargo add thiserror anyhow serde_json</code> で、3 つの部品を <code>Cargo.toml</code> の <code>[dependencies]</code> に書き足します。<code>--features 機能</code> で、部品の追加の機能も選べます。部品は、世界中の人が公開している場所（crates.io）から自動で取ってきます。</td>
+<td>第4巻 この巻で身に付けること</td>
+</tr>
+<tr>
+<td><code>cargo tree</code></td>
+<td>プロジェクトが使っている部品（クレート）と、その部品がさらに使っている部品を、木の形で表示するコマンド。<code>--depth 1</code> で、直接使っている物だけにできます。</td>
+<td>第4巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>cargo doc</code></td>
+<td>コードに書いた説明（<code>///</code> のコメント）から、説明書（ドキュメント）の Web ページを作るコマンド。<code>--no-deps</code> で自分のコードだけ、<code>--open</code> でできたページをブラウザーで開きます。</td>
+<td>第4巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>cargo search</code></td>
+<td>公開されている部品（クレート）を、名前で探すコマンド。<code>cargo search topcoat --limit 1</code> で、<code>topcoat</code> のいちばん新しい版が分かります。</td>
+<td>第9巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>cargo update</code></td>
+<td>使っている部品を、<code>Cargo.toml</code> で許す範囲の新しい版にして、<code>Cargo.lock</code> を書きかえるコマンド。<code>-p 名前</code> で、その部品だけにできます。</td>
+<td>第9巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>cargo +nightly</code></td>
+<td><code>+nightly</code> で、毎日作られている試し版（nightly）の Rust で cargo を動かします。ファズテスト（<code>cargo fuzz</code>）など、まだ安定版に無い機能を使う時に要ります。</td>
+<td>第11巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>cargo mutants</code></td>
+<td>コードをわざと少しだけ変えて（<code>&gt;</code> を <code>&gt;=</code> にする など）、テストがそれに気付くかを確かめる道具（ミューテーションテスト）。気付かなければ、テストが足りない所です。</td>
+<td>第11巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>cargo bench</code></td>
+<td>速さを測るコード（ベンチマーク）を動かすコマンド。最適化した版（release）で動きます。</td>
+<td>第11巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>cargo audit</code></td>
+<td>使っている部品に、知られている弱点（セキュリティの問題）がないかを調べる道具。</td>
+<td>第11巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>cargo clean</code></td>
+<td>翻訳でできたファイル（<code>target</code> フォルダの中）を消すコマンド。<code>--release -p rustnote</code> で、release の RustNote の分だけを消します。次の翻訳は時間がかかります。</td>
+<td>第12巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>cargo remove</code></td>
+<td>プロジェクトから部品（クレート）を外すコマンド。<code>Cargo.toml</code> の <code>[dependencies]</code> から、その行を消します。</td>
+<td>第14巻 A. 道具の早見表</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-3">PowerShell</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>cd</code></td>
+<td>「change directory（フォルダを移る）」の略。<code>cd rust-study</code> で、今いるフォルダの中の <code>rust-study</code> へ移ります。<code>cd ..</code> は 1 つ上のフォルダへ、<code>cd ~</code> はホームフォルダ（<code>C:\Users\you</code>）へ戻ります。今いる場所は、行の頭の <code>PS C:\Users\you\rust-study&gt;</code> の部分に表示されます。</td>
+<td>第0巻 はじめに: 手を動かす準備</td>
+</tr>
+<tr>
+<td><code>mkdir</code></td>
+<td>「make directory（フォルダを作る）」の略。<code>mkdir rust-study</code> で、今いるフォルダの中に <code>rust-study</code> という新しいフォルダを作ります。もう同じ名前のフォルダがあると、エラーになります。</td>
+<td>第0巻 はじめに: 手を動かす準備</td>
+</tr>
+<tr>
+<td><code>.\target\debug\practice.exe</code></td>
+<td><code>cargo build</code> が作った実行ファイルを、直接動かす書き方。PowerShell では、今いるフォルダのプログラムを動かす時、頭に <code>.\</code>（「ここの」という意味）を付ける決まりです。</td>
+<td>第0巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>Get-Content</code></td>
+<td>ファイルの中身を画面に出すコマンド（短い呼び名は <code>cat</code>）。<code>Get-Content memo.txt</code> で中身を表示します。日本語のファイルは <code>-Encoding utf8</code> を付けると文字化けしません。<code>-Tail 10</code> で最後の 10 行だけを出せます。</td>
+<td>第0巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>.\practice.exe</code></td>
+<td>今いるフォルダにある <code>practice.exe</code> を動かす書き方。PowerShell では、安全のため、今いるフォルダのプログラムにも <code>.\</code>（「ここの」という意味）を付けて呼ぶ決まりです。</td>
+<td>第0巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>Get-Location</code></td>
+<td>今いるフォルダ（カレントディレクトリ）を表示するコマンド。短い呼び名は <code>pwd</code> です。</td>
+<td>第0巻 UNIT 03</td>
+</tr>
+<tr>
+<td><code>Set-Content</code></td>
+<td>ファイルに文字を書くコマンド。<code>Set-Content memo.txt "1 行目"</code> で、ファイルを作るか、中身を置きかえます。後ろに書き足す時は <code>Add-Content</code> を使います。</td>
+<td>第0巻 UNIT 03</td>
+</tr>
+<tr>
+<td><code>Set-Content -Encoding</code></td>
+<td><code>-Encoding utf8</code> で、ファイルを UTF-8 という文字コードで書きます。Windows PowerShell 5.1 は、指定しないと古い文字コード（Shift_JIS）で書くので、日本語を書く時は付けておくと安心です。</td>
+<td>第0巻 UNIT 03</td>
+</tr>
+<tr>
+<td><code>ls</code></td>
+<td>フォルダの中の一覧を見るコマンド（正式な名前は <code>Get-ChildItem</code>）。<code>Mode</code> の列の <code>d</code> はフォルダ、<code>a</code> はファイルです。</td>
+<td>第0巻 UNIT 03</td>
+</tr>
+<tr>
+<td><code>cat</code></td>
+<td>ファイルの中身を表示するコマンド（正式な名前は <code>Get-Content</code>）。</td>
+<td>第0巻 UNIT 03</td>
+</tr>
+<tr>
+<td><code>Copy-Item</code></td>
+<td>ファイルやフォルダをコピーするコマンド（短い呼び名は <code>cp</code>）。<code>Copy-Item 元 先</code>。フォルダを中身ごとコピーする時は <code>-Recurse</code> を付けます。</td>
+<td>第0巻 UNIT 03</td>
+</tr>
+<tr>
+<td><code>Remove-Item</code></td>
+<td>ファイルやフォルダを消すコマンド（短い呼び名は <code>rm</code>）。<strong>ごみ箱に入らず、すぐ消えます。</strong> フォルダを中身ごと消す時は <code>-Recurse</code> を付けます。消す前に、名前をよく確かめます。</td>
+<td>第0巻 UNIT 03</td>
+</tr>
+<tr>
+<td><code>.\main.exe</code></td>
+<td>今いるフォルダの <code>main.exe</code> を動かす書き方。<code>rustc main.rs</code> で翻訳すると、同じフォルダに <code>main.exe</code> ができます。</td>
+<td>第0巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>Get-NetTCPConnection</code></td>
+<td>パソコンのネットワークの接続や、待ち受けているポート番号を一覧にするコマンド。「8080 番をだれが使っているか」を調べる時に使います。</td>
+<td>第0巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>Get-NetTCPConnection -LocalPort</code></td>
+<td><code>-LocalPort 8080</code> で、このパソコン側のポート番号が 8080 の物だけに絞ります。</td>
+<td>第0巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>Get-NetTCPConnection -State</code></td>
+<td><code>-State Listen</code> で、「待ち受けている」状態の物だけに絞ります（ほかに <code>Established</code>＝つながっている、など）。</td>
+<td>第0巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>Select-Object</code></td>
+<td>結果のうち、見たい列だけを選ぶコマンド。<code>… &#124; Select-Object Name, Length</code> のように、<code>&#124;</code>（パイプ）で前のコマンドの結果を受け取って使います。<code>-First 5</code> で最初の 5 つだけにもできます。</td>
+<td>第0巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>Get-Process</code></td>
+<td>動いているプログラム（プロセス）の一覧を出すコマンド。<code>Get-Process -Id 1234</code> で、番号 1234 のプロセスの名前などが分かります。</td>
+<td>第0巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>Get-Process -Id</code></td>
+<td><code>-Id 番号</code> で、プロセスの番号（PID）を指定して 1 つだけ見ます。</td>
+<td>第0巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>Set-Content -Path</code></td>
+<td><code>-Path 名前</code> で、書き込むファイルの名前（場所）を指定します。<code>Set-Content memo.txt "…"</code> のように名前を最初に書く時は、<code>-Path</code> を省けます。</td>
+<td>第1巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>Set-Content -Value</code></td>
+<td><code>-Value 中身</code> で、ファイルに書く中身を指定します。<code>@' … '@</code> で囲むと、何行もの文章をそのまま中身にできます（ヒア文字列）。</td>
+<td>第1巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>Select-Object -First</code></td>
+<td><code>-First 1</code> で、結果の最初の 1 つだけを取り出します。<code>-Last 3</code> なら最後の 3 つです。</td>
+<td>第1巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>default</code></td>
+<td>PowerShell の <code>switch</code> の中で、「どの場合にも合わなかった時」の処理を書く所。Rust の <code>match</code> の <code>_ =&gt;</code> に当たります。</td>
+<td>第1巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>Write-Output</code></td>
+<td>値を「出力」として次へ流す（最後なら画面に出す）コマンド。<code>Write-Output "こんにちは"</code>。文字列を 1 行に書くだけでも同じ働きをしますが、はっきり書く時に使います。</td>
+<td>第1巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>if</code></td>
+<td>PowerShell の条件の書き方。<code>if (条件) { 合う時 } else { 合わない時 }</code>。条件は <code>( )</code> で囲みます。比べる時は <code>-eq</code>（等しい）・<code>-ne</code>（違う）・<code>-gt</code>（大きい）・<code>-match</code>（パターンに合う）のような書き方をします（<code>==</code> や <code>&gt;</code> ではありません）。</td>
+<td>第1巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>Set-ExecutionPolicy</code></td>
+<td>PowerShell のスクリプト（<code>.ps1</code> のファイル）を動かしてよいかの決まり（実行ポリシー）を変えるコマンド。<code>Set-ExecutionPolicy -Scope CurrentUser RemoteSigned</code> は、「自分のアカウントだけ、自分のパソコンで作ったスクリプトは動かしてよい」にします。会社のパソコンでは、決まりがある時は勝手に変えません。</td>
+<td>第1巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>Set-ExecutionPolicy -Scope</code></td>
+<td><code>-Scope CurrentUser</code> で、決まりを「今のユーザーだけ」に当てます（管理者の権限が要りません）。</td>
+<td>第1巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>Get-ExecutionPolicy</code></td>
+<td>今の実行ポリシー（スクリプトを動かしてよいかの決まり）を見るコマンド。<code>Restricted</code> はスクリプトを動かせない、<code>RemoteSigned</code> は自分で作った物は動かせる、という意味です。</td>
+<td>第1巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>Get-ExecutionPolicy -List</code></td>
+<td><code>-List</code> で、決まりを「どの範囲（全員・自分・この窓など）に、何が決まっているか」の一覧で表示します。</td>
+<td>第1巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>.\whereami.ps1</code></td>
+<td>今いるフォルダの <code>whereami.ps1</code>（PowerShell のスクリプト）を動かす書き方。今いるフォルダのファイルを動かす時は、頭に <code>.\</code>（「ここの」）を付ける決まりです。</td>
+<td>第1巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>..\whereami.ps1</code></td>
+<td>1 つ上のフォルダの <code>whereami.ps1</code> を動かす書き方。<code>..</code> は「1 つ上のフォルダ」という意味です。</td>
+<td>第1巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>~\rust-study\whereami.ps1</code></td>
+<td>ホームフォルダ（<code>~</code> ＝ <code>C:\Users\you</code>）から数えた場所で、スクリプトを動かす書き方。どこにいても同じ書き方で動かせます。</td>
+<td>第1巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>New-Item</code></td>
+<td>新しいファイルやフォルダを作るコマンド。<code>New-Item memo.txt</code> でファイル、<code>New-Item -ItemType Directory 名前</code> でフォルダを作ります。</td>
+<td>第1巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>New-Item -Path</code></td>
+<td><code>-Path 場所</code> で、作るファイルやフォルダの場所（名前）を指定します。</td>
+<td>第1巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>New-Item -Value</code></td>
+<td><code>-Value 中身</code> で、作るファイルに最初から書いておく中身を指定します。</td>
+<td>第1巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>New-Item -Force</code></td>
+<td><code>-Force</code> で、同じ名前のファイルがあっても上書きして作ります（無いと、エラーで止まります）。上書きするので、使う時は名前をよく確かめます。</td>
+<td>第1巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>Out-Null</code></td>
+<td>コマンドの結果を、画面に出さずに捨てるコマンド。<code>… &#124; Out-Null</code> のように後ろに付けると、表示が出なくなります。</td>
+<td>第1巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>New-LfFile</code></td>
+<td>この巻のスクリプトの中で作った、自分の PowerShell の関数（改行を LF にしてファイルを書く）。<code>function New-LfFile { … }</code> で中身を決めてあり、PowerShell のコマンドと同じ形で呼べます。</td>
+<td>第1巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>.\rustup-init.exe</code></td>
+<td>ダウンロードした Rust のインストーラー（<code>rustup-init.exe</code>）を、今いるフォルダから動かす書き方。</td>
+<td>第1巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>Get-ChildItem</code></td>
+<td>フォルダの中の一覧を出すコマンド（短い呼び名は <code>ls</code>・<code>dir</code>）。<code>Get-ChildItem フォルダ</code> でそのフォルダの中身、<code>-Recurse</code> で中のフォルダまで全部を出します。</td>
+<td>第1巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>ForEach-Object</code></td>
+<td><code>&#124;</code> で流れてきた物を、1 つずつ処理するコマンド。<code>{ }</code> の中の <code>$_</code> が「今の 1 つ」を表します。<code>… &#124; ForEach-Object { $_.Name }</code> は、1 つずつ名前を取り出します。</td>
+<td>第1巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>ForEach-Object -f</code></td>
+<td>ここでの <code>-f</code> は <code>ForEach-Object</code> の指定ではなく、PowerShell の「書式の演算子」です。<code>"{0,-10} {1}" -f 値1, 値2</code> で、<code>{0}</code> に値 1、<code>{1}</code> に値 2 を入れた文字列を作ります（<code>,-10</code> は「10 文字分の幅で左寄せ」）。</td>
+<td>第1巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>Get-FileHash</code></td>
+<td>ファイルの中身から、ハッシュ（指紋のような長い英数字）を計算するコマンド。中身が 1 文字でも違えば、まったく違う値になります。ダウンロードしたファイルが壊れていないか確かめる時に使います。</td>
+<td>第1巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>Get-ChildItem -Filter</code></td>
+<td><code>-Filter *.exe</code> で、名前が合う物（ここでは <code>.exe</code> で終わる物）だけを一覧にします。<code>*</code> は「何文字でもよい」という意味です。</td>
+<td>第1巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>.\target\debug\hello.exe</code></td>
+<td><code>cargo build</code> が作った実行ファイルを、直接動かす書き方。</td>
+<td>第1巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>Get-ChildItem -Name</code></td>
+<td><code>-Name</code> で、日付や大きさを出さずに、名前だけを一覧にします。</td>
+<td>第1巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>Test-Path</code></td>
+<td>ファイルやフォルダがあるかを調べるコマンド。あれば <code>True</code>、無ければ <code>False</code> を返します。</td>
+<td>第1巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>foreach</code></td>
+<td>PowerShell のくり返し。<code>foreach ($path in $args) { … }</code> は、<code>$args</code>（スクリプトに渡された値の並び）から 1 つずつ <code>$path</code> に入れて、中を動かします。</td>
+<td>第1巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>Resolve-Path</code></td>
+<td>相対の場所（<code>..\a.txt</code> など）を、<code>C:\</code> から始まる絶対の場所に変えるコマンド。<code>(Resolve-Path 場所).Path</code> で文字列として取り出せます。</td>
+<td>第1巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>.\target\x86_64-pc-windows-msvc\debug\hello.exe</code></td>
+<td><code>--target x86_64-pc-windows-msvc</code> を付けて翻訳した時の実行ファイルを、直接動かす書き方。ほかの種類向けに翻訳した物は、<code>target\（種類の名前）\</code> の下にできます。</td>
+<td>第1巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>Get-ChildItem -Directory</code></td>
+<td><code>-Directory</code> で、フォルダだけを一覧にします（ファイルだけなら <code>-File</code>）。</td>
+<td>第1巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>Get-Command</code></td>
+<td>コマンドがどこにあるか・何なのかを調べるコマンド。<code>(Get-Command rustc).Source</code> は、<code>rustc.exe</code> の場所を返します。入っているかを確かめる時に使います。</td>
+<td>第1巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>.\target\debug\hello-topcoat.exe</code></td>
+<td><code>cargo build</code> で作った Topcoat のアプリの実行ファイルを、直接動かす書き方。サーバーなので、止めるまで動き続けます（止める時は <code>Ctrl</code> ＋ <code>C</code>）。</td>
+<td>第1巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>Invoke-RestMethod</code></td>
+<td>URL にアクセスして、返ってきた JSON などを PowerShell で扱える形にして受け取るコマンド。API を試す時に使います（短い呼び名は <code>irm</code>）。</td>
+<td>第1巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>Invoke-RestMethod -Method</code></td>
+<td><code>-Method Post</code> で、送る方法（GET・POST など）を指定します。指定しないと GET です。</td>
+<td>第1巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>Invoke-RestMethod -Uri</code></td>
+<td><code>-Uri URL</code> で、アクセスする先の URL を指定します。</td>
+<td>第1巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>Invoke-RestMethod -Body</code></td>
+<td><code>-Body 中身</code> で、送る中身（JSON の文字列など）を指定します。</td>
+<td>第1巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>Invoke-RestMethod -ContentType</code></td>
+<td><code>-ContentType application/json</code> で、送る中身の種類（ここでは JSON）をサーバーに伝えます。</td>
+<td>第1巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>ConvertTo-Json</code></td>
+<td>PowerShell の値（オブジェクト）を、JSON の文字列に変えるコマンド。受け取った結果を JSON の形で見たい時にも使います。</td>
+<td>第1巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>ConvertTo-Json -Depth</code></td>
+<td><code>-Depth 5</code> で、中に入れ子になった物を何段目まで JSON にするかを決めます（既定は 2 段で、それより深い所は省かれます）。</td>
+<td>第1巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>Where-Object</code></td>
+<td><code>&#124;</code> で流れてきた物のうち、条件に合う物だけを残すコマンド。<code>{ }</code> の中の <code>$_</code> が「今の 1 つ」です。<code>Where-Object { $_.Length -gt 1000 }</code> のように使います。</td>
+<td>第1巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>Where-Object -like</code></td>
+<td><code>-like '127*'</code> は、「<code>127</code> で始まる」のように、<code>*</code>（何文字でも）を使った形と比べる比べ方です。</td>
+<td>第1巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>Get-Item</code></td>
+<td>ファイルやフォルダ 1 つの情報（名前・大きさ・日時）を取り出すコマンド。</td>
+<td>第1巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>Get-Item -Stream</code></td>
+<td><code>-Stream *</code> で、ファイルに付いている「隠れた別の中身」（代替データストリーム。ダウンロードした印などが入る）の一覧を出します。</td>
+<td>第1巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>Format-Table</code></td>
+<td>結果を表の形に整えて表示するコマンド。</td>
+<td>第1巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>Format-Table -AutoSize</code></td>
+<td><code>-AutoSize</code> で、列の幅を中身に合わせて自動で決めます（長い値が <code>...</code> で切られにくくなります）。</td>
+<td>第1巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>pwsh</code></td>
+<td>PowerShell 7（新しい PowerShell）を動かすコマンド。Windows に最初から入っているのは Windows PowerShell 5.1（<code>powershell</code>）です。<code>pwsh -Command "…"</code> で、1 つの命令を PowerShell 7 で動かします。</td>
+<td>第1巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>Write-Host</code></td>
+<td>画面に文字を表示するコマンド。<code>Write-Output</code> と違い、次のコマンドへは流れず、画面に出すだけです。色を付ける（<code>-ForegroundColor Green</code>）こともできます。</td>
+<td>第1巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>try</code></td>
+<td>PowerShell で、失敗するかもしれない処理を <code>try { … } catch { … }</code> で囲み、失敗した時の処理を <code>catch</code> に書く書き方。</td>
+<td>第1巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>exit</code></td>
+<td>スクリプトを終えるコマンド。<code>exit 1</code> は、終了コード 1（失敗）でスクリプトを終えます。</td>
+<td>第1巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>powershell</code></td>
+<td>Windows PowerShell 5.1 を動かすコマンド。<code>powershell -ExecutionPolicy Bypass -File スクリプト.ps1</code> は、実行ポリシーをその 1 回だけ気にせずに、スクリプトを動かします。</td>
+<td>第1巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>New-Item -ItemType</code></td>
+<td><code>-ItemType Directory</code> で、ファイルではなくフォルダを作ります（<code>File</code> ならファイル）。<code>New-Item -ItemType Directory src\bin</code> は、<code>src</code> の中に <code>bin</code> フォルダを作ります。</td>
+<td>第6巻 この巻で身に付けること</td>
+</tr>
+<tr>
+<td><code>Copy-Item -Recurse</code></td>
+<td><code>-Recurse</code> で、フォルダを中身ごと（中のフォルダも全部）コピーします。付けないと、フォルダの中身はコピーされません。</td>
+<td>第8巻 この巻で身に付けること</td>
+</tr>
+<tr>
+<td><code>.\target\debug\rustnote.exe</code></td>
+<td><code>cargo build</code> で作った RustNote の実行ファイルを、直接動かす書き方。</td>
+<td>第11巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>.\target\release\rustnote.exe</code></td>
+<td><code>cargo build --release</code> で作った、最適化した（速い）RustNote の実行ファイルを、直接動かす書き方。</td>
+<td>第11巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>.\rustnote.exe</code></td>
+<td>今いるフォルダの <code>rustnote.exe</code> を動かす書き方。</td>
+<td>第12巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>param</code></td>
+<td>PowerShell のスクリプトが受け取る引数を決める書き方。<code>param([string]$Base = "http://…")</code> は、<code>-Base</code> で渡せる文字列の引数で、渡さなければ既定値になります。</td>
+<td>第12巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>Add-Content</code></td>
+<td>ファイルの後ろに書き足すコマンド。<code>Add-Content memo.txt "2 行目" -Encoding utf8</code>。中身を置きかえるのは <code>Set-Content</code> です。</td>
+<td>第14巻 A. 道具の早見表</td>
+</tr>
+<tr>
+<td><code>Add-Content -Encoding</code></td>
+<td><code>-Encoding utf8</code> で、書き足す文字を UTF-8 で書きます（日本語を書く時は付けておきます）。</td>
+<td>第14巻 A. 道具の早見表</td>
+</tr>
+<tr>
+<td><code>Get-Content -Encoding</code></td>
+<td><code>-Encoding utf8</code> で、ファイルを UTF-8 として読みます。付けないと、Windows PowerShell 5.1 では日本語が化けることがあります。</td>
+<td>第14巻 A. 道具の早見表</td>
+</tr>
+<tr>
+<td><code>Rename-Item</code></td>
+<td>ファイルやフォルダの名前を変えるコマンド。<code>Rename-Item 今の名前 新しい名前</code>。</td>
+<td>第14巻 A. 道具の早見表</td>
+</tr>
+<tr>
+<td><code>Move-Item</code></td>
+<td>ファイルやフォルダを、別の場所へ移すコマンド（短い呼び名は <code>mv</code>）。<code>Move-Item ファイル 先のフォルダ\</code>。</td>
+<td>第14巻 A. 道具の早見表</td>
+</tr>
+<tr>
+<td><code>Get-ChildItem -Recurse</code></td>
+<td><code>-Recurse</code> で、中のフォルダの中まで全部を一覧にします。</td>
+<td>第14巻 A. 道具の早見表</td>
+</tr>
+<tr>
+<td><code>Select-String</code></td>
+<td>ファイルの中から、文字を含む行を探すコマンド。何行目に見つかったかも表示します。</td>
+<td>第14巻 A. 道具の早見表</td>
+</tr>
+<tr>
+<td><code>Select-String -Path</code></td>
+<td><code>-Path ファイル</code> で、探すファイルを指定します。<code>*.log</code> のように、いくつものファイルも指定できます。</td>
+<td>第14巻 A. 道具の早見表</td>
+</tr>
+<tr>
+<td><code>Select-String -Pattern</code></td>
+<td><code>-Pattern "文字"</code> で、探す文字を指定します。<code>"ERROR&#124;WARN"</code> のように、<code>&#124;</code> で「または」にもできます（正規表現）。</td>
+<td>第14巻 A. 道具の早見表</td>
+</tr>
+<tr>
+<td><code>Select-String -Encoding</code></td>
+<td><code>-Encoding utf8</code> で、ファイルを UTF-8 として読んで探します。</td>
+<td>第14巻 A. 道具の早見表</td>
+</tr>
+<tr>
+<td><code>Remove-Item -Recurse</code></td>
+<td><code>-Recurse</code> で、フォルダを中身ごと消します。ごみ箱には入らないので、よく確かめて使います。</td>
+<td>第14巻 A. 道具の早見表</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-4">コマンド</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>curl.exe</code></td>
+<td>URL にアクセスして、返ってきた中身を表示するコマンド（Windows に最初から入っています）。<code>curl.exe http://127.0.0.1:8080/</code> のように使います。PowerShell では <code>curl</code> だけだと別の命令（<code>Invoke-WebRequest</code>）になるので、<code>.exe</code> まで付けて打ちます。<code>-i</code> で返事の見出し（ヘッダー）も表示します。</td>
+<td>第0巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>netstat</code></td>
+<td>ネットワークの接続の一覧を出す、昔からあるコマンド。<code>netstat -ano</code> で、ポート番号と、使っているプロセスの番号（PID）が分かります。</td>
+<td>第0巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>findstr</code></td>
+<td>文字を含む行だけを取り出すコマンド（Windows に最初から入っています）。<code>netstat -ano &#124; findstr :8080</code> は、<code>:8080</code> を含む行だけを表示します。PowerShell の <code>Select-String</code> に近い働きです。</td>
+<td>第0巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>where.exe</code></td>
+<td>コマンドの本体（<code>.exe</code>）が、パソコンのどこにあるかを探すコマンド。<code>where.exe git</code> で、<code>git.exe</code> の場所が分かります。PowerShell では <code>where</code> だけだと別の命令になるので、<code>.exe</code> まで付けて打ちます。</td>
+<td>第1巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>echo</code></td>
+<td>後ろに書いた文字を、そのまま画面に出すコマンド。<code>echo "hello"</code>。bash（WSL）でも PowerShell でも使えます。</td>
+<td>第1巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>pwd</code></td>
+<td>今いるフォルダを表示するコマンド（print working directory）。bash（WSL）では <code>/home/you</code> のような Linux の形で、PowerShell では <code>C:\Users\you</code> のような形で出ます。</td>
+<td>第1巻 UNIT 02</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-5">Windows</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>winget install</code></td>
+<td>Windows の公式の道具 <code>winget</code> で、アプリを入れるコマンド。<code>winget install LLVM.LLVM</code> は、LLVM（clang などの翻訳の道具）を入れます。</td>
+<td>第13巻 準備</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-6">WSL・bash</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bash</code></td>
+<td>Linux でよく使われるシェル（文字で命令する画面）。<code>bash ファイル.sh</code> で、bash のスクリプトを動かします。WSL の中や、Git for Windows に付いています。</td>
+<td>第1巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>sed</code></td>
+<td>文字を置きかえるコマンド（Linux）。<code>sed -i 's/\r$//' ファイル</code> は、各行の最後の <code>\r</code>（Windows の改行の印）を消して、ファイルを書きかえます（<code>-i</code> は「そのファイルを直接書きかえる」）。</td>
+<td>第1巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>wsl</code></td>
+<td>WSL（Windows の中で Linux を動かす仕組み）を操作するコマンド。<code>wsl --install</code> で入れ、<code>wsl</code> だけで Linux の画面（bash）に入ります。</td>
+<td>第1巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>rm</code></td>
+<td>ファイルやフォルダを消すコマンド（Linux）。<code>rm -rf フォルダ</code> は、中身ごと、確かめずに消します（<code>-r</code> は中まで、<code>-f</code> は聞かずに）。とても強いので、名前をよく確かめて使います。</td>
+<td>第1巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>return</code></td>
+<td>bash の関数の中で、その関数を終える命令。<code>cd 場所 &#124;&#124; return</code> は「<code>cd</code> に失敗したら、そこで関数を終える」という意味です（<code>&#124;&#124;</code> は「左が失敗した時だけ右をする」）。</td>
+<td>第1巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>s=$</code></td>
+<td>bash で変数に値を入れる書き方。<code>s=$(date +%s%N)</code> は、<code>$( )</code> の中のコマンド（今の時刻）を動かした結果を、変数 <code>s</code> に入れます。<code>=</code> の前後に空白を入れてはいけません。</td>
+<td>第1巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>date</code></td>
+<td>今の日時を表示するコマンド（Linux）。<code>date +%s%N</code> は「1970 年からの秒数＋ナノ秒」の形で出します（時間を測るのに使います）。</td>
+<td>第1巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>seq</code></td>
+<td>数の並びを出すコマンド（Linux）。<code>seq 1 2000</code> は 1 から 2000 まで、1 行に 1 つずつ出します。</td>
+<td>第1巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>do</code></td>
+<td>bash のくり返し <code>for 変数 in 並び; do … ; done</code> の一部。<code>do</code> から <code>done</code> までが、くり返す中身です。</td>
+<td>第1巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>e=$</code></td>
+<td><code>s=$(…)</code> と同じく、bash で変数に値を入れる書き方。ここでは終わりの時刻を <code>e</code> に入れ、<code>s</code> との差で、かかった時間を計算します。</td>
+<td>第1巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>curl</code></td>
+<td>URL にアクセスするコマンド（Linux・WSL 版）。<code>curl -sSfL URL &#124; bash</code> は、URL から取ってきたスクリプトを、そのまま bash で動かします（<code>-s</code> 静かに・<code>-S</code> エラーは出す・<code>-f</code> 失敗を見逃さない・<code>-L</code> 移動先を追う）。中身を確かめずに動かすことになるので、信頼できる所の物だけに使います。</td>
+<td>第1巻 UNIT 09</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-7">Git</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>git</code></td>
+<td>ファイルの変更の記録を残す道具（Git）の本体のコマンド。<code>git --version</code> で版を確かめられます。<code>git status</code>・<code>git add</code>・<code>git commit</code> のように、後ろに「何をするか」を付けて使います（この巻の UNIT 04）。</td>
+<td>第1巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>git config</code></td>
+<td>Git の設定を見る・変えるコマンド。<code>git config --global user.name "名前"</code> で、記録に残す名前を決めます。<code>--list</code> で、今の設定を一覧で見られます。</td>
+<td>第1巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>git init</code></td>
+<td>今いるフォルダで、Git の記録を始めるコマンド。フォルダの中に、記録を入れる <code>.git</code> という隠しフォルダができます（<code>cargo new</code> は、これを自動でしてくれます）。</td>
+<td>第1巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>git status</code></td>
+<td>今の状態（変わったファイル・記録に入れる予定のファイル・Git がまだ知らないファイル）を表示します。迷ったら、まずこれを打ちます。</td>
+<td>第1巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>git check-ignore</code></td>
+<td>そのファイルが <code>.gitignore</code>（記録しないファイルの一覧）で外されているかを調べるコマンド。<code>-v</code> を付けると、<code>.gitignore</code> の何行目の決まりで外されたかも表示します。</td>
+<td>第1巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>git add</code></td>
+<td>次の記録（コミット）に入れるファイルを選ぶコマンド。<code>git add ファイル名</code>、全部なら <code>git add .</code> です。選んだだけで、まだ記録はされていません。</td>
+<td>第1巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>git ls-files</code></td>
+<td>Git が記録しているファイルの一覧を出すコマンド。<code>--eol</code> を付けると、各ファイルの改行の形（LF か CRLF か）も表示します。</td>
+<td>第1巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>git commit</code></td>
+<td>選んだ変更を、1 つの記録（コミット）として残すコマンド。<code>git commit -m "何をしたか"</code> の <code>-m</code> の後ろに、変更の説明を書きます。</td>
+<td>第1巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>git log</code></td>
+<td>これまでの記録（コミット）の一覧を、新しい順に出すコマンド。<code>--oneline</code> で 1 行ずつ短く、<code>--format="…"</code> で表示の形を自分で決められます。</td>
+<td>第1巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>git rm</code></td>
+<td>ファイルを、Git の記録から外すコマンド。<code>git rm --cached .env</code> は、ファイルそのものは残したまま、記録からだけ外します（間違えて記録した秘密のファイルを外す時に使います）。</td>
+<td>第1巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>git show</code></td>
+<td>記録の中身を見るコマンド。<code>git show HEAD~1:.env</code> は「1 つ前の記録の時の <code>.env</code> の中身」を表示します。一度記録した物は、こうして後からでも見えてしまう、という例です。</td>
+<td>第1巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>git diff</code></td>
+<td>まだ記録していない変更の中身を見るコマンド。<code>-</code> で始まる行が前の内容、<code>+</code> で始まる行が新しい内容です。</td>
+<td>第1巻 UNIT 03</td>
+</tr>
+<tr>
+<td><code>git restore</code></td>
+<td>保存したけれど記録していない変更を捨てて、最後の記録の状態に戻すコマンド。<code>git restore src/main.rs</code>。捨てた変更は戻せないので、確かめてから使います。</td>
+<td>第1巻 UNIT 03</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-8">Docker</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>docker version</code></td>
+<td>Docker（アプリを、決まった環境ごと箱に入れて動かす道具）の版を表示します。表示されれば、Docker が動いています。</td>
+<td>第1巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>docker run</code></td>
+<td>イメージ（箱の設計図）から、コンテナ（動いている箱）を作って動かすコマンド。<code>docker run --rm hello-world</code> は、試しの箱を動かして、終わったら消します（<code>--rm</code>）。</td>
+<td>第1巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>docker image</code></td>
+<td>手元にあるイメージ（箱の設計図）を見る・消すコマンド。<code>docker image ls</code> で一覧を出します。</td>
+<td>第1巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>docker ps</code></td>
+<td>動いているコンテナ（箱）の一覧を出すコマンド。<code>--filter name=…</code> で名前で絞り、<code>--format</code> で表示する項目を選べます。</td>
+<td>第1巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>docker build</code></td>
+<td><code>Dockerfile</code>（箱の作り方を書いたファイル）から、イメージ（箱の設計図）を作るコマンド。<code>-t 名前:タグ</code> で名前を付けます。最後の <code>.</code> は「今のフォルダの中身を使う」という意味です。</td>
+<td>第12巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>docker history</code></td>
+<td>イメージが、どの手順で、どれだけの大きさを使って作られたかを表示するコマンド。</td>
+<td>第12巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>docker network</code></td>
+<td>コンテナ（箱）どうしをつなぐネットワークを作る・見るコマンド。<code>docker network create rn-net</code> で作り、同じネットワークの箱どうしは名前で呼び合えます。</td>
+<td>第12巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>docker start</code></td>
+<td>止まっているコンテナを動かすコマンド。</td>
+<td>第12巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>docker tag</code></td>
+<td>イメージに、別の名前（タグ）を付けるコマンド。<code>docker tag rustnote:u02 rustnote:v1</code>。</td>
+<td>第12巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>docker rm</code></td>
+<td>コンテナ（箱）を消すコマンド。<code>-f</code> で、動いていても止めて消します。</td>
+<td>第12巻 UNIT 10</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-9">Fly.io</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>fly version</code></td>
+<td>Fly.io（アプリをインターネットに公開するサービス）の道具 <code>fly</code> の版を表示します（第12巻）。</td>
+<td>第1巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>fly launch</code></td>
+<td>Fly.io に、新しいアプリを作る準備をするコマンド。<code>fly.toml</code>（設定のファイル）を作ります。<code>--no-deploy</code> で、まだ公開はしません（第12巻）。</td>
+<td>第12巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>fly secrets</code></td>
+<td>Fly.io のアプリに、秘密の設定（データベースの合言葉など）を渡すコマンド。<code>fly secrets set 名前=値</code>。アプリには環境変数として届き、<code>fly.toml</code> や Git には書きません（第12巻）。</td>
+<td>第12巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>fly deploy</code></td>
+<td>アプリを作って（Docker のイメージ）、Fly.io に公開するコマンド。新しい版に、少しずつ入れかえます（第12巻）。</td>
+<td>第12巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>fly status</code></td>
+<td>Fly.io のアプリのマシンの状態と、ヘルスチェック（元気か）の結果を見るコマンド。</td>
+<td>第12巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>fly logs</code></td>
+<td>Fly.io で動いているアプリのログ（動作の記録）を見るコマンド。</td>
+<td>第12巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>fly certs</code></td>
+<td>Fly.io のアプリに、自分の名前（ドメイン）の HTTPS の証明書を付けるコマンド。</td>
+<td>第12巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>fly releases</code></td>
+<td>Fly.io のアプリの、公開した版の歴史を見るコマンド。<code>--image</code> で、どのイメージだったかも表示し、前の版に戻す時に使います。</td>
+<td>第12巻 UNIT 10</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-10">Turso</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>turso db</code></td>
+<td>Turso（インターネット上のデータベースのサービス）の道具で、データベースを作る・見るコマンド。<code>turso db create 名前</code>（第7巻・第12巻）。</td>
+<td>第13巻 公開する</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-11">Node.js</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>npm init</code></td>
+<td>Node.js のプロジェクトを始めるコマンド。<code>package.json</code>（使う部品やコマンドを書くファイル）を作ります。<code>-y</code> を付けると、質問に全部「既定のまま」と答えます。</td>
+<td>第11巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>npm install</code></td>
+<td>Node.js の部品を入れるコマンド。<code>--save-dev</code> は「作る時・試す時だけ使う部品」として、<code>--save-exact</code> は版を固定して、<code>package.json</code> に書きます。</td>
+<td>第11巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>npx playwright</code></td>
+<td><code>npx</code> は、入れた部品のコマンドを動かす道具。<code>npx playwright install chromium</code> で、Playwright（ブラウザーを自動で操作してテストする道具）が使うブラウザーを入れ、<code>npx playwright test</code> でテストを動かします。</td>
+<td>第11巻 UNIT 05</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-12">画面に出す</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>println!</code></td>
+<td>かっこの中の文字を画面に出して、最後に改行するマクロ。<code>println!("Hello, world!");</code> は <code>Hello, world!</code> と表示します。<code>{}</code> を書くと、後ろに並べた値がそこに入ります（例: <code>println!("{}点", 80);</code> → <code>80点</code>）。名前の最後の <code>!</code> は「マクロ」（コードを作り出す特別な仕組み）の印で、ふつうの関数と見分けるために付いています。</td>
+<td>第0巻 はじめに: 手を動かす準備</td>
+</tr>
+<tr>
+<td><code>eprintln!</code></td>
+<td><code>println!</code> のエラー版。「標準エラー出力」というエラー用の出口に書きます。画面ではふつうの出力と同じに見えますが、<code>&gt; ファイル</code> で結果をファイルに書き出した時も、エラーは画面に残ります。失敗の知らせを出す時に使います。</td>
+<td>第0巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>print!</code></td>
+<td><code>println!</code> と同じく画面に出すマクロですが、最後に改行しません。続けて出したい時（例: <code>print!("入力してください: ");</code> のあとに入力を待つ）に使います。</td>
+<td>第0巻 UNIT 02</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-13">変数</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>let</code></td>
+<td>値に名前を付けて覚えておく（変数を作る）書き方。<code>let age = 20;</code> で、<code>age</code> という名前で 20 を覚えます。最初は「変えられない」変数です。あとで変えたい時は <code>let mut age = 20;</code> のように <code>mut</code> を付けます。</td>
+<td>第0巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>const</code></td>
+<td>ずっと変わらない値（定数）に名前を付ける書き方。<code>const MAX_TITLE_CHARS: usize = 80;</code>。名前は大文字と <code>_</code> で書き、型（<code>usize</code> など）を必ず書きます。プログラムのどこからでも使えます。</td>
+<td>第2巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>static</code></td>
+<td>プログラムが動いている間、ずっとある値。<code>&amp;'static str</code> は「プログラムの中に書いた、ずっと消えない文字列」を借りている型です（<code>"回覧中"</code> のような文字列はこの型）。</td>
+<td>第2巻 UNIT 08</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-14">数</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MIN</code></td>
+<td>数の型が持っている「いちばん小さい値」。<code>i32::MIN</code> は -2147483648。<code>u8::MIN</code> は 0 です。</td>
+<td>第2巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>MAX</code></td>
+<td>数の型が持っている「いちばん大きい値」。<code>i32::MAX</code> は 2147483647、<code>u8::MAX</code> は 255 です。これより大きくなる計算は「あふれ（オーバーフロー）」になります。</td>
+<td>第2巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>.wrapping_add()</code></td>
+<td>足し算をして、型に入りきらない時は、0（いちばん小さい値）に戻って数え直すメソッド。時計の針が 12 を過ぎて 1 に戻るのと同じです（<code>255u8.wrapping_add(1)</code> は 0）。</td>
+<td>第2巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>.checked_add()</code></td>
+<td>足し算をして、型に入りきらない時は <code>None</code>（計算できなかった）を返すメソッド。入りきれば <code>Some(結果)</code>。お金の合計など、あふれると困る所で使います。</td>
+<td>第2巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>.saturating_add()</code></td>
+<td>足し算をして、型に入りきらない時は、いちばん大きい値で止めるメソッド（<code>250u8.saturating_add(10)</code> は 255）。</td>
+<td>第2巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>.overflowing_add()</code></td>
+<td>足し算の結果（あふれたら一周した値）と、「あふれたかどうか」の両方を、組 <code>(値, true/false)</code> で返すメソッド。</td>
+<td>第2巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>as</code></td>
+<td>型を変える書き方。<code>x as f64</code> は整数を小数に、<code>300 as u8</code> は 300 を u8 に変えます。入りきらない分は<strong>黙って切り捨てられる</strong>ので（300 → 44）、範囲が分からない時は <code>try_from</code> を使います。</td>
+<td>第2巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>.abs()</code></td>
+<td>絶対値（マイナスを取った値）を返すメソッド。<code>(-5).abs()</code> は 5。小数に使う時は、値の型が <code>f64</code> などと決まっている必要があります。</td>
+<td>第2巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>.checked_mul()</code></td>
+<td>掛け算をして、型に入りきらない時は <code>None</code> を返すメソッド（<code>checked_add</code> の掛け算版）。</td>
+<td>第2巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>.div_ceil()</code></td>
+<td>割り算をして、余りがあれば切り上げるメソッド。<code>23.div_ceil(10)</code> は 3（23 件を 10 件ずつ分けると 3 ページ）。ページ数の計算によく使います。</td>
+<td>第2巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>.min()</code></td>
+<td>2 つのうち小さい方を返すメソッド。<code>(start + per_page).min(items.len())</code> は「どちらか小さい方」。イテレーターに使うと、並びの中でいちばん小さい物を <code>Option</code> で返します（大きい方は <code>.max()</code>）。</td>
+<td>第2巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>.pow()</code></td>
+<td>累乗（同じ数を何回も掛ける）を計算するメソッド。<code>2u32.pow(3)</code> は 8。待ち時間を 1・2・4・8 倍と増やしていく時に使います。</td>
+<td>第5巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>.is_multiple_of()</code></td>
+<td>その数が、指定した数で割り切れるなら <code>true</code> を返すメソッド。<code>n.is_multiple_of(5)</code> は「5 の倍数か」。</td>
+<td>第5巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>.wrapping_sub()</code></td>
+<td>引き算をして、型に入りきらない時（0 より小さくなる時）は、いちばん大きい値の方へ一周するメソッド。<code>0u64.wrapping_sub(1)</code> は大きな数になるので、<code>get</code> で「無い」と判断させるのに使えます。</td>
+<td>第6巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>.saturating_sub()</code></td>
+<td>引き算をして、0 より小さくなる時は 0 で止めるメソッド。<code>names.len().saturating_sub(keep)</code> は「数が足りなければ 0」。</td>
+<td>第7巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>.to_be_bytes()</code></td>
+<td>数を、大きい桁から順に並べたバイトの並び（ビッグエンディアン）にするメソッド。</td>
+<td>第8巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>u32::from_be_bytes()</code></td>
+<td>4 つのバイト（大きい桁から順）から、<code>u32</code> の数を作る関数。</td>
+<td>第8巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>.clamp()</code></td>
+<td>値を、決めた範囲（最小〜最大）に収めるメソッド。<code>x.clamp(1, 5)</code> は、1 より小さければ 1、5 より大きければ 5。</td>
+<td>第11巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>u32::from_le_bytes()</code></td>
+<td>4 つのバイト（小さい桁から順）から、<code>u32</code> の数を作る関数。実行ファイルの中の決まった場所の数を読む時に使います。</td>
+<td>第12巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>.cmp()</code></td>
+<td>2 つの値を比べて、「小さい・等しい・大きい」（<code>Ordering</code>）を返すメソッド。<code>sort_by</code> の中でよく使います。<code>.then(…)</code> で「同じなら次の基準で」とつなげられます。</td>
+<td>第14巻 B. サンプル集</td>
+</tr>
+<tr>
+<td><code>PI</code></td>
+<td><code>std::f64::consts::PI</code> は、円周率（3.14159…）の決まった値です。</td>
+<td>第14巻 B. サンプル集</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-15">文字</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.to_digit()</code></td>
+<td>1 文字（<code>char</code>）を、その文字が表す数に変えるメソッド。<code>'7'.to_digit(10)</code> は <code>Some(7)</code>（10 は「10 進数で」という意味）。数字でない文字なら <code>None</code> です。</td>
+<td>第2巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>.is_alphabetic()</code></td>
+<td>その文字が「文字（英字・かな・漢字など）」なら <code>true</code> を返すメソッド。</td>
+<td>第2巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>.is_ascii_alphanumeric()</code></td>
+<td>その文字が、ASCII（半角）の英字か数字（<code>A</code>〜<code>Z</code>・<code>a</code>〜<code>z</code>・<code>0</code>〜<code>9</code>）なら <code>true</code> を返すメソッド。<code>'あ'</code> は <code>false</code> です。</td>
+<td>第2巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>char::from_u32()</code></td>
+<td>番号（文字コード）から 1 文字を作る関数。<code>char::from_u32(0x41)</code> は <code>Some('A')</code>。文字に無い番号なら <code>None</code> です。</td>
+<td>第2巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>.len_utf8()</code></td>
+<td>その 1 文字が、UTF-8 で何バイトかを返すメソッド。英数字は 1、日本語の多くは 3 です。</td>
+<td>第2巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>.is_alphanumeric()</code></td>
+<td>その文字が、文字（英字・かな・漢字など）か数字なら <code>true</code> を返すメソッド。</td>
+<td>第9巻 UNIT 04</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-16">文字列</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.trim_end()</code></td>
+<td>文字列の後ろ（右側）の空白や改行を取り除くメソッド。キーボードから読んだ 1 行の最後に付いている改行を取る時によく使います。前後両方を取る時は <code>.trim()</code> です。</td>
+<td>第0巻 UNIT 03</td>
+</tr>
+<tr>
+<td><code>.split_once()</code></td>
+<td>文字列を、最初に見つかった区切りの所で 2 つに分けるメソッド。<code>"title=買い物".split_once('=')</code> は <code>Some(("title", "買い物"))</code>。区切りが無い時は <code>None</code> です。</td>
+<td>第0巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>.split()</code></td>
+<td>文字列を、区切り文字のたびに分けるメソッド。<code>"a,b,c".split(',')</code> は <code>a</code>・<code>b</code>・<code>c</code> の 3 つ。結果は 1 つずつ取り出せる形（イテレーター）なので、<code>Vec</code> にしたい時は <code>.collect()</code> を付けます。</td>
+<td>第0巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>.as_bytes()</code></td>
+<td>文字列を、中のバイト（コンピューターが持っている 0〜255 の数の並び）として見るメソッド。ネットやファイルに書く関数がバイトを求める時に使います。</td>
+<td>第0巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>format!</code></td>
+<td><code>println!</code> と同じ書き方で、画面に出さずに文字列（<code>String</code>）を作るマクロ。<code>let msg = format!("{}さん", name);</code> のように、値を埋め込んだ文を作る時に使います。</td>
+<td>第0巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>.split_whitespace()</code></td>
+<td>文字列を、空白（スペース・タブ・改行）の所で分けるメソッド。空白がいくつ続いても 1 つの区切りとして扱います。<code>"GET / HTTP/1.1".split_whitespace()</code> は <code>GET</code>・<code>/</code>・<code>HTTP/1.1</code>。</td>
+<td>第0巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>.trim()</code></td>
+<td>文字列の前後の空白や改行を取り除いたものを返すメソッド。入力された文字の、うっかり入った空白を取る時によく使います。</td>
+<td>第0巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>.to_string()</code></td>
+<td>値を、自分の物の文字列（<code>String</code>）に変えるメソッド。<code>"abc".to_string()</code> や <code>42.to_string()</code> のように使います。</td>
+<td>第0巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>.as_deref()</code></td>
+<td><code>Option&lt;String&gt;</code> を、中身を借りて <code>Option&lt;&amp;str&gt;</code> に変えるメソッド。<code>env::args().nth(1).as_deref() == Some("reset")</code> のように、「引数が <code>reset</code> かどうか」を文字列と比べる時に使います。</td>
+<td>第0巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>.repeat()</code></td>
+<td>文字列をくり返してつないだ、新しい文字列を作るメソッド。<code>"あ".repeat(80)</code> は「あ」が 80 個並んだ文字列。長い入力を試すテストでよく使います。</td>
+<td>第0巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>.is_empty()</code></td>
+<td>空（長さが 0）なら <code>true</code> を返すメソッド。文字列にも <code>Vec</code> にも使えます。<code>title.trim().is_empty()</code> は「空白を取ったら何も残らないか」を調べます。</td>
+<td>第1巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>.push_str()</code></td>
+<td><code>String</code> の後ろに文字列を足すメソッド。<code>s.push_str("さん");</code>。<code>s</code> は書きかえるので、<code>let mut s</code> のように <code>mut</code> が要ります。</td>
+<td>第2巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>.to_uppercase()</code></td>
+<td>英字を大文字にした、新しい文字列を返すメソッド。<code>"abc".to_uppercase()</code> は <code>"ABC"</code>。日本語は変わりません。</td>
+<td>第2巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>.is_char_boundary()</code></td>
+<td>そのバイトの位置が、文字の切れ目かどうかを調べるメソッド。日本語は 1 文字が 3 バイトなので、文字の途中で切ると止まってしまいます。切る前の確かめに使います。</td>
+<td>第2巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>.to_lowercase()</code></td>
+<td>英字を小文字にした、新しい文字列を返すメソッド。メールアドレスをそろえる時などに使います。</td>
+<td>第2巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>.starts_with()</code></td>
+<td>その文字（文字列）で始まっていれば <code>true</code> を返すメソッド。<code>"report.csv".starts_with("report")</code> は <code>true</code>。終わりを調べるのは <code>.ends_with()</code>、含むかは <code>.contains()</code> です。</td>
+<td>第2巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>.replace()</code></td>
+<td>文字列の中の、ある部分を全部置きかえた、新しい文字列を返すメソッド。<code>"a-b".replace('-', "/")</code> は <code>"a/b"</code>。元の文字列は変わりません。</td>
+<td>第2巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>write!</code></td>
+<td><code>println!</code> と同じ書き方で、画面ではなく、決めた書き込み先に書くマクロ。<code>Display</code> を実装する時の <code>write!(f, "…")</code> は、「表示する文を <code>f</code> に書く」という意味です。</td>
+<td>第2巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>.char_indices()</code></td>
+<td>文字列を、「何バイト目か」と「その文字」の組で、1 文字ずつ取り出すメソッド。日本語を、文字の切れ目で安全に切る時に使います。</td>
+<td>第3巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>.rfind()</code></td>
+<td>文字列の後ろから探して、最初に見つかった位置（バイトの番号）を <code>Option</code> で返すメソッド。前から探すのは <code>.find()</code> です。</td>
+<td>第3巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>.strip_prefix()</code></td>
+<td>文字列が、決めた文字で始まっていれば、それを取り除いた残りを <code>Some(残り)</code> で返すメソッド。始まっていなければ <code>None</code> です。</td>
+<td>第3巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>.write_str()</code></td>
+<td><code>Display</code> などの実装の中で、書き込み先（<code>Formatter</code>）に文字列をそのまま書くメソッド。<code>f.write_str(&amp;self.0)</code> は「自分の中の文字列を、そのまま表示する」。値を埋め込む時は <code>write!</code> を使います。</td>
+<td>第4巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>.eq_ignore_ascii_case()</code></td>
+<td>英字の大文字と小文字を区別せずに、同じかどうかを比べるメソッド。HTTP のヘッダーの名前（<code>Content-Type</code> と <code>content-type</code>）を比べる時などに使います。</td>
+<td>第5巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>String::from_utf8_lossy()</code></td>
+<td>バイトの並びを、文字列として読む関数。文字として読めない所があっても止まらず、<code>�</code> に置きかえて読みます。</td>
+<td>第5巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>.to_str()</code></td>
+<td>値（HTTP のヘッダーの値・パスなど）を、<code>&amp;str</code>（文字列）として読むメソッド。文字として読めないこともあるので、<code>Result</code> や <code>Option</code> で返ります。</td>
+<td>第6巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>String::from_utf8()</code></td>
+<td>バイトの並び（<code>Vec&lt;u8&gt;</code>）を、文字列（<code>String</code>）に変える関数。UTF-8 の文字として読めない時は <code>Err</code> を返します。</td>
+<td>第6巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>String::with_capacity()</code></td>
+<td>「これくらいの長さになる予定」と容量を決めて、空の <code>String</code> を作る関数。少しずつ足していく時に、広げ直す手間を減らせます。</td>
+<td>第7巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>include_str!</code></td>
+<td>ファイルの中身を、翻訳（コンパイル）の時に文字列として埋め込むマクロ。<code>include_str!("../../sql/schema.sql")</code>。動かす時にファイルが無くても使えます。</td>
+<td>第7巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>.to_string_lossy()</code></td>
+<td>ファイル名など、文字として読めないかもしれない物を、読めない所を <code>�</code> に置きかえて文字列として読むメソッド。</td>
+<td>第7巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>.into_owned()</code></td>
+<td>借りている文字列（など）を、自分の物（<code>String</code>）にするメソッド。</td>
+<td>第7巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>.ends_with()</code></td>
+<td>その文字（文字列）で終わっていれば <code>true</code> を返すメソッド。<code>name.ends_with(".db")</code>。</td>
+<td>第7巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>.trim_start_matches()</code></td>
+<td>文字列の先頭から、決めた文字（文字列）をくり返し取り除いたものを返すメソッド。<code>pair.trim_start_matches("__Host-session=")</code> は、クッキーの名前の部分を取って値だけにします。</td>
+<td>第8巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>.replace_range()</code></td>
+<td><code>String</code> の、決めた範囲を、別の文字列に置きかえるメソッド。</td>
+<td>第8巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>.trim_end_matches()</code></td>
+<td>文字列の後ろから、決めた文字（文字列）をくり返し取り除いたものを返すメソッド。<code>name.trim_end_matches(".rs")</code> は、<code>.rs</code> を取ります。</td>
+<td>第9巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>.match_indices()</code></td>
+<td>文字列の中で、探す文字が見つかった所の「位置と、見つかった文字」を、全部順に返すメソッド。</td>
+<td>第9巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>.trim_start()</code></td>
+<td>文字列の前（左側）の空白を取り除いたものを返すメソッド。</td>
+<td>第9巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>.encode_utf16()</code></td>
+<td>文字列を、UTF-16（ブラウザーの JavaScript が使う文字の数え方）の単位で並べるメソッド。<code>.count()</code> と合わせて、ブラウザーの <code>maxlength</code> と同じ数え方で長さを数えます。</td>
+<td>第11巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>.rsplit()</code></td>
+<td>文字列を、後ろから順に区切り文字で分けるメソッド。<code>line.rsplit(' ').next()</code> は、最後の単語です。</td>
+<td>第11巻 UNIT 07</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-17">Vec（並び）</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>vec!</code></td>
+<td><code>Vec</code>（ベクタ：同じ種類の値を、順番に並べて持つ入れ物）を、中身を書いて作るマクロ。<code>vec![80, 95, 70]</code> は、80・95・70 の 3 つが入った並びです。<code>scores[0]</code> で最初の 80 を取り出せます（番号は 0 から数えるので、3 つなら使える番号は 0・1・2）。範囲の外の番号（<code>scores[10]</code> など）を使うと、プログラムは止まります（パニック）。あとから <code>push</code> で足したり、<code>len()</code> で数を数えたりできます（第2巻 UNIT 06）。</td>
+<td>第0巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>Vec</code></td>
+<td>同じ種類の値を、順番に並べて持つ入れ物（ベクタ）。<code>Vec&lt;i32&gt;</code> は「整数の並び」、<code>Vec&lt;String&gt;</code> は「文字列の並び」です。<code>vec![…]</code> か <code>Vec::new()</code> で作り、<code>push</code> で足し、<code>len()</code> で数を数え、<code>v[0]</code> や <code>v.get(0)</code> で取り出します（第2巻 UNIT 06）。</td>
+<td>第0巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>.push()</code></td>
+<td>後ろに 1 つ足すメソッド。<code>Vec</code> なら <code>v.push(10);</code> で 10 を足し、<code>String</code> なら <code>s.push('!');</code> で 1 文字足します。<code>mut</code> の付いた変数に使います。</td>
+<td>第2巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>.pop()</code></td>
+<td><code>Vec</code> の最後の 1 つを取り出すメソッド。空なら <code>None</code> を返すので、結果は <code>Option</code> です。<code>String</code> なら最後の 1 文字を取り出します。</td>
+<td>第2巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>.sort()</code></td>
+<td><code>Vec</code> の中身を、小さい順（文字なら辞書の順）に並べかえるメソッド。新しい <code>Vec</code> は作らず、その <code>Vec</code> 自身を並べかえるので、<code>mut</code> が要ります。</td>
+<td>第2巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>.capacity()</code></td>
+<td><code>Vec</code> が、今の場所のまま入れられる数（容量）を返すメソッド。<code>len()</code>（今入っている数）とは別で、足りなくなると自動で広げられます。</td>
+<td>第2巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>Vec::with_capacity()</code></td>
+<td>「これくらい入れる予定」と容量を決めて、空の <code>Vec</code> を作る関数。たくさん足すと分かっている時に、広げ直す手間を減らせます。</td>
+<td>第2巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>.sort_by_key()</code></td>
+<td>「何で並べるか」を関数で決めて、<code>Vec</code> を並べかえるメソッド。<code>notes.sort_by_key(&#124;note&#124; note.id)</code> は、番号の小さい順にします。</td>
+<td>第2巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>.clear()</code></td>
+<td>中身を全部消して、空にするメソッド。<code>String</code> にも <code>Vec</code> にも使えます。</td>
+<td>第3巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>.extend()</code></td>
+<td><code>Vec</code> の後ろに、別の並びの中身をまとめて足すメソッド。<code>v.extend(extra);</code>。</td>
+<td>第3巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>.retain()</code></td>
+<td><code>Vec</code> の中から、条件に合う物だけを残すメソッド（合わない物は消える）。<code>scores.retain(&#124;&amp;s&#124; s &gt;= 60);</code> は 60 点以上だけを残します。</td>
+<td>第3巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>.extend_from_slice()</code></td>
+<td><code>Vec</code> の後ろに、別の並び（スライス）の中身を写して足すメソッド。受け取ったバイトを、ためておく時などに使います。</td>
+<td>第5巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>.windows()</code></td>
+<td>並びから、「隣どうし n 個ずつ」を、1 つずつずらしながら取り出すメソッド。<code>buffer.windows(4)</code> は、4 バイトずつの組を順に見ます（区切りの <code>\r\n\r\n</code> を探すのに使う）。</td>
+<td>第5巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>.to_vec()</code></td>
+<td>並び（スライス）の中身を写して、新しい <code>Vec</code> を作るメソッド。</td>
+<td>第5巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>.dedup()</code></td>
+<td><code>Vec</code> の中で、隣どうしで同じ値が続く所を 1 つにまとめるメソッド。先に <code>sort</code> しておくと、全部の重複が消えます。</td>
+<td>第5巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>.drain()</code></td>
+<td><code>Vec</code> から、決めた範囲の中身を取り出して（元からは消して）、1 つずつ渡すメソッド。<code>names.drain(..3)</code> は、先頭の 3 つを取り出します。</td>
+<td>第7巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>.as_slice()</code></td>
+<td><code>Vec</code> や配列を、「借りた一続きの並び」（スライス <code>&amp;[T]</code>）として見るメソッド。</td>
+<td>第8巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>.reverse()</code></td>
+<td><code>Vec</code> の順番を逆にするメソッド（その <code>Vec</code> 自身を変える）。</td>
+<td>第14巻 B. サンプル集</td>
+</tr>
+<tr>
+<td><code>.sort_by()</code></td>
+<td>「2 つを比べる関数」を渡して、<code>Vec</code> を並べかえるメソッド。<code>v.sort_by(&#124;a, b&#124; b.cmp(a))</code> は大きい順。</td>
+<td>第14巻 B. サンプル集</td>
+</tr>
+<tr>
+<td><code>.chunks()</code></td>
+<td>並びを、決めた数ずつのかたまりに分けて取り出すメソッド。<code>[1,2,3,4,5].chunks(2)</code> は <code>[1,2]</code>・<code>[3,4]</code>・<code>[5]</code>。</td>
+<td>第14巻 B. サンプル集</td>
+</tr>
+<tr>
+<td><code>.split_at()</code></td>
+<td>並びを、決めた位置で 2 つに分けるメソッド。<code>data.split_at(3)</code> は、前の 3 つと残りに分けます。</td>
+<td>第14巻 B. サンプル集</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-18">HashMap（表）</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>HashMap</code></td>
+<td>「キー → 値」の組を持つ入れ物（名前で引ける表）。<code>map.insert("りんご", 3)</code> で入れ、<code>map.get("りんご")</code> で引きます。キーが無いこともあるので、<code>get</code> は <code>Option</code> を返します。使うには <code>use std::collections::HashMap;</code> が要ります。</td>
+<td>第0巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>.contains_key()</code></td>
+<td><code>HashMap</code> に、そのキーがあれば <code>true</code> を返すメソッド。</td>
+<td>第2巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>.keys()</code></td>
+<td><code>HashMap</code> のキーだけを、1 つずつ取り出せる形で返すメソッド。順番は決まっていないので、並べたい時は <code>Vec</code> に集めて <code>sort</code> します。</td>
+<td>第2巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>.or_insert()</code></td>
+<td><code>map.entry(キー).or_insert(0)</code> の形で、「キーが無ければ 0 を入れる。そして、その値の場所を返す」メソッド。<code>*map.entry(word).or_insert(0) += 1;</code> は「数える」時の決まり文句です。</td>
+<td>第2巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>BTreeMap</code></td>
+<td>キーの順（小さい順・辞書の順）に並んでいる「キー → 値」の表。使い方は <code>HashMap</code> とほぼ同じで、回すと必ずキーの順に出てきます。</td>
+<td>第2巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>.get_mut()</code></td>
+<td><code>HashMap</code> や <code>Vec</code> から、書きかえるために中身を借りるメソッド。キー（番号）が無い時は <code>None</code> です。<code>if let Some(n) = map.get_mut("a") { *n += 1; }</code> のように使います。</td>
+<td>第2巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>HashSet</code></td>
+<td>同じ値は 1 つしか入らない集まり（値だけの <code>HashMap</code>）。重複を消す・「もう見たか」を覚える時に使います。<code>set.insert(x)</code> は、新しく入った時だけ <code>true</code> を返します。</td>
+<td>第8巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>.or_default()</code></td>
+<td><code>map.entry(キー).or_default()</code> は、キーが無ければ、その型の初期値（空の <code>Vec</code> など）を入れて、その場所を返すメソッド。</td>
+<td>第9巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>BTreeSet</code></td>
+<td>同じ値は 1 つしか入らず、しかも小さい順に並んでいる集まり（<code>HashSet</code> の並ぶ版）。</td>
+<td>第9巻 UNIT 04</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-19">範囲</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>..=</code></td>
+<td>「〜から〜まで（最後も含む）」の範囲。<code>1..=100</code> は 1, 2, …, 100。<code>..</code> だけだと最後を含みません（<code>1..100</code> は 1〜99）。<code>for n in 1..=100 { … }</code> のように、くり返しでよく使います。</td>
+<td>第0巻 UNIT 01</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-20">条件</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>if</code></td>
+<td>条件によって処理を分ける書き方。<code>if 条件 { 合う時 } else { 合わない時 }</code>。条件は <code>true</code>・<code>false</code> になる式（<code>age &gt;= 20</code> など）で、<code>( )</code> で囲む必要はありませんが、<code>{ }</code> は必ず要ります。</td>
+<td>第0巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>else</code></td>
+<td><code>if</code> の条件が合わなかった時の処理を書く所。<code>else if 条件 { … }</code> で、条件をいくつも続けられます。</td>
+<td>第0巻 UNIT 02</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-21">くり返し</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>loop</code></td>
+<td>終わりのないくり返し。<code>loop { … }</code> の中で <code>break</code> を書いた所で抜けます。サーバーが「次の接続を待つ」のをずっと続ける時などに使います。</td>
+<td>第0巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>break</code></td>
+<td><code>loop</code>・<code>while</code>・<code>for</code> のくり返しを、途中で抜ける命令。</td>
+<td>第0巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>while</code></td>
+<td>条件が <code>true</code> の間、くり返す書き方。<code>while 条件 { … }</code>。条件が最初から <code>false</code> なら、1 回も動きません。</td>
+<td>第2巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>continue</code></td>
+<td>くり返しの「今回の残り」を飛ばして、次の回へ進む命令。<code>for</code> や <code>while</code> の中で、条件に合わない物を飛ばす時に使います。</td>
+<td>第2巻 UNIT 04</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-22">場合分け</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>match</code></td>
+<td>値の形に合わせて、処理を分ける書き方。<code>match 値 { 形1 =&gt; 処理1, 形2 =&gt; 処理2 }</code> と書き、上から順に合う物を探します。全部の場合を書かないとコンパイルが通らないので、書き忘れを防げます。<code>_ =&gt;</code> は「それ以外全部」です。</td>
+<td>第0巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>=&gt;</code></td>
+<td><code>match</code> の中で「この形なら、→ この処理」をつなぐ矢印。<code>Some(name) =&gt; println!("{name}"),</code> は「値があったら、その名前を表示」という意味です。</td>
+<td>第0巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>matches!</code></td>
+<td>値が、ある形（パターン）に合うかを <code>true</code>・<code>false</code> で返すマクロ。<code>matches!(filter, Filter::Active &#124; Filter::Done)</code> のように、<code>match</code> を 1 行で書けます。</td>
+<td>第2巻 UNIT 08</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-23">Option</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.is_some()</code></td>
+<td><code>Option</code> が <code>Some</code>（値がある）なら <code>true</code> を返すメソッド。値そのものは要らず、あるかどうかだけ知りたい時に使います。</td>
+<td>第2巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>.is_none()</code></td>
+<td><code>Option</code> が <code>None</code>（値が無い）なら <code>true</code> を返すメソッド。</td>
+<td>第2巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>.then_some()</code></td>
+<td><code>bool</code> が <code>true</code> なら <code>Some(値)</code>、<code>false</code> なら <code>None</code> を返すメソッド。<code>on_about.then_some("page")</code>。Topcoat の <code>view!</code> では、属性に <code>None</code> を入れると、その属性ごと書かれません。</td>
+<td>第6巻 UNIT 03</td>
+</tr>
+<tr>
+<td><code>.then()</code></td>
+<td><code>bool</code> が <code>true</code> の時だけ、渡した関数を動かして <code>Some(結果)</code> を返すメソッド（<code>false</code> なら <code>None</code>）。<code>then_some</code> と違い、値を作る処理が、必要な時だけ動きます。（Future の <code>.then</code> は別の物です。）</td>
+<td>第6巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>.is_some_and()</code></td>
+<td><code>Option</code> に値があり、しかもその値が条件に合う時だけ <code>true</code> を返すメソッド。<code>cookie.is_some_and(&#124;c&#124; c == "admin=yes")</code>。</td>
+<td>第6巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>.map_or()</code></td>
+<td><code>Option</code> に値があれば、それを関数で変換し、無ければ決めた値を返すメソッド。<code>depth.get(&amp;k).map_or(0, &#124;p&#124; p + 1)</code> は「あれば +1、無ければ 0」。</td>
+<td>第7巻 この巻で身に付けること</td>
+</tr>
+<tr>
+<td><code>.flatten()</code></td>
+<td>入れ子になった物を、1 段平らにするメソッド。<code>Option&lt;Option&lt;T&gt;&gt;</code> を <code>Option&lt;T&gt;</code> にし、イテレーターなら「並びの並び」を 1 つの並びにします。</td>
+<td>第13巻 UNIT 07</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-24">エラー処理</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>?</code></td>
+<td><code>Result</code> や <code>Option</code> の後ろに付ける記号。「成功なら中身を取り出して先へ進む。失敗なら、その場で関数を終えて、エラーを呼び出し元へ返す」という意味です。<code>let text = fs::read_to_string("a.txt")?;</code> のように使います。<code>?</code> を使える関数は、戻り値が <code>Result</code>（または <code>Option</code>）の関数だけです。</td>
+<td>第0巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>.unwrap_or()</code></td>
+<td><code>Option</code> や <code>Result</code> から中身を取り出し、無い（失敗した）時は、代わりに決めた値を使うメソッド。<code>name.unwrap_or("名無し".to_string())</code> のように使います。止まらない安全な取り出し方です。</td>
+<td>第0巻 UNIT 03</td>
+</tr>
+<tr>
+<td><code>.unwrap()</code></td>
+<td><code>Option</code> や <code>Result</code> から中身を取り出すメソッド。中身が無い（失敗した）時は、その場でプログラムが止まります（パニック）。練習や「絶対に失敗しない」と分かっている所だけで使い、本番のコードでは <code>?</code> や <code>unwrap_or</code> を使います。</td>
+<td>第0巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>.unwrap_or_default()</code></td>
+<td><code>Option</code> や <code>Result</code> から中身を取り出し、無い（失敗した）時は、その型の「空の値」（文字列なら <code>""</code>、数なら 0）を使うメソッド。</td>
+<td>第0巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>.expect()</code></td>
+<td><code>Option</code> や <code>Result</code> から中身を取り出すメソッド。中身が無い（失敗した）時は、かっこの中の文を表示して、その場でプログラムが止まります（パニック）。<code>unwrap()</code> と同じですが、止まった理由が分かる文を付けられるので、<code>unwrap()</code> よりこちらがおすすめです。</td>
+<td>第2巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>ParseIntError</code></td>
+<td>文字列を整数に直す（<code>parse</code>）のに失敗した時のエラーの型。<code>"12a".parse::&lt;i32&gt;()</code> は、この型の <code>Err</code> を返します。</td>
+<td>第2巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>.ok_or()</code></td>
+<td><code>Option</code> を <code>Result</code> に変えるメソッド。<code>Some(値)</code> は <code>Ok(値)</code> に、<code>None</code> は <code>Err(指定したエラー)</code> になります。<code>?</code> と組み合わせて「無ければエラーで返す」と書けます。</td>
+<td>第2巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>.map_err()</code></td>
+<td><code>Result</code> のエラーの方だけを、別の物に変えるメソッド。<code>.map_err(&#124;_&#124; ConfigError::BadPort)</code> で、元のエラーを自分のエラーの型に変えます。成功の値はそのままです。</td>
+<td>第2巻 UNIT 09</td>
+</tr>
+<tr>
+<td>``</td>
+<td><code>thiserror</code> の印（属性）。エラーの種類ごとに、表示する文を決めます。<code>#[error("タイトルが長すぎます（{0} 文字）")]</code> のように書くと、<code>Display</code> を自分で書かずに済みます。</td>
+<td>第4巻 UNIT 05</td>
+</tr>
+<tr>
+<td>``</td>
+<td><code>thiserror</code> の印（属性）。「このエラーの元になったエラー」の項目に付けます。<code>.source()</code> や <code>anyhow</code> の原因の表示で、元のエラーまでたどれるようになります。</td>
+<td>第4巻 UNIT 05</td>
+</tr>
+<tr>
+<td>``</td>
+<td><code>thiserror</code> の印（属性）。付けた項目の型のエラーから、自分のエラーへ自動で変換できるようにします（<code>From</code> の実装を作る）。これで <code>?</code> を使った時に、自動で自分のエラーに変わります。</td>
+<td>第4巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>ErrorKind</code></td>
+<td>入出力のエラーの「種類」。<code>std::io::ErrorKind::NotFound</code>（無い）・<code>ConnectionRefused</code>（つなぐのを断られた）などがあり、<code>e.kind()</code> で調べて、種類ごとに処理を分けられます。</td>
+<td>第4巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>ConnectionRefused</code></td>
+<td><code>ErrorKind::ConnectionRefused</code> は、「相手のパソコンに、その番号で待っているプログラムがいない」ために、つなぐのを断られた、というエラーの種類です。</td>
+<td>第4巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>bail!</code></td>
+<td><code>anyhow</code> のマクロ。その場でエラーを作って、関数から返します。<code>bail!("ノートが 1 件もありません");</code> は <code>return Err(anyhow!("…"));</code> の短い書き方です。</td>
+<td>第4巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>.with_context()</code></td>
+<td><code>anyhow</code> のメソッド。失敗した時のエラーに、「何をしていて失敗したか」の説明を書き足します。<code>.with_context(&#124;&#124; format!("{path} を読めませんでした"))?</code>。ログを見た人が、原因をすぐ分かるようになります。</td>
+<td>第4巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>.unwrap_or_else()</code></td>
+<td><code>Option</code> や <code>Result</code> から中身を取り出し、無い（失敗した）時は、渡した関数を動かして代わりの値を作るメソッド。<code>unwrap_or</code> と違い、代わりの値を作る処理が、必要な時だけ動きます。</td>
+<td>第4巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>Context</code></td>
+<td><code>anyhow::Context</code> は、<code>with_context</code>・<code>context</code> メソッドを使えるようにする機能（トレイト）。<code>use anyhow::Context;</code> と書いておくと、<code>Result</code> や <code>Option</code> に説明を付けられます。</td>
+<td>第4巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>.is_ok()</code></td>
+<td><code>Result</code> が <code>Ok</code>（成功）なら <code>true</code> を返すメソッド。中身は要らず、成功したかだけ知りたい時に使います。</td>
+<td>第4巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>.or_else()</code></td>
+<td><code>Option</code> や <code>Result</code> が空（失敗）の時だけ、渡した関数で「別の <code>Option</code>・<code>Result</code>」を作って返すメソッド。「無ければ、別の所から探す」に使います。</td>
+<td>第4巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>panic!</code></td>
+<td>その場でプログラム（今のスレッド）を止めるマクロ。<code>panic!("起きるはずのないことが起きました")</code>。直しようのない、プログラムのまちがいを知らせる時に使います。ふつうの失敗には <code>Result</code> を使います。</td>
+<td>第5巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>.is_err()</code></td>
+<td><code>Result</code> が <code>Err</code>（失敗）なら <code>true</code> を返すメソッド。</td>
+<td>第5巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>.and_then()</code></td>
+<td><code>Option</code> や <code>Result</code> に中身があれば、それを使って、次の <code>Option</code>・<code>Result</code> を作るメソッド（無ければ、そのまま <code>None</code>・<code>Err</code>）。失敗するかもしれない処理を、続けてつなぐ時に使います。</td>
+<td>第5巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>.downcast_ref()</code></td>
+<td>いろいろな種類が入るエラー（<code>anyhow::Error</code> など）の中身が、指定した型なら、それを借りて <code>Some</code> で返すメソッド。「このエラーは〇〇の種類か」を調べる時に使います。</td>
+<td>第5巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>.chain()</code></td>
+<td><code>anyhow</code> のエラーの、原因を外側から順にたどれる形で返すメソッド。<code>error.chain()</code> で、説明を足した順に、元のエラーまで 1 つずつ見られます。（イテレーターの <code>.chain()</code> は「2 つの並びをつなぐ」別の意味です。）</td>
+<td>第5巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>.ok_or_else()</code></td>
+<td><code>Option</code> を <code>Result</code> に変えるメソッド。<code>None</code> の時に、渡した関数でエラーを作ります（必要な時だけ作る <code>ok_or</code> の版）。</td>
+<td>第6巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>todo!</code></td>
+<td>「ここはまだ書いていない」という印のマクロ。翻訳は通りますが、動かしてここに来ると止まります（パニック）。練習問題で、自分で書く所に置いてあります。</td>
+<td>第7巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>Forbidden</code></td>
+<td><code>AppError::Forbidden</code> は、この本のアプリのエラーの種類の 1 つで、「その操作は許されていない」（403）を表します。</td>
+<td>第10巻 UNIT 03</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-25">関数</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&#124;x&#124;</code>（クロージャ）</td>
+<td>その場で作る小さな関数（クロージャ）。<code>&#124;x&#124; x * 2</code> は「<code>x</code> を受け取って 2 倍を返す関数」です。<code>&#124; &#124;</code> の間が引数です。並べかえの基準やエラーの時の処理などを、ほかの関数に渡す時によく使います（第2巻）。</td>
+<td>第0巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>return</code></td>
+<td>関数を、その場で終えて値を返す命令。<code>return Err(…);</code> のように、途中で抜ける時に使います。Rust では、関数の最後の <code>;</code> の無い式が自動で戻り値になるので、最後の行では <code>return</code> を書かないのがふつうです。</td>
+<td>第0巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>Fn</code></td>
+<td>「呼び出せる物（関数やクロージャ）」を表す型の書き方。<code>f: impl Fn(i32) -&gt; i32</code> は「<code>i32</code> を受け取って <code>i32</code> を返す関数なら何でもよい」という引数です。</td>
+<td>第2巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>move</code></td>
+<td>クロージャが使う外の変数を、借りるのではなく「持っていく」印。<code>thread::spawn(move &#124;&#124; { … })</code> のように、別のスレッドに値を渡す時に必要です。</td>
+<td>第3巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>FnOnce</code></td>
+<td>「1 回だけ呼べる関数（クロージャ）」を表す型の書き方。中で値を使い切る（<code>move</code> した値を渡してしまう）クロージャは、この形になります。</td>
+<td>第5巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>FnMut</code></td>
+<td>「呼ぶたびに中の値を変えてよい関数（クロージャ）」を表す型の書き方。外の変数を書きかえるクロージャは、この形になります。</td>
+<td>第8巻 UNIT 02</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-26">型とメソッド</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>self</code></td>
+<td>メソッドの中で「このもの自身」を表す名前。<code>impl</code> の中の <code>fn label(&amp;self)</code> の <code>&amp;self</code> は「自分を借りて読むだけ」、<code>&amp;mut self</code> は「自分を書きかえる」という意味です。<code>use</code> の中の <code>self</code>（例: <code>use std::io::{self, Write};</code>）は「<code>io</code> そのもの」を表します。</td>
+<td>第0巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>struct</code></td>
+<td>いくつかの値をまとめて、新しい型を作る書き方（構造体）。<code>struct Note { id: u32, title: String }</code> で、「番号と題名を持つノート」という型ができます。<code>Note { id: 1, title: "買い物".to_string() }</code> で 1 つ作ります（第2巻）。</td>
+<td>第0巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>impl</code></td>
+<td>2 つの使い方があります。① <code>impl 型 { … }</code> で、その型にメソッド（関数）を付ける。② <code>impl View</code> のように型の場所に書くと、「<code>View</code> の機能を持つ何かの型」という意味になります（戻り値の型を細かく書かずに済む）。</td>
+<td>第1巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>.build()</code></td>
+<td>設定を少しずつ足していく「組み立て係」（ビルダー）の最後に呼んで、でき上がった物を作るメソッド。<code>Router::builder()…build()</code> の形で、ルーターなどを作る時に使います。</td>
+<td>第1巻 UNIT 08</td>
+</tr>
+<tr>
+<td>``</td>
+<td>型に、よく使う機能を自動で付ける印（属性）。<code>#[derive(Debug, Clone, PartialEq)]</code> のように、付けたい機能の名前を並べます（例: <code>Debug</code> → <code>{:?}</code> で表示できる、<code>Clone</code> → <code>.clone()</code> できる）。</td>
+<td>第2巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>Debug</code></td>
+<td><code>{:?}</code> で中身を表示できる機能（トレイト）。<code>#[derive(Debug)]</code> を付けた型は、<code>println!("{:?}", 値)</code> で中身を確かめられます。</td>
+<td>第2巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>Clone</code></td>
+<td><code>.clone()</code> で値を丸ごと複製できる機能（トレイト）。<code>#[derive(Clone)]</code> で付けます。</td>
+<td>第2巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>Copy</code></td>
+<td>代入や関数に渡した時に、移る（ムーブ）のではなく、自動で写される機能（トレイト）。数や <code>bool</code> のような小さな値が持っています。<code>#[derive(Clone, Copy)]</code> で自分の型にも付けられます（中身が全部 <code>Copy</code> の時だけ）。</td>
+<td>第2巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>PartialEq</code></td>
+<td><code>==</code> と <code>!=</code> で比べられる機能（トレイト）。<code>#[derive(PartialEq)]</code> で付けます。</td>
+<td>第2巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>enum</code></td>
+<td>「いくつかの種類のうち、どれか 1 つ」を表す型（列挙型）。<code>enum Filter { All, Active, Done }</code> のように種類を並べ、<code>match</code> で種類ごとに処理を分けます。種類ごとに違うデータを持たせることもできます（第2巻）。</td>
+<td>第2巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>Display</code></td>
+<td><code>{}</code> で表示できる機能（トレイト）。利用者に見せる形を自分で決めたい時に、<code>impl fmt::Display for 型 { fn fmt(…) { … } }</code> と書いて実装します（<code>Debug</code> は開発者向けの表示）。</td>
+<td>第2巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>Formatter</code></td>
+<td><code>Display</code> や <code>Debug</code> の実装の中で受け取る「書き込み先」。<code>write!(f, "…")</code> で、そこに表示する文を書きます。</td>
+<td>第2巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>Eq</code></td>
+<td><code>==</code> の比べ方が、いつも筋が通っている（自分と比べると必ず等しい）ことを表す印（トレイト）。<code>HashMap</code> のキーにする型などに要ります。<code>PartialEq</code> と一緒に <code>#[derive]</code> で付けます。</td>
+<td>第2巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>PartialOrd</code></td>
+<td><code>&lt;</code>・<code>&gt;</code> などで大小を比べられる機能（トレイト）。<code>#[derive(PartialOrd)]</code> で付けます。</td>
+<td>第2巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>Ord</code></td>
+<td>いつでも大小がはっきり決まる比べ方を持つ機能（トレイト）。<code>sort</code> や <code>BTreeMap</code> のキーに使う型に要ります。</td>
+<td>第2巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>Self::default()</code></td>
+<td>その型の「初期値」（<code>Default</code> の値）を作る書き方。<code>Self</code> は「今 <code>impl</code> している型そのもの」を表します。</td>
+<td>第2巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>Default</code></td>
+<td>「初期値（空の値）を作れる」機能（トレイト）。<code>#[derive(Default)]</code> を付けると、数は 0、文字列は <code>""</code>、<code>bool</code> は <code>false</code> の初期値を作れます。</td>
+<td>第2巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>trait</code></td>
+<td>「この型は、この関数を持っています」という約束（トレイト）を決める書き方。<code>trait Notifier { fn send(&amp;self, msg: &amp;str); }</code> と決めて、<code>impl Notifier for 型 { … }</code> で、それぞれの型が約束を守ります。</td>
+<td>第3巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>dyn</code></td>
+<td>「このトレイトを持つ、何かの型」を表す印。<code>Box&lt;dyn Notifier&gt;</code> は「<code>Notifier</code> を持つ何か（中身の型は動かしてみるまで分からない）を指す箱」です。違う型を 1 つの <code>Vec</code> に入れる時に使います。</td>
+<td>第3巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>type</code></td>
+<td>型に別の名前を付ける書き方（型の別名）。<code>type DynRepo = Arc&lt;dyn NoteRepository + Send + Sync&gt;;</code> のように、長い型を短く呼べます。トレイトの中の <code>type Err = IdError;</code> は「このトレイトで使うエラーの型は <code>IdError</code>」と決める書き方です。</td>
+<td>第4巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>FromStr</code></td>
+<td>「文字列から作れる」機能（トレイト）。<code>impl FromStr for 型 { … }</code> を書くと、<code>"42".parse::&lt;型&gt;()</code> で、文字列から自分の型を作れるようになります。</td>
+<td>第4巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>where</code></td>
+<td>ジェネリクス（型を後から決める書き方）の条件を、関数の後ろにまとめて書く所。<code>where T: Display, I: IntoIterator&lt;Item = T&gt;</code> のように、条件が長い時に読みやすくなります。</td>
+<td>第4巻 UNIT 03</td>
+</tr>
+<tr>
+<td><code>InMemoryNoteRepository::default()</code></td>
+<td>この巻で作る型 <code>InMemoryNoteRepository</code>（メモリの中にノートを持つ保管係）を、初期値（空の状態）で作る書き方。<code>#[derive(Default)]</code> を付けてあるので、<code>::default()</code> で作れます。</td>
+<td>第4巻 牛乳を買う</td>
+</tr>
+<tr>
+<td><code>Sized</code></td>
+<td>「大きさ（メモリで使う量）が、翻訳の時に決まっている」ことを表す印（トレイト）。<code>where Self: Sized</code> は「<code>dyn</code> 越しには呼べない」メソッドにする時の書き方です。ふだんは気にしなくて大丈夫です。</td>
+<td>第4巻 牛乳を買う</td>
+</tr>
+<tr>
+<td><code>From</code></td>
+<td>「ある型から作れる」機能（トレイト）。<code>impl From&lt;RepoError&gt; for AppError</code> を書くと、<code>RepoError</code> を <code>AppError</code> に変えられます。<code>?</code> は、エラーを返す時にこの変換を自動で使います。</td>
+<td>第4巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>NoteStore::default()</code></td>
+<td>この巻で作る型 <code>NoteStore</code> を、初期値（空の状態）で作る書き方（<code>#[derive(Default)]</code> のおかげで使える）。</td>
+<td>第4巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>TryFrom</code></td>
+<td>「ある型から作れるが、失敗することもある」変換の機能（トレイト）。<code>impl TryFrom&lt;CreateNoteInput&gt; for NewNote</code> を書くと、<code>NewNote::try_from(input)</code> で、入力を確かめながら変換でき、だめなら <code>Err</code> を返します。</td>
+<td>第4巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>.into()</code></td>
+<td>値を、受け取る側が求める型に変えるメソッド（<code>From</code> の実装を使う）。<code>let s: String = "abc".into();</code> のように、変換先の型が分かる所で使います。</td>
+<td>第4巻 UNIT 09</td>
+</tr>
+<tr>
+<td>``</td>
+<td>「この戻り値を使わずに捨てたら、警告を出して」という印（属性）。結果の確かめ忘れを防ぎます。</td>
+<td>第4巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>Builder</code></td>
+<td>「組み立て係」（ビルダー）の型。設定をメソッドでつなげて決め、最後の <code>.build()</code> ででき上がりを作ります。tokio のランタイム・HTTP のクライアント・データベースの接続などで使われます。</td>
+<td>第5巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>Into</code></td>
+<td>「ある型に変えられる」機能（トレイト。<code>From</code> の逆向き）。<code>body: impl Into&lt;String&gt;</code> は「<code>String</code> に変えられる物なら何でも（<code>&amp;str</code> でも <code>String</code> でも）受け取る」という引数で、中で <code>.into()</code> を呼んで変えます。</td>
+<td>第5巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>Fut</code></td>
+<td>ジェネリクス（型を後から決める書き方）で使う、型の名前の代わりの記号。<code>F: Fn() -&gt; Fut, Fut: Future&lt;Output = T&gt;</code> は、「<code>F</code> は呼ぶと <code>Fut</code> を返す関数で、<code>Fut</code> は終わると <code>T</code> を返す Future」という意味です。名前は自由に付けられます。</td>
+<td>第5巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>Ledger::default()</code></td>
+<td>この巻で作る型 <code>Ledger</code>（帳簿）を、初期値（空の状態）で作る書き方（<code>#[derive(Default)]</code> のおかげで使える）。</td>
+<td>第5巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>Metrics::default()</code></td>
+<td>この巻で作る型 <code>Metrics</code>（数を数える係）を、初期値（全部 0）で作る書き方（<code>#[derive(Default)]</code> のおかげで使える）。</td>
+<td>第5巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>.try_into()</code></td>
+<td>値を、別の型に変えようとして、変えられなければ <code>Err</code> を返すメソッド（<code>TryFrom</code> の逆向き）。<code>bytes.try_into()</code> で、長さの決まった配列（<code>[u8; 32]</code> など）に変えます。</td>
+<td>第8巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>RecordingBrokenNotes::default()</code></td>
+<td>この巻のテストで作る、わざと失敗するノートの保管係（<code>RecordingBrokenNotes</code>）を、初期値で作る書き方。</td>
+<td>第9巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>NoteFormState::default()</code></td>
+<td>この巻で作る型 <code>NoteFormState</code>（入力フォームの中身と、まちがいの知らせ）を、空の状態で作る書き方。最初にフォームを表示する時に使います。</td>
+<td>第10巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>unsafe</code></td>
+<td>「ここはコンパイラーが安全を確かめきれないので、書いた人が責任を持つ」という印。メモリを直接扱う所などで使います。ふつうのアプリのコードでは、ほとんど使いません。</td>
+<td>第11巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>AsRef</code></td>
+<td>「借りた形（<code>&amp;Path</code> など）に変えられる」機能（トレイト）。引数を <code>path: impl AsRef&lt;Path&gt;</code> にすると、<code>&amp;str</code> でも <code>String</code> でも <code>PathBuf</code> でも受け取れます。</td>
+<td>第13巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>SignupFormState::default()</code></td>
+<td>この巻で作る型 <code>SignupFormState</code>（登録フォームの中身とまちがいの知らせ）を、空の状態で作る書き方。</td>
+<td>第13巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>.db_dir()</code></td>
+<td>この本のテストの手伝いの係が持つ、テスト用のデータベースを置く一時フォルダの場所を返すメソッド。</td>
+<td>第13巻 設計のメモ</td>
+</tr>
+<tr>
+<td><code>Note::default()</code></td>
+<td>この付録のサンプルで作る型 <code>Note</code> を、初期値（番号 0・空のタイトル・未完了）で作る書き方（<code>#[derive(Default)]</code> のおかげで使える）。</td>
+<td>第14巻 B. サンプル集</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-27">モジュール</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>use</code></td>
+<td>ほかの場所にある道具に、短い名前で呼べるようにする宣言。<code>use std::env;</code> と書くと、<code>std::env::args()</code> を <code>env::args()</code> と短く書けます。<code>std</code> は Rust に最初から付いている道具箱（標準ライブラリ）です。</td>
+<td>第0巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>mod</code></td>
+<td>コードをまとめる箱（モジュール）を作る書き方。<code>mod tests { … }</code> のように、関係する関数をまとめます。<code>mod 名前;</code> と書くと、別のファイル（<code>名前.rs</code>）の中身を読み込みます。</td>
+<td>第0巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>super</code></td>
+<td>「1 つ外側のモジュール」を表す名前。テストの中の <code>use super::*;</code> は、「外側（テストする本体）にある物を全部使えるようにする」という決まり文句です。</td>
+<td>第0巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>pub</code></td>
+<td>「外から使ってよい」（公開）という印。<code>pub fn title_length(…)</code> は、ほかのファイル（モジュール）からも呼べる関数になります。付けないと、同じモジュールの中からしか使えません。</td>
+<td>第1巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>crate</code></td>
+<td>「このプロジェクト（クレート）のいちばん上」を表す言葉。<code>use crate::note::Note;</code> は「このプロジェクトの <code>note</code> モジュールの <code>Note</code> を使う」という意味です。</td>
+<td>第2巻 UNIT 10</td>
+</tr>
+<tr>
+<td>``</td>
+<td><code>mod</code> で読み込むファイルの場所を、自分で指定する印（属性）。<code>#[path = "../src/note.rs"] mod note;</code> のように使います。</td>
+<td>第11巻 UNIT 04</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-28">所有権と借用</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&amp;mut</code></td>
+<td>「書きかえてよい」という約束で値を貸す書き方。<code>read_to_string(&amp;mut text)</code> は、関数に <code>text</code> を貸して、中身を書き込んでもらいます。貸す元の変数は <code>let mut text</code> のように <code>mut</code> が付いている必要があります（第3巻）。</td>
+<td>第0巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>.clone()</code></td>
+<td>値を丸ごと複製するメソッド。<code>let b = a.clone();</code> で、<code>a</code> と <code>b</code> の両方を使えるようになります（<code>clone</code> しないと、<code>let b = a;</code> で中身が <code>b</code> に移り、<code>a</code> は使えなくなります。第3巻）。</td>
+<td>第0巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>Drop</code></td>
+<td>値が片づけられる（持ち主がいなくなって消える）時に、自動で動く処理を書くための機能（トレイト）。<code>impl Drop for 型 { fn drop(&amp;mut self) { … } }</code> と書くと、片づけの時にその処理が動きます。ファイルを閉じる・鍵を返す、などに使われています。</td>
+<td>第3巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>.as_ptr()</code></td>
+<td>値の本体がメモリのどこにあるか（アドレス）を返すメソッド。「同じ場所を指しているか」を見るための、仕組みの確かめ用です。ふだんのプログラムではあまり使いません。</td>
+<td>第3巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>.as_ref()</code></td>
+<td>中身を借りた形に変えるメソッド。<code>Option&lt;String&gt;</code> を <code>Option&lt;&amp;String&gt;</code> にするなど、中身を移さずに覗きたい時に使います。</td>
+<td>第4巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>.as_mut()</code></td>
+<td>中身を、書きかえられる形で借りるメソッド。<code>Pin</code> に使うと、ピン留めしたまま <code>poll</code> を呼べる形にします。</td>
+<td>第5巻 UNIT 01</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-29">スマートポインタ</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Box</code></td>
+<td>値をヒープ（大きな物を置く広い場所）に置き、その場所を指す「持ち手」を手元に置く型。<code>Box&lt;dyn Notifier&gt;</code> のように、違う型の物を同じ並びに入れる時によく使います（第3巻）。</td>
+<td>第3巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>Rc::strong_count()</code></td>
+<td><code>Rc</code> の本体を、今いくつの持ち手が指しているかを返す関数。0 になると本体が片づけられます。</td>
+<td>第3巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>Rc::clone()</code></td>
+<td><code>Rc</code> の持ち手を 1 つ増やす関数。本体は複製せず、「同じ物を指す持ち手」を作って、持ち主の数を 1 増やすだけなので、軽い操作です。</td>
+<td>第3巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>Rc::ptr_eq()</code></td>
+<td>2 つの <code>Rc</code> が、同じ本体を指しているかを調べる関数。</td>
+<td>第3巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>Rc</code></td>
+<td>1 つの値を、何人もで持てるようにする型（参照カウント）。持ち手を <code>Rc::clone</code> で増やし、全員がいなくなった時に本体が片づけられます。1 つのスレッドの中だけで使います（スレッドをまたぐ時は <code>Arc</code>）。</td>
+<td>第3巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>.borrow_mut()</code></td>
+<td><code>RefCell</code> の中身を、書きかえるために借りるメソッド。ほかで借りている最中に呼ぶと、その場で止まる（パニック）ので注意します。</td>
+<td>第3巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>.borrow()</code></td>
+<td><code>RefCell</code> の中身を、読むために借りるメソッド。</td>
+<td>第3巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>.try_borrow_mut()</code></td>
+<td><code>RefCell</code> の中身を書きかえるために借りられるかを、止まらずに確かめるメソッド。借りられなければ <code>Err</code> が返ります。</td>
+<td>第3巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>RefCell</code></td>
+<td>「借りるルール」の確かめを、コンパイルの時ではなく、動かしている時に行う入れ物。<code>Rc&lt;RefCell&lt;T&gt;&gt;</code> の形で、「何人もで持って、しかも書きかえたい」時に使います（第3巻）。</td>
+<td>第3巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>.upgrade()</code></td>
+<td><code>Weak</code>（弱い持ち手）から、本体を使うためのふつうの持ち手（<code>Rc</code>）を取り出すメソッド。本体がもう片づけられていれば <code>None</code> です。</td>
+<td>第3巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>Rc::downgrade()</code></td>
+<td><code>Rc</code> から、<code>Weak</code>（弱い持ち手）を作る関数。弱い持ち手は、本体を生かし続ける数に入りません。</td>
+<td>第3巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>Rc::weak_count()</code></td>
+<td>本体を指している <code>Weak</code>（弱い持ち手）の数を返す関数。</td>
+<td>第3巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>Weak</code></td>
+<td>本体を指すけれど、本体を生かし続ける数には入らない「弱い持ち手」。親と子が互いを指す時に、片方を <code>Weak</code> にして、いつまでも片づけられない（メモリが漏れる）のを防ぎます。</td>
+<td>第3巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>Cell</code></td>
+<td>中身を、借りずに丸ごと入れかえられる入れ物。<code>Copy</code> できる小さな値（数など）を、<code>&amp;</code> しか持っていない所から書きかえる時に使います。</td>
+<td>第3巻 UNIT 09</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-30">イテレーター</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.nth()</code></td>
+<td>並びの中から「n 番目」を 1 つ取り出すメソッド。番号は 0 から数えます。<code>env::args().nth(1)</code> は、コマンドの引数の 1 番目（0 番目はプログラム自身の場所）。無いかもしれないので、結果は <code>Some(値)</code> か <code>None</code>（<code>Option</code>）で返ります。</td>
+<td>第0巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>.enumerate()</code></td>
+<td>並びを 1 つずつ取り出す時に、「何番目か」の番号を一緒に付けるメソッド。<code>for (i, x) in list.iter().enumerate()</code> で、<code>i</code> に 0, 1, 2…、<code>x</code> に中身が入ります。</td>
+<td>第0巻 UNIT 03</td>
+</tr>
+<tr>
+<td><code>.collect()</code></td>
+<td>1 つずつ取り出せる形（イテレーター）の中身を、<code>Vec</code> や <code>String</code> などの入れ物に集めるメソッド。何に集めるかを、<code>let v: Vec&lt;&amp;str&gt; = ….collect();</code> のように変数の型で教えます。</td>
+<td>第0巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>.iter()</code></td>
+<td>並び（<code>Vec</code> など）の中身を、借りて 1 つずつ取り出せる形（イテレーター）にするメソッド。<code>for x in v.iter()</code> や、<code>v.iter().map(…)</code>・<code>.filter(…)</code> のように、加工してから使う時の入り口です。</td>
+<td>第0巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>.rev()</code></td>
+<td>並びを逆の順番で取り出すメソッド。<code>(1..=3).rev()</code> は 3, 2, 1 の順です。</td>
+<td>第2巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>.step_by()</code></td>
+<td>並びから、決めた数おきに取り出すメソッド。<code>(0..10).step_by(3)</code> は 0, 3, 6, 9。</td>
+<td>第2巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>.into_iter()</code></td>
+<td>入れ物の中身を、借りずに「もらって」1 つずつ取り出す形にするメソッド。使ったあと、元の入れ物は使えなくなります（<code>.iter()</code> は借りるだけ）。</td>
+<td>第2巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>.any()</code></td>
+<td>並びの中に、条件に合う物が 1 つでもあれば <code>true</code> を返すメソッド。全部が合うかは <code>.all()</code> で調べます。</td>
+<td>第2巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>.iter_mut()</code></td>
+<td>並びの中身を、書きかえられるように借りて、1 つずつ取り出すメソッド。<code>for v in values.iter_mut() { *v *= 2; }</code> のように、<code>*</code> を付けて中身を書きかえます。</td>
+<td>第3巻 UNIT 03</td>
+</tr>
+<tr>
+<td><code>.position()</code></td>
+<td>並びの中で、条件に合う最初の物が「何番目か」を <code>Option</code> で返すメソッド。<code>notes.iter().position(&#124;n&#124; n.id == id)</code>。無ければ <code>None</code> です。</td>
+<td>第3巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>IntoIterator</code></td>
+<td>「<code>for</code> で回せる物」の機能（トレイト）。<code>Vec</code>・配列・<code>HashMap</code> などが持っています。<code>I: IntoIterator&lt;Item = T&gt;</code> は「<code>T</code> が 1 つずつ出てくる、回せる物なら何でも」という条件です。</td>
+<td>第4巻 UNIT 03</td>
+</tr>
+<tr>
+<td><code>Iterator</code></td>
+<td>「1 つずつ取り出せる物」（イテレーター）の機能（トレイト）。<code>map</code>・<code>filter</code>・<code>sum</code> などのメソッドは、全部この機能に付いています。<code>impl Iterator&lt;Item = &amp;Note&gt;</code> は「<code>&amp;Note</code> を 1 つずつ出す何か」を返す、という戻り値の書き方です。</td>
+<td>第4巻 UNIT 03</td>
+</tr>
+<tr>
+<td><code>.filter_map()</code></td>
+<td>1 つずつ変換して、<code>None</code> になった物は捨て、<code>Some</code> の中身だけを残すメソッド。<code>.filter_map(&#124;line&#124; line.split_once('='))</code> は、<code>=</code> を含む行だけを「名前と値の組」にします。</td>
+<td>第4巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>.zip()</code></td>
+<td>2 つの並びを、同じ番号どうしの組にして取り出すメソッド。<code>names.iter().zip(ages.iter())</code> は <code>(名前, 年齢)</code> の組を順に出します。短い方が終わった所で終わります。</td>
+<td>第7巻 この巻で身に付けること</td>
+</tr>
+<tr>
+<td><code>.peekable()</code></td>
+<td>次の 1 つを、取り出さずに「覗く」（<code>peek</code>）ことができるイテレーターにするメソッド。文字を 1 つずつ読みながら、次の文字で処理を変える時に使います。</td>
+<td>第7巻 この巻で身に付けること</td>
+</tr>
+<tr>
+<td><code>.peek()</code></td>
+<td>次の 1 つを、取り出さずに覗くメソッド（<code>peekable</code> にしたイテレーターで使う）。</td>
+<td>第7巻 この巻で身に付けること</td>
+</tr>
+<tr>
+<td><code>.by_ref()</code></td>
+<td>イテレーターを借りたまま、途中まで使うメソッド。<code>for c in chars.by_ref()</code> のあとでも、残りを続けて読めます。</td>
+<td>第7巻 この巻で身に付けること</td>
+</tr>
+<tr>
+<td><code>.next_back()</code></td>
+<td>並びを後ろから 1 つ取り出すメソッド。<code>line[..at].chars().next_back()</code> は、その位置の 1 つ前の文字です。</td>
+<td>第9巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>.fold()</code></td>
+<td>並びを 1 つずつ見ながら、1 つの値にまとめていくメソッド。<code>fold(最初の値, &#124;ここまで, x&#124; 次の値)</code>。合計・文字列をつなぐ、などに使えます。</td>
+<td>第14巻 B. サンプル集</td>
+</tr>
+<tr>
+<td><code>.flat_map()</code></td>
+<td>1 つから、いくつもの物を作って、それを全部 1 つの並びに平らにつなぐメソッド。</td>
+<td>第14巻 B. サンプル集</td>
+</tr>
+<tr>
+<td><code>.max_by_key()</code></td>
+<td>「何で比べるか」を関数で決めて、いちばん大きい物を探すメソッド。<code>people.iter().max_by_key(&#124;p&#124; p.age)</code>。</td>
+<td>第14巻 B. サンプル集</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-31">ファイルとフォルダ</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.display()</code></td>
+<td>ファイルやフォルダの場所（<code>Path</code>・<code>PathBuf</code>）を、<code>println!</code> で表示できる形にするメソッド。場所は、そのままでは <code>{}</code> で出せないので、<code>path.display()</code> を通して出します。</td>
+<td>第0巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>.join()</code></td>
+<td>場所（パス）に、フォルダやファイルの名前をつなげた新しい場所を作るメソッド。<code>dir.join("notes.txt")</code> は、<code>dir</code> の中の <code>notes.txt</code> を表します。区切りの <code>\</code> は自動で入ります。（文字列の配列に使う <code>.join(", ")</code> は、「区切り文字でつなげて 1 つの文字列にする」別の意味です。）</td>
+<td>第0巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>fs::create_dir_all()</code></td>
+<td>フォルダを作る関数。<code>fs::create_dir_all("data/notes")</code> のように、途中のフォルダもまとめて作ります。もうあってもエラーになりません。</td>
+<td>第0巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>fs::write()</code></td>
+<td>ファイルに文字を書く関数。<code>fs::write("memo.txt", "こんにちは")</code> で、ファイルが無ければ作り、あれば中身を全部置きかえます。失敗することもあるので <code>Result</code> が返ります。</td>
+<td>第0巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>fs::read_to_string()</code></td>
+<td>ファイルの中身を全部読んで、1 つの文字列（<code>String</code>）にする関数。ファイルが無い時などは <code>Err</code>（エラー）が返ります。</td>
+<td>第0巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>.file_name()</code></td>
+<td>場所（パス）から、最後の部分（ファイル名やフォルダ名）だけを取り出すメソッド。<code>C:\data\memo.txt</code> なら <code>memo.txt</code>。無いこともあるので <code>Option</code> で返ります。</td>
+<td>第0巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>.extension()</code></td>
+<td>ファイル名の拡張子（<code>.txt</code> の <code>txt</code> の部分）を取り出すメソッド。拡張子が無い時は <code>None</code> が返ります。</td>
+<td>第0巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>.parent()</code></td>
+<td>場所（パス）の、1 つ上のフォルダを取り出すメソッド。<code>C:\data\memo.txt</code> なら <code>C:\data</code>。</td>
+<td>第0巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>.is_dir()</code></td>
+<td>その場所がフォルダなら <code>true</code>、ファイルなら <code>false</code> を返すメソッド。ファイルかどうかは <code>.is_file()</code> で調べます。</td>
+<td>第0巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>fs::read_dir()</code></td>
+<td>フォルダの中の一覧（ファイルとフォルダ）を、1 つずつ取り出せる形で返す関数。順番は決まっていないので、並べたい時は <code>Vec</code> に集めて <code>sort</code> します。</td>
+<td>第0巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>.append()</code></td>
+<td><code>OpenOptions::new().append(true)</code> で、「ファイルの後ろに書き足す」ように開く設定にします（指定しないと、最初から書き直します）。</td>
+<td>第0巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>OpenOptions</code></td>
+<td>ファイルをどう開くか（読む・書く・書き足す・無ければ作る）を細かく決めてから開くための型。<code>OpenOptions::new().create(true).append(true).open("memo.txt")?</code> のように、設定をつなげて書きます。</td>
+<td>第0巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>fs::remove_file()</code></td>
+<td>ファイルを消す関数。ごみ箱には入りません。ファイルが無い時はエラー（<code>Err</code>）が返ります。</td>
+<td>第0巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>std::fs::read_to_string()</code></td>
+<td>ファイルの中身を全部読んで文字列にする関数（<code>fs::read_to_string</code> と同じ）。</td>
+<td>第5巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>std::fs::write()</code></td>
+<td>ファイルに書く関数（<code>fs::write</code> と同じ）。無ければ作り、あれば中身を置きかえます。</td>
+<td>第5巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>std::fs::remove_dir_all()</code></td>
+<td>フォルダを、中身ごと全部消す関数。ごみ箱を通さずに消えるので、場所をよく確かめて使います。</td>
+<td>第5巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>std::fs::create_dir_all()</code></td>
+<td>フォルダを、途中のフォルダもまとめて作る関数（<code>fs::create_dir_all</code> と同じ）。</td>
+<td>第5巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>std::fs::remove_file()</code></td>
+<td>ファイルを消す関数（<code>fs::remove_file</code> と同じ）。ごみ箱には入りません。</td>
+<td>第7巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>std::fs::metadata()</code></td>
+<td>ファイルの情報（大きさ・日時など）を取り出す関数。<code>std::fs::metadata(path)?.len()</code> で、ファイルの大きさ（バイト）が分かります。</td>
+<td>第7巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>std::fs::read_dir()</code></td>
+<td>フォルダの中の一覧を返す関数（<code>fs::read_dir</code> と同じ）。</td>
+<td>第7巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>tempfile::tempdir()</code></td>
+<td>使い終わると自動で消える、一時的なフォルダを作る関数（<code>tempfile</code> の部品）。テストで、ファイルやデータベースを置く場所に使います。</td>
+<td>第8巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>PathBuf</code></td>
+<td>ファイルやフォルダの場所（パス）を、自分の物として持つ型（<code>String</code> のパス版）。<code>path.join("a")</code> で場所をつなげ、<code>.push("b")</code> で足せます。借りるだけの形は <code>&amp;Path</code> です。</td>
+<td>第9巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>std::env::temp_dir()</code></td>
+<td>OS の、一時的なファイルを置くフォルダの場所を返す関数（Windows なら <code>C:\Users\you\AppData\Local\Temp</code>）。</td>
+<td>第11巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>TempDir</code></td>
+<td><code>tempfile</code> の部品の、一時的なフォルダの型。この値が片づけられると、フォルダも中身ごと自動で消えます。</td>
+<td>第11巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>std::fs::create_dir()</code></td>
+<td>フォルダを 1 つ作る関数。途中のフォルダが無い・もうある時はエラーです（まとめて作るのは <code>create_dir_all</code>）。</td>
+<td>第13巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>fs::metadata()</code></td>
+<td>ファイルの情報（大きさ・日時など）を取り出す関数。<code>fs::metadata(path)?.len()</code> で大きさが分かります。</td>
+<td>第14巻 B. サンプル集</td>
+</tr>
+<tr>
+<td><code>fs::remove_dir_all()</code></td>
+<td>フォルダを、中身ごと全部消す関数。ごみ箱は通らないので、場所をよく確かめて使います。</td>
+<td>第14巻 B. サンプル集</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-32">入出力</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.write_all()</code></td>
+<td>用意した中身を、全部まとめて書き込むメソッド。ネットの接続（<code>TcpStream</code>）やファイルに、バイト（<code>&amp;[u8]</code>）を書きます。途中で失敗することもあるので <code>Result</code> が返ります。</td>
+<td>第0巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>.read_to_string()</code></td>
+<td>接続やファイルから、残りを全部読んで文字列に入れるメソッド。<code>stream.read_to_string(&amp;mut text)</code> の <code>&amp;mut text</code> は「この変数に書き込んでよい」と貸す書き方です。使うには <code>use std::io::Read;</code> が要ります。</td>
+<td>第0巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>Read</code></td>
+<td>「読める物」が持っている機能（トレイト）。<code>read_to_string</code> などの読むメソッドを使うには、<code>use std::io::Read;</code> で、この機能を使えるようにしておく必要があります。</td>
+<td>第0巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>Write</code></td>
+<td>「書ける物」が持っている機能（トレイト）。<code>write_all</code> や <code>writeln!</code> を使うには、<code>use std::io::Write;</code> で、この機能を使えるようにしておく必要があります。</td>
+<td>第0巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>.read_line()</code></td>
+<td>1 行だけ読んで、文字列に書き足すメソッド。読んだ行の最後には改行が付いたままなので、<code>.trim_end()</code> などで取ってから使います。</td>
+<td>第0巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>BufRead</code></td>
+<td>「1 行ずつ読める物」が持っている機能（トレイト）。<code>read_line</code> や <code>lines</code> を使うには、<code>use std::io::BufRead;</code> が要ります。</td>
+<td>第0巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>BufReader</code></td>
+<td>読む物（接続やファイル）を包んで、少しずつまとめて読む（バッファーする）ことで速くし、1 行ずつ読めるようにする型。<code>BufReader::new(&amp;stream)</code> のように使います。</td>
+<td>第0巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>writeln!</code></td>
+<td><code>println!</code> と同じ書き方で、画面ではなく、ファイルや接続に 1 行書くマクロ。<code>writeln!(file, "{}", text)?;</code> のように、最初に書き込み先を渡します。使うには <code>use std::io::Write;</code> が要ります。</td>
+<td>第0巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>.flush()</code></td>
+<td>ためておいた出力を、すぐに画面やファイルへ書き出すメソッド。<code>print!</code> は改行しないので、すぐ表示されないことがあり、<code>io::stdout().flush()</code> で確実に出します。使うには <code>use std::io::Write;</code> が要ります。</td>
+<td>第2巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>io::stdout()</code></td>
+<td>標準出力（ふつうの画面への出口）を表す物を返す関数。<code>println!</code> も、ここへ書いています。</td>
+<td>第2巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>io::stdin()</code></td>
+<td>標準入力（キーボードからの入口）を表す物を返す関数。<code>io::stdin().read_line(&amp;mut s)</code> で 1 行読み、<code>io::stdin().lines()</code> で 1 行ずつくり返し読めます。</td>
+<td>第2巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>.read_exact()</code></td>
+<td>決めた数のバイトを、ちょうどその数だけ読むメソッド。途中で終わってしまったら、エラーになります。HTTP の本文を、<code>Content-Length</code> の長さだけ読む時に使います。</td>
+<td>第6巻 UNIT 01</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-33">プロセス</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>process::exit()</code></td>
+<td>プログラムを、その場で終わらせる関数。<code>process::exit(2)</code> は、終了コード 2 を OS に知らせて終わります。終了コードは「0 なら成功、0 以外なら失敗」の決まりで、PowerShell では <code>$LASTEXITCODE</code> で見られます。</td>
+<td>第0巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>env::current_dir()</code></td>
+<td>プログラムを動かした時の、今いるフォルダ（カレントディレクトリ）を返す関数。PowerShell の <code>Get-Location</code> と同じ場所です。取れないこともあるので、結果は <code>Result</code> で返り、<code>?</code> や <code>unwrap()</code> で中身を取り出します。</td>
+<td>第0巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>env::var()</code></td>
+<td>環境変数（プログラムの外から渡す設定の値）を読む関数。<code>env::var("GREETING")</code>。設定されていないこともあるので、<code>Result</code> で返ります。<code>unwrap_or_else(&#124;_&#124; "既定値".to_string())</code> で、無い時の値を決めるのがふつうです。</td>
+<td>第0巻 UNIT 03</td>
+</tr>
+<tr>
+<td><code>std::process::exit()</code></td>
+<td>プログラムを、その場で終わらせる関数（<code>process::exit</code> と同じ）。<code>std::process::exit(1)</code> は、終了コード 1（失敗）で終わります。</td>
+<td>第4巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>VarError</code></td>
+<td>環境変数を読む <code>env::var</code> が失敗した時のエラーの型。<code>VarError::NotPresent</code>（設定されていない）と <code>VarError::NotUnicode</code>（文字として読めない）の 2 種類があります。</td>
+<td>第4巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>NotPresent</code></td>
+<td><code>VarError::NotPresent</code> は、「その名前の環境変数が設定されていない」というエラーの種類です。</td>
+<td>第4巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>std::env::var()</code></td>
+<td>環境変数を読む関数（<code>env::var</code> と同じ）。<code>std::env::var("PORT")</code> は <code>Result</code> を返し、設定されていなければ <code>Err</code> です。</td>
+<td>第4巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>env::set_var()</code></td>
+<td>このプログラムの中の環境変数を設定する関数。テストで設定を試す時などに使います（Rust 2024 では、ほかのスレッドとの関係で <code>unsafe</code> の中で使う決まりです）。</td>
+<td>第4巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>ExitCode</code></td>
+<td><code>main</code> が返す、終了コードの型。<code>fn main() -&gt; ExitCode</code> にして、<code>ExitCode::SUCCESS</code>（0）か <code>ExitCode::FAILURE</code>（1）を返します。<code>process::exit</code> と違い、片づけをしてから終われます。</td>
+<td>第7巻 この巻で身に付けること</td>
+</tr>
+<tr>
+<td><code>SUCCESS</code></td>
+<td><code>ExitCode::SUCCESS</code> は、終了コード 0（成功）です。</td>
+<td>第7巻 この巻で身に付けること</td>
+</tr>
+<tr>
+<td><code>FAILURE</code></td>
+<td><code>ExitCode::FAILURE</code> は、終了コード 1（失敗）です。</td>
+<td>第7巻 この巻で身に付けること</td>
+</tr>
+<tr>
+<td><code>std::env::current_exe()</code></td>
+<td>今動いている実行ファイル（<code>.exe</code>）の場所を返す関数。実行ファイルの隣に置いたフォルダを探す時に使います。</td>
+<td>第9巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>env::remove_var()</code></td>
+<td>このプログラムの中の環境変数を消す関数（テストで使う）。</td>
+<td>第13巻 UNIT 03</td>
+</tr>
+<tr>
+<td><code>std::env::set_var()</code></td>
+<td>このプログラムの中の環境変数を設定する関数（<code>env::set_var</code> と同じ）。</td>
+<td>第13巻 UNIT 03</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-34">設定</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dotenvy::dotenv()</code></td>
+<td><code>.env</code> ファイルに書いた「名前=値」を、環境変数として読み込む関数（<code>dotenvy</code> の部品）。開発のパソコンで、設定をファイルにまとめておく時に使います。<code>.env</code> は Git に入れません。</td>
+<td>第5巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>env!</code></td>
+<td>翻訳（コンパイル）の時の環境変数の値を、文字列として埋め込むマクロ。<code>env!("CARGO_MANIFEST_DIR")</code> は、<code>Cargo.toml</code> があるフォルダの場所です。</td>
+<td>第9巻 UNIT 04</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-35">時間</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Instant</code></td>
+<td>「ある瞬間」を表す型。<code>let start = Instant::now();</code> で今を覚えておき、<code>start.elapsed()</code> で「そこから何秒たったか」を測れます。処理の速さを測る時に使います。</td>
+<td>第0巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>.as_secs_f64()</code></td>
+<td>時間の長さ（<code>Duration</code>）を、秒を単位にした小数で返すメソッド。<code>0.25</code> なら 0.25 秒です。</td>
+<td>第3巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>thread::sleep()</code></td>
+<td>今のスレッドを、決めた時間だけ止めて待つ関数。<code>thread::sleep(Duration::from_millis(200))</code> は 0.2 秒待ちます。非同期（<code>async</code>）の中では、代わりに <code>tokio::time::sleep(…).await</code> を使います。</td>
+<td>第3巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>Duration::from_millis()</code></td>
+<td>ミリ秒（1000 分の 1 秒）から、時間の長さ（<code>Duration</code>）を作る関数。秒からなら <code>Duration::from_secs()</code> です。</td>
+<td>第3巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>Duration</code></td>
+<td>時間の長さを表す型。<code>Duration::from_secs(5)</code> で 5 秒。<code>{:?}</code> で表示すると <code>5s</code> や <code>200ms</code> のように単位つきで出ます。</td>
+<td>第3巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>.duration_since()</code></td>
+<td>「ある時刻から、どれだけたったか」を <code>Duration</code> で返すメソッド。<code>SystemTime::now().duration_since(UNIX_EPOCH)</code> は、1970 年 1 月 1 日から今までの時間です。</td>
+<td>第4巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>.as_secs()</code></td>
+<td>時間の長さ（<code>Duration</code>）を、秒の整数で返すメソッド（小数点以下は切り捨て）。</td>
+<td>第4巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>SystemTime</code></td>
+<td>カレンダーの時刻（今が何時か）を表す型。<code>SystemTime::now()</code> で今の時刻を取ります。記録に日時を残す時に使います（処理の時間を測るのは <code>Instant</code>）。</td>
+<td>第4巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>Duration::from_secs()</code></td>
+<td>秒から、時間の長さ（<code>Duration</code>）を作る関数。<code>Duration::from_secs(10)</code> は 10 秒。</td>
+<td>第5巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>.as_millis()</code></td>
+<td>時間の長さ（<code>Duration</code>）を、ミリ秒の整数で返すメソッド。</td>
+<td>第5巻 UNIT 03</td>
+</tr>
+<tr>
+<td><code>std::thread::sleep()</code></td>
+<td>今のスレッドを、決めた時間だけ止める関数（<code>thread::sleep</code> と同じ）。async の中では使わず、<code>tokio::time::sleep</code> を使います。</td>
+<td>第5巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>ZERO</code></td>
+<td><code>Duration::ZERO</code> は、長さ 0 の時間。合計を数え始める時の最初の値に使います。</td>
+<td>第5巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>std::time::Duration::from_millis()</code></td>
+<td>ミリ秒から、時間の長さを作る関数（<code>Duration::from_millis</code> と同じ）。</td>
+<td>第5巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>.as_micros()</code></td>
+<td>時間の長さを、マイクロ秒（100 万分の 1 秒）の整数で返すメソッド。</td>
+<td>第7巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>Duration::minutes()</code></td>
+<td>分から、時間の長さを作る関数（<code>time</code> の部品の <code>Duration</code>）。<code>Duration::minutes(5)</code> は 5 分。</td>
+<td>第10巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>.as_nanos()</code></td>
+<td>時間の長さを、ナノ秒（10 億分の 1 秒）の整数で返すメソッド。</td>
+<td>第11巻 UNIT 08</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-36">標準ライブラリ</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>OS</code></td>
+<td><code>std::env::consts::OS</code> は、プログラムが動いている OS の種類を表す決まった値（定数）。Windows なら <code>"windows"</code>、Linux なら <code>"linux"</code> という文字列が入っています。</td>
+<td>第0巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>ARCH</code></td>
+<td><code>std::env::consts::ARCH</code> は、CPU の種類を表す決まった値（定数）。多くの Windows のパソコンでは <code>"x86_64"</code>、Arm の CPU なら <code>"aarch64"</code> です。</td>
+<td>第0巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>DefaultHasher</code></td>
+<td>値からハッシュ（指紋のような数）を計算する、標準の道具。同じ値からは同じ数、少し違う値からはまったく違う数ができます。ここでは仕組みを見るために使います（パスワードの保存には、専用の Argon2 などを使います。第8巻）。</td>
+<td>第0巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>Hash</code></td>
+<td>「ハッシュ（指紋のような数）を計算できる物」が持っている機能（トレイト）。<code>value.hash(&amp;mut hasher)</code> を使うには <code>use std::hash::Hash;</code> が要ります。</td>
+<td>第0巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>.build_hasher()</code></td>
+<td><code>RandomState</code> などから、ハッシュを計算する係（<code>Hasher</code>）を作るメソッド。ここでは、毎回違う値（でたらめな数）を作るのに使っています。</td>
+<td>第5巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>RandomState</code></td>
+<td><code>HashMap</code> が、ハッシュを計算する時に使う「種」を、でたらめに決める係。</td>
+<td>第5巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>BuildHasher</code></td>
+<td>「ハッシュを計算する係を作れる」機能（トレイト）。<code>.build_hasher()</code> を使うには、これを <code>use</code> します。</td>
+<td>第5巻 UNIT 08</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-37">スレッドと共有</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.fetch_add()</code></td>
+<td>数を、ほかのスレッドとぶつからずに足すメソッド（<code>AtomicU64</code> などに使う）。<code>COUNT.fetch_add(1, Ordering::Relaxed)</code> で 1 足します。鍵（<code>Mutex</code>）を使わずに、安全に数えられます。</td>
+<td>第3巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>AtomicU64</code></td>
+<td>いくつものスレッドから同時に読み書きしても壊れない、整数の型。数を数える（アクセス数など）時に使います。</td>
+<td>第3巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>Ordering</code></td>
+<td><code>std::sync::atomic::Ordering</code> は、<code>AtomicU64</code> などを読み書きする時の「順番の守り方」の指定。ただ数えるだけなら、いちばん軽い <code>Ordering::Relaxed</code> で足ります。（大小を比べた結果の <code>std::cmp::Ordering</code> は別の物です。）</td>
+<td>第3巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>Relaxed</code></td>
+<td><code>Ordering::Relaxed</code> は、「この数の読み書きだけが壊れなければよい」という、いちばん軽い順番の守り方です。</td>
+<td>第3巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>.lock()</code></td>
+<td><code>Mutex</code> の鍵を取って、中身を使えるようにするメソッド。返ってきた物（ガード）を通して中身を読み書きし、ガードが片づけられると鍵は自動で返されます。ほかのスレッドが鍵を持っている間は、返されるまで待ちます。</td>
+<td>第3巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>Arc::clone()</code></td>
+<td><code>Arc</code> の持ち手を 1 つ増やす関数。スレッドに渡す前に増やしておき、<code>move</code> で持たせます。</td>
+<td>第3巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>Arc::strong_count()</code></td>
+<td><code>Arc</code> の本体を、今いくつの持ち手が指しているかを返す関数。</td>
+<td>第3巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>Arc</code></td>
+<td>いくつものスレッドから、1 つの値を一緒に持てるようにする型（<code>Rc</code> のスレッド版）。書きかえもしたい時は、<code>Arc&lt;Mutex&lt;T&gt;&gt;</code> の形にします。</td>
+<td>第3巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>Mutex</code></td>
+<td>中身を、1 度に 1 つのスレッドだけが使えるようにする鍵付きの入れ物。<code>.lock()</code> で鍵を取ってから使います。</td>
+<td>第3巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>thread::scope()</code></td>
+<td>「この中で作ったスレッドが全部終わるまで、外に出ない」範囲を作る関数。外の変数を借りたままスレッドで使えます（<code>move</code> や <code>Arc</code> が要らない）。</td>
+<td>第3巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>.write()</code></td>
+<td><code>RwLock</code> の「書き込み用の鍵」を取るメソッド。書いている間は、ほかのスレッドは読むことも書くこともできません。（ファイルや接続に使う <code>write</code> は「書き込む」意味の別の物です。）</td>
+<td>第3巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>RwLock</code></td>
+<td>「読むだけなら何人でも同時に、書く時は 1 人だけ」にできる鍵付きの入れ物。読むことが多く、書くことが少ない物に向いています。読む時は <code>.read()</code>、書く時は <code>.write()</code> で鍵を取ります。</td>
+<td>第3巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>Send</code></td>
+<td>「別のスレッドへ渡してもよい」ことを表す印（トレイト）。<code>Arc&lt;dyn NoteRepository + Send + Sync&gt;</code> の <code>+ Send</code> は「スレッドをまたいで渡せる物に限る」という条件です。多くの型は自動で持っています（<code>Rc</code> などは持っていません）。</td>
+<td>第4巻 牛乳を買う</td>
+</tr>
+<tr>
+<td><code>Sync</code></td>
+<td>「いくつものスレッドから同時に借りて読んでもよい」ことを表す印（トレイト）。Web サーバーのように、いくつもの処理が 1 つの物を共有する時に必要です。</td>
+<td>第4巻 牛乳を買う</td>
+</tr>
+<tr>
+<td><code>LazyLock</code></td>
+<td>初めて使われた時に 1 回だけ作られ、その後はずっと同じ値を使う入れ物。<code>static DUMMY: LazyLock&lt;String&gt; = LazyLock::new(&#124;&#124; { … });</code> のように、作るのに手間がかかる物を、プログラム全体で共有する時に使います。</td>
+<td>第5巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>AtomicU32</code></td>
+<td>いくつものスレッドから同時に読み書きしても壊れない、32 ビットの整数の型（<code>AtomicU64</code> の小さい版）。</td>
+<td>第5巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>SeqCst</code></td>
+<td><code>Ordering::SeqCst</code> は、いちばん厳しい順番の守り方。どのスレッドからも、同じ順番で変わったように見えます。迷ったらこれを選べば安全です（少し遅くなります）。</td>
+<td>第5巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>.fetch_max()</code></td>
+<td>今の値と比べて大きい方を、ぶつからずに入れるメソッド（<code>AtomicUsize</code> など）。最大の値を覚えておく時に使います。</td>
+<td>第11巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>.fetch_sub()</code></td>
+<td>数を、ほかのスレッドとぶつからずに引くメソッド。</td>
+<td>第11巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>AtomicUsize</code></td>
+<td>いくつものスレッドから同時に読み書きしても壊れない、<code>usize</code> の数の型。</td>
+<td>第11巻 UNIT 08</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-38">非同期</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>async</code></td>
+<td>「待つ所で、ほかの仕事に順番をゆずれる関数」にする印。<code>async fn root(…)</code> のように付けます。呼ぶ側は <code>.await</code> で結果を待ちます。Web サーバーが、たくさんの人を同時にさばけるのは、この仕組みのおかげです（第5巻）。</td>
+<td>第1巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>await</code></td>
+<td><code>async</code> の関数（Future）が終わるのを待って、結果を受け取る書き方。<code>sleep(…).await</code> のように、後ろに <code>.await</code> を付けます。待っている間は、ほかの仕事に順番をゆずります。<code>.await</code> を付けないと、その仕事は始まりません。</td>
+<td>第5巻 UNIT 01</td>
+</tr>
+<tr>
+<td>``</td>
+<td><code>#[tokio::main]</code> は、<code>main</code> を <code>async</code> にして、tokio（非同期の仕事を回す仕組み）の上で動かす印（属性）。<code>#[tokio::test]</code> は、テストを <code>async</code> で書けるようにする印です。</td>
+<td>第5巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>tokio::time::sleep()</code></td>
+<td>決めた時間だけ待つ、非同期の関数。<code>tokio::time::sleep(Duration::from_millis(300)).await</code>。待っている間、ほかの仕事は止まりません（<code>std::thread::sleep</code> はスレッドごと止めてしまうので、<code>async</code> の中では使いません）。</td>
+<td>第5巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>join!</code></td>
+<td><code>tokio::join!(a, b)</code> は、いくつかの非同期の仕事を同時に進めて、全部が終わるのを待つマクロ。かかる時間は、いちばん長い物の分だけです。</td>
+<td>第5巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>try_join!</code></td>
+<td><code>tokio::try_join!(a, b)</code> は、<code>join!</code> と同じく同時に進めますが、どれか 1 つでも <code>Err</code> になったら、すぐに止めてそのエラーを返すマクロ。</td>
+<td>第5巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>pin!</code></td>
+<td>Future を、メモリの中で動かないように「ピン留め」するマクロ。<code>poll</code> を自分で呼ぶ時などに必要です（ふつうは <code>.await</code> が自動でしてくれます）。</td>
+<td>第5巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>.waker()</code></td>
+<td><code>Context</code> から、「準備ができたら起こしてね」と頼むための物（<code>Waker</code>）を取り出すメソッド。非同期の仕組みの中身を見る時の物で、ふだんは使いません。</td>
+<td>第5巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>.wake_by_ref()</code></td>
+<td><code>Waker</code> を使って、「もう一度 <code>poll</code> してほしい」と知らせるメソッド。</td>
+<td>第5巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>Context::from_waker()</code></td>
+<td><code>Waker</code> から、<code>poll</code> に渡す <code>Context</code> を作る関数。非同期の仕組みの中身を確かめる時に使います。</td>
+<td>第5巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>Waker::noop()</code></td>
+<td>「起こしても何もしない」<code>Waker</code> を作る関数。仕組みを試すための物です。</td>
+<td>第5巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>Future</code></td>
+<td>「いつか終わる仕事」を表す型（トレイト）。<code>async fn</code> を呼ぶと、すぐには動かず、この Future が返ります。<code>.await</code> するか、tokio に渡して、初めて動きます。</td>
+<td>第5巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>Pin</code></td>
+<td>中身がメモリの中で動かないことを約束する入れ物。Future の中には、自分の中の場所を指している物があるので、動かすと壊れてしまいます。それを防ぐための仕組みです。</td>
+<td>第5巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>Waker</code></td>
+<td>「この仕事の準備ができた」と知らせて、もう一度動かしてもらうための物。tokio が、待っている仕事を起こすのに使います。</td>
+<td>第5巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>Ready</code></td>
+<td><code>Poll::Ready(値)</code> は「仕事が終わった。結果はこれ」という答え。まだなら <code>Poll::Pending</code> です。Future の <code>poll</code> は、この 2 つのどちらかを返します。</td>
+<td>第5巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>.worker_threads()</code></td>
+<td>tokio の組み立て係で、仕事を回すスレッドの数を決めるメソッド。</td>
+<td>第5巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>.enable_all()</code></td>
+<td>tokio の組み立て係で、時間（タイマー）やネットワークなど、全部の機能を使えるようにするメソッド。</td>
+<td>第5巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>tokio::runtime::Builder::new_multi_thread()</code></td>
+<td>いくつものスレッドで仕事を回す tokio の仕組み（ランタイム）を、組み立て始める関数。<code>.worker_threads(2).enable_all().build()</code> のように設定してから作ります。</td>
+<td>第5巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>.is_panic()</code></td>
+<td><code>tokio::spawn</code> した仕事の失敗（<code>JoinError</code>）が、パニック（止まった）のせいなら <code>true</code> を返すメソッド。</td>
+<td>第5巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>.abort()</code></td>
+<td><code>tokio::spawn</code> した仕事を、途中で取り消すメソッド。</td>
+<td>第5巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>.is_cancelled()</code></td>
+<td><code>tokio::spawn</code> した仕事の失敗が、取り消し（<code>abort</code>）のせいなら <code>true</code> を返すメソッド。</td>
+<td>第5巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>Runtime</code></td>
+<td>tokio の、非同期の仕事を回す仕組み（ランタイム）の型。<code>#[tokio::main]</code> は、中でこれを作っています。<code>runtime.block_on(future)</code> で、ふつうの関数から async の仕事を動かせます。</td>
+<td>第5巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>select!</code></td>
+<td><code>tokio::select!</code> は、いくつかの非同期の仕事のうち、<strong>先に終わった 1 つ</strong>だけを使い、残りは取り消すマクロ。「時間切れ」や「止めての合図」と組み合わせて使います。</td>
+<td>第5巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>tokio::task::spawn_blocking()</code></td>
+<td>時間のかかる重い計算や、待ってしまう処理（パスワードのハッシュなど）を、非同期の仕事を回すスレッドとは別のスレッドで動かす関数。ほかの仕事を止めないために使います。</td>
+<td>第5巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>.join_next()</code></td>
+<td><code>JoinSet</code> に入れた仕事のうち、終わった順に 1 つずつ結果を受け取るメソッド。全部受け取ると <code>None</code> を返します。</td>
+<td>第5巻 UNIT 03</td>
+</tr>
+<tr>
+<td><code>JoinSet</code></td>
+<td>いくつもの非同期の仕事をまとめて持ち、終わった順に結果を受け取れる入れ物（tokio の部品）。</td>
+<td>第5巻 UNIT 03</td>
+</tr>
+<tr>
+<td><code>.join_all()</code></td>
+<td><code>JoinSet</code> の仕事が全部終わるのを待って、結果を <code>Vec</code> で返すメソッド。</td>
+<td>第5巻 UNIT 03</td>
+</tr>
+<tr>
+<td><code>.recv()</code></td>
+<td>チャンネル（仕事どうしで値を渡す管）から、次の 1 つを受け取るメソッド。届くまで待ちます。送る口が全部無くなると <code>None</code> を返します。</td>
+<td>第5巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>.try_send()</code></td>
+<td>チャンネルに値を送るメソッド。待たずにすぐ試し、箱がいっぱいなら <code>Full</code>、受け取る側がいなければ <code>Closed</code> のエラーを返します。</td>
+<td>第5巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>TrySendError</code></td>
+<td><code>try_send</code> が失敗した時のエラーの型。<code>Full</code>（いっぱい）と <code>Closed</code>（受け取り係がいない）の 2 種類があります。</td>
+<td>第5巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>Full</code></td>
+<td><code>TrySendError::Full</code> は、「チャンネルの箱がいっぱいで、今は送れない」というエラーの種類です。</td>
+<td>第5巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>Closed</code></td>
+<td><code>TrySendError::Closed</code> は、「受け取り係がもういないので、送れない」というエラーの種類です。</td>
+<td>第5巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>mpsc::channel()</code></td>
+<td>「送る口がいくつあってもよく、受ける口は 1 つ」のチャンネル（仕事どうしで値を渡す管）を作る関数。<code>mpsc::channel(16)</code> の 16 は、ためておける数です。<code>(送る口, 受ける口)</code> の組が返ります。</td>
+<td>第5巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>oneshot::channel()</code></td>
+<td>1 回だけ値を送れるチャンネルを作る関数。「頼んだ仕事の答えを 1 つだけ返してもらう」時に使います。</td>
+<td>第5巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>Sender</code></td>
+<td>チャンネルの「送る口」の型。<code>.send(値).await</code> で送ります。<code>.clone()</code> で送る口を増やせます（<code>mpsc</code> の場合）。</td>
+<td>第5巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>Receiver</code></td>
+<td>チャンネルの「受ける口」の型。<code>.recv().await</code> で受け取ります。</td>
+<td>第5巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>.subscribe()</code></td>
+<td><code>broadcast</code>（1 つの送り手から、全員に配る）チャンネルで、受け取る口を新しく増やすメソッド。</td>
+<td>第5巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>watch::channel()</code></td>
+<td>「いちばん新しい値だけ」を全員に見せるチャンネルを作る関数。設定の値（ログの細かさなど）を、動いている仕事に伝える時に使います。</td>
+<td>第5巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>RecvError</code></td>
+<td>チャンネルから受け取る時のエラーの型。<code>broadcast</code> では、受け取るのが遅すぎて取りこぼした時の <code>Lagged</code> などがあります。</td>
+<td>第5巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>Lagged</code></td>
+<td><code>RecvError::Lagged(数)</code> は、「受け取るのが遅れて、その数だけ値を取りこぼした」というエラーの種類です。</td>
+<td>第5巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>.closed()</code></td>
+<td>チャンネルの受ける口が全部無くなるまで待つメソッド（送る口に使う）。「全員の片づけが終わった」ことを知る時に使います。</td>
+<td>第5巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>.acquire_owned()</code></td>
+<td><code>Semaphore</code>（同時に使える数を決めた札の入れ物）から、札を 1 枚もらうメソッド。札が無ければ、空くまで待ちます。もらった札は、片づけられると自動で返されます。</td>
+<td>第5巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>Semaphore</code></td>
+<td>「同時にいくつまで動いてよいか」を、札の数で決める仕組み。同時に外へ出す要求を 3 つまでに絞る、などに使います。</td>
+<td>第5巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>tokio::time::timeout()</code></td>
+<td>非同期の仕事に時間の制限を付ける関数。<code>timeout(Duration::from_secs(1), 仕事).await</code> は、1 秒で終わらなければ <code>Err</code> を返します。</td>
+<td>第5巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>.cancelled()</code></td>
+<td><code>CancellationToken</code>（止めての合図）が出されるまで待つメソッド。<code>select!</code> と組み合わせて、「合図が来たら仕事をやめる」と書きます。</td>
+<td>第5巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>.tick()</code></td>
+<td><code>interval</code>（決まった間隔で鳴る時計）の、次の「鳴る時」まで待つメソッド。<code>loop { ticker.tick().await; … }</code> で、決まった間隔で同じ仕事をくり返します。</td>
+<td>第5巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>.child_token()</code></td>
+<td><code>CancellationToken</code> から、子の合図を作るメソッド。親が止まれば子も止まりますが、子だけを止めることもできます。</td>
+<td>第5巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>CancellationToken</code></td>
+<td>「止めて」の合図を、いくつもの仕事に一斉に伝えるための物（<code>tokio_util</code> の部品）。<code>.cancel()</code> で合図を出し、仕事の側は <code>.cancelled().await</code> で受け取ります。サーバーを行儀よく止める時に使います。</td>
+<td>第5巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>TaskTracker</code></td>
+<td>動かした仕事を覚えておき、「全部終わるまで待つ」ことができる入れ物（<code>tokio_util</code> の部品）。<code>tracker.spawn(…)</code> で動かし、<code>tracker.close()</code> → <code>tracker.wait().await</code> で待ちます。</td>
+<td>第5巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>tokio::signal::unix::signal()</code></td>
+<td>Linux などで、OS からの合図（シグナル）を受け取る関数。<code>SignalKind::terminate()</code>（「終わって」の合図）を受け取って、サーバーを片づけてから終わる時に使います（Fly.io などで動かす時。第12巻）。</td>
+<td>第5巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>SignalKind</code></td>
+<td>受け取る OS の合図（シグナル）の種類。<code>SignalKind::terminate()</code> は「終わって」（SIGTERM）の合図です。</td>
+<td>第5巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>AsyncReadExt</code></td>
+<td>tokio で、接続やファイルから非同期に読むメソッド（<code>read</code>・<code>read_to_end</code> など）を使えるようにする機能（トレイト）。<code>use tokio::io::AsyncReadExt;</code> が要ります。</td>
+<td>第5巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>AsyncWriteExt</code></td>
+<td>tokio で、非同期に書くメソッド（<code>write_all</code> など）を使えるようにする機能（トレイト）。<code>use tokio::io::AsyncWriteExt;</code> が要ります。</td>
+<td>第5巻 UNIT 08</td>
+</tr>
+<tr>
+<td>``</td>
+<td>トレイトの中に <code>async fn</code> を書き、しかもそれを <code>dyn</code>（中身の型を後で決める）で使えるようにする印（<code>async_trait</code> の部品）。</td>
+<td>第7巻 UNIT 09</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-39">ネットワーク</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TcpStream</code></td>
+<td>ネットワークの 1 本の接続を表す型。<code>TcpStream::connect("127.0.0.1:8080")</code> でつなぎ、<code>write_all</code> で送り、<code>read_to_string</code> で受け取ります。HTTP などの通信は、この接続の上で文字をやり取りしています。</td>
+<td>第0巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>.incoming()</code></td>
+<td>サーバーが、やって来る接続を 1 つずつ受け取れる形にするメソッド。<code>for stream in listener.incoming() { … }</code> で、接続が来るたびに中が 1 回動きます。</td>
+<td>第0巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>TcpListener::bind()</code></td>
+<td>決まったポート番号で、接続を待ち受け始める関数。<code>TcpListener::bind("127.0.0.1:8080")</code> は「このパソコンの 8080 番で待つ」。もうほかのプログラムが使っている番号だと、エラーになります。</td>
+<td>第0巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>TcpListener</code></td>
+<td>決まったポート番号で接続を待つ、サーバー側の型。<code>TcpListener::bind(…)</code> で作り、<code>.incoming()</code> で来た接続を受け取ります。</td>
+<td>第0巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>.accept()</code></td>
+<td>サーバーが待ち受けている所に来た接続を、1 つ受け取るメソッド（<code>listener.accept().await</code>）。来るまで待ちます。</td>
+<td>第5巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>.local_addr()</code></td>
+<td>待ち受けている（つないでいる）自分の側の住所（IP アドレスとポート番号）を返すメソッド。番号 <code>0</code> で待ち受けると、OS が空いている番号を選ぶので、それを知るのに使います。</td>
+<td>第5巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>SocketAddr</code></td>
+<td>IP アドレスとポート番号の組（例: <code>127.0.0.1:8080</code>）を表す型。</td>
+<td>第5巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>std::net::TcpListener::bind()</code></td>
+<td>決めた番号で、接続を待ち受け始める関数（<code>TcpListener::bind</code> と同じ）。番号を <code>0</code> にすると、OS が空いている番号を選びます。</td>
+<td>第5巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>tokio::net::TcpListener::bind()</code></td>
+<td>非同期で接続を待ち受け始める関数（tokio 版）。<code>.await</code> で待ちます。Web サーバーは、これで決めた番号を待ち受けます。</td>
+<td>第9巻 UNIT 10</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-40">HTTP</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CREATED</code></td>
+<td><code>StatusCode::CREATED</code> は、HTTP の答えの番号 201（「作りました」）。新しいデータを作った時に返します。</td>
+<td>第6巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>.into_body()</code></td>
+<td>HTTP の答え（レスポンス）から、本文の部分だけを取り出すメソッド。テストで、返ってきた本文を確かめる時に使います。</td>
+<td>第6巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>Request::builder()</code></td>
+<td>HTTP の要求（リクエスト）を、組み立て始める関数。テストで、<code>.method("POST").uri("/notes").body(…)</code> のように作り、ルーターに直接渡して試します。</td>
+<td>第6巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>Method</code></td>
+<td>HTTP のメソッド（<code>GET</code>・<code>POST</code>・<code>PUT</code>・<code>DELETE</code> など）を表す型。</td>
+<td>第6巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>OK</code></td>
+<td><code>StatusCode::OK</code> は、HTTP の答えの番号 200（成功）です。</td>
+<td>第7巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>.get_all()</code></td>
+<td>HTTP のヘッダーで、同じ名前の物（<code>Set-Cookie</code> など）を全部取り出すメソッド。<code>get</code> だと最初の 1 つだけです。</td>
+<td>第8巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>HOST</code></td>
+<td><code>header::HOST</code> は、HTTP の <code>Host</code> ヘッダー（どのサイト宛ての頼みか）の名前。</td>
+<td>第8巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>COOKIE</code></td>
+<td><code>header::COOKIE</code> は、HTTP の <code>Cookie</code> ヘッダー（ブラウザーが覚えているクッキーを送る所）の名前。</td>
+<td>第8巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>Origin</code></td>
+<td><code>Origin</code> ヘッダーは、フォームなどを送ったページが、どのサイトの物かを表します。ほかのサイトから勝手に送らせる攻撃（CSRF）を見分けるのに使います（第8巻 UNIT 06）。</td>
+<td>第8巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>UNAUTHORIZED</code></td>
+<td><code>StatusCode::UNAUTHORIZED</code> は、HTTP の答えの番号 401（「ログインしていない」）です。</td>
+<td>第8巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>CONFLICT</code></td>
+<td><code>StatusCode::CONFLICT</code> は、HTTP の答えの番号 409（「ぶつかった」）。同じメールアドレスで登録しようとした時などに返します。</td>
+<td>第8巻 UNIT 03</td>
+</tr>
+<tr>
+<td><code>.is_redirection()</code></td>
+<td>HTTP の答えの番号が 300〜399（別のページへ移って）なら <code>true</code> を返すメソッド。</td>
+<td>第8巻 UNIT 03</td>
+</tr>
+<tr>
+<td><code>FORBIDDEN</code></td>
+<td><code>StatusCode::FORBIDDEN</code> は、HTTP の答えの番号 403（「その操作は許されていない」）です。</td>
+<td>第8巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>ALLOW</code></td>
+<td><code>header::ALLOW</code> は、HTTP の <code>Allow</code> ヘッダー（「この URL で使えるメソッドはこれ」）の名前。405（使えないメソッド）の答えに付きます。</td>
+<td>第9巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>LOCATION</code></td>
+<td><code>header::LOCATION</code> は、HTTP の <code>Location</code> ヘッダー（「ここへ移って」という行き先）の名前。303 などの答えに付きます。</td>
+<td>第9巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>HEAD</code></td>
+<td><code>Method::HEAD</code> は、本文を受け取らずに、見出し（ヘッダー）だけをもらう HTTP のメソッド。サーバーが動いているかを軽く確かめる時に使います。</td>
+<td>第9巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>ORIGIN</code></td>
+<td><code>header::ORIGIN</code> は、HTTP の <code>Origin</code> ヘッダー（送ってきたページのサイト）の名前。</td>
+<td>第9巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>.canonical_reason()</code></td>
+<td>HTTP の答えの番号の、決まった説明の言葉を返すメソッド（<code>404</code> なら <code>"Not Found"</code>）。</td>
+<td>第13巻 UNIT 07</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-41">HTTP クライアント</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.connect_timeout()</code></td>
+<td><code>reqwest</code> の組み立て係で、「相手につなぐまで」の時間の制限を決めるメソッド。</td>
+<td>第5巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>.timeout()</code></td>
+<td><code>reqwest</code> の組み立て係で、「頼んでから答えが全部届くまで」の時間の制限を決めるメソッド。</td>
+<td>第5巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>.is_success()</code></td>
+<td>HTTP の答えの番号（ステータスコード）が 200〜299（成功）なら <code>true</code> を返すメソッド。</td>
+<td>第5巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>.error_for_status()</code></td>
+<td><code>reqwest</code> の答えのうち、番号が 400〜599（失敗）の物を <code>Err</code> に変えるメソッド。<code>?</code> と組み合わせると、失敗の答えを見逃さずに済みます。</td>
+<td>第5巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>reqwest::Client::builder()</code></td>
+<td>ほかのサーバーへ HTTP で頼みに行くための「クライアント」（<code>reqwest</code> の部品）を、設定しながら作り始める関数。<code>.timeout(…).build()</code> のようにつなげます。</td>
+<td>第5巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>Client</code></td>
+<td><code>reqwest::Client</code> は、HTTP で頼みに行く係。中で接続をためて使い回すので、1 つ作ってアプリ全体で共有するのがよい使い方です。</td>
+<td>第5巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>.is_connect()</code></td>
+<td><code>reqwest</code> のエラーが「つなぐこと自体に失敗した」ものなら <code>true</code> を返すメソッド。</td>
+<td>第5巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>.is_timeout()</code></td>
+<td><code>reqwest</code> のエラーが「時間切れ」なら <code>true</code> を返すメソッド。</td>
+<td>第5巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>.is_server_error()</code></td>
+<td>HTTP の答えの番号が 500〜599（サーバー側の失敗）なら <code>true</code> を返すメソッド。もう一度試す価値がある失敗かを見分けるのに使います。</td>
+<td>第5巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>.as_u16()</code></td>
+<td>HTTP の答えの番号（ステータスコード）を、<code>200</code> や <code>429</code> のような数（<code>u16</code>）で返すメソッド。</td>
+<td>第5巻 UNIT 08</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-42">クッキー</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Cookie::build()</code></td>
+<td>クッキー（ブラウザーに覚えておいてもらう小さな値）を、設定しながら作り始める関数。<code>Cookie::build(("theme", "dark")).path("/").build()</code> のように、名前と値、使う範囲などを決めます。</td>
+<td>第6巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>Cookie</code></td>
+<td>クッキー 1 つ（名前と値と、使う範囲・期限などの設定）を表す型。</td>
+<td>第6巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>Cookies</code></td>
+<td>今のリクエストのクッキーを読み書きする入れ物（クッキーの瓶）。<code>jar.add(…)</code> で足し、<code>jar.get("名前")</code> で読みます。</td>
+<td>第6巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>cookie!</code></td>
+<td>Topcoat のマクロ。クッキーを、名前・値・決まり（<code>HttpOnly</code>・<code>SameSite</code>・<code>MaxAge</code> など）を並べて作ります（第10巻 UNIT 09）。</td>
+<td>第10巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>HttpOnly</code></td>
+<td>クッキーの決まりの 1 つ。付けると、ページの JavaScript からそのクッキーを読めなくなり、盗まれにくくなります。</td>
+<td>第10巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>SameSite</code></td>
+<td>クッキーの決まりの 1 つ。ほかのサイトから来た頼みに、このクッキーを付けるかを決めます。<code>Lax</code> は、ほかのサイトからのリンクでの移動には付けるが、フォームの送信などには付けない設定です。</td>
+<td>第10巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>Lax</code></td>
+<td><code>SameSite = Lax</code> は、ほかのサイトからのリンクで来た時（ふつうの移動）にはクッキーを送り、ほかのサイトからのフォームの送信には送らない設定です。</td>
+<td>第10巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>MaxAge</code></td>
+<td>クッキーを、ブラウザーが覚えておく長さを決める決まり。過ぎると消えます。</td>
+<td>第10巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>Jar::default()</code></td>
+<td>クッキーの瓶（クッキーをまとめて持つ入れ物）を、空の状態で作る書き方。</td>
+<td>第10巻 UNIT 09</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-43">認証</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Argon2::default()</code></td>
+<td>パスワードを安全に保存するための計算（Argon2id）を、おすすめの設定で用意する書き方（<code>argon2</code> の部品）。この計算は、わざと重く作られていて、パスワードを総当たりで当てるのを難しくします（第8巻）。</td>
+<td>第5巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>PasswordHasher</code></td>
+<td>パスワードからハッシュ（保存用の値）を作る機能（トレイト。<code>password_hash</code> の部品）。<code>argon2.hash_password(…)</code> を使うには、これを <code>use</code> します。</td>
+<td>第5巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>PasswordVerifier</code></td>
+<td>入力されたパスワードが、保存してあるハッシュと合うかを確かめる機能（トレイト）。<code>argon2.verify_password(…)</code> を使うには、これを <code>use</code> します。</td>
+<td>第5巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>PasswordHash</code></td>
+<td>保存してあるハッシュの文字列（<code>$argon2id$v=19$…</code>）を読み取った物の型。<code>PasswordHash::new(&amp;保存した文字列)</code> で作り、確かめに使います。</td>
+<td>第5巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>SaltString::generate()</code></td>
+<td>パスワードのハッシュに混ぜる「塩」（ソルト：毎回でたらめに作る値）を作る関数。同じパスワードでも、人ごとに違うハッシュになり、まとめて解かれにくくなります。</td>
+<td>第8巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>SaltString</code></td>
+<td>ソルト（塩）を文字列の形で持つ型。</td>
+<td>第8巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>OsRng</code></td>
+<td>OS が用意する、予想できないでたらめな数を作る係。パスワードやトークンなど、安全のための値は、必ずこのような係で作ります。</td>
+<td>第8巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>Sha256::digest()</code></td>
+<td>データから、SHA-256 というハッシュ（32 バイトの指紋）を計算する関数（<code>sha2</code> の部品）。</td>
+<td>第8巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>rand::rng()</code></td>
+<td>でたらめな数を作る係を取り出す関数（<code>rand</code> の部品）。<code>rand::rng().random()</code> で、でたらめな値を作ります。</td>
+<td>第8巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>Engine</code></td>
+<td><code>base64</code> の部品の、エンコード（バイト → 英数字の文字列）の機能（トレイト）。<code>URL_SAFE_NO_PAD.encode(バイト)</code> を使うには、これを <code>use</code> します。</td>
+<td>第8巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>RngExt</code></td>
+<td><code>rand</code> の部品の、<code>.random()</code> などのメソッドを使えるようにする機能（トレイト）。</td>
+<td>第8巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>Digest</code></td>
+<td>ハッシュの計算（<code>digest</code>・<code>update</code>・<code>finalize</code>）を使えるようにする機能（トレイト。<code>sha2</code> などの部品）。</td>
+<td>第8巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>Sha256</code></td>
+<td>SHA-256 というハッシュの計算をする型。データの「指紋」を作るのに使います（パスワードの保存には、わざと重い Argon2 を使います）。</td>
+<td>第8巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>.finalize()</code></td>
+<td>ハッシュや MAC の計算を締めくくって、結果を取り出すメソッド。</td>
+<td>第8巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>.into_bytes()</code></td>
+<td>計算の結果を、バイトの並びとして取り出すメソッド。</td>
+<td>第8巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>Hmac</code></td>
+<td>HMAC（秘密の鍵を混ぜたハッシュ）を計算する型（<code>hmac</code> の部品）。鍵を知っている人だけが同じ値を作れるので、「改ざんされていないか」の確かめに使います。</td>
+<td>第8巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>KeyInit</code></td>
+<td>鍵から計算の係を作る（<code>new_from_slice</code>）機能（トレイト）。</td>
+<td>第8巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>Mac</code></td>
+<td>HMAC の計算（<code>update</code>・<code>finalize</code>・<code>verify_slice</code>）を使えるようにする機能（トレイト）。</td>
+<td>第8巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>Sha1</code></td>
+<td>SHA-1 というハッシュの型。古い方法ですが、2 段階認証（TOTP）の決まりで今も使われています。</td>
+<td>第8巻 UNIT 09</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-44">ログ</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>info!</code></td>
+<td>ログ（動作の記録）を「お知らせ」の重さで書くマクロ（<code>tracing</code> の部品）。<code>info!("起動しました");</code>。ほかに <code>debug!</code>（細かい調査用）・<code>warn!</code>（注意）・<code>error!</code>（エラー）があります。</td>
+<td>第5巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>warn!</code></td>
+<td>ログを「注意」の重さで書くマクロ。<code>warn!(%path, ?elapsed, "応答が遅めです")</code> の <code>%</code> は <code>Display</code> で、<code>?</code> は <code>Debug</code> で、その値を記録に付けます。</td>
+<td>第5巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>error!</code></td>
+<td>ログを「エラー」の重さで書くマクロ。失敗した時に、原因を追うための情報を残します。</td>
+<td>第5巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>debug!</code></td>
+<td>ログを「細かい調査用」の重さで書くマクロ。ふだんは表示されず、ログの細かさを <code>debug</code> にした時だけ出ます。</td>
+<td>第5巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>.init()</code></td>
+<td>ログの設定を、プログラム全体で使えるように登録するメソッド。<code>tracing_subscriber::fmt().init();</code> を <code>main</code> の最初に 1 回だけ呼びます。</td>
+<td>第5巻 UNIT 09</td>
+</tr>
+<tr>
+<td>``</td>
+<td><code>tracing</code> の印（属性）。付けた関数が呼ばれるたびに、その関数の名前と引数を「スパン」（ひとまとまりの処理の記録）として残します。ログを、どの処理の中で起きたかでまとめて見られます。</td>
+<td>第5巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>.with_span_events()</code></td>
+<td>スパン（ひとまとまりの処理）の始まりや終わりにも、ログを出すように決めるメソッド。<code>FmtSpan::CLOSE</code> で、終わった時に、かかった時間も出ます。</td>
+<td>第5巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>.with_timer()</code></td>
+<td>ログの行の頭に付ける時刻の形を決めるメソッド。</td>
+<td>第5巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>tracing_subscriber::fmt::time::uptime()</code></td>
+<td>ログの時刻を「プログラムが動き始めてからの時間」で表す設定。</td>
+<td>第5巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>FmtSpan</code></td>
+<td>スパンのどの時点でログを出すかの指定。<code>FmtSpan::CLOSE</code> は「終わった時」です。</td>
+<td>第5巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>CLOSE</code></td>
+<td><code>FmtSpan::CLOSE</code> は、「スパン（ひとまとまりの処理）が終わった時に、かかった時間と一緒にログを出す」指定です。</td>
+<td>第5巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>.with_env_filter()</code></td>
+<td>どのログを表示するか（細かさ）を、決まりで絞るメソッド。</td>
+<td>第5巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>EnvFilter::try_from_default_env()</code></td>
+<td>環境変数 <code>RUST_LOG</code>（例: <code>RUST_LOG=debug</code>）から、表示するログの細かさを読み取る関数。設定が無ければ <code>Err</code> なので、<code>unwrap_or_else(&#124;_&#124; EnvFilter::new("info"))</code> で既定を決めます。</td>
+<td>第5巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>EnvFilter</code></td>
+<td>「どのログを表示するか」の決まり（<code>info</code> 以上だけ・この部品だけ <code>debug</code> など）の型。</td>
+<td>第5巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>info_span!</code></td>
+<td>「ここからここまでが 1 つの処理」というスパンを作るマクロ。<code>info_span!("request", request_id, path)</code> のように、処理の目印になる値を付けておくと、その中のログに自動で付きます。</td>
+<td>第5巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>.instrument()</code></td>
+<td>async の仕事に、スパンを付けるメソッド。その仕事の中で書いたログが、このスパンの中の物として記録されます。</td>
+<td>第5巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>.without_time()</code></td>
+<td>ログの行に時刻を付けないようにするメソッド（結果を見比べやすくするため）。</td>
+<td>第5巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>Instrument</code></td>
+<td><code>.instrument()</code> を使えるようにする機能（トレイト）。<code>use tracing::Instrument;</code> が要ります。</td>
+<td>第5巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>.in_current_span()</code></td>
+<td>async の仕事に、「今のスパン」を付けるメソッド。<code>tokio::spawn</code> で別の仕事にした時も、ログがどの処理の物か分かるようになります。</td>
+<td>第5巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>.with_writer()</code></td>
+<td>ログを書く先（標準出力・ファイルなど）を決めるメソッド。</td>
+<td>第11巻 UNIT 07</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-45">テスト</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>assert_eq!</code></td>
+<td>「2 つの値が同じか」を確かめるマクロ。<code>assert_eq!(実際の値, 期待する値);</code>。違う時はテストが失敗し、<code>left</code>（実際）と <code>right</code>（期待）の値を表示します。</td>
+<td>第0巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>assert!</code></td>
+<td>「条件が <code>true</code> か」を確かめるマクロ。<code>assert!(is_valid(&amp;title));</code>。<code>false</code> ならテストが失敗します。</td>
+<td>第0巻 UNIT 10</td>
+</tr>
+<tr>
+<td>``</td>
+<td>「この条件の時だけ、この部分を翻訳する」という印（属性）。<code>#[cfg(test)]</code> を付けた部分は、<code>cargo test</code> の時だけ翻訳され、ふつうの実行ファイルには入りません。</td>
+<td>第0巻 UNIT 10</td>
+</tr>
+<tr>
+<td>``</td>
+<td>「この関数はテストです」という印（属性）。<code>cargo test</code> が、この印の付いた関数を全部探して動かします。</td>
+<td>第0巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>cfg!</code></td>
+<td>条件（機能が ON か・どの OS か など）が合っているかを、<code>true</code>・<code>false</code> で返すマクロ。<code>if cfg!(feature = "json") { … }</code> のように、普通の <code>if</code> の中で使えます。</td>
+<td>第4巻 UNIT 07</td>
+</tr>
+<tr>
+<td>``</td>
+<td>「条件が合う時だけ、この印（属性）を付ける」という印。<code>#[cfg_attr(feature = "json", derive(Serialize))]</code> は、<code>json</code> の機能が ON の時だけ <code>Serialize</code> を付けます。</td>
+<td>第4巻 UNIT 07</td>
+</tr>
+<tr>
+<td>``</td>
+<td>「この警告は出さなくてよい」と伝える印（属性）。<code>#[allow(dead_code)]</code> は、使っていない関数への警告を止めます。本当に要らない警告だけに使います。</td>
+<td>第4巻 UNIT 08</td>
+</tr>
+<tr>
+<td>``</td>
+<td>「このテストは、パニック（止まる）するのが正しい」という印（属性）。<code>#[should_panic(expected = "文の一部")]</code> で、止まる時のメッセージも確かめられます。</td>
+<td>第4巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>.unwrap_err()</code></td>
+<td><code>Result</code> が <code>Err</code> の時に、そのエラーを取り出すメソッド。<code>Ok</code> だった時は止まります。テストで「ちゃんと失敗するか」を確かめる時に使います。</td>
+<td>第4巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>assert_ne!</code></td>
+<td>「2 つの値が違うか」を確かめるマクロ。同じだとテストが失敗します。</td>
+<td>第8巻 UNIT 10</td>
+</tr>
+<tr>
+<td>``</td>
+<td>付けた関数の中で止まった（パニックした）時に、その関数の中ではなく「呼んだ所」の行の番号を表示する印（属性）。テスト用の手伝いの関数に付けると、失敗の場所が分かりやすくなります。</td>
+<td>第11巻 UNIT 03</td>
+</tr>
+<tr>
+<td><code>.select()</code></td>
+<td><code>scraper</code> の部品で、HTML の中から、CSS と同じ書き方（<code>Selector</code>）に合うタグを探すメソッド。テストで、返ってきた HTML の中身を確かめる時に使います。</td>
+<td>第11巻 UNIT 03</td>
+</tr>
+<tr>
+<td><code>Html::parse_document()</code></td>
+<td>HTML の文字列を読み取って、中を探せる形にする関数（<code>scraper</code> の部品）。</td>
+<td>第11巻 UNIT 03</td>
+</tr>
+<tr>
+<td><code>Selector</code></td>
+<td><code>scraper</code> の部品の、「どのタグを探すか」（CSS と同じ書き方）を表す型。<code>Selector::parse("a.nav")</code> で作ります。</td>
+<td>第11巻 UNIT 03</td>
+</tr>
+<tr>
+<td><code>proptest!</code></td>
+<td><code>proptest</code> の部品のマクロ。決まった値ではなく、たくさんのでたらめな入力を自動で作って、「どんな入力でも、この性質が成り立つか」を確かめるテスト（プロパティテスト）を書きます（第11巻）。</td>
+<td>第11巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>prop_assert_eq!</code></td>
+<td><code>proptest!</code> の中で使う <code>assert_eq!</code>。違った時に、失敗する入力を小さく絞り込んで教えてくれます。</td>
+<td>第11巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>.new_tree()</code></td>
+<td><code>proptest</code> の作り方（<code>Strategy</code>）から、でたらめな値を 1 つ作るメソッド（仕組みを確かめる用）。</td>
+<td>第11巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>TestRunner::deterministic()</code></td>
+<td>毎回同じでたらめな値の並びになる <code>proptest</code> の実行係を作る関数。結果を見比べたい時に使います。</td>
+<td>第11巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>ValueTree</code></td>
+<td><code>proptest</code> が作った値と、その値を小さくしていく道筋を持つ物の型。<code>.current()</code> で今の値を取り出します。</td>
+<td>第11巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>TestRunner</code></td>
+<td><code>proptest</code> の、テストを何回も動かす係の型。</td>
+<td>第11巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>prop_oneof!</code></td>
+<td>いくつかの作り方のうち、どれか 1 つをでたらめに選んで値を作るマクロ（<code>proptest</code>）。</td>
+<td>第11巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>prop_assert!</code></td>
+<td><code>proptest!</code> の中で使う <code>assert!</code>。</td>
+<td>第11巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>.prop_map()</code></td>
+<td><code>proptest</code> で作った値を、関数で変換して、別の形の値にするメソッド（<code>any::&lt;u64&gt;().prop_map(&#124;n&#124; n.to_string())</code> で「数字だけの文字列」）。</td>
+<td>第11巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>Config::with_cases()</code></td>
+<td><code>proptest</code> で、何回分の入力を試すかを決める関数。</td>
+<td>第11巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>Strategy</code></td>
+<td><code>proptest</code> の「でたらめな値の作り方」を表す型（トレイト）。<code>impl Strategy&lt;Value = String&gt;</code> は「文字列を作る作り方」。</td>
+<td>第11巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>fuzz_target!</code></td>
+<td>ファズテスト（でたらめな入力を大量に与えて、止まらないかを確かめる）の中身を書くマクロ（<code>libfuzzer-sys</code> の部品）。</td>
+<td>第11巻 UNIT 04</td>
+</tr>
+<tr>
+<td>``</td>
+<td>「ふだんは動かさないテスト」にする印（属性）。時間がかかるテストに付けておき、<code>cargo test -- --ignored</code> の時だけ動かします。</td>
+<td>第11巻 UNIT 06</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-46">性能</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>criterion_group!</code></td>
+<td><code>criterion</code>（速さを正確に測る部品）で、測る関数をまとめるマクロ。</td>
+<td>第11巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>criterion_main!</code></td>
+<td><code>criterion</code> の測る仕組みの入り口（<code>main</code>）を作るマクロ。</td>
+<td>第11巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>.benchmark_group()</code></td>
+<td><code>criterion</code> で、関係する測り方をまとめるグループを作るメソッド。</td>
+<td>第11巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>.bench_function()</code></td>
+<td><code>criterion</code> で、1 つの処理の速さを何回も測るメソッド。</td>
+<td>第11巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>Criterion</code></td>
+<td><code>criterion</code> の、速さを測る係の型。</td>
+<td>第11巻 UNIT 08</td>
+</tr>
+<tr>
+<td>``</td>
+<td>プログラム全体のメモリの貸し出し係（アロケーター）を、自分の物に置きかえる印。使ったメモリの量を数える時などに使います。</td>
+<td>第11巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>GlobalAlloc</code></td>
+<td>メモリの貸し出し係が持つ機能（トレイト）。</td>
+<td>第11巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>Layout</code></td>
+<td>貸し出すメモリの大きさと並びの決まりを表す型。</td>
+<td>第11巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>System</code></td>
+<td>OS のふつうのメモリの貸し出し係。自分の係から、本当の貸し出しをこれに任せます。</td>
+<td>第11巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>oha</code></td>
+<td>Web サーバーに、たくさんの頼みを一度に送って、速さを測る道具。<code>oha -n 5000 -c 10 URL</code> は、5000 回を、同時に 10 本ずつ送ります。</td>
+<td>第11巻 UNIT 09</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-47">データベース</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>params!</code></td>
+<td><code>libsql::params![a, b]</code> は、SQL の <code>?1</code>・<code>?2</code> の場所に入れる値を並べるマクロ。値は SQL の文字列につながず、必ずこの形で渡します（SQL インジェクションを防ぐ。第7巻）。</td>
+<td>第5巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>.execute_batch()</code></td>
+<td><code>;</code> で区切った、いくつもの SQL の文を、まとめて実行するメソッド（libsql）。表を作る時などに使います。値を入れる文には使わず、<code>execute</code> と <code>params!</code> を使います。</td>
+<td>第5巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>.execute()</code></td>
+<td>値を入れたり変えたりする SQL の文を、1 つ実行するメソッド（libsql）。<code>conn.execute("UPDATE … WHERE id = ?1", params![id]).await?</code> のように、値は <code>params!</code> で渡します。変わった行の数が返ります。</td>
+<td>第5巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>Builder::new_local()</code></td>
+<td>libsql で、手元のファイル（SQLite の形）のデータベースを開く準備をする関数。<code>.build().await?</code> で開いた物ができます（第7巻）。</td>
+<td>第5巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>.prepare()</code></td>
+<td>SQL の文を、実行する前に用意（解釈）しておくメソッド（libsql）。同じ文を何度も使う時に速くなり、<code>?</code> の数や列の名前も調べられます。</td>
+<td>第7巻 この巻で身に付けること</td>
+</tr>
+<tr>
+<td><code>.columns()</code></td>
+<td>用意した SQL の文が返す列の一覧を返すメソッド。空なら、行を返さない文（<code>INSERT</code> など）です。</td>
+<td>第7巻 この巻で身に付けること</td>
+</tr>
+<tr>
+<td><code>.column_count()</code></td>
+<td>結果の列の数を返すメソッド。</td>
+<td>第7巻 この巻で身に付けること</td>
+</tr>
+<tr>
+<td><code>.column_name()</code></td>
+<td>結果の、何番目かの列の名前を返すメソッド。</td>
+<td>第7巻 この巻で身に付けること</td>
+</tr>
+<tr>
+<td><code>.get_value()</code></td>
+<td>結果の 1 行から、何番目かの列の値を、型を決めずに（<code>Value</code> として）取り出すメソッド。</td>
+<td>第7巻 この巻で身に付けること</td>
+</tr>
+<tr>
+<td><code>Null</code></td>
+<td><code>Value::Null</code> は、データベースの値が NULL（値が無い）であることを表す種類です。</td>
+<td>第7巻 この巻で身に付けること</td>
+</tr>
+<tr>
+<td><code>Integer</code></td>
+<td><code>Value::Integer(n)</code> は、データベースの値が整数であることを表す種類です。</td>
+<td>第7巻 この巻で身に付けること</td>
+</tr>
+<tr>
+<td><code>Real</code></td>
+<td><code>Value::Real(x)</code> は、データベースの値が小数であることを表す種類です。</td>
+<td>第7巻 この巻で身に付けること</td>
+</tr>
+<tr>
+<td><code>Text</code></td>
+<td><code>Value::Text(s)</code> は、データベースの値が文字列であることを表す種類です。</td>
+<td>第7巻 この巻で身に付けること</td>
+</tr>
+<tr>
+<td><code>Blob</code></td>
+<td><code>Value::Blob(bytes)</code> は、データベースの値がバイトの並び（画像などの生のデータ）であることを表す種類です。</td>
+<td>第7巻 この巻で身に付けること</td>
+</tr>
+<tr>
+<td><code>.transaction()</code></td>
+<td>トランザクション（いくつもの変更を「全部成功か、全部取り消し」にするまとまり）を始めるメソッド。<code>tx.commit()</code> で確定、<code>tx.rollback()</code>（または片づけ）で取り消しです（第7巻 UNIT 05）。</td>
+<td>第7巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>.is_autocommit()</code></td>
+<td>今、トランザクションの外（1 文ずつ自動で確定する状態）なら <code>true</code> を返すメソッド。</td>
+<td>第7巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>.transaction_with_behavior()</code></td>
+<td>トランザクションの始め方を決めて始めるメソッド。<code>TransactionBehavior::Immediate</code> は、始めた時点で書き込みの順番を取ります。</td>
+<td>第7巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>.busy_timeout()</code></td>
+<td>ほかの接続が書き込み中で待たされた時に、何秒まで待つかを決めるメソッド。決めないと、すぐに「使用中」のエラーになります。</td>
+<td>第7巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>TransactionBehavior</code></td>
+<td>トランザクションの始め方の種類。<code>Deferred</code>（必要になってから）・<code>Immediate</code>（すぐに書き込みの順番を取る）・<code>Exclusive</code>（ほかを全部止める）があります。</td>
+<td>第7巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>Immediate</code></td>
+<td><code>TransactionBehavior::Immediate</code> は、トランザクションを始めた時点で、書き込みの順番を取る始め方です。あとで「使用中」で失敗するのを減らせます。</td>
+<td>第7巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>.rollback()</code></td>
+<td>トランザクションの変更を取り消すメソッド。</td>
+<td>第7巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>.last_insert_rowid()</code></td>
+<td>いちばん最後に <code>INSERT</code> した行の番号（rowid）を返すメソッド。今作ったノートの番号を知る時に使います。</td>
+<td>第7巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>named_params!</code></td>
+<td><code>libsql::named_params! { ":owner": 1 }</code> は、SQL の <code>:owner</code> のような名前付きの場所に入れる値を並べるマクロ。番号（<code>?1</code>）の代わりに名前で渡せます。</td>
+<td>第7巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>.parameter_count()</code></td>
+<td>用意した SQL の文の、値を入れる場所（<code>?</code>）の数を返すメソッド。</td>
+<td>第7巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>SqliteFailure</code></td>
+<td><code>libsql::Error::SqliteFailure(番号, 文)</code> は、SQLite が返したエラーの種類です。番号で、どんな失敗か（2067 は UNIQUE 違反＝同じ値が既にある）が分かります。</td>
+<td>第7巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>.sync()</code></td>
+<td>組み込みレプリカ（手元の写し）を、Turso のサーバーの最新に合わせるメソッド（第7巻 UNIT 08）。</td>
+<td>第7巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>.sync_interval()</code></td>
+<td>組み込みレプリカを、決めた間隔で自動で同期（サーバーに合わせる）するように設定するメソッド。</td>
+<td>第7巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>Builder::new_remote()</code></td>
+<td>Turso のサーバーにあるデータベースへ、ネット越しにつなぐ準備をする関数。URL と、合言葉（トークン）を渡します。</td>
+<td>第7巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>Builder::new_remote_replica()</code></td>
+<td>手元のファイルに写し（レプリカ）を持ちながら、Turso のサーバーと同期するデータベースを開く準備をする関数。読むのは手元から、書くのはサーバーへ、となります（第7巻 UNIT 08）。</td>
+<td>第7巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>IntoParams</code></td>
+<td>「SQL に渡す値の並びにできる」機能（トレイト。libsql）。関数の引数を <code>impl IntoParams</code> にすると、<code>params![…]</code> でも <code>()</code> でも受け取れます。</td>
+<td>第7巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>Rows</code></td>
+<td><code>query</code> が返す、結果の行の並びの型（libsql）。<code>while let Some(row) = rows.next().await? { … }</code> で 1 行ずつ取り出します。</td>
+<td>第7巻 UNIT 09</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-48">SQL</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CREATE</code></td>
+<td><code>CREATE TABLE 表の名前 ( … )</code> で、データベースに新しい表を作る SQL の命令。かっこの中に、列の名前と型を並べます。</td>
+<td>第0巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>TABLE</code></td>
+<td>SQL で「表」を表す言葉。<code>CREATE TABLE</code>（表を作る）・<code>DROP TABLE</code>（表を消す）のように使います。</td>
+<td>第0巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>INTEGER</code></td>
+<td>SQL の列の型の 1 つで、整数を入れる列。</td>
+<td>第0巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>PRIMARY</code></td>
+<td><code>PRIMARY KEY</code>（主キー）の一部。主キーは、表の中で 1 行を必ず見分けられる列で、同じ値が 2 回入りません。ふつうは <code>id</code> 列にします。</td>
+<td>第0巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>KEY</code></td>
+<td><code>PRIMARY KEY</code>（主キー）・<code>FOREIGN KEY</code>（よその表とつなぐ列）などの「キー」。</td>
+<td>第0巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>TEXT</code></td>
+<td>SQL の列の型の 1 つで、文字を入れる列。</td>
+<td>第0巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>NOT</code></td>
+<td>SQL で「〜ではない」。<code>NOT NULL</code> は「この列は空（NULL）を許さない」という決まりです。</td>
+<td>第0巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>NULL</code></td>
+<td>SQL で「値が無い」ことを表す特別な値。0 や空の文字列とは違います。</td>
+<td>第0巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>REFERENCES</code></td>
+<td>「この列の値は、あの表の、あの列に必ずある値」という決まり（外部キー）。<code>user_id INTEGER REFERENCES users(id)</code> で、存在しないユーザーの番号を入れられなくなります。</td>
+<td>第0巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>BETWEEN</code></td>
+<td>「〜から〜の間」。<code>CHECK (score BETWEEN 0 AND 100)</code> は「0 以上 100 以下だけ許す」という決まりです。</td>
+<td>第0巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>AND</code></td>
+<td>SQL で「かつ」。<code>WHERE a = 1 AND b = 2</code> は両方に合う行だけ。<code>BETWEEN 0 AND 100</code> の一部としても使います。</td>
+<td>第0巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>DEFAULT</code></td>
+<td>列に値を入れなかった時に使う、決めておいた値（既定値）。<code>done INTEGER NOT NULL DEFAULT 0</code> は「指定が無ければ 0」。</td>
+<td>第0巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>INSERT</code></td>
+<td><code>INSERT INTO 表 (列, …) VALUES (値, …)</code> で、表に新しい行を足す SQL の命令。</td>
+<td>第0巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>INTO</code></td>
+<td><code>INSERT INTO 表</code> の一部で、「この表へ」入れる、という意味。</td>
+<td>第0巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>SELECT</code></td>
+<td>表から行を取り出す SQL の命令。<code>SELECT 列, … FROM 表 WHERE 条件 ORDER BY 列</code> の形でよく使います。<code>SELECT *</code> は全部の列です。</td>
+<td>第0巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>FROM</code></td>
+<td><code>SELECT … FROM 表</code> の一部で、「どの表から」取り出すかを書きます。</td>
+<td>第0巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>IF</code></td>
+<td><code>CREATE TABLE IF NOT EXISTS 表</code> の一部で、「もし〜なら」。この形は「まだ無ければ作る（もうあれば何もしない）」という意味です。</td>
+<td>第5巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>EXISTS</code></td>
+<td>SQL で「ある」。<code>IF NOT EXISTS</code> は「無ければ」、<code>EXISTS (SELECT …)</code> は「条件に合う行があれば」という意味です。</td>
+<td>第5巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>IN</code></td>
+<td>SQL で「このどれか」。<code>WHERE status IN ('queued', 'running')</code> は、状態がどちらかの行だけです。</td>
+<td>第5巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>UPDATE</code></td>
+<td><code>UPDATE 表 SET 列 = 値 WHERE 条件</code> で、表の行の中身を書きかえる SQL の命令。<code>WHERE</code> を忘れると、全部の行が変わってしまうので注意します。</td>
+<td>第5巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>SET</code></td>
+<td><code>UPDATE</code> の中で、「どの列を、どの値にするか」を書く所。<code>SET status = 'done', attempts = attempts + 1</code> のように、いくつも書けます。</td>
+<td>第5巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>ORDER</code></td>
+<td><code>ORDER BY 列</code> で、取り出した行を並べる SQL の書き方。<code>DESC</code> を付けると大きい順（新しい順）、付けなければ小さい順です。</td>
+<td>第5巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>BY</code></td>
+<td><code>ORDER BY</code>（並べる）・<code>GROUP BY</code>（まとめる）の一部で、「〜で」という意味です。</td>
+<td>第5巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>CASE</code></td>
+<td>SQL の場合分け。<code>CASE WHEN 条件 THEN 値 ELSE 別の値 END</code> で、条件に合う時と合わない時で、違う値を使えます。</td>
+<td>第5巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>WHEN</code></td>
+<td><code>CASE</code> の中の「もし〜なら」の部分。<code>WHEN attempts &gt;= max_attempts THEN 'dead'</code>。</td>
+<td>第5巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>THEN</code></td>
+<td><code>CASE WHEN 条件 THEN 値</code> の「その時は、この値」の部分。</td>
+<td>第5巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>ELSE</code></td>
+<td><code>CASE</code> の中の「どの条件にも合わなかった時は、この値」の部分。</td>
+<td>第5巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>END</code></td>
+<td><code>CASE … END</code> の終わりの印。</td>
+<td>第5巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>AS</code></td>
+<td>SQL で、列や表に別の名前を付ける書き方。<code>SELECT COUNT(*) AS notes</code> は、結果の列の名前を <code>notes</code> にします。<code>FROM users AS u</code> は、表を <code>u</code> と短く呼べるようにします。</td>
+<td>第7巻 この巻で身に付けること</td>
+</tr>
+<tr>
+<td><code>IN</code></td>
+<td>SQL で「このどれか」。<code>WHERE status IN ('queued', 'running')</code> は、状態がどちらかの行だけです。<code>CHECK (pinned IN (0, 1))</code> は、0 か 1 しか入れられない決まりです。</td>
+<td>第7巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>CAST</code></td>
+<td>SQL で、値の型を変える書き方。<code>CAST('あいう' AS BLOB)</code> は、文字列をバイトの並びとして扱います。</td>
+<td>第7巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>BLOB</code></td>
+<td>SQL の型の 1 つで、バイトの並び（画像などの生のデータ）を入れる型。</td>
+<td>第7巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>STRICT</code></td>
+<td>SQLite（libSQL）で、表の後ろに付けると、列の型と違う値を断るようにする決まり。付けないと、整数の列に文字が入ってしまうことがあります。</td>
+<td>第7巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>AUTOINCREMENT</code></td>
+<td><code>INTEGER PRIMARY KEY AUTOINCREMENT</code> で、番号を自動で振り、消した番号を二度と使わないようにする決まり。</td>
+<td>第7巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>ON</code></td>
+<td>SQL の「〜の時」「〜で」。<code>ON DELETE CASCADE</code> は「消された時は」、<code>JOIN … ON a.id = b.user_id</code> は「この条件で横につなぐ」、<code>CREATE INDEX … ON 表 (列)</code> は「この表の、この列に」という意味です。</td>
+<td>第7巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>DELETE</code></td>
+<td><code>DELETE FROM 表 WHERE 条件</code> で、表の行を消す SQL の命令。<code>WHERE</code> を忘れると、全部の行が消えます。<code>ON DELETE CASCADE</code> の中では「消された時」という意味です。</td>
+<td>第7巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>CASCADE</code></td>
+<td><code>ON DELETE CASCADE</code> は、「つながった元の行（ユーザー）が消されたら、こちらの行（そのユーザーのノート）も一緒に消す」という決まりです。</td>
+<td>第7巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>INDEX</code></td>
+<td><code>CREATE INDEX 名前 ON 表 (列)</code> で、表に索引（本の索引のような、速く探すための仕組み）を作る SQL の命令。よく条件や並べかえに使う列に作ります（第7巻 UNIT 04）。</td>
+<td>第7巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>ORDER</code></td>
+<td><code>ORDER BY 列</code> で、取り出した行を並べる書き方。<code>DESC</code> を付けると大きい順（新しい順）です。</td>
+<td>第7巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>BY</code></td>
+<td><code>ORDER BY</code>（並べる）・<code>GROUP BY</code>（まとめる）の一部で、「〜で」という意味です。</td>
+<td>第7巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>UNION</code></td>
+<td>2 つの <code>SELECT</code> の結果を、縦につなげる書き方。<code>UNION ALL</code> は、重なりも消さずにそのままつなげます。</td>
+<td>第7巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>COUNT</code></td>
+<td>行の数を数える SQL の関数。<code>SELECT COUNT(*) FROM notes</code> は、ノートの数です。<code>COUNT(列)</code> は、その列が NULL でない行の数です。</td>
+<td>第7巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>IF</code></td>
+<td><code>CREATE TABLE IF NOT EXISTS</code> の一部で、「もし〜なら」。「無ければ作る、あれば何もしない」という意味になります。</td>
+<td>第7巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>EXISTS</code></td>
+<td>SQL で「ある」。<code>IF NOT EXISTS</code> は「無ければ」という意味です。</td>
+<td>第7巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>PRAGMA</code></td>
+<td>SQLite（libSQL）の設定を見る・変える命令。<code>PRAGMA foreign_keys = ON;</code> は、表どうしのつながりの決まり（外部キー）を確かめるようにします。</td>
+<td>第7巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>OFF</code></td>
+<td><code>PRAGMA … = OFF</code> で、その設定を切ります（<code>ON</code> で入れます）。</td>
+<td>第7巻 UNIT 01</td>
+</tr>
+<tr>
+<td><code>OFFSET</code></td>
+<td><code>LIMIT 件数 OFFSET 飛ばす数</code> で、「先頭から何件飛ばしてから取り出すか」を決める書き方。ページ送り（2 ページ目なら 20 件飛ばす）に使います。</td>
+<td>第7巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>LIKE</code></td>
+<td>SQL のあいまい検索。<code>WHERE title LIKE '%買い物%'</code> は、<code>買い物</code> を含む行です（<code>%</code> は「何文字でも」、<code>_</code> は「どれか 1 文字」）。</td>
+<td>第7巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>ESCAPE</code></td>
+<td><code>LIKE … ESCAPE '\'</code> で、「<code>\</code> の次の文字は、特別な意味の無いただの文字」と決める書き方。検索の言葉に <code>%</code> や <code>_</code> が入っていても、正しく探せます（第10巻 UNIT 07）。</td>
+<td>第7巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>JOIN</code></td>
+<td>2 つの表を、条件で横につないで取り出す書き方。<code>FROM notes JOIN users ON users.id = notes.user_id</code> は、ノートと、その持ち主を 1 行に並べます。</td>
+<td>第7巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>LEFT</code></td>
+<td><code>LEFT JOIN</code> は、左の表の行は、相手が無くても全部残す JOIN。「ノートが 0 件の人も一覧に出す」時に使います。</td>
+<td>第7巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>GROUP</code></td>
+<td><code>GROUP BY 列</code> で、同じ値の行をまとめて、まとめごとに数える・足す時の書き方。<code>SELECT user_id, COUNT(*) FROM notes GROUP BY user_id</code> は、人ごとのノートの数です。</td>
+<td>第7巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>IS</code></td>
+<td>SQL で NULL かどうかを調べる時の書き方。<code>WHERE x IS NULL</code>（無い）・<code>WHERE x IS NOT NULL</code>（ある）。NULL は <code>= NULL</code> では比べられません。</td>
+<td>第7巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>ASC</code></td>
+<td><code>ORDER BY 列 ASC</code> で、小さい順（古い順）に並べます。書かなくても小さい順になります（大きい順は <code>DESC</code>）。</td>
+<td>第7巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>UPDATE</code></td>
+<td><code>UPDATE 表 SET 列 = 値 WHERE 条件</code> で、行の中身を書きかえる SQL の命令。<code>WHERE</code> を忘れると、全部の行が変わります。</td>
+<td>第7巻 UNIT 03</td>
+</tr>
+<tr>
+<td><code>SET</code></td>
+<td><code>UPDATE</code> の中で、「どの列を、どの値にするか」を書く所。</td>
+<td>第7巻 UNIT 03</td>
+</tr>
+<tr>
+<td><code>WITH</code></td>
+<td><code>WITH 名前 AS (SELECT …)</code> で、その文の中だけで使う「一時的な表」に名前を付ける書き方。長い SQL を読みやすく分けられます。</td>
+<td>第7巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>RECURSIVE</code></td>
+<td><code>WITH RECURSIVE</code> は、自分自身を使って行を増やしていく一時的な表を作る書き方。1〜1000 の数を作る、などに使えます。</td>
+<td>第7巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>EXPLAIN</code></td>
+<td><code>EXPLAIN QUERY PLAN SELECT …</code> で、データベースがその SQL をどう実行するつもりか（索引を使うか、全部の行を見るか）を表示します（第7巻 UNIT 04）。</td>
+<td>第7巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>QUERY</code></td>
+<td><code>EXPLAIN QUERY PLAN</code> の一部。</td>
+<td>第7巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>PLAN</code></td>
+<td><code>EXPLAIN QUERY PLAN</code> の一部で、「実行の計画」という意味です。</td>
+<td>第7巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>DROP</code></td>
+<td><code>DROP TABLE 表</code>・<code>DROP INDEX 索引</code> で、表や索引を消す SQL の命令。中のデータも消えるので注意します。</td>
+<td>第7巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>BEGIN</code></td>
+<td>トランザクションを始める SQL の命令。ここから <code>COMMIT</code>（確定）か <code>ROLLBACK</code>（取り消し）までが、1 つのまとまりになります。</td>
+<td>第7巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>ROLLBACK</code></td>
+<td>トランザクションの中でした変更を、全部取り消す SQL の命令。</td>
+<td>第7巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>COMMIT</code></td>
+<td>トランザクションの中でした変更を、確定する SQL の命令。確定するまでは、ほかの人からは見えません。</td>
+<td>第7巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>ALTER</code></td>
+<td><code>ALTER TABLE 表 …</code> で、もうある表の形を変える SQL の命令（列を足す・名前を変える など）。</td>
+<td>第7巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>ADD</code></td>
+<td><code>ALTER TABLE 表 ADD COLUMN 列 型</code> で、表に列を足します。</td>
+<td>第7巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>COLUMN</code></td>
+<td>SQL で「列」。<code>ADD COLUMN</code>（列を足す）・<code>RENAME COLUMN</code>（列の名前を変える）のように使います。</td>
+<td>第7巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>RENAME</code></td>
+<td><code>ALTER TABLE 表 RENAME TO 新しい名前</code> で、表の名前を変えます。</td>
+<td>第7巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>TO</code></td>
+<td><code>RENAME TO 新しい名前</code> の「〜へ」の部分です。</td>
+<td>第7巻 UNIT 06</td>
+</tr>
+<tr>
+<td><code>COALESCE</code></td>
+<td><code>COALESCE(値1, 値2)</code> は、最初の NULL でない値を返す SQL の関数。<code>COALESCE(SUM(done), 0)</code> は「合計が NULL（行が無い）なら 0」。</td>
+<td>第7巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>SUM</code></td>
+<td>列の値の合計を出す SQL の関数。<code>SUM(done)</code> は、<code>done</code> が 1 の行の数（完了の数）になります。</td>
+<td>第7巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>COALESCE</code></td>
+<td><code>COALESCE(値1, 値2)</code> は、最初の NULL でない値を返す SQL の関数。<code>COALESCE(SUM(done), 0)</code> は「合計が NULL（行が無い）なら 0」。</td>
+<td>第7巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>SUM</code></td>
+<td>列の値の合計を出す SQL の関数。</td>
+<td>第7巻 UNIT 09</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-49">JSON</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>serde_json::to_string()</code></td>
+<td>Rust の値を、JSON の文字列（1 行）に変える関数。値の型に <code>Serialize</code> が付いている必要があります。失敗することもあるので <code>Result</code> が返ります。</td>
+<td>第4巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>serde_json::to_string_pretty()</code></td>
+<td>Rust の値を、人が読みやすい字下げ付きの JSON の文字列に変える関数。</td>
+<td>第4巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>Deserialize</code></td>
+<td>「JSON などから作れる」機能（トレイト。<code>serde</code> の部品）。<code>#[derive(Deserialize)]</code> を付けた型は、<code>serde_json::from_str</code> で JSON から作れます。逆向き（値 → JSON）は <code>Serialize</code> です。</td>
+<td>第4巻 UNIT 08</td>
+</tr>
+<tr>
+<td>``</td>
+<td><code>serde</code> の印（属性）。JSON にする時の細かい決まりを付けます。<code>#[serde(rename_all = "camelCase")]</code>（名前の書き方を変える）・<code>#[serde(default)]</code>（無い時は初期値）・<code>#[serde(skip_serializing_if = "Option::is_none")]</code>（空なら書かない）などがあります。</td>
+<td>第4巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>json!</code></td>
+<td><code>serde_json::json!({ "ok": true })</code> は、JSON の形をそのまま書いて、JSON の値を作るマクロです。</td>
+<td>第14巻 B. サンプル集</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-50">Topcoat</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>module_router!</code></td>
+<td>Topcoat のマクロ。Rust のモジュール（ファイル）の並びを、そのまま URL の並びにしたルーター（URL ごとに、どの関数に答えさせるかの名簿）を作ります（第6巻 UNIT 03）。</td>
+<td>第1巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>view!</code></td>
+<td>Topcoat のマクロ。中に HTML をほぼそのままの形で書いて、画面（<code>View</code>）を作ります。文字は <code>"…"</code> で囲み、Rust の値は <code>(値)</code> で埋め込みます。埋め込んだ文字の <code>&lt;</code> などは、自動で安全な形に置きかえられます（第6巻 UNIT 05）。</td>
+<td>第1巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>asset!</code></td>
+<td>Topcoat のマクロ。CSS や画像などのファイル（アセット）を「このファイルを配る」と宣言し、ブラウザーから読める URL を作ります。<code>asset!("styles.css")</code> を、<code>&lt;link&gt;</code> の <code>href</code> などに入れて使います（第6巻 UNIT 08）。</td>
+<td>第1巻 UNIT 08</td>
+</tr>
+<tr>
+<td>``</td>
+<td>Topcoat の印（属性）。この関数を「どのページにも共通の外枠（HTML の骨組み・メニュー）」にします。外枠の中の、ページが入る場所を <code>slot</code> で受け取ります（第6巻 UNIT 03）。</td>
+<td>第1巻 UNIT 08</td>
+</tr>
+<tr>
+<td>``</td>
+<td>Topcoat の印（属性）。この関数を、1 つの URL に答える「ページ」にします。<code>#[page("/")]</code> なら <code>/</code> に、<code>#[page(POST)]</code> なら送信（POST）に答えます（第6巻 UNIT 02〜03）。</td>
+<td>第1巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>topcoat::dev::script()</code></td>
+<td><code>topcoat dev</code> で動かしている時だけ、「コードを直したら、ブラウザーを自動で読み直す」ための小さなスクリプトを、ページに入れる関数。<code>cargo run</code> や本番では何も出しません（第6巻 UNIT 08）。</td>
+<td>第1巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>AssetBundle</code></td>
+<td>Topcoat の型。<code>topcoat asset bundle</code> で作った「アセットの束」（名前にハッシュが付いたファイルと目録）を、<code>AssetBundle::load()</code> で読み込んで、配れるようにします（第6巻 UNIT 08）。</td>
+<td>第1巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>RouterBuilderAssetExt</code></td>
+<td>Topcoat のトレイト（機能のまとまり）。<code>use</code> しておくと、ルーターを組み立てる時に、アセット（CSS など）を配る設定のメソッドが使えるようになります。</td>
+<td>第1巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>Router</code></td>
+<td>URL とメソッド（GET・POST）ごとに、どの関数に答えさせるかを決めた名簿（ルーター）。Topcoat のサーバーは、来た頼み（リクエスト）をこの名簿で振り分けます（第6巻 UNIT 03）。</td>
+<td>第1巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>View</code></td>
+<td>Topcoat の「画面（HTML になる物）」の型（トレイト）。ページの関数は <code>Result&lt;impl View&gt;</code>（HTML になる何かを返す。失敗することもある）を返します。</td>
+<td>第1巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>href!</code></td>
+<td>Topcoat のマクロ。ページの関数から、その URL を作ります。<code>href!(id::show, id::Id(note.id))</code> は「このノートの詳細ページの URL」。URL を文字で書かないので、打ちまちがいがコンパイルの時に見つかります（第6巻 UNIT 04）。</td>
+<td>第5巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>.resolve()</code></td>
+<td><code>href!</code> で作った URL の部品を、今のリクエスト（<code>cx</code>）に合わせて、本物の URL の文字列にするメソッド。</td>
+<td>第5巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>#[page(POST)]</code> の <code>POST</code> は、「フォームの送信（POST）に答えるページ」にする指定。何も書かなければ、ふつうの表示（GET）に答えます（第6巻 UNIT 06）。</td>
+<td>第5巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>Cx</code></td>
+<td>Topcoat の「今のリクエストの情報（URL・クッキー・セッションなど）が入った箱」。ページの関数の引数 <code>cx: &amp;Cx</code> で受け取り、<code>href!(…).resolve(cx)</code> などで使います（第6巻 UNIT 04）。</td>
+<td>第5巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>Form</code></td>
+<td>Topcoat の、送られてきたフォームの中身を受け取る型。<code>Form(input): Form&lt;NoteForm&gt;</code> と書くと、フォームの項目が <code>NoteForm</code> の形に読み取られて <code>input</code> に入ります（第6巻 UNIT 06）。</td>
+<td>第5巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>Id</code></td>
+<td>URL の一部（<code>/notes/3</code> の <code>3</code> など）を、型として受け取るための入れ物。この本の RustNote では、<code>id::Id(番号)</code> の形で、URL の中のノートの番号を表します。</td>
+<td>第5巻 UNIT 08</td>
+</tr>
+<tr>
+<td>``</td>
+<td>Topcoat の印（属性）。全部（またはある範囲）のページの前後に、決まった処理（アクセスのログ・ログインの確かめなど）をはさむ「層」を作ります（第6巻 UNIT 03・第5巻）。</td>
+<td>第5巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>Next</code></td>
+<td><code>#[layer]</code> の関数で受け取る「次の処理」。<code>next.run(…)</code> を呼ぶと、その先（ページ）が動いて、答えが返ってきます。前後に自分の処理をはさめます。</td>
+<td>第5巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>SeeOther</code></td>
+<td>「303 See Other」（別のページへ移って）という答えを表す型。フォームを送ったあと、一覧や詳細のページへ移す時（PRG）に使います（第6巻 UNIT 06）。</td>
+<td>第5巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>Router::builder()</code></td>
+<td>Topcoat のルーター（URL ごとの名簿）を組み立て始める関数。<code>Router::builder().discover().build()</code> は、<code>#[page]</code> を付けた関数を全部自動で集めて（<code>discover</code>）、ルーターを作ります（第6巻 UNIT 02）。</td>
+<td>第6巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>RouterBuilderDiscoverExt</code></td>
+<td><code>.discover()</code>（<code>#[page]</code> の付いた関数を自動で集める）を使えるようにする機能（トレイト）。<code>use</code> しておく必要があります。</td>
+<td>第6巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>class!</code></td>
+<td>Topcoat のマクロ。HTML の <code>class</code> の値を、条件つきで組み立てます。<code>class!("nav", "active" if on_about)</code> は、<code>on_about</code> が <code>true</code> の時だけ <code>active</code> を足して <code>"nav active"</code> にします。</td>
+<td>第6巻 UNIT 03</td>
+</tr>
+<tr>
+<td>``</td>
+<td>Topcoat の印（属性）。画面（HTML）ではなく、JSON やただの文字などを返す「ルート」にします。<code>#[route(GET)]</code> のように、メソッドを必ず書きます。人が見る画面は <code>#[page]</code>、プログラムが読む答えは <code>#[route]</code> と使い分けます。</td>
+<td>第6巻 UNIT 03</td>
+</tr>
+<tr>
+<td><code>.is_current()</code></td>
+<td><code>href!(…)</code> で作ったリンク先が、「今開いているページ」なら <code>true</code> を返すメソッド。メニューの今のページに印（<code>aria-current</code>）を付ける時に使います。</td>
+<td>第6巻 UNIT 03</td>
+</tr>
+<tr>
+<td><code>SessionConfig::default()</code></td>
+<td>Topcoat のセッション（ログインの状態などを覚える仕組み）を、おすすめの設定で用意する書き方。<code>.sessions(SessionConfig::default())</code> でルーターに登録します（第6巻 UNIT 10）。</td>
+<td>第6巻 UNIT 03</td>
+</tr>
+<tr>
+<td><code>AssetConfig</code></td>
+<td>Topcoat のアセット（CSS・画像など）の配り方の設定の型。本番は束（<code>AssetBundle</code>）から、テストは <code>AssetConfig::hosted_at(…)</code> のように、場面に合わせて渡します。</td>
+<td>第6巻 UNIT 03</td>
+</tr>
+<tr>
+<td><code>SessionConfig</code></td>
+<td>Topcoat のセッションの設定（クッキーの名前・期限など）の型。</td>
+<td>第6巻 UNIT 03</td>
+</tr>
+<tr>
+<td><code>module_param!</code></td>
+<td>Topcoat のマクロ。モジュールの区切りを「URL の変わる部品」にします。<code>mod id</code> の中に <code>module_param!(id: u64, error = not_found);</code> と書くと、URL が <code>/notes/{id}</code> になり、数として読めない時は 404 になります（第6巻 UNIT 04）。</td>
+<td>第6巻 UNIT 04</td>
+</tr>
+<tr>
+<td>``</td>
+<td>Topcoat の印（属性）。<code>?q=rust&amp;page=2</code> のようなクエリ（URL の <code>?</code> の後ろ）を読むための構造体に付けます。項目は <code>Option&lt;T&gt;</code> にしておき、無い・空の時は <code>None</code> になります（第6巻 UNIT 04）。</td>
+<td>第6巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>Name</code></td>
+<td><code>module_param!(name: String)</code> で作られる、URL の部品の型（名前の頭を大文字にした形）。<code>path_param::&lt;Name&gt;(cx)</code> で、その部品の値を読みます。</td>
+<td>第6巻 UNIT 04</td>
+</tr>
+<tr>
+<td>``</td>
+<td>Topcoat の印（属性）。画面の一部を作る、何度も使える部品（コンポーネント）にします。<code>view!</code> の中で <code>panel(title: "一覧", …)</code> のように、名前付きの引数で呼べます（第6巻 UNIT 05）。</td>
+<td>第6巻 UNIT 05</td>
+</tr>
+<tr>
+<td>``</td>
+<td>コンポーネントの引数に付ける印。<code>#[default] child: Child&lt;'_&gt;</code> は、「名前を付けずにタグの間に書いた中身が、この引数に入る」という意味です。（<code>#[derive(Default)]</code> の中で、どの種類を初期値にするかの印にも使われます。）</td>
+<td>第6巻 UNIT 05</td>
+</tr>
+<tr>
+<td>``</td>
+<td><code>view!</code> の中の <code>for</code> に付ける印。くり返しの 1 つずつを、何で見分けるか（ノートの番号など）を決めます。画面を部分的に描き直す時に、正しく対応させるために使います。</td>
+<td>第6巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>Child</code></td>
+<td>コンポーネントの「中身」（タグの間に書いた物）を受け取る型。部品の中で <code>(child)</code> と書いた所に置かれます。</td>
+<td>第6巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>.push_string()</code></td>
+<td>Topcoat の画面を作る時に、文字を書き足すメソッド。入れた文字は、置く場所に合わせて自動でエスケープ（<code>&lt;</code> などを安全な形に置きかえ）されます。</td>
+<td>第6巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>NodeViewParts</code></td>
+<td><code>view!</code> の <code>( )</code> に入れられる物が持っている機能（トレイト）。文字・数・<code>bool</code> などは最初から持っています。自分の型（<code>NoteId</code> など）を入れたい時は、これを実装します。</td>
+<td>第6巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>PartsWriter</code></td>
+<td><code>NodeViewParts</code> を実装する時に受け取る「書き込み先」。<code>push_string</code> などで、画面の中身を書きます。</td>
+<td>第6巻 UNIT 05</td>
+</tr>
+<tr>
+<td>``</td>
+<td>Topcoat の印（属性）。付けた関数の結果を、<strong>1 つの要求（リクエスト）の間だけ</strong>覚えておきます。レイアウト・ページ・部品のどこから呼んでも、データベースを 1 回しか読まずに済みます（第6巻 UNIT 07）。</td>
+<td>第6巻 UNIT 07</td>
+</tr>
+<tr>
+<td><code>Asset</code></td>
+<td><code>asset!</code> で宣言した、配るファイル（CSS・画像など）1 つを表す型。ページの中で URL として使えます。</td>
+<td>第6巻 UNIT 08</td>
+</tr>
+<tr>
+<td>``</td>
+<td>Topcoat の印（属性）。ブラウザーの中のボタンなどから、サーバーの関数を呼べるようにします（中では <code>POST /api/…</code> という通信になります。第6巻 UNIT 09）。</td>
+<td>第6巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>topcoat::runtime::script()</code></td>
+<td>ブラウザーの中で画面を変える仕組み（runtime）を使うためのスクリプトを、ページに入れる関数（第6巻 UNIT 09）。</td>
+<td>第6巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>RouterBuilderRuntimeExt</code></td>
+<td>ルーターに <code>.runtime()</code>（ブラウザーの中で画面を変える仕組み）を登録できるようにする機能（トレイト）。</td>
+<td>第6巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>not_found!</code></td>
+<td>Topcoat のマクロ。その場で「404 Not Found（見つかりません）」の答えにします。</td>
+<td>第6巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>.description()</code></td>
+<td><code>BadRequestError</code> などに入れた、利用者向けの説明の文を取り出すメソッド。</td>
+<td>第6巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>.ok_or_not_found()</code></td>
+<td>Topcoat のメソッド。<code>Option</code> が <code>None</code>（無い）の時に、404 Not Found のエラーにします。<code>… .ok_or_not_found()?</code> と書くと、無い時はそこで 404 を返します（<code>RouterErrorExt</code> を <code>use</code> して使う）。</td>
+<td>第6巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>BadRequestError</code></td>
+<td>Topcoat の「400 Bad Request（頼み方がおかしい）」のエラーの型。<code>bad_request("検索の言葉を入れてください")</code> で作ります。文は利用者に見えるので、直し方が分かる短い文にします。</td>
+<td>第6巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>NotFoundError</code></td>
+<td>Topcoat の「404 Not Found（見つかりません）」のエラーの型。</td>
+<td>第6巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>RouterErrorExt</code></td>
+<td><code>.ok_or_not_found()</code> などを使えるようにする機能（トレイト）。</td>
+<td>第6巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>session::token_hash()</code></td>
+<td>Topcoat の関数。今のリクエストのセッションの印（トークン）の、ハッシュを返します。データベースの <code>sessions</code> 表に、ハッシュで記録しておき、ログイン中かを調べるのに使います（第8巻 UNIT 05）。</td>
+<td>第6巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>RouterBuilderCookieExt</code></td>
+<td>ルーターに <code>.cookies()</code>（クッキーを使う仕組み）を登録できるようにする機能（トレイト）。</td>
+<td>第6巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>RouterBuilderSessionExt</code></td>
+<td>ルーターに <code>.sessions(…)</code>（セッションの仕組み）を登録できるようにする機能（トレイト）。セッションはクッキーを使うので、先に <code>.cookies()</code> も登録します。</td>
+<td>第6巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>TokenHash</code></td>
+<td>セッションの印（トークン）のハッシュの型。トークンそのものではなくハッシュを保存しておくと、データベースが盗まれても、そのままではログインに使えません。</td>
+<td>第6巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>RemoteAddr</code></td>
+<td>相手（ブラウザー側）の IP アドレスを表す型。ログインの回数の制限などで、どこからの頼みかを見分けるのに使います。</td>
+<td>第8巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>Token</code></td>
+<td><code>topcoat::session::Token</code> は、セッションの印（でたらめな長い文字列）の型。ブラウザーのクッキーに入れ、サーバーには、そのハッシュだけを保存します。</td>
+<td>第8巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>AssetBundle::load_dir()</code></td>
+<td>指定したフォルダから、アセットの束（<code>topcoat asset bundle</code> で作った物）を読み込む関数（第12巻）。</td>
+<td>第9巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>AssetConfig::hosted_at()</code></td>
+<td>アセット（CSS など）を、決めた URL の場所から配る設定を作る関数。テストで、束を作らずに CSS の URL だけを決める時に使います。</td>
+<td>第13巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>Manifest</code></td>
+<td>アセットの目録（元の名前と、ハッシュの付いた本当の名前の対応表）の型。</td>
+<td>第13巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>ManifestEntry</code></td>
+<td>アセットの目録の 1 行（1 つのファイルの情報）の型。</td>
+<td>第13巻 UNIT 10</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-51">HTML</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DOCTYPE</code></td>
+<td><code>&lt;!DOCTYPE html&gt;</code> は、「この文書は HTML5 です」とブラウザーに伝える、HTML の先頭の決まった 1 行です。</td>
+<td>第1巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>&lt;meta&gt;</code></td>
+<td>HTML の <code>&lt;head&gt;</code> の中に書く、ページの情報のタグ。<code>&lt;meta charset="utf-8"&gt;</code>（文字コード）・<code>&lt;meta name="viewport" …&gt;</code>（スマホでの表示の幅）などがあります。</td>
+<td>第8巻 UNIT 06</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-52">CSS</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>font-family:</code></td>
+<td>CSS で、文字の書体（フォント）を決める項目。<code>font-family: sans-serif;</code> は「飾りの無い書体」。</td>
+<td>第6巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>margin:</code></td>
+<td>CSS で、箱の外側の余白を決める項目。<code>margin: 2rem;</code> は、上下左右に文字 2 つ分くらいの余白です。</td>
+<td>第6巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>color:</code></td>
+<td>CSS で、文字の色を決める項目。<code>color: #1e40af;</code> のように、色の番号（16 進数）や名前で書きます。</td>
+<td>第6巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>color-text:</code></td>
+<td>この本の CSS で決めた色の変数（<code>--color-text</code>：ふつうの文字の色）。<code>var(--color-text)</code> で使います。CSS の変数は、名前の頭を <code>--</code> にして <code>:root { … }</code> の中で決めると、どこからでも使えます。</td>
+<td>第9巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>color-muted:</code></td>
+<td>この本の CSS の色の変数（<code>--color-muted</code>：控えめな文字の色）。</td>
+<td>第9巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>color-border:</code></td>
+<td>この本の CSS の色の変数（<code>--color-border</code>：枠線の色）。</td>
+<td>第9巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>color-bg:</code></td>
+<td>この本の CSS の色の変数（<code>--color-bg</code>：ページの背景の色）。</td>
+<td>第9巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>color-card:</code></td>
+<td>この本の CSS の色の変数（<code>--color-card</code>：カードの背景の色）。</td>
+<td>第9巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>color-primary:</code></td>
+<td>この本の CSS の色の変数（<code>--color-primary</code>：ボタンなどの主な色）。</td>
+<td>第9巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>color-primary-dark:</code></td>
+<td>この本の CSS の色の変数（<code>--color-primary-dark</code>：主な色の濃い版。マウスを乗せた時など）。</td>
+<td>第9巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>color-success-bg:</code></td>
+<td>この本の CSS の色の変数（<code>--color-success-bg</code>：成功のお知らせの背景）。</td>
+<td>第9巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>color-success-text:</code></td>
+<td>この本の CSS の色の変数（<code>--color-success-text</code>：成功のお知らせの文字）。</td>
+<td>第9巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>color-warning-bg:</code></td>
+<td>この本の CSS の色の変数（<code>--color-warning-bg</code>：注意のお知らせの背景）。</td>
+<td>第9巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>color-warning-text:</code></td>
+<td>この本の CSS の色の変数（<code>--color-warning-text</code>：注意のお知らせの文字）。</td>
+<td>第9巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>color-danger:</code></td>
+<td>この本の CSS の色の変数（<code>--color-danger</code>：消すボタン・エラーの色）。</td>
+<td>第9巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>box-sizing:</code></td>
+<td>CSS で、箱の幅に枠線と内側の余白を含めるかを決める項目。<code>box-sizing: border-box;</code> にすると、<code>width</code> の中に <code>padding</code> と <code>border</code> が含まれ、大きさの計算が分かりやすくなります。</td>
+<td>第13巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>background:</code></td>
+<td>CSS で、背景（色や画像）を決める項目。<code>background: var(--color-bg);</code> は、色の変数の色にします。</td>
+<td>第13巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>line-height:</code></td>
+<td>CSS で、行の高さ（行と行の間隔）を決める項目。<code>1.7</code> は「文字の大きさの 1.7 倍」。</td>
+<td>第13巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>display:</code></td>
+<td>CSS で、箱の並べ方を決める項目。<code>display: flex;</code> は「中身を横一列に並べる」、<code>display: grid;</code> は「ます目に並べる」、<code>display: none;</code> は「表示しない」。</td>
+<td>第13巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>align-items:</code></td>
+<td><code>display: flex</code> の中身を、上下（交わる向き）のどこにそろえるかを決める項目。<code>center</code> で真ん中にそろえます。</td>
+<td>第13巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>justify-content:</code></td>
+<td><code>display: flex</code> の中身を、並ぶ向きにどう配るかを決める項目。<code>space-between</code> は「両端に寄せて、間を均等に空ける」。</td>
+<td>第13巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>gap:</code></td>
+<td><code>flex</code> や <code>grid</code> の中身どうしの間の幅を決める項目。</td>
+<td>第13巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>padding:</code></td>
+<td>CSS で、箱の内側の余白を決める項目。<code>padding: 12px 24px;</code> は、上下 12px・左右 24px。</td>
+<td>第13巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>border-bottom:</code></td>
+<td>CSS で、箱の下の枠線を決める項目。<code>1px solid 色</code> は「太さ 1px の実線」。</td>
+<td>第13巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>font-weight:</code></td>
+<td>CSS で、文字の太さを決める項目。<code>700</code> や <code>bold</code> で太字、<code>800</code> はもっと太い字です。</td>
+<td>第13巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>font-size:</code></td>
+<td>CSS で、文字の大きさを決める項目。</td>
+<td>第13巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>text-decoration:</code></td>
+<td>CSS で、文字の下線などを決める項目。<code>none</code> で、リンクの下線を消せます。</td>
+<td>第13巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>max-width:</code></td>
+<td>CSS で、箱の幅の上限を決める項目。広い画面でも、読みやすい幅で止められます。</td>
+<td>第13巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>border:</code></td>
+<td>CSS で、箱の枠線（太さ・線の種類・色）をまとめて決める項目。<code>border: 1px solid #e2e8f0;</code>。</td>
+<td>第13巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>border-radius:</code></td>
+<td>CSS で、箱の角の丸みを決める項目。</td>
+<td>第13巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>cursor:</code></td>
+<td>CSS で、マウスを乗せた時の矢印の形を決める項目。<code>pointer</code> は、押せる物の「指の形」です。</td>
+<td>第13巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>button:</code></td>
+<td><code>button:hover</code> は、「マウスを乗せている時のボタン」を指す CSS の書き方（<code>:hover</code> は乗せている時の状態）。</td>
+<td>第13巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>border-color:</code></td>
+<td>CSS で、枠線の色だけを決める項目。</td>
+<td>第13巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>link-button:</code></td>
+<td><code>.link-button:hover</code> は、この本の CSS で決めた「リンクのように見えるボタン」（<code>link-button</code> という class）の、マウスを乗せた時の見た目です。</td>
+<td>第13巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>margin-top:</code></td>
+<td>CSS で、箱の上の外側の余白を決める項目。</td>
+<td>第13巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>width:</code></td>
+<td>CSS で、箱の幅を決める項目。</td>
+<td>第13巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>font:</code></td>
+<td>CSS で、文字の大きさ・書体などをまとめて決める項目。<code>font: inherit;</code> は「親と同じにする」（ボタンや入力欄の文字を、ページの文字とそろえる）。</td>
+<td>第13巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>margin-bottom:</code></td>
+<td>CSS で、箱の下の外側の余白を決める項目。</td>
+<td>第13巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>list-style:</code></td>
+<td>CSS で、並び（<code>ul</code>・<code>ol</code>）の点や番号の形を決める項目。<code>none</code> で消せます。</td>
+<td>第13巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>flex-wrap:</code></td>
+<td><code>display: flex</code> の中身が入りきらない時に、次の行へ折り返すかを決める項目。<code>wrap</code> で折り返します。</td>
+<td>第13巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>margin-left:</code></td>
+<td>CSS で、箱の左の外側の余白を決める項目。<code>auto</code> にすると、その箱を右へ寄せられます。</td>
+<td>第13巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>white-space:</code></td>
+<td>CSS で、空白や改行をどう表示するかを決める項目。<code>pre-wrap</code> は「改行と空白はそのまま、はみ出す所は折り返す」。</td>
+<td>第13巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>overflow-wrap:</code></td>
+<td>CSS で、長い単語（URL など）が箱からはみ出す時に、途中で折り返すかを決める項目。<code>anywhere</code> で、どこでも折り返せます。</td>
+<td>第13巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>text-align:</code></td>
+<td>CSS で、文字の左右のそろえ方を決める項目。<code>center</code> で中央。</td>
+<td>第13巻 UNIT 09</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-53">JavaScript・TypeScript</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>import</code></td>
+<td>ほかのファイルや部品から、関数などを読み込む書き方。<code>import { rmSync } from "node:fs";</code> は、Node.js のファイルの道具から <code>rmSync</code> を使えるようにします。</td>
+<td>第8巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>try</code></td>
+<td>失敗するかもしれない処理を <code>try { … } catch (e) { … }</code> で囲み、失敗した時の処理を <code>catch</code> に書く書き方。</td>
+<td>第8巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>catch</code></td>
+<td><code>try</code> の中で失敗（エラー）が起きた時に動く所。<code>catch (e)</code> の <code>e</code> に、エラーが入ります。</td>
+<td>第8巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>.runMigrations()</code></td>
+<td>Better Auth の、データベースの表を作る・変える手順（マイグレーション）を実行するメソッド（第8巻 UNIT 08 の比べ）。</td>
+<td>第8巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>.stringify()</code></td>
+<td><code>JSON.stringify(値)</code> は、JavaScript の値を JSON の文字列にする関数です。</td>
+<td>第8巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>.round()</code></td>
+<td><code>Math.round(x)</code> は、小数を四捨五入して整数にする関数です。</td>
+<td>第8巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>.slice()</code></td>
+<td>文字列や配列の、一部分を切り出すメソッド。<code>text.slice(0, 40)</code> は、最初の 40 文字です。</td>
+<td>第8巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>.startsWith()</code></td>
+<td>文字列が、その文字で始まっていれば <code>true</code> を返すメソッド（Rust の <code>starts_with</code>）。</td>
+<td>第8巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>??</code></td>
+<td><code>a ?? b</code> は、<code>a</code> が <code>null</code> か <code>undefined</code>（値が無い）なら <code>b</code> を使う、という書き方です。</td>
+<td>第8巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>...</code></td>
+<td>スプレッド構文。<code>[...a, x]</code> は配列 <code>a</code> の中身を広げて新しい配列を作り、<code>{ ...obj, k: v }</code> はオブジェクトの中身を写して一部だけ変えた新しいオブジェクトを作ります。</td>
+<td>第8巻 UNIT 08</td>
+</tr>
+<tr>
+<td><code>.createElement()</code></td>
+<td><code>document.createElement('iframe')</code> は、新しい HTML のタグ（要素）を作る、ブラウザーの関数です。</td>
+<td>第10巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>.appendChild()</code></td>
+<td>作ったタグを、ページの中の決めた所（親）の最後に入れるメソッド。</td>
+<td>第10巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>.querySelectorAll()</code></td>
+<td>CSS と同じ書き方（<code>.flash</code>・<code>button</code> など）で、ページの中の合うタグを全部探すメソッド。</td>
+<td>第10巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>.toLowerCase()</code></td>
+<td>英字を小文字にした文字列を返すメソッド（Rust の <code>to_lowercase</code>）。</td>
+<td>第10巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>.padEnd()</code></td>
+<td>文字列の後ろを空白で埋めて、決めた長さにするメソッド。表のように並べて表示する時に使います。</td>
+<td>第10巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>.addEventListener()</code></td>
+<td>クリック・入力などの出来事（イベント）が起きた時に動く関数を登録するメソッド。<code>document.addEventListener('focusin', (e) =&gt; { … })</code>。</td>
+<td>第10巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>?.</code></td>
+<td><code>a?.b</code> は、<code>a</code> が <code>null</code> や <code>undefined</code> なら、そこで止めて <code>undefined</code> にする書き方（オプショナルチェーン）。無いかもしれない物を、エラーにせずにたどれます。</td>
+<td>第10巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>.querySelector()</code></td>
+<td>CSS と同じ書き方で、ページの中の合うタグを 1 つ（最初の物）だけ探すメソッド。見つからなければ <code>null</code> です。</td>
+<td>第10巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>null</code></td>
+<td>JavaScript で「値が無い」ことを表す値。</td>
+<td>第10巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>.getBoundingClientRect()</code></td>
+<td>タグが、画面のどこに、どの大きさで表示されているか（位置・幅・高さ）を返すメソッド。はみ出しや重なりを調べる時に使います。</td>
+<td>第10巻 UNIT 10</td>
+</tr>
+<tr>
+<td><code>default</code></td>
+<td><code>export default</code> は、そのファイルから「いちばんの物」を 1 つ外に出す書き方。読み込む側は <code>import 名前 from "./ファイル"</code> と、好きな名前で受け取れます。</td>
+<td>第11巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>.getAttribute()</code></td>
+<td>タグの属性（<code>placeholder</code>・<code>name</code> など）の値を取り出すメソッド。無ければ <code>null</code> です。</td>
+<td>第11巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>===</code></td>
+<td>JavaScript で「型も値も同じか」を比べる書き方。<code>==</code> は型を勝手にそろえて比べるので、ふつうは <code>===</code> を使います（違うかは <code>!==</code>）。</td>
+<td>第11巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>.getPropertyValue()</code></td>
+<td><code>getComputedStyle(要素).getPropertyValue("white-space")</code> のように、CSS の項目の、実際に効いている値を取り出すメソッド。</td>
+<td>第13巻 UNIT 09</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-54">Playwright</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.goto()</code></td>
+<td>Playwright で、ブラウザーを指定した URL へ移動させるメソッド。<code>await page.goto("/signup")</code>。</td>
+<td>第11巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>.getByLabel()</code></td>
+<td>ラベル（<code>&lt;label&gt;</code>）の文字で、入力欄を探すメソッド。利用者が見るのと同じ文字で探すので、テストが読みやすく、壊れにくくなります。</td>
+<td>第11巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>.fill()</code></td>
+<td>入力欄に文字を入れるメソッド。<code>await page.getByLabel("メールアドレス").fill("alice@example.com")</code>。</td>
+<td>第11巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>.getByRole()</code></td>
+<td>役割（ボタン・見出し・リンクなど）と名前で、画面の部品を探すメソッド。<code>page.getByRole("button", { name: "登録する" })</code>。</td>
+<td>第11巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>.toHaveURL()</code></td>
+<td>「今のページの URL が、これになっているか」を確かめるメソッド（<code>expect(page).toHaveURL("/notes")</code>）。少し待ってくれます。</td>
+<td>第11巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>.getByText()</code></td>
+<td>表示されている文字で、部品を探すメソッド。</td>
+<td>第11巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>.toBeVisible()</code></td>
+<td>「その部品が画面に見えているか」を確かめるメソッド。</td>
+<td>第11巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>.toHaveText()</code></td>
+<td>「その部品の文字が、これと同じか」を確かめるメソッド。</td>
+<td>第11巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>.beforeEach()</code></td>
+<td><code>test.beforeEach(async ({ page }) =&gt; { … })</code> は、それぞれのテストの前に、毎回動かす準備（ログインなど）を書く所です。</td>
+<td>第11巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>.pressSequentially()</code></td>
+<td>キーボードで 1 文字ずつ打つように、入力欄に文字を入れるメソッド。<code>maxlength</code> などで止まるかを確かめる時に使います。</td>
+<td>第11巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>.inputValue()</code></td>
+<td>入力欄に今入っている文字を取り出すメソッド。</td>
+<td>第11巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>.analyze()</code></td>
+<td><code>@axe-core/playwright</code> の部品で、ページのアクセシビリティ（目の見えにくい人なども使えるか）の問題を調べるメソッド。</td>
+<td>第11巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>.setTimeout()</code></td>
+<td><code>test.setTimeout(5_000)</code> は、そのテストの制限時間（ミリ秒）を決める関数です。</td>
+<td>第11巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>.textContent()</code></td>
+<td>部品の中の文字を取り出すメソッド。</td>
+<td>第11巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>.toBe()</code></td>
+<td><code>expect(値).toBe(期待する値)</code> で、「同じか」を確かめるメソッド。</td>
+<td>第11巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>.press()</code></td>
+<td>キーを 1 つ押すメソッド。<code>await page.keyboard.press("Tab")</code> は Tab キー（次の部品へ移る）。</td>
+<td>第11巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>.evaluate()</code></td>
+<td>ブラウザーの中で、JavaScript を動かして結果を受け取るメソッド。</td>
+<td>第11巻 UNIT 05</td>
+</tr>
+<tr>
+<td><code>.launch()</code></td>
+<td>Playwright で、ブラウザーを起動するメソッド。<code>chromium.launch({ channel: 'chrome' })</code> は、入っている Chrome を使います。</td>
+<td>第13巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>.newContext()</code></td>
+<td>起動したブラウザーの中に、まっさらな「利用者ひとり分」の環境（クッキーなどが別々）を作るメソッド。画面の大きさも決められます。</td>
+<td>第13巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>.newPage()</code></td>
+<td>新しいタブ（ページ）を開くメソッド。</td>
+<td>第13巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>.setViewportSize()</code></td>
+<td>画面の大きさ（幅・高さ）を変えるメソッド。スマホの幅で崩れないかを確かめる時に使います。</td>
+<td>第13巻 UNIT 09</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-55">Python</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>def</code></td>
+<td>Python で関数を作る書き方。<code>def luminance(hex_color):</code> の次の行から、字下げした所が関数の中身です。</td>
+<td>第9巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>.findall()</code></td>
+<td><code>re.findall(パターン, 文字列)</code> は、正規表現（文字の形の決まり）に合う所を、全部リストにして返す関数です。</td>
+<td>第9巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>dict()</code></td>
+<td>Python の辞書（キー → 値の表）を作る関数。<code>dict([("a", 1), ("b", 2)])</code> のように、組の並びから作れます。</td>
+<td>第9巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>int()</code></td>
+<td>Python で、文字列などを整数にする関数。<code>int("ff", 16)</code> は、16 進数の <code>ff</code> を 255 にします。</td>
+<td>第9巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>min()</code></td>
+<td>Python で、いちばん小さい値を返す関数。<code>min(1, 5, 3)</code> は 1。</td>
+<td>第9巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>python</code></td>
+<td>Python を動かすコマンド。<code>python -c "…"</code> は、<code>"…"</code> の中の Python のコードを 1 回だけ動かします。</td>
+<td>第12巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>global</code></td>
+<td>関数の中で、外（ファイル全体）の変数を書きかえる時に使う宣言。</td>
+<td>第12巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>not</code></td>
+<td>Python で「〜ではない」。<code>if not ok:</code> は「<code>ok</code> が成り立たなければ」。</td>
+<td>第12巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>and</code></td>
+<td>Python で「かつ」。両方が成り立つ時だけ <code>True</code> になります。</td>
+<td>第12巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>True</code></td>
+<td>Python の「正しい（はい）」の値。反対は <code>False</code>。</td>
+<td>第12巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>with</code></td>
+<td>使い終わったら自動で片づける（ファイルや接続を閉じる）書き方。<code>with open(…) as f:</code> の中で使った物は、抜ける時に閉じられます。</td>
+<td>第12巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>except</code></td>
+<td><code>try:</code> の中でエラーが起きた時に動く所。<code>except Exception as error:</code> で、起きたエラーを <code>error</code> という名前で受け取ります。</td>
+<td>第12巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>.loads()</code></td>
+<td>文字列から読み取るメソッド。<code>tomllib.loads(文字列)</code> は TOML、<code>json.loads(文字列)</code> は JSON を、Python の辞書にします。</td>
+<td>第12巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>.read_text()</code></td>
+<td><code>Path</code> のファイルの中身を、全部文字列として読むメソッド。<code>encoding="utf-8"</code> を付けて読みます。</td>
+<td>第12巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>.group()</code></td>
+<td>正規表現で見つかった所から、かっこ <code>( )</code> の中の部分を取り出すメソッド。<code>m.group(1)</code> は 1 つ目のかっこの中です。</td>
+<td>第12巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>.urlopen()</code></td>
+<td><code>urllib.request.urlopen(URL)</code> は、URL にアクセスして、返事を受け取る関数です。</td>
+<td>第12巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>.exit()</code></td>
+<td><code>sys.exit(番号)</code> は、Python のプログラムを、その終了コードで終える関数です。</td>
+<td>第12巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>getattr()</code></td>
+<td>物から、名前で属性（中の値）を取り出す関数。<code>getattr(error, "code", 既定値)</code> は、<code>code</code> が無ければ既定値を返します。</td>
+<td>第12巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>type()</code></td>
+<td>値の型を返す関数。<code>type(error).__name__</code> は、エラーの種類の名前です。</td>
+<td>第12巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>bool()</code></td>
+<td>値を <code>True</code>・<code>False</code> にする関数。空の文字列や <code>None</code> は <code>False</code>、中身があれば <code>True</code> です。</td>
+<td>第12巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>elif</code></td>
+<td>Python の「そうでなくて、もし〜なら」（<code>else if</code> の短い形）。</td>
+<td>第12巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>pass</code></td>
+<td>「何もしない」という Python の命令。中身が要らないけれど、形の上で何か書く必要がある所に置きます。</td>
+<td>第12巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>.Lock()</code></td>
+<td><code>threading.Lock()</code> は、いくつものスレッドが同時に同じ物を使わないようにする鍵を作る関数です。</td>
+<td>第12巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>.lower()</code></td>
+<td>英字を小文字にした文字列を返すメソッド。</td>
+<td>第12巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>.readline()</code></td>
+<td>1 行だけ読むメソッド。</td>
+<td>第12巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>.strip()</code></td>
+<td>前後の空白や改行を取り除いたものを返すメソッド（Rust の <code>trim</code>）。</td>
+<td>第12巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>.HTTPConnection()</code></td>
+<td><code>http.client.HTTPConnection(ホスト, ポート)</code> は、HTTP で相手のサーバーにつなぐ物を作る関数です。</td>
+<td>第12巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>.getresponse()</code></td>
+<td>送った頼みに対する、相手の返事を受け取るメソッド。</td>
+<td>第12巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>.send_response()</code></td>
+<td>HTTP のサーバーとして、答えの番号（200 など）を返し始めるメソッド。</td>
+<td>第12巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>.getheaders()</code></td>
+<td>受け取った返事のヘッダーを、<code>(名前, 値)</code> の組の並びで返すメソッド。</td>
+<td>第12巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>.send_header()</code></td>
+<td>HTTP のサーバーとして、ヘッダーを 1 つ返すメソッド。</td>
+<td>第12巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>.end_headers()</code></td>
+<td>ヘッダーの終わりを知らせるメソッド。このあとに本文を書きます。</td>
+<td>第12巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>.serve_forever()</code></td>
+<td>HTTP のサーバーを、止めるまでずっと動かし続けるメソッド。</td>
+<td>第12巻 UNIT 09</td>
+</tr>
+<tr>
+<td><code>urlsplit()</code></td>
+<td>URL を、部品（<code>scheme</code>・<code>hostname</code>・<code>port</code>・<code>path</code> など）に分ける関数。</td>
+<td>第12巻 UNIT 09</td>
+</tr>
+</tbody>
+</table>
+
+<script>
+(function () {
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy") ? resolve() : reject(); } catch (e) { reject(e); }
+      document.body.removeChild(ta);
+    });
+  }
+  document.querySelectorAll(".copy-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var pre = btn.parentElement.querySelector("pre");
+      var text = pre.textContent.replace(/\n$/, "");
+      copyText(text).then(function () {
+        btn.textContent = "コピーしました";
+        btn.classList.add("done");
+        setTimeout(function () { btn.textContent = "コピー"; btn.classList.remove("done"); }, 2000);
+      }, function () { btn.textContent = "コピーできませんでした"; });
+    });
+  });
+  if (/^#code-\d+$/.test(location.hash)) {
+    var note = document.getElementById("web-note");
+    if (note) { note.hidden = false; }
+  }
+})();
+</script>
+</body>
+</html>

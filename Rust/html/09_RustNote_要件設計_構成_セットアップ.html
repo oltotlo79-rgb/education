@@ -2411,6 +2411,16 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>ALLOW</code></strong>（HTTP）: <code>header::ALLOW</code> は、HTTP の <code>Allow</code> ヘッダー（「この URL で使えるメソッドはこれ」）の名前。405（使えないメソッド）の答えに付きます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <h4 id="1-get405-method-not-allowed">エラー1: 状態を変える操作を、リンク（GET）にした（405 Method Not Allowed）</h4>
 <p>詳細の画面の「完了にする」を、フォームのボタンではなく <code>&lt;a href="/notes/1/toggle"&gt;完了にする&lt;/a&gt;</code> のようなリンクにしてしまった場合です。リンクをクリックすると、ブラウザは GET を送ります。</p>
 <div class="codehilite"><div class="code-wrap" id="code-60"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">test</span> <span class="p">-</span><span class="n">-test</span> <span class="n">mistakes</span> <span class="n">toggle_by_link</span> <span class="p">--</span> <span class="p">-</span><span class="n">-nocapture</span>
@@ -4203,6 +4213,24 @@ alice@example.com → alice@example.com: NG SQLite failure: `UNIQUE constraint f
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>env!</code></strong>（設定）: 翻訳（コンパイル）の時の環境変数の値を、文字列として埋め込むマクロ。<code>env!("CARGO_MANIFEST_DIR")</code> は、<code>Cargo.toml</code> があるフォルダの場所です。</li>
+<li><strong><code>.trim_end_matches()</code></strong>（文字列）: 文字列の後ろから、決めた文字（文字列）をくり返し取り除いたものを返すメソッド。<code>name.trim_end_matches(".rs")</code> は、<code>.rs</code> を取ります。</li>
+<li><strong><code>.match_indices()</code></strong>（文字列）: 文字列の中で、探す文字が見つかった所の「位置と、見つかった文字」を、全部順に返すメソッド。</li>
+<li><strong><code>.is_alphanumeric()</code></strong>（文字）: その文字が、文字（英字・かな・漢字など）か数字なら <code>true</code> を返すメソッド。</li>
+<li><strong><code>.next_back()</code></strong>（イテレーター）: 並びを後ろから 1 つ取り出すメソッド。<code>line[..at].chars().next_back()</code> は、その位置の 1 つ前の文字です。</li>
+<li><strong><code>.or_default()</code></strong>（HashMap（表））: <code>map.entry(キー).or_default()</code> は、キーが無ければ、その型の初期値（空の <code>Vec</code> など）を入れて、その場所を返すメソッド。</li>
+<li><strong><code>.trim_start()</code></strong>（文字列）: 文字列の前（左側）の空白を取り除いたものを返すメソッド。</li>
+<li><strong><code>BTreeSet</code></strong>（HashMap（表））: 同じ値は 1 つしか入らず、しかも小さい順に並んでいる集まり（<code>HashSet</code> の並ぶ版）。</li>
+<li><strong><code>PathBuf</code></strong>（ファイルとフォルダ）: ファイルやフォルダの場所（パス）を、自分の物として持つ型（<code>String</code> のパス版）。<code>path.join("a")</code> で場所をつなげ、<code>.push("b")</code> で足せます。借りるだけの形は <code>&amp;Path</code> です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>コピーした <code>rustnote</code> フォルダの <code>examples/u04_deps.rs</code> として保存して実行します。</p>
 <div class="codehilite"><div class="code-wrap" id="code-107"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">-</span><span class="n">-example</span> <span class="n">u04_deps</span>
 </code></pre></div></div>
@@ -5178,6 +5206,16 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out; fini
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>RecordingBrokenNotes::default()</code></strong>（型とメソッド）: この巻のテストで作る、わざと失敗するノートの保管係（<code>RecordingBrokenNotes</code>）を、初期値で作る書き方。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-143"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">test</span> <span class="p">-</span><span class="n">-test</span> <span class="n">u04_q3</span> <span class="p">--</span> <span class="p">-</span><span class="n">-nocapture</span>
 </code></pre></div></div>
 
@@ -5435,6 +5473,16 @@ rustnote v0.1.0 (...\rustnote)
 <span class="n">cargo</span> <span class="n">search</span> <span class="n">tokio</span> <span class="p">-</span><span class="n">-limit</span> <span class="n">1</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo search</code></strong>（cargo のコマンド）: 公開されている部品（クレート）を、名前で探すコマンド。<code>cargo search topcoat --limit 1</code> で、<code>topcoat</code> のいちばん新しい版が分かります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-150"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>### cargo search topcoat --limit 1
 topcoat = &quot;0.11.0&quot;    # A modular, batteries-included Rust web framework for server-rendered apps.
 ... and 84 crates more (use --limit N to see more)
@@ -5449,6 +5497,16 @@ note: to learn more about a package, run `cargo info &lt;name&gt;`
 <p><strong>③ その2つだけを上げる。</strong> <code>-p</code> で、上げるクレートを選びます。</p>
 <div class="codehilite"><div class="code-wrap" id="code-151"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">update</span> <span class="n">-p</span> <span class="n">topcoat</span> <span class="n">-p</span> <span class="n">tokio</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo update</code></strong>（cargo のコマンド）: 使っている部品を、<code>Cargo.toml</code> で許す範囲の新しい版にして、<code>Cargo.lock</code> を書きかえるコマンド。<code>-p 名前</code> で、その部品だけにできます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-152"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>### cargo update -p topcoat -p tokio
     Updating crates.io index
@@ -6776,6 +6834,16 @@ Error: libsql://rustnote-example.turso.io はリモートの DB です。見本�
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>LOCATION</code></strong>（HTTP）: <code>header::LOCATION</code> は、HTTP の <code>Location</code> ヘッダー（「ここへ移って」という行き先）の名前。303 などの答えに付きます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-199"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">test</span> <span class="p">-</span><span class="n">-test</span> <span class="n">u08_routes</span> <span class="p">--</span> <span class="p">-</span><span class="n">-nocapture</span>
 </code></pre></div></div>
 
@@ -7000,6 +7068,17 @@ error: test failed, to rerun pass `--test u08_routes`
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>HEAD</code></strong>（HTTP）: <code>Method::HEAD</code> は、本文を受け取らずに、見出し（ヘッダー）だけをもらう HTTP のメソッド。サーバーが動いているかを軽く確かめる時に使います。</li>
+<li><strong><code>ORIGIN</code></strong>（HTTP）: <code>header::ORIGIN</code> は、HTTP の <code>Origin</code> ヘッダー（送ってきたページのサイト）の名前。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-210"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>### cargo test --test u08_q -- --nocapture
 問1 GET  /notes?page=abc（alice）        → 400 Bad Request
 問2 HEAD /health（未ログイン）            → 200 OK
@@ -7147,6 +7226,27 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>color-text:</code></strong>（CSS）: この本の CSS で決めた色の変数（<code>--color-text</code>：ふつうの文字の色）。<code>var(--color-text)</code> で使います。CSS の変数は、名前の頭を <code>--</code> にして <code>:root { … }</code> の中で決めると、どこからでも使えます。</li>
+<li><strong><code>color-muted:</code></strong>（CSS）: この本の CSS の色の変数（<code>--color-muted</code>：控えめな文字の色）。</li>
+<li><strong><code>color-border:</code></strong>（CSS）: この本の CSS の色の変数（<code>--color-border</code>：枠線の色）。</li>
+<li><strong><code>color-bg:</code></strong>（CSS）: この本の CSS の色の変数（<code>--color-bg</code>：ページの背景の色）。</li>
+<li><strong><code>color-card:</code></strong>（CSS）: この本の CSS の色の変数（<code>--color-card</code>：カードの背景の色）。</li>
+<li><strong><code>color-primary:</code></strong>（CSS）: この本の CSS の色の変数（<code>--color-primary</code>：ボタンなどの主な色）。</li>
+<li><strong><code>color-primary-dark:</code></strong>（CSS）: この本の CSS の色の変数（<code>--color-primary-dark</code>：主な色の濃い版。マウスを乗せた時など）。</li>
+<li><strong><code>color-success-bg:</code></strong>（CSS）: この本の CSS の色の変数（<code>--color-success-bg</code>：成功のお知らせの背景）。</li>
+<li><strong><code>color-success-text:</code></strong>（CSS）: この本の CSS の色の変数（<code>--color-success-text</code>：成功のお知らせの文字）。</li>
+<li><strong><code>color-warning-bg:</code></strong>（CSS）: この本の CSS の色の変数（<code>--color-warning-bg</code>：注意のお知らせの背景）。</li>
+<li><strong><code>color-warning-text:</code></strong>（CSS）: この本の CSS の色の変数（<code>--color-warning-text</code>：注意のお知らせの文字）。</li>
+<li><strong><code>color-danger:</code></strong>（CSS）: この本の CSS の色の変数（<code>--color-danger</code>：消すボタン・エラーの色）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> <code>style.css</code> から <code>--color-…</code> の変数を読み出し、WCAG の計算式で、色ごとの相対輝度（明るさ）を出します。RustNote で実際に使っている、文字と背景の9つの組み合わせについて、コントラスト比を計算し、4.5 以上なら <code>ok</code> と表示します。</p>
 </blockquote>
@@ -7192,6 +7292,20 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
     <span class="n">mark</span> <span class="o">=</span> <span class="s2">&quot;ok&quot;</span> <span class="k">if</span> <span class="n">r</span> <span class="o">&gt;=</span> <span class="mf">4.5</span> <span class="k">else</span> <span class="s2">&quot;NG&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">where</span><span class="si">:</span><span class="s2">&lt;16</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">colors</span><span class="p">[</span><span class="n">fg</span><span class="p">]</span><span class="si">}</span><span class="s2"> / </span><span class="si">{</span><span class="n">colors</span><span class="p">[</span><span class="n">bg</span><span class="p">]</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">r</span><span class="si">:</span><span class="s2">5.2f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">mark</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>def</code></strong>（Python）: Python で関数を作る書き方。<code>def luminance(hex_color):</code> の次の行から、字下げした所が関数の中身です。</li>
+<li><strong><code>.findall()</code></strong>（Python）: <code>re.findall(パターン, 文字列)</code> は、正規表現（文字の形の決まり）に合う所を、全部リストにして返す関数です。</li>
+<li><strong><code>dict()</code></strong>（Python）: Python の辞書（キー → 値の表）を作る関数。<code>dict([("a", 1), ("b", 2)])</code> のように、組の並びから作れます。</li>
+<li><strong><code>int()</code></strong>（Python）: Python で、文字列などを整数にする関数。<code>int("ff", 16)</code> は、16 進数の <code>ff</code> を 255 にします。</li>
+<li><strong><code>min()</code></strong>（Python）: Python で、いちばん小さい値を返す関数。<code>min(1, 5, 3)</code> は 1。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p>コピーした <code>rustnote</code> の1つ上のフォルダで、Python で動かします（Python が無ければ、表示の結果だけを読んでもかまいません）。</p>
 <div class="codehilite"><div class="code-wrap" id="code-213"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>### python contrast.py rustnote/assets/style.css
@@ -7812,6 +7926,18 @@ date: Fri, 30 Oct 2026 13:21:44 GMT
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>std::env::current_exe()</code></strong>（プロセス）: 今動いている実行ファイル（<code>.exe</code>）の場所を返す関数。実行ファイルの隣に置いたフォルダを探す時に使います。</li>
+<li><strong><code>AssetBundle::load_dir()</code></strong>（Topcoat）: 指定したフォルダから、アセットの束（<code>topcoat asset bundle</code> で作った物）を読み込む関数（第12巻）。</li>
+<li><strong><code>tokio::net::TcpListener::bind()</code></strong>（ネットワーク）: 非同期で接続を待ち受け始める関数（tokio 版）。<code>.await</code> で待ちます。Web サーバーは、これで決めた番号を待ち受けます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><code>examples/</code> に置いたファイルは、<code>cargo run --example 名前</code> で動かせる、アプリとは別の小さな実行ファイルになります（<code>rustnote</code> の <code>lib.rs</code> の公開された部品を、そのまま使えます）。ふだんの <code>dev.db</code> で動かします。</p>
 <div class="codehilite"><div class="code-wrap" id="code-228"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nv">$env:DATABASE_URL</span> <span class="p">=</span> <span class="s2">&quot;dev.db&quot;</span>

@@ -642,6 +642,14 @@ pub async fn index(cx: &Cx) -> Result<impl View> {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`NoteFormState::default()`**（型とメソッド）: この巻で作る型 `NoteFormState`（入力フォームの中身と、まちがいの知らせ）を、空の状態で作る書き方。最初にフォームを表示する時に使います。
+
+<!-- /first-use -->
+
 - 最初の行で `require_user(cx)` を呼びます。ログインしていなければ、ここで 303 になり、下の行は動きません。
 - `notes_index` に渡すのは、`owner: user.id` です。一覧の部品は、持ち主を引数で受け取るので、「誰の一覧か」を、部品の中で勝手に決めることができません。
 
@@ -2240,6 +2248,14 @@ pub async fn find_own_note(cx: &Cx, owner: UserId, id: NoteId) -> Result<Note, A
     }
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Forbidden`**（エラー処理）: `AppError::Forbidden` は、この本のアプリのエラーの種類の 1 つで、「その操作は許されていない」（403）を表します。
+
+<!-- /first-use -->
 
 alice のノートを3件作り、bob が `/notes/1` から `/notes/5` を順に開くテスト（`tests/u03_count.rs`）です。
 
@@ -5864,6 +5880,19 @@ pub fn take(cx: &Cx) -> Option<Flash> {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`cookie!`**（クッキー）: Topcoat のマクロ。クッキーを、名前・値・決まり（`HttpOnly`・`SameSite`・`MaxAge` など）を並べて作ります（第10巻 UNIT 09）。
+> - **`Duration::minutes()`**（時間）: 分から、時間の長さを作る関数（`time` の部品の `Duration`）。`Duration::minutes(5)` は 5 分。
+> - **`HttpOnly`**（クッキー）: クッキーの決まりの 1 つ。付けると、ページの JavaScript からそのクッキーを読めなくなり、盗まれにくくなります。
+> - **`SameSite`**（クッキー）: クッキーの決まりの 1 つ。ほかのサイトから来た頼みに、このクッキーを付けるかを決めます。`Lax` は、ほかのサイトからのリンクでの移動には付けるが、フォームの送信などには付けない設定です。
+> - **`Lax`**（クッキー）: `SameSite = Lax` は、ほかのサイトからのリンクで来た時（ふつうの移動）にはクッキーを送り、ほかのサイトからのフォームの送信には送らない設定です。
+> - **`MaxAge`**（クッキー）: クッキーを、ブラウザーが覚えておく長さを決める決まり。過ぎると消えます。
+
+<!-- /first-use -->
+
 画面に出すのは、`src/views.rs` の `flash_banner` です。
 
 ```rust
@@ -5999,6 +6028,14 @@ async fn eight_flashes() {
     step(&app, &mut jar, 8, "ログイン", "/login", Some(&login)).await;
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Jar::default()`**（クッキー）: クッキーの瓶（クッキーをまとめて持つ入れ物）を、空の状態で作る書き方。
+
+<!-- /first-use -->
 
 ```powershell
 cargo test --test u09_flash -- --nocapture
@@ -6738,6 +6775,18 @@ for (const w of [320, 375, 768]) for (const p of ['/notes', '/notes/2', '/notes/
 lines.join('\n')
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.createElement()`**（JavaScript・TypeScript）: `document.createElement('iframe')` は、新しい HTML のタグ（要素）を作る、ブラウザーの関数です。
+> - **`.appendChild()`**（JavaScript・TypeScript）: 作ったタグを、ページの中の決めた所（親）の最後に入れるメソッド。
+> - **`.querySelectorAll()`**（JavaScript・TypeScript）: CSS と同じ書き方（`.flash`・`button` など）で、ページの中の合うタグを全部探すメソッド。
+> - **`.toLowerCase()`**（JavaScript・TypeScript）: 英字を小文字にした文字列を返すメソッド（Rust の `to_lowercase`）。
+> - **`.padEnd()`**（JavaScript・TypeScript）: 文字列の後ろを空白で埋めて、決めた長さにするメソッド。表のように並べて表示する時に使います。
+
+<!-- /first-use -->
+
 ```text
 /notes         320px: 横幅 332px × はみ出す（li 286→315px）
 /notes/2       320px: 横幅 320px ○
@@ -6773,6 +6822,15 @@ document.addEventListener('focusin', (e) => {
 // Tab を押したあとで:
 focusLog.map((t, i) => `${i + 1}. ${t}`).join('\n')
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.addEventListener()`**（JavaScript・TypeScript）: クリック・入力などの出来事（イベント）が起きた時に動く関数を登録するメソッド。`document.addEventListener('focusin', (e) => { … })`。
+> - **`?.`**（JavaScript・TypeScript）: `a?.b` は、`a` が `null` や `undefined` なら、そこで止めて `undefined` にする書き方（オプショナルチェーン）。無いかもしれない物を、エラーにせずにたどれます。
+
+<!-- /first-use -->
 
 詳細の画面（`/notes/2`）で、Tab を7回押した結果です。
 
@@ -6820,6 +6878,14 @@ Tab で「完了にする」へ移って Enter を、続けて「未完了に戻
   active: document.activeElement.tagName,
 })
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.querySelector()`**（JavaScript・TypeScript）: CSS と同じ書き方で、ページの中の合うタグを 1 つ（最初の物）だけ探すメソッド。見つからなければ `null` です。
+
+<!-- /first-use -->
 
 ```text
 （Tab で「完了にする」へ移り、Enter を押したあと）
@@ -6878,6 +6944,15 @@ lines.push(`--- 足した CSS: ${fix}`);
 for (const w of [320, 375]) for (const p of ['/notes', '/notes/3']) lines.push(await probe(p, w, fix));
 lines.join('\n')
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`null`**（JavaScript・TypeScript）: JavaScript で「値が無い」ことを表す値。
+> - **`.getBoundingClientRect()`**（JavaScript・TypeScript）: タグが、画面のどこに、どの大きさで表示されているか（位置・幅・高さ）を返すメソッド。はみ出しや重なりを調べる時に使います。
+
+<!-- /first-use -->
 
 ```text
 --- いまの CSS

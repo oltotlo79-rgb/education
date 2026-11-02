@@ -611,6 +611,31 @@ fn push_statement(statements: &mut Vec<String>, text: &str) {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.prepare()`**（データベース）: SQL の文を、実行する前に用意（解釈）しておくメソッド（libsql）。同じ文を何度も使う時に速くなり、`?` の数や列の名前も調べられます。
+> - **`.columns()`**（データベース）: 用意した SQL の文が返す列の一覧を返すメソッド。空なら、行を返さない文（`INSERT` など）です。
+> - **`.column_count()`**（データベース）: 結果の列の数を返すメソッド。
+> - **`.column_name()`**（データベース）: 結果の、何番目かの列の名前を返すメソッド。
+> - **`.get_value()`**（データベース）: 結果の 1 行から、何番目かの列の値を、型を決めずに（`Value` として）取り出すメソッド。
+> - **`.zip()`**（イテレーター）: 2 つの並びを、同じ番号どうしの組にして取り出すメソッド。`names.iter().zip(ages.iter())` は `(名前, 年齢)` の組を順に出します。短い方が終わった所で終わります。
+> - **`.map_or()`**（Option）: `Option` に値があれば、それを関数で変換し、無ければ決めた値を返すメソッド。`depth.get(&k).map_or(0, |p| p + 1)` は「あれば +1、無ければ 0」。
+> - **`.peekable()`**（イテレーター）: 次の 1 つを、取り出さずに「覗く」（`peek`）ことができるイテレーターにするメソッド。文字を 1 つずつ読みながら、次の文字で処理を変える時に使います。
+> - **`.peek()`**（イテレーター）: 次の 1 つを、取り出さずに覗くメソッド（`peekable` にしたイテレーターで使う）。
+> - **`.by_ref()`**（イテレーター）: イテレーターを借りたまま、途中まで使うメソッド。`for c in chars.by_ref()` のあとでも、残りを続けて読めます。
+> - **`ExitCode`**（プロセス）: `main` が返す、終了コードの型。`fn main() -> ExitCode` にして、`ExitCode::SUCCESS`（0）か `ExitCode::FAILURE`（1）を返します。`process::exit` と違い、片づけをしてから終われます。
+> - **`SUCCESS`**（プロセス）: `ExitCode::SUCCESS` は、終了コード 0（成功）です。
+> - **`FAILURE`**（プロセス）: `ExitCode::FAILURE` は、終了コード 1（失敗）です。
+> - **`Null`**（データベース）: `Value::Null` は、データベースの値が NULL（値が無い）であることを表す種類です。
+> - **`Integer`**（データベース）: `Value::Integer(n)` は、データベースの値が整数であることを表す種類です。
+> - **`Real`**（データベース）: `Value::Real(x)` は、データベースの値が小数であることを表す種類です。
+> - **`Text`**（データベース）: `Value::Text(s)` は、データベースの値が文字列であることを表す種類です。
+> - **`Blob`**（データベース）: `Value::Blob(bytes)` は、データベースの値がバイトの並び（画像などの生のデータ）であることを表す種類です。
+
+<!-- /first-use -->
+
 #### ▼ 道具の使い方
 
 まず、試しに次の SQL を `sql/hello.sql` として保存します。`--` から行の終わりまではコメント（メモ書き）で、DB には送られません。文の終わりには `;`（セミコロン）を付けます。
@@ -620,6 +645,14 @@ fn push_statement(statements: &mut Vec<String>, text: &str) {
 SELECT 1 + 1 AS answer, 'こんにちは' AS greeting;
 SELECT sqlite_version() AS version;
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`AS`**（SQL）: SQL で、列や表に別の名前を付ける書き方。`SELECT COUNT(*) AS notes` は、結果の列の名前を `notes` にします。`FROM users AS u` は、表を `u` と短く呼べるようにします。
+
+<!-- /first-use -->
 
 `sql-lab` のフォルダで、次のように実行します。
 
@@ -845,6 +878,14 @@ SELECT id, email, password_hash FROM users;
 SELECT * FROM notes;
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`IN`**（SQL）: SQL で「このどれか」。`WHERE status IN ('queued', 'running')` は、状態がどちらかの行だけです。`CHECK (pinned IN (0, 1))` は、0 か 1 しか入れられない決まりです。
+
+<!-- /first-use -->
+
 `sql/u01_create.sql` として保存し、`sql-lab` フォルダで次のコマンドを実行します。
 
 ```powershell
@@ -978,6 +1019,16 @@ INSERT INTO strict_t VALUES ('abc');
 SELECT n, typeof(n) FROM strict_t;
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`CAST`**（SQL）: SQL で、値の型を変える書き方。`CAST('あいう' AS BLOB)` は、文字列をバイトの並びとして扱います。
+> - **`BLOB`**（SQL）: SQL の型の 1 つで、バイトの並び（画像などの生のデータ）を入れる型。
+> - **`STRICT`**（SQL）: SQLite（libSQL）で、表の後ろに付けると、列の型と違う値を断るようにする決まり。付けないと、整数の列に文字が入ってしまうことがあります。
+
+<!-- /first-use -->
+
 ```powershell
 cargo run -q --bin sql -- sql/u01_types.sql
 ```
@@ -1080,6 +1131,18 @@ CREATE TABLE notes (
 CREATE INDEX idx_notes_user_updated ON notes (user_id, updated_at DESC, id DESC);
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`AUTOINCREMENT`**（SQL）: `INTEGER PRIMARY KEY AUTOINCREMENT` で、番号を自動で振り、消した番号を二度と使わないようにする決まり。
+> - **`ON`**（SQL）: SQL の「〜の時」「〜で」。`ON DELETE CASCADE` は「消された時は」、`JOIN … ON a.id = b.user_id` は「この条件で横につなぐ」、`CREATE INDEX … ON 表 (列)` は「この表の、この列に」という意味です。
+> - **`DELETE`**（SQL）: `DELETE FROM 表 WHERE 条件` で、表の行を消す SQL の命令。`WHERE` を忘れると、全部の行が消えます。`ON DELETE CASCADE` の中では「消された時」という意味です。
+> - **`CASCADE`**（SQL）: `ON DELETE CASCADE` は、「つながった元の行（ユーザー）が消されたら、こちらの行（そのユーザーのノート）も一緒に消す」という決まりです。
+> - **`INDEX`**（SQL）: `CREATE INDEX 名前 ON 表 (列)` で、表に索引（本の索引のような、速く探すための仕組み）を作る SQL の命令。よく条件や並べかえに使う列に作ります（第7巻 UNIT 04）。
+
+<!-- /first-use -->
+
 例1-1 との違いは次の5つです。それぞれ、この巻の後の単元で学びます。
 
 | 違い | 意味 | 学ぶ単元 |
@@ -1096,6 +1159,15 @@ RustNote の3つの表（`0001_users.sql`・`0002_notes.sql`・`0003_sessions.sq
 -- DB の中にある表と索引の一覧（sqlite_schema は SQLite が自動で持っている表）
 SELECT type, name, tbl_name FROM sqlite_schema ORDER BY tbl_name, type DESC, name;
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`ORDER`**（SQL）: `ORDER BY 列` で、取り出した行を並べる書き方。`DESC` を付けると大きい順（新しい順）です。
+> - **`BY`**（SQL）: `ORDER BY`（並べる）・`GROUP BY`（まとめる）の一部で、「〜で」という意味です。
+
+<!-- /first-use -->
 
 ```powershell
 cargo run -q --bin sql -- --setup migrations/0001_users.sql --setup migrations/0002_notes.sql `
@@ -1154,6 +1226,14 @@ SELECT 'auto', id, v FROM auto WHERE v = 'd';
 SELECT name, seq FROM sqlite_sequence;
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`UNION`**（SQL）: 2 つの `SELECT` の結果を、縦につなげる書き方。`UNION ALL` は、重なりも消さずにそのままつなげます。
+
+<!-- /first-use -->
+
 ```powershell
 cargo run -q --bin sql -- sql/u01_autoinc.sql
 ```
@@ -1205,6 +1285,14 @@ INSERT INTO notes (user_id title) VALUES (1, 'カンマ忘れ');
 -- 失敗した文は、1行も追加していない
 SELECT (SELECT COUNT(*) FROM users) AS users_count, (SELECT COUNT(*) FROM notes) AS notes_count;
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`COUNT`**（SQL）: 行の数を数える SQL の関数。`SELECT COUNT(*) FROM notes` は、ノートの数です。`COUNT(列)` は、その列が NULL でない行の数です。
+
+<!-- /first-use -->
 
 ```powershell
 cargo run -q --bin sql -- --setup sql/u01_create.sql sql/u01_errors.sql
@@ -1264,6 +1352,15 @@ CREATE TABLE memos (id INTEGER PRIMARY KEY, text TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS memos (id INTEGER PRIMARY KEY, text TEXT NOT NULL);
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`IF`**（SQL）: `CREATE TABLE IF NOT EXISTS` の一部で、「もし〜なら」。「無ければ作る、あれば何もしない」という意味になります。
+> - **`EXISTS`**（SQL）: SQL で「ある」。`IF NOT EXISTS` は「無ければ」という意味です。
+
+<!-- /first-use -->
+
 ```powershell
 cargo run -q --bin sql -- sql/u01_ifnot.sql
 ```
@@ -1297,6 +1394,15 @@ PRAGMA foreign_key_check;
 PRAGMA foreign_keys = ON;
 PRAGMA foreign_keys;
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`PRAGMA`**（SQL）: SQLite（libSQL）の設定を見る・変える命令。`PRAGMA foreign_keys = ON;` は、表どうしのつながりの決まり（外部キー）を確かめるようにします。
+> - **`OFF`**（SQL）: `PRAGMA … = OFF` で、その設定を切ります（`ON` で入れます）。
+
+<!-- /first-use -->
 
 ```powershell
 cargo run -q --bin sql -- --setup sql/u01_create.sql sql/u01_fk_off.sql
@@ -1751,6 +1857,16 @@ SELECT id, title FROM notes WHERE user_id = 1 AND title LIKE '%%%';
 SELECT id, title FROM notes WHERE user_id = 1 AND title LIKE '%\%%' ESCAPE '\';
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`OFFSET`**（SQL）: `LIMIT 件数 OFFSET 飛ばす数` で、「先頭から何件飛ばしてから取り出すか」を決める書き方。ページ送り（2 ページ目なら 20 件飛ばす）に使います。
+> - **`LIKE`**（SQL）: SQL のあいまい検索。`WHERE title LIKE '%買い物%'` は、`買い物` を含む行です（`%` は「何文字でも」、`_` は「どれか 1 文字」）。
+> - **`ESCAPE`**（SQL）: `LIKE … ESCAPE '\'` で、「`\` の次の文字は、特別な意味の無いただの文字」と決める書き方。検索の言葉に `%` や `_` が入っていても、正しく探せます（第10巻 UNIT 07）。
+
+<!-- /first-use -->
+
 ```powershell
 cargo run -q --bin sql -- --setup sql/schema.sql --setup sql/seed.sql sql/u02_more.sql
 ```
@@ -1891,6 +2007,16 @@ GROUP BY users.id
 ORDER BY users.id;
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`JOIN`**（SQL）: 2 つの表を、条件で横につないで取り出す書き方。`FROM notes JOIN users ON users.id = notes.user_id` は、ノートと、その持ち主を 1 行に並べます。
+> - **`LEFT`**（SQL）: `LEFT JOIN` は、左の表の行は、相手が無くても全部残す JOIN。「ノートが 0 件の人も一覧に出す」時に使います。
+> - **`GROUP`**（SQL）: `GROUP BY 列` で、同じ値の行をまとめて、まとめごとに数える・足す時の書き方。`SELECT user_id, COUNT(*) FROM notes GROUP BY user_id` は、人ごとのノートの数です。
+
+<!-- /first-use -->
+
 ```sql
 -- ③ LEFT JOIN で、ノートが1件もない会員を探す（相手がいない行は NULL で埋まる）
 SELECT users.id, users.email, notes.id AS note_id
@@ -1898,6 +2024,14 @@ FROM users
 LEFT JOIN notes ON notes.user_id = users.id
 WHERE notes.id IS NULL;
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`IS`**（SQL）: SQL で NULL かどうかを調べる時の書き方。`WHERE x IS NULL`（無い）・`WHERE x IS NOT NULL`（ある）。NULL は `= NULL` では比べられません。
+
+<!-- /first-use -->
 
 前の2文を `sql/u02_join.sql`、③を `sql/u02_null.sql` の先頭に保存して実行します（`u02_null.sql` の残りは「よくあるエラー」で使います）。
 
@@ -2108,6 +2242,14 @@ fn escape_like(keyword: &str) -> String {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`String::with_capacity()`**（文字列）: 「これくらいの長さになる予定」と容量を決めて、空の `String` を作る関数。少しずつ足していく時に、広げ直す手間を減らせます。
+
+<!-- /first-use -->
+
 ### 練習問題
 
 **問題1:** Alice（user_id 1）のノートのうち、完了済み（`done = 1`）のものが何冊あるかを、1つの `SELECT` で求めてください。
@@ -2128,6 +2270,14 @@ SELECT id, title, created_at FROM notes WHERE user_id = 2 ORDER BY created_at AS
 -- 解答3: Alice の 3 ページ目（1 ページ 2 件）
 SELECT id, title FROM notes WHERE user_id = 1 ORDER BY updated_at DESC, id DESC LIMIT 2 OFFSET 4;
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`ASC`**（SQL）: `ORDER BY 列 ASC` で、小さい順（古い順）に並べます。書かなくても小さい順になります（大きい順は `DESC`）。
+
+<!-- /first-use -->
 
 ```powershell
 cargo run -q --bin sql -- --setup sql/schema.sql --setup sql/seed.sql sql/u02_q.sql
@@ -2261,6 +2411,15 @@ SELECT id, title, done, version FROM notes WHERE id = 9;
 DELETE FROM notes WHERE id = 9 AND user_id = 1;
 SELECT COUNT(*) AS found FROM notes WHERE id = 9;
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`UPDATE`**（SQL）: `UPDATE 表 SET 列 = 値 WHERE 条件` で、行の中身を書きかえる SQL の命令。`WHERE` を忘れると、全部の行が変わります。
+> - **`SET`**（SQL）: `UPDATE` の中で、「どの列を、どの値にするか」を書く所。
+
+<!-- /first-use -->
 
 `sql/u03_write.sql` として保存し、UNIT 02 と同じ表とデータを用意してから実行します。
 
@@ -2797,6 +2956,15 @@ SELECT (n % 1000) + 1, 'ノート ' || n, '本文 ' || n, datetime('2026-01-01',
 FROM seq;
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`WITH`**（SQL）: `WITH 名前 AS (SELECT …)` で、その文の中だけで使う「一時的な表」に名前を付ける書き方。長い SQL を読みやすく分けられます。
+> - **`RECURSIVE`**（SQL）: `WITH RECURSIVE` は、自分自身を使って行を増やしていく一時的な表を作る書き方。1〜1000 の数を作る、などに使えます。
+
+<!-- /first-use -->
+
 これを `sql/u04_big.sql` として保存します。`WITH RECURSIVE` は「1, 2, 3, … と数を作る」ための書き方で、ここでは道具として使うだけなので、覚えなくてかまいません。`(n % 1000) + 1` で、ノート n の持ち主を「n を 1000 で割った余り + 1」にしています。会員 42 のノートは、id が 41・1041・2041・…・99041 の 100 件です。
 
 #### 例4-1: 索引の前と後で、計画を比べる
@@ -2817,6 +2985,16 @@ SELECT id, title FROM notes WHERE user_id = 42 ORDER BY updated_at DESC, id DESC
 -- ⑤ 結果は同じ（索引は速さだけを変え、答えは変えない）
 SELECT id, title, updated_at FROM notes WHERE user_id = 42 ORDER BY updated_at DESC, id DESC LIMIT 3;
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`EXPLAIN`**（SQL）: `EXPLAIN QUERY PLAN SELECT …` で、データベースがその SQL をどう実行するつもりか（索引を使うか、全部の行を見るか）を表示します（第7巻 UNIT 04）。
+> - **`QUERY`**（SQL）: `EXPLAIN QUERY PLAN` の一部。
+> - **`PLAN`**（SQL）: `EXPLAIN QUERY PLAN` の一部で、「実行の計画」という意味です。
+
+<!-- /first-use -->
 
 `sql/u04_plan.sql` として保存し、表の準備（`schema.sql`）と 10 万件のデータ（`u04_big.sql`）を `--setup` で用意してから実行します。
 
@@ -3016,6 +3194,16 @@ async fn main() -> Result<(), libsql::Error> {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`include_str!`**（文字列）: ファイルの中身を、翻訳（コンパイル）の時に文字列として埋め込むマクロ。`include_str!("../../sql/schema.sql")`。動かす時にファイルが無くても使えます。
+> - **`.transaction()`**（データベース）: トランザクション（いくつもの変更を「全部成功か、全部取り消し」にするまとまり）を始めるメソッド。`tx.commit()` で確定、`tx.rollback()`（または片づけ）で取り消しです（第7巻 UNIT 05）。
+> - **`.as_micros()`**（時間）: 時間の長さを、マイクロ秒（100 万分の 1 秒）の整数で返すメソッド。
+
+<!-- /first-use -->
+
 `src/bin/u04_timing.rs` として保存して実行します。
 
 ```powershell
@@ -3137,6 +3325,14 @@ SELECT id, title FROM notes WHERE user_id = 42 ORDER BY updated_at DESC, id DESC
 -- ④ 存在しない索引を消す
 DROP INDEX idx_nope;
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`DROP`**（SQL）: `DROP TABLE 表`・`DROP INDEX 索引` で、表や索引を消す SQL の命令。中のデータも消えるので注意します。
+
+<!-- /first-use -->
 
 ```powershell
 cargo run -q --bin sql -- --setup sql/schema.sql --setup sql/u04_big.sql --setup sql/u04_index.sql sql/u04_errors.sql
@@ -3350,6 +3546,16 @@ COMMIT;
 SELECT COUNT(*) AS after_commit FROM notes;
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`BEGIN`**（SQL）: トランザクションを始める SQL の命令。ここから `COMMIT`（確定）か `ROLLBACK`（取り消し）までが、1 つのまとまりになります。
+> - **`ROLLBACK`**（SQL）: トランザクションの中でした変更を、全部取り消す SQL の命令。
+> - **`COMMIT`**（SQL）: トランザクションの中でした変更を、確定する SQL の命令。確定するまでは、ほかの人からは見えません。
+
+<!-- /first-use -->
+
 ```powershell
 cargo run -q --bin sql -- --setup sql/schema.sql --setup sql/seed.sql sql/u05_tx.sql
 ```
@@ -3556,6 +3762,15 @@ async fn main() -> Result<(), libsql::Error> {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.is_autocommit()`**（データベース）: 今、トランザクションの外（1 文ずつ自動で確定する状態）なら `true` を返すメソッド。
+> - **`std::fs::remove_file()`**（ファイルとフォルダ）: ファイルを消す関数（`fs::remove_file` と同じ）。ごみ箱には入りません。
+
+<!-- /first-use -->
+
 `src/bin/u05_drop.rs` として保存して実行します。
 
 ```powershell
@@ -3649,6 +3864,17 @@ async fn main() -> Result<(), libsql::Error> {
     Ok(())
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.transaction_with_behavior()`**（データベース）: トランザクションの始め方を決めて始めるメソッド。`TransactionBehavior::Immediate` は、始めた時点で書き込みの順番を取ります。
+> - **`.busy_timeout()`**（データベース）: ほかの接続が書き込み中で待たされた時に、何秒まで待つかを決めるメソッド。決めないと、すぐに「使用中」のエラーになります。
+> - **`TransactionBehavior`**（データベース）: トランザクションの始め方の種類。`Deferred`（必要になってから）・`Immediate`（すぐに書き込みの順番を取る）・`Exclusive`（ほかを全部止める）があります。
+> - **`Immediate`**（データベース）: `TransactionBehavior::Immediate` は、トランザクションを始めた時点で、書き込みの順番を取る始め方です。あとで「使用中」で失敗するのを減らせます。
+
+<!-- /first-use -->
 
 ```powershell
 cargo run -q --bin u05_locked
@@ -4307,6 +4533,14 @@ async fn main() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.rollback()`**（データベース）: トランザクションの変更を取り消すメソッド。
+
+<!-- /first-use -->
+
 `src/bin/u06_migrate.rs` として保存し、**2回続けて**実行します。
 
 ```powershell
@@ -4357,6 +4591,16 @@ cargo run -q --bin u06_migrate
 -- 既にある行には DEFAULT の 0 が入る
 ALTER TABLE notes ADD COLUMN pinned INTEGER NOT NULL DEFAULT 0 CHECK (pinned IN (0, 1));
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`ALTER`**（SQL）: `ALTER TABLE 表 …` で、もうある表の形を変える SQL の命令（列を足す・名前を変える など）。
+> - **`ADD`**（SQL）: `ALTER TABLE 表 ADD COLUMN 列 型` で、表に列を足します。
+> - **`COLUMN`**（SQL）: SQL で「列」。`ADD COLUMN`（列を足す）・`RENAME COLUMN`（列の名前を変える）のように使います。
+
+<!-- /first-use -->
 
 ```sql
 -- 0005: タグの表を作り、ノートに色の列を足す（わざと間違いを入れてある）
@@ -4563,6 +4807,15 @@ COMMIT;
 SELECT COUNT(*) AS notes FROM notes;
 UPDATE notes SET body = printf('%10001s', '') WHERE id = 1;
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`RENAME`**（SQL）: `ALTER TABLE 表 RENAME TO 新しい名前` で、表の名前を変えます。
+> - **`TO`**（SQL）: `RENAME TO 新しい名前` の「〜へ」の部分です。
+
+<!-- /first-use -->
 
 `sql/u06_rebuild.sql` として保存し、0001〜0004 の migration と練習用データを用意してから実行します。
 
@@ -4882,6 +5135,14 @@ async fn main() -> Result<(), libsql::Error> {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.last_insert_rowid()`**（データベース）: いちばん最後に `INSERT` した行の番号（rowid）を返すメソッド。今作ったノートの番号を知る時に使います。
+
+<!-- /first-use -->
+
 `src/bin/u07_first.rs` として保存し、**2回**実行します。
 
 ```powershell
@@ -5009,6 +5270,14 @@ async fn main() -> Result<(), libsql::Error> {
     Ok(())
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`named_params!`**（データベース）: `libsql::named_params! { ":owner": 1 }` は、SQL の `:owner` のような名前付きの場所に入れる値を並べるマクロ。番号（`?1`）の代わりに名前で渡せます。
+
+<!-- /first-use -->
 
 ```powershell
 cargo run -q --bin u07_params
@@ -5389,6 +5658,14 @@ let stmt = conn
 println!("④ この文の ? の数: {}", stmt.parameter_count());
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.parameter_count()`**（データベース）: 用意した SQL の文の、値を入れる場所（`?`）の数を返すメソッド。
+
+<!-- /first-use -->
+
 （`src/bin/u07_err_bind.rs`。前半は例7-2 と同じ準備です。）
 
 ```text
@@ -5435,6 +5712,14 @@ for sql in bad_statements {
     println!("  → 分類: {kind}");
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`SqliteFailure`**（データベース）: `libsql::Error::SqliteFailure(番号, 文)` は、SQLite が返したエラーの種類です。番号で、どんな失敗か（2067 は UNIQUE 違反＝同じ値が既にある）が分かります。
+
+<!-- /first-use -->
 
 （`src/bin/u07_err_codes.rs`。前半は例7-2 と同じ準備です。）
 
@@ -5516,6 +5801,14 @@ async fn search_titles(conn: &Connection, owner: i64, word: &str) -> Result<Vec<
     todo!()
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`todo!`**（エラー処理）: 「ここはまだ書いていない」という印のマクロ。翻訳は通りますが、動かしてここに来ると止まります（パニック）。練習問題で、自分で書く所に置いてあります。
+
+<!-- /first-use -->
 
 **問題3:** `SELECT 'メモ', NULL, 1, 'abc'` の1行を読み、次の (a)〜(e) で `get` したとき、結果がどうなるかを予想してください。
 
@@ -5818,6 +6111,14 @@ async fn main() -> Result<(), libsql::Error> {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.sync()`**（データベース）: 組み込みレプリカ（手元の写し）を、Turso のサーバーの最新に合わせるメソッド（第7巻 UNIT 08）。
+
+<!-- /first-use -->
+
 `src/bin/u08_local.rs` として保存し、**2回**実行します。
 
 ```powershell
@@ -6026,6 +6327,16 @@ async fn main() {
     }
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.sync_interval()`**（データベース）: 組み込みレプリカを、決めた間隔で自動で同期（サーバーに合わせる）するように設定するメソッド。
+> - **`Builder::new_remote()`**（データベース）: Turso のサーバーにあるデータベースへ、ネット越しにつなぐ準備をする関数。URL と、合言葉（トークン）を渡します。
+> - **`Builder::new_remote_replica()`**（データベース）: 手元のファイルに写し（レプリカ）を持ちながら、Turso のサーバーと同期するデータベースを開く準備をする関数。読むのは手元から、書くのはサーバーへ、となります（第7巻 UNIT 08）。
+
+<!-- /first-use -->
 
 `src/bin/u08_open.rs` として保存し、環境変数を変えながら4回実行します。PowerShell で設定した環境変数は、その PowerShell の窓を閉じるまで残るので、最後に消しておきます。
 
@@ -7025,6 +7336,14 @@ async fn main() -> Result<(), libsql::Error> {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`#[async_trait]`**（非同期）: トレイトの中に `async fn` を書き、しかもそれを `dyn`（中身の型を後で決める）で使えるようにする印（`async_trait` の部品）。
+
+<!-- /first-use -->
+
 `src/bin/u09_layers.rs` として保存して実行します。
 
 ```powershell
@@ -7281,6 +7600,17 @@ async fn main() -> Result<(), libsql::Error> {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`IntoParams`**（データベース）: 「SQL に渡す値の並びにできる」機能（トレイト。libsql）。関数の引数を `impl IntoParams` にすると、`params![…]` でも `()` でも受け取れます。
+> - **`Rows`**（データベース）: `query` が返す、結果の行の並びの型（libsql）。`while let Some(row) = rows.next().await? { … }` で 1 行ずつ取り出します。
+> - **`COALESCE`**（SQL）: `COALESCE(値1, 値2)` は、最初の NULL でない値を返す SQL の関数。`COALESCE(SUM(done), 0)` は「合計が NULL（行が無い）なら 0」。
+> - **`SUM`**（SQL）: 列の値の合計を出す SQL の関数。`SUM(done)` は、`done` が 1 の行の数（完了の数）になります。
+
+<!-- /first-use -->
+
 `src/bin/u09_n_plus_1.rs` として保存して実行します。
 
 ```powershell
@@ -7421,6 +7751,15 @@ SELECT u.email, COUNT(*) AS notes, COALESCE(SUM(n.done), 0) AS done
  GROUP BY u.id
  ORDER BY u.id;
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`COALESCE`**（SQL）: `COALESCE(値1, 値2)` は、最初の NULL でない値を返す SQL の関数。`COALESCE(SUM(done), 0)` は「合計が NULL（行が無い）なら 0」。
+> - **`SUM`**（SQL）: 列の値の合計を出す SQL の関数。
+
+<!-- /first-use -->
 
 ```powershell
 cargo run -q --bin sql -- --setup sql/schema.sql --setup sql/seed.sql sql/u09_inner_join.sql
@@ -7899,6 +8238,14 @@ async fn main() -> Result<(), libsql::Error> {
     Ok(())
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`std::fs::metadata()`**（ファイルとフォルダ）: ファイルの情報（大きさ・日時など）を取り出す関数。`std::fs::metadata(path)?.len()` で、ファイルの大きさ（バイト）が分かります。
+
+<!-- /first-use -->
 
 `src/bin/u10_backup.rs` として保存して実行します。`sql-lab` フォルダの中に `u10` フォルダができます。
 
@@ -8486,6 +8833,14 @@ pub async fn health(cx: &Cx) -> Result<(StatusCode, Json<Health>)> {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`OK`**（HTTP）: `StatusCode::OK` は、HTTP の答えの番号 200（成功）です。
+
+<!-- /first-use -->
+
 - `ping` は、例10-3 の浅い確認と同じ `SELECT 1` です。Turso につながらない、トークンが無効になった、といった「DB に問い合わせできない」失敗には気づけて、503 と `[error]` のログを返します。
 - ただし、例10-3 で見たとおり、`SELECT 1` は「正しい DB か」までは確かめません。RustNote は起動時に migration を流す（`src/main.rs`）ので、ローカルのファイルを指す `DATABASE_URL` を打ち間違えると、空の新しい DB に表が作られ、**ノートが1件も無いアプリとして元気に動きます**。ヘルスチェックも 200 のままです。
 
@@ -8551,6 +8906,19 @@ fn prune_backups(dir: &Path, keep: usize) -> std::io::Result<Vec<String>> {
     Ok(removed)
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.to_string_lossy()`**（文字列）: ファイル名など、文字として読めないかもしれない物を、読めない所を `�` に置きかえて文字列として読むメソッド。
+> - **`.into_owned()`**（文字列）: 借りている文字列（など）を、自分の物（`String`）にするメソッド。
+> - **`.ends_with()`**（文字列）: その文字（文字列）で終わっていれば `true` を返すメソッド。`name.ends_with(".db")`。
+> - **`.saturating_sub()`**（数）: 引き算をして、0 より小さくなる時は 0 で止めるメソッド。`names.len().saturating_sub(keep)` は「数が足りなければ 0」。
+> - **`.drain()`**（Vec（並び））: `Vec` から、決めた範囲の中身を取り出して（元からは消して）、1 つずつ渡すメソッド。`names.drain(..3)` は、先頭の 3 つを取り出します。
+> - **`std::fs::read_dir()`**（ファイルとフォルダ）: フォルダの中の一覧を返す関数（`fs::read_dir` と同じ）。
+
+<!-- /first-use -->
 
 `main` では、`VACUUM INTO` で `backup-2026-10-17.db`〜`backup-2026-10-21.db` の5日分の写しを作り、`memo.txt` も置いてから、`prune_backups(dir, 3)` を呼びます（`src/bin/u10_q1.rs`）。
 

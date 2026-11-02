@@ -158,6 +158,14 @@ Set-Content rust-toolchain.toml "[toolchain]`nchannel = `"1.99.1`""
 New-Item -ItemType Directory src\bin
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`New-Item -ItemType`**（PowerShell）: `-ItemType Directory` で、ファイルではなくフォルダを作ります（`File` ならファイル）。`New-Item -ItemType Directory src\bin` は、`src` の中に `bin` フォルダを作ります。
+
+<!-- /first-use -->
+
 `src/bin/u01_raw.rs` のように置いたファイルは、`cargo run --bin u01_raw` で、それぞれ別のプログラムとして動かせます。
 
 ## UNIT 01: HTTP の要求・応答・状態コード
@@ -351,6 +359,14 @@ fn main() -> std::io::Result<()> {
     Ok(())
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.read_exact()`**（入出力）: 決めた数のバイトを、ちょうどその数だけ読むメソッド。途中で終わってしまったら、エラーになります。HTTP の本文を、`Content-Length` の長さだけ読む時に使います。
+
+<!-- /first-use -->
 
 練習用のプロジェクトの `src/bin/u01_raw.rs` として保存し、1つ目の PowerShell の窓で起動します。
 
@@ -1092,6 +1108,15 @@ async fn main() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Router::builder()`**（Topcoat）: Topcoat のルーター（URL ごとの名簿）を組み立て始める関数。`Router::builder().discover().build()` は、`#[page]` を付けた関数を全部自動で集めて（`discover`）、ルーターを作ります（第6巻 UNIT 02）。
+> - **`RouterBuilderDiscoverExt`**（Topcoat）: `.discover()`（`#[page]` の付いた関数を自動で集める）を使えるようにする機能（トレイト）。`use` しておく必要があります。
+
+<!-- /first-use -->
+
 ```powershell
 cargo run --bin web_lab
 ```
@@ -1748,6 +1773,17 @@ async fn main() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`class!`**（Topcoat）: Topcoat のマクロ。HTML の `class` の値を、条件つきで組み立てます。`class!("nav", "active" if on_about)` は、`on_about` が `true` の時だけ `active` を足して `"nav active"` にします。
+> - **`#[route]`**（Topcoat）: Topcoat の印（属性）。画面（HTML）ではなく、JSON やただの文字などを返す「ルート」にします。`#[route(GET)]` のように、メソッドを必ず書きます。人が見る画面は `#[page]`、プログラムが読む答えは `#[route]` と使い分けます。
+> - **`.is_current()`**（Topcoat）: `href!(…)` で作ったリンク先が、「今開いているページ」なら `true` を返すメソッド。メニューの今のページに印（`aria-current`）を付ける時に使います。
+> - **`.then_some()`**（Option）: `bool` が `true` なら `Some(値)`、`false` なら `None` を返すメソッド。`on_about.then_some("page")`。Topcoat の `view!` では、属性に `None` を入れると、その属性ごと書かれません。
+
+<!-- /first-use -->
+
 UNIT 02 の `web_lab` の `src/bin/u03_site.rs` として保存し、起動します。
 
 ```powershell
@@ -2158,6 +2194,16 @@ pub fn build_router(state: AppState, assets: impl Into<AssetConfig>) -> Router {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`SessionConfig::default()`**（Topcoat）: Topcoat のセッション（ログインの状態などを覚える仕組み）を、おすすめの設定で用意する書き方。`.sessions(SessionConfig::default())` でルーターに登録します（第6巻 UNIT 10）。
+> - **`AssetConfig`**（Topcoat）: Topcoat のアセット（CSS・画像など）の配り方の設定の型。本番は束（`AssetBundle`）から、テストは `AssetConfig::hosted_at(…)` のように、場面に合わせて渡します。
+> - **`SessionConfig`**（Topcoat）: Topcoat のセッションの設定（クッキーの名前・期限など）の型。
+
+<!-- /first-use -->
+
 - 例3-1と同じく、`module_router!()` で名簿を作っています。`.cookies()`・`.sessions(…)`・`.assets(…)`・`.app_context(…)` は、ページから使う道具を、ルーターに登録しています（UNIT 07・08・10）。
 - `routes.rs` の先頭のコメントには、ファイルと URL の対応の表があります。`routes/notes/id/edit.rs` が `/notes/{id}/edit` になる、のように、**ファイルの並びが、そのまま URL の並び**です。`{id}` の部分は、UNIT 04 で扱います。
 
@@ -2495,6 +2541,17 @@ async fn main() {
         .expect("サーバーを起動できませんでした");
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`module_param!`**（Topcoat）: Topcoat のマクロ。モジュールの区切りを「URL の変わる部品」にします。`mod id` の中に `module_param!(id: u64, error = not_found);` と書くと、URL が `/notes/{id}` になり、数として読めない時は 404 になります（第6巻 UNIT 04）。
+> - **`#[query_params]`**（Topcoat）: Topcoat の印（属性）。`?q=rust&page=2` のようなクエリ（URL の `?` の後ろ）を読むための構造体に付けます。項目は `Option<T>` にしておき、無い・空の時は `None` になります（第6巻 UNIT 04）。
+> - **`.to_str()`**（文字列）: 値（HTTP のヘッダーの値・パスなど）を、`&str`（文字列）として読むメソッド。文字として読めないこともあるので、`Result` や `Option` で返ります。
+> - **`Name`**（Topcoat）: `module_param!(name: String)` で作られる、URL の部品の型（名前の頭を大文字にした形）。`path_param::<Name>(cx)` で、その部品の値を読みます。
+
+<!-- /first-use -->
 
 ```powershell
 cargo run --bin u04_params
@@ -3204,6 +3261,17 @@ async fn main() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`#[component]`**（Topcoat）: Topcoat の印（属性）。画面の一部を作る、何度も使える部品（コンポーネント）にします。`view!` の中で `panel(title: "一覧", …)` のように、名前付きの引数で呼べます（第6巻 UNIT 05）。
+> - **`#[default]`**（Topcoat）: コンポーネントの引数に付ける印。`#[default] child: Child<'_>` は、「名前を付けずにタグの間に書いた中身が、この引数に入る」という意味です。（`#[derive(Default)]` の中で、どの種類を初期値にするかの印にも使われます。）
+> - **`#[key]`**（Topcoat）: `view!` の中の `for` に付ける印。くり返しの 1 つずつを、何で見分けるか（ノートの番号など）を決めます。画面を部分的に描き直す時に、正しく対応させるために使います。
+> - **`Child`**（Topcoat）: コンポーネントの「中身」（タグの間に書いた物）を受け取る型。部品の中で `(child)` と書いた所に置かれます。
+
+<!-- /first-use -->
+
 ```powershell
 cargo run --bin u05_view
 curl.exe -s http://127.0.0.1:3000/
@@ -3619,6 +3687,16 @@ async fn main() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.push_string()`**（Topcoat）: Topcoat の画面を作る時に、文字を書き足すメソッド。入れた文字は、置く場所に合わせて自動でエスケープ（`<` などを安全な形に置きかえ）されます。
+> - **`NodeViewParts`**（Topcoat）: `view!` の `( )` に入れられる物が持っている機能（トレイト）。文字・数・`bool` などは最初から持っています。自分の型（`NoteId` など）を入れたい時は、これを実装します。
+> - **`PartsWriter`**（Topcoat）: `NodeViewParts` を実装する時に受け取る「書き込み先」。`push_string` などで、画面の中身を書きます。
+
+<!-- /first-use -->
+
 ```text
 ### curl.exe -s "http://127.0.0.1:3000/"
 <h1>ノート No.7</h1>
@@ -3948,6 +4026,14 @@ async fn main() {
         .expect("サーバーを起動できませんでした");
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`CREATED`**（HTTP）: `StatusCode::CREATED` は、HTTP の答えの番号 201（「作りました」）。新しいデータを作った時に返します。
+
+<!-- /first-use -->
 
 PowerShell 5.1 では、`"` を含む JSON をコマンドに直接書くと、うまく渡らないことがあります。JSON はファイルに書いて、`--data-binary "@ファイル名"` で送ります（英数字だけにして `-Encoding ascii` で書くと、文字化けもしません）。
 
@@ -4583,6 +4669,15 @@ async fn main() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`#[memoize]`**（Topcoat）: Topcoat の印（属性）。付けた関数の結果を、**1 つの要求（リクエスト）の間だけ**覚えておきます。レイアウト・ページ・部品のどこから呼んでも、データベースを 1 回しか読まずに済みます（第6巻 UNIT 07）。
+> - **`.then()`**（Option）: `bool` が `true` の時だけ、渡した関数を動かして `Some(結果)` を返すメソッド（`false` なら `None`）。`then_some` と違い、値を作る処理が、必要な時だけ動きます。（Future の `.then` は別の物です。）
+
+<!-- /first-use -->
+
 ```powershell
 cargo run --bin u07_memo
 ```
@@ -4875,6 +4970,17 @@ async fn main() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.into_body()`**（HTTP）: HTTP の答え（レスポンス）から、本文の部分だけを取り出すメソッド。テストで、返ってきた本文を確かめる時に使います。
+> - **`Request::builder()`**（HTTP）: HTTP の要求（リクエスト）を、組み立て始める関数。テストで、`.method("POST").uri("/notes").body(…)` のように作り、ルーターに直接渡して試します。
+> - **`String::from_utf8()`**（文字列）: バイトの並び（`Vec<u8>`）を、文字列（`String`）に変える関数。UTF-8 の文字として読めない時は `Err` を返します。
+> - **`Method`**（HTTP）: HTTP のメソッド（`GET`・`POST`・`PUT`・`DELETE` など）を表す型。
+
+<!-- /first-use -->
+
 ```powershell
 cargo run --bin u07_q2
 ```
@@ -5019,6 +5125,16 @@ h1 {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`font-family:`**（CSS）: CSS で、文字の書体（フォント）を決める項目。`font-family: sans-serif;` は「飾りの無い書体」。
+> - **`margin:`**（CSS）: CSS で、箱の外側の余白を決める項目。`margin: 2rem;` は、上下左右に文字 2 つ分くらいの余白です。
+> - **`color:`**（CSS）: CSS で、文字の色を決める項目。`color: #1e40af;` のように、色の番号（16 進数）や名前で書きます。
+
+<!-- /first-use -->
+
 > **▼ このコードがやること（先に日本語で）:** `asset!("assets/site.css")` で CSS を宣言し、ページの `<link rel="stylesheet">` の `href` に入れます。`main` では、`AssetBundle::load()` で、実行ファイルの隣の束を読み込み、`.assets(…)` でルーターに渡します。
 
 **▶ 書く所と動かし方:** 練習用のプロジェクト `web_lab`の `src\bin` フォルダに、`u08_assets.rs` という名前の**新しいファイル**を作り、下のコードを貼り付けて保存します。`web_lab` のフォルダで `topcoat asset bundle --bin u08_assets のあとで cargo run --bin u08_assets` を実行します。
@@ -5065,6 +5181,14 @@ async fn main() {
         .expect("サーバーを起動できませんでした");
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Asset`**（Topcoat）: `asset!` で宣言した、配るファイル（CSS・画像など）1 つを表す型。ページの中で URL として使えます。
+
+<!-- /first-use -->
 
 起動する前に、束を作ります。実行ファイルがいくつもある `web_lab` では、`--bin` で、どの実行ファイルの束かを選びます。
 
@@ -5561,6 +5685,16 @@ async fn main() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`#[procedure]`**（Topcoat）: Topcoat の印（属性）。ブラウザーの中のボタンなどから、サーバーの関数を呼べるようにします（中では `POST /api/…` という通信になります。第6巻 UNIT 09）。
+> - **`topcoat::runtime::script()`**（Topcoat）: ブラウザーの中で画面を変える仕組み（runtime）を使うためのスクリプトを、ページに入れる関数（第6巻 UNIT 09）。
+> - **`RouterBuilderRuntimeExt`**（Topcoat）: ルーターに `.runtime()`（ブラウザーの中で画面を変える仕組み）を登録できるようにする機能（トレイト）。
+
+<!-- /first-use -->
+
 runtime のスクリプトは、アセットの束から配るので、起動の前に束を作ります（UNIT 08）。
 
 ```powershell
@@ -5728,6 +5862,14 @@ async fn main() {
         .expect("サーバーを起動できませんでした");
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.is_some_and()`**（Option）: `Option` に値があり、しかもその値が条件に合う時だけ `true` を返すメソッド。`cookie.is_some_and(|c| c == "admin=yes")`。
+
+<!-- /first-use -->
 
 ```powershell
 topcoat asset bundle --bin u09_guard
@@ -5929,6 +6071,14 @@ async fn double(value: usize) -> Result<usize> {
         .ok_or_else(|| bad_request("2倍にすると大きすぎます").into())
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.ok_or_else()`**（エラー処理）: `Option` を `Result` に変えるメソッド。`None` の時に、渡した関数でエラーを作ります（必要な時だけ作る `ok_or` の版）。
+
+<!-- /first-use -->
 
 ```text
 ### curl.exe -i -H "Content-Type: application/json" --data-binary "@args21.json" http://127.0.0.1:3000/api/double
@@ -6224,6 +6374,20 @@ async fn main() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`not_found!`**（Topcoat）: Topcoat のマクロ。その場で「404 Not Found（見つかりません）」の答えにします。
+> - **`.description()`**（Topcoat）: `BadRequestError` などに入れた、利用者向けの説明の文を取り出すメソッド。
+> - **`.wrapping_sub()`**（数）: 引き算をして、型に入りきらない時（0 より小さくなる時）は、いちばん大きい値の方へ一周するメソッド。`0u64.wrapping_sub(1)` は大きな数になるので、`get` で「無い」と判断させるのに使えます。
+> - **`.ok_or_not_found()`**（Topcoat）: Topcoat のメソッド。`Option` が `None`（無い）の時に、404 Not Found のエラーにします。`… .ok_or_not_found()?` と書くと、無い時はそこで 404 を返します（`RouterErrorExt` を `use` して使う）。
+> - **`BadRequestError`**（Topcoat）: Topcoat の「400 Bad Request（頼み方がおかしい）」のエラーの型。`bad_request("検索の言葉を入れてください")` で作ります。文は利用者に見えるので、直し方が分かる短い文にします。
+> - **`NotFoundError`**（Topcoat）: Topcoat の「404 Not Found（見つかりません）」のエラーの型。
+> - **`RouterErrorExt`**（Topcoat）: `.ok_or_not_found()` などを使えるようにする機能（トレイト）。
+
+<!-- /first-use -->
+
 ```powershell
 cargo run --bin u10_errors
 ```
@@ -6430,6 +6594,20 @@ async fn main() {
         .expect("サーバーを起動できませんでした");
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`session::token_hash()`**（Topcoat）: Topcoat の関数。今のリクエストのセッションの印（トークン）の、ハッシュを返します。データベースの `sessions` 表に、ハッシュで記録しておき、ログイン中かを調べるのに使います（第8巻 UNIT 05）。
+> - **`Cookie::build()`**（クッキー）: クッキー（ブラウザーに覚えておいてもらう小さな値）を、設定しながら作り始める関数。`Cookie::build(("theme", "dark")).path("/").build()` のように、名前と値、使う範囲などを決めます。
+> - **`Cookie`**（クッキー）: クッキー 1 つ（名前と値と、使う範囲・期限などの設定）を表す型。
+> - **`Cookies`**（クッキー）: 今のリクエストのクッキーを読み書きする入れ物（クッキーの瓶）。`jar.add(…)` で足し、`jar.get("名前")` で読みます。
+> - **`RouterBuilderCookieExt`**（Topcoat）: ルーターに `.cookies()`（クッキーを使う仕組み）を登録できるようにする機能（トレイト）。
+> - **`RouterBuilderSessionExt`**（Topcoat）: ルーターに `.sessions(…)`（セッションの仕組み）を登録できるようにする機能（トレイト）。セッションはクッキーを使うので、先に `.cookies()` も登録します。
+> - **`TokenHash`**（Topcoat）: セッションの印（トークン）のハッシュの型。トークンそのものではなくハッシュを保存しておくと、データベースが盗まれても、そのままではログインに使えません。
+
+<!-- /first-use -->
 
 ```powershell
 cargo run --bin u10_session

@@ -425,6 +425,16 @@ li, tr { page-break-inside: avoid; }
 <span class="n">rustup</span> <span class="n">show</span> <span class="n">active-toolchain</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Copy-Item -Recurse</code></strong>（PowerShell）: <code>-Recurse</code> で、フォルダを中身ごと（中のフォルダも全部）コピーします。付けないと、フォルダの中身はコピーされません。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>この巻のテストは、RustNote の <code>tests/common/mod.rs</code> にある道具（<code>test_app</code>・<code>sign_up</code>・<code>create_note</code> など）を使います。テストごとに一時フォルダに新しい DB を作り、ポートを開かずに、ルーターへ直接リクエストを渡して動かします（第9巻 UNIT 01）。</p>
 <h2 id="unit-01">UNIT 01: 認証・セッション・認可と脅威モデル</h2>
 <h3 id="_8">この単元のゴール</h3>
@@ -753,6 +763,17 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.get_all()</code></strong>（HTTP）: HTTP のヘッダーで、同じ名前の物（<code>Set-Cookie</code> など）を全部取り出すメソッド。<code>get</code> だと最初の 1 つだけです。</li>
+<li><strong><code>.trim_start_matches()</code></strong>（文字列）: 文字列の先頭から、決めた文字（文字列）をくり返し取り除いたものを返すメソッド。<code>pair.trim_start_matches("__Host-session=")</code> は、クッキーの名前の部分を取って値だけにします。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-6"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">test</span> <span class="p">-</span><span class="n">-test</span> <span class="n">u01_session</span> <span class="p">--</span> <span class="p">-</span><span class="n">-nocapture</span>
 </code></pre></div></div>
 
@@ -889,6 +910,18 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>HOST</code></strong>（HTTP）: <code>header::HOST</code> は、HTTP の <code>Host</code> ヘッダー（どのサイト宛ての頼みか）の名前。</li>
+<li><strong><code>COOKIE</code></strong>（HTTP）: <code>header::COOKIE</code> は、HTTP の <code>Cookie</code> ヘッダー（ブラウザーが覚えているクッキーを送る所）の名前。</li>
+<li><strong><code>Origin</code></strong>（HTTP）: <code>Origin</code> ヘッダーは、フォームなどを送ったページが、どのサイトの物かを表します。ほかのサイトから勝手に送らせる攻撃（CSRF）を見分けるのに使います（第8巻 UNIT 06）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-9"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">test</span> <span class="p">-</span><span class="n">-test</span> <span class="n">u01_cross_site</span> <span class="p">--</span> <span class="p">-</span><span class="n">-nocapture</span>
 </code></pre></div></div>
 
@@ -1024,6 +1057,16 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 <span class="w">    </span><span class="nb">Ok</span><span class="p">(())</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>tempfile::tempdir()</code></strong>（ファイルとフォルダ）: 使い終わると自動で消える、一時的なフォルダを作る関数（<code>tempfile</code> の部品）。テストで、ファイルやデータベースを置く場所に使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-13"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">build</span> <span class="p">-</span><span class="n">-example</span> <span class="n">e01_find_without_owner</span>
 </code></pre></div></div>
@@ -1170,6 +1213,16 @@ error: could not compile `rustnote` (example &quot;e01_find_without_owner&quot;)
 <span class="w">        </span><span class="n">login_form</span><span class="p">(</span><span class="n">email</span><span class="p">:</span><span class="w"> </span><span class="nc">input</span><span class="p">.</span><span class="n">email</span><span class="p">,</span><span class="w"> </span><span class="n">error</span><span class="p">:</span><span class="w"> </span><span class="nc">error</span><span class="p">)</span>
 <span class="w">    </span><span class="p">})</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>UNAUTHORIZED</code></strong>（HTTP）: <code>StatusCode::UNAUTHORIZED</code> は、HTTP の答えの番号 401（「ログインしていない」）です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <h3 id="_14">練習問題</h3>
 <p><strong>問1:</strong> 脅威モデルの表で「守りが無い」とした、パスワードの総当たりを確かめます。alice を登録してから、まちがったパスワードで 10 回続けてログインし、11 回目に正しいパスワードを送るテストを書いてください。RustNote は、何回目かで止めるでしょうか。</p>
@@ -1616,6 +1669,16 @@ salt（22 文字）: 1dvNLHkr/dGcDbOcgy0oJQ
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>FnMut</code></strong>（関数）: 「呼ぶたびに中の値を変えてよい関数（クロージャ）」を表す型の書き方。外の変数を書きかえるクロージャは、この形になります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-31"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">-</span><span class="n">-release</span> <span class="p">-</span><span class="n">-example</span> <span class="n">u02_speed</span>
 </code></pre></div></div>
 
@@ -1769,6 +1832,18 @@ test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 <span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{hash}&quot;</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>SaltString::generate()</code></strong>（認証）: パスワードのハッシュに混ぜる「塩」（ソルト：毎回でたらめに作る値）を作る関数。同じパスワードでも、人ごとに違うハッシュになり、まとめて解かれにくくなります。</li>
+<li><strong><code>SaltString</code></strong>（認証）: ソルト（塩）を文字列の形で持つ型。</li>
+<li><strong><code>OsRng</code></strong>（認証）: OS が用意する、予想できないでたらめな数を作る係。パスワードやトークンなど、安全のための値は、必ずこのような係で作ります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-37"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">build</span> <span class="p">-</span><span class="n">-example</span> <span class="n">e02_old_api</span>
 </code></pre></div></div>
@@ -2162,6 +2237,16 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 <span class="p">};</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>CONFLICT</code></strong>（HTTP）: <code>StatusCode::CONFLICT</code> は、HTTP の答えの番号 409（「ぶつかった」）。同じメールアドレスで登録しようとした時などに返します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> 8通りの入力（正しい登録・大文字と空白の混ざった同じメール・@ の無いメール・ドメインに . の無いメール・短いパスワード・確認の欄と違うパスワード・3つとも間違い・大文字の混ざった別のメール）で <code>POST /signup</code> を送ります。返事の状態コードと、400 や 409 のときは入力欄の下のエラーと、メールの入力欄に残った値を表示します。最後に、<code>users</code> 表の <code>email</code> を表示します。</p>
 </blockquote>
@@ -2237,6 +2322,16 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 <span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;users 表の email: {:?}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">emails</span><span class="p">(</span><span class="o">&amp;</span><span class="n">app</span><span class="p">).</span><span class="k">await</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.is_redirection()</code></strong>（HTTP）: HTTP の答えの番号が 300〜399（別のページへ移って）なら <code>true</code> を返すメソッド。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-50"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">test</span> <span class="p">-</span><span class="n">-test</span> <span class="n">u03_signup</span> <span class="p">--</span> <span class="p">-</span><span class="n">-nocapture</span> <span class="p">-</span><span class="n">-test-threads</span><span class="p">=</span><span class="n">1</span>
 </code></pre></div></div>
@@ -4112,6 +4207,16 @@ error: could not compile `rustnote` (lib) due to 1 previous error
 <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;link&quot;</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;http://127.0.0.1:3000/notes&quot;</span><span class="p">&gt;</span>RustNote の一覧へのリンク<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>&lt;meta&gt;</code></strong>（HTML）: HTML の <code>&lt;head&gt;</code> の中に書く、ページの情報のタグ。<code>&lt;meta charset="utf-8"&gt;</code>（文字コード）・<code>&lt;meta name="viewport" …&gt;</code>（スマホでの表示の幅）などがあります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><strong>1. HttpOnly:</strong> RustNote の画面（ログイン中）の Console で、<code>document.cookie</code> を読みました。</p>
 <div class="codehilite"><div class="code-wrap" id="code-102"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>（127.0.0.1:3000 で alice としてログインしたあと、RustNote の画面の Console で）
 &gt; ({ &quot;document.cookie の長さ&quot;: document.cookie.length, &quot;空&quot;: document.cookie === &quot;&quot; })
@@ -5018,6 +5123,25 @@ help: provide the argument
 <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`sign-out → </span><span class="si">${</span><span class="nx">r</span><span class="p">.</span><span class="nx">response</span><span class="p">.</span><span class="nx">status</span><span class="si">}</span><span class="sb">（session: </span><span class="si">${</span><span class="nx">before</span><span class="si">}</span><span class="sb"> 行 → </span><span class="si">${</span><span class="nx">after</span><span class="si">}</span><span class="sb"> 行）`</span><span class="p">);</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>import</code></strong>（JavaScript・TypeScript）: ほかのファイルや部品から、関数などを読み込む書き方。<code>import { rmSync } from "node:fs";</code> は、Node.js のファイルの道具から <code>rmSync</code> を使えるようにします。</li>
+<li><strong><code>try</code></strong>（JavaScript・TypeScript）: 失敗するかもしれない処理を <code>try { … } catch (e) { … }</code> で囲み、失敗した時の処理を <code>catch</code> に書く書き方。</li>
+<li><strong><code>catch</code></strong>（JavaScript・TypeScript）: <code>try</code> の中で失敗（エラー）が起きた時に動く所。<code>catch (e)</code> の <code>e</code> に、エラーが入ります。</li>
+<li><strong><code>.runMigrations()</code></strong>（JavaScript・TypeScript）: Better Auth の、データベースの表を作る・変える手順（マイグレーション）を実行するメソッド（第8巻 UNIT 08 の比べ）。</li>
+<li><strong><code>.stringify()</code></strong>（JavaScript・TypeScript）: <code>JSON.stringify(値)</code> は、JavaScript の値を JSON の文字列にする関数です。</li>
+<li><strong><code>.round()</code></strong>（JavaScript・TypeScript）: <code>Math.round(x)</code> は、小数を四捨五入して整数にする関数です。</li>
+<li><strong><code>.slice()</code></strong>（JavaScript・TypeScript）: 文字列や配列の、一部分を切り出すメソッド。<code>text.slice(0, 40)</code> は、最初の 40 文字です。</li>
+<li><strong><code>.startsWith()</code></strong>（JavaScript・TypeScript）: 文字列が、その文字で始まっていれば <code>true</code> を返すメソッド（Rust の <code>starts_with</code>）。</li>
+<li><strong><code>??</code></strong>（JavaScript・TypeScript）: <code>a ?? b</code> は、<code>a</code> が <code>null</code> か <code>undefined</code>（値が無い）なら <code>b</code> を使う、という書き方です。</li>
+<li><strong><code>...</code></strong>（JavaScript・TypeScript）: スプレッド構文。<code>[...a, x]</code> は配列 <code>a</code> の中身を広げて新しい配列を作り、<code>{ ...obj, k: v }</code> はオブジェクトの中身を写して一部だけ変えた新しいオブジェクトを作ります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-128"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">node</span> <span class="n">probe</span><span class="p">.</span><span class="n">mjs</span>
 </code></pre></div></div>
 
@@ -5418,6 +5542,21 @@ user4 → 429（Too many requests. Please try again later.）
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>Sha256::digest()</code></strong>（認証）: データから、SHA-256 というハッシュ（32 バイトの指紋）を計算する関数（<code>sha2</code> の部品）。</li>
+<li><strong><code>rand::rng()</code></strong>（認証）: でたらめな数を作る係を取り出す関数（<code>rand</code> の部品）。<code>rand::rng().random()</code> で、でたらめな値を作ります。</li>
+<li><strong><code>Engine</code></strong>（認証）: <code>base64</code> の部品の、エンコード（バイト → 英数字の文字列）の機能（トレイト）。<code>URL_SAFE_NO_PAD.encode(バイト)</code> を使うには、これを <code>use</code> します。</li>
+<li><strong><code>RngExt</code></strong>（認証）: <code>rand</code> の部品の、<code>.random()</code> などのメソッドを使えるようにする機能（トレイト）。</li>
+<li><strong><code>Digest</code></strong>（認証）: ハッシュの計算（<code>digest</code>・<code>update</code>・<code>finalize</code>）を使えるようにする機能（トレイト。<code>sha2</code> などの部品）。</li>
+<li><strong><code>Sha256</code></strong>（認証）: SHA-256 というハッシュの計算をする型。データの「指紋」を作るのに使います（パスワードの保存には、わざと重い Argon2 を使います）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-138"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">-</span><span class="n">-example</span> <span class="n">pkce</span>
 </code></pre></div></div>
 
@@ -5561,6 +5700,24 @@ code_challenge: KHgXPO4I…
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.to_be_bytes()</code></strong>（数）: 数を、大きい桁から順に並べたバイトの並び（ビッグエンディアン）にするメソッド。</li>
+<li><strong><code>.finalize()</code></strong>（認証）: ハッシュや MAC の計算を締めくくって、結果を取り出すメソッド。</li>
+<li><strong><code>.into_bytes()</code></strong>（認証）: 計算の結果を、バイトの並びとして取り出すメソッド。</li>
+<li><strong><code>u32::from_be_bytes()</code></strong>（数）: 4 つのバイト（大きい桁から順）から、<code>u32</code> の数を作る関数。</li>
+<li><strong><code>HashSet</code></strong>（HashMap（表））: 同じ値は 1 つしか入らない集まり（値だけの <code>HashMap</code>）。重複を消す・「もう見たか」を覚える時に使います。<code>set.insert(x)</code> は、新しく入った時だけ <code>true</code> を返します。</li>
+<li><strong><code>Hmac</code></strong>（認証）: HMAC（秘密の鍵を混ぜたハッシュ）を計算する型（<code>hmac</code> の部品）。鍵を知っている人だけが同じ値を作れるので、「改ざんされていないか」の確かめに使います。</li>
+<li><strong><code>KeyInit</code></strong>（認証）: 鍵から計算の係を作る（<code>new_from_slice</code>）機能（トレイト）。</li>
+<li><strong><code>Mac</code></strong>（認証）: HMAC の計算（<code>update</code>・<code>finalize</code>・<code>verify_slice</code>）を使えるようにする機能（トレイト）。</li>
+<li><strong><code>Sha1</code></strong>（認証）: SHA-1 というハッシュの型。古い方法ですが、2 段階認証（TOTP）の決まりで今も使われています。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-141"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">-</span><span class="n">-example</span> <span class="n">totp</span>
 </code></pre></div></div>
 
@@ -5682,6 +5839,16 @@ code_challenge: KHgXPO4I…
 <span class="w">    </span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.replace_range()</code></strong>（文字列）: <code>String</code> の、決めた範囲を、別の文字列に置きかえるメソッド。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-144"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">-</span><span class="n">-example</span> <span class="n">reset</span>
 </code></pre></div></div>
@@ -6124,6 +6291,17 @@ error: could not compile `mfa_lab` (example &quot;e09_old_base64&quot;) due to 2
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>assert_ne!</code></strong>（テスト）: 「2 つの値が違うか」を確かめるマクロ。同じだとテストが失敗します。</li>
+<li><strong><code>FORBIDDEN</code></strong>（HTTP）: <code>StatusCode::FORBIDDEN</code> は、HTTP の答えの番号 403（「その操作は許されていない」）です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-153"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">test</span> <span class="p">-</span><span class="n">-test</span> <span class="n">u10_guards</span> <span class="p">--</span> <span class="p">-</span><span class="n">-nocapture</span>
 </code></pre></div></div>
 
@@ -6312,6 +6490,16 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 <span class="w">    </span><span class="fm">eprintln!</span><span class="p">(</span><span class="s">&quot;=== ここまで ===&quot;</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>RemoteAddr</code></strong>（Topcoat）: 相手（ブラウザー側）の IP アドレスを表す型。ログインの回数の制限などで、どこからの頼みかを見分けるのに使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-156"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">test</span> <span class="p">-</span><span class="n">-test</span> <span class="n">u10_audit</span> <span class="p">--</span> <span class="p">-</span><span class="n">-nocapture</span>
 </code></pre></div></div>
@@ -6558,6 +6746,18 @@ POST /logout -&gt; 303 See Other (5.5758ms)
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.try_into()</code></strong>（型とメソッド）: 値を、別の型に変えようとして、変えられなければ <code>Err</code> を返すメソッド（<code>TryFrom</code> の逆向き）。<code>bytes.try_into()</code> で、長さの決まった配列（<code>[u8; 32]</code> など）に変えます。</li>
+<li><strong><code>.as_slice()</code></strong>（Vec（並び））: <code>Vec</code> や配列を、「借りた一続きの並び」（スライス <code>&amp;[T]</code>）として見るメソッド。</li>
+<li><strong><code>Token</code></strong>（Topcoat）: <code>topcoat::session::Token</code> は、セッションの印（でたらめな長い文字列）の型。ブラウザーのクッキーに入れ、サーバーには、そのハッシュだけを保存します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-164"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">test</span> <span class="p">-</span><span class="n">-test</span> <span class="n">u10_incident</span> <span class="p">--</span> <span class="p">-</span><span class="n">-nocapture</span>
 </code></pre></div></div>

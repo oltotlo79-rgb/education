@@ -568,6 +568,19 @@ if ($env:OneDrive -and $here.StartsWith($env:OneDrive)) {
 '@
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Set-Content -Path`**（PowerShell）: `-Path 名前` で、書き込むファイルの名前（場所）を指定します。`Set-Content memo.txt "…"` のように名前を最初に書く時は、`-Path` を省けます。
+> - **`Set-Content -Value`**（PowerShell）: `-Value 中身` で、ファイルに書く中身を指定します。`@' … '@` で囲むと、何行もの文章をそのまま中身にできます（ヒア文字列）。
+> - **`Select-Object -First`**（PowerShell）: `-First 1` で、結果の最初の 1 つだけを取り出します。`-Last 3` なら最後の 3 つです。
+> - **`default`**（PowerShell）: PowerShell の `switch` の中で、「どの場合にも合わなかった時」の処理を書く所。Rust の `match` の `_ =>` に当たります。
+> - **`Write-Output`**（PowerShell）: 値を「出力」として次へ流す（最後なら画面に出す）コマンド。`Write-Output "こんにちは"`。文字列を 1 行に書くだけでも同じ働きをしますが、はっきり書く時に使います。
+> - **`if`**（PowerShell）: PowerShell の条件の書き方。`if (条件) { 合う時 } else { 合わない時 }`。条件は `( )` で囲みます。比べる時は `-eq`（等しい）・`-ne`（違う）・`-gt`（大きい）・`-match`（パターンに合う）のような書き方をします（`==` や `>` ではありません）。
+
+<!-- /first-use -->
+
 貼り付けている間、行の先頭に `>>` が表示されます。これは「まだ続きがありますね」という PowerShell の合図です。最後の `'@` の行で Enter キーを押すと、ファイルが作られます（成功しても何も表示されません）。
 
 **手順2: 自分で作ったスクリプトを実行できるようにする。** 何も設定していない Windows では、安全のためにスクリプトの実行が止められています。次のコマンドで、「自分の PC で作ったスクリプトは実行してよい」という設定に変えます。
@@ -576,6 +589,15 @@ if ($env:OneDrive -and $here.StartsWith($env:OneDrive)) {
 # 自分のユーザーだけ、実行ポリシーを RemoteSigned にする
 Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Set-ExecutionPolicy`**（PowerShell）: PowerShell のスクリプト（`.ps1` のファイル）を動かしてよいかの決まり（実行ポリシー）を変えるコマンド。`Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` は、「自分のアカウントだけ、自分のパソコンで作ったスクリプトは動かしてよい」にします。会社のパソコンでは、決まりがある時は勝手に変えません。
+> - **`Set-ExecutionPolicy -Scope`**（PowerShell）: `-Scope CurrentUser` で、決まりを「今のユーザーだけ」に当てます（管理者の権限が要りません）。
+
+<!-- /first-use -->
 
 確認の質問が表示されたら、`Y` を打って Enter キーを押します。設定できたかは、次のコマンドで確かめます。
 
@@ -598,6 +620,15 @@ MachinePolicy       Undefined
 
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Get-ExecutionPolicy`**（PowerShell）: 今の実行ポリシー（スクリプトを動かしてよいかの決まり）を見るコマンド。`Restricted` はスクリプトを動かせない、`RemoteSigned` は自分で作った物は動かせる、という意味です。
+> - **`Get-ExecutionPolicy -List`**（PowerShell）: `-List` で、決まりを「どの範囲（全員・自分・この窓など）に、何が決まっているか」の一覧で表示します。
+
+<!-- /first-use -->
+
 `CurrentUser` の行が `RemoteSigned` になっていれば成功です。
 
 **手順3: スクリプトを実行する。**
@@ -618,6 +649,14 @@ PC の CPU       : ARM64
 パスの文字      : OK（半角英数字と記号だけ）
 OneDrive        : OK（同期フォルダの外です）
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.\whereami.ps1`**（PowerShell）: 今いるフォルダの `whereami.ps1`（PowerShell のスクリプト）を動かす書き方。今いるフォルダのファイルを動かす時は、頭に `.\`（「ここの」）を付ける決まりです。
+
+<!-- /first-use -->
 
 「PC の CPU」と「このシェルの種類」が同じで、下の2行が両方 OK なら、作業を始める準備ができています。
 
@@ -699,6 +738,14 @@ PC の CPU       : ARM64
 OneDrive        : OK（同期フォルダの外です）
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`..\whereami.ps1`**（PowerShell）: 1 つ上のフォルダの `whereami.ps1` を動かす書き方。`..` は「1 つ上のフォルダ」という意味です。
+
+<!-- /first-use -->
+
 OneDrive を使っている人は、同期フォルダへ移動して実行してみます。
 
 ```powershell
@@ -718,6 +765,14 @@ PC の CPU       : ARM64
 パスの文字      : OK（半角英数字と記号だけ）
 OneDrive        : 注意（同期フォルダの中です）
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`~\rust-study\whereami.ps1`**（PowerShell）: ホームフォルダ（`~` ＝ `C:\Users\you`）から数えた場所で、スクリプトを動かす書き方。どこにいても同じ書き方で動かせます。
+
+<!-- /first-use -->
 
 確かめたら、作業フォルダに戻って、練習用に作ったフォルダを消しておきます。
 
@@ -908,6 +963,14 @@ cargo 1.99.1 (5f94df478 2026-08-27)
 stable-aarch64-pc-windows-msvc (default)
 cargo 1.99.1 (5f94df478 2026-08-27)
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`rustup show`**（Rust の道具）: 入っている Rust の版と、今使っている版を表示します。`rustup show active-toolchain` は、今このフォルダで使われる版だけを表示します。
+
+<!-- /first-use -->
 
 - RustNote のフォルダでは、`rust-toolchain.toml` によって `1.99.1` が選ばれています（`overridden by` は「このファイルで上書きされています」という意味です）。
 - ホームフォルダでは、この PC の既定の版（`stable`。`(default)` は「既定なので選ばれました」という意味）が使われました。今は stable も 1.99.1 なので、版の数字は同じですが、**選ばれた理由が違います**。stable は、新しい版が出たあとに `rustup update` をすると上がります（UNIT 04）。そのときも、RustNote のフォルダの中だけは 1.99.1 のままです。
@@ -1203,6 +1266,16 @@ credential.https://dev.azure.com.usehttppath=true
 init.defaultbranch=master
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`git`**（Git）: ファイルの変更の記録を残す道具（Git）の本体のコマンド。`git --version` で版を確かめられます。`git status`・`git add`・`git commit` のように、後ろに「何をするか」を付けて使います（この巻の UNIT 04）。
+> - **`where.exe`**（コマンド）: コマンドの本体（`.exe`）が、パソコンのどこにあるかを探すコマンド。`where.exe git` で、`git.exe` の場所が分かります。PowerShell では `where` だけだと別の命令になるので、`.exe` まで付けて打ちます。
+> - **`git config`**（Git）: Git の設定を見る・変えるコマンド。`git config --global user.name "名前"` で、記録に残す名前を決めます。`--list` で、今の設定を一覧で見られます。
+
+<!-- /first-use -->
+
 #### ▼ 1つずつ分解して解説
 
 ##### 解説1: `git --version` の `windows.2`
@@ -1308,6 +1381,14 @@ git init
 Initialized empty Git repository in C:/Users/.../rust-study/hello-git/.git/
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`git init`**（Git）: 今いるフォルダで、Git の記録を始めるコマンド。フォルダの中に、記録を入れる `.git` という隠しフォルダができます（`cargo new` は、これを自動でしてくれます）。
+
+<!-- /first-use -->
+
 **手順2: 練習用のファイルを作る。** Rust のプロジェクトは UNIT 04 で `cargo new` を使って作りますが、ここでは同じ形のファイルを手で作ります。まず、ファイルを作るための小さな**関数**（いくつかのコマンドをまとめて名前を付けたもの）を、PowerShell に覚えさせます。
 
 ```powershell
@@ -1317,6 +1398,18 @@ function New-LfFile($Path, [string[]]$Lines) {
     New-Item -Path $Path -Value $text -Force | Out-Null
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`New-Item`**（PowerShell）: 新しいファイルやフォルダを作るコマンド。`New-Item memo.txt` でファイル、`New-Item -ItemType Directory 名前` でフォルダを作ります。
+> - **`New-Item -Path`**（PowerShell）: `-Path 場所` で、作るファイルやフォルダの場所（名前）を指定します。
+> - **`New-Item -Value`**（PowerShell）: `-Value 中身` で、作るファイルに最初から書いておく中身を指定します。
+> - **`New-Item -Force`**（PowerShell）: `-Force` で、同じ名前のファイルがあっても上書きして作ります（無いと、エラーで止まります）。上書きするので、使う時は名前をよく確かめます。
+> - **`Out-Null`**（PowerShell）: コマンドの結果を、画面に出さずに捨てるコマンド。`… | Out-Null` のように後ろに付けると、表示が出なくなります。
+
+<!-- /first-use -->
 
 続けて、この関数でファイルを作ります。`'…'` で囲んだ1つずつが、ファイルの1行になります。
 
@@ -1334,6 +1427,14 @@ New-LfFile rustnote.db 'db'
 # ビルドの成果物の代わり（空のファイル。target\debug フォルダも一緒に作られる）
 New-Item target\debug\hello-git.exe -Force | Out-Null
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`New-LfFile`**（PowerShell）: この巻のスクリプトの中で作った、自分の PowerShell の関数（改行を LF にしてファイルを書く）。`function New-LfFile { … }` で中身を決めてあり、PowerShell のコマンドと同じ形で呼べます。
+
+<!-- /first-use -->
 
 **手順3: Git から見た状態を表示する。**
 
@@ -1360,6 +1461,14 @@ Untracked files:
 
 nothing added to commit but untracked files present (use "git add" to track)
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`git status`**（Git）: 今の状態（変わったファイル・記録に入れる予定のファイル・Git がまだ知らないファイル）を表示します。迷ったら、まずこれを打ちます。
+
+<!-- /first-use -->
 
 #### ▼ 1つずつ分解して解説
 
@@ -1450,6 +1559,14 @@ git check-ignore -v .env rustnote.db target/debug/hello-git.exe
 .gitignore:2:/target/	target/debug/hello-git.exe
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`git check-ignore`**（Git）: そのファイルが `.gitignore`（記録しないファイルの一覧）で外されているかを調べるコマンド。`-v` を付けると、`.gitignore` の何行目の決まりで外されたかも表示します。
+
+<!-- /first-use -->
+
 最後に、`.env` を名指しで追加しようとしてみます。
 
 ```powershell
@@ -1465,6 +1582,14 @@ The following paths are ignored by one of your .gitignore files:
 hint: Use -f if you really want to add them.
 hint: Disable this message with "git config set advice.addIgnoredFile false"
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`git add`**（Git）: 次の記録（コミット）に入れるファイルを選ぶコマンド。`git add ファイル名`、全部なら `git add .` です。選んだだけで、まだ記録はされていません。
+
+<!-- /first-use -->
 
 #### ▼ 1つずつ分解して解説
 
@@ -1525,6 +1650,14 @@ i/lf    w/lf    attr/                 	.gitignore
 i/lf    w/lf    attr/                 	Cargo.toml
 i/lf    w/lf    attr/                 	src/main.rs
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`git ls-files`**（Git）: Git が記録しているファイルの一覧を出すコマンド。`--eol` を付けると、各ファイルの改行の形（LF か CRLF か）も表示します。
+
+<!-- /first-use -->
 
 **手順2: 改行コードの決まりを作る。**
 
@@ -1591,6 +1724,14 @@ git commit -m "最初のコミット"
  create mode 100644 src/main.rs
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`git commit`**（Git）: 選んだ変更を、1 つの記録（コミット）として残すコマンド。`git commit -m "何をしたか"` の `-m` の後ろに、変更の説明を書きます。
+
+<!-- /first-use -->
+
 #### ▼ 1つずつ分解して解説
 
 ##### 解説1: 「LF will be replaced by CRLF」は何の警告か
@@ -1635,6 +1776,14 @@ git log --format="%h %an <%ae> %s"
 d779d78 Taro Yamada <taro@example.com> 最初のコミット
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`git log`**（Git）: これまでの記録（コミット）の一覧を、新しい順に出すコマンド。`--oneline` で 1 行ずつ短く、`--format="…"` で表示の形を自分で決められます。
+
+<!-- /first-use -->
+
 例2-2で設定した名前とメールアドレスが、コミットと一緒に記録されています。
 
 ### よくあるエラーと読み方
@@ -1678,6 +1827,15 @@ cd /tmp
 pwd
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`echo`**（コマンド）: 後ろに書いた文字を、そのまま画面に出すコマンド。`echo "hello"`。bash（WSL）でも PowerShell でも使えます。
+> - **`pwd`**（コマンド）: 今いるフォルダを表示するコマンド（print working directory）。bash（WSL）では `/home/you` のような Linux の形で、PowerShell では `C:\Users\you` のような形で出ます。
+
+<!-- /first-use -->
+
 WSL の bash で、見えない文字も表示するように（`cat -v`）して実行した結果です。
 
 ```bash
@@ -1695,6 +1853,14 @@ crlf.sh: line 4: cd: $'/tmp\r': No such file or directory
 crlf.sh: line 5: $'pwd\r': command not found
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`bash`**（WSL・bash）: Linux でよく使われるシェル（文字で命令する画面）。`bash ファイル.sh` で、bash のスクリプトを動かします。WSL の中や、Git for Windows に付いています。
+
+<!-- /first-use -->
+
 - **何が起きたか:** `^M` と `\r` は、どちらも CR（`0D`）のことです。bash は行の終わりを LF だけで判断するので、行の最後の CR を、**コマンドの一部**として読みました。
   - 2行目: `set -e` が `set -e\r` になり、「`-\r` という知らないオプションです」と断られました。
   - 4行目: `cd /tmp` が `/tmp\r` というフォルダへの移動になり、「そんなフォルダはありません」と言われました。
@@ -1706,6 +1872,14 @@ crlf.sh: line 5: $'pwd\r': command not found
 # 各行の最後の \r（CR）を取り除いて、ファイルを上書きする
 sed -i 's/\r$//' crlf.sh
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`sed`**（WSL・bash）: 文字を置きかえるコマンド（Linux）。`sed -i 's/\r$//' ファイル` は、各行の最後の `\r`（Windows の改行の印）を消して、ファイルを書きかえます（`-i` は「そのファイルを直接書きかえる」）。
+
+<!-- /first-use -->
 
 - そもそも CRLF にしないためには、この単元の `.gitattributes`（`* text=auto eol=lf`）をリポジトリに入れておき、UNIT 03 で VS Code を LF で保存する設定にします。
 
@@ -1733,6 +1907,14 @@ git status --short
 rm '.env'
 D  .env
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`git rm`**（Git）: ファイルを、Git の記録から外すコマンド。`git rm --cached .env` は、ファイルそのものは残したまま、記録からだけ外します（間違えて記録した秘密のファイルを外す時に使います）。
+
+<!-- /first-use -->
 
 `D` は「次のコミットで、このファイルを消します（Delete）」という印です。このままコミットします。
 
@@ -1764,6 +1946,14 @@ PORT=3000
 DATABASE_URL=libsql://rustnote-taro.turso.io
 DATABASE_AUTH_TOKEN=eyJhbGciOi...secret
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`git show`**（Git）: 記録の中身を見るコマンド。`git show HEAD~1:.env` は「1 つ前の記録の時の `.env` の中身」を表示します。一度記録した物は、こうして後からでも見えてしまう、という例です。
+
+<!-- /first-use -->
 
 - **何が起きたか:** `git rm --cached` で外したのは、「これからのコミット」からだけです。`45dbcd4` のコミットには、`.env` の中身がそのまま残っていて、`git show コミット:ファイル名` で誰でも読めます。図で見た「前のページに残った鍵の写真」です。
 - **直し方:** 手元のリポジトリだけで、まだどこにも上げていなければ、上げる前に履歴を作り直す方法があります（少し難しいので、このシリーズでは扱いません）。**GitHub などに一度でも上げてしまったら、その秘密はもう漏れたものとして扱います**。まず、その**トークンやパスワードを無効にして、新しいものに取り替えます**。Turso のトークンを無効にする方法は、第7巻で扱います。履歴の掃除は、その後です。
@@ -2345,12 +2535,28 @@ index e7a11a9..66449d7 100644
  }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`git diff`**（Git）: まだ記録していない変更の中身を見るコマンド。`-` で始まる行が前の内容、`+` で始まる行が新しい内容です。
+
+<!-- /first-use -->
+
 確かめたら、変更を元に戻しておきます。
 
 ```powershell
 # src/main.rs を、最後のコミットの状態に戻す（成功しても何も表示されない）
 git restore src/main.rs
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`git restore`**（Git）: 保存したけれど記録していない変更を捨てて、最後の記録の状態に戻すコマンド。`git restore src/main.rs`。捨てた変更は戻せないので、確かめてから使います。
+
+<!-- /first-use -->
 
 #### ▼ 1つずつ分解して解説
 
@@ -2619,6 +2825,14 @@ cd ~\Downloads
 .\rustup-init.exe
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.\rustup-init.exe`**（PowerShell）: ダウンロードした Rust のインストーラー（`rustup-init.exe`）を、今いるフォルダから動かす書き方。
+
+<!-- /first-use -->
+
 この本では、PC にもともと入っている Rust を変えないように、Rust の置き場を別のフォルダ（`rust-try`）にして試しました（`RUSTUP_HOME` と `CARGO_HOME` で場所を変え、`--no-modify-path` で PATH を変えないようにしています）。ふつうに入れると、置き場は `C:\Users\（あなたの名前）\.rustup` と `.cargo` になり、`modify PATH variable` は `yes` になります。途中で聞かれたら、`1`（標準のインストール）を選んで Enter キーを押します。
 
 **▼ 実行結果**
@@ -2726,6 +2940,14 @@ C:\Users\...\rust-try\cargo\bin\cargo.exe
 C:\Users\...\rust-try\cargo\bin\rustup.exe
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`rustup`**（Rust の道具）: Rust そのもの（`rustc`・`cargo`）を入れる・新しくする・版を切りかえる道具。`rustup --version` で版を確かめられます。
+
+<!-- /first-use -->
+
 ```powershell
 # 入っているツールチェーンと、今どれが選ばれているか
 rustup show
@@ -2753,6 +2975,18 @@ active because: it's the default toolchain
 installed targets:
   aarch64-pc-windows-msvc
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`rustup component`**（Rust の道具）: Rust の部品（`rustfmt`・`clippy` など）を見る・足すコマンド。`rustup component list --installed` で、入っている部品の一覧を出します。
+> - **`Get-ChildItem`**（PowerShell）: フォルダの中の一覧を出すコマンド（短い呼び名は `ls`・`dir`）。`Get-ChildItem フォルダ` でそのフォルダの中身、`-Recurse` で中のフォルダまで全部を出します。
+> - **`ForEach-Object`**（PowerShell）: `|` で流れてきた物を、1 つずつ処理するコマンド。`{ }` の中の `$_` が「今の 1 つ」を表します。`… | ForEach-Object { $_.Name }` は、1 つずつ名前を取り出します。
+> - **`ForEach-Object -f`**（PowerShell）: ここでの `-f` は `ForEach-Object` の指定ではなく、PowerShell の「書式の演算子」です。`"{0,-10} {1}" -f 値1, 値2` で、`{0}` に値 1、`{1}` に値 2 を入れた文字列を作ります（`,-10` は「10 文字分の幅で左寄せ」）。
+> - **`Get-FileHash`**（PowerShell）: ファイルの中身から、ハッシュ（指紋のような長い英数字）を計算するコマンド。中身が 1 文字でも違えば、まったく違う値になります。ダウンロードしたファイルが壊れていないか確かめる時に使います。
+
+<!-- /first-use -->
 
 ```text
 cargo-aarch64-pc-windows-msvc
@@ -2864,6 +3098,15 @@ hello.exe 131584
 Hello, world!
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Get-ChildItem -Filter`**（PowerShell）: `-Filter *.exe` で、名前が合う物（ここでは `.exe` で終わる物）だけを一覧にします。`*` は「何文字でもよい」という意味です。
+> - **`.\target\debug\hello.exe`**（PowerShell）: `cargo build` が作った実行ファイルを、直接動かす書き方。
+
+<!-- /first-use -->
+
 #### ▼ 1つずつ分解して解説
 
 ##### 解説1: `cargo new` が作るもの
@@ -2960,6 +3203,14 @@ info: downloading 8 components
 info: checking for self-update (current version: 1.29.2)
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`rustup update`**（Rust の道具）: 入っている Rust を、新しい版にするコマンド。`rustup update stable` で、安定版を最新にします。
+
+<!-- /first-use -->
+
 ```powershell
 rustup toolchain list
 ```
@@ -2972,6 +3223,14 @@ stable-aarch64-pc-windows-msvc (active, default)
 1.99.0-aarch64-pc-windows-msvc
 1.99.1-aarch64-pc-windows-msvc
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`rustup toolchain`**（Rust の道具）: 入っている Rust の版（ツールチェーン）を見る・足す・消すコマンド。`rustup toolchain list` で一覧を出します。
+
+<!-- /first-use -->
 
 - stable が 1.97.1 から **1.99.1** になりました。前の版の部品を消してから、新しい部品を入れています。この PC の stable には、x64 用（`x86_64-pc-windows-msvc`）と WebAssembly 用（`wasm32-unknown-unknown`）の部品も入っていたので、それも一緒に新しくなりました。
 - `rustup toolchain list` には、stable のほかに、貼り紙のために入れた版（1.90.0・1.99.0・1.99.1）が並びます。使わなくなった版は、`rustup toolchain uninstall 1.90.0` のように消せます。
@@ -3186,6 +3445,15 @@ x86
 True
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Get-ChildItem -Name`**（PowerShell）: `-Name` で、日付や大きさを出さずに、名前だけを一覧にします。
+> - **`Test-Path`**（PowerShell）: ファイルやフォルダがあるかを調べるコマンド。あれば `True`、無ければ `False` を返します。
+
+<!-- /first-use -->
+
 #### ▼ 1つずつ分解して解説
 
 ##### 解説1: 名前・版・MSVC の版
@@ -3225,6 +3493,15 @@ foreach ($path in $args) {
     "{0,-6} 0x{1:X4}  {2}" -f $name, $machine, $path
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`foreach`**（PowerShell）: PowerShell のくり返し。`foreach ($path in $args) { … }` は、`$args`（スクリプトに渡された値の並び）から 1 つずつ `$path` に入れて、中を動かします。
+> - **`Resolve-Path`**（PowerShell）: 相対の場所（`..\a.txt` など）を、`C:\` から始まる絶対の場所に変えるコマンド。`(Resolve-Path 場所).Path` で文字列として取り出せます。
+
+<!-- /first-use -->
 
 ```powershell
 rustc -vV
@@ -3282,6 +3559,15 @@ cargo build --target x86_64-pc-windows-msvc
 info: downloading component rust-std
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`rustup target`**（Rust の道具）: ほかの種類のパソコン（CPU・OS）向けに翻訳するための部品を足すコマンド。`rustup target add x86_64-pc-windows-msvc` で、x64 の Windows 用の実行ファイルを作れるようになります。
+> - **`.\target\x86_64-pc-windows-msvc\debug\hello.exe`**（PowerShell）: `--target x86_64-pc-windows-msvc` を付けて翻訳した時の実行ファイルを、直接動かす書き方。ほかの種類向けに翻訳した物は、`target\（種類の名前）\` の下にできます。
+
+<!-- /first-use -->
+
 ```text
    Compiling hello v0.1.0 (C:\Users\...\rust-study\hello)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.60s
@@ -3301,6 +3587,14 @@ rustup target list --installed
 debug
 x86_64-pc-windows-msvc
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Get-ChildItem -Directory`**（PowerShell）: `-Directory` で、フォルダだけを一覧にします（ファイルだけなら `-File`）。
+
+<!-- /first-use -->
 
 ```text
 aarch64-pc-windows-msvc
@@ -3332,6 +3626,14 @@ x64    0x8664  C:\Program Files\Git\usr\bin\bash.exe
 ARM64  0xAA64  C:\Program Files\Docker\Docker\resources\bin\docker.exe
 x64    0x8664  C:\Users\...\.fly\bin\fly.exe
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Get-Command`**（PowerShell）: コマンドがどこにあるか・何なのかを調べるコマンド。`(Get-Command rustc).Source` は、`rustc.exe` の場所を返します。入っているかを確かめる時に使います。
+
+<!-- /first-use -->
 
 - rustc・VS Code・Git・Docker のコマンドは ARM64 用でした。
 - Git に入っている `usr\bin\bash.exe`（Git Bash）は x64 用です。UNIT 01 で、Git Bash から開いた PowerShell が `AMD64` と答えたのは、このためです。
@@ -3541,6 +3843,14 @@ mod tests {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`pub`**（モジュール）: 「外から使ってよい」（公開）という印。`pub fn title_length(…)` は、ほかのファイル（モジュール）からも呼べる関数になります。付けないと、同じモジュールの中からしか使えません。
+
+<!-- /first-use -->
+
 ```powershell
 cargo check
 ```
@@ -3551,6 +3861,14 @@ cargo check
     Checking quality v0.1.0 (C:\Users\...\rust-study\quality)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.37s
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`cargo check`**（cargo のコマンド）: コードに間違いがないかだけを調べて、実行ファイルは作らないコマンド。`cargo build` より速いので、書きながら何度も打ちます。
+
+<!-- /first-use -->
 
 - `Checking quality` と出て、0.37 秒ほどで終わりました。`exit=0`（終了コード 0）は成功です。この本では、終了コードを `'exit=' + $LASTEXITCODE` で表示しています。
 - **3つの問題があるのに、check は通りました。** 型と文法は正しいからです。体裁・書き方・答えの間違いは、ほかの3つのコマンドで見つけます。
@@ -3575,6 +3893,14 @@ Diff in \\?\C:\Users\...\rust-study\quality\src\lib.rs:1:
      return title.len();
  }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`cargo fmt`**（cargo のコマンド）: コードの書き方（字下げ・空白・改行）を、決まった形に自動で整えるコマンド。`cargo fmt --check` は、整っているかを調べるだけで、ファイルは書きかえません。
+
+<!-- /first-use -->
 
 **▼ 実行結果**（`cargo fmt` のあとの `cargo fmt --check`）
 
@@ -3756,6 +4082,14 @@ mod tests {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.is_empty()`**（文字列）: 空（長さが 0）なら `true` を返すメソッド。文字列にも `Vec` にも使えます。`title.trim().is_empty()` は「空白を取ったら何も残らないか」を調べます。
+
+<!-- /first-use -->
+
 ```powershell
 cargo fmt --check; 'fmt: ' + $LASTEXITCODE
 cargo clippy -q -- -D warnings; 'clippy: ' + $LASTEXITCODE
@@ -3831,6 +4165,14 @@ info: downloading 3 components
 
 info: checking for self-update (current version: 1.29.2)
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`cargo +1.99.0`**（cargo のコマンド）: `+版` を付けると、その版の Rust で cargo を動かします。`cargo +1.99.0 fmt --check` は、Rust 1.99.0 の `rustfmt` で調べます（その版が `rustup` で入っている必要があります）。
+
+<!-- /first-use -->
 
 ```text
 error: 'cargo-fmt.exe' is not installed for the toolchain '1.99.0-aarch64-pc-windows-msvc'.
@@ -3974,6 +4316,14 @@ info: downloading 2 components
 wsl --install
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`wsl`**（WSL・bash）: WSL（Windows の中で Linux を動かす仕組み）を操作するコマンド。`wsl --install` で入れ、`wsl` だけで Linux の画面（bash）に入ります。
+
+<!-- /first-use -->
+
 この本の PC には、WSL2 と Ubuntu 24.04 が入っていました。
 
 ```powershell
@@ -4076,6 +4426,20 @@ count "$PWD" "Windows 側（$PWD）"
 count "$HOME" "Linux 側（$HOME）"
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`rm`**（WSL・bash）: ファイルやフォルダを消すコマンド（Linux）。`rm -rf フォルダ` は、中身ごと、確かめずに消します（`-r` は中まで、`-f` は聞かずに）。とても強いので、名前をよく確かめて使います。
+> - **`return`**（WSL・bash）: bash の関数の中で、その関数を終える命令。`cd 場所 || return` は「`cd` に失敗したら、そこで関数を終える」という意味です（`||` は「左が失敗した時だけ右をする」）。
+> - **`s=$`**（WSL・bash）: bash で変数に値を入れる書き方。`s=$(date +%s%N)` は、`$( )` の中のコマンド（今の時刻）を動かした結果を、変数 `s` に入れます。`=` の前後に空白を入れてはいけません。
+> - **`date`**（WSL・bash）: 今の日時を表示するコマンド（Linux）。`date +%s%N` は「1970 年からの秒数＋ナノ秒」の形で出します（時間を測るのに使います）。
+> - **`seq`**（WSL・bash）: 数の並びを出すコマンド（Linux）。`seq 1 2000` は 1 から 2000 まで、1 行に 1 つずつ出します。
+> - **`do`**（WSL・bash）: bash のくり返し `for 変数 in 並び; do … ; done` の一部。`do` から `done` までが、くり返す中身です。
+> - **`e=$`**（WSL・bash）: `s=$(…)` と同じく、bash で変数に値を入れる書き方。ここでは終わりの時刻を `e` に入れ、`s` との差で、かかった時間を計算します。
+
+<!-- /first-use -->
+
 ```powershell
 cd ~\rust-study
 wsl -d Ubuntu -- bash speed.sh
@@ -4115,6 +4479,15 @@ docker run --rm hello-world
 Client: 29.3.1 windows/arm64
 Server: 29.3.1 linux/arm64
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`docker version`**（Docker）: Docker（アプリを、決まった環境ごと箱に入れて動かす道具）の版を表示します。表示されれば、Docker が動いています。
+> - **`docker run`**（Docker）: イメージ（箱の設計図）から、コンテナ（動いている箱）を作って動かすコマンド。`docker run --rm hello-world` は、試しの箱を動かして、終わったら消します（`--rm`）。
+
+<!-- /first-use -->
 
 ```text
 Unable to find image 'hello-world:latest' locally
@@ -4159,6 +4532,14 @@ docker image ls --format '{{.Repository}}:{{.Tag}} {{.Size}}' hello-world
 ```text
 aarch64
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`docker image`**（Docker）: 手元にあるイメージ（箱の設計図）を見る・消すコマンド。`docker image ls` で一覧を出します。
+
+<!-- /first-use -->
 
 ```text
 Unable to find image 'debian:trixie-slim' locally
@@ -4351,6 +4732,14 @@ where.exe topcoat
 topcoat --help
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`cargo install`**（cargo のコマンド）: Rust で作られた道具（コマンド）を、パソコンに入れるコマンド。`cargo install topcoat-cli --version 0.11.0 --locked` は、Topcoat の道具 `topcoat` を、決まった版で入れます。
+
+<!-- /first-use -->
+
 この本では、PC のいつもの Rust とは別の置き場（`rsb`）の Rust で試しました（UNIT 04 の `rust-try` と同じ考え方です）。
 
 **▼ 実行結果**（`cargo install`。最初と最後の行だけ）
@@ -4507,6 +4896,27 @@ async fn home() -> Result<impl View> {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`module_router!`**（Topcoat）: Topcoat のマクロ。Rust のモジュール（ファイル）の並びを、そのまま URL の並びにしたルーター（URL ごとに、どの関数に答えさせるかの名簿）を作ります（第6巻 UNIT 03）。
+> - **`view!`**（Topcoat）: Topcoat のマクロ。中に HTML をほぼそのままの形で書いて、画面（`View`）を作ります。文字は `"…"` で囲み、Rust の値は `(値)` で埋め込みます。埋め込んだ文字の `<` などは、自動で安全な形に置きかえられます（第6巻 UNIT 05）。
+> - **`asset!`**（Topcoat）: Topcoat のマクロ。CSS や画像などのファイル（アセット）を「このファイルを配る」と宣言し、ブラウザーから読める URL を作ります。`asset!("styles.css")` を、`<link>` の `href` などに入れて使います（第6巻 UNIT 08）。
+> - **`async`**（非同期）: 「待つ所で、ほかの仕事に順番をゆずれる関数」にする印。`async fn root(…)` のように付けます。呼ぶ側は `.await` で結果を待ちます。Web サーバーが、たくさんの人を同時にさばけるのは、この仕組みのおかげです（第5巻）。
+> - **`impl`**（型とメソッド）: 2 つの使い方があります。① `impl 型 { … }` で、その型にメソッド（関数）を付ける。② `impl View` のように型の場所に書くと、「`View` の機能を持つ何かの型」という意味になります（戻り値の型を細かく書かずに済む）。
+> - **`#[layout]`**（Topcoat）: Topcoat の印（属性）。この関数を「どのページにも共通の外枠（HTML の骨組み・メニュー）」にします。外枠の中の、ページが入る場所を `slot` で受け取ります（第6巻 UNIT 03）。
+> - **`#[page]`**（Topcoat）: Topcoat の印（属性）。この関数を、1 つの URL に答える「ページ」にします。`#[page("/")]` なら `/` に、`#[page(POST)]` なら送信（POST）に答えます（第6巻 UNIT 02〜03）。
+> - **`.build()`**（型とメソッド）: 設定を少しずつ足していく「組み立て係」（ビルダー）の最後に呼んで、でき上がった物を作るメソッド。`Router::builder()…build()` の形で、ルーターなどを作る時に使います。
+> - **`topcoat::dev::script()`**（Topcoat）: `topcoat dev` で動かしている時だけ、「コードを直したら、ブラウザーを自動で読み直す」ための小さなスクリプトを、ページに入れる関数。`cargo run` や本番では何も出しません（第6巻 UNIT 08）。
+> - **`AssetBundle`**（Topcoat）: Topcoat の型。`topcoat asset bundle` で作った「アセットの束」（名前にハッシュが付いたファイルと目録）を、`AssetBundle::load()` で読み込んで、配れるようにします（第6巻 UNIT 08）。
+> - **`RouterBuilderAssetExt`**（Topcoat）: Topcoat のトレイト（機能のまとまり）。`use` しておくと、ルーターを組み立てる時に、アセット（CSS など）を配る設定のメソッドが使えるようになります。
+> - **`Router`**（Topcoat）: URL とメソッド（GET・POST）ごとに、どの関数に答えさせるかを決めた名簿（ルーター）。Topcoat のサーバーは、来た頼み（リクエスト）をこの名簿で振り分けます（第6巻 UNIT 03）。
+> - **`View`**（Topcoat）: Topcoat の「画面（HTML になる物）」の型（トレイト）。ページの関数は `Result<impl View>`（HTML になる何かを返す。失敗することもある）を返します。
+> - **`DOCTYPE`**（HTML）: `<!DOCTYPE html>` は、「この文書は HTML5 です」とブラウザーに伝える、HTML の先頭の決まった 1 行です。
+
+<!-- /first-use -->
+
 - `Cargo.toml` には `topcoat = { version = "0.11.0", … }` と、非同期の部品の `tokio` が書かれています。
 - `src\app.rs` の `#[page] async fn home()` が、トップページ（`/`）です。`view! { … }` の中に、HTML の形でページを書きます（第6巻）。`asset!("styles.css")` は、`styles.css` を束に入れて、その URL を書き込む、という意味です。
 - `Next steps` のとおり、次は `cd hello-topcoat` と `topcoat dev` です。
@@ -4627,6 +5037,14 @@ curl.exe -s http://127.0.0.1:3000/
 cargo +1.90.0 check
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`cargo +1.90.0`**（cargo のコマンド）: `+1.90.0` で、Rust 1.90.0 を使って cargo を動かします。古い版で動くかを確かめる時に使います（その版が入っていないと、エラーになります）。
+
+<!-- /first-use -->
+
 ```text
 error: rustc 1.90.0 is not supported by the following packages:
   rustnote@0.1.0 requires rustc 1.99
@@ -4647,6 +5065,14 @@ error: rustc 1.90.0 is not supported by the following packages:
 ```powershell
 .\target\debug\hello-topcoat.exe
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.\target\debug\hello-topcoat.exe`**（PowerShell）: `cargo build` で作った Topcoat のアプリの実行ファイルを、直接動かす書き方。サーバーなので、止めるまで動き続けます（止める時は `Ctrl` ＋ `C`）。
+
+<!-- /first-use -->
 
 ```text
 
@@ -4781,6 +5207,14 @@ wsl
 curl -sSfL https://get.tur.so/install.sh | bash
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`curl`**（WSL・bash）: URL にアクセスするコマンド（Linux・WSL 版）。`curl -sSfL URL | bash` は、URL から取ってきたスクリプトを、そのまま bash で動かします（`-s` 静かに・`-S` エラーは出す・`-f` 失敗を見逃さない・`-L` 移動先を追う）。中身を確かめずに動かすことになるので、信頼できる所の物だけに使います。
+
+<!-- /first-use -->
+
 `curl … | bash` は、「インターネットから取ってきたスクリプトを、そのまま動かす」という意味です。動かす前に、中身を読んでおくのが安全です。この本で、スクリプト（191 行）を取ってきて読むと、次のことをしていました。
 
 - `uname -m` と `uname -s` で、CPU（`aarch64` なら arm64）と OS（Linux）を調べる
@@ -4808,6 +5242,14 @@ curl.exe -s http://127.0.0.1:8080/version
 ```text
 6c6d2042c2bbde64b90c7b5e0725ccd27e4c8a6de90d6b2eefada6b37816df7c
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`docker ps`**（Docker）: 動いているコンテナ（箱）の一覧を出すコマンド。`--filter name=…` で名前で絞り、`--format` で表示する項目を選べます。
+
+<!-- /first-use -->
 
 ```text
 ghcr.io/tursodatabase/libsql-server:latest  Up 1 second  0.0.0.0:8080->8080/tcp, [::]:8080->8080/tcp
@@ -4912,6 +5354,20 @@ Invoke-RestMethod -Method Post -Uri http://127.0.0.1:8080/ -Body $body -ContentT
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Invoke-RestMethod`**（PowerShell）: URL にアクセスして、返ってきた JSON などを PowerShell で扱える形にして受け取るコマンド。API を試す時に使います（短い呼び名は `irm`）。
+> - **`Invoke-RestMethod -Method`**（PowerShell）: `-Method Post` で、送る方法（GET・POST など）を指定します。指定しないと GET です。
+> - **`Invoke-RestMethod -Uri`**（PowerShell）: `-Uri URL` で、アクセスする先の URL を指定します。
+> - **`Invoke-RestMethod -Body`**（PowerShell）: `-Body 中身` で、送る中身（JSON の文字列など）を指定します。
+> - **`Invoke-RestMethod -ContentType`**（PowerShell）: `-ContentType application/json` で、送る中身の種類（ここでは JSON）をサーバーに伝えます。
+> - **`ConvertTo-Json`**（PowerShell）: PowerShell の値（オブジェクト）を、JSON の文字列に変えるコマンド。受け取った結果を JSON の形で見たい時にも使います。
+> - **`ConvertTo-Json -Depth`**（PowerShell）: `-Depth 5` で、中に入れ子になった物を何段目まで JSON にするかを決めます（既定は 2 段で、それより深い所は省かれます）。
+
+<!-- /first-use -->
+
 #### ▼ 1つずつ分解して解説
 
 ##### 解説1: 起動のときのマイグレーション
@@ -4989,6 +5445,19 @@ RustNote を起動しました: http://127.0.0.1:3000
 Get-ChildItem -Name | Where-Object { $_ -like '127*' }
 Get-Item .\127.0.0.1 -Stream * | Select-Object Stream, Length | Format-Table -AutoSize
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Where-Object`**（PowerShell）: `|` で流れてきた物のうち、条件に合う物だけを残すコマンド。`{ }` の中の `$_` が「今の 1 つ」です。`Where-Object { $_.Length -gt 1000 }` のように使います。
+> - **`Where-Object -like`**（PowerShell）: `-like '127*'` は、「`127` で始まる」のように、`*`（何文字でも）を使った形と比べる比べ方です。
+> - **`Get-Item`**（PowerShell）: ファイルやフォルダ 1 つの情報（名前・大きさ・日時）を取り出すコマンド。
+> - **`Get-Item -Stream`**（PowerShell）: `-Stream *` で、ファイルに付いている「隠れた別の中身」（代替データストリーム。ダウンロードした印などが入る）の一覧を出します。
+> - **`Format-Table`**（PowerShell）: 結果を表の形に整えて表示するコマンド。
+> - **`Format-Table -AutoSize`**（PowerShell）: `-AutoSize` で、列の幅を中身に合わせて自動で決めます（長い値が `...` で切られにくくなります）。
+
+<!-- /first-use -->
 
 ```text
 127.0.0.1
@@ -5141,6 +5610,14 @@ error: process didn't exit successfully: `C:\Users\...\t06build\release\rustnote
 pwsh -Command "iwr https://fly.io/install.ps1 -useb | iex"
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`pwsh`**（PowerShell）: PowerShell 7（新しい PowerShell）を動かすコマンド。Windows に最初から入っているのは Windows PowerShell 5.1（`powershell`）です。`pwsh -Command "…"` で、1 つの命令を PowerShell 7 で動かします。
+
+<!-- /first-use -->
+
 この本の PC には、すでに flyctl v0.5.1 が入っていたので、版を確かめた結果だけを載せます。
 
 ```powershell
@@ -5157,6 +5634,14 @@ C:\Users\...\.fly\bin\fly.exe
 C:\Users\...\.fly\bin\flyctl.exe
 x64    0x8664  C:\Users\...\.fly\bin\fly.exe
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`fly version`**（Fly.io）: Fly.io（アプリをインターネットに公開するサービス）の道具 `fly` の版を表示します（第12巻）。
+
+<!-- /first-use -->
 
 #### ▼ 1つずつ分解して解説
 
@@ -5270,6 +5755,16 @@ if ($failed -gt 0) {
 Write-Host "全部 OK"
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`Write-Host`**（PowerShell）: 画面に文字を表示するコマンド。`Write-Output` と違い、次のコマンドへは流れず、画面に出すだけです。色を付ける（`-ForegroundColor Green`）こともできます。
+> - **`try`**（PowerShell）: PowerShell で、失敗するかもしれない処理を `try { … } catch { … }` で囲み、失敗した時の処理を `catch` に書く書き方。
+> - **`exit`**（PowerShell）: スクリプトを終えるコマンド。`exit 1` は、終了コード 1（失敗）でスクリプトを終えます。
+
+<!-- /first-use -->
+
 ```powershell
 cd （RustNote のフォルダ）
 powershell -ExecutionPolicy Bypass -File $HOME\rust-study\doctor.ps1
@@ -5297,6 +5792,14 @@ OK  flyctl                 fly.exe v0.5.1 windows/amd64
 全部 OK
 終了コード: 0
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`powershell`**（PowerShell）: Windows PowerShell 5.1 を動かすコマンド。`powershell -ExecutionPolicy Bypass -File スクリプト.ps1` は、実行ポリシーをその 1 回だけ気にせずに、スクリプトを動かします。
+
+<!-- /first-use -->
 
 #### ▼ 1つずつ分解して解説
 
