@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>README</title>
+<style>
+
+@page {
+  size: A4;
+  margin: 18mm 16mm 20mm 16mm;
+  @bottom-right {
+    content: counter(page);
+    font-size: 10px;
+    color: #64748b;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  font-family: "Yu Gothic UI", "Yu Gothic", "Meiryo", "Hiragino Sans",
+               "Noto Sans JP", "Segoe UI", system-ui, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.75;
+  color: #1e293b;
+  background: #ffffff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #0f172a;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 1.4em 0 0.6em;
+  page-break-after: avoid;
+}
+h1 {
+  font-size: 22pt;
+  border-bottom: 3px solid #1e40af;
+  padding-bottom: 0.3em;
+  margin-top: 0.4em;
+  page-break-before: auto;
+}
+h2 {
+  font-size: 16pt;
+  border-bottom: 1.5px solid #cbd5e1;
+  padding-bottom: 0.25em;
+  margin-top: 1.6em;
+}
+h3 { font-size: 13pt; color: #1e40af; }
+h4 { font-size: 12pt; color: #334155; }
+
+p { margin: 0.5em 0 0.8em; }
+
+a { color: #1d4ed8; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+ul, ol { margin: 0.4em 0 0.9em; padding-left: 1.6em; }
+li { margin: 0.2em 0; }
+
+blockquote {
+  border-left: 4px solid #3b82f6;
+  background: #eff6ff;
+  margin: 0.8em 0;
+  padding: 0.6em 1em;
+  color: #1e3a8a;
+  border-radius: 0 6px 6px 0;
+  page-break-inside: avoid;
+}
+blockquote p { margin: 0.3em 0; }
+blockquote strong { color: #1e40af; }
+
+code {
+  /* DefCode (see _code_font.py) has ASCII and Japanese in ONE font, so a code
+     line is drawn as one text run and copies as one line in every PDF viewer. */
+  font-family: "Consolas", "Consolas", monospace;
+  font-size: 0.9em;
+  background: #f1f5f9;
+  color: #be123c;
+  padding: 0.12em 0.36em;
+  border-radius: 4px;
+  /* Long inline code (file paths / URLs) must break instead of overflowing. */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  /* In a PDF there is no horizontal scrolling, so long lines must wrap
+     instead of being clipped off the right edge of the page. */
+  overflow-x: hidden;
+  overflow-y: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  font-size: 9.2pt;
+  line-height: 1.5;
+  margin: 0.8em 0;
+  page-break-inside: avoid;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+  white-space: inherit;
+  word-break: inherit;
+  overflow-wrap: inherit;
+}
+
+/* The codehilite extension wraps highlighted blocks in a scrolling div; make
+   that wrap too so nothing is clipped in the PDF. */
+.codehilite {
+  overflow-x: hidden;
+  /* overflow-x: hidden alone turns overflow-y into auto, and a glyph from a
+     fallback font that is a hair too tall then shows a vertical scrollbar. */
+  overflow-y: hidden;
+}
+.codehilite pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* No per-token colours: every coloured token became its own text run (and its
+   own tag) in the PDF, and some viewers then pasted each token on its own line.
+   Only whole comment lines get a colour, so each line is still one run. */
+pre .cmt { color: #94a3b8; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.8em 0;
+  font-size: 9.6pt;
+  page-break-inside: avoid;
+}
+th, td {
+  border: 1px solid #e2e8f0;
+  padding: 6px 9px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: #f1f5f9;
+  color: #0f172a;
+  font-weight: 700;
+}
+tr:nth-child(even) td { background: #f8fafc; }
+
+img { max-width: 100%; height: auto; }
+
+hr {
+  border: none;
+  border-top: 1px dashed #cbd5e1;
+  margin: 1.6em 0;
+}
+
+/* Diagram blocks (the inline-styled <div>s in the source) */
+div[style] {
+  page-break-inside: avoid;
+}
+
+/* Tighten spacing right after headings */
+h1 + p, h2 + p, h3 + p, h4 + p { margin-top: 0.2em; }
+
+/* Avoid ugly page breaks inside list items / table rows */
+li, tr { page-break-inside: avoid; }
+
+@media screen {
+  body { max-width: 920px; margin: 0 auto; padding: 20px 20px 120px; font-size: 16px; }
+  pre { white-space: pre !important; word-break: normal !important; overflow-wrap: normal !important;
+        overflow-x: auto !important; font-size: 14px !important; }
+  img { max-width: 100%; height: auto; }
+}
+.web-bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; font-size: 14px;
+  padding: 8px 12px; margin-bottom: 16px; background: #eef2f7; border-radius: 8px; }
+.web-bar a { color: #1e3a5f; }
+.web-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 10; max-width: 90%;
+  font-size: 15px; font-weight: 700; background: #fff7ed; border: 2px solid #f2994a; border-radius: 8px;
+  padding: 10px 16px; margin: 0; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.paste-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 11; width: 640px;
+  max-width: calc(100% - 32px); box-sizing: border-box; font-size: 15px; line-height: 1.7; background: #ecfdf5;
+  border: 2px solid #27ae60; border-radius: 8px; padding: 12px 40px 12px 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.18); }
+.paste-note[hidden] { display: none; }
+.paste-note button { position: absolute; top: 4px; right: 6px; border: 0; background: transparent; font-size: 20px;
+  line-height: 1; cursor: pointer; color: #1f2937; padding: 4px 6px; }
+.code-wrap { position: relative; scroll-margin-top: 16px; }
+.code-wrap pre { padding-top: 40px !important; }
+.copy-btn { position: absolute; top: 8px; right: 8px; z-index: 2; font-size: 13px; font-weight: 700;
+  padding: 4px 12px; border: 0; border-radius: 6px; background: #2f80ed; color: #fff; cursor: pointer;
+  font-family: inherit; }
+.copy-btn:hover { background: #1c64c8; }
+.copy-btn.done { background: #27ae60; }
+.code-wrap:target pre { outline: 4px solid #f2994a; outline-offset: 2px; }
+.code-wrap:target .copy-btn { box-shadow: 0 0 0 4px #f2994a; }
+/* syntax colours on screen (the PDF uses one colour so that each line copies as one piece) */
+.codehilite .k, .codehilite .kd, .codehilite .kn, .codehilite .kr { color: #c084fc; }
+.codehilite .s, .codehilite .s1, .codehilite .s2, .codehilite .sb { color: #fcd34d; }
+.codehilite .c, .codehilite .c1, .codehilite .cm { color: #94a3b8; }
+.codehilite .nf, .codehilite .nx { color: #60a5fa; }
+.codehilite .nb { color: #34d399; }
+.codehilite .mi, .codehilite .mf { color: #f472b6; }
+.codehilite .nt { color: #f59e0b; }
+.codehilite .na { color: #93c5fd; }
+</style>
+</head>
+<body>
+<div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/README.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、PDF を見ていた画面に戻ります（ブラウザーで PDF を見ていた時は「戻る」、VS Code で見ていた時は VS Code の窓に切り替えます）。</p><div class="paste-note" id="paste-note" role="status" hidden><button type="button" aria-label="閉じる">×</button><b>複数の行をコピーしました。</b>貼り付けた時に、次の確認が出ることがあります。どちらもエラーではなく、知らないうちにコマンドが動かないようにするための安全の確認です。<br>・コマンド プロンプトや PowerShell の窓（Windows Terminal）:「<b>複数の行を含むテキストを貼り付けようとしています。</b>…続行してもよろしいですか?」→ <b>「強制的に貼り付け」</b>を押す<br>・VS Code のターミナル:「<b>○ 行のテキストをターミナルに貼り付けますか?</b>」→ <b>「貼り付け」</b>を押す（「1 行として貼り付け」は、何行もの文字を 1 行にまとめて貼る物なので、押さないでください）</div><h1 id="_1">業務工数システム 引き継ぎ教育資料</h1>
+<p>このフォルダ（<code>docs/</code>）には、本Webアプリ「業務工数システム」を <strong>作成・運用・保守</strong> していくために必要な知識を、<strong>プログラミング完全初心者</strong> でも学べるようにまとめた教育資料が入っています。</p>
+<hr>
+<h2 id="0">0. この資料の対象読者</h2>
+<ul>
+<li>これまでプログラミングをほとんど（あるいは全く）やったことがない方</li>
+<li>このアプリの保守・運用を引き継ぐことになった方</li>
+<li>「何から手をつければいいか分からない」という状態の方</li>
+</ul>
+<p>専門用語には初出のときに必ず説明を入れています。サンプルコードは原則 <strong>1行ずつコメント</strong> を付けています。分からない単語が出てきたら、まず巻末の「<a href="10_用語集.html">10_用語集</a>」を引いてください。</p>
+<hr>
+<h2 id="1-30">1. このアプリは何をするもの？（30秒で理解）</h2>
+<p>工場などの現場で、従業員が <strong>「いつ・どの作業に・何時間使ったか（＝工数）」</strong> を記録・集計するためのWebアプリです。</p>
+<ul>
+<li>従業員が自分の作業時間を入力する</li>
+<li>休憩時間を差し引いて正味の工数を自動計算する</li>
+<li>班（チーム）単位・ショップ（職場）単位で集計・グラフ表示する</li>
+<li>管理者がデータのバックアップ・復元、操作履歴の確認を行う</li>
+</ul>
+<p>詳しくは「<a href="00_導入と全体像.html">00_導入と全体像</a>」で説明します。</p>
+<hr>
+<h2 id="2">2. 技術構成（ざっくり）</h2>
+<div class="codehilite"><div class="code-wrap" id="code-1"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>        ブラウザ（利用者）
+            │  画面操作
+            ▼
+┌───────────────────────────┐
+│ フロントエンド             │  React + TypeScript
+│ （見た目・画面の動き）       │  ＝ frontend/ フォルダ
+└───────────────────────────┘
+            │  API通信（HTTP / JSON）
+            ▼
+┌───────────────────────────┐
+│ バックエンド               │  Django + Django REST Framework
+│ （データ処理・業務ロジック） │  ＝ kosu/ ・ hozen_another/ フォルダ
+└───────────────────────────┘
+            │  SQL
+            ▼
+┌───────────────────────────┐
+│ データベース               │  PostgreSQL
+│ （データの保存場所）         │
+└───────────────────────────┘
+</code></pre></div></div>
+
+<p>「フロントエンド」「バックエンド」「API」などの言葉が分からなくても大丈夫です。後の資料で順を追って説明します。</p>
+<hr>
+<h2 id="3">3. 資料の一覧と読む順番</h2>
+<p><strong>上から順番に読む</strong> ことを強くおすすめします。前の資料の知識を前提に書いています。</p>
+<table>
+<thead>
+<tr>
+<th>No.</th>
+<th>ファイル</th>
+<th>内容</th>
+<th style="text-align: center;">重要度</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>00a</td>
+<td><a href="00a_はじめての方へ_超入門.html">00a_はじめての方へ_超入門.md</a></td>
+<td><strong>完全初心者の最初の一歩</strong>。ファイル/フォルダ/パス/ターミナル/コマンド/ブラウザの超基礎</td>
+<td style="text-align: center;">★★★</td>
+</tr>
+<tr>
+<td>00</td>
+<td><a href="00_導入と全体像.html">00_導入と全体像.md</a></td>
+<td>アプリの目的・全体構造・<strong>なぜこの技術を選んだか</strong>（技術選定理由）</td>
+<td style="text-align: center;">★★★</td>
+</tr>
+<tr>
+<td>01</td>
+<td><a href="01_環境構築.html">01_環境構築.md</a></td>
+<td>VSCode・Git・Node.js・Python・PostgreSQLの導入、GitHubからのクローン、起動手順</td>
+<td style="text-align: center;">★★★</td>
+</tr>
+<tr>
+<td>02</td>
+<td><a href="02_Git_GitHub.html">02_Git_GitHub.md</a></td>
+<td>バージョン管理の基礎、毎日使うGitコマンド、GitHub運用</td>
+<td style="text-align: center;">★★★</td>
+</tr>
+<tr>
+<td>03</td>
+<td><a href="03_Web基礎_HTML_CSS.html">03_Web基礎_HTML_CSS.md</a></td>
+<td>Webページの仕組み、HTML・CSSの基礎、本アプリでの使われ方</td>
+<td style="text-align: center;">★★</td>
+</tr>
+<tr>
+<td>04</td>
+<td><a href="04_JavaScript_TypeScript.html">04_JavaScript_TypeScript.md</a></td>
+<td>JavaScript・TypeScriptの基礎、本アプリで多用する書き方</td>
+<td style="text-align: center;">★★★</td>
+</tr>
+<tr>
+<td>05</td>
+<td><a href="05_React_フロントエンド.html">05_React_フロントエンド.md</a></td>
+<td>Reactの考え方、本アプリのフロント構造（ルーティング・API通信・画面）</td>
+<td style="text-align: center;">★★★</td>
+</tr>
+<tr>
+<td>06</td>
+<td><a href="06_Python基礎.html">06_Python基礎.md</a></td>
+<td>Pythonの基礎、本アプリのコードを読むための知識</td>
+<td style="text-align: center;">★★★</td>
+</tr>
+<tr>
+<td>07</td>
+<td><a href="07_Django_バックエンド.html">07_Django_バックエンド.md</a></td>
+<td>Django・DRFの仕組み、本アプリのAPI・非同期処理・履歴記録</td>
+<td style="text-align: center;">★★★</td>
+</tr>
+<tr>
+<td>08</td>
+<td><a href="08_データベースとモデル.html">08_データベースとモデル.md</a></td>
+<td>データベース設計、各テーブル（モデル）の意味、業務ルール</td>
+<td style="text-align: center;">★★★</td>
+</tr>
+<tr>
+<td>09</td>
+<td><a href="09_運用_保守_デプロイ.html">09_運用_保守_デプロイ.md</a></td>
+<td>日々の運用、バックアップ・復元、Azureへのデプロイ、障害対応</td>
+<td style="text-align: center;">★★★</td>
+</tr>
+<tr>
+<td>10</td>
+<td><a href="10_用語集.html">10_用語集.md</a></td>
+<td>この資料に出てくる用語の早見表</td>
+<td style="text-align: center;">★★</td>
+</tr>
+<tr>
+<td>11</td>
+<td><a href="11_使用技術ライブラリ全カタログ.html">11_使用技術ライブラリ全カタログ.md</a></td>
+<td>使用している<strong>全ライブラリ</strong>の解説。未使用（レガシー）候補も正直に明記</td>
+<td style="text-align: center;">★★</td>
+</tr>
+<tr>
+<td>12</td>
+<td><a href="12_テストの書き方と実行.html">12_テストの書き方と実行.md</a></td>
+<td>フロント(Vitest)・バック(Django)の自動テストの読み方・書き方・実行</td>
+<td style="text-align: center;">★★</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="4">4. 学習ロードマップ（目安）</h2>
+<p>完全初心者を想定した、無理のない進め方の目安です。<strong>焦らず、手を動かしながら</strong> 進めてください。</p>
+<h3 id="112">フェーズ1：まず動かす（1〜2週間）</h3>
+<ol start="0">
+<li>パソコン操作に不安があれば、まず <code>00a</code>（超入門）を読む</li>
+<li><code>00</code> を読んで全体像をつかむ（理解できなくてもOK、雰囲気をつかむ）</li>
+<li><code>01</code> を読みながら、自分のPCに開発環境を作る</li>
+<li><code>02</code> を読みながら、GitHubからコードを取得（クローン）できるようにする</li>
+<li>アプリをローカル（自分のPC）で起動して、画面を触ってみる</li>
+</ol>
+<blockquote>
+<p>✅ ゴール：自分のPCで <code>npm start</code> と <code>python manage.py runserver</code> を実行し、ブラウザでアプリが表示できる。</p>
+</blockquote>
+<h3 id="224">フェーズ2：言語の基礎（2〜4週間）</h3>
+<ol start="5">
+<li><code>03</code>（HTML/CSS）→ <code>04</code>（JS/TS）→ <code>06</code>（Python）を読む</li>
+<li>実際のコードを開いて「これはあの文法だな」と照らし合わせる</li>
+</ol>
+<blockquote>
+<p>✅ ゴール：本アプリのコードを開いたとき、「何が書いてあるか雰囲気が読める」。</p>
+</blockquote>
+<h3 id="336">フェーズ3：フレームワークと本アプリの構造（3〜6週間）</h3>
+<ol start="7">
+<li><code>05</code>（React）と <code>07</code>（Django）を読む</li>
+<li><code>08</code>（データベース・モデル）でデータ構造を理解する</li>
+<li>小さな修正（文言の変更など）を試してみる</li>
+</ol>
+<blockquote>
+<p>✅ ゴール：「この画面のこの文字を変えたい」を自力で実現できる。</p>
+</blockquote>
+<h3 id="4_1">フェーズ4：運用・保守(継続)</h3>
+<ol start="10">
+<li><code>09</code> を読み、バックアップ・復元・デプロイを実際に練習する</li>
+</ol>
+<blockquote>
+<p>✅ ゴール：本番環境を壊さずに、運用作業とリリースができる。</p>
+</blockquote>
+<hr>
+<h2 id="5">5. この資料の使い方のコツ</h2>
+<ul>
+<li><strong>分からない単語はすぐ調べる</strong>：まず <code>10_用語集</code> 、なければ検索（「○○ とは」で調べると初心者向け解説が出ます）。</li>
+<li><strong>コードは写経する</strong>：読むだけでなく、自分で打ち込むと身につきます。</li>
+<li><strong>壊しても大丈夫な環境で練習する</strong>：ローカル環境やテスト用データで試し、いきなり本番を触らない（理由は <code>09</code> で説明）。</li>
+<li><strong>エラーは敵ではない</strong>：エラーメッセージは「どこが悪いか」を教えてくれる味方です。メッセージをそのまま検索しましょう。</li>
+</ul>
+<hr>
+<h2 id="6-pdf">6. PDF版について</h2>
+<p>各 <code>.md</code>（マークダウン）ファイルは、<code>docs/pdf/</code> フォルダに <strong>PDF版</strong> も用意してあります（紙に印刷したり、タブレットで読んだりするとき用）。</p>
+<p>PDFを作り直したい場合の手順は「<a href="09_運用_保守_デプロイ.html">09_運用_保守_デプロイ.md</a>」の末尾、または <code>docs/tools/</code> の中の変換スクリプトを参照してください。</p>
+<hr>
+<h2 id="7">7. 困ったときの連絡先・情報源</h2>
+<ul>
+<li>アプリ内の「問い合わせ」機能（<code>InquirPage</code>）で、過去の質問・回答が確認できます。</li>
+<li>コードの全体方針は、プロジェクト直下の <code>CLAUDE.md</code> にも記載があります。</li>
+<li>それでも解決しない場合は、前任者・社内のIT担当者に相談してください。</li>
+</ul>
+<p>それでは、「<a href="00_導入と全体像.html">00_導入と全体像.md</a>」から始めましょう。</p>
+
+<script>
+(function () {
+  // The old way (a hidden text box + execCommand) works where the clipboard API is refused.
+  function copyOld(text) {
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.top = "0"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      var ok = false;
+      try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      ok ? resolve() : reject();
+    });
+  }
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text).catch(function () { return copyOld(text); });
+    }
+    return copyOld(text);
+  }
+  var pasteNote = document.getElementById("paste-note");
+  var pasteTimer = null;
+  function showPasteNote() {
+    if (!pasteNote) { return; }
+    var webNote = document.getElementById("web-note");
+    if (webNote) { webNote.hidden = true; }
+    pasteNote.hidden = false;
+    clearTimeout(pasteTimer);
+    pasteTimer = setTimeout(function () { pasteNote.hidden = true; }, 15000);
+  }
+  if (pasteNote) {
+    pasteNote.querySelector("button").addEventListener("click", function () { pasteNote.hidden = true; });
+  }
+  document.querySelectorAll(".copy-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var pre = btn.parentElement.querySelector("pre");
+      var text = pre.textContent.replace(/\n$/, "");
+      copyText(text).then(function () {
+        btn.textContent = "コピーしました";
+        btn.classList.add("done");
+        setTimeout(function () { btn.textContent = "コピー"; btn.classList.remove("done"); }, 2000);
+        if (text.indexOf("\n") >= 0) { showPasteNote(); }
+      }, function () {
+        // could not write to the clipboard: select the code so that Ctrl+C copies it (lines are kept)
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        var range = document.createRange();
+        range.selectNodeContents(pre.querySelector("code") || pre);
+        sel.addRange(range);
+        btn.textContent = "選びました。Ctrl＋C を押してください";
+      });
+    });
+  });
+  if (/^#code-\d+$/.test(location.hash)) {
+    var note = document.getElementById("web-note");
+    if (note) { note.hidden = false; }
+  }
+})();
+</script>
+</body>
+</html>
