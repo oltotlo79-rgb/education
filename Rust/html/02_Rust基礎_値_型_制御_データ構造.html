@@ -182,6 +182,12 @@ li, tr { page-break-inside: avoid; }
 .web-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 10; max-width: 90%;
   font-size: 15px; font-weight: 700; background: #fff7ed; border: 2px solid #f2994a; border-radius: 8px;
   padding: 10px 16px; margin: 0; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.paste-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 11; width: 640px;
+  max-width: calc(100% - 32px); box-sizing: border-box; font-size: 15px; line-height: 1.7; background: #ecfdf5;
+  border: 2px solid #27ae60; border-radius: 8px; padding: 12px 40px 12px 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.18); }
+.paste-note[hidden] { display: none; }
+.paste-note button { position: absolute; top: 4px; right: 6px; border: 0; background: transparent; font-size: 20px;
+  line-height: 1; cursor: pointer; color: #1f2937; padding: 4px 6px; }
 .code-wrap { position: relative; scroll-margin-top: 16px; }
 .code-wrap pre { padding-top: 40px !important; }
 .copy-btn { position: absolute; top: 8px; right: 8px; z-index: 2; font-size: 13px; font-weight: 700;
@@ -203,7 +209,7 @@ li, tr { page-break-inside: avoid; }
 </style>
 </head>
 <body>
-<div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/02_Rust%E5%9F%BA%E7%A4%8E_%E5%80%A4_%E5%9E%8B_%E5%88%B6%E5%BE%A1_%E3%83%87%E3%83%BC%E3%82%BF%E6%A7%8B%E9%80%A0.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、ブラウザーの「戻る」で PDF に戻れます。</p><div style="page-break-after: always; text-align: center; margin: 0; padding: 0;">
+<div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/02_Rust%E5%9F%BA%E7%A4%8E_%E5%80%A4_%E5%9E%8B_%E5%88%B6%E5%BE%A1_%E3%83%87%E3%83%BC%E3%82%BF%E6%A7%8B%E9%80%A0.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、ブラウザーの「戻る」で PDF に戻れます。</p><div class="paste-note" id="paste-note" role="status" hidden><button type="button" aria-label="閉じる">×</button><b>複数の行をコピーしました。</b>コマンド プロンプトや PowerShell の窓（Windows Terminal）に貼り付けると、「<b>複数の行を含むテキストを貼り付けようとしています。</b>…続行してもよろしいですか?」という確認が出ます。これは、知らないうちにコマンドが動かないようにするための、Windows Terminal の安全の確認です（エラーではありません）。貼り付ける物がこの資料のコードなら、<b>「強制的に貼り付け」</b>を押してください。</div><div style="page-break-after: always; text-align: center; margin: 0; padding: 0;">
 <img src="../assets/cover.jpg" alt="表紙" style="width: 100%; max-height: 175mm; object-fit: cover; border-radius: 10px;">
 <div style="margin-top: 14px; font-size: 11px; letter-spacing: 0.18em; color: #c2410c; font-weight: 700;">VOLUME 02 / RUST BACKEND MASTERY</div>
 <div style="font-size: 26px; font-weight: 800; color: #0f172a; margin-top: 6px; line-height: 1.35;">Rust基礎 — 値・型・制御・データ構造</div>
@@ -9428,17 +9434,36 @@ web: 2
 
 <script>
 (function () {
-  function copyText(text) {
-    if (navigator.clipboard && window.isSecureContext) {
-      return navigator.clipboard.writeText(text);
-    }
+  // The old way (a hidden text box + execCommand) works where the clipboard API is refused.
+  function copyOld(text) {
     return new Promise(function (resolve, reject) {
       var ta = document.createElement("textarea");
-      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
-      document.body.appendChild(ta); ta.select();
-      try { document.execCommand("copy") ? resolve() : reject(); } catch (e) { reject(e); }
+      ta.value = text; ta.style.position = "fixed"; ta.style.top = "0"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      var ok = false;
+      try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
       document.body.removeChild(ta);
+      ok ? resolve() : reject();
     });
+  }
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text).catch(function () { return copyOld(text); });
+    }
+    return copyOld(text);
+  }
+  var pasteNote = document.getElementById("paste-note");
+  var pasteTimer = null;
+  function showPasteNote() {
+    if (!pasteNote) { return; }
+    var webNote = document.getElementById("web-note");
+    if (webNote) { webNote.hidden = true; }
+    pasteNote.hidden = false;
+    clearTimeout(pasteTimer);
+    pasteTimer = setTimeout(function () { pasteNote.hidden = true; }, 15000);
+  }
+  if (pasteNote) {
+    pasteNote.querySelector("button").addEventListener("click", function () { pasteNote.hidden = true; });
   }
   document.querySelectorAll(".copy-btn").forEach(function (btn) {
     btn.addEventListener("click", function () {
@@ -9448,7 +9473,16 @@ web: 2
         btn.textContent = "コピーしました";
         btn.classList.add("done");
         setTimeout(function () { btn.textContent = "コピー"; btn.classList.remove("done"); }, 2000);
-      }, function () { btn.textContent = "コピーできませんでした"; });
+        if (text.indexOf("\n") >= 0) { showPasteNote(); }
+      }, function () {
+        // could not write to the clipboard: select the code so that Ctrl+C copies it (lines are kept)
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        var range = document.createRange();
+        range.selectNodeContents(pre.querySelector("code") || pre);
+        sel.addRange(range);
+        btn.textContent = "選びました。Ctrl＋C を押してください";
+      });
     });
   });
   if (/^#code-\d+$/.test(location.hash)) {
