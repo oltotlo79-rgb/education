@@ -14,6 +14,7 @@ render as real visual diagrams in the PDF. We add:
 from __future__ import annotations
 
 import html
+import json
 import os
 import re
 import sys
@@ -777,10 +778,155 @@ def copy_friendly_text(pdf) -> int:
     return changes
 
 
-def web_copy_links(src: Path, dest: Path, folder: str) -> int:
+# ---------------------- "コピー" inside Adobe Acrobat ----------------------------
+# Adobe Acrobat and Acrobat Reader run the scripts of a PDF, so there the "コピー" of each code block is a
+# button of the PDF itself: it opens a small window with the code in a text box, already all selected,
+# and Ctrl+C copies it exactly (line breaks, indentation, tabs, "…", emoji …), with nothing opened on
+# the web. A script of a PDF cannot write to the clipboard itself: Acrobat Reader quietly ignores
+# app.execMenuItem("Copy") from a document, so the one key press is the user's.
+#
+# In the file the buttons are hidden ("hidden" and "no view") and lie outside the page, so every other
+# viewer leaves them out and keeps the "コピー" link to the web edition: VS Code's PDF preview (PDF.js) and
+# Chrome do not draw such a widget, and Chrome (pdfium) would take any form field lying over the link as
+# the thing clicked, even a hidden one, and then not follow the link. The document's script, only in
+# Acrobat (app.viewerType "Reader" or "Exchange…"), moves each button onto its "コピー" and shows it, and
+# then marks the document unchanged again so that closing it asks nothing.
+COPY_FIELD_PREFIX = "copy_"
+COPY_FIELD_PARKED = [-2, -2, -1, -1]   # where the buttons lie in the file: outside the page, never clicked
+
+
+def _js(s: str) -> str:
+    """A JavaScript string literal in plain ASCII (the script of a PDF is then the same in every encoding)."""
+    return json.dumps(s, ensure_ascii=True)
+
+
+ACROBAT_DOC_JS = """\
+function defCopyDialog(code) {
+  app.execDialog({
+    initialize: function (d) { d.load({"code": code}); },
+    description: {
+      name: %(title)s,
+      elements: [{type: "view", align_children: "align_left", elements: [
+        {type: "static_text", name: %(l1)s, bold: true, width: 640},
+        {type: "static_text", name: %(l2)s, width: 640},
+        {type: "edit_text", item_id: "code", multiline: true, width: 640, height: 300},
+        {type: "static_text", name: %(l3)s, width: 640},
+        {type: "static_text", name: %(l4)s, width: 640},
+        {type: "ok", ok_name: %(ok)s}
+      ]}]
+    }
+  });
+}
+var defCopyPlaces = __PLACES__;
+if (typeof app !== "undefined" && /^(Reader|Exchange)/.test(String(app.viewerType))) {
+  for (var name in defCopyPlaces) {
+    var f = this.getField(name);
+    if (f) { f.rect = defCopyPlaces[name]; f.display = display.visible; }
+  }
+  this.dirty = false;
+}
+""" % {
+    "title": _js("コードのコピー"),
+    "l1": _js("コードが青く選ばれています。このまま Ctrl + C を押すと、コピーできます。"),
+    "l2": _js("（中をクリックして青い色が消えた時は、Ctrl + A を押してから Ctrl + C を押します）"),
+    "l3": _js("コピーしたら「閉じる」を押して、この窓を閉じます。"),
+    "l4": _js("下の赤い字の「警告 : JavaScript ウィンドウ」は、PDF の中のボタンが開いた窓だという印です。危ない物ではありません。"),
+    "ok": _js("閉じる"),
+}
+
+
+def code_texts(md_text: str) -> list[str]:
+    """The text of each code block, in order (code-1, code-2 …): what the web edition's "コピー" copies."""
+    return [re.sub(r"\n$", "", html.unescape(re.sub(r"<[^>]+>", "", m.group(2))))
+            for m in PRE_RE.finditer(render_body(md_text))]
+
+
+def acrobat_copy_buttons(pdf, codes: list[str]) -> int:
+    """Give each copy link of the PDF an Acrobat "コピー" button (see above). Returns the number of changes
+    (0 when the PDF already has the same buttons and script)."""
+    import pikepdf
+    Name, String = pikepdf.Name, pikepdf.String
+    is_copy_field = lambda a: (a.get("/Subtype") == Name.Widget
+                               and str(a.get("/T", "")).startswith(COPY_FIELD_PREFIX))
+    changes = 0
+    places = {}   # field name -> [upper-left x, upper-left y, lower-right x, lower-right y] (Acrobat's field.rect)
+    fields = []
+    for page in pdf.pages:
+        annots = page.obj.get("/Annots")
+        if annots is None:
+            continue
+        old = {str(a.T): a for a in annots if is_copy_field(a)}
+        keep = []
+        for a in annots:
+            if is_copy_field(a):
+                continue
+            keep.append(a)
+            action = a.get("/A")
+            if action is None or action.get("/S") != Name.URI:
+                continue
+            m = re.search(r"#code-(\d+)$", str(action.URI))
+            if not m or not (1 <= int(m.group(1)) <= len(codes)):
+                continue
+            n = int(m.group(1))
+            name = f"{COPY_FIELD_PREFIX}{n}"
+            x1, y1, x2, y2 = (round(float(v), 2) for v in a.Rect)
+            places[name] = [x1, y2, x2, y1]
+            js = f"if (typeof defCopyDialog === \"function\") {{ defCopyDialog({_js(codes[n - 1])}); }}".encode("ascii")
+            btn = old.pop(name, None)
+            if btn is None or bytes(btn.A.JS.read_bytes()) != js or [float(v) for v in btn.Rect] != COPY_FIELD_PARKED:
+                w, h = x2 - x1, y2 - y1
+                btn = pdf.make_indirect(pikepdf.Dictionary(
+                    Type=Name.Annot, Subtype=Name.Widget, FT=Name.Btn, Ff=1 << 16, T=String(name),
+                    TU=String("押すと、このコードをコピーする窓が開きます"),
+                    Rect=COPY_FIELD_PARKED, F=2 | 32,   # hidden, no view, outside the page (see above)
+                    P=page.obj, H=Name.P, MK=pikepdf.Dictionary(),
+                    AP=pikepdf.Dictionary(N=pdf.make_stream(b"", Type=Name.XObject, Subtype=Name.Form,
+                                                            BBox=[0, 0, w, h])),   # draws nothing
+                    A=pikepdf.Dictionary(S=Name.JavaScript, JS=pdf.make_stream(js))))
+                changes += 1
+            keep.append(btn)   # after the link: on top of it once Acrobat has moved it there
+            fields.append(btn)
+        changes += len(old)   # buttons of blocks that are gone
+        if [x.objgen for x in keep] != [y.objgen for y in annots]:
+            page.obj.Annots = pdf.make_indirect(pikepdf.Array(keep))
+
+    form = pdf.Root.get("/AcroForm")
+    others = [f for f in (form.get("/Fields", []) if form is not None else []) if not is_copy_field(f)]
+    if not others and not fields:
+        if form is not None:   # a PDF without code blocks gets no form (and no script, below)
+            del pdf.Root["/AcroForm"]
+            changes += 1
+    else:
+        if form is None:
+            pdf.Root.AcroForm = form = pikepdf.Dictionary()
+        if [f.objgen for f in form.get("/Fields", [])] != [f.objgen for f in others + fields]:
+            form.Fields = pikepdf.Array(others + fields)
+
+    doc_js = ACROBAT_DOC_JS.replace("__PLACES__", json.dumps(places, separators=(",", ":"))).encode("ascii")
+    names = pdf.Root.get("/Names")
+    old_js = None
+    if names is not None and "/JavaScript" in names:
+        arr = names.JavaScript.get("/Names", [])
+        if len(arr) == 2 and isinstance(arr[1].get("/JS"), pikepdf.Stream):
+            old_js = bytes(arr[1].JS.read_bytes())
+    if not places:
+        if old_js is not None:
+            del names["/JavaScript"]
+            changes += 1
+    elif old_js != doc_js:
+        if names is None:
+            pdf.Root.Names = names = pikepdf.Dictionary()
+        names.JavaScript = pikepdf.Dictionary(Names=pikepdf.Array([String("defcopy"), pdf.make_indirect(
+            pikepdf.Dictionary(S=Name.JavaScript, JS=pdf.make_stream(doc_js)))]))
+        changes += 1
+    return changes
+
+
+def web_copy_links(src: Path, dest: Path, folder: str, codes: list[str] | None = None) -> int:
     """Point the PDF's copy links at the HTML edition on the web (see WEB_BASE), and take the tags out
     and the page numbers out of the text (see copy_friendly_text), so that text copied in VS Code's PDF
-    preview keeps its line breaks and gets no page numbers.
+    preview keeps its line breaks and gets no page numbers. With the code blocks' texts (codes), also put
+    Acrobat's own "コピー" buttons on the links (see acrobat_copy_buttons).
 
     Chrome writes the links as absolute file:/// URLs. Reads src (the PDF Chrome printed, or an
     existing PDF for --relink) and writes the result to dest (src and dest may be the same file).
@@ -804,6 +950,8 @@ def web_copy_links(src: Path, dest: Path, folder: str) -> int:
                     action.URI = pikepdf.String(url)
                     changed += 1
         changed += copy_friendly_text(pdf)
+        if codes is not None:
+            changed += acrobat_copy_buttons(pdf, codes)
         if src == dest and changed == 0:
             return 0   # --relink on a PDF with nothing to change: leave the file as it is
         for attempt in range(10):
@@ -813,7 +961,7 @@ def web_copy_links(src: Path, dest: Path, folder: str) -> int:
             except PermissionError:
                 time.sleep(1)   # the old PDF may be open for a moment (a viewer, antivirus)
         else:
-            raise RuntimeError(f"could not write {dest}")
+            raise RuntimeError(f"could not write {dest} (is it open in Adobe Acrobat? Close it there and run again)")
     return changed
 
 def chrome_print_pdf(html_path: Path, pdf_path: Path) -> None:
@@ -905,7 +1053,7 @@ def convert(md_path: Path) -> Path:
     chrome_print_pdf(html_path, printed)
     for attempt in range(10):   # Chrome may hold the file for a moment after printing
         try:
-            web_copy_links(printed, pdf_path, md_path.parent.name)
+            web_copy_links(printed, pdf_path, md_path.parent.name, code_texts(md_text))
             break
         except PermissionError:
             time.sleep(1)
@@ -923,11 +1071,14 @@ def convert_html_only(md_path: Path) -> None:
 
 
 def relink(md_path: Path) -> None:
-    """Only redo the finishing of the existing PDF (copy links to the web, no tags), without Chrome printing."""
+    """Only redo the finishing of the existing PDF (copy links to the web, no tags, Acrobat's copy buttons),
+    without Chrome printing."""
     pdf_path = md_path.parent / "pdf" / f"{md_path.stem}.pdf"
     if pdf_path.exists():
-        n = web_copy_links(pdf_path, pdf_path, md_path.parent.name)
-        print(f"  {n} changes (copy links -> {WEB_BASE}/{md_path.parent.name}/html/, tags taken out)")
+        codes = code_texts(md_path.read_text(encoding="utf-8"))
+        n = web_copy_links(pdf_path, pdf_path, md_path.parent.name, codes)
+        print(f"  {n} changes (copy links -> {WEB_BASE}/{md_path.parent.name}/html/, tags taken out,"
+              f" Acrobat copy buttons)")
 
 
 def main(targets: list[Path], html_only: bool = False, relink_only: bool = False) -> None:
@@ -965,8 +1116,8 @@ def resolve_targets(args: list[str]) -> list[Path]:
 
 if __name__ == "__main__":
     # --html-only: rebuild just <folder>/html/*.html (no Chrome printing)
-    # --relink:    only redo the finishing of the existing PDFs: copy links to WEB_BASE, tags taken out
-    #              (no Chrome printing)
+    # --relink:    only redo the finishing of the existing PDFs: copy links to WEB_BASE, tags taken out,
+    #              Acrobat's copy buttons (no Chrome printing)
     flags = {"--html-only", "--relink"}
     args = [a for a in sys.argv[1:] if a not in flags]
     main(resolve_targets(args), html_only="--html-only" in sys.argv[1:], relink_only="--relink" in sys.argv[1:])
