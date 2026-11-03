@@ -533,12 +533,15 @@ def web_html(md_text: str, title: str, md_path: Path, out_dir: Path) -> str:
            f'<a href="{quote(pdf_rel)}">PDF 版</a>'
            f"<span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div>"
            f'<p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。'
-           f"コピーしたら、ブラウザーの「戻る」で PDF に戻れます。</p>"
+           f"コピーしたら、PDF を見ていた画面に戻ります（ブラウザーで PDF を見ていた時は「戻る」、"
+           f"VS Code で見ていた時は VS Code の窓に切り替えます）。</p>"
            f'<div class="paste-note" id="paste-note" role="status" hidden><button type="button" aria-label="閉じる">×</button>'
-           f"<b>複数の行をコピーしました。</b>コマンド プロンプトや PowerShell の窓（Windows Terminal）に貼り付けると、"
-           f"「<b>複数の行を含むテキストを貼り付けようとしています。</b>…続行してもよろしいですか?」という確認が出ます。"
-           f"これは、知らないうちにコマンドが動かないようにするための、Windows Terminal の安全の確認です（エラーではありません）。"
-           f"貼り付ける物がこの資料のコードなら、<b>「強制的に貼り付け」</b>を押してください。</div>")
+           f"<b>複数の行をコピーしました。</b>貼り付けた時に、次の確認が出ることがあります。"
+           f"どちらもエラーではなく、知らないうちにコマンドが動かないようにするための安全の確認です。"
+           f"<br>・コマンド プロンプトや PowerShell の窓（Windows Terminal）:「<b>複数の行を含むテキストを貼り付けようとしています。</b>…"
+           f"続行してもよろしいですか?」→ <b>「強制的に貼り付け」</b>を押す"
+           f"<br>・VS Code のターミナル:「<b>○ 行のテキストをターミナルに貼り付けますか?</b>」→ <b>「貼り付け」</b>を押す"
+           f"（「1 行として貼り付け」は、何行もの文字を 1 行にまとめて貼る物なので、押さないでください）</div>")
     page = HTML_TEMPLATE.format(title=title, body=bar + body, code_font="Consolas", code_font_face="")
     page = page.replace("</style>", WEB_CSS + "</style>", 1)
     return page.replace("</body>", WEB_JS + "</body>", 1)
@@ -559,29 +562,47 @@ def write_web_index(folder: Path) -> None:
     (out_dir / "index.html").write_text(page.replace("</style>", WEB_CSS + "</style>", 1), encoding="utf-8")
 
 
-def relative_copy_links(src: Path, dest: Path) -> int:
-    """Chrome writes links as absolute file:/// URLs; make the copy links relative to the PDF.
+# The HTML edition on the web (GitHub Pages of this repository: <WEB_BASE>/<folder>/html/<name>.html).
+# The PDF's "コピー" links go there. A link to a file in the folder (../html/... or file:///...) does not
+# work everywhere: VS Code's PDF preview (the vscode-pdf extension, PDF.js 2.10) only draws http(s)/ftp/
+# mailto/tel links, so such a "コピー" was not drawn as a link and pressing it did nothing.
+WEB_BASE = "https://oltotlo79-rgb.github.io/education"
 
-    Reads the PDF Chrome printed (src, a temporary file) and writes the result to dest.
+
+def copy_link_url(uri: str, folder: str) -> str | None:
+    """The web address for a copy link (file:///…/html/X.html#code-N, ../html/…, or an older web address)."""
+    if not uri.startswith(("file:///", "../html/", WEB_BASE + "/")):
+        return None
+    m = re.match(r".*/html/([^/]+\.html#code-\d+)$", uri)
+    return f"{WEB_BASE}/{quote(folder)}/html/{m.group(1)}" if m else None
+
+
+def web_copy_links(src: Path, dest: Path, folder: str) -> int:
+    """Point the PDF's copy links at the HTML edition on the web (see WEB_BASE).
+
+    Chrome writes the links as absolute file:/// URLs. Reads src (the PDF Chrome printed, or an
+    existing PDF for --relink) and writes the result to dest (src and dest may be the same file).
     """
     try:
         import pikepdf
     except ImportError:
         print("  (pikepdf is not installed: the copy links keep absolute paths)")
-        shutil.copyfile(src, dest)
+        if src != dest:
+            shutil.copyfile(src, dest)
         return 0
     changed = 0
-    with pikepdf.open(src) as pdf:
+    with pikepdf.open(src, allow_overwriting_input=(src == dest)) as pdf:
         for page in pdf.pages:
             for annot in page.obj.get("/Annots", []):
                 action = annot.get("/A")
                 if action is None or action.get("/S") != pikepdf.Name("/URI"):
                     continue
-                uri = str(action.URI)
-                m = re.match(r"file:///.*/html/([^/]+\.html#code-\d+)$", uri)
-                if m:
-                    action.URI = pikepdf.String("../html/" + m.group(1))
+                url = copy_link_url(str(action.URI), folder)
+                if url and url != str(action.URI):
+                    action.URI = pikepdf.String(url)
                     changed += 1
+        if src == dest and changed == 0:
+            return 0   # --relink on a PDF with nothing to change: leave the file as it is
         for attempt in range(10):
             try:
                 pdf.save(dest)
@@ -681,7 +702,7 @@ def convert(md_path: Path) -> Path:
     chrome_print_pdf(html_path, printed)
     for attempt in range(10):   # Chrome may hold the file for a moment after printing
         try:
-            relative_copy_links(printed, pdf_path)
+            web_copy_links(printed, pdf_path, md_path.parent.name)
             break
         except PermissionError:
             time.sleep(1)
@@ -698,12 +719,25 @@ def convert_html_only(md_path: Path) -> None:
     (web_dir / f"{md_path.stem}.html").write_text(web_html(md_text, md_path.stem, md_path, web_dir), encoding="utf-8")
 
 
-def main(targets: list[Path], html_only: bool = False) -> None:
+def relink(md_path: Path) -> None:
+    """Only point the copy links of the existing PDF at the web (no Chrome printing)."""
+    pdf_path = md_path.parent / "pdf" / f"{md_path.stem}.pdf"
+    if pdf_path.exists():
+        n = web_copy_links(pdf_path, pdf_path, md_path.parent.name)
+        print(f"  {n} copy links -> {WEB_BASE}/{md_path.parent.name}/html/")
+
+
+def main(targets: list[Path], html_only: bool = False, relink_only: bool = False) -> None:
     for md in targets:
+        if relink_only:
+            print(f"Relinking: {md.relative_to(ROOT)}")
+            relink(md)
+            continue
         print(f"Converting: {md.relative_to(ROOT)}" + ("  (HTML only)" if html_only else ""))
         convert_html_only(md) if html_only else convert(md)
-    for folder in sorted({md.parent for md in targets}):
-        write_web_index(folder)
+    if not relink_only:
+        for folder in sorted({md.parent for md in targets}):
+            write_web_index(folder)
     print("Done.")
 
 def resolve_targets(args: list[str]) -> list[Path]:
@@ -728,5 +762,7 @@ def resolve_targets(args: list[str]) -> list[Path]:
 
 if __name__ == "__main__":
     # --html-only: rebuild just <folder>/html/*.html (no Chrome printing)
-    args = [a for a in sys.argv[1:] if a != "--html-only"]
-    main(resolve_targets(args), html_only="--html-only" in sys.argv[1:])
+    # --relink:    only point the copy links of the existing PDFs at WEB_BASE (no Chrome printing)
+    flags = {"--html-only", "--relink"}
+    args = [a for a in sys.argv[1:] if a not in flags]
+    main(resolve_targets(args), html_only="--html-only" in sys.argv[1:], relink_only="--relink" in sys.argv[1:])
