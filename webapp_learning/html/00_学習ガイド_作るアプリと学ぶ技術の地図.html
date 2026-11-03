@@ -182,6 +182,12 @@ li, tr { page-break-inside: avoid; }
 .web-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 10; max-width: 90%;
   font-size: 15px; font-weight: 700; background: #fff7ed; border: 2px solid #f2994a; border-radius: 8px;
   padding: 10px 16px; margin: 0; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.paste-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 11; width: 640px;
+  max-width: calc(100% - 32px); box-sizing: border-box; font-size: 15px; line-height: 1.7; background: #ecfdf5;
+  border: 2px solid #27ae60; border-radius: 8px; padding: 12px 40px 12px 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.18); }
+.paste-note[hidden] { display: none; }
+.paste-note button { position: absolute; top: 4px; right: 6px; border: 0; background: transparent; font-size: 20px;
+  line-height: 1; cursor: pointer; color: #1f2937; padding: 4px 6px; }
 .code-wrap { position: relative; scroll-margin-top: 16px; }
 .code-wrap pre { padding-top: 40px !important; }
 .copy-btn { position: absolute; top: 8px; right: 8px; z-index: 2; font-size: 13px; font-weight: 700;
@@ -203,7 +209,7 @@ li, tr { page-break-inside: avoid; }
 </style>
 </head>
 <body>
-<div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/00_%E5%AD%A6%E7%BF%92%E3%82%AC%E3%82%A4%E3%83%89_%E4%BD%9C%E3%82%8B%E3%82%A2%E3%83%97%E3%83%AA%E3%81%A8%E5%AD%A6%E3%81%B6%E6%8A%80%E8%A1%93%E3%81%AE%E5%9C%B0%E5%9B%B3.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、ブラウザーの「戻る」で PDF に戻れます。</p><div style="text-align: center; padding: 28px 0 8px;">
+<div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/00_%E5%AD%A6%E7%BF%92%E3%82%AC%E3%82%A4%E3%83%89_%E4%BD%9C%E3%82%8B%E3%82%A2%E3%83%97%E3%83%AA%E3%81%A8%E5%AD%A6%E3%81%B6%E6%8A%80%E8%A1%93%E3%81%AE%E5%9C%B0%E5%9B%B3.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、ブラウザーの「戻る」で PDF に戻れます。</p><div class="paste-note" id="paste-note" role="status" hidden><button type="button" aria-label="閉じる">×</button><b>複数の行をコピーしました。</b>コマンド プロンプトや PowerShell の窓（Windows Terminal）に貼り付けると、「<b>複数の行を含むテキストを貼り付けようとしています。</b>…続行してもよろしいですか?」という確認が出ます。これは、知らないうちにコマンドが動かないようにするための、Windows Terminal の安全の確認です（エラーではありません）。貼り付ける物がこの資料のコードなら、<b>「強制的に貼り付け」</b>を押してください。</div><div style="text-align: center; padding: 28px 0 8px;">
 <div style="font-size: 14px; color: #475569;">Web アプリ開発 学習資料</div>
 <div style="font-size: 26px; font-weight: 800; color: #0f172a; margin-top: 6px; line-height: 1.35;">学習ガイド — 作るアプリと、学ぶ技術の地図</div>
 <div style="font-size: 13px; color: #475569; margin-top: 8px;">依頼・承認の練習アプリを作りながら、HTML・CSS・TypeScript・React・Python・Django・Rust・Topcoat・メール送信を学ぶ</div>
@@ -899,6 +905,9 @@ arm64
 <ul>
 <li><strong>初めて出てくるコードには、すぐ下に説明の箱があります。</strong> 「<strong>▶ ここで初めて出てくるコード</strong>」の箱に、その場で初めて出てくるタグ・メソッド・関数・コマンドなどの意味と使い方を、1 つずつ書いています。あとで「これは何だっけ？」と思ったら、<strong>12 付録「出てくるコードとコマンドの一覧」</strong>で、機能ごとの表から引けます。</li>
 <li>最初から HTML 版で読んでもかまいません。<code>webapp_learning\html\index.html</code> をダブルクリックすると、巻の一覧が開きます（中身は PDF と同じで、どのコードにも「コピー」ボタンがあります）。</li>
+<li><strong>PDF の「コピー」を押した時に「セキュリティ警告」が出たら:</strong> PDF を Adobe Acrobat Reader などで開いていると、PDF の外のファイル（ここでは HTML 版）を開く前に、「この文書は次のサイトへの接続を試みています」のような確認が出ることがあります。開く先が、この資料の <code>html</code> フォルダの中のファイル（<code>file:///…/html/…</code>）なら、「許可」を押してかまいません。心配な時や、許可しても開かない時は、PDF を使わずに、HTML 版（<code>html</code> フォルダの <code>index.html</code>）をダブルクリックして、そこから読んでください。HTML 版なら、どのコードにも「コピー」ボタンがあり、確認は出ません。</li>
+<li><strong>貼り付けた時に「複数の行を含むテキストを貼り付けようとしています。…続行してもよろしいですか?」と出たら:</strong> これはエラーではなく、Windows Terminal（Windows 11 のコマンド プロンプトや PowerShell の窓）の<strong>安全の確認</strong>です。何行もの文字を貼ると、<code>Enter</code> を押さなくても次々にコマンドが動くので、知らない文字を貼っていないかを確かめさせてくれます。貼る物がこの資料のコードなら、<strong>「強制的に貼り付け」</strong>を押してください（HTML 版でも、何行もコピーした時に同じ案内が出ます）。毎回出したくない時は、Windows Terminal の 設定 → 操作 →「改行を貼り付ける際に警告する」で変えられますが、安全のため、そのままがおすすめです。</li>
+<li><strong>コマンドは、特に書いていない限り PowerShell の物です。</strong> コマンド プロンプト（cmd）に貼ると、<code>#</code> で始まる説明の行が「'#' は、内部コマンドまたは外部コマンド、操作可能なプログラムまたはバッチ ファイルとして認識されていません。」になります。PowerShell の窓に貼ってください（<code>#</code> の行は、PowerShell では何もしない説明の行です）。</li>
 <li><strong>PDF の文字をマウスでなぞってコピーする方法は、おすすめしません。</strong> Chrome や Edge で開いた PDF からコピーすると、行の先頭の空白（字下げ）が 1 つに縮まり、空の行が消えます。これは PDF を見るソフトの決まった動きで、資料の作り方では直せません。<strong>特に Python は、字下げで「どこからどこまでが中身か」を表すので、字下げが崩れると動きません。</strong></li>
 </ul>
 <h2 id="7">7. 学び方のコツ</h2>
@@ -949,17 +958,36 @@ arm64
 
 <script>
 (function () {
-  function copyText(text) {
-    if (navigator.clipboard && window.isSecureContext) {
-      return navigator.clipboard.writeText(text);
-    }
+  // The old way (a hidden text box + execCommand) works where the clipboard API is refused.
+  function copyOld(text) {
     return new Promise(function (resolve, reject) {
       var ta = document.createElement("textarea");
-      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
-      document.body.appendChild(ta); ta.select();
-      try { document.execCommand("copy") ? resolve() : reject(); } catch (e) { reject(e); }
+      ta.value = text; ta.style.position = "fixed"; ta.style.top = "0"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      var ok = false;
+      try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
       document.body.removeChild(ta);
+      ok ? resolve() : reject();
     });
+  }
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text).catch(function () { return copyOld(text); });
+    }
+    return copyOld(text);
+  }
+  var pasteNote = document.getElementById("paste-note");
+  var pasteTimer = null;
+  function showPasteNote() {
+    if (!pasteNote) { return; }
+    var webNote = document.getElementById("web-note");
+    if (webNote) { webNote.hidden = true; }
+    pasteNote.hidden = false;
+    clearTimeout(pasteTimer);
+    pasteTimer = setTimeout(function () { pasteNote.hidden = true; }, 15000);
+  }
+  if (pasteNote) {
+    pasteNote.querySelector("button").addEventListener("click", function () { pasteNote.hidden = true; });
   }
   document.querySelectorAll(".copy-btn").forEach(function (btn) {
     btn.addEventListener("click", function () {
@@ -969,7 +997,16 @@ arm64
         btn.textContent = "コピーしました";
         btn.classList.add("done");
         setTimeout(function () { btn.textContent = "コピー"; btn.classList.remove("done"); }, 2000);
-      }, function () { btn.textContent = "コピーできませんでした"; });
+        if (text.indexOf("\n") >= 0) { showPasteNote(); }
+      }, function () {
+        // could not write to the clipboard: select the code so that Ctrl+C copies it (lines are kept)
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        var range = document.createRange();
+        range.selectNodeContents(pre.querySelector("code") || pre);
+        sel.addRange(range);
+        btn.textContent = "選びました。Ctrl＋C を押してください";
+      });
     });
   });
   if (/^#code-\d+$/.test(location.hash)) {

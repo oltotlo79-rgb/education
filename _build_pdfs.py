@@ -315,6 +315,12 @@ WEB_CSS = """
 .web-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 10; max-width: 90%;
   font-size: 15px; font-weight: 700; background: #fff7ed; border: 2px solid #f2994a; border-radius: 8px;
   padding: 10px 16px; margin: 0; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.paste-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 11; width: 640px;
+  max-width: calc(100% - 32px); box-sizing: border-box; font-size: 15px; line-height: 1.7; background: #ecfdf5;
+  border: 2px solid #27ae60; border-radius: 8px; padding: 12px 40px 12px 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.18); }
+.paste-note[hidden] { display: none; }
+.paste-note button { position: absolute; top: 4px; right: 6px; border: 0; background: transparent; font-size: 20px;
+  line-height: 1; cursor: pointer; color: #1f2937; padding: 4px 6px; }
 .code-wrap { position: relative; scroll-margin-top: 16px; }
 .code-wrap pre { padding-top: 40px !important; }
 .copy-btn { position: absolute; top: 8px; right: 8px; z-index: 2; font-size: 13px; font-weight: 700;
@@ -338,17 +344,36 @@ WEB_CSS = """
 WEB_JS = """
 <script>
 (function () {
-  function copyText(text) {
-    if (navigator.clipboard && window.isSecureContext) {
-      return navigator.clipboard.writeText(text);
-    }
+  // The old way (a hidden text box + execCommand) works where the clipboard API is refused.
+  function copyOld(text) {
     return new Promise(function (resolve, reject) {
       var ta = document.createElement("textarea");
-      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
-      document.body.appendChild(ta); ta.select();
-      try { document.execCommand("copy") ? resolve() : reject(); } catch (e) { reject(e); }
+      ta.value = text; ta.style.position = "fixed"; ta.style.top = "0"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      var ok = false;
+      try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
       document.body.removeChild(ta);
+      ok ? resolve() : reject();
     });
+  }
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text).catch(function () { return copyOld(text); });
+    }
+    return copyOld(text);
+  }
+  var pasteNote = document.getElementById("paste-note");
+  var pasteTimer = null;
+  function showPasteNote() {
+    if (!pasteNote) { return; }
+    var webNote = document.getElementById("web-note");
+    if (webNote) { webNote.hidden = true; }
+    pasteNote.hidden = false;
+    clearTimeout(pasteTimer);
+    pasteTimer = setTimeout(function () { pasteNote.hidden = true; }, 15000);
+  }
+  if (pasteNote) {
+    pasteNote.querySelector("button").addEventListener("click", function () { pasteNote.hidden = true; });
   }
   document.querySelectorAll(".copy-btn").forEach(function (btn) {
     btn.addEventListener("click", function () {
@@ -358,7 +383,16 @@ WEB_JS = """
         btn.textContent = "コピーしました";
         btn.classList.add("done");
         setTimeout(function () { btn.textContent = "コピー"; btn.classList.remove("done"); }, 2000);
-      }, function () { btn.textContent = "コピーできませんでした"; });
+        if (text.indexOf("\\n") >= 0) { showPasteNote(); }
+      }, function () {
+        // could not write to the clipboard: select the code so that Ctrl+C copies it (lines are kept)
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        var range = document.createRange();
+        range.selectNodeContents(pre.querySelector("code") || pre);
+        sel.addRange(range);
+        btn.textContent = "選びました。Ctrl＋C を押してください";
+      });
     });
   });
   if (/^#code-\\d+$/.test(location.hash)) {
@@ -499,7 +533,12 @@ def web_html(md_text: str, title: str, md_path: Path, out_dir: Path) -> str:
            f'<a href="{quote(pdf_rel)}">PDF 版</a>'
            f"<span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div>"
            f'<p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。'
-           f"コピーしたら、ブラウザーの「戻る」で PDF に戻れます。</p>")
+           f"コピーしたら、ブラウザーの「戻る」で PDF に戻れます。</p>"
+           f'<div class="paste-note" id="paste-note" role="status" hidden><button type="button" aria-label="閉じる">×</button>'
+           f"<b>複数の行をコピーしました。</b>コマンド プロンプトや PowerShell の窓（Windows Terminal）に貼り付けると、"
+           f"「<b>複数の行を含むテキストを貼り付けようとしています。</b>…続行してもよろしいですか?」という確認が出ます。"
+           f"これは、知らないうちにコマンドが動かないようにするための、Windows Terminal の安全の確認です（エラーではありません）。"
+           f"貼り付ける物がこの資料のコードなら、<b>「強制的に貼り付け」</b>を押してください。</div>")
     page = HTML_TEMPLATE.format(title=title, body=bar + body, code_font="Consolas", code_font_face="")
     page = page.replace("</style>", WEB_CSS + "</style>", 1)
     return page.replace("</body>", WEB_JS + "</body>", 1)
@@ -651,10 +690,18 @@ def convert(md_path: Path) -> Path:
     html_path.unlink(missing_ok=True)
     return pdf_path
 
-def main(targets: list[Path]) -> None:
+def convert_html_only(md_path: Path) -> None:
+    """Only the HTML edition (when nothing in the PDF changes, e.g. the copy button's script)."""
+    web_dir = md_path.parent / "html"
+    web_dir.mkdir(exist_ok=True)
+    md_text = md_path.read_text(encoding="utf-8")
+    (web_dir / f"{md_path.stem}.html").write_text(web_html(md_text, md_path.stem, md_path, web_dir), encoding="utf-8")
+
+
+def main(targets: list[Path], html_only: bool = False) -> None:
     for md in targets:
-        print(f"Converting: {md.relative_to(ROOT)}")
-        convert(md)
+        print(f"Converting: {md.relative_to(ROOT)}" + ("  (HTML only)" if html_only else ""))
+        convert_html_only(md) if html_only else convert(md)
     for folder in sorted({md.parent for md in targets}):
         write_web_index(folder)
     print("Done.")
@@ -680,4 +727,6 @@ def resolve_targets(args: list[str]) -> list[Path]:
     return files
 
 if __name__ == "__main__":
-    main(resolve_targets(sys.argv[1:]))
+    # --html-only: rebuild just <folder>/html/*.html (no Chrome printing)
+    args = [a for a in sys.argv[1:] if a != "--html-only"]
+    main(resolve_targets(args), html_only="--html-only" in sys.argv[1:])
