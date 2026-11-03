@@ -271,7 +271,8 @@ def display_width(line: str) -> int:
     return sum(2 if unicodedata.east_asian_width(c) in "WF" else 1 for c in line.replace("\t", "    "))
 
 
-def copy_friendly_pre(match: re.Match) -> str:
+def copy_friendly_pre(match: re.Match) -> tuple[str, str]:
+    """The <pre> for the PDF, and its text (as printed: an empty line holds one space)."""
     attrs, inner = match.group(1), plain_code(match.group(2))
     # An empty line has no glyph, so it vanished when copied. A single space keeps it.
     inner = re.sub(r"\n(?=\n)", "\n ", inner)
@@ -282,7 +283,69 @@ def copy_friendly_pre(match: re.Match) -> str:
         style = f"font-size:{size:.2f}pt;white-space:pre;word-break:normal;overflow-wrap:normal"
     else:
         style = f"font-size:{CODE_WRAP_PT}pt"
-    return f'<pre{attrs} style="{style}">{inner}</pre>'
+    return f'<pre{attrs} style="{style}">{inner}</pre>', text
+
+
+# ---------------------- Selecting and copying in the PDF ----------------------
+# In VS Code's PDF preview (the vscode-pdf extension, PDF.js 2.10), selecting a code block with the mouse
+# and pressing Ctrl+C copies it with its line breaks and indentation (an empty line holds one space),
+# once the PDF has no tags and no page numbers in its text (see copy_friendly_text). It cannot give back:
+#   - characters that PDF.js always turns into others when it reads the text of a PDF ("…" -> "...",
+#     "℃" -> "°C", "µ" -> "μ", "Ⅱ" -> "II" …): PDFJS_NORMALIZED is the keys of its NormalizedUnicodes table;
+#   - spaces other than the plain space (a tab or a full-width space comes back as a plain space);
+#   - an emoji made of several characters (the zero width joiner, a variation selector, a skin tone …);
+#   - "～": the code font draws it with the glyph of "〜", so it comes back as "〜";
+#   - a long line that the PDF wraps: each part comes back as a line of its own.
+# Such a block gets a short note beside its "コピー" link (which copies it exactly). Which lines wrap is
+# only known once Chrome has laid the page out, so the page itself checks that (PDF_WRAP_JS) and then
+# shows the note for wrapped lines (data-wrap-note).
+PDFJS_NORMALIZED = (
+    (0x00A8, 0x00A8), (0x00AF, 0x00AF), (0x00B4, 0x00B5), (0x00B8, 0x00B8), (0x0132, 0x0133), (0x013F, 0x0140),
+    (0x0149, 0x0149), (0x017F, 0x017F), (0x01C4, 0x01CC), (0x01F1, 0x01F3), (0x02D8, 0x02DD), (0x037A, 0x037A),
+    (0x0384, 0x0384), (0x03D0, 0x03D2), (0x03D5, 0x03D6), (0x03F0, 0x03F2), (0x03F4, 0x03F5), (0x03F9, 0x03F9),
+    (0x0587, 0x0587), (0x0675, 0x0678), (0x0E33, 0x0E33), (0x0EB3, 0x0EB3), (0x0EDC, 0x0EDD), (0x0F77, 0x0F77),
+    (0x0F79, 0x0F79), (0x1E9A, 0x1E9A), (0x1FBD, 0x1FBD), (0x1FBF, 0x1FC0), (0x1FFE, 0x1FFE), (0x2002, 0x2006),
+    (0x2008, 0x200A), (0x2017, 0x2017), (0x2024, 0x2026), (0x2033, 0x2034), (0x2036, 0x2037), (0x203C, 0x203C),
+    (0x203E, 0x203E), (0x2047, 0x2049), (0x2057, 0x2057), (0x205F, 0x205F), (0x20A8, 0x20A8), (0x2100, 0x2101),
+    (0x2103, 0x2103), (0x2105, 0x2107), (0x2109, 0x2109), (0x2116, 0x2116), (0x2121, 0x2121), (0x2135, 0x2138),
+    (0x213B, 0x213B), (0x2160, 0x217F), (0x222C, 0x222D), (0x222F, 0x2230), (0x2474, 0x24B5), (0x2A0C, 0x2A0C),
+    (0x2A74, 0x2A76), (0x2E9F, 0x2E9F), (0x2EF3, 0x2EF3), (0x2F00, 0x2FD5), (0x3036, 0x3036), (0x3038, 0x303A),
+    (0x309B, 0x309C), (0x3131, 0x318E), (0x3200, 0x321E), (0x3220, 0x3243), (0x32C0, 0x32CB), (0x3358, 0x3370),
+    (0x33E0, 0x33FE), (0xFB00, 0xFB06), (0xFB13, 0xFB17), (0xFB4F, 0xFBB1), (0xFBD3, 0xFD3D), (0xFD50, 0xFD8F),
+    (0xFD92, 0xFDC7), (0xFE49, 0xFE4F), (0xFE80, 0xFEFC),
+)
+SHARED_GLYPH_CHARS = "～"
+
+
+def _copy_changes(c: str) -> str | None:
+    """How the character is named in the note, when selecting and copying it in the PDF gives something else."""
+    n = ord(c)
+    if c == "\t":
+        return "タブ"
+    if c == "　":
+        return "全角の空白"
+    if c not in " \n" and (c.isspace() or unicodedata.category(c) == "Zs"):
+        return "特別な空白"
+    # an emoji made of several characters (joined with U+200D, with a variation selector, a skin tone,
+    # a keycap, or a flag) is drawn as one glyph, which comes back as other characters
+    if c in "‍⃣" or 0xFE00 <= n <= 0xFE0F or 0x1F3FB <= n <= 0x1F3FF or 0x1F1E6 <= n <= 0x1F1FF:
+        return "絵文字"
+    if c in SHARED_GLYPH_CHARS or any(a <= n <= b for a, b in PDFJS_NORMALIZED):
+        return f"「{c}」"
+    return None
+
+
+def selection_copy_note(text: str, wraps: bool) -> str | None:
+    """The note beside the "コピー" link of a block that selecting and copying in the PDF cannot give back."""
+    labels = list(dict.fromkeys(l for l in map(_copy_changes, text) if l))
+    shown = "・".join(labels[:3]) + ("など" if len(labels) > 3 else "")
+    if labels and wraps:
+        return f"なぞってコピーすると{shown}が別の文字になり、長い行も分かれます。正しくは →"
+    if labels:
+        return f"なぞってコピーすると{shown}が別の文字になります。正しくは →"
+    if wraps:
+        return "長い行を折り返しているので、なぞってコピーすると行が分かれます。正しくは →"
+    return None
 
 
 # ---------------------- Copy buttons (HTML edition) ---------------------------
@@ -300,6 +363,27 @@ PDF_COPY_CSS = """
   display: inline-block; font-size: 9pt; font-weight: 700; color: #ffffff; background: #2f80ed;
   border-radius: 4px; padding: 3px 12px; text-decoration: none;
 }
+.code-head .copy-note { font-size: 7.5pt; color: #b45309; margin-right: 6px; vertical-align: 1px; }
+"""
+
+# Runs in the page Chrome prints: a block whose lines take more rows on the page than the code has lines
+# (a long line wrapped) shows its wrap note (see selection_copy_note).
+PDF_WRAP_JS = """
+<script>
+document.fonts.ready.then(() => {
+  for (const head of document.querySelectorAll(".code-head")) {
+    const pre = head.nextElementSibling, note = head.querySelector(".copy-note");
+    if (!pre || pre.tagName !== "PRE" || !note) continue;
+    const lines = pre.textContent.replace(/\\n$/, "").split("\\n").length;
+    const range = document.createRange();
+    range.selectNodeContents(pre);
+    const tops = [...range.getClientRects()].filter((r) => r.height > 0).map((r) => r.top).sort((a, b) => a - b);
+    let rows = tops.length ? 1 : 0;
+    for (let i = 1; i < tops.length; i++) if (tops[i] - tops[i - 1] > 3) rows++;
+    if (rows > lines) note.textContent = note.dataset.wrapNote;
+  }
+});
+</script>
 """
 
 WEB_CSS = """
@@ -485,7 +569,10 @@ def pdf_body(body: str, stem: str) -> str:
         nonlocal n
         n += 1
         href = f"html/{quote(stem)}.html#code-{n}"
-        return f'<div class="code-head"><a class="copy-link" href="{href}">コピー</a></div>' + copy_friendly_pre(m)
+        pre, text = copy_friendly_pre(m)
+        note, wrap_note = selection_copy_note(text, False) or "", selection_copy_note(text, True)
+        note_html = f'<span class="copy-note" data-wrap-note="{html.escape(wrap_note)}">{html.escape(note)}</span>'
+        return f'<div class="code-head">{note_html}<a class="copy-link" href="{href}">コピー</a></div>' + pre
 
     return PRE_RE.sub(rep, body)
 
@@ -496,7 +583,8 @@ def md_to_html(md_text: str, title: str, stem: str | None = None) -> str:
     page = HTML_TEMPLATE.format(
         title=title, body=body, code_font=CODE_FONT, code_font_face=font_face_css(code_text)
     )
-    return page.replace("</style>", PDF_COPY_CSS + "</style>", 1)
+    page = page.replace("</style>", PDF_COPY_CSS + "</style>", 1)
+    return page.replace("</body>", PDF_WRAP_JS + "</body>", 1)
 
 
 LINK_RE = re.compile(r'\b(src|href)="([^"#:]+?)(#[^"]*)?"')
@@ -577,8 +665,122 @@ def copy_link_url(uri: str, folder: str) -> str | None:
     return f"{WEB_BASE}/{quote(folder)}/html/{m.group(1)}" if m else None
 
 
+# Chrome writes a "tagged" PDF: every block of text (and every coloured run, e.g. a comment at the end
+# of a code line) is wrapped in marked content (BDC … EMC) for the tag tree. VS Code's PDF preview
+# (PDF.js 2.10) then loses the line break after such a run: it puts the end-of-line mark on the
+# marked-content marker instead of on the text, so no line break is made there, and text selected and
+# copied from the PDF joins that line with the next one ("fn main() {\n    // comment    let a = 1;").
+# Without the marked content every line of a code block is copied as its own line, with its indentation.
+#
+# The page number at the foot of each page is text too, so a code block that goes on to the next page
+# was copied with that page's number as a line of its own ("        false\n134\n    }"). The number is
+# therefore moved out of the page's text into an annotation that draws the same thing (an annotation's
+# drawing is not part of the text that is selected and copied).
+MARKED_CONTENT_OPS = ("BDC", "BMC", "EMC")
+TEXT_STATE_OPS = {"q", "Q", "cm", "RG", "rg", "G", "g", "K", "k", "CS", "cs", "SC", "SCN", "sc", "scn", "gs",
+                  "BT", "ET", "Tf", "Tm", "Td", "TD", "Tc", "Tw", "Tz", "TL", "Ts", "Tr", "Tj", "TJ"}
+FOOTER_MAX_Y = 50.0   # pt from the bottom of the page: the page number sits in the 20 mm bottom margin
+
+
+def _apply(m, x, y):
+    a, b, c, d, e, f = (float(v) for v in m)
+    return a * x + c * y + e, b * x + d * y + f
+
+
+def _footer_group(ops):
+    """(start, end, (x, y)) of the top-level q … Q group that only draws the page number, or None."""
+    if not ops or str(ops[0][1]) != "cm":
+        return None
+    page_cm = ops[0][0]
+    depth, start = 0, None
+    for i, (operands, op) in enumerate(ops[1:], 1):
+        op = str(op)
+        if op == "q":
+            if depth == 0:
+                start = i
+            depth += 1
+        elif op == "Q":
+            depth -= 1
+            if depth == 0 and start is not None:
+                group = ops[start:i + 1]
+                names = [str(o) for _, o in group]
+                if names.count("BT") == 1 and set(names) <= TEXT_STATE_OPS:
+                    cm = next((g[0] for g in group if str(g[1]) == "cm"), [1, 0, 0, 1, 0, 0])
+                    tm = next((g[0] for g in group if str(g[1]) == "Tm"), None)
+                    if tm is not None:
+                        x, y = _apply(page_cm, *_apply(cm, float(tm[4]), float(tm[5])))
+                        if y < FOOTER_MAX_Y:
+                            return start, i, (x, y)
+                start = None
+        elif depth == 0 and op == "BT":
+            return None   # text outside a group: not the layout Chrome writes
+    return None
+
+
+def copy_friendly_text(pdf) -> int:
+    """Take the marked content out of the pages (and drop the tag tree), and move each page number into
+    an annotation. Returns the number of changes (0 for a PDF that was already done)."""
+    import pikepdf
+    changes = 0
+    seen_forms = set()
+
+    def strip_forms(resources) -> int:
+        """The same for the drawings a page uses (form XObjects, e.g. an embedded diagram with text)."""
+        n = 0
+        for xobj in (resources or {}).get("/XObject", {}).values():
+            if xobj.get("/Subtype") != pikepdf.Name.Form or xobj.objgen in seen_forms:
+                continue
+            seen_forms.add(xobj.objgen)
+            fops = pikepdf.parse_content_stream(xobj)
+            fkept = [(operands, op) for operands, op in fops if str(op) not in MARKED_CONTENT_OPS]
+            if len(fkept) != len(fops):
+                xobj.write(pikepdf.unparse_content_stream(fkept))
+                n += len(fops) - len(fkept)
+            n += strip_forms(xobj.get("/Resources"))
+        return n
+
+    for page in pdf.pages:
+        changes += strip_forms(page.obj.get("/Resources"))
+        ops = pikepdf.parse_content_stream(page)
+        kept = [(operands, op) for operands, op in ops if str(op) not in MARKED_CONTENT_OPS]
+        changed = len(kept) != len(ops)
+        footer = _footer_group(kept)
+        if footer:
+            start, end, (x, y) = footer
+            width = float(page.obj.MediaBox[2])
+            rect = [round(x - 6, 2), round(y - 5, 2), round(width - 4, 2), round(y + 12, 2)]
+            appearance = pdf.make_stream(
+                pikepdf.unparse_content_stream([kept[0]] + kept[start:end + 1]),
+                Type=pikepdf.Name.XObject, Subtype=pikepdf.Name.Form, BBox=rect, Resources=page.obj.Resources)
+            annot = pdf.make_indirect(pikepdf.Dictionary(
+                Type=pikepdf.Name.Annot, Subtype=pikepdf.Name.Watermark, Rect=rect,
+                F=4 | 64 | 128,   # print it; read-only and locked (nothing to click or move)
+                AP=pikepdf.Dictionary(N=appearance)))
+            if "/Annots" not in page.obj:
+                page.obj.Annots = pdf.make_indirect(pikepdf.Array())
+            page.obj.Annots.append(annot)
+            kept = kept[:start] + kept[end + 1:]
+            changed = True
+        if changed:
+            changes += 1 + len(ops) - len(kept)
+            page.obj.Contents = pdf.make_stream(pikepdf.unparse_content_stream(kept))
+        if "/StructParents" in page.obj:
+            del page.obj["/StructParents"]
+            changes += 1
+        for annot in page.obj.get("/Annots", []):
+            if "/StructParent" in annot:
+                del annot["/StructParent"]
+    for key in ("/StructTreeRoot", "/MarkInfo"):
+        if key in pdf.Root:
+            del pdf.Root[key]
+            changes += 1
+    return changes
+
+
 def web_copy_links(src: Path, dest: Path, folder: str) -> int:
-    """Point the PDF's copy links at the HTML edition on the web (see WEB_BASE).
+    """Point the PDF's copy links at the HTML edition on the web (see WEB_BASE), and take the tags out
+    and the page numbers out of the text (see copy_friendly_text), so that text copied in VS Code's PDF
+    preview keeps its line breaks and gets no page numbers.
 
     Chrome writes the links as absolute file:/// URLs. Reads src (the PDF Chrome printed, or an
     existing PDF for --relink) and writes the result to dest (src and dest may be the same file).
@@ -601,6 +803,7 @@ def web_copy_links(src: Path, dest: Path, folder: str) -> int:
                 if url and url != str(action.URI):
                     action.URI = pikepdf.String(url)
                     changed += 1
+        changed += copy_friendly_text(pdf)
         if src == dest and changed == 0:
             return 0   # --relink on a PDF with nothing to change: leave the file as it is
         for attempt in range(10):
@@ -720,11 +923,11 @@ def convert_html_only(md_path: Path) -> None:
 
 
 def relink(md_path: Path) -> None:
-    """Only point the copy links of the existing PDF at the web (no Chrome printing)."""
+    """Only redo the finishing of the existing PDF (copy links to the web, no tags), without Chrome printing."""
     pdf_path = md_path.parent / "pdf" / f"{md_path.stem}.pdf"
     if pdf_path.exists():
         n = web_copy_links(pdf_path, pdf_path, md_path.parent.name)
-        print(f"  {n} copy links -> {WEB_BASE}/{md_path.parent.name}/html/")
+        print(f"  {n} changes (copy links -> {WEB_BASE}/{md_path.parent.name}/html/, tags taken out)")
 
 
 def main(targets: list[Path], html_only: bool = False, relink_only: bool = False) -> None:
@@ -762,7 +965,8 @@ def resolve_targets(args: list[str]) -> list[Path]:
 
 if __name__ == "__main__":
     # --html-only: rebuild just <folder>/html/*.html (no Chrome printing)
-    # --relink:    only point the copy links of the existing PDFs at WEB_BASE (no Chrome printing)
+    # --relink:    only redo the finishing of the existing PDFs: copy links to WEB_BASE, tags taken out
+    #              (no Chrome printing)
     flags = {"--html-only", "--relink"}
     args = [a for a in sys.argv[1:] if a not in flags]
     main(resolve_targets(args), html_only="--html-only" in sys.argv[1:], relink_only="--relink" in sys.argv[1:])
